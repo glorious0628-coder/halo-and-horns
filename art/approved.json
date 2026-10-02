@@ -38,5 +38,9 @@
  "BigSlime": {
   "status": "redo",
   "note": "슬라임 B처럼: 연두색, 반짝이는 젤리, 혀 내민 귀여운 표정"
+ },
+ "Skeleton": {
+  "status": "approved",
+  "file": "art/out/Skeleton.png"
  }
 }
