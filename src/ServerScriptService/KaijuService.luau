@@ -4,8 +4,15 @@
 -- GetHealthMult, HandleKaijuDeath.
 -- SPEC_ADDENDUM A6: only Horns players can become a kaiju; only Halo players are stomped, count as participants
 -- or get rewards (Neutral / None never take part).
+-- Review fixes (anti-collusion, minted gold only; carried gold is a transfer and always moves as specced):
+--  * Survived: the +50% bonus needs real opposition (a Halo participant, a stomped Halo player or a Halo player within
+--    NearbyRadius at an HP recalc) and is capped at SURVIVE_BONUS_MINUTES of hunting value at the kaiju's level.
+--  * Defeated without a Halo player's lethal hit (reset / fall / monster): the minted 3x bounty is scaled by the share of
+--    the kaiju's MaxHealth that Halo players actually took off. A real kill pays the full pool.
+--  * Each participant gets the minted part of a pool share at most once per Config.PvP.PairRewardCooldown per kaiju player.
+-- A11-R1: the stomp's ground raycast includes only Terrain, workspace.Map.Ground and Map.Decor "Bridge_*" models.
+-- A12: a transformed kaiju may zoom out to KAIJU_CAMERA_ZOOM; the previous limit is restored when the event ends.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
@@ -14,6 +21,11 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local TAG = "KaijuService"
 local WARN_INTERVAL = 10
 local GROUND_RAY_LENGTH = 120
+local KAIJU_CAMERA_ZOOM = 60 -- A12: "kaiju may use 60 while transformed, then restore"
+-- candidates for Config.Kaiju (G1): survive bonus cap in minutes of Config.HuntValue at the kaiju's level
+local SURVIVE_BONUS_MINUTES = 20
+local TXT_SURVIVE_CAPPED = "살아남았다! 주머니 골드 + 보너스(최대치) = %s골드가 금고로!"
+local TXT_SURVIVE_UNCONTESTED = "살아남았다! 아무도 막지 않아 보너스 없이 %s골드만 금고로."
 
 local KaijuService = {}
 KaijuService.KaijuStarted = Util.Signal.new() -- (player)
@@ -33,10 +45,15 @@ local dmg = {} -- [Player] = damage dealt to the Active kaiju (Halo attackers)
 local healers = {} -- [Player] = true: Halo players whose release healed a damager
 local lastRecalc = 0 -- os.clock()
 local lastStomp = 0 -- os.clock()
+local contested = false -- a Halo player was near / stomped by / fighting the Active kaiju
+local lethalHit = false -- a Halo player's hit dropped the Active kaiju to 0 HP (false = reset, fall, monster, ...)
+local lastMaxHealth = 0 -- the Active kaiju's MaxHealth, sampled every tick
+local poolPaidAt = {} -- ["participantUserId:kaijuUserId"] = os.clock() of the last minted pool share
+local zoomRestore = {} -- [Player] = CameraMaxZoomDistance before the kaiju zoom was raised
 
 local lastWarnAt = {}
 local rayParams = RaycastParams.new()
-rayParams.FilterType = Enum.RaycastFilterType.Exclude
+rayParams.FilterType = Enum.RaycastFilterType.Include -- A11-R1
 
 ------------------------------------------------------------------ helpers
 local function warnThrottled(key, msg)
@@ -152,23 +169,68 @@ local function countNearbyHalo(p)
 end
 
 local function computeHealthMult(p)
-	return Config.Kaiju.HPMult * (1 + Config.Kaiju.HPPerNearbyHalo * countNearbyHalo(p))
+	local nearby = countNearbyHalo(p)
+	if nearby > 0 and phase == "Active" then
+		contested = true
+	end
+	return Config.Kaiju.HPMult * (1 + Config.Kaiju.HPPerNearbyHalo * nearby)
+end
+
+-- A11-R1: ground = Terrain + workspace.Map.Ground + bridge models (workspace.Map.Decor children named "Bridge_*")
+local function groundTargets()
+	local list = { workspace.Terrain }
+	local map = workspace:FindFirstChild("Map")
+	if map then
+		local ground = map:FindFirstChild("Ground")
+		if ground then table.insert(list, ground) end
+		local decor = map:FindFirstChild("Decor")
+		if decor then
+			for _, child in decor:GetChildren() do
+				if string.sub(child.Name, 1, 7) == "Bridge_" then
+					table.insert(list, child)
+				end
+			end
+		end
+	end
+	return list
 end
 
 -- ground point below a position (for the stomp ring); falls back to the map ground plane (Y = 0)
 local function groundBelow(pos)
-	local exclude = {}
-	for _, pl in Players:GetPlayers() do
-		if pl.Character then table.insert(exclude, pl.Character) end
-	end
-	local monsters = workspace:FindFirstChild("Monsters")
-	if monsters then table.insert(exclude, monsters) end
-	local effects = workspace:FindFirstChild("Effects")
-	if effects then table.insert(exclude, effects) end
-	rayParams.FilterDescendantsInstances = exclude
+	rayParams.FilterDescendantsInstances = groundTargets()
 	local hit = workspace:Raycast(pos, Vector3.new(0, -GROUND_RAY_LENGTH, 0), rayParams)
 	if hit then return hit.Position end
 	return Vector3.new(pos.X, 0, pos.Z)
+end
+
+local function sampleMaxHealth(p)
+	local hum = Util.GetHumanoid(p)
+	if hum and hum.MaxHealth > 0 then
+		lastMaxHealth = hum.MaxHealth
+	end
+end
+
+-- A12: let the 3x kaiju see around itself; remembers the previous limit for restoreZoom
+local function raiseZoom(p)
+	local ok, err = pcall(function()
+		local prev = p.CameraMaxZoomDistance
+		if prev < KAIJU_CAMERA_ZOOM then
+			zoomRestore[p] = prev
+			p.CameraMaxZoomDistance = KAIJU_CAMERA_ZOOM
+		end
+	end)
+	if not ok then warnThrottled("zoom", "kaiju zoom failed: " .. tostring(err)) end
+end
+
+local function restoreZoom(p)
+	local prev = zoomRestore[p]
+	zoomRestore[p] = nil
+	if prev == nil or not isPlayer(p) or p.Parent == nil then return end
+	pcall(function()
+		if p.CameraMaxZoomDistance == KAIJU_CAMERA_ZOOM then -- untouched since raiseZoom
+			p.CameraMaxZoomDistance = prev
+		end
+	end)
 end
 
 -- Halo players still in game who damaged the Active kaiju, plus Halo players who healed (via release) such a damager
@@ -204,12 +266,18 @@ local function finish(p, outcome, participants, leaving)
 		phaseEndsAt = 0
 		kaijuName = ""
 		healthMult = 1
+		contested = false
+		lethalHit = false
+		lastMaxHealth = 0
 	end
 	states[p] = nil
 
 	if inGame then
 		call("PvPService", "ResetStars", p)
 		p:SetAttribute("KaijuState", "None")
+		restoreZoom(p)
+	else
+		zoomRestore[p] = nil
 	end
 	if wasCurrent then
 		local ok, err = pcall(publish, "None", 0, "", 0)
@@ -239,6 +307,9 @@ local function beginSiren()
 			phaseEndsAt = Util.Now() + Config.Kaiju.SirenSeconds
 			dmg = {}
 			healers = {}
+			contested = false
+			lethalHit = false
+			lastMaxHealth = 0
 			setState(p, "Siren")
 			publish("Siren", p.UserId, kaijuName, phaseEndsAt)
 			Net.NotifyAll(string.format(Config.Story.KaijuSiren, kaijuName), "announce", Config.Kaiju.SirenSeconds)
@@ -253,13 +324,18 @@ local function activate(p)
 	phaseEndsAt = Util.Now() + Config.Kaiju.Duration
 	dmg = {}
 	healers = {}
-	healthMult = computeHealthMult(p)
+	contested = false
+	lethalHit = false
+	lastMaxHealth = 0
+	healthMult = computeHealthMult(p) -- phase is "Active": a Halo player already nearby marks the event contested
 	lastRecalc = os.clock()
 	lastStomp = os.clock()
 	setState(p, "Active") -- before Justice/Player refresh: they read GetState / GetHealthMult
 	publish("Active", p.UserId, kaijuName, phaseEndsAt)
 	call("JusticeService", "RefreshScale", p) -- x3 visual (capped by Config.Justice.MaxVisualScale)
 	call("PlayerService", "RefreshCharacter", p, true) -- full heal at the transformation
+	sampleMaxHealth(p)
+	raiseZoom(p)
 	Net.NotifyAll(string.format(Config.Story.KaijuStart, kaijuName))
 	KaijuService.KaijuStarted:Fire(p)
 end
@@ -267,16 +343,29 @@ end
 local function survive(p)
 	local name = kaijuName
 	local participants = participantList()
+	local opposed = contested or #participants > 0
 	local ok, err = pcall(function()
+		-- bonus cap first (pure math), so nothing below can fail after the carried gold was taken
+		local level = math.max(1, math.floor(getNum(p, "Level")))
+		local okCap, capGold = pcall(Config.HuntValue, level, SURVIVE_BONUS_MINUTES)
+		capGold = (okCap and tonumber(capGold)) or 0
 		local carried = math.max(0, math.floor(getNum(p, "CarriedGold")))
-		local taken = tonumber(call("ProgressionService", "TakeCarriedGold", p, carried)) or 0
-		local amount = math.floor(taken * Config.Kaiju.SurviveBankMult)
+		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", p, carried)) or 0))
+		local fullBonus = math.max(0, math.floor(taken * Config.Kaiju.SurviveBankMult) - taken) -- minted part
+		local bonus = opposed and math.min(fullBonus, math.max(0, math.floor(capGold))) or 0
+		local amount = taken + bonus
 		if amount > 0 then
 			call("ProgressionService", "AddBankGold", p, amount, "Kaiju")
 		end
 		p:SetAttribute("SessionTitle", Config.Story.SurviveTitle) -- session only
 		call("WarService", "AddFactionPoints", "Horns", Config.Kaiju.HornsWarPoints)
-		Net.Notify(p, string.format(Config.Text.KaijuSurviveReward, Util.FormatNumber(amount)), "reward")
+		local text = Config.Text.KaijuSurviveReward
+		if not opposed then
+			text = TXT_SURVIVE_UNCONTESTED
+		elseif bonus < fullBonus then
+			text = TXT_SURVIVE_CAPPED
+		end
+		Net.Notify(p, string.format(text, Util.FormatNumber(amount)), "reward")
 		Net.NotifyAll(string.format(Config.Story.KaijuSurvived, name))
 	end)
 	if not ok then warnThrottled("survive", "survive reward failed: " .. tostring(err)) end
@@ -297,6 +386,7 @@ local function stomp(p)
 				and call("ZoneService", "IsTown", v) ~= true then
 				local hum = Util.GetHumanoid(v)
 				if hum and hum.Health > 0 then
+					contested = true -- a Halo player stood in stomp range: the kaiju faced real opposition
 					call("CombatService", "DamagePlayer", v, Util.RoundDamage(hum.MaxHealth * Config.Kaiju.StompPct), p)
 				end
 			end
@@ -352,6 +442,7 @@ local function tick()
 			if Util.Now() >= phaseEndsAt then
 				survive(p)
 			else
+				sampleMaxHealth(p)
 				local now = os.clock()
 				if now - lastRecalc >= Config.Kaiju.HPRecalc then
 					lastRecalc = now
@@ -393,6 +484,7 @@ function KaijuService.Init(registry)
 		states[player] = nil
 		dmg[player] = nil
 		healers[player] = nil
+		zoomRestore[player] = nil
 	end)
 
 	S.FactionService.FactionChanged:Connect(function(player, newFaction)
@@ -410,6 +502,13 @@ function KaijuService.Init(registry)
 		if type(amount) ~= "number" or amount <= 0 then return end
 		if factionOf(attacker) ~= "Halo" then return end
 		dmg[attacker] = (dmg[attacker] or 0) + amount
+		contested = true
+		-- PlayerDamaged fires synchronously right after TakeDamage: Health <= 0 here means THIS Halo hit was lethal
+		local hum = Util.GetHumanoid(victim)
+		if hum then
+			if hum.MaxHealth > 0 then lastMaxHealth = hum.MaxHealth end
+			if hum.Health <= 0 then lethalHit = true end
+		end
 	end)
 
 	S.CombatService.Released:Connect(function(player, info)
@@ -469,9 +568,26 @@ function KaijuService.HandleKaijuDeath(victim, killer)
 		local level = math.max(1, math.floor(getNum(victim, "Level")))
 		local bully = tonumber(call("JusticeService", "GetBullyStacks", victim)) or 0
 		local bounty = Config.Bounty(level, starsOf(victim), bully)
+		local mint = math.max(0, Config.Kaiju.BountyPoolMult * bounty)
+
+		-- review fix: no Halo player landed the lethal hit (reset, fall, monster, ...) -> mint only the share of the
+		-- kaiju's HP that Halo players really took off (a 1-damage tag + reset mints ~0; a near-dead reset still pays)
+		if not lethalHit then
+			local maxHp = lastMaxHealth
+			local hum = Util.GetHumanoid(victim)
+			if hum and hum.MaxHealth > 0 then maxHp = math.max(maxHp, hum.MaxHealth) end
+			local haloDmg = 0
+			for _, amount in dmg do
+				if type(amount) == "number" and amount > 0 then haloDmg += amount end
+			end
+			local frac = (maxHp > 0) and math.clamp(haloDmg / maxHp, 0, 1) or 0
+			mint *= frac
+		end
+		mint = math.floor(mint)
+
 		local carried = math.max(0, math.floor(getNum(victim, "CarriedGold")))
-		local taken = tonumber(call("ProgressionService", "TakeCarriedGold", victim, carried)) or 0
-		pool = math.max(0, math.floor(Config.Kaiju.BountyPoolMult * bounty + taken))
+		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", victim, carried)) or 0))
+		pool = mint + taken
 
 		local n = #participants
 		if n > 0 and pool > 0 then
@@ -479,16 +595,23 @@ function KaijuService.HandleKaijuDeath(victim, killer)
 			for _, p in participants do
 				totalDmg += (dmg[p] or 0)
 			end
-			local dmgPool = pool * Config.Kaiju.DamageShare
-			local equalPool = pool * (1 - Config.Kaiju.DamageShare)
-			if totalDmg <= 0 then -- only healers are left in game: everything is split equally
-				dmgPool = 0
-				equalPool = pool
+			local now = os.clock()
+			local cooldown = Config.PvP.PairRewardCooldown
+			for key, t in poolPaidAt do
+				if now - t >= cooldown then poolPaidAt[key] = nil end
 			end
 			for _, p in participants do
-				local share = math.floor(equalPool / n)
+				-- spec split: DamageShare by damage + the rest equally (everything equally if only healers are left)
+				local frac = 1 / n
 				if totalDmg > 0 then
-					share += math.floor(dmgPool * (dmg[p] or 0) / totalDmg)
+					frac = Config.Kaiju.DamageShare * (dmg[p] or 0) / totalDmg + (1 - Config.Kaiju.DamageShare) / n
+				end
+				local share = math.floor(taken * frac) -- carried gold: a transfer, always paid
+				-- minted part: once per participant/kaiju pair per PairRewardCooldown (like PvP bounties)
+				local key = tostring(p.UserId) .. ":" .. tostring(victim.UserId)
+				if mint > 0 and poolPaidAt[key] == nil then
+					poolPaidAt[key] = now
+					share += math.floor(mint * frac)
 				end
 				if share > 0 then
 					call("ProgressionService", "AddBankGold", p, share, "Kaiju")

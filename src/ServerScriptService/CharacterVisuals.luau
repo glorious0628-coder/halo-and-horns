@@ -1,4 +1,4 @@
--- CharacterVisuals.luau : server-built character decorations. Nametag, faction mark (halo / horns), class weapon,
+-- CharacterVisuals.luau : server-built character decorations. Nametag, faction mark (halo / horns / neutral gear), class weapon,
 -- gold sack, grudge sack + ghost, rebirth aura, turncoat marks (cape / cracked halo / gray aura), wanted glow and
 -- kaiju fire. Every piece is rebuilt on CharacterSpawned and when its watched attributes change.
 local Players = game:GetService("Players")
@@ -14,8 +14,8 @@ local TAG = "CharacterVisuals"
 local V = Config.Visuals
 
 local NEUTRAL_ID = "Neutral"
-local NEUTRAL_GREY = Color3.fromRGB(180, 180, 190)
 local NEUTRAL_EMBLEM = (Config.Factions.Neutral and Config.Factions.Neutral.Emblem) or "⚙"
+local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11
 
 local WOOD_COLOR = Color3.fromRGB(120, 85, 50)
 local DARK_METAL = Color3.fromRGB(60, 60, 70)
@@ -102,8 +102,8 @@ local function getClass(player)
 	return "Warrior"
 end
 
+-- A9-1: every faction colour (Neutral teal included) comes from Config, never a local constant
 local function factionColor(f)
-	if f == NEUTRAL_ID then return NEUTRAL_GREY end
 	local def = Config.Factions[f] or Config.Factions.None
 	return (def and def.Color) or Color3.new(1, 1, 1)
 end
@@ -217,7 +217,7 @@ local function makeLine(name, order, height, maxSize, color)
 	l.Text = ""
 	local c = Instance.new("UITextSizeConstraint")
 	c.MaxTextSize = maxSize
-	c.MinTextSize = 11
+	c.MinTextSize = MIN_TEXT_SIZE
 	c.Parent = l
 	return l
 end
@@ -325,14 +325,46 @@ local function updateNametagOffset(player, character)
 	end
 end
 
------------------------------------------------------------------- FactionMark (halo disc / horns)
+------------------------------------------------------------------ FactionMark (halo disc / horns / neutral gear)
+-- A9-1 Neutral: a teal Neon gear 1.6 studs above the head = one thin Cylinder + two crossed Blocks (3 parts), fixed
+-- size (does not grow with rank). It stands upright (faces front/back), so at a distance it reads differently from
+-- the flat Halo disc, the Horns wedges and the bare None head.
+local function buildNeutralGear(head, sc)
+	local color = factionColor(NEUTRAL_ID)
+	local base = head.CFrame * CFrame.new(0, 1.6 * sc, 0)
+	local parts = {
+		accPart({
+			Name = "GearDisc",
+			Shape = Enum.PartType.Cylinder,
+			Size = Vector3.new(0.18, 1.1, 1.1) * sc,
+			Material = Enum.Material.Neon,
+			Color = color,
+			CFrame = base * CFrame.Angles(0, math.pi / 2, 0), -- cylinder axis along the head's look direction
+		}),
+	}
+	for k = 0, 1 do
+		table.insert(parts, accPart({
+			Name = "GearTeeth" .. (k + 1),
+			Size = Vector3.new(1.5, 0.34, 0.14) * sc, -- sticks 0.2 out of the disc rim on both ends = 4 teeth
+			Material = Enum.Material.Neon,
+			Color = color,
+			CFrame = base * CFrame.Angles(0, 0, math.rad(45 + 90 * k)),
+		}))
+	end
+	return parts
+end
+
 local function buildFactionMark(player, character)
 	clearChild(character, "FactionMark")
 	local f = getFaction(player)
-	if f ~= "Halo" and f ~= "Horns" then return end -- None / Neutral: nothing
+	if f ~= "Halo" and f ~= "Horns" and f ~= NEUTRAL_ID then return end -- None: nothing
 	local head = Util.FindPart(character, "Head")
 	if not head then return end
 	local sc = charScale(character)
+	if f == NEUTRAL_ID then
+		mount(newPiece("FactionMark"), buildNeutralGear(head, sc), character, head)
+		return
+	end
 	local _, rank = Config.GetTitle(f, attrNum(player, "Honor", 0), attrNum(player, "Infamy", 0))
 	local scale = 1 + V.MarkScalePerRank * (math.max(1, rank or 1) - 1)
 
@@ -592,7 +624,7 @@ local function buildGrudgeGhost(player, character)
 	label.Text = victim .. "의 원한"
 	local c = Instance.new("UITextSizeConstraint")
 	c.MaxTextSize = 18
-	c.MinTextSize = 11
+	c.MinTextSize = MIN_TEXT_SIZE
 	c.Parent = label
 	label.Parent = bb
 	bb.Parent = ghostHead

@@ -826,6 +826,7 @@ BUILDERS.Menu = function(parent)
 		{ Text = T.MenuRebirth, Id = "Rebirth" },
 		{ Text = T.MenuClass, Id = "Class" },
 		{ Text = T.MenuShop, Id = "Shop" },
+		{ Text = "지도", Id = "Map" },
 	}
 	if num("VacationDays") > 0 then
 		table.insert(entries, { Text = T.MenuVacation, Id = "Vacation" })
@@ -852,7 +853,12 @@ BUILDERS.Menu = function(parent)
 		local id = e.Id
 		local color = (id == "Vacation") and PALETTE.Free or PALETTE.Button
 		local b = makeButton(grid, e.Text, color, UDim2.fromOffset(200, 70), function()
-			openSub(id)
+			if id == "Map" then
+				local wm = C and C.WorldMap
+				if wm and wm.Open then wm.Open() end
+			else
+				openSub(id)
+			end
 		end)
 		b.TextSize = 22
 		if id == "Rebirth" then rebirthBtn = b end

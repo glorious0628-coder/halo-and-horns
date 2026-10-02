@@ -1,7 +1,8 @@
 -- Fx.luau : client-side effects for Halo & Horns (G11).
 -- Plays every server "Fx" remote kind (TECH_SPEC §5), pooled damage numbers, class swing / release shapes, camera
--- shake, built-in sounds, the hurt edge flash, the own level-up "next unlock" announce (addendum A7-3) and the kill
--- combo counter. Everything here is local-only and purely cosmetic; the server never trusts anything from it.
+-- shake, built-in sounds, the hurt edge flash, the own level-up "next unlock" announce (addendum A7-3), the kill
+-- combo counter and the A9-2 hit feel (local white flash on monsters I hit, number pop, number merging).
+-- Everything here is local-only and purely cosmetic; the server never trusts anything from it.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -536,7 +537,8 @@ local function buildPool()
 		constraint.Parent = label
 		label.Parent = gui
 		gui.Parent = part
-		pool[i] = { Part = part, Gui = gui, Label = label, Token = 0, Tweens = {} }
+		-- MergeKey/Amount/Prefix/Suffix/Crit/SpawnAt/SpawnPos are set while the entry shows a mergeable amount (A9-2)
+		pool[i] = { Part = part, Gui = gui, Label = label, Token = 0, Scale = 1 }
 	end
 	poolFolderRef = folder
 	poolCursor = 0
@@ -546,6 +548,172 @@ local function ensurePool()
 	local folder = getFolder()
 	if poolFolderRef ~= folder or #pool == 0 or pool[1].Part.Parent ~= folder then
 		buildPool()
+	end
+end
+
+-- (re)starts the size / fade / hide timer of a visible entry; its rise tween keeps running.
+-- sizeMode: "pop" = PopScale -> 1 in PopTime (A9-2), "set" = final size at once, "keep" = leave a running pop alone
+local function restartNumberLife(e, sizeMode)
+	if e.FadeTween then
+		e.FadeTween:Cancel()
+		e.FadeTween = nil
+	end
+	local w, h = NUMBER_W * e.Scale, NUMBER_H * e.Scale
+	if sizeMode == "pop" then
+		if e.SizeTween then e.SizeTween:Cancel() end
+		e.Gui.Size = UDim2.fromOffset(w * POP_SCALE, h * POP_SCALE)
+		e.SizeTween = tween(e.Gui, POP_TIME, { Size = UDim2.fromOffset(w, h) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	elseif sizeMode ~= "keep" or not e.SizeTween or e.SizeTween.PlaybackState ~= Enum.PlaybackState.Playing then
+		if e.SizeTween then
+			e.SizeTween:Cancel()
+			e.SizeTween = nil
+		end
+		e.Gui.Size = UDim2.fromOffset(w, h)
+	end
+	e.Token += 1
+	local token = e.Token
+	e.Label.TextTransparency = 0
+	e.Label.TextStrokeTransparency = 0.25
+	e.FadeTween = tween(e.Label, 0.35, { TextTransparency = 1, TextStrokeTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, NUMBER_LIFE - 0.35)
+	task.delay(NUMBER_LIFE + 0.02, function()
+		if e.Token == token then
+			e.Gui.Enabled = false
+			e.MergeKey = nil
+		end
+	end)
+end
+
+-- shows text on the oldest pooled number (round robin). merge = { Key, Amount, Prefix, Suffix, Crit } or nil
+local function spawnNumber(worldPos, text, color, scale, pop, merge)
+	ensurePool()
+	if #pool == 0 then return end
+	poolCursor = poolCursor % #pool + 1 -- round robin = the oldest popup is reused first
+	local e = pool[poolCursor]
+	if e.RiseTween then
+		e.RiseTween:Cancel()
+		e.RiseTween = nil
+	end
+	e.Scale = math.clamp(asNum(scale, 1), 0.3, 4)
+	e.Part.CFrame = CFrame.new(worldPos)
+	e.Label.Text = tostring(text or "")
+	e.Label.TextColor3 = typeof(color) == "Color3" and color or WHITE
+	e.Gui.Enabled = true
+	e.SpawnAt = os.clock()
+	e.SpawnPos = worldPos
+	if merge then
+		e.MergeKey = merge.Key
+		e.Amount = merge.Amount
+		e.Prefix = merge.Prefix
+		e.Suffix = merge.Suffix
+		e.Crit = merge.Crit
+	else
+		e.MergeKey = nil
+	end
+	e.RiseTween = tween(e.Part, NUMBER_LIFE, { CFrame = CFrame.new(worldPos + Vector3.new(0, NUMBER_RISE, 0)) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	restartNumberLife(e, pop and "pop" or "set")
+end
+
+-- A9-2 merge: a visible label with the same key spawned within MergeWindow s and MERGE_DIST studs
+local function findMergeTarget(key, worldPos, now)
+	for _, e in pool do
+		if e.MergeKey == key and e.Gui.Enabled and e.SpawnAt and now - e.SpawnAt <= MERGE_WINDOW
+			and (e.SpawnPos - worldPos).Magnitude <= MERGE_DIST then
+			return e
+		end
+	end
+	return nil
+end
+
+-- an amount number that merges into a nearby recent label of the same Key.
+-- style = { Key, Prefix?, Suffix?, Color, Scale, Pop?, Crit? }
+local function showAmount(worldPos, amount, style)
+	if typeof(worldPos) ~= "Vector3" or not nearCamera(worldPos) then return end
+	amount = asNum(amount, 0)
+	local ok, err = pcall(function()
+		ensurePool()
+		local prefix, suffix = style.Prefix or "", style.Suffix or ""
+		local e = style.Key and findMergeTarget(style.Key, worldPos, os.clock()) or nil
+		if e then
+			e.Amount += amount
+			local sizeMode = style.Pop == true and "pop" or "keep"
+			if style.Crit == true and not e.Crit then
+				-- a crit merging into a plain number turns the whole label into a crit
+				e.Crit = true
+				e.Suffix = suffix
+				e.Scale = math.clamp(asNum(style.Scale, 1), 0.3, 4)
+				e.Label.TextColor3 = typeof(style.Color) == "Color3" and style.Color or WHITE
+				sizeMode = "pop"
+			end
+			e.Label.Text = e.Prefix .. Util.FormatNumber(e.Amount) .. e.Suffix
+			restartNumberLife(e, sizeMode)
+		else
+			spawnNumber(worldPos, prefix .. Util.FormatNumber(amount) .. suffix, style.Color, style.Scale, style.Pop == true, {
+				Key = style.Key,
+				Amount = amount,
+				Prefix = prefix,
+				Suffix = suffix,
+				Crit = style.Crit == true,
+			})
+		end
+	end)
+	if not ok then warnThrottled("number failed: " .. tostring(err)) end
+end
+
+----------------------------------------------------------------- A9-2 white hit flash (my own hits on monsters)
+local flashing = {} -- [monster model] = { Colors = { [BasePart] = Color3 }, Token = n }
+
+local function flashModel(model)
+	local state = flashing[model]
+	if not state then
+		-- original colors are stored once per flash start, so rapid hits never leave a monster white
+		local colors = {}
+		for _, d in model:GetDescendants() do
+			if d:IsA("BasePart") and d.Name ~= "HumanoidRootPart" then
+				colors[d] = d.Color
+			end
+		end
+		state = { Colors = colors, Token = 0 }
+		flashing[model] = state
+		for part in colors do
+			pcall(function()
+				part.Color = WHITE
+			end)
+		end
+	end
+	state.Token += 1
+	local token = state.Token
+	task.delay(FLASH_TIME, function()
+		if flashing[model] ~= state or state.Token ~= token then return end
+		flashing[model] = nil
+		for part, color in state.Colors do
+			if part.Parent then
+				pcall(function()
+					part.Color = color
+				end)
+			end
+		end
+	end)
+end
+
+-- flashes every procedural monster in workspace.Monsters whose root is within FLASH_DIST of a hit position
+local function flashMonstersAt(positions)
+	if #positions == 0 then return end
+	local folder = workspace:FindFirstChild("Monsters")
+	if not folder then return end
+	for _, model in folder:GetChildren() do
+		-- custom-model visuals (A1) are skipped: their procedural parts are invisible hitboxes
+		if model:IsA("Model") and not model:FindFirstChild("CustomVisual") then
+			local root = model.PrimaryPart or model:FindFirstChild("HumanoidRootPart")
+			if root and root:IsA("BasePart") then
+				local rp = root.Position
+				for _, p in positions do
+					if (rp - p).Magnitude <= FLASH_DIST then
+						flashModel(model)
+						break
+					end
+				end
+			end
+		end
 	end
 end
 
@@ -813,14 +981,15 @@ local function announceLevelUp(level)
 	for lvl in unlocks do
 		if lvl > level and (nextLevel == nil or lvl < nextLevel) then nextLevel = lvl end
 	end
-	local nextText = nil
+	local nextText, nextItems = nil, nil
 	if nextLevel then
-		nextText = string.format(TXT_NEXT_UNLOCK, nextLevel, table.concat(unlocks[nextLevel], ", "))
+		nextItems = table.concat(unlocks[nextLevel], ", ")
+		nextText = string.format(TXT_NEXT_UNLOCK, nextLevel, nextItems)
 	end
 
 	local base = fmt("LevelUp", level)
 	if #reached > 0 then
-		uiCall("Announce", base .. " · " .. string.format(TXT_UNLOCKED, table.concat(reached, ", ")))
+		uiCall("Announce", base .. " · " .. textOr("Unlocked", TXT_UNLOCKED_FALLBACK, table.concat(reached, ", ")))
 		if nextText then
 			uiCall("Toast", nextText, "info", 4)
 		end
@@ -838,39 +1007,55 @@ local function announceLevelUp(level)
 				end
 			end
 		end
-	elseif nextText then
-		uiCall("Announce", base .. " · " .. nextText)
+	elseif nextLevel then
+		uiCall("Announce", textOr("LevelUpNext", TXT_LEVELUP_NEXT_FALLBACK, level, nextLevel, nextItems))
 	else
 		uiCall("Announce", base)
 	end
 end
 
 ----------------------------------------------------------------- hit numbers
-local function showHits(hits, own)
+-- A9-2: my own hits flash the hit monsters white; crits and my Release numbers pop; numbers merge;
+-- other players' Swing numbers are shown only for crits (protects the MaxDamagePopups pool).
+local function showHits(hits, own, fromRelease)
 	if type(hits) ~= "table" then return end
 	local scaleMult = own and 1 or 0.85
+	local pop = own and fromRelease == true
+	local tag = own and "o" or "x" -- own and other players' numbers never merge into each other
+	local flashAt = {}
 	local shown = 0
 	for _, h in hits do
-		if shown >= POPUP_COUNT then break end
 		if type(h) == "table" then
 			local p = asVec(h.P)
 			local a = asNum(h.A, 0)
+			local kind = h.K
+			local crit = h.C == true
 			if p then
-				shown += 1
-				local jitter = Vector3.new(rng:NextNumber(-0.8, 0.8), 2 + rng:NextNumber(0, 0.6), rng:NextNumber(-0.8, 0.8))
-				local kind = h.K
-				if kind == "P" then
-					Fx.ShowNumber(p + jitter, Util.FormatNumber(a), COLOR_PVP, 1.15 * scaleMult)
-				elseif kind == "G" then
-					Fx.ShowNumber(p + jitter, "+" .. Util.FormatNumber(a), COLOR_GOLD, 0.8)
-					featherPop(p)
-				elseif h.C == true then
-					Fx.ShowNumber(p + jitter, Util.FormatNumber(a) .. "!", COLOR_CRIT, 1.45 * scaleMult)
-				else
-					Fx.ShowNumber(p + jitter, Util.FormatNumber(a), WHITE, scaleMult)
+				if own and kind ~= "P" and kind ~= "G" and #flashAt < 16 then
+					table.insert(flashAt, p)
+				end
+				if shown < POPUP_COUNT and (own or fromRelease == true or crit) then
+					shown += 1
+					local at = p + Vector3.new(rng:NextNumber(-0.8, 0.8), 2 + rng:NextNumber(0, 0.6), rng:NextNumber(-0.8, 0.8))
+					if kind == "P" then
+						showAmount(at, a, { Key = "P" .. tag, Color = COLOR_PVP, Scale = 1.15 * scaleMult, Pop = pop or crit })
+					elseif kind == "G" then
+						showAmount(at, a, { Key = "G" .. tag, Prefix = "+", Color = COLOR_GOLD, Scale = 0.8, Pop = pop })
+						featherPop(p)
+					elseif crit then
+						showAmount(at, a, { Key = "M" .. tag, Suffix = "!", Color = COLOR_CRIT, Scale = 1.45 * scaleMult, Pop = true, Crit = true })
+					else
+						showAmount(at, a, { Key = "M" .. tag, Color = WHITE, Scale = scaleMult, Pop = pop })
+					end
+				elseif kind == "G" and nearCamera(p) then
+					featherPop(p) -- other players' goose hits: the cosmetic feather pop only, no number
 				end
 			end
 		end
+	end
+	if #flashAt > 0 then
+		local ok, err = pcall(flashMonstersAt, flashAt)
+		if not ok then warnThrottled("hit flash failed: " .. tostring(err)) end
 	end
 end
 
@@ -986,11 +1171,12 @@ handlers.Release = function(data)
 					Acceleration = Vector3.new(0, -4, 0), Drag = 3,
 				})
 			end
-			showHits(data.Hits, own)
+			showHits(data.Hits, own, true)
 			local total = asNum(data.Total, 0)
 			local top = pos + Vector3.new(0, 6, 0)
 			if total > 0 then
-				Fx.ShowNumber(top, Util.FormatNumber(total), own and COLOR_GOLD or WHITE, HUGE_SCALE)
+				-- A9-2: my Release numbers pop (PopScale -> 1 in PopTime)
+				Fx.ShowNumber(top, Util.FormatNumber(total), own and COLOR_GOLD or WHITE, HUGE_SCALE, { Pop = own })
 			end
 			if perfect then
 				Fx.ShowNumber(top + Vector3.new(0, 3.5, 0), "PERFECT!", COLOR_PERFECT, 1.8)
@@ -1030,7 +1216,7 @@ handlers.Hurt = function(data)
 	end
 	if at and amount > 0 then
 		local jitter = Vector3.new(rng:NextNumber(-0.6, 0.6), 0, rng:NextNumber(-0.6, 0.6))
-		Fx.ShowNumber(at + jitter, "-" .. Util.FormatNumber(Util.RoundDamage(amount)), COLOR_HURT, 1.1)
+		showAmount(at + jitter, Util.RoundDamage(amount), { Key = "H", Prefix = "-", Color = COLOR_HURT, Scale = 1.1 })
 	end
 	flashEdges(COLOR_HURT)
 end
@@ -1045,10 +1231,10 @@ handlers.Reward = function(data)
 	local golden = data.Golden == true
 	local rx, rz = rng:NextNumber(-0.5, 0.5), rng:NextNumber(-0.5, 0.5)
 	if gold > 0 then
-		Fx.ShowNumber(pos + Vector3.new(rx, 3.2, rz), "+" .. Util.FormatNumber(gold) .. " G", COLOR_GOLD, golden and 1.6 or 1)
+		showAmount(pos + Vector3.new(rx, 3.2, rz), gold, { Key = "RG", Prefix = "+", Suffix = " G", Color = COLOR_GOLD, Scale = golden and 1.6 or 1 })
 	end
 	if xp > 0 then
-		Fx.ShowNumber(pos + Vector3.new(rx, 2.0, rz), "+" .. Util.FormatNumber(xp) .. " XP", COLOR_XP, golden and 1.2 or 0.85)
+		showAmount(pos + Vector3.new(rx, 2.0, rz), xp, { Key = "RX", Prefix = "+", Suffix = " XP", Color = COLOR_XP, Scale = golden and 1.2 or 0.85 })
 	end
 	if golden then
 		burst(pos + Vector3.new(0, 1.5, 0), COLOR_GOLD, 40, {
@@ -1250,38 +1436,12 @@ function Fx.PlaySound(name)
 	end)
 end
 
-function Fx.ShowNumber(worldPos, text, color, scale)
+-- opts (optional, addendum A9-2): { Pop = true } scales the number PopScale -> 1 in PopTime. Plain text never merges.
+function Fx.ShowNumber(worldPos, text, color, scale, opts)
 	if typeof(worldPos) ~= "Vector3" then return end
 	if not nearCamera(worldPos) then return end
-	local ok, err = pcall(function()
-		ensurePool()
-		if #pool == 0 then return end
-		poolCursor = poolCursor % #pool + 1 -- round robin = the oldest popup is reused first
-		local e = pool[poolCursor]
-		e.Token += 1
-		local token = e.Token
-		for _, t in e.Tweens do
-			t:Cancel()
-		end
-		table.clear(e.Tweens)
-		local s = math.clamp(asNum(scale, 1), 0.3, 4)
-		local w, h = NUMBER_W * s, NUMBER_H * s
-		e.Part.CFrame = CFrame.new(worldPos)
-		e.Gui.Size = UDim2.fromOffset(w * 1.35, h * 1.35)
-		e.Label.Text = tostring(text or "")
-		e.Label.TextColor3 = typeof(color) == "Color3" and color or WHITE
-		e.Label.TextTransparency = 0
-		e.Label.TextStrokeTransparency = 0.25
-		e.Gui.Enabled = true
-		table.insert(e.Tweens, tween(e.Gui, 0.12, { Size = UDim2.fromOffset(w, h) }, Enum.EasingStyle.Back, Enum.EasingDirection.Out))
-		table.insert(e.Tweens, tween(e.Part, NUMBER_LIFE, { CFrame = CFrame.new(worldPos + Vector3.new(0, NUMBER_RISE, 0)) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out))
-		table.insert(e.Tweens, tween(e.Label, 0.35, { TextTransparency = 1, TextStrokeTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, NUMBER_LIFE - 0.35))
-		task.delay(NUMBER_LIFE + 0.02, function()
-			if e.Token == token then
-				e.Gui.Enabled = false
-			end
-		end)
-	end)
+	local pop = type(opts) == "table" and opts.Pop == true
+	local ok, err = pcall(spawnNumber, worldPos, text, color, scale, pop, nil)
 	if not ok then warnThrottled("ShowNumber failed: " .. tostring(err)) end
 end
 

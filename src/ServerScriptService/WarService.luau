@@ -17,18 +17,22 @@ local TAG = "WarService"
 local WAR_FACTIONS = { Halo = true, Horns = true }
 local WARN_INTERVAL = 10
 
--- docs/ART_DIRECTION.md 3.1: fixed lighting applied once in Start (this service owns Lighting; no Atmosphere, A9-3)
+-- docs/ART_DIRECTION.md 3.1: fixed lighting applied once in Start (this service owns Lighting; no Atmosphere, A9-3).
+-- Values match the A11 Elden-Ring mood baked by tools/preview_map.lua (ShadowSoftness 0.2, Bloom 24/1.4, rays spread 0.4)
+-- so the server start does not change the look the creator approved in Studio.
 local LIGHTING_FIXED = {
-	GlobalShadows = true, ShadowSoftness = 0.15, GeographicLatitude = 35,
+	GlobalShadows = true, ShadowSoftness = 0.2, GeographicLatitude = 35,
 	EnvironmentDiffuseScale = 0.3, EnvironmentSpecularScale = 0.3,
 }
 local TINT_FIXED = { Brightness = 0.02, Contrast = 0.1, Saturation = 0.2 } -- only TintColor is tweened
 local SKY_FIXED = { SunAngularSize = 14, MoonAngularSize = 18, StarCount = 3000 }
-local BLOOM_FIXED = { Size = 24, Threshold = 1.25 }
-local SUNRAYS_FIXED = { Spread = 0.35 }
--- ART_DIRECTION 3.2: per-sky values that Config.Sky does not carry (Config.Sky stays the source for everything it has)
+local BLOOM_FIXED = { Size = 24, Threshold = 1.4 }
+local SUNRAYS_FIXED = { Spread = 0.4 }
+-- ART_DIRECTION 3.2 per-sky values used only where Config.Sky[name] has no key of its own (Config.Sky stays the source
+-- for everything it carries: FogStart / ExposureCompensation / BloomIntensity are read from the preset first).
+-- Neutral = A11 (exposure -0.1, bloom 0.4) + preview sun rays 0.08.
 local SKY_EXTRAS = {
-	Neutral = { Exposure = 0.1, Bloom = 0.5, SunRays = 0.06, Clouds = Color3.fromRGB(255, 255, 255) },
+	Neutral = { Exposure = -0.1, Bloom = 0.4, SunRays = 0.08, Clouds = Color3.fromRGB(255, 255, 255) },
 	Dawn = { Exposure = 0.15, Bloom = 0.6, SunRays = 0.12, Clouds = Color3.fromRGB(255, 225, 190) },
 	Eclipse = { Exposure = 0.35, Bloom = 0.7, SunRays = 0, Clouds = Color3.fromRGB(110, 40, 50) }, -- monsters stay visible at night
 }
@@ -142,7 +146,12 @@ local function skyNameFor(winner)
 	return "Neutral"
 end
 
--- applies Config.Sky[name] to Lighting + WarTint, plus the ART_DIRECTION extras (exposure, bloom, sun rays, clouds)
+local function num(v)
+	return (type(v) == "number" and v == v) and v or nil
+end
+
+-- applies Config.Sky[name] to Lighting + WarTint (FogStart / ExposureCompensation / BloomIntensity when the preset has
+-- them, addendum A9-4/A11/A12), plus the ART_DIRECTION extras for whatever the preset does not carry
 local function applySky(name, animate)
 	local preset = Config.Sky[name]
 	if type(preset) ~= "table" then return end
@@ -152,18 +161,22 @@ local function applySky(name, animate)
 	end
 	table.clear(skyTweens)
 
-	local goals = {
-		{ Lighting, {
-			ClockTime = preset.ClockTime, Brightness = preset.Brightness, Ambient = preset.Ambient,
-			OutdoorAmbient = preset.OutdoorAmbient, FogColor = preset.FogColor, FogEnd = preset.FogEnd,
-			ExposureCompensation = extras.Exposure,
-		} },
+	local lightingGoal = {
+		ClockTime = preset.ClockTime, Brightness = preset.Brightness, Ambient = preset.Ambient,
+		OutdoorAmbient = preset.OutdoorAmbient, FogColor = preset.FogColor, FogEnd = preset.FogEnd,
+		FogStart = num(preset.FogStart), -- nil (left as is) when the preset has none
+		ExposureCompensation = num(preset.ExposureCompensation) or extras.Exposure,
 	}
+	local fogStart, fogEnd = lightingGoal.FogStart, num(preset.FogEnd)
+	if fogStart and fogEnd and fogStart >= fogEnd then
+		lightingGoal.FogStart = math.max(0, fogEnd - 1) -- FogStart must stay below FogEnd
+	end
+	local goals = { { Lighting, lightingGoal } }
 	if preset.Tint then
 		table.insert(goals, { ensureTint(), { TintColor = preset.Tint } })
 	end
 	local bloom = Lighting:FindFirstChildOfClass("BloomEffect")
-	if bloom then table.insert(goals, { bloom, { Intensity = extras.Bloom } }) end
+	if bloom then table.insert(goals, { bloom, { Intensity = num(preset.BloomIntensity) or extras.Bloom } }) end
 	local rays = Lighting:FindFirstChildOfClass("SunRaysEffect")
 	if rays then table.insert(goals, { rays, { Intensity = extras.SunRays } }) end
 	local clouds = workspace.Terrain:FindFirstChildOfClass("Clouds")

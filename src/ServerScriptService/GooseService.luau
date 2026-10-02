@@ -2,6 +2,8 @@
 -- Owner: G9. Public surface (TECH_SPEC §4.16): GooseFinished, Init, Start, IsActive, GetPosition, RegisterHit, DebugStart.
 -- SPEC_ADDENDUM A1: ServerStorage.CustomModels.GoldenGoose (Model or BasePart) replaces the procedural body visually.
 -- SPEC_ADDENDUM A6: only Halo/Horns players add tug counts and receive tug rewards (Neutral/None count 0).
+-- Review fixes: a reward needs >= MIN_MANUAL_HITS manual counts (auto-only AFK players still pull, never get paid), and a
+-- faction switch mid-event forfeits that player's entry (no pulling for one side and collecting the other's win).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local RunService = game:GetService("RunService")
@@ -12,7 +14,12 @@ local Net = require(ReplicatedStorage.Shared.Net)
 
 local TAG = "GooseService"
 local GOOSE_LABEL = "황금 거위" -- billboard text required verbatim by TECH_SPEC §4.16
-local CUSTOM_ID = "GoldenGoose" -- SPEC_ADDENDUM A1 id
+local CUSTOM_FOLDER = (Config.CustomModels and Config.CustomModels.FolderName) or "CustomModels" -- A1
+local CUSTOM_ID = (Config.CustomModels and Config.CustomModels.GooseId) or "GoldenGoose" -- A1
+-- review fix (anti-AFK): rewards (and GooseFinished participation) need this many ACCEPTED manual counts this event;
+-- auto-attack counts still move the tug but alone never pay. Candidate for Config.Goose.MinManualHits (G1).
+local MIN_MANUAL_HITS = 3
+local TXT_NEED_MANUAL = "황금 거위 보상은 직접 %d번 이상 때린 사람만 받아요! (자동 공격만으로는 보상 없음)"
 local MAX_SIDE_OFFSET = 6 -- studs; tug pivot clamp (§4.16)
 local VISUAL_BOTTOM = -2.0 -- procedural body bottom relative to the goose center
 local VISUAL_HEIGHT = 6.9 -- procedural body height (body bottom -> crown-shard tip)
@@ -59,6 +66,8 @@ local nextAt = 0
 local rescue = 0
 local poach = 0
 local counts = {} -- [Player] = number (faction-scaled tug counts this event)
+local manualHits = {} -- [Player] = accepted MANUAL counts this event (reward eligibility)
+local sideOf = {} -- [Player] = faction the player's counts were made for ("Halo" | "Horns")
 local hitTimes = {} -- [Player] = { os.clock() } accepted counts within the rolling 1 s window
 local publishedRescue = -1
 local publishedPoach = -1
@@ -180,7 +189,7 @@ local function prepVisualPart(p)
 end
 
 local function getCustomTemplate()
-	local folder = ServerStorage:FindFirstChild("CustomModels")
+	local folder = ServerStorage:FindFirstChild(CUSTOM_FOLDER)
 	if not folder then return nil end
 	local t = folder:FindFirstChild(CUSTOM_ID)
 	if t and (t:IsA("Model") or t:IsA("BasePart")) then return t end
@@ -399,6 +408,8 @@ local function start()
 	endsAt = Util.Now() + Config.Goose.Duration
 	rescue, poach = 0, 0
 	counts = {}
+	manualHits = {}
+	sideOf = {}
 	hitTimes = {}
 	publishTotals(true)
 	setGame("GooseEndsAt", endsAt)
@@ -418,8 +429,19 @@ local function start()
 	Net.NotifyAll(string.format(Config.Story.GooseStart))
 end
 
-local function rewardPlayer(p, result)
-	local f = factionOf(p)
+-- forget a player's entry for this event; what they already pulled stays in the side totals (like a leaver)
+local function dropEntry(p)
+	counts[p] = nil
+	manualHits[p] = nil
+	sideOf[p] = nil
+	hitTimes[p] = nil
+	if isPlayer(p) and p.Parent then
+		p:SetAttribute("GooseCount", 0)
+	end
+end
+
+-- f = the side the player's counts were made for, re-verified against the current faction by finish()
+local function rewardPlayer(p, result, f)
 	if not isTugFaction(f) then return end -- A6: Neutral (and None) get no tug rewards
 	local won = (result == f)
 
@@ -463,14 +485,26 @@ local function finish()
 
 	local result = (rescue > poach) and "Halo" or ((poach > rescue) and "Horns" or "Tie")
 	local fxPos = (gooseRoot and gooseRoot.Parent) and gooseRoot.Position or gooseCenter()
-	local finalCounts = counts
+	local finalCounts, finalManual, finalSide = counts, manualHits, sideOf
 	counts = {}
+	manualHits = {}
+	sideOf = {}
 	hitTimes = {}
 
+	-- paid participants: counts > 0, still on the side they pulled for, and enough MANUAL hits (auto-only = AFK)
+	local rewarded = {}
 	for p, n in finalCounts do
 		if type(n) == "number" and n > 0 and isReady(p) then
-			local ok, err = pcall(rewardPlayer, p, result)
-			if not ok then warnThrottled("reward", "goose reward failed for " .. p.Name .. ": " .. tostring(err)) end
+			local f = factionOf(p)
+			if isTugFaction(f) and finalSide[p] == f then
+				if (finalManual[p] or 0) >= MIN_MANUAL_HITS then
+					rewarded[p] = n
+					local ok, err = pcall(rewardPlayer, p, result, f)
+					if not ok then warnThrottled("reward", "goose reward failed for " .. p.Name .. ": " .. tostring(err)) end
+				else
+					pcall(Net.Notify, p, string.format(TXT_NEED_MANUAL, MIN_MANUAL_HITS), "info")
+				end
+			end
 		end
 	end
 
@@ -491,7 +525,9 @@ local function finish()
 	setGame("GooseActive", false)
 	setGame("GooseEndsAt", 0)
 
-	GooseService.GooseFinished:Fire(result, finalCounts)
+	-- same shape as the spec's counts ({ [Player]: number }), limited to the players who were actually paid,
+	-- so quest progress never goes to AFK auto-swingers or side-switchers
+	GooseService.GooseFinished:Fire(result, rewarded)
 end
 
 local function tick()
@@ -520,8 +556,22 @@ function GooseService.Init(registry)
 	S.PlayerService.PlayerLeaving:Connect(function(player)
 		-- the leaver's contribution stays in the side totals
 		counts[player] = nil
+		manualHits[player] = nil
+		sideOf[player] = nil
 		hitTimes[player] = nil
 	end)
+	-- review fix: switching sides mid-event (altar is next to the perch) forfeits this event's entry, so nobody can pull
+	-- for one side and then collect the winner share of the other. Pulling again after the switch starts a new entry.
+	local fs = S.FactionService
+	if fs and fs.FactionChanged then
+		fs.FactionChanged:Connect(function(player)
+			if counts[player] ~= nil or hitTimes[player] ~= nil then
+				dropEntry(player)
+			end
+		end)
+	else
+		warnThrottled("factionChanged", "FactionService.FactionChanged missing; side switches are caught at finish only")
+	end
 end
 
 function GooseService.Start()
@@ -558,6 +608,9 @@ function GooseService.RegisterHit(player, isManual)
 	if not isReady(player) then return end
 	local f = factionOf(player)
 	if not isTugFaction(f) then return end -- A6: Neutral swings on the goose count 0
+	if sideOf[player] ~= nil and sideOf[player] ~= f then
+		dropEntry(player) -- defensive: faction changed without a FactionChanged signal -> fresh entry for the new side
+	end
 
 	-- rolling 1 s window: at most MaxCountsPerSecond accepted counts per player
 	local now = os.clock()
@@ -576,6 +629,10 @@ function GooseService.RegisterHit(player, isManual)
 	if scale ~= scale or scale <= 0 then scale = 1 end
 	local amount = ((isManual == true) and Config.Goose.ManualCount or Config.Goose.AutoCount) * scale
 	counts[player] = (counts[player] or 0) + amount
+	sideOf[player] = f
+	if isManual == true then
+		manualHits[player] = (manualHits[player] or 0) + 1
+	end
 	if f == "Halo" then
 		rescue += amount
 	else

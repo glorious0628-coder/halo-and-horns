@@ -1696,9 +1696,7 @@ local function onInputBegan(input, gameProcessed)
 			toggleAuto()
 		elseif k == Enum.KeyCode.U then
 			doUpgrade()
-		elseif k == Enum.KeyCode.M then
-			openMenu()
-		end
+		end -- M is bound by WorldMap (A12)
 	elseif t == Enum.UserInputType.Gamepad1 then
 		if input.KeyCode == Enum.KeyCode.ButtonR2 then
 			startHold("padR2")

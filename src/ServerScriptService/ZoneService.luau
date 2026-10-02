@@ -4,6 +4,9 @@
 -- mirrored to the attributes ZoneId / ZonePvP / ZoneTown. Addendum A3-L1 + A6: a Halo/Horns/Neutral player standing in a
 -- faction town that is not theirs (Neutral: either faction town) is bounced to the Crossroads spawn
 -- (kaiju and sack carriers too; the sack keeps its state). "None" (no faction chosen yet) is not bounced.
+-- An Active kaiju may enter no faction town at all (not even its own): Halo is bounced out of HornsTown, so a kaiju
+-- waiting there could never be reached; it is bounced to Crossroads, where Halo can still hit it.
+-- A10: a player below Y = -20 (fell under the Terrain world) is teleported to their home spawn.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -22,7 +25,9 @@ local SPAWN_LIFT = 4 -- spawn CFrame is 4 studs above the ground
 local GATE_NOTIFY_INTERVAL = 3 -- NeedLevel / enemy-town toast at most once per 3 s
 local WARN_INTERVAL = 10
 local MAX_DEST_LENGTH = 64
+local RESCUE_Y = -20 -- addendum A10: below this (anywhere) -> home spawn
 local ENEMY_TOWN_FALLBACK = "상대 진영 마을에는 들어갈 수 없어요!" -- used only if Config.Text.EnemyTown is missing
+local KAIJU_TOWN_FALLBACK = "괴수는 마을에 들어갈 수 없어요!" -- TODO(config): Config.Text.KaijuNoTown (used if present)
 
 local S = nil
 local zoneIds = {} -- [Player] = cached zone id
@@ -119,12 +124,17 @@ local function notifyBounce(player, text)
 	notify(player, text, "bad")
 end
 
--- A3-L1 / A6: a faction town that is not the player's own. "None" (no side chosen yet) is never bounced.
-local function isForbiddenTown(player, zone)
-	if not zone.Town or zone.Faction == nil then return false end
+-- bounce toast text when the player may not stand in this faction town, else nil.
+-- A3-L1 / A6: a faction town that is not the player's own; "None" (no side chosen yet) is never bounced.
+-- An Active kaiju: every faction town (see header).
+local function forbiddenTownText(player, zone)
+	if not zone.Town or zone.Faction == nil then return nil end
+	if kaijuState(player) == "Active" then
+		return fmt("KaijuNoTown") or KAIJU_TOWN_FALLBACK
+	end
 	local f = getFaction(player)
-	if f == "None" then return false end
-	return f ~= zone.Faction
+	if f == "None" or f == zone.Faction then return nil end
+	return fmt("EnemyTown") or ENEMY_TOWN_FALLBACK
 end
 
 -- the zone-loop body (also run on CharacterSpawned and right after a teleport)
@@ -132,6 +142,12 @@ local function updateZone(player)
 	if not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return end
 	local root = Util.GetRoot(player)
 	if not root then return end
+	if root.Position.Y < RESCUE_Y then
+		-- A10 rescue (an Active kaiju goes to Crossroads directly: it may not stand in its home town)
+		local home = (kaijuState(player) == "Active") and DEFAULT_ZONE or Config.HomeZoneId(getFaction(player))
+		teleport(player, home)
+		return
+	end
 	local zone = Config.ZoneAt(root.Position)
 
 	if getLevel(player) < zone.MinLevel then
@@ -139,9 +155,10 @@ local function updateZone(player)
 		notifyBounce(player, fmt("NeedLevel", zone.MinLevel))
 		return
 	end
-	if isForbiddenTown(player, zone) then
+	local townText = forbiddenTownText(player, zone)
+	if townText then
 		teleport(player, DEFAULT_ZONE)
-		notifyBounce(player, fmt("EnemyTown") or ENEMY_TOWN_FALLBACK)
+		notifyBounce(player, townText)
 		return
 	end
 
@@ -219,6 +236,7 @@ local function finishChannel(player, zoneId, start)
 		and S.PlayerService.IsReady(player)
 		and Util.IsAlive(player)
 		and lastDamagedAt(player) < start
+		and not inCombat(player) -- swings / releases landed during the channel tag the attacker (no escape by Travel)
 		and not hasSack(player)
 		and not isKaiju(player)
 		and getStars(player) < Config.PvP.NoTravelStars
@@ -230,7 +248,7 @@ local function finishChannel(player, zoneId, start)
 	end
 end
 
--- (ok, reasonText?) — instant = pads; otherwise a ChannelSeconds channel cancelled by damage / sack / kaiju / stars
+-- (ok, reasonText?) — instant = pads; otherwise a ChannelSeconds channel cancelled by damage / combat tag / sack / kaiju / stars
 function ZoneService.Travel(player, destId, instant)
 	if not Util.IsAlive(player) then return false, nil end
 	local zoneId = ZoneService.ResolveDestination(player, destId)

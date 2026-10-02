@@ -193,8 +193,9 @@ function MonetizationService.AddTickets(player, kind, delta)
 	return newCount
 end
 
--- consumes 1 if available
+-- consumes 1 if available. false while a purchase of this player is still being saved (callers show NoTicket)
 function MonetizationService.UseTicket(player, kind)
+	if inFlightByPlayer[player] then return false end
 	if MonetizationService.GetTickets(player, kind) < 1 then return false end
 	MonetizationService.AddTickets(player, kind, -1)
 	return true

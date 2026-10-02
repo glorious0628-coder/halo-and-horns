@@ -5,3 +5,8 @@
 - A12-R3 [G1,G3,WorldMap]: Config.Map Lands/Bridges/Gates/PassX must match preview_map v4 and WorldMap/MapBuilder read only Config (no hard-coded copies).
 - IMG-R4 [all]: Config.Assets = { Icons = {}, Emblems = {}, Textures = {} } hooks (empty = current shapes/text). UI uses ImageLabel when Config.Assets.Icons[id] exists. Terrain textures: MaterialService MaterialVariants named "GE_<Material>"; MapBuilder applies them if present.
 - A12-R2: NOT needed — verified in Studio that fully fogged parts render as FogColor silhouettes against the unfogged sky, so the crown stays visible from the ruins (build/v4_far_crown2.jpeg). Optional billboard exists disabled.
+- WorldMap wiring [G10, G12] (WorldMap.luau is written, compiles):
+  - ClientMain ORDER = { "UIKit", "Fx", "HUD", "EventHUD", "Panels", "FactionPicker", "ClassPicker", "WorldMap" }
+  - Panels BUILDERS.Menu: add entry { Text = "지도", Id = "Map" }; callback: if id == "Map" then C.WorldMap.Open() else openSub(id) end
+  - HUD: delete the M → Menu key branch (≈ HUD.luau lines 1700–1701); add a small "지도" chip under the zone pill calling C.WorldMap.Toggle()
+  - Config.Neutral teal (A9-1) and Config.Map.Lands/Bridges/PassX + v3/v4 zone centers in the SAME edit (WorldMap trusts Config once Lands exists).

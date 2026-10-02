@@ -1,5 +1,7 @@
 -- MonsterService.luau : monster rigs (procedural or custom visual), spawn/respawn with zone density and spawn spread,
 -- AI loop, monster HP, kill rewards (MonsterKilled) and personal (tutorial) monsters.
+-- World is Terrain (A10/A11): spawn/wander points are raycast onto walkable ground; monsters stay inside their own zone
+-- rect, never chase into water and are recovered home when knocked out / sunk (A10-V3-2); stuck detection (A11-R5).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
@@ -34,14 +36,41 @@ local SPREAD_MAX = SPREAD.MaxDist or 28
 local SPREAD_TRIES = SPREAD.Tries or 6
 local SPREAD_COUNT_RADIUS = 30
 
+-- shared Config keys (G1) with fallbacks
+local TUTORIAL = Config.Tutorial or {}
+local CUSTOM = Config.CustomModels or {}
+local CUSTOM_FOLDER = CUSTOM.FolderName or "CustomModels"
+local GOLDEN_FILL_TRANSPARENCY = CUSTOM.GoldenFillTransparency or 0.5
+local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11
+local NO_REAGGRO_SECONDS = MC.ReaggroDelay or 3 -- A3-M4
+local PERSONAL_DISTANCE = TUTORIAL.SpawnDistance or 8 -- A4: ~8 studs in front of the player
+local PERSONAL_LIFETIME = TUTORIAL.Lifetime or 120 -- A4: despawn after 120 s
+
 -- AI tuning that is not in Config (private)
-local NO_REAGGRO_SECONDS = 3 -- A3-M4
 local RETURN_DONE_DIST = 6
 local WANDER_RADIUS = 15
 local WANDER_MIN, WANDER_MAX = 4, 8
-local PERSONAL_DISTANCE = 8 -- A4: ~8 studs in front of the player
-local PERSONAL_LIFETIME = 120 -- A4: despawn after 120 s
+local WANDER_TRIES = 4
 local PERSONAL_FOLLOW_RADIUS = 80 -- A5-C3: a personal monster only tracks its owner when the owner is this close
+local ZONE_MOVE_INSET = 6 -- A10-V3-2 (b): every MoveTo destination stays this far inside the monster's zone rect
+local OUT_Y = -3 -- A10-V3-2 (c): root below this (water) -> walk home, no re-aggro
+local DEEP_Y = -8 -- A10-V3-2 (c): root below this for more than DEEP_SECONDS -> PivotTo(Home)
+local DEEP_SECONDS = 2
+local MAX_SLOPE_ANGLE = 46 -- A11-R2: Terrain ridges (>= 50 deg) cannot be walked over
+local STUCK_WINDOW = 1.5 -- A11-R5: moved < STUCK_MIN_MOVE in this many seconds while moving -> new destination
+local STUCK_MIN_MOVE = 1
+local ARRIVE_DIST = 3 -- "still trying to move" while the destination is farther than this
+local DETOUR_MIN, DETOUR_MAX = 8, 14
+local DETOUR_SECONDS = 2
+local DETOUR_TRIES = 4
+local CHASE_STUCK_GIVEUP = 2 -- stuck this many times on one target -> give up and go home
+
+-- ground probing (A11-R1: Include only Terrain, Map.Ground and the Map.Decor "Bridge_*" models)
+local GROUND_RAY_TOP = 150 -- above every ridge top
+local GROUND_RAY_LENGTH = 320
+local GROUND_MIN_Y, GROUND_MAX_Y = -2, 6 -- walkable valley floor (zone ground top is Y = 0); higher = ridge, lower = shore
+local GROUND_PARAMS_REFRESH = 10
+local SPAWN_TRIES = 8
 
 -- visuals
 local BAR_MAX_DISTANCE = 80
@@ -72,6 +101,7 @@ local pending = {} -- [Kind] = respawns scheduled but not yet executed
 local personal = {} -- [Player] = { [MonsterRecord] = true }
 local monstersFolder = nil
 local lastWarn = {} -- [key] = os.clock()
+local groundParams, groundParamsAt = nil, -math.huge
 
 local GLOBAL_CAP
 do
@@ -127,6 +157,59 @@ local function insideZone(zone, p, inset)
 		and math.abs(p.Z - zone.Center.Z) <= zone.Size.Z / 2 - inset
 end
 
+-- A10-V3-2 (b): clamp a destination into the zone rect inset by ZONE_MOVE_INSET (keeps Y)
+local function clampToZone(zone, p)
+	if not zone then return p end
+	local hx = math.max(0, zone.Size.X / 2 - ZONE_MOVE_INSET)
+	local hz = math.max(0, zone.Size.Z / 2 - ZONE_MOVE_INSET)
+	return Vector3.new(
+		math.clamp(p.X, zone.Center.X - hx, zone.Center.X + hx),
+		p.Y,
+		math.clamp(p.Z, zone.Center.Z - hz, zone.Center.Z + hz)
+	)
+end
+
+-- A11-R1: ground raycasts only see Terrain, workspace.Map.Ground and the bridge models (rebuilt every few seconds
+-- so a late MapBuilder pass is picked up). Water is NOT ignored, so a hit on the sea/river reports Material Water.
+local function getGroundParams()
+	local now = os.clock()
+	if groundParams and now - groundParamsAt < GROUND_PARAMS_REFRESH then return groundParams end
+	local list = { workspace.Terrain }
+	local map = workspace:FindFirstChild("Map")
+	if map then
+		local ground = map:FindFirstChild("Ground")
+		if ground then table.insert(list, ground) end
+		local decor = map:FindFirstChild("Decor")
+		if decor then
+			for _, c in decor:GetChildren() do
+				if string.sub(c.Name, 1, 7) == "Bridge_" then table.insert(list, c) end
+			end
+		end
+	end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = list
+	params.IgnoreWater = false
+	groundParams, groundParamsAt = params, now
+	return params
+end
+
+-- ground under (x, z): returns (groundY, isWater), or nil when nothing was hit
+local function probeGround(x, z)
+	local hit = workspace:Raycast(Vector3.new(x, GROUND_RAY_TOP, z), Vector3.new(0, -GROUND_RAY_LENGTH, 0), getGroundParams())
+	if not hit then return nil, false end
+	return hit.Position.Y, hit.Material == Enum.Material.Water
+end
+
+-- walkable ground point at (x, z) or nil (water, ridge, shore). Second result: true when the ray hit nothing at all
+-- (bare test place without Terrain / Map.Ground), so callers can fall back to the legacy flat Y = 0 behaviour.
+local function groundPoint(x, z)
+	local y, water = probeGround(x, z)
+	if y == nil then return nil, true end
+	if water or y < GROUND_MIN_Y or y > GROUND_MAX_Y then return nil, false end
+	return Vector3.new(x, y, z), false
+end
+
 -- unanchored monster part
 local function newPart(props)
 	local p = Instance.new(props.ClassName or "Part")
@@ -148,7 +231,7 @@ local function newPart(props)
 end
 
 local function getCustomTemplate(id)
-	local folder = ServerStorage:FindFirstChild("CustomModels")
+	local folder = ServerStorage:FindFirstChild(CUSTOM_FOLDER)
 	if not folder then return nil end
 	local t = folder:FindFirstChild(id)
 	if t and (t:IsA("Model") or t:IsA("BasePart")) then return t end
@@ -244,10 +327,20 @@ function MonsterService.CountInRadius(position, radius, forPlayer)
 	return n
 end
 
------------------------------------------------------------------- spawn point (A7-1)
+------------------------------------------------------------------ spawn point (A7-1, grounded on Terrain per A10/A11)
+-- Returns a point ON the ground (Y = ground height) inside def.Zone, or nil when every try landed on water / a ridge
+-- (the density pass retries a few seconds later).
 local function pickSpawnPoint(def)
 	local zone = Config.Zones[def.Zone]
+	if not zone then return nil end
 	local inset = MC.SpawnInset
+	local anyHit = false
+	local function try(pt)
+		local g, noHit = groundPoint(pt.X, pt.Z)
+		if not noHit then anyHit = true end
+		if g and Config.ZoneAt(g).Id == def.Zone then return g end
+		return nil
+	end
 	if SPREAD_ENABLED then
 		local bestPos, bestCount = nil, nil
 		for _, p in readyPlayers() do
@@ -271,12 +364,22 @@ local function pickSpawnPoint(def)
 				local d = Util.Random:NextNumber(SPREAD_MIN, SPREAD_MAX)
 				local pt = Vector3.new(bestPos.X + math.cos(a) * d, 0, bestPos.Z + math.sin(a) * d)
 				if insideZone(zone, pt, inset) then
-					return pt
+					local g = try(pt)
+					if g then return g end
 				end
 			end
 		end
 	end
-	return Util.RandomPointInZone(zone, inset)
+	for _ = 1, SPAWN_TRIES do
+		local g = try(Util.RandomPointInZone(zone, inset))
+		if g then return g end
+	end
+	if not anyHit then
+		-- no Terrain / Map.Ground under the zone at all (bare test place): legacy flat ground at Y = 0
+		return Util.RandomPointInZone(zone, inset)
+	end
+	warnThrottled("spawnpoint_" .. def.Zone, "no walkable ground found in " .. def.Zone .. " this pass (water/ridge); retrying later")
+	return nil
 end
 
 ------------------------------------------------------------------ rig construction
@@ -300,7 +403,7 @@ local function makeBar(root, text, golden, offsetY)
 	name.TextScaled = true
 	local tsc = Instance.new("UITextSizeConstraint")
 	tsc.MaxTextSize = 16
-	tsc.MinTextSize = 11
+	tsc.MinTextSize = MIN_TEXT_SIZE
 	tsc.Parent = name
 	name.Parent = bb
 
@@ -482,7 +585,7 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 				local h = Instance.new("Highlight")
 				h.Name = "GoldenTint"
 				h.FillColor = MC.GoldenColor
-				h.FillTransparency = 0.5
+				h.FillTransparency = GOLDEN_FILL_TRANSPARENCY
 				h.OutlineColor = MC.GoldenColor
 				h.OutlineTransparency = 0.3
 				h.DepthMode = Enum.HighlightDepthMode.Occluded
@@ -517,6 +620,7 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 	hum.HipHeight = hip
 	hum.WalkSpeed = def.Speed
 	hum.AutoJumpEnabled = false
+	hum.MaxSlopeAngle = MAX_SLOPE_ANGLE -- A11-R2
 	hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 	hum.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
 	hum.BreakJointsOnDeath = false
@@ -541,6 +645,7 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 		BodyHeight = bodyHeight,
 		Hip = hip,
 		Scale = s,
+		RootOffset = rootY - floorY, -- root center height above the floor (used by PivotTo(Home))
 	}
 end
 
@@ -558,8 +663,12 @@ local function spawnMonster(kind, opts)
 		golden = Util.Random:NextNumber() < MC.GoldenChance
 	end
 
-	local point = opts.Position or pickSpawnPoint(def)
-	point = Vector3.new(point.X, 0, point.Z) -- ground top is Y = 0 everywhere
+	-- point is ON the ground (its Y = ground height); never assume a flat Part floor (A10/A11 Terrain world)
+	local point = opts.Position
+	if typeof(point) ~= "Vector3" then
+		point = pickSpawnPoint(def)
+		if not point then return nil end
+	end
 	local rig = buildRig(kind, def, golden, point, opts.FaceTo)
 
 	local maxHP
@@ -623,12 +732,20 @@ local function spawnMonster(kind, opts)
 		_fill = rig.Fill,
 		_bob = bob,
 		_scale = rig.Scale,
+		_rootOffset = rig.RootOffset,
 		_contributors = {},
 		_nextAttackAt = 0,
 		_nextWanderAt = os.clock() + Util.Random:NextNumber(1, WANDER_MAX),
 		_noAggroUntil = 0,
 		_returning = false,
 		_target = nil,
+		_goal = nil, -- last MoveTo destination (stuck detection, A11-R5)
+		_stuckAt = nil,
+		_stuckPos = nil,
+		_chaseStuck = 0,
+		_detour = nil,
+		_detourUntil = 0,
+		_deepSince = nil, -- A10-V3-2 (c): when the root first went below DEEP_Y
 	}
 	records[rec.Id] = rec
 	return rec
@@ -815,20 +932,35 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 		end
 	end
 
+	-- ~8 studs in front of the player on walkable ground (then the sides / behind); fallback: the home-zone spawn
 	local pos, faceTo
 	local root = Util.GetRoot(player)
 	if root then
 		local look = root.CFrame.LookVector
 		local flat = Vector3.new(look.X, 0, look.Z)
 		flat = flat.Magnitude > 0.01 and flat.Unit or Vector3.new(0, 0, -1)
-		local p = root.Position + flat * PERSONAL_DISTANCE
-		pos = Vector3.new(p.X, 0, p.Z)
-		faceTo = root.Position
-	else
+		local base = root.Position
+		for _, ang in { 0, math.pi / 2, -math.pi / 2, math.pi } do
+			local c, s = math.cos(ang), math.sin(ang)
+			local dir = Vector3.new(flat.X * c - flat.Z * s, 0, flat.X * s + flat.Z * c)
+			local p = base + dir * PERSONAL_DISTANCE
+			local g, noHit = groundPoint(p.X, p.Z)
+			if g then
+				pos = g
+			elseif noHit then
+				pos = Vector3.new(p.X, 0, p.Z) -- bare test place: legacy flat ground
+			end
+			if pos then break end
+		end
+		faceTo = base
+	end
+	if not pos then
 		local faction = player:GetAttribute("Faction")
 		local zone = Config.Zones[Config.HomeZoneId(type(faction) == "string" and faction or "None")] or Config.Zones.Crossroads
-		pos = zone.Spawn + Vector3.new(0, 0, -PERSONAL_DISTANCE)
-		faceTo = zone.Spawn
+		local p = zone.Spawn + Vector3.new(0, 0, -PERSONAL_DISTANCE)
+		local y, water = probeGround(p.X, p.Z)
+		pos = Vector3.new(p.X, (y and not water) and y or 0, p.Z)
+		faceTo = faceTo or zone.Spawn
 	end
 
 	local ok, rec = pcall(spawnMonster, monsterId, {
@@ -874,7 +1006,14 @@ local function findInfo(plist, player)
 	return nil
 end
 
+-- A10-V3-2 (a) + A3-M4: a player this (non-personal) monster may chase: in the monster's own zone, not in a town,
+-- not in the water
+local function targetable(rec, info)
+	return not info.Town and info.Zone == rec.ZoneId and info.Pos.Y >= OUT_Y
+end
+
 local function attack(rec, info, now)
+	rec._goal = nil
 	rec.Humanoid:MoveTo(rec.Root.Position)
 	if now >= rec._nextAttackAt then
 		rec._nextAttackAt = now + MC.AttackCooldown
@@ -884,6 +1023,103 @@ local function attack(rec, info, now)
 	end
 end
 
+-- A10-V3-2 (c): put the monster back on its home point (sunk in water / cannot walk back)
+local function pivotHome(rec)
+	local root = rec.Root
+	local p = rec.Home + Vector3.new(0, rec._rootOffset or 3, 0)
+	local lv = root.CFrame.LookVector
+	local flat = Vector3.new(lv.X, 0, lv.Z)
+	if flat.Magnitude < 0.01 then flat = Vector3.new(0, 0, -1) end
+	rec.Model:PivotTo(CFrame.lookAt(p, p + flat.Unit))
+	root.AssemblyLinearVelocity = Vector3.zero
+	root.AssemblyAngularVelocity = Vector3.zero
+	rec.Humanoid:MoveTo(p)
+	rec._goal = nil
+	rec._stuckAt = nil
+	rec._detour = nil
+	rec._deepSince = nil
+end
+
+-- A10-V3-2 (c): below DEEP_Y for more than DEEP_SECONDS -> PivotTo(Home). Returns true when it teleported.
+local function deepRecovery(rec, pos, now)
+	if pos.Y >= DEEP_Y then
+		rec._deepSince = nil
+		return false
+	end
+	if rec._deepSince == nil then
+		rec._deepSince = now
+		return false
+	end
+	if now - rec._deepSince > DEEP_SECONDS then
+		pivotHome(rec)
+		return true
+	end
+	return false
+end
+
+-- A11-R5: true when the monster moved < STUCK_MIN_MOVE during the last STUCK_WINDOW s while trying to move
+local function isStuck(rec, pos, now, trying)
+	if not trying then
+		rec._stuckAt = nil
+		return false
+	end
+	if rec._stuckAt == nil then
+		rec._stuckAt, rec._stuckPos = now, pos
+		return false
+	end
+	if now - rec._stuckAt < STUCK_WINDOW then return false end
+	local moved = Util.FlatDistance(pos, rec._stuckPos)
+	rec._stuckAt, rec._stuckPos = now, pos
+	return moved < STUCK_MIN_MOVE
+end
+
+-- A11-R5: a short sideways detour (8-14 studs, 60-150 deg off the blocked direction) on walkable ground in the zone
+local function startDetour(rec, zone, pos, goal, now)
+	local to = goal and Vector3.new(goal.X - pos.X, 0, goal.Z - pos.Z) or Vector3.zero
+	local baseAng = to.Magnitude > 0.01 and math.atan2(to.Z, to.X) or Util.Random:NextNumber(0, math.pi * 2)
+	for _ = 1, DETOUR_TRIES do
+		local side = Util.Random:NextNumber() < 0.5 and -1 or 1
+		local a = baseAng + side * Util.Random:NextNumber(math.rad(60), math.rad(150))
+		local r = Util.Random:NextNumber(DETOUR_MIN, DETOUR_MAX)
+		local p = clampToZone(zone, Vector3.new(pos.X + math.cos(a) * r, pos.Y, pos.Z + math.sin(a) * r))
+		local g, noHit = groundPoint(p.X, p.Z)
+		if noHit then g = p end
+		if g and Util.FlatDistance(g, pos) > ARRIVE_DIST then
+			rec._detour = g
+			rec._detourUntil = now + DETOUR_SECONDS
+			return
+		end
+	end
+	rec._detour = nil
+end
+
+-- every non-personal MoveTo goes through here; `dest` is already clamped into the zone (A10-V3-2 b)
+local function steer(rec, dest, pos, now)
+	local d = rec._detour
+	if d then
+		if now < rec._detourUntil and Util.FlatDistance(pos, d) > ARRIVE_DIST then
+			dest = d
+		else
+			rec._detour = nil
+		end
+	end
+	rec._goal = dest
+	rec.Humanoid:MoveTo(dest)
+end
+
+-- wander point within WANDER_RADIUS of Home, clamped into the zone and on walkable ground (never water / ridge)
+local function pickWanderPoint(rec, zone)
+	for _ = 1, WANDER_TRIES do
+		local a = Util.Random:NextNumber(0, math.pi * 2)
+		local r = Util.Random:NextNumber(0, WANDER_RADIUS)
+		local p = clampToZone(zone, rec.Home + Vector3.new(math.cos(a) * r, 0, math.sin(a) * r))
+		local g, noHit = groundPoint(p.X, p.Z)
+		if g then return g end
+		if noHit then return p end -- bare test place without Terrain / Map.Ground: legacy flat behaviour
+	end
+	return nil
+end
+
 local function personalStep(rec, plist, now, pos)
 	local owner = rec.Owner
 	if owner.Parent == nil then
@@ -891,8 +1127,8 @@ local function personalStep(rec, plist, now, pos)
 		return
 	end
 	local info = findInfo(plist, owner)
-	if not info or info.Town then
-		rec.Humanoid:MoveTo(pos) -- sandbag: stand still
+	if not info or info.Town or info.Pos.Y < OUT_Y then
+		rec.Humanoid:MoveTo(pos) -- sandbag: stand still (also never follow the owner into the water)
 		return
 	end
 	local d = Util.FlatDistance(pos, info.Pos)
@@ -916,28 +1152,75 @@ local function aiStep(rec, plist, now)
 	end
 	local pos = root.Position
 
+	-- A10-V3-2 (c): sunk deep (water, knocked off a cliff) for > 2 s -> back home. Also for personal monsters.
+	if deepRecovery(rec, pos, now) then return end
+
 	if rec.Owner then
 		personalStep(rec, plist, now, pos)
 		return
 	end
 
-	-- leash / town: go home and do not re-aggro for a moment (anti-jitter)
+	local zone = Config.Zones[rec.ZoneId]
 	local homeDist = Util.FlatDistance(pos, rec.Home)
-	if homeDist > MC.LeashRadius or Config.ZoneAt(pos).Town then
+
+	-- A10-V3-2 (c): out of its own zone (knockback, slid off) or in the water -> walk home, no re-aggro for 3 s.
+	-- If it makes no progress (river bank, cliff) it is put back home.
+	if Config.ZoneAt(pos).Id ~= rec.ZoneId or pos.Y < OUT_Y then
+		rec._target = nil
+		rec._returning = true
+		rec._detour = nil
+		rec._noAggroUntil = math.max(rec._noAggroUntil, now + NO_REAGGRO_SECONDS)
+		if isStuck(rec, pos, now, homeDist > ARRIVE_DIST) then
+			pivotHome(rec)
+			return
+		end
+		local homeDest = clampToZone(zone, rec.Home)
+		rec._goal = homeDest
+		hum:MoveTo(homeDest)
+		return
+	end
+
+	-- leash: go home and do not re-aggro for a moment (anti-jitter). (A monster standing in a town is out of its zone
+	-- and already handled above.)
+	if homeDist > MC.LeashRadius then
 		rec._returning = true
 		rec._target = nil
 		rec._noAggroUntil = math.max(rec._noAggroUntil, now + NO_REAGGRO_SECONDS)
 	end
 
-	-- A3-M4: the current target stepped into a town -> return home, no re-aggro for 3 s
+	-- A3-M4 / A10-V3-2 (a): the current target stepped into a town, left this zone or went into the water
+	-- -> return home, no re-aggro for 3 s
 	if rec._target then
 		local tinfo = findInfo(plist, rec._target)
-		if tinfo and tinfo.Town then
+		if not tinfo then
+			rec._target = nil
+		elseif not targetable(rec, tinfo) then
 			rec._target = nil
 			rec._returning = true
-			rec._noAggroUntil = now + NO_REAGGRO_SECONDS
-		elseif not tinfo then
-			rec._target = nil
+			rec._noAggroUntil = math.max(rec._noAggroUntil, now + NO_REAGGRO_SECONDS)
+		end
+	end
+
+	-- A11-R5: stuck on terrain while moving -> pick a different destination
+	local trying = rec._goal ~= nil and Util.FlatDistance(pos, rec._goal) > ARRIVE_DIST
+	if isStuck(rec, pos, now, trying) then
+		if rec._returning then
+			startDetour(rec, zone, pos, rec.Home, now)
+		elseif rec._target then
+			rec._chaseStuck += 1
+			if rec._chaseStuck >= CHASE_STUCK_GIVEUP then
+				-- the target is unreachable (ridge slope etc.): give up, go home, no re-aggro for a moment
+				rec._chaseStuck = 0
+				rec._target = nil
+				rec._returning = true
+				rec._noAggroUntil = math.max(rec._noAggroUntil, now + NO_REAGGRO_SECONDS)
+			else
+				startDetour(rec, zone, pos, rec._goal, now)
+			end
+		else
+			rec._goal = nil
+			rec._detour = nil
+			rec._nextWanderAt = now -- wander somewhere else right away
 		end
 	end
 
@@ -945,16 +1228,16 @@ local function aiStep(rec, plist, now)
 		if homeDist <= RETURN_DONE_DIST or (now >= rec._noAggroUntil and homeDist <= MC.LeashRadius * 0.75) then
 			rec._returning = false
 		else
-			hum:MoveTo(rec.Home)
+			steer(rec, clampToZone(zone, rec.Home), pos, now)
 			return
 		end
 	end
 
-	-- target = nearest alive player within AggroRadius that is not in a town
+	-- target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water (A10-V3-2 a)
 	local best, bestD = nil, nil
 	if now >= rec._noAggroUntil then
 		for _, info in plist do
-			if not info.Town then
+			if targetable(rec, info) then
 				local d = Util.FlatDistance(pos, info.Pos)
 				if d <= MC.AggroRadius and (bestD == nil or d < bestD) then
 					best, bestD = info, d
@@ -964,11 +1247,13 @@ local function aiStep(rec, plist, now)
 	end
 
 	if best then
+		if rec._target ~= best.Player then rec._chaseStuck = 0 end
 		rec._target = best.Player
 		if bestD <= MC.AttackRange then
+			rec._chaseStuck = 0
 			attack(rec, best, now)
 		else
-			hum:MoveTo(best.Pos)
+			steer(rec, clampToZone(zone, best.Pos), pos, now) -- A10-V3-2 (b)
 		end
 		return
 	end
@@ -976,9 +1261,11 @@ local function aiStep(rec, plist, now)
 	rec._target = nil
 	if now >= rec._nextWanderAt then
 		rec._nextWanderAt = now + Util.Random:NextNumber(WANDER_MIN, WANDER_MAX)
-		local a = Util.Random:NextNumber(0, math.pi * 2)
-		local r = Util.Random:NextNumber(0, WANDER_RADIUS)
-		hum:MoveTo(rec.Home + Vector3.new(math.cos(a) * r, 0, math.sin(a) * r))
+		local dest = pickWanderPoint(rec, zone)
+		if dest then
+			rec._detour = nil
+			steer(rec, dest, pos, now)
+		end
 	end
 end
 
@@ -990,7 +1277,7 @@ local function aiTick()
 			local root = Util.GetRoot(p)
 			if root then
 				local pos = root.Position
-				table.insert(plist, { Player = p, Pos = pos, Town = isPlayerInTown(p, pos) })
+				table.insert(plist, { Player = p, Pos = pos, Town = isPlayerInTown(p, pos), Zone = Config.ZoneAt(pos).Id })
 			end
 		end
 	end
@@ -1030,7 +1317,7 @@ function MonsterService.Init(registry)
 	S = registry
 	getMonstersFolder()
 	Util.GetFolder(workspace, "Effects")
-	Util.GetFolder(ServerStorage, "CustomModels") -- A1: may stay empty
+	Util.GetFolder(ServerStorage, CUSTOM_FOLDER) -- A1: may stay empty
 	if S.PlayerService and S.PlayerService.PlayerLeaving then
 		S.PlayerService.PlayerLeaving:Connect(function(player)
 			onOwnerLeaving(player)

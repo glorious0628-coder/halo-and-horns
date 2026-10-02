@@ -1,5 +1,6 @@
 -- PlayerService.luau : join/leave lifecycle, attribute mirroring, leaderstats, spawn/respawn, MaxHealth/WalkSpeed,
--- playtime, Regular's Luck minutes, the no-player-collision group (addendum A7-5) and BindToClose.
+-- playtime, Regular's Luck minutes, the no-player-collision group (addendum A7-5), fall rescue (A10), slope limit
+-- (A11-R2), camera zoom limits (A12) and BindToClose.
 local Players = game:GetService("Players")
 local PhysicsService = game:GetService("PhysicsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -37,6 +38,13 @@ local CLOSE_TIMEOUT = 25 -- BindToClose budget
 local FINALIZE_WAIT = 30 -- a second FinalizeLeave call waits this long for the first one
 local LEADERSTAT_KEYS = { "Level", "BankGold", "CarriedGold", "Rebirths", "Honor", "Infamy", "Faction" }
 
+-- A10: a player below this Y (anywhere: sea, river bed, out of the world) is put back on their home spawn.
+-- Swimming stays enabled on player Humanoids (the water surface is at Y = -1.2).
+local FALL_RESCUE_Y = -20
+local FALL_CHECK_INTERVAL = Config.Travel.ZoneTick or 0.5
+local MAX_SLOPE_ANGLE = 46 -- A11-R2: Terrain ridges (>= 50 deg) cannot be walked over
+local CAMERA_MAX_ZOOM = 40 -- A12: players never see the whole world (kaiju may raise it while transformed)
+local CAMERA_MIN_ZOOM = 6
 ------------------------------------------------------------------ helpers
 local lastLoopWarn = {}
 local function loopWarn(loopName, err)
@@ -126,6 +134,29 @@ local function loadCharacter(player)
 	end
 end
 
+-- A12: on join and on every CharacterAdded (max first, so min never exceeds max)
+local function applyCameraLimits(player)
+	local ok, err = pcall(function()
+		player.CameraMaxZoomDistance = CAMERA_MAX_ZOOM
+		player.CameraMinZoomDistance = CAMERA_MIN_ZOOM
+	end)
+	if not ok then
+		loopWarn("camera limits", err)
+	end
+end
+
+-- A10: below FALL_RESCUE_Y -> home spawn (the sack / kaiju state is untouched, like the enemy-town bounce)
+local function rescueIfFallen(player)
+	local character = Util.GetCharacter(player)
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root or not root:IsA("BasePart") or root.Position.Y >= FALL_RESCUE_Y then return end
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then return end
+	character:PivotTo(spawnCFrame(Config.HomeZoneId(stat(player, "Faction", "None"))))
+	root.AssemblyLinearVelocity = Vector3.zero
+	root.AssemblyAngularVelocity = Vector3.zero
+end
+
 ------------------------------------------------------------------ collision group (A7-5)
 local function setupCollisionGroup()
 	local ok, err = pcall(function()
@@ -213,7 +244,9 @@ local function onCharacterAdded(player, character)
 		end
 		return
 	end
+	humanoid.MaxSlopeAngle = MAX_SLOPE_ANGLE -- A11-R2 (Swimming stays enabled for players, A10)
 	if player.Character ~= character or not ready[player] then return end
+	applyCameraLimits(player)
 
 	-- CharacterAdded can fire before the model is parented: wait until it is in the world before placing it
 	local t0 = os.clock()
@@ -227,7 +260,8 @@ local function onCharacterAdded(player, character)
 	character:PivotTo(spawnCFrame(Config.HomeZoneId(stat(player, "Faction", "None"))))
 
 	humanoid.Died:Once(function()
-		if not ready[player] or player.Parent == nil then return end
+		-- a character already replaced by LoadCharacter (Respawn) is not a death
+		if not ready[player] or player.Parent == nil or player.Character ~= character then return end
 		PlayerService.CharacterDied:Fire(player, character)
 		task.delay(Config.Player.RespawnTime, function()
 			if player.Parent and player.Character == character and ready[player] then
@@ -242,6 +276,7 @@ end
 ------------------------------------------------------------------ join
 local function onJoin(player)
 	if ready[player] or joining[player] or finalizing[player] then return end
+	applyCameraLimits(player) -- A12: before the first character
 	joining[player] = true
 	local ok, data = pcall(S.DataService.Load, player)
 	joining[player] = nil
@@ -344,6 +379,17 @@ function PlayerService.Start()
 			for _, p in PlayerService.GetReadyPlayers() do
 				local ok, err = pcall(PlayerService.AddStat, p, "PlaytimeSeconds", step)
 				if not ok then loopWarn("playtime loop", err) end
+			end
+		end
+	end)
+
+	-- A10 fall rescue (sea / out of the world)
+	task.spawn(function()
+		while true do
+			task.wait(FALL_CHECK_INTERVAL)
+			for _, p in PlayerService.GetReadyPlayers() do
+				local ok, err = pcall(rescueIfFallen, p)
+				if not ok then loopWarn("fall rescue loop", err) end
 			end
 		end
 	end)
