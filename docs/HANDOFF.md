@@ -42,6 +42,10 @@
 4. Config.Assets 훅(Icons/Emblems/Textures, 비어 있으면 지금처럼 도형·텍스트).
 5. 2단계 경제: 몬스터 재료 드랍 → 전부 팔기 → 원버튼 제작 → 서버 간 거래소(판매 등록 + 예약 구매, 최소 10골드, 세금). 먼저 ADDENDUM에 설계(A14)를 쓰고 구현.
 
+## 아트 파이프라인 (로컬 세션 담당)
+- 이미지: art/prompts/<id>.txt (완성본 프롬프트 65개, art/prompts.json) → 로컬 세션이 Codex CLI로 생성(tools/gen_images.sh) → art/out/<id>.png → Studio MCP upload_image로 로블록스 업로드 → rbxassetid를 Config.Assets에 기록.
+- 코드에서는 Config.Assets.Icons/Emblems/Textures에 id가 있으면 이미지를 쓰고, 없으면 지금처럼 도형/텍스트로 대체하는 훅만 만들면 된다(IMG-R4).
+
 ## 클라우드에서 못 하는 것 (로컬 세션 담당)
 - 로블록스 스튜디오/Studio MCP 접근이 없어서 tools/luau_check.py, tools/sync_to_studio.py, tools/playtest.py, preview_map 실행이 안 된다.
 - 그래서: 문법은 아주 신중하게(Luau: continue, +=, 타입 주석 OK. `local x <const>` 같은 Lua 5.4 문법 금지). 작업 단위마다 브랜치(cloud/<주제>)에 커밋하고 PR을 열어. 로컬 세션이 PR을 받아서 스튜디오에서 문법 검사와 플레이테스트를 하고 main에 합친다.
