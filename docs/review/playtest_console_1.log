@@ -1,0 +1,39 @@
+[MapBuilder] reused workspace.Map (+0 missing pieces built)
+[MapBuilder] started
+[ZoneService] started
+[FactionService] started
+[ClassService] started
+[JusticeService] started
+[ProgressionService] started
+[CombatService] started
+[MonsterService] custom model for Slime: no
+[MonsterService] custom model for BigSlime: no
+[MonsterService] custom model for Goblin: no
+[MonsterService] custom model for GoblinBrute: no
+[MonsterService] custom model for Skeleton: no
+[MonsterService] custom model for SkeletonKnight: no
+[MonsterService] started
+[PvPService] started
+[GrudgeService] started
+[WarService] started
+[KaijuService] started
+[GooseService] custom model for GoldenGoose: no
+[GooseService] started
+[ShopService] started
+[QuestService] started
+[MonetizationService] Developer Product ids are 0: buy buttons show '상품 준비 중'. Create 2 Developer Products on create.roblox.com (your game > Monetization > Developer Products) and paste their ids into Config.Products.
+[MonetizationService] started
+[CharacterVisuals] started
+[DataService] DataStore unavailable (enable Studio Access to API Services). Using in-memory data; nothing will be saved.
+[DataService] started
+[PlayerService] started
+[Main] Halo & Horns server started (19/19 services)
+[UIKit] started
+[Fx] started
+[HUD] started
+[EventHUD] started
+[Panels] started
+[FactionPicker] started
+[ClassPicker] started
+[ClientMain] client started
+(25 s solo playtest, no input: all 19 server services + 7 client modules started with no errors; faction picker not clicked, gameplay paths untested at runtime.)
