@@ -177,14 +177,15 @@ end)
 local WATER_TOP = -1.2
 local bw, bd = BOUNDS.MaxX - BOUNDS.MinX, BOUNDS.MaxZ - BOUNDS.MinZ
 local cx, cz = (BOUNDS.MinX + BOUNDS.MaxX) / 2, (BOUNDS.MinZ + BOUNDS.MaxZ) / 2
-Terrain:FillBlock(CFrame.new(cx, -18, cz), Vector3.new(bw + 400, 4, bd + 400), Enum.Material.Sand)
-Terrain:FillBlock(CFrame.new(cx, (WATER_TOP - 16) / 2, cz), Vector3.new(bw + 400, 16 + WATER_TOP, bd + 400), Enum.Material.Water)
+-- 주의: Terrain:FillBlock 은 지정한 윗면보다 2칸 높게 표면이 생긴다(실측). 그래서 모든 채우기를 2칸 내려서 넣는다.
+Terrain:FillBlock(CFrame.new(cx, -20, cz), Vector3.new(bw + 400, 4, bd + 400), Enum.Material.Sand)
+Terrain:FillBlock(CFrame.new(cx, (WATER_TOP - 2 - 16) / 2, cz), Vector3.new(bw + 400, 16 + WATER_TOP, bd + 400), Enum.Material.Water)
 
 -- 땅 (윗면 Y = 0) + 물가 모래
 local function land(minX, maxX, minZ, maxZ, material)
 	local c = Vector3.new((minX + maxX) / 2, 0, (minZ + maxZ) / 2)
-	Terrain:FillBlock(CFrame.new(c.X, -10, c.Z), Vector3.new(maxX - minX + 16, 8, maxZ - minZ + 16), Enum.Material.Sand)
-	Terrain:FillBlock(CFrame.new(c.X, -6, c.Z), Vector3.new(maxX - minX, 12, maxZ - minZ), material)
+	Terrain:FillBlock(CFrame.new(c.X, -12, c.Z), Vector3.new(maxX - minX + 16, 8, maxZ - minZ + 16), Enum.Material.Sand)
+	Terrain:FillBlock(CFrame.new(c.X, -8, c.Z), Vector3.new(maxX - minX, 12, maxZ - minZ), material)
 end
 land(LAND.A[1], LAND.A[2], -175, 175, Enum.Material.Grass)
 land(LAND.B[1], LAND.B[2], -175, 175, Enum.Material.Grass)
@@ -199,7 +200,7 @@ local ZONE_MAT = {
 }
 for _, id in ZONE_ORDER do
 	local z = ZONES[id]
-	Terrain:FillBlock(CFrame.new(z.Center.X, -2, z.Center.Z), Vector3.new(z.Size.X, 4, z.Size.Z), ZONE_MAT[id])
+	Terrain:FillBlock(CFrame.new(z.Center.X, -4, z.Center.Z), Vector3.new(z.Size.X, 4, z.Size.Z), ZONE_MAT[id])
 	local p = part({ Name = id, Size = Vector3.new(z.Size.X, 1, z.Size.Z), Position = Vector3.new(z.Center.X, -0.45, z.Center.Z),
 		Color = z.Color, Material = z.Material, Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false, CastShadow = false }, folders.Zones)
 	p:SetAttribute("ZoneId", id)
@@ -207,12 +208,12 @@ end
 -- 해골 유적 바닥에 돌판 섞기, 뿔 소굴에 용암 줄기
 for _ = 1, 40 do
 	local z = ZONES.SkeletonRuins
-	Terrain:FillBlock(CFrame.new(z.Center.X + rng:NextNumber(-150, 150), -2, z.Center.Z + rng:NextNumber(-150, 150)) * CFrame.Angles(0, rng:NextNumber(0, 3), 0),
+	Terrain:FillBlock(CFrame.new(z.Center.X + rng:NextNumber(-150, 150), -4, z.Center.Z + rng:NextNumber(-150, 150)) * CFrame.Angles(0, rng:NextNumber(0, 3), 0),
 		Vector3.new(rng:NextNumber(12, 30), 4, rng:NextNumber(12, 30)), Enum.Material.Slate)
 end
 for _ = 1, 10 do
 	local z = ZONES.HornsTown
-	Terrain:FillBlock(CFrame.new(z.Center.X + rng:NextNumber(-60, 60), -2, z.Center.Z + rng:NextNumber(-60, 60)) * CFrame.Angles(0, rng:NextNumber(0, 3), 0),
+	Terrain:FillBlock(CFrame.new(z.Center.X + rng:NextNumber(-60, 60), -4, z.Center.Z + rng:NextNumber(-60, 60)) * CFrame.Angles(0, rng:NextNumber(0, 3), 0),
 		Vector3.new(rng:NextNumber(16, 30), 4, 4), Enum.Material.CrackedLava)
 end
 

@@ -72,12 +72,17 @@ class Client:
         return self.request("tools/call", {"name": name, "arguments": args})
 
     def studio_id(self):
+        # 스튜디오는 프록시가 뜬 뒤 몇 초 지나야 접속하므로 잠깐 기다리며 다시 묻는다
+        import time
         want = os.environ.get("STUDIO_NAME", "GoodEvil")
-        res = self.request("tools/call", {"name": "list_roblox_studios", "arguments": {}})
-        studios = json.loads(res["content"][0]["text"])["studios"]
-        for s in studios:
-            if want.lower() in s["name"].lower():
-                return s["id"]
+        studios = []
+        for _ in range(30):
+            res = self.request("tools/call", {"name": "list_roblox_studios", "arguments": {}})
+            studios = json.loads(res["content"][0]["text"])["studios"]
+            for s in studios:
+                if want.lower() in s["name"].lower():
+                    return s["id"]
+            time.sleep(0.5)
         raise RuntimeError(f"'{want}' 스튜디오 창을 찾지 못했습니다: {[s['name'] for s in studios]}")
 
     def close(self):

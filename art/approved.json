@@ -1,0 +1,42 @@
+{
+ "Emblem_Halo": {
+  "status": "approved",
+  "file": "art/out/Emblem_Halo.png"
+ },
+ "Emblem_Horns": {
+  "status": "approved",
+  "file": "art/out/Emblem_Horns.png"
+ },
+ "Emblem_Neutral": {
+  "status": "approved",
+  "file": "art/out/Emblem_Neutral.png"
+ },
+ "GameIcon": {
+  "status": "approved",
+  "file": "art/out/GameIcon.png"
+ },
+ "Thumbnail_Kaiju": {
+  "status": "approved",
+  "file": "art/out/Thumbnail_Kaiju.png"
+ },
+ "Thumbnail_Crown": {
+  "status": "not_selected",
+  "file": "art/out/v1/Thumbnail_Crown.png"
+ },
+ "Slime": {
+  "status": "approved",
+  "file": "art/out/Slime.png"
+ },
+ "Goblin": {
+  "status": "approved",
+  "file": "art/out/Goblin.png"
+ },
+ "GoblinBrute": {
+  "status": "approved",
+  "file": "art/out/GoblinBrute.png"
+ },
+ "BigSlime": {
+  "status": "redo",
+  "note": "슬라임 B처럼: 연두색, 반짝이는 젤리, 혀 내민 귀여운 표정"
+ }
+}
