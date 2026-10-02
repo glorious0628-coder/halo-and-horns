@@ -1,0 +1,8 @@
+# 빌드 결과물, 스튜디오 잠금 파일, 캡처, 로그
+build/
+*.rbxlx.lock
+*.rbxl.lock
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

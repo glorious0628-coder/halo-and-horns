@@ -1,0 +1,1 @@
+-- Intentionally empty. Replaces Roblox's default "Health" regen script; regen is handled by CombatService.

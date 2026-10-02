@@ -1,0 +1,415 @@
+-- DataService.luau : DataStore load/save with a session lock, retries, autosave, v1 -> v2 migration and an
+-- in-memory fallback for Studio sessions without API access. BindToClose is owned by PlayerService.
+local DataStoreService = game:GetService("DataStoreService")
+local HttpService = game:GetService("HttpService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Config = require(ReplicatedStorage.Shared.Config)
+local Util = require(ReplicatedStorage.Shared.Util)
+
+local TAG = "DataService"
+
+local DataService = {}
+
+local S = nil -- registry (unused at runtime; kept for the service pattern)
+
+local store = nil -- GlobalDataStore, set by the probe in Start
+local memoryMode = false
+local probeDone = false
+
+local cache = {} -- [Player] = live session table
+local releasing = {} -- [Player] = true while Release() runs
+local foreignLock = {} -- [Player] = true once another server owns the record (further saves are refused)
+local writeSlot = {} -- [userId] = token while a DataStore operation for that user runs (serializes writes)
+-- [Player] = GUID this session wrote into the stored record at Load (field SessionToken). A save only lands while the
+-- stored token is still ours, so a delayed write of an old session can never overwrite a newer session's record.
+local sessionTokens = {}
+
+local PROBE_TIMEOUT = 30 -- seconds Load waits for the Start probe before giving up
+local SLOT_TIMEOUT = 90 -- seconds a writer waits for the previous writer of the same user
+local RELEASE_WAIT = 60 -- seconds a second Release() call waits for the first one
+
+local TUTORIAL_NEW = (Config.Tutorial and Config.Tutorial.Steps and Config.Tutorial.Steps.Kill) or 0
+local TUTORIAL_DONE = (Config.Tutorial and Config.Tutorial.Steps and Config.Tutorial.Steps.Done) or 99
+
+------------------------------------------------------------------ helpers
+local function keyFor(userId)
+	return Config.Data.KeyPrefix .. tostring(userId)
+end
+
+-- per-user write slot: an older copy must never land after a newer one (autosave vs forced save vs release).
+-- nil = the previous writer still holds the slot after SLOT_TIMEOUT (the caller fails; it never writes without the slot)
+local function acquireSlot(userId)
+	local t0 = os.clock()
+	while writeSlot[userId] do
+		if os.clock() - t0 >= SLOT_TIMEOUT then return nil end
+		task.wait(0.1)
+	end
+	local token = {}
+	writeSlot[userId] = token
+	return token
+end
+
+local function releaseSlot(userId, token)
+	if writeSlot[userId] == token then
+		writeSlot[userId] = nil
+	end
+end
+
+local function isLock(lock)
+	return type(lock) == "table" and type(lock.JobId) == "string"
+end
+
+-- a lock held by ANOTHER server that is still considered alive
+local function isLiveForeignLock(lock)
+	if not isLock(lock) or lock.JobId == game.JobId then return false end
+	local t = tonumber(lock.Time)
+	if not t then return false end
+	return os.time() - t < Config.Data.LockTimeout
+end
+
+-- true if the stored value holds real player data (not just nothing / a bare session lock + token)
+local function hasStoredData(old)
+	if type(old) ~= "table" then return false end
+	for k in old do
+		if k ~= "SessionLock" and k ~= "SessionToken" then return true end
+	end
+	return false
+end
+
+-- v1 -> v2 (idempotent)
+local function migrate(d, player)
+	if (tonumber(d.Version) or 1) < 2 then
+		d.WeaponTier = d.WeaponTier or d.SwordTier or 1 -- v1 field SwordTier is renamed
+		d.SwordTier = nil
+		d.RebirthBonus = (tonumber(d.Rebirths) or 0) * Config.Rebirth.BonusNormal
+		d.Class = "Warrior"
+		d.ClassChosen = false -- migrated players get one free class pick (keeps their level)
+		d.Quests = {} -- QuestService regenerates (DailyDay = 0 -> fresh dailies, no vacation)
+		d.Version = 2
+		print("[DataService] migrated v1 -> v2 for " .. player.Name)
+	end
+end
+
+-- add missing keys from the defaults and repair obviously corrupted values
+local function fillDefaults(d, playerName)
+	for k, v in Config.Data.Defaults do
+		local cur = d[k]
+		if cur == nil then
+			d[k] = Util.DeepCopy(v)
+		elseif type(cur) ~= type(v) then
+			Util.Warn(TAG, ("%s: field %s had type %s, reset to default"):format(playerName, k, type(cur)))
+			d[k] = Util.DeepCopy(v)
+		end
+	end
+
+	-- table default Tickets: also fill missing sub-keys
+	if type(d.Tickets) ~= "table" then d.Tickets = {} end
+	for _, kind in { "Class", "Faction" } do
+		local n = tonumber(d.Tickets[kind])
+		d.Tickets[kind] = (n and n == n and n > 0) and math.floor(n) or 0
+	end
+
+	-- receipts: array of strings, at most MaxReceiptsKept (oldest dropped)
+	local receipts = {}
+	if type(d.ProcessedReceipts) == "table" then
+		for _, id in d.ProcessedReceipts do
+			if type(id) == "string" or type(id) == "number" then table.insert(receipts, tostring(id)) end
+		end
+	end
+	while #receipts > Config.Tickets.MaxReceiptsKept do
+		table.remove(receipts, 1)
+	end
+	d.ProcessedReceipts = receipts
+
+	-- ids that other services branch on
+	if not Config.Factions[d.Faction] then d.Faction = "None" end
+	if not Config.Classes[d.Class] then d.Class = "Warrior" end
+	d.Level = math.clamp(math.floor(tonumber(d.Level) or 1), 1, Config.Levels.MaxLevel)
+	d.WeaponTier = math.clamp(math.floor(tonumber(d.WeaponTier) or 1), 1, Config.MaxWeaponTier)
+end
+
+-- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.
+-- `sessionToken` = the token this session wrote at Load; the write is cancelled unless the stored record still carries it.
+-- Returns (ok, abortedByForeignLock).
+local function writeRecord(userId, data, release, label, sessionToken)
+	if not store then return false, false end
+	if type(sessionToken) ~= "string" then
+		Util.Warn(TAG, ("save of %s refused: no session token"):format(label))
+		return false, true
+	end
+	local copy = Util.DeepCopy(data)
+	if release then
+		copy.SessionLock = nil
+	else
+		copy.SessionLock = { JobId = game.JobId, Time = os.time() }
+	end
+	copy.SessionToken = sessionToken
+
+	local key = keyFor(userId)
+	local attempts = 1 + math.max(0, Config.Data.SaveRetries)
+	for attempt = 1, attempts do
+		local foreign = false
+		local ok, err = pcall(store.UpdateAsync, store, key, function(old)
+			-- a newer session (this or another server) loaded the record after ours, or it was deleted: never
+			-- overwrite it, even when that session already released its lock
+			if type(old) ~= "table" or old.SessionToken ~= sessionToken then
+				foreign = true
+				return nil
+			end
+			if isLock(old.SessionLock) and old.SessionLock.JobId ~= game.JobId then
+				foreign = true
+				return nil -- another server owns this record: cancel the write
+			end
+			foreign = false
+			return copy
+		end)
+		if ok then
+			if foreign then
+				Util.Warn(TAG, ("save of %s aborted: a newer session owns this data"):format(label))
+				return false, true
+			end
+			return true, false
+		end
+		Util.Warn(TAG, ("save attempt %d/%d failed for %s: %s"):format(attempt, attempts, label, tostring(err)))
+		if attempt < attempts then
+			task.wait(2 ^ (attempt - 1)) -- 1, 2, 4 s
+		end
+	end
+	return false, false
+end
+
+local function waitForProbe()
+	local t0 = os.clock()
+	while not probeDone do
+		if os.clock() - t0 > PROBE_TIMEOUT then return false end
+		task.wait()
+	end
+	return true
+end
+
+------------------------------------------------------------------ public API
+function DataService.Init(registry)
+	S = registry
+end
+
+function DataService.Start()
+	-- DataStore probe (memory mode only ever in Studio)
+	task.spawn(function()
+		local okStore, result = pcall(function()
+			return DataStoreService:GetDataStore(Config.Data.StoreName)
+		end)
+		if okStore and result then
+			store = result
+		end
+		if RunService:IsStudio() then
+			local usable = false
+			if store then
+				usable = pcall(function()
+					store:GetAsync("__probe")
+				end)
+			end
+			if not usable then
+				memoryMode = true
+				warn("[DataService] DataStore unavailable (enable Studio Access to API Services). Using in-memory data; nothing will be saved.")
+			end
+		elseif not store then
+			Util.Warn(TAG, "GetDataStore failed: " .. tostring(result))
+		end
+		probeDone = true
+	end)
+
+	-- autosave
+	task.spawn(function()
+		while true do
+			task.wait(Config.Data.AutosaveInterval)
+			if probeDone and not memoryMode then
+				local list = {}
+				for player in cache do
+					if not releasing[player] and not foreignLock[player] and player.Parent ~= nil then
+						table.insert(list, player)
+					end
+				end
+				for _, player in list do
+					task.spawn(DataService.Save, player, false)
+				end
+			end
+		end
+	end)
+
+	print("[DataService] started")
+end
+
+-- yields. nil = failed (caller kicks) or the player left during the load
+function DataService.Load(player)
+	if cache[player] then return cache[player] end
+	if not waitForProbe() then
+		Util.Warn(TAG, "DataStore probe did not finish; cannot load " .. player.Name)
+		return nil
+	end
+	if player.Parent == nil then return nil end
+
+	if memoryMode then
+		local d = Util.DeepCopy(Config.Data.Defaults)
+		d.TutorialStep = TUTORIAL_NEW -- always a fresh record in memory mode (A5-C5)
+		d.Version = Config.Data.Version
+		d.FirstJoinTime = os.time()
+		cache[player] = d
+		return d
+	end
+	if not store then
+		Util.Warn(TAG, "no DataStore available; cannot load " .. player.Name)
+		return nil
+	end
+
+	local userId = player.UserId
+	local key = keyFor(userId)
+	-- holding the slot also waits for a previous session of this user on this server (fast rejoin) to finish saving
+	local token = acquireSlot(userId)
+	if not token then
+		Util.Warn(TAG, "a previous save of " .. player.Name .. " is still running; cannot load")
+		return nil
+	end
+	-- one token per Load (retries reuse it, so a committed-but-errored attempt is still recognised as ours)
+	local sessionToken = HttpService:GenerateGUID(false)
+
+	local loaded, fresh = nil, false
+	local retries = math.max(1, Config.Data.LoadRetries)
+	local warnedLock = false
+	for attempt = 1, retries do
+		if player.Parent == nil then
+			releaseSlot(userId, token)
+			return nil
+		end
+		local final = (attempt == retries) -- the final attempt steals the lock (dead-server recovery)
+		local locked, captured, capturedFresh = false, nil, false
+		local ok, err = pcall(store.UpdateAsync, store, key, function(old)
+			if not final and type(old) == "table" and isLiveForeignLock(old.SessionLock) then
+				locked, captured = true, nil
+				return nil -- cancel the write and retry later
+			end
+			locked = false
+			capturedFresh = not hasStoredData(old)
+			local d = (type(old) == "table") and old or {}
+			d.SessionLock = { JobId = game.JobId, Time = os.time() }
+			d.SessionToken = sessionToken
+			captured = d
+			return d
+		end)
+		if ok and captured and not locked then
+			loaded, fresh = captured, capturedFresh
+			break
+		end
+		if not ok then
+			Util.Warn(TAG, ("load attempt %d/%d failed for %s: %s"):format(attempt, retries, player.Name, tostring(err)))
+		elseif locked and not warnedLock then
+			warnedLock = true
+			Util.Warn(TAG, ("data of %s is locked by another server; retrying"):format(player.Name))
+		end
+		if not final then
+			task.wait(Config.Data.LoadRetryDelay)
+		end
+	end
+
+	if not loaded then
+		releaseSlot(userId, token)
+		return nil
+	end
+
+	local d = Util.DeepCopy(loaded)
+	d.SessionLock = nil
+	d.SessionToken = nil -- kept in sessionTokens, never in the session table
+
+	-- A4 / A5-C5: onboarding step BEFORE the generic default fill
+	if fresh then
+		d.TutorialStep = TUTORIAL_NEW
+	elseif type(d.TutorialStep) ~= "number" then
+		d.TutorialStep = TUTORIAL_DONE
+	end
+
+	if not fresh then
+		migrate(d, player) -- a brand-new record gets everything from the defaults below
+	end
+	fillDefaults(d, player.Name)
+	d.Version = Config.Data.Version
+	if (tonumber(d.FirstJoinTime) or 0) == 0 then
+		d.FirstJoinTime = os.time()
+	end
+
+	if player.Parent == nil then
+		-- left during the load: write it back unlocked; nothing is cached
+		writeRecord(userId, d, true, player.Name, sessionToken)
+		releaseSlot(userId, token)
+		return nil
+	end
+
+	sessionTokens[player] = sessionToken
+	cache[player] = d
+	releaseSlot(userId, token)
+	return d
+end
+
+-- the live session table (mutable)
+function DataService.Get(player)
+	return cache[player]
+end
+
+-- yields; safe to call concurrently (writes of one user are serialized)
+function DataService.Save(player, release)
+	release = (release == true)
+	if not cache[player] then return false end
+	if memoryMode then return true end
+	if not store or foreignLock[player] then return false end
+
+	local userId = player.UserId
+	local token = acquireSlot(userId)
+	if not token then
+		Util.Warn(TAG, "save of " .. player.Name .. " skipped: the previous save is still running")
+		return false
+	end
+	local data = cache[player]
+	-- re-check after waiting: the session may have been released, or a release may be in progress
+	if not data or foreignLock[player] or (releasing[player] and not release) then
+		releaseSlot(userId, token)
+		return false
+	end
+	local ok, foreign = writeRecord(userId, data, release, player.Name, sessionTokens[player])
+	if foreign then
+		foreignLock[player] = true
+	end
+	releaseSlot(userId, token)
+	return ok
+end
+
+-- yields; sets LastLogoutTime, final unlocked save, drops the cache. Idempotent.
+function DataService.Release(player)
+	if releasing[player] then
+		local t0 = os.clock()
+		while releasing[player] and os.clock() - t0 < RELEASE_WAIT do
+			task.wait(0.1)
+		end
+		return
+	end
+	local data = cache[player]
+	if not data then return end
+
+	releasing[player] = true
+	data.LastLogoutTime = os.time()
+	local ok, result = pcall(DataService.Save, player, true)
+	if not ok then
+		Util.Warn(TAG, "final save error for " .. player.Name .. ": " .. tostring(result))
+	elseif not result and not memoryMode then
+		Util.Warn(TAG, "final save failed for " .. player.Name)
+	end
+	cache[player] = nil
+	sessionTokens[player] = nil
+	foreignLock[player] = nil
+	releasing[player] = nil
+end
+
+function DataService.IsMemoryMode()
+	return memoryMode
+end
+
+return DataService
