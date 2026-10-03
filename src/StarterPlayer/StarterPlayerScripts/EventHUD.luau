@@ -2,10 +2,13 @@
 -- Golden goose countdown chip / tug-of-war bar, kaiju chip + siren banner, screen-edge arrows (grudge sacks, kaiju,
 -- revenge), the personal status line (sack / kaiju / revenge) and the Regular's Luck corner.
 -- Reads only player attributes and GameState attributes; sends nothing to the server.
+-- Look (A14-3, mockup art/out/UI_HUD_Final.png): parchment pills / panels and the navy BarTrack from UIKit's GPT
+-- art parts; every part falls back to the code-drawn frame when its id is missing (IMG-R4).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local GuiService = game:GetService("GuiService")
+local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -18,15 +21,17 @@ local EventHUD = {}
 
 local C = nil -- client registry (set in Init)
 
+local IS_TOUCH = UserInputService.TouchEnabled -- same test as UIKit's scale / HUD's touch layout
+
 ----------------------------------------------------------------- layout (reference 1280x720 at UIScale 1)
-local STRIP_Y = 64 -- event strip slot (just under HUD's 50 px war meter that starts at y 8)
+local STRIP_Y = 64 -- event strip slot (just under HUD's 50 px war meter that starts at y 8; follows its real bottom)
 local STRIP_W = 360 -- same width as the war meter
 local BAR_H = 24
 local SUB_H = 13
-local GOOSE_CHIP_W = 190
-local KAIJU_CHIP_W = 140
+local GOOSE_CHIP_W = 196
+local KAIJU_CHIP_W = IS_TOUCH and 200 or 150 -- touch: the 15 px minimum text needs the wider pill
 local LUCK_Y = 52
-local LUCK_W, LUCK_H = 210, 42
+local LUCK_W, LUCK_H = 210, 58
 local LUCK_RIGHT = 12
 local UI_CFG = Config.UI or {}
 local TOP_PAD = UI_CFG.TopInsetPad or 8 -- addendum H4: top blocks start at inset + 8...
@@ -46,18 +51,49 @@ local MARKER_GLYPH = "▼"
 local TICK = 0.2
 local LAYOUT_EVERY = 2
 
+-- art layout (logical px at UIScale 1)
+local L = {
+	PillH = 28, -- goose countdown / kaiju pills
+	IconW = 30, IconH = 34, -- goose icon sticking out of the pill's left end (mockup)
+	StripGap = 6, -- gap under HUD's war meter
+	SubHTouch = 15, -- tug hint line on touch (15 logical = 11 real px at UIScale 0.75)
+	TugSide = 74, -- rescue / poach label width inside the tug bar
+	Clover = 26,
+	StarMax = 15, StarCap = 10,
+	-- luck panel: fixed thin rim (PanelParchment rim = 19 / 24 image px at top / bottom -> 5.7 / 7.2 px) and the two
+	-- line rows inside it
+	LuckSlice = 0.3, LuckLine1Y = 9, LuckLine2Y = 29,
+	KaijuNameMax = IS_TOUCH and 6 or 8, -- kaiju chip: longer names are cut ("Player..")
+	TrimH = 3, -- siren gold trim
+	ThumbW = 0.4, ThumbH = 0.45, -- U3: touch thumbstick zone = left 40% x bottom 45%
+	ChipsY = 106, ChipsH = 32, -- HUD's status chip row (fallback while its frame is not found)
+}
+
 ----------------------------------------------------------------- colors / text
 local WHITE = Color3.new(1, 1, 1)
 local DEFAULT_BG = Color3.fromRGB(25, 25, 35)
 local DEFAULT_BG_T = 0.25
 local GOLD = Color3.fromRGB(255, 210, 60)
-local HORNS_RED = Color3.fromRGB(220, 50, 60)
 local KAIJU_RED = Color3.fromRGB(200, 30, 35)
 local SIREN_RED = Color3.fromRGB(190, 20, 25)
 local SACK_PURPLE = Color3.fromRGB(185, 105, 255) -- brighter than Config.Visuals.GrudgeSackColor for readability
 local REVENGE_ORANGE = Color3.fromRGB(255, 150, 40)
 local KAIJU_ARROW = Color3.fromRGB(255, 45, 45)
-local SUBTEXT = Color3.fromRGB(200, 200, 210)
+
+-- storybook palette: defaults, overwritten from UIKit.ArtColors (Config.UIArt.Colors) in readTheme
+local AC = {
+	Ink = Color3.fromRGB(66, 40, 18),
+	InkSoft = Color3.fromRGB(122, 84, 46),
+	LightSub = Color3.fromRGB(226, 222, 206),
+	Gold = Color3.fromRGB(240, 190, 60),
+	BadInk = Color3.fromRGB(190, 40, 40),
+	WarHalo = Color3.fromRGB(252, 198, 52),
+	WarHorns = Color3.fromRGB(243, 38, 44),
+	-- not in ArtColors: ink versions of the status colours for text on parchment
+	SackInk = (Config.Visuals and Config.Visuals.GrudgeSackColor) or Color3.fromRGB(110, 40, 150),
+	RevengeInk = Color3.fromRGB(196, 92, 10),
+	KaijuTint = Color3.fromRGB(255, 196, 186), -- ImageColor3 on the kaiju pill
+}
 
 -- private Korean strings (TECH_SPEC §4.23 EventHUD)
 local TXT = {
@@ -76,6 +112,8 @@ local TXT = {
 	Revenge = "복수 대상: %s · %s",
 	Luck = "단골 %d분 · 희귀 %s%%",
 	Cheer = "응원별 %s (%d/%d)",
+	CheerLabel = "응원별",
+	CheerCount = "%d/%d",
 	ArrowSack = "원한 자루 %s",
 	ArrowKaiju = "괴수",
 	ArrowRevenge = "복수",
@@ -96,6 +134,10 @@ local bgColor = DEFAULT_BG
 local bgTransparency = DEFAULT_BG_T
 local guiScale = nil -- UIScale under the gui (for clamping labels in absolute pixels)
 local ownGui = nil
+local textConstraints = {} -- { UITextSizeConstraint, baseMax } of every label (U5 touch minimum)
+-- HUD frames the event UI lines up with: the strip sits under "WarMeter", the touch personal line under "StatusChips"
+local hudRef = { WarMeter = { Conns = {} }, StatusChips = { Conns = {} } }
+local layout -- forward declaration (assigned below)
 
 ----------------------------------------------------------------- helpers
 local lastWarnAt = -math.huge
@@ -232,6 +274,7 @@ local function makeLabel(props, maxText, parent)
 	c.MinTextSize = MIN_TEXT_SIZE
 	c.MaxTextSize = math.max(MIN_TEXT_SIZE, maxText or 20)
 	c.Parent = l
+	table.insert(textConstraints, { c, c.MaxTextSize })
 	if parent then l.Parent = parent end
 	return l
 end
@@ -249,14 +292,117 @@ local function makePanel(props, parent)
 	return f
 end
 
+-- GPT art parts through UIKit (A14-3). Art.On = UIKit has the art API; each call is pcall'd and falls back to the
+-- old dark panel / white label so the event UI never breaks.
+local Art = { On = false }
+local ART_ONLY_TEXT = { -- InkText / LightText keys that a plain TextLabel does not have
+	MaxTextSize = true, Number = true, Title = true, Outline = true, OutlineTransparency = true,
+	OutlineThickness = true, Color = true, TextColor = true,
+}
+
+-- 9-slice art frame (UIKit.ArtFrame: code-drawn parchment / navy frame when the id is missing)
+function Art.frame(name, props, fallbackProps, parent)
+	local kit = C and C.UIKit
+	if Art.On then
+		local ok, frame = pcall(kit.ArtFrame, name, props, fallbackProps)
+		if ok and typeof(frame) == "Instance" then
+			if parent then frame.Parent = parent end
+			return frame
+		end
+		warnThrottled("ArtFrame " .. tostring(name) .. " failed: " .. tostring(frame))
+	end
+	local p = {}
+	for k, v in props do
+		if k ~= "SliceScale" then p[k] = v end -- image-only key; a plain Frame has no such property
+	end
+	return makePanel(p, parent)
+end
+
+-- icon / emblem ImageLabel, or nil when the part is missing (the caller lays out without it)
+function Art.image(name, props, parent)
+	local kit = C and C.UIKit
+	if not Art.On then return nil end
+	local ok, img = pcall(kit.ArtImage, name, props)
+	if not ok or typeof(img) ~= "Instance" then return nil end
+	if parent then img.Parent = parent end
+	return img
+end
+
+-- uploaded id of a part (nil when missing)
+function Art.id(name)
+	local kit = C and C.UIKit
+	if not Art.On or type(kit.ArtId) ~= "function" then return nil end
+	local ok, id = pcall(kit.ArtId, name)
+	if ok and type(id) == "string" and id ~= "" then return id end
+	return nil
+end
+
+-- TextScaled label up to maxText: style "ink" (brown on parchment) or "light" (white, dark outline)
+function Art.text(style, props, maxText, parent)
+	local kit = C and C.UIKit
+	local label = nil
+	if Art.On then
+		props.TextScaled = true
+		props.MaxTextSize = maxText
+		local fn = (style == "ink") and kit.InkText or kit.LightText
+		local ok, l = pcall(fn, props)
+		if ok and typeof(l) == "Instance" then
+			label = l
+			local c = l:FindFirstChildOfClass("UITextSizeConstraint")
+			if c then table.insert(textConstraints, { c, math.max(MIN_TEXT_SIZE, maxText or c.MaxTextSize) }) end
+		end
+	end
+	if not label then
+		local p = {}
+		for k, v in props do
+			if not ART_ONLY_TEXT[k] and k ~= "TextScaled" then p[k] = v end
+		end
+		-- ink colours are unreadable on the old dark panel: keep white there
+		local color = props.Color or props.TextColor
+		if style ~= "ink" and typeof(color) == "Color3" then p.TextColor3 = color end
+		label = makeLabel(p, maxText)
+	end
+	if parent then label.Parent = parent end
+	return label
+end
+
+-- round capsule + glossy gradient on a bar fill
+local function candyFill(fill)
+	make("UICorner", { CornerRadius = UDim.new(0.5, 0) }, fill)
+	make("UIGradient", {
+		Rotation = 90,
+		Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(200, 200, 200)),
+	}, fill)
+end
+
+-- U3: on touch, slide an edge arrow / label (screen px, centre) out of the thumbstick zone
+local function outOfThumbZone(x, y, vp, padX, padY)
+	if not IS_TOUCH then return x, y end
+	local zx = vp.X * L.ThumbW + padX
+	local zy = vp.Y * (1 - L.ThumbH) - padY
+	if x >= zx or y <= zy then return x, y end
+	if y - zy < zx - x then return x, zy end
+	return zx, y
+end
+
 ----------------------------------------------------------------- build
 local function readTheme()
 	local kit = C and C.UIKit
-	local theme = kit and kit.Theme
-	if type(theme) ~= "table" then return end
-	if typeof(theme.Font) == "EnumItem" then fontFace = theme.Font end
-	if typeof(theme.Bg) == "Color3" then bgColor = theme.Bg end
-	if type(theme.BgTransparency) == "number" then bgTransparency = theme.BgTransparency end
+	if type(kit) ~= "table" then return end
+	local theme = kit.Theme
+	if type(theme) == "table" then
+		if typeof(theme.Font) == "EnumItem" then fontFace = theme.Font end
+		if typeof(theme.Bg) == "Color3" then bgColor = theme.Bg end
+		if type(theme.BgTransparency) == "number" then bgTransparency = theme.BgTransparency end
+	end
+	Art.On = type(kit.ArtFrame) == "function" and type(kit.ArtImage) == "function"
+		and type(kit.InkText) == "function" and type(kit.LightText) == "function"
+	local colors = kit.ArtColors
+	if type(colors) == "table" then
+		for key in AC do
+			if typeof(colors[key]) == "Color3" then AC[key] = colors[key] end
+		end
+	end
 end
 
 local function build()
@@ -297,118 +443,159 @@ local function build()
 		arrows[i] = { Glyph = glyph, Label = label }
 	end
 
-	-- event strip (top-center)
+	-- event strip (top-center, right under HUD's war meter: war bar > war timer > goose pill > HUD's status chips)
+	local subH = IS_TOUCH and L.SubHTouch or SUB_H
 	ui.Strip = make("Frame", {
 		Name = "EventStrip",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, STRIP_Y),
-		Size = UDim2.fromOffset(STRIP_W, BAR_H + SUB_H),
+		Size = UDim2.fromOffset(STRIP_W, math.max(L.PillH, BAR_H + subH)),
 		ZIndex = 3,
 	}, root)
 
-	ui.GooseChip = makePanel({
+	-- goose countdown: parchment pill + goose icon + ink text ("황금 거위까지 3:24")
+	ui.GooseChip = Art.frame("Pill", {
 		Name = "GooseChip",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.fromScale(0.5, 0),
-		Size = UDim2.fromOffset(GOOSE_CHIP_W, BAR_H),
+		Size = UDim2.fromOffset(GOOSE_CHIP_W, L.PillH),
 		Visible = false,
 		ZIndex = 3,
-	}, ui.Strip)
-	make("UIStroke", { Color = GOLD, Thickness = 1.5, Transparency = 0.3 }, ui.GooseChip)
-	ui.GooseChipText = makeLabel({
+	}, { CornerRadius = UDim.new(0.5, 0) }, ui.Strip)
+	local gooseIcon = Art.image("IconGoose", {
+		Name = "GooseIcon",
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, -6, 0.5, -1),
+		Size = UDim2.fromOffset(L.IconW, L.IconH),
+		ZIndex = 5,
+	}, ui.GooseChip)
+	local chipTextX = gooseIcon and 28 or 12
+	ui.GooseChipText = Art.text("ink", {
 		Name = "Text",
-		Position = UDim2.fromOffset(8, 3),
-		Size = UDim2.new(1, -16, 1, -6),
-		TextColor3 = GOLD,
+		Position = UDim2.fromOffset(chipTextX, 4),
+		Size = UDim2.new(1, -chipTextX - 12, 1, -8),
 		ZIndex = 4,
-	}, 15, ui.GooseChip)
+	}, 16, ui.GooseChip)
+	if not Art.On then ui.GooseChipText.TextColor3 = GOLD end
 
-	ui.Tug = makePanel({
+	-- goose tug-of-war: navy BarTrack capsule, gold rescue fill over the red poach fill
+	ui.Tug = Art.frame("BarTrack", {
 		Name = "GooseTug",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.fromScale(0.5, 0),
 		Size = UDim2.fromOffset(STRIP_W, BAR_H),
-		ClipsDescendants = true,
 		Visible = false,
 		ZIndex = 3,
-	}, ui.Strip)
-	make("UIStroke", { Color = WHITE, Thickness = 1.5, Transparency = 0.4 }, ui.Tug)
-	ui.TugLeft = make("Frame", {
-		Name = "RescueFill",
-		BackgroundColor3 = GOLD,
-		BackgroundTransparency = 0.1,
-		BorderSizePixel = 0,
-		Size = UDim2.fromScale(0.5, 1),
+	}, { CornerRadius = UDim.new(0.5, 0) }, ui.Strip)
+	-- navy interior from the BarTrack Inner rect (vertical insets scale with the height, side insets in height units)
+	local insetTop, insetBottom, insetSide = 0.18, 0.19, 0.21
+	local parts = type(Config.UIArt) == "table" and Config.UIArt.Parts or nil
+	local track = type(parts) == "table" and parts.BarTrack or nil
+	if type(track) == "table" and typeof(track.Inner) == "Rect" and typeof(track.Size) == "Vector2" and track.Size.Y > 0 then
+		insetTop = track.Inner.Min.Y / track.Size.Y
+		insetBottom = (track.Size.Y - track.Inner.Max.Y) / track.Size.Y
+		insetSide = track.Inner.Min.X / track.Size.Y
+	end
+	local sidePx = math.floor(insetSide * BAR_H + 0.5)
+	ui.TugInner = make("Frame", {
+		Name = "Inner",
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0, sidePx, insetTop, 0),
+		Size = UDim2.new(1, -2 * sidePx, 1 - insetTop - insetBottom, 0),
 		ZIndex = 3,
 	}, ui.Tug)
-	make("UICorner", { CornerRadius = UDim.new(0, 8) }, ui.TugLeft)
 	ui.TugRight = make("Frame", {
 		Name = "PoachFill",
-		BackgroundColor3 = HORNS_RED,
-		BackgroundTransparency = 0.1,
+		BackgroundColor3 = AC.WarHorns,
 		BorderSizePixel = 0,
-		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.fromScale(1, 0),
-		Size = UDim2.fromScale(0.5, 1),
+		Size = UDim2.fromScale(1, 1),
 		ZIndex = 3,
-	}, ui.Tug)
-	make("UICorner", { CornerRadius = UDim.new(0, 8) }, ui.TugRight)
-	ui.TugLeftText = makeLabel({
-		Name = "RescueText",
-		Position = UDim2.fromOffset(8, 3),
-		Size = UDim2.new(0, 80, 1, -6),
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextStrokeTransparency = 0.2,
+	}, ui.TugInner)
+	candyFill(ui.TugRight)
+	ui.TugLeft = make("Frame", {
+		Name = "RescueFill",
+		BackgroundColor3 = AC.WarHalo,
+		BorderSizePixel = 0,
+		Size = UDim2.fromScale(0.5, 1),
+		ZIndex = 4,
+	}, ui.TugInner)
+	candyFill(ui.TugLeft)
+	local shine = make("Frame", {
+		Name = "Shine",
+		BackgroundColor3 = WHITE,
+		BackgroundTransparency = 0.65,
+		BorderSizePixel = 0,
+		AnchorPoint = Vector2.new(0.5, 0),
+		Position = UDim2.fromScale(0.5, 0.12),
+		Size = UDim2.new(1, -6, 0.3, 0),
 		ZIndex = 5,
+	}, ui.TugInner)
+	make("UICorner", { CornerRadius = UDim.new(0.5, 0) }, shine)
+	local tugIcon = Art.image("IconGoose", {
+		Name = "GooseIcon",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(0, 2, 0.5, -1),
+		Size = UDim2.fromOffset(L.IconW - 4, L.IconH - 4),
+		ZIndex = 7,
+	}, ui.Tug)
+	local tugLeftX = tugIcon and 18 or 10
+	ui.TugLeftText = Art.text("light", {
+		Name = "RescueText",
+		Position = UDim2.fromOffset(tugLeftX, 2),
+		Size = UDim2.new(0, L.TugSide, 1, -4),
+		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 6,
 	}, 14, ui.Tug)
-	ui.TugRightText = makeLabel({
+	ui.TugRightText = Art.text("light", {
 		Name = "PoachText",
 		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.new(1, -8, 0, 3),
-		Size = UDim2.new(0, 80, 1, -6),
+		Position = UDim2.new(1, -10, 0, 2),
+		Size = UDim2.new(0, L.TugSide, 1, -4),
 		TextXAlignment = Enum.TextXAlignment.Right,
-		TextStrokeTransparency = 0.2,
-		ZIndex = 5,
+		ZIndex = 6,
 	}, 14, ui.Tug)
-	ui.TugCenterText = makeLabel({
+	local centerW = STRIP_W - tugLeftX - 10 - 2 * L.TugSide - 4
+	ui.TugCenterText = Art.text("light", {
 		Name = "TitleText",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, 3),
-		Size = UDim2.new(0, 180, 1, -6),
-		TextStrokeTransparency = 0.1,
-		ZIndex = 5,
+		Position = UDim2.fromOffset(tugLeftX + L.TugSide + 2 + centerW / 2, 2),
+		Size = UDim2.new(0, centerW, 1, -4),
+		ZIndex = 6,
 	}, 14, ui.Tug)
-	ui.TugSub = makeLabel({
+	ui.TugSub = Art.text("light", {
 		Name = "GooseSub",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, BAR_H),
-		Size = UDim2.fromOffset(STRIP_W, SUB_H),
-		TextColor3 = SUBTEXT,
-		TextStrokeTransparency = 0.3,
+		Size = UDim2.fromOffset(STRIP_W, subH),
+		Color = AC.LightSub,
 		Visible = false,
 		ZIndex = 3,
 	}, 13, ui.Strip)
 
-	ui.KaijuChip = makePanel({
+	-- kaiju chip (right of the strip): red-tinted parchment pill with red ink
+	ui.KaijuChip = Art.frame("Pill", {
 		Name = "KaijuChip",
-		BackgroundColor3 = KAIJU_RED,
-		BackgroundTransparency = 0.1,
 		Position = UDim2.new(1, 8, 0, 0),
-		Size = UDim2.fromOffset(KAIJU_CHIP_W, BAR_H),
+		Size = UDim2.fromOffset(KAIJU_CHIP_W, L.PillH),
 		Visible = false,
 		ZIndex = 3,
-	}, ui.Strip)
-	make("UIStroke", { Color = Color3.fromRGB(255, 120, 120), Thickness = 1.5, Transparency = 0.2 }, ui.KaijuChip)
-	ui.KaijuChipText = makeLabel({
+	}, { CornerRadius = UDim.new(0.5, 0), StrokeColor = KAIJU_RED }, ui.Strip)
+	if ui.KaijuChip:IsA("ImageLabel") then
+		ui.KaijuChip.ImageColor3 = AC.KaijuTint
+	elseif not Art.On then
+		ui.KaijuChip.BackgroundColor3 = KAIJU_RED -- old look without the art API
+		ui.KaijuChip.BackgroundTransparency = 0.1
+	end
+	ui.KaijuChipText = Art.text("ink", {
 		Name = "Text",
-		Position = UDim2.fromOffset(6, 3),
-		Size = UDim2.new(1, -12, 1, -6),
-		TextStrokeTransparency = 0.2,
+		Position = UDim2.fromOffset(12, 4),
+		Size = UDim2.new(1, -24, 1, -8),
+		Color = AC.BadInk,
 		ZIndex = 4,
-	}, 14, ui.KaijuChip)
+	}, 15, ui.KaijuChip)
 
-	-- kaiju siren banner (full width at 18% screen height)
+	-- kaiju siren banner (full width at 18% screen height): red band with gold trim
 	ui.Siren = make("Frame", {
 		Name = "KaijuSiren",
 		BackgroundColor3 = SIREN_RED,
@@ -420,63 +607,181 @@ local function build()
 		Visible = false,
 		ZIndex = 6,
 	}, root)
-	ui.SirenText = makeLabel({
+	for _, edge in { 0, 1 } do
+		make("Frame", {
+			Name = edge == 0 and "TrimTop" or "TrimBottom",
+			BackgroundColor3 = AC.Gold,
+			BorderSizePixel = 0,
+			AnchorPoint = Vector2.new(0, edge),
+			Position = UDim2.fromScale(0, edge),
+			Size = UDim2.new(1, 0, 0, L.TrimH),
+			ZIndex = 7,
+		}, ui.Siren)
+	end
+	ui.SirenText = Art.text("light", {
 		Name = "Text",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.new(1, -40, 1, -12),
-		TextStrokeTransparency = 0.2,
+		Size = UDim2.new(1, -40, 1, -14),
+		Title = true,
 		ZIndex = 7,
 	}, 28, ui.Siren)
 
-	-- personal line (bottom-center at 72% height)
-	ui.Personal = makePanel({
+	-- personal line: parchment pill with coloured ink (bottom-center at 72%; touch: top-centre under HUD's status
+	-- chips, clear of the thumbstick zone (U3) and the right-hand button column; layout() sets the y)
+	ui.Personal = Art.frame("Pill", {
 		Name = "PersonalLine",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.72),
+		AnchorPoint = IS_TOUCH and Vector2.new(0.5, 0) or Vector2.new(0.5, 0.5),
+		Position = IS_TOUCH and UDim2.new(0.5, 0, 0, L.ChipsY + TOP_FALLBACK + L.ChipsH + L.StripGap)
+			or UDim2.fromScale(0.5, 0.72),
 		Size = UDim2.fromOffset(PERSONAL_W, PERSONAL_H),
-		BackgroundTransparency = math.min(0.9, bgTransparency + 0.1),
 		Visible = false,
 		ZIndex = 3,
-	}, root)
-	ui.PersonalText = makeLabel({
+	}, { CornerRadius = UDim.new(0.5, 0) }, root)
+	ui.PersonalText = Art.text("ink", {
 		Name = "Text",
-		Position = UDim2.fromOffset(8, 4),
-		Size = UDim2.new(1, -16, 1, -8),
-		TextStrokeTransparency = 0.3,
+		Position = UDim2.fromOffset(16, 4),
+		Size = UDim2.new(1, -32, 1, -8),
 		ZIndex = 4,
 	}, 17, ui.Personal)
+	-- ink on parchment; the old bright colours only on the old dark panel
+	if Art.On then
+		ui.PersonalInk = { Sack = AC.SackInk, Kaiju = AC.BadInk, Revenge = AC.RevengeInk }
+	else
+		ui.PersonalInk = { Sack = SACK_PURPLE, Kaiju = KAIJU_ARROW, Revenge = REVENGE_ORANGE }
+	end
 
-	-- Regular's Luck corner (top-right)
-	ui.Luck = makePanel({
+	-- Regular's Luck corner (top-right): parchment panel, clover, ink lines, cheer stars. Hidden on touch (U5; the
+	-- menu can show EventHUD.LuckSummary instead). Fixed thin rim so both lines sit on the parchment (mockup).
+	ui.Luck = Art.frame("PanelParchment", {
 		Name = "LuckCorner",
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.new(1, -LUCK_RIGHT, 0, LUCK_Y),
 		Size = UDim2.fromOffset(LUCK_W, LUCK_H),
+		SliceScale = L.LuckSlice,
+		Visible = not IS_TOUCH,
 		ZIndex = 3,
-	}, root)
-	ui.LuckLine1 = makeLabel({
+	}, nil, root)
+	local clover = Art.image("IconClover", {
+		Name = "Clover",
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, 8, 0.5, 0),
+		Size = UDim2.fromOffset(L.Clover, L.Clover),
+		ZIndex = 4,
+	}, ui.Luck)
+	local luckX = clover and (12 + L.Clover) or 10
+	local lineY = L.LuckLine2Y
+	ui.LuckLine1 = Art.text("ink", {
 		Name = "Luck",
-		Position = UDim2.fromOffset(8, 3),
-		Size = UDim2.new(1, -16, 0, 18),
-		TextXAlignment = Enum.TextXAlignment.Right,
+		Position = UDim2.fromOffset(luckX, L.LuckLine1Y),
+		Size = UDim2.new(1, -luckX - 9, 0, 18),
+		TextXAlignment = Enum.TextXAlignment.Left,
 		ZIndex = 4,
 	}, 15, ui.Luck)
-	ui.LuckLine2 = makeLabel({
-		Name = "Cheer",
-		Position = UDim2.fromOffset(8, 22),
-		Size = UDim2.new(1, -16, 0, 17),
-		TextXAlignment = Enum.TextXAlignment.Right,
-		TextColor3 = GOLD,
-		ZIndex = 4,
-	}, 14, ui.Luck)
+	ui.StarFull, ui.StarEmpty = Art.id("IconStar"), Art.id("IconStarEmpty")
+	if ui.StarFull and ui.StarEmpty then
+		-- "응원별" + star icons + "2/5" (mockup)
+		local labelW, countW = 42, 30
+		Art.text("ink", {
+			Name = "CheerLabel",
+			Text = TXT.CheerLabel,
+			Position = UDim2.fromOffset(luckX, lineY),
+			Size = UDim2.fromOffset(labelW, 17),
+			TextXAlignment = Enum.TextXAlignment.Left,
+			ZIndex = 4,
+		}, 14, ui.Luck)
+		ui.StarsW = LUCK_W - luckX - labelW - countW - 15
+		ui.CheerStars = make("Frame", {
+			Name = "CheerStars",
+			BackgroundTransparency = 1,
+			Position = UDim2.fromOffset(luckX + labelW + 2, lineY),
+			Size = UDim2.fromOffset(ui.StarsW, 17),
+			ZIndex = 4,
+		}, ui.Luck)
+		make("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 1),
+		}, ui.CheerStars)
+		ui.StarPool = {}
+		ui.CheerCount = Art.text("ink", {
+			Name = "CheerCount",
+			AnchorPoint = Vector2.new(1, 0),
+			Position = UDim2.new(1, -9, 0, lineY),
+			Size = UDim2.fromOffset(countW, 17),
+			TextXAlignment = Enum.TextXAlignment.Right,
+			Color = AC.InkSoft,
+			Number = true,
+			ZIndex = 4,
+		}, 14, ui.Luck)
+	else
+		-- no star icons: the old text line ("응원별 ★★☆☆☆ (2/5)")
+		ui.LuckLine2 = Art.text("ink", {
+			Name = "Cheer",
+			Position = UDim2.fromOffset(luckX, lineY),
+			Size = UDim2.new(1, -luckX - 9, 0, 17),
+			TextXAlignment = Enum.TextXAlignment.Left,
+			ZIndex = 4,
+		}, 14, ui.Luck)
+		if not Art.On then ui.LuckLine2.TextColor3 = GOLD end
+	end
 
 	built = true
 end
 
+local function relayout()
+	lastLayoutKey = nil
+	local ok, err = pcall(layout)
+	if not ok then warnThrottled("layout failed: " .. tostring(err)) end
+end
+
+-- logical y of the bottom of a HUD frame ("WarMeter" = war bar + timer, "StatusChips"), or nil while HUD has not
+-- built it. Read from the live frame so the event UI stays under it whatever size HUD gives it (mockup order).
+local function hudBottom(name, s)
+	local ref = hudRef[name]
+	local frame = ref.Frame
+	if not (frame and frame.Parent) then
+		frame = nil
+		local root = ui.Strip and ui.Strip.Parent
+		local found = root and root:FindFirstChild(name, true)
+		if found and found:IsA("GuiObject") then frame = found end
+		for _, c in ref.Conns do
+			c:Disconnect()
+		end
+		table.clear(ref.Conns)
+		ref.Frame = frame
+		if frame then
+			table.insert(ref.Conns, frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(relayout))
+			table.insert(ref.Conns, frame:GetPropertyChangedSignal("AbsolutePosition"):Connect(relayout))
+		end
+	end
+	if not frame or frame.AbsoluteSize.Y < 1 then return nil end
+	local gui = frame:FindFirstAncestorWhichIsA("LayerCollector")
+	local top = (gui and gui:IsA("GuiBase2d")) and gui.AbsolutePosition.Y or 0
+	return (frame.AbsolutePosition.Y + frame.AbsoluteSize.Y - top) / s
+end
+
+-- U5: on touch every label renders at >= MinTextSize real px (logical min = MinTextSize / UIScale)
+local function applyMinText(minSize)
+	for _, entry in textConstraints do
+		local c = entry[1]
+		if c.Parent then
+			local maxSize = math.max(entry[2], minSize)
+			if minSize > c.MaxTextSize then
+				c.MaxTextSize = maxSize
+				c.MinTextSize = minSize
+			else
+				c.MinTextSize = minSize
+				c.MaxTextSize = maxSize
+			end
+		end
+	end
+end
+
 -- H4: shift the spec's top slots below the Roblox top bar. Same convention as UIKit's toast stack:
 -- logical offset = slot Y + realInset / UIScale (so the real-pixel top is always >= inset + TopInsetPad).
-local function layout()
+layout = function()
 	if not built then return end
 	if not guiScale or guiScale.Parent == nil then
 		local root = ui.Strip and ui.Strip.Parent
@@ -484,13 +789,32 @@ local function layout()
 	end
 	local inset = insetY()
 	local s = currentScale()
-	local stripY = math.floor(STRIP_Y + inset / s + 0.5)
+	local stripY = STRIP_Y + inset / s
+	local wb = hudBottom("WarMeter", s)
+	if wb then stripY = math.max(stripY, wb + L.StripGap) end
+	stripY = math.floor(stripY + 0.5)
+	-- strip bottom with its tallest content (tug bar + hint line): HUD puts its status chips under it (mockup order
+	-- war bar > timer > goose pill > chips), via the EventStrip "BottomY" attribute / EventHUD.StripBottom()
+	local stripBottom = stripY + ui.Strip.Size.Y.Offset
 	local luckY = math.floor(math.max(LUCK_Y, (inset + TOP_PAD) / s) + 0.5)
-	local key = stripY .. ":" .. luckY
+	-- touch: personal line top-centre under HUD's status chips (U3: clear of the thumbstick zone and the button column)
+	local personalY = 0
+	if IS_TOUCH then
+		local cb = hudBottom("StatusChips", s)
+		if not cb then cb = math.max(L.ChipsY + inset / s, stripBottom + L.StripGap) + L.ChipsH end
+		personalY = math.floor(math.max(cb, stripBottom) + L.StripGap + 0.5)
+	end
+	local minText = MIN_TEXT_SIZE
+	if IS_TOUCH then minText = math.max(MIN_TEXT_SIZE, math.ceil(MIN_TEXT_SIZE / s - 0.01)) end
+	local key = stripY .. ":" .. luckY .. ":" .. personalY .. ":" .. minText
 	if key == lastLayoutKey then return end
 	lastLayoutKey = key
 	ui.Strip.Position = UDim2.new(0.5, 0, 0, stripY)
+	ui.Strip:SetAttribute("BottomY", stripBottom)
 	ui.Luck.Position = UDim2.new(1, -LUCK_RIGHT, 0, luckY)
+	ui.Luck:SetAttribute("BottomY", luckY + LUCK_H) -- HUD's top-right blocks go below the luck panel
+	if IS_TOUCH then ui.Personal.Position = UDim2.new(0.5, 0, 0, personalY) end
+	applyMinText(minText)
 end
 
 ----------------------------------------------------------------- per-tick updates
@@ -504,8 +828,9 @@ local function updateGoose(now)
 		local total = rescue + poach
 		local frac = 0.5
 		if total > 0 then frac = math.clamp(rescue / total, 0, 1) end
+		-- rescue (gold) grows from the left over the full-width poach (red) capsule
 		ui.TugLeft.Size = UDim2.fromScale(frac, 1)
-		ui.TugRight.Size = UDim2.fromScale(1 - frac, 1)
+		setVisible(ui.TugLeft, frac > 0.001)
 		setText(ui.TugLeftText, string.format(TXT.Rescue, math.floor(rescue)))
 		setText(ui.TugRightText, string.format(TXT.Poach, math.floor(poach)))
 		setText(ui.TugCenterText, string.format(TXT.GooseTitle, Util.FormatTime(num(gsAttr("GooseEndsAt", 0)) - now)))
@@ -535,9 +860,15 @@ local function updateGoose(now)
 	end
 end
 
-local function kaijuName()
+-- maxChars: cut longer names for the narrow chip ("Player..")
+local function kaijuName(maxChars)
 	local name = gsAttr("KaijuName", "")
 	if type(name) ~= "string" or name == "" then return TXT.UnknownName end
+	local n = maxChars and utf8.len(name)
+	if n and n > maxChars then
+		local cut = utf8.offset(name, maxChars + 1)
+		if cut then name = string.sub(name, 1, cut - 1) .. ".." end
+	end
 	return name
 end
 
@@ -546,7 +877,7 @@ local function updateKaiju(now)
 	local endsAt = num(gsAttr("KaijuEndsAt", 0))
 	if phase == "Active" then
 		setVisible(ui.KaijuChip, true)
-		setText(ui.KaijuChipText, string.format(TXT.KaijuChip, kaijuName(), Util.FormatTime(endsAt - now)))
+		setText(ui.KaijuChipText, string.format(TXT.KaijuChip, kaijuName(L.KaijuNameMax), Util.FormatTime(endsAt - now)))
 	else
 		setVisible(ui.KaijuChip, false)
 	end
@@ -572,21 +903,22 @@ end
 
 local function updatePersonal(now)
 	local text, color = nil, WHITE
+	local ink = ui.PersonalInk
 	local sack = num(myAttr("SackGold", 0))
 	if sack > 0 then
 		local secs = math.max(0, math.ceil(num(myAttr("SackSeconds", 0))))
 		text = string.format(TXT.Sack, Util.FormatNumber(sack), secs)
-		color = SACK_PURPLE
+		color = ink.Sack
 	elseif myAttr("KaijuState", "None") == "Active" then
 		local endsAt = 0
 		if num(gsAttr("KaijuUserId", 0)) == LocalPlayer.UserId then endsAt = num(gsAttr("KaijuEndsAt", 0)) end
 		text = string.format(TXT.KaijuSelf, Util.FormatTime(endsAt - now))
-		color = KAIJU_ARROW
+		color = ink.Kaiju
 	else
 		local target, untilT = revengeTarget(now)
 		if target then
 			text = string.format(TXT.Revenge, target.DisplayName, Util.FormatTime(untilT - now))
-			color = REVENGE_ORANGE
+			color = ink.Revenge
 		end
 	end
 	if text then
@@ -598,14 +930,54 @@ local function updatePersonal(now)
 	end
 end
 
-local function updateLuck()
+-- star icons for the cheer line (pooled; size shrinks when more stars are needed)
+local function setStars(filled, need)
+	local pool = ui.StarPool
+	local shown = math.min(need, L.StarCap)
+	local size = math.clamp(math.floor(ui.StarsW / math.max(shown, 1)) - 1, 8, L.StarMax)
+	local sz = UDim2.fromOffset(size, size)
+	for i = 1, math.max(#pool, shown) do
+		local star = pool[i]
+		if not star and i <= shown then
+			star = Art.image("IconStar", { Name = "Star" .. i, LayoutOrder = i, Size = sz, ZIndex = 4 }, ui.CheerStars)
+			if not star then break end
+			pool[i] = star
+		end
+		if star then
+			setVisible(star, i <= shown)
+			if i <= shown then
+				local id = (i <= filled) and ui.StarFull or ui.StarEmpty
+				if star.Image ~= id then star.Image = id end
+				if star.Size ~= sz then star.Size = sz end
+			end
+		end
+	end
+end
+
+-- luck numbers: line 1 text ("단골 12분 · 희귀 5.25%"), cheer stars, stars needed, filled stars
+local function luckData()
 	local minutes = math.max(0, math.floor(num(myAttr("RegularMinutes", 0))))
-	setText(ui.LuckLine1, string.format(TXT.Luck, minutes, Util.FormatPercent(Config.RareChance(minutes))))
+	local line1 = string.format(TXT.Luck, minutes, Util.FormatPercent(Config.RareChance(minutes)))
 	local need = math.floor(num(Config.Goose and Config.Goose.CheerStarsForRare))
 	if need <= 0 then need = 5 end
 	local stars = math.max(0, math.floor(num(myAttr("CheerStars", 0))))
-	local filled = math.min(stars, need)
-	setText(ui.LuckLine2, string.format(TXT.Cheer, string.rep("★", filled) .. string.rep("☆", need - filled), stars, need))
+	return line1, stars, need, math.min(stars, need)
+end
+
+-- "응원별 ★★☆☆☆ (2/5)"
+local function cheerText(stars, need, filled)
+	return string.format(TXT.Cheer, string.rep("★", filled) .. string.rep("☆", need - filled), stars, need)
+end
+
+local function updateLuck()
+	local line1, stars, need, filled = luckData()
+	setText(ui.LuckLine1, line1)
+	if ui.CheerStars then
+		setStars(filled, need)
+		setText(ui.CheerCount, string.format(TXT.CheerCount, stars, need))
+	else
+		setText(ui.LuckLine2, cheerText(stars, need, filled))
+	end
 end
 
 -- builds the arrow target list (kaiju > revenge > grudge sacks, nearest first), at most MAX_ARROWS
@@ -688,7 +1060,7 @@ local function update()
 	end
 	setVisible(ui.Arrows, true)
 	setVisible(ui.Strip, true)
-	setVisible(ui.Luck, true)
+	setVisible(ui.Luck, not IS_TOUCH) -- U5: phones get the slim HUD (the menu shows EventHUD.LuckSummary)
 	local now = Util.Now()
 	updateGoose(now)
 	updateKaiju(now)
@@ -743,8 +1115,12 @@ local function placeArrow(a, target, root, cam, vp)
 		local sx = math.abs(dir.X) > 1e-6 and halfW / math.abs(dir.X) or math.huge
 		local sy = math.abs(dir.Y) > 1e-6 and halfH / math.abs(dir.Y) or math.huge
 		local edge = center + dir * math.min(sx, sy)
+		local s = currentScale()
+		local gx, gy = outOfThumbZone(edge.X, edge.Y, vp, ARROW_GLYPH_SIZE * s / 2, ARROW_GLYPH_SIZE * s / 2)
+		edge = Vector2.new(gx, gy)
 		local inward = -dir.Unit * LABEL_INSET
 		local lx, ly = clampLabel(edge.X + inward.X, edge.Y + inward.Y, vp)
+		lx, ly = outOfThumbZone(lx, ly, vp, ARROW_LABEL_W * s / 2, ARROW_LABEL_H * s / 2)
 		if a.Glyph.Text ~= EDGE_GLYPH then a.Glyph.Text = EDGE_GLYPH end
 		a.Glyph.Rotation = math.deg(math.atan2(dir.Y, dir.X))
 		a.Glyph.Position = UDim2.fromScale(edge.X / vp.X, edge.Y / vp.Y)
@@ -782,6 +1158,23 @@ end
 ----------------------------------------------------------------- public API
 function EventHUD.Init(registry)
 	C = registry
+end
+
+-- logical y (MainGui UIScale units) of the event strip's bottom, or nil before the first layout. HUD's status chips
+-- go under it (also published as the EventStrip "BottomY" attribute).
+function EventHUD.StripBottom()
+	local strip = ui.Strip
+	local y = strip and strip:GetAttribute("BottomY")
+	if type(y) == "number" then return y end
+	return nil
+end
+
+-- U5: touch hides the luck corner, so the menu shows these two lines instead:
+-- "단골 12분 · 희귀 5.25%", "응원별 ★★☆☆☆ (2/5)" (nil, nil on error)
+function EventHUD.LuckSummary()
+	local ok, line1, stars, need, filled = pcall(luckData)
+	if not ok then return nil, nil end
+	return line1, cheerText(stars, need, filled)
 end
 
 function EventHUD.Start()

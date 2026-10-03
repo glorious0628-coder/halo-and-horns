@@ -1,6 +1,7 @@
--- HUD.luau : stats block, war meter, status chips, quest rows (claim / reroll / pinned tutorial), the 5 big buttons
--- with the charge ring, keyboard / mouse / touch / gamepad input, travel bar and the guide beam
--- (TECH_SPEC §4.23 HUD; addendum A3-H4/H5/M1, A4 step 1, A5-C6/N1, A6 Neutral, A7-3 next goal).
+-- HUD.luau : player card, war meter, status chips, quest tracker (claim / reroll / pinned tutorial), next-weapon card,
+-- 자동 / 지도 / 메뉴 squares and the attack / release buttons with the charge ring, keyboard / mouse / touch / gamepad
+-- input, travel bar and the guide beam (TECH_SPEC §4.23 HUD; addendum A3-H4/H5/M1, A4 step 1, A5-C6/N1, A6 Neutral,
+-- A7-3 next goal, A14 compact HUD drawn with the GPT art parts of Config.UIArt through UIKit.Art*).
 -- Client only: reads attributes / GameState / the Fx remote, writes only client->server intents.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -28,6 +29,7 @@ local Theme = nil
 local UI = Config.UI or {}
 local NEXT = Config.NextGoal or {}
 local TUT = Config.Tutorial or {}
+local ART = type(Config.UIArt) == "table" and Config.UIArt or {} -- GPT art palette / fonts (addendum A14-3)
 
 local TICK = 0.2
 local TOP_PAD = UI.TopInsetPad or 8 -- addendum H4
@@ -35,22 +37,60 @@ local TOP_FALLBACK = UI.TopInsetFallback or 64
 local JUMP_WAIT = UI.JumpButtonWait or 5 -- addendum H5
 local ATTACK_FALLBACK = UI.AttackFallbackOffset or Vector2.new(-200, -170)
 
--- desktop (no touch) gets smaller buttons (~60% of the old on-screen size with the desktop UIScale);
--- touch keeps thumb-sized targets (attack / release stay >= 44 real px at UIScale 0.75)
+-- desktop (no touch) gets the compact A14-2 sizes; touch keeps thumb-sized targets (attack / release stay >= 44 real px
+-- at UIScale 0.75) and the slim U5 layout. UI units (before MainGui's UIScale), grouped in one table because this chunk
+-- is close to Luau's 200-locals limit.
 local IS_TOUCH = UserInputService.TouchEnabled
-local ATTACK_SIZE = IS_TOUCH and 136 or 120
-local RELEASE_SIZE = IS_TOUCH and 102 or 90
-local SMALL_W, SMALL_H = (IS_TOUCH and 92 or 80), (IS_TOUCH and 52 or 40)
-local UPGRADE_W, UPGRADE_H = (IS_TOUCH and 206 or 180), (IS_TOUCH and 62 or 50)
-local BTN_GAP = IS_TOUCH and 12 or 10
-local ROW_GAP = IS_TOUCH and 12 or 8 -- between upgrade / auto / menu
-local SCREEN_EDGE = IS_TOUCH and 24 or 16
-local STATS_W = 228
-local STATS_H_FULL, STATS_H_SHORT = 92, 76
-local QUEST_W, QUEST_ROW_H, QUEST_GAP, QUEST_HEADER_H = 240, 44, 3, 24
-local QUEST_BTN_W = 42 -- claim / reroll button width inside a quest row
-local WAR_W = 360
-local CHIPS_Y = 106 -- status chips slot, under EventHUD's strip (y 64-101)
+local SHOW_KEYS = UserInputService.KeyboardEnabled and not IS_TOUCH -- U1: key badges for keyboards only
+local L = {
+	Attack = IS_TOUCH and 136 or 120,
+	Release = IS_TOUCH and 102 or 90,
+	Square = IS_TOUCH and 72 or 60, -- 자동 / 지도 / 메뉴 parchment squares
+	UpgradeH = IS_TOUCH and 78 or 72, -- next-weapon card (as wide as the square row)
+	BtnGap = IS_TOUCH and 12 or 10,
+	RowGap = IS_TOUCH and 10 or 8, -- between the squares and above the row
+	Edge = IS_TOUCH and 24 or 16,
+	StatsW = IS_TOUCH and 212 or 280, -- player card
+	StatsH = IS_TOUCH and 68 or 100,
+	StarsH = IS_TOUCH and 22 or 20, -- extra wanted-stars row (Horns)
+	QuestW = IS_TOUCH and 260 or 270,
+	QuestRowH = IS_TOUCH and 58 or 50,
+	QuestGap = 4,
+	QuestHeaderH = IS_TOUCH and 32 or 28,
+	OverlayW = 340, -- touch quest overlay (CR-M25)
+	WarW = 380,
+	WarH = 56, -- bar row 34 + timer pills 20; EventHUD's strip follows the meter's real bottom
+	StripBelow = 47, -- EventHUD's strip under the meter (gap 6 + bar 24 + sub line 13 + 4)
+	ChipsY = 106, -- status chips slot, under EventHUD's strip
+	ChipH = IS_TOUCH and 26 or 24,
+	TouchText = 15, -- U5: 15 units = 11 real px at the 0.75 touch UIScale
+	StickZoneX = 0.4, -- U3: on touch no HUD in the left 40% x bottom 45% (thumbstick)
+	LuckY = 52, -- EventHUD's luck panel slot (y, height): fallback when its live "BottomY" is missing
+	LuckH = 58,
+	-- quest row metrics (badge / 교체 width, button and bar heights, text size)
+	Row = IS_TOUCH and { Badge = 40, BadgeH = 20, Reroll = 56, BtnH = 22, Reward = 72, BarH = 18, Text = 15 }
+		or { Badge = 30, BadgeH = 15, Reroll = 40, BtnH = 18, Reward = 58, BarH = 15, Text = 13 },
+}
+
+-- code-drawn fallback colours (IMG-R4) and ImageColor3 multipliers for the art parts
+local COL = {
+	Dark = Color3.fromRGB(30, 25, 10),
+	Grey = Color3.fromRGB(150, 150, 160),
+	White = Color3.new(1, 1, 1),
+	Black = Color3.new(0, 0, 0),
+	AttackFill = Color3.fromRGB(215, 70, 60),
+	ReleaseFill = Color3.fromRGB(28, 30, 48),
+	WarFill = Color3.fromRGB(12, 12, 20),
+	RingIdle = Color3.fromRGB(130, 140, 175),
+	Charge = Color3.fromRGB(90, 200, 255),
+	HotTint = Color3.new(0.5, 1, 0.72), -- parchment / ribbon -> green: claimable, 받기, 자동 ON
+	RowHotTint = Color3.fromRGB(205, 255, 200),
+	LockedTint = Color3.fromRGB(190, 186, 176),
+	DimTint = Color3.fromRGB(170, 170, 170),
+}
+
+-- quest Id -> icon part (slime for monster kills, scroll otherwise)
+local QUEST_ICON = { tutorial = "IconSlime", Kill = "IconSlime", Golden = "IconSlime", Goose = "IconGoose" }
 
 local REWARD_SAMPLES = NEXT.RewardSamples or 10
 local MAX_KILLS_SHOWN = NEXT.MaxKillsShown or 99
@@ -61,23 +101,13 @@ local TUT_GUIDE_ZONE = TUT.GuideZone or "SlimeMeadow"
 local TUT_GUIDE_TEXT = TUT.GuideText or "여기로!"
 local TUT_QUEST_ID = TUT.QuestId or "tutorial"
 
-local DARK_TEXT = Color3.fromRGB(30, 25, 10)
-local GREY = Color3.fromRGB(150, 150, 160)
-local BTN_GREY = Color3.fromRGB(70, 72, 92)
-local BTN_LOCKED = Color3.fromRGB(45, 45, 56)
-local ATTACK_COLOR = Color3.fromRGB(215, 70, 60)
-local RELEASE_BG = Color3.fromRGB(28, 30, 48)
-local UPGRADE_BG = Color3.fromRGB(55, 60, 92)
-local RING_IDLE = Color3.fromRGB(130, 140, 175)
-local CHARGE_COLOR = Color3.fromRGB(90, 200, 255)
-local WAR_BG = Color3.fromRGB(12, 12, 20)
-
 -- HUD display strings (the literals of TECH_SPEC §4.23 HUD; game messages come from Config.Text)
 local TXT = {
-	Level = "Lv %d",
-	Bank = "금고 %s",
-	Carried = "주머니 %s",
-	Bounty = "  현상금 %s",
+	LevelTag = "Lv",
+	Money = '<font color="#%s">%s</font> %s', -- RichText: grey tag + gold number
+	BankTag = "금고",
+	CarriedTag = "주머니",
+	Bounty = " 현상금 %s",
 	WarTime = "왕관 결정까지 %s",
 	Siege = "몬스터 포위전: 1인당 %d점",
 	MyWar = "내 점수 %s",
@@ -94,24 +124,32 @@ local TXT = {
 	QuestHeader = "오늘의 퀘스트 (%d/%d)",
 	QuestAllDone = "오늘 일일 완료! 추가 퀘스트 진행 중",
 	QuestClaimable = " · 받기 %d",
-	QuestExpand = " ▼",
-	QuestCollapse = " ▲",
+	QuestTouchClaim = "퀘스트 받기 %d개!",
+	QuestTouchLine = "%s/%s %s", -- progress first: truncation only cuts the quest text
+	QuestExpand = "▼",
+	QuestCollapse = "▲",
+	QuestClose = "닫기",
 	BadgeDaily = "일일",
 	BadgeExtra = "추가",
 	BadgePinned = "안내",
 	Claim = "받기",
 	Reroll = "교체", -- Gotham has no ↻ glyph (rendered as tofu)
+	RerollTitle = "퀘스트 바꾸기", -- CR-M25 confirm dialog
+	RerollBody = "진행도가 사라져요. 바꿀까요?",
+	RerollYes = "바꾸기",
 	Attack = "공격",
 	Release = "발사",
 	Perfect = "PERFECT!",
 	AutoOn = "자동 ON",
 	AutoOff = "자동 OFF",
 	AutoLocked = "Lv%d 해금",
-	UpgradeNext = "다음: %s (%sG)",
+	UpgradeNext = "다음: %s",
+	UpgradePrice = "%sG",
 	UpgradeMax = "최고 등급",
 	UpgradeNeedLevel = "Lv %d 필요",
 	UpgradeNeedFaction = "진영 선택 필요",
 	UpgradeReady = "구매 가능!",
+	Map = "지도",
 	Menu = "메뉴",
 	TravelLeft = "%s %.1f초",
 	ZoneGuide = "%s!",
@@ -140,6 +178,9 @@ local afford = { Baseline = false, Was = false, Streak = 0, Notified = {} }
 
 local questRows = {}
 local questExpanded = false -- collapsed list shows the header + one row
+-- CR-M24: 교체 is ignored for ClaimLock s after a claim and a row for RowLock s after its quest changed;
+-- CR-M25: touch opens the rows' overlay from the header (OverlayOpen)
+local questState = { ClaimAt = -math.huge, ClaimLock = 1.5, RowLock = 0.8, OverlayOpen = false }
 local guide = nil -- { Tag, Part, Att0, Att1, Beam, Billboard, Tween }
 local guideAnchors = {}
 
@@ -284,7 +325,7 @@ local function chatWindowBottom(inset, s, screenH)
 			if not cfg or not cfg.Enabled then return nil, nil end
 			local pos, size = cfg.AbsolutePosition, cfg.AbsoluteSize
 			if size.X < 1 or size.Y < 1 then return nil, nil end
-			if pos.X > (12 + math.max(STATS_W, QUEST_W)) * s then return nil, nil end -- not on the left side
+			if pos.X > (12 + math.max(L.StatsW, L.QuestW)) * s then return nil, nil end -- not on the left side
 			return pos.Y, pos.Y + size.Y
 		end)
 		if ok and type(t) == "number" and type(b) == "number" then
@@ -343,23 +384,93 @@ local function glyphSafe(text)
 	return ok and safe == true
 end
 
+-- Config.UIArt.Colors[key] / Fonts[key] with a fallback (the art table may be missing)
+local function ac(key, fallback)
+	local c = type(ART.Colors) == "table" and ART.Colors[key] or nil
+	if typeof(c) == "Color3" then return c end
+	return fallback
+end
+
+local function af(key, fallback)
+	local f = type(ART.Fonts) == "table" and ART.Fonts[key] or nil
+	if typeof(f) == "EnumItem" then return f end
+	return fallback
+end
+
 local function corner(radius)
 	return UIKit.Create("UICorner", { CornerRadius = radius or UDim.new(0, 12) })
 end
 
-local function panel(props)
-	if props.BackgroundColor3 == nil then props.BackgroundColor3 = Theme.Bg end
-	if props.BackgroundTransparency == nil then props.BackgroundTransparency = Theme.BgTransparency end
-	return UIKit.Create("Frame", props, { corner(UDim.new(0, 12)) })
+-- U5: on touch every HUD text stays >= 11 real px = L.TouchText units at the 0.75 touch UIScale
+local function touchFloor(label)
+	if not IS_TOUCH or not label then return label end
+	local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
+	if tc then
+		tc.MaxTextSize = math.max(tc.MaxTextSize, L.TouchText) -- raise the cap first: min must stay <= max
+		tc.MinTextSize = L.TouchText
+	end
+	if label.TextSize < L.TouchText then label.TextSize = L.TouchText end
+	return label
 end
 
-local function scaledLabel(props, maxSize)
-	props.BackgroundTransparency = 1
-	props.TextScaled = true
-	if props.Text == nil then props.Text = "" end
-	return UIKit.Create("TextLabel", props, {
-		UIKit.Create("UITextSizeConstraint", { MinTextSize = UI.MinTextSize or 11, MaxTextSize = maxSize }),
+-- UIKit.InkText (brown ink on parchment) or UIKit.LightText (white / gold on navy, bars, round buttons) + touch floor
+local function artLabel(ink, props)
+	if IS_TOUCH then
+		if type(props.TextSize) == "number" then props.TextSize = math.max(props.TextSize, L.TouchText) end
+		if type(props.MaxTextSize) == "number" then props.MaxTextSize = math.max(props.MaxTextSize, L.TouchText) end
+	end
+	local label = nil
+	if ink then
+		label = UIKit.InkText(props)
+	else
+		label = UIKit.LightText(props)
+	end
+	return touchFloor(label)
+end
+
+local function isImage(obj)
+	return typeof(obj) == "Instance" and (obj:IsA("ImageLabel") or obj:IsA("ImageButton"))
+end
+
+-- art parts tint through ImageColor3 (multiply); their code-drawn fallbacks (IMG-R4) take `fill` as background
+local function paint(obj, tint, fill)
+	if isImage(obj) then
+		obj.ImageColor3 = tint
+	elseif typeof(obj) == "Instance" and fill then
+		obj.BackgroundColor3 = fill
+	end
+end
+
+-- disabled / waiting look: faded art, or a more transparent fallback (normalT = its usual transparency)
+local function setDim(obj, dim, normalT)
+	if isImage(obj) then
+		obj.ImageTransparency = dim and 0.4 or 0
+	elseif typeof(obj) == "Instance" then
+		obj.BackgroundTransparency = dim and 0.5 or (normalT or 0)
+	end
+end
+
+-- gold ring just outside a button (affordable pulse / menu hint), hidden until used; returns its UIStroke
+local function makeGlow(parent, radius)
+	local frame = UIKit.Create("Frame", {
+		Name = "Glow",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.new(1, 4, 1, 4),
+		BackgroundTransparency = 1,
+		ZIndex = 9,
+		Parent = parent,
+	}, {
+		corner(radius),
+		UIKit.Create("UIStroke", {
+			Name = "GlowStroke",
+			Color = ac("Gold", Theme.Gold),
+			Thickness = 3,
+			Transparency = 1,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		}),
 	})
+	return frame:FindFirstChild("GlowStroke")
 end
 
 local function pressScale(btn, down)
@@ -379,6 +490,7 @@ end
 ----------------------------------------------------------------- layout (forward-declared users)
 local applyLayout -- assigned below
 local refreshQuests -- assigned with the quest rows (the header toggle calls it)
+local toggleQuests -- assigned with the quest rows (header / overlay close button)
 
 local function requestLayout()
 	if layoutPending then return end
@@ -390,170 +502,357 @@ local function requestLayout()
 	end)
 end
 
------------------------------------------------------------------ building: stats block
+----------------------------------------------------------------- building: player card (top-left)
+-- money line: coin / pouch icon + "금고 1,250" (grey tag, gold number through RichText)
+local function moneyLine(parent, name, icon, x, y, w)
+	local h = IS_TOUCH and 20 or 18
+	local img = UIKit.ArtImage(icon, {
+		Name = name .. "Icon",
+		Position = UDim2.fromOffset(x, y),
+		Size = UDim2.fromOffset(h, h),
+		Parent = parent,
+	})
+	local tx = img and (x + h + 3) or x
+	return artLabel(false, {
+		Name = name,
+		RichText = true,
+		Position = UDim2.fromOffset(tx, y),
+		Size = UDim2.fromOffset(x + w - tx, h),
+		TextScaled = true,
+		MaxTextSize = IS_TOUCH and 16 or 14,
+		Color = ac("GoldText", Theme.Gold),
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		Parent = parent,
+	})
+end
+
+-- PanelCard (gold rim, navy inside). Desktop: portrait ring + avatar headshot (U7), level badge, title / class, XP
+-- bar, 금고 / 주머니. Touch (U5): level badge + XP bar + 금고 only. Horns get a wanted-stars / bounty row on both.
 local function buildStats(root)
-	local f = panel({
+	local W = L.StatsW
+	local f = UIKit.ArtFrame("PanelCard", {
 		Name = "Stats",
 		Position = UDim2.fromOffset(12, 12 + TOP_FALLBACK),
-		Size = UDim2.fromOffset(STATS_W, STATS_H_SHORT),
+		Size = UDim2.fromOffset(W, L.StatsH),
 		Parent = root,
 	})
 	ui.stats = f
-	local half = math.floor((STATS_W - 18) / 2)
-	ui.level = UIKit.Create("TextLabel", {
-		Name = "Level",
-		Position = UDim2.fromOffset(6, 6),
-		Size = UDim2.fromOffset(58, 28),
-		BackgroundColor3 = Theme.Gold,
-		TextColor3 = DARK_TEXT,
-		TextSize = 17,
-		Text = "Lv 1",
+
+	-- level badge: navy disc with a gold ring
+	local bs = IS_TOUCH and 48 or 40
+	local badge = UIKit.ArtFrame("LevelBadge", {
+		Name = "LevelBadge",
+		Position = UDim2.fromOffset(IS_TOUCH and 8 or 80, IS_TOUCH and 10 or 5),
+		Size = UDim2.fromOffset(bs, bs),
+		ZIndex = 3,
 		Parent = f,
-	}, { corner(UDim.new(0, 8)) })
-	ui.title = UIKit.Label({
-		Name = "Title",
-		Position = UDim2.fromOffset(70, 4),
-		Size = UDim2.fromOffset(STATS_W - 76, 17),
-		TextSize = 15,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextTruncate = Enum.TextTruncate.AtEnd,
-		Parent = f,
+	}, { StrokeThickness = 2 })
+	local facePos, faceSize = UIKit.ArtInner("LevelBadge")
+	local face = UIKit.Create("Frame", {
+		Name = "Face",
+		BackgroundTransparency = 1,
+		Position = facePos or UDim2.fromScale(0.17, 0.18),
+		Size = faceSize or UDim2.fromScale(0.65, 0.61),
+		Parent = badge,
 	})
-	ui.class = UIKit.Label({
-		Name = "Class",
-		Position = UDim2.fromOffset(70, 21),
-		Size = UDim2.fromOffset(STATS_W - 76, 15),
-		TextSize = 13,
-		TextColor = Theme.SubText,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextTruncate = Enum.TextTruncate.AtEnd,
-		Parent = f,
-	})
-	UIKit.Label({
-		Name = "XPTag",
-		Position = UDim2.fromOffset(4, 39),
-		Size = UDim2.fromOffset(24, 14),
-		TextSize = 13,
-		TextColor = Theme.XP,
-		Text = "XP",
-		Parent = f,
-	})
-	local _, setXP, xpText = UIKit.Bar({
+	if IS_TOUCH then
+		-- the number alone: a separate "Lv" would fall under the touch text floor inside the badge
+		ui.level = artLabel(false, {
+			Name = "Level",
+			Size = UDim2.fromScale(1, 1),
+			TextScaled = true,
+			MaxTextSize = 26,
+			Number = true,
+			Color = ac("GoldText", Theme.Gold),
+			Text = "1",
+			Parent = face,
+		})
+	else
+		artLabel(false, {
+			Name = "Tag",
+			Position = UDim2.fromScale(0, -0.06),
+			Size = UDim2.fromScale(1, 0.42),
+			TextScaled = true,
+			MaxTextSize = 11,
+			Number = true,
+			Text = TXT.LevelTag,
+			Parent = face,
+		})
+		ui.level = artLabel(false, {
+			Name = "Level",
+			Position = UDim2.fromScale(0, 0.32),
+			Size = UDim2.fromScale(1, 0.7),
+			TextScaled = true,
+			MaxTextSize = 20,
+			Number = true,
+			Color = ac("GoldText", Theme.Gold),
+			Text = "1",
+			Parent = face,
+		})
+	end
+
+	local x0 = IS_TOUCH and 62 or 80 -- left edge of the XP bar / money column
+	if not IS_TOUCH then
+		-- portrait: avatar headshot (rbxthumb, no upload) inside the gold PortraitRing (U7)
+		local holder = UIKit.Create("Frame", {
+			Name = "Portrait",
+			BackgroundTransparency = 1,
+			Position = UDim2.fromOffset(3, 5),
+			Size = UDim2.fromOffset(74, 76),
+			ZIndex = 2,
+			Parent = f,
+		})
+		local holePos, holeSize = UIKit.ArtInner("PortraitRing")
+		local head = UIKit.Create("ImageLabel", {
+			Name = "Headshot",
+			Image = UIKit.HeadshotImage(),
+			ScaleType = Enum.ScaleType.Crop,
+			BackgroundColor3 = ac("NavyDeep", Theme.Bg),
+			Position = holePos or UDim2.fromScale(0.14, 0.2),
+			Size = holeSize or UDim2.fromScale(0.72, 0.67),
+			ZIndex = 1,
+			Parent = holder,
+		}, { corner(UDim.new(0.5, 0)) })
+		local ring = UIKit.ArtImage("PortraitRing", {
+			Name = "Ring",
+			Size = UDim2.fromScale(1, 1),
+			ZIndex = 2,
+			Parent = holder,
+		})
+		if not ring then
+			-- IMG-R4: gold ring drawn in code
+			UIKit.Create("UIStroke", {
+				Color = ac("Gold", Theme.Gold),
+				Thickness = 3,
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+				Parent = head,
+			})
+		end
+		ui.title = artLabel(false, {
+			Name = "Title",
+			Position = UDim2.fromOffset(126, 10),
+			Size = UDim2.fromOffset(W - 138, 18),
+			TextSize = 16,
+			Title = true,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextTruncate = Enum.TextTruncate.AtEnd,
+			Parent = f,
+		})
+		ui.class = artLabel(false, {
+			Name = "Class",
+			Position = UDim2.fromOffset(126, 29),
+			Size = UDim2.fromOffset(W - 138, 14),
+			TextSize = 12,
+			Color = ac("LightSub", Theme.SubText),
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextTruncate = Enum.TextTruncate.AtEnd,
+			Parent = f,
+		})
+	end
+
+	-- XP bar on the BarTrack art (bright blue fill)
+	local barW = W - x0 - (IS_TOUCH and 14 or 12)
+	local _, setXP, xpText = UIKit.ArtBar({
 		Name = "XPBar",
-		Position = UDim2.fromOffset(28, 40),
-		Size = UDim2.fromOffset(STATS_W - 34, 13),
-		Color = Theme.XP,
-		TextSize = 12,
+		Position = UDim2.fromOffset(x0, IS_TOUCH and 13 or 48),
+		Size = UDim2.fromOffset(barW, IS_TOUCH and 20 or 16),
+		Color = ac("XPBlue", Theme.XP),
+		TextSize = IS_TOUCH and L.TouchText or 12,
 		Parent = f,
 	})
 	ui.setXP = setXP
 	ui.xpText = xpText
-	ui.bank = UIKit.Label({
-		Name = "Bank",
-		Position = UDim2.fromOffset(6, 56),
-		Size = UDim2.fromOffset(half, 16),
-		TextSize = 14,
-		TextColor = Theme.Gold,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextTruncate = Enum.TextTruncate.AtEnd,
-		Parent = f,
-	})
-	ui.carried = UIKit.Label({
-		Name = "Carried",
-		Position = UDim2.fromOffset(12 + half, 56),
-		Size = UDim2.fromOffset(half, 16),
-		TextSize = 14,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextTruncate = Enum.TextTruncate.AtEnd,
-		Parent = f,
-	})
-	ui.stars = UIKit.Label({
+
+	if IS_TOUCH then
+		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 36, barW)
+	else
+		local half = math.floor((barW - 6) / 2)
+		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 68, half)
+		ui.carried = moneyLine(f, "Carried", "IconPouch", x0 + half + 6, 68, barW - half - 6)
+	end
+
+	-- Horns: wanted stars (IconStar / IconStarEmpty; ★☆ text without the art) + bounty, under the card's rows
+	local sh = L.StarsH - 4
+	ui.stars = UIKit.Create("Frame", {
 		Name = "Stars",
-		Position = UDim2.fromOffset(6, 73),
-		Size = UDim2.fromOffset(STATS_W - 12, 15),
-		TextSize = 13,
-		TextColor = Theme.Bad,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextTruncate = Enum.TextTruncate.AtEnd,
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(IS_TOUCH and 12 or 14, L.StatsH - 12),
+		Size = UDim2.fromOffset(W - 28, sh),
 		Visible = false,
 		Parent = f,
+	}, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 2),
+		}),
+	})
+	ui.starImgs = {}
+	local starId, emptyId = UIKit.ArtId("IconStar"), UIKit.ArtId("IconStarEmpty")
+	if starId and emptyId then
+		ui.starIds = { starId, emptyId }
+		for i = 1, math.max(1, math.floor(tonumber(Config.PvP.MaxStars) or 5)) do
+			ui.starImgs[i] = UIKit.Create("ImageLabel", {
+				Name = "Star" .. i,
+				LayoutOrder = i,
+				BackgroundTransparency = 1,
+				ScaleType = Enum.ScaleType.Fit,
+				Image = emptyId,
+				Size = UDim2.fromOffset(sh, sh),
+				Parent = ui.stars,
+			})
+		end
+	end
+	ui.bounty = artLabel(false, {
+		Name = "Bounty",
+		LayoutOrder = 100,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.new(0, 0, 1, 0),
+		TextSize = 13,
+		Color = Theme.Bad,
+		Parent = ui.stars,
 	})
 end
 
------------------------------------------------------------------ building: war meter
+----------------------------------------------------------------- building: war meter (top center)
+-- round timer / siege / my-points pill (Pill art, ink text, sized to its text)
+local function infoPill(name, order, parent, color)
+	local pill = UIKit.ArtFrame("Pill", {
+		Name = name,
+		LayoutOrder = order,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.fromOffset(0, 20),
+		Parent = parent,
+	}, { CornerRadius = UDim.new(0.5, 0) }, {
+		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12) }),
+	})
+	local props = {
+		Name = "Text",
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.new(0, 0, 1, 0),
+		TextSize = 14,
+		Parent = pill,
+	}
+	if color then props.Color = color end
+	return pill, artLabel(true, props)
+end
+
+-- gold 빛 fill from the left and crimson 뿔 fill from the right inside the BarTrack capsule, faction shields over both
+-- ends, the crown riding the split, info pills under it. 56 units tall (EventHUD's strip sits under its real bottom).
 local function buildWar(root)
+	local W = L.WarW
 	local w = UIKit.Create("Frame", {
 		Name = "WarMeter",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, 8 + TOP_FALLBACK),
-		Size = UDim2.fromOffset(WAR_W, 50),
+		Size = UDim2.fromOffset(W, L.WarH),
 		BackgroundTransparency = 1,
 		Parent = root,
 	})
 	ui.war = w
-	local bar = UIKit.Create("Frame", {
+	local shieldW, barY, barH = 30, 10, 22
+	local bar, barArt = UIKit.ArtFrame("BarTrack", {
 		Name = "Bar",
-		Size = UDim2.fromOffset(WAR_W, 22),
-		BackgroundColor3 = WAR_BG,
-		BackgroundTransparency = 0.15,
+		Position = UDim2.fromOffset(shieldW - 10, barY),
+		Size = UDim2.fromOffset(W - 2 * (shieldW - 10), barH),
 		Parent = w,
 	}, {
-		corner(UDim.new(0, 8)),
-		UIKit.Create("UIStroke", {
-			Color = Color3.new(0, 0, 0),
-			Thickness = 2,
-			Transparency = 0.4,
-			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-		}),
+		Color = COL.WarFill,
+		BackgroundTransparency = 0.15,
+		CornerRadius = UDim.new(0.5, 0),
+		StrokeColor = COL.Black,
+		StrokeTransparency = 0.4,
 	})
-	ui.haloFill = UIKit.Create("Frame", {
-		Name = "HaloFill",
-		Size = UDim2.fromScale(0.5, 1),
-		BackgroundColor3 = Theme.Halo,
+	-- fills live in the capsule's navy interior (BarTrack Inner rect; its edges follow the height)
+	local top, bottom, side = 0, 0, 0
+	local def = barArt and UIKit.ArtPart("BarTrack") or nil
+	if def and typeof(def.Inner) == "Rect" and typeof(def.Size) == "Vector2" and def.Size.Y > 0 then
+		top = def.Inner.Min.Y / def.Size.Y
+		bottom = (def.Size.Y - def.Inner.Max.Y) / def.Size.Y
+		side = math.floor(def.Inner.Min.X / def.Size.Y * barH + 0.5)
+	end
+	local inner = UIKit.Create("Frame", {
+		Name = "Inner",
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0, side, top, 0),
+		Size = UDim2.new(1, -2 * side, 1 - top - bottom, 0),
 		Parent = bar,
-	}, { corner(UDim.new(0, 8)) })
-	ui.hornsFill = UIKit.Create("Frame", {
-		Name = "HornsFill",
-		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.fromScale(1, 0),
-		Size = UDim2.fromScale(0.5, 1),
-		BackgroundColor3 = Theme.Horns,
-		Parent = bar,
-	}, { corner(UDim.new(0, 8)) })
+	})
+	local function fill(name, color, fromRight)
+		return UIKit.Create("Frame", {
+			Name = name,
+			AnchorPoint = Vector2.new(fromRight and 1 or 0, 0),
+			Position = UDim2.fromScale(fromRight and 1 or 0, 0),
+			Size = UDim2.fromScale(0.5, 1),
+			BackgroundColor3 = color,
+			Parent = inner,
+		}, {
+			corner(UDim.new(0.5, 0)),
+			UIKit.Create("UIGradient", {
+				Rotation = 90,
+				Color = ColorSequence.new(COL.White, Color3.fromRGB(205, 205, 205)),
+			}),
+		})
+	end
+	ui.haloFill = fill("HaloFill", ac("WarHalo", Theme.Halo), false)
+	ui.hornsFill = fill("HornsFill", ac("WarHorns", Theme.Horns), true)
 	ui.warDivider = UIKit.Create("Frame", {
 		Name = "Divider",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.new(0, 4, 1, 6),
-		BackgroundColor3 = Color3.new(1, 1, 1),
+		Size = UDim2.new(0, 3, 1, 4),
+		BackgroundColor3 = Color3.fromRGB(255, 248, 225),
+		ZIndex = 2,
+		Parent = inner,
+	}, { corner(UDim.new(0, 2)) })
+	-- crown on the split, its base at the bar's middle
+	ui.warCrown = UIKit.ArtImage("Crown", {
+		Name = "Crown",
+		AnchorPoint = Vector2.new(0.5, 1),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromOffset(27, 18),
+		ZIndex = 3,
+		Parent = inner,
+	})
+	ui.haloNum = artLabel(false, {
+		Name = "HaloScore",
+		Position = UDim2.fromOffset(16, 0),
+		Size = UDim2.new(0.5, -20, 1, 0),
+		TextSize = 15,
+		Number = true,
+		TextXAlignment = Enum.TextXAlignment.Left,
 		ZIndex = 2,
 		Parent = bar,
-	}, { corner(UDim.new(0, 2)) })
-	ui.haloNum = UIKit.Label({
-		Name = "HaloScore",
-		Position = UDim2.fromOffset(10, 0),
-		Size = UDim2.new(0.5, -10, 1, 0),
-		TextSize = 15,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextStrokeTransparency = 0.3,
-		ZIndex = 3,
-		Parent = bar,
 	})
-	ui.hornsNum = UIKit.Label({
+	ui.hornsNum = artLabel(false, {
 		Name = "HornsScore",
 		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.new(1, -10, 0, 0),
-		Size = UDim2.new(0.5, -10, 1, 0),
+		Position = UDim2.new(1, -16, 0, 0),
+		Size = UDim2.new(0.5, -20, 1, 0),
 		TextSize = 15,
+		Number = true,
 		TextXAlignment = Enum.TextXAlignment.Right,
-		TextStrokeTransparency = 0.3,
-		ZIndex = 3,
+		ZIndex = 2,
 		Parent = bar,
 	})
+	-- faction shields over both ends of the bar
+	for _, s in { { "ShieldHalo", 0 }, { "ShieldHorns", 1 } } do
+		UIKit.ArtImage(s[1], {
+			Name = s[1],
+			AnchorPoint = Vector2.new(s[2], 0),
+			Position = UDim2.new(s[2], 0, 0, 3),
+			Size = UDim2.fromOffset(shieldW, shieldW + 1),
+			ZIndex = 3,
+			Parent = w,
+		})
+	end
+
 	local row = UIKit.Create("Frame", {
 		Name = "Info",
-		Position = UDim2.fromOffset(0, 27),
-		Size = UDim2.fromOffset(WAR_W, 20),
+		Position = UDim2.fromOffset(0, barY + barH + 4),
+		Size = UDim2.fromOffset(W, 20),
 		BackgroundTransparency = 1,
 		Parent = w,
 	}, {
@@ -562,77 +861,101 @@ local function buildWar(root)
 			HorizontalAlignment = Enum.HorizontalAlignment.Center,
 			VerticalAlignment = Enum.VerticalAlignment.Center,
 			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 12),
+			Padding = UDim.new(0, 6),
 		}),
 	})
-	local function info(name, order, color)
-		return UIKit.Label({
-			Name = name,
-			LayoutOrder = order,
-			AutomaticSize = Enum.AutomaticSize.X,
-			Size = UDim2.new(0, 0, 1, 0),
-			TextSize = 14,
-			TextColor = color,
-			TextStrokeTransparency = 0.5,
-			Parent = row,
-		})
-	end
-	ui.warTime = info("Time", 1, Theme.Text)
-	ui.warSiege = info("Siege", 2, Theme.Revenge)
+	ui.warTimePill, ui.warTime = infoPill("Time", 1, row, nil)
+	ui.warSiege, ui.warSiegeText = infoPill("Siege", 2, row, ac("BadInk", Theme.Revenge))
 	ui.warSiege.Visible = false
-	ui.warPoints = info("MyPoints", 3, Theme.Gold)
+	ui.warPoints, ui.warPointsText = infoPill("MyPoints", 3, row, nil)
 end
 
 ----------------------------------------------------------------- building: status chips
-local function makeChip(name, order)
-	return UIKit.Create("TextLabel", {
+-- candy pill (fill + inked rim + dark text) with an optional art icon (안전 지대 IconSafe, 새싹 IconSprout, 축복 Crown)
+local function makeChip(name, order, icon)
+	local frame = UIKit.Create("Frame", {
 		Name = name,
 		LayoutOrder = order,
 		AutomaticSize = Enum.AutomaticSize.X,
-		Size = UDim2.fromOffset(0, 22),
+		Size = UDim2.fromOffset(0, L.ChipH),
 		BackgroundColor3 = Theme.Bg,
-		BackgroundTransparency = 0.2,
-		TextSize = 13,
-		Text = "",
 		Visible = false,
 		Parent = ui.chips,
 	}, {
-		corner(UDim.new(0, 11)),
-		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }),
+		corner(UDim.new(0.5, 0)),
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 4),
+		}),
 		UIKit.Create("UIStroke", {
 			Name = "Stroke",
-			Thickness = 1.5,
+			Thickness = 2,
 			Color = Theme.SubText,
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		}),
+		UIKit.Create("UIGradient", { -- glossy candy shading
+			Rotation = 90,
+			Color = ColorSequence.new(COL.White, Color3.fromRGB(222, 222, 222)),
+		}),
 	})
+	local chip = { Frame = frame, Stroke = frame:FindFirstChild("Stroke") }
+	if icon then
+		chip.Icon = UIKit.ArtImage(icon, {
+			Name = "Icon",
+			LayoutOrder = 1,
+			Size = UDim2.fromOffset(L.ChipH - 2, L.ChipH - 2),
+			Visible = false,
+			Parent = frame,
+		})
+	end
+	chip.Pad = UIKit.Create("UIPadding", {
+		PaddingLeft = UDim.new(0, 10),
+		PaddingRight = UDim.new(0, 10),
+		Parent = frame,
+	})
+	chip.Label = artLabel(true, {
+		Name = "Text",
+		LayoutOrder = 2,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.new(0, 0, 1, 0),
+		TextSize = 13,
+		Outline = false,
+		Parent = frame,
+	})
+	return chip
 end
 
-local function setChip(chip, visible, text, color, bright)
+-- palette = { fill, rim, text } (the art's chip colours) or nil = derived from `color` (bright = solid fill)
+local function setChip(chip, visible, text, color, bright, palette, withIcon)
 	if not chip then return end
-	chip.Visible = visible == true
+	chip.Frame.Visible = visible == true
 	if not visible then return end
 	color = color or Theme.SubText
-	chip.Text = text or ""
-	if bright then
-		chip.BackgroundColor3 = color
-		chip.BackgroundTransparency = 0.05
-		chip.TextColor3 = DARK_TEXT
+	local fill, rim, ink
+	if palette then
+		fill, rim, ink = palette[1], palette[2], palette[3]
+	elseif bright then
+		fill, rim, ink = color, color:Lerp(COL.Black, 0.45), COL.Dark
 	else
-		chip.BackgroundColor3 = Theme.Bg
-		chip.BackgroundTransparency = 0.2
-		chip.TextColor3 = color
+		fill, rim, ink = color:Lerp(COL.White, 0.7), color:Lerp(COL.Black, 0.3), color:Lerp(COL.Black, 0.62)
 	end
-	local stroke = chip:FindFirstChild("Stroke")
-	if stroke then stroke.Color = color end
+	chip.Frame.BackgroundColor3 = fill
+	if chip.Stroke then chip.Stroke.Color = rim end
+	chip.Label.TextColor3 = ink
+	chip.Label.Text = text or ""
+	local iconOn = withIcon == true and chip.Icon ~= nil
+	if chip.Icon then chip.Icon.Visible = iconOn end
+	chip.Pad.PaddingLeft = UDim.new(0, iconOn and 4 or 10)
 end
 
 local function buildChips(root)
 	ui.chips = UIKit.Create("Frame", {
 		Name = "StatusChips",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, CHIPS_Y + TOP_FALLBACK),
-		Size = UDim2.fromOffset(900, 30),
+		Position = UDim2.new(0.5, 0, 0, L.ChipsY + TOP_FALLBACK),
+		Size = UDim2.fromOffset(900, L.ChipH + 6),
 		BackgroundTransparency = 1,
 		Parent = root,
 	}, {
@@ -644,18 +967,26 @@ local function buildChips(root)
 			Padding = UDim.new(0, 6),
 		}),
 	})
+	ui.chipPal = {
+		Safe = { ac("ChipSafe", Theme.Good), ac("ChipSafeRim", Theme.Good), ac("ChipSafeText", COL.Dark) },
+		Rookie = { ac("ChipRookie", Theme.XP), ac("ChipRookieRim", Theme.XP), ac("ChipRookieText", COL.Dark) },
+	}
+	local icons = { Blessing = "Crown", Zone = "IconSafe", Rookie = "IconSprout" }
 	ui.chip = {}
 	for i, key in { "Blessing", "Zone", "Rookie", "Protected", "Combat", "Size", "Bully", "Kaiju" } do
-		ui.chip[key] = makeChip(key, i)
+		ui.chip[key] = makeChip(key, i, icons[key])
 	end
 end
 
 ----------------------------------------------------------------- building: quests
+-- ribbon header (star + "오늘의 퀘스트 (1/3)" + 받기 N + chevron) over parchment rows. Desktop: the header toggles the
+-- list (collapsed = header + one row, A14-2). Touch (U5 / CR-M25): one line only; the rows with 받기 / 교체 live in an
+-- overlay opened from the header, placed right of the thumbstick zone.
 local function buildQuests(root)
 	ui.quests = UIKit.Create("Frame", {
 		Name = "Quests",
 		Position = UDim2.fromOffset(12, 200 + TOP_FALLBACK),
-		Size = UDim2.fromOffset(QUEST_W, 0),
+		Size = UDim2.fromOffset(L.QuestW, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
 		Visible = false,
@@ -664,106 +995,236 @@ local function buildQuests(root)
 		UIKit.Create("UIListLayout", {
 			FillDirection = Enum.FillDirection.Vertical,
 			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, QUEST_GAP),
+			Padding = UDim.new(0, L.QuestGap),
 		}),
 	})
-	-- header doubles as the expand / collapse toggle
-	ui.questHeader = UIKit.Button({
+	local hh = L.QuestHeaderH
+	ui.questHeader = UIKit.ArtButton("RibbonHeader", {
 		Name = "Header",
 		LayoutOrder = 0,
-		Size = UDim2.fromOffset(QUEST_W, QUEST_HEADER_H),
-		Color = Theme.Bg,
-		BackgroundTransparency = 0.35,
-		TextColor = Theme.Gold,
-		TextSize = 14,
-		TextScaled = true,
-		Text = "",
+		Size = UDim2.fromOffset(L.QuestW, hh),
 		Parent = ui.quests,
 	}, function()
-		questExpanded = not questExpanded
-		refreshQuests()
-	end)
-	local tc = ui.questHeader:FindFirstChildOfClass("UITextSizeConstraint")
-	if tc then tc.MaxTextSize = 14 end
-	UIKit.Create("UIPadding", {
-		PaddingLeft = UDim.new(0, 6),
-		PaddingRight = UDim.new(0, 6),
-		PaddingTop = UDim.new(0, 3),
-		PaddingBottom = UDim.new(0, 3),
+		toggleQuests()
+	end, { CornerRadius = UDim.new(0, 10) })
+	local is = hh - 8
+	local star = UIKit.ArtImage("IconStar", {
+		Name = "Icon",
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, 8, 0.5, 0),
+		Size = UDim2.fromOffset(is, is),
 		Parent = ui.questHeader,
+	})
+	local tx = star and (is + 13) or 10
+	ui.questHeaderText = artLabel(true, {
+		Name = "Text",
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, tx, 0.5, 0),
+		Size = UDim2.new(1, -tx - 26, 1, -8),
+		TextScaled = true,
+		MaxTextSize = 14,
+		Title = true,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		Parent = ui.questHeader,
+	})
+	ui.questChevron = artLabel(true, {
+		Name = "Chevron",
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(1, -8, 0.5, 0),
+		Size = UDim2.fromOffset(16, is),
+		TextScaled = true,
+		MaxTextSize = 14,
+		Text = TXT.QuestExpand,
+		Parent = ui.questHeader,
+	})
+
+	local listParent = ui.quests
+	ui.questRowW = L.QuestW
+	if IS_TOUCH then
+		local pad = 10
+		ui.questRowW = L.OverlayW - 2 * pad
+		ui.questOverlay = UIKit.ArtFrame("PanelParchment", {
+			Name = "QuestOverlay",
+			Size = UDim2.fromOffset(L.OverlayW, 0),
+			AutomaticSize = Enum.AutomaticSize.Y,
+			Visible = false,
+			ZIndex = 20,
+			Parent = root,
+		}, nil, {
+			UIKit.Create("UIPadding", {
+				PaddingLeft = UDim.new(0, pad),
+				PaddingRight = UDim.new(0, pad),
+				PaddingTop = UDim.new(0, pad),
+				PaddingBottom = UDim.new(0, pad + 2),
+			}),
+			UIKit.Create("UIListLayout", {
+				FillDirection = Enum.FillDirection.Vertical,
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				Padding = UDim.new(0, 6),
+			}),
+		})
+		local top = UIKit.Create("Frame", {
+			Name = "Top",
+			LayoutOrder = 0,
+			Size = UDim2.new(1, 0, 0, 30),
+			BackgroundTransparency = 1,
+			Parent = ui.questOverlay,
+		})
+		ui.questOverlayTitle = artLabel(true, {
+			Name = "Title",
+			Size = UDim2.new(1, -80, 1, 0),
+			TextScaled = true,
+			MaxTextSize = 17,
+			Title = true,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextTruncate = Enum.TextTruncate.AtEnd,
+			Parent = top,
+		})
+		local _, closeLabel = UIKit.ArtButton("Pill", {
+			Name = "Close",
+			AnchorPoint = Vector2.new(1, 0),
+			Position = UDim2.fromScale(1, 0),
+			Size = UDim2.fromOffset(72, 30),
+			Text = TXT.QuestClose,
+			TextSize = 16,
+			Parent = top,
+		}, function()
+			toggleQuests(false)
+		end, { CornerRadius = UDim.new(0.5, 0) })
+		touchFloor(closeLabel)
+		listParent = ui.questOverlay
+	end
+	ui.questList = UIKit.Create("Frame", {
+		Name = "Rows",
+		LayoutOrder = 1,
+		Size = UDim2.fromOffset(ui.questRowW, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		Parent = listParent,
+	}, {
+		UIKit.Create("UIListLayout", {
+			FillDirection = Enum.FillDirection.Vertical,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, L.QuestGap),
+		}),
 	})
 end
 
 ----------------------------------------------------------------- building: travel bar
 local function buildTravel(root)
-	ui.travel = panel({
+	ui.travel = UIKit.ArtFrame("PanelParchment", {
 		Name = "Travel",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.6),
-		Size = UDim2.fromOffset(340, 60),
+		Position = UDim2.fromScale(0.5, IS_TOUCH and 0.42 or 0.6), -- U3: touch stays above the thumbstick zone
+		Size = UDim2.fromOffset(340, 64),
 		Visible = false,
+		ZIndex = 3,
 		Parent = root,
 	})
-	ui.travelLabel = UIKit.Label({
+	ui.travelLabel = artLabel(true, {
 		Name = "Label",
-		Position = UDim2.fromOffset(0, 6),
-		Size = UDim2.new(1, 0, 0, 24),
-		TextSize = 19,
+		Position = UDim2.fromOffset(0, 9),
+		Size = UDim2.new(1, 0, 0, 22),
+		TextSize = 18,
+		Title = true,
 		Parent = ui.travel,
 	})
-	local _, setTravel = UIKit.Bar({
+	local _, setTravel = UIKit.ArtBar({
 		Name = "Progress",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, 36),
-		Size = UDim2.fromOffset(310, 14),
-		Color = Theme.XP,
+		Position = UDim2.new(0.5, 0, 0, 35),
+		Size = UDim2.fromOffset(300, 18),
+		Color = ac("XPBlue", Theme.XP),
 		Parent = ui.travel,
 	})
 	ui.setTravel = setTravel
 end
 
 ----------------------------------------------------------------- building: buttons
-local function roundButton(name, size, color)
-	return UIKit.Create("TextButton", {
+-- round hit target (transparent TextButton + PressScale) holding the art disc "Art" (IMG-R4: code-drawn circle)
+local function roundButton(name, size, part, fallbackColor)
+	local btn = UIKit.Create("TextButton", {
 		Name = name,
 		Text = "",
 		AutoButtonColor = false,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Size = UDim2.fromOffset(size, size),
-		BackgroundColor3 = color,
-		BackgroundTransparency = 0.08,
+		BackgroundTransparency = 1,
 		Parent = ui.buttons,
+	}, { UIKit.Create("UIScale", { Name = "PressScale" }) })
+	local art = UIKit.ArtFrame(part, {
+		Name = "Art",
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = 2,
+		Parent = btn,
 	}, {
-		corner(UDim.new(0.5, 0)),
-		UIKit.Create("UIStroke", {
-			Name = "Ring",
-			Thickness = 4,
-			Color = Color3.new(1, 1, 1),
-			Transparency = 0.35,
-			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-		}),
-		UIKit.Create("UIScale", { Name = "PressScale" }),
+		Color = fallbackColor,
+		BackgroundTransparency = 0.08,
+		CornerRadius = UDim.new(0.5, 0),
+		StrokeColor = COL.White,
+		StrokeThickness = 4,
+		StrokeTransparency = 0.35,
 	})
+	return btn, art
 end
 
--- small key badge (desktop keyboards only)
+-- small key badge (U1: keyboards only, never on touch)
 local function keyHint(parent, text, position, anchor)
-	if not UserInputService.KeyboardEnabled then return end
+	if not SHOW_KEYS then return end
 	UIKit.Create("TextLabel", {
 		Name = "KeyHint",
 		AnchorPoint = anchor,
 		Position = position,
-		Size = UDim2.fromOffset(20, 18),
-		BackgroundColor3 = Color3.new(0, 0, 0),
-		BackgroundTransparency = 0.35,
+		Size = UDim2.fromOffset(18, 18),
+		BackgroundColor3 = ac("KeyHintBg", COL.Black),
+		TextColor3 = ac("KeyHintText", COL.White),
+		Font = af("Number", Theme.Font),
 		TextSize = 13,
 		Text = text,
-		ZIndex = 4,
+		ZIndex = 8,
 		Parent = parent,
-	}, { corner(UDim.new(0, 6)) })
+	}, {
+		corner(UDim.new(0, 5)),
+		UIKit.Create("UIStroke", {
+			Color = COL.White,
+			Thickness = 1.5,
+			Transparency = 0.15,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		}),
+	})
 end
 
-local toggleAuto, doUpgrade, openMenu -- forward (defined with the input code)
+local toggleAuto, doUpgrade, openMenu, openMap -- forward (defined with the input code)
+
+-- parchment square (BtnSquare art): icon over a short ink label, key badge on the corner
+local function squareButton(name, icon, text, key, onClick)
+	local btn = UIKit.ArtButton("BtnSquare", {
+		Name = name,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Size = UDim2.fromOffset(L.Square, L.Square),
+		Parent = ui.buttons,
+	}, onClick, { CornerRadius = UDim.new(0, 12) })
+	local img = UIKit.ArtImage(icon, {
+		Name = "Icon",
+		AnchorPoint = Vector2.new(0.5, 0),
+		Position = UDim2.fromScale(0.5, 0.1),
+		Size = UDim2.fromScale(0.5, 0.42),
+		Parent = btn,
+	})
+	local label = artLabel(true, {
+		Name = "Label",
+		AnchorPoint = Vector2.new(0.5, 0),
+		Position = UDim2.fromScale(0.5, img and 0.53 or 0.28),
+		Size = UDim2.new(1, -8, img and 0.25 or 0.4, 0),
+		TextScaled = true,
+		MaxTextSize = 14,
+		Text = text,
+		Parent = btn,
+	})
+	keyHint(btn, key, UDim2.new(1, 3, 1, 3), Vector2.new(1, 1))
+	return btn, label, img
+end
 
 local function buildButtons(root)
 	ui.buttons = UIKit.Create("Frame", {
@@ -773,150 +1234,217 @@ local function buildButtons(root)
 		Parent = root,
 	})
 
-	-- 공격 (press = one swing, hold = repeat)
-	ui.attack = roundButton("Attack", ATTACK_SIZE, ATTACK_COLOR)
-	UIKit.Label({
-		Name = "Label",
-		Size = UDim2.fromScale(1, 1),
-		TextSize = math.floor(ATTACK_SIZE * 0.21),
-		Text = TXT.Attack,
-		TextStrokeTransparency = 0.4,
-		ZIndex = 2,
+	-- 공격 (press = one swing, hold = repeat): red disc, silver sword, "공격"
+	ui.attack = roundButton("Attack", L.Attack, "BtnAttack", COL.AttackFill)
+	local sword = UIKit.ArtImage("IconAttack", {
+		Name = "Icon",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.4),
+		Size = UDim2.fromScale(0.46, 0.46),
+		ZIndex = 3,
 		Parent = ui.attack,
 	})
-	keyHint(ui.attack, "F", UDim2.new(0.5, 0, 1, -8), Vector2.new(0.5, 1))
+	artLabel(false, {
+		Name = "Label",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, sword and 0.74 or 0.5),
+		Size = UDim2.fromScale(0.7, 0.22),
+		TextScaled = true,
+		MaxTextSize = math.floor(L.Attack * 0.2),
+		Title = true,
+		Text = TXT.Attack,
+		ZIndex = 4,
+		Parent = ui.attack,
+	})
+	keyHint(ui.attack, "F", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
-	-- 발사 + charge ring
-	ui.release = roundButton("Release", RELEASE_SIZE, RELEASE_BG)
-	ui.ring = ui.release:FindFirstChild("Ring")
+	-- 발사: gold disc + winged star, charge count badge on the top edge, the charge ring around it
+	local rel, relArt = roundButton("Release", L.Release, "BtnSpecial", COL.ReleaseFill)
+	ui.release, ui.releaseArt = rel, relArt
+	-- charge gauge: a disc behind the button filling bottom-up (UIGradient "Level"), visible as a ring around it
+	local gauge = UIKit.Create("Frame", {
+		Name = "Gauge",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(1.16, 1.16),
+		BackgroundColor3 = ac("NavyDeep", COL.ReleaseFill),
+		BackgroundTransparency = 0.2,
+		ZIndex = 1,
+		Parent = rel,
+	}, {
+		corner(UDim.new(0.5, 0)),
+		UIKit.Create("UIStroke", {
+			Name = "Ring",
+			Thickness = 4,
+			Color = COL.RingIdle,
+			Transparency = 0.35,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		}),
+	})
+	ui.ring = gauge:FindFirstChild("Ring")
 	ui.chargeFill = UIKit.Create("Frame", {
 		Name = "Fill",
 		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = CHARGE_COLOR,
+		BackgroundColor3 = COL.Charge,
 		BackgroundTransparency = 0.2,
 		Visible = false,
-		Parent = ui.release,
+		Parent = gauge,
 	}, {
 		corner(UDim.new(0.5, 0)),
 		UIKit.Create("UIGradient", { Name = "Level", Rotation = -90 }),
 	})
 	ui.chargeGradient = ui.chargeFill:FindFirstChild("Level")
-	local rs = RELEASE_SIZE / 120 -- label metrics below were tuned for a 120 px button
-	ui.chargeNum = UIKit.Label({
-		Name = "Count",
+	ui.releaseIcon = UIKit.ArtImage("IconSpecial", {
+		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.47),
-		Size = UDim2.new(1, 0, 0, math.floor(40 * rs)),
-		TextSize = math.floor(36 * rs),
-		Text = "0",
-		TextStrokeTransparency = 0.3,
+		Position = UDim2.fromScale(0.5, 0.45),
+		Size = UDim2.fromScale(0.56, 0.34),
 		ZIndex = 3,
-		Parent = ui.release,
+		Parent = rel,
 	})
-	ui.chargeSub = UIKit.Label({
+	ui.chargeSub = artLabel(false, {
 		Name = "Sub",
-		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -math.floor(12 * rs)),
-		Size = UDim2.new(1, -10, 0, math.floor(20 * rs)),
-		TextSize = math.max(13, math.floor(16 * rs)),
-		Text = TXT.Release,
-		TextStrokeTransparency = 0.3,
-		ZIndex = 3,
-		Parent = ui.release,
-	})
-	ui.chargeTimer = UIKit.Label({
-		Name = "Timer",
-		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, math.floor(12 * rs)),
-		Size = UDim2.new(1, -10, 0, math.floor(20 * rs)),
-		TextSize = math.max(13, math.floor(16 * rs)),
-		TextColor = Theme.Gold,
-		TextStrokeTransparency = 0.3,
-		Visible = false,
-		ZIndex = 3,
-		Parent = ui.release,
-	})
-	keyHint(ui.release, "Q", UDim2.fromScale(1, 0), Vector2.new(1, 0))
-
-	-- 자동
-	ui.auto = UIKit.Button({
-		Name = "Auto",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Size = UDim2.fromOffset(SMALL_W, SMALL_H),
-		TextSize = IS_TOUCH and 16 or 14,
-		Text = TXT.AutoOff,
-		Color = BTN_GREY,
-		Parent = ui.buttons,
-	}, function()
+		Position = UDim2.fromScale(0.5, 0.74),
+		Size = UDim2.fromScale(0.76, 0.22),
+		TextScaled = true,
+		MaxTextSize = math.max(14, math.floor(L.Release * 0.18)),
+		Title = true,
+		Text = TXT.Release,
+		ZIndex = 4,
+		Parent = rel,
+	})
+	ui.chargeTimer = artLabel(false, {
+		Name = "Timer",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.45),
+		Size = UDim2.fromScale(0.6, 0.3),
+		TextScaled = true,
+		MaxTextSize = 26,
+		Number = true,
+		Color = Theme.Gold,
+		Visible = false,
+		ZIndex = 4,
+		Parent = rel,
+	})
+	local countBadge = UIKit.ArtFrame("LevelBadge", {
+		Name = "CountBadge",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.04),
+		Size = UDim2.fromScale(0.44, 0.44),
+		ZIndex = 5,
+		Parent = rel,
+	}, { StrokeThickness = 2 })
+	local facePos, faceSize = UIKit.ArtInner("LevelBadge")
+	ui.chargeNum = artLabel(false, {
+		Name = "Count",
+		Position = facePos or UDim2.fromScale(0.17, 0.18),
+		Size = faceSize or UDim2.fromScale(0.65, 0.61),
+		TextScaled = true,
+		MaxTextSize = 22,
+		Number = true,
+		Text = "0",
+		Parent = countBadge,
+	})
+	keyHint(rel, "Q", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
+
+	-- 자동 / 지도 / 메뉴 (U1: the menu key is B; Esc belongs to Roblox and M opens the map)
+	ui.auto, ui.autoLabel, ui.autoIcon = squareButton("Auto", "IconLock", TXT.AutoOff, "R", function()
 		toggleAuto()
 	end)
-	keyHint(ui.auto, "R", UDim2.fromOffset(-5, -5), Vector2.new(0, 0))
+	ui.map = squareButton("Map", "IconMap", TXT.Map, "M", function()
+		openMap()
+	end)
+	ui.menu, ui.menuLabel = squareButton("Menu", "IconGear", TXT.Menu, "B", function()
+		openMenu()
+	end)
+	ui.menuGlow = makeGlow(ui.menu, UDim.new(0, 12))
 
-	-- 업그레이드 (line 1: next weapon + price, line 2: progress bar / next-goal text)
-	ui.upgrade = UIKit.Button({
+	-- next-weapon card: sword + "다음: 나무 검" + coin price, progress bar / A7-3 "N마리 더!" line
+	local upW, upH = 3 * L.Square + 2 * L.RowGap, L.UpgradeH
+	ui.upgrade = UIKit.ArtButton("PanelParchment", {
 		Name = "Upgrade",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Size = UDim2.fromOffset(UPGRADE_W, UPGRADE_H),
-		Text = "",
-		Color = UPGRADE_BG,
+		Size = UDim2.fromOffset(upW, upH),
+		Visible = not IS_TOUCH,
 		Parent = ui.buttons,
 	}, function()
 		doUpgrade()
-	end)
-	local titleH = math.floor(UPGRADE_H * 0.4)
-	local barY = titleH + 7
-	ui.upgradeTitle = scaledLabel({
-		Name = "Title",
-		Position = UDim2.fromOffset(6, 5),
-		Size = UDim2.new(1, -12, 0, titleH),
-		ZIndex = 2,
+	end, { CornerRadius = UDim.new(0, 12) })
+	ui.upgradeGlow = makeGlow(ui.upgrade, UDim.new(0, 12))
+	local iconS = upH - 34
+	local wood = UIKit.ArtImage("IconSword", {
+		Name = "Icon",
+		Position = UDim2.fromOffset(9, 7),
+		Size = UDim2.fromOffset(iconS, iconS),
 		Parent = ui.upgrade,
-	}, IS_TOUCH and 16 or 14)
-	local _, setUpgrade, upgradeText = UIKit.Bar({
+	})
+	local tx = wood and (iconS + 15) or 10
+	ui.upgradeTitle = artLabel(true, {
+		Name = "Title",
+		Position = UDim2.fromOffset(tx, 8),
+		Size = UDim2.new(1, -tx - 10, 0, 18),
+		TextScaled = true,
+		MaxTextSize = 15,
+		Title = true,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		Parent = ui.upgrade,
+	})
+	ui.upgradeCoin = UIKit.ArtImage("IconCoin", {
+		Name = "Coin",
+		Position = UDim2.fromOffset(tx, 28),
+		Size = UDim2.fromOffset(16, 16),
+		Parent = ui.upgrade,
+	})
+	local px = ui.upgradeCoin and (tx + 20) or tx
+	ui.upgradePrice = artLabel(true, {
+		Name = "Price",
+		Position = UDim2.fromOffset(px, 27),
+		Size = UDim2.new(1, -px - 10, 0, 18),
+		TextScaled = true,
+		MaxTextSize = 15,
+		Number = true,
+		Color = ac("GoldInk", Theme.Gold),
+		Outline = ac("TextOutline", COL.Dark),
+		OutlineTransparency = 0,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		Parent = ui.upgrade,
+	})
+	local _, setUpgrade, upgradeText = UIKit.ArtBar({
 		Name = "Progress",
-		Position = UDim2.fromOffset(6, barY),
-		Size = UDim2.new(1, -12, 0, UPGRADE_H - barY - 5),
-		Color = Theme.Gold,
+		Position = UDim2.fromOffset(8, upH - 26),
+		Size = UDim2.new(1, -16, 0, 18),
+		Color = ac("UpgradeGold", Theme.Gold),
 		Parent = ui.upgrade,
 	})
 	upgradeText.TextScaled = true
 	local tc = upgradeText:FindFirstChildOfClass("UITextSizeConstraint")
-	if tc then tc.MaxTextSize = IS_TOUCH and 14 or 13 end
+	if tc then tc.MaxTextSize = 13 end
+	touchFloor(upgradeText)
 	ui.setUpgrade = setUpgrade
 	ui.upgradeText = upgradeText
-	keyHint(ui.upgrade, "U", UDim2.fromOffset(-5, -5), Vector2.new(0, 0))
-
-	-- 메뉴
-	ui.menu = UIKit.Button({
-		Name = "Menu",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Size = UDim2.fromOffset(SMALL_W, SMALL_H),
-		TextSize = IS_TOUCH and 18 or 16,
-		Text = TXT.Menu,
-		Color = BTN_GREY,
-		Parent = ui.buttons,
-	}, function()
-		openMenu()
-	end)
-	keyHint(ui.menu, "M", UDim2.fromOffset(-5, -5), Vector2.new(0, 0))
+	keyHint(ui.upgrade, "U", UDim2.new(1, -4, 0, 4), Vector2.new(1, 0))
 end
 
 ----------------------------------------------------------------- refresh: stats
 local function refreshStats()
 	local f = getFaction()
 	local level = math.floor(num("Level", 1))
-	ui.level.Text = string.format(TXT.Level, level)
+	ui.level.Text = tostring(level)
 
-	local title = Config.DisplayTitle(f, num("Honor", 0), num("Infamy", 0), num("FallMarks", 0), num("RedeemMarks", 0),
-		attr("SessionTitle", ""))
-	local prefix = ""
-	if f == "Neutral" then
-		local emblem = factionDef(f).Emblem
-		if type(emblem) == "string" and emblem ~= "" and glyphSafe(emblem) then prefix = emblem .. " " end
+	if ui.title then
+		local title = Config.DisplayTitle(f, num("Honor", 0), num("Infamy", 0), num("FallMarks", 0),
+			num("RedeemMarks", 0), attr("SessionTitle", ""))
+		local prefix = ""
+		if f == "Neutral" then
+			local emblem = factionDef(f).Emblem
+			if type(emblem) == "string" and emblem ~= "" and glyphSafe(emblem) then prefix = emblem .. " " end
+		end
+		ui.title.Text = prefix .. tostring(title or "")
+		ui.title.TextColor3 = factionColor(f)
+		ui.class.Text = Config.ClassName(getClass(), f)
 	end
-	ui.title.Text = prefix .. tostring(title or "")
-	ui.title.TextColor3 = factionColor(f)
-	ui.class.Text = Config.ClassName(getClass(), f)
 
 	local xp = math.max(0, num("XP", 0))
 	if level >= Config.Levels.MaxLevel then
@@ -928,20 +1456,31 @@ local function refreshStats()
 		ui.xpText.Text = fmtNum(xp) .. " / " .. fmtNum(need)
 	end
 
-	ui.bank.Text = string.format(TXT.Bank, fmtNum(num("BankGold", 0)))
-	ui.carried.Text = string.format(TXT.Carried, fmtNum(num("CarriedGold", 0)))
+	local tagHex = ac("LightSub", Theme.SubText):ToHex()
+	ui.bank.Text = string.format(TXT.Money, tagHex, TXT.BankTag, fmtNum(num("BankGold", 0)))
+	if ui.carried then
+		ui.carried.Text = string.format(TXT.Money, tagHex, TXT.CarriedTag, fmtNum(num("CarriedGold", 0)))
+	end
 
 	local horns = f == "Horns"
 	ui.stars.Visible = horns
 	if horns then
 		local maxStars = Config.PvP.MaxStars or 5
 		local stars = math.clamp(math.floor(num("WantedStars", 0)), 0, maxStars)
-		ui.stars.Text = string.rep("★", stars) .. string.rep("☆", maxStars - stars)
-			.. string.format(TXT.Bounty, fmtNum(num("Bounty", 0)))
+		local bounty = string.format(TXT.Bounty, fmtNum(num("Bounty", 0)))
+		if ui.starIds then
+			for i, img in ui.starImgs do
+				img.Visible = i <= maxStars
+				img.Image = (i <= stars) and ui.starIds[1] or ui.starIds[2]
+			end
+			ui.bounty.Text = bounty
+		else
+			ui.bounty.Text = string.rep("★", stars) .. string.rep("☆", maxStars - stars) .. " " .. bounty
+		end
 	end
-	local h = horns and STATS_H_FULL or STATS_H_SHORT
+	local h = L.StatsH + (horns and L.StarsH or 0)
 	if ui.stats.Size.Y.Offset ~= h then
-		ui.stats.Size = UDim2.fromOffset(STATS_W, h)
+		ui.stats.Size = UDim2.fromOffset(L.StatsW, h)
 		requestLayout()
 	end
 end
@@ -950,18 +1489,20 @@ end
 local function refreshChips()
 	local f = getFaction()
 	local now = Util.Now()
+	local pal = ui.chipPal
 
 	local blessing = UIKit.GameAttr("WarBlessing", "None")
 	local bdef = (blessing == "Halo" or blessing == "Horns") and Config.Factions[blessing] or nil
 	if bdef then
 		local pct = math.floor((Config.War.BlessingGold or 0.25) * 100 + 0.5)
-		setChip(ui.chip.Blessing, true, string.format(TXT.Blessing, bdef.Name, pct), factionColor(blessing), blessing == f)
+		setChip(ui.chip.Blessing, true, string.format(TXT.Blessing, bdef.Name, pct), factionColor(blessing),
+			blessing == f, nil, true)
 	else
 		setChip(ui.chip.Blessing, false)
 	end
 
 	if attr("ZoneTown", false) == true then
-		setChip(ui.chip.Zone, true, TXT.Safe, Theme.Good)
+		setChip(ui.chip.Zone, true, TXT.Safe, Theme.Good, false, pal.Safe, true)
 	elseif attr("ZonePvP", false) == true then
 		if f == "Neutral" then
 			setChip(ui.chip.Zone, true, TXT.PvPNeutral, factionColor("Neutral")) -- A6: Neutral is PvP-immune (A9-1 teal)
@@ -972,7 +1513,7 @@ local function refreshChips()
 		setChip(ui.chip.Zone, false)
 	end
 
-	setChip(ui.chip.Rookie, attr("Rookie", false) == true and f ~= "Neutral", TXT.Rookie, Theme.Good)
+	setChip(ui.chip.Rookie, attr("Rookie", false) == true and f ~= "Neutral", TXT.Rookie, Theme.XP, false, pal.Rookie, true)
 	setChip(ui.chip.Protected, attr("Protected", false) == true, TXT.Protected, Theme.XP)
 	setChip(ui.chip.Combat, num("InCombatUntil", 0) > now, TXT.InCombat, Theme.Revenge)
 	local size = num("SizeMult", 1)
@@ -1006,18 +1547,19 @@ local function refreshWar()
 	ui.haloFill.Visible = frac > 0.001
 	ui.hornsFill.Visible = frac < 0.999
 	ui.warDivider.Position = UDim2.fromScale(frac, 0.5)
+	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(frac, 0.5) end
 	ui.haloNum.Text = tostring(Config.Factions.Halo.Emblem) .. " " .. fmtScore(h)
 	ui.hornsNum.Text = fmtScore(r) .. " " .. tostring(Config.Factions.Horns.Emblem)
 
 	local mode = UIKit.GameAttr("WarMode", "Idle")
 	ui.warSiege.Visible = mode == "Siege"
-	ui.warSiege.Text = string.format(TXT.Siege, Config.War.SiegeTarget or 150)
+	ui.warSiegeText.Text = string.format(TXT.Siege, Config.War.SiegeTarget or 150)
 
 	local f = getFaction()
 	local fighting = f == "Halo" or f == "Horns" -- A6: Neutral / None earn no war points
 	ui.warPoints.Visible = fighting
 	if fighting then
-		ui.warPoints.Text = string.format(TXT.MyWar, fmtNum(num("WarPoints", 0)))
+		ui.warPointsText.Text = string.format(TXT.MyWar, fmtNum(num("WarPoints", 0)))
 	end
 	refreshWarTime()
 	refreshChips()
@@ -1051,12 +1593,16 @@ local function refreshCharge()
 	ui.chargeNum.Text = tostring(n)
 	setChargeFill(charge / cap)
 	local ready = n >= Config.Charge.MinRelease
-	ui.chargeNum.TextColor3 = ready and Theme.Text or GREY
-	ui.release.BackgroundTransparency = ready and 0.05 or 0.35
+	ui.chargeNum.TextColor3 = ready and Theme.Text or COL.Grey
+	if isImage(ui.releaseArt) then
+		ui.releaseArt.ImageColor3 = ready and COL.White or COL.DimTint
+	elseif ui.releaseArt then
+		ui.releaseArt.BackgroundTransparency = ready and 0.05 or 0.35
+	end
 	if not perfectOn then
-		ui.chargeFill.BackgroundColor3 = (charge >= cap) and Theme.Gold or CHARGE_COLOR
+		ui.chargeFill.BackgroundColor3 = (charge >= cap) and Theme.Gold or COL.Charge
 		ui.chargeFill.BackgroundTransparency = ready and 0.15 or 0.45
-		ui.ring.Color = ready and Theme.Gold or RING_IDLE
+		ui.ring.Color = ready and Theme.Gold or COL.RingIdle
 		ui.ring.Transparency = ready and 0.15 or 0.35
 	end
 end
@@ -1068,6 +1614,7 @@ local function setPerfect(on)
 		perfectTween:Cancel()
 		perfectTween = nil
 	end
+	if ui.releaseIcon then ui.releaseIcon.Visible = not on end -- the countdown takes the icon's spot
 	if on then
 		ui.ring.Color = Theme.Gold
 		ui.ring.Transparency = 0
@@ -1101,18 +1648,23 @@ end
 ----------------------------------------------------------------- refresh: auto / upgrade / menu
 local function refreshAuto()
 	local unlock = Config.Combat.AutoUnlockLevel
-	if num("Level", 1) < unlock then
-		ui.auto.Text = string.format(TXT.AutoLocked, unlock)
-		ui.auto.BackgroundColor3 = BTN_LOCKED
-		ui.auto.TextColor3 = GREY
-	elseif attr("AutoAttack", false) == true then
-		ui.auto.Text = TXT.AutoOn
-		ui.auto.BackgroundColor3 = Theme.Good
-		ui.auto.TextColor3 = DARK_TEXT
+	local locked = num("Level", 1) < unlock
+	local on = (not locked) and attr("AutoAttack", false) == true
+	if locked then
+		ui.autoLabel.Text = string.format(TXT.AutoLocked, unlock)
 	else
-		ui.auto.Text = TXT.AutoOff
-		ui.auto.BackgroundColor3 = BTN_GREY
-		ui.auto.TextColor3 = Theme.Text
+		ui.autoLabel.Text = on and TXT.AutoOn or TXT.AutoOff
+	end
+	ui.autoLabel.TextColor3 = locked and ac("InkSoft", COL.Grey) or ac("Ink", COL.Dark)
+	if locked then
+		paint(ui.auto, COL.LockedTint, ac("ParchmentDark", COL.Grey))
+	elseif on then
+		paint(ui.auto, COL.HotTint, Theme.Good)
+	else
+		paint(ui.auto, COL.White, ac("Parchment", Theme.SubText))
+	end
+	if ui.autoIcon then
+		ui.autoIcon.Image = UIKit.ArtId(locked and "IconLock" or "IconAttack") or ui.autoIcon.Image
 	end
 end
 
@@ -1157,51 +1709,57 @@ end
 
 local function refreshUpgrade()
 	local info = upgradeInfo()
+	local canBuy = false
 	if info.Max then
 		ui.upgradeTitle.Text = TXT.UpgradeMax
-		ui.setUpgrade(1, Theme.Gold)
+		ui.upgradePrice.Text = ""
+		ui.setUpgrade(1, ac("UpgradeGold", Theme.Gold))
 		ui.upgradeText.Text = ""
-		return
-	end
-	ui.upgradeTitle.Text = string.format(TXT.UpgradeNext, tostring(info.Name), fmtNum(info.Price))
-	local frac = info.Price > 0 and (info.Total / info.Price) or 1
-	if info.LevelShort then
-		ui.setUpgrade(frac, GREY)
-		ui.upgradeText.Text = string.format(TXT.UpgradeNeedLevel, info.MinLevel)
-	elseif info.NeedFaction then
-		ui.setUpgrade(frac, GREY)
-		ui.upgradeText.Text = TXT.UpgradeNeedFaction
-	elseif info.Total >= info.Price then
-		ui.setUpgrade(1, Theme.Good)
-		ui.upgradeText.Text = TXT.UpgradeReady
 	else
-		ui.setUpgrade(frac, Theme.Gold)
-		local text = fmtNum(info.Total) .. " / " .. fmtNum(info.Price)
-		-- A7-3: "<몬스터> N마리 더!" from the average of the last kill rewards
-		local avg = avgRecentGold()
-		if avg > 0 then
-			local n = math.ceil((info.Price - info.Total) / avg)
-			if n >= 1 and n <= MAX_KILLS_SHOWN then
-				text = textOr("KillsToAfford", "%s %d마리 더!", farmMonsterName(info.Level), n)
+		ui.upgradeTitle.Text = string.format(TXT.UpgradeNext, tostring(info.Name))
+		ui.upgradePrice.Text = string.format(TXT.UpgradePrice, fmtNum(info.Price))
+		local frac = info.Price > 0 and (info.Total / info.Price) or 1
+		if info.LevelShort then
+			ui.setUpgrade(frac, COL.Grey)
+			ui.upgradeText.Text = string.format(TXT.UpgradeNeedLevel, info.MinLevel)
+		elseif info.NeedFaction then
+			ui.setUpgrade(frac, COL.Grey)
+			ui.upgradeText.Text = TXT.UpgradeNeedFaction
+		elseif info.Total >= info.Price then
+			canBuy = true
+			ui.setUpgrade(1, Theme.Good)
+			ui.upgradeText.Text = TXT.UpgradeReady
+		else
+			ui.setUpgrade(frac, ac("UpgradeGold", Theme.Gold))
+			local text = fmtNum(info.Total) .. " / " .. fmtNum(info.Price)
+			-- A7-3: "<몬스터> N마리 더!" from the average of the last kill rewards
+			local avg = avgRecentGold()
+			if avg > 0 then
+				local n = math.ceil((info.Price - info.Total) / avg)
+				if n >= 1 and n <= MAX_KILLS_SHOWN then
+					text = textOr("KillsToAfford", "%s %d마리 더!", farmMonsterName(info.Level), n)
+				end
 			end
+			ui.upgradeText.Text = text
 		end
-		ui.upgradeText.Text = text
 	end
+	if ui.upgradeCoin then ui.upgradeCoin.Visible = not info.Max end
+	-- U5 slim touch layout: the card shows only while the next weapon can be bought, so phones can still buy it
+	local show = (not IS_TOUCH) or canBuy
+	if ui.upgrade.Visible ~= show then ui.upgrade.Visible = show end
 end
 
 local function pulseUpgrade()
-	local stroke = ui.upgrade:FindFirstChild("Stroke")
-	if stroke and stroke:IsA("UIStroke") then
-		stroke.Color = Theme.Gold
+	local stroke = ui.upgradeGlow
+	if stroke then
 		stroke.Transparency = 0
 		stroke.Thickness = 2
 		local t = TweenService:Create(stroke,
 			TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 5, true), { Thickness = 7 })
 		t.Completed:Once(function()
 			if stroke.Parent then
-				stroke.Color = Color3.new(0, 0, 0)
-				stroke.Transparency = 0.45
-				stroke.Thickness = 2
+				stroke.Transparency = 1
+				stroke.Thickness = 3
 			end
 		end)
 		t:Play()
@@ -1248,24 +1806,17 @@ local function refreshMenuGlow()
 		menuGlowTween:Cancel()
 		menuGlowTween = nil
 	end
-	local stroke = ui.menu:FindFirstChild("Stroke")
+	local stroke = ui.menuGlow
+	if not stroke then return end
 	if glow then
-		ui.menu.TextColor3 = Theme.Gold
-		if stroke then
-			stroke.Color = Theme.Gold
-			stroke.Transparency = 0
-			stroke.Thickness = 3
-			menuGlowTween = TweenService:Create(stroke,
-				TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 6 })
-			menuGlowTween:Play()
-		end
+		stroke.Transparency = 0
+		stroke.Thickness = 3
+		menuGlowTween = TweenService:Create(stroke,
+			TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 6 })
+		menuGlowTween:Play()
 	else
-		ui.menu.TextColor3 = Theme.Text
-		if stroke then
-			stroke.Color = Color3.new(0, 0, 0)
-			stroke.Transparency = 0.45
-			stroke.Thickness = 2
-		end
+		stroke.Transparency = 1
+		stroke.Thickness = 3
 	end
 end
 
@@ -1318,6 +1869,7 @@ end
 local function onClaim(r)
 	local e = r.Entry
 	if not e or throttled("claim", 0.35) then return end
+	if os.clock() < (r.LockUntil or 0) then return end -- CR-M24: the row just changed under the finger
 	local arg = nil
 	if e.Pinned then
 		arg = TUT_QUEST_ID
@@ -1326,12 +1878,13 @@ local function onClaim(r)
 	end
 	if arg == nil then return end
 	fire("ClaimQuest", arg)
+	questState.ClaimAt = os.clock() -- CR-M24: 교체 ignores taps for ClaimLock seconds after a claim
 	r.Claim:SetAttribute("Disabled", true)
-	r.Claim.BackgroundTransparency = 0.5
+	setDim(r.Claim, true)
 	task.delay(1.5, function()
 		if r.Claim.Parent then
 			r.Claim:SetAttribute("Disabled", false)
-			r.Claim.BackgroundTransparency = 0
+			setDim(r.Claim, false)
 		end
 	end)
 end
@@ -1339,102 +1892,138 @@ end
 local function onReroll(r)
 	local e = r.Entry
 	if not e or e.Pinned or e.Slot == nil then return end
+	local now = os.clock()
+	if now - questState.ClaimAt < questState.ClaimLock then return end -- CR-M24
+	if now < (r.LockUntil or 0) then return end
 	if Util.Now() < num("RerollReadyAt", 0) then return end
 	if throttled("reroll", 0.6) then return end
-	fire("RerollQuest", e.Slot)
+	local slot, key = e.Slot, r.Key
+	-- CR-M25: rerolling throws the progress away, so it always asks first (every device)
+	UIKit.Confirm(TXT.RerollTitle, TXT.RerollBody, TXT.RerollYes, function()
+		if r.Key ~= key then return end -- the row changed while the dialog was open
+		fire("RerollQuest", slot)
+	end)
 end
 
+-- parchment row: quest icon (slime / scroll), kind badge + text, progress bar + coin reward.
+-- 교체 sits top-right and 받기 bottom-right, so the two never share a spot (CR-M24).
 local function makeQuestRow(index)
-	local row = UIKit.Create("Frame", {
+	local W, H, R = ui.questRowW, L.QuestRowH, L.Row
+	local row, isArt = UIKit.ArtFrame("PanelParchment", {
 		Name = "Quest" .. index,
 		LayoutOrder = index,
-		Size = UDim2.fromOffset(QUEST_W, QUEST_ROW_H),
-		BackgroundColor3 = Theme.Bg,
-		BackgroundTransparency = Theme.BgTransparency,
-		Parent = ui.quests,
-	}, {
-		corner(UDim.new(0, 10)),
-		UIKit.Create("UIStroke", {
-			Name = "Stroke",
-			Color = Theme.Good,
-			Thickness = 2,
-			Transparency = 1,
-			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-		}),
+		Size = UDim2.fromOffset(W, H),
+		Parent = ui.questList,
 	})
-	local r = { Frame = row, Entry = nil }
-	-- one compact line: [badge] text / progress bar + reward, claim or reroll button on the right
-	local rightX = QUEST_W - QUEST_BTN_W - 8 -- left edge of the button column (minus a 4 px gap)
-	local rewardW = 40
-	local barW = rightX - rewardW - 2 - 5
-	r.Badge = UIKit.Create("TextLabel", {
+	local r = { Frame = row, IsArt = isArt, Entry = nil, Key = nil, LockUntil = 0 }
+	local iconS = H - 20
+	r.Icon = UIKit.ArtImage("IconScroll", {
+		Name = "Icon",
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, 8, 0.5, 0),
+		Size = UDim2.fromOffset(iconS, iconS),
+		Parent = row,
+	})
+	local x0 = r.Icon and (iconS + 14) or 8
+	r.Badge = touchFloor(UIKit.Create("TextLabel", {
 		Name = "Badge",
-		Position = UDim2.fromOffset(5, 5),
-		Size = UDim2.fromOffset(34, 16),
+		Position = UDim2.fromOffset(x0, 7),
+		Size = UDim2.fromOffset(R.Badge, R.BadgeH),
 		BackgroundColor3 = Theme.Gold,
-		TextColor3 = DARK_TEXT,
-		TextSize = 12,
+		TextColor3 = COL.Dark,
+		TextSize = R.Text - 2,
 		Text = "",
 		Parent = row,
-	}, { corner(UDim.new(0, 5)) })
-	r.Text = UIKit.Label({
+	}, {
+		corner(UDim.new(0, 5)),
+		UIKit.Create("UIStroke", {
+			Color = ac("Rim", COL.Dark),
+			Thickness = 1,
+			Transparency = 0.3,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		}),
+	}))
+	local textX = x0 + R.Badge + 5
+	r.TextLong = W - textX - 10
+	r.TextShort = W - textX - R.Reroll - 14
+	r.Text = artLabel(true, {
 		Name = "Text",
-		Position = UDim2.fromOffset(43, 3),
-		Size = UDim2.fromOffset(rightX - 43, 19),
-		TextSize = 13,
+		Position = UDim2.fromOffset(textX, 5),
+		Size = UDim2.fromOffset(r.TextShort, R.BtnH + 1),
 		TextScaled = true,
-		TextTruncate = Enum.TextTruncate.AtEnd,
+		MaxTextSize = R.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
 		Parent = row,
 	})
-	local tc = r.Text:FindFirstChildOfClass("UITextSizeConstraint")
-	if tc then tc.MaxTextSize = 13 end
-	local _, setBar, barText = UIKit.Bar({
+	local barY = H - R.BarH - 9
+	local _, setBar, barText = UIKit.ArtBar({
 		Name = "Progress",
-		Position = UDim2.fromOffset(5, 25),
-		Size = UDim2.fromOffset(barW, 14),
-		Color = Theme.Good,
-		TextSize = 12,
+		Position = UDim2.fromOffset(x0, barY),
+		Size = UDim2.fromOffset(W - x0 - R.Reward - 14, R.BarH),
+		Color = ac("QuestBlue", Theme.Good),
+		TextSize = IS_TOUCH and L.TouchText or 11,
 		Parent = row,
 	})
 	r.SetBar = setBar
 	r.BarText = barText
-	r.Reward = UIKit.Label({
-		Name = "Reward",
-		Position = UDim2.fromOffset(5 + barW + 2, 24),
-		Size = UDim2.fromOffset(rewardW, 16),
-		TextSize = 13,
-		TextScaled = true,
-		TextColor = Theme.Gold,
+	-- reward: coin + "+120"
+	local rx = W - R.Reward - 8
+	local cs = R.BarH + 3
+	r.Coin = UIKit.ArtImage("IconCoin", {
+		Name = "Coin",
+		Position = UDim2.fromOffset(rx, barY + math.floor((R.BarH - cs) / 2)),
+		Size = UDim2.fromOffset(cs, cs),
 		Parent = row,
 	})
-	local rc = r.Reward:FindFirstChildOfClass("UITextSizeConstraint")
-	if rc then rc.MaxTextSize = 13 end
-	r.Claim = UIKit.Button({
+	local tx = r.Coin and (rx + cs + 3) or rx
+	r.Reward = artLabel(true, {
+		Name = "Reward",
+		Position = UDim2.fromOffset(tx, barY - 2),
+		Size = UDim2.fromOffset(W - 8 - tx, R.BarH + 4),
+		TextScaled = true,
+		MaxTextSize = R.Text,
+		Number = true,
+		Color = ac("GoldInk", Theme.Gold),
+		Outline = ac("TextOutline", COL.Dark),
+		OutlineTransparency = 0,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		Parent = row,
+	})
+	-- 받기: green candy pill over the reward (bottom-right)
+	local claimH = R.BtnH + 4
+	local claim, claimLabel = UIKit.ArtButton("Pill", {
 		Name = "Claim",
+		Position = UDim2.fromOffset(rx - 6, H - claimH - 4),
+		Size = UDim2.fromOffset(R.Reward + 10, claimH),
+		ImageColor3 = COL.HotTint,
 		Text = TXT.Claim,
-		Position = UDim2.fromOffset(QUEST_W - QUEST_BTN_W - 4, 4),
-		Size = UDim2.fromOffset(QUEST_BTN_W, QUEST_ROW_H - 8),
-		Color = Theme.Good,
-		TextColor = DARK_TEXT,
-		TextSize = 14,
+		TextSize = R.Text + 1,
+		TextStyle = "light",
 		Visible = false,
+		ZIndex = 3,
 		Parent = row,
 	}, function()
 		onClaim(r)
-	end)
-	r.Reroll = UIKit.Button({
+	end, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
+	r.Claim = claim
+	touchFloor(claimLabel)
+	-- 교체: small parchment pill (top-right)
+	local reroll, rerollLabel = UIKit.ArtButton("Pill", {
 		Name = "Reroll",
+		Position = UDim2.fromOffset(W - R.Reroll - 8, 4),
+		Size = UDim2.fromOffset(R.Reroll, R.BtnH),
 		Text = TXT.Reroll,
-		Position = UDim2.fromOffset(QUEST_W - QUEST_BTN_W - 4, 4),
-		Size = UDim2.fromOffset(QUEST_BTN_W, QUEST_ROW_H - 8),
-		Color = BTN_GREY,
-		TextSize = 14,
+		TextSize = R.Text,
+		TextStyle = "ink",
 		Visible = false,
+		ZIndex = 3,
 		Parent = row,
 	}, function()
 		onReroll(r)
-	end)
+	end, { CornerRadius = UDim.new(0.5, 0) })
+	r.Reroll = reroll
+	r.RerollLabel = touchFloor(rerollLabel)
 	return r
 end
 
@@ -1442,17 +2031,12 @@ local function refreshRerollTimers()
 	local remaining = num("RerollReadyAt", 0) - Util.Now()
 	for _, r in questRows do
 		if r.Frame.Visible and r.Reroll.Visible then
-			if remaining > 0 then
-				r.Reroll.Text = tostring(math.ceil(remaining))
-				r.Reroll.TextSize = 14
-				r.Reroll.BackgroundTransparency = 0.55
-				r.Reroll:SetAttribute("Disabled", true)
-			else
-				r.Reroll.Text = TXT.Reroll
-				r.Reroll.TextSize = 14
-				r.Reroll.BackgroundTransparency = 0
-				r.Reroll:SetAttribute("Disabled", false)
+			local waiting = remaining > 0
+			if r.RerollLabel then
+				r.RerollLabel.Text = waiting and tostring(math.ceil(remaining)) or TXT.Reroll
 			end
+			setDim(r.Reroll, waiting)
+			r.Reroll:SetAttribute("Disabled", waiting)
 		end
 	end
 end
@@ -1460,6 +2044,10 @@ end
 refreshQuests = function()
 	local entries = parseQuests()
 	ui.quests.Visible = #entries > 0
+	if #entries == 0 and ui.questOverlay then
+		questState.OverlayOpen = false
+		ui.questOverlay.Visible = false
+	end
 	local slots = Config.Quests.Slots
 	local claims = math.floor(num("DailyClaims", 0))
 
@@ -1481,15 +2069,28 @@ refreshQuests = function()
 		shown = firstClaim or firstDaily or 1
 	end
 
-	-- header: progress, claimable count (highlighted so claiming stays 1-2 clicks), expand arrow
+	-- header: progress, claimable count (turns green so claiming stays 1-2 clicks), expand chevron
 	local head = (claims >= slots) and TXT.QuestAllDone or string.format(TXT.QuestHeader, claims, slots)
 	if claimable > 0 then head ..= string.format(TXT.QuestClaimable, claimable) end
-	if #entries > 1 then head ..= (questExpanded and TXT.QuestCollapse or TXT.QuestExpand) end
-	ui.questHeader.Text = head
 	local hot = claimable > 0
-	ui.questHeader.BackgroundColor3 = hot and Theme.Good or Theme.Bg
-	ui.questHeader.BackgroundTransparency = hot and 0.05 or 0.35
-	ui.questHeader.TextColor3 = hot and DARK_TEXT or Theme.Gold
+	if IS_TOUCH then
+		-- U5: one line (what to do now); tapping it opens the overlay with the rows
+		local line = head
+		local se = entries[shown]
+		if hot then
+			line = string.format(TXT.QuestTouchClaim, claimable)
+		elseif se then
+			line = string.format(TXT.QuestTouchLine, fmtNum(math.min(se.Progress, se.Target)), fmtNum(se.Target), se.Text)
+		end
+		ui.questHeaderText.Text = line
+		ui.questChevron.Text = questState.OverlayOpen and TXT.QuestCollapse or TXT.QuestExpand
+		if ui.questOverlayTitle then ui.questOverlayTitle.Text = head end
+	else
+		ui.questHeaderText.Text = head
+		ui.questChevron.Visible = #entries > 1
+		ui.questChevron.Text = questExpanded and TXT.QuestCollapse or TXT.QuestExpand
+	end
+	paint(ui.questHeader, hot and COL.HotTint or COL.White, hot and Theme.Good or ac("Ribbon", Theme.Gold))
 
 	local visibleBefore = 0
 	for _, r in questRows do
@@ -1503,8 +2104,14 @@ refreshQuests = function()
 			r = makeQuestRow(i)
 			questRows[i] = r
 		end
+		-- CR-M24: a row whose quest just changed ignores taps for RowLock seconds
+		local key = e.Id .. "|" .. tostring(e.Slot) .. "|" .. e.Kind
+		if r.Key ~= key then
+			r.Key = key
+			r.LockUntil = os.clock() + questState.RowLock
+		end
 		r.Entry = e
-		r.Frame.Visible = questExpanded or i == shown
+		r.Frame.Visible = IS_TOUCH or questExpanded or i == shown -- touch: every row, inside the overlay
 		if r.Frame.Visible then visibleNow += 1 end
 		if e.Pinned then
 			r.Badge.Text = TXT.BadgePinned
@@ -1514,18 +2121,33 @@ refreshQuests = function()
 			r.Badge.BackgroundColor3 = Theme.Gold
 		else
 			r.Badge.Text = TXT.BadgeExtra
-			r.Badge.BackgroundColor3 = GREY
+			r.Badge.BackgroundColor3 = COL.Grey
+		end
+		if r.Icon then
+			r.Icon.Image = UIKit.ArtId(QUEST_ICON[e.Id] or "IconScroll") or r.Icon.Image
 		end
 		r.Text.Text = e.Text
 		local done = e.Progress >= e.Target
-		r.SetBar(e.Progress / e.Target, done and Theme.Gold or Theme.Good)
+		r.SetBar(e.Progress / e.Target, done and ac("UpgradeGold", Theme.Gold) or ac("QuestBlue", Theme.Good))
 		r.BarText.Text = fmtNum(math.min(e.Progress, e.Target)) .. "/" .. fmtNum(e.Target)
-		r.Reward.Text = e.RewardGold > 0 and ("+" .. fmtNum(e.RewardGold)) or ""
 		local canClaim = done and (e.Pinned or e.Kind == "Daily")
+		local canReroll = (not done) and (not e.Pinned) and e.Slot ~= nil
+		r.Reward.Text = e.RewardGold > 0 and ("+" .. fmtNum(e.RewardGold)) or ""
+		r.Reward.Visible = not canClaim -- 받기 covers the reward slot
+		if r.Coin then r.Coin.Visible = e.RewardGold > 0 and not canClaim end
 		r.Claim.Visible = canClaim
-		r.Reroll.Visible = (not done) and (not e.Pinned) and e.Slot ~= nil
-		local stroke = r.Frame:FindFirstChild("Stroke")
-		if stroke then stroke.Transparency = canClaim and 0 or 1 end
+		r.Reroll.Visible = canReroll
+		r.Text.Size = UDim2.fromOffset(canReroll and r.TextShort or r.TextLong, r.Text.Size.Y.Offset)
+		-- claimable rows turn green (art tint, or the fallback's rim)
+		if r.IsArt then
+			r.Frame.ImageColor3 = canClaim and COL.RowHotTint or COL.White
+		else
+			local stroke = r.Frame:FindFirstChild("Stroke")
+			if stroke then
+				stroke.Color = canClaim and Theme.Good or ac("Rim", COL.Dark)
+				stroke.Thickness = canClaim and 3 or 2
+			end
+		end
 	end
 	for i = #entries + 1, #questRows do
 		local r = questRows[i]
@@ -1536,6 +2158,19 @@ refreshQuests = function()
 	if visibleBefore ~= visibleNow then
 		requestLayout()
 	end
+end
+
+-- desktop: expand / collapse the list; touch: open / close the overlay (open = nil toggles)
+toggleQuests = function(open)
+	if IS_TOUCH then
+		if open == nil then open = not questState.OverlayOpen end
+		questState.OverlayOpen = open == true
+		if ui.questOverlay then ui.questOverlay.Visible = questState.OverlayOpen end
+		requestLayout()
+	else
+		questExpanded = not questExpanded
+	end
+	refreshQuests()
 end
 
 ----------------------------------------------------------------- guide beam (A4 step 1, A7-3 reuse)
@@ -1814,6 +2449,16 @@ openMenu = function()
 	end
 end
 
+-- 지도 square (same toggle as WorldMap's M key)
+openMap = function()
+	if throttled("map", 0.25) then return end
+	local wm = C and C.WorldMap
+	if type(wm) == "table" and type(wm.Toggle) == "function" then
+		local ok, err = pcall(wm.Toggle)
+		if not ok then warnThrottled("WorldMap.Toggle failed: " .. tostring(err)) end
+	end
+end
+
 local function onInputBegan(input, gameProcessed)
 	if gameProcessed or not inputAllowed() then return end
 	local t = input.UserInputType
@@ -1829,6 +2474,8 @@ local function onInputBegan(input, gameProcessed)
 			toggleAuto()
 		elseif k == Enum.KeyCode.U then
 			doUpgrade()
+		elseif k == Enum.KeyCode.B then
+			openMenu() -- U1: Esc belongs to Roblox
 		end -- M is bound by WorldMap (A12)
 	elseif t == Enum.UserInputType.Gamepad1 then
 		if input.KeyCode == Enum.KeyCode.ButtonR2 then
@@ -1922,53 +2569,88 @@ applyLayout = function()
 	local W, H = abs.X / s, abs.Y / s
 	local inset = insetY()
 	local shift = inset / s -- slot-table y values are measured from below the top bar
-	local minTop = (inset + TOP_PAD) / s -- H4: never above inset + 8 real px
+	local minTop = (inset + TOP_PAD) / s -- H4 / U4: never above inset + 8 real px
 
 	-- top-anchored blocks
 	local statsY = math.max(12 + shift, minTop)
-	-- desktop: the Roblox chat window sits top-left too, so start the stats block below it
+	-- desktop: the Roblox chat window sits top-left too, so start the card below it
 	local chatBottom = (not IS_TOUCH) and chatWindowBottom(inset, s, abs.Y) or nil
 	if chatBottom then statsY = math.max(statsY, chatBottom / s + 8) end
 	ui.stats.Position = UDim2.fromOffset(12, statsY)
-	ui.war.Position = UDim2.new(0.5, 0, 0, math.max(8 + shift, minTop))
-	ui.chips.Position = UDim2.new(0.5, 0, 0, math.max(CHIPS_Y + shift, minTop))
+	local warY = math.max(8 + shift, minTop)
+	ui.war.Position = UDim2.new(0.5, 0, 0, warY)
+	-- chips under EventHUD's strip, which itself follows the war meter's bottom
+	ui.chips.Position = UDim2.new(0.5, 0, 0, math.max(L.ChipsY + shift, minTop, warY + L.WarH + L.StripBelow))
 
-	-- quests right under the stats block (collapsed by default, so the list stays short)
+	-- quests right under the card (collapsed by default, so the list stays short)
 	local statsBottom = statsY + ui.stats.Size.Y.Offset
 	ui.quests.Position = UDim2.fromOffset(12, statsBottom + 8)
 
-	-- big buttons: attack up-left of the touch jump button (H5), else bottom-right corner
-	local AR, RR = ATTACK_SIZE / 2, RELEASE_SIZE / 2
+	-- touch quest overlay (CR-M25): top band, right of the thumbstick zone's x range (U3)
+	if ui.questOverlay then
+		local ow = L.OverlayW
+		local ox = math.max(W * L.StickZoneX + 8, (W - ow) / 2)
+		ox = math.max(12, math.min(ox, W - 12 - ow))
+		ui.questOverlay.Position = UDim2.fromOffset(ox, minTop)
+	end
+
+	-- big buttons: attack up-left of the touch jump button (H5 / U2); no jump button on a mouse device: 발사 in the
+	-- bottom-right corner with 공격 to its left (mockup order)
+	local AR, RR = L.Attack / 2, L.Release / 2
+	local SQ, GAP, RG = L.Square, L.BtnGap, L.RowGap
 	local ax, ay
+	local cornerRelease = false
 	local jb = jumpButton
 	if jb and jb.Parent and jb.AbsoluteSize.X > 0 then
 		local rel = jb.AbsolutePosition - gui.AbsolutePosition
-		ax = rel.X / s - BTN_GAP - AR
+		ax = rel.X / s - GAP - AR
 		ay = rel.Y / s + (jb.AbsoluteSize.Y / s) * 0.2
 	elseif UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
 		ax, ay = W + ATTACK_FALLBACK.X, H + ATTACK_FALLBACK.Y
 	else
-		ax, ay = W - SCREEN_EDGE - AR, H - SCREEN_EDGE - AR
+		cornerRelease = true
+		ax, ay = W - L.Edge - 2 * RR - GAP - AR, H - L.Edge - AR
 	end
-	local axMax = W - AR - 8
+	-- top of the square row + next-weapon card column: desktop puts it right under EventHUD's luck panel (mockup);
+	-- touch (luck panel hidden) stacks it above the attack button, so it only needs room below the top inset
+	local colTop = minTop
+	if not IS_TOUCH then
+		local luck = gui:FindFirstChild("LuckCorner")
+		local luckBottom = luck and luck:GetAttribute("BottomY")
+		if type(luckBottom) ~= "number" or luckBottom ~= luckBottom then
+			luckBottom = math.max(L.LuckY, minTop) + L.LuckH
+		end
+		colTop = luckBottom + RG
+	end
+	-- keep the attack button below that column
+	local column = SQ + RG + L.UpgradeH + GAP
+	local axMax = cornerRelease and (W - AR - GAP - 2 * RR - 8) or (W - AR - 8)
+	local axMin = cornerRelease and (AR + 8) or (AR + 2 * RR + GAP + 8)
 	local ayMax = H - AR - 8
-	ax = math.clamp(ax, math.min(axMax, AR + 2 * RR + BTN_GAP + 8), axMax)
-	ay = math.clamp(ay, math.min(ayMax, AR + UPGRADE_H + BTN_GAP + 8), ayMax)
+	ax = math.clamp(ax, math.min(axMax, axMin), axMax)
+	ay = math.clamp(ay, math.min(ayMax, colTop + column + AR + 8), ayMax)
 	ui.attack.Position = UDim2.fromOffset(ax, ay)
-	ui.release.Position = UDim2.fromOffset(ax - AR - BTN_GAP - RR, math.min(ay + AR * 0.25, H - RR - 8))
-
-	local rowY = ay - AR - BTN_GAP - UPGRADE_H / 2
-	local autoX = ax
-	local menuX = autoX + SMALL_W + ROW_GAP
-	local overflow = menuX + SMALL_W / 2 - (W - 12)
-	if overflow > 0 then
-		autoX -= overflow
-		menuX -= overflow
+	if cornerRelease then
+		-- bottoms level with 공격's
+		ui.release.Position = UDim2.fromOffset(ax + AR + GAP + RR, math.min(ay + AR - RR, H - RR - 8))
+	else
+		ui.release.Position = UDim2.fromOffset(ax - AR - GAP - RR, math.min(ay + AR * 0.25, H - RR - 8))
 	end
-	local upX = autoX - SMALL_W / 2 - ROW_GAP - UPGRADE_W / 2
-	ui.auto.Position = UDim2.fromOffset(autoX, rowY)
-	ui.menu.Position = UDim2.fromOffset(menuX, rowY)
-	ui.upgrade.Position = UDim2.fromOffset(upX, rowY)
+
+	-- 자동 / 지도 / 메뉴 right-aligned with the next-weapon card above them (mockup order). Desktop: a top-right column
+	-- under the luck panel; touch: above the attack button
+	local right = W - 12
+	local rowW = 3 * SQ + 2 * RG
+	local rowY
+	if IS_TOUCH then
+		rowY = ay - AR - GAP - SQ / 2
+	else
+		rowY = colTop + L.UpgradeH + RG + SQ / 2
+	end
+	ui.menu.Position = UDim2.fromOffset(right - SQ / 2, rowY)
+	ui.map.Position = UDim2.fromOffset(right - SQ * 1.5 - RG, rowY)
+	ui.auto.Position = UDim2.fromOffset(right - SQ * 2.5 - 2 * RG, rowY)
+	ui.upgrade.Position = UDim2.fromOffset(right - rowW / 2, rowY - SQ / 2 - RG - L.UpgradeH / 2)
 end
 
 ----------------------------------------------------------------- visibility + timer loop

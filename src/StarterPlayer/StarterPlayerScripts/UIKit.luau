@@ -225,6 +225,37 @@ local function pressTween(scaleObj, down)
 	}):Play()
 end
 
+-- press-shrink on the child UIScale "PressScale" + Click sound; onClick(button) runs on Activated unless the button
+-- has Active == false or attribute Disabled == true (shared by UIKit.Button and UIKit.ArtButton)
+local function wirePress(btn, onClick)
+	local pressScale = btn:FindFirstChild("PressScale")
+
+	btn.InputBegan:Connect(function(input)
+		local t = input.UserInputType
+		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then
+			if btn.Active and btn:GetAttribute("Disabled") ~= true then
+				pressTween(pressScale, true)
+			end
+		end
+	end)
+	btn.InputEnded:Connect(function(input)
+		local t = input.UserInputType
+		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then
+			pressTween(pressScale, false)
+		end
+	end)
+	btn.MouseLeave:Connect(function()
+		pressTween(pressScale, false)
+	end)
+	btn.Activated:Connect(function()
+		if not btn.Active or btn:GetAttribute("Disabled") == true then return end
+		playClick()
+		if type(onClick) == "function" then
+			safeCall(onClick, btn)
+		end
+	end)
+end
+
 -- props: Name, Text, Size, Position, AnchorPoint, Color, TextColor, TextSize, Parent (+ any TextButton property).
 -- Adds UICorner, UIStroke ("Stroke"), a press-shrink UIScale ("PressScale") and the Click sound.
 -- onClick(button) runs on Activated unless the button has Active == false or attribute Disabled == true.
@@ -258,32 +289,7 @@ function UIKit.Button(props, onClick)
 		}),
 		UIKit.Create("UIScale", { Name = "PressScale" }),
 	})
-	local pressScale = btn:FindFirstChild("PressScale")
-
-	btn.InputBegan:Connect(function(input)
-		local t = input.UserInputType
-		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then
-			if btn.Active and btn:GetAttribute("Disabled") ~= true then
-				pressTween(pressScale, true)
-			end
-		end
-	end)
-	btn.InputEnded:Connect(function(input)
-		local t = input.UserInputType
-		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then
-			pressTween(pressScale, false)
-		end
-	end)
-	btn.MouseLeave:Connect(function()
-		pressTween(pressScale, false)
-	end)
-	btn.Activated:Connect(function()
-		if not btn.Active or btn:GetAttribute("Disabled") == true then return end
-		playClick()
-		if type(onClick) == "function" then
-			safeCall(onClick, btn)
-		end
-	end)
+	wirePress(btn, onClick)
 
 	if props.Parent then
 		btn.Parent = props.Parent
@@ -343,6 +349,553 @@ function UIKit.Bar(props)
 		ZIndex = 2,
 		Parent = frame,
 	})
+	local lastFraction = -1
+	local function setFraction(f, color)
+		f = tonumber(f) or 0
+		if f ~= f then f = 0 end
+		f = math.clamp(f, 0, 1)
+		if color and typeof(color) == "Color3" then
+			fill.BackgroundColor3 = color
+		end
+		if math.abs(f - lastFraction) < 0.0005 then return end
+		lastFraction = f
+		fill.Visible = f > 0.001
+		fill.Size = UDim2.fromScale(f, 1)
+	end
+	if props.Parent then
+		frame.Parent = props.Parent
+	end
+	return frame, setFraction, text
+end
+
+----------------------------------------------------------------- GPT art parts (Config.UIArt, addendum A14-3)
+-- Every helper returns nil or the old code-drawn style when a part id is missing, so the HUD never breaks (IMG-R4).
+local Art = {
+	Cfg = type(Config.UIArt) == "table" and Config.UIArt or {},
+	-- image-only properties, dropped when the code-drawn fallback is built instead
+	OnlyKeys = {
+		Image = true, ImageColor3 = true, ImageTransparency = true, ImageRectOffset = true, ImageRectSize = true,
+		ScaleType = true, SliceCenter = true, SliceScale = true, TileSize = true, ResampleMode = true,
+		HoverImage = true, PressedImage = true,
+	},
+	-- fallbackProps keys that style the fallback instead of being set as properties
+	FallbackKeys = {
+		Color = true, BackgroundColor3 = true, BackgroundTransparency = true, CornerRadius = true, Stroke = true,
+		StrokeColor = true, StrokeThickness = true, StrokeTransparency = true,
+	},
+	-- ArtButton props that go to its "Label" child instead of the button
+	LabelKeys = {
+		Text = true, TextSize = true, TextColor = true, TextColor3 = true, Font = true, TextStyle = true,
+		MaxTextSize = true,
+	},
+}
+Art.Parts = type(Art.Cfg.Parts) == "table" and Art.Cfg.Parts or {}
+Art.Colors = type(Art.Cfg.Colors) == "table" and Art.Cfg.Colors or {}
+Art.Fonts = type(Art.Cfg.Fonts) == "table" and Art.Cfg.Fonts or {}
+
+UIKit.ArtColors = Art.Colors -- Config.UIArt.Colors (Ink, Light, GoldText, Parchment, Navy, XPBlue, ...)
+UIKit.ArtFonts = Art.Fonts -- Config.UIArt.Fonts (Title, Body, Number)
+
+local function artColor(key, fallback)
+	local c = Art.Colors[key]
+	if typeof(c) == "Color3" then return c end
+	return fallback
+end
+
+local function artFont(key, fallback)
+	local f = Art.Fonts[key]
+	if typeof(f) == "EnumItem" then return f end
+	return fallback
+end
+
+-- part definition by short name ("PanelCard") or file name ("UIP_PanelCard"), even when its id is missing
+local function rawPart(name)
+	if type(name) ~= "string" then return nil end
+	local def = Art.Parts[name]
+	if def == nil and string.sub(name, 1, 4) == "UIP_" then
+		def = Art.Parts[string.sub(name, 5)]
+	end
+	if type(def) ~= "table" then return nil end
+	return def
+end
+
+local function validArtId(id)
+	if type(id) ~= "string" then return false end
+	local num = string.match(id, "^rbxassetid://(%d+)$")
+	if num then return (tonumber(num) or 0) > 0 end
+	return string.match(id, "^rbx%a+://.+") ~= nil
+end
+
+-- part definition only when it can be drawn (art enabled + uploaded id)
+local function artPart(name)
+	if Art.Cfg.Enabled == false then return nil end
+	local def = rawPart(name)
+	if def and validArtId(def.Id) then return def end
+	return nil
+end
+
+local function toneColor(def)
+	if def and type(def.Tone) == "string" then
+		return artColor(def.Tone, nil)
+	end
+	return nil
+end
+
+local function addChildren(inst, children)
+	if type(children) ~= "table" then return end
+	for _, child in children do
+		local c = child
+		if type(child) == "table" and type(child[1]) == "string" then
+			c = UIKit.Create(child[1], child[2], child[3])
+		end
+		if typeof(c) == "Instance" then
+			c.Parent = inst
+		end
+	end
+end
+
+-- product of the UIScale objects on inst and its ancestors (MainGui has one)
+local function inheritedScale(inst)
+	local s = 1
+	local node = inst
+	for _ = 1, 60 do
+		if node == nil or node == game then break end
+		local sc = node:FindFirstChildOfClass("UIScale")
+		if sc and sc.Scale > 0 then s *= sc.Scale end
+		if node:IsA("LayerCollector") then break end
+		node = node.Parent
+	end
+	return s
+end
+
+-- 9-slice edge scale that keeps the borders inside a w x h element (real px; scale = inherited UIScale).
+-- min(real, real / scale) stays inside whether or not the engine applies UIScale to slice edges.
+local function fitSliceScale(def, w, h, scale, base)
+	local slice, size = def.Slice, def.Size
+	if typeof(slice) ~= "Rect" or typeof(size) ~= "Vector2" then return base end
+	if scale <= 0 then scale = 1 end
+	local fw = math.min(w, w / scale)
+	local fh = math.min(h, h / scale)
+	local s = base
+	if def.FitHeight == true and size.Y > 0 and fh > 0 then
+		s = fh / size.Y -- capsule: edges follow the height
+	end
+	local bx = slice.Min.X + (size.X - slice.Max.X)
+	local by = slice.Min.Y + (size.Y - slice.Max.Y)
+	if bx > 0 and fw > 0 then s = math.min(s, fw / bx) end
+	if by > 0 and fh > 0 then s = math.min(s, fh / by) end
+	return math.max(s, 0.01)
+end
+
+-- Image / ScaleType / SliceCenter / SliceScale on an ImageLabel or ImageButton. Parts with Slice default to
+-- ScaleType Slice, the rest to Fit. sliceScale = number fixes the edge scale; nil fits it now and on every resize.
+local function applyArt(img, def, scaleType, sliceScale)
+	img.Image = def.Id
+	local sliced = typeof(def.Slice) == "Rect"
+	if scaleType == nil then
+		scaleType = sliced and Enum.ScaleType.Slice or Enum.ScaleType.Fit
+	end
+	img.ScaleType = scaleType
+	if scaleType ~= Enum.ScaleType.Slice or not sliced then return end
+	img.SliceCenter = def.Slice
+	if type(sliceScale) == "number" then
+		img.SliceScale = math.max(sliceScale, 0.01)
+		return
+	end
+	local base = tonumber(def.SliceScale) or 0.5
+	local function refit()
+		local abs = img.AbsoluteSize
+		local s
+		if abs.X >= 1 and abs.Y >= 1 then
+			s = fitSliceScale(def, abs.X, abs.Y, inheritedScale(img), base)
+		else
+			-- not laid out yet: estimate from the offset size (UI units)
+			s = fitSliceScale(def, img.Size.X.Offset, img.Size.Y.Offset, 1, base)
+		end
+		if math.abs(img.SliceScale - s) > 0.002 then
+			img.SliceScale = s
+		end
+	end
+	refit()
+	img:GetPropertyChangedSignal("AbsoluteSize"):Connect(refit)
+end
+
+-- corner + inked rim for a code-drawn fallback (IMG-R4); reuses an existing UIStroke "Stroke" (UIKit.Button)
+local function fallbackDecor(inst, fb, def)
+	local radius = fb.CornerRadius
+	if typeof(radius) ~= "UDim" then
+		radius = (def and def.Round == true) and UDim.new(0.5, 0) or UDim.new(0, 12)
+	end
+	local c = inst:FindFirstChildOfClass("UICorner")
+	if not c then
+		c = UIKit.Create("UICorner", { Parent = inst })
+	end
+	c.CornerRadius = radius
+
+	local stroke = inst:FindFirstChild("Stroke")
+	if fb.Stroke == false then
+		if stroke then stroke:Destroy() end
+		return
+	end
+	local tone = def and def.Tone
+	if not (stroke and stroke:IsA("UIStroke")) then
+		stroke = UIKit.Create("UIStroke", {
+			Name = "Stroke",
+			Color = Color3.new(0, 0, 0),
+			Thickness = 2,
+			Transparency = 0.4,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			Parent = inst,
+		})
+	end
+	-- toned parts get the storybook rim: gold around navy / red, inked brown around parchment / gold
+	if tone == "Navy" or tone == "NavyDeep" or tone == "Red" then
+		stroke.Color = artColor("Gold", UIKit.Theme.Gold)
+		stroke.Transparency = 0
+	elseif type(tone) == "string" then
+		stroke.Color = artColor("Rim", Color3.fromRGB(110, 66, 24))
+		stroke.Transparency = 0
+	end
+	if typeof(fb.StrokeColor) == "Color3" then stroke.Color = fb.StrokeColor end
+	if tonumber(fb.StrokeThickness) then stroke.Thickness = tonumber(fb.StrokeThickness) end
+	if tonumber(fb.StrokeTransparency) then stroke.Transparency = tonumber(fb.StrokeTransparency) end
+end
+
+-- shared body of InkText / LightText
+local function artText(props, color, outlineColor, outlineTransparency, thickness)
+	props = props or {}
+	local p = { BackgroundTransparency = 1, TextSize = 16, Text = "", TextColor3 = color }
+	local maxSize = nil
+	for key, value in props do
+		if key == "Color" or key == "TextColor" then
+			p.TextColor3 = value
+		elseif key == "MaxTextSize" then
+			maxSize = tonumber(value)
+		elseif key == "Outline" then
+			outlineColor = value -- false = no outline, Color3 = custom colour
+		elseif key == "OutlineTransparency" then
+			outlineTransparency = tonumber(value) or outlineTransparency
+		elseif key == "OutlineThickness" then
+			thickness = tonumber(value) or thickness
+		elseif key ~= "Parent" and key ~= "Number" and key ~= "Title" then
+			p[key] = value
+		end
+	end
+	if props.Font == nil then
+		if props.Number then
+			p.Font = artFont("Number", Enum.Font.FredokaOne)
+		elseif props.Title then
+			p.Font = artFont("Title", Enum.Font.GothamBlack)
+		else
+			p.Font = artFont("Body", UIKit.Theme.Font)
+		end
+	end
+	p.Text = tostring(p.Text)
+	if type(p.TextSize) == "number" and p.TextSize < MIN_TEXT_SIZE then
+		p.TextSize = MIN_TEXT_SIZE
+	end
+	local children = {
+		UIKit.Create("UITextSizeConstraint", {
+			MinTextSize = MIN_TEXT_SIZE,
+			MaxTextSize = math.max(maxSize or 100, MIN_TEXT_SIZE),
+		}),
+	}
+	if typeof(outlineColor) == "Color3" then
+		table.insert(children, UIKit.Create("UIStroke", {
+			Name = "Outline",
+			Color = outlineColor,
+			Thickness = thickness,
+			Transparency = outlineTransparency,
+			LineJoinMode = Enum.LineJoinMode.Round,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
+		}))
+	end
+	local label = UIKit.Create("TextLabel", p, children)
+	if props.Parent then
+		label.Parent = props.Parent
+	end
+	return label
+end
+
+-- brown ink text with a soft light outline, for parchment panels / pills / square buttons.
+-- props: any TextLabel property (+ Parent) plus Color / TextColor, Number = true (FredokaOne), Title = true
+-- (GothamBlack), MaxTextSize (cap for TextScaled), Outline (false or Color3), OutlineTransparency, OutlineThickness.
+-- Always has a UITextSizeConstraint with MinTextSize = Config.UI.MinTextSize; TextSize is never below it.
+function UIKit.InkText(props)
+	return artText(props, artColor("Ink", Color3.fromRGB(66, 40, 18)),
+		artColor("InkOutline", Color3.fromRGB(255, 247, 228)), 0.3, tonumber(Art.Cfg.OutlineInk) or 1)
+end
+
+-- white text with a dark outline, for the navy card, bars, ribbon and round buttons (Color = ArtColors.GoldText for
+-- gold numbers). Same props as UIKit.InkText.
+function UIKit.LightText(props)
+	return artText(props, artColor("Light", Color3.new(1, 1, 1)),
+		artColor("TextOutline", Color3.fromRGB(34, 20, 10)), 0, tonumber(Art.Cfg.OutlineLight) or 1.5)
+end
+
+-- "rbxassetid://..." of a part (short name or "UIP_" file name), or nil when missing / art disabled
+function UIKit.ArtId(name)
+	local def = artPart(name)
+	return def and def.Id or nil
+end
+
+-- the Config.UIArt.Parts entry (Id, Size, Slice, ...) when the part can be drawn, else nil
+function UIKit.ArtPart(name)
+	return artPart(name)
+end
+
+-- image width / height of a part (1 when unknown); handy for UIAspectRatioConstraint
+function UIKit.ArtAspect(name)
+	local def = rawPart(name)
+	if def and typeof(def.Size) == "Vector2" and def.Size.Y > 0 then
+		return def.Size.X / def.Size.Y
+	end
+	return 1
+end
+
+-- content area of a part (Inner rect: portrait hole, button face, badge centre, bar interior) as scale UDim2s
+-- (position, size) relative to the part's box; exact when the box has the part's aspect (ArtAspect).
+-- Works even when the id is missing (fallback layouts line up). nil when the part has no Inner.
+function UIKit.ArtInner(name)
+	local def = rawPart(name)
+	if not def or typeof(def.Inner) ~= "Rect" or typeof(def.Size) ~= "Vector2" then return nil end
+	local s, r = def.Size, def.Inner
+	if s.X <= 0 or s.Y <= 0 then return nil end
+	return UDim2.fromScale(r.Min.X / s.X, r.Min.Y / s.Y),
+		UDim2.fromScale((r.Max.X - r.Min.X) / s.X, (r.Max.Y - r.Min.Y) / s.Y)
+end
+
+-- addendum U7: avatar headshot thumbnail id (no upload needed); userId defaults to the local player
+function UIKit.HeadshotImage(userId)
+	local id = tonumber(userId) or (LocalPlayer and LocalPlayer.UserId) or 0
+	return "rbxthumb://type=AvatarHeadShot&id=" .. tostring(math.floor(id)) .. "&w=150&h=150"
+end
+
+-- ImageLabel for a part, or nil when the part is missing (the caller falls back). Frames (parts with Slice) use
+-- ScaleType Slice with an auto-fitted SliceScale (pass SliceScale = n to fix it); icons / round parts use Fit.
+-- props: any ImageLabel property (+ Parent); BackgroundTransparency defaults to 1.
+function UIKit.ArtImage(name, props)
+	local def = artPart(name)
+	if not def then return nil end
+	props = props or {}
+	local p = { BackgroundTransparency = 1 }
+	for key, value in props do
+		if key ~= "Parent" and key ~= "Image" and key ~= "ScaleType" and key ~= "SliceScale" then
+			p[key] = value
+		end
+	end
+	local img = UIKit.Create("ImageLabel", p)
+	applyArt(img, def, props.ScaleType, props.SliceScale)
+	if props.Parent then
+		img.Parent = props.Parent
+	end
+	return img
+end
+
+-- art frame (an ImageLabel; children go inside it) or, when the part is missing, the code-drawn panel: Frame +
+-- UICorner + UIStroke "Stroke" (IMG-R4). BackgroundColor3 / BackgroundTransparency in props are ignored; the fallback
+-- look comes from fallbackProps (BackgroundColor3 or Color, BackgroundTransparency, CornerRadius, Stroke = false,
+-- StrokeColor, StrokeThickness, StrokeTransparency + any Frame property), defaulting to the part's Tone colour with
+-- a gold / inked rim (Theme.Bg panel when the part has no Tone).
+-- children: Instances or { className, props, children } as in UIKit.Create. Returns (frame, isArt).
+function UIKit.ArtFrame(name, props, fallbackProps, children)
+	props = props or {}
+	local p = {}
+	for key, value in props do
+		if key ~= "Parent" and key ~= "BackgroundColor3" and key ~= "BackgroundTransparency" then
+			p[key] = value
+		end
+	end
+	local frame = UIKit.ArtImage(name, p)
+	local isArt = frame ~= nil
+	if not frame then
+		local fb = type(fallbackProps) == "table" and fallbackProps or {}
+		local def = rawPart(name)
+		local tone = toneColor(def)
+		local fp = {}
+		for key, value in p do
+			if not Art.OnlyKeys[key] then fp[key] = value end
+		end
+		for key, value in fb do
+			if not Art.FallbackKeys[key] then fp[key] = value end
+		end
+		fp.BackgroundColor3 = fb.BackgroundColor3 or fb.Color or tone or UIKit.Theme.Bg
+		fp.BackgroundTransparency = fb.BackgroundTransparency or (tone and 0.04 or UIKit.Theme.BgTransparency)
+		frame = UIKit.Create("Frame", fp)
+		fallbackDecor(frame, fb, def)
+	end
+	addChildren(frame, children)
+	if props.Parent then
+		frame.Parent = props.Parent
+	end
+	return frame, isArt
+end
+
+-- centred "Label" child of an art / fallback button (TextScaled up to TextSize)
+local function artButtonLabel(btn, def, props)
+	local style = props.TextStyle
+	if style ~= "ink" and style ~= "light" then
+		style = (def and def.Tone == "Parchment") and "ink" or "light"
+	end
+	local lp = {
+		Name = "Label",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.new(1, -8, 1, -4),
+		Text = tostring(props.Text),
+		TextScaled = true,
+		TextWrapped = true,
+		MaxTextSize = tonumber(props.MaxTextSize) or tonumber(props.TextSize) or 18,
+		Parent = btn,
+	}
+	if props.TextColor3 ~= nil then
+		lp.Color = props.TextColor3
+	elseif props.TextColor ~= nil then
+		lp.Color = props.TextColor
+	end
+	if props.Font ~= nil then lp.Font = props.Font end
+	if style == "ink" then
+		return UIKit.InkText(lp)
+	end
+	return UIKit.LightText(lp)
+end
+
+-- ImageButton for a part with UIKit.Button's press-shrink ("PressScale") + Click sound; onClick(button) runs on
+-- Activated unless Active == false or attribute Disabled == true. Round / icon parts use Fit, BtnSquare is 9-sliced.
+-- props: any ImageButton property (+ Parent, SliceScale) plus label keys Text, TextSize (max for TextScaled),
+-- MaxTextSize, TextColor / TextColor3, Font, TextStyle ("ink" / "light"; default ink on Parchment parts) that build
+-- a child TextLabel "Label". Color is only used by the fallback.
+-- Missing part (IMG-R4): a UIKit.Button TextButton styled by fallbackProps (BackgroundColor3 or Color, CornerRadius,
+-- StrokeColor / StrokeThickness / StrokeTransparency, Stroke = false + any TextButton property), else props.Color,
+-- else the part's Tone; round parts get a circle. It gets the same "Label" child.
+-- Returns (button, label or nil, isArt).
+function UIKit.ArtButton(name, props, onClick, fallbackProps)
+	props = props or {}
+	local def = artPart(name)
+	local raw = rawPart(name)
+	local btn
+	if def then
+		local p = { BackgroundTransparency = 1, AutoButtonColor = false }
+		for key, value in props do
+			if key ~= "Parent" and key ~= "Image" and key ~= "ScaleType" and key ~= "SliceScale" and key ~= "Color"
+				and not Art.LabelKeys[key] then
+				p[key] = value
+			end
+		end
+		btn = UIKit.Create("ImageButton", p, { UIKit.Create("UIScale", { Name = "PressScale" }) })
+		applyArt(btn, def, props.ScaleType, props.SliceScale)
+		wirePress(btn, onClick)
+	else
+		local fb = type(fallbackProps) == "table" and fallbackProps or {}
+		local p = {}
+		for key, value in props do
+			if key ~= "Parent" and key ~= "Color" and key ~= "BackgroundColor3" and key ~= "BackgroundTransparency"
+				and not Art.OnlyKeys[key] and not Art.LabelKeys[key] then
+				p[key] = value
+			end
+		end
+		for key, value in fb do
+			if not Art.FallbackKeys[key] then p[key] = value end
+		end
+		p.BackgroundColor3 = fb.BackgroundColor3 or fb.Color or props.Color or toneColor(raw)
+		if fb.BackgroundTransparency ~= nil then p.BackgroundTransparency = fb.BackgroundTransparency end
+		p.Text = ""
+		btn = UIKit.Button(p, onClick) -- nil BackgroundColor3 = UIKit.Button's default grey
+		fallbackDecor(btn, fb, raw)
+	end
+	local label = nil
+	if props.Text ~= nil then
+		label = artButtonLabel(btn, raw, props)
+	end
+	if props.Parent then
+		btn.Parent = props.Parent
+	end
+	return btn, label, def ~= nil
+end
+
+-- progress bar on the BarTrack art (navy capsule with a gold rim). Same props and returns as UIKit.Bar:
+-- (frame, setFraction(f, color?), textLabel); Color defaults to ArtColors.XPBlue, Track = another part name.
+-- The fill (frame.Inner.Fill) sits in the navy interior; the text is LightText in the Number font.
+-- Missing track art: UIKit.Bar(props) (IMG-R4).
+function UIKit.ArtBar(props)
+	props = props or {}
+	local fillColor = props.Color or artColor("XPBlue", UIKit.Theme.XP)
+	local trackName = props.Track or "BarTrack"
+	local def = artPart(trackName)
+	local frame = nil
+	local size = props.Size or UDim2.fromOffset(200, 16)
+	if def then
+		local frameProps = {
+			Name = props.Name or "Bar",
+			Size = size,
+			Position = props.Position or UDim2.new(),
+			AnchorPoint = props.AnchorPoint or Vector2.zero,
+			LayoutOrder = props.LayoutOrder or 0,
+			Visible = props.Visible ~= false,
+		}
+		if props.ZIndex then frameProps.ZIndex = props.ZIndex end
+		frame = UIKit.ArtImage(trackName, frameProps)
+	end
+	if not frame then
+		local p = {}
+		for key, value in props do
+			if key ~= "Track" then p[key] = value end
+		end
+		p.Color = fillColor
+		return UIKit.Bar(p)
+	end
+
+	-- navy interior from the Inner rect: vertical insets scale with the height (FitHeight edges), side insets are
+	-- in height units (round caps)
+	local top, bottom, side = 0.18, 0.19, 0.21
+	local imgSize, inner = def.Size, def.Inner
+	if typeof(inner) == "Rect" and typeof(imgSize) == "Vector2" and imgSize.Y > 0 then
+		top = inner.Min.Y / imgSize.Y
+		bottom = (imgSize.Y - inner.Max.Y) / imgSize.Y
+		side = inner.Min.X / imgSize.Y
+	end
+	local sidePx = size.Y.Offset > 0 and math.floor(side * size.Y.Offset + 0.5) or 3
+	local area = UIKit.Create("Frame", {
+		Name = "Inner",
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0, sidePx, top, 0),
+		Size = UDim2.new(1, -2 * sidePx, 1 - top - bottom, 0),
+		Parent = frame,
+	})
+	local fill = UIKit.Create("Frame", {
+		Name = "Fill",
+		Size = UDim2.fromScale(0, 1),
+		BackgroundColor3 = fillColor,
+		Visible = false,
+		Parent = area,
+	}, {
+		corner(UDim.new(0.5, 0)),
+		UIKit.Create("UIGradient", {
+			Rotation = 90,
+			Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(200, 200, 200)),
+		}),
+		-- glossy candy highlight
+		UIKit.Create("Frame", {
+			Name = "Shine",
+			AnchorPoint = Vector2.new(0.5, 0),
+			Position = UDim2.fromScale(0.5, 0.12),
+			Size = UDim2.new(1, -6, 0.32, 0),
+			BackgroundColor3 = Color3.new(1, 1, 1),
+			BackgroundTransparency = 0.6,
+		}, { corner(UDim.new(0.5, 0)) }),
+	})
+	local textProps = {
+		Name = "Text",
+		Size = UDim2.fromScale(1, 1),
+		Text = props.Text or "",
+		TextSize = props.TextSize or 15,
+		Number = true,
+		ZIndex = 2,
+		Parent = frame,
+	}
+	if props.ZIndex then textProps.ZIndex = props.ZIndex + 1 end
+	local text = UIKit.LightText(textProps)
+
 	local lastFraction = -1
 	local function setFraction(f, color)
 		f = tonumber(f) or 0

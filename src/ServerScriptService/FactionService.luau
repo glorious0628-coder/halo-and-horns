@@ -25,7 +25,8 @@ local FactionService = {}
 FactionService.FactionChanged = Util.Signal.new() -- (player, newFaction, oldFaction, reason: "Choose" | "Altar" | "Rebirth")
 
 local S = nil
-local teams = {} -- [factionId] = Team
+local teams = {} -- [factionId] = Team ("None" = players who have not picked yet)
+local NONE_TEAM_NAME = "진영 고르는 중"
 local leaving = {} -- [Player] = true while the player is leaving (excluded from counts)
 local lastWarnAt = {}
 
@@ -58,7 +59,8 @@ end
 local function applyTeam(player, factionId)
 	local team = teams[factionId]
 	local ok, err = pcall(function()
-		if factionId ~= "None" and team and team.Parent then
+		-- players who have not picked yet sit in the "진영 고르는 중" team, so the player list never shows "Neutral"
+		if team and team.Parent then
 			player.Neutral = false
 			player.Team = team
 		else
@@ -341,6 +343,11 @@ function FactionService.Init(registry)
 				Util.Warn(TAG, "could not create team for " .. id .. ": " .. tostring(teamOrErr))
 			end
 		end
+	end
+	local okNone, noneTeam = pcall(getOrCreateTeam, { TeamName = NONE_TEAM_NAME, TeamColor = BrickColor.new("Medium stone grey") })
+	if okNone and noneTeam then
+		noneTeam.AutoAssignable = true -- new players join it before they pick a faction
+		teams.None = noneTeam
 	end
 	S.PlayerService.PlayerReady:Connect(onPlayerReady)
 	S.PlayerService.PlayerLeaving:Connect(onPlayerLeaving)
