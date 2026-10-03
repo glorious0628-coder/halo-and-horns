@@ -26,6 +26,7 @@ def main():
     manifest = json.loads(args.manifest.read_text(encoding='utf-8'))
     glb = ROOT / manifest['skin_asset']
     prepared = ROOT / manifest['prepare_report'] if manifest.get('prepare_report') else args.manifest.with_name('prepare_report.json')
+    validation_path = ROOT / manifest['validation_report'] if manifest.get('validation_report') else args.manifest.with_name('skin_validation.json')
     validation, report, doc, binary = inspect(glb, prepared)
     if sha(glb) != manifest['skin_sha256']:
         raise ValueError('Current manifest does not match the validated GLB')
@@ -75,8 +76,8 @@ def main():
                     native_bounds_policy='Compare actual Importer observations to both referenced and full-accessor bounds; never guess a basis, pad extents, or claim a successful import offline.',
                     expression_manifest=args.manifest.resolve().relative_to(ROOT).as_posix(),
                     expression_manifest_sha256=sha(args.manifest),
-                    expression_validation=args.manifest.with_name('skin_validation.json').resolve().relative_to(ROOT).as_posix(),
-                    expression_validation_sha256=sha(args.manifest.with_name('skin_validation.json')),
+                    expression_validation=validation_path.resolve().relative_to(ROOT).as_posix(),
+                    expression_validation_sha256=sha(validation_path),
                     expression_meshes_validated_offline=True, expression_runtime_validated=False,
                     api_called=False, uploads=0,
                     expression_states={r['state']: {'png': r['png'], 'sha256': r['sha256']} for r in manifest['records']},

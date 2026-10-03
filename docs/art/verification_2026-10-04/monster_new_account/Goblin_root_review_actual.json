@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "name": "Goblin",
+  "inspection_sha256": "123d8ae18a3584764ab638291ba21d3479dbcabd73ea748ef0b703295a6830e5",
+  "reviewed_at": "2026-10-04 (root native QA report; exact execution time was not supplied)",
+  "target_use": "monster_spawn",
+  "reviewed_by_root": true,
+  "shown_to_user": true,
+  "native_original_shape_and_color_passed": true,
+  "native_pbr_and_opacity_passed": true,
+  "native_front_direction_passed": true,
+  "actual_mesh_preload_success": true,
+  "normal_game_spawn_qa_passed": false,
+  "material_preload_observation": {
+    "mesh_instance_status": "Success",
+    "map_string_statuses": {
+      "ColorMap": "Failure",
+      "NormalMap": "Failure",
+      "MetalnessMap": "Failure",
+      "RoughnessMap": "Failure"
+    },
+    "surface_instance_callback_count": 0,
+    "all_four_maps_callback_success_proven": false,
+    "native_original_color_clothes_shading_opaque_confirmed_by_root": true,
+    "texture_pack_warning_observed": false,
+    "basis": "root actual Client report: MeshPart/descendant object request produced mesh Success only; explicit four map strings returned Failure. Native green body/clothes/shading rendered. No PBR removal or repeat upload authorized by this result."
+  },
+  "preview_height_studs": 5.5,
+  "actual_service_target_height_studs": 5,
+  "evidence": [
+    {
+      "file": "build/monster_import_preflight_20261004/Goblin/native_front_clear.jpg",
+      "sha256": "85c9bdf77ccd2a523d29d612d98c7ea80ea2172b57b4637896c82e96202fab28"
+    },
+    {
+      "file": "build/monster_promotion/Goblin_actual_inspection.json",
+      "sha256": "123d8ae18a3584764ab638291ba21d3479dbcabd73ea748ef0b703295a6830e5"
+    }
+  ],
+  "notes": "Copied from root explicit personal native QA messages. Identity-pivot front -Z verified; source original mesh/texture/clothes preserved, PBR visible, opacity zero. Next normal-game CustomVisual spawn/5-stud ground/direction QA remains pending. User display approval inherited from root upload ledger."
+}

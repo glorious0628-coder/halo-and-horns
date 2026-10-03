@@ -20,6 +20,7 @@ from preserve_skin import node_matrices
 
 ROOT=Path(__file__).resolve().parents[2]
 NAMES={"Costume_"+f+c+g for f in ("Halo","Horns","Neutral") for c in ("Warrior","Archer","Mage") for g in ("M","F")}
+MOUTH_KIND="original_connected_mouth_pn_exception_v1"
 
 
 def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -33,7 +34,7 @@ def local_input(base,value):
 
 
 def load(path,proxy_override=None):
-    path=Path(path).resolve();data=json.loads(path.read_text(encoding="utf-8"));package=None
+    path=Path(path).resolve();data=json.loads(path.read_text(encoding="utf-8"));package=None;expression_data=None
     if data.get("kind")=="preserved_original_skin_pending":
         package=data
         if data.get("schema")!=1 or data.get("rig_ready_for_game") is not False: raise RigError("Only unpromoted preserved packages are supported")
@@ -50,14 +51,24 @@ def load(path,proxy_override=None):
         plan=Path(proxy_override or data.get("proxy_plan","")).resolve()
         if legacy_manual and not proxy_override: raise RigError("An explicit --proxy-plan is required for a legacy inferred sidecar")
         name=data.get("name")
-        if not name and data.get("expression_manifest"):
+        if data.get("expression_manifest"):
             expression_path=Path(data["expression_manifest"])
             if not expression_path.is_absolute(): expression_path=ROOT/expression_path
             expression_path.resolve().relative_to(ROOT)
             if sha(expression_path)!=data.get("expression_manifest_sha256"): raise RigError("Expression sidecar manifest SHA changed")
-            name=json.loads(expression_path.read_text(encoding="utf-8"))["avatar"]
+            expression_data=json.loads(expression_path.read_text(encoding="utf-8"));expression_name=expression_data["avatar"]
+            if name and name!=expression_name: raise RigError("Expression sidecar costume identity changed")
+            name=expression_name
         name=name or re.sub(r"_skin$","",skin.stem)
     if name not in NAMES or data.get("schema",1 if data.get("rig_origin")=="inferred_manual_candidate" else None)!=1 or data.get("rig_ready_for_game") is not False: raise RigError("An exact unpromoted eighteen-way costume is required")
+    kind=data.get("expression_validation_kind")
+    mouth=bool(expression_data and expression_data.get("validation_kind")==MOUTH_KIND)
+    if kind is not None and kind!=MOUTH_KIND: raise RigError("Unknown expression geometry exception is never inferred")
+    if kind==MOUTH_KIND or mouth:
+        from skin_face_union_proof import mouth_selection,MOUTH_RULES
+        if not mouth or kind!=MOUTH_KIND or name not in MOUTH_RULES or data.get("expression_original_mouth_pn_restored") is not True:
+            raise RigError("This explicitly selected avatar's mouth-only sidecar is required")
+        mouth_selection(expression_data,skin,path,data)
     manual=data.get("rig_origin")=="inferred_manual_candidate"
     legacy_manual=manual and "skin_source" not in data
     original=data["original_source_sha256"] if manual and not legacy_manual else data["source_sha256"]
@@ -114,6 +125,13 @@ def load(path,proxy_override=None):
             "actual_inspection_required":True,"rig_ready_for_game":False,"animation_validated":False,
             "weighting_quality_hold":bool(package and package.get("weighting_quality_hold")),
             "expression_manifest":data.get("expression_manifest"),
+            "expression_manifest_sha256":data.get("expression_manifest_sha256"),
+            "expression_validation":data.get("expression_validation"),
+            "expression_validation_sha256":data.get("expression_validation_sha256"),
+            "expression_validation_kind":kind,
+            "expression_original_mouth_pn_restored":bool(mouth),
+            "expression_mouth_ledger":data.get("expression_mouth_ledger"),
+            "expression_mouth_ledger_sha256":data.get("expression_mouth_ledger_sha256"),
             "path_policy":"package-local relative files override stale absolute sidecar paths" if package else "explicit current sidecar paths",
             "api_calls":0,"studio_calls":0}
 

@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloArcherM",
+  "expression_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "original_skin_sha256": "7d09b5aec17a52f0a161835bdab5db2a81dcd035baa1f2f8f64a226cb6977756",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "original_proxy_package": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HaloArcherM_preserved_v2\\package.json",
+  "original_proxy_package_sha256": "3af3a0788cb12dde9876fc6ed1ac9a010ca3a1ad5cd1ed74b1a02921f43e61b3",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "shading_policy": "original imported shaded materials",
+  "records": [
+    {
+      "clip": "ArcherSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/ArcherSwing_0_19_original.png",
+      "expression_render": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/ArcherSwing_0_19_expression.png",
+      "original_render_sha256": "aa827e80440518bc1bd5ec7a230194ec5480e43d0af5e69cba555061783e7803",
+      "original_render_metadata": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/ArcherSwing_0_19_original.json",
+      "original_render_metadata_sha256": "353b7247c5e127dee64cae4f80eddf8f021d324743da76535c14b738c9e603a9",
+      "expression_render_sha256": "7eac27ec5244dde3ff778209ea4ff50f3d04f271db2121d152aaade0bfd2c58d",
+      "expression_render_metadata": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/ArcherSwing_0_19_expression.json",
+      "expression_render_metadata_sha256": "069ed2cd6ad8155357c401d43b263c6d3d7defcf18005b1e2b85ce5f3803471e"
+    },
+    {
+      "clip": "ArcherRelease",
+      "time_seconds": 0.16,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/ArcherRelease_0_16_original.png",
+      "expression_render": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/ArcherRelease_0_16_expression.png",
+      "original_render_sha256": "e87bc26b4dbaaa13109592082006eee628eee2c4f72c307c79daeed7124ab1c4",
+      "original_render_metadata": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/ArcherRelease_0_16_original.json",
+      "original_render_metadata_sha256": "b2700cd030f1fbba44dea0180ed41c8ffe048a12df830a15690631db3891432f",
+      "expression_render_sha256": "6c5cac2a0f22ee5b7285571bc68ead4520404c5e43a107c898e3cca8efb4cb60",
+      "expression_render_metadata": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/ArcherRelease_0_16_expression.json",
+      "expression_render_metadata_sha256": "cb8474e23ace0e966a36a11aa1c876d40d01b4a397a174b646b3bc1004587dfe"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/HurtBig_0_06_original.png",
+      "expression_render": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/HurtBig_0_06_expression.png",
+      "original_render_sha256": "1f7905aca3220b649d7c0569ed7cf4cff38105ed88b5cc79496c3d9259800f87",
+      "original_render_metadata": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "1838af91f63dba22b5a54d6e436b8647c112616c64026c8cc227bafee528d033",
+      "expression_render_sha256": "c1cde1d22617fa3682e6120dc0061379e0eb19b14fbd472ffcb7f8717ad20b06",
+      "expression_render_metadata": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_fx_previews/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "17e4758075bb2b3228ee12f6d32b9bdd5757d56cbead418af5aeb405b24e3e67"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_mouth_restored_v2_lit/game_fx_neck_qa.json",
+  "report_source_sha256": "83663a17fb41e45dbe964f1f75d9ed42349513c6c4a4df6d270da3f27585ac15",
+  "visual_quality_hold": false,
+  "review_notes": "All six shaded original/expression exact Fx comparisons reviewed. Old open-mouth depression and raised rim are removed; no new cap seam or broad HurtBig face boundary. A shallow original mixed-weight wrinkle remains above the straight mouth at Swing/Release. Native full Animator and importer quality still pending.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ],
+  "rest_previews_personally_reviewed": true,
+  "rest_shading_policy": "original imported material with geometry QA area lights",
+  "roblox_uploaded": false
+}

@@ -1,0 +1,45 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_FaceUnionMouthRestored_v1.glb",
+  "source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\face_union_mouth_v1_fx_previews\\ArcherSwing_0_19_expression.png",
+  "angle": 0,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.1614100933074951,
+    9.799921035766602,
+    2.7570066452026367
+  ],
+  "camera_rotation": [
+    1.5597708225250244,
+    0.06119605526328087,
+    -3.05853009223938
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "shading_policy": "original imported material with geometry QA area lights",
+  "proxy_rotation_degrees": {
+    "UpperTorso": [
+      0.0,
+      -65.0,
+      0.0
+    ],
+    "Head": [
+      0.0,
+      65.0,
+      0.0
+    ]
+  },
+  "pose_source": {
+    "file": "C:\\Users\\glori\\Documents\\Game\\src\\StarterPlayer\\StarterPlayerScripts\\Fx.luau",
+    "sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+    "clip": "ArcherSwing",
+    "time_seconds": 0.19
+  },
+  "maximum_proxy_part_bind_reproduction_error": 0.0,
+  "maximum_desired_bone_matrix_error": 2.3388699553136827e-07,
+  "skin_pose_policy": "existing game Fx joint angles through exact original proxy world delta and all original shared bones; offline only; no source writes"
+}

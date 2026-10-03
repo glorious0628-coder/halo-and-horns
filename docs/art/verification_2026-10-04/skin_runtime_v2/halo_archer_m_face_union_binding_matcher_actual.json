@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"maximum_bone_error\":0.000015251146578521002,\"binding_schema\":1,\"passed\":true,\"bone_instances\":23,\"inspection_sha256\":\"b0a80449285fbe0d56c4cf8351ee2ea5a6175b0d9e757a1e25f05783482c3180\",\"internal_binding_welds\":3,\"read_only\":true,\"ready\":false,\"proxy_parts\":15,\"runtime_validated\":false,\"checks\":690,\"animation_validated\":false,\"pending_name\":\"Costume_HaloArcherM_FaceUnionBindingSkinSchema2Candidate\",\"promotion\":false,\"root_binding_welds\":1,\"skin_sha256\":\"77a99d609d0d7264b2931587ce040bc64d27beca262fd33444bbf8fd31c2734e\",\"maximum_axis_error\":0.000005811452865600586,\"name\":\"Costume_HaloArcherM\",\"unique_bones\":23,\"host_welds\":4,\"mesh_instances\":3,\"schema\":2,\"motors\":15}"
+    }
+  ],
+  "isError": false
+}

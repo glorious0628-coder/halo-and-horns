@@ -3,6 +3,7 @@
 local Players=game:GetService("Players")
 local RunService=game:GetService("RunService")
 local HttpService=game:GetService("HttpService")
+local SkinBinding=require(game:GetService("ReplicatedStorage").Shared.SkinBindingContract)
 local M={}
 local ST={Started=false,Watch={},Records={},Connections={},BindName=nil,RetryAt=0,Frames=0,Faults=0}
 local PRIMARY={"LowerTorso","UpperTorso","Head","LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm","RightLowerArm","RightHand","LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot"}
@@ -34,6 +35,7 @@ end
 local function gate(character)
     return character and character.Parent and ALLOWED[character:GetAttribute("HHC_CostumeId")]
         and character:GetAttribute("HHC_SkinRuntimeSchema")==2
+        and character:GetAttribute("HHC_SkinBindingSchema")==1
         and character:GetAttribute("HHC_SkinRetargetRequired")==true
         and character:GetAttribute("HHC_SkinRuntimeValidated")==true
         and character:GetAttribute("HHC_RigReady")==true
@@ -77,7 +79,7 @@ local function build(player,character)
     local hum=character:FindFirstChildOfClass("Humanoid")
     local skin=character:FindFirstChild("CostumeSkin")
     if not root or not root:IsA("BasePart") or root.Anchored or not hum or hum.RigType~=Enum.HumanoidRigType.R15 or hum.Health<=0 or not skin or not skin:IsA("Model") then return nil end
-    local q=physicalScale(root);if not q then return nil end
+    local q=physicalScale(root);if not q or not SkinBinding.Validate(character,q) then return nil end
     local proxies={HumanoidRootPart=root};local proxyRows={}
     if not close(root:GetAttribute("HHC_ProxyBindRoot"),CFrame.new(),0.0001) then return nil end
     for _,name in PRIMARY do
@@ -163,8 +165,8 @@ local function characterWatch(player,character)
     watcher.CharacterConnections={};watcher.Character=character;watcher.Dead=false
     if character then
         table.insert(watcher.CharacterConnections,character.AttributeChanged:Connect(function(name) if string.sub(name,1,4)=="HHC_" then queue(player) end end))
-        table.insert(watcher.CharacterConnections,character.DescendantAdded:Connect(function(object) if object:IsA("Bone") or object:IsA("BasePart") or object:IsA("Humanoid") or object.Name=="CostumeSkin" then queue(player) end end))
-        table.insert(watcher.CharacterConnections,character.DescendantRemoving:Connect(function(object) if object:IsA("Bone") or object:IsA("BasePart") or object:IsA("Humanoid") then queue(player) end end))
+        table.insert(watcher.CharacterConnections,character.DescendantAdded:Connect(function(object) if object:IsA("Bone") or object:IsA("BasePart") or object:IsA("Humanoid") or object:IsA("JointInstance") or object:IsA("WeldConstraint") or object:IsA("Constraint") or object:IsA("ObjectValue") or object.Name=="CostumeSkin" then queue(player) end end))
+        table.insert(watcher.CharacterConnections,character.DescendantRemoving:Connect(function(object) if object:IsA("Bone") or object:IsA("BasePart") or object:IsA("Humanoid") or object:IsA("JointInstance") or object:IsA("WeldConstraint") or object:IsA("Constraint") or object:IsA("ObjectValue") then queue(player) end end))
         table.insert(watcher.CharacterConnections,character.AncestryChanged:Connect(function(_,parent) if not parent then remove(player) end end))
     end
     queue(player)
@@ -188,7 +190,7 @@ local function apply(player,record)
         if record.Humanoid.Health<=0 and ST.Watch[player] then ST.Watch[player].Dead=true end
         remove(player);return
     end
-    local q=physicalScale(record.Root);if not q then return end
+    local q=physicalScale(record.Root);if not q or not SkinBinding.Validate(character,q) then return end
     -- ScaleTo replicates properties piecemeal. Wait until sizes and every local
     -- bind agree; never permanently discard a valid character for that frame.
     for _,row in record.ProxyRows do if row.Part.Parent~=character or not equalSize(row.Part.Size,row.Size*q) then return end end

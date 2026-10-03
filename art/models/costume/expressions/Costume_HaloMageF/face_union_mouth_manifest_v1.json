@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloMageF",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_FaceUnionMouthRestored_v1.glb",
+  "skin_sha256": "4d5fe892fc32a9c8a5135d72a1a819edbbe764617d2b993e3e58e897501233f3",
+  "source_skin_sha256": "d5386846aefeb8fed9b4cd3f9f41611b262825dc76860bfa03def6918d2fb24f",
+  "source_fixed_sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "prepare_report": "art/models/costume/expressions/Costume_HaloMageF/face_union_prepare_report.json",
+  "validation_report": "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_restoration_validation_v1.json",
+  "original_triangles_only": true,
+  "selected_original_face_triangles": 347,
+  "new_mouth_cap_vertices": 0,
+  "candidate_variant": "original_triangle_union_mouth_restored_v1",
+  "geometry_comparison_only": false,
+  "visual_quality_hold": false,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_HaloMageF",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "27aebf29d62ad85502fb4fcad443f52a070522656236789ea1b7e3ec1274d13b",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-8c657c18-45f4-4aab-95c8-8c0d2eb920a1.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloMageF/prompts/Neutral.txt",
+      "quality_status": "lit rest states and exact game Fx personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\ud3c9\uc18c",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_v1_previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_v1_previews/Neutral_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    },
+    {
+      "avatar": "Costume_HaloMageF",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "8547d3a79ee6914f03f86effa482cd429d94aa17e1c6c5c607171b0efd9738e6",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-2f66b75a-97dd-4409-b9bf-4e4ec9ee0ad0.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloMageF/prompts/SoftSmile.txt",
+      "quality_status": "lit rest states and exact game Fx personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_v1_previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_v1_previews/SoftSmile_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    },
+    {
+      "avatar": "Costume_HaloMageF",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "bf09db415f1e697d4585b31a4eaf5ed2172e1b3eeaa122ae130ff6e248ce3a0b",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-5592d472-d4c0-4a7c-b78e-89f65944f707.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloMageF/prompts/Serious.txt",
+      "quality_status": "lit rest states and exact game Fx personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_v1_previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_v1_previews/Serious_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "original_face_provenance": "art/models/costume/expressions/Costume_HaloMageF/face_union_provenance.json",
+  "original_face_provenance_sha256": "75ee9dfe75df68c54c664daa3a246d717f8dc4cba1764698b6f1111a03b600b9",
+  "uv_texture_compatibility": "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_uv_compatibility_v1.json",
+  "uv_texture_compatibility_sha256": "ecc60984afc06fd46922f0c376885396649deef78abdd4ac9e20218d806112f9",
+  "offline_visual_review": "All six shaded front/quarter states and six exact Fx original/expression comparisons personally reviewed.",
+  "limitations": [
+    "Only original mouth P/N restored in bounded ledger; body, UV, JW, all original bones and PNG remain exact.",
+    "Original mixed-weight shallow wrinkle remains at Swing/Release; actual imported mesh and full Animator quality are pending."
+  ],
+  "validation_kind": "original_connected_mouth_pn_exception_v1",
+  "original_geometry_preserved": false,
+  "original_position_normal_values_preserved": false,
+  "original_joint_weight_values_preserved": true,
+  "mouth_restoration_ledger": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_restoration_ledger_sha256": "7e6332a62564ca9741a13b684f2c82109908d23b5acf007bf3a645cff6843700",
+  "strict_validation_tool": "tools/costume_expressions/validate_mouth_restoration.py",
+  "original_face_provenance_role": "baseline source vertices/UV/JW; P/N exception is the separate mouth ledger",
+  "original_union_baseline": "art/models/costume/expressions/Costume_HaloMageF/face_union_manifest.json",
+  "original_union_baseline_sha256": "c38f91c4435004e16cabfa29f1ed2748ad2a80befb98b8cbbe22b2410794badf",
+  "game_fx_offline_review": "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_visual_review_v1.json",
+  "game_fx_offline_review_sha256": "ce7fbaee09d0bfb19601c641f6ad62e79d3f599138fe01aa1531c8e757fc35c3",
+  "mouth_negative_tests": "art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_contract_tests_v1.json",
+  "mouth_negative_tests_sha256": "0bf1fe6ae4ac9d87cea42d1b6ccfbce1c311c241f01bc94dda14da26de8289e1",
+  "offline_visual_notes": "All six shaded exact original/expression Fx comparisons personally reviewed. Original open-mouth recess and oval cap border are removed. A shallow source-weight wrinkle above the straight mouth is visible at MageRelease/HurtBig; no broad new face boundary. Full native Animator/import quality remains pending."
+}

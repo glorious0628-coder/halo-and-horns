@@ -1,0 +1,25 @@
+{
+  "path": "Workspace.Monsters.Goblin",
+  "normal_monster_service_spawn": true,
+  "height": 5,
+  "meshes": [
+    {
+      "transparency": 0,
+      "name": "tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982",
+      "maps": {
+        "ColorMap": "rbxassetid://140499490000513",
+        "NormalMap": "rbxassetid://116546690514192",
+        "RoughnessMap": "rbxassetid://98238124136264",
+        "MetalnessMap": "rbxassetid://99292265796269"
+      },
+      "mesh": "rbxassetid://111805774360030",
+      "texture": ""
+    }
+  ],
+  "visual_position": [
+    639.819580078125,
+    2.5103707313537598,
+    119.64860534667969
+  ],
+  "name": "Goblin"
+}

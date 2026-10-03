@@ -441,6 +441,12 @@ def validate_inspection(path,data,points_by_mesh):
     if len(meshes)!=len(data["meshes"]) or {m["name"] for m in meshes}!={m["name"] for m in data["meshes"]}: raise RigError("Actual imported surface count/names changed")
     expected={b["name"]:b for b in data["bones"]};byname={name:[] for name in expected};paths=set()
     for bone in bones:
+        actual_path=bone.get("path");parent_path=bone.get("parent_path");host_path=bone.get("host_path")
+        if any(not isinstance(value,list) or not value or any(not isinstance(item,str) or not item or "\0" in item for item in value)
+               for value in (actual_path,parent_path,host_path)):
+            raise RigError("Actual Bone paths must be exact nonempty name-component arrays")
+        if actual_path!=parent_path+[bone.get("name")] or len(host_path)>=len(actual_path) or actual_path[:len(host_path)]!=host_path:
+            raise RigError("Actual Bone path is not inside its declared parent/physical host")
         key=tuple(bone["path"])
         if key in paths or bone["name"] not in expected: raise RigError("Unknown/duplicate actual bone path")
         paths.add(key);byname[bone["name"]].append(bone)

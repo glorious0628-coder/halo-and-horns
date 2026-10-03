@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloMageF",
+  "expression_skin_sha256": "4d5fe892fc32a9c8a5135d72a1a819edbbe764617d2b993e3e58e897501233f3",
+  "comparison_manifest": "art/models/costume/expressions/Costume_HaloMageF/expressions_manifest.json",
+  "comparison_manifest_sha256": "2ae16876b2a2058fcad987a26bb2059cd04cd2324ddeb5a0b679c2dd532f0022",
+  "normalized_original_face_uv_sha256": "b56249c3bde6709064592617b8578c38714a25afb981a602546d9f63eb7b1a99",
+  "canonical_normalized_original_face_uv_sha256": "b56249c3bde6709064592617b8578c38714a25afb981a602546d9f63eb7b1a99",
+  "normalized_original_face_uv_float32_exact": true,
+  "approved_png_bytes_unchanged": true,
+  "comparison_uv_basis": "Exact approved normalized projection checked by inspect against original fixed/skin corners",
+  "expression_pngs": [
+    {
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_Neutral_face.png",
+      "sha256": "27aebf29d62ad85502fb4fcad443f52a070522656236789ea1b7e3ec1274d13b"
+    },
+    {
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_SoftSmile_face.png",
+      "sha256": "8547d3a79ee6914f03f86effa482cd429d94aa17e1c6c5c607171b0efd9738e6"
+    },
+    {
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_Serious_face.png",
+      "sha256": "bf09db415f1e697d4585b31a4eaf5ed2172e1b3eeaa122ae130ff6e248ce3a0b"
+    }
+  ],
+  "mesh_asset_reimport_required": true,
+  "texture_reuse_policy": "Actual upload-ledger PNG SHA must match.",
+  "geometry_comparison_only": true,
+  "ready": false,
+  "comparison_union": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_FaceUnionSkin_v1.glb",
+  "comparison_union_sha256": "c12e13cb6479e91a443c2cc4655515108f78574794c5973cef16129926025d9d",
+  "original_geometry_preserved": false,
+  "geometry_exception": "recorded original mouth P/N only",
+  "mouth_restoration_ledger": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_restoration_ledger_sha256": "7e6332a62564ca9741a13b684f2c82109908d23b5acf007bf3a645cff6843700"
+}

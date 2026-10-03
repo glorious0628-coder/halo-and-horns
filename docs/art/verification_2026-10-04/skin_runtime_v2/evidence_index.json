@@ -121,10 +121,234 @@
       "copied_sha256": "56dfd03a36a0bde8b8ea032f19d9f79554357b0a71fde6fa17e67ca4a02443a0",
       "removed_user_id_fields": 0,
       "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_import_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM_FaceUnion_v1/actual_imports.json",
+      "original_sha256": "5f46f8a0cd34d82029211a20c0cbe9c249f00e00af8ffd3de2d44467b4281708",
+      "copied_sha256": "5f46f8a0cd34d82029211a20c0cbe9c249f00e00af8ffd3de2d44467b4281708",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_importer_ledger_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM_FaceUnion_v1/importer_ledger.json",
+      "original_sha256": "c619d5f95752c46951fc459b5d9cbb4cec051ae37ce86984dddda372a3488300",
+      "copied_sha256": "c619d5f95752c46951fc459b5d9cbb4cec051ae37ce86984dddda372a3488300",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_inspection_actual.json",
+      "original_workspace_relative_path": "build/skin_runtime_v2/face_union_v1/actual_inspection.json",
+      "original_sha256": "b0a80449285fbe0d56c4cf8351ee2ea5a6175b0d9e757a1e25f05783482c3180",
+      "copied_sha256": "b0a80449285fbe0d56c4cf8351ee2ea5a6175b0d9e757a1e25f05783482c3180",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_binding_assembly_actual.json",
+      "original_workspace_relative_path": "build/skin_runtime_v2/face_union_binding_v1/assemble_response.json",
+      "original_sha256": "1f38f437e8a7b498f9624f2dd5fbc991ca4a39cb9afed48a2bd7f2d145bd2da8",
+      "copied_sha256": "1f38f437e8a7b498f9624f2dd5fbc991ca4a39cb9afed48a2bd7f2d145bd2da8",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_binding_matcher_actual.json",
+      "original_workspace_relative_path": "build/skin_runtime_v2/face_union_binding_v1/verify_v2_response.json",
+      "original_sha256": "57d14985c8c73f04f2bf6a823d9e297bd3b28ac3e13575e47a49c65fe94aa12f",
+      "copied_sha256": "57d14985c8c73f04f2bf6a823d9e297bd3b28ac3e13575e47a49c65fe94aa12f",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "skin_binding_contract_actual.json",
+      "original_workspace_relative_path": "build/skin_binding_contract_actual.json",
+      "original_sha256": "71fa73fe7b2d8cb454256768a06c72d85a591d4507d61f3767ad6db2869a3054",
+      "copied_sha256": "71fa73fe7b2d8cb454256768a06c72d85a591d4507d61f3767ad6db2869a3054",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_binding_mechanics_actual.json",
+      "original_workspace_relative_path": "build/skin_expression_face_union_binding_qa/Costume_HaloArcherM/actual_mechanics.json",
+      "original_sha256": "23885067cd3ac6a3f2794efb901e28d65b34f81bfe7c1814f79d9310544f6927",
+      "copied_sha256": "c81846a6df89fd05d3186118a387c61cf928b022f48c8ebb5ccfe0d395a5ac53",
+      "removed_user_id_fields": 9,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_binding_held_hurt_actual.json",
+      "original_workspace_relative_path": "build/skin_expression_face_union_binding_qa/Costume_HaloArcherM/held_hurt_state.json",
+      "original_sha256": "50d9ab6d1676cb6b871f999f842a56851f712cffecde4948a3a74dd36d6c7e87",
+      "copied_sha256": "4a5778b351ad21ba67076ff662b4880ac01eb12bd0656f355e2d638fa6dd08b4",
+      "removed_user_id_fields": 1,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_binding_neutral_native.jpg",
+      "original_workspace_relative_path": "build/skin_expression_face_union_binding_qa/Costume_HaloArcherM/neutral_native.jpg",
+      "original_sha256": "90bf2bf3625862d35f6a818bddde3e24db887916005374108bdf629fc0d94a74",
+      "copied_sha256": "90bf2bf3625862d35f6a818bddde3e24db887916005374108bdf629fc0d94a74",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_binding_softsmile_native.jpg",
+      "original_workspace_relative_path": "build/skin_expression_face_union_binding_qa/Costume_HaloArcherM/softsmile_native.jpg",
+      "original_sha256": "f1334a9db409b62410a0005a0b86e0acaa0f9c3cc10c62113d1e429e967b8758",
+      "copied_sha256": "f1334a9db409b62410a0005a0b86e0acaa0f9c3cc10c62113d1e429e967b8758",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_binding_serious_native.jpg",
+      "original_workspace_relative_path": "build/skin_expression_face_union_binding_qa/Costume_HaloArcherM/serious_native.jpg",
+      "original_sha256": "710745bff629aab2a7cb01c4a952572c61a5fd46d06965a0ff594e4a7282d620",
+      "copied_sha256": "710745bff629aab2a7cb01c4a952572c61a5fd46d06965a0ff594e4a7282d620",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_binding_hurtbig_native.jpg",
+      "original_workspace_relative_path": "build/skin_expression_face_union_binding_qa/Costume_HaloArcherM/hurtbig_native.jpg",
+      "original_sha256": "f4c50c1cccf1ca0333bbb7e8d79406b5c27b2b12d2a0400afaef531e9ecac067",
+      "copied_sha256": "f4c50c1cccf1ca0333bbb7e8d79406b5c27b2b12d2a0400afaef531e9ecac067",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_import_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM_FaceUnionMouth_v1/actual_imports.json",
+      "original_sha256": "9226353588a3b041615e95472b39d06299c193ccfe7d5a8aa7faee9a4f6b3af3",
+      "copied_sha256": "9226353588a3b041615e95472b39d06299c193ccfe7d5a8aa7faee9a4f6b3af3",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_importer_ledger_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM_FaceUnionMouth_v1/importer_ledger.json",
+      "original_sha256": "8abf0c3fbddd22740aab0486d4036df6d43b2c1078fa68eabf10eef16f09e874",
+      "copied_sha256": "8abf0c3fbddd22740aab0486d4036df6d43b2c1078fa68eabf10eef16f09e874",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_texture_reuse_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM_FaceUnionMouth_v1/texture_upload_ledger.json",
+      "original_sha256": "e40e165a8172e6c888296c192d2d78ccd9dd5c66407702652d0e91be6a4b3d9a",
+      "copied_sha256": "e40e165a8172e6c888296c192d2d78ccd9dd5c66407702652d0e91be6a4b3d9a",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_expression_assets_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM_FaceUnionMouth_v1/expression_assets.json",
+      "original_sha256": "19408bb3b7d47d70b97838c2f93e2d9ffbda1cc2d07fc37733eece8c0b889225",
+      "copied_sha256": "19408bb3b7d47d70b97838c2f93e2d9ffbda1cc2d07fc37733eece8c0b889225",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_expression_assets_proof.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM_FaceUnionMouth_v1/expression_assets_proof.json",
+      "original_sha256": "8c2ef0460113398ad9caef1074a7306f95d22083f071229ca5629ae70ad4edd8",
+      "copied_sha256": "8c2ef0460113398ad9caef1074a7306f95d22083f071229ca5629ae70ad4edd8",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_promotion_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM_FaceUnionMouth_v1/actual_promotion.json",
+      "original_sha256": "f6564703d62c0702e4c93e63caee07098010660282f6ba31baad4d5bcaf9e1d4",
+      "copied_sha256": "f6564703d62c0702e4c93e63caee07098010660282f6ba31baad4d5bcaf9e1d4",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_inspection_actual.json",
+      "original_workspace_relative_path": "build/skin_runtime_v2/face_union_mouth_binding_v1/actual_inspection.json",
+      "original_sha256": "68787b4a07438f7561bb8393db83d820a56b1e566a7e9dff74332d651eae798d",
+      "copied_sha256": "68787b4a07438f7561bb8393db83d820a56b1e566a7e9dff74332d651eae798d",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_assembly_actual.json",
+      "original_workspace_relative_path": "build/skin_runtime_v2/face_union_mouth_binding_v1/assemble_actual.json",
+      "original_sha256": "3134253d07282e7a76f004d7edfd25398318217dc9368c1658748c7f20ed1b8a",
+      "copied_sha256": "3134253d07282e7a76f004d7edfd25398318217dc9368c1658748c7f20ed1b8a",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_matcher_actual.json",
+      "original_workspace_relative_path": "build/skin_runtime_v2/face_union_mouth_binding_v1/verify_actual.json",
+      "original_sha256": "ec90600cd933e45891f2b726a9e4f465c475ce98d199ebf212f028822133799a",
+      "copied_sha256": "ec90600cd933e45891f2b726a9e4f465c475ce98d199ebf212f028822133799a",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_mechanics_actual.json",
+      "original_workspace_relative_path": "build/skin_expression_face_union_mouth_binding_qa/Costume_HaloArcherM/actual_mechanics.json",
+      "original_sha256": "2c9259fe9e547dfe5ac74c0e90a01ac1d68630df5de84d41f07ae91e2559a38f",
+      "copied_sha256": "fbd5757aa893020e955c8279afd2e62470ec7bb3f008f809078f0389b5dcc66e",
+      "removed_user_id_fields": 9,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_root_visual_review_actual.json",
+      "original_workspace_relative_path": "build/skin_expression_face_union_mouth_binding_qa/Costume_HaloArcherM/root_visual_review.json",
+      "original_sha256": "320132f557a5173ef9cbf4bd08396469cbe409900bfa79c17553040cd3875923",
+      "copied_sha256": "320132f557a5173ef9cbf4bd08396469cbe409900bfa79c17553040cd3875923",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_production_smoke_actual.json",
+      "original_workspace_relative_path": "build/production_mouth_archer_smoke_actual.json",
+      "original_sha256": "288af3f7b9fa0ae4cdf295b431a9a4f4f05c696bd4d7e1e3147231c31aa5a9ed",
+      "copied_sha256": "ad4a3c49aae1abda1fa822a0c932d3163f70a2e9f8642bf722a2b9c4cea86c70",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_neutral_native.jpg",
+      "original_workspace_relative_path": "build/skin_expression_face_union_mouth_binding_qa/Costume_HaloArcherM/neutral_native.jpg",
+      "original_sha256": "adff2e01d5f10b62d4b94f52e153e6572e59f1d980af0f4139c28dba066e8241",
+      "copied_sha256": "adff2e01d5f10b62d4b94f52e153e6572e59f1d980af0f4139c28dba066e8241",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_serious_native.jpg",
+      "original_workspace_relative_path": "build/skin_expression_face_union_mouth_binding_qa/Costume_HaloArcherM/serious_native.jpg",
+      "original_sha256": "99f0c746b62719c46f6bc6993d5af2765d722774a5a44c2877b5f3e3810cc526",
+      "copied_sha256": "99f0c746b62719c46f6bc6993d5af2765d722774a5a44c2877b5f3e3810cc526",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_softsmile_native.jpg",
+      "original_workspace_relative_path": "build/skin_expression_face_union_mouth_binding_qa/Costume_HaloArcherM/softsmile_native.jpg",
+      "original_sha256": "94d183ee5c433869684adf5c0a8752779d3069ab92fc3c1b13f6ad53179811e7",
+      "copied_sha256": "94d183ee5c433869684adf5c0a8752779d3069ab92fc3c1b13f6ad53179811e7",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_face_union_mouth_binding_hurtbig_native.jpg",
+      "original_workspace_relative_path": "build/skin_expression_face_union_mouth_binding_qa/Costume_HaloArcherM/hurtbig_native.jpg",
+      "original_sha256": "5b2d65680a527dbb31e48678410f6d56534c8f9a810ddfef1cee5273e618fee3",
+      "copied_sha256": "5b2d65680a527dbb31e48678410f6d56534c8f9a810ddfef1cee5273e618fee3",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
     }
   ],
   "redaction": "Nested JSON objects and JSON strings have user_id/UserId/userId removed; original raw-file SHA remains the provenance reference.",
-  "ready_costumes": 2,
+  "ready_costumes": 1,
   "total_costumes": 18,
   "full_eighteen_motion_quality_approved": false,
   "root_report_only": [
@@ -139,5 +363,28 @@
   ],
   "studio_calls": 0,
   "api_calls": 0,
-  "source_modified": false
+  "source_modified": false,
+  "previous_ready_count_report": 2,
+  "current_game_eligible_costumes": 1,
+  "new_binding_candidate_ready": false,
+  "binding_candidate_visual_hold": "Serious retains smiling shading from the original three-dimensional mouth groove; no visual promotion.",
+  "legacy_driver_and_preload_prove_rendered_deformation": false,
+  "legacy_mechanics_scope_correction": "Old 2-surface Archer/Neutral and cap3 Archer Bone/driver/Preload/state proofs did not prove skin deformation. External HRP star welds crossed the CostumeSkin Model namespace. The old Archer registry entry is preserved, gated off, and marked PendingSkinBindingRepair.",
+  "binding_schema": 1,
+  "actual_binding_matcher_checks": 690,
+  "actual_shared_binding_contract_checks": 19,
+  "binding_play_frames": 2488,
+  "latest_save_root_report": {
+    "kst": "2026-10-04 04:47:24",
+    "bytes": 11265486,
+    "place_copy_identical": true,
+    "studio_compiler_files": 42,
+    "sync_changed": 4,
+    "sync_unchanged": 38,
+    "play_seconds": 15,
+    "luau_runtime_errors": 0,
+    "remaining_monster_asset_warnings": true
+  },
+  "latest_game_eligible_costumes": 2,
+  "latest_scope": "MouthRestored BindingSchema1 native diagnostic + actual events + production smoke; single-client only"
 }

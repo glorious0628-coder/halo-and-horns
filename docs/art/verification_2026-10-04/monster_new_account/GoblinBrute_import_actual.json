@@ -1,0 +1,81 @@
+{
+  "meshes": [
+    {
+      "maps": {
+        "ColorMap": "rbxassetid://107493500820181",
+        "NormalMap": "rbxassetid://87958878588608",
+        "RoughnessMap": "rbxassetid://81264739626823",
+        "MetalnessMap": "rbxassetid://75572076806737"
+      },
+      "color": [
+        0.6392157077789307,
+        0.6352941393852234,
+        0.6470588445663452
+      ],
+      "mesh_id": "rbxassetid://116440221662180",
+      "pivot_offset": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+      "material": "Plastic",
+      "transparency": 0,
+      "cframe": [
+        -49.08413314819336,
+        -22.10310173034668,
+        116.0442123413086,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "texture_id": "",
+      "size": [
+        0.9782716035842896,
+        0.89019775390625,
+        0.4575501084327698
+      ]
+    }
+  ],
+  "path": "ServerStorage.MonsterNewAccountImports.GoblinBrute",
+  "name": "GoblinBrute",
+  "assetReferences": [
+    "rbxassetid://107493500820181",
+    "rbxassetid://116440221662180",
+    "rbxassetid://75572076806737",
+    "rbxassetid://81264739626823",
+    "rbxassetid://87958878588608"
+  ],
+  "production_promoted": false,
+  "pivot": [
+    -49.084041595458984,
+    -22.548200607299805,
+    116.04454803466797,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1
+  ],
+  "schema": 1,
+  "source_sha256": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706"
+}

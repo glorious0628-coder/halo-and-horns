@@ -1,0 +1,15 @@
+{
+  "body_parts": 15,
+  "rig_origin": "preserved_source_skin_proxy_candidate",
+  "ready": false,
+  "skin_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "motors": 15,
+  "bones": 23,
+  "animation_validated": false,
+  "name": "Costume_HaloArcherM",
+  "inspection_sha256": "68787b4a07438f7561bb8393db83d820a56b1e566a7e9dff74332d651eae798d",
+  "host_welds": 4,
+  "destination": "ServerStorage.CostumePendingRigs.Costume_HaloArcherM_FaceUnionMouthBindingSkinSchema2Candidate",
+  "schema": 1,
+  "mesh_parts": 3
+}

@@ -15,6 +15,7 @@ import numpy as np
 import skin_runtime as base
 import skin_schema
 import skin_expression_schema
+import skin_binding_schema
 from skin_verify import VERIFY
 from assemble import manifest as proxy_manifest
 from constraints import JOINTS, PRIMARY, RigError
@@ -73,7 +74,8 @@ def proxy_data(blueprint,input_path):
     return proxy_manifest(plan,blueprint["name"],root_reference="lower-torso-y")
 
 
-def prepare(path,model_path,proxy_override=None,pending_name=None,expression_manifest=None,source_contract=None):
+def prepare(path,model_path,proxy_override=None,pending_name=None,expression_manifest=None,source_contract=None,binding_schema=0):
+    if binding_schema not in (0,1): raise RigError("Only the exact explicit binding schema 1 is supported")
     blueprint=skin_schema.load(path,proxy_override)
     if not expression_manifest and blueprint.get("expression_manifest"):
         expression_manifest=Path(blueprint["expression_manifest"])
@@ -144,6 +146,7 @@ def prepare(path,model_path,proxy_override=None,pending_name=None,expression_man
           "joints_sha256":blueprint["proxy_plan_sha256"],"rig_origin":blueprint["rig_origin"],"original_bones_claimed":blueprint["original_bones_claimed"],
           "meshes":meshes,"bones":bones,"proxy_parts":parts,"root":proxy["root"],"joints":proxy["joints"],"hip_height":proxy["hip_height"],"target_height":5.5,"ready":False}
     if expression: data["expression"]=expression
+    if binding_schema: data["binding_schema"]=binding_schema
     return data,points
 
 
@@ -160,6 +163,7 @@ SCHEMA_METADATA=r'''
     for _,object in skin:GetDescendants() do
         if object:IsA("MeshPart") then table.insert(manifest.meshes,{path=skinRelative(object),mesh_id=object.MeshId}) end
     end
+    if DATA.binding then manifest.binding_schema=1;manifest.binding_host_path=DATA.binding.anchor_path end
     model:SetAttribute("HHC_SkinManifest",HttpService:JSONEncode(manifest))
     model:SetAttribute("HHC_SourceFileSHA256",DATA.skin_sha256)
     model:SetAttribute("HHC_SkinRootBindSize",root.Size)
@@ -185,10 +189,12 @@ def assembly():
     for before,after in replacements.items():
         if before not in code: raise RigError("The guarded base assembler boundary changed: "+before)
         code=code.replace(before,after)
-    return code
+    return skin_binding_schema.assembly(code)
 
 
 def write_payload(data,mode,output,inspection=None,fit=None):
+    if mode in ("assemble","verify") and inspection is not None:
+        data=skin_binding_schema.configure(data,inspection)
     code=base.COMMON.replace("__DATA__",base.literal(data))
     if mode=="inspect": code+=base.INSPECT
     elif mode=="assemble":
@@ -196,7 +202,7 @@ def write_payload(data,mode,output,inspection=None,fit=None):
         code+=assembly().replace("__SNAP__",base.literal(inspection)).replace("__FIT__",base.literal(fit))
     elif mode=="verify":
         if inspection is None or fit is None: raise RigError("A strictly validated actual imported inventory is required")
-        matcher=VERIFY.replace('return HttpService:JSONEncode({schema=2',skin_expression_schema.VERIFY+'\nreturn HttpService:JSONEncode({schema=2')
+        matcher=skin_binding_schema.verify(VERIFY).replace('return HttpService:JSONEncode({schema=2',skin_expression_schema.VERIFY+'\nreturn HttpService:JSONEncode({schema=2')
         code+=matcher.replace("__SNAP__",base.literal(inspection)).replace("__FIT__",base.literal(fit))
     else: raise RigError("Unknown generic mode")
     return base.write_draft(output,{"code":code,"datamodel_type":"Edit"})
@@ -206,8 +212,9 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument("contract",type=Path);parser.add_argument("--model-path",required=True)
     parser.add_argument("--proxy-plan",type=Path);parser.add_argument("--pending-name");parser.add_argument("--mode",choices=("inspect","assemble","verify"),default="inspect")
     parser.add_argument("--expression-manifest",type=Path);parser.add_argument("--source-contract",type=Path)
+    parser.add_argument("--binding-schema",type=int,choices=(0,1),default=0)
     parser.add_argument("--inspection",type=Path);parser.add_argument("--output",required=True,type=Path)
-    args=parser.parse_args();data,points=prepare(args.contract,args.model_path,args.proxy_plan,args.pending_name,args.expression_manifest,args.source_contract)
+    args=parser.parse_args();data,points=prepare(args.contract,args.model_path,args.proxy_plan,args.pending_name,args.expression_manifest,args.source_contract,args.binding_schema)
     inspection,fit=None,None
     if args.mode in ("assemble","verify"):
         if not args.inspection: parser.error("--inspection is required")

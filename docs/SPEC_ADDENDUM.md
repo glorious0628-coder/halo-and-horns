@@ -624,9 +624,10 @@ check. See HANDOFF_CODEX and the actual-cost records in
   shared imported Bone host. Four manually inferred candidates have 15 principal bones; fourteen paid sources retain
   the original 15 principal + 8 auxiliary hierarchy. Inferred bones must never be reported as original paid bones.
 - The server retains direct invisible R15 proxy Parts, the living Humanoid/server Animator and 15 Motor6D edges.
-  `CostumeSkin` contains noncolliding massless imported surfaces and original Bone hosts welded only to the root.
+  `CostumeSkin` contains noncolliding massless imported surfaces and original Bone hosts. BindingSchema1 uses one
+  root-to-anchor WeldConstraint and internal anchor-to-surface Weld joints inside the same `CostumeSkin` Model.
   Assembly stays under `CostumePendingRigs`, preserving earlier Pending siblings and the existing playable rig.
-- A skin template requires `HHC_SkinRetargetRequired=true`, runtime schema2 and RigReady/AnimationValidated/
+- A skin template requires `HHC_SkinRetargetRequired=true`, runtime schema2, `HHC_SkinBindingSchema=1`, and RigReady/AnimationValidated/
   SkinRuntimeValidated=true. Missing validation returns PendingRig and retains the owner's normal avatar. Require
   exact 64-digit source/skin/joint/contract/actual-inspection hashes and a nonempty manifest before replacement.
 - `SkinRetargetClient` follows every current Player.Character after Animator/Fx. It validates exact manifest mesh IDs,
@@ -640,6 +641,38 @@ check. See HANDOFF_CODEX and the actual-cost records in
   owner-avatar OFF/ON and death/respawn before any Edit-mode promotion. Play-only trial flags are discarded at Stop.
 - The offline driver suite passed 341 checks and the basic 40-file compiler/23-service/10-client load round passed.
   These checks do not claim all18 appearances, final weapons, multiplayer replication or DataStore persistence passed.
+
+#### A17-2a-1 Actual render binding correction (2026-10-04)
+- Bone.Transform/FK agreement and Preload Success alone do not prove visible mesh deformation. The previous shared
+  RootPart and sibling meshes were each welded through the Character's HRP outside their nearest `CostumeSkin` Model.
+  Actual Native screenshots stayed static even when proxy/Bone frames changed. Adding internal Weld connections in
+  Play immediately made the actual mesh follow the held full HurtBig key. Preserve those earlier results as numeric
+  and loading checks, not proof of moving rendered skins.
+- `CostumeSkin.HHC_SkinBindingHost` is an ObjectValue to the exact imported anchor. Keep each BasePart's recorded
+  root-relative bind. Anchor has exactly one `CostumeSkinRootWeld` WeldConstraint to HRP; each other imported BasePart
+  has one enabled `CostumeSkinInternalWeld`, Part0=anchor/Part1=surface, C0=anchorBind^-1*surfaceBind at current scale,
+  C1=identity. All imported surfaces/hosts/Bones share the same nearest Model. Reject extra joints, external shortcuts,
+  moving Head-proxy attachments, malformed refs/binds, unknown schemas, and nonuniform/partially replicated scales.
+- Shared `SkinBindingContract` gates CostumeService, SkinRetargetClient and ExpressionSkinContract. The face's existing
+  `HHC_ExpressionSkinRootWeld` ObjectValue now references its internal Weld, not an outside-HRP WeldConstraint.
+  Schema0 historical imports remain Pending and must not be silently promoted by older preparation tools.
+- ArcherM FaceUnion retains 438 original triangles, original weights/UV/PNG and adds no mouth-cap vertices. New exact
+  BindingSchema1 Pending passed actual matcher690, runtime2488 recorded frames/fault0/max error<0.00025 stud,
+  expressions/priority/loading/walk/jump/F/Q/growth/OFF/ON/respawn and19 actual Edit graph/scale/rejection checks.
+  Native held HurtBig confirms visible deformation. The original smiling mouth's geometric rim remains visible under
+  lighting; final appearance promotion is held. Static CG emission previews are insufficient to approve lit mouth shape.
+  This was the prior HOLD checkpoint: original ArcherM was preserved/Pending and only WarriorM was usable.
+- Latest 2026-10-04 MouthRestored ArcherM replaces that production entry after root Native quality review. Original
+  438 triangles/Body/UV/weights/23 bones/PNG stay exact; only the explicitly recorded 71 original mouth P/N vertices
+  may differ from its preserved union baseline. Strict ledger/manifest SHA and source-specific whitelist are required;
+  the general original P/N gate is unchanged. No new cap triangles/vertices or inferred original-bone claims are allowed.
+  Source SHA17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584/FaceMesh120232648183385,
+  actual BindingSchema1 matcher691, Play2497 frames/fault0/max Bone error0.000221093 stud, root Native three expressions
+  and held HurtBig pass, and source-only fresh Play confirms Active/ExpressionReady without trial markers.
+  Production is now WarriorM plus ArcherM (2/18); sixteen avatars and all eighteen final weapon/motion reviews remain.
+- Skin server validation requires the same fifteen enabled, uniquely named Motor6D joints and exact Part0/Part1 pairs
+  as the client. Disabled duplicate Neck and renamed required joints are rejected. The rigid legacy path is preserved.
+  Actual Edit graph/scale/server rejection and rigid regression checks total23; local/numeric tests do not replace Native QA.
 
 ### A17-3 Reviewable local tools and upload safety
 - Use the same files on the new account; the user allowed uploads from **2026-10-03**. Inspect and show each image before

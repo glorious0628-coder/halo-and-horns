@@ -1,0 +1,12 @@
+{
+  "driver": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":23576,\"characters\":[{\"scale\":1,\"max_error\":0.000249320175498724,\"frames\":21267}]}",
+  "texture": "rbxassetid://130810730029380",
+  "ready": true,
+  "angles": [
+    0.4537857472896576,
+    1.30385160446167e-08,
+    0.1396263837814331
+  ],
+  "pose": "HurtBig key 0.06, Animator identity, diagnostic hold only",
+  "expression": "Serious"
+}

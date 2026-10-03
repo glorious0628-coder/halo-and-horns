@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "stage": "Reused",
+  "maximum_assets": 0,
+  "states": [
+    "Serious",
+    "SoftSmile"
+  ],
+  "files": {
+    "Serious": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_Serious_face.png",
+    "SoftSmile": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_SoftSmile_face.png"
+  },
+  "source_sha256": {
+    "Serious": "6cde5a8b53f7877cfff649c5a1a2bcbe1f5edbedb91871361223fe5ee485ae61",
+    "SoftSmile": "07009ceee32a03c4d081b3eb657a2d34e692afd7376e7ae9b3d80c81b4f51660"
+  },
+  "root_reviewed": true,
+  "whole_batch_maximum_assets": 7,
+  "actual": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"http://127.0.0.1:8766/SoftSmile.png\":\"rbxassetid://96983789676579\",\"http://127.0.0.1:8766/Serious.png\":\"rbxassetid://130810730029380\"}"
+      }
+    ],
+    "isError": false
+  },
+  "reuse_source_ledger": "build\\costume_skin_expression_imports\\Costume_HaloArcherM\\texture_upload_ledger.json",
+  "reuse_source_sha256": "3a746eedf7ec059291d7ad64c3c789a9a3ec7dbdd0e723974bc3e9ec0a9900c0"
+}

@@ -45,6 +45,52 @@
         }
       ],
       "Name": "SkeletonKnight"
+    },
+    "Goblin": {
+      "Name": "Goblin",
+      "Height": 0.977264404296875,
+      "ServiceTargetHeight": 5,
+      "ProductionConnected": true,
+      "NativeTemplateVisualValidated": true,
+      "NormalGameVisualValidated": true,
+      "VisualHoldReason": "",
+      "SourceSHA256": "1d92307a508d33cb8ef6b97b850411e8280d40dad1559974af70eba68d99ffce",
+      "Meshes": [
+        {
+          "Name": "tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982",
+          "MeshId": "rbxassetid://111805774360030",
+          "TextureID": "",
+          "ColorMap": "rbxassetid://140499490000513",
+          "NormalMap": "rbxassetid://116546690514192",
+          "RoughnessMap": "rbxassetid://98238124136264",
+          "MetalnessMap": "rbxassetid://99292265796269"
+        }
+      ],
+      "ActualImportSHA256": "d49b63354c7264a308177a89466831cf032a132acac239574e6c323fb3d13bac",
+      "ActualPromotionSHA256": "e2bb8af3001b96530c8d84f7b0d621d3a0e87a69fea31605728e26ece52e087b"
+    },
+    "GoblinBrute": {
+      "Name": "GoblinBrute",
+      "Height": 0.8901759386062622,
+      "ServiceTargetHeight": 7.5,
+      "ProductionConnected": true,
+      "NativeTemplateVisualValidated": true,
+      "NormalGameVisualValidated": true,
+      "VisualHoldReason": "",
+      "SourceSHA256": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706",
+      "Meshes": [
+        {
+          "Name": "tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+          "MeshId": "rbxassetid://116440221662180",
+          "TextureID": "",
+          "ColorMap": "rbxassetid://107493500820181",
+          "NormalMap": "rbxassetid://87958878588608",
+          "RoughnessMap": "rbxassetid://81264739626823",
+          "MetalnessMap": "rbxassetid://75572076806737"
+        }
+      ],
+      "ActualImportSHA256": "eb3a672baf68c894df82b408699bac8344b11df9ec22b78505925b140684561b",
+      "ActualPromotionSHA256": "e80ac3237a92fe51c3063c1e4a07991571a71797c20fd747ac1016a26739f0c1"
     }
   },
   "costumeModels": {
@@ -67,5 +113,6 @@
       "Name": "Costume_HaloWarriorM",
       "Height": 5.5
     }
-  }
+  },
+  "lastRecordedAt": "2026-10-03T21:01:09.720750+00:00"
 }

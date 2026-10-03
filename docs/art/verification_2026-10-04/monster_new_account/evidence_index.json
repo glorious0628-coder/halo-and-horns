@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "file": "Goblin_import_actual.json",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/Goblin/actual_imports.json",
+      "original_sha256": "d49b63354c7264a308177a89466831cf032a132acac239574e6c323fb3d13bac",
+      "copied_sha256": "d49b63354c7264a308177a89466831cf032a132acac239574e6c323fb3d13bac",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "Goblin_inspection_actual.json",
+      "original_workspace_relative_path": "build/monster_promotion/Goblin_actual_inspection.json",
+      "original_sha256": "123d8ae18a3584764ab638291ba21d3479dbcabd73ea748ef0b703295a6830e5",
+      "copied_sha256": "123d8ae18a3584764ab638291ba21d3479dbcabd73ea748ef0b703295a6830e5",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "Goblin_promotion_actual.json",
+      "original_workspace_relative_path": "build/monster_promotion/Goblin_promotion_actual.json",
+      "original_sha256": "e2bb8af3001b96530c8d84f7b0d621d3a0e87a69fea31605728e26ece52e087b",
+      "copied_sha256": "e2bb8af3001b96530c8d84f7b0d621d3a0e87a69fea31605728e26ece52e087b",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "Goblin_root_review_actual.json",
+      "original_workspace_relative_path": "build/monster_promotion/Goblin_root_review.json",
+      "original_sha256": "8bb5b4d0134d50f485cb0528fbdfa4417d4c606f9486579ae71ee65a5aae8377",
+      "copied_sha256": "8bb5b4d0134d50f485cb0528fbdfa4417d4c606f9486579ae71ee65a5aae8377",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "Goblin_normal_game_spawn_actual.json",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/Goblin/normal_game_spawn_actual.json",
+      "original_sha256": "59ddcadd19f89e19b199657ba2bd615141f3fe8a63cdff3d2cec85ebbe47a6b4",
+      "copied_sha256": "59ddcadd19f89e19b199657ba2bd615141f3fe8a63cdff3d2cec85ebbe47a6b4",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "Goblin_native_front_clear.jpg",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/Goblin/native_front_clear.jpg",
+      "original_sha256": "85c9bdf77ccd2a523d29d612d98c7ea80ea2172b57b4637896c82e96202fab28",
+      "copied_sha256": "85c9bdf77ccd2a523d29d612d98c7ea80ea2172b57b4637896c82e96202fab28",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "Goblin_normal_game_native_passed.jpg",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/Goblin/native_normal_game_clear.jpg",
+      "original_sha256": "ebe9bbd30deca02eb6ba8498966d43a8126413b650650611f50aebf537f26503",
+      "copied_sha256": "ebe9bbd30deca02eb6ba8498966d43a8126413b650650611f50aebf537f26503",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_import_actual.json",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/GoblinBrute/actual_imports.json",
+      "original_sha256": "eb3a672baf68c894df82b408699bac8344b11df9ec22b78505925b140684561b",
+      "copied_sha256": "eb3a672baf68c894df82b408699bac8344b11df9ec22b78505925b140684561b",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_inspection_actual.json",
+      "original_workspace_relative_path": "build/monster_promotion/GoblinBrute_actual_inspection.json",
+      "original_sha256": "67de37b4c231b80669ddd07085cc756f0655a948c5caa2aeedc1d6fef6de7142",
+      "copied_sha256": "67de37b4c231b80669ddd07085cc756f0655a948c5caa2aeedc1d6fef6de7142",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_promotion_actual.json",
+      "original_workspace_relative_path": "build/monster_promotion/GoblinBrute_promotion_actual.json",
+      "original_sha256": "e80ac3237a92fe51c3063c1e4a07991571a71797c20fd747ac1016a26739f0c1",
+      "copied_sha256": "e80ac3237a92fe51c3063c1e4a07991571a71797c20fd747ac1016a26739f0c1",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_root_review_actual.json",
+      "original_workspace_relative_path": "build/monster_promotion/GoblinBrute_root_review.json",
+      "original_sha256": "2821f1168b9a8db5ecc3c8308aa9b3f20c92df3089d5406e1232a9e43303b4e1",
+      "copied_sha256": "2821f1168b9a8db5ecc3c8308aa9b3f20c92df3089d5406e1232a9e43303b4e1",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_normal_game_spawn_actual.json",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/GoblinBrute/normal_game_spawn_actual.json",
+      "original_sha256": "fae5ad429a32c8ef8181184ca476508e9b34a6c295d4458c1fca8cd16462e969",
+      "copied_sha256": "fae5ad429a32c8ef8181184ca476508e9b34a6c295d4458c1fca8cd16462e969",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_native_front_clear.jpg",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/GoblinBrute/native_front_clear.jpg",
+      "original_sha256": "efce361a9856055a77f08f39f82f043d4126dca49d138617c73ac76adb21fce7",
+      "copied_sha256": "efce361a9856055a77f08f39f82f043d4126dca49d138617c73ac76adb21fce7",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_normal_game_native_hold.jpg",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/GoblinBrute/native_normal_game_texture_hold.jpg",
+      "original_sha256": "5c6c67d4f17cf1522adf90e7c9768fc538d3552ff3ac0f08b8e2e07f0c9e7b53",
+      "copied_sha256": "5c6c67d4f17cf1522adf90e7c9768fc538d3552ff3ac0f08b8e2e07f0c9e7b53",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_normal_game_native_recheck_passed.jpg",
+      "original_workspace_relative_path": "build/monster_import_preflight_20261004/GoblinBrute/native_normal_game_clear.jpg",
+      "original_sha256": "640c54d505bcd46c93227e03504c85fb901df6e8489c13e67158a11ae224acea",
+      "copied_sha256": "640c54d505bcd46c93227e03504c85fb901df6e8489c13e67158a11ae224acea",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_client_material_actual.json",
+      "original_workspace_relative_path": "build/monster_promotion/GoblinBrute_client_material_near_actual.json",
+      "original_sha256": "65bb5d5f5669555beab6e0ac44df25c25ee207ea20b4a0557f69200623d6c32e",
+      "copied_sha256": "65bb5d5f5669555beab6e0ac44df25c25ee207ea20b4a0557f69200623d6c32e",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "GoblinBrute_server_nearby_attempt_actual.json",
+      "original_workspace_relative_path": "build/monster_promotion/GoblinBrute_nearby_move_actual.json",
+      "original_sha256": "2033f6dd1954b1a7a611e43b56ad0e96e60ccc486cb5befec1636d1a9fc34ea3",
+      "copied_sha256": "2033f6dd1954b1a7a611e43b56ad0e96e60ccc486cb5befec1636d1a9fc34ea3",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    }
+  ],
+  "production_mapping": {
+    "Goblin": true,
+    "GoblinBrute": true
+  },
+  "normal_game_visual": {
+    "Goblin": "root_actual_pass",
+    "GoblinBrute": "root_actual_recheck_pass"
+  },
+  "uploads_by_this_helper": 0,
+  "initial_gray_failure_preserved": true,
+  "gray_failure_cause": "not confirmed; delayed material loading is an inference only"
+}

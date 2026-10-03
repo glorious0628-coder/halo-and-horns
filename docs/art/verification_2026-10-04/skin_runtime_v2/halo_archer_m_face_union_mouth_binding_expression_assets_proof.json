@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "actual_imports_sha256": "9226353588a3b041615e95472b39d06299c193ccfe7d5a8aa7faee9a4f6b3af3",
+  "importer_ledger_sha256": "8abf0c3fbddd22740aab0486d4036df6d43b2c1078fa68eabf10eef16f09e874",
+  "texture_reuse_ledger_sha256": "e40e165a8172e6c888296c192d2d78ccd9dd5c66407702652d0e91be6a4b3d9a",
+  "reuse_source_sha256": "3a746eedf7ec059291d7ad64c3c789a9a3ec7dbdd0e723974bc3e9ec0a9900c0",
+  "expression_assets_sha256": "19408bb3b7d47d70b97838c2f93e2d9ffbda1cc2d07fc37733eece8c0b889225",
+  "face_mesh_id": "rbxassetid://120232648183385",
+  "neutral_from_actual_native_mesh": true,
+  "reused_pngs_exact": true,
+  "states": {
+    "Neutral": {
+      "png": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_Neutral_face.png",
+      "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+      "texture_id": "rbxassetid://114282379234661"
+    },
+    "SoftSmile": {
+      "png": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_SoftSmile_face.png",
+      "sha256": "07009ceee32a03c4d081b3eb657a2d34e692afd7376e7ae9b3d80c81b4f51660",
+      "texture_id": "rbxassetid://96983789676579"
+    },
+    "Serious": {
+      "png": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_Serious_face.png",
+      "sha256": "6cde5a8b53f7877cfff649c5a1a2bcbe1f5edbedb91871361223fe5ee485ae61",
+      "texture_id": "rbxassetid://130810730029380"
+    }
+  },
+  "actual_runtime_qa": false,
+  "ready": false,
+  "studio_calls": 0,
+  "api_calls": 0
+}

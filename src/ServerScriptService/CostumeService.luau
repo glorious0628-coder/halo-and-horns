@@ -8,6 +8,7 @@ local StarterPlayer = game:GetService("StarterPlayer")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
 local Net = require(ReplicatedStorage.Shared.Net)
+local SkinBinding = require(ReplicatedStorage.Shared.SkinBindingContract)
 
 local CostumeService = {}
 local S = nil
@@ -27,6 +28,13 @@ local EDGES = {
 	{ "UpperTorso", "RightUpperArm" }, { "RightUpperArm", "RightLowerArm" }, { "RightLowerArm", "RightHand" },
 	{ "LowerTorso", "LeftUpperLeg" }, { "LeftUpperLeg", "LeftLowerLeg" }, { "LeftLowerLeg", "LeftFoot" },
 	{ "LowerTorso", "RightUpperLeg" }, { "RightUpperLeg", "RightLowerLeg" }, { "RightLowerLeg", "RightFoot" },
+}
+local SKIN_JOINTS = {
+	Root = EDGES[1], Waist = EDGES[2], Neck = EDGES[3],
+	LeftShoulder = EDGES[4], LeftElbow = EDGES[5], LeftWrist = EDGES[6],
+	RightShoulder = EDGES[7], RightElbow = EDGES[8], RightWrist = EDGES[9],
+	LeftHip = EDGES[10], LeftKnee = EDGES[11], LeftAnkle = EDGES[12],
+	RightHip = EDGES[13], RightKnee = EDGES[14], RightAnkle = EDGES[15],
 }
 
 local function setStatus(player, status)
@@ -67,6 +75,10 @@ function CostumeService.ValidateTemplate(template)
 		local skin = template:FindFirstChild("CostumeSkin")
 		local manifest = template:GetAttribute("HHC_SkinManifest")
 		if not skin or not skin:IsA("Model") or type(manifest) ~= "string" or manifest == "" then return false, "InvalidRig" end
+		local root = template:FindFirstChild("HumanoidRootPart")
+		local bind = template:GetAttribute("HHC_SkinRootBindSize")
+		if not root or not root:IsA("BasePart") or typeof(bind) ~= "Vector3" or bind.X <= 0
+			or not SkinBinding.Validate(template, root.Size.X / bind.X) then return false, "InvalidRig" end
 		for _, attribute in { "HHC_SkinSourceSHA256", "HHC_SourceSHA256", "HHC_JointsSHA256", "HHC_SkinContractSHA256", "HHC_SkinInspectionSHA256" } do
 			local hash = template:GetAttribute(attribute)
 			if type(hash) ~= "string" or #hash ~= 64 or not hash:match("^[0-9a-fA-F]+$") then return false, "InvalidRig" end
@@ -83,6 +95,19 @@ function CostumeService.ValidateTemplate(template)
 	local joints = {}
 	for _, child in template:GetDescendants() do
 		if child:IsA("Motor6D") then table.insert(joints, child) end
+	end
+	if template:GetAttribute("HHC_SkinRetargetRequired") == true then
+		local named = {}
+		for _, joint in joints do
+			local edge = SKIN_JOINTS[joint.Name]
+			if edge then
+				if named[joint.Name] or not joint.Enabled or joint.Part0 ~= parts[edge[1]] or joint.Part1 ~= parts[edge[2]] then
+					return false, "InvalidRig"
+				end
+				named[joint.Name] = true
+			end
+		end
+		for name in SKIN_JOINTS do if not named[name] then return false, "InvalidRig" end end
 	end
 	for _, edge in EDGES do
 		local found = false

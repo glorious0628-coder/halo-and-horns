@@ -1,0 +1,340 @@
+{
+  "note": "Object callback counts and individual map-string results are separate observations. Zero SurfaceAppearance callbacks do not prove its four maps loaded. A failed string alone never authorizes stripping PBR or reuploading. Content.SourceType is URI/Object/Opaque, not image-versus-TexturePack.",
+  "native_visual_pass_claimed": false,
+  "instance_properties_written": 0,
+  "source_sha256": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706",
+  "actual_import_sha256": "eb3a672baf68c894df82b408699bac8344b11df9ec22b78505925b140684561b",
+  "alive": true,
+  "properties_unchanged": true,
+  "streaming_enabled": false,
+  "read_only": true,
+  "preload": [
+    {
+      "callback_observation_only": true,
+      "phase": "actual_normal_game_MeshPart_instances",
+      "failed_callbacks": 0,
+      "call_succeeded": true,
+      "all_maps_loaded_claimed": false,
+      "callbacks": [
+        {
+          "asset": "rbxassetid://116440221662180",
+          "status": "Success"
+        }
+      ],
+      "callback_count": 1,
+      "requested_items": 1,
+      "error": false
+    },
+    {
+      "callback_observation_only": true,
+      "phase": "actual_normal_game_SurfaceAppearance_instances",
+      "failed_callbacks": 0,
+      "call_succeeded": true,
+      "all_maps_loaded_claimed": false,
+      "callbacks": [],
+      "callback_count": 0,
+      "requested_items": 1,
+      "error": false
+    },
+    {
+      "callback_observation_only": true,
+      "phase": "individual_map_ID_strings",
+      "failed_callbacks": 4,
+      "call_succeeded": true,
+      "all_maps_loaded_claimed": false,
+      "callbacks": [
+        {
+          "asset": "rbxassetid://75572076806737",
+          "status": "Failure"
+        },
+        {
+          "asset": "rbxassetid://107493500820181",
+          "status": "Failure"
+        },
+        {
+          "asset": "rbxassetid://87958878588608",
+          "status": "Failure"
+        },
+        {
+          "asset": "rbxassetid://81264739626823",
+          "status": "Failure"
+        }
+      ],
+      "callback_count": 4,
+      "requested_items": 4,
+      "error": false
+    }
+  ],
+  "lighting": {
+    "clock_time": 16.79972267150879,
+    "ambient": [
+      0.27450981736183167,
+      0.23529411852359772,
+      0.21568627655506134
+    ],
+    "outdoor_ambient": [
+      0.47058823704719543,
+      0.4117647111415863,
+      0.3529411852359772
+    ],
+    "environment_specular": 0.30000001192092896,
+    "brightness": 1.7999999523162842,
+    "environment_diffuse": 0.30000001192092896,
+    "exposure": -0.10000000149011612
+  },
+  "meshes": [
+    {
+      "path": "Workspace.Monsters.GoblinBrute.CustomVisual.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+      "reflectance": 0,
+      "surfaces": [
+        {
+          "texture_pack_content": {
+            "error": "The current thread cannot read 'TexturePackContent' (lacking capability RobloxScript)",
+            "readable": false
+          },
+          "name": "SurfaceAppearance",
+          "color": {
+            "value": [
+              1,
+              1,
+              1
+            ],
+            "readable": true,
+            "kind": "Color3"
+          },
+          "contents": {
+            "ColorMap": {
+              "SourceType": {
+                "value": "Uri",
+                "readable": true,
+                "kind": "EnumItem"
+              },
+              "Object": {
+                "value": "nil",
+                "readable": true,
+                "kind": "nil"
+              },
+              "display": "Content{SourceType=Uri, Uri=rbxassetid://107493500820181}",
+              "kind": "Content",
+              "Uri": {
+                "value": "rbxassetid://107493500820181",
+                "readable": true,
+                "kind": "string"
+              },
+              "readable": true
+            },
+            "NormalMap": {
+              "SourceType": {
+                "value": "Uri",
+                "readable": true,
+                "kind": "EnumItem"
+              },
+              "Object": {
+                "value": "nil",
+                "readable": true,
+                "kind": "nil"
+              },
+              "display": "Content{SourceType=Uri, Uri=rbxassetid://87958878588608}",
+              "kind": "Content",
+              "Uri": {
+                "value": "rbxassetid://87958878588608",
+                "readable": true,
+                "kind": "string"
+              },
+              "readable": true
+            },
+            "RoughnessMap": {
+              "SourceType": {
+                "value": "Uri",
+                "readable": true,
+                "kind": "EnumItem"
+              },
+              "Object": {
+                "value": "nil",
+                "readable": true,
+                "kind": "nil"
+              },
+              "display": "Content{SourceType=Uri, Uri=rbxassetid://81264739626823}",
+              "kind": "Content",
+              "Uri": {
+                "value": "rbxassetid://81264739626823",
+                "readable": true,
+                "kind": "string"
+              },
+              "readable": true
+            },
+            "MetalnessMap": {
+              "SourceType": {
+                "value": "Uri",
+                "readable": true,
+                "kind": "EnumItem"
+              },
+              "Object": {
+                "value": "nil",
+                "readable": true,
+                "kind": "nil"
+              },
+              "display": "Content{SourceType=Uri, Uri=rbxassetid://75572076806737}",
+              "kind": "Content",
+              "Uri": {
+                "value": "rbxassetid://75572076806737",
+                "readable": true,
+                "kind": "string"
+              },
+              "readable": true
+            }
+          },
+          "alpha_mode": {
+            "value": "Overlay",
+            "readable": true,
+            "kind": "EnumItem"
+          },
+          "maps": {
+            "ColorMap": "rbxassetid://107493500820181",
+            "NormalMap": "rbxassetid://87958878588608",
+            "RoughnessMap": "rbxassetid://81264739626823",
+            "MetalnessMap": "rbxassetid://75572076806737"
+          }
+        }
+      ],
+      "color": [
+        0.6392157077789307,
+        0.6352941393852234,
+        0.6470588445663452
+      ],
+      "mesh_size": [
+        0.9782716035842896,
+        0.89019775390625,
+        0.4575501084327698
+      ],
+      "double_sided": false,
+      "mesh_id": "rbxassetid://116440221662180",
+      "material_variant": "",
+      "transparency": 0,
+      "name": "tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+      "mesh_content": {
+        "SourceType": {
+          "value": "Uri",
+          "readable": true,
+          "kind": "EnumItem"
+        },
+        "Object": {
+          "value": "nil",
+          "readable": true,
+          "kind": "nil"
+        },
+        "display": "Content{SourceType=Uri, Uri=rbxassetid://116440221662180}",
+        "kind": "Content",
+        "Uri": {
+          "value": "rbxassetid://116440221662180",
+          "readable": true,
+          "kind": "string"
+        },
+        "readable": true
+      },
+      "local_transparency": 0,
+      "material": "Plastic",
+      "texture_id": "",
+      "size": [
+        8.242232322692871,
+        7.500183582305908,
+        3.854997158050537
+      ]
+    }
+  ],
+  "source_marker": false,
+  "material_match": true,
+  "player_moved": false,
+  "distance": 597.9185180664062,
+  "nearby": false,
+  "body_height": 7.5,
+  "selected_path": "Workspace.Monsters.GoblinBrute",
+  "target_streamed": true,
+  "name": "GoblinBrute",
+  "camera_changed": false,
+  "player_position": [
+    4.358280658721924,
+    3.2248411178588867,
+    -20.26310157775879
+  ],
+  "candidate_count": 4,
+  "schema": 1,
+  "candidates": [
+    {
+      "body_height": 7.5,
+      "path": "Workspace.Monsters.GoblinBrute",
+      "pivot": [
+        597.5078125,
+        4.511886119842529,
+        -95.619140625,
+        0.8384337425231934,
+        3.088514688442956e-08,
+        -0.5450035333633423,
+        -1.6760576926344584e-08,
+        1,
+        3.088514688442956e-08,
+        0.5450035333633423,
+        -1.6760575149987744e-08,
+        0.8384337425231934
+      ],
+      "distance": 597.9185180664062
+    },
+    {
+      "body_height": 7.5,
+      "path": "Workspace.Monsters.GoblinBrute",
+      "pivot": [
+        698.81640625,
+        4.511886119842529,
+        -85.50000762939453,
+        -0.8386426568031311,
+        1.0417844009680266e-07,
+        -0.5446820855140686,
+        5.656081469851415e-08,
+        1,
+        1.0417845430765738e-07,
+        0.5446820259094238,
+        5.6560825356655187e-08,
+        -0.8386427164077759
+      ],
+      "distance": 697.5167236328125
+    },
+    {
+      "body_height": 7.5,
+      "path": "Workspace.Monsters.GoblinBrute",
+      "pivot": [
+        712.8056030273438,
+        4.513760566711426,
+        75.07951354980469,
+        0.9944201111793518,
+        4.877587223006685e-09,
+        -0.10549237579107285,
+        -4.387280760909107e-09,
+        1,
+        4.879848525263242e-09,
+        0.10549237579107285,
+        -4.389794749926068e-09,
+        0.9944201111793518
+      ],
+      "distance": 714.8352661132812
+    },
+    {
+      "body_height": 7.5,
+      "path": "Workspace.Monsters.GoblinBrute",
+      "pivot": [
+        781.3777465820312,
+        4.515635967254639,
+        -12.83248519897461,
+        0.6796472668647766,
+        1.7895542825385746e-08,
+        0.7335391044616699,
+        -4.583265322821717e-08,
+        1,
+        1.806924210256966e-08,
+        -0.7335391044616699,
+        -4.5900751644012416e-08,
+        0.6796472668647766
+      ],
+      "distance": 777.0560913085938
+    }
+  ]
+}

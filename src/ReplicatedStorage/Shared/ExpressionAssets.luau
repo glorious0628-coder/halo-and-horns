@@ -7,8 +7,8 @@ return {
 			SoftSmile = "rbxassetid://96983789676579",
 			MeshName = "FaceExpression",
 			SkinSchema = 1,
-			SkinSourceSHA256 = "f23871e89b092cb69eb0547c2c77180ff4150ffbb8593eb47a220ac87aff060a",
-			MeshId = "rbxassetid://88405558388221",
+			SkinSourceSHA256 = "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+			MeshId = "rbxassetid://120232648183385",
 		},
 		Costume_HaloWarriorM = {
 			Neutral = "rbxassetid://121674541725480",

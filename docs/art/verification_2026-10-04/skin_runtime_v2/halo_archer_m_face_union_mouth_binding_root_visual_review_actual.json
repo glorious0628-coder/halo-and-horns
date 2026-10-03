@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "reviewed_by_root": true,
+  "reviewed_at": "2026-10-03T20:53:09.669127+00:00",
+  "source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "actual_mechanics_sha256": "2c9259fe9e547dfe5ac74c0e90a01ac1d68630df5de84d41f07ae91e2559a38f",
+  "three_expressions_native_passed": true,
+  "actual_surface_deformation_native_passed": true,
+  "mouth_3d_grin_removed_native": true,
+  "limited_to_single_client_and_diagnostic_hold": true,
+  "evidence": [
+    {
+      "file": "build\\skin_expression_face_union_mouth_binding_qa\\Costume_HaloArcherM\\neutral_native.jpg",
+      "sha256": "adff2e01d5f10b62d4b94f52e153e6572e59f1d980af0f4139c28dba066e8241"
+    },
+    {
+      "file": "build\\skin_expression_face_union_mouth_binding_qa\\Costume_HaloArcherM\\serious_native.jpg",
+      "sha256": "99f0c746b62719c46f6bc6993d5af2765d722774a5a44c2877b5f3e3810cc526"
+    },
+    {
+      "file": "build\\skin_expression_face_union_mouth_binding_qa\\Costume_HaloArcherM\\softsmile_native.jpg",
+      "sha256": "94d183ee5c433869684adf5c0a8752779d3069ab92fc3c1b13f6ad53179811e7"
+    },
+    {
+      "file": "build\\skin_expression_face_union_mouth_binding_qa\\Costume_HaloArcherM\\hurtbig_native.jpg",
+      "sha256": "5b2d65680a527dbb31e48678410f6d56534c8f9a810ddfef1cee5273e618fee3"
+    }
+  ],
+  "notes": "Root personally inspected native Neutral/Serious/SoftSmile and held full HurtBig. Original approved hair, wink, clothes preserved. Mouth has no old curved 3D groove; face and arms actually deform. Held poses do not prove final attack timing or multiplayer."
+}

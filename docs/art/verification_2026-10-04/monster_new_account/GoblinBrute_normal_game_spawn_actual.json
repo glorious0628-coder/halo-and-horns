@@ -1,0 +1,25 @@
+{
+  "path": "Workspace.Monsters.GoblinBrute",
+  "normal_monster_service_spawn": true,
+  "height": 7.5,
+  "meshes": [
+    {
+      "transparency": 0,
+      "name": "tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+      "maps": {
+        "ColorMap": "rbxassetid://107493500820181",
+        "NormalMap": "rbxassetid://87958878588608",
+        "RoughnessMap": "rbxassetid://81264739626823",
+        "MetalnessMap": "rbxassetid://75572076806737"
+      },
+      "mesh": "rbxassetid://116440221662180",
+      "texture": ""
+    }
+  ],
+  "visual_position": [
+    604.5426025390625,
+    3.796616554260254,
+    -22.154386520385742
+  ],
+  "name": "GoblinBrute"
+}

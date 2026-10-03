@@ -1,0 +1,22 @@
+[
+  {
+    "label": "FactionPicker.Cards.Card_Halo.Body.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "ClassPicker.Cards.Card_Archer.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "production_ready",
+    "text": "{\"folder\":\"CostumeRigs\",\"validated\":true,\"enabled\":true,\"status\":\"Active\",\"id\":\"Costume_HaloArcherM\",\"applied\":true,\"rig\":\"R15\"}",
+    "error": false
+  },
+  {
+    "label": "new_face_without_trial",
+    "text": "{\"binding_schema\":1,\"ready\":true,\"mesh\":\"rbxassetid://120232648183385\",\"expression\":\"Neutral\"}",
+    "error": false
+  }
+]

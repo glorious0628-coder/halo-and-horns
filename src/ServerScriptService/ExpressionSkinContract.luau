@@ -1,5 +1,6 @@
 -- Verified skinned face attachment: root-owned material surface, shared original Head Bone.
 local HttpService = game:GetService("HttpService")
+local SkinBinding = require(game:GetService("ReplicatedStorage").Shared.SkinBindingContract)
 local M = {}
 local MARKERS = { "HHC_RigReady", "HHC_AnimationValidated", "HHC_SkinRuntimeValidated", "HHC_ExpressionSkinValidated", "HHC_ExpressionRuntimeValidated" }
 
@@ -54,12 +55,12 @@ function M.IsReady(ctx)
 		or mesh.MeshId ~= ctx.MeshId or mesh.Anchored or not mesh.Massless or mesh.CanCollide
 		or mesh:FindFirstChildOfClass("SurfaceAppearance") or objectValue(mesh, "HHC_ExpressionSkinBoneHost", "BasePart") ~= host
 		or objectValue(mesh, "HHC_ExpressionSkinHeadBone", "Bone") ~= bone
-		or objectValue(mesh, "HHC_ExpressionSkinRootWeld", "WeldConstraint") ~= weld then return false end
-	if not weld.Parent or not weld:IsDescendantOf(skin) or not weld.Enabled or weld.Part0 ~= root or weld.Part1 ~= mesh
+		or objectValue(mesh, "HHC_ExpressionSkinRootWeld", "Weld") ~= weld then return false end
+	if not weld.Parent or not weld:IsDescendantOf(skin) or not weld.Enabled or weld.Part1 ~= mesh
 		or bone:GetAttribute("HHC_SkinPrincipal") ~= true or bone:GetAttribute("HHC_SkinBonePart") ~= "Head"
 		or bone:GetAttribute("HHC_SkinSourceSHA256") ~= ctx.SHA then return false end
 	local q = scaleOf(root, model)
-	return q ~= nil and closeFrame(bone.CFrame, ctx.BoneBind, q)
+	return q ~= nil and SkinBinding.Validate(model, q) and closeFrame(bone.CFrame, ctx.BoneBind, q)
 		and closeFrame(root.CFrame:ToObjectSpace(mesh.CFrame), ctx.MeshBind, q)
 		and closeFrame(root.CFrame:ToObjectSpace(host.CFrame), ctx.HostBind, q)
 end
@@ -70,7 +71,7 @@ function M.Bind(model, head, mesh, def)
 	local skin, root = model:FindFirstChild("CostumeSkin"), model:FindFirstChild("HumanoidRootPart")
 	if not skin or not skin:IsA("Model") or not root or not root:IsA("BasePart") or head.Parent ~= model then return nil end
 	local bone, host = objectValue(mesh, "HHC_ExpressionSkinHeadBone", "Bone"), objectValue(mesh, "HHC_ExpressionSkinBoneHost", "BasePart")
-	local weld = objectValue(mesh, "HHC_ExpressionSkinRootWeld", "WeldConstraint")
+	local weld = objectValue(mesh, "HHC_ExpressionSkinRootWeld", "Weld")
 	if not bone or not host or not weld then return nil end
 	local actualHost = bone.Parent
 	while actualHost and actualHost ~= skin and not actualHost:IsA("BasePart") do actualHost = actualHost.Parent end

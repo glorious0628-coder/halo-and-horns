@@ -1,0 +1,319 @@
+{
+  "path": "ServerStorage.MonsterNewAccountImports.GoblinBrute",
+  "source": {
+    "meshes": [
+      {
+        "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9/tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+        "reflectance": 0,
+        "color": [
+          0.6392157077789307,
+          0.6352941393852234,
+          0.6470588445663452
+        ],
+        "class": "MeshPart",
+        "can_query": true,
+        "pivot_offset": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "collision_fidelity": "Default",
+        "cframe": [
+          -49.08413314819336,
+          -22.10310173034668,
+          116.0442123413086,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "mesh_id": "rbxassetid://116440221662180",
+        "size": [
+          0.9782716035842896,
+          0.89019775390625,
+          0.4575501084327698
+        ],
+        "double_sided": false,
+        "mesh_size": [
+          0.9782716035842896,
+          0.89019775390625,
+          0.4575501084327698
+        ],
+        "texture_id": "",
+        "collision_group": "Default",
+        "render_fidelity": "Automatic",
+        "surface": {
+          "color": [
+            1,
+            1,
+            1
+          ],
+          "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9/tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9/SurfaceAppearance",
+          "alpha_mode": "Overlay",
+          "maps": {
+            "ColorMap": "rbxassetid://107493500820181",
+            "NormalMap": "rbxassetid://87958878588608",
+            "RoughnessMap": "rbxassetid://81264739626823",
+            "MetalnessMap": "rbxassetid://75572076806737"
+          }
+        },
+        "anchored": false,
+        "can_touch": true,
+        "material_variant": "",
+        "transparency": 0,
+        "name": "tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+        "massless": false,
+        "can_collide": true,
+        "cast_shadow": true,
+        "material": "Plastic",
+        "local_transparency": 0
+      }
+    ],
+    "root_attributes": {
+      "RBX_ReimportId": {
+        "value": "fb3f4233-1b10-46c8-bde1-28645f939deb",
+        "kind": "string"
+      },
+      "HHC_SourceFileSHA256": {
+        "value": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706",
+        "kind": "string"
+      },
+      "HHC_VisualValidated": {
+        "value": false,
+        "kind": "boolean"
+      }
+    },
+    "scale": 1,
+    "class": "Model",
+    "bounding_cframe": [
+      -49.08414077758789,
+      -22.103113174438477,
+      116.0442123413086,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    "bounding_size": [
+      0.9782216548919678,
+      0.8901759386062622,
+      0.4575501084327698
+    ],
+    "nodes": [
+      {
+        "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9",
+        "attributes": [],
+        "class": "Model"
+      },
+      {
+        "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9/tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+        "attributes": [],
+        "class": "MeshPart"
+      },
+      {
+        "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9/tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9/SurfaceAppearance",
+        "attributes": [],
+        "class": "SurfaceAppearance"
+      }
+    ],
+    "asset_references": [
+      "rbxassetid://107493500820181",
+      "rbxassetid://116440221662180",
+      "rbxassetid://75572076806737",
+      "rbxassetid://81264739626823",
+      "rbxassetid://87958878588608"
+    ],
+    "pivot": [
+      -49.084041595458984,
+      -22.548200607299805,
+      116.04454803466797,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    "primary_part": false
+  },
+  "target_height": 7.5,
+  "previous": {
+    "meshes": [
+      {
+        "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9/tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+        "reflectance": 0,
+        "color": [
+          0.6392157077789307,
+          0.6352941393852234,
+          0.6470588445663452
+        ],
+        "class": "MeshPart",
+        "can_query": true,
+        "pivot_offset": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "collision_fidelity": "Default",
+        "cframe": [
+          -0.0008227832149714231,
+          4.000097751617432,
+          -0.003016871865838766,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        "mesh_id": "rbxassetid://130367891145829",
+        "size": [
+          8.791714668273926,
+          8.000195503234863,
+          4.111997127532959
+        ],
+        "double_sided": false,
+        "mesh_size": [
+          0.9782716035842896,
+          0.89019775390625,
+          0.4575501084327698
+        ],
+        "texture_id": "",
+        "collision_group": "Default",
+        "render_fidelity": "Automatic",
+        "surface": {
+          "color": [
+            1,
+            1,
+            1
+          ],
+          "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9/tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9/SurfaceAppearance",
+          "alpha_mode": "Overlay",
+          "maps": {
+            "ColorMap": "rbxassetid://105927523520537",
+            "NormalMap": "rbxassetid://106145280479229",
+            "RoughnessMap": "rbxassetid://117069009349894",
+            "MetalnessMap": "rbxassetid://100718831200237"
+          }
+        },
+        "anchored": false,
+        "can_touch": true,
+        "material_variant": "",
+        "transparency": 0,
+        "name": "tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+        "massless": false,
+        "can_collide": true,
+        "cast_shadow": true,
+        "material": "Plastic",
+        "local_transparency": 0
+      }
+    ],
+    "root_attributes": {
+      "RBX_ReimportId": {
+        "value": "11691612-8d4d-4336-8a7c-d13a289e936e",
+        "kind": "string"
+      }
+    },
+    "scale": 8.986987113952637,
+    "class": "Model",
+    "bounding_cframe": [
+      -0.0008945465087890625,
+      3.999999761581421,
+      -0.003016948699951172,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    "bounding_size": [
+      8.791265487670898,
+      7.999999523162842,
+      4.111997127532959
+    ],
+    "nodes": [
+      {
+        "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9",
+        "attributes": [],
+        "class": "Model"
+      },
+      {
+        "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9/tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9",
+        "attributes": [],
+        "class": "MeshPart"
+      },
+      {
+        "path": "tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9/tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9/SurfaceAppearance",
+        "attributes": [],
+        "class": "SurfaceAppearance"
+      }
+    ],
+    "asset_references": [
+      "rbxassetid://100718831200237",
+      "rbxassetid://105927523520537",
+      "rbxassetid://106145280479229",
+      "rbxassetid://117069009349894",
+      "rbxassetid://130367891145829"
+    ],
+    "pivot": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    "primary_part": false
+  },
+  "source_sha256": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706",
+  "actual_import_sha256": "eb3a672baf68c894df82b408699bac8344b11df9ec22b78505925b140684561b",
+  "name": "GoblinBrute",
+  "production_promoted": false,
+  "asset_total_including_wrapper": 6,
+  "schema": 1,
+  "read_only": true
+}

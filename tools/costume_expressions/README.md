@@ -64,3 +64,75 @@ continuous skin의 FaceExpression을 움직이는 Head proxy에 직접 weld하�
 `record_actual_registration.py`는 실제 root가 저장한 graft·Ready 승격·공격/피격/만료·대화/피격 우선·OFF/ON/재생성·MeshPart 기반 preload·ExpressionAssets 등록 증거를 읽어 `roblox_registrations/<avatar>.json`을 별도로 만든다. Head/PNG SHA·실제 메시/텍스처 ID·Neck 보존·각 상태가 모두 맞아야 실제 QA 시점의 등록을 기록한다. 원본 manifest, Ready 모델, 소스는 수정하지 않고 Studio도 호출하지 않는다. 현재 파일럿 실제 등록1종과 로컬 제작18종을 혼동하지 않는다. `--help`에서 필수 증거 인자를 확인한다. 기록 파일은 현재 Studio를 새로 조회한 결과가 아닌 검증 당시의 SHA 연결된 증거다.
 
 수동 skin 원본15뼈는 추정뼈이고, 유료 원본23뼈는 실제 원래 계층을 보존할 때만 구별해 표시한다. 성장 중 bind 비교는 복제되는 HumanoidRootPart.Size와 검증한 원래 Root 크기의 균일비율 q를 사용한다. bind 회전은 유지하며 위치만 q배로 확인한다. `Model.Scale` 또는 성장 전 CFrame 전체의 그대로 비교는 사용하지 않는다.
+
+## 원본 유료 skin 보존과 실제 모션 축 검사
+
+`build_preserved_skin.py`는 준비된 원본23본 2메시 skin을 복사해 승인된 기존3PNG를 연결한다. `prepare_preserved_skin.py`의 모든 원본 Head UV 삼각형·꼭짓점 대응으로 fixed→skin affine를 증명한다. `skin_frames.py`와 `finalize_skin_assets.py`는 현재 원본 SHA, 전체 UV 대응, Body/P/N/JOINTS/WEIGHTS/원래2PNG/bone계층/inverse bind 보존을 재검사한다. 원래23본과 추정15본을 구별한다. `write_skin_runtime_sidecar.py`는 검증한 원본 contract를 복사해 3surface와 별도 manifest/검증 SHA를 연결하며 ready=false를 유지한다.
+
+`render_game_neck_qa.py <새 표현 GLB> --version <새 버전>`은 실제 `Fx.luau`의 클래스 Swing·Release 및 HurtBig 키를 읽어 원본/표현 CG6장을 비교한다. `proxy_runtime.json`의 실제 parts CFrame과 Motor C0/C1으로 FK를 계산하며, `A^-1 * (현재 proxyWorld * 원래 proxyWorld^-1) * A * 원래BoneArmature`로 보조8본을 포함한 원본 계층에 적용한다. Head의 로컬 Euler25도는 실제 Roblox Neck 축25도 검증으로 사용하지 않는다. 기본 Animate 레이어는 오프라인에서 identity이므로 실제 Animator·물리·성장·표정 전환은 Studio에서 별도로 검증해야 한다.
+
+## 원래 삼각형만 사용하는 FaceUnion 후보
+
+새 입 cover의 보간 가중치는 원본 삼각형과 큰 모션에서 다르게 움직일 수 있다. `skin_export.py --original-triangles-only`는 기존 승인 얼굴 범위에 속한 원래 삼각형만 FaceExpression으로 분리하고 새 정점/cover를 추가하지 않는다. 원래 POSITION/NORMAL/JOINTS/WEIGHTS와 원래 입 홈은 그대로 유지한다. 원래 피부 표정 후보와 rigid 비교본은 덮어쓰지 않는다.
+
+`build_face_union.py <검증한 원본 skin GLB> <prepare_report.json> --version v1`은 새 FaceUnion GLB와 정면/측면3표정6장, 실제 Fx 원본 비교6장, 바이트 검증을 만든다. 직접 모두 확인한 뒤 `finalize_face_union.py --help`의 인자로 별도 `face_union_manifest.json`, `face_union_validation.json`, `face_union_prepare_report.json`, GLB `.skin.json`을 완성한다. `face_union_provenance.json`은 정확한 원래 Head face/vertex 인덱스·UV/P/N/JW를 기록하며, `face_union_uv_compatibility.json`은 기존 PNG3장 SHA와 원래 Face UV float32 SHA를 비교한다. PNG가 실제 업로드 ledger SHA와 일치하면 이미 올린 텍스처를 재사용할 수 있지만 새 Face 메시 자체는 다시 임포트해야 한다. CG 품질 실패 때 `--diagnostic-only --visual-notes <실패 내용>`은 증거만 저장하고 최종 manifest나 runtime sidecar를 만들지 않는다.
+
+원래 입의 흰색 면이 기존 cover 아래에 숨었다가 나타나면 `trace_skin_pixels.py`로 기록된 정확한 정면 카메라의 픽셀→HeadBase→원래 UV 삼각형을 증명한다. `extend_verified_union_mouth.py`는 해당 원래 면이 기존 승인 입 footprint 안에 있는지 확인하고 새 prepare 사본의 면 목록에만 추가한다. 원본 기하·가중치·UV·PNG는 바꾸지 않으며 새 CG 검증이 필수다. source에 이미 있던 턱/얼굴 가중치 오류는 union만으로 고쳐지지 않으므로 별도 승인한 얼굴 가중치 교정 source 사본을 사용하고 실제 모션을 다시 확인한다.
+
+### Bounded original-mouth geometry restoration
+
+`restore_union_mouth.py` is a separate candidate step after an exact original
+triangle union. It fits the surrounding original facial surface inside the
+already reviewed mouth ellipse, then restores only the old connected mouth
+depression's depth and normals. HeadBase and FaceExpression share the exact
+restored P/N accessors; there are no new vertices or triangles. Original body,
+UV, joint/weight arrays, bones and PNG bytes stay unchanged. The source union,
+original two-surface skin and canonical expression candidates remain intact.
+
+`validate_mouth_restoration.py <new.glb>` first applies the normal exact skin
+validator to the recorded original union. It then permits only the ledger's
+bounded mouth P/N exception, including coincident-copy continuity and unchanged
+outside vertices. Ordinary `finalize_skin_assets.inspect` deliberately rejects
+this changed geometry. The exception is not a global preservation relaxation.
+`test_mouth_restoration_contract.py <new.glb>` checks fourteen unauthorized
+mutations, including a self-consistent replacement position/ledger.
+
+Use `render_prepared_expression.py ... --lit` and
+`render_game_neck_qa.py <new.glb> --version <fresh> --lit` for this geometry QA.
+Flat emission hides physical mouth recesses and cannot approve their removal.
+After personally reviewing all three states in front/quarter and all three
+actual-Fx original/expression pose pairs, `finalize_mouth_restoration.py` writes
+a separate `face_union_mouth_manifest_v1.json` and false-ready `.skin.json`.
+The explicit validation kind is `original_connected_mouth_pn_exception_v1`.
+Existing texture IDs may be reused only when their upload-ledger PNG SHA is
+unchanged; the new mesh requires a new actual import and native quality QA.
+Shared Bone host and internal root-to-all-skin-mesh welds must be preserved.
+
+For a union without a previously finalized comparison manifest,
+`prepare_union_comparison.py <union.glb> <prepare.json>` records its exact
+geometry/provenance and writes the ordinary false-ready shared-skin sidecar.
+It explicitly marks that baseline as `geometry_comparison_only` and
+`visual_quality_hold`; the original physical smile is never claimed approved.
+`finalize_mouth_restoration.py` then records the separately reviewed restored
+candidate. `render_skin_states.py <glb> <fresh-output-directory> --lit` provides
+the repeatable three-state, two-view inspection step for either candidate.
+
+### Original inward-mouth winding diagnostic
+
+`correct_mouth_winding.py <mouth-PN.glb> <new-winding.glb>` creates a separate
+copy after the strict P/N gate. Only original Face triangles whose three
+vertices all belong to the approved bounded mouth ledger and whose projected
+winding opposes the original skin orientation can reverse. The same three
+indices, triangle count, all P/N/UV/JW data, bones and PNG bytes are preserved
+from the parent P/N candidate. This index-order exception is explicitly recorded
+in `.winding.json`; it does not pass or weaken the ordinary oriented-index gate.
+
+`validate_mouth_winding.py <new-winding.glb> <new-validation.json>` recomputes
+that exact eligible triangle set and verifies every source face. Run
+`test_mouth_winding_contract.py <new-winding.glb>` to reject fifteen unauthorized
+mutations, including an unlisted reversal, replacement vertex set, forged
+provenance, altered UV/weights/PNG and false engine promotion. Lit rest six-view
+and actual-Fx six-view CG review remain mandatory. A corrected winding can remove
+black inward-mouth walls while inherited lower-jaw/neck deformation still keeps
+the candidate on quality hold. Original sources, Ready rigs and older evidence
+remain intact; only root performs native QA or production promotion.

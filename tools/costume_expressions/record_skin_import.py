@@ -2,6 +2,7 @@
 import argparse
 import datetime
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -55,12 +56,15 @@ return game.HttpService:JSONEncode({schema=1,name=model.Name,path=model:GetFullN
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('name')
+    parser.add_argument('--tag',default='')
     args=parser.parse_args()
     assert args.name.startswith('Costume_') and args.name.replace('_','').isalnum()
-    folder=Path('build/costume_skin_expression_imports')/args.name
+    assert not args.tag or re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{0,40}',args.tag)
+    folder=Path('build/costume_skin_expression_imports')/(args.name+('_'+args.tag if args.tag else ''))
     p=folder/'importer_ledger.json'
     d=json.loads(p.read_text(encoding='utf-8'))
     assert d['model']==args.name and d['stage']=='Submitting'
+    assert d.get('batch_tag','')==args.tag
     assert d['root_reviewed'] and d['maximum_full_set_assets']<=10
     data={'name':args.name,'sha':d['sha256'],'wrapper':d['wrapper_name'],
           'meshes':d['mesh_names'],'bones':d['bone_count'],'folder':d['storage_folder']}

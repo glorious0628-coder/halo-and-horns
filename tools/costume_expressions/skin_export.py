@@ -218,6 +218,9 @@ def main():
             report[key]=proof[key]
         report['preserved_skin_coordinate_proof']=proof
         report['approved_rigid_face_scope']=prep['reviewed_profile']
+    if prep.get('verified_original_face_union_extension'):
+        report['verified_original_face_union_extension']=prep['verified_original_face_union_extension']
+        report['previous_verified_union_extensions']=prep.get('previous_verified_union_extensions',[])
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in report.items() if k not in ['source_to_game_affine','limitations']}))
 

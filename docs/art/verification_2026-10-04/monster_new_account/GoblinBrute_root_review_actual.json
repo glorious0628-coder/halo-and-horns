@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "name": "GoblinBrute",
+  "inspection_sha256": "67de37b4c231b80669ddd07085cc756f0655a948c5caa2aeedc1d6fef6de7142",
+  "reviewed_at": "2026-10-03T20:43:25.746909+00:00",
+  "target_use": "monster_spawn",
+  "reviewed_by_root": true,
+  "shown_to_user": true,
+  "native_original_shape_and_color_passed": true,
+  "native_pbr_and_opacity_passed": true,
+  "native_front_direction_passed": true,
+  "actual_mesh_preload_success": true,
+  "normal_game_spawn_qa_passed": false,
+  "preview_height_studs": 5.5,
+  "actual_service_target_height_studs": 7.5,
+  "material_preload_observation": {
+    "mesh_instance_status": "Success",
+    "map_string_statuses": {
+      "ColorMap": "Failure",
+      "NormalMap": "Failure",
+      "RoughnessMap": "Failure",
+      "MetalnessMap": "Failure"
+    },
+    "surface_instance_callback_count": 0,
+    "all_four_maps_callback_success_proven": false,
+    "native_original_green_skin_armor_club_shading_opaque_confirmed_by_root": true
+  },
+  "evidence": [
+    {
+      "file": "build\\monster_promotion\\GoblinBrute_actual_inspection.json",
+      "sha256": "67de37b4c231b80669ddd07085cc756f0655a948c5caa2aeedc1d6fef6de7142"
+    },
+    {
+      "file": "build\\monster_import_preflight_20261004\\GoblinBrute\\native_front_clear.jpg",
+      "sha256": "efce361a9856055a77f08f39f82f043d4126dca49d138617c73ac76adb21fce7"
+    },
+    {
+      "file": "build\\monster_import_preflight_20261004\\GoblinBrute\\actual_preload.json",
+      "sha256": "15c42e6fc09edc48180b751fffc53276157d289c864fd3a3ac1f47e6f4afcc16"
+    }
+  ],
+  "notes": "Root personally inspected original PNG and embedded JPGs before import, then native front preview: original green skin/armor/club, opaque shape and -Z front. Actual MeshPart callback Success; map-string failures are preserved and do not justify PBR removal. Existing normal-game record is the previous model, so new production normal QA remains pending."
+}

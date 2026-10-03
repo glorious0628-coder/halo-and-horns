@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"body_parts\":15,\"rig_origin\":\"preserved_source_skin_proxy_candidate\",\"ready\":false,\"skin_sha256\":\"77a99d609d0d7264b2931587ce040bc64d27beca262fd33444bbf8fd31c2734e\",\"motors\":15,\"bones\":23,\"animation_validated\":false,\"name\":\"Costume_HaloArcherM\",\"inspection_sha256\":\"b0a80449285fbe0d56c4cf8351ee2ea5a6175b0d9e757a1e25f05783482c3180\",\"host_welds\":4,\"destination\":\"ServerStorage.CostumePendingRigs.Costume_HaloArcherM_FaceUnionBindingSkinSchema2Candidate\",\"schema\":1,\"mesh_parts\":3}"
+    }
+  ],
+  "isError": false
+}

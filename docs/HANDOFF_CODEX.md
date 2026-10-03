@@ -3,7 +3,36 @@
 > Codex(또는 다른 에이전트)가 이어서 작업하기 위한 문서. 먼저 루트의 `AGENTS.md`(규칙)를 읽고 이 문서를 읽는다.
 > 사용자에게 말할 때는 항상 한국어, 짧게. 설명 대신 결과(스튜디오에서 플레이 가능한 상태)를 보여 준다.
 
-## 최신 작업 상태 (2026-10-04 빛 궁수 남 최종 skin 승격; 아래 이전 기록보다 우선)
+## 최신 작업 상태 (2026-10-04 05:56 MouthRestored 실제 생산 승격)
+
+- **현재 게임용 아바타는 2/18종**이다. 성기사 남성 기존 강체 리그와 빛 궁수 남성 원본23Bone/3표면/BindingSchema1을 실제 등록했다. 남은16종·전체18종 모션/무기·다인 QA는 미완료다. 아래 이전1/18/HOLD 기록은 당시 실패와 후보 증거로 보존하며 현재 궁수는 새 MouthRestored 등록본을 사용한다.
+- 새 궁수 GLB SHA `17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584`, 원래 얼굴438면/새 정점·덮개0/Body·UV·JW·23Bone·PNG 보존. 루트가 승인한 입71개 P/N 국소 복원만 exact ledger/manifest SHA로 예외 검증했다. 일반 원본 P/N exact gate는 유지한다. 실제 Import7상황 오프라인1161Python+354Luau, 국소 입 예외 궁수68/마법사68·Union59·기존6표정108검사가 통과했다. 이 로컬 검사는 실제 Native QA를 대체하지 않는다. 마법사347면·입75점 후보는 별도 whitelist/68검사만 통과했고 아직 실제 등록/Native QA 완료가 아니다.
+- 실제 새 Import는3Mesh/23Bone/6참조/최대7개, 이전 진지·미소PNG는 exact SHA/ID로 재사용했다. Face Mesh`120232648183385`, 기본`114282379234661`, 진지`130810730029380`, 미소`96983789676579`. 새 Source/별도 Pending 및 이전 union/cap/2표면/강체 후보와 옛 Ready archive는 보존했다.
+- 내부 연결은 `HHC_SkinBindingSchema=1`, 같은 CostumeSkin 안 실제 BoneHost→3Mesh InternalWeld3개와 외부 root→host WeldConstraint1개다. 실제 inspect SHA `68787b4a07438f7561bb8393db83d820a56b1e566a7e9dff74332d651eae798d`, **engine matcher691검사 PASS**, 최대 bind 오차0.0000152511stud. 기존 외부 graph의 Bone 수치/Preload 성공은 실제 피부 변형 증거가 아니었다는 정정은 유지한다.
+- 실제 새 후보 Play **2497프레임/fault0/최대 Bone 오차0.000221093stud**: UI 선택·걷기/점프/F/Q/실제 성장1→2→1/OFF·ON/사망·재연결·3표정/피격·대화 우선순위·로딩을 확인했다. 루트가 Native 기본/진지/미소/큰 HurtBig 네 장에서 원래 입 웃는 홈 제거와 실제 얼굴/팔 변형을 직접 확인하고 생산 CostumeRigs로 승격했다. 단일 클라이언트/진단 고정 pose 범위이며 전체18종 모션 품질 승인으로 쓰지 않는다.
+- 승격 후 원래 source로 새15초 Play에서 실제 Halo→Archer 선택만으로 Active/ExpressionReady/new FaceMesh/Binding1을 확인했다. QATrial 없이 생산 경로가 적용됐다. 첫 QA는 UI 초기화 조건 때문에 실패했으며 최종 JSON은 재실행 성공 범위만 보관한다. 그 실패가 없었다고 쓰지 않는다.
+- 최신 실제 전체42 Luau compiler PASS→마지막 ExpressionAssets1파일 compile/sync1·41동일→15초 Play Luau 오류0. **2026-10-04 05:56:14 KST /12,071,834바이트**, build/place byte 동일 SHA `6da73478884aebcea934e2dbdb9f931a36c13fa211526da3d505995c2379b677`. 최신 생산 궁수·새 몬스터 Source/CustomModels·ID가 저장됐다.
+- **Goblin/GoblinBrute 새 계정 Native 등록·CustomModels 승격·art/models/new_asset_ids.json 기록 및 정상 게임 Native 외형2종 확인 완료**다. Source/옛 모델·ID archive/PBR를 보존했고 높이는 Goblin5/Brute7.5다. Brute 첫 회색·갈색 Native 실패/HOLD는 보존했지만 변경0으로 재확인한 정상 게임에서 초록/원래 갑옷/몽둥이/불투명을 루트가 확인했다. 당시 서버 이동 직후거리13과 실제 Client probe거리597.9/nearbyfalse/Streamingfalse가 달라 근처 이동이 해결 원인이었다고 쓰지 않는다. 회색 원인은 미확정이며 지연 로딩은 추정이다. Mesh instance Success/SA콜백0/맵 문자열4Failure는 구분하고 PBR 제거·재업로드하지 않았다. 나머지 몬스터는 아직 완료가 아니다.
+- 증거는 `docs/art/verification_2026-10-04/skin_runtime_v2/`와 `monster_new_account/`의 README/evidence_index를 따른다. 복사본의 중첩 user_id도 제거했고 원본 SHA를 유지했다. Native 표정 JPEG는 **Play-only API로 지속해 UV 확인한 화면; 원래 이벤트 전환은 별도 실제 QA**다. 기존 작은 스냅샷은 정밀모션 증거가 아니다.
+- HUD A·물약 상점 GPT 선택/`MerchantEnabled=false` 실제 NPC 구매, 남은16아바타·전체18모션/표정/3D무기, 몬스터 나머지 새 계정 복구/회색 원인 조사, 닉네임 DataStore 영속/다인 QA는 미완료다. Native ActualSize 복원/reset 완료, **GraphicsMode Vulkan→원래 Automatic 최종 복원은 아직 필요**하다. 전체 요청 실제 완료·저장·커밋/push 뒤 종료, 무료 초기화 실제 사용0/자동 유료 구매 없음 조건을 유지한다.
+
+## 이전 작업 상태 (2026-10-04 내부 스킨 연결 수정·입 외형 HOLD 당시)
+
+- **현재 실제 게임용 적용 가능 아바타는 1/18종이다.** 성기사 남성 기존 강체 리그만 사용 가능하다. 기존 `CostumeRigs.Costume_HaloArcherM` 등록본은 보존했지만 `HHC_SkinBindingSchema=1`이 없어 새 서버/client gate가 거절한다. 실제 기존 궁수의 RigReady/Animation/Skin/ExpressionRuntime marker를 false로 낮추고 `HHC_PendingSkinBindingRepair=true`를 기록했다. 새 궁수 후보도 외형 HOLD/Pending/Ready0이며 남은17종은 아직 게임용 완료가 아니다.
+- 이전 궁수23Bone/중립 전사 여15Bone의 **Bone 오차·driver 프레임·Preload Success·상태 전환은 실제 피부 표면 변형을 증명하지 못했다.** 조립에서 원래 내부 Motor 연결을 지우고 `CostumeSkin` 밖 Character.HRP로 모든 메시/host를 직접 연결해, 같은 Model 안의 Bone→메시 스킨 연결이 끊겼다. 큰 HurtBig를 고정한 Native 화면에서 Bone은 변하지만 얼굴/팔은 거의 정지했고, 내부 연결을 추가하자 실제 표면이 즉시 움직였다. 아래 기존 수치와 승격 기록은 이 오류 발견 전 기록으로 보존하며 최종 모션 성공으로 집계하지 않는다.
+- 새 후보는 `CostumePendingRigs.Costume_HaloArcherM_FaceUnionBindingSkinSchema2Candidate`다. GLB SHA `77a99d609d0d7264b2931587ce040bc64d27beca262fd33444bbf8fd31c2734e`, 원래 얼굴438면/새 정점·덮개0/원본23Bone·UV·PNG 보존. 실제3Mesh/23Bone/6참조로 가져왔으며 Importer 최대7개, 기존 진지/미소2PNG는 정확한 SHA/ID 확인 후 재사용했다. 기존 cap 후보·Ready·원본2표면·강체 Pending은 덮어쓰지 않았다.
+- **내부 연결 계약은 `HHC_SkinBindingSchema=1`**: `CostumeSkin.HHC_SkinBindingHost` ObjectValue→실제 BoneHost RootPart, 외부 HRP→host WeldConstraint1개, 같은 CostumeSkin Model 안 host→3Mesh의 `CostumeSkinInternalWeld`3개(C0 원래 bind 상대/C1 identity). 실제 inspect SHA `b0a80449285fbe0d56c4cf8351ee2ea5a6175b0d9e757a1e25f05783482c3180`을 사용했고 source/import SHA는 바꾸지 않았다. 실제 강화 matcher690검사와 Shared 계약19검사(Scale1→2→1·누락/외부연결/중복/잘못된 C0·물리설정 거절)가 통과했다.
+- 새 실제 Play-only 후보는 **2488프레임/fault0/최대 Bone 오차0.00024832stud**였다. 걷기·점프·F/Q·실제 JusticeService 성장1→2→1·OFF 원래 아바타/driver 해제·ON·사망 재연결, 기본/진지/미소·피격 우선/대화 복귀를 확인했다. Native 고정 HurtBig에서 실제 얼굴/팔 변형도 확인했다. 단일 클라이언트/진단 pose 범위이며 전체18종 모션·활 시위·무기 품질 완료는 아니다. Edit 후보 검증 marker는 false이고 Play-only clone에만 trial marker를 넣었다.
+- **궁수 승격은 HOLD**: Serious PNG를 써도 원래 입3D홈의 웃는 음영이 남는다. 표현 담당의 CG/입 주변 ray6개가 모두 FaceExpression이라 누락 면 문제가 아니다. 루트가 허용한 국소 입 곡면 P/N 복원은 별도 후보/strict validator로 준비 중이다. 원래438면·Body/UV/JW/23Bone/PNG는 보존하고 좁은 입 P/N 예외만 기록해야 하며 기존 P/N exact validator를 우회하지 않는다. 아직 새 외형 승인/게임용 승격은 없고 union v1은 보존한다.
+- 새 실제 응답·Play 기록·Native 화면은 `docs/art/verification_2026-10-04/skin_runtime_v2/README.md`와 `evidence_index.json`을 따른다. 복사본에서 중첩 JSON 문자열의 사용자 ID를 제거하고 원본 SHA를 유지했다. 진단 고정 표정/HurtBig JPEG는 이벤트 시간·전체 모션 타이밍의 증거가 아니다.
+- 오프라인 source 기반 검사981 Python+292 Luau, FaceUnion 원본/변조59검사, 기존6종 표정108검사와 앞선 client341검사는 로컬 검사다. `skin_runtime_v2.py --binding-schema 1`로 새 Pending을 준비한다. legacy schema0/과거 Ready 기록은 보존용이며 새 production gate를 통과하지 못한다. SPEC의 최신 내부 연결 계약은 루트가 갱신한다.
+- 몬스터는 **준비 metadata만** 있다: 승인된 기존 Goblin/GoblinBrute/Slime/GoldenGoose와 선택된 SkeletonClothed/SkeletonKingClothed6원본 GLB·내장 이미지 원본을 보존해 1모델 최대6에셋/총10이하 목록을 만들었다. BigSlime GLB는 없어 HOLD다. `build/monster_import_preflight_20261004/ledger_prepared.json`의 직접 검토·사용자 표시·업로드·승격 표시는 모두 false이고, 새 import/CustomModels 복구나 PBR 제거는 아직 하지 않았다. `art/out/v1`/미선택 고블린 옷 수정본은 제외한다.
+- HUD A·물약 상점 GPT 선택, `MerchantEnabled=false` 실제 NPC 구매, 나머지17종 아바타·전체18종 모션/표정·최종3D무기, 몬스터 새 계정 복구, 닉네임 DataStore 영속/다인 QA는 미완료다. 최근 API 리깅13신규325/잔액4560/무료거절4는 유지하며 이번 오프라인 준비에서 유료 요청은 없었다.
+- 최신 실제 Studio 저장은 **2026-10-04 04:47:24 KST / 11,265,486바이트**, `place/GoodEvil.rbxlx`에 동일 복사했다. 전체42 Luau compiler PASS→4변경/38동일 sync→15초 Play에서 Luau 런타임 오류0이며 옛 몬스터 에셋 warning은 남았다. Native GraphicsMode **Vulkan→원래 Automatic 복원**, 전체 요청 실제 완료·저장·커밋/push 뒤 종료 조건을 유지한다. 무료 초기화 실제 사용0, 유료 구매 승인 아님.
+
+## 이전 작업 상태 (2026-10-04 빛 궁수 남 legacy skin 승격; 위 binding 정정이 우선)
+
+아래 2/18 판정과 표면 변형을 포함한 듯한 표현은 내부 연결 오류 발견 전 기록이다. 실제 수치/상태·에셋 로딩 기록을 보존하며 현재 적용 가능 수는 위 1/18을 따른다.
 
 - **게임용 아바타 기술적 연결은 2/18종이다.** `CostumeRigs.Costume_HaloWarriorM`은 기존 강체 리그+3표정, `CostumeRigs.Costume_HaloArcherM`은 원본23Bone+연속 skin 3표면+3표정이다. 남은16종과 전체18종 모션 품질은 미완료다. 새 큰 피격 자세 렌더에서 궁수 얼굴 패치 경계가 보고돼 **Native/HurtBig 품질 추가 검증 중**이며, Ready2를 전체 피격모션 품질 승인으로 쓰지 않는다.
 - 빛 궁수 남 최종 GLB SHA `f23871e89b092cb69eb0547c2c77180ff4150ffbb8593eb47a220ac87aff060a`: 실제 Custom Import3메시/23Bone/6에셋 참조, Importer 최대7개+진지/미소2PNG=전체9개. 원래 공유 RootPart/Bone 계층을 그대로 보존해 투명 R15proxy15개/15Motor/Root host weld4개로 별도 Pending에 조립했다. 628검사 matcher 성공은 **루트 실제 실행 보고**이며 별도 응답 JSON은 아직 없다. 원래2표면 Import/Pending과 강체 Pending은 보존했다.
@@ -117,9 +146,9 @@
 
 ## 3. 다음에 할 일 (최신 사용자 우선순위)
 
-1. 남은16종 직업 코스튬: 준비된 원본 연속 skin/최종3표면 manifest를 한 장씩 확인·표시한 뒤10개 이하 Importer→실제 import ID/Bone/축/크기 검사→별도 Pending 조립→걷기/점프/F/Q/성장1→2→1/ON·OFF/사망·얼굴 품질 QA→승격. 기존 성기사 남성과 빛 궁수 남 Ready/원본2표면·강체 Pending을 보존한다. 궁수 큰 피격 얼굴 패치 경계는 Native/HurtBig로 추가 확인·수정하며, 원래 웨이트 끌림3종 교정본은 별도 원본/교정 SHA 계약으로 검증한다.
+1. 궁수 FaceUnionBinding 후보의 Serious 입3D홈/웃는 음영 외형 HOLD를 먼저 해결·확인한다. 남은17종 직업 코스튬은 승인 원본 연속 skin/최종3표면을 한 장씩 확인·표시한 뒤10개 이하 Importer→실제 ID/Bone/축/크기→BindingSchema1 같은 Model 내부 그래프→별도 Pending→걷기/점프/F/Q/성장1→2→1/ON·OFF/사망·Native 실제 표면 변형/얼굴 품질 QA→승격한다. 성기사 Ready와 궁수 legacy 등록본/원본2표면·강체 Pending을 보존하며 legacy를 새 gate에 우회 연결하지 않는다. 교정 웨이트3종은 별도 원본/교정 SHA 계약으로 검증한다.
 2. 남녀18종 전체 전사·궁수·마법사 최종 무기/활 시위·당김·발사·지팡이 실제 muzzle/원본 Animate 공존 검증. 임시 무기 시각 요구를 완료로 처리하지 않는다.
-3. 승인된 기본/진지/미소 얼굴을 나머지16종 모델별 UV·실제 큰 피격 포즈 검사→한 장씩 표시→소량 업로드→ExpressionAssets 등록→전투/피격/대화 우선·OFF 얼굴 복귀 검증. Ready2의 연결 성공을 전체 얼굴/모션 품질 승인으로 간주하지 않는다. 악 궁수는 원본에 남은 앞얼굴112면 처리와 교정 웨이트 계약도 함께 확인한다.
+3. 승인된 기본/진지/미소 얼굴을 남은17종 모델별 UV·실제 큰 피격 표면 변형·표정 외형 검사→한 장씩 표시→소량 업로드→ExpressionAssets 등록→전투/피격/대화 우선·OFF 얼굴 복귀 검증. Bone/Preload 수치나 과거 Ready2 기록을 얼굴/모션 품질 승인으로 간주하지 않는다. 악 궁수는 원본 앞얼굴112면과 교정 웨이트 계약도 함께 확인한다.
 4. 사용자 HUD A/물약 상점 GPT 선택 답변 후 정확히 구현. NPC 활성/실제 G→1·5병 구매/거리·돈·99상한·회복소비·버튼/단축키/CD·재접속 확인. 준비중 가격을 사용자 확정 가격으로 쓰지 않는다.
 5. Goblin/GoblinBrute/선택된 옷입힌 Skeleton/BigSlime 새 계정 복구, 실제 불투명 슬라임 화면. SkeletonKing은 파일 준비됐지만 보스 게임 설계는 아직 후속이다.
 6. 선택·HUD1590/991/짧은 높이·터치44px·닉네임Toast/필터/영속 저장·전 서버중복 경쟁. Studio API 보안 설정은 사용자 직접 작업 필요(컴퓨터 제어 규칙). R1 다인PvP/PairCD·괴수퇴장·이동오탐 후 AntiCheat.Enforce 활성 여부 검토.

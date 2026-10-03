@@ -150,6 +150,9 @@ def main():
     parser.add_argument('--reviewed', action='store_true', help='All six CG previews personally viewed')
     parser.add_argument('--validate-only', action='store_true')
     parser.add_argument('--preview-directory', default='previews')
+    parser.add_argument('--manifest-name', default='skin_expressions_manifest.json')
+    parser.add_argument('--validation-name', default='skin_validation.json')
+    parser.add_argument('--prepare-name', help='Separate candidate preparation filename')
     args = parser.parse_args()
     glb = args.glb.resolve(); folder = glb.parent
     avatar = folder.name
@@ -158,8 +161,15 @@ def main():
         print(json.dumps(result)); return
     if not args.reviewed:
         raise ValueError('Personally view all six CG previews before finalization')
-    if folder.joinpath('skin_expressions_manifest.json').exists():
-        raise ValueError('Refuse silent final manifest replacement')
+    output_names = [args.manifest_name, args.validation_name]
+    if args.prepare_name:
+        output_names.append(args.prepare_name)
+    if any(Path(name).name != name or not name.endswith('.json') for name in output_names):
+        raise ValueError('Candidate output names must be JSON basenames')
+    if len(set(output_names)) != len(output_names):
+        raise ValueError('Candidate output names must be distinct')
+    if any(folder.joinpath(name).exists() for name in output_names):
+        raise ValueError('Refuse silent final candidate file replacement')
     records = []
     prep = json.loads(args.prepare_report.read_text(encoding='utf-8'))
     paid = result['original_bones_claimed']
@@ -190,13 +200,17 @@ def main():
         if not paid:
             meta_path.write_text(json.dumps(meta, indent=2) + '\n', encoding='utf-8')
         records.append(meta)
-    prepare_destination = folder / ('skin_prepare_report.json' if paid else 'prepare_report.json')
+    prepare_destination = folder / (args.prepare_name or ('skin_prepare_report.json' if paid else 'prepare_report.json'))
     shutil.copy2(args.prepare_report, prepare_destination)
     manifest = {'schema': 1, 'avatar': avatar, 'pipeline': 'preserved_continuous_skin_expression',
                 'skin_asset': relative(glb), 'skin_sha256': sha(glb), 'source_skin_sha256': report['source_skin_sha256'],
                 'source_fixed_sha256': report['source_fixed_sha256'], 'rig_origin': result['rig_origin'],
                 'original_bones_claimed': paid, 'source_skin_bones': result['source_skin_bones'],
                 'prepare_report': relative(prepare_destination),
+                'validation_report': relative(folder / args.validation_name),
+                'original_triangles_only': result['original_triangles_only'],
+                'selected_original_face_triangles': result['selected_original_face_triangles'],
+                'new_mouth_cap_vertices': result['new_mouth_cap_vertices'],
                 'rigid_comparison_reference_preserved': paid,
                 'ready': False, 'runtime_validated': False, 'roblox_uploaded': False,
                 'approved_states': ['Neutral', 'SoftSmile', 'Serious'], 'approval_preview': 'art/out/Avatar_Expressions_Preview_A.png',
@@ -208,8 +222,8 @@ def main():
                 'runtime_registration': 'Production marker/actual imported Bone host and mesh asset ID proof must be added by the root after engine QA.',
                 'limitations': report['limitations']}
     result.update(avatar=avatar, expression_pngs=3, offline_baseline_previews_checked=6)
-    folder.joinpath('skin_expressions_manifest.json').write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
-    folder.joinpath('skin_validation.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
+    folder.joinpath(args.manifest_name).write_text(json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
+    folder.joinpath(args.validation_name).write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(result))
 
 

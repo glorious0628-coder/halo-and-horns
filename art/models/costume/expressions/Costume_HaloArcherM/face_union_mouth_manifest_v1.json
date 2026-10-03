@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloArcherM",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_FaceUnionMouthRestored_v1.glb",
+  "skin_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "source_skin_sha256": "7d09b5aec17a52f0a161835bdab5db2a81dcd035baa1f2f8f64a226cb6977756",
+  "source_fixed_sha256": "e1500ceaa21de1b68b063bd82d133d36a5f55c656888bda0dd9c9d754128de39",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "prepare_report": "art/models/costume/expressions/Costume_HaloArcherM/face_union_prepare_report.json",
+  "validation_report": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_restoration_validation_v1.json",
+  "original_triangles_only": true,
+  "selected_original_face_triangles": 438,
+  "new_mouth_cap_vertices": 0,
+  "rigid_comparison_reference_preserved": true,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_HaloArcherM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-a3b3caf1-7644-4e8a-a46c-a4edbfced459.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloArcherM/prompts/Neutral.txt",
+      "quality_status": "lit rest states and exact game Fx personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\ud3c9\uc18c",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_previews/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HaloArcherM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "07009ceee32a03c4d081b3eb657a2d34e692afd7376e7ae9b3d80c81b4f51660",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-08886ec0-1b77-4316-ab0d-a1e69184e8a6.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloArcherM/prompts/SoftSmile.txt",
+      "quality_status": "lit rest states and exact game Fx personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_previews/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HaloArcherM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "6cde5a8b53f7877cfff649c5a1a2bcbe1f5edbedb91871361223fe5ee485ae61",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-b2bffb1c-545a-41ba-9e08-86bfb62c036b.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloArcherM/prompts/Serious.txt",
+      "quality_status": "lit rest states and exact game Fx personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_previews/Serious_quarter.png"
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "offline_visual_review": "All six shaded front/quarter states and six exact Fx original/expression comparisons personally reviewed.",
+  "offline_visual_notes": "All six shaded original/expression exact Fx comparisons reviewed. Old open-mouth depression and raised rim are removed; no new cap seam or broad HurtBig face boundary. A shallow original mixed-weight wrinkle remains above the straight mouth at Swing/Release. Native full Animator and importer quality still pending.",
+  "runtime_attachment": "Preserve the actual shared Bone host and root skin weld; never weld FaceExpression directly to the moving Head proxy.",
+  "runtime_registration": "Production marker/actual imported Bone host and mesh asset ID proof must be added by the root after engine QA.",
+  "limitations": [
+    "Only original mouth P/N restored in bounded ledger; body, UV, JW, all original bones and PNG remain exact.",
+    "Original mixed-weight shallow wrinkle remains at Swing/Release; actual imported mesh and full Animator quality are pending."
+  ],
+  "candidate_variant": "original_triangle_union_mouth_restored_v1",
+  "original_face_provenance": "art/models/costume/expressions/Costume_HaloArcherM/face_union_provenance.json",
+  "original_face_provenance_sha256": "10b6a10743ab99a8a624cec99d91d5cd036c85f9a0911eaa4a643c25eb7f330d",
+  "uv_texture_compatibility": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_uv_compatibility_v1.json",
+  "uv_texture_compatibility_sha256": "96681cf2d0884ef78c04e7720b1e5814f773d6d7f2bdc5f9051f65c22c60e762",
+  "game_fx_offline_review": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_visual_review_v1.json",
+  "game_fx_offline_review_sha256": "09ca38bb3470bdfa8673c10d082e97d11d6e5667eb79bb7e6f07097562577c86",
+  "canonical_skin_candidate_preserved": true,
+  "validation_kind": "original_connected_mouth_pn_exception_v1",
+  "original_geometry_preserved": false,
+  "original_position_normal_values_preserved": false,
+  "original_joint_weight_values_preserved": true,
+  "mouth_restoration_ledger": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_restoration_ledger_sha256": "3c6f732b488e7635cfe43f5568661a03c0f74829f448208c9e917ffbe0d36419",
+  "strict_validation_tool": "tools/costume_expressions/validate_mouth_restoration.py",
+  "original_face_provenance_role": "baseline source vertices/UV/JW; P/N exception is the separate mouth ledger",
+  "original_union_baseline": "art/models/costume/expressions/Costume_HaloArcherM/face_union_manifest.json",
+  "original_union_baseline_sha256": "0942a5759b1c34696cd8d61ed4b2908bb81470447508789bf3ecd2a92851167c",
+  "mouth_negative_tests": "art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_contract_tests_v1.json",
+  "mouth_negative_tests_sha256": "7052a5a48fb6b2c145cb4e6f7ada77b803138a45e06797b54cba3350da79ec5e"
+}

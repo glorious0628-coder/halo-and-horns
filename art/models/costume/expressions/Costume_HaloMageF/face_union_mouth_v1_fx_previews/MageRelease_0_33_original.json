@@ -1,0 +1,72 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HaloMageF_preserved_v1\\Costume_HaloMageF_skin.glb",
+  "source_sha256": "d5386846aefeb8fed9b4cd3f9f41611b262825dc76860bfa03def6918d2fb24f",
+  "expression": null,
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\face_union_mouth_v1_fx_previews\\MageRelease_0_33_original.png",
+  "angle": 0,
+  "view_selector": "source-front",
+  "camera_location": [
+    -0.10181622952222824,
+    9.746980667114258,
+    2.293412208557129
+  ],
+  "camera_rotation": [
+    1.5707961320877075,
+    -1.9999451694729942e-07,
+    -3.141592264175415
+  ],
+  "face_texture_size": null,
+  "source_unchanged": true,
+  "shading_policy": "original imported material with geometry QA area lights",
+  "proxy_rotation_degrees": {
+    "UpperTorso": [
+      16.0,
+      -18.0,
+      0.0
+    ],
+    "Head": [
+      16.0,
+      12.0,
+      0.0
+    ],
+    "RightUpperArm": [
+      36.0,
+      -8.0,
+      18.0
+    ],
+    "RightLowerArm": [
+      38.0,
+      0.0,
+      0.0
+    ],
+    "RightHand": [
+      -72.0,
+      0.0,
+      8.0
+    ],
+    "LeftUpperArm": [
+      116.0,
+      0.0,
+      -28.0
+    ],
+    "LeftLowerArm": [
+      24.0,
+      0.0,
+      0.0
+    ],
+    "LeftHand": [
+      -95.0,
+      0.0,
+      -12.0
+    ]
+  },
+  "pose_source": {
+    "file": "C:\\Users\\glori\\Documents\\Game\\src\\StarterPlayer\\StarterPlayerScripts\\Fx.luau",
+    "sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+    "clip": "MageRelease",
+    "time_seconds": 0.33
+  },
+  "maximum_proxy_part_bind_reproduction_error": 0.0,
+  "maximum_desired_bone_matrix_error": 4.349550466464791e-07,
+  "skin_pose_policy": "existing game Fx joint angles through exact original proxy world delta and all original shared bones; offline only; no source writes"
+}

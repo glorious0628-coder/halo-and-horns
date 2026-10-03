@@ -11,6 +11,8 @@ from pathlib import Path
 import bpy
 
 args=sys.argv[sys.argv.index('--')+1:]
+lit='--lit' in args
+if lit:args.remove('--lit')
 pose_file=None
 if '--pose-json' in args:
     pose_index=args.index('--pose-json')
@@ -35,15 +37,78 @@ if pose_file:
     skeletons=[o for o in bpy.context.scene.objects if o.type=='ARMATURE']
     if len(skeletons)!=1:raise RuntimeError('Exactly the preserved shared skin skeleton is required')
     skeleton=skeletons[0]
-    pose_data=requested.get('bone_local_euler_degrees',{})
-    if set(pose_data)!={'Head'}:raise RuntimeError('This diagnostic only poses the original Head bone')
-    for name,values in pose_data.items():
-        if len(values)!=3 or any(abs(v)>35 for v in values):raise RuntimeError('Small explicit Head pose required')
-        bone=skeleton.pose.bones.get(name)
-        if not bone:raise RuntimeError('Preserved Head bone missing')
-        bone.rotation_mode='XYZ';bone.rotation_euler=tuple(math.radians(v) for v in values)
-    bpy.context.view_layer.update()
-    pose_report={'skin_pose':pose_data,'skin_pose_policy':'temporary offline original shared Head bone rotation; no source writes'}
+    if 'proxy_rotation_degrees' in requested:
+        import numpy as np
+        from mathutils import Matrix
+        sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'costume_r15'))
+        from render_manual_motion import TO_BLENDER
+        sidecar_path=Path(requested['original_skin_sidecar']).resolve()
+        if hashlib.sha256(sidecar_path.read_bytes()).hexdigest()!=requested['original_skin_sidecar_sha256']:
+            raise RuntimeError('Original shared-skin contract changed')
+        skin_sidecar=json.loads(sidecar_path.read_text(encoding='utf-8'))
+        plan_path=Path(skin_sidecar['proxy_plan']).resolve()
+        if hashlib.sha256(plan_path.read_bytes()).hexdigest()!=skin_sidecar['proxy_plan_sha256']:
+            raise RuntimeError('Exact original proxy joint plan changed')
+        plan=json.loads(plan_path.read_text(encoding='utf-8'))
+        degrees=requested['proxy_rotation_degrees']
+        allowed={'UpperTorso','Head','LeftUpperArm','RightUpperArm','LeftLowerArm','RightLowerArm','LeftHand','RightHand'}
+        if not set(degrees).issubset(allowed) or any(len(v)!=3 or any(not math.isfinite(x) or abs(x)>180 for x in v) for v in degrees.values()):
+            raise RuntimeError('Explicit existing Fx joint-angle sample required')
+        runtime_path=Path(requested['proxy_runtime']).resolve()
+        if hashlib.sha256(runtime_path.read_bytes()).hexdigest()!=requested['proxy_runtime_sha256']:
+            raise RuntimeError('Exact source proxy part-bind runtime changed')
+        runtime=json.loads(runtime_path.read_text(encoding='utf-8'))
+        if runtime['proxy_plan_sha256']!=skin_sidecar['proxy_plan_sha256']:
+            raise RuntimeError('Proxy part-bind runtime belongs to another rig')
+        def cf(values):
+            result=np.eye(4);result[:3,3]=values[:3];result[:3,:3]=np.asarray(values[3:]).reshape(3,3)
+            return result
+        root_bind=np.eye(4)
+        root_bind[:3,3]=runtime['root']['center']
+        binds={'HumanoidRootPart':root_bind}
+        binds.update({part['name']:cf(part['cframe']) for part in runtime['parts']})
+        current={'HumanoidRootPart':root_bind.copy()}
+        bind_error=0.
+        for joint in runtime['joints']:
+            part0,part1=joint['part0'],joint['part1']
+            c0,c1=cf(joint['C0']),cf(joint['C1'])
+            bind_error=max(bind_error,float(np.max(np.abs(binds[part0]@c0@np.linalg.inv(c1)-binds[part1]))))
+            rotation=Matrix.Identity(4)
+            for axis,angle in zip(('X','Y','Z'),degrees.get(part1,[0,0,0])):
+                rotation=rotation@Matrix.Rotation(math.radians(angle),4,axis)
+            current[part1]=current[part0]@c0@np.asarray(rotation,dtype=np.float64)@np.linalg.inv(c1)
+        if bind_error>1e-5:raise RuntimeError('Exact proxy C0/C1 does not reproduce actual part bind frames')
+        deltas={name:current[name]@np.linalg.inv(bind) for name,bind in binds.items()}
+        mapping={bone['name']:bone['proxy_part'] for bone in skin_sidecar['bones']}
+        if set(skeleton.data.bones.keys())!=set(mapping):raise RuntimeError('Original source bones changed')
+        arm_to_game=np.asarray(TO_BLENDER.inverted()@skeleton.matrix_world,dtype=np.float64)
+        game_to_arm=np.linalg.inv(arm_to_game)
+        rest={bone.name:np.asarray(bone.matrix_local,dtype=np.float64) for bone in skeleton.data.bones}
+        desired={name:game_to_arm@np.asarray(deltas[part],dtype=np.float64)@arm_to_game@rest[name] for name,part in mapping.items()}
+        for bone in skeleton.data.bones:
+            if bone.parent:
+                local=np.linalg.inv(rest[bone.parent.name])@rest[bone.name]
+                posed_local=np.linalg.inv(desired[bone.parent.name])@desired[bone.name]
+                basis=np.linalg.inv(local)@posed_local
+            else:basis=np.linalg.inv(rest[bone.name])@desired[bone.name]
+            skeleton.pose.bones[bone.name].matrix_basis=Matrix(basis.tolist())
+        bpy.context.view_layer.update()
+        error=max(float(np.max(np.abs(np.asarray(skeleton.pose.bones[name].matrix)-wanted))) for name,wanted in desired.items())
+        if error>1e-4:raise RuntimeError('Actual shared Bone channels disagree with proxy delta')
+        pose_report={'proxy_rotation_degrees':degrees,'pose_source':requested.get('pose_source'),
+                     'maximum_proxy_part_bind_reproduction_error':bind_error,
+                     'maximum_desired_bone_matrix_error':error,
+                     'skin_pose_policy':'existing game Fx joint angles through exact original proxy world delta and all original shared bones; offline only; no source writes'}
+    else:
+        pose_data=requested.get('bone_local_euler_degrees',{})
+        if set(pose_data)!={'Head'}:raise RuntimeError('This diagnostic only poses the original Head bone')
+        for name,values in pose_data.items():
+            if len(values)!=3 or any(abs(v)>35 for v in values):raise RuntimeError('Small explicit Head pose required')
+            bone=skeleton.pose.bones.get(name)
+            if not bone:raise RuntimeError('Preserved Head bone missing')
+            bone.rotation_mode='XYZ';bone.rotation_euler=tuple(math.radians(v) for v in values)
+        bpy.context.view_layer.update()
+        pose_report={'skin_pose':pose_data,'skin_pose_policy':'temporary offline original shared Head bone rotation; no source writes'}
 face_mat=next((mat for mat in bpy.data.materials if mat.name.startswith('FaceExpressionMat')),None)
 face_tex=next((node for node in face_mat.node_tree.nodes if node.type=='TEX_IMAGE' and node.image),None) if face_mat else None
 if override:
@@ -53,7 +118,7 @@ if override:
 
 # Flat emission preserves the original texture colors while supporting separate
 # material UV maps, unlike workbench's single active UV selection.
-for material in bpy.data.materials:
+for material in ([] if lit else bpy.data.materials):
     if not material.use_nodes:continue
     nodes=material.node_tree.nodes;links=material.node_tree.links
     bsdf=next((node for node in nodes if node.type=='BSDF_PRINCIPLED'),None)
@@ -80,6 +145,8 @@ scene.view_settings.view_transform='Standard';scene.view_settings.look='None'
 scene.view_settings.exposure=0;scene.view_settings.gamma=1
 world=bpy.data.worlds.new('Background');world.use_nodes=True
 world.node_tree.nodes.get('Background').inputs['Color'].default_value=(.82,.82,.82,1)
+if lit:
+    world.node_tree.nodes.get('Background').inputs['Strength'].default_value=.25
 scene.world=world
 cam_data=bpy.data.cameras.new('Cam');cam_data.type='ORTHO'
 cam=bpy.data.objects.new('Cam',cam_data);scene.collection.objects.link(cam)
@@ -101,10 +168,19 @@ else:
     cam.location=(cx+10*math.sin(math.radians(angle)),-10*math.cos(math.radians(angle)),cz)
     cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
 scene.camera=cam;scene.render.resolution_x=scene.render.resolution_y=768
+if lit:
+    # Original material shading reveals mouth recesses hidden by emission QA.
+    rotation=cam.rotation_euler.to_quaternion()
+    right=rotation@Vector((1,0,0));up=rotation@Vector((0,1,0));backward=rotation@Vector((0,0,1))
+    for name,side,height,energy in [('GeometryKey',-1.8,2.5,80),('GeometryFill',2.,.7,30)]:
+        lamp_data=bpy.data.lights.new(name,'AREA');lamp_data.energy=energy;lamp_data.size=2.
+        lamp=bpy.data.objects.new(name,lamp_data);scene.collection.objects.link(lamp)
+        lamp.location=center+4*backward+side*right+height*up
+        lamp.rotation_euler=(center-lamp.location).to_track_quat('-Z','Y').to_euler()
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG';scene.render.filepath=str(output)
 bpy.ops.render.render(write_still=True)
-report={'source':str(source),'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'expression':str(override) if override else None,'render':str(output),'angle':angle,'view_selector':view_selector,'camera_location':list(cam.location),'camera_rotation':list(cam.rotation_euler),'face_texture_size':list(face_tex.image.size) if face_tex else None,'source_unchanged':True}
+report={'source':str(source),'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'expression':str(override) if override else None,'render':str(output),'angle':angle,'view_selector':view_selector,'camera_location':list(cam.location),'camera_rotation':list(cam.rotation_euler),'face_texture_size':list(face_tex.image.size) if face_tex else None,'source_unchanged':True,'shading_policy':'original imported material with geometry QA area lights' if lit else 'flat emission texture colors'}
 report.update(context_report)
 report.update(pose_report)
 output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')

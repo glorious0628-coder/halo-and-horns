@@ -17,6 +17,7 @@ import tempfile
 import skin_runtime as base
 import skin_runtime_v2 as runtime
 import skin_expression_schema
+import skin_binding_schema
 from skin_verify import VERIFY
 from test_skin_runtime import lua
 
@@ -25,6 +26,10 @@ CASES=[
     ("art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/package.json", "ServerStorage/CostumeSkinImports/Costume_HaloArcherM", "build/halo_archer_m_skin_import/actual_imports.json"),
     ("build/manual_partition_candidates/NeutralWarriorF_skin_v3/runtime_contract.json", "ServerStorage/CostumeSkinImports/Costume_NeutralWarriorF", "build/manual_partition_candidates/NeutralWarriorF_skin_v3/actual_imports.json"),
     ("art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_PreservedSkinExpressions_v1.skin.json", "ServerStorage/CostumeExpressionSkinImports/Costume_HaloArcherM", "build/costume_skin_expression_imports/Costume_HaloArcherM/actual_imports.json"),
+    ("art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_FaceUnionSkin_v1.skin.json", "ServerStorage/CostumeExpressionSkinImports_FaceUnion_v1/Costume_HaloArcherM", "build/skin_runtime_v2/face_union_v1/actual_inspection.json"),
+    ("art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_FaceUnionSkin_v1.skin.json", "ServerStorage/CostumeExpressionSkinImports_FaceUnion_v1/Costume_HaloArcherM", "build/skin_runtime_v2/face_union_v1/actual_inspection.json", 1),
+    ("build/manual_partition_candidates/NeutralWarriorF_skin_v3/runtime_contract.json", "ServerStorage/CostumeSkinImports/Costume_NeutralWarriorF", "build/manual_partition_candidates/NeutralWarriorF_skin_v3/actual_imports.json", 1),
+    ("art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_FaceUnionMouthRestored_v1.skin.json", "ServerStorage/CostumeExpressionSkinImports_FaceUnionMouth_v1/Costume_HaloArcherM", "build/skin_runtime_v2/face_union_mouth_binding_v1/actual_inspection.json", 1),
 ]
 
 
@@ -35,11 +40,23 @@ def main():
     checks=0;failures=[];cases=[]
     with tempfile.TemporaryDirectory(prefix="assembly_negative_",dir=out) as temp:
         temp=Path(temp)
-        for contract,model_path,inventory in CASES:
-            extra={"source_contract":ROOT/CASES[0][0]} if "PreservedSkinExpressions" in contract else {}
+        for case in CASES:
+            contract,model_path,inventory=case[:3]
+            binding=case[3] if len(case)>3 else 0
+            extra={"source_contract":ROOT/CASES[0][0]} if "PreservedSkinExpressions" in contract or "FaceUnion" in contract else {}
+            if "FaceUnionMouthRestored" in contract:
+                extra["pending_name"]="Costume_HaloArcherM_FaceUnionMouthBindingSkinSchema2Candidate"
+            if "FaceUnionSkin" in contract:
+                extra["pending_name"]="Costume_HaloArcherM_FaceUnion"+("Binding" if binding else "")+"SkinSchema2Candidate"
+            if binding:
+                extra["binding_schema"]=binding
+                if "FaceUnion" not in contract: extra["pending_name"]="Costume_NeutralWarriorF_BindingSkinSchema2Candidate"
             data,points=runtime.prepare(ROOT/contract,model_path,**extra)
             snapshot,fit=base.validate_inspection(ROOT/inventory,data,points)
+            data=skin_binding_schema.configure(data,snapshot)
             actual=json.loads((ROOT/inventory).read_text(encoding="utf-8"));checks+=1
+            raw_import="path" in actual
+            world_key="world" if raw_import else "world_cframe"
             cases.append({"data":data,"snap":snapshot,"fit":fit})
             def refuse(label,edit):
                 nonlocal checks
@@ -48,21 +65,21 @@ def main():
                 try: base.validate_inspection(path,data,points)
                 except (base.RigError,ValueError,KeyError,TypeError): checks+=1
                 else: failures.append(data["name"]+" "+label)
-            refuse("wrong source hash",lambda d:d.update(source_sha256="0"*64))
-            refuse("foreign source path",lambda d:d.update(path="ServerStorage.Other."+data["name"]))
+            refuse("wrong source hash",lambda d:d.update(**{("source_sha256" if raw_import else "source_file_sha256"):"0"*64}))
+            refuse("foreign source path",lambda d:d.update(**({"path":"ServerStorage.Other."+data["name"]} if raw_import else {"model_path":["ServerStorage","Other",data["name"]]})))
             refuse("wrong name",lambda d:d.update(name="Costume_Other"))
             refuse("synthetic inventory",lambda d:d.update(synthetic_fixture=True))
-            refuse("untrusted script",lambda d:d["nodes"].append({"class":"LocalScript"}))
+            refuse("untrusted script",lambda d:d["nodes"].append({"class":"LocalScript"}) if raw_import else d.update(scripts=1))
             refuse("missing mesh",lambda d:d["meshes"].pop())
             refuse("duplicate mesh",lambda d:d["meshes"].append(copy.deepcopy(d["meshes"][0])))
             for i in range(len(data["bones"])):
-                refuse(f"bone {i} displaced",lambda d,i=i:d["bones"][i]["world"].__setitem__(0,d["bones"][i]["world"][0]+.1))
+                refuse(f"bone {i} displaced",lambda d,i=i:d["bones"][i][world_key].__setitem__(0,d["bones"][i][world_key][0]+.1))
                 refuse(f"bone {i} posed",lambda d,i=i:d["bones"][i]["transform"].__setitem__(1,.1))
-                refuse(f"bone {i} wrong axes",lambda d,i=i:d["bones"][i]["world"].__setitem__(3,d["bones"][i]["world"][3]+.5))
+                refuse(f"bone {i} wrong axes",lambda d,i=i:d["bones"][i][world_key].__setitem__(3,d["bones"][i][world_key][3]+.5))
                 refuse(f"bone {i} local mismatch",lambda d,i=i:d["bones"][i]["cframe"].__setitem__(1,d["bones"][i]["cframe"][1]+.1))
                 refuse(f"bone {i} lost",lambda d,i=i:d["bones"].pop(i))
                 refuse(f"bone {i} foreign path",lambda d,i=i:d["bones"][i].update(path="Workspace.Other."+d["bones"][i]["name"]))
-                refuse(f"bone {i} nonfinite",lambda d,i=i:d["bones"][i]["world"].__setitem__(0,float("nan")))
+                refuse(f"bone {i} nonfinite",lambda d,i=i:d["bones"][i][world_key].__setitem__(0,float("nan")))
             for i in range(len(data["meshes"])):
                 refuse(f"mesh {i} unknown id",lambda d,i=i:d["meshes"][i].update(mesh_id="rbxassetid://0"))
                 refuse(f"mesh {i} changed size",lambda d,i=i:d["meshes"][i]["size"].__setitem__(0,d["meshes"][i]["size"][0]*1.1))
@@ -115,13 +132,39 @@ def main():
         refuse_package("proxy frame mismatch",edit_runtime=lambda r:r["parts"][0]["cframe"].__setitem__(0,1))
         refuse_package("duplicate motor",edit_runtime=lambda r:r["joints"].__setitem__(0,copy.deepcopy(r["joints"][1])))
         refuse_package("misplaced hinge",edit_runtime=lambda r:r["joints"][0]["C0"].__setitem__(0,1))
+        # Policy-only counterfactual: each material mesh hosts its own Bone
+        # tree. This is not a native inventory and is never sent to the
+        # assembly writer. All local hosts remain connected inside one Model.
+        policy_data={"binding_schema":1,"ready":False}
+        policy_inventory={"parts":[{"path":["Body"],"name":"Body","class":"MeshPart"},
+                                   {"path":["HeadSurface"],"name":"HeadSurface","class":"MeshPart"}],
+                          "bones":[{"host_path":["Body"]},{"host_path":["HeadSurface"]}],"synthetic_fixture":True}
+        policy=skin_binding_schema.configure(policy_data,policy_inventory)
+        if policy["binding"]["anchor_path"]==["Body"] and policy["binding"]["internal_welds"]==1 and policy["binding"]["root_welds"]==1 and len(policy["binding"]["bone_host_paths"])==2:
+            checks+=1
+        else: failures.append("per-mesh Bone-host internal binding policy")
+        if policy_data=={"binding_schema":1,"ready":False} and policy_inventory["synthetic_fixture"] is True:
+            checks+=1
+        else: failures.append("policy fixture inputs modified")
+        def refuse_binding(label,edit):
+            nonlocal checks
+            changed=copy.deepcopy(policy_inventory);edit(changed)
+            try: skin_binding_schema.configure(policy_data,changed)
+            except (base.RigError,ValueError,KeyError,TypeError): checks+=1
+            else: failures.append("binding policy "+label)
+        refuse_binding("missing actual Bone host",lambda d:d["bones"][0].update(host_path=["ForeignHost"]))
+        refuse_binding("duplicate physical path",lambda d:d["parts"].append(copy.deepcopy(d["parts"][0])))
+        refuse_binding("non-array physical path",lambda d:d["parts"][0].update(path="Body"))
+        refuse_binding("wrong actual path leaf",lambda d:d["parts"][0].update(path=["ForeignBody"]))
+        refuse_binding("unexpected physical class",lambda d:d["parts"][0].update(**{"class":"Model"}))
+        refuse_binding("no actual Bone tree",lambda d:d.update(bones=[]))
         # Execute the same matcher code, with only JSON transport substituted.
         prefix=Path(__file__).with_name("skin_runtime_fixture.luau").read_text(encoding="utf-8").split("local jsonMap={}",1)[0]
-        matcher=VERIFY.replace('return HttpService:JSONEncode({schema=2',skin_expression_schema.VERIFY+'\nreturn HttpService:JSONEncode({schema=2')
+        matcher=skin_binding_schema.verify(VERIFY).replace('return HttpService:JSONEncode({schema=2',skin_expression_schema.VERIFY+'\nreturn HttpService:JSONEncode({schema=2')
         # Counterfactual three-surface fixtures exercise references and false
         # markers only. They are never passed to the actual-inspection writer.
         for case in list(cases):
-            if case["data"].get("expression"): continue
+            if case["data"].get("expression") or case["data"].get("binding"): continue
             altered=copy.deepcopy(case);data,snap=altered["data"],altered["snap"]
             name=data["name"];folder=ROOT/"art/models/costume/expressions"/name;manifest_path=folder/"skin_expressions_manifest.json"
             manifest=json.loads(manifest_path.read_text(encoding="utf-8"));sidecar=ROOT/Path(manifest["skin_asset"]).with_suffix(".skin.json")
