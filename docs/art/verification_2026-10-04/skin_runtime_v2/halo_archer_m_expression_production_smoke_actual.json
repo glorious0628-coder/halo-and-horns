@@ -1,0 +1,27 @@
+[
+  {
+    "label": "production_select",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "production_select",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "production_default_source",
+    "text": "{\"ready\":true,\"id\":\"Costume_HaloArcherM\",\"face\":\"rbxassetid://114282379234661\",\"status\":\"Active\",\"expression\":\"Neutral\"}",
+    "error": false
+  },
+  {
+    "label": "production_attack",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "production_attack_state",
+    "text": "production Serious verified",
+    "error": false
+  }
+]

@@ -1,0 +1,380 @@
+{
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_PreservedSkinExpressions_v1.glb",
+  "sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HornsMageM_preserved_v1\\Costume_HornsMageM_skin.glb",
+  "source_skin_sha256": "0adfc9fa8827cd02229db055afd4cd68afde342cac1af16cb6437ec2545ad477",
+  "source_fixed": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsMageM.glb",
+  "source_fixed_sha256": "5f89379362c2362d034075fb17c13ff760b0f063a08c4ace48fc0de6e87e7804",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "skin_joints_inverse_binds_preserved": true,
+  "original_position_normal_joint_weight_values_preserved": true,
+  "original_binary_prefix_preserved": true,
+  "original_non_facial_texture_bytes_preserved": true,
+  "original_body_primitive_unchanged": true,
+  "original_headbase_uv_unchanged": true,
+  "facial_signature_uv_convention": "Blender V = 1 - original glTF V; original UV bytes unchanged",
+  "original_head_triangles": 5971,
+  "original_face_triangles": 473,
+  "headbase_triangles": 5498,
+  "new_mouth_cap_triangles": 224,
+  "new_mouth_cap_vertices": 129,
+  "mouth_cap_weight_method": "closest original facial triangle barycentric interpolation, no original vertex edits",
+  "mouth_cap_source_surface_distance_max": 0.011300134652524774,
+  "source_to_game_affine": [
+    -5.341277538221466,
+    0.12679142515394035,
+    1.0140054629370792,
+    0.0,
+    0.00046130233913444033,
+    5.396432733145113,
+    -0.6723410061182248,
+    0.0,
+    -1.0219016251865733,
+    -0.6602776505496367,
+    -5.300309366187378,
+    0.0,
+    -0.00683137105155081,
+    -1.3556982450915103,
+    0.4892139085504748,
+    1.0
+  ],
+  "expected_glb_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "camera_scale": 2.564746577704846,
+  "camera_center": [
+    -0.005090003726941146,
+    2.807011991705301
+  ],
+  "camera_target": [
+    -0.02046440024765167,
+    0.11453407460627532,
+    2.8984408159961634
+  ],
+  "source_front_camera_scale": 2.626628797866319,
+  "camera_front_direction": [
+    -0.187913459992217,
+    0.9746520858153108,
+    -0.12141599223173662
+  ],
+  "camera_front_up": [
+    8.468668097828907e-05,
+    0.12363397364751949,
+    0.9923278860277436
+  ],
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "limitations": [
+    "Original paid skeleton is preserved; new expression copy is not engine validated.",
+    "New mouth cover and 3-state face need actual engine pose/texture switching QA.",
+    "Original mouth recess is retained under the new skinned cover; original vertices are not flattened."
+  ],
+  "preserved_skin_coordinate_proof": {
+    "skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HornsMageM_preserved_v1\\Costume_HornsMageM_skin.glb",
+    "skin_sha256": "0adfc9fa8827cd02229db055afd4cd68afde342cac1af16cb6437ec2545ad477",
+    "source_sidecar_sha256": "44d4fb7f8746bb777a1d0931ce73cf4cb908e8b5ee8281a4a1fa7291bc1576b8",
+    "fixed_to_skin_affine": [
+      [
+        1.0241280984599854,
+        1.5200266090012164e-07,
+        1.6889054687251487e-07,
+        0.00026561966035292494
+      ],
+      [
+        -1.9616548278561317e-07,
+        1.0241280057450435,
+        -2.5531529186688767e-07,
+        2.039909222664509e-07
+      ],
+      [
+        -9.553765142423884e-08,
+        -2.9776699571428268e-08,
+        1.0241279935082834,
+        -7.784106033108807e-06
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "matched_original_head_triangles": 5971,
+    "matched_original_corners": 17913,
+    "maximum_coordinate_error": 1.724602758734981e-07,
+    "approved_unchanged_headbase_coordinate_error": 2.969931036854634e-07,
+    "approved_unchanged_headbase_corners": 13959,
+    "old_mouth_geometry_modified_headbase_corners_excluded": 0,
+    "approved_baseline_head": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_HeadExpressions_R15.glb",
+    "approved_baseline_head_sha256": "825b4fddd79981861ef92878e157fc59ac4cd72a285b7b9f18f47a94bc68636d",
+    "approved_face_uv_maximum_error": 7.361084930490591e-08,
+    "approved_face_original_triangles": 473,
+    "complete_coincident_projected_uv_groups": [
+      {
+        "fixed_faces": [
+          3348,
+          3351
+        ],
+        "approved_baseline_faces": [
+          166,
+          169
+        ]
+      },
+      {
+        "fixed_faces": [
+          3349,
+          3350
+        ],
+        "approved_baseline_faces": [
+          167,
+          168
+        ]
+      },
+      {
+        "fixed_faces": [
+          3352,
+          3353
+        ],
+        "approved_baseline_faces": [
+          170,
+          171
+        ]
+      },
+      {
+        "fixed_faces": [
+          3354,
+          3355
+        ],
+        "approved_baseline_faces": [
+          172,
+          173
+        ]
+      },
+      {
+        "fixed_faces": [
+          3356,
+          3357
+        ],
+        "approved_baseline_faces": [
+          174,
+          175
+        ]
+      },
+      {
+        "fixed_faces": [
+          3358,
+          3359
+        ],
+        "approved_baseline_faces": [
+          176,
+          177
+        ]
+      },
+      {
+        "fixed_faces": [
+          3363,
+          3366
+        ],
+        "approved_baseline_faces": [
+          181,
+          184
+        ]
+      },
+      {
+        "fixed_faces": [
+          3370,
+          3431
+        ],
+        "approved_baseline_faces": [
+          188,
+          249
+        ]
+      },
+      {
+        "fixed_faces": [
+          3371,
+          3432
+        ],
+        "approved_baseline_faces": [
+          189,
+          250
+        ]
+      },
+      {
+        "fixed_faces": [
+          3372,
+          3433
+        ],
+        "approved_baseline_faces": [
+          190,
+          251
+        ]
+      },
+      {
+        "fixed_faces": [
+          3373,
+          3434
+        ],
+        "approved_baseline_faces": [
+          191,
+          252
+        ]
+      },
+      {
+        "fixed_faces": [
+          3379,
+          3385
+        ],
+        "approved_baseline_faces": [
+          197,
+          203
+        ]
+      },
+      {
+        "fixed_faces": [
+          3380,
+          3383
+        ],
+        "approved_baseline_faces": [
+          198,
+          201
+        ]
+      },
+      {
+        "fixed_faces": [
+          3381,
+          3384
+        ],
+        "approved_baseline_faces": [
+          199,
+          202
+        ]
+      },
+      {
+        "fixed_faces": [
+          3382,
+          3386
+        ],
+        "approved_baseline_faces": [
+          200,
+          204
+        ]
+      },
+      {
+        "fixed_faces": [
+          3394,
+          3408
+        ],
+        "approved_baseline_faces": [
+          212,
+          226
+        ]
+      },
+      {
+        "fixed_faces": [
+          3395,
+          3409
+        ],
+        "approved_baseline_faces": [
+          213,
+          227
+        ]
+      },
+      {
+        "fixed_faces": [
+          3410,
+          3418
+        ],
+        "approved_baseline_faces": [
+          228,
+          236
+        ]
+      },
+      {
+        "fixed_faces": [
+          3411,
+          3417
+        ],
+        "approved_baseline_faces": [
+          229,
+          235
+        ]
+      },
+      {
+        "fixed_faces": [
+          3722,
+          3752
+        ],
+        "approved_baseline_faces": [
+          349
+        ]
+      },
+      {
+        "fixed_faces": [
+          3724,
+          3765
+        ],
+        "approved_baseline_faces": [
+          350
+        ]
+      },
+      {
+        "fixed_faces": [
+          5272,
+          5280
+        ],
+        "approved_baseline_faces": [
+          398,
+          406
+        ]
+      },
+      {
+        "fixed_faces": [
+          5275,
+          5278
+        ],
+        "approved_baseline_faces": [
+          401,
+          404
+        ]
+      },
+      {
+        "fixed_faces": [
+          5276,
+          5281
+        ],
+        "approved_baseline_faces": [
+          402,
+          407
+        ]
+      }
+    ],
+    "source_front_camera_scale": 2.626628797866319,
+    "camera_target": [
+      -0.02046440024765167,
+      0.11453407460627532,
+      2.8984408159961634
+    ],
+    "camera_front_direction": [
+      -0.187913459992217,
+      0.9746520858153108,
+      -0.12141599223173662
+    ],
+    "camera_front_up": [
+      8.468668097828907e-05,
+      0.12363397364751949,
+      0.9923278860277436
+    ],
+    "original_bones_claimed": true,
+    "source_skin_bones": 23,
+    "runtime_validated": false
+  },
+  "approved_rigid_face_scope": {
+    "reviewed": true,
+    "approved_rigid_face_scope": true,
+    "baseline_manifest": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\expressions_manifest.json",
+    "baseline_manifest_sha256": "aa0fe38711f51653eb4b477910789470558a045a300407835fbd51cab2e71c30"
+  }
+}

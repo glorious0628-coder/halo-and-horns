@@ -1,13 +1,16 @@
 """Exercise the actual Fx pose functions offline; never opens Studio or calls an API.
 
 The small CFrame/Vector3 harness implements rigid transform math, not Roblox physics.
-Native bind/size/grip data is a sanitized actual AJU capture. Optional local exported
-costumes use assemble.manifest's real geometry-center correction and original bones.
+Native bind/size/grip data is a sanitized actual AJU capture. Optional costumes use
+the tracked manifest's fourteen preserved and four inferred continuous-skin sources,
+with the exact source hierarchy and checked invisible R15 proxy bind geometry.
 These checks do not establish game-ready rigs, physical collision safety, or visual approval.
 """
 from __future__ import annotations
 
 import argparse
+import copy
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -17,12 +20,10 @@ ROOT = Path(__file__).resolve().parents[1]
 FX = ROOT / "src/StarterPlayer/StarterPlayerScripts/Fx.luau"
 VISUALS = ROOT / "src/ServerScriptService/CharacterVisuals.luau"
 FIXTURE = ROOT / "tools/fixtures/archer_native_aju.json"
-READY = ["HaloWarriorM", "HornsWarriorM", "HornsWarriorF", "HaloArcherM", "HornsArcherM",
-         "NeutralWarriorM", "NeutralMageM", "NeutralMageF", "NeutralArcherF"]
-HELD = {"HornsMageM": "Head/LeftUpperArm exact weighted tie; no arbitrary owner",
-        "HornsMageF": "Empty genuine LeftLowerArm; no invented geometry"}
-REJECTED = ["HaloWarriorF", "HaloMageM", "HaloMageF", "HaloArcherF", "HornsArcherF",
-            "NeutralWarriorF", "NeutralArcherM"]
+MANIFEST = ROOT / "art/models/costume/prepared/source_records.json"
+SKIN_KINDS = {"preserved_original_skin_pending": 23, "skin_R15_proxy_pending_source": 15}
+EXPECTED_COSTUMES = {f + c + g for f in ("Halo", "Horns", "Neutral")
+                     for c in ("Warrior", "Mage", "Archer") for g in "MF"}
 
 
 def lua(value):
@@ -56,44 +57,190 @@ def local_function(source, name):
     return source[start:end]
 
 
-def costume_fixtures():
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def manifest_input(value):
+    path = Path(value)
+    if path.is_absolute() or ".." in path.parts:
+        raise ValueError("Manifest input must be workspace-relative")
+    resolved = (ROOT / path).resolve()
+    resolved.relative_to(ROOT)
+    return resolved
+
+
+def proxy_fixture(data):
+    """Check every rest FK edge against source bone hinges before testing poses."""
+    import numpy as np
+    from constraints import JOINTS, PRIMARY
+    from skin_runtime import frame
+
+    parts = {p["name"]: {"size": p["size"], "cf": p["center"] + [1,0,0,0,1,0,0,0,1],
+                          "source_part": p["name"]} for p in data["proxy_parts"]}
+    if len(data["proxy_parts"]) != 15 or set(parts) != set(PRIMARY):
+        raise ValueError("Exactly fifteen unique proxy parts are required")
+    parts["HumanoidRootPart"] = {"size": data["root"]["size"],
+        "cf": data["root"]["center"] + [1,0,0,0,1,0,0,0,1]}
+    frames = {}
+    for name, p in parts.items():
+        size = np.asarray(p["size"], dtype=float)
+        if size.shape != (3,) or not np.isfinite(size).all() or min(size) <= 0:
+            raise ValueError("Invalid proxy bounds: " + name)
+        frames[name] = frame(p["cf"])
+    edges = {(name, p0, p1) for name, p0, p1, _ in JOINTS}
+    actual = {(j["name"], j["part0"], j["part1"]) for j in data["joints"]}
+    if len(data["joints"]) != 15 or actual != edges:
+        raise ValueError("The exact fifteen standard R15 edges are required")
+    bones = {b["name"]: b for b in data["bones"]}
+    reached, pending = {"HumanoidRootPart"}, list(data["joints"])
+    maximum_fk = maximum_hinge = 0.0
+    joints = {}
+    while pending:
+        reachable = [j for j in pending if j["part0"] in reached]
+        if not reachable:
+            raise ValueError("Disconnected/cyclic R15 proxy hierarchy")
+        for j in reachable:
+            p0, p1 = j["part0"], j["part1"]
+            if p1 in reached:
+                raise ValueError("Duplicate R15 proxy parent: " + p1)
+            c0, c1 = frame(j["C0"]), frame(j["C1"])
+            for bind in (c0, c1):
+                r = bind[:3, :3]
+                if not np.isfinite(bind).all() or not np.allclose(r.T @ r, np.eye(3), atol=1e-6) or np.linalg.det(r) < .99999:
+                    raise ValueError("Nonrigid proxy joint frame: " + j["name"])
+            fk = frames[p0] @ c0 @ np.linalg.inv(c1)
+            fk_error = float(np.max(np.abs(fk - frames[p1])))
+            world = np.asarray(j["world"], dtype=float)
+            hinge_error = max(float(np.linalg.norm((frames[p0] @ c0)[:3, 3] - world)),
+                              float(np.linalg.norm((frames[p1] @ c1)[:3, 3] - world)),
+                              float(np.linalg.norm(world - bones[p1]["position"])))
+            if fk_error > 1e-5 or hinge_error > 1e-5:
+                raise ValueError("Source/proxy rest FK mismatch: " + j["name"])
+            maximum_fk, maximum_hinge = max(maximum_fk, fk_error), max(maximum_hinge, hinge_error)
+            joints[j["name"]] = {"p0": p0, "p1": p1, "c0": j["C0"], "c1": j["C1"]}
+            reached.add(p1)
+            pending.remove(j)
+    if reached != set(parts):
+        raise ValueError("An R15 proxy part was not reached by FK")
+    arms = {}
+    for side in ("Left", "Right"):
+        a, b, c = (np.asarray(bones[side + part]["position"], dtype=float)
+                   for part in ("UpperArm", "LowerArm", "Hand"))
+        upper, lower = float(np.linalg.norm(b - a)), float(np.linalg.norm(c - b))
+        if min(upper, lower) <= 0:
+            raise ValueError("A source arm has zero actual bone length: " + side)
+        inner, outer = abs(upper - lower), upper + lower
+        old_goal = .8 * outer
+        epsilon = min(upper, lower) * .001
+        arms[side] = {"upper_length": upper, "lower_length": lower,
+                      "lower_to_upper_ratio": lower / upper,
+                      "inner_reach_radius": inner, "outer_reach_radius": outer,
+                      "original_synthetic_test_goal_distance": old_goal,
+                      "original_synthetic_test_goal_reachable": inner + epsilon <= old_goal <= outer - epsilon,
+                      "corrected_synthetic_test_goal_distance": inner + (outer - inner) * .8}
+    return {"name": data["name"].removeprefix("Costume_"), "parts": parts, "joints": joints}, {
+        "proxy_parts": 15, "r15_joints": 15, "rest_fk_maximum_error": maximum_fk,
+        "source_hinge_maximum_error": maximum_hinge, "source_bones": len(bones),
+        "source_auxiliary_bones": len(bones) - 15, "actual_imported_binds_checked": False,
+        "measured_arm_reach": arms,
+        "motion_visual_quality_inferred_from_ik_pass": False}
+
+
+def contract_rejection_guards(data):
+    """Invalid source/proxy data must fail rather than become a passing fixture."""
+    mutations = (
+        lambda d: d["proxy_parts"][0]["size"].__setitem__(0, 0),
+        lambda d: d["proxy_parts"][0].__setitem__("name", d["proxy_parts"][1]["name"]),
+        lambda d: d["joints"].pop(),
+        lambda d: d["joints"][0]["C0"].__setitem__(0, d["joints"][0]["C0"][0] + .02),
+        lambda d: d["joints"][0]["C0"].__setitem__(3, 2),
+        lambda d: d["joints"][0]["world"].__setitem__(0, d["joints"][0]["world"][0] + .02),
+        lambda d: next(b for b in d["bones"] if b["name"] == "Head")["position"].__setitem__(0, 100),
+    )
+    for mutate in mutations:
+        invalid = copy.deepcopy(data)
+        mutate(invalid)
+        try:
+            proxy_fixture(invalid)
+        except ValueError:
+            continue
+        raise AssertionError("Invalid source/proxy data was accepted")
+    return len(mutations)
+
+
+def costume_fixtures(manifest_path=MANIFEST):
     sys.path.insert(0, str(ROOT / "tools/costume_r15"))
-    from assemble import manifest, inspection_data
+    from skin_runtime_v2 import prepare
+
+    records = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+    packages = [p for p in records["packages"] if p["kind"] in SKIN_KINDS]
+    counts = {kind: sum(p["kind"] == kind for p in packages) for kind in SKIN_KINDS}
+    if counts != {"preserved_original_skin_pending": 14, "skin_R15_proxy_pending_source": 4}:
+        raise ValueError("Manifest must contain exactly fourteen preserved and four inferred skins")
     out, states = [], []
-    for faction in ("Halo", "Horns", "Neutral"):
-        for cls in ("Warrior", "Mage", "Archer"):
-            for gender in "MF":
-                name = faction + cls + gender
-                row = {"name": name, "class": cls, "state": "missing", "studio_validated_by_this_tool": False}
-                if name in HELD:
-                    row.update(state="held", reason=HELD[name])
-                elif name in REJECTED:
-                    row.update(state="free_rig_check_rejected", reason="riggable=false; paid request not made")
-                elif name in READY:
-                    path = ROOT / "build/costume_r15" / ("Costume_" + name) / "joints.json"
-                    if path.is_file():
-                        try:
-                            data = manifest(path, "Costume_" + name)
-                            actual = path.parent / "actual_imports.json"
-                            if actual.is_file():
-                                inspection_data(actual, data)
-                                row["import_basis_verified"] = True
-                            primary = {x["part"]: x for x in data["meshes"] if x["primary"]}
-                            parts = {part: {"size": x.get("assembled_size", x["size"]),
-                                            "cf": x.get("assembled_cframe", x["center"] + [1,0,0,0,1,0,0,0,1]),
-                                            "source_part": part}
-                                     for part, x in primary.items()}
-                            parts["HumanoidRootPart"] = {"size": data["root"]["size"],
-                                "cf": data["root"]["center"] + [1,0,0,0,1,0,0,0,1]}
-                            joints = {x["name"]: {"p0": x["part0"], "p1": x["part1"],
-                                "c0": x["C0"], "c1": x["C1"]} for x in data["joints"]}
-                            out.append({"name": name, "parts": parts, "joints": joints})
-                            row.update(state="pilot_pending" if name == "HaloWarriorM" else "local_export_ready",
-                                       source_sha256=data["source_sha256"], meshes=len(data["meshes"]))
-                        except Exception as exc:
-                            row.update(state="local_validation_failed", reason=str(exc))
-                states.append(row)
-    assert len(states) == 18
+    for record in packages:
+        row = {"name": record["name"].removeprefix("Costume_").split("_")[0],
+               "kind": record["kind"], "state": "offline_contract_failed",
+               "studio_validated_by_this_tool": False, "game_ready_claimed_by_this_tool": False}
+        try:
+            # Only declared files are considered; other pending/expression/corrected
+            # siblings are neither promoted nor silently substituted for benchmarks.
+            paths = {}
+            for saved in record["files"]:
+                path = manifest_input(saved["path"])
+                if not path.is_file() or sha(path) != saved["sha256"]:
+                    raise ValueError("Recorded source SHA mismatch: " + saved["path"])
+                paths[path.name] = path
+            if record["kind"] == "preserved_original_skin_pending":
+                contract = paths["package.json"]
+                proxy_override = None
+            elif "runtime_contract.json" in paths:
+                contract = paths["runtime_contract.json"]
+                proxy_override = None
+            else:
+                # The two manually bound archer packages predate a portable
+                # runtime contract. Resolve only a plan tied to their recorded
+                # landmark bytes and source frame; never pick a latest filename.
+                contract = next(p for p in paths.values() if p.name.endswith(".skin.json"))
+                sidecar = json.loads(contract.read_text(encoding="utf-8-sig"))
+                landmark_sha = sha(paths["manual_landmarks.json"])
+                candidates = []
+                for plan in (ROOT / "build/manual_partition_candidates").glob("*/r15*/joints.json"):
+                    saved_plan = json.loads(plan.read_text(encoding="utf-8-sig"))
+                    provenance = saved_plan.get("manual_binding_provenance", {})
+                    if (provenance.get("landmark_config_sha256") == landmark_sha
+                            and provenance.get("source_sha256") == record["source_sha256"]
+                            and saved_plan.get("source_frame_policy") == sidecar["source_frame_policy"]):
+                        candidates.append(plan)
+                if len(candidates) != 1:
+                    raise ValueError("Require one exact source-frame proxy plan for recorded manual landmarks")
+                proxy_override = candidates[0]
+            data, _ = prepare(contract, "ServerStorage/OfflineOnly", proxy_override=proxy_override)
+            name = data["name"].removeprefix("Costume_")
+            row["name"] = name
+            expected = SKIN_KINDS[record["kind"]]
+            if name not in EXPECTED_COSTUMES or len(data["bones"]) != expected or data["original_bones_claimed"] != (expected == 23):
+                raise ValueError("Recorded source kind/bone provenance disagrees")
+            recorded_skin = next(p for p in paths.values() if p.name.endswith(".glb"))
+            if data["skin_sha256"] != sha(recorded_skin) or data["original_sha256"] != record["source_sha256"]:
+                raise ValueError("Loaded contract differs from the recorded skin/original source")
+            fixture, metrics = proxy_fixture(data)
+            metrics["invalid_contract_rejection_checks"] = contract_rejection_guards(data)
+            out.append(fixture)
+            row.update(state="offline_contract_verified", contract=str(contract.relative_to(ROOT)),
+                       contract_sha256=sha(contract), skin_sha256=data["skin_sha256"],
+                       proxy_plan_sha256=data["joints_sha256"],
+                       source_sha256=data["original_sha256"], rig_origin=data["rig_origin"],
+                       original_bones_claimed=data["original_bones_claimed"],
+                       contract_metrics=metrics, visual_surfaces=len(data["meshes"]))
+        except Exception as exc:
+            row["reason"] = str(exc)
+        states.append(row)
+    names = [r["name"] for r in states]
+    # Never report partial/duplicate coverage as an eighteen-costume audit.
+    if len(set(names)) != 18 or set(names) != EXPECTED_COSTUMES:
+        raise ValueError("Manifest failed to cover each of the eighteen exact costumes once: " + repr(names))
     return out, states
 
 
@@ -395,10 +542,14 @@ for _,data in FIXTURES do
         local limited=Feel.solveArm(arm,torso,far,Vector3.yAxis)
         check(limited and limited.Clamped,"unreachable wrist is explicitly clamped")
         check(limited.Shoulder.Position.Magnitude<1e-5 and limited.Elbow.Position.Magnitude<1e-5 and limited.Wrist.Position.Magnitude<1e-5,"unreachable goal never stretches bones")
+        -- Unequal genuine source bones have an inner unreachable sphere too.
+        -- A fraction of L1+L2 alone may fall inside abs(L1-L2).
+        local inner,outer=math.abs(arm.L1-arm.L2),arm.L1+arm.L2
+        local reachableDistance=inner+(outer-inner)*.8
         for _,direction in {Vector3.new(-1,1,-1).Unit,Vector3.new(0,-1,0),Vector3.new(0,1,0),Vector3.new(0,0,1)} do
             local torso=parts.UpperTorso.CFrame*CFrame.Angles(.13,-.21,.09)
             local start=(torso*arm.Shoulder.C0).Position
-            local goalWrist=start+direction*((arm.L1+arm.L2)*.8)
+            local goalWrist=start+direction*reachableDistance
             local handRot=CFrame.Angles(.2,.3,-.6)
             local goal=CFrame.new(goalWrist-handRot:VectorToWorldSpace(arm.Wrist.C1.Position))*handRot
             local solved=Feel.solveArm(arm,torso,goal,Vector3.yAxis)
@@ -421,7 +572,8 @@ for _,data in FIXTURES do
         local torso=parts.UpperTorso.CFrame
         local start=(torso*spun.Shoulder.C0).Position
         local rotation=CFrame.Angles(-.2,.7,1.1)
-        local handGoal=CFrame.new(start+Vector3.new(-.5,.2,-1).Unit*((spun.L1+spun.L2)*.9)-rotation:VectorToWorldSpace(spun.Wrist.C1.Position))*rotation
+        local spunReach=math.abs(spun.L1-spun.L2)+2*math.min(spun.L1,spun.L2)*.9
+        local handGoal=CFrame.new(start+Vector3.new(-.5,.2,-1).Unit*spunReach-rotation:VectorToWorldSpace(spun.Wrist.C1.Position))*rotation
         local solved=Feel.solveArm(spun,torso,handGoal,Vector3.yAxis)
         local upper=torso*spun.Shoulder.C0*solved.Shoulder*spun.Shoulder.C1:Inverse()
         local lower=upper*spun.Elbow.C0*solved.Elbow*spun.Elbow.C1:Inverse()
@@ -570,7 +722,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--luau", type=Path, default=ROOT / "build/luau_cli_0_741/luau.exe")
     parser.add_argument("--native-capture", type=Path)
-    parser.add_argument("--costumes", action="store_true", help="Also audit existing ignored build exports")
+    parser.add_argument("--costumes", action="store_true", help="Audit all fourteen preserved and four inferred manifest sources")
+    parser.add_argument("--manifest", type=Path, default=MANIFEST, help="Tracked source inventory; no live status lookup")
     args = parser.parse_args()
     if args.native_capture:
         capture = json.loads(args.native_capture.read_text(encoding="utf-8-sig"))
@@ -586,7 +739,7 @@ def main():
     fixtures = [json.loads(FIXTURE.read_text(encoding="utf-8"))]
     states = []
     if args.costumes:
-        extra, states = costume_fixtures()
+        extra, states = costume_fixtures(args.manifest.resolve())
         fixtures.extend(extra)
     source = FX.read_text(encoding="utf-8")
     motion = source[source.index("local MOTION = {"):source.index("-- A14-4 combat feel: functions")]
@@ -605,30 +758,61 @@ def main():
     helper_names = ["attrNum", "attrStr", "getFaction", "getClass", "charScale", "clearChild", "accPart",
                     "gripCFrame", "buildSword", "buildStaff", "buildBow", "buildWeapon"]
     harness += "\n" + "\n".join(local_function(visuals, n) for n in helper_names)
-    harness += "\nlocal FIXTURES=" + lua(fixtures) + "\n" + TESTS
     output = ROOT / "build/weapon_motion_offline_test.luau"
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(harness, encoding="utf-8")
-    completed = subprocess.run([str(args.luau.resolve()), str(output)], capture_output=True, text=True, encoding="utf-8")
-    pose_rows, count = {}, None
-    for line in completed.stdout.splitlines():
-        if line.startswith("WEAPON_MOTION_CHECKS "):
-            count = int(line.split()[1])
-            print(line)
-        elif line.startswith("POSE "):
-            _, name, forward, axis_error = line.split()
-            pose_rows[name] = {"forward_dot": float(forward), "string_hand_axis_error": float(axis_error)}
-        elif completed.returncode:
-            print(line)
-    print(completed.stderr, end="", file=sys.stderr)
-    result = {"offline_only": True, "physics_simulated": False, "passed": completed.returncode == 0,
+    pose_rows, count, fixture_results = {}, 0, []
+    # An assertion in one source must not silently prevent auditing the other
+    # seventeen. Each process has fresh simulated actors, layers and callbacks.
+    for fixture in fixtures:
+        output.write_text(harness + "\nlocal FIXTURES=" + lua([fixture]) + "\n" + TESTS, encoding="utf-8")
+        completed = subprocess.run([str(args.luau.resolve()), str(output)], capture_output=True, text=True, encoding="utf-8")
+        checks = None
+        for line in completed.stdout.splitlines():
+            if line.startswith("WEAPON_MOTION_CHECKS "):
+                checks = int(line.split()[1])
+                count += checks
+            elif line.startswith("POSE "):
+                _, name, forward, axis_error = line.split()
+                pose_rows[name] = {"forward_dot": float(forward), "string_hand_axis_error": float(axis_error)}
+        passed = completed.returncode == 0 and checks is not None
+        entry = {"name": fixture["name"], "passed": passed, "checks": checks,
+                 "joint_variants": ["Motor6D", "AnimationConstraint"],
+                 "pose_classes": ["Warrior", "Mage", "Archer"],
+                 "actual_studio_motion_validated": False}
+        if not passed:
+            entry["error"] = completed.stderr or completed.stdout or "Missing completion marker"
+            print(entry["error"], end="\n", file=sys.stderr)
+        fixture_results.append(entry)
+        print("WEAPON_MOTION_FIXTURE", fixture["name"], "PASS" if passed else "FAIL", checks)
+        row = next((r for r in states if r["name"] == fixture["name"]), None)
+        if row:
+            row.update(state="offline_verified" if passed else "offline_motion_failed", motion_checks=checks)
+            if not passed:
+                row["reason"] = entry["error"]
+    passed = (all(x["passed"] for x in fixture_results)
+              and all(r["state"] == "offline_verified" for r in states)
+              and (not args.costumes or len(states) == len(fixtures) - 1 == 18))
+    print("WEAPON_MOTION_CHECKS", count)
+    result = {"schema": 2, "offline_only": True, "physics_simulated": False, "passed": passed,
               "checks": count, "poses": pose_rows, "fixtures": [x["name"] for x in fixtures], "costumes": states,
-              "live_status_queried": False,
+              "fixture_results": fixture_results,
+              "source_manifest": str(args.manifest.resolve()) if args.costumes else None,
+              "source_manifest_sha256": sha(args.manifest.resolve()) if args.costumes else None,
+              "offline_costume_contracts_passed": sum("contract_metrics" in r for r in states),
+              "invalid_contract_rejection_checks": sum(r.get("contract_metrics", {}).get("invalid_contract_rejection_checks", 0) for r in states),
+              "offline_costume_motion_fixtures_passed": sum(r["state"] == "offline_verified" for r in states),
+              "actual_studio_costume_motion_validated_by_this_tool": 0,
+              "actual_studio_costume_motion_status": "not_queried",
+              "game_ready_claimed_by_this_tool": False, "live_status_queried": False,
               "state_counts": {state: sum(row["state"] == state for row in states)
                                for state in sorted({row["state"] for row in states})},
-              "limitations": ["No Studio visual or collision approval", "Held/rejected rigs were not invented or tested as ready"]}
+              "limitations": ["No Studio visual, collision, skin deformation, multiplayer, or game-ready approval",
+                              "R15 proxy FK/weapon pose math does not animate or approve the whole source skin",
+                              "Original twenty-three bones are preserved; fifteen manual bones remain inferred",
+                              "Recorded manual runtime contracts currently require their exact local build proxy plans",
+                              "Separate corrected/expression siblings are not substituted for original benchmark sources"]}
     (ROOT / "build/weapon_motion_offline_result.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    raise SystemExit(completed.returncode)
+    raise SystemExit(0 if passed else 1)
 
 
 if __name__ == "__main__":

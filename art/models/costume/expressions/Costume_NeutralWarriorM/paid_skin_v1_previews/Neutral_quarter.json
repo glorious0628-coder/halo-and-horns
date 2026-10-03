@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "108547a10747590bbe4589f599fd12bf6c22209d49cd9c31c9afb39753db9c8e",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\paid_skin_v1_previews\\Neutral_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    4.5740532875061035,
+    8.976439476013184,
+    1.6773463487625122
+  ],
+  "camera_rotation": [
+    1.6878470182418823,
+    0.11522803455591202,
+    2.6607720851898193
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

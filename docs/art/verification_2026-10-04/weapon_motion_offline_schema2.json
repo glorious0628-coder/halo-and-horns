@@ -1,0 +1,1524 @@
+{
+  "schema": 2,
+  "offline_only": true,
+  "physics_simulated": false,
+  "passed": true,
+  "checks": 5671,
+  "poses": {
+    "NativeAJU/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 2.864408996071657e-16
+    },
+    "NativeAJU/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 2.864408996071657e-16
+    },
+    "NativeAJU/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 2.864408996071657e-16
+    },
+    "NativeAJU/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 2.864408996071657e-16
+    },
+    "HaloArcherM/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 4.205963734143904e-16
+    },
+    "HaloArcherM/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 4.205963734143904e-16
+    },
+    "HaloArcherM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 4.205963734143904e-16
+    },
+    "HaloArcherM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 4.205963734143904e-16
+    },
+    "NeutralWarriorF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 1.8581441340903696e-16
+    },
+    "NeutralWarriorF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 1.8581441340903696e-16
+    },
+    "NeutralWarriorF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 1.8581441340903696e-16
+    },
+    "NeutralWarriorF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 1.8581441340903696e-16
+    },
+    "NeutralArcherM/Motor6D/ArcherRelease": {
+      "forward_dot": 0.9999999999999998,
+      "string_hand_axis_error": 1.1511658811177197e-15
+    },
+    "NeutralArcherM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 0.9999999999999998,
+      "string_hand_axis_error": 1.1511658811177197e-15
+    },
+    "NeutralArcherM/Motor6D/ArcherSwing": {
+      "forward_dot": 0.9999999999999998,
+      "string_hand_axis_error": 1.1511658811177197e-15
+    },
+    "NeutralArcherM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 0.9999999999999998,
+      "string_hand_axis_error": 1.1511658811177197e-15
+    },
+    "HaloArcherF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 3.53875351192761e-17
+    },
+    "HaloArcherF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 3.53875351192761e-17
+    },
+    "HaloArcherF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 3.53875351192761e-17
+    },
+    "HaloArcherF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 3.53875351192761e-17
+    },
+    "HornsArcherF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 4.825595695725347e-16
+    },
+    "HornsArcherF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 4.825595695725347e-16
+    },
+    "HornsArcherF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 4.825595695725347e-16
+    },
+    "HornsArcherF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 4.825595695725347e-16
+    },
+    "HaloWarriorM/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000009,
+      "string_hand_axis_error": 4.957195661185565e-16
+    },
+    "HaloWarriorM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000009,
+      "string_hand_axis_error": 4.957195661185565e-16
+    },
+    "HaloWarriorM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000009,
+      "string_hand_axis_error": 4.957195661185565e-16
+    },
+    "HaloWarriorM/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000009,
+      "string_hand_axis_error": 4.957195661185565e-16
+    },
+    "HaloWarriorF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 8.098995761959851e-16
+    },
+    "HaloWarriorF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 8.098995761959851e-16
+    },
+    "HaloWarriorF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 8.098995761959851e-16
+    },
+    "HaloWarriorF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 8.098995761959851e-16
+    },
+    "HaloMageM/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000007,
+      "string_hand_axis_error": 5.109817853493913e-16
+    },
+    "HaloMageM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000007,
+      "string_hand_axis_error": 5.109817853493913e-16
+    },
+    "HaloMageM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000007,
+      "string_hand_axis_error": 5.109817853493913e-16
+    },
+    "HaloMageM/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000007,
+      "string_hand_axis_error": 5.109817853493913e-16
+    },
+    "HaloMageF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 1.2560832423365868e-15
+    },
+    "HaloMageF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 1.2560832423365868e-15
+    },
+    "HaloMageF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 1.2560832423365868e-15
+    },
+    "HaloMageF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 1.2560832423365868e-15
+    },
+    "HornsWarriorM/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000007,
+      "string_hand_axis_error": 6.859077004696062e-16
+    },
+    "HornsWarriorM/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000007,
+      "string_hand_axis_error": 6.859077004696062e-16
+    },
+    "HornsWarriorM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000007,
+      "string_hand_axis_error": 6.859077004696062e-16
+    },
+    "HornsWarriorM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000007,
+      "string_hand_axis_error": 6.859077004696062e-16
+    },
+    "HornsWarriorF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 8.234803782839915e-16
+    },
+    "HornsWarriorF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 8.234803782839915e-16
+    },
+    "HornsWarriorF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 8.234803782839915e-16
+    },
+    "HornsWarriorF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 8.234803782839915e-16
+    },
+    "HornsMageM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 4.2758052642880113e-16
+    },
+    "HornsMageM/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 4.2758052642880113e-16
+    },
+    "HornsMageM/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 4.2758052642880113e-16
+    },
+    "HornsMageM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 4.2758052642880113e-16
+    },
+    "HornsMageF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 6.890841358889858e-16
+    },
+    "HornsMageF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 6.890841358889858e-16
+    },
+    "HornsMageF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 6.890841358889858e-16
+    },
+    "HornsMageF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 6.890841358889858e-16
+    },
+    "HornsArcherM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 1.3491155156884998e-15
+    },
+    "HornsArcherM/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 1.3491155156884998e-15
+    },
+    "HornsArcherM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 1.3491155156884998e-15
+    },
+    "HornsArcherM/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000002,
+      "string_hand_axis_error": 1.3491155156884998e-15
+    },
+    "NeutralWarriorM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0,
+      "string_hand_axis_error": 1.5426062038970921e-15
+    },
+    "NeutralWarriorM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0,
+      "string_hand_axis_error": 1.5426062038970921e-15
+    },
+    "NeutralWarriorM/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0,
+      "string_hand_axis_error": 1.5426062038970921e-15
+    },
+    "NeutralWarriorM/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0,
+      "string_hand_axis_error": 1.5426062038970921e-15
+    },
+    "NeutralMageM/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 7.12665411352561e-16
+    },
+    "NeutralMageM/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 7.12665411352561e-16
+    },
+    "NeutralMageM/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 7.12665411352561e-16
+    },
+    "NeutralMageM/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 7.12665411352561e-16
+    },
+    "NeutralMageF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000009,
+      "string_hand_axis_error": 1.378815164233224e-15
+    },
+    "NeutralMageF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000009,
+      "string_hand_axis_error": 1.378815164233224e-15
+    },
+    "NeutralMageF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000009,
+      "string_hand_axis_error": 1.378815164233224e-15
+    },
+    "NeutralMageF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000009,
+      "string_hand_axis_error": 1.378815164233224e-15
+    },
+    "NeutralArcherF/AnimationConstraint/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 1.1098792930901182e-15
+    },
+    "NeutralArcherF/AnimationConstraint/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 1.1098792930901182e-15
+    },
+    "NeutralArcherF/Motor6D/ArcherSwing": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 1.1098792930901182e-15
+    },
+    "NeutralArcherF/Motor6D/ArcherRelease": {
+      "forward_dot": 1.0000000000000004,
+      "string_hand_axis_error": 1.1098792930901182e-15
+    }
+  },
+  "fixtures": [
+    "NativeAJU",
+    "HaloArcherM",
+    "NeutralWarriorF",
+    "NeutralArcherM",
+    "HaloArcherF",
+    "HornsArcherF",
+    "HaloWarriorM",
+    "HaloWarriorF",
+    "HaloMageM",
+    "HaloMageF",
+    "HornsWarriorM",
+    "HornsWarriorF",
+    "HornsMageM",
+    "HornsMageF",
+    "HornsArcherM",
+    "NeutralWarriorM",
+    "NeutralMageM",
+    "NeutralMageF",
+    "NeutralArcherF"
+  ],
+  "costumes": [
+    {
+      "name": "HaloArcherM",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HaloArcherM_preserved_v2\\package.json",
+      "contract_sha256": "3af3a0788cb12dde9876fc6ed1ac9a010ca3a1ad5cd1ed74b1a02921f43e61b3",
+      "skin_sha256": "7d09b5aec17a52f0a161835bdab5db2a81dcd035baa1f2f8f64a226cb6977756",
+      "proxy_plan_sha256": "f823aae2cc7c9fc47e5a8c29c9cafe781eb10a55a4b08cb0035acb21885d4535",
+      "source_sha256": "48b60fffa4d6c348f364f5f85dfef4ceaf31eceacb3477a015cae99dfaea4d37",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 6.612458358064788e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.7937903024509818,
+            "lower_length": 0.48134092008729296,
+            "lower_to_upper_ratio": 0.606382968651871,
+            "inner_reach_radius": 0.31244938236368885,
+            "outer_reach_radius": 1.2751312225382747,
+            "original_synthetic_test_goal_distance": 1.0201049780306197,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.0825948545033575
+          },
+          "Right": {
+            "upper_length": 0.7287061989850184,
+            "lower_length": 0.32493217904881205,
+            "lower_to_upper_ratio": 0.4459028611275645,
+            "inner_reach_radius": 0.4037740199362064,
+            "outer_reach_radius": 1.0536383780338305,
+            "original_synthetic_test_goal_distance": 0.8429107024270645,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.9236655064143058
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "NeutralWarriorF",
+      "kind": "skin_R15_proxy_pending_source",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_NeutralWarriorF_inferred_skin_v3\\runtime_contract.json",
+      "contract_sha256": "f8c72368eeba7bcf863f95829fe689cee3a7c5a784c522b01c8143825b2f6a0d",
+      "skin_sha256": "319c07b1b688385bb4060834db8f18fb006a59d226f12370a17d643229c61939",
+      "proxy_plan_sha256": "18395b913a3fb5292cca4c875ef5ccde38843bcc87b475d0f8f60e36d9bba542",
+      "source_sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+      "rig_origin": "inferred_manual_candidate",
+      "original_bones_claimed": false,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 2.8181730835570984e-07,
+        "source_bones": 15,
+        "source_auxiliary_bones": 0,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.5369694413934966,
+            "lower_length": 0.4554451019973677,
+            "lower_to_upper_ratio": 0.8481769480502206,
+            "inner_reach_radius": 0.08152433939612885,
+            "outer_reach_radius": 0.9924145433908642,
+            "original_synthetic_test_goal_distance": 0.7939316347126915,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.8102365025919172
+          },
+          "Right": {
+            "upper_length": 0.5180540017760498,
+            "lower_length": 0.44413676313033384,
+            "lower_to_upper_ratio": 0.8573175028234418,
+            "inner_reach_radius": 0.07391723864571592,
+            "outer_reach_radius": 0.9621907649063837,
+            "original_synthetic_test_goal_distance": 0.769752611925107,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.7845360596542501
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "NeutralArcherM",
+      "kind": "skin_R15_proxy_pending_source",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_NeutralArcherM_inferred_skin_v3\\runtime_contract.json",
+      "contract_sha256": "852d2720436d73b5e1155f14d93b8fd2fced253d020821bb2755e533a03d5261",
+      "skin_sha256": "fce99186fffb203d7b973e60611faa5195124f4f23b5e73aa2212ce607a4ffac",
+      "proxy_plan_sha256": "da3c2a08faf542855e98caa2baa7d4db4f729d818ec6cbac5695ee2abc6e14a5",
+      "source_sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+      "rig_origin": "inferred_manual_candidate",
+      "original_bones_claimed": false,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 1.740477459973489e-07,
+        "source_bones": 15,
+        "source_auxiliary_bones": 0,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.5184185363313288,
+            "lower_length": 0.48630226697307066,
+            "lower_to_upper_ratio": 0.938049535061894,
+            "inner_reach_radius": 0.032116269358258176,
+            "outer_reach_radius": 1.0047208033043995,
+            "original_synthetic_test_goal_distance": 0.8037766426435197,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.8101998965151713
+          },
+          "Right": {
+            "upper_length": 0.5230366032402316,
+            "lower_length": 0.5046358792118223,
+            "lower_to_upper_ratio": 0.9648194334499419,
+            "inner_reach_radius": 0.01840072402840931,
+            "outer_reach_radius": 1.0276724824520538,
+            "original_synthetic_test_goal_distance": 0.8221379859616431,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.8258181307673248
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HaloArcherF",
+      "kind": "skin_R15_proxy_pending_source",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HaloArcherF_inferred_skin_v1\\Costume_HaloArcherF_skin.skin.json",
+      "contract_sha256": "5292757a608092a21b561e65b0f35074ec800920d51618a95bb551a49d3672c9",
+      "skin_sha256": "0b72fb526d6049712ade5db365de9deffa3264e9a80875a9191b089d3bbcc26f",
+      "proxy_plan_sha256": "58108f55c8b139aa4c3dd693dfff4e04f2261b93bdff6fe93a2943b17f68acd9",
+      "source_sha256": "07451eec71f0b9785f867a53aac20e66d4af65e8259dce574a7c684826dad976",
+      "rig_origin": "inferred_manual_candidate",
+      "original_bones_claimed": false,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 2.705036124609066e-07,
+        "source_bones": 15,
+        "source_auxiliary_bones": 0,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.6792047672687602,
+            "lower_length": 0.4628377280646077,
+            "lower_to_upper_ratio": 0.6814406352384502,
+            "inner_reach_radius": 0.2163670392041525,
+            "outer_reach_radius": 1.1420424953333679,
+            "original_synthetic_test_goal_distance": 0.9136339962666944,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.9569074041075247
+          },
+          "Right": {
+            "upper_length": 0.6770003551442786,
+            "lower_length": 0.46572760419140996,
+            "lower_to_upper_ratio": 0.6879281534382011,
+            "inner_reach_radius": 0.21127275095286863,
+            "outer_reach_radius": 1.1427279593356885,
+            "original_synthetic_test_goal_distance": 0.9141823674685509,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.9564369176591245
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HornsArcherF",
+      "kind": "skin_R15_proxy_pending_source",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HornsArcherF_inferred_skin_v1\\Costume_HornsArcherF_skin.skin.json",
+      "contract_sha256": "cf476cb15edd92148245d9baee590fb81c65fb0fb20d5e81c96e94e0354f3698",
+      "skin_sha256": "0c5000a1cf32e27bbfe574d62c9536a3a08e203a95987bff21908f592970474a",
+      "proxy_plan_sha256": "9f26b7c5e443fe11b37fd94cf30ddc0c22c9130a5a67bb6a0fdb471d981e24d4",
+      "source_sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+      "rig_origin": "inferred_manual_candidate",
+      "original_bones_claimed": false,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 1.777537194947257e-07,
+        "source_bones": 15,
+        "source_auxiliary_bones": 0,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.7058335722195728,
+            "lower_length": 0.48389717413885436,
+            "lower_to_upper_ratio": 0.6855683736000052,
+            "inner_reach_radius": 0.2219363980807184,
+            "outer_reach_radius": 1.189730746358427,
+            "original_synthetic_test_goal_distance": 0.9517845970867417,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.9961718767028853
+          },
+          "Right": {
+            "upper_length": 0.7062395551669746,
+            "lower_length": 0.44538931117961256,
+            "lower_to_upper_ratio": 0.6306490594035196,
+            "inner_reach_radius": 0.260850243987362,
+            "outer_reach_radius": 1.151628866346587,
+            "original_synthetic_test_goal_distance": 0.9213030930772697,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.9734731418747421
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HaloWarriorM",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HaloWarriorM_preserved_v1\\package.json",
+      "contract_sha256": "879c49f2135f731349044c958fcdbf8ff22776d55353df2ef0c47e2dbb60f96e",
+      "skin_sha256": "4a4448f556a9c0b8eaf10631ff73f21e28235a35af7944f60dbf99ff03899268",
+      "proxy_plan_sha256": "48e10963958514f4d4748ae22153f3b2c39b3ed8c235fbbe5e5330dc222aba8f",
+      "source_sha256": "9e15d92825b0eb919055ccb24a5eaf38ed3e29e6f7bf35f1684bbb459c08cca0",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 8.131899591673352e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.8740096177672996,
+            "lower_length": 0.45910596111523916,
+            "lower_to_upper_ratio": 0.5252870812658194,
+            "inner_reach_radius": 0.4149036566520604,
+            "outer_reach_radius": 1.3331155788825386,
+            "original_synthetic_test_goal_distance": 1.0664924631060309,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.149473194436443
+          },
+          "Right": {
+            "upper_length": 0.8117641765951412,
+            "lower_length": 0.7445993965658306,
+            "lower_to_upper_ratio": 0.9172607242770602,
+            "inner_reach_radius": 0.06716478002931059,
+            "outer_reach_radius": 1.5563635731609717,
+            "original_synthetic_test_goal_distance": 1.2450908585287774,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.2585238145346396
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HaloWarriorF",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HaloWarriorF_preserved_v1\\package.json",
+      "contract_sha256": "b64d9239d37db1dc6dd5c592829787cf705633f3107f78d48af02762fe2071b9",
+      "skin_sha256": "028c52651a0fe42d3d0ef77a38639f1349b3e9d8622b933f7672f3f38531e2f6",
+      "proxy_plan_sha256": "e00fad424ee29e23740b1a631469542f776be906a84d0b36ce0f8592891caf2d",
+      "source_sha256": "43ef3a0c1f9fe525c7146336f01b29a63013bc5f263a320ff22e8b000abe0912",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 7.711082551945951e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.8584361502655068,
+            "lower_length": 0.7262405966410992,
+            "lower_to_upper_ratio": 0.8460042094178808,
+            "inner_reach_radius": 0.1321955536244076,
+            "outer_reach_radius": 1.5846767469066059,
+            "original_synthetic_test_goal_distance": 1.2677413975252847,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.2941805082501663
+          },
+          "Right": {
+            "upper_length": 0.5628626985113785,
+            "lower_length": 1.3540112242888713,
+            "lower_to_upper_ratio": 2.405579953814437,
+            "inner_reach_radius": 0.7911485257774928,
+            "outer_reach_radius": 1.9168739228002498,
+            "original_synthetic_test_goal_distance": 1.5334991382402,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.6917288433956985
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HaloMageM",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HaloMageM_preserved_v1\\package.json",
+      "contract_sha256": "93ddc0e5462563b7c753bc70680d440edcb357918a4e1cb6078970ec50c161ee",
+      "skin_sha256": "11722b180f091066987653b888cdcd157f98946f7cb7c6948262acd20e5b8782",
+      "proxy_plan_sha256": "bac03095b53e413fc2aea32af2e01aba69e0a10219b178a4c2664def1135e5ce",
+      "source_sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 1.1379776888994176e-06,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.6674411126775928,
+            "lower_length": 0.5065130926730772,
+            "lower_to_upper_ratio": 0.7588880622607799,
+            "inner_reach_radius": 0.16092802000451556,
+            "outer_reach_radius": 1.17395420535067,
+            "original_synthetic_test_goal_distance": 0.939163364280536,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.9713489682814391
+          },
+          "Right": {
+            "upper_length": 0.7100439654859504,
+            "lower_length": 1.4723308159141364,
+            "lower_to_upper_ratio": 2.07357697196466,
+            "inner_reach_radius": 0.762286850428186,
+            "outer_reach_radius": 2.1823747814000867,
+            "original_synthetic_test_goal_distance": 1.7458998251200695,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.8983571952057066
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HaloMageF",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HaloMageF_preserved_v1\\package.json",
+      "contract_sha256": "268ab5134206c782c722c4adc418d6a1f3d6d3ec74976cb9a908b2f43bf4c903",
+      "skin_sha256": "d5386846aefeb8fed9b4cd3f9f41611b262825dc76860bfa03def6918d2fb24f",
+      "proxy_plan_sha256": "26f07e4a4abb41467ddf6fb1199d5b2ecb64c45b6470d99eb9c88db2fefc9270",
+      "source_sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 8.076772139176598e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.6418313402524765,
+            "lower_length": 0.533776463099896,
+            "lower_to_upper_ratio": 0.8316459942419219,
+            "inner_reach_radius": 0.10805487715258044,
+            "outer_reach_radius": 1.1756078033523725,
+            "original_synthetic_test_goal_distance": 0.9404862426818981,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.9620972181124141
+          },
+          "Right": {
+            "upper_length": 0.6108787402724773,
+            "lower_length": 0.48519942666600263,
+            "lower_to_upper_ratio": 0.7942647119288904,
+            "inner_reach_radius": 0.12567931360647472,
+            "outer_reach_radius": 1.09607816693848,
+            "original_synthetic_test_goal_distance": 0.876862533550784,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.901998396272079
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HornsWarriorM",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HornsWarriorM_preserved_v1\\package.json",
+      "contract_sha256": "a2fda0e5082d1c5ac927d8d77ea49faa08433dddcd18b2204d36700dd063aafa",
+      "skin_sha256": "e5537e521fd98af7c8e248ec5bc215af4b5544ceb6e1c49cb94378b33713359e",
+      "proxy_plan_sha256": "2301c792e7f716f2d84c180c7969a4ddb1f460ade0f0e967b02d3203704de094",
+      "source_sha256": "57bfeed4f0b747984d7807e0f691794014c53c5ddd69f92edfedfe579e100235",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 8.774538203875849e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.6670156141736561,
+            "lower_length": 0.7932200141308977,
+            "lower_to_upper_ratio": 1.1892075646738678,
+            "inner_reach_radius": 0.12620439995724164,
+            "outer_reach_radius": 1.4602356283045537,
+            "original_synthetic_test_goal_distance": 1.168188502643643,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.1934293826350912
+          },
+          "Right": {
+            "upper_length": 0.612788640254862,
+            "lower_length": 0.5887223700360271,
+            "lower_to_upper_ratio": 0.9607266378031656,
+            "inner_reach_radius": 0.024066270218834895,
+            "outer_reach_radius": 1.201511010290889,
+            "original_synthetic_test_goal_distance": 0.9612088082327113,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 0.9660220622764784
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HornsWarriorF",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HornsWarriorF_preserved_v1\\package.json",
+      "contract_sha256": "a8feef5edd113aafbd9878e109af6d51686451acbd8010b5faee9ecf93a7ee01",
+      "skin_sha256": "5c0ce4d7a2c8b8a2a241a157b715ab812ff2f1860844ee2da6c7d8ed1fb312b7",
+      "proxy_plan_sha256": "680fe2822e34d5f84460b2ff021db03adc54c008f433b795ac6e6e7874ba6a2c",
+      "source_sha256": "881af71342a5386ed7248b8b2c3a39414112954b2b57cc94636c70ae47f01050",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 9.891480516299205e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 1.161005663431747,
+            "lower_length": 0.974184097843752,
+            "lower_to_upper_ratio": 0.8390864304349901,
+            "inner_reach_radius": 0.1868215655879949,
+            "outer_reach_radius": 2.135189761275499,
+            "original_synthetic_test_goal_distance": 1.7081518090203993,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.7455161221379982
+          },
+          "Right": {
+            "upper_length": 0.7316249938970762,
+            "lower_length": 0.5068074131379366,
+            "lower_to_upper_ratio": 0.6927147341404707,
+            "inner_reach_radius": 0.2248175807591396,
+            "outer_reach_radius": 1.2384324070350128,
+            "original_synthetic_test_goal_distance": 0.9907459256280102,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.0357094417798383
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HornsMageM",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HornsMageM_preserved_v1\\package.json",
+      "contract_sha256": "23e0797686520781b40167b44238f8c8f1ea7d5690f61e27c7a47b1453088772",
+      "skin_sha256": "0adfc9fa8827cd02229db055afd4cd68afde342cac1af16cb6437ec2545ad477",
+      "proxy_plan_sha256": "5d68ca4ad627cb3e34b8daed3b4a3b91783db49ada6d76bb82a2727ed0ec655e",
+      "source_sha256": "d93eebfa6f4a2bac20a1f4802bd565d23a3b85b36c82081c3f907493ec113f08",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 9.633542973197855e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.9831085393411818,
+            "lower_length": 0.07606007018332986,
+            "lower_to_upper_ratio": 0.0773669103050418,
+            "inner_reach_radius": 0.907048469157852,
+            "outer_reach_radius": 1.0591686095245116,
+            "original_synthetic_test_goal_distance": 0.8473348876196094,
+            "original_synthetic_test_goal_reachable": false,
+            "corrected_synthetic_test_goal_distance": 1.0287445814511798
+          },
+          "Right": {
+            "upper_length": 1.1303475571065487,
+            "lower_length": 0.9883719516895313,
+            "lower_to_upper_ratio": 0.8743965035139767,
+            "inner_reach_radius": 0.14197560541701737,
+            "outer_reach_radius": 2.11871950879608,
+            "original_synthetic_test_goal_distance": 1.694975607036864,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.7233707281202675
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HornsMageF",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HornsMageF_preserved_v1\\package.json",
+      "contract_sha256": "51a17ac0f9d81eb58ac8a5c4a16a66a9106834005302e420e0a5b54671c43adb",
+      "skin_sha256": "4d9221b7d22d330b4989c3dc2368b3ff7ebca52932d72780f27ed027b41fd42b",
+      "proxy_plan_sha256": "56af54073216463f3b403a71f6f22a4ff9e9d12d83c8ff22805aedea15d01718",
+      "source_sha256": "966a7c03fd082cf7735ba2c9299360c03475a3be95b9a6919508b640f7b06019",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 1.302123440229152e-06,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 1.8927026712587425,
+            "lower_length": 0.6573192496838183,
+            "lower_to_upper_ratio": 0.34729134145864965,
+            "inner_reach_radius": 1.2353834215749242,
+            "outer_reach_radius": 2.5500219209425605,
+            "original_synthetic_test_goal_distance": 2.0400175367540485,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 2.287094221069033
+          },
+          "Right": {
+            "upper_length": 1.495180055170843,
+            "lower_length": 0.6339822386085627,
+            "lower_to_upper_ratio": 0.4240173191289141,
+            "inner_reach_radius": 0.8611978165622802,
+            "outer_reach_radius": 2.1291622937794057,
+            "original_synthetic_test_goal_distance": 1.7033298350235246,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.8755693983359807
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "HornsArcherM",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_HornsArcherM_preserved_v1\\package.json",
+      "contract_sha256": "c1030eb6fb972c0378453f9d2234b358257ffb433e24c15a047f7110b0d0a89a",
+      "skin_sha256": "c793d05d57116691d53e78489f073e53b269af3dd74d61f34fb0f9dd0251fc8c",
+      "proxy_plan_sha256": "a928be6856d04791401f59979bf813ea4995fde5520b939093c9e39eed8ce9dc",
+      "source_sha256": "192bebb4f66ca9573ebc18c1021f6b30632e95dcdd276e05d16cf053e4117691",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 1.1442091698498037e-06,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.9864693238117825,
+            "lower_length": 0.8376290057014009,
+            "lower_to_upper_ratio": 0.8491181484131175,
+            "inner_reach_radius": 0.14884031811038168,
+            "outer_reach_radius": 1.8240983295131834,
+            "original_synthetic_test_goal_distance": 1.4592786636105468,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.489046727232623
+          },
+          "Right": {
+            "upper_length": 0.7368576181068658,
+            "lower_length": 0.6497889999982106,
+            "lower_to_upper_ratio": 0.881837934535641,
+            "inner_reach_radius": 0.08706861810865518,
+            "outer_reach_radius": 1.3866466181050763,
+            "original_synthetic_test_goal_distance": 1.109317294484061,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.126731018105792
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "NeutralWarriorM",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_NeutralWarriorM_preserved_v1\\package.json",
+      "contract_sha256": "333aa54f6ce917d44d07c1f9d428d438496438fd4cbb0024a577029d4fa634fb",
+      "skin_sha256": "b54e953b68d793d886ee68ac14c9ad0e797cb31054fc07519a2d1d8a297c7f34",
+      "proxy_plan_sha256": "b8ff636325050f8c3cba57e8dd8250a3f1b4b61e699ad0ec671ef61c6f20a200",
+      "source_sha256": "739d6fb97ee49abce14e23ba481dc13c7836392051e134c3cc2fbedc4ce0b07c",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 9.029486524398275e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.8923073078131618,
+            "lower_length": 0.5993123811116378,
+            "lower_to_upper_ratio": 0.6716434751390901,
+            "inner_reach_radius": 0.29299492670152405,
+            "outer_reach_radius": 1.4916196889247995,
+            "original_synthetic_test_goal_distance": 1.1932957511398397,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.2518947364801445
+          },
+          "Right": {
+            "upper_length": 0.8375099849024433,
+            "lower_length": 0.5489661488017411,
+            "lower_to_upper_ratio": 0.6554741539776233,
+            "inner_reach_radius": 0.2885438361007022,
+            "outer_reach_radius": 1.3864761337041844,
+            "original_synthetic_test_goal_distance": 1.1091809069633476,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.166889674183488
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "NeutralMageM",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_NeutralMageM_preserved_v1\\package.json",
+      "contract_sha256": "9e89e77b0177bd29c5bd6bc31aba7b38c11a8081e2b41619addc20807ef25c17",
+      "skin_sha256": "62abccef62b87a9eaffece53c2ef664bd7f1f4bf9de773936570ad43c38a16ef",
+      "proxy_plan_sha256": "c83047e554c4059274ec7816222b70a668672736d9e58db04c54570ad29cacc1",
+      "source_sha256": "eb751abcafcd88626f8302dc33ba005752b39b105589d3439396463608a26d06",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 7.246601164955505e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.8490465598142705,
+            "lower_length": 0.596814711748838,
+            "lower_to_upper_ratio": 0.7029234202178403,
+            "inner_reach_radius": 0.2522318480654324,
+            "outer_reach_radius": 1.4458612715631085,
+            "original_synthetic_test_goal_distance": 1.156689017250487,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.2071353868635732
+          },
+          "Right": {
+            "upper_length": 0.7874735605654779,
+            "lower_length": 0.5320171349680317,
+            "lower_to_upper_ratio": 0.6755999967617895,
+            "inner_reach_radius": 0.2554564255974462,
+            "outer_reach_radius": 1.3194906955335095,
+            "original_synthetic_test_goal_distance": 1.0555925564268076,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.106683841546297
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "NeutralMageF",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_NeutralMageF_preserved_v1\\package.json",
+      "contract_sha256": "4a7884e4a17bc38e514e29733667a6680c676b5958cbec892abf5bee3453b0b7",
+      "skin_sha256": "f8045886143d1973d00d68d67f96dbde6ffbbf36f2585beb0410b37368498f1e",
+      "proxy_plan_sha256": "41e7430da45cfcae9294e673d8277e69e39b178aba8718774889f5f41c551637",
+      "source_sha256": "cfa23bd0075b4dd73cd6982261c9debcdbacf8777dd0967b5404180a86490f57",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 6.708540227378343e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 1.0558269251793677,
+            "lower_length": 0.54751908774595,
+            "lower_to_upper_ratio": 0.5185689763054068,
+            "inner_reach_radius": 0.5083078374334177,
+            "outer_reach_radius": 1.6033460129253179,
+            "original_synthetic_test_goal_distance": 1.2826768103402544,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.3843383778269378
+          },
+          "Right": {
+            "upper_length": 0.9020164120168023,
+            "lower_length": 0.4944177570021009,
+            "lower_to_upper_ratio": 0.5481250123782572,
+            "inner_reach_radius": 0.4075986550147014,
+            "outer_reach_radius": 1.396434169018903,
+            "original_synthetic_test_goal_distance": 1.1171473352151224,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.1986670662180627
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    },
+    {
+      "name": "NeutralArcherF",
+      "kind": "preserved_original_skin_pending",
+      "state": "offline_verified",
+      "studio_validated_by_this_tool": false,
+      "game_ready_claimed_by_this_tool": false,
+      "contract": "art\\models\\costume\\prepared\\skin\\Costume_NeutralArcherF_preserved_v1\\package.json",
+      "contract_sha256": "15ccdbbbb4439fb8856f5d4b203c5a75d5b763beb814be548e791e6d937537f8",
+      "skin_sha256": "e9008293bc893ea12bbeb69475db05c900eb829e28a61b3147a39b1f43811f7c",
+      "proxy_plan_sha256": "c3e765a61dfd966235eb90bbec15c7e3356cf2ad75919197688d236139ceb8b0",
+      "source_sha256": "12da1a661d2f6afae7c0322427a672930577901d17df40eaf59a4bc184773435",
+      "rig_origin": "preserved_source_skin_proxy_candidate",
+      "original_bones_claimed": true,
+      "contract_metrics": {
+        "proxy_parts": 15,
+        "r15_joints": 15,
+        "rest_fk_maximum_error": 0.0,
+        "source_hinge_maximum_error": 4.901234015106875e-07,
+        "source_bones": 23,
+        "source_auxiliary_bones": 8,
+        "actual_imported_binds_checked": false,
+        "measured_arm_reach": {
+          "Left": {
+            "upper_length": 0.8731166540775063,
+            "lower_length": 0.24137192221692036,
+            "lower_to_upper_ratio": 0.2764486521814688,
+            "inner_reach_radius": 0.6317447318605859,
+            "outer_reach_radius": 1.1144885762944265,
+            "original_synthetic_test_goal_distance": 0.8915908610355413,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.0179398074076584
+          },
+          "Right": {
+            "upper_length": 0.7169218874761125,
+            "lower_length": 0.7728759394814395,
+            "lower_to_upper_ratio": 1.0780476269211285,
+            "inner_reach_radius": 0.05595405200532699,
+            "outer_reach_radius": 1.489797826957552,
+            "original_synthetic_test_goal_distance": 1.1918382615660417,
+            "original_synthetic_test_goal_reachable": true,
+            "corrected_synthetic_test_goal_distance": 1.203029071967107
+          }
+        },
+        "motion_visual_quality_inferred_from_ik_pass": false,
+        "invalid_contract_rejection_checks": 7
+      },
+      "visual_surfaces": 2,
+      "motion_checks": 301
+    }
+  ],
+  "fixture_results": [
+    {
+      "name": "NativeAJU",
+      "passed": true,
+      "checks": 253,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HaloArcherM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "NeutralWarriorF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "NeutralArcherM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HaloArcherF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HornsArcherF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HaloWarriorM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HaloWarriorF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HaloMageM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HaloMageF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HornsWarriorM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HornsWarriorF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HornsMageM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HornsMageF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "HornsArcherM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "NeutralWarriorM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "NeutralMageM",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "NeutralMageF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    },
+    {
+      "name": "NeutralArcherF",
+      "passed": true,
+      "checks": 301,
+      "joint_variants": [
+        "Motor6D",
+        "AnimationConstraint"
+      ],
+      "pose_classes": [
+        "Warrior",
+        "Mage",
+        "Archer"
+      ],
+      "actual_studio_motion_validated": false
+    }
+  ],
+  "source_manifest": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\source_records.json",
+  "source_manifest_sha256": "e2c36d1c5cdfdcd7ea65b66c207818d9a2b3cbe19e91be44a4a7876472f9da98",
+  "offline_costume_contracts_passed": 18,
+  "invalid_contract_rejection_checks": 126,
+  "offline_costume_motion_fixtures_passed": 18,
+  "actual_studio_costume_motion_validated_by_this_tool": 0,
+  "actual_studio_costume_motion_status": "not_queried",
+  "game_ready_claimed_by_this_tool": false,
+  "live_status_queried": false,
+  "state_counts": {
+    "offline_verified": 18
+  },
+  "limitations": [
+    "No Studio visual, collision, skin deformation, multiplayer, or game-ready approval",
+    "R15 proxy FK/weapon pose math does not animate or approve the whole source skin",
+    "Original twenty-three bones are preserved; fifteen manual bones remain inferred",
+    "Recorded manual runtime contracts currently require their exact local build proxy plans",
+    "Separate corrected/expression siblings are not substituted for original benchmark sources"
+  ]
+}

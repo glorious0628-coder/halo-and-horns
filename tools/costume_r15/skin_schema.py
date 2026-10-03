@@ -16,6 +16,7 @@ import numpy as np
 
 from constraints import PRIMARY, RigError
 from glb_io import read_glb
+from preserve_skin import node_matrices
 
 ROOT=Path(__file__).resolve().parents[2]
 NAMES={"Costume_"+f+c+g for f in ("Halo","Horns","Neutral") for c in ("Warrior","Archer","Mage") for g in ("M","F")}
@@ -31,7 +32,7 @@ def local_input(base,value):
     return result
 
 
-def load(path):
+def load(path,proxy_override=None):
     path=Path(path).resolve();data=json.loads(path.read_text(encoding="utf-8"));package=None
     if data.get("kind")=="preserved_original_skin_pending":
         package=data
@@ -44,36 +45,54 @@ def load(path):
     else:
         manifest_path=path
         manual=data.get("rig_origin")=="inferred_manual_candidate"
-        skin=Path(data["skin_source"] if manual else data["output"]).resolve();plan=Path(data["proxy_plan"]).resolve()
-        name=data.get("name") or re.sub(r"_skin$","",skin.stem)
-    if name not in NAMES or data.get("schema")!=1 or data.get("rig_ready_for_game") is not False: raise RigError("An exact unpromoted eighteen-way costume is required")
+        legacy_manual=manual and "skin_source" not in data
+        skin=Path(data["output"] if legacy_manual else data["skin_source"] if manual else data["output"]).resolve()
+        plan=Path(proxy_override or data.get("proxy_plan","")).resolve()
+        if legacy_manual and not proxy_override: raise RigError("An explicit --proxy-plan is required for a legacy inferred sidecar")
+        name=data.get("name")
+        if not name and data.get("expression_manifest"):
+            expression_path=Path(data["expression_manifest"])
+            if not expression_path.is_absolute(): expression_path=ROOT/expression_path
+            expression_path.resolve().relative_to(ROOT)
+            if sha(expression_path)!=data.get("expression_manifest_sha256"): raise RigError("Expression sidecar manifest SHA changed")
+            name=json.loads(expression_path.read_text(encoding="utf-8"))["avatar"]
+        name=name or re.sub(r"_skin$","",skin.stem)
+    if name not in NAMES or data.get("schema",1 if data.get("rig_origin")=="inferred_manual_candidate" else None)!=1 or data.get("rig_ready_for_game") is not False: raise RigError("An exact unpromoted eighteen-way costume is required")
     manual=data.get("rig_origin")=="inferred_manual_candidate"
-    original=data["original_source_sha256"] if manual else data["source_sha256"]
-    original_path=Path(data["original_static_source"] if manual else data["source"])
+    legacy_manual=manual and "skin_source" not in data
+    original=data["original_source_sha256"] if manual and not legacy_manual else data["source_sha256"]
+    original_path=Path(data["original_static_source"] if manual and not legacy_manual else data["source"])
     if package:
         original_path=ROOT/package["original_source"]["workspace_relative_path"]
         if package["original_source"]["sha256"]!=original: raise RigError("Package original provenance disagrees")
     if original_path.is_file() and sha(original_path)!=original: raise RigError("Available original source changed")
-    expected_skin=data["skin_sha256"] if manual else data["output_sha256"]
+    expected_skin=data["skin_sha256"] if manual and not legacy_manual else data["output_sha256"]
     if sha(skin)!=expected_skin: raise RigError("Exact preserved skin changed")
     if not manual and sha(plan)!=data["proxy_plan_sha256"]: raise RigError("Exact proxy plan changed")
     gltf,binary,_=read_glb(skin)
     if len(gltf.get("skins",[]))!=1: raise RigError("One complete source skin is required")
     count=15 if manual else 23
+    if legacy_manual:
+        if data.get("original_bones_claimed") is not False or data.get("original_geometry_accessors_reused") is not True: raise RigError("Inferred source preservation markers are required")
+        parents,local,world=node_matrices(gltf);indices=gltf["skins"][0]["joints"];names={i:gltf["nodes"][i]["name"] for i in indices}
+        data["bones"]=[{"name":names[i],"parent":names.get(parents.get(i),"HumanoidRootPart"),"gltf_bind_game_world_column_major":world[i].flatten(order="F").tolist()} for i in indices]
     if len(gltf["skins"][0]["joints"])!=count or len(data["bones"])!=count: raise RigError("The whole preserved fifteen/twenty-three bone hierarchy is required")
     bone_rows=[]
     for b in data["bones"]:
         values=np.array(b["gltf_bind_game_world_column_major"] if manual else b["game_bind_world"],dtype=float)
         if values.size!=16 or not np.isfinite(values).all(): raise RigError("Finite column-major source bind is required")
         matrix=values.reshape(4,4).T;lengths=np.linalg.norm(matrix[:3,:3],axis=0)
-        if min(lengths)<=0 or not np.allclose(lengths,lengths[0],rtol=1e-5): raise RigError("Source bind has nonuniform scale")
+        # Some original Tripo limb matrices retain ~1.5e-5 scale rounding.
+        # Keep their exact source matrices; unit reference axes are comparison
+        # metadata only and must later be checked against actual Bone CFrames.
+        if min(lengths)<=0 or not np.allclose(lengths,lengths[0],rtol=1e-4): raise RigError("Source bind has nonuniform scale beyond imported-frame precision")
         rotation=matrix[:3,:3]/lengths
-        if not np.allclose(rotation.T@rotation,np.eye(3),atol=1e-5) or np.linalg.det(rotation)<0: raise RigError("Source bind axes are invalid")
+        if not np.allclose(rotation.T@rotation,np.eye(3),atol=1e-4) or np.linalg.det(rotation)<0: raise RigError("Source bind axes are invalid")
         parent=b["parent"] if manual else b["parent_name"]
         parent=None if manual and parent=="HumanoidRootPart" else parent
         bone_rows.append({"name":b["name"],"parent":parent,"part":b["name"] if manual else b["proxy_part"],
                           "principal":True if manual else b["principal"],"reference_game_position":matrix[:3,3].tolist(),
-                          "reference_unit_rotation":rotation.reshape(9).tolist(),"actual_imported_bind_required":True})
+                          "reference_unit_rotation":rotation.reshape(9).tolist(),"source_axis_scale_relative_error":float(max(lengths)/min(lengths)-1),"actual_imported_bind_required":True})
     lookup={b["name"]:b for b in bone_rows}
     if len(lookup)!=count or {b["name"] for b in bone_rows if b["principal"]}!=set(PRIMARY): raise RigError("Exactly fifteen uniquely named principal bones are required")
     for b in bone_rows:
@@ -94,13 +113,14 @@ def load(path):
             "visual_surfaces":surfaces,"rig_origin":data["rig_origin"],"original_bones_claimed":source_claim,
             "actual_inspection_required":True,"rig_ready_for_game":False,"animation_validated":False,
             "weighting_quality_hold":bool(package and package.get("weighting_quality_hold")),
+            "expression_manifest":data.get("expression_manifest"),
             "path_policy":"package-local relative files override stale absolute sidecar paths" if package else "explicit current sidecar paths",
             "api_calls":0,"studio_calls":0}
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument("contract",type=Path);parser.add_argument("--output",type=Path)
-    args=parser.parse_args();result=load(args.contract)
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument("contract",type=Path);parser.add_argument("--output",type=Path);parser.add_argument("--proxy-plan",type=Path)
+    args=parser.parse_args();result=load(args.contract,args.proxy_plan)
     if args.output:
         output=args.output.resolve();output.relative_to((ROOT/"build").resolve())
         if output.exists(): raise RigError("Existing plans are never overwritten")

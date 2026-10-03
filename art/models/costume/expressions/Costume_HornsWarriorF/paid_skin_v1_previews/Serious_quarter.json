@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "a554b1d807ae6d85ef5142e6845239ed1ddbfa47b4cd3409735d7ed6c3e01a12",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\paid_skin_v1_previews\\Serious_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    3.1199142932891846,
+    9.478767395019531,
+    1.7834206819534302
+  ],
+  "camera_rotation": [
+    1.6272507905960083,
+    0.018119147047400475,
+    2.831220865249634
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

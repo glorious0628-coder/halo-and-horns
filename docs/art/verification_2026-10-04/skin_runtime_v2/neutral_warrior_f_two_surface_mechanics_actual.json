@@ -1,0 +1,197 @@
+[
+  {
+    "label": "server_pending_guard",
+    "text": "PendingRig rejected before Play-only trial markers",
+    "error": false
+  },
+  {
+    "label": "trial_template",
+    "text": "QA flags on Play-only clone, Edit candidate remains Pending",
+    "error": false
+  },
+  {
+    "label": "install_reader",
+    "text": "actual client module reader installed",
+    "error": false
+  },
+  {
+    "label": "gender",
+    "text": "ok",
+    "error": false
+  },
+  {
+    "label": "choose_FactionPicker.Cards.Card_Neutral.Body.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "choose_ClassPicker.Cards.Card_Warrior.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "initial",
+    "text": "{\"enabled\":true,\"id\":\"Costume_NeutralWarriorF\",\"mana\":100,\"hp\":130,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.6774998903274536,\"root\":[5.8658447265625,1.677490234375,-21.3648681640625],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_initial",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":177,\"characters\":[{\"scale\":1,\"max_error\":5.994935690978309e-06,\"frames\":177}]}",
+    "error": false
+  },
+  {
+    "label": "growth_probe",
+    "text": "Play-only faction-scale override; real JusticeService applies growth",
+    "error": false
+  },
+  {
+    "label": "preload",
+    "text": "[{\"id\":\"rbxassetid://97469231692132\",\"status\":\"Success\"},{\"id\":\"rbxassetid://114535887832815\",\"status\":\"Success\"},{\"id\":\"rbxassetid://137185234402427\",\"status\":\"Success\"},{\"id\":\"rbxassetid://72734822328341\",\"status\":\"Success\"}]",
+    "error": false
+  },
+  {
+    "label": "walk_jump",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "after_walk",
+    "text": "{\"enabled\":true,\"id\":\"Costume_NeutralWarriorF\",\"mana\":100,\"hp\":130,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.6774998903274536,\"root\":[1.01171875,6.67578125,-3.4765625],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_walk",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":584,\"characters\":[{\"scale\":1,\"max_error\":6.198883056640625e-06,\"frames\":584}]}",
+    "error": false
+  },
+  {
+    "label": "mana_charge",
+    "text": "ok",
+    "error": false
+  },
+  {
+    "label": "attack_F",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_F",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":618,\"characters\":[{\"scale\":1,\"max_error\":6.198883056640625e-06,\"frames\":618}]}",
+    "error": false
+  },
+  {
+    "label": "attack_Q",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_Q",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":768,\"characters\":[{\"scale\":1,\"max_error\":6.198883056640625e-06,\"frames\":768}]}",
+    "error": false
+  },
+  {
+    "label": "scale_2",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "driver_scale_2",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1315,\"characters\":[{\"scale\":2,\"max_error\":6.198883056640625e-06,\"frames\":1315}]}",
+    "error": false
+  },
+  {
+    "label": "walk_grown",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_scale_2_walk",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1427,\"characters\":[{\"scale\":2,\"max_error\":7.751354132778943e-06,\"frames\":1427}]}",
+    "error": false
+  },
+  {
+    "label": "scale_1",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "driver_scale_1",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1853,\"characters\":[{\"scale\":1,\"max_error\":8.025184797588736e-06,\"frames\":1853}]}",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "text": "false",
+    "error": false
+  },
+  {
+    "label": "open_menu",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "toggle_button",
+    "text": "직업 코스튬: ON",
+    "error": false
+  },
+  {
+    "label": "off",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "off_state",
+    "text": "{\"enabled\":false,\"mana\":100,\"hp\":130,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Avatar\",\"hip\":2.224841356277466,\"root\":[-6.25140380859375,3.224853515625,22.98260498046875],\"applied\":false}",
+    "error": false
+  },
+  {
+    "label": "driver_off",
+    "text": "{\"players\":1,\"active\":0,\"faults\":0,\"frames\":1960,\"characters\":[]}",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "toggle_button",
+    "text": "직업 코스튬: OFF",
+    "error": false
+  },
+  {
+    "label": "on",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "on_state",
+    "text": "{\"enabled\":true,\"id\":\"Costume_NeutralWarriorF\",\"mana\":100,\"hp\":130,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.6774998903274536,\"root\":[-6.25140380859375,1.677490234375,22.98260498046875],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_on",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":2053,\"characters\":[{\"scale\":1,\"max_error\":6.042158929631114e-06,\"frames\":93}]}",
+    "error": false
+  },
+  {
+    "label": "close_menu",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "death",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "respawn",
+    "text": "{\"enabled\":true,\"id\":\"Costume_NeutralWarriorF\",\"mana\":100,\"hp\":130,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.6774998903274536,\"root\":[-4.989990234375,1.677490234375,-29.802734375],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_respawn",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":2247,\"characters\":[{\"scale\":1,\"max_error\":6.747708994225832e-06,\"frames\":178}]}",
+    "error": false
+  }
+]

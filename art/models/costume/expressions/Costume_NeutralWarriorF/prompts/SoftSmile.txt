@@ -1,0 +1,5 @@
+Use case: identity-preserve
+Asset type: approved human class avatar FaceExpression UV texture variant for a 3D game.
+Input 1 is the exact edit target: the existing NeutralWarriorF neutral front-projection face texture. Input 2 is a supporting approved three-expression concept sheet only; never copy its different character, armor, hair or portrait framing.
+Change only the existing face expression to a very subtle friendly closed-mouth smile, a small gently upward-curved line without teeth or open mouth. Keep both original eyebrows unchanged.
+The user already selected these three expression meanings. Keep this same character, eye positions and iris colors, face skin tone, skin shading, cheeks, ears, hair, head accessories, modest clothing, everything else pixel aligned with input 1. Keep the exact square canvas, scale, crop, head placement and all feature locations: this is a normalized UV chart, not a new illustration or portrait. All pixels outside the small mouth/eyebrow regions remain unchanged. No head tilt, no camera or lighting change, no new features. No text, no watermark, no HUD, no teeth, no mouth opening, no duplicate eyebrows.

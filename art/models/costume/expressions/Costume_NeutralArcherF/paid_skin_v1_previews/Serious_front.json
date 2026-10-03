@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\paid_skin_v1_previews\\Serious_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.34392249584198,
+    10.036705017089844,
+    2.829564332962036
+  ],
+  "camera_rotation": [
+    1.6340795755386353,
+    -0.016547145321965218,
+    -2.997581720352173
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

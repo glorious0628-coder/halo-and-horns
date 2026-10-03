@@ -1,0 +1,31 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "f23871e89b092cb69eb0547c2c77180ff4150ffbb8593eb47a220ac87aff060a",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\paid_skin_v1_pose_previews\\head_a.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.1614100933074951,
+    9.799921035766602,
+    2.7570066452026367
+  ],
+  "camera_rotation": [
+    1.5597708225250244,
+    0.06119605526328087,
+    -3.05853009223938
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "skin_pose": {
+    "Head": [
+      8,
+      0,
+      25
+    ]
+  },
+  "skin_pose_policy": "temporary offline original shared Head bone rotation; no source writes"
+}

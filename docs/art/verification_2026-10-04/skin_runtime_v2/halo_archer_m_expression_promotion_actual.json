@@ -1,0 +1,26 @@
+{
+  "textures": {
+    "SkinSchema": 1,
+    "Serious": "rbxassetid://130810730029380",
+    "SkinSourceSHA256": "f23871e89b092cb69eb0547c2c77180ff4150ffbb8593eb47a220ac87aff060a",
+    "Neutral": "rbxassetid://114282379234661",
+    "MeshId": "rbxassetid://88405558388221",
+    "MeshName": "FaceExpression",
+    "SoftSmile": "rbxassetid://96983789676579"
+  },
+  "validated": true,
+  "pending_preserved": true,
+  "source_sha256": "f23871e89b092cb69eb0547c2c77180ff4150ffbb8593eb47a220ac87aff060a",
+  "bones": 23,
+  "qa_sha256": "50f4acbcb59a2d2ba1f7f78d5b8b96ebc9f5d19fe319615ba425956e3f608b04",
+  "name": "Costume_HaloArcherM",
+  "mesh_id": "rbxassetid://88405558388221",
+  "scale_contract": [
+    1,
+    2,
+    1
+  ],
+  "destination": "ServerStorage.CostumeRigs.Costume_HaloArcherM",
+  "schema": 1,
+  "mesh_parts": 3
+}

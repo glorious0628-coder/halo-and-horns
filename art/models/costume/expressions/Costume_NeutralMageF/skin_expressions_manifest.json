@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralMageF",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_PreservedSkinExpressions_v2.glb",
+  "skin_sha256": "26a2362fadcbe623356dba379c8094aa7274cd91954810a017cfebf252bc5ebb",
+  "source_skin_sha256": "f8045886143d1973d00d68d67f96dbde6ffbbf36f2585beb0410b37368498f1e",
+  "source_fixed_sha256": "8d1dfd965602d0e78b85815fd6d3f76704f3121b6d7463b416b0a736dd8df583",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "prepare_report": "art/models/costume/expressions/Costume_NeutralMageF/skin_prepare_report.json",
+  "rigid_comparison_reference_preserved": true,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_NeutralMageF",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-3ea628fb-5ea4-46dd-9061-d15f80aee9b0.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralMageF/prompts/Neutral.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\ud3c9\uc18c",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralMageF/paid_skin_v2_previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_NeutralMageF/paid_skin_v2_previews/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralMageF",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a266b96ac23e3e273abbc82ddb3123303872c8b9317b76bc294103360d6e1778",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-43cf91a2-b7d8-4d4c-945d-6ae867cf67d4.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralMageF/prompts/SoftSmile.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralMageF/paid_skin_v2_previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_NeutralMageF/paid_skin_v2_previews/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralMageF",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "6ee6d507f7d3809106cd06512c8a110d3086c7e5915e841aa58575fcb19ae5e9",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-442b5c65-3955-48ec-8ac8-f66c9562c089.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralMageF/prompts/Serious.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralMageF/paid_skin_v2_previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_NeutralMageF/paid_skin_v2_previews/Serious_quarter.png"
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "offline_visual_review": "All six actual full-skin baseline CG previews personally reviewed; closed mouth and original eyes/hair/body preserved.",
+  "offline_visual_notes": "A small amount of source/GPT skin color faceting can appear in very close views; actual normal-distance engine QA remains.",
+  "runtime_attachment": "Preserve the actual shared Bone host and root skin weld; never weld FaceExpression directly to the moving Head proxy.",
+  "runtime_registration": "Production marker/actual imported Bone host and mesh asset ID proof must be added by the root after engine QA.",
+  "limitations": [
+    "Original paid skeleton is preserved; new expression copy is not engine validated.",
+    "New mouth cover and 3-state face need actual engine pose/texture switching QA.",
+    "Original mouth recess is retained under the new skinned cover; original vertices are not flattened."
+  ]
+}

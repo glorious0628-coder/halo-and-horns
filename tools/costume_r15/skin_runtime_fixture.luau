@@ -97,7 +97,7 @@ local function makeCharacter(fixture,meshCount)
     for i=1,(meshCount or 2) do local mesh=skin:Add(object("MeshPart","Surface"..i));mesh.MeshId="rbxassetid://"..(100+i);table.insert(meshManifest,{path={mesh.Name},mesh_id=mesh.MeshId}) end
     local token=fixture.name.."_"..tostring(meshCount or 2)
     jsonMap[token]={schema=2,name=fixture.name,unique_bones=#fixture.bones,bone_instances=#fixture.bones,mesh_instances=meshCount or 2,bones=definitions,meshes=meshManifest,skin_sha256=string.rep("a",64),joints_sha256=string.rep("a",64),contract_sha256=string.rep("a",64),inspection_sha256=string.rep("a",64)}
-    model.Attrs={HHC_CostumeId=fixture.name,HHC_SkinRuntimeSchema=2,HHC_SkinRetargetRequired=true,HHC_RigReady=true,HHC_AnimationValidated=true,HHC_SkinSourceSHA256=string.rep("a",64),HHC_SourceSHA256=string.rep("a",64),HHC_JointsSHA256=string.rep("a",64),HHC_SkinContractSHA256=string.rep("a",64),HHC_SkinInspectionSHA256=string.rep("a",64),HHC_SkinBindScale=1,HHC_SkinRootBindSize=root.Size,HHC_SkinManifest=token,HHC_RigOrigin=#fixture.bones==15 and "inferred_manual_candidate" or "preserved_source_skin_proxy_candidate",HHC_OriginalBonesClaimed=#fixture.bones~=15}
+    model.Attrs={HHC_CostumeId=fixture.name,HHC_SkinRuntimeSchema=2,HHC_SkinRetargetRequired=true,HHC_SkinRuntimeValidated=true,HHC_RigReady=true,HHC_AnimationValidated=true,HHC_SkinSourceSHA256=string.rep("a",64),HHC_SourceSHA256=string.rep("a",64),HHC_JointsSHA256=string.rep("a",64),HHC_SkinContractSHA256=string.rep("a",64),HHC_SkinInspectionSHA256=string.rep("a",64),HHC_SkinBindScale=1,HHC_SkinRootBindSize=root.Size,HHC_SkinManifest=token,HHC_RigOrigin=#fixture.bones==15 and "inferred_manual_candidate" or "preserved_source_skin_proxy_candidate",HHC_OriginalBonesClaimed=#fixture.bones~=15}
     return {Model=model,Root=root,Host=host,Humanoid=hum,Proxies=proxies,Bones=bones,Binds=binds,Definitions=definitions}
 end
 local function pose(character,q,partial)
@@ -135,6 +135,9 @@ for _,bone in paid.Bones do check(cfError(bone.Transform,CF.new())<1e-9,"death o
 local respawn=makeCharacter(PAID_FIXTURE);swap(p2,respawn.Model);pose(respawn,2);frame();check(module.GetDebugSnapshot().active==3,"death respawn rebind");checkPose(respawn,2,"respawn bone hierarchy")
 respawn.Model:SetAttribute("HHC_RigReady",false);flush();frame();check(module.GetDebugSnapshot().active==2,"unvalidated Pending never binds")
 respawn.Model:SetAttribute("HHC_RigReady",true);flush();frame();check(module.GetDebugSnapshot().active==3,"promotion rebind")
+respawn.Model:SetAttribute("HHC_SkinRuntimeValidated",nil);flush();frame();check(module.GetDebugSnapshot().active==2,"missing runtime QA marker never binds")
+respawn.Model:SetAttribute("HHC_SkinRuntimeValidated",false);flush();frame();check(module.GetDebugSnapshot().active==2,"runtime QA false never binds")
+respawn.Model:SetAttribute("HHC_SkinRuntimeValidated",true);flush();frame();check(module.GetDebugSnapshot().active==3,"verified runtime marker rebinds")
 respawn.Model:SetAttribute("HHC_SkinSourceSHA256",string.rep("b",64));flush();frame();check(module.GetDebugSnapshot().active==2,"hash/manifest disagreement refused")
 respawn.Model:SetAttribute("HHC_SkinSourceSHA256",string.rep("a",64));flush();frame();check(module.GetDebugSnapshot().active==3,"known sealed metadata restores")
 players.PlayerRemoving:Fire(p3);frame();check(module.GetDebugSnapshot().players==2 and module.GetDebugSnapshot().active==2,"leave removes player and record")

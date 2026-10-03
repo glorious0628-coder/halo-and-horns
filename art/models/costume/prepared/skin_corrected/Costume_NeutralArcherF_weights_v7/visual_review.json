@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "name": "NeutralArcherF",
+  "directly_reviewed": true,
+  "all_six_pose_front_side_reviewed": true,
+  "reviewed_contact_sheet": "before_after_six_poses.png",
+  "reviewed_original_overlays": [
+    "region_overlay_front.png",
+    "region_overlay_side.png"
+  ],
+  "scope": "Only the explicit complete original side braid including its teal tie; the measured diagonal excludes the sleeve",
+  "observations": [
+    "Original approved rest shape, modest outfit, UV/material/PNG bytes and full twenty-three source bones/bind matrices remain unchanged.",
+    "The reviewed region remains attached to its adjacent UpperTorso/Head through walking, raised arms, attack stress and head-turn poses.",
+    "The original arms no longer pull this region upward; no first-candidate boundary spike was observed in the reviewed six pose views."
+  ],
+  "unmodified_regions_not_repaired": true,
+  "whole_character_engine_quality_claimed": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

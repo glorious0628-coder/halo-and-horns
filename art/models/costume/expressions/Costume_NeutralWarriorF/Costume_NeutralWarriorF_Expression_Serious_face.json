@@ -1,0 +1,21 @@
+{
+  "avatar": "Costume_NeutralWarriorF",
+  "state": "Serious",
+  "png": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_Serious_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "559f49fb5fac2d10c324baf4cb0ca97aa6f1d0881497cba03c275b84ffc41534",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-e94cded4-5ec8-47ad-bc54-8e5cb5761e59.png",
+  "prompt": "art/models/costume/expressions/Costume_NeutralWarriorF/prompts/Serious.txt",
+  "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_NeutralWarriorF/previews_v4/Serious_front.png",
+    "art/models/costume/expressions/Costume_NeutralWarriorF/previews_v4/Serious_quarter.png"
+  ]
+}

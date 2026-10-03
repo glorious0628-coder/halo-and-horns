@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "d815dee2edd09aeb8536ef1327bf280da3a62e2fc64ec034d216d4ab4ab17ac0",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\paid_skin_v1_previews\\Serious_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    4.898185729980469,
+    8.407236099243164,
+    2.293410539627075
+  ],
+  "camera_rotation": [
+    1.5707963705062866,
+    -3.4641277579794405e-07,
+    2.6179940700531006
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

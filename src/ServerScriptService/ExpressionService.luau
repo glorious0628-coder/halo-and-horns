@@ -7,6 +7,7 @@ local ProximityPromptService = game:GetService("ProximityPromptService")
 local CollectionService = game:GetService("CollectionService")
 local Assets = require(ReplicatedStorage.Shared.ExpressionAssets)
 local Util = require(ReplicatedStorage.Shared.Util)
+local SkinContract = require(script.Parent.ExpressionSkinContract)
 
 local ExpressionService = {}
 local S
@@ -61,6 +62,11 @@ local function faceMesh(model, head, def)
 	end
 	if not mesh or mesh:GetAttribute("HHC_ExpressionMeshValidated") ~= true
 		or mesh:FindFirstChildOfClass("SurfaceAppearance") then return nil end
+	if head and def.SkinSchema ~= nil then
+		local ok, context = pcall(SkinContract.Bind, model, head, mesh, def)
+		if not ok then return nil end
+		return context and mesh or nil, nil, context
+	end
 	if not head then return mesh end -- monster-owned target, still marked and scoped to this model
 	if mesh:IsDescendantOf(head) then return mesh end
 	for _, child in model:GetDescendants() do
@@ -74,6 +80,10 @@ local function meshReady(st)
 	if not complete(st.Assets) or not mesh or not mesh.Parent or not mesh:IsDescendantOf(st.Model)
 		or mesh:GetAttribute("HHC_ExpressionMeshValidated") ~= true
 		or mesh:FindFirstChildOfClass("SurfaceAppearance") then return false end
+	if st.Assets.SkinSchema ~= nil then
+		local ok, ready = pcall(SkinContract.IsReady, st.SkinContext)
+		return ok and ready == true
+	end
 	return not st.Head or mesh:IsDescendantOf(st.Head) or directWeld(st.Weld, st.Model, st.Head, mesh)
 end
 
@@ -122,9 +132,10 @@ local function bindCharacter(player, character, humanoid)
 	if not head or not head:IsA("BasePart") then return end
 	-- PBR assets require prebuilt SurfaceAppearance variants, never a protected ColorMap write at runtime.
 	local def = Assets.Costumes[id]
-	local mesh, weld = faceMesh(character, head, def)
+	local mesh, weld, context = faceMesh(character, head, def)
 	local st = state(character, mesh, def)
 	st.Player, st.CostumeId, st.Head, st.Weld = player, id, head, weld
+	st.SkinContext = context
 	st.Health = humanoid.Health
 	states[player] = st
 	table.insert(st.Conns, humanoid.HealthChanged:Connect(function(health)

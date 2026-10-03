@@ -202,3 +202,27 @@ py -B tools/costume_r15/preserve_skin.py build/costume_r15/Costume_HaloArcherM/j
 이 GLB를 기존 `convert.py`나 강체 `assemble.py`에 넣으면 skin을 잃으므로 사용하지 않습니다. 실제 Importer가 생성한 bone/Size/bind를 먼저 검사하고 별도의 15부위 R15 물리 proxy와 연결해야 합니다. sidecar의 `source_to_game_affine`는 glTF column-major 16값이며, 원래 Bone hierarchy와 보조 bone을 모두 보존합니다. 각 proxy의 현재/rest delta를 실제 bone bind에 적용하고, 부모 bone의 현재 transform을 반영해 local `Bone.Transform`을 계산합니다. 공식 [Bone 문서](https://create.roblox.com/docs/reference/engine/classes/Bone)는 Transform이 복제되지 않는다고 명시하므로 모든 클라이언트의 animation 이후 갱신과 실제 ON/OFF·무기·표정·충돌 검증이 필요합니다. [Rigging 문서](https://create.roblox.com/docs/art/modeling/rigging)에 따라 bone은 시각 표면을 변형하며 충돌 형상을 바꾸지 않습니다.
 
 모든 새 skin은 `rig_ready_for_game=false`입니다. 로컬 렌더 통과를 실제 게임 등록이나 Studio 통과로 표시하지 않습니다. 코드와 최종 source GLB/sidecar/추정 landmark 입력을 함께 보관해야 하며, ignored `build/`에만 남긴 출력은 Git 체크포인트에 포함되지 않습니다.
+
+### 원본 14종 보존 및 휴대 가능한 입력
+
+실제 Tripo 원본 14종은 `art/models/costume/prepared/skin/Costume_<name>_preserved_v1/`에 보관했습니다. HaloArcherM만 `_preserved_v2`입니다. 각 `package.json`은 같은 폴더의 GLB·sidecar·`proxy_joints.json`·`proxy_runtime.json`과 SHA256를 지정합니다. 절대 경로가 남은 원래 sidecar를 바꾸지 않고 패키지 상대 경로를 먼저 사용합니다. `proxy_runtime.json`에는 원래 강체 묶음과 source SHA를 검사한 15부위 중심/크기·C0/C1·Root·HipHeight를 저장해, ignored batch 파일이 없는 새 체크아웃에서도 물리 proxy 입력을 읽을 수 있습니다.
+
+HaloWarriorF/HaloMageM/HaloMageF는 누락 재질을 복원한 최종 source를 사용합니다. `preserve_skin.py --split-material-surfaces --omit-unused-records`는 검증된 복구 SHA가 있는 source만 두 원래 primitive/node로 포장하고 사용되지 않는 재질 메타데이터를 제외합니다. 원래 바이너리 전체·활성 PNG·POSITION/NORMAL/UV/JOINTS/WEIGHTS·실제 23본·inverse-bind는 그대로입니다. 14종 모두 추정 자산 수는 5개입니다.
+
+14종의 실제 Blender Armature를 동일한 6포즈/앞·옆으로 계산했습니다. 실제 Bone matrix와 원래 가중치의 독립 LBS 오차는 최대 0.00000191 stud입니다. 원래 source limb rest matrix의 작은 비직교 성분은 Blender pose channel에서 분해되므로, 목표 포즈 투영 오차도 별도로 기록합니다(최대 0.00002020 stud, 제한 0.0001). 이 차이를 원래 뼈나 가중치를 편집해서 숨기지 않습니다. 직접 전체 12뷰를 본 표본은 각 진영·직업·성별을 포함한 8종이고, 나머지 6종은 정지 앞/옆 직접 검토와 6포즈 수치 검사를 수행했습니다.
+
+### 원래 가중치의 명시적 부분 교정 후보
+
+`correct_skin_weights.py`는 검토할 영역과 **모든 변경 정점의 원래/새 JOINTS·WEIGHTS**를 먼저 JSON으로 만듭니다. 원본 앞/옆 진단 overlay를 직접 본 뒤 `region_review_complete`와 해당 이미지 SHA를 기록하고 `apply --reviewed`로 새 후보를 만듭니다. 해당 영역 밖 정점·모든 POSITION/NORMAL/UV/indices/재질/PNG·원래 rest 계층/23본/IBM은 유지합니다. 원래 바이너리 prefix도 그대로 두고, 바뀐 활성 JOINTS/WEIGHTS accessor 배열만 뒤에 추가합니다. 원래 skin source는 쓰지 않습니다.
+
+```powershell
+py -B tools/costume_r15/correct_skin_weights.py plan <원본-preserved.skin.json> NeutralArcherF build/costume_r15/새후보/weight_plan.json
+& 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/render_skin_comparison.py -- <원본-preserved.skin.json> build/costume_r15/새후보/region_overlay --region-overlay build/costume_r15/새후보/weight_plan.json
+py -B tools/costume_r15/correct_skin_weights.py apply build/costume_r15/새후보/weight_plan.json build/costume_r15/새후보/Costume_NeutralArcherF_skin_corrected.glb --reviewed
+```
+
+확정 로컬 교정 후보는 `prepared/skin_corrected/Costume_HornsArcherM_weights_v4/`의 망토 1,118정점과 `Costume_NeutralArcherF_weights_v7/`의 땋은 머리/청록 묶음 794정점입니다. 원래 그림의 실제 앞/옆 면을 대조하고, 땋은 머리는 측정한 대각선 경계로 소매를 제외했습니다. 원래 14종 기준 파일은 그대로 보관하며, 별도 `corrected_preserved_skin_pending` 패키지의 `original_benchmark` SHA와 `weight_correction_plan` SHA로 변경을 구분합니다. 6포즈 앞/옆 직접 비교에서 해당 부위의 팔 끌림·끝 꺾임은 개선됐습니다. 전체 캐릭터 엔진 품질 통과는 별도입니다.
+
+HornsMageF는 v6 로컬 후보에서 긴 뒤머리 끌림이 줄었지만 옆머리와 코트 일부가 아직 접혀, `build/` 후보에서만 보류합니다. 이 후보는 최종 prepared 패키지에 넣지 않았습니다. 모든 교정 후보의 `rig_ready_for_game=false`를 유지하고 실제 bone runtime/무기/표정/ON·OFF 검사 후에만 별도 승격합니다.
+
+교정 도구 검사는 미검토/변경된 source SHA·영역/대상 bone 변경·정점 중복·계수 불일치·실제 네 가중치 슬롯의 잘못된 합성 등을 거절하며, 새 GLB의 원래 바이너리 prefix와 정적 accessor도 확인합니다.

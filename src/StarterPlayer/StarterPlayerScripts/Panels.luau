@@ -79,7 +79,7 @@ local T = {
 	MenuCostumeWaitingOn = "직업 코스튬: 처리 대기 (켜짐)",
 	MenuCostumeWaitingOff = "직업 코스튬: 처리 대기 (꺼짐)",
 	MenuCostumeError = "직업 코스튬: 적용 실패 (켜짐)",
-	CostumePreparing = { MissingTemplate = true, InvalidRig = true, WaitingAnimation = true, WaitingAppearance = true },
+	CostumePreparing = { MissingTemplate = true, InvalidRig = true, PendingRig = true, WaitingAnimation = true, WaitingAppearance = true },
 	MenuAltarHint = "진영 변경은 교차로 마을의 운명의 제단에서!",
 	-- travel
 	TravelGo = "이동",

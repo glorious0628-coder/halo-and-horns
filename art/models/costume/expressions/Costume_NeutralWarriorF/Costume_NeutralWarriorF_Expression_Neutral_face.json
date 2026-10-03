@@ -1,0 +1,21 @@
+{
+  "avatar": "Costume_NeutralWarriorF",
+  "state": "Neutral",
+  "png": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_Neutral_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "1272adeb79c8c4b120b19285b9c46ae700614fe044f83d56f3d32805d2f6de56",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-7ef219a1-fedc-4f7e-a555-5b406fa7c5e8.png",
+  "prompt": "art/models/costume/expressions/Costume_NeutralWarriorF/prompts/Neutral.txt",
+  "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_NeutralWarriorF/previews_v4/Neutral_front.png",
+    "art/models/costume/expressions/Costume_NeutralWarriorF/previews_v4/Neutral_quarter.png"
+  ]
+}

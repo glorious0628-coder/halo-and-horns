@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_Expression_SoftSmile_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\paid_skin_v1_previews\\SoftSmile_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    3.79691743850708,
+    9.431151390075684,
+    2.831547737121582
+  ],
+  "camera_rotation": [
+    1.633881688117981,
+    0.017287414520978928,
+    2.7630739212036133
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

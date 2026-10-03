@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\paid_skin_v1_previews\\Serious_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.8995990753173828,
+    9.861055374145508,
+    1.6842808723449707
+  ],
+  "camera_rotation": [
+    1.6925458908081055,
+    -0.023317139595746994,
+    -2.953981876373291
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

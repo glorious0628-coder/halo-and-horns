@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "34b1ec6f8b9aec81d0a26c5cb9eb5a4adbfd0c1551e559f9924715ec7822d5a0",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\paid_skin_v1_previews\\Neutral_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    4.959273338317871,
+    8.453658103942871,
+    2.4056577682495117
+  ],
+  "camera_rotation": [
+    1.570796251296997,
+    -9.251821353473133e-08,
+    2.6179933547973633
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

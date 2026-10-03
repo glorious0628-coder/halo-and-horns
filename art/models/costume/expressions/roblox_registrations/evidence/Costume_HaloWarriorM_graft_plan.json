@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloWarriorM",
+  "head_sha256": "d8000e76a841f1d4675a8dbfc202168ec938551fdcf6e4e6bbeccff41c974611",
+  "original_source_sha256": "9e15d92825b0eb919055ccb24a5eaf38ed3e29e6f7bf35f1684bbb459c08cca0",
+  "imports": {
+    "FaceExpression": {
+      "imported_name": "R15_Head_Expressions",
+      "mesh_id": "rbxassetid://129632625883192",
+      "pivot_offset": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "FaceExpression",
+      "path": "Workspace.Scene.FaceExpression.R15_Head_Expressions",
+      "mesh_size": [
+        1.2584559917449951,
+        1.0970323085784912,
+        0.9943594932556152
+      ],
+      "cframe": [
+        -48.9327392578125,
+        -20.44829559326172,
+        116.4415054321289,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "texture_id": "rbxassetid://121674541725480",
+      "size": [
+        1.2584559917449951,
+        1.0970323085784912,
+        0.9943594932556152
+      ]
+    },
+    "HeadBase": {
+      "imported_name": "R15_Head_Expressions.001",
+      "mesh_id": "rbxassetid://89786211556898",
+      "pivot_offset": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "HeadBase",
+      "path": "Workspace.Scene.HeadBase.R15_Head_Expressions.001",
+      "mesh_size": [
+        2.047797918319702,
+        2.2119264602661133,
+        1.9929457902908325
+      ],
+      "cframe": [
+        -49.00706481933594,
+        -19.96554183959961,
+        115.9591064453125,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "texture_id": "rbxassetid://96103784237092",
+      "size": [
+        2.047797918319702,
+        2.2119264602661133,
+        1.9929457902908325
+      ]
+    }
+  },
+  "importer_fit": {
+    "bake": [
+      [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    ],
+    "scale": 1.0000000078763864,
+    "offset": [
+      -49.084041253631284,
+      -22.548200063221806,
+      116.04454911191272
+    ],
+    "maximum_center_error": 7.413699165681464e-07,
+    "maximum_relative_size_error": 6.177025868581154e-08
+  },
+  "old_head": {
+    "mesh_id": "rbxassetid://74810214845276",
+    "assembled_size": [
+      2.047797918319702,
+      2.2119269371032715,
+      1.992945671081543
+    ]
+  },
+  "old_neck": {
+    "name": "Neck",
+    "part0": "UpperTorso",
+    "part1": "Head",
+    "world": [
+      -0.01743357814848423,
+      1.5173078775405884,
+      -1.0244548320770264e-08
+    ],
+    "C0": [
+      -0.10669944249093533,
+      0.746620237827301,
+      0.09687347244471312,
+      -1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1
+    ],
+    "C1": [
+      -0.05954278074204922,
+      -1.0653496980667114,
+      0.08544356655329466,
+      -1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      -1
+    ]
+  },
+  "face_size": [
+    1.2584559321403503,
+    1.0970323234796524,
+    0.9943594560027122
+  ],
+  "face_relative_cframe": [
+    0.07432571053504944,
+    -0.4827526733279228,
+    0.4824006147682667,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+  ],
+  "original_mesh_count": 18,
+  "textures": {
+    "Neutral": "rbxassetid://121674541725480",
+    "Serious": "rbxassetid://104677901335263",
+    "SoftSmile": "rbxassetid://133057889021878"
+  },
+  "verified_head_center_error": 1.7881393432617188e-07,
+  "verified_head_size_error": 3.5762786865234375e-07,
+  "offline_exact_uv_proof": true,
+  "ready": false,
+  "runtime_validated": false,
+  "destination": "ServerStorage.CostumePendingExpressions.Costume_HaloWarriorM",
+  "original_ready_mutated": false,
+  "source_config_mutated": false,
+  "recommended_expression_asset": {
+    "Neutral": "rbxassetid://121674541725480",
+    "Serious": "rbxassetid://104677901335263",
+    "SoftSmile": "rbxassetid://133057889021878",
+    "MeshName": "FaceExpression"
+  }
+}

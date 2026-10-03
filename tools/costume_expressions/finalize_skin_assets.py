@@ -20,6 +20,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/costume_r15'))
 from glb_io import accessor_values, image_bytes, read_glb
+from skin_frames import resolve, transform_cap, original_projection
 
 
 def sha(path):
@@ -39,14 +40,18 @@ def png_size(path):
 
 def inspect(glb, prepared):
     report = json.loads(glb.with_suffix('.json').read_text(encoding='utf-8'))
-    if report['sha256'] != sha(glb) or report['rig_origin'] != 'inferred_manual_candidate':
-        raise ValueError('Current explicitly inferred candidate is required')
+    if report['sha256'] != sha(glb) or report['rig_origin'] not in ['inferred_manual_candidate', 'preserved_original_paid_skin_candidate']:
+        raise ValueError('Current explicitly identified skin candidate is required')
     source = Path(report['source_skin'])
     if sha(source) != report['source_skin_sha256'] or sha(report['source_fixed']) != report['source_fixed_sha256']:
         raise ValueError('Original skin or fixed model changed')
     prep = json.loads(prepared.read_text(encoding='utf-8'))
-    if prep['source_sha256'] != report['source_fixed_sha256'] or not prep['reviewed_profile']['facial_boundary_polygon']:
-        raise ValueError('Reviewed original inner-face boundary required')
+    if prep['source_sha256'] != report['source_fixed_sha256']:
+        raise ValueError('Reviewed original fixed source differs')
+    sidecar = json.loads(source.with_suffix('.skin.json').read_text(encoding='utf-8'))
+    frame, rig_origin, original_bones_claimed = resolve(prep, source, sidecar)
+    if rig_origin != report['rig_origin']:
+        raise ValueError('Source rig origin differs')
     original, original_bin, _ = read_glb(source)
     doc, binary, _ = read_glb(glb)
     if len(doc['meshes']) != 3 or len(doc['images']) != 3 or len(doc['skins']) != 1:
@@ -76,21 +81,28 @@ def inspect(glb, prepared):
         return np.asarray(accessor_values(d, b, pr['attributes'][key]))
     old_values = {key: arr(original, original_bin, old, key) for key in old['attributes']}
     count = len(old_values['POSITION'])
+    original_only = report.get('original_triangles_only') is True
+    expected_cap_vertices = 0 if original_only else 129
+    expected_cap_faces = 0 if original_only else 224
     for key in ['POSITION', 'NORMAL', 'JOINTS_0', 'WEIGHTS_0']:
         values = arr(doc, binary, face, key)
-        if len(values) != count + 129 or not np.array_equal(values[:count], old_values[key]):
+        if len(values) != count + expected_cap_vertices or not np.array_equal(values[:count], old_values[key]):
             raise ValueError('Original facial attribute changed: ' + key)
     triangles = lambda d, b, pr: np.asarray(accessor_values(d, b, pr['indices']), int).reshape(-1, 3)
     original_tri = triangles(original, original_bin, old)
     head_tri, face_tri = triangles(doc, binary, head), triangles(doc, binary, face)
     selected = face_tri[np.all(face_tri < count, axis=1)]
     cap = face_tri[np.all(face_tri >= count, axis=1)]
-    if len(selected) + len(cap) != len(face_tri) or len(cap) != 224:
+    if len(selected) + len(cap) != len(face_tri) or len(cap) != expected_cap_faces:
         raise ValueError('Original/cap triangles are mixed or cap count differs')
-    if not np.array_equal(cap-count, np.asarray(prep['mouth_cap_source_indices'])):
+    expected_cap = np.empty((0,3),dtype=int) if original_only else np.asarray(prep['mouth_cap_source_indices'])
+    if not np.array_equal(cap-count, expected_cap):
         raise ValueError('Reviewed mouth cover triangle indices changed')
-    for key, source_key in [('POSITION', 'mouth_cap_source_gltf_positions'), ('NORMAL', 'mouth_cap_source_normals')]:
-        if not np.array_equal(arr(doc, binary, face, key)[count:], np.asarray(prep[source_key], dtype=np.float32)):
+    cap_positions, cap_normals = transform_cap(prep, frame)
+    if original_only:
+        cap_positions, cap_normals = np.empty((0,3)),np.empty((0,3))
+    for key, source_values in [('POSITION', cap_positions), ('NORMAL', cap_normals)]:
+        if not np.array_equal(arr(doc, binary, face, key)[count:], np.asarray(source_values, dtype=np.float32)):
             raise ValueError('Reviewed cover attribute changed: ' + key)
     if Counter(map(tuple, original_tri)) != Counter(map(tuple, np.vstack((head_tri, selected)))):
         raise ValueError('Original oriented face partition is not exactly preserved')
@@ -99,9 +111,8 @@ def inspect(glb, prepared):
     matched = [tuple(sorted((round(float(uv[i, 0]), 6), round(1-float(uv[i, 1]), 6)) for i in tri)) for tri in selected]
     if set(matched) != requested or len(matched) != len(requested):
         raise ValueError('New face is not exactly the reviewed original UV region')
-    center, scale = prep['camera_center'], prep['camera_scale']
     p = old_values['POSITION']
-    expected_uv = np.column_stack(((p[:, 0]-center[0])/scale+.5, 1-((p[:, 1]-center[1])/scale+.5)))
+    expected_uv = original_projection(p, prep, frame)
     uv_error = float(np.max(np.abs(arr(doc, binary, face, 'TEXCOORD_0')[:count] - expected_uv)))
     if uv_error > 1e-6:
         raise ValueError('Normalized face UV projection changed')
@@ -124,8 +135,10 @@ def inspect(glb, prepared):
               'original_oriented_triangles_partition_exact': True, 'reviewed_face_uv_signatures_exact': True,
               'normalized_face_uv_max_error': uv_error, 'original_head_triangles': len(original_tri),
               'selected_original_face_triangles': len(selected), 'new_mouth_cap_triangles': len(cap),
-              'new_mouth_cap_vertices': 129, 'meshes': 3, 'embedded_images': 3,
-              'maximum_import_assets': 9, 'rig_origin': 'inferred_manual_candidate',
+              'new_mouth_cap_vertices': expected_cap_vertices, 'original_triangles_only': original_only,
+              'meshes': 3, 'embedded_images': 3,
+              'maximum_import_assets': 9, 'rig_origin': rig_origin,
+              'original_bones_claimed': original_bones_claimed, 'source_skin_bones': len(joint_nodes),
               'ready': False, 'runtime_validated': False, 'studio_called': False, 'paid_api_calls': 0}
     return result, report, doc, binary
 
@@ -148,10 +161,16 @@ def main():
     if folder.joinpath('skin_expressions_manifest.json').exists():
         raise ValueError('Refuse silent final manifest replacement')
     records = []
+    prep = json.loads(args.prepare_report.read_text(encoding='utf-8'))
+    paid = result['original_bones_claimed']
+    baseline_records = {}
+    if paid:
+        baseline = json.loads(Path(prep['reviewed_profile']['baseline_manifest']).read_text(encoding='utf-8'))
+        baseline_records = {r['state']: r for r in baseline['records']}
     for state in ['Neutral', 'SoftSmile', 'Serious']:
-        png = folder / (avatar + '_Expression_' + state + '_face.png')
+        png = ROOT / baseline_records[state]['png'] if paid else folder / (avatar + '_Expression_' + state + '_face.png')
         meta_path = png.with_suffix('.json')
-        meta = json.loads(meta_path.read_text(encoding='utf-8'))
+        meta = copy.deepcopy(baseline_records[state]) if paid else json.loads(meta_path.read_text(encoding='utf-8'))
         if sha(png) != meta['sha256'] or png_size(png) != meta['size'] or not meta['builtin_gpt_generated']:
             raise ValueError('GPT expression provenance differs')
         if state == 'Neutral' and image_bytes(doc, binary, doc['images'][2]) != png.read_bytes():
@@ -168,13 +187,18 @@ def main():
         meta.update(quality_status='offline full-skin front/quarter reviewed; actual engine pending',
                     closed_mouth_offline_render_verified=True, offline_previews=previews,
                     roblox_uploaded=False, runtime_validated=False)
-        meta_path.write_text(json.dumps(meta, indent=2) + '\n', encoding='utf-8')
+        if not paid:
+            meta_path.write_text(json.dumps(meta, indent=2) + '\n', encoding='utf-8')
         records.append(meta)
-    shutil.copy2(args.prepare_report, folder / 'prepare_report.json')
+    prepare_destination = folder / ('skin_prepare_report.json' if paid else 'prepare_report.json')
+    shutil.copy2(args.prepare_report, prepare_destination)
     manifest = {'schema': 1, 'avatar': avatar, 'pipeline': 'preserved_continuous_skin_expression',
                 'skin_asset': relative(glb), 'skin_sha256': sha(glb), 'source_skin_sha256': report['source_skin_sha256'],
-                'source_fixed_sha256': report['source_fixed_sha256'], 'rig_origin': 'inferred_manual_candidate',
-                'original_bones_claimed': False, 'ready': False, 'runtime_validated': False, 'roblox_uploaded': False,
+                'source_fixed_sha256': report['source_fixed_sha256'], 'rig_origin': result['rig_origin'],
+                'original_bones_claimed': paid, 'source_skin_bones': result['source_skin_bones'],
+                'prepare_report': relative(prepare_destination),
+                'rigid_comparison_reference_preserved': paid,
+                'ready': False, 'runtime_validated': False, 'roblox_uploaded': False,
                 'approved_states': ['Neutral', 'SoftSmile', 'Serious'], 'approval_preview': 'art/out/Avatar_Expressions_Preview_A.png',
                 'records': records, 'meshes': ['CostumeSkinBody', 'HeadBase', 'FaceExpression'],
                 'glb_expected_import_assets': 7, 'full_set_maximum_import_assets': 9,

@@ -5,16 +5,17 @@
   "skin_attachment": "Preserve shared skin joints/inverse binds and the actual shared Bone host. FaceExpression is root-welded like other skin hosts, never directly welded to the animated Head proxy.",
   "rigid_branch": "Keep the existing validated Head direct-weld path unchanged.",
   "production_model_attributes": {
-    "HHC_SkinRuntimeSchema": 1,
+    "HHC_SkinRuntimeSchema": 2,
     "HHC_SkinRuntimeValidated": true,
     "HHC_ExpressionSkinRuntimeSchema": 1,
     "HHC_ExpressionSkinValidated": true,
     "HHC_ExpressionRuntimeValidated": true,
-    "HHC_OriginalBonesClaimed": false,
-    "HHC_RigOrigin": "inferred_manual_candidate",
+    "HHC_OriginalBonesClaimed": "false for manual inferred 15-bone skins; true only for preserved actual paid 23-bone source hierarchy",
+    "HHC_RigOrigin": "inferred_manual_candidate or verified_preserved_original_paid_skin",
     "HHC_SkinSourceSHA256": "actual imported three-mesh expression GLB SHA256",
     "HHC_OriginalSkinSHA256": "original two-mesh inferred skin SHA256",
-    "HHC_ExpressionInspectionSHA256": "verified actual importer JSON SHA256"
+    "HHC_ExpressionInspectionSHA256": "verified actual importer JSON SHA256",
+    "HHC_SkinRootBindSize": "actual inspected rest HumanoidRootPart Vector3 size for uniform replicated growth ratio"
   },
   "face_attributes": {
     "HHC_ExpressionMeshValidated": true,
@@ -42,8 +43,8 @@
     "Exactly one named MeshPart exists, with no SurfaceAppearance; it is unanchored, massless and noncolliding.",
     "Face and ObjectValue references remain in this character's exact CostumeSkin subtree; root weld connects only HumanoidRootPart and FaceExpression.",
     "BoneHost equals the first BasePart ancestor of the referenced Head Bone; never guess its name or require Bone ownership by the face MeshPart.",
-    "Head Bone has exact principal/Head/source-SHA markers and its original parent name and CFrame equal the inspected bind metadata. Only Bone.Transform changes through the verified active retarget driver.",
-    "Face and actual Bone host root-relative CFrames still equal their HHC_SkinHostBindRoot metadata.",
+    "Head Bone has exact principal/Head/source-SHA markers, original parent ancestry and growth-scaled CFrame bind metadata. Rotation stays exact; bind Position scales by q. Only Bone.Transform changes through the verified active retarget driver.",
+    "Face and actual Bone host root-relative rotation equals inspected bind rotation; bind Position scales by the replicated uniform q from HumanoidRootPart.Size and HHC_SkinRootBindSize.",
     "Complete inspected skeleton and retarget driver stay valid; the existence of a static Bone is not movement validation.",
     "No additional Head-proxy weld/Motor6D/constraint connects FaceExpression; reject double transformation.",
     "OFF, character replacement and removal dispose all expression connections and restore the owner's avatar normally."
@@ -59,5 +60,17 @@
     "runtime_validated": false,
     "production_markers_set": false,
     "uploads_performed_by_expression_agent": 0
-  }
+  },
+  "growth_bind_contract": {
+    "schema": 2,
+    "replicated_scale_source": "q from current HumanoidRootPart.Size / HHC_SkinRootBindSize; all three ratios must be positive, finite and equal within validated tolerance",
+    "rotation": "rest host/bone CFrame rotation unchanged",
+    "translation": "rest host-relative and Bone.CFrame.Position multiplied by q",
+    "not_authoritative": "Model.Scale does not replicate; never use raw unscaled bind CFrame equality after growth",
+    "missing_or_nonuniform_scale": "fail closed"
+  },
+  "supported_original_joint_counts": [
+    15,
+    23
+  ]
 }

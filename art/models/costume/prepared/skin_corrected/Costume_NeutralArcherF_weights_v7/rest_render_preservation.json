@@ -1,0 +1,10 @@
+{
+  "front": {
+    "mean_absolute_8bit": 5.4253472222222226e-05,
+    "maximum_8bit": 13
+  },
+  "side": {
+    "mean_absolute_8bit": 6.21654369212963e-06,
+    "maximum_8bit": 1
+  }
+}

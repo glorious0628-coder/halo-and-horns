@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HornsMageM",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_PreservedSkinExpressions_v1.glb",
+  "skin_sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+  "source_skin_sha256": "0adfc9fa8827cd02229db055afd4cd68afde342cac1af16cb6437ec2545ad477",
+  "source_fixed_sha256": "5f89379362c2362d034075fb17c13ff760b0f063a08c4ace48fc0de6e87e7804",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "prepare_report": "art/models/costume/expressions/Costume_HornsMageM/skin_prepare_report.json",
+  "rigid_comparison_reference_preserved": true,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_HornsMageM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "64169b99a50ff904b8c2d7e6be3289960814c3a24be82d9f3477494aa5af5b11",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-272ce8dc-d199-4840-afb0-02c2426af80d.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsMageM/prompts/Neutral.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\ud3c9\uc18c",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/Neutral_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    },
+    {
+      "avatar": "Costume_HornsMageM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e3a365569e36ce86108d3e943742c0bcb6dad38df20cbaf41e895607591d5542",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-b2ef3502-cad7-421e-9210-3c300c4d3251.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsMageM/prompts/SoftSmile.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/SoftSmile_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    },
+    {
+      "avatar": "Costume_HornsMageM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "350afd04a4b6c7c468d17f2f6ba4de21f36a25ffb9c8e1f81e582196d54e7c00",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-193f49c8-ada0-4929-867d-dbe04577db07.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsMageM/prompts/Serious.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/Serious_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "offline_visual_review": "All six actual full-skin baseline CG previews personally reviewed; closed mouth and original eyes/hair/body preserved.",
+  "offline_visual_notes": "A small amount of source/GPT skin color faceting can appear in very close views; actual normal-distance engine QA remains.",
+  "runtime_attachment": "Preserve the actual shared Bone host and root skin weld; never weld FaceExpression directly to the moving Head proxy.",
+  "runtime_registration": "Production marker/actual imported Bone host and mesh asset ID proof must be added by the root after engine QA.",
+  "limitations": [
+    "Original paid skeleton is preserved; new expression copy is not engine validated.",
+    "New mouth cover and 3-state face need actual engine pose/texture switching QA.",
+    "Original mouth recess is retained under the new skinned cover; original vertices are not flattened."
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "avatar": "Costume_HaloArcherF",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed in exact 768 frame; preliminary until three state 3D QA passes",
+  "source_sha256": "07451eec71f0b9785f867a53aac20e66d4af65e8259dce574a7c684826dad976",
+  "mouth_center_screen": [
+    390,
+    630
+  ],
+  "screen_scale": [
+    1.15,
+    0.95
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      267,
+      505,
+      337,
+      541
+    ],
+    [
+      421,
+      451,
+      474,
+      490
+    ]
+  ],
+  "eye_boxes": [
+    [
+      227,
+      548,
+      342,
+      602
+    ],
+    [
+      427,
+      488,
+      540,
+      613
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.085
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "runtime_validated": false,
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ],
+  "rig_origin": "inferred_manual_candidate",
+  "facial_boundary_polygon": [
+    [
+      247,
+      532
+    ],
+    [
+      289,
+      511
+    ],
+    [
+      353,
+      401
+    ],
+    [
+      434,
+      409
+    ],
+    [
+      518,
+      488
+    ],
+    [
+      580,
+      567
+    ],
+    [
+      554,
+      611
+    ],
+    [
+      511,
+      647
+    ],
+    [
+      458,
+      663
+    ],
+    [
+      390,
+      679
+    ],
+    [
+      313,
+      665
+    ],
+    [
+      254,
+      639
+    ],
+    [
+      217,
+      601
+    ],
+    [
+      204,
+      561
+    ]
+  ],
+  "facial_boundary_review": "Original source front 768 CG directly reviewed: inner facial skin/features only; ears, hair, hood, collar and body keep original UV and image pixels.",
+  "brow_inspect_max_value": 0.95,
+  "verified_eyebrow_face_indices": [
+    3082,
+    2907,
+    3084
+  ],
+  "eyebrow_uv_expansion_review": {
+    "verified_original_fixed_faces": [
+      3082,
+      2907,
+      3084
+    ],
+    "classification": "original forehead eyebrow and directly adjoining skin under the forelock confirmed in left-quarter exact-face CG; hair triangles remain excluded",
+    "read_only_cg_diagnostic": "build/expr_qa/Costume_HaloArcherF/brow_v2_exact_cg/left_quarter.png",
+    "directly_viewed": true,
+    "actual_serious_render_trace": "build/expr_qa/Costume_HaloArcherF/serious_v2_suspected_brows.json",
+    "trace_sha256": "070ff35d5bfbd58265aad3ee36c8db08cea09d0150b89e42864f75cc3aa032d0"
+  }
+}

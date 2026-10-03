@@ -1,0 +1,141 @@
+{
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_PreservedSkinExpressions_v1.glb",
+  "sha256": "a554b1d807ae6d85ef5142e6845239ed1ddbfa47b4cd3409735d7ed6c3e01a12",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HornsWarriorF_preserved_v1\\Costume_HornsWarriorF_skin.glb",
+  "source_skin_sha256": "5c0ce4d7a2c8b8a2a241a157b715ab812ff2f1860844ee2da6c7d8ed1fb312b7",
+  "source_fixed": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsWarriorF.glb",
+  "source_fixed_sha256": "f54fb171f56bbaeca3772ca6aee7e3f30fbaf331576df19e0a4cb15ba3eb1b0e",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "skin_joints_inverse_binds_preserved": true,
+  "original_position_normal_joint_weight_values_preserved": true,
+  "original_binary_prefix_preserved": true,
+  "original_non_facial_texture_bytes_preserved": true,
+  "original_body_primitive_unchanged": true,
+  "original_headbase_uv_unchanged": true,
+  "facial_signature_uv_convention": "Blender V = 1 - original glTF V; original UV bytes unchanged",
+  "original_head_triangles": 5381,
+  "original_face_triangles": 382,
+  "headbase_triangles": 4999,
+  "new_mouth_cap_triangles": 224,
+  "new_mouth_cap_vertices": 129,
+  "mouth_cap_weight_method": "closest original facial triangle barycentric interpolation, no original vertex edits",
+  "mouth_cap_source_surface_distance_max": 0.0062237648670990225,
+  "source_to_game_affine": [
+    -5.358699506597642,
+    0.06861873921452959,
+    1.1553508546707243,
+    0.0,
+    4.102605083063715e-05,
+    5.472630350584005,
+    -0.32484084557401294,
+    0.0,
+    -1.1573867664167539,
+    -0.3175107010243671,
+    -5.3492847520419025,
+    0.0,
+    0.06654845758005588,
+    -1.9742520451669139,
+    0.3079402549773583,
+    1.0
+  ],
+  "expected_glb_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "camera_scale": 2.5886194555126667,
+  "camera_center": [
+    0.06723428028974565,
+    2.2522743110044576
+  ],
+  "camera_target": [
+    0.06091777324501835,
+    -0.025140428344138172,
+    2.347572740933258
+  ],
+  "source_front_camera_scale": 2.6479323544432254,
+  "camera_front_direction": [
+    -0.21111511055416216,
+    0.9757438881506891,
+    -0.05791610166680212
+  ],
+  "camera_front_up": [
+    7.718202282693538e-06,
+    0.05925305634687793,
+    0.9982429940921114
+  ],
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "limitations": [
+    "Original paid skeleton is preserved; new expression copy is not engine validated.",
+    "New mouth cover and 3-state face need actual engine pose/texture switching QA.",
+    "Original mouth recess is retained under the new skinned cover; original vertices are not flattened."
+  ],
+  "preserved_skin_coordinate_proof": {
+    "skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HornsWarriorF_preserved_v1\\Costume_HornsWarriorF_skin.glb",
+    "skin_sha256": "5c0ce4d7a2c8b8a2a241a157b715ab812ff2f1860844ee2da6c7d8ed1fb312b7",
+    "source_sidecar_sha256": "6651fd3ec59c8ec9d4307a4a02926e39852cd6a7fbc97307974ce5e69c589901",
+    "fixed_to_skin_affine": [
+      [
+        1.0229129271004092,
+        -2.3381726074136717e-07,
+        3.3096061110483233e-07,
+        0.00012498946829346644
+      ],
+      [
+        1.028844616426759e-07,
+        1.0229129464372118,
+        -1.1331324203817238e-07,
+        2.4858506097631384e-07
+      ],
+      [
+        -4.280348375839657e-07,
+        -5.503608700573307e-08,
+        1.0229129707980251,
+        1.5677715496725225e-05
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "matched_original_head_triangles": 5381,
+    "matched_original_corners": 16143,
+    "maximum_coordinate_error": 1.507709576522086e-07,
+    "approved_unchanged_headbase_coordinate_error": 2.897569900683126e-07,
+    "approved_unchanged_headbase_corners": 10548,
+    "old_mouth_geometry_modified_headbase_corners_excluded": 0,
+    "approved_baseline_head": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_HeadExpressions_R15.glb",
+    "approved_baseline_head_sha256": "d27480f646c8a744ce22efa943ffbfef49276413b7ca06a9e9fb864c24839eb1",
+    "approved_face_uv_maximum_error": 7.424506787145901e-08,
+    "approved_face_original_triangles": 382,
+    "complete_coincident_projected_uv_groups": [],
+    "source_front_camera_scale": 2.6479323544432254,
+    "camera_target": [
+      0.06091777324501835,
+      -0.025140428344138172,
+      2.347572740933258
+    ],
+    "camera_front_direction": [
+      -0.21111511055416216,
+      0.9757438881506891,
+      -0.05791610166680212
+    ],
+    "camera_front_up": [
+      7.718202282693538e-06,
+      0.05925305634687793,
+      0.9982429940921114
+    ],
+    "original_bones_claimed": true,
+    "source_skin_bones": 23,
+    "runtime_validated": false
+  },
+  "approved_rigid_face_scope": {
+    "reviewed": true,
+    "approved_rigid_face_scope": true,
+    "baseline_manifest": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\expressions_manifest.json",
+    "baseline_manifest_sha256": "b3f88c2153fb6073594e6bf66ba0d32efb86cfd777576d2ca7b84e3e47844607"
+  }
+}

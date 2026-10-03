@@ -1,0 +1,1348 @@
+{
+  "path": "ServerStorage.CostumeSkinImports.Costume_NeutralWarriorF",
+  "source_sha256": "319c07b1b688385bb4060834db8f18fb006a59d226f12370a17d643229c61939",
+  "bones": [
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso",
+      "name": "LowerTorso",
+      "parent": "RootPart",
+      "cframe": [
+        0.00034279259853065014,
+        -1.1920928955078125e-07,
+        -0.5495027303695679,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -49.08369827270508,
+        4.635116100311279,
+        115.49504852294922,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso",
+      "name": "UpperTorso",
+      "parent": "LowerTorso",
+      "cframe": [
+        0.005389878060668707,
+        0.5115002393722534,
+        0.09149634838104248,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -49.089088439941406,
+        5.146616458892822,
+        115.40354919433594,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.Head",
+      "name": "Head",
+      "parent": "UpperTorso",
+      "cframe": [
+        -0.005389825440943241,
+        0.874500036239624,
+        -0.5273909568786621,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -49.08369827270508,
+        6.021116256713867,
+        115.93093872070312,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.LeftUpperArm",
+      "name": "LeftUpperArm",
+      "parent": "UpperTorso",
+      "cframe": [
+        0.7695291042327881,
+        0.46199989318847656,
+        -0.5273908376693726,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -49.85861587524414,
+        5.608615875244141,
+        115.93093872070312,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.LeftUpperArm.LeftLowerArm",
+      "name": "LeftLowerArm",
+      "parent": "LeftUpperArm",
+      "cframe": [
+        0.29061073064804077,
+        -0.3410000801086426,
+        0.2959739863872528,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -50.149227142333984,
+        5.267615795135498,
+        115.63496398925781,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.LeftUpperArm.LeftLowerArm.LeftHand",
+      "name": "LeftHand",
+      "parent": "LeftLowerArm",
+      "cframe": [
+        0.23137414455413818,
+        -0.3684999942779541,
+        0.1345510184764862,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -50.38059997558594,
+        4.899116516113281,
+        115.50041198730469,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.RightUpperArm",
+      "name": "RightUpperArm",
+      "parent": "UpperTorso",
+      "cframe": [
+        -0.7803089022636414,
+        0.46199989318847656,
+        -0.4789559245109558,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -48.308780670166016,
+        5.608615875244141,
+        115.88250732421875,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.RightUpperArm.RightLowerArm",
+      "name": "RightLowerArm",
+      "parent": "RightUpperArm",
+      "cframe": [
+        -0.30136942863464355,
+        -0.3410000801086426,
+        0.24753879010677338,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -48.00741195678711,
+        5.267615795135498,
+        115.63497161865234,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.RightUpperArm.RightLowerArm.RightHand",
+      "name": "RightHand",
+      "parent": "RightLowerArm",
+      "cframe": [
+        -0.2206583023071289,
+        -0.3684999942779541,
+        0.11302688717842102,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -47.7867546081543,
+        4.899116516113281,
+        115.52193450927734,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.LeftUpperLeg",
+      "name": "LeftUpperLeg",
+      "parent": "LowerTorso",
+      "cframe": [
+        0.44665324687957764,
+        -0.0549999475479126,
+        -0.005389869213104248,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -49.53034973144531,
+        4.580116271972656,
+        115.50043487548828,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.LeftUpperLeg.LeftLowerLeg",
+      "name": "LeftLowerLeg",
+      "parent": "LeftUpperLeg",
+      "cframe": [
+        0.059215009212493896,
+        -0.3794999122619629,
+        0.026923298835754395,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -49.589569091796875,
+        4.200616359710693,
+        115.4735107421875,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.LeftUpperLeg.LeftLowerLeg.LeftFoot",
+      "name": "LeftFoot",
+      "parent": "LeftLowerLeg",
+      "cframe": [
+        0.02690720558166504,
+        -0.847000002861023,
+        0.139931321144104,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -49.61647415161133,
+        3.3536157608032227,
+        115.33358001708984,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.RightUpperLeg",
+      "name": "RightUpperLeg",
+      "parent": "LowerTorso",
+      "cframe": [
+        -0.5220171213150024,
+        -0.0549999475479126,
+        0.05382508039474487,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -48.56167984008789,
+        4.580116271972656,
+        115.44122314453125,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.RightUpperLeg.RightLowerLeg",
+      "name": "RightLowerLeg",
+      "parent": "RightUpperLeg",
+      "cframe": [
+        0.02154940366744995,
+        -0.3794999122619629,
+        -0.03229182958602905,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -48.583229064941406,
+        4.200616359710693,
+        115.47351837158203,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    },
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.RightUpperLeg.RightLowerLeg.RightFoot",
+      "name": "RightFoot",
+      "parent": "RightLowerLeg",
+      "cframe": [
+        -0.03766584396362305,
+        -0.847000002861023,
+        0.10763949155807495,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "transform": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "world": [
+        -48.54556655883789,
+        3.3536157608032227,
+        115.3658676147461,
+        -1,
+        0,
+        -8.742277657347586e-08,
+        0,
+        1,
+        0,
+        8.742277657347586e-08,
+        0,
+        -1
+      ]
+    }
+  ],
+  "assetReferences": [
+    "rbxassetid://114535887832815",
+    "rbxassetid://137185234402427",
+    "rbxassetid://72734822328341",
+    "rbxassetid://97469231692132"
+  ],
+  "name": "Costume_NeutralWarriorF",
+  "nodes": [
+    {
+      "parent": "ContinuousSkinCandidate",
+      "class": "MeshPart",
+      "name": "CostumeSkinBody",
+      "path": "Workspace.ContinuousSkinCandidate.CostumeSkinBody"
+    },
+    {
+      "parent": "CostumeSkinBody",
+      "class": "Motor6D",
+      "name": "CostumeSkinBodyMotor6D",
+      "path": "Workspace.ContinuousSkinCandidate.CostumeSkinBody.CostumeSkinBodyMotor6D"
+    },
+    {
+      "parent": "ContinuousSkinCandidate",
+      "class": "MeshPart",
+      "name": "CostumeSkinHead",
+      "path": "Workspace.ContinuousSkinCandidate.CostumeSkinHead"
+    },
+    {
+      "parent": "CostumeSkinHead",
+      "class": "Motor6D",
+      "name": "CostumeSkinHeadMotor6D",
+      "path": "Workspace.ContinuousSkinCandidate.CostumeSkinHead.CostumeSkinHeadMotor6D"
+    },
+    {
+      "parent": "ContinuousSkinCandidate",
+      "class": "Folder",
+      "name": "InitialPoses",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "Costume_NeutralWarriorF_SkinCandidate_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.Costume_NeutralWarriorF_SkinCandidate_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "Costume_NeutralWarriorF_SkinCandidate_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.Costume_NeutralWarriorF_SkinCandidate_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "Costume_NeutralWarriorF_SkinCandidate_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.Costume_NeutralWarriorF_SkinCandidate_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinBody_Node_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinBody_Node_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinBody_Node_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinBody_Node_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinBody_Node_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinBody_Node_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinBody_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinBody_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinBody_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinBody_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinBody_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinBody_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinHead_Node_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinHead_Node_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinHead_Node_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinHead_Node_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinHead_Node_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinHead_Node_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinHead_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinHead_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinHead_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinHead_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "CostumeSkinHead_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.CostumeSkinHead_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LowerTorso_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LowerTorso_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LowerTorso_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LowerTorso_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LowerTorso_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LowerTorso_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "UpperTorso_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.UpperTorso_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "UpperTorso_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.UpperTorso_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "UpperTorso_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.UpperTorso_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "Head_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.Head_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "Head_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.Head_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "Head_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.Head_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftUpperArm_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftUpperArm_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftUpperArm_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftUpperArm_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftUpperArm_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftUpperArm_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftLowerArm_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftLowerArm_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftLowerArm_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftLowerArm_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftLowerArm_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftLowerArm_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftHand_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftHand_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftHand_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftHand_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftHand_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftHand_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightUpperArm_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightUpperArm_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightUpperArm_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightUpperArm_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightUpperArm_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightUpperArm_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightLowerArm_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightLowerArm_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightLowerArm_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightLowerArm_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightLowerArm_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightLowerArm_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightHand_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightHand_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightHand_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightHand_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightHand_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightHand_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftUpperLeg_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftUpperLeg_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftUpperLeg_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftUpperLeg_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftUpperLeg_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftUpperLeg_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftLowerLeg_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftLowerLeg_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftLowerLeg_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftLowerLeg_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftLowerLeg_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftLowerLeg_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftFoot_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftFoot_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftFoot_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftFoot_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "LeftFoot_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.LeftFoot_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightUpperLeg_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightUpperLeg_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightUpperLeg_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightUpperLeg_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightUpperLeg_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightUpperLeg_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightLowerLeg_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightLowerLeg_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightLowerLeg_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightLowerLeg_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightLowerLeg_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightLowerLeg_Initial"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightFoot_Composited",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightFoot_Composited"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightFoot_Original",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightFoot_Original"
+    },
+    {
+      "parent": "InitialPoses",
+      "class": "CFrameValue",
+      "name": "RightFoot_Initial",
+      "path": "Workspace.ContinuousSkinCandidate.InitialPoses.RightFoot_Initial"
+    },
+    {
+      "parent": "ContinuousSkinCandidate",
+      "class": "AnimationController",
+      "name": "AnimationController",
+      "path": "Workspace.ContinuousSkinCandidate.AnimationController"
+    },
+    {
+      "parent": "ContinuousSkinCandidate",
+      "class": "Part",
+      "name": "RootPart",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart"
+    },
+    {
+      "parent": "RootPart",
+      "class": "Bone",
+      "name": "LowerTorso",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso"
+    },
+    {
+      "parent": "LowerTorso",
+      "class": "Bone",
+      "name": "UpperTorso",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso"
+    },
+    {
+      "parent": "UpperTorso",
+      "class": "Bone",
+      "name": "Head",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.Head"
+    },
+    {
+      "parent": "UpperTorso",
+      "class": "Bone",
+      "name": "LeftUpperArm",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.LeftUpperArm"
+    },
+    {
+      "parent": "LeftUpperArm",
+      "class": "Bone",
+      "name": "LeftLowerArm",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.LeftUpperArm.LeftLowerArm"
+    },
+    {
+      "parent": "LeftLowerArm",
+      "class": "Bone",
+      "name": "LeftHand",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.LeftUpperArm.LeftLowerArm.LeftHand"
+    },
+    {
+      "parent": "UpperTorso",
+      "class": "Bone",
+      "name": "RightUpperArm",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.RightUpperArm"
+    },
+    {
+      "parent": "RightUpperArm",
+      "class": "Bone",
+      "name": "RightLowerArm",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.RightUpperArm.RightLowerArm"
+    },
+    {
+      "parent": "RightLowerArm",
+      "class": "Bone",
+      "name": "RightHand",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.UpperTorso.RightUpperArm.RightLowerArm.RightHand"
+    },
+    {
+      "parent": "LowerTorso",
+      "class": "Bone",
+      "name": "LeftUpperLeg",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.LeftUpperLeg"
+    },
+    {
+      "parent": "LeftUpperLeg",
+      "class": "Bone",
+      "name": "LeftLowerLeg",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.LeftUpperLeg.LeftLowerLeg"
+    },
+    {
+      "parent": "LeftLowerLeg",
+      "class": "Bone",
+      "name": "LeftFoot",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.LeftUpperLeg.LeftLowerLeg.LeftFoot"
+    },
+    {
+      "parent": "LowerTorso",
+      "class": "Bone",
+      "name": "RightUpperLeg",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.RightUpperLeg"
+    },
+    {
+      "parent": "RightUpperLeg",
+      "class": "Bone",
+      "name": "RightLowerLeg",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.RightUpperLeg.RightLowerLeg"
+    },
+    {
+      "parent": "RightLowerLeg",
+      "class": "Bone",
+      "name": "RightFoot",
+      "path": "Workspace.ContinuousSkinCandidate.RootPart.LowerTorso.RightUpperLeg.RightLowerLeg.RightFoot"
+    }
+  ],
+  "base_parts": [
+    {
+      "path": "Workspace.ContinuousSkinCandidate.RootPart",
+      "name": "RootPart",
+      "cframe": [
+        -49.084041595458984,
+        4.635116100311279,
+        116.04454803466797,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "pivot_offset": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "size": [
+        2,
+        2,
+        1
+      ]
+    }
+  ],
+  "schema": 1,
+  "meshes": [
+    {
+      "imported_name": "CostumeSkinBody",
+      "surface": [],
+      "mesh_id": "rbxassetid://97469231692132",
+      "bones": [],
+      "pivot_offset": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "CostumeSkinBody",
+      "texture_id": "rbxassetid://72734822328341",
+      "mesh_size": [
+        3.4547526836395264,
+        3.2074332237243652,
+        2.2064125537872314
+      ],
+      "cframe": [
+        -49.08369827270508,
+        4.561332702636719,
+        115.81257629394531,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "path": "Workspace.ContinuousSkinCandidate.CostumeSkinBody",
+      "size": [
+        3.4547526836395264,
+        3.2074332237243652,
+        2.2064125537872314
+      ]
+    },
+    {
+      "imported_name": "CostumeSkinHead",
+      "surface": [],
+      "mesh_id": "rbxassetid://114535887832815",
+      "bones": [],
+      "pivot_offset": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "CostumeSkinHead",
+      "texture_id": "rbxassetid://137185234402427",
+      "mesh_size": [
+        3.078073263168335,
+        2.540121555328369,
+        2.292567014694214
+      ],
+      "cframe": [
+        -49.07829666137695,
+        7.187555313110352,
+        115.76949310302734,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "path": "Workspace.ContinuousSkinCandidate.CostumeSkinHead",
+      "size": [
+        3.078073263168335,
+        2.540121555328369,
+        2.292567014694214
+      ]
+    }
+  ]
+}

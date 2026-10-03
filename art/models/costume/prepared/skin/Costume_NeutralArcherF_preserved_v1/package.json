@@ -8,7 +8,8 @@
   "sha256": {
     "skin_glb": "e9008293bc893ea12bbeb69475db05c900eb829e28a61b3147a39b1f43811f7c",
     "skin_manifest": "5358c581acae7bf18609a54f6586fc72367af9bd1430c62f56cd64890212beb3",
-    "proxy_plan": "c3e765a61dfd966235eb90bbec15c7e3356cf2ad75919197688d236139ceb8b0"
+    "proxy_plan": "c3e765a61dfd966235eb90bbec15c7e3356cf2ad75919197688d236139ceb8b0",
+    "proxy_runtime": "652c8817b0c973c471f5ec165c253085478fbd793724a71477b814129f6f4163"
   },
   "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
   "original_source": {
@@ -28,5 +29,6 @@
   "rig_ready_for_game": false,
   "studio_validation_claimed": false,
   "api_calls": 0,
-  "uploads": 0
+  "uploads": 0,
+  "proxy_runtime": "proxy_runtime.json"
 }

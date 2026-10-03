@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralArcherF",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_PreservedSkinExpressions_v1.glb",
+  "skin_sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+  "source_skin_sha256": "0fb94b04e5eb38102c547b58a2a8002917a874a2ca6d6c8bea7fb6221bfd5029",
+  "source_fixed_sha256": "380acd5fce8365f60cd5a1660140979932ca09ec714f61c030b0d7ee6f370579",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "prepare_report": "art/models/costume/expressions/Costume_NeutralArcherF/skin_prepare_report.json",
+  "rigid_comparison_reference_preserved": true,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_NeutralArcherF",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "31beeee0614eb2dd6d2fe6bb82d0ee2425678fbf3a784ef4d6481aa566b0f5be",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-00a1c467-e68b-4aa2-8d92-93eeca6771cb.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherF/prompts/Neutral.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\ud3c9\uc18c",
+      "closed_mouth_offline_render_verified": true,
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ],
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralArcherF",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e59c999e8a26afb348b71432f5187fb14acc0999d1883ddb235dbaa236c37be0",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1684dcf1-27de-4b5f-a538-186a5a22e2d6.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherF/prompts/SoftSmile.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+      "closed_mouth_offline_render_verified": true,
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ],
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralArcherF",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "60bff03ce198918d3f77d9782c9299f2db59c082dfa75fa41e33460897521534",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-84d7af80-4a15-4d6a-abe7-ef5d327a3a37.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherF/prompts/Serious.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+      "closed_mouth_offline_render_verified": true,
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ],
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/Serious_quarter.png"
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "offline_visual_review": "All six actual full-skin baseline CG previews personally reviewed; closed mouth and original eyes/hair/body preserved.",
+  "offline_visual_notes": "A small amount of source/GPT skin color faceting can appear in very close views; actual normal-distance engine QA remains.",
+  "runtime_attachment": "Preserve the actual shared Bone host and root skin weld; never weld FaceExpression directly to the moving Head proxy.",
+  "runtime_registration": "Production marker/actual imported Bone host and mesh asset ID proof must be added by the root after engine QA.",
+  "limitations": [
+    "Original paid skeleton is preserved; new expression copy is not engine validated.",
+    "New mouth cover and 3-state face need actual engine pose/texture switching QA.",
+    "Original mouth recess is retained under the new skinned cover; original vertices are not flattened."
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloWarriorM",
+  "pipeline": "rigid_head_expression",
+  "recorded_at_utc": "2026-10-03T17:34:10.675061+00:00",
+  "head_asset": "art/models/costume/expressions/Costume_HaloWarriorM/Costume_HaloWarriorM_HeadExpressions_R15.glb",
+  "head_sha256": "d8000e76a841f1d4675a8dbfc202168ec938551fdcf6e4e6bbeccff41c974611",
+  "face_mesh_id": "rbxassetid://129632625883192",
+  "head_mesh_id": "rbxassetid://89786211556898",
+  "textures": {
+    "Neutral": "rbxassetid://121674541725480",
+    "Serious": "rbxassetid://104677901335263",
+    "SoftSmile": "rbxassetid://133057889021878"
+  },
+  "texture_png_sha256": {
+    "Neutral": "cc040072b0bad26912a5bbcd1ee35c024ed037c888043a0c58ee83e80d7f1e53",
+    "SoftSmile": "af6e5403e8fca4e1399fd03a23742c9d90b2ce4da2a2d966d14b78d7d1ae6e8c",
+    "Serious": "e677f1dd733c1e1d99a3c502d571c070904dea061e4127202b35b5640378cdbf"
+  },
+  "ready_destination": "ServerStorage.CostumeRigs.Costume_HaloWarriorM",
+  "old_ready_archive": "ServerStorage.CostumeRigArchive.Costume_HaloWarriorM_beforeExpressions_20261004",
+  "roblox_uploaded": true,
+  "source_registered": true,
+  "runtime_validated": true,
+  "qa": {
+    "attack_hurt_expiry": true,
+    "talk_hurt_priority_expiry": true,
+    "off_personal_avatar_cleanup": true,
+    "on_respawn_neutral": true,
+    "actual_instance_preload": true
+  },
+  "evidence": {
+    "local_manifest": {
+      "path": "art/models/costume/expressions/Costume_HaloWarriorM/expressions_manifest.json",
+      "sha256": "85b2a8405f3a757fe72b3fde6eb9a85e5523e4719c2b222431fd647281e16fb8"
+    },
+    "graft_plan": {
+      "path": "art/models/costume/expressions/roblox_registrations/evidence/Costume_HaloWarriorM_graft_plan.json",
+      "sha256": "8150af1ca6d25646142d1de1b39d8318c99c3330c146c9dff0e4ff6f1754d7d6"
+    },
+    "actual_graft": {
+      "path": "docs/art/verification_2026-10-04/pilot_expression_graft_actual.json",
+      "sha256": "6b2a65e5b0562520789f32bf28e6cfe6162a47abff77027ae8316bbe38fdd61e"
+    },
+    "promotion_result": {
+      "path": "docs/art/verification_2026-10-04/pilot_expression_promotion_actual.json",
+      "sha256": "8a9b00bc83ced5dad67e7e432dedc92ead50993e4867d8ebf0f8e81a8ffd2caf"
+    },
+    "live_qa": {
+      "path": "docs/art/verification_2026-10-04/pilot_expression_initial_qa_actual.json",
+      "sha256": "e914b5cfbee0d8c3fd2046ef9d1700edeaf513e3a8d0512f3a0ed72e98bac7be"
+    },
+    "talk_qa": {
+      "path": "docs/art/verification_2026-10-04/pilot_expression_talk_actual.json",
+      "sha256": "e7c28446889e2abb934507ca9be6c79bc018afc0f6a027d3363c3e87959fe963"
+    },
+    "lifecycle": {
+      "path": "docs/art/verification_2026-10-04/pilot_expression_lifecycle_actual.json",
+      "sha256": "cbbf964cdf49ac734c9df1c983b46452089ccfcab569e3cf44df3b0800dfab56"
+    },
+    "instance_preload": {
+      "path": "docs/art/verification_2026-10-04/pilot_expression_instance_preload_actual.json",
+      "sha256": "decb48e8a2a8ca5fc7dd931ee835e47a59a2cea08121ee404844a9bd08d769e2"
+    },
+    "registration_source": {
+      "path": "src/ReplicatedStorage/Shared/ExpressionAssets.luau",
+      "sha256": "f3d1f117847ba10531c629ddee1bf34fd055fb5d6c6ca3c9ac42080f3e4d3770"
+    }
+  },
+  "scope": "Actual recorded root-owned QA snapshot; this tool does not query current Studio.",
+  "studio_called": false,
+  "source_edited": false,
+  "local_manifests_edited": false
+}

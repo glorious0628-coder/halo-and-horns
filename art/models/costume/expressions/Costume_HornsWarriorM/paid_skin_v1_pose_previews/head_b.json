@@ -1,0 +1,31 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "3ce715191c3ff7303545ef536eacf4d68b06f4fa0d849fa34f9df08d44f1f497",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\paid_skin_v1_pose_previews\\head_b.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.5069433450698853,
+    9.834147453308105,
+    2.1731767654418945
+  ],
+  "camera_rotation": [
+    1.6005302667617798,
+    0.05350920930504799,
+    -3.009493350982666
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "skin_pose": {
+    "Head": [
+      -8,
+      0,
+      -25
+    ]
+  },
+  "skin_pose_policy": "temporary offline original shared Head bone rotation; no source writes"
+}

@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "108547a10747590bbe4589f599fd12bf6c22209d49cd9c31c9afb39753db9c8e",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_Expression_SoftSmile_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\paid_skin_v1_previews\\SoftSmile_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -0.46098005771636963,
+    10.102245330810547,
+    1.2579030990600586
+  ],
+  "camera_rotation": [
+    -1.412040114402771,
+    3.100015640258789,
+    0.0393272303044796
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "1d9caee54efc968145e01ed2573c6442da358d28b35f2a7d754ec27cbc69abd8",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_Expression_SoftSmile_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\paid_skin_v1_previews\\SoftSmile_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    5.485260486602783,
+    8.281046867370605,
+    2.1691720485687256
+  ],
+  "camera_rotation": [
+    1.609770655632019,
+    0.03777993470430374,
+    2.5446951389312744
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

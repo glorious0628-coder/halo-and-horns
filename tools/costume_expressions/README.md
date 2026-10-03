@@ -56,3 +56,11 @@ continuous skin의 FaceExpression을 움직이는 Head proxy에 직접 weld하�
 ## 실제 임포트한 파일럿의 Pending graft
 
 `graft_expression.py`는 `--manifest`, `--actual-imports`, `--texture-ledger`, `--assembly-manifest`, `--original-imports`, `--output`을 받는다. 실제 두 메시의 비퇴화 Size/MeshSize와 세 축에서 모두 0이 아닌 중심 차이로 24개 proper axis bake 중 단 하나만 허용한다. 기존 primary Head 바운딩 중심·크기·기존 bake도 일치해야 Neck C0/C1·Head CFrame·attachments·보조 weld를 그대로 유지한다. 실제 MeshID/TextureID/현재 import CFrame을 다시 확인하는 Edit payload를 생성할 뿐 Studio를 호출하지 않는다. 목적지는 원래 Ready의 복사본 `CostumePendingExpressions`이고 Config·원래 Ready는 수정하지 않는다. 실제 게임 검증 전 runtime=false다.
+
+## 로컬 제작과 실제 등록 목록
+
+`write_skin_index.py`는 원본 skin·UV·웨이트·뼈·현재 PNG와 6장 렌더를 검증한 수동4종을 `skin_local_index.json`에 저장한다. `expression_inventory.json`은 rigid14 비교본과 skin4 후보의 중복 없는 18명·54장·기본 프리뷰108장을 집계한다. 추가 Head 포즈8장은 baseline 수에 합치지 않는다. 유료14종의 continuous 표현 포장은 이후 검증본만 교체 후보로 추가하며 rigid 비교본을 보존한다.
+
+`record_actual_registration.py`는 실제 root가 저장한 graft·Ready 승격·공격/피격/만료·대화/피격 우선·OFF/ON/재생성·MeshPart 기반 preload·ExpressionAssets 등록 증거를 읽어 `roblox_registrations/<avatar>.json`을 별도로 만든다. Head/PNG SHA·실제 메시/텍스처 ID·Neck 보존·각 상태가 모두 맞아야 실제 QA 시점의 등록을 기록한다. 원본 manifest, Ready 모델, 소스는 수정하지 않고 Studio도 호출하지 않는다. 현재 파일럿 실제 등록1종과 로컬 제작18종을 혼동하지 않는다. `--help`에서 필수 증거 인자를 확인한다. 기록 파일은 현재 Studio를 새로 조회한 결과가 아닌 검증 당시의 SHA 연결된 증거다.
+
+수동 skin 원본15뼈는 추정뼈이고, 유료 원본23뼈는 실제 원래 계층을 보존할 때만 구별해 표시한다. 성장 중 bind 비교는 복제되는 HumanoidRootPart.Size와 검증한 원래 Root 크기의 균일비율 q를 사용한다. bind 회전은 유지하며 위치만 q배로 확인한다. `Model.Scale` 또는 성장 전 CFrame 전체의 그대로 비교는 사용하지 않는다.

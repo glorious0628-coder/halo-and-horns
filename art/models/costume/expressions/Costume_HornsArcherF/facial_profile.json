@@ -1,0 +1,138 @@
+{
+  "avatar": "Costume_HornsArcherF",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed in exact 768 frame; preliminary until three state 3D QA passes",
+  "source_sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+  "mouth_center_screen": [
+    383,
+    597
+  ],
+  "screen_scale": [
+    1.25,
+    1.0
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      258,
+      424,
+      351,
+      483
+    ],
+    [
+      420,
+      424,
+      509,
+      478
+    ]
+  ],
+  "eye_boxes": [
+    [
+      219,
+      470,
+      345,
+      577
+    ],
+    [
+      429,
+      474,
+      555,
+      579
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.085
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "runtime_validated": false,
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ],
+  "rig_origin": "inferred_manual_candidate",
+  "facial_boundary_polygon": [
+    [
+      230,
+      440
+    ],
+    [
+      309,
+      376
+    ],
+    [
+      438,
+      360
+    ],
+    [
+      545,
+      443
+    ],
+    [
+      589,
+      492
+    ],
+    [
+      561,
+      558
+    ],
+    [
+      516,
+      604
+    ],
+    [
+      459,
+      638
+    ],
+    [
+      394,
+      656
+    ],
+    [
+      317,
+      641
+    ],
+    [
+      259,
+      609
+    ],
+    [
+      214,
+      566
+    ],
+    [
+      195,
+      503
+    ]
+  ],
+  "facial_boundary_review": "Original source front 768 CG directly reviewed: inner facial skin/features only; ears, hair, hood, collar and body keep original UV and image pixels.",
+  "verified_eyebrow_face_indices": [
+    5216,
+    5222
+  ],
+  "eyebrow_uv_expansion_review": {
+    "verified_original_fixed_faces": [
+      5216,
+      5222
+    ],
+    "classification": "original facial eyebrow skin only; hair candidates excluded",
+    "read_only_cg_diagnostic": "build/expr_qa/Costume_HornsArcherF/brow_candidates_cg/front.png",
+    "directly_viewed": true
+  }
+}

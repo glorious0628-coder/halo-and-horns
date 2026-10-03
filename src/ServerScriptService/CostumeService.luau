@@ -57,6 +57,21 @@ end
 -- Complete R15 graph, not a torso with a welded decorative statue. Standard Animate needs all 15 body joints.
 function CostumeService.ValidateTemplate(template)
 	if typeof(template) ~= "Instance" or not template:IsA("Model") then return false, "MissingTemplate" end
+	-- A continuous skin requires the tested client driver as well as the physical R15 graph.
+	-- Pending imports must not replace the owner's avatar with an undeformed mesh.
+	if template:GetAttribute("HHC_SkinRetargetRequired") == true then
+		if template:GetAttribute("HHC_SkinRuntimeSchema") ~= 2
+			or template:GetAttribute("HHC_RigReady") ~= true
+			or template:GetAttribute("HHC_AnimationValidated") ~= true
+			or template:GetAttribute("HHC_SkinRuntimeValidated") ~= true then return false, "PendingRig" end
+		local skin = template:FindFirstChild("CostumeSkin")
+		local manifest = template:GetAttribute("HHC_SkinManifest")
+		if not skin or not skin:IsA("Model") or type(manifest) ~= "string" or manifest == "" then return false, "InvalidRig" end
+		for _, attribute in { "HHC_SkinSourceSHA256", "HHC_SourceSHA256", "HHC_JointsSHA256", "HHC_SkinContractSHA256", "HHC_SkinInspectionSHA256" } do
+			local hash = template:GetAttribute(attribute)
+			if type(hash) ~= "string" or #hash ~= 64 or not hash:match("^[0-9a-fA-F]+$") then return false, "InvalidRig" end
+		end
+	end
 	local humanoid = template:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.RigType ~= Enum.HumanoidRigType.R15 or humanoid.Health <= 0 then return false, "InvalidRig" end
 	local parts = {}

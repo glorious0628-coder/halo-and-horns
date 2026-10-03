@@ -16,6 +16,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/costume_r15'))
 from glb_io import read_glb, write_glb, accessor_values, image_bytes
+from skin_frames import resolve, transform_cap, original_projection
 
 
 def sha(path):
@@ -24,6 +25,22 @@ def sha(path):
 
 def closest_barycentric(p, a, b, c):
     ab, ac, ap = b-a, c-a, p-a
+    # Original paid surfaces can contain zero-area UV-seam triangles. Keep
+    # their original indices intact; the closest point is on one of their
+    # three existing edges, with weights interpolated on that edge only.
+    edge_scale = max(float(np.dot(ab, ab)), float(np.dot(ac, ac)), float(np.dot(c-b, c-b)))
+    area_squared = float(np.dot(np.cross(ab, ac), np.cross(ab, ac)))
+    if area_squared <= max(1e-30, edge_scale*edge_scale*1e-14):
+        choices = []
+        vertices = (a, b, c)
+        for first, second in ((0, 1), (1, 2), (2, 0)):
+            edge = vertices[second]-vertices[first]
+            length_squared = float(np.dot(edge, edge))
+            t = float(np.clip(np.dot(p-vertices[first], edge)/length_squared, 0, 1)) if length_squared > 1e-30 else 0.
+            bary = np.zeros(3)
+            bary[first], bary[second] = 1-t, t
+            choices.append((float(np.linalg.norm(p-bary@np.asarray(vertices))), bary))
+        return min(choices, key=lambda row: row[0])[1]
     d1, d2 = np.dot(ab, ap), np.dot(ac, ap)
     if d1 <= 0 and d2 <= 0: return np.array([1., 0, 0])
     bp = p-b
@@ -56,6 +73,8 @@ def main():
     parser.add_argument('prepare_report', type=Path)
     parser.add_argument('neutral_png', type=Path)
     parser.add_argument('output', type=Path)
+    parser.add_argument('--original-triangles-only', action='store_true',
+                        help='Separate candidate with no new vertices or mouth cover')
     args = parser.parse_args()
     source, output = args.source.resolve(), args.output.resolve()
     if output.exists() or output.with_suffix('.json').exists():
@@ -63,10 +82,9 @@ def main():
     source_sha = sha(source)
     sidecar = json.loads(source.with_suffix('.skin.json').read_text(encoding='utf-8'))
     prep = json.loads(args.prepare_report.read_text(encoding='utf-8'))
-    if sidecar['output_sha256'] != source_sha or sha(Path(sidecar['source'])) != prep['source_sha256']:
-        raise ValueError('Original skin/fixed model checksums differ')
-    if not prep['reviewed_profile'].get('facial_boundary_polygon'):
-        raise ValueError('Skin expressions require a reviewed inner-face boundary')
+    if sidecar['output_sha256'] != source_sha:
+        raise ValueError('Original skin model checksum differs')
+    fixed_frame, rig_origin, original_bones_claimed = resolve(prep, source, sidecar)
     doc, original_binary, _ = read_glb(source)
     doc = copy.deepcopy(doc)
     if len(doc['meshes']) != 2 or len(doc['skins']) != 1 or len(doc['images']) != 2:
@@ -100,10 +118,12 @@ def main():
         raise ValueError('Reviewed original facial UV triangles must match exactly once')
     selected, retained = np.asarray(selected, dtype=np.uint32), np.asarray(retained, dtype=np.uint32)
     if not len(selected) or not len(retained): raise ValueError('Original HeadBase/face partition is empty')
-    cap_p = np.asarray(prep['mouth_cap_source_gltf_positions'], dtype=float)
-    cap_n = np.asarray(prep['mouth_cap_source_normals'], dtype=float)
+    cap_p, cap_n = transform_cap(prep, fixed_frame)
     cap_uv = np.asarray(prep['mouth_cap_face_uv'], dtype=float)
     cap_tri = np.asarray(prep['mouth_cap_source_indices'], dtype=np.uint32)
+    if args.original_triangles_only:
+        cap_p = np.empty((0, 3));cap_n = np.empty((0, 3));cap_uv = np.empty((0, 2))
+        cap_tri = np.empty((0, 3), dtype=np.uint32)
     cap_j, cap_w, cap_distance = [], [], []
     for point in cap_p:
         choices = []
@@ -124,11 +144,11 @@ def main():
         if total <= 0: raise ValueError('Mouth cover has no source skin influence')
         cap_j.append([j for j, w in active]);cap_w.append([w/total for j, w in active]);cap_distance.append(float(distance))
     cx, cy = prep['camera_center'];scale = prep['camera_scale']
-    projected_uv = np.column_stack(((p[:, 0]-cx)/scale+.5, 1-((p[:, 1]-cy)/scale+.5)))
+    projected_uv = original_projection(p, prep, fixed_frame)
     cap_uv[:, 1] = 1-cap_uv[:, 1]
     face_arrays = {'POSITION': np.vstack((p, cap_p)), 'NORMAL': np.vstack((n, cap_n)),
-        'TEXCOORD_0': np.vstack((projected_uv, cap_uv)), 'JOINTS_0': np.vstack((joints, cap_j)),
-        'WEIGHTS_0': np.vstack((weights, cap_w))}
+        'TEXCOORD_0': np.vstack((projected_uv, cap_uv)), 'JOINTS_0': np.vstack((joints, np.asarray(cap_j).reshape(-1,4))),
+        'WEIGHTS_0': np.vstack((weights, np.asarray(cap_w).reshape(-1,4)))}
     binary = bytearray(original_binary)
     def append_view(content, target=None):
         binary.extend(b'\0'*(-len(binary)%4));offset=len(binary);binary.extend(content)
@@ -177,19 +197,27 @@ def main():
     target=frame@np.array([cx,cy,0,1])
     factor=float(np.linalg.norm(frame[:3,1]))
     report={'glb':str(output),'sha256':sha(output),'source_skin':str(source),'source_skin_sha256':source_sha,
-        'source_fixed':sidecar['source'],'source_fixed_sha256':prep['source_sha256'],'rig_origin':'inferred_manual_candidate',
+        'source_fixed':prep['source'],'source_fixed_sha256':prep['source_sha256'],'rig_origin':rig_origin,
+        'original_bones_claimed':original_bones_claimed,'source_skin_bones':len(doc['skins'][0]['joints']),
         'skin_joints_inverse_binds_preserved':True,'original_position_normal_joint_weight_values_preserved':True,
         'original_binary_prefix_preserved':True,'original_non_facial_texture_bytes_preserved':True,
         'original_body_primitive_unchanged':True,'original_headbase_uv_unchanged':True,
         'facial_signature_uv_convention':'Blender V = 1 - original glTF V; original UV bytes unchanged',
         'original_head_triangles':len(triangles),'original_face_triangles':len(selected),'headbase_triangles':len(retained),
-        'new_mouth_cap_triangles':len(cap_tri),'new_mouth_cap_vertices':len(cap_p),'mouth_cap_weight_method':'closest original facial triangle barycentric interpolation, no original vertex edits',
-        'mouth_cap_source_surface_distance_max':max(cap_distance),'source_to_game_affine':sidecar['source_to_game_affine'],
+        'new_mouth_cap_triangles':len(cap_tri),'new_mouth_cap_vertices':len(cap_p),'mouth_cap_weight_method':'none: exact original facial triangle union' if args.original_triangles_only else 'closest original facial triangle barycentric interpolation, no original vertex edits',
+        'original_triangles_only':args.original_triangles_only,
+        'mouth_cap_source_surface_distance_max':max(cap_distance,default=0),'source_to_game_affine':sidecar['source_to_game_affine'],
         'expected_glb_import_assets':7,'full_set_maximum_import_assets':9,'camera_scale':scale*factor,
         'camera_center':[float(target[0]),float(target[1])],'camera_target':[float(target[0]),float(-target[2]),float(target[1])],
         'source_front_camera_scale':scale*factor,'camera_front_direction':[0,1,0],'camera_front_up':[0,0,1],
         'ready':False,'runtime_validated':False,'roblox_uploaded':False,
-        'limitations':['Inferred manual skeleton is not a genuine Tripo rig.','New mouth cover and 3-state face need actual engine pose/texture switching QA.','Original mouth recess is retained under the new skinned cover; original vertices are not flattened.']}
+        'limitations':(['Inferred manual skeleton is not a genuine Tripo rig.'] if not original_bones_claimed else ['Original paid skeleton is preserved; new expression copy is not engine validated.'])+(['Exact original mouth recess and inner surface remain; no new mouth-cover geometry.'] if args.original_triangles_only else ['New mouth cover and 3-state face need actual engine pose/texture switching QA.','Original mouth recess is retained under the new skinned cover; original vertices are not flattened.'])}
+    proof=prep.get('preserved_skin_coordinate_proof')
+    if proof:
+        for key in ['source_front_camera_scale','camera_target','camera_front_direction','camera_front_up']:
+            report[key]=proof[key]
+        report['preserved_skin_coordinate_proof']=proof
+        report['approved_rigid_face_scope']=prep['reviewed_profile']
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in report.items() if k not in ['source_to_game_affine','limitations']}))
 

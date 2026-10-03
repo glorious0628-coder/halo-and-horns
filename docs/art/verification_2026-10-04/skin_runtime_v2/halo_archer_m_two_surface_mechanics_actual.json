@@ -1,0 +1,197 @@
+[
+  {
+    "label": "server_pending_guard",
+    "text": "PendingRig rejected before Play-only trial markers",
+    "error": false
+  },
+  {
+    "label": "trial_template",
+    "text": "QA flags on Play-only clone, Edit candidate remains Pending",
+    "error": false
+  },
+  {
+    "label": "install_reader",
+    "text": "actual client module reader installed",
+    "error": false
+  },
+  {
+    "label": "gender",
+    "text": "ok",
+    "error": false
+  },
+  {
+    "label": "choose_FactionPicker.Cards.Card_Halo.Body.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "choose_ClassPicker.Cards.Card_Archer.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "initial",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":120,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[5.5224609375,1.7197265625,-408.310546875],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_initial",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":178,\"characters\":[{\"scale\":1,\"max_error\":0.00022103167430032045,\"frames\":178}]}",
+    "error": false
+  },
+  {
+    "label": "growth_probe",
+    "text": "Play-only faction-scale override; real JusticeService applies growth",
+    "error": false
+  },
+  {
+    "label": "preload",
+    "text": "[{\"id\":\"rbxassetid://121406917480475\",\"status\":\"Success\"},{\"id\":\"rbxassetid://89266257167687\",\"status\":\"Success\"},{\"id\":\"rbxassetid://84211055370691\",\"status\":\"Success\"},{\"id\":\"rbxassetid://106725946673245\",\"status\":\"Success\"}]",
+    "error": false
+  },
+  {
+    "label": "walk_jump",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "after_walk",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":120,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[-9.4326171875,1.7197265625,-385.798828125],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_walk",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":394,\"characters\":[{\"scale\":1,\"max_error\":0.00022694004292134196,\"frames\":394}]}",
+    "error": false
+  },
+  {
+    "label": "mana_charge",
+    "text": "ok",
+    "error": false
+  },
+  {
+    "label": "attack_F",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_F",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":426,\"characters\":[{\"scale\":1,\"max_error\":0.00022694004292134196,\"frames\":426}]}",
+    "error": false
+  },
+  {
+    "label": "attack_Q",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_Q",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":577,\"characters\":[{\"scale\":1,\"max_error\":0.00015003046428319067,\"frames\":11}]}",
+    "error": false
+  },
+  {
+    "label": "scale_2",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "driver_scale_2",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1128,\"characters\":[{\"scale\":2,\"max_error\":0.00020345488155726343,\"frames\":562}]}",
+    "error": false
+  },
+  {
+    "label": "walk_grown",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_scale_2_walk",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1236,\"characters\":[{\"scale\":2,\"max_error\":0.00021740898955613375,\"frames\":670}]}",
+    "error": false
+  },
+  {
+    "label": "scale_1",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "driver_scale_1",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1663,\"characters\":[{\"scale\":1,\"max_error\":0.0002182165626436472,\"frames\":1097}]}",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "text": "false",
+    "error": false
+  },
+  {
+    "label": "open_menu",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "toggle_button",
+    "text": "직업 코스튬: ON",
+    "error": false
+  },
+  {
+    "label": "off",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "off_state",
+    "text": "{\"enabled\":false,\"mana\":100,\"hp\":132,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Avatar\",\"hip\":2.224841356277466,\"root\":[-16.912109375,3.240234375,-381.64453125],\"applied\":false}",
+    "error": false
+  },
+  {
+    "label": "driver_off",
+    "text": "{\"players\":1,\"active\":0,\"faults\":0,\"frames\":1764,\"characters\":[]}",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "toggle_button",
+    "text": "직업 코스튬: OFF",
+    "error": false
+  },
+  {
+    "label": "on",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "on_state",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":132,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[-16.912109375,1.7197265625,-381.64453125],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_on",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1862,\"characters\":[{\"scale\":1,\"max_error\":0.0002229008387075737,\"frames\":98}]}",
+    "error": false
+  },
+  {
+    "label": "close_menu",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "death",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "respawn",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":132,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[2.6484375,1.7197265625,-409.525390625],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_respawn",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":2059,\"characters\":[{\"scale\":1,\"max_error\":0.00018911948427557945,\"frames\":182}]}",
+    "error": false
+  }
+]

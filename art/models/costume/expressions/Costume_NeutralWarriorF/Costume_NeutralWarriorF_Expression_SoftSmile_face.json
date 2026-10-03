@@ -1,0 +1,21 @@
+{
+  "avatar": "Costume_NeutralWarriorF",
+  "state": "SoftSmile",
+  "png": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_SoftSmile_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "aac68839b2280e983a10d689de03ec192f9e5a77def6fa1aebc45ad82c471a7a",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-f6281b70-ddb4-4722-aaf0-fc064015507b.png",
+  "prompt": "art/models/costume/expressions/Costume_NeutralWarriorF/prompts/SoftSmile.txt",
+  "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_NeutralWarriorF/previews_v4/SoftSmile_front.png",
+    "art/models/costume/expressions/Costume_NeutralWarriorF/previews_v4/SoftSmile_quarter.png"
+  ]
+}

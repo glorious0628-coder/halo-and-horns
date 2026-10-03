@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "f23871e89b092cb69eb0547c2c77180ff4150ffbb8593eb47a220ac87aff060a",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\paid_skin_v1_previews\\Serious_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    3.9240739345550537,
+    8.879009246826172,
+    3.0480527877807617
+  ],
+  "camera_rotation": [
+    1.5306310653686523,
+    0.04747975990176201,
+    2.700439929962158
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

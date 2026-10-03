@@ -1,0 +1,97 @@
+[
+  {
+    "label": "server_pending_guard",
+    "text": "PendingRig rejected before Play-only trial markers",
+    "error": false
+  },
+  {
+    "label": "trial_template",
+    "text": "QA flags on Play-only clone, Edit candidate remains Pending",
+    "error": false
+  },
+  {
+    "label": "install_reader",
+    "text": "actual client module reader installed",
+    "error": false
+  },
+  {
+    "label": "gender",
+    "text": "ok",
+    "error": false
+  },
+  {
+    "label": "choose_FactionPicker.Cards.Card_Halo.Body.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "choose_ClassPicker.Cards.Card_Archer.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "initial",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":120,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[3.740234375,1.7197265625,-407.44140625],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_initial",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":180,\"characters\":[{\"scale\":1,\"max_error\":0.0002180377923650667,\"frames\":180}]}",
+    "error": false
+  },
+  {
+    "label": "preload",
+    "text": "[{\"id\":\"rbxassetid://121406917480475\",\"status\":\"Success\"},{\"id\":\"rbxassetid://89266257167687\",\"status\":\"Success\"},{\"id\":\"rbxassetid://106725946673245\",\"status\":\"Success\"},{\"id\":\"rbxassetid://84211055370691\",\"status\":\"Success\"}]",
+    "error": false
+  },
+  {
+    "label": "walk_jump",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "after_walk",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":120,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[-8.4248046875,1.7197265625,-383.2275390625],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_walk",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":604,\"characters\":[{\"scale\":1,\"max_error\":0.0002180377923650667,\"frames\":604}]}",
+    "error": false
+  },
+  {
+    "label": "mana_charge",
+    "text": "ok",
+    "error": false
+  },
+  {
+    "label": "attack_F",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_F",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":637,\"characters\":[{\"scale\":1,\"max_error\":0.0002180377923650667,\"frames\":637}]}",
+    "error": false
+  },
+  {
+    "label": "attack_Q",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_Q",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":784,\"characters\":[{\"scale\":1,\"max_error\":0.000111127614218276,\"frames\":17}]}",
+    "error": false
+  },
+  {
+    "label": "scale_2",
+    "text": "2",
+    "error": false
+  },
+  {
+    "label": "driver_scale_2",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1035,\"characters\":[{\"scale\":1,\"max_error\":0.0002159306750399992,\"frames\":218}]}",
+    "error": false
+  }
+]

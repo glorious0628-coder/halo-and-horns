@@ -1,0 +1,21 @@
+{
+  "avatar": "Costume_HornsArcherF",
+  "state": "Serious",
+  "png": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_Expression_Serious_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "80c9f3775c545aaf13d0e96f0a763bed802fc87b9fed53337a00e28efa3b3385",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-7ba92969-afb2-44ad-ae9e-a7768b295300.png",
+  "prompt": "art/models/costume/expressions/Costume_HornsArcherF/prompts/Serious.txt",
+  "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HornsArcherF/previews_v2/Serious_front.png",
+    "art/models/costume/expressions/Costume_HornsArcherF/previews_v2/Serious_quarter.png"
+  ]
+}

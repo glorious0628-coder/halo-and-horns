@@ -12,7 +12,7 @@ import sys
 import bpy
 import numpy as np
 from mathutils import Matrix, Vector
-from scipy.spatial import cKDTree
+from mathutils.kdtree import KDTree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from constraints import RigError
@@ -103,8 +103,11 @@ def main():
             changes = [row for row in selection["changes"] if row["mesh_name"] == obj.name]
             if not changes:
                 continue
-            tree = cKDTree([row["game_position"] for row in changes])
-            distance, _ = tree.query([tuple(point) for point in game_points[obj]])
+            tree = KDTree(len(changes))
+            for index, row in enumerate(changes):
+                tree.insert(row["game_position"], index)
+            tree.balance()
+            distance = [tree.find(point)[2] for point in game_points[obj]]
             slot = len(obj.data.materials)
             obj.data.materials.append(overlay)
             for polygon in obj.data.polygons:

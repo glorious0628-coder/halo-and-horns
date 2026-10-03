@@ -1,0 +1,21 @@
+{
+  "avatar": "Costume_NeutralArcherM",
+  "state": "Neutral",
+  "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1d588894-98f7-4d91-91bf-9213d1a0f071.png",
+  "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/Neutral.txt",
+  "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_NeutralArcherM/previews_v2/Neutral_front.png",
+    "art/models/costume/expressions/Costume_NeutralArcherM/previews_v2/Neutral_quarter.png"
+  ]
+}

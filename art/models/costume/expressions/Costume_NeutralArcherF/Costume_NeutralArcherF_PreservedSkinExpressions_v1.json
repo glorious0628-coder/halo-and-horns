@@ -1,0 +1,141 @@
+{
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_PreservedSkinExpressions_v1.glb",
+  "sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin_corrected\\Costume_NeutralArcherF_weights_v7\\Costume_NeutralArcherF_skin_corrected.glb",
+  "source_skin_sha256": "0fb94b04e5eb38102c547b58a2a8002917a874a2ca6d6c8bea7fb6221bfd5029",
+  "source_fixed": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralArcherF.glb",
+  "source_fixed_sha256": "380acd5fce8365f60cd5a1660140979932ca09ec714f61c030b0d7ee6f370579",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "skin_joints_inverse_binds_preserved": true,
+  "original_position_normal_joint_weight_values_preserved": true,
+  "original_binary_prefix_preserved": true,
+  "original_non_facial_texture_bytes_preserved": true,
+  "original_body_primitive_unchanged": true,
+  "original_headbase_uv_unchanged": true,
+  "facial_signature_uv_convention": "Blender V = 1 - original glTF V; original UV bytes unchanged",
+  "original_head_triangles": 4796,
+  "original_face_triangles": 258,
+  "headbase_triangles": 4538,
+  "new_mouth_cap_triangles": 224,
+  "new_mouth_cap_vertices": 129,
+  "mouth_cap_weight_method": "closest original facial triangle barycentric interpolation, no original vertex edits",
+  "mouth_cap_source_surface_distance_max": 0.0022786795737983552,
+  "source_to_game_affine": [
+    -5.355513200207622,
+    0.08955340213063004,
+    0.7766281252274652,
+    0.0,
+    0.03932749781631306,
+    5.400699122196816,
+    -0.35156085354269706,
+    0.0,
+    -0.7807844802780123,
+    -0.342230732101884,
+    -5.344712004934187,
+    0.0,
+    0.06762820744553354,
+    -0.80466434216375,
+    0.11619950465890626,
+    1.0
+  ],
+  "expected_glb_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "camera_scale": 2.5538162834893714,
+  "camera_center": [
+    0.09994138273478477,
+    3.3634203073720275
+  ],
+  "camera_target": [
+    0.09869714195283368,
+    0.1615336556679217,
+    3.4618884216933257
+  ],
+  "source_front_camera_scale": 2.614128532104113,
+  "camera_front_direction": [
+    -0.14426196981980993,
+    0.9875171632870939,
+    -0.06323239895116506
+  ],
+  "camera_front_up": [
+    0.00726639101786501,
+    0.06495616757449081,
+    0.9978616616824248
+  ],
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "limitations": [
+    "Original paid skeleton is preserved; new expression copy is not engine validated.",
+    "New mouth cover and 3-state face need actual engine pose/texture switching QA.",
+    "Original mouth recess is retained under the new skinned cover; original vertices are not flattened."
+  ],
+  "preserved_skin_coordinate_proof": {
+    "skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin_corrected\\Costume_NeutralArcherF_weights_v7\\Costume_NeutralArcherF_skin_corrected.glb",
+    "skin_sha256": "0fb94b04e5eb38102c547b58a2a8002917a874a2ca6d6c8bea7fb6221bfd5029",
+    "source_sidecar_sha256": "8cbd0967499b43aaff35edb1f13a781da80729e8085259d8612ee3063b1eda37",
+    "fixed_to_skin_affine": [
+      [
+        1.02361644912619,
+        -2.5154128496115485e-08,
+        1.1424387560376499e-07,
+        0.00037483944657632173
+      ],
+      [
+        5.009800594928757e-08,
+        1.0236165181515433,
+        -4.671475905993646e-08,
+        -2.0314930592759585e-07
+      ],
+      [
+        -7.217843713687709e-08,
+        -7.635478298998793e-08,
+        1.0236164373689998,
+        -3.898424274223383e-05
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "matched_original_head_triangles": 4796,
+    "matched_original_corners": 14388,
+    "maximum_coordinate_error": 1.3308392055874018e-07,
+    "approved_unchanged_headbase_coordinate_error": 2.7978586185047747e-07,
+    "approved_unchanged_headbase_corners": 13182,
+    "old_mouth_geometry_modified_headbase_corners_excluded": 0,
+    "approved_baseline_head": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_HeadExpressions_R15.glb",
+    "approved_baseline_head_sha256": "4c5c4d383368fea29cb96ffa1f9981ac44cf9311cd05f0c3104d412003ab2e8c",
+    "approved_face_uv_maximum_error": 7.747879549047099e-08,
+    "approved_face_original_triangles": 258,
+    "complete_coincident_projected_uv_groups": [],
+    "source_front_camera_scale": 2.614128532104113,
+    "camera_target": [
+      0.09869714195283368,
+      0.1615336556679217,
+      3.4618884216933257
+    ],
+    "camera_front_direction": [
+      -0.14426196981980993,
+      0.9875171632870939,
+      -0.06323239895116506
+    ],
+    "camera_front_up": [
+      0.00726639101786501,
+      0.06495616757449081,
+      0.9978616616824248
+    ],
+    "original_bones_claimed": true,
+    "source_skin_bones": 23,
+    "runtime_validated": false
+  },
+  "approved_rigid_face_scope": {
+    "reviewed": true,
+    "approved_rigid_face_scope": true,
+    "baseline_manifest": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\expressions_manifest.json",
+    "baseline_manifest_sha256": "951b3ab94c58b1d862b7b7e917f9bbeeb3a666b883bcf832301d87463a5235f6"
+  }
+}

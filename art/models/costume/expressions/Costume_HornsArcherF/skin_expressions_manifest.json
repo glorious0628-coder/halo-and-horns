@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HornsArcherF",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_SkinExpressions_v2.glb",
+  "skin_sha256": "bb0e90eed84a53236c0c4f228b2cccb23dea6cda6cd79acaa758b401c44d1214",
+  "source_skin_sha256": "0c5000a1cf32e27bbfe574d62c9536a3a08e203a95987bff21908f592970474a",
+  "source_fixed_sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_HornsArcherF",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c6a2ce6c35f02f3099a42141436d124450637306a77d30a899fff7d1c8d32cfe",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-a9847760-aa7f-4f31-a68a-d9bb912da702.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsArcherF/prompts/Neutral.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsArcherF/previews_v2/Neutral_front.png",
+        "art/models/costume/expressions/Costume_HornsArcherF/previews_v2/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HornsArcherF",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d84292cd25dcb903a846d6912f982748cbd9f17c561df7f099a9204f82832c38",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-000ccc3b-a7f9-4e08-9bdc-6baff4dda79a.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsArcherF/prompts/SoftSmile.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsArcherF/previews_v2/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_HornsArcherF/previews_v2/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HornsArcherF",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "80c9f3775c545aaf13d0e96f0a763bed802fc87b9fed53337a00e28efa3b3385",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-7ba92969-afb2-44ad-ae9e-a7768b295300.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsArcherF/prompts/Serious.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsArcherF/previews_v2/Serious_front.png",
+        "art/models/costume/expressions/Costume_HornsArcherF/previews_v2/Serious_quarter.png"
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "offline_visual_review": "All six actual full-skin baseline CG previews personally reviewed; closed mouth and original eyes/hair/body preserved.",
+  "offline_visual_notes": "A small amount of source/GPT skin color faceting can appear in very close views; actual normal-distance engine QA remains.",
+  "runtime_attachment": "Preserve the actual shared Bone host and root skin weld; never weld FaceExpression directly to the moving Head proxy.",
+  "runtime_registration": "Production marker/actual imported Bone host and mesh asset ID proof must be added by the root after engine QA.",
+  "limitations": [
+    "Inferred manual skeleton is not a genuine Tripo rig.",
+    "New mouth cover and 3-state face need actual engine pose/texture switching QA.",
+    "Original mouth recess is retained under the new skinned cover; original vertices are not flattened."
+  ],
+  "offline_head_pose_review": {
+    "previews": [
+      "art/models/costume/expressions/Costume_HornsArcherF/pose_previews/head_a.png",
+      "art/models/costume/expressions/Costume_HornsArcherF/pose_previews/head_b.png"
+    ],
+    "original_head_bone_only": true,
+    "source_skin_unchanged": true,
+    "face_cover_and_original_head_move_together": true,
+    "personally_viewed": true,
+    "actual_roblox_motion_validation": false
+  }
+}

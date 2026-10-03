@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "scope": "actual_engine_evidence_with_user_id_redaction",
+  "files": [
+    {
+      "file": "halo_archer_m_two_surface_import_actual.json",
+      "original_workspace_relative_path": "build/halo_archer_m_skin_import/actual_imports.json",
+      "original_sha256": "6f6b92fb12979efc8900d71f137dcd1521ac7a50209dfe21c3a96bd81be60cb4",
+      "copied_sha256": "6f6b92fb12979efc8900d71f137dcd1521ac7a50209dfe21c3a96bd81be60cb4",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_two_surface_assembly_actual.json",
+      "original_workspace_relative_path": "build/halo_archer_m_skin_import/actual_assembly_schema2.json",
+      "original_sha256": "be8f7721df9660dd77a6fc77f4cc73aed18c58e4b39827ac0cc42ca11242c987",
+      "copied_sha256": "be8f7721df9660dd77a6fc77f4cc73aed18c58e4b39827ac0cc42ca11242c987",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_two_surface_matcher_actual.json",
+      "original_workspace_relative_path": "build/halo_archer_m_skin_import/actual_schema2_verification_v2.json",
+      "original_sha256": "bd8c0fcd62634de78129f034135efd5b6ead59b64068c07acbdb66620a4e4e4a",
+      "copied_sha256": "bd8c0fcd62634de78129f034135efd5b6ead59b64068c07acbdb66620a4e4e4a",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_two_surface_mechanics_actual.json",
+      "original_workspace_relative_path": "build/skin_schema2_qa/Costume_HaloArcherM/actual_mechanics.json",
+      "original_sha256": "6ef8de8026216ef99a036cd11a8a607adaed890d5cbed6b01fe839e65778d3a7",
+      "copied_sha256": "a4350a8fd296ffbc3deec250bedf9fc641da2be26083879b9718b337a3b950d1",
+      "removed_user_id_fields": 9,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_initial_matcher_failed.txt",
+      "original_workspace_relative_path": "build/halo_archer_m_skin_import/actual_schema2_verification.json",
+      "original_sha256": "f81f8c7c9359c2696d5838a91864c411b2169c770110cccbcaf9553fb46d0fce",
+      "copied_sha256": "f81f8c7c9359c2696d5838a91864c411b2169c770110cccbcaf9553fb46d0fce",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_initial_direct_scale_failed.json",
+      "original_workspace_relative_path": "build/skin_schema2_qa/Costume_HaloArcherM/initial_direct_scale_probe_failed.json",
+      "original_sha256": "7a1e9d6f79610823d59b69eaec3aab3817621d6dd59a586ac7ab50244f51bcbb",
+      "copied_sha256": "a64d62fa35bd3a22d17cebdab619c992707d0c98090b3f96b683751c8a9739db",
+      "removed_user_id_fields": 5,
+      "original_unchanged": true
+    },
+    {
+      "file": "neutral_warrior_f_two_surface_import_actual.json",
+      "original_workspace_relative_path": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/actual_imports.json",
+      "original_sha256": "f39a20559e770b47df276f771f0baa6f507f3ebfc9fcc80b028184e53e0e4eba",
+      "copied_sha256": "f39a20559e770b47df276f771f0baa6f507f3ebfc9fcc80b028184e53e0e4eba",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "neutral_warrior_f_two_surface_assembly_actual.json",
+      "original_workspace_relative_path": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/actual_assembly_schema2.json",
+      "original_sha256": "b4153edaab1dbec54f9ff605cb5490242d1076063e82ed3e2cb44a99ebe1e328",
+      "copied_sha256": "b4153edaab1dbec54f9ff605cb5490242d1076063e82ed3e2cb44a99ebe1e328",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "neutral_warrior_f_two_surface_matcher_actual.json",
+      "original_workspace_relative_path": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/actual_schema2_verification_v2.json",
+      "original_sha256": "8b1e8a3115dcd3c394bf9e593991a658dc25839bb2520aa8f5bf23fc92422707",
+      "copied_sha256": "8b1e8a3115dcd3c394bf9e593991a658dc25839bb2520aa8f5bf23fc92422707",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "neutral_warrior_f_two_surface_mechanics_actual.json",
+      "original_workspace_relative_path": "build/skin_schema2_qa/Costume_NeutralWarriorF/actual_mechanics.json",
+      "original_sha256": "772d1bc471c00b3e75da8983e03000e7c9b0572e909eb0760b1f4a34e54c94aa",
+      "copied_sha256": "7c401a88b85af32f56db416a321d36a77cedfc47122c6d5faea41d06aedabae2",
+      "removed_user_id_fields": 9,
+      "original_unchanged": true
+    },
+    {
+      "file": "neutral_warrior_f_initial_matcher_failed.txt",
+      "original_workspace_relative_path": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/actual_schema2_verification.json",
+      "original_sha256": "f81f8c7c9359c2696d5838a91864c411b2169c770110cccbcaf9553fb46d0fce",
+      "copied_sha256": "f81f8c7c9359c2696d5838a91864c411b2169c770110cccbcaf9553fb46d0fce",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_expression_import_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM/actual_imports.json",
+      "original_sha256": "e63a884d6bcc7e3a5a4cc309294cef370816170521cb2c3c0c4940ae50517381",
+      "copied_sha256": "e63a884d6bcc7e3a5a4cc309294cef370816170521cb2c3c0c4940ae50517381",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_expression_importer_ledger_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM/importer_ledger.json",
+      "original_sha256": "dcac2f1b4aab8a72d37dfed4969f5e78708ab1664683e9f72b9c59f2d7a661f7",
+      "copied_sha256": "dcac2f1b4aab8a72d37dfed4969f5e78708ab1664683e9f72b9c59f2d7a661f7",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_expression_mechanics_actual.json",
+      "original_workspace_relative_path": "build/skin_expression_schema2_qa/Costume_HaloArcherM/actual_mechanics.json",
+      "original_sha256": "50f4acbcb59a2d2ba1f7f78d5b8b96ebc9f5d19fe319615ba425956e3f608b04",
+      "copied_sha256": "fad0e3b5263a4d509ba66832b3f3de75d1466f085fea93bf98b558f5b41dfe48",
+      "removed_user_id_fields": 9,
+      "original_unchanged": true
+    },
+    {
+      "file": "halo_archer_m_expression_promotion_actual.json",
+      "original_workspace_relative_path": "build/costume_skin_expression_imports/Costume_HaloArcherM/actual_promotion.json",
+      "original_sha256": "56dfd03a36a0bde8b8ea032f19d9f79554357b0a71fde6fa17e67ca4a02443a0",
+      "copied_sha256": "56dfd03a36a0bde8b8ea032f19d9f79554357b0a71fde6fa17e67ca4a02443a0",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true
+    }
+  ],
+  "redaction": "Nested JSON objects and JSON strings have user_id/UserId/userId removed; original raw-file SHA remains the provenance reference.",
+  "ready_costumes": 2,
+  "total_costumes": 18,
+  "full_eighteen_motion_quality_approved": false,
+  "root_report_only": [
+    {
+      "kind": "final_three_surface_matcher",
+      "checks": 628,
+      "passed": true,
+      "storage": "root execution log; no separate response file copied",
+      "ready_at_match_time": false,
+      "promotion": false
+    }
+  ],
+  "studio_calls": 0,
+  "api_calls": 0,
+  "source_modified": false
+}

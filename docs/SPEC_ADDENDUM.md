@@ -615,9 +615,31 @@ check. See HANDOFF_CODEX and the actual-cost records in
   old character, preserve position/velocities/current HP, existing shield expiration and movement-check state. Do not
   fire CharacterDied, grant a new spawn shield, heal, teleport to spawn or reset combat/progression for a cosmetic swap.
   `ZoneService.CaptureMovementTrack`/`RestoreMovementTrack` preserve the existing validation track for this path.
-- Diagnostic attributes: CostumeStatus (`Avatar`, `Active`, `MissingTemplate`, `InvalidRig`, `WaitingAppearance`, `WaitingAnimation`,
+- Diagnostic attributes: CostumeStatus (`Avatar`, `Active`, `MissingTemplate`, `InvalidRig`, `PendingRig`, `WaitingAppearance`, `WaitingAnimation`,
   `Deferred`, `Error`); CostumeApplied reflects the current character's `HHC_CostumeId`. CostumeEnabled=true is an
   intended choice, not proof of CostumeApplied. B menu distinguishes preparation/deferred/error from applied ON/OFF.
+
+### A17-2a Continuous skins with the verified R15 physics graph (2026-10-04; actual promotion pending)
+- Preserve the approved two/three skinned material surfaces, texture bytes, weighted source geometry and the actual
+  shared imported Bone host. Four manually inferred candidates have 15 principal bones; fourteen paid sources retain
+  the original 15 principal + 8 auxiliary hierarchy. Inferred bones must never be reported as original paid bones.
+- The server retains direct invisible R15 proxy Parts, the living Humanoid/server Animator and 15 Motor6D edges.
+  `CostumeSkin` contains noncolliding massless imported surfaces and original Bone hosts welded only to the root.
+  Assembly stays under `CostumePendingRigs`, preserving earlier Pending siblings and the existing playable rig.
+- A skin template requires `HHC_SkinRetargetRequired=true`, runtime schema2 and RigReady/AnimationValidated/
+  SkinRuntimeValidated=true. Missing validation returns PendingRig and retains the owner's normal avatar. Require
+  exact 64-digit source/skin/joint/contract/actual-inspection hashes and a nonempty manifest before replacement.
+- `SkinRetargetClient` follows every current Player.Character after Animator/Fx. It validates exact manifest mesh IDs,
+  true parent-first 15/23 Bone hierarchy, imported host/bind frames, proxy graph and Ready markers before deformation.
+  It updates Bone.Transform from each animated proxy and the imported rest frame; it does not animate a welded statue.
+- Uniform physical growth ratio is replicated HumanoidRootPart.Size / recorded bind Root.Size. Require all three
+  ratios, proxy sizes and Bone local frames to agree; wait through partial property replication. Model.Scale does not
+  replicate and player SizeMult/VisualScale are targets, so neither is authoritative for local skin deformation.
+- Character replacement/OFF/death/leave clears owned transforms and lifecycle connections. Partial streaming retries
+  without trusting an incomplete hierarchy. Engine QA must include actual texture loading, walking/jump/F/Q, growth,
+  owner-avatar OFF/ON and death/respawn before any Edit-mode promotion. Play-only trial flags are discarded at Stop.
+- The offline driver suite passed 341 checks and the basic 40-file compiler/23-service/10-client load round passed.
+  These checks do not claim all18 appearances, final weapons, multiplayer replication or DataStore persistence passed.
 
 ### A17-3 Reviewable local tools and upload safety
 - Use the same files on the new account; the user allowed uploads from **2026-10-03**. Inspect and show each image before

@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralArcherM",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_SkinExpressions_v2.glb",
+  "skin_sha256": "4f51ba3f510318ac11ca72c49e6eda2e4a1ad00b6b812559a9c2789483d11c3d",
+  "source_skin_sha256": "fce99186fffb203d7b973e60611faa5195124f4f23b5e73aa2212ce607a4ffac",
+  "source_fixed_sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1d588894-98f7-4d91-91bf-9213d1a0f071.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/Neutral.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherM/previews_v2/Neutral_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherM/previews_v2/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "79d5bdc0549dcf6a2b3b8c463c4a9a42b9f95f7e9f83d9d87fdd805cbea99ac5",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1932879f-90bf-4e0b-8531-45a31d47d5d0.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/SoftSmile.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherM/previews_v2/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherM/previews_v2/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "1389e58f8b8be8c8104b1885d84f81ada131c7b10d55efd8c93149b3465cac13",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-27355c67-876b-4bb0-a988-246c4a83b418.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/Serious.txt",
+      "quality_status": "offline full-skin front/quarter reviewed; actual engine pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherM/previews_v2/Serious_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherM/previews_v2/Serious_quarter.png"
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "offline_visual_review": "All six actual full-skin baseline CG previews personally reviewed; closed mouth and original eyes/hair/body preserved.",
+  "offline_visual_notes": "A small amount of source/GPT skin color faceting can appear in very close views; actual normal-distance engine QA remains.",
+  "runtime_attachment": "Preserve the actual shared Bone host and root skin weld; never weld FaceExpression directly to the moving Head proxy.",
+  "runtime_registration": "Production marker/actual imported Bone host and mesh asset ID proof must be added by the root after engine QA.",
+  "limitations": [
+    "Inferred manual skeleton is not a genuine Tripo rig.",
+    "New mouth cover and 3-state face need actual engine pose/texture switching QA.",
+    "Original mouth recess is retained under the new skinned cover; original vertices are not flattened."
+  ],
+  "offline_head_pose_review": {
+    "previews": [
+      "art/models/costume/expressions/Costume_NeutralArcherM/pose_previews/head_a.png",
+      "art/models/costume/expressions/Costume_NeutralArcherM/pose_previews/head_b.png"
+    ],
+    "original_head_bone_only": true,
+    "source_skin_unchanged": true,
+    "face_cover_and_original_head_move_together": true,
+    "personally_viewed": true,
+    "actual_roblox_motion_validation": false
+  }
+}

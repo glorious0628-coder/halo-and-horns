@@ -1,0 +1,31 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorM\\Costume_HaloWarriorM_PreservedSkinExpressions_v1.glb",
+  "source_sha256": "89749886d4114873c1da2bb2966336ae46d538386fe08285b771af1fa280c5bc",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\out\\Costume_HaloWarriorM_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorM\\paid_skin_v1_pose_previews\\head_a.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.7755136489868164,
+    9.754316329956055,
+    2.3931307792663574
+  ],
+  "camera_rotation": [
+    1.5860644578933716,
+    -0.012462825514376163,
+    -2.9698519706726074
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "skin_pose": {
+    "Head": [
+      8,
+      0,
+      25
+    ]
+  },
+  "skin_pose_policy": "temporary offline original shared Head bone rotation; no source writes"
+}

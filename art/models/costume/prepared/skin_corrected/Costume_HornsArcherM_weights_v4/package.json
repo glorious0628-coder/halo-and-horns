@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "kind": "corrected_preserved_skin_pending",
+  "name": "HornsArcherM",
+  "skin_glb": "Costume_HornsArcherM_skin_corrected.glb",
+  "skin_manifest": "Costume_HornsArcherM_skin_corrected.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "6ab861994ce9740468837560a21b8d7e8fe1ac6223c61bb79227db73eb5791d8",
+    "skin_manifest": "ab5ac5037cff9a2e6a65925f4021a37275155283692717e3b572955f98c23fbe",
+    "proxy_plan": "a928be6856d04791401f59979bf813ea4995fde5520b939093c9e39eed8ce9dc",
+    "proxy_runtime": "8a34de630e43e9884c0520a5141ea42948cda6c076be8349d0bc35edd43a9e35",
+    "weight_correction_plan": "42bbf448a379d7ff3cae10c71a071334cde553597a726de8e480d349a12d67d3"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_HornsArcherM_rig_1c4762a2-29bd-4e14-baca-488d2d44a98b.glb",
+    "sha256": "192bebb4f66ca9573ebc18c1021f6b30632e95dcdd276e05d16cf053e4117691"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": false,
+  "maximum_proxy_joint_error": 1.1442091700702932e-06,
+  "maximum_actual_armature_lbs_error": 9.834766387939453e-07,
+  "maximum_target_pose_projection_error": 1.6827099577776317e-06,
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0,
+  "proxy_runtime": "proxy_runtime.json",
+  "weight_correction_plan": "weight_plan.json",
+  "original_benchmark": {
+    "workspace_relative_path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.glb",
+    "sha256": "c793d05d57116691d53e78489f073e53b269af3dd74d61f34fb0f9dd0251fc8c"
+  },
+  "changed_skin_vertices": 1118,
+  "weight_correction_regions": {
+    "posterior_cape": 1118
+  },
+  "original_geometry_uv_normals_material_images_preserved": true,
+  "original_binary_prefix_preserved": true,
+  "original_source_bones_bind_preserved": true,
+  "original_source_weights_exact": false,
+  "local_corrected_region_qa_pass": true,
+  "whole_character_engine_quality_claimed": false
+}

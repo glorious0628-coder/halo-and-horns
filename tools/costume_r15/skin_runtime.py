@@ -28,6 +28,7 @@ SCHEMA2={
     "schema":2,"draft":True,"promotion_automatic":False,
     "model_attributes":{
         "HHC_SkinRuntimeSchema":2,"HHC_SkinRetargetRequired":True,
+        "HHC_SkinRuntimeValidated":"false until actual imported bind and live runtime QA",
         "HHC_RigReady":"false until server QA promotion","HHC_AnimationValidated":"false until live QA",
         "HHC_SkinSourceSHA256":"exact preserved/imported GLB sha256",
         "HHC_SourceSHA256":"preserved original GLB sha256","HHC_JointsSHA256":"proxy plan sha256",
@@ -86,6 +87,7 @@ local function gate(character)
     return character and character.Parent and ALLOWED[character:GetAttribute("HHC_CostumeId")]
         and character:GetAttribute("HHC_SkinRuntimeSchema")==2
         and character:GetAttribute("HHC_SkinRetargetRequired")==true
+        and character:GetAttribute("HHC_SkinRuntimeValidated")==true
         and character:GetAttribute("HHC_RigReady")==true
         and character:GetAttribute("HHC_AnimationValidated")==true
 end
@@ -436,7 +438,7 @@ def validate_inspection(path,data,points_by_mesh):
     if not inspection.get("edit_mode") or inspection.get("scripts",0)!=0: raise RigError("Only an inert Edit-mode imported model is supported")
     if inspection.get("source_file_sha256")!=data["skin_sha256"]: raise RigError("The imported source file SHA marker is missing or differs")
     meshes=inspection.get("meshes",[]);bones=inspection.get("bones",[])
-    if len(meshes)!=2 or {m["name"] for m in meshes}!={m["name"] for m in data["meshes"]}: raise RigError("Actual imported surface count/names changed")
+    if len(meshes)!=len(data["meshes"]) or {m["name"] for m in meshes}!={m["name"] for m in data["meshes"]}: raise RigError("Actual imported surface count/names changed")
     expected={b["name"]:b for b in data["bones"]};byname={name:[] for name in expected};paths=set()
     for bone in bones:
         key=tuple(bone["path"])
@@ -446,9 +448,9 @@ def validate_inspection(path,data,points_by_mesh):
         if not np.allclose(frame(bone["transform"]),np.eye(4),atol=1e-5): raise RigError("An imported bone already has a posed Transform")
         parent=bone.get("parent_bone")
         if parent is not None and parent!=expected[bone["name"]]["parent"]: raise RigError("Actual Bone parent differs from the preserved hierarchy")
-        if parent is None and expected[bone["name"]]["parent"]!="HumanoidRootPart": raise RigError("An actual bone hierarchy link is missing")
+        if parent is None and expected[bone["name"]]["parent"] not in (None,"HumanoidRootPart"): raise RigError("An actual bone hierarchy link is missing")
         if tuple(bone["host_path"]) not in {tuple(p["path"]) for p in inspection["parts"]}: raise RigError("Bone host is not an inspected physical part")
-    if any(not 1<=len(items)<=2 for items in byname.values()): raise RigError("The importer lost or duplicated a declared principal bone")
+    if any(not 1<=len(items)<=len(data["meshes"]) for items in byname.values()): raise RigError("The importer lost or duplicated a declared source bone")
     x=np.array([expected[name]["position"] for name in PRIMARY]);y=np.array([byname[name][0]["world_cframe"][:3] for name in PRIMARY])
     xc,yc=x-x.mean(0),y-y.mean(0)
     u,s,vh=np.linalg.svd(xc.T@yc)
@@ -474,22 +476,29 @@ def validate_inspection(path,data,points_by_mesh):
             if parent is None: raise RigError("Actual Bone parent path is not an inspected parent")
             parent_world=frame(parent.get("world_cframe",parent.get("cframe")))
             if not np.allclose(parent_world@frame(bone["cframe"]),actual_world,atol=.0001): raise RigError("Actual Bone local/world frame hierarchy is inconsistent: "+name)
-    maximum_size_error=0.
+    maximum_size_error=0.;native_bounds_policies={}
     for mesh in meshes:
         if not re.fullmatch(r"rbxassetid://[1-9][0-9]*",mesh.get("mesh_id","")): raise RigError("Actual imported mesh ID is missing")
         size=finite(mesh["size"],3);actual_cf=frame(mesh["cframe"]);frame(mesh["pivot_offset"])
         if min(size)<=0: raise RigError("Invalid imported mesh size")
-        world=scale*(points_by_mesh[mesh["name"]]@rotation.T)+offset
-        local=(world-actual_cf[:3,3])@actual_cf[:3,:3]
-        expected_size=local.max(0)-local.min(0);center=(local.max(0)+local.min(0))/2
-        error=float(np.max(np.abs(expected_size-size)));maximum_size_error=max(maximum_size_error,error)
-        if error>max(.002,scale*.005) or np.max(np.abs(center))>max(.002,scale*.005):
+        points=points_by_mesh[mesh["name"]]
+        candidates=points if isinstance(points,dict) else {"full_accessor":points}
+        matches=[]
+        for policy,source_points in candidates.items():
+            world=scale*(source_points@rotation.T)+offset
+            local=(world-actual_cf[:3,3])@actual_cf[:3,:3]
+            expected_size=local.max(0)-local.min(0);center=(local.max(0)+local.min(0))/2
+            error=float(np.max(np.abs(expected_size-size)))
+            if error<=max(.002,scale*.005) and np.max(np.abs(center))<=max(.002,scale*.005): matches.append((policy,error))
+        if not matches:
             raise RigError("Actual imported surface Size/pivot/axes do not match the original skin: "+mesh["name"])
+        maximum_size_error=max(maximum_size_error,min(error for _,error in matches))
+        native_bounds_policies[mesh["name"]]=[policy for policy,_ in matches]
     # Translation of the new pivot is R^-1*(P-offset)/scale. Lua scales about
     # the old pivot first, then applies this rigid orientation/new pivot.
     return inspection,{"scale":scale,"rotation":rotation.reshape(9).tolist(),"offset":offset.tolist(),
                        "maximum_bone_error":maximum_bone_error,"maximum_size_error":maximum_size_error,"maximum_axis_error":maximum_axis_error,
-                       "inspection_sha256":sha(path)}
+                       "inspection_sha256":sha(path),"native_bounds_policies":native_bounds_policies}
 
 
 COMMON=r'''

@@ -1,0 +1,381 @@
+{
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "rig_ready_for_game": false,
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralArcherM.glb",
+  "source_sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+  "landmark_config": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\NeutralArcherM_v3\\manual_landmarks.json",
+  "weight_policy": "continuous_original_surface_edges_4ring_16passes",
+  "bone_names": [
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+  ],
+  "original_geometry_accessors_reused": true,
+  "surface_or_uv_design_changed": false,
+  "requires_studio_skin_motion_validation": true,
+  "source_to_game_affine": [
+    -5.6356984270927795,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    5.6356984270927795,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -5.6356984270927795,
+    0.0,
+    -0.0009459332687075893,
+    -1.628,
+    0.05462764626786328,
+    1.0
+  ],
+  "affine_layout": "gltf_column_major_16",
+  "target_height_studs": 5.5,
+  "source_frame_policy": "gltf-positive-z",
+  "source_original_local_vertex_bytes_preserved": true,
+  "output": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_SkinExpressions_v2.glb",
+  "output_sha256": "4f51ba3f510318ac11ca72c49e6eda2e4a1ad00b6b812559a9c2789483d11c3d",
+  "original_triangles": 14621,
+  "original_images_preserved": true,
+  "source_file_unchanged": true,
+  "unique_surface_positions": 7191,
+  "boundary_positions": 599,
+  "smoothing_band_positions": 4019,
+  "maximum_influences": 4,
+  "shared_position_weight_error": 0,
+  "meshes": 3,
+  "images": 3,
+  "api_calls": 0,
+  "studio_calls": 0,
+  "studio_motion_validated": false,
+  "expression_origin": "inferred_manual_candidate",
+  "original_two_surface_skin": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\NeutralArcherM_skin_v3\\Costume_NeutralArcherM_skin.glb",
+  "original_two_surface_skin_sha256": "fce99186fffb203d7b973e60611faa5195124f4f23b5e73aa2212ce607a4ffac",
+  "original_sidecar_sha256": "694ae3597db51c936e153613dbe4678050b2f643f45170608eccc901d6d36dc7",
+  "estimated_assets": 7,
+  "active_original_images": 2,
+  "expression_surfaces": [
+    {
+      "name": "CostumeSkinBody",
+      "mesh": 0,
+      "node": 0,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 8778,
+      "accessor_vertices": 12298,
+      "referenced_unique_vertices": 12298,
+      "unused_accessor_vertices": 0,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.2704162895679474,
+          0.0,
+          -0.1516876369714737
+        ],
+        "maximum": [
+          0.2700805962085724,
+          0.555755615234375,
+          0.1519775688648224
+        ],
+        "center": [
+          -0.0001678466796875,
+          0.2778778076171875,
+          0.00014496594667434692
+        ],
+        "size": [
+          0.5404968857765198,
+          0.555755615234375,
+          0.3036652058362961
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.2704162895679474,
+          0.0,
+          -0.1516876369714737
+        ],
+        "maximum": [
+          0.2700805962085724,
+          0.555755615234375,
+          0.1519775688648224
+        ],
+        "center": [
+          -0.0001678466796875,
+          0.2778778076171875,
+          0.00014496594667434692
+        ],
+        "size": [
+          0.5404968857765198,
+          0.555755615234375,
+          0.3036652058362961
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -1.523038724509639,
+          -1.628,
+          -0.8018720995370008
+        ],
+        "maximum": [
+          1.523038724509639,
+          1.5040710466243474,
+          0.9094934233574181
+        ],
+        "center": [
+          0.0,
+          -0.06196447668782623,
+          0.05381066191020867
+        ],
+        "size": [
+          3.046077449019278,
+          3.1320710466243473,
+          1.711365522894419
+        ]
+      }
+    },
+    {
+      "name": "HeadBase",
+      "mesh": 1,
+      "node": 1,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 5262,
+      "accessor_vertices": 7248,
+      "referenced_unique_vertices": 6847,
+      "unused_accessor_vertices": 401,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.2016449272632599,
+          0.5347518920898438,
+          -0.1879730522632599
+        ],
+        "maximum": [
+          0.1936798393726349,
+          0.975921630859375,
+          0.1882629692554474
+        ],
+        "center": [
+          -0.0039825439453125,
+          0.7553367614746094,
+          0.00014495849609375
+        ],
+        "size": [
+          0.3953247666358948,
+          0.44116973876953125,
+          0.3762360215187073
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.2016449272632599,
+          0.5347518920898438,
+          -0.1879730522632599
+        ],
+        "maximum": [
+          0.1936798393726349,
+          0.975921630859375,
+          0.1882629692554474
+        ],
+        "center": [
+          -0.0039825439453125,
+          0.7553367614746094,
+          0.00014495849609375
+        ],
+        "size": [
+          0.3953247666358948,
+          0.44116973876953125,
+          0.3762360215187073
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -1.0924670993806482,
+          1.38570039713562,
+          -1.006365673444878
+        ],
+        "maximum": [
+          1.135464066140084,
+          3.872,
+          1.1139870812437458
+        ],
+        "center": [
+          0.021498483379717936,
+          2.62885019856781,
+          0.053810703899433876
+        ],
+        "size": [
+          2.227931165520732,
+          2.4862996028643796,
+          2.120352754688624
+        ]
+      }
+    },
+    {
+      "name": "FaceExpression",
+      "mesh": 2,
+      "node": 18,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 581,
+      "accessor_vertices": 7377,
+      "referenced_unique_vertices": 661,
+      "unused_accessor_vertices": 6716,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.10234072059392929,
+          0.6321563720703125,
+          0.03356553986668587
+        ],
+        "maximum": [
+          0.1020050123333931,
+          0.77728271484375,
+          0.1596069484949112
+        ],
+        "center": [
+          -0.00016785413026809692,
+          0.7047195434570312,
+          0.09658624418079853
+        ],
+        "size": [
+          0.2043457329273224,
+          0.1451263427734375,
+          0.12604140862822533
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.2016449272632599,
+          0.5347518920898438,
+          -0.1879730522632599
+        ],
+        "maximum": [
+          0.1936798393726349,
+          0.975921630859375,
+          0.1882629692554474
+        ],
+        "center": [
+          -0.0039825439453125,
+          0.7553367614746094,
+          0.00014495849609375
+        ],
+        "size": [
+          0.3953247666358948,
+          0.44116973876953125,
+          0.3762360215187073
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -0.5758154208315907,
+          1.9346426717533383,
+          -0.844868982317986
+        ],
+        "maximum": [
+          0.5758155048100413,
+          2.752530973451327,
+          -0.13453761396333824
+        ],
+        "center": [
+          4.198922531895022e-08,
+          2.3435868226023326,
+          -0.48970329814066216
+        ],
+        "size": [
+          1.151630925641632,
+          0.8178883016979885,
+          0.7103313683546477
+        ]
+      }
+    }
+  ],
+  "expression_face_unused_original_head_positions_preserved": true,
+  "native_bounds_policy": "Compare actual Importer observations to both referenced and full-accessor bounds; never guess a basis, pad extents, or claim a successful import offline.",
+  "expression_manifest": "art/models/costume/expressions/Costume_NeutralArcherM/skin_expressions_manifest.json",
+  "expression_manifest_sha256": "e04d4b95cbdf3d31b328655e4e865350b846dec528d4040f3d745202549d65fd",
+  "expression_validation": "art/models/costume/expressions/Costume_NeutralArcherM/skin_validation.json",
+  "expression_validation_sha256": "8c7c3177097ed2c9ba52530d91bbff2e1caa6f427f22c80270b2795fa46648ee",
+  "expression_meshes_validated_offline": true,
+  "expression_runtime_validated": false,
+  "api_called": false,
+  "uploads": 0,
+  "expression_states": {
+    "Neutral": {
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.png",
+      "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f"
+    },
+    "SoftSmile": {
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_SoftSmile_face.png",
+      "sha256": "79d5bdc0549dcf6a2b3b8c463c4a9a42b9f95f7e9f83d9d87fdd805cbea99ac5"
+    },
+    "Serious": {
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Serious_face.png",
+      "sha256": "1389e58f8b8be8c8104b1885d84f81ada131c7b10d55efd8c93149b3465cac13"
+    }
+  },
+  "requires_expression_root_weld_and_shared_actual_bone_host": true
+}

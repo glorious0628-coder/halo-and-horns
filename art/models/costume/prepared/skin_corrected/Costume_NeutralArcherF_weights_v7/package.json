@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "kind": "corrected_preserved_skin_pending",
+  "name": "NeutralArcherF",
+  "skin_glb": "Costume_NeutralArcherF_skin_corrected.glb",
+  "skin_manifest": "Costume_NeutralArcherF_skin_corrected.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "0fb94b04e5eb38102c547b58a2a8002917a874a2ca6d6c8bea7fb6221bfd5029",
+    "skin_manifest": "8cbd0967499b43aaff35edb1f13a781da80729e8085259d8612ee3063b1eda37",
+    "proxy_plan": "c3e765a61dfd966235eb90bbec15c7e3356cf2ad75919197688d236139ceb8b0",
+    "proxy_runtime": "f8c254effc043b17b4cb41dde0de2e39e7361101d6e433a32bc6c8022d2f59e3",
+    "weight_correction_plan": "67159d77a7661e7f23d83ff7ececb12b7f9cecb976ecd98ee78396c047682203"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_NeutralArcherF_rig_0eb31d8c-3641-48a5-b4d5-51f69894d359.glb",
+    "sha256": "12da1a661d2f6afae7c0322427a672930577901d17df40eaf59a4bc184773435"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": false,
+  "maximum_proxy_joint_error": 4.901234014882776e-07,
+  "maximum_actual_armature_lbs_error": 1.4465643286122795e-06,
+  "maximum_target_pose_projection_error": 2.1266416042937365e-06,
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0,
+  "proxy_runtime": "proxy_runtime.json",
+  "weight_correction_plan": "weight_plan.json",
+  "original_benchmark": {
+    "workspace_relative_path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.glb",
+    "sha256": "e9008293bc893ea12bbeb69475db05c900eb829e28a61b3147a39b1f43811f7c"
+  },
+  "changed_skin_vertices": 794,
+  "weight_correction_regions": {
+    "posterior_right_braid": 794
+  },
+  "original_geometry_uv_normals_material_images_preserved": true,
+  "original_binary_prefix_preserved": true,
+  "original_source_bones_bind_preserved": true,
+  "original_source_weights_exact": false,
+  "local_corrected_region_qa_pass": true,
+  "whole_character_engine_quality_claimed": false
+}

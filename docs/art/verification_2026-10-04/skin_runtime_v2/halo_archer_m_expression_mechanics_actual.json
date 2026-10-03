@@ -1,0 +1,297 @@
+[
+  {
+    "label": "assets_trial",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "assets_applied",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "server_pending_guard",
+    "text": "PendingRig rejected before Play-only trial markers",
+    "error": false
+  },
+  {
+    "label": "trial_template",
+    "text": "QA flags on Play-only clone, Edit candidate remains Pending",
+    "error": false
+  },
+  {
+    "label": "install_reader",
+    "text": "actual client module reader installed",
+    "error": false
+  },
+  {
+    "label": "gender",
+    "text": "ok",
+    "error": false
+  },
+  {
+    "label": "choose_FactionPicker.Cards.Card_Halo.Body.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "choose_ClassPicker.Cards.Card_Archer.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "initial",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":120,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[-5.2119140625,1.7197265625,-415.662109375],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_initial",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":171,\"characters\":[{\"scale\":1,\"max_error\":0.00023037218488752842,\"frames\":171}]}",
+    "error": false
+  },
+  {
+    "label": "neutral",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://114282379234661\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"Neutral\"}",
+    "error": false
+  },
+  {
+    "label": "expression_attack",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "after_attack",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://130810730029380\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"Serious\"}",
+    "error": false
+  },
+  {
+    "label": "attack_expiry",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://114282379234661\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"Neutral\"}",
+    "error": false
+  },
+  {
+    "label": "hurt_expression",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "after_hurt",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://130810730029380\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"Serious\"}",
+    "error": false
+  },
+  {
+    "label": "talk_npc",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "talk_G",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "talk",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://96983789676579\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"SoftSmile\"}",
+    "error": false
+  },
+  {
+    "label": "hurt_during_talk",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "hurt_priority",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://130810730029380\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"Serious\"}",
+    "error": false
+  },
+  {
+    "label": "resume_talk",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://96983789676579\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"SoftSmile\"}",
+    "error": false
+  },
+  {
+    "label": "neutral_expired",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://114282379234661\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"Neutral\"}",
+    "error": false
+  },
+  {
+    "label": "remove_npc",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "instance_expression_preload",
+    "text": "[{\"id\":\"rbxassetid://88405558388221\",\"status\":\"Success\",\"texture\":\"rbxassetid://130810730029380\"},{\"id\":\"rbxassetid://130810730029380\",\"status\":\"Success\",\"texture\":\"rbxassetid://130810730029380\"},{\"id\":\"rbxassetid://88405558388221\",\"status\":\"Success\",\"texture\":\"rbxassetid://96983789676579\"},{\"id\":\"rbxassetid://96983789676579\",\"status\":\"Success\",\"texture\":\"rbxassetid://96983789676579\"}]",
+    "error": false
+  },
+  {
+    "label": "growth_probe",
+    "text": "Play-only faction-scale override; real JusticeService applies growth",
+    "error": false
+  },
+  {
+    "label": "preload",
+    "text": "[{\"id\":\"rbxassetid://89266257167687\",\"status\":\"Success\"},{\"id\":\"rbxassetid://94716127504114\",\"status\":\"Success\"},{\"id\":\"rbxassetid://88405558388221\",\"status\":\"Success\"},{\"id\":\"rbxassetid://84211055370691\",\"status\":\"Success\"},{\"id\":\"rbxassetid://106725946673245\",\"status\":\"Success\"},{\"id\":\"rbxassetid://114282379234661\",\"status\":\"Success\"}]",
+    "error": false
+  },
+  {
+    "label": "walk_jump",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "after_walk",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":120,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[3.35546875,1.7197265625,-389.9287109375],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_walk",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":827,\"characters\":[{\"scale\":1,\"max_error\":0.0003380628186278045,\"frames\":827}]}",
+    "error": false
+  },
+  {
+    "label": "mana_charge",
+    "text": "ok",
+    "error": false
+  },
+  {
+    "label": "attack_F",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_F",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":860,\"characters\":[{\"scale\":1,\"max_error\":0.0003380628186278045,\"frames\":860}]}",
+    "error": false
+  },
+  {
+    "label": "attack_Q",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_Q",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1011,\"characters\":[{\"scale\":1,\"max_error\":0.00018715251644607633,\"frames\":19}]}",
+    "error": false
+  },
+  {
+    "label": "scale_2",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "driver_scale_2",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1557,\"characters\":[{\"scale\":2,\"max_error\":0.00022231557522900403,\"frames\":525}]}",
+    "error": false
+  },
+  {
+    "label": "walk_grown",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "driver_scale_2_walk",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":1668,\"characters\":[{\"scale\":2,\"max_error\":0.00022329830972012132,\"frames\":636}]}",
+    "error": false
+  },
+  {
+    "label": "scale_1",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "driver_scale_1",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":2096,\"characters\":[{\"scale\":1,\"max_error\":0.00022329830972012132,\"frames\":1064}]}",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "text": "false",
+    "error": false
+  },
+  {
+    "label": "open_menu",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "toggle_button",
+    "text": "직업 코스튬: ON",
+    "error": false
+  },
+  {
+    "label": "off",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "off_state",
+    "text": "{\"enabled\":false,\"mana\":100,\"hp\":132,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Avatar\",\"hip\":2.224841356277466,\"root\":[12.1552734375,3.240234375,-363.5029296875],\"applied\":false}",
+    "error": false
+  },
+  {
+    "label": "driver_off",
+    "text": "{\"players\":1,\"active\":0,\"faults\":0,\"frames\":2191,\"characters\":[]}",
+    "error": false
+  },
+  {
+    "label": "off_face",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "toggle_button",
+    "text": "직업 코스튬: OFF",
+    "error": false
+  },
+  {
+    "label": "on",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "on_state",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":132,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[12.1552734375,1.7197265625,-363.5029296875],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_on",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":2295,\"characters\":[{\"scale\":1,\"max_error\":0.00019789607904385775,\"frames\":104}]}",
+    "error": false
+  },
+  {
+    "label": "on_face",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://114282379234661\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"Neutral\"}",
+    "error": false
+  },
+  {
+    "label": "close_menu",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "death",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "respawn",
+    "text": "{\"enabled\":true,\"id\":\"Costume_HaloArcherM\",\"mana\":100,\"hp\":132,\"rig\":\"R15\",\"state\":\"Running\",\"scale\":1,\"status\":\"Active\",\"hip\":0.704023003578186,\"root\":[-3.3896484375,1.7197265625,-408.6640625],\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "driver_respawn",
+    "text": "{\"players\":1,\"active\":1,\"faults\":0,\"frames\":2495,\"characters\":[{\"scale\":1,\"max_error\":0.0002494202635716647,\"frames\":177}]}",
+    "error": false
+  },
+  {
+    "label": "respawn_face",
+    "text": "{\"ready\":true,\"face\":\"rbxassetid://114282379234661\",\"status\":\"Active\",\"costume\":\"Costume_HaloArcherM\",\"mesh\":\"rbxassetid://88405558388221\",\"expression\":\"Neutral\"}",
+    "error": false
+  }
+]
