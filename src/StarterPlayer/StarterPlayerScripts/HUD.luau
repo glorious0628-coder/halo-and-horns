@@ -55,7 +55,8 @@ local L = {
 	RowGap = IS_TOUCH and 10 or 8, -- between the squares and above the row
 	Edge = IS_TOUCH and 24 or 16,
 	StatsW = IS_TOUCH and 212 or 280, -- player card
-	StatsH = IS_TOUCH and 68 or 100,
+	StatsH = IS_TOUCH and 110 or 132,
+	PotionH = IS_TOUCH and 64 or 50,
 	StarsH = IS_TOUCH and 22 or 20, -- extra wanted-stars row (Horns)
 	QuestW = IS_TOUCH and 260 or 270,
 	QuestRowH = IS_TOUCH and 58 or 50,
@@ -414,6 +415,52 @@ local function touchFloor(label)
 	return label
 end
 
+-- Keep approved HUD art and the active UIKit font family. Caps are physical pixels, so a large GUI scale
+-- cannot turn small HUD captions into oversized letters. Table members avoid adding chunk locals (200 limit).
+function L.FitText(label, pixels, bold)
+	if not label then return label end
+	ui.textFits = ui.textFits or setmetatable({}, { __mode = "k" })
+	local fit = ui.textFits[label]
+	if not fit then
+		fit = { Truncate = label.TextTruncate, Connections = {} }
+		ui.textFits[label] = fit
+		fit.Apply = function()
+			if not label.Parent then return end
+			local s = currentScale()
+			local minSize = math.max(1, math.min(11, math.floor(11 / s)))
+			local maxSize = math.max(minSize, math.floor(fit.Pixels / s))
+			if fit.Min == minSize and fit.Max == maxSize then return end
+			fit.Min, fit.Max = minSize, maxSize
+			local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
+			if tc then tc.MaxTextSize = 100; tc.MinTextSize = minSize; tc.MaxTextSize = maxSize end
+			if label.AutomaticSize == Enum.AutomaticSize.X or label.AutomaticSize == Enum.AutomaticSize.XY then
+				-- Auto-width pills follow their text; fitting against their previous width would shrink every update.
+				label.TextScaled = false
+				label.TextSize = maxSize
+			else
+				UIKit.FitText(label, minSize, maxSize)
+			end
+			label.TextTruncate = fit.Truncate
+		end
+		table.insert(fit.Connections, label:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit.Apply))
+		table.insert(fit.Connections, label.Destroying:Connect(function()
+			for _, connection in fit.Connections do connection:Disconnect() end
+			ui.textFits[label] = nil
+		end))
+	end
+	fit.Pixels = pixels or 12
+	UIKit.ApplyFont(label, bold and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
+	label.TextWrapped = false
+	label.TextStrokeTransparency = 1
+	label:SetAttribute("PickerMeasureWhole", label.RichText ~= true)
+	local outline = label:FindFirstChild("Outline")
+	if outline and outline:IsA("UIStroke") then outline.Thickness = 0.4; outline.Transparency = 0.65 end
+	label:SetAttribute("PickerOutlineThickness", 0.4)
+	fit.Apply()
+	return label
+end
+HUD.FitText = L.FitText
+
 -- UIKit.InkText (brown ink on parchment) or UIKit.LightText (white / gold on navy, bars, round buttons) + touch floor
 local function artLabel(ink, props)
 	if IS_TOUCH then
@@ -426,7 +473,10 @@ local function artLabel(ink, props)
 	else
 		label = UIKit.LightText(props)
 	end
-	return touchFloor(label)
+	UIKit.ApplyFont(label, props.Title and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
+	local outline = label:FindFirstChild("Outline")
+	if outline and outline:IsA("UIStroke") then outline.Thickness = 0.4; outline.Transparency = 0.65 end
+	return L.FitText(touchFloor(label), props.Title and 13 or 12, props.Title)
 end
 
 local function isImage(obj)
@@ -514,7 +564,7 @@ local function moneyLine(parent, name, icon, x, y, w)
 		Parent = parent,
 	})
 	local tx = img and (x + h + 3) or x
-	return artLabel(false, {
+	return L.FitText(artLabel(false, {
 		Name = name,
 		RichText = true,
 		Position = UDim2.fromOffset(tx, y),
@@ -525,7 +575,7 @@ local function moneyLine(parent, name, icon, x, y, w)
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		Parent = parent,
-	})
+	}), 12)
 end
 
 -- PanelCard (gold rim, navy inside). Desktop: portrait ring + avatar headshot (U7), level badge, title / class, XP
@@ -553,10 +603,12 @@ local function buildStats(root)
 	local face = UIKit.Create("Frame", {
 		Name = "Face",
 		BackgroundTransparency = 1,
+		ClipsDescendants = true,
 		Position = facePos or UDim2.fromScale(0.17, 0.18),
 		Size = faceSize or UDim2.fromScale(0.65, 0.61),
 		Parent = badge,
 	})
+	ui.levelFace = face
 	if IS_TOUCH then
 		-- the number alone: a separate "Lv" would fall under the touch text floor inside the badge
 		ui.level = artLabel(false, {
@@ -570,10 +622,10 @@ local function buildStats(root)
 			Parent = face,
 		})
 	else
-		artLabel(false, {
+		ui.levelTag = artLabel(false, {
 			Name = "Tag",
-			Position = UDim2.fromScale(0, -0.06),
-			Size = UDim2.fromScale(1, 0.42),
+			Position = UDim2.fromScale(0, 0.03),
+			Size = UDim2.fromScale(1, 0.39),
 			TextScaled = true,
 			MaxTextSize = 11,
 			Number = true,
@@ -582,8 +634,8 @@ local function buildStats(root)
 		})
 		ui.level = artLabel(false, {
 			Name = "Level",
-			Position = UDim2.fromScale(0, 0.32),
-			Size = UDim2.fromScale(1, 0.7),
+			Position = UDim2.fromScale(0, 0.47),
+			Size = UDim2.fromScale(1, 0.5),
 			TextScaled = true,
 			MaxTextSize = 20,
 			Number = true,
@@ -592,6 +644,8 @@ local function buildStats(root)
 			Parent = face,
 		})
 	end
+	L.FitText(ui.levelTag, 11)
+	L.FitText(ui.level, IS_TOUCH and 16 or 14, true)
 
 	local x0 = IS_TOUCH and 62 or 80 -- left edge of the XP bar / money column
 	if not IS_TOUCH then
@@ -650,11 +704,13 @@ local function buildStats(root)
 			TextTruncate = Enum.TextTruncate.AtEnd,
 			Parent = f,
 		})
+		L.FitText(ui.title, 13, true)
+		L.FitText(ui.class, 12)
 	end
 
 	-- XP bar on the BarTrack art (bright blue fill)
 	local barW = W - x0 - (IS_TOUCH and 14 or 12)
-	local _, setXP, xpText = UIKit.ArtBar({
+	local xpFrame, setXP, xpText = UIKit.ArtBar({
 		Name = "XPBar",
 		Position = UDim2.fromOffset(x0, IS_TOUCH and 13 or 48),
 		Size = UDim2.fromOffset(barW, IS_TOUCH and 20 or 16),
@@ -663,15 +719,19 @@ local function buildStats(root)
 		Parent = f,
 	})
 	ui.setXP = setXP
+	ui.xpFrame = xpFrame
 	ui.xpText = xpText
+	L.FitText(ui.xpText, 11)
 
 	if IS_TOUCH then
-		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 36, barW)
+		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 78, barW)
 	else
 		local half = math.floor((barW - 6) / 2)
-		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 68, half)
-		ui.carried = moneyLine(f, "Carried", "IconPouch", x0 + half + 6, 68, barW - half - 6)
+		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 104, half)
+		ui.carried = moneyLine(f, "Carried", "IconPouch", x0 + half + 6, 104, barW - half - 6)
 	end
+	C.VitalsUI.BuildStats(f, x0, barW, IS_TOUCH)
+	ui.potions = C.VitalsUI.BuildPotions(root, W, L.PotionH, IS_TOUCH)
 
 	-- Horns: wanted stars (IconStar / IconStarEmpty; ★☆ text without the art) + bounty, under the card's rows
 	local sh = L.StarsH - 4
@@ -715,6 +775,48 @@ local function buildStats(root)
 		Color = Theme.Bad,
 		Parent = ui.stars,
 	})
+	L.FitText(ui.bounty, 12)
+end
+
+function L.LayoutStats(s)
+	local textH = math.ceil(12 / s)
+	local barH = math.max(IS_TOUCH and 20 or 16, textH)
+	local vitalH = math.max(IS_TOUCH and 18 or 16, textH)
+	local xpY = IS_TOUCH and 13 or 48
+	if ui.title then
+		local titleH = math.max(18, math.ceil(14 / s))
+		local classH = math.max(14, textH)
+		local classY = math.max(29, 10 + titleH + 2)
+		ui.title.Size = UDim2.fromOffset(L.StatsW - 138, titleH)
+		ui.class.Position = UDim2.fromOffset(126, classY)
+		ui.class.Size = UDim2.fromOffset(L.StatsW - 138, classH)
+		xpY = math.max(xpY, classY + classH + 4)
+	end
+	if ui.levelTag then
+		-- A tiny badge can hold one readable line. Its original touch fallback already shows just the number.
+		local faceH = ui.levelFace.Size.Y.Scale * ui.levelFace.Parent.Size.Y.Offset * s
+		local split = faceH >= 29.5
+		ui.levelTag.Visible = split
+		ui.level.Position = split and UDim2.fromScale(0, 0.47) or UDim2.fromScale(0, 0)
+		ui.level.Size = split and UDim2.fromScale(1, 0.5) or UDim2.fromScale(1, 1)
+	end
+	ui.xpFrame.Position = UDim2.fromOffset(IS_TOUCH and 62 or 80, xpY)
+	ui.xpFrame.Size = UDim2.fromOffset(ui.xpFrame.Size.X.Offset, barH)
+	local hpY = xpY + barH + (IS_TOUCH and 3 or 2)
+	C.VitalsUI.LayoutStats(hpY, vitalH, 2)
+	local moneyY = hpY + vitalH * 2 + 6
+	local moneyH = math.max(IS_TOUCH and 20 or 18, textH)
+	for _, label in { ui.bank, ui.carried } do
+		label.Position = UDim2.fromOffset(label.Position.X.Offset, moneyY)
+		label.Size = UDim2.fromOffset(label.Size.X.Offset, moneyH)
+	end
+	for _, name in { "BankIcon", "CarriedIcon" } do
+		local icon = ui.stats:FindFirstChild(name)
+		if icon then icon.Position = UDim2.fromOffset(icon.Position.X.Offset, moneyY) end
+	end
+	ui.statsBaseH = math.max(L.StatsH, moneyY + moneyH + 10)
+	ui.stats.Size = UDim2.fromOffset(L.StatsW, ui.statsBaseH + (getFaction() == "Horns" and L.StarsH or 0))
+	ui.stars.Position = UDim2.fromOffset(IS_TOUCH and 12 or 14, ui.statsBaseH - 8)
 end
 
 ----------------------------------------------------------------- building: war meter (top center)
@@ -1045,6 +1147,8 @@ local function buildQuests(root)
 		Text = TXT.QuestExpand,
 		Parent = ui.questHeader,
 	})
+	L.FitText(ui.questHeaderText, 13, true)
+	L.FitText(ui.questChevron, 11)
 
 	local listParent = ui.quests
 	ui.questRowW = L.QuestW
@@ -1099,7 +1203,8 @@ local function buildQuests(root)
 		}, function()
 			toggleQuests(false)
 		end, { CornerRadius = UDim.new(0.5, 0) })
-		touchFloor(closeLabel)
+		L.FitText(ui.questOverlayTitle, 13, true)
+		L.FitText(closeLabel, 12)
 		listParent = ui.questOverlay
 	end
 	ui.questList = UIKit.Create("Frame", {
@@ -1179,7 +1284,7 @@ end
 -- small key badge (U1: keyboards only, never on touch)
 local function keyHint(parent, text, position, anchor)
 	if not SHOW_KEYS then return end
-	UIKit.Create("TextLabel", {
+	L.FitText(UIKit.Create("TextLabel", {
 		Name = "KeyHint",
 		AnchorPoint = anchor,
 		Position = position,
@@ -1199,7 +1304,7 @@ local function keyHint(parent, text, position, anchor)
 			Transparency = 0.15,
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		}),
-	})
+	}), 11)
 end
 
 local toggleAuto, doUpgrade, openMenu, openMap -- forward (defined with the input code)
@@ -1230,6 +1335,7 @@ local function squareButton(name, icon, text, key, onClick)
 		Parent = btn,
 	})
 	keyHint(btn, key, UDim2.new(1, 3, 1, 3), Vector2.new(1, 1))
+	L.FitText(label, 12)
 	return btn, label, img
 end
 
@@ -1263,6 +1369,7 @@ local function buildButtons(root)
 		ZIndex = 4,
 		Parent = ui.attack,
 	})
+	L.FitText(ui.attack:FindFirstChild("Label"), 16, true)
 	keyHint(ui.attack, "F", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
 	-- 발사: gold disc + winged star, charge count badge on the top edge, the charge ring around it
@@ -1321,6 +1428,7 @@ local function buildButtons(root)
 		ZIndex = 4,
 		Parent = rel,
 	})
+	L.FitText(ui.chargeSub, 14, true)
 	ui.chargeTimer = artLabel(false, {
 		Name = "Timer",
 		AnchorPoint = Vector2.new(0.5, 0.5),
@@ -1353,6 +1461,8 @@ local function buildButtons(root)
 		Text = "0",
 		Parent = countBadge,
 	})
+	L.FitText(ui.chargeNum, 14, true)
+	L.FitText(ui.chargeTimer, 16)
 	keyHint(rel, "Q", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
 	-- 자동 / 지도 / 메뉴 (U1: the menu key is B; Esc belongs to Roblox and M opens the map)
@@ -1386,6 +1496,8 @@ local function buildButtons(root)
 		Size = UDim2.fromOffset(iconS, iconS),
 		Parent = ui.upgrade,
 	})
+	ui.upgradeIcon = wood
+	ui.upgradeIconKey = wood and "IconSword" or nil
 	local tx = wood and (iconS + 15) or 10
 	ui.upgradeTitle = artLabel(true, {
 		Name = "Title",
@@ -1431,6 +1543,9 @@ local function buildButtons(root)
 	touchFloor(upgradeText)
 	ui.setUpgrade = setUpgrade
 	ui.upgradeText = upgradeText
+	L.FitText(ui.upgradeTitle, 13, true)
+	L.FitText(ui.upgradePrice, 12)
+	L.FitText(ui.upgradeText, 11)
 	keyHint(ui.upgrade, "U", UDim2.new(1, -4, 0, 4), Vector2.new(1, 0))
 end
 
@@ -1485,7 +1600,7 @@ local function refreshStats()
 			ui.bounty.Text = string.rep("★", stars) .. string.rep("☆", maxStars - stars) .. " " .. bounty
 		end
 	end
-	local h = L.StatsH + (horns and L.StarsH or 0)
+	local h = (ui.statsBaseH or L.StatsH) + (horns and L.StarsH or 0)
 	if ui.stats.Size.Y.Offset ~= h then
 		ui.stats.Size = UDim2.fromOffset(L.StatsW, h)
 		requestLayout()
@@ -1717,6 +1832,31 @@ end
 
 local function refreshUpgrade()
 	local info = upgradeInfo()
+	-- Use the next tier for the current class/faction; missing art keeps the existing sword/text fallback.
+	local iconKey = "IconSword"
+	if type(Config.WeaponArtKey) == "function" then
+		local weaponKey = Config.WeaponArtKey(info.Tier or Config.MaxWeaponTier, getClass(), getFaction())
+		if UIKit.ArtId(weaponKey) then iconKey = weaponKey end
+	end
+	if not UIKit.ArtId(iconKey) then iconKey = nil end
+	if ui.upgradeIconKey ~= iconKey then
+		if ui.upgradeIcon then ui.upgradeIcon:Destroy() end
+		local iconS = L.UpgradeH - 34
+		ui.upgradeIcon = iconKey and UIKit.ArtImage(iconKey, {
+			Name = "Icon",
+			Position = UDim2.fromOffset(9, 7),
+			Size = UDim2.fromOffset(iconS, iconS),
+			Parent = ui.upgrade,
+		}) or nil
+		ui.upgradeIconKey = iconKey
+		local tx = ui.upgradeIcon and (iconS + 15) or 10
+		ui.upgradeTitle.Position = UDim2.fromOffset(tx, 8)
+		ui.upgradeTitle.Size = UDim2.new(1, -tx - 10, 0, 18)
+		if ui.upgradeCoin then ui.upgradeCoin.Position = UDim2.fromOffset(tx, 28) end
+		local px = ui.upgradeCoin and (tx + 20) or tx
+		ui.upgradePrice.Position = UDim2.fromOffset(px, 27)
+		ui.upgradePrice.Size = UDim2.new(1, -px - 10, 0, 18)
+	end
 	local canBuy = false
 	if info.Max then
 		ui.upgradeTitle.Text = TXT.UpgradeMax
@@ -1957,8 +2097,51 @@ end
 
 -- parchment row: quest icon (slime / scroll), kind badge + text, progress bar + coin reward.
 -- 교체 sits top-right and 받기 bottom-right, so the two never share a spot (CR-M24).
+function L.QuestMetrics(s)
+	local r = table.clone(L.Row)
+	r.Badge = math.max(r.Badge, math.ceil(26 / s))
+	r.BadgeH = math.max(r.BadgeH, math.ceil(12 / s))
+	r.Reroll = math.max(r.Reroll, math.ceil(30 / s))
+	r.BtnH = math.max(r.BtnH, math.ceil(16 / s))
+	r.Reward = math.max(r.Reward, math.ceil(50 / s))
+	r.BarH = math.max(r.BarH, math.ceil(12 / s))
+	r.Height = math.max(L.QuestRowH, math.ceil(40 / s), r.BtnH + r.BarH + 14)
+	return r
+end
+
+function L.LayoutQuestRow(r, s)
+	local W, R = ui.questRowW, L.QuestMetrics(s)
+	local H, iconS = R.Height, L.QuestRowH - 20
+	r.Frame.Size = UDim2.fromOffset(W, H)
+	local x0 = r.Icon and (iconS + 14) or 8
+	r.Badge.Position = UDim2.fromOffset(x0, 7)
+	r.Badge.Size = UDim2.fromOffset(R.Badge, R.BadgeH)
+	local textX = x0 + R.Badge + 5
+	r.TextLong = W - textX - 10
+	r.TextShort = W - textX - R.Reroll - 14
+	r.Text.Position = UDim2.fromOffset(textX, 5)
+	r.Text.Size = UDim2.fromOffset(r.Reroll.Visible and r.TextShort or r.TextLong, R.BtnH + 1)
+	local barY, rx = H - R.BarH - 9, W - R.Reward - 8
+	r.Bar.Position = UDim2.fromOffset(x0, barY)
+	r.Bar.Size = UDim2.fromOffset(W - x0 - R.Reward - 14, R.BarH)
+	local cs = R.BarH + 3
+	if r.Coin then
+		r.Coin.Position = UDim2.fromOffset(rx, barY + math.floor((R.BarH - cs) / 2))
+		r.Coin.Size = UDim2.fromOffset(cs, cs)
+	end
+	local tx = r.Coin and (rx + cs + 3) or rx
+	r.Reward.Position = UDim2.fromOffset(tx, barY - 2)
+	r.Reward.Size = UDim2.fromOffset(W - 8 - tx, R.BarH + 4)
+	local claimH = R.BtnH + 4
+	r.Claim.Position = UDim2.fromOffset(rx - 6, H - claimH - 4)
+	r.Claim.Size = UDim2.fromOffset(R.Reward + 10, claimH)
+	r.Reroll.Position = UDim2.fromOffset(W - R.Reroll - 8, 4)
+	r.Reroll.Size = UDim2.fromOffset(R.Reroll, R.BtnH)
+end
+
 local function makeQuestRow(index)
-	local W, H, R = ui.questRowW, L.QuestRowH, L.Row
+	local W, R = ui.questRowW, L.QuestMetrics(currentScale())
+	local H = R.Height
 	local row, isArt = UIKit.ArtFrame("PanelParchment", {
 		Name = "Quest" .. index,
 		LayoutOrder = index,
@@ -1966,7 +2149,7 @@ local function makeQuestRow(index)
 		Parent = ui.questList,
 	})
 	local r = { Frame = row, IsArt = isArt, Entry = nil, Key = nil, LockUntil = 0 }
-	local iconS = H - 20
+	local iconS = L.QuestRowH - 20
 	r.Icon = UIKit.ArtImage("IconScroll", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0, 0.5),
@@ -2007,7 +2190,7 @@ local function makeQuestRow(index)
 		Parent = row,
 	})
 	local barY = H - R.BarH - 9
-	local _, setBar, barText = UIKit.ArtBar({
+	local bar, setBar, barText = UIKit.ArtBar({
 		Name = "Progress",
 		Position = UDim2.fromOffset(x0, barY),
 		Size = UDim2.fromOffset(W - x0 - R.Reward - 14, R.BarH),
@@ -2016,6 +2199,7 @@ local function makeQuestRow(index)
 		Parent = row,
 	})
 	r.SetBar = setBar
+	r.Bar = bar
 	r.BarText = barText
 	-- reward: coin + "+120"
 	local rx = W - R.Reward - 8
@@ -2057,7 +2241,7 @@ local function makeQuestRow(index)
 		onClaim(r)
 	end, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
 	r.Claim = claim
-	touchFloor(claimLabel)
+	L.FitText(claimLabel, 12)
 	-- 교체: small parchment pill (top-right)
 	local reroll, rerollLabel = UIKit.ArtButton("Pill", {
 		Name = "Reroll",
@@ -2073,7 +2257,11 @@ local function makeQuestRow(index)
 		onReroll(r)
 	end, { CornerRadius = UDim.new(0.5, 0) })
 	r.Reroll = reroll
-	r.RerollLabel = touchFloor(rerollLabel)
+	r.RerollLabel = L.FitText(rerollLabel, 11)
+	L.FitText(r.Badge, 11)
+	L.FitText(r.Text, 12)
+	L.FitText(r.BarText, 11)
+	L.FitText(r.Reward, 11)
 	return r
 end
 
@@ -2622,6 +2810,15 @@ applyLayout = function()
 	local abs = gui.AbsoluteSize
 	if abs.X < 10 or abs.Y < 10 then return end
 	local W, H = abs.X / s, abs.Y / s
+	L.LayoutStats(s)
+	ui.questHeader.Size = UDim2.fromOffset(L.QuestW, math.max(L.QuestHeaderH, math.ceil(20 / s)))
+	for _, row in questRows do L.LayoutQuestRow(row, s) end
+	for label in ui.textFits or {} do
+		if label.Name == "KeyHint" then
+			local keyH = math.max(18, math.ceil(12 / s))
+			label.Size = UDim2.fromOffset(keyH, keyH)
+		end
+	end
 	local inset = insetY()
 	local shift = inset / s -- slot-table y values are measured from below the top bar
 	local minTop = (inset + TOP_PAD) / s -- H4 / U4: never above inset + 8 real px
@@ -2660,7 +2857,8 @@ applyLayout = function()
 
 	-- quests right under the card (collapsed by default, so the list stays short)
 	local statsBottom = statsY + ui.stats.Size.Y.Offset
-	ui.quests.Position = UDim2.fromOffset(12, statsBottom + 8)
+	ui.potions.Position = UDim2.fromOffset(12, statsBottom + 4)
+	ui.quests.Position = UDim2.fromOffset(12, statsBottom + L.PotionH + 10)
 
 	-- touch quest overlay (CR-M25): top band, right of the thumbstick zone's x range (U3)
 	if ui.questOverlay then

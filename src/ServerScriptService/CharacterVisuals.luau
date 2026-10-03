@@ -55,6 +55,8 @@ local WATCH = {
 	Rookie = { "Nametag" },
 	BullyStacks = { "Nametag" },
 	SessionTitle = { "Nametag" },
+	Nickname = { "Nametag" },
+	NicknameVerified = { "Nametag" },
 	FallMarks = { "Nametag", "MarkCape", "GrayAura" },
 	RedeemMarks = { "Nametag", "MarkHalo", "GrayAura" },
 	VisualScale = { "NametagOffset" },
@@ -67,7 +69,8 @@ local WATCH = {
 
 -- body parts whose replacement (e.g. R15 appearance loading) requires a rebuild
 local BODY_PARTS = {
-	Head = true, RightHand = true, ["Right Arm"] = true, UpperTorso = true, Torso = true, HumanoidRootPart = true,
+	Head = true, RightHand = true, ["Right Arm"] = true, LeftHand = true, ["Left Arm"] = true,
+	UpperTorso = true, Torso = true, HumanoidRootPart = true,
 }
 
 ------------------------------------------------------------------ state
@@ -266,7 +269,7 @@ local function updateNametag(player, bb)
 		attrNum(player, "RedeemMarks", 0),
 		attrStr(player, "SessionTitle", "")
 	)
-	local line1 = "[" .. tostring(title) .. "] " .. player.DisplayName
+	local line1 = "[" .. tostring(title) .. "] " .. Util.PlayerDisplayName(player)
 	if f == NEUTRAL_ID then
 		line1 = NEUTRAL_EMBLEM .. " " .. line1
 	end
@@ -406,8 +409,8 @@ local function buildFactionMark(player, character)
 end
 
 ------------------------------------------------------------------ WeaponModel
-local function gripCFrame(hand)
-	local att = hand:FindFirstChild("RightGripAttachment")
+local function gripCFrame(hand, left)
+	local att = hand:FindFirstChild(left and "LeftGripAttachment" or "RightGripAttachment")
 	local pos
 	if att and att:IsA("Attachment") then
 		pos = att.WorldPosition
@@ -484,23 +487,44 @@ local function buildBow(grip, sc, w, color)
 	local string_ = accPart({
 		Name = "String", Size = Vector3.new(0.05, H, 0.05) * sc,
 		Color = Color3.new(1, 1, 1),
+		Transparency = 1, -- two strings share a movable nock for the right-hand draw
 		CFrame = base * CFrame.new(0, 0, sag * sc),
 	})
 	table.insert(parts, string_)
+	for _, spec in { { "BowTop", H / 2 }, { "BowBottom", -H / 2 }, { "BowNock", 0 } } do
+		local att = Instance.new("Attachment")
+		att.Name = spec[1]
+		att.Position = Vector3.new(0, spec[2] * sc, 0)
+		att.Parent = string_
+	end
+	for _, name in { "BowTop", "BowBottom" } do
+		local beam = Instance.new("Beam")
+		beam.Name = name .. "String"
+		beam.Attachment0 = string_:FindFirstChild(name)
+		beam.Attachment1 = string_:FindFirstChild("BowNock")
+		beam.Width0 = 0.05 * sc
+		beam.Width1 = 0.05 * sc
+		beam.Color = ColorSequence.new(string_.Color)
+		beam.FaceCamera = true
+		beam.Parent = string_
+	end
 	return parts, main
 end
 
 local function buildWeapon(player, character)
 	clearChild(character, "WeaponModel")
-	local hand = Util.FindPart(character, "RightHand", "Right Arm")
+	local classId = getClass(player)
+	local classDef = Config.Classes[classId] or Config.Classes.Warrior
+	local left = classDef.Weapon == "Bow"
+	local hand = left and Util.FindPart(character, "LeftHand", "Left Arm")
+		or (not left and Util.FindPart(character, "RightHand", "Right Arm"))
 	if not hand then return end
 	local sc = charScale(character)
 	local tier = math.clamp(math.floor(attrNum(player, "WeaponTier", 1)), 1, Config.MaxWeaponTier)
 	local w = Config.Weapons[tier]
 	local f = getFaction(player)
-	local classDef = Config.Classes[getClass(player)] or Config.Classes.Warrior
 	local color = Config.WeaponColor(tier, f)
-	local grip = gripCFrame(hand)
+	local grip = gripCFrame(hand, left)
 
 	local parts, main
 	if classDef.Weapon == "Staff" then
@@ -524,7 +548,22 @@ local function buildWeapon(player, character)
 		sparkle(main, color, 12, 0.35 * sc)
 	end
 
-	mount(newPiece("WeaponModel"), parts, character, hand)
+	local model = newPiece("WeaponModel")
+	model:SetAttribute("Class", classId)
+	model:SetAttribute("GripHand", hand.Name)
+	if main then
+		local muzzle = Instance.new("Attachment")
+		muzzle.Name = "AttackMuzzle"
+		if classDef.Weapon == "Bow" then
+			muzzle.Position = Vector3.new(0, 0, -0.18 * sc)
+		elseif classDef.Weapon == "Staff" then
+			muzzle.Position = Vector3.new(0, main.Size.Y * 0.5, 0)
+		else
+			muzzle.Position = Vector3.new(0, main.Size.Y * 0.5, 0)
+		end
+		muzzle.Parent = main
+	end
+	mount(model, parts, character, hand)
 end
 
 ------------------------------------------------------------------ sacks & ghost

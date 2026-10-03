@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local GuiService = game:GetService("GuiService")
 local UserInputService = game:GetService("UserInputService")
+local TextService = game:GetService("TextService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -17,6 +18,13 @@ local LocalPlayer = Players.LocalPlayer
 local UIKit = {}
 
 UIKit.Gui = nil -- ScreenGui "MainGui", created in Init
+
+-- User-selected replacement from the Creator Store. Shared state keeps large HUD / Fx chunks below the local limit.
+local FONT = { Id = 12187370747, UseTextImages = false, Faces = {}, States = setmetatable({}, { __mode = "k" }), MeasureCache = {}, CacheCount = 0 }
+for _, weight in { Enum.FontWeight.Regular, Enum.FontWeight.Bold, Enum.FontWeight.ExtraBold } do
+	local ok, face = pcall(Font.fromId, FONT.Id, weight, Enum.FontStyle.Normal)
+	FONT.Faces[weight] = ok and face or Font.fromEnum(Enum.Font.GothamBold)
+end
 
 -- faction colours always come from Config (addendum A9-1: Neutral is teal, read from Config, never a hard-coded grey)
 local function configFactionColor(id, fallback)
@@ -40,6 +48,7 @@ UIKit.Theme = {
 	Sack = Config.Visuals.GrudgeSackColor,
 	Revenge = Color3.fromRGB(255, 150, 40),
 	Font = Enum.Font.GothamBold,
+	FontFace = FONT.Faces[Enum.FontWeight.Bold],
 }
 
 local C = nil -- client registry
@@ -109,6 +118,99 @@ local function setProp(inst, key, value)
 	if not ok then
 		warnThrottled("bad property " .. tostring(key) .. " on " .. inst.ClassName .. ": " .. tostring(err))
 	end
+end
+
+local function sameFontFace(a, b)
+	return typeof(a) == "Font" and typeof(b) == "Font"
+		and a.Family == b.Family and a.Weight == b.Weight and a.Style == b.Style
+end
+
+-- Existing Enum.Font choices carry their body / title / number weight into the selected family.
+local function themeFontFace(weightOrEnum)
+	if typeof(weightOrEnum) == "Font" then return weightOrEnum end
+	local weight = Enum.FontWeight.Bold
+	if typeof(weightOrEnum) == "EnumItem" then
+		if weightOrEnum.EnumType == Enum.FontWeight then
+			weight = weightOrEnum.Value >= Enum.FontWeight.ExtraBold.Value and Enum.FontWeight.ExtraBold
+				or (weightOrEnum.Value >= Enum.FontWeight.SemiBold.Value and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
+		elseif weightOrEnum.EnumType == Enum.Font and weightOrEnum ~= Enum.Font.Unknown then
+			local name = weightOrEnum.Name
+			if string.find(name, "Black", 1, true) or string.find(name, "Heavy", 1, true) then
+				weight = Enum.FontWeight.ExtraBold
+			elseif string.find(name, "Bold", 1, true) or name == "FredokaOne" then
+				weight = Enum.FontWeight.Bold
+			else
+				weight = Enum.FontWeight.Regular
+			end
+		end
+	elseif type(weightOrEnum) == "number" then
+		weight = weightOrEnum >= 800 and Enum.FontWeight.ExtraBold
+			or (weightOrEnum >= 600 and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
+	elseif type(weightOrEnum) == "string" then
+		weight = weightOrEnum == "ExtraBold" and Enum.FontWeight.ExtraBold
+			or (weightOrEnum == "Regular" and Enum.FontWeight.Regular or Enum.FontWeight.Bold)
+	end
+	return FONT.Faces[weight]
+end
+
+function UIKit.ApplyFont(textObj, weightOrEnum)
+	if typeof(textObj) ~= "Instance" or not TEXT_CLASSES[textObj.ClassName] then return textObj end
+	local state = FONT.States[textObj]
+	if not state then
+		state = { Connections = {}, Sequence = 0, Dead = false, Writing = false }
+		FONT.States[textObj] = state
+	end
+	if state.Dead then return textObj end
+	local source = weightOrEnum
+	if source == nil then
+		if textObj.Font ~= Enum.Font.Unknown then source = textObj.Font
+		elseif textObj.FontFace.Family == UIKit.Theme.FontFace.Family then source = textObj.FontFace
+		else source = UIKit.Theme.FontFace end
+	end
+	local face = themeFontFace(source)
+	state.Sequence += 1 -- invalidate an older deferred font request
+	state.Writing = true
+	local ok, err = pcall(function()
+		if not sameFontFace(textObj.FontFace, face) then textObj.FontFace = face end
+	end)
+	state.Writing = false
+	if ok then state.Written = face
+	else warnThrottled("font failed: " .. tostring(err)) end
+	return textObj
+end
+
+local function watchFont(textObj)
+	if not TEXT_CLASSES[textObj.ClassName] then return end
+	local state = FONT.States[textObj]
+	if not state then
+		-- Unknown identifies a directly assigned custom FontFace; respect it as an explicit choice.
+		UIKit.ApplyFont(textObj, textObj.Font == Enum.Font.Unknown and textObj.FontFace or textObj.Font)
+		state = FONT.States[textObj]
+	end
+	if state.Watched or state.Dead then return end
+	state.Watched = true
+	local function request()
+		if state.Dead or state.Writing or sameFontFace(textObj.FontFace, state.Written) then return end
+		state.Sequence += 1
+		local sequence = state.Sequence
+		task.defer(function()
+			if state.Dead or state.Sequence ~= sequence or not textObj.Parent then return end
+			if sameFontFace(textObj.FontFace, state.Written) then return end
+			-- Our own FontFace writes report Font.Unknown. An external custom FontFace stays intact.
+			local source = textObj.Font == Enum.Font.Unknown and textObj.FontFace or textObj.Font
+			UIKit.ApplyFont(textObj, source)
+		end)
+	end
+	for _, property in { "Font", "FontFace" } do
+		table.insert(state.Connections, textObj:GetPropertyChangedSignal(property):Connect(request))
+	end
+	table.insert(state.Connections, textObj.Destroying:Connect(function()
+		state.Dead = true
+		state.Sequence += 1
+		for _, connection in state.Connections do connection:Disconnect() end
+		FONT.States[textObj] = nil
+	end))
+	request()
 end
 
 local function playClick()
@@ -194,10 +296,13 @@ function UIKit.Create(className, props, children)
 		for key, value in props do
 			if key == "Parent" then
 				parent = value
-			else
+			elseif not (isText and key == "FontFace") then
 				setProp(inst, key, value)
 			end
 		end
+	end
+	if isText then
+		UIKit.ApplyFont(inst, type(props) == "table" and props.FontFace or inst.Font)
 	end
 	local hasSizeConstraint = false
 	if type(children) == "table" then
@@ -394,13 +499,16 @@ local Art = {
 	},
 	-- ArtButton props that go to its "Label" child instead of the button
 	LabelKeys = {
-		Text = true, TextSize = true, TextColor = true, TextColor3 = true, Font = true, TextStyle = true,
+		Text = true, TextSize = true, TextColor = true, TextColor3 = true, Font = true, FontFace = true, TextStyle = true,
 		MaxTextSize = true,
 	},
 }
 Art.Parts = type(Art.Cfg.Parts) == "table" and Art.Cfg.Parts or {}
 Art.Colors = type(Art.Cfg.Colors) == "table" and Art.Cfg.Colors or {}
 Art.Fonts = type(Art.Cfg.Fonts) == "table" and Art.Cfg.Fonts or {}
+Art.TextLabels = type(Art.Cfg.TextLabels) == "table" and Art.Cfg.TextLabels or {}
+Art.TextBindings = {}
+Art.TextFits = {}
 
 UIKit.ArtColors = Art.Colors -- Config.UIArt.Colors (Ink, Light, GoldText, Parchment, Navy, XPBlue, ...)
 UIKit.ArtFonts = Art.Fonts -- Config.UIArt.Fonts (Title, Body, Number)
@@ -701,6 +809,321 @@ function UIKit.ArtImage(name, props)
 	return img
 end
 
+-- FontFace metrics include Hangul. Each yielding request owns its params; successful results are exact canvas
+-- units and cached. Conservative glyph estimates are used only if the font-bound measurement fails.
+function UIKit.MeasureText(text, size, fontOrFontFace, width)
+	text = tostring(text or "")
+	size = tonumber(size) or 18
+	width = tonumber(width) or 10000
+	if size ~= size or size <= 0 or size == math.huge then size = 18 end
+	if width ~= width or width <= 0 or width == math.huge then width = 10000 end
+	width = math.max(1, width)
+	local face = themeFontFace(fontOrFontFace)
+	local key = face.Family .. "/" .. face.Weight.Name .. "/" .. face.Style.Name
+		.. "/" .. tostring(size) .. "/" .. tostring(width) .. "/" .. text
+	local cached = FONT.MeasureCache[key]
+	if cached then return cached.Y, cached.X, true end
+	local params = nil
+	local ok, measured = pcall(function()
+		params = Instance.new("GetTextBoundsParams")
+		params.Text = text
+		params.Size = size
+		params.Font = face
+		params.Width = width
+		return TextService:GetTextBoundsAsync(params)
+	end)
+	if params then params:Destroy() end
+	if ok and typeof(measured) == "Vector2" and measured.X >= 0 and measured.Y >= 0
+		and measured.X < math.huge and measured.Y < math.huge then
+		if FONT.CacheCount >= 512 then FONT.MeasureCache = {}; FONT.CacheCount = 0 end
+		if FONT.MeasureCache[key] == nil then FONT.CacheCount += 1 end
+		FONT.MeasureCache[key] = measured
+		return measured.Y, measured.X, true
+	end
+	-- Unknown is the normal Enum.Font value of a custom FontFace; never send it to the legacy API.
+	local legacyFont = UIKit.Theme.Font
+	if typeof(fontOrFontFace) == "EnumItem" and fontOrFontFace.EnumType == Enum.Font
+		and fontOrFontFace ~= Enum.Font.Unknown then legacyFont = fontOrFontFace end
+	local legacyOk, legacyMeasured = pcall(function()
+		return TextService:GetTextSize(text, size, legacyFont, Vector2.new(width, 10000))
+	end)
+	local line, widest, lines = 0, 0, 1
+	local valid = pcall(function()
+		for _, code in utf8.codes(text) do
+			if code == 10 then
+				widest, line, lines = math.max(widest, line), 0, lines + 1
+			else
+				local advance = size * (code == 32 and 0.35 or (code < 128 and 0.62 or 1.05))
+				if line > 0 and line + advance > width then
+					widest, line, lines = math.max(widest, line), 0, lines + 1
+				end
+				line += advance
+			end
+		end
+	end)
+	if not valid then line = math.min(width, #text * size); lines = math.max(1, math.ceil(#text * size / width)) end
+	widest = math.max(widest, line)
+	local height = lines * size * 1.25
+	if legacyOk and typeof(legacyMeasured) == "Vector2" then
+		return math.max(height, legacyMeasured.Y), math.max(widest, legacyMeasured.X), false
+	end
+	return height, widest, false
+end
+
+-- TextSize is a canvas size. The rendered picker never goes below the observed physical 11px floor.
+-- Measure the complete text in those physical pixels before comparing it with AbsoluteSize / TextBounds.
+function UIKit.MeasureRenderedText(text, size, fontOrFontFace, scale, width)
+	size, scale = tonumber(size) or 18, tonumber(scale) or 1
+	if scale ~= scale or scale <= 0 or scale == math.huge then scale = 1 end
+	if size ~= size or size <= 0 or size == math.huge then size = 18 end
+	local pixelSize = math.max(MIN_TEXT_SIZE, size * scale)
+	local height, measuredWidth, exact = UIKit.MeasureText(text, pixelSize, fontOrFontFace, width)
+	return height, measuredWidth, exact, pixelSize
+end
+
+-- Designated picker labels only. Start at the layout's maximum and shrink from rendered TextBounds. A label
+-- may request whole FontFace metrics too: clipped/wrapped TextBounds can describe just the visible prefix.
+-- Only successful font-service measurements participate; fallback estimates never pin a label to its minimum.
+function UIKit.FitText(label, minSize, maxSize)
+	local fit = Art.TextFits[label]
+	if not fit then
+		fit = { Connections = {}, Queued = false, Running = false, Pending = false, Reset = false, Dead = false, Version = 0 }
+		Art.TextFits[label] = fit
+		fit.Request = function(reset)
+			if fit.Dead then return end
+			fit.Reset = fit.Reset or reset == true
+			if reset then fit.Version += 1 end
+			if fit.Queued or fit.Running then fit.Pending = true; return end
+			fit.Queued = true
+			task.defer(function()
+				fit.Queued = false
+				if fit.Dead or not label.Parent then return end
+				fit.Running = true
+				pcall(function()
+					local box = label.AbsoluteSize
+					if box.X <= 0 or box.Y <= 0 then return end
+					local size = label.TextSize
+					if fit.Reset then
+						fit.Reset = false
+						label.TextSize = fit.Max
+						-- Measure after the renderer has seen the new maximum, including when it was unchanged.
+						fit.Pending = true
+						return
+					end
+					local bounds = label.TextBounds
+					if label:GetAttribute("PickerMeasureWhole") == true then
+						local text, face, wrapped, version = label.Text, label.FontFace, label.TextWrapped, fit.Version
+						local measuredH, measuredW, exact, pixelSize = UIKit.MeasureRenderedText(text, size, face,
+							inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000)
+						-- Loading a font yields. Never apply an earlier text/layout/font measurement after a reset.
+						if fit.Dead or not label.Parent or fit.Version ~= version or label.Text ~= text
+							or label.FontFace.Family ~= face.Family or label.FontFace.Weight ~= face.Weight
+							or label.FontFace.Style ~= face.Style or label.TextWrapped ~= wrapped
+							or label.TextSize ~= size or label.AbsoluteSize ~= box then return end
+						if exact then
+							bounds = Vector2.new(math.max(bounds.X, measuredW), math.max(bounds.Y, measuredH))
+							label:SetAttribute("PickerFullTextWidth", measuredW)
+							label:SetAttribute("PickerFullTextHeight", measuredH)
+							label:SetAttribute("PickerPhysicalTextSize", pixelSize)
+						end
+					end
+					local padX = label:GetAttribute("PickerFitPaddingX") or 0.5
+					local factor = math.min(1, math.max(1, box.X - padX) / math.max(1, bounds.X),
+						math.max(1, box.Y - 0.25) / math.max(1, bounds.Y))
+					if factor < 1 then size = math.clamp(math.floor(size * factor), fit.Min, fit.Max) end
+					if size ~= label.TextSize then label.TextSize = size; fit.Pending = true end
+					local outline = label:FindFirstChild("Outline")
+					local limit = label:GetAttribute("PickerOutlineThickness")
+					if outline and outline:IsA("UIStroke") and type(limit) == "number" then
+						outline.Thickness = math.min(limit, math.max(0.6, size * (label:GetAttribute("PickerOutlineRatio") or 0.06)))
+					end
+				end)
+				fit.Running = false
+				if not fit.Dead and (fit.Pending or fit.Reset) then fit.Pending = false; fit.Request(false) end
+			end)
+		end
+		for _, property in { "Text", "AbsoluteSize", "TextWrapped", "FontFace" } do
+			table.insert(fit.Connections, label:GetPropertyChangedSignal(property):Connect(function() fit.Request(true) end))
+		end
+		table.insert(fit.Connections, label:GetPropertyChangedSignal("TextBounds"):Connect(function() fit.Request(false) end))
+		table.insert(fit.Connections, label.Destroying:Connect(function()
+			fit.Dead = true
+			for _, connection in fit.Connections do connection:Disconnect() end
+			Art.TextFits[label] = nil
+		end))
+	end
+	-- Picker layout minima include inverse UIScale for card geometry; do not reuse that as a raw font minimum.
+	fit.Min = math.max(1, math.min(math.floor(minSize), MIN_TEXT_SIZE))
+	fit.Max = math.max(fit.Min, math.floor(maxSize))
+	local constraint = label:FindFirstChildOfClass("UITextSizeConstraint")
+	if constraint then constraint.MinTextSize = fit.Min end
+	label.TextScaled = false
+	label.TextTruncate = Enum.TextTruncate.None
+	label.ClipsDescendants = true
+	fit.Request(true)
+	return label
+end
+
+-- Approved C lettering on a designated TextLabel / TextButton. Keep Text and its label intact: only a loaded
+-- ArtImage may cover it. Empty IDs, 403s, pending images, numbers and unknown messages retain the normal text
+-- (IMG-R4). Changing Text automatically selects the exact Config.UIArt.TextLabels match, including reverting
+-- from "발사" to an unknown PERFECT message. Optional hint is a part key or its exact text; it never overrides
+-- a different current message. Returns the original label, so callers can continue using .Text / .TextColor3.
+function UIKit.BindArtText(label, partKeyOrText)
+	-- Pre-rendered glyphs cannot follow a newly selected font. Keep the approved frame art and render its labels.
+	if FONT.UseTextImages == false then return label end
+	if typeof(label) ~= "Instance" or not (label:IsA("TextLabel") or label:IsA("TextButton")) then return label end
+	if Art.TextBindings[label] then
+		Art.TextBindings[label].Hint = partKeyOrText
+		Art.TextBindings[label].Select()
+		return label
+	end
+	local binding = { Hint = partKeyOrText, Connections = {}, Opacity = {}, Ready = false, Dead = false }
+	Art.TextBindings[label] = binding
+
+	local function draw()
+		if binding.Dead then return end
+		local image = binding.Image
+		binding.Ready = image ~= nil and image.IsLoaded
+		if image then image.Visible = false end -- never expose art and the fallback during a state change
+		for _, record in binding.Opacity do
+			if record.Target == label or record.Target.Parent == label then
+				local value = binding.Ready and 1 or record.Base
+				record.Written = value -- set before writing; property events may run now or later
+				if math.abs(record.Target[record.Property] - value) > 0.00001 then
+					record.Target[record.Property] = value
+				end
+			end
+		end
+		if image then
+			image.ImageTransparency = binding.TextOpacity.Base
+			image.Visible = binding.Ready
+		end
+	end
+
+	local function watchOpacity(target, property)
+		local record = { Target = target, Property = property, Base = target[property] }
+		table.insert(binding.Opacity, record)
+		table.insert(binding.Connections, target:GetPropertyChangedSignal(property):Connect(function()
+			if binding.Dead then return end
+			local value = target[property]
+			-- Do not mistake our own hide/restore for a caller's fade; avoids a transparency signal loop.
+			if record.Written ~= nil and math.abs(value - record.Written) <= 0.00001 then return end
+			record.Base = value
+			draw()
+		end))
+		return record
+	end
+	binding.TextOpacity = watchOpacity(label, "TextTransparency")
+	watchOpacity(label, "TextStrokeTransparency")
+	for _, child in label:GetChildren() do
+		if child:IsA("UIStroke") and child.ApplyStrokeMode == Enum.ApplyStrokeMode.Contextual then
+			watchOpacity(child, "Transparency")
+		end
+	end
+	table.insert(binding.Connections, label.ChildAdded:Connect(function(child)
+		if child:IsA("UIStroke") and child.ApplyStrokeMode == Enum.ApplyStrokeMode.Contextual then
+			watchOpacity(child, "Transparency")
+			draw()
+		end
+	end))
+
+	local function layout()
+		local image, def = binding.Image, binding.Definition
+		if binding.Dead or not image or not def then return end
+		local size = typeof(def.ImageRectSize) == "Vector2" and def.ImageRectSize or def.Size
+		local aspect = typeof(size) == "Vector2" and size.Y > 0 and size.X / size.Y or 1
+		local abs = label.AbsoluteSize
+		local x = label.TextXAlignment == Enum.TextXAlignment.Left and 0
+			or (label.TextXAlignment == Enum.TextXAlignment.Right and 1 or 0.5)
+		local y = label.TextYAlignment == Enum.TextYAlignment.Top and 0
+			or (label.TextYAlignment == Enum.TextYAlignment.Bottom and 1 or 0.5)
+		image.AnchorPoint = Vector2.new(x, y)
+		if abs.X > 0 and abs.Y > 0 then
+			local left, right, top, bottom = 0, 0, 0, 0
+			local padding = label:FindFirstChildOfClass("UIPadding")
+			if padding then
+				local scale = inheritedScale(label)
+				left = padding.PaddingLeft.Scale * abs.X + padding.PaddingLeft.Offset * scale
+				right = padding.PaddingRight.Scale * abs.X + padding.PaddingRight.Offset * scale
+				top = padding.PaddingTop.Scale * abs.Y + padding.PaddingTop.Offset * scale
+				bottom = padding.PaddingBottom.Scale * abs.Y + padding.PaddingBottom.Offset * scale
+			end
+			local width = math.max(0, abs.X - left - right)
+			local height = math.min(math.max(0, abs.Y - top - bottom), width / aspect)
+			local constraint = label:FindFirstChildOfClass("UITextSizeConstraint")
+			local cap = not label.TextScaled and label.TextSize or (constraint and constraint.MaxTextSize)
+			if cap then
+				local capScale = Art.TextFits[label] and 1 or inheritedScale(label)
+				height = math.min(height, cap * capScale)
+			end
+			image.Size = UDim2.fromScale(height * aspect / abs.X, height / abs.Y)
+			image.Position = UDim2.fromScale((left + width * x) / abs.X,
+				(top + math.max(0, abs.Y - top - bottom) * y) / abs.Y)
+		else
+			image.Size = UDim2.fromScale(1, 1)
+			image.Position = UDim2.fromScale(x, y)
+		end
+		image.ZIndex = label.ZIndex + 1
+	end
+	local padding = label:FindFirstChildOfClass("UIPadding")
+	if padding then
+		for _, property in { "PaddingLeft", "PaddingRight", "PaddingTop", "PaddingBottom" } do
+			table.insert(binding.Connections, padding:GetPropertyChangedSignal(property):Connect(layout))
+		end
+	end
+	local constraint = label:FindFirstChildOfClass("UITextSizeConstraint")
+	if constraint then
+		table.insert(binding.Connections, constraint:GetPropertyChangedSignal("MaxTextSize"):Connect(layout))
+	end
+
+	binding.Select = function()
+		if binding.Dead then return end
+		local key = Art.TextLabels[label.Text]
+		local hint = Art.TextLabels[binding.Hint] or binding.Hint
+		if hint ~= key then hint = nil end -- exact match only; never discard dynamic suffixes or digits
+		key = hint or key
+		local def = key and artPart(key) or nil
+		if def and binding.Key == key and binding.Image and binding.Image.Image == def.Id then
+			layout()
+			draw()
+			return
+		end
+		if binding.LoadConnection then binding.LoadConnection:Disconnect(); binding.LoadConnection = nil end
+		local previous = binding.Image
+		if previous then previous.Visible = false end
+		binding.Image, binding.Definition, binding.Key = nil, nil, key
+		draw() -- restore the font before destroying an old image or starting a different request
+		if previous then previous:Destroy() end
+		if not def then return end
+		local ok, image = pcall(UIKit.ArtImage, key, {
+			Name = "ArtText", Size = UDim2.fromScale(1, 1), ZIndex = label.ZIndex + 1,
+			ImageRectOffset = def.ImageRectOffset or Vector2.zero,
+			ImageRectSize = def.ImageRectSize or Vector2.zero,
+			Visible = false, Active = false, Parent = label,
+		})
+		if not ok or not image then return end
+		binding.Image, binding.Definition = image, def
+		binding.LoadConnection = image:GetPropertyChangedSignal("IsLoaded"):Connect(function()
+			if binding.Image == image then draw() end
+		end)
+		layout()
+		draw()
+	end
+	table.insert(binding.Connections, label:GetPropertyChangedSignal("Text"):Connect(binding.Select))
+	for _, property in { "AbsoluteSize", "TextXAlignment", "TextYAlignment", "TextSize", "TextScaled", "ZIndex" } do
+		table.insert(binding.Connections, label:GetPropertyChangedSignal(property):Connect(layout))
+	end
+	table.insert(binding.Connections, label.Destroying:Connect(function()
+		binding.Dead = true
+		if binding.LoadConnection then binding.LoadConnection:Disconnect() end
+		for _, connection in binding.Connections do connection:Disconnect() end
+		Art.TextBindings[label] = nil
+	end))
+	binding.Select()
+	return label
+end
+
 -- art frame (an ImageLabel; children go inside it) or, when the part is missing, the code-drawn panel: Frame +
 -- UICorner + UIStroke "Stroke" (IMG-R4). BackgroundColor3 / BackgroundTransparency in props are ignored; the fallback
 -- look comes from fallbackProps (BackgroundColor3 or Color, BackgroundTransparency, CornerRadius, Stroke = false,
@@ -763,6 +1186,7 @@ local function artButtonLabel(btn, def, props)
 		lp.Color = props.TextColor
 	end
 	if props.Font ~= nil then lp.Font = props.Font end
+	if props.FontFace ~= nil then lp.FontFace = props.FontFace end
 	if style == "ink" then
 		return UIKit.InkText(lp)
 	end
@@ -1332,6 +1756,9 @@ function UIKit.Init(registry)
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	gui.DisplayOrder = 10
 	UIKit.Gui = gui
+	-- Includes text created directly by HUD / panels / map modules after UIKit.Init.
+	gui.DescendantAdded:Connect(watchFont)
+	for _, descendant in gui:GetDescendants() do watchFont(descendant) end
 
 	uiScale = Instance.new("UIScale")
 	uiScale.Name = "UIScale"

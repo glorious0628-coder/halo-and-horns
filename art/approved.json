@@ -41,7 +41,9 @@
  },
  "Skeleton": {
   "status": "approved",
-  "file": "art/out/Skeleton.png"
+  "file": "art/out/Skeleton_Clothed.png",
+  "previousFile": "art/out/Skeleton.png",
+  "note": "2026-10-03 사용자 선택: 해골은 옷을 입힘. 해골·해골 왕 3D 90크레딧 승인."
  },
  "GoldenGoose": {
   "status": "approved",
@@ -54,7 +56,9 @@
  },
  "SkeletonKing": {
   "status": "approved",
-  "file": "art/out/SkeletonKing.png"
+  "file": "art/out/SkeletonKing_Clothed.png",
+  "previousFile": "art/out/SkeletonKing.png",
+  "note": "2026-10-03 해골·해골 왕 옷 입힌 3D 제작 총 90크레딧 승인."
  },
  "UI_HUD_Final": {
   "status": "approved",
@@ -91,5 +95,32 @@
  "UI_Lettering_B": {
   "status": "not_selected",
   "file": "art/out/UI_Lettering_B.png"
+ },
+ "UI_Faction_Layout_A": {
+  "status": "approved",
+  "file": "art/out/UI_Faction_Layout_A.png",
+  "approvedDate": "2026-10-03",
+  "note": "사용자가 A안 선택. 중앙 제목 → 넓은 3문장 설명 → 중앙 진영 카드 3개 → 하단 안내. 나눔고딕 적용, 기존 부품 그림 유지."
+ },
+ "Motion_Class_Attacks_A": {
+  "status": "approved",
+  "file": "art/out/Motion_Class_Attacks_A.png",
+  "note": "사용자 직업별 전사·궁수·마법사 모션 시안 승인 (좋았으), 2026-10-03"
+ },
+ "UI_HUD_Vitals_A": {
+  "status": "approved",
+  "file": "art/out/UI_HUD_Vitals_A.png",
+  "approvedDate": "2026-10-03",
+  "note": "HP/MP바+물약 GPT 시안 승인 (어휴 너무 좋지). 기존 HUD 유지, 카드 아래 물약, 퀘스트 아래로."
+ },
+ "UIP_IconPotionHP": {
+  "status": "approved",
+  "file": "art/out/UIP_IconPotionHP.png",
+  "note": "승인된 HP/MP HUD 시안의 물약 병 그대로. root 한장씩 검사/사용자 표시 후 업로드."
+ },
+ "UIP_IconPotionMP": {
+  "status": "approved",
+  "file": "art/out/UIP_IconPotionMP.png",
+  "note": "승인된 HP/MP HUD 시안의 물약 병 그대로. root 한장씩 검사/사용자 표시 후 업로드."
  }
 }

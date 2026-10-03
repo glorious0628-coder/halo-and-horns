@@ -61,6 +61,7 @@ local T = {
 	Titles = {
 		Menu = "메뉴", Travel = "이동", Rebirth = "전향 환생", Altar = "운명의 제단",
 		Class = "직업 변경", Shop = "변경권 상점", Vacation = "휴가 보너스",
+		Nickname = "게임 닉네임",
 	},
 	Back = "← 메뉴",
 	Close = "X",
@@ -71,6 +72,14 @@ local T = {
 	MenuClass = "직업 변경",
 	MenuShop = "변경권 상점",
 	MenuVacation = "휴가 보너스",
+	MenuNickname = "게임 닉네임",
+	MenuCostumeOn = "직업 코스튬: ON",
+	MenuCostumeOff = "직업 코스튬: OFF",
+	MenuCostumePreparing = "직업 코스튬: 준비 중 (켜짐)",
+	MenuCostumeWaitingOn = "직업 코스튬: 처리 대기 (켜짐)",
+	MenuCostumeWaitingOff = "직업 코스튬: 처리 대기 (꺼짐)",
+	MenuCostumeError = "직업 코스튬: 적용 실패 (켜짐)",
+	CostumePreparing = { MissingTemplate = true, InvalidRig = true, WaitingAnimation = true, WaitingAppearance = true },
 	MenuAltarHint = "진영 변경은 교차로 마을의 운명의 제단에서!",
 	-- travel
 	TravelGo = "이동",
@@ -186,6 +195,8 @@ local inputGuardUntil = 0 -- CR-L26: os.clock() before which panel buttons / car
 local lastWarnAt = -math.huge
 local cameraConn = nil
 local scaleConn = nil
+local NICK = { UI = nil, Draft = nil, Message = "", Pending = false, Request = 0,
+	Rule = "2~20글자 · 다른 사람과 중복 불가", Unavailable = "저장 연결을 확인해 주세요." }
 
 local disabledButtons = setmetatable({}, { __mode = "k" })
 local baseColors = setmetatable({}, { __mode = "k" })
@@ -782,6 +793,10 @@ local function layoutRoot()
 	local w, h, top, s = canvas(root.Parent)
 	root.Position = UDim2.fromOffset(0, 0)
 	root.Size = UDim2.fromOffset(w, h)
+	if currentId == "Nickname" and NICK.UI then
+		NICK.Layout(w, h, top, s)
+		return
+	end
 	local availH = math.max(220, h - top - 12)
 	local winW = math.max(280, math.min(WINDOW_MAX_W, w - 24))
 	local winH = math.min(WINDOW_MAX_H, availH)
@@ -888,6 +903,8 @@ BUILDERS.Menu = function(parent)
 		{ Text = T.MenuClass, Id = "Class" },
 		{ Text = T.MenuShop, Id = "Shop" },
 		{ Text = "지도", Id = "Map" },
+		{ Text = T.MenuCostumeOn, Id = "Costume" },
+		{ Text = T.MenuNickname, Id = "Nickname" },
 	}
 	if num("VacationDays") > 0 then
 		table.insert(entries, { Text = T.MenuVacation, Id = "Vacation" })
@@ -909,7 +926,7 @@ BUILDERS.Menu = function(parent)
 	gl.Parent = grid
 	grid.Parent = parent
 
-	local rebirthBtn = nil
+	local rebirthBtn, costumeBtn = nil, nil
 	for _, e in entries do
 		local id = e.Id
 		local color = (id == "Vacation") and PALETTE.Free or PALETTE.Button
@@ -917,18 +934,36 @@ BUILDERS.Menu = function(parent)
 			if id == "Map" then
 				local wm = C and C.WorldMap
 				if wm and wm.Open then wm.Open() end
+			elseif id == "Costume" then
+				fire("SetCostume", player:GetAttribute("CostumeEnabled") == false)
 			else
 				openSub(id)
 			end
 		end)
 		b.TextSize = 22
 		if id == "Rebirth" then rebirthBtn = b end
+		if id == "Costume" then costumeBtn = b end
 	end
 
 	addText(parent, T.MenuAltarHint, { Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 	addText(parent, Config.Story.MarkLore, { Color = theme.SubText, Size = 16, Align = Enum.TextXAlignment.Center })
 
 	return function()
+		if costumeBtn then
+			local enabled = player:GetAttribute("CostumeEnabled") ~= false
+			local status = player:GetAttribute("CostumeStatus")
+			if status == "Deferred" or (not enabled and player:GetAttribute("CostumeApplied") == true) then
+				costumeBtn.Text = enabled and T.MenuCostumeWaitingOn or T.MenuCostumeWaitingOff
+			elseif not enabled then
+				costumeBtn.Text = T.MenuCostumeOff
+			elseif T.CostumePreparing[status] then
+				costumeBtn.Text = T.MenuCostumePreparing
+			elseif status == "Error" then
+				costumeBtn.Text = T.MenuCostumeError
+			else
+				costumeBtn.Text = T.MenuCostumeOn
+			end
+		end
 		if not rebirthBtn then return end
 		local ready = num("Level") >= Config.RebirthLevel(num("Rebirths"))
 		rebirthBtn.Text = ready and T.MenuRebirthReady or T.MenuRebirth
@@ -1509,7 +1544,13 @@ function Panels.Start()
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(hookCamera)
 
 	player.AttributeChanged:Connect(function(name)
-		if currentId and REBUILD_ATTRS[name] then queueRebuild() end
+		if currentId and REBUILD_ATTRS[name] then
+			queueRebuild()
+		elseif currentId == "Menu" and currentUpdate
+			and (name == "CostumeStatus" or name == "CostumeEnabled" or name == "CostumeApplied") then
+			local ok, err = pcall(currentUpdate)
+			if not ok then warnThrottled("costume status update error: " .. tostring(err)) end
+		end
 	end)
 
 	task.spawn(function()

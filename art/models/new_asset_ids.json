@@ -1,0 +1,71 @@
+{
+  "accountReuploadDate": "2026-10-03",
+  "models": {
+    "Slime": {
+      "Height": 5,
+      "Meshes": [
+        {
+          "ColorMap": "rbxassetid://85133491981131",
+          "NormalMap": "rbxassetid://70661050573018",
+          "Name": "tripo_mesh_9212a88b-1b2f-4a13-a06d-d8175eafb8d4",
+          "TextureID": "",
+          "MeshId": "rbxassetid://115793401832497",
+          "MetalnessMap": "rbxassetid://94517547030358",
+          "RoughnessMap": "rbxassetid://118777393276075"
+        }
+      ],
+      "Name": "Slime"
+    },
+    "GoldenGoose": {
+      "Height": 6.900000095367432,
+      "Meshes": [
+        {
+          "ColorMap": "rbxassetid://136242034248705",
+          "NormalMap": "rbxassetid://90673661592887",
+          "Name": "tripo_mesh_46ff9012-da22-4bae-ab87-5820a6fcd509",
+          "TextureID": "",
+          "MeshId": "rbxassetid://103986277289881",
+          "MetalnessMap": "rbxassetid://72375642241322",
+          "RoughnessMap": "rbxassetid://84492255505283"
+        }
+      ],
+      "Name": "GoldenGoose"
+    },
+    "SkeletonKnight": {
+      "Height": 7,
+      "Meshes": [
+        {
+          "ColorMap": "rbxassetid://114240529031835",
+          "NormalMap": "rbxassetid://76736731027085",
+          "Name": "tripo_mesh_8e643ed8-7e46-4e3f-bd9b-1305baf484f6",
+          "TextureID": "",
+          "MeshId": "rbxassetid://81089053356642",
+          "MetalnessMap": "rbxassetid://113935327693502",
+          "RoughnessMap": "rbxassetid://97006467269661"
+        }
+      ],
+      "Name": "SkeletonKnight"
+    }
+  },
+  "costumeModels": {
+    "Costume_HaloWarriorM": {
+      "PlayableRig": false,
+      "Meshes": [
+        {
+          "Name": "tripo_mesh_6d5b6a77-5ad7-41ca-b415-05ee9c3a24b5",
+          "Parent": "Costume_HaloWarriorM",
+          "MeshId": "rbxassetid://102726207197730",
+          "TextureID": "rbxassetid://108042005937918"
+        },
+        {
+          "Name": "tripo_mesh_6d5b6a77-5ad...ca-b415-05ee9c3a24b5.001",
+          "Parent": "Costume_HaloWarriorM",
+          "MeshId": "rbxassetid://76317352209827",
+          "TextureID": "rbxassetid://118681197837655"
+        }
+      ],
+      "Name": "Costume_HaloWarriorM",
+      "Height": 5.5
+    }
+  }
+}

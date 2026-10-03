@@ -6,16 +6,16 @@ local Net = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Net")
 Net.CreateAll() -- remotes + GameState folder exist before anything else runs
 
 local INIT_ORDER = {
-	"DataService", "PlayerService", "MonetizationService", "MapBuilder", "ZoneService", "FactionService",
-	"ClassService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
+	"DataService", "PlayerService", "NicknameService", "MonetizationService", "MapBuilder", "ZoneService", "FactionService",
+	"ClassService", "CostumeService", "VitalsService", "ExpressionService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
 	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "CharacterVisuals",
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
 local START_ORDER = {
-	"MapBuilder", "ZoneService", "FactionService", "ClassService", "JusticeService", "ProgressionService",
+	"MapBuilder", "ZoneService", "FactionService", "ClassService", "CostumeService", "VitalsService", "ExpressionService", "JusticeService", "ProgressionService",
 	"CombatService", "MonsterService", "PvPService", "GrudgeService", "WarService", "KaijuService", "GooseService",
-	"ShopService", "QuestService", "MonetizationService", "CharacterVisuals", "DataService", "PlayerService",
+	"ShopService", "QuestService", "MonetizationService", "CharacterVisuals", "DataService", "NicknameService", "PlayerService",
 }
 
 local S = {}
@@ -55,7 +55,26 @@ if game:GetService("RunService"):IsStudio() then
 	debugFn.OnInvoke = function(playerName, key, value)
 		local player = game:GetService("Players"):FindFirstChild(playerName)
 		if not player or not S.PlayerService.IsReady(player) then return "no such ready player" end
-		if key == "Gold" then
+		if key == "Nickname" then
+			S.NicknameService.SetNickname(player, value) -- actual live registry, including filtering/global reservation
+			return player:GetAttribute("NicknameStatus")
+		elseif key == "Mana" then
+			S.VitalsService.DebugSetMana(player, value)
+		elseif key == "Charge" then
+			return S.CombatService.DebugSetCharge(player, value) and "ok" or "invalid charge"
+		elseif key == "CostumePilot" then
+			local data = S.PlayerService.GetData(player)
+			if value ~= "Costume_HaloWarriorM" or not data or data.Faction ~= "Halo"
+				or data.Class ~= "Warrior" or data.CharacterGender ~= "M" or not data.ClassChosen then
+				return "select male Halo Warrior for pilot"
+			end
+			local folder = game:GetService("ServerStorage"):FindFirstChild("CostumePendingRigs")
+			local rig = folder and folder:FindFirstChild(value)
+			if not S.CostumeService.ValidateTemplate(rig) then return "invalid pending pilot" end
+			local sharedConfig = require(ReplicatedStorage.Shared.Config)
+			sharedConfig.Costumes.TemplateFolder = "CostumePendingRigs" -- this Play session only
+			S.CostumeService.RequestRefresh(player)
+		elseif key == "Gold" then
 			S.ProgressionService.AddCarriedGold(player, value, "Other")
 		elseif key == "Stars" then
 			S.PvPService.DebugSetStars(player, value)

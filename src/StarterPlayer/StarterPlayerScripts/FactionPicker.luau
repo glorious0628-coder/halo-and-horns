@@ -1,8 +1,8 @@
 -- FactionPicker.luau : first-join faction choice with the crown-shard premise.
 -- Visible exactly when DataLoaded == true and Faction == "None". Three cards: 빛의 기사단 / 뿔 군단 / 장인 길드
 -- (SPEC_ADDENDUM A6). One tap on "이 편으로!" sends ChooseFaction; no confirm, no draw animation (A7-4).
--- Look = GPT mockup art/out/UI_Faction_B.png (addendum A14-3): premise lines on a parchment strip, "어느 편에 설래요?"
--- on the title ribbon, three text-free faction card images (Config.UIArt.Parts.Card<Faction>, regions in
+-- Look = the user's selected centred A composition: title ribbon, a wide three-line premise strip, three cards
+-- and the altar note beneath. The original text-free faction card images (Config.UIArt.Parts.Card<Faction>, regions in
 -- Config.UIArt.CardLayout) holding the name, the one-line lore, the motto, four perk rows (Config.UIArt.FactionPerks)
 -- and the baked "이 편으로!" button, then the altar note. A missing card id or layout draws the old code-styled card
 -- instead (IMG-R4), so the picker never breaks.
@@ -56,14 +56,21 @@ local LAY = {
 	Gap = 12, -- between cards
 	CardMaxH = 640,
 	Lift = 0.04, -- room around the cards for the hover scale + glow (fraction of the card height)
-	-- a card shorter than NeedCardK x the min text size cannot hold the motto / perk lines: the cards then take the
-	-- full screen height (premise, title and note move into a left column) or the row scrolls sideways
+	-- Only a narrow touch viewport uses larger cards and a sideways scroll; desktop A always shows all cards.
 	NeedCardK = 26,
-	PremiseMaxW = 820,
-	TitleFrac = 0.13, TitleMin = 40, TitleMax = 140, -- title ribbon height = canvas height * TitleFrac
-	TextFrac = 0.02, TextMax = 20, -- premise / note text size = canvas height * TextFrac
+	PremiseMaxW = 1600, PremiseFrac = 0.66,
+	TitleFrac = 0.10, TitleMin = 40, TitleMax = 140, -- compact ribbon on short viewports
+	TextFrac = 0.021, TextMax = 16, -- physical caption target; preserve the three sentences above the cards
+	LoreShort = { Halo = "후광을 얻은 자들.", Horns = "뿔을 얻은 자들.", Neutral = "조각을 다듬는 자들." },
+	LoreTiny = { Horns = { "뿔을 얻었어요.", "뿔을얻었어요." }, Neutral = "조각장인들." },
+	MottoShort = { Halo = "지키고, 치유해, 되찾아라!", Horns = "털고, 버텨, 괴수가 돼라!", Neutral = "줍지 말고 다듬어 만들어라!" },
+	MottoTiny = { Halo = "지키고되찾아라!", Horns = "털고버텨괴수가돼라!", Neutral = "다듬고만들어라!" },
+	PerkTiny = {
+		Halo = { "경험치+30%", "체력+20%·회복", "동료치유", "골드자동지급" },
+		Horns = { "골드+25%", { "공격+15%·흡혈", "공격+15% 흡혈", "공격+15%흡혈" }, { "발사게이지175", "발사175" }, "별5개괴수변신" },
+		Neutral = { "싸움버프없음", "안전(PvP없음)", "약탈·수배없음", { "제작특화(준비중)", "제작특화준비중", "제작특화(준비)", "제작특화준비" } },
+	},
 	TitleText = { 0.17, 0.08, 0.66, 0.6 }, -- text box inside UIP_TitleRibbon (fractions of the ribbon)
-	SideMinW = 700, SideColFrac = 0.27, SideColMin = 220, SideColMax = 340, -- short screens (landscape phones)
 	TouchTarget = 44, -- real px of the invisible hit areas and the code-styled choose buttons (CR-L41)
 	FixedTextMin = 15, -- CR-L40: min TextSize of non-scaled code-card text (>= 11 real px under a 0.75 UIScale)
 	HoverScale = 1.03,
@@ -85,9 +92,9 @@ local LAY = {
 -- per-faction text style on the card art ("ink" = brown on parchment, "light" = white with a dark outline,
 -- "gold" = gold with a dark outline like the "어느 편에 설래요?" title)
 local CARD_STYLE = {
-	Halo = { Title = "gold", Motto = "light", Perks = "ink", Button = "light" },
+	Halo = { Title = "ink", Motto = "light", Perks = "ink", Button = "light" },
 	Horns = { Title = "light", Motto = "light", Perks = "light", Button = "light" },
-	Neutral = { Title = "gold", Motto = "light", Perks = "ink", Button = "light" },
+	Neutral = { Title = "ink", Motto = "light", Perks = "ink", Button = "light" },
 }
 
 -- Neutral fallbacks (A6 / A9-1 teal), used only if Config lacks the entries
@@ -281,6 +288,14 @@ local function corner(obj, radius)
 	c.Parent = obj
 end
 
+local function applyFont(label, font)
+	local title = font == Enum.Font.GothamBlack or font == Art.Fonts.Title
+	if UIKit and type(UIKit.ApplyFont) == "function" then
+		pcall(UIKit.ApplyFont, label, title and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
+	end
+	return label
+end
+
 local function newLabel(parent, props, maxText)
 	local l = Instance.new("TextLabel")
 	l.BackgroundTransparency = 1
@@ -291,6 +306,7 @@ local function newLabel(parent, props, maxText)
 	for k, v in props do
 		l[k] = v
 	end
+	applyFont(l, l.Font)
 	l.TextSize = math.max(l.TextSize, LAY.FixedTextMin) -- CR-L40 (the TextLabel default is 14)
 	constrainText(l, maxText)
 	l.Parent = parent
@@ -347,6 +363,7 @@ local function makeButton(parent, text, color, textColor, onClick)
 		btn = b
 	end
 	btn.Name = "ChooseButton"
+	applyFont(btn, theme.Font)
 	btn.Text = text
 	btn.TextWrapped = true
 	if not btn:FindFirstChildOfClass("UITextSizeConstraint") then constrainText(btn, 28) end
@@ -403,7 +420,16 @@ end
 
 -- wrapped text bounds (height, width) at a TextSize inside `width` canvas units
 local function textBounds(text, size, font, width)
+	if UIKit and type(UIKit.MeasureText) == "function" then return UIKit.MeasureText(text, size, font, width) end
 	local ok, v = pcall(function()
+		if typeof(font) == "Font" then
+			local params = Instance.new("GetTextBoundsParams")
+			params.Text, params.Size, params.Font, params.Width = text, size, font, math.max(1, width)
+			local bounds = TextService:GetTextBoundsAsync(params)
+			params:Destroy()
+			return bounds
+		end
+		if font == Enum.Font.Unknown then error("FontFace가 필요합니다.") end
 		return TextService:GetTextSize(text, size, font, Vector2.new(math.max(1, width), 10000))
 	end)
 	if ok and typeof(v) == "Vector2" then return v.Y, v.X end
@@ -413,7 +439,15 @@ local function textBounds(text, size, font, width)
 	return math.ceil(chars / perLine) * size * 1.25, math.min(width, chars * size)
 end
 
+local function renderedBounds(text, size, font, scale, width)
+	if UIKit and type(UIKit.MeasureRenderedText) == "function" then
+		return UIKit.MeasureRenderedText(text, size, font, scale, width)
+	end
+	return textBounds(text, math.max(MIN_TEXT, size * scale), font, width)
+end
+
 local function place(obj, x, y, w, h)
+	if obj.Parent and obj.Parent:GetAttribute("PickerTextClip") == true then obj = obj.Parent end
 	obj.Position = UDim2.fromOffset(x, y)
 	obj.Size = UDim2.fromOffset(math.max(0, w), math.max(0, h))
 end
@@ -445,15 +479,33 @@ local function newImage(parent, name, z)
 end
 
 -- transparent, wrapped, TextScaled label with a UITextSizeConstraint (range set by setTextRange on layout)
-local function artLabel(parent, name, z, font)
+local function artLabel(parent, name, z, font, clipped)
+	if clipped then
+		local clip = Instance.new("Frame")
+		clip.Name = name .. "Clip"
+		clip.BackgroundTransparency = 1
+		clip.BorderSizePixel = 0
+		clip.Size = UDim2.fromScale(1, 1)
+		clip.ClipsDescendants = true
+		clip.ZIndex = z or 1
+		clip:SetAttribute("PickerTextClip", true)
+		clip.Parent = parent
+		parent = clip
+	end
 	local l = Instance.new("TextLabel")
 	l.Name = name
 	l.BackgroundTransparency = 1
 	l.BorderSizePixel = 0
 	l.Font = font or artFont("Body", Enum.Font.GothamBold)
+	applyFont(l, l.Font)
 	l.Text = ""
 	l.TextScaled = true
 	l.TextWrapped = true
+	l.TextTruncate = Enum.TextTruncate.None
+	l.TextXAlignment = Enum.TextXAlignment.Center
+	l:SetAttribute("PickerFit", true)
+	l:SetAttribute("PickerMeasureWhole", true)
+	if clipped then l.Size = UDim2.fromScale(1, 1) end
 	l.ZIndex = z or 1
 	constrainText(l, 64)
 	l.Parent = parent
@@ -467,12 +519,15 @@ local function setTextRange(label, minT, maxT)
 		c = Instance.new("UITextSizeConstraint")
 		c.Parent = label
 	end
-	local lo = math.clamp(math.floor(minT), 1, 100)
+	local lo = math.clamp(math.floor(label:GetAttribute("PickerFit") and MIN_TEXT or minT), 1, 100)
 	local hi = math.clamp(math.floor(maxT), lo, 100)
 	c.MaxTextSize = 100 -- widen first so Min never exceeds Max mid-update
 	c.MinTextSize = lo
 	c.MaxTextSize = hi
 	label.TextSize = hi
+	if label:GetAttribute("PickerFit") and UIKit and type(UIKit.FitText) == "function" then
+		UIKit.FitText(label, lo, hi)
+	end
 end
 
 -- storybook text look (same colours as UIKit.InkText / LightText): "ink", "light" or "gold" + a UIStroke "Outline"
@@ -494,14 +549,18 @@ local function styleText(label, style, thickness)
 		st.Parent = label
 	end
 	st.Color = ink and artColor("InkOutline", Color3.fromRGB(255, 247, 228)) or artColor("TextOutline", Color3.fromRGB(34, 20, 10))
-	st.Transparency = ink and 0.3 or 0
-	st.Thickness = thickness or (ink and (tonumber(ART.OutlineInk) or 1) or (tonumber(ART.OutlineLight) or 1.5))
+	st.Thickness = ink and 0 or math.min(thickness or 0.5, 0.6)
+	st.Transparency = st.Thickness == 0 and 1 or 0.45
+	label:SetAttribute("PickerOutlineThickness", st.Thickness)
 end
 
--- the heavy mockup outline of the big card texts (name, button label): about 8 % of the text size
+-- Keep the native Nanum letters filled and the selected art visible; large text uses only a thin outline.
 local function boldOutline(label, size)
+	if label:GetAttribute("PickerOutlineThickness") == 0 then return end
 	local st = label:FindFirstChild("Outline")
-	if st and st:IsA("UIStroke") then st.Thickness = math.clamp(size * 0.08, 2, 4) end
+	if st and st:IsA("UIStroke") then st.Thickness = math.clamp(size * 0.02, 0.3, 0.6) end
+	label:SetAttribute("PickerOutlineThickness", 0.6)
+	label:SetAttribute("PickerOutlineRatio", 0.02)
 end
 
 -- 9-slice art panel (UIKit.ArtImage fits the slice edges) or a code-drawn parchment panel when the part is missing
@@ -701,13 +760,13 @@ local function buildArtCard(c, id, lay, img, imageId)
 	local name = artLabel(body, "FactionName", 3, titleFont)
 	name.Text = tostring(def.Name or id)
 	name.TextWrapped = false
-	styleText(name, style.Title, 2)
-	local desc = artLabel(body, "Desc", 3)
+	styleText(name, style.Title, 0)
+	local desc = artLabel(body, "Desc", 3, nil, true)
 	desc.Text = shortLore(id)
 	desc.TextScaled = false -- sized by layoutDesc: one small line, two only when one cannot fit
 	desc.TextWrapped = false
 	styleText(desc, "ink")
-	local motto = artLabel(body, "Motto", 3, titleFont)
+	local motto = artLabel(body, "Motto", 3, nil, true)
 	motto.Text = tostring(def.Pitch or "")
 	motto.TextWrapped = false
 	styleText(motto, style.Motto, 1.5)
@@ -719,6 +778,7 @@ local function buildArtCard(c, id, lay, img, imageId)
 		row.Name = "Perk" .. i
 		row.BackgroundTransparency = 1
 		row.BorderSizePixel = 0
+		row.ClipsDescendants = true
 		row.ZIndex = 3
 		row.Parent = body
 		local icon = newImage(row, "Icon", 1)
@@ -727,12 +787,20 @@ local function buildArtCard(c, id, lay, img, imageId)
 		dot.Text = "•"
 		dot.Visible = icon.Image == ""
 		styleText(dot, style.Perks)
-		local text = artLabel(row, "Text", 2)
+		local text = artLabel(row, "Text", 2, nil, true)
 		text.Text = p.Text
 		text.TextWrapped = false
-		text.TextXAlignment = Enum.TextXAlignment.Left
+		text.TextXAlignment = Enum.TextXAlignment.Center
 		styleText(text, style.Perks)
 		perks[i] = { Frame = row, Icon = icon, Dot = dot, Text = text, Full = p.Text, Short = p.Short }
+		text:GetPropertyChangedSignal("TextBounds"):Connect(function()
+			local metrics = perks[i].Layout
+			if not metrics then return end
+			local inkW = math.min(metrics.TextW, text.TextBounds.X / metrics.Scale)
+			local ix = math.max(0, (metrics.TextW - inkW) / 2)
+			icon.Position = UDim2.fromOffset(ix, metrics.IconY)
+			dot.Position = UDim2.fromOffset(ix, metrics.IconY)
+		end)
 	end
 
 	-- the baked button cropped from the card art, greyed while locked; its label and the invisible hit area
@@ -760,7 +828,7 @@ local function buildArtCard(c, id, lay, img, imageId)
 	-- weaker-faction sign-on badge: a parchment pill over the top ornament
 	local badge = sliceFrame(body, "WeakerBadge", "Pill", 7)
 	badge.Visible = false
-	local badgeText = artLabel(badge, "Text", 1, titleFont)
+	local badgeText = artLabel(badge, "Text", 1)
 	badgeText.AnchorPoint = Vector2.new(0.5, 0.5)
 	badgeText.Position = UDim2.fromScale(0.5, 0.5)
 	badgeText.Size = UDim2.fromScale(0.86, 0.8)
@@ -768,6 +836,7 @@ local function buildArtCard(c, id, lay, img, imageId)
 	styleText(badgeText, "ink")
 
 	c.Layout, c.NameLabel, c.Desc, c.Lore, c.Motto, c.Perks = lay, name, desc, desc.Text, motto, perks
+	c.FullMotto = motto.Text
 	c.Shade, c.Label, c.Button, c.Badge, c.BadgeText = shade, label, hit, badge, badgeText
 	c.Aspect = img.X / img.Y
 	wirePress(c, id)
@@ -890,6 +959,7 @@ local function buildCard(id, order)
 	body.Size = UDim2.fromScale(1, 1)
 	body.BackgroundTransparency = 1
 	body.BorderSizePixel = 0
+	body.ClipsDescendants = true
 	body.Parent = slot
 	local scale = Instance.new("UIScale")
 	scale.Name = "CardScale"
@@ -931,29 +1001,50 @@ local function layoutOldCard(c, compact, s)
 	c.Button.Size = UDim2.new(1, -24, 0, bh)
 end
 
--- perk rows inside the (inset) perk panel; one text size for every row (the widest line decides), like the mockup
-local function layoutPerks(c, W, H, minT)
+-- A full sentence can shrink until the real 11px floor. If it still cannot fit, try every approved compact
+-- equivalent too; returning an unchecked Short was the cause of clipped labels in the default 991px view.
+local function cardText(label, full, short, tiny, width, height, scale)
+	local candidates = { full }
+	if type(short) == "string" and short ~= "" then table.insert(candidates, short) end
+	if type(tiny) == "table" then
+		for _, text in tiny do table.insert(candidates, text) end
+	elseif type(tiny) == "string" and tiny ~= "" then
+		table.insert(candidates, tiny)
+	end
+	for _, text in candidates do
+		local th, tw, exact
+		if UIKit and type(UIKit.MeasureRenderedText) == "function" then
+			th, tw, exact = UIKit.MeasureRenderedText(text, MIN_TEXT, label.FontFace, scale, 10000)
+		else
+			th, tw = textBounds(text, math.max(MIN_TEXT, MIN_TEXT * scale), label.FontFace, 10000)
+		end
+		-- Font-loading failure uses the shortest wording immediately; conservative estimates do not grant a fit.
+		if not exact then return candidates[#candidates] end
+		if tw <= width - 0.5 and th <= height - 0.25 then return text end
+	end
+	return candidates[#candidates]
+end
+
+-- Perk rows remain centred groups of an icon and a complete one-line label.
+local function layoutPerks(c, W, H, minT, scale)
 	local px, py, pw, ph = region(c.Layout.Perks, W, H)
 	local inset = LAY.PerkInset[c.Id] or LAY.PerkInset.Horns
 	px, pw = px + W * inset[1], pw - W * inset[1] * 2
-	py, ph = py + H * inset[2], ph - H * inset[2] * 2
-	local rowH = ph / math.max(LAY.PerkRows, #c.Perks)
+	local count = math.max(LAY.PerkRows, #c.Perks)
+	-- Reduce only the empty inset, staying inside the original bitmap perk panel. Keep a real 11px line
+	-- plus rounding/stroke room; a 9.6px clipping frame cannot display even the shortest text.
+	local insetY = math.min(H * inset[2], math.max(0, (ph - count * (MIN_TEXT + 0.75) / scale) / 2))
+	py, ph = py + insetY, ph - insetY * 2
+	local rowH = ph / count
 	local icon = math.min(rowH * 0.82, pw * 0.16)
 	local gap = rowH * 0.25
 	local textW = math.max(10, pw - icon - gap)
-	local size = math.max(minT, math.floor(rowH * 0.6))
-	-- a line too wide for its row even at the min size (phones) shows its Short text instead of leaving the panel
-	for _, row in c.Perks do
-		local _, fw = textBounds(row.Full, minT, row.Text.Font, 10000)
-		row.Text.Text = (row.Short and fw > textW * 0.97) and row.Short or row.Full
-	end
-	local widest = 0
-	for _, row in c.Perks do
-		local _, lw = textBounds(row.Text.Text, size, row.Text.Font, 10000)
-		widest = math.max(widest, lw)
-	end
-	if widest > textW * 0.97 then
-		size = math.max(minT, math.floor(size * textW * 0.97 / widest))
+	local size = math.max(MIN_TEXT, math.floor(rowH * 0.68))
+	for i, row in c.Perks do
+		local compact = LAY.PerkTiny[c.Id]
+		row.Text.Text = cardText(row.Text, row.Full, row.Short, compact and compact[i], textW * scale, rowH * scale, scale)
+		row.Text.TextWrapped = false
+		row.Text.TextXAlignment = Enum.TextXAlignment.Center
 	end
 	for i, row in c.Perks do
 		place(row.Frame, px, py + (i - 1) * rowH, pw, rowH)
@@ -961,48 +1052,23 @@ local function layoutPerks(c, W, H, minT)
 		place(row.Dot, 0, (rowH - icon) / 2, icon, icon)
 		setTextRange(row.Dot, minT, icon)
 		place(row.Text, icon + gap, 0, textW, rowH)
-		setTextRange(row.Text, minT, size)
+		row.Layout = { TextW = textW, Scale = scale, IconY = (rowH - icon) / 2 }
+		local inkW = math.min(textW, row.Text.TextBounds.X / scale)
+		local ix = math.max(0, (textW - inkW) / 2)
+		row.Icon.Position = UDim2.fromOffset(ix, row.Layout.IconY)
+		row.Dot.Position = UDim2.fromOffset(ix, row.Layout.IconY)
+		setTextRange(row.Text, MIN_TEXT, size)
 	end
 end
 
--- the lore split into two lines at the space that balances them best (Neutral's falls on the comma)
-local function splitLore(text, size, font)
-	local best, bestW = text, math.huge
-	local from = 1
-	while true do
-		local i = string.find(text, " ", from, true)
-		if not i then break end
-		local a, b = string.sub(text, 1, i - 1), string.sub(text, i + 1)
-		local _, wa = textBounds(a, size, font, 10000)
-		local _, wb = textBounds(b, size, font, 10000)
-		if math.max(wa, wb) < bestW then best, bestW = a .. "\n" .. b, math.max(wa, wb) end
-		from = i + 1
-	end
-	return best
-end
-
--- lore: one small line on the strip, about 0.7 x the motto like the mockup. Only when even the min size cannot fit
--- one line (Neutral, phones) two lines, as small as the strip needs; a block taller than the strip spills more
--- upward, away from the motto ribbon right under the strip
-local function layoutDesc(c, W, H, minT)
+-- The original lore stays in Config/Story. An approved short summary fits the card's original narrow strip.
+local function layoutDesc(c, W, H, minT, scale)
 	local dx, dy, dw, dh = region(c.Layout.Desc, W, H)
-	local _, _, _, mh = region(c.Layout.Motto, W, H)
-	local font, text = c.Desc.Font, c.Lore
-	local boxW = dw * 0.92
-	local size = math.max(minT, math.floor(math.min(dh * 0.7, mh * 0.42)))
-	local _, lw = textBounds(text, size, font, 10000)
-	if lw > boxW then
-		size = math.max(minT, math.floor(size * boxW / lw))
-		_, lw = textBounds(text, size, font, 10000)
-		if lw > boxW then
-			size = math.max(minT, math.min(size, math.floor(dh / 2)))
-			text = splitLore(text, size, font)
-		end
-	end
-	local bh = math.max(dh, (textBounds(text, size, font, 10000)))
-	c.Desc.Text = text
-	place(c.Desc, dx + dw * 0.04, dy - (bh - dh) * 0.65, boxW, bh)
-	setTextRange(c.Desc, size, size)
+	local size = math.max(MIN_TEXT, math.floor(dh * 0.8))
+	c.Desc.Text = cardText(c.Desc, LAY.LoreShort[c.Id] or c.Lore, nil, LAY.LoreTiny[c.Id], dw * scale, dh * scale, scale)
+	c.Desc.TextWrapped = false
+	place(c.Desc, dx, dy, dw, dh)
+	setTextRange(c.Desc, MIN_TEXT, size)
 end
 
 -- one art card: everything sits in the measured CardLayout regions of the card image
@@ -1013,15 +1079,18 @@ local function layoutArtCard(c, W, H, minT, s)
 	setTextRange(c.NameLabel, minT, th * 0.66)
 	boldOutline(c.NameLabel, th * 0.66)
 
-	layoutDesc(c, W, H, minT)
+	layoutDesc(c, W, H, minT, s)
 
 	-- motto: one line; the box may spill onto the ribbon tails
 	local mx, my, mw, mh = region(lay.Motto, W, H)
-	local motW = math.min(W * 0.84, mw * 1.1)
-	place(c.Motto, mx + mw / 2 - motW / 2, my + mh * 0.1, motW, mh * 0.8)
-	setTextRange(c.Motto, minT, mh * 0.6)
+	local motW = math.min(W * 0.9, mw * 1.3)
+	local mottoSize = math.max(MIN_TEXT, math.floor(mh * 0.72))
+	c.Motto.Text = cardText(c.Motto, c.FullMotto, LAY.MottoShort[c.Id], LAY.MottoTiny[c.Id], motW * s, mh * 0.96 * s, s)
+	c.Motto.TextWrapped = false
+	place(c.Motto, mx + mw / 2 - motW / 2, my + mh * 0.02, motW, mh * 0.96)
+	setTextRange(c.Motto, minT, mottoSize)
 
-	layoutPerks(c, W, H, minT)
+	layoutPerks(c, W, H, minT, s)
 
 	-- button: lock shade, label, and a hit area at least TouchTarget real px tall, kept inside the card
 	local kx, ky, kw, kh = region(lay.Button, W, H)
@@ -1040,23 +1109,33 @@ local function layoutArtCard(c, W, H, minT, s)
 	setTextRange(c.BadgeText, minT, math.max(minT, bh * 0.34))
 end
 
--- premise strip centred at cx from y (as narrow as its longest line, at most maxW); returns its height
-local function placePremise(cx, y, maxW, size)
+-- The selected A composition has a wide, compact three-line premise, centred above the cards.
+local function placePremise(cx, y, maxW, size, scale, compact)
 	if #premiseLabels == 0 then
 		premiseFrame.Visible = false
 		return 0
 	end
 	premiseFrame.Visible = true
-	local padX, padY = math.ceil(size * 1.1), math.ceil(size * 0.55)
-	local longest = 0
+	local padX = math.ceil(size * 1.1)
+	local padY = compact and math.ceil(3 / scale) or math.ceil(size * 0.55)
+	local innerW = math.max(40, maxW - padX * 2)
+	local widest = 0
 	for _, l in premiseLabels do
-		local _, lw = textBounds(l.Text, size, l.Font, 10000)
-		longest = math.max(longest, lw)
+		local _, lw
+		if compact then _, lw = renderedBounds(l.Text, size, l.FontFace, scale, 10000)
+		else _, lw = textBounds(l.Text, size, l.FontFace, 10000) end
+		widest = math.max(widest, lw)
 	end
-	local innerW = math.max(40, math.min(maxW - padX * 2, longest + size)) -- one glyph of slack: no re-wrap
+	if widest > innerW * scale - 2 then
+		size = math.max(MIN_TEXT, math.floor(size * math.max(1, innerW * scale - 2) / widest))
+	end
 	local yy = padY
 	for _, l in premiseLabels do
-		local lh = math.ceil((textBounds(l.Text, size, l.Font, innerW)))
+		local lh
+		if compact then lh = renderedBounds(l.Text, size, l.FontFace, scale, 10000)
+		else lh = textBounds(l.Text, size, l.FontFace, 10000) end
+		lh = math.ceil((lh + (compact and 4 or 3)) / scale)
+		l.TextWrapped = false
 		place(l, padX, yy, innerW, lh)
 		setTextRange(l, size, size)
 		yy += lh
@@ -1080,14 +1159,17 @@ local function placeTitle(cx, y, maxW, height, minT)
 end
 
 -- altar note centred at cx with its bottom at `bottom`, at most maxW wide; returns its height
-local function placeFooter(cx, bottom, maxW, size)
+local function placeFooter(cx, bottom, maxW, size, scale, compact)
 	local iconW = note.Icon.Visible and math.floor(size * 1.7) or 0
 	local gapW = iconW > 0 and 6 or 0
 	local padX = math.floor(size * 0.8)
 	local maxTextW = math.max(40, maxW - iconW - gapW - padX * 2)
-	local th, tw = textBounds(T.Footer, size, note.Text.Font, maxTextW)
+	local th, tw = textBounds(T.Footer, size, note.Text.FontFace, maxTextW * scale)
+	-- Preserve the selected footer's width; only remove the unused height on short viewports.
+	if compact then th = renderedBounds(T.Footer, size, note.Text.FontFace, scale, maxTextW * scale) end
+	th, tw = th / scale, tw / scale
 	local textW = math.min(maxTextW, tw + size) -- one glyph of slack so the measured line never re-wraps
-	local noteH = math.ceil(math.max(th, iconW) + size * 0.9)
+	local noteH = math.ceil(math.max(th, iconW) + (compact and 4 / scale or size * 0.9))
 	local noteW = padX * 2 + iconW + gapW + textW
 	place(note.Frame, cx - noteW / 2, bottom - noteH, noteW, noteH)
 	place(note.Icon, padX, (noteH - iconW) / 2, iconW, iconW)
@@ -1096,89 +1178,123 @@ local function placeFooter(cx, bottom, maxW, size)
 	return noteH
 end
 
--- the cards side by side in the area (x, y, areaW, areaH): scaled to fit, or a sideways ScrollingFrame when fitting
--- would make them shorter than needH
+-- Match the three original bitmap widths and their baked button centres without stretching any card.
+local function prepareCardBalance()
+	local aspect, baseline = math.huge, 0
+	for _, id in FACTION_IDS do
+		local c = cards[id]
+		if c then aspect = math.min(aspect, c.Aspect) end
+	end
+	if aspect == math.huge then aspect = LAY.OldAspect end
+	for _, id in FACTION_IDS do
+		local c = cards[id]
+		if c then
+			c.HeightFactor = aspect / c.Aspect
+			c.ButtonY = c.Art and (c.Layout.Button[2] + c.Layout.Button[4] / 2) or 0.9
+			baseline = math.max(baseline, c.HeightFactor * c.ButtonY)
+		end
+	end
+	LAY.CardAspect, LAY.BalancedHeight = aspect, 1
+	for _, id in FACTION_IDS do
+		local c = cards[id]
+		if c then
+			c.YFactor = baseline - c.HeightFactor * c.ButtonY
+			LAY.BalancedHeight = math.max(LAY.BalancedHeight, c.YFactor + c.HeightFactor)
+		end
+	end
+end
+
+-- Desktop A always fits complete cards into the final area. Only a narrow touch viewport retains scroll.
 local function placeCards(x, y, areaW, areaH, needH, minT, s)
+	prepareCardBalance()
 	local n, sumA = 0, 0
 	for _, id in FACTION_IDS do
 		local c = cards[id]
 		if c then
 			n += 1
-			sumA += c.Aspect
+			sumA += LAY.CardAspect
 		end
 	end
 	if n == 0 then return end
 	local gaps = LAY.Gap * (n - 1)
-	local cardH = math.min(areaH / (1 + 2 * LAY.Lift), LAY.CardMaxH)
-	local fitH = (areaW - gaps) / (sumA + 2 * LAY.Lift)
-	local scroll = false
-	if fitH < cardH then
-		if fitH >= needH then
-			cardH = fitH
-		else
-			cardH = math.min(cardH, needH)
-			scroll = cardH > fitH
-		end
-	end
-	cardH = math.max(60, math.floor(cardH))
+	local phone = UserInputService.TouchEnabled and areaW * s < 700
+	local cardH = math.min(math.max(1, areaH - 4) / (LAY.BalancedHeight + 2 * LAY.Lift), LAY.CardMaxH / s)
+	local fitH = math.max(1, areaW - gaps - 4) / (sumA + 2 * LAY.Lift)
+	cardH = math.min(cardH, fitH)
+	if phone then cardH = math.max(needH, cardH) end
+	cardH = math.max(1, math.floor(cardH))
 	local lift = math.ceil(cardH * LAY.Lift)
 	local canvasW = gaps + 2 * lift
 	for _, id in FACTION_IDS do
 		local c = cards[id]
-		if c then canvasW += math.floor(cardH * c.Aspect) end
+		if c then canvasW += math.floor(cardH * LAY.CardAspect) end
 	end
-	local frameH = cardH + 2 * lift
-	local frameW = scroll and areaW or math.min(areaW, canvasW)
+	local canvasH = math.ceil(cardH * LAY.BalancedHeight) + 2 * lift
+	local frameH, frameW = math.min(areaH, canvasH), math.min(areaW, canvasW)
+	local scrollX, scrollY = phone and canvasW > frameW, phone and canvasH > frameH
+	local scroll = scrollX or scrollY
 	place(cardsRow, x + (areaW - frameW) / 2, y + math.max(0, (areaH - frameH) / 2), frameW, frameH)
-	cardsRow.CanvasSize = UDim2.fromOffset(canvasW, frameH)
+	cardsRow.CanvasSize = UDim2.fromOffset(canvasW, canvasH)
+	cardsRow.ScrollingDirection = scrollY and Enum.ScrollingDirection.XY or Enum.ScrollingDirection.X
 	cardsRow.ScrollingEnabled = scroll
 	cardsRow.ScrollBarThickness = scroll and LAY.ScrollBar or 0
-	if not scroll then cardsRow.CanvasPosition = Vector2.zero end
+	if not scroll then cardsRow.CanvasPosition = Vector2.zero
+	else
+		cardsRow.CanvasPosition = Vector2.new(math.clamp(cardsRow.CanvasPosition.X, 0, math.max(0, canvasW - frameW)),
+			math.clamp(cardsRow.CanvasPosition.Y, 0, math.max(0, canvasH - frameH)))
+	end
 	local cx = lift
 	for _, id in FACTION_IDS do
 		local c = cards[id]
 		if c then
-			local cw = math.floor(cardH * c.Aspect)
-			place(c.Slot, cx, lift, cw, cardH)
+			local cw = math.floor(cardH * LAY.CardAspect)
+			local ch = cw / c.Aspect
+			place(c.Slot, cx, lift + (cw / LAY.CardAspect) * c.YFactor, cw, ch)
 			if c.Art then
-				layoutArtCard(c, cw, cardH, minT, s)
+				layoutArtCard(c, cw, ch, minT, s)
 			else
-				layoutOldCard(c, cardH < 420, s)
+				layoutOldCard(c, ch < 420, s)
 			end
 			cx += cw + LAY.Gap
 		end
 	end
 end
 
-local function layout()
+local function layoutNow()
 	if not root then return end
 	local w, h, top, s = canvas(root.Parent)
 	place(root, 0, 0, w, h)
 	local minT = minTextFor(s)
-	local size = math.clamp(math.floor(h * LAY.TextFrac), minT, math.max(minT, LAY.TextMax))
+	local physicalCaption = math.clamp(math.floor(h * s * LAY.TextFrac), 12, LAY.TextMax)
+	local size = math.ceil(physicalCaption / math.min(s, 1))
+	local compact = h * s < 560
 	local needH = LAY.NeedCardK * minT
 	local g = LAY.Gutter
 	local bottom = h - 8
 
-	-- stacked like the mockup: premise / title / cards / note
+	-- Selected A composition: title / wide compact premise / centred cards / centred altar note.
 	local y = top
-	y += placePremise(w / 2, y, math.min(w - g * 2, LAY.PremiseMaxW), size) + 4
-	local titleH = math.clamp(math.floor(h * LAY.TitleFrac), LAY.TitleMin, LAY.TitleMax)
+	local usableH = math.max(80, bottom - top)
+	local titleH = math.clamp(math.floor(usableH * LAY.TitleFrac), LAY.TitleMin, LAY.TitleMax)
 	y += placeTitle(w / 2, y, w - g * 2, titleH, minT) + 4
-	local noteH = placeFooter(w / 2, bottom, w - g * 2, size)
+	local premiseW = math.min(w - g * 2, LAY.PremiseMaxW, math.max(300, w * LAY.PremiseFrac))
+	y += placePremise(w / 2, y, premiseW, size, s, compact) + 8
+	local noteH = placeFooter(w / 2, bottom, w - g * 2, size, s, compact)
 	local areaH = bottom - noteH - 6 - y
-	if areaH / (1 + 2 * LAY.Lift) >= needH or w < LAY.SideMinW then
-		placeCards(g, y, w - g * 2, math.max(areaH, 80), needH, minT, s)
-		return
-	end
+	placeCards(g, y, w - g * 2, math.max(areaH, 1), needH, minT, s)
+end
 
-	-- short screen (landscape phone): the cards take the full height, premise / title / note move to a left column
-	local colW = math.clamp(math.floor(w * LAY.SideColFrac), LAY.SideColMin, LAY.SideColMax)
-	local cx = g + colW / 2
-	local cy = top + placePremise(cx, top, colW, minT) + 6
-	placeTitle(cx, cy, colW, math.min(LAY.TitleMax, colW / heading.Aspect), minT)
-	placeFooter(cx, bottom, colW, minT)
-	placeCards(g + colW + LAY.Gap, top, w - g * 2 - colW - LAY.Gap, bottom - top, needH, minT, s)
+-- FontFace bounds can yield while loading. Serialize layout passes so a resize never lets an older pass win.
+local function layout()
+	if LAY.LayoutRunning then LAY.LayoutAgain = true; return end
+	LAY.LayoutRunning = true
+	local ok, err = pcall(layoutNow)
+	LAY.LayoutRunning = false
+	if LAY.LayoutAgain then
+		LAY.LayoutAgain = false
+		task.defer(layout)
+	end
+	if not ok then warnThrottled("layout error: " .. tostring(err)) end
 end
 
 local function build()
@@ -1197,6 +1313,7 @@ local function build()
 
 	-- premise lines on a parchment strip; they fade in one by one (playPremise)
 	premiseFrame = sliceFrame(root, "Premise", "PanelParchment", 2)
+	premiseFrame.ClipsDescendants = true
 	premiseLabels = {}
 	local premise = Config.Story.Premise
 	if type(premise) == "table" then
@@ -1227,17 +1344,18 @@ local function build()
 	end
 	local titleText = artLabel(titleFrame, "Text", 1, artFont("Title", Enum.Font.GothamBlack))
 	titleText.Text = T.Title
+	titleText:SetAttribute("PickerFitPaddingX", 8)
 	titleText.TextWrapped = false
 	if ribbonId then
 		local b = LAY.TitleText
 		titleText.Position = UDim2.fromScale(b[1], b[2])
 		titleText.Size = UDim2.fromScale(b[3], b[4])
-		styleText(titleText, "light", 2.5)
-		titleText.TextColor3 = artColor("GoldText", theme.Gold)
+		styleText(titleText, "ink", 0)
 	else
 		titleText.Size = UDim2.fromScale(1, 1)
-		titleText.TextColor3 = theme.Gold
+		titleText.TextColor3 = artColor("Ink", Color3.fromRGB(66, 40, 18))
 		titleText.Font = theme.Font
+		applyFont(titleText, Enum.Font.GothamBlack)
 	end
 	local rs = partSize("TitleRibbon")
 	heading.Frame, heading.Text, heading.Art = titleFrame, titleText, ribbonId ~= nil
@@ -1269,7 +1387,7 @@ local function build()
 	icon.Visible = icon.Image ~= ""
 	local text = artLabel(nf, "Text", 1)
 	text.TextScaled = false
-	text.TextXAlignment = Enum.TextXAlignment.Left
+	text.TextXAlignment = Enum.TextXAlignment.Center
 	text.Text = T.Footer
 	styleText(text, "ink")
 	note.Frame, note.Icon, note.Text = nf, icon, text

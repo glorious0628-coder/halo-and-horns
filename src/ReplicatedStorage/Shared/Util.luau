@@ -129,6 +129,39 @@ function Util.ClearPlayer(player)
 end
 
 ------------------------------------------------------------------ characters
+-- Nicknames count Unicode codepoints, never UTF-8 bytes. Reject invisible/control and markup inputs.
+function Util.ValidateNickname(text)
+	if type(text) ~= "string" or #text > 80 then return false end
+	local ok, count = pcall(utf8.len, text)
+	if not ok or not count or count < 2 or count > 20 then return false end
+	if string.find(text, "[#<>&]") or string.sub(text, 1, 1) == " "
+		or string.sub(text, -1) == " " or string.find(text, "  ", 1, true) then return false end
+	local valid = pcall(function()
+		for _, cp in utf8.codes(text) do
+			if cp < 0x20 or (cp >= 0x7F and cp <= 0x9F) or (cp >= 0xD800 and cp <= 0xDFFF)
+				or cp > 0x10FFFF or cp == 0xA0 or cp == 0xAD or cp == 0x1680 or cp == 0x180E
+				or (cp >= 0x2000 and cp <= 0x200F) or (cp >= 0x2028 and cp <= 0x202F)
+				or (cp >= 0x205F and cp <= 0x206F) or cp == 0x3000 or cp == 0xFEFF
+				or (cp >= 0xFFF9 and cp <= 0xFFFB) or (cp >= 0xE0000 and cp <= 0xE007F) then
+				error("invalid nickname codepoint")
+			end
+		end
+	end)
+	return valid, count
+end
+
+function Util.NicknameCanonical(text)
+	return (string.gsub(text, "[A-Z]", string.lower)) -- ASCII casefold only; Unicode bytes remain intact
+end
+
+function Util.PlayerDisplayName(player)
+	if not player then return "" end
+	local nickname = player:GetAttribute("Nickname")
+	-- Only NicknameService publishes the server-filtered, globally confirmed attribute.
+	if player:GetAttribute("NicknameVerified") == true and Util.ValidateNickname(nickname) then return nickname end
+	return player.DisplayName
+end
+
 function Util.GetCharacter(player)
 	local c = player and player.Character
 	if c and c.Parent then return c end

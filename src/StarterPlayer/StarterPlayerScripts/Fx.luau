@@ -4,7 +4,7 @@
 -- combo counter and the A9-2 hit feel (local white flash on monsters I hit, number pop, number merging), my own
 -- attack animations (stock Roblox animations on my character; they replicate) and the monster attack lunge / hit
 -- recoil (local tweens of the monster's VisualJoint.C0).
--- A14-4 combat feel: procedural R15 attack / hurt clips (Motor6D.Transform layers, every client animates every nearby
+-- A14-4 combat feel: procedural R15 attack / hurt clips (avatar joint Transform layers, every client animates every nearby
 -- character from the Fx), slash / spark / magic / dust / shock-ring art with code fallbacks, hit-stop + camera kick,
 -- monster wind-up telegraph (WindupAt), pain stickers over hurt monsters (HurtSeq) and players (Pain Fx).
 -- Everything here is local-only and purely cosmetic; the server never trusts anything from it.
@@ -190,71 +190,86 @@ local MOTION = {
 	-- swing art: slash arc (Warrior), arrow streak (Archer), magic burst at the target (Mage); timed to the clips below
 	SLASH_SIZE = 5.5, SLASH_TIME = 0.18, SLASH_DIST = 2.6, SLASH_ROT0 = -35, SLASH_ROT1 = 15,
 	SLASH_FROM = -45, SLASH_TO = 115, SLASH_PLANE_TILT = 30, -- fallback Trail sweep (degrees around the look axis)
-	SLASH_VFX_AT = 0.08, -- Warrior swing: slash art starts with the downswing ...
-	SLASH_CONTACT = 0.13, -- ... and the hits (numbers, sparks, hit-stop) land on the WarriorSwing contact key
+	SLASH_VFX_AT = 0.17, -- approved wind-up -> diagonal cut
+	SLASH_CONTACT = 0.23,
 	SMASH_VFX_AT = 0.17, SMASH_AT = 0.24, -- Warrior release: big slash, then the shockwave impact
-	CAST_DELAY = 0.12, -- Mage swing: the orb leaves with the thrust
-	SHOT_DELAY = 0.09, -- Archer swing: the arrow leaves on the release
+	CAST_DELAY = 0.24, -- left-hand gather -> staff-tip cast
+	SHOT_DELAY = 0.22, -- aim -> visible draw -> release
+	RELEASE_CONTACT = { Warrior = 0.24, Mage = 0.35, Archer = 0.4 },
+	RELEASE_LAUNCH = { Mage = 0.35, Archer = 0.18 },
+	UPPER_BLEND = { Waist = 0.5, Neck = 0.7, RightShoulder = 1, RightElbow = 1, RightWrist = 1,
+		LeftShoulder = 1, LeftElbow = 1, LeftWrist = 1 },
+	LAYER_FADE_IN = 0.045, LAYER_FADE_OUT = 0.1,
 	STREAK_LIFE = 0.12,
 	MAGIC_SIZE = 4, MAGIC_COLOR = Color3.fromRGB(190, 140, 255),
 
 	-- A14-4 procedural animation. AnimationClipProvider:RegisterActiveAnimationClip ids work in Studio only (docs), so
-	-- clips are played by writing Motor6D.Transform in RunService.PreSimulation (the Animator writes it before that,
+	-- clips write Motor6D / AnimationConstraint.Transform in PreSimulation (the Animator writes it before that,
 	-- so the clip adds on top of walk / idle). Transform does not replicate: every client animates every nearby R15
 	-- character from the Swing / Release / Pain Fx. R6 rigs (or PROCEDURAL = false) keep the stock animations above.
 	PROCEDURAL = true,
 	PROC_MAX_CHARS = 12, -- characters animated at once (my own always)
 	PROC_DIST = 120, -- studs from the camera
-	JOINT_PARTS = { -- R15 Motor6D name -> the part holding it
+	JOINT_PARTS = { -- R15 joint -> its connected child body part (independent of the joint's parent/name)
 		Waist = "UpperTorso", Neck = "Head", RightShoulder = "RightUpperArm", RightElbow = "RightLowerArm",
-		LeftShoulder = "LeftUpperArm", LeftElbow = "LeftLowerArm",
+		RightWrist = "RightHand", LeftShoulder = "LeftUpperArm", LeftElbow = "LeftLowerArm", LeftWrist = "LeftHand",
+	},
+	JOINT_PARENTS = {
+		Waist = "LowerTorso", Neck = "UpperTorso", RightShoulder = "UpperTorso", RightElbow = "RightUpperArm",
+		RightWrist = "RightLowerArm", LeftShoulder = "UpperTorso", LeftElbow = "LeftUpperArm", LeftWrist = "LeftLowerArm",
 	},
 	-- clip = { Len = s, Keys = { { time, ease of the segment ending here, { Joint = { rx, ry, rz } } } } }: degrees in
 	-- joint space (+rx raises an arm forward / leans the torso or head back, +rz swings an arm to the character's right,
 	-- +ry turns left); joints missing from a key are at rest there. Consecutive keys stay < 180 degrees apart (slerp).
 	CLIPS = {
-		WarriorSwing = { Len = 0.42, Keys = { -- wind-up behind the shoulder -> fast diagonal slash -> follow-through
+		WarriorSwing = { Len = 0.68, Keys = { -- planted wind-up -> weighted diagonal cut -> settle
 			{ 0, "Out", {} },
-			{ 0.07, "Out", { Waist = { 8, -28, 0 }, Neck = { 0, 14, 0 }, RightShoulder = { 160, 0, 22 }, RightElbow = { 75, 0, 0 }, LeftShoulder = { 25, 0, -18 } } },
-			{ 0.13, "In", { Waist = { -12, 26, 0 }, Neck = { 4, -12, 0 }, RightShoulder = { 62, 0, -35 }, RightElbow = { 8, 0, 0 }, LeftShoulder = { -18, 0, -28 } } },
-			{ 0.22, "Out", { Waist = { -15, 34, 0 }, Neck = { 6, -16, 0 }, RightShoulder = { 30, -15, -52 }, RightElbow = { 22, 0, 0 }, LeftShoulder = { -22, 0, -30 } } },
-			{ 0.42, "InOut", {} },
+			{ 0.1, "Out", { Waist = { 6, -18, -4 }, Neck = { -2, 12, 2 }, RightShoulder = { 110, -10, 22 }, RightElbow = { 55, 0, 0 }, RightWrist = { -45, 0, 12 }, LeftShoulder = { 25, 0, -18 } } },
+			{ 0.17, "InOut", { Waist = { 12, -30, -6 }, Neck = { -4, 20, 3 }, RightShoulder = { 145, -12, 28 }, RightElbow = { 72, 0, 0 }, RightWrist = { -75, 0, 18 }, LeftShoulder = { 38, 0, -25 }, LeftElbow = { 25, 0, 0 } } },
+			{ 0.23, "In", { Waist = { -12, 22, 7 }, Neck = { 5, -14, -3 }, RightShoulder = { 65, 0, -32 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, -12 }, LeftShoulder = { -12, 0, -30 } } },
+			{ 0.32, "Out", { Waist = { -16, 34, 8 }, Neck = { 7, -18, -4 }, RightShoulder = { 28, -14, -48 }, RightElbow = { 18, 0, 0 }, RightWrist = { -55, 0, -18 }, LeftShoulder = { -20, 0, -32 } } },
+			{ 0.48, "InOut", { Waist = { -4, 12, 2 }, Neck = { 2, -6, 0 }, RightShoulder = { 24, 0, -15 }, RightElbow = { 26, 0, 0 } } },
+			{ 0.68, "InOut", {} },
 		} },
 		WarriorRelease = { Len = 0.7, Keys = { -- two-handed overhead wind-up -> ground smash
 			{ 0, "Out", {} },
-			{ 0.16, "Out", { Waist = { 20, -10, 0 }, Neck = { -8, 6, 0 }, RightShoulder = { 168, 0, 12 }, RightElbow = { 95, 0, 0 }, LeftShoulder = { 160, 0, -12 }, LeftElbow = { 70, 0, 0 } } },
-			{ 0.26, "In", { Waist = { -32, 6, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 58, 0, -12 }, RightElbow = { 6, 0, 0 }, LeftShoulder = { 55, 0, 12 }, LeftElbow = { 12, 0, 0 } } },
-			{ 0.44, "Out", { Waist = { -26, 4, 0 }, Neck = { 15, 0, 0 }, RightShoulder = { 48, 0, -10 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 45, 0, 10 }, LeftElbow = { 15, 0, 0 } } },
+			{ 0.16, "Out", { Waist = { 20, -10, 0 }, Neck = { -8, 6, 0 }, RightShoulder = { 168, 0, 12 }, RightElbow = { 95, 0, 0 }, RightWrist = { -100, 0, 0 }, LeftShoulder = { 160, 0, -12 }, LeftElbow = { 70, 0, 0 } } },
+			{ 0.24, "In", { Waist = { -32, 6, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 58, 0, -12 }, RightElbow = { 6, 0, 0 }, RightWrist = { -75, 0, 0 }, LeftShoulder = { 55, 0, 12 }, LeftElbow = { 12, 0, 0 } } },
+			{ 0.44, "Out", { Waist = { -26, 4, 0 }, Neck = { 15, 0, 0 }, RightShoulder = { 48, 0, -10 }, RightElbow = { 10, 0, 0 }, RightWrist = { -58, 0, 0 }, LeftShoulder = { 45, 0, 10 }, LeftElbow = { 15, 0, 0 } } },
 			{ 0.7, "InOut", {} },
 		} },
-		MageSwing = { Len = 0.5, Keys = { -- raise the staff -> thrust cast
+		MageSwing = { Len = 0.68, Keys = { -- left palm gathers; right wrist points the staff tip forward
 			{ 0, "Out", {} },
-			{ 0.08, "Out", { Waist = { 10, -12, 0 }, Neck = { -4, 8, 0 }, RightShoulder = { 150, 0, 18 }, RightElbow = { 45, 0, 0 }, LeftShoulder = { 20, 0, -15 } } },
-			{ 0.13, "In", { Waist = { -14, 10, 0 }, Neck = { 10, -6, 0 }, RightShoulder = { 92, 0, -6 }, RightElbow = { 0, 0, 0 }, LeftShoulder = { -15, 0, -22 } } },
-			{ 0.3, "Out", { Waist = { -10, 8, 0 }, Neck = { 8, -5, 0 }, RightShoulder = { 86, 0, -4 }, RightElbow = { 4, 0, 0 }, LeftShoulder = { -10, 0, -18 } } },
-			{ 0.5, "InOut", {} },
+			{ 0.1, "Out", { Waist = { 8, -14, -3 }, Neck = { -3, 8, 0 }, RightShoulder = { 28, -8, 14 }, RightElbow = { 38, 0, 0 }, RightWrist = { -60, 0, 8 }, LeftShoulder = { 60, 5, -18 }, LeftElbow = { 48, 0, 0 }, LeftWrist = { -70, 0, -15 } } },
+			{ 0.19, "InOut", { Waist = { 12, -18, -4 }, Neck = { -4, 12, 0 }, RightShoulder = { 34, -8, 12 }, RightElbow = { 40, 0, 0 }, RightWrist = { -72, 0, 8 }, LeftShoulder = { 78, 8, -22 }, LeftElbow = { 42, 0, 0 }, LeftWrist = { -85, 0, -12 } } },
+			{ 0.24, "In", { Waist = { -9, 10, 4 }, Neck = { 4, -6, 0 }, RightShoulder = { 38, 0, -8 }, RightElbow = { 4, 0, 0 }, RightWrist = { -125, 0, -4 }, LeftShoulder = { 64, 0, -32 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -65, 0, -12 } } },
+			{ 0.36, "Out", { Waist = { -6, 8, 3 }, Neck = { 3, -4, 0 }, RightShoulder = { 34, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -115, 0, -2 }, LeftShoulder = { 42, 0, -26 }, LeftElbow = { 22, 0, 0 } } },
+			{ 0.5, "InOut", { Waist = { 0, 3, 0 }, RightShoulder = { 18, 0, 0 }, RightElbow = { 18, 0, 0 }, RightWrist = { -35, 0, 0 }, LeftShoulder = { 15, 0, -8 } } },
+			{ 0.68, "InOut", {} },
 		} },
-		MageRelease = { Len = 0.75, Keys = { -- both arms up calling the meteor -> thrust down as it lands
+		MageRelease = { Len = 0.75, Keys = { -- left hand calls the meteor; right staff thrust meets its impact
 			{ 0, "Out", {} },
-			{ 0.15, "Out", { Waist = { 16, 0, 0 }, Neck = { 22, 0, 0 }, RightShoulder = { 165, 0, 28 }, RightElbow = { 20, 0, 0 }, LeftShoulder = { 165, 0, -28 }, LeftElbow = { 20, 0, 0 } } },
-			{ 0.33, "InOut", { Waist = { 20, 0, 0 }, Neck = { 26, 0, 0 }, RightShoulder = { 170, 0, 34 }, RightElbow = { 12, 0, 0 }, LeftShoulder = { 170, 0, -34 }, LeftElbow = { 12, 0, 0 } } },
-			{ 0.42, "In", { Waist = { -22, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 75, 0, 8 }, RightElbow = { 0, 0, 0 }, LeftShoulder = { 75, 0, -8 }, LeftElbow = { 0, 0, 0 } } },
+			{ 0.15, "Out", { Waist = { 12, -12, 0 }, Neck = { 12, 8, 0 }, RightShoulder = { 30, -8, 16 }, RightElbow = { 40, 0, 0 }, RightWrist = { -65, 0, 8 }, LeftShoulder = { 86, 0, -24 }, LeftElbow = { 42, 0, 0 }, LeftWrist = { -92, 0, -12 } } },
+			{ 0.33, "InOut", { Waist = { 16, -18, 0 }, Neck = { 16, 12, 0 }, RightShoulder = { 36, -8, 18 }, RightElbow = { 38, 0, 0 }, RightWrist = { -72, 0, 8 }, LeftShoulder = { 116, 0, -28 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -95, 0, -12 } } },
+			{ 0.35, "In", { Waist = { -22, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 38, 0, 8 }, RightElbow = { 4, 0, 0 }, RightWrist = { -125, 0, 0 }, LeftShoulder = { 75, 0, -8 }, LeftElbow = { 0, 0, 0 }, LeftWrist = { -65, 0, 0 } } },
 			{ 0.55, "Out", { Waist = { -16, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 68, 0, 8 }, RightElbow = { 5, 0, 0 }, LeftShoulder = { 68, 0, -8 }, LeftElbow = { 5, 0, 0 } } },
 			{ 0.75, "InOut", {} },
 		} },
-		ArcherSwing = { Len = 0.34, Keys = { -- bow forward (right hand), draw to the chin -> release recoil
+		ArcherSwing = { Len = 0.44, Keys = { -- left-hand bow stays upright; right hand visibly draws the string
 			{ 0, "Out", {} },
-			{ 0.07, "Out", { Waist = { 0, 24, 0 }, Neck = { 0, -18, 0 }, RightShoulder = { 88, 0, 22 }, LeftShoulder = { 84, 0, 30 }, LeftElbow = { 115, 0, 0 } } },
-			{ 0.1, "In", { Waist = { 6, 28, 0 }, Neck = { 0, -20, 0 }, RightShoulder = { 100, 0, 24 }, LeftShoulder = { 60, 0, -40 }, LeftElbow = { 35, 0, 0 } } },
-			{ 0.2, "Out", { Waist = { 2, 18, 0 }, Neck = { 0, -14, 0 }, RightShoulder = { 90, 0, 20 }, LeftShoulder = { 35, 0, -22 }, LeftElbow = { 25, 0, 0 } } },
-			{ 0.34, "InOut", {} },
+			{ 0.07, "Out", { Waist = { 0, 18, 0 }, Neck = { 0, -14, 0 }, LeftShoulder = { 88, 0, -5 }, LeftElbow = { 5, 0, 0 }, LeftWrist = { -93, 0, 5 }, RightShoulder = { 82, 20, -28 }, RightElbow = { 24, 0, 0 }, RightWrist = { -86, 0, 0 } } },
+			{ 0.19, "InOut", { Waist = { 3, 26, -2 }, Neck = { 0, -20, 0 }, LeftShoulder = { 90, 0, -5 }, LeftElbow = { 4, 0, 0 }, LeftWrist = { -94, 0, 5 }, RightShoulder = { 78, -30, -28 }, RightElbow = { 112, 0, 0 }, RightWrist = { -92, 0, 12 } } },
+			{ 0.22, "In", { Waist = { 4, 27, -2 }, Neck = { 0, -20, 0 }, LeftShoulder = { 92, 0, -5 }, LeftElbow = { 3, 0, 0 }, LeftWrist = { -95, 0, 5 }, RightShoulder = { 70, -35, -20 }, RightElbow = { 102, 0, 0 }, RightWrist = { -84, 0, 20 } } },
+			{ 0.29, "Out", { Waist = { 2, 20, 0 }, Neck = { 0, -14, 0 }, LeftShoulder = { 90, 0, -4 }, LeftElbow = { 5, 0, 0 }, LeftWrist = { -95, 0, 4 }, RightShoulder = { 52, -18, -12 }, RightElbow = { 65, 0, 0 }, RightWrist = { -58, 0, 8 } } },
+			{ 0.44, "InOut", {} },
 		} },
-		ArcherRelease = { Len = 0.7, Keys = { -- lean back, draw upward -> volley release
+		ArcherRelease = { Len = 0.44, Keys = { -- left bow aims upward; right string release calls the existing volley
 			{ 0, "Out", {} },
-			{ 0.14, "Out", { Waist = { 18, 24, 0 }, Neck = { 14, -16, 0 }, RightShoulder = { 140, 0, 20 }, LeftShoulder = { 128, 0, 28 }, LeftElbow = { 110, 0, 0 } } },
-			{ 0.2, "In", { Waist = { 24, 28, 0 }, Neck = { 16, -18, 0 }, RightShoulder = { 152, 0, 22 }, LeftShoulder = { 105, 0, -35 }, LeftElbow = { 30, 0, 0 } } },
-			{ 0.42, "Out", { Waist = { 14, 18, 0 }, Neck = { 10, -12, 0 }, RightShoulder = { 130, 0, 18 }, LeftShoulder = { 60, 0, -25 }, LeftElbow = { 25, 0, 0 } } },
-			{ 0.7, "InOut", {} },
+			{ 0.08, "Out", { Waist = { 12, 18, 0 }, Neck = { 12, -14, 0 }, LeftShoulder = { 116, 0, -5 }, LeftElbow = { 4, 0, 0 }, LeftWrist = { -92, 0, 5 }, RightShoulder = { 100, 16, -25 }, RightElbow = { 30, 0, 0 }, RightWrist = { -85, 0, 0 } } },
+			{ 0.16, "InOut", { Waist = { 18, 24, -2 }, Neck = { 16, -18, 0 }, LeftShoulder = { 120, 0, -5 }, LeftElbow = { 4, 0, 0 }, LeftWrist = { -94, 0, 5 }, RightShoulder = { 102, -28, -24 }, RightElbow = { 110, 0, 0 }, RightWrist = { -95, 0, 12 } } },
+			{ 0.18, "In", { Waist = { 18, 24, -2 }, Neck = { 16, -18, 0 }, LeftShoulder = { 120, 0, -5 }, LeftElbow = { 4, 0, 0 }, LeftWrist = { -94, 0, 5 }, RightShoulder = { 95, -32, -18 }, RightElbow = { 100, 0, 0 }, RightWrist = { -85, 0, 20 } } },
+			{ 0.29, "Out", { Waist = { 8, 14, 0 }, Neck = { 6, -10, 0 }, LeftShoulder = { 95, 0, -4 }, LeftElbow = { 5, 0, 0 }, LeftWrist = { -95, 0, 4 }, RightShoulder = { 50, -15, -12 }, RightElbow = { 55, 0, 0 }, RightWrist = { -55, 0, 5 } } },
+			{ 0.44, "InOut", {} },
 		} },
 		Hurt = { Len = 0.32, Keys = { -- snap back, arms jerk out, small rebound
 			{ 0, "Out", {} },
@@ -283,7 +298,9 @@ local Feel = {
 	Chars = setmetatable({}, { __mode = "k" }), -- [character Model] = procedural animation state
 	Active = {}, -- [state] = true while a layer plays (or a joint still has to be handed back)
 	ActiveCount = 0,
+	Actors = {}, -- player lifecycle token invalidates even a quick class change followed by changing back
 	StepConn = nil,
+	RenderConn = nil,
 	StepAt = 0,
 	Stickers = {}, -- pooled pain stickers
 	PainAt = {}, -- [UserId] = os.clock() of that player's last sticker / flinch
@@ -706,11 +723,12 @@ local function meteor(center, radius, color, fallTime)
 end
 
 -- ~12 arrows raining inside the radius over `duration`
-local function arrowRain(center, radius, color, duration)
+local function arrowRain(center, radius, color, duration, ctx)
 	local count = 12
 	local gy = groundY(center)
 	for i = 1, count do
 		later((i - 1) * (duration / count), function()
+			if ctx and not Feel.validAttack(ctx) then return end
 			local r = radius * math.sqrt(rng:NextNumber())
 			local a = rng:NextNumber(0, math.pi * 2)
 			local landing = Vector3.new(center.X + math.cos(a) * r, gy + 0.6, center.Z + math.sin(a) * r)
@@ -1381,7 +1399,7 @@ local function animateOwnAttack(data, which)
 	local classId = asStr(data.Class, "Warrior")
 	if which ~= "Release" and os.clock() < releaseAnimUntil then return end -- let the release move finish
 	local maxTime = Feel.attackTime(classId, which)
-	local okProc, played = pcall(Feel.playAttack, LocalPlayer and LocalPlayer.Character, classId, which, maxTime)
+	local okProc, played = pcall(Feel.playAttack, LocalPlayer and LocalPlayer.Character, classId, which, maxTime, data)
 	if not okProc then warnThrottled("procedural attack failed: " .. tostring(played)) end
 	if okProc and played then
 		local cur = animCurrent
@@ -1395,7 +1413,7 @@ local function animateOwnAttack(data, which)
 		if not ok then warnThrottled("attack animation failed: " .. tostring(err)) end
 	end
 	if which == "Release" then
-		releaseAnimUntil = os.clock() + MOTION.RELEASE_HOLD -- set after the play (a new Animator resets it)
+		releaseAnimUntil = os.clock() + math.min(MOTION.RELEASE_HOLD, maxTime)
 	end
 end
 
@@ -1792,7 +1810,7 @@ function Feel.compileClips()
 			end
 			joints[joint] = track
 		end
-		Feel.Clips[name] = { Len = def.Len, Joints = joints }
+		Feel.Clips[name] = { Name = name, Len = def.Len, Joints = joints }
 	end
 end
 
@@ -1811,20 +1829,182 @@ function Feel.sample(track, t)
 	return cfs[n]
 end
 
--- (re)finds the R15 Motor6Ds (appearance loading may replace body parts); true when the rig can play clips
+-- AJU joints expose attachments; their Part0/1 aliases are read-only and absent on some engine versions.
+function Feel.jointParts(joint)
+	local ok, part0, part1, rank = pcall(function()
+		if joint:IsA("Motor6D") then
+			if joint.Enabled and typeof(joint.Transform) == "CFrame" then return joint.Part0, joint.Part1, 1 end
+		elseif joint:IsA("AnimationConstraint") then
+			local a0, a1 = joint.Attachment0, joint.Attachment1
+			if joint.Enabled and a0 and a1 and typeof(joint.Transform) == "CFrame" then
+				return a0.Parent, a1.Parent, 2
+			end
+		end
+	end)
+	if ok and part0 and part1 and part0:IsA("BasePart") and part1:IsA("BasePart") then return part0, part1, rank end
+	return nil, nil, nil
+end
+
+function Feel.restoreJoint(joint, base, last)
+	if not joint or not joint.Parent or not base or not last then return end
+	pcall(function()
+		if Feel.same(joint.Transform, last) then joint.Transform = base end
+	end)
+end
+
+-- Finds old/custom Motor6Ds and upgraded avatar constraints by the exact R15 part pair.
 function Feel.findJoints(st)
 	local char = st.Char
+	local wanted, found, ranks = {}, {}, {}
 	for joint, partName in MOTION.JOINT_PARTS do
 		local part = char:FindFirstChild(partName)
-		local m = part and part:FindFirstChild(joint)
-		if not (m and m:IsA("Motor6D")) then m = nil end
+		local parent = char:FindFirstChild(MOTION.JOINT_PARENTS[joint])
+		if part and parent then wanted[part] = { Name = joint, Parent = parent } end
+	end
+	for _, candidate in char:GetDescendants() do
+		local part0, part1, rank = Feel.jointParts(candidate)
+		local target = part1 and wanted[part1]
+		if target and part0 == target.Parent and rank > (ranks[target.Name] or 0) then
+			found[target.Name], ranks[target.Name] = candidate, rank
+		end
+	end
+	for joint in MOTION.JOINT_PARTS do
+		local m = found[joint]
 		if st.Joints[joint] ~= m then
+			Feel.restoreJoint(st.Joints[joint], st.Base[joint], st.Last[joint])
 			st.Joints[joint] = m
 			st.Base[joint] = nil
 			st.Last[joint] = nil
 		end
 	end
 	return st.Joints.Waist ~= nil and st.Joints.RightShoulder ~= nil
+end
+
+-- Capture the server-approved actor, so delayed effects never move onto a replacement character/class.
+function Feel.actorState(player)
+	local state = Feel.Actors[player]
+	if state then return state end
+	state = { Token = {}, Conns = {} }
+	Feel.Actors[player] = state
+	local function changed() state.Token = {} end
+	for _, name in { "Class", "Faction" } do
+		table.insert(state.Conns, player:GetAttributeChangedSignal(name):Connect(changed))
+	end
+	table.insert(state.Conns, player:GetPropertyChangedSignal("Character"):Connect(changed))
+	return state
+end
+
+function Feel.attackContext(data)
+	if type(data) ~= "table" then return nil end
+	local uid = asNum(data.UserId, nil)
+	local p = uid and Players:GetPlayerByUserId(math.floor(uid))
+	local char = p and p.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	local classId = asStr(data.Class, "Warrior")
+	if not char or not char.Parent or not hum or hum.Health <= 0 or p:GetAttribute("Class") ~= classId then return nil end
+	if type(data.Faction) == "string" and data.Faction ~= p:GetAttribute("Faction") then return nil end
+	if data.Character ~= char then return nil end
+	return { Player = p, Char = char, Class = classId, Faction = p:GetAttribute("Faction"),
+		Token = Feel.actorState(p).Token }
+end
+
+function Feel.validAttack(ctx)
+	if not ctx or not ctx.Player.Parent or ctx.Player.Character ~= ctx.Char or not ctx.Char.Parent then return false end
+	local state = Feel.Actors[ctx.Player]
+	if not state or state.Token ~= ctx.Token then return false end
+	if ctx.Player:GetAttribute("Class") ~= ctx.Class or ctx.Player:GetAttribute("Faction") ~= ctx.Faction then return false end
+	local hum = ctx.Char:FindFirstChildOfClass("Humanoid")
+	return hum ~= nil and hum.Health > 0
+end
+
+function Feel.after(ctx, seconds, fn)
+	later(seconds, function()
+		if Feel.validAttack(ctx) then fn() end
+	end)
+end
+
+function Feel.handPoint(char, left)
+	local hand = left and Util.FindPart(char, "LeftHand", "Left Arm")
+		or (not left and Util.FindPart(char, "RightHand", "Right Arm"))
+	if not hand then return nil end
+	local grip = hand:FindFirstChild(left and "LeftGripAttachment" or "RightGripAttachment")
+	return grip and grip:IsA("Attachment") and grip.WorldPosition
+		or (hand.CFrame * CFrame.new(0, -hand.Size.Y * 0.5, 0)).Position
+end
+
+-- Read the moving, class-matched weapon at launch time, rather than the old hand position in the Fx packet.
+function Feel.muzzle(ctx, fallback)
+	if not Feel.validAttack(ctx) then return nil end
+	local weapon = ctx.Char:FindFirstChild("WeaponModel")
+	local muzzle = weapon and weapon:IsA("Model") and weapon:GetAttribute("Class") == ctx.Class
+		and weapon:FindFirstChild("AttackMuzzle", true)
+	if muzzle and muzzle:IsA("Attachment") and muzzle.Parent and muzzle.Parent:IsA("BasePart") then
+		return muzzle.WorldPosition
+	end
+	return Feel.handPoint(ctx.Char, ctx.Class == "Archer") or fallback
+end
+
+function Feel.clearWeaponMotion(st)
+	if st.BowNock and st.BowNock.Parent and st.BowRest then st.BowNock.Position = st.BowRest end
+	st.BowNock, st.BowRest = nil, nil
+	for _, key in { "NockArrow", "Gather" } do
+		if st[key] then st[key]:Destroy(); st[key] = nil end
+	end
+end
+
+function Feel.weaponMotion(st, attack)
+	local ctx = st.AttackContext
+	if not attack or not attack.Clip or not Feel.validAttack(ctx) then Feel.clearWeaponMotion(st); return end
+	local t = attack.T
+	local release = string.find(attack.Clip.Name, "Release", 1, true) ~= nil
+	local launch = release and MOTION.RELEASE_LAUNCH[ctx.Class]
+		or (ctx.Class == "Archer" and MOTION.SHOT_DELAY or MOTION.CAST_DELAY)
+	local sc = 1
+	pcall(function() sc = st.Char:GetScale() end)
+	if ctx.Class == "Archer" then
+		local weapon = st.Char:FindFirstChild("WeaponModel")
+		local stringPart = weapon and weapon:GetAttribute("Class") == ctx.Class and weapon:FindFirstChild("String")
+		local nock = stringPart and stringPart:FindFirstChild("BowNock")
+		if not (nock and nock:IsA("Attachment")) then Feel.clearWeaponMotion(st); return end
+		if st.BowNock ~= nock then
+			Feel.clearWeaponMotion(st)
+			st.BowNock, st.BowRest = nock, nock.Position
+		end
+		local draw = math.clamp((t - 0.06) / math.max(0.05, launch - 0.08), 0, 1)
+		if t >= launch then draw = math.max(0, 1 - (t - launch) / 0.05) end
+		local handPos = Feel.handPoint(st.Char, false)
+		if handPos then
+			local delta = stringPart.CFrame:PointToObjectSpace(handPos) - st.BowRest
+			if delta.Magnitude > 3 * sc then delta = delta.Unit * (3 * sc) end
+			nock.Position = st.BowRest + delta * draw
+		end
+		if t >= 0.06 and t < launch then
+			local muzzle = Feel.muzzle(ctx, nil)
+			local from = nock.WorldPosition
+			if muzzle and (muzzle - from).Magnitude > 0.05 then
+				if not st.NockArrow then
+					st.NockArrow = makePart({ Name = "FxNockedArrow", Size = Vector3.new(0.12, 0.12, 2.4) * sc,
+						Color = factionColor(ctx.Faction), Transparency = 0.1 })
+				end
+				local dir = (muzzle - from).Unit
+				st.NockArrow.CFrame = CFrame.lookAt(from + dir * (1.2 * sc), muzzle + dir * (2.4 * sc))
+			end
+		elseif st.NockArrow then st.NockArrow:Destroy(); st.NockArrow = nil end
+	elseif ctx.Class == "Mage" and t >= 0.05 and t < launch then
+		local handPos = Feel.handPoint(st.Char, true)
+		if handPos then
+			if not st.Gather then
+				st.Gather = makePart({ Name = "FxManaGather", Shape = Enum.PartType.Ball,
+					Size = Vector3.new(1, 1, 1) * (0.25 * sc), Color = factionColor(ctx.Faction), Transparency = 0.25 })
+				addLight(st.Gather, st.Gather.Color, 1.2, 5 * sc)
+			end
+			local size = (0.25 + 0.5 * math.clamp(t / math.max(0.05, launch), 0, 1)) * sc
+			st.Gather.Size = Vector3.new(1, 1, 1) * size
+			st.Gather.CFrame = CFrame.new(handPos + Vector3.new(0, size * 0.45, 0))
+		end
+	else
+		Feel.clearWeaponMotion(st)
+	end
 end
 
 -- starts clip `name` on a layer ("Attack" / "Hurt", they add up) of a living R15 character.
@@ -1874,12 +2054,25 @@ function Feel.bind()
 		local ok, err = pcall(Feel.step)
 		if not ok then warnThrottled("procedural animation failed: " .. tostring(err)) end
 	end)
+	-- Both joint types apply poses after PreSimulation; follow the actual hands/weapon after that batch.
+	Feel.RenderConn = RunService.RenderStepped:Connect(function()
+		for st in Feel.Active do
+			local ok, err = pcall(Feel.weaponMotion, st, st.Layers.Attack)
+			if not ok then
+				warnThrottled("weapon motion failed: " .. tostring(err))
+				Feel.clearWeaponMotion(st)
+			end
+		end
+	end)
 end
 
 function Feel.unbind()
 	local conn = Feel.StepConn
 	Feel.StepConn = nil
 	if conn then conn:Disconnect() end
+	local render = Feel.RenderConn
+	Feel.RenderConn = nil
+	if render then render:Disconnect() end
 end
 
 function Feel.step()
@@ -1898,7 +2091,9 @@ end
 
 -- advances one character's layers and writes clip offset * (the pose the Animator wrote this frame) into its joints
 function Feel.stepChar(st, dt, now)
-	if not st.Char.Parent then
+	local hum = st.Char:FindFirstChildOfClass("Humanoid")
+	if not st.Char.Parent or not hum or hum.Health <= 0
+		or (st.Layers.Attack and st.Layers.Attack.Clip and not Feel.validAttack(st.AttackContext)) then
 		Feel.drop(st)
 		return
 	end
@@ -1933,9 +2128,17 @@ function Feel.stepChar(st, dt, now)
 			local base = cur
 			if last and Feel.same(cur, last) then base = st.Base[joint] or cur end
 			if off then
+				local restBase = base
+				local attack = st.Layers.Attack
+				local blend = MOTION.UPPER_BLEND[joint] or 0
+				if attack and attack.Clip and attack.Clip.Joints[joint] and blend > 0 then
+					local weight = math.min(math.clamp(attack.T / MOTION.LAYER_FADE_IN, 0, 1),
+						math.clamp((attack.Clip.Len - attack.T) / MOTION.LAYER_FADE_OUT, 0, 1))
+					base = base:Lerp(CFrame.new(), blend * weight) -- leave walk legs running; steady the attack arms
+				end
 				local out = off * base
 				m.Transform = out
-				st.Base[joint] = base
+				st.Base[joint] = restBase
 				st.Last[joint] = out
 			else
 				m.Transform = base -- every layer ended: hand the joint back
@@ -1949,6 +2152,8 @@ end
 
 -- stops every layer of a character and hands back the joints it still holds
 function Feel.drop(st)
+	Feel.clearWeaponMotion(st)
+	st.AttackContext = nil
 	if Feel.Active[st] then
 		Feel.Active[st] = nil
 		Feel.ActiveCount -= 1
@@ -1959,11 +2164,7 @@ function Feel.drop(st)
 	for joint, last in st.Last do
 		local m = st.Joints[joint]
 		local base = st.Base[joint]
-		if m and base then
-			pcall(function()
-				if Feel.same(m.Transform, last) then m.Transform = base end
-			end)
-		end
+		Feel.restoreJoint(m, base, last)
 	end
 	table.clear(st.Last)
 	table.clear(st.Base)
@@ -1971,25 +2172,31 @@ end
 
 -- seconds a class move must finish in (Swing: SwingInterval x SWING_FIT, Release: RELEASE_ANIM_TIME)
 function Feel.attackTime(classId, which)
-	if which == "Release" then return MOTION.RELEASE_ANIM_TIME end
 	local def = Config.Classes[classId] or Config.Classes.Warrior
-	return math.max(0.1, tonumber(def.SwingInterval) or 1) * MOTION.SWING_FIT
+	local fit = math.max(0.1, tonumber(def.SwingInterval) or 1) * MOTION.SWING_FIT
+	return which == "Release" and math.min(MOTION.RELEASE_ANIM_TIME, fit) or fit
 end
 
 -- class Swing / Release clip on a character, sped up to fit maxTime. true when the clip plays (or a running release
 -- must not be cut short by a swing); false -> the caller may use the stock animation
-function Feel.playAttack(char, classId, which, maxTime)
+function Feel.playAttack(char, classId, which, maxTime, data)
 	if typeof(char) ~= "Instance" then return false end
+	local context = Feel.attackContext(data)
+	if not context or context.Char ~= char then return false end
 	local names = MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior
 	local name = names[which]
 	local clip = name and Feel.Clips[name]
 	if not clip then return false end
 	local now = os.clock()
 	local st = Feel.Chars[char]
-	if which ~= "Release" and st and Feel.Active[st] and now < st.ReleaseUntil then return true end
+	if which ~= "Release" and st and Feel.Active[st] and Feel.validAttack(st.AttackContext)
+		and now < st.ReleaseUntil then return true end
 	local rate = math.clamp(clip.Len / math.max(0.05, maxTime), 1, MOTION.ANIM_MAX_SPEED)
 	if not Feel.play(char, "Attack", name, rate) then return false end
-	if which == "Release" then Feel.Chars[char].ReleaseUntil = now + MOTION.RELEASE_HOLD end
+	local current = Feel.Chars[char]
+	current.AttackContext = context
+	Feel.clearWeaponMotion(current)
+	if which == "Release" then current.ReleaseUntil = now + math.min(MOTION.RELEASE_HOLD, maxTime) end
 	return true
 end
 
@@ -2002,7 +2209,7 @@ function Feel.animateOther(data, which)
 	local root = char and char:FindFirstChild("HumanoidRootPart")
 	if not root or not root:IsA("BasePart") or not Feel.near(root.Position, MOTION.PROC_DIST) then return end
 	local classId = asStr(data.Class, "Warrior")
-	Feel.playAttack(char, classId, which, Feel.attackTime(classId, which))
+	Feel.playAttack(char, classId, which, Feel.attackTime(classId, which), data)
 end
 
 -- my hits landed: my attack layer (or the stock track, R6) runs at HITSTOP_RATE for HITSTOP_TIME (HITSTOP_CRIT for a
@@ -2664,6 +2871,8 @@ local handlers = {}
 
 -- A14-4: projectiles / hits wait for the clip's key frame (CAST_DELAY thrust, SHOT_DELAY release, SLASH_CONTACT)
 handlers.Swing = function(data)
+	local ctx = Feel.attackContext(data)
+	if not ctx then return end
 	local own = isOwn(data)
 	if own then
 		Fx.PlaySound("Swing")
@@ -2683,68 +2892,51 @@ handlers.Swing = function(data)
 	local targets = validTargets(data.Targets)
 	local hits = data.Hits
 	local feel = { Stop = classId == "Warrior", Kick = data.Manual == true } -- my hits: hit-stop / camera kick
+	local launch = math.clamp(asNum(data.LaunchDelay, classId == "Mage" and MOTION.CAST_DELAY or MOTION.SHOT_DELAY), 0, 1)
+	local flight = math.clamp(asNum(data.FlightTime, classId == "Mage" and 0.2 or 0.15), 0, 1)
 
 	-- A14-4: when the hits will show, so the monsters' HurtSeq pain reaction waits for it
-	local showAt = MOTION.SLASH_CONTACT
-	if classId == "Mage" then
-		local t1 = targets[1]
-		showAt = MOTION.CAST_DELAY + ((t1 and from and (t1 - from).Magnitude > 0.5) and 0.2 or 0)
-	elseif classId == "Archer" then
-		showAt = MOTION.SHOT_DELAY
-		if from then
-			for _, target in targets do
-				if (target - from).Magnitude > 0.5 then
-					showAt += 0.15
-					break
-				end
-			end
-		end
-	end
+	local showAt = math.clamp(asNum(data.ContactDelay,
+		classId == "Warrior" and MOTION.SLASH_CONTACT or launch + flight), 0, 1)
 	local okExpect, errExpect = pcall(Feel.expectHits, hits, showAt)
 	if not okExpect then warnThrottled("hit sync failed: " .. tostring(errExpect)) end
 
 	if classId == "Mage" then
-		later(MOTION.CAST_DELAY, function()
+		Feel.after(ctx, launch, function()
+			local origin = Feel.muzzle(ctx, from)
 			local target = targets[1]
-			if target and from and (target - from).Magnitude > 0.5 then
-				orb(from, target, 0.2, color)
-				later(0.2, function()
+			if target and origin and (target - origin).Magnitude > 0.05 then orb(origin, target, flight, color) end
+			Feel.after(ctx, math.max(0, showAt - launch), function()
+				if target then
 					ring(target, math.max(radius, 2), color, { Grow = 0.15, Fade = 0.3, Transparency = own and 0.4 or 0.6 })
 					if own then Feel.magicBurst(target + Vector3.new(0, 1, 0), false) end
-					showHits(hits, own, false, feel)
-				end)
-			else
-				-- whiff: a small fizzle at the caster
-				ring(from or pos, 2, color, { Grow = 0.1, Fade = 0.2, Transparency = 0.6 })
+				else
+					ring(origin or pos, 2, color, { Grow = 0.1, Fade = 0.2, Transparency = 0.6 })
+				end
 				showHits(hits, own, false, feel)
-			end
+			end)
 		end)
 	elseif classId == "Archer" then
-		later(MOTION.SHOT_DELAY, function()
-			local any = false
-			if from then
+		Feel.after(ctx, launch, function()
+			local origin = Feel.muzzle(ctx, from)
+			if origin then
 				for _, target in targets do
-					if (target - from).Magnitude > 0.5 then
-						arrowBolt(from, target, 0.15, color, 0, own and color or nil)
-						any = true
+					if (target - origin).Magnitude > 0.05 then
+						arrowBolt(origin, target, flight, color, 0, own and color or nil)
 					end
 				end
 			end
-			if any then
-				later(0.15, function()
-					showHits(hits, own, false, feel)
-				end)
-			else
+			Feel.after(ctx, math.max(0, showAt - launch), function()
 				showHits(hits, own, false, feel)
-			end
+			end)
 		end)
 	else
 		if own then
-			later(MOTION.SLASH_VFX_AT, function()
+			Feel.after(ctx, MOTION.SLASH_VFX_AT, function()
 				Feel.slash(color, false)
 			end)
 		end
-		later(MOTION.SLASH_CONTACT, function()
+		Feel.after(ctx, showAt, function()
 			ring(pos, math.max(radius, 1), color, { Grow = 0.15, Fade = 0.25, Transparency = own and 0.45 or 0.65 })
 			showHits(hits, own, false, feel)
 		end)
@@ -2752,6 +2944,8 @@ handlers.Swing = function(data)
 end
 
 handlers.Release = function(data)
+	local ctx = Feel.attackContext(data)
+	if not ctx then return end
 	local own = isOwn(data)
 	if own then
 		animateOwnAttack(data, "Release")
@@ -2773,18 +2967,22 @@ handlers.Release = function(data)
 	local auto = data.Auto == true
 	local color = perfect and COLOR_PERFECT or factionColor(data.Faction)
 	local visible = nearCamera(pos)
-	local impactDelay = 0
+	local impactDelay = math.clamp(asNum(data.ContactDelay, MOTION.RELEASE_CONTACT[classId] or MOTION.SMASH_AT), 0, 1)
 	if classId == "Mage" then
-		impactDelay = 0.35
 		if visible then meteor(pos, radius, color, impactDelay) end
 	elseif classId == "Archer" then
-		impactDelay = 0.4
-		if visible then arrowRain(pos, radius, color, impactDelay) end
+		local launch = math.clamp(asNum(data.LaunchDelay, MOTION.RELEASE_LAUNCH.Archer), 0, impactDelay)
+		if visible then
+			Feel.after(ctx, launch, function()
+				local origin = Feel.muzzle(ctx, nil)
+				if origin then arrowBolt(origin, pos + Vector3.new(0, 30, 0), 0.2, color, 0, own and color or nil) end
+				arrowRain(pos, radius, color, impactDelay, ctx)
+			end)
+		end
 	else
 		-- A14-4: the shockwave lands with the smash of the release clip; my big slash arc on the downswing
-		impactDelay = MOTION.SMASH_AT
 		if own then
-			later(MOTION.SMASH_VFX_AT, function()
+			Feel.after(ctx, MOTION.SMASH_VFX_AT, function()
 				Feel.slash(color, true)
 			end)
 		end
@@ -2844,7 +3042,7 @@ handlers.Release = function(data)
 	end
 
 	if impactDelay > 0 then
-		later(impactDelay, impact)
+		Feel.after(ctx, impactDelay, impact)
 	else
 		impact()
 	end
@@ -3150,6 +3348,11 @@ function Fx.Start()
 	if not okClips then Util.Warn("Fx", "attack clips not built: " .. tostring(errClips)) end
 	Players.PlayerRemoving:Connect(function(p)
 		Feel.PainAt[p.UserId] = nil
+		local actor = Feel.Actors[p]
+		if actor then
+			for _, conn in actor.Conns do conn:Disconnect() end
+			Feel.Actors[p] = nil
+		end
 	end)
 
 	-- level tracking for the A7-3 unlock announce (only decreases are taken from the attribute: rebirth / class reset)
@@ -3167,6 +3370,20 @@ function Fx.Start()
 			resetAttackAnims()
 			Feel.StopTrack = nil
 		end)
+		LocalPlayer.CharacterRemoving:Connect(function(char)
+			local st = Feel.Chars[char]
+			if st then Feel.drop(st) end
+			resetAttackAnims()
+			Feel.StopTrack = nil
+		end)
+		for _, name in { "Class", "Faction" } do
+			LocalPlayer:GetAttributeChangedSignal(name):Connect(function()
+				local st = Feel.Chars[LocalPlayer.Character]
+				if st then Feel.drop(st) end
+				resetAttackAnims()
+				Feel.StopTrack = nil
+			end)
+		end
 	end
 
 	-- monster attack lunge: watch workspace.Monsters (connect first, then look, so a late folder is never missed)

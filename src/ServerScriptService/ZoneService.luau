@@ -381,6 +381,22 @@ function ZoneService.MarkTeleported(player, seconds)
 	markTeleported(player, seconds)
 end
 
+-- Server-only appearance replacement: keep the old position/time/velocity sample and its existing grace.
+-- No new spawn/teleport exemption is granted merely because the character Model changed.
+function ZoneService.CaptureMovementTrack(player)
+	local good = move.lastGood[player]
+	return { LastGood = good and table.clone(good) or nil, GraceUntil = move.graceUntil[player] }
+end
+
+function ZoneService.RestoreMovementTrack(player, snapshot, character)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(snapshot) ~= "table" then return end
+	if typeof(character) ~= "Instance" or not character:IsA("Model") or player.Character ~= character then return end
+	local good = snapshot.LastGood and table.clone(snapshot.LastGood) or nil
+	if good then good.Char = character end
+	move.lastGood[player] = good
+	move.graceUntil[player] = snapshot.GraceUntil
+end
+
 -- zone.Spawn + random XZ offset in [-6, 6] + (0, 4, 0), facing into the zone. Pure: safe to call any time.
 function ZoneService.GetSpawnCFrame(zoneId)
 	local zone = Config.Zones[zoneId] or Config.Zones[DEFAULT_ZONE]
@@ -565,7 +581,8 @@ function ZoneService.Init(registry)
 		player:SetAttribute("ZoneTown", true)
 		player:SetAttribute("TravelingUntil", 0)
 	end)
-	S.PlayerService.CharacterSpawned:Connect(function(player)
+	S.PlayerService.CharacterSpawned:Connect(function(player, _character, _humanoid, cosmetic)
+		if cosmetic then return end -- the ordinary zone tick continues the preserved movement track
 		markTeleported(player, acNum("SpawnGrace", 2)) -- CR-H2: spawn pivot of a new character
 		updateZone(player)
 	end)

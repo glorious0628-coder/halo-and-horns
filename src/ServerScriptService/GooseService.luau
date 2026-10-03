@@ -464,7 +464,7 @@ local function rewardPlayer(p, result, f)
 
 	if rare then
 		Net.Fx(p, "Rare", { Gold = gold, XP = xp })
-		Net.NotifyAll(string.format(Config.Text.RareAnnounce, p.DisplayName), "info")
+		Net.NotifyAll(string.format(Config.Text.RareAnnounce, Util.PlayerDisplayName(p)), "info")
 	end
 
 	if not won then -- loss or tie: +1 cheer star

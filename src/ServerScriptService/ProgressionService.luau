@@ -408,7 +408,7 @@ function M.TryRebirth(player, factionId)
 	elseif mark == "Redeem" then
 		Net.Notify(player, string.format(Config.Story.Redeem), "announce")
 	end
-	Net.NotifyAll(string.format(Config.Text.RebirthAnnounce, player.DisplayName, newRebirths))
+	Net.NotifyAll(string.format(Config.Text.RebirthAnnounce, Util.PlayerDisplayName(player), newRebirths))
 	M.Rebirthed:Fire(player, newRebirths, { From = old, To = factionId, Bonus = bonus, Mark = mark })
 	return true, nil
 end

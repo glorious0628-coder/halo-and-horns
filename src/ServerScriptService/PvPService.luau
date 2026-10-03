@@ -265,7 +265,7 @@ end
 
 local function announceIfMostWanted(p, before, after)
 	if before < Config.PvP.AnnounceStars and after >= Config.PvP.AnnounceStars then
-		Net.NotifyAll(fmt("MostWanted", p.DisplayName, Util.FormatNumber(computeBounty(p))))
+		Net.NotifyAll(fmt("MostWanted", Util.PlayerDisplayName(p), Util.FormatNumber(computeBounty(p))))
 	end
 end
 
@@ -497,7 +497,7 @@ function PvPService.HandleKO(victim, killer)
 	revenge[victim] = { Target = killer, Until = now + Config.Revenge.Duration }
 	setAttr(victim, "RevengeTargetId", killer.UserId)
 	setAttr(victim, "RevengeUntil", Util.Now() + Config.Revenge.Duration)
-	notify(victim, fmt("Revenge", killer.DisplayName), "info")
+	notify(victim, fmt("Revenge", Util.PlayerDisplayName(killer)), "info")
 	local killerRevenge = revenge[killer]
 	if killerRevenge and killerRevenge.Target == victim then
 		local wasActive = now < killerRevenge.Until
@@ -544,7 +544,7 @@ function PvPService.HandleKO(victim, killer)
 					if from and to then
 						Net.Fx(nil, "Plunder", { From = from, To = to, Amount = stolen })
 					end
-					notify(victim, fmt("Plundered", killer.DisplayName, Util.FormatNumber(stolen)), "bad")
+					notify(victim, fmt("Plundered", Util.PlayerDisplayName(killer), Util.FormatNumber(stolen)), "bad")
 					notify(killer, fmt("PlunderGain", Util.FormatNumber(stolen), stars[killer] or 0), "reward")
 				end
 			end
@@ -595,7 +595,7 @@ function PvPService.HandleKO(victim, killer)
 				notify(killer, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
 			end
 			if starsBefore >= P.GlowStars and bounty > 0 then
-				Net.NotifyAll(fmt("BountyAnnounce", killer.DisplayName, Util.FormatNumber(bounty)))
+				Net.NotifyAll(fmt("BountyAnnounce", Util.PlayerDisplayName(killer), Util.FormatNumber(bounty)))
 			end
 			info = {
 				Kind = "Bounty", Bully = false, VictimStars = starsBefore,
@@ -622,12 +622,12 @@ local function updateBoard()
 	for _, p in S.PlayerService.GetReadyPlayers() do
 		local bounty = tonumber(p:GetAttribute("Bounty")) or 0
 		if bounty > 0 then
-			table.insert(wanted, { Name = p.DisplayName, Bounty = bounty, Stars = stars[p] or 0, Bully = bullyStacksOf(p) })
+			table.insert(wanted, { Name = Util.PlayerDisplayName(p), Bounty = bounty, Stars = stars[p] or 0, Bully = bullyStacksOf(p) })
 		end
 		if faction(p) == "Halo" then
 			local honor = num(p, "Honor", 0)
 			if honor > 0 then
-				table.insert(heroes, { Name = p.DisplayName, Honor = honor })
+				table.insert(heroes, { Name = Util.PlayerDisplayName(p), Honor = honor })
 			end
 		end
 	end
@@ -784,7 +784,7 @@ local function payLeaveBounty(player)
 	S.PlayerService.AddStat(a, "Honor", honor)
 	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
 	if s >= Config.PvP.GlowStars and bounty > 0 then
-		Net.NotifyAll(fmt("BountyAnnounce", a.DisplayName, Util.FormatNumber(bounty)))
+		Net.NotifyAll(fmt("BountyAnnounce", Util.PlayerDisplayName(a), Util.FormatNumber(bounty)))
 	end
 	return true
 end
@@ -850,7 +850,8 @@ local function onPlayerLeaving(player, data)
 	task.defer(cleanupPlayer, player)
 end
 
-local function onCharacterSpawned(player)
+local function onCharacterSpawned(player, _character, _humanoid, cosmetic)
+	if cosmetic then return end -- replacing an appearance never renews spawn protection / the spawn clock
 	spawnedAt[player] = os.clock()
 	PvPService.Protect(player, Config.PvP.SpawnProtection)
 end

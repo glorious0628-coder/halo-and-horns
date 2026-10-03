@@ -170,7 +170,7 @@ local function avenge(thief, sack, killer)
 			local refund = math.floor(entry.Amount * (bonusOk and G.AvengeRefundRate or G.ReturnRate))
 			if refund > 0 then
 				S.ProgressionService.AddBankGold(victim, refund, "Refund")
-				notify(victim, fmt("GrudgeRefund", killer.DisplayName, Util.FormatNumber(refund)), "good")
+				notify(victim, fmt("GrudgeRefund", Util.PlayerDisplayName(killer), Util.FormatNumber(refund)), "good")
 				local victimPos = rootPos(victim)
 				if thiefPos and victimPos then
 					Net.Fx(victim, "Plunder", { From = thiefPos, To = victimPos, Amount = refund })
@@ -185,7 +185,7 @@ local function avenge(thief, sack, killer)
 		notify(killer, fmt("AvengerBonus", Util.FormatNumber(G.AvengerBonus)), "reward")
 	end
 
-	Net.NotifyAll(fmt("GrudgeAvengedAll", killer.DisplayName, thief.DisplayName), "info")
+	Net.NotifyAll(fmt("GrudgeAvengedAll", Util.PlayerDisplayName(killer), Util.PlayerDisplayName(thief)), "info")
 end
 
 local function returnSack(thief, tellThief)
@@ -240,15 +240,15 @@ function GrudgeService.AddToSack(thief, victim, amount, infamy)
 			entry.Amount = 0 -- the older share stays in the sack (thief's Paid total) but is no longer refundable
 		end
 		entry.Amount += amount
-		entry.Name = victim.DisplayName
+		entry.Name = Util.PlayerDisplayName(victim)
 		entry.Rebirths = rebirths
 	else
-		sack.Entries[victim.UserId] = { Amount = amount, Name = victim.DisplayName, Rebirths = rebirths }
+		sack.Entries[victim.UserId] = { Amount = amount, Name = Util.PlayerDisplayName(victim), Rebirths = rebirths }
 	end
 	sack.Total += amount
 	sack.Remaining = Config.Grudge.SackSeconds -- every new steal resets the countdown
 	sack.Infamy += infamy
-	sack.LastVictimName = victim.DisplayName
+	sack.LastVictimName = Util.PlayerDisplayName(victim)
 	pairReady(victim, thief.UserId, "steal", 0) -- CR-M4: record the steal in the victim's save (RestealWindow)
 	publish(thief, sack)
 end

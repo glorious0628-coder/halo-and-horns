@@ -415,9 +415,13 @@ local function label(props, maxText)
 	if props.TextStrokeColor3 == nil then props.TextStrokeColor3 = BLACK end
 	if props.Font == nil then props.Font = fontFace end
 	if props.Text == nil then props.Text = "" end
-	return new("TextLabel", props, {
+	local textLabel = new("TextLabel", props, {
 		new("UITextSizeConstraint", { MinTextSize = MIN_TEXT, MaxTextSize = math.max(MIN_TEXT, maxText or 18) }),
 	})
+	-- Approved GPT lettering only: unknown/dynamic text and unavailable images keep the original label.
+	local k = kit()
+	if k and type(k.BindArtText) == "function" then pcall(k.BindArtText, textLabel) end
+	return textLabel
 end
 
 local function button(props, onClick)
@@ -1404,6 +1408,20 @@ local function build()
 		new("UIGradient", { Color = ColorSequence.new(COL.SeaTop, COL.SeaBottom), Rotation = 90 }),
 	})
 
+	do
+		local k = kit()
+		if k and type(k.ArtImage) == "function" then
+			pcall(k.ArtImage, "MapParchment", {
+				Name = "Parchment",
+				Size = UDim2.fromScale(1, 1),
+				ScaleType = Enum.ScaleType.Crop,
+				Active = false,
+				ZIndex = 0,
+				Parent = viewport,
+			})
+		end
+	end
+
 	canvas = new("Frame", {
 		Name = "Canvas",
 		BackgroundTransparency = 1,
@@ -1655,7 +1673,7 @@ local function updateMarkers(faction)
 		local r = rootOf(pl)
 		if r then
 			local name = gsAttr("KaijuName", "")
-			if type(name) ~= "string" or name == "" then name = pl.DisplayName end
+			if type(name) ~= "string" or name == "" then name = Util.PlayerDisplayName(pl) end
 			placeMarker(kaijuMarker, r.Position, string.format(TXT.Kaiju, name))
 			kaijuShown = true
 		end

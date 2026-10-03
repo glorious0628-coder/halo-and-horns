@@ -124,20 +124,23 @@ def config_parts(source: str) -> dict:
     return result
 
 
-def config_info(key: str | None, parts: dict, old_ids: dict, file_key: str) -> dict:
+def config_info(key: str | None, parts: dict, old_ids: dict, file_key: str, uploaded_ids: set[str]) -> dict:
     definition = parts.get(key) if key else None
-    old_id = old_ids.get(file_key)
+    registry_id = old_ids.get(file_key)
+    old_id = registry_id if registry_id not in uploaded_ids else None
     return {
         "file": relative(CONFIG),
         "key": key,
         "present": definition is not None,
         "definition": definition,
+        "registry_asset_id": registry_id,
+        "recorded_upload_asset_id": registry_id if registry_id in uploaded_ids else None,
         "old_account_asset_id": old_id,
         "old_id_still_in_config": bool(old_id and definition and definition["asset_id"] == old_id),
     }
 
 
-def png_entry(name: str, category: str, key: str | None, *, parts: dict, old_ids: dict, meta: dict) -> dict:
+def png_entry(name: str, category: str, key: str | None, *, parts: dict, old_ids: dict, meta: dict, uploaded_ids: set[str]) -> dict:
     source = file_info(ROOT / "art" / "out" / f"{name}.png")
     prepared = file_info(ROOT / "art" / "ui" / f"{name}.png")
     metadata = meta.get(name)
@@ -160,7 +163,7 @@ def png_entry(name: str, category: str, key: str | None, *, parts: dict, old_ids
                 if isinstance(metadata, dict) and prepared["exists"] and "error" not in prepared else None
             ),
         },
-        "config": config_info(key, parts, old_ids, name),
+        "config": config_info(key, parts, old_ids, name, uploaded_ids),
         "config_size_matches_prepared": (
             config_size == dimensions if config_size and prepared["exists"] and "error" not in prepared else None
         ),
@@ -175,7 +178,12 @@ def build_report() -> dict:
     tasks = read_json(ROOT / "art" / "models" / "costume" / "tripo_tasks.json")
     source = CONFIG.read_text(encoding="utf-8")
     parts = config_parts(source)
-    shared = {"parts": parts, "old_ids": old_ids, "meta": meta}
+    records = read_json(ROOT / "build" / "ui_upload_ledger.json").get("records", {})
+    uploaded_ids = {
+        record["id"] for record in records.values()
+        if isinstance(record, dict) and isinstance(record.get("id"), str)
+    }
+    shared = {"parts": parts, "old_ids": old_ids, "meta": meta, "uploaded_ids": uploaded_ids}
     entries = []
 
     for name in (*UI_BASE, *CHARACTERS, *FX_EMO):
@@ -259,7 +267,7 @@ def build_report() -> dict:
         "generated_at_kst": datetime.now(KST).isoformat(timespec="seconds"),
         "policy": {
             "mode": "read-only inspection; generated report only",
-            "earliest_roblox_upload_date": "2026-10-04",
+            "earliest_roblox_upload_date": "2026-10-03",
             "upload_function_present": False,
             "network_api_used": False,
             "max_upload_batch": 10,

@@ -150,6 +150,11 @@ local function fillDefaults(d, playerName)
 	-- ids that other services branch on
 	if not Config.Factions[d.Faction] then d.Faction = "None" end
 	if not Config.Classes[d.Class] then d.Class = "Warrior" end
+	-- Appearance preferences are additive save fields; older records do not need a version reset.
+	if d.CharacterGender ~= "M" and d.CharacterGender ~= "F" then d.CharacterGender = "M" end
+	if type(d.CostumeEnabled) ~= "boolean" then d.CostumeEnabled = true end
+	-- Never re-save a cached name before today's filter and global claim check. The separate directory is authoritative.
+	d.Nickname = ""
 	d.Level = math.clamp(math.floor(tonumber(d.Level) or 1), 1, Config.Levels.MaxLevel)
 	d.WeaponTier = math.clamp(math.floor(tonumber(d.WeaponTier) or 1), 1, Config.MaxWeaponTier)
 end
@@ -478,6 +483,10 @@ end
 
 function DataService.IsMemoryMode()
 	return memoryMode
+end
+
+function DataService.IsPersistentReady()
+	return probeDone and not memoryMode and store ~= nil
 end
 
 return DataService

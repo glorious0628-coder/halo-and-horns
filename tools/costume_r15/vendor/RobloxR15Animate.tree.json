@@ -1,0 +1,646 @@
+{
+  "Name": "Animate",
+  "ClassName": "LocalScript",
+  "Children": [
+    {
+      "Name": "PlayEmote",
+      "ClassName": "BindableFunction",
+      "Children": [],
+      "Properties": {},
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "ScaleDampeningPercent",
+      "ClassName": "NumberValue",
+      "Children": [],
+      "Properties": {
+        "Value": 1
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "cheer",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "CheerAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507770677"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "climb",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "ClimbAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507765644"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "dance",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "Animation1",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507771019"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        },
+        {
+          "Name": "Animation2",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507771955"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        },
+        {
+          "Name": "Animation3",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507772104"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "dance2",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "Animation1",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507776043"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        },
+        {
+          "Name": "Animation2",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507776720"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        },
+        {
+          "Name": "Animation3",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507776879"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "dance3",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "Animation1",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507777268"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        },
+        {
+          "Name": "Animation2",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507777451"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        },
+        {
+          "Name": "Animation3",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 10
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507777623"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "fall",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "FallAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507767968"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "idle",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "Animation1",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 9
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507766388"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        },
+        {
+          "Name": "Animation2",
+          "ClassName": "Animation",
+          "Children": [
+            {
+              "Name": "Weight",
+              "ClassName": "NumberValue",
+              "Children": [],
+              "Properties": {
+                "Value": 1
+              },
+              "Archivable": true,
+              "Attributes": {}
+            }
+          ],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507766666"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "jump",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "JumpAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507765000"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "laugh",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "LaughAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507770818"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "mood",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "Animation1",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "rbxassetid://114302219876492"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "point",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "PointAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507770453"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "run",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "RunAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=913376220"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "sit",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "SitAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=2506281703"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "swim",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "Swim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=913384386"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "swimidle",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "SwimIdle",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=913389285"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "toollunge",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "ToolLungeAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=522638767"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "toolnone",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "ToolNoneAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507768375"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "toolslash",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "ToolSlashAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=522635514"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "walk",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "WalkAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=913402848"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    },
+    {
+      "Name": "wave",
+      "ClassName": "StringValue",
+      "Children": [
+        {
+          "Name": "WaveAnim",
+          "ClassName": "Animation",
+          "Children": [],
+          "Properties": {
+            "AnimationId": "http://www.roblox.com/asset/?id=507770239"
+          },
+          "Archivable": true,
+          "Attributes": {}
+        }
+      ],
+      "Properties": {
+        "Value": ""
+      },
+      "Archivable": true,
+      "Attributes": {}
+    }
+  ],
+  "Properties": {
+    "Disabled": false,
+    "RunContext": {
+      "Value": 0,
+      "Type": "EnumItem",
+      "Name": "Legacy",
+      "Enum": "RunContext"
+    }
+  },
+  "Archivable": true,
+  "Attributes": {}
+}

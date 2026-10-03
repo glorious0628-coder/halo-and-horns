@@ -369,7 +369,7 @@ local function beginSiren()
 		if states[p] == "Queued" and isEligible(p) then
 			current = p
 			phase = "Siren"
-			kaijuName = p.DisplayName
+			kaijuName = Util.PlayerDisplayName(p)
 			phaseEndsAt = Util.Now() + Config.Kaiju.SirenSeconds
 			dmg = {}
 			healers = {}

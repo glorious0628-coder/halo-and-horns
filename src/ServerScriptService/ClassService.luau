@@ -61,9 +61,10 @@ end
 
 ------------------------------------------------------------------ remotes
 -- first pick: free and keeps the level (also the one-time pick for data migrated from v1)
-local function onChooseClass(player, classId)
+local function onChooseClass(player, classId, gender)
 	if not S.PlayerService.IsReady(player) then return end
 	if not isClassId(classId) then return end
+	if gender ~= nil and gender ~= "M" and gender ~= "F" then return end
 	if not Util.RateLimit(player, "ChooseClass", Config.RateLimits.ChooseClass) then return end
 	if isClassChosen(player) then return end -- silent
 	local faction = factionOf(player)
@@ -73,6 +74,7 @@ local function onChooseClass(player, classId)
 	end
 
 	local old = ClassService.GetClass(player)
+	if gender ~= nil then S.PlayerService.SetStat(player, "CharacterGender", gender) end
 	S.PlayerService.SetStat(player, "Class", classId)
 	S.PlayerService.SetStat(player, "ClassChosen", true)
 	S.PlayerService.RefreshCharacter(player, true)
@@ -80,9 +82,10 @@ local function onChooseClass(player, classId)
 	notify(player, "ClassChosen", "good", Config.ClassName(classId, faction))
 end
 
-local function onChangeClass(player, classId, useTicket)
+local function onChangeClass(player, classId, useTicket, gender)
 	if not S.PlayerService.IsReady(player) then return end
 	if not isClassId(classId) or type(useTicket) ~= "boolean" then return end
+	if gender ~= nil and gender ~= "M" and gender ~= "F" then return end
 	if not Util.RateLimit(player, "ChangeClass", Config.RateLimits.ChangeClass) then return end
 	if not isClassChosen(player) then return end -- silent
 	if classId == ClassService.GetClass(player) then
@@ -123,6 +126,7 @@ local function onChangeClass(player, classId, useTicket)
 	end
 
 	local old = ClassService.GetClass(player)
+	if gender ~= nil then S.PlayerService.SetStat(player, "CharacterGender", gender) end
 	S.PlayerService.SetStat(player, "Class", classId)
 	S.PlayerService.RefreshCharacter(player, true)
 	ClassService.ClassChanged:Fire(player, classId, old)

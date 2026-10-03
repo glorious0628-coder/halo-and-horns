@@ -17,6 +17,25 @@ Config.Player = {
 	CollisionGroup = "Players", -- addendum A7-5: PhysicsService group, not collidable with itself (PlayerService)
 }
 
+-- HP/MP HUD and reusable potions (2026-10-03 approved GPT HUD extension).
+Config.Vitals = {
+	MaxMana = 100,
+	ManaRegen = 4, -- per second; session state, not persisted
+	MageSwingCost = 3,
+	ReleaseCost = 20,
+	HPRecovery = 0.30,
+	MPRecovery = 0.40,
+	PotionCooldown = 10, -- HP and MP have independent server deadlines
+}
+
+Config.Nickname = {
+	StoreName = "HaloHorns_Nicknames_v1", -- universe-wide claims; no Studio memory fallback
+	MinLength = 2, MaxLength = 20, MaxBytes = 80,
+	ChangeInterval = 10,
+	-- Claimed aliases stay with their owner. Never free a name after an uncertain cross-key response.
+	RetainPreviousClaims = true,
+}
+
 Config.Data = {
 	StoreName = "HaloHorns_Player_v1", -- unchanged on purpose: v1 saves are migrated in place by DataService
 	KeyPrefix = "P_",
@@ -36,6 +55,9 @@ Config.Data = {
 		Faction = "None",
 		Class = "Warrior",
 		ClassChosen = false, -- false -> ClassPicker shows (first pick is free and keeps level)
+		CharacterGender = "M",
+		CostumeEnabled = true,
+		Nickname = "", -- filtered cache only; NicknameService's global directory is authoritative
 		Rebirths = 0,
 		RebirthBonus = 0, -- sum of per-rebirth bonuses (0.25 or 0.40 each); v1 data: Rebirths * 0.25
 		FallMarks = 0, -- "타락" stacks (Halo -> Horns at rebirth), max Config.Rebirth.MarkMax
@@ -73,6 +95,7 @@ Config.Data = {
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
 		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "Faction", "Class", "ClassChosen",
+		"CharacterGender", "CostumeEnabled",
 		"Rebirths", "RebirthBonus", "FallMarks", "RedeemMarks", "Honor", "Infamy", "SwitchCount",
 		"LastSwitchTime", "PlaytimeSeconds", "TotalKills", "DailyDay", "DailyClaims",
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
@@ -128,6 +151,19 @@ function Config.WeaponName(tier, classId, factionId)
 	local n = names[tier]
 	if type(n) == "table" then return n[factionId] or n.None end
 	return n or "?"
+end
+
+-- Existing GPT inventory icons; tier 7 uses the chosen faction, with the neutral icon as the unset fallback.
+function Config.WeaponArtKey(tier, classId, factionId)
+	if type(tier) ~= "number" or tier ~= tier or math.abs(tier) == math.huge then tier = 1 end
+	tier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier)
+	if classId ~= "Warrior" and classId ~= "Mage" and classId ~= "Archer" then classId = "Warrior" end
+	local key = "Weapon_" .. classId .. "_T" .. tostring(tier)
+	if tier == 7 then
+		local faction = (factionId == "Halo" or factionId == "Horns") and factionId or "Neutral"
+		key ..= "_" .. faction
+	end
+	return key
 end
 
 function Config.WeaponColor(tier, factionId)
@@ -959,9 +995,9 @@ end
 ----------------------------------------------------------------- remotes / misc
 -- minimum seconds between two accepted calls of the same remote from the same player (Util.RateLimit)
 Config.RateLimits = {
-	ChooseFaction = 1, ChooseClass = 1, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
+	ChooseFaction = 1, ChooseClass = 1, SetCostume = 1, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
-	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1,
+	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3,
 }
 
 Config.Sounds = { -- optional built-in files; client must pcall and ignore failures
@@ -998,80 +1034,225 @@ Config.UIArt = {
 	Enabled = true, -- false = every part counts as missing (forces the IMG-R4 fallback)
 	Parts = {
 		-- frames (9-slice)
-		PanelParchment = { Id = "rbxassetid://72205434910489", Size = Vector2.new(512, 327), Slice = Rect.new(22, 23, 490, 300), SliceScale = 0.5, Tone = "Parchment" },
-		PanelCard = { Id = "rbxassetid://136335526027749", Size = Vector2.new(512, 233), Slice = Rect.new(39, 40, 472, 193), SliceScale = 0.35, Tone = "Navy", Inner = Rect.new(27, 35, 484, 197) },
-		RibbonHeader = { Id = "rbxassetid://139030670576287", Size = Vector2.new(512, 124), Slice = Rect.new(42, 21, 470, 104), FitHeight = true, Tone = "Ribbon" },
-		Pill = { Id = "rbxassetid://104493989064174", Size = Vector2.new(512, 120), Slice = Rect.new(41, 23, 472, 98), FitHeight = true, Tone = "Parchment" },
-		BarTrack = { Id = "rbxassetid://83211717779640", Size = Vector2.new(512, 94), Slice = Rect.new(45, 20, 466, 73), FitHeight = true, Tone = "NavyDeep", Inner = Rect.new(20, 17, 492, 76) },
-		BtnSquare = { Id = "rbxassetid://139680959679196", Size = Vector2.new(512, 491), Slice = Rect.new(94, 34, 416, 392), SliceScale = 0.22, Tone = "Parchment" },
+		PanelParchment = { Id = "rbxassetid://71017857503225", Size = Vector2.new(512, 327), Slice = Rect.new(22, 23, 490, 300), SliceScale = 0.5, Tone = "Parchment" },
+		PanelCard = { Id = "rbxassetid://98336983830443", Size = Vector2.new(512, 233), Slice = Rect.new(39, 40, 472, 193), SliceScale = 0.35, Tone = "Navy", Inner = Rect.new(27, 35, 484, 197) },
+		RibbonHeader = { Id = "rbxassetid://118684607039365", Size = Vector2.new(512, 124), Slice = Rect.new(42, 21, 470, 104), FitHeight = true, Tone = "Ribbon" },
+		Pill = { Id = "rbxassetid://116332974579615", Size = Vector2.new(512, 120), Slice = Rect.new(41, 23, 472, 98), FitHeight = true, Tone = "Parchment" },
+		BarTrack = { Id = "rbxassetid://84705987817804", Size = Vector2.new(512, 94), Slice = Rect.new(45, 20, 466, 73), FitHeight = true, Tone = "NavyDeep", Inner = Rect.new(20, 17, 492, 76) },
+		BtnSquare = { Id = "rbxassetid://118044680000027", Size = Vector2.new(512, 491), Slice = Rect.new(94, 34, 416, 392), SliceScale = 0.22, Tone = "Parchment" },
 		-- round buttons / rings (Fit)
-		BtnAttack = { Id = "rbxassetid://132704332440668", Size = Vector2.new(509, 512), Round = true, Tone = "Red", Inner = Rect.new(53, 56, 456, 444) },
-		BtnSpecial = { Id = "rbxassetid://109104625287455", Size = Vector2.new(512, 504), Round = true, Tone = "Gold", Inner = Rect.new(55, 50, 458, 454) },
-		LevelBadge = { Id = "rbxassetid://119498869874355", Size = Vector2.new(512, 511), Round = true, Tone = "Navy", Inner = Rect.new(89, 93, 422, 405) },
-		PortraitRing = { Id = "rbxassetid://79459292166016", Size = Vector2.new(498, 512), Round = true, Tone = "Navy", Inner = Rect.new(70, 102, 427, 445) },
+		BtnAttack = { Id = "rbxassetid://98283109958452", Size = Vector2.new(509, 512), Round = true, Tone = "Red", Inner = Rect.new(53, 56, 456, 444) },
+		BtnSpecial = { Id = "rbxassetid://88592946691017", Size = Vector2.new(512, 504), Round = true, Tone = "Gold", Inner = Rect.new(55, 50, 458, 454) },
+		LevelBadge = { Id = "rbxassetid://88211694815402", Size = Vector2.new(512, 511), Round = true, Tone = "Navy", Inner = Rect.new(89, 93, 422, 405) },
+		PortraitRing = { Id = "rbxassetid://102492452438180", Size = Vector2.new(498, 512), Round = true, Tone = "Navy", Inner = Rect.new(70, 102, 427, 445) },
 		-- emblems
-		ShieldHalo = { Id = "rbxassetid://75337774918722", Size = Vector2.new(490, 512) },
-		ShieldHorns = { Id = "rbxassetid://86370929061230", Size = Vector2.new(497, 512) },
-		Crown = { Id = "rbxassetid://119142490435797", Size = Vector2.new(256, 175) },
+		ShieldHalo = { Id = "rbxassetid://137212311874878", Size = Vector2.new(490, 512) },
+		ShieldHorns = { Id = "rbxassetid://134547958841068", Size = Vector2.new(497, 512) },
+		Crown = { Id = "rbxassetid://87428837580998", Size = Vector2.new(256, 175) },
 		-- icons
-		IconCoin = { Id = "rbxassetid://94164695982355", Size = Vector2.new(254, 256) },
-		IconPouch = { Id = "rbxassetid://140252516996220", Size = Vector2.new(256, 249) },
-		IconSword = { Id = "rbxassetid://72547608031298", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
-		IconAttack = { Id = "rbxassetid://108907022902105", Size = Vector2.new(256, 253) }, -- silver sword (attack button)
-		IconSpecial = { Id = "rbxassetid://85317688210710", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
-		IconLock = { Id = "rbxassetid://139055212938008", Size = Vector2.new(246, 256) },
-		IconMap = { Id = "rbxassetid://138000833306308", Size = Vector2.new(256, 202) },
-		IconGear = { Id = "rbxassetid://125495221925556", Size = Vector2.new(247, 256) },
-		IconGoose = { Id = "rbxassetid://75561315472577", Size = Vector2.new(218, 256) },
-		IconSafe = { Id = "rbxassetid://79507893882404", Size = Vector2.new(254, 256) }, -- green shield
-		IconSprout = { Id = "rbxassetid://113278909940414", Size = Vector2.new(256, 187) },
-		IconStar = { Id = "rbxassetid://119757093512057", Size = Vector2.new(256, 243) },
-		IconStarEmpty = { Id = "rbxassetid://105701738413323", Size = Vector2.new(256, 255) },
-		IconClover = { Id = "rbxassetid://130220802039072", Size = Vector2.new(246, 256) },
-		IconScroll = { Id = "rbxassetid://104306436967552", Size = Vector2.new(256, 192) },
-		IconSlime = { Id = "rbxassetid://132864964926977", Size = Vector2.new(256, 245) },
+		IconCoin = { Id = "rbxassetid://109221625076322", Size = Vector2.new(254, 256) },
+		IconPouch = { Id = "rbxassetid://123337208513871", Size = Vector2.new(256, 249) },
+		IconPotionHP = { Id = "rbxassetid://100061379621289", Size = Vector2.new(197, 256) },
+		IconPotionMP = { Id = "rbxassetid://133725941898063", Size = Vector2.new(194, 256) },
+		IconSword = { Id = "rbxassetid://112025111517770", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
+		IconAttack = { Id = "rbxassetid://110857011116269", Size = Vector2.new(256, 253) }, -- silver sword (attack button)
+		IconSpecial = { Id = "rbxassetid://96492143551436", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
+		IconLock = { Id = "rbxassetid://91132729692542", Size = Vector2.new(246, 256) },
+		IconMap = { Id = "rbxassetid://90459703873799", Size = Vector2.new(256, 202) },
+		IconGear = { Id = "rbxassetid://99179510720767", Size = Vector2.new(247, 256) },
+		IconGoose = { Id = "rbxassetid://105838105764489", Size = Vector2.new(218, 256) },
+		IconSafe = { Id = "rbxassetid://136639253247722", Size = Vector2.new(254, 256) }, -- green shield
+		IconSprout = { Id = "rbxassetid://76742471774514", Size = Vector2.new(256, 187) },
+		IconStar = { Id = "rbxassetid://117033474251317", Size = Vector2.new(256, 243) },
+		IconStarEmpty = { Id = "rbxassetid://78608910520884", Size = Vector2.new(256, 255) },
+		IconClover = { Id = "rbxassetid://132542570098556", Size = Vector2.new(246, 256) },
+		IconScroll = { Id = "rbxassetid://103880967919087", Size = Vector2.new(256, 192) },
+		IconSlime = { Id = "rbxassetid://112355880587310", Size = Vector2.new(256, 245) },
 		-- pick screens (mockups art/out/UI_Faction_B.png, UI_Class_A.png): text-free card backgrounds, regions in CardLayout
-		CardHalo = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(635, 1024) },
-		CardHorns = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(617, 1024) },
-		CardNeutral = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(612, 1024) },
-		ClassCardHalo = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(647, 1024) },
-		ClassCardHorns = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(608, 1024) },
-		ClassCardNeutral = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(618, 1024) },
-		ShieldNeutral = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(251, 256) },
-		TitleRibbon = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
+		CardHalo = { Id = "rbxassetid://116168194185824" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(635, 1024) },
+		CardHorns = { Id = "rbxassetid://104067051233656" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(617, 1024) },
+		CardNeutral = { Id = "rbxassetid://138991972922636" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(612, 1024) },
+		ClassCardHalo = { Id = "rbxassetid://125017026560821" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(647, 1024) },
+		ClassCardHorns = { Id = "rbxassetid://105501650454200" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(608, 1024) },
+		ClassCardNeutral = { Id = "rbxassetid://106618683671422" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(618, 1024) },
+		ShieldNeutral = { Id = "rbxassetid://101381231096931" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(251, 256) },
+		TitleRibbon = { Id = "rbxassetid://73292535588441" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
 		-- class characters (transparent chibi): Char<Faction><Class><M|F>
-		CharHaloWarriorM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(420, 512) },
-		CharHaloWarriorF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(464, 512) },
-		CharHaloMageM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(460, 512) },
-		CharHaloMageF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(478, 512) },
-		CharHaloArcherM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(501, 512) },
-		CharHaloArcherF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(504, 512) },
-		CharHornsWarriorM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(489, 512) },
-		CharHornsWarriorF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(473, 512) },
-		CharHornsMageM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(478, 512) },
-		CharHornsMageF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(496, 512) },
-		CharHornsArcherM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(467, 512) },
-		CharHornsArcherF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(467, 512) },
-		CharNeutralWarriorM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(485, 512) },
-		CharNeutralWarriorF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(476, 512) },
-		CharNeutralMageM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(465, 512) },
-		CharNeutralMageF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(457, 512) },
-		CharNeutralArcherM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(416, 512) },
-		CharNeutralArcherF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(463, 512) },
+		CharHaloWarriorM = { Id = "rbxassetid://134988581827453" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(420, 512) },
+		CharHaloWarriorF = { Id = "rbxassetid://78286000819352" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(464, 512) },
+		CharHaloMageM = { Id = "rbxassetid://102544376554965" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(460, 512) },
+		CharHaloMageF = { Id = "rbxassetid://113432552037923" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(478, 512) },
+		CharHaloArcherM = { Id = "rbxassetid://90265187612649" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(501, 512) },
+		CharHaloArcherF = { Id = "rbxassetid://73817434891295" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(406, 512) },
+		CharHornsWarriorM = { Id = "rbxassetid://115730141032244" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(446, 512) },
+		CharHornsWarriorF = { Id = "rbxassetid://91437880088798" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(472, 512) },
+		CharHornsMageM = { Id = "rbxassetid://72321159201625" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(474, 512) },
+		CharHornsMageF = { Id = "rbxassetid://118395974592567" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(449, 512) },
+		CharHornsArcherM = { Id = "rbxassetid://88045973583949" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(488, 512) },
+		CharHornsArcherF = { Id = "rbxassetid://130533135861283" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(467, 512) },
+		CharNeutralWarriorM = { Id = "rbxassetid://117733913914622" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(485, 512) },
+		CharNeutralWarriorF = { Id = "rbxassetid://123242512932772" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(476, 512) },
+		CharNeutralMageM = { Id = "rbxassetid://103288933310374" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(465, 512) },
+		CharNeutralMageF = { Id = "rbxassetid://114214067792680" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(457, 512) },
+		CharNeutralArcherM = { Id = "rbxassetid://118794739229907" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(416, 512) },
+		CharNeutralArcherF = { Id = "rbxassetid://101214489604794" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(463, 512) },
 		-- perk / misc icons
-		IconExp = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(229, 256) },
-		IconHeart = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 222) },
-		IconWings = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 166) },
-		IconGoldPile = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 166) },
-		IconBloodSword = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 239) },
-		IconGauge = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 70) },
-		IconDemon = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 231) },
-		IconNoBuff = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 243) },
-		IconShieldBlue = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(227, 256) },
-		IconNoLoot = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(243, 256) },
-		IconHammer = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(236, 256) },
-		IconAltar = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(241, 256) },
-		IconBoot = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 232) },
+		IconExp = { Id = "rbxassetid://126693522209557" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(229, 256) },
+		IconHeart = { Id = "rbxassetid://136034394484764" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 222) },
+		IconWings = { Id = "rbxassetid://126719552618804" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 166) },
+		IconGoldPile = { Id = "rbxassetid://84180626478301" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 166) },
+		IconBloodSword = { Id = "rbxassetid://132217044566905" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 239) },
+		IconGauge = { Id = "rbxassetid://120312988080031" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 70) },
+		IconDemon = { Id = "rbxassetid://127767718578535" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 231) },
+		IconNoBuff = { Id = "rbxassetid://137931613383299" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 243) },
+		IconShieldBlue = { Id = "rbxassetid://89142524062230" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(227, 256) },
+		IconNoLoot = { Id = "rbxassetid://128404798093606" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(243, 256) },
+		IconHammer = { Id = "rbxassetid://80311803840434" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(236, 256) },
+		IconAltar = { Id = "rbxassetid://92739557390353" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(241, 256) },
+		IconBoot = { Id = "rbxassetid://75175931189814" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 232) },
+		-- A15 hit/pain art; empty IDs retain the code fallback.
+		FxSlash = { Id = "rbxassetid://99494789057875", Size = Vector2.new(256, 251) },
+		FxHitSpark = { Id = "rbxassetid://76401646477744", Size = Vector2.new(254, 256) },
+		FxShockRing = { Id = "rbxassetid://135827777163619", Size = Vector2.new(256, 252) },
+		FxMagicBurst = { Id = "rbxassetid://92519617657939", Size = Vector2.new(256, 256) },
+		FxDust = { Id = "rbxassetid://108076168454993", Size = Vector2.new(222, 256) },
+		EmoOuch = { Id = "rbxassetid://72032537654477", Size = Vector2.new(256, 175) },
+		EmoTears = { Id = "rbxassetid://70917213593538", Size = Vector2.new(256, 197) },
+		EmoDizzy = { Id = "rbxassetid://124025733418147", Size = Vector2.new(256, 232) },
+		EmoAngry = { Id = "rbxassetid://123879588166068", Size = Vector2.new(256, 232) },
+		EmoStress = { Id = "rbxassetid://135439617637591", Size = Vector2.new(256, 213) },
+		-- Approved C lettering; source PNG sizes and alpha bounds (no new styling).
+		-- Upload full-size TXT PNGs; replace these measured bounds if a file is cropped later.
+		TXT_Attack = { Id = "rbxassetid://98250821822904", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(47, 276), ImageRectSize = Vector2.new(930, 494) },
+		TXT_Release = { Id = "rbxassetid://116194627847547", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(19, 219), ImageRectSize = Vector2.new(1005, 602) },
+		TXT_Menu = { Id = "rbxassetid://92283001237959", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(43, 290), ImageRectSize = Vector2.new(961, 452) },
+		TXT_Map = { Id = "rbxassetid://73294834221789", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(11, 264), ImageRectSize = Vector2.new(1001, 523) },
+		TXT_Claim = { Id = "rbxassetid://118427675820272", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(50, 282), ImageRectSize = Vector2.new(924, 460) },
+		TXT_Reroll = { Id = "rbxassetid://73825749957607", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(64, 287), ImageRectSize = Vector2.new(902, 454) },
+		TXT_Quests = { Id = "rbxassetid://117681934543569", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(46, 395), ImageRectSize = Vector2.new(931, 225) },
+		TXT_Light = { Id = "rbxassetid://110514325808489", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(73, 102), ImageRectSize = Vector2.new(900, 827) },
+		TXT_Horn = { Id = "rbxassetid://103663739588779", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(107, 120), ImageRectSize = Vector2.new(820, 766) },
+		TXT_Safe = { Id = "rbxassetid://89303273670959", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(42, 371), ImageRectSize = Vector2.new(935, 277) },
+		TXT_Rookie = { Id = "rbxassetid://76344573196272", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(22, 367), ImageRectSize = Vector2.new(980, 307) },
+		TXT_Regular = { Id = "rbxassetid://87813963027105", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(53, 260), ImageRectSize = Vector2.new(934, 494) },
+		TXT_CheerStars = { Id = "rbxassetid://91912542746649", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(32, 338), ImageRectSize = Vector2.new(958, 345) },
+		TXT_Next = { Id = "rbxassetid://125486764311560", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(62, 304), ImageRectSize = Vector2.new(901, 425) },
+		TXT_PickFaction = { Id = "rbxassetid://122632489644785", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(14, 415), ImageRectSize = Vector2.new(1000, 218) },
+		TXT_PickClass = { Id = "rbxassetid://100333047732355", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(42, 411), ImageRectSize = Vector2.new(940, 183) },
+		TXT_ThisSide = { Id = "rbxassetid://106328910658398", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(35, 362), ImageRectSize = Vector2.new(957, 290) },
+		TXT_ThisClass = { Id = "rbxassetid://139552040478610", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(17, 383), ImageRectSize = Vector2.new(995, 262) },
+		TXT_Halo = { Id = "rbxassetid://84253679534085", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(40, 386), ImageRectSize = Vector2.new(947, 244) },
+		TXT_Horns = { Id = "rbxassetid://122733028453143", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(17, 314), ImageRectSize = Vector2.new(998, 419) },
+		TXT_Neutral = { Id = "rbxassetid://123316362815459", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(46, 372), ImageRectSize = Vector2.new(926, 262) },
+		TXT_Paladin = { Id = "rbxassetid://76514962497375", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(41, 332), ImageRectSize = Vector2.new(945, 353) },
+		TXT_LightMage = { Id = "rbxassetid://73151603946140", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(23, 377), ImageRectSize = Vector2.new(988, 279) },
+		TXT_Ranger = { Id = "rbxassetid://106790531366000", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(37, 330), ImageRectSize = Vector2.new(946, 357) },
+		TXT_Berserker = { Id = "rbxassetid://115473512483755", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(11, 303), ImageRectSize = Vector2.new(1003, 417) },
+		TXT_DarkMage = { Id = "rbxassetid://123003479662317", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(52, 389), ImageRectSize = Vector2.new(919, 261) },
+		TXT_ShadowHunter = { Id = "rbxassetid://80860403354341", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(14, 399), ImageRectSize = Vector2.new(997, 235) },
+		TXT_Blacksmith = { Id = "rbxassetid://89380033426515", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(22, 352), ImageRectSize = Vector2.new(979, 323) },
+		TXT_Alchemist = { Id = "rbxassetid://84174178184020", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(37, 365), ImageRectSize = Vector2.new(957, 284) },
+		TXT_Hunter = { Id = "rbxassetid://72300636973949", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(28, 319), ImageRectSize = Vector2.new(972, 409) },
+		TXT_Male = { Id = "rbxassetid://74628967381797", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(60, 104), ImageRectSize = Vector2.new(918, 838) },
+		TXT_Female = { Id = "rbxassetid://79119143008950", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(57, 105), ImageRectSize = Vector2.new(902, 847) },
+		TXT_LevelUp = { Id = "rbxassetid://87685207336169", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(24, 345), ImageRectSize = Vector2.new(976, 329) },
+		TXT_GoldenGoose = { Id = "rbxassetid://118344018643742", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(26, 366), ImageRectSize = Vector2.new(969, 280) },
+		TXT_Crossroads = { Id = "rbxassetid://121634705034244", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(14, 373), ImageRectSize = Vector2.new(997, 277) },
+		TXT_HaloTown = { Id = "rbxassetid://112063601867600", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(35, 363), ImageRectSize = Vector2.new(951, 294) },
+		TXT_HornsTown = { Id = "rbxassetid://95993978315203", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(12, 301), ImageRectSize = Vector2.new(1001, 394) },
+		TXT_Meadow = { Id = "rbxassetid://137041154773318", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(30, 367), ImageRectSize = Vector2.new(964, 279) },
+		TXT_GoblinWoods = { Id = "rbxassetid://85681760418016", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(31, 354), ImageRectSize = Vector2.new(962, 298) },
+		TXT_SkeletonRuins = { Id = "rbxassetid://95378982488216", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(30, 370), ImageRectSize = Vector2.new(972, 280) },
+		TXT_SafeZone = { Id = "rbxassetid://126144617681076", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(15, 370), ImageRectSize = Vector2.new(992, 309) },
+		TXT_PvPZone = { Id = "rbxassetid://95155412805850", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(11, 361), ImageRectSize = Vector2.new(1002, 312) },
+		Weapon_Warrior_T1 = { Id = "rbxassetid://110253568224769", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T2 = { Id = "rbxassetid://134296432983209", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T3 = { Id = "rbxassetid://118676171420516", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T4 = { Id = "rbxassetid://121628920172881", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T5 = { Id = "rbxassetid://78787056413343", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T6 = { Id = "rbxassetid://134912361470616", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T7_Halo = { Id = "rbxassetid://81358930713578", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T7_Horns = { Id = "rbxassetid://109996418847092", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T7_Neutral = { Id = "rbxassetid://113768226721190", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T1 = { Id = "rbxassetid://94017465082266", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T2 = { Id = "rbxassetid://124480073241910", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T3 = { Id = "rbxassetid://98652791112835", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T4 = { Id = "rbxassetid://114114689990814", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T5 = { Id = "rbxassetid://82923455323942", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T6 = { Id = "rbxassetid://86455721876057", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T7_Halo = { Id = "rbxassetid://83762763419599", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T7_Horns = { Id = "rbxassetid://112320137471828", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T7_Neutral = { Id = "rbxassetid://111298666053873", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T1 = { Id = "rbxassetid://114530628874023", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T2 = { Id = "rbxassetid://77934186009567", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T3 = { Id = "rbxassetid://107992927949121", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T4 = { Id = "rbxassetid://135806799928152", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T5 = { Id = "rbxassetid://76246016710761", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T6 = { Id = "rbxassetid://111067065096221", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T7_Halo = { Id = "rbxassetid://123944650415871", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T7_Horns = { Id = "rbxassetid://129557918253283", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T7_Neutral = { Id = "rbxassetid://134108221476202", Size = Vector2.new(1024, 1024) },
+		Tex_Grass = { Id = "rbxassetid://78282434254609", Size = Vector2.new(1024, 1024) },
+		Tex_LeafyGrass = { Id = "rbxassetid://97617252360457", Size = Vector2.new(1024, 1024) },
+		Tex_HaloTiles = { Id = "rbxassetid://108329087203475", Size = Vector2.new(1024, 1024) },
+		Tex_Ground = { Id = "rbxassetid://91532028025941", Size = Vector2.new(1024, 1024) },
+		Tex_DirtPath = { Id = "rbxassetid://98968179009156", Size = Vector2.new(1024, 1024) },
+		Tex_CrownShardGround = { Id = "rbxassetid://114856730896342", Size = Vector2.new(1024, 1024) },
+		Tex_CrackedLava = { Id = "rbxassetid://91957054731134", Size = Vector2.new(1024, 1024) },
+		Tex_Cobblestone = { Id = "rbxassetid://115522078544414", Size = Vector2.new(1024, 1024) },
+		Tex_Basalt = { Id = "rbxassetid://103343555671461", Size = Vector2.new(1024, 1024) },
+		Tex_WoodPlanks = { Id = "rbxassetid://109420001270116", Size = Vector2.new(1024, 1024) },
+		Tex_Slate = { Id = "rbxassetid://121489633827695", Size = Vector2.new(1024, 1024) },
+		Tex_Sand = { Id = "rbxassetid://95940507315556", Size = Vector2.new(1024, 1024) },
+		Tex_Rock = { Id = "rbxassetid://106576322424276", Size = Vector2.new(1024, 1024) },
+		Tex_Marble = { Id = "rbxassetid://116081327339487", Size = Vector2.new(1024, 1024) },
+		Tex_Limestone = { Id = "rbxassetid://113099053145664", Size = Vector2.new(1024, 1024) },
+		MapParchment = { Id = "rbxassetid://133911744102396", Size = Vector2.new(1536, 1024) },
+	},
+	-- Exact static text only; numbers, suffixes and unknown/dynamic messages retain their TextLabel.
+	TextLabels = {
+		["공격"] = "TXT_Attack",
+		["발사"] = "TXT_Release",
+		["메뉴"] = "TXT_Menu",
+		["지도"] = "TXT_Map",
+		["받기"] = "TXT_Claim",
+		["교체"] = "TXT_Reroll",
+		["오늘의 퀘스트"] = "TXT_Quests",
+		["빛"] = "TXT_Light",
+		["뿔"] = "TXT_Horn",
+		["안전 지대"] = "TXT_Safe",
+		["새싹 보호"] = "TXT_Rookie",
+		["단골"] = "TXT_Regular",
+		["응원별"] = "TXT_CheerStars",
+		["다음"] = "TXT_Next",
+		["어느 편에 설래요?"] = "TXT_PickFaction",
+		["직업을 골라요!"] = "TXT_PickClass",
+		["이 편으로!"] = "TXT_ThisSide",
+		["이 직업으로!"] = "TXT_ThisClass",
+		["빛의 기사단"] = "TXT_Halo",
+		["뿔 군단"] = "TXT_Horns",
+		["장인 길드"] = "TXT_Neutral",
+		["성기사"] = "TXT_Paladin",
+		["빛의 마법사"] = "TXT_LightMage",
+		["레인저"] = "TXT_Ranger",
+		["광전사"] = "TXT_Berserker",
+		["흑마법사"] = "TXT_DarkMage",
+		["그림자 사냥꾼"] = "TXT_ShadowHunter",
+		["대장장이"] = "TXT_Blacksmith",
+		["연금술사"] = "TXT_Alchemist",
+		["사냥꾼"] = "TXT_Hunter",
+		["남"] = "TXT_Male",
+		["여"] = "TXT_Female",
+		["레벨 업!"] = "TXT_LevelUp",
+		["황금 거위"] = "TXT_GoldenGoose",
+		["교차로 마을"] = "TXT_Crossroads",
+		["빛의 성채"] = "TXT_HaloTown",
+		["뿔 소굴"] = "TXT_HornsTown",
+		["말랑 초원"] = "TXT_Meadow",
+		["고블린 숲"] = "TXT_GoblinWoods",
+		["해골 유적"] = "TXT_SkeletonRuins",
+		["안전 지역"] = "TXT_SafeZone",
+		["위험 지역"] = "TXT_PvPZone",
 	},
 	-- picked from the mockup (UI_HUD_Final.png) and the part images
 	Colors = {
@@ -1172,6 +1353,11 @@ Config.CustomModels = {
 	FolderName = "CustomModels",
 	GooseId = "GoldenGoose",
 	GoldenFillTransparency = 0.5, -- golden variant: gold Highlight instead of recoloring parts
+}
+
+Config.Costumes = {
+	TemplateFolder = "CostumeRigs",
+	TemplatePrefix = "Costume_",
 }
 
 ----------------------------------------------------------------- story ("세계관": flavor text only)
@@ -1369,29 +1555,5 @@ Config.HitReact = {
 		Release = { Warrior = 0.17, Mage = 0.28, Archer = 0.33 },
 	},
 }
-
--- A15 GPT hit / pain art (art/ui/UIP_Fx*.png, UIP_Emo*.png), not uploaded yet: Id = "" -> UIKit.ArtId returns nil and
--- the client draws its code fallback. Paste the rbxassetid here once uploaded and the images are used automatically.
--- (Only fills names the Parts table above does not define yet.)
-do
-	local parts = Config.UIArt.Parts
-	local add = {
-		FxSlash = { Id = "", Size = Vector2.new(256, 251) }, -- white crescent slash arc (tintable)
-		FxHitSpark = { Id = "", Size = Vector2.new(254, 256) }, -- comic impact star burst
-		FxShockRing = { Id = "", Size = Vector2.new(256, 252) }, -- white ring (tintable)
-		FxMagicBurst = { Id = "", Size = Vector2.new(256, 256) }, -- white-violet burst
-		FxDust = { Id = "", Size = Vector2.new(222, 256) }, -- dust puff
-		EmoOuch = { Id = "", Size = Vector2.new(256, 175) }, -- "아야!" speech burst
-		EmoTears = { Id = "", Size = Vector2.new(256, 197) }, -- blue drops
-		EmoDizzy = { Id = "", Size = Vector2.new(256, 232) }, -- spinning stars
-		EmoAngry = { Id = "", Size = Vector2.new(256, 232) }, -- red anger vein
-		EmoStress = { Id = "", Size = Vector2.new(256, 213) }, -- red stress marks
-	}
-	for name, def in add do
-		if parts[name] == nil then
-			parts[name] = def
-		end
-	end
-end
 
 return Config

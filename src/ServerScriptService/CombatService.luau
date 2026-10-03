@@ -56,6 +56,19 @@ local TUNE = {
 	FX_CULL = (Config.Visuals and Config.Visuals.FxCullDistance) or 150,
 	FX_SEND_PAD = 60,
 	AUTO_TOAST_GAP = 1, -- CR-L22: no manual "need stacks" toast this soon after an automatic release
+	-- Approved clips: cosmetic contact/flight only; damage, charge and cooldown still resolve immediately.
+	MOTION = {
+		Swing = {
+			Warrior = { Contact = 0.23 },
+			Mage = { Launch = 0.24, Flight = 0.2, Contact = 0.44 },
+			Archer = { Launch = 0.22, Flight = 0.15, Contact = 0.37 },
+		},
+		Release = {
+			Warrior = { Contact = 0.24 },
+			Mage = { Launch = 0.35, Contact = 0.35 },
+			Archer = { Launch = 0.18, Contact = 0.4 },
+		},
+	},
 }
 
 ------------------------------------------------------------------ per-player state (session only)
@@ -167,8 +180,15 @@ local function goosePositionFor(player)
 	return pos
 end
 
-local function handPosition(character, fallback)
-	local hand = Util.FindPart(character, "RightHand", "Right Arm")
+local function weaponPosition(character, classId, fallback)
+	local weapon = character:FindFirstChild("WeaponModel")
+	local muzzle = weapon and weapon:GetAttribute("Class") == classId
+		and weapon:FindFirstChild("AttackMuzzle", true)
+	if muzzle and muzzle:IsA("Attachment") and muzzle.Parent and muzzle.Parent:IsA("BasePart") then
+		return muzzle.WorldPosition
+	end
+	local hand = classId == "Archer" and Util.FindPart(character, "LeftHand", "Left Arm")
+		or (classId ~= "Archer" and Util.FindPart(character, "RightHand", "Right Arm"))
 	if hand then
 		return hand.Position
 	end
@@ -558,6 +578,18 @@ function CombatService.GetCharge(player)
 	return charge[player] or 0
 end
 
+-- Studio manual QA sets up Q/insufficient-MP cases through Main's real service registry.
+function CombatService.DebugSetCharge(player, amount)
+	if not game:GetService("RunService"):IsStudio() or not isPlayer(player)
+		or type(amount) ~= "number" or amount ~= amount or amount == math.huge or amount == -math.huge then
+		return false
+	end
+	charge[player] = math.clamp(amount, 0, chargeCapOf(player))
+	perfectUntil[player] = 0
+	publishCharge(player)
+	return true
+end
+
 ------------------------------------------------------------------ lifesteal
 local function applyLifesteal(player, perks, total)
 	local rate = perks.Lifesteal or 0
@@ -600,12 +632,17 @@ local function shoveMonster(rec, fromPos, studs, player)
 	end
 end
 
--- the shove of an attack ("Swing" / "Release") of class `classId`, REACT.SHOVE_DELAY s later (0 / missing = now)
+-- Cosmetic shove follows the same contact frame that the Fx packet announces.
 local function shoveLater(attack, classId, rec, fromPos, studs, player)
 	local byClass = REACT.SHOVE_DELAY[attack]
-	local d = type(byClass) == "table" and tonumber(byClass[classId]) or 0
+	local motion = TUNE.MOTION[attack] and TUNE.MOTION[attack][classId]
+	local d = motion and motion.Contact or (type(byClass) == "table" and tonumber(byClass[classId]) or 0)
 	if d > 0 then
-		task.delay(math.min(d, 1), shoveMonster, rec, fromPos, studs, player)
+		local character = Util.GetCharacter(player)
+		task.delay(math.min(d, 1), function()
+			if player.Parent and Util.IsAlive(player) and Util.GetCharacter(player) == character
+				and cls(player).Id == classId then shoveMonster(rec, fromPos, studs, player) end
+		end)
 	else
 		shoveMonster(rec, fromPos, studs, player)
 	end
@@ -633,8 +670,12 @@ function CombatService.Swing(player, isManual)
 		return
 	end
 	local c = cls(player)
+	if c.Id == "Mage" and not S.VitalsService.TrySpendMana(player, Config.Vitals.MageSwingCost, not isManual) then
+		return
+	end
 	nextSwingAt[player] = now + (c.SwingInterval or 1)
 	lastSwingAuto[player] = not isManual
+	if S.ExpressionService then S.ExpressionService.Attack(player) end
 
 	local pos = root.Position
 	local fac = faction(player)
@@ -800,9 +841,13 @@ function CombatService.Swing(player, isManual)
 		-- the hand (Splash center up to Range away) and Multi targets (radius 0, up to Range away)
 		fxNear(player, "Swing", center, math.max(radius, range), {
 			UserId = player.UserId,
+			Character = character,
 			Class = c.Id,
 			Faction = fac,
-			From = handPosition(character, pos),
+			From = weaponPosition(character, c.Id, pos),
+			ContactDelay = TUNE.MOTION.Swing[c.Id] and TUNE.MOTION.Swing[c.Id].Contact,
+			LaunchDelay = TUNE.MOTION.Swing[c.Id] and TUNE.MOTION.Swing[c.Id].Launch,
+			FlightTime = TUNE.MOTION.Swing[c.Id] and TUNE.MOTION.Swing[c.Id].Flight,
 			Pos = center,
 			Radius = radius,
 			Targets = targets,
@@ -843,13 +888,15 @@ function CombatService.Release(player, isAuto)
 		return
 	end
 
-	local c = cls(player)
-	local fac = faction(player)
-	local perks = perksOf(player)
-
 	-- 2. PERFECT window (manual only). CR-L22: + PerfectGrace so a press at the very end still counts (latency)
 	local pu = perfectUntil[player] or 0
 	local perfect = (not isAuto) and pu > 0 and pu + (Config.Charge.PerfectGrace or 0) > Util.Now()
+
+	if not S.VitalsService.TrySpendMana(player, Config.Vitals.ReleaseCost, isAuto) then return end
+	if S.ExpressionService then S.ExpressionService.Attack(player) end
+	local c = cls(player)
+	local fac = faction(player)
+	local perks = perksOf(player)
 
 	-- 8 (early). consume the charge first so a failure below can never allow a double release
 	charge[player] = 0
@@ -979,8 +1026,11 @@ function CombatService.Release(player, isAuto)
 	-- 9. visuals (CR-L49: the attacker + players near the blast) + signal
 	fxNear(player, "Release", center, radius, {
 		UserId = player.UserId,
+		Character = Util.GetCharacter(player),
 		Class = c.Id,
 		Faction = fac,
+		ContactDelay = TUNE.MOTION.Release[c.Id] and TUNE.MOTION.Release[c.Id].Contact,
+		LaunchDelay = TUNE.MOTION.Release[c.Id] and TUNE.MOTION.Release[c.Id].Launch,
 		Pos = center,
 		Radius = radius,
 		Stacks = n,
@@ -1052,6 +1102,7 @@ local function onCharacterDied(player, _character)
 	if not isPlayer(player) then
 		return
 	end
+	pendingManual[player] = nil
 	-- deferred so the lethal hit's PlayerDamaged handlers (kaiju damage share, bait log) always run first,
 	-- whatever the Workspace.SignalBehavior is
 	task.defer(function()
@@ -1100,6 +1151,7 @@ local function onFactionChanged(player, _newFaction, _oldFaction, _reason)
 	if not isPlayer(player) then
 		return
 	end
+	pendingManual[player] = nil
 	resetCharge(player) -- also refreshes ChargeCap for the new faction
 end
 
@@ -1107,19 +1159,23 @@ local function onClassChanged(player, _newClass, _oldClass)
 	if not isPlayer(player) then
 		return
 	end
+	pendingManual[player] = nil
 	resetCharge(player)
 end
 
 ------------------------------------------------------------------ remotes
 -- one queued manual swing that fires as soon as the shared cooldown is ready (addendum H3)
 local function queueManualSwing(player)
-	pendingManual[player] = true
+	local request = { Character = Util.GetCharacter(player), Class = cls(player).Id, Faction = faction(player) }
+	pendingManual[player] = request
 	local tries = 0
 	local function attempt()
-		if pendingManual[player] ~= true then
+		if pendingManual[player] ~= request then
 			return
 		end
-		if player.Parent == nil or not S.PlayerService.IsReady(player) then
+		if player.Parent == nil or not S.PlayerService.IsReady(player) or not Util.IsAlive(player)
+			or Util.GetCharacter(player) ~= request.Character or cls(player).Id ~= request.Class
+			or faction(player) ~= request.Faction then
 			pendingManual[player] = nil
 			return
 		end

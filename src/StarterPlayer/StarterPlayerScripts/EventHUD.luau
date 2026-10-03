@@ -999,7 +999,7 @@ local function updatePersonal(now)
 	else
 		local target, untilT = revengeTarget(now)
 		if target then
-			text = string.format(TXT.Revenge, target.DisplayName, Util.FormatTime(untilT - now))
+			text = string.format(TXT.Revenge, Util.PlayerDisplayName(target), Util.FormatTime(untilT - now))
 			color = ink.Revenge
 		end
 	end

@@ -1,0 +1,31 @@
+{
+  "asset": "Avatar_Expressions_Preview_A",
+  "purpose": "사용자 표정 선택용 시안",
+  "status": "preview_pending_user_selection",
+  "approved": false,
+  "roblox_uploaded": false,
+  "generator": "builtin_image_gen",
+  "reference": "docs/art/verification_2026-10-03/costume_pilot_front.jpeg",
+  "prompt": "art/prompts/Avatar_Expressions_Preview_A.txt",
+  "output": "art/out/Avatar_Expressions_Preview_A.png",
+  "source": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-52819468-6e57-4fa0-82b5-d799bbd2b7bc.png",
+  "sha256": "ccf3cc44e34def8275389dff78a755ca73cb100c83d44d509f003028d0f4ca00",
+  "bytes": 1541379,
+  "size": [
+    1810,
+    869
+  ],
+  "labels": [
+    "기본",
+    "미소",
+    "진지"
+  ],
+  "review": {
+    "identity_preserved": true,
+    "modest_clothing": true,
+    "text_correct": true,
+    "hud_removed": true,
+    "closed_mouth": true
+  },
+  "created_date": "2026-10-03"
+}

@@ -1,0 +1,12 @@
+Use case: stylized-concept.
+Asset type: preview-only facial expression selection sheet for the Roblox game Halo & Horns. The attached screenshot is an identity reference, not the composition to copy.
+Primary request: show exactly the same blond chibi paladin avatar that appears in the center of the reference screenshot, as three aligned head-and-shoulders portraits with three different facial expressions. Keep the avatar recognizable: tousled golden-blond hair with the same side spikes and top tuft, big amber eyes, round child-friendly face, compact chibi proportions, modest gold-and-white paladin armor covering the neck, shoulders, and entire chest, the same small gold shoulder plates.
+Scene/backdrop: clean warm cream background.
+Style/medium: polished cute stylized 3D game render matching the avatar, clean readable facial expression variations.
+Composition/framing: landscape sheet, one horizontal row of exactly three equally sized portraits, front-facing camera, same lighting, same head position and the same armor in all three portraits. The portraits are visually separated by generous spacing. Portrait crop is from the top of the hair to mid-chest.
+Left portrait: relaxed neutral expression, closed mouth, gentle calm eyebrows; no smile.
+Middle portrait: a subtle friendly closed-mouth smile, gentle eyebrows; no open-mouth grin.
+Right portrait: a focused, determined expression, closed mouth, slightly lowered eyebrows; serious but cute, approachable and not scary.
+Text (verbatim): under the left portrait "기본"; under the middle portrait "미소"; under the right portrait "진지". Small, simple Korean labels, one consistent clean typeface, centered under each portrait. No other text.
+Constraints: change facial expression only across the three portraits. Preserve hair, face identity, eye color, armor design, framing, size, light and proportions. The costume must be modest, child-friendly and fully cover torso and shoulders.
+Avoid: open mouth, big grin, exposed teeth, exaggerated emotions, angry violence, blood, gore, suggestive posing, any game HUD, any sword or weapon, yellow beams, world environment, halos, Roblox default red-haired thumbnail, extra people, logos and watermark.

@@ -550,3 +550,204 @@ Config values below are the ones in Config.luau.
   SkeletonRuins pad (68, 0, 24) is clear of the east Crossroads ridge (x ≈ 105).
 - The Panels rebirth preview subtracts the viewer from their faction even when the viewer is idle > 120 s (not counted in
   UnderdogHalo/Horns), so it can be off by one until the viewer acts.
+
+## A17. New-account art, exact lettering and optional R15 costumes (2026-10-03; partial implementation)
+
+This is a code/asset contract, not a claim that all costume rigs or the saved place are complete. The latest Studio
+round compiled 34 Luau files, synced 3 plus 2 subsequent A/Nanum changes, and ran 15 seconds with 20/20 server services
+and 8 client modules without Luau runtime errors. See HANDOFF_CODEX and the actual-cost records in
+`docs/art/` for unfinished work. A16 multiplayer, persistence and anti-cheat verification limits still apply.
+
+### A17-1 Existing approved art and load-safe lettering
+- Continue using the user's existing GPT-approved images; do not redesign the UI or regenerate these assets in code.
+  New-account IDs are recorded for UI/FX/stickers 78 + lettering 42 + weapon icons 27 + terrain textures 15 + map 1 = **163** images in
+  `art/ui/asset_ids.json` and `Config.UIArt.Parts`.
+- `Config.UIArt.TextLabels` maps exact Korean strings to `TXT_*` parts. `UIKit.BindArtText(label, partKeyOrText?)`
+  accepts a TextLabel/TextButton, returns the original label, and observes its current Text. An optional hint cannot
+  override a different current string; dynamic digits/suffixes must never disappear.
+- The child ArtText remains hidden until its ImageLabel reports IsLoaded. Only then hide the original font/stroke and
+  contextual UIStroke. While pending, missing an ID, changing text or failing to load, restore the original font/stroke.
+  Preserve callers' opacity changes and never show both the image and its fallback at once. Keep IMG-R4 fallbacks.
+- Bind designated labels in the pickers, HUD, Panels, WorldMap and existing shared text helpers. Font-fit/safe-area work
+  must preserve the selected art and Korean glyphs; numbers and unmatched runtime messages remain normal text.
+- The user selected the latest GPT **A composition** for selection-screen balance and Nanum Gothic. Implement that
+  selected layout while retaining the existing approved card/lettering assets. Nanum family `12187361718` is verified
+  live; use FontFace with the intended Regular/Bold/ExtraBold weights for normal text, retaining font-load fallback.
+  At the actual 991×511 viewport, clipping still needs the current follow-up fix and visual recheck.
+- `Config.WeaponArtKey(tier, classId, factionId) -> string`: clamp finite integer tier to 1..MaxWeaponTier, default invalid
+  class to Warrior; tiers 1..6 return `Weapon_<Class>_T<n>`, tier 7 appends Halo/Horns/Neutral (unset faction → Neutral).
+  The HUD upgrade card selects the current class's NEXT tier icon, with the current faction at tier 7. A missing ID uses
+  IconSword. Recreate the icon only when its key changes; keep the original approved card position/size/layout.
+- Terrain textures 15 and MapParchment 1 uploads/IDs are complete. The material tool applied 15 GE variants, 12 base
+  material overrides and 3 road assignments. GE_Grass was replaced with a new Instance (GrassReplaced=true); its old
+  TexturePack warning did not recur in this Play. WorldMap uses the MapParchment ArtImage with its existing fallback.
+
+### A17-2 Saved appearance choice and server-owned character replacement
+- Persist and mirror `CharacterGender` (`M` default; only M/F) and `CostumeEnabled` (`true` default; boolean only).
+  DataService repairs invalid/missing legacy values without resetting progression.
+- `ChooseClass(classId, gender?)`, `ChangeClass(classId, useTicket, gender?)` accept only M/F when provided and retain all
+  existing choice/change restrictions. `SetCostume(enabled, gender?)` is a rate-limited client→server remote for ready
+  players; enabled must be boolean and optional gender M/F. The server owns the template ID and every replacement.
+- Desired ID = `Costume_<Faction><Class><M|F>` only for ClassChosen=true, enabled=true, a valid Halo/Horns/Neutral faction
+  and Warrior/Mage/Archer class. `Config.Costumes.TemplateFolder = "CostumeRigs"`, TemplatePrefix = `"Costume_"`.
+- `CostumeService.ValidateTemplate(model) -> (boolean, reason?)` requires a living R15 Humanoid, HumanoidRootPart and all
+  15 standard R15 body parts. Require enabled Motor6D edges Root→LowerTorso→UpperTorso→Head, torso→each upper arm→lower
+  arm→hand and lower torso→each upper leg→lower leg→foot. A decorative welded GLB alone is not a playable template.
+- `CreateSpawnCharacter(player) -> Model?` clones a valid server template. Missing/invalid rigs return nil and keep the
+  owner's normal Roblox avatar. Template LuaSourceContainers are removed. Install only a verified game-owned Animate
+  LocalScript for the correct RigType and create Animator on the server. Controller sources: captured owner Animate of
+  the SAME RigType, then `ServerStorage.CostumeAnimationControllers.<R15|R6>` with matching CaptureRigType, origin
+  RobloxDefaultCharacter and a valid 64-digit CaptureSourceSHA256. An untyped StarterCharacterScripts.Animate must not
+  silently override a verified R15 controller.
+- Capture the fully loaded owner's actual HumanoidDescription, RigType and compatible Animate before first replacement.
+  OFF rebuilds that owner's avatar from the description, preserving their clothes/accessories and original rig type.
+  Never capture a costume clone as the original avatar.
+- `RequestRefresh(player)` serializes pending work with version checks. Defer while spawning/dead/in combat/kaiju;
+  discard stale clones after a yielded appearance call or character change. Class/faction changes, spawns, appearance
+  loading and template arrivals request refresh. Verified controller arrival/metadata updates also request refresh so
+  WaitingAnimation can recover after installation. No original appearance yet → WaitingAppearance. Clean
+  snapshots/controller clones/connections on PlayerLeaving.
+- `PlayerService.SpawnCharacter(player, model) -> boolean` installs an unparented server-owned model through the normal
+  spawn path. `ReplaceCharacter(player, model, expectedOld) -> boolean` is an appearance swap: require unchanged live
+  old character, preserve position/velocities/current HP, existing shield expiration and movement-check state. Do not
+  fire CharacterDied, grant a new spawn shield, heal, teleport to spawn or reset combat/progression for a cosmetic swap.
+  `ZoneService.CaptureMovementTrack`/`RestoreMovementTrack` preserve the existing validation track for this path.
+- Diagnostic attributes: CostumeStatus (`Avatar`, `Active`, `MissingTemplate`, `InvalidRig`, `WaitingAppearance`, `WaitingAnimation`,
+  `Deferred`, `Error`); CostumeApplied reflects the current character's `HHC_CostumeId`. CostumeEnabled=true is an
+  intended choice, not proof of CostumeApplied. B menu distinguishes preparation/deferred/error from applied ON/OFF.
+
+### A17-3 Reviewable local tools and upload safety
+- Use the same files on the new account; the user allowed uploads from **2026-10-03**. Inspect and show each image before
+  uploads, at most 10 per batch. Never upload `art/out/v1/`. Keep humans modest; Slime/original Goblin/GoblinBrute designs
+  stay unchanged, and Skeleton uses the user's selected clothed revision.
+- `tools/upload_ui_assets.py` validates explicit SHA256, existing Config key, direct workspace `art/ui/*.png`, ≤10 items,
+  and localhost image URLs. Write received IDs to the recoverable report/ledger before Config/asset_ids updates.
+  Record-result repairs previously returned IDs without uploading. Unknown/inflight results block ordinary retry;
+  the explicit disconnected-unknown retry needs reason and old/current Studio evidence. Run only one ledger writer.
+- `tools/costume_r15/convert.py` exports R15 pieces/joint data from the existing rig; `assemble.py` generates inspection
+  and assembly payloads. Import all source batches, inspect actual geometry, then assemble only under
+  `ServerStorage.CostumePendingRigs`. Move to playable CostumeRigs only after complete animation/play QA.
+- `tools/costume_r15/vendor/RobloxR15Animate.client.luau` and its serialized children are captured from a normal R15 avatar,
+  read/inspected, and exactly match Source extracted from the installed Roblox engine `.rbxm` (SHA256 recorded in
+  provenance). `install_animate.py --dry` is offline; `--apply` targets only GoodEvil/Edit, installs Source via multi_edit,
+  deserializes the recorded children, verifies the result and saves an audit. It never stops Play or syncs other scripts.
+  Root executed the installer successfully in Edit: 61 nodes, Source 28,802 characters, SHA256
+  `49eab7530cfc33b8af13b995ae1fa87f482a489b6d108ec2410d12dd19b720f0`; complete audit in
+  `build/costume_r15/animate_install_20261003T073704Z_4ef76cd9.json`.
+- Additional paid work requires the user's actual authorized cost scope. Completed Skeleton 30 + SkeletonKing 60 +
+  one human pilot rig 25 = 115 credits. Remaining 17 rigs (425) are a plan, not a verified blanket cost approval.
+
+### A17-4 Actual verification boundary for this round
+- Live diagnosis: Darugi_S2, Halo/Mage/F, ClassChosen=true, CostumeEnabled=true, CostumeStatus=MissingTemplate.
+  CostumeRigs, CostumePendingRigs and CostumeAnimationControllers were absent at that diagnosis. The verified R15
+  controller has since been installed; playable CostumeRigs is still empty/absent. CostumeImports contains only the male
+  HaloWarrior Batch01's 7 MeshParts. **Playable costumes: 0.** ON/OFF code is prepared; a working animated costume or
+  actual OFF restoration has not passed play verification.
+- A later temporary Batch01 clone loaded its 9 asset references successfully and displayed its face/eyes/armor textures.
+  This proves those static imported surfaces, not a complete R15 body or animation. Initial failed loads are not silently
+  removed from earlier diagnostic records.
+- Default Animate capture/vendor/installation verification is complete. Full R15 assembly,
+  walking/jumping/combat/death/respawn/OFF restoration and state preservation remain. A free EditableMesh comparison of
+  the original LeftLowerArm passed (431 faces, UV maximum error 0, position maximum error 1.237e-7). The free
+  LeftLowerLeg preview had 850 vertices/596 faces and all comparison errors 0. One actual CreateAssetAsync call raised
+  "CreateAssetAsync and CreateAssetVersionAsync are not available yet"; this Studio does not support that upload path.
+  New mesh uploads succeeded: 0; retries: 0. Preserve Unknown in
+  `build/costume_r15/Costume_HaloWarriorM/editable_upload_ledger.json`; do not blindly retry. Import the remaining 11
+  file pieces using the 3D Importer before assembly. These free geometry checks are not playable-rig validation.
+- `texture_01` originally had 10 unknown outcomes. Public assetdelivery returned 403 and two public thumbnails were the
+  same broken-image placeholder; that comparison could not identify originals. Later, after verifying the old Studio
+  had closed and recording retryHistory, the explicit retry returned all 10 complete with exact URL→ID mappings:
+  Tex_Grass=78282434254609, Tex_LeafyGrass=97617252360457. Texture02 five and MapParchment=133911744102396 are also
+  complete/recorded. These mappings come from actual upload results, not a guessed thumbnail match. Actual terrain
+  application is 15 GE variants/12 overrides/3 roads; latest Play has no GE_Grass TexturePack warning, while
+  Goblin/GoblinBrute/Skeleton asset warnings remain.
+- WaitingAppearance/verified-controller fallback/retry and preparation-state menu display passed the subsequent all-file
+  compiler/basic start round. Latest A/Nanum code is reflected in Studio; 991×511 clipping is being fixed and remains
+  visually unverified after that fix. The later approved Warrior/Archer/Mage sheet and motion contract are A19.
+  `docs/art/verification_2026-10-03/faction_a_nanum_1590.jpeg` records an intermediate failed layout, not the final result.
+- Last inspected saved `build/GoodEvil.rbxlx`: 2026-10-03 14:53:38, 6,606,409 bytes; only Slime/GoldenGoose/SkeletonKnight
+  had new-account monster imports in that saved file. Current live imports/latest src still need a confirmed Studio save
+  and copy to the committed `place/GoodEvil.rbxlx` before this round can claim a current saved playable place.
+
+## A18. Approved HP/MP HUD and server-owned reusable potions (2026-10-03; basic runtime verified)
+
+The user approved GPT `art/out/UI_HUD_Vitals_A.png` ("어휴 너무 좋지"). Implement the approved addition without changing
+the existing HUD style. The optional potion-mechanic question had no answer; **free reusable potions with separate
+10-second cooldowns** are the implementation default, not a recorded user choice of that mechanic.
+
+### A18-1 Resource and remote contract
+- `Config.Vitals = { MaxMana=100, ManaRegen=4, MageSwingCost=3, ReleaseCost=20,
+  HPRecovery=0.30, MPRecovery=0.40, PotionCooldown=10 }`.
+- New server `VitalsService` follows Init(S)/Start and is registered before CombatService; new client `VitalsUI` is
+  registered before HUD. Current registrations: 21 server services and 9 client modules. Register remote `UsePotion`
+  (client→server) and `Config.RateLimits.UsePotion=0.3`.
+- Mana is **session-only server state**, not saved in DataService. PlayerReady starts at MaxMana. A non-cosmetic
+  CharacterSpawned refills mana; a cosmetic character replacement preserves it. Remove state on PlayerLeaving.
+  Potion deadlines are per-player session fields and persist across death/respawn and cosmetic replacement.
+- Server publishes `Mana` (rounded to 0.1), `MaxMana`, `HPPotionReadyAt`, `MPPotionReadyAt` player attributes. Deadlines use
+  workspace:GetServerTimeNow. Regenerate ready, living, ClassChosen players every 0.5 seconds by ManaRegen × elapsed time
+  (elapsed clamp 0..1), capped at MaxMana. Clients never set the authoritative resource state.
+- `VitalsService.TrySpendMana(player, amount, silent?) -> boolean` validates finite nonnegative amount≤MaxMana and a
+  ready/living/ClassChosen player. Spend once on success. Insufficient manual mana sends a Korean notice at most every
+  2 seconds; automatic requests may suppress that notice.
+- Mage Swing (manual or auto) spends 3 before consuming the shared Swing cooldown. Warrior/Archer Swing spend no mana.
+  Every class Release (manual/auto) spends 20 only after ordinary eligibility/min-stack checks and BEFORE consuming
+  charge/perfect state. Insufficient mana keeps charge and attack cooldown; no damage/attack Fx is accepted.
+- `UsePotion("HP"|"MP")`: validate kind, ready/living/ClassChosen player, independent per-kind request throttle and
+  authoritative deadline. Refuse kaiju Siren/Active. HP adds 30% of the current Humanoid.MaxHealth, capped at MaxHealth;
+  MP adds 40% of MaxMana, capped at MaxMana. Successful use alone starts that kind's 10-second deadline, marks active
+  and sends a Korean notice. Full resource, bad kind, dead/not chosen, active deadline and kaiju spend no potion deadline.
+  Potions have no gold cost, purchased stock or saved inventory in this default.
+- `DebugSetMana` is Studio-only via Main's existing DebugCommand; never expose a resource setter as a client remote.
+
+### A18-2 Approved HUD and controls
+- `VitalsUI.BuildStats` places HP/MP bars below XP; `BuildPotions` adds two approved parchment/icon buttons directly
+  below the player card. HUD increases the card height and moves quests below the potion row, including Horns' stars.
+  Keep touch/desktop scaling, existing safe-area rules and the original approved layout outside this addition.
+- Show HP/MP current/maximum values, plus per-kind ready/countdown text from server time. Key **1=HP, 2=MP** and direct
+  button taps send the same remote. Keyboard hint appears only on keyboard without touch. Ignore processed input or
+  focused text boxes and suppress potion requests while faction/class picker, WorldMap or Panels is open.
+- Disable default Backpack/Health CoreGui to avoid competing 1/2 hotbar shortcuts and duplicate health display.
+  Keep code fallback when an art icon is absent.
+- Root inspected/displayed each potion PNG before upload. Config part IDs: IconPotionHP=`100061379621289`,
+  IconPotionMP=`133725941898063` (`art/ui/asset_ids.json` records `UIP_IconPotionHP/MP`). Existing 163+2 = **165** new-account
+  2D images. This upload success is independent of potion/HUD gameplay validation.
+
+### A18-3 Verification boundary
+- Subsequent actual check: **36 Luau files compiled**, sync changed 0/kept 36, and a **15-second Play** started all
+  **21/21 server services + 9 client modules** with no Luau runtime errors. The initial Play/Edit conflict was resolved;
+  it was not a confirmed syntax failure. Prior A17 34-file/20-service/8-client result remains historical.
+- Actual UI selected Halo/Mage. Studio DebugCommand set HP19.2/MaxHealth96 and MP20/MaxMana100. HP and MP button clicks
+  recovered 30% (28.8) and 40% (40), with separate deadlines about server-now+10 seconds. Natural town HP/mana regen ran
+  concurrently: first read HP68/MP64, then repeated clicks read HP78/MP68.1. Both deadlines remained exactly unchanged;
+  the repeat did not grant an additional potion recovery. Both button status labels showed "9초".
+  Evidence: `build/vitals_play_verify_result.json`. Do not misattribute the concurrent regeneration to the potion.
+- **Still unverified:** keys 1/2, wrong kind/dead/not chosen/kaiju refusal, exact cost/failed-MP charge and cooldown
+  preservation for Mage Swing/all-class Release, respawn mana refill and cosmetic resource/CD preservation.
+  CostumeRigs still has 0 playable templates, so real costume replacement coverage remains pending.
+
+## A19. Approved class attack motions and moving weapon origins (2026-10-03; runtime verification pending)
+
+The user approved GPT `art/out/Motion_Class_Attacks_A.png` ("좋았으"). The code in CharacterVisuals, CombatService and Fx
+implements that selected three-class sheet. Do not treat approval as proof the final in-game motion has been tested.
+
+- Warrior: prepare/rotate/slash/recover for Swing; overhead preparation and ground smash for Release. Archer: hold the
+  bow upright in the **left hand**, visibly draw its string with the right hand, fire from the actual bow, and use the
+  approved upward Release/volley motion. Mage: gather in the left palm, thrust the right-hand staff and launch at its tip;
+  Release keeps the approved meteor gesture. Keep stock animation fallback for unsupported rigs/procedural failures.
+- CharacterVisuals assigns WeaponModel's Class/GripHand, mounts the bow to left grip and sword/staff to right grip,
+  adds class-appropriate AttackMuzzle, and uses two bow-string Beams sharing the movable BowNock.
+- Fx follows the current hands/weapon after the procedural pose batch: bow nock follows the right grip while drawn,
+  temporary arrow follows nock→muzzle, and Mage gather follows the current left palm. Reset nock and remove temporary
+  arrow/gather when the attack stops. Read the class-matched AttackMuzzle **at launch time**, with the proper hand as
+  fallback; do not launch from a stale packet hand position.
+- Swing/Release Fx carry Character identity, Class, Faction and launch/contact/flight delays. Deferred motion/launch/hit
+  display checks the same living Character, current Class/Faction and actor token; character replacement/death or
+  class/faction change invalidates the stale context. Server manual-queue requests also capture and validate these
+  identities and are cleared on class/faction changes.
+- Existing target selection, damage/reward/charge rules remain server-owned. Accepted damage and cooldown resolve
+  immediately; clip launch/contact/flight delays coordinate visuals and shove timing. Add only the A18 mana gate.
+  The client must never deal extra damage, decide a hit, consume server charge or move a player to match an animation.
+- All three final motions, actual muzzle origin, visible string/staff behavior, class/faction/respawn cancellation and
+  coexistence with movement/hurt remain **unverified in final Play** until root reports results. Keep A16 multiplayer/
+  persistence/anti-cheat limits and the 0-playable-costume limitation.

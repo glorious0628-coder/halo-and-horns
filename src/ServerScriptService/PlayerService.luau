@@ -15,7 +15,7 @@ local PlayerService = {}
 -- public signals (top level so they exist before any Init)
 PlayerService.PlayerReady = Util.Signal.new() -- (player, data)
 PlayerService.PlayerLeaving = Util.Signal.new() -- (player, data) fired once, BEFORE the final save
-PlayerService.CharacterSpawned = Util.Signal.new() -- (player, character, humanoid)
+PlayerService.CharacterSpawned = Util.Signal.new() -- (player, character, humanoid, cosmetic: boolean?)
 PlayerService.CharacterDied = Util.Signal.new() -- (player, character)
 
 local S = nil
@@ -30,6 +30,9 @@ local conns = {} -- [Player] = { RBXScriptConnection }
 local lastActive = {} -- [Player] = os.clock() of the last input/combat
 local regularMinutes = {} -- [Player] = active minutes on this server
 local mirrored = {} -- [key] = true for every key of Config.Data.Mirrored
+local characterLoading = {} -- [Player] = true while a normal spawn is being installed
+local respawnQueued = {} -- [Player] = one additional requested respawn while the current load yields
+local cosmeticContext = setmetatable({}, { __mode = "k" }) -- [Model] = server-only snapshot for an appearance replacement
 local closing = false
 
 local COLLISION_GROUP = Config.Player.CollisionGroup or "Players"
@@ -144,12 +147,28 @@ local function markTeleported(player, seconds)
 end
 
 local function loadCharacter(player)
-	if player.Parent == nil then return end
+	if player.Parent == nil or not ready[player] then return end
+	if characterLoading[player] then
+		respawnQueued[player] = true
+		return
+	end
+	characterLoading[player] = true
 	-- CR-H2: the new character appears at a spawn point first; onCharacterAdded marks again before placing it
 	markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2)
-	local ok, err = pcall(player.LoadCharacter, player)
+	local ok, err = pcall(function()
+		local costumes = S.CostumeService
+		local custom = costumes and costumes.CreateSpawnCharacter(player)
+		if custom and PlayerService.SpawnCharacter(player, custom) then return end
+		if custom then custom:Destroy() end
+		player:LoadCharacter()
+	end)
+	characterLoading[player] = nil
 	if not ok then
 		Util.Warn(TAG, "LoadCharacter failed for " .. player.Name .. ": " .. tostring(err))
+	end
+	if respawnQueued[player] then
+		respawnQueued[player] = nil
+		if ready[player] and player.Parent then task.defer(loadCharacter, player) end
 	end
 end
 
@@ -298,7 +317,32 @@ local function buildLeaderstats(player)
 end
 
 ------------------------------------------------------------------ character lifecycle
+-- Humanoid.HipHeight uses different standing-height formulas for R15 and R6.
+local function standingHeight(character, humanoid, root)
+	if not character or not humanoid or not root or not root:IsA("BasePart") then return nil end
+	local height = humanoid.HipHeight + root.Size.Y * 0.5
+	if humanoid.RigType == Enum.HumanoidRigType.R6 then
+		local leg = character:FindFirstChild("Left Leg")
+		if not leg or not leg:IsA("BasePart") then return nil end
+		height += leg.Size.Y
+	end
+	return height == height and height > 0 and height < math.huge and height or nil
+end
+
+local function cosmeticPivot(character, humanoid, root, context)
+	local pivot = context.OriginalPivot or context.Pivot
+	local height = standingHeight(character, humanoid, root)
+	if height and context.StandingHeight then
+		-- World Y only: preserve the feet's height, XZ, facing and airborne offset.
+		pivot += Vector3.new(0, height - context.StandingHeight, 0)
+	end
+	context.Pivot = pivot -- recompute from OriginalPivot after spawn handlers scale the new rig
+	return pivot
+end
+
 local function onCharacterAdded(player, character)
+	local context = cosmeticContext[character]
+	cosmeticContext[character] = nil
 	assignCollisionGroup(character)
 
 	local humanoid = character:WaitForChild("Humanoid", CHILD_TIMEOUT)
@@ -322,8 +366,10 @@ local function onCharacterAdded(player, character)
 
 	humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 	applyStats(player, humanoid, true)
-	markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2) -- CR-H2
-	character:PivotTo(spawnCFrame(Config.HomeZoneId(stat(player, "Faction", "None"))))
+	if context then humanoid.Health = math.min(context.Health, humanoid.MaxHealth) end
+	if not context then markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2) end -- CR-H2
+	character:PivotTo(context and cosmeticPivot(character, humanoid, root, context)
+		or spawnCFrame(Config.HomeZoneId(stat(player, "Faction", "None"))))
 
 	humanoid.Died:Once(function()
 		-- a character already replaced by LoadCharacter (Respawn) is not a death
@@ -336,7 +382,18 @@ local function onCharacterAdded(player, character)
 		end)
 	end)
 
-	PlayerService.CharacterSpawned:Fire(player, character, humanoid)
+	PlayerService.CharacterSpawned:Fire(player, character, humanoid, context ~= nil)
+	if context and player.Character == character and character.Parent and humanoid.Health > 0 then
+		-- JusticeService may scale the new rig; recalculate its standing height without accumulating an offset.
+		character:PivotTo(cosmeticPivot(character, humanoid, root, context))
+		root.AssemblyLinearVelocity = context.LinearVelocity
+		root.AssemblyAngularVelocity = context.AngularVelocity
+	end
+	if context and context.MovementTrack and S.ZoneService and S.ZoneService.RestoreMovementTrack then
+		-- Spawn handlers (including JusticeService scale/lift) are synchronous and may mark a teleport.
+		-- Restore after all of them: a cosmetic switch neither resets the position sample nor renews grace.
+		S.ZoneService.RestoreMovementTrack(player, context.MovementTrack, character)
+	end
 end
 
 ------------------------------------------------------------------ join
@@ -375,6 +432,10 @@ local function onJoin(player)
 		end
 	end
 	regularMinutes[player] = 0
+	-- A saved nickname is untrusted until the global reservation and current text filter are verified.
+	player:SetAttribute("Nickname", "")
+	player:SetAttribute("NicknameVerified", false)
+	player:SetAttribute("NicknameStatus", "Loading")
 	player:SetAttribute("RegularMinutes", 0)
 	buildLeaderstats(player)
 
@@ -536,6 +597,73 @@ function PlayerService.Respawn(player)
 	task.spawn(loadCharacter, player)
 end
 
+function PlayerService.IsSpawning(player)
+	return characterLoading[player] == true
+end
+
+-- Server-owned character installation. Appearance swaps do not fire CharacterDied or grant a new spawn shield.
+local function installCharacter(player, character, context, expectedOld)
+	if not ready[player] or player.Parent ~= Players or player.Character ~= expectedOld then return false end
+	if typeof(character) ~= "Instance" or not character:IsA("Model") or character.Parent ~= nil then return false end
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if not humanoid or not root or not root:IsA("BasePart") then return false end
+	local ok, err = pcall(function()
+		character.Name = player.Name
+		character.PrimaryPart = root
+		if context then
+			context.OriginalPivot = context.Pivot
+			for _, child in character:GetChildren() do
+				if child:IsA("ForceField") then child:Destroy() end
+			end
+			character:PivotTo(cosmeticPivot(character, humanoid, root, context))
+			cosmeticContext[character] = context
+		end
+		character.Parent = workspace
+		-- The context is registered before CharacterAdded fires, for both immediate and deferred signal modes.
+		player.Character = character
+	end)
+	if not ok then
+		cosmeticContext[character] = nil
+		pcall(character.Destroy, character)
+		Util.Warn(TAG, "character installation failed: " .. tostring(err))
+		return false
+	end
+	if expectedOld and expectedOld ~= character then
+		-- Move existing shields rather than cloning them: their original expiration callbacks still apply.
+		if context then
+			for _, child in expectedOld:GetChildren() do
+				if child:IsA("ForceField") then child.Parent = character end
+			end
+		end
+		pcall(expectedOld.Destroy, expectedOld)
+	end
+	pcall(root.SetNetworkOwner, root, player)
+	return true
+end
+
+function PlayerService.SpawnCharacter(player, character)
+	return installCharacter(player, character, nil, player.Character)
+end
+
+function PlayerService.ReplaceCharacter(player, character, expectedOld)
+	local old = player.Character
+	if old ~= expectedOld or characterLoading[player] or not Util.IsAlive(player) then return false end
+	local humanoid = Util.GetHumanoid(player)
+	local root = Util.GetRoot(player)
+	local context = {
+		Health = humanoid.Health,
+		Pivot = old:GetPivot(),
+		StandingHeight = standingHeight(old, humanoid, root),
+		LinearVelocity = root.AssemblyLinearVelocity,
+		AngularVelocity = root.AssemblyAngularVelocity,
+	}
+	if S.ZoneService and S.ZoneService.CaptureMovementTrack then
+		context.MovementTrack = S.ZoneService.CaptureMovementTrack(player)
+	end
+	return installCharacter(player, character, context, old)
+end
+
 -- recompute MaxHealth + WalkSpeed of the current character (keeps the HP ratio unless fullHeal)
 function PlayerService.RefreshCharacter(player, fullHeal)
 	local humanoid = Util.GetHumanoid(player)
@@ -576,6 +704,8 @@ function PlayerService.FinalizeLeave(player)
 	Util.ClearPlayer(player)
 	lastActive[player] = nil
 	regularMinutes[player] = nil
+	characterLoading[player] = nil
+	respawnQueued[player] = nil
 	local list = conns[player]
 	conns[player] = nil
 	if list then

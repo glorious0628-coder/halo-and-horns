@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "origin": "Roblox default R15 Animate captured directly from a normal engine-spawned avatar in GoodEvil Server Play",
+  "captured_at_utc": "2026-10-03T06:24:32.168121+00:00",
+  "rig_type": "R15",
+  "source_characters": 28802,
+  "source_sha256": "49eab7530cfc33b8af13b995ae1fa87f482a489b6d108ec2410d12dd19b720f0",
+  "tree_sha256": "460f8b136638bac6bdd5da8db156c176daa36ceb87ba1a8c0f1024c6bad039be",
+  "nodes": 61,
+  "default_avatar_checks": {
+    "CostumeMarkerAbsent": true,
+    "OriginalRestoreMarkerAbsent": true,
+    "StarterCharacterAnimateAbsent": true,
+    "StarterCharacterAbsent": true
+  },
+  "review": {
+    "full_source_read": true,
+    "only_local_humanoid_animation_and_emote_controller": true,
+    "external_require": false,
+    "http_requests": false,
+    "remote_calls": false,
+    "datastore_calls": false,
+    "source_modified": false,
+    "child_structure_modified": false
+  },
+  "local_distribution_comparison": {
+    "file": "content/avatar/scripts/humanoidAnimateR15.lua",
+    "version": "version-76e1a02649ad4f35",
+    "characters": 32209,
+    "same_as_capture": false,
+    "note": "Bundled Lua file is a different revision; no byte-identity claim."
+  },
+  "documentation": [
+    "https://create.roblox.com/docs/reference/engine/classes/StarterCharacterScripts",
+    "https://create.roblox.com/docs/tutorials/use-case-tutorials/animation/play-character-animations"
+  ],
+  "installed_engine_match": {
+    "file": "content/avatar/scripts/humanoidAnimateR15_DEPRECATED_20260813.rbxm",
+    "version": "version-76e1a02649ad4f35",
+    "engine_file_sha256": "2a8c520427d460cdb790c68786aa064957eea12f00cccb2fd389c0f588ccb515",
+    "source_bytes": 28802,
+    "source_sha256": "49eab7530cfc33b8af13b995ae1fa87f482a489b6d108ec2410d12dd19b720f0",
+    "exact_source_match": true
+  }
+}

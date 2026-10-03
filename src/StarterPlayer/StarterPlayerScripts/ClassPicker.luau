@@ -391,6 +391,7 @@ end
 
 -- wrapped text bounds (height, width) at a TextSize inside `width` canvas units
 local function textBounds(text, size, font, width)
+	if UIKit and type(UIKit.MeasureText) == "function" then return UIKit.MeasureText(text, size, font, width) end
 	local ok, v = pcall(function()
 		return TextService:GetTextSize(text, size, font, Vector2.new(math.max(1, width), 10000))
 	end)
@@ -402,6 +403,7 @@ local function textBounds(text, size, font, width)
 end
 
 local function place(obj, x, y, w, h)
+	if obj.Parent and obj.Parent:GetAttribute("PickerTextClip") == true then obj = obj.Parent end
 	obj.Position = UDim2.fromOffset(x, y)
 	obj.Size = UDim2.fromOffset(math.max(0, w), math.max(0, h))
 end
@@ -433,7 +435,19 @@ local function newImage(parent, name, z)
 end
 
 -- transparent, wrapped, TextScaled label with a UITextSizeConstraint (range set by setTextRange on layout)
-local function artLabel(parent, name, z, font)
+local function artLabel(parent, name, z, font, clipped)
+	if clipped then
+		local clip = Instance.new("Frame")
+		clip.Name = name .. "Clip"
+		clip.BackgroundTransparency = 1
+		clip.BorderSizePixel = 0
+		clip.Size = UDim2.fromScale(1, 1)
+		clip.ClipsDescendants = true
+		clip.ZIndex = z or 1
+		clip:SetAttribute("PickerTextClip", true)
+		clip.Parent = parent
+		parent = clip
+	end
 	local l = Instance.new("TextLabel")
 	l.Name = name
 	l.BackgroundTransparency = 1
@@ -442,10 +456,17 @@ local function artLabel(parent, name, z, font)
 	l.Text = ""
 	l.TextScaled = true
 	l.TextWrapped = true
+	l:SetAttribute("PickerFit", true)
+	if clipped then l.Size = UDim2.fromScale(1, 1) end
 	l.ZIndex = z or 1
 	constrainText(l, 64)
 	l.Parent = parent
 	return l
+end
+
+local function bindArtText(label)
+	if UIKit and type(UIKit.BindArtText) == "function" then pcall(UIKit.BindArtText, label) end
+	return label
 end
 
 -- min / max text size (canvas units); TextSize = max for labels that are not TextScaled
@@ -455,12 +476,15 @@ local function setTextRange(label, minT, maxT)
 		c = Instance.new("UITextSizeConstraint")
 		c.Parent = label
 	end
-	local lo = math.clamp(math.floor(minT), 1, 100)
+	local lo = math.clamp(math.floor(label:GetAttribute("PickerFit") and MIN_TEXT or minT), 1, 100)
 	local hi = math.clamp(math.floor(maxT), lo, 100)
 	c.MaxTextSize = 100 -- widen first so Min never exceeds Max mid-update
 	c.MinTextSize = lo
 	c.MaxTextSize = hi
 	label.TextSize = hi
+	if label:GetAttribute("PickerFit") and UIKit and type(UIKit.FitText) == "function" then
+		UIKit.FitText(label, lo, hi)
+	end
 end
 
 -- storybook text look (same colours as UIKit.InkText / LightText): "ink" or "light" + a UIStroke "Outline"
@@ -478,6 +502,7 @@ local function styleText(label, style, thickness)
 	st.Color = ink and artColor("InkOutline", Color3.fromRGB(255, 247, 228)) or artColor("TextOutline", Color3.fromRGB(34, 20, 10))
 	st.Transparency = ink and 0.3 or 0
 	st.Thickness = thickness or (ink and (tonumber(ART.OutlineInk) or 1) or (tonumber(ART.OutlineLight) or 1.5))
+	label:SetAttribute("PickerOutlineThickness", st.Thickness)
 end
 
 -- 9-slice art panel (UIKit.ArtImage fits the slice edges) or a code-drawn parchment panel when the part is missing
@@ -592,7 +617,7 @@ local function choose(id)
 	if not ClassPicker.IsOpen() then return end
 	lockedUntil = os.clock() + CLICK_LOCK
 	refreshButtons()
-	fire("ChooseClass", id)
+	fire("ChooseClass", id, gender)
 	task.delay(CLICK_LOCK + 0.05, function()
 		if built then refreshButtons() end
 	end)
@@ -651,6 +676,7 @@ local function genderButton(pill, g, text)
 	b.ZIndex = 3
 	constrainText(b, 40)
 	b.Parent = pill
+	bindArtText(b)
 	b.Activated:Connect(function()
 		if gender == g then return end
 		playClick()
@@ -706,6 +732,7 @@ local function buildHeader()
 	title.Position = UDim2.fromScale(tr[1], tr[2])
 	title.Size = UDim2.fromScale(tr[3], tr[4])
 	styleText(title, "ink", 2)
+	bindArtText(title)
 	head.Ribbon, head.Title = ribbon, title
 
 	-- 남 | 여 pill (cosmetic: swaps the portraits)
@@ -753,6 +780,7 @@ local function buildStatRow(parent, def)
 	row.Name = "Stat_" .. def.Key
 	row.BackgroundTransparency = 1
 	row.BorderSizePixel = 0
+	row.ClipsDescendants = true
 	row.ZIndex = 4
 	row.Parent = parent
 	local icon = newImage(row, "Icon", 1)
@@ -760,7 +788,7 @@ local function buildStatRow(parent, def)
 	local emoji = artLabel(row, "Emoji", 1, theme.Font)
 	emoji.Text = def.Emoji
 	emoji.Visible = icon.Image == ""
-	local label = artLabel(row, "Label", 1)
+	local label = artLabel(row, "Label", 1, nil, true)
 	label.TextScaled = false
 	label.TextXAlignment = Enum.TextXAlignment.Left
 	label.Text = def.Label
@@ -850,6 +878,7 @@ local function buildArtCard(id)
 	card.AnchorPoint = Vector2.new(0.5, 0.5)
 	card.BackgroundTransparency = 1
 	card.BorderSizePixel = 0
+	card.ClipsDescendants = true
 	local scale = Instance.new("UIScale")
 	scale.Name = "CardScale"
 	scale.Parent = card
@@ -891,7 +920,8 @@ local function buildArtCard(id)
 	crop.ScaleType = Enum.ScaleType.Stretch
 
 	local name = artLabel(card, "ClassName", 4, artFont("Title", Enum.Font.GothamBlack))
-	local desc = artLabel(card, "Desc", 4)
+	bindArtText(name)
+	local desc = artLabel(card, "Desc", 4, nil, true)
 	local rows = {}
 	for i, rowDef in STAT_ROWS do
 		rows[i] = buildStatRow(card, rowDef)
@@ -910,6 +940,7 @@ local function buildArtCard(id)
 	shade.Parent = card
 	local label = artLabel(card, "ChooseLabel", 5, artFont("Title", Enum.Font.GothamBlack))
 	label.Text = T.Choose
+	bindArtText(label)
 	local hit = Instance.new("TextButton")
 	hit.Name = "ChooseButton"
 	hit.BackgroundTransparency = 1
@@ -973,6 +1004,7 @@ local function buildOldCard(id, order)
 		TextColor3 = theme.Gold,
 		Font = theme.Font,
 	}, 30)
+	bindArtText(name)
 	local generic = newLabel(card, {
 		Name = "Generic",
 		AnchorPoint = Vector2.new(0.5, 0),
@@ -1024,6 +1056,7 @@ local function buildOldCard(id, order)
 		choose(id)
 	end)
 	btn.AnchorPoint = Vector2.new(0.5, 1)
+	bindArtText(btn)
 
 	card.Parent = cardsRow
 	oldCards[id] = {
@@ -1525,8 +1558,13 @@ function ClassPicker.Init(c)
 	C = c
 	UIKit = c and c.UIKit
 	loadTheme()
+	gender = player:GetAttribute("CharacterGender") == "F" and "F" or "M"
 	prevClassChosen = player:GetAttribute("ClassChosen")
 	player.AttributeChanged:Connect(function(name)
+		if name == "CharacterGender" then
+			local ok, err = pcall(setGender, player:GetAttribute("CharacterGender") == "F" and "F" or "M")
+			if not ok then warnThrottled("gender error: " .. tostring(err)) end
+		end
 		if name == "ClassChosen" then
 			local ok, err = pcall(onClassChosenChanged)
 			if not ok then warnThrottled("intro error: " .. tostring(err)) end
