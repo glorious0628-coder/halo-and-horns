@@ -153,6 +153,7 @@ Config.Classes = {
 		WalkSpeedMult = 1.0,
 		ReleaseMult = 1.0, -- tuning knob: multiplies this class's release damage
 		Stats = { "체력 ×1.3", "공격 ×1.0", "주변 전체 공격" },
+		DisplayStats = { HP = 4, Atk = 3, Spd = 2 }, -- picker card bars (체력 / 공격 / 속도), 5-point scale, cosmetic only
 	},
 	Mage = {
 		Id = "Mage",
@@ -169,6 +170,7 @@ Config.Classes = {
 		WalkSpeedMult = 1.0,
 		ReleaseMult = 1.0,
 		Stats = { "체력 ×0.8", "공격 ×1.3", "35칸 원거리 + 폭발" },
+		DisplayStats = { HP = 2, Atk = 4, Spd = 3 },
 	},
 	Archer = {
 		Id = "Archer",
@@ -185,6 +187,7 @@ Config.Classes = {
 		WalkSpeedMult = 1.1,
 		ReleaseMult = 1.0,
 		Stats = { "체력 ×1.0", "공격 ×0.55 (2배 빠름)", "30칸 2명 동시 · 이동 +10%" },
+		DisplayStats = { HP = 3, Atk = 2, Spd = 4 },
 	},
 }
 
@@ -930,6 +933,184 @@ Config.UI = {
 	MinTextSize = 11, -- UITextSizeConstraint.MinTextSize on every TextLabel/TextButton
 	JumpButtonWait = 5, -- WaitForChild timeout for PlayerGui.TouchGui.TouchControlFrame.JumpButton
 	AttackFallbackOffset = Vector2.new(-200, -170), -- attack button offset from bottom-right without a jump button
+}
+
+-- addendum A14-3: GPT-drawn HUD parts (art/ui/asset_ids.json + art/ui/ui_meta.json; mockup art/out/UI_HUD_Final.png).
+-- Plain data only; the client reads it through UIKit.ArtImage / ArtFrame / ArtButton / ArtBar.
+-- Part fields: Id (empty or missing = not uploaded -> UIKit draws the old code-styled frame, IMG-R4), Size (image px),
+-- Slice (SliceCenter rect in image px = 9-slice frame), SliceScale (default edge scale), FitHeight (capsule: edge
+-- scale follows the element height), Round (fallback is a circle), Tone (Colors key for the fallback fill and the
+-- label style), Inner (content rect in image px: hole / face / track interior).
+Config.UIArt = {
+	Enabled = true, -- false = every part counts as missing (forces the IMG-R4 fallback)
+	Parts = {
+		-- frames (9-slice)
+		PanelParchment = { Id = "rbxassetid://72205434910489", Size = Vector2.new(512, 327), Slice = Rect.new(22, 23, 490, 300), SliceScale = 0.5, Tone = "Parchment" },
+		PanelCard = { Id = "rbxassetid://136335526027749", Size = Vector2.new(512, 233), Slice = Rect.new(39, 40, 472, 193), SliceScale = 0.35, Tone = "Navy", Inner = Rect.new(27, 35, 484, 197) },
+		RibbonHeader = { Id = "rbxassetid://139030670576287", Size = Vector2.new(512, 124), Slice = Rect.new(42, 21, 470, 104), FitHeight = true, Tone = "Ribbon" },
+		Pill = { Id = "rbxassetid://104493989064174", Size = Vector2.new(512, 120), Slice = Rect.new(41, 23, 472, 98), FitHeight = true, Tone = "Parchment" },
+		BarTrack = { Id = "rbxassetid://83211717779640", Size = Vector2.new(512, 94), Slice = Rect.new(45, 20, 466, 73), FitHeight = true, Tone = "NavyDeep", Inner = Rect.new(20, 17, 492, 76) },
+		BtnSquare = { Id = "rbxassetid://139680959679196", Size = Vector2.new(512, 491), Slice = Rect.new(94, 34, 416, 392), SliceScale = 0.22, Tone = "Parchment" },
+		-- round buttons / rings (Fit)
+		BtnAttack = { Id = "rbxassetid://132704332440668", Size = Vector2.new(509, 512), Round = true, Tone = "Red", Inner = Rect.new(53, 56, 456, 444) },
+		BtnSpecial = { Id = "rbxassetid://109104625287455", Size = Vector2.new(512, 504), Round = true, Tone = "Gold", Inner = Rect.new(55, 50, 458, 454) },
+		LevelBadge = { Id = "rbxassetid://119498869874355", Size = Vector2.new(512, 511), Round = true, Tone = "Navy", Inner = Rect.new(89, 93, 422, 405) },
+		PortraitRing = { Id = "rbxassetid://79459292166016", Size = Vector2.new(498, 512), Round = true, Tone = "Navy", Inner = Rect.new(70, 102, 427, 445) },
+		-- emblems
+		ShieldHalo = { Id = "rbxassetid://75337774918722", Size = Vector2.new(490, 512) },
+		ShieldHorns = { Id = "rbxassetid://86370929061230", Size = Vector2.new(497, 512) },
+		Crown = { Id = "rbxassetid://119142490435797", Size = Vector2.new(256, 175) },
+		-- icons
+		IconCoin = { Id = "rbxassetid://94164695982355", Size = Vector2.new(254, 256) },
+		IconPouch = { Id = "rbxassetid://140252516996220", Size = Vector2.new(256, 249) },
+		IconSword = { Id = "rbxassetid://72547608031298", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
+		IconAttack = { Id = "rbxassetid://108907022902105", Size = Vector2.new(256, 253) }, -- silver sword (attack button)
+		IconSpecial = { Id = "rbxassetid://85317688210710", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
+		IconLock = { Id = "rbxassetid://139055212938008", Size = Vector2.new(246, 256) },
+		IconMap = { Id = "rbxassetid://138000833306308", Size = Vector2.new(256, 202) },
+		IconGear = { Id = "rbxassetid://125495221925556", Size = Vector2.new(247, 256) },
+		IconGoose = { Id = "rbxassetid://75561315472577", Size = Vector2.new(218, 256) },
+		IconSafe = { Id = "rbxassetid://79507893882404", Size = Vector2.new(254, 256) }, -- green shield
+		IconSprout = { Id = "rbxassetid://113278909940414", Size = Vector2.new(256, 254) },
+		IconStar = { Id = "rbxassetid://119757093512057", Size = Vector2.new(256, 243) },
+		IconStarEmpty = { Id = "rbxassetid://105701738413323", Size = Vector2.new(256, 255) },
+		IconClover = { Id = "rbxassetid://130220802039072", Size = Vector2.new(246, 256) },
+		IconScroll = { Id = "rbxassetid://104306436967552", Size = Vector2.new(256, 192) },
+		IconSlime = { Id = "rbxassetid://132864964926977", Size = Vector2.new(256, 245) },
+		-- pick screens (mockups art/out/UI_Faction_B.png, UI_Class_A.png): text-free card backgrounds, regions in CardLayout
+		CardHalo = { Id = "rbxassetid://127968705264649", Size = Vector2.new(635, 1024) },
+		CardHorns = { Id = "rbxassetid://118772199487027", Size = Vector2.new(617, 1024) },
+		CardNeutral = { Id = "rbxassetid://91054727125376", Size = Vector2.new(612, 1024) },
+		ClassCardHalo = { Id = "rbxassetid://106511467901627", Size = Vector2.new(647, 1024) },
+		ClassCardHorns = { Id = "rbxassetid://88897242529915", Size = Vector2.new(608, 1024) },
+		ClassCardNeutral = { Id = "rbxassetid://111415926358171", Size = Vector2.new(618, 1024) },
+		ShieldNeutral = { Id = "rbxassetid://108855002367843", Size = Vector2.new(251, 256) },
+		TitleRibbon = { Id = "rbxassetid://105521181481849", Size = Vector2.new(256, 63) }, -- empty title ribbon
+		-- class characters (transparent chibi): Char<Faction><Class><M|F>
+		CharHaloWarriorM = { Id = "rbxassetid://91124975552923", Size = Vector2.new(420, 512) },
+		CharHaloWarriorF = { Id = "rbxassetid://112844299339258", Size = Vector2.new(464, 512) },
+		CharHaloMageM = { Id = "rbxassetid://132965528745270", Size = Vector2.new(460, 512) },
+		CharHaloMageF = { Id = "rbxassetid://114828753943727", Size = Vector2.new(478, 512) },
+		CharHaloArcherM = { Id = "rbxassetid://122481808871259", Size = Vector2.new(501, 512) },
+		CharHaloArcherF = { Id = "rbxassetid://124348927719351", Size = Vector2.new(504, 512) },
+		CharHornsWarriorM = { Id = "rbxassetid://123139571964542", Size = Vector2.new(489, 512) },
+		CharHornsWarriorF = { Id = "rbxassetid://125995393023187", Size = Vector2.new(473, 512) },
+		CharHornsMageM = { Id = "rbxassetid://96352144576106", Size = Vector2.new(478, 512) },
+		CharHornsMageF = { Id = "rbxassetid://77910369681201", Size = Vector2.new(496, 512) },
+		CharHornsArcherM = { Id = "rbxassetid://105137475844346", Size = Vector2.new(467, 512) },
+		CharHornsArcherF = { Id = "rbxassetid://100148164488141", Size = Vector2.new(467, 512) },
+		CharNeutralWarriorM = { Id = "rbxassetid://74407898891261", Size = Vector2.new(485, 512) },
+		CharNeutralWarriorF = { Id = "rbxassetid://120947459158861", Size = Vector2.new(476, 512) },
+		CharNeutralMageM = { Id = "rbxassetid://102550410777063", Size = Vector2.new(465, 512) },
+		CharNeutralMageF = { Id = "rbxassetid://82933568473532", Size = Vector2.new(457, 512) },
+		CharNeutralArcherM = { Id = "rbxassetid://127668674323208", Size = Vector2.new(416, 512) },
+		CharNeutralArcherF = { Id = "rbxassetid://103757200729319", Size = Vector2.new(463, 512) },
+		-- perk / misc icons
+		IconExp = { Id = "rbxassetid://71570492311980", Size = Vector2.new(229, 256) },
+		IconHeart = { Id = "rbxassetid://117251570083495", Size = Vector2.new(256, 222) },
+		IconWings = { Id = "rbxassetid://100448040477725", Size = Vector2.new(256, 166) },
+		IconGoldPile = { Id = "rbxassetid://121580818331312", Size = Vector2.new(256, 166) },
+		IconBloodSword = { Id = "rbxassetid://89539033522501", Size = Vector2.new(256, 239) },
+		IconGauge = { Id = "rbxassetid://105265456701675", Size = Vector2.new(256, 70) },
+		IconDemon = { Id = "rbxassetid://138771309720551", Size = Vector2.new(256, 231) },
+		IconNoBuff = { Id = "rbxassetid://110309392433326", Size = Vector2.new(256, 243) },
+		IconShieldBlue = { Id = "rbxassetid://98551767326821", Size = Vector2.new(227, 256) },
+		IconNoLoot = { Id = "rbxassetid://106989595509471", Size = Vector2.new(243, 256) },
+		IconHammer = { Id = "rbxassetid://74147674132543", Size = Vector2.new(236, 256) },
+		IconAltar = { Id = "rbxassetid://112545534083025", Size = Vector2.new(241, 256) },
+		IconBoot = { Id = "rbxassetid://118619367792480", Size = Vector2.new(256, 232) },
+	},
+	-- picked from the mockup (UI_HUD_Final.png) and the part images
+	Colors = {
+		-- text
+		Ink = Color3.fromRGB(66, 40, 18), -- brown ink text on parchment
+		InkSoft = Color3.fromRGB(122, 84, 46), -- secondary text on parchment (3/5, hints)
+		InkOutline = Color3.fromRGB(255, 247, 228), -- light halo around ink text
+		Light = Color3.fromRGB(255, 255, 255), -- white text on navy / red / ribbon
+		LightSub = Color3.fromRGB(226, 222, 206), -- labels on navy (금고, 주머니)
+		TextOutline = Color3.fromRGB(34, 20, 10), -- dark outline for white / gold text
+		GoldText = Color3.fromRGB(255, 228, 100), -- numbers on navy (금고 1,250 / Lv)
+		GoldInk = Color3.fromRGB(236, 164, 16), -- gold numbers on parchment (150G, +120); use with TextOutline
+		GoodInk = Color3.fromRGB(40, 140, 60), -- done / 받기 on parchment
+		BadInk = Color3.fromRGB(190, 40, 40),
+		-- fills (also the IMG-R4 fallback fills, keyed by Part.Tone)
+		Parchment = Color3.fromRGB(242, 221, 178),
+		ParchmentDark = Color3.fromRGB(214, 182, 128), -- dividers / empty slots on parchment
+		Ribbon = Color3.fromRGB(241, 207, 132),
+		Rim = Color3.fromRGB(110, 66, 24), -- hand-inked brown outline (fallback stroke)
+		Navy = Color3.fromRGB(26, 40, 79),
+		NavyDeep = Color3.fromRGB(19, 31, 56), -- bar track interior
+		Gold = Color3.fromRGB(240, 190, 60), -- gold trim
+		Red = Color3.fromRGB(225, 40, 36), -- attack button face
+		-- bars
+		XPBlue = Color3.fromRGB(30, 170, 255),
+		QuestBlue = Color3.fromRGB(56, 144, 253),
+		UpgradeGold = Color3.fromRGB(245, 196, 64),
+		WarHalo = Color3.fromRGB(252, 198, 52),
+		WarHorns = Color3.fromRGB(243, 38, 44),
+		-- status chips
+		ChipSafe = Color3.fromRGB(112, 214, 120),
+		ChipSafeText = Color3.fromRGB(18, 50, 22),
+		ChipSafeRim = Color3.fromRGB(40, 120, 50),
+		ChipRookie = Color3.fromRGB(182, 229, 251),
+		ChipRookieText = Color3.fromRGB(16, 40, 110),
+		ChipRookieRim = Color3.fromRGB(60, 130, 200),
+		-- key hint badges (F / Q / R / M ..., keyboard only)
+		KeyHintBg = Color3.fromRGB(60, 44, 34),
+		KeyHintText = Color3.fromRGB(255, 255, 255),
+	},
+	-- ART_DIRECTION: Korean labels in Gotham (Korean renders in the fallback font), numbers / Lv / timers in FredokaOne
+	Fonts = {
+		Title = Enum.Font.GothamBlack,
+		Body = Enum.Font.GothamBold,
+		Number = Enum.Font.FredokaOne,
+	},
+	-- UIStroke outline thickness for UIKit.InkText / UIKit.LightText
+	OutlineInk = 1,
+	OutlineLight = 1.5,
+}
+
+-- empty regions of the pick-screen cards, measured from the GPT card art (art/ui/UIP_*.png, PIL region fill).
+-- Each region = { x, y, w, h } as fractions of the card image (use UDim2.fromScale(x, y) / UDim2.fromScale(w, h)
+-- inside a card box that keeps Aspect = image width / height). Faction cards: Title (name ribbon), Desc (description
+-- strip), Motto (motto ribbon), Perks (perk panel), Button (glossy button). Class cards: Portrait (alcove for the
+-- character), Name (name ribbon), Body (description + stat bars), Button.
+Config.UIArt.CardLayout = {
+	CardHalo = { Aspect = 0.620, Title = { 0.169, 0.297, 0.658, 0.088 }, Desc = { 0.153, 0.424, 0.698, 0.051 },
+		Motto = { 0.170, 0.498, 0.660, 0.053 }, Perks = { 0.079, 0.577, 0.847, 0.257 }, Button = { 0.224, 0.869, 0.553, 0.080 } },
+	CardHorns = { Aspect = 0.603, Title = { 0.165, 0.264, 0.665, 0.086 }, Desc = { 0.214, 0.366, 0.567, 0.062 },
+		Motto = { 0.146, 0.434, 0.710, 0.065 }, Perks = { 0.143, 0.509, 0.729, 0.277 }, Button = { 0.167, 0.807, 0.661, 0.100 } },
+	CardNeutral = { Aspect = 0.598, Title = { 0.208, 0.272, 0.587, 0.080 }, Desc = { 0.225, 0.369, 0.547, 0.056 },
+		Motto = { 0.163, 0.433, 0.675, 0.064 }, Perks = { 0.137, 0.518, 0.724, 0.296 }, Button = { 0.180, 0.837, 0.624, 0.101 } },
+	ClassCardHalo = { Aspect = 0.632, Portrait = { 0.121, 0.096, 0.762, 0.347 }, Name = { 0.170, 0.445, 0.666, 0.070 },
+		Body = { 0.073, 0.527, 0.858, 0.302 }, Button = { 0.202, 0.845, 0.592, 0.091 } },
+	ClassCardHorns = { Aspect = 0.594, Portrait = { 0.123, 0.088, 0.758, 0.302 }, Name = { 0.202, 0.396, 0.595, 0.071 },
+		Body = { 0.133, 0.479, 0.725, 0.319 }, Button = { 0.189, 0.840, 0.623, 0.075 } },
+	ClassCardNeutral = { Aspect = 0.604, Portrait = { 0.089, 0.107, 0.827, 0.294 }, Name = { 0.136, 0.410, 0.728, 0.077 },
+		Body = { 0.083, 0.497, 0.830, 0.323 }, Button = { 0.142, 0.848, 0.712, 0.088 } },
+}
+
+-- faction card perk rows (icon part + short plain text, mockup art/out/UI_Faction_B.png). Numbers must match
+-- Config.Factions (XPBonus, MaxHPMult, GoldBonus, DamageBonus, ChargeCap) and Config.Kaiju.StarsNeeded.
+Config.UIArt.FactionPerks = {
+	Halo = {
+		{ Icon = "IconExp", Text = "경험치 +30%" },
+		{ Icon = "IconHeart", Text = "체력 +20%, 계속 회복" },
+		{ Icon = "IconWings", Text = "발사하면 동료 치유" },
+		{ Icon = "IconGoldPile", Text = "주머니 골드 자동 저금" },
+	},
+	Horns = {
+		{ Icon = "IconGoldPile", Text = "골드 +25%" },
+		{ Icon = "IconBloodSword", Text = "공격력 +15%, 체력 흡수" },
+		{ Icon = "IconGauge", Text = "발사 게이지 175" },
+		{ Icon = "IconDemon", Text = "별 5개면 괴수 변신!" },
+	},
+	Neutral = {
+		{ Icon = "IconNoBuff", Text = "싸움 버프 없음" },
+		{ Icon = "IconShieldBlue", Text = "PvP 없음 (안전)" },
+		{ Icon = "IconNoLoot", Text = "약탈·현상수배 걱정 없음" },
+		{ Icon = "IconHammer", Text = "제작 특화 (곧 추가)" },
+	},
 }
 
 -- addendum A1: optional custom visual models in ServerStorage[FolderName] named by monster id or GooseId
