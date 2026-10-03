@@ -896,6 +896,210 @@ end
 ------------------------------------------------------------------ panel builders: build(parent) -> update()?
 local BUILDERS = {}
 
+-- User-approved Nickname_Form_A. Reuse the existing parchment/ribbon and the empty gold card button;
+-- input stays private to this client, and only the verified server attribute supplies the current name.
+function NICK.Fit(label, pixels, bold, wrapped, scale)
+	UIKit.ApplyFont(label, bold and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
+	label.RichText = false
+	label.TextWrapped = wrapped == true
+	label.TextStrokeTransparency = 1
+	label:SetAttribute("PickerMeasureWhole", true)
+	label:SetAttribute("PickerOutlineThickness", 0)
+	local outline = label:FindFirstChild("Outline")
+	if outline and outline:IsA("UIStroke") then outline.Transparency = 1 end
+	local minimum = math.max(1, math.min(MIN_TEXT, math.floor(MIN_TEXT / scale)))
+	UIKit.FitText(label, minimum, math.max(minimum, math.floor(pixels / scale)))
+end
+
+function NICK.Destroy()
+	if NICK.UI then
+		NICK.UI.Frame:Destroy()
+		NICK.UI = nil
+	end
+end
+
+function NICK.Layout(w, h, top, s)
+	local u = NICK.UI
+	if not u then return end
+	local width = math.max(1, math.min(520, w * s - 24))
+	local available = math.max(1, (h - top) * s - 16)
+	local height = math.min(360, available)
+	local gutter = math.min(22, width * 0.055)
+	local bodyWidth = math.max(1, width - gutter * 2)
+	local textWidth = math.max(1, bodyWidth - 6) -- leave room for the touch overflow scrollbar
+	local titleWidth = math.max(1, math.min(width * 0.66, width - 116))
+	local titleHeight = titleWidth / (256 / 63)
+	local bodyTop = math.max(68, titleHeight + 10)
+	local currentText = "현재 이름: " .. Util.PlayerDisplayName(player)
+	local noteText = u.Note.Text
+	local currentHeight = math.max(24, select(1, UIKit.MeasureText(currentText, 14,
+		u.Current.FontFace, textWidth)) + 3)
+	local noteHeight = math.max(22, select(1, UIKit.MeasureText(noteText, 12,
+		u.Note.FontFace, textWidth)) + 3)
+	-- Font loading may yield; a closed/rebuilt dialog must not receive an obsolete layout.
+	if NICK.UI ~= u or not u.Frame.Parent or u.Note.Text ~= noteText or u.Current.Text ~= currentText then return end
+	local saveWidth = math.min(bodyWidth, math.max(180, width * 0.56))
+	local saveHeight = math.max(48, saveWidth / 4)
+	local inputY = currentHeight + 14
+	local inputHeight = 64
+	local noteY = inputY + inputHeight + 14
+	local saveY = noteY + noteHeight + 16
+	local bodyHeight = saveY + saveHeight + 10
+	u.Frame.Size = UDim2.fromOffset(width / s, height / s)
+	u.Frame.Position = UDim2.fromOffset(w / 2, top + available / (2 * s))
+	u.TitleArt.Size = UDim2.fromOffset(titleWidth / s, titleHeight / s)
+	u.TitleArt.Position = UDim2.new(0.5, 0, 0, 0)
+	u.Close.Size = UDim2.fromOffset(48 / s, 48 / s)
+	u.Close.Position = UDim2.new(1, -10 / s, 0, 12 / s)
+	u.Scroll.Position = UDim2.fromOffset(gutter / s, bodyTop / s)
+	u.Scroll.Size = UDim2.fromOffset(bodyWidth / s, math.max(1, height - bodyTop - 14) / s)
+	u.Body.Size = UDim2.new(1, -6 / s, 0, bodyHeight / s)
+	u.Current.Size = UDim2.new(1, 0, 0, currentHeight / s)
+	u.InputArt.Position = UDim2.fromOffset(0, inputY / s)
+	u.InputArt.Size = UDim2.new(1, 0, 0, inputHeight / s)
+	u.Input.Position = UDim2.fromOffset(14 / s, 6 / s)
+	u.Input.Size = UDim2.new(1, -28 / s, 1, -12 / s)
+	u.Note.Position = UDim2.fromOffset(0, noteY / s)
+	u.Note.Size = UDim2.new(1, 0, 0, noteHeight / s)
+	u.Save.Position = UDim2.new(0.5, 0, 0, saveY / s)
+	u.Save.Size = UDim2.fromOffset(saveWidth / s, saveHeight / s)
+	u.Scroll.ScrollBarThickness = bodyHeight > height - bodyTop - 14 and math.ceil(4 / s) or 0
+	u.Frame:SetAttribute("OverflowScroll", bodyHeight > height - bodyTop - 14)
+	NICK.Fit(u.Title, 26, true, false, s)
+	NICK.Fit(u.Current, 14, false, true, s)
+	NICK.Fit(u.Input, 20, false, false, s)
+	NICK.Fit(u.Note, 12, false, true, s)
+	NICK.Fit(u.SaveLabel, 22, true, false, s)
+	NICK.Fit(u.CloseLabel, 26, true, false, s)
+end
+
+function NICK.Update()
+	local u = NICK.UI
+	if not u then return end
+	u.Current.Text = "현재 이름: " .. Util.PlayerDisplayName(player)
+	local busy = NICK.Pending or player:GetAttribute("NicknameStatus") == "Busy"
+	u.Save:SetAttribute("Disabled", busy)
+	u.Save.Active = not busy
+	u.SaveLabel.Text = busy and "저장 중..." or "저장"
+	u.Input.TextEditable = not busy
+	local message = NICK.Message ~= "" and NICK.Message or NICK.Rule
+	if u.Note.Text ~= message then
+		u.Note.Text = message
+		layoutRoot()
+	end
+end
+
+function NICK.BindResult()
+	if NICK.ResultConnection then return true end
+	local folder = ReplicatedStorage:FindFirstChild("Remotes")
+	local result = folder and folder:FindFirstChild("NicknameResult")
+	if not result or not result:IsA("RemoteEvent") then return false end
+	NICK.ResultConnection = result.OnClientEvent:Connect(function(payload)
+		if type(payload) ~= "table" or type(payload.Status) ~= "string"
+			or type(payload.Message) ~= "string" or #payload.Message > 800 then return end
+		NICK.Pending = false
+		NICK.Request += 1 -- retire the local timeout; no retries are sent automatically
+		NICK.Message = payload.Message
+		-- Never turn the unfiltered draft into an attribute/HUD name, or replace a failed draft.
+		NICK.Update()
+	end)
+	return true
+end
+
+function NICK.Submit()
+	if os.clock() < inputGuardUntil or NICK.Pending
+		or player:GetAttribute("NicknameStatus") == "Busy" then return end
+	local draft = NICK.Draft or ""
+	local ok, length = pcall(utf8.len, draft)
+	if not ok or not length or length < 2 or length > 20 then
+		NICK.Message = "2~20글자로 입력해 주세요."
+		NICK.Update()
+		return
+	end
+	local folder = ReplicatedStorage:FindFirstChild("Remotes")
+	local intent = folder and folder:FindFirstChild("SetNickname")
+	if not intent or not intent:IsA("RemoteEvent") or not NICK.BindResult() then
+		NICK.Message = NICK.Unavailable
+		NICK.Update()
+		return
+	end
+	NICK.Request += 1
+	local request = NICK.Request
+	NICK.Pending = true
+	NICK.Message = "저장 중..."
+	NICK.Update()
+	local sent = pcall(function() Net.Get("SetNickname"):FireServer(draft) end)
+	if not sent then
+		NICK.Pending = false
+		NICK.Message = player:GetAttribute("NicknameStatus") == "Busy" and "저장 결과를 확인하고 있어요." or NICK.Unavailable
+		NICK.Update()
+		return
+	end
+	task.delay(15, function()
+		if NICK.Request ~= request or not NICK.Pending then return end
+		-- Busy remains server-owned. An absent listener must not leave the form locked forever.
+		NICK.Pending = false
+		NICK.Message = player:GetAttribute("NicknameStatus") == "Busy" and "저장 결과를 확인하고 있어요." or NICK.Unavailable
+		NICK.Update()
+	end)
+end
+
+function NICK.Build()
+	NICK.Destroy()
+	if NICK.Draft == nil then
+		NICK.Draft = player:GetAttribute("NicknameVerified") == true and Util.PlayerDisplayName(player) or ""
+	end
+	local u = {}
+	u.Frame = UIKit.ArtFrame("PanelParchment", { Name = "NicknameWindow", Parent = root,
+		AnchorPoint = Vector2.new(0.5, 0.5), Active = true, ZIndex = ZINDEX + 1 })
+	u.TitleArt = UIKit.ArtFrame("TitleRibbon", { Name = "TitleRibbon", Parent = u.Frame,
+		AnchorPoint = Vector2.new(0.5, 0), ZIndex = ZINDEX + 2 })
+	u.Title = UIKit.InkText({ Name = "Title", Parent = u.TitleArt, Text = T.Titles.Nickname,
+		Position = UDim2.fromScale(0.17, 0.18), Size = UDim2.fromScale(0.66, 0.63), Outline = false })
+	u.Close, u.CloseLabel = UIKit.ArtButton("BtnSpecial", { Name = "Close", Parent = u.Frame,
+		Text = "X", TextStyle = "ink", AnchorPoint = Vector2.new(1, 0), ZIndex = ZINDEX + 3 }, function()
+		if os.clock() >= inputGuardUntil then Panels.Close() end
+	end)
+	u.Scroll = UIKit.Create("ScrollingFrame", { Name = "NicknameContents", Parent = u.Frame,
+		BackgroundTransparency = 1, BorderSizePixel = 0, Active = true, ClipsDescendants = true,
+		CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y,
+		ScrollingDirection = Enum.ScrollingDirection.Y, ScrollBarThickness = 0,
+		ScrollBarImageColor3 = (Config.UIArt.Colors or {}).Ink or PALETTE.DarkText })
+	u.Body = UIKit.Create("Frame", { Name = "Body", Parent = u.Scroll, BackgroundTransparency = 1 })
+	u.Current = UIKit.InkText({ Name = "CurrentName", Parent = u.Body,
+		Text = "현재 이름: " .. Util.PlayerDisplayName(player), Outline = false })
+	u.InputArt = UIKit.ArtFrame("PanelParchment", { Name = "InputFrame", Parent = u.Body })
+	u.Input = UIKit.Create("TextBox", { Name = "NicknameInput", Parent = u.InputArt,
+		BackgroundTransparency = 1, BorderSizePixel = 0, ClearTextOnFocus = false, MultiLine = false,
+		Text = NICK.Draft, PlaceholderText = "성기사별", RichText = false,
+		TextColor3 = (Config.UIArt.Colors or {}).Ink or PALETTE.DarkText,
+		PlaceholderColor3 = (Config.UIArt.Colors or {}).InkSoft or PALETTE.DarkText,
+		TextXAlignment = Enum.TextXAlignment.Left })
+	u.Note = UIKit.InkText({ Name = "NicknameStatus", Parent = u.Body,
+		Text = NICK.Message ~= "" and NICK.Message or NICK.Rule, Outline = false })
+	u.Save, u.SaveLabel = UIKit.ArtButton("CardHalo", { Name = "SaveNickname", Parent = u.Body,
+		Text = "저장", TextStyle = "ink", AnchorPoint = Vector2.new(0.5, 0), ScaleType = Enum.ScaleType.Fit }, NICK.Submit,
+		{ Color = (Config.UIArt.Colors or {}).Gold or theme.Gold, CornerRadius = UDim.new(0.5, 0) })
+	if u.Save:IsA("ImageButton") then
+		-- The existing text-free CardHalo bitmap's complete gold button, with its original aspect ratio.
+		u.Save.ImageRectOffset = Vector2.new(94, 876)
+		u.Save.ImageRectSize = Vector2.new(448, 112)
+	end
+	NICK.UI = u
+	u.Input:GetPropertyChangedSignal("Text"):Connect(function()
+		NICK.Draft = u.Input.Text
+		if not NICK.Pending and NICK.Message ~= "" then NICK.Message = ""; NICK.Update() end
+	end)
+	u.Input.FocusLost:Connect(function(enterPressed)
+		if enterPressed then NICK.Submit() end
+	end)
+	NICK.BindResult()
+	NICK.Update()
+	return NICK.Update
+end
+
+BUILDERS.Nickname = function() return NICK.Build() end
+
 BUILDERS.Menu = function(parent)
 	local entries = {
 		{ Text = T.MenuTravel, Id = "Travel" },
@@ -1417,6 +1621,12 @@ end
 ------------------------------------------------------------------ render / open / close
 local function render()
 	if not currentId or not ensureRoot() then return end
+	if currentId == "Nickname" then
+		window.Visible = false
+	else
+		NICK.Destroy()
+		window.Visible = true
+	end
 	layoutRoot()
 	clearContent()
 	orderCounter = 0
@@ -1433,6 +1643,7 @@ local function render()
 		local ok2, err = pcall(result)
 		if not ok2 then Util.Warn(TAG, "update error in " .. tostring(currentId) .. ": " .. tostring(err)) end
 	end
+	if currentId == "Nickname" then layoutRoot() end
 	content.CanvasPosition = Vector2.new(0, 0)
 	-- CR-L26: the 2nd tap of a double tap on a menu entry must not press what just appeared under the finger
 	inputGuardUntil = os.clock() + GUARD.InputAfterRender
@@ -1467,6 +1678,8 @@ function Panels.Open(id)
 	end
 	openedFromMenu = fromMenu
 	currentId = id
+	-- The nickname result is displayed in its own panel; transient game tips stay behind it.
+	root.ZIndex = id == "Nickname" and 96 or ZINDEX
 	root.Visible = true
 	render()
 end
@@ -1478,6 +1691,7 @@ function Panels.Close()
 	selectedClass = nil
 	selectedTarget = nil
 	if root then root.Visible = false end
+	NICK.Destroy()
 	clearContent()
 end
 
@@ -1539,6 +1753,7 @@ end
 function Panels.Start()
 	loadTheme()
 	ensureRoot()
+	NICK.BindResult()
 	hookCamera()
 	hookScale()
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(hookCamera)
@@ -1550,6 +1765,8 @@ function Panels.Start()
 			and (name == "CostumeStatus" or name == "CostumeEnabled" or name == "CostumeApplied") then
 			local ok, err = pcall(currentUpdate)
 			if not ok then warnThrottled("costume status update error: " .. tostring(err)) end
+		elseif currentId == "Nickname" and (name == "Nickname" or name == "NicknameVerified" or name == "NicknameStatus") then
+			NICK.Update()
 		end
 	end)
 

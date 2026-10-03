@@ -156,6 +156,79 @@ do
     check(s:Name() == s.Player.DisplayName and s.Data.Nickname == "", "unverified saved nickname leaked")
 end
 
+-- Supplemental policy runs against the real service, before/after broadcast filtering and on reload.
+-- Positive examples protect ordinary Korean syllables, fantasy names and ASCII substring boundaries.
+do
+    local db = makeDatabase()
+    local s = server(db, 2)
+    for _, name in {
+        "성기사", "천사", "사랑", "예수금", "신의검", "빛의사제", "교차로", "성수기사",
+        "성장왕", "신나는기사", "교복전사", "하나님의검", "기독교", "불교", "예수", "알라딘",
+        "하느님", "자유의여신", "불교의역사", "남자의검", "눈사람기사", "몬스터죽여",
+        "죽어도용사", "노출없는기사", "시발점", "전화기전사", "숫자1234567890", "Knight+2026",
+        "출생2000-01-01", "가방관리자", "초보개발자", "천사😀", "NakedMoleRat", "XXX기사",
+        "HolyKnight", "DarkAngel", "GodSlayer", "LoveKnight", "Christian", "Essex", "Scunthorpe",
+        "Sexton", "GrapeKnight", "Administrate", "SnowmenAreTrash", "Ａｎｇｅｌ", "９９용사",
+    } do
+        s:Change(name)
+        check(s.Result.Status == "Active" and s:Name() == name, "context-safe nickname rejected: " .. name)
+        check(active(db,2).Canonical == s.Util.NicknameCanonical(name), "policy normalization changed ownership")
+    end
+    local oldName, writes, calls = s:Name(), db.Writes, s.FilterCalls
+    for _, name in {
+        "성관계", "성행위", "성매매왕", "음란물", "야동기사", "포르노", "섹스", "강간",
+        "알몸사진", "벗은사진", "누드사진", "나체사진", "야한사진보내",
+        "예수믿어", "예 수 믿 어", "예수천국", "불신지옥", "교회오세요", "개종하라",
+        "하나님믿으세요", "알라믿어", "기독교꺼져", "불교는쓰레기", "무슬림을죽여",
+        "흑인박멸", "여자는열등", "장애인꺼져", "짱깨", "씨발", "자살해라",
+        "sex", "S.e.x", "Porn123", "send nudes", "NudePhotos", "rape", "SexMaster",
+        "JesusSaves", "believe in jesus", "convert to islam", "join my church", "KillJews",
+        "death to muslims", "men are trash", "kill black people", "KillYourself",
+        "무료로벅스", "공짜로벅스", "로벅스복사", "free robux", "ＲｏｂｕｘＧｅｎｅｒａｔｏｒ",
+        "비밀번호알려", "인증번호줘", "send password", "카톡아이디", "전화번호줘", "우리집주소",
+        "디스코드와", "add me discord", "abc@example.com", "https://evil.gg", "evil.gg", "www.evil.io",
+        "０１０１２３４５６７８", "010-1234-5678", "123-456-7890", "+821012345678", "990101-1234567",
+        "4111-1111-1111-1111", "공식운영자", "로블록스직원", "운영자123", "Ａｄｍｉｎ", "GM99",
+        "official moderator", "RobloxStaff", "＃＃", "＜b＞가＜/b＞",
+    } do
+        s:Change(name)
+        check(s.Result.Status == "Filtered" and s:Name() == oldName, "risky nickname accepted: " .. name)
+        check(db.Writes == writes and s.FilterCalls == calls, "raw policy rejection performed external work")
+    end
+    -- A safe raw name cannot bypass the local policy when Roblox's returned text changes its meaning.
+    for _, rejected in { "예수믿어", "send nudes", "관리자", "01012345678", "evil.gg", "여자죽어" } do
+        s.FilterMap = { SafeInput = rejected }
+        s:Change("SafeInput")
+        check(s.Result.Status == "Filtered" and s:Name() == oldName and db.Writes == writes,
+            "unsafe broadcast result was stored or exposed: " .. rejected)
+    end
+    s.FilterMap = nil
+    -- Today's policy also protects stored names. Simulate a legacy row while retaining a genuine
+    -- claim key/token; reads substitute that key's response without inventing a new reservation.
+    s:Change("이전버전이름")
+    local key
+    for candidate, value in db.Rows do
+        if string.sub(candidate,1,2) == "N_" and value.Canonical == "이전버전이름" then key = candidate end
+    end
+    local get = db.GetAsync
+    db.Rows.U_2.Active.Text, db.Rows.U_2.Active.Canonical = "예수믿어", "예수믿어"
+    function db:GetAsync(candidate, options)
+        if string.sub(candidate,1,2) == "N_" then
+            local claim = copy(self.Rows[key]); claim.Canonical = "예수믿어"
+            check(options.UseCache == false, "legacy policy read used cache")
+            return claim
+        end
+        return get(self,candidate,options)
+    end
+    s.Registry.PlayerService.PlayerLeaving:Fire(s.Player)
+    s.Player:SetAttribute("Nickname", ""); s.Player:SetAttribute("NicknameVerified", false)
+    writes, calls = db.Writes, s.FilterCalls
+    s:Load()
+    check(s:Name() == s.Player.DisplayName and s.Player:GetAttribute("NicknameStatus") == "Filtered",
+        "legacy unsafe nickname exposed at join")
+    check(db.Writes == writes and s.FilterCalls == calls, "legacy policy rejection changed durable claims")
+end
+
 -- Two independent server instances race for the same canonical name, including filter aliases.
 for _, alias in { false, true } do
     local db = makeDatabase()
@@ -239,13 +312,13 @@ do
 end
 
 -- Unknown claim + subsequent policy rejection clears only the exact pending intent, never a claim.
-do
+for _, rejected in { "###", "예수믿어", "free robux", "01012345678" } do
     local db = makeDatabase()
     local s = server(db, 60)
     s:Change("옛이름")
     db.FailStage, db.FailWhen = "claim", "after"
     s:Change("새이름")
-    s.FilterMap = { ["새이름"] = "###" }
+    s.FilterMap = { ["새이름"] = rejected }
     s:Change("다른이름")
     check(s.Result.Status == "Filtered" and db.Rows.U_60.Pending == nil, "rejected recovery intent got stuck")
     check(claimCount(db) == 2 and s:Name() == "옛이름", "recovery removed a durable claim")

@@ -138,7 +138,11 @@ local function prepareCharacter(player, character)
 		local animator = Instance.new("Animator")
 		animator.Parent = humanoid -- server creation allows animation replication to all players
 	end
-	root.CanCollide = false
+	-- Custom Motor6D costumes use the verified template's non-colliding root. An engine-created
+	-- owner avatar may use an AnimationConstraint/controller collision profile with a colliding
+	-- root. Keep that native profile intact; the remaining OFF lifecycle issue is validated separately.
+	-- Preserve every native body/accessory collision and joint setting when costume is OFF.
+	if character:GetAttribute(ATTR.Costume) then root.CanCollide = false end
 	humanoid.PlatformStand = false
 	character.PrimaryPart = root
 	animate.Disabled = false

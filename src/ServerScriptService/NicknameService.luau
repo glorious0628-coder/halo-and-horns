@@ -26,6 +26,128 @@ local MESSAGES = {
 	Cooldown = "잠시 뒤 닉네임을 다시 변경해 주세요.", Loading = "닉네임을 불러오고 있어요.",
 }
 
+-- A bounded supplemental policy, not a language model or a replacement for Roblox filtering.
+-- Match complete risky phrases or an explicit target + abusive action. Never ban syllables such
+-- as 성/신/교, ordinary affection, fantasy class names, or a religion's name alone.
+-- Sources: https://create.roblox.com/docs/ui/text-filtering
+--          https://about.roblox.com/community-standards
+local POLICY = {
+	Korean = {
+		"성관계", "성행위", "성매매", "음란물", "야동", "포르노", "섹스", "강간",
+		"알몸사진", "벗은사진", "누드사진", "나체사진", "야한사진보내", "미성년자성착취",
+		"예수믿어", "예수를믿", "예수믿으", "예수믿자", "예수천국", "불신지옥",
+		"하나님믿", "하느님믿", "알라믿", "부처믿", "교회오세요", "교회나와",
+		"종교가입해", "종교가입하", "개종해라", "개종하세요", "개종하라",
+		"무료로벅스", "공짜로벅스", "로벅스무료", "로벅스공짜", "로벅스복사",
+		"비밀번호입력", "비번입력", "비밀번호알려", "비번알려", "인증번호줘", "토큰보내",
+		"전화번호줘", "폰번호줘", "카톡아이디", "디코아이디", "인스타아이디",
+		"디스코드와", "디코로와", "카톡으로와", "우리집주소", "집주소는", "계좌번호",
+		"공식운영자", "진짜운영자", "공식관리자", "공식개발자", "공식GM",
+		"로블록스운영", "로블록스관리", "로블록스직원", "로블록스본사",
+		"깜둥이", "짱깨", "씨발", "자살해라", "자살하세요", "자해해라",
+	},
+	KoreanTargets = {
+		"기독교", "불교", "천주교", "이슬람", "힌두교", "유대인", "무슬림",
+		"흑인", "백인", "아시아인", "여자", "남자", "장애인", "동성애자",
+	},
+	KoreanAbuse = { "죽어", "죽여", "죽이자", "박멸", "추방", "꺼져", "쓰레기", "열등", "멸종" },
+	EnglishWords = { "sex", "porn", "porno", "nudes", "rape", "rapist", "nigger", "faggot" },
+	EnglishPhrases = {
+		"sex master", "sex slave", "sex king", "sex queen", "porn star", "porn hub", "child porn",
+		"send nudes", "nudes please", "want nudes", "nude photos", "naked photos", "jesus saves", "believe in jesus", "accept jesus",
+		"convert to islam", "convert to christ", "join my church", "join our church", "join my religion",
+		"free robux", "robux generator", "send password", "give password", "password please",
+		"send otp", "send token", "add me discord", "discord me", "kill yourself", "hurt yourself",
+		"official admin", "official developer", "official moderator", "real admin", "roblox staff",
+		"roblox admin", "roblox moderator", "roblox employee", "game admin", "game moderator",
+	},
+	EnglishTargets = { "christians", "muslims", "jews", "hindus", "buddhists", "black people", "white people", "asians", "women", "men", "gay people", "disabled people" },
+	EnglishAbuse = { "kill", "exterminate", "death to" },
+	EnglishDegrade = { "die", "are trash", "are inferior" },
+	Reserved = { "운영자", "관리자", "개발자", "게임운영자", "공식운영자", "gm", "admin", "moderator", "developer", "gamemaster" },
+	Domains = { "com", "net", "org", "gg", "io", "kr", "me" },
+}
+
+local function policyForms(text)
+	-- Only the comparison copy folds full-width ASCII/camel case/separators. Display and the
+	-- global canonical stay unchanged; no Unicode normalization changes ownership semantics.
+	local chars = {}
+	for _, cp in utf8.codes(text) do
+		if cp >= 0xFF01 and cp <= 0xFF5E then cp -= 0xFEE0 end
+		chars[#chars + 1] = utf8.char(cp)
+	end
+	local folded = table.concat(chars)
+	local words = string.gsub(folded, "(%l)(%u)", "%1 %2")
+	words = string.lower(words)
+	words = string.gsub(words, "[ _%.%-]+", " ")
+	local compact = string.lower(string.gsub(folded, "[ _%.%-]+", ""))
+	return string.lower(folded), words, compact
+end
+
+local function englishPhrase(text, phrase)
+	-- ASCII letter boundaries avoid the classic substring false positives (Essex/Scunthorpe).
+	-- Numeric decorations do not make an explicit phrase safe.
+	local from = 1
+	while true do
+		local first, last = string.find(text, phrase, from, true)
+		if not first then return false end
+		local before, after = string.sub(text, first - 1, first - 1), string.sub(text, last + 1, last + 1)
+		if not string.find(before, "[a-z]") and not string.find(after, "[a-z]") then return true end
+		from = last + 1
+	end
+end
+
+local function englishRisk(words, compact, phrase)
+	return englishPhrase(words, phrase) or englishPhrase(compact, string.gsub(phrase, " ", ""))
+end
+
+local function policyAllowed(text)
+	local folded, words, compact = policyForms(text)
+	if not Util.ValidateNickname(folded) then return false end
+	for _, phrase in POLICY.Korean do
+		if string.find(compact, string.lower(phrase), 1, true) then return false end
+	end
+	for _, target in POLICY.KoreanTargets do
+		for _, abuse in POLICY.KoreanAbuse do
+			if string.find(compact, target .. abuse, 1, true)
+				or string.find(compact, target .. "는" .. abuse, 1, true)
+				or string.find(compact, target .. "은" .. abuse, 1, true)
+				or string.find(compact, target .. "을" .. abuse, 1, true)
+				or string.find(compact, target .. "를" .. abuse, 1, true) then return false end
+		end
+	end
+	for _, phrase in POLICY.EnglishWords do if englishRisk(words, compact, phrase) then return false end end
+	for _, phrase in POLICY.EnglishPhrases do if englishRisk(words, compact, phrase) then return false end end
+	for _, target in POLICY.EnglishTargets do
+		for _, abuse in POLICY.EnglishAbuse do
+			if englishRisk(words, compact, abuse .. " " .. target) then return false end
+		end
+		for _, abuse in POLICY.EnglishDegrade do
+			if englishRisk(words, compact, target .. " " .. abuse) then return false end
+		end
+	end
+	for _, role in POLICY.Reserved do
+		if compact == role or string.match(compact, "^" .. role .. "%d+$") then return false end
+	end
+	-- Match contact/credential shapes, not all long numeric nicknames or all mentions of a phone.
+	if string.find(folded, "%S+@%S+%.%w+") or string.find(folded, "https?://")
+		or string.find(folded, "www%.") then return false end
+	for phone in string.gmatch(folded, "%+%d[%d %.%-]+%d") do
+		local digits = string.gsub(phone, "%D", "")
+		if #digits >= 8 and #digits <= 15 then return false end
+	end
+	for _, domain in POLICY.Domains do
+		if string.find(folded, "[%w%-]+%." .. domain .. "%f[^a-z]") then return false end
+	end
+	for number in string.gmatch(compact, "%d+") do
+		if #number == 11 and string.match(number, "^01[016789]") then return false end
+	end
+	if string.find(folded, "%d%d%d[%s%.%-]%d%d%d%d?[%s%.%-]%d%d%d%d")
+		or string.find(folded, "%d%d%d%d%d%d%-[1-4]%d%d%d%d%d%d")
+		or string.find(folded, "%d%d%d%d[%s%-]%d%d%d%d[%s%-]%d%d%d%d[%s%-]%d%d%d%d") then return false end
+	return true
+end
+
 local function live(player, st)
 	return states[player] == st and player.Parent == Players and S.PlayerService.IsReady(player)
 end
@@ -97,13 +219,14 @@ end
 
 local function filtered(player, raw)
 	if not Util.ValidateNickname(raw) then return nil, "Invalid" end
+	if not policyAllowed(raw) then return nil, "Filtered" end
 	local ok, text = pcall(function()
 		local result = TextService:FilterStringAsync(raw, player.UserId, Enum.TextFilterContext.PublicChat)
 		return result:GetNonChatStringForBroadcastAsync()
 	end)
 	if not ok then return nil, "FilterUnavailable" end
 	-- Use the broadcast result for both the visible text and the global canonical claim.
-	if not Util.ValidateNickname(text) then return nil, "Filtered" end
+	if not Util.ValidateNickname(text) or not policyAllowed(text) then return nil, "Filtered" end
 	return text
 end
 

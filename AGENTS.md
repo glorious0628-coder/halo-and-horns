@@ -18,7 +18,7 @@ Read this file first, then `docs/HANDOFF_CODEX.md` (full state, history and next
 
 ## Code conventions (Luau, Roblox)
 - `src/` is a Rojo-style tree (no Rojo installed): `*.server.luau` = Script, `*.client.luau` = LocalScript, `*.luau` = ModuleScript. Services follow `Init(S)` / `Start()`; entry points `src/ServerScriptService/Main.server.luau` and `src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau`.
-- Specs: `docs/TECH_SPEC.md` (contracts), **`docs/SPEC_ADDENDUM.md` (authoritative; A1–A19)**, `docs/GDD.md` (Korean design), `docs/ART_DIRECTION.md`.
+- Specs: `docs/TECH_SPEC.md` (contracts), **`docs/SPEC_ADDENDUM.md` (authoritative; A1–A21)**, `docs/GDD.md` (Korean design), `docs/ART_DIRECTION.md`.
 - Luau only: `continue`, `+=`, type annotations OK; **no `local x <const>`**. Use `task.*` (not `wait/spawn/delay`). pcall anything that can throw. Server-authoritative; validate every remote. Player-facing text is Korean.
 - **Luau limit: 200 locals per function scope, including the file's top-level chunk.** `Fx.luau` and `HUD.luau` are close to it — put new constants/state into tables (e.g. `MOTION`, `L`, `COL`, `TXT`).
 - UI art goes through `Config.UIArt.Parts` + `UIKit.ArtImage / ArtButton / ArtFrame`; an empty `Id = ""` means "draw the code fallback" (IMG-R4) — keep fallbacks working.

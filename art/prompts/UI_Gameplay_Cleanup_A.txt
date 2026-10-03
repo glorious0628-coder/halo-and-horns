@@ -1,0 +1,7 @@
+Use case: ui-mockup. Built-in GPT image generation edit preview of the user's live screenshot.
+Preserve the existing bridge, river, cliffs, dressed Roblox avatar, gold/navy/parchment game art.
+Compact profile with nickname, Lv/class, slim XP/HP/MP and gold. HP/MP bottle buttons show counts.
+Collapsed quest header with one tracked objective. One central faction score/crown bar and a goose countdown.
+Compact upgrade/map/menu. Smaller single-line nameplate. Small waypoint diamond instead of giant guide text.
+Keep the gameplay center clear, hide collapsed chat, use Noto Sans Korean text within art borders.
+This A preview is not user-approved. Generated labels/keys must be reconciled with existing B-menu contracts.

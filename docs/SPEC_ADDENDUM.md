@@ -553,9 +553,11 @@ Config values below are the ones in Config.luau.
 
 ## A17. New-account art, exact lettering and optional R15 costumes (2026-10-03; partial implementation)
 
-This is a code/asset contract, not a claim that all costume rigs or the saved place are complete. The latest Studio
-round compiled 34 Luau files, synced 3 plus 2 subsequent A/Nanum changes, and ran 15 seconds with 20/20 server services
-and 8 client modules without Luau runtime errors. See HANDOFF_CODEX and the actual-cost records in
+This is a code/asset contract, not a claim that all costume rigs or the saved place are complete. The original A17
+round compiled 34 Luau files and ran 15 seconds with 20/20 server services and 8 client modules. The latest basic round
+compiled 39 files, synced 22 changed/17 kept, and started 23/23 server services + 9 client modules without Luau runtime
+errors. Later nickname live QA passed input/Unavailable/draft preservation; the ZIndex96 Toast-layer patch needs a new
+check. See HANDOFF_CODEX and the actual-cost records in
 `docs/art/` for unfinished work. A16 multiplayer, persistence and anti-cheat verification limits still apply.
 
 ### A17-1 Existing approved art and load-safe lettering
@@ -570,10 +572,11 @@ and 8 client modules without Luau runtime errors. See HANDOFF_CODEX and the actu
   Preserve callers' opacity changes and never show both the image and its fallback at once. Keep IMG-R4 fallbacks.
 - Bind designated labels in the pickers, HUD, Panels, WorldMap and existing shared text helpers. Font-fit/safe-area work
   must preserve the selected art and Korean glyphs; numbers and unmatched runtime messages remain normal text.
-- The user selected the latest GPT **A composition** for selection-screen balance and Nanum Gothic. Implement that
-  selected layout while retaining the existing approved card/lettering assets. Nanum family `12187361718` is verified
-  live; use FontFace with the intended Regular/Bold/ExtraBold weights for normal text, retaining font-load fallback.
-  At the actual 991×511 viewport, clipping still needs the current follow-up fix and visual recheck.
+- The user selected the latest GPT **A composition** for selection-screen balance. The initial Nanum choice was later
+  superseded by **Noto Sans family `12187370747`** after the user's new font request. Keep the approved parchment/card
+  artwork; center the descriptions, use Regular body/Bold titles and fit whole Korean strings with FontFace metrics
+  and the actual minimum physical 11px floor. Current `UseTextImages=false` shows native text; retain the uploaded
+  C-lettering IDs and IMG-R4 contracts. Latest 991×475 selection/HUD bounds fit their boxes; final 1590 QA remains.
 - `Config.WeaponArtKey(tier, classId, factionId) -> string`: clamp finite integer tier to 1..MaxWeaponTier, default invalid
   class to Warrior; tiers 1..6 return `Weapon_<Class>_T<n>`, tier 7 appends Halo/Horns/Neutral (unset faction → Neutral).
   The HUD upgrade card selects the current class's NEXT tier icon, with the current faction at tier 7. A missing ID uses
@@ -634,26 +637,34 @@ and 8 client modules without Luau runtime errors. See HANDOFF_CODEX and the actu
   Root executed the installer successfully in Edit: 61 nodes, Source 28,802 characters, SHA256
   `49eab7530cfc33b8af13b995ae1fa87f482a489b6d108ec2410d12dd19b720f0`; complete audit in
   `build/costume_r15/animate_install_20261003T073704Z_4ef76cd9.json`.
-- Additional paid work requires the user's actual authorized cost scope. Completed Skeleton 30 + SkeletonKing 60 +
-  one human pilot rig 25 = 115 credits. Remaining 17 rigs (425) are a plan, not a verified blanket cost approval.
+- The user explicitly approved all remaining **17 rigs, maximum 425 credits**. The run finished with **10 paid rigs/250
+  credits and 7 free riggable=false rejections/0 paid calls**. Skeleton 30 + SkeletonKing 60 + pilot 25 + new 250 = **365
+  actual credits**, latest confirmed API balance **4,635**. Do not treat the approval ceiling as actual spending.
+  Preserve completed/rejected/Unknown records and never automatically issue paid re-rig or regeneration requests.
+  Eight new rigs passed strict local R15 conversion with original UV/image bytes and ≤10 import items per batch;
+  HornsMageM's nonadjacent Head/left-arm tie and HornsMageF's empty LeftLowerArm remain held. Local conversion is not
+  Roblox upload, animation QA or game registration. Root alone writes the API ledger.
 
 ### A17-4 Actual verification boundary for this round
-- Live diagnosis: Darugi_S2, Halo/Mage/F, ClassChosen=true, CostumeEnabled=true, CostumeStatus=MissingTemplate.
-  CostumeRigs, CostumePendingRigs and CostumeAnimationControllers were absent at that diagnosis. The verified R15
-  controller has since been installed; playable CostumeRigs is still empty/absent. CostumeImports contains only the male
-  HaloWarrior Batch01's 7 MeshParts. **Playable costumes: 0.** ON/OFF code is prepared; a working animated costume or
-  actual OFF restoration has not passed play verification.
+- Earlier diagnosis: Darugi_S2, Halo/Mage/F, ClassChosen=true, CostumeEnabled=true, CostumeStatus=MissingTemplate;
+  the three costume folders were absent then. The verified R15 controller is now installed, and all **18 pilot mesh
+  pieces from 3 file Importer batches** are assembled in CostumePendingRigs. Basic Animate/walk/jump/F/Q joint motion
+  and default-ON recreation after death passed. OFF restores the owner's visible avatar but still physically pushes it;
+  height adjustment and preserving the original OFF root.CanCollide still failed in live Play. The ownership experiment
+  also failed and its source was reverted. Offline physics checks:86 passed; this does not prove a stable swap.
+  **Promoted playable CostumeRigs: 0.** Final OFF/location/resource/
+  protection/movement-track preservation must pass before promotion. Basic joint motion is not final A19 motion QA.
 - A later temporary Batch01 clone loaded its 9 asset references successfully and displayed its face/eyes/armor textures.
   This proves those static imported surfaces, not a complete R15 body or animation. Initial failed loads are not silently
   removed from earlier diagnostic records.
-- Default Animate capture/vendor/installation verification is complete. Full R15 assembly,
-  walking/jumping/combat/death/respawn/OFF restoration and state preservation remain. A free EditableMesh comparison of
+- Default Animate capture/vendor/installation and the pilot's pending R15 assembly/basic motion are verified;
+  final OFF restoration/state preservation remain. A free EditableMesh comparison of
   the original LeftLowerArm passed (431 faces, UV maximum error 0, position maximum error 1.237e-7). The free
   LeftLowerLeg preview had 850 vertices/596 faces and all comparison errors 0. One actual CreateAssetAsync call raised
   "CreateAssetAsync and CreateAssetVersionAsync are not available yet"; this Studio does not support that upload path.
-  New mesh uploads succeeded: 0; retries: 0. Preserve Unknown in
-  `build/costume_r15/Costume_HaloWarriorM/editable_upload_ledger.json`; do not blindly retry. Import the remaining 11
-  file pieces using the 3D Importer before assembly. These free geometry checks are not playable-rig validation.
+  This API path succeeded: 0; retries: 0. Preserve Unknown in
+  `build/costume_r15/Costume_HaloWarriorM/editable_upload_ledger.json`; do not blindly retry. The later file Importer
+  successfully imported all 18 pilot pieces. These separate results and free geometry checks are not final playable-rig QA.
 - `texture_01` originally had 10 unknown outcomes. Public assetdelivery returned 403 and two public thumbnails were the
   same broken-image placeholder; that comparison could not identify originals. Later, after verifying the old Studio
   had closed and recording retryHistory, the explicit retry returned all 10 complete with exact URL→ID mappings:
@@ -661,13 +672,16 @@ and 8 client modules without Luau runtime errors. See HANDOFF_CODEX and the actu
   complete/recorded. These mappings come from actual upload results, not a guessed thumbnail match. Actual terrain
   application is 15 GE variants/12 overrides/3 roads; latest Play has no GE_Grass TexturePack warning, while
   Goblin/GoblinBrute/Skeleton asset warnings remain.
-- WaitingAppearance/verified-controller fallback/retry and preparation-state menu display passed the subsequent all-file
-  compiler/basic start round. Latest A/Nanum code is reflected in Studio; 991×511 clipping is being fixed and remains
-  visually unverified after that fix. The later approved Warrior/Archer/Mage sheet and motion contract are A19.
+- WaitingAppearance/verified-controller fallback/retry and preparation-state menu display passed the all-file
+  compiler/basic start round. Latest A/Noto Sans selection/HUD text bounds fit at 991×475. Nickname popup input,
+  Unavailable response and close/reopen draft preservation passed live QA. Final1590 and the later Toast-layer fix still
+  require checks. Latest basic check:39 Luau compiled, sync22 changed/17 kept,
+  15-second Play 23/23 server services + 9 client modules, no Luau runtime errors. Later source changes need a new check.
+  The approved Warrior/Archer/Mage sheet and motion contract are A19.
   `docs/art/verification_2026-10-03/faction_a_nanum_1590.jpeg` records an intermediate failed layout, not the final result.
-- Last inspected saved `build/GoodEvil.rbxlx`: 2026-10-03 14:53:38, 6,606,409 bytes; only Slime/GoldenGoose/SkeletonKnight
-  had new-account monster imports in that saved file. Current live imports/latest src still need a confirmed Studio save
-  and copy to the committed `place/GoodEvil.rbxlx` before this round can claim a current saved playable place.
+- Last inspected GoodEvil/Edit save: 2026-10-03 **20:07:18**, `build/GoodEvil.rbxlx` **7,457,604 bytes**; copied to
+  `place/GoodEvil.rbxlx`, including the pilot pending assembly/controller. Subsequent nickname UI/policy source changes
+  still require sync/live QA/save/copy. Complete new-account monster restoration is not verified.
 
 ## A18. Approved HP/MP HUD and server-owned reusable potions (2026-10-03; basic runtime verified)
 
@@ -679,7 +693,8 @@ the existing HUD style. The optional potion-mechanic question had no answer; **f
 - `Config.Vitals = { MaxMana=100, ManaRegen=4, MageSwingCost=3, ReleaseCost=20,
   HPRecovery=0.30, MPRecovery=0.40, PotionCooldown=10 }`.
 - New server `VitalsService` follows Init(S)/Start and is registered before CombatService; new client `VitalsUI` is
-  registered before HUD. Current registrations: 21 server services and 9 client modules. Register remote `UsePotion`
+  registered before HUD. Registrations in the original A18 round: 21 server services and 9 client modules; after A20/A21,
+  the latest basic Play started 23 server services and 9 client modules. Register remote `UsePotion`
   (client→server) and `Config.RateLimits.UsePotion=0.3`.
 - Mana is **session-only server state**, not saved in DataService. PlayerReady starts at MaxMana. A non-cosmetic
   CharacterSpawned refills mana; a cosmetic character replacement preserves it. Remove state on PlayerLeaving.
@@ -714,7 +729,7 @@ the existing HUD style. The optional potion-mechanic question had no answer; **f
   2D images. This upload success is independent of potion/HUD gameplay validation.
 
 ### A18-3 Verification boundary
-- Subsequent actual check: **36 Luau files compiled**, sync changed 0/kept 36, and a **15-second Play** started all
+- Historical A18-round check: **36 Luau files compiled**, sync changed 0/kept 36, and a **15-second Play** started all
   **21/21 server services + 9 client modules** with no Luau runtime errors. The initial Play/Edit conflict was resolved;
   it was not a confirmed syntax failure. Prior A17 34-file/20-service/8-client result remains historical.
 - Actual UI selected Halo/Mage. Studio DebugCommand set HP19.2/MaxHealth96 and MP20/MaxMana100. HP and MP button clicks
@@ -751,3 +766,65 @@ implements that selected three-class sheet. Do not treat approval as proof the f
 - All three final motions, actual muzzle origin, visible string/staff behavior, class/faction/respawn cancellation and
   coexistence with movement/hurt remain **unverified in final Play** until root reports results. Keep A16 multiplayer/
   persistence/anti-cheat limits and the 0-playable-costume limitation.
+- The user's later report still rejects the temporary 3D weapon and bow motion quality. The approved sheet/code and
+  pilot F/Q joint movement do not prove those requirements are met. Track them as pending in
+  `docs/art/verification_checklist_2026-10-03.md`.
+
+## A20. 승인된 3단계 표정과 검증된 얼굴 메시 (2026-10-03; 실제 등록 0종)
+
+- 남녀 직업18종은 사용자 승인한 **Neutral / Serious / SoftSmile** 세 표정부터 준비한다. 현재
+  `ExpressionAssets.Costumes`와 `Monsters`는 비어 있으며 실제 업로드 ID/등록은 **0종**이다. 서비스 시작이나
+  `Expression` 속성 변경만으로 표정 그림이 실제 표시됐다고 하지 않는다.
+- `ExpressionService`는 서버가 조건을 정한다. 기본 Neutral, 승인된 공격 후1.2초 또는 실제 HP 감소 후0.8초는
+  Serious, 유저 채팅/확인된 NPC 대화 후3초는 SoftSmile이며 전투·피격이 대화보다 우선이다. 전투가 끝나면
+  남은 대화 시간 또는 기본 표정으로 돌아온다. 몬스터는 서버 WindupAt/AttackSeq/HurtSeq를 따른다.
+- NPC 대화는 `Conversation=true` ProximityPrompt와 NPC 태그, 살아 있는 ready 플레이어, 활성 prompt,
+  서버 거리≤MaxActivationDistance+3 및0.5초 throttle을 확인한다. 일반 상점/제단 prompt만으로 미소를 강제하지
+  않는다. 채팅 내용은 이 서비스에서 저장하거나 재전송하지 않는다.
+- 등록 정의에는 UV에 맞는 `Neutral`, `Serious`, `SoftSmile`의 유효한 `rbxassetid://` ID와 **MeshName**이 필요하다.
+  MeshName은1~64자의 영문/숫자/밑줄/하이픈이며 `Head`는 금지한다. 대상 모델에서 유일한 MeshPart여야 하고
+  **`HHC_ExpressionMeshValidated=true`** 표시를 가진 검증된 별도 얼굴 메시만 사용한다. 플레이어 얼굴은 Head
+  아래에 속하거나 활성 Weld/WeldConstraint로 Head에 직접 연결돼야 한다. SurfaceAppearance가 있거나 이름이
+  중복·잘못 연결되면 적용하지 않는다.
+- 원본 Head atlas/TextureID는 표정 atlas로 덮지 않는다. 열린 입이 파인 기존 머리의 수정본은 원본을 보존한
+  별도 UV/메시 검증을 통과해야 한다. 실패한 atlas 파일은 업로드하지 않는다. ID/검증 메시가 부족하면 기존
+  얼굴을 유지하고 `ExpressionReady=false`로 표시한다. 코스튬 OFF의 개인 Roblox 아바타 얼굴은 변경하지 않는다.
+- 캐릭터 교체·죽음/퇴장과 몬스터 폴더 교체 때 이전 참조/연결을 정리한다. 비기본 표정만 만료 tick에 참여한다.
+  남은 검증은 각 리그의 실제 얼굴 UV/원본 보존, 세 표정 전환, 이동·전투·대화 우선순위, OFF 얼굴 복귀다.
+
+## A21. 게임 닉네임·전 서버 중복 예약·한정 안전 규칙 (2026-10-03; 기본 입력/실패 보존 통과)
+
+- 사용자가 GPT `art/out/Nickname_Form_A.png`를 **"ㅇㅇ좋아"**로 승인했다. B 메뉴 **게임 닉네임**에 양피지/금색
+  제목/현재 이름/입력칸/"2~20글자 · 다른 사람과 중복 불가"/저장/X를 기존 승인 부품으로 구현한다. 현재 글꼴은
+  Noto Sans family12187370747이며 본문 Regular, 필요한 제목 Bold다. 입력칸 placeholder는 성기사별이다.
+- 길이는 유효한 UTF-8 **Unicode 코드포인트2~20**, 최대80바이트다. 제어/숨은 문자·줄바꿈·`#<>&`·양끝/중복
+  공백은 거절한다. `Util.NicknameCanonical`은 ASCII 대문자만 소문자로 바꾸며 비ASCII bytes는 보존한다.
+  Unicode 정규화/동형문자 전체 통합을 구현했다고 하지 않는다.
+- 서버 `SetNickname(raw)`은 ready/load 완료·10초 요청 간격·진행 중 요청을 확인한다. 클라이언트는 문자열 길이
+  안내만 하며 중복/정책/필터의 권한을 갖지 않는다. `NicknameResult`는 `{Status, Message, Nickname}`으로 응답한다.
+- `TextService:FilterStringAsync`와 `GetNonChatStringForBroadcastAsync` 결과를 다시 검증한다. 표시와 중복 예약은
+  **방송 필터 결과**만 사용하며 원문은 입력한 사용자의 로컬 TextBox에만 남긴다. 필터가 실패하면 기존 이름을
+  유지한다. `NicknameVerified=true`인 서버 확정 값만 `Util.PlayerDisplayName`으로 HUD·이름표 등에 표시한다.
+  미확정이면 원래 Roblox DisplayName을 쓴다. Roblox 계정 닉네임 자체는 바꾸지 않는다.
+- `HaloHorns_Nicknames_v1` DataStore의 사용자 directory와 canonical claim을 UpdateAsync로 원자적으로 예약한다.
+  전체 canonical과 UserId/token을 확인하므로 hash 충돌·다른 사용자의 선점은 실패 처리한다. directory Pending/
+  Active와 영속 token으로 불확실 쓰기를 복구하며 확인 읽기는 cache를 쓰지 않는다. 이전 claim은 그 사용자에게
+  보존하고 지연 rollback으로 남의 이름을 해제하지 않는다. DataStore가 없거나 본게임 저장이 준비되지 않으면
+  Unavailable이며 **닉네임 전용 메모리 성공 대체는 없다**.
+- Unknown 이후 다음 명시 저장 요청은 이전 token부터 확인하며 새로운 입력을 동시에 예약하지 않는다. 복구되면
+  Recovered로 알리고 새 변경은 다시 눌러야 한다. 자동 재저장/불확실 claim 삭제를 하지 않는다.
+- 추가 안전 검사는 한정된 명시 위험 문구/형태에만 적용한다: 성적 요청·착취, 특정 집단을 겨냥한 혐오/위협,
+  명시 종교 가입/개종 권유, 무료 Robux 사기·자격 증명 요구·외부 연락/개인정보 형태·공식 역할 사칭 등이다.
+  성/신/교 같은 음절이나 정상 애정 표현·판타지 직업명·종교명 자체를 단편어로 금지하지 않는다.
+  **성기사/성기사별처럼 정상 맥락의 이름은 허용**한다. 영문은 단어 경계를 검사하며 비교용 사본만 구분자/전각
+  ASCII를 접는다. 이 한정 목록을 모든 언어·모든 맥락을 판별하는 완전한 필터로 설명하지 않는다.
+- 창은 저장 중 연속 요청을 막고 서버 실패 메시지와 재입력 원문을 보존한다. remote가 없으면
+  "저장 연결을 확인해 주세요."로 알린다. 최소 물리11px/터치44px 및 짧은 높이의 본문 스크롤 보호를 유지한다.
+- 최신 닉네임 오프라인 **790개 검사 통과**. 실제 B→게임 닉네임→성기사별 입력→저장→DataStore 연결 불가 안내→
+  닫기/재오픈 원문 보존도 통과했다. 응답은 `Unavailable`, `NicknameVerified=false`, 확정 닉네임은 빈 값으로
+  유지돼 원문을 공개 이름으로 적용하지 않았다. 증거는 `build/nickname_ui_qa_actual.json`과
+  `docs/art/verification_2026-10-03/nickname_unavailable_991.jpeg`다.
+- 위 화면은 게임 안내 Toast가 제목 아래 현재 이름 영역에 겹친 실패도 보존한다. `Panels.Open`에서 닉네임
+  modal root.ZIndex=96을 지정한 소스 패치는 완료했으나 **겹침 수정 후 실제 재검증은 대기**다.
+  최종1590/작은 화면/터치44px, 저장 중 연속 클릭, 실제 필터 서비스 실패, 영속 저장·재접속,
+  다인/전 서버 동일 이름 경쟁은 완료로 쓰지 않는다.
