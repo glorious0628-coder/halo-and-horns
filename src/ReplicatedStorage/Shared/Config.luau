@@ -971,54 +971,54 @@ Config.UIArt = {
 		IconGear = { Id = "rbxassetid://125495221925556", Size = Vector2.new(247, 256) },
 		IconGoose = { Id = "rbxassetid://75561315472577", Size = Vector2.new(218, 256) },
 		IconSafe = { Id = "rbxassetid://79507893882404", Size = Vector2.new(254, 256) }, -- green shield
-		IconSprout = { Id = "rbxassetid://113278909940414", Size = Vector2.new(256, 254) },
+		IconSprout = { Id = "rbxassetid://113278909940414", Size = Vector2.new(256, 187) },
 		IconStar = { Id = "rbxassetid://119757093512057", Size = Vector2.new(256, 243) },
 		IconStarEmpty = { Id = "rbxassetid://105701738413323", Size = Vector2.new(256, 255) },
 		IconClover = { Id = "rbxassetid://130220802039072", Size = Vector2.new(246, 256) },
 		IconScroll = { Id = "rbxassetid://104306436967552", Size = Vector2.new(256, 192) },
 		IconSlime = { Id = "rbxassetid://132864964926977", Size = Vector2.new(256, 245) },
 		-- pick screens (mockups art/out/UI_Faction_B.png, UI_Class_A.png): text-free card backgrounds, regions in CardLayout
-		CardHalo = { Id = "rbxassetid://127968705264649", Size = Vector2.new(635, 1024) },
-		CardHorns = { Id = "rbxassetid://118772199487027", Size = Vector2.new(617, 1024) },
-		CardNeutral = { Id = "rbxassetid://91054727125376", Size = Vector2.new(612, 1024) },
-		ClassCardHalo = { Id = "rbxassetid://106511467901627", Size = Vector2.new(647, 1024) },
-		ClassCardHorns = { Id = "rbxassetid://88897242529915", Size = Vector2.new(608, 1024) },
-		ClassCardNeutral = { Id = "rbxassetid://111415926358171", Size = Vector2.new(618, 1024) },
-		ShieldNeutral = { Id = "rbxassetid://108855002367843", Size = Vector2.new(251, 256) },
-		TitleRibbon = { Id = "rbxassetid://105521181481849", Size = Vector2.new(256, 63) }, -- empty title ribbon
+		CardHalo = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(635, 1024) },
+		CardHorns = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(617, 1024) },
+		CardNeutral = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(612, 1024) },
+		ClassCardHalo = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(647, 1024) },
+		ClassCardHorns = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(608, 1024) },
+		ClassCardNeutral = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(618, 1024) },
+		ShieldNeutral = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(251, 256) },
+		TitleRibbon = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
 		-- class characters (transparent chibi): Char<Faction><Class><M|F>
-		CharHaloWarriorM = { Id = "rbxassetid://91124975552923", Size = Vector2.new(420, 512) },
-		CharHaloWarriorF = { Id = "rbxassetid://112844299339258", Size = Vector2.new(464, 512) },
-		CharHaloMageM = { Id = "rbxassetid://132965528745270", Size = Vector2.new(460, 512) },
-		CharHaloMageF = { Id = "rbxassetid://114828753943727", Size = Vector2.new(478, 512) },
-		CharHaloArcherM = { Id = "rbxassetid://122481808871259", Size = Vector2.new(501, 512) },
-		CharHaloArcherF = { Id = "rbxassetid://124348927719351", Size = Vector2.new(504, 512) },
-		CharHornsWarriorM = { Id = "rbxassetid://123139571964542", Size = Vector2.new(489, 512) },
-		CharHornsWarriorF = { Id = "rbxassetid://125995393023187", Size = Vector2.new(473, 512) },
-		CharHornsMageM = { Id = "rbxassetid://96352144576106", Size = Vector2.new(478, 512) },
-		CharHornsMageF = { Id = "rbxassetid://77910369681201", Size = Vector2.new(496, 512) },
-		CharHornsArcherM = { Id = "rbxassetid://105137475844346", Size = Vector2.new(467, 512) },
-		CharHornsArcherF = { Id = "rbxassetid://100148164488141", Size = Vector2.new(467, 512) },
-		CharNeutralWarriorM = { Id = "rbxassetid://74407898891261", Size = Vector2.new(485, 512) },
-		CharNeutralWarriorF = { Id = "rbxassetid://120947459158861", Size = Vector2.new(476, 512) },
-		CharNeutralMageM = { Id = "rbxassetid://102550410777063", Size = Vector2.new(465, 512) },
-		CharNeutralMageF = { Id = "rbxassetid://82933568473532", Size = Vector2.new(457, 512) },
-		CharNeutralArcherM = { Id = "rbxassetid://127668674323208", Size = Vector2.new(416, 512) },
-		CharNeutralArcherF = { Id = "rbxassetid://103757200729319", Size = Vector2.new(463, 512) },
+		CharHaloWarriorM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(420, 512) },
+		CharHaloWarriorF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(464, 512) },
+		CharHaloMageM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(460, 512) },
+		CharHaloMageF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(478, 512) },
+		CharHaloArcherM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(501, 512) },
+		CharHaloArcherF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(504, 512) },
+		CharHornsWarriorM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(489, 512) },
+		CharHornsWarriorF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(473, 512) },
+		CharHornsMageM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(478, 512) },
+		CharHornsMageF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(496, 512) },
+		CharHornsArcherM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(467, 512) },
+		CharHornsArcherF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(467, 512) },
+		CharNeutralWarriorM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(485, 512) },
+		CharNeutralWarriorF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(476, 512) },
+		CharNeutralMageM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(465, 512) },
+		CharNeutralMageF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(457, 512) },
+		CharNeutralArcherM = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(416, 512) },
+		CharNeutralArcherF = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(463, 512) },
 		-- perk / misc icons
-		IconExp = { Id = "rbxassetid://71570492311980", Size = Vector2.new(229, 256) },
-		IconHeart = { Id = "rbxassetid://117251570083495", Size = Vector2.new(256, 222) },
-		IconWings = { Id = "rbxassetid://100448040477725", Size = Vector2.new(256, 166) },
-		IconGoldPile = { Id = "rbxassetid://121580818331312", Size = Vector2.new(256, 166) },
-		IconBloodSword = { Id = "rbxassetid://89539033522501", Size = Vector2.new(256, 239) },
-		IconGauge = { Id = "rbxassetid://105265456701675", Size = Vector2.new(256, 70) },
-		IconDemon = { Id = "rbxassetid://138771309720551", Size = Vector2.new(256, 231) },
-		IconNoBuff = { Id = "rbxassetid://110309392433326", Size = Vector2.new(256, 243) },
-		IconShieldBlue = { Id = "rbxassetid://98551767326821", Size = Vector2.new(227, 256) },
-		IconNoLoot = { Id = "rbxassetid://106989595509471", Size = Vector2.new(243, 256) },
-		IconHammer = { Id = "rbxassetid://74147674132543", Size = Vector2.new(236, 256) },
-		IconAltar = { Id = "rbxassetid://112545534083025", Size = Vector2.new(241, 256) },
-		IconBoot = { Id = "rbxassetid://118619367792480", Size = Vector2.new(256, 232) },
+		IconExp = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(229, 256) },
+		IconHeart = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 222) },
+		IconWings = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 166) },
+		IconGoldPile = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 166) },
+		IconBloodSword = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 239) },
+		IconGauge = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 70) },
+		IconDemon = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 231) },
+		IconNoBuff = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 243) },
+		IconShieldBlue = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(227, 256) },
+		IconNoLoot = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(243, 256) },
+		IconHammer = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(236, 256) },
+		IconAltar = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(241, 256) },
+		IconBoot = { Id = "" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 232) },
 	},
 	-- picked from the mockup (UI_HUD_Final.png) and the part images
 	Colors = {
@@ -1092,6 +1092,7 @@ Config.UIArt.CardLayout = {
 
 -- faction card perk rows (icon part + short plain text, mockup art/out/UI_Faction_B.png). Numbers must match
 -- Config.Factions (XPBonus, MaxHPMult, GoldBonus, DamageBonus, ChargeCap) and Config.Kaiju.StarsNeeded.
+-- Short (optional) = shorter line used when Text cannot fit its row at the min text size (landscape phones).
 Config.UIArt.FactionPerks = {
 	Halo = {
 		{ Icon = "IconExp", Text = "경험치 +30%" },
@@ -1101,14 +1102,14 @@ Config.UIArt.FactionPerks = {
 	},
 	Horns = {
 		{ Icon = "IconGoldPile", Text = "골드 +25%" },
-		{ Icon = "IconBloodSword", Text = "공격력 +15%, 체력 흡수" },
+		{ Icon = "IconBloodSword", Text = "공격력 +15%, 체력 흡수", Short = "공격력 +15%, 흡혈" },
 		{ Icon = "IconGauge", Text = "발사 게이지 175" },
 		{ Icon = "IconDemon", Text = "별 5개면 괴수 변신!" },
 	},
 	Neutral = {
 		{ Icon = "IconNoBuff", Text = "싸움 버프 없음" },
 		{ Icon = "IconShieldBlue", Text = "PvP 없음 (안전)" },
-		{ Icon = "IconNoLoot", Text = "약탈·현상수배 걱정 없음" },
+		{ Icon = "IconNoLoot", Text = "약탈·현상수배 걱정 없음", Short = "약탈·수배 걱정 없음" },
 		{ Icon = "IconHammer", Text = "제작 특화 (곧 추가)" },
 	},
 }
@@ -1287,5 +1288,41 @@ Config.Text = {
 	LossLevel = "Lv %d → Lv 1", -- (current level)
 	KeepAll = "전부 유지",
 }
+
+----------------------------------------------------------------- A15 hit feel (server: MonsterService / CombatService)
+-- Monster attacks are telegraphed: model attribute "WindupAt" (server time) -> MonsterWindup s later "AttackSeq" +1 and
+-- the damage (cancelled if the target got farther than AttackRange + WindupLeeway or became invalid). A damaged
+-- monster that survives gets "HurtBig" then "HurtSeq" +1 (once per MonsterHurtGap s); a damaged player sends
+-- Fx "Pain" { UserId, Pos, Big } to all clients (once per PainGap s per victim). Big = crit or >= BigHitFraction of
+-- max HP. Swing / release hits shove monsters ShoveSwing / ShoveCrit / ShoveRelease studs (<= ShoveMax, / body scale)
+-- over ShoveTime s, at most once per ShoveGap s per monster.
+Config.HitReact = {
+	MonsterWindup = 0.28, WindupLeeway = 2, MonsterHurtGap = 0.15, PainGap = 0.4, BigHitFraction = 0.25,
+	ShoveSwing = 1.2, ShoveCrit = 1.6, ShoveRelease = 2, ShoveMax = 2, ShoveTime = 0.12, ShoveGap = 0.5,
+}
+
+-- A15 GPT hit / pain art (art/ui/UIP_Fx*.png, UIP_Emo*.png), not uploaded yet: Id = "" -> UIKit.ArtId returns nil and
+-- the client draws its code fallback. Paste the rbxassetid here once uploaded and the images are used automatically.
+-- (Only fills names the Parts table above does not define yet.)
+do
+	local parts = Config.UIArt.Parts
+	local add = {
+		FxSlash = { Id = "", Size = Vector2.new(256, 251) }, -- white crescent slash arc (tintable)
+		FxHitSpark = { Id = "", Size = Vector2.new(254, 256) }, -- comic impact star burst
+		FxShockRing = { Id = "", Size = Vector2.new(256, 252) }, -- white ring (tintable)
+		FxMagicBurst = { Id = "", Size = Vector2.new(256, 256) }, -- white-violet burst
+		FxDust = { Id = "", Size = Vector2.new(222, 256) }, -- dust puff
+		EmoOuch = { Id = "", Size = Vector2.new(256, 175) }, -- "아야!" speech burst
+		EmoTears = { Id = "", Size = Vector2.new(256, 197) }, -- blue drops
+		EmoDizzy = { Id = "", Size = Vector2.new(256, 232) }, -- spinning stars
+		EmoAngry = { Id = "", Size = Vector2.new(256, 232) }, -- red anger vein
+		EmoStress = { Id = "", Size = Vector2.new(256, 213) }, -- red stress marks
+	}
+	for name, def in add do
+		if parts[name] == nil then
+			parts[name] = def
+		end
+	end
+end
 
 return Config

@@ -73,5 +73,23 @@
   "status": "approved",
   "file": "art/out/UI_Class_A.png",
   "note": "능력치(5칸): 성기사 체력4 공격3 속도2 / 마법사 체력2 공격4 속도3 / 레인저 체력3 공격2 속도4"
+ },
+ "ClassCharacters": {
+  "status": "approved",
+  "files": "art/out/UIP_Char{Halo|Horns|Neutral}{Warrior|Mage|Archer}{M|F}.png",
+  "note": "2026-10-03 뿔 6명+빛 여궁수는 노출 없는 옷으로 다시 그림(로블록스 제재 후). 예전 그림은 art/out/v1/revealing — 절대 업로드 금지"
+ },
+ "UI_Lettering_C": {
+  "status": "approved",
+  "file": "art/out/UI_Lettering_C.png",
+  "note": "고정 글자는 C 스타일 그림 글자(금색 입체+진한 테두리), 바뀌는 글자는 같은 색감으로"
+ },
+ "UI_Lettering_A": {
+  "status": "not_selected",
+  "file": "art/out/UI_Lettering_A.png"
+ },
+ "UI_Lettering_B": {
+  "status": "not_selected",
+  "file": "art/out/UI_Lettering_B.png"
  }
 }

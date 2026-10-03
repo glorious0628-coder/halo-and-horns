@@ -14,12 +14,13 @@ gen_one() {
   id="$1"
   [ -s "$OUT/$id.png" ] && { echo "skip $id"; return 0; }
   size="1024x1024"
-  case "$id" in Thumbnail_*|UI_MapParchment|UI_HUD_*|UI_Faction_*|UI_Class_*) size="1536x1024 (landscape)";; esac
+  case "$id" in Thumbnail_*|UI_MapParchment|UI_HUD_*|UI_Faction_*|UI_Class_*|UI_Lettering_*) size="1536x1024 (landscape)";; esac
   case "$id" in UIP_Card*|UIP_ClassCard*) size="1024x1536 (portrait)";; esac
   refargs=()
   refnote=""
   for r in $REFS; do refargs+=(-i "$(pwd)/$r"); done
   [ -n "$REFS" ] && refnote=" The attached image(s) are STYLE REFERENCES only: match their art style, colors, materials and finish, but do not copy their layout or content."
+  case "$id" in APose_*) [ -n "$REFS" ] && refnote=" The attached image is the CHARACTER REFERENCE: reproduce this exact same character (identity, gender, face, hair, horns/halo/goggles, outfit and colors); only the pose and the removed items change.";; esac
   "$CODEX" exec --skip-git-repo-check -C "$(pwd)/$OUT" -s workspace-write \
     --add-dir "$(pwd)/art/prompts" "${refargs[@]}" -o "logs/$id.last.txt" \
     "Read the prompt file $(pwd)/art/prompts/$id.txt. Use your image generation tool to create exactly ONE image from that prompt text verbatim (size $size; if the prompt asks for a transparent background, generate with a transparent background).$refnote Then copy the generated PNG into the current directory with the exact file name $id.png. Do not create any other files. Reply with only the saved file path." \
