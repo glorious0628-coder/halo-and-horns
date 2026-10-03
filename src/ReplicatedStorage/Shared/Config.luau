@@ -1295,10 +1295,15 @@ Config.Text = {
 -- monster that survives gets "HurtBig" then "HurtSeq" +1 (once per MonsterHurtGap s); a damaged player sends
 -- Fx "Pain" { UserId, Pos, Big } to all clients (once per PainGap s per victim). Big = crit or >= BigHitFraction of
 -- max HP. Swing / release hits shove monsters ShoveSwing / ShoveCrit / ShoveRelease studs (<= ShoveMax, / body scale)
--- over ShoveTime s, at most once per ShoveGap s per monster.
+-- over ShoveTime s, at most once per ShoveGap s per monster, starting ShoveDelay[attack][class] s after the damage
+-- (when clients show the hit: contact frame / projectile flight, minus ~0.07 s of physics replication lag).
 Config.HitReact = {
-	MonsterWindup = 0.28, WindupLeeway = 2, MonsterHurtGap = 0.15, PainGap = 0.4, BigHitFraction = 0.25,
+	MonsterWindup = 0.28, WindupLeeway = 2, MonsterHurtGap = 0.15, PainGap = 0.4, BigHitFraction = 0.5,
 	ShoveSwing = 1.2, ShoveCrit = 1.6, ShoveRelease = 2, ShoveMax = 2, ShoveTime = 0.12, ShoveGap = 0.5,
+	ShoveDelay = {
+		Swing = { Warrior = 0.06, Archer = 0.17, Mage = 0.25 },
+		Release = { Warrior = 0.17, Mage = 0.28, Archer = 0.33 },
+	},
 }
 
 -- A15 GPT hit / pain art (art/ui/UIP_Fx*.png, UIP_Emo*.png), not uploaded yet: Id = "" -> UIKit.ArtId returns nil and

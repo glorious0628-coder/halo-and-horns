@@ -30,6 +30,21 @@ local LOOP_WARN_INTERVAL = 10 -- seconds between two warnings of the same loop
 -- factions that take part in PvP / goose tug (addendum A6: "Neutral" and "None" never do)
 local PVP_FACTIONS = { Halo = true, Horns = true }
 
+-- A15 hit feel: every damaged player gets a "Pain" Fx to ALL clients (pain sticker over that player), at most one per
+-- victim per PAIN_GAP s; Big = crit or >= BIG_FRACTION of the victim's MaxHealth. Monsters a swing / release lands on
+-- are shoved SHOVE_* studs (MonsterService.Shove applies the zone / water / owner rules) SHOVE_DELAY[attack][class] s
+-- after the damage, so the slide starts when clients show the hit (contact frame / projectile flight).
+-- Config.HitReact, fallbacks.
+local HIT_REACT = Config.HitReact or {}
+local REACT = {
+	PAIN_GAP = HIT_REACT.PainGap or 0.4,
+	BIG_FRACTION = HIT_REACT.BigHitFraction or 0.5,
+	SHOVE_SWING = HIT_REACT.ShoveSwing or 1.2,
+	SHOVE_CRIT = HIT_REACT.ShoveCrit or 1.6,
+	SHOVE_RELEASE = HIT_REACT.ShoveRelease or 2,
+	SHOVE_DELAY = type(HIT_REACT.ShoveDelay) == "table" and HIT_REACT.ShoveDelay or {},
+}
+
 ------------------------------------------------------------------ per-player state (session only)
 local charge = {} -- [Player] = stacks (may be fractional)
 local perfectUntil = {} -- [Player] = server time (Util.Now) of the PERFECT window end, 0 = none
@@ -41,6 +56,7 @@ local lastDamagedAt = {} -- [Player] = os.clock() of the last damage of any kind
 local lastPvPAttacker = {} -- [Player] = { Player = Player, T = os.clock() }
 local lastPvPTime = {} -- [Player] = os.clock() of the last PvP damage dealt or received
 local autoHintAt = {} -- [Player] = os.clock() of the last M3 hint
+local painAt = {} -- [Player] = os.clock() of the last "Pain" Fx (A15)
 local lastLoopWarn = {} -- [loopName] = os.clock()
 
 ------------------------------------------------------------------ small helpers
@@ -352,8 +368,23 @@ local function tagCombat(player)
 	end
 end
 
--- attacker nil = monster (or any non-player source)
-function CombatService.DamagePlayer(victim, amount, attacker)
+-- A15: "Pain" Fx to every client (pain sticker / flinch over the victim), throttled per victim. A lethal hit is left to
+-- the KO effects.
+local function sendPain(victim, hum, rootPos, applied, crit)
+	if applied <= 0 or hum.Health <= 0 then
+		return
+	end
+	local now = os.clock()
+	if now - (painAt[victim] or -math.huge) < REACT.PAIN_GAP then
+		return
+	end
+	painAt[victim] = now
+	local big = crit == true or (hum.MaxHealth > 0 and applied >= hum.MaxHealth * REACT.BIG_FRACTION)
+	Net.Fx(nil, "Pain", { UserId = victim.UserId, Pos = rootPos, Big = big })
+end
+
+-- attacker nil = monster (or any non-player source); crit (optional) = the hit was a critical hit (Pain "Big")
+function CombatService.DamagePlayer(victim, amount, attacker, crit)
 	if not isPlayer(victim) or victim.Parent == nil then
 		return
 	end
@@ -391,6 +422,10 @@ function CombatService.DamagePlayer(victim, amount, attacker)
 	hum:TakeDamage(amount) -- respects ForceField
 	local applied = before - hum.Health
 	S.PlayerService.MarkActive(victim)
+	local okPain, errPain = pcall(sendPain, victim, hum, rootPos, applied, crit)
+	if not okPain then
+		loopWarn("Pain", errPain)
+	end
 
 	if attacker then
 		-- addendum M3: AFK-in-PvP hint for players relying on auto attack
@@ -447,6 +482,29 @@ local function applyLifesteal(player, perks, total)
 		return
 	end
 	CombatService.HealPlayer(player, math.min(total * rate, hum.MaxHealth * (perks.LifestealCapPct or 0)))
+end
+
+------------------------------------------------------------------ A15 monster shove
+-- a small slide of a monster my hit landed on, away from `fromPos` (cosmetic: a failure never breaks the hit loop)
+local function shoveMonster(rec, fromPos, studs, player)
+	if not rec.Alive or type(S.MonsterService.Shove) ~= "function" then
+		return
+	end
+	local ok, err = pcall(S.MonsterService.Shove, rec, fromPos, studs, player)
+	if not ok then
+		loopWarn("Shove", err)
+	end
+end
+
+-- the shove of an attack ("Swing" / "Release") of class `classId`, REACT.SHOVE_DELAY s later (0 / missing = now)
+local function shoveLater(attack, classId, rec, fromPos, studs, player)
+	local byClass = REACT.SHOVE_DELAY[attack]
+	local d = type(byClass) == "table" and tonumber(byClass[classId]) or 0
+	if d > 0 then
+		task.delay(math.min(d, 1), shoveMonster, rec, fromPos, studs, player)
+	else
+		shoveMonster(rec, fromPos, studs, player)
+	end
 end
 
 ------------------------------------------------------------------ swing (public)
@@ -571,7 +629,10 @@ function CombatService.Swing(player, isManual)
 				local crit = Util.Random:NextNumber() < Config.Combat.CritChance
 				local d = base * (crit and Config.Combat.CritMult or 1)
 				local dealt = Util.RoundDamage(d * Config.Charge.SwingImmediate)
-				S.MonsterService.DamageMonster(rec, dealt, player)
+				local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit)
+				if not killed then
+					shoveLater("Swing", c.Id, rec, pos, crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING, player) -- A15
+				end
 				table.insert(hits, { P = m.Pos, A = dealt, C = crit, K = "M" })
 				totalDealt += dealt
 				monstersHit += 1
@@ -628,6 +689,7 @@ function CombatService.Swing(player, isManual)
 			Radius = radius,
 			Targets = targets,
 			Hits = hits,
+			Manual = isManual, -- A15: clients kick the camera on manual hits only
 		})
 	end
 end
@@ -703,7 +765,12 @@ function CombatService.Release(player, isAuto)
 		local dealt = Util.RoundDamage(Config.ReleaseDamage(D, n, isAuto) * releaseMult)
 		for _, m in monsters do
 			if m.Rec.Alive then
-				S.MonsterService.DamageMonster(m.Rec, dealt, player)
+				local killed = S.MonsterService.DamageMonster(m.Rec, dealt, player)
+				if not killed then
+					-- A15: a blast pushes outward from its center; the monster at the center goes away from me
+					local from = Util.FlatDistance(m.Pos, center) > 0.5 and center or pos
+					shoveLater("Release", c.Id, m.Rec, from, REACT.SHOVE_RELEASE, player)
+				end
 				table.insert(hits, { P = m.Pos, A = dealt, C = false, K = "M" })
 				total += dealt
 				monstersHit += 1
@@ -884,6 +951,7 @@ local function onPlayerLeaving(player, _data)
 		lastPvPAttacker[player] = nil
 		lastPvPTime[player] = nil
 		autoHintAt[player] = nil
+		painAt[player] = nil
 	end)
 end
 

@@ -11,3 +11,7 @@ Thumbs.db
 art/out/logs/
 art/test/*.log
 art/test/*.codex.txt
+
+# Tripo raw exports (2k, ~10MB each) and baked texture copies — the fixed GLBs are the source of truth
+art/models/costume/raw/
+art/models/costume/fixed/*.png

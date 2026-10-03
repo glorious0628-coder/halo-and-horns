@@ -2,6 +2,7 @@
 -- AI loop, monster HP, kill rewards (MonsterKilled) and personal (tutorial) monsters.
 -- World is Terrain (A10/A11): spawn/wander points are raycast onto walkable ground; monsters stay inside their own zone
 -- rect, never chase into water and are recovered home when knocked out / sunk (A10-V3-2); stuck detection (A11-R5).
+-- A15 hit feel: attacks are telegraphed (WindupAt -> AttackSeq), damage bumps HurtSeq, player hits shove (Shove).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
@@ -84,8 +85,25 @@ local BOB_FRACTION = 0.06 -- custom visual bob height as a fraction of the body 
 local VISUAL_ROOT_NAME = "VisualRoot"
 local VISUAL_JOINT_NAME = "VisualJoint"
 local VISUAL_ROOT_SIZE = 0.2
-local ATTACK_SEQ_ATTR = "AttackSeq" -- +1 on every monster hit on a player (clients play the attack lunge)
+local ATTACK_SEQ_ATTR = "AttackSeq" -- +1 when a monster attack lands on a player (clients play the attack lunge)
 local FACE_TARGET_DOT = 0.85 -- attacking: turn to the target when it is more than ~30 deg off the look direction
+-- A15 hit feel (server half): attack telegraph, pain reactions, swing shove. Tunables live in Config.HitReact (shared
+-- with the client Fx); the fallbacks keep the service working without it. Model attribute contract for clients:
+-- "WindupAt" changed -> wind-up pose (the hit follows REACT.WINDUP s later unless cancelled), "AttackSeq" +1 -> lunge
+-- (the damage lands now), "HurtSeq" +1 -> pain reaction ("HurtBig" is written first: true = crit / big hit).
+local HIT_REACT = Config.HitReact or {}
+local REACT = {
+	WINDUP = HIT_REACT.MonsterWindup or 0.28, -- s from "WindupAt" to the hit
+	WINDUP_LEEWAY = HIT_REACT.WindupLeeway or 2, -- the hit still lands while the target is within AttackRange + this
+	HURT_GAP = HIT_REACT.MonsterHurtGap or 0.15, -- at most one "HurtSeq" bump per monster per this many seconds
+	BIG_FRACTION = HIT_REACT.BigHitFraction or 0.5, -- a hit of >= this fraction of MaxHP is "big"
+	SHOVE_MAX = HIT_REACT.ShoveMax or 2, -- studs, upper bound of any shove (divided by the monster's body scale)
+	SHOVE_TIME = HIT_REACT.ShoveTime or 0.12, -- s the shove slide takes
+	SHOVE_GAP = HIT_REACT.ShoveGap or 0.5, -- min seconds between two shoves of one monster (no push-locking)
+}
+local WINDUP_AT_ATTR = "WindupAt" -- workspace:GetServerTimeNow() when the monster starts winding up an attack
+local HURT_SEQ_ATTR = "HurtSeq" -- +1 when the monster takes damage and survives (throttled by REACT.HURT_GAP)
+local HURT_BIG_ATTR = "HurtBig" -- written right before HurtSeq: true = crit or >= BIG_FRACTION of its MaxHP
 local BAR_HIGH = Color3.fromRGB(80, 220, 120)
 local BAR_LOW = Color3.fromRGB(255, 80, 80)
 local EYE_COLOR = Color3.fromRGB(20, 20, 20)
@@ -778,6 +796,9 @@ local function spawnMonster(kind, opts)
 		_detour = nil,
 		_detourUntil = 0,
 		_deepSince = nil, -- A10-V3-2 (c): when the root first went below DEEP_Y
+		_windup = nil, -- A15: token of the attack being wound up (the hit lands REACT.WINDUP s after it started)
+		_hurtAt = -math.huge, -- A15: os.clock() of the last HurtSeq bump
+		_shoveReadyAt = 0, -- A15: os.clock() when the next shove is allowed
 	}
 	records[rec.Id] = rec
 	return rec
@@ -921,7 +942,21 @@ local function killRecord(rec)
 	end
 end
 
-function MonsterService.DamageMonster(record, amount, player)
+-- A15: pain reaction for clients ("HurtBig" first, then "HurtSeq" +1), at most once per REACT.HURT_GAP s per monster
+local function markHurt(rec, amount, crit)
+	local now = os.clock()
+	if now - rec._hurtAt < REACT.HURT_GAP then return end
+	local model = rec.Model
+	if not model or not model.Parent then return end
+	rec._hurtAt = now
+	local big = crit == true or (rec.MaxHP > 0 and amount >= rec.MaxHP * REACT.BIG_FRACTION)
+	model:SetAttribute(HURT_BIG_ATTR, big)
+	local seq = model:GetAttribute(HURT_SEQ_ATTR)
+	model:SetAttribute(HURT_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
+end
+
+-- crit (optional): the hit was a critical hit (only used for the "HurtBig" pain reaction)
+function MonsterService.DamageMonster(record, amount, player, crit)
 	if type(record) ~= "table" or not record.Alive then return false end
 	if type(amount) ~= "number" or amount ~= amount or amount <= 0 then return false end
 	if record.Owner and record.Owner ~= player then return false end -- A5-C2
@@ -931,9 +966,11 @@ function MonsterService.DamageMonster(record, amount, player)
 	record.HP -= amount
 	if record.HP > 0 then
 		updateBar(record)
+		local okHurt, errHurt = pcall(markHurt, record, amount, crit)
+		if not okHurt then warnThrottled("hurt", errHurt) end
 		return false
 	end
-	killRecord(record)
+	killRecord(record) -- the killing hit plays the death pop instead of a pain reaction
 	return true
 end
 
@@ -946,6 +983,82 @@ function MonsterService.ApplyKnockback(record, fromPosition, power)
 	local flat = Vector3.new(d.X, 0, d.Z)
 	local dir = flat.Magnitude > 0.01 and flat.Unit or Vector3.zero
 	root.AssemblyLinearVelocity = dir * power + Vector3.new(0, 25, 0)
+end
+
+-- A15: shove sweep params (Terrain + every collidable part under workspace.Map; water ignored), rebuilt like the
+-- ground params so a late MapBuilder pass is picked up
+local shoveSweep = { Params = nil, At = -math.huge }
+local function getShoveParams()
+	local now = os.clock()
+	if shoveSweep.Params and now - shoveSweep.At < GROUND_PARAMS_REFRESH then return shoveSweep.Params end
+	local list = { workspace.Terrain }
+	local map = workspace:FindFirstChild("Map")
+	if map then table.insert(list, map) end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = list
+	params.IgnoreWater = true
+	pcall(function()
+		params.RespectCanCollide = true -- invisible zone / pad volumes never block a shove
+	end)
+	shoveSweep.Params, shoveSweep.At = params, now
+	return params
+end
+
+-- A15: subtle shove of a monster a player's hit landed on: the root slides `studs` (capped by REACT.SHOVE_MAX, divided
+-- by the body scale so big monsters barely move) away from `fromPosition` over REACT.SHOVE_TIME. Skipped for anchored
+-- (dying) roots, other players' personal monsters, a monster shoved less than REACT.SHOVE_GAP s ago, and whenever the
+-- end point is not walkable ground (water / ridge / shore) in the zone the monster stands in (zone monsters: inside
+-- their own zone rect inset by ZONE_MOVE_INSET, like every MoveTo). Returns true when a shove started.
+function MonsterService.Shove(record, fromPosition, studs, player)
+	if type(record) ~= "table" or not record.Alive then return false end
+	if typeof(fromPosition) ~= "Vector3" then return false end
+	if type(studs) ~= "number" or studs ~= studs or studs <= 0 then return false end
+	if record.Owner and record.Owner ~= player then return false end -- A5-C2
+	local now = os.clock()
+	if now < record._shoveReadyAt then return false end
+	local root = record.Root
+	if not root or not root.Parent or root.Anchored then return false end
+
+	local pos = root.Position
+	local flat = Vector3.new(pos.X - fromPosition.X, 0, pos.Z - fromPosition.Z)
+	if flat.Magnitude < 0.05 then
+		local lv = root.CFrame.LookVector
+		flat = Vector3.new(-lv.X, 0, -lv.Z) -- hit from right on top of it: push it backwards
+		if flat.Magnitude < 0.05 then return false end
+	end
+	local dist = math.min(studs, REACT.SHOVE_MAX) / math.max(1, record._scale or 1)
+	local delta = flat.Unit * dist
+	local dest = pos + delta
+
+	local here = Config.ZoneAt(pos).Id
+	if Config.ZoneAt(dest).Id ~= here then return false end
+	if record.Owner == nil then
+		local zone = Config.Zones[record.ZoneId]
+		if here ~= record.ZoneId or (zone and not insideZone(zone, dest, ZONE_MOVE_INSET)) then return false end
+	end
+	local g, noHit = groundPoint(dest.X, dest.Z)
+	if not g and not noHit then return false end -- water / ridge / shore (noHit = bare test place: flat ground)
+	-- never into a wall / gate / tree / rock / hillside at body height
+	if workspace:Raycast(pos, delta + flat.Unit * 0.5, getShoveParams()) then return false end
+
+	record._shoveReadyAt = now + REACT.SHOVE_GAP
+	task.spawn(function()
+		local ok, err = pcall(function()
+			local done = 0
+			while true do
+				task.wait()
+				if not record.Alive or not root.Parent or root.Anchored then break end
+				local t = math.clamp((os.clock() - now) / math.max(REACT.SHOVE_TIME, 0.01), 0, 1)
+				local f = 1 - (1 - t) * (1 - t) -- ease out
+				root.CFrame = root.CFrame + delta * (f - done)
+				done = f
+				if t >= 1 then break end
+			end
+		end)
+		if not ok then warnThrottled("shove", err) end
+	end)
+	return true
 end
 
 ------------------------------------------------------------------ personal monsters (A4 / A5-C2..C4)
@@ -1056,23 +1169,62 @@ local function faceTarget(rec, targetPos)
 	root.CFrame = CFrame.lookAt(pos, pos + dir)
 end
 
+-- A15: the wound-up hit lands only if this wind-up is still the current one, the monster is alive and in the world
+-- and the target is alive, still a valid target (owner / zone / town / water rules) and within AttackRange + leeway.
+-- Bumps AttackSeq at the impact (clients play the lunge), then deals the damage.
+local function landAttack(rec, token, target)
+	if rec._windup ~= token then return end
+	rec._windup = nil
+	if not rec.Alive or records[rec.Id] ~= rec then return end
+	local model, root = rec.Model, rec.Root
+	if not model or not model.Parent or not root or not root.Parent or root.Anchored then return end
+	if typeof(target) ~= "Instance" or not target:IsA("Player") or target.Parent == nil or not Util.IsAlive(target) then
+		return
+	end
+	local troot = Util.GetRoot(target)
+	if not troot then return end
+	local tpos = troot.Position
+	if Util.FlatDistance(root.Position, tpos) > MC.AttackRange + REACT.WINDUP_LEEWAY then return end
+	if rec.Owner then
+		if target ~= rec.Owner or tpos.Y < OUT_Y or isPlayerInTown(target, tpos) then return end
+	else
+		if rec._returning then return end
+		local info = { Pos = tpos, Town = isPlayerInTown(target, tpos), Zone = Config.ZoneAt(tpos).Id }
+		if not targetable(rec, info) then return end
+	end
+
+	-- the client lunge goes along the look direction: face where the target is now
+	local okFace, errFace = pcall(faceTarget, rec, tpos)
+	if not okFace then warnThrottled("face", errFace) end
+	local seq = model:GetAttribute(ATTACK_SEQ_ATTR)
+	model:SetAttribute(ATTACK_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
+	if S and S.CombatService then
+		S.CombatService.DamagePlayer(target, rec.Def.Damage, nil)
+	end
+end
+
+-- in reach: stand still and start a wind-up when the cooldown allows (the cooldown counts from the wind-up start; one
+-- wind-up at a time, so a monster never hits twice for one attack)
 local function attack(rec, info, now)
 	rec._goal = nil
 	rec.Humanoid:MoveTo(rec.Root.Position)
-	if now >= rec._nextAttackAt then
-		rec._nextAttackAt = now + MC.AttackCooldown
-		-- the client lunge goes along the look direction, so face the target first
-		local okFace, errFace = pcall(faceTarget, rec, info.Pos)
-		if not okFace then warnThrottled("face", errFace) end
-		local model = rec.Model
-		if model then
-			local seq = model:GetAttribute(ATTACK_SEQ_ATTR)
-			model:SetAttribute(ATTACK_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
-		end
-		if S and S.CombatService then
-			S.CombatService.DamagePlayer(info.Player, rec.Def.Damage, nil)
-		end
+	if rec._windup ~= nil or now < rec._nextAttackAt then return end
+	rec._nextAttackAt = now + MC.AttackCooldown
+	-- the wind-up pose leans along the look direction, so face the target first
+	local okFace, errFace = pcall(faceTarget, rec, info.Pos)
+	if not okFace then warnThrottled("face", errFace) end
+	local model = rec.Model
+	if model then
+		model:SetAttribute(WINDUP_AT_ATTR, workspace:GetServerTimeNow())
 	end
+	local token = {}
+	rec._windup = token
+	local target = info.Player
+	task.delay(REACT.WINDUP, function()
+		local ok, err = pcall(landAttack, rec, token, target)
+		if rec._windup == token then rec._windup = nil end -- landAttack threw before clearing it
+		if not ok then warnThrottled("attack", err) end
+	end)
 end
 
 -- A10-V3-2 (c): put the monster back on its home point (sunk in water / cannot walk back)

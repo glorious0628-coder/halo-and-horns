@@ -4,6 +4,9 @@
 -- combo counter and the A9-2 hit feel (local white flash on monsters I hit, number pop, number merging), my own
 -- attack animations (stock Roblox animations on my character; they replicate) and the monster attack lunge / hit
 -- recoil (local tweens of the monster's VisualJoint.C0).
+-- A14-4 combat feel: procedural R15 attack / hurt clips (Motor6D.Transform layers, every client animates every nearby
+-- character from the Fx), slash / spark / magic / dust / shock-ring art with code fallbacks, hit-stop + camera kick,
+-- monster wind-up telegraph (WindupAt), pain stickers over hurt monsters (HurtSeq) and players (Pain Fx).
 -- Everything here is local-only and purely cosmetic; the server never trusts anything from it.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -128,7 +131,166 @@ local MOTION = {
 	HOP_SQUASH_TIME = 0.08, HOP_SQUASH_DOWN = 0.06, HOP_SQUASH_BACK = 0.06, HOP_SQUASH_TILT = 6, -- slime crouch
 	HOP_TIME = 0.12, HOP_UP = 0.2, HOP_FWD = 0.3, HOP_TILT = 12, -- slime hop up + forward
 	HOP_LAND_TIME = 0.18,
-	RECOIL_IN = 0.04, RECOIL_OUT = 0.1, RECOIL_TILT = 8, -- flinch of monsters my hits land on
+	-- recoil of monsters my hits land on: tilt away + a visual push back along the hit direction on top of the server
+	-- shove (A15 Config.HitReact.Shove*); Release hits x RECOIL_RELEASE
+	RECOIL_IN = 0.05, RECOIL_OUT = 0.16, RECOIL_TILT = 15, RECOIL_PUSH = 0.08, RECOIL_RELEASE = 1.4,
+
+	-- A14-4 monster telegraph (A15 server half): the server sets the model attribute WindupAt
+	-- (workspace:GetServerTimeNow() of the wind-up start); the strike follows with AttackSeq +1 or never (cancelled).
+	-- Wind-up length = attribute WindupTime, else Config.HitReact.MonsterWindup, else TELE_DEFAULT.
+	WINDUP_ATTR = "WindupAt",
+	WINDUP_TIME_ATTR = "WindupTime",
+	TELE_DEFAULT = 0.28,
+	TELE_IN = 0.12, TELE_BACK = 0.06, TELE_DOWN = 0.05, TELE_TILT = 14, -- lean back + crouch
+	TELE_BACK2 = 0.09, TELE_DOWN2 = 0.08, TELE_TILT2 = 19, -- ... deepening while the wind-up lasts
+	SLIME_TELE_DOWN = 0.12, SLIME_TELE_DOWN2 = 0.16, SLIME_TELE_TILT = 6, -- slimes squash down instead
+	TELE_FLASH = 0.1, TELE_COLOR = Color3.fromRGB(255, 70, 60), -- red tint blink at the start and right before the strike
+	TELE_GRACE = 0.35, -- no strike this long after the wind-up -> back to rest
+	TELE_LUNGE_WINDOW = 0.6, -- AttackSeq this soon after a telegraph skips the lunge's own short wind-up
+	-- A14-4 pain: the server bumps HurtSeq on every hit on a monster (HurtBig = true, or = the HurtSeq value, for a big one)
+	HURT_SEQ_ATTR = "HurtSeq",
+	HURT_BIG_ATTR = "HurtBig",
+	FLINCH_IN = 0.05, FLINCH_OUT = 0.14, FLINCH_DOWN = 0.05, FLINCH_BACK = 0.04, FLINCH_TILT = 9, FLINCH_BIG = 1.6,
+	FLINCH_SKIP = 0.15, -- no squash flinch this soon after my own directional recoil started
+	-- HurtSeq arrives when the damage lands, the hit shows later (clip contact frame / projectile flight): Swing /
+	-- Release remember where their hits will show and the pain reaction waits for that moment (HURT_SYNC_MAX cap)
+	HURT_SYNC_WAIT = 0.05, -- s to let the Swing / Release Fx of the same server frame arrive first
+	HURT_SYNC_MAX = 0.6,
+	PENDING_MAX = 24, PENDING_DIST = 4, -- remembered hit slots (ring buffer), studs a monster may be off its hit point
+	-- pain stickers (GPT art Emo*, code fallback below): pooled BillboardGuis in PlayerGui, one per monster at a time
+	-- stickers sit BESIDE the head (screen right), never over the HP bar / nametag above it, and rise only a little
+	STICKER_MAX = 12, STICKER_LIFE = 0.6, STICKER_POP = 0.16, STICKER_FADE = 0.25, STICKER_RISE = 0.6,
+	STICKER_TILT = 12, STICKER_DIST = 90, STICKER_SIDE = 0.85, -- side offset (screen right) as a fraction of the size
+	MONSTER_STICKER_K = 0.45, MONSTER_STICKER_MIN = 2.2, MONSTER_STICKER_MAX = 5, -- size = body height x K (studs)
+	MONSTER_STICKER_Y = -0.35, -- sticker centre: head top + this x size
+	MONSTER_STICKER_GAP = 1.0, -- s between two stickers of one monster (the HP bar stays readable in between)
+	PLAYER_STICKER_SIZE = 2.4, PLAYER_STICKER_Y = 0.4, -- studs above the head centre
+	OWN_STICKER_MULT = 0.7, -- my own sticker is smaller (it sits right next to the screen centre)
+	PAIN_GAP = 0.3, -- one player sticker / flinch per this many seconds (Pain and Hurt both trigger it; < server PainGap)
+	PAIN_GAP_OWN = 0.8, -- ... for myself (the damage number + edge flash already mark every hit)
+	PAIN_KICK = 0.14, PAIN_KICK_TIME = 0.12, -- camera kick when I get hurt: big hits only ...
+	PAIN_KICK_FRAC = 0.1, -- ... or a Hurt of >= this fraction of my MaxHealth
+	EMO_HURT = { "EmoOuch", "EmoStress", "EmoTears", "EmoAngry" },
+	EMO_BIG = { "EmoDizzy", "EmoDizzy", "EmoOuch" }, -- big hits: mostly dizzy, sometimes 아야!
+	EMO_FALLBACK = { -- code-drawn stickers while the art ids are empty (emoji via \u escapes)
+		EmoOuch = { Text = "아야!", Color = Color3.fromRGB(225, 40, 40), Bubble = true },
+		EmoTears = { Text = "\u{1F4A7}\u{1F4A7}", Color = Color3.fromRGB(80, 170, 255) },
+		EmoDizzy = { Text = "\u{1F4AB}", Color = Color3.fromRGB(255, 215, 60) },
+		EmoAngry = { Text = "\u{1F4A2}", Color = Color3.fromRGB(235, 40, 40) },
+		EmoStress = { Text = "!!", Color = Color3.fromRGB(235, 40, 40) },
+	},
+	STICKER_INK = Color3.fromRGB(34, 20, 10),
+
+	-- A14-4 my hits: spark art (pop 0.6 -> 1.2, fade), hit-stop of my attack layer / track, small camera kick
+	SPARK_SIZE = 3.2, SPARK_TIME = 0.15, SPARK_MAX = 6, SPARK_CRIT_MULT = 1.4,
+	SPARK_TINT = Color3.fromRGB(255, 240, 190), -- fallback star: short rays / core of a normal hit (crits: COLOR_CRIT)
+	HITSTOP_RATE = 0.05, HITSTOP_TIME = 0.08, HITSTOP_CRIT = 0.12, -- Warrior contact frames only
+	KICK = 0.16, KICK_CRIT = 0.1, KICK_TIME = 0.1, -- manual swings and crits only (auto farming never jitters)
+	-- swing art: slash arc (Warrior), arrow streak (Archer), magic burst at the target (Mage); timed to the clips below
+	SLASH_SIZE = 5.5, SLASH_TIME = 0.18, SLASH_DIST = 2.6, SLASH_ROT0 = -35, SLASH_ROT1 = 15,
+	SLASH_FROM = -45, SLASH_TO = 115, SLASH_PLANE_TILT = 30, -- fallback Trail sweep (degrees around the look axis)
+	SLASH_VFX_AT = 0.08, -- Warrior swing: slash art starts with the downswing ...
+	SLASH_CONTACT = 0.13, -- ... and the hits (numbers, sparks, hit-stop) land on the WarriorSwing contact key
+	SMASH_VFX_AT = 0.17, SMASH_AT = 0.24, -- Warrior release: big slash, then the shockwave impact
+	CAST_DELAY = 0.12, -- Mage swing: the orb leaves with the thrust
+	SHOT_DELAY = 0.09, -- Archer swing: the arrow leaves on the release
+	STREAK_LIFE = 0.12,
+	MAGIC_SIZE = 4, MAGIC_COLOR = Color3.fromRGB(190, 140, 255),
+
+	-- A14-4 procedural animation. AnimationClipProvider:RegisterActiveAnimationClip ids work in Studio only (docs), so
+	-- clips are played by writing Motor6D.Transform in RunService.PreSimulation (the Animator writes it before that,
+	-- so the clip adds on top of walk / idle). Transform does not replicate: every client animates every nearby R15
+	-- character from the Swing / Release / Pain Fx. R6 rigs (or PROCEDURAL = false) keep the stock animations above.
+	PROCEDURAL = true,
+	PROC_MAX_CHARS = 12, -- characters animated at once (my own always)
+	PROC_DIST = 120, -- studs from the camera
+	JOINT_PARTS = { -- R15 Motor6D name -> the part holding it
+		Waist = "UpperTorso", Neck = "Head", RightShoulder = "RightUpperArm", RightElbow = "RightLowerArm",
+		LeftShoulder = "LeftUpperArm", LeftElbow = "LeftLowerArm",
+	},
+	-- clip = { Len = s, Keys = { { time, ease of the segment ending here, { Joint = { rx, ry, rz } } } } }: degrees in
+	-- joint space (+rx raises an arm forward / leans the torso or head back, +rz swings an arm to the character's right,
+	-- +ry turns left); joints missing from a key are at rest there. Consecutive keys stay < 180 degrees apart (slerp).
+	CLIPS = {
+		WarriorSwing = { Len = 0.42, Keys = { -- wind-up behind the shoulder -> fast diagonal slash -> follow-through
+			{ 0, "Out", {} },
+			{ 0.07, "Out", { Waist = { 8, -28, 0 }, Neck = { 0, 14, 0 }, RightShoulder = { 160, 0, 22 }, RightElbow = { 75, 0, 0 }, LeftShoulder = { 25, 0, -18 } } },
+			{ 0.13, "In", { Waist = { -12, 26, 0 }, Neck = { 4, -12, 0 }, RightShoulder = { 62, 0, -35 }, RightElbow = { 8, 0, 0 }, LeftShoulder = { -18, 0, -28 } } },
+			{ 0.22, "Out", { Waist = { -15, 34, 0 }, Neck = { 6, -16, 0 }, RightShoulder = { 30, -15, -52 }, RightElbow = { 22, 0, 0 }, LeftShoulder = { -22, 0, -30 } } },
+			{ 0.42, "InOut", {} },
+		} },
+		WarriorRelease = { Len = 0.7, Keys = { -- two-handed overhead wind-up -> ground smash
+			{ 0, "Out", {} },
+			{ 0.16, "Out", { Waist = { 20, -10, 0 }, Neck = { -8, 6, 0 }, RightShoulder = { 168, 0, 12 }, RightElbow = { 95, 0, 0 }, LeftShoulder = { 160, 0, -12 }, LeftElbow = { 70, 0, 0 } } },
+			{ 0.26, "In", { Waist = { -32, 6, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 58, 0, -12 }, RightElbow = { 6, 0, 0 }, LeftShoulder = { 55, 0, 12 }, LeftElbow = { 12, 0, 0 } } },
+			{ 0.44, "Out", { Waist = { -26, 4, 0 }, Neck = { 15, 0, 0 }, RightShoulder = { 48, 0, -10 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 45, 0, 10 }, LeftElbow = { 15, 0, 0 } } },
+			{ 0.7, "InOut", {} },
+		} },
+		MageSwing = { Len = 0.5, Keys = { -- raise the staff -> thrust cast
+			{ 0, "Out", {} },
+			{ 0.08, "Out", { Waist = { 10, -12, 0 }, Neck = { -4, 8, 0 }, RightShoulder = { 150, 0, 18 }, RightElbow = { 45, 0, 0 }, LeftShoulder = { 20, 0, -15 } } },
+			{ 0.13, "In", { Waist = { -14, 10, 0 }, Neck = { 10, -6, 0 }, RightShoulder = { 92, 0, -6 }, RightElbow = { 0, 0, 0 }, LeftShoulder = { -15, 0, -22 } } },
+			{ 0.3, "Out", { Waist = { -10, 8, 0 }, Neck = { 8, -5, 0 }, RightShoulder = { 86, 0, -4 }, RightElbow = { 4, 0, 0 }, LeftShoulder = { -10, 0, -18 } } },
+			{ 0.5, "InOut", {} },
+		} },
+		MageRelease = { Len = 0.75, Keys = { -- both arms up calling the meteor -> thrust down as it lands
+			{ 0, "Out", {} },
+			{ 0.15, "Out", { Waist = { 16, 0, 0 }, Neck = { 22, 0, 0 }, RightShoulder = { 165, 0, 28 }, RightElbow = { 20, 0, 0 }, LeftShoulder = { 165, 0, -28 }, LeftElbow = { 20, 0, 0 } } },
+			{ 0.33, "InOut", { Waist = { 20, 0, 0 }, Neck = { 26, 0, 0 }, RightShoulder = { 170, 0, 34 }, RightElbow = { 12, 0, 0 }, LeftShoulder = { 170, 0, -34 }, LeftElbow = { 12, 0, 0 } } },
+			{ 0.42, "In", { Waist = { -22, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 75, 0, 8 }, RightElbow = { 0, 0, 0 }, LeftShoulder = { 75, 0, -8 }, LeftElbow = { 0, 0, 0 } } },
+			{ 0.55, "Out", { Waist = { -16, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 68, 0, 8 }, RightElbow = { 5, 0, 0 }, LeftShoulder = { 68, 0, -8 }, LeftElbow = { 5, 0, 0 } } },
+			{ 0.75, "InOut", {} },
+		} },
+		ArcherSwing = { Len = 0.34, Keys = { -- bow forward (right hand), draw to the chin -> release recoil
+			{ 0, "Out", {} },
+			{ 0.07, "Out", { Waist = { 0, 24, 0 }, Neck = { 0, -18, 0 }, RightShoulder = { 88, 0, 22 }, LeftShoulder = { 84, 0, 30 }, LeftElbow = { 115, 0, 0 } } },
+			{ 0.1, "In", { Waist = { 6, 28, 0 }, Neck = { 0, -20, 0 }, RightShoulder = { 100, 0, 24 }, LeftShoulder = { 60, 0, -40 }, LeftElbow = { 35, 0, 0 } } },
+			{ 0.2, "Out", { Waist = { 2, 18, 0 }, Neck = { 0, -14, 0 }, RightShoulder = { 90, 0, 20 }, LeftShoulder = { 35, 0, -22 }, LeftElbow = { 25, 0, 0 } } },
+			{ 0.34, "InOut", {} },
+		} },
+		ArcherRelease = { Len = 0.7, Keys = { -- lean back, draw upward -> volley release
+			{ 0, "Out", {} },
+			{ 0.14, "Out", { Waist = { 18, 24, 0 }, Neck = { 14, -16, 0 }, RightShoulder = { 140, 0, 20 }, LeftShoulder = { 128, 0, 28 }, LeftElbow = { 110, 0, 0 } } },
+			{ 0.2, "In", { Waist = { 24, 28, 0 }, Neck = { 16, -18, 0 }, RightShoulder = { 152, 0, 22 }, LeftShoulder = { 105, 0, -35 }, LeftElbow = { 30, 0, 0 } } },
+			{ 0.42, "Out", { Waist = { 14, 18, 0 }, Neck = { 10, -12, 0 }, RightShoulder = { 130, 0, 18 }, LeftShoulder = { 60, 0, -25 }, LeftElbow = { 25, 0, 0 } } },
+			{ 0.7, "InOut", {} },
+		} },
+		Hurt = { Len = 0.32, Keys = { -- snap back, arms jerk out, small rebound
+			{ 0, "Out", {} },
+			{ 0.05, "Out", { Waist = { 14, 0, 6 }, Neck = { 18, 0, 0 }, RightShoulder = { 18, 0, 22 }, LeftShoulder = { 18, 0, -22 }, RightElbow = { 35, 0, 0 }, LeftElbow = { 35, 0, 0 } } },
+			{ 0.15, "InOut", { Waist = { -5, 0, -2 }, Neck = { -6, 0, 0 }, RightShoulder = { 6, 0, 8 }, LeftShoulder = { 6, 0, -8 }, RightElbow = { 12, 0, 0 }, LeftElbow = { 12, 0, 0 } } },
+			{ 0.32, "InOut", {} },
+		} },
+		HurtBig = { Len = 0.5, Keys = { -- bigger snap, arms flung, wobble
+			{ 0, "Out", {} },
+			{ 0.06, "Out", { Waist = { 24, 0, 10 }, Neck = { 26, 0, 8 }, RightShoulder = { 35, 0, 45 }, LeftShoulder = { 35, 0, -45 }, RightElbow = { 50, 0, 0 }, LeftElbow = { 50, 0, 0 } } },
+			{ 0.2, "InOut", { Waist = { -8, 0, -6 }, Neck = { -10, 0, -8 }, RightShoulder = { 10, 0, 12 }, LeftShoulder = { 10, 0, -12 }, RightElbow = { 15, 0, 0 }, LeftElbow = { 15, 0, 0 } } },
+			{ 0.32, "InOut", { Waist = { 3, 0, 4 }, Neck = { 4, 0, 6 } } },
+			{ 0.5, "InOut", {} },
+		} },
+	},
+	CLASS_CLIPS = {
+		Warrior = { Swing = "WarriorSwing", Release = "WarriorRelease" },
+		Mage = { Swing = "MageSwing", Release = "MageRelease" },
+		Archer = { Swing = "ArcherSwing", Release = "ArcherRelease" },
+	},
+}
+
+-- A14-4 combat feel: functions and state live in this one table (Luau's 200-locals limit); defined further below
+local Feel = {
+	Clips = {}, -- [clip name] = { Len, Joints = { [joint] = { Times, CFs, Eases } } } (compiled from MOTION.CLIPS)
+	Chars = setmetatable({}, { __mode = "k" }), -- [character Model] = procedural animation state
+	Active = {}, -- [state] = true while a layer plays (or a joint still has to be handed back)
+	ActiveCount = 0,
+	StepConn = nil,
+	StepAt = 0,
+	Stickers = {}, -- pooled pain stickers
+	PainAt = {}, -- [UserId] = os.clock() of that player's last sticker / flinch
+	StopTrack = nil, -- stock track slowed by a hit-stop (R6 fallback)
+	StopSpeed = 1,
+	MonsterAttr = {}, -- [attribute name] = handler(model), filled after the handlers exist
+	Pending = {}, -- ring buffer of { Pos, At }: where / when (os.clock) a Swing / Release hit on a monster shows
+	PendingCursor = 0,
 }
 
 ----------------------------------------------------------------- small helpers
@@ -355,6 +517,33 @@ local function ring(pos, radius, color, opts)
 	local grow = opts.Grow or 0.15
 	local fade = opts.Fade or 0.3
 	local thick = opts.Thickness or 0.2
+	-- A14-4: big shockwaves (opts.Art) use the GPT ring art (white, tinted) once its id exists; else the Neon disc
+	local art = opts.Art == true and Feel.art("FxShockRing") or nil
+	if art then
+		local rp = makePart({
+			Name = "FxRing",
+			Size = Vector3.new(d0, 0.05, d0),
+			CFrame = CFrame.new(pos.X, y, pos.Z),
+			Transparency = 1,
+		})
+		local sg = Instance.new("SurfaceGui")
+		sg.Face = Enum.NormalId.Top
+		sg.LightInfluence = 0
+		sg.SizingMode = Enum.SurfaceGuiSizingMode.FixedSize
+		sg.CanvasSize = Vector2.new(256, 256)
+		local img = Instance.new("ImageLabel")
+		img.BackgroundTransparency = 1
+		img.Size = UDim2.fromScale(1, 1)
+		img.Image = art
+		img.ImageColor3 = color
+		img.ImageTransparency = math.max(0, (opts.Transparency or 0.45) - 0.3)
+		img.Parent = sg
+		sg.Parent = rp
+		tween(rp, grow, { Size = Vector3.new(d1, 0.05, d1) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+		tween(img, fade, { ImageTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, grow * 0.6)
+		Debris:AddItem(rp, grow + fade + 0.2)
+		return rp
+	end
 	local p = makePart({
 		Name = "FxRing",
 		Shape = Enum.PartType.Cylinder,
@@ -398,6 +587,7 @@ local function burst(pos, color, count, opts)
 	e.Drag = opts.Drag or 2
 	e.Rotation = NumberRange.new(0, 360)
 	e.RotSpeed = NumberRange.new(-180, 180)
+	e.ZOffset = opts.ZOffset or 0 -- > 0 draws the particles that many studs toward the camera
 	e.Parent = p
 	e:Emit(math.clamp(math.floor(count), 1, 200))
 	Debris:AddItem(p, lifeMax + 0.5)
@@ -424,8 +614,8 @@ local function pillar(pos, height, diameter, color, fadeTime, transparency)
 	return p
 end
 
--- thin arrow bolt flying from -> to
-local function arrowBolt(from, to, time, color, linger)
+-- thin arrow bolt flying from -> to (streak = a Color3: A14-4 glowing Trail behind my own arrows)
+local function arrowBolt(from, to, time, color, linger, streak)
 	local dir = to - from
 	if dir.Magnitude < 0.05 then return end
 	local unit = dir.Unit
@@ -437,10 +627,33 @@ local function arrowBolt(from, to, time, color, linger)
 		Transparency = 0.05,
 	})
 	tween(p, time, { CFrame = CFrame.lookAt(to, to + unit) }, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+	local life = time + (linger or 0)
 	if linger and linger > 0 then
 		tween(p, linger, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, time)
 	end
-	Debris:AddItem(p, time + (linger or 0) + 0.05)
+	if typeof(streak) == "Color3" then
+		local a0 = Instance.new("Attachment")
+		a0.Position = Vector3.new(0, 0.14, 1.1) -- the tail (+Z is behind the flight direction)
+		a0.Parent = p
+		local a1 = Instance.new("Attachment")
+		a1.Position = Vector3.new(0, -0.14, 1.1)
+		a1.Parent = p
+		local tr = Instance.new("Trail")
+		tr.Attachment0 = a0
+		tr.Attachment1 = a1
+		tr.FaceCamera = true
+		tr.LightEmission = 1
+		tr.Color = ColorSequence.new(WHITE, streak)
+		tr.Transparency = NumberSequence.new(0.1, 1)
+		tr.Lifetime = MOTION.STREAK_LIFE
+		tr.MinLength = 0.05
+		tr.Parent = p
+		if not linger or linger <= 0 then
+			tween(p, 0.05, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, time)
+		end
+		life = math.max(life, time + MOTION.STREAK_LIFE) -- let the streak fade out before the part goes
+	end
+	Debris:AddItem(p, life + 0.05)
 end
 
 -- glowing orb flying from -> to
@@ -707,9 +920,11 @@ local function showAmount(worldPos, amount, style)
 end
 
 ----------------------------------------------------------------- A9-2 white hit flash (my own hits on monsters)
-local flashing = {} -- [monster model] = { Colors = { [BasePart] = Color3 }, Token = n }
+local flashing = {} -- [monster model] = { Colors = { [BasePart] = Color3 }, Token = n, Tint = Color3 }
 
-local function flashModel(model)
+-- tints the model `color` (white by default) for `time` s (FLASH_TIME by default); A14-4 reuses it for the red wind-up
+local function flashModel(model, color, time)
+	color = color or WHITE
 	local state = flashing[model]
 	if not state then
 		-- original colors are stored once per flash start, so rapid hits never leave a monster white
@@ -719,17 +934,20 @@ local function flashModel(model)
 				colors[d] = d.Color
 			end
 		end
-		state = { Colors = colors, Token = 0 }
+		state = { Colors = colors, Token = 0, Tint = nil }
 		flashing[model] = state
-		for part in colors do
+	end
+	if state.Tint ~= color then
+		state.Tint = color
+		for part in state.Colors do
 			pcall(function()
-				part.Color = WHITE
+				part.Color = color
 			end)
 		end
 	end
 	state.Token += 1
 	local token = state.Token
-	task.delay(FLASH_TIME, function()
+	task.delay(time or FLASH_TIME, function()
 		if flashing[model] ~= state or state.Token ~= token then return end
 		flashing[model] = nil
 		for part, color in state.Colors do
@@ -801,7 +1019,9 @@ local function leanCF(rootHeight, offset, pitchDeg)
 	return CFrame.new(offset) * pivot * CFrame.Angles(math.rad(pitchDeg), 0, 0) * pivot:Inverse()
 end
 
--- tweens VisualJoint.C0 through steps { { C0, time, style?, direction? }, ... }; a newer sequence cancels a running one
+-- tweens VisualJoint.C0 through steps { { C0, time, style?, direction? }, ... }; a newer sequence cancels a running one.
+-- isAttack: true = the whole sequence is an attack (st.Attack, no recoil interrupts it); a number n = only steps 1..n
+-- (the return to rest after them may take a recoil)
 local function playJointSeq(model, steps, isAttack)
 	local st = monsterMotion[model]
 	local joint = st and visualJoint(model)
@@ -812,15 +1032,16 @@ local function playJointSeq(model, steps, isAttack)
 		st.Tween:Cancel()
 		st.Tween = nil
 	end
-	st.Attack = isAttack == true
+	local attackSteps = (isAttack == true and #steps) or (type(isAttack) == "number" and isAttack) or 0
+	st.Attack = attackSteps > 0
 	local i = 0
 	local function step()
 		if st.Token ~= token or not joint.Parent then return end
 		i += 1
 		local s = steps[i]
+		if i > attackSteps then st.Attack = false end
 		if not s then
 			st.Tween = nil
-			st.Attack = false
 			return
 		end
 		local info = TweenInfo.new(s[2], s[3] or Enum.EasingStyle.Quad, s[4] or Enum.EasingDirection.Out)
@@ -836,10 +1057,16 @@ local function playJointSeq(model, steps, isAttack)
 	step()
 end
 
--- AttackSeq went up: wind-up, lunge along the look direction, back to rest (slimes: squash, hop forward, land)
+-- AttackSeq went up: wind-up, lunge along the look direction, back to rest (slimes: squash, hop forward, land).
+-- A14-4: right after a WindupAt telegraph the wind-up step is skipped (the anticipation pose already played);
+-- dust puffs kick up at the feet as the lunge starts.
 local function onMonsterAttack(model)
 	local root = monsterRoot(model)
 	if not root or not nearCamera(root.Position) then return end
+	local st = monsterMotion[model]
+	local teleUntil = st and st.TeleUntil
+	local telegraphed = teleUntil ~= nil and os.clock() <= teleUntil + MOTION.TELE_LUNGE_WINDOW
+	if st then st.TeleUntil = nil end
 	local h, rh = monsterSize(model)
 	local steps
 	if isSlimeModel(model) then
@@ -855,26 +1082,38 @@ local function onMonsterAttack(model)
 			{ CFrame.identity, MOTION.LUNGE_RETURN_TIME, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut },
 		}
 	end
-	playJointSeq(model, steps, true)
+	local lungeAt = steps[1][2]
+	if telegraphed then
+		table.remove(steps, 1)
+		lungeAt = 0
+	end
+	playJointSeq(model, steps, #steps - 1) -- the final return to rest may take a recoil
+	later(lungeAt, function()
+		if model.Parent then Feel.dust(root, h, rh) end
+	end)
 end
 
--- small flinch on monsters my own hits landed on (never interrupts their attack lunge)
-local function recoilMonstersAt(positions)
+-- flinch of monsters my own hits landed on: tilt + push away from me (never interrupts their attack lunge), plus a
+-- pain sticker (A14-4; the HurtSeq attribute shows one for everyone's hits, this one also works without it).
+-- strength > 1 = Release hits (bigger push). The sticker is a big-hit one (EMO_BIG) when the server marked it (HurtBig),
+-- or for Release hits on a server without the HurtSeq contract. Dying monsters (anchored root) get neither.
+local function recoilMonstersAt(positions, strength)
 	if #positions == 0 then return end
+	local mult = strength or 1
+	local ownRoot = getOwnRoot()
 	for model, st in monsterMotion do
-		if not st.Attack then
-			local root = monsterRoot(model)
-			if root then
-				local rp = root.Position
-				for _, p in positions do
-					if (rp - p).Magnitude <= FLASH_DIST then
-						local _, rh = monsterSize(model)
-						playJointSeq(model, {
-							{ leanCF(rh, Vector3.zero, MOTION.RECOIL_TILT), MOTION.RECOIL_IN },
-							{ CFrame.identity, MOTION.RECOIL_OUT, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut },
-						}, false)
-						break
+		local root = monsterRoot(model)
+		-- an anchored root is dying (MonsterService deathPop): the killing hit plays only the death pop
+		if root and not root.Anchored then
+			local rp = root.Position
+			for _, p in positions do
+				if (rp - p).Magnitude <= FLASH_DIST then
+					local h, rh = monsterSize(model)
+					Feel.monsterPain(st, root, h, rh, Feel.hurtBig(model, mult > 1))
+					if not st.Attack then
+						Feel.recoil(model, st, root, ownRoot, h, rh, mult)
 					end
+					break
 				end
 			end
 		end
@@ -895,13 +1134,17 @@ local function untrackMonster(model)
 	if st.Conn then st.Conn:Disconnect() end
 end
 
+-- st.TeleUntil / RecoilAt / StickerUntil / LastEmo are A14-4 fields (telegraph end, last recoil, sticker gate)
 local function trackMonster(model)
 	if monsterMotion[model] or not model:IsA("Model") then return end
 	local st = { Token = 0, Tween = nil, Attack = false, Conn = nil }
 	monsterMotion[model] = st
-	st.Conn = model:GetAttributeChangedSignal(MOTION.ATTACK_SEQ_ATTR):Connect(function()
-		local ok, err = pcall(onMonsterAttack, model)
-		if not ok then warnThrottled("monster lunge failed: " .. tostring(err)) end
+	-- one listener per monster: AttackSeq (lunge), WindupAt (telegraph), HurtSeq (pain sticker + flinch)
+	st.Conn = model.AttributeChanged:Connect(function(name)
+		local fn = Feel.MonsterAttr[name]
+		if not fn then return end
+		local ok, err = pcall(fn, model)
+		if not ok then warnThrottled("monster " .. name .. " failed: " .. tostring(err)) end
 	end)
 end
 
@@ -1032,19 +1275,25 @@ local function playAttackAnim(classId, which, maxTime)
 	end)
 end
 
--- my Swing / Release -> the class move on my character (failures only warn, throttled)
+-- my Swing / Release -> the class move on my character (failures only warn, throttled).
+-- A14-4: the procedural R15 clip first (every client plays it from the Fx); the stock animation for R6 / failures.
 local function animateOwnAttack(data, which)
 	local classId = asStr(data.Class, "Warrior")
-	local maxTime
-	if which == "Release" then
-		maxTime = MOTION.RELEASE_ANIM_TIME
+	if which ~= "Release" and os.clock() < releaseAnimUntil then return end -- let the release move finish
+	local maxTime = Feel.attackTime(classId, which)
+	local okProc, played = pcall(Feel.playAttack, LocalPlayer and LocalPlayer.Character, classId, which, maxTime)
+	if not okProc then warnThrottled("procedural attack failed: " .. tostring(played)) end
+	if okProc and played then
+		local cur = animCurrent
+		if cur and cur.IsPlaying then
+			pcall(function()
+				cur:Stop(MOTION.ANIM_FADE_OUT)
+			end)
+		end
 	else
-		if os.clock() < releaseAnimUntil then return end -- let the release move finish
-		local def = Config.Classes[classId] or Config.Classes.Warrior
-		maxTime = math.max(0.1, tonumber(def.SwingInterval) or 1) * MOTION.SWING_FIT
+		local ok, err = pcall(playAttackAnim, classId, which, maxTime)
+		if not ok then warnThrottled("attack animation failed: " .. tostring(err)) end
 	end
-	local ok, err = pcall(playAttackAnim, classId, which, maxTime)
-	if not ok then warnThrottled("attack animation failed: " .. tostring(err)) end
 	if which == "Release" then
 		releaseAnimUntil = os.clock() + MOTION.RELEASE_HOLD -- set after the play (a new Animator resets it)
 	end
@@ -1347,16 +1596,865 @@ local function announceLevelUp(level)
 	end
 end
 
+----------------------------------------------------------------- A14-4 combat feel
+-- Every function here is a field of Feel (declared next to MOTION) so Fx.luau stays under Luau's 200-locals limit.
+-- GPT art parts (Config.UIArt.Parts Fx* / Emo*) are used once UIKit.ArtId returns an id; until then each effect
+-- draws a code fallback (Trail / ParticleEmitter / Neon part / TextLabel) in the same colors.
+
+-- "rbxassetid://..." of an art part, or nil while its id is empty (-> code fallback)
+function Feel.art(name)
+	local ui = C and C.UIKit
+	local fn = ui and ui.ArtId
+	if type(fn) ~= "function" then return nil end
+	local ok, id = pcall(fn, name)
+	if ok and type(id) == "string" and id ~= "" then return id end
+	return nil
+end
+
+function Feel.near(pos, dist)
+	local cam = workspace.CurrentCamera
+	if not cam then return true end
+	return (cam.CFrame.Position - pos).Magnitude <= dist
+end
+
+-- two joint transforms equal within float noise (a Transform read back need not be bit-identical)
+function Feel.same(a, b)
+	return (a.Position - b.Position).Magnitude < 1e-3
+		and a.LookVector:Dot(b.LookVector) > 0.99999
+		and a.UpVector:Dot(b.UpVector) > 0.99999
+end
+
+function Feel.ease(kind, a)
+	if kind == "Out" then
+		return 1 - (1 - a) * (1 - a)
+	elseif kind == "In" then
+		return a * a
+	elseif kind == "InOut" then
+		if a < 0.5 then return 2 * a * a end
+		local b = 2 - 2 * a
+		return 1 - b * b / 2
+	end
+	return a
+end
+
+-- MOTION.CLIPS (degrees per key) -> per joint arrays of key times / CFrames / eases
+function Feel.compileClips()
+	table.clear(Feel.Clips)
+	for name, def in MOTION.CLIPS do
+		local used = {}
+		for _, key in def.Keys do
+			for joint in key[3] do
+				used[joint] = true
+			end
+		end
+		local joints = {}
+		for joint in used do
+			local track = { Times = {}, CFs = {}, Eases = {} }
+			for _, key in def.Keys do
+				local a = key[3][joint]
+				local cf = CFrame.identity
+				if a then
+					cf = CFrame.Angles(math.rad(a[1] or 0), math.rad(a[2] or 0), math.rad(a[3] or 0))
+				end
+				table.insert(track.Times, key[1])
+				table.insert(track.CFs, cf)
+				table.insert(track.Eases, key[2])
+			end
+			joints[joint] = track
+		end
+		Feel.Clips[name] = { Len = def.Len, Joints = joints }
+	end
+end
+
+function Feel.sample(track, t)
+	local times, cfs = track.Times, track.CFs
+	local n = #times
+	if t <= times[1] then return cfs[1] end
+	for i = 2, n do
+		local t1 = times[i]
+		if t < t1 then
+			local t0 = times[i - 1]
+			local a = (t - t0) / math.max(1e-3, t1 - t0)
+			return cfs[i - 1]:Lerp(cfs[i], Feel.ease(track.Eases[i], a))
+		end
+	end
+	return cfs[n]
+end
+
+-- (re)finds the R15 Motor6Ds (appearance loading may replace body parts); true when the rig can play clips
+function Feel.findJoints(st)
+	local char = st.Char
+	for joint, partName in MOTION.JOINT_PARTS do
+		local part = char:FindFirstChild(partName)
+		local m = part and part:FindFirstChild(joint)
+		if not (m and m:IsA("Motor6D")) then m = nil end
+		if st.Joints[joint] ~= m then
+			st.Joints[joint] = m
+			st.Base[joint] = nil
+			st.Last[joint] = nil
+		end
+	end
+	return st.Joints.Waist ~= nil and st.Joints.RightShoulder ~= nil
+end
+
+-- starts clip `name` on a layer ("Attack" / "Hurt", they add up) of a living R15 character.
+-- false when it cannot play (R6, dead, PROC_MAX_CHARS other characters busy, unknown clip, PROCEDURAL off)
+function Feel.play(char, layer, name, rate)
+	local clip = Feel.Clips[name]
+	if not MOTION.PROCEDURAL or not clip or typeof(char) ~= "Instance" or not char.Parent then return false end
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	if not hum or hum.RigType ~= Enum.HumanoidRigType.R15 or hum.Health <= 0 then return false end
+	local st = Feel.Chars[char]
+	if not st then
+		-- states of removed characters go first (the state holds its character, so the weak key alone never frees it)
+		for c, other in Feel.Chars do
+			if not c.Parent and not Feel.Active[other] then Feel.Chars[c] = nil end
+		end
+		st = { Char = char, Joints = {}, Base = {}, Last = {}, Layers = {}, HoldUntil = 0, ReleaseUntil = 0 }
+		Feel.Chars[char] = st
+	end
+	if not Feel.findJoints(st) then return false end
+	if not Feel.Active[st] then
+		local mine = LocalPlayer ~= nil and char == LocalPlayer.Character
+		if Feel.ActiveCount >= MOTION.PROC_MAX_CHARS and not mine then return false end
+		Feel.Active[st] = true
+		Feel.ActiveCount += 1
+	end
+	local l = st.Layers[layer]
+	if not l then
+		l = { Clip = nil, T = 0, Rate = 1 }
+		st.Layers[layer] = l
+	end
+	l.Clip = clip
+	l.T = 0
+	l.Rate = rate or 1
+	Feel.bind()
+	return true
+end
+
+-- the per-frame step runs only while some character plays a clip
+function Feel.bind()
+	if Feel.StepConn then return end
+	local sig = RunService.Stepped
+	pcall(function()
+		sig = RunService.PreSimulation -- same point of the frame (right after the Animator), newer name
+	end)
+	Feel.StepAt = os.clock()
+	Feel.StepConn = sig:Connect(function()
+		local ok, err = pcall(Feel.step)
+		if not ok then warnThrottled("procedural animation failed: " .. tostring(err)) end
+	end)
+end
+
+function Feel.unbind()
+	local conn = Feel.StepConn
+	Feel.StepConn = nil
+	if conn then conn:Disconnect() end
+end
+
+function Feel.step()
+	local now = os.clock()
+	local dt = math.clamp(now - Feel.StepAt, 0, 0.1)
+	Feel.StepAt = now
+	for st in Feel.Active do
+		local ok, err = pcall(Feel.stepChar, st, dt, now)
+		if not ok then
+			warnThrottled("procedural joint failed: " .. tostring(err))
+			Feel.drop(st)
+		end
+	end
+	if Feel.ActiveCount <= 0 then Feel.unbind() end
+end
+
+-- advances one character's layers and writes clip offset * (the pose the Animator wrote this frame) into its joints
+function Feel.stepChar(st, dt, now)
+	if not st.Char.Parent then
+		Feel.drop(st)
+		return
+	end
+	local playing = false
+	for layer, l in st.Layers do
+		if l.Clip then
+			local rate = l.Rate
+			if layer == "Attack" and now < st.HoldUntil then rate = MOTION.HITSTOP_RATE end
+			l.T += dt * rate
+			if l.T >= l.Clip.Len then
+				l.Clip = nil
+			else
+				playing = true
+			end
+		end
+	end
+	for joint, m in st.Joints do
+		local off = nil
+		if playing then
+			for _, l in st.Layers do
+				local track = l.Clip and l.Clip.Joints[joint]
+				if track then
+					local s = Feel.sample(track, l.T)
+					off = off and off * s or s
+				end
+			end
+		end
+		local last = st.Last[joint]
+		if off or last then
+			-- the Animator rewrote the joint this frame unless it still holds what was written here last frame
+			local cur = m.Transform
+			local base = cur
+			if last and Feel.same(cur, last) then base = st.Base[joint] or cur end
+			if off then
+				local out = off * base
+				m.Transform = out
+				st.Base[joint] = base
+				st.Last[joint] = out
+			else
+				m.Transform = base -- every layer ended: hand the joint back
+				st.Base[joint] = nil
+				st.Last[joint] = nil
+			end
+		end
+	end
+	if not playing then Feel.drop(st) end
+end
+
+-- stops every layer of a character and hands back the joints it still holds
+function Feel.drop(st)
+	if Feel.Active[st] then
+		Feel.Active[st] = nil
+		Feel.ActiveCount -= 1
+	end
+	for _, l in st.Layers do
+		l.Clip = nil
+	end
+	for joint, last in st.Last do
+		local m = st.Joints[joint]
+		local base = st.Base[joint]
+		if m and base then
+			pcall(function()
+				if Feel.same(m.Transform, last) then m.Transform = base end
+			end)
+		end
+	end
+	table.clear(st.Last)
+	table.clear(st.Base)
+end
+
+-- seconds a class move must finish in (Swing: SwingInterval x SWING_FIT, Release: RELEASE_ANIM_TIME)
+function Feel.attackTime(classId, which)
+	if which == "Release" then return MOTION.RELEASE_ANIM_TIME end
+	local def = Config.Classes[classId] or Config.Classes.Warrior
+	return math.max(0.1, tonumber(def.SwingInterval) or 1) * MOTION.SWING_FIT
+end
+
+-- class Swing / Release clip on a character, sped up to fit maxTime. true when the clip plays (or a running release
+-- must not be cut short by a swing); false -> the caller may use the stock animation
+function Feel.playAttack(char, classId, which, maxTime)
+	if typeof(char) ~= "Instance" then return false end
+	local names = MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior
+	local name = names[which]
+	local clip = name and Feel.Clips[name]
+	if not clip then return false end
+	local now = os.clock()
+	local st = Feel.Chars[char]
+	if which ~= "Release" and st and Feel.Active[st] and now < st.ReleaseUntil then return true end
+	local rate = math.clamp(clip.Len / math.max(0.05, maxTime), 1, MOTION.ANIM_MAX_SPEED)
+	if not Feel.play(char, "Attack", name, rate) then return false end
+	if which == "Release" then Feel.Chars[char].ReleaseUntil = now + MOTION.RELEASE_HOLD end
+	return true
+end
+
+-- another player's Swing / Release -> the clip on their character (near the camera only)
+function Feel.animateOther(data, which)
+	local uid = asNum(data.UserId, nil)
+	if not uid then return end
+	local p = Players:GetPlayerByUserId(math.floor(uid))
+	local char = p and p.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	if not root or not root:IsA("BasePart") or not Feel.near(root.Position, MOTION.PROC_DIST) then return end
+	local classId = asStr(data.Class, "Warrior")
+	Feel.playAttack(char, classId, which, Feel.attackTime(classId, which))
+end
+
+-- my hits landed: my attack layer (or the stock track, R6) runs at HITSTOP_RATE for HITSTOP_TIME (HITSTOP_CRIT for a
+-- crit), then normal again
+function Feel.hitStop(crit)
+	local now = os.clock()
+	local hold = crit and MOTION.HITSTOP_CRIT or MOTION.HITSTOP_TIME
+	local char = LocalPlayer and LocalPlayer.Character
+	local st = char and Feel.Chars[char]
+	if st then st.HoldUntil = now + hold end
+	local track = animCurrent
+	if track and track.IsPlaying and not Feel.StopTrack then
+		Feel.StopTrack = track
+		Feel.StopSpeed = track.Speed
+		track:AdjustSpeed(MOTION.HITSTOP_RATE)
+		later(hold, function()
+			local t = Feel.StopTrack
+			Feel.StopTrack = nil
+			if t and t.IsPlaying then t:AdjustSpeed(Feel.StopSpeed) end
+		end)
+	end
+end
+
+-- one-shot camera-facing art image at pos.
+-- o = { Size0, Size1 (studs), Time, Fade?, FadeDelay?, Rot0?, Rot1? (degrees), Color? (tint), Top? (AlwaysOnTop) }
+function Feel.popImage(id, pos, o)
+	local part = makePart({
+		Name = "FxPop",
+		Size = Vector3.new(0.1, 0.1, 0.1),
+		CFrame = CFrame.new(pos),
+		Transparency = 1,
+	})
+	local gui = Instance.new("BillboardGui")
+	gui.AlwaysOnTop = o.Top == true
+	gui.LightInfluence = 0
+	gui.MaxDistance = CULL_DISTANCE
+	gui.Size = UDim2.fromScale(o.Size0, o.Size0)
+	local img = Instance.new("ImageLabel")
+	img.BackgroundTransparency = 1
+	img.Size = UDim2.fromScale(1, 1)
+	img.ScaleType = Enum.ScaleType.Fit
+	img.Image = id
+	img.ImageColor3 = o.Color or WHITE
+	img.Rotation = o.Rot0 or 0
+	img.Parent = gui
+	gui.Parent = part
+	tween(gui, o.Time, { Size = UDim2.fromScale(o.Size1, o.Size1) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	if o.Rot1 then
+		tween(img, o.Time, { Rotation = o.Rot1 }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	end
+	local fade, fadeDelay = o.Fade or o.Time, o.FadeDelay or 0
+	tween(img, fade, { ImageTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeDelay)
+	Debris:AddItem(part, math.max(o.Time, fadeDelay + fade) + 0.1)
+end
+
+-- code fallback flash, drawn like the art (camera-facing, AlwaysOnTop) so it never hides inside the body it hit:
+-- a comic star of 4 crossed rays (long white / short `color`) around a round core, popping s0 -> s1 studs while it
+-- turns a little and fades
+function Feel.popStar(pos, color, s0, s1, time)
+	local part = makePart({
+		Name = "FxPopStar",
+		Size = Vector3.new(0.1, 0.1, 0.1),
+		CFrame = CFrame.new(pos),
+		Transparency = 1,
+	})
+	local gui = Instance.new("BillboardGui")
+	gui.AlwaysOnTop = true
+	gui.LightInfluence = 0
+	gui.MaxDistance = CULL_DISTANCE
+	gui.Size = UDim2.fromScale(s0, s0)
+	local holder = Instance.new("Frame")
+	holder.BackgroundTransparency = 1
+	holder.AnchorPoint = Vector2.new(0.5, 0.5)
+	holder.Position = UDim2.fromScale(0.5, 0.5)
+	holder.Size = UDim2.fromScale(1, 1)
+	holder.Rotation = rng:NextNumber(0, 45)
+	holder.Parent = gui
+	for i = 0, 4 do
+		local f = Instance.new("Frame")
+		f.AnchorPoint = Vector2.new(0.5, 0.5)
+		f.Position = UDim2.fromScale(0.5, 0.5)
+		f.BorderSizePixel = 0
+		if i < 4 then
+			f.Size = UDim2.fromScale(i % 2 == 0 and 1 or 0.72, i % 2 == 0 and 0.13 or 0.1)
+			f.Rotation = i * 45
+			f.BackgroundColor3 = i % 2 == 0 and WHITE or color
+		else
+			f.Size = UDim2.fromScale(0.36, 0.36) -- core
+			f.BackgroundColor3 = color
+		end
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0.5, 0)
+		corner.Parent = f
+		f.Parent = holder
+		tween(f, time, { BackgroundTransparency = 1 }, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+	end
+	gui.Parent = part
+	tween(gui, time, { Size = UDim2.fromScale(s1, s1) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	tween(holder, time, { Rotation = holder.Rotation + 20 }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	Debris:AddItem(part, time + 0.1)
+end
+
+-- FxHitSpark where one of my hits landed (pop 0.6 -> 1.2, fade SPARK_TIME); fallback: white star + sparks (both drawn
+-- in front of the body: AlwaysOnTop / particle ZOffset)
+function Feel.hitSpark(pos, crit)
+	if not nearCamera(pos) then return end
+	local s = MOTION.SPARK_SIZE * (crit and MOTION.SPARK_CRIT_MULT or 1)
+	local id = Feel.art("FxHitSpark")
+	if id then
+		Feel.popImage(id, pos, { Size0 = s * 0.6, Size1 = s * 1.2, Time = MOTION.SPARK_TIME, Rot0 = rng:NextNumber(0, 360), Top = true })
+	else
+		Feel.popStar(pos, crit and COLOR_CRIT or MOTION.SPARK_TINT, s * 0.35, s * 0.8, MOTION.SPARK_TIME + 0.05)
+		burst(pos, ColorSequence.new(WHITE, COLOR_CRIT), crit and 10 or 6, {
+			Size = 0.35, SpeedMin = 14, SpeedMax = 26, LifeMin = 0.12, LifeMax = 0.25, LightEmission = 1,
+			Acceleration = Vector3.zero, Drag = 6, ZOffset = 2,
+		})
+	end
+end
+
+-- FxMagicBurst (Mage hit at the target; big = meteor landing); fallback: violet star + sparkles (in front of the body)
+function Feel.magicBurst(pos, big)
+	if not nearCamera(pos) then return end
+	local s = MOTION.MAGIC_SIZE * (big and 1.8 or 1)
+	local id = Feel.art("FxMagicBurst")
+	if id then
+		local r = rng:NextNumber(0, 360)
+		Feel.popImage(id, pos, { Size0 = s * 0.4, Size1 = s, Time = 0.22, Fade = 0.2, FadeDelay = 0.08, Rot0 = r, Rot1 = r + 40, Top = true })
+	else
+		Feel.popStar(pos, MOTION.MAGIC_COLOR, s * 0.3, s * 0.75, 0.22)
+		burst(pos, ColorSequence.new(WHITE, MOTION.MAGIC_COLOR), big and 26 or 14, {
+			Size = big and 0.8 or 0.5, SpeedMin = 8, SpeedMax = 18, LifeMin = 0.2, LifeMax = 0.4, LightEmission = 1,
+			Acceleration = Vector3.zero, Drag = 4, ZOffset = 2,
+		})
+	end
+end
+
+-- code fallback slash: two attachments on an invisible pivot sweep an arc around the look axis and the Trail
+-- between them draws the crescent (white -> faction color)
+function Feel.slashTrail(cf, radius, color, time)
+	local pivot = makePart({
+		Name = "FxSlash",
+		Size = Vector3.new(0.1, 0.1, 0.1),
+		CFrame = cf * CFrame.Angles(0, 0, math.rad(MOTION.SLASH_FROM)),
+		Transparency = 1,
+	})
+	local a0 = Instance.new("Attachment")
+	a0.Position = Vector3.new(0, radius, 0)
+	a0.Parent = pivot
+	local a1 = Instance.new("Attachment")
+	a1.Position = Vector3.new(0, radius * 0.55, 0)
+	a1.Parent = pivot
+	local tr = Instance.new("Trail")
+	tr.Attachment0 = a0
+	tr.Attachment1 = a1
+	tr.LightEmission = 1
+	tr.Color = ColorSequence.new(WHITE, color)
+	tr.Transparency = NumberSequence.new(0.05, 1)
+	tr.WidthScale = NumberSequence.new(1, 0.25)
+	tr.Lifetime = time
+	tr.MinLength = 0.05
+	tr.Parent = pivot
+	local sweep = time * 0.6
+	tween(pivot, sweep, { CFrame = cf * CFrame.Angles(0, 0, math.rad(MOTION.SLASH_TO)) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	Debris:AddItem(pivot, sweep + time + 0.05)
+end
+
+-- my swing's slash arc in front of my character, tinted by faction color (big = Warrior release smash)
+function Feel.slash(color, big)
+	local root = getOwnRoot()
+	if not root then return end
+	local cf = root.CFrame
+	local look = cf.LookVector
+	local chest = cf.Position + Vector3.new(0, 0.6, 0) + look * (MOTION.SLASH_DIST * (big and 1.3 or 1))
+	local s = MOTION.SLASH_SIZE * (big and 1.6 or 1)
+	local id = Feel.art("FxSlash")
+	if id then
+		Feel.popImage(id, chest, {
+			Size0 = s * 0.8, Size1 = s * 1.1, Time = MOTION.SLASH_TIME, Fade = MOTION.SLASH_TIME * 0.8,
+			FadeDelay = MOTION.SLASH_TIME * 0.2, Rot0 = MOTION.SLASH_ROT0, Rot1 = MOTION.SLASH_ROT1, Color = color,
+		})
+	else
+		local plane = CFrame.lookAt(chest, chest + look) * CFrame.Angles(math.rad(MOTION.SLASH_PLANE_TILT), 0, 0)
+		Feel.slashTrail(plane, s * 0.5, color, MOTION.SLASH_TIME)
+	end
+end
+
+-- FxDust puffs at a monster's feet as its lunge starts; fallback: dust particles
+function Feel.dust(root, h, rh)
+	if not root.Parent or not nearCamera(root.Position) then return end
+	local cf = root.CFrame
+	local size = math.clamp(h * 0.45, 1.6, 6)
+	local base = cf.Position - Vector3.new(0, rh - size * 0.3, 0) - cf.LookVector * (h * 0.12)
+	local id = Feel.art("FxDust")
+	for side = -1, 1, 2 do
+		local pos = base + cf.RightVector * (side * h * 0.22)
+		if id then
+			Feel.popImage(id, pos, { Size0 = size * 0.5, Size1 = size * 1.1, Time = 0.35, Fade = 0.28, FadeDelay = 0.1, Rot0 = rng:NextNumber(-20, 20) })
+		else
+			burst(pos, COLOR_DUST, 5, {
+				Size = size * 0.35, EndSize = size * 0.6, SpeedMin = 2, SpeedMax = 5, LifeMin = 0.3, LifeMax = 0.5,
+				LightEmission = 0, StartTransparency = 0.25, Spread = Vector2.new(70, 70),
+				Acceleration = Vector3.new(0, 2, 0), Drag = 4,
+			})
+		end
+	end
+end
+
+-- leanCF around any horizontal root-space axis (the top moves toward axis x up)
+function Feel.tiltCF(rootHeight, offset, axis, deg)
+	local pivot = CFrame.new(0, -rootHeight, 0)
+	return CFrame.new(offset) * pivot * CFrame.fromAxisAngle(axis, math.rad(deg)) * pivot:Inverse()
+end
+
+-- recoil of a monster my hit landed on: tilt away from me and push back along the hit direction, then settle
+function Feel.recoil(model, st, root, ownRoot, h, rh, mult)
+	if st.TeleUntil then return end -- keep the wind-up readable
+	local cf = root.CFrame
+	local away = ownRoot and (root.Position - ownRoot.Position) or -cf.LookVector
+	local d = cf:VectorToObjectSpace(Vector3.new(away.X, 0, away.Z))
+	d = Vector3.new(d.X, 0, d.Z)
+	if d.Magnitude < 1e-3 then
+		d = Vector3.new(0, 0, 1) -- straight back
+	else
+		d = d.Unit
+	end
+	local axis = Vector3.new(d.Z, 0, -d.X)
+	st.RecoilAt = os.clock()
+	playJointSeq(model, {
+		{ Feel.tiltCF(rh, d * (MOTION.RECOIL_PUSH * h * mult), axis, MOTION.RECOIL_TILT * mult), MOTION.RECOIL_IN },
+		{ CFrame.identity, MOTION.RECOIL_OUT, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut },
+	}, false)
+end
+
+-- wind-up length of a monster: attribute WindupTime, MonsterTypes[kind].WindupTime, Config.HitReact.MonsterWindup
+-- (A15 server value), TELE_DEFAULT
+function Feel.windupTime(model)
+	local v = model:GetAttribute(MOTION.WINDUP_TIME_ATTR)
+	if type(v) ~= "number" then
+		local kind = model:GetAttribute("MonsterKind")
+		local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+		v = type(def) == "table" and def.WindupTime or nil
+		local react = Config.HitReact
+		if type(v) ~= "number" and type(react) == "table" then v = react.MonsterWindup end
+	end
+	return math.clamp(asNum(v, MOTION.TELE_DEFAULT), 0.1, 2)
+end
+
+-- WindupAt changed: crouch + lean back (slimes squash) deepening until the strike, two red tint blinks. The lunge on
+-- AttackSeq then starts from this pose. nil / <= 0 cancels (back to rest unless the strike follows right away).
+function Feel.onWindup(model)
+	local st = monsterMotion[model]
+	local root = monsterRoot(model)
+	if not st or not root then return end
+	local v = model:GetAttribute(MOTION.WINDUP_ATTR)
+	if type(v) ~= "number" or v <= 0 then
+		if st.TeleUntil then
+			local cancelToken = st.Token
+			later(0.12, function()
+				if monsterMotion[model] == st and st.Token == cancelToken and st.TeleUntil then
+					st.TeleUntil = nil
+					playJointSeq(model, { { CFrame.identity, 0.15 } }, false)
+				end
+			end)
+		end
+		return
+	end
+	if not nearCamera(root.Position) then return end
+	local dur = Feel.windupTime(model)
+	local remaining = dur
+	local okNow, serverNow = pcall(function()
+		return workspace:GetServerTimeNow()
+	end)
+	if okNow and type(serverNow) == "number" then
+		local elapsed = serverNow - v
+		if elapsed >= dur and elapsed < 3 then return end -- arrived after the strike
+		if elapsed > 0 and elapsed < dur then remaining = dur - elapsed end
+	end
+	remaining = math.max(0.12, remaining)
+	local h, rh = monsterSize(model)
+	local pose, deep
+	if isSlimeModel(model) then
+		pose = leanCF(rh, Vector3.new(0, -MOTION.SLIME_TELE_DOWN * h, MOTION.TELE_BACK * h), MOTION.SLIME_TELE_TILT)
+		deep = leanCF(rh, Vector3.new(0, -MOTION.SLIME_TELE_DOWN2 * h, MOTION.TELE_BACK2 * h), MOTION.SLIME_TELE_TILT)
+	else
+		pose = leanCF(rh, Vector3.new(0, -MOTION.TELE_DOWN * h, MOTION.TELE_BACK * h), MOTION.TELE_TILT)
+		deep = leanCF(rh, Vector3.new(0, -MOTION.TELE_DOWN2 * h, MOTION.TELE_BACK2 * h), MOTION.TELE_TILT2)
+	end
+	local inTime = math.min(MOTION.TELE_IN, remaining * 0.5)
+	st.TeleUntil = os.clock() + remaining
+	playJointSeq(model, {
+		{ pose, inTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out },
+		{ deep, remaining - inTime, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut },
+	}, true)
+	local token = st.Token
+	-- custom-model visuals (A1) are not tinted (their procedural parts are invisible hitboxes)
+	if not model:FindFirstChild("CustomVisual") then
+		flashModel(model, MOTION.TELE_COLOR, MOTION.TELE_FLASH)
+		later(math.max(MOTION.TELE_FLASH * 2, remaining - MOTION.TELE_FLASH), function()
+			if st.Token == token and model.Parent then flashModel(model, MOTION.TELE_COLOR, MOTION.TELE_FLASH) end
+		end)
+	end
+	-- no strike came (target escaped): back to rest
+	later(remaining + MOTION.TELE_GRACE, function()
+		if monsterMotion[model] == st and st.Token == token then
+			st.TeleUntil = nil
+			playJointSeq(model, { { CFrame.identity, 0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut } }, false)
+		end
+	end)
+end
+
+-- the server's "big hit" mark of the latest HurtSeq bump (true, or the HurtSeq value); `fallback` without the contract
+function Feel.hurtBig(model, fallback)
+	local bigAttr = model:GetAttribute(MOTION.HURT_BIG_ATTR)
+	if bigAttr == nil then return fallback == true end
+	return bigAttr == true or (type(bigAttr) == "number" and bigAttr == model:GetAttribute(MOTION.HURT_SEQ_ATTR))
+end
+
+-- a Swing / Release hit on a monster at pos will show `secs` s from now (ring buffer, slots reused)
+function Feel.expect(pos, secs)
+	local at = os.clock() + secs
+	Feel.PendingCursor = Feel.PendingCursor % MOTION.PENDING_MAX + 1
+	local slot = Feel.Pending[Feel.PendingCursor]
+	if slot then
+		slot.Pos, slot.At = pos, at
+	else
+		Feel.Pending[Feel.PendingCursor] = { Pos = pos, At = at }
+	end
+end
+
+-- remembers the monster hits of a Swing / Release payload that show `secs` s from now (near the camera only)
+function Feel.expectHits(hits, secs)
+	if type(hits) ~= "table" or secs <= 0 then return end
+	for _, h in hits do
+		if type(h) == "table" and h.K == "M" then
+			local p = asVec(h.P)
+			if p and Feel.near(p, MOTION.STICKER_DIST) then Feel.expect(p, secs) end
+		end
+	end
+end
+
+-- seconds until the next remembered hit near pos shows (0 = none pending), capped by HURT_SYNC_MAX
+function Feel.pendingDelay(pos)
+	local now = os.clock()
+	local best = math.huge
+	for _, slot in Feel.Pending do
+		local left = slot.At - now
+		if left > 0 and left < best and (slot.Pos - pos).Magnitude <= MOTION.PENDING_DIST then best = left end
+	end
+	if best == math.huge then return 0 end
+	return math.min(best, MOTION.HURT_SYNC_MAX)
+end
+
+-- pain sticker + a quick squash flinch (not while it attacks / winds up, and not right after my own directional recoil)
+function Feel.hurtReact(model, big)
+	local st = monsterMotion[model]
+	local root = monsterRoot(model)
+	if not st or not root or root.Anchored or not model.Parent then return end
+	if not Feel.near(root.Position, MOTION.STICKER_DIST) then return end
+	local h, rh = monsterSize(model)
+	Feel.monsterPain(st, root, h, rh, big)
+	if st.Attack or st.TeleUntil or os.clock() - (st.RecoilAt or -math.huge) < MOTION.FLINCH_SKIP then return end
+	local k = big and MOTION.FLINCH_BIG or 1
+	playJointSeq(model, {
+		{ leanCF(rh, Vector3.new(0, -MOTION.FLINCH_DOWN * h * k, MOTION.FLINCH_BACK * h * k), MOTION.FLINCH_TILT * k), MOTION.FLINCH_IN },
+		{ CFrame.identity, MOTION.FLINCH_OUT, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut },
+	}, false)
+end
+
+-- HurtSeq changed (anyone hit this monster): the reaction waits HURT_SYNC_WAIT for the Swing / Release Fx of the
+-- same hit, then until that hit shows (projectile flight / contact frame); damage without such an Fx reacts then
+function Feel.onMonsterHurt(model)
+	local root = monsterRoot(model)
+	if not monsterMotion[model] or not root or not Feel.near(root.Position, MOTION.STICKER_DIST) then return end
+	local big = Feel.hurtBig(model, false) -- read now: a later hit rewrites HurtBig
+	later(MOTION.HURT_SYNC_WAIT, function()
+		local r = monsterRoot(model)
+		if not r then return end
+		local left = Feel.pendingDelay(r.Position)
+		if left > 0.02 then
+			later(left, function()
+				Feel.hurtReact(model, big)
+			end)
+		else
+			Feel.hurtReact(model, big)
+		end
+	end)
+end
+
+function Feel.pickEmo(big, last)
+	local list = big and MOTION.EMO_BIG or MOTION.EMO_HURT
+	local emo = list[rng:NextInteger(1, #list)]
+	if emo == last then emo = list[rng:NextInteger(1, #list)] end
+	return emo
+end
+
+-- one pooled sticker: BillboardGui (PlayerGui, Adornee set per use) > Holder (UIScale pop, tilt) > Image | Bubble+Text
+function Feel.buildSticker(pg)
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "FxPainSticker"
+	gui.ResetOnSpawn = false
+	gui.AlwaysOnTop = true
+	gui.LightInfluence = 0
+	gui.MaxDistance = MOTION.STICKER_DIST
+	gui.Enabled = false
+	local holder = Instance.new("Frame")
+	holder.Name = "Holder"
+	holder.BackgroundTransparency = 1
+	holder.AnchorPoint = Vector2.new(0.5, 0.5)
+	holder.Position = UDim2.fromScale(0.5, 0.5)
+	holder.Size = UDim2.fromScale(1, 1)
+	holder.Parent = gui
+	local scale = Instance.new("UIScale")
+	scale.Parent = holder
+	local img = Instance.new("ImageLabel")
+	img.Name = "Image"
+	img.BackgroundTransparency = 1
+	img.Size = UDim2.fromScale(1, 1)
+	img.ScaleType = Enum.ScaleType.Fit
+	img.Parent = holder
+	-- fallback "아야!" speech burst: white rounded bubble with an ink outline
+	local bubble = Instance.new("Frame")
+	bubble.Name = "Bubble"
+	bubble.AnchorPoint = Vector2.new(0.5, 0.5)
+	bubble.Position = UDim2.fromScale(0.5, 0.5)
+	bubble.Size = UDim2.fromScale(1, 0.62)
+	bubble.BackgroundColor3 = WHITE
+	bubble.BorderSizePixel = 0
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0.45, 0)
+	corner.Parent = bubble
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = MOTION.STICKER_INK
+	stroke.Thickness = 2
+	stroke.Parent = bubble
+	bubble.Parent = holder
+	local text = Instance.new("TextLabel")
+	text.Name = "Text"
+	text.BackgroundTransparency = 1
+	text.AnchorPoint = Vector2.new(0.5, 0.5)
+	text.Position = UDim2.fromScale(0.5, 0.5)
+	text.Size = UDim2.fromScale(1, 1)
+	text.Font = FONT_NUMBER
+	text.TextScaled = true
+	text.TextStrokeColor3 = MOTION.STICKER_INK
+	text.Text = ""
+	text.ZIndex = 2
+	addTextConstraint(text, 80)
+	text.Parent = holder
+	gui.Parent = pg
+	return { Gui = gui, Holder = holder, Scale = scale, Image = img, Bubble = bubble, Stroke = stroke, Text = text, Busy = false, Token = 0 }
+end
+
+-- a free pooled sticker (rebuilt when its gui was destroyed), a new one while under STICKER_MAX, else nil
+function Feel.stickerEntry()
+	local pg = LocalPlayer and LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	if not pg then return nil end
+	for i, e in Feel.Stickers do
+		if not e.Busy then
+			if e.Gui.Parent == pg then return e end
+			pcall(function()
+				e.Gui:Destroy()
+			end)
+			local fresh = Feel.buildSticker(pg)
+			Feel.Stickers[i] = fresh
+			return fresh
+		end
+	end
+	if #Feel.Stickers >= MOTION.STICKER_MAX then return nil end
+	local e = Feel.buildSticker(pg)
+	table.insert(Feel.Stickers, e)
+	return e
+end
+
+-- pops pain sticker `emo` (Config.UIArt part name) on adornee: scale-pop, float up, fade. false at the global cap
+function Feel.sticker(adornee, emo, size, offset)
+	local e = Feel.stickerEntry()
+	if not e then return false end
+	e.Busy = true
+	e.Token += 1
+	local token = e.Token
+	local gui = e.Gui
+	gui.Adornee = adornee
+	gui.Size = UDim2.fromScale(size, size)
+	gui.StudsOffset = Vector3.new(size * MOTION.STICKER_SIDE, 0, 0) -- beside the head, clear of the nametag / HP bar
+	gui.StudsOffsetWorldSpace = offset
+	local fade, fadeAt = MOTION.STICKER_FADE, MOTION.STICKER_LIFE - MOTION.STICKER_FADE
+	local id = Feel.art(emo)
+	if id then
+		e.Image.Image = id
+		e.Image.ImageTransparency = 0
+		e.Image.Visible = true
+		e.Bubble.Visible = false
+		e.Text.Visible = false
+		tween(e.Image, fade, { ImageTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt)
+	else
+		local fb = MOTION.EMO_FALLBACK[emo] or MOTION.EMO_FALLBACK.EmoOuch
+		local bubble = fb.Bubble == true
+		e.Image.Visible = false
+		e.Bubble.Visible = bubble
+		e.Text.Visible = true
+		e.Text.Text = fb.Text
+		e.Text.TextColor3 = fb.Color
+		e.Text.Size = bubble and UDim2.fromScale(0.84, 0.46) or UDim2.fromScale(1, 1)
+		e.Text.TextTransparency = 0
+		e.Text.TextStrokeTransparency = 0
+		tween(e.Text, fade, { TextTransparency = 1, TextStrokeTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt)
+		if bubble then
+			e.Bubble.BackgroundTransparency = 0
+			e.Stroke.Transparency = 0
+			tween(e.Bubble, fade, { BackgroundTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt)
+			tween(e.Stroke, fade, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt)
+		end
+	end
+	e.Holder.Rotation = rng:NextNumber(-MOTION.STICKER_TILT, MOTION.STICKER_TILT)
+	e.Scale.Scale = 0.3
+	gui.Enabled = true
+	tween(e.Scale, MOTION.STICKER_POP, { Scale = 1 }, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+	tween(gui, MOTION.STICKER_LIFE, { StudsOffsetWorldSpace = offset + Vector3.new(0, MOTION.STICKER_RISE, 0) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	task.delay(MOTION.STICKER_LIFE + 0.03, function()
+		if e.Token ~= token then return end
+		e.Busy = false
+		gui.Enabled = false
+		gui.Adornee = nil
+	end)
+	return true
+end
+
+-- pain sticker beside a monster's head: one per monster per MONSTER_STICKER_GAP, near the camera only (big -> mostly
+-- EmoDizzy); never on a dying monster (anchored root)
+function Feel.monsterPain(st, root, h, rh, big)
+	local now = os.clock()
+	if root.Anchored or now < (st.StickerUntil or 0) or not Feel.near(root.Position, MOTION.STICKER_DIST) then return end
+	local emo = Feel.pickEmo(big, st.LastEmo)
+	local size = math.clamp(h * MOTION.MONSTER_STICKER_K, MOTION.MONSTER_STICKER_MIN, MOTION.MONSTER_STICKER_MAX)
+	if Feel.sticker(root, emo, size, Vector3.new(0, (h - rh) + size * MOTION.MONSTER_STICKER_Y, 0)) then
+		st.StickerUntil = now + math.max(MOTION.STICKER_LIFE, MOTION.MONSTER_STICKER_GAP)
+		st.LastEmo = emo
+	end
+end
+
+-- a player got hurt: sticker beside the head and the hurt clip (R15, near); for me a smaller, rarer sticker
+-- (PAIN_GAP_OWN) and a camera kick on big hits only (the Hurt handler kicks for hard hits).
+-- The Pain Fx (any player) and my Hurt Fx both land here; the gap keeps it to one per hit.
+function Feel.playerPain(userId, big)
+	local now = os.clock()
+	local own = LocalPlayer ~= nil and userId == LocalPlayer.UserId
+	if now - (Feel.PainAt[userId] or -math.huge) < (own and MOTION.PAIN_GAP_OWN or MOTION.PAIN_GAP) then return end
+	local p = Players:GetPlayerByUserId(userId)
+	local char = p and p.Character
+	local head = char and char:FindFirstChild("Head")
+	if not head or not head:IsA("BasePart") then return end
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	if not hum or hum.Health <= 0 then return end -- a lethal hit is left to the KO effects
+	if not own and not Feel.near(head.Position, MOTION.STICKER_DIST) then return end
+	Feel.PainAt[userId] = now
+	local size = MOTION.PLAYER_STICKER_SIZE * (own and MOTION.OWN_STICKER_MULT or 1)
+	Feel.sticker(head, Feel.pickEmo(big, nil), size, Vector3.new(0, MOTION.PLAYER_STICKER_Y, 0))
+	if own or Feel.near(head.Position, MOTION.PROC_DIST) then
+		Feel.play(char, "Hurt", big and "HurtBig" or "Hurt", 1)
+	end
+	if own and big then
+		Fx.Shake(MOTION.PAIN_KICK * 1.5, MOTION.PAIN_KICK_TIME)
+	end
+end
+
+Feel.MonsterAttr[MOTION.ATTACK_SEQ_ATTR] = onMonsterAttack
+Feel.MonsterAttr[MOTION.WINDUP_ATTR] = Feel.onWindup
+Feel.MonsterAttr[MOTION.HURT_SEQ_ATTR] = Feel.onMonsterHurt
+
 ----------------------------------------------------------------- hit numbers
 -- A9-2: my own hits flash the hit monsters white; crits and my Release numbers pop; numbers merge;
 -- other players' Swing numbers are shown only for crits (protects the MaxDamagePopups pool).
-local function showHits(hits, own, fromRelease)
+-- feel (A14-4, my hits): { Stop = hit-stop of my attack motion (Warrior: the hits show on its contact frame; Mage /
+-- Archer clips are already recovering when the projectile lands), Kick = camera kick (manual swings; crits always) }
+local function showHits(hits, own, fromRelease, feel)
 	if type(hits) ~= "table" then return end
 	local scaleMult = own and 1 or 0.85
 	local pop = own and fromRelease == true
 	local tag = own and "o" or "x" -- own and other players' numbers never merge into each other
 	local flashAt = {}
 	local shown = 0
+	local sparks, anyCrit = 0, false -- A14-4 impact art on my hits
 	for _, h in hits do
 		if type(h) == "table" then
 			local p = asVec(h.P)
@@ -1366,6 +2464,13 @@ local function showHits(hits, own, fromRelease)
 			if p then
 				if own and kind ~= "P" and kind ~= "G" and #flashAt < 16 then
 					table.insert(flashAt, p)
+				end
+				if own and sparks < MOTION.SPARK_MAX then
+					sparks += 1
+					anyCrit = anyCrit or crit
+					local at = p + Vector3.new(rng:NextNumber(-0.4, 0.4), 0.6 + rng:NextNumber(0, 0.5), rng:NextNumber(-0.4, 0.4))
+					local okSpark, errSpark = pcall(Feel.hitSpark, at, crit)
+					if not okSpark then warnThrottled("hit spark failed: " .. tostring(errSpark)) end
 				end
 				if shown < POPUP_COUNT and (own or fromRelease == true or crit) then
 					shown += 1
@@ -1389,8 +2494,18 @@ local function showHits(hits, own, fromRelease)
 	if #flashAt > 0 then
 		local ok, err = pcall(flashMonstersAt, flashAt)
 		if not ok then warnThrottled("hit flash failed: " .. tostring(err)) end
-		local okRecoil, errRecoil = pcall(recoilMonstersAt, flashAt)
+		local okRecoil, errRecoil = pcall(recoilMonstersAt, flashAt, fromRelease == true and MOTION.RECOIL_RELEASE or 1)
 		if not okRecoil then warnThrottled("hit recoil failed: " .. tostring(errRecoil)) end
+	end
+	if sparks > 0 and type(feel) == "table" then
+		-- A14-4: a tiny hit-stop of my attack motion and a short camera kick (a running bigger shake wins)
+		if feel.Stop then
+			local okStop, errStop = pcall(Feel.hitStop, anyCrit)
+			if not okStop then warnThrottled("hit-stop failed: " .. tostring(errStop)) end
+		end
+		if feel.Kick or anyCrit then
+			Fx.Shake(MOTION.KICK + (anyCrit and MOTION.KICK_CRIT or 0), MOTION.KICK_TIME)
+		end
 	end
 end
 
@@ -1410,6 +2525,7 @@ end
 ----------------------------------------------------------------- kind handlers
 local handlers = {}
 
+-- A14-4: projectiles / hits wait for the clip's key frame (CAST_DELAY thrust, SHOT_DELAY release, SLASH_CONTACT)
 handlers.Swing = function(data)
 	local own = isOwn(data)
 	if own then
@@ -1420,51 +2536,92 @@ handlers.Swing = function(data)
 	local from = asVec(data.From) or pos
 	if not pos then return end
 	if not nearCamera(pos) and not (from and nearCamera(from)) then return end
+	if not own then
+		local okAnim, errAnim = pcall(Feel.animateOther, data, "Swing")
+		if not okAnim then warnThrottled("swing animation failed: " .. tostring(errAnim)) end
+	end
 	local classId = asStr(data.Class, "Warrior")
 	local color = factionColor(data.Faction)
 	local radius = math.clamp(asNum(data.Radius, 0), 0, 60)
 	local targets = validTargets(data.Targets)
 	local hits = data.Hits
+	local feel = { Stop = classId == "Warrior", Kick = data.Manual == true } -- my hits: hit-stop / camera kick
 
+	-- A14-4: when the hits will show, so the monsters' HurtSeq pain reaction waits for it
+	local showAt = MOTION.SLASH_CONTACT
 	if classId == "Mage" then
-		local target = targets[1]
-		if target and from and (target - from).Magnitude > 0.5 then
-			orb(from, target, 0.2, color)
-			later(0.2, function()
-				ring(target, math.max(radius, 2), color, { Grow = 0.15, Fade = 0.3, Transparency = own and 0.4 or 0.6 })
-				showHits(hits, own)
-			end)
-		else
-			-- whiff: a small fizzle at the caster
-			ring(from or pos, 2, color, { Grow = 0.1, Fade = 0.2, Transparency = 0.6 })
-			showHits(hits, own)
-		end
+		local t1 = targets[1]
+		showAt = MOTION.CAST_DELAY + ((t1 and from and (t1 - from).Magnitude > 0.5) and 0.2 or 0)
 	elseif classId == "Archer" then
-		local any = false
+		showAt = MOTION.SHOT_DELAY
 		if from then
 			for _, target in targets do
 				if (target - from).Magnitude > 0.5 then
-					arrowBolt(from, target, 0.15, color, 0)
-					any = true
+					showAt += 0.15
+					break
 				end
 			end
 		end
-		if any then
-			later(0.15, function()
-				showHits(hits, own)
-			end)
-		else
-			showHits(hits, own)
-		end
+	end
+	local okExpect, errExpect = pcall(Feel.expectHits, hits, showAt)
+	if not okExpect then warnThrottled("hit sync failed: " .. tostring(errExpect)) end
+
+	if classId == "Mage" then
+		later(MOTION.CAST_DELAY, function()
+			local target = targets[1]
+			if target and from and (target - from).Magnitude > 0.5 then
+				orb(from, target, 0.2, color)
+				later(0.2, function()
+					ring(target, math.max(radius, 2), color, { Grow = 0.15, Fade = 0.3, Transparency = own and 0.4 or 0.6 })
+					if own then Feel.magicBurst(target + Vector3.new(0, 1, 0), false) end
+					showHits(hits, own, false, feel)
+				end)
+			else
+				-- whiff: a small fizzle at the caster
+				ring(from or pos, 2, color, { Grow = 0.1, Fade = 0.2, Transparency = 0.6 })
+				showHits(hits, own, false, feel)
+			end
+		end)
+	elseif classId == "Archer" then
+		later(MOTION.SHOT_DELAY, function()
+			local any = false
+			if from then
+				for _, target in targets do
+					if (target - from).Magnitude > 0.5 then
+						arrowBolt(from, target, 0.15, color, 0, own and color or nil)
+						any = true
+					end
+				end
+			end
+			if any then
+				later(0.15, function()
+					showHits(hits, own, false, feel)
+				end)
+			else
+				showHits(hits, own, false, feel)
+			end
+		end)
 	else
-		ring(pos, math.max(radius, 1), color, { Grow = 0.15, Fade = 0.25, Transparency = own and 0.45 or 0.65 })
-		showHits(hits, own)
+		if own then
+			later(MOTION.SLASH_VFX_AT, function()
+				Feel.slash(color, false)
+			end)
+		end
+		later(MOTION.SLASH_CONTACT, function()
+			ring(pos, math.max(radius, 1), color, { Grow = 0.15, Fade = 0.25, Transparency = own and 0.45 or 0.65 })
+			showHits(hits, own, false, feel)
+		end)
 	end
 end
 
 handlers.Release = function(data)
 	local own = isOwn(data)
-	if own then animateOwnAttack(data, "Release") end
+	if own then
+		animateOwnAttack(data, "Release")
+	else
+		local okAnim, errAnim = pcall(Feel.animateOther, data, "Release")
+		if not okAnim then warnThrottled("release animation failed: " .. tostring(errAnim)) end
+	end
 	local pos = asVec(data.Pos)
 	if not pos then
 		if own then
@@ -1486,14 +2643,28 @@ handlers.Release = function(data)
 	elseif classId == "Archer" then
 		impactDelay = 0.4
 		if visible then arrowRain(pos, radius, color, impactDelay) end
+	else
+		-- A14-4: the shockwave lands with the smash of the release clip; my big slash arc on the downswing
+		impactDelay = MOTION.SMASH_AT
+		if own then
+			later(MOTION.SMASH_VFX_AT, function()
+				Feel.slash(color, true)
+			end)
+		end
+	end
+
+	if visible and impactDelay > 0 then
+		local okExpect, errExpect = pcall(Feel.expectHits, data.Hits, impactDelay)
+		if not okExpect then warnThrottled("hit sync failed: " .. tostring(errExpect)) end
 	end
 
 	local function impact()
 		if visible then
-			-- shockwave ring always sized exactly to Radius
-			ring(pos, radius, color, { Grow = 0.25, Fade = 0.45, Transparency = 0.3, Thickness = 0.3, StartDiameter = 2 })
+			-- shockwave ring always sized exactly to Radius (A14-4: GPT ring art once its id exists)
+			ring(pos, radius, color, { Grow = 0.25, Fade = 0.45, Transparency = 0.3, Thickness = 0.3, StartDiameter = 2, Art = true })
 			local gpos = Vector3.new(pos.X, groundY(pos) + 0.5, pos.Z)
 			if classId == "Mage" then
+				Feel.magicBurst(gpos + Vector3.new(0, 1, 0), true)
 				burst(gpos, ColorSequence.new(COLOR_FIRE, color), 40, {
 					Size = 1.4, SpeedMin = 14, SpeedMax = 26, LifeMin = 0.4, LifeMax = 0.8, LightEmission = 1,
 					Spread = Vector2.new(90, 90), Acceleration = Vector3.new(0, -6, 0), Drag = 3,
@@ -1510,7 +2681,7 @@ handlers.Release = function(data)
 					Acceleration = Vector3.new(0, -4, 0), Drag = 3,
 				})
 			end
-			showHits(data.Hits, own, true)
+			showHits(data.Hits, own, true, { Stop = classId == "Warrior", Kick = true }) -- (the release shake wins)
 			local total = asNum(data.Total, 0)
 			local top = pos + Vector3.new(0, 6, 0)
 			if total > 0 then
@@ -1558,6 +2729,23 @@ handlers.Hurt = function(data)
 		showAmount(at + jitter, Util.RoundDamage(amount), { Key = "H", Prefix = "-", Color = COLOR_HURT, Scale = 1.1 })
 	end
 	flashEdges(COLOR_HURT)
+	-- A14-4: camera kick only for a hard hit (small hits keep the number + edge flash; auto farming stays calm)
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if hum and hum.MaxHealth > 0 and amount >= hum.MaxHealth * MOTION.PAIN_KICK_FRAC then
+		Fx.Shake(MOTION.PAIN_KICK, MOTION.PAIN_KICK_TIME)
+	end
+	-- A14-4: my pain sticker + flinch also without a Pain Fx (PAIN_GAP_OWN keeps one when both arrive)
+	if LocalPlayer then
+		local ok, err = pcall(Feel.playerPain, LocalPlayer.UserId, false)
+		if not ok then warnThrottled("pain failed: " .. tostring(err)) end
+	end
+end
+
+-- A14-4: { UserId, Big? } from the server whenever a player takes damage -> sticker beside the head + hurt flinch
+handlers.Pain = function(data)
+	local uid = asNum(data.UserId, nil)
+	if not uid then return end
+	Feel.playerPain(math.floor(uid), data.Big == true)
 end
 
 handlers.Reward = function(data)
@@ -1691,7 +2879,7 @@ handlers.Stomp = function(data)
 	if not pos then return end
 	local radius = math.clamp(asNum(data.Radius, 15), 1, 100)
 	if nearCamera(pos) then
-		ring(pos, radius, COLOR_STOMP, { Grow = 0.2, Fade = 0.5, Transparency = 0.3, Thickness = 0.3, StartDiameter = 2 })
+		ring(pos, radius, COLOR_STOMP, { Grow = 0.2, Fade = 0.5, Transparency = 0.3, Thickness = 0.3, StartDiameter = 2, Art = true })
 		burst(Vector3.new(pos.X, groundY(pos) + 0.5, pos.Z), COLOR_DUST, 35, {
 			Size = 1.8, EndSize = 2.6, SpeedMin = 18, SpeedMax = 30, LifeMin = 0.5, LifeMax = 0.9, LightEmission = 0,
 			StartTransparency = 0.3, Spread = Vector2.new(90, 90), Acceleration = Vector3.new(0, -4, 0), Drag = 3,
@@ -1811,6 +2999,12 @@ end
 function Fx.Start()
 	local ok, err = pcall(buildScreenFx)
 	if not ok then Util.Warn("Fx", "screen effects not built: " .. tostring(err)) end
+	-- A14-4 procedural clips (a failure leaves Feel.Clips empty -> stock animations everywhere)
+	local okClips, errClips = pcall(Feel.compileClips)
+	if not okClips then Util.Warn("Fx", "attack clips not built: " .. tostring(errClips)) end
+	Players.PlayerRemoving:Connect(function(p)
+		Feel.PainAt[p.UserId] = nil
+	end)
 
 	-- level tracking for the A7-3 unlock announce (only decreases are taken from the attribute: rebirth / class reset)
 	if LocalPlayer then
@@ -1825,6 +3019,7 @@ function Fx.Start()
 		-- attack tracks belong to one Animator; a new character loads them again
 		LocalPlayer.CharacterAdded:Connect(function()
 			resetAttackAnims()
+			Feel.StopTrack = nil
 		end)
 	end
 
