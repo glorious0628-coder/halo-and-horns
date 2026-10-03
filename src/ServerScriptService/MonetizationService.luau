@@ -193,10 +193,11 @@ function MonetizationService.AddTickets(player, kind, delta)
 	return newCount
 end
 
--- consumes 1 if available. false while a purchase of this player is still being saved (callers show NoTicket)
+-- consumes 1 if available. CR-L25: false, "Pending" while a purchase of this player is still being saved (callers
+-- show Text.TicketSaving, not NoTicket: the bought ticket is already counted); false, "None" when there is none
 function MonetizationService.UseTicket(player, kind)
-	if inFlightByPlayer[player] then return false end
-	if MonetizationService.GetTickets(player, kind) < 1 then return false end
+	if inFlightByPlayer[player] then return false, "Pending" end
+	if MonetizationService.GetTickets(player, kind) < 1 then return false, "None" end
 	MonetizationService.AddTickets(player, kind, -1)
 	return true
 end

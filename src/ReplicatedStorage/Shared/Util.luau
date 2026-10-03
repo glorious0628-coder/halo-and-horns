@@ -92,6 +92,21 @@ function Util.RoundDamage(x)
 	return math.max(1, math.floor((x or 0) + 0.5))
 end
 
+-- CR-L44 (moved from HUD glyphSafe): false when the text has a symbol Gotham / the Korean fallback font lacks
+-- (⚙ ⚔ ↻ render as tofu boxes). Only these symbols of the U+2190..U+2BFF block are known to render: ← → ▲ ▶ ▼ ★ ☆.
+local GLYPH_SAFE_SYMBOLS = { [0x2190] = true, [0x2192] = true, [0x25B2] = true, [0x25B6] = true, [0x25BC] = true,
+	[0x2605] = true, [0x2606] = true }
+function Util.GlyphSafe(text)
+	if type(text) ~= "string" then return false end
+	local ok, safe = pcall(function()
+		for _, cp in utf8.codes(text) do
+			if cp >= 0x2190 and cp <= 0x2BFF and not GLYPH_SAFE_SYMBOLS[cp] then return false end
+		end
+		return true
+	end)
+	return ok and safe == true
+end
+
 ------------------------------------------------------------------ rate limit (server)
 local lastCall = {} -- [Player] = { [key] = os.clock() }
 

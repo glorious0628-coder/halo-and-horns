@@ -2,7 +2,11 @@
 -- 자동 / 지도 / 메뉴 squares and the attack / release buttons with the charge ring, keyboard / mouse / touch / gamepad
 -- input, travel bar and the guide beam (TECH_SPEC §4.23 HUD; addendum A3-H4/H5/M1, A4 step 1, A5-C6/N1, A6 Neutral,
 -- A7-3 next goal, A14 compact HUD drawn with the GPT art parts of Config.UIArt through UIKit.Art*).
--- Client only: reads attributes / GameState / the Fx remote, writes only client->server intents.
+-- Client only: reads attributes / GameState / the Fx and Quests remotes, writes only client->server intents.
+-- Published layout (logical MainGui units, updated by every layout pass; nil until the first one):
+--   HUD.TopCenterX / HUD.TopCenterW : centre x and width of the war meter column (CR-L36, EventHUD's strip follows it)
+--   HUD.Layout = { W, H, Scale, ClusterTop, ClusterLeft, TopCenterX, TopCenterW } : ClusterTop / ClusterLeft = top /
+--   left edge of the bottom-right button cluster (CR-L37, EventHUD keeps its personal line above it)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
@@ -67,6 +71,8 @@ local L = {
 	StickZoneX = 0.4, -- U3: on touch no HUD in the left 40% x bottom 45% (thumbstick)
 	LuckY = 52, -- EventHUD's luck panel slot (y, height): fallback when its live "BottomY" is missing
 	LuckH = 58,
+	LuckW = 210, -- its width (desktop top-right), kept clear by the war meter (CR-L36)
+	WarMinW = 200, -- CR-L36: narrowest war meter on small screens
 	-- quest row metrics (badge / 교체 width, button and bar heights, text size)
 	Row = IS_TOUCH and { Badge = 40, BadgeH = 20, Reroll = 56, BtnH = 22, Reward = 72, BarH = 18, Text = 15 }
 		or { Badge = 30, BadgeH = 15, Reroll = 40, BtnH = 18, Reward = 58, BarH = 15, Text = 13 },
@@ -179,8 +185,10 @@ local afford = { Baseline = false, Was = false, Streak = 0, Notified = {} }
 local questRows = {}
 local questExpanded = false -- collapsed list shows the header + one row
 -- CR-M24: 교체 is ignored for ClaimLock s after a claim and a row for RowLock s after its quest changed;
--- CR-M25: touch opens the rows' overlay from the header (OverlayOpen)
-local questState = { ClaimAt = -math.huge, ClaimLock = 1.5, RowLock = 0.8, OverlayOpen = false }
+-- CR-M25: touch opens the rows' overlay from the header (OverlayOpen);
+-- CR-L50: Data = the last quest list from the "Quests" remote, Started = HUD.Start ran (rows may refresh)
+local questState = { ClaimAt = -math.huge, ClaimLock = 1.5, RowLock = 0.8, OverlayOpen = false, Data = nil,
+	Started = false }
 local guide = nil -- { Tag, Part, Att0, Att1, Beam, Billboard, Tween }
 local guideAnchors = {}
 
@@ -371,17 +379,10 @@ local function withRo(word)
 	return word .. "(으)로"
 end
 
--- false when the text has a symbol Gotham / the Korean fallback font lacks (⚙ ⚔ ↻ render as tofu boxes)
-local SAFE_SYMBOLS = { [0x2190] = true, [0x2192] = true, [0x25B2] = true, [0x25B6] = true, [0x25BC] = true,
-	[0x2605] = true, [0x2606] = true }
+-- false when the text has a symbol Gotham / the Korean fallback font lacks (⚙ ⚔ ↻ render as tofu boxes);
+-- CR-L44: the shared Util.GlyphSafe (missing = unsafe, so the emblem is just left out)
 local function glyphSafe(text)
-	local ok, safe = pcall(function()
-		for _, cp in utf8.codes(text) do
-			if cp >= 0x2190 and cp <= 0x2BFF and not SAFE_SYMBOLS[cp] then return false end
-		end
-		return true
-	end)
-	return ok and safe == true
+	return type(Util.GlyphSafe) == "function" and Util.GlyphSafe(text) == true
 end
 
 -- Config.UIArt.Colors[key] / Fonts[key] with a fallback (the art table may be missing)
@@ -753,10 +754,11 @@ local function buildWar(root)
 	})
 	ui.war = w
 	local shieldW, barY, barH = 30, 10, 22
+	-- Bar / Info follow the meter's width: applyLayout narrows it on small screens (CR-L36)
 	local bar, barArt = UIKit.ArtFrame("BarTrack", {
 		Name = "Bar",
 		Position = UDim2.fromOffset(shieldW - 10, barY),
-		Size = UDim2.fromOffset(W - 2 * (shieldW - 10), barH),
+		Size = UDim2.new(1, -2 * (shieldW - 10), 0, barH),
 		Parent = w,
 	}, {
 		Color = COL.WarFill,
@@ -852,7 +854,7 @@ local function buildWar(root)
 	local row = UIKit.Create("Frame", {
 		Name = "Info",
 		Position = UDim2.fromOffset(0, barY + barH + 4),
-		Size = UDim2.fromOffset(W, 20),
+		Size = UDim2.new(1, 0, 0, 20),
 		BackgroundTransparency = 1,
 		Parent = w,
 	}, {
@@ -951,22 +953,27 @@ local function setChip(chip, visible, text, color, bright, palette, withIcon)
 end
 
 local function buildChips(root)
+	-- applyLayout sets the width (CR-L36: the war meter column); a full row wraps and the frame grows downwards
 	ui.chips = UIKit.Create("Frame", {
 		Name = "StatusChips",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, L.ChipsY + TOP_FALLBACK),
 		Size = UDim2.fromOffset(900, L.ChipH + 6),
+		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
 		Parent = root,
-	}, {
-		UIKit.Create("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 6),
-		}),
 	})
+	local chipList = UIKit.Create("UIListLayout", {
+		FillDirection = Enum.FillDirection.Horizontal,
+		HorizontalAlignment = Enum.HorizontalAlignment.Center,
+		VerticalAlignment = Enum.VerticalAlignment.Center,
+		SortOrder = Enum.SortOrder.LayoutOrder,
+		Padding = UDim.new(0, 6),
+		Parent = ui.chips,
+	})
+	pcall(function()
+		chipList.Wraps = true -- older clients lack it: the row just overflows sideways as before
+	end)
 	ui.chipPal = {
 		Safe = { ac("ChipSafe", Theme.Good), ac("ChipSafeRim", Theme.Good), ac("ChipSafeText", COL.Dark) },
 		Rookie = { ac("ChipRookie", Theme.XP), ac("ChipRookieRim", Theme.XP), ac("ChipRookieText", COL.Dark) },
@@ -1704,7 +1711,8 @@ local function farmMonsterName(level)
 	local zoneId = attr("ZoneId", "")
 	local id = Config.ZoneMainMonster[zoneId] or Config.ZoneMainMonster[Config.QuestZoneForLevel(level)]
 	local def = id and Config.MonsterTypes[id]
-	return def and def.Name or TXT.Monster
+	if type(def) ~= "table" then return TXT.Monster end
+	return def.Short or def.Name or TXT.Monster -- optional short name (Config.MonsterTypes[*].Short)
 end
 
 local function refreshUpgrade()
@@ -1746,7 +1754,10 @@ local function refreshUpgrade()
 	if ui.upgradeCoin then ui.upgradeCoin.Visible = not info.Max end
 	-- U5 slim touch layout: the card shows only while the next weapon can be bought, so phones can still buy it
 	local show = (not IS_TOUCH) or canBuy
-	if ui.upgrade.Visible ~= show then ui.upgrade.Visible = show end
+	if ui.upgrade.Visible ~= show then
+		ui.upgrade.Visible = show
+		requestLayout() -- HUD.Layout.ClusterTop includes the card while it shows (CR-L37)
+	end
 end
 
 local function pulseUpgrade()
@@ -1836,24 +1847,26 @@ end
 
 ----------------------------------------------------------------- quests
 local function parseQuests()
-	local json = attr("QuestsJson", "")
-	if type(json) ~= "string" or json == "" then return {} end
-	local ok, data = pcall(function()
-		return HttpService:JSONDecode(json)
-	end)
-	if not ok or type(data) ~= "table" then return {} end
+	local data = questState.Data -- CR-L50: last "Quests" remote payload (array of entries)
+	if type(data) ~= "table" then return {} end
+	-- remote tables can carry NaN / inf (JSON could not): treat them as missing
+	local function finite(v, default)
+		v = tonumber(v)
+		if v == nil or v ~= v or v == math.huge or v == -math.huge then return default end
+		return v
+	end
 	local pinned, normal = {}, {}
 	for _, e in ipairs(data) do
 		if type(e) == "table" then
 			local isPinned = e.Pinned == true or (e.Slot == nil and e.Id == TUT_QUEST_ID)
-			local slot = tonumber(e.Slot)
+			local slot = finite(e.Slot, nil)
 			local entry = {
 				Id = tostring(e.Id or ""),
 				Kind = tostring(e.Kind or "Extra"),
 				Text = tostring(e.Text or ""),
-				Progress = math.max(0, tonumber(e.Progress) or 0),
-				Target = math.max(1, tonumber(e.Target) or 1),
-				RewardGold = math.max(0, tonumber(e.RewardGold) or 0),
+				Progress = math.max(0, finite(e.Progress, 0)),
+				Target = math.max(1, finite(e.Target, 1)),
+				RewardGold = math.max(0, finite(e.RewardGold, 0)),
 				Pinned = isPinned,
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
@@ -1864,6 +1877,43 @@ local function parseQuests()
 		table.insert(pinned, e)
 	end
 	return pinned
+end
+
+-- CR-L50: the owner's quest list arrives on the "Quests" remote (fired only when it changes) instead of the
+-- QuestsJson attribute that replicated to every player. Takes the array itself or its JSON string.
+local function onQuests(payload)
+	local data = payload
+	if type(payload) == "string" then
+		local ok, decoded = pcall(function()
+			return HttpService:JSONDecode(payload)
+		end)
+		data = ok and decoded or nil
+	elseif type(payload) == "table" and type(payload.Quests) == "table" then
+		data = payload.Quests
+	end
+	if type(data) ~= "table" then return end
+	questState.Data = data
+	if questState.Started then refreshQuests() end
+end
+
+-- CR-M27 / CR-L31: "progress/target" strings. Kill / Golden progress can be fractional (unit-XP share, floored to
+-- 0.1 by the server) and shows one decimal instead of looking stuck; targets under 10,000 show the plain integer
+-- (FormatNumber made 3,199 of 3,200 read "3.2K/3.2K" while unfinished).
+local function questNums(e)
+	local function count(v)
+		v = math.clamp(v, 0, e.Target)
+		if e.Target < 10000 then
+			local tenths = math.floor(v * 10 + 1e-6) / 10 -- floor: 0.96 of 1 reads "0.9", never "1.0"
+			if tenths == math.floor(tenths) then return tostring(math.floor(tenths)) end
+			return string.format("%.1f", tenths)
+		end
+		return fmtNum(v)
+	end
+	local p, t = count(e.Progress), count(e.Target)
+	if e.Progress < e.Target and p == t then
+		p, t = tostring(math.floor(e.Progress)), tostring(math.floor(e.Target)) -- never "12.5K/12.5K" unfinished
+	end
+	return p, t
 end
 
 local function onClaim(r)
@@ -2042,7 +2092,9 @@ local function refreshRerollTimers()
 end
 
 refreshQuests = function()
+	if not ui.quests then return end -- Init stopped before buildQuests (CR-L50 binds the remote earlier)
 	local entries = parseQuests()
+	local blockWasVisible = ui.quests.Visible
 	ui.quests.Visible = #entries > 0
 	if #entries == 0 and ui.questOverlay then
 		questState.OverlayOpen = false
@@ -2080,7 +2132,8 @@ refreshQuests = function()
 		if hot then
 			line = string.format(TXT.QuestTouchClaim, claimable)
 		elseif se then
-			line = string.format(TXT.QuestTouchLine, fmtNum(math.min(se.Progress, se.Target)), fmtNum(se.Target), se.Text)
+			local p, t = questNums(se) -- CR-M27 / CR-L31
+			line = string.format(TXT.QuestTouchLine, p, t, se.Text)
 		end
 		ui.questHeaderText.Text = line
 		ui.questChevron.Text = questState.OverlayOpen and TXT.QuestCollapse or TXT.QuestExpand
@@ -2129,7 +2182,8 @@ refreshQuests = function()
 		r.Text.Text = e.Text
 		local done = e.Progress >= e.Target
 		r.SetBar(e.Progress / e.Target, done and ac("UpgradeGold", Theme.Gold) or ac("QuestBlue", Theme.Good))
-		r.BarText.Text = fmtNum(math.min(e.Progress, e.Target)) .. "/" .. fmtNum(e.Target)
+		local p, t = questNums(e) -- CR-M27 / CR-L31
+		r.BarText.Text = p .. "/" .. t
 		local canClaim = done and (e.Pinned or e.Kind == "Daily")
 		local canReroll = (not done) and (not e.Pinned) and e.Slot ~= nil
 		r.Reward.Text = e.RewardGold > 0 and ("+" .. fmtNum(e.RewardGold)) or ""
@@ -2155,7 +2209,8 @@ refreshQuests = function()
 		r.Frame.Visible = false
 	end
 	refreshRerollTimers()
-	if visibleBefore ~= visibleNow then
+	-- CR-L36: the block's visibility also moves the war meter column's left edge
+	if visibleBefore ~= visibleNow or blockWasVisible ~= ui.quests.Visible then
 		requestLayout()
 	end
 end
@@ -2578,9 +2633,30 @@ applyLayout = function()
 	if chatBottom then statsY = math.max(statsY, chatBottom / s + 8) end
 	ui.stats.Position = UDim2.fromOffset(12, statsY)
 	local warY = math.max(8 + shift, minTop)
-	ui.war.Position = UDim2.new(0.5, 0, 0, warY)
-	-- chips under EventHUD's strip, which itself follows the war meter's bottom
-	ui.chips.Position = UDim2.new(0.5, 0, 0, math.max(L.ChipsY + shift, minTop, warY + L.WarH + L.StripBelow))
+	-- CR-L36: the war meter column (EventHUD's strip and the chips follow it) fits between the player card and the
+	-- desktop luck panel: narrow screens shrink it to >= WarMinW and slide its centre off the card. The quest block
+	-- under the card counts too (touch: header 260 wide vs card 212, level with the strip / chips rows)
+	local leftBlockW = ui.stats.Size.X.Offset
+	if ui.quests and ui.quests.Visible then leftBlockW = math.max(leftBlockW, ui.quests.Size.X.Offset) end
+	local leftX = 12 + leftBlockW + 8
+	local rightX = W - 12
+	if not IS_TOUCH then
+		local luck = gui:FindFirstChild("LuckCorner")
+		local luckW = (luck and luck:IsA("GuiObject") and luck.Size.X.Offset > 0) and luck.Size.X.Offset or L.LuckW
+		rightX -= luckW + 8
+	end
+	local warW = math.floor(math.clamp(rightX - leftX, L.WarMinW, L.WarW))
+	local cx = math.clamp(W / 2, leftX + warW / 2, math.max(leftX + warW / 2, rightX - warW / 2))
+	cx = math.floor(cx + 0.5)
+	-- set before the frames move, so EventHUD's relayout (on the meter's size / position signals) reads the new values
+	HUD.TopCenterX, HUD.TopCenterW = cx, warW
+	if ui.war.Size.X.Offset ~= warW then ui.war.Size = UDim2.fromOffset(warW, L.WarH) end
+	ui.war.Position = UDim2.new(0, cx, 0, warY)
+	-- chips under EventHUD's strip, which itself follows the war meter's bottom; centred on the same column, as wide
+	-- as fits symmetrically between the card and the right edge (wrapping to a second row only when that is full)
+	local chipsW = math.floor(math.max(warW, 2 * math.min(cx - leftX, rightX - cx)))
+	if ui.chips.Size.X.Offset ~= chipsW then ui.chips.Size = UDim2.fromOffset(chipsW, L.ChipH + 6) end
+	ui.chips.Position = UDim2.new(0, cx, 0, math.max(L.ChipsY + shift, minTop, warY + L.WarH + L.StripBelow))
 
 	-- quests right under the card (collapsed by default, so the list stays short)
 	local statsBottom = statsY + ui.stats.Size.Y.Offset
@@ -2630,12 +2706,14 @@ applyLayout = function()
 	ax = math.clamp(ax, math.min(axMax, axMin), axMax)
 	ay = math.clamp(ay, math.min(ayMax, colTop + column + AR + 8), ayMax)
 	ui.attack.Position = UDim2.fromOffset(ax, ay)
+	local rx, ry
 	if cornerRelease then
 		-- bottoms level with 공격's
-		ui.release.Position = UDim2.fromOffset(ax + AR + GAP + RR, math.min(ay + AR - RR, H - RR - 8))
+		rx, ry = ax + AR + GAP + RR, math.min(ay + AR - RR, H - RR - 8)
 	else
-		ui.release.Position = UDim2.fromOffset(ax - AR - GAP - RR, math.min(ay + AR * 0.25, H - RR - 8))
+		rx, ry = ax - AR - GAP - RR, math.min(ay + AR * 0.25, H - RR - 8)
 	end
+	ui.release.Position = UDim2.fromOffset(rx, ry)
 
 	-- 자동 / 지도 / 메뉴 right-aligned with the next-weapon card above them (mockup order). Desktop: a top-right column
 	-- under the luck panel; touch: above the attack button
@@ -2651,6 +2729,25 @@ applyLayout = function()
 	ui.map.Position = UDim2.fromOffset(right - SQ * 1.5 - RG, rowY)
 	ui.auto.Position = UDim2.fromOffset(right - SQ * 2.5 - 2 * RG, rowY)
 	ui.upgrade.Position = UDim2.fromOffset(right - rowW / 2, rowY - SQ / 2 - RG - L.UpgradeH / 2)
+
+	-- CR-L37: top / left edge of the bottom-right button cluster (공격 + 발사; on touch also the square row and, while
+	-- it shows, the next-weapon card above it). EventHUD keeps its personal line above ClusterTop.
+	local clusterTop = math.min(ay - AR, ry - RR)
+	local clusterLeft = math.min(ax - AR, rx - RR)
+	if IS_TOUCH then
+		clusterTop = math.min(clusterTop, rowY - SQ / 2)
+		clusterLeft = math.min(clusterLeft, right - rowW)
+		if ui.upgrade.Visible then clusterTop = math.min(clusterTop, rowY - SQ / 2 - RG - L.UpgradeH) end
+	end
+	HUD.Layout = {
+		W = W,
+		H = H,
+		Scale = s,
+		ClusterTop = math.floor(clusterTop),
+		ClusterLeft = math.floor(clusterLeft),
+		TopCenterX = cx,
+		TopCenterW = warW,
+	}
 end
 
 ----------------------------------------------------------------- visibility + timer loop
@@ -2673,6 +2770,7 @@ end
 
 local function onFx(kind, data)
 	if kind ~= "Reward" or type(data) ~= "table" then return end
+	if data.Golden == true then return end -- CR-L32: golden (x10) rewards would shrink the "N마리 더!" estimate
 	local g = tonumber(data.Gold)
 	if not g or g ~= g or g <= 0 or g == math.huge then return end
 	table.insert(recentGold, g)
@@ -2718,6 +2816,32 @@ function HUD.Init(registry)
 		ZIndex = 5,
 		Parent = UIKit.Gui,
 	})
+
+	-- CR-L50: listen to the quest list remote inside Init (synchronously, before any Start) so the first list is
+	-- never missed. Bound before the build* steps: if one of them throws, Start still runs (ui.root exists) and the
+	-- list must still arrive (onQuests only stores it until Start). Never yields here: a missing remote (old server)
+	-- is bound later from a background wait.
+	local function bindQuests(r)
+		r.OnClientEvent:Connect(function(payload)
+			local ok, err = pcall(onQuests, payload)
+			if not ok then warnThrottled("Quests handler error: " .. tostring(err)) end
+		end)
+	end
+	local questsRemote = remote("Quests")
+	if questsRemote then
+		bindQuests(questsRemote)
+	else
+		task.spawn(function()
+			local folder = ReplicatedStorage:WaitForChild("Remotes", 30)
+			local r = folder and folder:WaitForChild("Quests", 30)
+			if r and r:IsA("RemoteEvent") then
+				bindQuests(r)
+			else
+				warnThrottled("remote missing: Quests")
+			end
+		end)
+	end
+
 	buildStats(ui.root)
 	buildWar(ui.root)
 	buildChips(ui.root)
@@ -2748,7 +2872,8 @@ function HUD.Start()
 	UIKit.OnAttr({ "AutoAttack", "Level" }, refreshAuto)
 	UIKit.OnAttr({ "WeaponTier", "Level", "Class", "Faction", "BankGold", "CarriedGold", "ZoneId" }, refreshUpgrade)
 	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays" }, refreshMenuGlow)
-	UIKit.OnAttr({ "QuestsJson", "DailyClaims", "RerollReadyAt" }, refreshQuests)
+	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
+	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",
 		"KaijuState", "Faction" }, refreshChips)
 	UIKit.OnAttr({ "WarPoints", "Faction" }, refreshWar)

@@ -7,6 +7,12 @@
 -- An Active kaiju may enter no faction town at all (not even its own): Halo is bounced out of HornsTown, so a kaiju
 -- waiting there could never be reached; it is bounced to Crossroads, where Halo can still hit it.
 -- A10: a player below Y = -20 (fell under the Terrain world) is teleported to their home spawn.
+-- CR-H2: the zone loop also sanity-checks movement (IsPlausible / validateMove, Config.AntiCheat). LOG-ONLY while
+-- Config.AntiCheat.Enforce is false: suspicious moves are logged, never pulled back or refused. Server teleports call
+-- MarkTeleported first. Pad touches always need the root on the pad (enforced regardless of Enforce) and are
+-- movement-checked before the pad teleport clears the track. The A10 rescue first checks the drop against free fall.
+-- CR-L18: a Travel channel carries a token; the zone loop cancels it at once (damage / combat / sack / kaiju / stars /
+-- death) and a stale channel timer never finishes a newer channel.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -35,6 +41,15 @@ local lastGateNotify = {} -- [Player] = os.clock() of the last bounce toast
 local lastPadTouch = {} -- [Player] = os.clock() of the last handled pad touch
 local hookedPads = setmetatable({}, { __mode = "k" }) -- [BasePart] = true
 local lastWarnAt = {}
+local channels = {} -- [Player] = { Token = {}, Start = os.clock() } of the running Travel channel (CR-L18)
+
+-- CR-H2 movement check state (log-only unless Config.AntiCheat.Enforce)
+local AC = Config.AntiCheat or {}
+local move = {
+	lastGood = {}, -- [Player] = { Pos = Vector3, T = os.clock(), Char = Model, VY = Y speed of the last interval }
+	graceUntil = {}, -- [Player] = os.clock() until which every move is accepted (server teleport / spawn)
+	lastLog = {}, -- [Player] = os.clock() of the last suspicious-move log
+}
 
 -- "Home" plus every real zone id listed in Config.Travel.Destinations
 local validDestinations = {}
@@ -105,11 +120,123 @@ local function lastDamagedAt(player)
 	return tonumber(t) or 0
 end
 
+------------------------------------------------------------------ movement check (CR-H2)
+local function acNum(key, default)
+	local v = AC[key]
+	return (type(v) == "number" and v == v) and v or default
+end
+
+-- every move is accepted for `seconds` (default AntiCheat.TeleportGrace) and the next sample starts a new track
+local function markTeleported(player, seconds)
+	local s = tonumber(seconds)
+	if not s or s ~= s or s < 0 then
+		s = acNum("TeleportGrace", 1)
+	end
+	move.graceUntil[player] = os.clock() + math.min(s, 30)
+	move.lastGood[player] = nil
+end
+
+-- (ok, flat, rise, allowFlat, allowRise): pos against the last good sample. Flat move <= WalkSpeed * MoveMult * dt + Slack,
+-- rise <= RisePerSec * dt + RiseSlack; falling is never limited. No sample / new character / grace -> ok.
+local function checkMove(player, pos)
+	local g = move.lastGood[player]
+	if not g or g.Char ~= player.Character then return true end
+	local now = os.clock()
+	if now < (move.graceUntil[player] or 0) then return true end
+	local hum = Util.GetHumanoid(player)
+	local speed = hum and hum.WalkSpeed or Config.Player.WalkSpeed
+	local dt = math.max(now - g.T, 0.05)
+	local flat = Util.FlatDistance(pos, g.Pos)
+	local rise = pos.Y - g.Pos.Y
+	local allowFlat = speed * acNum("MoveMult", 1.6) * dt + acNum("Slack", 8)
+	local allowRise = acNum("RisePerSec", 60) * dt + acNum("RiseSlack", 12)
+	return flat <= allowFlat and rise <= allowRise, flat, rise, allowFlat, allowRise
+end
+
+-- CR-H2 (A10 rescue): (ok, drop, allowDrop). Drop since the last good sample <= free fall that starts with the last
+-- sampled sink speed (+ one tick of gravity) + FallSlack. No sample / new character / grace -> ok.
+local function checkFall(player, pos)
+	local g = move.lastGood[player]
+	if not g or g.Char ~= player.Character then return true end
+	local now = os.clock()
+	if now < (move.graceUntil[player] or 0) then return true end
+	local grav = workspace.Gravity
+	if type(grav) ~= "number" or grav ~= grav or grav <= 0 then
+		grav = 196.2
+	end
+	local dt = math.max(now - g.T, 0.05)
+	local sink = math.max(-(g.VY or 0), 0) + grav * dt
+	local drop = g.Pos.Y - pos.Y
+	local allowDrop = sink * dt + 0.5 * grav * dt * dt + acNum("FallSlack", 30)
+	return drop <= allowDrop, drop, allowDrop
+end
+
+-- at most once per AntiCheat.LogCooldown s per player
+local function logSuspicious(player, where, flat, rise, allowFlat, allowRise, extra)
+	local now = os.clock()
+	local last = move.lastLog[player]
+	if last and now - last < acNum("LogCooldown", 10) then return end
+	move.lastLog[player] = now
+	Util.Warn(TAG, string.format("CR-H2 suspicious move (%s, %s): %s (%d) flat %.1f/%.1f rise %.1f/%.1f zone %s%s",
+		tostring(where), AC.Enforce == true and "enforced" or "log only", player.Name, player.UserId,
+		flat or 0, allowFlat or 0, rise or 0, allowRise or 0, tostring(zoneIds[player]), extra or ""))
+end
+
+-- Enforce only: back to the last good position; the track continues from there at rest
+local function pullBack(root, g)
+	root.CFrame = CFrame.new(g.Pos) * root.CFrame.Rotation
+	root.AssemblyLinearVelocity = Vector3.zero
+	g.T = os.clock()
+	g.VY = 0
+end
+
+-- zone-loop part: records the last good sample. A suspicious move is logged; only with Enforce it is pulled back
+-- to the last good position (returns false: the rest of the zone update is skipped).
+local function validateMove(player, root)
+	local now, pos = os.clock(), root.Position
+	local ok, flat, rise, allowFlat, allowRise = checkMove(player, pos)
+	local g = move.lastGood[player]
+	if not ok then
+		logSuspicious(player, "zone", flat, rise, allowFlat, allowRise)
+		if AC.Enforce == true and g then
+			pullBack(root, g)
+			return false
+		end
+	end
+	local char = player.Character
+	if g and g.Char == char then
+		g.VY = (pos.Y - g.Pos.Y) / math.max(now - g.T, 0.05) -- sink speed for checkFall
+		g.Pos = pos
+		g.T = now
+	else
+		move.lastGood[player] = { Pos = pos, T = now, Char = char, VY = 0 }
+	end
+	return true
+end
+
+-- A10 rescue part: a drop below RESCUE_Y faster than free fall (or a flat hop) is logged BEFORE teleport() clears
+-- the track. Only with Enforce it is pulled back to the last good position instead (returns false: no rescue).
+local function validateRescue(player, root)
+	local pos = root.Position
+	local okMove, flat, rise, allowFlat, allowRise = checkMove(player, pos)
+	local okFall, drop, allowDrop = checkFall(player, pos)
+	if okMove and okFall then return true end
+	logSuspicious(player, "rescue", flat, rise, allowFlat, allowRise,
+		string.format(" drop %.1f/%.1f", drop or 0, allowDrop or 0))
+	local g = move.lastGood[player]
+	if AC.Enforce == true and g then
+		pullBack(root, g)
+		return false
+	end
+	return true
+end
+
 -- pivots the character to a zone spawn; false when there is no character / root
 local function teleport(player, zoneId)
 	local character = Util.GetCharacter(player)
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root then return false end
+	markTeleported(player) -- CR-H2: the jump to the spawn is not a suspicious move
 	character:PivotTo(ZoneService.GetSpawnCFrame(zoneId))
 	root.AssemblyLinearVelocity = Vector3.zero
 	return true
@@ -137,17 +264,44 @@ local function forbiddenTownText(player, zone)
 	return fmt("EnemyTown") or ENEMY_TOWN_FALLBACK
 end
 
+-- CR-L18: true when a running Travel channel must stop (the finishChannel conditions, checked every zone tick)
+local function channelBroken(player, ch)
+	return not Util.IsAlive(player)
+		or lastDamagedAt(player) >= ch.Start
+		or inCombat(player)
+		or hasSack(player)
+		or isKaiju(player)
+		or getStars(player) >= Config.PvP.NoTravelStars
+end
+
+-- CR-L18: drops the channel (its timer sees a missing token), clears the bar, tells the player
+local function cancelChannel(player)
+	if not channels[player] then return end
+	channels[player] = nil
+	if player.Parent then
+		player:SetAttribute("TravelingUntil", 0)
+		notify(player, fmt("TravelCancelled"), "bad")
+	end
+end
+
 -- the zone-loop body (also run on CharacterSpawned and right after a teleport)
 local function updateZone(player)
-	if not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return end
+	if not S.PlayerService.IsReady(player) then return end
+	local ch = channels[player]
+	if ch and channelBroken(player, ch) then
+		cancelChannel(player) -- CR-L18: at once, not when the 3 s bar runs out
+	end
+	if not Util.IsAlive(player) then return end
 	local root = Util.GetRoot(player)
 	if not root then return end
 	if root.Position.Y < RESCUE_Y then
+		if not validateRescue(player, root) then return end -- CR-H2 (pulled back only with AntiCheat.Enforce)
 		-- A10 rescue (an Active kaiju goes to Crossroads directly: it may not stand in its home town)
 		local home = (kaijuState(player) == "Active") and DEFAULT_ZONE or Config.HomeZoneId(getFaction(player))
 		teleport(player, home)
 		return
 	end
+	if not validateMove(player, root) then return end -- CR-H2 (pulled back only with AntiCheat.Enforce)
 	local zone = Config.ZoneAt(root.Position)
 
 	if getLevel(player) < zone.MinLevel then
@@ -172,7 +326,11 @@ local function updateZone(player)
 	local oldZone = Config.Zones[old]
 	local wasPvP = oldZone ~= nil and oldZone.PvP == true
 	if zone.PvP and not wasPvP then
-		notify(player, fmt("EnteredPvP"), "bad")
+		if getFaction(player) == "Neutral" then
+			notify(player, fmt("EnteredPvPNeutral"), "info") -- CR-L24: 장인 길드 is immune to PvP
+		else
+			notify(player, fmt("EnteredPvP"), "bad")
+		end
 	elseif not zone.PvP and wasPvP then
 		notify(player, fmt("EnteredSafe"), "good")
 	end
@@ -183,6 +341,10 @@ local function cleanup(player)
 	zoneIds[player] = nil
 	lastGateNotify[player] = nil
 	lastPadTouch[player] = nil
+	channels[player] = nil -- CR-L18
+	move.lastGood[player] = nil -- CR-H2
+	move.graceUntil[player] = nil
+	move.lastLog[player] = nil
 end
 
 ------------------------------------------------------------------ public API
@@ -200,6 +362,23 @@ end
 
 function ZoneService.IsTown(player)
 	return ZoneService.GetZone(player).Town == true
+end
+
+-- CR-H2: is `pos` (the player's root position now) a plausible move since the last zone-loop sample? A suspicious
+-- move is logged; false is returned ONLY while Config.AntiCheat.Enforce is true (log-only mode: always true).
+function ZoneService.IsPlausible(player, pos)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or typeof(pos) ~= "Vector3" then return true end
+	local ok, flat, rise, allowFlat, allowRise = checkMove(player, pos)
+	if ok then return true end
+	logSuspicious(player, "check", flat, rise, allowFlat, allowRise)
+	return AC.Enforce ~= true
+end
+
+-- CR-H2: call right BEFORE a server-side teleport of the player's character; every move is accepted for `seconds`
+-- (default Config.AntiCheat.TeleportGrace = 1, max 30) and the movement track restarts at the new position
+function ZoneService.MarkTeleported(player, seconds)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
+	markTeleported(player, seconds)
 end
 
 -- zone.Spawn + random XZ offset in [-6, 6] + (0, 4, 0), facing into the zone. Pure: safe to call any time.
@@ -269,7 +448,7 @@ function ZoneService.Travel(player, destId, instant)
 	if inCombat(player) then
 		return false, fmt("TravelBlockedCombat")
 	end
-	if (tonumber(player:GetAttribute("TravelingUntil")) or 0) > Util.Now() then
+	if channels[player] or (tonumber(player:GetAttribute("TravelingUntil")) or 0) > Util.Now() then
 		return false, nil
 	end
 
@@ -279,10 +458,15 @@ function ZoneService.Travel(player, destId, instant)
 		return true, nil
 	end
 
+	local start = os.clock()
+	local token = {}
+	channels[player] = { Token = token, Start = start } -- CR-L18
 	player:SetAttribute("TravelingUntil", Util.Now() + Config.Travel.ChannelSeconds)
 	notify(player, fmt("Traveling"), "info")
-	local start = os.clock()
 	task.delay(Config.Travel.ChannelSeconds, function()
+		local ch = channels[player]
+		if not ch or ch.Token ~= token then return end -- cancelled by the zone loop, or the player left
+		channels[player] = nil
 		local ok, err = pcall(finishChannel, player, zoneId, start)
 		if not ok then
 			warnThrottled("channel", "travel channel error: " .. tostring(err))
@@ -325,6 +509,14 @@ local function onPadTouched(pad, hit)
 	if type(dest) ~= "string" then return end
 	local player = playerFromHit(hit)
 	if not player or not S.PlayerService.IsReady(player) then return end
+	-- CR-H2 (always enforced): the root must really stand on the pad (no remote firetouchinterest escape)
+	local root = Util.GetRoot(player)
+	if not root or not pad:IsA("BasePart")
+		or Util.FlatDistance(root.Position, pad.Position) > math.max(pad.Size.X, pad.Size.Z) / 2 + acNum("PadSlack", 4) then
+		return
+	end
+	-- CR-H2: a hop onto the pad is checked before Travel's teleport clears the track (logged; refused only with Enforce)
+	if not ZoneService.IsPlausible(player, root.Position) then return end
 	local now = os.clock()
 	local last = lastPadTouch[player]
 	if last and now - last < Config.Travel.PadDebounce then return end
@@ -374,6 +566,7 @@ function ZoneService.Init(registry)
 		player:SetAttribute("TravelingUntil", 0)
 	end)
 	S.PlayerService.CharacterSpawned:Connect(function(player)
+		markTeleported(player, acNum("SpawnGrace", 2)) -- CR-H2: spawn pivot of a new character
 		updateZone(player)
 	end)
 	S.PlayerService.PlayerLeaving:Connect(function(player)

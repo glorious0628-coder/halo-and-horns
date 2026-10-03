@@ -4,7 +4,8 @@
 --     require(game.ServerScriptService.MapBuilder).Build()
 -- so it never touches S, never yields and is idempotent: every named element is looked up first and only the missing
 -- pieces are created; existing functional pieces get their functional bits re-applied (pad TravelTo, AltarPrompt,
--- BoardGui.BoardText, zone floor ZoneId + invisibility, the two-line gate signs).
+-- BoardGui.BoardText, zone floor ZoneId + invisibility, the two-line gate signs, the pad position + sign text from
+-- Config.Map.Pads (CR-M22), the bounds walls' bottom below the sea floor (CR-L17)).
 --
 -- The real world is the Studio-saved place built by tools/preview_map.lua (addendum A8/A10/A11: Terrain landscape,
 -- sea, rivers, ridges, bridges, sky crown). A reused map is adopted as-is: the four "Wall" parts get the contract names
@@ -27,6 +28,8 @@ local FOLDER_NAMES = { "Ground", "Zones", "Walls", "Gates", "Pads", "Landmarks",
 local WALL_NAMES = { "Wall_MinX", "Wall_MaxX", "Wall_MinZ", "Wall_MaxZ" }
 local WALL_THICKNESS = 2
 local WALL_ADOPT_LENGTH = 100 -- a pre-baked part at least this long in the Walls folder is a bounds wall
+-- CR-L17: walls reach 20 studs below the water surface (under the sea floor) so nobody swims under them
+local WALL_BOTTOM = (Config.Map.WaterTop or 0) - 20
 local GATE_HALF_SPAN = 10 -- pillar centers 20 apart (17-stud passage)
 local EXTREME_MIN_LEVEL = 25 -- PvP zones from this level use the "extreme" danger color
 local SIGN_MAX_DISTANCE = 150
@@ -345,12 +348,26 @@ local function wallSpecs()
 	local lenX = b.MaxX - b.MinX + 2 * t -- overlap the corners
 	local lenZ = b.MaxZ - b.MinZ + 2 * t
 	local cx, cz = (b.MinX + b.MaxX) / 2, (b.MinZ + b.MaxZ) / 2
+	-- top at Y = WallHeight, bottom at WALL_BOTTOM (CR-L17)
+	local sy, y = h - WALL_BOTTOM, (h + WALL_BOTTOM) / 2
 	return {
-		Wall_MinX = { Size = Vector3.new(t, h, lenZ), Position = Vector3.new(b.MinX - t / 2, h / 2, cz) },
-		Wall_MaxX = { Size = Vector3.new(t, h, lenZ), Position = Vector3.new(b.MaxX + t / 2, h / 2, cz) },
-		Wall_MinZ = { Size = Vector3.new(lenX, h, t), Position = Vector3.new(cx, h / 2, b.MinZ - t / 2) },
-		Wall_MaxZ = { Size = Vector3.new(lenX, h, t), Position = Vector3.new(cx, h / 2, b.MaxZ + t / 2) },
+		Wall_MinX = { Size = Vector3.new(t, sy, lenZ), Position = Vector3.new(b.MinX - t / 2, y, cz) },
+		Wall_MaxX = { Size = Vector3.new(t, sy, lenZ), Position = Vector3.new(b.MaxX + t / 2, y, cz) },
+		Wall_MinZ = { Size = Vector3.new(lenX, sy, t), Position = Vector3.new(cx, y, b.MinZ - t / 2) },
+		Wall_MaxZ = { Size = Vector3.new(lenX, sy, t), Position = Vector3.new(cx, y, b.MaxZ + t / 2) },
 	}
+end
+
+-- CR-L17: a reused upright wall whose bottom is above WALL_BOTTOM is stretched down to it (top, X/Z, rotation kept)
+local function lowerWall(wall)
+	if not wall:IsA("BasePart") then return end
+	local cf, s = wall.CFrame, wall.Size
+	if math.abs(cf.UpVector.Y) < 0.99 then return end -- tilted: Size.Y is not the height
+	local top = cf.Position.Y + s.Y / 2
+	local bottom = cf.Position.Y - s.Y / 2
+	if bottom <= WALL_BOTTOM + 0.05 or top <= WALL_BOTTOM then return end
+	wall.Size = Vector3.new(s.X, top - WALL_BOTTOM, s.Z)
+	wall.CFrame = CFrame.new(cf.Position.X, (top + WALL_BOTTOM) / 2, cf.Position.Z) * cf.Rotation
 end
 
 -- which bounds edge a pre-baked wall stands on: long along X -> a Z edge, long along Z -> an X edge; side from the
@@ -378,13 +395,16 @@ local function ensureWalls(ctx, folder)
 		end
 	end
 	for _, name in WALL_NAMES do
-		if not folder:FindFirstChild(name) then
+		local wall = folder:FindFirstChild(name)
+		if not wall then
 			local spec = specs[name]
 			part(ctx, {
 				Name = name, Size = spec.Size, Position = spec.Position,
 				Transparency = 1, CanCollide = true, CastShadow = false,
 			}, folder)
 			ctx.pieces += 1
+		else
+			lowerWall(wall) -- CR-L17
 		end
 	end
 end
@@ -535,6 +555,21 @@ local function ensureGates(ctx, folder)
 end
 
 ------------------------------------------------------------------ pads
+-- CR-M22: a reused pad is moved to its Config position (top at Y = 0.5) with every part under it (ring, decor);
+-- the billboard is adorned to the pad and follows. Returns true when it moved.
+local function placePad(pad, pos)
+	local want = Vector3.new(pos.X, 0.5 - pad.Size.Y / 2, pos.Z)
+	local delta = want - pad.Position
+	if delta.Magnitude < 0.05 then return false end
+	for _, d in pad:GetDescendants() do
+		if d:IsA("BasePart") then
+			d.CFrame = d.CFrame + delta
+		end
+	end
+	pad.CFrame = pad.CFrame + delta
+	return true
+end
+
 local function ensurePads(ctx, folder)
 	local size = Config.Map.PadSize
 	for _, entry in Config.Map.Pads do
@@ -554,10 +589,20 @@ local function ensurePads(ctx, folder)
 		if pad:IsA("BasePart") then
 			pad.CanTouch = true
 			pad.CanCollide = true
+			if placePad(pad, entry.Position) then -- CR-M22: an older map had pads on the east road
+				Util.Log(TAG, ("moved %s to (%g, %g)"):format(name, entry.Position.X, entry.Position.Z))
+			end
 		end
-		if zone and not pad:FindFirstChildWhichIsA("BillboardGui") then
-			billboard(pad, "PadSign", padLabel(zone), 4, RGB(200, 240, 255))
-			ctx.pieces += 1
+		if zone then
+			local sign = pad:FindFirstChildWhichIsA("BillboardGui")
+			if not sign then
+				billboard(pad, "PadSign", padLabel(zone), 4, RGB(200, 240, 255))
+				ctx.pieces += 1
+			else
+				-- CR-M22: the reused sign text follows Config (zone name / level)
+				local label = sign:FindFirstChildWhichIsA("TextLabel", true)
+				if label then label.Text = padLabel(zone) end
+			end
 		end
 	end
 end

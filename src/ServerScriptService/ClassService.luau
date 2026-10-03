@@ -108,9 +108,13 @@ local function onChangeClass(player, classId, useTicket)
 		notify(player, "TravelBlockedCombat", "bad")
 		return
 	end
-	if useTicket and not S.MonetizationService.UseTicket(player, "Class") then
-		notify(player, "NoTicket", "bad")
-		return
+	if useTicket then
+		local okTicket, why = S.MonetizationService.UseTicket(player, "Class")
+		if not okTicket then
+			-- CR-L25: a purchase still being saved is not "no ticket"
+			notify(player, why == "Pending" and "TicketSaving" or "NoTicket", "bad")
+			return
+		end
 	end
 
 	if not useTicket then

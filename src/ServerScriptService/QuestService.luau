@@ -1,5 +1,6 @@
 -- QuestService.luau : 3 quest slots (KST dailies first, then rolling extras), claim, daily chest, reroll,
--- vacation bonus and QuestsJson publishing (TECH_SPEC §4.20), plus the first-60-seconds tutorial
+-- vacation bonus and quest-list publishing to the owner only via the "Quests" remote (TECH_SPEC §4.20, CR-L50),
+-- plus the first-60-seconds tutorial
 -- (SPEC_ADDENDUM A4 / A5-C4..C6 / N1) and the faction-filtered quest pool (A6 Neutral).
 -- data.Quests is mutated directly (documented exception); every other persisted stat goes through SetStat/AddStat.
 local HttpService = game:GetService("HttpService")
@@ -22,7 +23,7 @@ local PROGRESS_EPS = 1e-6 -- Kill/Golden progress is fractional (killWeight)
 
 ------------------------------------------------------------------ tutorial constants (A4) — all from Config.Tutorial
 local TUT_CFG = Config.Tutorial
-local TUT_ID = TUT_CFG.QuestId -- claim id (N1) and QuestsJson Id of the pinned tutorial entry
+local TUT_ID = TUT_CFG.QuestId -- claim id (N1) and quest-list Id of the pinned tutorial entry
 local TUT_KIND = "Tutorial"
 local STEP_KILL = TUT_CFG.Steps.Kill -- 0: personal golden slime
 local STEP_GUIDE = TUT_CFG.Steps.Guide -- 1: HUD guide beam to GuideZone
@@ -62,7 +63,8 @@ end
 local SIDE_ONLY_IDS = { Hunt = true, Plunder = true, Goose = true, Bounty = true, Kaiju = true }
 
 ------------------------------------------------------------------ state (session only)
-local dirty = {} -- [Player] = true -> QuestsJson republished by the publish loop
+local dirty = {} -- [Player] = true -> quest list republished by the publish loop
+local lastSent = {} -- [Player] = last JSON fired on the "Quests" remote (CR-L50: fire only on change)
 local rerollReadyAt = {} -- [Player] = server time
 local tutorialProgress = {} -- [Player] = tutorial quest kills (step 2)
 local personal = {} -- [Player] = { Model = Model, Conn = RBXScriptConnection }
@@ -114,6 +116,12 @@ end
 
 local function getLevel(data)
 	return math.max(1, math.floor(num(data and data.Level, 1)))
+end
+
+-- CR-M6: unclaimed rewards never pay more than the CURRENT level's value (free class change / rebirth to Lv1).
+-- After a level-up the stored value is the smaller one, so it is paid unchanged.
+local function capTo(g, x, capG, capX)
+	return math.min(g, math.floor(num(capG))), math.min(x, math.floor(num(capX)))
 end
 
 local function isSlotIndex(v)
@@ -231,7 +239,9 @@ local function newQuest(player, kind, others)
 
 	local text
 	if t.Id == "Gold" then
-		text = string.format(t.Text, Util.FormatNumber(target))
+		text = string.format(t.Text, tostring(target)) -- CR-L31: exact number (FormatNumber rounds to "3.2K")
+	elseif t.Id == "Kill" or t.Id == "Golden" then
+		text = string.format(t.Text, tostring(main.Short or main.Name), target) -- CR-M27: (monster name, target)
 	else
 		text = string.format(t.Text, target)
 	end
@@ -422,6 +432,10 @@ end
 ------------------------------------------------------------------ publish
 local function publish(player)
 	dirty[player] = nil
+	if player.Parent == nil then
+		lastSent[player] = nil -- left: never fire to (or keep state for) a removed player
+		return
+	end
 	local data = getData(player)
 	if not data then return end
 	local list = {}
@@ -439,26 +453,43 @@ local function publish(player)
 		})
 	end
 	if type(data.Quests) == "table" then
+		-- CR-M6: dailies show what a claim pays now (stored reward capped to the current level; stored value kept)
+		local capG, capX = Config.DailyQuestReward(getLevel(data))
 		for i, q in ipairs(data.Quests) do
 			if type(q) == "table" then
+				local rg, rx = num(q.RewardGold), num(q.RewardXP)
+				if q.Kind == "Daily" then
+					rg, rx = capTo(math.floor(rg), math.floor(rx), capG, capX)
+				end
 				table.insert(list, {
 					Id = tostring(q.Id),
 					Kind = q.Kind,
 					Text = tostring(q.Text),
-					Progress = math.floor(num(q.Progress) + PROGRESS_EPS), -- Kill/Golden progress can be fractional
+					-- CR-M27: Kill/Golden progress is fractional; sent floored to 1 decimal (0.43 -> 0.4)
+					Progress = math.floor(num(q.Progress) * 10 + PROGRESS_EPS) / 10,
 					Target = num(q.Target),
-					RewardGold = num(q.RewardGold),
-					RewardXP = num(q.RewardXP),
+					RewardGold = rg,
+					RewardXP = rx,
 					Slot = i, -- N1: clients address quests by Slot, never by array index
 				})
 			end
 		end
 	end
 	local ok, json = pcall(HttpService.JSONEncode, HttpService, list)
-	if ok then
-		player:SetAttribute("QuestsJson", json)
+	if not ok then
+		Util.Warn(TAG, "quest list encode failed: " .. tostring(json))
+		return
+	end
+	-- CR-L50: owner-only remote instead of the QuestsJson attribute (which replicated to every client), fired only
+	-- on change. Payload = the same JSON string the attribute held.
+	if lastSent[player] == json then return end
+	local okF, err = pcall(function()
+		Net.Get("Quests"):FireClient(player, json)
+	end)
+	if okF then
+		lastSent[player] = json
 	else
-		Util.Warn(TAG, "QuestsJson encode failed: " .. tostring(json))
+		Util.Warn(TAG, "Quests fire failed: " .. tostring(err))
 	end
 end
 
@@ -469,6 +500,22 @@ local function payReward(player, gold, xp)
 	end
 	if xp > 0 then
 		S.ProgressionService.AddXP(player, xp)
+	end
+end
+
+-- bonus chest for the full set of dailies (claimed by hand, or completed by the midnight auto-pay: CR-M21)
+local function payChest(player, data)
+	local cg, cx = Config.DailyChestReward(getLevel(data))
+	cg, cx = math.floor(num(cg)), math.floor(num(cx))
+	payReward(player, cg, cx)
+	Net.Notify(player, string.format(Config.Text.DailyChest, Util.FormatNumber(cg), Util.FormatNumber(cx)), "reward")
+	if Util.Random:NextNumber() < Config.Daily.ChestTicketChance then
+		local ok, err = pcall(S.MonetizationService.AddTickets, player, "Class", 1)
+		if ok then
+			Net.Notify(player, string.format(Config.Text.DailyChestTicket), "reward")
+		else
+			Util.Warn(TAG, "chest ticket failed: " .. tostring(err))
+		end
 	end
 end
 
@@ -553,30 +600,50 @@ local function runDayCheck(player)
 		end
 	end
 
+	-- CR-M21: dailies of the old day that count as done = claimed ones + the ones auto-paid below
+	local slots = Config.Quests.Slots
+	local prevClaims = math.clamp(math.floor(num(data.DailyClaims)), 0, slots)
+	local claims = math.min(slots, prevClaims + #toPay)
+
 	-- commit: the day flips before anything is paid, so a failure can never double-pay
 	S.PlayerService.SetStat(player, "DailyDay", today)
 	S.PlayerService.SetStat(player, "DailyClaims", 0)
 
-	if dailyDay > 0 and today > dailyDay + 1 then
-		local missed = today - dailyDay - 1
-		local days = math.min(Config.Daily.VacationMaxDays, math.max(0, math.floor(num(data.VacationDays))) + missed)
-		local g, x = Config.VacationReward(getLevel(data), days)
-		S.PlayerService.SetStat(player, "VacationDays", days)
-		S.PlayerService.SetStat(player, "VacationGold", g)
-		S.PlayerService.SetStat(player, "VacationXP", x)
+	-- CR-M21: vacation days = (1 - f) for the old day + every whole missed day (fractional, no floor), where
+	-- f = share of a full day's daily value (3 dailies + chest) earned on the old day. A partly played day
+	-- therefore never pays less than an absent one.
+	if dailyDay > 0 and today > dailyDay then
+		local D = Config.Daily
+		local fullDay = D.QuestMinutes * slots + D.ChestMinutes
+		local earned = claims * D.QuestMinutes + ((claims >= slots) and D.ChestMinutes or 0)
+		local f = if fullDay > 0 then math.clamp(earned / fullDay, 0, 1) else 1
+		local add = (1 - f) + math.max(0, today - dailyDay - 1)
+		if add > 0 then
+			local days = math.min(D.VacationMaxDays, math.max(0, num(data.VacationDays)) + add)
+			days = math.floor(days * 1000 + 0.5) / 1000 -- keep the mirrored attribute tidy
+			local g, x = Config.VacationReward(getLevel(data), days)
+			S.PlayerService.SetStat(player, "VacationDays", days)
+			S.PlayerService.SetStat(player, "VacationGold", g)
+			S.PlayerService.SetStat(player, "VacationXP", x)
+		end
 	end
 
 	data.Quests = fresh
 	dirty[player] = true
 
+	local capG, capX = Config.DailyQuestReward(getLevel(data)) -- CR-M6
 	local paidGold = 0
 	for _, q in toPay do
-		local g = math.floor(num(q.RewardGold))
+		local g, x = capTo(math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP)), capG, capX)
 		paidGold += g
-		payReward(player, g, math.floor(num(q.RewardXP)))
+		payReward(player, g, x)
 	end
 	if paidGold > 0 then
 		Net.Notify(player, string.format(Config.Text.DailyAutoPaid, Util.FormatNumber(paidGold)), "reward")
+	end
+	-- CR-M21: an auto-pay that completes the set also pays the bonus chest
+	if prevClaims < slots and claims >= slots then
+		payChest(player, data)
 	end
 end
 
@@ -602,19 +669,13 @@ local function onClaimQuest(player, slot)
 	dirty[player] = true
 
 	local g, x = math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP))
+	g, x = capTo(g, x, Config.DailyQuestReward(getLevel(data))) -- CR-M6
 	payReward(player, g, x)
 	Net.Notify(player, string.format(Config.Text.DailyClaimed, Util.FormatNumber(g), Util.FormatNumber(x)), "reward")
 
 	local claims = num(S.PlayerService.AddStat(player, "DailyClaims", 1))
 	if claims == Config.Quests.Slots then
-		local cg, cx = Config.DailyChestReward(getLevel(data))
-		cg, cx = math.floor(num(cg)), math.floor(num(cx))
-		payReward(player, cg, cx)
-		Net.Notify(player, string.format(Config.Text.DailyChest, Util.FormatNumber(cg), Util.FormatNumber(cx)), "reward")
-		if Util.Random:NextNumber() < Config.Daily.ChestTicketChance then
-			S.MonetizationService.AddTickets(player, "Class", 1)
-			Net.Notify(player, string.format(Config.Text.DailyChestTicket), "reward")
-		end
+		payChest(player, data)
 	end
 end
 
@@ -651,6 +712,7 @@ local function onClaimVacation(player)
 
 	local g = math.floor(math.max(0, num(data.VacationGold)))
 	local x = math.floor(math.max(0, num(data.VacationXP)))
+	g, x = capTo(g, x, Config.VacationReward(getLevel(data), num(data.VacationDays))) -- CR-M6
 	-- zero first, so the reward can never be claimed twice
 	S.PlayerService.SetStat(player, "VacationDays", 0)
 	S.PlayerService.SetStat(player, "VacationGold", 0)
@@ -684,6 +746,7 @@ end
 local function onPlayerLeaving(player)
 	clearPersonal(player)
 	dirty[player] = nil
+	lastSent[player] = nil
 	rerollReadyAt[player] = nil
 	tutorialProgress[player] = nil
 	spawning[player] = nil
@@ -692,6 +755,9 @@ local function onPlayerLeaving(player)
 end
 
 local function onCharacterSpawned(player)
+	-- CR-L50 safety net: resend the quest list once per spawn (the client keeps the last payload; same content)
+	lastSent[player] = nil
+	dirty[player] = true
 	task.delay(SPAWN_DELAY_ON_SPAWN, function()
 		local ok, err = pcall(tryTutorial, player)
 		if not ok then Util.Warn(TAG, "tutorial on spawn: " .. tostring(err)) end
@@ -781,16 +847,35 @@ local function onFactionChanged(player, newFaction)
 	for i = 1, #quests do
 		local q = quests[i]
 		if isValidQuest(q) and not isComplete(q) and not templateFitsFaction(TEMPLATE_BY_ID[q.Id], newFaction) then
-			quests[i] = newQuest(player, q.Kind, othersExcept(quests, i))
+			local nq = newQuest(player, q.Kind, othersExcept(quests, i))
+			if q.Kind == "Daily" then
+				-- CR-L12: a remade daily keeps the reward it had (a rebirth must not shrink it to Lv1 here;
+				-- claiming caps it to the current level anyway: CR-M6)
+				nq.RewardGold = math.max(nq.RewardGold, math.floor(num(q.RewardGold)))
+				nq.RewardXP = math.max(nq.RewardXP, math.floor(num(q.RewardXP)))
+			end
+			quests[i] = nq
 			dirty[player] = true
 		end
 	end
 end
 
--- dailies keep their rewards; extras are regenerated for the new (level 1) life
+-- dailies keep their stored rewards (capped to the current level when claimed: CR-M6); extras are regenerated
+-- for the new (level 1) life. Also runs on ProgressionService.LevelReset (free class change, CR-M6).
 local function onRebirthed(player)
 	local data = getData(player)
-	if not data or type(data.Quests) ~= "table" then return end
+	if not data then return end
+	-- CR-M6: re-cap the mirrored vacation reward to the new level, so the vacation panel shows what a claim pays
+	local vg = math.floor(math.max(0, num(data.VacationGold)))
+	local vx = math.floor(math.max(0, num(data.VacationXP)))
+	local cg, cx = capTo(vg, vx, Config.VacationReward(getLevel(data), num(data.VacationDays)))
+	if cg ~= num(data.VacationGold) then
+		S.PlayerService.SetStat(player, "VacationGold", cg)
+	end
+	if cx ~= num(data.VacationXP) then
+		S.PlayerService.SetStat(player, "VacationXP", cx)
+	end
+	if type(data.Quests) ~= "table" then return end
 	local quests = data.Quests
 	for i = 1, Config.Quests.Slots do
 		local q = quests[i]
@@ -798,6 +883,11 @@ local function onRebirthed(player)
 			quests[i] = newQuest(player, "Extra", othersExcept(quests, i))
 		end
 	end
+	dirty[player] = true
+end
+
+-- CR-M6: the daily cap rises with the level -> republish so the shown (capped) daily rewards follow it
+local function onLeveledUp(player)
 	dirty[player] = true
 end
 
@@ -827,6 +917,8 @@ function M.Init(registry)
 	connectSignal("MonsterService", "MonsterKilled", onMonsterKilled)
 	connectSignal("ProgressionService", "GoldEarned", onGoldEarned)
 	connectSignal("ProgressionService", "Rebirthed", onRebirthed)
+	connectSignal("ProgressionService", "LevelReset", onRebirthed) -- CR-M6
+	connectSignal("ProgressionService", "LeveledUp", onLeveledUp) -- CR-M6
 	connectSignal("CombatService", "Released", onReleased)
 	connectSignal("GooseService", "GooseFinished", onGooseFinished)
 	connectSignal("PvPService", "PlayerKO", onPlayerKO)

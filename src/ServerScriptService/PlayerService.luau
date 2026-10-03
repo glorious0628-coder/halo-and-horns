@@ -1,6 +1,6 @@
 -- PlayerService.luau : join/leave lifecycle, attribute mirroring, leaderstats, spawn/respawn, MaxHealth/WalkSpeed,
--- playtime, Regular's Luck minutes, the no-player-collision group (addendum A7-5), fall rescue (A10), slope limit
--- (A11-R2), camera zoom limits (A12) and BindToClose.
+-- playtime, Regular's Luck minutes, the no-player-collision group (addendum A7-5), slope limit (A11-R2), camera zoom
+-- limits (A12), anti-collusion pair cooldowns (CR-M4) and BindToClose. Fall rescue (A10) is owned by ZoneService.
 local Players = game:GetService("Players")
 local PhysicsService = game:GetService("PhysicsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -23,6 +23,8 @@ local S = nil
 local ready = {} -- [Player] = true
 local joining = {} -- [Player] = true while the data load runs
 local finalizing = {} -- [Player] = true while FinalizeLeave runs
+-- CR-M2: [Player] = true once onClose fired PlayerLeaving (ready kept); "saving" while that player's release runs
+local leftFired = {}
 local removed = setmetatable({}, { __mode = "k" }) -- [Player] = true once PlayerRemoving fired
 local conns = {} -- [Player] = { RBXScriptConnection }
 local lastActive = {} -- [Player] = os.clock() of the last input/combat
@@ -38,13 +40,19 @@ local CLOSE_TIMEOUT = 25 -- BindToClose budget
 local FINALIZE_WAIT = 30 -- a second FinalizeLeave call waits this long for the first one
 local LEADERSTAT_KEYS = { "Level", "BankGold", "CarriedGold", "Rebirths", "Honor", "Infamy", "Faction" }
 
--- A10: a player below this Y (anywhere: sea, river bed, out of the world) is put back on their home spawn.
--- Swimming stays enabled on player Humanoids (the water surface is at Y = -1.2).
-local FALL_RESCUE_Y = -20
-local FALL_CHECK_INTERVAL = Config.Travel.ZoneTick or 0.5
 local MAX_SLOPE_ANGLE = 46 -- A11-R2: Terrain ridges (>= 50 deg) cannot be walked over
 local CAMERA_MAX_ZOOM = 40 -- A12: players never see the whole world (kaiju may raise it while transformed)
 local CAMERA_MIN_ZOOM = 6
+-- CR-M4: PairCD entries older than this are dropped at PlayerReady (>= every pair cooldown / window that uses them)
+local PAIR = {
+	MinKeep = 1800,
+	MaxKeys = 200,
+	-- { Config table, key } read for the keep window (a longer configured cooldown keeps its entries longer)
+	KeepFrom = {
+		{ "Kaiju", "PairRewardCooldown" }, { "PvP", "PairRewardCooldown" }, { "Bully", "RepeatWindow" },
+		{ "Grudge", "RefundBonusCooldown" }, { "Grudge", "RestealWindow" },
+	},
+}
 ------------------------------------------------------------------ helpers
 local lastLoopWarn = {}
 local function loopWarn(loopName, err)
@@ -126,8 +134,19 @@ local function spawnCFrame(zoneId)
 	return CFrame.new(z.Spawn + Vector3.new(0, 4, 0))
 end
 
+-- CR-H2: tell ZoneService's movement check that the server is about to move this player (no false "teleport" log)
+local function markTeleported(player, seconds)
+	local zs = S.ZoneService
+	if zs and zs.MarkTeleported then
+		local ok, err = pcall(zs.MarkTeleported, player, seconds)
+		if not ok then loopWarn("MarkTeleported", err) end
+	end
+end
+
 local function loadCharacter(player)
 	if player.Parent == nil then return end
+	-- CR-H2: the new character appears at a spawn point first; onCharacterAdded marks again before placing it
+	markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2)
 	local ok, err = pcall(player.LoadCharacter, player)
 	if not ok then
 		Util.Warn(TAG, "LoadCharacter failed for " .. player.Name .. ": " .. tostring(err))
@@ -145,16 +164,62 @@ local function applyCameraLimits(player)
 	end
 end
 
--- A10: below FALL_RESCUE_Y -> home spawn (the sack / kaiju state is untouched, like the enemy-town bounce)
-local function rescueIfFallen(player)
-	local character = Util.GetCharacter(player)
-	local root = character and character:FindFirstChild("HumanoidRootPart")
-	if not root or not root:IsA("BasePart") or root.Position.Y >= FALL_RESCUE_Y then return end
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-	if not humanoid or humanoid.Health <= 0 then return end
-	character:PivotTo(spawnCFrame(Config.HomeZoneId(stat(player, "Faction", "None"))))
-	root.AssemblyLinearVelocity = Vector3.zero
-	root.AssemblyAngularVelocity = Vector3.zero
+------------------------------------------------------------------ pair cooldowns (CR-M4)
+local function pairKeepSeconds()
+	local keep = PAIR.MinKeep
+	for _, ref in PAIR.KeepFrom do
+		local t = Config[ref[1]]
+		local v = type(t) == "table" and tonumber(t[ref[2]]) or nil
+		if v and v == v and v > keep and v < math.huge then keep = v end
+	end
+	local b = Config.Bully
+	if type(b) == "table" then -- PvPService's bully bounty window (DecaySeconds * MaxStacks)
+		local v = (tonumber(b.DecaySeconds) or 0) * (tonumber(b.MaxStacks) or 0)
+		if v == v and v > keep and v < math.huge then keep = v end
+	end
+	return keep
+end
+
+-- os.time() of an entry: a number, or the newest of a { t1, t2 } list ("kolog:<victimUserId>")
+local function pairStamp(v)
+	if type(v) == "table" then
+		local newest = nil
+		for _, item in v do
+			local t = tonumber(item)
+			if t and t == t and (newest == nil or t > newest) then newest = t end
+		end
+		return newest
+	end
+	local t = tonumber(v)
+	if t and t == t then return t end
+	return nil
+end
+
+-- drops entries older than the keep window (or far in the future: bad clock), then the oldest above MaxKeys
+local function prunePairCD(data)
+	if type(data) ~= "table" then return end
+	if type(data.PairCD) ~= "table" then
+		data.PairCD = {}
+		return
+	end
+	local cd = data.PairCD
+	local now = os.time()
+	local keep = pairKeepSeconds()
+	local list = {}
+	for k, v in cd do
+		local t = pairStamp(v)
+		if type(k) ~= "string" or t == nil or now - t > keep or t - now > keep then
+			cd[k] = nil
+		else
+			table.insert(list, { K = k, T = t })
+		end
+	end
+	if #list > PAIR.MaxKeys then
+		table.sort(list, function(a, b) return a.T < b.T end)
+		for i = 1, #list - PAIR.MaxKeys do
+			cd[list[i].K] = nil
+		end
+	end
 end
 
 ------------------------------------------------------------------ collision group (A7-5)
@@ -257,6 +322,7 @@ local function onCharacterAdded(player, character)
 
 	humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 	applyStats(player, humanoid, true)
+	markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2) -- CR-H2
 	character:PivotTo(spawnCFrame(Config.HomeZoneId(stat(player, "Faction", "None"))))
 
 	humanoid.Died:Once(function()
@@ -279,22 +345,28 @@ local function onJoin(player)
 	applyCameraLimits(player) -- A12: before the first character
 	joining[player] = true
 	local ok, data = pcall(S.DataService.Load, player)
-	joining[player] = nil
 	if not ok then
 		Util.Warn(TAG, "load error for " .. player.Name .. ": " .. tostring(data))
 		data = nil
 	end
-	if player.Parent == nil then return end
 
-	-- left (or the server started closing) while the load was finishing: hand the data straight back
-	if data ~= nil and (removed[player] or closing) then
-		pcall(S.DataService.Release, player)
+	-- left (or the server started closing) while the load was finishing: hand the data straight back.
+	-- CR-L2: joining stays set until the release finished, so onClose waits for this save too
+	if data ~= nil and (player.Parent == nil or removed[player] or closing) then
+		local okRel, errRel = pcall(S.DataService.Release, player)
+		if not okRel then Util.Warn(TAG, "release failed for " .. player.Name .. ": " .. tostring(errRel)) end
+		joining[player] = nil
 		return
 	end
+	joining[player] = nil
+	if player.Parent == nil then return end
 	if data == nil then
 		player:Kick(string.format(Config.Text.LoadFailed))
 		return
 	end
+
+	local okPrune, errPrune = pcall(prunePairCD, data) -- CR-M4
+	if not okPrune then Util.Warn(TAG, "PairCD prune failed for " .. player.Name .. ": " .. tostring(errPrune)) end
 
 	for _, key in Config.Data.Mirrored do
 		local v = data[key]
@@ -329,6 +401,24 @@ local function onClose()
 	end
 	for p in ready do
 		targets[p] = true
+	end
+
+	-- CR-M2: fire PlayerLeaving for every ready player BEFORE any of them is released, keeping ready set, so
+	-- cross-player handlers (e.g. a thief's sack refund to a victim) still land in the other player's data.
+	-- FinalizeLeave then only runs the final save (leftFired branch).
+	local pre = {}
+	for p in ready do
+		table.insert(pre, p)
+	end
+	for _, p in pre do
+		if ready[p] and not finalizing[p] and not leftFired[p] then
+			finalizing[p] = true -- a concurrent FinalizeLeave (PlayerRemoving) waits while the handlers run
+			local okFire, errFire = pcall(function()
+				PlayerService.PlayerLeaving:Fire(p, S.DataService.Get(p))
+			end)
+			if not okFire then Util.Warn(TAG, "PlayerLeaving on close failed: " .. tostring(errFire)) end
+			leftFired[p] = true
+		end
 	end
 
 	local pending = 0
@@ -379,17 +469,6 @@ function PlayerService.Start()
 			for _, p in PlayerService.GetReadyPlayers() do
 				local ok, err = pcall(PlayerService.AddStat, p, "PlaytimeSeconds", step)
 				if not ok then loopWarn("playtime loop", err) end
-			end
-		end
-	end)
-
-	-- A10 fall rescue (sea / out of the world)
-	task.spawn(function()
-		while true do
-			task.wait(FALL_CHECK_INTERVAL)
-			for _, p in PlayerService.GetReadyPlayers() do
-				local ok, err = pcall(rescueIfFallen, p)
-				if not ok then loopWarn("fall rescue loop", err) end
 			end
 		end
 	end)
@@ -466,15 +545,22 @@ end
 
 -- idempotent: PlayerLeaving + final save once; always clears per-player state
 function PlayerService.FinalizeLeave(player)
-	if finalizing[player] then
+	if leftFired[player] == true then
+		-- CR-M2: onClose already fired PlayerLeaving (ready was kept for cross-player refunds): only the save is left
+		leftFired[player] = "saving" -- a concurrent call takes the finalizing branch below and waits
+		ready[player] = nil
+		local ok, err = pcall(S.DataService.Release, player)
+		if not ok then
+			Util.Warn(TAG, "release failed for " .. player.Name .. ": " .. tostring(err))
+		end
+		finalizing[player] = nil
+	elseif finalizing[player] then
 		local t0 = os.clock()
 		while finalizing[player] and os.clock() - t0 < FINALIZE_WAIT do
 			task.wait(0.1)
 		end
 		return
-	end
-
-	if ready[player] then
+	elseif ready[player] then
 		finalizing[player] = true
 		PlayerService.PlayerLeaving:Fire(player, S.DataService.Get(player))
 		ready[player] = nil -- loops and remotes stop touching the player while the final save runs
@@ -486,6 +572,7 @@ function PlayerService.FinalizeLeave(player)
 	end
 
 	ready[player] = nil
+	leftFired[player] = nil
 	Util.ClearPlayer(player)
 	lastActive[player] = nil
 	regularMinutes[player] = nil
@@ -502,6 +589,50 @@ function PlayerService.MarkActive(player)
 	if ready[player] then
 		lastActive[player] = os.clock()
 	end
+end
+
+-- CR-M20: os.clock() of the player's last input/combat (MarkActive); 0 = none yet on this server
+function PlayerService.GetLastActive(player)
+	return (player ~= nil and lastActive[player]) or 0
+end
+
+-- CR-M2: true once BindToClose started (the server is shutting down; leaves are not the players' choice)
+function PlayerService.IsShuttingDown()
+	return closing
+end
+
+-- CR-M4: anti-collusion pair cooldown kept in the HOLDER's save (key "<kind>:<otherUserId>" = os.time()), so it
+-- follows the player across servers. true = the last commit is at least `cooldown` s old (or there is none);
+-- commit ~= false records now on true. false when the holder has no loaded data (no reward).
+function PlayerService.PairReady(holder, otherUserId, kind, cooldown, commit)
+	if holder == nil or otherUserId == nil or type(kind) ~= "string" then return false end
+	local d = S.DataService.Get(holder)
+	if type(d) ~= "table" then return false end
+	if type(d.PairCD) ~= "table" then d.PairCD = {} end
+	local cd = d.PairCD
+	local k = kind .. ":" .. tostring(otherUserId)
+	local now = os.time()
+	local last = tonumber(cd[k]) or 0
+	if last ~= last then last = 0 end
+	local need = tonumber(cooldown) or 0
+	if need ~= need then need = 0 end
+	if now - last < need then return false end
+	if commit ~= false then
+		local isNew = cd[k] == nil
+		cd[k] = now
+		if isNew then
+			-- bound growth within a long session too (PlayerReady prunes the rest)
+			local n = 0
+			for _ in cd do
+				n += 1
+			end
+			if n > PAIR.MaxKeys then
+				local okPrune, errPrune = pcall(prunePairCD, d)
+				if not okPrune then loopWarn("PairCD prune", errPrune) end
+			end
+		end
+	end
+	return true
 end
 
 function PlayerService.GetRegularMinutes(player)

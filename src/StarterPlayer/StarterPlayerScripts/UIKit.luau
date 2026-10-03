@@ -59,6 +59,8 @@ local TOP_FALLBACK = UI.TopInsetFallback or 64
 local TOAST_Y = 152 -- slot table: toast stack top-center from y 152 (shifted below the top bar inset)
 local TOAST_WIDTH = 460
 local MAX_TOASTS = 4
+-- CR-L38: short (phone) viewports keep fewer toasts; the stack never takes more than WidthFrac of the screen width
+local TOAST_PHONE = { Height = 500, Max = 2, WidthFrac = 0.45 }
 local DEFAULT_TOAST_SECONDS = 2.5
 local DEFAULT_ANNOUNCE_SECONDS = 3.5
 local MAX_ANNOUNCE_QUEUE = 3
@@ -79,6 +81,7 @@ local confirmOverlay = nil
 
 local toasts = {} -- oldest first: { Frame, Label, Stroke, Text, Token, Dead }
 local toastCounter = 0
+local toastMax = MAX_TOASTS -- CR-L38: TOAST_PHONE.Max on short viewports (set by applyScale)
 
 local announceCurrent = nil -- { Text, Token }
 local announceQueue = {} -- { { Text, Duration } }
@@ -151,6 +154,12 @@ local function applyScale()
 	end
 	if toastHolder then
 		toastHolder.Position = UDim2.new(0.5, 0, 0, TOAST_Y + insetY() / currentScale())
+		-- CR-L38: on phones the stack covered the upgrade / release buttons
+		local raw = cam and cam.ViewportSize or Vector2.zero
+		toastMax = (raw.Y >= 50 and raw.Y < TOAST_PHONE.Height) and TOAST_PHONE.Max or MAX_TOASTS
+		local w = TOAST_WIDTH
+		if raw.X >= 50 then w = math.min(TOAST_WIDTH, raw.X / currentScale() * TOAST_PHONE.WidthFrac) end
+		toastHolder.Size = UDim2.fromOffset(math.floor(w), 10)
 	end
 end
 
@@ -942,7 +951,8 @@ local function scheduleToast(t, duration)
 	end)
 end
 
--- kinds: info / good / bad / reward (anything else = info); max 4 stacked, newest on top; default 2.5 s.
+-- kinds: info / good / bad / reward (anything else = info); max 4 stacked (2 on short phones, CR-L38), newest on
+-- top; default 2.5 s.
 -- A toast whose text is already on screen is refreshed instead of stacked twice.
 function UIKit.Toast(text, kind, duration)
 	if text == nil then return end
@@ -1001,7 +1011,7 @@ function UIKit.Toast(text, kind, duration)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
-	while #toasts > MAX_TOASTS do
+	while #toasts > toastMax do -- CR-L38
 		removeToast(toasts[1])
 	end
 
@@ -1311,6 +1321,14 @@ function UIKit.Init(registry)
 	gui.Name = "MainGui"
 	gui.ResetOnSpawn = false
 	gui.IgnoreGuiInset = true
+	-- CR-L34: still under the top bar (H4 handles it), but clear of notches / rounded corners on landscape phones.
+	-- Set after IgnoreGuiInset (which rewrites ScreenInsets); pcall'd for clients without these properties.
+	pcall(function()
+		gui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+	end)
+	pcall(function()
+		gui.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None
+	end)
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	gui.DisplayOrder = 10
 	UIKit.Gui = gui

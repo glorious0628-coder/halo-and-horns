@@ -9,7 +9,13 @@
 --    NearbyRadius at an HP recalc) and is capped at SURVIVE_BONUS_MINUTES of hunting value at the kaiju's level.
 --  * Defeated without a Halo player's lethal hit (reset / fall / monster): the minted 3x bounty is scaled by the share of
 --    the kaiju's MaxHealth that Halo players actually took off. A real kill pays the full pool.
---  * Each participant gets the minted part of a pool share at most once per Config.PvP.PairRewardCooldown per kaiju player.
+--  * Each participant gets the minted part of a pool share at most once per Config.Kaiju.PairRewardCooldown per kaiju
+--    player, stored in the participant's saved data (PlayerService.PairReady kind "kaiju", CR-M3/CR-M4). The kaiju's
+--    carried gold moved into the pool is capped at Config.PvP.PlunderCapPerLevel x its level (the rest is destroyed).
+--  * CR-M11: an Active kaiju that leaves after Halo players hurt it is settled as Defeated (minted part scaled by the
+--    Halo damage share); otherwise it is Cancelled. Its pouch is escrowed by a PlayerLeaving handler that runs first
+--    (ahead of ProgressionService's leave banking), so the carried gold reaches the pool like a KO; public
+--    WillSettleOnLeave tells other services such a leave is coming. CR-M13: stomps outside PvP zones carry no attacker.
 -- A11-R1: the stomp's ground raycast includes only Terrain, workspace.Map.Ground and Map.Decor "Bridge_*" models.
 -- A12: a transformed kaiju may zoom out to KAIJU_CAMERA_ZOOM; the previous limit is restored when the event ends.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -48,8 +54,9 @@ local lastStomp = 0 -- os.clock()
 local contested = false -- a Halo player was near / stomped by / fighting the Active kaiju
 local lethalHit = false -- a Halo player's hit dropped the Active kaiju to 0 HP (false = reset, fall, monster, ...)
 local lastMaxHealth = 0 -- the Active kaiju's MaxHealth, sampled every tick
-local poolPaidAt = {} -- ["participantUserId:kaijuUserId"] = os.clock() of the last minted pool share
+local poolPaidAt = {} -- fallback only (PairReady missing): ["participantUserId:kaijuUserId"] = os.clock() of the last minted share
 local zoomRestore = {} -- [Player] = CameraMaxZoomDistance before the kaiju zoom was raised
+local leaveEscrow = {} -- CR-M11: [Player] = { Gold, CombatLog } pouch of a leaving kaiju whose leave settles as Defeated
 
 local lastWarnAt = {}
 local rayParams = RaycastParams.new()
@@ -78,6 +85,21 @@ local function call(serviceName, fnName, ...)
 		return nil
 	end
 	return result
+end
+
+-- CR-M11: Util.Signal fires handlers in connection order and KaijuService is late in INIT_ORDER, so this moves the new
+-- handler to the front; if the Signal layout ever changes it stays a normal (late) connection and warns
+local function connectFirst(signal, fn)
+	local conn = signal:Connect(fn)
+	local handlers = (type(signal) == "table") and rawget(signal, "_handlers") or nil
+	local last = (type(handlers) == "table") and handlers[#handlers] or nil
+	if type(handlers) == "table" and type(last) == "table" and last.fn == fn then
+		table.remove(handlers, #handlers)
+		table.insert(handlers, 1, last)
+	else
+		warnThrottled("connectFirst", "Signal layout changed; the kaiju leave escrow runs after earlier handlers")
+	end
+	return conn
 end
 
 local function getGameState()
@@ -126,6 +148,28 @@ local function readyPlayers()
 	local list = call("PlayerService", "GetReadyPlayers")
 	if type(list) ~= "table" then return {} end
 	return list
+end
+
+-- CR-M4: the minted-pool pair cooldown lives in the participant's saved data (PlayerService.PairReady, key
+-- "kaiju:<kaijuUserId>"), so a server hop never resets it. Commits on success. Falls back to this server's memory
+-- while PairReady is missing; a PairReady error fails closed (no minted gold).
+local function pairReady(p, kaijuUserId, cooldown)
+	local ps = S and S.PlayerService
+	if ps and type(ps.PairReady) == "function" then
+		local ok, res = pcall(ps.PairReady, p, kaijuUserId, "kaiju", cooldown)
+		if ok then return res == true end
+		warnThrottled("pairReady", "PlayerService.PairReady failed: " .. tostring(res))
+		return false
+	end
+	warnThrottled("pairReadyMissing", "PlayerService.PairReady missing; kaiju pair cooldown kept in memory only")
+	local now = os.clock()
+	for key, t in poolPaidAt do
+		if now - t >= cooldown then poolPaidAt[key] = nil end
+	end
+	local key = tostring(p.UserId) .. ":" .. tostring(kaijuUserId)
+	if poolPaidAt[key] ~= nil then return false end
+	poolPaidAt[key] = now
+	return true
 end
 
 local function setState(p, st)
@@ -252,6 +296,20 @@ local function participantList()
 	return list
 end
 
+-- total damage Halo players dealt to the Active kaiju
+local function haloDamageTotal()
+	local total = 0
+	for _, amount in dmg do
+		if type(amount) == "number" and amount > 0 then total += amount end
+	end
+	return total
+end
+
+-- CR-M11: `p` is the Active kaiju and Halo players already hurt it, so its leave settles as Defeated (settleLeaver)
+local function willSettleOnLeave(p)
+	return p ~= nil and p == current and phase == "Active" and isPlayer(p) and haloDamageTotal() > 0
+end
+
 ------------------------------------------------------------------ lifecycle
 -- ends the current event for `p`; `leaving` = the player is being removed (skip per-player calls)
 local function finish(p, outcome, participants, leaving)
@@ -278,6 +336,14 @@ local function finish(p, outcome, participants, leaving)
 		restoreZoom(p)
 	else
 		zoomRestore[p] = nil
+		if outcome == "Defeated" and isPlayer(p) then
+			-- CR-M11: a leaver settled as defeated loses its stars like a KO'd kaiju (also the saved copy, CR-M12)
+			call("PvPService", "ResetStars", p)
+			local data = call("PlayerService", "GetData", p)
+			if type(data) == "table" then
+				data.SavedStars = 0
+			end
+		end
 	end
 	if wasCurrent then
 		local ok, err = pcall(publish, "None", 0, "", 0)
@@ -311,8 +377,7 @@ local function beginSiren()
 			lethalHit = false
 			lastMaxHealth = 0
 			setState(p, "Siren")
-			publish("Siren", p.UserId, kaijuName, phaseEndsAt)
-			Net.NotifyAll(string.format(Config.Story.KaijuSiren, kaijuName), "announce", Config.Kaiju.SirenSeconds)
+			publish("Siren", p.UserId, kaijuName, phaseEndsAt) -- CR-L23: EventHUD's siren banner is the only announcement
 		elseif states[p] == "Queued" then
 			setState(p, "None")
 		end
@@ -387,12 +452,64 @@ local function stomp(p)
 				local hum = Util.GetHumanoid(v)
 				if hum and hum.Health > 0 then
 					contested = true -- a Halo player stood in stomp range: the kaiju faced real opposition
-					call("CombatService", "DamagePlayer", v, Util.RoundDamage(hum.MaxHealth * Config.Kaiju.StompPct), p)
+					-- CR-M13: outside PvP zones the stomp is environmental damage (no combat tag, no PvP KO credit)
+					local atk = (call("ZoneService", "IsPvPZone", v) == true) and p or nil
+					call("CombatService", "DamagePlayer", v, Util.RoundDamage(hum.MaxHealth * Config.Kaiju.StompPct), atk)
 				end
 			end
 		end
 	end
 	Net.Fx(nil, "Stomp", { UserId = p.UserId, Pos = groundBelow(pos), Radius = Config.Kaiju.StompRadius })
+end
+
+-- CR-M11: the current kaiju is leaving (PlayerLeaving, or found already removed by the tick). An Active kaiju that Halo
+-- players already hurt is settled as Defeated (leaving = true: no character access; unless the last hit was lethal the
+-- minted pool is scaled by the Halo damage share). Otherwise, or if that fails, the event is Cancelled (no rewards).
+local function settleLeaver(p)
+	if p ~= current then return end
+	if willSettleOnLeave(p) then
+		local ok, err = pcall(KaijuService.HandleKaijuDeath, p, nil, true)
+		if not ok then warnThrottled("leaveDefeat", "leaving kaiju settle failed: " .. tostring(err)) end
+	end
+	if p == current then
+		finish(p, "Cancelled", nil, true)
+	end
+end
+
+-- CR-M11: first PlayerLeaving handler (connectFirst). ProgressionService (earlier in INIT_ORDER) would otherwise bank
+-- the pouch of a kaiju that is about to be settled as Defeated into its own vault (75% when combat-tagged) and the
+-- raid pool would get no carried gold. Pull the pouch into escrow; HandleKaijuDeath(leaving) pours it into the pool.
+local function escrowLeaverGold(player)
+	if not willSettleOnLeave(player) then return end
+	local entry = {
+		Gold = 0,
+		-- decided now, before any other leave handler can drop the combat tag (used only by bankLeftover)
+		CombatLog = call("CombatService", "IsInCombat", player) == true and call("PlayerService", "IsShuttingDown") ~= true,
+	}
+	leaveEscrow[player] = entry
+	local carried = math.max(0, math.floor(getNum(player, "CarriedGold")))
+	if carried > 0 then
+		entry.Gold = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", player, carried)) or 0))
+	end
+end
+
+-- CR-M11 fallback, after settleLeaver: escrow the Defeated settle did not take (it failed) plus any pouch left (a
+-- ProgressionService that skips WillSettleOnLeave leavers) is banked like ProgressionService.onPlayerLeaving would
+local function bankLeftover(p, data)
+	local entry = leaveEscrow[p]
+	leaveEscrow[p] = nil
+	if type(entry) ~= "table" then return end
+	if type(data) ~= "table" then data = call("PlayerService", "GetData", p) end
+	if type(data) ~= "table" then return end
+	local escrowed = math.max(0, math.floor(tonumber(entry.Gold) or 0))
+	local amount = escrowed + math.max(0, math.floor(tonumber(data.CarriedGold) or 0))
+	if amount <= 0 then return end
+	if entry.CombatLog == true then
+		amount = math.floor(amount * (1 - (tonumber(Config.PvP.CombatLogPenalty) or 0)))
+	end
+	data.CarriedGold = 0
+	data.BankGold = math.max(0, tonumber(data.BankGold) or 0) + math.max(0, amount)
+	warnThrottled("leaveLeftover", "leaving kaiju pouch banked instead of pooled (settle did not take it)")
 end
 
 ------------------------------------------------------------------ loop
@@ -429,7 +546,7 @@ local function tick()
 	local p = current
 	if p ~= nil then
 		if not isPlayer(p) or p.Parent == nil then
-			finish(p, "Cancelled", nil, true)
+			settleLeaver(p) -- CR-M11
 		elseif phase == "Siren" then
 			if Util.Now() >= phaseEndsAt then
 				if isEligible(p) and Util.IsAlive(p) then
@@ -476,10 +593,17 @@ function KaijuService.Init(registry)
 		player:SetAttribute("SessionTitle", "")
 	end)
 
-	S.PlayerService.PlayerLeaving:Connect(function(player)
+	-- CR-M11: must run before ProgressionService's PlayerLeaving handler, which banks the leaver's pouch
+	connectFirst(S.PlayerService.PlayerLeaving, escrowLeaverGold)
+
+	S.PlayerService.PlayerLeaving:Connect(function(player, data)
 		if player == current then
-			finish(player, "Cancelled", nil, true) -- no rewards
+			-- CR-M11: Defeated if Halo players hurt the Active kaiju, else Cancelled
+			local ok, err = pcall(settleLeaver, player)
+			if not ok then warnThrottled("settleLeaver", "leaving kaiju settle failed: " .. tostring(err)) end
 		end
+		local okLeft, errLeft = pcall(bankLeftover, player, data) -- CR-M11: no-op once the pool took the escrow
+		if not okLeft then warnThrottled("leaveLeftover", "leaving kaiju leftover failed: " .. tostring(errLeft)) end
 		removeFromQueue(player)
 		states[player] = nil
 		dmg[player] = nil
@@ -547,6 +671,13 @@ function KaijuService.GetActive()
 	return current
 end
 
+-- CR-M11: true when `player` is the Active kaiju and Halo players already hurt it: its leave settles as Defeated and
+-- its pouch belongs to the raid pool (escrowed by KaijuService's first PlayerLeaving handler), so a leave handler must
+-- not bank its CarriedGold
+function KaijuService.WillSettleOnLeave(player)
+	return willSettleOnLeave(player)
+end
+
 function KaijuService.GetHealthMult(player)
 	if player ~= nil and player == current and phase == "Active" then
 		return healthMult
@@ -554,15 +685,17 @@ function KaijuService.GetHealthMult(player)
 	return 1
 end
 
--- called ONLY by CombatService's death pipeline (Defeated; no last-hit bonus)
-function KaijuService.HandleKaijuDeath(victim, killer)
+-- called by CombatService's death pipeline (Defeated; no last-hit bonus) and by settleLeaver (leaving = true, CR-M11:
+-- the kaiju is being removed, so its character is never touched)
+function KaijuService.HandleKaijuDeath(victim, killer, leaving)
 	if victim == nil or victim ~= current or phase ~= "Active" then
 		warnThrottled("death", "HandleKaijuDeath for a player that is not the active kaiju")
 		return
 	end
+	leaving = leaving == true
 	local name = kaijuName
 	local participants = participantList()
-	local pool = 0
+	local paid = 0 -- CR-L19: gold actually paid out (the announcement shows this, not the theoretical pool)
 
 	local ok, err = pcall(function()
 		local level = math.max(1, math.floor(getNum(victim, "Level")))
@@ -570,24 +703,29 @@ function KaijuService.HandleKaijuDeath(victim, killer)
 		local bounty = Config.Bounty(level, starsOf(victim), bully)
 		local mint = math.max(0, Config.Kaiju.BountyPoolMult * bounty)
 
-		-- review fix: no Halo player landed the lethal hit (reset, fall, monster, ...) -> mint only the share of the
-		-- kaiju's HP that Halo players really took off (a 1-damage tag + reset mints ~0; a near-dead reset still pays)
+		-- review fix: no Halo player landed the lethal hit (reset, fall, monster, logout, ...) -> mint only the share of
+		-- the kaiju's HP that Halo players really took off (a 1-damage tag + reset mints ~0; a near-dead reset still pays)
 		if not lethalHit then
 			local maxHp = lastMaxHealth
-			local hum = Util.GetHumanoid(victim)
+			local hum = (not leaving) and Util.GetHumanoid(victim) or nil
 			if hum and hum.MaxHealth > 0 then maxHp = math.max(maxHp, hum.MaxHealth) end
-			local haloDmg = 0
-			for _, amount in dmg do
-				if type(amount) == "number" and amount > 0 then haloDmg += amount end
-			end
-			local frac = (maxHp > 0) and math.clamp(haloDmg / maxHp, 0, 1) or 0
+			local frac = (maxHp > 0) and math.clamp(haloDamageTotal() / maxHp, 0, 1) or 0
 			mint *= frac
 		end
 		mint = math.floor(mint)
 
 		local carried = math.max(0, math.floor(getNum(victim, "CarriedGold")))
 		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", victim, carried)) or 0))
-		pool = mint + taken
+		-- CR-M11: a leaving kaiju's pouch was escrowed before ProgressionService could bank it; it joins the pool here
+		local escrow = leaveEscrow[victim]
+		if type(escrow) == "table" then
+			taken += math.max(0, math.floor(tonumber(escrow.Gold) or 0))
+			escrow.Gold = 0 -- entry kept: bankLeftover still reads CombatLog
+		end
+		-- CR-M3: the carried gold moved into the pool is capped like a PvP plunder; the excess is destroyed
+		local capPerLevel = tonumber(Config.PvP.PlunderCapPerLevel) or 100
+		taken = math.min(taken, math.max(0, math.floor(capPerLevel * level)))
+		local pool = mint + taken
 
 		local n = #participants
 		if n > 0 and pool > 0 then
@@ -595,11 +733,7 @@ function KaijuService.HandleKaijuDeath(victim, killer)
 			for _, p in participants do
 				totalDmg += (dmg[p] or 0)
 			end
-			local now = os.clock()
-			local cooldown = Config.PvP.PairRewardCooldown
-			for key, t in poolPaidAt do
-				if now - t >= cooldown then poolPaidAt[key] = nil end
-			end
+			local cooldown = tonumber(Config.Kaiju.PairRewardCooldown) or 1800 -- CR-M3
 			for _, p in participants do
 				-- spec split: DamageShare by damage + the rest equally (everything equally if only healers are left)
 				local frac = 1 / n
@@ -607,14 +741,14 @@ function KaijuService.HandleKaijuDeath(victim, killer)
 					frac = Config.Kaiju.DamageShare * (dmg[p] or 0) / totalDmg + (1 - Config.Kaiju.DamageShare) / n
 				end
 				local share = math.floor(taken * frac) -- carried gold: a transfer, always paid
-				-- minted part: once per participant/kaiju pair per PairRewardCooldown (like PvP bounties)
-				local key = tostring(p.UserId) .. ":" .. tostring(victim.UserId)
-				if mint > 0 and poolPaidAt[key] == nil then
-					poolPaidAt[key] = now
-					share += math.floor(mint * frac)
+				-- minted part: once per participant/kaiju pair per Kaiju.PairRewardCooldown, saved in PairCD (CR-M4)
+				local mintShare = math.floor(mint * frac)
+				if mintShare > 0 and pairReady(p, victim.UserId, cooldown) then
+					share += mintShare
 				end
 				if share > 0 then
 					call("ProgressionService", "AddBankGold", p, share, "Kaiju")
+					paid += share
 					Net.Notify(p, string.format(Config.Text.KaijuReward, Util.FormatNumber(share)), "reward")
 				end
 			end
@@ -625,10 +759,15 @@ function KaijuService.HandleKaijuDeath(victim, killer)
 	if not ok then warnThrottled("defeat", "defeat reward failed: " .. tostring(err)) end
 
 	local okSend, sendErr = pcall(function()
-		Net.NotifyAll(string.format(Config.Story.KaijuDefeated, name, Util.FormatNumber(pool)))
+		if paid > 0 then
+			Net.NotifyAll(string.format(Config.Story.KaijuDefeated, name, Util.FormatNumber(paid)))
+		else
+			-- CR-L19: nobody was paid -> no "보상 N골드" line
+			Net.NotifyAll(string.format(Config.Story.KaijuDefeatedNoReward or "괴수 %s이(가) 쓰러졌어요.", name))
+		end
 	end)
 	if not okSend then warnThrottled("send", "defeat broadcast failed: " .. tostring(sendErr)) end
-	finish(victim, "Defeated", participants)
+	finish(victim, "Defeated", participants, leaving)
 end
 
 return KaijuService

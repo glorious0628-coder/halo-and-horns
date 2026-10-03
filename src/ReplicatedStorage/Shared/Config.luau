@@ -60,6 +60,15 @@ Config.Data = {
 		-- addendum A4 / A5-C5: onboarding step (0 = brand-new, 1 = guide, 2 = tutorial quest, 99 = done).
 		-- DataService sets 99 for any STORED record lacking the field BEFORE this default fill.
 		TutorialStep = 0,
+		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
+		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
+		-- "kolog:<victimUserId>" = { t1, t2 } (last two KOs). Pruned at PlayerReady (> 1800 s old, at most 200 keys).
+		PairCD = {},
+		-- CR-M12: bully stacks / wanted stars saved at leave with os.time(); restored minus decay on the next join
+		SavedBully = 0,
+		SavedBullyAt = 0,
+		SavedStars = 0,
+		SavedStarsAt = 0,
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
@@ -206,7 +215,10 @@ Config.Combat = {
 	AutoLoopInterval = 0.1,
 	RegenTick = 1,
 	ChargeTick = 0.1, -- perfect-window watcher interval
-	ManualPriority = 1.0, -- addendum A3-H3: the auto loop skips a player for this long after a manual swing
+	-- addendum A3-H3 / CR-M17: after a manual swing the auto loop skips the player for the class SwingInterval +
+	-- ManualYieldPad (a fixed 1.0 s window was <= the Warrior / Mage interval, so held manual attacks went auto).
+	ManualYieldPad = 0.3,
+	ManualPriority = 1.0, -- legacy fixed window (pre CR-M17); kept only so old references never read nil
 	AutoPvPHintCooldown = 60, -- addendum A3-M3: "under attack" hint at most once per this many seconds
 }
 
@@ -219,12 +231,16 @@ Config.Charge = {
 	PerStackBonus = 0.02, -- manual release: mult = 1 + 0.02 * stacks
 	AutoReleaseMult = 1.5, -- automatic release (PERFECT window missed): mult = 1.5
 	PerfectWindow = 3, -- seconds the golden ring glows after reaching the cap
+	-- CR-L22: added to PerfectWindow both for the manual PERFECT check and before the auto release fires, so a
+	-- manual release sent at the very end of the window is not stolen by the auto release (latency)
+	PerfectGrace = 0.25,
 	RadiusBase = 8,
 	RadiusPerStack = 0.1,
 	PvPCapPct = 0.35, -- release damage to a player <= 35% of the target's current MaxHealth
 	HaloHealPct = 0.10, -- Halo release heals allies in the radius by 10% of the total damage dealt...
 	HaloHealCapPct = 0.30, -- ...capped at 30% of each ally's MaxHealth...
-	HaloAllyStacks = 10, -- ...and gives each OTHER ally in the radius +10 stacks
+	HaloAllyStacks = 10, -- ...and gives each OTHER ally in the radius +10 stacks...
+	HaloAllyStackCooldown = 5, -- ...at most once per 5 s per receiving ally (CR-H1: stops endless release ping-pong)
 }
 
 function Config.ReleaseRadius(stacks)
@@ -293,7 +309,7 @@ Config.Factions = {
 	-- addendum A9-1: Neutral identity colour is TEAL (grey stays reserved for 회색 전설 / 금 간 후광 and for "None").
 	-- Nametag, UIKit.Theme and the CharacterVisuals gear mark read Color; the Team uses TeamColor (distinct from the others).
 	Neutral = {
-		Id = "Neutral", Name = "장인 길드", Short = "장인", Emblem = "⚙",
+		Id = "Neutral", Name = "장인 길드", Short = "장인", Emblem = "장", -- CR-L44: "⚙" renders as a tofu box
 		TeamName = "장인 길드", TeamColor = BrickColor.new(Color3.fromRGB(40, 200, 190)),
 		Color = Color3.fromRGB(40, 200, 190), -- teal (A9-1)
 		XPBonus = 0, GoldBonus = 0, DamageBonus = 0,
@@ -398,7 +414,8 @@ end
 
 Config.Bully = {
 	WeakPowerRatio = 0.5, -- (a) victim base power < 50% of the attacker's
-	BaitWindow = 10, -- (a) does not apply if the victim damaged the attacker within the last 10 s
+	BaitWindow = 10, -- (a) does not apply if the victim damaged the attacker within the last 10 s...
+	BaitMinPct = 0.2, -- ...for a total of >= 20% of the attacker's base MaxHealth (CR-M15: one stray hit is not bait)
 	WantedIgnoresWeakRule = true, -- (a) does not apply if the victim had Wanted stars or bully stacks (lead decision)
 	FreshSpawnSeconds = 15, -- (b) victim respawned less than 15 s ago
 	RepeatKOs = 3, -- (c) 3rd+ KO of the same victim by the same attacker...
@@ -446,6 +463,7 @@ Config.PvP = {
 	NoTravelStars = 3, -- cannot use Travel at >= 3
 	AnnounceStars = 5,
 	PairRewardCooldown = 300, -- minted rewards (bounty, honor, infamy, war points) once per killer/victim pair per 300 s
+	-- (stored in Data.Defaults.PairCD so it survives a server hop: CR-M4)
 	HonorPerKOMin = 1, -- Halo KO of a 0-star, non-bully Horns gives 1 Honor
 	CombatLogPenalty = 0.25, -- leaving while combat-tagged loses 25% of carried gold
 	BoardRefresh = 5,
@@ -464,10 +482,12 @@ end
 Config.Grudge = {
 	SackSeconds = 45, -- countdown; ticks ONLY while the thief is in a PvP zone; each new steal resets it to 45
 	AvengeRefundRate = 1.2, -- a Halo player KOs the thief in time: each victim gets 120% (to the bank)...
-	RefundBonusCooldown = 600, -- ...the extra 20% only if this victim/thief pair had no refund in the last 10 min
+	RefundBonusCooldown = 600, -- ...the extra 20% at most once per VICTIM per 10 min, whatever the thief (CR-L6)
 	ReturnRate = 1.0, -- thief died without a Halo killer, or left the server: victims get 100% back
 	RestealWindow = 180, -- the same thief stealing from the same victim again within 3 min steals 0
-	AvengerBonus = 100, -- "복수 대행" bonus (minted, to the bank) for the Halo player who KO'd the thief
+	-- "복수 대행" bonus (minted, to the bank) for the Halo player who KO'd the thief; at most once per AVENGER per
+	-- PvP.PairRewardCooldown, whatever the thief (CR-L6: per-pair keys paid once per thief alt)
+	AvengerBonus = 100,
 	Tick = 0.25,
 }
 
@@ -490,6 +510,11 @@ Config.Kaiju = {
 	ShieldSeconds = 10, -- spawn-protection-style shield after the event
 	HaloWarPoints = 150, -- war points to Halo's pool when the kaiju is KO'd
 	HornsWarPoints = 150, -- war points to Horns' pool when the kaiju survives
+	-- CR-M3: the minted pool share is paid once per participant/kaiju pair per 30 min (stored in Data PairCD as
+	-- "kaiju:<kaijuUserId>", CR-M4); the kaiju's carried gold moved into the pool is capped at PvP.PlunderCapPerLevel x
+	-- the kaiju's level (the rest is destroyed)
+	PairRewardCooldown = 1800,
+	ReleaseCapPct = 0.08, -- CR-M7: one release on an ACTIVE kaiju deals <= 8% of its current MaxHealth (players: Charge.PvPCapPct)
 	Tick = 0.25,
 }
 
@@ -670,10 +695,13 @@ Config.Map = {
 	AltarPosition = Vector3.new(0, 0, 45), -- "운명의 제단": Part named "Altar" + ProximityPrompt "AltarPrompt"
 	BoardPosition = Vector3.new(-55, 0, 0), -- "현상수배 게시판": faces +X
 	PadSize = Vector3.new(10, 1, 10),
-	Pads = { -- inside Crossroads; touching = instant Travel
-		{ Dest = "SlimeMeadow", Position = Vector3.new(60, 0, -30) },
-		{ Dest = "GoblinWoods", Position = Vector3.new(60, 0, 0) },
-		{ Dest = "SkeletonRuins", Position = Vector3.new(60, 0, 30) },
+	-- inside Crossroads; touching = instant Travel. CR-M22 (ART_DIRECTION 5): every pad is OFF the east road (RoadCross
+	-- |z| <= 8) so walking the road never teleports anyone; safe meadow pad north, both PvP pads south (Horns side).
+	-- MapBuilder.ensurePads moves already-built pads to these values; tools/preview_map.lua PADS must match.
+	Pads = {
+		{ Dest = "SlimeMeadow", Position = Vector3.new(52, 0, -24) },
+		{ Dest = "GoblinWoods", Position = Vector3.new(52, 0, 24) },
+		{ Dest = "SkeletonRuins", Position = Vector3.new(68, 0, 24) },
 	},
 	Gates = { -- decorative arches with a level sign, centered on zone borders
 		{ Zone = "SlimeMeadow", Position = Vector3.new(200, 0, 0) },
@@ -718,7 +746,7 @@ Config.Map = {
 Config.Travel = {
 	ChannelSeconds = 3,
 	PadDebounce = 2,
-	ZoneTick = 0.5, -- ZoneService polling interval
+	ZoneTick = 0.2, -- ZoneService polling interval (CR-H2: 0.5 -> 0.2 so a short teleport hop is sampled)
 	Destinations = {
 		{ Id = "Home", Name = "우리 진영 마을" }, -- resolves to Config.HomeZoneId(faction)
 		{ Id = "Crossroads", Name = "교차로 마을" },
@@ -726,6 +754,26 @@ Config.Travel = {
 		{ Id = "GoblinWoods", Name = "고블린 숲" },
 		{ Id = "SkeletonRuins", Name = "해골 유적" },
 	},
+}
+
+-- CR-H2: server-side movement sanity check (ZoneService.IsPlausible / validateMove, run every Travel.ZoneTick).
+-- A move is plausible when the flat distance since the last good position <= Humanoid.WalkSpeed * MoveMult * dt + Slack
+-- and the rise <= RisePerSec * dt + RiseSlack (falling is never limited). Server-side teleports call
+-- ZoneService.MarkTeleported(player, TeleportGrace) first; CharacterSpawned uses SpawnGrace.
+-- Enforce = false is LOG-ONLY: suspicious moves are logged (at most once per LogCooldown s per player) and players
+-- are never pulled back. Always enforced regardless of Enforce: a travel pad touch counts only when the root is
+-- within max(pad.Size.X, pad.Size.Z) / 2 + PadSlack studs of the pad, and Swing / Release ignore zones whose
+-- MinLevel is above the attacker's level.
+Config.AntiCheat = {
+	Enforce = false,
+	MoveMult = 1.6,
+	Slack = 8,
+	RisePerSec = 60,
+	RiseSlack = 12,
+	TeleportGrace = 1,
+	SpawnGrace = 2,
+	PadSlack = 4,
+	LogCooldown = 10,
 }
 
 ----------------------------------------------------------------- monsters
@@ -757,13 +805,14 @@ Config.MonsterDensity = { ExtraPerPlayer = 2, MaxZoneMult = 2, GlobalCap = 72, R
 Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDist = 28, Tries = 6 }
 
 Config.MonsterTypeOrder = { "Slime", "BigSlime", "Goblin", "GoblinBrute", "Skeleton", "SkeletonKnight" }
+-- Name = full name (nametag, lore); Short = short name for quest / HUD lines (optional: use `def.Short or def.Name`)
 Config.MonsterTypes = {
-	Slime = { Name = "조각먹은 슬라임", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
-	BigSlime = { Name = "왕 슬라임", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
-	Goblin = { Name = "조각 도둑 고블린", Zone = "GoblinWoods", Count = 10, HP = 90, Damage = 6, XP = 28, Gold = 16, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(110, 170, 70) },
-	GoblinBrute = { Name = "고블린 우두머리", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
-	Skeleton = { Name = "옛 왕국 해골 병사", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
-	SkeletonKnight = { Name = "왕관을 지키던 해골 기사", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
+	Slime = { Name = "조각먹은 슬라임", Short = "슬라임", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
+	BigSlime = { Name = "왕 슬라임", Short = "왕 슬라임", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
+	Goblin = { Name = "조각 도둑 고블린", Short = "고블린", Zone = "GoblinWoods", Count = 10, HP = 90, Damage = 6, XP = 28, Gold = 16, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(110, 170, 70) },
+	GoblinBrute = { Name = "고블린 우두머리", Short = "고블린 우두머리", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
+	Skeleton = { Name = "옛 왕국 해골 병사", Short = "해골 병사", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
+	SkeletonKnight = { Name = "왕관을 지키던 해골 기사", Short = "해골 기사", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
 }
 
 -- the "unit" monster used for quest targets / rewards and Config.HuntValue
@@ -779,7 +828,8 @@ end
 -- TutorialStep transitions are owned by QuestService. Step 0: personal golden slime ~8 studs in front of the spawn
 -- (MonsterService.SpawnPersonal(player, Monster, { Golden = true, HP = MonsterHP })); kill or timeout -> step 1.
 -- Step 1: HUD guide beam to the GuideZone pad/entrance; entering GuideZone -> step 2. Step 2: pinned quest
--- (first QuestsJson entry, Id = QuestId, Pinned = true, Slot = nil); claim -> step 99.
+-- (first quest-list entry, Id = QuestId, Pinned = true, Slot = nil; sent by the "Quests" remote since CR-L50);
+-- claim -> step 99.
 Config.Tutorial = {
 	Steps = { Kill = 0, Guide = 1, Quest = 2, Done = 99 },
 	Monster = "Slime",
@@ -807,11 +857,14 @@ Config.Quests = {
 	ExtraRewardMult = 0.5, -- extras pay floor(units * mainMonster.Gold|XP * RewardPerUnit * ExtraRewardMult)
 	-- Units = extra-quest sizes, DailyUnits = daily sizes (~5 min of play). For Id "Gold": Target = units * mainMonster.Gold.
 	-- Every DAILY pays Config.DailyQuestReward(level at generation) regardless of template.
+	-- CR-M27: Kill / Golden Text = string.format(Text, mainMonsterName, target) (the level zone's unit monster). Their
+	-- progress per kill = killed monster XP / unit monster XP (max 1), so it can be fractional (shown with 1 decimal).
+	-- Every other template: string.format(Text, target) ("Gold" passes the target as a string).
 	Templates = {
 		{ Id = "Kill", Weight = 40, Units = { 25, 40 }, DailyUnits = { 50, 60 }, RewardPerUnit = 1.0,
-			Text = "몬스터 %d마리 쓰러뜨려 조각 모으기" },
+			Text = "%s %d마리 쓰러뜨리기" },
 		{ Id = "Golden", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 30,
-			Text = "황금 몬스터 %d마리 처치" },
+			Text = "황금 %s %d마리 처치" },
 		{ Id = "Gold", Weight = 20, Units = { 40, 60 }, DailyUnits = { 50, 60 }, RewardPerUnit = 0.5,
 			Text = "사냥으로 골드 %s 벌기" },
 		{ Id = "Release", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8, MinStacks = 50,
@@ -1134,6 +1187,11 @@ Config.Story = {
 		"발사 게이지가 꽉 차서 금빛 고리가 빛나면 바로 [발사]!",
 		"10분마다 왕관의 주인이 바뀌어요. 우리 편을 도와주세요!",
 	},
+	IntroNeutral = { -- CR-L29: same toasts for 장인 길드 (Faction "Neutral"), without the war call
+		"몬스터를 때리면 왕관 조각의 힘이 모여요! (공격 버튼)",
+		"발사 게이지가 꽉 차서 금빛 고리가 빛나면 바로 [발사]!",
+		"장인 길드는 전쟁·PvP에 끼지 않아요. 마음 놓고 사냥하세요!",
+	},
 	FactionLore = {
 		Halo = "왕관 조각이 후광이 된 자들. 조각을 지키고 세상을 고친다.",
 		Horns = "왕관 조각이 뿔이 된 자들. 조각을 빼앗아 세상을 차지한다.",
@@ -1160,9 +1218,11 @@ Config.Story = {
 		Horns = "뿔 군단이 황금 거위를 밀렵했어요! 조각이 어둠에 물들었어요.",
 		Tie = "황금 거위가 날아가 버렸어요! 무승부예요.",
 	},
+	GooseNoRival = "상대 진영이 없어서 이번 황금 거위는 무승부예요.", -- CR-L8: one faction had 0 players online
 	KaijuSiren = "경보! %s이(가) 왕관 조각의 어둠에 삼켜지고 있어요! 10초 뒤 괴수가 돼요!",
 	KaijuStart = "괴수 %s 출현! 기사단은 어디서든 공격할 수 있어요!",
-	KaijuDefeated = "기사단이 괴수 %s을(를) 쓰러뜨렸어요! 보상 %s골드를 나눠 가져요.",
+	KaijuDefeated = "기사단이 괴수 %s을(를) 쓰러뜨렸어요! 보상 %s골드를 나눠 가져요.", -- (name, gold actually paid: CR-L19)
+	KaijuDefeatedNoReward = "괴수 %s이(가) 쓰러졌어요.", -- CR-L19: (name) nobody was paid
 	KaijuSurvived = "괴수 %s이(가) 끝까지 살아남았어요! 전설의 악당 탄생!",
 	SurviveTitle = "전설의 악당",
 	GrayLegendTitle = "회색 전설",
@@ -1192,6 +1252,7 @@ Config.Text = {
 	LoadFailed = "데이터를 불러오지 못했어요. 잠시 후 다시 접속해 주세요.",
 	NeedLevel = "레벨 %d 이상만 들어갈 수 있어요!",
 	EnteredPvP = "PvP 지역이에요! 다른 진영을 조심하세요.",
+	EnteredPvPNeutral = "PvP 지역이지만 장인 길드는 공격받지 않아요.", -- CR-L24: Neutral entering a PvP zone ("info")
 	EnteredSafe = "안전 지대예요.",
 	Banked = "골드 %s을(를) 금고에 넣었어요.",
 	HaloCourier = "천사 배달부가 골드 %s을(를) 금고에 넣었어요.",
@@ -1234,12 +1295,15 @@ Config.Text = {
 	BlockedSack = "원한 자루를 든 동안은 할 수 없어요.",
 	BlockedKaiju = "괴수 이벤트 중에는 할 수 없어요.",
 	BlockedStars = "현상수배 별이 없어야 할 수 있어요.",
+	BlockedBully = "깡패 단계가 모두 풀린 뒤에 장인 길드로 갈 수 있어요.", -- CR-L9: altar / rebirth to Neutral with bully stacks
+	WaitRespawn = "다시 살아난 뒤에 할 수 있어요.", -- CR-L30: travel / class / rebirth / altar while dead
 	-- faction / class / tickets
 	UnderdogSignOn = "약한 편 합류 보너스 +%d골드!",
 	SwitchDoneFree = "%s(으)로 진영을 바꿨어요! (배신의 대가: %s 0)",
 	SwitchDoneTicket = "%s(으)로 진영을 바꿨어요! (변경권 사용, 점수 유지)",
 	SwitchCooldown = "진영 변경은 %s 후에 가능해요.",
 	NoTicket = "변경권이 없어요. 메뉴 > 변경권 상점에서 살 수 있어요.",
+	TicketSaving = "변경권 구매를 저장하는 중이에요. 잠시 뒤 다시 눌러 주세요.", -- CR-L25: UseTicket returned "Pending"
 	ClassChosen = "%s이(가) 되었어요!",
 	ClassChangedFree = "%s(으)로 직업을 바꿨어요! 레벨 1부터 다시 시작해요.",
 	ClassChangedTicket = "%s(으)로 직업을 바꿨어요! (변경권 사용, 레벨 유지)",

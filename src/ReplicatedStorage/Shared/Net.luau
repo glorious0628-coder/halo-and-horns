@@ -10,6 +10,7 @@ Net.Names = {
 	"Rebirth", "SwitchFaction", "ChangeClass", "Travel", "RerollQuest", "ClaimQuest", "ClaimVacation",
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
+	"Quests", -- CR-L50: the owner's quest list (replaces the replicated QuestsJson attribute), fired only on change
 }
 
 Net.GameStateDefaults = {
@@ -17,6 +18,8 @@ Net.GameStateDefaults = {
 	WarHaloScore = 0, WarHornsScore = 0, WarRoundEndsAt = 0, WarMode = "Idle", WarBlessing = "None",
 	-- FactionService
 	HaloCount = 0, HornsCount = 0,
+	-- CR-L7: FactionService.GetUnderdogCounts (no rookies, no 120 s idlers) for the rebirth underdog bonus + preview
+	UnderdogHalo = 0, UnderdogHorns = 0,
 	-- JusticeService
 	HaloPower = 0, HornsPower = 0, HaloSize = 1, HornsSize = 1, WeakerFaction = "None",
 	-- GooseService

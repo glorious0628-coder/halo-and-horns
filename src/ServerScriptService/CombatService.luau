@@ -1,6 +1,7 @@
 -- CombatService.luau : class swing patterns, charge & release ("자동은 장전, 손은 발사"), damage formulas,
 -- player damage / heal, regen, auto-attack and the death pipeline (the ONLY KO entry point).
 -- Server-authoritative: clients only send Swing / Release / SetAutoAttack intents.
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
@@ -13,15 +14,18 @@ local CombatService = {}
 
 ------------------------------------------------------------------ public signals (top level)
 -- info = { Stacks, Auto, Perfect, Center, Radius, Total, MonstersHit, PlayersHit, Healed = { Player } }
+-- (Total = HP really removed, CR-M10; the Release Fx shows the dealt numbers)
 CombatService.Released = Util.Signal.new()
--- (victim, amount, attacker) : fired by DamagePlayer only when attacker ~= nil, after the damage
+-- (victim, amount, attacker) : fired by DamagePlayer only when attacker ~= nil, after the damage.
+-- amount = HP actually removed (CR-M10: no overkill; 0 under a ForceField, still fired for the bait log)
 CombatService.PlayerDamaged = Util.Signal.new()
 
 local S = nil
 
 ------------------------------------------------------------------ private constants
--- addendum H3 auto-loop yield = Config.Combat.ManualPriority; addendum M3 hint = Config.Text.AutoUnderAttack
--- at most once per Config.Combat.AutoPvPHintCooldown (CombatService.DamagePlayer is the single sender)
+-- addendum H3 auto-loop yield = class SwingInterval + Config.Combat.ManualYieldPad (CR-M17); addendum M3 hint =
+-- Config.Text.AutoUnderAttack at most once per Config.Combat.AutoPvPHintCooldown (CombatService.DamagePlayer is the
+-- single sender)
 local MANUAL_GRACE = 0.2 -- a manual request this close to the swing-ready time is queued (network jitter on "hold")
 local MANUAL_QUEUE_RETRIES = 3 -- timer-precision retries for a queued manual swing
 local WHIFF_REACH = 12 -- studs in front of the player used as the visual target of a whiffed ranged swing
@@ -45,6 +49,15 @@ local REACT = {
 	SHOVE_DELAY = type(HIT_REACT.ShoveDelay) == "table" and HIT_REACT.ShoveDelay or {},
 }
 
+-- review R1 tuning
+local TUNE = {
+	-- CR-L49: Swing / Release Fx go to the attacker + players whose root is within FxCullDistance + FX_SEND_PAD + the
+	-- attack extent of the center (pad >= camera max zoom: 40, kaiju 60; clients cull from the camera)
+	FX_CULL = (Config.Visuals and Config.Visuals.FxCullDistance) or 150,
+	FX_SEND_PAD = 60,
+	AUTO_TOAST_GAP = 1, -- CR-L22: no manual "need stacks" toast this soon after an automatic release
+}
+
 ------------------------------------------------------------------ per-player state (session only)
 local charge = {} -- [Player] = stacks (may be fractional)
 local perfectUntil = {} -- [Player] = server time (Util.Now) of the PERFECT window end, 0 = none
@@ -58,6 +71,11 @@ local lastPvPTime = {} -- [Player] = os.clock() of the last PvP damage dealt or 
 local autoHintAt = {} -- [Player] = os.clock() of the last M3 hint
 local painAt = {} -- [Player] = os.clock() of the last "Pain" Fx (A15)
 local lastLoopWarn = {} -- [loopName] = os.clock()
+local guard = {
+	allyStackAt = {}, -- CR-H1: [Player] = os.clock() this player last RECEIVED the Halo ally +stacks
+	autoReleasedAt = {}, -- CR-L22: [Player] = os.clock() of the last automatic release
+	acLogAt = {}, -- CR-H2: [Player] = os.clock() of the last implausible-position log
+}
 
 ------------------------------------------------------------------ small helpers
 local function isPlayer(x)
@@ -169,6 +187,66 @@ local function forwardPoint(root, reach)
 	return root.Position + flat * reach
 end
 
+-- CR-H2: true when this Swing / Release must be ignored. The zone level gate (the attacker stands in a zone whose
+-- MinLevel is above their Level: a teleport hop into a gated zone) is always enforced. ZoneService.IsPlausible logs
+-- an implausible position itself ("suspicious move (check, ...)", shared LogCooldown with its zone loop) and returns
+-- false ONLY while Config.AntiCheat.Enforce is true, so in log-only mode nothing is blocked or logged here. The
+-- Swing / Release line below (at most once per AntiCheat.LogCooldown s) appears only when enforcing; `enforce` is
+-- re-checked so blocking stays gated on Config even if ZoneService ever returns false without it.
+local function attackBlocked(player, root, what)
+	local pos = root.Position
+	local zone = Config.ZoneAt(pos)
+	if (zone.MinLevel or 1) > numAttr(player, "Level", 1) then
+		return true
+	end
+	local zs = S.ZoneService
+	if not (zs and type(zs.IsPlausible) == "function") then
+		return false
+	end
+	local ok, plausible = pcall(zs.IsPlausible, player, pos)
+	if not ok then
+		loopWarn("IsPlausible", plausible)
+		return false
+	end
+	if plausible ~= false then
+		return false
+	end
+	local ac = Config.AntiCheat or {}
+	local enforce = ac.Enforce == true
+	local now = os.clock()
+	if now - (guard.acLogAt[player] or -math.huge) >= (ac.LogCooldown or 10) then
+		guard.acLogAt[player] = now
+		Util.Warn(
+			TAG,
+			string.format(
+				"CR-H2%s implausible %s position: %s (%d) at %s",
+				enforce and "" or " (log only)",
+				tostring(what),
+				player.Name,
+				player.UserId,
+				tostring(pos)
+			)
+		)
+	end
+	return enforce
+end
+
+-- CR-L49: a Swing / Release Fx for the attacker and the players near `center` only (`extent` = the attack's reach
+-- around the center); everyone else would cull it on the client anyway
+local function fxNear(attacker, kind, center, extent, data)
+	local reach = TUNE.FX_CULL + TUNE.FX_SEND_PAD + math.max(0, tonumber(extent) or 0)
+	for _, rp in Players:GetPlayers() do
+		local send = rp == attacker
+		if not send then
+			local r = Util.GetRoot(rp)
+			send = r ~= nil and (r.Position - center).Magnitude <= reach
+		end
+		if send then
+			Net.Fx(rp, kind, data)
+		end
+	end
+end
+
 ------------------------------------------------------------------ charge
 local function publishCharge(player)
 	if player.Parent == nil then
@@ -204,6 +282,7 @@ end
 ------------------------------------------------------------------ target selection
 -- alive monsters this player may hit within `radius` (flat) of `point`, nearest first: { { Rec, Pos, Dist } }
 -- (addendum C2: always passes the attacking player; personal monsters of other players are filtered here too)
+-- CR-H2: zone monsters of a zone whose MinLevel is above the attacker's Level are never targets (personal: always)
 local function monstersNear(player, point, radius)
 	local out = {}
 	if radius <= 0 then
@@ -213,8 +292,11 @@ local function monstersNear(player, point, radius)
 	if type(list) ~= "table" then
 		return out
 	end
+	local level = numAttr(player, "Level", 1)
 	for _, rec in list do
-		if type(rec) == "table" and rec.Alive and (rec.Owner == nil or rec.Owner == player) then
+		local zone = type(rec) == "table" and rec.Owner == nil and Config.Zones[rec.ZoneId] or nil
+		local gated = zone ~= nil and (zone.MinLevel or 1) > level
+		if type(rec) == "table" and rec.Alive and (rec.Owner == nil or rec.Owner == player) and not gated then
 			local root = rec.Root
 			if root and root.Parent then
 				local pos = root.Position
@@ -383,28 +465,29 @@ local function sendPain(victim, hum, rootPos, applied, crit)
 	Net.Fx(nil, "Pain", { UserId = victim.UserId, Pos = rootPos, Big = big })
 end
 
--- attacker nil = monster (or any non-player source); crit (optional) = the hit was a critical hit (Pain "Big")
+-- attacker nil = monster (or any non-player source); crit (optional) = the hit was a critical hit (Pain "Big").
+-- Returns the HP actually removed (CR-M10: no overkill, 0 when nothing was applied).
 function CombatService.DamagePlayer(victim, amount, attacker, crit)
 	if not isPlayer(victim) or victim.Parent == nil then
-		return
+		return 0
 	end
 	if type(amount) ~= "number" or amount ~= amount or amount <= 0 then
-		return
+		return 0
 	end
 	if attacker ~= nil and (not isPlayer(attacker) or attacker == victim) then
 		attacker = nil
 	end
 	-- addendum A6: Neutral (and unassigned) players never deal or receive player damage
 	if attacker and (not PVP_FACTIONS[faction(attacker)] or not PVP_FACTIONS[faction(victim)]) then
-		return
+		return 0
 	end
 	if not Util.IsAlive(victim) then
-		return
+		return 0
 	end
 	local hum = Util.GetHumanoid(victim)
 	local root = Util.GetRoot(victim)
 	if not hum or not root then
-		return
+		return 0
 	end
 
 	amount = Util.RoundDamage(amount)
@@ -420,11 +503,16 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit)
 	local rootPos = root.Position
 	local before = hum.Health
 	hum:TakeDamage(amount) -- respects ForceField
-	local applied = before - hum.Health
+	local applied = math.max(0, before - hum.Health)
 	S.PlayerService.MarkActive(victim)
 	local okPain, errPain = pcall(sendPain, victim, hum, rootPos, applied, crit)
 	if not okPain then
 		loopWarn("Pain", errPain)
+	end
+
+	-- CR-M23: the victim always sees the hit number + red edge, whoever the attacker is (PvP swings, kaiju stomps)
+	if applied > 0 then
+		Net.Fx(victim, "Hurt", { Pos = rootPos, Amount = applied })
 	end
 
 	if attacker then
@@ -436,10 +524,9 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit)
 			autoHintAt[victim] = now
 			Net.Notify(victim, Config.Text.AutoUnderAttack, "bad")
 		end
-		CombatService.PlayerDamaged:Fire(victim, amount, attacker)
-	elseif applied > 0 then
-		Net.Fx(victim, "Hurt", { Pos = rootPos, Amount = amount })
+		CombatService.PlayerDamaged:Fire(victim, applied, attacker) -- CR-M10: real damage (fired even when 0)
 	end
+	return applied
 end
 
 ------------------------------------------------------------------ queries (public)
@@ -481,7 +568,24 @@ local function applyLifesteal(player, perks, total)
 	if not hum or hum.Health <= 0 then
 		return
 	end
-	CombatService.HealPlayer(player, math.min(total * rate, hum.MaxHealth * (perks.LifestealCapPct or 0)))
+	-- CR-M8: an Active kaiju's cap uses its health WITHOUT the kaiju multiplier (x20 MaxHealth outhealed the raid)
+	local capBase = hum.MaxHealth
+	if kstate(player) == "Active" and S.KaijuService and type(S.KaijuService.GetHealthMult) == "function" then
+		local okK, km = pcall(S.KaijuService.GetHealthMult, player)
+		if okK and type(km) == "number" and km > 1 then
+			capBase = capBase / km
+		end
+	end
+	CombatService.HealPlayer(player, math.min(total * rate, capBase * (perks.LifestealCapPct or 0)))
+end
+
+-- CR-M10: damage a monster and return the HP it actually lost (no overkill; 0 when the hit was refused).
+-- killed = DamageMonster's own result
+local function damageMonster(rec, dealt, player, crit)
+	local hpBefore = math.max(0, tonumber(rec.HP) or 0)
+	local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit)
+	local applied = math.max(0, hpBefore - math.max(0, tonumber(rec.HP) or 0))
+	return killed, applied
 end
 
 ------------------------------------------------------------------ A15 monster shove
@@ -516,6 +620,10 @@ function CombatService.Swing(player, isManual)
 	local character = Util.GetCharacter(player)
 	local root = Util.GetRoot(player)
 	if not character or not root then
+		return
+	end
+	-- CR-H2: zone level gate + movement plausibility (before the cooldown: a refused swing costs nothing)
+	if attackBlocked(player, root, "Swing") then
 		return
 	end
 
@@ -629,13 +737,15 @@ function CombatService.Swing(player, isManual)
 				local crit = Util.Random:NextNumber() < Config.Combat.CritChance
 				local d = base * (crit and Config.Combat.CritMult or 1)
 				local dealt = Util.RoundDamage(d * Config.Charge.SwingImmediate)
-				local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit)
-				if not killed then
-					shoveLater("Swing", c.Id, rec, pos, crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING, player) -- A15
+				local killed, applied = damageMonster(rec, dealt, player, crit)
+				if killed or applied > 0 then -- 0 = refused by MonsterService (owner / zone rules): not a hit
+					if not killed then
+						shoveLater("Swing", c.Id, rec, pos, crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING, player) -- A15
+					end
+					table.insert(hits, { P = m.Pos, A = dealt, C = crit, K = "M" }) -- the number shows the hit as dealt
+					totalDealt += applied -- CR-M10: lifesteal counts real damage only
+					monstersHit += 1
 				end
-				table.insert(hits, { P = m.Pos, A = dealt, C = crit, K = "M" })
-				totalDealt += dealt
-				monstersHit += 1
 			end
 		end
 	end
@@ -645,9 +755,8 @@ function CombatService.Swing(player, isManual)
 		local vp = v.Player
 		if vp.Parent and Util.IsAlive(vp) then
 			local dealt = Util.RoundDamage(CombatService.ComputePvPHit(player, vp) * Config.Charge.SwingImmediate)
-			CombatService.DamagePlayer(vp, dealt, player)
-			table.insert(hits, { P = v.Pos, A = dealt, C = false, K = "P" })
-			totalDealt += dealt
+			totalDealt += CombatService.DamagePlayer(vp, dealt, player) or 0 -- CR-M10
+			table.insert(hits, { P = v.Pos, A = dealt, C = false, K = "P", V = vp.UserId }) -- CR-M23: V = victim
 			playersHit += 1
 		end
 	end
@@ -655,15 +764,23 @@ function CombatService.Swing(player, isManual)
 		S.PvPService.BreakProtection(player)
 	end
 
-	-- 5. golden goose: no damage, no charge
+	-- 5. golden goose: no damage, no charge. CR-L21: the number is what RegisterHit really counted (0 = none)
 	if hitGoose and goosePos then
-		S.GooseService.RegisterHit(player, isManual)
-		table.insert(hits, {
-			P = goosePos,
-			A = isManual and Config.Goose.ManualCount or Config.Goose.AutoCount,
-			C = false,
-			K = "G",
-		})
+		local okG, counted = pcall(S.GooseService.RegisterHit, player, isManual)
+		if not okG then
+			loopWarn("GooseHit", counted)
+			counted = 0
+		elseif counted == nil then
+			counted = isManual and Config.Goose.ManualCount or Config.Goose.AutoCount -- GooseService without a return
+		end
+		if type(counted) == "number" and counted == counted and counted > 0 then
+			table.insert(hits, {
+				P = goosePos,
+				A = math.floor(counted * 10 + 0.5) / 10,
+				C = false,
+				K = "G",
+			})
+		end
 	end
 
 	-- 6. charge
@@ -679,8 +796,9 @@ function CombatService.Swing(player, isManual)
 	if isManual or anyHit then
 		S.PlayerService.MarkActive(player)
 
-		-- 9. visuals for everyone (manual whiffs too, with empty Hits)
-		Net.Fx(nil, "Swing", {
+		-- 9. visuals for the attacker + everyone near (manual whiffs too, with empty Hits). CR-L49: the extent covers
+		-- the hand (Splash center up to Range away) and Multi targets (radius 0, up to Range away)
+		fxNear(player, "Swing", center, math.max(radius, range), {
 			UserId = player.UserId,
 			Class = c.Id,
 			Faction = fac,
@@ -704,6 +822,10 @@ function CombatService.Release(player, isAuto)
 	if not root then
 		return
 	end
+	-- CR-H2: zone level gate + movement plausibility (the charge is kept)
+	if attackBlocked(player, root, "Release") then
+		return
+	end
 
 	-- 1. enough stacks?
 	local n = math.floor(charge[player] or 0)
@@ -714,7 +836,8 @@ function CombatService.Release(player, isAuto)
 				perfectUntil[player] = 0
 				publishCharge(player)
 			end
-		else
+		elseif os.clock() - (guard.autoReleasedAt[player] or -math.huge) >= TUNE.AUTO_TOAST_GAP then
+			-- CR-L22: a late manual press right after the automatic release already spent the charge: no red toast
 			Net.Notify(player, string.format(Config.Text.ReleaseNeed, Config.Charge.MinRelease), "bad")
 		end
 		return
@@ -724,13 +847,17 @@ function CombatService.Release(player, isAuto)
 	local fac = faction(player)
 	local perks = perksOf(player)
 
-	-- 2. PERFECT window (manual only)
-	local perfect = (not isAuto) and (perfectUntil[player] or 0) > Util.Now()
+	-- 2. PERFECT window (manual only). CR-L22: + PerfectGrace so a press at the very end still counts (latency)
+	local pu = perfectUntil[player] or 0
+	local perfect = (not isAuto) and pu > 0 and pu + (Config.Charge.PerfectGrace or 0) > Util.Now()
 
 	-- 8 (early). consume the charge first so a failure below can never allow a double release
 	charge[player] = 0
 	perfectUntil[player] = 0
 	publishCharge(player)
+	if isAuto then
+		guard.autoReleasedAt[player] = os.clock() -- CR-L22
+	end
 
 	-- 3. center + radius
 	local pos = root.Position
@@ -756,7 +883,8 @@ function CombatService.Release(player, isAuto)
 	local releaseMult = c.ReleaseMult or 1
 
 	local hits = {}
-	local total, monstersHit, playersHit = 0, 0, 0
+	-- total = HP really removed (CR-M10: heal / lifesteal / Released.Total); shownTotal = the dealt numbers (Fx)
+	local total, shownTotal, monstersHit, playersHit = 0, 0, 0, 0
 
 	-- 4. monsters (never crit)
 	local monsters = monstersNear(player, center, radius)
@@ -765,34 +893,39 @@ function CombatService.Release(player, isAuto)
 		local dealt = Util.RoundDamage(Config.ReleaseDamage(D, n, isAuto) * releaseMult)
 		for _, m in monsters do
 			if m.Rec.Alive then
-				local killed = S.MonsterService.DamageMonster(m.Rec, dealt, player)
-				if not killed then
-					-- A15: a blast pushes outward from its center; the monster at the center goes away from me
-					local from = Util.FlatDistance(m.Pos, center) > 0.5 and center or pos
-					shoveLater("Release", c.Id, m.Rec, from, REACT.SHOVE_RELEASE, player)
+				local killed, applied = damageMonster(m.Rec, dealt, player, nil)
+				if killed or applied > 0 then -- 0 = refused by MonsterService (owner / zone rules): not a hit
+					if not killed then
+						-- A15: a blast pushes outward from its center; the monster at the center goes away from me
+						local from = Util.FlatDistance(m.Pos, center) > 0.5 and center or pos
+						shoveLater("Release", c.Id, m.Rec, from, REACT.SHOVE_RELEASE, player)
+					end
+					table.insert(hits, { P = m.Pos, A = dealt, C = false, K = "M" })
+					total += applied
+					shownTotal += dealt
+					monstersHit += 1
 				end
-				table.insert(hits, { P = m.Pos, A = dealt, C = false, K = "M" })
-				total += dealt
-				monstersHit += 1
 			end
 		end
 	end
 
 	-- 5. players (manual releases only), capped at PvPCapPct of the target's current MaxHealth
+	-- (CR-M7: an Active kaiju at Kaiju.ReleaseCapPct, so its x20 HP is not 3 shots of saved-up stacks)
 	if not isAuto then
 		for _, v in playersNear(player, center, radius) do
 			local vp = v.Player
 			local vHum = Util.GetHumanoid(vp)
 			if vp.Parent and vHum and vHum.Health > 0 then
 				local D = CombatService.ComputePvPHit(player, vp)
-				local raw = math.min(
-					Config.ReleaseDamage(D, n, false) * releaseMult,
-					Config.Charge.PvPCapPct * vHum.MaxHealth
-				)
+				local capPct = Config.Charge.PvPCapPct
+				if kstate(vp) == "Active" then
+					capPct = Config.Kaiju.ReleaseCapPct or 0.08
+				end
+				local raw = math.min(Config.ReleaseDamage(D, n, false) * releaseMult, capPct * vHum.MaxHealth)
 				local dealt = Util.RoundDamage(raw)
-				CombatService.DamagePlayer(vp, dealt, player)
-				table.insert(hits, { P = v.Pos, A = dealt, C = false, K = "P" })
-				total += dealt
+				total += CombatService.DamagePlayer(vp, dealt, player) or 0 -- CR-M10
+				table.insert(hits, { P = v.Pos, A = dealt, C = false, K = "P", V = vp.UserId }) -- CR-M23: V = victim
+				shownTotal += dealt
 				playersHit += 1
 			end
 		end
@@ -804,9 +937,12 @@ function CombatService.Release(player, isAuto)
 	-- 6. Halo release support: heal Halo allies in the radius (self included), +stacks to OTHER allies.
 	-- The stack share needs a release that hit something: otherwise Halo groups could pass charge around
 	-- forever in a safe town (MinRelease 10 = HaloAllyStacks 10) and farm Release quests / PERFECT charge.
+	-- CR-H1: and each receiving ally gets it at most once per Charge.HaloAllyStackCooldown s, or 2+ knights next to
+	-- one slime could release in turn forever (3+ even gained stacks per round).
 	-- (The heal is HaloHealPct x total, so a whiff heals nothing anyway.)
 	local healed = {}
 	local shareStacks = monstersHit + playersHit > 0
+	local stackCooldown = Config.Charge.HaloAllyStackCooldown or 5
 	if perks.ReleaseSupport == true and fac == "Halo" then
 		for _, a in S.PlayerService.GetReadyPlayers() do
 			if a.Parent and faction(a) == "Halo" and Util.IsAlive(a) then
@@ -818,7 +954,9 @@ function CombatService.Release(player, isAuto)
 						math.min(Config.Charge.HaloHealPct * total, Config.Charge.HaloHealCapPct * aHum.MaxHealth)
 					)
 					if a ~= player then
-						if shareStacks then
+						local t = os.clock()
+						if shareStacks and t - (guard.allyStackAt[a] or -math.huge) >= stackCooldown then
+							guard.allyStackAt[a] = t -- CR-H1
 							addCharge(a, Config.Charge.HaloAllyStacks)
 						end
 						if amount > 0 then
@@ -838,8 +976,8 @@ function CombatService.Release(player, isAuto)
 		S.PlayerService.MarkActive(player)
 	end
 
-	-- 9. visuals + signal
-	Net.Fx(nil, "Release", {
+	-- 9. visuals (CR-L49: the attacker + players near the blast) + signal
+	fxNear(player, "Release", center, radius, {
 		UserId = player.UserId,
 		Class = c.Id,
 		Faction = fac,
@@ -848,7 +986,7 @@ function CombatService.Release(player, isAuto)
 		Stacks = n,
 		Perfect = perfect,
 		Auto = isAuto,
-		Total = total,
+		Total = shownTotal, -- the big number = the sum of the hit numbers shown
 		Hits = hits,
 	})
 	CombatService.Released:Fire(player, {
@@ -952,6 +1090,9 @@ local function onPlayerLeaving(player, _data)
 		lastPvPTime[player] = nil
 		autoHintAt[player] = nil
 		painAt[player] = nil
+		guard.allyStackAt[player] = nil -- CR-H1
+		guard.autoReleasedAt[player] = nil -- CR-L22
+		guard.acLogAt[player] = nil -- CR-H2
 	end)
 end
 
@@ -1059,8 +1200,11 @@ local function autoTick(p)
 	if pendingManual[p] then
 		return
 	end
+	-- CR-M17: yield for one full swing interval + pad after a manual request, so a held button never alternates
+	-- with auto swings (the old fixed 1.0 s was <= the Warrior / Mage interval)
+	local c = cls(p)
 	local lm = lastManualAt[p]
-	if lm and os.clock() - lm < Config.Combat.ManualPriority then
+	if lm and os.clock() - lm < (c.SwingInterval or 1) + (Config.Combat.ManualYieldPad or 0.3) then
 		return
 	end
 	if os.clock() < (nextSwingAt[p] or 0) then
@@ -1070,7 +1214,6 @@ local function autoTick(p)
 	if not root then
 		return
 	end
-	local c = cls(p)
 	local range = c.Range or 10
 	local pos = root.Position
 	local count = S.MonsterService.CountInRadius(pos, range, p)
@@ -1086,7 +1229,8 @@ end
 
 local function chargeTick(p)
 	local pu = perfectUntil[p]
-	if pu and pu > 0 and Util.Now() >= pu then
+	-- CR-L22: + PerfectGrace, so a manual release sent at the very end of the window is not stolen
+	if pu and pu > 0 and Util.Now() >= pu + (Config.Charge.PerfectGrace or 0) then
 		CombatService.Release(p, true) -- PERFECT window missed: automatic release (x1.5, monsters only)
 	end
 end

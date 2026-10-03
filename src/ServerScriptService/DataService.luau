@@ -21,7 +21,9 @@ local probeDone = false
 local cache = {} -- [Player] = live session table
 local releasing = {} -- [Player] = true while Release() runs
 local foreignLock = {} -- [Player] = true once another server owns the record (further saves are refused)
-local writeSlot = {} -- [userId] = token while a DataStore operation for that user runs (serializes writes)
+-- CR-M1: [userId] = { token, ... } FIFO of DataStore operations for that user; q[1] holds the slot (serializes
+-- writes in request order, so a fast rejoin's Load can never jump ahead of the previous session's Release)
+local slotQueue = {}
 -- [Player] = GUID this session wrote into the stored record at Load (field SessionToken). A save only lands while the
 -- stored token is still ours, so a delayed write of an old session can never overwrite a newer session's record.
 local sessionTokens = {}
@@ -39,22 +41,44 @@ local function keyFor(userId)
 end
 
 -- per-user write slot: an older copy must never land after a newer one (autosave vs forced save vs release).
--- nil = the previous writer still holds the slot after SLOT_TIMEOUT (the caller fails; it never writes without the slot)
+-- CR-M1: first come, first served. nil = the slot was not reached within SLOT_TIMEOUT (the caller fails; it never
+-- writes without the slot)
 local function acquireSlot(userId)
-	local t0 = os.clock()
-	while writeSlot[userId] do
-		if os.clock() - t0 >= SLOT_TIMEOUT then return nil end
-		task.wait(0.1)
+	local q = slotQueue[userId]
+	if not q then
+		q = {}
+		slotQueue[userId] = q
 	end
 	local token = {}
-	writeSlot[userId] = token
+	table.insert(q, token)
+	local t0 = os.clock()
+	while q[1] ~= token do
+		if os.clock() - t0 >= SLOT_TIMEOUT then
+			local i = table.find(q, token)
+			if i then table.remove(q, i) end
+			if #q == 0 and slotQueue[userId] == q then slotQueue[userId] = nil end
+			return nil
+		end
+		task.wait(0.1)
+	end
 	return token
 end
 
 local function releaseSlot(userId, token)
-	if writeSlot[userId] == token then
-		writeSlot[userId] = nil
+	local q = slotQueue[userId]
+	if not q then return end
+	local i = table.find(q, token)
+	if i then table.remove(q, i) end
+	if #q == 0 and slotQueue[userId] == q then slotQueue[userId] = nil end
+end
+
+-- CR-M1: true while another Player object of this user (a fast rejoin to this server) still has a cached session
+local function hasOtherSession(player)
+	local userId = player.UserId
+	for p in cache do
+		if p ~= player and p.UserId == userId then return true end
 	end
+	return false
 end
 
 local function isLock(lock)
@@ -241,50 +265,31 @@ function DataService.Start()
 	print("[DataService] started")
 end
 
--- yields. nil = failed (caller kicks) or the player left during the load
-function DataService.Load(player)
-	if cache[player] then return cache[player] end
-	if not waitForProbe() then
-		Util.Warn(TAG, "DataStore probe did not finish; cannot load " .. player.Name)
-		return nil
-	end
-	if player.Parent == nil then return nil end
-
-	if memoryMode then
-		local d = Util.DeepCopy(Config.Data.Defaults)
-		d.TutorialStep = TUTORIAL_NEW -- always a fresh record in memory mode (A5-C5)
-		d.Version = Config.Data.Version
-		d.FirstJoinTime = os.time()
-		cache[player] = d
-		return d
-	end
-	if not store then
-		Util.Warn(TAG, "no DataStore available; cannot load " .. player.Name)
-		return nil
-	end
-
+-- Load body; the caller holds the user's write slot. nil = failed or the player left
+local function loadLocked(player)
 	local userId = player.UserId
 	local key = keyFor(userId)
-	-- holding the slot also waits for a previous session of this user on this server (fast rejoin) to finish saving
-	local token = acquireSlot(userId)
-	if not token then
-		Util.Warn(TAG, "a previous save of " .. player.Name .. " is still running; cannot load")
-		return nil
-	end
 	-- one token per Load (retries reuse it, so a committed-but-errored attempt is still recognised as ours)
 	local sessionToken = HttpService:GenerateGUID(false)
 
 	local loaded, fresh = nil, false
 	local retries = math.max(1, Config.Data.LoadRetries)
 	local warnedLock = false
+	local tooNew, storedVersion = false, nil
 	for attempt = 1, retries do
 		if player.Parent == nil then
-			releaseSlot(userId, token)
 			return nil
 		end
 		local final = (attempt == retries) -- the final attempt steals the lock (dead-server recovery)
 		local locked, captured, capturedFresh = false, nil, false
 		local ok, err = pcall(store.UpdateAsync, store, key, function(old)
+			tooNew = false
+			-- CR-L3: a record saved by a newer data version is never rewritten (or locked) by this older server
+			if type(old) == "table" and (tonumber(old.Version) or 1) > Config.Data.Version then
+				tooNew, storedVersion = true, old.Version
+				locked, captured = false, nil
+				return nil
+			end
 			if not final and type(old) == "table" and isLiveForeignLock(old.SessionLock) then
 				locked, captured = true, nil
 				return nil -- cancel the write and retry later
@@ -297,6 +302,9 @@ function DataService.Load(player)
 			captured = d
 			return d
 		end)
+		if ok and tooNew then
+			break
+		end
 		if ok and captured and not locked then
 			loaded, fresh = captured, capturedFresh
 			break
@@ -312,8 +320,13 @@ function DataService.Load(player)
 		end
 	end
 
+	if tooNew then
+		-- CR-L3: kicked with LoadFailed; the player rejoins a server running the newer version
+		Util.Warn(TAG, ("data of %s has version %s (> %d): saved by a newer server; refusing to load"):format(
+			player.Name, tostring(storedVersion), Config.Data.Version))
+		return nil
+	end
 	if not loaded then
-		releaseSlot(userId, token)
 		return nil
 	end
 
@@ -340,14 +353,64 @@ function DataService.Load(player)
 	if player.Parent == nil then
 		-- left during the load: write it back unlocked; nothing is cached
 		writeRecord(userId, d, true, player.Name, sessionToken)
-		releaseSlot(userId, token)
 		return nil
 	end
 
 	sessionTokens[player] = sessionToken
 	cache[player] = d
-	releaseSlot(userId, token)
 	return d
+end
+
+-- yields. nil = failed (caller kicks) or the player left during the load
+function DataService.Load(player)
+	if cache[player] then return cache[player] end
+	if not waitForProbe() then
+		Util.Warn(TAG, "DataStore probe did not finish; cannot load " .. player.Name)
+		return nil
+	end
+	if player.Parent == nil then return nil end
+
+	if memoryMode then
+		local d = Util.DeepCopy(Config.Data.Defaults)
+		d.TutorialStep = TUTORIAL_NEW -- always a fresh record in memory mode (A5-C5)
+		d.Version = Config.Data.Version
+		d.FirstJoinTime = os.time()
+		cache[player] = d
+		return d
+	end
+	if not store then
+		Util.Warn(TAG, "no DataStore available; cannot load " .. player.Name)
+		return nil
+	end
+
+	local userId = player.UserId
+	-- CR-M1: a previous session of this user on this server (fast rejoin) must finish its Release first; its final
+	-- save may not have queued for the slot yet (PlayerLeaving handlers still running)
+	local tWait = os.clock()
+	while hasOtherSession(player) do
+		if player.Parent == nil then return nil end
+		if os.clock() - tWait >= SLOT_TIMEOUT then
+			Util.Warn(TAG, "the previous session of " .. player.Name .. " is still saving; cannot load")
+			return nil
+		end
+		task.wait(0.1)
+	end
+	if player.Parent == nil then return nil end
+
+	-- holding the slot also waits for any queued save of this user (autosave retries, release) to finish first
+	local token = acquireSlot(userId)
+	if not token then
+		Util.Warn(TAG, "a previous save of " .. player.Name .. " is still running; cannot load")
+		return nil
+	end
+	-- the slot is always released, even if the body throws (a leaked slot would block every later load / save)
+	local okBody, result = pcall(loadLocked, player)
+	releaseSlot(userId, token)
+	if not okBody then
+		Util.Warn(TAG, "load error for " .. player.Name .. ": " .. tostring(result))
+		return nil
+	end
+	return result
 end
 
 -- the live session table (mutable)
@@ -374,12 +437,17 @@ function DataService.Save(player, release)
 		releaseSlot(userId, token)
 		return false
 	end
-	local ok, foreign = writeRecord(userId, data, release, player.Name, sessionTokens[player])
+	-- pcall: the slot must be released even if the write throws (CR-M1)
+	local okCall, ok, foreign = pcall(writeRecord, userId, data, release, player.Name, sessionTokens[player])
+	releaseSlot(userId, token)
+	if not okCall then
+		Util.Warn(TAG, "save error for " .. player.Name .. ": " .. tostring(ok))
+		return false
+	end
 	if foreign then
 		foreignLock[player] = true
 	end
-	releaseSlot(userId, token)
-	return ok
+	return ok == true
 end
 
 -- yields; sets LastLogoutTime, final unlocked save, drops the cache. Idempotent.

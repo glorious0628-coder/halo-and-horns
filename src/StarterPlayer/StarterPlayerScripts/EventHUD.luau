@@ -38,6 +38,7 @@ local TOP_PAD = UI_CFG.TopInsetPad or 8 -- addendum H4: top blocks start at inse
 local TOP_FALLBACK = UI_CFG.TopInsetFallback or 64 -- ...or at 64 px when the inset is unknown
 local MIN_TEXT_SIZE = UI_CFG.MinTextSize or 11 -- addendum M1
 local PERSONAL_W, PERSONAL_H = 480, 30
+local PERSONAL_Z = 6 -- CR-L37: above HUD's root frame (ZIndex 5), so quest rows / buttons never cover the sack timer
 local SIREN_H = 64
 
 local MAX_ARROWS = 10
@@ -57,7 +58,8 @@ local L = {
 	IconW = 30, IconH = 34, -- goose icon sticking out of the pill's left end (mockup)
 	StripGap = 6, -- gap under HUD's war meter
 	SubHTouch = 15, -- tug hint line on touch (15 logical = 11 real px at UIScale 0.75)
-	TugSide = 74, -- rescue / poach label width inside the tug bar
+	TugSide = 74, -- rescue / poach label width inside the tug bar (at the full STRIP_W; scales with the strip, CR-L36)
+	StripMinW = 200, -- CR-L36: narrowest strip (HUD clamps its war meter to 200..WarW on narrow phones)
 	Clover = 26,
 	StarMax = 15, StarCap = 10,
 	-- luck panel: fixed thin rim (PanelParchment rim = 19 / 24 image px at top / bottom -> 5.7 / 7.2 px) and the two
@@ -67,6 +69,7 @@ local L = {
 	TrimH = 3, -- siren gold trim
 	ThumbW = 0.4, ThumbH = 0.45, -- U3: touch thumbstick zone = left 40% x bottom 45%
 	ChipsY = 106, ChipsH = 32, -- HUD's status chip row (fallback while its frame is not found)
+	MarkerLabelUp = 26, -- on-screen marker: its label's centre sits this far above the glyph's
 }
 
 ----------------------------------------------------------------- colors / text
@@ -138,6 +141,8 @@ local textConstraints = {} -- { UITextSizeConstraint, baseMax } of every label (
 -- HUD frames the event UI lines up with: the strip sits under "WarMeter", the touch personal line under "StatusChips"
 local hudRef = { WarMeter = { Conns = {} }, StatusChips = { Conns = {} } }
 local layout -- forward declaration (assigned below)
+-- CR-L43: top inset (real px) and raw GetGuiInset top-left cached by layout() for the per-frame arrow placement
+local arrowGeo = { Inset = TOP_FALLBACK - TOP_PAD, TopLeft = nil }
 
 ----------------------------------------------------------------- helpers
 local lastWarnAt = -math.huge
@@ -226,19 +231,26 @@ local function getGuiRoot()
 	ownGui.Name = "EventHUDGui"
 	ownGui.ResetOnSpawn = false
 	ownGui.IgnoreGuiInset = true
+	pcall(function() -- CR-L34: keep the fallback layer inside the notch-safe area (set after IgnoreGuiInset)
+		ownGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+		ownGui.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None
+	end)
 	ownGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	ownGui.DisplayOrder = 10
 	ownGui.Parent = pg
 	return ownGui
 end
 
+-- top inset in real px (fallback TopInsetFallback - TopInsetPad when unknown), plus the raw GetGuiInset top-left
+-- (nil when unknown; CR-L43 maps viewport px onto the arrow layer with it)
 local function insetY()
 	local ok, topLeft = pcall(function()
 		return GuiService:GetGuiInset()
 	end)
-	local y = (ok and typeof(topLeft) == "Vector2") and topLeft.Y or 0
+	local raw = (ok and typeof(topLeft) == "Vector2") and topLeft or nil
+	local y = raw and raw.Y or 0
 	if y <= 0 then y = TOP_FALLBACK - TOP_PAD end
-	return y
+	return y, raw
 end
 
 local function currentScale()
@@ -479,12 +491,13 @@ local function build()
 	}, 16, ui.GooseChip)
 	if not Art.On then ui.GooseChipText.TextColor3 = GOLD end
 
-	-- goose tug-of-war: navy BarTrack capsule, gold rescue fill over the red poach fill
+	-- goose tug-of-war: navy BarTrack capsule, gold rescue fill over the red poach fill. As wide as the strip, which
+	-- layout() narrows on small phones (CR-L36), so every piece inside is sized in scale.
 	ui.Tug = Art.frame("BarTrack", {
 		Name = "GooseTug",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.fromScale(0.5, 0),
-		Size = UDim2.fromOffset(STRIP_W, BAR_H),
+		Size = UDim2.new(1, 0, 0, BAR_H),
 		Visible = false,
 		ZIndex = 3,
 	}, { CornerRadius = UDim.new(0.5, 0) }, ui.Strip)
@@ -540,10 +553,13 @@ local function build()
 		ZIndex = 7,
 	}, ui.Tug)
 	local tugLeftX = tugIcon and 18 or 10
+	-- CR-L36: side labels take the same share of any strip width (TugSide at the full STRIP_W); the title fills the
+	-- middle with 2 px gaps: from tugLeftX + side + 2 to W - 10 - side - 2
+	local sideK = L.TugSide / STRIP_W
 	ui.TugLeftText = Art.text("light", {
 		Name = "RescueText",
 		Position = UDim2.fromOffset(tugLeftX, 2),
-		Size = UDim2.new(0, L.TugSide, 1, -4),
+		Size = UDim2.new(sideK, 0, 1, -4),
 		TextXAlignment = Enum.TextXAlignment.Left,
 		ZIndex = 6,
 	}, 14, ui.Tug)
@@ -551,23 +567,22 @@ local function build()
 		Name = "PoachText",
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.new(1, -10, 0, 2),
-		Size = UDim2.new(0, L.TugSide, 1, -4),
+		Size = UDim2.new(sideK, 0, 1, -4),
 		TextXAlignment = Enum.TextXAlignment.Right,
 		ZIndex = 6,
 	}, 14, ui.Tug)
-	local centerW = STRIP_W - tugLeftX - 10 - 2 * L.TugSide - 4
 	ui.TugCenterText = Art.text("light", {
 		Name = "TitleText",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.fromOffset(tugLeftX + L.TugSide + 2 + centerW / 2, 2),
-		Size = UDim2.new(0, centerW, 1, -4),
+		Position = UDim2.new(0.5, (tugLeftX - 10) / 2, 0, 2),
+		Size = UDim2.new(1 - 2 * sideK, -(tugLeftX + 10 + 4), 1, -4),
 		ZIndex = 6,
 	}, 14, ui.Tug)
 	ui.TugSub = Art.text("light", {
 		Name = "GooseSub",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, BAR_H),
-		Size = UDim2.fromOffset(STRIP_W, subH),
+		Size = UDim2.new(1, 0, 0, subH),
 		Color = AC.LightSub,
 		Visible = false,
 		ZIndex = 3,
@@ -627,8 +642,9 @@ local function build()
 		ZIndex = 7,
 	}, 28, ui.Siren)
 
-	-- personal line: parchment pill with coloured ink (bottom-center at 72%; touch: top-centre under HUD's status
-	-- chips, clear of the thumbstick zone (U3) and the right-hand button column; layout() sets the y)
+	-- personal line: parchment pill with coloured ink (bottom-center at 72%, above HUD's bottom button cluster; touch:
+	-- top-centre under HUD's status chips, clear of the thumbstick zone (U3) and the right-hand button column; layout()
+	-- sets the y and the width). CR-L37: drawn above HUD's root frame (PERSONAL_Z) so nothing covers the sack seconds.
 	ui.Personal = Art.frame("Pill", {
 		Name = "PersonalLine",
 		AnchorPoint = IS_TOUCH and Vector2.new(0.5, 0) or Vector2.new(0.5, 0.5),
@@ -636,13 +652,13 @@ local function build()
 			or UDim2.fromScale(0.5, 0.72),
 		Size = UDim2.fromOffset(PERSONAL_W, PERSONAL_H),
 		Visible = false,
-		ZIndex = 3,
+		ZIndex = PERSONAL_Z,
 	}, { CornerRadius = UDim.new(0.5, 0) }, root)
 	ui.PersonalText = Art.text("ink", {
 		Name = "Text",
 		Position = UDim2.fromOffset(16, 4),
 		Size = UDim2.new(1, -32, 1, -8),
-		ZIndex = 4,
+		ZIndex = PERSONAL_Z + 1,
 	}, 17, ui.Personal)
 	-- ink on parchment; the old bright colours only on the old dark panel
 	if Art.On then
@@ -779,41 +795,107 @@ local function applyMinText(minSize)
 	end
 end
 
+-- CR-L36: centre x and width (logical px) of HUD's top-centre column, i.e. the war meter that HUD narrows / shifts
+-- between the stats card and the right-hand blocks on narrow phones: HUD.TopCenterX / TopCenterW when published,
+-- else the live WarMeter frame (call after hudBottom("WarMeter")), else nil (strip stays at the screen centre)
+local function hudTopCenter(s)
+	local hud = C and C.HUD
+	if type(hud) == "table" then
+		local x, w = num(hud.TopCenterX), num(hud.TopCenterW)
+		if x > 0 and w > 0 then return x, w end
+	end
+	local frame = hudRef.WarMeter.Frame
+	if frame and frame.Parent and frame.AbsoluteSize.X >= 1 then
+		local gui = frame:FindFirstAncestorWhichIsA("LayerCollector")
+		local left = (gui and gui:IsA("GuiBase2d")) and gui.AbsolutePosition.X or 0
+		return (frame.AbsolutePosition.X + frame.AbsoluteSize.X / 2 - left) / s, frame.AbsoluteSize.X / s
+	end
+	return nil, nil
+end
+
+-- CR-L37: (W, H, ClusterTop, ClusterLeft) in logical px from HUD.Layout = { W, H, ClusterTop, ClusterLeft, ... }
+-- (top / left edge of HUD's bottom-right button cluster); W / H fall back to the gui's own size, the cluster to nil
+local function hudLayoutNums(root, s)
+	local W, H = root.AbsoluteSize.X / s, root.AbsoluteSize.Y / s
+	local hl = C and type(C.HUD) == "table" and C.HUD.Layout or nil
+	local clusterTop, clusterLeft = nil, nil
+	if type(hl) == "table" then
+		if num(hl.W) > 0 then W = hl.W end
+		if num(hl.H) > 0 then H = hl.H end
+		if num(hl.ClusterTop) > 0 then clusterTop = hl.ClusterTop end
+		if num(hl.ClusterLeft) > 0 then clusterLeft = hl.ClusterLeft end
+	end
+	return W, H, clusterTop, clusterLeft
+end
+
 -- H4: shift the spec's top slots below the Roblox top bar. Same convention as UIKit's toast stack:
 -- logical offset = slot Y + realInset / UIScale (so the real-pixel top is always >= inset + TopInsetPad).
 layout = function()
 	if not built then return end
+	local root = ui.Strip and ui.Strip.Parent
+	if not root then return end
 	if not guiScale or guiScale.Parent == nil then
-		local root = ui.Strip and ui.Strip.Parent
-		guiScale = root and root:FindFirstChildOfClass("UIScale") or nil
+		guiScale = root:FindFirstChildOfClass("UIScale")
 	end
-	local inset = insetY()
+	local inset, rawInset = insetY()
+	arrowGeo.Inset = inset -- CR-L43: placeArrow keeps the edge arrows below the top bar
+	arrowGeo.TopLeft = rawInset
 	local s = currentScale()
 	local stripY = STRIP_Y + inset / s
 	local wb = hudBottom("WarMeter", s)
 	if wb then stripY = math.max(stripY, wb + L.StripGap) end
 	stripY = math.floor(stripY + 0.5)
+	-- CR-L36: the strip follows HUD's top-centre column (x and width), never wider than STRIP_W
+	local stripX, stripW = nil, STRIP_W
+	local cx, cw = hudTopCenter(s)
+	if cx and cw then
+		stripX = math.floor(cx + 0.5)
+		stripW = math.floor(math.clamp(cw, L.StripMinW, STRIP_W) + 0.5)
+	end
 	-- strip bottom with its tallest content (tug bar + hint line): HUD puts its status chips under it (mockup order
 	-- war bar > timer > goose pill > chips), via the EventStrip "BottomY" attribute / EventHUD.StripBottom()
 	local stripBottom = stripY + ui.Strip.Size.Y.Offset
 	local luckY = math.floor(math.max(LUCK_Y, (inset + TOP_PAD) / s) + 0.5)
-	-- touch: personal line top-centre under HUD's status chips (U3: clear of the thumbstick zone and the button column)
-	local personalY = 0
+	-- CR-L37: personal line width fits the screen; desktop y = 72% or just above HUD's bottom-right button cluster
+	local W, H, clusterTop, clusterLeft = hudLayoutNums(root, s)
+	local personalW = math.max(120, math.min(PERSONAL_W, W - 24))
+	-- the centred line reaches the cluster's x range only when its right end passes ClusterLeft - 8
+	local reachesCluster = clusterTop ~= nil and (clusterLeft == nil or W / 2 + personalW / 2 > clusterLeft - 8)
+	local personalY
 	if IS_TOUCH then
+		-- touch: top-centre under HUD's status chips (U3: clear of the thumbstick zone and the button column)
 		local cb = hudBottom("StatusChips", s)
 		if not cb then cb = math.max(L.ChipsY + inset / s, stripBottom + L.StripGap) + L.ChipsH end
 		personalY = math.floor(math.max(cb, stripBottom) + L.StripGap + 0.5)
+		-- a tall touch cluster (square row + next-weapon card) can reach up to that line: narrow it to end left of it
+		if reachesCluster and clusterLeft and personalY + PERSONAL_H > clusterTop - 8 then
+			personalW = math.max(200, math.min(personalW, 2 * (clusterLeft - 8 - W / 2)))
+		end
+	else
+		local y = 0.72 * H
+		-- only a cluster in the lower half can cover the line (never pull the line above the screen middle)
+		if reachesCluster and clusterTop > H * 0.5 then
+			y = math.max(math.min(y, clusterTop - 8 - PERSONAL_H / 2), H * 0.5)
+		end
+		personalY = math.floor(y + 0.5)
 	end
+	personalW = math.floor(personalW + 0.5)
+	local sized = W >= 10 and H >= 10 -- the gui is laid out (else the build-time spot stays until the next pass)
+	if not sized then personalY = -1 end
 	local minText = MIN_TEXT_SIZE
 	if IS_TOUCH then minText = math.max(MIN_TEXT_SIZE, math.ceil(MIN_TEXT_SIZE / s - 0.01)) end
-	local key = stripY .. ":" .. luckY .. ":" .. personalY .. ":" .. minText
+	local key = table.concat({ stripY, tostring(stripX), stripW, luckY, personalY, personalW, minText }, ":")
 	if key == lastLayoutKey then return end
 	lastLayoutKey = key
-	ui.Strip.Position = UDim2.new(0.5, 0, 0, stripY)
+	ui.Strip.Position = stripX and UDim2.new(0, stripX, 0, stripY) or UDim2.new(0.5, 0, 0, stripY)
+	ui.Strip.Size = UDim2.fromOffset(stripW, ui.Strip.Size.Y.Offset)
 	ui.Strip:SetAttribute("BottomY", stripBottom)
 	ui.Luck.Position = UDim2.new(1, -LUCK_RIGHT, 0, luckY)
 	ui.Luck:SetAttribute("BottomY", luckY + LUCK_H) -- HUD's top-right blocks go below the luck panel
-	if IS_TOUCH then ui.Personal.Position = UDim2.new(0.5, 0, 0, personalY) end
+	if sized then
+		ui.Personal.Position = UDim2.new(0.5, 0, 0, personalY)
+		ui.Personal.Size = UDim2.fromOffset(personalW, PERSONAL_H)
+	end
 	applyMinText(minText)
 end
 
@@ -1075,16 +1157,37 @@ local function hideArrow(a)
 	if a.Label.Visible then a.Label.Visible = false end
 end
 
-local function clampLabel(x, y, vp)
+-- the arrow layer's rect in viewport px (origin, size). UIKit's gui keeps to the device safe area (CR-L34), so the
+-- layer can be narrower than the viewport on notched phones; AbsolutePosition is measured from the GUI inset origin
+-- (viewport px = AbsolutePosition + GetGuiInset top-left). Anything implausible falls back to the whole viewport.
+local function layerRect(vp)
+	local size = ui.Arrows.AbsoluteSize
+	local topLeft = arrowGeo.TopLeft
+	if topLeft and size.X >= 2 and size.Y >= 2 then
+		local origin = ui.Arrows.AbsolutePosition + topLeft
+		if origin.X >= -1 and origin.Y >= -1 and origin.X + size.X <= vp.X + 1 and origin.Y + size.Y <= vp.Y + 1 then
+			return origin, size
+		end
+	end
+	return Vector2.new(0, 0), vp
+end
+
+-- viewport px -> Position on the arrow layer (yOffset: logical px)
+local function onLayer(x, y, origin, size, yOffset)
+	return UDim2.new((x - origin.X) / size.X, 0, (y - origin.Y) / size.Y, yOffset or 0)
+end
+
+local function clampLabel(x, y, origin, size)
 	local s = currentScale()
 	local halfW = ARROW_LABEL_W * s / 2 + 4
 	local halfH = ARROW_LABEL_H * s / 2 + 4
-	x = math.clamp(x, math.min(halfW, vp.X / 2), math.max(vp.X - halfW, vp.X / 2))
-	y = math.clamp(y, math.min(halfH, vp.Y / 2), math.max(vp.Y - halfH, vp.Y / 2))
+	local midX, midY = origin.X + size.X / 2, origin.Y + size.Y / 2
+	x = math.clamp(x, math.min(origin.X + halfW, midX), math.max(origin.X + size.X - halfW, midX))
+	y = math.clamp(y, math.min(origin.Y + halfH, midY), math.max(origin.Y + size.Y - halfH, midY))
 	return x, y
 end
 
-local function placeArrow(a, target, root, cam, vp)
+local function placeArrow(a, target, root, cam, vp, origin, size)
 	local scale = num(target.Player:GetAttribute("VisualScale"))
 	if scale <= 0 then scale = 1 end
 	local world = root.Position + Vector3.new(0, 4.2 * scale, 0)
@@ -1094,14 +1197,18 @@ local function placeArrow(a, target, root, cam, vp)
 	if a.Label.Text ~= target.Label then a.Label.Text = target.Label end
 
 	if onScreen and sp.Z > 0 then
-		-- small marker above the target
+		-- small marker above the target. CR-L43 (H4): a head near the top of the view (kaiju, high ground) would put the
+		-- pair in the Roblox top bar, so it moves down until the label's top (the pair's highest point) is at
+		-- inset + TopInsetPad or lower
+		local s = currentScale()
+		local my = math.max(sp.Y, arrowGeo.Inset + TOP_PAD + (L.MarkerLabelUp + ARROW_LABEL_H / 2) * s)
 		if a.Glyph.Text ~= MARKER_GLYPH then a.Glyph.Text = MARKER_GLYPH end
 		a.Glyph.Rotation = 0
-		a.Glyph.Position = UDim2.fromScale(sp.X / vp.X, sp.Y / vp.Y)
-		a.Label.Position = UDim2.new(sp.X / vp.X, 0, sp.Y / vp.Y, -26)
+		a.Glyph.Position = onLayer(sp.X, my, origin, size)
+		a.Label.Position = onLayer(sp.X, my, origin, size, -L.MarkerLabelUp)
 	else
-		-- clamp to the screen edge, rotated toward the target
-		local center = vp / 2
+		-- clamp to the layer's edge, rotated toward the target
+		local center = origin + size / 2
 		local dir
 		if sp.Z > 0 then
 			dir = Vector2.new(sp.X, sp.Y) - center
@@ -1110,21 +1217,26 @@ local function placeArrow(a, target, root, cam, vp)
 			dir = Vector2.new(rel.X, -rel.Y)
 		end
 		if dir.Magnitude < 1e-3 then dir = Vector2.new(0, 1) end
-		local halfW = math.max(1, center.X - EDGE_MARGIN)
-		local halfH = math.max(1, center.Y - EDGE_MARGIN)
+		local halfW = math.max(1, size.X / 2 - EDGE_MARGIN)
+		local halfH = math.max(1, size.Y / 2 - EDGE_MARGIN)
 		local sx = math.abs(dir.X) > 1e-6 and halfW / math.abs(dir.X) or math.huge
 		local sy = math.abs(dir.Y) > 1e-6 and halfH / math.abs(dir.Y) or math.huge
 		local edge = center + dir * math.min(sx, sy)
 		local s = currentScale()
-		local gx, gy = outOfThumbZone(edge.X, edge.Y, vp, ARROW_GLYPH_SIZE * s / 2, ARROW_GLYPH_SIZE * s / 2)
+		local glyphHalf = ARROW_GLYPH_SIZE * s / 2
+		local gx, gy = outOfThumbZone(edge.X, edge.Y, vp, glyphHalf, glyphHalf)
+		-- CR-L43 (H4): never in the Roblox top bar; the glyph's top stays at inset + TopInsetPad or lower
+		local topMin = math.max(origin.Y + EDGE_MARGIN, arrowGeo.Inset + TOP_PAD + glyphHalf)
+		if gy < topMin then gy = topMin end
 		edge = Vector2.new(gx, gy)
 		local inward = -dir.Unit * LABEL_INSET
-		local lx, ly = clampLabel(edge.X + inward.X, edge.Y + inward.Y, vp)
+		local lx, ly = clampLabel(edge.X + inward.X, edge.Y + inward.Y, origin, size)
 		lx, ly = outOfThumbZone(lx, ly, vp, ARROW_LABEL_W * s / 2, ARROW_LABEL_H * s / 2)
+		ly = math.max(ly, arrowGeo.Inset + TOP_PAD + ARROW_LABEL_H * s / 2) -- ... and so does its label (CR-L43)
 		if a.Glyph.Text ~= EDGE_GLYPH then a.Glyph.Text = EDGE_GLYPH end
 		a.Glyph.Rotation = math.deg(math.atan2(dir.Y, dir.X))
-		a.Glyph.Position = UDim2.fromScale(edge.X / vp.X, edge.Y / vp.Y)
-		a.Label.Position = UDim2.fromScale(lx / vp.X, ly / vp.Y)
+		a.Glyph.Position = onLayer(edge.X, edge.Y, origin, size)
+		a.Label.Position = onLayer(lx, ly, origin, size)
 	end
 	if not a.Glyph.Visible then a.Glyph.Visible = true end
 	if not a.Label.Visible then a.Label.Visible = true end
@@ -1140,12 +1252,13 @@ local function onRender()
 	if cam and ui.Arrows.Visible and #activeTargets > 0 then
 		local vp = cam.ViewportSize
 		if vp.X >= 2 and vp.Y >= 2 then
+			local origin, size = layerRect(vp)
 			for _, t in activeTargets do
 				if used >= MAX_ARROWS then break end
 				local root = getRoot(t.Player)
 				if root then
 					used += 1
-					placeArrow(arrows[used], t, root, cam, vp)
+					placeArrow(arrows[used], t, root, cam, vp, origin, size)
 				end
 			end
 		end

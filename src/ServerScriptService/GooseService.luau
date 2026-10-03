@@ -4,6 +4,8 @@
 -- SPEC_ADDENDUM A6: only Halo/Horns players add tug counts and receive tug rewards (Neutral/None count 0).
 -- Review fixes: a reward needs >= MIN_MANUAL_HITS manual counts (auto-only AFK players still pull, never get paid), and a
 -- faction switch mid-event forfeits that player's entry (no pulling for one side and collecting the other's win).
+-- CR-L8: a win with no rival faction online becomes a Tie. CR-L21: GetPosition follows the tug pivot; RegisterHit
+-- returns the count actually added (0 = rejected).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local RunService = game:GetService("RunService")
@@ -484,6 +486,17 @@ local function finish()
 	setGame("GooseNextAt", nextAt)
 
 	local result = (rescue > poach) and "Halo" or ((poach > rescue) and "Horns" or "Tie")
+	-- CR-L8: no rival faction online -> no winner (no 100% winner reward, no war points). Called directly: the call
+	-- helper only returns the first result.
+	local noRival = false
+	local fs = S and S.FactionService
+	if result ~= "Tie" and fs and type(fs.GetCounts) == "function" then
+		local okC, halo, horns = pcall(fs.GetCounts)
+		if okC and ((tonumber(halo) or 0) <= 0 or (tonumber(horns) or 0) <= 0) then
+			result = "Tie"
+			noRival = true
+		end
+	end
 	local fxPos = (gooseRoot and gooseRoot.Parent) and gooseRoot.Position or gooseCenter()
 	local finalCounts, finalManual, finalSide = counts, manualHits, sideOf
 	counts = {}
@@ -512,7 +525,11 @@ local function finish()
 		call("WarService", "AddFactionPoints", result, Config.Goose.WinWarPoints)
 	end
 	local okSend, sendErr = pcall(function()
-		Net.NotifyAll(string.format(Config.Story.GooseResult[result]))
+		if noRival and Config.Story.GooseNoRival then
+			Net.NotifyAll(string.format(Config.Story.GooseNoRival)) -- CR-L8: replaces the plain tie banner
+		else
+			Net.NotifyAll(string.format(Config.Story.GooseResult[result]))
+		end
 		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result })
 	end)
 	if not okSend then warnThrottled("send", "goose result broadcast failed: " .. tostring(sendErr)) end
@@ -598,16 +615,18 @@ function GooseService.IsActive()
 	return active
 end
 
+-- CR-L21: includes the tug pivot (sideOffset, +-MAX_SIDE_OFFSET) so swing range checks match the goose players see
 function GooseService.GetPosition()
 	if not active then return nil end
-	return gooseCenter()
+	return gooseCenter() + Vector3.new(sideOffset, 0, 0)
 end
 
+-- returns the tug count actually added (0 = rejected), so CombatService can show the real "+N" (CR-L21)
 function GooseService.RegisterHit(player, isManual)
-	if not active then return end
-	if not isReady(player) then return end
+	if not active then return 0 end
+	if not isReady(player) then return 0 end
 	local f = factionOf(player)
-	if not isTugFaction(f) then return end -- A6: Neutral swings on the goose count 0
+	if not isTugFaction(f) then return 0 end -- A6: Neutral swings on the goose count 0
 	if sideOf[player] ~= nil and sideOf[player] ~= f then
 		dropEntry(player) -- defensive: faction changed without a FactionChanged signal -> fresh entry for the new side
 	end
@@ -622,7 +641,7 @@ function GooseService.RegisterHit(player, isManual)
 	while list[1] and now - list[1] >= 1 do
 		table.remove(list, 1)
 	end
-	if #list >= Config.Goose.MaxCountsPerSecond then return end
+	if #list >= Config.Goose.MaxCountsPerSecond then return 0 end
 	table.insert(list, now)
 
 	local scale = tonumber(call("JusticeService", "GetFactionScale", f)) or 1
@@ -639,6 +658,7 @@ function GooseService.RegisterHit(player, isManual)
 		poach += amount
 	end
 	player:SetAttribute("GooseCount", math.floor(counts[player]))
+	return amount
 end
 
 function GooseService.DebugStart()

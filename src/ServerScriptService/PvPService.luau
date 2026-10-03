@@ -11,8 +11,15 @@ local TAG = "PvPService"
 
 -- (the A3-M3 "under attack while auto-attack is ON" hint is sent by CombatService.DamagePlayer only)
 local LOOP_INTERVAL = 1
-local PRUNE_INTERVAL = 60 -- seconds between prunes of the pair tables
+local PRUNE_INTERVAL = 60 -- seconds between prunes of the bait damage log
 local LOOP_WARN_INTERVAL = 10
+
+-- review-fix tuning knobs (grouped to keep the chunk's local count low)
+local GUARD = {
+	DmgLogMax = 64, -- CR-M15: hits kept per attacker/victim pair (oldest dropped first)
+	RecentHitSeconds = 3, -- CR-L4: a non-PvP death without damage this recent (reset / fall) keeps the stars
+	KoLogKeep = math.max(1, Config.Bully.RepeatKOs - 1), -- CR-M4: KO times kept per killer/victim pair ({ t1, t2 })
+}
 
 -- Most Wanted board lines (TECH_SPEC §4.13 board text)
 local BOARD_WANTED_TITLE = "현상수배 TOP 3"
@@ -33,17 +40,16 @@ local stars = {} -- [Player] = number
 local lastStarChange = {} -- [Player] = os.clock()
 local protectedUntil = {} -- [Player] = os.clock() (0 = not protected)
 local spawnedAt = {} -- [Player] = os.clock() of the last CharacterSpawned
-local lastHitOn = {} -- [attacker][victim] = os.clock() (attacker damaged victim)
+-- CR-M15: [attacker][victim] = { { T = os.clock(), A = damage }, ... } within Config.Bully.BaitWindow (bait check)
+local dmgLog = {}
 local revenge = {} -- [Player] = { Target = Player, Until = os.clock() }
 
--- pair state keyed by "killerUserId:victimUserId" so a rejoin cannot reset it; pruned by age
-local koLog = {} -- [pairKey] = { os.clock(), ... } within Config.Bully.RepeatWindow
-local pairReward = {} -- [pairKey] = os.clock() of the last minted reward
+-- CR-M4: pair state (minted KO reward, repeat-KO log, claimed bully bounty) lives in the saved PairCD of the player
+-- it belongs to, so a server hop or rejoin cannot reset it (pairReady / logKO below; pruned by PlayerService)
 
 -- anti-farm: the minted bully part of a bounty is paid at most once per victim (any killer) per this window,
--- the time a max-stack bully needs to decay back to clean. Keyed by victim UserId; pruned by age.
+-- the time a max-stack bully needs to decay back to clean. Stored in the victim's PairCD as "bully:0".
 local BULLY_BOUNTY_COOLDOWN = Config.Bully.DecaySeconds * Config.Bully.MaxStacks
-local bullyBountyAt = {} -- [victimUserId] = os.clock() of the last minted bully bounty on that victim
 
 local lastLoopWarn = 0
 
@@ -107,14 +113,100 @@ local function bullyStacksOf(p)
 	return tonumber(S.JusticeService.GetBullyStacks(p)) or 0
 end
 
--- bully stacks that still carry a bounty: 0 while this bully's bounty was already claimed (BULLY_BOUNTY_COOLDOWN).
--- The stacks themselves (size / damage penalty, "깡패" tag) stay with JusticeService.
-local function bountyBullyStacks(p, now)
-	local t = bullyBountyAt[p.UserId]
-	if t ~= nil and (now or os.clock()) - t < BULLY_BOUNTY_COOLDOWN then
+local function classOf(p)
+	local C = S.ClassService
+	return (C and C.GetClass and C.GetClass(p)) or "Warrior"
+end
+
+-- CR-M4: pair cooldown kept in the holder's saved PairCD ("<kind>:<otherUserId>" = os.time()). PlayerService.PairReady
+-- owns it; the inline copy follows the same contract. commit = false only checks. No data -> false (no reward).
+local function pairReady(holder, otherUserId, kind, cooldown, commit)
+	if not holder then
+		return false
+	end
+	local PS = S.PlayerService
+	if PS.PairReady then
+		local ok, res = pcall(PS.PairReady, holder, otherUserId, kind, cooldown, commit)
+		return ok and res == true
+	end
+	local d = PS.GetData(holder)
+	if type(d) ~= "table" then
+		return false
+	end
+	if type(d.PairCD) ~= "table" then
+		d.PairCD = {}
+	end
+	local k = kind .. ":" .. tostring(otherUserId)
+	local t = os.time()
+	if t - (tonumber(d.PairCD[k]) or 0) < cooldown then
+		return false
+	end
+	if commit ~= false then
+		d.PairCD[k] = t
+	end
+	return true
+end
+
+-- CR-M4: the killer's recent KO times on this victim live in the killer's PairCD as "kolog:<victimUserId>" =
+-- { t1, t2 } (os.time, oldest first). Records this KO; true when it is the RepeatKOs-th within RepeatWindow.
+local function logKO(killer, victim)
+	local B = Config.Bully
+	local d = S.PlayerService.GetData(killer)
+	if type(d) ~= "table" then
+		return false
+	end
+	if type(d.PairCD) ~= "table" then
+		d.PairCD = {}
+	end
+	local k = "kolog:" .. tostring(victim.UserId)
+	local t = os.time()
+	local times = {}
+	local old = d.PairCD[k]
+	if type(old) == "table" then
+		for _, v in old do
+			local x = tonumber(v)
+			if x and t - x <= B.RepeatWindow then
+				table.insert(times, x)
+			end
+		end
+		table.sort(times)
+	end
+	table.insert(times, t)
+	local repeated = #times >= B.RepeatKOs
+	while #times > GUARD.KoLogKeep do
+		table.remove(times, 1)
+	end
+	d.PairCD[k] = times
+	return repeated
+end
+
+-- bully stacks that still carry a bounty: 0 while this bully's bounty was already claimed (BULLY_BOUNTY_COOLDOWN,
+-- the victim's PairCD "bully:0"). The stacks themselves (size / damage penalty, "깡패" tag) stay with JusticeService.
+local function bountyBullyStacks(p)
+	local n = bullyStacksOf(p)
+	if n <= 0 or not pairReady(p, 0, "bully", BULLY_BOUNTY_COOLDOWN, false) then
 		return 0
 	end
-	return bullyStacksOf(p)
+	return n
+end
+
+-- marks this bully's bounty as claimed (by any killer) for BULLY_BOUNTY_COOLDOWN
+local function claimBullyBounty(p)
+	pairReady(p, 0, "bully", 0)
+end
+
+-- CR-L5: weak-victim check power WITHOUT the rebirth bonus (that bonus is gold / XP only)
+local function combatPower(p)
+	local J = S.JusticeService
+	if J and J.GetCombatPower then
+		local ok, v = pcall(J.GetCombatPower, p)
+		if ok and type(v) == "number" then
+			return v
+		end
+	end
+	local level = math.max(1, num(p, "Level", 1))
+	local tier = math.clamp(math.floor(num(p, "WeaponTier", 1)), 1, Config.MaxWeaponTier)
+	return Config.PowerOf(level, tier, 1)
 end
 
 -- addendum A10-V3-3: inside a PvP zone, or combat-tagged (Config.PvP.CombatTagTime) anywhere outside a town
@@ -128,20 +220,27 @@ local function rootPos(p)
 	return root and root.Position or nil
 end
 
-local function pairKey(a, b)
-	return tostring(a.UserId) .. ":" .. tostring(b.UserId)
+-- CR-M15: remove every hit with T < cutoff from an ascending dmgLog list
+local function pruneHits(hits, cutoff)
+	while hits[1] ~= nil and hits[1].T < cutoff do
+		table.remove(hits, 1)
+	end
 end
 
--- remove every time < cutoff from an ascending array of os.clock() values
-local function pruneTimes(log, cutoff)
-	local i = 1
-	while i <= #log do
-		if log[i] < cutoff then
-			table.remove(log, i)
-		else
-			i += 1
+-- CR-M15: total damage `attacker` dealt to `victim` within Config.Bully.BaitWindow
+local function recentDamage(attacker, victim, now)
+	local byVictim = dmgLog[attacker]
+	local hits = byVictim and byVictim[victim]
+	if not hits then
+		return 0
+	end
+	local sum = 0
+	for _, h in hits do
+		if now - h.T <= Config.Bully.BaitWindow then
+			sum += h.A
 		end
 	end
+	return sum
 end
 
 local function computeBounty(p)
@@ -329,6 +428,12 @@ function PvPService.HandleNonPvPDeath(victim)
 		return
 	end
 	if (stars[victim] or 0) >= 1 then
+		-- CR-L4: a death in town or without damage in the last few seconds (reset, fall) keeps the stars and bounty:
+		-- carried gold is 0 in town, so a reset there would otherwise wipe them for free
+		local lastHit = tonumber(S.CombatService.GetLastDamagedAt(victim)) or 0
+		if S.ZoneService.IsTown(victim) == true or os.clock() - lastHit > GUARD.RecentHitSeconds then
+			return
+		end
 		local carried = num(victim, "CarriedGold", 0)
 		local loss = math.floor(carried * Config.PvP.VillainLossOnWantedPvEDeath)
 		if loss > 0 then
@@ -359,34 +464,34 @@ function PvPService.HandleKO(victim, killer)
 	local Justice = S.JusticeService
 	local Progression = S.ProgressionService
 	local now = os.clock()
-	local key = pairKey(killer, victim)
 
-	-- 1. snapshot + KO log
+	-- 1. snapshot + KO log (CR-M4: the log is kept in the killer's save)
 	local starsBefore = stars[victim] or 0
 	local bullyBefore = bullyStacksOf(victim)
 	-- the victim's bully stacks that still pay a bounty (0 once claimed; anti-farm, see BULLY_BOUNTY_COOLDOWN)
-	local bountyBully = bountyBullyStacks(victim, now)
-	local log = koLog[key]
-	if not log then
-		log = {}
-		koLog[key] = log
-	end
-	table.insert(log, now)
-	pruneTimes(log, now - B.RepeatWindow)
+	local bountyBully = bountyBullyStacks(victim)
+	local repeated = logKO(killer, victim)
 
 	-- 2. bully check (any faction pairing)
-	local weak = (tonumber(Justice.GetPower(victim)) or 0) < B.WeakPowerRatio * (tonumber(Justice.GetPower(killer)) or 0)
-	local victimHits = lastHitOn[victim]
-	local baitAt = victimHits and victimHits[killer]
-	if weak and baitAt and now - baitAt <= B.BaitWindow then
-		weak = false -- anti-bait: the victim hit the killer first
+	local weak = combatPower(victim) < B.WeakPowerRatio * combatPower(killer) -- CR-L5
+	-- CR-M15: bait = the victim dealt >= BaitMinPct of the killer's base MaxHealth to the killer within BaitWindow
+	local baitNeed = (B.BaitMinPct or 0.2) * Config.MaxHealth(num(killer, "Level", 1), fk, classOf(killer))
+	local baitDealt = recentDamage(victim, killer, now)
+	local baited = baitDealt > 0 and baitDealt >= baitNeed
+	if weak and baited then
+		weak = false -- anti-bait: the victim attacked the killer first
 	end
 	if weak and B.WantedIgnoresWeakRule and (starsBefore > 0 or bullyBefore > 0) then
 		weak = false
 	end
 	local fresh = spawnedAt[victim] ~= nil and now - spawnedAt[victim] < B.FreshSpawnSeconds
-	local repeated = #log >= B.RepeatKOs
 	local bully = weak or fresh or repeated
+	-- CR-M14: a fresh / repeat KO of a victim who baited the killer is self-defense (no bully stack, no rewards),
+	-- and a kaiju never becomes a bully (that would double its kaiju pool)
+	local defense = baited and (fresh or repeated)
+	if defense or kstate(killer) ~= "None" then
+		bully = false
+	end
 
 	-- 3. revenge (always)
 	revenge[victim] = { Target = killer, Until = now + Config.Revenge.Duration }
@@ -403,7 +508,10 @@ function PvPService.HandleKO(victim, killer)
 	end
 
 	local info
-	if bully then
+	if defense then
+		-- CR-M14: self-defense KO: no bully stack, stars, plunder, honor/infamy, bounty or war points
+		info = { Kind = "Defense", Bully = false, VictimStars = starsBefore, Stolen = 0, Bounty = 0, Rewarded = false }
+	elseif bully then
 		-- 4. bully KO: no plunder, stars, honor/infamy, bounty or war points
 		local n = math.floor(tonumber(Justice.AddBullyStack(killer)) or 0)
 		notify(killer, fmt("BullyKO", n), "bad")
@@ -411,16 +519,15 @@ function PvPService.HandleKO(victim, killer)
 		refreshStarAttrs(killer) -- bounty doubles while a bully
 		info = { Kind = "Bully", Bully = true, VictimStars = starsBefore, Stolen = 0, Bounty = 0, Rewarded = false }
 	else
-		-- 5. pair cooldown for minted rewards
-		local pairOk = now - (pairReward[key] or -math.huge) >= P.PairRewardCooldown
-		if pairOk then
-			pairReward[key] = now
-		end
+		-- 5. pair cooldown for minted rewards (CR-M4: kept in the killer's save as "ko:<victimUserId>")
+		local pairOk = pairReady(killer, victim.UserId, "ko", P.PairRewardCooldown)
 		local vLevel = num(victim, "Level", 1)
 
 		if fk == "Horns" then
 			-- 6a. Horns KO Halo: plunder into the grudge sack
-			addStar(killer)
+			if pairOk then
+				addStar(killer) -- CR-M3: a farmed pair (inside the cooldown) adds no star
+			end
 			local stolen = 0
 			if not S.GrudgeService.CanSteal(killer, victim) then
 				notify(killer, fmt("PlunderTooSoon"), "info")
@@ -448,7 +555,7 @@ function PvPService.HandleKO(victim, killer)
 			if bountyBully > 0 and pairOk then
 				bullyBounty = Config.Bounty(vLevel, 0, bountyBully)
 				if bullyBounty > 0 then
-					bullyBountyAt[victim.UserId] = now -- claimed: no bully bounty on this victim for any killer for a while
+					claimBullyBounty(victim) -- claimed: no bully bounty on this victim for any killer for a while
 					Progression.AddBankGold(killer, bullyBounty, "Bounty")
 					notify(killer, fmt("BullyBountyGain", Util.FormatNumber(bullyBounty)), "reward")
 				end
@@ -469,7 +576,7 @@ function PvPService.HandleKO(victim, killer)
 			local bounty = pairOk and Config.Bounty(vLevel, starsBefore, bountyBully) or 0
 			if bounty > 0 then
 				if bountyBully > 0 then
-					bullyBountyAt[victim.UserId] = now -- claimed: no bully bounty on this victim for any killer for a while
+					claimBullyBounty(victim) -- claimed: no bully bounty on this victim for any killer for a while
 				end
 				Progression.AddBankGold(killer, bounty, "Bounty")
 			end
@@ -601,31 +708,97 @@ local function tickPlayer(p, now)
 	end
 end
 
-local function prunePairs(now)
-	local rewardHorizon = Config.PvP.PairRewardCooldown
-	for key, t in pairReward do
-		if now - t > rewardHorizon then
-			pairReward[key] = nil
+-- CR-M15: drop bait-log hits older than BaitWindow (pair state itself is in the saves, CR-M4)
+local function pruneDmgLog(now)
+	local cutoff = now - Config.Bully.BaitWindow
+	for attacker, byVictim in dmgLog do
+		for victim, hits in byVictim do
+			pruneHits(hits, cutoff)
+			if #hits == 0 then
+				byVictim[victim] = nil
+			end
 		end
-	end
-	for userId, t in bullyBountyAt do
-		if now - t >= BULLY_BOUNTY_COOLDOWN then
-			bullyBountyAt[userId] = nil
-		end
-	end
-	local cutoff = now - Config.Bully.RepeatWindow
-	for key, log in koLog do
-		pruneTimes(log, cutoff)
-		if #log == 0 then
-			koLog[key] = nil
+		if next(byVictim) == nil then
+			dmgLog[attacker] = nil
 		end
 	end
 end
 
+-- CR-M12: stars saved at leave come back on the next join minus the decay for the time away, capped below the kaiju
+-- threshold. Clears the saved fields. Returns (stars, seconds already spent toward the next decay step).
+local function takeSavedStars(player, data)
+	if type(data) ~= "table" then
+		return 0, 0
+	end
+	local saved = math.floor(tonumber(data.SavedStars) or 0)
+	local at = tonumber(data.SavedStarsAt) or 0
+	data.SavedStars = 0
+	data.SavedStarsAt = 0
+	if saved <= 0 or at <= 0 or not isFighter(faction(player)) then
+		return 0, 0
+	end
+	local step = math.max(1, Config.PvP.StarDecaySeconds)
+	local away = math.max(0, os.time() - at)
+	local decayed = math.floor(away / step)
+	local needed = (Config.Kaiju and Config.Kaiju.StarsNeeded) or Config.PvP.MaxStars
+	local cap = math.max(0, math.min(Config.PvP.MaxStars, needed - 1))
+	local n = math.clamp(saved - decayed, 0, cap)
+	return n, away - decayed * step
+end
+
+-- CR-M11: a Wanted Horns logging out while combat-tagged pays the bounty (+ honor, like a bounty KO) to the last Halo
+-- attacker, once per pair per PairRewardCooldown. Returns true when paid (the stars count as claimed).
+local function payLeaveBounty(player)
+	-- CR-M11 / CR-M2: a server shutdown is not the player's choice; keep the stars (saved by CR-M12) instead
+	local PS = S.PlayerService
+	if PS and type(PS.IsShuttingDown) == "function" then
+		local okS, closing = pcall(PS.IsShuttingDown)
+		if okS and closing == true then
+			return false
+		end
+	end
+	local s = stars[player] or 0
+	if s < 1 or faction(player) ~= "Horns" or kstate(player) == "Active" then
+		return false -- an Active kaiju's logout is resolved by KaijuService
+	end
+	local C = S.CombatService
+	if not C.IsInCombat(player) then
+		return false
+	end
+	local a = C.GetLastPvPAttacker(player)
+	if a == nil or a == player or not isPlaying(a) or not S.PlayerService.IsReady(a) or faction(a) ~= "Halo" then
+		return false
+	end
+	if not pairReady(a, player.UserId, "ko", Config.PvP.PairRewardCooldown) then
+		return false
+	end
+	local bully = bountyBullyStacks(player) -- 0 when this bully's bounty was already claimed
+	local bounty = Config.Bounty(num(player, "Level", 1), s, bully)
+	local honor = math.max(1, s)
+	if bounty > 0 then
+		if bully > 0 then
+			claimBullyBounty(player)
+		end
+		S.ProgressionService.AddBankGold(a, bounty, "Bounty")
+	end
+	S.PlayerService.AddStat(a, "Honor", honor)
+	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
+	if s >= Config.PvP.GlowStars and bounty > 0 then
+		Net.NotifyAll(fmt("BountyAnnounce", a.DisplayName, Util.FormatNumber(bounty)))
+	end
+	return true
+end
+
 ------------------------------------------------------------------ signal handlers
-local function onPlayerReady(player)
-	stars[player] = 0
-	lastStarChange[player] = os.clock()
+local function onPlayerReady(player, data)
+	-- CR-M12: bring back the stars saved at the last leave (decayed); failures just start clean
+	local okSaved, restored, partial = pcall(takeSavedStars, player, data or S.PlayerService.GetData(player))
+	if not okSaved then
+		Util.Warn(TAG, "saved stars restore failed: " .. tostring(restored))
+		restored, partial = 0, 0
+	end
+	stars[player] = restored
+	lastStarChange[player] = os.clock() - (restored > 0 and partial or 0)
 	protectedUntil[player] = 0
 	player:SetAttribute("WantedStars", 0)
 	player:SetAttribute("Bounty", 0)
@@ -633,6 +806,9 @@ local function onPlayerReady(player)
 	player:SetAttribute("Protected", false)
 	player:SetAttribute("RevengeTargetId", 0)
 	player:SetAttribute("RevengeUntil", 0)
+	if restored > 0 then
+		refreshStarAttrs(player)
+	end
 end
 
 local function cleanupPlayer(player)
@@ -642,13 +818,33 @@ local function cleanupPlayer(player)
 	protectedUntil[player] = nil
 	spawnedAt[player] = nil
 	revenge[player] = nil
-	lastHitOn[player] = nil
-	for _, hits in lastHitOn do
-		hits[player] = nil
+	dmgLog[player] = nil
+	for _, byVictim in dmgLog do
+		byVictim[player] = nil
 	end
 end
 
-local function onPlayerLeaving(player)
+local function onPlayerLeaving(player, data)
+	-- CR-M11: runs before KaijuService's handler (init order) and while JusticeService still reports the bully
+	-- stacks (CR-L1 defers their cleanup)
+	local okPay, paid = pcall(payLeaveBounty, player)
+	if not okPay then
+		Util.Warn(TAG, "leave bounty failed: " .. tostring(paid))
+		paid = false
+	end
+	-- CR-M12: save the unclaimed stars so a rejoin cannot wipe them; a paid leave bounty or an Active kaiju
+	-- (KaijuService resolves it) leaves none
+	local d = data or S.PlayerService.GetData(player)
+	if type(d) == "table" then
+		local keep = (paid == true or kstate(player) == "Active") and 0 or (stars[player] or 0)
+		-- CR-M12: like SavedBullyAt, back-date by the time already spent toward the next decay step this session
+		-- (a queued / siren kaiju refreshes lastStarChange every tick, so into ~ 0 there)
+		local step = math.max(1, Config.PvP.StarDecaySeconds)
+		local now = os.clock()
+		local into = math.clamp(math.floor(now - (lastStarChange[player] or now)), 0, step - 1)
+		d.SavedStars = keep
+		d.SavedStarsAt = keep > 0 and (os.time() - into) or 0
+	end
 	-- other services' PlayerLeaving handlers (e.g. KaijuService) may still call ResetStars; clean up after them
 	clearRevengeInvolving(player)
 	task.defer(cleanupPlayer, player)
@@ -659,16 +855,31 @@ local function onCharacterSpawned(player)
 	PvPService.Protect(player, Config.PvP.SpawnProtection)
 end
 
-local function onPlayerDamaged(victim, _amount, attacker)
+-- CR-M15: log each PvP hit with its damage (the applied amount once CR-M10 lands) for the bait check
+local function onPlayerDamaged(victim, amount, attacker)
 	if victim == nil or attacker == nil then
 		return
 	end
-	local hits = lastHitOn[attacker]
+	amount = tonumber(amount) or 0
+	if amount ~= amount or amount <= 0 then
+		return
+	end
+	local now = os.clock()
+	local byVictim = dmgLog[attacker]
+	if not byVictim then
+		byVictim = {}
+		dmgLog[attacker] = byVictim
+	end
+	local hits = byVictim[victim]
 	if not hits then
 		hits = {}
-		lastHitOn[attacker] = hits
+		byVictim[victim] = hits
 	end
-	hits[victim] = os.clock()
+	pruneHits(hits, now - Config.Bully.BaitWindow)
+	table.insert(hits, { T = now, A = amount })
+	while #hits > GUARD.DmgLogMax do
+		table.remove(hits, 1)
+	end
 end
 
 local function onFactionChanged(player)
@@ -721,7 +932,7 @@ function PvPService.Start()
 			pruneAcc += LOOP_INTERVAL
 			if pruneAcc >= PRUNE_INTERVAL then
 				pruneAcc = 0
-				local ok, err = pcall(prunePairs, now)
+				local ok, err = pcall(pruneDmgLog, now)
 				if not ok then
 					warnLoop(err)
 				end

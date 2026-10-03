@@ -45,7 +45,6 @@ local MAX_SACKS = 10
 local ICON_PPS = 0.55 -- logical px per stud from which Crossroads landmark icons are shown
 local LABEL_PPS = 1.1 -- ... and their labels
 local HINT_MIN_WIDTH = 760 -- logical px; the hint line hides on narrow screens
-local KEY_GUARD = 0.35 -- s after an M press during which a Menu that popped open is treated as the same key press
 local EXTREME_MIN_LEVEL = 25 -- PvP zones from this level use the "extreme" danger colour (same rule as MapBuilder)
 
 local ACTION_TOGGLE = "WorldMapToggle"
@@ -164,23 +163,29 @@ local GLYPH = {
 	Crown = "✦",
 	Halo = "◯", -- 후광
 	Horns = "▲", -- 뿔
-	Guild = "⚙",
+	Guild = "장", -- CR-L44: "⚙" rendered as a tofu box; replaced by Config.Factions.Neutral.Emblem below
 	Altar = "◆",
-	Market = "⚖",
+	Market = "상", -- CR-L44 (was "⚖")
 	Nest = "◎",
 	Pad = "▣",
 	Goose = "✪",
-	Kaiju = "☠",
+	Kaiju = "괴", -- CR-L44 (was "☠")
 	Sack = "◈",
 	Me = "▲",
 }
+do -- CR-L44: the guild badge shows the Neutral emblem when the fonts can draw it (Util.GlyphSafe)
+	local fac = type(Config.Factions) == "table" and Config.Factions.Neutral or nil
+	local emblem = type(fac) == "table" and fac.Emblem or nil
+	if type(emblem) == "string" and emblem ~= "" and type(Util.GlyphSafe) == "function" and Util.GlyphSafe(emblem) then
+		GLYPH.Guild = emblem
+	end
+end
 
 ----------------------------------------------------------------- state
 local dataReady = false
 local built = false
 local isOpen = false
 local loopToken = 0
-local lastKeyAt = -math.huge
 local toggleBound = false
 local openActionsBound = false
 local inputConnected = false
@@ -194,6 +199,7 @@ local fontFace = Enum.Font.GothamBold
 local ownGui = nil
 local root, viewport, canvas = nil, nil, nil
 local hereLabel, hintLabel, legendMe = nil, nil, nil
+local ctl = {} -- CR-L41: Close / Locate / ZoomOut / ZoomIn buttons + Controls row and its List layout (resized in layoutRoot)
 local me, meGlyph, mePulse = nil, nil, nil
 local pulseTween = nil
 local gooseMarker, kaijuMarker = nil, nil
@@ -542,20 +548,24 @@ local function prepareData()
 	worldW = math.max(1, W.MaxX - W.MinX)
 	worldH = math.max(1, W.MaxZ - W.MinZ)
 
-	-- roads: east-west from the Crossroads center to the far end of the hunting zones, north-south between the towns
-	roadsData = {}
-	local hub, halo, horns, eastEnd = nil, nil, nil, nil
-	for _, z in zonesData do
-		if z.Id == "Crossroads" then hub = z end
-		if z.Faction == "Halo" then halo = z end
-		if z.Faction == "Horns" then horns = z end
-		if not z.Town then
-			local e = z.Center.X + z.Size.X / 2 - 12
-			if not eastEnd or e > eastEnd then eastEnd = e end
+	-- roads: Config.Map.Roads (the strips preview_map builds as Decor.Roads; CR-L46)
+	roadsData = legacy and {} or readLands(map.Roads)
+	if #roadsData == 0 then
+		-- fallback (Config without Roads): east-west from the Crossroads center to the far end of the hunting zones,
+		-- north-south between the towns
+		local hub, halo, horns, eastEnd = nil, nil, nil, nil
+		for _, z in zonesData do
+			if z.Id == "Crossroads" then hub = z end
+			if z.Faction == "Halo" then halo = z end
+			if z.Faction == "Horns" then horns = z end
+			if not z.Town then
+				local e = z.Center.X + z.Size.X / 2 - 12
+				if not eastEnd or e > eastEnd then eastEnd = e end
+			end
 		end
+		if hub and eastEnd then addRoad(true, hub.Center.Z, hub.Center.X, eastEnd) end
+		if halo and horns then addRoad(false, halo.Center.X, halo.Center.Z, horns.Center.Z) end
 	end
-	if hub and eastEnd then addRoad(true, hub.Center.Z, hub.Center.X, eastEnd) end
-	if halo and horns then addRoad(false, halo.Center.X, halo.Center.Z, horns.Center.Z) end
 
 	dataReady = true
 end
@@ -847,7 +857,7 @@ local function drawWorld()
 		table.insert(detailLabels, cap)
 	end
 
-	-- faction town icons (후광 / 뿔 / ⚙) and the sky crown: always visible
+	-- faction town icons (후광 / 뿔 / 장인 길드 emblem) and the sky crown: always visible
 	for _, z in zonesData do
 		if z.Faction == "Halo" then
 			badge("TownHalo", GLYPH.Halo, factionColor("Halo"), z.Center, 32)
@@ -1006,9 +1016,12 @@ local function clampAxis(o, content, view)
 	return math.clamp(o, view - content - PAN_MARGIN, PAN_MARGIN)
 end
 
-local function updateDetail(ppsL, vpWidthL)
-	local icons = ppsL >= ICON_PPS
-	local labels = ppsL >= LABEL_PPS
+-- CR-L45: on short screens fit is small, so the fixed thresholds were never reached even at ZOOM_MAX; cap them by the
+-- largest reachable px per stud (labels from 90% of max zoom, icons from half of it)
+local function updateDetail(ppsL, vpWidthL, fitL)
+	local maxL = math.max(0, fitL or 0) * ZOOM_MAX
+	local icons = ppsL >= math.min(ICON_PPS, maxL * 0.5)
+	local labels = ppsL >= math.min(LABEL_PPS, maxL * 0.9)
 	if icons ~= detailIconsOn then
 		detailIconsOn = icons
 		for _, g in detailIcons do g.Visible = icons end
@@ -1044,7 +1057,7 @@ local function applyView()
 	canvas.Position = UDim2.fromScale(ox / vp.X, oy / vp.Y)
 	lastVp = vp
 	local s = uiScaleFactor()
-	updateDetail(pps / s, vp.X / s)
+	updateDetail(pps / s, vp.X / s, fit / s) -- CR-L45
 end
 
 -- keeps the world point at the viewport center when the viewport changed size (rotation, resize, re-open)
@@ -1076,9 +1089,17 @@ local function zoomAt(px, py, newZoom)
 	applyView()
 end
 
+-- CR-L48: viewport top-left in real screen px (the space of GetMouseLocation and inputAbs). AbsolutePosition is measured
+-- in GUI space, which starts below the top-bar inset whatever the gui's IgnoreGuiInset / ScreenInsets say (an element
+-- at the very top of an IgnoreGuiInset gui reads Y = -inset), so add the inset back. Also exact when DeviceSafeInsets
+-- (CR-L34) moves the gui content away from a notch.
+local function viewportScreenPos()
+	return viewport.AbsolutePosition + insetVec()
+end
+
 local function zoomAtAbs(abs, newZoom)
 	if not viewport then return end
-	local rel = abs - viewport.AbsolutePosition
+	local rel = abs - viewportScreenPos() -- CR-L48
 	zoomAt(rel.X, rel.Y, newZoom)
 end
 
@@ -1116,7 +1137,7 @@ end
 
 local function pointInViewport(abs)
 	if not viewport then return false end
-	local p, s = viewport.AbsolutePosition, viewport.AbsoluteSize
+	local p, s = viewportScreenPos(), viewport.AbsoluteSize -- CR-L48
 	return abs.X >= p.X and abs.X <= p.X + s.X and abs.Y >= p.Y and abs.Y <= p.Y + s.Y
 end
 
@@ -1136,6 +1157,17 @@ local function layoutRoot()
 	local top = math.floor(topReal / s + 0.5)
 	viewport.Position = UDim2.fromOffset(SIDE_PAD, top)
 	viewport.Size = UDim2.new(1, -2 * SIDE_PAD, 1, -(top + BOTTOM_PAD))
+
+	-- CR-L41: on touch devices the buttons stay >= 44 real px (52 logical minimum) and keep a real gap between them
+	local touch = UserInputService.TouchEnabled
+	local btn = touch and math.max(52, math.ceil(44 / s)) or 52
+	local gap = touch and math.max(8, math.ceil(8 / s)) or 8
+	if ctl.Close then ctl.Close.Size = UDim2.fromOffset(btn, btn) end
+	if ctl.Locate then ctl.Locate.Size = UDim2.fromOffset(112, btn) end
+	if ctl.ZoomOut then ctl.ZoomOut.Size = UDim2.fromOffset(btn, btn) end
+	if ctl.ZoomIn then ctl.ZoomIn.Size = UDim2.fromOffset(btn, btn) end
+	if ctl.List then ctl.List.Padding = UDim.new(0, gap) end
+	if ctl.Controls then ctl.Controls.Size = UDim2.fromOffset(112 + 2 * btn + 2 * gap, btn) end
 end
 
 ----------------------------------------------------------------- pointer input (drag to pan, wheel / pinch to zoom)
@@ -1153,7 +1185,8 @@ local function removeTouch(input)
 	if i then table.remove(touchOrder, i) end
 end
 
--- InputObject.Position is measured below the top bar; the map gui ignores the inset
+-- InputObject.Position is in GUI space (below the top-bar inset); add the inset for real screen px like
+-- GetMouseLocation, then compare with viewportScreenPos() (CR-L48)
 local function inputAbs(input)
 	local p = input.Position
 	return Vector2.new(p.X, p.Y) + insetVec()
@@ -1230,7 +1263,6 @@ local function onToggleAction(_, state, _input)
 	if state ~= Enum.UserInputState.Begin then return Enum.ContextActionResult.Pass end
 	if UserInputService:GetFocusedTextBox() then return Enum.ContextActionResult.Pass end
 	if not isOpen and pickersOpen() then return Enum.ContextActionResult.Pass end
-	lastKeyAt = os.clock()
 	WorldMap.Toggle()
 	return Enum.ContextActionResult.Sink
 end
@@ -1286,6 +1318,13 @@ local function getGuiRoot()
 	ownGui.Name = "WorldMapGui"
 	ownGui.ResetOnSpawn = false
 	ownGui.IgnoreGuiInset = true
+	-- CR-L34: keep the content inside the device safe area (phone notches); no full-screen extension past it
+	pcall(function()
+		ownGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+	end)
+	pcall(function()
+		ownGui.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None
+	end)
 	ownGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	ownGui.DisplayOrder = 12
 	ownGui.Parent = pg
@@ -1420,8 +1459,8 @@ local function build()
 		Parent = viewport,
 	}, 15)
 
-	-- close (top-right)
-	button({
+	-- close (top-right; sized for touch in layoutRoot, CR-L41)
+	ctl.Close = button({
 		Name = "Close",
 		Text = TXT.CloseX,
 		AnchorPoint = Vector2.new(1, 0),
@@ -1476,7 +1515,14 @@ local function build()
 		if i == 4 then legendMe = l end
 	end
 
-	-- zoom / locate (bottom-right)
+	-- zoom / locate (bottom-right; row, gap and buttons are resized for touch in layoutRoot, CR-L41)
+	ctl.List = new("UIListLayout", {
+		FillDirection = Enum.FillDirection.Horizontal,
+		HorizontalAlignment = Enum.HorizontalAlignment.Right,
+		VerticalAlignment = Enum.VerticalAlignment.Center,
+		SortOrder = Enum.SortOrder.LayoutOrder,
+		Padding = UDim.new(0, 8),
+	})
 	local controls = new("Frame", {
 		Name = "Controls",
 		AnchorPoint = Vector2.new(1, 1),
@@ -1485,16 +1531,9 @@ local function build()
 		BackgroundTransparency = 1,
 		ZIndex = 5,
 		Parent = viewport,
-	}, {
-		new("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			HorizontalAlignment = Enum.HorizontalAlignment.Right,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 8),
-		}),
-	})
-	button({
+	}, { ctl.List })
+	ctl.Controls = controls
+	ctl.Locate = button({
 		Name = "Locate",
 		Text = TXT.Locate,
 		LayoutOrder = 1,
@@ -1508,7 +1547,7 @@ local function build()
 		local p = myPosition()
 		if p then centerOn(p, 2) end
 	end)
-	button({
+	ctl.ZoomOut = button({
 		Name = "ZoomOut",
 		Text = TXT.ZoomOut,
 		LayoutOrder = 2,
@@ -1521,7 +1560,7 @@ local function build()
 	}, function()
 		zoomCenter(1 / ZOOM_STEP)
 	end)
-	button({
+	ctl.ZoomIn = button({
 		Name = "ZoomIn",
 		Text = TXT.ZoomIn,
 		LayoutOrder = 3,
@@ -1650,13 +1689,11 @@ local function tick()
 		WorldMap.Close()
 		return
 	end
+	-- CR-L47: a panel opened while the map is up (altar prompt, vacation popup) always wins. HUD no longer binds M,
+	-- so the old KEY_GUARD only closed panels that had just opened on purpose.
 	if panelsOpen() then
-		if os.clock() - lastKeyAt < KEY_GUARD then
-			closePanels() -- a Menu opened by the same M press (legacy HUD binding): the map keeps the key
-		else
-			WorldMap.Close() -- a panel was opened on purpose (e.g. the altar prompt): it wins
-			return
-		end
+		WorldMap.Close()
+		return
 	end
 	local faction = myAttr("Faction", "None")
 	updateHeader()
@@ -1707,7 +1744,7 @@ function WorldMap.Start()
 	if not ok then Util.Warn(TAG, "build failed: " .. tostring(err)) end
 
 	-- M toggles the map (A12). Bound through ContextActionService so the key press reaches UserInputService
-	-- listeners as gameProcessed (HUD's legacy M = menu stays silent). Ignored while typing in a TextBox.
+	-- listeners as gameProcessed. Ignored while typing in a TextBox.
 	if not toggleBound then
 		local okBind, errBind = pcall(function()
 			ContextActionService:BindActionAtPriority(ACTION_TOGGLE, onToggleAction, false, ACTION_PRIORITY, Enum.KeyCode.M)

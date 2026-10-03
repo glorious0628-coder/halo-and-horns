@@ -57,7 +57,8 @@ local LAY = {
 	CardMaxH = 640,
 	CardMinH = 300, -- below this (or 20 x the min text size) the row scrolls sideways instead of shrinking further
 	Lift = 0.035, -- room around the cards for the hover lift (fraction of the card height)
-	TouchTarget = 44, -- real px of the invisible hit areas (CR-L41)
+	TouchTarget = 44, -- real px of the invisible hit areas and the code-styled choose buttons (CR-L41)
+	FixedTextMin = 15, -- CR-L40: min TextSize of non-scaled code-card text (>= 11 real px under a 0.75 UIScale)
 	HoverScale = 1.03,
 	PressScale = 0.95,
 	Bob = 0.025, -- idle character bob (fraction of the portrait box)
@@ -272,6 +273,7 @@ local function newLabel(parent, props, maxText)
 	for k, v in props do
 		l[k] = v
 	end
+	l.TextSize = math.max(l.TextSize, LAY.FixedTextMin) -- CR-L40 (the TextLabel default is 14)
 	constrainText(l, maxText)
 	l.Parent = parent
 	return l
@@ -514,6 +516,8 @@ end
 ------------------------------------------------------------------ intro toasts
 local function playIntro()
 	local lines = Config.Story.Intro
+	-- CR-L29: 장인 길드 stays out of the war and PvP, so it gets the intro without the "help your side" call
+	if myFaction() == "Neutral" and type(Config.Story.IntroNeutral) == "table" then lines = Config.Story.IntroNeutral end
 	if type(lines) ~= "table" then return end
 	task.spawn(function()
 		for i, line in lines do
@@ -913,7 +917,7 @@ local function buildArtCard(id)
 	hit.AutoButtonColor = false
 	hit.Text = ""
 	hit.ZIndex = 6
-	constrainText(hit, 14) -- empty, but every TextButton carries the M1 constraint
+	constrainText(hit, 15) -- empty, but every TextButton carries the M1 constraint
 	hit.Parent = card
 
 	-- A7-4: generic class chip ("전사") and the Warrior's "처음이면 추천" badge
@@ -1028,9 +1032,10 @@ local function buildOldCard(id, order)
 	}
 end
 
-local function layoutOldCard(c, compact)
+local function layoutOldCard(c, compact, s)
 	local hh = compact and 70 or 104 -- header: icon + name + generic
-	local bh = compact and 44 or 54
+	-- choose button, at least TouchTarget real px tall after the UIScale (CR-L41)
+	local bh = math.max(compact and 44 or 54, math.ceil(LAY.TouchTarget / math.max(s or 1, 0.05)))
 	local iconH = math.floor(hh * 0.42)
 	local nameH = math.floor(hh * 0.33)
 	local genH = math.floor(hh * 0.2)
@@ -1311,7 +1316,7 @@ local function layoutArtCards(w, cardsTop, cardsBottom, minT, s)
 end
 
 -- code-styled cards (IMG-R4): same sizes as before the art pass
-local function layoutOldCards(w, h, cardsTop, cardsBottom)
+local function layoutOldCards(w, h, cardsTop, cardsBottom, s)
 	local n = math.max(1, #classIds)
 	local compact = h < 600
 	local rowW = math.min(w - 24, 1100)
@@ -1329,7 +1334,7 @@ local function layoutOldCards(w, h, cardsTop, cardsBottom)
 		if c then
 			c.Card.Position = UDim2.fromOffset((i - 1) * (cardW + gap) + cardW / 2, cardH / 2)
 			c.Card.Size = UDim2.fromOffset(cardW, cardH)
-			layoutOldCard(c, compact)
+			layoutOldCard(c, compact, s)
 		end
 	end
 end
@@ -1348,7 +1353,7 @@ local function layout()
 	if mode == "art" then
 		layoutArtCards(w, cardsTop, cardsBottom, minT, s)
 	else
-		layoutOldCards(w, h, cardsTop, cardsBottom)
+		layoutOldCards(w, h, cardsTop, cardsBottom, s)
 	end
 end
 

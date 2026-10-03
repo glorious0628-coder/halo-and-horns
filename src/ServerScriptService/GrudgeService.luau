@@ -11,7 +11,6 @@ local Net = require(ReplicatedStorage.Shared.Net)
 
 local TAG = "GrudgeService"
 
-local PRUNE_INTERVAL = 60 -- seconds between prunes of the anti-collusion tables
 local LOOP_WARN_INTERVAL = 10
 local MAX_TICK_STEP = 1 -- clamp for the elapsed time of one tick after a server hitch
 
@@ -21,11 +20,12 @@ GrudgeService.SackResolved = Util.Signal.new() -- (thief, outcome: "Paid" | "Ave
 
 local S = nil
 
--- [thief: Player] = { Entries = { [victimUserId] = { Amount, Name } }, Total, Remaining, Infamy, LastVictimName }
+-- [thief: Player] = { Entries = { [victimUserId] = { Amount, Name, Rebirths } }, Total, Remaining, Infamy,
+-- LastVictimName }. Entry.Rebirths = the victim's Rebirths when stolen (CR-M6: no refund across a rebirth).
 local sacks = {}
-local lastSteal = {} -- ["thiefUserId:victimUserId"] = os.clock() of the last steal
-local lastRefund = {} -- ["thiefUserId:victimUserId"] = os.clock() of the last 120% refund
-local lastAvenge = {} -- ["avengerUserId:thiefUserId"] = os.clock() of the last avenger bonus
+-- CR-M4 / CR-L6: anti-collusion cooldowns live in the saved PairCD (follows the player across servers):
+-- victim data "steal:<thiefUserId>" (RestealWindow), "refund:0" (extra 20%, per victim);
+-- avenger data "avenge:0" (avenger bonus, per avenger)
 
 local lastLoopWarn = 0
 
@@ -52,8 +52,38 @@ local function notify(p, text, kind)
 	end
 end
 
-local function pairKey(firstUserId, secondUserId)
-	return tostring(firstUserId) .. ":" .. tostring(secondUserId)
+-- CR-M4: pair cooldown kept in the holder's saved PairCD ("<kind>:<otherUserId>" = os.time()). PlayerService.PairReady
+-- owns it; the inline copy follows the same contract. commit = false only checks. No data -> false.
+local function pairReady(holder, otherUserId, kind, cooldown, commit)
+	if not holder then
+		return false
+	end
+	local PS = S.PlayerService
+	if PS.PairReady then
+		local ok, res = pcall(PS.PairReady, holder, otherUserId, kind, cooldown, commit)
+		return ok and res == true
+	end
+	local d = PS.GetData(holder)
+	if type(d) ~= "table" then
+		return false
+	end
+	if type(d.PairCD) ~= "table" then
+		d.PairCD = {}
+	end
+	local k = kind .. ":" .. tostring(otherUserId)
+	local t = os.time()
+	if t - (tonumber(d.PairCD[k]) or 0) < cooldown then
+		return false
+	end
+	if commit ~= false then
+		d.PairCD[k] = t
+	end
+	return true
+end
+
+-- CR-M6: a share is refunded only to the same "life" it was stolen from (a rebirth resets the bank on purpose)
+local function sameLife(victim, entry)
+	return (tonumber(victim:GetAttribute("Rebirths")) or 0) == (tonumber(entry.Rebirths) or 0)
 end
 
 local function rootPos(p)
@@ -112,11 +142,12 @@ local function pay(thief, sack)
 	closeSack(thief, sack, "Paid", true)
 end
 
--- Returned: every present victim gets 100% back to the bank; shares of victims who left are destroyed
+-- Returned: every present victim gets 100% back to the bank; shares of victims who left (or rebirthed since,
+-- CR-M6) are destroyed
 local function returnShares(sack)
 	for userId, entry in sack.Entries do
 		local victim = presentVictim(userId)
-		if victim then
+		if victim and sameLife(victim, entry) then
 			local amount = math.floor(entry.Amount * Config.Grudge.ReturnRate)
 			if amount > 0 then
 				S.ProgressionService.AddBankGold(victim, amount, "Refund")
@@ -129,18 +160,14 @@ end
 -- Avenged: a Halo player KO'd the thief in time
 local function avenge(thief, sack, killer)
 	local G = Config.Grudge
-	local now = os.clock()
 	local thiefPos = rootPos(thief)
 
 	for userId, entry in sack.Entries do
 		local victim = presentVictim(userId)
-		if victim then
-			local key = pairKey(thief.UserId, userId)
-			local bonusOk = now - (lastRefund[key] or -math.huge) >= G.RefundBonusCooldown
+		if victim and sameLife(victim, entry) then -- CR-M6
+			-- CR-L6: the extra 20% is once per VICTIM per RefundBonusCooldown whatever the thief (victim's save, CR-M4)
+			local bonusOk = pairReady(victim, 0, "refund", G.RefundBonusCooldown)
 			local refund = math.floor(entry.Amount * (bonusOk and G.AvengeRefundRate or G.ReturnRate))
-			if bonusOk then
-				lastRefund[key] = now
-			end
 			if refund > 0 then
 				S.ProgressionService.AddBankGold(victim, refund, "Refund")
 				notify(victim, fmt("GrudgeRefund", killer.DisplayName, Util.FormatNumber(refund)), "good")
@@ -152,10 +179,8 @@ local function avenge(thief, sack, killer)
 		end
 	end
 
-	-- "복수 대행" bonus, once per avenger/thief pair per PairRewardCooldown
-	local avengeKey = pairKey(killer.UserId, thief.UserId)
-	if now - (lastAvenge[avengeKey] or -math.huge) >= Config.PvP.PairRewardCooldown then
-		lastAvenge[avengeKey] = now
+	-- "복수 대행" bonus, once per AVENGER per PairRewardCooldown whatever the thief (CR-L6; avenger's save, CR-M4)
+	if pairReady(killer, 0, "avenge", Config.PvP.PairRewardCooldown) then
 		S.ProgressionService.AddBankGold(killer, G.AvengerBonus, "Bounty")
 		notify(killer, fmt("AvengerBonus", Util.FormatNumber(G.AvengerBonus)), "reward")
 	end
@@ -182,13 +207,13 @@ function GrudgeService.GetSackTotal(player)
 	return sack and sack.Total or 0
 end
 
--- false if this thief stole from this victim less than RestealWindow ago
+-- false if this thief stole from this victim less than RestealWindow ago (CR-M4: checked in the victim's save;
+-- AddToSack records it)
 function GrudgeService.CanSteal(thief, victim)
 	if not thief or not victim then
 		return false
 	end
-	local t = lastSteal[pairKey(thief.UserId, victim.UserId)]
-	return t == nil or os.clock() - t >= Config.Grudge.RestealWindow
+	return pairReady(victim, thief.UserId, "steal", Config.Grudge.RestealWindow, false)
 end
 
 -- amount was already taken from the victim's carried gold (PvPService.HandleKO)
@@ -207,18 +232,24 @@ function GrudgeService.AddToSack(thief, victim, amount, infamy)
 		sack = { Entries = {}, Total = 0, Remaining = 0, Infamy = 0, LastVictimName = "" }
 		sacks[thief] = sack
 	end
+	-- CR-M6: remember the victim's rebirth count; a share stolen before a rebirth is never refunded after it
+	local rebirths = tonumber(victim:GetAttribute("Rebirths")) or 0
 	local entry = sack.Entries[victim.UserId]
 	if entry then
+		if not sameLife(victim, entry) then
+			entry.Amount = 0 -- the older share stays in the sack (thief's Paid total) but is no longer refundable
+		end
 		entry.Amount += amount
 		entry.Name = victim.DisplayName
+		entry.Rebirths = rebirths
 	else
-		sack.Entries[victim.UserId] = { Amount = amount, Name = victim.DisplayName }
+		sack.Entries[victim.UserId] = { Amount = amount, Name = victim.DisplayName, Rebirths = rebirths }
 	end
 	sack.Total += amount
 	sack.Remaining = Config.Grudge.SackSeconds -- every new steal resets the countdown
 	sack.Infamy += infamy
 	sack.LastVictimName = victim.DisplayName
-	lastSteal[pairKey(thief.UserId, victim.UserId)] = os.clock()
+	pairReady(victim, thief.UserId, "steal", 0) -- CR-M4: record the steal in the victim's save (RestealWindow)
 	publish(thief, sack)
 end
 
@@ -276,26 +307,6 @@ local function tickAll(dt)
 	end
 end
 
-local function prune()
-	local now = os.clock()
-	local G = Config.Grudge
-	for key, t in lastSteal do
-		if now - t >= G.RestealWindow then
-			lastSteal[key] = nil
-		end
-	end
-	for key, t in lastRefund do
-		if now - t >= G.RefundBonusCooldown then
-			lastRefund[key] = nil
-		end
-	end
-	for key, t in lastAvenge do
-		if now - t >= Config.PvP.PairRewardCooldown then
-			lastAvenge[key] = nil
-		end
-	end
-end
-
 ------------------------------------------------------------------ signal handlers
 local function onPlayerReady(player)
 	player:SetAttribute("SackGold", 0)
@@ -326,20 +337,12 @@ function GrudgeService.Init(registry)
 end
 
 function GrudgeService.Start()
+	-- (the anti-collusion cooldowns are in the saves now, CR-M4; PlayerService prunes them at PlayerReady)
 	task.spawn(function()
-		local pruneAcc = 0
 		while true do
 			local elapsed = task.wait(Config.Grudge.Tick)
 			local dt = math.clamp(tonumber(elapsed) or Config.Grudge.Tick, 0, MAX_TICK_STEP)
 			tickAll(dt)
-			pruneAcc += dt
-			if pruneAcc >= PRUNE_INTERVAL then
-				pruneAcc = 0
-				local ok, err = pcall(prune)
-				if not ok then
-					warnLoop(err)
-				end
-			end
 		end
 	end)
 

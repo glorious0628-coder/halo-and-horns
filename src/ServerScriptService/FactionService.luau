@@ -19,6 +19,8 @@ local WARN_THROTTLE = 10
 -- Config.Text.SwitchDonePlain is used instead once it exists.
 local TEXT_SWITCH_DONE_PLAIN = "%s(으)로 진영을 바꿨어요!"
 local SCORE_NAME = { Halo = "명예", Horns = "악명" } -- score lost by a FREE switch away from that faction
+local SCORE_KEY = { Halo = "Honor", Horns = "Infamy" } -- CR-L11: the stat behind SCORE_NAME
+local UNDERDOG_IDLE_SECONDS = 120 -- CR-L7: no input / combat for this long = not counted for the underdog bonus
 
 local FactionService = {}
 
@@ -88,6 +90,10 @@ local function recount()
 	local gs = Net.GameState()
 	gs:SetAttribute("HaloCount", halo)
 	gs:SetAttribute("HornsCount", horns)
+	-- CR-L7: rebirth preview (Panels) reads the same counts the server bonus uses
+	local uHalo, uHorns = FactionService.GetUnderdogCounts()
+	gs:SetAttribute("UnderdogHalo", uHalo)
+	gs:SetAttribute("UnderdogHorns", uHorns)
 end
 
 local function safeRecount()
@@ -113,11 +119,40 @@ local function wantedStars(player)
 	return 0
 end
 
-local function lastSwitchTime(player)
+local function bullyStacks(player)
+	local j = S.JusticeService
+	if j and j.GetBullyStacks then
+		local ok, n = pcall(j.GetBullyStacks, player)
+		if ok and type(n) == "number" then return n end
+	end
+	return 0
+end
+
+-- data value first, mirrored attribute as fallback
+local function statNum(player, key)
 	local data = S.PlayerService.GetData(player)
-	local t = data and data.LastSwitchTime
-	if type(t) ~= "number" then t = player:GetAttribute("LastSwitchTime") end
-	return tonumber(t) or 0
+	local v = data and data[key]
+	if type(v) ~= "number" then v = player:GetAttribute(key) end
+	return tonumber(v) or 0
+end
+
+local function lastSwitchTime(player)
+	return statNum(player, "LastSwitchTime")
+end
+
+-- CR-L7: rookies (PvPService.IsRookie) and idlers (PlayerService.GetLastActive, CR-M20) do not count
+local function isUnderdogEligible(player, now)
+	local pvp = S.PvPService
+	if pvp and pvp.IsRookie then
+		local ok, rookie = pcall(pvp.IsRookie, player)
+		if ok and rookie == true then return false end
+	end
+	local ps = S.PlayerService
+	if ps and ps.GetLastActive then
+		local ok, t = pcall(ps.GetLastActive, player)
+		if ok and type(t) == "number" and now - t > UNDERDOG_IDLE_SECONDS then return false end
+	end
+	return true
 end
 
 local function nearAltar(player)
@@ -125,7 +160,15 @@ local function nearAltar(player)
 	if not root then return false end
 	local ok, altar = pcall(S.MapBuilder.GetAltar)
 	if not ok or typeof(altar) ~= "Instance" or not altar:IsA("BasePart") then return false end
-	return Util.FlatDistance(root.Position, altar.Position) <= Config.Switch.AltarRange
+	if Util.FlatDistance(root.Position, altar.Position) > Config.Switch.AltarRange then return false end
+	-- CR-H2: a root that just teleported is not near. IsPlausible always logs a suspicious move and returns false
+	-- only while Config.AntiCheat.Enforce is true (log-only mode: always true)
+	local zs = S.ZoneService
+	if zs and zs.IsPlausible then
+		local okP, plausible = pcall(zs.IsPlausible, player, root.Position)
+		if okP and plausible == false then return false end
+	end
+	return true
 end
 
 -- Spec payload is (useTicket: boolean). Addendum A6 makes the target ambiguous with three factions, so an optional
@@ -186,6 +229,27 @@ function FactionService.GetCounts()
 	return halo, horns
 end
 
+-- CR-L7: GetCounts without rookies and 120 s idlers (underdog rebirth bonus + GameState UnderdogHalo/Horns).
+-- `always` (optional Player) is counted even if idle, e.g. the player rebirthing at the altar right now.
+function FactionService.GetUnderdogCounts(always)
+	if not S then return 0, 0 end
+	local now = os.clock()
+	local halo, horns = 0, 0
+	for _, p in S.PlayerService.GetReadyPlayers() do
+		if isCounted(p) then
+			local f = FactionService.GetFaction(p)
+			if (f == "Halo" or f == "Horns") and (p == always or isUnderdogEligible(p, now)) then
+				if f == "Halo" then
+					halo += 1
+				else
+					horns += 1
+				end
+			end
+		end
+	end
+	return halo, horns
+end
+
 function FactionService.GetTeam(factionId)
 	local t = teams[factionId]
 	if t and t.Parent then return t end
@@ -222,6 +286,8 @@ local function onChooseFaction(player, factionId)
 	FactionService.SetFaction(player, factionId, "Choose")
 
 	if wasWeaker then
+		-- CR-L10: the sign-on bonus starts the altar cooldown (no instant free switch after cashing it)
+		S.PlayerService.SetStat(player, "LastSwitchTime", os.time())
 		S.ProgressionService.AddBankGold(player, Config.Justice.SignOnGold, "Other")
 		notify(player, "UnderdogSignOn", "reward", Config.Justice.SignOnGold)
 	end
@@ -257,6 +323,11 @@ local function onSwitchFaction(player, a, b)
 		notify(player, "TravelBlockedCombat", "bad")
 		return
 	end
+	-- CR-L9: Neutral sheds bully stacks (A6), so a bully may not reach it through the altar
+	if new == "Neutral" and bullyStacks(player) > 0 then
+		notify(player, "BlockedBully", "bad")
+		return
+	end
 	local remaining = lastSwitchTime(player) + Config.Switch.Cooldown - os.time()
 	if remaining > 0 then
 		notify(player, "SwitchCooldown", "bad", Util.FormatTime(remaining))
@@ -265,10 +336,15 @@ local function onSwitchFaction(player, a, b)
 
 	-- leaving Neutral costs nothing (A6: no Neutral score yet), so a ticket is never consumed for it
 	local lostScore = SCORE_NAME[old]
+	-- CR-L11: a score of 0 has nothing to protect, so the ticket is kept then too
+	local scoreKey = SCORE_KEY[old]
+	local atStake = scoreKey ~= nil and statNum(player, scoreKey) > 0
 	local ticketUsed = false
-	if useTicket and lostScore then
-		if not S.MonetizationService.UseTicket(player, "Faction") then
-			notify(player, "NoTicket", "bad")
+	if useTicket and lostScore and atStake then
+		local okTicket, why = S.MonetizationService.UseTicket(player, "Faction")
+		if not okTicket then
+			-- CR-L25: a purchase still being saved is not "no ticket"
+			notify(player, why == "Pending" and "TicketSaving" or "NoTicket", "bad")
 			return
 		end
 		ticketUsed = true
@@ -290,7 +366,7 @@ local function onSwitchFaction(player, a, b)
 	local newName = (Config.Factions[new] and Config.Factions[new].Name) or new
 	if ticketUsed then
 		notify(player, "SwitchDoneTicket", "good", newName)
-	elseif lostScore then
+	elseif lostScore and atStake then
 		notify(player, "SwitchDoneFree", "good", newName, lostScore)
 	else
 		local fmt = Config.Text.SwitchDonePlain

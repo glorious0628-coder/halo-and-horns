@@ -14,7 +14,8 @@ local Util = require(ReplicatedStorage.Shared.Util)
 
 local MonsterService = {}
 
--- fired once PER CONTRIBUTOR: (player, info)
+-- fired once PER CONTRIBUTOR: (player, info). info.WarPoints = personal war points, info.WarShare = this player's
+-- part of the faction pool points (WarPoints / same-faction contributors, CR-M18)
 MonsterService.MonsterKilled = Util.Signal.new()
 
 ------------------------------------------------------------------ constants
@@ -173,8 +174,29 @@ local function isPlayerInTown(player, pos)
 	return false
 end
 
-local function visibleTo(rec, forPlayer)
-	return forPlayer == nil or rec.Owner == nil or rec.Owner == forPlayer
+-- CR-M18: faction id the war pool uses (same lookup as WarService: FactionService first, then the attribute)
+local function factionOf(player)
+	if S and S.FactionService and S.FactionService.GetFaction then
+		local ok, f = pcall(S.FactionService.GetFaction, player)
+		if ok and type(f) == "string" then return f end
+	end
+	local f = player:GetAttribute("Faction")
+	return type(f) == "string" and f or "None"
+end
+
+-- CR-M5: zone id of the player's root (nil without a character); attackers must stand in the monster's zone
+local function zoneIdOf(player)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then return nil end
+	local r = Util.GetRoot(player)
+	return r and Config.ZoneAt(r.Position).Id or nil
+end
+
+-- CR-M5: personal monsters only for their owner (any zone); zone monsters only for a player standing in their zone
+-- (A10-V3-2a both ways: a monster that never chases out of its zone cannot be farmed from just outside it)
+local function visibleTo(rec, forPlayer, forZone)
+	if forPlayer == nil then return true end
+	if rec.Owner ~= nil then return rec.Owner == forPlayer end
+	return forZone ~= nil and rec.ZoneId == forZone
 end
 
 local function insideZone(zone, p, inset)
@@ -226,12 +248,54 @@ local function probeGround(x, z)
 	return hit.Position.Y, hit.Material == Enum.Material.Water
 end
 
--- walkable ground point at (x, z) or nil (water, ridge, shore). Second result: true when the ray hit nothing at all
--- (bare test place without Terrain / Map.Ground), so callers can fall back to the legacy flat Y = 0 behaviour.
+-- CR-L14: solid decoration a monster must not stand in (King Slime hill, goblin tents, broken pillars / arches):
+-- Map.Decor children except the "Bridge_*" decks, plus Map.Landmarks. Non-collidable props (canopies, flowers, glows)
+-- never count. Rebuilt every GROUND_PARAMS_REFRESH s like the ground params.
+local blockCast = { Params = nil, At = -math.huge, Any = false }
+local function getBlockParams()
+	local now = os.clock()
+	if blockCast.Params and now - blockCast.At < GROUND_PARAMS_REFRESH then return blockCast.Params end
+	local list = {}
+	local map = workspace:FindFirstChild("Map")
+	if map then
+		local decor = map:FindFirstChild("Decor")
+		if decor then
+			for _, c in decor:GetChildren() do
+				if string.sub(c.Name, 1, 7) ~= "Bridge_" then table.insert(list, c) end
+			end
+		end
+		local landmarks = map:FindFirstChild("Landmarks")
+		if landmarks then table.insert(list, landmarks) end
+	end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = list
+	params.IgnoreWater = true
+	pcall(function()
+		params.RespectCanCollide = true
+	end)
+	blockCast.Params, blockCast.At, blockCast.Any = params, now, #list > 0
+	return params
+end
+
+-- CR-L14: true when a solid decor / landmark part stands on the ground point (ray from y + 40 down to y + 0.5)
+local function occupied(x, y, z)
+	local params = getBlockParams()
+	if not blockCast.Any then return false end
+	local ok, hit = pcall(function()
+		return workspace:Raycast(Vector3.new(x, y + 40, z), Vector3.new(0, -39.5, 0), params)
+	end)
+	return ok and hit ~= nil
+end
+
+-- walkable ground point at (x, z) or nil (water, ridge, shore, inside solid decor). Second result: true when the ray
+-- hit nothing at all (bare test place without Terrain / Map.Ground), so callers can fall back to the legacy flat Y = 0
+-- behaviour.
 local function groundPoint(x, z)
 	local y, water = probeGround(x, z)
 	if y == nil then return nil, true end
 	if water or y < GROUND_MIN_Y or y > GROUND_MAX_Y then return nil, false end
+	if occupied(x, y, z) then return nil, false end -- CR-L14
 	return Vector3.new(x, y, z), false
 end
 
@@ -300,12 +364,65 @@ local function targetCount(kind, zoneCounts)
 	return math.min(def.Count + EXTRA_PER_PLAYER * math.max(0, n - 1), def.Count * MAX_ZONE_MULT)
 end
 
+-- CR-L13: { [kind] = target } where the extras above each base Count share the GLOBAL_CAP room (GLOBAL_CAP - base
+-- sum) in proportion to what each kind asks for (largest remainder), instead of MonsterTypeOrder filling the cap
+-- first (busy meadow -> the ruins stayed at their base density).
+local function cappedTargets(zoneCounts)
+	zoneCounts = zoneCounts or playersPerZone()
+	local targets, extras = {}, {}
+	local baseSum, extraSum = 0, 0
+	for _, kind in Config.MonsterTypeOrder do
+		local def = Config.MonsterTypes[kind]
+		if def and targets[kind] == nil then
+			local t = targetCount(kind, zoneCounts)
+			local base = math.min(def.Count, t)
+			targets[kind] = base
+			extras[kind] = math.max(0, t - base)
+			baseSum += base
+			extraSum += extras[kind]
+		end
+	end
+	if extraSum <= 0 then return targets end
+	local room = math.max(0, GLOBAL_CAP - baseSum)
+	if room >= extraSum then
+		for kind, e in extras do
+			targets[kind] += e
+		end
+		return targets
+	end
+	local used, fracs = 0, {}
+	for _, kind in Config.MonsterTypeOrder do
+		local e = extras[kind]
+		if e and e > 0 then
+			extras[kind] = 0 -- a kind listed twice is shared out once
+			local share = e * room / extraSum
+			local whole = math.floor(share)
+			targets[kind] += whole
+			used += whole
+			table.insert(fracs, { Kind = kind, F = share - whole, I = #fracs + 1 })
+		end
+	end
+	table.sort(fracs, function(a, b)
+		if a.F ~= b.F then return a.F > b.F end
+		return a.I < b.I
+	end)
+	for _, fr in fracs do
+		if used >= room then break end
+		targets[fr.Kind] += 1
+		used += 1
+	end
+	return targets
+end
+
 ------------------------------------------------------------------ public queries
+-- forPlayer (optional): only the monsters that player may hit (own personal ones + zone monsters of the zone the
+-- player stands in, CR-M5). nil = every alive monster.
 function MonsterService.GetMonstersInRadius(position, radius, forPlayer)
 	local out = {}
 	if typeof(position) ~= "Vector3" or type(radius) ~= "number" then return out end
+	local fz = zoneIdOf(forPlayer) -- CR-M5
 	for _, rec in records do
-		if rec.Alive and visibleTo(rec, forPlayer) then
+		if rec.Alive and visibleTo(rec, forPlayer, fz) then
 			local root = rec.Root
 			if root and root.Parent and Util.FlatDistance(root.Position, position) <= radius then
 				table.insert(out, rec)
@@ -319,8 +436,9 @@ function MonsterService.GetNearest(position, radius, maxCount, forPlayer)
 	local out = {}
 	if typeof(position) ~= "Vector3" or type(radius) ~= "number" then return out end
 	local found = {}
+	local fz = zoneIdOf(forPlayer) -- CR-M5
 	for _, rec in records do
-		if rec.Alive and visibleTo(rec, forPlayer) then
+		if rec.Alive and visibleTo(rec, forPlayer, fz) then
 			local root = rec.Root
 			if root and root.Parent then
 				local d = Util.FlatDistance(root.Position, position)
@@ -341,8 +459,9 @@ end
 function MonsterService.CountInRadius(position, radius, forPlayer)
 	if typeof(position) ~= "Vector3" or type(radius) ~= "number" then return 0 end
 	local n = 0
+	local fz = zoneIdOf(forPlayer) -- CR-M5
 	for _, rec in records do
-		if rec.Alive and visibleTo(rec, forPlayer) then
+		if rec.Alive and visibleTo(rec, forPlayer, fz) then
 			local root = rec.Root
 			if root and root.Parent and Util.FlatDistance(root.Position, position) <= radius then
 				n += 1
@@ -893,7 +1012,8 @@ scheduleRespawn = function(kind)
 	task.delay(MC.RespawnDelay, function()
 		pending[kind] = math.max(0, (pending[kind] or 0) - 1)
 		local ok, err = pcall(function()
-			if aliveCountOf(kind) < targetCount(kind) and totalNonPersonal() < GLOBAL_CAP then
+			local target = cappedTargets()[kind] or targetCount(kind) -- CR-L13
+			if aliveCountOf(kind) < target and totalNonPersonal() < GLOBAL_CAP then
 				spawnMonster(kind)
 			end
 		end)
@@ -926,13 +1046,24 @@ local function killRecord(rec)
 		Personal = isPersonal,
 	}
 
+	-- CR-M18: every contributor keeps the full personal WarPoints, but one kill adds WarPoints to a faction pool only
+	-- once: WarShare = WarPoints / (contributors of that faction) (WarService.AddPoints(player, n, poolN))
 	local now = os.clock()
+	local eligible, perFaction = {}, {}
 	for p, t in rec._contributors do
 		if p.Parent and now - t <= MC.ContributorWindow then
-			MonsterService.MonsterKilled:Fire(p, table.clone(info))
+			local okF, f = pcall(factionOf, p)
+			if not okF or type(f) ~= "string" then f = "None" end
+			table.insert(eligible, { Player = p, Faction = f })
+			perFaction[f] = (perFaction[f] or 0) + 1
 		end
 	end
 	rec._contributors = {}
+	for _, e in eligible do
+		local i = table.clone(info)
+		i.WarShare = info.WarPoints / math.max(1, perFaction[e.Faction] or 1)
+		MonsterService.MonsterKilled:Fire(e.Player, i)
+	end
 
 	deathPop(rec, true)
 	if isPersonal then
@@ -960,6 +1091,8 @@ function MonsterService.DamageMonster(record, amount, player, crit)
 	if type(record) ~= "table" or not record.Alive then return false end
 	if type(amount) ~= "number" or amount ~= amount or amount <= 0 then return false end
 	if record.Owner and record.Owner ~= player then return false end -- A5-C2
+	-- CR-M5: a zone monster takes no damage from a player standing outside its zone (no HP change, no contribution)
+	if record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then return false end
 	if player then
 		record._contributors[player] = os.clock()
 	end
@@ -1500,10 +1633,11 @@ end
 ------------------------------------------------------------------ density (A3-M2 / A5-C1)
 local function reevaluate()
 	local zoneCounts = playersPerZone()
+	local targets = cappedTargets(zoneCounts) -- CR-L13
 	local total = totalNonPersonal()
 	for _, kind in Config.MonsterTypeOrder do
 		if total >= GLOBAL_CAP then break end
-		local target = targetCount(kind, zoneCounts)
+		local target = targets[kind] or targetCount(kind, zoneCounts)
 		local have = aliveCountOf(kind) + (pending[kind] or 0)
 		local spawned = 0
 		while have < target and total < GLOBAL_CAP and spawned < MAX_SPAWNS_PER_KIND_PER_PASS do

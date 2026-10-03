@@ -64,7 +64,8 @@ local LAY = {
 	TextFrac = 0.02, TextMax = 20, -- premise / note text size = canvas height * TextFrac
 	TitleText = { 0.17, 0.08, 0.66, 0.6 }, -- text box inside UIP_TitleRibbon (fractions of the ribbon)
 	SideMinW = 700, SideColFrac = 0.27, SideColMin = 220, SideColMax = 340, -- short screens (landscape phones)
-	TouchTarget = 44, -- real px of the invisible hit areas (CR-L41)
+	TouchTarget = 44, -- real px of the invisible hit areas and the code-styled choose buttons (CR-L41)
+	FixedTextMin = 15, -- CR-L40: min TextSize of non-scaled code-card text (>= 11 real px under a 0.75 UIScale)
 	HoverScale = 1.03,
 	PressScale = 0.95,
 	BlurSize = 10, -- camera blur behind the picker (mockup background is blurred)
@@ -175,11 +176,19 @@ local function shortLore(id)
 	return string.match(lore, "^(.-%.)%s") or lore
 end
 
--- emblem glyph of the code-styled card; "⚙" shows as tofu on some devices (CR-L44)
+-- emblem glyph of the code-styled card; symbols like "⚙" show as tofu on some devices (CR-L44: Util.GlyphSafe), so an
+-- unsafe or empty emblem falls back to "장" (Neutral) or the first letter of the faction name
 local function emblemText(id, def)
 	local e = tostring(def.Emblem or "")
-	if id == "Neutral" and (e == "" or e == "⚙") then return "장" end
-	return e
+	local safe = e ~= "" and e ~= "⚙"
+	if safe and type(Util.GlyphSafe) == "function" then
+		local ok, res = pcall(Util.GlyphSafe, e)
+		safe = ok and res == true
+	end
+	if safe then return e end
+	if id == "Neutral" then return "장" end
+	local name = tostring(def.Short or def.Name or "")
+	return string.match(name, utf8.charpattern) or "?"
 end
 
 -- perk rows { Icon, Text, Short } of a card: Config.UIArt.FactionPerks, else the first Config.Factions perk lines
@@ -282,6 +291,7 @@ local function newLabel(parent, props, maxText)
 	for k, v in props do
 		l[k] = v
 	end
+	l.TextSize = math.max(l.TextSize, LAY.FixedTextMin) -- CR-L40 (the TextLabel default is 14)
 	constrainText(l, maxText)
 	l.Parent = parent
 	return l
@@ -907,9 +917,10 @@ local function buildCard(id, order)
 end
 
 ------------------------------------------------------------------ layout
-local function layoutOldCard(c, compact)
+local function layoutOldCard(c, compact, s)
 	local hh = compact and 62 or 96 -- header (emblem + name)
-	local bh = compact and 44 or 54 -- choose button
+	-- choose button, at least TouchTarget real px tall after the UIScale (CR-L41)
+	local bh = math.max(compact and 44 or 54, math.ceil(LAY.TouchTarget / math.max(s or 1, 0.05)))
 	c.Emblem.Position = UDim2.new(0.5, 0, 0, 6)
 	c.Emblem.Size = UDim2.new(1, -16, 0, math.floor(hh * 0.55))
 	c.Name.Position = UDim2.new(0.5, 0, 0, 6 + math.floor(hh * 0.55))
@@ -1132,7 +1143,7 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 			if c.Art then
 				layoutArtCard(c, cw, cardH, minT, s)
 			else
-				layoutOldCard(c, cardH < 420)
+				layoutOldCard(c, cardH < 420, s)
 			end
 			cx += cw + LAY.Gap
 		end

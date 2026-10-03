@@ -14,7 +14,12 @@ local TAG = "CharacterVisuals"
 local V = Config.Visuals
 
 local NEUTRAL_ID = "Neutral"
-local NEUTRAL_EMBLEM = (Config.Factions.Neutral and Config.Factions.Neutral.Emblem) or "⚙"
+-- CR-L44: "⚙" renders as a tofu box; a missing / empty / unsafe emblem falls back to "장"
+local NEUTRAL_EMBLEM = (Config.Factions.Neutral and Config.Factions.Neutral.Emblem) or "장"
+if type(NEUTRAL_EMBLEM) ~= "string" or NEUTRAL_EMBLEM == ""
+	or (type(Util.GlyphSafe) == "function" and not Util.GlyphSafe(NEUTRAL_EMBLEM)) then
+	NEUTRAL_EMBLEM = "장"
+end
 local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11
 
 local WOOD_COLOR = Color3.fromRGB(120, 85, 50)

@@ -196,7 +196,7 @@
   "h": 512
  },
  "UIP_CharNeutralWarrior": {
-  "w": 495,
+  "w": 485,
   "h": 512
  },
  "UIP_ClassCardHalo": {
@@ -272,7 +272,7 @@
   "h": 63
  },
  "UIP_CharHaloArcherF": {
-  "w": 504,
+  "w": 406,
   "h": 512
  },
  "UIP_CharHaloArcherM": {
@@ -300,23 +300,23 @@
   "h": 512
  },
  "UIP_CharHornsArcherM": {
-  "w": 467,
+  "w": 488,
   "h": 512
  },
  "UIP_CharHornsMageF": {
-  "w": 496,
+  "w": 449,
   "h": 512
  },
  "UIP_CharHornsMageM": {
-  "w": 478,
+  "w": 474,
   "h": 512
  },
  "UIP_CharHornsWarriorF": {
-  "w": 473,
+  "w": 472,
   "h": 512
  },
  "UIP_CharHornsWarriorM": {
-  "w": 489,
+  "w": 446,
   "h": 512
  },
  "UIP_CharNeutralArcherF": {

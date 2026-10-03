@@ -28,10 +28,10 @@ local LAND = { A = { -110, 115 }, B = { 155, 490 }, C = { 530, 1300 } } -- 대�
 local ALTAR = Vector3.new(0, 0, 45)
 local BOARD = Vector3.new(-55, 0, 0)
 local GOOSE_NEST = Vector3.new(-30, 0, 30)
-local PADS = {
-	{ Dest = "SlimeMeadow", Position = Vector3.new(60, 0, -30) },
-	{ Dest = "GoblinWoods", Position = Vector3.new(60, 0, 0) },
-	{ Dest = "SkeletonRuins", Position = Vector3.new(60, 0, 30) },
+local PADS = { -- Config.Map.Pads 와 같은 값 (CR-M22: 동쪽 큰길(|z| <= 8) 밖)
+	{ Dest = "SlimeMeadow", Position = Vector3.new(52, 0, -24) },
+	{ Dest = "GoblinWoods", Position = Vector3.new(52, 0, 24) },
+	{ Dest = "SkeletonRuins", Position = Vector3.new(68, 0, 24) },
 }
 local GATES = {
 	{ Zone = "SlimeMeadow", Position = Vector3.new(200, 0, 0), AlongX = true, Style = "Meadow" },
@@ -217,14 +217,17 @@ for _ = 1, 10 do
 		Vector3.new(rng:NextNumber(16, 30), 4, 4), Enum.Material.CrackedLava)
 end
 
-local wh = 120
-for _, w in {
-	{ Vector3.new(bw, wh, 2), Vector3.new(cx, wh / 2, BOUNDS.MinZ - 1) },
-	{ Vector3.new(bw, wh, 2), Vector3.new(cx, wh / 2, BOUNDS.MaxZ + 1) },
-	{ Vector3.new(2, wh, bd), Vector3.new(BOUNDS.MinX - 1, wh / 2, cz) },
-	{ Vector3.new(2, wh, bd), Vector3.new(BOUNDS.MaxX + 1, wh / 2, cz) },
-} do
-	part({ Name = "Wall", Size = w[1], Position = w[2], Transparency = 1, CanCollide = true, CastShadow = false }, folders.Walls)
+do -- 경계벽: 위 Y = 120, 바닥 Y = 수면 - 20 (CR-L17: 바다 밑으로 잠수해 맵 밖으로 못 나가게. MapBuilder 와 같은 바닥)
+	local wh, bottom = 120, WATER_TOP - 20
+	local sy, wy = wh - bottom, (wh + bottom) / 2
+	for _, w in {
+		{ Vector3.new(bw, sy, 2), Vector3.new(cx, wy, BOUNDS.MinZ - 1) },
+		{ Vector3.new(bw, sy, 2), Vector3.new(cx, wy, BOUNDS.MaxZ + 1) },
+		{ Vector3.new(2, sy, bd), Vector3.new(BOUNDS.MinX - 1, wy, cz) },
+		{ Vector3.new(2, sy, bd), Vector3.new(BOUNDS.MaxX + 1, wy, cz) },
+	} do
+		part({ Name = "Wall", Size = w[1], Position = w[2], Transparency = 1, CanCollide = true, CastShadow = false }, folders.Walls)
+	end
 end
 
 -- 산 능선: 시작점→끝점을 따라 바위 공을 늘어놓는다. gaps 안(길/관문/다리)은 비운다.

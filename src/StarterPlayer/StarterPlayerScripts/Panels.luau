@@ -6,6 +6,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
 local GuiService = game:GetService("GuiService")
+local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -27,6 +28,13 @@ local WINDOW_MAX_W, WINDOW_MAX_H = 780, 600
 local ZINDEX = 50
 local BODY_FONT = Enum.Font.GothamMedium
 local WARN_INTERVAL = 10
+-- review R1 tunables
+local GUARD = {
+	FixedTextMin = 15, -- CR-L40: non-scaled text stays >= 11 real px under a 0.75 phone UIScale
+	InputAfterRender = 0.35, -- CR-L26: a fast 2nd tap must not hit the panel that just opened under the finger
+	TouchTarget = 44, -- CR-L41: real px of the X / back buttons on touch screens
+	TouchGap = 12, -- CR-L41: real px between the X and back buttons on touch screens
+}
 
 -- layout rules from Config.UI (addendum A3-H4 / M1)
 local UI_CFG = type(Config.UI) == "table" and Config.UI or {}
@@ -129,6 +137,9 @@ local T = {
 	VacationNoteF = "쉬어도 하루치 보상의 %d%%를 챙겨 줘요. 직접 하면 100%%!",
 	VacationClaim = "받기",
 	VacationNone = "받을 휴가 보너스가 없어요.",
+	-- fallbacks for Config.Text keys added in review R1
+	WaitRespawn = "다시 살아난 뒤에 할 수 있어요.", -- CR-L30
+	BlockedBully = "깡패 단계가 모두 풀린 뒤에 장인 길드로 갈 수 있어요.", -- CR-L9
 }
 
 local DEFAULT_THEME = {
@@ -160,7 +171,7 @@ local UIKit = nil
 local theme = table.clone(DEFAULT_THEME)
 
 local fallbackGui = nil
-local root, window, titleLabel, backButton, content = nil, nil, nil, nil, nil
+local root, window, titleLabel, backButton, closeButton, content = nil, nil, nil, nil, nil, nil
 local currentId = nil
 local currentUpdate = nil
 local openedFromMenu = false
@@ -171,6 +182,7 @@ local rebuildQueued = false
 local vacationShown = false
 local pickersClosedSince = nil
 local orderCounter = 0
+local inputGuardUntil = 0 -- CR-L26: os.clock() before which panel buttons / cards ignore clicks
 local lastWarnAt = -math.huge
 local cameraConn = nil
 local scaleConn = nil
@@ -220,6 +232,14 @@ end
 
 local function inCombat()
 	return num("InCombatUntil") > Util.Now()
+end
+
+-- CR-L30: dead (or no character yet) -> travel / class / rebirth / altar wait for the respawn
+local function isDead()
+	local character = player.Character
+	local hum = character and character:FindFirstChildOfClass("Humanoid")
+	if not hum then return true end
+	return hum.Health <= 0 or hum:GetState() == Enum.HumanoidStateType.Dead
 end
 
 local function fmtText(key, ...)
@@ -362,7 +382,7 @@ local function canvas(gui)
 	end)
 	if ok and typeof(topLeft) == "Vector2" then insetY = topLeft.Y end
 	local top = ((insetY > 0) and (insetY + TOP_PAD) or TOP_FALLBACK) / s
-	return vp.X / s, vp.Y / s, top
+	return vp.X / s, vp.Y / s, top, s
 end
 
 local function constrainText(obj, maxSize)
@@ -394,7 +414,7 @@ local function addText(parent, text, opts)
 	l.Size = opts.Width or UDim2.new(1, 0, 0, 0)
 	l.AutomaticSize = Enum.AutomaticSize.Y
 	l.Font = opts.Font or BODY_FONT
-	l.TextSize = opts.Size or 18
+	l.TextSize = math.max(opts.Size or 18, GUARD.FixedTextMin) -- CR-L40
 	l.TextColor3 = opts.Color or theme.Text
 	l.TextWrapped = true
 	l.RichText = opts.Rich == true
@@ -402,7 +422,7 @@ local function addText(parent, text, opts)
 	l.TextYAlignment = Enum.TextYAlignment.Top
 	l.Text = text or ""
 	l.LayoutOrder = nextOrder()
-	constrainText(l)
+	if l.TextScaled then constrainText(l) end -- CR-L40: the constraint only matters for scaled text
 	l.Parent = parent
 	return l
 end
@@ -415,7 +435,7 @@ local function placeLabel(parent, text, size, color, pos, dim, align)
 	l.Position = pos
 	l.Size = dim
 	l.Font = theme.Font
-	l.TextSize = size
+	l.TextSize = math.max(size, GUARD.FixedTextMin) -- CR-L40
 	l.TextColor3 = color
 	l.TextWrapped = true
 	l.TextTruncate = Enum.TextTruncate.AtEnd
@@ -499,6 +519,7 @@ end
 local function makeButton(parent, text, color, size, onClick, textColor)
 	local btn = nil
 	local function handler()
+		if os.clock() < inputGuardUntil then return end -- CR-L26
 		if not btn or disabledButtons[btn] then return end
 		local ok, err = pcall(onClick)
 		if not ok then Util.Warn(TAG, "button handler error: " .. tostring(err)) end
@@ -564,6 +585,7 @@ local function makeCard(parent, size, accent, onClick)
 	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	list.Parent = card
 	card.Activated:Connect(function()
+		if os.clock() < inputGuardUntil then return end -- CR-L26
 		playClick()
 		local ok, err = pcall(onClick)
 		if not ok then Util.Warn(TAG, "card handler error: " .. tostring(err)) end
@@ -617,6 +639,7 @@ end
 
 ------------------------------------------------------------------ rules mirrored from the server (display only)
 local function travelBlock(destId, zone, level, faction)
+	if isDead() then return cfgFmt("WaitRespawn", T.WaitRespawn), T.TravelNoGo end -- CR-L30
 	if num("TravelingUntil") > Util.Now() then return fmtText("Traveling"), T.TravelBusy end
 	if destId == "Home" and faction == "None" then return fmtText("NeedFaction"), T.TravelNoGo end
 	if level < zone.MinLevel then
@@ -630,13 +653,27 @@ local function travelBlock(destId, zone, level, faction)
 	return nil, nil
 end
 
-local function rebirthBlock(level, req)
+-- same order as ProgressionService.TryRebirth; targetId (optional) adds the per-target bully check (CR-L9)
+local function rebirthBlock(level, req, targetId)
+	if isDead() then return cfgFmt("WaitRespawn", T.WaitRespawn) end -- CR-L30
 	if level < req then return fmtText("RebirthNeed", math.floor(req)) end
 	if num("WantedStars") > 0 then return fmtText("BlockedStars") end
 	if num("SackGold") > 0 then return fmtText("BlockedSack") end
 	if kaijuState() ~= "None" then return fmtText("BlockedKaiju") end
 	if inCombat() then return fmtText("TravelBlockedCombat") end
+	if targetId == "Neutral" and num("BullyStacks") > 0 then return cfgFmt("BlockedBully", T.BlockedBully) end -- CR-L9
 	return nil
+end
+
+-- CR-L7: the server's underdog counts (no rookies, no 120 s idlers); HaloCount / HornsCount until they are published.
+-- Returns halo, horns, selfIn: whether I am inside those counts. HaloCount/HornsCount always include me; the
+-- underdog counts only when FactionService marked me eligible (UnderdogCounted, published with the same recount).
+local function underdogCounts()
+	local halo, horns = gameAttr("UnderdogHalo"), gameAttr("UnderdogHorns")
+	if type(halo) ~= "number" or type(horns) ~= "number" then
+		return gameNum("HaloCount"), gameNum("HornsCount"), true
+	end
+	return halo, horns, player:GetAttribute("UnderdogCounted") ~= false
 end
 
 -- underdog ratio counts Halo vs Horns only (A6); Neutral always gets the normal bonus
@@ -656,14 +693,16 @@ local function altarDistance()
 	return Util.FlatDistance(altar.Position, hrp.Position)
 end
 
--- returns (reasonText?, shortCooldownText?)
-local function altarBlock()
+-- returns (reasonText?, shortCooldownText?); same order as FactionService.onSwitchFaction
+local function altarBlock(target)
+	if isDead() then return cfgFmt("WaitRespawn", T.WaitRespawn), nil end -- CR-L30
 	local d = altarDistance()
 	if d and d > Config.Switch.AltarRange then return T.AltarFar, nil end
 	if num("SackGold") > 0 then return fmtText("BlockedSack"), nil end
 	if kaijuState() ~= "None" then return fmtText("BlockedKaiju"), nil end
 	if num("WantedStars") > 0 then return fmtText("BlockedStars"), nil end
 	if inCombat() then return fmtText("TravelBlockedCombat"), nil end
+	if target == "Neutral" and num("BullyStacks") > 0 then return cfgFmt("BlockedBully", T.BlockedBully), nil end -- CR-L9
 	local last = num("LastSwitchTime")
 	local remaining = last + Config.Switch.Cooldown - Util.Now()
 	if last > 0 and remaining > 0 then
@@ -690,6 +729,7 @@ end
 
 -- same checks and order as ClassService.onChangeClass (PvP zone, sack, kaiju, combat tag)
 local function classBlock()
+	if isDead() then return cfgFmt("WaitRespawn", T.WaitRespawn) end -- CR-L30
 	if player:GetAttribute("ZonePvP") == true then return fmtText("ClassNeedSafe") end
 	if num("SackGold") > 0 then return fmtText("BlockedSack") end
 	if kaijuState() ~= "None" then return fmtText("BlockedKaiju") end
@@ -717,9 +757,29 @@ local function pickerOpen()
 end
 
 ------------------------------------------------------------------ modal root
+-- title / back / X row and the content below it. CR-L41: on touch screens the buttons are >= 44 real px tall
+-- (canvas px = real px / UIScale) and kept apart, and the content moves down with them
+local function layoutChrome(s)
+	if not (closeButton and backButton and titleLabel and content) then return end
+	local th, gap = 44, 10
+	if UserInputService.TouchEnabled then
+		th = math.max(44, math.ceil(GUARD.TouchTarget / s))
+		gap = math.max(10, math.ceil(GUARD.TouchGap / s))
+	end
+	local closeW, backW = math.max(52, th), 112
+	closeButton.Size = UDim2.fromOffset(closeW, th)
+	closeButton.Position = UDim2.new(1, -12, 0, 10)
+	backButton.Size = UDim2.fromOffset(backW, th)
+	backButton.Position = UDim2.new(1, -(12 + closeW + gap), 0, 10)
+	titleLabel.Size = UDim2.new(1, -(18 + 12 + closeW + gap + backW + 16), 0, th)
+	local contentTop = 10 + th + 10
+	content.Position = UDim2.fromOffset(14, contentTop)
+	content.Size = UDim2.new(1, -28, 1, -(contentTop + 12))
+end
+
 local function layoutRoot()
 	if not root or not window then return end
-	local w, h, top = canvas(root.Parent)
+	local w, h, top, s = canvas(root.Parent)
 	root.Position = UDim2.fromOffset(0, 0)
 	root.Size = UDim2.fromOffset(w, h)
 	local availH = math.max(220, h - top - 12)
@@ -727,6 +787,7 @@ local function layoutRoot()
 	local winH = math.min(WINDOW_MAX_H, availH)
 	window.Size = UDim2.fromOffset(winW, winH)
 	window.Position = UDim2.fromOffset(w / 2, top + availH / 2)
+	layoutChrome(s)
 end
 
 local function ensureRoot()
@@ -762,7 +823,7 @@ local function ensureRoot()
 
 	titleLabel = placeLabel(window, "", 26, theme.Gold, UDim2.fromOffset(18, 10), UDim2.new(1, -220, 0, 44))
 
-	local closeButton = makeButton(window, T.Close, PALETTE.Close, UDim2.fromOffset(52, 44), function()
+	closeButton = makeButton(window, T.Close, PALETTE.Close, UDim2.fromOffset(52, 44), function()
 		Panels.Close()
 	end)
 	closeButton.AnchorPoint = Vector2.new(1, 0)
@@ -884,6 +945,8 @@ BUILDERS.Travel = function(parent)
 	local rows = {}
 	for _, dest in Config.Travel.Destinations do
 		local destId = dest.Id
+		-- CR-L28: 장인 길드's home IS Crossroads; the "Home" row already lists it
+		if destId == "Crossroads" and faction ~= "None" and Config.HomeZoneId(faction) == "Crossroads" then continue end
 		local zoneId = (destId == "Home") and Config.HomeZoneId(faction) or destId
 		local zone = Config.Zones[zoneId]
 		if zone then
@@ -904,6 +967,12 @@ BUILDERS.Travel = function(parent)
 			infoLabel.Font = BODY_FONT
 
 			local btn = makeButton(row, T.TravelGo, PALETTE.Ticket, UDim2.fromOffset(156, 48), function()
+				-- CR-L30: re-check at click time (the row refreshes only every UPDATE_INTERVAL)
+				local reason = travelBlock(destId, zone, num("Level"), faction)
+				if reason then
+					toast(reason, "bad")
+					return
+				end
 				fire("Travel", destId)
 				Panels.Close()
 			end)
@@ -937,7 +1006,7 @@ BUILDERS.Travel = function(parent)
 end
 
 local function confirmRebirth(targetId)
-	local reason = rebirthBlock(num("Level"), Config.RebirthLevel(num("Rebirths")))
+	local reason = rebirthBlock(num("Level"), Config.RebirthLevel(num("Rebirths")), targetId)
 	if reason then
 		toast(reason, "bad")
 		return
@@ -972,7 +1041,7 @@ BUILDERS.Rebirth = function(parent)
 		end
 		local mark = markPreview(mine, id)
 		if mark then
-			addText(col, mark, { Size = 14, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
+			addText(col, mark, { Size = 15, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
 		end
 		cols[id] = { Button = btn, Bonus = bonus }
 	end
@@ -989,11 +1058,13 @@ BUILDERS.Rebirth = function(parent)
 		local halo, horns = math.floor(gameNum("HaloCount")), math.floor(gameNum("HornsCount"))
 		countLabel.Text = string.format(T.RebirthCountsF, halo, horns) -- Halo vs Horns only (A6)
 
-		-- "others" = server counts minus me (only Halo/Horns are counted)
-		local oHalo, oHorns = halo, horns
-		if mine == "Halo" then
+		-- "others" = the underdog counts minus me (CR-L7: same counts as ProgressionService.rebirthBonusFor, which
+		-- marks me active first and then subtracts me; an idle / just-joined me is not in the published counts)
+		local uHalo, uHorns, selfIn = underdogCounts()
+		local oHalo, oHorns = math.max(0, math.floor(uHalo)), math.max(0, math.floor(uHorns))
+		if selfIn and mine == "Halo" then
 			oHalo = math.max(0, oHalo - 1)
-		elseif mine == "Horns" then
+		elseif selfIn and mine == "Horns" then
 			oHorns = math.max(0, oHorns - 1)
 		end
 		for id, col in cols do
@@ -1007,18 +1078,21 @@ BUILDERS.Rebirth = function(parent)
 		end
 
 		local reason = rebirthBlock(level, req)
-		reasonLabel.Text = reason or ""
-		reasonLabel.Visible = reason ~= nil
-		for _, col in cols do
-			setEnabled(col.Button, reason == nil)
+		local shown = reason
+		for id, col in cols do
+			local colReason = reason or rebirthBlock(level, req, id) -- CR-L9: only 장인 길드 waits for the bully stacks
+			setEnabled(col.Button, colReason == nil)
+			if shown == nil then shown = colReason end
 		end
+		reasonLabel.Text = shown or ""
+		reasonLabel.Visible = shown ~= nil
 	end
 end
 
 local function altarFree()
 	local target = selectedTarget
 	if not target then return end
-	local reason = altarBlock()
+	local reason = altarBlock(target)
 	if reason then
 		toast(reason, "bad")
 		return
@@ -1037,7 +1111,7 @@ local function altarTicket()
 	end
 	local target = selectedTarget
 	if not target then return end
-	local reason = altarBlock()
+	local reason = altarBlock(target)
 	if reason then
 		toast(reason, "bad")
 		return
@@ -1079,13 +1153,8 @@ BUILDERS.Altar = function(parent)
 		cards[id] = { Card = card, Stroke = st, Selected = sel }
 	end
 
-	local loreLabel = addText(parent, "", { Color = theme.SubText, Size = 16 })
-	local perksLabel = addText(parent, "", { Size = 16 })
-	addText(parent, T.AltarRules, { Size = 15, Color = theme.SubText })
-	addText(parent, string.format(T.AltarCooldownRuleF, math.max(1, math.floor(Config.Switch.Cooldown / 60 + 0.5))),
-		{ Size = 15, Color = theme.SubText })
+	-- CR-L27: reason + [무료]/[티켓] right under the cards so they are on the first screen of a phone
 	local reasonLabel = addText(parent, "", { Color = theme.Bad, Size = 17, Font = theme.Font })
-
 	local optRow = addRow(parent, 0, 14)
 	local freeCol = addColumn(optRow, 0.5, -7, 4)
 	local freeBtn = makeButton(freeCol, cfgFmt("ChangeFree", T.FreeButton), PALETTE.Free, UDim2.new(1, 0, 0, 58), altarFree)
@@ -1093,6 +1162,12 @@ BUILDERS.Altar = function(parent)
 	local ticketCol = addColumn(optRow, 0.5, -7, 4)
 	local ticketBtn = makeButton(ticketCol, "", PALETTE.Ticket, UDim2.new(1, 0, 0, 58), altarTicket)
 	local ticketSub = addText(ticketCol, "", { Size = 15, Align = Enum.TextXAlignment.Center })
+
+	local loreLabel = addText(parent, "", { Color = theme.SubText, Size = 16 })
+	local perksLabel = addText(parent, "", { Size = 16 })
+	addText(parent, T.AltarRules, { Size = 15, Color = theme.SubText })
+	addText(parent, string.format(T.AltarCooldownRuleF, math.max(1, math.floor(Config.Switch.Cooldown / 60 + 0.5))),
+		{ Size = 15, Color = theme.SubText })
 
 	return function()
 		for id, c in cards do
@@ -1124,7 +1199,7 @@ BUILDERS.Altar = function(parent)
 			paintButton(ticketBtn, PALETTE.Buy)
 		end
 
-		local reason, short = altarBlock()
+		local reason, short = altarBlock(target)
 		reasonLabel.Text = reason or ""
 		reasonLabel.Visible = reason ~= nil
 		freeBtn.Text = short or cfgFmt("ChangeFree", T.FreeButton)
@@ -1190,9 +1265,9 @@ BUILDERS.Class = function(parent)
 			addText(card, className(id, faction), { Size = 21, Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 			addText(card, "(" .. genericClassName(id) .. ")", { Size = 15, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
 			addText(card, pickLine(id), { Size = 16, Align = Enum.TextXAlignment.Center, Font = theme.Font })
-			addText(card, def.Desc or "", { Size = 14, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
+			addText(card, def.Desc or "", { Size = 15, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
 			if type(def.Stats) == "table" then
-				addText(card, table.concat(def.Stats, "\n"), { Size = 14, Align = Enum.TextXAlignment.Center })
+				addText(card, table.concat(def.Stats, "\n"), { Size = 15, Align = Enum.TextXAlignment.Center })
 			end
 			local badge = addText(card, "", { Size = 16, Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 			cards[id] = { Card = card, Stroke = st, Badge = badge }
@@ -1281,11 +1356,13 @@ BUILDERS.Shop = function(parent)
 end
 
 BUILDERS.Vacation = function(parent)
-	local days = math.floor(num("VacationDays"))
-	if days <= 0 then
+	local rawDays = num("VacationDays")
+	if rawDays <= 0 then
 		addText(parent, T.VacationNone, { Color = theme.SubText, Align = Enum.TextXAlignment.Center })
 		return nil
 	end
+	-- CR-M21: a partly played day adds a fraction of a day; show whole days rounded up (0.5 -> 1)
+	local days = math.max(1, math.ceil(rawDays - 1e-6))
 	vacationShown = true -- seen this session (manual open counts too)
 	addText(parent, string.format(T.VacationHeaderF, days), { Size = 24, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 	local reward = addText(parent, "", { Size = 22, Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
@@ -1322,6 +1399,8 @@ local function render()
 		if not ok2 then Util.Warn(TAG, "update error in " .. tostring(currentId) .. ": " .. tostring(err)) end
 	end
 	content.CanvasPosition = Vector2.new(0, 0)
+	-- CR-L26: the 2nd tap of a double tap on a menu entry must not press what just appeared under the finger
+	inputGuardUntil = os.clock() + GUARD.InputAfterRender
 end
 
 local function queueRebuild()

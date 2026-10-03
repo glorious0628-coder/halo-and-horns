@@ -15,6 +15,7 @@ local M = {}
 M.GoldEarned = Util.Signal.new() -- (player, amount, source)
 M.LeveledUp = Util.Signal.new() -- (player, newLevel)
 M.Rebirthed = Util.Signal.new() -- (player, rebirths, { From, To, Bonus, Mark })
+M.LevelReset = Util.Signal.new() -- (player) CR-M6: free class change dropped the player to Lv1 (QuestService remakes extras)
 
 local S = nil
 
@@ -88,6 +89,29 @@ local function rootPosition(player)
 	return nil
 end
 
+local function getKaijuState(player)
+	local ks = S.KaijuService
+	if not ks or type(ks.GetState) ~= "function" then return "None" end
+	local ok, state = pcall(ks.GetState, player)
+	if ok and type(state) == "string" then return state end
+	return "None"
+end
+
+local function bullyStacks(player)
+	local js = S.JusticeService
+	if not js or type(js.GetBullyStacks) ~= "function" then return 0 end
+	local ok, stacks = pcall(js.GetBullyStacks, player)
+	return ok and num(stacks) or 0
+end
+
+-- CR-M2: no combat-log penalty while the server itself is closing
+local function isShuttingDown()
+	local ps = S.PlayerService
+	if not ps or type(ps.IsShuttingDown) ~= "function" then return false end
+	local ok, closing = pcall(ps.IsShuttingDown)
+	return ok and closing == true
+end
+
 ------------------------------------------------------------------ multipliers
 function M.GetGoldMult(player)
 	local data = getData(player)
@@ -144,23 +168,27 @@ function M.AddXP(player, amount)
 	S.PlayerService.SetStat(player, "XP", xp)
 
 	if level > startLevel then
-		S.PlayerService.RefreshCharacter(player, true)
+		-- CR-M16: no full heal mid-fight (e.g. claiming a finished daily during PvP) or as an active kaiju
+		local fullHeal = not S.CombatService.IsInCombat(player) and getKaijuState(player) ~= "Active"
+		S.PlayerService.RefreshCharacter(player, fullHeal)
+		-- CR-L23: the LevelUp Fx already shows the level-up announcement on the owner's screen (no extra toast)
 		Net.Fx(nil, "LevelUp", {
 			UserId = player.UserId,
 			Level = level,
 			Pos = rootPosition(player) or Vector3.zero,
 		})
-		Net.Notify(player, string.format(Config.Text.LevelUp, level), "reward")
 		M.LeveledUp:Fire(player, level)
 	end
 end
 
--- Level 1, XP 0, full heal (free class change). Gold, bank, weapon, rebirth bonus, marks, tickets, quests are kept.
+-- Level 1, XP 0, full heal (free class change). Gold, bank, weapon, rebirth bonus, marks, tickets, quests are kept
+-- (unclaimed quest/vacation rewards are capped to the current level when claimed: QuestService CR-M6).
 function M.ResetLevel(player)
 	if not getData(player) then return end
 	S.PlayerService.SetStat(player, "Level", 1)
 	S.PlayerService.SetStat(player, "XP", 0)
 	S.PlayerService.RefreshCharacter(player, true)
+	M.LevelReset:Fire(player) -- CR-M6
 end
 
 ------------------------------------------------------------------ gold
@@ -228,8 +256,7 @@ function M.BankAll(player, silent)
 	S.PlayerService.SetStat(player, "CarriedGold", 0)
 	S.PlayerService.AddStat(player, "BankGold", carried)
 	if not silent then
-		Net.Fx(player, "Bank", { Amount = carried })
-		Net.Notify(player, string.format(Config.Text.Banked, Util.FormatNumber(carried)), "good")
+		Net.Fx(player, "Bank", { Amount = carried }) -- CR-L23: the Bank Fx shows the only toast
 	end
 	return carried
 end
@@ -239,6 +266,10 @@ local function bankTick(player, now)
 	local data = getData(player)
 	if not data then return end
 	local carried = math.floor(math.max(0, num(data.CarriedGold)))
+
+	-- CR-M9: a siren / active kaiju keeps its pouch (the raid pool), even in Crossroads (Town = true)
+	local ks = getKaijuState(player)
+	if ks == "Siren" or ks == "Active" then return end
 
 	-- towns (every faction's home, incl. Crossroads for Neutral) bank everything
 	if S.ZoneService.IsTown(player) then
@@ -264,22 +295,38 @@ local function bankTick(player, now)
 	if amount <= 0 then return end
 	S.PlayerService.SetStat(player, "CarriedGold", carried - amount)
 	S.PlayerService.AddStat(player, "BankGold", amount)
-	Net.Fx(player, "Bank", { Amount = amount })
-	Net.Notify(player, string.format(Config.Text.HaloCourier, Util.FormatNumber(amount)), "good")
+	Net.Fx(player, "Bank", { Amount = amount, Courier = true }) -- CR-L23: Fx shows the HaloCourier text (one toast)
 end
 
 ------------------------------------------------------------------ turncoat rebirth
--- A6: ratios are Halo vs Horns only; Neutral targets always get the normal bonus
-local function rebirthBonusFor(oldFaction, target)
+-- A6: ratios are Halo vs Horns only; Neutral targets always get the normal bonus.
+-- CR-L7: counts skip rookies and 120 s idlers (FactionService.GetUnderdogCounts), so Lv1 alts cannot fake an underdog.
+local function rebirthBonusFor(player, oldFaction, target)
 	if target ~= "Halo" and target ~= "Horns" then
 		return Config.Rebirth.BonusNormal
 	end
-	local halo, horns = S.FactionService.GetCounts()
+	local fs = S.FactionService
+	local halo, horns = nil, nil
+	local selfCounted = true
+	if type(fs.GetUnderdogCounts) == "function" then
+		local ok, h, r = pcall(fs.GetUnderdogCounts)
+		if ok and type(h) == "number" and type(r) == "number" then
+			halo, horns = h, r
+			-- the rebirthing player is active (MarkActive in onRebirthRemote); only a rookie is left out there
+			local okR, rookie = pcall(S.PvPService.IsRookie, player)
+			selfCounted = not (okR and rookie == true)
+		end
+	end
+	if halo == nil then
+		halo, horns = fs.GetCounts()
+	end
 	halo, horns = math.max(0, num(halo)), math.max(0, num(horns))
-	if oldFaction == "Halo" then
-		halo = math.max(0, halo - 1)
-	elseif oldFaction == "Horns" then
-		horns = math.max(0, horns - 1)
+	if selfCounted then
+		if oldFaction == "Halo" then
+			halo = math.max(0, halo - 1)
+		elseif oldFaction == "Horns" then
+			horns = math.max(0, horns - 1)
+		end
 	end
 	return Config.RebirthBonusFor(target == "Halo" and halo or horns, halo + horns)
 end
@@ -316,9 +363,13 @@ function M.TryRebirth(player, factionId)
 	if S.CombatService.IsInCombat(player) then
 		return false, string.format(Config.Text.TravelBlockedCombat)
 	end
+	-- CR-L9: the guild has no bully stacks, so becoming Neutral would wipe them; wait until they decay
+	if factionId == "Neutral" and bullyStacks(player) > 0 then
+		return false, string.format(Config.Text.BlockedBully or "깡패 단계가 모두 풀린 뒤에 장인 길드로 갈 수 있어요.")
+	end
 
 	local old = getFaction(player)
-	local bonus = rebirthBonusFor(old, factionId)
+	local bonus = rebirthBonusFor(player, old, factionId)
 	local mark = markFor(old, factionId)
 	local pos = rootPosition(player) or Vector3.zero
 
@@ -393,7 +444,8 @@ local function onPlayerLeaving(player, data)
 	end
 	if type(data) ~= "table" then return end
 	local carried = math.floor(math.max(0, num(data.CarriedGold)))
-	if carried > 0 and S.CombatService.IsInCombat(player) then
+	-- CR-M2: a server shutdown (update) is not a combat log
+	if carried > 0 and S.CombatService.IsInCombat(player) and not isShuttingDown() then
 		carried = math.floor(carried * (1 - Config.PvP.CombatLogPenalty))
 	end
 	data.BankGold = math.max(0, num(data.BankGold)) + carried
@@ -404,6 +456,9 @@ local function onRebirthRemote(player, factionId)
 	if not S.PlayerService.IsReady(player) then return end
 	if type(factionId) ~= "string" then return end
 	if not Util.RateLimit(player, "Rebirth", Config.RateLimits.Rebirth) then return end
+	if type(S.PlayerService.MarkActive) == "function" then
+		S.PlayerService.MarkActive(player) -- CR-L7: pressing rebirth is input, so the player counts as active
+	end
 	local ok, reason = M.TryRebirth(player, factionId)
 	if not ok and reason then
 		Net.Notify(player, reason, "bad")

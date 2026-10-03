@@ -50,8 +50,9 @@ local FLASH_TIME = HIT_CFG.FlashTime or 0.06
 local POP_SCALE = HIT_CFG.PopScale or 1.4
 local POP_TIME = HIT_CFG.PopTime or 0.1
 local MERGE_WINDOW = HIT_CFG.MergeWindow or 0.25
-local MERGE_DIST = 3 -- studs: numbers spawned this close (and within MERGE_WINDOW) add into one label
-local FLASH_DIST = 3 -- studs: monsters whose root is this close to one of my hit positions flash white
+-- CR-L42: both radii come from Config.HitFeel (studs)
+local MERGE_DIST = HIT_CFG.MergeRadius or 3 -- numbers spawned this close (and within MERGE_WINDOW) add into one label
+local FLASH_DIST = HIT_CFG.FlashRadius or 3 -- monsters whose root is this close to one of my hit positions flash white
 
 local WHITE = Color3.new(1, 1, 1)
 local COLOR_CRIT = Color3.fromRGB(255, 225, 60)
@@ -966,8 +967,9 @@ local function flashMonstersAt(positions)
 	local folder = workspace:FindFirstChild("Monsters")
 	if not folder then return end
 	for _, model in folder:GetChildren() do
-		-- custom-model visuals (A1) are skipped: their procedural parts are invisible hitboxes
-		if model:IsA("Model") and not model:FindFirstChild("CustomVisual") then
+		-- custom-model visuals (A1) are skipped: their procedural parts are invisible hitboxes; so are other players'
+		-- hidden personal monsters (CR-L15)
+		if model:IsA("Model") and not model:FindFirstChild("CustomVisual") and not Feel.isForeign(model) then
 			local root = model.PrimaryPart or model:FindFirstChild("HumanoidRootPart")
 			if root and root:IsA("BasePart") then
 				local rp = root.Position
@@ -1104,7 +1106,7 @@ local function recoilMonstersAt(positions, strength)
 	for model, st in monsterMotion do
 		local root = monsterRoot(model)
 		-- an anchored root is dying (MonsterService deathPop): the killing hit plays only the death pop
-		if root and not root.Anchored then
+		if root and not root.Anchored and not st.Hidden then
 			local rp = root.Position
 			for _, p in positions do
 				if (rp - p).Magnitude <= FLASH_DIST then
@@ -1120,6 +1122,86 @@ local function recoilMonstersAt(positions, strength)
 	end
 end
 
+-- CR-L15: another player's personal monster (tutorial golden slime, model attribute OwnerUserId) cannot be hit by me,
+-- so this client hides it: parts / decals get LocalTransparencyModifier 1, guis / particles / lights / highlights are
+-- switched off (existing and late descendants), and Fx skips its white flash, recoil, lunge, telegraph and stickers.
+Feel.HIDE_CLASSES = {
+	"LayerCollector", "ParticleEmitter", "Light", "Highlight", "Beam", "Trail", "Fire", "Smoke", "Sparkles",
+}
+-- [model] = { Root = BasePart?, Until = os.clock() expiry once untracked } of the hidden monsters; a killed one stays
+-- for HIDDEN_KEEP s after its model goes, so the owner's late killing-hit number is still filtered (showHits)
+Feel.HiddenRoots = {}
+Feel.HIDDEN_KEEP = 1.5
+
+-- true when p is within FLASH_DIST of a monster this client hides (same hit -> monster match as flashMonstersAt)
+function Feel.nearHidden(p)
+	local now = os.clock()
+	for model, e in Feel.HiddenRoots do
+		if e.Until and now > e.Until then
+			Feel.HiddenRoots[model] = nil
+		else
+			if not e.Root then e.Root = monsterRoot(model) end
+			if e.Root and (e.Root.Position - p).Magnitude <= FLASH_DIST then return true end
+		end
+	end
+	return false
+end
+
+function Feel.isForeign(model)
+	local owner = model:GetAttribute("OwnerUserId")
+	return LocalPlayer ~= nil and type(owner) == "number" and owner ~= LocalPlayer.UserId
+end
+
+function Feel.hideInst(st, d)
+	if d:IsA("BasePart") or d:IsA("Decal") then
+		d.LocalTransparencyModifier = 1
+		return
+	end
+	for _, cls in Feel.HIDE_CLASSES do
+		if d:IsA(cls) then
+			if d.Enabled then
+				d.Enabled = false
+				if st.HiddenOff then st.HiddenOff[d] = true end -- re-enabled if the monster becomes mine
+			end
+			return
+		end
+	end
+end
+
+function Feel.setHidden(model, st, hidden)
+	if hidden == (st.Hidden == true) then return end
+	st.Hidden = hidden
+	if st.HideConn then
+		st.HideConn:Disconnect()
+		st.HideConn = nil
+	end
+	if hidden then
+		Feel.HiddenRoots[model] = { Root = monsterRoot(model) }
+		st.HiddenOff = setmetatable({}, { __mode = "k" })
+		for _, d in model:GetDescendants() do
+			pcall(Feel.hideInst, st, d)
+		end
+		st.HideConn = model.DescendantAdded:Connect(function(d)
+			pcall(Feel.hideInst, st, d)
+		end)
+	else
+		Feel.HiddenRoots[model] = nil
+		for _, d in model:GetDescendants() do
+			if d:IsA("BasePart") or d:IsA("Decal") then
+				pcall(function()
+					d.LocalTransparencyModifier = 0
+				end)
+			end
+		end
+		for d in st.HiddenOff or {} do
+			pcall(function()
+				d.Enabled = true
+			end)
+		end
+		st.HiddenOff = nil
+	end
+end
+
 local function untrackMonster(model)
 	local st = monsterMotion[model]
 	if not st then return end
@@ -1132,20 +1214,37 @@ local function untrackMonster(model)
 		st.Tween = nil
 	end
 	if st.Conn then st.Conn:Disconnect() end
+	if st.HideConn then -- CR-L15
+		st.HideConn:Disconnect()
+		st.HideConn = nil
+	end
+	local hiddenEntry = st.Hidden and Feel.HiddenRoots[model]
+	if hiddenEntry then -- CR-L15: keep its last root a moment (Feel.nearHidden)
+		if not hiddenEntry.Root then hiddenEntry.Root = monsterRoot(model) end
+		hiddenEntry.Until = os.clock() + Feel.HIDDEN_KEEP
+	end
 end
 
--- st.TeleUntil / RecoilAt / StickerUntil / LastEmo are A14-4 fields (telegraph end, last recoil, sticker gate)
+-- st.TeleUntil / RecoilAt / StickerUntil / LastEmo are A14-4 fields (telegraph end, last recoil, sticker gate);
+-- st.Hidden / HideConn / HiddenOff are CR-L15 (another player's personal monster)
 local function trackMonster(model)
 	if monsterMotion[model] or not model:IsA("Model") then return end
 	local st = { Token = 0, Tween = nil, Attack = false, Conn = nil }
 	monsterMotion[model] = st
 	-- one listener per monster: AttackSeq (lunge), WindupAt (telegraph), HurtSeq (pain sticker + flinch)
 	st.Conn = model.AttributeChanged:Connect(function(name)
+		if name == "OwnerUserId" then -- CR-L15
+			local okHide, errHide = pcall(Feel.setHidden, model, st, Feel.isForeign(model))
+			if not okHide then warnThrottled("monster hide failed: " .. tostring(errHide)) end
+			return
+		end
+		if st.Hidden then return end -- CR-L15: no motion / stickers on a monster this client hides
 		local fn = Feel.MonsterAttr[name]
 		if not fn then return end
 		local ok, err = pcall(fn, model)
 		if not ok then warnThrottled("monster " .. name .. " failed: " .. tostring(err)) end
 	end)
+	if Feel.isForeign(model) then Feel.setHidden(model, st, true) end -- CR-L15
 end
 
 -- existing children + ChildAdded; models leaving the folder (death, despawn, streaming out) are untracked
@@ -1348,6 +1447,10 @@ local function getGuiRoot()
 	ownGui.Name = "FxGui"
 	ownGui.ResetOnSpawn = false
 	ownGui.IgnoreGuiInset = true
+	pcall(function() -- CR-L34: keep the fallback layer inside the notch-safe area (set after IgnoreGuiInset)
+		ownGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+		ownGui.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None
+	end)
 	ownGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	ownGui.DisplayOrder = 11
 	ownGui.Parent = pg
@@ -1399,38 +1502,39 @@ local function buildScreenFx()
 	edge("Left", UDim2.new(0.1, 0, 1, 0), UDim2.fromScale(0, 0), Vector2.new(0, 0), 0)
 	edge("Right", UDim2.new(0.1, 0, 1, 0), UDim2.fromScale(1, 0), Vector2.new(1, 0), 180)
 
-	-- combo counter at right-center
+	-- combo counter at bottom-centre, under the character (CR-L39: the old right-centre spot covered the menu / 자동
+	-- buttons on small phones and in the fallback layout)
 	comboLabel = Instance.new("TextLabel")
 	comboLabel.Name = "FxCombo"
 	comboLabel.BackgroundTransparency = 1
-	comboLabel.AnchorPoint = Vector2.new(1, 0.5)
-	comboLabel.Position = UDim2.new(1, -24, 0.42, 0)
-	comboLabel.Size = UDim2.fromOffset(150, 56)
+	comboLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+	comboLabel.Position = UDim2.fromScale(0.5, 0.66)
+	comboLabel.Size = UDim2.fromOffset(120, 24)
 	comboLabel.Font = FONT_NUMBER
 	comboLabel.TextScaled = true
-	comboLabel.TextXAlignment = Enum.TextXAlignment.Right
+	comboLabel.TextXAlignment = Enum.TextXAlignment.Center
 	comboLabel.TextColor3 = COLOR_GOLD
 	comboLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
 	comboLabel.TextStrokeTransparency = 0.2
 	comboLabel.Text = ""
 	comboLabel.Visible = false
 	comboLabel.ZIndex = 5
-	addTextConstraint(comboLabel, 56)
+	addTextConstraint(comboLabel, 24)
 	comboScale = Instance.new("UIScale")
 	comboScale.Scale = 1
 	comboScale.Parent = comboLabel
 	comboLabel.Parent = root
 
-	-- milestone text ("좋아요! x10"), shown big for 1 s above the counter
+	-- milestone text ("좋아요! x10"), shown big for 1 s right above the counter (same centre x, CR-L39)
 	milestoneLabel = Instance.new("TextLabel")
 	milestoneLabel.Name = "FxComboMilestone"
 	milestoneLabel.BackgroundTransparency = 1
-	milestoneLabel.AnchorPoint = Vector2.new(1, 0.5)
-	milestoneLabel.Position = UDim2.new(1, -24, 0.42, -62)
+	milestoneLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+	milestoneLabel.Position = UDim2.new(0.5, 0, 0.66, -46) -- counter half height 12 + gap 2 + own half height 32
 	milestoneLabel.Size = UDim2.fromOffset(420, 64)
 	milestoneLabel.Font = FONT_NUMBER
 	milestoneLabel.TextScaled = true
-	milestoneLabel.TextXAlignment = Enum.TextXAlignment.Right
+	milestoneLabel.TextXAlignment = Enum.TextXAlignment.Center
 	milestoneLabel.TextColor3 = COLOR_PERFECT
 	milestoneLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
 	milestoneLabel.TextStrokeTransparency = 0.1
@@ -2460,6 +2564,8 @@ local function showHits(hits, own, fromRelease, feel)
 			local p = asVec(h.P)
 			local a = asNum(h.A, 0)
 			local kind = h.K
+			-- CR-M23: a PvP hit on me already shows as my Hurt number (+ edge flash); skip the attacker's copy
+			if kind == "P" and not own and LocalPlayer and asNum(h.V, -1) == LocalPlayer.UserId then continue end
 			local crit = h.C == true
 			if p then
 				if own and kind ~= "P" and kind ~= "G" and #flashAt < 16 then
@@ -2819,10 +2925,19 @@ handlers.Plunder = function(data)
 	end
 end
 
+-- { Amount, Courier? }: the only bank toast (CR-L23: the server sends no Banked / HaloCourier notify any more);
+-- Courier = the Halo courier's periodic deposit
 handlers.Bank = function(data)
 	local amount = asNum(data.Amount, 0)
 	if amount <= 0 then return end
-	uiCall("Toast", string.format(TXT_BANK, Util.FormatNumber(amount)), "reward")
+	local gold = Util.FormatNumber(amount)
+	local text
+	if data.Courier == true then
+		text = textOr("HaloCourier", "천사 배달부가 골드 %s을(를) 금고에 넣었어요.", gold)
+	else
+		text = string.format(TXT_BANK, gold)
+	end
+	uiCall("Toast", text, "reward")
 	Fx.PlaySound("Coin")
 end
 

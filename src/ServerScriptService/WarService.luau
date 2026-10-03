@@ -2,7 +2,8 @@
 --
 -- Story: each round decides which side "holds the crown"; the sky turns the crown's color (Dawn gold / Eclipse blood).
 -- Only Halo and Horns take part (addendum A6): Neutral and None never earn war points, never get a chest and never
--- hold the blessing; per-capita scores use FactionService.GetCounts (Halo vs Horns only).
+-- hold the blessing; per-capita scores use FactionService.GetCounts (Halo vs Horns only), averaged over the round
+-- (CR-M19). One monster kill adds its WarPoints to the faction pool once, split between contributors (CR-M18).
 local Lighting = game:GetService("Lighting")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -45,6 +46,11 @@ local roundEndsAt = 0
 local warTint = nil
 local skyTweens = {}
 local lastWarnAt = {}
+-- CR-M19: head counts summed every tick of the current round; the per-capita divisor is the round AVERAGE, so a
+-- last-second exodus cannot flip the result
+local presence = { Halo = 0, Horns = 0, Ticks = 0 }
+-- CR-L20: ClockTime is tweened through this NumberValue (always forward, wrapping at 24)
+local clock = { Value = nil, Conn = nil }
 
 ------------------------------------------------------------------ helpers
 local function warnThrottled(key, msg)
@@ -150,6 +156,33 @@ local function num(v)
 	return (type(v) == "number" and v == v) and v or nil
 end
 
+-- CR-L20: a tween of ClockTime toward `target` that only runs FORWARD (to < from -> to + 24, written back as v % 24);
+-- a plain number tween ran the sun backwards (16.8 -> 0.5). nil when there is nothing to tween or it failed.
+local function clockTween(target, info)
+	local from = Lighting.ClockTime
+	local to = target
+	if to < from then
+		to += 24
+	end
+	if to - from < 1e-3 then return nil end
+	if not clock.Value then
+		local nv = Instance.new("NumberValue")
+		nv.Name = "WarClock"
+		clock.Value = nv
+		clock.Conn = nv.Changed:Connect(function(v)
+			Lighting.ClockTime = v % 24
+		end)
+	end
+	clock.Value.Value = from
+	local ok, tweenOrErr = pcall(TweenService.Create, TweenService, clock.Value, info, { Value = to })
+	if not ok then
+		warnThrottled("clock", "clock tween failed: " .. tostring(tweenOrErr))
+		setProps(Lighting, { ClockTime = target })
+		return nil
+	end
+	return tweenOrErr
+end
+
 -- applies Config.Sky[name] to Lighting + WarTint (FogStart / ExposureCompensation / BloomIntensity when the preset has
 -- them, addendum A9-4/A11/A12), plus the ART_DIRECTION extras for whatever the preset does not carry
 local function applySky(name, animate)
@@ -161,8 +194,9 @@ local function applySky(name, animate)
 	end
 	table.clear(skyTweens)
 
+	-- ClockTime is not in the goal: it is tweened forward on its own (CR-L20)
 	local lightingGoal = {
-		ClockTime = preset.ClockTime, Brightness = preset.Brightness, Ambient = preset.Ambient,
+		Brightness = preset.Brightness, Ambient = preset.Ambient,
 		OutdoorAmbient = preset.OutdoorAmbient, FogColor = preset.FogColor, FogEnd = preset.FogEnd,
 		FogStart = num(preset.FogStart), -- nil (left as is) when the preset has none
 		ExposureCompensation = num(preset.ExposureCompensation) or extras.Exposure,
@@ -181,6 +215,7 @@ local function applySky(name, animate)
 	if rays then table.insert(goals, { rays, { Intensity = extras.SunRays } }) end
 	local clouds = workspace.Terrain:FindFirstChildOfClass("Clouds")
 	if clouds then table.insert(goals, { clouds, { Color = extras.Clouds } }) end
+	local clockTarget = num(preset.ClockTime)
 
 	if animate then
 		local info = TweenInfo.new(Config.Sky.TweenTime, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
@@ -194,9 +229,17 @@ local function applySky(name, animate)
 				setProps(g[1], g[2])
 			end
 		end
+		local clockT = clockTarget and clockTween(clockTarget, info)
+		if clockT then
+			table.insert(skyTweens, clockT)
+			clockT:Play()
+		end
 	else
 		for _, g in goals do
 			setProps(g[1], g[2])
+		end
+		if clockTarget then
+			setProps(Lighting, { ClockTime = clockTarget }) -- no animation: set at once (CR-L20)
 		end
 	end
 end
@@ -212,13 +255,27 @@ local function getCounts()
 	return tonumber(halo) or 0, tonumber(horns) or 0
 end
 
+-- CR-M19: adds this tick's head counts to the round sums; returns the round-average counts (an average below 0.5 -
+-- a side that was barely online this round - counts as 0)
+local function averageCounts(halo, horns)
+	presence.Halo += halo
+	presence.Horns += horns
+	presence.Ticks += 1
+	local aH = presence.Halo / presence.Ticks
+	local aR = presence.Horns / presence.Ticks
+	if aH < 0.5 then aH = 0 end
+	if aR < 0.5 then aR = 0 end
+	return aH, aR
+end
+
 local function modeFor(halo, horns)
 	if halo == 0 and horns == 0 then return "Idle" end
 	if halo == 0 or horns == 0 then return "Siege" end
 	return "Normal"
 end
 
--- writes the per-capita scores, mode and round end to GameState; returns (haloScore, hornsScore, mode)
+-- writes the per-capita scores, mode and round end to GameState; returns (haloScore, hornsScore, mode).
+-- halo / horns = head counts (the round averages during a round, CR-M19; may be fractional)
 local function publish(halo, horns)
 	local haloScore = points.Halo / math.max(1, halo)
 	local hornsScore = points.Horns / math.max(1, horns)
@@ -264,12 +321,16 @@ local function payChests(winner, snapshot)
 	end
 end
 
-local function endRound(mode, haloScore, hornsScore, halo, horns)
+-- halo / horns = round-average head counts (decide the winner); curHalo / curHorns = counts now (next round's publish)
+local function endRound(mode, haloScore, hornsScore, halo, horns, curHalo, curHorns)
 	-- advance + reset first so a failure below can never re-trigger the same round end every tick
 	local snapshot = table.clone(personal)
 	roundEndsAt = Util.Now() + Config.War.RoundSeconds
 	points.Halo = 0
 	points.Horns = 0
+	presence.Halo = 0 -- CR-M19
+	presence.Horns = 0
+	presence.Ticks = 0
 	for player in snapshot do
 		setPersonal(player, 0)
 	end
@@ -289,25 +350,28 @@ local function endRound(mode, haloScore, hornsScore, halo, horns)
 		end
 	end
 
-	publish(halo, horns)
+	publish(curHalo or halo, curHorns or horns) -- new round: no averages yet
 end
 
 local function tick()
 	local halo, horns = getCounts()
-	local haloScore, hornsScore, mode = publish(halo, horns)
+	local aH, aR = averageCounts(halo, horns) -- CR-M19
+	local haloScore, hornsScore, mode = publish(aH, aR)
 	if Util.Now() >= roundEndsAt then
-		endRound(mode, haloScore, hornsScore, halo, horns)
+		endRound(mode, haloScore, hornsScore, aH, aR, halo, horns)
 	end
 end
 
 ------------------------------------------------------------------ public API
--- personal + faction pool (monster kills, rewarded PvP KOs)
-function WarService.AddPoints(player, n)
+-- personal + faction pool (monster kills, rewarded PvP KOs). poolN (optional, CR-M18) = this player's share of the
+-- pool: one monster killed by k same-faction contributors adds WarPoints / k each (WarShare), so the pool gets
+-- WarPoints once while every contributor still gets n personal points. Invalid / missing poolN -> n (capped at n).
+function WarService.AddPoints(player, n, poolN)
 	if not isPlayer(player) or not isValidAmount(n) then return end
 	if not (S and S.PlayerService.IsReady(player)) then return end
 	local f = getFaction(player)
 	if not WAR_FACTIONS[f] then return end -- None / Neutral never earn war points
-	points[f] += n
+	points[f] += isValidAmount(poolN) and math.min(poolN, n) or n
 	setPersonal(player, (personal[player] or 0) + n)
 end
 
@@ -348,7 +412,7 @@ function WarService.Init(registry)
 	if S.MonsterService and S.MonsterService.MonsterKilled then
 		S.MonsterService.MonsterKilled:Connect(function(player, info)
 			if type(info) == "table" then
-				WarService.AddPoints(player, info.WarPoints)
+				WarService.AddPoints(player, info.WarPoints, info.WarShare) -- CR-M18: pool share per contributor
 			end
 		end)
 	else
