@@ -1,0 +1,118 @@
+{
+  "source_rig": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\restored_material_sources\\Costume_HaloMageM_rig_material_restored.glb",
+  "source_rig_sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546",
+  "source_rig_unchanged": true,
+  "existing_joints": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HaloMageM_material_front_fixed\\joints.json",
+  "existing_head_cframe": [
+    -0.041244685649871826,
+    2.3812241554260254,
+    0.0649065375328064
+  ],
+  "head_r15_partition_original_triangles": 5644,
+  "new_mouth_cap_triangles": 224,
+  "excluded_original_non_head_triangles": {
+    "UpperTorso": 402,
+    "LeftUpperArm": 79
+  },
+  "triangles": 5868,
+  "pieces": [
+    {
+      "name": "FaceExpression",
+      "triangles": 921,
+      "location": [
+        -0.041244685649871826,
+        -0.0649065375328064,
+        2.3812241554260254
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    },
+    {
+      "name": "HeadBase",
+      "triangles": 4947,
+      "location": [
+        -0.041244685649871826,
+        -0.0649065375328064,
+        2.3812241554260254
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    }
+  ],
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_HeadExpressions_R15.glb",
+  "sha256": "805eb48ae86cedb5ac097bfa430408624761abd358fa84c6b2a3bc99e7fc3fec",
+  "geometry_uv_verification": "original UV face signatures matched exact real bone-weight R15 partition; existing coordinate and head center reused",
+  "runtime_validated": false,
+  "camera_scale": 2.6983548164367672,
+  "camera_center": [
+    -0.0412447452545166,
+    2.381225109100342
+  ],
+  "expected_import_assets": 5,
+  "body_reimport_required": false,
+  "body_parts_reimport_required": [],
+  "restored_original_head_faces": 0,
+  "headbase_is_primary_part": "rename HeadBase to Head; preserve existing Head CFrame and Motor6D",
+  "expression_face_attachment": "FaceExpression welds to existing Head, with imported relative transform preserved",
+  "embedded_source_texture_bytes_preserved": true,
+  "embedded_texture_sha256": {
+    "Costume_HaloMageM_Expression_Neutral_face": "f5bfee0efaaa3299caf4fc570a2210098781d17e1ab03461047f7d6f521285aa",
+    "Costume_HaloMageM_head": "d855c8caf0e27c8619fa575544427ffab3b26efbcc26a537c73e65b482b9afc5"
+  },
+  "front_preview_camera_angle": 180,
+  "retained_existing_head_auxiliary_meshes": [],
+  "excluded_expression_faces": [],
+  "fixed_to_rig_affine": [
+    [
+      1.0216059684753418,
+      2.1232354185940494e-07,
+      1.4850590446258138e-07,
+      6.228544953046367e-05
+    ],
+    [
+      -1.4229998157588852e-07,
+      1.0216058492660522,
+      2.0744128903515957e-07,
+      -0.0001871109416242689
+    ],
+    [
+      -6.346356773434536e-09,
+      -7.599649798351038e-09,
+      1.0216060876846313,
+      -9.863927630249236e-08
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "coordinate_mapping_matched_corners": 16932,
+  "coordinate_mapping_residual_max": 2.28010957210362e-07,
+  "coordinate_mapping_residual_mean": 2.4470061670604253e-08,
+  "source_fixed_sha256": "479a6a268f56a421e65a353dd696ea4a67476dc06879815d1abca76316a279cb",
+  "source_fixed_unchanged": true,
+  "head_replacement_scope": "Replace existing primary HeadMat Head only; retain all listed original Head auxiliary BodyMat pieces and their UV/material/head welds",
+  "camera_front_direction": [
+    2.0783312493222184e-07,
+    1.0,
+    7.438925475611313e-09
+  ],
+  "camera_front_up": [
+    -1.4536513504026516e-07,
+    -2.0305407133491826e-07,
+    1.0
+  ],
+  "camera_target": [
+    -0.0412447452545166,
+    -0.06490656733512878,
+    2.381225109100342
+  ],
+  "source_front_camera_scale": 2.6983550286767986,
+  "source_front_yaw_degrees": 179.9999880920391,
+  "source_up_tilt_degrees": 0.0,
+  "source_front_differs_from_standard_r15_view": false
+}

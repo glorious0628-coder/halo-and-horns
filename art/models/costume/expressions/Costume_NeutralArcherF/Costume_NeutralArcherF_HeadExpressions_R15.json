@@ -1,0 +1,215 @@
+{
+  "source_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_NeutralArcherF_rig_0eb31d8c-3641-48a5-b4d5-51f69894d359.glb",
+  "source_rig_sha256": "12da1a661d2f6afae7c0322427a672930577901d17df40eaf59a4bc184773435",
+  "source_rig_unchanged": true,
+  "existing_joints": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_NeutralArcherF\\joints.json",
+  "existing_head_cframe": [
+    0.0442579984664917,
+    3.312689781188965,
+    -0.15278691053390503
+  ],
+  "head_r15_partition_original_triangles": 4652,
+  "new_mouth_cap_triangles": 224,
+  "excluded_original_non_head_triangles": {
+    "UpperTorso": 142,
+    "RightUpperArm": 2
+  },
+  "triangles": 4876,
+  "pieces": [
+    {
+      "name": "FaceExpression",
+      "triangles": 482,
+      "location": [
+        0.0442579984664917,
+        0.15278691053390503,
+        3.312689781188965
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    },
+    {
+      "name": "HeadBase",
+      "triangles": 4394,
+      "location": [
+        0.0442579984664917,
+        0.15278691053390503,
+        3.312689781188965
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    }
+  ],
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_HeadExpressions_R15.glb",
+  "sha256": "4c5c4d383368fea29cb96ffa1f9981ac44cf9311cd05f0c3104d412003ab2e8c",
+  "geometry_uv_verification": "original UV face signatures matched exact real bone-weight R15 partition; existing coordinate and head center reused",
+  "runtime_validated": false,
+  "camera_scale": 2.8465114593505856,
+  "camera_center": [
+    0.04425781965255737,
+    3.3983893394470215
+  ],
+  "expected_import_assets": 5,
+  "body_reimport_required": false,
+  "body_parts_reimport_required": [],
+  "restored_original_head_faces": 0,
+  "headbase_is_primary_part": "rename HeadBase to Head; preserve existing Head CFrame and Motor6D",
+  "expression_face_attachment": "FaceExpression welds to existing Head, with imported relative transform preserved",
+  "embedded_source_texture_bytes_preserved": true,
+  "embedded_texture_sha256": {
+    "Costume_NeutralArcherF_Expression_Neutral_face": "31beeee0614eb2dd6d2fe6bb82d0ee2425678fbf3a784ef4d6481aa566b0f5be",
+    "Costume_NeutralArcherF_head": "3c02ff1ac6d52fb9a9faebeae9145bf9681570e2af17e1be4f6eac4cf51b8a70"
+  },
+  "front_preview_camera_angle": 180,
+  "retained_existing_head_auxiliary_meshes": [
+    {
+      "name": "Head__Material02",
+      "part": "Head",
+      "material": "BodyMat",
+      "is_primary": false,
+      "triangles": 82,
+      "CFrame": [
+        0.0442579984664917,
+        3.312689781188965,
+        -0.15278691053390503,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "assembly_requirements": {
+    "root_reference": "lower-torso-y",
+    "scope": "Transparent HumanoidRootPart only; original Head, world joints, geometry and UV unchanged",
+    "studio_assembly_validated_by_this_pipeline": false
+  },
+  "excluded_expression_faces": [
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.409127,
+          0.685068
+        ],
+        [
+          0.411159,
+          0.676599
+        ],
+        [
+          0.41624,
+          0.686423
+        ]
+      ],
+      "prepared_face": 4535,
+      "fixed_world_centroid": [
+        0.1426951289176941,
+        -0.021386168897151947,
+        0.5633417963981628
+      ]
+    },
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.610159,
+          0.135538
+        ],
+        [
+          0.618628,
+          0.128764
+        ],
+        [
+          0.619644,
+          0.136893
+        ]
+      ],
+      "prepared_face": 4546,
+      "fixed_world_centroid": [
+        0.1006368026137352,
+        -0.07746635377407074,
+        0.5697149038314819
+      ]
+    },
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.619644,
+          0.136893
+        ],
+        [
+          0.627774,
+          0.129102
+        ],
+        [
+          0.62879,
+          0.137571
+        ]
+      ],
+      "prepared_face": 4548,
+      "fixed_world_centroid": [
+        0.08534495532512665,
+        -0.08893587440252304,
+        0.5639801025390625
+      ]
+    }
+  ],
+  "fixed_to_rig_affine": [
+    [
+      1.0236166715621948,
+      -2.083858277046602e-07,
+      1.5428575750320306e-07,
+      0.0003748295421246439
+    ],
+    [
+      2.3765243994944285e-08,
+      1.0236166715621948,
+      1.0092869473510291e-07,
+      3.900759111274965e-05
+    ],
+    [
+      3.2274845018775977e-09,
+      2.7015909509486846e-09,
+      1.023616909980774,
+      -4.843194005843543e-07
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "coordinate_mapping_matched_corners": 13956,
+  "coordinate_mapping_residual_max": 2.1126008650720642e-07,
+  "coordinate_mapping_residual_mean": 4.7297614784256206e-08,
+  "source_fixed_sha256": "380acd5fce8365f60cd5a1660140979932ca09ec714f61c030b0d7ee6f370579",
+  "source_fixed_unchanged": true,
+  "head_replacement_scope": "Replace existing primary HeadMat Head only; retain all listed original Head auxiliary BodyMat pieces and their UV/material/head welds",
+  "camera_front_direction": [
+    -0.14426203072071075,
+    0.9875171184539795,
+    -0.06323225796222687
+  ],
+  "camera_front_up": [
+    0.0072664557956159115,
+    0.06495606899261475,
+    0.9978616833686829
+  ],
+  "camera_target": [
+    0.04425781965255737,
+    0.15278661251068115,
+    3.3983893394470215
+  ],
+  "source_front_camera_scale": 2.7892795693129298,
+  "source_front_yaw_degrees": -171.68870272033416,
+  "source_up_tilt_degrees": 3.747581235766531,
+  "source_front_differs_from_standard_r15_view": true
+}

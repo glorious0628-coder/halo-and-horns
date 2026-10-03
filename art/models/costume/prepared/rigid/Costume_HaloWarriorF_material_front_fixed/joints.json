@@ -1,0 +1,3308 @@
+{
+  "schema": 1,
+  "dry_run": false,
+  "source": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\restored_material_sources\\Costume_HaloWarriorF_rig_material_restored.glb",
+  "source_sha256": "43ef3a0c1f9fe525c7146336f01b29a63013bc5f263a320ff22e8b000abe0912",
+  "output": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HaloWarriorF_material_front_fixed",
+  "parts": [
+    {
+      "name": "LowerTorso",
+      "triangles": 346,
+      "CFrame": [
+        -0.07839444279670715,
+        -0.018080413341522217,
+        -0.10551656782627106,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LowerTorso"
+      ]
+    },
+    {
+      "name": "UpperTorso",
+      "triangles": 915,
+      "CFrame": [
+        0.35211747884750366,
+        0.8590793609619141,
+        0.37343811988830566,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "UpperTorso",
+        "UpperTorso__Material02"
+      ]
+    },
+    {
+      "name": "Head",
+      "triangles": 4965,
+      "CFrame": [
+        0.013080418109893799,
+        2.172203540802002,
+        0.17970922589302063,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "Head",
+        "Head__Material02"
+      ]
+    },
+    {
+      "name": "LeftUpperArm",
+      "triangles": 1688,
+      "CFrame": [
+        -0.30437612533569336,
+        0.5146742463111877,
+        0.4595445692539215,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftUpperArm",
+        "LeftUpperArm__Material02"
+      ]
+    },
+    {
+      "name": "LeftLowerArm",
+      "triangles": 448,
+      "CFrame": [
+        -1.0201990604400635,
+        0.10028916597366333,
+        0.06131640076637268,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftLowerArm"
+      ]
+    },
+    {
+      "name": "LeftHand",
+      "triangles": 566,
+      "CFrame": [
+        -1.1708104610443115,
+        -0.3624963164329529,
+        0.06132665276527405,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftHand"
+      ]
+    },
+    {
+      "name": "RightUpperArm",
+      "triangles": 398,
+      "CFrame": [
+        0.08842939138412476,
+        0.5577378273010254,
+        -0.35304635763168335,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightUpperArm"
+      ]
+    },
+    {
+      "name": "RightLowerArm",
+      "triangles": 1134,
+      "CFrame": [
+        0.8041236996650696,
+        0.40165090560913086,
+        0.23352059721946716,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightLowerArm"
+      ]
+    },
+    {
+      "name": "RightHand",
+      "triangles": 360,
+      "CFrame": [
+        1.3315215110778809,
+        -0.14725232124328613,
+        -0.21851228177547455,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightHand"
+      ]
+    },
+    {
+      "name": "LeftUpperLeg",
+      "triangles": 1145,
+      "CFrame": [
+        0.1422193944454193,
+        -0.2118099331855774,
+        0.4864678978919983,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftUpperLeg"
+      ]
+    },
+    {
+      "name": "LeftLowerLeg",
+      "triangles": 473,
+      "CFrame": [
+        -0.6273081302642822,
+        -1.3634371757507324,
+        -0.04630470275878906,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftLowerLeg"
+      ]
+    },
+    {
+      "name": "LeftFoot",
+      "triangles": 56,
+      "CFrame": [
+        -0.7403419017791748,
+        -1.8531925678253174,
+        -0.014028847217559814,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftFoot"
+      ]
+    },
+    {
+      "name": "RightUpperLeg",
+      "triangles": 1809,
+      "CFrame": [
+        -0.003068000078201294,
+        -0.5508357882499695,
+        -0.1324215531349182,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightUpperLeg"
+      ]
+    },
+    {
+      "name": "RightLowerLeg",
+      "triangles": 97,
+      "CFrame": [
+        -0.6542249321937561,
+        -1.7724541425704956,
+        -0.3853495717048645,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightLowerLeg"
+      ]
+    },
+    {
+      "name": "RightFoot",
+      "triangles": 454,
+      "CFrame": [
+        0.5673712491989136,
+        -1.5787678956985474,
+        -0.11089432239532471,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightFoot"
+      ]
+    }
+  ],
+  "meshes": [
+    {
+      "name": "LowerTorso",
+      "part": "LowerTorso",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 346,
+      "CFrame": [
+        -0.07839444279670715,
+        -0.018080413341522217,
+        -0.10551656782627106,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "UpperTorso",
+      "part": "UpperTorso",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 751,
+      "CFrame": [
+        0.35211747884750366,
+        0.8590793609619141,
+        0.37343811988830566,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "UpperTorso__Material02",
+      "part": "UpperTorso",
+      "material": "HeadMat",
+      "is_primary": false,
+      "triangles": 164,
+      "CFrame": [
+        0.35211747884750366,
+        0.8590793609619141,
+        0.37343811988830566,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Head",
+      "part": "Head",
+      "material": "HeadMat",
+      "is_primary": true,
+      "triangles": 4719,
+      "CFrame": [
+        0.013080418109893799,
+        2.172203540802002,
+        0.17970922589302063,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Head__Material02",
+      "part": "Head",
+      "material": "BodyMat",
+      "is_primary": false,
+      "triangles": 246,
+      "CFrame": [
+        0.013080418109893799,
+        2.172203540802002,
+        0.17970922589302063,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftUpperArm",
+      "part": "LeftUpperArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 1480,
+      "CFrame": [
+        -0.30437612533569336,
+        0.5146742463111877,
+        0.4595445692539215,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftUpperArm__Material02",
+      "part": "LeftUpperArm",
+      "material": "HeadMat",
+      "is_primary": false,
+      "triangles": 208,
+      "CFrame": [
+        -0.30437612533569336,
+        0.5146742463111877,
+        0.4595445692539215,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftLowerArm",
+      "part": "LeftLowerArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 448,
+      "CFrame": [
+        -1.0201990604400635,
+        0.10028916597366333,
+        0.06131640076637268,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftHand",
+      "part": "LeftHand",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 566,
+      "CFrame": [
+        -1.1708104610443115,
+        -0.3624963164329529,
+        0.06132665276527405,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightUpperArm",
+      "part": "RightUpperArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 398,
+      "CFrame": [
+        0.08842939138412476,
+        0.5577378273010254,
+        -0.35304635763168335,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightLowerArm",
+      "part": "RightLowerArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 1134,
+      "CFrame": [
+        0.8041236996650696,
+        0.40165090560913086,
+        0.23352059721946716,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightHand",
+      "part": "RightHand",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 360,
+      "CFrame": [
+        1.3315215110778809,
+        -0.14725232124328613,
+        -0.21851228177547455,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftUpperLeg",
+      "part": "LeftUpperLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 1145,
+      "CFrame": [
+        0.1422193944454193,
+        -0.2118099331855774,
+        0.4864678978919983,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftLowerLeg",
+      "part": "LeftLowerLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 473,
+      "CFrame": [
+        -0.6273081302642822,
+        -1.3634371757507324,
+        -0.04630470275878906,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftFoot",
+      "part": "LeftFoot",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 56,
+      "CFrame": [
+        -0.7403419017791748,
+        -1.8531925678253174,
+        -0.014028847217559814,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightUpperLeg",
+      "part": "RightUpperLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 1809,
+      "CFrame": [
+        -0.003068000078201294,
+        -0.5508357882499695,
+        -0.1324215531349182,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightLowerLeg",
+      "part": "RightLowerLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 97,
+      "CFrame": [
+        -0.6542249321937561,
+        -1.7724541425704956,
+        -0.3853495717048645,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightFoot",
+      "part": "RightFoot",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 454,
+      "CFrame": [
+        0.5673712491989136,
+        -1.5787678956985474,
+        -0.11089432239532471,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "name": "Root",
+      "part0": "HumanoidRootPart",
+      "part1": "LowerTorso",
+      "source_bone": "mixamorig:Hips",
+      "joint_position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "C0": [
+        0.0,
+        0.0,
+        0.0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.07839444279670715,
+        0.018080413341522217,
+        0.10551656782627106,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Waist",
+      "part0": "LowerTorso",
+      "part1": "UpperTorso",
+      "source_bone": "mixamorig:Spine1",
+      "joint_position": [
+        -0.0302276611328125,
+        0.45348548889160156,
+        -0.05099436640739441
+      ],
+      "C0": [
+        0.04816678166389465,
+        0.4715659022331238,
+        0.05452220141887665,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.38234513998031616,
+        -0.4055938720703125,
+        -0.4244324862957001,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Neck",
+      "part0": "UpperTorso",
+      "part1": "Head",
+      "source_bone": "mixamorig:Head",
+      "joint_position": [
+        -0.07770199328660965,
+        1.1657073497772217,
+        -0.1310836374759674
+      ],
+      "C0": [
+        -0.4298194646835327,
+        0.3066279888153076,
+        -0.5045217275619507,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.09078241139650345,
+        -1.0064961910247803,
+        -0.31079286336898804,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftShoulder",
+      "part0": "UpperTorso",
+      "part1": "LeftUpperArm",
+      "source_bone": "mixamorig:LeftArm",
+      "joint_position": [
+        -0.1963350921869278,
+        1.0158042907714844,
+        0.13975617289543152
+      ],
+      "C0": [
+        -0.5484525561332703,
+        0.1567249298095703,
+        -0.23368194699287415,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.10804103314876556,
+        0.5011300444602966,
+        -0.31978839635849,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftElbow",
+      "part0": "LeftUpperArm",
+      "part1": "LeftLowerArm",
+      "source_bone": "mixamorig:LeftForeArm",
+      "joint_position": [
+        -0.7715476751327515,
+        0.37994885444641113,
+        0.1813647747039795
+      ],
+      "C0": [
+        -0.4671715497970581,
+        -0.1347253918647766,
+        -0.278179794549942,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.248651385307312,
+        0.2796596884727478,
+        0.12004837393760681,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftWrist",
+      "part0": "LeftLowerArm",
+      "part1": "LeftHand",
+      "source_bone": "mixamorig:LeftHand",
+      "joint_position": [
+        -1.2806963920593262,
+        -0.05624115467071533,
+        -0.09779688715934753
+      ],
+      "C0": [
+        -0.2604973316192627,
+        -0.15653032064437866,
+        -0.15911328792572021,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.10988593101501465,
+        0.30625516176223755,
+        -0.15912353992462158,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightShoulder",
+      "part0": "UpperTorso",
+      "part1": "RightUpperArm",
+      "source_bone": "mixamorig:RightArm",
+      "joint_position": [
+        0.06454277038574219,
+        0.9535698890686035,
+        -0.3614944815635681
+      ],
+      "C0": [
+        -0.2875747084617615,
+        0.09449052810668945,
+        -0.7349326014518738,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.02388662099838257,
+        0.3958320617675781,
+        -0.008448123931884766,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightElbow",
+      "part0": "RightUpperArm",
+      "part1": "RightLowerArm",
+      "source_bone": "mixamorig:RightForeArm",
+      "joint_position": [
+        0.19692865014076233,
+        0.4423563480377197,
+        -0.5563004016876221
+      ],
+      "C0": [
+        0.10849925875663757,
+        -0.11538147926330566,
+        -0.20325404405593872,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.6071950197219849,
+        0.04070544242858887,
+        -0.7898210287094116,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightWrist",
+      "part0": "RightLowerArm",
+      "part1": "RightHand",
+      "source_bone": "mixamorig:RightHand",
+      "joint_position": [
+        1.3646279573440552,
+        0.056002140045166016,
+        0.009876072406768799
+      ],
+      "C0": [
+        0.5605042576789856,
+        -0.34564876556396484,
+        -0.22364452481269836,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.033106446266174316,
+        0.20325446128845215,
+        0.22838835418224335,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftHip",
+      "part0": "LowerTorso",
+      "part1": "LeftUpperLeg",
+      "source_bone": "mixamorig:LeftUpLeg",
+      "joint_position": [
+        -0.04862435534596443,
+        0.04264044761657715,
+        0.22769419848918915
+      ],
+      "C0": [
+        0.02977008745074272,
+        0.060720860958099365,
+        0.3332107663154602,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.19084374606609344,
+        0.25445038080215454,
+        -0.25877368450164795,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftKnee",
+      "part0": "LeftUpperLeg",
+      "part1": "LeftLowerLeg",
+      "source_bone": "mixamorig:LeftLeg",
+      "joint_position": [
+        -0.048763252794742584,
+        -0.9674205183982849,
+        0.36936551332473755
+      ],
+      "C0": [
+        -0.1909826397895813,
+        -0.7556105852127075,
+        -0.11710238456726074,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.5785448551177979,
+        0.3960166573524475,
+        0.4156702160835266,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftAnkle",
+      "part0": "LeftLowerLeg",
+      "part1": "LeftFoot",
+      "source_bone": "mixamorig:LeftFoot",
+      "joint_position": [
+        -0.1872357875108719,
+        -1.8345701694488525,
+        0.47937482595443726
+      ],
+      "C0": [
+        0.44007235765457153,
+        -0.4711329936981201,
+        0.5256795287132263,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.5531061291694641,
+        0.018622398376464844,
+        0.49340367317199707,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightHip",
+      "part0": "LowerTorso",
+      "part1": "RightUpperLeg",
+      "source_bone": "mixamorig:RightUpLeg",
+      "joint_position": [
+        0.04867437854409218,
+        -0.04461061954498291,
+        -0.22786587476730347
+      ],
+      "C0": [
+        0.12706881761550903,
+        -0.026530206203460693,
+        -0.12234930694103241,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.05174237862229347,
+        0.5062251687049866,
+        -0.09544432163238525,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightKnee",
+      "part0": "RightUpperLeg",
+      "part1": "RightLowerLeg",
+      "source_bone": "mixamorig:RightLeg",
+      "joint_position": [
+        0.09841299057006836,
+        -1.004791259765625,
+        -0.5410231947898865
+      ],
+      "C0": [
+        0.10148099064826965,
+        -0.4539554715156555,
+        -0.40860164165496826,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.7526379227638245,
+        0.7676628828048706,
+        -0.15567362308502197,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightAnkle",
+      "part0": "RightLowerLeg",
+      "part1": "RightFoot",
+      "source_bone": "mixamorig:RightFoot",
+      "joint_position": [
+        0.0008605457842350006,
+        -1.8271195888519287,
+        -0.6103354692459106
+      ],
+      "C0": [
+        0.6550855040550232,
+        -0.054665446281433105,
+        -0.22498589754104614,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.5665106773376465,
+        -0.24835169315338135,
+        -0.49944114685058594,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "batches": [
+    {
+      "parts": [
+        "LowerTorso",
+        "UpperTorso",
+        "UpperTorso__Material02",
+        "Head",
+        "Head__Material02",
+        "LeftUpperArm",
+        "LeftUpperArm__Material02"
+      ],
+      "estimated_assets": 10,
+      "file": "batch_01.glb",
+      "texture_sha256": {
+        "Costume_HaloWarriorF_head": "d1323e830de89fb25ea466853cf90a01f82c4d763e8849674b8bd9c6a2779c23",
+        "Costume_HaloWarriorF_body": "9b2b94f00dd150c3e1229e32a4572e83d17672a18ebcbc4f088a776ff2cbdf57"
+      },
+      "export_validation": {
+        "meshes": 7,
+        "triangles": 7914,
+        "embedded_images": 2,
+        "uv_verified": true,
+        "normals_verified": true,
+        "maximum_normal_export_error": 6.633996963500977e-05
+      },
+      "sha256": "7aff516d34ff8294041ab6d42ca2eec8255e8670b94b3716bb909831f9865c98"
+    },
+    {
+      "parts": [
+        "LeftLowerArm",
+        "LeftHand",
+        "RightUpperArm",
+        "RightLowerArm",
+        "RightHand",
+        "LeftUpperLeg",
+        "LeftLowerLeg",
+        "LeftFoot"
+      ],
+      "estimated_assets": 10,
+      "file": "batch_02.glb",
+      "texture_sha256": {
+        "Costume_HaloWarriorF_body": "9b2b94f00dd150c3e1229e32a4572e83d17672a18ebcbc4f088a776ff2cbdf57"
+      },
+      "export_validation": {
+        "meshes": 8,
+        "triangles": 4580,
+        "embedded_images": 1,
+        "uv_verified": true,
+        "normals_verified": true,
+        "maximum_normal_export_error": 6.428360939025879e-05
+      },
+      "sha256": "7cbe21c9efb77d7f421ea4bcce691534ea279d7a130a6c6859d69d61e58d0793"
+    },
+    {
+      "parts": [
+        "RightUpperLeg",
+        "RightLowerLeg",
+        "RightFoot"
+      ],
+      "estimated_assets": 5,
+      "file": "batch_03.glb",
+      "texture_sha256": {
+        "Costume_HaloWarriorF_body": "9b2b94f00dd150c3e1229e32a4572e83d17672a18ebcbc4f088a776ff2cbdf57"
+      },
+      "export_validation": {
+        "meshes": 3,
+        "triangles": 2360,
+        "embedded_images": 1,
+        "uv_verified": true,
+        "normals_verified": true,
+        "maximum_normal_export_error": 6.416440010070801e-05
+      },
+      "sha256": "95d5e6d7856eb43510e3a21a1ecb46cef0ff752557fa00d87d50151d9f0fbbe8"
+    }
+  ],
+  "target_height_studs": 5.5,
+  "source_height": 1.000000149011612,
+  "uniform_scale": 5.499999180436256,
+  "source_frame_policy": "gltf-positive-z",
+  "source_triangles": 14854,
+  "minimum_face_confidence": 0.19727876579375989,
+  "partition_policy": "Maximum average original bone-region weight; connected exact ties choose the nearest parent; equal depth uses a stable name order. Explicit surface subdivisions/actual elbow-wrist region recovery are recorded separately.",
+  "nonadjacent_ties": "refuse",
+  "weight_diagnostics": {
+    "low_confidence_faces": 3324,
+    "parent_tie_faces": 0,
+    "non_adjacent_exact_ties": 0,
+    "non_adjacent_close_weights": 982,
+    "mechanical_region_overrides": 56,
+    "examples": [
+      {
+        "object": "CostumePreserved",
+        "face": 12,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.44579489076528694,
+          "LeftUpperArm": 0.4039006243498785,
+          "LeftLowerArm": 0.07432675736169758,
+          "UpperTorso": 0.05659514991704109,
+          "LeftLowerLeg": 0.01938257760609587
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 32,
+        "chosen_part": "LeftUpperArm",
+        "region_weights": {
+          "LeftUpperArm": 0.3429908272820773,
+          "RightLowerArm": 0.2752294605132241,
+          "UpperTorso": 0.250008474589844,
+          "LeftUpperLeg": 0.13177123761485454
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 36,
+        "chosen_part": "LeftUpperArm",
+        "region_weights": {
+          "LeftUpperArm": 0.3387658398909182,
+          "RightLowerArm": 0.27563991673540367,
+          "LeftUpperLeg": 0.24369615245285692,
+          "UpperTorso": 0.14189809092082117
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 37,
+        "chosen_part": "LeftUpperArm",
+        "region_weights": {
+          "LeftUpperArm": 0.3281303178442468,
+          "LeftUpperLeg": 0.3082217118284003,
+          "RightLowerArm": 0.2520774525885402,
+          "UpperTorso": 0.1115705177388127
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 39,
+        "chosen_part": "LeftUpperArm",
+        "region_weights": {
+          "LeftUpperArm": 0.3366607076732518,
+          "LeftUpperLeg": 0.32961457549826634,
+          "RightLowerArm": 0.2340761358405936,
+          "UpperTorso": 0.09964858098788824
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 41,
+        "chosen_part": "LeftUpperArm",
+        "region_weights": {
+          "LeftUpperArm": 0.37487428300655024,
+          "LeftUpperLeg": 0.33680139876733245,
+          "RightLowerArm": 0.18634081837210742,
+          "UpperTorso": 0.10198349985400992
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 141,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.4519734732337899,
+          "LeftUpperArm": 0.38178360711786774,
+          "LeftLowerArm": 0.1362418106390198,
+          "LeftLowerLeg": 0.021504513668459242,
+          "UpperTorso": 0.008496595340863356
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 143,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.4376377852031481,
+          "LeftUpperArm": 0.35663732376329504,
+          "LeftLowerArm": 0.19154689004906866,
+          "LeftLowerLeg": 0.014178000984488067
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 270,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.3865954757155087,
+          "LeftUpperArm": 0.3128923169586917,
+          "RightLowerArm": 0.15309948964583608,
+          "UpperTorso": 0.14741271767996353
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 271,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.37554847826350374,
+          "LeftUpperArm": 0.313826111585545,
+          "RightLowerArm": 0.16416997874030798,
+          "UpperTorso": 0.14645543141064327
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 272,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.3790326777079567,
+          "LeftUpperArm": 0.3132734473850801,
+          "RightLowerArm": 0.16703455313294457,
+          "UpperTorso": 0.1406593217740186
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 312,
+        "chosen_part": "LeftLowerLeg",
+        "region_weights": {
+          "LeftLowerLeg": 0.36773320499850093,
+          "RightLowerLeg": 0.307910398103221,
+          "LeftFoot": 0.21349053896658793,
+          "LeftUpperLeg": 0.07407490916761164,
+          "RightFoot": 0.03679094876407851
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 313,
+        "chosen_part": "LeftFoot",
+        "region_weights": {
+          "LeftLowerLeg": 0.3776387193806214,
+          "RightLowerLeg": 0.29608931475544437,
+          "LeftFoot": 0.21289419770421503,
+          "LeftUpperLeg": 0.07658681939564078,
+          "RightFoot": 0.03679094876407851
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 314,
+        "chosen_part": "LeftLowerLeg",
+        "region_weights": {
+          "LeftLowerLeg": 0.3402292987403207,
+          "RightLowerLeg": 0.3312644916818954,
+          "LeftFoot": 0.22025580067315642,
+          "RightFoot": 0.06949908650415204,
+          "LeftUpperLeg": 0.038751322400475297
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 315,
+        "chosen_part": "LeftFoot",
+        "region_weights": {
+          "LeftLowerLeg": 0.3533984653984855,
+          "RightLowerLeg": 0.3104978837748821,
+          "LeftFoot": 0.21278630387959302,
+          "RightFoot": 0.08205411431853493,
+          "LeftUpperLeg": 0.04126323262850443
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 316,
+        "chosen_part": "RightLowerLeg",
+        "region_weights": {
+          "RightLowerLeg": 0.3616143492354078,
+          "LeftLowerLeg": 0.31622369349015816,
+          "LeftFoot": 0.21440080928062577,
+          "RightFoot": 0.10776114799380815
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 317,
+        "chosen_part": "RightLowerLeg",
+        "region_weights": {
+          "RightLowerLeg": 0.3430513613102067,
+          "LeftLowerLeg": 0.31883554279150317,
+          "LeftFoot": 0.19777758301672585,
+          "RightFoot": 0.14033551288156426
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 318,
+        "chosen_part": "RightLowerLeg",
+        "region_weights": {
+          "RightLowerLeg": 0.37534680221808503,
+          "LeftLowerLeg": 0.30303716937495123,
+          "LeftFoot": 0.20248774831617644,
+          "RightFoot": 0.11912828009078719
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 319,
+        "chosen_part": "RightLowerLeg",
+        "region_weights": {
+          "RightLowerLeg": 0.36572933885212067,
+          "LeftLowerLeg": 0.30238536640025193,
+          "LeftFoot": 0.19273767758346702,
+          "RightFoot": 0.1391476171641604
+        }
+      },
+      {
+        "object": "CostumePreserved",
+        "face": 320,
+        "chosen_part": "RightLowerLeg",
+        "region_weights": {
+          "RightLowerLeg": 0.3792431605318217,
+          "LeftLowerLeg": 0.283473726590726,
+          "LeftFoot": 0.20879605652310873,
+          "RightFoot": 0.1284870563543435
+        }
+      }
+    ],
+    "exact_tie_examples": []
+  },
+  "auxiliary_mesh_policy": "Material fragments retain original UVs/images and must be welded only to their named, actual Motor6D-driven R15 part.",
+  "root": {
+    "name": "HumanoidRootPart",
+    "CFrame": [
+      0.0,
+      0.0,
+      0.0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    "Size": [
+      2,
+      2,
+      1
+    ]
+  },
+  "texture_rebake": false,
+  "uv_repack": false,
+  "original_texture_bytes_preserved": true,
+  "source_corner_normals_preserved": true,
+  "rig_ready_for_game": false,
+  "requires_studio_animation_validation": true,
+  "limitations": [
+    "Bone-weight maximum triangles become rigid parts; joint seams and non-adjacent low-confidence weights need motion QA.",
+    "Exact bone joint positions use canonical R15 axes; Mixamo bind-pose/roll versus default Animate is not yet verified.",
+    "No retargeting or geometry-based replacement is performed.",
+    "New barycentric normals are normalized mechanically; the measured small shading-field change needs visual QA."
+  ],
+  "prepared_triangles": 14854,
+  "mechanical_surface_partition": {
+    "enabled": true,
+    "split_weight_ties": false,
+    "recover_empty_left_forearm": false,
+    "source_triangles": 14854,
+    "subdivided_source_faces": 0,
+    "extra_triangles": 0,
+    "original_vertices_changed": false,
+    "reassigned_original_faces": 56,
+    "projected_head_faces_restored": 0,
+    "projected_head_face_signature_file": null,
+    "projected_head_face_signature_sha256": null,
+    "forearm_recovery_policy": null,
+    "recover_empty_left_foot": true,
+    "foot_recovery_policy": "Only original weighted left-leg triangles entirely on the foot side of the actual knee-to-ankle bone plane; crossing triangles retain their original owner.",
+    "maximum_coverage_error": 0.0,
+    "maximum_sampled_normalization_error_degrees": 0.0,
+    "uv_repack": false,
+    "texture_rebake": false,
+    "elbow_world": null,
+    "wrist_world": null,
+    "faces": [
+      {
+        "object": "CostumePreserved",
+        "source_face": 291,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 294,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 295,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 309,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 310,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 311,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 313,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 315,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 331,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 332,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 333,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 334,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 335,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 336,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 354,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 355,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 356,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 357,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 358,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 362,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 363,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 364,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 365,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 366,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 367,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 368,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 369,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 370,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 371,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 372,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 373,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 374,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 375,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 376,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 377,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 378,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 379,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 380,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 489,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 492,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 493,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 494,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 496,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 497,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 498,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 499,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 500,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 501,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 4447,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 4448,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 4449,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 4450,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 4455,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 4461,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 4462,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "CostumePreserved",
+        "source_face": 4463,
+        "reason": "entire_original_face_on_actual_ankle_foot_side",
+        "source_owner": "LeftLowerLeg",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "LeftFoot",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "knee_world": [
+      0.001460468745790422,
+      0.024699212983250618,
+      0.17671290040016174
+    ],
+    "ankle_world": [
+      0.026637298986315727,
+      0.04470091313123703,
+      0.01904931105673313
+    ],
+    "output_triangles": 14854
+  }
+}

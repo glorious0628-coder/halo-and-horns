@@ -1,0 +1,77 @@
+[
+  {
+    "label": "off_menu",
+    "text": "false",
+    "error": false
+  },
+  {
+    "label": "open_menu",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "find_toggle",
+    "text": "직업 코스튬: ON",
+    "error": false
+  },
+  {
+    "label": "off",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "off_state",
+    "text": "{\"applied\":false,\"root\":[0,3.224853515625,-45],\"state\":\"Running\",\"enabled\":false,\"status\":\"Avatar\",\"hp\":156,\"rig\":\"R15\"}",
+    "error": false
+  },
+  {
+    "label": "off_face",
+    "text": "{\"face\":false}",
+    "error": false
+  },
+  {
+    "label": "on_menu",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "find_toggle",
+    "text": "직업 코스튬: OFF",
+    "error": false
+  },
+  {
+    "label": "on",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "on_state",
+    "text": "{\"applied\":true,\"root\":[0,1.8114013671875,-45],\"state\":\"Running\",\"enabled\":true,\"id\":\"Costume_HaloWarriorM\",\"status\":\"Active\",\"hp\":156,\"rig\":\"R15\"}",
+    "error": false
+  },
+  {
+    "label": "on_face",
+    "text": "{\"face\":\"rbxassetid://121674541725480\",\"expression\":\"Neutral\",\"ready\":true}",
+    "error": false
+  },
+  {
+    "label": "close_menu",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "death",
+    "text": "dead",
+    "error": false
+  },
+  {
+    "label": "respawn",
+    "text": "{\"applied\":true,\"root\":[5.5068359375,1.8271484375,-407.416015625],\"state\":\"Running\",\"enabled\":true,\"id\":\"Costume_HaloWarriorM\",\"status\":\"Active\",\"hp\":156,\"rig\":\"R15\"}",
+    "error": false
+  },
+  {
+    "label": "respawn_face",
+    "text": "{\"face\":\"rbxassetid://121674541725480\",\"expression\":\"Neutral\",\"ready\":true}",
+    "error": false
+  }
+]

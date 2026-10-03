@@ -1,0 +1,25 @@
+{
+  "avatar": "Costume_HaloMageF",
+  "state": "SoftSmile",
+  "png": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_SoftSmile_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "8547d3a79ee6914f03f86effa482cd429d94aa17e1c6c5c607171b0efd9738e6",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-2f66b75a-97dd-4409-b9bf-4e4ec9ee0ad0.png",
+  "prompt": "art/models/costume/expressions/Costume_HaloMageF/prompts/SoftSmile.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HaloMageF/previews/SoftSmile_front.png",
+    "art/models/costume/expressions/Costume_HaloMageF/previews/SoftSmile_quarter.png"
+  ],
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

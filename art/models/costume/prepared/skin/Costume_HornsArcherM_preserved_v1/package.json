@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "preserved_original_skin_pending",
+  "name": "HornsArcherM",
+  "skin_glb": "Costume_HornsArcherM_skin.glb",
+  "skin_manifest": "Costume_HornsArcherM_skin.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "c793d05d57116691d53e78489f073e53b269af3dd74d61f34fb0f9dd0251fc8c",
+    "skin_manifest": "7c7b6df8200a1e72c7149bae1b0f7e9bacde0726ca7f222a30a81c643282bac5",
+    "proxy_plan": "a928be6856d04791401f59979bf813ea4995fde5520b939093c9e39eed8ce9dc"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_HornsArcherM_rig_1c4762a2-29bd-4e14-baca-488d2d44a98b.glb",
+    "sha256": "192bebb4f66ca9573ebc18c1021f6b30632e95dcdd276e05d16cf053e4117691"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": true,
+  "maximum_proxy_joint_error": 1.1442091700702932e-06,
+  "maximum_actual_armature_lbs_error": 9.834766387939453e-07,
+  "maximum_target_pose_projection_error": 1.6827099577776317e-06,
+  "weighting_quality_hold": true,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

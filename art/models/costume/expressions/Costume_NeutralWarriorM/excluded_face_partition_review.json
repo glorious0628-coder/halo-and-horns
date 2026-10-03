@@ -1,0 +1,227 @@
+{
+  "avatar": "Costume_NeutralWarriorM",
+  "source_rig_sha256": "739d6fb97ee49abce14e23ba481dc13c7836392051e134c3cc2fbedc4ce0b07c",
+  "head_sha256": "3a1a76e7eca20d79aa67609d2c883bf352e633c9f661ca2f79647e08ee2f6180",
+  "reviewed": true,
+  "excluded_original_skin_triangles": 9,
+  "records": [
+    {
+      "original_uv_signature": [
+        [
+          0.85771,
+          0.413617
+        ],
+        [
+          0.858582,
+          0.415362
+        ],
+        [
+          0.864398,
+          0.411872
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 1039,
+      "fixed_frame_centroid": [
+        436.3782736576312,
+        717.0265774598072
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.394108,
+          0.798286
+        ],
+        [
+          0.394689,
+          0.804684
+        ],
+        [
+          0.397888,
+          0.799158
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 3676,
+      "fixed_frame_centroid": [
+        415.63502961518293,
+        720.1373060169643
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.394689,
+          0.804684
+        ],
+        [
+          0.397597,
+          0.804102
+        ],
+        [
+          0.397888,
+          0.799158
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 3677,
+      "fixed_frame_centroid": [
+        409.4114349960017,
+        715.9882136497042
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.803553,
+          0.09597
+        ],
+        [
+          0.803844,
+          0.091608
+        ],
+        [
+          0.808788,
+          0.092771
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 3690,
+      "fixed_frame_centroid": [
+        391.77889527252637,
+        722.2096707640185
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.797737,
+          0.092189
+        ],
+        [
+          0.803553,
+          0.09597
+        ],
+        [
+          0.803844,
+          0.091608
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 3691,
+      "fixed_frame_centroid": [
+        378.295478592763,
+        722.2096707640185
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.803553,
+          0.09597
+        ],
+        [
+          0.808497,
+          0.096261
+        ],
+        [
+          0.808788,
+          0.092771
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 3692,
+      "fixed_frame_centroid": [
+        398.0020020982511,
+        717.0264805070705
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.797446,
+          0.095679
+        ],
+        [
+          0.797737,
+          0.092189
+        ],
+        [
+          0.803553,
+          0.09597
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 3696,
+      "fixed_frame_centroid": [
+        371.03517101105416,
+        717.0263835543337
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.793084,
+          0.096261
+        ],
+        [
+          0.797446,
+          0.095679
+        ],
+        [
+          0.797737,
+          0.092189
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 3698,
+      "fixed_frame_centroid": [
+        358.58853622115464,
+        715.9882136497042
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.792211,
+          0.091899
+        ],
+        [
+          0.793084,
+          0.096261
+        ],
+        [
+          0.797737,
+          0.092189
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 3700,
+      "fixed_frame_centroid": [
+        352.3649491764059,
+        720.137402969701
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    }
+  ],
+  "original_skin_uv_unchanged": true,
+  "geometry_mutations": 0
+}

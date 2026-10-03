@@ -107,7 +107,7 @@ def material_roles(material):
     return roles
 
 
-def analyze_scene(height, nonadjacent_ties="refuse", surface_overrides=None):
+def analyze_scene(height, nonadjacent_ties="refuse", surface_overrides=None, source_frame="bones"):
     arms = [obj for obj in bpy.context.scene.objects if obj.type == "ARMATURE"]
     if len(arms) != 1:
         raise RigError("A single real skinned armature is required; static GLBs are refused")
@@ -128,6 +128,12 @@ def analyze_scene(height, nonadjacent_ties="refuse", surface_overrides=None):
     origin = positions["LowerTorso"]
     right = positions["RightUpperArm"] - positions["LeftUpperArm"]
     up = positions["Head"] - origin
+    if source_frame == "gltf-positive-z":
+        # Verified fixed sources face +Z in glTF. Blender imports Y-up glTF
+        # as (x,-z,y); Roblox forward is -Z, left arm is on -X.
+        right, up = Vector((-1, 0, 0)), Vector((0, 0, 1))
+    elif source_frame != "bones":
+        raise RigError("Unknown explicit source frame")
     if right.length < 1e-8 or up.length < 1e-8:
         raise RigError("Degenerate actual shoulder/head/hip positions")
     right.normalize()
@@ -384,6 +390,10 @@ def main():
                         help="비어 있는 왼발만 원본 knee/ankle 단면 발 쪽 기존 면과 Foot 가중치로 배분")
     parser.add_argument("--restore-head-face-signatures", type=Path,
                         help="승인 표정 정면 투영의 정확한 UV/geometry signature 면만 Head에 복원")
+    parser.add_argument("--allow-inferred-manual", action="store_true",
+                        help="명시적으로 검토한 수동 관절 후보만 변환; 원본 뼈라고 표시하지 않음")
+    parser.add_argument("--source-frame", choices=("bones", "gltf-positive-z"), default="bones",
+                        help="정확한 정적 원본 대응 또는 수동 후보 근거가 있는 glTF +Z 정면만 명시적으로 사용")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
     input_path, output = args.input.resolve(), args.output.resolve()
     if not math.isfinite(args.height) or not 0.5 <= args.height <= 20:
@@ -397,6 +407,19 @@ def main():
     gltf, binary, source_data = read_glb(input_path)
     if not gltf.get("skins"):
         raise RigError("GLB has no skin; no guessed joint positions or static-weld substitute is allowed")
+    manual = gltf.get("extras", {}).get("HHC_ManualBind")
+    if manual and (not args.allow_inferred_manual or manual.get("rig_origin") != "inferred_manual_candidate"
+                   or manual.get("original_bones_claimed") is not False or manual.get("rig_ready_for_game") is not False):
+        raise RigError("Inferred manual source requires --allow-inferred-manual and explicit candidate provenance")
+    if args.allow_inferred_manual and not manual:
+        raise RigError("This source is not an explicitly documented inferred manual candidate")
+    if args.source_frame == "gltf-positive-z" and not manual:
+        proof_path = input_path.with_suffix(".recovery.json")
+        if not proof_path.is_file():
+            raise RigError("Original glTF front requires verified static-to-rig recovery provenance")
+        proof = json.loads(proof_path.read_text(encoding="utf-8"))
+        if proof.get("output_sha256") != hashlib.sha256(source_data).hexdigest() or not proof.get("oriented_original_triangles_matched_exactly_once") or not proof.get("exact_rig_geometry_skin_corner_attributes_verified"):
+            raise RigError("Original static front proof does not match this actual rig copy")
     for image in gltf.get("images", []):
         image_bytes(gltf, binary, image)
     source_sha = hashlib.sha256(source_data).hexdigest()
@@ -407,7 +430,7 @@ def main():
         from surface_partition import prepare
         surface_overrides, surface_report = prepare(args.split_weight_ties, args.recover_empty_left_forearm,
             args.recover_empty_left_foot, args.restore_head_face_signatures, input_path)
-    analysis = analyze_scene(args.height, args.nonadjacent_ties, surface_overrides)
+    analysis = analyze_scene(args.height, args.nonadjacent_ties, surface_overrides, args.source_frame)
     if surface_report and analysis["total_faces"] != surface_report["output_triangles"]:
         raise RigError("Verified subdivision face coverage disagrees with conversion")
     textures = source_images(gltf, binary)
@@ -428,6 +451,7 @@ def main():
                         "triangles": len(fragment["faces"]), "CFrame": cframe(centers[fragment["part"]])} for name, fragment in analysis["fragments"].items()],
             "joints": joints, "batches": [{**batch, "file": f"batch_{index:02d}.glb"} for index, batch in enumerate(batches, 1)],
             "target_height_studs": args.height, "source_height": analysis["source_height"], "uniform_scale": analysis["scale"],
+            "source_frame_policy": args.source_frame,
             "source_triangles": analysis["total_faces"], "minimum_face_confidence": analysis["min_face_confidence"],
             "partition_policy": "Maximum average original bone-region weight; connected exact ties choose the nearest parent; equal depth uses a stable name order.",
             "nonadjacent_ties": args.nonadjacent_ties,
@@ -440,6 +464,14 @@ def main():
             "limitations": ["Bone-weight maximum triangles become rigid parts; joint seams and non-adjacent low-confidence weights need motion QA.",
                             "Exact bone joint positions use canonical R15 axes; Mixamo bind-pose/roll versus default Animate is not yet verified.",
                             "No retargeting or geometry-based replacement is performed."]}
+    if manual:
+        plan["rig_origin"] = "inferred_manual_candidate"
+        plan["manual_binding_provenance"] = manual
+        plan["original_bones_claimed"] = False
+        plan["partition_policy"] = "Explicit inferred manual original-face ownership; source triangle geometry/UV/normal/material retained."
+        plan["limitations"] = ["Joint locations were inferred from measured original geometry and visual landmarks; they are not original source bones.",
+                               "Rigid face boundaries, long hair, coats and all motion require actual validation before promotion.",
+                               "Original approved static surface/UV/image design is retained; Studio gameplay is not yet verified."]
     if surface_report:
         plan["source_triangles"] = surface_report["source_triangles"]
         plan["prepared_triangles"] = surface_report["output_triangles"]

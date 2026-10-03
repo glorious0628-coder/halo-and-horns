@@ -1,0 +1,143 @@
+{
+  "source_rig": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\restored_material_sources\\Costume_HaloMageF_rig_material_restored.glb",
+  "source_rig_sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+  "source_rig_unchanged": true,
+  "existing_joints": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HaloMageF_material_front_face_fixed\\joints.json",
+  "existing_head_cframe": [
+    -0.23635333776474,
+    1.7908828258514404,
+    0.33912190794944763
+  ],
+  "head_r15_partition_original_triangles": 3983,
+  "new_mouth_cap_triangles": 224,
+  "excluded_original_non_head_triangles": {
+    "UpperTorso": 434,
+    "RightUpperArm": 120,
+    "LeftUpperArm": 43
+  },
+  "triangles": 4207,
+  "pieces": [
+    {
+      "name": "FaceExpression",
+      "triangles": 571,
+      "location": [
+        -0.23635333776474,
+        -0.33912190794944763,
+        1.7908828258514404
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    },
+    {
+      "name": "HeadBase",
+      "triangles": 3636,
+      "location": [
+        -0.23635333776474,
+        -0.33912190794944763,
+        1.7908828258514404
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    }
+  ],
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_HeadExpressions_R15.glb",
+  "sha256": "aa6fbe6f9c78676836bbacfa8c3093e6024a567b60a9d043623f906ca6b6a8ca",
+  "geometry_uv_verification": "original UV face signatures matched exact real bone-weight R15 partition; existing coordinate and head center reused",
+  "runtime_validated": false,
+  "camera_scale": 2.9211436271667477,
+  "camera_center": [
+    -0.17178630828857422,
+    2.1783502101898193
+  ],
+  "expected_import_assets": 5,
+  "body_reimport_required": true,
+  "body_parts_reimport_required": [
+    "UpperTorso"
+  ],
+  "restored_original_head_faces": 3,
+  "headbase_is_primary_part": "rename HeadBase to Head; preserve existing Head CFrame and Motor6D",
+  "expression_face_attachment": "FaceExpression welds to existing Head, with imported relative transform preserved",
+  "embedded_source_texture_bytes_preserved": true,
+  "embedded_texture_sha256": {
+    "Costume_HaloMageF_Expression_Neutral_face": "27aebf29d62ad85502fb4fcad443f52a070522656236789ea1b7e3ec1274d13b",
+    "Costume_HaloMageF_head": "5cdc55894311fc7448334af2d4056da2a5004824fe52ad882cad4af3c7080892"
+  },
+  "front_preview_camera_angle": 180,
+  "retained_existing_head_auxiliary_meshes": [
+    {
+      "name": "Head__Material02",
+      "part": "Head",
+      "material": "BodyMat",
+      "is_primary": false,
+      "triangles": 370,
+      "CFrame": [
+        -0.23635333776474,
+        1.7908828258514404,
+        0.33912190794944763,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "excluded_expression_faces": [],
+  "fixed_to_rig_affine": [
+    [
+      1.0224024057388306,
+      -1.710071586558115e-07,
+      -1.8457413375472242e-07,
+      1.5668143532820977e-05
+    ],
+    [
+      1.7942021202088654e-07,
+      1.0224027633666992,
+      8.877984924993143e-08,
+      -0.0001482120278524235
+    ],
+    [
+      1.1167148983304287e-07,
+      3.7926440654700855e-07,
+      1.0224026441574097,
+      -1.4049150820483192e-07
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "coordinate_mapping_matched_corners": 11949,
+  "coordinate_mapping_residual_max": 2.530135367953775e-07,
+  "coordinate_mapping_residual_mean": 5.5277897062086765e-08,
+  "source_fixed_sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+  "source_fixed_unchanged": true,
+  "head_replacement_scope": "Replace existing primary HeadMat Head only; retain all listed original Head auxiliary BodyMat pieces and their UV/material/head welds",
+  "camera_front_direction": [
+    -1.6726006890621647e-07,
+    0.9999999403953552,
+    -3.7095401239639614e-07
+  ],
+  "camera_front_up": [
+    1.8052976713534008e-07,
+    -8.683451824254007e-08,
+    0.9999999403953552
+  ],
+  "camera_target": [
+    -0.17178630828857422,
+    -0.25301826000213623,
+    2.1783502101898193
+  ],
+  "source_front_camera_scale": 2.921143342611801,
+  "source_front_yaw_degrees": -179.9999904167034,
+  "source_up_tilt_degrees": 0.019782341029446364,
+  "source_front_differs_from_standard_r15_view": false
+}

@@ -1,0 +1,100 @@
+{
+  "avatar": "Costume_HornsArcherM",
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approved_human_avatar_scope": 18,
+  "target_total_textures": 54,
+  "actual_preferred_textures": 3,
+  "head_asset": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_HeadExpressions_R15.glb",
+  "head_sha256": "13f152a00379cab2572dfdcfee5a3eff345392418024c69aeaceda0331864a5f",
+  "import_asset_budget": 5,
+  "extra_expression_pngs_outside_glb": 2,
+  "full_set_maximum_import_assets": 7,
+  "needs_new_head_mesh_import": true,
+  "body_reimport_required": true,
+  "body_parts_reimport_required": [
+    "UpperTorso"
+  ],
+  "original_models_unchanged": true,
+  "studio_untouched": true,
+  "paid_api_calls": 0,
+  "uploads": 0,
+  "records": [
+    {
+      "avatar": "Costume_HornsArcherM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "61b768429e570bc03f4ad33ab59aa49b9d8523b948fca3431b86e345331daa41",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-fade62a4-ab68-4df4-8854-8fdb215702f1.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsArcherM/prompts/Neutral.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "평소",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsArcherM/previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_HornsArcherM/previews/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HornsArcherM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "e63def068e084c6c01afefd769d48433c9d6147806978c7120c6e083533db107",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-02bb2635-7767-47f3-af6c-6fd8b81da00a.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsArcherM/prompts/SoftSmile.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/유저 대화",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsArcherM/previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_HornsArcherM/previews/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HornsArcherM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "8712c7a7a8faa6a89249e22f99cfebb8ba063d535c5d069ef0d949312278cd10",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-9146fa8d-ceaa-4599-b15b-ce983e9e7c7f.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsArcherM/prompts/Serious.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "공격/피격",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsArcherM/previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_HornsArcherM/previews/Serious_quarter.png"
+      ]
+    }
+  ],
+  "runtime_validated": false,
+  "offline_visual_review": "All three state front and 30-degree quarter renders reviewed with unchanged original body context; mouth closed and old duplicate brows checked",
+  "limitations": [
+    "Roblox head import, texture upload, automatic state switching and runtime QA remain.",
+    "Other human avatars require their own reviewed facial profiles and actual offline previews."
+  ]
+}

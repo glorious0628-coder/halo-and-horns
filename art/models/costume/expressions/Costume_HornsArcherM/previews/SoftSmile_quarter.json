@@ -1,0 +1,17 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_HeadExpressions_R15.glb",
+  "source_sha256": "13f152a00379cab2572dfdcfee5a3eff345392418024c69aeaceda0331864a5f",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_Expression_SoftSmile_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\previews\\SoftSmile_quarter.png",
+  "angle": 150.0,
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HornsArcherM_rig_1c4762a2-29bd-4e14-baca-488d2d44a98b.glb",
+  "original_rig_sha256": "192bebb4f66ca9573ebc18c1021f6b30632e95dcdd276e05d16cf053e4117691",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 9894,
+  "context_exported": false
+}

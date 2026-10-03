@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "HaloMageM",
+  "directly_reviewed": true,
+  "reviewed_original_images": [
+    "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\Costume_HaloMageM_preserved_v1\\motion_final_v6\\rest_skin_front.png",
+    "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\Costume_HaloMageM_preserved_v1\\motion_final_v6\\rest_skin_side.png"
+  ],
+  "reviewed_contact_sheets": [
+    "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\review_sheets_final_v6\\all_rest_front.png",
+    "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\review_sheets_final_v6\\all_rest_side.png"
+  ],
+  "all_six_pose_views_reviewed": false,
+  "observations": [
+    "Original approved shape, covered outfit, and restored/original texture remain intact at rest.",
+    "Actual original Armature and independent original-weight LBS were evaluated in all six poses."
+  ],
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "limitations": [
+    "This is a preserved source candidate; it does not repair source weighting or prove game physics/attack timing."
+  ]
+}

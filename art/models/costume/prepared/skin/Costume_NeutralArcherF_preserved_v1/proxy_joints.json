@@ -1,0 +1,1613 @@
+{
+  "schema": 1,
+  "dry_run": false,
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_NeutralArcherF_rig_0eb31d8c-3641-48a5-b4d5-51f69894d359.glb",
+  "source_sha256": "12da1a661d2f6afae7c0322427a672930577901d17df40eaf59a4bc184773435",
+  "output": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_NeutralArcherF",
+  "parts": [
+    {
+      "name": "LowerTorso",
+      "triangles": 437,
+      "CFrame": [
+        -0.042110294103622437,
+        0.6522355079650879,
+        -0.08308924734592438,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LowerTorso"
+      ]
+    },
+    {
+      "name": "UpperTorso",
+      "triangles": 4034,
+      "CFrame": [
+        0.17199796438217163,
+        1.4198895692825317,
+        0.18757542967796326,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "UpperTorso",
+        "UpperTorso__Material02"
+      ]
+    },
+    {
+      "name": "Head",
+      "triangles": 4734,
+      "CFrame": [
+        0.0442579984664917,
+        3.312689781188965,
+        -0.15278691053390503,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "Head",
+        "Head__Material02"
+      ]
+    },
+    {
+      "name": "LeftUpperArm",
+      "triangles": 1083,
+      "CFrame": [
+        -0.8827382922172546,
+        1.2944175004959106,
+        0.300819993019104,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftUpperArm"
+      ]
+    },
+    {
+      "name": "LeftLowerArm",
+      "triangles": 92,
+      "CFrame": [
+        -1.289872169494629,
+        1.1848177909851074,
+        0.02169717848300934,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftLowerArm"
+      ]
+    },
+    {
+      "name": "LeftHand",
+      "triangles": 365,
+      "CFrame": [
+        -1.5282009840011597,
+        0.9890661835670471,
+        0.013203933835029602,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftHand"
+      ]
+    },
+    {
+      "name": "RightUpperArm",
+      "triangles": 567,
+      "CFrame": [
+        1.1250253915786743,
+        1.6710209846496582,
+        0.012925595045089722,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightUpperArm",
+        "RightUpperArm__Material02"
+      ]
+    },
+    {
+      "name": "RightLowerArm",
+      "triangles": 563,
+      "CFrame": [
+        1.4369961023330688,
+        1.0939159393310547,
+        -0.2525670528411865,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightLowerArm"
+      ]
+    },
+    {
+      "name": "RightHand",
+      "triangles": 380,
+      "CFrame": [
+        1.6933202743530273,
+        1.64809250831604,
+        0.2625168561935425,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightHand"
+      ]
+    },
+    {
+      "name": "LeftUpperLeg",
+      "triangles": 946,
+      "CFrame": [
+        -0.4836055040359497,
+        0.04869091510772705,
+        0.10725295543670654,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftUpperLeg"
+      ]
+    },
+    {
+      "name": "LeftLowerLeg",
+      "triangles": 55,
+      "CFrame": [
+        -0.5608358979225159,
+        -0.6033785343170166,
+        0.21703271567821503,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftLowerLeg"
+      ]
+    },
+    {
+      "name": "LeftFoot",
+      "triangles": 195,
+      "CFrame": [
+        -0.6258761882781982,
+        -0.5794605612754822,
+        -0.20161601901054382,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftFoot"
+      ]
+    },
+    {
+      "name": "RightUpperLeg",
+      "triangles": 661,
+      "CFrame": [
+        0.4877004027366638,
+        -0.030981123447418213,
+        -0.1181296557188034,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightUpperLeg"
+      ]
+    },
+    {
+      "name": "RightLowerLeg",
+      "triangles": 49,
+      "CFrame": [
+        0.8513317108154297,
+        -0.6385393142700195,
+        -0.1284617930650711,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightLowerLeg"
+      ]
+    },
+    {
+      "name": "RightFoot",
+      "triangles": 299,
+      "CFrame": [
+        0.49695950746536255,
+        -0.5591903924942017,
+        -0.15195730328559875,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightFoot"
+      ]
+    }
+  ],
+  "meshes": [
+    {
+      "name": "LowerTorso",
+      "part": "LowerTorso",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 437,
+      "CFrame": [
+        -0.042110294103622437,
+        0.6522355079650879,
+        -0.08308924734592438,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "UpperTorso",
+      "part": "UpperTorso",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 3892,
+      "CFrame": [
+        0.17199796438217163,
+        1.4198895692825317,
+        0.18757542967796326,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "UpperTorso__Material02",
+      "part": "UpperTorso",
+      "material": "HeadMat",
+      "is_primary": false,
+      "triangles": 142,
+      "CFrame": [
+        0.17199796438217163,
+        1.4198895692825317,
+        0.18757542967796326,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Head",
+      "part": "Head",
+      "material": "HeadMat",
+      "is_primary": true,
+      "triangles": 4652,
+      "CFrame": [
+        0.0442579984664917,
+        3.312689781188965,
+        -0.15278691053390503,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Head__Material02",
+      "part": "Head",
+      "material": "BodyMat",
+      "is_primary": false,
+      "triangles": 82,
+      "CFrame": [
+        0.0442579984664917,
+        3.312689781188965,
+        -0.15278691053390503,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftUpperArm",
+      "part": "LeftUpperArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 1083,
+      "CFrame": [
+        -0.8827382922172546,
+        1.2944175004959106,
+        0.300819993019104,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftLowerArm",
+      "part": "LeftLowerArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 92,
+      "CFrame": [
+        -1.289872169494629,
+        1.1848177909851074,
+        0.02169717848300934,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftHand",
+      "part": "LeftHand",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 365,
+      "CFrame": [
+        -1.5282009840011597,
+        0.9890661835670471,
+        0.013203933835029602,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightUpperArm",
+      "part": "RightUpperArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 565,
+      "CFrame": [
+        1.1250253915786743,
+        1.6710209846496582,
+        0.012925595045089722,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightUpperArm__Material02",
+      "part": "RightUpperArm",
+      "material": "HeadMat",
+      "is_primary": false,
+      "triangles": 2,
+      "CFrame": [
+        1.1250253915786743,
+        1.6710209846496582,
+        0.012925595045089722,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightLowerArm",
+      "part": "RightLowerArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 563,
+      "CFrame": [
+        1.4369961023330688,
+        1.0939159393310547,
+        -0.2525670528411865,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightHand",
+      "part": "RightHand",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 380,
+      "CFrame": [
+        1.6933202743530273,
+        1.64809250831604,
+        0.2625168561935425,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftUpperLeg",
+      "part": "LeftUpperLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 946,
+      "CFrame": [
+        -0.4836055040359497,
+        0.04869091510772705,
+        0.10725295543670654,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftLowerLeg",
+      "part": "LeftLowerLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 55,
+      "CFrame": [
+        -0.5608358979225159,
+        -0.6033785343170166,
+        0.21703271567821503,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftFoot",
+      "part": "LeftFoot",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 195,
+      "CFrame": [
+        -0.6258761882781982,
+        -0.5794605612754822,
+        -0.20161601901054382,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightUpperLeg",
+      "part": "RightUpperLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 661,
+      "CFrame": [
+        0.4877004027366638,
+        -0.030981123447418213,
+        -0.1181296557188034,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightLowerLeg",
+      "part": "RightLowerLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 49,
+      "CFrame": [
+        0.8513317108154297,
+        -0.6385393142700195,
+        -0.1284617930650711,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightFoot",
+      "part": "RightFoot",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 299,
+      "CFrame": [
+        0.49695950746536255,
+        -0.5591903924942017,
+        -0.15195730328559875,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "name": "Root",
+      "part0": "HumanoidRootPart",
+      "part1": "LowerTorso",
+      "source_bone": "mixamorig:Hips",
+      "joint_position": [
+        2.7939677238464355e-09,
+        1.234002411365509e-08,
+        1.862645149230957e-09
+      ],
+      "C0": [
+        2.7939677238464355e-09,
+        1.234002411365509e-08,
+        1.862645149230957e-09,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.042110297828912735,
+        -0.6522355079650879,
+        0.08308924734592438,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Waist",
+      "part0": "LowerTorso",
+      "part1": "UpperTorso",
+      "source_bone": "mixamorig:Spine1",
+      "joint_position": [
+        0.09170051664113998,
+        0.862615168094635,
+        -9.080395102500916e-09
+      ],
+      "C0": [
+        0.13381081819534302,
+        0.21037966012954712,
+        0.08308923989534378,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.08029744774103165,
+        -0.5572744011878967,
+        -0.18757544457912445,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Neck",
+      "part0": "UpperTorso",
+      "part1": "Head",
+      "source_bone": "mixamorig:Head",
+      "joint_position": [
+        0.22730274498462677,
+        2.1382064819335938,
+        -9.313225746154785e-09
+      ],
+      "C0": [
+        0.05530478060245514,
+        0.718316912651062,
+        -0.18757544457912445,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.18304474651813507,
+        -1.174483299255371,
+        0.15278689563274384,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftShoulder",
+      "part0": "UpperTorso",
+      "part1": "LeftUpperArm",
+      "source_bone": "mixamorig:LeftArm",
+      "joint_position": [
+        -0.6496782898902893,
+        1.8735028505325317,
+        -5.066394805908203e-05
+      ],
+      "C0": [
+        -0.8216762542724609,
+        0.45361328125,
+        -0.18762609362602234,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.23306000232696533,
+        0.5790853500366211,
+        -0.3008706569671631,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftElbow",
+      "part0": "LeftUpperArm",
+      "part1": "LeftLowerArm",
+      "source_bone": "mixamorig:LeftForeArm",
+      "joint_position": [
+        -1.1805342435836792,
+        1.215698003768921,
+        0.2186223715543747
+      ],
+      "C0": [
+        -0.29779595136642456,
+        -0.07871949672698975,
+        -0.08219762146472931,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.10933792591094971,
+        0.030880212783813477,
+        0.19692519307136536,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftWrist",
+      "part0": "LeftLowerArm",
+      "part1": "LeftHand",
+      "source_bone": "mixamorig:LeftHand",
+      "joint_position": [
+        -1.3371096849441528,
+        1.0739729404449463,
+        0.10175240784883499
+      ],
+      "C0": [
+        -0.047237515449523926,
+        -0.11084485054016113,
+        0.08005522936582565,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.19109129905700684,
+        0.08490675687789917,
+        0.08854847401380539,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightShoulder",
+      "part0": "UpperTorso",
+      "part1": "RightUpperArm",
+      "source_bone": "mixamorig:RightArm",
+      "joint_position": [
+        1.0477005243301392,
+        1.8735027313232422,
+        -5.0671398639678955e-05
+      ],
+      "C0": [
+        0.8757025599479675,
+        0.45361316204071045,
+        -0.18762609362602234,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.07732486724853516,
+        0.20248174667358398,
+        -0.0129762664437294,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightElbow",
+      "part0": "RightUpperArm",
+      "part1": "RightLowerArm",
+      "source_bone": "mixamorig:RightForeArm",
+      "joint_position": [
+        1.1373417377471924,
+        1.2379443645477295,
+        -0.31943702697753906
+      ],
+      "C0": [
+        0.012316346168518066,
+        -0.4330766201019287,
+        -0.3323626220226288,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.29965436458587646,
+        0.1440284252166748,
+        -0.06686997413635254,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightWrist",
+      "part0": "RightLowerArm",
+      "part1": "RightHand",
+      "source_bone": "mixamorig:RightHand",
+      "joint_position": [
+        1.7193629741668701,
+        1.4836320877075195,
+        0.1257888376712799
+      ],
+      "C0": [
+        0.28236687183380127,
+        0.38971614837646484,
+        0.37835589051246643,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.026042699813842773,
+        -0.1644604206085205,
+        -0.13672801852226257,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftHip",
+      "part0": "LowerTorso",
+      "part1": "LeftUpperLeg",
+      "source_bone": "mixamorig:LeftUpLeg",
+      "joint_position": [
+        -0.41162875294685364,
+        -0.041013725101947784,
+        0.08758971095085144
+      ],
+      "C0": [
+        -0.3695184588432312,
+        -0.6932492256164551,
+        0.17067895829677582,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.07197675108909607,
+        -0.08970464020967484,
+        -0.019663244485855103,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftKnee",
+      "part0": "LeftUpperLeg",
+      "part1": "LeftLowerLeg",
+      "source_bone": "mixamorig:LeftLeg",
+      "joint_position": [
+        -0.548254668712616,
+        -0.5559805035591125,
+        0.09087474644184113
+      ],
+      "C0": [
+        -0.06464916467666626,
+        -0.6046714186668396,
+        -0.016378208994865417,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.012581229209899902,
+        0.04739803075790405,
+        -0.1261579692363739,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftAnkle",
+      "part0": "LeftLowerLeg",
+      "part1": "LeftFoot",
+      "source_bone": "mixamorig:LeftFoot",
+      "joint_position": [
+        -0.708518385887146,
+        -0.6893213987350464,
+        0.06295209378004074
+      ],
+      "C0": [
+        -0.14768248796463013,
+        -0.08594286441802979,
+        -0.15408062934875488,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.08264219760894775,
+        -0.10986083745956421,
+        0.26456812024116516,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightHip",
+      "part0": "LowerTorso",
+      "part1": "RightUpperLeg",
+      "source_bone": "mixamorig:RightUpLeg",
+      "joint_position": [
+        0.4117811620235443,
+        0.039864733815193176,
+        -0.08783654868602753
+      ],
+      "C0": [
+        0.45389145612716675,
+        -0.6123707890510559,
+        -0.004747301340103149,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.0759192407131195,
+        0.07084585726261139,
+        0.03029310703277588,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightKnee",
+      "part0": "RightUpperLeg",
+      "part1": "RightLowerLeg",
+      "source_bone": "mixamorig:RightLeg",
+      "joint_position": [
+        0.7002084851264954,
+        -0.5929461717605591,
+        -0.3373391032218933
+      ],
+      "C0": [
+        0.21250808238983154,
+        -0.5619650483131409,
+        -0.2192094475030899,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.15112322568893433,
+        0.04559314250946045,
+        -0.2088773101568222,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightAnkle",
+      "part0": "RightLowerLeg",
+      "part1": "RightFoot",
+      "source_bone": "mixamorig:RightFoot",
+      "joint_position": [
+        0.48797398805618286,
+        -0.7022303938865662,
+        -0.0015156702138483524
+      ],
+      "C0": [
+        -0.3633577227592468,
+        -0.06369107961654663,
+        0.1269461214542389,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.008985519409179688,
+        -0.1430400013923645,
+        0.15044163167476654,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "batches": [
+    {
+      "parts": [
+        "LowerTorso",
+        "UpperTorso",
+        "UpperTorso__Material02",
+        "Head",
+        "Head__Material02",
+        "LeftUpperArm",
+        "LeftLowerArm"
+      ],
+      "estimated_assets": 10,
+      "file": "batch_01.glb",
+      "texture_sha256": {
+        "Costume_NeutralArcherF_head": "3c02ff1ac6d52fb9a9faebeae9145bf9681570e2af17e1be4f6eac4cf51b8a70",
+        "Costume_NeutralArcherF_body": "023861093581ffa39d29e6e86f4c0edb8e2aef24147346359321c3bbdb92e14e"
+      },
+      "export_validation": {
+        "meshes": 7,
+        "triangles": 10380,
+        "embedded_images": 2,
+        "uv_verified": true
+      },
+      "sha256": "93cfe27a308fe565032ac865ccb3613d2196072423a649c0c2a2e63626122a96"
+    },
+    {
+      "parts": [
+        "LeftHand",
+        "RightUpperArm",
+        "RightUpperArm__Material02",
+        "RightLowerArm",
+        "RightHand",
+        "LeftUpperLeg",
+        "LeftLowerLeg"
+      ],
+      "estimated_assets": 10,
+      "file": "batch_02.glb",
+      "texture_sha256": {
+        "Costume_NeutralArcherF_body": "023861093581ffa39d29e6e86f4c0edb8e2aef24147346359321c3bbdb92e14e",
+        "Costume_NeutralArcherF_head": "3c02ff1ac6d52fb9a9faebeae9145bf9681570e2af17e1be4f6eac4cf51b8a70"
+      },
+      "export_validation": {
+        "meshes": 7,
+        "triangles": 2876,
+        "embedded_images": 2,
+        "uv_verified": true
+      },
+      "sha256": "19d88e9df5f8ed2dede7a873be8ac89572705055f0725ae7d8edcb0b42107d9f"
+    },
+    {
+      "parts": [
+        "LeftFoot",
+        "RightUpperLeg",
+        "RightLowerLeg",
+        "RightFoot"
+      ],
+      "estimated_assets": 6,
+      "file": "batch_03.glb",
+      "texture_sha256": {
+        "Costume_NeutralArcherF_body": "023861093581ffa39d29e6e86f4c0edb8e2aef24147346359321c3bbdb92e14e"
+      },
+      "export_validation": {
+        "meshes": 4,
+        "triangles": 1204,
+        "embedded_images": 1,
+        "uv_verified": true
+      },
+      "sha256": "843735fd2b0d1b742fcd0eed86ecaebb57ca627bac1939c743418803cf1cfbcb"
+    }
+  ],
+  "target_height_studs": 5.5,
+  "source_height": 1.0162088721990585,
+  "uniform_scale": 5.412273156106278,
+  "source_triangles": 14460,
+  "minimum_face_confidence": 0.32234583332449307,
+  "partition_policy": "Maximum average original bone-region weight; connected exact ties choose the nearest parent; equal depth uses a stable name order.",
+  "nonadjacent_ties": "refuse",
+  "weight_diagnostics": {
+    "low_confidence_faces": 1311,
+    "parent_tie_faces": 0,
+    "non_adjacent_exact_ties": 0,
+    "non_adjacent_close_weights": 98,
+    "examples": [
+      {
+        "object": "Body",
+        "face": 938,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.35443867130945395,
+          "UpperTorso": 0.32683050706226274,
+          "LowerTorso": 0.3187308216282833
+        }
+      },
+      {
+        "object": "Body",
+        "face": 939,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.3575687872031171,
+          "UpperTorso": 0.3454469430620556,
+          "LowerTorso": 0.2969842697348274
+        }
+      },
+      {
+        "object": "Body",
+        "face": 1817,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.38123286532030787,
+          "UpperTorso": 0.3337731786949001,
+          "LowerTorso": 0.28499395598479205
+        }
+      },
+      {
+        "object": "Body",
+        "face": 1819,
+        "chosen_part": "LeftUpperLeg",
+        "region_weights": {
+          "LeftUpperLeg": 0.3709045426713058,
+          "UpperTorso": 0.35133620385155695,
+          "LowerTorso": 0.2777592534771372
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3288,
+        "chosen_part": "RightFoot",
+        "region_weights": {
+          "RightFoot": 0.43437636346297065,
+          "RightUpperLeg": 0.38560624313626346,
+          "RightLowerLeg": 0.1800173934007659
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3290,
+        "chosen_part": "RightFoot",
+        "region_weights": {
+          "RightFoot": 0.4376300344911681,
+          "RightUpperLeg": 0.3575116237837419,
+          "RightLowerLeg": 0.20485834172509
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3293,
+        "chosen_part": "RightFoot",
+        "region_weights": {
+          "RightFoot": 0.3875780908512826,
+          "RightUpperLeg": 0.36804978864356586,
+          "RightLowerLeg": 0.24437212050515156
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3294,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.40067503878096034,
+          "RightFoot": 0.3695508267461845,
+          "RightLowerLeg": 0.22977413447285516
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3295,
+        "chosen_part": "RightFoot",
+        "region_weights": {
+          "RightFoot": 0.3957412353947216,
+          "RightUpperLeg": 0.3907754399557598,
+          "RightLowerLeg": 0.21348332464951855
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3345,
+        "chosen_part": "RightFoot",
+        "region_weights": {
+          "RightFoot": 0.46953534307431893,
+          "RightUpperLeg": 0.38066872830728604,
+          "RightLowerLeg": 0.14979592861839497
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3346,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.43580882860633696,
+          "RightFoot": 0.42666672095822755,
+          "RightLowerLeg": 0.13752445043543549
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3356,
+        "chosen_part": "RightFoot",
+        "region_weights": {
+          "RightFoot": 0.3930728878796213,
+          "RightUpperLeg": 0.32156869000082344,
+          "RightLowerLeg": 0.28535842211955526
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3357,
+        "chosen_part": "RightFoot",
+        "region_weights": {
+          "RightFoot": 0.3886640217125528,
+          "RightUpperLeg": 0.34873270219450325,
+          "RightLowerLeg": 0.2626032760929439
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3372,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.39195464279140163,
+          "RightFoot": 0.353334570548943,
+          "RightLowerLeg": 0.25471078665965535
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3373,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.44391738427165783,
+          "RightFoot": 0.3872433903786767,
+          "RightLowerLeg": 0.16883922534966542
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3375,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.4231106167360792,
+          "RightFoot": 0.40934997046022736,
+          "RightLowerLeg": 0.16753941280369342
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3410,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.4494480085710444,
+          "RightFoot": 0.3780894650676476,
+          "RightLowerLeg": 0.172462526361308
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3504,
+        "chosen_part": "RightFoot",
+        "region_weights": {
+          "RightFoot": 0.45569668871753827,
+          "RightUpperLeg": 0.38479368851229634,
+          "RightLowerLeg": 0.1595096227701654
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3505,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.4429453401095421,
+          "RightFoot": 0.40032446847057135,
+          "RightLowerLeg": 0.15673019141988648
+        }
+      },
+      {
+        "object": "Body",
+        "face": 3506,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.4800964237800917,
+          "RightFoot": 0.3909996598458187,
+          "RightLowerLeg": 0.12890391637408954
+        }
+      }
+    ],
+    "exact_tie_examples": []
+  },
+  "auxiliary_mesh_policy": "Material fragments retain original UVs/images and must be welded only to their named, actual Motor6D-driven R15 part.",
+  "root": {
+    "name": "HumanoidRootPart",
+    "CFrame": [
+      0.0,
+      0.0,
+      0.0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    "Size": [
+      2,
+      2,
+      1
+    ]
+  },
+  "texture_rebake": false,
+  "uv_repack": false,
+  "original_texture_bytes_preserved": true,
+  "rig_ready_for_game": false,
+  "requires_studio_animation_validation": true,
+  "limitations": [
+    "Bone-weight maximum triangles become rigid parts; joint seams and non-adjacent low-confidence weights need motion QA.",
+    "Exact bone joint positions use canonical R15 axes; Mixamo bind-pose/roll versus default Animate is not yet verified.",
+    "No retargeting or geometry-based replacement is performed."
+  ]
+}

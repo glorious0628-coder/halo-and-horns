@@ -1,0 +1,17 @@
+{
+  "validated": true,
+  "avatar": "Costume_NeutralWarriorM",
+  "head_sha256": "3a1a76e7eca20d79aa67609d2c883bf352e633c9f661ca2f79647e08ee2f6180",
+  "triangles": {
+    "FaceExpression": 717,
+    "HeadBase": 5143
+  },
+  "primary_uv_only": true,
+  "embedded_original_png_bytes_preserved": true,
+  "source_models_unchanged": true,
+  "expression_pngs": 3,
+  "offline_previews_checked": 6,
+  "expected_import_assets": 5,
+  "runtime_validated": false,
+  "uploads_performed_by_validator": 0
+}

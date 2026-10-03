@@ -1,0 +1,123 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralArcherF.glb",
+  "source_sha256": "380acd5fce8365f60cd5a1660140979932ca09ec714f61c030b0d7ee6f370579",
+  "excluded_report": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\excluded_face_partition_review.json",
+  "matched_original_faces": [
+    {
+      "fixed_face": 785,
+      "original_material": "HeadMat",
+      "original_uv_signature": [
+        [
+          0.409127,
+          0.685068
+        ],
+        [
+          0.411159,
+          0.676599
+        ],
+        [
+          0.41624,
+          0.686423
+        ]
+      ],
+      "original_world_corners": [
+        [
+          0.1401519924402237,
+          -0.03349306434392929,
+          0.565887451171875
+        ],
+        [
+          0.1439666897058487,
+          -0.014376661740243435,
+          0.5544204711914062
+        ],
+        [
+          0.1439666897058487,
+          -0.01628877781331539,
+          0.5697174072265625
+        ]
+      ]
+    },
+    {
+      "fixed_face": 2284,
+      "original_material": "HeadMat",
+      "original_uv_signature": [
+        [
+          0.610159,
+          0.135538
+        ],
+        [
+          0.618628,
+          0.128764
+        ],
+        [
+          0.619644,
+          0.136893
+        ]
+      ],
+      "original_world_corners": [
+        [
+          0.11338043957948685,
+          -0.07173158973455429,
+          0.5697174072265625
+        ],
+        [
+          0.0904388427734375,
+          -0.07555391639471054,
+          0.5754470825195312
+        ],
+        [
+          0.09809112548828125,
+          -0.08511354774236679,
+          0.5639801025390625
+        ]
+      ]
+    },
+    {
+      "fixed_face": 2286,
+      "original_material": "HeadMat",
+      "original_uv_signature": [
+        [
+          0.619644,
+          0.136893
+        ],
+        [
+          0.627774,
+          0.129102
+        ],
+        [
+          0.62879,
+          0.137571
+        ]
+      ],
+      "original_world_corners": [
+        [
+          0.09809112548828125,
+          -0.08511354774236679,
+          0.5639801025390625
+        ],
+        [
+          0.0751495286822319,
+          -0.0851135402917862,
+          0.5697174072265625
+        ],
+        [
+          0.0827941820025444,
+          -0.09658052772283554,
+          0.5582427978515625
+        ]
+      ]
+    }
+  ],
+  "renders": [
+    "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_NeutralArcherF\\excluded_original_inspection\\front.png",
+    "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_NeutralArcherF\\excluded_original_inspection\\right_quarter.png",
+    "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_NeutralArcherF\\excluded_original_inspection\\right_side.png",
+    "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_NeutralArcherF\\excluded_original_inspection\\left_quarter.png"
+  ],
+  "marker_color": "magenta diagnostic face materials",
+  "original_source_unchanged": true,
+  "original_geometry_uv_unchanged": true,
+  "raster_editing": false,
+  "product_asset": false
+}

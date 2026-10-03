@@ -1,0 +1,66 @@
+{
+  "avatar": "Costume_NeutralMageF",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed; profile is preliminary until 3D expression QA passes",
+  "source_sha256": "8d1dfd965602d0e78b85815fd6d3f76704f3121b6d7463b416b0a736dd8df583",
+  "mouth_center_screen": [
+    386,
+    586
+  ],
+  "screen_scale": [
+    1.2,
+    1
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      246,
+      413,
+      351,
+      455
+    ],
+    [
+      414,
+      413,
+      535,
+      455
+    ]
+  ],
+  "eye_boxes": [
+    [
+      207,
+      443,
+      350,
+      556
+    ],
+    [
+      415,
+      443,
+      561,
+      556
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.085
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0.08,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "runtime_validated": false
+}

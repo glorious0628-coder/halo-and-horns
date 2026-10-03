@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "preserved_original_skin_pending",
+  "name": "HaloArcherM",
+  "skin_glb": "Costume_HaloArcherM_skin.glb",
+  "skin_manifest": "Costume_HaloArcherM_skin.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "7d09b5aec17a52f0a161835bdab5db2a81dcd035baa1f2f8f64a226cb6977756",
+    "skin_manifest": "0dfe7e0b167c8dbfbb1d3bcf6790bdde8495951851795faaf8a31c0357861412",
+    "proxy_plan": "f823aae2cc7c9fc47e5a8c29c9cafe781eb10a55a4b08cb0035acb21885d4535"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_HaloArcherM_rig_5c617179-323f-461c-961d-aeb62f216b25.glb",
+    "sha256": "48b60fffa4d6c348f364f5f85dfef4ceaf31eceacb3477a015cae99dfaea4d37"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": true,
+  "maximum_proxy_joint_error": 6.612458361827899e-07,
+  "maximum_actual_armature_lbs_error": 1.1995203374325102e-06,
+  "maximum_target_pose_projection_error": 2.3163518371371084e-06,
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

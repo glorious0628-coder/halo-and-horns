@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "preserved_original_skin_pending",
+  "name": "HornsMageF",
+  "skin_glb": "Costume_HornsMageF_skin.glb",
+  "skin_manifest": "Costume_HornsMageF_skin.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "4d9221b7d22d330b4989c3dc2368b3ff7ebca52932d72780f27ed027b41fd42b",
+    "skin_manifest": "3f776fa966ca25980b6c9cbe22bfb895948f467a7a706c32d6bbbece422a74a6",
+    "proxy_plan": "56af54073216463f3b403a71f6f22a4ff9e9d12d83c8ff22805aedea15d01718"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_HornsMageF_rig_1d458a15-2257-4e35-9980-cdf5cac63f05.glb",
+    "sha256": "966a7c03fd082cf7735ba2c9299360c03475a3be95b9a6919508b640f7b06019"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": true,
+  "maximum_proxy_joint_error": 1.3021234404569085e-06,
+  "maximum_actual_armature_lbs_error": 1.4357792699868564e-06,
+  "maximum_target_pose_projection_error": 3.968635523267704e-06,
+  "weighting_quality_hold": true,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

@@ -34,6 +34,8 @@ def canonical_source(plan):
     origin = positions["LowerTorso"]
     right = (positions["RightUpperArm"] - positions["LeftUpperArm"]).normalized()
     up = positions["Head"] - origin
+    if plan.get("source_frame_policy") == "gltf-positive-z":
+        right, up = Vector((-1, 0, 0)), Vector((0, 0, 1))
     up = (up - right * up.dot(right)).normalized()
     back = right.cross(up).normalized()
     coordinate = Matrix.Diagonal(Vector((plan["uniform_scale"],) * 3 + (1,))) @ Matrix((right, up, back)).to_4x4() @ Matrix.Translation(-origin)

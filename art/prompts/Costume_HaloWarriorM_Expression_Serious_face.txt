@@ -1,0 +1,6 @@
+Use case: precise-object-edit.
+Asset type: aligned continuous face projection texture for an existing 3D Roblox avatar.
+Image 1 is the EDIT TARGET: the current approved neutral facial texture of the blond chibi paladin. Image 2 is an EXPRESSION REFERENCE ONLY: the right portrait labelled "진지".
+Change ONLY facial expression to a focused determined expression like the reference right portrait. Lower the two eyebrows gently toward the center, creating a cute concentrated look. Keep the mouth closed as a short subtle neutral straight line, no open mouth, no teeth, no tongue. Keep the original eye size, eye position and amber iris design; do not change eye identity. Serious and alert, still child-friendly, never scary or enraged.
+Keep the exact image square frame and normalized facial coordinates. Preserve original hair, face size, skin color and shading, ears, halo, armor, neck, camera, gray background and every silhouette. Do not redraw, resize, crop, zoom, beautify, smooth, relight, sharpen, add a pose or restyle the avatar. The output will be sampled by the existing mesh UVs, so all feature positions must stay fixed. Only the eyebrows and subtle eyelid expression may change.
+Return only the target texture, no labels, text, border or watermark. Keep modest child-friendly armor unchanged.

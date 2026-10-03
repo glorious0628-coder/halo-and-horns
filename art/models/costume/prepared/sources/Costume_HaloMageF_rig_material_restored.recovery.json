@@ -1,0 +1,48 @@
+{
+  "source_triangles": 14440,
+  "rig_triangles": 14440,
+  "unique_original_points": 7185,
+  "all_original_points_matched": true,
+  "oriented_original_triangles_matched_exactly_once": true,
+  "verified_uniform_scale": 1.022402208408815,
+  "verified_translation": [
+    1.560019716553503e-05,
+    5.01609255798563e-08,
+    0.00014815502354981885
+  ],
+  "maximum_shape_mapping_error": 7.359894730565671e-07,
+  "shape_tolerance": 2e-06,
+  "maximum_original_uv_error_before_recovery": 0.0,
+  "maximum_original_normal_error_before_recovery": 1.8865028023719788,
+  "schema": 1,
+  "reference": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloMageF.glb",
+  "rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HaloMageF_rig_aa27d070-7d4c-479a-b606-dce7e7c61903.glb",
+  "reference_sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+  "rig_sha256": "1c69c486430313bfbec2ec11d58e013b797d9f55017517639c45b3021b27eb94",
+  "source_materials": [
+    "BodyMat",
+    "HeadMat"
+  ],
+  "source_material_triangle_counts": {
+    "BodyMat": 9860,
+    "HeadMat": 4580
+  },
+  "original_uv_recovery": true,
+  "original_normal_recovery": true,
+  "original_material_region_recovery": true,
+  "skin_skeleton_animations_preserved": true,
+  "texture_rebake": false,
+  "uv_repack": false,
+  "read_only": false,
+  "api_called": false,
+  "rig_ready_for_game": false,
+  "output": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\restored_material_sources\\Costume_HaloMageF_rig_material_restored.glb",
+  "output_sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+  "output_primitives": 2,
+  "output_vertices": 19911,
+  "exact_rig_geometry_skin_corner_attributes_verified": true,
+  "exact_original_uv_normal_material_corners_verified": true,
+  "original_rig_binary_prefix_preserved": true,
+  "original_reference_image_bytes_preserved": true,
+  "source_files_unchanged": true
+}

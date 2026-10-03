@@ -1,0 +1,25 @@
+{
+  "avatar": "Costume_HaloMageM",
+  "state": "Neutral",
+  "png": "art/models/costume/expressions/Costume_HaloMageM/Costume_HaloMageM_Expression_Neutral_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "f5bfee0efaaa3299caf4fc570a2210098781d17e1ab03461047f7d6f521285aa",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-4c900ceb-3422-4b1b-952c-2c895518696f.png",
+  "prompt": "art/models/costume/expressions/Costume_HaloMageM/prompts/Neutral.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\ud3c9\uc18c",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HaloMageM/previews/Neutral_front.png",
+    "art/models/costume/expressions/Costume_HaloMageM/previews/Neutral_quarter.png"
+  ],
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

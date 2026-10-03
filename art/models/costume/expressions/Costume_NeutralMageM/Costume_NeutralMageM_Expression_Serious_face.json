@@ -1,0 +1,22 @@
+{
+  "avatar": "Costume_NeutralMageM",
+  "state": "Serious",
+  "png": "art/models/costume/expressions/Costume_NeutralMageM/Costume_NeutralMageM_Expression_Serious_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "e0cddcdf072101bfb8a02f63b47a74630595fa21a22e8cc9f9f955439463c44a",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-435716a8-04a8-402f-95f1-7bc9d89432dc.png",
+  "prompt": "art/models/costume/expressions/Costume_NeutralMageM/prompts/Serious.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_NeutralMageM/previews/Serious_front.png",
+    "art/models/costume/expressions/Costume_NeutralMageM/previews/Serious_quarter.png"
+  ]
+}

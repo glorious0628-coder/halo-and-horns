@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "name": "Costume_HaloArcherF",
+  "rig_origin": "inferred_manual_candidate",
+  "rig_ready_for_game": false,
+  "studio_motion_validated": false,
+  "reviewed_images": [
+    "motion_qa/arm_bend_front.png",
+    "motion_qa/head_turn_side.png",
+    "motion_qa/attack_stress_side.png",
+    "motion_qa/walk_left_front.png"
+  ],
+  "review": [
+    "원래 geometry/UV/material/images를 보존한 연속 skin에서 큰 관절 갈라짐과 떠 있는 면이 해소됨.",
+    "긴 뒤머리·장갑은 원래 선택한 표면 근거의 부위 배정을 따라 움직임.",
+    "소매·장식과 골반/무릎의 굴곡 압축은 실제 걷기·공격에서 추가 검증 필요."
+  ],
+  "offline_numerical_qa": {
+    "schema": 1,
+    "skin": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\HaloArcherF_skin_v1\\Costume_HaloArcherF_skin.glb",
+    "skin_sha256": "0b72fb526d6049712ade5db365de9deffa3264e9a80875a9191b089d3bbcc26f",
+    "rig_origin": "inferred_manual_candidate",
+    "rig_ready_for_game": false,
+    "studio_motion_validated": false,
+    "offline_linear_blend_skinning": true,
+    "actual_imported_armature_rendered": true,
+    "source_or_texture_edits": 0,
+    "maximum_import_position_match_error": 8.630541969978367e-07,
+    "poses": {
+      "rest": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 1.1944189326376765e-07,
+        "maximum_actual_armature_vs_lbs_error": 2.525516041618331e-07,
+        "rotations_radians": {}
+      },
+      "walk_left": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 2.525516041618331e-07,
+        "rotations_radians": {
+          "LeftUpperLeg": [
+            [
+              "X",
+              0.35
+            ]
+          ],
+          "RightUpperLeg": [
+            [
+              "X",
+              -0.35
+            ]
+          ],
+          "RightLowerLeg": [
+            [
+              "X",
+              0.45
+            ]
+          ],
+          "LeftUpperArm": [
+            [
+              "X",
+              -0.25
+            ]
+          ],
+          "RightUpperArm": [
+            [
+              "X",
+              0.25
+            ]
+          ]
+        }
+      },
+      "walk_right": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 2.5636927089222153e-07,
+        "rotations_radians": {
+          "LeftUpperLeg": [
+            [
+              "X",
+              -0.35
+            ]
+          ],
+          "RightUpperLeg": [
+            [
+              "X",
+              0.35
+            ]
+          ],
+          "LeftLowerLeg": [
+            [
+              "X",
+              0.45
+            ]
+          ],
+          "LeftUpperArm": [
+            [
+              "X",
+              0.25
+            ]
+          ],
+          "RightUpperArm": [
+            [
+              "X",
+              -0.25
+            ]
+          ]
+        }
+      },
+      "arm_bend": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 2.548762929901082e-07,
+        "rotations_radians": {
+          "LeftUpperArm": [
+            [
+              "X",
+              -0.6
+            ],
+            [
+              "Z",
+              -0.25
+            ]
+          ],
+          "RightUpperArm": [
+            [
+              "X",
+              -0.6
+            ],
+            [
+              "Z",
+              0.25
+            ]
+          ],
+          "LeftLowerArm": [
+            [
+              "X",
+              -0.8
+            ]
+          ],
+          "RightLowerArm": [
+            [
+              "X",
+              -0.8
+            ]
+          ]
+        }
+      },
+      "attack_stress": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 3.686345347181454e-07,
+        "rotations_radians": {
+          "UpperTorso": [
+            [
+              "Y",
+              0.16
+            ]
+          ],
+          "LeftUpperArm": [
+            [
+              "X",
+              -0.8
+            ]
+          ],
+          "RightUpperArm": [
+            [
+              "X",
+              -1.0
+            ]
+          ],
+          "RightLowerArm": [
+            [
+              "X",
+              -0.8
+            ]
+          ],
+          "LeftUpperLeg": [
+            [
+              "X",
+              -0.15
+            ]
+          ],
+          "RightUpperLeg": [
+            [
+              "X",
+              0.15
+            ]
+          ]
+        }
+      },
+      "head_turn": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 2.546924609419696e-07,
+        "rotations_radians": {
+          "Head": [
+            [
+              "Y",
+              0.4
+            ]
+          ]
+        }
+      }
+    },
+    "limitations": [
+      "Continuity does not prove good anatomical deformation, collisions, exact Animate or class combat timing.",
+      "Full skin Importer and R15 proxy/shared-joint integration still require Studio validation."
+    ]
+  },
+  "api_called": false,
+  "uploads": 0
+}

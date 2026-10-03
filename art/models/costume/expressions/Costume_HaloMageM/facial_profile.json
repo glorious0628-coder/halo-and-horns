@@ -1,0 +1,70 @@
+{
+  "avatar": "Costume_HaloMageM",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed in exact 768 frame; preliminary until three state 3D QA passes",
+  "source_sha256": "479a6a268f56a421e65a353dd696ea4a67476dc06879815d1abca76316a279cb",
+  "mouth_center_screen": [
+    382,
+    635
+  ],
+  "screen_scale": [
+    1.2,
+    1.0
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      246,
+      448,
+      335,
+      494
+    ],
+    [
+      410,
+      433,
+      512,
+      482
+    ]
+  ],
+  "eye_boxes": [
+    [
+      201,
+      493,
+      349,
+      607
+    ],
+    [
+      416,
+      485,
+      559,
+      604
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.085
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "existing_joints_override": "build/costume_r15/Costume_HaloMageM_material_front_fixed/joints.json",
+  "runtime_validated": false,
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

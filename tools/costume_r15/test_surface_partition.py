@@ -64,13 +64,13 @@ class OriginalSurfacePartitionTests(unittest.TestCase):
     def test_three_merged_rig_results_have_safe_actual_bone_based_local_outputs(self):
         for name in ("HaloWarriorF", "HaloMageM", "HaloMageF"):
             with self.subTest(costume=name):
-                path = ROOT / ("build/costume_r15/Costume_" + name + "/joints.json")
+                path = ROOT / ("build/costume_r15/Costume_" + name + "_material_fixed/joints.json")
                 if not path.is_file():
                     self.skipTest("Final merged rig conversion is not present")
                 plan = json.loads(path.read_text(encoding="utf-8"))
                 self.assertEqual(len(plan["parts"]), 15)
-                self.assertEqual(len(plan["meshes"]), 15)
-                self.assertEqual(len(plan["batches"]), 2)
+                self.assertEqual(len(plan["meshes"]), {"HaloWarriorF": 18, "HaloMageM": 17, "HaloMageF": 19}[name])
+                self.assertEqual(len(plan["batches"]), 3)
                 assembled = manifest(path, "Costume_" + name)
                 self.assertGreater(assembled["hip_height"], 0.01)
                 if name == "HaloWarriorF":
@@ -167,6 +167,32 @@ class OriginalSurfacePartitionTests(unittest.TestCase):
         self.assertEqual(exported_images, source_images)
         self.assertEqual(len(manifest(path, "Costume_HornsArcherM")["joints"]), 15)
         self.assertFalse(plan["rig_ready_for_game"])
+
+    def test_final_small_face_repairs_preserve_all_source_world_joints(self):
+        cases = (("Costume_HornsArcherM", "Costume_HornsArcherM_face_fixed_v2", 115),
+                 ("Costume_HornsWarriorM", "Costume_HornsWarriorM_face_fixed", 1),
+                 ("Costume_HaloMageF_material_front_fixed", "Costume_HaloMageF_material_front_face_fixed", 3))
+        for old_name, new_name, restored in cases:
+            with self.subTest(costume=new_name):
+                before_path = ROOT / "build/costume_r15" / old_name / "joints.json"
+                path = ROOT / "build/costume_r15" / new_name / "joints.json"
+                if not path.is_file() or not before_path.is_file():
+                    self.skipTest("Final exact small face repair is not present")
+                before = json.loads(before_path.read_text(encoding="utf-8"))
+                plan = json.loads(path.read_text(encoding="utf-8"))
+                report = plan["mechanical_surface_partition"]
+                self.assertEqual(plan["source_sha256"], before["source_sha256"])
+                self.assertEqual(report["projected_head_faces_restored"], restored)
+                self.assertEqual(report["source_triangles"], report["output_triangles"])
+                self.assertEqual(report["subdivided_source_faces"], 0)
+                self.assertFalse(report["original_vertices_changed"])
+                old_counts = {part["name"]: part["triangles"] for part in before["parts"]}
+                new_counts = {part["name"]: part["triangles"] for part in plan["parts"]}
+                for part in old_counts:
+                    delta = restored if part == "Head" else -restored if part == "UpperTorso" else 0
+                    self.assertEqual(new_counts[part], old_counts[part] + delta)
+                self.assertEqual([joint["joint_position"] for joint in before["joints"]], [joint["joint_position"] for joint in plan["joints"]])
+                self.assertFalse(plan["rig_ready_for_game"])
 
 
 if __name__ == "__main__":

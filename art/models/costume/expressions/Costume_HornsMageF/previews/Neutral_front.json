@@ -1,0 +1,28 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_HeadExpressions_R15.glb",
+  "source_sha256": "6a4d6d20f89b7481692623d5c6093ac8c5459e6b855ccf5870983a805caa955e",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageF\\previews\\Neutral_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -2.236100435256958,
+    9.757164001464844,
+    1.0573195219039917
+  ],
+  "camera_rotation": [
+    1.681744933128357,
+    -0.02555013634264469,
+    -2.9174671173095703
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HornsMageF_rig_1d458a15-2257-4e35-9980-cdf5cac63f05.glb",
+  "original_rig_sha256": "966a7c03fd082cf7735ba2c9299360c03475a3be95b9a6919508b640f7b06019",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 9758,
+  "context_exported": false
+}

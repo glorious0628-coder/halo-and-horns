@@ -1,0 +1,168 @@
+{
+  "source_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HaloArcherM_rig_5c617179-323f-461c-961d-aeb62f216b25.glb",
+  "source_rig_sha256": "48b60fffa4d6c348f364f5f85dfef4ceaf31eceacb3477a015cae99dfaea4d37",
+  "source_rig_unchanged": true,
+  "existing_joints": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HaloArcherM\\joints.json",
+  "existing_head_cframe": [
+    -0.31090661883354187,
+    2.598270893096924,
+    0.14375713467597961
+  ],
+  "head_r15_partition_original_triangles": 4635,
+  "new_mouth_cap_triangles": 224,
+  "excluded_original_non_head_triangles": {
+    "LeftUpperArm": 39,
+    "RightUpperArm": 39,
+    "UpperTorso": 299
+  },
+  "triangles": 4859,
+  "pieces": [
+    {
+      "name": "FaceExpression",
+      "triangles": 662,
+      "location": [
+        -0.31090661883354187,
+        -0.14375713467597961,
+        2.598270893096924
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    },
+    {
+      "name": "HeadBase",
+      "triangles": 4197,
+      "location": [
+        -0.31090661883354187,
+        -0.14375713467597961,
+        2.598270893096924
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    }
+  ],
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_HeadExpressions_R15.glb",
+  "sha256": "f12d339a3dc6b62979b9dd86d7247c220adc9cd55459d2c216920fd732edeee6",
+  "geometry_uv_verification": "original UV face signatures matched exact real bone-weight R15 partition; existing coordinate and head center reused",
+  "runtime_validated": false,
+  "camera_scale": 2.8583585619926453,
+  "camera_center": [
+    -0.31090670824050903,
+    2.5532130002975464
+  ],
+  "expected_import_assets": 5,
+  "body_reimport_required": false,
+  "headbase_is_primary_part": "rename HeadBase to Head; preserve existing Head CFrame and Motor6D",
+  "expression_face_attachment": "FaceExpression welds to existing Head, with imported relative transform preserved",
+  "embedded_source_texture_bytes_preserved": true,
+  "embedded_texture_sha256": {
+    "Costume_HaloArcherM_Expression_Neutral_face": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+    "Costume_HaloArcherM_head": "21373e3323a09428ded9a473a36da4326c82a595954904fee9ea6be38882e004"
+  },
+  "front_preview_camera_angle": 180,
+  "retained_existing_head_auxiliary_meshes": [],
+  "excluded_expression_faces": [
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.864954,
+          0.338281
+        ],
+        [
+          0.879962,
+          0.335553
+        ],
+        [
+          0.881326,
+          0.338281
+        ]
+      ],
+      "prepared_face": 4587,
+      "fixed_world_centroid": [
+        0.04991912469267845,
+        -0.0819091945886612,
+        0.5699107050895691
+      ]
+    },
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.622994,
+          0.33651
+        ],
+        [
+          0.639708,
+          0.336851
+        ],
+        [
+          0.640271,
+          0.331411
+        ]
+      ],
+      "prepared_face": 4588,
+      "fixed_world_centroid": [
+        0.057567596435546875,
+        -0.07362240552902222,
+        0.5699107050895691
+      ]
+    },
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.864954,
+          0.089346
+        ],
+        [
+          0.880644,
+          0.092075
+        ],
+        [
+          0.881667,
+          0.089346
+        ]
+      ],
+      "prepared_face": 4919,
+      "fixed_world_centroid": [
+        -0.050163283944129944,
+        -0.0819091796875,
+        0.5699107050895691
+      ]
+    }
+  ],
+  "fixed_to_rig_affine": [
+    [
+      1.0232645273208618,
+      -4.62053399985507e-08,
+      1.5063523051139782e-07,
+      0.00012486825289670378
+    ],
+    [
+      -1.3641420082421973e-07,
+      1.0232645273208618,
+      -9.807528300598278e-08,
+      -7.797043508617207e-06
+    ],
+    [
+      1.0427488206232738e-07,
+      1.7633503546221618e-07,
+      1.023264765739441,
+      -1.2525026704679476e-07
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "coordinate_mapping_matched_corners": 13905,
+  "coordinate_mapping_residual_max": 1.4095460669508713e-07,
+  "coordinate_mapping_residual_mean": 2.838591502109785e-08,
+  "source_fixed_sha256": "e1500ceaa21de1b68b063bd82d133d36a5f55c656888bda0dd9c9d754128de39",
+  "source_fixed_unchanged": true,
+  "head_replacement_scope": "Replace existing primary HeadMat Head only; retain all listed original Head auxiliary BodyMat pieces and their UV/material/head welds"
+}

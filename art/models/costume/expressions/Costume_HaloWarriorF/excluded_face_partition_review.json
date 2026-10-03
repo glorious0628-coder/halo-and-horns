@@ -1,0 +1,35 @@
+{
+  "avatar": "Costume_HaloWarriorF",
+  "source_rig_sha256": "43ef3a0c1f9fe525c7146336f01b29a63013bc5f263a320ff22e8b000abe0912",
+  "head_sha256": "549dd62570ad691f1f6653a2d697165f05712578dc4df0bf2c100eb009a66daf",
+  "reviewed": true,
+  "excluded_original_skin_triangles": 1,
+  "records": [
+    {
+      "original_uv_signature": [
+        [
+          0.750732,
+          0.336165
+        ],
+        [
+          0.763149,
+          0.336165
+        ],
+        [
+          0.764125,
+          0.328845
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 12400,
+      "fixed_frame_centroid": [
+        272.4981304574802,
+        746.0650442495902
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    }
+  ],
+  "original_skin_uv_unchanged": true,
+  "geometry_mutations": 0
+}

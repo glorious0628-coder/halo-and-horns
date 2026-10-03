@@ -262,6 +262,8 @@ def manifest(path, name, root_reference="source"):
                        "world": world, "C0": [world[axis] - centers[joint["part0"]][axis] for axis in range(3)] + IDENTITY,
                        "C1": [world[axis] - centers[joint["part1"]][axis] for axis in range(3)] + IDENTITY})
     return {"schema": 1, "name": name, "source_sha256": metadata["source_sha256"],
+            "rig_origin": metadata.get("rig_origin", "provided_source_skin"),
+            "source_frame_policy": metadata.get("source_frame_policy", "bones"),
             "joints_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             "meshes": list(geometries.values()), "joints": joints,
             "root": {"center": root_center, "size": root_size}, "hip_height": hip_height,
@@ -482,6 +484,8 @@ local ok, result = pcall(function()
     model:SetAttribute("HHC_PendingAnimationQA", true)
     model:SetAttribute("HHC_OriginalUVPreserved", true)
     model:SetAttribute("HHC_OriginalTextureBytesPreserved", true)
+    model:SetAttribute("HHC_RigOrigin", DATA.rig_origin)
+    model:SetAttribute("HHC_InferredManualCandidate", DATA.rig_origin == "inferred_manual_candidate")
     return { schema = 1, name = DATA.name, mesh_parts = #DATA.meshes, body_parts = 15, motors = #DATA.joints,
              material_welds = extraCount, attachments = #DATA.joints * 2, hip_height = humanoid.HipHeight,
              source_sha256 = DATA.source_sha256, animation_validated = false,

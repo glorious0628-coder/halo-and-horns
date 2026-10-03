@@ -1,0 +1,212 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloMageF.glb",
+  "source_sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+  "source_file_unchanged": true,
+  "body_unchanged": true,
+  "hair_rear_ear_original_uv_preserved": true,
+  "original_uv_layer": "UVMap",
+  "new_uv_layer": "FaceExpressionUV",
+  "facial_uv_scope": "front-visible skin/features, plus visible original eyebrow surface hits whose centroid may be under the fringe; original UV layer retained",
+  "original_eyebrow_faces_in_expression_uv": [
+    2752,
+    2753,
+    2755,
+    2756,
+    2757,
+    2758,
+    2760,
+    2763,
+    2764,
+    2765,
+    2766,
+    2778,
+    2779,
+    2780,
+    2783,
+    2863,
+    2864,
+    2865,
+    2866,
+    2870,
+    3134,
+    3135,
+    3136,
+    3166,
+    3172,
+    4291,
+    4292,
+    4293,
+    4294
+  ],
+  "facial_faces": 571,
+  "total_head_faces": 4804,
+  "mouth_geometry_modified_vertices": 73,
+  "mouth_vertex_indices": [
+    3222,
+    3223,
+    3224,
+    3225,
+    3272,
+    3273,
+    3274,
+    3275,
+    3276,
+    3277,
+    3278,
+    3279,
+    3280,
+    3281,
+    3282,
+    3283,
+    3344,
+    3345,
+    3346,
+    3780,
+    3781,
+    3782,
+    3826,
+    3827,
+    3828,
+    3829,
+    3830,
+    3831,
+    3832,
+    3833,
+    3834,
+    3835,
+    3836,
+    3837,
+    3840,
+    3841,
+    3842,
+    3843,
+    3844,
+    3845,
+    3846,
+    3911,
+    3912,
+    3913,
+    3914,
+    3915,
+    3916,
+    3917,
+    3918,
+    3919,
+    3920,
+    3921,
+    3922,
+    3923,
+    3924,
+    3925,
+    3926,
+    3927,
+    3928,
+    3929,
+    3930,
+    4001,
+    4002,
+    4003,
+    4004,
+    4005,
+    4006,
+    4007,
+    4008,
+    4009,
+    4086,
+    4087,
+    4088
+  ],
+  "mouth_cap_added_vertices": 129,
+  "mouth_cap_added_triangles": 224,
+  "non_facial_uv_loops_unchanged": 12699,
+  "mesh_objects": [
+    [
+      "Body",
+      9860
+    ],
+    [
+      "Head",
+      4804
+    ]
+  ],
+  "exported_materials": [
+    "HeadMat",
+    "FaceExpressionMat",
+    "BodyMat"
+  ],
+  "expected_gltf_head_primitives": 2,
+  "copy": "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_HaloMageF\\prepared\\Costume_HaloMageF_FaceExpression_prepared.glb",
+  "expression_input": "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_HaloMageF\\prepared\\FaceExpression_source.png",
+  "camera_scale": 0.47241668701171874,
+  "camera_center": [
+    -1.52587890625e-05,
+    0.7726898193359375
+  ],
+  "reviewed_profile": {
+    "avatar": "Costume_HaloMageF",
+    "reviewed": true,
+    "review_basis": "Original source front CG render individually viewed in exact 768 frame; preliminary until three state 3D QA passes",
+    "source_sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+    "mouth_center_screen": [
+      383,
+      633
+    ],
+    "screen_scale": [
+      1.3,
+      1.1
+    ],
+    "crop_start_fraction": 0.58,
+    "brow_boxes": [
+      [
+        247,
+        432,
+        342,
+        476
+      ],
+      [
+        418,
+        432,
+        522,
+        476
+      ]
+    ],
+    "eye_boxes": [
+      [
+        198,
+        488,
+        352,
+        619
+      ],
+      [
+        417,
+        486,
+        565,
+        618
+      ]
+    ],
+    "skin_hsv": {
+      "hue_ranges": [
+        [
+          0,
+          0.085
+        ],
+        [
+          0.95,
+          1
+        ]
+      ],
+      "saturation_max": 0.65,
+      "value_min": 0.82
+    },
+    "brow_hsv": {
+      "hue_min": 0,
+      "hue_max": 0.1,
+      "saturation_min": 0.15,
+      "value_min": 0,
+      "value_max": 0.9,
+      "center_hue_max": 0.1
+    },
+    "existing_joints_override": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/joints.json",
+    "runtime_validated": false
+  }
+}

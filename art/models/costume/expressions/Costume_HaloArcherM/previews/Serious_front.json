@@ -1,0 +1,17 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_HeadExpressions_R15.glb",
+  "source_sha256": "f12d339a3dc6b62979b9dd86d7247c220adc9cd55459d2c216920fd732edeee6",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\previews\\Serious_front.png",
+  "angle": 180.0,
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HaloArcherM_rig_5c617179-323f-461c-961d-aeb62f216b25.glb",
+  "original_rig_sha256": "48b60fffa4d6c348f364f5f85dfef4ceaf31eceacb3477a015cae99dfaea4d37",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 9749,
+  "context_exported": false
+}

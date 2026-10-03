@@ -1,0 +1,6 @@
+Use case: precise-object-edit.
+Asset type: an aligned facial UV texture for an existing 3D game character.
+Image 1 is the EDIT TARGET: a 1024-square face-only UV texture on pure black. The visible skin, eyes and brows are parts of ONE face at fixed normalized coordinates. The small black holes and ragged borders are intentional UV gaps, not damage. Do not fill or alter those gaps.
+Image 2 is ONLY the neutral expression reference: the previously generated full head image of this same character with a short closed neutral mouth.
+Change ONLY the open pink smiling mouth centered at x512,y822 in Image 1. Fill the existing open mouth with exactly matching adjacent peach skin color and gentle skin shading, then draw one short, thin, relaxed CLOSED neutral mouth line. No teeth, tongue or open mouth. Calm, neither smiling nor angry.
+Keep every pixel outside the small mouth region as unchanged as possible: exact UV face silhouette, all black gaps and background, eyes, brows, skin shade, islands, position, size and camera. Do not move, crop, scale, beautify, smooth, relight or re-render the face. Return only the edited original face UV texture on black, no text, border or watermark. It is a child's modest armored avatar face.

@@ -1,0 +1,103 @@
+{
+  "source_rig": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\restored_material_sources\\Costume_HaloMageF_rig_material_restored.glb",
+  "source_rig_sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+  "source_fixed_sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+  "fixed_to_rig_affine": [
+    [
+      1.0224024057388306,
+      -1.710028385559781e-07,
+      -1.8460609396697691e-07,
+      1.5668168998672627e-05
+    ],
+    [
+      1.7941142971267254e-07,
+      1.0224027633666992,
+      8.875048962408982e-08,
+      -0.00014821201330050826
+    ],
+    [
+      1.1217463935508931e-07,
+      3.7902520944044227e-07,
+      1.0224026441574097,
+      -1.4187091323947243e-07
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "avatar": "Costume_HaloMageF",
+  "expression_front_face_signatures_excluded": [
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.594387,
+          0.478684
+        ],
+        [
+          0.606043,
+          0.474224
+        ],
+        [
+          0.606242,
+          0.478435
+        ]
+      ],
+      "prepared_face": 4235,
+      "fixed_world_centroid": [
+        -0.042442336678504944,
+        -0.09013112634420395,
+        0.5780487060546875
+      ]
+    },
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.574014,
+          0.727166
+        ],
+        [
+          0.576304,
+          0.738617
+        ],
+        [
+          0.578594,
+          0.727166
+        ]
+      ],
+      "prepared_face": 4506,
+      "fixed_world_centroid": [
+        -0.04818473383784294,
+        -0.08566538989543915,
+        0.5793253779411316
+      ]
+    },
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.576304,
+          0.738617
+        ],
+        [
+          0.578594,
+          0.727166
+        ],
+        [
+          0.578976,
+          0.738998
+        ]
+      ],
+      "prepared_face": 4507,
+      "fixed_world_centroid": [
+        -0.04818473383784294,
+        -0.09332275390625,
+        0.5780487060546875
+      ]
+    }
+  ]
+}

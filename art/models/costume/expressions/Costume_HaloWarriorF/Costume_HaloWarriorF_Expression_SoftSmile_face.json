@@ -1,0 +1,25 @@
+{
+  "avatar": "Costume_HaloWarriorF",
+  "state": "SoftSmile",
+  "png": "art/models/costume/expressions/Costume_HaloWarriorF/Costume_HaloWarriorF_Expression_SoftSmile_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "8ff4a08eda1d773190cde3978eeb007091c7086c11d1cf971c9274aa1b95d892",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-f881c6b2-bcbe-4ef4-90f0-fe5e2e1d9f56.png",
+  "prompt": "art/models/costume/expressions/Costume_HaloWarriorF/prompts/SoftSmile.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HaloWarriorF/previews/SoftSmile_front.png",
+    "art/models/costume/expressions/Costume_HaloWarriorF/previews/SoftSmile_quarter.png"
+  ],
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

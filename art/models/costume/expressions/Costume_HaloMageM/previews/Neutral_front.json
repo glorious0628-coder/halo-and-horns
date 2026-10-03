@@ -1,0 +1,28 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_HeadExpressions_R15.glb",
+  "source_sha256": "805eb48ae86cedb5ac097bfa430408624761abd358fa84c6b2a3bc99e7fc3fec",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\previews\\Neutral_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -0.04124266654253006,
+    9.935093879699707,
+    2.381225109100342
+  ],
+  "camera_rotation": [
+    1.5707963705062866,
+    1.45365092407701e-07,
+    3.141592502593994
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\restored_material_sources\\Costume_HaloMageM_rig_material_restored.glb",
+  "original_rig_sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 8895,
+  "context_exported": false
+}

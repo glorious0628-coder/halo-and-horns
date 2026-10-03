@@ -1,0 +1,22 @@
+{
+  "avatar": "Costume_HornsWarriorF",
+  "state": "Serious",
+  "png": "art/models/costume/expressions/Costume_HornsWarriorF/Costume_HornsWarriorF_Expression_Serious_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "9dd852251b1169614c9afcca1cd4f6a36a557390a4857dbec55086a6c760b62a",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-95c89ca6-c05f-4309-9988-a6cccc8f48d6.png",
+  "prompt": "art/models/costume/expressions/Costume_HornsWarriorF/prompts/Serious.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HornsWarriorF/previews/Serious_front.png",
+    "art/models/costume/expressions/Costume_HornsWarriorF/previews/Serious_quarter.png"
+  ]
+}

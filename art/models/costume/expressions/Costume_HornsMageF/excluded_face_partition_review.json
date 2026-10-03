@@ -1,0 +1,10 @@
+{
+  "avatar": "Costume_HornsMageF",
+  "source_rig_sha256": "966a7c03fd082cf7735ba2c9299360c03475a3be95b9a6919508b640f7b06019",
+  "head_sha256": "6a4d6d20f89b7481692623d5c6093ac8c5459e6b855ccf5870983a805caa955e",
+  "reviewed": true,
+  "excluded_original_skin_triangles": 0,
+  "records": [],
+  "original_skin_uv_unchanged": true,
+  "geometry_mutations": 0
+}

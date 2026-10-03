@@ -1,0 +1,86 @@
+{
+  "avatar": "Costume_NeutralArcherF",
+  "source_rig_sha256": "12da1a661d2f6afae7c0322427a672930577901d17df40eaf59a4bc184773435",
+  "head_sha256": "4c5c4d383368fea29cb96ffa1f9981ac44cf9311cd05f0c3104d412003ab2e8c",
+  "reviewed": true,
+  "excluded_original_skin_triangles": 3,
+  "records": [
+    {
+      "original_uv_signature": [
+        [
+          0.409127,
+          0.685068
+        ],
+        [
+          0.411159,
+          0.676599
+        ],
+        [
+          0.41624,
+          0.686423
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 785,
+      "fixed_frame_centroid": [
+        616.848531955796,
+        723.2464006121927
+      ],
+      "fully_on_actual_head_side": true,
+      "classification": "original_hood_trim_retained_on_upper_torso",
+      "visual_evidence": "art/models/costume/expressions/Costume_NeutralArcherF/diagnostics/excluded_original/inspection.json"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.610159,
+          0.135538
+        ],
+        [
+          0.618628,
+          0.128764
+        ],
+        [
+          0.619644,
+          0.136893
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 2284,
+      "fixed_frame_centroid": [
+        548.3938671484218,
+        712.8735435391852
+      ],
+      "fully_on_actual_head_side": true,
+      "classification": "original_hood_trim_retained_on_upper_torso",
+      "visual_evidence": "art/models/costume/expressions/Costume_NeutralArcherF/diagnostics/excluded_original/inspection.json"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.619644,
+          0.136893
+        ],
+        [
+          0.627774,
+          0.129102
+        ],
+        [
+          0.62879,
+          0.137571
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 2286,
+      "fixed_frame_centroid": [
+        523.5046539224809,
+        722.2074850812933
+      ],
+      "fully_on_actual_head_side": true,
+      "classification": "original_hood_trim_retained_on_upper_torso",
+      "visual_evidence": "art/models/costume/expressions/Costume_NeutralArcherF/diagnostics/excluded_original/inspection.json"
+    }
+  ],
+  "original_skin_uv_unchanged": true,
+  "geometry_mutations": 0
+}

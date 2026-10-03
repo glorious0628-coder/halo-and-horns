@@ -1,0 +1,70 @@
+{
+  "avatar": "Costume_HornsMageM",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed in exact 768 frame; preliminary until three state 3D QA passes",
+  "source_sha256": "5f89379362c2362d034075fb17c13ff760b0f063a08c4ace48fc0de6e87e7804",
+  "mouth_center_screen": [
+    384,
+    609
+  ],
+  "screen_scale": [
+    1.25,
+    1.0
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      210,
+      466,
+      329,
+      511
+    ],
+    [
+      398,
+      432,
+      522,
+      498
+    ]
+  ],
+  "eye_boxes": [
+    [
+      194,
+      503,
+      348,
+      590
+    ],
+    [
+      418,
+      488,
+      564,
+      585
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.085
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "existing_joints_override": "build/costume_r15/Costume_HornsMageM/joints.json",
+  "runtime_validated": false,
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

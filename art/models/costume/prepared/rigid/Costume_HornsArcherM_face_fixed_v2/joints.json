@@ -1,0 +1,5041 @@
+{
+  "schema": 1,
+  "dry_run": false,
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HornsArcherM_rig_1c4762a2-29bd-4e14-baca-488d2d44a98b.glb",
+  "source_sha256": "192bebb4f66ca9573ebc18c1021f6b30632e95dcdd276e05d16cf053e4117691",
+  "output": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HornsArcherM_face_fixed_v2",
+  "parts": [
+    {
+      "name": "LowerTorso",
+      "triangles": 670,
+      "CFrame": [
+        -0.020895540714263916,
+        0.2958139479160309,
+        -0.202602818608284,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LowerTorso"
+      ]
+    },
+    {
+      "name": "UpperTorso",
+      "triangles": 1323,
+      "CFrame": [
+        0.043554484844207764,
+        1.5350217819213867,
+        0.0905037522315979,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "UpperTorso",
+        "UpperTorso__Material02"
+      ]
+    },
+    {
+      "name": "Head",
+      "triangles": 4361,
+      "CFrame": [
+        0.002017199993133545,
+        2.36421537399292,
+        0.011691808700561523,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "Head",
+        "Head__Material02"
+      ]
+    },
+    {
+      "name": "LeftUpperArm",
+      "triangles": 1051,
+      "CFrame": [
+        -0.6203842163085938,
+        1.2178428173065186,
+        0.05669891834259033,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftUpperArm",
+        "LeftUpperArm__Material02"
+      ]
+    },
+    {
+      "name": "LeftLowerArm",
+      "triangles": 994,
+      "CFrame": [
+        -1.2226500511169434,
+        0.32852116227149963,
+        0.22567155957221985,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftLowerArm"
+      ]
+    },
+    {
+      "name": "LeftHand",
+      "triangles": 297,
+      "CFrame": [
+        -0.8645169138908386,
+        -0.38885343074798584,
+        0.8917608261108398,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftHand"
+      ]
+    },
+    {
+      "name": "RightUpperArm",
+      "triangles": 771,
+      "CFrame": [
+        0.4809480309486389,
+        1.3599212169647217,
+        -0.00575372576713562,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightUpperArm",
+        "RightUpperArm__Material02"
+      ]
+    },
+    {
+      "name": "RightLowerArm",
+      "triangles": 243,
+      "CFrame": [
+        0.8882400989532471,
+        0.6309099793434143,
+        -0.1869974434375763,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightLowerArm"
+      ]
+    },
+    {
+      "name": "RightHand",
+      "triangles": 696,
+      "CFrame": [
+        1.092559576034546,
+        0.033076345920562744,
+        0.062308669090270996,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightHand"
+      ]
+    },
+    {
+      "name": "LeftUpperLeg",
+      "triangles": 792,
+      "CFrame": [
+        -0.5748968124389648,
+        -0.15715891122817993,
+        -0.14985501766204834,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftUpperLeg"
+      ]
+    },
+    {
+      "name": "LeftLowerLeg",
+      "triangles": 732,
+      "CFrame": [
+        -0.6867741346359253,
+        -1.1611686944961548,
+        -0.07989443838596344,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftLowerLeg"
+      ]
+    },
+    {
+      "name": "LeftFoot",
+      "triangles": 370,
+      "CFrame": [
+        -0.8507300615310669,
+        -1.6396589279174805,
+        -0.20283420383930206,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "LeftFoot"
+      ]
+    },
+    {
+      "name": "RightUpperLeg",
+      "triangles": 979,
+      "CFrame": [
+        0.41247567534446716,
+        -0.17114511132240295,
+        0.3034486770629883,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightUpperLeg"
+      ]
+    },
+    {
+      "name": "RightLowerLeg",
+      "triangles": 611,
+      "CFrame": [
+        0.3788425922393799,
+        -1.347156047821045,
+        -0.21200695633888245,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightLowerLeg"
+      ]
+    },
+    {
+      "name": "RightFoot",
+      "triangles": 363,
+      "CFrame": [
+        0.500198483467102,
+        -1.6386114358901978,
+        -0.3654782176017761,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "meshes": [
+        "RightFoot"
+      ]
+    }
+  ],
+  "meshes": [
+    {
+      "name": "LowerTorso",
+      "part": "LowerTorso",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 670,
+      "CFrame": [
+        -0.020895540714263916,
+        0.2958139479160309,
+        -0.202602818608284,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "UpperTorso",
+      "part": "UpperTorso",
+      "material": "HeadMat",
+      "is_primary": true,
+      "triangles": 1150,
+      "CFrame": [
+        0.043554484844207764,
+        1.5350217819213867,
+        0.0905037522315979,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "UpperTorso__Material02",
+      "part": "UpperTorso",
+      "material": "BodyMat",
+      "is_primary": false,
+      "triangles": 173,
+      "CFrame": [
+        0.043554484844207764,
+        1.5350217819213867,
+        0.0905037522315979,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Head",
+      "part": "Head",
+      "material": "HeadMat",
+      "is_primary": true,
+      "triangles": 4359,
+      "CFrame": [
+        0.002017199993133545,
+        2.36421537399292,
+        0.011691808700561523,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Head__Material02",
+      "part": "Head",
+      "material": "BodyMat",
+      "is_primary": false,
+      "triangles": 2,
+      "CFrame": [
+        0.002017199993133545,
+        2.36421537399292,
+        0.011691808700561523,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftUpperArm",
+      "part": "LeftUpperArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 710,
+      "CFrame": [
+        -0.6203842163085938,
+        1.2178428173065186,
+        0.05669891834259033,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftUpperArm__Material02",
+      "part": "LeftUpperArm",
+      "material": "HeadMat",
+      "is_primary": false,
+      "triangles": 341,
+      "CFrame": [
+        -0.6203842163085938,
+        1.2178428173065186,
+        0.05669891834259033,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftLowerArm",
+      "part": "LeftLowerArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 994,
+      "CFrame": [
+        -1.2226500511169434,
+        0.32852116227149963,
+        0.22567155957221985,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftHand",
+      "part": "LeftHand",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 297,
+      "CFrame": [
+        -0.8645169138908386,
+        -0.38885343074798584,
+        0.8917608261108398,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightUpperArm",
+      "part": "RightUpperArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 421,
+      "CFrame": [
+        0.4809480309486389,
+        1.3599212169647217,
+        -0.00575372576713562,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightUpperArm__Material02",
+      "part": "RightUpperArm",
+      "material": "HeadMat",
+      "is_primary": false,
+      "triangles": 350,
+      "CFrame": [
+        0.4809480309486389,
+        1.3599212169647217,
+        -0.00575372576713562,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightLowerArm",
+      "part": "RightLowerArm",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 243,
+      "CFrame": [
+        0.8882400989532471,
+        0.6309099793434143,
+        -0.1869974434375763,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightHand",
+      "part": "RightHand",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 696,
+      "CFrame": [
+        1.092559576034546,
+        0.033076345920562744,
+        0.062308669090270996,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftUpperLeg",
+      "part": "LeftUpperLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 792,
+      "CFrame": [
+        -0.5748968124389648,
+        -0.15715891122817993,
+        -0.14985501766204834,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftLowerLeg",
+      "part": "LeftLowerLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 732,
+      "CFrame": [
+        -0.6867741346359253,
+        -1.1611686944961548,
+        -0.07989443838596344,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftFoot",
+      "part": "LeftFoot",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 370,
+      "CFrame": [
+        -0.8507300615310669,
+        -1.6396589279174805,
+        -0.20283420383930206,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightUpperLeg",
+      "part": "RightUpperLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 979,
+      "CFrame": [
+        0.41247567534446716,
+        -0.17114511132240295,
+        0.3034486770629883,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightLowerLeg",
+      "part": "RightLowerLeg",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 611,
+      "CFrame": [
+        0.3788425922393799,
+        -1.347156047821045,
+        -0.21200695633888245,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightFoot",
+      "part": "RightFoot",
+      "material": "BodyMat",
+      "is_primary": true,
+      "triangles": 363,
+      "CFrame": [
+        0.500198483467102,
+        -1.6386114358901978,
+        -0.3654782176017761,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "name": "Root",
+      "part0": "HumanoidRootPart",
+      "part1": "LowerTorso",
+      "source_bone": "mixamorig:Hips",
+      "joint_position": [
+        3.2887328416109085e-09,
+        4.215689841657877e-08,
+        3.725290298461914e-09
+      ],
+      "C0": [
+        3.2887328416109085e-09,
+        4.215689841657877e-08,
+        3.725290298461914e-09,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.020895544439554214,
+        -0.2958139181137085,
+        0.202602818608284,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Waist",
+      "part0": "LowerTorso",
+      "part1": "UpperTorso",
+      "source_bone": "mixamorig:Spine1",
+      "joint_position": [
+        -0.02669416181743145,
+        0.619396448135376,
+        -1.4901161193847656e-08
+      ],
+      "C0": [
+        -0.005798621103167534,
+        0.3235825002193451,
+        0.2026028037071228,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.07024864852428436,
+        -0.9156253337860107,
+        -0.0905037671327591,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "Neck",
+      "part0": "UpperTorso",
+      "part1": "Head",
+      "source_bone": "mixamorig:Head",
+      "joint_position": [
+        -0.06882509589195251,
+        1.5969758033752441,
+        6.51925802230835e-09
+      ],
+      "C0": [
+        -0.11237958073616028,
+        0.06195402145385742,
+        -0.0905037447810173,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.07084229588508606,
+        -0.7672395706176758,
+        -0.011691802181303501,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftShoulder",
+      "part0": "UpperTorso",
+      "part1": "LeftUpperArm",
+      "source_bone": "mixamorig:LeftArm",
+      "joint_position": [
+        -0.6044326424598694,
+        1.344993233680725,
+        1.548975706100464e-05
+      ],
+      "C0": [
+        -0.6479871273040771,
+        -0.19002854824066162,
+        -0.0904882624745369,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.015951573848724365,
+        0.12715041637420654,
+        -0.05668342858552933,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftElbow",
+      "part0": "LeftUpperArm",
+      "part1": "LeftLowerArm",
+      "source_bone": "mixamorig:LeftForeArm",
+      "joint_position": [
+        -1.1217715740203857,
+        0.5097218155860901,
+        0.08835108578205109
+      ],
+      "C0": [
+        -0.501387357711792,
+        -0.7081210017204285,
+        0.031652167439460754,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.10087847709655762,
+        0.18120065331459045,
+        -0.13732047379016876,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftWrist",
+      "part0": "LeftLowerArm",
+      "part1": "LeftHand",
+      "source_bone": "mixamorig:LeftHand",
+      "joint_position": [
+        -1.6400237083435059,
+        -0.11447631567716599,
+        0.29671114683151245
+      ],
+      "C0": [
+        -0.4173736572265625,
+        -0.4429974853992462,
+        0.0710395872592926,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.7755067944526672,
+        0.27437710762023926,
+        -0.5950496792793274,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightShoulder",
+      "part0": "UpperTorso",
+      "part1": "RightUpperArm",
+      "source_bone": "mixamorig:RightArm",
+      "joint_position": [
+        0.48831242322921753,
+        1.344993233680725,
+        1.5487894415855408e-05
+      ],
+      "C0": [
+        0.44475793838500977,
+        -0.19002854824066162,
+        -0.0904882624745369,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.007364392280578613,
+        -0.014927983283996582,
+        0.0057692136615514755,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightElbow",
+      "part0": "RightUpperArm",
+      "part1": "RightLowerArm",
+      "source_bone": "mixamorig:RightForeArm",
+      "joint_position": [
+        0.8784163594245911,
+        0.7224995493888855,
+        -0.057246819138526917
+      ],
+      "C0": [
+        0.39746832847595215,
+        -0.6374216675758362,
+        -0.051493093371391296,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.009823739528656006,
+        0.09158957004547119,
+        0.12975062429904938,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightWrist",
+      "part0": "RightLowerArm",
+      "part1": "RightHand",
+      "source_bone": "mixamorig:RightHand",
+      "joint_position": [
+        1.233155369758606,
+        0.2136048972606659,
+        -0.25066739320755005
+      ],
+      "C0": [
+        0.3449152708053589,
+        -0.4173050820827484,
+        -0.06366994976997375,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.14059579372406006,
+        0.18052855134010315,
+        -0.31297606229782104,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftHip",
+      "part0": "LowerTorso",
+      "part1": "LeftUpperLeg",
+      "source_bone": "mixamorig:LeftUpLeg",
+      "joint_position": [
+        -0.4095384180545807,
+        -0.012830393388867378,
+        -0.03972659632563591
+      ],
+      "C0": [
+        -0.3886428773403168,
+        -0.3086443543434143,
+        0.1628762185573578,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.16535839438438416,
+        0.1443285197019577,
+        0.11012841761112213,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftKnee",
+      "part0": "LeftUpperLeg",
+      "part1": "LeftLowerLeg",
+      "source_bone": "mixamorig:LeftLeg",
+      "joint_position": [
+        -0.6316698789596558,
+        -0.797267735004425,
+        -0.11073482781648636
+      ],
+      "C0": [
+        -0.05677306652069092,
+        -0.6401088237762451,
+        0.03912018984556198,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.05510425567626953,
+        0.36390095949172974,
+        -0.03084038943052292,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "LeftAnkle",
+      "part0": "LeftLowerLeg",
+      "part1": "LeftFoot",
+      "source_bone": "mixamorig:LeftFoot",
+      "joint_position": [
+        -0.8213690519332886,
+        -1.664262294769287,
+        -0.03501272201538086
+      ],
+      "C0": [
+        -0.13459491729736328,
+        -0.5030936002731323,
+        0.04488171637058258,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.02936100959777832,
+        -0.02460336685180664,
+        0.1678214818239212,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightHip",
+      "part0": "LowerTorso",
+      "part1": "RightUpperLeg",
+      "source_bone": "mixamorig:RightUpLeg",
+      "joint_position": [
+        0.40927451848983765,
+        0.011200874112546444,
+        0.03943775221705437
+      ],
+      "C0": [
+        0.43017005920410156,
+        -0.28461307287216187,
+        0.24204057455062866,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.0032011568546295166,
+        0.18234598636627197,
+        -0.2640109360218048,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightKnee",
+      "part0": "RightUpperLeg",
+      "part1": "RightLowerLeg",
+      "source_bone": "mixamorig:RightLeg",
+      "joint_position": [
+        0.3679030239582062,
+        -0.8342474102973938,
+        -0.1778295636177063
+      ],
+      "C0": [
+        -0.044572651386260986,
+        -0.6631022691726685,
+        -0.4812782406806946,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        -0.010939568281173706,
+        0.5129086375236511,
+        0.03417739272117615,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "name": "RightAnkle",
+      "part0": "RightLowerLeg",
+      "part1": "RightFoot",
+      "source_bone": "mixamorig:RightFoot",
+      "joint_position": [
+        0.5756535530090332,
+        -1.6713191270828247,
+        -0.11662103235721588
+      ],
+      "C0": [
+        0.19681096076965332,
+        -0.3241630792617798,
+        0.09538592398166656,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "C1": [
+        0.07545506954193115,
+        -0.03270769119262695,
+        0.24885718524456024,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "batches": [
+    {
+      "parts": [
+        "LowerTorso",
+        "UpperTorso",
+        "UpperTorso__Material02",
+        "Head",
+        "Head__Material02",
+        "LeftUpperArm",
+        "LeftUpperArm__Material02"
+      ],
+      "estimated_assets": 10,
+      "file": "batch_01.glb",
+      "texture_sha256": {
+        "Costume_HornsArcherM_head": "967c5226490d3f613f73dc4395fdd3361fc2afd017f250f0bb3516f2021eaaed",
+        "Costume_HornsArcherM_body": "0417906456bd976838084b5717af16e63a637994ceaa6b7e53f5354ae600c8d7"
+      },
+      "export_validation": {
+        "meshes": 7,
+        "triangles": 7405,
+        "embedded_images": 2,
+        "uv_verified": true,
+        "normals_verified": true,
+        "maximum_normal_export_error": 6.395578384399414e-05
+      },
+      "sha256": "4f39102b48b1e3ae6cd02079b3330c7b67f6e1c7ff0d2da8615f38ab36a4bc84"
+    },
+    {
+      "parts": [
+        "LeftLowerArm",
+        "LeftHand",
+        "RightUpperArm",
+        "RightUpperArm__Material02",
+        "RightLowerArm",
+        "RightHand",
+        "LeftUpperLeg"
+      ],
+      "estimated_assets": 10,
+      "file": "batch_02.glb",
+      "texture_sha256": {
+        "Costume_HornsArcherM_body": "0417906456bd976838084b5717af16e63a637994ceaa6b7e53f5354ae600c8d7",
+        "Costume_HornsArcherM_head": "967c5226490d3f613f73dc4395fdd3361fc2afd017f250f0bb3516f2021eaaed"
+      },
+      "export_validation": {
+        "meshes": 7,
+        "triangles": 3793,
+        "embedded_images": 2,
+        "uv_verified": true,
+        "normals_verified": true,
+        "maximum_normal_export_error": 6.225705146789551e-05
+      },
+      "sha256": "de32928aa739aa1b4433a48e4bddb7988288074d60d5dbf74dd843711caa684d"
+    },
+    {
+      "parts": [
+        "LeftLowerLeg",
+        "LeftFoot",
+        "RightUpperLeg",
+        "RightLowerLeg",
+        "RightFoot"
+      ],
+      "estimated_assets": 7,
+      "file": "batch_03.glb",
+      "texture_sha256": {
+        "Costume_HornsArcherM_body": "0417906456bd976838084b5717af16e63a637994ceaa6b7e53f5354ae600c8d7"
+      },
+      "export_validation": {
+        "meshes": 5,
+        "triangles": 3055,
+        "embedded_images": 1,
+        "uv_verified": true,
+        "normals_verified": true,
+        "maximum_normal_export_error": 6.335973739624023e-05
+      },
+      "sha256": "f795793e3490dd5d1148ac0f7ef798a3eab780f904d192fe3d20a2dc36380c31"
+    }
+  ],
+  "target_height_studs": 5.5,
+  "source_height": 1.0009483993053436,
+  "uniform_scale": 5.494788746170122,
+  "source_triangles": 14253,
+  "minimum_face_confidence": 0.16942898132753295,
+  "partition_policy": "Maximum average original bone-region weight; connected exact ties choose the nearest parent; equal depth uses a stable name order. Explicit surface subdivisions/actual elbow-wrist region recovery are recorded separately.",
+  "nonadjacent_ties": "refuse",
+  "weight_diagnostics": {
+    "low_confidence_faces": 4582,
+    "parent_tie_faces": 0,
+    "non_adjacent_exact_ties": 0,
+    "non_adjacent_close_weights": 622,
+    "mechanical_region_overrides": 115,
+    "examples": [
+      {
+        "object": "Body",
+        "face": 67,
+        "chosen_part": "LeftHand",
+        "region_weights": {
+          "LeftHand": 0.3824614655397069,
+          "RightUpperLeg": 0.3691021967057846,
+          "LeftLowerArm": 0.13660691347406007,
+          "LeftUpperArm": 0.11182942428044837
+        }
+      },
+      {
+        "object": "Body",
+        "face": 77,
+        "chosen_part": "LeftHand",
+        "region_weights": {
+          "LeftHand": 0.35071808099746704,
+          "RightUpperLeg": 0.2592813869317373,
+          "LeftUpperArm": 0.1979892998933792,
+          "LeftLowerArm": 0.1920112321774165
+        }
+      },
+      {
+        "object": "Body",
+        "face": 79,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.35202126467526296,
+          "LeftHand": 0.3117019819506946,
+          "LeftUpperArm": 0.1681822383199417,
+          "LeftLowerArm": 0.11800611515839896,
+          "RightUpperArm": 0.0500883998957018
+        }
+      },
+      {
+        "object": "Body",
+        "face": 80,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.41231423150485513,
+          "LeftHand": 0.32925528973903917,
+          "LeftUpperArm": 0.12032575558077822,
+          "LeftLowerArm": 0.08801632327962558,
+          "RightUpperArm": 0.0500883998957018
+        }
+      },
+      {
+        "object": "Body",
+        "face": 82,
+        "chosen_part": "LeftHand",
+        "region_weights": {
+          "LeftHand": 0.32298602809625165,
+          "LeftUpperArm": 0.26263474557121524,
+          "LeftLowerArm": 0.22785553933665237,
+          "RightUpperLeg": 0.18652368699588073
+        }
+      },
+      {
+        "object": "Body",
+        "face": 107,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.29168168538169625,
+          "LeftHand": 0.2716493512746989,
+          "LeftUpperArm": 0.23300371627964972,
+          "LeftLowerArm": 0.12889408669357583,
+          "RightUpperArm": 0.07477116037037931
+        }
+      },
+      {
+        "object": "Body",
+        "face": 122,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.3914843979380581,
+          "RightUpperArm": 0.3324475864087437,
+          "RightLowerArm": 0.17688941878993594,
+          "UpperTorso": 0.09917859686326214
+        }
+      },
+      {
+        "object": "Body",
+        "face": 123,
+        "chosen_part": "RightUpperArm",
+        "region_weights": {
+          "RightUpperArm": 0.4066352506871894,
+          "RightUpperLeg": 0.3246312157923262,
+          "UpperTorso": 0.15557436997470098,
+          "RightLowerArm": 0.1131591635457833
+        }
+      },
+      {
+        "object": "Body",
+        "face": 124,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.36767623591435017,
+          "RightUpperArm": 0.3275404146513694,
+          "UpperTorso": 0.12544434413899802,
+          "RightLowerArm": 0.11707563169578339,
+          "LeftUpperArm": 0.06226337359949886
+        }
+      },
+      {
+        "object": "Body",
+        "face": 125,
+        "chosen_part": "RightUpperArm",
+        "region_weights": {
+          "RightUpperArm": 0.3943916325195513,
+          "RightUpperLeg": 0.29815769355995714,
+          "UpperTorso": 0.1918419238693619,
+          "LeftUpperArm": 0.06226337359949886,
+          "RightLowerArm": 0.05334537645163074
+        }
+      },
+      {
+        "object": "Body",
+        "face": 126,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.3831674769797331,
+          "RightUpperArm": 0.3010282718788041,
+          "RightLowerArm": 0.11640118685170103,
+          "LeftUpperArm": 0.11201523225737339,
+          "UpperTorso": 0.08738783203238837
+        }
+      },
+      {
+        "object": "Body",
+        "face": 128,
+        "chosen_part": "RightUpperArm",
+        "region_weights": {
+          "RightUpperArm": 0.3475749043488268,
+          "RightUpperLeg": 0.2541262817264654,
+          "LeftUpperArm": 0.2316079303879351,
+          "UpperTorso": 0.16669088353677267
+        }
+      },
+      {
+        "object": "Body",
+        "face": 129,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.32569802720806806,
+          "RightUpperArm": 0.30881873589252107,
+          "LeftUpperArm": 0.20973659887562868,
+          "UpperTorso": 0.10307570641623377,
+          "RightLowerArm": 0.05267093160754837
+        }
+      },
+      {
+        "object": "Body",
+        "face": 130,
+        "chosen_part": "RightUpperArm",
+        "region_weights": {
+          "RightUpperArm": 0.34106200588016927,
+          "LeftUpperArm": 0.2770284836091912,
+          "RightUpperLeg": 0.20255252496937665,
+          "UpperTorso": 0.17935698554126284
+        }
+      },
+      {
+        "object": "Body",
+        "face": 131,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.33121932622980066,
+          "RightUpperArm": 0.27529241636520874,
+          "LeftUpperArm": 0.2270241322919303,
+          "LeftHand": 0.06088027854760488,
+          "UpperTorso": 0.05291291495790707,
+          "RightLowerArm": 0.05267093160754837
+        }
+      },
+      {
+        "object": "Body",
+        "face": 133,
+        "chosen_part": "LeftUpperArm",
+        "region_weights": {
+          "LeftUpperArm": 0.3578008466879322,
+          "RightUpperArm": 0.2889702937984375,
+          "UpperTorso": 0.21510753897603768,
+          "RightUpperLeg": 0.13812132053759257
+        }
+      },
+      {
+        "object": "Body",
+        "face": 134,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.30514706614174825,
+          "LeftUpperArm": 0.25401073433159504,
+          "LeftHand": 0.21749897472643792,
+          "RightUpperArm": 0.15699922490742765,
+          "LeftLowerArm": 0.0663439998927911
+        }
+      },
+      {
+        "object": "Body",
+        "face": 135,
+        "chosen_part": "LeftUpperArm",
+        "region_weights": {
+          "LeftUpperArm": 0.28045902314760485,
+          "RightUpperLeg": 0.2699762145426479,
+          "RightUpperArm": 0.18038482321068505,
+          "LeftHand": 0.14992302424836393,
+          "LeftLowerArm": 0.0663439998927911,
+          "UpperTorso": 0.05291291495790707
+        }
+      },
+      {
+        "object": "Body",
+        "face": 136,
+        "chosen_part": "RightUpperLeg",
+        "region_weights": {
+          "RightUpperLeg": 0.27119144357876057,
+          "LeftUpperArm": 0.2633397814682985,
+          "LeftHand": 0.2566968930035952,
+          "LeftLowerArm": 0.13400072157896642,
+          "RightUpperArm": 0.07477116037037931
+        }
+      },
+      {
+        "object": "Body",
+        "face": 137,
+        "chosen_part": "LeftUpperArm",
+        "region_weights": {
+          "LeftUpperArm": 0.2946429892667153,
+          "LeftHand": 0.2882722955668522,
+          "LeftLowerArm": 0.22019442221042596,
+          "RightUpperLeg": 0.1968902929560066
+        }
+      }
+    ],
+    "exact_tie_examples": []
+  },
+  "auxiliary_mesh_policy": "Material fragments retain original UVs/images and must be welded only to their named, actual Motor6D-driven R15 part.",
+  "root": {
+    "name": "HumanoidRootPart",
+    "CFrame": [
+      0.0,
+      0.0,
+      0.0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ],
+    "Size": [
+      2,
+      2,
+      1
+    ]
+  },
+  "texture_rebake": false,
+  "uv_repack": false,
+  "original_texture_bytes_preserved": true,
+  "source_corner_normals_preserved": true,
+  "rig_ready_for_game": false,
+  "requires_studio_animation_validation": true,
+  "limitations": [
+    "Bone-weight maximum triangles become rigid parts; joint seams and non-adjacent low-confidence weights need motion QA.",
+    "Exact bone joint positions use canonical R15 axes; Mixamo bind-pose/roll versus default Animate is not yet verified.",
+    "No retargeting or geometry-based replacement is performed.",
+    "New barycentric normals are normalized mechanically; the measured small shading-field change needs visual QA."
+  ],
+  "prepared_triangles": 14253,
+  "mechanical_surface_partition": {
+    "enabled": true,
+    "split_weight_ties": false,
+    "recover_empty_left_forearm": false,
+    "source_triangles": 14253,
+    "subdivided_source_faces": 0,
+    "extra_triangles": 0,
+    "original_vertices_changed": false,
+    "reassigned_original_faces": 115,
+    "projected_head_faces_restored": 115,
+    "projected_head_face_signature_file": "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_HornsArcherM\\face_reassignment_candidates_v2.json",
+    "projected_head_face_signature_sha256": "dda203bd446fa1373c4590218552db586205bf0a03e59bab67b00e8e327329d4",
+    "forearm_recovery_policy": null,
+    "recover_empty_left_foot": false,
+    "foot_recovery_policy": null,
+    "maximum_coverage_error": 0.0,
+    "maximum_sampled_normalization_error_degrees": 0.0,
+    "uv_repack": false,
+    "texture_rebake": false,
+    "elbow_world": null,
+    "wrist_world": null,
+    "faces": [
+      {
+        "object": "Head",
+        "source_face": 1010,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 1012,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 1013,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 1027,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3141,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3154,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3155,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3156,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3166,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3170,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3171,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3172,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3205,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3207,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3208,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3209,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3210,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3211,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3212,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3213,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3214,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3233,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3246,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3247,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3248,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3249,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3250,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3251,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3253,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3254,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3256,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3257,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3258,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3259,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3260,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3261,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3262,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3263,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3264,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3265,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3266,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3267,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3268,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3269,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3270,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3271,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3272,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3273,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3274,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3275,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3282,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3285,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3354,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3355,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3356,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3357,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3358,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3359,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3360,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3361,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3362,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3363,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3364,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3365,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3366,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3367,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3575,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3576,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3579,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3580,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3581,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3583,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3584,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3585,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3587,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3588,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3589,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3590,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3594,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3595,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3596,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3597,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3608,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3610,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3612,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3614,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3615,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3616,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3617,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3618,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3619,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3620,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3621,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 3622,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4894,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4895,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4897,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4899,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4926,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4927,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4928,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4930,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4984,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4985,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4986,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4987,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4990,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4991,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4992,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 4993,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 5167,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 5168,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 5290,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 5291,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "object": "Head",
+        "source_face": 5292,
+        "reason": "verified_projected_front_face_uv_geometry_signature",
+        "source_owner": "UpperTorso",
+        "triangles": 1,
+        "barycentric_triangles": [
+          {
+            "owner_override": "Head",
+            "corners": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "knee_world": null,
+    "ankle_world": null,
+    "output_triangles": 14253
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "avatar": "Costume_HornsWarriorF",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed; profile is preliminary until 3D expression QA passes",
+  "source_sha256": "f54fb171f56bbaeca3772ca6aee7e3f30fbaf331576df19e0a4cb15ba3eb1b0e",
+  "mouth_center_screen": [
+    380,
+    600
+  ],
+  "screen_scale": [
+    1.2,
+    1
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      241,
+      414,
+      344,
+      465
+    ],
+    [
+      415,
+      414,
+      527,
+      463
+    ]
+  ],
+  "eye_boxes": [
+    [
+      217,
+      463,
+      350,
+      566
+    ],
+    [
+      416,
+      463,
+      553,
+      567
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.085
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0.08,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "runtime_validated": false
+}

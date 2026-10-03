@@ -1,0 +1,25 @@
+{
+  "avatar": "Costume_NeutralArcherF",
+  "state": "SoftSmile",
+  "png": "art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_Expression_SoftSmile_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "e59c999e8a26afb348b71432f5187fb14acc0999d1883ddb235dbaa236c37be0",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1684dcf1-27de-4b5f-a538-186a5a22e2d6.png",
+  "prompt": "art/models/costume/expressions/Costume_NeutralArcherF/prompts/SoftSmile.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+  "closed_mouth_offline_render_verified": true,
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ],
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_NeutralArcherF/previews/SoftSmile_front.png",
+    "art/models/costume/expressions/Costume_NeutralArcherF/previews/SoftSmile_quarter.png"
+  ]
+}

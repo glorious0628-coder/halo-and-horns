@@ -1,0 +1,37 @@
+[
+  {
+    "label": "expression_log",
+    "text": "[{\"at\":4098.2889221000009,\"expression\":\"Neutral\",\"ready\":true,\"texture\":\"rbxassetid://121674541725480\"},{\"at\":4098.371122700002,\"expression\":\"Serious\",\"ready\":true,\"texture\":\"rbxassetid://104677901335263\"},{\"at\":4099.588804899999,\"expression\":\"Neutral\",\"ready\":true,\"texture\":\"rbxassetid://121674541725480\"},{\"at\":4100.271712200003,\"expression\":\"Serious\",\"ready\":true,\"texture\":\"rbxassetid://104677901335263\"},{\"at\":4101.0895561,\"expression\":\"Neutral\",\"ready\":true,\"texture\":\"rbxassetid://121674541725480\"},{\"at\":4343.210265300004,\"expression\":\"SoftSmile\",\"ready\":true,\"texture\":\"rbxassetid://133057889021878\"},{\"at\":4346.211783799998,\"expression\":\"Neutral\",\"ready\":true,\"texture\":\"rbxassetid://121674541725480\"}]",
+    "error": false
+  },
+  {
+    "label": "talk",
+    "text": "{\"texture\":\"rbxassetid://133057889021878\",\"ready\":true,\"expression\":\"SoftSmile\"}",
+    "error": false
+  },
+  {
+    "label": "hurt",
+    "text": "true",
+    "error": false
+  },
+  {
+    "label": "hurt_priority",
+    "text": "{\"texture\":\"rbxassetid://104677901335263\",\"ready\":true,\"expression\":\"Serious\"}",
+    "error": false
+  },
+  {
+    "label": "resume_talk",
+    "text": "{\"texture\":\"rbxassetid://133057889021878\",\"ready\":true,\"expression\":\"SoftSmile\"}",
+    "error": false
+  },
+  {
+    "label": "neutral_expired",
+    "text": "{\"texture\":\"rbxassetid://121674541725480\",\"ready\":true,\"expression\":\"Neutral\"}",
+    "error": false
+  },
+  {
+    "label": "remove_npc",
+    "text": "true",
+    "error": false
+  }
+]

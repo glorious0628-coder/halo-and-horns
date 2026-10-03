@@ -1,0 +1,208 @@
+{
+  "schema": 1,
+  "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\Costume_NeutralMageM_preserved_v1\\Costume_NeutralMageM_skin.skin.json",
+  "proxy_plan": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_NeutralMageM\\joints.json",
+  "poses": {
+    "rest": {
+      "maximum_actual_armature_lbs_error": 6.107658604359387e-07,
+      "maximum_target_pose_projection_error": 6.107658604359387e-07,
+      "maximum_expected_bone_matrix_error": 6.938893903907228e-18,
+      "maximum_pose_channel_projection_error": 2.220446049250313e-16,
+      "maximum_pose_channel_singular_value_deviation": 4.440892098500626e-16,
+      "rotations_radians": {}
+    },
+    "walk_left": {
+      "maximum_actual_armature_lbs_error": 9.629425061585611e-07,
+      "maximum_target_pose_projection_error": 2.0193311217125463e-05,
+      "maximum_expected_bone_matrix_error": 8.881092071533203e-06,
+      "maximum_pose_channel_projection_error": 8.652677957687871e-06,
+      "maximum_pose_channel_singular_value_deviation": 1.0508110400597737e-05,
+      "rotations_radians": {
+        "LeftUpperLeg": [
+          [
+            "X",
+            0.35
+          ]
+        ],
+        "RightUpperLeg": [
+          [
+            "X",
+            -0.35
+          ]
+        ],
+        "RightLowerLeg": [
+          [
+            "X",
+            0.45
+          ]
+        ],
+        "LeftUpperArm": [
+          [
+            "X",
+            -0.25
+          ]
+        ],
+        "RightUpperArm": [
+          [
+            "X",
+            0.25
+          ]
+        ]
+      }
+    },
+    "walk_right": {
+      "maximum_actual_armature_lbs_error": 7.474384429445537e-07,
+      "maximum_target_pose_projection_error": 1.3823138301435247e-05,
+      "maximum_expected_bone_matrix_error": 8.52346420288086e-06,
+      "maximum_pose_channel_projection_error": 9.550755864784488e-06,
+      "maximum_pose_channel_singular_value_deviation": 1.3329324718647229e-05,
+      "rotations_radians": {
+        "LeftUpperLeg": [
+          [
+            "X",
+            -0.35
+          ]
+        ],
+        "RightUpperLeg": [
+          [
+            "X",
+            0.35
+          ]
+        ],
+        "LeftLowerLeg": [
+          [
+            "X",
+            0.45
+          ]
+        ],
+        "LeftUpperArm": [
+          [
+            "X",
+            0.25
+          ]
+        ],
+        "RightUpperArm": [
+          [
+            "X",
+            -0.25
+          ]
+        ]
+      }
+    },
+    "arm_bend": {
+      "maximum_actual_armature_lbs_error": 9.830249847454215e-07,
+      "maximum_target_pose_projection_error": 1.1087104819857046e-06,
+      "maximum_expected_bone_matrix_error": 2.384185791015625e-07,
+      "maximum_pose_channel_projection_error": 1.3095288653452997e-07,
+      "maximum_pose_channel_singular_value_deviation": 1.9970935705160286e-07,
+      "rotations_radians": {
+        "LeftUpperArm": [
+          [
+            "X",
+            -0.6
+          ],
+          [
+            "Z",
+            -0.25
+          ]
+        ],
+        "RightUpperArm": [
+          [
+            "X",
+            -0.6
+          ],
+          [
+            "Z",
+            0.25
+          ]
+        ],
+        "LeftLowerArm": [
+          [
+            "X",
+            -0.8
+          ]
+        ],
+        "RightLowerArm": [
+          [
+            "X",
+            -0.8
+          ]
+        ]
+      }
+    },
+    "attack_stress": {
+      "maximum_actual_armature_lbs_error": 9.902267292640298e-07,
+      "maximum_target_pose_projection_error": 8.85209246890494e-06,
+      "maximum_expected_bone_matrix_error": 3.978610038757324e-06,
+      "maximum_pose_channel_projection_error": 3.973024807535364e-06,
+      "maximum_pose_channel_singular_value_deviation": 4.570984576623971e-06,
+      "rotations_radians": {
+        "UpperTorso": [
+          [
+            "Y",
+            0.16
+          ]
+        ],
+        "LeftUpperArm": [
+          [
+            "X",
+            -0.8
+          ]
+        ],
+        "RightUpperArm": [
+          [
+            "X",
+            -1.0
+          ]
+        ],
+        "RightLowerArm": [
+          [
+            "X",
+            -0.8
+          ]
+        ],
+        "LeftUpperLeg": [
+          [
+            "X",
+            -0.15
+          ]
+        ],
+        "RightUpperLeg": [
+          [
+            "X",
+            0.15
+          ]
+        ]
+      }
+    },
+    "head_turn": {
+      "maximum_actual_armature_lbs_error": 1.431830240382153e-06,
+      "maximum_target_pose_projection_error": 1.1924653663481805e-06,
+      "maximum_expected_bone_matrix_error": 5.960464477539063e-08,
+      "maximum_pose_channel_projection_error": 5.7466126190952593e-08,
+      "maximum_pose_channel_singular_value_deviation": 3.640069357047082e-08,
+      "rotations_radians": {
+        "Head": [
+          [
+            "Y",
+            0.4
+          ]
+        ]
+      }
+    }
+  },
+  "original_source_bone_position_error": 1.2125342427373648e-06,
+  "canonical_height_error": 4.76837158203125e-07,
+  "source_skin_accessor_image_bytes_preserved": true,
+  "lbs_tolerance_studs": 1e-05,
+  "target_pose_projection_tolerance_studs": 0.0001,
+  "pose_channel_singular_value_tolerance": 0.0001,
+  "rig_ready_for_game": false,
+  "studio_motion_validated": false,
+  "api_called": false,
+  "limitations": [
+    "Actual Blender Armature and independent LBS agree; the native importer/Bone runtime remains untested.",
+    "Pose channels decompose imported rest-frame shear; target-pose projection error is measured separately without editing the source.",
+    "Offline shared poses expose source weighting defects; they do not prove exact class attack timing or physics."
+  ]
+}

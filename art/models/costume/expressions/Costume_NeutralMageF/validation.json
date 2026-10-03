@@ -1,0 +1,17 @@
+{
+  "validated": true,
+  "avatar": "Costume_NeutralMageF",
+  "head_sha256": "cf2b3334ef4336683f925a3f22ee6eb5f18c4b7573c42e72baf2c2d94ef749e2",
+  "triangles": {
+    "FaceExpression": 516,
+    "HeadBase": 4771
+  },
+  "primary_uv_only": true,
+  "embedded_original_png_bytes_preserved": true,
+  "source_models_unchanged": true,
+  "expression_pngs": 3,
+  "offline_previews_checked": 6,
+  "expected_import_assets": 5,
+  "runtime_validated": false,
+  "uploads_performed_by_validator": 0
+}

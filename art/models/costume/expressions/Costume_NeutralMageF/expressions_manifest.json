@@ -1,0 +1,97 @@
+{
+  "avatar": "Costume_NeutralMageF",
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approved_human_avatar_scope": 18,
+  "target_total_textures": 54,
+  "actual_preferred_textures": 3,
+  "head_asset": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_HeadExpressions_R15.glb",
+  "head_sha256": "cf2b3334ef4336683f925a3f22ee6eb5f18c4b7573c42e72baf2c2d94ef749e2",
+  "import_asset_budget": 5,
+  "extra_expression_pngs_outside_glb": 2,
+  "full_set_maximum_import_assets": 7,
+  "needs_new_head_mesh_import": true,
+  "body_reimport_required": false,
+  "original_models_unchanged": true,
+  "studio_untouched": true,
+  "paid_api_calls": 0,
+  "uploads": 0,
+  "records": [
+    {
+      "avatar": "Costume_NeutralMageF",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-3ea628fb-5ea4-46dd-9061-d15f80aee9b0.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralMageF/prompts/Neutral.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "평소",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralMageF/previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_NeutralMageF/previews/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralMageF",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a266b96ac23e3e273abbc82ddb3123303872c8b9317b76bc294103360d6e1778",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-43cf91a2-b7d8-4d4c-945d-6ae867cf67d4.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralMageF/prompts/SoftSmile.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/유저 대화",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralMageF/previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_NeutralMageF/previews/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralMageF",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "6ee6d507f7d3809106cd06512c8a110d3086c7e5915e841aa58575fcb19ae5e9",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-442b5c65-3955-48ec-8ac8-f66c9562c089.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralMageF/prompts/Serious.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "공격/피격",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralMageF/previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_NeutralMageF/previews/Serious_quarter.png"
+      ]
+    }
+  ],
+  "runtime_validated": false,
+  "offline_visual_review": "All three state front and 30-degree quarter renders reviewed with unchanged original body context; mouth closed and old duplicate brows checked",
+  "limitations": [
+    "Roblox head import, texture upload, automatic state switching and runtime QA remain.",
+    "Other human avatars require their own reviewed facial profiles and actual offline previews."
+  ]
+}

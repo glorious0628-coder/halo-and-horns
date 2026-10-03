@@ -1,0 +1,66 @@
+{
+  "avatar": "Costume_HaloArcherM",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed; profile is preliminary until 3D expression QA passes",
+  "source_sha256": "e1500ceaa21de1b68b063bd82d133d36a5f55c656888bda0dd9c9d754128de39",
+  "mouth_center_screen": [
+    384,
+    650
+  ],
+  "screen_scale": [
+    1.2,
+    1.05
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      235,
+      497,
+      335,
+      527
+    ],
+    [
+      428,
+      469,
+      510,
+      506
+    ]
+  ],
+  "eye_boxes": [
+    [
+      210,
+      548,
+      343,
+      617
+    ],
+    [
+      429,
+      513,
+      556,
+      625
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.085
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0.08,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "runtime_validated": false
+}

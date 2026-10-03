@@ -1,0 +1,72 @@
+[
+  {
+    "label": "play_only_expression_template",
+    "text": "Pending face exposed in Play only",
+    "error": false
+  },
+  {
+    "label": "select_FactionPicker.Cards.Card_Halo.Body.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "select_ClassPicker.Cards.Card_Warrior.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "neutral",
+    "text": "{\"face\":\"rbxassetid://121674541725480\",\"status\":\"Active\",\"costume\":\"Costume_HaloWarriorM\",\"expression\":\"Neutral\",\"ready\":true}",
+    "error": false
+  },
+  {
+    "label": "preload_three",
+    "text": "[{\"id\":\"rbxassetid://104677901335263\",\"status\":\"Failure\"},{\"id\":\"rbxassetid://96103784237092\",\"status\":\"Failure\"},{\"id\":\"rbxassetid://129632625883192\",\"status\":\"Failure\"},{\"id\":\"rbxassetid://133057889021878\",\"status\":\"Failure\"},{\"id\":\"rbxassetid://89786211556898\",\"status\":\"Failure\"},{\"id\":\"rbxassetid://121674541725480\",\"status\":\"Success\"}]",
+    "error": false
+  },
+  {
+    "label": "monitor",
+    "text": "monitor installed",
+    "error": false
+  },
+  {
+    "label": "attack",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "after_attack",
+    "text": "{\"face\":\"rbxassetid://104677901335263\",\"status\":\"Active\",\"costume\":\"Costume_HaloWarriorM\",\"expression\":\"Serious\",\"ready\":true}",
+    "error": false
+  },
+  {
+    "label": "attack_expiry",
+    "text": "{\"face\":\"rbxassetid://121674541725480\",\"status\":\"Active\",\"costume\":\"Costume_HaloWarriorM\",\"expression\":\"Neutral\",\"ready\":true}",
+    "error": false
+  },
+  {
+    "label": "hurt",
+    "text": "HP reduced in Play-only QA",
+    "error": false
+  },
+  {
+    "label": "after_hurt",
+    "text": "{\"face\":\"rbxassetid://104677901335263\",\"status\":\"Active\",\"costume\":\"Costume_HaloWarriorM\",\"expression\":\"Serious\",\"ready\":true}",
+    "error": false
+  },
+  {
+    "label": "talk_npc",
+    "text": "approved existing rig; temporary conversation prompt",
+    "error": false
+  },
+  {
+    "label": "talk_G",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "after_talk",
+    "text": "{\"face\":\"rbxassetid://121674541725480\",\"status\":\"Active\",\"costume\":\"Costume_HaloWarriorM\",\"expression\":\"Neutral\",\"ready\":true}",
+    "error": false
+  }
+]

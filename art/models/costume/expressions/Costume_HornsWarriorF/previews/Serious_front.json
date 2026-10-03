@@ -1,0 +1,17 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_HeadExpressions_R15.glb",
+  "source_sha256": "d27480f646c8a744ce22efa943ffbfef49276413b7ca06a9e9fb864c24839eb1",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\previews\\Serious_front.png",
+  "angle": 180.0,
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HornsWarriorF_rig_16a7c6a7-e024-4edd-8f52-d8400b9d5660.glb",
+  "original_rig_sha256": "881af71342a5386ed7248b8b2c3a39414112954b2b57cc94636c70ae47f01050",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 10935,
+  "context_exported": false
+}

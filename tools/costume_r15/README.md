@@ -114,7 +114,8 @@ py tools/studio_mcp.py call execute_luau @build/costume_r15/Costume_HaloWarriorM
 | HornsMageM | Body 622번 면의 Head/왼팔 세 웨이트 동률 | `--split-weight-ties`: 원래 면 위의 웨이트 경계로 1면을 6면으로 세분화. 위치·UV·노멀을 원래 면에서 보간하고 기존 정점은 그대로 유지 |
 | HornsMageF | LeftLowerArm의 최댓값 웨이트 영역이 없음 | `--recover-empty-left-forearm`: 실제 팔꿈치/손목 뼈 단면 사이에 완전히 들어오는 원래 팔 면 415개만 재귀속. 단면을 가로지르는 면과 모든 정점·UV·노멀은 그대로 유지 |
 | HaloWarriorF | LeftFoot의 평균 웨이트 영역이 없음 | `--recover-empty-left-foot`: 실제 무릎→발목 축에서 발목 아래에 완전히 들어오는 원래 발 웨이트 면 56개만 재귀속 |
-| HornsArcherM | 실제 앞얼굴 112면이 UpperTorso에 귀속됨 | `--restore-head-face-signatures`: UV 서명·원본 fixed 면 좌표·검증된 affine·실제 Head 관절면을 모두 대조한 112면만 Head로 재귀속. 머리 재질의 다른 몸/어깨 면은 그대로 유지 |
+| HornsArcherM | 실제 앞얼굴 115면이 UpperTorso에 귀속됨 | `--restore-head-face-signatures`: UV 서명·원본 fixed 면 좌표·검증된 affine·실제 Head 관절면을 모두 대조한 115면만 Head로 재귀속. 최초 112면 후보에서 확인된 입 가장자리 3면을 추가. 머리 재질의 다른 몸/어깨 면은 그대로 유지 |
+| HornsWarriorM / HaloMageF | 실제 턱 1면 / 피부 3면이 UpperTorso에 귀속됨 | 각 `verified_head_face_reassignment.json`으로 원래 면만 Head에 복원. 실제 Head joint 아래 목 피부는 옮기지 않음 |
 | NeutralArcherF | 원본 투명 Root의 높이로 계산한 HipHeight가 음수 | `assemble.py --root-reference lower-torso-y`: 투명 Root의 Y만 실제 LowerTorso 중심으로 옮김. XZ·크기·보이는 메시·실제 뼈의 월드 관절 위치는 그대로 유지 |
 
 HornsMageM의 원래 14,031면은 14,036면이 됩니다. 보간 후 노멀 정규화 차이는 최대 약 0.06552°이며, 이 차이를 기록합니다. HornsMageF와 HaloWarriorF는 원래 면 수와 면 자체가 변하지 않습니다. 변환기는 각 원본 corner normal을 메시 경계에도 보존합니다. Blender의 custom-normal 저장 오차는 별도 `maximum_normal_export_error`에 기록하며 0.0001을 넘으면 거절합니다. 원본 이미지 byte SHA256·UV·정점·삼각형 방향·15관절 관계도 출력 때 검증합니다.
@@ -124,15 +125,14 @@ HornsMageM의 원래 14,031면은 14,036면이 됩니다. 보간 후 노멀 정�
 ```powershell
 & 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/convert.py -- art/models/tripo/Costume_HornsMageM_rig_c607eae7-d06e-4e2d-a95f-05b429771ec7.glb build/costume_r15/Costume_HornsMageM --height 5.5 --split-weight-ties
 & 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/convert.py -- art/models/tripo/Costume_HornsMageF_rig_1d458a15-2257-4e35-9980-cdf5cac63f05.glb build/costume_r15/Costume_HornsMageF --height 5.5 --recover-empty-left-forearm
-& 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/convert.py -- art/models/tripo/Costume_HaloWarriorF_rig_9e168902-6a36-4220-9bcd-732502cfd0a2.glb build/costume_r15/Costume_HaloWarriorF --height 5.5 --recover-empty-left-foot
-& 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/convert.py -- art/models/tripo/Costume_HornsArcherM_rig_1c4762a2-29bd-4e14-baca-488d2d44a98b.glb build/costume_r15/Costume_HornsArcherM_face_fixed --height 5.5 --restore-head-face-signatures build/expr_qa/Costume_HornsArcherM/face_reassignment_candidates.json
-py tools/costume_r15/assemble.py build/costume_r15/Costume_HornsArcherM_face_fixed/joints.json --name Costume_HornsArcherM
+& 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/convert.py -- art/models/tripo/Costume_HornsArcherM_rig_1c4762a2-29bd-4e14-baca-488d2d44a98b.glb build/costume_r15/Costume_HornsArcherM_face_fixed_v2 --height 5.5 --restore-head-face-signatures build/expr_qa/Costume_HornsArcherM/face_reassignment_candidates_v2.json
+py tools/costume_r15/assemble.py build/costume_r15/Costume_HornsArcherM_face_fixed_v2/joints.json --name Costume_HornsArcherM
 py tools/costume_r15/assemble.py build/costume_r15/Costume_NeutralArcherF/joints.json --root-reference lower-torso-y --output build/costume_r15/Costume_NeutralArcherF/inspect_imports_root_fixed.json
 ```
 
 NeutralArcherF의 높이 옵션은 이후 `--mode assemble --inspection ...`에도 동일하게 전달합니다. source 기본값은 음수 HipHeight를 계속 거절합니다. 실제 출력을 원본으로 재분석하는 별도 도구는 `mechanical_surface_partition`의 옵션과 얼굴 서명 파일을 같은 순서로 재적용해야 합니다. 원래 웨이트만 재분석하면 복구된 면 배정과 일치하지 않습니다.
 
-`render_surface_comparison.py joints.json 새출력폴더`는 동일한 실제 뼈 좌표·카메라로 원본/출력의 평면 텍스처와 조명 렌더를 비교합니다. 최종 두 Horns 마법사는 평면 렌더 오차가 255단계 기준 평균 0.00005 이하, 조명 렌더 평균 오차가 0.014 이하였습니다. 새 Halo 3종도 원본/출력 렌더와 이미지·UV·corner normal 검증을 통과했습니다. 이는 정지 외형 보존 검사이며 Studio 애니메이션 통과를 뜻하지 않습니다. `preliminary_local_20261003/`의 중간 출력은 Importer에 사용하지 않습니다.
+`render_surface_comparison.py joints.json 새출력폴더`는 동일한 실제 뼈 좌표·카메라로 원본/출력의 평면 텍스처와 조명 렌더를 비교합니다. 최종 두 Horns 마법사는 평면 렌더 오차가 255단계 기준 평균 0.00005 이하, 조명 렌더 평균 오차가 0.014 이하였습니다. 새 Halo 3종은 아래 원본 재질 복구 후 정지 렌더·이미지·UV·corner normal 검증을 통과했습니다. 이는 정지 외형 보존 검사이며 Studio 애니메이션 통과를 뜻하지 않습니다. `preliminary_local_20261003/`와 아래 사용 금지 중간 출력은 Importer에 사용하지 않습니다.
 
 ## 무료 리깅 검사 후보와 원본 형상 비교
 
@@ -145,6 +145,60 @@ py tools/costume_r15/compare_static_surface.py art/models/costume/fixed/Costume_
 
 실제 무료 검사에서 병합 후보 7종 중 HaloWarriorF/HaloMageM/HaloMageF만 리깅 가능했습니다. 나머지 HaloArcherF/HornsArcherF/NeutralWarriorF/NeutralArcherM은 병합 및 원본 raw2k 무료 검사 모두 거절됐습니다. 네 raw2k는 fixed와 원래 oriented triangle/월드 정점 형상이 같지만, 원본 2K PBR UV/이미지와 fixed의 1K 얼굴 UV는 다릅니다. 이 형상 비교를 리깅 성공이나 얼굴 텍스처 호환으로 해석하지 않습니다. 자동 유료 재시도는 하지 않습니다.
 
+## Tripo가 누락한 원래 머리 재질 복구
+
+실제 병합 리깅 3종의 반환 GLB는 2개의 원래 primitive/material 중 HeadMat을 누락하고 전체 표면에 BodyMat 하나를 적용했습니다. UV는 원래 fixed와 정확히 같았지만 머리에 몸 텍스처가 표시됐습니다. 원래 corner normal도 병합 과정에서 바뀌었습니다. `restore_material_regions.py`는 original fixed와 실제 rig의 모든 oriented triangle을 좌표로 1회씩 대조하여 원래 재질/UV/노멀/이미지를 새 복사본에 되돌립니다. 실제 rig의 POSITION/JOINTS/WEIGHTS·뼈·bind·animation과 원래 바이너리 prefix는 그대로 유지합니다. 맞지 않는 면·뒤집힌 면·겹치는 면·불명확한 좌표 대응·새 노드 변환은 거절합니다.
+
+```powershell
+py -B tools/costume_r15/restore_material_regions.py art/models/costume/fixed/Costume_HaloWarriorF.glb art/models/tripo/Costume_HaloWarriorF_rig_9e168902-6a36-4220-9bcd-732502cfd0a2.glb --output build/costume_r15/restored_material_sources/Costume_HaloWarriorF_rig_material_restored.glb
+& 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/convert.py -- build/costume_r15/restored_material_sources/Costume_HaloWarriorF_rig_material_restored.glb build/costume_r15/Costume_HaloWarriorF_material_front_fixed --height 5.5 --recover-empty-left-foot --source-frame gltf-positive-z
+py tools/costume_r15/assemble.py build/costume_r15/Costume_HaloWarriorF_material_front_fixed/joints.json --name Costume_HaloWarriorF
+```
+
+변환된 원본과 rig의 uniform scale/translation 대응은 최대 0.000000842 좌표 오차였고 모든 원래 삼각형의 방향·코너를 정확히 1회 대응했습니다. 원본이 +Z를 보는 glTF Y-up임을 직접 렌더로 확인한 뒤 `--source-frame gltf-positive-z`로 Roblox의 -Z 정면에 맞춥니다. 이 옵션은 실제 source SHA와 일치하는 `.recovery.json` 또는 명시된 수동 후보가 있어야 허용합니다. 모든 보이는 면과 실제 source joint도 같은 좌표 변환을 거치므로 형상은 바꾸지 않습니다. 기본 뼈 축 옵션은 그대로입니다. 외부 표정/렌더 도구도 `source_frame_policy`를 재적용해야 합니다.
+
+최종 출력은 다음과 같습니다. 접미사 없는 3종은 재질 누락을 보존했던 중간 출력이고, `_material_fixed`는 옛 뼈 축으로 정면이 틀어진 중간 출력이므로 사용하지 않습니다.
+
+| 최종 폴더 (`build/costume_r15/`) | 메시 | 묶음별 최대 자산 수 |
+|---|---:|---|
+| Costume_HaloWarriorF_material_front_fixed | 18 | 10 / 10 / 5 |
+| Costume_HaloMageM_material_front_fixed | 17 | 10 / 10 / 4 |
+| Costume_HaloMageF_material_front_face_fixed | 19 | 10 / 10 / 7 |
+
+HaloMageF 최종본은 `art/models/costume/expressions/Costume_HaloMageF/verified_head_face_reassignment.json`으로 실제 Head joint 위 3면만 추가 복원한 것입니다. HornsWarriorM은 `Costume_HornsWarriorM_face_fixed`, HornsArcherM은 `Costume_HornsArcherM_face_fixed_v2`를 사용합니다. `build/`는 ignored이므로 최종 복구 source GLB와 provenance 보관은 별도 자산 저장 단계에서 수행해야 합니다.
+
+## 무료 검사 거절 4종의 수동 관절 후보
+
+원래 정적 GLB에 없는 뼈를 원본 뼈로 표시하지 않습니다. 승인 원본의 정면/측면, 실제 장갑·팔 단면·무릎판·부츠·비율을 읽고 관절 중심을 추정했습니다. `manual_archer.py`와 `manual_neutral.py`는 모든 면의 부위 배정·15관절 좌표·원본 표면 근거 JSON을 준비합니다. `manual_bind.py`는 이 명시적 입력을 새 skin으로 만듭니다. 원래 POSITION/NORMAL/UV/material/image byte와 면 방향은 그대로이며 모든 원래 면이 정확히 한 부위에 배정됩니다. 새 얼굴·옷·무기 디자인을 만들지 않습니다.
+
+```powershell
+py -B tools/costume_r15/manual_archer.py HaloArcherF --output build/manual_partition_audit/HaloArcherF_manual_landmarks.json
+py -B tools/costume_r15/manual_bind.py build/manual_partition_audit/HaloArcherF_manual_landmarks.json build/manual_partition_candidates/HaloArcherF/Costume_HaloArcherF_manual.glb
+& 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/convert.py -- build/manual_partition_candidates/HaloArcherF/Costume_HaloArcherF_manual.glb build/manual_partition_candidates/HaloArcherF/r15 --height 5.5 --allow-inferred-manual --source-frame gltf-positive-z
+& 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/render_manual_motion.py -- build/manual_partition_candidates/HaloArcherF/r15/joints.json build/manual_partition_candidates/HaloArcherF/motion_qa
+```
+
+수동 입력은 `schema=1`, `coordinates=gltf_world_y_up`, `rig_origin=inferred_manual_candidate`, `rig_ready_for_game=false`와 15개의 `landmarks`/`landmark_evidence`를 요구합니다. `triangle_owners`는 `{mesh, primitive, owners}` 목록이며 owners 길이는 각 원래 indices/3과 같아야 합니다. 누락·중복·빈 부위·근거 없는 위치는 거절합니다. 변환에는 `--allow-inferred-manual`이 필요하고, 생성된 대기 모델에도 수동 후보 표시를 남깁니다.
+
+로컬 후보는 휴식·걷기 양쪽·팔 굽힘·공격 스트레스·머리 돌리기 각각 정면/측면 12장과 실제 위치의 관절 gizmo로 점검합니다. FK 관절 연결 오차 검사는 움직임이 분리되는 기술 오류만 확인하며, 승인 공격의 실제 타이밍·엔진 물리·걷기·OFF 복원을 대신하지 않습니다. 초기 후보의 잘못 움직이는 장갑/긴 머리 및 작은 분리 면은 원래 면 귀속만 보정했습니다. 강체 경계의 틈·옷/골반의 일부 분리는 남아 있으므로 **모든 수동 후보는 아직 게임 등록 보류**입니다. 최신 각 후보의 `visual_review.json`/`motion_qa.json`을 확인합니다. 중간 후보를 최종 통과로 주장하지 않습니다.
+
 ```powershell
 py -B -m unittest discover -s tools/costume_r15 -p 'test_*.py'
 ```
+
+## 원래 skin을 유지하는 별도 시각 후보 (2026-10-04)
+
+강체 분할의 관절 틈을 피하려면 원래 skin을 보존해야 합니다. `preserve_skin.py`는 실제 Tripo skin의 POSITION/NORMAL/UV/JOINTS/WEIGHTS/inverse-bind/이미지 바이너리를 그대로 복사합니다. 실제 principal 15개 bone의 이름만 R15 이름으로 바꾸고 Root/Spine/Neck/Shoulder/Toe 등의 보조 bone은 삭제하지 않습니다. 기존 `joints.json`의 실제 15관절 위치와 1회 similarity 변환을 대조한 scene wrapper만 추가합니다. 원래 골격·가중치·표면을 다시 설계하지 않습니다.
+
+```powershell
+py -B tools/costume_r15/preserve_skin.py build/costume_r15/Costume_HaloArcherM/joints.json build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/Costume_HaloArcherM_skin.glb
+& 'C:/Users/glori/Tools/blender-5.2.2/blender.exe' --background --factory-startup --python-exit-code 2 --python tools/costume_r15/render_skin_comparison.py -- build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/Costume_HaloArcherM_skin.skin.json build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/motion_qa
+```
+
+기존 출력이면 덮어쓰지 않으므로 재생성 때는 새 폴더를 지정합니다. 현재 최종 HaloArcherM 후보는 위 `_v2` 경로입니다. 두 시각 surface의 node와 mesh 이름은 모두 `CostumeSkinBody`/`CostumeSkinHead`입니다. 23개 실제 bone·14,384면을 유지하며 업로드 추정은 model 1 + mesh 2 + texture 2 = 5개입니다. 원래 바이너리 전체가 동일하고 실제 proxy joint 위치 오차는 0.000000662 이하였습니다. 실제 Blender Armature 변형과 독립 LBS의 비교 오차는 0.00000229 이하였으며, 동일한 휴식·걷기·팔 굽힘·공격 스트레스·머리 회전의 skin/강체 앞/옆 비교 24장을 생성했습니다. 소스의 잘못된 가중치까지 고쳤다는 뜻은 아닙니다.
+
+수동 후보 4종에는 원본 정적 accessor를 그대로 두고 공유 정점에 동일한 연속 가중치를 추가하는 `manual_neutral.py --bind-continuous`를 사용합니다. 여자 궁수는 `manual_archer.py <name> --bind-continuous <검토된 landmarks.json> <새 GLB> --canonical-height 5.5`로 같은 binder를 호출합니다. 기존 삼각형·geometry·UV·노멀·재질·이미지는 그대로이며, 15개 관절은 계속 **추정 관절**입니다. 최신 skin 출력은 `build/manual_partition_candidates/NeutralWarriorF_skin_v3/`, `NeutralArcherM_skin_v3/`, `HaloArcherF_skin_v1/`, `HornsArcherF_skin_v1/`입니다. 원래 강체 후보의 큰 틈과 떠 있는 면은 로컬 연속 skin 움직임에서 개선됐고, 소매·옷의 굴곡 압축은 실제 동작에서도 점검해야 합니다.
+
+이 GLB를 기존 `convert.py`나 강체 `assemble.py`에 넣으면 skin을 잃으므로 사용하지 않습니다. 실제 Importer가 생성한 bone/Size/bind를 먼저 검사하고 별도의 15부위 R15 물리 proxy와 연결해야 합니다. sidecar의 `source_to_game_affine`는 glTF column-major 16값이며, 원래 Bone hierarchy와 보조 bone을 모두 보존합니다. 각 proxy의 현재/rest delta를 실제 bone bind에 적용하고, 부모 bone의 현재 transform을 반영해 local `Bone.Transform`을 계산합니다. 공식 [Bone 문서](https://create.roblox.com/docs/reference/engine/classes/Bone)는 Transform이 복제되지 않는다고 명시하므로 모든 클라이언트의 animation 이후 갱신과 실제 ON/OFF·무기·표정·충돌 검증이 필요합니다. [Rigging 문서](https://create.roblox.com/docs/art/modeling/rigging)에 따라 bone은 시각 표면을 변형하며 충돌 형상을 바꾸지 않습니다.
+
+모든 새 skin은 `rig_ready_for_game=false`입니다. 로컬 렌더 통과를 실제 게임 등록이나 Studio 통과로 표시하지 않습니다. 코드와 최종 source GLB/sidecar/추정 landmark 입력을 함께 보관해야 하며, ignored `build/`에만 남긴 출력은 Git 체크포인트에 포함되지 않습니다.

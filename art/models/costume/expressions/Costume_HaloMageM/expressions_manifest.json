@@ -1,0 +1,111 @@
+{
+  "avatar": "Costume_HaloMageM",
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approved_human_avatar_scope": 18,
+  "target_total_textures": 54,
+  "actual_preferred_textures": 3,
+  "head_asset": "art/models/costume/expressions/Costume_HaloMageM/Costume_HaloMageM_HeadExpressions_R15.glb",
+  "head_sha256": "805eb48ae86cedb5ac097bfa430408624761abd358fa84c6b2a3bc99e7fc3fec",
+  "import_asset_budget": 5,
+  "extra_expression_pngs_outside_glb": 2,
+  "full_set_maximum_import_assets": 7,
+  "needs_new_head_mesh_import": true,
+  "body_reimport_required": false,
+  "body_parts_reimport_required": [],
+  "original_models_unchanged": true,
+  "studio_untouched": true,
+  "paid_api_calls": 0,
+  "uploads": 0,
+  "records": [
+    {
+      "avatar": "Costume_HaloMageM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HaloMageM/Costume_HaloMageM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "f5bfee0efaaa3299caf4fc570a2210098781d17e1ab03461047f7d6f521285aa",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-4c900ceb-3422-4b1b-952c-2c895518696f.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloMageM/prompts/Neutral.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "평소",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloMageM/previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_HaloMageM/previews/Neutral_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    },
+    {
+      "avatar": "Costume_HaloMageM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HaloMageM/Costume_HaloMageM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "efc4285c9dfa13dc47bb4e9e3a29551346f86f79238b978255f7fd1141750677",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-e532ca5d-6d85-45f4-b96a-61edc8d2175a.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloMageM/prompts/SoftSmile.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/유저 대화",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloMageM/previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_HaloMageM/previews/SoftSmile_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    },
+    {
+      "avatar": "Costume_HaloMageM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HaloMageM/Costume_HaloMageM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "b6bc66a7600fc3a99a46dcd0cc83222ac19426b4a2bf2dde785122832e95c484",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-2174d902-b8ce-4287-bc10-1ee7b1a6d685.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloMageM/prompts/Serious.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "공격/피격",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloMageM/previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_HaloMageM/previews/Serious_quarter.png"
+      ],
+      "offline_visual_notes": [
+        "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+      ]
+    }
+  ],
+  "runtime_validated": false,
+  "offline_visual_review": "All three state front and 30-degree quarter renders reviewed with unchanged original body context; mouth closed and old duplicate brows checked",
+  "limitations": [
+    "Roblox head import, texture upload, automatic state switching and runtime QA remain.",
+    "Other human avatars require their own reviewed facial profiles and actual offline previews."
+  ],
+  "assembly_requirements": {},
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

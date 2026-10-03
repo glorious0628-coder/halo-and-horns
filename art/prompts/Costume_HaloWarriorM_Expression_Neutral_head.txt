@@ -1,0 +1,14 @@
+Use case: precise-object-edit.
+Asset type: an existing 1024 by 1024 UV texture atlas for the head of a Roblox 3D character. This output will be sampled directly by the existing mesh UV coordinates.
+
+Input images:
+Image 1 is the EDIT TARGET, Costume_HaloWarriorM_head.png. It is a fragmented UV texture atlas on a black background. Edit this texture in place.
+Image 2 is a SUPPORTING FACIAL EXPRESSION REFERENCE ONLY. Use only the closed neutral mouth in its LEFT portrait labelled "기본". Do not copy its composition, style, hair, facial proportions, armor or background onto the atlas.
+
+Primary request: close the open smiling mouth in Image 1 and make its texture read as the same avatar with a relaxed neutral, short closed mouth, matching the left reference portrait. Preserve the original avatar's identity and original eye design. Replace only the open smiling mouth pigment with continuous original skin and a subtle thin neutral mouth line.
+
+STRICT INVARIANTS: The target atlas must remain EXACTLY 1024 by 1024 pixels, with the same orientation, framing, coordinates, black empty space, UV island positions, sizes, silhouettes, boundaries and padding. Keep every existing island in its exact original position. All hair patches, eyes, ears, eyebrows, skin, shading and every other color outside the mouth must remain exactly unchanged. Do not improve, sharpen, smooth, repaint or clean up the atlas. Do not move any pixel island, scale or rotate. Do not draw a portrait. Do not reinterpret the atlas as a mosaic or invent any new UV layout.
+
+The probable mouth texture island is at the far left of the lower quarter of the target, near x=0 to 75 and y=750 to 880: a peach facial patch containing a curved brown/red open smiling mouth mark. Use the target's existing mouth mark and skin colors, alter only that mouth to a closed short neutral line, keeping the surrounding island's exact border and original skin shading. Do not alter eye islands to its right or golden rings below.
+
+Output: the edited original atlas only; no labels, no text, no border, no character render, no comparison sheet, no watermark. Child-friendly neutral expression, no violence or suggestive content.

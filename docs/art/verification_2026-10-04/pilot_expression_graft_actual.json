@@ -1,0 +1,28 @@
+{
+  "face_size": [
+    1.2584559917449951,
+    1.0970323085784912,
+    0.9943594336509705
+  ],
+  "original_ready_unchanged": true,
+  "runtime_validated": false,
+  "textures": {
+    "Neutral": "rbxassetid://121674541725480",
+    "Serious": "rbxassetid://104677901335263",
+    "SoftSmile": "rbxassetid://133057889021878"
+  },
+  "head_size": [
+    2.047797918319702,
+    2.2119269371032715,
+    1.992945671081543
+  ],
+  "head_mesh_id": "rbxassetid://89786211556898",
+  "preserved_neck_c0_c1": true,
+  "motors": 15,
+  "head_sha256": "d8000e76a841f1d4675a8dbfc202168ec938551fdcf6e4e6bbeccff41c974611",
+  "face_mesh_id": "rbxassetid://129632625883192",
+  "mesh_parts": 19,
+  "destination": "ServerStorage.CostumePendingExpressions.Costume_HaloWarriorM",
+  "schema": 1,
+  "ready": false
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "preserved_original_skin_pending",
+  "name": "HaloMageM",
+  "skin_glb": "Costume_HaloMageM_skin.glb",
+  "skin_manifest": "Costume_HaloMageM_skin.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "11722b180f091066987653b888cdcd157f98946f7cb7c6948262acd20e5b8782",
+    "skin_manifest": "f121e8002510ea4b9884c39db0d89a83961a719871ae15d99f8d648ff73e2f7a",
+    "proxy_plan": "bac03095b53e413fc2aea32af2e01aba69e0a10219b178a4c2664def1135e5ce"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "build/costume_r15/restored_material_sources/Costume_HaloMageM_rig_material_restored.glb",
+    "sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546"
+  },
+  "source_frame_policy": "gltf-positive-z",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": true,
+  "maximum_proxy_joint_error": 1.137977688831773e-06,
+  "maximum_actual_armature_lbs_error": 1.1980385328675377e-06,
+  "maximum_target_pose_projection_error": 1.6214216361922555e-06,
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

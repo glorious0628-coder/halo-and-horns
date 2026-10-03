@@ -1,0 +1,17 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_HeadExpressions_R15.glb",
+  "source_sha256": "cb626256f6b06e3216a1294d2d41d1c6f28d855062e38ac32b769bfb6670bc7d",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_Expression_SoftSmile_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\previews\\SoftSmile_quarter.png",
+  "angle": 150.0,
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_NeutralMageM_rig_db720f76-5798-453a-be0c-34b72e097ecd.glb",
+  "original_rig_sha256": "eb751abcafcd88626f8302dc33ba005752b39b105589d3439396463608a26d06",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 9055,
+  "context_exported": false
+}

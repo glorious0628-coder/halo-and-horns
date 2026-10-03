@@ -1,0 +1,533 @@
+{
+  "schema": 1,
+  "name": "Costume_NeutralWarriorF",
+  "skin_source": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\NeutralWarriorF_skin_v3\\Costume_NeutralWarriorF_skin.glb",
+  "skin_sha256": "319c07b1b688385bb4060834db8f18fb006a59d226f12370a17d643229c61939",
+  "original_static_source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralWarriorF.glb",
+  "original_source_sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+  "proxy_plan": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\NeutralWarriorF_v3\\r15_front\\joints.json",
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "rig_ready_for_game": false,
+  "source_to_game_affine": [
+    -5.618130240967611,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    5.618130240967611,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -5.618130240967611,
+    0.0,
+    -0.0001714203347960309,
+    -1.6774999999999998,
+    0.27475137406444344,
+    1.0
+  ],
+  "affine_layout": "gltf_column_major_16",
+  "target_height_studs": 5.5,
+  "visual_mesh_names": [
+    "CostumeSkinBody",
+    "CostumeSkinHead"
+  ],
+  "bones": [
+    {
+      "name": "LowerTorso",
+      "parent": "HumanoidRootPart",
+      "source_joint": [
+        -3.0511990189552307e-05,
+        0.29858688354492186,
+        0.0489044152200222
+      ],
+      "game_joint": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "name": "UpperTorso",
+      "parent": "LowerTorso",
+      "source_joint": [
+        0.0009288601577281952,
+        0.3896314086914063,
+        0.06519031152129173
+      ],
+      "game_joint": [
+        -0.005389877676558749,
+        0.5115000000000003,
+        -0.09149628651142488
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        -0.005389877676558749,
+        0.5115000000000003,
+        -0.09149628651142488,
+        1.0
+      ]
+    },
+    {
+      "name": "Head",
+      "parent": "UpperTorso",
+      "source_joint": [
+        -3.0502676963806152e-05,
+        0.5452881774902344,
+        -0.028682716190814972
+      ],
+      "game_joint": [
+        -5.232291520543145e-08,
+        1.3860000000000001,
+        0.43589460928915236
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        -5.232291520543145e-08,
+        1.3860000000000001,
+        0.43589460928915236,
+        1.0
+      ]
+    },
+    {
+      "name": "LeftUpperArm",
+      "parent": "UpperTorso",
+      "source_joint": [
+        0.13790131732821465,
+        0.47186517333984374,
+        -0.02868269756436348
+      ],
+      "game_joint": [
+        -0.7749189814857096,
+        0.9735,
+        0.4358945046433219
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        -0.7749189814857096,
+        0.9735,
+        0.4358945046433219,
+        1.0
+      ]
+    },
+    {
+      "name": "LeftLowerArm",
+      "parent": "LeftUpperArm",
+      "source_joint": [
+        0.18962861597537994,
+        0.4111688232421875,
+        0.02399924024939537
+      ],
+      "game_joint": [
+        -1.065529682298912,
+        0.6325000000000003,
+        0.13992051665906824
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        -1.065529682298912,
+        0.6325000000000003,
+        0.13992051665906824,
+        1.0
+      ]
+    },
+    {
+      "name": "LeftHand",
+      "parent": "LeftLowerArm",
+      "source_joint": [
+        0.23081210255622864,
+        0.34557760620117184,
+        0.04794866914744489
+      ],
+      "game_joint": [
+        -1.2969038736872618,
+        0.264,
+        0.005369505913032646
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        -1.2969038736872618,
+        0.264,
+        0.005369505913032646,
+        1.0
+      ]
+    },
+    {
+      "name": "LeftUpperLeg",
+      "parent": "LowerTorso",
+      "source_joint": [
+        0.07947160117328167,
+        0.28879714965820313,
+        0.047945041209459305
+      ],
+      "game_joint": [
+        -0.4466532261845269,
+        -0.054999999999999716,
+        0.005389888141141774
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        -0.4466532261845269,
+        -0.054999999999999716,
+        0.005389888141141774,
+        1.0
+      ]
+    },
+    {
+      "name": "LeftLowerLeg",
+      "parent": "LeftUpperLeg",
+      "source_joint": [
+        0.0900115929543972,
+        0.22124798583984376,
+        0.05273725278675556
+      ],
+      "game_joint": [
+        -0.505868272749562,
+        -0.43449999999999966,
+        -0.021533380642381417
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        -0.505868272749562,
+        -0.43449999999999966,
+        -0.021533380642381417,
+        1.0
+      ]
+    },
+    {
+      "name": "LeftFoot",
+      "parent": "LeftLowerLeg",
+      "source_joint": [
+        0.09480094723403454,
+        0.07048608398437499,
+        0.07764436630532146
+      ],
+      "game_joint": [
+        -0.5327754888627002,
+        -1.2814999999999999,
+        -0.16146478831624966
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        -0.5327754888627002,
+        -1.2814999999999999,
+        -0.16146478831624966,
+        1.0
+      ]
+    },
+    {
+      "name": "RightUpperArm",
+      "parent": "UpperTorso",
+      "source_joint": [
+        -0.13796235248446465,
+        0.47186517333984374,
+        -0.020061515271663666
+      ],
+      "game_joint": [
+        0.7749190442732079,
+        0.9735,
+        0.38745957969181066
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        0.7749190442732079,
+        0.9735,
+        0.38745957969181066,
+        1.0
+      ]
+    },
+    {
+      "name": "RightLowerArm",
+      "parent": "RightUpperArm",
+      "source_joint": [
+        -0.1916046440601349,
+        0.4111688232421875,
+        0.023999189026653767
+      ],
+      "game_joint": [
+        1.076288424769283,
+        0.6325000000000003,
+        0.13992080443510188
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        1.076288424769283,
+        0.6325000000000003,
+        0.13992080443510188,
+        1.0
+      ]
+    },
+    {
+      "name": "RightHand",
+      "parent": "RightLowerArm",
+      "source_joint": [
+        -0.23088077455759048,
+        0.34557760620117184,
+        0.04411742836236954
+      ],
+      "game_joint": [
+        1.2969468412652285,
+        0.264,
+        0.026893915628092957
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        1.2969468412652285,
+        0.264,
+        0.026893915628092957,
+        1.0
+      ]
+    },
+    {
+      "name": "RightUpperLeg",
+      "parent": "LowerTorso",
+      "source_joint": [
+        -0.09294703416526318,
+        0.28879714965820313,
+        0.05848502367734909
+      ],
+      "game_joint": [
+        0.5220171231173187,
+        -0.054999999999999716,
+        -0.05382510610097824
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        0.5220171231173187,
+        -0.054999999999999716,
+        -0.05382510610097824,
+        1.0
+      ]
+    },
+    {
+      "name": "RightLowerLeg",
+      "parent": "RightUpperLeg",
+      "source_joint": [
+        -0.08911134675145149,
+        0.22124798583984376,
+        0.05273723229765892
+      ],
+      "game_joint": [
+        0.5004677316628845,
+        -0.43449999999999966,
+        -0.021533265531967938
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        0.5004677316628845,
+        -0.43449999999999966,
+        -0.021533265531967938,
+        1.0
+      ]
+    },
+    {
+      "name": "RightFoot",
+      "parent": "RightLowerLeg",
+      "source_joint": [
+        -0.09581568278372288,
+        0.07048608398437499,
+        0.07189654372632504
+      ],
+      "game_joint": [
+        0.5381335646713972,
+        -1.2814999999999999,
+        -0.12917277246547343
+      ],
+      "gltf_bind_game_world_column_major": [
+        -5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        5.618130240967611,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -5.618130240967611,
+        0.0,
+        0.5381335646713972,
+        -1.2814999999999999,
+        -0.12917277246547343,
+        1.0
+      ]
+    }
+  ],
+  "proxy_joint_position_error": 2.818173083557098e-07,
+  "integration_requirements": [
+    "Import as Custom to preserve continuous skin; do not pass through rigid convert.py.",
+    "Keep complete invisible R15 proxy parts/Motor6Ds, verified Animate, Humanoid/HP/collision/movement/server authority.",
+    "Visual meshes are noncolliding; imported Bone bind CFrames must be captured and retargeted against live proxy part delta.",
+    "Evaluate Bone.Transform locally on every client after Animator; Transform is not replicated.",
+    "Bone.Transform = Bone.CFrame^-1 * desiredParentWorld^-1 * desiredBoneWorld. Account for original bind rotation, not just raw Motor6D.Transform.",
+    "Never mark ready/register without Studio preload/rest/walk/jump/F/Q/death/OFF/ON tests."
+  ],
+  "sources": [
+    "https://create.roblox.com/docs/art/modeling/rigging",
+    "https://create.roblox.com/docs/studio/importer",
+    "https://create.roblox.com/docs/reference/engine/classes/Bone",
+    "https://devforum.roblox.com/t/skinned-meshparts-are-live/831011"
+  ]
+}

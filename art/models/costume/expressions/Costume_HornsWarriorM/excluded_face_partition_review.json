@@ -1,0 +1,10 @@
+{
+  "avatar": "Costume_HornsWarriorM",
+  "source_rig_sha256": "57bfeed4f0b747984d7807e0f691794014c53c5ddd69f92edfedfe579e100235",
+  "head_sha256": "6beca780357afb0c32c4b1d63a9f8cc2247ddf08e62dcc96c370460051cdc39e",
+  "reviewed": true,
+  "excluded_original_skin_triangles": 0,
+  "records": [],
+  "original_skin_uv_unchanged": true,
+  "geometry_mutations": 0
+}

@@ -1,0 +1,22 @@
+{
+  "avatar": "Costume_HornsArcherM",
+  "state": "SoftSmile",
+  "png": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_SoftSmile_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "e63def068e084c6c01afefd769d48433c9d6147806978c7120c6e083533db107",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-02bb2635-7767-47f3-af6c-6fd8b81da00a.png",
+  "prompt": "art/models/costume/expressions/Costume_HornsArcherM/prompts/SoftSmile.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HornsArcherM/previews/SoftSmile_front.png",
+    "art/models/costume/expressions/Costume_HornsArcherM/previews/SoftSmile_quarter.png"
+  ]
+}

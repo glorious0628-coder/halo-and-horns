@@ -1,0 +1,74 @@
+{
+  "avatar": "Costume_NeutralWarriorM",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed; profile is preliminary until 3D expression QA passes",
+  "source_sha256": "0aecac75ca002dfac8646ce981820137b7a94966e6af6f2beb0d75141fb2ebfd",
+  "mouth_center_screen": [
+    387,
+    655
+  ],
+  "screen_scale": [
+    1.35,
+    1.2
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      215,
+      415,
+      360,
+      530
+    ],
+    [
+      414,
+      410,
+      558,
+      530
+    ]
+  ],
+  "eye_boxes": [
+    [
+      201,
+      513,
+      358,
+      610
+    ],
+    [
+      423,
+      513,
+      574,
+      611
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.085
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0.08,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "runtime_validated": false,
+  "mouth_flatten_radius": [
+    60,
+    48
+  ],
+  "mouth_cap_radius": [
+    55,
+    42
+  ]
+}

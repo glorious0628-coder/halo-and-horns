@@ -1,0 +1,23 @@
+{
+  "input_size": [
+    1024,
+    1024
+  ],
+  "output_size": [
+    1254,
+    1254
+  ],
+  "analysis_only_normalized_in_memory": true,
+  "original_unchanged": true,
+  "outside_mouth_mean_absolute_rgb_error": 5.489514970017487,
+  "outside_mouth_pixels_any_channel_changed_over_20_ratio": 0.06674769700702628,
+  "uv_foreground_iou": 0.9788314108565473,
+  "uv_foreground_boundary_difference_ratio": 0.018285751342773438,
+  "accepted": false,
+  "roblox_uploaded": false,
+  "reason": "Offline 3D render still shows original open smiling mouth; mouth texture spans many scattered UV islands. Do not upload or expand batch.",
+  "render_verified": true,
+  "source_glb_unchanged": true,
+  "source_mesh_uv_unchanged": true,
+  "expression_success": false
+}

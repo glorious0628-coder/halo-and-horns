@@ -1,0 +1,100 @@
+{
+  "avatar": "Costume_HornsWarriorM",
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approved_human_avatar_scope": 18,
+  "target_total_textures": 54,
+  "actual_preferred_textures": 3,
+  "head_asset": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_HeadExpressions_R15.glb",
+  "head_sha256": "6beca780357afb0c32c4b1d63a9f8cc2247ddf08e62dcc96c370460051cdc39e",
+  "import_asset_budget": 5,
+  "extra_expression_pngs_outside_glb": 2,
+  "full_set_maximum_import_assets": 7,
+  "needs_new_head_mesh_import": true,
+  "body_reimport_required": true,
+  "body_parts_reimport_required": [
+    "UpperTorso"
+  ],
+  "original_models_unchanged": true,
+  "studio_untouched": true,
+  "paid_api_calls": 0,
+  "uploads": 0,
+  "records": [
+    {
+      "avatar": "Costume_HornsWarriorM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "401eb33583a5fe7707fe5cdbab2f21e1f8b1e3765254e46cc4ef5b6db9297277",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-7199f971-d6f9-494f-b09c-d90091a1443d.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsWarriorM/prompts/Neutral.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "평소",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsWarriorM/previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_HornsWarriorM/previews/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HornsWarriorM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "1fcee35f4adcdce00183294e3e2a6bd38f246bc78805b48db10015368595e1d9",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-65c8c129-37dd-4211-91ce-382ff08efa96.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsWarriorM/prompts/SoftSmile.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/유저 대화",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsWarriorM/previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_HornsWarriorM/previews/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HornsWarriorM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "20553923a185ae4856dc3daf8b4e88f5c96027629717d37f6e9f85ec7fc45481",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-68106a6e-e7d9-40c9-ae06-1a1bed676d21.png",
+      "prompt": "art/models/costume/expressions/Costume_HornsWarriorM/prompts/Serious.txt",
+      "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "공격/피격",
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HornsWarriorM/previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_HornsWarriorM/previews/Serious_quarter.png"
+      ]
+    }
+  ],
+  "runtime_validated": false,
+  "offline_visual_review": "All three state front and 30-degree quarter renders reviewed with unchanged original body context; mouth closed and old duplicate brows checked",
+  "limitations": [
+    "Roblox head import, texture upload, automatic state switching and runtime QA remain.",
+    "Other human avatars require their own reviewed facial profiles and actual offline previews."
+  ]
+}

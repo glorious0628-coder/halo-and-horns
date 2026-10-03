@@ -1,0 +1,25 @@
+{
+  "avatar": "Costume_HaloMageF",
+  "state": "Serious",
+  "png": "art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_Serious_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "bf09db415f1e697d4585b31a4eaf5ed2172e1b3eeaa122ae130ff6e248ce3a0b",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-5592d472-d4c0-4a7c-b78e-89f65944f707.png",
+  "prompt": "art/models/costume/expressions/Costume_HaloMageF/prompts/Serious.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HaloMageF/previews/Serious_front.png",
+    "art/models/costume/expressions/Costume_HaloMageF/previews/Serious_quarter.png"
+  ],
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

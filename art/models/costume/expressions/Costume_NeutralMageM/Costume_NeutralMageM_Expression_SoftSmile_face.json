@@ -1,0 +1,22 @@
+{
+  "avatar": "Costume_NeutralMageM",
+  "state": "SoftSmile",
+  "png": "art/models/costume/expressions/Costume_NeutralMageM/Costume_NeutralMageM_Expression_SoftSmile_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "63a8a3a224e816c5e719cf85f24c3738bacd4d3ab4cca650b798452a0adf06eb",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-14802f94-8b12-4d5a-ad16-6f307226ef9a.png",
+  "prompt": "art/models/costume/expressions/Costume_NeutralMageM/prompts/SoftSmile.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_NeutralMageM/previews/SoftSmile_front.png",
+    "art/models/costume/expressions/Costume_NeutralMageM/previews/SoftSmile_quarter.png"
+  ]
+}

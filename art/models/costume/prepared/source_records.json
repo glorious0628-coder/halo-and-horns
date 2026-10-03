@@ -1,0 +1,2057 @@
+{
+  "schema": 1,
+  "date": "2026-10-04",
+  "packages": [
+    {
+      "kind": "rigid_R15_pending_source",
+      "name": "Costume_HaloWarriorF_material_front_fixed",
+      "source": "build/costume_r15/restored_material_sources/Costume_HaloWarriorF_rig_material_restored.glb",
+      "source_sha256": "43ef3a0c1f9fe525c7146336f01b29a63013bc5f263a320ff22e8b000abe0912",
+      "source_file_unchanged": true,
+      "meshes": 18,
+      "joints": 15,
+      "batch_asset_estimates": [
+        10,
+        10,
+        5
+      ],
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/joints.json",
+          "sha256": "e00fad424ee29e23740b1a631469542f776be906a84d0b36ce0f8592891caf2d",
+          "bytes": 73911,
+          "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/batch_01.glb",
+          "sha256": "7aff516d34ff8294041ab6d42ca2eec8255e8670b94b3716bb909831f9865c98",
+          "bytes": 3160480,
+          "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/batch_01.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/batch_02.glb",
+          "sha256": "7cbe21c9efb77d7f421ea4bcce691534ea279d7a130a6c6859d69d61e58d0793",
+          "bytes": 1739208,
+          "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/batch_02.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/batch_03.glb",
+          "sha256": "95d5e6d7856eb43510e3a21a1ecb46cef0ff752557fa00d87d50151d9f0fbbe8",
+          "bytes": 1612324,
+          "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/batch_03.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/assembly_manifest.json",
+          "sha256": "5a160c633d0191e7d91a2108805260d32b8da25281092e3ea43b638d21dcab17",
+          "bytes": 33372,
+          "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/assembly_manifest.json"
+        }
+      ]
+    },
+    {
+      "kind": "rigid_R15_pending_source",
+      "name": "Costume_HaloMageM_material_front_fixed",
+      "source": "build/costume_r15/restored_material_sources/Costume_HaloMageM_rig_material_restored.glb",
+      "source_sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546",
+      "source_file_unchanged": true,
+      "meshes": 17,
+      "joints": 15,
+      "batch_asset_estimates": [
+        10,
+        10,
+        4
+      ],
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/joints.json",
+          "sha256": "bac03095b53e413fc2aea32af2e01aba69e0a10219b178a4c2664def1135e5ce",
+          "bytes": 33987,
+          "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/batch_01.glb",
+          "sha256": "791538ce07c4b83bd62bb78711a8b0a35e53cd2bf772ffedd5aa29e0a8d9ade2",
+          "bytes": 3115228,
+          "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/batch_01.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/batch_02.glb",
+          "sha256": "575bdd9e98d31ea2af18e084010b0d72905ed2937255edf9c17c146c7ccac99f",
+          "bytes": 1612292,
+          "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/batch_02.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/batch_03.glb",
+          "sha256": "3fc6048d4f5e0cf4f3d489a24a7922d987362e3c16691b6240c4a87d108cf69a",
+          "bytes": 1360420,
+          "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/batch_03.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/assembly_manifest.json",
+          "sha256": "2f83656a11a1a3754cbe4dcc04cdd597816a97bafa795806430ad8d3775c469e",
+          "bytes": 32575,
+          "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/assembly_manifest.json"
+        }
+      ]
+    },
+    {
+      "kind": "rigid_R15_pending_source",
+      "name": "Costume_HaloMageF_material_front_face_fixed",
+      "source": "build/costume_r15/restored_material_sources/Costume_HaloMageF_rig_material_restored.glb",
+      "source_sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+      "source_file_unchanged": true,
+      "meshes": 19,
+      "joints": 15,
+      "batch_asset_estimates": [
+        10,
+        10,
+        7
+      ],
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/joints.json",
+          "sha256": "26f07e4a4abb41467ddf6fb1199d5b2ecb64c45b6470d99eb9c88db2fefc9270",
+          "bytes": 37709,
+          "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/batch_01.glb",
+          "sha256": "4e50502309152f654f32d5b7c630fdcfeb5d5a1bfb4deabebf97930b42df5de7",
+          "bytes": 2931604,
+          "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/batch_01.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/batch_02.glb",
+          "sha256": "471a61add79ad73d1bb89811799b24ec1632ccc28ca2f7f77da249992c2d5e50",
+          "bytes": 2721132,
+          "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/batch_02.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/batch_03.glb",
+          "sha256": "4f44c84e2970f5638800148d2cdb498c8a52359b85d019161c6642685a3c6b04",
+          "bytes": 1515836,
+          "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/batch_03.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/assembly_manifest.json",
+          "sha256": "8e244b84c6b9ab850f6619df7937ba82788dd705e05f59730b957ee3242ff5bf",
+          "bytes": 33492,
+          "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/assembly_manifest.json"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/face_reassignment.json",
+          "sha256": "717541a736cc418c3aed98bf5213a4e155e229806fbc7450737c58a5d8d19232",
+          "bytes": 2246,
+          "copied_from": "art/models/costume/expressions/Costume_HaloMageF/verified_head_face_reassignment.json"
+        }
+      ]
+    },
+    {
+      "kind": "rigid_R15_pending_source",
+      "name": "Costume_HornsWarriorM_face_fixed",
+      "source": "art/models/tripo/Costume_HornsWarriorM_rig_e84669f3-92b1-4774-9269-0da605a9fdcd.glb",
+      "source_sha256": "57bfeed4f0b747984d7807e0f691794014c53c5ddd69f92edfedfe579e100235",
+      "source_file_unchanged": true,
+      "meshes": 18,
+      "joints": 15,
+      "batch_asset_estimates": [
+        10,
+        10,
+        5
+      ],
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/joints.json",
+          "sha256": "2301c792e7f716f2d84c180c7969a4ddb1f460ade0f0e967b02d3203704de094",
+          "bytes": 34001,
+          "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/batch_01.glb",
+          "sha256": "9cb37584aed1b2fddff67c7f50881dba2aba6d862cca2fd5477cc47f539c49b4",
+          "bytes": 3143476,
+          "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/batch_01.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/batch_02.glb",
+          "sha256": "a83e7964a4274a59e7f0559d85c33743c5c8cfcb1e2b97bafa4252dc98fdcc42",
+          "bytes": 1456960,
+          "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/batch_02.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/batch_03.glb",
+          "sha256": "7d87a5361ec60f745a5f8a341d979c56ea858fed8970b29953ce783f3c7ee387",
+          "bytes": 1335060,
+          "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/batch_03.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/assembly_manifest.json",
+          "sha256": "1fab0ab239411edd764add82e5da615634a4fd93812a8523a5f9e19bcd1b13f7",
+          "bytes": 31007,
+          "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/assembly_manifest.json"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/face_reassignment.json",
+          "sha256": "a231da9b244f3b3a75a397e7ee2553620c25a0e46161dbc0c332600286e68d68",
+          "bytes": 1360,
+          "copied_from": "art/models/costume/expressions/Costume_HornsWarriorM/verified_head_face_reassignment.json"
+        }
+      ]
+    },
+    {
+      "kind": "rigid_R15_pending_source",
+      "name": "Costume_HornsArcherM_face_fixed_v2",
+      "source": "art/models/tripo/Costume_HornsArcherM_rig_1c4762a2-29bd-4e14-baca-488d2d44a98b.glb",
+      "source_sha256": "192bebb4f66ca9573ebc18c1021f6b30632e95dcdd276e05d16cf053e4117691",
+      "source_file_unchanged": true,
+      "meshes": 19,
+      "joints": 15,
+      "batch_asset_estimates": [
+        10,
+        10,
+        7
+      ],
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/joints.json",
+          "sha256": "a928be6856d04791401f59979bf813ea4995fde5520b939093c9e39eed8ce9dc",
+          "bytes": 113137,
+          "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/batch_01.glb",
+          "sha256": "4f39102b48b1e3ae6cd02079b3330c7b67f6e1c7ff0d2da8615f38ab36a4bc84",
+          "bytes": 3107668,
+          "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/batch_01.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/batch_02.glb",
+          "sha256": "de32928aa739aa1b4433a48e4bddb7988288074d60d5dbf74dd843711caa684d",
+          "bytes": 2916176,
+          "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/batch_02.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/batch_03.glb",
+          "sha256": "f795793e3490dd5d1148ac0f7ef798a3eab780f904d192fe3d20a2dc36380c31",
+          "bytes": 1432868,
+          "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/batch_03.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/assembly_manifest.json",
+          "sha256": "88a413077c7b880317341992583de9262f265982905454dd3beebb5e4ad23180",
+          "bytes": 34581,
+          "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/assembly_manifest.json"
+        },
+        {
+          "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/face_reassignment.json",
+          "sha256": "dda203bd446fa1373c4590218552db586205bf0a03e59bab67b00e8e327329d4",
+          "bytes": 51465,
+          "copied_from": "build/expr_qa/Costume_HornsArcherM/face_reassignment_candidates_v2.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HaloArcherM_preserved_v2",
+      "source": "art/models/tripo/Costume_HaloArcherM_rig_5c617179-323f-461c-961d-aeb62f216b25.glb",
+      "source_sha256": "48b60fffa4d6c348f364f5f85dfef4ceaf31eceacb3477a015cae99dfaea4d37",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/Costume_HaloArcherM_skin.glb",
+          "sha256": "7d09b5aec17a52f0a161835bdab5db2a81dcd035baa1f2f8f64a226cb6977756",
+          "bytes": 3916724,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/Costume_HaloArcherM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/Costume_HaloArcherM_skin.skin.json",
+          "sha256": "0dfe7e0b167c8dbfbb1d3bcf6790bdde8495951851795faaf8a31c0357861412",
+          "bytes": 30683,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/Costume_HaloArcherM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/proxy_joints.json",
+          "sha256": "f823aae2cc7c9fc47e5a8c29c9cafe781eb10a55a4b08cb0035acb21885d4535",
+          "bytes": 32927,
+          "copied_from": "build/costume_r15/Costume_HaloArcherM/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/motion_qa_final_v6.json",
+          "sha256": "62d29a4497a9c7878b24f890d46dc0ad3486dee4a5eded973a993b390a9e6b8e",
+          "bytes": 5872,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/visual_review_final_v6.json",
+          "sha256": "b2c8a45caa286291dc8402f9bce79add047598168069ba9a289fd6614aa6281d",
+          "bytes": 2884,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/package.json",
+          "sha256": "7eb6411df7ca5a966f1139a5d5f32ed53ffd528864787dfb77885ecd2aaf4c82",
+          "bytes": 1407,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/Costume_HaloArcherM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/visual_review.json",
+          "sha256": "df93c775fb409066e5a876ebaa81d6d02eb84bb557045f0d87260de558be1801",
+          "bytes": 5022,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/visual_review.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/motion_qa.json",
+          "sha256": "d5b95b9d9acea637b9dfdc798e974c72c9e3b4de7a07d185a9889c6b39e5d96f",
+          "bytes": 3863,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/motion_qa/motion_qa.json"
+        }
+      ]
+    },
+    {
+      "kind": "skin_R15_proxy_pending_source",
+      "name": "Costume_NeutralWarriorF_inferred_skin_v3",
+      "rig_origin": "inferred_manual_candidate",
+      "source": "art/models/costume/fixed/Costume_NeutralWarriorF.glb",
+      "source_sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+      "source_file_unchanged": true,
+      "triangles": 14710,
+      "bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorF_inferred_skin_v3/Costume_NeutralWarriorF_skin.glb",
+          "sha256": "319c07b1b688385bb4060834db8f18fb006a59d226f12370a17d643229c61939",
+          "bytes": 3918824,
+          "copied_from": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/Costume_NeutralWarriorF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorF_inferred_skin_v3/Costume_NeutralWarriorF_skin.skin.json",
+          "sha256": "10594bf3e4a8c5d9eafc098a1da3f9debe1ef665eda19f6a94cbafaede6bcae7",
+          "bytes": 2029,
+          "copied_from": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/Costume_NeutralWarriorF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorF_inferred_skin_v3/manual_landmarks.json",
+          "sha256": "52244266013508e6c83dd8dc5cc68877a1521da0cb9c4602120512c25e820ffa",
+          "bytes": 340526,
+          "copied_from": "build/manual_partition_candidates/NeutralWarriorF_v3/manual_landmarks.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorF_inferred_skin_v3/runtime_contract.json",
+          "sha256": "f8c72368eeba7bcf863f95829fe689cee3a7c5a784c522b01c8143825b2f6a0d",
+          "bytes": 12521,
+          "copied_from": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/runtime_contract.json"
+        }
+      ]
+    },
+    {
+      "kind": "skin_R15_proxy_pending_source",
+      "name": "Costume_NeutralArcherM_inferred_skin_v3",
+      "rig_origin": "inferred_manual_candidate",
+      "source": "art/models/costume/fixed/Costume_NeutralArcherM.glb",
+      "source_sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+      "source_file_unchanged": true,
+      "triangles": 14397,
+      "bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherM_inferred_skin_v3/Costume_NeutralArcherM_skin.glb",
+          "sha256": "fce99186fffb203d7b973e60611faa5195124f4f23b5e73aa2212ce607a4ffac",
+          "bytes": 3828484,
+          "copied_from": "build/manual_partition_candidates/NeutralArcherM_skin_v3/Costume_NeutralArcherM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherM_inferred_skin_v3/Costume_NeutralArcherM_skin.skin.json",
+          "sha256": "694ae3597db51c936e153613dbe4678050b2f643f45170608eccc901d6d36dc7",
+          "bytes": 2015,
+          "copied_from": "build/manual_partition_candidates/NeutralArcherM_skin_v3/Costume_NeutralArcherM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherM_inferred_skin_v3/manual_landmarks.json",
+          "sha256": "cf65a260e409989674c725fa7a52a6d993b7bcb37e1ee83e01b7d02eee10db80",
+          "bytes": 340556,
+          "copied_from": "build/manual_partition_candidates/NeutralArcherM_v3/manual_landmarks.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherM_inferred_skin_v3/runtime_contract.json",
+          "sha256": "852d2720436d73b5e1155f14d93b8fd2fced253d020821bb2755e533a03d5261",
+          "bytes": 12629,
+          "copied_from": "build/manual_partition_candidates/NeutralArcherM_skin_v3/runtime_contract.json"
+        }
+      ]
+    },
+    {
+      "kind": "skin_R15_proxy_pending_source",
+      "name": "Costume_HaloArcherF_inferred_skin_v1",
+      "rig_origin": "inferred_manual_candidate",
+      "source": "art/models/costume/fixed/Costume_HaloArcherF.glb",
+      "source_sha256": "07451eec71f0b9785f867a53aac20e66d4af65e8259dce574a7c684826dad976",
+      "source_file_unchanged": true,
+      "triangles": 14545,
+      "bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/Costume_HaloArcherF_skin.glb",
+          "sha256": "0b72fb526d6049712ade5db365de9deffa3264e9a80875a9191b089d3bbcc26f",
+          "bytes": 4036540,
+          "copied_from": "build/manual_partition_candidates/HaloArcherF_skin_v1/Costume_HaloArcherF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/Costume_HaloArcherF_skin.skin.json",
+          "sha256": "5292757a608092a21b561e65b0f35074ec800920d51618a95bb551a49d3672c9",
+          "bytes": 1994,
+          "copied_from": "build/manual_partition_candidates/HaloArcherF_skin_v1/Costume_HaloArcherF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/manual_landmarks.json",
+          "sha256": "7451ae581fbd866cf9a1b8ff117e043b052afe187636d7f2c8892eb8baabf166",
+          "bytes": 339248,
+          "copied_from": "build/manual_partition_audit/HaloArcherF_manual_landmarks_v3.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/visual_review.json",
+          "sha256": "30b567365ef2bf862fd0d8a9a409af00180ad4b249050380430b30d764e14061",
+          "bytes": 5558,
+          "copied_from": "build/manual_partition_candidates/HaloArcherF_skin_v1/visual_review.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/skin_motion_qa.json",
+          "sha256": "2e9f31626032b746cc99773c1d8d64175e0d578cb55f9d1bf3086af03f8eb5dc",
+          "bytes": 4395,
+          "copied_from": "build/manual_partition_candidates/HaloArcherF_skin_v1/motion_qa/skin_motion_qa.json"
+        }
+      ]
+    },
+    {
+      "kind": "skin_R15_proxy_pending_source",
+      "name": "Costume_HornsArcherF_inferred_skin_v1",
+      "rig_origin": "inferred_manual_candidate",
+      "source": "art/models/costume/fixed/Costume_HornsArcherF.glb",
+      "source_sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+      "source_file_unchanged": true,
+      "triangles": 13949,
+      "bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/Costume_HornsArcherF_skin.glb",
+          "sha256": "0c5000a1cf32e27bbfe574d62c9536a3a08e203a95987bff21908f592970474a",
+          "bytes": 3803276,
+          "copied_from": "build/manual_partition_candidates/HornsArcherF_skin_v1/Costume_HornsArcherF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/Costume_HornsArcherF_skin.skin.json",
+          "sha256": "cf476cb15edd92148245d9baee590fb81c65fb0fb20d5e81c96e94e0354f3698",
+          "bytes": 1998,
+          "copied_from": "build/manual_partition_candidates/HornsArcherF_skin_v1/Costume_HornsArcherF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/manual_landmarks.json",
+          "sha256": "52fc94aefa16b3da2b9416cef220af2346adb3cb74f4090400806f4617733a06",
+          "bytes": 328723,
+          "copied_from": "build/manual_partition_audit/HornsArcherF_manual_landmarks_v3.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/visual_review.json",
+          "sha256": "7c435df77b6069637817d0235621c17f273436858e6ec122d67250f2a7242708",
+          "bytes": 5566,
+          "copied_from": "build/manual_partition_candidates/HornsArcherF_skin_v1/visual_review.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/skin_motion_qa.json",
+          "sha256": "91c5e4b5c09f93e0722658beec2931f65e006ecbd8c19c6c01e041458ea586b8",
+          "bytes": 4401,
+          "copied_from": "build/manual_partition_candidates/HornsArcherF_skin_v1/motion_qa/skin_motion_qa.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HaloWarriorM_preserved_v1",
+      "source": "art/models/tripo/Costume_HaloWarriorM_rig_117c8bcf-b2f2-4c24-a95c-dc420db14658.glb",
+      "source_sha256": "9e15d92825b0eb919055ccb24a5eaf38ed3e29e6f7bf35f1684bbb459c08cca0",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.glb",
+          "sha256": "4a4448f556a9c0b8eaf10631ff73f21e28235a35af7944f60dbf99ff03899268",
+          "bytes": 3952812,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.skin.json",
+          "sha256": "33e5f83393571e2b806b5d1d13452761bf2ad617454cfb2b11f5100872228e08",
+          "bytes": 30917,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/proxy_joints.json",
+          "sha256": "48e10963958514f4d4748ae22153f3b2c39b3ed8c235fbbe5e5330dc222aba8f",
+          "bytes": 33811,
+          "copied_from": "build/costume_r15/Costume_HaloWarriorM/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "9cd53671d48d9c5dffb9655e180bba361f01861f1a3a9c48c4e8af029da0d669",
+          "bytes": 5879,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/visual_review_final_v6.json",
+          "sha256": "5464434bd0affd89ebba6063aa52094c24368be45842722ce9eec4436e9fc782",
+          "bytes": 1199,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/package.json",
+          "sha256": "03eb3bf36b31b05737ff6067336702decafd870242fa2a5892d4d1e3b9a44e71",
+          "bytes": 1407,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HaloWarriorF_preserved_v1",
+      "source": "build/costume_r15/restored_material_sources/Costume_HaloWarriorF_rig_material_restored.glb",
+      "source_sha256": "43ef3a0c1f9fe525c7146336f01b29a63013bc5f263a320ff22e8b000abe0912",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.glb",
+          "sha256": "028c52651a0fe42d3d0ef77a38639f1349b3e9d8622b933f7672f3f38531e2f6",
+          "bytes": 6660180,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.skin.json",
+          "sha256": "76192b768c49f37904eeacf0c6eb0f39599c25505269bafd785402ecf2ebd083",
+          "bytes": 31041,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/proxy_joints.json",
+          "sha256": "e00fad424ee29e23740b1a631469542f776be906a84d0b36ce0f8592891caf2d",
+          "bytes": 73911,
+          "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "ea13707e7f9d789ec16a78fe037f0809adc44c2b28f125f967103feb7378b8ec",
+          "bytes": 5910,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/visual_review_final_v6.json",
+          "sha256": "92642bc1839bbc0a0a7e8611041caebe93886f2d2e27161f2da5137530cf16a8",
+          "bytes": 3018,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/package.json",
+          "sha256": "36c8ebc25e61ac9f9c2da7cc2e53a1ef3bc82102da7d7a9c28ab88f7280c2016",
+          "bytes": 1428,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HaloMageM_preserved_v1",
+      "source": "build/costume_r15/restored_material_sources/Costume_HaloMageM_rig_material_restored.glb",
+      "source_sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.glb",
+          "sha256": "11722b180f091066987653b888cdcd157f98946f7cb7c6948262acd20e5b8782",
+          "bytes": 6355104,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.skin.json",
+          "sha256": "f121e8002510ea4b9884c39db0d89a83961a719871ae15d99f8d648ff73e2f7a",
+          "bytes": 31070,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/proxy_joints.json",
+          "sha256": "bac03095b53e413fc2aea32af2e01aba69e0a10219b178a4c2664def1135e5ce",
+          "bytes": 33987,
+          "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "279fd5f38db59318c5577cb54c3020a8cd2db0c5b0b8c6edc2fb38c450a24aa6",
+          "bytes": 5900,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/visual_review_final_v6.json",
+          "sha256": "6f6c57cc4ace5a638a3173d3ad0ddbdfec888451b64cd9950f7fecb60e3ef8f4",
+          "bytes": 1190,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/package.json",
+          "sha256": "29cc1c8daaa5b258efec885829b74fdb2ccf35bcf7eb3805f6778b3e370f982b",
+          "bytes": 1417,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HaloMageF_preserved_v1",
+      "source": "build/costume_r15/restored_material_sources/Costume_HaloMageF_rig_material_restored.glb",
+      "source_sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.glb",
+          "sha256": "d5386846aefeb8fed9b4cd3f9f41611b262825dc76860bfa03def6918d2fb24f",
+          "bytes": 6241224,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.skin.json",
+          "sha256": "e124abb78a7c35b9f095e6097ebb8d646b2427cdba1bb16f9f3668c57e6b44c4",
+          "bytes": 31047,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/proxy_joints.json",
+          "sha256": "26f07e4a4abb41467ddf6fb1199d5b2ecb64c45b6470d99eb9c88db2fefc9270",
+          "bytes": 37709,
+          "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "e82f4d99062c9bc8293ed73070cd1944e43cdcd52767a6d1222065d3d2273e65",
+          "bytes": 5892,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/visual_review_final_v6.json",
+          "sha256": "425ba0c976721f7b975d49c0f2ba32760224ebaf4e69d0d96a38041548d03a30",
+          "bytes": 2976,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/package.json",
+          "sha256": "3e08dd8a0e26aa98a32ba670e1a3cdfaac09ca6135ed401a06edfed67637c22e",
+          "bytes": 1415,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HornsWarriorM_preserved_v1",
+      "source": "art/models/tripo/Costume_HornsWarriorM_rig_e84669f3-92b1-4774-9269-0da605a9fdcd.glb",
+      "source_sha256": "57bfeed4f0b747984d7807e0f691794014c53c5ddd69f92edfedfe579e100235",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.glb",
+          "sha256": "e5537e521fd98af7c8e248ec5bc215af4b5544ceb6e1c49cb94378b33713359e",
+          "bytes": 3850380,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.skin.json",
+          "sha256": "789fe806e0c33d6be1fedc34f0f7ceb2bb910a82e058c5f1e54eba7f9bbec30a",
+          "bytes": 30919,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/proxy_joints.json",
+          "sha256": "2301c792e7f716f2d84c180c7969a4ddb1f460ade0f0e967b02d3203704de094",
+          "bytes": 34001,
+          "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "940247d35761b9517044fbc6ab15db804a4debd212d136c9140c35621ae5d429",
+          "bytes": 5898,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/visual_review_final_v6.json",
+          "sha256": "86ac1c66b2108f8dab24d9d8c927af09fc98dc4df178d15d1afb15341118a20d",
+          "bytes": 3032,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/package.json",
+          "sha256": "1596d7fefefa1431ff48ea1da5fdce426f73fa36b63d2562de95ff0246d4da9b",
+          "bytes": 1414,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HornsWarriorF_preserved_v1",
+      "source": "art/models/tripo/Costume_HornsWarriorF_rig_16a7c6a7-e024-4edd-8f52-d8400b9d5660.glb",
+      "source_sha256": "881af71342a5386ed7248b8b2c3a39414112954b2b57cc94636c70ae47f01050",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.glb",
+          "sha256": "5c0ce4d7a2c8b8a2a241a157b715ab812ff2f1860844ee2da6c7d8ed1fb312b7",
+          "bytes": 3961072,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.skin.json",
+          "sha256": "6651fd3ec59c8ec9d4307a4a02926e39852cd6a7fbc97307974ce5e69c589901",
+          "bytes": 30910,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/proxy_joints.json",
+          "sha256": "680fe2822e34d5f84460b2ff021db03adc54c008f433b795ac6e6e7874ba6a2c",
+          "bytes": 34363,
+          "copied_from": "build/costume_r15/Costume_HornsWarriorF/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "56a7072e53475472007353dfdcc3d274417cde651daa3da19c596ebee855c650",
+          "bytes": 5890,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/visual_review_final_v6.json",
+          "sha256": "c3c2409b027aa0d1068dbc5eaf1cd53550ede06e1b2f7cc7c226cc45bafb8b75",
+          "bytes": 1202,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/package.json",
+          "sha256": "300ad98b91d7742a90670a4621a748b396e55b1c6aa328b87be69cd4ec2f9472",
+          "bytes": 1414,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HornsMageM_preserved_v1",
+      "source": "art/models/tripo/Costume_HornsMageM_rig_c607eae7-d06e-4e2d-a95f-05b429771ec7.glb",
+      "source_sha256": "d93eebfa6f4a2bac20a1f4802bd565d23a3b85b36c82081c3f907493ec113f08",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.glb",
+          "sha256": "0adfc9fa8827cd02229db055afd4cd68afde342cac1af16cb6437ec2545ad477",
+          "bytes": 3869136,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.skin.json",
+          "sha256": "44d4fb7f8746bb777a1d0931ce73cf4cb908e8b5ee8281a4a1fa7291bc1576b8",
+          "bytes": 30881,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/proxy_joints.json",
+          "sha256": "5d68ca4ad627cb3e34b8daed3b4a3b91783db49ada6d76bb82a2727ed0ec655e",
+          "bytes": 38032,
+          "copied_from": "build/costume_r15/Costume_HornsMageM/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "0d6df99e0ff62b146706a9d22b18bbe45c67b40d1c496eae01070de1b123e8da",
+          "bytes": 5886,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/visual_review_final_v6.json",
+          "sha256": "ba41761dd19456ffd904453ef2063a7c8f6412ae99a5efa414390ae0e722932f",
+          "bytes": 1193,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/package.json",
+          "sha256": "7c0a196d4e163974faf6aa21607fab233aef052baa71f591bfd0a40daad61001",
+          "bytes": 1399,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HornsMageF_preserved_v1",
+      "source": "art/models/tripo/Costume_HornsMageF_rig_1d458a15-2257-4e35-9980-cdf5cac63f05.glb",
+      "source_sha256": "966a7c03fd082cf7735ba2c9299360c03475a3be95b9a6919508b640f7b06019",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": true,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.glb",
+          "sha256": "4d9221b7d22d330b4989c3dc2368b3ff7ebca52932d72780f27ed027b41fd42b",
+          "bytes": 3931924,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.skin.json",
+          "sha256": "3f776fa966ca25980b6c9cbe22bfb895948f467a7a706c32d6bbbece422a74a6",
+          "bytes": 30905,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/proxy_joints.json",
+          "sha256": "56af54073216463f3b403a71f6f22a4ff9e9d12d83c8ff22805aedea15d01718",
+          "bytes": 314143,
+          "copied_from": "build/costume_r15/Costume_HornsMageF/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "9090fd5179197b0f147023842f6ab08a9b19e31a743d22ad4f5816f2a1f359e2",
+          "bytes": 5888,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/visual_review_final_v6.json",
+          "sha256": "0d14e31e2d3cb5f55233b80def06ef3205fb36b957dfd1624eea132b5e5a967d",
+          "bytes": 3127,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/package.json",
+          "sha256": "d36a76d5545025cf1b2c0d9c9a1c8345d453ddadbce7b17f0f9e3c65176edca3",
+          "bytes": 1402,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_HornsArcherM_preserved_v1",
+      "source": "art/models/tripo/Costume_HornsArcherM_rig_1c4762a2-29bd-4e14-baca-488d2d44a98b.glb",
+      "source_sha256": "192bebb4f66ca9573ebc18c1021f6b30632e95dcdd276e05d16cf053e4117691",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": true,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.glb",
+          "sha256": "c793d05d57116691d53e78489f073e53b269af3dd74d61f34fb0f9dd0251fc8c",
+          "bytes": 3915988,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.skin.json",
+          "sha256": "7c7b6df8200a1e72c7149bae1b0f7e9bacde0726ca7f222a30a81c643282bac5",
+          "bytes": 30956,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/proxy_joints.json",
+          "sha256": "a928be6856d04791401f59979bf813ea4995fde5520b939093c9e39eed8ce9dc",
+          "bytes": 113137,
+          "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "1efd9f889b71e71fb0f2c13f683da84a1831c61544533b1f889f650a6062a4ca",
+          "bytes": 5900,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/visual_review_final_v6.json",
+          "sha256": "a28f32ddf877cce7fdcb9446a1b7413d862c11c69047473ed0eb96f510fadafd",
+          "bytes": 3109,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/package.json",
+          "sha256": "8267517fb86c80b7cc15722cbd71de136e6c658189a52f2edcd37cb8b06be446",
+          "bytes": 1410,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_NeutralWarriorM_preserved_v1",
+      "source": "art/models/tripo/Costume_NeutralWarriorM_rig_b8e78766-7cd0-4190-a96a-c7d00c1c868b.glb",
+      "source_sha256": "739d6fb97ee49abce14e23ba481dc13c7836392051e134c3cc2fbedc4ce0b07c",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.glb",
+          "sha256": "b54e953b68d793d886ee68ac14c9ad0e797cb31054fc07519a2d1d8a297c7f34",
+          "bytes": 3988024,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.skin.json",
+          "sha256": "1305cbe86d62f10d59232a6eaaa6fc21d66bccc68696d416fb9b8b436e94a86a",
+          "bytes": 30891,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/proxy_joints.json",
+          "sha256": "b8ff636325050f8c3cba57e8dd8250a3f1b4b61e699ad0ec671ef61c6f20a200",
+          "bytes": 33078,
+          "copied_from": "build/costume_r15/Costume_NeutralWarriorM/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "f4c3887fc6701a7d2343d5fb5511d907ea4c19ec6541f0b6206d3c824733f4d3",
+          "bytes": 5886,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/visual_review_final_v6.json",
+          "sha256": "53d206706b37361804b2f5a57b9fceba6f36a9c760a8d1b92601d1bc32594f0d",
+          "bytes": 1208,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/package.json",
+          "sha256": "feceb7fd1de3beabce3c09731e83715c613513e5fc6a918ef417f974b833fb91",
+          "bytes": 1420,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_NeutralMageM_preserved_v1",
+      "source": "art/models/tripo/Costume_NeutralMageM_rig_db720f76-5798-453a-be0c-34b72e097ecd.glb",
+      "source_sha256": "eb751abcafcd88626f8302dc33ba005752b39b105589d3439396463608a26d06",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.glb",
+          "sha256": "62abccef62b87a9eaffece53c2ef664bd7f1f4bf9de773936570ad43c38a16ef",
+          "bytes": 3933000,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.skin.json",
+          "sha256": "a04d1a3a8ca2b1eee632963a5407c5f4b3b3bd47766b77cadefec57782c052a8",
+          "bytes": 30982,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/proxy_joints.json",
+          "sha256": "c83047e554c4059274ec7816222b70a668672736d9e58db04c54570ad29cacc1",
+          "bytes": 33382,
+          "copied_from": "build/costume_r15/Costume_NeutralMageM/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "17b3b258f6d63794406e1e4bc11c26629653aea3203567fa8b5527ac7ad671ec",
+          "bytes": 5887,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/visual_review_final_v6.json",
+          "sha256": "9533436db8ea9e0dd828b4024b17c11c0c3efb362387882a532295d8cb8be7c3",
+          "bytes": 3018,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/package.json",
+          "sha256": "db1fb220bfc2b43122c7467f371a05620306fedcf4eb86cb0c6aa5f6d62eed0a",
+          "bytes": 1410,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_NeutralMageF_preserved_v1",
+      "source": "art/models/tripo/Costume_NeutralMageF_rig_5b76f4c0-cff9-47f8-a090-dc43dbfc7a12.glb",
+      "source_sha256": "cfa23bd0075b4dd73cd6982261c9debcdbacf8777dd0967b5404180a86490f57",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": false,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.glb",
+          "sha256": "f8045886143d1973d00d68d67f96dbde6ffbbf36f2585beb0410b37368498f1e",
+          "bytes": 3781784,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.skin.json",
+          "sha256": "ee6c37cc5c4bcc03fbbb25f62b0c7e6403ee57736ad77a760dc4f2d4c8a0386b",
+          "bytes": 30924,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/proxy_joints.json",
+          "sha256": "41e7430da45cfcae9294e673d8277e69e39b178aba8718774889f5f41c551637",
+          "bytes": 33426,
+          "copied_from": "build/costume_r15/Costume_NeutralMageF/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "139e73cd44dcdb7b5cbc59ec14574503df3fffcb95aed7535808b00c5a61e2d8",
+          "bytes": 5882,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/visual_review_final_v6.json",
+          "sha256": "459c073384cae4fe81e81e7d924d96612594af90baf2fbca3ab817521a1d3bb2",
+          "bytes": 1199,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/package.json",
+          "sha256": "d9917c9290adbae4fa661bd7fded25a5e61fb1faa176afd242e25921b060d4f2",
+          "bytes": 1410,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.skin.json"
+        }
+      ]
+    },
+    {
+      "kind": "preserved_original_skin_pending",
+      "name": "Costume_NeutralArcherF_preserved_v1",
+      "source": "art/models/tripo/Costume_NeutralArcherF_rig_0eb31d8c-3641-48a5-b4d5-51f69894d359.glb",
+      "source_sha256": "12da1a661d2f6afae7c0322427a672930577901d17df40eaf59a4bc184773435",
+      "source_file_unchanged": true,
+      "meshes": 2,
+      "source_skin_bones": 23,
+      "principal_r15_bones": 15,
+      "estimated_assets": 5,
+      "rig_ready_for_game": false,
+      "studio_validation_claimed": false,
+      "weighting_quality_hold": true,
+      "files": [
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.glb",
+          "sha256": "e9008293bc893ea12bbeb69475db05c900eb829e28a61b3147a39b1f43811f7c",
+          "bytes": 3946472,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.glb"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.skin.json",
+          "sha256": "5358c581acae7bf18609a54f6586fc72367af9bd1430c62f56cd64890212beb3",
+          "bytes": 30906,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.skin.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/proxy_joints.json",
+          "sha256": "c3e765a61dfd966235eb90bbec15c7e3356cf2ad75919197688d236139ceb8b0",
+          "bytes": 32803,
+          "copied_from": "build/costume_r15/Costume_NeutralArcherF/joints.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/motion_qa_final_v6.json",
+          "sha256": "760eb0076cc8b53ea7b79e019a2abf0be49a61b370f023c12da88c33dae21918",
+          "bytes": 5898,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/motion_final_v6/motion_qa.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/visual_review_final_v6.json",
+          "sha256": "0da7e53f42e5b5638a4720d8e5dd343299d6f9406c7f9ab2dc9f5b7f3a483e15",
+          "bytes": 3137,
+          "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/visual_review_final_v6.json"
+        },
+        {
+          "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/package.json",
+          "sha256": "c33aec132c40c4fefd04ebb1dcb1b7f0c44a29982e7fd0fa480ed9b96e6a394f",
+          "bytes": 1418,
+          "generated_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.skin.json"
+        }
+      ]
+    }
+  ],
+  "material_recovery_sources": [
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloWarriorF_rig_material_restored.glb",
+      "sha256": "43ef3a0c1f9fe525c7146336f01b29a63013bc5f263a320ff22e8b000abe0912",
+      "bytes": 6640416,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloWarriorF_rig_material_restored.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloWarriorF_rig_material_restored.recovery.json",
+      "sha256": "22238dfa94473bad5608b7d5ef3e49a027414640b9bc9c5c5714b6e42691f6f7",
+      "bytes": 2008,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloWarriorF_rig_material_restored.recovery.json"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloMageM_rig_material_restored.glb",
+      "sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546",
+      "bytes": 6335304,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloMageM_rig_material_restored.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloMageM_rig_material_restored.recovery.json",
+      "sha256": "020447b465eb416ee04e65394e6d2884cfd725c554b3a9447f191100b9657f01",
+      "bytes": 1999,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloMageM_rig_material_restored.recovery.json"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloMageF_rig_material_restored.glb",
+      "sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+      "bytes": 6221448,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloMageF_rig_material_restored.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloMageF_rig_material_restored.recovery.json",
+      "sha256": "5440d8749cb6bccdf969a9c65b1e63d0ad6f07b31dad59f69b88ee15fa620116",
+      "bytes": 1996,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloMageF_rig_material_restored.recovery.json"
+    }
+  ],
+  "files": [
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloWarriorF_rig_material_restored.glb",
+      "sha256": "43ef3a0c1f9fe525c7146336f01b29a63013bc5f263a320ff22e8b000abe0912",
+      "bytes": 6640416,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloWarriorF_rig_material_restored.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloWarriorF_rig_material_restored.recovery.json",
+      "sha256": "22238dfa94473bad5608b7d5ef3e49a027414640b9bc9c5c5714b6e42691f6f7",
+      "bytes": 2008,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloWarriorF_rig_material_restored.recovery.json"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloMageM_rig_material_restored.glb",
+      "sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546",
+      "bytes": 6335304,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloMageM_rig_material_restored.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloMageM_rig_material_restored.recovery.json",
+      "sha256": "020447b465eb416ee04e65394e6d2884cfd725c554b3a9447f191100b9657f01",
+      "bytes": 1999,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloMageM_rig_material_restored.recovery.json"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloMageF_rig_material_restored.glb",
+      "sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+      "bytes": 6221448,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloMageF_rig_material_restored.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/sources/Costume_HaloMageF_rig_material_restored.recovery.json",
+      "sha256": "5440d8749cb6bccdf969a9c65b1e63d0ad6f07b31dad59f69b88ee15fa620116",
+      "bytes": 1996,
+      "copied_from": "build/costume_r15/restored_material_sources/Costume_HaloMageF_rig_material_restored.recovery.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/joints.json",
+      "sha256": "e00fad424ee29e23740b1a631469542f776be906a84d0b36ce0f8592891caf2d",
+      "bytes": 73911,
+      "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/batch_01.glb",
+      "sha256": "7aff516d34ff8294041ab6d42ca2eec8255e8670b94b3716bb909831f9865c98",
+      "bytes": 3160480,
+      "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/batch_01.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/batch_02.glb",
+      "sha256": "7cbe21c9efb77d7f421ea4bcce691534ea279d7a130a6c6859d69d61e58d0793",
+      "bytes": 1739208,
+      "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/batch_02.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/batch_03.glb",
+      "sha256": "95d5e6d7856eb43510e3a21a1ecb46cef0ff752557fa00d87d50151d9f0fbbe8",
+      "bytes": 1612324,
+      "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/batch_03.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloWarriorF_material_front_fixed/assembly_manifest.json",
+      "sha256": "5a160c633d0191e7d91a2108805260d32b8da25281092e3ea43b638d21dcab17",
+      "bytes": 33372,
+      "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/assembly_manifest.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/joints.json",
+      "sha256": "bac03095b53e413fc2aea32af2e01aba69e0a10219b178a4c2664def1135e5ce",
+      "bytes": 33987,
+      "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/batch_01.glb",
+      "sha256": "791538ce07c4b83bd62bb78711a8b0a35e53cd2bf772ffedd5aa29e0a8d9ade2",
+      "bytes": 3115228,
+      "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/batch_01.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/batch_02.glb",
+      "sha256": "575bdd9e98d31ea2af18e084010b0d72905ed2937255edf9c17c146c7ccac99f",
+      "bytes": 1612292,
+      "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/batch_02.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/batch_03.glb",
+      "sha256": "3fc6048d4f5e0cf4f3d489a24a7922d987362e3c16691b6240c4a87d108cf69a",
+      "bytes": 1360420,
+      "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/batch_03.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageM_material_front_fixed/assembly_manifest.json",
+      "sha256": "2f83656a11a1a3754cbe4dcc04cdd597816a97bafa795806430ad8d3775c469e",
+      "bytes": 32575,
+      "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/assembly_manifest.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/joints.json",
+      "sha256": "26f07e4a4abb41467ddf6fb1199d5b2ecb64c45b6470d99eb9c88db2fefc9270",
+      "bytes": 37709,
+      "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/batch_01.glb",
+      "sha256": "4e50502309152f654f32d5b7c630fdcfeb5d5a1bfb4deabebf97930b42df5de7",
+      "bytes": 2931604,
+      "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/batch_01.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/batch_02.glb",
+      "sha256": "471a61add79ad73d1bb89811799b24ec1632ccc28ca2f7f77da249992c2d5e50",
+      "bytes": 2721132,
+      "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/batch_02.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/batch_03.glb",
+      "sha256": "4f44c84e2970f5638800148d2cdb498c8a52359b85d019161c6642685a3c6b04",
+      "bytes": 1515836,
+      "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/batch_03.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/assembly_manifest.json",
+      "sha256": "8e244b84c6b9ab850f6619df7937ba82788dd705e05f59730b957ee3242ff5bf",
+      "bytes": 33492,
+      "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/assembly_manifest.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HaloMageF_material_front_face_fixed/face_reassignment.json",
+      "sha256": "717541a736cc418c3aed98bf5213a4e155e229806fbc7450737c58a5d8d19232",
+      "bytes": 2246,
+      "copied_from": "art/models/costume/expressions/Costume_HaloMageF/verified_head_face_reassignment.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/joints.json",
+      "sha256": "2301c792e7f716f2d84c180c7969a4ddb1f460ade0f0e967b02d3203704de094",
+      "bytes": 34001,
+      "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/batch_01.glb",
+      "sha256": "9cb37584aed1b2fddff67c7f50881dba2aba6d862cca2fd5477cc47f539c49b4",
+      "bytes": 3143476,
+      "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/batch_01.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/batch_02.glb",
+      "sha256": "a83e7964a4274a59e7f0559d85c33743c5c8cfcb1e2b97bafa4252dc98fdcc42",
+      "bytes": 1456960,
+      "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/batch_02.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/batch_03.glb",
+      "sha256": "7d87a5361ec60f745a5f8a341d979c56ea858fed8970b29953ce783f3c7ee387",
+      "bytes": 1335060,
+      "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/batch_03.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/assembly_manifest.json",
+      "sha256": "1fab0ab239411edd764add82e5da615634a4fd93812a8523a5f9e19bcd1b13f7",
+      "bytes": 31007,
+      "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/assembly_manifest.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsWarriorM_face_fixed/face_reassignment.json",
+      "sha256": "a231da9b244f3b3a75a397e7ee2553620c25a0e46161dbc0c332600286e68d68",
+      "bytes": 1360,
+      "copied_from": "art/models/costume/expressions/Costume_HornsWarriorM/verified_head_face_reassignment.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/joints.json",
+      "sha256": "a928be6856d04791401f59979bf813ea4995fde5520b939093c9e39eed8ce9dc",
+      "bytes": 113137,
+      "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/batch_01.glb",
+      "sha256": "4f39102b48b1e3ae6cd02079b3330c7b67f6e1c7ff0d2da8615f38ab36a4bc84",
+      "bytes": 3107668,
+      "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/batch_01.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/batch_02.glb",
+      "sha256": "de32928aa739aa1b4433a48e4bddb7988288074d60d5dbf74dd843711caa684d",
+      "bytes": 2916176,
+      "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/batch_02.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/batch_03.glb",
+      "sha256": "f795793e3490dd5d1148ac0f7ef798a3eab780f904d192fe3d20a2dc36380c31",
+      "bytes": 1432868,
+      "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/batch_03.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/assembly_manifest.json",
+      "sha256": "88a413077c7b880317341992583de9262f265982905454dd3beebb5e4ad23180",
+      "bytes": 34581,
+      "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/assembly_manifest.json"
+    },
+    {
+      "path": "art/models/costume/prepared/rigid/Costume_HornsArcherM_face_fixed_v2/face_reassignment.json",
+      "sha256": "dda203bd446fa1373c4590218552db586205bf0a03e59bab67b00e8e327329d4",
+      "bytes": 51465,
+      "copied_from": "build/expr_qa/Costume_HornsArcherM/face_reassignment_candidates_v2.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/Costume_HaloArcherM_skin.glb",
+      "sha256": "7d09b5aec17a52f0a161835bdab5db2a81dcd035baa1f2f8f64a226cb6977756",
+      "bytes": 3916724,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/Costume_HaloArcherM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/Costume_HaloArcherM_skin.skin.json",
+      "sha256": "0dfe7e0b167c8dbfbb1d3bcf6790bdde8495951851795faaf8a31c0357861412",
+      "bytes": 30683,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/Costume_HaloArcherM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/proxy_joints.json",
+      "sha256": "f823aae2cc7c9fc47e5a8c29c9cafe781eb10a55a4b08cb0035acb21885d4535",
+      "bytes": 32927,
+      "copied_from": "build/costume_r15/Costume_HaloArcherM/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/visual_review.json",
+      "sha256": "df93c775fb409066e5a876ebaa81d6d02eb84bb557045f0d87260de558be1801",
+      "bytes": 5022,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/visual_review.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/motion_qa.json",
+      "sha256": "d5b95b9d9acea637b9dfdc798e974c72c9e3b4de7a07d185a9889c6b39e5d96f",
+      "bytes": 3863,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/motion_qa/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorF_inferred_skin_v3/Costume_NeutralWarriorF_skin.glb",
+      "sha256": "319c07b1b688385bb4060834db8f18fb006a59d226f12370a17d643229c61939",
+      "bytes": 3918824,
+      "copied_from": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/Costume_NeutralWarriorF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorF_inferred_skin_v3/Costume_NeutralWarriorF_skin.skin.json",
+      "sha256": "10594bf3e4a8c5d9eafc098a1da3f9debe1ef665eda19f6a94cbafaede6bcae7",
+      "bytes": 2029,
+      "copied_from": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/Costume_NeutralWarriorF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorF_inferred_skin_v3/manual_landmarks.json",
+      "sha256": "52244266013508e6c83dd8dc5cc68877a1521da0cb9c4602120512c25e820ffa",
+      "bytes": 340526,
+      "copied_from": "build/manual_partition_candidates/NeutralWarriorF_v3/manual_landmarks.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorF_inferred_skin_v3/runtime_contract.json",
+      "sha256": "f8c72368eeba7bcf863f95829fe689cee3a7c5a784c522b01c8143825b2f6a0d",
+      "bytes": 12521,
+      "copied_from": "build/manual_partition_candidates/NeutralWarriorF_skin_v3/runtime_contract.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherM_inferred_skin_v3/Costume_NeutralArcherM_skin.glb",
+      "sha256": "fce99186fffb203d7b973e60611faa5195124f4f23b5e73aa2212ce607a4ffac",
+      "bytes": 3828484,
+      "copied_from": "build/manual_partition_candidates/NeutralArcherM_skin_v3/Costume_NeutralArcherM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherM_inferred_skin_v3/Costume_NeutralArcherM_skin.skin.json",
+      "sha256": "694ae3597db51c936e153613dbe4678050b2f643f45170608eccc901d6d36dc7",
+      "bytes": 2015,
+      "copied_from": "build/manual_partition_candidates/NeutralArcherM_skin_v3/Costume_NeutralArcherM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherM_inferred_skin_v3/manual_landmarks.json",
+      "sha256": "cf65a260e409989674c725fa7a52a6d993b7bcb37e1ee83e01b7d02eee10db80",
+      "bytes": 340556,
+      "copied_from": "build/manual_partition_candidates/NeutralArcherM_v3/manual_landmarks.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherM_inferred_skin_v3/runtime_contract.json",
+      "sha256": "852d2720436d73b5e1155f14d93b8fd2fced253d020821bb2755e533a03d5261",
+      "bytes": 12629,
+      "copied_from": "build/manual_partition_candidates/NeutralArcherM_skin_v3/runtime_contract.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/Costume_HaloArcherF_skin.glb",
+      "sha256": "0b72fb526d6049712ade5db365de9deffa3264e9a80875a9191b089d3bbcc26f",
+      "bytes": 4036540,
+      "copied_from": "build/manual_partition_candidates/HaloArcherF_skin_v1/Costume_HaloArcherF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/Costume_HaloArcherF_skin.skin.json",
+      "sha256": "5292757a608092a21b561e65b0f35074ec800920d51618a95bb551a49d3672c9",
+      "bytes": 1994,
+      "copied_from": "build/manual_partition_candidates/HaloArcherF_skin_v1/Costume_HaloArcherF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/manual_landmarks.json",
+      "sha256": "7451ae581fbd866cf9a1b8ff117e043b052afe187636d7f2c8892eb8baabf166",
+      "bytes": 339248,
+      "copied_from": "build/manual_partition_audit/HaloArcherF_manual_landmarks_v3.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/visual_review.json",
+      "sha256": "30b567365ef2bf862fd0d8a9a409af00180ad4b249050380430b30d764e14061",
+      "bytes": 5558,
+      "copied_from": "build/manual_partition_candidates/HaloArcherF_skin_v1/visual_review.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherF_inferred_skin_v1/skin_motion_qa.json",
+      "sha256": "2e9f31626032b746cc99773c1d8d64175e0d578cb55f9d1bf3086af03f8eb5dc",
+      "bytes": 4395,
+      "copied_from": "build/manual_partition_candidates/HaloArcherF_skin_v1/motion_qa/skin_motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/Costume_HornsArcherF_skin.glb",
+      "sha256": "0c5000a1cf32e27bbfe574d62c9536a3a08e203a95987bff21908f592970474a",
+      "bytes": 3803276,
+      "copied_from": "build/manual_partition_candidates/HornsArcherF_skin_v1/Costume_HornsArcherF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/Costume_HornsArcherF_skin.skin.json",
+      "sha256": "cf476cb15edd92148245d9baee590fb81c65fb0fb20d5e81c96e94e0354f3698",
+      "bytes": 1998,
+      "copied_from": "build/manual_partition_candidates/HornsArcherF_skin_v1/Costume_HornsArcherF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/manual_landmarks.json",
+      "sha256": "52fc94aefa16b3da2b9416cef220af2346adb3cb74f4090400806f4617733a06",
+      "bytes": 328723,
+      "copied_from": "build/manual_partition_audit/HornsArcherF_manual_landmarks_v3.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/visual_review.json",
+      "sha256": "7c435df77b6069637817d0235621c17f273436858e6ec122d67250f2a7242708",
+      "bytes": 5566,
+      "copied_from": "build/manual_partition_candidates/HornsArcherF_skin_v1/visual_review.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherF_inferred_skin_v1/skin_motion_qa.json",
+      "sha256": "91c5e4b5c09f93e0722658beec2931f65e006ecbd8c19c6c01e041458ea586b8",
+      "bytes": 4401,
+      "copied_from": "build/manual_partition_candidates/HornsArcherF_skin_v1/motion_qa/skin_motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.glb",
+      "sha256": "4a4448f556a9c0b8eaf10631ff73f21e28235a35af7944f60dbf99ff03899268",
+      "bytes": 3952812,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.skin.json",
+      "sha256": "33e5f83393571e2b806b5d1d13452761bf2ad617454cfb2b11f5100872228e08",
+      "bytes": 30917,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/proxy_joints.json",
+      "sha256": "48e10963958514f4d4748ae22153f3b2c39b3ed8c235fbbe5e5330dc222aba8f",
+      "bytes": 33811,
+      "copied_from": "build/costume_r15/Costume_HaloWarriorM/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "9cd53671d48d9c5dffb9655e180bba361f01861f1a3a9c48c4e8af029da0d669",
+      "bytes": 5879,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/visual_review_final_v6.json",
+      "sha256": "5464434bd0affd89ebba6063aa52094c24368be45842722ce9eec4436e9fc782",
+      "bytes": 1199,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorM_preserved_v1/package.json",
+      "sha256": "03eb3bf36b31b05737ff6067336702decafd870242fa2a5892d4d1e3b9a44e71",
+      "bytes": 1407,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorM_preserved_v1/Costume_HaloWarriorM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.glb",
+      "sha256": "028c52651a0fe42d3d0ef77a38639f1349b3e9d8622b933f7672f3f38531e2f6",
+      "bytes": 6660180,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.skin.json",
+      "sha256": "76192b768c49f37904eeacf0c6eb0f39599c25505269bafd785402ecf2ebd083",
+      "bytes": 31041,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/proxy_joints.json",
+      "sha256": "e00fad424ee29e23740b1a631469542f776be906a84d0b36ce0f8592891caf2d",
+      "bytes": 73911,
+      "copied_from": "build/costume_r15/Costume_HaloWarriorF_material_front_fixed/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "ea13707e7f9d789ec16a78fe037f0809adc44c2b28f125f967103feb7378b8ec",
+      "bytes": 5910,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/visual_review_final_v6.json",
+      "sha256": "92642bc1839bbc0a0a7e8611041caebe93886f2d2e27161f2da5137530cf16a8",
+      "bytes": 3018,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloWarriorF_preserved_v1/package.json",
+      "sha256": "36c8ebc25e61ac9f9c2da7cc2e53a1ef3bc82102da7d7a9c28ab88f7280c2016",
+      "bytes": 1428,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HaloWarriorF_preserved_v1/Costume_HaloWarriorF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.glb",
+      "sha256": "11722b180f091066987653b888cdcd157f98946f7cb7c6948262acd20e5b8782",
+      "bytes": 6355104,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.skin.json",
+      "sha256": "f121e8002510ea4b9884c39db0d89a83961a719871ae15d99f8d648ff73e2f7a",
+      "bytes": 31070,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/proxy_joints.json",
+      "sha256": "bac03095b53e413fc2aea32af2e01aba69e0a10219b178a4c2664def1135e5ce",
+      "bytes": 33987,
+      "copied_from": "build/costume_r15/Costume_HaloMageM_material_front_fixed/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "279fd5f38db59318c5577cb54c3020a8cd2db0c5b0b8c6edc2fb38c450a24aa6",
+      "bytes": 5900,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/visual_review_final_v6.json",
+      "sha256": "6f6c57cc4ace5a638a3173d3ad0ddbdfec888451b64cd9950f7fecb60e3ef8f4",
+      "bytes": 1190,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageM_preserved_v1/package.json",
+      "sha256": "29cc1c8daaa5b258efec885829b74fdb2ccf35bcf7eb3805f6778b3e370f982b",
+      "bytes": 1417,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HaloMageM_preserved_v1/Costume_HaloMageM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.glb",
+      "sha256": "d5386846aefeb8fed9b4cd3f9f41611b262825dc76860bfa03def6918d2fb24f",
+      "bytes": 6241224,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.skin.json",
+      "sha256": "e124abb78a7c35b9f095e6097ebb8d646b2427cdba1bb16f9f3668c57e6b44c4",
+      "bytes": 31047,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/proxy_joints.json",
+      "sha256": "26f07e4a4abb41467ddf6fb1199d5b2ecb64c45b6470d99eb9c88db2fefc9270",
+      "bytes": 37709,
+      "copied_from": "build/costume_r15/Costume_HaloMageF_material_front_face_fixed/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "e82f4d99062c9bc8293ed73070cd1944e43cdcd52767a6d1222065d3d2273e65",
+      "bytes": 5892,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/visual_review_final_v6.json",
+      "sha256": "425ba0c976721f7b975d49c0f2ba32760224ebaf4e69d0d96a38041548d03a30",
+      "bytes": 2976,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloMageF_preserved_v1/package.json",
+      "sha256": "3e08dd8a0e26aa98a32ba670e1a3cdfaac09ca6135ed401a06edfed67637c22e",
+      "bytes": 1415,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HaloMageF_preserved_v1/Costume_HaloMageF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.glb",
+      "sha256": "e5537e521fd98af7c8e248ec5bc215af4b5544ceb6e1c49cb94378b33713359e",
+      "bytes": 3850380,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.skin.json",
+      "sha256": "789fe806e0c33d6be1fedc34f0f7ceb2bb910a82e058c5f1e54eba7f9bbec30a",
+      "bytes": 30919,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/proxy_joints.json",
+      "sha256": "2301c792e7f716f2d84c180c7969a4ddb1f460ade0f0e967b02d3203704de094",
+      "bytes": 34001,
+      "copied_from": "build/costume_r15/Costume_HornsWarriorM_face_fixed/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "940247d35761b9517044fbc6ab15db804a4debd212d136c9140c35621ae5d429",
+      "bytes": 5898,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/visual_review_final_v6.json",
+      "sha256": "86ac1c66b2108f8dab24d9d8c927af09fc98dc4df178d15d1afb15341118a20d",
+      "bytes": 3032,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorM_preserved_v1/package.json",
+      "sha256": "1596d7fefefa1431ff48ea1da5fdce426f73fa36b63d2562de95ff0246d4da9b",
+      "bytes": 1414,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorM_preserved_v1/Costume_HornsWarriorM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.glb",
+      "sha256": "5c0ce4d7a2c8b8a2a241a157b715ab812ff2f1860844ee2da6c7d8ed1fb312b7",
+      "bytes": 3961072,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.skin.json",
+      "sha256": "6651fd3ec59c8ec9d4307a4a02926e39852cd6a7fbc97307974ce5e69c589901",
+      "bytes": 30910,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/proxy_joints.json",
+      "sha256": "680fe2822e34d5f84460b2ff021db03adc54c008f433b795ac6e6e7874ba6a2c",
+      "bytes": 34363,
+      "copied_from": "build/costume_r15/Costume_HornsWarriorF/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "56a7072e53475472007353dfdcc3d274417cde651daa3da19c596ebee855c650",
+      "bytes": 5890,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/visual_review_final_v6.json",
+      "sha256": "c3c2409b027aa0d1068dbc5eaf1cd53550ede06e1b2f7cc7c226cc45bafb8b75",
+      "bytes": 1202,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsWarriorF_preserved_v1/package.json",
+      "sha256": "300ad98b91d7742a90670a4621a748b396e55b1c6aa328b87be69cd4ec2f9472",
+      "bytes": 1414,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HornsWarriorF_preserved_v1/Costume_HornsWarriorF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.glb",
+      "sha256": "0adfc9fa8827cd02229db055afd4cd68afde342cac1af16cb6437ec2545ad477",
+      "bytes": 3869136,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.skin.json",
+      "sha256": "44d4fb7f8746bb777a1d0931ce73cf4cb908e8b5ee8281a4a1fa7291bc1576b8",
+      "bytes": 30881,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/proxy_joints.json",
+      "sha256": "5d68ca4ad627cb3e34b8daed3b4a3b91783db49ada6d76bb82a2727ed0ec655e",
+      "bytes": 38032,
+      "copied_from": "build/costume_r15/Costume_HornsMageM/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "0d6df99e0ff62b146706a9d22b18bbe45c67b40d1c496eae01070de1b123e8da",
+      "bytes": 5886,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/visual_review_final_v6.json",
+      "sha256": "ba41761dd19456ffd904453ef2063a7c8f6412ae99a5efa414390ae0e722932f",
+      "bytes": 1193,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageM_preserved_v1/package.json",
+      "sha256": "7c0a196d4e163974faf6aa21607fab233aef052baa71f591bfd0a40daad61001",
+      "bytes": 1399,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HornsMageM_preserved_v1/Costume_HornsMageM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.glb",
+      "sha256": "4d9221b7d22d330b4989c3dc2368b3ff7ebca52932d72780f27ed027b41fd42b",
+      "bytes": 3931924,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.skin.json",
+      "sha256": "3f776fa966ca25980b6c9cbe22bfb895948f467a7a706c32d6bbbece422a74a6",
+      "bytes": 30905,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/proxy_joints.json",
+      "sha256": "56af54073216463f3b403a71f6f22a4ff9e9d12d83c8ff22805aedea15d01718",
+      "bytes": 314143,
+      "copied_from": "build/costume_r15/Costume_HornsMageF/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "9090fd5179197b0f147023842f6ab08a9b19e31a743d22ad4f5816f2a1f359e2",
+      "bytes": 5888,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/visual_review_final_v6.json",
+      "sha256": "0d14e31e2d3cb5f55233b80def06ef3205fb36b957dfd1624eea132b5e5a967d",
+      "bytes": 3127,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsMageF_preserved_v1/package.json",
+      "sha256": "d36a76d5545025cf1b2c0d9c9a1c8345d453ddadbce7b17f0f9e3c65176edca3",
+      "bytes": 1402,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/Costume_HornsMageF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.glb",
+      "sha256": "c793d05d57116691d53e78489f073e53b269af3dd74d61f34fb0f9dd0251fc8c",
+      "bytes": 3915988,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.skin.json",
+      "sha256": "7c7b6df8200a1e72c7149bae1b0f7e9bacde0726ca7f222a30a81c643282bac5",
+      "bytes": 30956,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/proxy_joints.json",
+      "sha256": "a928be6856d04791401f59979bf813ea4995fde5520b939093c9e39eed8ce9dc",
+      "bytes": 113137,
+      "copied_from": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "1efd9f889b71e71fb0f2c13f683da84a1831c61544533b1f889f650a6062a4ca",
+      "bytes": 5900,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/visual_review_final_v6.json",
+      "sha256": "a28f32ddf877cce7fdcb9446a1b7413d862c11c69047473ed0eb96f510fadafd",
+      "bytes": 3109,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HornsArcherM_preserved_v1/package.json",
+      "sha256": "8267517fb86c80b7cc15722cbd71de136e6c658189a52f2edcd37cb8b06be446",
+      "bytes": 1410,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HornsArcherM_preserved_v1/Costume_HornsArcherM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.glb",
+      "sha256": "b54e953b68d793d886ee68ac14c9ad0e797cb31054fc07519a2d1d8a297c7f34",
+      "bytes": 3988024,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.skin.json",
+      "sha256": "1305cbe86d62f10d59232a6eaaa6fc21d66bccc68696d416fb9b8b436e94a86a",
+      "bytes": 30891,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/proxy_joints.json",
+      "sha256": "b8ff636325050f8c3cba57e8dd8250a3f1b4b61e699ad0ec671ef61c6f20a200",
+      "bytes": 33078,
+      "copied_from": "build/costume_r15/Costume_NeutralWarriorM/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "f4c3887fc6701a7d2343d5fb5511d907ea4c19ec6541f0b6206d3c824733f4d3",
+      "bytes": 5886,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/visual_review_final_v6.json",
+      "sha256": "53d206706b37361804b2f5a57b9fceba6f36a9c760a8d1b92601d1bc32594f0d",
+      "bytes": 1208,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralWarriorM_preserved_v1/package.json",
+      "sha256": "feceb7fd1de3beabce3c09731e83715c613513e5fc6a918ef417f974b833fb91",
+      "bytes": 1420,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_NeutralWarriorM_preserved_v1/Costume_NeutralWarriorM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.glb",
+      "sha256": "62abccef62b87a9eaffece53c2ef664bd7f1f4bf9de773936570ad43c38a16ef",
+      "bytes": 3933000,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.skin.json",
+      "sha256": "a04d1a3a8ca2b1eee632963a5407c5f4b3b3bd47766b77cadefec57782c052a8",
+      "bytes": 30982,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/proxy_joints.json",
+      "sha256": "c83047e554c4059274ec7816222b70a668672736d9e58db04c54570ad29cacc1",
+      "bytes": 33382,
+      "copied_from": "build/costume_r15/Costume_NeutralMageM/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "17b3b258f6d63794406e1e4bc11c26629653aea3203567fa8b5527ac7ad671ec",
+      "bytes": 5887,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/visual_review_final_v6.json",
+      "sha256": "9533436db8ea9e0dd828b4024b17c11c0c3efb362387882a532295d8cb8be7c3",
+      "bytes": 3018,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageM_preserved_v1/package.json",
+      "sha256": "db1fb220bfc2b43122c7467f371a05620306fedcf4eb86cb0c6aa5f6d62eed0a",
+      "bytes": 1410,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/Costume_NeutralMageM_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.glb",
+      "sha256": "f8045886143d1973d00d68d67f96dbde6ffbbf36f2585beb0410b37368498f1e",
+      "bytes": 3781784,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.skin.json",
+      "sha256": "ee6c37cc5c4bcc03fbbb25f62b0c7e6403ee57736ad77a760dc4f2d4c8a0386b",
+      "bytes": 30924,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/proxy_joints.json",
+      "sha256": "41e7430da45cfcae9294e673d8277e69e39b178aba8718774889f5f41c551637",
+      "bytes": 33426,
+      "copied_from": "build/costume_r15/Costume_NeutralMageF/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "139e73cd44dcdb7b5cbc59ec14574503df3fffcb95aed7535808b00c5a61e2d8",
+      "bytes": 5882,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/visual_review_final_v6.json",
+      "sha256": "459c073384cae4fe81e81e7d924d96612594af90baf2fbca3ab817521a1d3bb2",
+      "bytes": 1199,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralMageF_preserved_v1/package.json",
+      "sha256": "d9917c9290adbae4fa661bd7fded25a5e61fb1faa176afd242e25921b060d4f2",
+      "bytes": 1410,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/Costume_NeutralMageF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.glb",
+      "sha256": "e9008293bc893ea12bbeb69475db05c900eb829e28a61b3147a39b1f43811f7c",
+      "bytes": 3946472,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.glb"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.skin.json",
+      "sha256": "5358c581acae7bf18609a54f6586fc72367af9bd1430c62f56cd64890212beb3",
+      "bytes": 30906,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/proxy_joints.json",
+      "sha256": "c3e765a61dfd966235eb90bbec15c7e3356cf2ad75919197688d236139ceb8b0",
+      "bytes": 32803,
+      "copied_from": "build/costume_r15/Costume_NeutralArcherF/joints.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/motion_qa_final_v6.json",
+      "sha256": "760eb0076cc8b53ea7b79e019a2abf0be49a61b370f023c12da88c33dae21918",
+      "bytes": 5898,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/visual_review_final_v6.json",
+      "sha256": "0da7e53f42e5b5638a4720d8e5dd343299d6f9406c7f9ab2dc9f5b7f3a483e15",
+      "bytes": 3137,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_NeutralArcherF_preserved_v1/package.json",
+      "sha256": "c33aec132c40c4fefd04ebb1dcb1b7f0c44a29982e7fd0fa480ed9b96e6a394f",
+      "bytes": 1418,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_NeutralArcherF_preserved_v1/Costume_NeutralArcherF_skin.skin.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/motion_qa_final_v6.json",
+      "sha256": "62d29a4497a9c7878b24f890d46dc0ad3486dee4a5eded973a993b390a9e6b8e",
+      "bytes": 5872,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/motion_final_v6/motion_qa.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/visual_review_final_v6.json",
+      "sha256": "b2c8a45caa286291dc8402f9bce79add047598168069ba9a289fd6614aa6281d",
+      "bytes": 2884,
+      "copied_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/visual_review_final_v6.json"
+    },
+    {
+      "path": "art/models/costume/prepared/skin/Costume_HaloArcherM_preserved_v2/package.json",
+      "sha256": "7eb6411df7ca5a966f1139a5d5f32ed53ffd528864787dfb77885ecd2aaf4c82",
+      "bytes": 1407,
+      "generated_from": "build/costume_r15/skin_candidates/Costume_HaloArcherM_v2/Costume_HaloArcherM_skin.skin.json"
+    }
+  ],
+  "all_original_source_files_unchanged": true,
+  "copy_policy": "Exact byte copies; separate inventory records portable tracked relative paths without altering actual QA source metadata.",
+  "ready_for_game_claimed": false,
+  "api_called": false,
+  "studio_called": false,
+  "uploads": 0,
+  "notes": [
+    "HaloMageF final material+3headface recovery is one package, avoiding duplicate superseded files.",
+    "Use listed final rigid batches, never earlier intermediate folders.",
+    "All skin sources require actual importer inspection and separate R15 proxy runtime; rigid convert/assemble discards skin.",
+    "Inferred bones remain inferred; preserved HaloArcherM original weights remain exact.",
+    "Copied source metadata retains original build paths; this inventory/adjacent packaged inputs provide tracked artifacts.",
+    "All 14 original skins retain 23 source bones/weights/geometry/UV/image bytes; six-pose Blender evidence is separate from game-quality approval. Known source hair/cape weight defects remain explicitly held."
+  ],
+  "preserved_original_skin_models": 14,
+  "continuous_inferred_skin_models": 4,
+  "complete_native_game_registration_claimed": false
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "preserved_original_skin_pending",
+  "name": "HornsWarriorM",
+  "skin_glb": "Costume_HornsWarriorM_skin.glb",
+  "skin_manifest": "Costume_HornsWarriorM_skin.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "e5537e521fd98af7c8e248ec5bc215af4b5544ceb6e1c49cb94378b33713359e",
+    "skin_manifest": "789fe806e0c33d6be1fedc34f0f7ceb2bb910a82e058c5f1e54eba7f9bbec30a",
+    "proxy_plan": "2301c792e7f716f2d84c180c7969a4ddb1f460ade0f0e967b02d3203704de094"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_HornsWarriorM_rig_e84669f3-92b1-4774-9269-0da605a9fdcd.glb",
+    "sha256": "57bfeed4f0b747984d7807e0f691794014c53c5ddd69f92edfedfe579e100235"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": true,
+  "maximum_proxy_joint_error": 8.774538203560275e-07,
+  "maximum_actual_armature_lbs_error": 1.451467950568905e-06,
+  "maximum_target_pose_projection_error": 1.4551348228137138e-06,
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

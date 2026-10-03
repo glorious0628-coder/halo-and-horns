@@ -1,0 +1,25 @@
+{
+  "avatar": "Costume_HornsMageM",
+  "state": "SoftSmile",
+  "png": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_SoftSmile_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "e3a365569e36ce86108d3e943742c0bcb6dad38df20cbaf41e895607591d5542",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-b2ef3502-cad7-421e-9210-3c300c4d3251.png",
+  "prompt": "art/models/costume/expressions/Costume_HornsMageM/prompts/SoftSmile.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HornsMageM/previews/SoftSmile_front.png",
+    "art/models/costume/expressions/Costume_HornsMageM/previews/SoftSmile_quarter.png"
+  ],
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

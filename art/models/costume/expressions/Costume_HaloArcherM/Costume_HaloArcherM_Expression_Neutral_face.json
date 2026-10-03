@@ -1,0 +1,22 @@
+{
+  "avatar": "Costume_HaloArcherM",
+  "state": "Neutral",
+  "png": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_Neutral_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-a3b3caf1-7644-4e8a-a46c-a4edbfced459.png",
+  "prompt": "art/models/costume/expressions/Costume_HaloArcherM/prompts/Neutral.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\ud3c9\uc18c",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HaloArcherM/previews/Neutral_front.png",
+    "art/models/costume/expressions/Costume_HaloArcherM/previews/Neutral_quarter.png"
+  ]
+}

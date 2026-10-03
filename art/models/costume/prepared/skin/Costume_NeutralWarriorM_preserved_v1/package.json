@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "preserved_original_skin_pending",
+  "name": "NeutralWarriorM",
+  "skin_glb": "Costume_NeutralWarriorM_skin.glb",
+  "skin_manifest": "Costume_NeutralWarriorM_skin.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "b54e953b68d793d886ee68ac14c9ad0e797cb31054fc07519a2d1d8a297c7f34",
+    "skin_manifest": "1305cbe86d62f10d59232a6eaaa6fc21d66bccc68696d416fb9b8b436e94a86a",
+    "proxy_plan": "b8ff636325050f8c3cba57e8dd8250a3f1b4b61e699ad0ec671ef61c6f20a200"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_NeutralWarriorM_rig_b8e78766-7cd0-4190-a96a-c7d00c1c868b.glb",
+    "sha256": "739d6fb97ee49abce14e23ba481dc13c7836392051e134c3cc2fbedc4ce0b07c"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": true,
+  "maximum_proxy_joint_error": 9.029486526601072e-07,
+  "maximum_actual_armature_lbs_error": 1.20395480851675e-06,
+  "maximum_target_pose_projection_error": 1.198131199343514e-06,
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

@@ -1,0 +1,22 @@
+{
+  "avatar": "Costume_HornsWarriorM",
+  "state": "SoftSmile",
+  "png": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_SoftSmile_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "1fcee35f4adcdce00183294e3e2a6bd38f246bc78805b48db10015368595e1d9",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-65c8c129-37dd-4211-91ce-382ff08efa96.png",
+  "prompt": "art/models/costume/expressions/Costume_HornsWarriorM/prompts/SoftSmile.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HornsWarriorM/previews/SoftSmile_front.png",
+    "art/models/costume/expressions/Costume_HornsWarriorM/previews/SoftSmile_quarter.png"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "validated": true,
+  "avatar": "Costume_NeutralArcherF",
+  "head_sha256": "4c5c4d383368fea29cb96ffa1f9981ac44cf9311cd05f0c3104d412003ab2e8c",
+  "triangles": {
+    "FaceExpression": 482,
+    "HeadBase": 4394
+  },
+  "primary_uv_only": true,
+  "embedded_original_png_bytes_preserved": true,
+  "source_models_unchanged": true,
+  "expression_pngs": 3,
+  "offline_previews_checked": 6,
+  "expected_import_assets": 5,
+  "runtime_validated": false,
+  "uploads_performed_by_validator": 0
+}

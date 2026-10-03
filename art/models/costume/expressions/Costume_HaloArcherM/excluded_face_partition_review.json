@@ -1,0 +1,83 @@
+{
+  "avatar": "Costume_HaloArcherM",
+  "source_rig_sha256": "48b60fffa4d6c348f364f5f85dfef4ceaf31eceacb3477a015cae99dfaea4d37",
+  "head_sha256": "f12d339a3dc6b62979b9dd86d7247c220adc9cd55459d2c216920fd732edeee6",
+  "reviewed": true,
+  "excluded_original_skin_triangles": 3,
+  "records": [
+    {
+      "original_uv_signature": [
+        [
+          0.864954,
+          0.338281
+        ],
+        [
+          0.879962,
+          0.335553
+        ],
+        [
+          0.881326,
+          0.338281
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 2397,
+      "fixed_frame_centroid": [
+        465.41972224738316,
+        712.8734863121479
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.622994,
+          0.33651
+        ],
+        [
+          0.639708,
+          0.336851
+        ],
+        [
+          0.640271,
+          0.331411
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 2420,
+      "fixed_frame_centroid": [
+        477.86419999367695,
+        712.8733893321628
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    },
+    {
+      "original_uv_signature": [
+        [
+          0.864954,
+          0.089346
+        ],
+        [
+          0.880644,
+          0.092075
+        ],
+        [
+          0.881667,
+          0.089346
+        ]
+      ],
+      "source_owner": "UpperTorso",
+      "source_face": 4041,
+      "fixed_frame_centroid": [
+        302.58018077263176,
+        712.8734863121479
+      ],
+      "fully_on_actual_head_side": false,
+      "classification": "original_neck_skin_retained_on_upper_torso"
+    }
+  ],
+  "original_skin_uv_unchanged": true,
+  "geometry_mutations": 0
+}

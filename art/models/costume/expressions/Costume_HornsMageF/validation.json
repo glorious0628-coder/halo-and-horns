@@ -1,0 +1,17 @@
+{
+  "validated": true,
+  "avatar": "Costume_HornsMageF",
+  "head_sha256": "6a4d6d20f89b7481692623d5c6093ac8c5459e6b855ccf5870983a805caa955e",
+  "triangles": {
+    "FaceExpression": 636,
+    "HeadBase": 4276
+  },
+  "primary_uv_only": true,
+  "embedded_original_png_bytes_preserved": true,
+  "source_models_unchanged": true,
+  "expression_pngs": 3,
+  "offline_previews_checked": 6,
+  "expected_import_assets": 5,
+  "runtime_validated": false,
+  "uploads_performed_by_validator": 0
+}

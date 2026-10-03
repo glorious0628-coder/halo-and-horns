@@ -1,0 +1,17 @@
+{
+  "validated": true,
+  "avatar": "Costume_HaloArcherM",
+  "head_sha256": "f12d339a3dc6b62979b9dd86d7247c220adc9cd55459d2c216920fd732edeee6",
+  "triangles": {
+    "FaceExpression": 662,
+    "HeadBase": 4197
+  },
+  "primary_uv_only": true,
+  "embedded_original_png_bytes_preserved": true,
+  "source_models_unchanged": true,
+  "expression_pngs": 3,
+  "offline_previews_checked": 6,
+  "expected_import_assets": 5,
+  "runtime_validated": false,
+  "uploads_performed_by_validator": 0
+}

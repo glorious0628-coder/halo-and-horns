@@ -1,0 +1,28 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_HeadExpressions_R15.glb",
+  "source_sha256": "6beca780357afb0c32c4b1d63a9f8cc2247ddf08e62dcc96c370460051cdc39e",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_Expression_SoftSmile_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\previews\\SoftSmile_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.4639291763305664,
+    9.791467666625977,
+    2.124980926513672
+  ],
+  "camera_rotation": [
+    1.6005302667617798,
+    0.053509291261434555,
+    -3.009493350982666
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HornsWarriorM_rig_e84669f3-92b1-4774-9269-0da605a9fdcd.glb",
+  "original_rig_sha256": "57bfeed4f0b747984d7807e0f691794014c53c5ddd69f92edfedfe579e100235",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 8719,
+  "context_exported": false
+}

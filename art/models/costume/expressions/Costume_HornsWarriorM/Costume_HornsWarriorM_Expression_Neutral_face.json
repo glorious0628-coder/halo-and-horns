@@ -1,0 +1,22 @@
+{
+  "avatar": "Costume_HornsWarriorM",
+  "state": "Neutral",
+  "png": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_Neutral_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "401eb33583a5fe7707fe5cdbab2f21e1f8b1e3765254e46cc4ef5b6db9297277",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-7199f971-d6f9-494f-b09c-d90091a1443d.png",
+  "prompt": "art/models/costume/expressions/Costume_HornsWarriorM/prompts/Neutral.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\ud3c9\uc18c",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HornsWarriorM/previews/Neutral_front.png",
+    "art/models/costume/expressions/Costume_HornsWarriorM/previews/Neutral_quarter.png"
+  ]
+}

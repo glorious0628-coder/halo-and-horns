@@ -1,0 +1,17 @@
+{
+  "validated": true,
+  "avatar": "Costume_HornsWarriorM",
+  "head_sha256": "6beca780357afb0c32c4b1d63a9f8cc2247ddf08e62dcc96c370460051cdc39e",
+  "triangles": {
+    "FaceExpression": 660,
+    "HeadBase": 5834
+  },
+  "primary_uv_only": true,
+  "embedded_original_png_bytes_preserved": true,
+  "source_models_unchanged": true,
+  "expression_pngs": 3,
+  "offline_previews_checked": 6,
+  "expected_import_assets": 5,
+  "runtime_validated": false,
+  "uploads_performed_by_validator": 0
+}

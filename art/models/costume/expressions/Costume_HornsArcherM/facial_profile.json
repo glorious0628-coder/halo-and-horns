@@ -1,0 +1,81 @@
+{
+  "avatar": "Costume_HornsArcherM",
+  "reviewed": true,
+  "review_basis": "Original source front CG render individually viewed; profile is preliminary until 3D expression QA passes",
+  "source_sha256": "9410d599c8b275df966a97efffa3c0991760944a8d4a0f504ccdabe4e6f9b1fb",
+  "mouth_center_screen": [
+    379,
+    554
+  ],
+  "screen_scale": [
+    1.2,
+    0.85
+  ],
+  "crop_start_fraction": 0.58,
+  "brow_boxes": [
+    [
+      232,
+      416,
+      327,
+      451
+    ],
+    [
+      401,
+      383,
+      495,
+      423
+    ]
+  ],
+  "eye_boxes": [
+    [
+      217,
+      451,
+      335,
+      548
+    ],
+    [
+      403,
+      421,
+      529,
+      516
+    ]
+  ],
+  "skin_hsv": {
+    "hue_ranges": [
+      [
+        0,
+        0.11
+      ],
+      [
+        0.95,
+        1
+      ]
+    ],
+    "saturation_max": 0.65,
+    "value_min": 0.82
+  },
+  "brow_hsv": {
+    "hue_min": 0,
+    "hue_max": 0.1,
+    "saturation_min": 0.15,
+    "value_min": 0.08,
+    "value_max": 0.9,
+    "center_hue_max": 0.1
+  },
+  "runtime_validated": false,
+  "surface_normal_sign": -1,
+  "profile_note": "Original visible face ray normals are reversed; orient sampling only, retain all original mesh normals outside new mouth surface",
+  "existing_joints_override": "build/costume_r15/Costume_HornsArcherM_face_fixed_v2/joints.json",
+  "verified_expression_face_indices": [
+    3583,
+    3597
+  ],
+  "verified_eyebrow_face_indices": [
+    3539,
+    5338
+  ],
+  "mouth_cap_radius": [
+    55,
+    42
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "avatar": "Costume_HaloMageM",
+  "source_rig_sha256": "b304ba69990c25973c134c2ecafe7d40a24f320b8ff6f588f192f5a0f7bfd546",
+  "head_sha256": "805eb48ae86cedb5ac097bfa430408624761abd358fa84c6b2a3bc99e7fc3fec",
+  "reviewed": true,
+  "excluded_original_skin_triangles": 0,
+  "records": [],
+  "original_skin_uv_unchanged": true,
+  "geometry_mutations": 0
+}

@@ -1,0 +1,57 @@
+{
+  "source_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HornsWarriorM_rig_e84669f3-92b1-4774-9269-0da605a9fdcd.glb",
+  "source_rig_sha256": "57bfeed4f0b747984d7807e0f691794014c53c5ddd69f92edfedfe579e100235",
+  "source_fixed_sha256": "7ea12e5e584203c5555f468a03851f90c9d70b936810ddb0a8360ae747898221",
+  "fixed_to_rig_affine": [
+    [
+      1.0218608379364014,
+      -1.5573945688629465e-07,
+      4.401832143230422e-08,
+      -4.679704943555407e-05
+    ],
+    [
+      2.165382717578268e-08,
+      1.0218607187271118,
+      -7.755646436180541e-08,
+      -0.00016369449440389872
+    ],
+    [
+      3.099512202453525e-09,
+      3.313204288701854e-08,
+      1.0218613147735596,
+      1.05955017204451e-07
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "avatar": "Costume_HornsWarriorM",
+  "expression_front_face_signatures_excluded": [
+    {
+      "part": "UpperTorso",
+      "original_uv_signature": [
+        [
+          0.526185,
+          0.564834
+        ],
+        [
+          0.52761,
+          0.565974
+        ],
+        [
+          0.528465,
+          0.560844
+        ]
+      ],
+      "prepared_face": 6517,
+      "fixed_world_centroid": [
+        -0.006656655576080084,
+        -0.06271745264530182,
+        0.5943120718002319
+      ]
+    }
+  ]
+}

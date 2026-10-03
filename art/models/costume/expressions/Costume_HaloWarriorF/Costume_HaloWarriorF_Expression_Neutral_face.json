@@ -1,0 +1,25 @@
+{
+  "avatar": "Costume_HaloWarriorF",
+  "state": "Neutral",
+  "png": "art/models/costume/expressions/Costume_HaloWarriorF/Costume_HaloWarriorF_Expression_Neutral_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "1c7a2e67c3eb5152e9858c09177a4ba4abcdbe55b339a784880bb19484d2b5f1",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-8d589681-ed14-4801-abe1-55ce3ed23a90.png",
+  "prompt": "art/models/costume/expressions/Costume_HaloWarriorF/prompts/Neutral.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\ud3c9\uc18c",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HaloWarriorF/previews/Neutral_front.png",
+    "art/models/costume/expressions/Costume_HaloWarriorF/previews/Neutral_quarter.png"
+  ],
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

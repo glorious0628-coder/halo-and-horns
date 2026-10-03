@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "preserved_original_skin_pending",
+  "name": "NeutralMageM",
+  "skin_glb": "Costume_NeutralMageM_skin.glb",
+  "skin_manifest": "Costume_NeutralMageM_skin.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "62abccef62b87a9eaffece53c2ef664bd7f1f4bf9de773936570ad43c38a16ef",
+    "skin_manifest": "a04d1a3a8ca2b1eee632963a5407c5f4b3b3bd47766b77cadefec57782c052a8",
+    "proxy_plan": "c83047e554c4059274ec7816222b70a668672736d9e58db04c54570ad29cacc1"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_NeutralMageM_rig_db720f76-5798-453a-be0c-34b72e097ecd.glb",
+    "sha256": "eb751abcafcd88626f8302dc33ba005752b39b105589d3439396463608a26d06"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": true,
+  "maximum_proxy_joint_error": 7.246601156064191e-07,
+  "maximum_actual_armature_lbs_error": 1.431830240382153e-06,
+  "maximum_target_pose_projection_error": 2.0193311217125463e-05,
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

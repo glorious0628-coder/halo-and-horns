@@ -1,0 +1,22 @@
+{
+  "avatar": "Costume_NeutralMageF",
+  "state": "Neutral",
+  "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Neutral_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-3ea628fb-5ea4-46dd-9061-d15f80aee9b0.png",
+  "prompt": "art/models/costume/expressions/Costume_NeutralMageF/prompts/Neutral.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\ud3c9\uc18c",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_NeutralMageF/previews/Neutral_front.png",
+    "art/models/costume/expressions/Costume_NeutralMageF/previews/Neutral_quarter.png"
+  ]
+}

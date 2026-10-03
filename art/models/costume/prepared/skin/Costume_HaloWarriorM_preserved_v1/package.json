@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "kind": "preserved_original_skin_pending",
+  "name": "HaloWarriorM",
+  "skin_glb": "Costume_HaloWarriorM_skin.glb",
+  "skin_manifest": "Costume_HaloWarriorM_skin.skin.json",
+  "proxy_plan": "proxy_joints.json",
+  "sha256": {
+    "skin_glb": "4a4448f556a9c0b8eaf10631ff73f21e28235a35af7944f60dbf99ff03899268",
+    "skin_manifest": "33e5f83393571e2b806b5d1d13452761bf2ad617454cfb2b11f5100872228e08",
+    "proxy_plan": "48e10963958514f4d4748ae22153f3b2c39b3ed8c235fbbe5e5330dc222aba8f"
+  },
+  "path_policy": "Each input path is relative to this package.json directory; original sidecar metadata is an exact provenance copy.",
+  "original_source": {
+    "workspace_relative_path": "art/models/tripo/Costume_HaloWarriorM_rig_117c8bcf-b2f2-4c24-a95c-dc420db14658.glb",
+    "sha256": "9e15d92825b0eb919055ccb24a5eaf38ed3e29e6f7bf35f1684bbb459c08cca0"
+  },
+  "source_frame_policy": "bones",
+  "canonical_height_studs": 5.5,
+  "source_skin_bones": 23,
+  "principal_r15_bones": 15,
+  "estimated_assets": 5,
+  "original_geometry_uv_normal_skin_binary_image_bytes_preserved": true,
+  "maximum_proxy_joint_error": 8.131899593111705e-07,
+  "maximum_actual_armature_lbs_error": 1.9073486328125e-06,
+  "maximum_target_pose_projection_error": 9.645138457161247e-06,
+  "weighting_quality_hold": false,
+  "rig_ready_for_game": false,
+  "studio_validation_claimed": false,
+  "api_calls": 0,
+  "uploads": 0
+}

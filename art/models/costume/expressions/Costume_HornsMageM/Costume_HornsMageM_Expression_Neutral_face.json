@@ -1,0 +1,25 @@
+{
+  "avatar": "Costume_HornsMageM",
+  "state": "Neutral",
+  "png": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_Neutral_face.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "sha256": "64169b99a50ff904b8c2d7e6be3289960814c3a24be82d9f3477494aa5af5b11",
+  "builtin_gpt_generated": true,
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-272ce8dc-d199-4840-afb0-02c2426af80d.png",
+  "prompt": "art/models/costume/expressions/Costume_HornsMageM/prompts/Neutral.txt",
+  "quality_status": "offline front and quarter reviewed; Roblox runtime pending",
+  "roblox_uploaded": false,
+  "runtime_validated": false,
+  "trigger": "\ud3c9\uc18c",
+  "closed_mouth_offline_render_verified": true,
+  "offline_previews": [
+    "art/models/costume/expressions/Costume_HornsMageM/previews/Neutral_front.png",
+    "art/models/costume/expressions/Costume_HornsMageM/previews/Neutral_quarter.png"
+  ],
+  "offline_visual_notes": [
+    "Close-up original-skin and GPT face-texture boundaries show mild color faceting; Roblox runtime and normal gameplay distance QA pending."
+  ]
+}

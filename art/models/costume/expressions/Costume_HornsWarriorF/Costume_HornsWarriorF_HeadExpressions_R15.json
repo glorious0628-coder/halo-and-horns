@@ -1,0 +1,120 @@
+{
+  "source_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_HornsWarriorF_rig_16a7c6a7-e024-4edd-8f52-d8400b9d5660.glb",
+  "source_rig_sha256": "881af71342a5386ed7248b8b2c3a39414112954b2b57cc94636c70ae47f01050",
+  "source_rig_unchanged": true,
+  "existing_joints": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HornsWarriorF\\joints.json",
+  "existing_head_cframe": [
+    0.011564791202545166,
+    2.002974510192871,
+    0.11013585329055786
+  ],
+  "head_r15_partition_original_triangles": 3898,
+  "new_mouth_cap_triangles": 224,
+  "excluded_original_non_head_triangles": {
+    "LeftUpperArm": 140,
+    "UpperTorso": 1179,
+    "RightUpperArm": 164
+  },
+  "triangles": 4122,
+  "pieces": [
+    {
+      "name": "FaceExpression",
+      "triangles": 606,
+      "location": [
+        0.011564791202545166,
+        -0.11013585329055786,
+        2.002974510192871
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    },
+    {
+      "name": "HeadBase",
+      "triangles": 3516,
+      "location": [
+        0.011564791202545166,
+        -0.11013585329055786,
+        2.002974510192871
+      ],
+      "uv_layers": [
+        "UVMap"
+      ]
+    }
+  ],
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_HeadExpressions_R15.glb",
+  "sha256": "d27480f646c8a744ce22efa943ffbfef49276413b7ca06a9e9fb864c24839eb1",
+  "geometry_uv_verification": "original UV face signatures matched exact real bone-weight R15 partition; existing coordinate and head center reused",
+  "runtime_validated": false,
+  "camera_scale": 2.9334986507892604,
+  "camera_center": [
+    0.12480628490447998,
+    2.1831515431404114
+  ],
+  "expected_import_assets": 5,
+  "body_reimport_required": false,
+  "headbase_is_primary_part": "rename HeadBase to Head; preserve existing Head CFrame and Motor6D",
+  "expression_face_attachment": "FaceExpression welds to existing Head, with imported relative transform preserved",
+  "embedded_source_texture_bytes_preserved": true,
+  "embedded_texture_sha256": {
+    "Costume_HornsWarriorF_Expression_Neutral_face": "df3506ed238e712c9c4326f73d864a1a112673160d580349d760edda8312f2b2",
+    "Costume_HornsWarriorF_head": "05225a3d21f2c691697ef45eac912390ce67b41111723b9023b12d497b545175"
+  },
+  "front_preview_camera_angle": 180,
+  "retained_existing_head_auxiliary_meshes": [
+    {
+      "name": "Head__Material02",
+      "part": "Head",
+      "material": "BodyMat",
+      "is_primary": false,
+      "triangles": 30,
+      "CFrame": [
+        0.011564791202545166,
+        2.002974510192871,
+        0.11013585329055786,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "excluded_expression_faces": [],
+  "fixed_to_rig_affine": [
+    [
+      1.022912859916687,
+      -5.662624289470841e-07,
+      -3.824564203114278e-07,
+      0.0001249844499398023
+    ],
+    [
+      7.27214967355394e-07,
+      1.0229129791259766,
+      -5.827369875532895e-08,
+      -1.559478732815478e-05
+    ],
+    [
+      -1.1480789652296153e-08,
+      3.2819855277921306e-07,
+      1.0229130983352661,
+      -1.6981935857529606e-07
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "coordinate_mapping_matched_corners": 11694,
+  "coordinate_mapping_residual_max": 2.2481416448707296e-07,
+  "coordinate_mapping_residual_mean": 4.560706581590786e-08,
+  "source_fixed_sha256": "f54fb171f56bbaeca3772ca6aee7e3f30fbaf331576df19e0a4cb15ba3eb1b0e",
+  "source_fixed_unchanged": true,
+  "head_replacement_scope": "Replace existing primary HeadMat Head only; retain all listed original Head auxiliary BodyMat pieces and their UV/material/head welds"
+}

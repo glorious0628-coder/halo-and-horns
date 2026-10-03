@@ -1,0 +1,17 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_HeadExpressions_R15.glb",
+  "source_sha256": "cf2b3334ef4336683f925a3f22ee6eb5f18c4b7573c42e72baf2c2d94ef749e2",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\previews\\Neutral_front.png",
+  "angle": 180.0,
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\art\\models\\tripo\\Costume_NeutralMageF_rig_5b76f4c0-cff9-47f8-a090-dc43dbfc7a12.glb",
+  "original_rig_sha256": "cfa23bd0075b4dd73cd6982261c9debcdbacf8777dd0967b5404180a86490f57",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 8970,
+  "context_exported": false
+}

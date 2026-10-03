@@ -1,0 +1,28 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_HeadExpressions_R15.glb",
+  "source_sha256": "aa6fbe6f9c78676836bbacfa8c3093e6024a567b60a9d043623f906ca6b6a8ca",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_Expression_SoftSmile_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\previews\\SoftSmile_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    4.828213691711426,
+    8.40723705291748,
+    2.1783454418182373
+  ],
+  "camera_rotation": [
+    1.5707968473434448,
+    -1.9976064891125134e-07,
+    2.6179938316345215
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "original_rig": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\restored_material_sources\\Costume_HaloMageF_rig_material_restored.glb",
+  "original_rig_sha256": "33b5fd3ecc10f1366c0aa7b3248464d278fcc04aad84136e869172d343578a59",
+  "whole_avatar_original_nonhead_uv_preserved": true,
+  "original_context_triangles": 10457,
+  "context_exported": false
+}

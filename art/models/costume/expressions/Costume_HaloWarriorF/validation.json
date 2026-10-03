@@ -1,0 +1,17 @@
+{
+  "validated": true,
+  "avatar": "Costume_HaloWarriorF",
+  "head_sha256": "549dd62570ad691f1f6653a2d697165f05712578dc4df0bf2c100eb009a66daf",
+  "triangles": {
+    "FaceExpression": 524,
+    "HeadBase": 4419
+  },
+  "primary_uv_only": true,
+  "embedded_original_png_bytes_preserved": true,
+  "source_models_unchanged": true,
+  "expression_pngs": 3,
+  "offline_previews_checked": 6,
+  "expected_import_assets": 5,
+  "runtime_validated": false,
+  "uploads_performed_by_validator": 0
+}
