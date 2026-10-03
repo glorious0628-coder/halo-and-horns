@@ -19,20 +19,20 @@ local EventHUD = {}
 local C = nil -- client registry (set in Init)
 
 ----------------------------------------------------------------- layout (reference 1280x720 at UIScale 1)
-local STRIP_Y = 72 -- event strip slot (spec: y 72-110 when the top HUD block starts at y 8)
-local STRIP_W = 420
-local BAR_H = 30
-local SUB_H = 14
-local GOOSE_CHIP_W = 240
-local KAIJU_CHIP_W = 170
+local STRIP_Y = 64 -- event strip slot (just under HUD's 50 px war meter that starts at y 8)
+local STRIP_W = 360 -- same width as the war meter
+local BAR_H = 24
+local SUB_H = 13
+local GOOSE_CHIP_W = 190
+local KAIJU_CHIP_W = 140
 local LUCK_Y = 52
-local LUCK_W, LUCK_H = 250, 52
+local LUCK_W, LUCK_H = 210, 42
 local LUCK_RIGHT = 12
 local UI_CFG = Config.UI or {}
 local TOP_PAD = UI_CFG.TopInsetPad or 8 -- addendum H4: top blocks start at inset + 8...
 local TOP_FALLBACK = UI_CFG.TopInsetFallback or 64 -- ...or at 64 px when the inset is unknown
 local MIN_TEXT_SIZE = UI_CFG.MinTextSize or 11 -- addendum M1
-local PERSONAL_W, PERSONAL_H = 560, 34
+local PERSONAL_W, PERSONAL_H = 480, 30
 local SIREN_H = 64
 
 local MAX_ARROWS = 10
@@ -40,7 +40,7 @@ local EDGE_MARGIN = 40 -- px from the screen edge (absolute pixels)
 local LABEL_INSET = 40 -- px from an edge arrow toward the screen center
 local ARROW_GLYPH_SIZE = 34
 local ARROW_LABEL_W, ARROW_LABEL_H = 150, 20
-local EDGE_GLYPH = "►" -- points to +X at Rotation 0
+local EDGE_GLYPH = "▶" -- points to +X at Rotation 0 (► is not in the fallback font)
 local MARKER_GLYPH = "▼"
 
 local TICK = 0.2
@@ -318,11 +318,11 @@ local function build()
 	make("UIStroke", { Color = GOLD, Thickness = 1.5, Transparency = 0.3 }, ui.GooseChip)
 	ui.GooseChipText = makeLabel({
 		Name = "Text",
-		Position = UDim2.fromOffset(8, 4),
-		Size = UDim2.new(1, -16, 1, -8),
+		Position = UDim2.fromOffset(8, 3),
+		Size = UDim2.new(1, -16, 1, -6),
 		TextColor3 = GOLD,
 		ZIndex = 4,
-	}, 18, ui.GooseChip)
+	}, 15, ui.GooseChip)
 
 	ui.Tug = makePanel({
 		Name = "GooseTug",
@@ -356,29 +356,29 @@ local function build()
 	make("UICorner", { CornerRadius = UDim.new(0, 8) }, ui.TugRight)
 	ui.TugLeftText = makeLabel({
 		Name = "RescueText",
-		Position = UDim2.fromOffset(8, 4),
-		Size = UDim2.new(0, 96, 1, -8),
+		Position = UDim2.fromOffset(8, 3),
+		Size = UDim2.new(0, 80, 1, -6),
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextStrokeTransparency = 0.2,
 		ZIndex = 5,
-	}, 16, ui.Tug)
+	}, 14, ui.Tug)
 	ui.TugRightText = makeLabel({
 		Name = "PoachText",
 		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.new(1, -8, 0, 4),
-		Size = UDim2.new(0, 96, 1, -8),
+		Position = UDim2.new(1, -8, 0, 3),
+		Size = UDim2.new(0, 80, 1, -6),
 		TextXAlignment = Enum.TextXAlignment.Right,
 		TextStrokeTransparency = 0.2,
 		ZIndex = 5,
-	}, 16, ui.Tug)
+	}, 14, ui.Tug)
 	ui.TugCenterText = makeLabel({
 		Name = "TitleText",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, 4),
-		Size = UDim2.new(0, 200, 1, -8),
+		Position = UDim2.new(0.5, 0, 0, 3),
+		Size = UDim2.new(0, 180, 1, -6),
 		TextStrokeTransparency = 0.1,
 		ZIndex = 5,
-	}, 16, ui.Tug)
+	}, 14, ui.Tug)
 	ui.TugSub = makeLabel({
 		Name = "GooseSub",
 		AnchorPoint = Vector2.new(0.5, 0),
@@ -402,11 +402,11 @@ local function build()
 	make("UIStroke", { Color = Color3.fromRGB(255, 120, 120), Thickness = 1.5, Transparency = 0.2 }, ui.KaijuChip)
 	ui.KaijuChipText = makeLabel({
 		Name = "Text",
-		Position = UDim2.fromOffset(6, 4),
-		Size = UDim2.new(1, -12, 1, -8),
+		Position = UDim2.fromOffset(6, 3),
+		Size = UDim2.new(1, -12, 1, -6),
 		TextStrokeTransparency = 0.2,
 		ZIndex = 4,
-	}, 16, ui.KaijuChip)
+	}, 14, ui.KaijuChip)
 
 	-- kaiju siren banner (full width at 18% screen height)
 	ui.Siren = make("Frame", {
@@ -445,7 +445,7 @@ local function build()
 		Size = UDim2.new(1, -16, 1, -8),
 		TextStrokeTransparency = 0.3,
 		ZIndex = 4,
-	}, 20, ui.Personal)
+	}, 17, ui.Personal)
 
 	-- Regular's Luck corner (top-right)
 	ui.Luck = makePanel({
@@ -457,19 +457,19 @@ local function build()
 	}, root)
 	ui.LuckLine1 = makeLabel({
 		Name = "Luck",
-		Position = UDim2.fromOffset(10, 4),
-		Size = UDim2.new(1, -20, 0, 22),
+		Position = UDim2.fromOffset(8, 3),
+		Size = UDim2.new(1, -16, 0, 18),
 		TextXAlignment = Enum.TextXAlignment.Right,
 		ZIndex = 4,
-	}, 17, ui.Luck)
+	}, 15, ui.Luck)
 	ui.LuckLine2 = makeLabel({
 		Name = "Cheer",
-		Position = UDim2.fromOffset(10, 27),
-		Size = UDim2.new(1, -20, 0, 21),
+		Position = UDim2.fromOffset(8, 22),
+		Size = UDim2.new(1, -16, 0, 17),
 		TextXAlignment = Enum.TextXAlignment.Right,
 		TextColor3 = GOLD,
 		ZIndex = 4,
-	}, 16, ui.Luck)
+	}, 14, ui.Luck)
 
 	built = true
 end

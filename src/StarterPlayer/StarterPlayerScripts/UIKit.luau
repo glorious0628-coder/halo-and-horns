@@ -5,6 +5,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local GuiService = game:GetService("GuiService")
+local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -47,6 +48,9 @@ local C = nil -- client registry
 local UI = Config.UI or {}
 local SCALE_MIN = UI.ScaleMin or 0.75 -- addendum M1 (overrides the 0.6 lower bound of §4.23)
 local SCALE_MAX = UI.ScaleMax or 1.25
+local DESKTOP_MULT = UI.DesktopScaleMult or 0.8 -- non-touch devices get a smaller HUD
+local DESKTOP_MIN = UI.DesktopScaleMin or 0.6
+local DESKTOP_MAX = UI.DesktopScaleMax or 1.0
 local REF_HEIGHT = 720
 local MIN_TEXT_SIZE = UI.MinTextSize or 11 -- addendum M1
 local TOP_PAD = UI.TopInsetPad or 8 -- addendum H4
@@ -140,7 +144,11 @@ local function applyScale()
 	local cam = workspace.CurrentCamera
 	local vy = cam and cam.ViewportSize.Y or REF_HEIGHT
 	if vy < 50 then vy = REF_HEIGHT end
-	uiScale.Scale = math.clamp(vy / REF_HEIGHT, SCALE_MIN, SCALE_MAX)
+	if UserInputService.TouchEnabled then
+		uiScale.Scale = math.clamp(vy / REF_HEIGHT, SCALE_MIN, SCALE_MAX)
+	else
+		uiScale.Scale = math.clamp(vy / REF_HEIGHT * DESKTOP_MULT, DESKTOP_MIN, DESKTOP_MAX)
+	end
 	if toastHolder then
 		toastHolder.Position = UDim2.new(0.5, 0, 0, TOAST_Y + insetY() / currentScale())
 	end
@@ -551,7 +559,7 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 		confirmOverlay = nil
 	end
 	local T = UIKit.Theme
-	-- oversized and centred: the backdrop covers the whole screen however MainGui's UIScale (0.75-1.25) treats
+	-- oversized and centred: the backdrop covers the whole screen however MainGui's UIScale (0.6-1.25) treats
 	-- scale-sized top-level children; the dialog box sits at the overlay's centre = the screen centre
 	local overlay = UIKit.Create("TextButton", {
 		Name = "ConfirmDialog",

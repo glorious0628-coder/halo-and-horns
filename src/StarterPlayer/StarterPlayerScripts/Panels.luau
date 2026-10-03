@@ -36,7 +36,7 @@ local TOP_FALLBACK = type(UI_CFG.TopInsetFallback) == "number" and UI_CFG.TopIns
 
 -- Neutral faction fallbacks (SPEC_ADDENDUM A6 / A7-4 / A9-1 teal), used only if Config lacks the entries
 local NEUTRAL_FALLBACK = {
-	Id = "Neutral", Name = "장인 길드", Short = "장인", Emblem = "⚙",
+	Id = "Neutral", Name = "장인 길드", Short = "장인", Emblem = "장", -- no ⚙ glyph in Gotham
 	Color = Color3.fromRGB(40, 200, 190), Perks = {}, Pitch = "",
 }
 local NEUTRAL_LORE = "조각을 줍지 않고, 다듬기로 한 자들."

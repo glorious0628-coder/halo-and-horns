@@ -923,6 +923,10 @@ Config.UI = {
 	TopInsetFallback = 64, -- ...or this many px when the inset is unknown (never use the top 0..64 px band)
 	ScaleMin = 0.75, -- UIScale = clamp(viewportY / 720, ScaleMin, ScaleMax)
 	ScaleMax = 1.25,
+	-- desktop (no touch): UIScale = clamp(viewportY / 720 * DesktopScaleMult, DesktopScaleMin, DesktopScaleMax)
+	DesktopScaleMult = 0.8,
+	DesktopScaleMin = 0.6,
+	DesktopScaleMax = 1.0,
 	MinTextSize = 11, -- UITextSizeConstraint.MinTextSize on every TextLabel/TextButton
 	JumpButtonWait = 5, -- WaitForChild timeout for PlayerGui.TouchGui.TouchControlFrame.JumpButton
 	AttackFallbackOffset = Vector2.new(-200, -170), -- attack button offset from bottom-right without a jump button

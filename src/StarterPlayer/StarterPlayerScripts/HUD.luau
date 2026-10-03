@@ -8,6 +8,8 @@ local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local GuiService = game:GetService("GuiService")
 local HttpService = game:GetService("HttpService")
+local StarterGui = game:GetService("StarterGui")
+local TextChatService = game:GetService("TextChatService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -33,16 +35,22 @@ local TOP_FALLBACK = UI.TopInsetFallback or 64
 local JUMP_WAIT = UI.JumpButtonWait or 5 -- addendum H5
 local ATTACK_FALLBACK = UI.AttackFallbackOffset or Vector2.new(-200, -170)
 
-local ATTACK_SIZE = 160
-local RELEASE_SIZE = 120
-local SMALL_W, SMALL_H = 100, 56
-local UPGRADE_W, UPGRADE_H = 230, 70
-local BTN_GAP = 14
-local SCREEN_EDGE = 24
-local STATS_W = 300
-local STATS_H_FULL, STATS_H_SHORT = 122, 98
-local QUEST_W, QUEST_ROW_H, QUEST_GAP, QUEST_HEADER_H = 300, 58, 4, 24
-local WAR_W = 420
+-- desktop (no touch) gets smaller buttons (~60% of the old on-screen size with the desktop UIScale);
+-- touch keeps thumb-sized targets (attack / release stay >= 44 real px at UIScale 0.75)
+local IS_TOUCH = UserInputService.TouchEnabled
+local ATTACK_SIZE = IS_TOUCH and 136 or 120
+local RELEASE_SIZE = IS_TOUCH and 102 or 90
+local SMALL_W, SMALL_H = (IS_TOUCH and 92 or 80), (IS_TOUCH and 52 or 40)
+local UPGRADE_W, UPGRADE_H = (IS_TOUCH and 206 or 180), (IS_TOUCH and 62 or 50)
+local BTN_GAP = IS_TOUCH and 12 or 10
+local ROW_GAP = IS_TOUCH and 12 or 8 -- between upgrade / auto / menu
+local SCREEN_EDGE = IS_TOUCH and 24 or 16
+local STATS_W = 228
+local STATS_H_FULL, STATS_H_SHORT = 92, 76
+local QUEST_W, QUEST_ROW_H, QUEST_GAP, QUEST_HEADER_H = 240, 44, 3, 24
+local QUEST_BTN_W = 42 -- claim / reroll button width inside a quest row
+local WAR_W = 360
+local CHIPS_Y = 106 -- status chips slot, under EventHUD's strip (y 64-101)
 
 local REWARD_SAMPLES = NEXT.RewardSamples or 10
 local MAX_KILLS_SHOWN = NEXT.MaxKillsShown or 99
@@ -85,11 +93,14 @@ local TXT = {
 	KaijuQueued = "괴수 대기 중",
 	QuestHeader = "오늘의 퀘스트 (%d/%d)",
 	QuestAllDone = "오늘 일일 완료! 추가 퀘스트 진행 중",
+	QuestClaimable = " · 받기 %d",
+	QuestExpand = " ▼",
+	QuestCollapse = " ▲",
 	BadgeDaily = "일일",
 	BadgeExtra = "추가",
 	BadgePinned = "안내",
 	Claim = "받기",
-	Reroll = "↻",
+	Reroll = "교체", -- Gotham has no ↻ glyph (rendered as tofu)
 	Attack = "공격",
 	Release = "발사",
 	Perfect = "PERFECT!",
@@ -128,6 +139,7 @@ local menuGlowTween = nil
 local afford = { Baseline = false, Was = false, Streak = 0, Notified = {} }
 
 local questRows = {}
+local questExpanded = false -- collapsed list shows the header + one row
 local guide = nil -- { Tag, Part, Att0, Att1, Beam, Billboard, Tween }
 local guideAnchors = {}
 
@@ -252,6 +264,56 @@ local function insetY()
 	return y
 end
 
+-- bottom (real px) of the TextChatService chat window + input bar when shown over the top-left block, else nil.
+-- Everything is pcall'd: older clients lack the configurations' AbsolutePosition / AbsoluteSize.
+local CHAT_CONFIGS = { "ChatWindowConfiguration", "ChatInputBarConfiguration" }
+local function chatWindowBottom(inset, s, screenH)
+	local active = true
+	pcall(function()
+		active = StarterGui:GetCore("ChatActive") ~= false
+	end)
+	if not active then return nil end
+	local okVersion, isTcs = pcall(function()
+		return TextChatService.ChatVersion == Enum.ChatVersion.TextChatService
+	end)
+	if not okVersion or not isTcs then return nil end
+	local top, bottom = nil, nil
+	for _, className in CHAT_CONFIGS do
+		local ok, t, b = pcall(function()
+			local cfg = TextChatService:FindFirstChildOfClass(className)
+			if not cfg or not cfg.Enabled then return nil, nil end
+			local pos, size = cfg.AbsolutePosition, cfg.AbsoluteSize
+			if size.X < 1 or size.Y < 1 then return nil, nil end
+			if pos.X > (12 + math.max(STATS_W, QUEST_W)) * s then return nil, nil end -- not on the left side
+			return pos.Y, pos.Y + size.Y
+		end)
+		if ok and type(t) == "number" and type(b) == "number" then
+			if top == nil or t < top then top = t end
+			if bottom == nil or b > bottom then bottom = b end
+		end
+	end
+	if not bottom or not top then return nil end
+	if top < inset - 4 then bottom += inset end -- positions measured from below the top bar
+	if bottom > screenH * 0.55 then return nil end -- chat moved / very tall: keep the HUD where it is
+	return bottom
+end
+
+-- desktop: legacy chat sits top-left over the stats block; move its window to the bottom-left instead.
+-- SetCore throws until the chat CoreScript has registered it, so retry for a while. TextChatService places
+-- its own window through ChatWindowConfiguration (VerticalAlignment = Bottom in the place file).
+local LEGACY_CHAT_POS = UDim2.new(0, 0, 0.6, 0)
+local function placeLegacyChat()
+	if IS_TOUCH then return end
+	local okVersion, isLegacy = pcall(function()
+		return TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService
+	end)
+	if not okVersion or not isLegacy then return end
+	for _ = 1, 20 do
+		if pcall(StarterGui.SetCore, StarterGui, "ChatWindowPosition", LEGACY_CHAT_POS) then return end
+		task.wait(0.5)
+	end
+end
+
 -- Korean directional particle: "고블린 숲" -> "고블린 숲으로", "마을" -> "마을로"
 local function withRo(word)
 	local last = nil
@@ -266,6 +328,19 @@ local function withRo(word)
 		return word .. "으로"
 	end
 	return word .. "(으)로"
+end
+
+-- false when the text has a symbol Gotham / the Korean fallback font lacks (⚙ ⚔ ↻ render as tofu boxes)
+local SAFE_SYMBOLS = { [0x2190] = true, [0x2192] = true, [0x25B2] = true, [0x25B6] = true, [0x25BC] = true,
+	[0x2605] = true, [0x2606] = true }
+local function glyphSafe(text)
+	local ok, safe = pcall(function()
+		for _, cp in utf8.codes(text) do
+			if cp >= 0x2190 and cp <= 0x2BFF and not SAFE_SYMBOLS[cp] then return false end
+		end
+		return true
+	end)
+	return ok and safe == true
 end
 
 local function corner(radius)
@@ -303,6 +378,7 @@ end
 
 ----------------------------------------------------------------- layout (forward-declared users)
 local applyLayout -- assigned below
+local refreshQuests -- assigned with the quest rows (the header toggle calls it)
 
 local function requestLayout()
 	if layoutPending then return end
@@ -323,30 +399,31 @@ local function buildStats(root)
 		Parent = root,
 	})
 	ui.stats = f
+	local half = math.floor((STATS_W - 18) / 2)
 	ui.level = UIKit.Create("TextLabel", {
 		Name = "Level",
-		Position = UDim2.fromOffset(8, 8),
-		Size = UDim2.fromOffset(76, 36),
+		Position = UDim2.fromOffset(6, 6),
+		Size = UDim2.fromOffset(58, 28),
 		BackgroundColor3 = Theme.Gold,
 		TextColor3 = DARK_TEXT,
-		TextSize = 21,
+		TextSize = 17,
 		Text = "Lv 1",
 		Parent = f,
-	}, { corner(UDim.new(0, 10)) })
+	}, { corner(UDim.new(0, 8)) })
 	ui.title = UIKit.Label({
 		Name = "Title",
-		Position = UDim2.fromOffset(92, 6),
-		Size = UDim2.fromOffset(STATS_W - 100, 20),
-		TextSize = 17,
+		Position = UDim2.fromOffset(70, 4),
+		Size = UDim2.fromOffset(STATS_W - 76, 17),
+		TextSize = 15,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		Parent = f,
 	})
 	ui.class = UIKit.Label({
 		Name = "Class",
-		Position = UDim2.fromOffset(92, 26),
-		Size = UDim2.fromOffset(STATS_W - 100, 18),
-		TextSize = 15,
+		Position = UDim2.fromOffset(70, 21),
+		Size = UDim2.fromOffset(STATS_W - 76, 15),
+		TextSize = 13,
 		TextColor = Theme.SubText,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
@@ -354,46 +431,50 @@ local function buildStats(root)
 	})
 	UIKit.Label({
 		Name = "XPTag",
-		Position = UDim2.fromOffset(4, 50),
-		Size = UDim2.fromOffset(28, 18),
-		TextSize = 15,
+		Position = UDim2.fromOffset(4, 39),
+		Size = UDim2.fromOffset(24, 14),
+		TextSize = 13,
 		TextColor = Theme.XP,
 		Text = "XP",
 		Parent = f,
 	})
 	local _, setXP, xpText = UIKit.Bar({
 		Name = "XPBar",
-		Position = UDim2.fromOffset(32, 51),
-		Size = UDim2.fromOffset(260, 16),
+		Position = UDim2.fromOffset(28, 40),
+		Size = UDim2.fromOffset(STATS_W - 34, 13),
 		Color = Theme.XP,
+		TextSize = 12,
 		Parent = f,
 	})
 	ui.setXP = setXP
 	ui.xpText = xpText
 	ui.bank = UIKit.Label({
 		Name = "Bank",
-		Position = UDim2.fromOffset(8, 72),
-		Size = UDim2.fromOffset(140, 22),
-		TextSize = 17,
+		Position = UDim2.fromOffset(6, 56),
+		Size = UDim2.fromOffset(half, 16),
+		TextSize = 14,
 		TextColor = Theme.Gold,
 		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
 		Parent = f,
 	})
 	ui.carried = UIKit.Label({
 		Name = "Carried",
-		Position = UDim2.fromOffset(152, 72),
-		Size = UDim2.fromOffset(140, 22),
-		TextSize = 17,
+		Position = UDim2.fromOffset(12 + half, 56),
+		Size = UDim2.fromOffset(half, 16),
+		TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
 		Parent = f,
 	})
 	ui.stars = UIKit.Label({
 		Name = "Stars",
-		Position = UDim2.fromOffset(8, 96),
-		Size = UDim2.fromOffset(STATS_W - 16, 20),
-		TextSize = 16,
+		Position = UDim2.fromOffset(6, 73),
+		Size = UDim2.fromOffset(STATS_W - 12, 15),
+		TextSize = 13,
 		TextColor = Theme.Bad,
 		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
 		Visible = false,
 		Parent = f,
 	})
@@ -405,14 +486,14 @@ local function buildWar(root)
 		Name = "WarMeter",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, 8 + TOP_FALLBACK),
-		Size = UDim2.fromOffset(WAR_W, 58),
+		Size = UDim2.fromOffset(WAR_W, 50),
 		BackgroundTransparency = 1,
 		Parent = root,
 	})
 	ui.war = w
 	local bar = UIKit.Create("Frame", {
 		Name = "Bar",
-		Size = UDim2.fromOffset(WAR_W, 26),
+		Size = UDim2.fromOffset(WAR_W, 22),
 		BackgroundColor3 = WAR_BG,
 		BackgroundTransparency = 0.15,
 		Parent = w,
@@ -452,7 +533,7 @@ local function buildWar(root)
 		Name = "HaloScore",
 		Position = UDim2.fromOffset(10, 0),
 		Size = UDim2.new(0.5, -10, 1, 0),
-		TextSize = 16,
+		TextSize = 15,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextStrokeTransparency = 0.3,
 		ZIndex = 3,
@@ -463,7 +544,7 @@ local function buildWar(root)
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.new(1, -10, 0, 0),
 		Size = UDim2.new(0.5, -10, 1, 0),
-		TextSize = 16,
+		TextSize = 15,
 		TextXAlignment = Enum.TextXAlignment.Right,
 		TextStrokeTransparency = 0.3,
 		ZIndex = 3,
@@ -471,8 +552,8 @@ local function buildWar(root)
 	})
 	local row = UIKit.Create("Frame", {
 		Name = "Info",
-		Position = UDim2.fromOffset(0, 32),
-		Size = UDim2.fromOffset(WAR_W, 22),
+		Position = UDim2.fromOffset(0, 27),
+		Size = UDim2.fromOffset(WAR_W, 20),
 		BackgroundTransparency = 1,
 		Parent = w,
 	}, {
@@ -490,7 +571,7 @@ local function buildWar(root)
 			LayoutOrder = order,
 			AutomaticSize = Enum.AutomaticSize.X,
 			Size = UDim2.new(0, 0, 1, 0),
-			TextSize = 15,
+			TextSize = 14,
 			TextColor = color,
 			TextStrokeTransparency = 0.5,
 			Parent = row,
@@ -508,16 +589,16 @@ local function makeChip(name, order)
 		Name = name,
 		LayoutOrder = order,
 		AutomaticSize = Enum.AutomaticSize.X,
-		Size = UDim2.fromOffset(0, 26),
+		Size = UDim2.fromOffset(0, 22),
 		BackgroundColor3 = Theme.Bg,
 		BackgroundTransparency = 0.2,
-		TextSize = 15,
+		TextSize = 13,
 		Text = "",
 		Visible = false,
 		Parent = ui.chips,
 	}, {
-		corner(UDim.new(0, 13)),
-		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10) }),
+		corner(UDim.new(0, 11)),
+		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }),
 		UIKit.Create("UIStroke", {
 			Name = "Stroke",
 			Thickness = 1.5,
@@ -550,7 +631,7 @@ local function buildChips(root)
 	ui.chips = UIKit.Create("Frame", {
 		Name = "StatusChips",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, 116 + TOP_FALLBACK),
+		Position = UDim2.new(0.5, 0, 0, CHIPS_Y + TOP_FALLBACK),
 		Size = UDim2.fromOffset(900, 30),
 		BackgroundTransparency = 1,
 		Parent = root,
@@ -586,17 +667,31 @@ local function buildQuests(root)
 			Padding = UDim.new(0, QUEST_GAP),
 		}),
 	})
-	ui.questHeader = UIKit.Create("TextLabel", {
+	-- header doubles as the expand / collapse toggle
+	ui.questHeader = UIKit.Button({
 		Name = "Header",
 		LayoutOrder = 0,
 		Size = UDim2.fromOffset(QUEST_W, QUEST_HEADER_H),
-		BackgroundColor3 = Theme.Bg,
+		Color = Theme.Bg,
 		BackgroundTransparency = 0.35,
-		TextSize = 16,
-		TextColor3 = Theme.Gold,
+		TextColor = Theme.Gold,
+		TextSize = 14,
+		TextScaled = true,
 		Text = "",
 		Parent = ui.quests,
-	}, { corner(UDim.new(0, 8)) })
+	}, function()
+		questExpanded = not questExpanded
+		refreshQuests()
+	end)
+	local tc = ui.questHeader:FindFirstChildOfClass("UITextSizeConstraint")
+	if tc then tc.MaxTextSize = 14 end
+	UIKit.Create("UIPadding", {
+		PaddingLeft = UDim.new(0, 6),
+		PaddingRight = UDim.new(0, 6),
+		PaddingTop = UDim.new(0, 3),
+		PaddingBottom = UDim.new(0, 3),
+		Parent = ui.questHeader,
+	})
 end
 
 ----------------------------------------------------------------- building: travel bar
@@ -658,10 +753,10 @@ local function keyHint(parent, text, position, anchor)
 		Name = "KeyHint",
 		AnchorPoint = anchor,
 		Position = position,
-		Size = UDim2.fromOffset(24, 22),
+		Size = UDim2.fromOffset(20, 18),
 		BackgroundColor3 = Color3.new(0, 0, 0),
 		BackgroundTransparency = 0.35,
-		TextSize = 15,
+		TextSize = 13,
 		Text = text,
 		ZIndex = 4,
 		Parent = parent,
@@ -683,13 +778,13 @@ local function buildButtons(root)
 	UIKit.Label({
 		Name = "Label",
 		Size = UDim2.fromScale(1, 1),
-		TextSize = 34,
+		TextSize = math.floor(ATTACK_SIZE * 0.21),
 		Text = TXT.Attack,
 		TextStrokeTransparency = 0.4,
 		ZIndex = 2,
 		Parent = ui.attack,
 	})
-	keyHint(ui.attack, "F", UDim2.new(0.5, 0, 1, -12), Vector2.new(0.5, 1))
+	keyHint(ui.attack, "F", UDim2.new(0.5, 0, 1, -8), Vector2.new(0.5, 1))
 
 	-- 발사 + charge ring
 	ui.release = roundButton("Release", RELEASE_SIZE, RELEASE_BG)
@@ -706,12 +801,13 @@ local function buildButtons(root)
 		UIKit.Create("UIGradient", { Name = "Level", Rotation = -90 }),
 	})
 	ui.chargeGradient = ui.chargeFill:FindFirstChild("Level")
+	local rs = RELEASE_SIZE / 120 -- label metrics below were tuned for a 120 px button
 	ui.chargeNum = UIKit.Label({
 		Name = "Count",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.47),
-		Size = UDim2.new(1, 0, 0, 40),
-		TextSize = 36,
+		Size = UDim2.new(1, 0, 0, math.floor(40 * rs)),
+		TextSize = math.floor(36 * rs),
 		Text = "0",
 		TextStrokeTransparency = 0.3,
 		ZIndex = 3,
@@ -720,9 +816,9 @@ local function buildButtons(root)
 	ui.chargeSub = UIKit.Label({
 		Name = "Sub",
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -12),
-		Size = UDim2.new(1, -10, 0, 20),
-		TextSize = 16,
+		Position = UDim2.new(0.5, 0, 1, -math.floor(12 * rs)),
+		Size = UDim2.new(1, -10, 0, math.floor(20 * rs)),
+		TextSize = math.max(13, math.floor(16 * rs)),
 		Text = TXT.Release,
 		TextStrokeTransparency = 0.3,
 		ZIndex = 3,
@@ -731,9 +827,9 @@ local function buildButtons(root)
 	ui.chargeTimer = UIKit.Label({
 		Name = "Timer",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, 12),
-		Size = UDim2.new(1, -10, 0, 20),
-		TextSize = 16,
+		Position = UDim2.new(0.5, 0, 0, math.floor(12 * rs)),
+		Size = UDim2.new(1, -10, 0, math.floor(20 * rs)),
+		TextSize = math.max(13, math.floor(16 * rs)),
 		TextColor = Theme.Gold,
 		TextStrokeTransparency = 0.3,
 		Visible = false,
@@ -747,14 +843,14 @@ local function buildButtons(root)
 		Name = "Auto",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Size = UDim2.fromOffset(SMALL_W, SMALL_H),
-		TextSize = 17,
+		TextSize = IS_TOUCH and 16 or 14,
 		Text = TXT.AutoOff,
 		Color = BTN_GREY,
 		Parent = ui.buttons,
 	}, function()
 		toggleAuto()
 	end)
-	keyHint(ui.auto, "R", UDim2.fromOffset(-6, -6), Vector2.new(0, 0))
+	keyHint(ui.auto, "R", UDim2.fromOffset(-5, -5), Vector2.new(0, 0))
 
 	-- 업그레이드 (line 1: next weapon + price, line 2: progress bar / next-goal text)
 	ui.upgrade = UIKit.Button({
@@ -767,40 +863,42 @@ local function buildButtons(root)
 	}, function()
 		doUpgrade()
 	end)
+	local titleH = math.floor(UPGRADE_H * 0.4)
+	local barY = titleH + 7
 	ui.upgradeTitle = scaledLabel({
 		Name = "Title",
-		Position = UDim2.fromOffset(8, 6),
-		Size = UDim2.new(1, -16, 0, 24),
+		Position = UDim2.fromOffset(6, 5),
+		Size = UDim2.new(1, -12, 0, titleH),
 		ZIndex = 2,
 		Parent = ui.upgrade,
-	}, 17)
+	}, IS_TOUCH and 16 or 14)
 	local _, setUpgrade, upgradeText = UIKit.Bar({
 		Name = "Progress",
-		Position = UDim2.fromOffset(8, 36),
-		Size = UDim2.new(1, -16, 0, 24),
+		Position = UDim2.fromOffset(6, barY),
+		Size = UDim2.new(1, -12, 0, UPGRADE_H - barY - 5),
 		Color = Theme.Gold,
 		Parent = ui.upgrade,
 	})
 	upgradeText.TextScaled = true
 	local tc = upgradeText:FindFirstChildOfClass("UITextSizeConstraint")
-	if tc then tc.MaxTextSize = 15 end
+	if tc then tc.MaxTextSize = IS_TOUCH and 14 or 13 end
 	ui.setUpgrade = setUpgrade
 	ui.upgradeText = upgradeText
-	keyHint(ui.upgrade, "U", UDim2.fromOffset(-6, -6), Vector2.new(0, 0))
+	keyHint(ui.upgrade, "U", UDim2.fromOffset(-5, -5), Vector2.new(0, 0))
 
 	-- 메뉴
 	ui.menu = UIKit.Button({
 		Name = "Menu",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Size = UDim2.fromOffset(SMALL_W, SMALL_H),
-		TextSize = 20,
+		TextSize = IS_TOUCH and 18 or 16,
 		Text = TXT.Menu,
 		Color = BTN_GREY,
 		Parent = ui.buttons,
 	}, function()
 		openMenu()
 	end)
-	keyHint(ui.menu, "M", UDim2.fromOffset(-6, -6), Vector2.new(0, 0))
+	keyHint(ui.menu, "M", UDim2.fromOffset(-5, -5), Vector2.new(0, 0))
 end
 
 ----------------------------------------------------------------- refresh: stats
@@ -814,7 +912,7 @@ local function refreshStats()
 	local prefix = ""
 	if f == "Neutral" then
 		local emblem = factionDef(f).Emblem
-		if type(emblem) == "string" and emblem ~= "" then prefix = emblem .. " " end
+		if type(emblem) == "string" and emblem ~= "" and glyphSafe(emblem) then prefix = emblem .. " " end
 	end
 	ui.title.Text = prefix .. tostring(title or "")
 	ui.title.TextColor3 = factionColor(f)
@@ -1265,51 +1363,61 @@ local function makeQuestRow(index)
 		}),
 	})
 	local r = { Frame = row, Entry = nil }
+	-- one compact line: [badge] text / progress bar + reward, claim or reroll button on the right
+	local rightX = QUEST_W - QUEST_BTN_W - 8 -- left edge of the button column (minus a 4 px gap)
+	local rewardW = 40
+	local barW = rightX - rewardW - 2 - 5
 	r.Badge = UIKit.Create("TextLabel", {
 		Name = "Badge",
-		Position = UDim2.fromOffset(6, 6),
-		Size = UDim2.fromOffset(44, 22),
+		Position = UDim2.fromOffset(5, 5),
+		Size = UDim2.fromOffset(34, 16),
 		BackgroundColor3 = Theme.Gold,
 		TextColor3 = DARK_TEXT,
-		TextSize = 15,
+		TextSize = 12,
 		Text = "",
 		Parent = row,
-	}, { corner(UDim.new(0, 6)) })
+	}, { corner(UDim.new(0, 5)) })
 	r.Text = UIKit.Label({
 		Name = "Text",
-		Position = UDim2.fromOffset(56, 2),
-		Size = UDim2.fromOffset(190, 34),
-		TextSize = 15,
-		TextWrapped = true,
+		Position = UDim2.fromOffset(43, 3),
+		Size = UDim2.fromOffset(rightX - 43, 19),
+		TextSize = 13,
+		TextScaled = true,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = row,
 	})
+	local tc = r.Text:FindFirstChildOfClass("UITextSizeConstraint")
+	if tc then tc.MaxTextSize = 13 end
 	local _, setBar, barText = UIKit.Bar({
 		Name = "Progress",
-		Position = UDim2.fromOffset(6, 38),
-		Size = UDim2.fromOffset(190, 16),
+		Position = UDim2.fromOffset(5, 25),
+		Size = UDim2.fromOffset(barW, 14),
 		Color = Theme.Good,
+		TextSize = 12,
 		Parent = row,
 	})
 	r.SetBar = setBar
 	r.BarText = barText
 	r.Reward = UIKit.Label({
 		Name = "Reward",
-		Position = UDim2.fromOffset(198, 36),
-		Size = UDim2.fromOffset(50, 20),
-		TextSize = 15,
+		Position = UDim2.fromOffset(5 + barW + 2, 24),
+		Size = UDim2.fromOffset(rewardW, 16),
+		TextSize = 13,
+		TextScaled = true,
 		TextColor = Theme.Gold,
 		Parent = row,
 	})
+	local rc = r.Reward:FindFirstChildOfClass("UITextSizeConstraint")
+	if rc then rc.MaxTextSize = 13 end
 	r.Claim = UIKit.Button({
 		Name = "Claim",
 		Text = TXT.Claim,
-		Position = UDim2.fromOffset(250, 6),
-		Size = UDim2.fromOffset(46, 46),
+		Position = UDim2.fromOffset(QUEST_W - QUEST_BTN_W - 4, 4),
+		Size = UDim2.fromOffset(QUEST_BTN_W, QUEST_ROW_H - 8),
 		Color = Theme.Good,
 		TextColor = DARK_TEXT,
-		TextSize = 16,
+		TextSize = 14,
 		Visible = false,
 		Parent = row,
 	}, function()
@@ -1318,10 +1426,10 @@ local function makeQuestRow(index)
 	r.Reroll = UIKit.Button({
 		Name = "Reroll",
 		Text = TXT.Reroll,
-		Position = UDim2.fromOffset(250, 6),
-		Size = UDim2.fromOffset(46, 46),
+		Position = UDim2.fromOffset(QUEST_W - QUEST_BTN_W - 4, 4),
+		Size = UDim2.fromOffset(QUEST_BTN_W, QUEST_ROW_H - 8),
 		Color = BTN_GREY,
-		TextSize = 22,
+		TextSize = 14,
 		Visible = false,
 		Parent = row,
 	}, function()
@@ -1336,12 +1444,12 @@ local function refreshRerollTimers()
 		if r.Frame.Visible and r.Reroll.Visible then
 			if remaining > 0 then
 				r.Reroll.Text = tostring(math.ceil(remaining))
-				r.Reroll.TextSize = 16
+				r.Reroll.TextSize = 14
 				r.Reroll.BackgroundTransparency = 0.55
 				r.Reroll:SetAttribute("Disabled", true)
 			else
 				r.Reroll.Text = TXT.Reroll
-				r.Reroll.TextSize = 22
+				r.Reroll.TextSize = 14
 				r.Reroll.BackgroundTransparency = 0
 				r.Reroll:SetAttribute("Disabled", false)
 			end
@@ -1349,22 +1457,46 @@ local function refreshRerollTimers()
 	end
 end
 
-local function refreshQuests()
+refreshQuests = function()
 	local entries = parseQuests()
 	ui.quests.Visible = #entries > 0
 	local slots = Config.Quests.Slots
 	local claims = math.floor(num("DailyClaims", 0))
-	if claims >= slots then
-		ui.questHeader.Text = TXT.QuestAllDone
-	else
-		ui.questHeader.Text = string.format(TXT.QuestHeader, claims, slots)
+
+	-- collapsed: the tutorial row if present, else the first claimable, else the first unfinished daily
+	local claimable, firstClaim, firstDaily = 0, nil, nil
+	for i, e in entries do
+		local done = e.Progress >= e.Target
+		if done and (e.Pinned or e.Kind == "Daily") then
+			claimable += 1
+			if not firstClaim then firstClaim = i end
+		elseif not done and e.Kind == "Daily" and not firstDaily then
+			firstDaily = i
+		end
 	end
+	local shown = nil
+	if entries[1] and entries[1].Pinned then
+		shown = 1
+	else
+		shown = firstClaim or firstDaily or 1
+	end
+
+	-- header: progress, claimable count (highlighted so claiming stays 1-2 clicks), expand arrow
+	local head = (claims >= slots) and TXT.QuestAllDone or string.format(TXT.QuestHeader, claims, slots)
+	if claimable > 0 then head ..= string.format(TXT.QuestClaimable, claimable) end
+	if #entries > 1 then head ..= (questExpanded and TXT.QuestCollapse or TXT.QuestExpand) end
+	ui.questHeader.Text = head
+	local hot = claimable > 0
+	ui.questHeader.BackgroundColor3 = hot and Theme.Good or Theme.Bg
+	ui.questHeader.BackgroundTransparency = hot and 0.05 or 0.35
+	ui.questHeader.TextColor3 = hot and DARK_TEXT or Theme.Gold
 
 	local visibleBefore = 0
 	for _, r in questRows do
 		if r.Frame.Visible then visibleBefore += 1 end
 	end
 
+	local visibleNow = 0
 	for i, e in entries do
 		local r = questRows[i]
 		if not r then
@@ -1372,7 +1504,8 @@ local function refreshQuests()
 			questRows[i] = r
 		end
 		r.Entry = e
-		r.Frame.Visible = true
+		r.Frame.Visible = questExpanded or i == shown
+		if r.Frame.Visible then visibleNow += 1 end
 		if e.Pinned then
 			r.Badge.Text = TXT.BadgePinned
 			r.Badge.BackgroundColor3 = Theme.XP
@@ -1388,11 +1521,11 @@ local function refreshQuests()
 		r.SetBar(e.Progress / e.Target, done and Theme.Gold or Theme.Good)
 		r.BarText.Text = fmtNum(math.min(e.Progress, e.Target)) .. "/" .. fmtNum(e.Target)
 		r.Reward.Text = e.RewardGold > 0 and ("+" .. fmtNum(e.RewardGold)) or ""
-		local claimable = done and (e.Pinned or e.Kind == "Daily")
-		r.Claim.Visible = claimable
+		local canClaim = done and (e.Pinned or e.Kind == "Daily")
+		r.Claim.Visible = canClaim
 		r.Reroll.Visible = (not done) and (not e.Pinned) and e.Slot ~= nil
 		local stroke = r.Frame:FindFirstChild("Stroke")
-		if stroke then stroke.Transparency = claimable and 0 or 1 end
+		if stroke then stroke.Transparency = canClaim and 0 or 1 end
 	end
 	for i = #entries + 1, #questRows do
 		local r = questRows[i]
@@ -1400,7 +1533,7 @@ local function refreshQuests()
 		r.Frame.Visible = false
 	end
 	refreshRerollTimers()
-	if visibleBefore ~= #entries then
+	if visibleBefore ~= visibleNow then
 		requestLayout()
 	end
 end
@@ -1793,22 +1926,16 @@ applyLayout = function()
 
 	-- top-anchored blocks
 	local statsY = math.max(12 + shift, minTop)
+	-- desktop: the Roblox chat window sits top-left too, so start the stats block below it
+	local chatBottom = (not IS_TOUCH) and chatWindowBottom(inset, s, abs.Y) or nil
+	if chatBottom then statsY = math.max(statsY, chatBottom / s + 8) end
 	ui.stats.Position = UDim2.fromOffset(12, statsY)
 	ui.war.Position = UDim2.new(0.5, 0, 0, math.max(8 + shift, minTop))
-	ui.chips.Position = UDim2.new(0.5, 0, 0, math.max(116 + shift, minTop))
+	ui.chips.Position = UDim2.new(0.5, 0, 0, math.max(CHIPS_Y + shift, minTop))
 
-	-- quests (left-middle); pulled up on short screens so the last row stays visible
-	local rows = 0
-	for _, r in questRows do
-		if r.Frame.Visible then rows += 1 end
-	end
-	local needed = QUEST_HEADER_H + rows * (QUEST_ROW_H + QUEST_GAP)
+	-- quests right under the stats block (collapsed by default, so the list stays short)
 	local statsBottom = statsY + ui.stats.Size.Y.Offset
-	local qy = 200 + shift
-	if qy + needed > H - 8 then
-		qy = math.max(statsBottom + 8, H - 8 - needed)
-	end
-	ui.quests.Position = UDim2.fromOffset(12, qy)
+	ui.quests.Position = UDim2.fromOffset(12, statsBottom + 8)
 
 	-- big buttons: attack up-left of the touch jump button (H5), else bottom-right corner
 	local AR, RR = ATTACK_SIZE / 2, RELEASE_SIZE / 2
@@ -1828,17 +1955,17 @@ applyLayout = function()
 	ax = math.clamp(ax, math.min(axMax, AR + 2 * RR + BTN_GAP + 8), axMax)
 	ay = math.clamp(ay, math.min(ayMax, AR + UPGRADE_H + BTN_GAP + 8), ayMax)
 	ui.attack.Position = UDim2.fromOffset(ax, ay)
-	ui.release.Position = UDim2.fromOffset(ax - AR - BTN_GAP - RR, math.min(ay + 20, H - RR - 8))
+	ui.release.Position = UDim2.fromOffset(ax - AR - BTN_GAP - RR, math.min(ay + AR * 0.25, H - RR - 8))
 
 	local rowY = ay - AR - BTN_GAP - UPGRADE_H / 2
 	local autoX = ax
-	local menuX = autoX + SMALL_W + 12
+	local menuX = autoX + SMALL_W + ROW_GAP
 	local overflow = menuX + SMALL_W / 2 - (W - 12)
 	if overflow > 0 then
 		autoX -= overflow
 		menuX -= overflow
 	end
-	local upX = autoX - SMALL_W / 2 - 12 - UPGRADE_W / 2
+	local upX = autoX - SMALL_W / 2 - ROW_GAP - UPGRADE_W / 2
 	ui.auto.Position = UDim2.fromOffset(autoX, rowY)
 	ui.menu.Position = UDim2.fromOffset(menuX, rowY)
 	ui.upgrade.Position = UDim2.fromOffset(upX, rowY)
@@ -1949,6 +2076,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "Level" }, onLevelChanged)
 
 	bindButtonInput()
+	task.spawn(placeLegacyChat)
 	UserInputService.InputBegan:Connect(onInputBegan)
 	UserInputService.InputEnded:Connect(onInputEnded)
 	UserInputService.WindowFocusReleased:Connect(clearHolds)
