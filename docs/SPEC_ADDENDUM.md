@@ -683,15 +683,20 @@ check. See HANDOFF_CODEX and the actual-cost records in
   `place/GoodEvil.rbxlx`, including the pilot pending assembly/controller. Subsequent nickname UI/policy source changes
   still require sync/live QA/save/copy. Complete new-account monster restoration is not verified.
 
-## A18. Approved HP/MP HUD and server-owned reusable potions (2026-10-03; basic runtime verified)
+## A18. Approved HP/MP HUD and server-owned potion stock (2026-10-03; purchase connection pending)
 
 The user approved GPT `art/out/UI_HUD_Vitals_A.png` ("어휴 너무 좋지"). Implement the approved addition without changing
-the existing HUD style. The optional potion-mechanic question had no answer; **free reusable potions with separate
-10-second cooldowns** are the implementation default, not a recorded user choice of that mechanic.
+the existing HUD style. The original unanswered mechanic question led to a free-reusable implementation default.
+The user's later explicit **NPC purchase + remaining count display** request replaces that default. Purchase stock
+server code is locally prepared, excluded from the current intermediate commit, and not verified live or connected to
+an NPC/new shop GUI. Separate10-second HP/MP cooldowns and the approved HUD artwork remain.
 
 ### A18-1 Resource and remote contract
 - `Config.Vitals = { MaxMana=100, ManaRegen=4, MageSwingCost=3, ReleaseCost=20,
-  HPRecovery=0.30, MPRecovery=0.40, PotionCooldown=10 }`.
+  HPRecovery=0.30, MPRecovery=0.40, PotionCooldown=10, PotionPrices={HP=10,MP=10}, PotionInventoryCap=99,
+  PotionMerchantName="PotionMerchant", PotionMerchantDistance=12 }`. Prices are provisional implementation balance
+  values, not user-approved exact prices. Persist/mirror `HPPotionCount`, `MPPotionCount`, each default0 for new and
+  legacy saves. Normalize corrupted/fractional/nonfinite stock to0 and clamp oversized valid integers to99.
 - New server `VitalsService` follows Init(S)/Start and is registered before CombatService; new client `VitalsUI` is
   registered before HUD. Registrations in the original A18 round: 21 server services and 9 client modules; after A20/A21,
   the latest basic Play started 23 server services and 9 client modules. Register remote `UsePotion`
@@ -709,10 +714,17 @@ the existing HUD style. The optional potion-mechanic question had no answer; **f
   Every class Release (manual/auto) spends 20 only after ordinary eligibility/min-stack checks and BEFORE consuming
   charge/perfect state. Insufficient mana keeps charge and attack cooldown; no damage/attack Fx is accepted.
 - `UsePotion("HP"|"MP")`: validate kind, ready/living/ClassChosen player, independent per-kind request throttle and
-  authoritative deadline. Refuse kaiju Siren/Active. HP adds 30% of the current Humanoid.MaxHealth, capped at MaxHealth;
+  authoritative deadline and at least1 valid saved bottle. Refuse kaiju Siren/Active. HP adds 30% of the current Humanoid.MaxHealth, capped at MaxHealth;
   MP adds 40% of MaxMana, capped at MaxMana. Successful use alone starts that kind's 10-second deadline, marks active
-  and sends a Korean notice. Full resource, bad kind, dead/not chosen, active deadline and kaiju spend no potion deadline.
-  Potions have no gold cost, purchased stock or saved inventory in this default.
+  and sends a Korean notice. Decrement exactly1 saved bottle only after actual recovery; no yield separates recovery,
+  stock decrement and deadline. Full resource, empty/invalid stock, bad kind, dead/not chosen, active deadline and kaiju
+  consume neither stock nor potion deadline. Respawn/cosmetic changes grant no new stock; existing session deadlines persist.
+- `BuyPotion(kind,amount)` permits only HP/MP and numeric integer1 or5. Validate ready/living player and the server-owned
+  `workspace.Map.NPCs.PotionMerchant` Model/PrimaryPart within12studs using finite3D positions. Missing/far/invalid NPC,
+  NaN/fractional/forged amount, insufficient gold or an inventory overflow rejects before mutation. Call the existing
+  carried-first `ProgressionService.SpendGold` and `PlayerService.SetStat` with no intervening yield. Never accept a
+  client price, merchant position or stock total. `ShopService.CanBuyPotions` exposes the same server distance check;
+  purchase GUI/NPC creation remains pending and must follow a user-selected GPT image.
 - `DebugSetMana` is Studio-only via Main's existing DebugCommand; never expose a resource setter as a client remote.
 
 ### A18-2 Approved HUD and controls
@@ -740,6 +752,10 @@ the existing HUD style. The optional potion-mechanic question had no answer; **f
 - **Still unverified:** keys 1/2, wrong kind/dead/not chosen/kaiju refusal, exact cost/failed-MP charge and cooldown
   preservation for Mage Swing/all-class Release, respawn mana refill and cosmetic resource/CD preservation.
   CostumeRigs still has 0 playable templates, so real costume replacement coverage remains pending.
+- Stock-purchase source passed local luau-compile and **560 network-free checks using actual current service sources**:
+  new/legacy0 stock, normalization, amount1/5, exact prices, carried-first debit, mirror/save, distance/cap/NaN rejection,
+  recovery-only consumption, full/CD/kaiju/empty refusals, respawn/cosmetic stock/CD preservation. These mock-backed
+  checks do not replace live NPC purchase, persisted rejoin, remaining-count UI or latest source sync/play/save.
 
 ## A19. Approved class attack motions and moving weapon origins (2026-10-03; runtime verification pending)
 
