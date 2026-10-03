@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from assemble import IDENTITY, RigError, bounds, cube_rotations, importer_basis, inspection_data, manifest, matmul, matvec, transpose
+from assemble import IDENTITY, RigError, bounds, cube_rotations, importer_basis, inspection_data, manifest, matmul, matvec, root_placement, transpose
 
 
 I = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
@@ -89,6 +89,46 @@ class ImporterBasisTests(unittest.TestCase):
 
 
 class ActualPilotAssemblyTests(unittest.TestCase):
+    def test_short_leg_reference_repair_is_explicit_and_does_not_guess_geometry(self):
+        with self.assertRaises(RigError):
+            root_placement([0, 0, 0], [2, 2, 1], -0.86, 5.5, [0, 0.65, 0])
+        center, height, record = root_placement([0, 0, 0], [2, 2, 1], -0.86, 5.5,
+                                                 [0.2, 0.65, -0.4], "lower-torso-y")
+        self.assertEqual(center, [0, 0.65, 0])
+        self.assertAlmostEqual(height, 0.51)
+        self.assertFalse(record["visible_geometry_changed"])
+        for lower, feet in (([0, -0.2, 0], -0.86), ([0, 0.01, 0], -0.5), ([0, 8, 0], -0.86)):
+            with self.subTest(lower=lower, feet=feet), self.assertRaises(RigError):
+                root_placement([0, 0, 0], [2, 2, 1], feet, 5.5, lower, "lower-torso-y")
+        original = [0.1, 0, -0.2]
+        center, height, _ = root_placement(original, [2, 2, 1], -1.8, 5.5, [0, 0.7, 0], "lower-torso-y")
+        self.assertEqual(center, original)  # Already valid roots are not changed by the repair.
+        self.assertAlmostEqual(height, 0.8)
+
+    def test_actual_neutral_archer_f_root_repair_preserves_world_joints_and_meshes(self):
+        root = Path(__file__).resolve().parents[2]
+        path = root / "build/costume_r15/Costume_NeutralArcherF/joints.json"
+        if not path.is_file():
+            self.skipTest("Local short-leg conversion is not present")
+        original_bytes = path.read_bytes()
+        source = json.loads(original_bytes)
+        with self.assertRaises(RigError):
+            manifest(path, "Costume_NeutralArcherF")
+        data = manifest(path, "Costume_NeutralArcherF", "lower-torso-y")
+        self.assertAlmostEqual(data["hip_height"], 0.5162326395511627, places=6)
+        self.assertEqual(data["root"]["size"], source["root"]["Size"])
+        pieces = {geometry["name"]: geometry for geometry in data["meshes"]}
+        joints = {joint["name"]: joint for joint in source["joints"]}
+        for joint in data["joints"]:
+            self.assertEqual(joint["world"], joints[joint["name"]]["joint_position"])
+            for part_key, frame_key in (("part0", "C0"), ("part1", "C1")):
+                part = joint[part_key]
+                center = data["root"]["center"] if part == "HumanoidRootPart" else pieces[part]["center"]
+                for axis in range(3):
+                    self.assertAlmostEqual(center[axis] + joint[frame_key][axis], joint["world"][axis], places=7)
+        self.assertEqual(path.read_bytes(), original_bytes)
+        self.assertFalse(data["root_reference"]["visible_geometry_changed"])
+
     def test_real_glb_fragments_recenter_without_moving_any_bone_joint(self):
         root = Path(__file__).resolve().parents[2]
         joints = root / "build/costume_r15/Costume_HaloWarriorM/joints.json"

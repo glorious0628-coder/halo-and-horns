@@ -1,0 +1,38 @@
+{
+  "Costume_HaloArcherF": {
+    "stage": "Complete",
+    "sha256": "219104efab68005ae4ecd00eb1ab8c9c767b3ae882c6f9ac5bedcf5c015ee586",
+    "import_task_id": "92a5577d-2387-4409-bdb9-53c78aaf2e58",
+    "check_task_id": "7b8e685b-181c-42aa-bbda-b6033ae341ee",
+    "riggable": false,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_HornsArcherF": {
+    "stage": "Complete",
+    "sha256": "428bb62bf1bac2ec61061ba197e0fde9074e777bfba66ae37bbe0584724865e0",
+    "import_task_id": "f666b30a-cd9d-4950-8137-9df55bb1374f",
+    "check_task_id": "5f73f7d8-72dc-41d9-8cb7-298194aad816",
+    "riggable": false,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_NeutralWarriorF": {
+    "stage": "Complete",
+    "sha256": "fc7ec20f94bfa5b2d96293d699f6036c61afaa3c80a1a2e327e69597419557d9",
+    "import_task_id": "f84b9a5f-f483-4b3f-860c-571f6c9efe64",
+    "check_task_id": "a003797c-da37-4155-874f-b1d8edca0065",
+    "riggable": false,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_NeutralArcherM": {
+    "stage": "Complete",
+    "sha256": "ddc0fc2bba1f19372bd7c341f115adb3954b0da6f021da44ba252f65cb052ee6",
+    "import_task_id": "c858128a-0a62-40a2-835e-29264e0c446d",
+    "check_task_id": "e685d62b-dd1a-4717-a8fd-a10b3a74621f",
+    "riggable": false,
+    "rig_type": "biped",
+    "credits": 0
+  }
+}

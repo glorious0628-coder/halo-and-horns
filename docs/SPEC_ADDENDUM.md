@@ -637,28 +637,31 @@ check. See HANDOFF_CODEX and the actual-cost records in
   Root executed the installer successfully in Edit: 61 nodes, Source 28,802 characters, SHA256
   `49eab7530cfc33b8af13b995ae1fa87f482a489b6d108ec2410d12dd19b720f0`; complete audit in
   `build/costume_r15/animate_install_20261003T073704Z_4ef76cd9.json`.
-- The user explicitly approved all remaining **17 rigs, maximum 425 credits**. The run finished with **10 paid rigs/250
-  credits and 7 free riggable=false rejections/0 paid calls**. Skeleton 30 + SkeletonKing 60 + pilot 25 + new 250 = **365
-  actual credits**, latest confirmed API balance **4,635**. Do not treat the approval ceiling as actual spending.
-  Preserve completed/rejected/Unknown records and never automatically issue paid re-rig or regeneration requests.
-  Eight new rigs passed strict local R15 conversion with original UV/image bytes and ≤10 import items per batch;
-  HornsMageM's nonadjacent Head/left-arm tie and HornsMageF's empty LeftLowerArm remain held. Local conversion is not
-  Roblox upload, animation QA or game registration. Root alone writes the API ledger.
+- The user approved all remaining17 rigs, maximum425 credits. Initial10 paid rigs250 and7 free rejections
+  are historical. Exact mesh/UV-preserving Head+Body object packaging made3 previously rejected Halo rigs pass free
+  checks; their first authorized paid rigs cost75. Current new17 total:13 paid/325,4 remaining free rejections/0.
+  Skeleton30+King60+pilot25+new325=440 actual credits; confirmed API balance4560. No paid re-rig/regeneration.
+  HornsMageM/F surface-weight and NeutralArcherF root fixes passed offline preservation checks. Newly paid Halo3
+  source rigs incorrectly collapse Head material into Body material: upload held for exact original UV/material
+  restoration. Local conversion does not prove approved appearance or runtime quality. Root alone writes API ledger.
 
 ### A17-4 Actual verification boundary for this round
-- Earlier diagnosis: Darugi_S2, Halo/Mage/F, ClassChosen=true, CostumeEnabled=true, CostumeStatus=MissingTemplate;
-  the three costume folders were absent then. The verified R15 controller is now installed, and all **18 pilot mesh
-  pieces from 3 file Importer batches** are assembled in CostumePendingRigs. Basic Animate/walk/jump/F/Q joint motion
-  and default-ON recreation after death passed. OFF restores the owner's visible avatar but still physically pushes it;
-  height adjustment and preserving the original OFF root.CanCollide still failed in live Play. The ownership experiment
-  also failed and its source was reverted. Offline physics checks:86 passed; this does not prove a stable swap.
-  **Promoted playable CostumeRigs: 0.** Final OFF/location/resource/
-  protection/movement-track preservation must pass before promotion. Basic joint motion is not final A19 motion QA.
+- **Playable CostumeRigs:1**, Costume_HaloWarriorM (18 meshes/15 motors/3 welds). Actual normal faction/class UI
+  selects this costume without a debug template override. Default ON, B-menu OFF/ON, walking/jumping, F/Q joint motion
+  and real-death default-ON recreation passed. Client PreloadAsync returned153 callbacks, all Success.
+- OFF now uses Player:LoadCharacterWithHumanoidDescriptionAsync for engine-owned appearance/controller restoration.
+  Install the restore context before CharacterAdded, bind death before yielding, and cancel failed/late callbacks.
+  Preserve original RigType/feet-height-adjusted position/velocities/HP, current MP/stock/CD, original ForceField instances
+  and expiration, and ZoneService movement tracking. Cosmetic CharacterSpawned must not reset resources/protection.
+  Death during restore uses the normal death path once; never revive or grant cosmetic respawn protection.
+  Actual OFF stable46 samples showed XZ drift0, velocity<1, Running; subsequent walking25stud/jump passed. Offline
+ 28 scenarios/365 checks cover delayed/error/death/leave/R6-R15 preservation; actual R6 owner remains unverified.
+  Full18-costume and final A19 weapon quality remain pending. Evidence: docs/art/costume_checkpoint_2026-10-03.md.
 - A later temporary Batch01 clone loaded its 9 asset references successfully and displayed its face/eyes/armor textures.
   This proves those static imported surfaces, not a complete R15 body or animation. Initial failed loads are not silently
   removed from earlier diagnostic records.
 - Default Animate capture/vendor/installation and the pilot's pending R15 assembly/basic motion are verified;
-  final OFF restoration/state preservation remain. A free EditableMesh comparison of
+  final all-class restoration coverage remains. A free EditableMesh comparison of
   the original LeftLowerArm passed (431 faces, UV maximum error 0, position maximum error 1.237e-7). The free
   LeftLowerLeg preview had 850 vertices/596 faces and all comparison errors 0. One actual CreateAssetAsync call raised
   "CreateAssetAsync and CreateAssetVersionAsync are not available yet"; this Studio does not support that upload path.
@@ -751,11 +754,23 @@ an NPC/new shop GUI. Separate10-second HP/MP cooldowns and the approved HUD artw
   Evidence: `build/vitals_play_verify_result.json`. Do not misattribute the concurrent regeneration to the potion.
 - **Still unverified:** keys 1/2, wrong kind/dead/not chosen/kaiju refusal, exact cost/failed-MP charge and cooldown
   preservation for Mage Swing/all-class Release, respawn mana refill and cosmetic resource/CD preservation.
-  CostumeRigs still has 0 playable templates, so real costume replacement coverage remains pending.
-- Stock-purchase source passed local luau-compile and **560 network-free checks using actual current service sources**:
+  CostumeRigs now has1 verified pilot; all remaining class/gender swaps remain pending.
+- Stock-purchase source passed local luau-compile and **929 network-free checks using actual current service sources**:
   new/legacy0 stock, normalization, amount1/5, exact prices, carried-first debit, mirror/save, distance/cap/NaN rejection,
   recovery-only consumption, full/CD/kaiju/empty refusals, respawn/cosmetic stock/CD preservation. These mock-backed
   checks do not replace live NPC purchase, persisted rejoin, remaining-count UI or latest source sync/play/save.
+
+### A18-4 Current merchant and stock UI boundary
+- Config.Vitals.MerchantEnabled=false gates the prepared server NPC until GPT Potion_Shop_A is selected. MapBuilder
+  clones only the verified playable modest HaloWarriorM template; never a pending/unvalidated rig. Keep a server-owned
+  anchored model at workspace.Map.NPCs.PotionMerchant with exact direct-child PotionShopPrompt on its PrimaryPart.
+- Prompt opens OpenPanel('PotionShop') only for ready/alive/finite/in-range players and an enabled exact prompt.
+  BuyPotion independently rechecks the exact Map/NPC/model/PrimaryPart/prompt/Enabled marker chain,12stud distance,
+  finite gold/stock/kind/amount1or5/cap99 and rate. Debit carried gold first and bank second, then mirror/save stock.
+  Current10G unit price and purchase panel are awaiting user selection; do not enable the unfinished panel.
+- VitalsUI displays actual server HP/MP stock,0→구매, cooldown→N초, full→가득, available→사용. Disable invalid use.
+  Live native keys1/2 each consumed exactly1 (2→1) and set separate deadlines. Actual title/status TextBounds fit;
+  evidence docs/art/verification_2026-10-03/potion_stock_keys.jpeg. NPC purchase/persisted rejoin remain unverified.
 
 ## A19. Approved class attack motions and moving weapon origins (2026-10-03; runtime verification pending)
 

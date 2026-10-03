@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "syntaxFiles": [
+    "src/ReplicatedStorage/Shared/Config.luau",
+    "src/ReplicatedStorage/Shared/Net.luau",
+    "src/ServerScriptService/DataService.luau",
+    "src/ServerScriptService/ShopService.luau",
+    "src/ServerScriptService/VitalsService.luau",
+    "src/ServerScriptService/MapBuilder.luau"
+  ],
+  "checks": 929,
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "liveValidation": "pending: merchant/UI, real datastore/reconnect and engine play",
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "95a9f8f0c38861051b2325bc40c12da9117f9dc88d8f53314e4be9938509d691",
+    "src/ReplicatedStorage/Shared/Net.luau": "c62141f79b8bbba0d862e43f2153c5f4e2c84dcaab5986b6ce87f56e200b80ab",
+    "src/ServerScriptService/DataService.luau": "0a28094b426dd660aaac8a3890684897da5a884c779d076eef90e56ef2677cc7",
+    "src/ServerScriptService/ShopService.luau": "89b1be4f9687ef36beadf64bc669258377dea5f40d6255dc45537ea221b61388",
+    "src/ServerScriptService/VitalsService.luau": "2e433a5991bbc446438c48d74a55e4658632060f1e7cb88733be67d195427d04",
+    "src/ServerScriptService/ProgressionService.luau": "f62b8cf30b56c3897607ee68a86c826ea2fd2af0a1780501be07ea9e85902ea8",
+    "src/ServerScriptService/PlayerService.luau": "0bd356dda9d74ffd9f4ddf42e2e85a78bd26f03728188f95e48086a65d6cbde7",
+    "src/ServerScriptService/MapBuilder.luau": "d1fd9480cb074a2129255de44a621d6b2bfdcb2a0456047fd10d18a4477e984b",
+    "src/ServerScriptService/CostumeService.luau": "c54415f19c0918488f4adf6fcc97c479fd9a272a895db2c11b5390bc62264f51"
+  },
+  "fixtureSHA256": "2f53441330a76a7616f3b2a6ccec6f146ae1ac883d4305c3acd0a71f1570fbb5"
+}

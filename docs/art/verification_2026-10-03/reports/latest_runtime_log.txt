@@ -1,0 +1,61 @@
+[MapBuilder] moved Pad_SlimeMeadow to (52, -24)
+[MapBuilder] moved Pad_GoblinWoods to (52, 24)
+[MapBuilder] moved Pad_SkeletonRuins to (68, 24)
+[MapBuilder] reused workspace.Map (+1 missing pieces built)
+[MapBuilder] started
+[ZoneService] started
+[FactionService] started
+[ClassService] started
+[CostumeService] started
+[VitalsService] started
+[ExpressionService] started
+[JusticeService] started
+[ProgressionService] started
+[CombatService] started
+[MonsterService] custom model for Slime: yes
+[MonsterService] custom model for BigSlime: no
+[MonsterService] custom model for Goblin: yes
+[MonsterService] custom model for GoblinBrute: yes
+[MonsterService] custom model for Skeleton: yes
+[MonsterService] custom model for SkeletonKnight: yes
+[MonsterService] started
+[PvPService] started
+[GrudgeService] started
+[WarService] started
+[KaijuService] started
+[GooseService] custom model for GoldenGoose: yes
+[GooseService] started
+[ShopService] started
+[QuestService] started
+[MonetizationService] Developer Product ids are 0: buy buttons show '상품 준비 중'. Create 2 Developer Products on create.roblox.com (your game > Monetization > Developer Products) and paste their ids into Config.Products.
+[MonetizationService] started
+[CharacterVisuals] started
+[DataService] DataStore unavailable (enable Studio Access to API Services). Using in-memory data; nothing will be saved.
+[DataService] started
+[NicknameService] started
+[PlayerService] started
+[Main] Halo & Horns server started (23/23 services)
+Failed to fetch TexturePack in ServerStorage.CustomModels.Goblin.tripo_node_e8497c3a-ac26-4a67-bb46-ad931bc29982.tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.CustomModels.GoblinBrute.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.CustomModels.Skeleton.tripo_node_75dda943-8798-4cd0-a323-5831f66e63ac.tripo_mesh_75dda943-8798-4cd0-a323-5831f66e63ac.SurfaceAppearance. (0)
+[UIKit] started
+[Fx] started
+[VitalsUI] started
+[HUD] started
+[EventHUD] started
+[Panels] started
+Failed to fetch TexturePack in Workspace.Monsters.Goblin.CustomVisual.tripo_node_e8497c3a-ac26-4a67-bb46-ad931bc29982.tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982.SurfaceAppearance. (0)
+Failed to fetch TexturePack in Workspace.Monsters.GoblinBrute.CustomVisual.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9.SurfaceAppearance. (0)
+Failed to fetch TexturePack in Workspace.Monsters.Skeleton.CustomVisual.tripo_node_75dda943-8798-4cd0-a323-5831f66e63ac.tripo_mesh_75dda943-8798-4cd0-a323-5831f66e63ac.SurfaceAppearance. (0)
+[FactionPicker] started
+[ClassPicker] started
+[WorldMap] started
+[ClientMain] client started
+MeshContentProvider failed to process https://assetdelivery.roblox.com/v1/asset?id=140676049757743 because 'could not fetch'
+MeshContentProvider failed to process https://assetdelivery.roblox.com/v1/asset?id=140676049757743 because 'could not fetch'
+MeshContentProvider failed to process https://assetdelivery.roblox.com/v1/asset?id=130367891145829 because 'could not fetch'
+MeshContentProvider failed to process https://assetdelivery.roblox.com/v1/asset?id=97685895938537 because 'could not fetch'
+MeshContentProvider failed to process https://assetdelivery.roblox.com/v1/asset?id=140676049757743 because 'could not fetch'
+MeshContentProvider failed to process https://assetdelivery.roblox.com/v1/asset?id=130367891145829 because 'could not fetch'
+MeshContentProvider failed to process https://assetdelivery.roblox.com/v1/asset?id=97685895938537 because 'could not fetch'
+MeshContentProvider failed to process https://assetdelivery.roblox.com/v1/asset?id=130367891145829 because 'could not fetch'

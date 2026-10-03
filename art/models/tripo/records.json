@@ -212,6 +212,97 @@
    "stage": "rig-check",
    "resume_task_id": "46adc129-4cf0-4492-b0b3-f6ffd0618ab6",
    "error_type": "UnicodeEncodeError"
+  },
+  {
+   "event": "merged_rig_check_submitted",
+   "task_id": "c6dcbc94-d58b-4e75-ad2f-4599f0374385",
+   "source_task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+   "candidate_sha256": "4f8228bfe0e6ef1f0448a009917d36aeab1048e4f392a313b92dca0e669e105d"
+  },
+  {
+   "event": "merged_rig_check_completed",
+   "task_id": "c6dcbc94-d58b-4e75-ad2f-4599f0374385",
+   "source_task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+   "riggable": true,
+   "rig_type": "biped",
+   "credits": 0,
+   "candidate_sha256": "4f8228bfe0e6ef1f0448a009917d36aeab1048e4f392a313b92dca0e669e105d"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+   "rig_parameters": {
+    "input": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:01:56",
+   "rig_check_task_id": "ab59c669-9cd8-43fa-b9e7-45c604cabec1",
+   "event": "rig_check_submitted"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+   "rig_parameters": {
+    "input": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:01:56",
+   "rig_check_task_id": "ab59c669-9cd8-43fa-b9e7-45c604cabec1",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "event": "rig_check_completed"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+   "rig_parameters": {
+    "input": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:01:56",
+   "rig_check_task_id": "ab59c669-9cd8-43fa-b9e7-45c604cabec1",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "rig_task_id": "6a773fc7-2504-42a7-9b1f-a6a58c282f50",
+   "event": "rig_submitted"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+   "rig_parameters": {
+    "input": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:01:56",
+   "rig_check_task_id": "ab59c669-9cd8-43fa-b9e7-45c604cabec1",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "rig_task_id": "6a773fc7-2504-42a7-9b1f-a6a58c282f50",
+   "rig_file": "art\\models\\tripo\\Costume_HaloMageM_rig_6a773fc7-2504-42a7-9b1f-a6a58c282f50.glb",
+   "bytes": 2452988,
+   "rig_credits": 25.0,
+   "event": "rig_completed"
   }
  ],
  "Costume_HaloMageF": [
@@ -282,6 +373,97 @@
    "stage": "rig-check",
    "resume_task_id": "5a31b9c8-a51b-421b-b9e4-7876fdebf059",
    "error_type": "UnicodeEncodeError"
+  },
+  {
+   "event": "merged_rig_check_submitted",
+   "task_id": "52453012-ea0b-4c51-8767-34bcaf6c6c67",
+   "source_task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+   "candidate_sha256": "9c47d43b3e779dded7417360a1a1cf10ac6bed0fa519cceebeec2477b6849f42"
+  },
+  {
+   "event": "merged_rig_check_completed",
+   "task_id": "52453012-ea0b-4c51-8767-34bcaf6c6c67",
+   "source_task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+   "riggable": true,
+   "rig_type": "biped",
+   "credits": 0,
+   "candidate_sha256": "9c47d43b3e779dded7417360a1a1cf10ac6bed0fa519cceebeec2477b6849f42"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+   "rig_parameters": {
+    "input": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:02:06",
+   "rig_check_task_id": "129960d1-c778-4677-8bf4-7a9d67a5ea6a",
+   "event": "rig_check_submitted"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+   "rig_parameters": {
+    "input": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:02:06",
+   "rig_check_task_id": "129960d1-c778-4677-8bf4-7a9d67a5ea6a",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "event": "rig_check_completed"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+   "rig_parameters": {
+    "input": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:02:06",
+   "rig_check_task_id": "129960d1-c778-4677-8bf4-7a9d67a5ea6a",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "rig_task_id": "aa27d070-7d4c-479a-b606-dce7e7c61903",
+   "event": "rig_submitted"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+   "rig_parameters": {
+    "input": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:02:06",
+   "rig_check_task_id": "129960d1-c778-4677-8bf4-7a9d67a5ea6a",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "rig_task_id": "aa27d070-7d4c-479a-b606-dce7e7c61903",
+   "rig_file": "art\\models\\tripo\\Costume_HaloMageF_rig_aa27d070-7d4c-479a-b606-dce7e7c61903.glb",
+   "bytes": 2492952,
+   "rig_credits": 25.0,
+   "event": "rig_completed"
   }
  ],
  "Costume_HaloWarriorF": [
@@ -352,6 +534,97 @@
    "stage": "rig-check",
    "resume_task_id": "a105c54b-f7cc-4567-a854-ad08f159125d",
    "error_type": "UnicodeEncodeError"
+  },
+  {
+   "event": "merged_rig_check_submitted",
+   "task_id": "a65a6715-0ea4-4267-a0ec-84bf2167e773",
+   "source_task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+   "candidate_sha256": "11fc537b83171c8c38b4ae3de03a16b694cd0705441f952431114b96b74ded05"
+  },
+  {
+   "event": "merged_rig_check_completed",
+   "task_id": "a65a6715-0ea4-4267-a0ec-84bf2167e773",
+   "source_task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+   "riggable": true,
+   "rig_type": "biped",
+   "credits": 0,
+   "candidate_sha256": "11fc537b83171c8c38b4ae3de03a16b694cd0705441f952431114b96b74ded05"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+   "rig_parameters": {
+    "input": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:01:46",
+   "rig_check_task_id": "2edfc049-6cd5-4068-9e27-cac11a609be7",
+   "event": "rig_check_submitted"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+   "rig_parameters": {
+    "input": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:01:46",
+   "rig_check_task_id": "2edfc049-6cd5-4068-9e27-cac11a609be7",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "event": "rig_check_completed"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+   "rig_parameters": {
+    "input": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:01:46",
+   "rig_check_task_id": "2edfc049-6cd5-4068-9e27-cac11a609be7",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "rig_task_id": "9e168902-6a36-4220-9bcd-732502cfd0a2",
+   "event": "rig_submitted"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+   "rig_parameters": {
+    "input": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-03 23:01:46",
+   "rig_check_task_id": "2edfc049-6cd5-4068-9e27-cac11a609be7",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "rig_task_id": "9e168902-6a36-4220-9bcd-732502cfd0a2",
+   "rig_file": "art\\models\\tripo\\Costume_HaloWarriorF_rig_9e168902-6a36-4220-9bcd-732502cfd0a2.glb",
+   "bytes": 2643648,
+   "rig_credits": 25.0,
+   "event": "rig_completed"
   }
  ],
  "Costume_HaloArcherF": [
@@ -422,6 +695,36 @@
    "stage": "rig-check",
    "resume_task_id": "d74fd4ee-d4fa-4394-835a-b6391fae36dc",
    "error_type": "UnicodeEncodeError"
+  },
+  {
+   "event": "merged_rig_check_submitted",
+   "task_id": "6275234f-97e6-4dd1-91a8-d86e33d50475",
+   "source_task_id": "18d00a1e-ce53-4a7f-8c28-900439290a30",
+   "candidate_sha256": "c32b0d1dcc4f9c3f74584526220f0ef652eec133f01e95ae6116e218d455a7bb"
+  },
+  {
+   "event": "merged_rig_check_completed",
+   "task_id": "6275234f-97e6-4dd1-91a8-d86e33d50475",
+   "source_task_id": "18d00a1e-ce53-4a7f-8c28-900439290a30",
+   "riggable": false,
+   "rig_type": "biped",
+   "credits": 0,
+   "candidate_sha256": "c32b0d1dcc4f9c3f74584526220f0ef652eec133f01e95ae6116e218d455a7bb"
+  },
+  {
+   "event": "raw2k_rig_check_submitted",
+   "task_id": "7b8e685b-181c-42aa-bbda-b6033ae341ee",
+   "source_task_id": "92a5577d-2387-4409-bdb9-53c78aaf2e58",
+   "original_geometry_sha256": "219104efab68005ae4ecd00eb1ab8c9c767b3ae882c6f9ac5bedcf5c015ee586"
+  },
+  {
+   "event": "raw2k_rig_check_completed",
+   "task_id": "7b8e685b-181c-42aa-bbda-b6033ae341ee",
+   "source_task_id": "92a5577d-2387-4409-bdb9-53c78aaf2e58",
+   "riggable": false,
+   "rig_type": "biped",
+   "credits": 0,
+   "original_geometry_sha256": "219104efab68005ae4ecd00eb1ab8c9c767b3ae882c6f9ac5bedcf5c015ee586"
   }
  ],
  "Costume_HornsWarriorM": [
@@ -1038,6 +1341,36 @@
    "stage": "rig-check",
    "resume_task_id": "f536f27e-9d05-4ac4-8f5a-228e69792d47",
    "error_type": "UnicodeEncodeError"
+  },
+  {
+   "event": "merged_rig_check_submitted",
+   "task_id": "c72f78ed-0670-4321-8c69-7aa9866cc3a3",
+   "source_task_id": "3a7465ee-11b5-4ff9-a0e7-5274dd3778ca",
+   "candidate_sha256": "5f5c92ab10759d122a3c611ee019f71832c3816eb0ff8d118cbd8d7365d5302f"
+  },
+  {
+   "event": "merged_rig_check_completed",
+   "task_id": "c72f78ed-0670-4321-8c69-7aa9866cc3a3",
+   "source_task_id": "3a7465ee-11b5-4ff9-a0e7-5274dd3778ca",
+   "riggable": false,
+   "rig_type": "biped",
+   "credits": 0,
+   "candidate_sha256": "5f5c92ab10759d122a3c611ee019f71832c3816eb0ff8d118cbd8d7365d5302f"
+  },
+  {
+   "event": "raw2k_rig_check_submitted",
+   "task_id": "5f73f7d8-72dc-41d9-8cb7-298194aad816",
+   "source_task_id": "f666b30a-cd9d-4950-8137-9df55bb1374f",
+   "original_geometry_sha256": "428bb62bf1bac2ec61061ba197e0fde9074e777bfba66ae37bbe0584724865e0"
+  },
+  {
+   "event": "raw2k_rig_check_completed",
+   "task_id": "5f73f7d8-72dc-41d9-8cb7-298194aad816",
+   "source_task_id": "f666b30a-cd9d-4950-8137-9df55bb1374f",
+   "riggable": false,
+   "rig_type": "biped",
+   "credits": 0,
+   "original_geometry_sha256": "428bb62bf1bac2ec61061ba197e0fde9074e777bfba66ae37bbe0584724865e0"
   }
  ],
  "Costume_NeutralWarriorM": [
@@ -1199,6 +1532,36 @@
    "stage": "rig-check",
    "resume_task_id": "78d2459e-0625-4a40-8a0d-a7511d9599df",
    "error_type": "UnicodeEncodeError"
+  },
+  {
+   "event": "merged_rig_check_submitted",
+   "task_id": "5a97aed3-e0ae-4b1a-93df-cf369b974aee",
+   "source_task_id": "0a5abafe-f511-48dd-8725-631c9f733019",
+   "candidate_sha256": "e20fa0d5f4d4d1bca6d79d3c22a6b64dd801406e7728a6387ed21519c73cac5d"
+  },
+  {
+   "event": "merged_rig_check_completed",
+   "task_id": "5a97aed3-e0ae-4b1a-93df-cf369b974aee",
+   "source_task_id": "0a5abafe-f511-48dd-8725-631c9f733019",
+   "riggable": false,
+   "rig_type": "biped",
+   "credits": 0,
+   "candidate_sha256": "e20fa0d5f4d4d1bca6d79d3c22a6b64dd801406e7728a6387ed21519c73cac5d"
+  },
+  {
+   "event": "raw2k_rig_check_submitted",
+   "task_id": "a003797c-da37-4155-874f-b1d8edca0065",
+   "source_task_id": "f84b9a5f-f483-4b3f-860c-571f6c9efe64",
+   "original_geometry_sha256": "fc7ec20f94bfa5b2d96293d699f6036c61afaa3c80a1a2e327e69597419557d9"
+  },
+  {
+   "event": "raw2k_rig_check_completed",
+   "task_id": "a003797c-da37-4155-874f-b1d8edca0065",
+   "source_task_id": "f84b9a5f-f483-4b3f-860c-571f6c9efe64",
+   "riggable": false,
+   "rig_type": "biped",
+   "credits": 0,
+   "original_geometry_sha256": "fc7ec20f94bfa5b2d96293d699f6036c61afaa3c80a1a2e327e69597419557d9"
   }
  ],
  "Costume_NeutralMageM": [
@@ -1542,6 +1905,201 @@
    "stage": "rig-check",
    "resume_task_id": "43d5e795-5387-4382-9754-372681f4ddfa",
    "error_type": "UnicodeEncodeError"
+  },
+  {
+   "event": "merged_rig_check_submitted",
+   "task_id": "ee38cf0b-875e-4153-8c08-3ae712d4cf1c",
+   "source_task_id": "2e80e74e-eb0c-4421-bdcd-e3c82d8cedd2",
+   "candidate_sha256": "553a8b7851ea7eb53fb5b5102b34d76b430f7dba0a2461d2c3201305cd7410f5"
+  },
+  {
+   "event": "merged_rig_check_completed",
+   "task_id": "ee38cf0b-875e-4153-8c08-3ae712d4cf1c",
+   "source_task_id": "2e80e74e-eb0c-4421-bdcd-e3c82d8cedd2",
+   "riggable": false,
+   "rig_type": "biped",
+   "credits": 0,
+   "candidate_sha256": "553a8b7851ea7eb53fb5b5102b34d76b430f7dba0a2461d2c3201305cd7410f5"
+  },
+  {
+   "event": "raw2k_rig_check_submitted",
+   "task_id": "e685d62b-dd1a-4717-a8fd-a10b3a74621f",
+   "source_task_id": "c858128a-0a62-40a2-835e-29264e0c446d",
+   "original_geometry_sha256": "ddc0fc2bba1f19372bd7c341f115adb3954b0da6f021da44ba252f65cb052ee6"
+  },
+  {
+   "event": "raw2k_rig_check_completed",
+   "task_id": "e685d62b-dd1a-4717-a8fd-a10b3a74621f",
+   "source_task_id": "c858128a-0a62-40a2-835e-29264e0c446d",
+   "riggable": false,
+   "rig_type": "biped",
+   "credits": 0,
+   "original_geometry_sha256": "ddc0fc2bba1f19372bd7c341f115adb3954b0da6f021da44ba252f65cb052ee6"
+  }
+ ],
+ "Costume_HaloWarriorF_MergedProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HaloWarriorF\\merged_preserved.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HaloWarriorF\\merged_preserved.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_HaloMageM_MergedProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HaloMageM\\merged_preserved.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HaloMageM\\merged_preserved.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_HaloMageF_MergedProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HaloMageF\\merged_preserved.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HaloMageF\\merged_preserved.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_HaloArcherF_MergedProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "18d00a1e-ce53-4a7f-8c28-900439290a30",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HaloArcherF\\merged_preserved.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "18d00a1e-ce53-4a7f-8c28-900439290a30",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HaloArcherF\\merged_preserved.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_HornsArcherF_MergedProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "3a7465ee-11b5-4ff9-a0e7-5274dd3778ca",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HornsArcherF\\merged_preserved.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "3a7465ee-11b5-4ff9-a0e7-5274dd3778ca",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_HornsArcherF\\merged_preserved.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_NeutralWarriorF_MergedProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "0a5abafe-f511-48dd-8725-631c9f733019",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_NeutralWarriorF\\merged_preserved.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "0a5abafe-f511-48dd-8725-631c9f733019",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_NeutralWarriorF\\merged_preserved.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_NeutralArcherM_MergedProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "2e80e74e-eb0c-4421-bdcd-e3c82d8cedd2",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_NeutralArcherM\\merged_preserved.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "2e80e74e-eb0c-4421-bdcd-e3c82d8cedd2",
+   "file": "build\\costume_r15\\merge_candidates\\Costume_NeutralArcherM\\merged_preserved.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_HaloArcherF_Raw2kProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "92a5577d-2387-4409-bdb9-53c78aaf2e58",
+   "file": "art\\models\\costume\\raw\\C2k_HaloArcherF.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "92a5577d-2387-4409-bdb9-53c78aaf2e58",
+   "file": "art\\models\\costume\\raw\\C2k_HaloArcherF.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_HornsArcherF_Raw2kProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "f666b30a-cd9d-4950-8137-9df55bb1374f",
+   "file": "art\\models\\costume\\raw\\C2k_HornsArcherF.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "f666b30a-cd9d-4950-8137-9df55bb1374f",
+   "file": "art\\models\\costume\\raw\\C2k_HornsArcherF.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_NeutralWarriorF_Raw2kProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "f84b9a5f-f483-4b3f-860c-571f6c9efe64",
+   "file": "art\\models\\costume\\raw\\C2k_NeutralWarriorF.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "f84b9a5f-f483-4b3f-860c-571f6c9efe64",
+   "file": "art\\models\\costume\\raw\\C2k_NeutralWarriorF.glb",
+   "credits": 0.0
+  }
+ ],
+ "Costume_NeutralArcherM_Raw2kProbe": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "c858128a-0a62-40a2-835e-29264e0c446d",
+   "file": "art\\models\\costume\\raw\\C2k_NeutralArcherM.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "c858128a-0a62-40a2-835e-29264e0c446d",
+   "file": "art\\models\\costume\\raw\\C2k_NeutralArcherM.glb",
+   "credits": 0.0
   }
  ]
 }

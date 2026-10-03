@@ -1,0 +1,17 @@
+[
+  {
+    "label": "FactionPicker.Cards.Card_Halo.Body.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "ClassPicker.Cards.Card_Warrior.ChooseButton",
+    "text": "Success",
+    "error": false
+  },
+  {
+    "label": "production_ready",
+    "text": "{\"folder\":\"CostumeRigs\",\"validated\":true,\"enabled\":true,\"status\":\"Active\",\"id\":\"Costume_HaloWarriorM\",\"applied\":true,\"rig\":\"R15\"}",
+    "error": false
+  }
+]

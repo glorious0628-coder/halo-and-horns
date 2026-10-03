@@ -200,6 +200,8 @@ local MOTION = {
 	UPPER_BLEND = { Waist = 0.5, Neck = 0.7, RightShoulder = 1, RightElbow = 1, RightWrist = 1,
 		LeftShoulder = 1, LeftElbow = 1, LeftWrist = 1 },
 	LAYER_FADE_IN = 0.045, LAYER_FADE_OUT = 0.1,
+	BOW = { Extend = 0.995, CheekSide = 0.27, CheekDown = 0.18, CheekFront = 0.32,
+		DrawStart = 0.055, SnapTime = 0.05, AimIn = 0.065, Settle = 0.105 },
 	STREAK_LIFE = 0.12,
 	MAGIC_SIZE = 4, MAGIC_COLOR = Color3.fromRGB(190, 140, 255),
 
@@ -231,7 +233,7 @@ local MOTION = {
 			{ 0.48, "InOut", { Waist = { -4, 12, 2 }, Neck = { 2, -6, 0 }, RightShoulder = { 24, 0, -15 }, RightElbow = { 26, 0, 0 } } },
 			{ 0.68, "InOut", {} },
 		} },
-		WarriorRelease = { Len = 0.7, Keys = { -- two-handed overhead wind-up -> ground smash
+		WarriorRelease = { Len = 0.7, Keys = { -- overhead wind-up with the free arm balancing -> ground smash
 			{ 0, "Out", {} },
 			{ 0.16, "Out", { Waist = { 20, -10, 0 }, Neck = { -8, 6, 0 }, RightShoulder = { 168, 0, 12 }, RightElbow = { 95, 0, 0 }, RightWrist = { -100, 0, 0 }, LeftShoulder = { 160, 0, -12 }, LeftElbow = { 70, 0, 0 } } },
 			{ 0.24, "In", { Waist = { -32, 6, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 58, 0, -12 }, RightElbow = { 6, 0, 0 }, RightWrist = { -75, 0, 0 }, LeftShoulder = { 55, 0, 12 }, LeftElbow = { 12, 0, 0 } } },
@@ -255,20 +257,20 @@ local MOTION = {
 			{ 0.55, "Out", { Waist = { -16, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 68, 0, 8 }, RightElbow = { 5, 0, 0 }, LeftShoulder = { 68, 0, -8 }, LeftElbow = { 5, 0, 0 } } },
 			{ 0.75, "InOut", {} },
 		} },
-		ArcherSwing = { Len = 0.44, Keys = { -- left-hand bow stays upright; right hand visibly draws the string
+		ArcherSwing = { Len = 0.44, Keys = { -- actual grip/arm lengths solve the six arm joints below
 			{ 0, "Out", {} },
-			{ 0.07, "Out", { Waist = { 0, 18, 0 }, Neck = { 0, -14, 0 }, LeftShoulder = { 88, 0, -5 }, LeftElbow = { 5, 0, 0 }, LeftWrist = { -93, 0, 5 }, RightShoulder = { 82, 20, -28 }, RightElbow = { 24, 0, 0 }, RightWrist = { -86, 0, 0 } } },
-			{ 0.19, "InOut", { Waist = { 3, 26, -2 }, Neck = { 0, -20, 0 }, LeftShoulder = { 90, 0, -5 }, LeftElbow = { 4, 0, 0 }, LeftWrist = { -94, 0, 5 }, RightShoulder = { 78, -30, -28 }, RightElbow = { 112, 0, 0 }, RightWrist = { -92, 0, 12 } } },
-			{ 0.22, "In", { Waist = { 4, 27, -2 }, Neck = { 0, -20, 0 }, LeftShoulder = { 92, 0, -5 }, LeftElbow = { 3, 0, 0 }, LeftWrist = { -95, 0, 5 }, RightShoulder = { 70, -35, -20 }, RightElbow = { 102, 0, 0 }, RightWrist = { -84, 0, 20 } } },
-			{ 0.29, "Out", { Waist = { 2, 20, 0 }, Neck = { 0, -14, 0 }, LeftShoulder = { 90, 0, -4 }, LeftElbow = { 5, 0, 0 }, LeftWrist = { -95, 0, 4 }, RightShoulder = { 52, -18, -12 }, RightElbow = { 65, 0, 0 }, RightWrist = { -58, 0, 8 } } },
+			{ 0.07, "Out", { Waist = { 0, -58, 0 }, Neck = { 0, 58, 0 } } },
+			{ 0.19, "InOut", { Waist = { 0, -65, 0 }, Neck = { 0, 65, 0 } } },
+			{ 0.22, "In", { Waist = { 0, -65, 0 }, Neck = { 0, 65, 0 } } },
+			{ 0.29, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
-		ArcherRelease = { Len = 0.44, Keys = { -- left bow aims upward; right string release calls the existing volley
+		ArcherRelease = { Len = 0.44, Keys = { -- same hand/string solve, pointed toward the existing volley
 			{ 0, "Out", {} },
-			{ 0.08, "Out", { Waist = { 12, 18, 0 }, Neck = { 12, -14, 0 }, LeftShoulder = { 116, 0, -5 }, LeftElbow = { 4, 0, 0 }, LeftWrist = { -92, 0, 5 }, RightShoulder = { 100, 16, -25 }, RightElbow = { 30, 0, 0 }, RightWrist = { -85, 0, 0 } } },
-			{ 0.16, "InOut", { Waist = { 18, 24, -2 }, Neck = { 16, -18, 0 }, LeftShoulder = { 120, 0, -5 }, LeftElbow = { 4, 0, 0 }, LeftWrist = { -94, 0, 5 }, RightShoulder = { 102, -28, -24 }, RightElbow = { 110, 0, 0 }, RightWrist = { -95, 0, 12 } } },
-			{ 0.18, "In", { Waist = { 18, 24, -2 }, Neck = { 16, -18, 0 }, LeftShoulder = { 120, 0, -5 }, LeftElbow = { 4, 0, 0 }, LeftWrist = { -94, 0, 5 }, RightShoulder = { 95, -32, -18 }, RightElbow = { 100, 0, 0 }, RightWrist = { -85, 0, 20 } } },
-			{ 0.29, "Out", { Waist = { 8, 14, 0 }, Neck = { 6, -10, 0 }, LeftShoulder = { 95, 0, -4 }, LeftElbow = { 5, 0, 0 }, LeftWrist = { -95, 0, 4 }, RightShoulder = { 50, -15, -12 }, RightElbow = { 55, 0, 0 }, RightWrist = { -55, 0, 5 } } },
+			{ 0.08, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
+			{ 0.16, "InOut", { Waist = { 0, -65, 0 }, Neck = { 0, 65, 0 } } },
+			{ 0.18, "In", { Waist = { 0, -65, 0 }, Neck = { 0, 65, 0 } } },
+			{ 0.29, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
 		Hurt = { Len = 0.32, Keys = { -- snap back, arms jerk out, small rebound
@@ -309,6 +311,8 @@ local Feel = {
 	MonsterAttr = {}, -- [attribute name] = handler(model), filled after the handlers exist
 	Pending = {}, -- ring buffer of { Pos, At }: where / when (os.clock) a Swing / Release hit on a monster shows
 	PendingCursor = 0,
+	Guarded = {}, -- short preparation effects cancelled with their captured actor
+	GuardConn = nil,
 }
 
 ----------------------------------------------------------------- small helpers
@@ -689,7 +693,7 @@ local function orb(from, to, time, color)
 end
 
 -- meteor falling from 60 studs above center to the ground
-local function meteor(center, radius, color, fallTime)
+local function meteor(center, radius, color, fallTime, ctx)
 	local gy = groundY(center)
 	local landing = Vector3.new(center.X, gy + 1, center.Z)
 	local start = landing + Vector3.new(0, 60, 0)
@@ -718,8 +722,9 @@ local function meteor(center, radius, color, fallTime)
 	trail.Speed = NumberRange.new(1, 3)
 	trail.Rate = 80
 	trail.Parent = ball
-	tween(ball, fallTime, { CFrame = CFrame.new(landing) }, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+	local fall = tween(ball, fallTime, { CFrame = CFrame.new(landing) }, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
 	Debris:AddItem(ball, fallTime + 0.05)
+	if ctx then Feel.guardEffect(ctx, ball, fallTime + 0.05, fall) end
 end
 
 -- ~12 arrows raining inside the radius over `duration`
@@ -1944,6 +1949,288 @@ function Feel.muzzle(ctx, fallback)
 	return Feel.handPoint(ctx.Char, ctx.Class == "Archer") or fallback
 end
 
+-- The same FK relation applies to both joint implementations. Read attachment frames, never write
+-- them: AJU retargeting depends on their original CFrames.
+function Feel.jointFrames(joint)
+	local ok, c0, c1, p0, p1 = pcall(function()
+		if joint:IsA("AnimationConstraint") then
+			local a0, a1 = joint.Attachment0, joint.Attachment1
+			if not joint.Enabled or not a0 or not a1 then return end
+			return a0.CFrame, a1.CFrame, a0.Parent, a1.Parent
+		elseif joint:IsA("Motor6D") and joint.Enabled then
+			return joint.C0, joint.C1, joint.Part0, joint.Part1
+		end
+	end)
+	if ok and typeof(c0) == "CFrame" and typeof(c1) == "CFrame" and p0 and p1 then
+		return { C0 = c0, C1 = c1, P0 = p0, P1 = p1 }
+	end
+	return nil
+end
+
+function Feel.rotationBetween(from, to, pole)
+	local a, b = from.Unit, to.Unit
+	local dot = math.clamp(a:Dot(b), -1, 1)
+	local axis = a:Cross(b)
+	if axis.Magnitude > 1e-5 then return CFrame.fromAxisAngle(axis.Unit, math.acos(dot)) end
+	if dot > 0 then return CFrame.identity end
+	axis = pole - a * pole:Dot(a)
+	if axis.Magnitude < 1e-5 then axis = a:Cross(math.abs(a.Y) < 0.9 and Vector3.yAxis or Vector3.xAxis) end
+	return CFrame.fromAxisAngle(axis.Unit, math.pi)
+end
+
+function Feel.armGeometry(st, side)
+	local shoulder = Feel.jointFrames(st.Joints[side .. "Shoulder"])
+	local elbow = Feel.jointFrames(st.Joints[side .. "Elbow"])
+	local wrist = Feel.jointFrames(st.Joints[side .. "Wrist"])
+	if not shoulder or not elbow or not wrist or shoulder.P1 ~= elbow.P0 or elbow.P1 ~= wrist.P0 then return nil end
+	local upper = elbow.C0.Position - shoulder.C1.Position
+	local lower = wrist.C0.Position - elbow.C1.Position
+	if upper.Magnitude < 0.03 or lower.Magnitude < 0.03 then return nil end
+	return { Shoulder = shoulder, Elbow = elbow, Wrist = wrist, Upper = upper, Lower = lower,
+		L1 = upper.Magnitude, L2 = lower.Magnitude }
+end
+
+-- Analytic two-bone solve. Bone lengths come from the real attachment pairs, and the wrist uses
+-- the desired whole-hand frame. Neither a mesh's bounding box nor a guessed avatar scale is a bone.
+function Feel.solveArm(arm, torso, handGoal, pole)
+	local s, e, w = arm.Shoulder, arm.Elbow, arm.Wrist
+	local start = (torso * s.C0).Position
+	local goal = (handGoal * w.C1).Position
+	local delta = goal - start
+	if delta.Magnitude < 1e-5 then return nil end
+	local axis = delta.Unit
+	local epsilon = math.min(arm.L1, arm.L2) * 0.001
+	local distance = math.clamp(delta.Magnitude, math.abs(arm.L1 - arm.L2) + epsilon, arm.L1 + arm.L2 - epsilon)
+	local bend = pole - axis * pole:Dot(axis)
+	if bend.Magnitude < 1e-5 then bend = axis:Cross(math.abs(axis.Y) < 0.9 and Vector3.yAxis or Vector3.xAxis) end
+	local along = (distance * distance + arm.L1 * arm.L1 - arm.L2 * arm.L2) / (2 * distance)
+	local height = math.sqrt(math.max(0, arm.L1 * arm.L1 - along * along))
+	local elbowPos = start + axis * along + bend.Unit * height
+	local wristPos = start + axis * distance
+	local upperRest = torso.Rotation * s.C0.Rotation * s.C1.Rotation:Inverse()
+	local lowerRest = upperRest * e.C0.Rotation * e.C1.Rotation:Inverse()
+	local upperRot = Feel.rotationBetween(upperRest:VectorToWorldSpace(arm.Upper), elbowPos - start, pole) * upperRest
+	local lowerRot = Feel.rotationBetween(lowerRest:VectorToWorldSpace(arm.Lower), wristPos - elbowPos, pole) * lowerRest
+	local upperCF = CFrame.new(start - upperRot:VectorToWorldSpace(s.C1.Position)) * upperRot
+	local lowerCF = CFrame.new(elbowPos - lowerRot:VectorToWorldSpace(e.C1.Position)) * lowerRot
+	local handCF = CFrame.new(wristPos - handGoal.Rotation:VectorToWorldSpace(w.C1.Position)) * handGoal.Rotation
+	return {
+		Shoulder = (torso * s.C0):Inverse() * upperCF * s.C1,
+		Elbow = (upperCF * e.C0):Inverse() * lowerCF * e.C1,
+		Wrist = (lowerCF * w.C0):Inverse() * handCF * w.C1,
+		Hand = handCF, WristPosition = wristPos, ElbowPosition = elbowPos,
+		Clamped = math.abs(distance - delta.Magnitude) > epsilon,
+	}
+end
+
+function Feel.archerPhase(attack)
+	local clipLaunch = attack.Clip.Name == "ArcherRelease" and MOTION.RELEASE_LAUNCH.Archer or MOTION.SHOT_DELAY
+	local at = attack.LaunchT or clipLaunch
+	if attack.T <= at then return attack.T / math.max(0.001, at) * clipLaunch end
+	return clipLaunch + (attack.T - at) / math.max(0.001, attack.Clip.Len - at) * (attack.Clip.Len - clipLaunch)
+end
+
+function Feel.bowAim(root, point, target, handMuzzle)
+	local aim = root.CFrame.LookVector
+	if target and (target - point).Magnitude > 0.05 then aim = (target - point).Unit end
+	local up = root.CFrame.UpVector - aim * root.CFrame.UpVector:Dot(aim)
+	if up.Magnitude < 0.05 then up = -root.CFrame.LookVector end
+	local rotation = CFrame.lookAt(Vector3.zero, aim, up.Unit).Rotation
+	return aim, rotation, rotation * handMuzzle.Rotation:Inverse()
+end
+
+-- Keep the string hand on the shooting line, including when its real wrist/grip offset reaches
+-- either end of the two-bone range. Clamping the whole hand with solveArm would leave that line.
+function Feel.bowDrawDistance(point, aim, offset, shoulder, arm, desired)
+	local delta = point + offset - shoulder
+	local along = delta:Dot(aim)
+	local cross = delta - aim * along
+	local outer = arm.L1 + arm.L2 - math.min(arm.L1, arm.L2) * 0.002
+	if cross.Magnitude >= outer then return nil end
+	local span = math.sqrt(math.max(0, outer * outer - cross:Dot(cross)))
+	local value = math.clamp(desired, -along - span, -along + span)
+	local inner = math.abs(arm.L1 - arm.L2) + math.min(arm.L1, arm.L2) * 0.002
+	if cross.Magnitude < inner then
+		local gap = math.sqrt(math.max(0, inner * inner - cross:Dot(cross)))
+		local low, high = -along - gap, -along + gap
+		if value > low and value < high then value = math.abs(value - low) < math.abs(high - value) and low or high end
+	end
+	return value
+end
+
+function Feel.archerPose(st, attack, bases, outputs)
+	local ctx = st.AttackContext
+	if not ctx or ctx.Class ~= "Archer" or not Feel.validAttack(ctx) then return end
+	local char = st.Char
+	local root, head = char:FindFirstChild("HumanoidRootPart"), char:FindFirstChild("Head")
+	local weapon = char:FindFirstChild("WeaponModel")
+	if not root or not head or not weapon or weapon:GetAttribute("Class") ~= "Archer" then return end
+	local muzzle = weapon:FindFirstChild("AttackMuzzle", true)
+	local stringPart = weapon:FindFirstChild("String")
+	local nock = stringPart and stringPart:FindFirstChild("BowNock")
+	local left, right = Feel.armGeometry(st, "Left"), Feel.armGeometry(st, "Right")
+	local waist, neck = Feel.jointFrames(st.Joints.Waist), Feel.jointFrames(st.Joints.Neck)
+	if not left or not right or not waist or not neck or not muzzle or not nock then return end
+	local handMuzzle = weapon:GetAttribute("HandMuzzle")
+	local handRest = weapon:GetAttribute("HandBowRest")
+	if typeof(handMuzzle) ~= "CFrame" or typeof(handRest) ~= "CFrame" then return end
+	local torso = waist.P0.CFrame * waist.C0 * (outputs.Waist or bases.Waist or CFrame.identity) * waist.C1:Inverse()
+	local headCF = torso * neck.C0 * (outputs.Neck or bases.Neck or CFrame.identity) * neck.C1:Inverse()
+	local up, side = root.CFrame.UpVector, root.CFrame.RightVector
+	local cheek = headCF.Position + side * (head.Size.X * MOTION.BOW.CheekSide)
+		- up * (head.Size.Y * MOTION.BOW.CheekDown) + root.CFrame.LookVector * (head.Size.Z * MOTION.BOW.CheekFront)
+	local shoulderPos = (torso * left.Shoulder.C0).Position
+	local rightShoulder = (torso * right.Shoulder.C0).Position
+	local rightHand = right.Wrist.P1
+	local grip = rightHand:FindFirstChild("RightGripAttachment")
+	local gripPos = grip and grip:IsA("Attachment") and grip.Position or Vector3.new(0, -rightHand.Size.Y * 0.5, 0)
+	local reach = (left.L1 + left.L2) * MOTION.BOW.Extend
+	local rightReach = (right.L1 + right.L2) * 0.985
+	-- Project the intended cheek into both measured reaches. Recompute the target axis after each
+	-- projection: a shifted face line must still point at the actual packet target.
+	for _ = 1, 8 do
+		local previous = cheek
+		local axis, rotation, handRotation = Feel.bowAim(root, cheek, st.AttackTarget, handMuzzle)
+		local wristOffset = handRotation:VectorToWorldSpace(left.Wrist.C1.Position - handMuzzle.Position)
+		local delta = cheek + wristOffset - shoulderPos
+		local perpendicular = delta - axis * delta:Dot(axis)
+		if perpendicular.Magnitude > reach * 0.98 then
+			cheek -= perpendicular * (1 - reach * 0.98 / perpendicular.Magnitude)
+		end
+		axis, rotation = Feel.bowAim(root, cheek, st.AttackTarget, handMuzzle)
+		local rightRotation = rotation * CFrame.Angles(0, 0, -math.pi * 0.5)
+		local rightDelta = cheek + rightRotation:VectorToWorldSpace(right.Wrist.C1.Position - gripPos) - rightShoulder
+		if rightDelta.Magnitude > rightReach then cheek -= rightDelta * (1 - rightReach / rightDelta.Magnitude) end
+		-- An elevated volley must still place the bow ahead of the string hand. Short arms cannot
+		-- shoot along a face-height ray whose forward sphere intersection is behind the cheek.
+		axis, rotation, handRotation = Feel.bowAim(root, cheek, st.AttackTarget, handMuzzle)
+		delta = cheek + handRotation:VectorToWorldSpace(left.Wrist.C1.Position - handMuzzle.Position) - shoulderPos
+		local along = delta:Dot(axis)
+		perpendicular = delta - axis * along
+		local forward = -along + math.sqrt(math.max(0, reach * reach - perpendicular:Dot(perpendicular)))
+		local gap = reach * 0.15
+		if forward < gap then cheek -= axis * (gap - forward) end
+		if (cheek - previous).Magnitude < 0.0001 then break end
+	end
+	local aim, bowRot, handRot = Feel.bowAim(root, cheek, st.AttackTarget, handMuzzle)
+	local wristOffset = handRot:VectorToWorldSpace(left.Wrist.C1.Position - handMuzzle.Position)
+	local offset = cheek + wristOffset - shoulderPos
+	local along = offset:Dot(aim)
+	local cross = offset - aim * along
+	if cross.Magnitude >= reach then return end
+	local forward = -along + math.sqrt(math.max(0, reach * reach - cross:Dot(cross)))
+	if forward <= 0.05 then return end
+	local desiredMuzzle = CFrame.new(cheek + aim * forward) * bowRot
+	local leftGoal = desiredMuzzle * handMuzzle:Inverse()
+	local leftPose = Feel.solveArm(left, torso, leftGoal, -up)
+	if not leftPose then return end
+	local rest = (leftPose.Hand * handRest).Position
+	local time = attack.T / math.max(0.01, attack.Rate)
+	local launch = (attack.LaunchT or MOTION.SHOT_DELAY) / math.max(0.01, attack.Rate)
+	local draw = Feel.ease("InOut", math.clamp((time - MOTION.BOW.DrawStart)
+		/ math.max(0.02, launch - MOTION.BOW.DrawStart - 0.025), 0, 1))
+	local rightRot = bowRot * CFrame.Angles(0, 0, -math.pi * 0.5)
+	local rightOffset = rightRot:VectorToWorldSpace(right.Wrist.C1.Position - gripPos)
+	local distance = Feel.bowDrawDistance(cheek, aim, rightOffset, rightShoulder, right,
+		(rest - cheek):Dot(aim) * (1 - draw))
+	if not distance then return end
+	local drawPoint = cheek + aim * distance
+	if st.BowReleased then drawPoint += side * (head.Size.X * 0.12) - aim * (head.Size.Z * 0.08) end
+	local rightGoal = CFrame.new(drawPoint - rightRot:VectorToWorldSpace(gripPos)) * rightRot
+	local rightPose = Feel.solveArm(right, torso, rightGoal, side + up * 0.25)
+	if not rightPose then return end
+	local weight = math.min(Feel.ease("Out", math.clamp(time / MOTION.BOW.AimIn, 0, 1)),
+		Feel.ease("InOut", math.clamp((attack.Clip.Len - attack.T) / (MOTION.BOW.Settle * attack.Rate), 0, 1)))
+	for _, spec in { { "Left", leftPose }, { "Right", rightPose } } do
+		for _, suffix in { "Shoulder", "Elbow", "Wrist" } do
+			local name = spec[1] .. suffix
+			outputs[name] = (outputs[name] or bases[name] or CFrame.identity):Lerp(spec[2][suffix], weight)
+		end
+	end
+end
+
+-- Retain the approved gather/thrust arm motion. At cast, solve the right wrist from its actual
+-- grip/muzzle frame so the staff axis and the projectile share the packet target line.
+function Feel.staffPose(st, attack, bases, outputs)
+	local ctx = st.AttackContext
+	if not ctx or ctx.Class ~= "Mage" or not Feel.validAttack(ctx) or not st.AttackTarget then return end
+	local weapon = st.Char:FindFirstChild("WeaponModel")
+	local muzzle = weapon and weapon:GetAttribute("Class") == "Mage" and weapon:GetAttribute("HandMuzzle")
+	local arm, waist = Feel.armGeometry(st, "Right"), Feel.jointFrames(st.Joints.Waist)
+	if typeof(muzzle) ~= "CFrame" or not arm or not waist then return end
+	local torso = waist.P0.CFrame * waist.C0 * (outputs.Waist or bases.Waist or CFrame.identity) * waist.C1:Inverse()
+	local upper = torso * arm.Shoulder.C0 * (outputs.RightShoulder or bases.RightShoulder or CFrame.identity) * arm.Shoulder.C1:Inverse()
+	local lower = upper * arm.Elbow.C0 * (outputs.RightElbow or bases.RightElbow or CFrame.identity) * arm.Elbow.C1:Inverse()
+	local hand = lower * arm.Wrist.C0 * (outputs.RightWrist or bases.RightWrist or CFrame.identity) * arm.Wrist.C1:Inverse()
+	local pivot = (lower * arm.Wrist.C0).Position
+	local delta = st.AttackTarget - pivot
+	local axis = muzzle.UpVector
+	local offset = muzzle.Position - arm.Wrist.C1.Position
+	local along = offset:Dot(axis)
+	local cross = offset - axis * along
+	if delta.Magnitude <= cross.Magnitude + 0.05 then return end
+	local forward = math.sqrt(math.max(0, delta:Dot(delta) - cross:Dot(cross)))
+	-- A target inside the physical staff cannot be reached by extending the shaft forward; keep
+	-- the existing gesture and actual tip origin rather than inventing shorter weapon geometry.
+	if forward <= along + 0.05 then return end
+	local root = st.Char:FindFirstChild("HumanoidRootPart")
+	local pole = root and root.CFrame.RightVector or Vector3.xAxis
+	local localTarget = cross + axis * forward
+	local rotation = Feel.rotationBetween(hand.Rotation:VectorToWorldSpace(localTarget), delta, pole) * hand.Rotation
+	local goal = CFrame.new(pivot - rotation:VectorToWorldSpace(arm.Wrist.C1.Position)) * rotation
+	local solved = (lower * arm.Wrist.C0):Inverse() * goal * arm.Wrist.C1
+	local time = attack.T / math.max(0.01, attack.Rate)
+	local launch = (attack.LaunchT or MOTION.CAST_DELAY) / math.max(0.01, attack.Rate)
+	local weight = math.min(Feel.ease("InOut", math.clamp((time - launch + 0.075) / 0.075, 0, 1)),
+		Feel.ease("InOut", math.clamp((attack.Clip.Len - attack.T) / (0.11 * attack.Rate), 0, 1)))
+	outputs.RightWrist = (outputs.RightWrist or bases.RightWrist or CFrame.identity):Lerp(solved, weight)
+end
+
+-- Delay to the packet's launch frame, then read attachments after the Transform physics batch.
+-- Class/character replacement and a newer attack invalidate this one-frame callback too.
+function Feel.launchWeapon(ctx, seconds, callback)
+	local st = Feel.Chars[ctx.Char]
+	local serial = st and st.AttackSerial
+	Feel.after(ctx, seconds, function()
+		local connection
+		connection = RunService.RenderStepped:Connect(function()
+			connection:Disconnect()
+			if not Feel.validAttack(ctx) or (serial and (not st or st.AttackSerial ~= serial)) then return end
+			local ok, err = pcall(callback)
+			if st and ctx.Class == "Archer" then
+				st.BowReleased = true
+				if st.NockArrow then st.NockArrow:Destroy(); st.NockArrow = nil end
+			end
+			if not ok then warnThrottled("weapon launch failed: " .. tostring(err)) end
+		end)
+	end)
+end
+
+function Feel.launchArrow(ctx, seconds, callback)
+	Feel.launchWeapon(ctx, seconds, callback)
+end
+
+function Feel.guardEffect(ctx, part, duration, motion)
+	Feel.Guarded[part] = { Context = ctx, Until = os.clock() + duration, Motion = motion }
+	if Feel.GuardConn then return end
+	Feel.GuardConn = RunService.Heartbeat:Connect(function()
+		local now = os.clock()
+		for item, entry in Feel.Guarded do
+			if not Feel.validAttack(entry.Context) then
+				if entry.Motion then pcall(function() entry.Motion:Cancel() end) end
+				pcall(function() item:Destroy() end)
+				Feel.Guarded[item] = nil
+			elseif not item.Parent or now >= entry.Until then
+				Feel.Guarded[item] = nil
+			end
+		end
+		if next(Feel.Guarded) == nil then
+			Feel.GuardConn:Disconnect()
+			Feel.GuardConn = nil
+		end
+	end)
+end
+
 function Feel.clearWeaponMotion(st)
 	if st.BowNock and st.BowNock.Parent and st.BowRest then st.BowNock.Position = st.BowRest end
 	st.BowNock, st.BowRest = nil, nil
@@ -1957,7 +2244,7 @@ function Feel.weaponMotion(st, attack)
 	if not attack or not attack.Clip or not Feel.validAttack(ctx) then Feel.clearWeaponMotion(st); return end
 	local t = attack.T
 	local release = string.find(attack.Clip.Name, "Release", 1, true) ~= nil
-	local launch = release and MOTION.RELEASE_LAUNCH[ctx.Class]
+	local launch = attack.LaunchT or release and MOTION.RELEASE_LAUNCH[ctx.Class]
 		or (ctx.Class == "Archer" and MOTION.SHOT_DELAY or MOTION.CAST_DELAY)
 	local sc = 1
 	pcall(function() sc = st.Char:GetScale() end)
@@ -1970,15 +2257,15 @@ function Feel.weaponMotion(st, attack)
 			Feel.clearWeaponMotion(st)
 			st.BowNock, st.BowRest = nock, nock.Position
 		end
-		local draw = math.clamp((t - 0.06) / math.max(0.05, launch - 0.08), 0, 1)
-		if t >= launch then draw = math.max(0, 1 - (t - launch) / 0.05) end
 		local handPos = Feel.handPoint(st.Char, false)
-		if handPos then
-			local delta = stringPart.CFrame:PointToObjectSpace(handPos) - st.BowRest
-			if delta.Magnitude > 3 * sc then delta = delta.Unit * (3 * sc) end
-			nock.Position = st.BowRest + delta * draw
+		if handPos and not st.BowReleased then
+			-- The hand IK already performs the draw. A second interpolation broke hand/string contact.
+			nock.Position = stringPart.CFrame:PointToObjectSpace(handPos)
+		elseif st.BowReleased then
+			local snap = math.clamp((t - launch) / math.max(0.01, MOTION.BOW.SnapTime * attack.Rate), 0, 1)
+			nock.Position = nock.Position:Lerp(st.BowRest, snap)
 		end
-		if t >= 0.06 and t < launch then
+		if t >= MOTION.BOW.DrawStart * attack.Rate and not st.BowReleased then
 			local muzzle = Feel.muzzle(ctx, nil)
 			local from = nock.WorldPosition
 			if muzzle and (muzzle - from).Magnitude > 0.05 then
@@ -1987,7 +2274,9 @@ function Feel.weaponMotion(st, attack)
 						Color = factionColor(ctx.Faction), Transparency = 0.1 })
 				end
 				local dir = (muzzle - from).Unit
-				st.NockArrow.CFrame = CFrame.lookAt(from + dir * (1.2 * sc), muzzle + dir * (2.4 * sc))
+				local length = (muzzle - from).Magnitude + 0.6 * sc
+				st.NockArrow.Size = Vector3.new(0.12 * sc, 0.12 * sc, length)
+				st.NockArrow.CFrame = CFrame.lookAt(from + dir * (length * 0.5), from + dir * (length * 0.5 + 1))
 			end
 		elseif st.NockArrow then st.NockArrow:Destroy(); st.NockArrow = nil end
 	elseif ctx.Class == "Mage" and t >= 0.05 and t < launch then
@@ -2110,25 +2399,27 @@ function Feel.stepChar(st, dt, now)
 			end
 		end
 	end
+	local bases, outputs = {}, {}
 	for joint, m in st.Joints do
 		local off = nil
 		if playing then
-			for _, l in st.Layers do
+			for layer, l in st.Layers do
 				local track = l.Clip and l.Clip.Joints[joint]
 				if track then
-					local s = Feel.sample(track, l.T)
+					local sampleTime = layer == "Attack" and st.AttackContext and st.AttackContext.Class == "Archer"
+						and Feel.archerPhase(l) or l.T
+					local s = Feel.sample(track, sampleTime)
 					off = off and off * s or s
 				end
 			end
 		end
 		local last = st.Last[joint]
+		-- The Animator rewrote the joint this frame unless it still holds our previous output.
+		local cur = m.Transform
+		local base = last and Feel.same(cur, last) and (st.Base[joint] or cur) or cur
+		bases[joint] = base
 		if off or last then
-			-- the Animator rewrote the joint this frame unless it still holds what was written here last frame
-			local cur = m.Transform
-			local base = cur
-			if last and Feel.same(cur, last) then base = st.Base[joint] or cur end
 			if off then
-				local restBase = base
 				local attack = st.Layers.Attack
 				local blend = MOTION.UPPER_BLEND[joint] or 0
 				if attack and attack.Clip and attack.Clip.Joints[joint] and blend > 0 then
@@ -2136,16 +2427,24 @@ function Feel.stepChar(st, dt, now)
 						math.clamp((attack.Clip.Len - attack.T) / MOTION.LAYER_FADE_OUT, 0, 1))
 					base = base:Lerp(CFrame.new(), blend * weight) -- leave walk legs running; steady the attack arms
 				end
-				local out = off * base
-				m.Transform = out
-				st.Base[joint] = restBase
-				st.Last[joint] = out
+				outputs[joint] = off * base
 			else
 				m.Transform = base -- every layer ended: hand the joint back
 				st.Base[joint] = nil
 				st.Last[joint] = nil
 			end
 		end
+	end
+	local attack = st.Layers.Attack
+	if attack and attack.Clip and st.AttackContext and st.AttackContext.Class == "Archer" then
+		Feel.archerPose(st, attack, bases, outputs)
+	elseif attack and attack.Clip and st.AttackContext and st.AttackContext.Class == "Mage" then
+		Feel.staffPose(st, attack, bases, outputs)
+	end
+	-- Every solved child uses this frame's predicted parent FK, independent of table iteration order.
+	for joint, out in outputs do
+		st.Joints[joint].Transform = out
+		st.Base[joint], st.Last[joint] = bases[joint], out
 	end
 	if not playing then Feel.drop(st) end
 end
@@ -2192,10 +2491,30 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	if which ~= "Release" and st and Feel.Active[st] and Feel.validAttack(st.AttackContext)
 		and now < st.ReleaseUntil then return true end
 	local rate = math.clamp(clip.Len / math.max(0.05, maxTime), 1, MOTION.ANIM_MAX_SPEED)
+	local launch = math.clamp(asNum(data.LaunchDelay, which == "Release" and MOTION.RELEASE_LAUNCH[classId]
+		or (classId == "Archer" and MOTION.SHOT_DELAY or MOTION.CAST_DELAY)), 0, 1)
+	if classId == "Archer" then
+		-- Packet launch time is real seconds. Reserve recovery time even when the clip is sped up;
+		-- its launch key is remapped to that exact time rather than using rate-scaled clip seconds.
+		rate = math.min(rate, clip.Len / math.max(0.05, launch + MOTION.BOW.Settle + 0.015))
+	end
 	if not Feel.play(char, "Attack", name, rate) then return false end
 	local current = Feel.Chars[char]
 	current.AttackContext = context
 	Feel.clearWeaponMotion(current)
+	current.AttackSerial, current.BowReleased = {}, false
+	if classId == "Archer" then
+		current.Layers.Attack.LaunchT = launch * rate
+		current.AttackTarget = which == "Release" and asVec(data.Pos) and (data.Pos + Vector3.new(0, 30, 0))
+			or (type(data.Targets) == "table" and asVec(data.Targets[1])) or nil
+	elseif classId == "Mage" then
+		current.Layers.Attack.LaunchT = launch * rate
+		current.AttackTarget = which == "Release" and asVec(data.Pos) and data.Pos
+			or (type(data.Targets) == "table" and asVec(data.Targets[1])) or nil
+	else
+		current.Layers.Attack.LaunchT = nil
+		current.AttackTarget = nil
+	end
 	if which == "Release" then current.ReleaseUntil = now + math.min(MOTION.RELEASE_HOLD, maxTime) end
 	return true
 end
@@ -2902,7 +3221,7 @@ handlers.Swing = function(data)
 	if not okExpect then warnThrottled("hit sync failed: " .. tostring(errExpect)) end
 
 	if classId == "Mage" then
-		Feel.after(ctx, launch, function()
+		Feel.launchWeapon(ctx, launch, function()
 			local origin = Feel.muzzle(ctx, from)
 			local target = targets[1]
 			if target and origin and (target - origin).Magnitude > 0.05 then orb(origin, target, flight, color) end
@@ -2917,7 +3236,7 @@ handlers.Swing = function(data)
 			end)
 		end)
 	elseif classId == "Archer" then
-		Feel.after(ctx, launch, function()
+		Feel.launchArrow(ctx, launch, function()
 			local origin = Feel.muzzle(ctx, from)
 			if origin then
 				for _, target in targets do
@@ -2969,11 +3288,11 @@ handlers.Release = function(data)
 	local visible = nearCamera(pos)
 	local impactDelay = math.clamp(asNum(data.ContactDelay, MOTION.RELEASE_CONTACT[classId] or MOTION.SMASH_AT), 0, 1)
 	if classId == "Mage" then
-		if visible then meteor(pos, radius, color, impactDelay) end
+		if visible then meteor(pos, radius, color, impactDelay, ctx) end
 	elseif classId == "Archer" then
 		local launch = math.clamp(asNum(data.LaunchDelay, MOTION.RELEASE_LAUNCH.Archer), 0, impactDelay)
 		if visible then
-			Feel.after(ctx, launch, function()
+			Feel.launchArrow(ctx, launch, function()
 				local origin = Feel.muzzle(ctx, nil)
 				if origin then arrowBolt(origin, pos + Vector3.new(0, 30, 0), 0.2, color, 0, own and color or nil) end
 				arrowRain(pos, radius, color, impactDelay, ctx)

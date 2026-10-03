@@ -23,6 +23,7 @@ from constraints import JOINTS, PRIMARY, RigError, adjacent_regions, bone_region
 from glb_io import accessor_values, image_bytes, read_glb, view_bytes, write_glb
 
 ROOT = Path(__file__).resolve().parents[2]
+NORMAL_EXPORT_TOLERANCE = 1e-4  # Blender/glTF custom-normal quantization; measured errors are recorded.
 
 
 def preserve_images(path, source_images):
@@ -106,7 +107,7 @@ def material_roles(material):
     return roles
 
 
-def analyze_scene(height, nonadjacent_ties="refuse"):
+def analyze_scene(height, nonadjacent_ties="refuse", surface_overrides=None):
     arms = [obj for obj in bpy.context.scene.objects if obj.type == "ARMATURE"]
     if len(arms) != 1:
         raise RigError("A single real skinned armature is required; static GLBs are refused")
@@ -149,7 +150,7 @@ def analyze_scene(height, nonadjacent_ties="refuse"):
     points = {part: [] for part in PRIMARY}
     materials = {part: set() for part in PRIMARY}
     min_confidence, total_faces = 1.0, 0
-    diagnostics = {"low_confidence_faces": 0, "parent_tie_faces": 0, "non_adjacent_exact_ties": 0, "non_adjacent_close_weights": 0, "examples": [], "exact_tie_examples": []}
+    diagnostics = {"low_confidence_faces": 0, "parent_tie_faces": 0, "non_adjacent_exact_ties": 0, "non_adjacent_close_weights": 0, "mechanical_region_overrides": 0, "examples": [], "exact_tie_examples": []}
     for obj in meshes:
         mods = [modifier for modifier in obj.modifiers if modifier.type == "ARMATURE"]
         if len(mods) != 1 or mods[0].object != arm:
@@ -165,6 +166,18 @@ def analyze_scene(height, nonadjacent_ties="refuse"):
                 raise RigError("Expected the source GLB triangle topology")
             vertex_weights = [weights[index] for index in face.vertices]
             part, confidence = face_region(vertex_weights, nonadjacent_ties)
+            override = (surface_overrides or {}).get(obj, {}).get(face.index)
+            if override:
+                compatible = {"LeftLowerArm": ("LeftUpperArm", "LeftHand", "LeftLowerArm"),
+                              "LeftFoot": ("LeftUpperLeg", "LeftLowerLeg", "LeftFoot"),
+                              "Head": ("UpperTorso", "LeftUpperArm", "RightUpperArm", "Head")}
+                if override not in compatible or part not in compatible[override]:
+                    raise RigError("An unexpected original-elbow surface owner override is refused")
+                part = override
+                confidence = sum(row.get(part, 0) for row in vertex_weights) / 3
+                if confidence <= 1e-8 and override != "Head":
+                    raise RigError("Recovered surface needs a real source bone-region weight")
+                diagnostics["mechanical_region_overrides"] += 1
             scores = Counter()
             for index in face.vertices:
                 for region, weight in weights[index].items():
@@ -239,6 +252,17 @@ def make_piece(mesh_name, analysis):
         bm = bmesh.new()
         bm.from_mesh(obj.data)
         bm.faces.ensure_lookup_table()
+        # BMesh face deletion otherwise recalculates smooth normals at the new
+        # rigid-part boundary. Carry the original per-corner field explicitly.
+        normal_layer = bm.loops.layers.float_vector.new("_HHC_SourceLoopNormal")
+        source_normals = [normal.vector.copy() for normal in source.data.corner_normals]
+        for face in bm.faces:
+            original = source.data.polygons[face.index]
+            by_vertex = {vertex: source_normals[loop] for vertex, loop in zip(original.vertices, original.loop_indices)}
+            for loop in face.loops:
+                if loop.vert.index not in by_vertex:
+                    raise RigError("BMesh changed original face/corner correspondence")
+                loop[normal_layer] = by_vertex[loop.vert.index]
         bmesh.ops.delete(bm, geom=[face for face in bm.faces if face.index not in kept], context="FACES")
         bmesh.ops.delete(bm, geom=[vertex for vertex in bm.verts if not vertex.link_faces], context="VERTS")
         bm.to_mesh(obj.data)
@@ -253,6 +277,12 @@ def make_piece(mesh_name, analysis):
         center = analysis["centers"][part]
         local_matrix = analysis["to_blender"] @ Matrix.Translation(-center) @ analysis["coordinate"] @ source.matrix_world
         obj.data.transform(local_matrix)
+        normals = obj.data.attributes.get("_HHC_SourceLoopNormal")
+        if not normals or normals.domain != "CORNER" or len(normals.data) != len(obj.data.loops):
+            raise RigError("Source loop-normal preservation data was lost")
+        normal_matrix = local_matrix.to_3x3().inverted().transposed()
+        obj.data.normals_split_custom_set([(normal_matrix @ value.vector).normalized() for value in normals.data])
+        obj.data.attributes.remove(normals)
         obj.matrix_world = Matrix.Translation(analysis["to_blender"] @ center)
         pieces.append(obj)
     uv_sets = {tuple(layer.name for layer in obj.data.uv_layers) for obj in pieces}
@@ -285,7 +315,7 @@ def verify_export(path, parts, objects):
     mesh_nodes = [node for node in gltf.get("nodes", []) if "mesh" in node]
     if gltf.get("skins") or len(mesh_nodes) != len(parts) or {node.get("name") for node in mesh_nodes} != set(parts):
         raise RigError("Exporter changed body-part names/counts or kept a skin")
-    triangles = 0
+    triangles, maximum_normal_error = 0, 0.0
     for node in mesh_nodes:
         part = node["name"]
         obj = objects[part]
@@ -303,6 +333,26 @@ def verify_export(path, parts, objects):
         if len(indices) % 3 or any(not 0 <= index < len(positions) for index in indices) or len(indices) != 3 * len(obj.data.polygons):
             raise RigError(f"Exported triangle coverage changed: {part}")
         triangles += len(indices) // 3
+        if "NORMAL" not in primitive["attributes"]:
+            raise RigError(f"Exporter dropped source corner normals: {part}")
+        exported_normals = accessor_values(gltf, binary, primitive["attributes"]["NORMAL"])
+        if len(exported_normals) != len(positions):
+            raise RigError(f"Invalid exported normal count: {part}")
+        source_normals = {}
+        for face in obj.data.polygons:
+            for vertex, loop in zip(face.vertices, face.loop_indices):
+                point = obj.data.vertices[vertex].co
+                key = tuple(round(value, 6) for value in (point.x, point.z, -point.y))
+                normal = obj.data.corner_normals[loop].vector
+                source_normals.setdefault(key, []).append((normal.x, normal.z, -normal.y))
+        for point, normal in zip(positions, exported_normals):
+            key = tuple(round(value, 6) for value in point)
+            if key not in source_normals:
+                raise RigError(f"Exporter moved a source vertex: {part}")
+            error = min(max(abs(a - b) for a, b in zip(normal, expected)) for expected in source_normals[key])
+            if error > NORMAL_EXPORT_TOLERANCE:
+                raise RigError(f"Exporter changed the preserved source normal field: {part} ({error})")
+            maximum_normal_error = max(maximum_normal_error, error)
         for index, layer in enumerate(obj.data.uv_layers):
             attribute = "TEXCOORD_" + str(index)
             if attribute not in primitive["attributes"]:
@@ -314,7 +364,8 @@ def verify_export(path, parts, objects):
             actual = Counter(tuple(sorted(tuple(round(component, 6) for component in values[vertex]) for vertex in indices[start:start + 3])) for start in range(0, len(indices), 3))
             if actual != expected:
                 raise RigError(f"Exporter changed original per-face UVs: {part}/{layer.name}")
-    return {"meshes": len(mesh_nodes), "triangles": triangles, "embedded_images": len(gltf.get("images", [])), "uv_verified": True}
+    return {"meshes": len(mesh_nodes), "triangles": triangles, "embedded_images": len(gltf.get("images", [])),
+            "uv_verified": True, "normals_verified": True, "maximum_normal_export_error": maximum_normal_error}
 
 
 def main():
@@ -325,6 +376,14 @@ def main():
     parser.add_argument("--dry", action="store_true")
     parser.add_argument("--nonadjacent-ties", choices=("refuse", "parent-depth"), default="refuse",
                         help="비인접 완전 동률을 별도 허용할 때만 실제 계층의 몸통 쪽 부위를 선택")
+    parser.add_argument("--split-weight-ties", action="store_true",
+                        help="실제 동률 원본 면만 원래 가중치 경계로 세분화; 원본 정점/표면/UV 보존")
+    parser.add_argument("--recover-empty-left-forearm", action="store_true",
+                        help="비어 있는 왼아래팔만 원본 elbow/wrist 단면 안 기존 면과 forearm 가중치로 배분")
+    parser.add_argument("--recover-empty-left-foot", action="store_true",
+                        help="비어 있는 왼발만 원본 knee/ankle 단면 발 쪽 기존 면과 Foot 가중치로 배분")
+    parser.add_argument("--restore-head-face-signatures", type=Path,
+                        help="승인 표정 정면 투영의 정확한 UV/geometry signature 면만 Head에 복원")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
     input_path, output = args.input.resolve(), args.output.resolve()
     if not math.isfinite(args.height) or not 0.5 <= args.height <= 20:
@@ -343,7 +402,14 @@ def main():
     source_sha = hashlib.sha256(source_data).hexdigest()
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(input_path))
-    analysis = analyze_scene(args.height, args.nonadjacent_ties)
+    surface_overrides, surface_report = {}, None
+    if args.split_weight_ties or args.recover_empty_left_forearm or args.recover_empty_left_foot or args.restore_head_face_signatures:
+        from surface_partition import prepare
+        surface_overrides, surface_report = prepare(args.split_weight_ties, args.recover_empty_left_forearm,
+            args.recover_empty_left_foot, args.restore_head_face_signatures, input_path)
+    analysis = analyze_scene(args.height, args.nonadjacent_ties, surface_overrides)
+    if surface_report and analysis["total_faces"] != surface_report["output_triangles"]:
+        raise RigError("Verified subdivision face coverage disagrees with conversion")
     textures = source_images(gltf, binary)
     parts = list(PRIMARY)
     mesh_names = list(analysis["fragments"])
@@ -369,10 +435,17 @@ def main():
             "auxiliary_mesh_policy": "Material fragments retain original UVs/images and must be welded only to their named, actual Motor6D-driven R15 part.",
             "root": {"name": "HumanoidRootPart", "CFrame": cframe(centers["HumanoidRootPart"]), "Size": [2, 2, 1]},
             "texture_rebake": False, "uv_repack": False, "original_texture_bytes_preserved": True,
+            "source_corner_normals_preserved": True,
             "rig_ready_for_game": False, "requires_studio_animation_validation": True,
             "limitations": ["Bone-weight maximum triangles become rigid parts; joint seams and non-adjacent low-confidence weights need motion QA.",
                             "Exact bone joint positions use canonical R15 axes; Mixamo bind-pose/roll versus default Animate is not yet verified.",
                             "No retargeting or geometry-based replacement is performed."]}
+    if surface_report:
+        plan["source_triangles"] = surface_report["source_triangles"]
+        plan["prepared_triangles"] = surface_report["output_triangles"]
+        plan["mechanical_surface_partition"] = surface_report
+        plan["partition_policy"] += " Explicit surface subdivisions/actual elbow-wrist region recovery are recorded separately."
+        plan["limitations"].append("New barycentric normals are normalized mechanically; the measured small shading-field change needs visual QA.")
     if args.dry:
         print(json.dumps(plan, ensure_ascii=False, indent=2), flush=True)
         return

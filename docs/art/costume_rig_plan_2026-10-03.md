@@ -2,6 +2,16 @@
 
 기존 18개 모델을 움직이는 R15 아바타로 연결한다. 새 그림/3D 생성은 하지 않는다. 성기사 남성 pilot을 먼저 리깅했고 사용자가 나머지 **17종 전부/최대425크레딧** 진행도 추가 승인했다. 실제 유료 리깅은 신규10종250크레딧으로 종료했다. 게임용 등록은 각 리그의 걷기·점프·전투·OFF 복귀 검증 후에만 한다. 실패/미지원 모델은 자동 유료 재시도를 하지 않는다.
 
+## 최신 결과 (아래 최초 실행 기록보다 우선)
+
+- 나머지17종 중13종325,원본 보존 무료 재검사 뒤 HaloWarriorF/HaloMageM/HaloMageF3종 최초25씩75추가. 전체 실제440,API잔액4560. 승인상한425와 실제325구분.
+- 3종 rig ID: HaloWarriorF `9e168902-6a36-4220-9bcd-732502cfd0a2`,HaloMageM `6a773fc7-2504-42a7-9b1f-a6a58c282f50`,HaloMageF `aa27d070-7d4c-479a-b606-dce7e7c61903`. 실제 GLB/ledger 저장. Tripo가 HeadMat을 BodyMat으로 합친 오류 발견으로 이3종 업로드는 원본 UV/재질 복원까지 보류한다.
+- HaloArcherF/HornsArcherF/NeutralWarriorF/NeutralArcherM4종은 merged 및 원본raw 무료 검사 모두false/청구0. 수동가능성 조사,유료 재요청/재생성0.
+- HornsMageM/F·NeutralArcherF·악궁수Head112면 로컬 보정은 원본 표면/UV/normal을 보존했다. 게임용 등록은 성기사 남성 **1종**만. 기본ON·B메뉴OFF/ON·걷기/점프/FQ기본·진짜죽음후ON 및 원본복귀밀림 해결을 실제 확인했다.
+- 현재 상세증거는 `costume_checkpoint_2026-10-03.md`를 따른다. 아래10종250/7무료거절/OFF실패/20:07 문장은 최초 라운드의 역사이며 현재 값이 아니다.
+
+## 최초 실행 기록
+
 ## 모델마다 실행할 API 순서
 
 1. `POST /v3/animations/rig-check`: 아래 기존 작업 ID를 `input`으로 전달. 무료. `riggable=true`, `rig_type=biped`일 때만 다음 단계.

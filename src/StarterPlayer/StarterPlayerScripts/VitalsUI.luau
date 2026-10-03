@@ -8,11 +8,18 @@ local Util = require(ReplicatedStorage.Shared.Util)
 local VitalsUI = {}
 local C, UIKit = nil, nil
 local player = Players.LocalPlayer
-local ui = { Potions = {} }
+local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, WatchedAttributes = {
+	Mana = true, MaxMana = true, HPPotionCount = true, MPPotionCount = true,
+	HPPotionReadyAt = true, MPPotionReadyAt = true, ClassChosen = true, DataLoaded = true, KaijuState = true,
+} }
 local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245) }
 
 local function canUse()
-	if player:GetAttribute("ClassChosen") ~= true or not Util.IsAlive(player) then return false end
+	if player.Parent ~= Players or player:GetAttribute("DataLoaded") ~= true
+		or player:GetAttribute("ClassChosen") ~= true or not Util.IsAlive(player) then return false end
+	if ui.Character ~= player.Character or ui.Humanoid ~= Util.GetHumanoid(player) then return false end
+	local kaiju = player:GetAttribute("KaijuState")
+	if kaiju == "Active" or kaiju == "Siren" then return false end
 	for _, name in { "FactionPicker", "ClassPicker", "WorldMap", "Panels" } do
 		local module = C[name]
 		if module and type(module.IsOpen) == "function" then
@@ -23,8 +30,33 @@ local function canUse()
 	return true
 end
 
+local function finiteNumber(value, fallback)
+	return type(value) == "number" and value == value and value > -math.huge and value < math.huge and value or fallback
+end
+
+local function potionState(kind)
+	local count = Config.NormalizePotionCount(player:GetAttribute(kind .. "PotionCount"))
+	local deadline = finiteNumber(player:GetAttribute(kind .. "PotionReadyAt"), 0)
+	local left = math.max(0, deadline - workspace:GetServerTimeNow())
+	-- Stock is shown in the title: even the narrow touch slot can show stock and the entire countdown.
+	if left > 0 then return count, tostring(math.ceil(left)) .. "초", false end
+	if player:GetAttribute("DataLoaded") ~= true or player:GetAttribute("ClassChosen") ~= true then return count, "대기", false end
+	if ui.Character ~= player.Character or not Util.IsAlive(player) then return count, "부활", false end
+	local kaiju = player:GetAttribute("KaijuState")
+	if kaiju == "Active" or kaiju == "Siren" then return count, "괴수", false end
+	if count <= 0 then return 0, "구매", false end
+	if not canUse() then return count, "대기", false end
+	local humanoid = Util.GetHumanoid(player)
+	local amount = kind == "HP" and humanoid.Health or finiteNumber(player:GetAttribute("Mana"), 0)
+	local maximum = kind == "HP" and humanoid.MaxHealth or finiteNumber(player:GetAttribute("MaxMana"), Config.Vitals.MaxMana)
+	if amount >= maximum then return count, "가득", false end
+	return count, "사용", true
+end
+
 local function requestPotion(kind)
-	if not canUse() then return end
+	local _, _, available = potionState(kind)
+	if not available then return end
+	-- Display checks only: the server alone consumes stock, heals, charges MP and applies the deadline.
 	Net.Get("UsePotion"):FireServer(kind)
 end
 
@@ -85,10 +117,10 @@ function VitalsUI.BuildPotions(parent, width, height, touch)
 		local icon = UIKit.ArtImage("IconPotion" .. kind, { Name = "Icon", Parent = button,
 			Position = UDim2.fromOffset(5, (height - iconSize) / 2), Size = UDim2.fromOffset(iconSize, iconSize) })
 		local left = icon and iconSize + 8 or 6
-		local title = UIKit.InkText({ Name = "Title", Parent = button, Text = kind .. " 물약",
+		local title = UIKit.InkText({ Name = "Title", Parent = button, Text = kind .. "0개",
 			Position = UDim2.fromOffset(left, 6), Size = UDim2.fromOffset(w - left - 5, height * 0.4),
 			TextScaled = true, TextWrapped = false, MaxTextSize = touch and 16 or 14 })
-		local status = UIKit.InkText({ Name = "Status", Parent = button, Text = "사용 가능",
+		local status = UIKit.InkText({ Name = "Status", Parent = button, Text = "구매",
 			Position = UDim2.fromOffset(left, height * 0.49), Size = UDim2.fromOffset(w - left - 5, height * 0.35),
 			TextScaled = true, TextWrapped = false, MaxTextSize = touch and 15 or 12 })
 		C.HUD.FitText(title, 12)
@@ -102,14 +134,15 @@ function VitalsUI.BuildPotions(parent, width, height, touch)
 		ui.Potions[kind] = { Button = button, Title = title, Status = status, Key = key, Height = height, Width = w, Left = left }
 	end
 	VitalsUI.LayoutPotions()
+	if ui.Refresh then ui.Refresh() end
 	return row
 end
 
 local function refresh()
 	local humanoid = Util.GetHumanoid(player)
 	local hp, maxHP = humanoid and humanoid.Health or 0, humanoid and humanoid.MaxHealth or 1
-	local mana = tonumber(player:GetAttribute("Mana")) or 0
-	local maxMana = math.max(1, tonumber(player:GetAttribute("MaxMana")) or Config.Vitals.MaxMana)
+	local mana = math.max(0, finiteNumber(player:GetAttribute("Mana"), 0))
+	local maxMana = math.max(1, finiteNumber(player:GetAttribute("MaxMana"), Config.Vitals.MaxMana))
 	for kind, values in { HP = { hp, maxHP }, MP = { mana, maxMana } } do
 		local bar = ui[kind]
 		if bar then
@@ -118,13 +151,51 @@ local function refresh()
 		end
 		local potion = ui.Potions[kind]
 		if potion then
-			local left = math.max(0, (tonumber(player:GetAttribute(kind .. "PotionReadyAt")) or 0) - workspace:GetServerTimeNow())
-			potion.Status.Text = left > 0 and (tostring(math.ceil(left)) .. "초") or "사용 가능"
+			local count, status, available = potionState(kind)
+			potion.Title.Text = kind .. tostring(count) .. "개"
+			potion.Status.Text = status
+			potion.Button.Active = available
+			potion.Button:SetAttribute("Disabled", not available)
 			if potion.Button:IsA("ImageButton") then
-				potion.Button.ImageColor3 = left > 0 and Color3.fromRGB(178, 174, 166) or Color3.new(1, 1, 1)
+				potion.Button.ImageColor3 = not available and Color3.fromRGB(178, 174, 166) or Color3.new(1, 1, 1)
 			end
 		end
 	end
+end
+
+ui.Refresh = function()
+	local ok, err = pcall(refresh)
+	if not ok then Util.Warn("VitalsUI", tostring(err)) end
+end
+
+local function clearConnections(list)
+	for _, connection in list do connection:Disconnect() end
+	table.clear(list)
+end
+
+local function bindHumanoid(humanoid)
+	if ui.Humanoid == humanoid then return end
+	clearConnections(ui.HumanoidConnections)
+	ui.Humanoid = humanoid
+	if humanoid then
+		table.insert(ui.HumanoidConnections, humanoid.HealthChanged:Connect(ui.Refresh))
+		table.insert(ui.HumanoidConnections, humanoid:GetPropertyChangedSignal("MaxHealth"):Connect(ui.Refresh))
+	end
+	ui.Refresh()
+end
+
+local function bindCharacter(character)
+	clearConnections(ui.CharacterConnections)
+	ui.Character = character
+	bindHumanoid(character and character:FindFirstChildOfClass("Humanoid") or nil)
+	if not character then return end
+	table.insert(ui.CharacterConnections, character.ChildAdded:Connect(function(child)
+		if player.Character == character and child:IsA("Humanoid") then bindHumanoid(child) end
+	end))
+	table.insert(ui.CharacterConnections, character.ChildRemoved:Connect(function(child)
+		if ui.Character == character and child == ui.Humanoid then bindHumanoid(nil) end
+	end))
+	table.insert(ui.CharacterConnections, character.AncestryChanged:Connect(ui.Refresh))
 end
 
 function VitalsUI.Init(registry)
@@ -132,6 +203,8 @@ function VitalsUI.Init(registry)
 end
 
 function VitalsUI.Start()
+	if ui.Started then return end
+	ui.Started = true
 	-- This game equips custom Parts, so its potion shortcuts own 1/2 and its HP bar owns health display.
 	local starterGui = game:GetService("StarterGui")
 	pcall(starterGui.SetCoreGuiEnabled, starterGui, Enum.CoreGuiType.Backpack, false)
@@ -141,10 +214,17 @@ function VitalsUI.Start()
 		if input.KeyCode == Enum.KeyCode.One then requestPotion("HP") end
 		if input.KeyCode == Enum.KeyCode.Two then requestPotion("MP") end
 	end)
+	player.AttributeChanged:Connect(function(name)
+		if ui.WatchedAttributes[name] then ui.Refresh() end
+	end)
+	player.CharacterAdded:Connect(bindCharacter)
+	player.CharacterRemoving:Connect(function(character)
+		if ui.Character == character then bindCharacter(nil) end
+	end)
+	bindCharacter(player.Character)
 	task.spawn(function()
 		while true do
-			local ok, err = pcall(refresh)
-			if not ok then Util.Warn("VitalsUI", tostring(err)) end
+			ui.Refresh()
 			task.wait(0.2)
 		end
 	end)

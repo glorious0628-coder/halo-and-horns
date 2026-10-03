@@ -141,7 +141,30 @@ def importer_basis(geometries, rows):
     return candidates[0]
 
 
-def manifest(path, name):
+def root_placement(origin, size, foot_bottom, target_height, lower_torso_center, policy="source"):
+    """Optionally repair only the invisible root reference, never a body mesh/bone.
+
+    Short source legs can put a fixed 2-stud root below the actual sole. The
+    explicit repair uses the exported LowerTorso's measured center on Y only;
+    every original joint world position and rendered vertex stays unchanged.
+    """
+    if policy not in ("source", "lower-torso-y"):
+        raise RigError("Unknown invisible-root reference policy")
+    center = list(origin)
+    original_height = origin[1] - size[1] * 0.5 - foot_bottom
+    if policy == "lower-torso-y" and original_height <= 0.01:
+        center[1] = lower_torso_center[1]
+        if center[1] <= origin[1]:
+            raise RigError("Actual LowerTorso center cannot repair the root reference")
+    height = center[1] - size[1] * 0.5 - foot_bottom
+    if not 0.01 < height < target_height:
+        raise RigError("Actual foot geometry cannot establish a safe R15 HipHeight")
+    return center, height, {"policy": policy, "source_center": list(origin),
+                            "assembled_center": center, "source_hip_height": original_height,
+                            "actual_foot_bottom": foot_bottom, "visible_geometry_changed": False}
+
+
+def manifest(path, name, root_reference="source"):
     path = Path(path).resolve()
     metadata = json.loads(path.read_text(encoding="utf-8"))
     if metadata.get("schema") != 1 or metadata.get("dry_run"):
@@ -218,7 +241,10 @@ def manifest(path, name):
     if min(root_size) <= 0:
         raise RigError("Invalid root size")
     centers = {part: geometries[part]["center"] for part in parts}
-    centers["HumanoidRootPart"] = root_origin
+    foot_bottom = min(geometries[foot]["origin"][1] + geometries[foot]["min"][1] for foot in ("LeftFoot", "RightFoot"))
+    root_center, hip_height, root_reference_record = root_placement(
+        root_origin, root_size, foot_bottom, metadata["target_height_studs"], centers["LowerTorso"], root_reference)
+    centers["HumanoidRootPart"] = root_center
     expected_edges = {(joint, parent, child) for joint, parent, child, _ in JOINTS}
     actual_edges = {(joint["name"], joint["part0"], joint["part1"]) for joint in metadata["joints"]}
     if len(metadata["joints"]) != 15 or actual_edges != expected_edges:
@@ -235,14 +261,11 @@ def manifest(path, name):
         joints.append({"name": joint["name"], "part0": joint["part0"], "part1": joint["part1"],
                        "world": world, "C0": [world[axis] - centers[joint["part0"]][axis] for axis in range(3)] + IDENTITY,
                        "C1": [world[axis] - centers[joint["part1"]][axis] for axis in range(3)] + IDENTITY})
-    foot_bottom = min(geometries[foot]["origin"][1] + geometries[foot]["min"][1] for foot in ("LeftFoot", "RightFoot"))
-    hip_height = root_origin[1] - root_size[1] * 0.5 - foot_bottom
-    if not 0.01 < hip_height < metadata["target_height_studs"]:
-        raise RigError("Actual foot geometry cannot establish a safe R15 HipHeight")
     return {"schema": 1, "name": name, "source_sha256": metadata["source_sha256"],
             "joints_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             "meshes": list(geometries.values()), "joints": joints,
-            "root": {"center": root_origin, "size": root_size}, "hip_height": hip_height,
+            "root": {"center": root_center, "size": root_size}, "hip_height": hip_height,
+            "root_reference": root_reference_record,
             "requires_studio_animation_validation": True, "diagnostics": metadata["weight_diagnostics"]}
 
 
@@ -493,9 +516,11 @@ def main():
     parser.add_argument("--mode", choices=("inspect", "assemble"), default="inspect")
     parser.add_argument("--inspection", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--root-reference", choices=("source", "lower-torso-y"), default="source",
+                        help="Explicitly repair a non-positive HipHeight using the actual LowerTorso center; visible meshes/bones stay unchanged")
     args = parser.parse_args()
     name = args.name or args.joints.resolve().parent.name
-    data = manifest(args.joints, name)
+    data = manifest(args.joints, name, args.root_reference)
     snapshot = None
     if args.mode == "assemble":
         if not args.inspection:

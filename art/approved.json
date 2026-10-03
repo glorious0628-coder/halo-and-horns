@@ -129,5 +129,17 @@
   "approvedDate": "2026-10-03",
   "approvalQuote": "ㅇㅇ좋아",
   "note": "양피지 B 메뉴 게임 닉네임 작은 창: 현재 이름·입력란·2~20글자 및 중복 불가 안내·저장·X. 실제 입력·저장소 연결 불가 안내·닫기 재오픈 원문 보존 통과. Toast 겹침 패치 재검증과 실서버 저장은 대기."
+ },
+ "UI_Gameplay_Cleanup_A_v2": {
+  "status": "pending",
+  "file": "art/out/UI_Gameplay_Cleanup_A_v2.png",
+  "shownDate": "2026-10-03",
+  "note": "HUD난잡함 정리A시안; 키힌트자동R/지도M/메뉴B와 물약보유수량; 사용자 선택 대기. 구현/Roblox업로드0."
+ },
+ "Potion_Shop_A": {
+  "status": "pending",
+  "file": "art/out/Potion_Shop_A.png",
+  "shownDate": "2026-10-03",
+  "note": "양피지 물약상점: 보유수량/HP30%·MP40%/임시1개10G·5개50G/99개상한; 사용자 선택 대기. 구현/Roblox업로드0."
  }
 }

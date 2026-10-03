@@ -155,6 +155,9 @@ local function fillDefaults(d, playerName)
 	if type(d.CostumeEnabled) ~= "boolean" then d.CostumeEnabled = true end
 	-- Never re-save a cached name before today's filter and global claim check. The separate directory is authoritative.
 	d.Nickname = ""
+	for _, key in { "HPPotionCount", "MPPotionCount" } do
+		d[key] = Config.NormalizePotionCount(d[key])
+	end
 	d.Level = math.clamp(math.floor(tonumber(d.Level) or 1), 1, Config.Levels.MaxLevel)
 	d.WeaponTier = math.clamp(math.floor(tonumber(d.WeaponTier) or 1), 1, Config.MaxWeaponTier)
 end

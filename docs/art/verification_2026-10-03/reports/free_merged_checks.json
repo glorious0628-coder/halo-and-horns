@@ -1,0 +1,65 @@
+{
+  "Costume_HaloWarriorF": {
+    "stage": "Complete",
+    "sha256": "11fc537b83171c8c38b4ae3de03a16b694cd0705441f952431114b96b74ded05",
+    "import_task_id": "c54d6561-d92d-4482-a289-7208d9d3ea80",
+    "check_task_id": "a65a6715-0ea4-4267-a0ec-84bf2167e773",
+    "riggable": true,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_HaloMageM": {
+    "stage": "Complete",
+    "sha256": "4f8228bfe0e6ef1f0448a009917d36aeab1048e4f392a313b92dca0e669e105d",
+    "import_task_id": "a55fe9cc-c76c-44ce-9d10-9a06ec59f9c1",
+    "check_task_id": "c6dcbc94-d58b-4e75-ad2f-4599f0374385",
+    "riggable": true,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_HaloMageF": {
+    "stage": "Complete",
+    "sha256": "9c47d43b3e779dded7417360a1a1cf10ac6bed0fa519cceebeec2477b6849f42",
+    "import_task_id": "20544748-dd81-4dc5-a4d0-772ab991c84e",
+    "check_task_id": "52453012-ea0b-4c51-8767-34bcaf6c6c67",
+    "riggable": true,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_HaloArcherF": {
+    "stage": "Complete",
+    "sha256": "c32b0d1dcc4f9c3f74584526220f0ef652eec133f01e95ae6116e218d455a7bb",
+    "import_task_id": "18d00a1e-ce53-4a7f-8c28-900439290a30",
+    "check_task_id": "6275234f-97e6-4dd1-91a8-d86e33d50475",
+    "riggable": false,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_HornsArcherF": {
+    "stage": "Complete",
+    "sha256": "5f5c92ab10759d122a3c611ee019f71832c3816eb0ff8d118cbd8d7365d5302f",
+    "import_task_id": "3a7465ee-11b5-4ff9-a0e7-5274dd3778ca",
+    "check_task_id": "c72f78ed-0670-4321-8c69-7aa9866cc3a3",
+    "riggable": false,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_NeutralWarriorF": {
+    "stage": "Complete",
+    "sha256": "e20fa0d5f4d4d1bca6d79d3c22a6b64dd801406e7728a6387ed21519c73cac5d",
+    "import_task_id": "0a5abafe-f511-48dd-8725-631c9f733019",
+    "check_task_id": "5a97aed3-e0ae-4b1a-93df-cf369b974aee",
+    "riggable": false,
+    "rig_type": "biped",
+    "credits": 0
+  },
+  "Costume_NeutralArcherM": {
+    "stage": "Complete",
+    "sha256": "553a8b7851ea7eb53fb5b5102b34d76b430f7dba0a2461d2c3201305cd7410f5",
+    "import_task_id": "2e80e74e-eb0c-4421-bdcd-e3c82d8cedd2",
+    "check_task_id": "ee38cf0b-875e-4153-8c08-3ae712d4cf1c",
+    "riggable": false,
+    "rig_type": "biped",
+    "credits": 0
+  }
+}

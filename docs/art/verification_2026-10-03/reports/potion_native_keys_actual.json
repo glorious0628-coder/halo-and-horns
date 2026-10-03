@@ -1,0 +1,30 @@
+{
+  "method": "native Sky input; Studio MCP server reads",
+  "before": {
+    "hp": 10,
+    "maxHP": 96,
+    "mana": 10,
+    "hpCount": 2,
+    "mpCount": 2
+  },
+  "afterKeyOne": {
+    "hp": 48.79999923706055,
+    "mana": 14.1,
+    "hpCount": 1,
+    "mpCount": 2,
+    "hpCD": 1791038439.911147,
+    "mpCD": 0
+  },
+  "afterKeyTwo": {
+    "hp": 96,
+    "mana": 100,
+    "hpCount": 1,
+    "mpCount": 1,
+    "hpCD": 1791038439.911147,
+    "mpCD": 1791038455.243778
+  },
+  "naturalRegenerationConcurrent": true,
+  "titleStatusTextBoundsFit": true,
+  "mcpVirtualKeysUnsupported": "CoreGUI permanent binding",
+  "merchantPurchaseValidated": false
+}

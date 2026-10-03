@@ -4,6 +4,7 @@
 local Players = game:GetService("Players")
 local PhysicsService = game:GetService("PhysicsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
@@ -33,6 +34,8 @@ local mirrored = {} -- [key] = true for every key of Config.Data.Mirrored
 local characterLoading = {} -- [Player] = true while a normal spawn is being installed
 local respawnQueued = {} -- [Player] = one additional requested respawn while the current load yields
 local cosmeticContext = setmetatable({}, { __mode = "k" }) -- [Model] = server-only snapshot for an appearance replacement
+local nativeRestore = {} -- [Player] = pending engine-owned avatar restoration; registered before CharacterAdded
+local deathBound = setmetatable({}, { __mode = "k" }) -- [Humanoid] = death listener installed once
 local closing = false
 
 local COLLISION_GROUP = Config.Player.CollisionGroup or "Players"
@@ -340,12 +343,51 @@ local function cosmeticPivot(character, humanoid, root, context)
 	return pivot
 end
 
+local function bindCharacterDeath(player, character, humanoid)
+	if deathBound[humanoid] then return end
+	deathBound[humanoid] = true
+	local handled = false
+	local function died()
+		if handled or not ready[player] or player.Parent == nil or player.Character ~= character then return end
+		handled = true
+		PlayerService.CharacterDied:Fire(player, character)
+		task.delay(Config.Player.RespawnTime, function()
+			if player.Parent and player.Character == character and ready[player] then loadCharacter(player) end
+		end)
+	end
+	humanoid.Died:Once(died)
+	if humanoid.Health <= 0 then died() end -- CharacterAdded may arrive after an engine-load death.
+end
+
 local function onCharacterAdded(player, character)
 	local context = cosmeticContext[character]
 	cosmeticContext[character] = nil
+	local native = nativeRestore[player]
+	if not context and native and character ~= native.ExpectedOld and player.Character == character then
+		context = native
+	end
+	if context and context.Native then context.Character = character end
+	local humanoid = character:WaitForChild("Humanoid", CHILD_TIMEOUT)
+	if not humanoid or not humanoid:IsA("Humanoid") then return end
+	bindCharacterDeath(player, character, humanoid)
+	-- A deferred engine callback must never turn an expired cosmetic request into a fresh spawn.
+	if character:GetAttribute("HHC_RestoreCancelled") then return end
+	if context and context.Native then
+		if nativeRestore[player] == context then nativeRestore[player] = nil end
+		context.Character = character
+		character:SetAttribute("HHC_OriginalRestore", true)
+		-- The engine installs the owner's native controllers/appearance after CharacterAdded.
+		-- Do not place or scale its unfinished avatar and do not replace its Animate/joint setup.
+		local started = os.clock()
+		while not context.NativeReady and player.Character == character and ready[player]
+			and os.clock() - started < 30 do task.wait() end
+		if not context.NativeReady or context.Cancelled or context.Failed then
+			context.Failed = true
+			return
+		end
+	end
 	assignCollisionGroup(character)
 
-	local humanoid = character:WaitForChild("Humanoid", CHILD_TIMEOUT)
 	local root = character:WaitForChild("HumanoidRootPart", CHILD_TIMEOUT)
 	if not humanoid or not root or not humanoid:IsA("Humanoid") then
 		if player.Character == character then
@@ -363,6 +405,10 @@ local function onCharacterAdded(player, character)
 		task.wait()
 	end
 	if player.Character ~= character or character.Parent == nil or not ready[player] then return end
+	if context and (context.Cancelled or context.Failed or humanoid.Health <= 0) then
+		context.Failed = true
+		return
+	end
 
 	humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 	applyStats(player, humanoid, true)
@@ -370,17 +416,6 @@ local function onCharacterAdded(player, character)
 	if not context then markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2) end -- CR-H2
 	character:PivotTo(context and cosmeticPivot(character, humanoid, root, context)
 		or spawnCFrame(Config.HomeZoneId(stat(player, "Faction", "None"))))
-
-	humanoid.Died:Once(function()
-		-- a character already replaced by LoadCharacter (Respawn) is not a death
-		if not ready[player] or player.Parent == nil or player.Character ~= character then return end
-		PlayerService.CharacterDied:Fire(player, character)
-		task.delay(Config.Player.RespawnTime, function()
-			if player.Parent and player.Character == character and ready[player] then
-				loadCharacter(player)
-			end
-		end)
-	end)
 
 	PlayerService.CharacterSpawned:Fire(player, character, humanoid, context ~= nil)
 	if context and player.Character == character and character.Parent and humanoid.Health > 0 then
@@ -394,6 +429,7 @@ local function onCharacterAdded(player, character)
 		-- Restore after all of them: a cosmetic switch neither resets the position sample nor renews grace.
 		S.ZoneService.RestoreMovementTrack(player, context.MovementTrack, character)
 	end
+	if context then context.Completed = true end
 end
 
 ------------------------------------------------------------------ join
@@ -664,6 +700,83 @@ function PlayerService.ReplaceCharacter(player, character, expectedOld)
 	return installCharacter(player, character, context, old)
 end
 
+-- OFF uses the player's engine spawn path. Manually assigning a detached native avatar can leave
+-- current R15 AnimationConstraint/controller physics uninitialized on the owning client.
+function PlayerService.RestoreOwnerCharacter(player, description, expectedOld, stillWanted)
+	if not ready[player] or player.Parent ~= Players or player.Character ~= expectedOld
+		or characterLoading[player] or not Util.IsAlive(player) then return false end
+	if typeof(description) ~= "Instance" or not description:IsA("HumanoidDescription") then return false end
+	local copiedOk, copied = pcall(description.Clone, description)
+	if not copiedOk or not copied then return false end
+	local old = player.Character
+	local humanoid, root = Util.GetHumanoid(player), Util.GetRoot(player)
+	if not humanoid or not root or (stillWanted and not stillWanted()) then copied:Destroy(); return false end
+	local context = {
+		ExpectedOld = old, Health = humanoid.Health, OriginalPivot = old:GetPivot(), Pivot = old:GetPivot(),
+		StandingHeight = standingHeight(old, humanoid, root),
+		LinearVelocity = root.AssemblyLinearVelocity, AngularVelocity = root.AssemblyAngularVelocity,
+		Native = true, NativeReady = false, Completed = false,
+	}
+	if S.ZoneService and S.ZoneService.CaptureMovementTrack then
+		context.MovementTrack = S.ZoneService.CaptureMovementTrack(player)
+	end
+	local holder = Instance.new("Folder")
+	holder.Name = "CosmeticRestoreShields"
+	holder.Parent = ServerStorage
+	local shields = {}
+	for _, child in old:GetChildren() do
+		if child:IsA("ForceField") then shields[child] = true; child.Parent = holder end
+	end
+	local added = player.CharacterAdded:Connect(function(character)
+		if character == old then return end
+		-- Delete only the engine's newly granted spawn shield. Original shield instances keep their deadlines.
+		for _, child in character:GetChildren() do
+			if child:IsA("ForceField") and not shields[child] then child:Destroy() end
+		end
+		character.DescendantAdded:Connect(function(child)
+			if not context.NativeReady and child:IsA("ForceField") and not shields[child] then child:Destroy() end
+		end)
+	end)
+	characterLoading[player] = true
+	nativeRestore[player] = context
+	local ok, err = pcall(player.LoadCharacterWithHumanoidDescriptionAsync, player, copied)
+	copied:Destroy()
+	added:Disconnect()
+	if not ok then context.Failed = true end
+	context.NativeReady = true
+	local current = player.Character
+	-- In deferred signal mode the engine call may finish before CharacterAdded runs. Register
+	-- that exact model before clearing the player slot so the cosmetic snapshot cannot be lost.
+	if current and current ~= old and not context.Character then cosmeticContext[current] = context end
+	if nativeRestore[player] == context then nativeRestore[player] = nil end
+	if current and current.Parent and ready[player] then
+		for _, child in current:GetChildren() do
+			if child:IsA("ForceField") and not shields[child] then child:Destroy() end
+		end
+		for _, child in holder:GetChildren() do child.Parent = current end
+	end
+	holder:Destroy()
+	local started = os.clock()
+	while ok and not context.Completed and not context.Failed and player.Character == current
+		and player.Parent == Players and ready[player] and os.clock() - started < CHILD_TIMEOUT do task.wait() end
+	local restored = ok and context.Completed and not context.Failed and player.Character == current
+		and current ~= old and Util.IsAlive(player)
+	if not restored then
+		context.Cancelled, context.Failed = true, true
+		if current and current ~= old then
+			if cosmeticContext[current] == context then cosmeticContext[current] = nil end
+			current:SetAttribute("HHC_RestoreCancelled", true)
+		end
+	end
+	characterLoading[player] = nil
+	if respawnQueued[player] then
+		respawnQueued[player] = nil
+		if ready[player] and player.Parent then task.defer(loadCharacter, player) end
+	end
+	if not ok then Util.Warn(TAG, "owner avatar restore failed: " .. tostring(err)) end
+	return restored
+end
+
 -- recompute MaxHealth + WalkSpeed of the current character (keeps the HP ratio unless fullHeal)
 function PlayerService.RefreshCharacter(player, fullHeal)
 	local humanoid = Util.GetHumanoid(player)
@@ -706,6 +819,7 @@ function PlayerService.FinalizeLeave(player)
 	regularMinutes[player] = nil
 	characterLoading[player] = nil
 	respawnQueued[player] = nil
+	nativeRestore[player] = nil
 	local list = conns[player]
 	conns[player] = nil
 	if list then

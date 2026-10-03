@@ -1,4 +1,4 @@
--- Server-owned mana and reusable HP/MP potions. Appearance changes preserve these session values.
+-- Server-owned mana and purchased HP/MP potion stock. Appearance changes preserve session cooldowns and saved stock.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
@@ -52,6 +52,14 @@ local function usePotion(player, kind)
 	local now = workspace:GetServerTimeNow()
 	local key = kind .. "ReadyAt"
 	if now < st[key] then return end
+	local stockKey = Config.PotionStockKey(kind)
+	local data = S.PlayerService.GetData(player)
+	local count = type(data) == "table" and data[stockKey]
+	if type(count) ~= "number" or count ~= count or count < 1 or count > TUNE.PotionInventoryCap
+		or count ~= math.floor(count) then
+		Net.Notify(player, "물약이 없어요. 물약 상인에게서 구매해 주세요.", "bad")
+		return
+	end
 	local humanoid = Util.GetHumanoid(player)
 	if not humanoid or humanoid.Health <= 0 then return end
 	if kind == "HP" then
@@ -59,14 +67,20 @@ local function usePotion(player, kind)
 			Net.Notify(player, "HP가 가득 찼어요.", "info")
 			return
 		end
-		humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * TUNE.HPRecovery)
+		local before = humanoid.Health
+		humanoid.Health = math.min(humanoid.MaxHealth, before + humanoid.MaxHealth * TUNE.HPRecovery)
+		if humanoid.Health <= before then return end -- a failed/no-op heal consumes neither stock nor the deadline
 	else
 		if st.Mana >= TUNE.MaxMana then
 			Net.Notify(player, "MP가 가득 찼어요.", "info")
 			return
 		end
-		st.Mana = math.min(TUNE.MaxMana, st.Mana + TUNE.MaxMana * TUNE.MPRecovery)
+		local before = st.Mana
+		st.Mana = math.min(TUNE.MaxMana, before + TUNE.MaxMana * TUNE.MPRecovery)
+		if st.Mana <= before then return end
 	end
+	-- No yields between actual restoration, saved stock decrement and the independent session deadline.
+	S.PlayerService.SetStat(player, stockKey, count - 1)
 	st[key] = now + TUNE.PotionCooldown
 	publish(player, st)
 	S.PlayerService.MarkActive(player)

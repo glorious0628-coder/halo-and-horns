@@ -206,19 +206,6 @@ local function blocked(player)
 	return false
 end
 
-local function createOriginal(player, st)
-	if not st.OriginalDescription or not st.OriginalRigType then return nil end
-	local description = clone(st.OriginalDescription)
-	if not description then return nil end
-	local ok, character = pcall(Players.CreateHumanoidModelFromDescriptionAsync, Players, description, st.OriginalRigType)
-	description:Destroy()
-	if not ok or typeof(character) ~= "Instance" or not character:IsA("Model") then return nil end
-	character:SetAttribute(ATTR.Costume, nil)
-	character:SetAttribute(ATTR.Original, true)
-	if not prepareCharacter(player, character) then character:Destroy(); return nil end
-	return character
-end
-
 local function refresh(player, st, version)
 	if states[player] ~= st or not S.PlayerService.IsReady(player) then return false end
 	if blocked(player) then setStatus(player, "Deferred"); return true end
@@ -231,10 +218,14 @@ local function refresh(player, st, version)
 	if id and not character then status = player:GetAttribute("CostumeStatus") or "MissingTemplate" end
 	if not character then
 		if not currentId then setStatus(player, status); return false end
-		character = createOriginal(player, st)
-		if not character then setStatus(player, "Error"); return false end
+		local restored = S.PlayerService.RestoreOwnerCharacter(player, st.OriginalDescription, old, function()
+			return states[player] == st and st.Version == version and player.Character == old and not blocked(player)
+		end)
+		if states[player] ~= st then return false end
+		setStatus(player, restored and status or "Error")
+		return not restored and player.Character == old
 	end
-	-- Creating the original avatar yields. Discard stale requests, leaving players, changed/dead characters.
+	-- Discard stale requests, leaving players, changed/dead characters.
 	if states[player] ~= st or st.Version ~= version or player.Character ~= old or blocked(player) then
 		character:Destroy()
 		return states[player] == st

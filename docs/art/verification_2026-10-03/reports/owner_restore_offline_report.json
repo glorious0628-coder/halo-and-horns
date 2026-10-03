@@ -1,0 +1,163 @@
+{
+  "status": "passed",
+  "checks": 365,
+  "cases": [
+    {
+      "name": "immediate_R15_to_R15",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "immediate_R15_to_R6",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "immediate_R6_to_R15",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "immediate_R6_to_R6",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "deferred_R15_to_R15",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "deferred_R15_to_R6",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "deferred_R6_to_R15",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "deferred_R6_to_R6",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "post_spawn_scale_recomputed_once",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "shield_expires_during_engine_wait",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "new_shield_while_engine_waiting",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "engine_error_before",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "engine_error_after",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "no_replacement",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "missing_root_timeout_cleanup",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "missing_callback_timeout_cleanup",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "delayed_callback_after_timeout_cancelled",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "native_wait_30_second_timeout_aborts",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "death_during_native_load_not_revived",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "death_during_native_load_then_real_respawn",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "death_during_long_native_load_queued_respawn",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "already_dead_before_deferred_callback_respawns_once",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "leave_during_native_load",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "respawn_queued_once_while_restoring",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "death_after_restore_uses_normal_respawn",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "movement_snapshot_is_copied_and_validated",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "standing_height_rejects_invalid_geometry",
+      "status": "pass",
+      "detail": ""
+    },
+    {
+      "name": "restore_rejections_do_not_call_engine",
+      "status": "pass",
+      "detail": ""
+    }
+  ],
+  "failedCases": 0,
+  "syntaxFiles": [
+    "src/ServerScriptService/PlayerService.luau",
+    "src/ServerScriptService/VitalsService.luau",
+    "src/ServerScriptService/ZoneService.luau"
+  ],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "liveValidation": "pending: native engine scheduling, ownership, collisions and real OFF/respawn",
+  "sourceSHA256": {
+    "src/ServerScriptService/PlayerService.luau": "0bd356dda9d74ffd9f4ddf42e2e85a78bd26f03728188f95e48086a65d6cbde7",
+    "src/ServerScriptService/VitalsService.luau": "2e433a5991bbc446438c48d74a55e4658632060f1e7cb88733be67d195427d04",
+    "src/ServerScriptService/ZoneService.luau": "be02405bbb9199384f0bb3f874328ba4972bf9909cbb596e2d4a968ea7fa9add",
+    "src/ReplicatedStorage/Shared/Util.luau": "e266e115374db1c243b0f2057905c325ff3ca2e824812c8034d30b9c625f347e",
+    "src/ReplicatedStorage/Shared/Config.luau": "95a9f8f0c38861051b2325bc40c12da9117f9dc88d8f53314e4be9938509d691"
+  },
+  "fixtureSHA256": "f91b2288b141f4911ccd25b7f86e824b81c780d85d2974ffa1a757abc8a71f05"
+}

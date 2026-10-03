@@ -17,7 +17,7 @@ Config.Player = {
 	CollisionGroup = "Players", -- addendum A7-5: PhysicsService group, not collidable with itself (PlayerService)
 }
 
--- HP/MP HUD and reusable potions (2026-10-03 approved GPT HUD extension).
+-- Approved HP/MP HUD. Potions are now purchased stock; prices are provisional balance values.
 Config.Vitals = {
 	MaxMana = 100,
 	ManaRegen = 4, -- per second; session state, not persisted
@@ -26,7 +26,29 @@ Config.Vitals = {
 	HPRecovery = 0.30,
 	MPRecovery = 0.40,
 	PotionCooldown = 10, -- HP and MP have independent server deadlines
+	PotionPrices = { HP = 10, MP = 10 }, -- gold per bottle; implementation default, not a user-selected price
+	PotionInventoryCap = 99,
+	PotionMerchantName = "PotionMerchant", -- server-owned workspace.Map.NPCs model; missing NPC rejects buying
+	PotionMerchantDistance = 12,
+	MerchantEnabled = false, -- enable only after the user selects the GPT potion-shop preview
+	PotionMerchantTemplate = "Costume_HaloWarriorM", -- approved armor, from ready CostumeRigs only
+	PotionMerchantPrompt = "PotionShopPrompt",
+	PotionMerchantPromptRate = 0.5,
+	PotionMerchantOffset = { X = 12, Z = -9 }, -- beside the Crossroads spawn, off the north road/pads
 }
+
+function Config.PotionStockKey(kind)
+	if kind == "HP" then return "HPPotionCount" end
+	if kind == "MP" then return "MPPotionCount" end
+	return nil
+end
+
+-- Additive save field: no free stock on first join or migration. Invalid/fractional values grant no bottles.
+function Config.NormalizePotionCount(value)
+	if type(value) ~= "number" or value ~= value or value < 0 or value == math.huge
+		or value ~= math.floor(value) then return 0 end
+	return math.min(value, Config.Vitals.PotionInventoryCap)
+end
 
 Config.Nickname = {
 	StoreName = "HaloHorns_Nicknames_v1", -- universe-wide claims; no Studio memory fallback
@@ -58,6 +80,8 @@ Config.Data = {
 		CharacterGender = "M",
 		CostumeEnabled = true,
 		Nickname = "", -- filtered cache only; NicknameService's global directory is authoritative
+		HPPotionCount = 0,
+		MPPotionCount = 0,
 		Rebirths = 0,
 		RebirthBonus = 0, -- sum of per-rebirth bonuses (0.25 or 0.40 each); v1 data: Rebirths * 0.25
 		FallMarks = 0, -- "타락" stacks (Halo -> Horns at rebirth), max Config.Rebirth.MarkMax
@@ -96,6 +120,7 @@ Config.Data = {
 	Mirrored = {
 		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "Faction", "Class", "ClassChosen",
 		"CharacterGender", "CostumeEnabled",
+		"HPPotionCount", "MPPotionCount",
 		"Rebirths", "RebirthBonus", "FallMarks", "RedeemMarks", "Honor", "Infamy", "SwitchCount",
 		"LastSwitchTime", "PlaytimeSeconds", "TotalKills", "DailyDay", "DailyClaims",
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
@@ -997,7 +1022,7 @@ end
 Config.RateLimits = {
 	ChooseFaction = 1, ChooseClass = 1, SetCostume = 1, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
-	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3,
+	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
 }
 
 Config.Sounds = { -- optional built-in files; client must pcall and ignore failures

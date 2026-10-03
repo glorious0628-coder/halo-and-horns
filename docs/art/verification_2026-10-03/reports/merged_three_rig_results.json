@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Costume_HaloWarriorF",
+    "task_id": "9e168902-6a36-4220-9bcd-732502cfd0a2",
+    "rig_file": "art\\models\\tripo\\Costume_HaloWarriorF_rig_9e168902-6a36-4220-9bcd-732502cfd0a2.glb",
+    "credits": 25.0,
+    "check_task_id": "2edfc049-6cd5-4068-9e27-cac11a609be7",
+    "check_credits": 0
+  },
+  {
+    "name": "Costume_HaloMageM",
+    "task_id": "6a773fc7-2504-42a7-9b1f-a6a58c282f50",
+    "rig_file": "art\\models\\tripo\\Costume_HaloMageM_rig_6a773fc7-2504-42a7-9b1f-a6a58c282f50.glb",
+    "credits": 25.0,
+    "check_task_id": "ab59c669-9cd8-43fa-b9e7-45c604cabec1",
+    "check_credits": 0
+  },
+  {
+    "name": "Costume_HaloMageF",
+    "task_id": "aa27d070-7d4c-479a-b606-dce7e7c61903",
+    "rig_file": "art\\models\\tripo\\Costume_HaloMageF_rig_aa27d070-7d4c-479a-b606-dce7e7c61903.glb",
+    "credits": 25.0,
+    "check_task_id": "129960d1-c778-4677-8bf4-7a9d67a5ea6a",
+    "check_credits": 0
+  }
+]

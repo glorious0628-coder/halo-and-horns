@@ -3,22 +3,24 @@
 > Codex(또는 다른 에이전트)가 이어서 작업하기 위한 문서. 먼저 루트의 `AGENTS.md`(규칙)를 읽고 이 문서를 읽는다.
 > 사용자에게 말할 때는 항상 한국어, 짧게. 설명 대신 결과(스튜디오에서 플레이 가능한 상태)를 보여 준다.
 
-## 최신 작업 상태 (2026-10-03 20:07 저장 및 이후 소스 준비, 아래 이전 기록보다 우선)
+## 최신 작업 상태 (성기사 남성 실제 연동 확인 후; 아래 이전 기록보다 우선)
 
-- **Studio 재시작 시 먼저 최신 소스를 동기화해야 한다.** 마지막 Studio에는 실패한 ownership 실험의0.25초 지연 코드가 남았지만 로컬 `PlayerService.luau`는 이미 원복했다. 재실행 전 GoodEvil/Edit에서 최신 소스 문법 검사·동기화를 하고 잔존 실험을 사용하지 않는다. 아래20:07 저장본과 이후 미커밋 소스 준비를 구분한다.
-- **사용자 최신 우선순위는 직업 아바타 연동**이다. pilot OFF 안정화·1종 검증/승격을 먼저, 이후 준비된8종 Importer와7종 무료 거절 구조 검토를 진행한다. 남녀18캐릭터의 전사·궁수·마법사 실제 모션도 요청했다. 임시 무기/활 모션을 완성으로 보고하지 않는다.
-- 새 HUD 정리 **A 프리뷰는 생성됐지만 아직 사용자 미승인**이다. 선택 전 레이아웃을 적용하지 않는다. 물약은 사용자의 새 요청으로 **NPC에서 골드 구매·보유 수량 표시** 방식이며 기존 무료 재사용 기본값을 대체한다. 아바타 다음으로 연결한다.
-- 물약 서버5파일(Config/Net/DataService/ShopService/VitalsService)은 **로컬 준비/WIP, 이번 중간 커밋 제외**다. HP/MP 각0개 신규/기존 기본,99개 상한,1/5병 구매,각10G는 임시 밸런스이며 사용자 선택 가격으로 쓰지 않는다. 서버 상인 거리12stud·실제 회복 때1병 소비·10초CD·저장/mirror를 구현했다. 로컬 luau-compile와 실제 소스 기반 오프라인560개 검사 통과(Studio/API0). **NPC·구매 화면·보유 수량 UI·Studio 실제 구매/사용 검증은 미완료**다.
-- 사용자 추가 승인: 나머지 남녀 코스튬 **17종 전부, 최대 425크레딧** 리깅. 실제 무료 import/검사 17종, 유료 리깅 성공 10종/250크레딧, 나머지 7종은 biped이지만 riggable=false라 유료 요청하지 않았다. 현재 API 잔액 **4,635**, 이번까지 누적 실제 청구 **365**. 자동 유료 재요청 금지. 루트만 API ledger를 쓴다.
-- 10종 중 로컬 R15 strict 분할 성공은 8종. HornsMageM의 Head/왼팔 동일 웨이트 1면과 HornsMageF의 빈 LeftLowerArm은 보류했다. 새로운 17종이 Roblox에 전부 올라갔거나 게임용 등록됐다는 뜻이 아니다. 실행 도구는 tools/costume_r15/rig_batch.py, 실제 작업 번호는 art/models/tripo/records.json이다.
-- 성기사 남성 pilot의3묶음/18메시를 가져와 CostumePendingRigs에 실제 조립했다. 기본 Animate, 걷기, 점프, F/Q 관절 움직임, 죽음 뒤 기본 ON 재생성은 확인했다. **OFF는 여전히 밀림/날아감이 재현되어 CostumeRigs 승격0종**이다. 높이 보정 및 OFF 원본 root.CanCollide 보존 패치 이후에도 해결되지 않았다. 코스튬 물리 오프라인86개 검사는 통과했지만 실제 복귀 통과를 뜻하지 않는다. ownership 실험은 실패하여 소스를 되돌렸다.
-- 글꼴은 사용자 새 요청에 따라 **Noto Sans family 12187370747**로 변경했다. UIKit의 고정 글자 PNG 사용을 껐다. HUD/Vitals 글자를 Regular 11~12px, 제목 13px 수준으로 줄이고 칸을 분리했다. 991×475 선택 화면/HUD 실제 TextBounds는 칸 안에 들어온다. 최종 1590 재검증과 라이브러리 소유권 추가는 남아 있다.
-- 전체 **39 Luau 실제 Studio 문법 정상**, 동기화 22개/동일17개, 15초 Play **서버23/23·클라이언트9 시작**, Luau 런타임 오류 없음. 기존 Goblin/GoblinBrute/Skeleton TexturePack 경고는 남아 있다. DataStore는 아직 Studio API 미활성으로 메모리 모드다.
-- 닉네임 서버: Unicode2~20글자·Roblox 방송 필터·전 서버 원자적 중복 방지·동일 요청 token 복구·검증된 이름만 표시. 최신 오프라인 **790개 검사 통과**. 한정 안전 규칙은 정상 성기사 등 직업명이나 종교명 자체를 금지하지 않는다. 승인 창의 실제 **B→게임 닉네임→성기사별 입력→저장소 연결 불가 안내→닫기/재오픈 draft 유지**는 통과했다(`build/nickname_ui_qa_actual.json`, `docs/art/verification_2026-10-03/nickname_unavailable_991.jpeg`). 화면의 게임 안내 Toast가 창 앞에 겹쳐 `Panels.Open` root.ZIndex=96 패치는 소스 반영 후 재검증 대기다. 실서버 저장·필터 서비스·다인 경쟁은 미검증이며 DataStore 미활성 때 메모리 성공 대체는 없다(A21).
-- 사용자가 새 슬라임의 반투명 표시를 지적했으며 루트가 원인을 확인 중이다. 수정·실제 표시 확인 전 완료로 기록하지 않는다.
-- 표정은 남녀 직업 18종 모두 **Neutral/Serious/SoftSmile 세 개**부터. 평소 기본, 전투·피격 진지, NPC/유저 대화 미소. GPT 시안은 사용자 승인됐으나 기존 열린 입이 모델에 파여 있어 원본 보존한 새 Head/얼굴 UV 복사본을 검증 중이다. ExpressionAssets는 아직 비어 있고 실제 등록 표정은 0종이다. 실패한 기존 Head atlas 파일은 업로드하지 않는다.
-- GoodEvil Edit에서 Ctrl+S 저장을 실제 확인했다: build/GoodEvil.rbxlx **20:07:18, 7,457,604바이트**. place/GoodEvil.rbxlx에 복사했다. 이후 소스 변경은 다시 동기화·저장해야 한다. 컴퓨터 제어는 저장 직후 해제했다.
-- 남은 실검증은 `docs/art/verification_checklist_2026-10-03.md`를 따른다. 임시 3D 무기와 활 공격 모션은 사용자 요구를 아직 충족하지 못했으며 승인 모션 시안과 기본 관절 움직임만으로 완성 처리하지 않는다.
+- 사용자 지시: 전체 요청을 계속하고, 모두 실제 검증·저장·커밋/push한 뒤 컴퓨터를 종료한다. 미완료 상태에서 종료하지 않는다. 남은 Codex 사용량3% 때 보유 무료 초기화1회 사용을 조건부 승인했다(10월4일 만료분 우선 요청; 도구는 날짜 선택 필드가 없어 확인 필요). 최근 남은95%/무료 초기화4회, 실제 사용0. 유료 크레딧 구매 승인은 아니다.
+- **성기사 남성1종은 게임용 `ServerStorage.CostumeRigs.Costume_HaloWarriorM`에 승격됐다.** 18메시/15관절/3weld, 검증 Animate. 실제 진영·직업 선택만으로 기본 ON 적용, F/Q 관절 동작, 죽음 뒤 ON 재생성, B메뉴 OFF→원래 계정 아바타→ON을 확인했다. 남녀18종 전체 완료는 아니다.
+- **OFF 밀림은 엔진 `LoadCharacterWithHumanoidDescriptionAsync` 복귀로 수정했다.** 실제 OFF 안정46샘플/XZ드리프트0/속도<1/Running, 이후 걷기25stud·점프 정상. HP/MP 자연 회복과 외형 변경 초기화를 구분한다. 28개 오프라인 상황365검사는 원본 RigType·HP/MP/재고/CD/기존 ForceField·이동기록, 지연·실패·퇴장·죽음·중복 리스폰을 확인했다. 실제 R6 계정은 별도 확인 필요. 실패한0.25초 ownership 실험은 현재 소스/Studio에서 제거됐다.
+- 실제 성기사 클라이언트 PreloadAsync는 **153콜백 전부 Success**였다. 서버 GetAssetFetchStatus의None은 실패 증거가 아니다. 실제 텍스처/ON·OFF 화면 및 상세 결과: `docs/art/costume_checkpoint_2026-10-03.md`.
+- 나머지17종 리깅 승인 상한425 중 **13종 성공325크레딧**. Head/Body 오브젝트 포장만 합친 무료 재검사로 HaloWarriorF/HaloMageM/HaloMageF3종이 통과해 최초 리깅75를 추가했다. API 최근 잔액4,560, 실제 누적440(해골30+왕60+pilot25+신규325). 승인 상한을 실제 청구로 집계하지 않는다.
+- 남은 HaloArcherF/HornsArcherF/NeutralWarriorF/NeutralArcherM4종은 merged 및 원본raw2k 무료 검사도 false/청구0. 승인 원본을 보존하는 수동 R15 가능성 조사 중. 자동 유료 재요청/재생성하지 않는다. API ledger writer는 루트만.
+- HornsMageM 비인접 웨이트1면·HornsMageF 빈 왼팔·NeutralArcherF 낮은 root는 원본 UV/표면/normal을 보존한 로컬 복구를 통과했다. HornsArcherM의 앞얼굴112면 잘못된 body 분류도 별도 복사본에서 바로잡았다. **신규 Halo3은 Tripo rig에서 Head 재질이 Body 재질로 합쳐진 오류 발견으로 업로드 보류**, 원본 fixed의 실제 면 대응으로 UV/재질 복원 중이다. 로컬 변환/정지 렌더를 Roblox 동작 완료로 쓰지 않는다.
+- 물약 재고/구매 서버·NPC 준비·수량 UI 소스는 연결됐다. 신규/기존0개,99상한,HP30%/MP40%,종류별10초CD,서버 정확한 NPC/prompt/활성/12stud·1/5병·임시각10G·실제 회복 때만1개 소비. 실제 소스 오프라인929검사 통과. **상인 `MerchantEnabled=false`, 구매 화면 미구현**이며 가격/화면 GPT 선택 대기다. 현재 무료 재사용으로 표시하지 않는다.
+- **실제 키1/2로 HP/MP 각2개→1개**, 각각CD설정·수량/상태 표시·TextBounds 정상 확인.0개는'구매'/비활성,가득 찼을 때'가득'/비활성. 실제 NPC 구매·영속 재접속·죽음/괴수 등 전 조건 실검증은 아직이다.
+- 새 HUD `UI_Gameplay_Cleanup_A_v2.png`와 상점 `Potion_Shop_A.png`는 사용자에게 표시했지만 선택 대기. 선택 전 새 화면 스타일/레이아웃을 적용하지 않는다.
+- 표정 파일럿 포함7종21장/42프리뷰가 로컬 검증됐다. 파일럿 최종 Head SHA `d8000e76a841f1d4675a8dbfc202168ec938551fdcf6e4e6bbeccff41c974611`, 실제 rig 좌표 최대 오차1.1845e-7. **ExpressionAssets 실제 등록0종**, 새 얼굴 업로드·실제 전투/피격/대화 전환은 남았다. 신규Halo3 표정은 UV복구 뒤 진행한다.
+- 무기 Fx/CharacterVisuals는 실제 관절/왼손활/오른손당김·현재 muzzle을 보강했고 실제 소스 오프라인253검사 통과. 그러나 **임시3D 무기와 남녀18종의 최종 모션은 사용자 요구 미완료**다. 아이콘27개 연결·파일럿 F/Q 움직임만으로 완성 처리하지 않는다.
+- 전체39 Luau 문법 통과, 최신 sync는4변경/35동일 후 Shop검증1변경/38동일.15초 Play 서버23/23·클라이언트9, Luau 오류 없음. Goblin/GoblinBrute/Skeleton 옛 에셋 경고·BigSlime 새 계정 모델 누락은 남았다. 슬라임fallback 투명도0은 소스 수정됐고 최종 실제 화면 확인 필요.
+- Noto Sans12187370747/글자PNG OFF/991×475 글자 범위, 닉네임790오프라인 및 실제 Unavailable·draft 재오픈은 이전 통과. DataStore API는 Studio에서 아직 꺼져 영속 저장·전 서버 중복 경쟁은 미검증. 닉네임Toast root.ZIndex96 수정·1590 최종화면·폰트 소유권 추가도 후속 확인한다.
+- 아래20:07 상태는 **이전 기록**이다. 현재 게임용1종/리깅325/잔액4560/물약929가 우선한다. 저장본 시각·용량은 최신 체크포인트 문서에 기록한다.
+- 컴퓨터 제어는 실제 화면 입력 때만 켜고 곧바로 reset한다. Codex 질문 알림이 Import 버튼을 가려 직접 닫기 요청 중이다. 미리보기는 일단 닫아 소스 검증을 계속하며 첫 HaloArcherM 배치는 아직 업로드0. 다른 place는 건드리지 않는다.
 
 ## 1. 게임 한 줄 요약
 "뇌 빼고 하는" 귀여운 로블록스 MMORPG **선악 키우기: 헤일로 & 혼즈**. 진영 3개(빛의 기사단 Halo / 뿔 군단 Horns / 장인 길드 Neutral, 청록 40,200,190) × 직업 3개(전사/마법사/궁수, 진영별 이름). 엘든 링 풍 대륙(교차로 → 말랑 초원 → 고블린 숲 → 해골 유적) + 진영 섬. 전체 맵은 지도(M)로만 본다.
@@ -32,7 +34,7 @@
 - 아바타: 진영·직업을 고르면 **3D 직업 코스튬**을 입힘(기본 켜짐, 설정에서 끄면 원래 로블록스 아바타).
 - 메뉴 키 B (Esc는 로블록스 예약), 키 힌트는 키보드 기기에서만.
 
-## 2. 지금 상태
+## 2. 이전 구현 기록 (20:07 당시; 최신 상태는 문서 상단)
 ### 코드 (`src/`, 약 2.6만 줄)
 - 이번 작업 라운드는 **부분 완료**다. 최신 기록된 기본 검증은39 Luau 문법, 동기화22개 변경/17개 동일,15초 Play 서버23/23·클라이언트9 정상 시작, Luau 런타임 오류 없음이다. 이후 닉네임 입력/Unavailable 안내/재오픈 보존은 실제 통과했고 오프라인 닉네임790개·코스튬 물리86개 검사는 통과했다. HP/MP 버튼 회복·중복 클릭 방지와991×475 선택/HUD 글자 범위도 통과했다. Toast 겹침 ZIndex96 패치, 키1/2·자원 거절/리스폰 보존·3직업 최종 모션·1590 최종 화면·OFF 밀림·최신 소스 저장/커밋은 남아 있다.
 - 완료된 큰 작업 (자세한 계약은 SPEC_ADDENDUM):
@@ -87,22 +89,16 @@
   - MaterialService 15종/override 12종/도로 3개 새 ID 적용 완료. 나머지 몬스터/코스튬의 완전한 3D 가져오기·플레이 연결은 미완료.
   - 업로드 전 한 장씩 확인 → 사용자에게 보여 주기 → 10장 이하씩 나눠서.
 
-## 3. 다음에 할 일 (우선순위)
-최신 사용자 순서는 **직업 아바타 안정화/등록 → 남녀18캐릭터 실제 직업별 모션 → 승인 대기 HUD/물약 NPC 구매·수량 화면**이다. 아래 기존 항목도 보존하되 이 순서가 우선한다. 물약 서버5파일은 오프라인 준비만 완료했으며 이번 중간 커밋에는 넣지 않는다.
+## 3. 다음에 할 일 (최신 사용자 우선순위)
 
-1. **R1 기본 스튜디오 검증 완료**: 전체 문법·동기화·시작·진영/직업·전투·퀘스트·지도·거위·괴수 기본 동작 확인 완료(위 기록). 남은 다인 PvP/PairCD 저장·재접속/괴수 퇴장 정산/이동 오탐 전체 조건은 별도 검증한다. `AntiCheat.Enforce`는 아직 끄고 둔다.
-2. **새 계정 2D 재업로드 완료**: 165개 새 ID와 SHA256/배치 결과를 유지한다. 3D 미완료 몬스터/코스튬을 이어서 처리한다. `--record-result`는 받은 결과만 복구하며, `--retry-disconnected-unknown --reason ...`은 이전 Studio 종료·대상 증거·retryHistory가 필요한 실제 재업로드다. ledger writer는 반드시 하나만 둔다.
-3. **글자/선택 화면·닉네임창 후속 검증**: A 구도·Noto Sans·글자 PNG OFF·물리 최소11px 유지. 991×475 선택/HUD 범위와 닉네임 실제 입력/Unavailable/재오픈 draft 유지 통과. **root.ZIndex96 이후 Toast 겹침**, 최종1590/짧은 높이/터치44px, 저장 중 연속 요청·필터/실저장/전 서버 중복 경쟁은 확인한다. 내장 Laptop1590×637 및 device·방향·배율 원복 payload는 `build/device_session_*.json`, 생성기는 `build/prepare_device_session.py`다. custom device는 만들지 않는다.
-4. **직업 코스튬 시스템**(기본 켜짐, 설정에서 끄기):
-   - 계획: Tripo 자동 리깅(biped, mixamo 뼈, 25크레딧) → 블렌더에서 뼈 가중치로 메시를 R15 15조각(Head, UpperTorso, LowerTorso, Left/RightUpperArm, LowerArm, Hand, Upper/LowerLeg, Foot)으로 나누고 관절 위치 JSON 출력 → 스튜디오에서 조각을 MeshPart로 가져와 커스텀 R15 리그(Motor6D를 관절 위치에)로 조립 → 스폰 때 `player.Character`로. 로블록스 기본 걷기/점프 애니메이션이 그대로 돈다. (로블록스 자동 아바타 설정은 치비 비율이라 실패함.)
-   - 성기사(남) pilot18메시/대기 R15 조립과 기본 움직임 확인은 끝났다. OFF 원본 root.CanCollide 보존 패치/높이 보정 후에도 실제 날아감이 남아 있으며86개 오프라인 통과로 해결 처리하지 않는다. 실패한 ownership 실험 소스는 되돌렸다. **OFF 밀림·원본 RigType/위치/속도/HP/MP/물약CD/보호/이동 검증 상태 보존**을 확인한 뒤에만 승격한다. 미지원 CreateAssetAsync는 재호출하지 않는다.
-   - 나머지17종은 사용자 최대425 승인에 따라 **10종 리깅250/7종 무료거절0**으로 종료했다. 로컬 strict8종만 후속 Importer/조립/동작 검증 대상으로 삼는다. 보류2종·무료거절7종은 원본 보존한 구조 원인 분석부터 하며 자동 유료 재요청/재생성하지 않는다(`docs/art/costume_rig_plan_2026-10-03.md`).
-5. **무기/지형/지도/왕슬라임 연결 후속**: 무기 27개 ID와 HUD 코드, 지도 양피지 코드, 지형 15종/override 12종/도로 3개 적용 완료. 직업·진영·티어별 무기 표시와 실제 지형/지도 화면을 확인한다. 왕슬라임은 새 계정 `CustomModels.BigSlime` 미완료.
-   - **전사·궁수·마법사별 모션 시안**은 승인됐지만 사용자 지적한 임시3D 무기·어색한 활 모션은 아직 미충족이다. 최종 무기/시위 당김·발사·지팡이/3직업 F/Q·실제 muzzle·기본 Animate와의 공존·직업/진영/캐릭터 변경 취소를 확인한다. A18 키1/2·종류별 CD·부족 MP 거절·리스폰/외형 변경 보존도 함께 검증한다.
-   - 아바타 이후 물약 NPC를 서버 소유 `workspace.Map.NPCs.PotionMerchant`(Model/PrimaryPart)로 연결한다. `ShopService.CanBuyPotions`, `BuyPotion("HP"|"MP",1|5)`는 거리12stud 안에서만 허용한다. `HPPotionCount`/`MPPotionCount`를 VitalsUI에 표시하고0개일 때 사용 불가로 안내한다. 구매 화면은 GPT 승인 후 구현한다.
-6. **해골 왕 보스**: 아직 게임에 없음(기획 확인 후 추가).
-7. 2단계 경제(재료/제작/거래소) — ADDENDUM에 설계 먼저.
-8. **저장/커밋 마감**: 단일 GoodEvil Edit 창 확인→최신 src 동기화/검증→Studio에서 `build/GoodEvil.rbxlx` 저장→파일 시각·내용 확인→`place/GoodEvil.rbxlx` 복사→커밋/push. 지금 남은 부분을 완료한 것으로 쓰지 않는다.
+1. 나머지 직업 코스튬: 확인한 기존 원본만10개 이하 배치로 Importer→Pending 조립→걷기/점프/F/Q/ON·OFF QA→승격. Halo3 UV복구·무료거절4 수동 가능성 확인. 이미 정상인 성기사 남성은 유지한다.
+2. 남녀18종 전체 전사·궁수·마법사 최종 무기/활 시위·당김·발사·지팡이 실제 muzzle/원본 Animate 공존 검증. 임시 무기 시각 요구를 완료로 처리하지 않는다.
+3. 승인된 기본/진지/미소 얼굴을 모델별 UV검사·한 장씩 표시→소량 업로드→ExpressionAssets 등록→전투/피격/대화 우선·OFF 얼굴 복귀 검증. 악 궁수는 Head뿐 아니라 옛 body 앞얼굴112면 제거가 필요하다.
+4. 사용자 HUD A/물약 상점 GPT 선택 답변 후 정확히 구현. NPC 활성/실제 G→1·5병 구매/거리·돈·99상한·회복소비·버튼/단축키/CD·재접속 확인. 준비중 가격을 사용자 확정 가격으로 쓰지 않는다.
+5. Goblin/GoblinBrute/선택된 옷입힌 Skeleton/BigSlime 새 계정 복구, 실제 불투명 슬라임 화면. SkeletonKing은 파일 준비됐지만 보스 게임 설계는 아직 후속이다.
+6. 선택·HUD1590/991/짧은 높이·터치44px·닉네임Toast/필터/영속 저장·전 서버중복 경쟁. Studio API 보안 설정은 사용자 직접 작업 필요(컴퓨터 제어 규칙). R1 다인PvP/PairCD·괴수퇴장·이동오탐 후 AntiCheat.Enforce 활성 여부 검토.
+7. 기존 다음 설계: 해골왕 보스,재료/제작/거래소2단계경제는 ADDENDUM 계약부터. 실제 요청과 완료 경계를 유지한다.
+8. 라운드별 GoodEvil/Edit→문법/동기화/Play→저장→place복사→커밋/push. 모든 요청이 실제 완료된 뒤에만 사용자의 종료 지시를 실행한다. 사용량3% 조건일 때만 승인된 무료 초기화1회 사용, 자동 유료 구매 금지.
 
 ## 4. 그림 → 게임 파이프라인
 1. 프롬프트 `art/prompts/<id>.txt` 작성(캐릭터는 단정한 옷차림 문구 필수) → 생성 → `art/out/<id>.png`.
@@ -110,7 +106,7 @@
 3. UI 부품이면 `py tools/prep_ui.py <id>` → `art/ui/` → 업로드(로컬 http 서버 + `upload_image`) → `Config.UIArt.Parts`에 `{ Id, Size, Slice }`.
 4. 3D면 Tripo(API: `tools/tripo_api.py`, 웹: studio.tripo3d.ai) → 텍스처 2k로 → `tools/fix_face.py`(캐릭터) → 스튜디오 3D Importer.
 
-## 5. Tripo 3D
+## 5. 이전 Tripo 실행 기록 (최신 비용은 문서 상단)
 - 마지막 확인 API 잔액 **4,635크레딧**, 누적 실제 청구 **365 = 옷 입힌 해골30 + 왕60 + pilot25 + 추가10종×25**. 신규17종 무료 import/rig-check와7종 riggable=false 거절에는 청구가 없다. 웹 스튜디오 과거 잔액과 별개다. API 키는 git 제외 `.env`에만 보관한다.
 - 나머지17종 최대425는 사용자 명시 승인을 받았으며 실제 유료 실행은10종250으로 종료했다. **승인 상한425를 실제 청구량으로 쓰지 않는다.** 완료/거절/불확실 상태는 `art/models/tripo/records.json`, `build/costume_r15/rejected_7_readonly_audit.json`, `docs/art/costume_rig_plan_2026-10-03.md`를 따른다. 자동 유료 재요청 금지, API/업로드 ledger writer는 하나만 둔다.
 - 문서 전체 사본 `docs/vendor/tripo_api/*.md` + 한국어 정리 `docs/vendor/tripo_api/README_KO.md`(추천 레시피 9장).

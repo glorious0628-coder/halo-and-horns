@@ -1,0 +1,137 @@
+[
+  {
+    "label": "pilot_setup",
+    "value": "ok",
+    "error": false
+  },
+  {
+    "label": "initial",
+    "value": "{\"enabled\":false,\"protected\":false,\"maxHP\":156,\"mana\":100,\"hp\":156,\"mpCD\":0,\"hpCD\":0,\"status\":\"Avatar\",\"root\":[4.21917724609375,3.224853515625,-27.36083984375],\"pivot\":\"4.21917725, 3.22485352, -27.3608398, -0.988316119, -8.02496345e-08, 0.152418151, -9.35744566e-08, 0.999999702, -8.02496416e-08, -0.152418151, -9.35744566e-08, -0.988315821\",\"applied\":false}",
+    "error": false
+  },
+  {
+    "label": "resource_setup",
+    "value": "ok",
+    "error": false
+  },
+  {
+    "label": "before_on",
+    "value": "{\"enabled\":false,\"protected\":false,\"maxHP\":156,\"mana\":25,\"hp\":62.400001525878909,\"mpCD\":0,\"hpCD\":0,\"status\":\"Avatar\",\"root\":[4.21917724609375,3.224853515625,-27.36083984375],\"pivot\":\"4.21917725, 3.22485352, -27.3608398, -0.988316119, -8.02496345e-08, 0.152418151, -9.35744566e-08, 0.999999702, -8.02496416e-08, -0.152418151, -9.35744566e-08, -0.988315821\",\"applied\":false}",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "value": "false",
+    "error": false
+  },
+  {
+    "label": "open_menu",
+    "value": "Success",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "value": "true",
+    "error": false
+  },
+  {
+    "label": "button_on",
+    "value": "{\"visible\":true,\"text\":\"직업 코스튬: OFF\"}",
+    "error": false
+  },
+  {
+    "label": "on",
+    "value": "Success",
+    "error": false
+  },
+  {
+    "label": "after_on",
+    "value": "{\"enabled\":true,\"protected\":false,\"maxHP\":156,\"id\":\"Costume_HaloWarriorM\",\"mana\":37.3,\"hp\":110.4000015258789,\"mpCD\":0,\"hpCD\":0,\"status\":\"Active\",\"root\":[4.21917724609375,1.8114013671875,-27.36083984375],\"pivot\":\"4.21917725, 1.81140137, -27.3608398, -0.988316119, -8.02496345e-08, 0.152418151, -9.35744566e-08, 0.999999702, -8.02496416e-08, -0.152418151, -9.35744566e-08, -0.988315821\",\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "before_off",
+    "value": "{\"enabled\":true,\"protected\":false,\"maxHP\":156,\"id\":\"Costume_HaloWarriorM\",\"mana\":37.3,\"hp\":110.4000015258789,\"mpCD\":0,\"hpCD\":0,\"status\":\"Active\",\"root\":[4.21917724609375,1.8114013671875,-27.36083984375],\"pivot\":\"4.21917725, 1.81140137, -27.3608398, -0.988316119, -8.02496345e-08, 0.152418151, -9.35744566e-08, 0.999999702, -8.02496416e-08, -0.152418151, -9.35744566e-08, -0.988315821\",\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "value": "true",
+    "error": false
+  },
+  {
+    "label": "button_off",
+    "value": "{\"visible\":true,\"text\":\"직업 코스튬: ON\"}",
+    "error": false
+  },
+  {
+    "label": "off",
+    "value": "Success",
+    "error": false
+  },
+  {
+    "label": "after_off",
+    "value": "{\"enabled\":false,\"protected\":false,\"maxHP\":156,\"mana\":47.7,\"hp\":142.39999389648438,\"mpCD\":0,\"hpCD\":0,\"status\":\"Avatar\",\"root\":[4.21917724609375,3.224853515625,-27.36083984375],\"pivot\":\"4.21917725, 3.22485352, -27.3608398, -0.988316119, -8.02496345e-08, 0.152418151, -9.35744566e-08, 0.999999702, -8.02496416e-08, -0.152418151, -9.35744566e-08, -0.988315821\",\"applied\":false}",
+    "error": false
+  },
+  {
+    "label": "menu_state",
+    "value": "true",
+    "error": false
+  },
+  {
+    "label": "button_on_again",
+    "value": "{\"visible\":true,\"text\":\"직업 코스튬: OFF\"}",
+    "error": false
+  },
+  {
+    "label": "on_again",
+    "value": "Success",
+    "error": false
+  },
+  {
+    "label": "after_on_again",
+    "value": "{\"enabled\":true,\"protected\":false,\"maxHP\":156,\"id\":\"Costume_HaloWarriorM\",\"mana\":57.9,\"hp\":156,\"mpCD\":0,\"hpCD\":0,\"status\":\"Active\",\"root\":[4.21917724609375,1.8114013671875,-27.36083984375],\"pivot\":\"4.21917725, 1.81140137, -27.3608398, -0.988316119, -8.02496345e-08, 0.152418151, -9.35744566e-08, 0.999999702, -8.02496416e-08, -0.152418151, -9.35744566e-08, -0.988315821\",\"applied\":true}",
+    "error": false
+  },
+  {
+    "label": "close_menu",
+    "value": "Success",
+    "error": false
+  },
+  {
+    "label": "motion_spy",
+    "value": "spy ready",
+    "error": false
+  },
+  {
+    "label": "charge",
+    "value": "ok",
+    "error": false
+  },
+  {
+    "label": "attack_F",
+    "value": "Success",
+    "error": false
+  },
+  {
+    "label": "attack_Q",
+    "value": "Success",
+    "error": false
+  },
+  {
+    "label": "motion_compact",
+    "value": "[{\"contact\":0.23,\"name\":\"WarriorSwing\",\"sampleCount\":42,\"fx\":{\"FxNumber24\":true,\"FxNumber12\":true,\"FxNumber9\":true,\"FxNumber8\":true,\"FxNumber1\":true,\"FxNumber3\":true,\"FxNumber4\":true,\"FxNumber17\":true,\"FxNumber20\":true,\"FxNumber16\":true,\"FxNumber23\":true,\"FxNumber21\":true,\"FxNumber2\":true,\"FxNumber14\":true,\"FxNumber22\":true,\"FxNumber25\":true,\"FxNumber19\":true,\"FxNumber7\":true,\"FxPop\":true,\"FxNumber18\":true,\"FxRing\":true,\"FxNumber6\":true,\"FxNumber13\":true,\"FxNumber15\":true,\"FxNumber11\":true,\"FxNumber10\":true,\"FxNumber5\":true},\"ranges\":{\"LeftShoulder\":{\"min\":[-0.3490631878376007,-0.06271443516016007,-0.5585007667541504],\"max\":[0.6616306900978088,0.013888501562178135,0]},\"RightShoulder\":{\"min\":[-0.0796838328242302,-2.886990785598755,-2.518610954284668],\"max\":[1.3412301540374756,0.01366384793072939,-0.024835627526044847]},\"LeftWrist\":{\"min\":[1.7508862981685525e-7,-9.126959099603482e-8,0.000001668929826337262],\"max\":[1.7508862981685525e-7,-9.126959099603482e-8,0.000001668929826337262]},\"RightWrist\":{\"min\":[-1.3701180219650269,-0.04274696856737137,-0.3141554892063141],\"max\":[4.6938683340158607e-7,0.022727759554982187,0.31273460388183596]},\"RightElbow\":{\"min\":[0.1829046756029129,0,-0.30387672781944277],\"max\":[1.2545497417449952,0.014917359687387944,0]},\"LeftElbow\":{\"min\":[0,-0.03753981739282608,0],\"max\":[0.43326249718666079,0,0.4534569978713989]}}},{\"contact\":0.24,\"name\":\"WarriorRelease\",\"sampleCount\":42,\"fx\":{\"FxNumber24\":true,\"FxPillar\":true,\"FxNumber12\":true,\"FxNumber9\":true,\"FxNumber8\":true,\"FxNumber1\":true,\"FxNumber3\":true,\"FxNumber4\":true,\"FxPop\":true,\"FxNumber17\":true,\"FxNumber18\":true,\"FxNumber16\":true,\"FxBurst\":true,\"FxNumber23\":true,\"FxNumber2\":true,\"FxNumber14\":true,\"FxNumber22\":true,\"FxNumber25\":true,\"FxNumber21\":true,\"FxNumber7\":true,\"FxNumber20\":true,\"FxNumber19\":true,\"FxRing\":true,\"FxNumber6\":true,\"FxNumber13\":true,\"FxNumber15\":true,\"FxNumber10\":true,\"FxNumber11\":true,\"FxNumber5\":true},\"ranges\":{\"LeftShoulder\":{\"min\":[0.002145234262570739,-0.08351323008537293,-0.03321317583322525],\"max\":[1.4347368478775025,3.1402881145477297,2.94535231590271]},\"RightShoulder\":{\"min\":[-0.08307981491088867,-3.1402785778045656,-2.957751750946045],\"max\":[1.471855878829956,0.02025994285941124,-0.028637271374464036]},\"LeftWrist\":{\"min\":[1.7508862981685525e-7,-9.126959099603482e-8,0.000001668929826337262],\"max\":[1.7508862981685525e-7,-9.126959099603482e-8,0.000001668929826337262]},\"RightWrist\":{\"min\":[-1.5282986164093018,0,-0.0000037848967622267084],\"max\":[4.6938683340158607e-7,3.1415927410125734,3.1415927410125734]},\"RightElbow\":{\"min\":[0.058228153735399249,0,-0.3033986985683441],\"max\":[1.5344970226287842,3.1415927410125734,3.1415927410125734]},\"LeftElbow\":{\"min\":[0.0792316272854805,-0.03720090910792351,0],\"max\":[1.2166190147399903,0,0.4536660611629486]}}}]",
+    "error": false
+  },
+  {
+    "label": "death",
+    "value": "dead",
+    "error": false
+  },
+  {
+    "label": "after_respawn",
+    "value": "{\"enabled\":true,\"protected\":true,\"maxHP\":171,\"id\":\"Costume_HaloWarriorM\",\"mana\":100,\"hp\":171,\"mpCD\":0,\"hpCD\":0,\"status\":\"Active\",\"root\":[-5.0556640625,1.8271484375,-414.88671875],\"pivot\":\"-5.05566406, 1.82714844, -414.886719, -0.946847975, 9.91605589e-08, -0.32168144, 7.10382722e-08, 0.99999994, 9.91605589e-08, 0.32168144, 7.10382722e-08, -0.946847916\",\"applied\":true}",
+    "error": false
+  }
+]

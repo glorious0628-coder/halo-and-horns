@@ -7,7 +7,7 @@ local Net = {}
 Net.Names = {
 	-- client -> server
 	"ChooseFaction", "ChooseClass", "Swing", "Release", "SetAutoAttack", "UpgradeWeapon",
-	"Rebirth", "SwitchFaction", "ChangeClass", "SetCostume", "SetNickname", "UsePotion", "Travel", "RerollQuest", "ClaimQuest", "ClaimVacation",
+	"Rebirth", "SwitchFaction", "ChangeClass", "SetCostume", "SetNickname", "UsePotion", "BuyPotion", "Travel", "RerollQuest", "ClaimQuest", "ClaimVacation",
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request

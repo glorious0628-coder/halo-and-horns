@@ -417,7 +417,15 @@ local function gripCFrame(hand, left)
 	else
 		pos = (hand.CFrame * CFrame.new(0, -hand.Size.Y / 2, 0)).Position
 	end
-	return CFrame.new(pos) * hand.CFrame.Rotation
+	local rotation = hand.CFrame.Rotation
+	-- Imported costume geometry can carry a verified axis bake (pilot Y180). Its wrist attachment
+	-- restores the original bone frame; using the mesh's raw rotation turns the held weapon around.
+	-- Personal avatar grips retain their existing frame.
+	if hand:GetAttribute("HHC_SourcePart") == hand.Name then
+		local wrist = hand:FindFirstChild(left and "LeftWristRigAttachment" or "RightWristRigAttachment")
+		if wrist and wrist:IsA("Attachment") then rotation *= wrist.CFrame.Rotation end
+	end
+	return CFrame.new(pos) * rotation
 end
 
 local function buildSword(grip, sc, w, color)
@@ -442,7 +450,7 @@ end
 
 local function buildStaff(grip, sc, w, color, tier)
 	local shaftLen = w.Length + 1.5
-	local base = grip * CFrame.new(0, 0, -0.55 * sc) -- just in front of the hand, held upright
+	local base = grip -- the shaft centreline must pass through the actual hand grip
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.3, shaftLen, 0.3) * sc,
 		Material = Enum.Material.Wood, Color = WOOD_COLOR,
@@ -468,8 +476,9 @@ local function buildBow(grip, sc, w, color)
 	local half = math.rad(50)
 	local R = H / (2 * math.sin(half))
 	local sag = R * (1 - math.cos(half))
-	local lift = math.max(0, H / 2 - 1.6) -- keep long bows off the floor
-	local base = grip * CFrame.new(0, lift * sc, -0.1 * sc)
+	-- The centre/grip stays in the hand at every tier; lifting a long bow moved its arrow rest
+	-- above the grip, so no arm pose could align the string hand, face and launch axis together.
+	local base = grip * CFrame.new(0, 0, -0.1 * sc)
 	local segLen = math.max(0.9, 2 * R * math.sin(math.rad(10)) * 1.08)
 	local parts = {}
 	local main
@@ -562,6 +571,15 @@ local function buildWeapon(player, character)
 			muzzle.Position = Vector3.new(0, main.Size.Y * 0.5, 0)
 		end
 		muzzle.Parent = main
+		-- Server-built attachment offsets survive both joint types and avoid reading a one-frame-old
+		-- hand/weapon pair while their Transform batch is still waiting for the physics step.
+		model:SetAttribute("HandMuzzle", hand.CFrame:ToObjectSpace(main.CFrame * muzzle.CFrame))
+		if classDef.Weapon == "Bow" then
+			for _, part in parts do
+				local nock = part:FindFirstChild("BowNock")
+				if nock then model:SetAttribute("HandBowRest", hand.CFrame:ToObjectSpace(part.CFrame * nock.CFrame)) end
+			end
+		end
 	end
 	mount(model, parts, character, hand)
 end

@@ -17,14 +17,16 @@
 -- Lighting is never touched here: WarService owns it (addendum A9-3: no Atmosphere, no per-zone ColorCorrection).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
+local CollectionService = game:GetService("CollectionService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
+local CostumeService = require(script.Parent.CostumeService) -- ValidateTemplate is pure; Build never uses its registry
 
 local MapBuilder = {}
 
 local TAG = "MapBuilder"
-local FOLDER_NAMES = { "Ground", "Zones", "Walls", "Gates", "Pads", "Landmarks", "Decor" }
+local FOLDER_NAMES = { "Ground", "Zones", "Walls", "Gates", "Pads", "Landmarks", "Decor", "NPCs" }
 local WALL_NAMES = { "Wall_MinX", "Wall_MaxX", "Wall_MinZ", "Wall_MaxZ" }
 local WALL_THICKNESS = 2
 local WALL_ADOPT_LENGTH = 100 -- a pre-baked part at least this long in the Walls folder is a bounds wall
@@ -798,6 +800,80 @@ local function buildPreviewSpawn(ctx, landmarks)
 	if decal then decal:Destroy() end
 end
 
+-- No new NPC artwork: copy only the approved, ready paladin rig and keep all mesh/texture data.
+-- The shop stays absent/disabled until its GPT preview is selected. Pending/static imports are not eligible.
+local function ensureMerchantPrompt(merchant, tune)
+	local root = merchant.PrimaryPart
+	if not root or not root:IsA("BasePart") or not root:IsDescendantOf(merchant) then return false end
+	local prompt = root:FindFirstChild(tune.PotionMerchantPrompt)
+	if prompt and not prompt:IsA("ProximityPrompt") then retire(prompt, "_Old"); prompt = nil end
+	if not prompt then prompt = Instance.new("ProximityPrompt"); prompt.Name = tune.PotionMerchantPrompt end
+	prompt.ActionText, prompt.ObjectText = "물약 구매", "물약 상인"
+	prompt.KeyboardKeyCode = Enum.KeyCode.G -- Q/E are combat keys
+	prompt.HoldDuration, prompt.MaxActivationDistance = 0.3, tune.PotionMerchantDistance
+	prompt.RequiresLineOfSight, prompt.Enabled = false, true
+	prompt:SetAttribute("Conversation", true) -- verified NPC interaction; ExpressionService owns the smile
+	prompt.Parent = root
+	CollectionService:AddTag(merchant, "NPC")
+	return true
+end
+
+local function ensurePotionMerchant(ctx, folder)
+	local tune = Config.Vitals
+	local merchant = folder:FindFirstChild(tune.PotionMerchantName)
+	local function disableExisting()
+		local part = merchant and merchant:IsA("Model") and merchant.PrimaryPart
+		local prompt = part and part:FindFirstChild(tune.PotionMerchantPrompt)
+		if prompt and prompt:IsA("ProximityPrompt") then prompt.Enabled = false end
+	end
+	if tune.MerchantEnabled ~= true then disableExisting(); return end
+	local rigs = ServerStorage:FindFirstChild("CostumeRigs")
+	local template = rigs and rigs:IsA("Folder") and rigs:FindFirstChild(tune.PotionMerchantTemplate)
+	if not CostumeService.ValidateTemplate(template) then disableExisting(); return end
+	if merchant and (not merchant:IsA("Model") or merchant:GetAttribute("HHC_PotionMerchant") ~= true) then
+		Util.Warn(TAG, "PotionMerchant name is occupied by unrelated content; skipped")
+		return
+	end
+	if merchant then
+		ensureMerchantPrompt(merchant, tune)
+		return
+	end
+	local offset = tune.PotionMerchantOffset
+	if type(offset) ~= "table" or type(offset.X) ~= "number" or type(offset.Z) ~= "number"
+		or offset.X ~= offset.X or offset.Z ~= offset.Z or math.abs(offset.X) > 30 or math.abs(offset.Z) > 30 then return end
+	local ok, copied = pcall(template.Clone, template)
+	if not ok or not copied then Util.Warn(TAG, "PotionMerchant template clone failed"); return end
+	merchant = copied
+	local prepared, why = pcall(function()
+		merchant.Name = tune.PotionMerchantName
+		for _, child in merchant:GetDescendants() do
+			if child:IsA("LuaSourceContainer") or child:IsA("Tool") or child:IsA("ForceField") or child:IsA("ProximityPrompt") then
+				child:Destroy()
+			elseif child:IsA("BasePart") then
+				child.Anchored = true
+				child.CanCollide, child.CanTouch, child.CanQuery = false, false, false
+			end
+		end
+		local humanoid = merchant:FindFirstChildOfClass("Humanoid")
+		local root = merchant:FindFirstChild("HumanoidRootPart")
+		assert(humanoid and root and root:IsA("BasePart"), "approved merchant rig has no root/humanoid")
+		humanoid.WalkSpeed, humanoid.JumpPower, humanoid.AutoRotate = 0, 0, false
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		merchant.PrimaryPart = root
+		local pivot = merchant:GetPivot()
+		local bounds, size = merchant:GetBoundingBox()
+		local target = Config.Zones.Crossroads.Spawn + Vector3.new(offset.X, 0, offset.Z)
+		merchant:PivotTo(pivot + Vector3.new(target.X - pivot.Position.X,
+			target.Y - (bounds.Position.Y - size.Y * 0.5), target.Z - pivot.Position.Z))
+		merchant:SetAttribute("HHC_PotionMerchant", true)
+		merchant:SetAttribute("HHC_MerchantTemplate", tune.PotionMerchantTemplate)
+		assert(ensureMerchantPrompt(merchant, tune), "approved merchant root is invalid")
+		merchant.Parent = folder
+	end)
+	if not prepared then merchant:Destroy(); Util.Warn(TAG, "PotionMerchant preparation failed: " .. tostring(why)); return end
+	ctx.pieces += 1
+end
+
 ------------------------------------------------------------------ public API
 -- ENSURE: reuse workspace.Map if present, create only what is missing. No S, no yields, idempotent.
 -- A reused map never gets ground or decor (its world is Terrain); a fresh one gets the A11-R3 minimal ground.
@@ -826,6 +902,7 @@ function MapBuilder.Build()
 	ensureGates(ctx, folders.Gates)
 	ensurePads(ctx, folders.Pads)
 	ensureLandmarks(ctx, folders.Landmarks)
+	ensurePotionMerchant(ctx, folders.NPCs)
 
 	if fresh then
 		buildPreviewSpawn(ctx, folders.Landmarks)
