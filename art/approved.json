@@ -42,5 +42,14 @@
  "Skeleton": {
   "status": "approved",
   "file": "art/out/Skeleton.png"
+ },
+ "GoldenGoose": {
+  "status": "approved",
+  "file": "art/out/GoldenGoose.png",
+  "note": "v2 심술궂은 버전 (v1은 art/out/v1)"
+ },
+ "SkeletonKnight": {
+  "status": "approved",
+  "file": "art/out/SkeletonKnight.png"
  }
 }

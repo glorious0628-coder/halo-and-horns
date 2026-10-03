@@ -1,7 +1,9 @@
 -- Fx.luau : client-side effects for Halo & Horns (G11).
 -- Plays every server "Fx" remote kind (TECH_SPEC §5), pooled damage numbers, class swing / release shapes, camera
 -- shake, built-in sounds, the hurt edge flash, the own level-up "next unlock" announce (addendum A7-3), the kill
--- combo counter and the A9-2 hit feel (local white flash on monsters I hit, number pop, number merging).
+-- combo counter and the A9-2 hit feel (local white flash on monsters I hit, number pop, number merging), my own
+-- attack animations (stock Roblox animations on my character; they replicate) and the monster attack lunge / hit
+-- recoil (local tweens of the monster's VisualJoint.C0).
 -- Everything here is local-only and purely cosmetic; the server never trusts anything from it.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -83,6 +85,51 @@ local TXT_LEVELUP_NEXT_FALLBACK = "레벨 업! Lv %d · 다음 해금: Lv %d %s"
 local TXT_NEXT_UNLOCK = "다음 해금: Lv %d %s"
 local TXT_BANK = "금고 +%s"
 local TXT_AUTO_RELEASE = "자동 발사"
+
+-- attack motion tuning, one table (Fx.luau is close to Luau's 200-locals-per-function limit)
+local MOTION = {
+	-- own attack animations: Roblox-owned stock animations (usable in any experience), played ONLY on my own
+	-- character (tracks of my character's Animator replicate to everyone, so other characters are never animated here)
+	ANIM_IDS = {
+		R15 = {
+			Slash = "rbxassetid://522635514", -- toolslash
+			Lunge = "rbxassetid://522638767", -- toollunge
+			Point = "rbxassetid://507770453", -- point
+		},
+		R6 = {
+			Slash = "rbxassetid://129967390", -- toolslash
+			Lunge = "rbxassetid://129967478", -- toollunge
+		},
+	},
+	ANIM_FALLBACK = { Point = "Lunge" }, -- move -> move used when the rig has no stock id for it (R6 point)
+	CLASS_MOVES = {
+		Warrior = { Swing = "Slash", Release = "Lunge" }, -- sword slash, big lunge for the shockwave
+		Mage = { Swing = "Point", Release = "Slash" }, -- cast forward, overhead call for the meteor
+		Archer = { Swing = "Lunge", Release = "Slash" }, -- quick shot forward, overhead volley for the arrow rain
+	},
+	SWING_FIT = 0.9, -- a swing move finishes within this fraction of the class SwingInterval
+	RELEASE_ANIM_TIME = 0.75, -- the release move finishes within this many seconds
+	RELEASE_HOLD = 0.6, -- swings do not cut the release move short for this many seconds
+	ANIM_MAX_SPEED = 4,
+	ANIM_FADE_IN = 0.05,
+	ANIM_FADE_OUT = 0.12,
+
+	-- monster attack motion. MonsterService welds every visible monster part to "VisualRoot", which hangs off the root
+	-- by the Weld "VisualJoint" (C0 = identity); the server never writes C0 after spawn, so a local C0 tween sticks.
+	MONSTER_FOLDER = "Monsters",
+	VISUAL_ROOT_NAME = "VisualRoot",
+	VISUAL_JOINT_NAME = "VisualJoint",
+	ATTACK_SEQ_ATTR = "AttackSeq", -- the server bumps it on every monster hit on a player
+	DEFAULT_BODY_HEIGHT = 5,
+	-- distances are fractions of the body height, angles in degrees (lean pivots on the floor under the root)
+	LUNGE_WINDUP_TIME = 0.08, LUNGE_WINDUP_BACK = 0.08, LUNGE_WINDUP_TILT = 10, -- step back, lean back
+	LUNGE_TIME = 0.1, LUNGE_DIST = 0.35, LUNGE_TILT = 20, -- forward (-Z in root space), lean forward
+	LUNGE_RETURN_TIME = 0.2,
+	HOP_SQUASH_TIME = 0.08, HOP_SQUASH_DOWN = 0.06, HOP_SQUASH_BACK = 0.06, HOP_SQUASH_TILT = 6, -- slime crouch
+	HOP_TIME = 0.12, HOP_UP = 0.2, HOP_FWD = 0.3, HOP_TILT = 12, -- slime hop up + forward
+	HOP_LAND_TIME = 0.18,
+	RECOIL_IN = 0.04, RECOIL_OUT = 0.1, RECOIL_TILT = 8, -- flinch of monsters my hits land on
+}
 
 ----------------------------------------------------------------- small helpers
 local rng = Random.new()
@@ -668,7 +715,7 @@ local function flashModel(model)
 		-- original colors are stored once per flash start, so rapid hits never leave a monster white
 		local colors = {}
 		for _, d in model:GetDescendants() do
-			if d:IsA("BasePart") and d.Name ~= "HumanoidRootPart" then
+			if d:IsA("BasePart") and d.Name ~= "HumanoidRootPart" and d.Name ~= MOTION.VISUAL_ROOT_NAME then
 				colors[d] = d.Color
 			end
 		end
@@ -714,6 +761,292 @@ local function flashMonstersAt(positions)
 				end
 			end
 		end
+	end
+end
+
+----------------------------------------------------------------- monster attack lunge / hit recoil (local VisualJoint.C0)
+local monsterMotion = {} -- [monster model] = { Token = n, Tween = Tween?, Attack = bool, Conn = RBXScriptConnection }
+local monsterFolderConns = {}
+local hookedMonsterFolder = nil
+
+local function visualJoint(model)
+	local vr = model:FindFirstChild(MOTION.VISUAL_ROOT_NAME)
+	local j = vr and vr:FindFirstChild(MOTION.VISUAL_JOINT_NAME)
+	if j and j:IsA("JointInstance") then return j end
+	return nil
+end
+
+local function monsterRoot(model)
+	local root = model.PrimaryPart or model:FindFirstChild("HumanoidRootPart")
+	if root and root:IsA("BasePart") then return root end
+	return nil
+end
+
+-- (body height, root center height above the floor) from the model attributes MonsterService sets
+local function monsterSize(model)
+	local h = math.clamp(asNum(model:GetAttribute("BodyHeight"), MOTION.DEFAULT_BODY_HEIGHT), 0.5, 60)
+	local rh = math.clamp(asNum(model:GetAttribute("RootHeight"), h * 0.55), 0, h)
+	return h, rh
+end
+
+local function isSlimeModel(model)
+	local kind = model:GetAttribute("MonsterKind")
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	return type(def) == "table" and def.Shape == "Slime"
+end
+
+-- root-space offset plus a lean around the floor point under the root (pitch > 0 leans back, < 0 leans forward)
+local function leanCF(rootHeight, offset, pitchDeg)
+	local pivot = CFrame.new(0, -rootHeight, 0)
+	return CFrame.new(offset) * pivot * CFrame.Angles(math.rad(pitchDeg), 0, 0) * pivot:Inverse()
+end
+
+-- tweens VisualJoint.C0 through steps { { C0, time, style?, direction? }, ... }; a newer sequence cancels a running one
+local function playJointSeq(model, steps, isAttack)
+	local st = monsterMotion[model]
+	local joint = st and visualJoint(model)
+	if not joint then return end
+	st.Token += 1
+	local token = st.Token
+	if st.Tween then
+		st.Tween:Cancel()
+		st.Tween = nil
+	end
+	st.Attack = isAttack == true
+	local i = 0
+	local function step()
+		if st.Token ~= token or not joint.Parent then return end
+		i += 1
+		local s = steps[i]
+		if not s then
+			st.Tween = nil
+			st.Attack = false
+			return
+		end
+		local info = TweenInfo.new(s[2], s[3] or Enum.EasingStyle.Quad, s[4] or Enum.EasingDirection.Out)
+		local t = TweenService:Create(joint, info, { C0 = s[1] })
+		st.Tween = t
+		t.Completed:Connect(function(state)
+			if state ~= Enum.PlaybackState.Completed then return end
+			local ok, err = pcall(step)
+			if not ok then warnThrottled("monster motion failed: " .. tostring(err)) end
+		end)
+		t:Play()
+	end
+	step()
+end
+
+-- AttackSeq went up: wind-up, lunge along the look direction, back to rest (slimes: squash, hop forward, land)
+local function onMonsterAttack(model)
+	local root = monsterRoot(model)
+	if not root or not nearCamera(root.Position) then return end
+	local h, rh = monsterSize(model)
+	local steps
+	if isSlimeModel(model) then
+		steps = {
+			{ leanCF(rh, Vector3.new(0, -MOTION.HOP_SQUASH_DOWN * h, MOTION.HOP_SQUASH_BACK * h), MOTION.HOP_SQUASH_TILT), MOTION.HOP_SQUASH_TIME },
+			{ leanCF(rh, Vector3.new(0, MOTION.HOP_UP * h, -MOTION.HOP_FWD * h), -MOTION.HOP_TILT), MOTION.HOP_TIME },
+			{ CFrame.identity, MOTION.HOP_LAND_TIME, Enum.EasingStyle.Quad, Enum.EasingDirection.In },
+		}
+	else
+		steps = {
+			{ leanCF(rh, Vector3.new(0, 0, MOTION.LUNGE_WINDUP_BACK * h), MOTION.LUNGE_WINDUP_TILT), MOTION.LUNGE_WINDUP_TIME },
+			{ leanCF(rh, Vector3.new(0, 0, -MOTION.LUNGE_DIST * h), -MOTION.LUNGE_TILT), MOTION.LUNGE_TIME, Enum.EasingStyle.Back, Enum.EasingDirection.Out },
+			{ CFrame.identity, MOTION.LUNGE_RETURN_TIME, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut },
+		}
+	end
+	playJointSeq(model, steps, true)
+end
+
+-- small flinch on monsters my own hits landed on (never interrupts their attack lunge)
+local function recoilMonstersAt(positions)
+	if #positions == 0 then return end
+	for model, st in monsterMotion do
+		if not st.Attack then
+			local root = monsterRoot(model)
+			if root then
+				local rp = root.Position
+				for _, p in positions do
+					if (rp - p).Magnitude <= FLASH_DIST then
+						local _, rh = monsterSize(model)
+						playJointSeq(model, {
+							{ leanCF(rh, Vector3.zero, MOTION.RECOIL_TILT), MOTION.RECOIL_IN },
+							{ CFrame.identity, MOTION.RECOIL_OUT, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut },
+						}, false)
+						break
+					end
+				end
+			end
+		end
+	end
+end
+
+local function untrackMonster(model)
+	local st = monsterMotion[model]
+	if not st then return end
+	monsterMotion[model] = nil
+	st.Token += 1
+	if st.Tween then
+		pcall(function()
+			st.Tween:Cancel()
+		end)
+		st.Tween = nil
+	end
+	if st.Conn then st.Conn:Disconnect() end
+end
+
+local function trackMonster(model)
+	if monsterMotion[model] or not model:IsA("Model") then return end
+	local st = { Token = 0, Tween = nil, Attack = false, Conn = nil }
+	monsterMotion[model] = st
+	st.Conn = model:GetAttributeChangedSignal(MOTION.ATTACK_SEQ_ATTR):Connect(function()
+		local ok, err = pcall(onMonsterAttack, model)
+		if not ok then warnThrottled("monster lunge failed: " .. tostring(err)) end
+	end)
+end
+
+-- existing children + ChildAdded; models leaving the folder (death, despawn, streaming out) are untracked
+local function hookMonsterFolder(folder)
+	if hookedMonsterFolder == folder then return end
+	hookedMonsterFolder = folder
+	for _, c in monsterFolderConns do
+		c:Disconnect()
+	end
+	table.clear(monsterFolderConns)
+	local old = {}
+	for model in monsterMotion do
+		table.insert(old, model)
+	end
+	for _, model in old do
+		untrackMonster(model)
+	end
+	table.insert(monsterFolderConns, folder.ChildAdded:Connect(function(child)
+		local ok, err = pcall(trackMonster, child)
+		if not ok then warnThrottled("monster track failed: " .. tostring(err)) end
+	end))
+	table.insert(monsterFolderConns, folder.ChildRemoved:Connect(function(child)
+		untrackMonster(child)
+	end))
+	for _, child in folder:GetChildren() do
+		local ok, err = pcall(trackMonster, child)
+		if not ok then warnThrottled("monster track failed: " .. tostring(err)) end
+	end
+end
+
+local function isMonsterFolder(inst)
+	return inst.Name == MOTION.MONSTER_FOLDER and inst:IsA("Folder")
+end
+
+----------------------------------------------------------------- own attack animations (my character only; they replicate)
+local ATTACK_PRIORITY = Enum.AnimationPriority.Action
+do
+	local ok, p = pcall(function()
+		return Enum.AnimationPriority.Action2
+	end)
+	if ok and p then ATTACK_PRIORITY = p end -- above tool / emote animations
+end
+
+local animObjects = {} -- [asset id] = Animation
+local animAnimator = nil -- the Animator the cached tracks were loaded on
+local animTracks = {} -- [asset id] = AnimationTrack (loaded on animAnimator)
+local animCurrent = nil -- the attack track played last
+local animToken = 0
+local releaseAnimUntil = 0
+
+local function resetAttackAnims()
+	animToken += 1
+	local cur = animCurrent
+	animCurrent = nil
+	if cur then
+		pcall(function()
+			cur:Stop(0)
+		end)
+	end
+	animAnimator = nil
+	table.clear(animTracks)
+	releaseAnimUntil = 0
+end
+
+-- my living character's (Animator, Humanoid), or nil
+local function ownAnimator()
+	local char = LocalPlayer and LocalPlayer.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if not hum or hum.Health <= 0 then return nil, nil end
+	local animator = hum:FindFirstChildOfClass("Animator")
+	if not animator then return nil, nil end
+	return animator, hum
+end
+
+-- stock animation id for a class move ("Swing" / "Release") on this rig type
+local function attackAnimId(hum, classId, which)
+	local ids = hum.RigType == Enum.HumanoidRigType.R6 and MOTION.ANIM_IDS.R6 or MOTION.ANIM_IDS.R15
+	local moves = MOTION.CLASS_MOVES[classId] or MOTION.CLASS_MOVES.Warrior
+	local move = moves[which]
+	if not move then return nil end
+	local id = ids[move]
+	if not id and MOTION.ANIM_FALLBACK[move] then id = ids[MOTION.ANIM_FALLBACK[move]] end
+	return id
+end
+
+-- cached track per Animator (a new character / Animator drops the old cache)
+local function attackTrack(animator, id)
+	if animAnimator ~= animator then
+		resetAttackAnims()
+		animAnimator = animator
+	end
+	local track = animTracks[id]
+	if track then return track end
+	local anim = animObjects[id]
+	if not anim then
+		anim = Instance.new("Animation")
+		anim.AnimationId = id
+		animObjects[id] = anim
+	end
+	track = animator:LoadAnimation(anim)
+	track.Priority = ATTACK_PRIORITY
+	track.Looped = false
+	animTracks[id] = track
+	return track
+end
+
+-- plays my class move, sped up to finish within maxTime and stopped then at the latest (first play may not know
+-- the length yet; it is then just cut)
+local function playAttackAnim(classId, which, maxTime)
+	local animator, hum = ownAnimator()
+	if not animator then return end
+	local id = attackAnimId(hum, classId, which)
+	if not id then return end
+	local track = attackTrack(animator, id)
+	local speed = 1
+	local len = track.Length
+	if len > 0 then speed = math.clamp(len / maxTime, 1, MOTION.ANIM_MAX_SPEED) end
+	local prev = animCurrent
+	if prev and prev ~= track and prev.IsPlaying then prev:Stop(MOTION.ANIM_FADE_OUT) end
+	if track.IsPlaying then track:Stop(0) end
+	track:Play(MOTION.ANIM_FADE_IN, 1, speed)
+	animCurrent = track
+	animToken += 1
+	local token = animToken
+	later(maxTime, function()
+		if animToken == token and track.IsPlaying then track:Stop(MOTION.ANIM_FADE_OUT) end
+	end)
+end
+
+-- my Swing / Release -> the class move on my character (failures only warn, throttled)
+local function animateOwnAttack(data, which)
+	local classId = asStr(data.Class, "Warrior")
+	local maxTime
+	if which == "Release" then
+		maxTime = MOTION.RELEASE_ANIM_TIME
+	else
+		if os.clock() < releaseAnimUntil then return end -- let the release move finish
+		local def = Config.Classes[classId] or Config.Classes.Warrior
+		maxTime = math.max(0.1, tonumber(def.SwingInterval) or 1) * MOTION.SWING_FIT
+	end
+	local ok, err = pcall(playAttackAnim, classId, which, maxTime)
+	if not ok then warnThrottled("attack animation failed: " .. tostring(err)) end
+	if which == "Release" then
+		releaseAnimUntil = os.clock() + MOTION.RELEASE_HOLD -- set after the play (a new Animator resets it)
 	end
 end
 
@@ -1056,6 +1389,8 @@ local function showHits(hits, own, fromRelease)
 	if #flashAt > 0 then
 		local ok, err = pcall(flashMonstersAt, flashAt)
 		if not ok then warnThrottled("hit flash failed: " .. tostring(err)) end
+		local okRecoil, errRecoil = pcall(recoilMonstersAt, flashAt)
+		if not okRecoil then warnThrottled("hit recoil failed: " .. tostring(errRecoil)) end
 	end
 end
 
@@ -1077,7 +1412,10 @@ local handlers = {}
 
 handlers.Swing = function(data)
 	local own = isOwn(data)
-	if own then Fx.PlaySound("Swing") end
+	if own then
+		Fx.PlaySound("Swing")
+		animateOwnAttack(data, "Swing")
+	end
 	local pos = asVec(data.Pos)
 	local from = asVec(data.From) or pos
 	if not pos then return end
@@ -1126,6 +1464,7 @@ end
 
 handlers.Release = function(data)
 	local own = isOwn(data)
+	if own then animateOwnAttack(data, "Release") end
 	local pos = asVec(data.Pos)
 	if not pos then
 		if own then
@@ -1483,6 +1822,23 @@ function Fx.Start()
 				lastLevelSeen = v
 			end
 		end)
+		-- attack tracks belong to one Animator; a new character loads them again
+		LocalPlayer.CharacterAdded:Connect(function()
+			resetAttackAnims()
+		end)
+	end
+
+	-- monster attack lunge: watch workspace.Monsters (connect first, then look, so a late folder is never missed)
+	workspace.ChildAdded:Connect(function(child)
+		if isMonsterFolder(child) then
+			local okHook, errHook = pcall(hookMonsterFolder, child)
+			if not okHook then warnThrottled("monster folder hook failed: " .. tostring(errHook)) end
+		end
+	end)
+	local monsters = workspace:FindFirstChild(MOTION.MONSTER_FOLDER)
+	if monsters and isMonsterFolder(monsters) then
+		local okHook, errHook = pcall(hookMonsterFolder, monsters)
+		if not okHook then warnThrottled("monster folder hook failed: " .. tostring(errHook)) end
 	end
 
 	-- the remote normally exists already; never block the other client modules' Start on it

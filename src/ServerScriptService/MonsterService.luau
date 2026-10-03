@@ -79,6 +79,13 @@ local DEATH_DESTROY = 0.4
 local DEATH_PARTICLES = 15
 local BOB_PERIOD = 0.55
 local BOB_FRACTION = 0.06 -- custom visual bob height as a fraction of the body height
+-- every visible part is welded to VisualRoot, which hangs off the root by the Weld VisualJoint (C0 = C1 = identity).
+-- Clients tween VisualJoint.C0 locally (Fx.luau attack lunge / hit recoil); the server never writes C0 after spawn.
+local VISUAL_ROOT_NAME = "VisualRoot"
+local VISUAL_JOINT_NAME = "VisualJoint"
+local VISUAL_ROOT_SIZE = 0.2
+local ATTACK_SEQ_ATTR = "AttackSeq" -- +1 on every monster hit on a player (clients play the attack lunge)
+local FACE_TARGET_DOT = 0.85 -- attacking: turn to the target when it is more than ~30 deg off the look direction
 local BAR_HIGH = Color3.fromRGB(80, 220, 120)
 local BAR_LOW = Color3.fromRGB(255, 80, 80)
 local EYE_COLOR = Color3.fromRGB(20, 20, 20)
@@ -501,7 +508,8 @@ local function buildCustomVisual(template, rootCF, bodyHeight, floorY)
 	return visual, parts
 end
 
--- builds the model (not parented yet). Returns a table with Model, Root, Humanoid, Fill, Parts, VisualParts, BodyHeight, Hip.
+-- builds the model (not parented yet). Returns a table with Model, Root, VisualRoot, Humanoid, Fill, Parts, VisualParts,
+-- BodyHeight, Hip.
 local function buildRig(kind, def, golden, groundPos, faceTo)
 	local s = def.Scale or 1
 	local isSlime = def.Shape == "Slime"
@@ -540,6 +548,24 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 	})
 	root.Parent = model
 	model.PrimaryPart = root
+
+	-- invisible anchor for every visible part (see VISUAL_ROOT_NAME); starts exactly on the root
+	local visualRoot = newPart({
+		Name = VISUAL_ROOT_NAME,
+		Size = Vector3.new(VISUAL_ROOT_SIZE, VISUAL_ROOT_SIZE, VISUAL_ROOT_SIZE),
+		CFrame = rootCF,
+		Transparency = 1,
+		CanQuery = false,
+		CastShadow = false,
+	})
+	visualRoot.Parent = model
+	local joint = Instance.new("Weld")
+	joint.Name = VISUAL_JOINT_NAME
+	joint.Part0 = root
+	joint.Part1 = visualRoot
+	joint.C0 = CFrame.identity
+	joint.C1 = CFrame.identity
+	joint.Parent = visualRoot
 
 	local bodyColor = golden and MC.GoldenColor or def.Color
 	local darkColor = golden and MC.GoldenColor or def.Color:Lerp(Color3.new(0, 0, 0), 0.25)
@@ -634,10 +660,14 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 
 	model:SetAttribute("MonsterKind", kind)
 	model:SetAttribute("Golden", golden)
+	-- body size for the client attack motion (lunge distance, lean pivot at the floor)
+	model:SetAttribute("BodyHeight", bodyHeight)
+	model:SetAttribute("RootHeight", rootY - floorY)
 
 	return {
 		Model = model,
 		Root = root,
+		VisualRoot = visualRoot,
 		Humanoid = hum,
 		Fill = fill,
 		Parts = parts,
@@ -682,14 +712,16 @@ local function spawnMonster(kind, opts)
 		rig.Model:SetAttribute("OwnerUserId", owner.UserId)
 	end
 
-	-- parent, weld, network owner, humanoid states
+	-- parent, weld (visible parts to VisualRoot, which is jointed to the root), network owner, humanoid states.
+	-- Gameplay (hits, AI, knockback) only uses the root; parts follow it through the joints.
 	rig.Model.Parent = getMonstersFolder()
+	local anchor = rig.VisualRoot or rig.Root
 	for _, p in rig.Parts do
-		Util.Weld(rig.Root, p)
+		Util.Weld(anchor, p)
 	end
 	if rig.VisualParts then
 		for _, p in rig.VisualParts do
-			Util.Weld(rig.Root, p)
+			Util.Weld(anchor, p)
 		end
 	end
 	pcall(rig.Root.SetNetworkOwner, rig.Root, nil)
@@ -798,7 +830,7 @@ local function deathPop(rec, withParticles)
 	local info = TweenInfo.new(DEATH_FADE, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
 	for _, d in model:GetDescendants() do
 		if d:IsA("BasePart") then
-			if d ~= root then
+			if d ~= root and d.Name ~= VISUAL_ROOT_NAME then -- the invisible joint anchor keeps its size
 				TweenService:Create(d, info, { Size = d.Size * 0.2, Transparency = 1 }):Play()
 			end
 		elseif d:IsA("ParticleEmitter") or d:IsA("Light") or d:IsA("Highlight") then
@@ -1012,11 +1044,31 @@ local function targetable(rec, info)
 	return not info.Town and info.Zone == rec.ZoneId and info.Pos.Y >= OUT_Y
 end
 
+-- turns the root (whole assembly) toward the target on the floor plane when it is far off the look direction
+local function faceTarget(rec, targetPos)
+	local root = rec.Root
+	if root.Anchored then return end
+	local pos = root.Position
+	local flat = Vector3.new(targetPos.X - pos.X, 0, targetPos.Z - pos.Z)
+	if flat.Magnitude < 0.1 then return end
+	local dir = flat.Unit
+	if root.CFrame.LookVector:Dot(dir) >= FACE_TARGET_DOT then return end
+	root.CFrame = CFrame.lookAt(pos, pos + dir)
+end
+
 local function attack(rec, info, now)
 	rec._goal = nil
 	rec.Humanoid:MoveTo(rec.Root.Position)
 	if now >= rec._nextAttackAt then
 		rec._nextAttackAt = now + MC.AttackCooldown
+		-- the client lunge goes along the look direction, so face the target first
+		local okFace, errFace = pcall(faceTarget, rec, info.Pos)
+		if not okFace then warnThrottled("face", errFace) end
+		local model = rec.Model
+		if model then
+			local seq = model:GetAttribute(ATTACK_SEQ_ATTR)
+			model:SetAttribute(ATTACK_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
+		end
 		if S and S.CombatService then
 			S.CombatService.DamagePlayer(info.Player, rec.Def.Damage, nil)
 		end
