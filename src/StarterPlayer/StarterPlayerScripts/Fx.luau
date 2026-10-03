@@ -1124,7 +1124,8 @@ end
 
 -- CR-L15: another player's personal monster (tutorial golden slime, model attribute OwnerUserId) cannot be hit by me,
 -- so this client hides it: parts / decals get LocalTransparencyModifier 1, guis / particles / lights / highlights are
--- switched off (existing and late descendants), and Fx skips its white flash, recoil, lunge, telegraph and stickers.
+-- switched off (existing and late descendants), and Fx skips its white flash, recoil, lunge, telegraph and stickers,
+-- and the owner's hit numbers on it.
 Feel.HIDE_CLASSES = {
 	"LayerCollector", "ParticleEmitter", "Light", "Highlight", "Beam", "Trail", "Fire", "Smoke", "Sparkles",
 }
@@ -1468,14 +1469,39 @@ local function buildScreenFx()
 	local root = getGuiRoot()
 	if not root then return end
 
-	-- red screen-edge flash (4 gradient strips, invisible until Hurt)
+	-- red screen-edge flash (4 gradient strips, invisible until Hurt). CR-L34: a full-screen effect, so it gets its own
+	-- layer that ignores the safe area (root keeps to DeviceSafeInsets, which would leave an unflashed band at a notched
+	-- phone's edges); one DisplayOrder above root, like its old ZIndex 40 inside it. Any failure -> root as before.
+	local flashRoot = root
+	local pg = LocalPlayer and LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	if pg then
+		local okEdge, edgeGui = pcall(function()
+			local g = pg:FindFirstChild("FxEdgeGui")
+			if g and g:IsA("ScreenGui") then return g end
+			g = Instance.new("ScreenGui")
+			g.Name = "FxEdgeGui"
+			g.ResetOnSpawn = false
+			g.IgnoreGuiInset = true
+			pcall(function() -- set after IgnoreGuiInset (which rewrites ScreenInsets)
+				g.ScreenInsets = Enum.ScreenInsets.None
+				g.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None -- no compat shrink into the safe area
+			end)
+			g.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+			local baseOrder = 10
+			if root:IsA("ScreenGui") then baseOrder = root.DisplayOrder end
+			g.DisplayOrder = baseOrder + 1
+			g.Parent = pg
+			return g
+		end)
+		if okEdge and typeof(edgeGui) == "Instance" then flashRoot = edgeGui end
+	end
 	local holder = Instance.new("Frame")
 	holder.Name = "FxHurtFlash"
 	holder.BackgroundTransparency = 1
 	holder.Size = UDim2.fromScale(1, 1)
 	holder.ZIndex = 40
 	holder.Active = false
-	holder.Parent = root
+	holder.Parent = flashRoot
 	local function edge(name, size, position, anchor, rotation)
 		local f = Instance.new("Frame")
 		f.Name = name
@@ -2566,6 +2592,11 @@ local function showHits(hits, own, fromRelease, feel)
 			local kind = h.K
 			-- CR-M23: a PvP hit on me already shows as my Hurt number (+ edge flash); skip the attacker's copy
 			if kind == "P" and not own and LocalPlayer and asNum(h.V, -1) == LocalPlayer.UserId then continue end
+			-- CR-L15: the owner's hits on their personal monster (hidden here) show no number over empty ground
+			if p and not own and kind ~= "P" and kind ~= "G" and next(Feel.HiddenRoots) ~= nil then
+				local okHidden, nearHidden = pcall(Feel.nearHidden, p)
+				if okHidden and nearHidden then continue end
+			end
 			local crit = h.C == true
 			if p then
 				if own and kind ~= "P" and kind ~= "G" and #flashAt < 16 then

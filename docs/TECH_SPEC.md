@@ -16,6 +16,9 @@ GameState `UnderdogFaction`/`UnderdogTier`), the 10-level-gap rule, the "2 KOs i
 justice refund (`JusticeRefundRate`, `stolenThisLife`), the "first switch free + 30 min" rule, and everything named
 `Sword*` (now `Weapon*`).
 
+> **Later changes:** `docs/SPEC_ADDENDUM.md` (A1–A16) overrides this document where they conflict. Code review R1
+> (2026-10-03) changed many contracts below; they are marked "R1 / CR-xx" here and listed in full in **A16**.
+
 ---
 
 ## 1. Overview & architecture
@@ -1402,6 +1405,7 @@ Net.Names = {
 	"Rebirth", "SwitchFaction", "ChangeClass", "Travel", "RerollQuest", "ClaimQuest", "ClaimVacation",
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
+	"Quests", -- R1 CR-L50: the owner's quest list (replaces the replicated QuestsJson attribute), fired only on change
 }
 
 Net.GameStateDefaults = {
@@ -1409,6 +1413,8 @@ Net.GameStateDefaults = {
 	WarHaloScore = 0, WarHornsScore = 0, WarRoundEndsAt = 0, WarMode = "Idle", WarBlessing = "None",
 	-- FactionService
 	HaloCount = 0, HornsCount = 0,
+	-- R1 CR-L7: FactionService.GetUnderdogCounts (no rookies, no 120 s idlers) for the rebirth underdog bonus + preview
+	UnderdogHalo = 0, UnderdogHorns = 0,
 	-- JusticeService
 	HaloPower = 0, HornsPower = 0, HaloSize = 1, HornsSize = 1, WeakerFaction = "None",
 	-- GooseService
@@ -1535,6 +1541,9 @@ Behavior:
   no retry — another server owns the data). Else `return copy`. Retry `SaveRetries` times with waits 1, 2, 4 s on errors.
 - **Autosave**: every `Config.Data.AutosaveInterval` s, `task.spawn(Save, player, false)` for each cached player.
 - `BindToClose` is owned by PlayerService (it must fire `PlayerLeaving` first). DataService does not bind it.
+- **R1 (A16-3):** writes per UserId go through a FIFO slot queue [CR-M1]; `Load` first waits until an earlier session of the
+  same UserId has finished `Release`, and always frees the slot (pcall). `Load` refuses a stored record with
+  `Version > Config.Data.Version` (write and lock cancelled, nil → LoadFailed) [CR-L3].
 
 ### 4.5 PlayerService (G2) — `ServerScriptService/PlayerService.luau`
 ```
@@ -1555,6 +1564,9 @@ PlayerService.RefreshCharacter(player, fullHeal: boolean)  -- recompute MaxHealt
 PlayerService.FinalizeLeave(player)                        -- idempotent: if ready -> PlayerLeaving:Fire + DataService.Release; always Util.ClearPlayer; ready = false
 PlayerService.MarkActive(player)                           -- "had input/combat now" (feeds Regular's Luck)
 PlayerService.GetRegularMinutes(player) -> number          -- active minutes on THIS server (session only)
+PlayerService.GetLastActive(player) -> number              -- R1 CR-M20: os.clock() of the last MarkActive, 0 = never
+PlayerService.IsShuttingDown() -> boolean                  -- R1 CR-M2: true once BindToClose started
+PlayerService.PairReady(holder, otherUserId, kind, cooldown, commit?) -> boolean  -- R1 CR-M4: saved pair cooldown (A16-2)
 ```
 Health/speed formula (used by `RefreshCharacter` and on spawn):
 ```
@@ -1570,6 +1582,11 @@ Flow:
   run `onJoin` for players already present; `game:BindToClose(function() ... end)` that calls `FinalizeLeave` for every
   player in parallel (`task.spawn`) and waits until all finished or 25 s passed. Start the playtime loop and the
   regular-minutes loop.
+  **R1 CR-M2:** before spawning the FinalizeLeave calls, BindToClose fires `PlayerLeaving` synchronously (pcall) for every
+  ready, not-finalizing player while all of them are still ready; their FinalizeLeave then only clears ready, Releases and
+  cleans up. A load still running at shutdown keeps `joining[player]` until its Release finishes (CR-L2), so BindToClose
+  waits for it. PairCD is pruned right before `PlayerReady` (A16-2). The fall-rescue loop was removed (CR-L16, ZoneService
+  owns A10), and server teleports call `ZoneService.MarkTeleported` first (A16-1).
 - `onJoin(player)`: `data = S.DataService.Load(player)`; if `player.Parent == nil` → return; if `data == nil` →
   `player:Kick(Config.Text.LoadFailed)` and return. Then: mirror every key of `Config.Data.Mirrored` to attributes;
   attribute `RegularMinutes = 0`; create `leaderstats` Folder with IntValues **"레벨"** (Level), **"골드"** (BankGold +
@@ -1643,6 +1660,8 @@ ZoneService.IsTown(player) -> boolean
 ZoneService.GetSpawnCFrame(zoneId) -> CFrame         -- zone.Spawn + random XZ offset in [-6, 6] + Vector3.new(0, 4, 0)
 ZoneService.ResolveDestination(player, destId) -> zoneId | nil   -- "Home" -> Config.HomeZoneId(faction); others must be a zone id in Config.Travel.Destinations
 ZoneService.Travel(player, destId, instant: boolean) -> (ok: boolean, reasonText: string?)
+ZoneService.IsPlausible(player, pos: Vector3) -> boolean   -- R1 CR-H2: movement sanity; false only while Config.AntiCheat.Enforce (A16-1)
+ZoneService.MarkTeleported(player, seconds: number?)      -- R1 CR-H2: call right before any server teleport (A16-1)
 ```
 - Remote **Travel**(destId): ready → `type(destId) == "string"` → rate limit → `local ok, reason = Travel(player, destId, false)`;
   if not ok and reason then `Net.Notify(player, reason, "bad")`.
@@ -1650,18 +1669,25 @@ ZoneService.Travel(player, destId, instant: boolean) -> (ok: boolean, reasonText
   `Level >= zone.MinLevel` (else `NeedLevel`); `kstate(player)` is `"Siren"` or `"Active"` → `TravelBlockedKaiju`;
   `S.GrudgeService.HasSack(player)` → `TravelBlockedSack`; `stars(player) >= Config.PvP.NoTravelStars` →
   `TravelBlockedStars`; `S.CombatService.IsInCombat(player)` → `TravelBlockedCombat`; already traveling
-  (`TravelingUntil > Util.Now()`) → return false with no reason. Instant → `character:PivotTo(GetSpawnCFrame(zoneId))`.
-  Otherwise set attribute `TravelingUntil = Util.Now() + ChannelSeconds`, notify `Traveling`, remember `start = os.clock()`,
-  and `task.delay(ChannelSeconds)`: if player still in game, alive, `S.CombatService.GetLastDamagedAt(player) < start`, no
-  sack, not kaiju (Siren/Active) and stars still below the limit → pivot; else notify `TravelCancelled`. Always reset
-  `TravelingUntil = 0`. Call `S.PlayerService.MarkActive(player)` on every accepted Travel remote.
-- Zone loop every `Config.Travel.ZoneTick`: for each ready, alive player: `z = Config.ZoneAt(root.Position)`.
-  If `Level < z.MinLevel` → pivot to `GetSpawnCFrame("Crossroads")`, notify `NeedLevel` (once per 3 s max), skip.
+  (a channel is running, R1 CR-L18) → return false with no reason. Instant → `character:PivotTo(GetSpawnCFrame(zoneId))`.
+  Otherwise **(R1 CR-L18)** store `channels[player] = { Token = {}, Start = os.clock() }`, set attribute
+  `TravelingUntil = Util.Now() + ChannelSeconds`, notify `Traveling`, and `task.delay(ChannelSeconds)`: return at once if
+  `channels[player]` no longer holds this Token (cancelled, left or a newer channel); otherwise if player still in game,
+  alive, `S.CombatService.GetLastDamagedAt(player) < Start`, no sack, not kaiju (Siren/Active) and stars still below the
+  limit → pivot; else notify `TravelCancelled`. Always clear the channel and reset `TravelingUntil = 0`. The zone loop
+  also cancels a running channel immediately (dead, damaged since Start, in combat, sack, kaiju, too many stars):
+  clear it, `TravelingUntil = 0`, notify `TravelCancelled`. Call `S.PlayerService.MarkActive(player)` on every accepted
+  Travel remote. Every server teleport here calls `MarkTeleported` first (A16-1).
+- Zone loop every `Config.Travel.ZoneTick` (0.2 since R1 CR-H2): for each ready, alive player: `z = Config.ZoneAt(root.Position)`.
+  After the A10 fall rescue, the movement check runs (`validateMove`, A16-1: logs only while `Config.AntiCheat.Enforce`
+  is false). If `Level < z.MinLevel` → pivot to `GetSpawnCFrame("Crossroads")`, notify `NeedLevel` (once per 3 s max), skip.
   If `z.Id` differs from the cached id → set attributes `ZoneId`, `ZonePvP`, `ZoneTown`; notify `EnteredPvP` ("bad") when
-  entering a PvP zone from a non-PvP zone and `EnteredSafe` ("good") when entering a non-PvP zone from a PvP zone;
-  `ZoneChanged:Fire(player, new, old)`.
+  entering a PvP zone from a non-PvP zone (Neutral players get `EnteredPvPNeutral`, "info", R1 CR-L24) and `EnteredSafe`
+  ("good") when entering a non-PvP zone from a PvP zone; `ZoneChanged:Fire(player, new, old)`.
 - Pads: in `Start`, for each child of `workspace.Map.Pads` with attribute `TravelTo`, connect `Touched`: resolve player
-  from `hit.Parent`, debounce per player `PadDebounce` s, `Travel(player, dest, true)`; notify the reason on failure.
+  from `hit.Parent`; **(R1 CR-H2, always enforced)** ignore the touch unless the player's root is within
+  `max(pad.Size.X, pad.Size.Z) / 2 + Config.AntiCheat.PadSlack` (flat) of the pad; debounce per player `PadDebounce` s,
+  `Travel(player, dest, true)`; notify the reason on failure.
 - Subscriptions: `PlayerReady` → attributes `ZoneId = "Crossroads"`, `ZonePvP = false`, `ZoneTown = true`, `TravelingUntil = 0`.
   `CharacterSpawned` → recompute that player's zone immediately (same code as the loop body).
 
@@ -1670,13 +1696,16 @@ ZoneService.Travel(player, destId, instant: boolean) -> (ok: boolean, reasonText
 MonsterService.MonsterKilled : Signal(player, info)   -- fired once PER CONTRIBUTOR
   info = { Kind: string, ZoneId: string, Golden: boolean, Position: Vector3,
            XP: number, Gold: number,        -- base values incl. golden multiplier, BEFORE player multipliers
-           WarPoints: number }              -- Config.War.MonsterPoints or Config.War.GoldenPoints
+           WarPoints: number,               -- Config.War.MonsterPoints or Config.War.GoldenPoints
+           WarShare: number }               -- R1 CR-M18: WarPoints / same-faction contributors of this kill (faction pool share)
 
 MonsterService.Init(S) ; MonsterService.Start()        -- Start spawns Count of every type in Config.MonsterTypeOrder
-MonsterService.GetMonstersInRadius(position: Vector3, radius: number) -> { MonsterRecord }  -- alive only, flat XZ distance
-MonsterService.GetNearest(position: Vector3, radius: number, maxCount: number?) -> { MonsterRecord } -- alive, within radius, sorted nearest first; nil maxCount = all
-MonsterService.CountInRadius(position: Vector3, radius: number) -> number
+MonsterService.GetMonstersInRadius(position: Vector3, radius: number, forPlayer: Player?) -> { MonsterRecord }  -- alive only, flat XZ distance
+MonsterService.GetNearest(position: Vector3, radius: number, maxCount: number?, forPlayer: Player?) -> { MonsterRecord } -- alive, within radius, sorted nearest first; nil maxCount = all
+MonsterService.CountInRadius(position: Vector3, radius: number, forPlayer: Player?) -> number
+  -- R1 CR-M5: with forPlayer → that player's personal monsters + zone monsters of the zone the player stands in
 MonsterService.DamageMonster(record: MonsterRecord, amount: number, player: Player) -> killed: boolean
+  -- R1 CR-M5: false (no HP / contributor change) for a zone monster when `player` stands outside its zone
 MonsterService.ApplyKnockback(record: MonsterRecord, fromPosition: Vector3, power: number)
 ```
 `MonsterRecord` (read-only outside this file): `{ Id: number, Kind: string, Def: table, ZoneId: string, Model: Model,
@@ -1721,9 +1750,10 @@ CombatService.Released : Signal(player, info)
   info = { Stacks: number, Auto: boolean, Perfect: boolean, Center: Vector3, Radius: number,
            Total: number, MonstersHit: number, PlayersHit: number, Healed: { Player } }  -- Healed = OTHER Halo allies healed > 0
 CombatService.PlayerDamaged : Signal(victim, amount, attacker)   -- fired by DamagePlayer only when attacker ~= nil, after the damage
+  -- R1 CR-M10: amount = HP actually removed (no overkill; may be 0, still fired)
 
 CombatService.Init(S) ; CombatService.Start()
-CombatService.DamagePlayer(victim: Player, amount: number, attacker: Player?)  -- attacker nil = monster
+CombatService.DamagePlayer(victim: Player, amount: number, attacker: Player?, crit: boolean?) -> applied: number  -- attacker nil = monster; R1 CR-M10: returns HP actually removed (0 on refusal)
 CombatService.HealPlayer(player, amount) -> healedAmount
 CombatService.IsInCombat(player) -> boolean           -- dealt or received PvP damage within Config.PvP.CombatTagTime
 CombatService.GetLastDamagedAt(player) -> number      -- os.clock() of last damage of any kind, 0 if never
@@ -1760,6 +1790,13 @@ pvpHit     = Config.MaxHealth(vLevel, vFaction, vClass) * Config.PvP.HitPctOfMax
 - goose: `S.GooseService.GetPosition()` (nil when inactive) — counts as reachable if its flat distance to the relevant
   point ≤ (relevant radius) + `Config.Goose.HitRadius`. The goose takes no damage and gives **no charge**.
 
+**R1 changes to Swing / Release (A16-1, A16-5):** both first run `attackBlocked`: return when
+`Config.ZoneAt(root.Position).MinLevel > Level` (always), or when `S.ZoneService.IsPlausible(player, pos)` is false (only
+while `Config.AntiCheat.Enforce`); Swing then keeps its cooldown unspent and Release keeps the charge. Monster candidates
+skip zone monsters whose zone MinLevel > the attacker's Level. `totalDealt` / `total` add the HP really removed
+(`hpBefore - rec.HP` for monsters, `DamagePlayer`'s return for players); a monster hit MonsterService refuses adds no hit,
+charge or shove. Hit numbers `A` keep `dealt`. PvP hit entries add `V = victim.UserId` (CR-M23).
+
 **`Swing(player, isManual)`**:
 1. Alive check; per-player `nextSwingAt` (os.clock): if not reached → return silently; set `nextSwingAt = now + c.SwingInterval`.
 2. Select by `c.Pattern`:
@@ -1775,12 +1812,15 @@ pvpHit     = Config.MaxHealth(vLevel, vFaction, vClass) * Config.PvP.HitPctOfMax
    `S.MonsterService.DamageMonster(rec, dealt, player)`; hit `{ P = rec.Root.Position, A = dealt, C = crit, K = "M" }`.
 4. Each player: `dealt = Util.RoundDamage(ComputePvPHit(player, v) * Config.Charge.SwingImmediate)`;
    `DamagePlayer(v, dealt, player)`; `S.PvPService.BreakProtection(player)`; hit `{ P, A = dealt, C = false, K = "P" }`.
-5. Goose reached → `S.GooseService.RegisterHit(player, isManual)`; hit `{ P = gooseCenter, A = (isManual and ManualCount or AutoCount), C = false, K = "G" }`.
+5. Goose reached → `counted = S.GooseService.RegisterHit(player, isManual)`; **R1 CR-L21:** only if `counted > 0` → hit
+   `{ P = gooseCenter, A = counted (rounded to 0.1), C = false, K = "G" }` (nil return → old Manual/AutoCount fallback).
 6. If ≥ 1 monster or player was hit → `addCharge(player, isManual and c.ChargeManual or c.ChargeAuto)`.
-7. Horns lifesteal: `HealPlayer(player, math.min(totalDealt * perks.Lifesteal, maxHealth * perks.LifestealCapPct))`.
+7. Horns lifesteal: `HealPlayer(player, math.min(totalDealt * perks.Lifesteal, maxHealth * perks.LifestealCapPct))`
+   (R1 CR-M8: for an Active kaiju the cap base is `maxHealth / S.KaijuService.GetHealthMult(player)`).
 8. `MarkActive(player)` if manual or anything (incl. goose) was hit.
-9. `Net.Fx(nil, "Swing", { UserId, Class = c.Id, Faction, From = <hand position or pos>, Pos = center, Radius, Targets, Hits })`
-   — sent when anything was hit, or when `isManual` (whiff feedback, empty Hits).
+9. `Fx "Swing" { UserId, Class = c.Id, Faction, From = <hand position or pos>, Pos = center, Radius, Targets, Hits }`
+   — sent when anything was hit, or when `isManual` (whiff feedback, empty Hits). **R1 CR-L49:** not FireAllClients: sent
+   to the attacker plus every player whose root is within `Config.Visuals.FxCullDistance + 60 + max(Radius, c.Range)` of `center`.
 
 **Charge** (private `addCharge(p, amount)`): `charge = math.min(cap, charge + amount)` where
 `cap = S.FactionService.GetPerks(p).ChargeCap`; attributes `Charge` (number, may be fractional; clients floor it) and
@@ -1796,15 +1836,21 @@ Charge is reset to 0 (and `PerfectUntil = 0`) on death, after every release, on 
 4. Monsters within `radius` of `center`: `D = ComputeMonsterHit(player, false)`;
    `dealt = Util.RoundDamage(Config.ReleaseDamage(D, n, isAuto) * c.ReleaseMult)`; `DamageMonster`.
 5. Only if not isAuto: valid players within `radius` of `center`: `D = ComputePvPHit(player, v)`;
-   `dealt = Util.RoundDamage(math.min(Config.ReleaseDamage(D, n, false) * c.ReleaseMult, Config.Charge.PvPCapPct * vHumanoid.MaxHealth))`;
+   `dealt = Util.RoundDamage(math.min(Config.ReleaseDamage(D, n, false) * c.ReleaseMult, capPct * vHumanoid.MaxHealth))`
+   with `capPct = Config.Charge.PvPCapPct`, or `Config.Kaiju.ReleaseCapPct` (0.08) when `v` is the Active kaiju (R1 CR-M7);
    `DamagePlayer(v, dealt, player)`; `BreakProtection(player)`.
-6. `total` = sum dealt. If `perks.ReleaseSupport` (Halo): every alive ready Halo player `a` (self included) within `radius`
+6. `total` = sum of HP actually removed (R1 CR-M10). If `perks.ReleaseSupport` (Halo): every alive ready Halo player `a` (self included) within `radius`
    of `center`: `HealPlayer(a, math.min(Config.Charge.HaloHealPct * total, Config.Charge.HaloHealCapPct * aMaxHealth))`;
-   every **other** such ally gets `addCharge(a, Config.Charge.HaloAllyStacks)`; others with healed > 0 go to `info.Healed`.
+   every **other** such ally gets `addCharge(a, Config.Charge.HaloAllyStacks)` at most once per
+   `Config.Charge.HaloAllyStackCooldown` (5 s) per receiving ally (R1 CR-H1); others with healed > 0 go to `info.Healed`.
 7. Horns lifesteal on `total` (same cap as Swing).
 8. Reset own charge to 0, `PerfectUntil = 0`. `MarkActive(player)` if not isAuto.
-9. `Net.Fx(nil, "Release", { UserId, Class = c.Id, Faction, Pos = center, Radius = radius, Stacks = n, Perfect = perfect,
-   Auto = isAuto, Total = total, Hits })`; `Released:Fire(player, info)`.
+9. `Fx "Release" { UserId, Class = c.Id, Faction, Pos = center, Radius = radius, Stacks = n, Perfect = perfect,
+   Auto = isAuto, Total = <sum of the shown hit numbers>, Hits }` to the attacker plus every player whose root is within
+   `Config.Visuals.FxCullDistance + 60 + radius` of `center` (R1 CR-L49, not FireAllClients); `Released:Fire(player, info)`
+   (`info.Total` = real HP removed).
+   R1 CR-L22: `perfect` also counts within `Config.Charge.PerfectGrace` (0.25 s) after `PerfectUntil`; a manual
+   `ReleaseNeed` toast within 1 s after an automatic release is skipped.
 
 Remotes:
 - **Swing**(): ready → rate limit → `MarkActive` → `Swing(player, true)`.
@@ -1815,17 +1861,20 @@ Remotes:
 Loops:
 - Auto loop every `AutoLoopInterval`: players with `AutoAttack == true` and alive: if `Level < AutoUnlockLevel` set false;
   if `os.clock() >= nextSwingAt` and (`S.MonsterService.CountInRadius(pos, c.Range) > 0` or the goose is within
-  `c.Range + HitRadius`) → `Swing(p, false)`.
-- Charge watcher every `Config.Combat.ChargeTick`: players with `PerfectUntil > 0` and `Util.Now() >= PerfectUntil` →
-  `Release(p, true)` (auto-release, ×1.5, monsters only).
+  `c.Range + HitRadius`) → `Swing(p, false)`. R1 CR-M17: skip the player for `c.SwingInterval + Config.Combat.ManualYieldPad`
+  (0.3) after their last manual Swing request.
+- Charge watcher every `Config.Combat.ChargeTick`: players with `PerfectUntil > 0` and
+  `Util.Now() >= PerfectUntil + Config.Charge.PerfectGrace` (R1 CR-L22) → `Release(p, true)` (auto-release, ×1.5, monsters only).
 - Regen every `RegenTick`: `pct = S.ZoneService.IsTown(p) and Config.Combat.TownRegenPerSec or perks.RegenPerSec`;
   heal `MaxHealth * pct * RegenTick` if below max.
 
-`DamagePlayer(victim, amount, attacker)`: requires alive victim; `humanoid:TakeDamage(amount)` (respects ForceField);
-`lastDamagedAt[victim] = os.clock()`; `S.PlayerService.MarkActive(victim)`. If attacker: `lastPvPAttacker[victim] =
-{ Player = attacker, T = os.clock() }`, mark both as in combat (`lastPvPTime[x] = os.clock()`, attribute
-`InCombatUntil = Util.Now() + CombatTagTime` on both), then `PlayerDamaged:Fire(victim, amount, attacker)`.
-If attacker nil: `Net.Fx(victim, "Hurt", { Pos = rootPos, Amount = amount })`.
+`DamagePlayer(victim, amount, attacker) -> applied`: requires alive victim (else return 0); `humanoid:TakeDamage(amount)`
+(respects ForceField); `applied` = HP actually removed (R1 CR-M10); `lastDamagedAt[victim] = os.clock()`;
+`S.PlayerService.MarkActive(victim)`. If attacker: `lastPvPAttacker[victim] = { Player = attacker, T = os.clock() }`, mark
+both as in combat (`lastPvPTime[x] = os.clock()`, attribute `InCombatUntil = Util.Now() + CombatTagTime` on both), then
+`PlayerDamaged:Fire(victim, applied, attacker)` (also when applied is 0). **R1 CR-M23:** whenever `applied > 0` (with or
+without an attacker) → `Net.Fx(victim, "Hurt", { Pos = rootPos, Amount = applied })`. Every early return returns 0; the end
+returns `applied`.
 
 **Death pipeline (the only KO entry point)** — subscribe `PlayerService.CharacterDied(victim)`:
 ```
@@ -1850,6 +1899,7 @@ FactionService.Init(S) ; FactionService.Start()
 FactionService.GetFaction(player) -> "Halo" | "Horns" | "None"     -- player:GetAttribute("Faction") or "None"
 FactionService.GetPerks(player) -> table                             -- Config.Factions[faction]
 FactionService.GetCounts() -> (haloCount: number, hornsCount: number) -- ready players only, excluding leaving players
+FactionService.GetUnderdogCounts(always: Player?) -> (halo: number, horns: number) -- R1 CR-L7: GetCounts minus rookies and > 120 s idlers (`always` counted even if idle)
 FactionService.GetTeam(factionId) -> Team | nil
 FactionService.SetFaction(player, factionId, reason)                 -- the ONLY writer of the Faction stat
 ```
@@ -1860,7 +1910,8 @@ FactionService.SetFaction(player, factionId, reason)                 -- the ONLY
 - Remote **ChooseFaction**(factionId): ready → string and (`"Halo"` or `"Horns"`) → rate limit → current faction must be
   `"None"` (silent). `wasWeaker = (S.JusticeService.GetWeakerFaction() == factionId)` read **before** changing.
   `SetFaction(player, factionId, "Choose")`. If wasWeaker → `S.ProgressionService.AddBankGold(player, Config.Justice.SignOnGold, "Other")`
-  + notify `UnderdogSignOn` (SignOnGold, "reward"). Then `S.PlayerService.Respawn(player)`. (First choice only — never on switches.)
+  + notify `UnderdogSignOn` (SignOnGold, "reward"), and **(R1 CR-L10)** `SetStat LastSwitchTime = os.time()` before the gold,
+  so the bonus cannot be followed by an instant free switch. Then `S.PlayerService.Respawn(player)`. (First choice only — never on switches.)
 - Remote **SwitchFaction**(useTicket): ready → `type(useTicket) == "boolean"` → rate limit → faction ~= "None" → flat
   distance to `S.MapBuilder.GetAltar().Position` ≤ `Config.Switch.AltarRange` (silent) → `S.GrudgeService.HasSack` →
   `BlockedSack` → `kstate(player) ~= "None"` → `BlockedKaiju` → `stars(player) > 0` → `BlockedStars` →
@@ -1872,10 +1923,14 @@ FactionService.SetFaction(player, factionId, reason)                 -- the ONLY
   Then `AddStat SwitchCount +1`, `SetStat LastSwitchTime = os.time()`, `SetFaction(player, new, "Altar")`, notify
   `SwitchDoneFree` (new faction Name, "명예"/"악명") or `SwitchDoneTicket` (new faction Name) ("good"),
   `S.PlayerService.Respawn(player)`. Level, gold, weapon, class, marks are kept. Altar switches never grant marks.
+  **R1:** after the combat check, a switch to `"Neutral"` with `JusticeService.GetBullyStacks > 0` → `BlockedBully` (CR-L9);
+  `UseTicket` returning `false, "Pending"` → `TicketSaving` instead of `NoTicket` (CR-L25); a ticket is spent only when
+  the score being left (Honor / Infamy) is > 0, otherwise the switch is free with the plain `SwitchDonePlain` message
+  (CR-L11); `nearAltar` also requires `S.ZoneService.IsPlausible` (blocks only while `Config.AntiCheat.Enforce`, CR-H2).
 - Altar: in `Start`, `S.MapBuilder.GetAltar().AltarPrompt.Triggered` → if ready and faction ~= "None" →
   `Net.Get("OpenPanel"):FireClient(player, "Altar")`.
 - Recount every 10 s, on FactionChanged, PlayerReady and PlayerLeaving (exclude the leaving player): write GameState
-  `HaloCount`, `HornsCount`.
+  `HaloCount`, `HornsCount`, and (R1 CR-L7) `UnderdogHalo`, `UnderdogHorns` from `GetUnderdogCounts()`.
 
 ### 4.11 ClassService (G6) — `ServerScriptService/ClassService.luau`
 ```
@@ -1894,8 +1949,9 @@ ClassService.GetClassDef(player) -> table                           -- Config.Cl
   `ClassChosen == true` (silent) → `classId ~= GetClass` (`ClassSame`) → alive (silent) → `S.ZoneService.IsPvPZone(player)`
   → `ClassNeedSafe` → `S.GrudgeService.HasSack` → `BlockedSack` →
   `kstate(player) ~= "None"` → `BlockedKaiju` → if useTicket and `not S.MonetizationService.UseTicket(player, "Class")` →
-  `NoTicket`. **Free**: `S.ProgressionService.ResetLevel(player)` (Level 1, XP 0; gold, bank, weapon tier, rebirth bonus,
-  marks, tickets, quests are kept). **Ticket**: level/XP kept. Then `SetStat Class`, `RefreshCharacter(player, true)`,
+  `NoTicket` (`TicketSaving` when UseTicket returns `"Pending"`, R1 CR-L25). **Free**: `S.ProgressionService.ResetLevel(player)`
+  (Level 1, XP 0; gold, bank, weapon tier, rebirth bonus, marks, tickets, quests are kept — but unclaimed daily / vacation
+  rewards are capped to the level at claim time and Extras are remade on `LevelReset`, R1 CR-M6). **Ticket**: level/XP kept. Then `SetStat Class`, `RefreshCharacter(player, true)`,
   `ClassChanged:Fire`, notify `ClassChangedFree` / `ClassChangedTicket` (`Config.ClassName(classId, faction)`, "good").
   No cooldown. (Safe zones all have MinLevel 1, so no teleport is needed; ZoneService's level gate and PvPService's
   rookie rule re-evaluate on their own loops.)
@@ -1904,6 +1960,7 @@ ClassService.GetClassDef(player) -> table                           -- Config.Cl
 ```
 JusticeService.Init(S) ; JusticeService.Start()
 JusticeService.GetPower(player) -> number            -- Config.PowerOf(Level, WeaponTier, 1 + RebirthBonus)
+JusticeService.GetCombatPower(player) -> number      -- R1 CR-L5: Config.PowerOf(Level, WeaponTier, 1) (bully weak-victim test)
 JusticeService.GetFactionScale(factionId) -> number  -- current S of that faction (1 for "None")
 JusticeService.GetWeakerFaction() -> "Halo" | "Horns" | "None"
 JusticeService.GetDamageMult(player) -> number       -- GetFactionScale(faction) * Config.BullyMult(BullyStacks)
@@ -1915,7 +1972,9 @@ JusticeService.Recompute()                           -- recompute faction sums /
 ```
 - **Recompute** (every `Config.Justice.RecalcInterval` s; plus a debounced `task.defer` request on `PlayerReady`,
   `PlayerLeaving` (exclude the leaving player), `FactionChanged`, `Rebirthed`, `ClassChanged`):
-  `haloSum/hornsSum` = sum of `GetPower(p)` over ready players of each faction; counts likewise. If both counts ≥ 1:
+  `haloSum/hornsSum` = sum of `GetPower(p)` over ready players of each faction; counts likewise (R1 CR-M20: only players
+  who are not rookies, were active within 120 s (`PlayerService.GetLastActive`) and have not been in a town for 60 s+;
+  excluded players still receive their side's S). If both counts ≥ 1:
   `S_Halo = Config.SizeJustice(haloSum, hornsSum)`, `S_Horns = Config.SizeJustice(hornsSum, haloSum)`; else both 1.
   Weaker faction: `"None"` if both sums are 0 or equal, else the faction with the lower sum (an empty faction counts as 0).
   Write GameState `HaloPower`, `HornsPower` (rounded to integers), `HaloSize`, `HornsSize` (rounded to 0.01), `WeakerFaction`.
@@ -1929,13 +1988,15 @@ JusticeService.Recompute()                           -- recompute faction sums /
   `VisualScale`.
 - **Bully stacks** (session only): attribute `BullyStacks`. `AddBullyStack` → `RefreshScale`. Decay loop (1 s): stacks > 0
   and `os.clock() - lastBullyChange >= Config.Bully.DecaySeconds` → stacks −1, `lastBullyChange = os.clock()`, notify
-  `BullyDecay` (stacks, "info"), `RefreshScale`. Cleared on leave.
+  `BullyDecay` (stacks, "info"), `RefreshScale`. Cleared on leave (R1 CR-L1: inside `task.defer`, so other
+  PlayerLeaving handlers can still read them). R1 CR-M12: saved as `data.SavedBully` / `SavedBullyAt` in PlayerLeaving and
+  restored (minus elapsed decay) in PlayerReady — A16-3.
 - `PlayerReady` → attributes `SizeMult = 1`, `BullyStacks = 0`, `VisualScale = 1`, then request a recompute.
 
 ### 4.13 PvPService (G7) — `ServerScriptService/PvPService.luau`
 ```
 PvPService.PlayerKO : Signal(killer, victim, info)
-  info = { Kind: "Plunder" | "Bounty" | "Honor" | "Bully", Bully: boolean, VictimStars: number,
+  info = { Kind: "Plunder" | "Bounty" | "Honor" | "Bully" | "Defense" (R1 CR-M14), Bully: boolean, VictimStars: number,
            Stolen: number, Bounty: number,
            Rewarded: boolean }   -- = pair cooldown allowed minted rewards AND not a bully KO
 
@@ -1958,11 +2019,15 @@ victim attribute `Protected ~= true` (`"Protected"`). (v1's level-gap rule and a
 
 State per player: `stars`, `lastStarChange` (os.clock), `protectedUntil`, `spawnedAt`, `koLog[killer][victim] = {times}`,
 `lastHitOn[a][v] = os.clock()` (a damaged v), `pairReward[killer][victim] = lastTime`, `revenge[p] = { Target: Player, Until }`.
+**R1:** `koLog` and `pairReward` moved into the saved `PairCD` (keys `kolog:<victimUserId>` = last 2 KO times and
+`ko:<victimUserId>` on the killer, via `PlayerService.PairReady`; bully-bounty claims `bully:0` on the victim — A16-2,
+CR-M4). `lastHitOn` became `dmgLog[a][v] = { { T, A } }` (amount > 0, BaitWindow, ≤ 64 entries, CR-M15).
 
 - `CharacterSpawned` → `spawnedAt[p] = os.clock()`; `Protect(p, Config.PvP.SpawnProtection)`.
 - `Protect(p, s)`: add a visible `ForceField` to the character if none; `protectedUntil = max(current, os.clock() + s)`;
   attribute `Protected = true`. `BreakProtection` destroys ForceFields and sets `Protected = false` immediately.
-- `CombatService.PlayerDamaged(victim, amount, attacker)` → `lastHitOn[attacker][victim] = os.clock()`.
+- `CombatService.PlayerDamaged(victim, amount, attacker)` → `lastHitOn[attacker][victim] = os.clock()` (R1: append
+  `{ T = os.clock(), A = amount }` to `dmgLog[attacker][victim]` when amount > 0).
 - 1 s loop: expire protection; star decay (one star per `StarDecaySeconds` since `lastStarChange`) **only while
   `kstate(p) == "None"`** (queued/active kaiju keep their stars); attributes `WantedStars`,
   `Bounty = Config.Bounty(Level, stars, S.JusticeService.GetBullyStacks(p))`, `Rookie = IsRookie(p)`; expire revenge
@@ -1983,6 +2048,12 @@ State per player: `stars`, `lastStarChange` (os.clock), `protectedUntil`, `spawn
    repeated = #koLog[killer][victim] >= Config.Bully.RepeatKOs
    bully = weak or fresh or repeated
    ```
+   **R1:** `weak` compares `JusticeService.GetCombatPower` (no rebirth bonus, CR-L5). The anti-bait line becomes
+   `baited = <victim's damage to the killer in dmgLog within BaitWindow> >= Config.Bully.BaitMinPct * Config.MaxHealth(killer
+   Level, faction, class)` (CR-M15); `if weak and baited then weak = false end`; `defense = baited and (fresh or repeated)`;
+   `if defense or kstate(killer) ~= "None" then bully = false end` (CR-M14). A `defense` KO builds
+   `info = { Kind = "Defense", Bully = false, VictimStars = starsBefore, Stolen = 0, Bounty = 0, Rewarded = false }` and skips
+   steps 4–6 (no stacks, stars, plunder, honor/infamy or bounty); revenge (step 3) and the KO log still run → step 7.
 3. **Revenge** (always): `revenge[victim] = { Target = killer, Until = now + Config.Revenge.Duration }`; victim attributes
    `RevengeTargetId = killer.UserId`, `RevengeUntil = Util.Now() + Config.Revenge.Duration`; notify victim `Revenge`
    (killer.DisplayName, "info"). If `revenge[killer]` targets `victim` → clear it (attributes 0) and notify killer `RevengeDone` ("good").
@@ -1990,7 +2061,8 @@ State per player: `stars`, `lastStarChange` (os.clock), `protectedUntil`, `spawn
    `BullyVictim` ("info"). No plunder, no stars, no honor/infamy, no bounty, no war points:
    `info = { Kind = "Bully", Bully = true, VictimStars = starsBefore, Stolen = 0, Bounty = 0, Rewarded = false }` → step 7.
 5. `pairOk = now - (pairReward[killer][victim] or -math.huge) >= PairRewardCooldown`; if pairOk record now.
-6. **Horns killer, Halo victim** (Kind `"Plunder"`): first `addStar(killer)` (always, non-bully KOs only). Then if
+   (R1 CR-M4: `pairOk = S.PlayerService.PairReady(killer, victim.UserId, "ko", PairRewardCooldown)`, saved in PairCD.)
+6. **Horns killer, Halo victim** (Kind `"Plunder"`): first `addStar(killer)` — **R1 CR-M3: only if `pairOk`**. Then if
    `not S.GrudgeService.CanSteal(killer, victim)` → `stolen = 0`, notify killer `PlunderTooSoon`; else
    `floor = SafeFloorPerLevel * vLevel`;
    `stolen = math.min(math.floor(math.max(0, carried - floor) * PlunderRate), PlunderCapPerLevel * vLevel)`.
@@ -2010,9 +2082,15 @@ State per player: `stars`, `lastStarChange` (os.clock), `protectedUntil`, `spawn
    (A thief's grudge sack was already resolved by GrudgeService in pipeline step 1.)
 7. `ResetStars(victim)`. `PlayerKO:Fire(killer, victim, info)` with `Rewarded = pairOk and not bully`.
 
-`HandleNonPvPDeath(victim)`: if stars ≥ 1 → `TakeCarriedGold(victim, floor(carried * VillainLossOnWantedPvEDeath))`;
+`HandleNonPvPDeath(victim)`: **R1 CR-L4:** if stars ≥ 1 and (`S.ZoneService.IsTown(victim)` or
+`os.clock() - S.CombatService.GetLastDamagedAt(victim) > 3`) → keep the stars and return (no loss: a town reset or a fall
+must not wipe a bounty). Otherwise: if stars ≥ 1 → `TakeCarriedGold(victim, floor(carried * VillainLossOnWantedPvEDeath))`;
 `ResetStars`. Also `ResetStars` on `FactionChanged`. Clean all tables on `PlayerLeaving` (also clear other players'
 revenge marks that target the leaver).
+**R1 PlayerLeaving(p, data):** first the logout bounty (CR-M11, A16-4: Horns leaver with ≥ 1 star, in combat, not an Active
+kaiju, last PvP attacker an online ready Halo passing `PairReady(a, p.UserId, "ko", PairRewardCooldown)` → `Config.Bounty`
+to the attacker's bank + honor + BountyGain), then `data.SavedStars` / `SavedStarsAt` (0 after a paid logout bounty or for
+an Active kaiju; restored minus decay in PlayerReady, ≤ `Kaiju.StarsNeeded - 1`, CR-M12), then the cleanup.
 
 Board text (via `S.MapBuilder.GetBoardLabel().Text`), newline-separated: `"현상수배 TOP 3"`, then up to 3 lines
 `"1. 이름 ★★★ 900G"` (players with `Bounty > 0`, sorted by Bounty desc; append `" 깡패"` when BullyStacks > 0) or
@@ -2032,6 +2110,11 @@ GrudgeService.OnCarrierDown(player, killer: Player?)      -- death pipeline step
 ```
 State: `sacks[thief] = { Entries = { [victimUserId] = { Amount, Name } }, Total, Remaining, Infamy }`;
 `lastSteal[pairKey]`, `lastRefund[pairKey]` (pairKey = `thief.UserId .. ":" .. victim.UserId`), `lastAvenge[avengerKey]`.
+**R1:** the three cooldowns live in the saved `PairCD` via `PlayerService.PairReady` (A16-2, CR-M4): victim
+`steal:<thiefUserId>` (CanSteal looks with commit = false, AddToSack records), victim `refund:0` (extra 20 % once per
+VICTIM whatever the thief) and avenger `avenge:0` (bonus once per AVENGER whatever the thief) (CR-L6). Each entry also
+stores the victim's `Rebirths`; a refund / return is paid only while it is unchanged, otherwise that share is destroyed
+(an older entry's Amount is zeroed when more gold is added after a rebirth) (CR-M6).
 - `AddToSack`: create or merge (multiple steals stack into ONE sack), `Remaining = Config.Grudge.SackSeconds` (reset),
   `Infamy += infamy`, `lastSteal[pairKey] = os.clock()`; thief attributes `SackGold = Total`,
   `SackSeconds = math.ceil(Remaining)`, `SackVictimName = victim.DisplayName` (latest victim; the ghost shows it).
@@ -2063,7 +2146,8 @@ KaijuService.Init(S) ; KaijuService.Start()
 KaijuService.GetState(player) -> "None" | "Queued" | "Siren" | "Active"
 KaijuService.GetActive() -> Player?            -- the current Siren/Active player, if any
 KaijuService.GetHealthMult(player) -> number   -- 1 unless Active; Active: Config.Kaiju.HPMult * (1 + HPPerNearbyHalo * nearbyHalo) (cached)
-KaijuService.HandleKaijuDeath(victim, killer: Player?)   -- called ONLY by CombatService's death pipeline
+KaijuService.HandleKaijuDeath(victim, killer: Player?, leaving: boolean?)   -- called by CombatService's death pipeline;
+                                               -- R1 CR-M11: also by KaijuService itself with leaving = true (no character access)
 ```
 One kaiju per server; others wait in a FIFO queue. Player attribute `KaijuState` mirrors `GetState`. Loop every
 `Config.Kaiju.Tick`:
@@ -2071,7 +2155,8 @@ One kaiju per server; others wait in a FIFO queue. Player attribute `KaijuState`
   (notify `KaijuQueued` if a kaiju is current). Drop queued players who left, are no longer Horns or have fewer stars.
 - **Siren:** no current kaiju and queue non-empty → pop first → state `"Siren"`; GameState `KaijuPhase = "Siren"`,
   `KaijuUserId`, `KaijuName = DisplayName`, `KaijuEndsAt = Util.Now() + SirenSeconds`;
-  `Net.NotifyAll(string.format(Config.Story.KaijuSiren, name), "announce", SirenSeconds)`. When the siren ends: player
+  ~~`Net.NotifyAll(string.format(Config.Story.KaijuSiren, name), "announce", SirenSeconds)`~~ (removed in R1 CR-L23: the
+  EventHUD siren banner, driven by GameState `KaijuPhase = "Siren"`, is the only announcement). When the siren ends: player
   still in game, Horns, alive and `stars ≥ StarsNeeded` → **Activate**, else `finish(p, "Cancelled")`.
 - **Activate:** state `"Active"`, GameState `KaijuPhase = "Active"`, `KaijuEndsAt = Util.Now() + Duration`; compute the
   health mult; `S.JusticeService.RefreshScale(p)` (×3 visual, capped 3.0); `S.PlayerService.RefreshCharacter(p, true)`
@@ -2079,7 +2164,9 @@ One kaiju per server; others wait in a FIFO queue. Player attribute `KaijuState`
 - **Every `HPRecalc` s while Active:** `nearby` = alive Halo players within `NearbyRadius` (flat) of the kaiju →
   health mult → `RefreshCharacter(p, false)` (HP % preserved).
 - **Every `StompInterval` s while Active:** for each alive Halo player `v` within `StompRadius` (flat) that is not
-  `IsRookie`, not `Protected` and not in a town: `S.CombatService.DamagePlayer(v, Util.RoundDamage(vMaxHealth * StompPct), p)`;
+  `IsRookie`, not `Protected` and not in a town: `S.CombatService.DamagePlayer(v, Util.RoundDamage(vMaxHealth * StompPct), atk)`
+  with **`atk = S.ZoneService.IsPvPZone(v) and p or nil`** (R1 CR-M13: in a safe zone the stomp is environmental damage —
+  no combat tag and no PvP KO credit; the victim still sees the Hurt number, CR-M23);
   `Net.Fx(nil, "Stomp", { UserId, Pos = kaijuPos, Radius = StompRadius })`. The kaiju keeps normal controls otherwise.
 - **Survived** (`Util.Now() >= KaijuEndsAt`): `c = TakeCarriedGold(p, CarriedGold)`; `amount = math.floor(c * SurviveBankMult)`;
   `AddBankGold(p, amount, "Kaiju")`; attribute `SessionTitle = Config.Story.SurviveTitle` (session only);
@@ -2092,6 +2179,11 @@ One kaiju per server; others wait in a FIFO queue. Player attribute `KaijuState`
   + math.floor(pool * (1 - DamageShare) / #participants)` → `AddBankGold(p, share, "Kaiju")` + notify `KaijuReward`.
   No participants → nothing is paid. `S.WarService.AddFactionPoints("Halo", HaloWarPoints)`;
   `Net.NotifyAll(KaijuDefeated(name, FormatNumber(pool)))`; `finish(victim, "Defeated")`.
+  **R1:** the kaiju's carried gold put into the pool is capped at `Config.PvP.PlunderCapPerLevel × kaiju Level` (rest
+  destroyed); the minted share is paid once per participant per `Config.Kaiju.PairRewardCooldown` (1800 s) through
+  `PairReady(p, kaijuUserId, "kaiju", ...)`, spent only when that share > 0 (CR-M3, CR-M4). The announcement uses the gold
+  actually paid, or `Config.Story.KaijuDefeatedNoReward` when nobody was paid (CR-L19). With `leaving = true` the character
+  is not touched and `finish(victim, "Defeated", participants, leaving)` also zeroes `data.SavedStars` (CR-M11, CR-M12).
 - `finish(p, outcome)`: `S.PvPService.ResetStars(p)`; state `"None"`; mult 1; GameState `KaijuPhase = "None"`,
   `KaijuUserId = 0`, `KaijuName = ""`, `KaijuEndsAt = 0`; `S.JusticeService.RefreshScale(p)`; if alive →
   `RefreshCharacter(p, false)` and `S.PvPService.Protect(p, ShieldSeconds)` (a Defeated kaiju respawns with normal spawn
@@ -2100,6 +2192,8 @@ One kaiju per server; others wait in a FIFO queue. Player attribute `KaijuState`
   `faction(attacker) == "Halo"` → `dmg[attacker] += amount`. `CombatService.Released(player, info)` → if a kaiju is Active
   and `faction(player) == "Halo"` → for each `h` in `info.Healed` with `dmg[h] > 0` → `healers[player] = true`.
 - `PlayerLeaving` of the current kaiju → `finish(p, "Cancelled")` (no rewards); remove leavers from the queue.
+  **R1 CR-M11:** if the leaver is Active and the Halo damage total > 0 → `pcall(HandleKaijuDeath, p, nil, true)` (settled as
+  Defeated); Cancelled only if that fails or the kaiju is still current afterwards.
   `FactionChanged` of the current kaiju (defensive; normally blocked) → `finish(p, "Cancelled")`.
 
 ### 4.16 GooseService (G9) — `ServerScriptService/GooseService.luau`
@@ -2109,7 +2203,9 @@ GooseService.GooseFinished : Signal(result: "Halo" | "Horns" | "Tie", counts: { 
 GooseService.Init(S) ; GooseService.Start()
 GooseService.IsActive() -> boolean
 GooseService.GetPosition() -> Vector3?         -- goose body center while active (Position + (0, HoverHeight, 0)), else nil
-GooseService.RegisterHit(player, isManual)     -- CombatService calls this for every swing that reached the goose
+                                               -- R1 CR-L21: + Vector3.new(sideOffset, 0, 0) (the tug pivot)
+GooseService.RegisterHit(player, isManual) -> number  -- CombatService calls this for every swing that reached the goose
+                                               -- R1 CR-L21: returns the faction-scaled count added (0 when rejected)
 GooseService.DebugStart()                      -- Studio debug hook: start a goose right now
 ```
 - **Schedule:** in `Start` (after WarService started): `nextAt = S.WarService.GetRoundEndsAt() - Config.Goose.OffsetFromWarEnd`;
@@ -2124,7 +2220,8 @@ GooseService.DebugStart()                      -- Studio debug hook: start a goo
   `MaxCountsPerSecond` counts already happened in the last second → ignore. `amount = (isManual and ManualCount or AutoCount)
   * S.JusticeService.GetFactionScale(faction)`; `counts[p] += amount`; Halo → rescue, Horns → poach; attribute
   `GooseCount = math.floor(counts[p])`. GameState `GooseRescue`/`GoosePoach` (rounded 0.1) are published from the tick loop.
-- `finish()`: `result = rescue > poach and "Halo" or (poach > rescue and "Horns" or "Tie")`. For each ready participant
+- `finish()`: `result = rescue > poach and "Halo" or (poach > rescue and "Horns" or "Tie")`; **R1 CR-L8:** if either faction
+  has 0 players (`FactionService.GetCounts`) the result becomes "Tie" and the broadcast is `Config.Story.GooseNoRival`. For each ready participant
   (`counts[p] > 0`, faction Halo/Horns): `won = (result == faction)`; RARE: if `CheerStars >= CheerStarsForRare` →
   rare = true and `AddStat(p, "CheerStars", -CheerStarsForRare)`; else `rare = Util.Random:NextNumber() <
   Config.RareChance(S.PlayerService.GetRegularMinutes(p))`. `gold, xp = Config.GooseReward(Level, faction, won, rare)`;
@@ -2140,7 +2237,7 @@ GooseService.DebugStart()                      -- Studio debug hook: start a goo
 ### 4.17 WarService (G3) — `ServerScriptService/WarService.luau`
 ```
 WarService.Init(S) ; WarService.Start()
-WarService.AddPoints(player, points)                 -- personal + faction pool
+WarService.AddPoints(player, points, poolPoints?)    -- personal + faction pool (R1 CR-M18: pool gets poolPoints if valid, capped at points)
 WarService.AddFactionPoints(factionId, points)       -- faction pool only (events: goose, kaiju)
 WarService.HasBlessing(player) -> boolean            -- blessing faction == player's faction (and ~= "None")
 WarService.GetBlessingFaction() -> "Halo" | "Horns" | "None"
@@ -2148,20 +2245,24 @@ WarService.GetPersonalPoints(player) -> number
 WarService.GetRoundEndsAt() -> number                -- server time; valid after Start
 ```
 - Story: each round decides which side "holds the crown"; the sky change is the crown's color.
-- Subscriptions: `MonsterKilled` → `AddPoints(p, info.WarPoints)`; `PlayerKO` → if `info.Rewarded` →
+- Subscriptions: `MonsterKilled` → `AddPoints(p, info.WarPoints, info.WarShare)` (R1 CR-M18: one kill adds WarPoints once
+  to the faction pool, however many same-faction players helped); `PlayerKO` → if `info.Rewarded` →
   `AddPoints(killer, PvPKOPoints + PvPKOPerStar * info.VictimStars)`; `FactionChanged` / `PlayerReady` → personal = 0;
   `PlayerLeaving` → remove personal.
 - `AddPoints`: ignore faction "None"; `points[f] += n`; personal += n; attribute `WarPoints`. `AddFactionPoints`: ignore
   unknown factions; `points[f] += n`.
 - `Init`: create `ColorCorrectionEffect` named `WarTint` in `Lighting`. `Start`: apply `Config.Sky.Neutral` instantly,
   `roundEndsAt = Util.Now() + RoundSeconds`, start the tick loop.
-- Tick every `Config.War.Tick` s: `halo, horns = S.FactionService.GetCounts()`; per-capita `score = points / math.max(1, count)`;
+- Tick every `Config.War.Tick` s: `halo, horns = S.FactionService.GetCounts()`; per-capita `score = points / math.max(1, count)`
+  (R1 CR-M19: `count` = the faction's ROUND-AVERAGE head count, summed every tick and reset each round; an average < 0.5
+  counts as 0; it also decides `WarMode` and the winner, so a last-second exodus cannot flip the result);
   GameState attributes `WarHaloScore`, `WarHornsScore` (rounded to 0.1), `WarRoundEndsAt = roundEndsAt`,
   `WarMode` = "Idle" (both counts 0) / "Siege" (exactly one is 0) / "Normal". If `Util.Now() >= roundEndsAt` → end round.
 - End round: Normal → higher per-capita wins, equal → "None". Siege → the present faction wins iff its per-capita
   ≥ `SiegeTarget`, else "None". Idle → "None" silently. Set blessing, GameState `WarBlessing`, tween sky
   (`Dawn` for Halo, `Eclipse` for Horns, `Neutral` for None) over `Config.Sky.TweenTime` (Lighting ClockTime, Brightness,
-  Ambient, OutdoorAmbient, FogColor, FogEnd + `WarTint.TintColor`). Chests: every ready player with faction ~= "None" and
+  Ambient, OutdoorAmbient, FogColor, FogEnd + `WarTint.TintColor`; R1 CR-L20: ClockTime always moves forward through a
+  NumberValue, `ClockTime = v % 24`). Chests: every ready player with faction ~= "None" and
   personal ≥ `ChestMinPoints` gets `Level * WinnerChestPerLevel` (on the winning faction) or `Level * LoserChestPerLevel`
   (everyone else, including draws) via `AddBankGold(p, amount, "War")` + notify `WarChest`. Unless Idle,
   `Net.NotifyAll(string.format(Config.Story.WarWin[winner]))` or `Config.Story.WarDraw`. Reset points and personal
@@ -2173,6 +2274,7 @@ ProgressionService.GoldEarned : Signal(player, amount, source)
   source: "Monster" | "Quest" | "Bounty" | "Plunder" | "War" | "Refund" | "Event" | "Kaiju" | "Other"
 ProgressionService.LeveledUp  : Signal(player, newLevel)
 ProgressionService.Rebirthed  : Signal(player, rebirths, info)   -- info = { From, To, Bonus: number, Mark: "Fall" | "Redeem" | "None" }
+ProgressionService.LevelReset : Signal(player)                   -- R1 CR-M6: end of ResetLevel (free class change); QuestService remakes Extras
 
 ProgressionService.Init(S) ; ProgressionService.Start()
 ProgressionService.GetGoldMult(player) -> number
@@ -2200,28 +2302,34 @@ XPMult   = 1 + perks.XPBonus
   `AddCarriedGold(p, gold, "Monster")`; `AddXP(p, xp)`; `AddStat(p, "TotalKills", 1)`;
   `Net.Fx(p, "Reward", { Pos = info.Position, Gold = gold, XP = xp, Golden = info.Golden })`.
 - `AddXP`: add, then `while Level < MaxLevel and XP >= Config.XPToNext(Level)` → subtract, level++. At MaxLevel clamp XP to
-  `XPToNext(MaxLevel)`. Write via SetStat. On any level-up: `S.PlayerService.RefreshCharacter(p, true)`,
-  `Net.Fx(nil, "LevelUp", { UserId, Level, Pos })`, notify `LevelUp` ("reward"), `LeveledUp:Fire`.
-- 1 s loop: if `S.ZoneService.IsTown(p)` and carried > 0 → `BankAll(p, false)`. Else if the faction's
-  `AutoBankInterval > 0` and that many seconds passed since the last auto-bank → move
-  `math.floor(carried * AutoBankFraction)` to the bank (Fx `"Bank"`, notify `HaloCourier`). (Grudge-sack gold is not
-  carried gold and is never banked here.)
-- `BankAll`: moves all carried to bank; if > 0 and not silent → `Net.Fx(p, "Bank", { Amount })` + notify `Banked`.
+  `XPToNext(MaxLevel)`. Write via SetStat. On any level-up: `S.PlayerService.RefreshCharacter(p, fullHeal)` with
+  `fullHeal = not IsInCombat(p) and KaijuService.GetState(p) ~= "Active"` (R1 CR-M16),
+  `Net.Fx(nil, "LevelUp", { UserId, Level, Pos })`, `LeveledUp:Fire` (R1 CR-L23: no `LevelUp` Notify; Fx announces it).
+- 1 s loop: (R1 CR-M9: skip players whose kaiju state is Siren or Active) if `S.ZoneService.IsTown(p)` and carried > 0 →
+  `BankAll(p, false)`. Else if the faction's `AutoBankInterval > 0` and that many seconds passed since the last auto-bank →
+  move `math.floor(carried * AutoBankFraction)` to the bank (Fx `"Bank" { Amount, Courier = true }`; R1 CR-L23: no
+  `HaloCourier` Notify, the client shows it). (Grudge-sack gold is not carried gold and is never banked here.)
+- `BankAll`: moves all carried to bank; if > 0 and not silent → `Net.Fx(p, "Bank", { Amount })` (R1 CR-L23: no `Banked` Notify).
 - `PlayerReady`: if carried > 0 → `BankAll(p, true)` (leftover from a crash). Reset the auto-bank timer.
-- `PlayerLeaving(p, data)`: if `S.CombatService.IsInCombat(p)` → `data.CarriedGold = math.floor(data.CarriedGold * (1 - CombatLogPenalty))`;
+- `PlayerLeaving(p, data)`: if `S.CombatService.IsInCombat(p)` and not `S.PlayerService.IsShuttingDown()` (R1 CR-M2) →
+  `data.CarriedGold = math.floor(data.CarriedGold * (1 - CombatLogPenalty))`;
   then `data.BankGold += data.CarriedGold; data.CarriedGold = 0` (direct data mutation; attributes do not matter here).
 - **Turncoat rebirth** — Remote **Rebirth**(factionId): ready → `type(factionId) == "string"` → rate limit →
   `TryRebirth`; notify the reason ("bad") on failure. `TryRebirth(p, factionId)`:
   1. `factionId` must be `"Halo"` or `"Horns"` (else false, nil). `Level >= Config.RebirthLevel(Rebirths)` (else `RebirthNeed`).
      Blocks: `stars(p) > 0` → `BlockedStars`; `S.GrudgeService.HasSack` → `BlockedSack`; `kstate(p) ~= "None"` →
-     `BlockedKaiju`; `S.CombatService.IsInCombat` → `TravelBlockedCombat`.
+     `BlockedKaiju`; `S.CombatService.IsInCombat` → `TravelBlockedCombat`; (R1 CR-L9) `factionId == "Neutral"` and
+     `JusticeService.GetBullyStacks(p) > 0` → `BlockedBully`.
   2. Underdog bonus: `halo, horns = S.FactionService.GetCounts()`; subtract 1 from the player's current faction count;
      `bonus = Config.RebirthBonusFor(factionId == "Halo" and halo or horns, halo + horns)` (0.25 or 0.40).
+     (R1 CR-L7: the counts come from `GetUnderdogCounts()` — no rookies, no > 120 s idlers — and the player is subtracted
+     only when counted; the Rebirth remote calls `MarkActive` first.)
   3. Mark: `old == "Halo" and factionId == "Horns"` → `"Fall"` (`FallMarks = math.min(MarkMax, FallMarks + 1)`);
      `old == "Horns" and factionId == "Halo"` → `"Redeem"` (`RedeemMarks` likewise); else `"None"`.
   4. Reset `Level = 1, XP = 0, BankGold = 0, CarriedGold = 0, WeaponTier = 1`; `Rebirths += 1`;
      `RebirthBonus = math.floor((RebirthBonus + bonus) * 100 + 0.5) / 100`. Keeps Class, Honor, Infamy (both),
-     tickets, marks, quests (QuestService regenerates extras on `Rebirthed`). Free, no tickets, no altar cooldown.
+     tickets, marks, quests (QuestService regenerates extras on `Rebirthed`; unclaimed daily / vacation rewards are capped
+     to the level at claim time and grudge refunds skip a rebirthed victim, R1 CR-M6). Free, no tickets, no altar cooldown.
   5. If `factionId ~= old` → `S.FactionService.SetFaction(p, factionId, "Rebirth")` + `S.PlayerService.Respawn(p)`;
      else `RefreshCharacter(p, true)`.
   6. `Net.Fx(nil, "Rebirth", { UserId, Rebirths, Pos, Mark })`, notify `RebirthDone` (`math.floor(bonus * 100 + 0.5)`,
@@ -2243,7 +2351,8 @@ and faction "None" → `NeedFaction`; `not S.ProgressionService.SpendGold(p, nex
 QuestService.Init(S) ; QuestService.Start()
 QuestService.GetQuests(player) -> { Quest }     -- data.Quests (array of Config.Quests.Slots entries)
 Quest = { Id: string, Kind: "Daily" | "Extra", Target: number, Progress: number, RewardGold: number, RewardXP: number,
-          Text: string, MinStacks: number? }
+          Text: string, MinStacks: number?,
+          Unit: string? }   -- R1 CR-M27: Kill/Golden quests: the monster type whose kills count as 1 (see Progress)
 QuestService.DebugSimulateAbsence(player, days)  -- Studio hook: DailyDay = today - (days + 1), then run the day check
 ```
 - `newQuest(player, kind)`: candidates = templates where `Faction` (if set) equals the player's faction; `PvP` →
@@ -2252,7 +2361,9 @@ QuestService.DebugSimulateAbsence(player, days)  -- Studio hook: DailyDay = toda
   `DailyUnits` or `Units`); `main = Config.MonsterTypes[Config.ZoneMainMonster[Config.QuestZoneForLevel(Level)]]`;
   `Target = (Id == "Gold") and units * main.Gold or units`. Rewards: Daily → `RewardGold, RewardXP = Config.DailyQuestReward(Level)`;
   Extra → `math.floor(units * main.Gold * RewardPerUnit * ExtraRewardMult)` / same with `main.XP`. `Text`: Gold →
-  `string.format(T.Text, Util.FormatNumber(Target))`; others → `string.format(T.Text, Target)`. `MinStacks = T.MinStacks`.
+  `string.format(T.Text, tostring(Target))` (R1 CR-L31: exact number); Kill / Golden → `string.format(T.Text,
+  main.Short or main.Name, Target)` with `Unit = <main id>` (R1 CR-M27; texts `"%s %d마리 쓰러뜨리기"` / `"황금 %s %d마리 처치"`);
+  others → `string.format(T.Text, Target)`. `MinStacks = T.MinStacks`.
   `Progress = Target >= 5 and math.floor(Target * Util.Random:NextNumber(EndowedMin, EndowedMax)) or 0`.
 - **Day check** (on `PlayerReady` and every `Config.Daily.CheckInterval` s): `today = Config.DayIndex(os.time())`; if
   `DailyDay ~= today`:
@@ -2262,7 +2373,17 @@ QuestService.DebugSimulateAbsence(player, days)  -- Studio hook: DailyDay = toda
   2. Any slot that is a completed but unclaimed Daily → pay it now (`AddBankGold "Quest"` + `AddXP`) and notify `DailyAutoPaid`.
   3. `SetStat DailyDay = today`, `SetStat DailyClaims = 0`; all 3 slots become fresh `newQuest(p, "Daily")`. Publish.
   (New players: `DailyDay == 0` → dailies, no vacation.)
-- Progress: `MonsterKilled(p, info)` → Kill +1; Golden +1 if `info.Golden`. `GoldEarned(p, amount, source)` → only
+  **R1 CR-M21 (replaces step 1):** `claims = min(Slots, DailyClaims + #auto-paid dailies)` is read before the reset; if
+  `DailyDay > 0` and `today > DailyDay`: `add = (1 - f) + (today - DailyDay - 1)` with
+  `f = (claims * QuestMinutes + (claims >= Slots and ChestMinutes or 0)) / (Slots * QuestMinutes + ChestMinutes)`;
+  `VacationDays = min(VacationMaxDays, VacationDays + add)` (fractional, 3 decimals), gold/XP recomputed as before. So a
+  partly played day never pays less than an absent day. If the step-2 auto-pay completes the set
+  (`DailyClaims < Slots <= claims`), the bonus chest (and the ticket roll) is paid too. **R1 CR-M6:** the auto-paid amounts
+  are capped to `Config.DailyQuestReward(current Level)`.
+- Progress: `MonsterKilled(p, info)` → Kill +1; Golden +1 if `info.Golden`. **R1 CR-M27 (deviation):** instead of +1 a kill
+  adds `killWeight = math.clamp(Config.MonsterTypes[info.Kind].XP / Config.MonsterTypes[q.Unit].XP, 0, 1)` (quests saved
+  without `Unit` use the level zone's main monster), so a quest sized for the player's zone cannot be farmed on low-zone
+  slimes; Progress is fractional and published floored to 0.1. `GoldEarned(p, amount, source)` → only
   `source == "Monster"` → Gold +amount. `CombatService.Released(p, info)` → Release +1 if `info.Stacks >= quest.MinStacks`.
   `GooseService.GooseFinished(result, counts)` → Goose +1 for each player with `counts[p] > 0`. `PlayerKO(killer, victim, info)`
   → killer's Hunt +1 if `info.Kind == "Bounty"`; killer's Plunder +1 if `info.Kind == "Plunder"`.
@@ -2274,22 +2395,30 @@ QuestService.DebugSimulateAbsence(player, days)  -- Studio hook: DailyDay = toda
   otherwise) → pay (`AddBankGold "Quest"`, `AddXP`), notify `DailyClaimed`, `AddStat DailyClaims +1`, replace the slot with
   `newQuest(p, "Extra")`. If `DailyClaims == Slots` → bonus chest: `g, x = Config.DailyChestReward(Level)`, pay, notify
   `DailyChest`; with chance `Config.Daily.ChestTicketChance` → `S.MonetizationService.AddTickets(p, "Class", 1)` + notify `DailyChestTicket`.
+  R1 CR-M6: the paid daily reward is `min(stored, Config.DailyQuestReward(current Level))` (gold and XP separately).
 - Remote **ClaimVacation**(): ready → rate limit → `VacationDays > 0` (silent) → `AddBankGold(p, VacationGold, "Quest")`,
   `AddXP(p, VacationXP)`, notify `VacationClaimed`, `SetStat` all three to 0. (Doing dailies always beats vacation: 100% vs 70%.)
+  R1 CR-M6: capped to `Config.VacationReward(current Level, VacationDays)`.
 - Remote **RerollQuest**(slot): ready → integer `1..Slots` → rate limit → `Util.Now() >= RerollReadyAt` → slot not complete
   → regenerate with the SAME Kind (`newQuest(p, kind)`), `RerollReadyAt = Util.Now() + RerollCooldown`, publish.
-- Publish: a 0.5 s loop writes attribute `QuestsJson = HttpService:JSONEncode(list)` for dirty players, each entry
-  `{ Id, Kind, Text, Progress, Target, RewardGold, RewardXP }`.
+- Publish (**R1 CR-L50**): a 0.5 s loop builds `json = HttpService:JSONEncode(list)` for dirty players, each entry
+  `{ Id, Kind, Text, Progress, Target, RewardGold, RewardXP, Slot }` (+ the pinned tutorial entry, A5-C6), and sends it with
+  `Net.Get("Quests"):FireClient(player, json)` only when it differs from the last one sent (and once again after each
+  CharacterSpawned). The `QuestsJson` attribute is no longer written. Progress is floored to 0.1; Daily rewards are shown
+  capped to the current level (CR-M6).
 - `PlayerReady`: ensure exactly `Slots` valid quests (missing/invalid entries → `newQuest(p, "Extra")`), attribute
   `RerollReadyAt = 0`, run the day check, publish. `FactionChanged`: regenerate (same Kind) slots whose template no
-  longer fits. `Rebirthed`: regenerate Extra slots only (dailies keep their rewards). Data: `data.Quests` is mutated directly.
+  longer fits (R1 CR-L12: a remade Daily keeps `max(new, old)` rewards). `Rebirthed` and (R1 CR-M6) `ProgressionService.LevelReset`:
+  regenerate Extra slots only (dailies keep their stored rewards, but claims are capped to the current level).
+  Data: `data.Quests` is mutated directly.
 
 ### 4.21 MonetizationService (G2) — `ServerScriptService/MonetizationService.luau`
 ```
 MonetizationService.Init(S) ; MonetizationService.Start()
 MonetizationService.GetTickets(player, kind: "Class" | "Faction") -> number
 MonetizationService.AddTickets(player, kind, delta) -> newCount   -- data.Tickets[kind] (>= 0) + attribute
-MonetizationService.UseTicket(player, kind) -> boolean            -- consumes 1 if available
+MonetizationService.UseTicket(player, kind) -> (boolean, reason: "Pending" | "None" | nil)  -- consumes 1 if available
+                                               -- R1 CR-L25: "Pending" = a purchase is still saving (callers toast TicketSaving), "None" = no ticket
 ```
 - Attributes `ClassTickets`, `FactionTickets` mirror `data.Tickets.Class` / `.Faction`; set on `PlayerReady` and on every
   change. `data.Tickets` and `data.ProcessedReceipts` are mutated directly (documented exception).
@@ -2382,6 +2511,7 @@ Client code reads state only from player attributes (LocalPlayer and, for arrows
 **UIKit** (`UIKit.luau`, G10)
 ```
 UIKit.Gui : ScreenGui        -- "MainGui", ResetOnSpawn=false, IgnoreGuiInset=true, ZIndexBehavior=Sibling, DisplayOrder=10; created in Init
+                             -- R1 CR-L34: then ScreenInsets=DeviceSafeInsets, SafeAreaCompatibility=None (pcall) — see A3-H4
 UIKit.Theme = { Bg = Color3.fromRGB(25,25,35), BgTransparency = 0.25, Text = Color3.new(1,1,1), SubText = Color3.fromRGB(200,200,210),
                 Good = Color3.fromRGB(80,220,120), Bad = Color3.fromRGB(255,80,80), Gold = Color3.fromRGB(255,210,60),
                 XP = Color3.fromRGB(90,170,255), Halo = Config.Factions.Halo.Color, Horns = Config.Factions.Horns.Color,
@@ -2413,7 +2543,9 @@ UIKit.GameAttr(name, default) -> any ; UIKit.OnGameAttr(names, fn)   -- same for
 - Status chips: ZoneTown → `"안전 지대"` (green); ZonePvP → `"PvP 지역"` (red); Rookie → `"새싹 보호중"`;
   Protected → `"부활 보호"`; `InCombatUntil > now` → `"전투 중"`; `SizeMult > 1.001` → `"덩치 저울 ×1.32"` (gold,
   2 decimals); `BullyStacks > 0` → `"깡패 N단계"` (red); `KaijuState == "Queued"` → `"괴수 대기 중"`.
-- Quest rows (3 × 300×58), parsed from `QuestsJson` (pcall `HttpService:JSONDecode`); header `"오늘의 퀘스트 (DailyClaims/3)"`
+- Quest rows (3 × 300×58), parsed from the last `Quests` remote payload (R1 CR-L50; connected synchronously in `Init`,
+  accepts the JSON string, an array or `{ Quests = array }`; pcall `HttpService:JSONDecode`); fractional Progress shows one
+  decimal and targets under 10000 show as integers (R1 CR-M27, CR-L31); header `"오늘의 퀘스트 (DailyClaims/3)"`
   (`"오늘 일일 완료! 추가 퀘스트 진행 중"` at 3). Each row: badge `"일일"` (gold) for Kind Daily / `"추가"` (gray) for Extra;
   text; bar `"12/40"`; reward `"+1.2K"`; right: completed Daily → green **받기** button → `ClaimQuest:FireServer(i)`;
   otherwise small `"↻"` → `RerollQuest:FireServer(i)` (disabled until `RerollReadyAt`).
@@ -2427,6 +2559,10 @@ UIKit.GameAttr(name, default) -> any ; UIKit.OnGameAttr(names, fn)   -- same for
   (`"최고 등급"` at max, `"Lv 12 필요"` if level short) → `UpgradeWeapon:FireServer()`;
   **메뉴** 100×56 → `C.Panels.Open("Menu")` (gold glow when `Level >= Config.RebirthLevel(Rebirths)` or `VacationDays > 0`).
 - Travel bar (center) while `TravelingUntil > now`.
+- R1 CR-L36 / CR-L37 (read by EventHUD, MainGui logical units, nil until the first layout): `HUD.TopCenterX`,
+  `HUD.TopCenterW` (war-meter column: width clamped to 200..380 between the stats card and the luck corner) and
+  `HUD.Layout = { W, H, Scale, ClusterTop, ClusterLeft, TopCenterX, TopCenterW }` (ClusterTop/Left = top / left edge of the
+  bottom-right button cluster). Status chips wrap onto a second row instead of overflowing.
 - Keys (ignore when `gameProcessedEvent`): MouseButton1 / F = attack (hold repeats), Q or E = release, R = auto toggle,
   U = upgrade, M = menu.
 - Timers refresh in a 0.2 s loop; everything else is attribute-driven (`UIKit.OnAttr` / `OnGameAttr`).
@@ -2445,7 +2581,8 @@ are skipped). All visual parts are local, anchored, `CanCollide/CanQuery/CanTouc
 - `Swing`: by `Class` — Warrior: flat Neon ring at `Pos` expanding to `Radius` over 0.15 s in faction color; Mage: glowing
   Neon orb tweened `From` → `Targets[1]` (0.2 s), then a splash ring of `Radius` there; Archer: one thin arrow Part
   tweened `From` → each of `Targets` (0.15 s). Then numbers for each hit: `K == "M"` white (crits yellow & larger),
-  `K == "P"` red, `K == "G"` small gold `"+N"` feather pop. Play `Swing` sound if own UserId.
+  `K == "P"` red, `K == "G"` small gold `"+N"` feather pop. Play `Swing` sound if own UserId. R1 CR-M23: in another
+  player's Swing/Release, a `K == "P"` hit whose `V` equals my UserId is skipped (I already see it as my `Hurt` number).
 - `Release`: class shape at `Pos` with radius `Radius` — Warrior: big shockwave ring + dust burst; Mage: meteor (Neon
   ball) falling from 60 studs above `Pos` in 0.35 s, then the ring; Archer: ~12 arrows raining inside the radius over 0.4 s,
   then the ring. Shockwave ring always sized exactly to `Radius`. Hit numbers as Swing, plus one HUGE number
@@ -2454,14 +2591,18 @@ are skipped). All visual parts are local, anchored, `CanCollide/CanQuery/CanTouc
 - `Hurt` (red number at own head + brief red screen-edge flash), `Reward` (`"+N G"` gold and `"+N XP"` blue at Pos;
   Golden → bigger gold burst; `Coin` sound; counts the combo), `LevelUp` (Neon light pillar 40 studs at Pos fading in 1 s;
   if own → `UIKit.Announce(UIKit.Fmt("LevelUp", Level))`), `Plunder` (8 small gold balls tween From → To), `Bank` (gold
-  toast `"금고 +N"`), `Upgrade` (sparkle at own character), `Rebirth` (big pillar + particles; `Mark == "Fall"` black
+  toast `"금고 +N"`; R1 CR-L23: `Courier == true` → `Config.Text.HaloCourier` instead — the only toast for it), `Upgrade` (sparkle at own character), `Rebirth` (big pillar + particles; `Mark == "Fall"` black
   smoke, `"Redeem"` white light), `Stomp` (red ground ring of `Radius` at Pos + `Fx.Shake(ShakeOwnRelease, 0.3)` if own
   character is within `Radius`), `Rare` (gold burst on own character + `UIKit.Announce(UIKit.Fmt("RareToast"))`),
   `GooseEnd` (feather burst at Pos, gold if Winner == "Halo", red if "Horns", white if "Tie").
 - Damage numbers use a pool of `Config.Visuals.MaxDamagePopups` BillboardGuis on anchored invisible parts (local-only),
   rising 3 studs and fading over 0.8 s.
-- Combo: count `Reward` events; reset after `Config.Combo.ResetSeconds` without one; show `"x12"` at right-center while
-  ≥ 5; at each `Config.Combo.Milestones` value show its text big for 1 s. Purely cosmetic.
+- Combo: count `Reward` events; reset after `Config.Combo.ResetSeconds` without one; show `"x12"` at bottom-centre
+  (AnchorPoint 0.5, 0.5 at scale (0.5, 0.66), 120×24; R1 CR-L39 — was right-center) while ≥ 5; at each
+  `Config.Combo.Milestones` value show its text big for 1 s, just above the combo label. Purely cosmetic.
+- R1 CR-L15: another player's personal monster (`OwnerUserId` ≠ mine) is hidden locally (LocalTransparencyModifier = 1,
+  effects disabled) and gets no flash / recoil / attack motion. R1 CR-L42: the flash and merge radii come from
+  `Config.HitFeel.FlashRadius` / `MergeRadius`.
 
 **EventHUD** (`EventHUD.luau`, G11)
 ```
@@ -2482,6 +2623,10 @@ EventHUD.Init(C) ; EventHUD.Start()     -- no other public functions
 - Personal line (first that applies): own `SackGold > 0` → `"원한 자루 1.2K · 34초 (PvP 지역에서만 줄어요)"` (purple);
   own `KaijuState == "Active"` → `"괴수 변신 중! m:ss 버티면 전설의 악당"` (red); own revenge active →
   `"복수 대상: <name> · 0:42"` (orange).
+- R1 CR-L36 / CR-L37 / CR-L43: the strip is centred on `HUD.TopCenterX` with width clamp(`HUD.TopCenterW`, 200, 360)
+  (fallback: the live war-meter frame, then screen centre); the personal line uses ZIndex 6, width min(480, W − 24) and,
+  on desktop, y = min(0.72 H, `HUD.Layout.ClusterTop` − 8 − h/2) when it would otherwise reach under the button cluster;
+  edge arrows stay below the top-bar inset.
 - Lore hint: the first time in a session that a sack-carrier arrow appears for a Halo player →
   `UIKit.Toast(string.format(Config.Story.SackLore), "info", 4)`.
 - Luck corner: `"단골 " .. RegularMinutes .. "분 · 희귀 " .. Util.FormatPercent(Config.RareChance(RegularMinutes)) .. "%"`
@@ -2573,18 +2718,19 @@ Purchases go through Roblox (`PromptProductPurchase` → `ProcessReceipt`), neve
 | `Notify` | S→C | `{ Text: string, Kind: "info"\|"good"\|"bad"\|"reward"\|"announce", Duration: number? }` | `Net.Notify/NotifyAll` | — |
 | `Fx` | S→C | `(kind: string, data: table)` — see table below | `Net.Fx` | — |
 | `OpenPanel` | S→C | `panelId: "Altar"` | FactionService | — |
+| `Quests` | S→C | `json: string` (JSON array of quest entries, §4.20) | QuestService | — (R1 CR-L50: fired to the owner only when the list changes; replaces the `QuestsJson` attribute) |
 
 `Fx` kinds (sender → recipients → data):
 
 | kind | Sender | Recipients | data |
 |---|---|---|---|
-| `Swing` | CombatService | all | `{ UserId, Class, Faction, From: Vector3, Pos: Vector3, Radius: number, Targets: { Vector3 }, Hits = { { P: Vector3, A: number, C: boolean, K: "M"\|"P"\|"G" } } }` |
-| `Release` | CombatService | all | `{ UserId, Class, Faction, Pos: Vector3, Radius, Stacks, Perfect: boolean, Auto: boolean, Total: number, Hits = (same as Swing) }` |
-| `Hurt` | CombatService | victim | `{ Pos: Vector3, Amount: number }` |
+| `Swing` | CombatService | attacker + players near the centre (R1 CR-L49) | `{ UserId, Class, Faction, From: Vector3, Pos: Vector3, Radius: number, Targets: { Vector3 }, Hits = { { P: Vector3, A: number, C: boolean, K: "M"\|"P"\|"G", V: number? } } }` (V = victim UserId on P hits, R1 CR-M23) |
+| `Release` | CombatService | attacker + players near the centre (R1 CR-L49) | `{ UserId, Class, Faction, Pos: Vector3, Radius, Stacks, Perfect: boolean, Auto: boolean, Total: number, Hits = (same as Swing) }` |
+| `Hurt` | CombatService | victim, whenever HP was actually removed (R1 CR-M23) | `{ Pos: Vector3, Amount: number }` |
 | `Reward` | ProgressionService | earner | `{ Pos: Vector3, Gold: number, XP: number, Golden: boolean }` |
 | `LevelUp` | ProgressionService | all | `{ UserId, Level, Pos }` |
 | `Rebirth` | ProgressionService | all | `{ UserId, Rebirths, Pos, Mark: "Fall"\|"Redeem"\|"None" }` |
-| `Bank` | ProgressionService | owner | `{ Amount }` |
+| `Bank` | ProgressionService | owner | `{ Amount, Courier: boolean? }` (Courier = Halo auto-bank, R1 CR-L23) |
 | `Plunder` | PvPService (all), GrudgeService (refunded victim) | all / victim | `{ From: Vector3, To: Vector3, Amount }` |
 | `Upgrade` | ShopService | buyer | `{ Tier }` |
 | `Stomp` | KaijuService | all | `{ UserId, Pos: Vector3, Radius }` |
@@ -2628,9 +2774,13 @@ Purchases go through Roblox (`PromptProductPurchase` → `ProcessReceipt`), neve
 | `FirstJoinTime` | number (os.time) | 0 → set on first load | DataService |
 | `LastLogoutTime` | number (os.time) | 0 | DataService (on Release) |
 | `SessionLock` | `{ JobId, Time }` | — | DataService only; stored in DataStore, never in the session table |
+| `PairCD` | `{ ["<kind>:<otherUserId>"] = os.time() }` (`kolog:*` = `{ t1, t2 }`) | {} | R1 CR-M4: PlayerService.PairReady + PvP/Grudge/Kaiju (direct; not mirrored; pruned on join) — A16-2 |
+| `SavedBully` / `SavedBullyAt` | number / number (os.time) | 0 | R1 CR-M12: JusticeService (PlayerLeaving write, PlayerReady read + zero; not mirrored) |
+| `SavedStars` / `SavedStarsAt` | number / number (os.time) | 0 | R1 CR-M12: PvPService (same), KaijuService zeroes it for a defeated leaver |
 
 Session-only (never saved): Wanted stars, bounty, grudge sacks, revenge, bully stacks, charge stacks, war points, buffs,
-cooldowns, protection, regular minutes, goose counts, kaiju state and session title.
+cooldowns, protection, regular minutes, goose counts, kaiju state and session title. (R1: bully stacks and wanted stars
+now survive a rejoin through `SavedBully` / `SavedStars`, minus the decay while away; pair cooldowns are saved in `PairCD`.)
 
 ### 6.2 Player attributes (server writes, client reads)
 
@@ -2640,7 +2790,7 @@ cooldowns, protection, regular minutes, goose counts, kaiju state and session ti
 | `DataLoaded` | boolean | PlayerService | true once data is loaded |
 | `RegularMinutes` | number | PlayerService | active minutes on this server (Regular's Luck) |
 | `ClassTickets`, `FactionTickets` | number | MonetizationService | ticket counts |
-| `QuestsJson` | string | QuestService | JSON array of `{Id, Kind, Text, Progress, Target, RewardGold, RewardXP}` |
+| ~~`QuestsJson`~~ | — | — | removed in R1 CR-L50 (it replicated to every player); the list now comes through the `Quests` remote |
 | `RerollReadyAt` | number (server time) | QuestService | quest reroll available at |
 | `ZoneId` / `ZonePvP` / `ZoneTown` | string / boolean / boolean | ZoneService | current zone |
 | `TravelingUntil` | number (server time, 0 = no) | ZoneService | travel channel end |
@@ -2672,11 +2822,12 @@ cooldowns, protection, regular minutes, goose counts, kaiju state and session ti
 
 | Attribute | Type | Writer | Meaning |
 |---|---|---|---|
-| `WarHaloScore`, `WarHornsScore` | number | WarService | per-capita round score (0.1 precision) |
+| `WarHaloScore`, `WarHornsScore` | number | WarService | per-capita round score (0.1 precision; R1 CR-M19: divided by the round-average head count) |
 | `WarRoundEndsAt` | number (server time) | WarService | round end |
 | `WarMode` | "Normal"/"Siege"/"Idle" | WarService | round mode |
 | `WarBlessing` | "Halo"/"Horns"/"None" | WarService | faction holding the crown this round |
 | `HaloCount`, `HornsCount` | number | FactionService | players per faction |
+| `UnderdogHalo`, `UnderdogHorns` | number | FactionService | R1 CR-L7: counts for the rebirth underdog bonus (no rookies, no > 120 s idlers) |
 | `HaloPower`, `HornsPower` | number | JusticeService | faction base-power sums |
 | `HaloSize`, `HornsSize` | number | JusticeService | Size Justice S per faction (1.0..1.6) |
 | `WeakerFaction` | "Halo"/"Horns"/"None" | JusticeService | lower power sum (sign-on bonus target) |
@@ -2833,6 +2984,9 @@ Client `Init` may only create instances/state; cross-module calls (`C.Panels.Ope
 
 The lead builds and syncs (implementers only run `py tools/luau_check.py <their files>`). Single-player tests with
 **Play**; PvP tests with **Test > Start Server + 2 Players**. Watch the Output: no errors at startup.
+R1 fixes: also run the per-item checks in `docs/review/reviewer_code_r1.md` ("플레이테스트로 확인할 것"). While
+`Config.AntiCheat.Enforce` is false, CR-H2 is checked by reading the `[ZoneService] CR-H2 suspicious move (..., log only)`
+warnings in the Output (expected for a command-bar teleport, never for menu travel, respawn or a fall rescue), not by being pulled back.
 
 Startup & data
 - [ ] Output shows one `[<ServiceName>] started` line for each of the 19 services, then

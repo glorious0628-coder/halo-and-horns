@@ -37,10 +37,15 @@ file's public API exactly as written in TECH_SPEC.md and report it under integra
   (death is handled by the service's own HP, not Humanoid state); `hum.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff`;
   `hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None`. Knockback must not topple them.
 - **Manual beats auto (H3):** manual and auto swings share the swing cooldown, but record `lastManualAt[player]`; the auto
-  loop skips a player while `os.clock() - lastManualAt[player] < 1.0`. A manual swing request is accepted whenever the
-  cooldown is ready (never silently dropped because auto consumed it).
-- **Top bar inset (H4):** UI uses `IgnoreGuiInset = true`, so every top-anchored HUD block must start at
-  `Y >= GuiService:GetGuiInset().Y + 8` (fallback 64 px). Never place UI in the top-left 0..64 px band.
+  loop skips a player while `os.clock() - lastManualAt[player] < cls(player).SwingInterval + Config.Combat.ManualYieldPad`
+  (0.3; R1 CR-M17 — the old fixed 1.0 s was not longer than the Warrior/Mage interval). A manual swing request is accepted
+  whenever the cooldown is ready (never silently dropped because auto consumed it).
+- **Top bar inset (H4, revised by R1 CR-L34):** every own ScreenGui sets `IgnoreGuiInset = true` and then
+  `ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets` + `SafeAreaCompatibility = Enum.SafeAreaCompatibility.None` (each in
+  pcall), so content stays out of notches / the home indicator but still extends under the Roblox top bar. Therefore every
+  top-anchored HUD block must still start at `Y >= GuiService:GetGuiInset().Y + 8` (fallback 64 px), and code that maps
+  screen pixels into the gui must use the gui's own AbsolutePosition (it is no longer always 0,0). Never place UI in the
+  top-left 0..64 px band.
 - **Mobile jump button (H5):** on touch devices, read `PlayerGui.TouchGui.TouchControlFrame.JumpButton`
   (WaitForChild with 5 s timeout) AbsolutePosition/AbsoluteSize and place the main attack button up-left of it
   (fallback offset (-200, -170) from bottom-right); place release/auto buttons relative to the attack button. Re-layout on
@@ -88,6 +93,7 @@ file's public API exactly as written in TECH_SPEC.md and report it under integra
   CombatService ALWAYS passes the attacking player. `DamageMonster` ignores (returns false) when `record.Owner and record.Owner ~= player`.
   Kills of personal monsters give 0 war points and personal monsters are excluded from density counts and from the goose/kaiju
   logic. (If the revised spec names these functions differently, apply the same optional `forPlayer` parameter to its equivalents.)
+  R1 CR-M5 adds a zone filter on top of this (zone monsters only in the zone the player stands in) — see A16-6.
 - **C3 Personal monster AI:** for `Owner ~= nil` monsters skip town/leash/home logic entirely; they only track their Owner
   (standing still is fine when the owner is in a town — it is a sandbag).
 - **C4 Tutorial can't get stuck:** if the personal slime despawns by timeout, advance to step 1 automatically. On every
@@ -108,7 +114,8 @@ Faction ids become `"Halo"`, `"Horns"`, `"Neutral"` (playable) and `"None"` (not
 All code that branches on faction must handle `"Neutral"` explicitly (never assume "not Halo ⇒ Horns").
 
 - **Config.Factions.Neutral** (G1 adds it next to Halo/Horns, same shape; numbers neutral):
-  `Id = "Neutral", Name = "장인 길드", Short = "장인", Emblem = "⚙", TeamName = "장인 길드", TeamColor = BrickColor.new("Medium stone grey")`,
+  `Id = "Neutral", Name = "장인 길드", Short = "장인", Emblem = "장", TeamName = "장인 길드", TeamColor = BrickColor.new("Medium stone grey")`
+  (Emblem was "⚙" until R1 CR-L44: that glyph renders as a tofu box; TeamColor/Color became teal in A9-1),
   every combat/economy perk multiplier = 1.0 / 0 (no XP bonus, no gold bonus, no HP/damage bonus, no lifesteal, no regen bonus),
   release: no heal/no stack sharing, cap 150 (Halo-like cap, no Halo extras), home zone = `Crossroads`.
   Story line for the picker card: "조각을 줍지 않고, 다듬기로 한 자들." Add a third Team in the Teams service.
@@ -128,7 +135,7 @@ All code that branches on faction must handle `"Neutral"` explicitly (never assu
   (phase 2 adds 장인 명성), so a FREE switch away from Neutral loses nothing; switching away from Halo/Horns follows the
   existing free/ticket rule. Turncoat marks are granted only for Halo↔Horns switches at rebirth.
 - **Daily quests:** the pool must be filtered by faction; Neutral never gets PvP/plunder/bounty/goose/kaiju quests.
-- **Visuals:** no halo/horns; nametag in grey with the "⚙" emblem prefix.
+- **Visuals:** no halo/horns; nametag with the Neutral emblem prefix ("장", CR-L44) in the Neutral colour (A9-1).
 
 ## A7. Lessons from the "Soul RPG" playtest video (authoritative; if a name differs from the revised spec, follow the revised spec's name)
 
@@ -264,7 +271,7 @@ Applied in the Studio preview map (`tools/preview_map.lua` v3). Config must matc
 - **World Map (new client module `StarterPlayerScripts/WorldMap.luau`, owner: new group G13):** full-screen panel opened by
   the Menu panel's "지도" entry and the `M` key (also a small "지도" chip on the HUD top-right under the zone pill). Draws a
   top-down map from Config only (no screenshots, no asset ids): Config.Map.Lands (land shapes), sea background, zone rectangles
-  with name + level + 안전/PvP colour (ART_DIRECTION 2.4), bridges and roads, faction town icons (후광/뿔/⚙), Crossroads
+  with name + level + 안전/PvP colour (ART_DIRECTION 2.4), bridges and roads, faction town icons (후광/뿔/장 — CR-L44), Crossroads
   landmarks (제단, 거래소, 거위 둥지, 이동 발판), the sky crown icon, the local player's arrow (rotates with camera/character
   heading, updates 10×/s), active event markers (golden goose when GameState says active, kaiju position if GameState exposes it,
   sack carriers for Halo only — reuse whatever EventHUD already reads). Pan by drag, zoom with wheel/pinch (0.5×–3×), close with X / M /
@@ -281,3 +288,257 @@ Applied in the Studio preview map (`tools/preview_map.lua` v3). Config must matc
 - Server: monsters wind up `Config.HitReact.MonsterWindup` (0.28 s, model attribute `WindupAt`) before the hit lands (`AttackSeq` at impact; cancelled if the target leaves range / dies). Monsters that take damage and survive bump `HurtSeq` (+ `HurtBig` for crits / ≥ 25% max HP), throttled 0.15 s. Players that take damage broadcast Fx `"Pain"` {UserId, Pos, Big} (throttled 0.4 s per victim). Swing/Release hits shove monsters 1.2–2 studs (`MonsterService.Shove`, zone/water/wall safe).
 - Client (Fx.luau): procedural R15 attack/hurt clips applied through Motor6D.Transform on PreSimulation (AnimationClipProvider runtime clips are Studio-only), stock animations as fallback; slash arc / arrow trail / magic burst, hit spark, 0.05 s hit-stop on my own attack track, small camera kick, monster anticipation pose + lunge + dust, monster pain stickers (EmoOuch/Stress/Tears/Angry, EmoDizzy on big hits) and player pain stickers for everyone nearby. All GPT art parts are registered in Config.UIArt.Parts with Id = "" until uploaded; code-drawn fallbacks are used meanwhile.
 - Class costumes: 18 Tripo models (art/models/costume/fixed/Costume_<Faction><Class><M|F>.glb) — 2k export, head split into its own 1024 texture, sharpened (tools/fix_face.py). Not uploaded/imported yet (account upload block 2026-10-03); avatar toggle is a user decision: costume ON by default, can be turned off.
+
+## A16. Code review R1 fixes (docs/review/reviewer_code_r1.md; overrides TECH_SPEC and A1–A15 where they conflict)
+
+Applied 2026-10-03 by groups G1–G12 + GW **without Studio**: nothing has been compiled or play-tested yet
+(next step: `luau_check` on every file → sync → playtest, HANDOFF_CODEX §3). CR-M24, CR-M25, CR-M26, CR-L33 and CR-L35 were
+already fixed by the HUD / picker redesign. `[CR-xx]` = review item. Config values below are the ones in Config.luau.
+
+### A16-1 Anti-cheat movement check — LOG-ONLY for now [CR-H2]
+- `Config.AntiCheat = { Enforce = false, MoveMult = 1.6, Slack = 8, RisePerSec = 60, RiseSlack = 12, TeleportGrace = 1,
+  SpawnGrace = 2, PadSlack = 4, LogCooldown = 10 }`; `Config.Travel.ZoneTick` 0.5 → 0.2. A missing / non-number key uses
+  the default.
+- ZoneService samples each root every zone tick (`validateMove`, right after the A10 RESCUE_Y rescue). Plausible = flat move
+  since the last good sample ≤ `Humanoid.WalkSpeed × MoveMult × dt + Slack` and rise ≤ `RisePerSec × dt + RiseSlack`
+  (falls are never limited). An implausible move is logged at most once per `LogCooldown` s per player. Only when
+  `Enforce == true` is the player pulled back to the last good position; in log-only mode the new position simply becomes
+  the last good one.
+- `ZoneService.IsPlausible(player, pos) -> boolean`: same test against the last sample; true when there is no sample yet,
+  the character is new, the player is in teleport/spawn grace or the input is invalid. Logs failures; returns **false only
+  while `Enforce == true`**, so callers can never punish anyone in log-only mode. Callers (all pcall'd, only if present):
+  CombatService Swing / Release, FactionService.nearAltar.
+- `ZoneService.MarkTeleported(player, seconds?)`: call right BEFORE a server-side teleport; every move is accepted for
+  `seconds` (default `TeleportGrace`, NaN/negative → default, max 30) and the track restarts. Callers: ZoneService.teleport()
+  (enemy-town / level bounces, A10 rescue, pads, travel), ZoneService CharacterSpawned (`SpawnGrace`), PlayerService
+  (before LoadCharacter and the spawn PivotTo) and JusticeService (spawn lift), both with `SpawnGrace`.
+- **Always enforced** (independent of `Enforce`): a travel-pad touch counts only when the toucher's root is within
+  `max(pad.Size.X, pad.Size.Z) / 2 + PadSlack` (flat) of the pad, checked before the pad debounce; Swing / Release return
+  early when `Config.ZoneAt(root.Position).MinLevel > Level` (Swing keeps its cooldown unspent, Release keeps the charge);
+  target selection skips zone monsters whose zone MinLevel > the attacker's Level (personal monsters exempt).
+- ProgressionService.BankAll does not consult IsPlausible (its IsTown comes from ZoneService's checked zone).
+- Switch `Enforce = true` only after a playtest shows no false positives (menu travel, respawn, fall rescue, bully / kaiju
+  scale changes, enemy-town bounce). It is read on every call, so it can be flipped at runtime.
+
+### A16-2 Saved pair cooldowns [CR-M3, CR-M4, CR-L6]
+- `Config.Data.Defaults.PairCD = {}` (persisted, not mirrored): `PairCD["<kind>:<otherUserId>"] = os.time()` of the last
+  reward, stored on the player who is rewarded / protected, so it follows them to another server with the session lock.
+- `PlayerService.PairReady(holder, otherUserId, kind, cooldown, commit?) -> boolean`: true when
+  `os.time() - PairCD[key] >= cooldown`; when true and `commit ~= false` it records now (`commit = false` = look only).
+  No data / bad arguments → false. Callers pcall it and treat an error as false (no reward).
+- Keys in use:
+
+  | Holder | Key | Cooldown | Meaning |
+  |---|---|---|---|
+  | killer | `ko:<victimUserId>` | PvP.PairRewardCooldown 300 | minted KO rewards; also the logout bounty (A16-4) |
+  | killer | `kolog:<victimUserId>` = `{ t1, t2 }` | Bully.RepeatWindow 600 | last 2 KO times for the 3rd-KO bully rule (written directly by PvPService) |
+  | victim | `bully:0` | Bully.DecaySeconds × MaxStacks (900) | a bully bounty was paid on this victim |
+  | victim | `steal:<thiefUserId>` | Grudge.RestealWindow 180 | CanSteal checks with commit = false; AddToSack records |
+  | victim | `refund:0` | Grudge.RefundBonusCooldown 600 | extra 20 % refund, once per VICTIM whatever the thief [CR-L6] |
+  | avenger | `avenge:0` | PvP.PairRewardCooldown 300 | avenger bonus, once per AVENGER whatever the thief [CR-L6] |
+  | participant | `kaiju:<kaijuUserId>` | Kaiju.PairRewardCooldown 1800 | minted kaiju-pool share [CR-M3]; spent only when that share > 0 |
+- Pruning right before PlayerReady (and on insert past 200): drop entries older than max(1800, the largest configured pair
+  cooldown / window), timestamps in the future and non-string keys; keep at most 200 (oldest dropped first); `kolog` uses
+  the newer of its two times.
+- The in-memory tables `koLog`, `pairReward`, `bullyBountyAt`, `lastSteal`, `lastRefund`, `lastAvenge` and `poolPaidAt`
+  are gone (`lastHitOn` became `dmgLog`, A16-9). Fallbacks while PairReady is missing: PvP/Grudge use an inline copy of the same contract on
+  `GetData(holder).PairCD`; KaijuService uses an in-memory map and warns (throttled).
+- [CR-M3] A Plunder KO adds a wanted star only when `pairOk`. The kaiju's carried gold moved into the raid pool is capped
+  at `Config.PvP.PlunderCapPerLevel × kaiju Level` (the rest is destroyed).
+
+### A16-3 Data, rejoin and shutdown [CR-M1, CR-M2, CR-M12, CR-L1, CR-L2, CR-L3]
+- DataService: the per-UserId write slot is a FIFO queue (token interface unchanged); a waiter that exceeds SLOT_TIMEOUT
+  removes itself and gets nil. `Load` first waits until an earlier session of the same UserId has finished `Release`
+  (nil if the player leaves or SLOT_TIMEOUT passes), runs its body in pcall and always frees the slot; `Save` does too.
+  Public API unchanged.
+- `Load` refuses a stored record whose `Version > Config.Data.Version` (the UpdateAsync write and lock are cancelled; nil →
+  LoadFailed kick). Operating rule: bump `Config.Data.Version` whenever MaxLevel, classes or factions are added.
+- `PlayerService.IsShuttingDown() -> boolean`: true from the start of BindToClose. Shutdown order: for every ready,
+  not-finalizing player, PlayerLeaving is fired synchronously (pcall) **while everyone is still ready** (so a thief's sack
+  refund still reaches a victim who is leaving too); then FinalizeLeave per player (ready off → Release → cleanup).
+  ProgressionService does not apply CombatLogPenalty during shutdown.
+- A load that finishes after the player left / PlayerRemoving / closing keeps `joining[player]` until its Release is done,
+  so BindToClose waits for that save as well.
+- Kept across a rejoin [CR-M12]: `Config.Data.Defaults.SavedBully, SavedBullyAt, SavedStars, SavedStarsAt` (persisted, not
+  mirrored). Written in PlayerLeaving, read and zeroed (one-shot) in PlayerReady, restored only for Halo/Horns:
+  - bully stacks = min(MaxStacks, saved − floor(elapsed / Bully.DecaySeconds)); `SavedBullyAt` is the start of the running
+    decay period, so the partial decay timer carries over;
+  - wanted stars = min(MaxStars, Kaiju.StarsNeeded − 1, saved − floor(away / PvP.StarDecaySeconds)), partial decay carried
+    over; `SavedStars = 0` when a logout bounty was just paid or for an Active kaiju (KaijuService also zeroes it when it
+    settles a leaving kaiju as Defeated).
+- [CR-L1] JusticeService clears bully state with `task.defer` in PlayerLeaving, so `GetBullyStacks` stays valid in every
+  PlayerLeaving handler; its direct PlayerRemoving hook clears only players who never became ready.
+
+### A16-4 Logging out does not cancel rewards [CR-M11, CR-L19]
+- Kaiju: when the current kaiju leaves while Active and the Halo damage total > 0, KaijuService runs
+  `HandleKaijuDeath(victim, nil, true)` (new optional 3rd argument `leaving`: no character access; with no lethal hit the
+  minted part is scaled by the Halo damage share). Outcome Defeated; on failure, or in any other case, Cancelled as before.
+- Wanted: PvPService pays a logout bounty before `clearRevengeInvolving` when the leaver is Horns, has ≥ 1 star, is not an
+  Active kaiju, is in combat, and `GetLastPvPAttacker` is an online, ready Halo who passes
+  `PairReady(attacker, leaver, "ko", PvP.PairRewardCooldown)`: `Config.Bounty(Level, stars, bully stacks)` to the attacker's
+  bank (bully part only if `bully:0` allows), honor `max(1, stars)`, BountyGain toast, BountyAnnounce at GlowStars+.
+- [CR-L19] The kaiju-defeated announcement shows the gold actually paid; nobody paid → `Config.Story.KaijuDefeatedNoReward`.
+
+### A16-5 Combat [CR-H1, CR-M7, CR-M8, CR-M10, CR-M13, CR-M17, CR-M23, CR-L21, CR-L22, CR-L49]
+- [CR-H1] A Halo release gives each other ally +HaloAllyStacks at most once per `Config.Charge.HaloAllyStackCooldown` (5 s)
+  per receiving ally.
+- [CR-M7] A manual release that hits an Active kaiju is capped at `Config.Kaiju.ReleaseCapPct` (0.08) × its current
+  MaxHealth; everyone else keeps `Charge.PvPCapPct`.
+- [CR-M8] Lifesteal cap base of an Active kaiju = MaxHealth / `KaijuService.GetHealthMult` (its base health).
+- [CR-M10] `CombatService.DamagePlayer(victim, amount, attacker?, crit?) -> number` = HP actually removed (0 on every
+  refusal and under a ForceField). `PlayerDamaged:Fire(victim, applied, attacker)` carries that value and still fires with 0.
+  Swing `totalDealt` and Release `total` (Halo heal, lifesteal, `Released.Total`) add the HP really removed from monsters and
+  players; a monster hit MonsterService refuses (no HP change, not killed) adds no hit entry, charge or shove. Hit numbers
+  `A` keep the requested damage, and the Release Fx `Total` is the sum of those numbers. Side effect: Halo release healing
+  from monster hits drops a lot (≈ 68 → 9 HP on one goblin); raising `HaloHealPct` is an open user decision.
+- [CR-M13] A kaiju stomp passes the kaiju as attacker only when `ZoneService.IsPvPZone(victim)`; in safe zones it is
+  environmental damage (no combat tag, no PvP KO credit).
+- [CR-M17] Auto attack yields for `SwingInterval + Config.Combat.ManualYieldPad` (0.3) after a manual request (see A3-H3).
+- [CR-M23] DamagePlayer sends Fx `Hurt { Pos, Amount = applied }` to the victim whenever applied > 0 (PvP hits and stomps
+  included). PvP hit entries carry `V = victim UserId`; Fx skips another player's P number whose V is me (shown once as Hurt).
+- [CR-L21] `GooseService.RegisterHit(player, isManual) -> number` (tug count added, 0 when rejected); a `G` hit entry is
+  added only when > 0, `A` rounded to 0.1. `GooseService.GetPosition()` includes the tug side offset on X.
+- [CR-L22] `Config.Charge.PerfectGrace = 0.25`: the auto release fires at PerfectUntil + grace and a manual PERFECT counts
+  until then; the "need N stacks" toast is skipped within 1 s after an auto release.
+- [CR-L49] Swing / Release Fx are no longer FireAllClients: they go to the attacker plus players whose root is within
+  `Visuals.FxCullDistance + 60 + extent` of the centre (extent: Swing max(Radius, Range), Release Radius; 60 covers the
+  kaiju camera zoom).
+
+### A16-6 Monsters, zones and map [CR-M5, CR-M22, CR-L13, CR-L14, CR-L16, CR-L17, CR-L18, CR-L24]
+- [CR-M5] `GetMonstersInRadius / GetNearest / CountInRadius(..., forPlayer)`: with a player → that player's personal
+  monsters + zone monsters whose `ZoneId == Config.ZoneAt(player root).Id` (no character → personal only); nil → all.
+  `DamageMonster` returns false (no HP or contributor change) for a zone monster when the player stands outside its zone.
+- [CR-L13] Global cap: base counts are kept; per-player extras share the remaining room proportionally (largest remainder,
+  ties by MonsterTypeOrder). [CR-L14] Spawn / wander / detour / shove points inside collidable Decor (except `Bridge_*`) or
+  Landmarks are rejected (downward ray from y + 40; filter cached 10 s).
+- [CR-L18] Travel channel = `channels[player] = { Token, Start }`. A new Travel is refused `(false, nil)` while one runs. The
+  zone loop cancels it within one ZoneTick when the player is dead, was damaged since Start, is in combat, carries a sack,
+  is a kaiju or has too many stars: `TravelingUntil = 0` + TravelCancelled toast. The delayed pivot checks the token.
+- [CR-L24] A Neutral player entering a PvP zone gets `Config.Text.EnteredPvPNeutral` ("info") instead of EnteredPvP.
+- [CR-M22] `Config.Map.Pads`: SlimeMeadow (52, 0, −24), GoblinWoods (52, 0, 24), SkeletonRuins (68, 0, 24) — off the east
+  road. MapBuilder moves a reused pad (with every BasePart under it) to its Config position (top at Y 0.5) and rewrites its
+  sign; `tools/preview_map.lua` PADS match.
+- [CR-L17] Bounds walls reach down to `Config.Map.WaterTop − 20` (reused walls are stretched too; preview_map matches).
+- [CR-L16] The A10 fall rescue lives only in ZoneService (PlayerService's rescue loop is deleted).
+
+### A16-7 War and goose [CR-M18, CR-M19, CR-L8, CR-L20]
+- [CR-M18] `MonsterKilled` info gains `WarShare = WarPoints / (same-faction contributors of this kill)` (0 for personal
+  monsters). `WarService.AddPoints(player, n, poolN?)`: personal += n; faction pool += poolN when it is a positive finite
+  number (capped at n), else n. MonsterKilled is wired as `AddPoints(p, info.WarPoints, info.WarShare)`.
+- [CR-M19] Per-capita war scores (`WarHaloScore` / `WarHornsScore`), `WarMode` and the winner divide by the ROUND-AVERAGE
+  head count of each faction (sampled every War.Tick; an average < 0.5 counts as 0); reset every round; the first publish
+  after a round end uses the current counts.
+- [CR-L20] The sky's ClockTime always tweens forward (NumberValue, +24 wrap, `ClockTime = v % 24`).
+- [CR-L8] If either faction has 0 players when the goose ends, the result is "Tie" (no winner reward, no war points) with
+  `Config.Story.GooseNoRival`.
+
+### A16-8 Justice, factions, classes, tickets [CR-M20, CR-L5, CR-L7, CR-L9, CR-L10, CR-L11, CR-L25]
+- [CR-M20] Size Justice sums/counts include a Halo/Horns player only when not a rookie, active within 120 s
+  (`PlayerService.GetLastActive(p)` = os.clock() of the last MarkActive, 0 = never) and not 60 s+ inside a town. Excluded
+  players still get their side's S.
+- [CR-L5] `JusticeService.GetCombatPower(player) = Config.PowerOf(Level, WeaponTier, 1)` (no rebirth bonus) is used for the
+  bully "weak victim" test; `GetPower` (with the rebirth bonus) still feeds the faction sums.
+- [CR-L7] `FactionService.GetUnderdogCounts(always?) -> (halo, horns)`: ready, non-leaving Halo/Horns players without
+  rookies and > 120 s idlers (`always` is counted even if idle). Published as GameState `UnderdogHalo` / `UnderdogHorns`
+  (10 s loop + join / leave / faction change). The rebirth underdog bonus uses it (fallback GetCounts) and subtracts the
+  player from the old faction only when counted; the Rebirth remote marks the player active first. The Panels preview
+  reads the GameState values.
+- [CR-L9] Switching at the altar or rebirthing to Neutral is refused with `Config.Text.BlockedBully` while BullyStacks > 0.
+- [CR-L10] The +300 sign-on bonus also sets `LastSwitchTime` (starts the 10-min altar cooldown).
+- [CR-L11] A ticket is spent on an altar switch only if the score being left (Honor / Infamy) is > 0; otherwise the switch
+  is free and shows the plain message (`Config.Text.SwitchDonePlain`, fallback "%s(으)로 진영을 바꿨어요!").
+- [CR-L25] `MonetizationService.UseTicket(player, kind) -> (boolean, reason: "Pending" | "None" | nil)`; on "Pending"
+  (purchase still saving) callers show `Config.Text.TicketSaving`, otherwise NoTicket.
+
+### A16-9 PvP rules [CR-M14, CR-M15, CR-L4]
+- [CR-M15] `Config.Bully.BaitMinPct = 0.2`. PvPService keeps `dmgLog[attacker][victim] = { { T, A } }` (amount > 0 only,
+  BaitWindow, ≤ 64 entries). `baited` = the victim's damage to the killer inside BaitWindow ≥ BaitMinPct ×
+  `Config.MaxHealth(killer Level, faction, class)`.
+- [CR-M14] A baited KO is never "weak"; `defense = baited and (fresh or repeated)` → `info.Kind = "Defense"` (Bully false,
+  Rewarded false, Stolen 0, Bounty 0): no bully stack, stars, plunder, honor/infamy or bounty; revenge and the KO log are
+  kept and the victim's stars still reset. A killer whose kaiju state is not "None" is never a bully.
+  `PvPService.PlayerKO` info.Kind may now be "Defense".
+- [CR-L4] A wanted player who dies in a town, or with no damage taken in the last 3 s (reset / fall), keeps the stars and
+  loses nothing.
+
+### A16-10 Quests and progression [CR-M6, CR-M9, CR-M16, CR-M21, CR-M27, CR-L12, CR-L23, CR-L31, CR-L50]
+- [CR-M6] Rewards are capped at claim time to the CURRENT level: a Daily claim and the midnight auto-pay to
+  `Config.DailyQuestReward(Level)`, a vacation claim to `Config.VacationReward(Level, VacationDays)`; the published daily
+  reward shows the capped value. New signal `ProgressionService.LevelReset(player)` (end of ResetLevel = free class change)
+  remakes Extras like Rebirthed. Grudge sack entries store the victim's `Rebirths`; a return/refund is paid only if it is
+  unchanged (otherwise that share is destroyed). This supersedes TECH_SPEC's "quests are kept" / "dailies keep their rewards".
+- [CR-M9] The town auto-bank skips a player whose kaiju state is Siren or Active.
+- [CR-M16] A level-up refills HP only when not in combat and not an Active kaiju (HP % kept otherwise).
+- [CR-M21] `VacationDays` is fractional (3 decimals). At the day flip it gains (1 − f) for the old day plus every whole
+  missed day (cap VacationMaxDays), where f = (claims × QuestMinutes + (all claimed and ChestMinutes or 0)) /
+  (Slots × QuestMinutes + ChestMinutes) and claims = earlier claims + dailies auto-paid now. An auto-pay that completes the
+  set also pays the bonus chest (and rolls the class ticket). Panels shows `max(1, ceil(VacationDays))`.
+- [CR-M27] Deviation from TECH_SPEC §4.20 "Kill +1": a kill adds `killWeight = clamp(def.XP / unit.XP, 0, 1)` to Kill and
+  Golden quests, where unit = the quest's monster (`Quest.Unit`, fixed at generation; older quests use the level zone's main
+  monster). Quest text names that monster (`"%s %d마리 쓰러뜨리기"`, `"황금 %s %d마리 처치"`, with `def.Short or def.Name`).
+  Published Progress is floored to 0.1; the HUD shows fractional progress with one decimal.
+- [CR-L12] A Daily remade by a faction change keeps max(new, old) rewards. [CR-L31] Gold quest text shows the exact number;
+  the HUD shows targets under 10000 as integers.
+- [CR-L23] The server no longer sends the LevelUp / Banked / HaloCourier Notify or NotifyAll(KaijuSiren); Fx LevelUp / Bank
+  and the EventHUD siren banner announce them. The Halo courier sends Fx `Bank { Amount, Courier = true }` →
+  `Config.Text.HaloCourier` toast.
+- [CR-L50] The `QuestsJson` attribute is gone. New server → client remote `Quests` (`Net.Names`):
+  `FireClient(player, json)` (same JSON array string as before) only when it changes, plus once after each
+  CharacterSpawned. HUD accepts the JSON string, an array or `{ Quests = array }`.
+
+### A16-11 Client / UI [CR-L15, CR-L26–L30, CR-L32, CR-L34, CR-L36–L48]
+- [CR-M24] Quest claim and reroll buttons use separate positions. After a claim, reroll input is ignored for 1.5 s;
+  a row whose quest identity changes ignores claim/reroll input for 0.8 s. [CR-M25] Reroll always asks for confirmation,
+  and ignores confirmation if the row changed while it was open. On touch devices, the quest header opens an overlay
+  above the thumbstick area. [CR-M26] FactionPicker and ClassPicker ignore card input for 0.6 s after opening.
+- [CR-L34] Own ScreenGuis use DeviceSafeInsets (A3-H4 revised). [CR-L36/L37] HUD publishes `HUD.TopCenterX`,
+  `HUD.TopCenterW` (war-meter column) and `HUD.Layout = { W, H, Scale, ClusterTop, ClusterLeft, TopCenterX, TopCenterW }`
+  (MainGui logical units, nil before the first layout); EventHUD places the event strip and the personal line (ZIndex 6) from
+  them. Status chips wrap to a second row. [CR-L38] Max 2 toasts below 500 px viewport height; toast width
+  min(460, W / scale × 0.45). [CR-L39] The combo label is bottom-centre (0.5, 0.66).
+- [CR-L15] Another player's personal monster (OwnerUserId ≠ me) is hidden locally. [CR-L32] Golden kill rewards are left
+  out of the "N마리 더!" average. [CR-L42] Fx reads `Config.HitFeel.FlashRadius / MergeRadius`. [CR-L43] Edge arrows stay
+  below the top bar.
+- [CR-L26] Panels ignore input for 0.35 s after a render; [CR-L27] altar buttons sit above the lore; [CR-L28] no duplicate
+  Crossroads in the Neutral travel list; [CR-L29] `Config.Story.IntroNeutral`; [CR-L30] `Config.Text.WaitRespawn` while
+  dead; [CR-L40] minimum text size 15; [CR-L41] touch close/back buttons ≥ 44 pt, WorldMap buttons max(52, ceil(44 / s)).
+- [CR-L44] `Util.GlyphSafe(text)` is the shared check (only ← → ▲ ▶ ▼ ★ ☆ of U+2190–U+2BFF are trusted); Neutral emblem "장";
+  WorldMap Guild = Neutral Emblem, Kaiju "괴", Market "상". The other WorldMap glyphs and ClassPicker emoji fallbacks wait
+  for a Studio check. [CR-L45–L48] WorldMap: zoom-relative label/icon thresholds, roads from `Config.Map.Roads`, KEY_GUARD
+  removed, zoom anchor in screen pixels.
+
+### A16-12 New or changed public surface
+| Owner | Function / field | Contract |
+|---|---|---|
+| ZoneService | `IsPlausible(player, pos) -> boolean` | A16-1 (false only while Enforce) |
+| ZoneService | `MarkTeleported(player, seconds?)` | A16-1 |
+| PlayerService | `PairReady(holder, otherUserId, kind, cooldown, commit?) -> boolean` | A16-2 |
+| PlayerService | `GetLastActive(player) -> number` | os.clock() of last MarkActive, 0 = never |
+| PlayerService | `IsShuttingDown() -> boolean` | A16-3 |
+| CombatService | `DamagePlayer(...) -> number`; `PlayerDamaged(victim, applied, attacker)` | A16-5 |
+| MonsterService | query functions + `DamageMonster` zone filter; `MonsterKilled` info.`WarShare` | A16-6, A16-7 |
+| WarService | `AddPoints(player, n, poolN?)` | A16-7 |
+| KaijuService | `HandleKaijuDeath(victim, killer, leaving?)` | A16-4 |
+| GooseService | `RegisterHit(...) -> number`; `GetPosition()` includes side offset | A16-5 |
+| JusticeService | `GetCombatPower(player) -> number` | A16-8 |
+| FactionService | `GetUnderdogCounts(always?) -> (halo, horns)` | A16-8 |
+| MonetizationService | `UseTicket(...) -> (boolean, "Pending" \| "None" \| nil)` | A16-8 |
+| ProgressionService | signal `LevelReset(player)` | A16-10 |
+| PvPService | `PlayerKO` info.Kind `"Defense"` | A16-9 |
+| Net / GameState | remote `Quests` (S→C); `UnderdogHalo`, `UnderdogHorns` | A16-10, A16-8 |
+| Data | `PairCD`, `SavedBully`, `SavedBullyAt`, `SavedStars`, `SavedStarsAt` (not mirrored) | A16-2, A16-3 |
+| Util | `GlyphSafe(text) -> boolean` | A16-11 |
+| HUD (client) | `HUD.TopCenterX`, `HUD.TopCenterW`, `HUD.Layout` | A16-11 |
+
+### A16-13 Still open after R1
+- Studio verification of every changed file (compile, then playtest with the review's checklist).
+- Turn on `Config.AntiCheat.Enforce` once the playtest shows no false positives.
+- User decision: raise `Config.Charge.HaloHealPct` after CR-M10, or accept the lower release healing.
+- A leaving kaiju's carried gold is banked by ProgressionService's PlayerLeaving before KaijuService settles, so only the
+  minted part reaches the raid (G9 note).
+- `Config.Text.SwitchDonePlain` is not in Config yet (FactionService uses its fallback text).
+- `tools/preview_map.lua` still writes the guild billboard as "⚙ 장인 길드" (only matters if the preview is re-run).
+- Goose `G` numbers with decimals display floored (Fx uses Util.FormatNumber); CR-M22: check in Studio that the
+  SkeletonRuins pad (68, 0, 24) is clear of the east Crossroads ridge (x ≈ 105).
+- The Panels rebirth preview subtracts the viewer from their faction even when the viewer is idle > 120 s (not counted in
+  UnderdogHalo/Horns), so it can be off by one until the viewer acts.
