@@ -55,5 +55,23 @@
  "SkeletonKing": {
   "status": "approved",
   "file": "art/out/SkeletonKing.png"
+ },
+ "UI_HUD_Final": {
+  "status": "approved",
+  "file": "art/out/UI_HUD_Final.png",
+  "note": "시안 C+A 합본 1 + 왼쪽 위 카드는 합본 2"
+ },
+ "UI_Faction_B": {
+  "status": "approved",
+  "file": "art/out/UI_Faction_B.png"
+ },
+ "UI_Faction_A": {
+  "status": "not_selected",
+  "file": "art/out/UI_Faction_A.png"
+ },
+ "UI_Class_A": {
+  "status": "approved",
+  "file": "art/out/UI_Class_A.png",
+  "note": "능력치(5칸): 성기사 체력4 공격3 속도2 / 마법사 체력2 공격4 속도3 / 레인저 체력3 공격2 속도4"
  }
 }

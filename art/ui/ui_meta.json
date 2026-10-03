@@ -1,0 +1,346 @@
+{
+ "UIP_BarTrack": {
+  "w": 512,
+  "h": 94,
+  "slice": [
+   45,
+   20,
+   466,
+   73
+  ]
+ },
+ "UIP_BtnAttack": {
+  "w": 509,
+  "h": 512
+ },
+ "UIP_BtnSpecial": {
+  "w": 512,
+  "h": 504
+ },
+ "UIP_BtnSquare": {
+  "w": 512,
+  "h": 491,
+  "slice": [
+   94,
+   34,
+   416,
+   392
+  ]
+ },
+ "UIP_Crown": {
+  "w": 256,
+  "h": 175
+ },
+ "UIP_IconAttack": {
+  "w": 256,
+  "h": 253
+ },
+ "UIP_IconClover": {
+  "w": 246,
+  "h": 256
+ },
+ "UIP_IconCoin": {
+  "w": 254,
+  "h": 256
+ },
+ "UIP_IconGear": {
+  "w": 247,
+  "h": 256
+ },
+ "UIP_IconGoose": {
+  "w": 218,
+  "h": 256
+ },
+ "UIP_IconLock": {
+  "w": 246,
+  "h": 256
+ },
+ "UIP_IconMap": {
+  "w": 256,
+  "h": 202
+ },
+ "UIP_IconPouch": {
+  "w": 256,
+  "h": 249
+ },
+ "UIP_IconSafe": {
+  "w": 254,
+  "h": 256
+ },
+ "UIP_IconScroll": {
+  "w": 256,
+  "h": 192
+ },
+ "UIP_PortraitRing": {
+  "w": 498,
+  "h": 512
+ },
+ "UIP_RibbonHeader": {
+  "w": 512,
+  "h": 124,
+  "slice": [
+   42,
+   21,
+   470,
+   104
+  ]
+ },
+ "UIP_ShieldHalo": {
+  "w": 490,
+  "h": 512
+ },
+ "UIP_ShieldHorns": {
+  "w": 497,
+  "h": 512
+ },
+ "UIP_IconSlime": {
+  "w": 256,
+  "h": 245
+ },
+ "UIP_IconSpecial": {
+  "w": 256,
+  "h": 146
+ },
+ "UIP_IconSprout": {
+  "w": 256,
+  "h": 187
+ },
+ "UIP_IconStar": {
+  "w": 256,
+  "h": 243
+ },
+ "UIP_IconStarEmpty": {
+  "w": 256,
+  "h": 255
+ },
+ "UIP_IconSword": {
+  "w": 255,
+  "h": 256
+ },
+ "UIP_LevelBadge": {
+  "w": 512,
+  "h": 511
+ },
+ "UIP_PanelCard": {
+  "w": 512,
+  "h": 233,
+  "slice": [
+   39,
+   40,
+   472,
+   193
+  ]
+ },
+ "UIP_PanelParchment": {
+  "w": 512,
+  "h": 327,
+  "slice": [
+   22,
+   23,
+   490,
+   300
+  ]
+ },
+ "UIP_Pill": {
+  "w": 512,
+  "h": 120,
+  "slice": [
+   41,
+   23,
+   472,
+   98
+  ]
+ },
+ "UIP_CardHalo": {
+  "w": 635,
+  "h": 1024
+ },
+ "UIP_CardHorns": {
+  "w": 617,
+  "h": 1024
+ },
+ "UIP_CardNeutral": {
+  "w": 612,
+  "h": 1024
+ },
+ "UIP_CharHaloArcher": {
+  "w": 504,
+  "h": 512
+ },
+ "UIP_CharHaloMage": {
+  "w": 478,
+  "h": 512
+ },
+ "UIP_CharHaloWarrior": {
+  "w": 464,
+  "h": 512
+ },
+ "UIP_CharHornsArcher": {
+  "w": 467,
+  "h": 512
+ },
+ "UIP_CharHornsMage": {
+  "w": 478,
+  "h": 512
+ },
+ "UIP_CharHornsWarrior": {
+  "w": 489,
+  "h": 512
+ },
+ "UIP_CharNeutralArcher": {
+  "w": 463,
+  "h": 512
+ },
+ "UIP_CharNeutralMage": {
+  "w": 457,
+  "h": 512
+ },
+ "UIP_CharNeutralWarrior": {
+  "w": 495,
+  "h": 512
+ },
+ "UIP_ClassCardHalo": {
+  "w": 647,
+  "h": 1024
+ },
+ "UIP_ClassCardHorns": {
+  "w": 608,
+  "h": 1024
+ },
+ "UIP_ClassCardNeutral": {
+  "w": 618,
+  "h": 1024
+ },
+ "UIP_IconAltar": {
+  "w": 241,
+  "h": 256
+ },
+ "UIP_IconBloodSword": {
+  "w": 256,
+  "h": 239
+ },
+ "UIP_IconBoot": {
+  "w": 256,
+  "h": 232
+ },
+ "UIP_IconDemon": {
+  "w": 256,
+  "h": 231
+ },
+ "UIP_IconExp": {
+  "w": 229,
+  "h": 256
+ },
+ "UIP_IconGauge": {
+  "w": 256,
+  "h": 70
+ },
+ "UIP_IconGoldPile": {
+  "w": 256,
+  "h": 166
+ },
+ "UIP_IconHammer": {
+  "w": 236,
+  "h": 256
+ },
+ "UIP_IconHeart": {
+  "w": 256,
+  "h": 222
+ },
+ "UIP_IconNoBuff": {
+  "w": 256,
+  "h": 243
+ },
+ "UIP_IconNoLoot": {
+  "w": 243,
+  "h": 256
+ },
+ "UIP_IconShieldBlue": {
+  "w": 227,
+  "h": 256
+ },
+ "UIP_IconWings": {
+  "w": 256,
+  "h": 166
+ },
+ "UIP_ShieldNeutral": {
+  "w": 251,
+  "h": 256
+ },
+ "UIP_TitleRibbon": {
+  "w": 256,
+  "h": 63
+ },
+ "UIP_CharHaloArcherF": {
+  "w": 504,
+  "h": 512
+ },
+ "UIP_CharHaloArcherM": {
+  "w": 501,
+  "h": 512
+ },
+ "UIP_CharHaloMageF": {
+  "w": 478,
+  "h": 512
+ },
+ "UIP_CharHaloMageM": {
+  "w": 460,
+  "h": 512
+ },
+ "UIP_CharHaloWarriorF": {
+  "w": 464,
+  "h": 512
+ },
+ "UIP_CharHaloWarriorM": {
+  "w": 420,
+  "h": 512
+ },
+ "UIP_CharHornsArcherF": {
+  "w": 467,
+  "h": 512
+ },
+ "UIP_CharHornsArcherM": {
+  "w": 467,
+  "h": 512
+ },
+ "UIP_CharHornsMageF": {
+  "w": 496,
+  "h": 512
+ },
+ "UIP_CharHornsMageM": {
+  "w": 478,
+  "h": 512
+ },
+ "UIP_CharHornsWarriorF": {
+  "w": 473,
+  "h": 512
+ },
+ "UIP_CharHornsWarriorM": {
+  "w": 489,
+  "h": 512
+ },
+ "UIP_CharNeutralArcherF": {
+  "w": 463,
+  "h": 512
+ },
+ "UIP_CharNeutralArcherM": {
+  "w": 416,
+  "h": 512
+ },
+ "UIP_CharNeutralMageF": {
+  "w": 457,
+  "h": 512
+ },
+ "UIP_CharNeutralMageM": {
+  "w": 465,
+  "h": 512
+ },
+ "UIP_CharNeutralWarriorM": {
+  "w": 485,
+  "h": 512
+ },
+ "UIP_CharNeutralWarriorF": {
+  "w": 476,
+  "h": 512
+ }
+}

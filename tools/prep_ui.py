@@ -73,7 +73,12 @@ def main(names):
             print("없음", name)
             continue
         im = crop_alpha(Image.open(src).convert("RGBA"))
-        limit = 512 if (name in FRAMES or name in BIG) else 256
+        if name.startswith(("UIP_Card", "UIP_ClassCard")):
+            limit = 1024  # whole cards are shown large (Roblox max 1024)
+        elif name.startswith("UIP_Char") or name in FRAMES or name in BIG:
+            limit = 512
+        else:
+            limit = 256
         scale = min(1.0, limit / max(im.size))
         if scale < 1.0:
             im = im.resize((max(1, round(im.width * scale)), max(1, round(im.height * scale))), Image.LANCZOS)

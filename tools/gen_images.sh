@@ -14,7 +14,8 @@ gen_one() {
   id="$1"
   [ -s "$OUT/$id.png" ] && { echo "skip $id"; return 0; }
   size="1024x1024"
-  case "$id" in Thumbnail_*|UI_MapParchment|UI_HUD_*) size="1536x1024 (landscape)";; esac
+  case "$id" in Thumbnail_*|UI_MapParchment|UI_HUD_*|UI_Faction_*|UI_Class_*) size="1536x1024 (landscape)";; esac
+  case "$id" in UIP_Card*|UIP_ClassCard*) size="1024x1536 (portrait)";; esac
   refargs=()
   refnote=""
   for r in $REFS; do refargs+=(-i "$(pwd)/$r"); done
