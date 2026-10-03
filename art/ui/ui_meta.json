@@ -342,5 +342,45 @@
  "UIP_CharNeutralWarriorF": {
   "w": 476,
   "h": 512
+ },
+ "UIP_FxSlash": {
+  "w": 256,
+  "h": 251
+ },
+ "UIP_FxHitSpark": {
+  "w": 254,
+  "h": 256
+ },
+ "UIP_FxShockRing": {
+  "w": 256,
+  "h": 252
+ },
+ "UIP_FxMagicBurst": {
+  "w": 256,
+  "h": 256
+ },
+ "UIP_FxDust": {
+  "w": 222,
+  "h": 256
+ },
+ "UIP_EmoOuch": {
+  "w": 256,
+  "h": 175
+ },
+ "UIP_EmoTears": {
+  "w": 256,
+  "h": 197
+ },
+ "UIP_EmoDizzy": {
+  "w": 256,
+  "h": 232
+ },
+ "UIP_EmoAngry": {
+  "w": 256,
+  "h": 232
+ },
+ "UIP_EmoStress": {
+  "w": 256,
+  "h": 213
  }
 }
