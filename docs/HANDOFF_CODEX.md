@@ -23,8 +23,11 @@
   - **진영/직업 고르기 화면 재디자인**(GPT 카드, 남/여 전환, 능력치 5칸: 성기사 4/3/2, 마법사 2/4/3, 레인저 3/2/4)
   - **A15 타격감 + 아파하는 반응**(몬스터 예비 동작 `WindupAt`, 피격 `HurtSeq`, 플레이어 `Pain` Fx, 밀려나기, 베기 궤적, 히트스톱, 스티커)
   - 진영 고르기 전 팀 "진영 고르는 중"
-- **코드 리뷰 R1 수정(HIGH 2 / MED 27 / LOW 51)**: 이 문서를 쓸 때 막바지였다. 결과와 남은 것은 `docs/review/reviewer_code_r1.md`(체크리스트)와 `docs/SPEC_ADDENDUM.md` A16을 본다. **반드시 스튜디오에서 `py tools/luau_check.py`(전 파일) → `sync_to_studio.py` → `playtest.py`로 확인**해야 한다(작성 당시 스튜디오를 못 써서 컴파일 검사를 아직 못 함).
-  - CR-H2(위치 검증)는 `Config.AntiCheat.Enforce = false`(로그만) 상태. 플레이 테스트에서 오탐이 없으면 켠다.
+- **코드 리뷰 R1 수정(HIGH 2 / MED 27 / LOW 51)**: 2026-10-03 GoodEvil에서 전체 33개 Luau 문법 정상 → 동기화 29개/동일 4개 → 15초 플레이 테스트를 완료했다. 서버 19/19와 ClientMain 클라이언트 8개 모듈이 정상 시작했으며 이번 검증에서 Luau 런타임 오류는 없었다.
+  - 실제 UI로 빛의 기사단·성기사 선택, B 메뉴의 말랑 초원 이동, M 지도 열기/닫기·확대·내 위치, F 수동 전투, Q 발사, R 자동 공격, 안내 퀘스트 받기 중복 방지, 거위 공격, 괴수 Siren→Active를 확인했다. 거위 시작·괴수 별 5개·자동 공격용 레벨 5는 Studio 디버그로 설정했다.
+  - 결과와 화면은 `docs/review/r1_studio_verify_2026-10-03.md`, 원본 체크리스트는 `docs/review/reviewer_code_r1.md`, 계약은 `docs/SPEC_ADDENDUM.md` A16을 본다.
+  - DataStore API 미활성으로 메모리 모드였다. 저장·재접속/PairCD·다인 PvP·괴수 퇴장 정산·이동 오탐 조건 전체·새 계정 에셋은 미검증이다. 옛 Mesh/Texture 불러오기 실패 경고와 Developer Product ID 0도 남아 있다.
+  - CR-H2(위치 검증)는 `Config.AntiCheat.Enforce = false`(로그만)를 유지한다. 메뉴 이동·리스폰·낙하 구조·덩치 변화·적 마을 튕김 등 오탐 조건 전체를 확인한 뒤 켠다.
 
 ### 아트 (`art/`)
 - `art/prompts/<id>.txt` = 프롬프트, `art/out/<id>.png` = GPT 결과, `art/approved.json` = 사용자 승인 기록.
@@ -49,7 +52,7 @@
   - 업로드 전 한 장씩 확인 → 사용자에게 보여 주기 → 10장 이하씩 나눠서.
 
 ## 3. 다음에 할 일 (우선순위)
-1. **스튜디오 검증**: 리뷰 R1 수정본 전체 `luau_check` → 오류 수정 → `sync_to_studio` → 플레이 테스트(진영/직업 고르기, 전투, 퀘스트, 지도, 거위, 괴수) → 커밋.
+1. **R1 기본 스튜디오 검증 완료**: 전체 문법·동기화·시작·진영/직업·전투·퀘스트·지도·거위·괴수 기본 동작 확인 완료(위 기록). 남은 다인 PvP/PairCD 저장·재접속/괴수 퇴장 정산/이동 오탐 전체 조건은 별도 검증한다. `AntiCheat.Enforce`는 아직 끄고 둔다.
 2. **새 계정으로 재업로드**(10-04부터, 위 규칙대로) → `Config.UIArt.Parts`의 `Id = ""`들 채우기(코스튬 카드/캐릭터/아이콘/Fx/Emo).
 3. **그림 글자 연결**: 고정 글자(공격, 발사, 메뉴, 지도, 받기, 교체, 오늘의 퀘스트, 진영·직업 이름, 화면 제목, "이 편으로!", "이 직업으로!", 레벨 업!, 지역 이름…)를 `TXT_*` 이미지(ImageLabel)로. 바뀌는 글자는 나눔고딕 ExtraBold(`Font.fromId(12187361718, Enum.FontWeight.ExtraBold)`, 게시한 place에서 403 확인)나 Montserrat Bold + 진갈색 UIStroke + 따뜻한 색. 이미지가 없으면 지금 글자로 대체(IMG-R4).
 4. **직업 코스튬 시스템**(기본 켜짐, 설정에서 끄기):

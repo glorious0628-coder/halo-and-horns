@@ -291,9 +291,14 @@ Applied in the Studio preview map (`tools/preview_map.lua` v3). Config must matc
 
 ## A16. Code review R1 fixes (docs/review/reviewer_code_r1.md; overrides TECH_SPEC and A1–A15 where they conflict)
 
-Applied 2026-10-03 by groups G1–G12 + GW **without Studio**: nothing has been compiled or play-tested yet
-(next step: `luau_check` on every file → sync → playtest, HANDOFF_CODEX §3). CR-M24, CR-M25, CR-M26, CR-L33 and CR-L35 were
-already fixed by the HUD / picker redesign. `[CR-xx]` = review item. Config values below are the ones in Config.luau.
+Applied 2026-10-03 by groups G1–G12 + GW, initially without Studio. Verified afterward in GoodEvil:
+all 33 Luau files compiled, sync changed 29 / kept 4, and a 15 s start test ran all 19 server services plus 8 client
+modules without Luau runtime errors. Single-player UI checks passed faction/class selection, travel, map, manual/auto
+combat, release, a tutorial claim paid once after a double click, goose hits, and the kaiju Siren → Active transition.
+See [the verification record and screenshots](review/r1_studio_verify_2026-10-03.md) for exact scope and limitations;
+DataStore was in memory mode and multiplayer/persistent-data scenarios remain unverified. CR-M24, CR-M25, CR-M26,
+CR-L33 and CR-L35 were already fixed by the HUD / picker redesign. `[CR-xx]` = review item.
+Config values below are the ones in Config.luau.
 
 ### A16-1 Anti-cheat movement check — LOG-ONLY for now [CR-H2]
 - `Config.AntiCheat = { Enforce = false, MoveMult = 1.6, Slack = 8, RisePerSec = 60, RiseSlack = 12, TeleportGrace = 1,
@@ -531,11 +536,14 @@ already fixed by the HUD / picker redesign. `[CR-xx]` = review item. Config valu
 | HUD (client) | `HUD.TopCenterX`, `HUD.TopCenterW`, `HUD.Layout` | A16-11 |
 
 ### A16-13 Still open after R1
-- Studio verification of every changed file (compile, then playtest with the review's checklist).
-- Turn on `Config.AntiCheat.Enforce` once the playtest shows no false positives.
+- All-file compile and the basic single-player checks passed on 2026-10-03; the full review's multiplayer, persistence,
+  shutdown and exploit scenarios still need Studio/published-server verification (see the verification record).
+- Keep `Config.AntiCheat.Enforce = false` until all movement false-positive conditions are checked: menu travel,
+  respawn, fall rescue, bully/kaiju scale changes and enemy-town bounce, plus intentional invalid moves.
 - User decision: raise `Config.Charge.HaloHealPct` after CR-M10, or accept the lower release healing.
-- A leaving kaiju's carried gold is banked by ProgressionService's PlayerLeaving before KaijuService settles, so only the
-  minted part reaches the raid (G9 note).
+- Former G9 limitation: ProgressionService banked a leaving kaiju's pouch before the raid settled, leaving only the
+  minted part. The follow-up code now escrows that pouch before settlement; actual leaving-kaiju reward/rollback and
+  shutdown behavior are still unverified in this single-player run.
 - `Config.Text.SwitchDonePlain` is not in Config yet (FactionService uses its fallback text).
 - `tools/preview_map.lua` still writes the guild billboard as "⚙ 장인 길드" (only matters if the preview is re-run).
 - Goose `G` numbers with decimals display floored (Fx uses Util.FormatNumber); CR-M22: check in Studio that the
