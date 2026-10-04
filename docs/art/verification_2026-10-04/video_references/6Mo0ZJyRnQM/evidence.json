@@ -1,0 +1,259 @@
+{
+  "video_id": "6Mo0ZJyRnQM",
+  "url": "https://www.youtube.com/watch?v=6Mo0ZJyRnQM",
+  "provided_playlist_url": "https://www.youtube.com/watch?v=6Mo0ZJyRnQM&list=PLyOdoGTR-aaGx4TkOhEQeCR4v4-DbU6ci",
+  "single_video_only": true,
+  "title": "무언가 엄청나게 바뀌어버린 제목없는 RPG ㄷㄷ [제목없는 RPG]",
+  "author": "캣치즈",
+  "channel_id": "UCNKWu0r-T_dGPT2lmRTWM1g",
+  "duration_seconds": 488,
+  "collected_at": "2026-10-04T05:02:16.944615+00:00",
+  "metadata_method": "Public YouTube watch page ytInitialPlayerResponse, UTF-8",
+  "watch_html_sha256": "c54bb78b14b223e1f703992e71831365af0bea53eeac92c543ceac6ab71aae46",
+  "playback_performed": false,
+  "audio_reviewed": false,
+  "caption_reviewed": false,
+  "caption_attempt": {
+    "track": "ko / automatic",
+    "endpoint": "https://www.youtube.com/api/timedtext",
+    "format": "json3",
+    "http_status": 429,
+    "body_bytes": 1103,
+    "body_sha256": "9010e5a841cf0acfb13facfaa2c3318bc8118020ec071d15de099eb9a628fd01",
+    "note": "Rate limited. No retry or bypass attempted; response is an error HTML, not a transcript."
+  },
+  "storyboard": {
+    "level": 3,
+    "tile_width": 320,
+    "tile_height": 180,
+    "count": 99,
+    "columns": 3,
+    "rows": 3,
+    "interval_ms": 5000,
+    "timestamp_method": "Approximate source-preview index multiplied by advertised interval; not actual player time or frame accurate.",
+    "sheets": [
+      {
+        "file": "storyboard_L3_00.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M0.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "cbbc9b89b5ea5471ccecd1bfac9a950962491e2fabcb461c5b59c9c60bb1262a",
+        "bytes": 73687,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 0,
+        "last_tile_index": 8,
+        "approx_start_seconds": 0.0,
+        "approx_last_tile_seconds": 40.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_01.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M1.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "4c035be1748d6d18ca42f6371f755e1f87c8ef2bb052bf845a35949f58fc9627",
+        "bytes": 74894,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 9,
+        "last_tile_index": 17,
+        "approx_start_seconds": 45.0,
+        "approx_last_tile_seconds": 85.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_02.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M2.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "80f0f50141791c6d50246b61cab985ee57beebad1e4cc19eb891ae9ad212d9f4",
+        "bytes": 69387,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 18,
+        "last_tile_index": 26,
+        "approx_start_seconds": 90.0,
+        "approx_last_tile_seconds": 130.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_03.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M3.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "65ca309fb584f852884af0452012c88d10b0dfa3767d4424dbe1e8714e977100",
+        "bytes": 77315,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 27,
+        "last_tile_index": 35,
+        "approx_start_seconds": 135.0,
+        "approx_last_tile_seconds": 175.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_04.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M4.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "bdd44f92e21277105aff911052700c22f68b6c3de53ef56985df9c87904d3920",
+        "bytes": 74161,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 36,
+        "last_tile_index": 44,
+        "approx_start_seconds": 180.0,
+        "approx_last_tile_seconds": 220.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_05.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M5.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "bc71fd588adffd99fbaa7515aa4a79e59fb375b7e3c556714b1208386b4c737d",
+        "bytes": 66038,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 45,
+        "last_tile_index": 53,
+        "approx_start_seconds": 225.0,
+        "approx_last_tile_seconds": 265.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_06.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M6.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "629577b32127d3be6600c55e390a1de5fca1275b3c333d08604c58c8321da458",
+        "bytes": 65542,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 54,
+        "last_tile_index": 62,
+        "approx_start_seconds": 270.0,
+        "approx_last_tile_seconds": 310.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_07.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M7.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "8a55a1a1fc11b932a0482b8d431b085c9c359c8abe7584f1279bc47694819fa1",
+        "bytes": 70262,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 63,
+        "last_tile_index": 71,
+        "approx_start_seconds": 315.0,
+        "approx_last_tile_seconds": 355.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_08.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M8.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "6e9ab2005dffc1e65cf4667f455f9a4fc3ddd10b856681dfbd71398aeee9e7d3",
+        "bytes": 69506,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 72,
+        "last_tile_index": 80,
+        "approx_start_seconds": 360.0,
+        "approx_last_tile_seconds": 400.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_09.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M9.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "78e6987ad6cce1e6f5efcf031cefbe01fc7bed45f851a223f9ab7c4febcfd743",
+        "bytes": 84081,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 81,
+        "last_tile_index": 89,
+        "approx_start_seconds": 405.0,
+        "approx_last_tile_seconds": 445.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      },
+      {
+        "file": "storyboard_L3_10.jpg",
+        "source_url": "https://i.ytimg.com/sb/6Mo0ZJyRnQM/storyboard3_L3/M10.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIm0o9QG&sigh=rs$AOn4CLBhbNcWukd0g9N2OaVn_qYHQtRi2A",
+        "sha256": "54c62099e6b49733a8e019b85edae746765cc4fe47ddeccb302bcfe52d0d2ea0",
+        "bytes": 59460,
+        "width": 960,
+        "height": 540,
+        "first_tile_index": 90,
+        "last_tile_index": 98,
+        "approx_start_seconds": 450.0,
+        "approx_last_tile_seconds": 490.0,
+        "visual_reviewed": true,
+        "review_method": "Opened original sheet with view_image; read visible scene and legible baked-in captions only.",
+        "sha256_verified": true
+      }
+    ],
+    "reviewed_tile_count": 99,
+    "content_tile_count": 98,
+    "content_approx_start_seconds": 0,
+    "content_approx_end_seconds": 485,
+    "excluded_tiles": [
+      {
+        "index": 98,
+        "approx_seconds": 490,
+        "reason": "Black tile beyond declared 488-second video duration."
+      }
+    ],
+    "final_content_tile": {
+      "index": 97,
+      "approx_seconds": 485,
+      "note": "Darkened ending scene still visibly contains the game; not playback completion proof."
+    }
+  },
+  "limits": [
+    "No continuous playback",
+    "No audio review",
+    "No transcript text obtained",
+    "Only source-provided low-resolution storyboard samples; intermediate frames not reviewed",
+    "No game code/assets changed and no paid calls"
+  ],
+  "observations": [
+    {
+      "approx_seconds": [
+        180,
+        195
+      ],
+      "evidence": "storyboard_L3_04.jpg r1c1,r2c1",
+      "observation": "Level/resource bars and toolbar at bottom, shown enlarged in the edited video."
+    },
+    {
+      "approx_seconds": [
+        200,
+        225
+      ],
+      "evidence": "storyboard_L3_04.jpg r2c2-r3c3; storyboard_L3_05.jpg r1c1",
+      "observation": "Physical shop and NPC, item list, separate selection confirmation. Exact prices and completed purchase not verified."
+    },
+    {
+      "approx_seconds": [
+        320,
+        335
+      ],
+      "evidence": "storyboard_L3_07.jpg r1c2-r2c2",
+      "observation": "Fishing with nearby avatars, circular input cue, progress and success display. Input timing and audio not reviewed."
+    },
+    {
+      "approx_seconds": [
+        420,
+        460
+      ],
+      "evidence": "storyboard_L3_09.jpg r2c1-r3c3; storyboard_L3_10.jpg r1c1-r1c3",
+      "observation": "Multiple avatars near a large enemy, upper enemy health display and broad overlapping visual effects."
+    }
+  ]
+}

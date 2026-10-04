@@ -1,0 +1,285 @@
+{
+  "schema": 1,
+  "checked_date_kst": "2026-10-04",
+  "official_api": [
+    {
+      "name": "place_universe",
+      "url": "https://apis.roblox.com/universes/v1/places/118582391303761/universe",
+      "status": 200,
+      "response_sha256": "74961cf00871ec8d651a7badb6993768bca734f1a300364cc4a51717ed846d67",
+      "selected_fields": {
+        "universeId": 8570876289
+      },
+      "retrieved_at_utc": "2026-10-04T05:06:01.139967+00:00"
+    },
+    {
+      "name": "game",
+      "url": "https://games.roblox.com/v1/games?universeIds=8570876289",
+      "status": 200,
+      "response_sha256": "c4fef94a6a6676c46e83ef58cf1598089b0cd195d867afca4063fe5e04bd9a6e",
+      "selected_fields": {
+        "id": 8570876289,
+        "rootPlaceId": 118582391303761,
+        "name": "UNTITLED RPG GAME",
+        "creator": {
+          "id": 35801606,
+          "name": "Lunar's Studio.",
+          "type": "Group",
+          "isRNVAccount": false,
+          "hasVerifiedBadge": true
+        },
+        "maxPlayers": 20,
+        "created": "2025-08-28T15:08:18.507Z",
+        "updated": "2026-10-03T17:47:39.2053053Z",
+        "universeAvatarType": "MorphToR6",
+        "genre_l1": "RPG",
+        "genre_l2": "Action RPG",
+        "playing": 1140,
+        "visits": 61775775
+      },
+      "retrieved_at_utc": "2026-10-04T05:06:01.646897+00:00"
+    },
+    {
+      "name": "group",
+      "url": "https://groups.roblox.com/v1/groups/35801606",
+      "status": 200,
+      "response_sha256": "aece7e7f311c9622c7d8c4fa31d5bcfa7cb66872ded4d19cb1ad1c964db80856",
+      "selected_fields": {
+        "id": 35801606,
+        "name": "Lunar's Studio.",
+        "owner": {
+          "hasVerifiedBadge": true,
+          "userId": 3746869261,
+          "username": "YGvw_Sol",
+          "displayName": "YGvw_Sol"
+        }
+      },
+      "retrieved_at_utc": "2026-10-04T05:06:02.138555+00:00"
+    }
+  ],
+  "restricted_api": {
+    "url": "https://games.roblox.com/v1/games/8570876289/social-links/list",
+    "http_status": 401,
+    "authentication_not_attempted": true
+  },
+  "developer_interview": {
+    "publisher": "아주경제",
+    "date": "2026-06-01",
+    "author": "백서현",
+    "url": "https://v.daum.net/v/20260601180243082",
+    "publisher_english_version": "https://m.ajupress.com/amp/20260601180670446",
+    "developer_public_name": "김태훈",
+    "developer_handle": "Lunar_Dev",
+    "game_linkage": "The interview identifies Untitled RPG Game as his representative work.",
+    "distinction": "Current Roblox creator group and current group owner are separate from the developer interviewed. No citizenship field or complete current development-team roster was verified.",
+    "article_text_archived": false
+  },
+  "video": {
+    "id": "GV5zZLF-nD8",
+    "url": "https://www.youtube.com/watch?v=GV5zZLF-nD8",
+    "title": "초보자분들을 위해 꽉꽉 눌러 담았습니다.. 제목없는 RPG 초보자 가이드!!",
+    "channel": "코대",
+    "duration_seconds": 673,
+    "published": "2025-11-09T21:00:30-08:00",
+    "method": "Official YouTube scrub preview contact sheets; not video playback",
+    "storyboard_tile_size": [
+      320,
+      180
+    ],
+    "tile_interval_milliseconds": 5000,
+    "tile_count": 136,
+    "sheets": [
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_00.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M0.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "c453880540433363bc7cd57e0662eee24aeb219f01533ff49c909d8098066ac2",
+        "first_index": 0,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_01.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M1.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "2e576d0336c2de93256d2c8778c94ec4b84793e84907dd36dcf53dec86b2d56d",
+        "first_index": 9,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_02.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M2.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "7031bc83238ae9588268ad64bdc0ee81bd1ee5c90a90788cd51d2c42084ed4c5",
+        "first_index": 18,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_03.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M3.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "d2e71573b43dd811c41ad4f5c3496c2c424a33233402b70dc5dc96fc00d9e82f",
+        "first_index": 27,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_04.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M4.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "d9d1de652278337c52d4ee771b6164307f1507ad5a14646703188151b9b65443",
+        "first_index": 36,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_05.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M5.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "bfcb31967452226ab0ff534c3610b0080f18d211a57ee6de995b2fa9c649a88e",
+        "first_index": 45,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_06.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M6.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "b166b5b6b9b856653a7301f1e61579b206dd2b035460817e5be945263a4bbc8f",
+        "first_index": 54,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_07.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M7.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "5758b363131836b56ecf71659b6c118340e700f020ea58716b32343f2523a7a2",
+        "first_index": 63,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_08.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M8.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "3d1b3f756a9b511b5e133630367a1c02b03e1b9d725f9f32f89ed9e70d7c12d5",
+        "first_index": 72,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_09.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M9.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "a5402bae5c19fb1881c986300b76c062b4779d04e058f7935c7b9e55e81035b8",
+        "first_index": 81,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_10.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M10.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "b737bfca9a57320f37e500e9d55eccdf9af8bba22dad8b79736e5e8072f77db7",
+        "first_index": 90,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_11.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M11.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "01bad17e8ef9993a17072750330b9ee8ae0675a84240fda43037f9b025e97b62",
+        "first_index": 99,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_12.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M12.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "89dd2c2f3c24dc1744ba4bd9115b227d9c2a26689ac812f1f2061c139165d7f7",
+        "first_index": 108,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_13.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M13.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "53b5f89c54ab18fcb63dbc64120323de602f3d650905e19f623310e540cb626e",
+        "first_index": 117,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_14.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M14.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "183751a4234b987900f2a80d4ae65691b0cff8ff002017b2ad358df725af0f6c",
+        "first_index": 126,
+        "count": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/untitled_rpg/guide_storyboard_15.jpg",
+        "url": "https://i.ytimg.com/sb/GV5zZLF-nD8/storyboard3_L3/M15.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCIicw8gG&sigh=rs$AOn4CLDgc4D7ZhKUcRar_7x-4dkUan58QA",
+        "sha256": "9b0bd09910509112bd42c2dfaaa1ec45251fd08c2ebabc317c6b4b7fc35cd628",
+        "first_index": 135,
+        "count": 1
+      }
+    ],
+    "transcript": "Not requested after earlier same-service timedtext HTTP 429 restriction.",
+    "audio_heard": false,
+    "continuous_playback": false,
+    "historical_reference_not_current_UI_verification": true,
+    "visual_review": {
+      "all_16_sheets_opened": true,
+      "target_game_tiles_reviewed": 132,
+      "nominal_range_seconds": [
+        0,
+        655
+      ],
+      "excluded_outro_tiles_seconds": [
+        660,
+        665,
+        670,
+        675
+      ],
+      "timing_exact": false,
+      "displayed_demo_level": 35,
+      "not_first_login_capture": true,
+      "observations": [
+        {
+          "seconds": [
+            40,
+            85
+          ],
+          "sheet_indices": [
+            0,
+            1
+          ],
+          "summary": "Named town buildings, nearby NPC interaction, shop and combination panels."
+        },
+        {
+          "seconds": [
+            135,
+            150
+          ],
+          "sheet_indices": [
+            3
+          ],
+          "summary": "Inventory item selection plus bottom quickbar and persistent HP/MP."
+        },
+        {
+          "seconds": [
+            195,
+            265
+          ],
+          "sheet_indices": [
+            4,
+            5
+          ],
+          "summary": "Goblin and slime health, return to town for sale and next weapon panel."
+        },
+        {
+          "seconds": [
+            375,
+            395
+          ],
+          "sheet_indices": [
+            8
+          ],
+          "summary": "Pond route followed by desert with region label."
+        },
+        {
+          "seconds": [
+            620,
+            640
+          ],
+          "sheet_indices": [
+            13,
+            14
+          ],
+          "summary": "Red attack areas and effects in front of enemy."
+        }
+      ]
+    }
+  },
+  "game_played": false,
+  "computer_control": false,
+  "paid_calls": 0
+}

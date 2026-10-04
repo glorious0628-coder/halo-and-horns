@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "date_kst": "2026-10-04",
+  "collected_at_utc": "2026-10-04T04:59:44.714195+00:00",
+  "video_id": "UQ7zRWzcIgo",
+  "url": "https://www.youtube.com/watch?v=UQ7zRWzcIgo",
+  "title": "새로운 로블록스 RPG 게임을 소개합니다. [소울 RPG]",
+  "channel": "캣치즈",
+  "duration_seconds": 590,
+  "metadata_method": "official watch page ytInitialPlayerResponse; requested ID verified",
+  "playback": "not_played",
+  "audio": "not_heard",
+  "transcript": {
+    "status": "unavailable_http_429",
+    "observed_tracks": [
+      {
+        "language": "en-US",
+        "kind": "asr"
+      },
+      {
+        "language": "id",
+        "kind": "asr"
+      },
+      {
+        "language": "ko",
+        "kind": "asr"
+      }
+    ],
+    "attempts": [
+      {
+        "format": "json3",
+        "http_status": 429
+      },
+      {
+        "format": "srv3",
+        "http_status": 429
+      }
+    ],
+    "text_read": false,
+    "further_attempts_after_two_failed_formats": 0
+  },
+  "storyboard": {
+    "method": "official YouTube scrub-preview contact sheets; not playback screenshots",
+    "width": 320,
+    "height": 180,
+    "count": 120,
+    "columns": 3,
+    "rows": 3,
+    "interval_milliseconds": 5000,
+    "nominal_last_seconds": 595.0,
+    "timing_note": "Nominal preview index multiplied by interval. End tiles beyond declared duration are excluded from content claims. These are approximate preview times, not exact decoded video timestamps.",
+    "sheets": [
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_00.jpg",
+        "sha256": "94a907da11c1b2ebc4ef3e868500ccb00069a47cf6caf99ac54d8f5fd9af974e",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M0.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 0,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_01.jpg",
+        "sha256": "f174ac0a9bf9bae96b4f53326e606131fa581c1f620bd2a4263499361de9c5fe",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M1.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 9,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_02.jpg",
+        "sha256": "c9a7407c1069c53ec30ff8c5502a655ec2190e22d7cb42ef0dc8eedfe0c39578",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M2.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 18,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_03.jpg",
+        "sha256": "f2e3697b856e7e93fa07f02531c1a98b6e8b2aef52207e24b32d918c5daac03c",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M3.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 27,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_04.jpg",
+        "sha256": "411b307c910eff9a55b9b4418c43c028a7233f2e8973e757a12066da7be85b1a",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M4.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 36,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_05.jpg",
+        "sha256": "fda6595d5c779f7284a9165c5daa90a7f75c4e30de46b5d401f10e33544f0f8a",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M5.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 45,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_06.jpg",
+        "sha256": "daf8730355cc54a4d866d5acebfb3f4b8597b9e8536605c4845a9ad4cc9ac388",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M6.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 54,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_07.jpg",
+        "sha256": "919c143f96b7fd543612fd5d7718edc5478a50890b5488d3f926bc4333822e00",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M7.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 63,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_08.jpg",
+        "sha256": "ded2b6f2e37bd24189e49b96f03338e028d0980bc52f33db17251e1d35049374",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M8.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 72,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_09.jpg",
+        "sha256": "0fef287157097ba7b7ffafca42b8d85943df41d9a5ee55e0d61c657957263287",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M9.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 81,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_10.jpg",
+        "sha256": "27197822adc239557c9bff752cc45c0854b03b064ee8318f7893c07b7228c13f",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M10.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 90,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_11.jpg",
+        "sha256": "54ac2896c730d508cff45cfc0144e123b36aba0d100d97e4262accc1689fe7f0",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M11.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 99,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_12.jpg",
+        "sha256": "2b1fb3faf8454fb5a1cebd27740d51fc8e1d368d40a651b62068959350c134c8",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M12.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 108,
+        "frames": 9
+      },
+      {
+        "path": "docs/art/verification_2026-10-04/video_references/UQ7zRWzcIgo/storyboard_13.jpg",
+        "sha256": "9699942db22dd7b55289b42718bb12572f0a9bd71fdaa659273c4e3176d802d7",
+        "http_status": 200,
+        "url": "https://i.ytimg.com/sb/UQ7zRWzcIgo/storyboard3_L3/M13.jpg?sqp=-oaymwGhAUg48quKqQOYAYgBAZUBAAAEQpgBMqABPKgBBLIBQBANDBAVHyYtDg4PEhcrLCkPDhAVHyoyKQ8RFBgmPTgtERQeKjFLRzYVHCkuOUdNPyUuNz1HUlFFM0BCQ0xERkO6AUARERUjRENDQxETFi9DQ0NDFRYpQ0NDQ0MjL0NDQ0NDQ0RDQ0NDQ0JCQ0NDQ0NCQkJDQ0NDQkJCQkNDQ0JCQkJCovOX_wMGCPmUydUG&sigh=rs$AOn4CLDmpphhQEstGYkHRMHJTTb2hD1GWQ",
+        "first_frame_index": 117,
+        "frames": 3
+      }
+    ]
+  },
+  "paid_calls": 0,
+  "computer_control": false,
+  "visual_review": {
+    "all_14_contact_sheets_opened": true,
+    "valid_scene_tiles_reviewed": 118,
+    "nominal_first_seconds": 0,
+    "nominal_last_seconds": 585,
+    "excluded_black_tiles_seconds": [
+      590,
+      595
+    ],
+    "continuous_playback": false,
+    "full_transcript": false,
+    "frame_exact_timing": false,
+    "observations": [
+      {
+        "approx_seconds": [
+          75,
+          95
+        ],
+        "sheet_indices": [
+          1,
+          2
+        ],
+        "observation": "List plus separate detail panel."
+      },
+      {
+        "approx_seconds": [
+          280
+        ],
+        "sheet_indices": [
+          6
+        ],
+        "observation": "Large combat effect and target health display visible together."
+      },
+      {
+        "approx_seconds": [
+          455
+        ],
+        "sheet_indices": [
+          10
+        ],
+        "observation": "Weapon shop shows owned currency and purchase entries."
+      },
+      {
+        "approx_seconds": [
+          475,
+          530
+        ],
+        "sheet_indices": [
+          10,
+          11
+        ],
+        "observation": "Region image selection and region name banner."
+      }
+    ]
+  }
+}
