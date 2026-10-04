@@ -1,0 +1,4 @@
+Use case: precise-object-edit.
+Edit target: approved Costume_HaloArcherM_Expression_Neutral_face.png.
+Improve eye and eyelash edge clarity while preserving the original wink, golden-brown open eye, feature positions, mouth, hair, halo, covered costume, framing and projected UV layout.
+Built-in GPT image generation was used. The user rejected this candidate on 2026-10-04 and requested sharper eyes. No upload or production application is authorized by this record.

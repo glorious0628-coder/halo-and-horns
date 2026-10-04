@@ -1,0 +1,92 @@
+{
+  "dry_run": true,
+  "valid": true,
+  "input": "art/out/APose_HaloArcherM_Sharp_D.png",
+  "scenario": "toy",
+  "model": "v3.1-20260211",
+  "model_reason": "explicit --model",
+  "steps": [
+    {
+      "name": "image-to-model",
+      "endpoint": "/v3/generation/image-to-model",
+      "task_type": "image_to_model",
+      "payload": {
+        "input": "<upload:art/out/APose_HaloArcherM_Sharp_D.png>",
+        "model": "v3.1-20260211",
+        "texture": true,
+        "pbr": true,
+        "face_limit": 18000,
+        "geometry_quality": "detailed",
+        "texture_quality": "extreme",
+        "texture_version": "v3.5-20260815",
+        "texture_alignment": "original_image",
+        "delight": false
+      },
+      "estimated_credits": 70
+    },
+    {
+      "name": "rig-check",
+      "endpoint": "/v3/animations/rig-check",
+      "task_type": "animate_prerigcheck",
+      "payload": {
+        "input": "<upstream>"
+      },
+      "estimated_credits": 0
+    },
+    {
+      "name": "rig",
+      "endpoint": "/v3/animations/rig",
+      "task_type": "animate_rig",
+      "payload": {
+        "input": "<upstream>",
+        "rig_type": "biped",
+        "spec": "mixamo",
+        "out_format": "glb",
+        "model": "v1.0-20240301"
+      },
+      "estimated_credits": 25
+    }
+  ],
+  "pending_uploads": [
+    "art/out/APose_HaloArcherM_Sharp_D.png"
+  ],
+  "deliverables": [
+    "GLB",
+    "STL via convert"
+  ],
+  "candidates": 1,
+  "warnings": [],
+  "errors": [],
+  "cost_notes": [
+    "texture_quality extreme: higher price tier",
+    "geometry detailed (Ultra): extra HD credit"
+  ],
+  "plan_status": "awaiting_specific_paid_execution_approval",
+  "date": "2026-10-04",
+  "cli_version": "0.5.1",
+  "cli_alias": "tripo-v3.1",
+  "input_sha256": "649ce86f007b2762e70bb1fc8d494351520de4f024d1a876c9225b94e6160b0a",
+  "input_personally_viewed": true,
+  "input_displayed_to_user": true,
+  "style_approval_quote": "ㅇㅋㅇㅋ 좋아!",
+  "paid_submissions": 0,
+  "roblox_uploads": 0,
+  "production_changes": 0,
+  "estimate_source": "https://developers.tripo3d.ai/en/pricing",
+  "maximum_estimated_credits": 95,
+  "refund_on_failed_or_cancelled_tasks": true,
+  "balance_at_preflight": 4560,
+  "frozen_at_preflight": 0,
+  "output_parent": "art/models/costume/redraw",
+  "output_pattern": "art/models/costume/redraw/tripo-out/Costume_HaloArcherM_SharpD-<id8>/",
+  "actual_deliverables": [
+    "GLB",
+    "preview.png",
+    "task.json"
+  ],
+  "automatic_paid_retries_allowed": false,
+  "preserve_existing_sources": true,
+  "native_quality_approval": false,
+  "user_requested_highest_model_quality": true,
+  "scope": "first_approved_D_avatar_only; audit_all_18_before_any_submission"
+}

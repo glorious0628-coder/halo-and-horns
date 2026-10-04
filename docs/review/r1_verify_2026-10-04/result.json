@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "verification_date": "2026-10-04",
+  "timezone": "Asia/Seoul",
+  "place": "GoodEvil",
+  "scope": "single_client_basic_play_and_native_visual_checks",
+  "full_r1_multiplayer_and_persistence_verified": false,
+  "git": {
+    "branch": "main",
+    "base_commit": "44cbabf",
+    "pull_result": "Already up to date.",
+    "existing_uncommitted_preparation_changes_preserved": true
+  },
+  "checks": {
+    "luau_compile": { "command": "py tools/luau_check.py", "files": 42, "status": "pass" },
+    "source_sync": { "command": "py tools/sync_to_studio.py", "changed": 0, "unchanged": 42, "status": "pass" },
+    "start_playtest_attempts": [
+      {
+        "attempt": 1,
+        "command": "py tools/playtest.py 15",
+        "actual_play_started": true,
+        "status": "mcp_response_timeout",
+        "error": "_queue.Empty",
+        "counted_as_success": false
+      },
+      {
+        "attempt": 2,
+        "command": "py tools/playtest.py 15",
+        "foreground_restored_before_retry": true,
+        "exit_code": 0,
+        "server_services_started": 23,
+        "server_services_total": 23,
+        "client_modules": ["UIKit", "Fx", "SkinRetargetClient", "VitalsUI", "HUD", "EventHUD", "Panels", "FactionPicker", "ClassPicker", "WorldMap"],
+        "luau_runtime_errors": 0,
+        "status": "pass"
+      }
+    ],
+    "spec_a16": { "already_present": true, "duplicate_added": false },
+    "selection": { "method": "actual_ui_cards", "faction": "Halo", "class": "Warrior", "costume_status": "Active", "status": "pass" },
+    "travel": { "method": "B_menu", "destination": "SlimeMeadow", "status": "pass" },
+    "manual_combat_initial": { "input": "F", "input_count": 3, "charge": 6, "kills": 1, "carried_gold": 3, "xp": 7, "tutorial_step": 2, "status": "pass" },
+    "release": {
+      "input_sequence": ["F", "F", "Q"],
+      "charge_before_release": 10,
+      "charge_after_release": 0,
+      "mana_after_release": 80,
+      "release_fx_count": 1,
+      "hit_count": 2,
+      "hit_display_amounts": [48, 48],
+      "displayed_total": 96,
+      "kills": 3,
+      "tutorial_progress_at_followup_ui_check": { "progress": 2, "target": 5 },
+      "status": "pass"
+    },
+    "tutorial_completed": { "method": "additional_actual_F_combat", "kills": 9, "carried_gold": 26, "charge": 16, "progress": 5, "target": 5, "bank_gold": 1, "status": "pass" },
+    "tutorial_claim": { "consecutive_claim_clicks": 2, "bank_gold_before": 1, "bank_gold_after": 121, "bank_reward_delta": 120, "tutorial_step_after": 99, "carried_gold_before": 26, "carried_gold_after": 26, "reward_paid_once": true, "status": "pass" },
+    "auto_combat": {
+      "level": 5,
+      "level_set_with": "Studio-only Main.DebugCommand",
+      "enabled_with": "R",
+      "observed_duration_seconds_approx": 8,
+      "auto_at_observation": true,
+      "kills": 11,
+      "carried_gold": 32,
+      "swing_fx_at_probe_start": 2,
+      "swing_fx_cumulative_at_observation": 16,
+      "swing_fx_increase": 14,
+      "disabled_with": "R",
+      "play_stopped_afterward": true,
+      "status": "pass"
+    },
+    "world_map": { "M_open": true, "M_close": true, "plus_zoom": true, "my_position_button": true, "status": "pass", "screenshot": "01_map.jpeg" },
+    "separate_archer_play": {
+      "method": "fresh_Play_actual_Halo_Archer_cards",
+      "costume_status": "Active",
+      "expression": "Neutral",
+      "new_face_mesh_observed": true,
+      "source_changed": false,
+      "production_ready_count": 2,
+      "production_registration_changed": false,
+      "actual_F_combat_observed": true,
+      "player_hp_decreased_from_slime_hit": true,
+      "screenshots": ["02_archer_face_native.jpeg", "06_archer_combat_native.jpeg"],
+      "status": "pass_in_stated_scope"
+    },
+    "slime_opaque": { "mesh": "SlimeCustomVisualMesh", "transparency": 0, "local_transparency_modifier": 0, "native_green_opaque_visual_observed": true, "screenshot": "06_archer_combat_native.jpeg", "status": "pass" },
+    "eye_detail": {
+      "viewport_pixels": [1077, 475],
+      "blur_observed_in_close_view": true,
+      "quality_level_21_comparison": "04_archer_quality21_native.jpeg",
+      "play_only_bloom_off_comparison": "05_archer_bloom_off_native.jpeg",
+      "quality_setting_restored": true,
+      "bloom_setting_restored": true,
+      "status": "unresolved",
+      "close_screenshot": "03_archer_face_close_native.jpeg"
+    },
+    "native_graphics_mode": { "observed_at_first_read": "Automatic", "changed_this_session": false, "status": "confirmed_unchanged", "legacy_handoff_vulkan_restore_todo_is_not_a_this_session_mutation": true },
+    "temporary_visual_settings_restored": { "quality_level": "Automatic", "bloom_enabled": true }
+  },
+  "environment": {
+    "data_store_available": false,
+    "data_mode": "memory",
+    "nickname_status": "Unavailable",
+    "developer_product_ids_configured": false,
+    "developer_product_id_observed": 0,
+    "anti_cheat_enforce": false,
+    "potion_merchant_enabled": false,
+    "quest_delivery": "owner-only Net.Quests remote"
+  },
+  "remaining_warnings": [
+    { "kind": "legacy_asset_load", "model": "Skeleton", "mesh_id": "97685895938537", "texture_pack_warning": true },
+    { "kind": "legacy_archive_asset_load", "location": "MonsterModelArchive", "models": "old_goblin_models", "does_not_by_itself_establish_current_new_goblin_failure": true },
+    { "kind": "missing_new_account_model", "model": "BigSlime" }
+  ],
+  "unverified_or_incomplete": [
+    "multiplayer_PvP_and_Halo_ally_stack_cooldown",
+    "PairCD_persistence_and_cross_server_rejoin",
+    "FIFO_competing_sessions",
+    "shutdown_and_leaving_kaiju_settlement",
+    "movement_false_positives_and_exploit_enforcement",
+    "nickname_filter_persistence_and_global_duplicate_race_QA",
+    "actual_developer_product_purchase_and_receipt_storage",
+    "remaining_16_avatar_production_connections",
+    "all_18_final_motion_quality",
+    "27_final_3D_weapons",
+    "remaining_expressions_and_monster_new_account_restoration",
+    "potion_NPC_purchase_and_persistent_inventory",
+    "final_HUD_layout_and_text",
+    "eye_and_fine_detail_sharpness_fix"
+  ],
+  "evidence": [
+    { "file": "01_map.jpeg", "bytes": 125125, "sha256": "cc9502ef5425aad0b957a22c1f80c77fed5d2ad6ceeefa7d26656c48e9a07d90", "kind": "native_screenshot" },
+    { "file": "02_archer_face_native.jpeg", "bytes": 136502, "sha256": "64abfea25b05d7ce306cec92efbed280d1622cce22e597889941a9601d3d99af", "kind": "native_screenshot" },
+    { "file": "03_archer_face_close_native.jpeg", "bytes": 127156, "sha256": "ae23bdd692aab20c568c85cff67ed8a0fe45e14018e6ba629c551b08460d1bad", "kind": "native_close_view_screenshot" },
+    { "file": "04_archer_quality21_native.jpeg", "bytes": 122537, "sha256": "cf10ce29905cf8dbaeac4648025cfb185a931aede4f624c4e4aef3f75ccb0488", "kind": "temporary_quality_comparison_screenshot" },
+    { "file": "05_archer_bloom_off_native.jpeg", "bytes": 122527, "sha256": "36e917e225b2061909aa52b328470840da91c8eeafbe8e50d9cb86cd6758300d", "kind": "play_only_bloom_comparison_screenshot" },
+    { "file": "06_archer_combat_native.jpeg", "bytes": 156809, "sha256": "9ab4a3ca0702740f27a4f6a9a854d3aa22dfb7308cb6d01ab085b85f3a14c917", "kind": "native_combat_and_slime_screenshot" }
+  ]
+}

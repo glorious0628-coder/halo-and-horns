@@ -141,5 +141,12 @@
   "file": "art/out/Potion_Shop_A.png",
   "shownDate": "2026-10-03",
   "note": "양피지 물약상점: 보유수량/HP30%·MP40%/임시1개10G·5개50G/99개상한; 사용자 선택 대기. 구현/Roblox업로드0."
+ },
+ "Avatar_HaloArcherM_FullRedraw_D": {
+  "status": "approved",
+  "file": "art/out/Avatar_HaloArcherM_FullRedraw_D.png",
+  "approvedDate": "2026-10-04",
+  "approvalQuote": "ㅇㅋㅇㅋ 좋아!",
+  "note": "기존 승인3D 꼬마 스타일을 유지한 전체 새 렌더. 이전 A/B 눈 부분수정·C 다른 그림체는 거절. 게임용 UV·3표정·Native 확인은 별도이며 승인 시점 업로드0/생산 변경0."
  }
 }

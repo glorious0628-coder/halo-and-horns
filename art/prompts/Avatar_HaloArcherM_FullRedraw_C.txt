@@ -1,0 +1,3 @@
+Use case: stylized-concept.
+Built-in GPT generation, no image references. Square character portrait from scratch: blond male chibi Halo archer, white/gold modest high-collar uniform, gold star halo, both eyes open, amber irises, clean dark pupils, sharp cel shading and fine clean line art.
+User decision 2026-10-04: rejected, "우리 스타일이랑 너무 달라졌잖아". The line-art/cel-shaded direction changed the established rounded 3D chibi game style. Roblox uploads 0; production changes 0. Do not use this design for implementation.

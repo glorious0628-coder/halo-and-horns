@@ -1,0 +1,2961 @@
+{
+  "schema": 1,
+  "source_files_read_only": true,
+  "studio_called": false,
+  "uploads": 0,
+  "paid_calls": 0,
+  "actual_native_quality_verified": false,
+  "rows": [
+    {
+      "avatar": "Costume_HaloWarriorM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HaloWarriorM.glb",
+        "sha256": "bd75eecd237912ef4b7979b104370af9a630f82800f0e9dd4fcc66f20517fdf8",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HaloWarriorM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d6c6af8a836729463bc028eb83527b3349b6e3f308218cc59c4ba31c7514a12a",
+            "bytes": 1472007
+          },
+          {
+            "index": 1,
+            "name": "C2k_HaloWarriorM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "2ad6daefb2e14fc2d7d9f66226f22fa6c4bd6904c41c1b5bbdbf34e37210932e",
+            "bytes": 2144680
+          },
+          {
+            "index": 2,
+            "name": "C2k_HaloWarriorM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "137defe453fd7c73dd4926c0bbc2c1501961513c504e179eb1c807a8d3aa38b0",
+            "bytes": 5831900
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloWarriorM.glb",
+        "sha256": "3ccfc2f9c4c404a9e37c06d9cbea7ea1d8b5b3d35e91779b7dc8f589eb3c7917",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "fcede737e902d9a6cc051e7714af7139ff18a9fc531de6d3933bbc54a9f99fc3",
+            "bytes": 1430718
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "94da68b7297871819f251057f58becfe013a322e02daf89476e9869215f63280",
+            "bytes": 1325715
+          }
+        ]
+      },
+      "triangles": 14589,
+      "matching_raw_triangles": 14589,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5839,
+        "raw_texel_area_sum": 343194.375,
+        "fixed_texel_area_sum": 175218.75594466002,
+        "fixed_to_raw_total_area_ratio": 0.510552528562451,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.7145036965077873,
+          "10": 0.7145268536979382,
+          "50": 0.7145295951520849,
+          "90": 0.7145324706770569,
+          "100": 0.7145649669601323
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 1.0211307480931282,
+          "10": 7.466737300157547,
+          "50": 23.54950623959303,
+          "90": 62.28727586856112,
+          "100": 161.71752906683832
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 2.0,
+          "10": 14.625,
+          "50": 46.125,
+          "90": 122.0,
+          "100": 316.75
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1252,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 163.0
+          },
+          "largest_island_triangles": 163,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1253,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 163.0
+          },
+          "largest_island_triangles": 163,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.1671016272970772,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HaloWarriorF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HaloWarriorF.glb",
+        "sha256": "306500487c1cdad69c575199f9f917e9da632e8ca5a1ad9c8bc4038b381f0c67",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HaloWarriorF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "1f84ba6cafe7cd9b926b09958bf759fdd828a6617ef6e15e08b875c9cafde406",
+            "bytes": 1460675
+          },
+          {
+            "index": 1,
+            "name": "C2k_HaloWarriorF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "f1672d6d573099309a9d09933f81c1bd4bdbe16ac8862eb7766de120958a646e",
+            "bytes": 2231849
+          },
+          {
+            "index": 2,
+            "name": "C2k_HaloWarriorF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d488c5e1786231f34842e28df7e84e870497bd0e1f7d7d88e3ba41b36314c856",
+            "bytes": 5958856
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloWarriorF.glb",
+        "sha256": "b1f8d7677ecd9c84998617137f279993eb3077a23c9b7ff96838f9822360606a",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "9b2b94f00dd150c3e1229e32a4572e83d17672a18ebcbc4f088a776ff2cbdf57",
+            "bytes": 1486756
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "d1323e830de89fb25ea466853cf90a01f82c4d763e8849674b8bd9c6a2779c23",
+            "bytes": 1268153
+          }
+        ]
+      },
+      "triangles": 14854,
+      "matching_raw_triangles": 14854,
+      "maximum_world_position_error": 7.450580596923828e-09,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5091,
+        "raw_texel_area_sum": 381820.25,
+        "fixed_texel_area_sum": 215658.06135524728,
+        "fixed_to_raw_total_area_ratio": 0.5648156727026586,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.7515014639514667,
+          "10": 0.7515398884303491,
+          "50": 0.7515422276080267,
+          "90": 0.7515445180610776,
+          "100": 0.7515620713421081
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.635424442589283,
+          "10": 11.93174047768116,
+          "50": 38.12535187974572,
+          "90": 79.42718951590359,
+          "100": 230.72690784931183
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 1.125,
+          "10": 21.125,
+          "50": 67.5,
+          "90": 140.625,
+          "100": 408.5
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1009,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 13.0,
+            "100": 90.0
+          },
+          "largest_island_triangles": 90,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1009,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 13.0,
+            "100": 90.0
+          },
+          "largest_island_triangles": 90,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.20566755424046257,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_Expression_Neutral_face.png",
+          "sha256": "1c7a2e67c3eb5152e9858c09177a4ba4abcdbe55b339a784880bb19484d2b5f1",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_Expression_Serious_face.png",
+          "sha256": "d279152e3ca3a6e250a6ccdd54f3afd127a7d4b838fc718293b77608ab30f055",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_Expression_SoftSmile_face.png",
+          "sha256": "8ff4a08eda1d773190cde3978eeb007091c7086c11d1cf971c9274aa1b95d892",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HaloArcherM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HaloArcherM.glb",
+        "sha256": "fb50189842bdf4ea3cf2d4e8b371d96c74a6162c0cb57457ae1eeb46c9018ade",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HaloArcherM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "7a7039b25dd9b1e55628716462bb0694250a870543b5ce14f868ab6145bec860",
+            "bytes": 1553684
+          },
+          {
+            "index": 1,
+            "name": "C2k_HaloArcherM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "6e56883ab26b07f599991a1c0c9bbf7daa0a6c429116292d1782d8f5291a4be5",
+            "bytes": 2278115
+          },
+          {
+            "index": 2,
+            "name": "C2k_HaloArcherM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "3612616973628e3be3a7c96679595bf8fe5271030cbd0a0af6db3e122c1995c9",
+            "bytes": 5811310
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloArcherM.glb",
+        "sha256": "e1500ceaa21de1b68b063bd82d133d36a5f55c656888bda0dd9c9d754128de39",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "3919b28d83292936c44a7df73c3830e78a9fe8d47fb6222e3282a2f5ef3ca336",
+            "bytes": 1461113
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "21373e3323a09428ded9a473a36da4326c82a595954904fee9ea6be38882e004",
+            "bytes": 1296536
+          }
+        ]
+      },
+      "triangles": 14384,
+      "matching_raw_triangles": 14384,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5012,
+        "raw_texel_area_sum": 348521.0,
+        "fixed_texel_area_sum": 170072.78025754183,
+        "fixed_to_raw_total_area_ratio": 0.487984311583927,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.6985415502580653,
+          "10": 0.6985562616327606,
+          "50": 0.6985587786765024,
+          "90": 0.6985611795382933,
+          "100": 0.6986041876326701
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 1.8299135472625494,
+          "10": 9.759752102196217,
+          "50": 29.18763431813568,
+          "90": 62.095843291236086,
+          "100": 207.63734443346038
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 3.75,
+          "10": 20.0,
+          "50": 59.8125,
+          "90": 127.25,
+          "100": 425.5
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1127,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 124.0
+          },
+          "largest_island_triangles": 124,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1129,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 124.0
+          },
+          "largest_island_triangles": 124,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.16219404245142158,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_Expression_Neutral_face.png",
+          "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_Expression_Serious_face.png",
+          "sha256": "6cde5a8b53f7877cfff649c5a1a2bcbe1f5edbedb91871361223fe5ee485ae61",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_Expression_SoftSmile_face.png",
+          "sha256": "07009ceee32a03c4d081b3eb657a2d34e692afd7376e7ae9b3d80c81b4f51660",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HaloArcherF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HaloArcherF.glb",
+        "sha256": "219104efab68005ae4ecd00eb1ab8c9c767b3ae882c6f9ac5bedcf5c015ee586",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HaloArcherF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "7819c0d5af1c1da48811f910ab8a0b368508257c85def2841c4aa1a2511dfb4d",
+            "bytes": 1463035
+          },
+          {
+            "index": 1,
+            "name": "C2k_HaloArcherF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d6e8f24118a36df92752e68a771e8773e72bff4051017f03a19ed0df5334fc2a",
+            "bytes": 2145787
+          },
+          {
+            "index": 2,
+            "name": "C2k_HaloArcherF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "f96f41f4d015f1ea6ca27784f202e42d6b30b0ac01c6a5335fe042587499965e",
+            "bytes": 6122116
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloArcherF.glb",
+        "sha256": "07451eec71f0b9785f867a53aac20e66d4af65e8259dce574a7c684826dad976",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "5e41f4b93bab6be01d0856c2876a15d776dec51e53cc84efdc95b4689658a0b1",
+            "bytes": 1434835
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "bc98e6a139ca2505a3cdfe27021e78760befc347af0735341e4cb1d095a423ff",
+            "bytes": 1362621
+          }
+        ]
+      },
+      "triangles": 14545,
+      "matching_raw_triangles": 14545,
+      "maximum_world_position_error": 7.450580596923828e-09,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5372,
+        "raw_texel_area_sum": 383613.875,
+        "fixed_texel_area_sum": 183192.20493513078,
+        "fixed_to_raw_total_area_ratio": 0.47754321955933104,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.6910196937109164,
+          "10": 0.6910422996201452,
+          "50": 0.6910450215147357,
+          "90": 0.6910476684569037,
+          "100": 0.6910743711589066
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.35815225169062614,
+          "10": 7.879392769373953,
+          "50": 25.070828965399414,
+          "90": 71.27332801776939,
+          "100": 221.46086831344292
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 0.75,
+          "10": 16.5,
+          "50": 52.5,
+          "90": 149.25,
+          "100": 463.75
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1322,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 9.0,
+            "100": 67.0
+          },
+          "largest_island_triangles": 67,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1323,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 9.0,
+            "100": 67.0
+          },
+          "largest_island_triangles": 67,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.1747057008124645,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherF\\Costume_HaloArcherF_Expression_Neutral_face.png",
+          "sha256": "7c94c1b4d477ff6d6ecf98e8629e7db8bff762954ca269042638e5ec0db94898",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherF\\Costume_HaloArcherF_Expression_Serious_face.png",
+          "sha256": "d1b29f2347675d23b76f4246a6d7761481aab23ffe656b99d32b5914504a147a",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherF\\Costume_HaloArcherF_Expression_SoftSmile_face.png",
+          "sha256": "d5e26aec9478f1716f4c683a7391a0deae9680a6a67562aaa124190e2585a7b2",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HaloMageM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HaloMageM.glb",
+        "sha256": "ff44c0f29674f8ccf4518293115605f64e5f2fccd08a0433bc43e006c979ede1",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HaloMageM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "c7794b5a9803acbe361c7049f55e86ded9a6562b6963528d3d48e776ebbbf334",
+            "bytes": 1352765
+          },
+          {
+            "index": 1,
+            "name": "C2k_HaloMageM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "814df642ef83d382a8d5e2047c33a3f83be3852568473e39f734a764a32b2fb1",
+            "bytes": 2113875
+          },
+          {
+            "index": 2,
+            "name": "C2k_HaloMageM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "7383618c4100fadfbd19f48b09dfc363dfdbd70dce1fbe32ec93bc2c4690c601",
+            "bytes": 5619688
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloMageM.glb",
+        "sha256": "479a6a268f56a421e65a353dd696ea4a67476dc06879815d1abca76316a279cb",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "4df126feb0fd3a6e4eab792f8097073622951bfdf0d2c4c5fc3afa5954f3afbd",
+            "bytes": 1328592
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "d855c8caf0e27c8619fa575544427ffab3b26efbcc26a537c73e65b482b9afc5",
+            "bytes": 1347090
+          }
+        ]
+      },
+      "triangles": 14539,
+      "matching_raw_triangles": 14539,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 6125,
+        "raw_texel_area_sum": 427620.625,
+        "fixed_texel_area_sum": 172389.810873364,
+        "fixed_to_raw_total_area_ratio": 0.40313726886621526,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.634908040038614,
+          "10": 0.6349283124216203,
+          "50": 0.6349308996923135,
+          "90": 0.6349334716764709,
+          "100": 0.6349731434752175
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.0,
+          "10": 8.032503076270222,
+          "50": 22.374017536640167,
+          "90": 51.934191536158345,
+          "100": 199.75429333141074
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 0.0,
+          "10": 19.924999999999997,
+          "50": 55.5,
+          "90": 128.82500000000005,
+          "100": 495.5
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1299,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 11.0,
+            "100": 124.0
+          },
+          "largest_island_triangles": 124,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1300,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 11.0,
+            "100": 124.0
+          },
+          "largest_island_triangles": 124,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.16440373504005815,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_Expression_Neutral_face.png",
+          "sha256": "f5bfee0efaaa3299caf4fc570a2210098781d17e1ab03461047f7d6f521285aa",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_Expression_Serious_face.png",
+          "sha256": "b6bc66a7600fc3a99a46dcd0cc83222ac19426b4a2bf2dde785122832e95c484",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_Expression_SoftSmile_face.png",
+          "sha256": "efc4285c9dfa13dc47bb4e9e3a29551346f86f79238b978255f7fd1141750677",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HaloMageF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HaloMageF.glb",
+        "sha256": "a8f0c0e006b2ba51e0cd043b548cd1b0617b89630f94a5d178329f3903a40f60",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HaloMageF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "fe53526cf73b46694eaefa70890562aa3667e15f548f48e5664fed7ef7fb9122",
+            "bytes": 1365687
+          },
+          {
+            "index": 1,
+            "name": "C2k_HaloMageF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "af565d0bcc2895f310605407d5052e23dc7cea4f6fca76a9e5d2a0bb6622f5da",
+            "bytes": 2023941
+          },
+          {
+            "index": 2,
+            "name": "C2k_HaloMageF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "e80e1db2739005a5533e991baea15bbf806ff95db2944236c128924e1ca39ed8",
+            "bytes": 6028304
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloMageF.glb",
+        "sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "baf853ca48063ac0165db5690ebd3ac795c8e189cc55805d4f2199df7a2fbfe2",
+            "bytes": 1363983
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "5cdc55894311fc7448334af2d4056da2a5004824fe52ad882cad4af3c7080892",
+            "bytes": 1152940
+          }
+        ]
+      },
+      "triangles": 14440,
+      "matching_raw_triangles": 14440,
+      "maximum_world_position_error": 7.450580596923828e-09,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 4580,
+        "raw_texel_area_sum": 361555.25,
+        "fixed_texel_area_sum": 220930.81810274645,
+        "fixed_to_raw_total_area_ratio": 0.6110568664201292,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.7816568999825801,
+          "10": 0.7816988627105543,
+          "50": 0.781701276025478,
+          "90": 0.7817035961270434,
+          "100": 0.7817292382463416
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 1.527619857341051,
+          "10": 10.540679600089788,
+          "50": 39.565953399054706,
+          "90": 105.6598601788749,
+          "100": 248.08840039023198
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 2.5,
+          "10": 17.25,
+          "50": 64.75,
+          "90": 172.91250000000014,
+          "100": 406.0
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 986,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 155.0
+          },
+          "largest_island_triangles": 155,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 986,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 155.0
+          },
+          "largest_island_triangles": 155,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.21069604692721028,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_Expression_Neutral_face.png",
+          "sha256": "27aebf29d62ad85502fb4fcad443f52a070522656236789ea1b7e3ec1274d13b",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_Expression_Serious_face.png",
+          "sha256": "bf09db415f1e697d4585b31a4eaf5ed2172e1b3eeaa122ae130ff6e248ce3a0b",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_Expression_SoftSmile_face.png",
+          "sha256": "8547d3a79ee6914f03f86effa482cd429d94aa17e1c6c5c607171b0efd9738e6",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HornsWarriorM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HornsWarriorM.glb",
+        "sha256": "10246aa1c39601471d5528f499b29809d2e34fbbc206e96e57405fe25dd3b26b",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HornsWarriorM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "fe59d8c9ba6a1b566640e915eb6e02f855e08de543ab8c8564b2587cfb0e0659",
+            "bytes": 1520521
+          },
+          {
+            "index": 1,
+            "name": "C2k_HornsWarriorM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "6f34bd827590f8e0bc3b879736ece59da98cec16ecda9b43fb7260be076d5362",
+            "bytes": 1681018
+          },
+          {
+            "index": 2,
+            "name": "C2k_HornsWarriorM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "506dec7ce901d693b32c8ddeb7cfc1c92a4368028aa0156e0572616d80120305",
+            "bytes": 5911624
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsWarriorM.glb",
+        "sha256": "7ea12e5e584203c5555f468a03851f90c9d70b936810ddb0a8360ae747898221",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "32ca83f9bdcc2e1aeb3f517be6bd239afb0905a02c3ed87d040a726642956b83",
+            "bytes": 1251830
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "ba2edf9da09bb87308039a4250c9f9954c3e9cd9180ca3d5feb56cd04874c2b7",
+            "bytes": 1381176
+          }
+        ]
+      },
+      "triangles": 14989,
+      "matching_raw_triangles": 14989,
+      "maximum_world_position_error": 7.450580596923828e-09,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 6951,
+        "raw_texel_area_sum": 437286.375,
+        "fixed_texel_area_sum": 148945.40238181542,
+        "fixed_to_raw_total_area_ratio": 0.3406129504533852,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.5835978186557879,
+          "10": 0.5836181640625,
+          "50": 0.5836202214236911,
+          "90": 0.5836232261980552,
+          "100": 0.5836486808427798
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.8515254035592079,
+          "10": 7.450909618288279,
+          "50": 18.393273761495948,
+          "90": 39.25589995086193,
+          "100": 98.99087565299124
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 2.5,
+          "10": 21.875,
+          "50": 54.0,
+          "90": 115.25,
+          "100": 290.625
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1417,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 11.0,
+            "100": 111.0
+          },
+          "largest_island_triangles": 111,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1417,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 11.0,
+            "100": 111.0
+          },
+          "largest_island_triangles": 111,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.14204540479833166,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_Expression_Neutral_face.png",
+          "sha256": "401eb33583a5fe7707fe5cdbab2f21e1f8b1e3765254e46cc4ef5b6db9297277",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_Expression_Serious_face.png",
+          "sha256": "20553923a185ae4856dc3daf8b4e88f5c96027629717d37f6e9f85ec7fc45481",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_Expression_SoftSmile_face.png",
+          "sha256": "1fcee35f4adcdce00183294e3e2a6bd38f246bc78805b48db10015368595e1d9",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HornsWarriorF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HornsWarriorF.glb",
+        "sha256": "633efc13b30e982d6c56cfb64ce19a8a1a39579ba93fadfcad0bbca0f37ee470",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HornsWarriorF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "bb364b8ecad887d4942a793ea768fc27c850ba7f72395fe26b3d2abe2eefe48b",
+            "bytes": 1434563
+          },
+          {
+            "index": 1,
+            "name": "C2k_HornsWarriorF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "3ada656c120b4e654787eed78dd63ac1d1aaeb98e5eef901b800c12d3efb0d8d",
+            "bytes": 2047145
+          },
+          {
+            "index": 2,
+            "name": "C2k_HornsWarriorF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "203b3c6fd52b5461694da2396813d95f85b8a88046b7268754eacb43189aeb3d",
+            "bytes": 6158747
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsWarriorF.glb",
+        "sha256": "f54fb171f56bbaeca3772ca6aee7e3f30fbaf331576df19e0a4cb15ba3eb1b0e",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "9a9dc6688436936da5528274c5bccbc29965fb8873414bcfad3c3ab0cd14bda0",
+            "bytes": 1404650
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "05225a3d21f2c691697ef45eac912390ce67b41111723b9023b12d497b545175",
+            "bytes": 1315668
+          }
+        ]
+      },
+      "triangles": 14833,
+      "matching_raw_triangles": 14833,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5381,
+        "raw_texel_area_sum": 421390.0,
+        "fixed_texel_area_sum": 189258.11348600767,
+        "fixed_to_raw_total_area_ratio": 0.44912815559459807,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.6701611578948219,
+          "10": 0.6701676652217874,
+          "50": 0.6701700965005322,
+          "90": 0.6701730051342429,
+          "100": 0.6701897514075829
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.5052627995610237,
+          "10": 6.624556705355644,
+          "50": 22.79319829249289,
+          "90": 69.89553272811463,
+          "100": 358.5727479830384
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 1.125,
+          "10": 14.75,
+          "50": 50.75,
+          "90": 155.625,
+          "100": 798.375
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1239,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 52.0
+          },
+          "largest_island_triangles": 52,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1242,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 52.0
+          },
+          "largest_island_triangles": 52,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.18049060200310485,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_Expression_Neutral_face.png",
+          "sha256": "df3506ed238e712c9c4326f73d864a1a112673160d580349d760edda8312f2b2",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_Expression_Serious_face.png",
+          "sha256": "9dd852251b1169614c9afcca1cd4f6a36a557390a4857dbec55086a6c760b62a",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_Expression_SoftSmile_face.png",
+          "sha256": "dc6f3104ca06b05714e6b58a7c6997823008df8901b07295f8cf3ec844b431b9",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HornsArcherM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HornsArcherM.glb",
+        "sha256": "467029947be7ff95eba88204e506730f2c8b0316f07dea8b071cb3054304305d",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HornsArcherM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "0a647871d9590ce4893a7d75054404165c642d2b2274c8047b35189bf0e0bae7",
+            "bytes": 1108610
+          },
+          {
+            "index": 1,
+            "name": "C2k_HornsArcherM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d3cbad0545a8744d8633195f760b3c26c9eeebfb026fe5b44ed074b8e37cd6ce",
+            "bytes": 1697722
+          },
+          {
+            "index": 2,
+            "name": "C2k_HornsArcherM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "ae561ff855161e3ace52c079ac412808dc5382ceacfe4d58cea39c02f21164fd",
+            "bytes": 5575171
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsArcherM.glb",
+        "sha256": "9410d599c8b275df966a97efffa3c0991760944a8d4a0f504ccdabe4e6f9b1fb",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "0417906456bd976838084b5717af16e63a637994ceaa6b7e53f5354ae600c8d7",
+            "bytes": 1255584
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "967c5226490d3f613f73dc4395fdd3361fc2afd017f250f0bb3516f2021eaaed",
+            "bytes": 1441162
+          }
+        ]
+      },
+      "triangles": 14253,
+      "matching_raw_triangles": 14253,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 6200,
+        "raw_texel_area_sum": 360637.5,
+        "fixed_texel_area_sum": 123552.70248307445,
+        "fixed_to_raw_total_area_ratio": 0.3425952722139945,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.5852997607162196,
+          "10": 0.5853138675784811,
+          "50": 0.5853163499081611,
+          "90": 0.5853189740859629,
+          "100": 0.5853299278348945
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.7280327938497066,
+          "10": 7.151699029188603,
+          "50": 17.129773925757036,
+          "90": 36.743408024311066,
+          "100": 101.83670635521412
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 2.125,
+          "10": 20.875,
+          "50": 50.0,
+          "90": 107.25,
+          "100": 297.25
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1584,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 8.0,
+            "100": 97.0
+          },
+          "largest_island_triangles": 97,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1588,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 8.0,
+            "100": 97.0
+          },
+          "largest_island_triangles": 97,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.11782903908069081,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_Expression_Neutral_face.png",
+          "sha256": "61b768429e570bc03f4ad33ab59aa49b9d8523b948fca3431b86e345331daa41",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_Expression_Serious_face.png",
+          "sha256": "8712c7a7a8faa6a89249e22f99cfebb8ba063d535c5d069ef0d949312278cd10",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_Expression_SoftSmile_face.png",
+          "sha256": "e63def068e084c6c01afefd769d48433c9d6147806978c7120c6e083533db107",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HornsArcherF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HornsArcherF.glb",
+        "sha256": "428bb62bf1bac2ec61061ba197e0fde9074e777bfba66ae37bbe0584724865e0",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HornsArcherF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d727facadca7865d32e9c01e4bad449b8c3e73d179b5717a8c3855838d07684d",
+            "bytes": 1406554
+          },
+          {
+            "index": 1,
+            "name": "C2k_HornsArcherF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d5e75db860a69a8f321e15d401f64e1a019dd608779b2138a7f486bc883f6ab2",
+            "bytes": 1912642
+          },
+          {
+            "index": 2,
+            "name": "C2k_HornsArcherF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "3676e0e2ef42fc5573750121c3ba911516ccefc014e5cbb7cc8d7f96361d135e",
+            "bytes": 5512156
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsArcherF.glb",
+        "sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "f558f2974ec0c3c7f53b7f34475782b57a0ec37885fa9663f38ba2586bd7a099",
+            "bytes": 1295289
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "31714e3b449ffa10999a350035d20144884b22e219b4241eefab7e974772c550",
+            "bytes": 1309189
+          }
+        ]
+      },
+      "triangles": 13949,
+      "matching_raw_triangles": 13949,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5807,
+        "raw_texel_area_sum": 410758.625,
+        "fixed_texel_area_sum": 179028.0508360602,
+        "fixed_to_raw_total_area_ratio": 0.4358473320823396,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.66015129231135,
+          "10": 0.6601848365387665,
+          "50": 0.6601873221736343,
+          "90": 0.660189957505684,
+          "100": 0.6602270373767514
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.38141227327287197,
+          "10": 8.172090915963054,
+          "50": 24.51603702455759,
+          "90": 65.0500771170482,
+          "100": 144.7014635503292
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 0.875,
+          "10": 18.75,
+          "50": 56.25,
+          "90": 149.25,
+          "100": 332.0
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1186,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 12.0,
+            "100": 93.0
+          },
+          "largest_island_triangles": 93,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1201,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 12.0,
+            "100": 93.0
+          },
+          "largest_island_triangles": 93,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.17073445399862308,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_Expression_Neutral_face.png",
+          "sha256": "c6a2ce6c35f02f3099a42141436d124450637306a77d30a899fff7d1c8d32cfe",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_Expression_Serious_face.png",
+          "sha256": "80c9f3775c545aaf13d0e96f0a763bed802fc87b9fed53337a00e28efa3b3385",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_Expression_SoftSmile_face.png",
+          "sha256": "d84292cd25dcb903a846d6912f982748cbd9f17c561df7f099a9204f82832c38",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HornsMageM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HornsMageM.glb",
+        "sha256": "dcc8c5a40c32bcd169046c1b3629713055421aa0cc631fb2b438ce4013c9acf2",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HornsMageM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "2997e5dac01d247ed90fbc5378b9ea0721290774909855ff19d516db74d141b7",
+            "bytes": 1470710
+          },
+          {
+            "index": 1,
+            "name": "C2k_HornsMageM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d9af102fc388a9bbd78f38a3116ade1e8c911947fcd5c855a055513a78195b7c",
+            "bytes": 1839975
+          },
+          {
+            "index": 2,
+            "name": "C2k_HornsMageM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "b548ae22e697c1eb00e7e5319f6a05ffd9115e6cb66f8f4525370970dd0bbca0",
+            "bytes": 5884505
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsMageM.glb",
+        "sha256": "5f89379362c2362d034075fb17c13ff760b0f063a08c4ace48fc0de6e87e7804",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "8d4a3eeab6ca5c46545ddae55054dacfb1bca6be8a019ba1d219f2bae679ce7c",
+            "bytes": 1431909
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "f1283c188c69e25a585a861db9ac98170a9046a502858ce5d0cdf28cc2e8e184",
+            "bytes": 1297415
+          }
+        ]
+      },
+      "triangles": 14031,
+      "matching_raw_triangles": 14031,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5971,
+        "raw_texel_area_sum": 368856.5,
+        "fixed_texel_area_sum": 189901.9425418548,
+        "fixed_to_raw_total_area_ratio": 0.5148396260926805,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.7174944191660332,
+          "10": 0.7175205775139858,
+          "50": 0.7175232581124574,
+          "90": 0.7175264358463468,
+          "100": 0.7175500723807452
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.6435603648424149,
+          "10": 7.079054526984692,
+          "50": 25.09854766819626,
+          "90": 67.70137663930655,
+          "100": 137.84829429071397
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 1.25,
+          "10": 13.75,
+          "50": 48.75,
+          "90": 131.5,
+          "100": 267.75
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1142,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 12.0,
+            "100": 182.0
+          },
+          "largest_island_triangles": 182,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1145,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 12.0,
+            "100": 182.0
+          },
+          "largest_island_triangles": 182,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.18110460523782235,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_Expression_Neutral_face.png",
+          "sha256": "64169b99a50ff904b8c2d7e6be3289960814c3a24be82d9f3477494aa5af5b11",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_Expression_Serious_face.png",
+          "sha256": "350afd04a4b6c7c468d17f2f6ba4de21f36a25ffb9c8e1f81e582196d54e7c00",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_Expression_SoftSmile_face.png",
+          "sha256": "e3a365569e36ce86108d3e943742c0bcb6dad38df20cbaf41e895607591d5542",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_HornsMageF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_HornsMageF.glb",
+        "sha256": "2f053b54fa1daa59e1e4e9cefbd46db27559e3e439ed8968d9558509e333dfc2",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_HornsMageF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "31e25030c466310c1af528ff245d0245b357838e15769dd258277b5f3a6cc00f",
+            "bytes": 1512185
+          },
+          {
+            "index": 1,
+            "name": "C2k_HornsMageF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "397fda05cab7fa72df674a25be73593b7bbaf839e1c248a2337b14879b36ea3e",
+            "bytes": 1758423
+          },
+          {
+            "index": 2,
+            "name": "C2k_HornsMageF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "ac77ed3841f597506b57244e02a6885e8a8a8762b0cf014cafc27b6e52cd1c21",
+            "bytes": 5880858
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsMageF.glb",
+        "sha256": "f8d11d1577b78a285867bf2be68734168251b73a82a4d0d20e27a372b8352fc2",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "febd31c7d419aec5cf29d0c2caf7a68f7ad5d83fc3e356970c9be1db1d5c8819",
+            "bytes": 1332103
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "e9e02e61d8817d8df4f8a654edab04d046e96d722fad0d819d93184fee45f9fa",
+            "bytes": 1394117
+          }
+        ]
+      },
+      "triangles": 14446,
+      "matching_raw_triangles": 14446,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 6241,
+        "raw_texel_area_sum": 374852.375,
+        "fixed_texel_area_sum": 139659.12674130313,
+        "fixed_to_raw_total_area_ratio": 0.3725710067631374,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.6103088327327932,
+          "10": 0.6103830771540695,
+          "50": 0.6103859503273754,
+          "90": 0.6103889266866767,
+          "100": 0.6104300347155023
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.0,
+          "10": 5.122962178662419,
+          "50": 16.393112069927156,
+          "90": 49.73821357730776,
+          "100": 178.08936987817287
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 0.0,
+          "10": 13.75,
+          "50": 44.0,
+          "90": 133.5,
+          "100": 478.0
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1557,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 9.0,
+            "100": 60.0
+          },
+          "largest_island_triangles": 60,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1575,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 9.0,
+            "100": 60.0
+          },
+          "largest_island_triangles": 60,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.1331893222249061,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_Expression_Neutral_face.png",
+          "sha256": "eda3e88e669c6d059e079c9cd024989b8c831728cda9dce9323417c397db9fa7",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_Expression_Serious_face.png",
+          "sha256": "d28f40cf2d72df0948d7f6a8cd849fa8c6dc4d548f349e9abc67c53ef03300cd",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_Expression_SoftSmile_face.png",
+          "sha256": "5e79f33b2ccb631ab71be6e3317ec83d3f273086e396a6f67d3d7a7fffb57c06",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_NeutralWarriorM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_NeutralWarriorM.glb",
+        "sha256": "ee56b364600380c49aa00ce719c718f041256d48431464e493c2e692d742297d",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_NeutralWarriorM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "3f44087450ecd43330cc6e61d3e5f1ad4f53117e7cf3169df7db10eb6dbce288",
+            "bytes": 1536194
+          },
+          {
+            "index": 1,
+            "name": "C2k_NeutralWarriorM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d29cb02694f146291d9503bb5d6b8fd5428ede8115712fb8f1549aac2f14915d",
+            "bytes": 2002344
+          },
+          {
+            "index": 2,
+            "name": "C2k_NeutralWarriorM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "75c0d2741468bcb0a198d90c3eca5c981e53330097620aa3c0485617d0064b75",
+            "bytes": 6117148
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralWarriorM.glb",
+        "sha256": "0aecac75ca002dfac8646ce981820137b7a94966e6af6f2beb0d75141fb2ebfd",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "121e3d62a4a14af3de1db161539d8639317f8c0b7f7d00de051cefc9a1dd2223",
+            "bytes": 1349072
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "4be053ee4289c82c77788a91b34ae29357c5b2fab9d0a4370be3cdd8a487f7a8",
+            "bytes": 1370153
+          }
+        ]
+      },
+      "triangles": 15060,
+      "matching_raw_triangles": 15060,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 6071,
+        "raw_texel_area_sum": 433065.0,
+        "fixed_texel_area_sum": 153616.87319319625,
+        "fixed_to_raw_total_area_ratio": 0.3547201302187807,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.5955669694848882,
+          "10": 0.5955810546875,
+          "50": 0.5955836682778769,
+          "90": 0.5955863411736345,
+          "100": 0.5956103002424495
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.620754387229681,
+          "10": 8.424423858523369,
+          "50": 22.34737604856491,
+          "90": 46.33537065575365,
+          "100": 138.6070408076048
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 1.75,
+          "10": 23.75,
+          "50": 63.0,
+          "90": 130.625,
+          "100": 390.75
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1379,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 68.0
+          },
+          "largest_island_triangles": 68,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1379,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 68.0
+          },
+          "largest_island_triangles": 68,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.14650046653098703,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_Expression_Neutral_face.png",
+          "sha256": "0e61dd71bb86a84b1babe1a0f8180c87453a36fbe57acdd50458f09cdff22602",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_Expression_Serious_face.png",
+          "sha256": "365cb2894a91e81d94df99b0a4830afb323c2512a3deea2f9ec2f0c4ac7d7a1e",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_Expression_SoftSmile_face.png",
+          "sha256": "847358409e93c8822d973cc7a38e72fa8510eb55f98fcb31d66988b40dc8bf47",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_NeutralWarriorF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_NeutralWarriorF.glb",
+        "sha256": "fc7ec20f94bfa5b2d96293d699f6036c61afaa3c80a1a2e327e69597419557d9",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_NeutralWarriorF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "1ee67e285d7172a33344dc9a1060a03fe03ad2a63f735d1e37e7a1bbf893d00b",
+            "bytes": 1508467
+          },
+          {
+            "index": 1,
+            "name": "C2k_NeutralWarriorF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "e563ef5a72d91767c2ce96d486d3b0116fe247c2b725f91786f984fbabb03167",
+            "bytes": 2161981
+          },
+          {
+            "index": 2,
+            "name": "C2k_NeutralWarriorF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "9558a76ed55f2ca1015f592c59116f5c93912682c119752ba926b3aa8c1f7c69",
+            "bytes": 5983541
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralWarriorF.glb",
+        "sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "9c967a1e563181647cbf73420b4eacb29aafbb805fd66176dd8ba7362eacf844",
+            "bytes": 1328395
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "97e2159359d8ce5d5f3542e14ac2677153a77f888197e4e225e51a1351bb8851",
+            "bytes": 1332302
+          }
+        ]
+      },
+      "triangles": 14710,
+      "matching_raw_triangles": 14710,
+      "maximum_world_position_error": 7.450580596923828e-09,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5193,
+        "raw_texel_area_sum": 452776.625,
+        "fixed_texel_area_sum": 172321.23059660796,
+        "fixed_to_raw_total_area_ratio": 0.38058773594287904,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.6168947215772163,
+          "10": 0.6169158067560978,
+          "50": 0.6169179507688605,
+          "90": 0.6169199753437115,
+          "100": 0.616934640005348
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.9990969188511372,
+          "10": 11.141801653802396,
+          "50": 30.113997072912753,
+          "90": 59.466697567142546,
+          "100": 148.14344912488014
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 2.625,
+          "10": 29.275000000000006,
+          "50": 79.125,
+          "90": 156.25,
+          "100": 389.25
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1146,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.5,
+            "90": 10.0,
+            "100": 75.0
+          },
+          "largest_island_triangles": 75,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1147,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 10.0,
+            "100": 75.0
+          },
+          "largest_island_triangles": 75,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.16433833179150387,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_Expression_Neutral_face.png",
+          "sha256": "1272adeb79c8c4b120b19285b9c46ae700614fe044f83d56f3d32805d2f6de56",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_Expression_Serious_face.png",
+          "sha256": "559f49fb5fac2d10c324baf4cb0ca97aa6f1d0881497cba03c275b84ffc41534",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_Expression_SoftSmile_face.png",
+          "sha256": "aac68839b2280e983a10d689de03ec192f9e5a77def6fa1aebc45ad82c471a7a",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_NeutralArcherM.glb",
+        "sha256": "ddc0fc2bba1f19372bd7c341f115adb3954b0da6f021da44ba252f65cb052ee6",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_NeutralArcherM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "34f226d2ad4553afd72f4e11c64ffcd04371554595437094e56472f50c0472e0",
+            "bytes": 1463413
+          },
+          {
+            "index": 1,
+            "name": "C2k_NeutralArcherM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "9b46638526a5ee2b96576b786b7499a88325e8c5c7a07592a3ffc24d1b66024a",
+            "bytes": 1824921
+          },
+          {
+            "index": 2,
+            "name": "C2k_NeutralArcherM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "d510b1856e950814fff39622a64ddb64d0af3634579b619d12134ad79c495f5d",
+            "bytes": 5181804
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralArcherM.glb",
+        "sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "ab0ffbe1161df3eed801e4a389d3e42791c76b04d4e02cc9259f6d12a74756f8",
+            "bytes": 1299338
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "d69c97c23c3ee28e3557e0440fc647b114b34b908f2a7bf067055f2be6fa0d31",
+            "bytes": 1339570
+          }
+        ]
+      },
+      "triangles": 14397,
+      "matching_raw_triangles": 14397,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5619,
+        "raw_texel_area_sum": 433787.625,
+        "fixed_texel_area_sum": 190226.41604850028,
+        "fixed_to_raw_total_area_ratio": 0.4385243033350716,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.6621893017208415,
+          "10": 0.662209562182339,
+          "50": 0.6622117115902002,
+          "90": 0.6622138407325708,
+          "100": 0.6622248629467526
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 1.0962852761149406,
+          "10": 12.004575880616903,
+          "50": 31.24485284090042,
+          "90": 58.98161098696291,
+          "100": 122.56727253645658
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 2.5,
+          "10": 27.375,
+          "50": 71.25,
+          "90": 134.5,
+          "100": 279.5
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1028,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 3.0,
+            "90": 12.0,
+            "100": 132.0
+          },
+          "largest_island_triangles": 132,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1029,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 3.0,
+            "90": 12.0,
+            "100": 132.0
+          },
+          "largest_island_triangles": 132,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.1814140472874644,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_Expression_Neutral_face.png",
+          "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_Expression_Serious_face.png",
+          "sha256": "1389e58f8b8be8c8104b1885d84f81ada131c7b10d55efd8c93149b3465cac13",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_Expression_SoftSmile_face.png",
+          "sha256": "79d5bdc0549dcf6a2b3b8c463c4a9a42b9f95f7e9f83d9d87fdd805cbea99ac5",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_NeutralArcherF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_NeutralArcherF.glb",
+        "sha256": "1235c7624e457fe7cb12cfdec970bfd7e13e73f788085ac1dca3fa615d501520",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_NeutralArcherF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "5ad7b8a16ed094d87029e1519fd3f543091bd991a75ef600a56e0349c46bdfca",
+            "bytes": 1452121
+          },
+          {
+            "index": 1,
+            "name": "C2k_NeutralArcherF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "e866cc1911dbd1bab6cc5aca0136ce536b80c24a772e6ae6d503c6ef8cb4c663",
+            "bytes": 2026978
+          },
+          {
+            "index": 2,
+            "name": "C2k_NeutralArcherF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "aee093a204148c036aa714c90bcfff81a681181915295414dd1ade243a4657c0",
+            "bytes": 5801421
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralArcherF.glb",
+        "sha256": "380acd5fce8365f60cd5a1660140979932ca09ec714f61c030b0d7ee6f370579",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "023861093581ffa39d29e6e86f4c0edb8e2aef24147346359321c3bbdb92e14e",
+            "bytes": 1382948
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "3c02ff1ac6d52fb9a9faebeae9145bf9681570e2af17e1be4f6eac4cf51b8a70",
+            "bytes": 1346891
+          }
+        ]
+      },
+      "triangles": 14460,
+      "matching_raw_triangles": 14460,
+      "maximum_world_position_error": 1.4901161193847656e-08,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 4796,
+        "raw_texel_area_sum": 448770.25,
+        "fixed_texel_area_sum": 215980.76524755795,
+        "fixed_to_raw_total_area_ratio": 0.48127246680803365,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.6937233797146098,
+          "10": 0.693736043808991,
+          "50": 0.6937380262296717,
+          "90": 0.6937400210453787,
+          "100": 0.6937678405849634
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.6015689857304096,
+          "10": 15.039759211242199,
+          "50": 36.095469940803014,
+          "90": 81.30475632485468,
+          "100": 346.27508303755894
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 1.25,
+          "10": 31.25,
+          "50": 75.0,
+          "90": 168.9375,
+          "100": 719.5
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1122,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 8.0,
+            "100": 109.0
+          },
+          "largest_island_triangles": 109,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1124,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 8.0,
+            "100": 109.0
+          },
+          "largest_island_triangles": 109,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.2059753086543636,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_Expression_Neutral_face.png",
+          "sha256": "31beeee0614eb2dd6d2fe6bb82d0ee2425678fbf3a784ef4d6481aa566b0f5be",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_Expression_Serious_face.png",
+          "sha256": "60bff03ce198918d3f77d9782c9299f2db59c082dfa75fa41e33460897521534",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_Expression_SoftSmile_face.png",
+          "sha256": "e59c999e8a26afb348b71432f5187fb14acc0999d1883ddb235dbaa236c37be0",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_NeutralMageM",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_NeutralMageM.glb",
+        "sha256": "04a2f116eea066b4e89d9cf57ce03618221c28e09a436f510c983f5b5ef8f016",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_NeutralMageM_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "a9a39ae537e9fa6009c7d1ad0f2d028c50228614d7d5e79cad548038208b2339",
+            "bytes": 1553479
+          },
+          {
+            "index": 1,
+            "name": "C2k_NeutralMageM_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "c171100522e7a4c5ea5b41cc59f6ee117b96caf8093859362a146dcf23180e05",
+            "bytes": 2175184
+          },
+          {
+            "index": 2,
+            "name": "C2k_NeutralMageM_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "86d0456f414496588f4c57ede8c9080051ec686e61bcc4e0317579b444d96065",
+            "bytes": 6046483
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralMageM.glb",
+        "sha256": "04481a1c0dbe593fc6f9b2629f4949571dca15cc8de516a80898464fd35dc28c",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "b59d55ca1dd9a01ad37b2cbdc089b308be09e772fed2fd14be228110adc722ec",
+            "bytes": 1330820
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "fe765fe7beafad1539971173503dbe73c53bb60d68406aa621622ad3842aaffa",
+            "bytes": 1390205
+          }
+        ]
+      },
+      "triangles": 14563,
+      "matching_raw_triangles": 14563,
+      "maximum_world_position_error": 0.0,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 6295,
+        "raw_texel_area_sum": 405639.25,
+        "fixed_texel_area_sum": 134492.38984078701,
+        "fixed_to_raw_total_area_ratio": 0.33155664754036257,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.5757879722535416,
+          "10": 0.5758073136589547,
+          "50": 0.575809462422481,
+          "90": 0.5758120567068197,
+          "100": 0.5760929678640978
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.16578376665711403,
+          "10": 7.832922115176916,
+          "50": 19.106038235127926,
+          "90": 37.44921995769256,
+          "100": 106.76105941599235
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 0.5,
+          "10": 23.625,
+          "50": 57.625,
+          "90": 112.95000000000005,
+          "100": 322.0
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1525,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 9.0,
+            "100": 112.0
+          },
+          "largest_island_triangles": 112,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1527,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 9.0,
+            "100": 112.0
+          },
+          "largest_island_triangles": 112,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.12826193794325544,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_Expression_Neutral_face.png",
+          "sha256": "dd1c70a833992f0657c5c3e76947c64803fdb89b3336930e93cb601918d05b5c",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_Expression_Serious_face.png",
+          "sha256": "e0cddcdf072101bfb8a02f63b47a74630595fa21a22e8cc9f9f955439463c44a",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_Expression_SoftSmile_face.png",
+          "sha256": "63a8a3a224e816c5e719cf85f24c3738bacd4d3ab4cca650b798452a0adf06eb",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    },
+    {
+      "avatar": "Costume_NeutralMageF",
+      "raw": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\raw\\C2k_NeutralMageF.glb",
+        "sha256": "b910a28479a1c2f9ff178c15001b346f7e8f8dea3151d3be09fe09ebd4e9ac94",
+        "images": [
+          {
+            "index": 0,
+            "name": "C2k_NeutralMageF_normal",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "4474b3c83f6deb5a19abd49e8c63677bb53593401f4904497567c32f05e3c442",
+            "bytes": 1454170
+          },
+          {
+            "index": 1,
+            "name": "C2k_NeutralMageF_basecolor",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "0c800a22e6ed078e0414fd7144beee01d0a0b580db0ed6b18cdea60ed36b483c",
+            "bytes": 2033759
+          },
+          {
+            "index": 2,
+            "name": "C2k_NeutralMageF_rm",
+            "size": [
+              2048,
+              2048
+            ],
+            "sha256": "5ff2d1a6e608b51f572e6f6ccc875c6a1b413314e076055e40dbfc021c55a308",
+            "bytes": 5912722
+          }
+        ]
+      },
+      "fixed": {
+        "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralMageF.glb",
+        "sha256": "8d1dfd965602d0e78b85815fd6d3f76704f3121b6d7463b416b0a736dd8df583",
+        "images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "cde33fb4f653b0059d431bb3de0e6184ffc633565d3ca3afae4afd166e3ab0f8",
+            "bytes": 1337677
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "sha256": "8df00f8cabad31c28b1a24a626bef962ab6d5f51357e1d4777529a1a7fca89fb",
+            "bytes": 1330886
+          }
+        ]
+      },
+      "triangles": 14033,
+      "matching_raw_triangles": 14033,
+      "maximum_world_position_error": 7.450580596923828e-09,
+      "head_density": {
+        "label": "entire fixed Head material surface",
+        "triangles": 5601,
+        "raw_texel_area_sum": 443392.375,
+        "fixed_texel_area_sum": 184191.06618400966,
+        "fixed_to_raw_total_area_ratio": 0.41541324697793836,
+        "fixed_to_raw_linear_density_percentiles": {
+          "0": 0.6445040017928387,
+          "10": 0.644523270956481,
+          "50": 0.6445256309894518,
+          "90": 0.6445284673214298,
+          "100": 0.644538598066887
+        },
+        "fixed_texels_per_triangle_percentiles": {
+          "0": 0.0,
+          "10": 9.554593563079834,
+          "50": 27.417096201330423,
+          "90": 62.51961485110223,
+          "100": 250.96217216458172
+        },
+        "raw_texels_per_triangle_percentiles": {
+          "0": 0.0,
+          "10": 23.0,
+          "50": 66.0,
+          "90": 150.5,
+          "100": 604.125
+        }
+      },
+      "existing_pipeline": {
+        "source_texture_interpolation": "Cubic",
+        "bake_resolution": 1024,
+        "bake_margin": 12,
+        "pack_islands_margin": 0.004,
+        "head_sharpen_amount": 0.9,
+        "body_sharpen_amount": 0.6,
+        "saturation_multiplier": 1.08
+      },
+      "paid_calls": 0,
+      "uploads": 0,
+      "studio_called": false,
+      "source_assets_mutated": false,
+      "head_uv_islands": {
+        "raw": {
+          "islands": 1159,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 11.0,
+            "100": 74.0
+          },
+          "largest_island_triangles": 74,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        },
+        "fixed": {
+          "islands": 1159,
+          "triangle_count_per_island_percentiles": {
+            "0": 1.0,
+            "10": 1.0,
+            "50": 2.0,
+            "90": 11.0,
+            "100": 74.0
+          },
+          "largest_island_triangles": 74,
+          "geometry_and_uv_edge_epsilon": 1e-06
+        }
+      },
+      "head_true_triangle_uv_area_fraction_of_1024_atlas": 0.17565828913117376,
+      "fixed_head_external_png_matches_embedded_bytes": true,
+      "expression_original_pngs": [
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_Expression_Neutral_face.png",
+          "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_Expression_Serious_face.png",
+          "sha256": "6ee6d507f7d3809106cd06512c8a110d3086c7e5915e841aa58575fcb19ae5e9",
+          "size": [
+            1254,
+            1254
+          ]
+        },
+        {
+          "path": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_Expression_SoftSmile_face.png",
+          "sha256": "a266b96ac23e3e273abbc82ddb3123303872c8b9317b76bc294103360d6e1778",
+          "size": [
+            1254,
+            1254
+          ]
+        }
+      ],
+      "face_png_policy": "GPT source bytes inspected only; no sharpening, resampling or image edits in this audit",
+      "source_sha256_unchanged_after_audit": true
+    }
+  ],
+  "limitations": [
+    "UV texel area quantifies available samples, not recovered detail or a universal visual-quality score.",
+    "The audit does not assert the actual Roblox download texture resolution.",
+    "Existing expression PNG byte preservation must be checked per final GLB; raw/fixed static density alone does not establish it.",
+    "Packed UV bake and sharpen cannot recover detail absent in the original GPT/Tripo source."
+  ]
+}

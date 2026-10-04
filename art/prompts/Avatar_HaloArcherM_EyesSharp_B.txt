@@ -1,0 +1,7 @@
+Use case: precise-object-edit.
+Edit target: approved Costume_HaloArcherM_Expression_Neutral_face.png.
+The first sharpening candidate was still too blurry. Improve only the two eye regions: clean sharp dark-brown eyelash contours, distinct round pupil, clean amber iris boundary and restrained crisp iris details, solid white sclera and one crisp white catchlight in the original position.
+Keep the viewer-left wink closed and preserve its original curve and center. Keep the viewer-right open eye's shape, scale, center, gaze, color and character identity. Keep the original short neutral mouth, hair, halo, gray background, square framing and modest covered white/gold costume.
+Preserve the projected UV feature locations. No muddy paint, smearing, blur, ghosting, chunky pixels, sharpening halos, extra highlights or eye enlargement. No text.
+Built-in GPT image generation. Candidate approval, upload and production QA are separate steps.
+User decision 2026-10-04: rejected; asked to redraw the whole design from scratch. Roblox uploads 0; production changes 0.
