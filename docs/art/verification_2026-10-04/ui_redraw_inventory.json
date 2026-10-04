@@ -1,0 +1,5259 @@
+{
+  "date": "2026-10-04",
+  "audit": "읽기 전용 정적 소스 경로·PNG 알파 검사. 활성 클라이언트·업로드·디자인 승인 검증 아님.",
+  "priority": "기본 디자인을 먼저 정립하고 게임 스토리와 전체 흐름을 점검한다. 디자인은 이후에도 계속 개선한다. 출시일/베타 범위 변경 없음.",
+  "source_sha256": "e9b6960327bc3163eceaa9d29a0c5995ea3dff372f5eba9c8f3c5e9a584e2874",
+  "counts": {
+    "registered_parts": 177,
+    "registered_png_files": 177,
+    "registered_world_material_png": 15,
+    "registered_non_material_png": 162,
+    "current_configuration_reachable_candidates_including_fallbacks": 102,
+    "runtime_confirmed_images_in_this_audit": 0,
+    "unregistered_png_files": 10,
+    "current_ui_candidate_png_excluding_world_fx": 92,
+    "current_world_fx_sprite_candidates": 10,
+    "disabled_text_images": 42,
+    "legacy_or_disabled_non_material_png": 60
+  },
+  "group_counts": {
+    "shared_ui_frames_icons_and_fallbacks": 37,
+    "replaced_faction_6": 6,
+    "current_faction_6": 6,
+    "legacy_faction_only_with_e_disabled": 12,
+    "dynamic_class_card_backgrounds": 3,
+    "dynamic_class_portraits": 18,
+    "world_effect_sprites": 10,
+    "registered_text_without_current_binding": 22,
+    "class_text_bindings": 13,
+    "map_text_bindings": 7,
+    "dynamic_weapon_inventory_icons": 27,
+    "world_materials_not_ui": 15,
+    "map_background": 1
+  },
+  "groups": {
+    "shared_ui_frames_icons_and_fallbacks": [
+      "PanelParchment",
+      "PanelCard",
+      "RibbonHeader",
+      "Pill",
+      "BarTrack",
+      "BtnSquare",
+      "BtnAttack",
+      "BtnSpecial",
+      "LevelBadge",
+      "PortraitRing",
+      "ShieldHalo",
+      "ShieldHorns",
+      "Crown",
+      "IconCoin",
+      "IconPouch",
+      "IconPotionHP",
+      "IconPotionMP",
+      "IconSword",
+      "IconAttack",
+      "IconSpecial",
+      "IconLock",
+      "IconMap",
+      "IconGear",
+      "IconGoose",
+      "IconSafe",
+      "IconSprout",
+      "IconStar",
+      "IconStarEmpty",
+      "IconClover",
+      "IconScroll",
+      "IconSlime",
+      "CardHalo",
+      "ShieldNeutral",
+      "TitleRibbon",
+      "IconHeart",
+      "IconAltar",
+      "IconBoot"
+    ],
+    "replaced_faction_6": [
+      "FactionCardHaloE",
+      "FactionCardHornsE",
+      "FactionCardNeutralE",
+      "FactionTitleRibbonE",
+      "FactionPremisePanelE",
+      "FactionFooterPanelE"
+    ],
+    "current_faction_6": [
+      "FactionPremiseFreshTyped",
+      "FactionCardHaloFreshTyped",
+      "FactionCardHornsFreshTyped",
+      "FactionCardNeutralFreshTyped",
+      "FactionTitleFreshTyped",
+      "FactionFooterFreshTyped"
+    ],
+    "legacy_faction_only_with_e_disabled": [
+      "CardHorns",
+      "CardNeutral",
+      "IconExp",
+      "IconWings",
+      "IconGoldPile",
+      "IconBloodSword",
+      "IconGauge",
+      "IconDemon",
+      "IconNoBuff",
+      "IconShieldBlue",
+      "IconNoLoot",
+      "IconHammer"
+    ],
+    "dynamic_class_card_backgrounds": [
+      "ClassCardHalo",
+      "ClassCardHorns",
+      "ClassCardNeutral"
+    ],
+    "dynamic_class_portraits": [
+      "CharHaloWarriorM",
+      "CharHaloWarriorF",
+      "CharHaloMageM",
+      "CharHaloMageF",
+      "CharHaloArcherM",
+      "CharHaloArcherF",
+      "CharHornsWarriorM",
+      "CharHornsWarriorF",
+      "CharHornsMageM",
+      "CharHornsMageF",
+      "CharHornsArcherM",
+      "CharHornsArcherF",
+      "CharNeutralWarriorM",
+      "CharNeutralWarriorF",
+      "CharNeutralMageM",
+      "CharNeutralMageF",
+      "CharNeutralArcherM",
+      "CharNeutralArcherF"
+    ],
+    "world_effect_sprites": [
+      "FxSlash",
+      "FxHitSpark",
+      "FxShockRing",
+      "FxMagicBurst",
+      "FxDust",
+      "EmoOuch",
+      "EmoTears",
+      "EmoDizzy",
+      "EmoAngry",
+      "EmoStress"
+    ],
+    "registered_text_without_current_binding": [
+      "TXT_Attack",
+      "TXT_Release",
+      "TXT_Menu",
+      "TXT_Map",
+      "TXT_Claim",
+      "TXT_Reroll",
+      "TXT_Quests",
+      "TXT_Light",
+      "TXT_Horn",
+      "TXT_Safe",
+      "TXT_Rookie",
+      "TXT_Regular",
+      "TXT_CheerStars",
+      "TXT_Next",
+      "TXT_PickFaction",
+      "TXT_ThisSide",
+      "TXT_Halo",
+      "TXT_Horns",
+      "TXT_LevelUp",
+      "TXT_GoldenGoose",
+      "TXT_SafeZone",
+      "TXT_PvPZone"
+    ],
+    "class_text_bindings": [
+      "TXT_PickClass",
+      "TXT_ThisClass",
+      "TXT_Paladin",
+      "TXT_LightMage",
+      "TXT_Ranger",
+      "TXT_Berserker",
+      "TXT_DarkMage",
+      "TXT_ShadowHunter",
+      "TXT_Blacksmith",
+      "TXT_Alchemist",
+      "TXT_Hunter",
+      "TXT_Male",
+      "TXT_Female"
+    ],
+    "map_text_bindings": [
+      "TXT_Neutral",
+      "TXT_Crossroads",
+      "TXT_HaloTown",
+      "TXT_HornsTown",
+      "TXT_Meadow",
+      "TXT_GoblinWoods",
+      "TXT_SkeletonRuins"
+    ],
+    "dynamic_weapon_inventory_icons": [
+      "Weapon_Warrior_T1",
+      "Weapon_Warrior_T2",
+      "Weapon_Warrior_T3",
+      "Weapon_Warrior_T4",
+      "Weapon_Warrior_T5",
+      "Weapon_Warrior_T6",
+      "Weapon_Warrior_T7_Halo",
+      "Weapon_Warrior_T7_Horns",
+      "Weapon_Warrior_T7_Neutral",
+      "Weapon_Mage_T1",
+      "Weapon_Mage_T2",
+      "Weapon_Mage_T3",
+      "Weapon_Mage_T4",
+      "Weapon_Mage_T5",
+      "Weapon_Mage_T6",
+      "Weapon_Mage_T7_Halo",
+      "Weapon_Mage_T7_Horns",
+      "Weapon_Mage_T7_Neutral",
+      "Weapon_Archer_T1",
+      "Weapon_Archer_T2",
+      "Weapon_Archer_T3",
+      "Weapon_Archer_T4",
+      "Weapon_Archer_T5",
+      "Weapon_Archer_T6",
+      "Weapon_Archer_T7_Halo",
+      "Weapon_Archer_T7_Horns",
+      "Weapon_Archer_T7_Neutral"
+    ],
+    "world_materials_not_ui": [
+      "Tex_Grass",
+      "Tex_LeafyGrass",
+      "Tex_HaloTiles",
+      "Tex_Ground",
+      "Tex_DirtPath",
+      "Tex_CrownShardGround",
+      "Tex_CrackedLava",
+      "Tex_Cobblestone",
+      "Tex_Basalt",
+      "Tex_WoodPlanks",
+      "Tex_Slate",
+      "Tex_Sand",
+      "Tex_Rock",
+      "Tex_Marble",
+      "Tex_Limestone"
+    ],
+    "map_background": [
+      "MapParchment"
+    ]
+  },
+  "unregistered_png_files": [
+    "art/ui/UIP_CharHaloArcher.png",
+    "art/ui/UIP_CharHaloMage.png",
+    "art/ui/UIP_CharHaloWarrior.png",
+    "art/ui/UIP_CharHornsArcher.png",
+    "art/ui/UIP_CharHornsMage.png",
+    "art/ui/UIP_CharHornsWarrior.png",
+    "art/ui/UIP_CharNeutralArcher.png",
+    "art/ui/UIP_CharNeutralMage.png",
+    "art/ui/UIP_CharNeutralWarrior.png",
+    "art/ui/UIP_PortraitHaloArcherM.png"
+  ],
+  "limitations": [
+    "정적 리터럴 참조가 없다고 미사용으로 판정하지 않는다. Char/ClassCard/Shield/Weapon/물약/텍스트는 문자열 조합 또는 매핑 경로가 있다.",
+    "102개 후보는 현재 코드 경로로 호출 가능한 집합이며 동시에 보이는 수·실제 로드 성공 수·최종 제작 장수와 다르다.",
+    "메뉴·물약 상점 등 현재 PNG 없는 코드 도형은 이 이미지 수에 들어 있지 않다. GPT 승인 시 부품 분할에 따라 새 제작 장수가 늘 수 있다.",
+    "글자 TXT42개 전부 UseTextImages=false로 표시 OFF. ClassPicker13/WorldMap7은 재활성화 때의 잠재 경로이며 현재 활성 수가 아니다.",
+    "2D 직업18개를 포함해3D아바타 외 디자인은 전면 재제작 범위. Bitmap이 아닌3D무기·몬스터·소품과 타일 재질은 별도 작업형식으로 분리한다. 기존 모델을 평면PNG로 바꾸라는 뜻으로 해석하지 않는다.",
+    "알파 1..254 픽셀 다수는 중앙값253~254일 수 있어 흐림/전체 반투명 문제로 단정하지 않는다.",
+    "본 감사 중 모든 원화에 대한 육안·한글 OCR·안전 전수 검토를 하지 않았다. 업로드 전에 각각 필요하다."
+  ],
+  "common_acceptance": [
+    "GPT에서 부품 한 장씩 투명 PNG로 직접 생성하고 사용자 선택 후 구현. 합성 화면을 다시 잘라내는 생산 흐름은 쓰지 않는다.",
+    "얼굴·손 외 신체를 옷으로 가린다. 목·어깨·가슴·배·등·다리 노출 없음. 긴 소매·긴 바지 또는 긴 치마와 불투명 타이츠·신발. 기존 그림체만 참조하고 과거 노출 의상은 복제하지 않는다.",
+    "PNG에 alpha 채널 및 alpha=0 배경이 실제 존재하는지 확인. 체크무늬가 RGB에 그려진 가짜 투명도는 별도 육안 검사.",
+    "원본/확대에서 외곽선 끊김·잘린 금테·잔여 점·글씨 오탈자 확인. 카드 간 높이/버튼 위치 수치 기록.",
+    "글자를 포함한 이미지면 ko/en 별도 원본과 정확한 문구 기록. 동적 숫자/이름/수량은 실제 텍스트로 보존.",
+    "PC와 폰의 실제 클라이언트에서 기본·확대·스크롤·로드 실패 대체 UI 확인. 파일 알파 검사만으로 합격 처리하지 않는다.",
+    "이미지를 각각 사용자에게 보여 준 뒤 10개 이하씩 업로드. art/out/v1/ 업로드 금지."
+  ],
+  "parts": [
+    {
+      "key": "PanelParchment",
+      "file": "art/ui/UIP_PanelParchment.png",
+      "asset_id": "rbxassetid://71017857503225",
+      "sha256": "7ca8f9c79c560d13652b94eedde3bbf5447d53daa66cc41bc7e6020e96b6c85c",
+      "size": [
+        512,
+        327
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 2773,
+      "fully_transparent_percent": 1.6563,
+      "partially_transparent_percent": 97.4305,
+      "visible_alpha_median": 254.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 767
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 672
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 1749
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 1818
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1160
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1230
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1484
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2385
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+          "line": 1053
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+          "line": 1071
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau",
+          "line": 114
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "PanelCard",
+      "file": "art/ui/UIP_PanelCard.png",
+      "asset_id": "rbxassetid://98336983830443",
+      "sha256": "d0102627c1063ebe2c8fa99182e83797dc3746e8cabc7fe269cbacaa19b417cd",
+      "size": [
+        512,
+        233
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 7073,
+      "fully_transparent_percent": 5.9289,
+      "partially_transparent_percent": 93.102,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 585
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "RibbonHeader",
+      "file": "art/ui/UIP_RibbonHeader.png",
+      "asset_id": "rbxassetid://118684607039365",
+      "sha256": "8f6231f467068289891a2a47007743858a37c480f131fdbd0ecb7abdebfa6bb0",
+      "size": [
+        512,
+        124
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 2685,
+      "fully_transparent_percent": 4.2291,
+      "partially_transparent_percent": 94.0288,
+      "visible_alpha_median": 254.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1113
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Pill",
+      "file": "art/ui/UIP_Pill.png",
+      "asset_id": "rbxassetid://116332974579615",
+      "sha256": "3494fa19caa22b0e4dba94dc65659b5fb93e22701a16a95eb2f976b562a1c916",
+      "size": [
+        512,
+        120
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 3771,
+      "fully_transparent_percent": 6.1377,
+      "partially_transparent_percent": 92.1436,
+      "visible_alpha_median": 254.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 739
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 856
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 470
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 592
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 648
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 966
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 1138
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 827
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1197
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2469
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2486
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "BarTrack",
+      "file": "art/ui/UIP_BarTrack.png",
+      "asset_id": "rbxassetid://84705987817804",
+      "sha256": "6abd892a48ead885a349b4ec207418069e787f2869b96d6248d4c290578201bc",
+      "size": [
+        512,
+        94
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 2676,
+      "fully_transparent_percent": 5.5602,
+      "partially_transparent_percent": 92.2602,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 496
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 862
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 876
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+          "line": 1256
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "BtnSquare",
+      "file": "art/ui/UIP_BtnSquare.png",
+      "asset_id": "rbxassetid://118044680000027",
+      "sha256": "b5bcf01620208afa4cf8b247c1e91def9199e1f4169d2861945bed441d90c09c",
+      "size": [
+        512,
+        491
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 13985,
+      "fully_transparent_percent": 5.563,
+      "partially_transparent_percent": 93.9095,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1316
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "BtnAttack",
+      "file": "art/ui/UIP_BtnAttack.png",
+      "asset_id": "rbxassetid://98283109958452",
+      "sha256": "6895d0ca7b1b493b96ffe97b82c575ae7c2b72d82bb532fc3601c8e3767c5555",
+      "size": [
+        509,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 56377,
+      "fully_transparent_percent": 21.6329,
+      "partially_transparent_percent": 77.9454,
+      "visible_alpha_median": 252.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1353
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "BtnSpecial",
+      "file": "art/ui/UIP_BtnSpecial.png",
+      "asset_id": "rbxassetid://88592946691017",
+      "sha256": "4b5341e63e0fe377285bb28408ed49de02cfc799c494d963055846323eb60729",
+      "size": [
+        512,
+        504
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 55389,
+      "fully_transparent_percent": 21.4646,
+      "partially_transparent_percent": 78.1114,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1378
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+          "line": 1059
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "LevelBadge",
+      "file": "art/ui/UIP_LevelBadge.png",
+      "asset_id": "rbxassetid://88211694815402",
+      "sha256": "7dfed8bfe6d99dc4f5445602b1b200dd2129f70328618b60902fd7aa4b647d84",
+      "size": [
+        512,
+        511
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 92999,
+      "fully_transparent_percent": 35.5457,
+      "partially_transparent_percent": 64.0862,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 595
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 596
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 602
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1447
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1455
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "PortraitRing",
+      "file": "art/ui/UIP_PortraitRing.png",
+      "asset_id": "rbxassetid://102492452438180",
+      "sha256": "9fc465ae8514b6abdc021def18f93b1650a50ef430cc91dfa98a266d58188f7e",
+      "size": [
+        498,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 160751,
+      "fully_transparent_percent": 63.0455,
+      "partially_transparent_percent": 36.2548,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 661
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 674
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "ShieldHalo",
+      "file": "art/ui/UIP_ShieldHalo.png",
+      "asset_id": "rbxassetid://137212311874878",
+      "sha256": "5eb59400856de6849e2ce985446feedd0e57c7b26f466da9a1d4d9dd7e04a7fb",
+      "size": [
+        490,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 76449,
+      "fully_transparent_percent": 30.4723,
+      "partially_transparent_percent": 69.0968,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 947
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "ShieldHorns",
+      "file": "art/ui/UIP_ShieldHorns.png",
+      "asset_id": "rbxassetid://134547958841068",
+      "sha256": "da386a186fa350722cfb97fb15dcd9ab58399ca35f3d8da1093308ce8b660af3",
+      "size": [
+        497,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 73997,
+      "fully_transparent_percent": 29.0796,
+      "partially_transparent_percent": 70.4819,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 947
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Crown",
+      "file": "art/ui/UIP_Crown.png",
+      "asset_id": "rbxassetid://87428837580998",
+      "sha256": "360714a0dc7d0a7c44b42a47e067e3bc4705c31f530640a79b07fa1542de9588",
+      "size": [
+        256,
+        175
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 16638,
+      "fully_transparent_percent": 37.1384,
+      "partially_transparent_percent": 61.4643,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 917
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 918
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1085
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau",
+          "line": 904
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconCoin",
+      "file": "art/ui/UIP_IconCoin.png",
+      "asset_id": "rbxassetid://109221625076322",
+      "sha256": "0b4802e55180ede5dd8a548e13bc9928412bc9cd5d311ea498eb1ca87a544ba7",
+      "size": [
+        254,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 12899,
+      "fully_transparent_percent": 19.8373,
+      "partially_transparent_percent": 79.28,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 729
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 732
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1515
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2447
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconPouch",
+      "file": "art/ui/UIP_IconPouch.png",
+      "asset_id": "rbxassetid://123337208513871",
+      "sha256": "b20af0713d861523e109c59c8301ab643276124d105beac142700f32108a2a89",
+      "size": [
+        256,
+        249
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 14736,
+      "fully_transparent_percent": 23.1175,
+      "partially_transparent_percent": 75.8942,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 733
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconPotionHP",
+      "file": "art/ui/UIP_IconPotionHP.png",
+      "asset_id": "rbxassetid://100061379621289",
+      "sha256": "796402ffb0b9339a35d7d0a352012379f6f6f32c6ad49b3f423d0db33d070b83",
+      "size": [
+        197,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 15018,
+      "fully_transparent_percent": 29.7787,
+      "partially_transparent_percent": 69.1842,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconPotionMP",
+      "file": "art/ui/UIP_IconPotionMP.png",
+      "asset_id": "rbxassetid://133725941898063",
+      "sha256": "787331d8ef2f566f81e385dd2c9ec6678623283cfcfdabd496246216fb65ff20",
+      "size": [
+        194,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 14270,
+      "fully_transparent_percent": 28.7331,
+      "partially_transparent_percent": 70.2038,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconSword",
+      "file": "art/ui/UIP_IconSword.png",
+      "asset_id": "rbxassetid://112025111517770",
+      "sha256": "1ec7ae93d561cc963fdf79a95d740bfc90b86a7e0bae60a23882bf58541d0bcc",
+      "size": [
+        255,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 39618,
+      "fully_transparent_percent": 60.6893,
+      "partially_transparent_percent": 38.341,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 91
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1495
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1502
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2076
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconAttack",
+      "file": "art/ui/UIP_IconAttack.png",
+      "asset_id": "rbxassetid://110857011116269",
+      "sha256": "3d87688f18462dbf5983775efecf8007f5be44750c7b6cd7ae944dbae97355ab",
+      "size": [
+        256,
+        253
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 43053,
+      "fully_transparent_percent": 66.4726,
+      "partially_transparent_percent": 32.567,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 91
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1354
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2029
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconSpecial",
+      "file": "art/ui/UIP_IconSpecial.png",
+      "asset_id": "rbxassetid://96492143551436",
+      "sha256": "d026ea721d9826f4d15afbcfdc5211f50044a6e6a75c08efa2eb761093eb3c1c",
+      "size": [
+        256,
+        146
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 15768,
+      "fully_transparent_percent": 42.1875,
+      "partially_transparent_percent": 56.0975,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1413
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconLock",
+      "file": "art/ui/UIP_IconLock.png",
+      "asset_id": "rbxassetid://91132729692542",
+      "sha256": "517be984c01a1cbf445f3b333cd295b5a6c10463d25c4ea6e21d393e494c907a",
+      "size": [
+        246,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 14196,
+      "fully_transparent_percent": 22.5419,
+      "partially_transparent_percent": 76.1703,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1471
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2029
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconMap",
+      "file": "art/ui/UIP_IconMap.png",
+      "asset_id": "rbxassetid://90459703873799",
+      "sha256": "e22d15a86e149e3ca6060cef7af2d9285da3fc3d2af1a6347a41579a46879205",
+      "size": [
+        256,
+        202
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 7717,
+      "fully_transparent_percent": 14.923,
+      "partially_transparent_percent": 83.7156,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1474
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconGear",
+      "file": "art/ui/UIP_IconGear.png",
+      "asset_id": "rbxassetid://99179510720767",
+      "sha256": "cf7e5d86072678e6bc1d6e7d56f4560bbb4661cd79e5e184a3b061d0ef2c238a",
+      "size": [
+        247,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 22026,
+      "fully_transparent_percent": 34.8336,
+      "partially_transparent_percent": 63.8632,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1477
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconGoose",
+      "file": "art/ui/UIP_IconGoose.png",
+      "asset_id": "rbxassetid://105838105764489",
+      "sha256": "5c1fd983868307fd270a162b36e0f9fee81ee47da62341089ed6c7206ca46764",
+      "size": [
+        218,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 22792,
+      "fully_transparent_percent": 40.84,
+      "partially_transparent_percent": 57.7677,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 478
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 548
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 100
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconSafe",
+      "file": "art/ui/UIP_IconSafe.png",
+      "asset_id": "rbxassetid://136639253247722",
+      "sha256": "e13ae04fc192e354da1c03c17d48d2bb38a9af9b71b2fe19915eae7b6573dbbe",
+      "size": [
+        254,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 21286,
+      "fully_transparent_percent": 32.7356,
+      "partially_transparent_percent": 66.397,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1085
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconSprout",
+      "file": "art/ui/UIP_IconSprout.png",
+      "asset_id": "rbxassetid://76742471774514",
+      "sha256": "8238c1635a8b2d837c3cae75a0505c12ebe264f7606bc8d051818058a81a4f38",
+      "size": [
+        256,
+        187
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 16680,
+      "fully_transparent_percent": 34.8429,
+      "partially_transparent_percent": 63.8453,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1085
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconStar",
+      "file": "art/ui/UIP_IconStar.png",
+      "asset_id": "rbxassetid://117033474251317",
+      "sha256": "1840749257e03686f50c7f0e2d006222a4d12b7cd30ff3719fb576d6b3a75459",
+      "size": [
+        256,
+        243
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 21755,
+      "fully_transparent_percent": 34.9714,
+      "partially_transparent_percent": 64.048,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 697
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 1024
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 756
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 1122
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconStarEmpty",
+      "file": "art/ui/UIP_IconStarEmpty.png",
+      "asset_id": "rbxassetid://78608910520884",
+      "sha256": "37e8849c632b73083b22c426a2914a8f64c4f4aca37786d7f1a07e957c154022",
+      "size": [
+        256,
+        255
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 24206,
+      "fully_transparent_percent": 37.0803,
+      "partially_transparent_percent": 61.9562,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 697
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 756
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconClover",
+      "file": "art/ui/UIP_IconClover.png",
+      "asset_id": "rbxassetid://132542570098556",
+      "sha256": "2f084b7cd2e504254647d39a5a9f24fb2c394212658b835f266946db03b8bb2c",
+      "size": [
+        246,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 15255,
+      "fully_transparent_percent": 24.2235,
+      "partially_transparent_percent": 74.7745,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+          "line": 681
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconScroll",
+      "file": "art/ui/UIP_IconScroll.png",
+      "asset_id": "rbxassetid://103880967919087",
+      "sha256": "593f183dd3fe0d0fbc518429d6b07b1c1caa1224cc63a74bafeea7030f02c158",
+      "size": [
+        256,
+        192
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 14539,
+      "fully_transparent_percent": 29.5797,
+      "partially_transparent_percent": 69.1427,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 769
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2393
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 2608
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconSlime",
+      "file": "art/ui/UIP_IconSlime.png",
+      "asset_id": "rbxassetid://112355880587310",
+      "sha256": "8381fd6054bf59a13497ae362e5501ce46089435de44c5999b568188c57db738",
+      "size": [
+        256,
+        245
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 20643,
+      "fully_transparent_percent": 32.9129,
+      "partially_transparent_percent": 66.1049,
+      "visible_alpha_median": 252.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+          "line": 100
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FactionCardHaloE",
+      "file": "art/ui/UIP_FactionCardHaloE.png",
+      "asset_id": "rbxassetid://115165874013728",
+      "sha256": "95803be1aeb628743df8998452434dea5f6dab59af9307bd825f728b1819e1ad",
+      "size": [
+        380,
+        636
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 58186,
+      "fully_transparent_percent": 24.0756,
+      "partially_transparent_percent": 1.6522,
+      "visible_alpha_median": 255.0,
+      "group": "replaced_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 68
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "FactionCardHornsE",
+      "file": "art/ui/UIP_FactionCardHornsE.png",
+      "asset_id": "rbxassetid://117803151290007",
+      "sha256": "f583c2573488506a29292e0af29ff6e4be62bfaefd79539260219e0357ac0712",
+      "size": [
+        380,
+        636
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 48721,
+      "fully_transparent_percent": 20.1593,
+      "partially_transparent_percent": 2.4185,
+      "visible_alpha_median": 255.0,
+      "group": "replaced_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 68
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "FactionCardNeutralE",
+      "file": "art/ui/UIP_FactionCardNeutralE.png",
+      "asset_id": "rbxassetid://78748710982730",
+      "sha256": "cc5a9689a373390b74101caccd700510bda5f479ac29f85e9a71b3d87cc0aad7",
+      "size": [
+        380,
+        636
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 46219,
+      "fully_transparent_percent": 19.124,
+      "partially_transparent_percent": 2.5137,
+      "visible_alpha_median": 255.0,
+      "group": "replaced_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 68
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "FactionTitleRibbonE",
+      "file": "art/ui/UIP_FactionTitleRibbonE.png",
+      "asset_id": "rbxassetid://77703498329138",
+      "sha256": "509aba484291567e1e650da0cfd5d73cd53736f373134df132d0364f6963e4d2",
+      "size": [
+        549,
+        108
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 17292,
+      "fully_transparent_percent": 29.1641,
+      "partially_transparent_percent": 1.5634,
+      "visible_alpha_median": 255.0,
+      "group": "replaced_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 69
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "FactionPremisePanelE",
+      "file": "art/ui/UIP_FactionPremisePanelE.png",
+      "asset_id": "rbxassetid://101379550181314",
+      "sha256": "36da50c6ecd706bbeb3b201c1986bd118d5a106b1d314536fbeaa334b2a58167",
+      "size": [
+        1024,
+        130
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 5077,
+      "fully_transparent_percent": 3.8139,
+      "partially_transparent_percent": 3.4262,
+      "visible_alpha_median": 255.0,
+      "group": "replaced_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 69
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "FactionPremiseFreshTyped",
+      "file": "art/ui/UIP_FactionPremise_FreshTyped.png",
+      "asset_id": "rbxassetid://105024415024705",
+      "sha256": "de9cc448e03eb9d81602f6181da761fcca742893bce58cffaa758afa71491384",
+      "size": [
+        1024,
+        174
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 2762,
+      "fully_transparent_percent": 1.5502,
+      "partially_transparent_percent": 90.8781,
+      "visible_alpha_median": 254.0,
+      "group": "current_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FactionCardHaloFreshTyped",
+      "file": "art/ui/UIP_FactionCardHalo_FreshTyped.png",
+      "asset_id": "rbxassetid://76818879022385",
+      "sha256": "269ea13bb0f632b41a1c7677986a4fab92c13e5202e11256f8dae30c4a904691",
+      "size": [
+        570,
+        954
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 181605,
+      "fully_transparent_percent": 33.3968,
+      "partially_transparent_percent": 63.6226,
+      "visible_alpha_median": 253.0,
+      "group": "current_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FactionCardHornsFreshTyped",
+      "file": "art/ui/UIP_FactionCardHorns_FreshTyped.png",
+      "asset_id": "rbxassetid://137806621328187",
+      "sha256": "dcc38d93b3e31964d0b75409d2b2a73095367664cc0657e0926883ae66a212a6",
+      "size": [
+        570,
+        954
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 166554,
+      "fully_transparent_percent": 30.6289,
+      "partially_transparent_percent": 66.3984,
+      "visible_alpha_median": 253.0,
+      "group": "current_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FactionCardNeutralFreshTyped",
+      "file": "art/ui/UIP_FactionCardNeutral_FreshTyped.png",
+      "asset_id": "rbxassetid://127475794518664",
+      "sha256": "a600d49c82e58e6767e67057bc6f873c45513cf2e11c8fa57fd2ceef09aa1a7d",
+      "size": [
+        570,
+        954
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 155303,
+      "fully_transparent_percent": 28.5599,
+      "partially_transparent_percent": 68.2511,
+      "visible_alpha_median": 253.0,
+      "group": "current_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FactionFooterPanelE",
+      "file": "art/ui/UIP_FactionFooterPanelE.png",
+      "asset_id": "rbxassetid://99568724265364",
+      "sha256": "d4c80a6cffd931e52e785eef32a08b981fbd81ec3b5776a6f80ca9ad8199b1b7",
+      "size": [
+        928,
+        86
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 4649,
+      "fully_transparent_percent": 5.8252,
+      "partially_transparent_percent": 2.516,
+      "visible_alpha_median": 255.0,
+      "group": "replaced_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 69
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "CardHalo",
+      "file": "art/ui/UIP_CardHalo.png",
+      "asset_id": "rbxassetid://116168194185824",
+      "sha256": "3670bc7c99920b6bdbbc45cb4fc6e4c4a62deec6a4536e812b221f0ffd3fce70",
+      "size": [
+        635,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 74154,
+      "fully_transparent_percent": 11.4041,
+      "partially_transparent_percent": 88.3735,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+          "line": 1080
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "CardHorns",
+      "file": "art/ui/UIP_CardHorns.png",
+      "asset_id": "rbxassetid://104067051233656",
+      "sha256": "bd5a63e775496d68f62f4cea0dd72452aecef87f7a6a8a8c31cc4605d678bc2e",
+      "size": [
+        617,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 104490,
+      "fully_transparent_percent": 16.5383,
+      "partially_transparent_percent": 83.28,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "CardNeutral",
+      "file": "art/ui/UIP_CardNeutral.png",
+      "asset_id": "rbxassetid://138991972922636",
+      "sha256": "41c7ac017f97a0186a82c77517ab454d1844d49078e898ddb08bd0e4c35e6c57",
+      "size": [
+        612,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 84827,
+      "fully_transparent_percent": 13.5358,
+      "partially_transparent_percent": 86.2576,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "ClassCardHalo",
+      "file": "art/ui/UIP_ClassCardHalo.png",
+      "asset_id": "rbxassetid://125017026560821",
+      "sha256": "77cbb3cbe902461f685f7e4d5ca643fce2f86301d4a0c3e8fb41c01786d0564b",
+      "size": [
+        647,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 99430,
+      "fully_transparent_percent": 15.0077,
+      "partially_transparent_percent": 84.7981,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_card_backgrounds",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "ClassCardHorns",
+      "file": "art/ui/UIP_ClassCardHorns.png",
+      "asset_id": "rbxassetid://105501650454200",
+      "sha256": "7339f2464d64920ca6382cf0b097051ec972ba04c595b1a0dba3dd3675641ea5",
+      "size": [
+        608,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 114890,
+      "fully_transparent_percent": 18.4535,
+      "partially_transparent_percent": 81.2987,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_card_backgrounds",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "ClassCardNeutral",
+      "file": "art/ui/UIP_ClassCardNeutral.png",
+      "asset_id": "rbxassetid://106618683671422",
+      "sha256": "01c44b357e9620e265bbc4869a8af97cc67489f4a81b22c9df4a71805f34f141",
+      "size": [
+        618,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 47495,
+      "fully_transparent_percent": 7.5052,
+      "partially_transparent_percent": 92.1749,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_card_backgrounds",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "ShieldNeutral",
+      "file": "art/ui/UIP_ShieldNeutral.png",
+      "asset_id": "rbxassetid://101381231096931",
+      "sha256": "63d7b090d17264a7ce7cb5a8ffd55f9e1ac6de0aa0d8d3152a6c6c4ef1999aa9",
+      "size": [
+        251,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 20427,
+      "fully_transparent_percent": 31.79,
+      "partially_transparent_percent": 67.3213,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "TitleRibbon",
+      "file": "art/ui/UIP_TitleRibbon.png",
+      "asset_id": "rbxassetid://73292535588441",
+      "sha256": "ca620dc9c9486fbddcc09b530aef9edd2804ab25fae956aa433c98bbdff7268f",
+      "size": [
+        256,
+        63
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 3783,
+      "fully_transparent_percent": 23.4561,
+      "partially_transparent_percent": 73.1585,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 710
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 711
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 1162
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 1765
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 1794
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+          "line": 1055
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "CharHaloWarriorM",
+      "file": "art/ui/UIP_CharHaloWarriorM.png",
+      "asset_id": "rbxassetid://134988581827453",
+      "sha256": "657f567c997d48dd069af7640d79ae5c5cb6e268ba6606d2a02c51fe56d6cda0",
+      "size": [
+        420,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 84593,
+      "fully_transparent_percent": 39.3383,
+      "partially_transparent_percent": 59.8744,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHaloWarriorM.png",
+      "source_exists": true,
+      "source_sha256": "fe104ed4218b3bf855cf87492bc623d41f5db941a3ca9b056d71251bc4df3ea1",
+      "prompt_file": "art/prompts/UIP_CharHaloWarriorM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHaloWarriorF",
+      "file": "art/ui/UIP_CharHaloWarriorF.png",
+      "asset_id": "rbxassetid://78286000819352",
+      "sha256": "eb2549d086778d9ad6c4a3cc2a409a2dce2c1da8764fb3f30e9c14e91f6e809c",
+      "size": [
+        464,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 93284,
+      "fully_transparent_percent": 39.2662,
+      "partially_transparent_percent": 60.0645,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHaloWarriorF.png",
+      "source_exists": true,
+      "source_sha256": "aee751ed6aa0b0635315441b4f7890afcb54c4a2a5a468c6a6bc7d5a10b7fc0d",
+      "prompt_file": "art/prompts/UIP_CharHaloWarriorF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHaloMageM",
+      "file": "art/ui/UIP_CharHaloMageM.png",
+      "asset_id": "rbxassetid://102544376554965",
+      "sha256": "cb01d7c8bbaf167579c8947b56415f97115d47a531923ca4bcbb7ad4b9b6f53b",
+      "size": [
+        460,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 97334,
+      "fully_transparent_percent": 41.3273,
+      "partially_transparent_percent": 57.8083,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHaloMageM.png",
+      "source_exists": true,
+      "source_sha256": "058a2c033e900e93174a292824f8f3809f65750a5e2633efe19d43162888cab2",
+      "prompt_file": "art/prompts/UIP_CharHaloMageM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHaloMageF",
+      "file": "art/ui/UIP_CharHaloMageF.png",
+      "asset_id": "rbxassetid://113432552037923",
+      "sha256": "b90fbe254441920c6fc622d99af5ae417263c94a70126b21dd3192e4593e9b18",
+      "size": [
+        478,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 98015,
+      "fully_transparent_percent": 40.0493,
+      "partially_transparent_percent": 59.0122,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHaloMageF.png",
+      "source_exists": true,
+      "source_sha256": "88f7413294e953bceae3ecac12adf9af414a441a3766bac69f845718636aa59d",
+      "prompt_file": "art/prompts/UIP_CharHaloMageF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHaloArcherM",
+      "file": "art/ui/UIP_CharHaloArcherM.png",
+      "asset_id": "rbxassetid://90265187612649",
+      "sha256": "fbe7aea9bf9d94ec24230abc0c2979eb74ea9b8cc5a00c0ae558aaf3d54fae00",
+      "size": [
+        501,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 118363,
+      "fully_transparent_percent": 46.1433,
+      "partially_transparent_percent": 52.9219,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHaloArcherM.png",
+      "source_exists": true,
+      "source_sha256": "8b07323bf32c8ba846dd5606a1c5c4499a0465b2387e4cfce5118ba5b3cde6b5",
+      "prompt_file": "art/prompts/UIP_CharHaloArcherM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHaloArcherF",
+      "file": "art/ui/UIP_CharHaloArcherF.png",
+      "asset_id": "rbxassetid://73817434891295",
+      "sha256": "461c3947478319fde376003ab3a1abe14fcd1ee49513dff6c2bbd901db8b7a44",
+      "size": [
+        406,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 66171,
+      "fully_transparent_percent": 31.8326,
+      "partially_transparent_percent": 67.4237,
+      "visible_alpha_median": 252.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHaloArcherF.png",
+      "source_exists": true,
+      "source_sha256": "844bcb167a31828e82bd812dadcd6e2251f60f4c0b918240675a57ce7dcf6afc",
+      "prompt_file": "art/prompts/UIP_CharHaloArcherF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHornsWarriorM",
+      "file": "art/ui/UIP_CharHornsWarriorM.png",
+      "asset_id": "rbxassetid://115730141032244",
+      "sha256": "122acf4ccda1e626ff9e36cc29d8b2e081293ecf03979c359dba0bb42ef84c1d",
+      "size": [
+        446,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 90311,
+      "fully_transparent_percent": 39.549,
+      "partially_transparent_percent": 59.5567,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHornsWarriorM.png",
+      "source_exists": true,
+      "source_sha256": "9a9027bba8db043480a59932c8ff31f56b5914af849dbd74e2935a2d801e4569",
+      "prompt_file": "art/prompts/UIP_CharHornsWarriorM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHornsWarriorF",
+      "file": "art/ui/UIP_CharHornsWarriorF.png",
+      "asset_id": "rbxassetid://91437880088798",
+      "sha256": "070e0de825ff9c3d258d23221d6843224e7aea2e16a5322ab8f9cb9dc32eea60",
+      "size": [
+        472,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 89719,
+      "fully_transparent_percent": 37.1255,
+      "partially_transparent_percent": 62.0316,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHornsWarriorF.png",
+      "source_exists": true,
+      "source_sha256": "ab420800d9c6a7ac66d4776b23c38ae0d3d82665bb5bf4946796d87e89cdc0a3",
+      "prompt_file": "art/prompts/UIP_CharHornsWarriorF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHornsMageM",
+      "file": "art/ui/UIP_CharHornsMageM.png",
+      "asset_id": "rbxassetid://72321159201625",
+      "sha256": "812593926d75b3b61911c98273e2a97fea44af273035884efe2d122a4999c547",
+      "size": [
+        474,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 81496,
+      "fully_transparent_percent": 33.5806,
+      "partially_transparent_percent": 65.5426,
+      "visible_alpha_median": 252.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHornsMageM.png",
+      "source_exists": true,
+      "source_sha256": "124aa61f0c7fffd96947daccc4b5c340635553cd99d5a7a12ab332b46f42426e",
+      "prompt_file": "art/prompts/UIP_CharHornsMageM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHornsMageF",
+      "file": "art/ui/UIP_CharHornsMageF.png",
+      "asset_id": "rbxassetid://118395974592567",
+      "sha256": "8554e20daf87d2811e032d33371466d87204628560b1eba24f48b783cc9e72c8",
+      "size": [
+        449,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 85886,
+      "fully_transparent_percent": 37.3599,
+      "partially_transparent_percent": 61.4456,
+      "visible_alpha_median": 252.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHornsMageF.png",
+      "source_exists": true,
+      "source_sha256": "2af696a637404f2058baf29c1b942a425e390108a088ca2cac07201e7188edd6",
+      "prompt_file": "art/prompts/UIP_CharHornsMageF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHornsArcherM",
+      "file": "art/ui/UIP_CharHornsArcherM.png",
+      "asset_id": "rbxassetid://88045973583949",
+      "sha256": "134f2fb07b781c1d9cb449cec35f55e4b85eac0260eaf211b68c7e1915fc7171",
+      "size": [
+        488,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 127675,
+      "fully_transparent_percent": 51.0994,
+      "partially_transparent_percent": 47.9052,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHornsArcherM.png",
+      "source_exists": true,
+      "source_sha256": "b2dab3e2d086f2604342566d568d0cdc30d39db81bc7f13719f00b0fdd425104",
+      "prompt_file": "art/prompts/UIP_CharHornsArcherM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharHornsArcherF",
+      "file": "art/ui/UIP_CharHornsArcherF.png",
+      "asset_id": "rbxassetid://130533135861283",
+      "sha256": "1fe9799d029c8bb2da0663429a07a09e78a3a70165c17e2298b6b5fa9ed65b18",
+      "size": [
+        467,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 93028,
+      "fully_transparent_percent": 38.9069,
+      "partially_transparent_percent": 59.9396,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharHornsArcherF.png",
+      "source_exists": true,
+      "source_sha256": "6162d8a1c154819da9816d17360722627609c11ab5296f2873938b3f6a60e373",
+      "prompt_file": "art/prompts/UIP_CharHornsArcherF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharNeutralWarriorM",
+      "file": "art/ui/UIP_CharNeutralWarriorM.png",
+      "asset_id": "rbxassetid://117733913914622",
+      "sha256": "80e8bd411b93ea687047f784cd941df525e46b8053fdf70aa736a6ea012f4f6d",
+      "size": [
+        485,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 116478,
+      "fully_transparent_percent": 46.9064,
+      "partially_transparent_percent": 52.3852,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharNeutralWarriorM.png",
+      "source_exists": true,
+      "source_sha256": "ff1947a3eef176335026c014589f2570db042bd7a63fc23ddb0f77444b26b3da",
+      "prompt_file": "art/prompts/UIP_CharNeutralWarriorM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharNeutralWarriorF",
+      "file": "art/ui/UIP_CharNeutralWarriorF.png",
+      "asset_id": "rbxassetid://123242512932772",
+      "sha256": "3fb96d0364e2ecf03b7c677116ee1302dc40aa263ffc97e37bb7ed308f8c5609",
+      "size": [
+        476,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 106999,
+      "fully_transparent_percent": 43.9039,
+      "partially_transparent_percent": 55.3777,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharNeutralWarriorF.png",
+      "source_exists": true,
+      "source_sha256": "cec4cb047e0855588a1b907c4bad8e8637e120abc656e463fb7755623b997e68",
+      "prompt_file": "art/prompts/UIP_CharNeutralWarriorF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharNeutralMageM",
+      "file": "art/ui/UIP_CharNeutralMageM.png",
+      "asset_id": "rbxassetid://103288933310374",
+      "sha256": "bec40bcd7261e945851897d08b591fadcb1feb9cdf8cc0285038d9e35322322e",
+      "size": [
+        465,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 94215,
+      "fully_transparent_percent": 39.5728,
+      "partially_transparent_percent": 59.4964,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharNeutralMageM.png",
+      "source_exists": true,
+      "source_sha256": "465e9cd80f96f60535134dae1771ea67257d6334886306b7afebee63ede24d04",
+      "prompt_file": "art/prompts/UIP_CharNeutralMageM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharNeutralMageF",
+      "file": "art/ui/UIP_CharNeutralMageF.png",
+      "asset_id": "rbxassetid://114214067792680",
+      "sha256": "a411a78a4544bb49ac13e0196bf6b492c497786a8142dda9e9cbc33303335f14",
+      "size": [
+        457,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 86085,
+      "fully_transparent_percent": 36.791,
+      "partially_transparent_percent": 62.3466,
+      "visible_alpha_median": 252.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharNeutralMageF.png",
+      "source_exists": true,
+      "source_sha256": "ca02650022966d7f2250f33b35729e12b97bb93b6ba99d71cf8493a869d499d0",
+      "prompt_file": "art/prompts/UIP_CharNeutralMageF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharNeutralArcherM",
+      "file": "art/ui/UIP_CharNeutralArcherM.png",
+      "asset_id": "rbxassetid://118794739229907",
+      "sha256": "90bae0c08553115e8efd2b2b57d2bdb3e4c0e226ff80cc853d6fdf7f8dc0cf21",
+      "size": [
+        416,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 86676,
+      "fully_transparent_percent": 40.6945,
+      "partially_transparent_percent": 58.4745,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharNeutralArcherM.png",
+      "source_exists": true,
+      "source_sha256": "bda70dde7d631e3bc2476cb9a75186f05c2f9a8aedb826c850837501bd6489fb",
+      "prompt_file": "art/prompts/UIP_CharNeutralArcherM.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "CharNeutralArcherF",
+      "file": "art/ui/UIP_CharNeutralArcherF.png",
+      "asset_id": "rbxassetid://101214489604794",
+      "sha256": "b83e976df4692f6b24c7dc2e46559953169bef5d5b0dcee41405ba78b6d629a4",
+      "size": [
+        463,
+        512
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 95479,
+      "fully_transparent_percent": 40.277,
+      "partially_transparent_percent": 58.9388,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_class_portraits",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "redraw_required_by_latest_user": true,
+      "source_file": "art/out/UIP_CharNeutralArcherF.png",
+      "source_exists": true,
+      "source_sha256": "fbc647f556283c8b49607a5b9a140bc88a788ae97922d8d9cc24a394b560feea",
+      "prompt_file": "art/prompts/UIP_CharNeutralArcherF.txt",
+      "approval_record": "art/approved.json:ClassCharacters"
+    },
+    {
+      "key": "IconExp",
+      "file": "art/ui/UIP_IconExp.png",
+      "asset_id": "rbxassetid://126693522209557",
+      "sha256": "bc9f0f6603bcf1ea8d6149869c24d9fe534ca726b9aafb43fd00580adaae4fe4",
+      "size": [
+        229,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 19341,
+      "fully_transparent_percent": 32.9916,
+      "partially_transparent_percent": 65.9525,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconHeart",
+      "file": "art/ui/UIP_IconHeart.png",
+      "asset_id": "rbxassetid://136034394484764",
+      "sha256": "89c87b049a9c43c9dace682809360453c76b62a02844a9c36f7c6a421e02972f",
+      "size": [
+        256,
+        222
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 16534,
+      "fully_transparent_percent": 29.0928,
+      "partially_transparent_percent": 70.045,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 90
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconWings",
+      "file": "art/ui/UIP_IconWings.png",
+      "asset_id": "rbxassetid://126719552618804",
+      "sha256": "80a049096cec69d267a529156caf2c5733fbca39e6990aa543acbb0ca64d48c3",
+      "size": [
+        256,
+        166
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 18180,
+      "fully_transparent_percent": 42.7805,
+      "partially_transparent_percent": 55.497,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconGoldPile",
+      "file": "art/ui/UIP_IconGoldPile.png",
+      "asset_id": "rbxassetid://84180626478301",
+      "sha256": "e80fa6cfb11398416a8f8671929078988911635c984a2b30e97c7a9a18a9df11",
+      "size": [
+        256,
+        166
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 12314,
+      "fully_transparent_percent": 28.9768,
+      "partially_transparent_percent": 69.7854,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconBloodSword",
+      "file": "art/ui/UIP_IconBloodSword.png",
+      "asset_id": "rbxassetid://132217044566905",
+      "sha256": "b8407e0ba65aaf18f274c0c4aa73e435491151231d3515675ba8d2ac5ef48219",
+      "size": [
+        256,
+        239
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 24441,
+      "fully_transparent_percent": 39.9467,
+      "partially_transparent_percent": 58.2947,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconGauge",
+      "file": "art/ui/UIP_IconGauge.png",
+      "asset_id": "rbxassetid://120312988080031",
+      "sha256": "f7a94daa2ec6babeeeb7086c1c3d3bc46a00abe3bb93dd878803b871812327dd",
+      "size": [
+        256,
+        70
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 2387,
+      "fully_transparent_percent": 13.3203,
+      "partially_transparent_percent": 83.817,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconDemon",
+      "file": "art/ui/UIP_IconDemon.png",
+      "asset_id": "rbxassetid://127767718578535",
+      "sha256": "a37f76dd6a39771bb86c1f6b7790a25f6880188423e75cb99010bea2acb7fc92",
+      "size": [
+        256,
+        231
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 18773,
+      "fully_transparent_percent": 31.7455,
+      "partially_transparent_percent": 67.0827,
+      "visible_alpha_median": 252.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconNoBuff",
+      "file": "art/ui/UIP_IconNoBuff.png",
+      "asset_id": "rbxassetid://137931613383299",
+      "sha256": "e6fce0a8cfbbe357bb47ebec07a5cdee5e2f8d364649918c318b2c8be6c8b72d",
+      "size": [
+        256,
+        243
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 17668,
+      "fully_transparent_percent": 28.4015,
+      "partially_transparent_percent": 70.6469,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconShieldBlue",
+      "file": "art/ui/UIP_IconShieldBlue.png",
+      "asset_id": "rbxassetid://89142524062230",
+      "sha256": "65ee8c22606d9b9161d949d0251a98a367ff5305688e0a1822d9530d8767b682",
+      "size": [
+        227,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 19936,
+      "fully_transparent_percent": 34.3062,
+      "partially_transparent_percent": 64.7698,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconNoLoot",
+      "file": "art/ui/UIP_IconNoLoot.png",
+      "asset_id": "rbxassetid://128404798093606",
+      "sha256": "a86d06ba04e07ddd7fa15e9e343dce397a016482d18c39e4e96000f9a91decd7",
+      "size": [
+        243,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 16474,
+      "fully_transparent_percent": 26.4821,
+      "partially_transparent_percent": 72.5614,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconHammer",
+      "file": "art/ui/UIP_IconHammer.png",
+      "asset_id": "rbxassetid://80311803840434",
+      "sha256": "69379bdafa19c1599e7b2c0e6fe37fe27c359462051d5f944a568a2e81940872",
+      "size": [
+        236,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 26983,
+      "fully_transparent_percent": 44.662,
+      "partially_transparent_percent": 54.1463,
+      "visible_alpha_median": 253.0,
+      "group": "legacy_faction_only_with_e_disabled",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "IconAltar",
+      "file": "art/ui/UIP_IconAltar.png",
+      "asset_id": "rbxassetid://92739557390353",
+      "sha256": "eb6d25940ced5939baef07fa6fb7b9a67a60479696575e8d64e556c5479ca8bc",
+      "size": [
+        241,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 20197,
+      "fully_transparent_percent": 32.7363,
+      "partially_transparent_percent": 66.2766,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+          "line": 1820
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "IconBoot",
+      "file": "art/ui/UIP_IconBoot.png",
+      "asset_id": "rbxassetid://75175931189814",
+      "sha256": "4b8cfb4d33437fe5161412afa6ee3b5c31274963db297743dc4540fb2c39b946",
+      "size": [
+        256,
+        232
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 19384,
+      "fully_transparent_percent": 32.6374,
+      "partially_transparent_percent": 66.2547,
+      "visible_alpha_median": 253.0,
+      "group": "shared_ui_frames_icons_and_fallbacks",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+          "line": 92
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FxSlash",
+      "file": "art/ui/UIP_FxSlash.png",
+      "asset_id": "rbxassetid://99494789057875",
+      "sha256": "7f9bddd2a34daea2e1ec0728b55219c5d79849685fe51641a7ec5849c998efb0",
+      "size": [
+        256,
+        251
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 38088,
+      "fully_transparent_percent": 59.2754,
+      "partially_transparent_percent": 40.1488,
+      "visible_alpha_median": 251.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 2672
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 2706
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FxHitSpark",
+      "file": "art/ui/UIP_FxHitSpark.png",
+      "asset_id": "rbxassetid://76401646477744",
+      "sha256": "687c91ddd8be7d9c907f2730735b636209c908789294fd3356ce27311777a835",
+      "size": [
+        254,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 22721,
+      "fully_transparent_percent": 34.9425,
+      "partially_transparent_percent": 62.8045,
+      "visible_alpha_median": 252.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 2639
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FxShockRing",
+      "file": "art/ui/UIP_FxShockRing.png",
+      "asset_id": "rbxassetid://135827777163619",
+      "sha256": "7faf40e4641d1baa427255d84b48f057f6d1515a42bb4b3f3eb6ebb07729c2fa",
+      "size": [
+        256,
+        252
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 31043,
+      "fully_transparent_percent": 48.1197,
+      "partially_transparent_percent": 50.7502,
+      "visible_alpha_median": 84.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 543
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FxMagicBurst",
+      "file": "art/ui/UIP_FxMagicBurst.png",
+      "asset_id": "rbxassetid://92519617657939",
+      "sha256": "f8943f32a5d2f1961a58a7a63404a1ed49509431a8f538ca76b7eb8b29d17978",
+      "size": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 18322,
+      "fully_transparent_percent": 27.9572,
+      "partially_transparent_percent": 71.6644,
+      "visible_alpha_median": 251.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 2655
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FxDust",
+      "file": "art/ui/UIP_FxDust.png",
+      "asset_id": "rbxassetid://108076168454993",
+      "sha256": "2b627948eb58eddaef1e7115c7cc06a6f556f1fcdc476fb5f6fb1c3d1391f055",
+      "size": [
+        222,
+        256
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 17607,
+      "fully_transparent_percent": 30.9808,
+      "partially_transparent_percent": 67.5482,
+      "visible_alpha_median": 253.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 2724
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "EmoOuch",
+      "file": "art/ui/UIP_EmoOuch.png",
+      "asset_id": "rbxassetid://72032537654477",
+      "sha256": "9c16ef218461671d8068e4dba0c1e0157d8dae1aba46f1503c9bcae859c138d2",
+      "size": [
+        256,
+        175
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 15858,
+      "fully_transparent_percent": 35.3973,
+      "partially_transparent_percent": 62.5871,
+      "visible_alpha_median": 253.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 174
+        },
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 175
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "EmoTears",
+      "file": "art/ui/UIP_EmoTears.png",
+      "asset_id": "rbxassetid://70917213593538",
+      "sha256": "a011d2c37a37ea96f5387c22c9303f75fa71c8a75d883753325ee876f29a8c63",
+      "size": [
+        256,
+        197
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 19308,
+      "fully_transparent_percent": 38.2852,
+      "partially_transparent_percent": 59.6962,
+      "visible_alpha_median": 253.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 174
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "EmoDizzy",
+      "file": "art/ui/UIP_EmoDizzy.png",
+      "asset_id": "rbxassetid://124025733418147",
+      "sha256": "f0982c1487061392430779fbed11744c14cdd1bd6c19a1615b832244d769a6f5",
+      "size": [
+        256,
+        232
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 30458,
+      "fully_transparent_percent": 51.283,
+      "partially_transparent_percent": 46.1173,
+      "visible_alpha_median": 253.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 175
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "EmoAngry",
+      "file": "art/ui/UIP_EmoAngry.png",
+      "asset_id": "rbxassetid://123879588166068",
+      "sha256": "7b48e5ac9002176ea2b9bd6b49d24fd169ceec5f873aae07d3835332a657c20e",
+      "size": [
+        256,
+        232
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 22799,
+      "fully_transparent_percent": 38.3873,
+      "partially_transparent_percent": 59.279,
+      "visible_alpha_median": 253.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 174
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "EmoStress",
+      "file": "art/ui/UIP_EmoStress.png",
+      "asset_id": "rbxassetid://135439617637591",
+      "sha256": "4318d1f4520008ee9bbdbe14f4ff03edda951f9bba51321d3c072d2d4b394d9b",
+      "size": [
+        256,
+        213
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 34723,
+      "fully_transparent_percent": 63.6792,
+      "partially_transparent_percent": 34.8555,
+      "visible_alpha_median": 253.0,
+      "group": "world_effect_sprites",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+          "line": 174
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "TXT_Attack",
+      "file": "art/ui/TXT_Attack.png",
+      "asset_id": "rbxassetid://98250821822904",
+      "sha256": "283a915ee5977190f3f20c53d157ef780652651faf91d334ddb87e1eed2240de",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 670912,
+      "fully_transparent_percent": 63.9832,
+      "partially_transparent_percent": 35.8143,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Release",
+      "file": "art/ui/TXT_Release.png",
+      "asset_id": "rbxassetid://116194627847547",
+      "sha256": "6e3a3bb1cda387129a0e723e8b7a1bbc682351d2052e62ea84679ae0a5f56848",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 571410,
+      "fully_transparent_percent": 54.4939,
+      "partially_transparent_percent": 45.2177,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Menu",
+      "file": "art/ui/TXT_Menu.png",
+      "asset_id": "rbxassetid://92283001237959",
+      "sha256": "d1e19aa19dc4b0e795e39c4c0ee6c83b2a303321c4ce4fd38cb14710e361ed3c",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 677703,
+      "fully_transparent_percent": 64.6308,
+      "partially_transparent_percent": 35.194,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Map",
+      "file": "art/ui/TXT_Map.png",
+      "asset_id": "rbxassetid://73294834221789",
+      "sha256": "47839438b99249852b29b80591415318b6c985e3e83d83d9c2fc86bf42caace2",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 670035,
+      "fully_transparent_percent": 63.8995,
+      "partially_transparent_percent": 35.8777,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Claim",
+      "file": "art/ui/TXT_Claim.png",
+      "asset_id": "rbxassetid://118427675820272",
+      "sha256": "c21bb4e1aebe39116d6df2910e4efba2d0ee1a884d3fc8dbbac8371ef3ee77b3",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 694011,
+      "fully_transparent_percent": 66.186,
+      "partially_transparent_percent": 33.5998,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Reroll",
+      "file": "art/ui/TXT_Reroll.png",
+      "asset_id": "rbxassetid://73825749957607",
+      "sha256": "d138b3a391afeedcb8c2e3434af11518889f81dad95b9fc6ae4fef27311deb79",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 716021,
+      "fully_transparent_percent": 68.2851,
+      "partially_transparent_percent": 31.4586,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Quests",
+      "file": "art/ui/TXT_Quests.png",
+      "asset_id": "rbxassetid://117681934543569",
+      "sha256": "f0bf087068c68edc475819718c9ee388a881a62b256656e6f2ae7ebb503d1cae",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 865174,
+      "fully_transparent_percent": 82.5094,
+      "partially_transparent_percent": 17.2701,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Light",
+      "file": "art/ui/TXT_Light.png",
+      "asset_id": "rbxassetid://110514325808489",
+      "sha256": "49aa1c9170f7954712a3eb84c8cd77e6b16dd4d47105dafb0033414627c9d965",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 476450,
+      "fully_transparent_percent": 45.4378,
+      "partially_transparent_percent": 54.3561,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Horn",
+      "file": "art/ui/TXT_Horn.png",
+      "asset_id": "rbxassetid://103663739588779",
+      "sha256": "cfb4ac708ddefcc126895508e2626c598a04b5ffe9594485127f971584b7ee1e",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 524547,
+      "fully_transparent_percent": 50.0247,
+      "partially_transparent_percent": 49.8126,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Safe",
+      "file": "art/ui/TXT_Safe.png",
+      "asset_id": "rbxassetid://89303273670959",
+      "sha256": "ca0355dcd43062ceb310328bf9638b2d8f1d773f1a60c5a88553a2f59e3d10fd",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 851667,
+      "fully_transparent_percent": 81.2213,
+      "partially_transparent_percent": 18.5608,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Rookie",
+      "file": "art/ui/TXT_Rookie.png",
+      "asset_id": "rbxassetid://76344573196272",
+      "sha256": "6d30b1f3013470e8f513af5308283ac63a07243a4d0e990bedb57af7eb5e46ea",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 802489,
+      "fully_transparent_percent": 76.5313,
+      "partially_transparent_percent": 23.2633,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Regular",
+      "file": "art/ui/TXT_Regular.png",
+      "asset_id": "rbxassetid://87813963027105",
+      "sha256": "27d852302f3da5c075d1c3eb41d4ed19005441e229212be1c9fa3f5a93641a24",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 656969,
+      "fully_transparent_percent": 62.6534,
+      "partially_transparent_percent": 37.1402,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_CheerStars",
+      "file": "art/ui/TXT_CheerStars.png",
+      "asset_id": "rbxassetid://91912542746649",
+      "sha256": "a285f288372d7ddeefba415d52b8cfe399c9880c9adcd317f5e94ddd6fdfcb4a",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 756420,
+      "fully_transparent_percent": 72.1378,
+      "partially_transparent_percent": 27.6292,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Next",
+      "file": "art/ui/TXT_Next.png",
+      "asset_id": "rbxassetid://125486764311560",
+      "sha256": "1d4797e3f713fd1bb844002c7accb86c525f20ebccaa3e2bd4e9b5228ec2c179",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 747212,
+      "fully_transparent_percent": 71.2597,
+      "partially_transparent_percent": 28.4831,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_PickFaction",
+      "file": "art/ui/TXT_PickFaction.png",
+      "asset_id": "rbxassetid://122632489644785",
+      "sha256": "d86c057035368b261cd778a6af7a39d948c304621d311158663eeadca00c2183",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 878053,
+      "fully_transparent_percent": 83.7377,
+      "partially_transparent_percent": 16.098,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_PickClass",
+      "file": "art/ui/TXT_PickClass.png",
+      "asset_id": "rbxassetid://100333047732355",
+      "sha256": "8e1c13129f30d53ae7c754d5a2a6672055a087a927245bb2cf8f731793b1660e",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 915448,
+      "fully_transparent_percent": 87.3039,
+      "partially_transparent_percent": 12.4961,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_ThisSide",
+      "file": "art/ui/TXT_ThisSide.png",
+      "asset_id": "rbxassetid://106328910658398",
+      "sha256": "7d583ce6e4de9681cc3e7090c84a0810c546d222019165b4481916590a690fa8",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 825847,
+      "fully_transparent_percent": 78.7589,
+      "partially_transparent_percent": 20.9983,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_ThisClass",
+      "file": "art/ui/TXT_ThisClass.png",
+      "asset_id": "rbxassetid://139552040478610",
+      "sha256": "f3297b8a3bc5a0db95273fb3f15b0e8d57ed7be31b983995bd8f249fc4de5722",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 838995,
+      "fully_transparent_percent": 80.0128,
+      "partially_transparent_percent": 19.8214,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Halo",
+      "file": "art/ui/TXT_Halo.png",
+      "asset_id": "rbxassetid://84253679534085",
+      "sha256": "68bf733082a67ae085c9d9d3642020482fdde4e1fa7502abd693296c5ce3ab03",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 862393,
+      "fully_transparent_percent": 82.2442,
+      "partially_transparent_percent": 17.5243,
+      "visible_alpha_median": 252.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Horns",
+      "file": "art/ui/TXT_Horns.png",
+      "asset_id": "rbxassetid://122733028453143",
+      "sha256": "1e08416d1ee8ab44e17025bd7069784d6442a6e6971b2d592d9816f9c1fa83b6",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 707246,
+      "fully_transparent_percent": 67.4482,
+      "partially_transparent_percent": 32.3321,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Neutral",
+      "file": "art/ui/TXT_Neutral.png",
+      "asset_id": "rbxassetid://123316362815459",
+      "sha256": "5be917411a58ed147f694fc67366cbfdf217c19adaef7428614b2e43132b4ae8",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 859206,
+      "fully_transparent_percent": 81.9403,
+      "partially_transparent_percent": 17.7678,
+      "visible_alpha_median": 253.0,
+      "group": "map_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Paladin",
+      "file": "art/ui/TXT_Paladin.png",
+      "asset_id": "rbxassetid://76514962497375",
+      "sha256": "c2b161e340f68bddc2dd250e17fa9157e4b6f4c0484891cf743d2b37a3e66e60",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 820787,
+      "fully_transparent_percent": 78.2763,
+      "partially_transparent_percent": 21.3843,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_LightMage",
+      "file": "art/ui/TXT_LightMage.png",
+      "asset_id": "rbxassetid://73151603946140",
+      "sha256": "9f6c7a5643af7c4a2754903492159fba297a0b4b2f349cc42c1618be6870c551",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 833583,
+      "fully_transparent_percent": 79.4967,
+      "partially_transparent_percent": 20.2795,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Ranger",
+      "file": "art/ui/TXT_Ranger.png",
+      "asset_id": "rbxassetid://106790531366000",
+      "sha256": "d634e973d5349e5e84fc2a86b0ee61f4c9072773402ad87685d9ff28b48d8824",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 771438,
+      "fully_transparent_percent": 73.5701,
+      "partially_transparent_percent": 26.1481,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Berserker",
+      "file": "art/ui/TXT_Berserker.png",
+      "asset_id": "rbxassetid://115473512483755",
+      "sha256": "ead3bc5a34b48cba3e4ce36693976f2fd141ea08ba4a7fddb95c493d47ae2841",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 715748,
+      "fully_transparent_percent": 68.259,
+      "partially_transparent_percent": 31.5813,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_DarkMage",
+      "file": "art/ui/TXT_DarkMage.png",
+      "asset_id": "rbxassetid://123003479662317",
+      "sha256": "abdf759d5756621d0cf2d988d5a8300e138573754bade7b3fe2a1ff4c24ee7c3",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 858354,
+      "fully_transparent_percent": 81.859,
+      "partially_transparent_percent": 17.9461,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_ShadowHunter",
+      "file": "art/ui/TXT_ShadowHunter.png",
+      "asset_id": "rbxassetid://80860403354341",
+      "sha256": "20035bf7febb91e5bd6681c5ca29b99ab7c2c346b8049070860488ae8fc80b0c",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 858477,
+      "fully_transparent_percent": 81.8707,
+      "partially_transparent_percent": 17.903,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Blacksmith",
+      "file": "art/ui/TXT_Blacksmith.png",
+      "asset_id": "rbxassetid://89380033426515",
+      "sha256": "9aca43a020e32d304ebc5a39f3db68287d986dd26a8c3677683664c5b6c339c0",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 776055,
+      "fully_transparent_percent": 74.0104,
+      "partially_transparent_percent": 25.7622,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Alchemist",
+      "file": "art/ui/TXT_Alchemist.png",
+      "asset_id": "rbxassetid://84174178184020",
+      "sha256": "0a9db267e82740888b65a5a8d7270574fc3e530cd709c92c858eebdc480fc377",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 846333,
+      "fully_transparent_percent": 80.7126,
+      "partially_transparent_percent": 18.9635,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Hunter",
+      "file": "art/ui/TXT_Hunter.png",
+      "asset_id": "rbxassetid://72300636973949",
+      "sha256": "a16019df542cb9cd547e6190b7252484abfc36f775b54ea7819c626d97f6f135",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 726514,
+      "fully_transparent_percent": 69.2858,
+      "partially_transparent_percent": 30.5299,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Male",
+      "file": "art/ui/TXT_Male.png",
+      "asset_id": "rbxassetid://74628967381797",
+      "sha256": "89b548c8e153f5123796b4735049c1ef14b707ac846621e3b93f31f8c2ace763",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 501585,
+      "fully_transparent_percent": 47.8349,
+      "partially_transparent_percent": 52.0182,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Female",
+      "file": "art/ui/TXT_Female.png",
+      "asset_id": "rbxassetid://79119143008950",
+      "sha256": "0cb5fd213f31ec5554ee401ccf496f5795bb42b3a27fdd67f713697e54604873",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 510665,
+      "fully_transparent_percent": 48.7008,
+      "partially_transparent_percent": 51.1222,
+      "visible_alpha_median": 253.0,
+      "group": "class_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_LevelUp",
+      "file": "art/ui/TXT_LevelUp.png",
+      "asset_id": "rbxassetid://87685207336169",
+      "sha256": "b62004551d4adedac696621735c085588d1f2bddbd8c3e7432058b71042f3b36",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 782263,
+      "fully_transparent_percent": 74.6024,
+      "partially_transparent_percent": 25.1412,
+      "visible_alpha_median": 252.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_GoldenGoose",
+      "file": "art/ui/TXT_GoldenGoose.png",
+      "asset_id": "rbxassetid://118344018643742",
+      "sha256": "44acceaac6ab0b975768d3297672332872d927a1d931a093476a2402860f0c11",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 843249,
+      "fully_transparent_percent": 80.4185,
+      "partially_transparent_percent": 19.2658,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Crossroads",
+      "file": "art/ui/TXT_Crossroads.png",
+      "asset_id": "rbxassetid://121634705034244",
+      "sha256": "de6ce7b42787cfe2d390aab0f8caa053c6c13aa05fdf876bec65cd809cf0021b",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 822495,
+      "fully_transparent_percent": 78.4392,
+      "partially_transparent_percent": 21.3365,
+      "visible_alpha_median": 253.0,
+      "group": "map_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_HaloTown",
+      "file": "art/ui/TXT_HaloTown.png",
+      "asset_id": "rbxassetid://112063601867600",
+      "sha256": "826b7f2e6287a99ade14168d0cbf6a8508bc7604c8378fe39634429c6526c8bb",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 823410,
+      "fully_transparent_percent": 78.5265,
+      "partially_transparent_percent": 21.2762,
+      "visible_alpha_median": 253.0,
+      "group": "map_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_HornsTown",
+      "file": "art/ui/TXT_HornsTown.png",
+      "asset_id": "rbxassetid://95993978315203",
+      "sha256": "5ce3198a1ac25daad712bbd9c4a7a3f0dc153a06345a5d72471db594c916d045",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 737946,
+      "fully_transparent_percent": 70.376,
+      "partially_transparent_percent": 29.4498,
+      "visible_alpha_median": 253.0,
+      "group": "map_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_Meadow",
+      "file": "art/ui/TXT_Meadow.png",
+      "asset_id": "rbxassetid://137041154773318",
+      "sha256": "3ec55d2a42b0dfdd7dd32ba4095f3c37d71de21d149b64a59483bcf12694baab",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 813791,
+      "fully_transparent_percent": 77.6092,
+      "partially_transparent_percent": 22.2184,
+      "visible_alpha_median": 253.0,
+      "group": "map_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_GoblinWoods",
+      "file": "art/ui/TXT_GoblinWoods.png",
+      "asset_id": "rbxassetid://85681760418016",
+      "sha256": "3f0b20aa029ed16f279f74d96840bff173cb091c5560c02247c0c0d2b422179e",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 814461,
+      "fully_transparent_percent": 77.6731,
+      "partially_transparent_percent": 22.0778,
+      "visible_alpha_median": 253.0,
+      "group": "map_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_SkeletonRuins",
+      "file": "art/ui/TXT_SkeletonRuins.png",
+      "asset_id": "rbxassetid://95378982488216",
+      "sha256": "2a12453831ea7851bd2b2bd524d1d3a89c5a1a54b04f3f5f2c1dceaf0bd8ea62",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 828540,
+      "fully_transparent_percent": 79.0157,
+      "partially_transparent_percent": 20.7627,
+      "visible_alpha_median": 253.0,
+      "group": "map_text_bindings",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_SafeZone",
+      "file": "art/ui/TXT_SafeZone.png",
+      "asset_id": "rbxassetid://126144617681076",
+      "sha256": "6d5fdc55d4e505dffc60531c67fcce03d2c16e563d437fd0209af4aee38b32b4",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 787347,
+      "fully_transparent_percent": 75.0873,
+      "partially_transparent_percent": 24.6691,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "TXT_PvPZone",
+      "file": "art/ui/TXT_PvPZone.png",
+      "asset_id": "rbxassetid://95155412805850",
+      "sha256": "e36a82673032153e77c07d70b4d8fe934f05d1a941c6d5d3d9660e5e41cdcc23",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 778331,
+      "fully_transparent_percent": 74.2274,
+      "partially_transparent_percent": 25.6497,
+      "visible_alpha_median": 253.0,
+      "group": "registered_text_without_current_binding",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false,
+      "currently_disabled_by": "UIKit.FONT.UseTextImages=false"
+    },
+    {
+      "key": "Weapon_Warrior_T1",
+      "file": "art/ui/Weapon_Warrior_T1.png",
+      "asset_id": "rbxassetid://110253568224769",
+      "sha256": "4a2beea4c4aac7c6cd0d77d8d71c484eff0c60e70d8efc0d6c2e432521f20679",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 855912,
+      "fully_transparent_percent": 81.6261,
+      "partially_transparent_percent": 18.1747,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Warrior_T2",
+      "file": "art/ui/Weapon_Warrior_T2.png",
+      "asset_id": "rbxassetid://134296432983209",
+      "sha256": "0c9f63788f9b5a88a2f2b533a50502d30d6ce2da480dc4c3638743f9d6ae0ae5",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 779870,
+      "fully_transparent_percent": 74.3742,
+      "partially_transparent_percent": 25.421,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Warrior_T3",
+      "file": "art/ui/Weapon_Warrior_T3.png",
+      "asset_id": "rbxassetid://118676171420516",
+      "sha256": "dae2a09ed9007c05ba9d0f1a98f691fa7283ddb9cc1fb443213b7b137dec8c9f",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 809307,
+      "fully_transparent_percent": 77.1815,
+      "partially_transparent_percent": 22.6239,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Warrior_T4",
+      "file": "art/ui/Weapon_Warrior_T4.png",
+      "asset_id": "rbxassetid://121628920172881",
+      "sha256": "3152358b9e793f0ffd8a4e30fad2363528a66e51a970e61e261e351972680b79",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 782023,
+      "fully_transparent_percent": 74.5795,
+      "partially_transparent_percent": 25.1947,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Warrior_T5",
+      "file": "art/ui/Weapon_Warrior_T5.png",
+      "asset_id": "rbxassetid://78787056413343",
+      "sha256": "cdc56b8ea2bcd39c9c08b7359662a703440db3f645b84173218fbfe92e1391c3",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 766138,
+      "fully_transparent_percent": 73.0646,
+      "partially_transparent_percent": 26.7177,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Warrior_T6",
+      "file": "art/ui/Weapon_Warrior_T6.png",
+      "asset_id": "rbxassetid://134912361470616",
+      "sha256": "268db4d4d99ede6eb1852751c2c97c6f90fe8c8e7d5d9a9033e0aa90a50b5c0e",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 808386,
+      "fully_transparent_percent": 77.0937,
+      "partially_transparent_percent": 22.7093,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Warrior_T7_Halo",
+      "file": "art/ui/Weapon_Warrior_T7_Halo.png",
+      "asset_id": "rbxassetid://81358930713578",
+      "sha256": "f0bf11f73a9f5d6a6620622089ae5bb6b1c6f16be765ffe75642ab7c2d2e8f62",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 759868,
+      "fully_transparent_percent": 72.4667,
+      "partially_transparent_percent": 27.3011,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Warrior_T7_Horns",
+      "file": "art/ui/Weapon_Warrior_T7_Horns.png",
+      "asset_id": "rbxassetid://109996418847092",
+      "sha256": "72d2bf668bc4732baa51e4538c83c957e0744ff88567e07dcf3f11d24154db91",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 814318,
+      "fully_transparent_percent": 77.6594,
+      "partially_transparent_percent": 22.0709,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Warrior_T7_Neutral",
+      "file": "art/ui/Weapon_Warrior_T7_Neutral.png",
+      "asset_id": "rbxassetid://113768226721190",
+      "sha256": "5752fb882d2fe38cf0f7d8cbf47113e0afe0afdd30a436c50c88c496416e81b6",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 817416,
+      "fully_transparent_percent": 77.9549,
+      "partially_transparent_percent": 21.8331,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T1",
+      "file": "art/ui/Weapon_Mage_T1.png",
+      "asset_id": "rbxassetid://94017465082266",
+      "sha256": "368321b15d442104657536489363a90c0e98dd918c12e2e776a30beeb30a3aab",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 872064,
+      "fully_transparent_percent": 83.1665,
+      "partially_transparent_percent": 16.6284,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T2",
+      "file": "art/ui/Weapon_Mage_T2.png",
+      "asset_id": "rbxassetid://124480073241910",
+      "sha256": "3a2d89e40753ea91b5a76684a1755326b50f1daa556b4f8c40be949b22ed4866",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 830061,
+      "fully_transparent_percent": 79.1608,
+      "partially_transparent_percent": 20.6406,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T3",
+      "file": "art/ui/Weapon_Mage_T3.png",
+      "asset_id": "rbxassetid://98652791112835",
+      "sha256": "8b29d1e04aa102fa5f334e1ca8696bbeff39243e6f40037504f4050a9eb6ad11",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 853571,
+      "fully_transparent_percent": 81.4029,
+      "partially_transparent_percent": 18.4248,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T4",
+      "file": "art/ui/Weapon_Mage_T4.png",
+      "asset_id": "rbxassetid://114114689990814",
+      "sha256": "0063dc04846bc5254a46c2abb23b7807ea43991ffd1b19bb911b51842e8315e0",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 831632,
+      "fully_transparent_percent": 79.3106,
+      "partially_transparent_percent": 20.47,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T5",
+      "file": "art/ui/Weapon_Mage_T5.png",
+      "asset_id": "rbxassetid://82923455323942",
+      "sha256": "dc3e9628904d3d8c0a745a4b7e155787464780c516ca57c320b39343715f3204",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 880422,
+      "fully_transparent_percent": 83.9636,
+      "partially_transparent_percent": 15.8797,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T6",
+      "file": "art/ui/Weapon_Mage_T6.png",
+      "asset_id": "rbxassetid://86455721876057",
+      "sha256": "eb6234b06ff812a7cbc9eabcf270c7f08650fe4efc14140aaace9f9d66e6540d",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 838751,
+      "fully_transparent_percent": 79.9895,
+      "partially_transparent_percent": 19.7934,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T7_Halo",
+      "file": "art/ui/Weapon_Mage_T7_Halo.png",
+      "asset_id": "rbxassetid://83762763419599",
+      "sha256": "b3bceb49cd6ecd8c46a9cd371b6e5aaad359b488404a950856fa5b6469fb48e4",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 782323,
+      "fully_transparent_percent": 74.6081,
+      "partially_transparent_percent": 25.1683,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T7_Horns",
+      "file": "art/ui/Weapon_Mage_T7_Horns.png",
+      "asset_id": "rbxassetid://112320137471828",
+      "sha256": "687bfb2bf9d4b9a27a227ba7342533fca790c8202ee68ed6375c4fadde1e8b37",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 836929,
+      "fully_transparent_percent": 79.8158,
+      "partially_transparent_percent": 19.9393,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Mage_T7_Neutral",
+      "file": "art/ui/Weapon_Mage_T7_Neutral.png",
+      "asset_id": "rbxassetid://111298666053873",
+      "sha256": "ec4264055c13a29d8f4255873b86fbdb57cedcfc7c67e3f665936b987aa9668f",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 851861,
+      "fully_transparent_percent": 81.2398,
+      "partially_transparent_percent": 18.5645,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T1",
+      "file": "art/ui/Weapon_Archer_T1.png",
+      "asset_id": "rbxassetid://114530628874023",
+      "sha256": "a6e8f0edaceeaa23fbdaf712c87b5169abb378187ac2423c16ee10cf34ff9ae3",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 830656,
+      "fully_transparent_percent": 79.2175,
+      "partially_transparent_percent": 20.5262,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T2",
+      "file": "art/ui/Weapon_Archer_T2.png",
+      "asset_id": "rbxassetid://77934186009567",
+      "sha256": "efb9942be8a2a5e77fb23a7adeb3a33b9b8573cc29c0d8f9c5d3d0f3bb7de9a4",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 853371,
+      "fully_transparent_percent": 81.3838,
+      "partially_transparent_percent": 18.3413,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T3",
+      "file": "art/ui/Weapon_Archer_T3.png",
+      "asset_id": "rbxassetid://107992927949121",
+      "sha256": "708c02c83429d71d29f6e37b1c04e05d9c9f1044b096125040fdbc29721bc09c",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 827343,
+      "fully_transparent_percent": 78.9016,
+      "partially_transparent_percent": 20.8045,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T4",
+      "file": "art/ui/Weapon_Archer_T4.png",
+      "asset_id": "rbxassetid://135806799928152",
+      "sha256": "2d30fe81f910a69320e807708b23a13dffdeafce34d0e5c39a1466fde40de1ef",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 822494,
+      "fully_transparent_percent": 78.4391,
+      "partially_transparent_percent": 21.3143,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T5",
+      "file": "art/ui/Weapon_Archer_T5.png",
+      "asset_id": "rbxassetid://76246016710761",
+      "sha256": "ffbf4f927afeac59fa3d50286aa294044efc5d2420634cf0764ba0ea51cb6a1e",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 861574,
+      "fully_transparent_percent": 82.1661,
+      "partially_transparent_percent": 17.5662,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T6",
+      "file": "art/ui/Weapon_Archer_T6.png",
+      "asset_id": "rbxassetid://111067065096221",
+      "sha256": "c52d4e07c43225815a5d4449fe194c7d0d6737d5c4ae92c8bb3f19e918482a21",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 884575,
+      "fully_transparent_percent": 84.3596,
+      "partially_transparent_percent": 15.3773,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T7_Halo",
+      "file": "art/ui/Weapon_Archer_T7_Halo.png",
+      "asset_id": "rbxassetid://123944650415871",
+      "sha256": "cdbc3de8b4b2061b4130827c3600bf1f4544121b0064e4c99a47b21568822d16",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 802765,
+      "fully_transparent_percent": 76.5576,
+      "partially_transparent_percent": 23.1592,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T7_Horns",
+      "file": "art/ui/Weapon_Archer_T7_Horns.png",
+      "asset_id": "rbxassetid://129557918253283",
+      "sha256": "1dc29189e53227708ba48dcc44ad7feb4e670af883edf99f8e228a1c026757e7",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 817775,
+      "fully_transparent_percent": 77.9891,
+      "partially_transparent_percent": 21.6783,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Weapon_Archer_T7_Neutral",
+      "file": "art/ui/Weapon_Archer_T7_Neutral.png",
+      "asset_id": "rbxassetid://134108221476202",
+      "sha256": "e057251ae9b5380f7947caab8f501a8574c7423e2187ac305b921268e192292a",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 809463,
+      "fully_transparent_percent": 77.1964,
+      "partially_transparent_percent": 22.6663,
+      "visible_alpha_median": 253.0,
+      "group": "dynamic_weapon_inventory_icons",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "Tex_Grass",
+      "file": "art/ui/Tex_Grass.png",
+      "asset_id": "rbxassetid://78282434254609",
+      "sha256": "c2dd5aa6c09ac5a56e9dbf8e4194a663e02a8c3651a3a5a5977c6784b9f068f0",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 220,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.3902,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_LeafyGrass",
+      "file": "art/ui/Tex_LeafyGrass.png",
+      "asset_id": "rbxassetid://97617252360457",
+      "sha256": "8ad47acb12a1863539704913a1cc5c5dc3fea5d6b8e8ffe86a1e40a325ba5a81",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_HaloTiles",
+      "file": "art/ui/Tex_HaloTiles.png",
+      "asset_id": "rbxassetid://108329087203475",
+      "sha256": "58eb47213c17702ed13473264e018c648c3789b9941967e581be97aaeac40963",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_Ground",
+      "file": "art/ui/Tex_Ground.png",
+      "asset_id": "rbxassetid://91532028025941",
+      "sha256": "cc5ca23524a0c0fe165d6273a9e16d9f6a7de0218887d5444025457760900509",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_DirtPath",
+      "file": "art/ui/Tex_DirtPath.png",
+      "asset_id": "rbxassetid://98968179009156",
+      "sha256": "36bf5614f375a97a5108faf3700d758bb5dac81ea8d6c68c8ecb3bab18cde395",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_CrownShardGround",
+      "file": "art/ui/Tex_CrownShardGround.png",
+      "asset_id": "rbxassetid://114856730896342",
+      "sha256": "db0aa59eaaca4e78ba5731420a3750a0b0e549966e975f346c70abfc8ed9ed0a",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_CrackedLava",
+      "file": "art/ui/Tex_CrackedLava.png",
+      "asset_id": "rbxassetid://91957054731134",
+      "sha256": "2e71f32f773fed863d401ed9c33062b34ac210d19845bfdc45896e48ad22c02a",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_Cobblestone",
+      "file": "art/ui/Tex_Cobblestone.png",
+      "asset_id": "rbxassetid://115522078544414",
+      "sha256": "ef4671ae56d6a11c7fb8cc42ecda17eebf761cb60b6190773fbbf97dfd79b90b",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_Basalt",
+      "file": "art/ui/Tex_Basalt.png",
+      "asset_id": "rbxassetid://103343555671461",
+      "sha256": "410e8f07e0a5562a88acaec4808a3f985f49719ddf56f5e4fc349b65dae36d56",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_WoodPlanks",
+      "file": "art/ui/Tex_WoodPlanks.png",
+      "asset_id": "rbxassetid://109420001270116",
+      "sha256": "89c22c3a2004753958c21cbb8bec9277535ed3af6ab04ceca64056d1e7f84b9c",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_Slate",
+      "file": "art/ui/Tex_Slate.png",
+      "asset_id": "rbxassetid://121489633827695",
+      "sha256": "d17466f8783b966173cec3fb8283f97493eb5bd1f441e434525b22c9a609cd1c",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 219,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.3902,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_Sand",
+      "file": "art/ui/Tex_Sand.png",
+      "asset_id": "rbxassetid://95940507315556",
+      "sha256": "a74a57a955fa1661843a98461c03874a61d604bf5161ccd6a7e25d1d6b36905a",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_Rock",
+      "file": "art/ui/Tex_Rock.png",
+      "asset_id": "rbxassetid://106576322424276",
+      "sha256": "860a5f82c6ff2e5452d81a66a022a212c6d1c6b7aebe321b82e38271588a9454",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_Marble",
+      "file": "art/ui/Tex_Marble.png",
+      "asset_id": "rbxassetid://116081327339487",
+      "sha256": "848e99f0d9a56de7495fee43ccb1180c9acc69fbd7ff50603db8d5ccde7e5f98",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "Tex_Limestone",
+      "file": "art/ui/Tex_Limestone.png",
+      "asset_id": "rbxassetid://113099053145664",
+      "sha256": "01fb02ec7259bb21ec73117bcfd81a1517fa0beede78824a235efbb7688565db",
+      "size": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "world_materials_not_ui",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": false
+    },
+    {
+      "key": "MapParchment",
+      "file": "art/ui/UI_MapParchment.png",
+      "asset_id": "rbxassetid://133911744102396",
+      "sha256": "99fd243bc34b95ae15541d7977de4edb0c81e146ed8583553e338bdd51ea2754",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "has_alpha_channel": false,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 0,
+      "fully_transparent_percent": 0.0,
+      "partially_transparent_percent": 0.0,
+      "visible_alpha_median": 255.0,
+      "group": "map_background",
+      "baked_text_confirmed_by_metadata_or_type": null,
+      "baked_text_limit": "true는 합성/글자 이미지의 코드·메타데이터 근거. null은 OCR/전수 육안 미검사이며 글자 없음 확정이 아님.",
+      "literal_references_excluding_config": [
+        {
+          "file": "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau",
+          "line": 1414
+        }
+      ],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true
+    },
+    {
+      "key": "FactionTitleFreshTyped",
+      "file": "art/ui/UIP_FactionTitle_FreshTyped.png",
+      "asset_id": "rbxassetid://111239293270560",
+      "sha256": "a07679875246246b951808ad7819215098b9559610976e24090dbc04389de919",
+      "size": [
+        1024,
+        210
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 73322,
+      "fully_transparent_percent": 34.0969,
+      "partially_transparent_percent": 57.5065,
+      "visible_alpha_median": 253.0,
+      "group": "current_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "dynamic_reference": "Config.UIArt.FactionE.Parts → FactionPicker.E.key",
+      "snapshot_delta": "제목/footer 개별 새 PNG 추가"
+    },
+    {
+      "key": "FactionFooterFreshTyped",
+      "file": "art/ui/UIP_FactionFooter_FreshTyped.png",
+      "asset_id": "rbxassetid://128423642459976",
+      "sha256": "e1d708c9ee3546f70bbb40addec3edb79c4fe21c5f375349a2bb7a48b7c70462",
+      "size": [
+        1024,
+        126
+      ],
+      "mode": "RGBA",
+      "has_alpha_channel": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "fully_transparent_pixels": 13331,
+      "fully_transparent_percent": 10.3322,
+      "partially_transparent_percent": 83.7867,
+      "visible_alpha_median": 253.0,
+      "group": "current_faction_6",
+      "baked_text_confirmed_by_metadata_or_type": true,
+      "literal_references_excluding_config": [],
+      "runtime_loading_confirmed_in_this_audit": false,
+      "current_configuration_reachable_candidate": true,
+      "dynamic_reference": "Config.UIArt.FactionE.Parts → FactionPicker.E.key",
+      "snapshot_delta": "제목/footer 개별 새 PNG 추가"
+    }
+  ],
+  "scope_update": {
+    "user_quote": "3d 아바타 외에 모든 것들 다! 지금 직업별 이미지들도 다 전부 새로 그러나 기존 그림체는 유지하고. 절대 노출",
+    "exclude_only": "현재3D아바타 자체. 2D직업그림18개는 제외하지 않음.",
+    "human_clothing": "얼굴·손 외 신체를 옷으로 가린다. 목·어깨·가슴·배·등·다리 노출 없음. 긴 소매·긴 바지 또는 긴 치마와 불투명 타이츠·신발. 기존 그림체만 참조하고 과거 노출 의상은 복제하지 않는다.",
+    "monster_exception": "기존 비성적 Slime/Goblin/GoblinBrute 의복 예외는 유지. 인간형 직업에는 적용하지 않음.",
+    "new_design_status": "재제작 요청은 범위 승인이다. 아직 생성하지 않은 개별 새 그림의 시각 검증/업로드 완료를 뜻하지 않는다."
+  },
+  "text_image_gate": {
+    "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+    "setting_line": 23,
+    "return_line": 974,
+    "UseTextImages": false,
+    "potential_class_bindings": 13,
+    "potential_map_bindings": 7,
+    "rendering_enabled": false,
+    "correction": "초기 리터럴/바인딩 조사에서20개 잠재 매핑을 현재 후보로 포함했으나 실행 게이트를 확인해 제외함."
+  },
+  "style_references": [
+    {
+      "file": "art/out/UI_Class_A.png",
+      "approval": "art/approved.json:UI_Class_A",
+      "role": "직업 선택 화면의 기존 장난감 같은 치비/양피지/금색 틀 기준. 이번 감사에서 이미지 재열람 안 함."
+    },
+    {
+      "file": "art/out/UIP_CharHaloArcherF.png",
+      "approval": "art/approved.json:ClassCharacters",
+      "visually_reviewed": true,
+      "observation": "큰 머리·동그란 눈·부드러운 금발·입체 장난감 표현·흰색/금색. 긴 소매/장갑/다리 전체 옷. 기본표정으로 윙크를 그대로 요구하지 않는다."
+    },
+    {
+      "file": "art/out/UIP_CharHornsMageF.png",
+      "approval": "art/approved.json:ClassCharacters",
+      "visually_reviewed": true,
+      "observation": "동일한 치비 얼굴/입체 표현·검붉은 긴 옷·작은 뿔·긴 소매·긴 바지·신발. 얼굴과 손 외 옷으로 가려짐."
+    },
+    {
+      "file": "art/out/UIP_CharNeutralWarriorF.png",
+      "approval": "art/approved.json:ClassCharacters",
+      "visually_reviewed": true,
+      "observation": "동일 치비 비율·청록/갈색·고글/톱니/망치·긴 소매/장갑/긴 바지/부츠. 목의 일부 피부도 새 제작에서는 가리기."
+    }
+  ],
+  "separate_non_ui": {
+    "world_material_png": [
+      "Tex_Grass",
+      "Tex_LeafyGrass",
+      "Tex_HaloTiles",
+      "Tex_Ground",
+      "Tex_DirtPath",
+      "Tex_CrownShardGround",
+      "Tex_CrackedLava",
+      "Tex_Cobblestone",
+      "Tex_Basalt",
+      "Tex_WoodPlanks",
+      "Tex_Slate",
+      "Tex_Sand",
+      "Tex_Rock",
+      "Tex_Marble",
+      "Tex_Limestone"
+    ],
+    "out_icon_emblem_marketing_png_candidates": [
+      "art/out/Emblem_Halo.png",
+      "art/out/Emblem_Horns.png",
+      "art/out/Emblem_Neutral.png",
+      "art/out/GameIcon.png",
+      "art/out/Icon_CheerStar.png",
+      "art/out/Icon_ClassTicket.png",
+      "art/out/Icon_CrownShard.png",
+      "art/out/Icon_FactionTicket.png",
+      "art/out/Icon_Gold.png",
+      "art/out/Icon_GrudgeSack.png",
+      "art/out/Icon_RewardChest.png",
+      "art/out/Icon_XP.png",
+      "art/out/Thumbnail_Kaiju.png"
+    ],
+    "out_asset_runtime_status": "Config.UIArt.Parts 밖. 현재월드/마케팅사용 여부는 별도. UI 분모와 합산하지 않음.",
+    "top_level_non_avatar_glb_files": [
+      "art/models/Goblin.glb",
+      "art/models/GoblinBrute.glb",
+      "art/models/GoldenGoose.glb",
+      "art/models/Skeleton.glb",
+      "art/models/SkeletonKing.glb",
+      "art/models/SkeletonKnight.glb",
+      "art/models/Slime.glb"
+    ],
+    "model_limit": "위7개는 최상위폴더 파일 수이며 운영중 몬스터 모델 수가 아니다. costume/tripo 폴더나 savedplace 전수 모델 감사는 이번에 하지 않았다.",
+    "weapons_3d": "정식 계획27종은 PNG아이콘27개와 별개. 현재 파일 기반 준비 여부 전수검사 안 함.",
+    "world_geometry": "지형·건물·소품은 Roblox/Blender 모델·재질로 따로 조사하고 GPT안 승인 후 적용. 단일 투명PNG로 일괄 치환하지 않는다."
+  },
+  "unregistered_note": "무성별 구직업9개와2D궁수초상화1개. 새Footer/Title은 현재등록6역할에포함.",
+  "snapshot_history": [
+    {
+      "counts": {
+        "registered_parts": 175,
+        "registered_png_files": 175,
+        "registered_world_material_png": 15,
+        "registered_non_material_png": 160,
+        "current_configuration_reachable_candidates_including_fallbacks": 102,
+        "runtime_confirmed_images_in_this_audit": 0,
+        "unregistered_png_files": 11,
+        "current_ui_candidate_png_excluding_world_fx": 92,
+        "current_world_fx_sprite_candidates": 10,
+        "disabled_text_images": 42,
+        "legacy_or_disabled_non_material_png": 58
+      },
+      "source_sha256": "d577e7312e9ddd1ea0c530edcde9311e47e0b0a94ba7e3377661137d7acd8fc3",
+      "notes": "최초175개등록 스냅샷. 제목/footer 신규2개등록 전의 수치이며 보존함."
+    }
+  ]
+}

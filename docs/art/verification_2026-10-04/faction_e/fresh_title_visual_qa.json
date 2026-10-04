@@ -1,0 +1,73 @@
+{
+  "dateKst": "2026-10-04",
+  "scope": "로컬 제목 PNG 조판 및 밝고 어두운 배경 확대 검사. Roblox 런타임은 확인하지 않음.",
+  "personallyViewed": [
+    "art/out/UI_FactionTitle_Fresh.png",
+    "docs/art/verification_2026-10-04/faction_e/fresh_title_export_light.png",
+    "docs/art/verification_2026-10-04/faction_e/fresh_title_export_dark.png",
+    "docs/art/verification_2026-10-04/faction_e/fresh_title_text_4x_light.png",
+    "docs/art/verification_2026-10-04/faction_e/fresh_title_export_4x_dark.png"
+  ],
+  "text": "어느 편에 설래요?",
+  "font": "art/fonts/jua/Jua-Regular.ttf",
+  "fontAtOutputPixels": 89.6484375,
+  "solidGlyphInteriorMeasurement": {
+    "method": "기록된 글자 경계 ROI 안에서 기준 RGB [71,32,8]과 최대 채널차 12 이내를 추출하고 2px 침식. 글자 중심색 검사이며 전체 글자 존재 증명과는 별도.",
+    "roi": [
+      206,
+      56,
+      818,
+      146
+    ],
+    "samplePixels": 10191,
+    "rgbMin": [
+      71,
+      32,
+      8
+    ],
+    "rgbMax": [
+      71,
+      32,
+      8
+    ],
+    "maxChannelRange": 0
+  },
+  "visualChecks": {
+    "sourceArtPreserved": true,
+    "exactTextLegible": true,
+    "visibleTextMottling": false,
+    "visibleDetachedFragments": false,
+    "visibleBodyScratchesOrClipping": false,
+    "lightBackgroundPass": true,
+    "darkBackgroundPass": true,
+    "textWithinCentralBlankArea": true
+  },
+  "sourceCropBounds": [
+    62,
+    137,
+    2110,
+    549
+  ],
+  "cropOutsideNonzeroPixels": 306,
+  "cropOutsideAlphaMax": 1,
+  "maskThresholdEdit": false,
+  "nonzeroAlphaComponentCount": 1,
+  "nonzeroAlphaMargins": [
+    3,
+    3,
+    3,
+    4
+  ],
+  "sourceSha256Unchanged": true,
+  "outputSha256": "a07679875246246b951808ad7819215098b9559610976e24090dbc04389de919",
+  "outputSize": [
+    1024,
+    210
+  ],
+  "nodeSyntaxCheck": "passed",
+  "gitDiffCheck": "passed",
+  "upload": false,
+  "studioValidation": false,
+  "localResult": "PASS",
+  "creditUsed": 0
+}

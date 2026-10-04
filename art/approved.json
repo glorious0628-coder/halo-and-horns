@@ -225,5 +225,29 @@
   "sha256": "a600d49c82e58e6767e67057bc6f873c45513cf2e11c8fa57fd2ceef09aa1a7d",
   "assetId": "rbxassetid://127475794518664",
   "note": "참조 없이 개별 새 GPT 투명 그림과 실제 Jua 조판. 사용자 표시 후 3장 묶음 업로드. 원본 PNG 보존."
+ },
+ "UI_FactionTitle_FreshTyped": {
+  "status": "authorized_redraw",
+  "file": "art/ui/UIP_FactionTitle_FreshTyped.png",
+  "sourceArt": "art/out/UI_FactionTitle_Fresh.png",
+  "typographySource": "docs/art/verification_2026-10-04/faction_e/fresh_title_preview.html",
+  "approvedDate": "2026-10-04",
+  "authorizationQuote": "어느편에 설래요? 이것도 ! 지금 게임 안에 들어가는 디자인 모두 다 싹 다 다시해야 돼 ㅡㅡ; 다 투명으로 하고, 하나 하나씩 정확하게 하자.",
+  "individualPostGenerationApproval": false,
+  "sha256": "a07679875246246b951808ad7819215098b9559610976e24090dbc04389de919",
+  "assetId": "rbxassetid://111239293270560",
+  "note": "사용자 전면 새 제작·적용 지시 및 계속 진행 요청. 새 GPT 빈 그림과 실제 Jua 조판. 한 장씩 표시·검사 후 각 1개 업로드. 별도 개별 선택 문구를 받은 것으로 기록하지 않음."
+ },
+ "UI_FactionFooter_FreshTyped": {
+  "status": "authorized_redraw",
+  "file": "art/ui/UIP_FactionFooter_FreshTyped.png",
+  "sourceArt": "art/out/UI_FactionFooter_Fresh.png",
+  "typographySource": "docs/art/verification_2026-10-04/faction_e/fresh_footer_preview.html",
+  "approvedDate": "2026-10-04",
+  "authorizationQuote": "어느편에 설래요? 이것도 ! 지금 게임 안에 들어가는 디자인 모두 다 싹 다 다시해야 돼 ㅡㅡ; 다 투명으로 하고, 하나 하나씩 정확하게 하자.",
+  "individualPostGenerationApproval": false,
+  "sha256": "e1d708c9ee3546f70bbb40addec3edb79c4fe21c5f375349a2bb7a48b7c70462",
+  "assetId": "rbxassetid://128423642459976",
+  "note": "사용자 전면 새 제작·적용 지시 및 계속 진행 요청. 새 GPT 빈 그림과 실제 Jua 조판. 한 장씩 표시·검사 후 각 1개 업로드. 별도 개별 선택 문구를 받은 것으로 기록하지 않음."
  }
 }

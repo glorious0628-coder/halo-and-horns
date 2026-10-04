@@ -142888,6 +142888,8 @@ Config.UIArt = {
 		FactionCardHaloFreshTyped = { Id = "rbxassetid://76818879022385", Size = Vector2.new(570, 954) },
 		FactionCardHornsFreshTyped = { Id = "rbxassetid://137806621328187", Size = Vector2.new(570, 954) },
 		FactionCardNeutralFreshTyped = { Id = "rbxassetid://127475794518664", Size = Vector2.new(570, 954) },
+		FactionTitleFreshTyped = { Id = "rbxassetid://111239293270560", Size = Vector2.new(1024, 210) },
+		FactionFooterFreshTyped = { Id = "rbxassetid://128423642459976", Size = Vector2.new(1024, 126) },
 		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
 		-- pick screens (mockups art/out/UI_Faction_B.png, UI_Class_A.png): text-free card backgrounds, regions in CardLayout
 		CardHalo = { Id = "rbxassetid://116168194185824" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(635, 1024) },
@@ -143180,7 +143182,7 @@ Config.UIArt.FactionE = {
     CardAspect = 380 / 636,
     Parts = {
         Halo = "FactionCardHaloFreshTyped", Horns = "FactionCardHornsFreshTyped", Neutral = "FactionCardNeutralFreshTyped",
-        Title = "FactionTitleRibbonE", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterPanelE",
+        Title = "FactionTitleFreshTyped", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterFreshTyped",
     },
     ButtonRects = {
 		Halo = { 0.24793872, 0.80211072, 0.50513279, 0.07605582 },
@@ -143195,7 +143197,7 @@ Config.UIArt.FactionE = {
         Title = { 514/1584, 5/1050, 557/1584, 111/1050 },
         Premise = { 240/1584, 124/1050, 1100/1584, 187/1050 },
         Cards = { 238/1584, 318/1050, 1102/1584, 627/1050 },
-        Footer = { 326/1584, 953/1050, 929/1584, 84/1050 },
+        Footer = { 326/1584, 929/1050, 929/1584, 116/1050 },
     },
     SemanticText = {
         Title = "어느 편에 설래요?",

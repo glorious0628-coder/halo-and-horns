@@ -1,0 +1,33 @@
+{
+  "authorization_quote": "어느편에 설래요? 이것도 ! 지금 게임 안에 들어가는 디자인 모두 다 싹 다 다시해야 돼 ㅡㅡ; 다 투명으로 하고, 하나 하나씩 정확하게 하자.",
+  "tripo_credits_spent": 0,
+  "uploads": [
+    {
+      "role": "Title",
+      "file": "art/ui/UIP_FactionTitle_FreshTyped.png",
+      "sha256": "a07679875246246b951808ad7819215098b9559610976e24090dbc04389de919",
+      "asset_id": "rbxassetid://111239293270560",
+      "size": [
+        1024,
+        210
+      ],
+      "inspected_and_shown_individually_before_upload": true,
+      "batch_size": 1
+    },
+    {
+      "role": "Footer",
+      "file": "art/ui/UIP_FactionFooter_FreshTyped.png",
+      "sha256": "e1d708c9ee3546f70bbb40addec3edb79c4fe21c5f375349a2bb7a48b7c70462",
+      "asset_id": "rbxassetid://128423642459976",
+      "size": [
+        1024,
+        126
+      ],
+      "inspected_and_shown_individually_before_upload": true,
+      "batch_size": 1
+    }
+  ],
+  "successful_uploads_cumulative": 15,
+  "active_first_screen_images": 6,
+  "source_images_modified": false
+}

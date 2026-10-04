@@ -1,0 +1,303 @@
+{
+  "0": {
+    "componentCount": 208,
+    "largestComponents": [
+      {
+        "pixels": 506752,
+        "bounds": [
+          14,
+          226,
+          2158,
+          486
+        ]
+      },
+      {
+        "pixels": 25,
+        "bounds": [
+          66,
+          273,
+          81,
+          283
+        ]
+      },
+      {
+        "pixels": 6,
+        "bounds": [
+          89,
+          37,
+          91,
+          40
+        ]
+      },
+      {
+        "pixels": 6,
+        "bounds": [
+          443,
+          641,
+          445,
+          644
+        ]
+      },
+      {
+        "pixels": 6,
+        "bounds": [
+          276,
+          701,
+          280,
+          704
+        ]
+      },
+      {
+        "pixels": 5,
+        "bounds": [
+          1634,
+          614,
+          1636,
+          618
+        ]
+      }
+    ],
+    "outsideLargestPixels": 329
+  },
+  "1": {
+    "componentCount": 127,
+    "largestComponents": [
+      {
+        "pixels": 497430,
+        "bounds": [
+          15,
+          233,
+          2157,
+          483
+        ]
+      },
+      {
+        "pixels": 18,
+        "bounds": [
+          63,
+          286,
+          64,
+          304
+        ]
+      },
+      {
+        "pixels": 8,
+        "bounds": [
+          80,
+          445,
+          85,
+          449
+        ]
+      },
+      {
+        "pixels": 6,
+        "bounds": [
+          42,
+          381,
+          46,
+          384
+        ]
+      },
+      {
+        "pixels": 5,
+        "bounds": [
+          2110,
+          306,
+          2111,
+          311
+        ]
+      },
+      {
+        "pixels": 5,
+        "bounds": [
+          107,
+          473,
+          109,
+          477
+        ]
+      }
+    ],
+    "outsideLargestPixels": 212
+  },
+  "8": {
+    "componentCount": 94,
+    "largestComponents": [
+      {
+        "pixels": 490994,
+        "bounds": [
+          16,
+          236,
+          2155,
+          479
+        ]
+      },
+      {
+        "pixels": 39,
+        "bounds": [
+          1908,
+          478,
+          1947,
+          479
+        ]
+      },
+      {
+        "pixels": 38,
+        "bounds": [
+          569,
+          478,
+          607,
+          479
+        ]
+      },
+      {
+        "pixels": 31,
+        "bounds": [
+          1732,
+          478,
+          1763,
+          479
+        ]
+      },
+      {
+        "pixels": 26,
+        "bounds": [
+          988,
+          478,
+          1014,
+          479
+        ]
+      },
+      {
+        "pixels": 24,
+        "bounds": [
+          1771,
+          478,
+          1795,
+          479
+        ]
+      }
+    ],
+    "outsideLargestPixels": 526
+  },
+  "16": {
+    "componentCount": 1,
+    "largestComponents": [
+      {
+        "pixels": 490893,
+        "bounds": [
+          16,
+          236,
+          2155,
+          477
+        ]
+      }
+    ],
+    "outsideLargestPixels": 0
+  },
+  "64": {
+    "componentCount": 1,
+    "largestComponents": [
+      {
+        "pixels": 488450,
+        "bounds": [
+          17,
+          237,
+          2155,
+          477
+        ]
+      }
+    ],
+    "outsideLargestPixels": 0
+  },
+  "128": {
+    "componentCount": 1,
+    "largestComponents": [
+      {
+        "pixels": 486521,
+        "bounds": [
+          17,
+          237,
+          2155,
+          476
+        ]
+      }
+    ],
+    "outsideLargestPixels": 0
+  },
+  "254": {
+    "componentCount": 157,
+    "largestComponents": [
+      {
+        "pixels": 381,
+        "bounds": [
+          904,
+          474,
+          1285,
+          475
+        ]
+      },
+      {
+        "pixels": 217,
+        "bounds": [
+          127,
+          474,
+          344,
+          475
+        ]
+      },
+      {
+        "pixels": 180,
+        "bounds": [
+          1519,
+          474,
+          1699,
+          475
+        ]
+      },
+      {
+        "pixels": 148,
+        "bounds": [
+          1366,
+          474,
+          1514,
+          475
+        ]
+      },
+      {
+        "pixels": 133,
+        "bounds": [
+          639,
+          474,
+          772,
+          475
+        ]
+      },
+      {
+        "pixels": 128,
+        "bounds": [
+          773,
+          474,
+          901,
+          475
+        ]
+      }
+    ],
+    "outsideLargestPixels": 2804
+  },
+  "qaCrop": [
+    12,
+    232,
+    2159,
+    481
+  ],
+  "qaScale": 0.4769445738239404,
+  "sourceModified": false,
+  "status": "pass_at_1024_light_and_dark_visual_review",
+  "finalProductionCrop": {
+    "x": 12,
+    "y": 224,
+    "width": 2148,
+    "height": 264
+  },
+  "caution": "Very low alpha specks remain in the original margin; no alpha cleanup or source modification performed."
+}

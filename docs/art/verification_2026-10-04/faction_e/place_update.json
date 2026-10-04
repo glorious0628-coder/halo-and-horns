@@ -1,12 +1,12 @@
 {
   "schema": 1,
   "status": "applied_and_verified",
-  "timestamp_utc": "20261004T062358892484Z",
+  "timestamp_utc": "20261004T063536601285Z",
   "originals_identical": true,
-  "original_bytes": 12525170,
-  "original_sha256": "d5c889688cc2a006bccd3985274ca934586a557e4720eb1f29aabf6646141f34",
-  "updated_bytes": 12525885,
-  "updated_sha256": "b9da5608d1d82079079420ad5821fb26002c28a2cf515d049987f1035e32f60f",
+  "original_bytes": 12525885,
+  "original_sha256": "b9da5608d1d82079079420ad5821fb26002c28a2cf515d049987f1035e32f60f",
+  "updated_bytes": 12526092,
+  "updated_sha256": "56dda2b88fb3c6f66575dd6c46c34b164dc20e380cf762c57a84c93a5796d1c3",
   "changed": true,
   "checks": {
     "instance_count": 4501,
@@ -15,9 +15,9 @@
         "instance_path": "StarterPlayer/StarterPlayerScripts/FactionPicker",
         "referent": "RBX12E12F3B642E486C9C4ACF5B42554FF5",
         "source_file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
-        "changed": true,
-        "old_source_sha256": "3d0b7dcb7bf2de3ab310e00e6d131dbe9c7744925fb81f2791b5edd5eb5921ba",
-        "old_body_bytes": 78996,
+        "changed": false,
+        "old_source_sha256": "cc505e0ae34fe2fcf23306eda828f2972a67486a46fdf5fb815dcad7fc1fe438",
+        "old_body_bytes": 79192,
         "new_body_bytes": 79192,
         "source_sha256": "cc505e0ae34fe2fcf23306eda828f2972a67486a46fdf5fb815dcad7fc1fe438"
       },
@@ -26,10 +26,10 @@
         "referent": "RBX69436A65202049959533F9E0CF169092",
         "source_file": "src/ReplicatedStorage/Shared/Config.luau",
         "changed": true,
-        "old_source_sha256": "dfaff741f150235bf2441af9ffbac30fc133a66e1ccef1417678c45a73965bf6",
-        "old_body_bytes": 100505,
-        "new_body_bytes": 101024,
-        "source_sha256": "ff9b4283dff27cef8ff81d54593344a645de7d2ae10c59b69b1b0283be8d6b96"
+        "old_source_sha256": "ff9b4283dff27cef8ff81d54593344a645de7d2ae10c59b69b1b0283be8d6b96",
+        "old_body_bytes": 101024,
+        "new_body_bytes": 101231,
+        "source_sha256": "91583bf7e0d5e7afe46afbcddd528349f0fcc6c56efd387a8418031781834e73"
       }
     ],
     "all_other_bytes_unchanged": true,
@@ -44,13 +44,13 @@
   "targets": [
     {
       "path": "build/GoodEvil.rbxlx",
-      "backup": "build/faction_source_backups/20261004T062358892484Z/build_GoodEvil.rbxlx",
-      "backup_sha256": "d5c889688cc2a006bccd3985274ca934586a557e4720eb1f29aabf6646141f34"
+      "backup": "build/faction_source_backups/20261004T063536601285Z/build_GoodEvil.rbxlx",
+      "backup_sha256": "b9da5608d1d82079079420ad5821fb26002c28a2cf515d049987f1035e32f60f"
     },
     {
       "path": "place/GoodEvil.rbxlx",
-      "backup": "build/faction_source_backups/20261004T062358892484Z/place_GoodEvil.rbxlx",
-      "backup_sha256": "d5c889688cc2a006bccd3985274ca934586a557e4720eb1f29aabf6646141f34"
+      "backup": "build/faction_source_backups/20261004T063536601285Z/place_GoodEvil.rbxlx",
+      "backup_sha256": "b9da5608d1d82079079420ad5821fb26002c28a2cf515d049987f1035e32f60f"
     }
   ],
   "final_files_identical": true

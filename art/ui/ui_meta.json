@@ -1034,5 +1034,35 @@
   "baked_text_locale": "ko",
   "typography": "Separate Jua HTML typesetting",
   "visible_height": 930
+ },
+ "UIP_FactionTitle_FreshTyped": {
+  "w": 1024,
+  "h": 210,
+  "source": "art/out/UI_FactionTitle_Fresh.png",
+  "source_sha256": "c56d0f4620f57fc7e2e119b9aea14828e8ee7c502cba92bae0b52f20dfeb45ca",
+  "sha256": "a07679875246246b951808ad7819215098b9559610976e24090dbc04389de919",
+  "alpha_bounds": [
+   3,
+   3,
+   1021,
+   206
+  ],
+  "baked_text_locale": "ko",
+  "typography": "Separate Jua HTML typesetting"
+ },
+ "UIP_FactionFooter_FreshTyped": {
+  "w": 1024,
+  "h": 126,
+  "source": "art/out/UI_FactionFooter_Fresh.png",
+  "source_sha256": "53fa7b8e110bb9419f913ce52986cc0969157631c0ab875b94c9450061b32f5b",
+  "sha256": "e1d708c9ee3546f70bbb40addec3edb79c4fe21c5f375349a2bb7a48b7c70462",
+  "alpha_bounds": [
+   1,
+   1,
+   1023,
+   125
+  ],
+  "baked_text_locale": "ko",
+  "typography": "Separate Jua HTML typesetting"
  }
 }

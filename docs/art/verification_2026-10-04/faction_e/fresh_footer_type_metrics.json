@@ -1,0 +1,163 @@
+{
+  "source": "art/out/UI_FactionFooter_Fresh.png",
+  "sourceSha256": "53fa7b8e110bb9419f913ce52986cc0969157631c0ab875b94c9450061b32f5b",
+  "html": "docs/art/verification_2026-10-04/faction_e/fresh_footer_preview.html",
+  "htmlSha256": "27cdb3786b0a99d86541fb549b2aae4683e1e89e4c7e54b0fb684586723657ca",
+  "font": "art/fonts/jua/Jua-Regular.ttf",
+  "fontSha256": "769677aef240bfc3b9965f2b50748075bff885e6c6992fc591a3fb268279f898",
+  "sourceAlpha": {
+    "size": [
+      2172,
+      724
+    ],
+    "thresholds": {
+      "0": {
+        "bounds": [
+          14,
+          9,
+          2158,
+          704
+        ],
+        "pixels": 507081
+      },
+      "16": {
+        "bounds": [
+          16,
+          236,
+          2155,
+          477
+        ],
+        "pixels": 490893
+      },
+      "128": {
+        "bounds": [
+          17,
+          237,
+          2155,
+          476
+        ],
+        "pixels": 486521
+      }
+    }
+  },
+  "crop": {
+    "x": 12,
+    "y": 224,
+    "width": 2148,
+    "height": 264
+  },
+  "cropReason": "Complete alpha>0 main component plus 2 native pixels. Only surrounding margin cropped; no mask/color edits.",
+  "selectedFontPx": 61,
+  "fontPxAt1024": 29.08007448789572,
+  "native": {
+    "fontLoaded": true,
+    "fontPx": 61,
+    "text": "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)",
+    "copyBox": {
+      "x": 322,
+      "y": 265,
+      "width": 1700,
+      "height": 180
+    },
+    "textRange": {
+      "x": 338.953125,
+      "y": 324.453125,
+      "width": 1666.09375,
+      "height": 61
+    },
+    "overflow": false,
+    "lineCount": 1,
+    "color": "rgb(71, 32, 8)"
+  },
+  "target": {
+    "fontLoaded": true,
+    "fontPx": 61,
+    "text": "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)",
+    "copyBox": {
+      "x": 147.7839813232422,
+      "y": 19.545623779296875,
+      "width": 810.4283447265625,
+      "height": 85.81005096435547
+    },
+    "textRange": {
+      "x": 155.8659210205078,
+      "y": 47.888267517089844,
+      "width": 794.2644653320312,
+      "height": 29.080078125
+    },
+    "overflow": false,
+    "lineCount": 1,
+    "color": "rgb(71, 32, 8)"
+  },
+  "canvas": [
+    1024,
+    126
+  ],
+  "uniformScale": 0.4767225325884544,
+  "alpha": {
+    "size": [
+      1024,
+      126
+    ],
+    "thresholds": {
+      "0": {
+        "bounds": [
+          1,
+          1,
+          1023,
+          125
+        ],
+        "pixels": 115693
+      },
+      "16": {
+        "bounds": [
+          2,
+          5,
+          1022,
+          121
+        ],
+        "pixels": 112685
+      },
+      "128": {
+        "bounds": [
+          3,
+          6,
+          1021,
+          120
+        ],
+        "pixels": 110616
+      }
+    }
+  },
+  "semanticMatchesConfig": true,
+  "sourceImageModified": false,
+  "textZoom": {
+    "method": "nearest-neighbor actual target PNG glyph crop",
+    "crop": {
+      "x": 152,
+      "y": 44,
+      "width": 801,
+      "height": 36
+    },
+    "scale": 3
+  },
+  "export": {
+    "file": "art/ui/UIP_FactionFooter_FreshTyped.png",
+    "sha256": "e1d708c9ee3546f70bbb40addec3edb79c4fe21c5f375349a2bb7a48b7c70462"
+  },
+  "uploaded": false,
+  "sourceEdgeReview": "1024px light/dark QA passed visual inspection before typesetting. See fresh_footer_source_alpha_metrics.json.",
+  "typesetVisualReview": {
+    "status": "pass",
+    "reviewed": [
+      "fresh_footer_1024_light.png",
+      "fresh_footer_1024_dark.png",
+      "fresh_footer_text_3x.png"
+    ],
+    "observations": [
+      "One complete Korean line in Jua; no wrapping, clipping, or touching the emblem.",
+      "At 1024px both backgrounds show a continuous border with no visible detached pieces.",
+      "The 3x image enlarges actual rendered glyph pixels, not newly rendered larger text."
+    ]
+  }
+}

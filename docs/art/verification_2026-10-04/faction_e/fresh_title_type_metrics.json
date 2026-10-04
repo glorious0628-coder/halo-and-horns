@@ -1,0 +1,377 @@
+{
+  "dateKst": "2026-10-04",
+  "source": {
+    "size": [
+      2172,
+      724
+    ],
+    "alphaNonzeroBounds": [
+      64,
+      7,
+      2108,
+      702
+    ],
+    "components": {
+      "0": {
+        "count": 173,
+        "largest": {
+          "pixels": 567589,
+          "bounds": [
+            64,
+            139,
+            2108,
+            547
+          ],
+          "maxAlpha": 255
+        },
+        "detachedPixels": 367,
+        "detachedMaxAlpha": 1,
+        "largestDetached": [
+          {
+            "pixels": 30,
+            "bounds": [
+              1504,
+              61,
+              1510,
+              72
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 17,
+            "bounds": [
+              459,
+              122,
+              465,
+              129
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 14,
+            "bounds": [
+              904,
+              633,
+              909,
+              640
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 13,
+            "bounds": [
+              445,
+              129,
+              451,
+              134
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 12,
+            "bounds": [
+              1511,
+              63,
+              1514,
+              72
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 12,
+            "bounds": [
+              443,
+              122,
+              447,
+              127
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 6,
+            "bounds": [
+              1536,
+              59,
+              1541,
+              61
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 6,
+            "bounds": [
+              1070,
+              633,
+              1072,
+              638
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 6,
+            "bounds": [
+              1368,
+              638,
+              1372,
+              641
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 5,
+            "bounds": [
+              441,
+              128,
+              445,
+              130
+            ],
+            "maxAlpha": 1
+          }
+        ]
+      },
+      "16": {
+        "count": 1,
+        "largest": {
+          "pixels": 551746,
+          "bounds": [
+            67,
+            141,
+            2105,
+            544
+          ],
+          "maxAlpha": 255
+        },
+        "detachedPixels": 0,
+        "detachedMaxAlpha": 0,
+        "largestDetached": []
+      },
+      "128": {
+        "count": 1,
+        "largest": {
+          "pixels": 548155,
+          "bounds": [
+            68,
+            142,
+            2105,
+            543
+          ],
+          "maxAlpha": 255
+        },
+        "detachedPixels": 0,
+        "detachedMaxAlpha": 0,
+        "largestDetached": []
+      }
+    },
+    "cropOutsideNonzeroPixels": 306,
+    "cropOutsideAlphaMax": 1
+  },
+  "sourceSha256": "c56d0f4620f57fc7e2e119b9aea14828e8ee7c502cba92bae0b52f20dfeb45ca",
+  "html": "docs/art/verification_2026-10-04/faction_e/fresh_title_preview.html",
+  "htmlSha256": "0871e04e9296ebe8a85b28b40485b2643b367a9276aa9b1bd1589b38417237d7",
+  "font": "art/fonts/jua/Jua-Regular.ttf",
+  "fontSha256": "769677aef240bfc3b9965f2b50748075bff885e6c6992fc591a3fb268279f898",
+  "configTitle": "어느 편에 설래요?",
+  "pickerTitle": "어느 편에 설래요?",
+  "semanticMatchesConfig": true,
+  "configSha256": "d577e7312e9ddd1ea0c530edcde9311e47e0b0a94ba7e3377661137d7acd8fc3",
+  "pickerSha256": "cc505e0ae34fe2fcf23306eda828f2972a67486a46fdf5fb815dcad7fc1fe438",
+  "native": {
+    "text": "어느 편에 설래요?",
+    "fontLoaded": true,
+    "fontFamily": "Jua, sans-serif",
+    "fontSizeNative": 180,
+    "glyphColor": "rgb(71, 32, 8)",
+    "textShadow": "none",
+    "textStroke": "0px",
+    "box": [
+      458,
+      231,
+      1256,
+      210
+    ],
+    "range": [
+      472.546875,
+      245.5,
+      1226.890625,
+      180
+    ],
+    "overflow": false
+  },
+  "originalModified": false,
+  "retouch": false,
+  "alphaMaskEdited": false,
+  "upload": false,
+  "studioValidation": false,
+  "approval": "User requested new title; generated/type candidate not yet a runtime completion",
+  "cropAuthorization": "Largest alpha>0 connected body +2 native pixels rectangle; no threshold or mask edit. Detached alpha=1 pixels outside are transparent-margin crop only.",
+  "export": {
+    "file": "art/ui/UIP_FactionTitle_FreshTyped.png",
+    "sha256": "a07679875246246b951808ad7819215098b9559610976e24090dbc04389de919",
+    "size": [
+      1024,
+      210
+    ],
+    "uniformScale": 0.498046875,
+    "translation": [
+      -28.87890625,
+      -66.232421875
+    ],
+    "sourceCropBounds": [
+      62,
+      137,
+      2110,
+      549
+    ],
+    "paddingPixels": 2,
+    "nonzeroAlphaMargins": [
+      3,
+      3,
+      3,
+      4
+    ],
+    "alpha": {
+      "size": [
+        1024,
+        210
+      ],
+      "alphaNonzeroBounds": [
+        3,
+        3,
+        1021,
+        206
+      ],
+      "components": {
+        "0": {
+          "count": 1,
+          "largest": {
+            "pixels": 141718,
+            "bounds": [
+              3,
+              3,
+              1021,
+              206
+            ],
+            "maxAlpha": 255
+          },
+          "detachedPixels": 0,
+          "detachedMaxAlpha": 0,
+          "largestDetached": []
+        },
+        "16": {
+          "count": 1,
+          "largest": {
+            "pixels": 137698,
+            "bounds": [
+              4,
+              4,
+              1020,
+              205
+            ],
+            "maxAlpha": 255
+          },
+          "detachedPixels": 0,
+          "detachedMaxAlpha": 0,
+          "largestDetached": []
+        },
+        "128": {
+          "count": 1,
+          "largest": {
+            "pixels": 135949,
+            "bounds": [
+              5,
+              5,
+              1019,
+              204
+            ],
+            "maxAlpha": 255
+          },
+          "detachedPixels": 0,
+          "detachedMaxAlpha": 0,
+          "largestDetached": []
+        }
+      },
+      "cropOutsideNonzeroPixels": null,
+      "cropOutsideAlphaMax": null
+    },
+    "text": {
+      "text": "어느 편에 설래요?",
+      "fontLoaded": true,
+      "fontFamily": "Jua, sans-serif",
+      "fontSizeNative": 180,
+      "glyphColor": "rgb(71, 32, 8)",
+      "textShadow": "none",
+      "textStroke": "0px",
+      "box": [
+        199.2265625,
+        48.81640625,
+        625.546875,
+        104.58984375
+      ],
+      "range": [
+        206.47158813476562,
+        56.0380859375,
+        611.049072265625,
+        89.6484375
+      ],
+      "overflow": false
+    },
+    "fontPixelsAtOutput": 89.6484375,
+    "fontPixelsAtRuntimeWidth238_8": 20.906295776367188,
+    "nativeFontFaceInRoblox": false,
+    "fontRasterizedAtOutputResolution": true
+  },
+  "evidence": [
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_export_light.png",
+      "sha256": "84836cd225eb65875be7c2d84192fca24f5f13ec5b6d4675d78311bff74c6a86",
+      "nearestNeighborZoom": 1,
+      "background": "#ffffff",
+      "crop": null
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_export_4x_light.png",
+      "sha256": "cc8e4796d2561b9e46d392576ca328eddc79dda6b36baa8356fbb15933e0b62e",
+      "nearestNeighborZoom": 4,
+      "background": "#ffffff",
+      "crop": null
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_text_4x_light.png",
+      "sha256": "4b517ad3ea794d992744f5e06b650d1785ac8c15c1f8298b66c027e73afcfb16",
+      "nearestNeighborZoom": 4,
+      "background": "#ffffff",
+      "crop": [
+        195,
+        44,
+        829,
+        157
+      ]
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_export_dark.png",
+      "sha256": "32bf644e95c61a6fb7e835b703e32082866ab7c43505ed93d93c136bec91ddc4",
+      "nearestNeighborZoom": 1,
+      "background": "#20242c",
+      "crop": null
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_export_4x_dark.png",
+      "sha256": "2c1ab3ed52ef47eebc750a06c9bc6f8269a571d60d024651aeab5fd8b4dbf39f",
+      "nearestNeighborZoom": 4,
+      "background": "#20242c",
+      "crop": null
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_text_4x_dark.png",
+      "sha256": "2caf82247244fa3c1c4f76587277457d1e369d949c14ecf3eda66be4f977c3e5",
+      "nearestNeighborZoom": 4,
+      "background": "#20242c",
+      "crop": [
+        195,
+        44,
+        829,
+        157
+      ]
+    }
+  ]
+}
