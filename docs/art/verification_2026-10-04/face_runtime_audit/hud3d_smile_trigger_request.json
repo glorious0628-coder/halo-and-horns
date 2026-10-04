@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Server",
+  "code": "local p=game.Players:GetPlayers()[1]\nrequire(game.ServerScriptService.ExpressionService).Talk(p)\nreturn \"Production expression service invoked\""
+}

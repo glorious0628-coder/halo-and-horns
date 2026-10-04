@@ -1,0 +1,72 @@
+{
+  "render": {
+    "GraphicsMode": "Enum.GraphicsMode.Automatic",
+    "EditQualityLevel": "Enum.QualityLevel.Level21",
+    "QualityLevel": "Enum.QualityLevel.Level21",
+    "EnableFRM": false
+  },
+  "camera": {
+    "position": [
+      -8,
+      4.319647789001465,
+      -401.5
+    ],
+    "viewport": [
+      793,
+      475
+    ],
+    "distance": 3.5,
+    "fov": 70,
+    "focus": [
+      -8,
+      4.319647789001465,
+      -405
+    ]
+  },
+  "faction": "Halo",
+  "class": "Archer",
+  "parts": [
+    {
+      "name": "CostumeSkinBody",
+      "size": [
+        3.669544219970703,
+        3.1133689880371094,
+        1.8401496410369873
+      ],
+      "mesh": "rbxassetid://89266257167687",
+      "texture": "rbxassetid://84211055370691"
+    },
+    {
+      "name": "HeadBase",
+      "size": [
+        2.2360594272613525,
+        2.4607317447662354,
+        2.107675075531006
+      ],
+      "mesh": "rbxassetid://94716127504114",
+      "texture": "rbxassetid://106725946673245"
+    },
+    {
+      "name": "FaceExpression",
+      "size": [
+        1.4870924949645996,
+        0.9415009021759033,
+        1.1019176244735718
+      ],
+      "mesh": "rbxassetid://120232648183385",
+      "texture": "rbxassetid://114282379234661"
+    }
+  ],
+  "capture": {
+    "tool": "studio_mcp.screen_capture",
+    "path": "production_Level21_close_v2.jpeg",
+    "sha256": "c368e8f8120318504751bafcb5541c98b9edea81bbe54fea496c118d15a4b4fc",
+    "size": [
+      1586,
+      950
+    ],
+    "billboards_hidden": true,
+    "idle_animation_frozen": true,
+    "production_assets_unchanged": true
+  }
+}

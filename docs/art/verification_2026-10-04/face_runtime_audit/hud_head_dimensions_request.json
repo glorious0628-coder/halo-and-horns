@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local c=game.Players.LocalPlayer.Character\nlocal h=c and c:FindFirstChild(\"Head\")\nlocal r=c and c:FindFirstChild(\"HumanoidRootPart\")\nassert(h and r)\nlocal rows={}\nfor _,v in c:GetDescendants() do if v:IsA(\"MeshPart\") then table.insert(rows,{name=v.Name,size={v.Size.X,v.Size.Y,v.Size.Z},rootOffset={r.CFrame:PointToObjectSpace(v.Position).X,r.CFrame:PointToObjectSpace(v.Position).Y,r.CFrame:PointToObjectSpace(v.Position).Z}}) end end\nreturn game:GetService(\"HttpService\"):JSONEncode({headSize={h.Size.X,h.Size.Y,h.Size.Z},headRootOffset={r.CFrame:PointToObjectSpace(h.Position).X,r.CFrame:PointToObjectSpace(h.Position).Y,r.CFrame:PointToObjectSpace(h.Position).Z},meshes=rows})"
+}

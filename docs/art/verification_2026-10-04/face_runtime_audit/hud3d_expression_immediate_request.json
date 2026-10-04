@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Server",
+  "code": "local p=game.Players:GetPlayers()[1]\nlocal e=require(game.ServerScriptService.ExpressionService)\ne.Talk(p)\nreturn game:GetService(\"HttpService\"):JSONEncode({expression=p.Character:GetAttribute(\"Expression\"),texture=p.Character:FindFirstChild(\"FaceExpression\",true).TextureID})"
+}

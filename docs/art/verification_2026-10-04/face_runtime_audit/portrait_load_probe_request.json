@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local H=game:GetService(\"HttpService\")\nlocal P=game.Players.LocalPlayer\nlocal image=P.PlayerGui:FindFirstChild(\"ClassPortrait\",true)\nlocal rows={}\nlocal ok,err=pcall(function()game:GetService(\"ContentProvider\"):PreloadAsync({image},function(id,status)table.insert(rows,{id=id,status=tostring(status)})end)end)\nreturn H:JSONEncode({ok=ok,error=tostring(err),loaded=image.IsLoaded,preload=rows,parents=tostring(image.Parent),absolute_size={image.AbsoluteSize.X,image.AbsoluteSize.Y}})\n"
+}

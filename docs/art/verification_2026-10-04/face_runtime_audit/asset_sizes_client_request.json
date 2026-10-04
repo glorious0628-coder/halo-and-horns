@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local H=game:GetService(\"HttpService\")\nlocal rows={}\nfor _,id in {114282379234661,130810730029380,96983789676579,84211055370691,106725946673245} do\n local ok,e=pcall(function() return game:GetService(\"AssetService\"):CreateEditableImageAsync(Content.fromUri(\"rbxassetid://\"..id)) end)\n local row={asset=id,ok=ok}\n if ok and e then row.size={e.Size.X,e.Size.Y};e:Destroy() else row.error=tostring(e) end\n table.insert(rows,row)\nend\nreturn H:JSONEncode(rows)\n"
+}

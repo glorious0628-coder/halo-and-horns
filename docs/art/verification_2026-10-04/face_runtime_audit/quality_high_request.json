@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local H=game:GetService(\"HttpService\")\nlocal r=settings().Rendering\nr.QualityLevel=Enum.QualityLevel.Level21\nr.EditQualityLevel=Enum.QualityLevel.Level21\nr.EnableFRM=false\nreturn H:JSONEncode({QualityLevel=tostring(r.QualityLevel),EditQualityLevel=tostring(r.EditQualityLevel),EnableFRM=r.EnableFRM,GraphicsMode=tostring(r.GraphicsMode)})\n"
+}

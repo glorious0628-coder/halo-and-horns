@@ -1,0 +1,367 @@
+{
+  "schema": 1,
+  "avatar": "HaloArcherM",
+  "source_read_only": true,
+  "inputs": {
+    "raw2k": {
+      "path": "art\\models\\costume\\raw\\C2k_HaloArcherM.glb",
+      "sha256": "fb50189842bdf4ea3cf2d4e8b371d96c74a6162c0cb57457ae1eeb46c9018ade"
+    },
+    "fixed": {
+      "path": "art\\models\\costume\\fixed\\Costume_HaloArcherM.glb",
+      "sha256": "e1500ceaa21de1b68b063bd82d133d36a5f55c656888bda0dd9c9d754128de39"
+    },
+    "production": {
+      "path": "art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_FaceUnionMouthRestored_v1.glb",
+      "sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584"
+    },
+    "face1254": {
+      "path": "art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_Expression_Neutral_face.png",
+      "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a"
+    },
+    "approved_D": {
+      "path": "art\\out\\Avatar_HaloArcherM_FullRedraw_D.png",
+      "sha256": "62d746d88297d8939065ca6c36a02edc85995e975087b439f42a763631156470"
+    },
+    "original_APose": {
+      "path": "art\\out\\APose_HaloArcherM.png",
+      "sha256": "4534e82d4407fa7956ef50be299092a0c19770181139fb0285b7bf3852422c63"
+    },
+    "profile": {
+      "path": "art\\models\\costume\\expressions\\Costume_HaloArcherM\\facial_profile.json",
+      "sha256": "00a94d2e870ded46e1a1f2a60f7c7aaf4fb248192aab30b22a58a673bfc1f4ab"
+    },
+    "provenance": {
+      "path": "art\\models\\costume\\expressions\\Costume_HaloArcherM\\face_union_provenance.json",
+      "sha256": "10b6a10743ab99a8a624cec99d91d5cd036c85f9a0911eaa4a643c25eb7f330d"
+    },
+    "prompt": {
+      "path": "art\\models\\costume\\expressions\\Costume_HaloArcherM\\prompts\\Neutral.txt",
+      "sha256": "4b4213e43a299b6d29b91d9203ef66c3405cfbcdd53503f3e11cf163b65088a5"
+    },
+    "generated_source": {
+      "path": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-a3b3caf1-7644-4e8a-a46c-a4edbfced459.png",
+      "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a"
+    }
+  },
+  "raw_embedded_images": [
+    {
+      "index": 0,
+      "name": "C2k_HaloArcherM_normal",
+      "size": [
+        2048,
+        2048
+      ],
+      "sha256": "7a7039b25dd9b1e55628716462bb0694250a870543b5ce14f868ab6145bec860",
+      "bytes": 1553684
+    },
+    {
+      "index": 1,
+      "name": "C2k_HaloArcherM_basecolor",
+      "size": [
+        2048,
+        2048
+      ],
+      "sha256": "6e56883ab26b07f599991a1c0c9bbf7daa0a6c429116292d1782d8f5291a4be5",
+      "bytes": 2278115
+    },
+    {
+      "index": 2,
+      "name": "C2k_HaloArcherM_rm",
+      "size": [
+        2048,
+        2048
+      ],
+      "sha256": "3612616973628e3be3a7c96679595bf8fe5271030cbd0a0af6db3e122c1995c9",
+      "bytes": 5811310
+    }
+  ],
+  "fixed_embedded_images": [
+    {
+      "index": 0,
+      "name": "Costume_HaloArcherM_body",
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "3919b28d83292936c44a7df73c3830e78a9fe8d47fb6222e3282a2f5ef3ca336",
+      "bytes": 1461113
+    },
+    {
+      "index": 1,
+      "name": "Costume_HaloArcherM_head",
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "21373e3323a09428ded9a473a36da4326c82a595954904fee9ea6be38882e004",
+      "bytes": 1296536
+    }
+  ],
+  "production_embedded_images": [
+    {
+      "name": "Costume_HaloArcherM_body",
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "3919b28d83292936c44a7df73c3830e78a9fe8d47fb6222e3282a2f5ef3ca336"
+    },
+    {
+      "name": "Costume_HaloArcherM_head",
+      "size": [
+        1024,
+        1024
+      ],
+      "sha256": "21373e3323a09428ded9a473a36da4326c82a595954904fee9ea6be38882e004"
+    },
+    {
+      "name": "FaceExpression_Neutral",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a"
+    }
+  ],
+  "raw_fixed_triangle_bijection": {
+    "count": 14384,
+    "unique": 14384,
+    "max_world_error": 0.0
+  },
+  "provenance_order_and_original_triangle_indices_exact": true,
+  "face_triangle_count": 438,
+  "referenced_face_vertices": 606,
+  "face_uv_pixel_bounds": [
+    284.05161640048027,
+    716.8856853246689,
+    990.2577534914017,
+    1163.9955461025238
+  ],
+  "face_pixel_union_at_texel_centers": 155704,
+  "face_overlap_pixels_at_texel_centers": 3412,
+  "face_union_fraction_of_png": 0.09901584467185072,
+  "regions": {
+    "face": {
+      "box_in_1254": null,
+      "triangle_count": 438,
+      "raw2k_uv_area_px2": 17119.125,
+      "fixed1024_uv_area_px2": 8353.862219962757,
+      "face1254_uv_area_px2": 159863.09959112274,
+      "fixed_to_raw_linear_density": 0.6985586465005034
+    },
+    "highlight_roi": {
+      "box_in_1254": [
+        744,
+        882,
+        785,
+        923
+      ],
+      "triangle_count": 14,
+      "raw2k_uv_area_px2": 137.53088916648454,
+      "fixed1024_uv_area_px2": 67.11289999695431,
+      "face1254_uv_area_px2": 1660.028784552822,
+      "fixed_to_raw_linear_density": 0.6985586541233816
+    },
+    "mouth_roi": {
+      "box_in_1254": [
+        570,
+        1030,
+        690,
+        1080
+      ],
+      "triangle_count": 36,
+      "raw2k_uv_area_px2": 520.7722005208768,
+      "fixed1024_uv_area_px2": 254.1285728691828,
+      "face1254_uv_area_px2": 6000.0,
+      "fixed_to_raw_linear_density": 0.6985586138949803
+    },
+    "eye_boxes_0": {
+      "box_in_1254": [
+        342.890625,
+        894.78125,
+        560.0546875,
+        1007.4453125
+      ],
+      "triangle_count": 77,
+      "raw2k_uv_area_px2": 1937.5210800865855,
+      "fixed1024_uv_area_px2": 945.4802186148678,
+      "face1254_uv_area_px2": 19142.26163065122,
+      "fixed_to_raw_linear_density": 0.6985588600539503
+    },
+    "eye_boxes_1": {
+      "box_in_1254": [
+        700.4765625,
+        837.6328125,
+        907.84375,
+        1020.5078125
+      ],
+      "triangle_count": 166,
+      "raw2k_uv_area_px2": 2653.3104856797163,
+      "fixed1024_uv_area_px2": 1294.7722365982056,
+      "face1254_uv_area_px2": 26253.4879360997,
+      "fixed_to_raw_linear_density": 0.6985582925897529
+    },
+    "brow_boxes_0": {
+      "box_in_1254": [
+        383.7109375,
+        811.5078125,
+        546.9921875,
+        860.4921875
+      ],
+      "triangle_count": 42,
+      "raw2k_uv_area_px2": 1133.9215921441178,
+      "fixed1024_uv_area_px2": 553.3365615034666,
+      "face1254_uv_area_px2": 9026.060042445024,
+      "fixed_to_raw_linear_density": 0.6985591263750579
+    },
+    "brow_boxes_1": {
+      "box_in_1254": [
+        698.84375,
+        765.7890625,
+        832.734375,
+        826.203125
+      ],
+      "triangle_count": 18,
+      "raw2k_uv_area_px2": 849.7784784208213,
+      "fixed1024_uv_area_px2": 414.67836773521435,
+      "face1254_uv_area_px2": 9338.418423025694,
+      "fixed_to_raw_linear_density": 0.6985585720011991
+    }
+  },
+  "source_equal_png": true,
+  "png_exact_in_glb": true,
+  "face_image_origin": "GPT edit of a Blender front projection; the prompt explicitly preserves both existing eyes.",
+  "highlight_edge_20_80": {
+    "current": {
+      "rows": [
+        {
+          "row": 900,
+          "left_20_80_px": 3.9868465256510737,
+          "right_80_20_px": 6.289780610130375
+        },
+        {
+          "row": 901,
+          "left_20_80_px": 4.258967711894003,
+          "right_80_20_px": 5.806444769977674
+        },
+        {
+          "row": 902,
+          "left_20_80_px": 4.715505610408308,
+          "right_80_20_px": 5.247574788584146
+        },
+        {
+          "row": 903,
+          "left_20_80_px": 5.036722924841172,
+          "right_80_20_px": 4.758476751748994
+        },
+        {
+          "row": 904,
+          "left_20_80_px": 5.0014716495874385,
+          "right_80_20_px": 4.432339371185364
+        },
+        {
+          "row": 905,
+          "left_20_80_px": 4.978087711785416,
+          "right_80_20_px": 4.306928478723599
+        },
+        {
+          "row": 906,
+          "left_20_80_px": 5.286694315433886,
+          "right_80_20_px": 4.234695010757598
+        }
+      ],
+      "x_range": [
+        743,
+        786
+      ],
+      "median_transition_px": 4.868282231767205,
+      "min_transition_px": 3.9868465256510737,
+      "max_transition_px": 6.289780610130375
+    },
+    "approved_D": {
+      "rows": [
+        {
+          "row": 596,
+          "left_20_80_px": 1.0567747871261108,
+          "right_80_20_px": 1.227355684461802
+        },
+        {
+          "row": 597,
+          "left_20_80_px": 1.2361584988939942,
+          "right_80_20_px": 1.158979522510176
+        },
+        {
+          "row": 598,
+          "left_20_80_px": 1.2324370783780196,
+          "right_80_20_px": 1.1263144736518313
+        },
+        {
+          "row": 599,
+          "left_20_80_px": 1.2482780444770984,
+          "right_80_20_px": 1.108793660890008
+        },
+        {
+          "row": 600,
+          "left_20_80_px": 1.2388419450089394,
+          "right_80_20_px": 1.123775342736117
+        },
+        {
+          "row": 601,
+          "left_20_80_px": 1.2138305620127898,
+          "right_80_20_px": 1.1520936149383836
+        },
+        {
+          "row": 602,
+          "left_20_80_px": 1.2894034163241255,
+          "right_80_20_px": 1.2143919363346853
+        }
+      ],
+      "x_range": [
+        712,
+        755
+      ],
+      "median_transition_px": 1.2141112491737376,
+      "min_transition_px": 1.0567747871261108,
+      "max_transition_px": 1.2894034163241255
+    }
+  },
+  "exact_pixel_crops": [
+    {
+      "file": "docs\\art\\verification_2026-10-04\\face_sharpness_audit\\face1254_eye_exact_pixels.png",
+      "crop_box": [
+        695,
+        829,
+        924,
+        1020
+      ],
+      "source_sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+      "resampling": "none"
+    },
+    {
+      "file": "docs\\art\\verification_2026-10-04\\face_sharpness_audit\\approved_D_eye_exact_pixels.png",
+      "crop_box": [
+        672,
+        536,
+        862,
+        691
+      ],
+      "source_sha256": "62d746d88297d8939065ca6c36a02edc85995e975087b439f42a763631156470",
+      "resampling": "none"
+    }
+  ],
+  "interpretation_ko": [
+    "기존 3D에서 굽힌 흐린 눈을 GPT 표정 편집에서 그대로 보존하도록 지시했다.",
+    "따라서 얼굴1254 PNG가 GPT 원본과 같다는 사실만으로 승인 원화의 선명한 눈을 사용했다고 볼 수 없다.",
+    "승인 D의 눈·눈썹·입 원본 픽셀을 쓰려면 별도 UV를 정확히 재매핑해야 한다."
+  ],
+  "limitations_ko": [
+    "로컬 내장 텍스처 크기는 Roblox 원격 저장 원본 또는 현재 GPU mip 크기를 증명하지 않는다.",
+    "UV 면적은 표면이 사용하는 텍셀 수용량이며 눈의 가로 길이나 복원된 정보량이 아니다.",
+    "7개 줄의 하이라이트 경계 폭은 이 흰 반사점의 국소 수치이며 전체 화질 점수가 아니다."
+  ],
+  "paid_calls": 0,
+  "uploads": 0,
+  "studio_called": false,
+  "source_sha256_unchanged": true
+}

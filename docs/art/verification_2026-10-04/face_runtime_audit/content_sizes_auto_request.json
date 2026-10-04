@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local H=game:GetService(\"HttpService\")\nlocal P=game.Players.LocalPlayer\nlocal rows={}\nfor _,id in {114282379234661,130810730029380,96983789676579,84211055370691,106725946673245} do\n local im=Instance.new(\"ImageLabel\");im.Name=\"HHC_TextureAudit\";im.Image=\"rbxassetid://\"..id;im.Size=UDim2.fromOffset(1,1);im.Visible=false;im.Parent=P.PlayerGui\n local loaded={}\n local ok,err=pcall(function() game:GetService(\"ContentProvider\"):PreloadAsync({im},function(url,status)table.insert(loaded,{status=tostring(status)})end) end)\n task.wait(.1)\n local sok,s=pcall(function() return im.ContentImageSize end)\n table.insert(rows,{asset=id,preload_ok=ok,preload=loaded,size_read_ok=sok,content_size=sok and {s.X,s.Y} or nil,error=not sok and tostring(s) or nil})\n im:Destroy()\nend\nreturn H:JSONEncode(rows)\n"
+}

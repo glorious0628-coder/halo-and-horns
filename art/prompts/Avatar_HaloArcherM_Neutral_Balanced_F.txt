@@ -1,0 +1,5 @@
+Edit target: art/out/Avatar_HaloArcherM_Neutral_OpenEyes_E.png.
+User correction: the eyes have unequal sizes; balance them.
+Make both open amber eyes visibly equal in width, height, iris/pupil diameter and highlight size, with matching eyelash contours and horizontally aligned eye centers. Increase the smaller-looking viewer-left eye to match the viewer-right. No wink or perspective-size difference.
+Preserve the approved toy chibi style, blonde hair, round ears, star halo, mouth, modest fully covered white/gold costume, proportions, pose, lighting and framing. Only adjust the eye/brow alignment needed for balance. Keep pupils, eyelashes and highlights crisp.
+Built-in imagegen tool, 2026-10-04. E remains preserved as rejected for unequal eye sizes. F awaits user selection before use/upload.

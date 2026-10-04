@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "\nlocal P=game.Players.LocalPlayer\nlocal R=game:GetService(\"RunService\")\nlocal old=_G.HHC_FaceAudit\nassert(not old,\"Unrestored audit state\")\nlocal r=settings().Rendering\n_G.HHC_FaceAudit={quality=r.QualityLevel,edit=r.EditQualityLevel,frm=r.EnableFRM,gui={},tracks={}}\nfor _,v in workspace:GetDescendants() do if v:IsA(\"BillboardGui\") then\n table.insert(_G.HHC_FaceAudit.gui,{v,v.Enabled});v.Enabled=false\nend end\nlocal a=P.Character:FindFirstChildOfClass(\"Humanoid\"):FindFirstChildOfClass(\"Animator\")\nfor _,v in a:GetPlayingAnimationTracks() do table.insert(_G.HHC_FaceAudit.tracks,{v,v.Speed});v:AdjustSpeed(0) end\nreturn \"Billboards hidden and idle tracks frozen for comparison only\"\n"
+}

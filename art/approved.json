@@ -142,6 +142,19 @@
   "shownDate": "2026-10-03",
   "note": "양피지 물약상점: 보유수량/HP30%·MP40%/임시1개10G·5개50G/99개상한; 사용자 선택 대기. 구현/Roblox업로드0."
  },
+ "Avatar_HaloArcherM_Neutral_Balanced_F": {
+  "status": "approved",
+  "file": "art/out/Avatar_HaloArcherM_Neutral_Balanced_F.png",
+  "approvedDate": "2026-10-04",
+  "approvalQuote": "좋아, 이걸로 해줘",
+  "note": "기본 표정은 윙크가 아니라 양눈 뜬 얼굴. E의 눈 크기 불균형을 거절한 뒤 균형 수정 F 승인. 별도 3D 얼굴 텍스처에 사용하며 프로필도 최신 정정대로 실제3D 아바타를 표시한다. 업로드한2D초상화는 최종HUD 미사용. 기존 D와 생산 파일 보존."
+ },
+ "Avatar_HaloArcherM_Neutral_OpenEyes_E": {
+  "status": "rejected",
+  "file": "art/out/Avatar_HaloArcherM_Neutral_OpenEyes_E.png",
+  "rejectionQuote": "눈 크기가 짝짝이야 균형 맞춰줘",
+  "note": "2026-10-04. 적용·업로드하지 않음. 균형 수정 F로 대체."
+ },
  "Avatar_HaloArcherM_FullRedraw_D": {
   "status": "approved",
   "file": "art/out/Avatar_HaloArcherM_FullRedraw_D.png",

@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local P=game.Players.LocalPlayer\nlocal H=game:GetService(\"HttpService\")\nlocal gui=P.PlayerGui\nlocal found={}\nfor _,x in gui:GetDescendants() do\n if x.Name==\"ClassPortrait\" or (x:IsA(\"ImageLabel\") and x.Parent and x.Parent.Name==\"Portrait\") then\n table.insert(found,{name=x.Name,image=x.Image,visible=x.Visible,loaded=x.IsLoaded,rect_offset={x.ImageRectOffset.X,x.ImageRectOffset.Y},rect_size={x.ImageRectSize.X,x.ImageRectSize.Y},absolute_size={x.AbsoluteSize.X,x.AbsoluteSize.Y}})\n end\nend\nreturn H:JSONEncode({faction=P:GetAttribute(\"Faction\"),class=P:GetAttribute(\"Class\"),gender=P:GetAttribute(\"CharacterGender\"),enabled=P:GetAttribute(\"CostumeEnabled\"),portraits=found})\n"
+}

@@ -1,0 +1,564 @@
+{
+  "rows": [
+    {
+      "name": "Slime",
+      "source": "art\\models\\Slime.glb",
+      "source_sha256": "16e71849a507f3f93b98673f49664b5b5c9615ba2e902cb3c5956c519253d925",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.4889832139015198,
+          -0.3243408501148224,
+          0.0
+        ],
+        "max": [
+          0.4888306260108948,
+          0.3243408501148224,
+          0.9356689453125
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Slime_front_full_unlit.png",
+          "sha256": "e25d873ac021b546cfac205f64b6d87525878946efbf79874ea34a435a50e78b",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            -7.62939453125e-05,
+            -3.911255359649658,
+            0.46783447265625
+          ],
+          "orthographic_scale": 1.0951515436172485,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Slime_front_face_unlit.png",
+          "sha256": "4840eb671c0a9afb2b7f609da88df374e5690f316740160bb1b9c66bc6b2ef7c",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            -7.62939453125e-05,
+            -3.911255359649658,
+            0.46783447265625
+          ],
+          "orthographic_scale": 1.0951515436172485,
+          "height_crop_fraction": 0
+        }
+      ]
+    },
+    {
+      "name": "Goblin",
+      "source": "art\\models\\Goblin.glb",
+      "source_sha256": "1d92307a508d33cb8ef6b97b850411e8280d40dad1559974af70eba68d99ffce",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.43951424956321716,
+          -0.3016051650047302,
+          0.0
+        ],
+        "max": [
+          0.43829354643821716,
+          0.3007813096046448,
+          0.977264404296875
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Goblin_front_full_unlit.png",
+          "sha256": "3e32b22ed72c261370dac1653b3b2b4ea0da55584bfe73be7e31f8898808ad33",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            -0.0006103515625,
+            -3.9094696044921875,
+            0.4886322021484375
+          ],
+          "orthographic_scale": 1.0945361852645874,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Goblin_front_face_unlit.png",
+          "sha256": "55e9fbb0d460cfd4e5b41f46b52998b1dd1ba329b9ddf04cb154bb48cc62e4ef",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            -0.0006103515625,
+            -3.9094696044921875,
+            0.7085167169570923
+          ],
+          "orthographic_scale": 0.6019948720932007,
+          "height_crop_fraction": 0.45
+        }
+      ]
+    },
+    {
+      "name": "GoblinBrute",
+      "source": "art\\models\\GoblinBrute.glb",
+      "source_sha256": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.4890442490577698,
+          -0.2291107028722763,
+          0.0
+        ],
+        "max": [
+          0.4892273545265198,
+          0.22843937575817108,
+          0.89019775390625
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\GoblinBrute_front_full_unlit.png",
+          "sha256": "e4f2b2d2ad9154b2b7ecf4882653a2cfe467f38092084d1799535e05b5f6f9ec",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            9.1552734375e-05,
+            -3.913422107696533,
+            0.445098876953125
+          ],
+          "orthographic_scale": 1.095664143562317,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\GoblinBrute_front_face_unlit.png",
+          "sha256": "5b2f3c28a26eba6cd20e5fca1566b7f4b594def9a99ed2745516e23129e338ee",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            9.1552734375e-05,
+            -3.913422107696533,
+            0.6453933715820312
+          ],
+          "orthographic_scale": 0.5483618378639221,
+          "height_crop_fraction": 0.45
+        }
+      ]
+    },
+    {
+      "name": "Skeleton",
+      "source": "art\\models\\Skeleton.glb",
+      "source_sha256": "c0dd760ae6f655adb2cc81ea6a91c712722e3090ab098e7af2fd3d3ca1dc9410",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.42562875151634216,
+          -0.2984924018383026,
+          0.0
+        ],
+        "max": [
+          0.42578133940696716,
+          0.2965393364429474,
+          0.97772216796875
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Skeleton_front_full_unlit.png",
+          "sha256": "ea135edb8da9cb2778a07772dee42f51ef8e9906a304385a18085007717ed7e6",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            7.62939453125e-05,
+            -3.911865234375,
+            0.488861083984375
+          ],
+          "orthographic_scale": 1.0950487852096558,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Skeleton_front_face_unlit.png",
+          "sha256": "3c6efae10f5b02c38e21af4731e635868556da8997092efa2b9f7dd4e5c4d5da",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            7.62939453125e-05,
+            -3.911865234375,
+            0.7088485956192017
+          ],
+          "orthographic_scale": 0.6022768616676331,
+          "height_crop_fraction": 0.45
+        }
+      ]
+    },
+    {
+      "name": "SkeletonKnight",
+      "source": "art\\models\\SkeletonKnight.glb",
+      "source_sha256": "44907ed0ff2a9ba10f8f681dff493f5c77d99bc11e538cc17c1bcf6ef4b55227",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.3245544731616974,
+          -0.1423644721508026,
+          0.0
+        ],
+        "max": [
+          0.3240051567554474,
+          0.1426697075366974,
+          0.97760009765625
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKnight_front_full_unlit.png",
+          "sha256": "6ab30e07c9a9fe1eda6d743b904718e6c1d3936ab278894fc55a535523dff16e",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            -0.000274658203125,
+            -3.910247802734375,
+            0.488800048828125
+          ],
+          "orthographic_scale": 1.094912052154541,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKnight_front_face_unlit.png",
+          "sha256": "b89edd81dbf89c9a10a9acda7db5c63d85388832c13aaf256e24d148e1b5e1f8",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            -0.000274658203125,
+            -3.910247802734375,
+            0.7087600827217102
+          ],
+          "orthographic_scale": 0.6022016406059265,
+          "height_crop_fraction": 0.45
+        }
+      ]
+    },
+    {
+      "name": "SkeletonKing",
+      "source": "art\\models\\SkeletonKing.glb",
+      "source_sha256": "6b02cda2e9c82fe9d037e6ff3dde589bace1fbea2983ef2b53f46f357d629977",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.4834900498390198,
+          -0.2842406928539276,
+          0.0
+        ],
+        "max": [
+          0.4825134873390198,
+          0.2838745415210724,
+          0.97747802734375
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKing_front_full_unlit.png",
+          "sha256": "167ae8d7796041491c7c47e7fcea151ca0695150ad32e5f8a6cba30577d366e6",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            -0.00048828125,
+            -3.91009521484375,
+            0.488739013671875
+          ],
+          "orthographic_scale": 1.0947754383087158,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKing_front_face_unlit.png",
+          "sha256": "630662f6a58177710c7119cd28873b9d9be93594bf0e6fff95ec0b9776ed198d",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            -0.00048828125,
+            -3.91009521484375,
+            0.7086715698242188
+          ],
+          "orthographic_scale": 0.6021264791488647,
+          "height_crop_fraction": 0.45
+        }
+      ]
+    },
+    {
+      "name": "GoldenGoose",
+      "source": "art\\models\\GoldenGoose.glb",
+      "source_sha256": "3804cf75014e64c552fd7b028ccc898b32524500c35c0b6af80a23e43cc86679",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.4598694443702698,
+          -0.3355408012866974,
+          0.0
+        ],
+        "max": [
+          0.4598694443702698,
+          0.3356323540210724,
+          0.97711181640625
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\GoldenGoose_front_full_unlit.png",
+          "sha256": "e98f6a4441e92893164c6f8aa8f050cd769c09358d4209f70c817ff893880187",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            0.0,
+            -3.9084014892578125,
+            0.488555908203125
+          ],
+          "orthographic_scale": 1.0943652391433716,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\GoldenGoose_front_face_unlit.png",
+          "sha256": "3a16bf8057bcf0b43da95b426244eec4c2294e3d8617bf03f8722d42a279e817",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            0.0,
+            -3.9084014892578125,
+            0.7084060907363892
+          ],
+          "orthographic_scale": 0.6019008755683899,
+          "height_crop_fraction": 0.45
+        }
+      ]
+    },
+    {
+      "name": "SkeletonClothed",
+      "source": "art\\models\\tripo\\SkeletonClothed_raw.glb",
+      "source_sha256": "f6104c41791106741d3d33f01591a2762458bb8b9526b06f29ee41e31ae2aa5b",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.30041810870170593,
+          -0.4369889199733734,
+          -0.5
+        ],
+        "max": [
+          0.30041810870170593,
+          0.4369889199733734,
+          0.5
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonClothed_front_full_unlit.png",
+          "sha256": "666fd56757eb194ee27af69afaf4595fd42d96843198e764e7eee75d8a014698",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            4.0,
+            0.0,
+            0.0
+          ],
+          "orthographic_scale": 1.1200000047683716,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonClothed_front_face_unlit.png",
+          "sha256": "110a9b9f109e85de472392425d7882e880decec79371e254a8330633fb25630d",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            4.0,
+            0.0,
+            0.25
+          ],
+          "orthographic_scale": 0.5600000023841858,
+          "height_crop_fraction": 0.5
+        }
+      ]
+    },
+    {
+      "name": "SkeletonKingClothed",
+      "source": "art\\models\\tripo\\SkeletonKingClothed_raw.glb",
+      "source_sha256": "da9da2cc06ddf99c34f2fcc05718b37a85ec9734a1e1e35aec123a6a1a133d30",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.2959469258785248,
+          -0.4890645146369934,
+          -0.4885483384132385
+        ],
+        "max": [
+          0.2960655391216278,
+          0.4878495931625366,
+          0.4907960295677185
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKingClothed_front_full_unlit.png",
+          "sha256": "72e278648c81a289f4dc3b8015f29005a90dc700bbf9f494069d0c69273813bd",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            3.9174368381500244,
+            -0.0006074607372283936,
+            0.0011238455772399902
+          ],
+          "orthographic_scale": 1.0968656539916992,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKingClothed_front_face_unlit.png",
+          "sha256": "b5a6727626103ed3de954e766d38e8e6bc1605ed5ed23ec97ba0ccfcf7d85ff0",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            3.9174368381500244,
+            -0.0006074607372283936,
+            0.24595993757247925
+          ],
+          "orthographic_scale": 0.5484328269958496,
+          "height_crop_fraction": 0.5
+        }
+      ]
+    },
+    {
+      "name": "SharpD_generation",
+      "source": "art\\models\\costume\\redraw\\generation-c22df695\\model.glb",
+      "source_sha256": "4aa4206f7cf4f57c62f1d6c38eaf0c860a274404136c774dbb13dfaa679b2ca6",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.18023662269115448,
+          -0.41316941380500793,
+          -0.4898762106895447
+        ],
+        "max": [
+          0.17832182347774506,
+          0.4120742380619049,
+          0.46032416820526123
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SharpD_generation_front_full_unlit.png",
+          "sha256": "25bdfee2a9a12068bddafd96a01f0660725b55afca6f3c1b0261ddf30fcdbf3e",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            3.7998440265655518,
+            -0.0005475878715515137,
+            -0.014776021242141724
+          ],
+          "orthographic_scale": 1.0642244815826416,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SharpD_generation_front_face_unlit.png",
+          "sha256": "e1f9472ec74ed592644b6e7ade55200bfc5541c17f86da9170778d15f4b92cbf",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            3.7998440265655518,
+            -0.0005475878715515137,
+            0.22277407348155975
+          ],
+          "orthographic_scale": 0.5321122407913208,
+          "height_crop_fraction": 0.5
+        }
+      ]
+    },
+    {
+      "name": "SharpD_rig",
+      "source": "art\\models\\costume\\redraw\\tripo-out\\costume-haloarcherm-sharpd-rig-96aa4858\\model.glb",
+      "source_sha256": "ce5e406725c98fb9a431a32854f1e57569b6f3ace4fbd390507625c92a70e10e",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.9510578513145447,
+          -0.9999999403953552,
+          -1.0
+        ],
+        "max": [
+          0.9510578513145447,
+          0.9999999403953552,
+          1.0
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SharpD_rig_front_full_unlit.png",
+          "sha256": "72a20d1e367048803305b748f2878fbc8447dd1c04d2473da780f263b6aaf6d3",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            8.0,
+            0.0,
+            0.0
+          ],
+          "orthographic_scale": 2.240000009536743,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SharpD_rig_front_face_unlit.png",
+          "sha256": "caa635f2ec70715f65a1cda01a30dacbcdfd5bb79cf8f146750abbe4627e3f11",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            8.0,
+            0.0,
+            0.7350000143051147
+          ],
+          "orthographic_scale": 0.5712000131607056,
+          "height_crop_fraction": 0.5,
+          "z_frame_bounds": [
+            0.48,
+            0.99
+          ],
+          "framing_basis": "manually observed rendered head region; bind-space bounds differ"
+        }
+      ]
+    }
+  ],
+  "shading": "Workbench FLAT baseColor texture; no PBR reflection evaluation",
+  "correction": "Initial axis-only renders are retained separately. v2 uses evaluated mesh bounds and visibly checked +X front for new Tripo sources.",
+  "source_mutations": 0,
+  "studio_calls": 0,
+  "paid_calls": 0
+}

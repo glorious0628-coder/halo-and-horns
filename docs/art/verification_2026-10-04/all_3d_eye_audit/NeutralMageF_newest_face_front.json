@@ -1,0 +1,24 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_FaceUnionMouthWinding_v2.glb",
+  "source_sha256": "8075719e8f67fe95c4928d4ad05560457764c36a1f3b2b1b13eb9d58ad03e378",
+  "expression": null,
+  "render": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\NeutralMageF_newest_face_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    0.44770461320877075,
+    10.015721321105957,
+    1.6064597368240356
+  ],
+  "camera_rotation": [
+    -1.4737824201583862,
+    3.042797565460205,
+    -0.0666041299700737
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "shading_policy": "original imported material with geometry QA area lights"
+}

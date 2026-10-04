@@ -80,10 +80,10 @@ class Client:
             res = self.request("tools/call", {"name": "list_roblox_studios", "arguments": {}})
             studios = json.loads(res["content"][0]["text"])["studios"]
             for s in studios:
-                if want.lower() in s["name"].lower():
+                if want.lower() in (s.get("name") or "").lower():
                     return s["id"]
             time.sleep(0.5)
-        raise RuntimeError(f"'{want}' 스튜디오 창을 찾지 못했습니다: {[s['name'] for s in studios]}")
+        raise RuntimeError(f"'{want}' 스튜디오 창을 찾지 못했습니다: {[s.get('name') for s in studios]}")
 
     def close(self):
         try:

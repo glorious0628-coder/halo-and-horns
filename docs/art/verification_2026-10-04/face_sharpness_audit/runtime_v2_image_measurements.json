@@ -1,0 +1,275 @@
+{
+  "schema": 1,
+  "source": "Actual Play studio_mcp.screen_capture production_*_v2.jpeg only",
+  "reference": {
+    "path": "art\\out\\Avatar_HaloArcherM_FullRedraw_D.png",
+    "sha256": "62d746d88297d8939065ca6c36a02edc85995e975087b439f42a763631156470",
+    "head_crop": [
+      190,
+      0,
+      1070,
+      824
+    ]
+  },
+  "captures": [
+    {
+      "path": "docs\\art\\verification_2026-10-04\\face_runtime_audit\\production_Automatic_default_v2.jpeg",
+      "sha256": "155089e687e74901e92e58c837ccbf295260dbeea0e1147879d5c77ccfaed9d5",
+      "capture_size": [
+        1586,
+        950
+      ],
+      "engine_viewport": [
+        793,
+        475
+      ],
+      "capture_to_viewport_ratio": [
+        2.0,
+        2.0
+      ],
+      "distance_stud": 12.5,
+      "quality": "Enum.QualityLevel.Automatic",
+      "head_roi_capture_px": [
+        744,
+        417,
+        873,
+        553
+      ],
+      "face_roi_capture_px": [
+        768,
+        494,
+        855,
+        546
+      ],
+      "eye_roi_capture_px": [
+        817,
+        499,
+        846,
+        525
+      ],
+      "eye_roi_capture_size": [
+        29,
+        26
+      ],
+      "dark_eye_component": {
+        "pixels": 200,
+        "bbox": [
+          822,
+          502,
+          843,
+          518
+        ],
+        "bbox_size": [
+          21,
+          16
+        ],
+        "luminance_threshold": 100,
+        "scope": "Largest dark 4-connected component inside manually reviewed eye ROI; not the full anatomical eye."
+      },
+      "dark_eye_component_size_in_viewport_coordinates": [
+        10.5,
+        8.0
+      ],
+      "roi_uncertainty_capture_px": 3,
+      "visual_ko": "하이라이트와 속눈썹이 여전히 흐리다. 최고 품질에서도 승인 D만큼 선명해지지 않았다."
+    },
+    {
+      "path": "docs\\art\\verification_2026-10-04\\face_runtime_audit\\production_Level21_default_v2.jpeg",
+      "sha256": "60113c9d28bc1a841e0e7f231023e057f0272aa7d1b929ccda67bbd4ea90d6f1",
+      "capture_size": [
+        1586,
+        950
+      ],
+      "engine_viewport": [
+        793,
+        475
+      ],
+      "capture_to_viewport_ratio": [
+        2.0,
+        2.0
+      ],
+      "distance_stud": 12.5,
+      "quality": "Enum.QualityLevel.Level21",
+      "head_roi_capture_px": [
+        744,
+        417,
+        873,
+        553
+      ],
+      "face_roi_capture_px": [
+        768,
+        494,
+        855,
+        546
+      ],
+      "eye_roi_capture_px": [
+        817,
+        499,
+        846,
+        525
+      ],
+      "eye_roi_capture_size": [
+        29,
+        26
+      ],
+      "dark_eye_component": {
+        "pixels": 233,
+        "bbox": [
+          822,
+          502,
+          844,
+          519
+        ],
+        "bbox_size": [
+          22,
+          17
+        ],
+        "luminance_threshold": 100,
+        "scope": "Largest dark 4-connected component inside manually reviewed eye ROI; not the full anatomical eye."
+      },
+      "dark_eye_component_size_in_viewport_coordinates": [
+        11.0,
+        8.5
+      ],
+      "roi_uncertainty_capture_px": 3,
+      "visual_ko": "하이라이트와 속눈썹이 여전히 흐리다. 최고 품질에서도 승인 D만큼 선명해지지 않았다."
+    },
+    {
+      "path": "docs\\art\\verification_2026-10-04\\face_runtime_audit\\production_Automatic_close_v2.jpeg",
+      "sha256": "c22a0e18e66e51288da98a18b330c0e19d2a322f32d7dd2b9815a982a804b489",
+      "capture_size": [
+        1586,
+        950
+      ],
+      "engine_viewport": [
+        793,
+        475
+      ],
+      "capture_to_viewport_ratio": [
+        2.0,
+        2.0
+      ],
+      "distance_stud": 3.5,
+      "quality": "Enum.QualityLevel.Automatic",
+      "head_roi_capture_px": [
+        632,
+        280,
+        1085,
+        752
+      ],
+      "face_roi_capture_px": [
+        702,
+        568,
+        1005,
+        735
+      ],
+      "eye_roi_capture_px": [
+        906,
+        579,
+        990,
+        664
+      ],
+      "eye_roi_capture_size": [
+        84,
+        85
+      ],
+      "dark_eye_component": {
+        "pixels": 2402,
+        "bbox": [
+          911,
+          585,
+          986,
+          650
+        ],
+        "bbox_size": [
+          75,
+          65
+        ],
+        "luminance_threshold": 100,
+        "scope": "Largest dark 4-connected component inside manually reviewed eye ROI; not the full anatomical eye."
+      },
+      "dark_eye_component_size_in_viewport_coordinates": [
+        37.5,
+        32.5
+      ],
+      "roi_uncertainty_capture_px": 5,
+      "visual_ko": "하이라이트와 속눈썹이 여전히 흐리다. 최고 품질에서도 승인 D만큼 선명해지지 않았다."
+    },
+    {
+      "path": "docs\\art\\verification_2026-10-04\\face_runtime_audit\\production_Level21_close_v2.jpeg",
+      "sha256": "c368e8f8120318504751bafcb5541c98b9edea81bbe54fea496c118d15a4b4fc",
+      "capture_size": [
+        1586,
+        950
+      ],
+      "engine_viewport": [
+        793,
+        475
+      ],
+      "capture_to_viewport_ratio": [
+        2.0,
+        2.0
+      ],
+      "distance_stud": 3.5,
+      "quality": "Enum.QualityLevel.Level21",
+      "head_roi_capture_px": [
+        632,
+        280,
+        1085,
+        752
+      ],
+      "face_roi_capture_px": [
+        702,
+        568,
+        1005,
+        735
+      ],
+      "eye_roi_capture_px": [
+        906,
+        579,
+        990,
+        664
+      ],
+      "eye_roi_capture_size": [
+        84,
+        85
+      ],
+      "dark_eye_component": {
+        "pixels": 2984,
+        "bbox": [
+          910,
+          584,
+          988,
+          652
+        ],
+        "bbox_size": [
+          78,
+          68
+        ],
+        "luminance_threshold": 100,
+        "scope": "Largest dark 4-connected component inside manually reviewed eye ROI; not the full anatomical eye."
+      },
+      "dark_eye_component_size_in_viewport_coordinates": [
+        39.0,
+        34.0
+      ],
+      "roi_uncertainty_capture_px": 5,
+      "visual_ko": "하이라이트와 속눈썹이 여전히 흐리다. 최고 품질에서도 승인 D만큼 선명해지지 않았다."
+    }
+  ],
+  "failed_earlier_white_captures_used": false,
+  "method_ko": "네 원본 v2 화면을 직접 열어 확인했다. 눈·얼굴 ROI는 수동 범위이며 완전한 해부학적 분할이 아니다. 어두운 연결요소는 같은 밝기100 기준으로 재현한다.",
+  "limitations_ko": [
+    "캡처 픽셀은 실제 GPU 내부 렌더 해상도나 mip 해상도와 같다는 뜻이 아니다.",
+    "viewport 값은1586×950 캡처의 절반인793×475다. 두 좌표계를 구분한다.",
+    "Automatic과 Level21은 그림자·밝기도 달라 픽셀 차이를 텍스처 압축 손실로 해석하지 않는다.",
+    "기본 거리에서 눈이 작은 것은 샘플 수 자체의 한계다. 선명한 원화도 화면 픽셀 수보다 세밀하게 표시할 수 없다."
+  ],
+  "studio_calls": 0,
+  "uploads": 0,
+  "source_mutations": 0,
+  "comparison": {
+    "path": "docs/art/verification_2026-10-04/face_sharpness_audit/production_v2_reference_comparison.png",
+    "method": "Crop then fit each head to350x340; approved PNG Lanczos; screenshot nearest to show existing capture samples, no sharpening."
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local P=game.Players.LocalPlayer\nlocal R=game:GetService(\"RunService\")\nR:UnbindFromRenderStep(\"FaceSharpAuditCamera\")\nR:BindToRenderStep(\"FaceSharpAuditCamera\",Enum.RenderPriority.Camera.Value+10,function()\n local c=P.Character;local root=c and c:FindFirstChild(\"HumanoidRootPart\");if not root then return end\n local target=root.Position+Vector3.new(0,2.6,0)\n local cam=workspace.CurrentCamera\n cam.CameraType=Enum.CameraType.Scriptable\n cam.CFrame=CFrame.lookAt(target+root.CFrame.LookVector*12.5,target)\n cam.Focus=CFrame.new(target)\n for _,v in c:GetDescendants() do if v:IsA(\"BasePart\") then v.LocalTransparencyModifier=0 end end\nend)\nreturn \"frontal12.5\"\n"
+}

@@ -1,0 +1,344 @@
+{
+  "schema": 1,
+  "review_scope": "fixed18 및 최신 얼굴후보18, 기존 몬스터7, 옷입힌 해골2, 현존 SharpD 생성/리그2",
+  "direct_review": "6개 아바타 비교판과 3개 몬스터/SharpD 비교판을 원본 크기로 직접 확인했다. 최신 HaloMageM/NeutralMageF 및 SharpD 두 파일은 별도 근접 렌더도 직접 확인했다.",
+  "inventory": "inventory.json",
+  "source_files_mutated": false,
+  "production_applied": false,
+  "uploads": 0,
+  "paid_calls": 0,
+  "free_fix_classes": {
+    "A": "승인 GPT 원화에서 눈·눈썹·입을 직접 가져오는 얼굴 전용 UV/PNG 적용. 원래 머리/몸/리그를 보존하고 자동 샤픈이나 유료 재생성은 사용하지 않는다. HaloArcherM 파일럿 승인 뒤에만 나머지 적용한다.",
+    "B": "입·볼 삼각 틈은 텍스처 번짐과 구분해 원래 면 방향·겹침·국소 곡면을 무료 Blender로 점검한다. 국소 수정은 별도 후보와 SHA로 보존하며 기존 검증을 우회하지 않는다.",
+    "C": "눈 경계가 이미 식별되는 모델은 유지한다. 실제 게임 기본/근접 거리 확인 전 불필요하게 얼굴을 다시 만들지 않는다.",
+    "D": "기존 SharpD8K 원본을 보존하고 승인 D 원화 직접 얼굴 UV 후보와 비교한다. 흰 의상 광택은 PBR/roughness 무료 후보로 별도 검사한다. 유료 Tripo 재생성이 필요하다고 결론내리지 않는다.",
+    "E": "기존 승인 몬스터 원화의 동일 눈을 전용 UV로 옮기는 무료 후보만 검토한다. 고블린 디자인/복장은 그대로 유지한다. 기본 거리에서 충분하면 유지한다."
+  },
+  "avatars": [
+    {
+      "name": "HaloWarriorM",
+      "eye_status": "수정 필요",
+      "findings": "홍채·작은 반사점·흰자 경계가 부드럽게 번진다. 후보도 같은 성격이다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "3ccfc2f9c4c404a9e37c06d9cbea7ea1d8b5b3d35e91779b7dc8f589eb3c7917",
+      "candidate_source_sha256": "bd1283994aa956ad4a0d07d1e15f5a2ca6b927a2824a85e3b64030a82995098d",
+      "render_sha256": "0c0dde931f4a244ce9881f6579eda8260d797bc7ed9a84ff0ca58e000bc14052"
+    },
+    {
+      "name": "HaloWarriorF",
+      "eye_status": "수정 필요",
+      "findings": "별 모양 반사점과 위쪽 속눈썹 경계가 거칠고 두껍다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "b1f8d7677ecd9c84998617137f279993eb3077a23c9b7ff96838f9822360606a",
+      "candidate_source_sha256": "1364e95a2c33145313a9c5c80b550f8668b66f9d01f4a850f933d6001e451d38",
+      "render_sha256": "daa2f6663f1a12171d43621728d3750155e10d4d778b8b983b14d64d86a3f28f"
+    },
+    {
+      "name": "HaloArcherM",
+      "eye_status": "수정 필요",
+      "findings": "윙크 외곽 붓질·열린 눈 흰자 경계·둥근 하이라이트가 번진다. 생산1254와 원본 바이트가 같아도 원본 눈부터 흐리다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "e1500ceaa21de1b68b063bd82d133d36a5f55c656888bda0dd9c9d754128de39",
+      "candidate_source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+      "render_sha256": "77fb8f7edd46baea5aaafac2444818e420d45b9f04f71a16e1e3bd4fb1ee7ed3"
+    },
+    {
+      "name": "HaloArcherF",
+      "eye_status": "수정 필요",
+      "findings": "윙크 선이 덩어리처럼 뭉치고 열린 눈 홍채 아래 경계가 뾰족하고 거칠다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "07451eec71f0b9785f867a53aac20e66d4af65e8259dce574a7c684826dad976",
+      "candidate_source_sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+      "render_sha256": "025d37617738b53a2a5674e52cb1d4968fb92ca5051cc684695a8cb3f867fd62"
+    },
+    {
+      "name": "HaloMageM",
+      "eye_status": "수정 필요",
+      "findings": "눈 하이라이트와 속눈썹이 번진다. 최신 MouthRestored_v2 근접 렌더에서 입 위·아래에 검은 삼각 틈이 뚜렷하다.",
+      "free_fix": [
+        "A",
+        "B"
+      ],
+      "additional_hold": "입 표면 틈",
+      "fixed_source_sha256": "479a6a268f56a421e65a353dd696ea4a67476dc06879815d1abca76316a279cb",
+      "candidate_source_sha256": "21796f97f56c8c1da6ac982d5ddf5669c3afd6597e9aa8509430e3297c9e8de6",
+      "render_sha256": "9ab0d4fd3554f293e9c1180fbe5ffa681ddc37eabd52153881987c4b01f103af"
+    },
+    {
+      "name": "HaloMageF",
+      "eye_status": "수정 필요",
+      "findings": "두 눈 흰자 외곽과 위쪽 속눈썹 선에 붓질 같은 번짐이 남는다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+      "candidate_source_sha256": "4d5fe892fc32a9c8a5135d72a1a819edbbe764617d2b993e3e58e897501233f3",
+      "render_sha256": "601f5acb6d1f1052f06b9222040be7c71b08371ec09f063dd475d7f2ce813743"
+    },
+    {
+      "name": "HornsWarriorM",
+      "eye_status": "수정 필요",
+      "findings": "빨간 홍채와 흰자 경계, 위 눈꺼풀 선이 흐리고 거칠다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "7ea12e5e584203c5555f468a03851f90c9d70b936810ddb0a8360ae747898221",
+      "candidate_source_sha256": "3ce715191c3ff7303545ef536eacf4d68b06f4fa0d849fa34f9df08d44f1f497",
+      "render_sha256": "59cfd27112485f957ccbc69ff4408816cbd6c07b83d65fbae4309072a4937a1a"
+    },
+    {
+      "name": "HornsWarriorF",
+      "eye_status": "수정 필요",
+      "findings": "작은 하이라이트 경계가 흐리며 눈썹 일부가 각진 조각처럼 끊겨 보인다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "f54fb171f56bbaeca3772ca6aee7e3f30fbaf331576df19e0a4cb15ba3eb1b0e",
+      "candidate_source_sha256": "a554b1d807ae6d85ef5142e6845239ed1ddbfa47b4cd3409735d7ed6c3e01a12",
+      "render_sha256": "d342539afd89dd68c15b074b795b082b77daf203d35c05f8318ee9f4dafdfce3"
+    },
+    {
+      "name": "HornsMageM",
+      "eye_status": "수정 필요",
+      "findings": "빨간 홍채 아래가 덩어리로 합쳐지고 눈·볼 경계의 검은 조각이 남는다.",
+      "free_fix": [
+        "A",
+        "B"
+      ],
+      "fixed_source_sha256": "5f89379362c2362d034075fb17c13ff760b0f063a08c4ace48fc0de6e87e7804",
+      "candidate_source_sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+      "render_sha256": "7c5c34ae216ee83eb130faedcf500c82dc439e82e980e756847ff43d54f514e2"
+    },
+    {
+      "name": "HornsMageF",
+      "eye_status": "수정 필요",
+      "findings": "속눈썹과 흰자 외곽이 들쭉날쭉하고 붓질처럼 번진다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "f8d11d1577b78a285867bf2be68734168251b73a82a4d0d20e27a372b8352fc2",
+      "candidate_source_sha256": "6a4d6d20f89b7481692623d5c6093ac8c5459e6b855ccf5870983a805caa955e",
+      "render_sha256": "99440718166e4c38e594b4dc8554a121727be450d19dec624b7011c5d55a9915"
+    },
+    {
+      "name": "HornsArcherM",
+      "eye_status": "수정 필요",
+      "findings": "홍채·눈꺼풀 외곽이 흐리고 입 옆에 작고 어두운 삼각 선이 보인다.",
+      "free_fix": [
+        "A",
+        "B"
+      ],
+      "fixed_source_sha256": "9410d599c8b275df966a97efffa3c0991760944a8d4a0f504ccdabe4e6f9b1fb",
+      "candidate_source_sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+      "render_sha256": "6c8f7650010142118746475031a6b7105d65389a20874f73d4cb035a144f27f5"
+    },
+    {
+      "name": "HornsArcherF",
+      "eye_status": "수정 필요",
+      "findings": "위 속눈썹과 빨간 홍채 경계가 두껍고 작은 반사점이 흐리다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+      "candidate_source_sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+      "render_sha256": "a2ccc33092ac977daf6e65cf4cbca08845aa2104efb922ebd8a94dcde526f00f"
+    },
+    {
+      "name": "NeutralWarriorM",
+      "eye_status": "수정 필요",
+      "findings": "홍채의 밝은 경계와 작은 반사점이 부드럽게 번지고 흰자 외곽이 거칠다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "0aecac75ca002dfac8646ce981820137b7a94966e6af6f2beb0d75141fb2ebfd",
+      "candidate_source_sha256": "37ce5944971a43d6841d5ffa10610c774a2f2178f9bd9cca9e138633db937024",
+      "render_sha256": "c019f3cc4f572615a535591cf1e407fb223da6dbd77523fd92f9b1d86aa588de"
+    },
+    {
+      "name": "NeutralWarriorF",
+      "eye_status": "수정 필요",
+      "findings": "눈 경계가 흐리며 후보의 입 양쪽에 큰 역삼각형 음영/틈이 보인다.",
+      "free_fix": [
+        "A",
+        "B"
+      ],
+      "additional_hold": "입 삼각형 표면",
+      "fixed_source_sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+      "candidate_source_sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+      "render_sha256": "3322849e4a2c39ca89b0aca3fcc19752b770125d52cc2692be13511d6cc004cf"
+    },
+    {
+      "name": "NeutralMageM",
+      "eye_status": "수정 필요",
+      "findings": "홍채 아래가 각진 모양이며 눈 안으로 세로 면 경계가 드러난다. 고글 장식도 거칠다.",
+      "free_fix": [
+        "A",
+        "B"
+      ],
+      "fixed_source_sha256": "04481a1c0dbe593fc6f9b2629f4949571dca15cc8de516a80898464fd35dc28c",
+      "candidate_source_sha256": "16f80c7cdb84203b6df6eb19307541fd67e278f52c222d77b849f10464b50775",
+      "render_sha256": "f60fb99b8b6d480a5e74ccca6c3f8dfa6a2ccdd022857cc1897d8d6f2857fc95"
+    },
+    {
+      "name": "NeutralMageF",
+      "eye_status": "수정 필요",
+      "findings": "최신 Winding_v2에서 입 끝 삼각 음영은 이전보다 줄었다. 홍채 아래 평평한 경계와 흰자·반사점 번짐은 남는다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "8d1dfd965602d0e78b85815fd6d3f76704f3121b6d7463b416b0a736dd8df583",
+      "candidate_source_sha256": "8075719e8f67fe95c4928d4ad05560457764c36a1f3b2b1b13eb9d58ad03e378",
+      "render_sha256": "ce4d5068793a6b1a6aee4d65514622b6d639d7f1fd753cba4f73add04a0663f9"
+    },
+    {
+      "name": "NeutralArcherM",
+      "eye_status": "수정 필요",
+      "findings": "두 눈 흰자 외곽과 반사점이 흐리고 갈색 홍채의 가장자리가 들쭉날쭉하다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+      "candidate_source_sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+      "render_sha256": "bbf6e788203be5d779cb99d606ab281f7e5680388cdb0d46984d9048ce4b37fe"
+    },
+    {
+      "name": "NeutralArcherF",
+      "eye_status": "수정 필요",
+      "findings": "윙크 선이 뭉치고 열린 눈의 홍채와 하이라이트 경계가 거칠다.",
+      "free_fix": [
+        "A"
+      ],
+      "fixed_source_sha256": "380acd5fce8365f60cd5a1660140979932ca09ec714f61c030b0d7ee6f370579",
+      "candidate_source_sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+      "render_sha256": "e91a71622a1d7b0dedbf5bfa169c77bfea15a24d07c10408fd2cba8cc9707177"
+    }
+  ],
+  "monsters_and_sharpd": [
+    {
+      "name": "Slime",
+      "eye_status": "현재 정면 유지 가능",
+      "findings": "둥근 눈과 큰 하이라이트는 명확하다. 외곽의 미세한 거침은 있으나 아바타 같은 심한 번짐은 보이지 않는다.",
+      "free_fix": [
+        "C"
+      ],
+      "source_sha256": "16e71849a507f3f93b98673f49664b5b5c9615ba2e902cb3c5956c519253d925",
+      "render_sha256": "4840eb671c0a9afb2b7f609da88df374e5690f316740160bb1b9c66bc6b2ef7c"
+    },
+    {
+      "name": "Goblin",
+      "eye_status": "경미한 경계 거침",
+      "findings": "홍채와 흰자 외곽이 들쭉날쭉하다. 큰 하이라이트는 식별된다. 아바타 파일럿 이후 필요할 때만 검토한다.",
+      "free_fix": [
+        "E"
+      ],
+      "source_sha256": "1d92307a508d33cb8ef6b97b850411e8280d40dad1559974af70eba68d99ffce",
+      "render_sha256": "55e9fbb0d460cfd4e5b41f46b52998b1dd1ba329b9ddf04cb154bb48cc62e4ef"
+    },
+    {
+      "name": "GoblinBrute",
+      "eye_status": "작은 눈 세부 손실",
+      "findings": "눈썹 아래 작은 눈이 매우 적은 영역을 사용하고 노란 흰자/홍채 경계가 흐리다. 눈을 가리는 큰 눈썹은 원래 디자인과 구분해야 한다.",
+      "free_fix": [
+        "E"
+      ],
+      "source_sha256": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706",
+      "render_sha256": "5b2f3c28a26eba6cd20e5fca1566b7f4b594def9a99ed2745516e23129e338ee"
+    },
+    {
+      "name": "Skeleton",
+      "eye_status": "현재 정면 유지 가능",
+      "findings": "검은 눈구멍과 보라 원형 눈은 뚜렷하다. 옷 입힌 선택본으로 교체할 예정인 기존 보관 모델이다.",
+      "free_fix": [
+        "C"
+      ],
+      "source_sha256": "c0dd760ae6f655adb2cc81ea6a91c712722e3090ab098e7af2fd3d3ca1dc9410",
+      "render_sha256": "3c6efae10f5b02c38e21af4731e635868556da8997092efa2b9f7dd4e5c4d5da"
+    },
+    {
+      "name": "SkeletonKnight",
+      "eye_status": "현재 정면 유지 가능",
+      "findings": "투구 틈의 보라색 눈 형태는 구분된다. 빛 번짐을 속눈썹 텍스처 실패로 보지 않는다.",
+      "free_fix": [
+        "C"
+      ],
+      "source_sha256": "44907ed0ff2a9ba10f8f681dff493f5c77d99bc11e538cc17c1bcf6ef4b55227",
+      "render_sha256": "b89edd81dbf89c9a10a9acda7db5c63d85388832c13aaf256e24d148e1b5e1f8"
+    },
+    {
+      "name": "SkeletonKing",
+      "eye_status": "현재 정면 유지 가능",
+      "findings": "보라색 눈과 검은 눈구멍이 구분된다. 보라 그라데이션 자체는 발광 표현 범위다. 옷 입힌 선택본과 구분한다.",
+      "free_fix": [
+        "C"
+      ],
+      "source_sha256": "6b02cda2e9c82fe9d037e6ff3dde589bace1fbea2983ef2b53f46f357d629977",
+      "render_sha256": "630662f6a58177710c7119cd28873b9d9be93594bf0e6fff95ec0b9776ed198d"
+    },
+    {
+      "name": "GoldenGoose",
+      "eye_status": "현재 정면 유지 가능",
+      "findings": "검은 눈·흰자·반사점은 명확하다. 윗 눈꺼풀에 작은 계단 경계가 있으나 재생성 우선 대상은 아니다.",
+      "free_fix": [
+        "C"
+      ],
+      "source_sha256": "3804cf75014e64c552fd7b028ccc898b32524500c35c0b6af80a23e43cc86679",
+      "render_sha256": "3a16bf8057bcf0b43da95b426244eec4c2294e3d8617bf03f8722d42a279e817"
+    },
+    {
+      "name": "SkeletonClothed",
+      "eye_status": "현재 정면 유지 가능",
+      "findings": "검은 눈구멍과 보라 원형 눈 경계가 선명하다. 몸통은 선택된 옷으로 가려져 있다.",
+      "free_fix": [
+        "C"
+      ],
+      "source_sha256": "f6104c41791106741d3d33f01591a2762458bb8b9526b06f29ee41e31ae2aa5b",
+      "render_sha256": "110a9b9f109e85de472392425d7882e880decec79371e254a8330633fb25630d"
+    },
+    {
+      "name": "SkeletonKingClothed",
+      "eye_status": "현재 정면 유지 가능",
+      "findings": "눈구멍·보라 눈 형태가 명확하다. 옷이 몸통을 가리며 아바타 같은 심한 눈 번짐은 없다.",
+      "free_fix": [
+        "C"
+      ],
+      "source_sha256": "da9da2cc06ddf99c34f2fcc05718b37a85ec9734a1e1e35aec123a6a1a133d30",
+      "render_sha256": "b5a6727626103ed3de954e766d38e8e6bc1605ed5ed23ec97ba0ccfcf7d85ff0"
+    },
+    {
+      "name": "SharpD_generation",
+      "eye_status": "기존 생산궁수보다 선명",
+      "findings": "실제8K 컬러에 눈동자·둥근 반사점·속눈썹·윙크 선이 보존됐다. 헤일로 위 별도 존재한다. 일부 외곽은 원화보다 부드럽지만 유료 재생성부터 할 이유는 확인되지 않았다.",
+      "free_fix": [
+        "D"
+      ],
+      "source_sha256": "4aa4206f7cf4f57c62f1d6c38eaf0c860a274404136c774dbb13dfaa679b2ca6",
+      "render_sha256": "e1f9472ec74ed592644b6e7ade55200bfc5541c17f86da9170778d15f4b92cbf"
+    },
+    {
+      "name": "SharpD_rig",
+      "eye_status": "기존 생산궁수보다 선명",
+      "findings": "생성본과 컬러·ORM·Normal 이미지 SHA가 모두 같다. 근접 렌더에서 동일한 선명한 눈을 확인했다. 실제 게임 연결·모션 품질 검증은 별도다.",
+      "free_fix": [
+        "D"
+      ],
+      "source_sha256": "ce5e406725c98fb9a431a32854f1e57569b6f3ace4fbd390507625c92a70e10e",
+      "render_sha256": "caa635f2ec70715f65a1cda01a30dacbcdfd5bb79cf8f146750abbe4627e3f11"
+    }
+  ],
+  "boundaries": [
+    "47개 GLB 항목을 검사했다. 보관된 모든 중간 후보를 각각 완성 모델로 세지 않는다.",
+    "최신이라는 표기는 expression 폴더의 파일 수정시간과 실제 SHA 대조 기준이다. 사용자 승인이나 생산 등록을 뜻하지 않는다.",
+    "피격·걷기·활 모션 전체 품질과 실제 Roblox 기본/최고 품질 검증은 이 로컬 정면 검사에 포함되지 않는다.",
+    "SharpD 무조명 렌더는 PBR 반짝임을 판단하지 않는다. materialFactor1만으로 흰옷 전체가 금속이라고 확정하지 않는다.",
+    "원본 17종 후속 적용은 HaloArcherM 사용자 승인 이후다. 이번에는 변경·업로드·유료 호출을 하지 않았다."
+  ],
+  "inventory_sha256": "9e49ba2119d578a4a1abe771b8079168e35cba6e7860873751f55b8ba731cef7"
+}

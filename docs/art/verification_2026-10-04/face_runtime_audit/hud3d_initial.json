@@ -1,0 +1,22 @@
+{
+  "visible": true,
+  "characterCostume": true,
+  "imageTransparency": 0,
+  "viewportPosition": [
+    15.240960121154785,
+    19.484375
+  ],
+  "cameraDistance": 5.767376899719238,
+  "welds": 26,
+  "bones": 23,
+  "costumeId": "Costume_HaloArcherM",
+  "exists": true,
+  "scripts": 0,
+  "backgroundTransparency": 0,
+  "faceTexture": "rbxassetid://114282379234661",
+  "viewportSize": [
+    31.828916549682617,
+    30.548439025878906
+  ],
+  "cloneChildren": 213
+}

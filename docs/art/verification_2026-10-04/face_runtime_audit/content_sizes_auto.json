@@ -1,0 +1,57 @@
+[
+  {
+    "preload": [
+      {
+        "status": "Enum.AssetFetchStatus.Success"
+      }
+    ],
+    "preload_ok": true,
+    "error": "The current thread cannot read 'ContentImageSize' (lacking capability RobloxScript)",
+    "asset": 114282379234661,
+    "size_read_ok": false
+  },
+  {
+    "preload": [
+      {
+        "status": "Enum.AssetFetchStatus.Success"
+      }
+    ],
+    "preload_ok": true,
+    "error": "The current thread cannot read 'ContentImageSize' (lacking capability RobloxScript)",
+    "asset": 130810730029380,
+    "size_read_ok": false
+  },
+  {
+    "preload": [
+      {
+        "status": "Enum.AssetFetchStatus.Success"
+      }
+    ],
+    "preload_ok": true,
+    "error": "The current thread cannot read 'ContentImageSize' (lacking capability RobloxScript)",
+    "asset": 96983789676579,
+    "size_read_ok": false
+  },
+  {
+    "preload": [
+      {
+        "status": "Enum.AssetFetchStatus.Success"
+      }
+    ],
+    "preload_ok": true,
+    "error": "The current thread cannot read 'ContentImageSize' (lacking capability RobloxScript)",
+    "asset": 84211055370691,
+    "size_read_ok": false
+  },
+  {
+    "preload": [
+      {
+        "status": "Enum.AssetFetchStatus.Success"
+      }
+    ],
+    "preload_ok": true,
+    "error": "The current thread cannot read 'ContentImageSize' (lacking capability RobloxScript)",
+    "asset": 106725946673245,
+    "size_read_ok": false
+  }
+]

@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local H=game:GetService(\"HttpService\")\nlocal cs=game:GetService(\"StudioCaptureService\")\nlocal allowed=cs:CanCaptureScreenshot()\nif not allowed then return H:JSONEncode({allowed=false}) end\nlocal cap=cs:CaptureScreenshot({})\nlocal deadline=os.clock()+15\nrepeat task.wait(0.1) until cap.BufferStatus.Name~=\"Processing\" or os.clock()>deadline\nlocal b=cap:GetBuffer()\nreturn H:JSONEncode({allowed=true,status=tostring(cap.BufferStatus),format=tostring(cap.BufferFormat),size={cap.Resolution.X,cap.Resolution.Y},base64=buffer.tostring(game:GetService(\"EncodingService\"):Base64Encode(b))})\n"
+}

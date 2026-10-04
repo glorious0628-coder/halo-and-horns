@@ -1,0 +1,4495 @@
+{
+  "schema": 1,
+  "avatars": [
+    {
+      "avatar": "Costume_HaloWarriorM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HaloWarriorM.glb",
+        "sha256": "3ccfc2f9c4c404a9e37c06d9cbea7ea1d8b5b3d35e91779b7dc8f589eb3c7917",
+        "bytes": 3510900,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "fcede737e902d9a6cc051e7714af7139ff18a9fc531de6d3933bbc54a9f99fc3",
+            "bytes": 1430718
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "94da68b7297871819f251057f58becfe013a322e02daf89476e9869215f63280",
+            "bytes": 1325715
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloWarriorM\\Costume_HaloWarriorM_FaceUnionMouthWinding_v1.glb",
+        "sha256": "bd1283994aa956ad4a0d07d1e15f5a2ca6b927a2824a85e3b64030a82995098d",
+        "bytes": 6035700,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "fcede737e902d9a6cc051e7714af7139ff18a9fc531de6d3933bbc54a9f99fc3",
+            "bytes": 1430718
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "94da68b7297871819f251057f58becfe013a322e02daf89476e9869215f63280",
+            "bytes": 1325715
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "cc040072b0bad26912a5bbcd1ee35c024ed037c888043a0c58ee83e80d7f1e53",
+            "bytes": 1173644
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HaloWarriorM_fixed_unlit.png",
+        "sha256": "2a19b97ff2dbabeaa4c690cab89de32a11e8d0f06fe7dade6aea6dd44bc80a3b"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloWarriorM\\face_union_mouth_winding_v1_previews\\Neutral_front.png",
+        "sha256": "0c0dde931f4a244ce9881f6579eda8260d797bc7ed9a84ff0ca58e000bc14052",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "art\\models\\costume\\expressions\\Costume_HaloWarriorM\\previews\\Neutral_front.png",
+          "source": "art\\models\\costume\\expressions\\Costume_HaloWarriorM\\Costume_HaloWarriorM_HeadExpressions_R15.glb",
+          "source_sha256": "d8000e76a841f1d4675a8dbfc202168ec938551fdcf6e4e6bbeccff41c974611",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloWarriorM\\Costume_HaloWarriorM_FaceUnionMouthWinding_v1.glb",
+        "sha256": "bd1283994aa956ad4a0d07d1e15f5a2ca6b927a2824a85e3b64030a82995098d",
+        "bytes": 6035700,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "fcede737e902d9a6cc051e7714af7139ff18a9fc531de6d3933bbc54a9f99fc3",
+            "bytes": 1430718
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "94da68b7297871819f251057f58becfe013a322e02daf89476e9869215f63280",
+            "bytes": 1325715
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "cc040072b0bad26912a5bbcd1ee35c024ed037c888043a0c58ee83e80d7f1e53",
+            "bytes": 1173644
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HaloWarriorF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HaloWarriorF.glb",
+        "sha256": "b1f8d7677ecd9c84998617137f279993eb3077a23c9b7ff96838f9822360606a",
+        "bytes": 3499196,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9b2b94f00dd150c3e1229e32a4572e83d17672a18ebcbc4f088a776ff2cbdf57",
+            "bytes": 1486756
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d1323e830de89fb25ea466853cf90a01f82c4d763e8849674b8bd9c6a2779c23",
+            "bytes": 1268153
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_FaceUnionMouthWinding_v1.glb",
+        "sha256": "1364e95a2c33145313a9c5c80b550f8668b66f9d01f4a850f933d6001e451d38",
+        "bytes": 8508156,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9b2b94f00dd150c3e1229e32a4572e83d17672a18ebcbc4f088a776ff2cbdf57",
+            "bytes": 1486756
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d1323e830de89fb25ea466853cf90a01f82c4d763e8849674b8bd9c6a2779c23",
+            "bytes": 1268153
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "1c7a2e67c3eb5152e9858c09177a4ba4abcdbe55b339a784880bb19484d2b5f1",
+            "bytes": 1269765
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HaloWarriorF_fixed_unlit.png",
+        "sha256": "9ac9f5109997e73644bc4430b5eba7ff23f9bcb345b79651ea232c58eb61ff46"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloWarriorF\\face_union_mouth_winding_v1_previews\\Neutral_front.png",
+        "sha256": "daa2f6663f1a12171d43621728d3750155e10d4d778b8b983b14d64d86a3f28f",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_FaceUnionMouthWinding_v1.glb",
+        "sha256": "1364e95a2c33145313a9c5c80b550f8668b66f9d01f4a850f933d6001e451d38",
+        "bytes": 8508156,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9b2b94f00dd150c3e1229e32a4572e83d17672a18ebcbc4f088a776ff2cbdf57",
+            "bytes": 1486756
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d1323e830de89fb25ea466853cf90a01f82c4d763e8849674b8bd9c6a2779c23",
+            "bytes": 1268153
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "1c7a2e67c3eb5152e9858c09177a4ba4abcdbe55b339a784880bb19484d2b5f1",
+            "bytes": 1269765
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HaloArcherM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HaloArcherM.glb",
+        "sha256": "e1500ceaa21de1b68b063bd82d133d36a5f55c656888bda0dd9c9d754128de39",
+        "bytes": 3488616,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "3919b28d83292936c44a7df73c3830e78a9fe8d47fb6222e3282a2f5ef3ca336",
+            "bytes": 1461113
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "21373e3323a09428ded9a473a36da4326c82a595954904fee9ea6be38882e004",
+            "bytes": 1296536
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_FaceUnionMouthRestored_v1.glb",
+        "sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+        "bytes": 5746788,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "3919b28d83292936c44a7df73c3830e78a9fe8d47fb6222e3282a2f5ef3ca336",
+            "bytes": 1461113
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "21373e3323a09428ded9a473a36da4326c82a595954904fee9ea6be38882e004",
+            "bytes": 1296536
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+            "bytes": 1237999
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HaloArcherM_fixed_unlit.png",
+        "sha256": "fb4bf9b72e0825483eb3c0273b33273271558b9eb6af8da54a23a20c559f358a"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloArcherM\\face_union_mouth_v1_previews\\Neutral_front.png",
+        "sha256": "77fb8f7edd46baea5aaafac2444818e420d45b9f04f71a16e1e3bd4fb1ee7ed3",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_FaceUnionMouthRestored_v1.glb",
+        "sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+        "bytes": 5746788,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "3919b28d83292936c44a7df73c3830e78a9fe8d47fb6222e3282a2f5ef3ca336",
+            "bytes": 1461113
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "21373e3323a09428ded9a473a36da4326c82a595954904fee9ea6be38882e004",
+            "bytes": 1296536
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+            "bytes": 1237999
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HaloArcherF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HaloArcherF.glb",
+        "sha256": "07451eec71f0b9785f867a53aac20e66d4af65e8259dce574a7c684826dad976",
+        "bytes": 3540616,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "5e41f4b93bab6be01d0856c2876a15d776dec51e53cc84efdc95b4689658a0b1",
+            "bytes": 1434835
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "bc98e6a139ca2505a3cdfe27021e78760befc347af0735341e4cb1d095a423ff",
+            "bytes": 1362621
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloArcherF\\Costume_HaloArcherF_FaceUnionMouthRestored_v1.glb",
+        "sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+        "bytes": 6081800,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "5e41f4b93bab6be01d0856c2876a15d776dec51e53cc84efdc95b4689658a0b1",
+            "bytes": 1434835
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "bc98e6a139ca2505a3cdfe27021e78760befc347af0735341e4cb1d095a423ff",
+            "bytes": 1362621
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "7c94c1b4d477ff6d6ecf98e8629e7db8bff762954ca269042638e5ec0db94898",
+            "bytes": 1360607
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 15,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HaloArcherF_fixed_unlit.png",
+        "sha256": "5193b4450006975860b6008b412759173a9ffb822952791418974b7cf5150a62"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloArcherF\\face_union_mouth_v1_previews\\Neutral_front.png",
+        "sha256": "025d37617738b53a2a5674e52cb1d4968fb92ca5051cc684695a8cb3f867fd62",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloArcherF\\Costume_HaloArcherF_FaceUnionMouthRestored_v1.glb",
+        "sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+        "bytes": 6081800,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "5e41f4b93bab6be01d0856c2876a15d776dec51e53cc84efdc95b4689658a0b1",
+            "bytes": 1434835
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "bc98e6a139ca2505a3cdfe27021e78760befc347af0735341e4cb1d095a423ff",
+            "bytes": 1362621
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "7c94c1b4d477ff6d6ecf98e8629e7db8bff762954ca269042638e5ec0db94898",
+            "bytes": 1360607
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 15,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HaloMageM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HaloMageM.glb",
+        "sha256": "479a6a268f56a421e65a353dd696ea4a67476dc06879815d1abca76316a279cb",
+        "bytes": 3398356,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "4df126feb0fd3a6e4eab792f8097073622951bfdf0d2c4c5fc3afa5954f3afbd",
+            "bytes": 1328592
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d855c8caf0e27c8619fa575544427ffab3b26efbcc26a537c73e65b482b9afc5",
+            "bytes": 1347090
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_FaceUnionMouthRestored_v2.glb",
+        "sha256": "21796f97f56c8c1da6ac982d5ddf5669c3afd6597e9aa8509430e3297c9e8de6",
+        "bytes": 8367216,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "4df126feb0fd3a6e4eab792f8097073622951bfdf0d2c4c5fc3afa5954f3afbd",
+            "bytes": 1328592
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d855c8caf0e27c8619fa575544427ffab3b26efbcc26a537c73e65b482b9afc5",
+            "bytes": 1347090
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "f5bfee0efaaa3299caf4fc570a2210098781d17e1ab03461047f7d6f521285aa",
+            "bytes": 1304731
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HaloMageM_fixed_unlit.png",
+        "sha256": "45151363ce13b8c36d9e2d866b9eec7785560e8b246765b7d39527bee6803f9c"
+      },
+      "candidate_render": {
+        "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\HaloMageM_newest_face_front.png",
+        "sha256": "9ab0d4fd3554f293e9c1180fbe5ffa681ddc37eabd52153881987c4b01f103af",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "art\\models\\costume\\expressions\\Costume_HaloMageM\\face_union_v2_previews\\Neutral_front.png",
+          "source": "art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_FaceUnionSkin_v2.glb",
+          "source_sha256": "9a9df979d5ad8534bbb93e52af8abc7f2e86e4d6e07a96664e08be6b99132fc8",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_FaceUnionMouthRestored_v2.glb",
+        "sha256": "21796f97f56c8c1da6ac982d5ddf5669c3afd6597e9aa8509430e3297c9e8de6",
+        "bytes": 8367216,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "4df126feb0fd3a6e4eab792f8097073622951bfdf0d2c4c5fc3afa5954f3afbd",
+            "bytes": 1328592
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d855c8caf0e27c8619fa575544427ffab3b26efbcc26a537c73e65b482b9afc5",
+            "bytes": 1347090
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "f5bfee0efaaa3299caf4fc570a2210098781d17e1ab03461047f7d6f521285aa",
+            "bytes": 1304731
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HaloMageF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HaloMageF.glb",
+        "sha256": "9de1addb0bc4ad39b3f763ca464a07517952628eda7d61c19957fe46fecaf3fb",
+        "bytes": 3242452,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "baf853ca48063ac0165db5690ebd3ac795c8e189cc55805d4f2199df7a2fbfe2",
+            "bytes": 1363983
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "5cdc55894311fc7448334af2d4056da2a5004824fe52ad882cad4af3c7080892",
+            "bytes": 1152940
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_FaceUnionMouthRestored_v1.glb",
+        "sha256": "4d5fe892fc32a9c8a5135d72a1a819edbbe764617d2b993e3e58e897501233f3",
+        "bytes": 8075788,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "baf853ca48063ac0165db5690ebd3ac795c8e189cc55805d4f2199df7a2fbfe2",
+            "bytes": 1363983
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "5cdc55894311fc7448334af2d4056da2a5004824fe52ad882cad4af3c7080892",
+            "bytes": 1152940
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "27aebf29d62ad85502fb4fcad443f52a070522656236789ea1b7e3ec1274d13b",
+            "bytes": 1302038
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HaloMageF_fixed_unlit.png",
+        "sha256": "79ccf0ba23a7d1a4d6304c5ab9cf2e786fbd06bee0c5e9db0e82f422f7454647"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloMageF\\face_union_mouth_v1_previews\\Neutral_front.png",
+        "sha256": "601f5acb6d1f1052f06b9222040be7c71b08371ec09f063dd475d7f2ce813743",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_FaceUnionMouthRestored_v1.glb",
+        "sha256": "4d5fe892fc32a9c8a5135d72a1a819edbbe764617d2b993e3e58e897501233f3",
+        "bytes": 8075788,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HaloMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "baf853ca48063ac0165db5690ebd3ac795c8e189cc55805d4f2199df7a2fbfe2",
+            "bytes": 1363983
+          },
+          {
+            "index": 1,
+            "name": "Costume_HaloMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "5cdc55894311fc7448334af2d4056da2a5004824fe52ad882cad4af3c7080892",
+            "bytes": 1152940
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "27aebf29d62ad85502fb4fcad443f52a070522656236789ea1b7e3ec1274d13b",
+            "bytes": 1302038
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HornsWarriorM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HornsWarriorM.glb",
+        "sha256": "7ea12e5e584203c5555f468a03851f90c9d70b936810ddb0a8360ae747898221",
+        "bytes": 3401332,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "32ca83f9bdcc2e1aeb3f517be6bd239afb0905a02c3ed87d040a726642956b83",
+            "bytes": 1251830
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "ba2edf9da09bb87308039a4250c9f9954c3e9cd9180ca3d5feb56cd04874c2b7",
+            "bytes": 1381176
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_PreservedSkinExpressions_v1.glb",
+        "sha256": "3ce715191c3ff7303545ef536eacf4d68b06f4fa0d849fa34f9df08d44f1f497",
+        "bytes": 5780708,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "32ca83f9bdcc2e1aeb3f517be6bd239afb0905a02c3ed87d040a726642956b83",
+            "bytes": 1251830
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "ba2edf9da09bb87308039a4250c9f9954c3e9cd9180ca3d5feb56cd04874c2b7",
+            "bytes": 1381176
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "401eb33583a5fe7707fe5cdbab2f21e1f8b1e3765254e46cc4ef5b6db9297277",
+            "bytes": 1354253
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HornsWarriorM_fixed_unlit.png",
+        "sha256": "c4b62f6284f477b68423ac28ca94cb8a6ab31e36d80bf58b2df6ff4d0722f855"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsWarriorM\\paid_skin_v1_previews\\Neutral_front.png",
+        "sha256": "59cfd27112485f957ccbc69ff4408816cbd6c07b83d65fbae4309072a4937a1a",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsWarriorM_v3\\game_fx_comparison\\HurtBig_0_06_after.png",
+          "source": "build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsWarriorM_v3\\Costume_HornsWarriorM_skin_face_corrected.glb",
+          "source_sha256": "cd8d72f28757467470f7a492f4c4c914eceafa5c03c79a229eb2a2e9f772a036",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_PreservedSkinExpressions_v1.glb",
+        "sha256": "3ce715191c3ff7303545ef536eacf4d68b06f4fa0d849fa34f9df08d44f1f497",
+        "bytes": 5780708,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "32ca83f9bdcc2e1aeb3f517be6bd239afb0905a02c3ed87d040a726642956b83",
+            "bytes": 1251830
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "ba2edf9da09bb87308039a4250c9f9954c3e9cd9180ca3d5feb56cd04874c2b7",
+            "bytes": 1381176
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "401eb33583a5fe7707fe5cdbab2f21e1f8b1e3765254e46cc4ef5b6db9297277",
+            "bytes": 1354253
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HornsWarriorF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HornsWarriorF.glb",
+        "sha256": "f54fb171f56bbaeca3772ca6aee7e3f30fbaf331576df19e0a4cb15ba3eb1b0e",
+        "bytes": 3502876,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9a9dc6688436936da5528274c5bccbc29965fb8873414bcfad3c3ab0cd14bda0",
+            "bytes": 1404650
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "05225a3d21f2c691697ef45eac912390ce67b41111723b9023b12d497b545175",
+            "bytes": 1315668
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_PreservedSkinExpressions_v1.glb",
+        "sha256": "a554b1d807ae6d85ef5142e6845239ed1ddbfa47b4cd3409735d7ed6c3e01a12",
+        "bytes": 5732428,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9a9dc6688436936da5528274c5bccbc29965fb8873414bcfad3c3ab0cd14bda0",
+            "bytes": 1404650
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "05225a3d21f2c691697ef45eac912390ce67b41111723b9023b12d497b545175",
+            "bytes": 1315668
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "df3506ed238e712c9c4326f73d864a1a112673160d580349d760edda8312f2b2",
+            "bytes": 1303735
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HornsWarriorF_fixed_unlit.png",
+        "sha256": "1dedae61fb0b331cacf8fbb291dc8bce89e8a17822b50f6b94ac1f2c99e1b71c"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsWarriorF\\paid_skin_v1_previews\\Neutral_front.png",
+        "sha256": "d342539afd89dd68c15b074b795b082b77daf203d35c05f8318ee9f4dafdfce3",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsWarriorF_v3\\game_fx_comparison\\HurtBig_0_06_after.png",
+          "source": "build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsWarriorF_v3\\Costume_HornsWarriorF_skin_face_corrected.glb",
+          "source_sha256": "826d6fcf314e2c763667429ff9b8cf739b4e2e93f9a755b5b9c6685c02131e88",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_PreservedSkinExpressions_v1.glb",
+        "sha256": "a554b1d807ae6d85ef5142e6845239ed1ddbfa47b4cd3409735d7ed6c3e01a12",
+        "bytes": 5732428,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9a9dc6688436936da5528274c5bccbc29965fb8873414bcfad3c3ab0cd14bda0",
+            "bytes": 1404650
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "05225a3d21f2c691697ef45eac912390ce67b41111723b9023b12d497b545175",
+            "bytes": 1315668
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "df3506ed238e712c9c4326f73d864a1a112673160d580349d760edda8312f2b2",
+            "bytes": 1303735
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HornsMageM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HornsMageM.glb",
+        "sha256": "5f89379362c2362d034075fb17c13ff760b0f063a08c4ace48fc0de6e87e7804",
+        "bytes": 3447768,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "8d4a3eeab6ca5c46545ddae55054dacfb1bca6be8a019ba1d219f2bae679ce7c",
+            "bytes": 1431909
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "f1283c188c69e25a585a861db9ac98170a9046a502858ce5d0cdf28cc2e8e184",
+            "bytes": 1297415
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_PreservedSkinExpressions_v1.glb",
+        "sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+        "bytes": 5721016,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "8d4a3eeab6ca5c46545ddae55054dacfb1bca6be8a019ba1d219f2bae679ce7c",
+            "bytes": 1431909
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "f1283c188c69e25a585a861db9ac98170a9046a502858ce5d0cdf28cc2e8e184",
+            "bytes": 1297415
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "64169b99a50ff904b8c2d7e6be3289960814c3a24be82d9f3477494aa5af5b11",
+            "bytes": 1364324
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HornsMageM_fixed_unlit.png",
+        "sha256": "84d403304b859d13c57cd933c467bf0ab9fce4237c6f247ba6e0f8cf73e38d11"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsMageM\\paid_skin_v1_previews\\Neutral_front.png",
+        "sha256": "7c5c34ae216ee83eb130faedcf500c82dc439e82e980e756847ff43d54f514e2",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "build\\expr_qa\\Costume_HornsMageM\\game_fx_neck_hmm_combined_winding_v1_lit\\HurtBig_0_06_expression.png",
+          "source": "build\\horns_mage_arm_anatomy\\combined_expression_union_v1\\Costume_HornsMageM\\Costume_HornsMageM_face_union_mouth_winding_v1.glb",
+          "source_sha256": "d34d3cbb46c5159bef3402fcd64de6bcb6a62b5d7454877eaa847aa90f8ac967",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_PreservedSkinExpressions_v1.glb",
+        "sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+        "bytes": 5721016,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "8d4a3eeab6ca5c46545ddae55054dacfb1bca6be8a019ba1d219f2bae679ce7c",
+            "bytes": 1431909
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "f1283c188c69e25a585a861db9ac98170a9046a502858ce5d0cdf28cc2e8e184",
+            "bytes": 1297415
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "64169b99a50ff904b8c2d7e6be3289960814c3a24be82d9f3477494aa5af5b11",
+            "bytes": 1364324
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HornsMageF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HornsMageF.glb",
+        "sha256": "f8d11d1577b78a285867bf2be68734168251b73a82a4d0d20e27a372b8352fc2",
+        "bytes": 3485944,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "febd31c7d419aec5cf29d0c2caf7a68f7ad5d83fc3e356970c9be1db1d5c8819",
+            "bytes": 1332103
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "e9e02e61d8817d8df4f8a654edab04d046e96d722fad0d819d93184fee45f9fa",
+            "bytes": 1394117
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_HeadExpressions_R15.glb",
+        "sha256": "6a4d6d20f89b7481692623d5c6093ac8c5459e6b855ccf5870983a805caa955e",
+        "bytes": 3254624,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsMageF_Expression_Neutral_face",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "eda3e88e669c6d059e079c9cd024989b8c831728cda9dce9323417c397db9fa7",
+            "bytes": 1415202
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "e9e02e61d8817d8df4f8a654edab04d046e96d722fad0d819d93184fee45f9fa",
+            "bytes": 1394117
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat.002",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HornsMageF_fixed_unlit.png",
+        "sha256": "7a6a6752e30fa81117058dd06cb7a8f134ca5414924f24533cc397f02c6905da"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsMageF\\previews\\Neutral_front.png",
+        "sha256": "99440718166e4c38e594b4dc8554a121727be450d19dec624b7011c5d55a9915",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_HeadExpressions_R15.glb",
+        "sha256": "6a4d6d20f89b7481692623d5c6093ac8c5459e6b855ccf5870983a805caa955e",
+        "bytes": 3254624,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsMageF_Expression_Neutral_face",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "eda3e88e669c6d059e079c9cd024989b8c831728cda9dce9323417c397db9fa7",
+            "bytes": 1415202
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "e9e02e61d8817d8df4f8a654edab04d046e96d722fad0d819d93184fee45f9fa",
+            "bytes": 1394117
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat.002",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HornsArcherM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HornsArcherM.glb",
+        "sha256": "9410d599c8b275df966a97efffa3c0991760944a8d4a0f504ccdabe4e6f9b1fb",
+        "bytes": 3464080,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "0417906456bd976838084b5717af16e63a637994ceaa6b7e53f5354ae600c8d7",
+            "bytes": 1255584
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "967c5226490d3f613f73dc4395fdd3361fc2afd017f250f0bb3516f2021eaaed",
+            "bytes": 1441162
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+        "sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+        "bytes": 6588956,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "0417906456bd976838084b5717af16e63a637994ceaa6b7e53f5354ae600c8d7",
+            "bytes": 1255584
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "967c5226490d3f613f73dc4395fdd3361fc2afd017f250f0bb3516f2021eaaed",
+            "bytes": 1441162
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "61b768429e570bc03f4ad33ab59aa49b9d8523b948fca3431b86e345331daa41",
+            "bytes": 1353596
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HornsArcherM_fixed_unlit.png",
+        "sha256": "adc384f80b085ff8f8b30f99141fe6fc084cf04e39c4416005a10ac0288a70f8"
+      },
+      "candidate_render": {
+        "path": "build\\expr_qa\\Costume_HornsArcherM\\mouth_winding_v1_lit\\Neutral_front.png",
+        "sha256": "6c8f7650010142118746475031a6b7105d65389a20874f73d4cb035a144f27f5",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "build\\expr_qa\\Costume_HornsArcherM\\game_fx_neck_mouth_winding_v1_lit\\HurtBig_0_06_expression.png",
+          "source": "art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+          "source_sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+        "sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+        "bytes": 6588956,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "0417906456bd976838084b5717af16e63a637994ceaa6b7e53f5354ae600c8d7",
+            "bytes": 1255584
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "967c5226490d3f613f73dc4395fdd3361fc2afd017f250f0bb3516f2021eaaed",
+            "bytes": 1441162
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "61b768429e570bc03f4ad33ab59aa49b9d8523b948fca3431b86e345331daa41",
+            "bytes": 1353596
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_HornsArcherF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_HornsArcherF.glb",
+        "sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+        "bytes": 3323080,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "f558f2974ec0c3c7f53b7f34475782b57a0ec37885fa9663f38ba2586bd7a099",
+            "bytes": 1295289
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "31714e3b449ffa10999a350035d20144884b22e219b4241eefab7e974772c550",
+            "bytes": 1309189
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb",
+        "sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+        "bytes": 5823716,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "f558f2974ec0c3c7f53b7f34475782b57a0ec37885fa9663f38ba2586bd7a099",
+            "bytes": 1295289
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "31714e3b449ffa10999a350035d20144884b22e219b4241eefab7e974772c550",
+            "bytes": 1309189
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "c6a2ce6c35f02f3099a42141436d124450637306a77d30a899fff7d1c8d32cfe",
+            "bytes": 1324187
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 15,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\HornsArcherF_fixed_unlit.png",
+        "sha256": "ad5f29625ba59e334e4c7902b0dd0efdac9a730396e8937bac30a93c1216a219"
+      },
+      "candidate_render": {
+        "path": "build\\expr_qa\\Costume_HornsArcherF\\rest_mouth_v1_lit\\Neutral_front.png",
+        "sha256": "a2ccc33092ac977daf6e65cf4cbca08845aa2104efb922ebd8a94dcde526f00f",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "build\\expr_qa\\Costume_HornsArcherF\\full_body_mouth_v1\\front.png",
+          "source": "art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb",
+          "source_sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb",
+        "sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+        "bytes": 5823716,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_HornsArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "f558f2974ec0c3c7f53b7f34475782b57a0ec37885fa9663f38ba2586bd7a099",
+            "bytes": 1295289
+          },
+          {
+            "index": 1,
+            "name": "Costume_HornsArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "31714e3b449ffa10999a350035d20144884b22e219b4241eefab7e974772c550",
+            "bytes": 1309189
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "c6a2ce6c35f02f3099a42141436d124450637306a77d30a899fff7d1c8d32cfe",
+            "bytes": 1324187
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 15,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_NeutralWarriorM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_NeutralWarriorM.glb",
+        "sha256": "0aecac75ca002dfac8646ce981820137b7a94966e6af6f2beb0d75141fb2ebfd",
+        "bytes": 3519632,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "121e3d62a4a14af3de1db161539d8639317f8c0b7f7d00de051cefc9a1dd2223",
+            "bytes": 1349072
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "4be053ee4289c82c77788a91b34ae29357c5b2fab9d0a4370be3cdd8a487f7a8",
+            "bytes": 1370153
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_FaceUnionMouthRestored_v1.glb",
+        "sha256": "37ce5944971a43d6841d5ffa10610c774a2f2178f9bd9cca9e138633db937024",
+        "bytes": 5991000,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "121e3d62a4a14af3de1db161539d8639317f8c0b7f7d00de051cefc9a1dd2223",
+            "bytes": 1349072
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "4be053ee4289c82c77788a91b34ae29357c5b2fab9d0a4370be3cdd8a487f7a8",
+            "bytes": 1370153
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "0e61dd71bb86a84b1babe1a0f8180c87453a36fbe57acdd50458f09cdff22602",
+            "bytes": 1286888
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\NeutralWarriorM_fixed_unlit.png",
+        "sha256": "a775ce11d0b3b4939c8ac9a2c8d8cd5efa890f856c283771669e8e9c3c18d27b"
+      },
+      "candidate_render": {
+        "path": "build\\expr_qa\\Costume_NeutralWarriorM\\rest_mouth_v1_lit\\Neutral_front.png",
+        "sha256": "c019f3cc4f572615a535591cf1e407fb223da6dbd77523fd92f9b1d86aa588de",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "build\\expr_qa\\Costume_NeutralWarriorM\\full_body_mouth_v1\\front.png",
+          "source": "art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_FaceUnionMouthRestored_v1.glb",
+          "source_sha256": "37ce5944971a43d6841d5ffa10610c774a2f2178f9bd9cca9e138633db937024",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_FaceUnionMouthRestored_v1.glb",
+        "sha256": "37ce5944971a43d6841d5ffa10610c774a2f2178f9bd9cca9e138633db937024",
+        "bytes": 5991000,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralWarriorM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "121e3d62a4a14af3de1db161539d8639317f8c0b7f7d00de051cefc9a1dd2223",
+            "bytes": 1349072
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralWarriorM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "4be053ee4289c82c77788a91b34ae29357c5b2fab9d0a4370be3cdd8a487f7a8",
+            "bytes": 1370153
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "0e61dd71bb86a84b1babe1a0f8180c87453a36fbe57acdd50458f09cdff22602",
+            "bytes": 1286888
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_NeutralWarriorF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_NeutralWarriorF.glb",
+        "sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+        "bytes": 3415136,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9c967a1e563181647cbf73420b4eacb29aafbb805fd66176dd8ba7362eacf844",
+            "bytes": 1328395
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "97e2159359d8ce5d5f3542e14ac2677153a77f888197e4e225e51a1351bb8851",
+            "bytes": 1332302
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.glb",
+        "sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+        "bytes": 5953424,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9c967a1e563181647cbf73420b4eacb29aafbb805fd66176dd8ba7362eacf844",
+            "bytes": 1328395
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "97e2159359d8ce5d5f3542e14ac2677153a77f888197e4e225e51a1351bb8851",
+            "bytes": 1332302
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "1272adeb79c8c4b120b19285b9c46ae700614fe044f83d56f3d32805d2f6de56",
+            "bytes": 1393848
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 15,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\NeutralWarriorF_fixed_unlit.png",
+        "sha256": "184d0ac8952a831e66f141ead0b26016abe1cf0a410aef10cf7beb7d72873a4c"
+      },
+      "candidate_render": {
+        "path": "build\\expr_qa\\Costume_NeutralWarriorF\\rest_mouth_v1_lit\\Neutral_front.png",
+        "sha256": "3322849e4a2c39ca89b0aca3fcc19752b770125d52cc2692be13511d6cc004cf",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "build\\expr_qa\\Costume_NeutralWarriorF\\full_body_mouth_v1\\front.png",
+          "source": "art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.glb",
+          "source_sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.glb",
+        "sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+        "bytes": 5953424,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralWarriorF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "9c967a1e563181647cbf73420b4eacb29aafbb805fd66176dd8ba7362eacf844",
+            "bytes": 1328395
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralWarriorF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "97e2159359d8ce5d5f3542e14ac2677153a77f888197e4e225e51a1351bb8851",
+            "bytes": 1332302
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "1272adeb79c8c4b120b19285b9c46ae700614fe044f83d56f3d32805d2f6de56",
+            "bytes": 1393848
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 15,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_NeutralMageM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_NeutralMageM.glb",
+        "sha256": "04481a1c0dbe593fc6f9b2629f4949571dca15cc8de516a80898464fd35dc28c",
+        "bytes": 3485164,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "b59d55ca1dd9a01ad37b2cbdc089b308be09e772fed2fd14be228110adc722ec",
+            "bytes": 1330820
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "fe765fe7beafad1539971173503dbe73c53bb60d68406aa621622ad3842aaffa",
+            "bytes": 1390205
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_FaceUnionMouthRestored_v2.glb",
+        "sha256": "16f80c7cdb84203b6df6eb19307541fd67e278f52c222d77b849f10464b50775",
+        "bytes": 6248720,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "b59d55ca1dd9a01ad37b2cbdc089b308be09e772fed2fd14be228110adc722ec",
+            "bytes": 1330820
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "fe765fe7beafad1539971173503dbe73c53bb60d68406aa621622ad3842aaffa",
+            "bytes": 1390205
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "dd1c70a833992f0657c5c3e76947c64803fdb89b3336930e93cb601918d05b5c",
+            "bytes": 1301128
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\NeutralMageM_fixed_unlit.png",
+        "sha256": "9c44cbe878f975fbf099b273bc7a7c50844ea1b4398b7e72cb5f971334575037"
+      },
+      "candidate_render": {
+        "path": "build\\expr_qa\\Costume_NeutralMageM\\mouth_v2_lit\\Neutral_front.png",
+        "sha256": "f60fb99b8b6d480a5e74ccca6c3f8dfa6a2ccdd022857cc1897d8d6f2857fc95",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_FaceUnionMouthRestored_v2.glb",
+        "sha256": "16f80c7cdb84203b6df6eb19307541fd67e278f52c222d77b849f10464b50775",
+        "bytes": 6248720,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralMageM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "b59d55ca1dd9a01ad37b2cbdc089b308be09e772fed2fd14be228110adc722ec",
+            "bytes": 1330820
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralMageM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "fe765fe7beafad1539971173503dbe73c53bb60d68406aa621622ad3842aaffa",
+            "bytes": 1390205
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "dd1c70a833992f0657c5c3e76947c64803fdb89b3336930e93cb601918d05b5c",
+            "bytes": 1301128
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_NeutralMageF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_NeutralMageF.glb",
+        "sha256": "8d1dfd965602d0e78b85815fd6d3f76704f3121b6d7463b416b0a736dd8df583",
+        "bytes": 3370608,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "cde33fb4f653b0059d431bb3de0e6184ffc633565d3ca3afae4afd166e3ab0f8",
+            "bytes": 1337677
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "8df00f8cabad31c28b1a24a626bef962ab6d5f51357e1d4777529a1a7fca89fb",
+            "bytes": 1330886
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_FaceUnionMouthWinding_v2.glb",
+        "sha256": "8075719e8f67fe95c4928d4ad05560457764c36a1f3b2b1b13eb9d58ad03e378",
+        "bytes": 6057272,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "cde33fb4f653b0059d431bb3de0e6184ffc633565d3ca3afae4afd166e3ab0f8",
+            "bytes": 1337677
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "8df00f8cabad31c28b1a24a626bef962ab6d5f51357e1d4777529a1a7fca89fb",
+            "bytes": 1330886
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7",
+            "bytes": 1411206
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\NeutralMageF_fixed_unlit.png",
+        "sha256": "6417bf26dc3e62bdfab5cd6f9954702f90bd8a27decfd12b849bfb416e95a481"
+      },
+      "candidate_render": {
+        "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\NeutralMageF_newest_face_front.png",
+        "sha256": "ce4d5068793a6b1a6aee4d65514622b6d639d7f1fd753cba4f73add04a0663f9",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "build\\expr_qa\\Costume_NeutralMageF\\mouth_v2_lit\\Neutral_front.png",
+          "source": "art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_FaceUnionMouthRestored_v2.glb",
+          "source_sha256": "2772134346519b54148507a8ed5be735ffa042880394dc2aea906babea5285fb",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_FaceUnionMouthWinding_v2.glb",
+        "sha256": "8075719e8f67fe95c4928d4ad05560457764c36a1f3b2b1b13eb9d58ad03e378",
+        "bytes": 6057272,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralMageF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "cde33fb4f653b0059d431bb3de0e6184ffc633565d3ca3afae4afd166e3ab0f8",
+            "bytes": 1337677
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralMageF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "8df00f8cabad31c28b1a24a626bef962ab6d5f51357e1d4777529a1a7fca89fb",
+            "bytes": 1330886
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7",
+            "bytes": 1411206
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_NeutralArcherM.glb",
+        "sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+        "bytes": 3353384,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "ab0ffbe1161df3eed801e4a389d3e42791c76b04d4e02cc9259f6d12a74756f8",
+            "bytes": 1299338
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d69c97c23c3ee28e3557e0440fc647b114b34b908f2a7bf067055f2be6fa0d31",
+            "bytes": 1339570
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb",
+        "sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+        "bytes": 5799824,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "ab0ffbe1161df3eed801e4a389d3e42791c76b04d4e02cc9259f6d12a74756f8",
+            "bytes": 1299338
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d69c97c23c3ee28e3557e0440fc647b114b34b908f2a7bf067055f2be6fa0d31",
+            "bytes": 1339570
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+            "bytes": 1321952
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 15,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\NeutralArcherM_fixed_unlit.png",
+        "sha256": "3ccba13f5e8b7ef38e45fc0e3013964a5cd5320d2f55df5095c6d89723bb7705"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralArcherM\\face_union_mouth_v1_previews\\Neutral_front.png",
+        "sha256": "bbf6e788203be5d779cb99d606ab281f7e5680388cdb0d46984d9048ce4b37fe",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [
+        {
+          "render": "art\\models\\costume\\expressions\\Costume_NeutralArcherM\\face_union_mouth_v1_full_body_previews\\front.png",
+          "source": "art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb",
+          "source_sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+          "scope": "Historical QA render; not asserted as current production."
+        }
+      ],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb",
+        "sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+        "bytes": 5799824,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralArcherM_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "ab0ffbe1161df3eed801e4a389d3e42791c76b04d4e02cc9259f6d12a74756f8",
+            "bytes": 1299338
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralArcherM_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "d69c97c23c3ee28e3557e0440fc647b114b34b908f2a7bf067055f2be6fa0d31",
+            "bytes": 1339570
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+            "bytes": 1321952
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 15,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    },
+    {
+      "avatar": "Costume_NeutralArcherF",
+      "fixed": {
+        "path": "art\\models\\costume\\fixed\\Costume_NeutralArcherF.glb",
+        "sha256": "380acd5fce8365f60cd5a1660140979932ca09ec714f61c030b0d7ee6f370579",
+        "bytes": 3496172,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "023861093581ffa39d29e6e86f4c0edb8e2aef24147346359321c3bbdb92e14e",
+            "bytes": 1382948
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "3c02ff1ac6d52fb9a9faebeae9145bf9681570e2af17e1be4f6eac4cf51b8a70",
+            "bytes": 1346891
+          }
+        ],
+        "mesh_count": 2,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "face_candidate": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_PreservedSkinExpressions_v1.glb",
+        "sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+        "bytes": 6087700,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "023861093581ffa39d29e6e86f4c0edb8e2aef24147346359321c3bbdb92e14e",
+            "bytes": 1382948
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "3c02ff1ac6d52fb9a9faebeae9145bf9681570e2af17e1be4f6eac4cf51b8a70",
+            "bytes": 1346891
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "31beeee0614eb2dd6d2fe6bb82d0ee2425678fbf3a784ef4d6481aa566b0f5be",
+            "bytes": 1374998
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "candidate_scope": "Newest expression GLB by filesystem time, verified against selected old or newly rendered front. Timestamp is not approval.",
+      "fixed_render": {
+        "path": "docs\\art\\verification_2026-10-04\\avatar_visual_review\\fixed_front\\NeutralArcherF_fixed_unlit.png",
+        "sha256": "18f83b4ce19644410244fbe26603ec4070f0bcc2e05fe0b2d92d59fa37b7c995"
+      },
+      "candidate_render": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralArcherF\\paid_skin_v1_previews\\Neutral_front.png",
+        "sha256": "e91a71622a1d7b0dedbf5bfa169c77bfea15a24d07c10408fd2cba8cc9707177",
+        "source_sha_verified": true
+      },
+      "other_reviewed_geometry_renders": [],
+      "review_status": "metadata only; separately signed direct review is in visual_findings.json",
+      "newest_expression_glb_by_filesystem_mtime": {
+        "path": "art\\models\\costume\\expressions\\Costume_NeutralArcherF\\Costume_NeutralArcherF_PreservedSkinExpressions_v1.glb",
+        "sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+        "bytes": 6087700,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Costume_NeutralArcherF_body",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "023861093581ffa39d29e6e86f4c0edb8e2aef24147346359321c3bbdb92e14e",
+            "bytes": 1382948
+          },
+          {
+            "index": 1,
+            "name": "Costume_NeutralArcherF_head",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "PNG",
+            "sha256": "3c02ff1ac6d52fb9a9faebeae9145bf9681570e2af17e1be4f6eac4cf51b8a70",
+            "bytes": 1346891
+          },
+          {
+            "index": 2,
+            "name": "FaceExpression_Neutral",
+            "size": [
+              1254,
+              1254
+            ],
+            "format": "PNG",
+            "sha256": "31beeee0614eb2dd6d2fe6bb82d0ee2425678fbf3a784ef4d6481aa566b0f5be",
+            "bytes": 1374998
+          }
+        ],
+        "mesh_count": 3,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "BodyMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "HeadMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          },
+          {
+            "name": "FaceExpressionMat",
+            "metallic": 0,
+            "roughness": 0.800000011920929,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "newest_file_is_approved_or_production": false,
+      "newest_1254_face_bytes_match_reviewed_candidate": true,
+      "newest_source_geometry_has_this_review_render": true
+    }
+  ],
+  "monster_and_sharpd": [
+    {
+      "name": "Slime",
+      "source": "art\\models\\Slime.glb",
+      "source_sha256": "16e71849a507f3f93b98673f49664b5b5c9615ba2e902cb3c5956c519253d925",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.4889832139015198,
+          -0.3243408501148224,
+          0.0
+        ],
+        "max": [
+          0.4888306260108948,
+          0.3243408501148224,
+          0.9356689453125
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Slime_front_full_unlit.png",
+          "sha256": "e25d873ac021b546cfac205f64b6d87525878946efbf79874ea34a435a50e78b",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            -7.62939453125e-05,
+            -3.911255359649658,
+            0.46783447265625
+          ],
+          "orthographic_scale": 1.0951515436172485,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Slime_front_face_unlit.png",
+          "sha256": "4840eb671c0a9afb2b7f609da88df374e5690f316740160bb1b9c66bc6b2ef7c",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            -7.62939453125e-05,
+            -3.911255359649658,
+            0.46783447265625
+          ],
+          "orthographic_scale": 1.0951515436172485,
+          "height_crop_fraction": 0
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\Slime.glb",
+        "sha256": "16e71849a507f3f93b98673f49664b5b5c9615ba2e902cb3c5956c519253d925",
+        "bytes": 891820,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Slime_normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "d92746882a9e597786b718aade58cb1b0474aff68715daedb400388709f8278f",
+            "bytes": 153995
+          },
+          {
+            "index": 1,
+            "name": "Slime_basecolor",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "04f02cc0aaa82f984e7a2c58bab8ee869dbd690d18f0cab1eb9e260bb8f441f6",
+            "bytes": 287387
+          },
+          {
+            "index": 2,
+            "name": "Slime_rm",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "6f45d5746d0c8868d3a6a2cd0f95274efd56641b0145f91b53bca6c24bc9cddc",
+            "bytes": 166658
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_mat_9212a88b-1b2f-4a13-a06d-d8175eafb8d4",
+            "metallic": 1,
+            "roughness": 1,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "Goblin",
+      "source": "art\\models\\Goblin.glb",
+      "source_sha256": "1d92307a508d33cb8ef6b97b850411e8280d40dad1559974af70eba68d99ffce",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.43951424956321716,
+          -0.3016051650047302,
+          0.0
+        ],
+        "max": [
+          0.43829354643821716,
+          0.3007813096046448,
+          0.977264404296875
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Goblin_front_full_unlit.png",
+          "sha256": "3e32b22ed72c261370dac1653b3b2b4ea0da55584bfe73be7e31f8898808ad33",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            -0.0006103515625,
+            -3.9094696044921875,
+            0.4886322021484375
+          ],
+          "orthographic_scale": 1.0945361852645874,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Goblin_front_face_unlit.png",
+          "sha256": "55e9fbb0d460cfd4e5b41f46b52998b1dd1ba329b9ddf04cb154bb48cc62e4ef",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            -0.0006103515625,
+            -3.9094696044921875,
+            0.7085167169570923
+          ],
+          "orthographic_scale": 0.6019948720932007,
+          "height_crop_fraction": 0.45
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\Goblin.glb",
+        "sha256": "1d92307a508d33cb8ef6b97b850411e8280d40dad1559974af70eba68d99ffce",
+        "bytes": 2113668,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Goblin_normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "d02d2e7635db5aad008c096063c6330b5f67e816478806741921cda5c2226c6a",
+            "bytes": 446673
+          },
+          {
+            "index": 1,
+            "name": "Goblin_basecolor",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "65f79d968dc88482a0c1e6346f847febb876defe60b7335b76a00a3f5d5cacb0",
+            "bytes": 676053
+          },
+          {
+            "index": 2,
+            "name": "Goblin_rm",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "72191413b668bd3ff1930ac6e11f231e5e11b93f1e4e3f8541e3512725685591",
+            "bytes": 310886
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_mat_e8497c3a-ac26-4a67-bb46-ad931bc29982",
+            "metallic": 1,
+            "roughness": 1,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "GoblinBrute",
+      "source": "art\\models\\GoblinBrute.glb",
+      "source_sha256": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.4890442490577698,
+          -0.2291107028722763,
+          0.0
+        ],
+        "max": [
+          0.4892273545265198,
+          0.22843937575817108,
+          0.89019775390625
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\GoblinBrute_front_full_unlit.png",
+          "sha256": "e4f2b2d2ad9154b2b7ecf4882653a2cfe467f38092084d1799535e05b5f6f9ec",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            9.1552734375e-05,
+            -3.913422107696533,
+            0.445098876953125
+          ],
+          "orthographic_scale": 1.095664143562317,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\GoblinBrute_front_face_unlit.png",
+          "sha256": "5b2f3c28a26eba6cd20e5fca1566b7f4b594def9a99ed2745516e23129e338ee",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            9.1552734375e-05,
+            -3.913422107696533,
+            0.6453933715820312
+          ],
+          "orthographic_scale": 0.5483618378639221,
+          "height_crop_fraction": 0.45
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\GoblinBrute.glb",
+        "sha256": "9937c3e2e9b0464ff6258da68fdb14ed81eb8681158681ad99eb9b92dd54f706",
+        "bytes": 2054024,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "GoblinBrute_normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "1bfc270b16e4c446cad93a3e0e839a584fe4da27570088fc535fc8480df07a6b",
+            "bytes": 443979
+          },
+          {
+            "index": 1,
+            "name": "GoblinBrute_basecolor",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "c51647e0922a00c1b7bbd965891f1274ad20fc8007148bdcd9a4520cd6b65bfc",
+            "bytes": 611404
+          },
+          {
+            "index": 2,
+            "name": "GoblinBrute_rm",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "1bcbdbb7a30f4cc0314a40c00fdf3ed7ee134d45e653f1ee15cf5c9470135a5b",
+            "bytes": 380201
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_mat_7864553f-8556-495d-8781-28acb3d9f1e9",
+            "metallic": 1,
+            "roughness": 1,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "Skeleton",
+      "source": "art\\models\\Skeleton.glb",
+      "source_sha256": "c0dd760ae6f655adb2cc81ea6a91c712722e3090ab098e7af2fd3d3ca1dc9410",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.42562875151634216,
+          -0.2984924018383026,
+          0.0
+        ],
+        "max": [
+          0.42578133940696716,
+          0.2965393364429474,
+          0.97772216796875
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Skeleton_front_full_unlit.png",
+          "sha256": "ea135edb8da9cb2778a07772dee42f51ef8e9906a304385a18085007717ed7e6",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            7.62939453125e-05,
+            -3.911865234375,
+            0.488861083984375
+          ],
+          "orthographic_scale": 1.0950487852096558,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\Skeleton_front_face_unlit.png",
+          "sha256": "3c6efae10f5b02c38e21af4731e635868556da8997092efa2b9f7dd4e5c4d5da",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            7.62939453125e-05,
+            -3.911865234375,
+            0.7088485956192017
+          ],
+          "orthographic_scale": 0.6022768616676331,
+          "height_crop_fraction": 0.45
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\Skeleton.glb",
+        "sha256": "c0dd760ae6f655adb2cc81ea6a91c712722e3090ab098e7af2fd3d3ca1dc9410",
+        "bytes": 2176632,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Skeleton_normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "05bc5d30ae4ef9efdb499b67cd5485ba21c10d70b94c3913cc6eda208d0a7d85",
+            "bytes": 407460
+          },
+          {
+            "index": 1,
+            "name": "Skeleton_basecolor",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "c8ef79b60ee4aee00b149b64a72799596e84ddd5b104c8a0103b9792d21ff23a",
+            "bytes": 695862
+          },
+          {
+            "index": 2,
+            "name": "Skeleton_rm",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "d0a0a48ae06056fd8ea268b9e28e75b4eead85072d714e05b7668ab57e5851ee",
+            "bytes": 469620
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_mat_75dda943-8798-4cd0-a323-5831f66e63ac",
+            "metallic": 1,
+            "roughness": 1,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "SkeletonKnight",
+      "source": "art\\models\\SkeletonKnight.glb",
+      "source_sha256": "44907ed0ff2a9ba10f8f681dff493f5c77d99bc11e538cc17c1bcf6ef4b55227",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.3245544731616974,
+          -0.1423644721508026,
+          0.0
+        ],
+        "max": [
+          0.3240051567554474,
+          0.1426697075366974,
+          0.97760009765625
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKnight_front_full_unlit.png",
+          "sha256": "6ab30e07c9a9fe1eda6d743b904718e6c1d3936ab278894fc55a535523dff16e",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            -0.000274658203125,
+            -3.910247802734375,
+            0.488800048828125
+          ],
+          "orthographic_scale": 1.094912052154541,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKnight_front_face_unlit.png",
+          "sha256": "b89edd81dbf89c9a10a9acda7db5c63d85388832c13aaf256e24d148e1b5e1f8",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            -0.000274658203125,
+            -3.910247802734375,
+            0.7087600827217102
+          ],
+          "orthographic_scale": 0.6022016406059265,
+          "height_crop_fraction": 0.45
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\SkeletonKnight.glb",
+        "sha256": "44907ed0ff2a9ba10f8f681dff493f5c77d99bc11e538cc17c1bcf6ef4b55227",
+        "bytes": 2139512,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "SkeletonKnight_normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "c3e11050b3e5bb1c7944156c89198f24da877f1d1d3b8dc09f2aea6fd719e7c1",
+            "bytes": 520491
+          },
+          {
+            "index": 1,
+            "name": "SkeletonKnight_basecolor",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "2cbc7f70ebc993f28cf3b3b657a14c4aecc150bf73b5ff25900c1b17d5289a47",
+            "bytes": 560143
+          },
+          {
+            "index": 2,
+            "name": "SkeletonKnight_rm",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "4bffddec273c88ecce403f8750372449fb029c8446dcd2fff33e36c05ed80604",
+            "bytes": 343229
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_mat_8e643ed8-7e46-4e3f-bd9b-1305baf484f6",
+            "metallic": 1,
+            "roughness": 1,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "SkeletonKing",
+      "source": "art\\models\\SkeletonKing.glb",
+      "source_sha256": "6b02cda2e9c82fe9d037e6ff3dde589bace1fbea2983ef2b53f46f357d629977",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.4834900498390198,
+          -0.2842406928539276,
+          0.0
+        ],
+        "max": [
+          0.4825134873390198,
+          0.2838745415210724,
+          0.97747802734375
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKing_front_full_unlit.png",
+          "sha256": "167ae8d7796041491c7c47e7fcea151ca0695150ad32e5f8a6cba30577d366e6",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            -0.00048828125,
+            -3.91009521484375,
+            0.488739013671875
+          ],
+          "orthographic_scale": 1.0947754383087158,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKing_front_face_unlit.png",
+          "sha256": "630662f6a58177710c7119cd28873b9d9be93594bf0e6fff95ec0b9776ed198d",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            -0.00048828125,
+            -3.91009521484375,
+            0.7086715698242188
+          ],
+          "orthographic_scale": 0.6021264791488647,
+          "height_crop_fraction": 0.45
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\SkeletonKing.glb",
+        "sha256": "6b02cda2e9c82fe9d037e6ff3dde589bace1fbea2983ef2b53f46f357d629977",
+        "bytes": 2415508,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "SkeletonKing_normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "f6452a67952e4517fa5a8e22fa7b2b387cc46415e59f73d926e29bf69d284d4d",
+            "bytes": 509127
+          },
+          {
+            "index": 1,
+            "name": "SkeletonKing_basecolor",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "ed3aa0c95127b00009ee613a4fb84242fed79ce11ca6911bb327085a7dc45fa5",
+            "bytes": 746357
+          },
+          {
+            "index": 2,
+            "name": "SkeletonKing_rm",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "57f6de0791ca8e9dc3c550cdfea27b1d724045bce31f022825d780f1c651c58f",
+            "bytes": 445811
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_mat_aee4c632-feb6-49a0-994b-99fa3a18d514",
+            "metallic": 1,
+            "roughness": 1,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "GoldenGoose",
+      "source": "art\\models\\GoldenGoose.glb",
+      "source_sha256": "3804cf75014e64c552fd7b028ccc898b32524500c35c0b6af80a23e43cc86679",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.4598694443702698,
+          -0.3355408012866974,
+          0.0
+        ],
+        "max": [
+          0.4598694443702698,
+          0.3356323540210724,
+          0.97711181640625
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\GoldenGoose_front_full_unlit.png",
+          "sha256": "e98f6a4441e92893164c6f8aa8f050cd769c09358d4209f70c817ff893880187",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            0.0,
+            -3.9084014892578125,
+            0.488555908203125
+          ],
+          "orthographic_scale": 1.0943652391433716,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\GoldenGoose_front_face_unlit.png",
+          "sha256": "3a16bf8057bcf0b43da95b426244eec4c2294e3d8617bf03f8722d42a279e817",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            0.0,
+            -3.9084014892578125,
+            0.7084060907363892
+          ],
+          "orthographic_scale": 0.6019008755683899,
+          "height_crop_fraction": 0.45
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\GoldenGoose.glb",
+        "sha256": "3804cf75014e64c552fd7b028ccc898b32524500c35c0b6af80a23e43cc86679",
+        "bytes": 2194404,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "GoldenGoose_normal",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "9491a90995613285259f419ada57269daa5ef087855dfb3ea6be7421ea59e536",
+            "bytes": 452959
+          },
+          {
+            "index": 1,
+            "name": "GoldenGoose_basecolor",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "73163dcf919338b2e46790c39c5866d197c42cb3af35231ed6a192c34a8f7937",
+            "bytes": 717036
+          },
+          {
+            "index": 2,
+            "name": "GoldenGoose_rm",
+            "size": [
+              1024,
+              1024
+            ],
+            "format": "JPEG",
+            "sha256": "04eec3e3d84f8be9d3ddf0173d9772b8bc3f4c6dc91546bcfe361b3a18360600",
+            "bytes": 399463
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_mat_46ff9012-da22-4bae-ab87-5820a6fcd509",
+            "metallic": 1,
+            "roughness": 1,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "SkeletonClothed",
+      "source": "art\\models\\tripo\\SkeletonClothed_raw.glb",
+      "source_sha256": "f6104c41791106741d3d33f01591a2762458bb8b9526b06f29ee41e31ae2aa5b",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.30041810870170593,
+          -0.4369889199733734,
+          -0.5
+        ],
+        "max": [
+          0.30041810870170593,
+          0.4369889199733734,
+          0.5
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonClothed_front_full_unlit.png",
+          "sha256": "666fd56757eb194ee27af69afaf4595fd42d96843198e764e7eee75d8a014698",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            4.0,
+            0.0,
+            0.0
+          ],
+          "orthographic_scale": 1.1200000047683716,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonClothed_front_face_unlit.png",
+          "sha256": "110a9b9f109e85de472392425d7882e880decec79371e254a8330633fb25630d",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            4.0,
+            0.0,
+            0.25
+          ],
+          "orthographic_scale": 0.5600000023841858,
+          "height_crop_fraction": 0.5
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\tripo\\SkeletonClothed_raw.glb",
+        "sha256": "f6104c41791106741d3d33f01591a2762458bb8b9526b06f29ee41e31ae2aa5b",
+        "bytes": 1130332,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Color_7933a6c8-84d2-441a-974a-f9d30c436611",
+            "size": [
+              2048,
+              2048
+            ],
+            "format": "JPEG",
+            "sha256": "af5024cd19e234426a4f85c46eb6093c4f16bb62beda383c4e16a0e20cc246dd",
+            "bytes": 757352
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_material_7933a6c8-84d2-441a-974a-f9d30c436611",
+            "metallic": 0.0,
+            "roughness": 0.9,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "SkeletonKingClothed",
+      "source": "art\\models\\tripo\\SkeletonKingClothed_raw.glb",
+      "source_sha256": "da9da2cc06ddf99c34f2fcc05718b37a85ec9734a1e1e35aec123a6a1a133d30",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.2959469258785248,
+          -0.4890645146369934,
+          -0.4885483384132385
+        ],
+        "max": [
+          0.2960655391216278,
+          0.4878495931625366,
+          0.4907960295677185
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKingClothed_front_full_unlit.png",
+          "sha256": "72e278648c81a289f4dc3b8015f29005a90dc700bbf9f494069d0c69273813bd",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            3.9174368381500244,
+            -0.0006074607372283936,
+            0.0011238455772399902
+          ],
+          "orthographic_scale": 1.0968656539916992,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SkeletonKingClothed_front_face_unlit.png",
+          "sha256": "b5a6727626103ed3de954e766d38e8e6bc1605ed5ed23ec97ba0ccfcf7d85ff0",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            3.9174368381500244,
+            -0.0006074607372283936,
+            0.24595993757247925
+          ],
+          "orthographic_scale": 0.5484328269958496,
+          "height_crop_fraction": 0.5
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\tripo\\SkeletonKingClothed_raw.glb",
+        "sha256": "da9da2cc06ddf99c34f2fcc05718b37a85ec9734a1e1e35aec123a6a1a133d30",
+        "bytes": 2949608,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Color_f5de205f-58fa-4519-b054-55e5ad6d616d",
+            "size": [
+              4096,
+              4096
+            ],
+            "format": "JPEG",
+            "sha256": "1c73532f3ba3bc983113a5d10263f0243ca1a4b71be60fb092d524e7d20b2370",
+            "bytes": 2319939
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_material_f5de205f-58fa-4519-b054-55e5ad6d616d",
+            "metallic": 0.0,
+            "roughness": 0.9,
+            "has_metallic_roughness_texture": false
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "SharpD_generation",
+      "source": "art\\models\\costume\\redraw\\generation-c22df695\\model.glb",
+      "source_sha256": "4aa4206f7cf4f57c62f1d6c38eaf0c860a274404136c774dbb13dfaa679b2ca6",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.18023662269115448,
+          -0.41316941380500793,
+          -0.4898762106895447
+        ],
+        "max": [
+          0.17832182347774506,
+          0.4120742380619049,
+          0.46032416820526123
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SharpD_generation_front_full_unlit.png",
+          "sha256": "25bdfee2a9a12068bddafd96a01f0660725b55afca6f3c1b0261ddf30fcdbf3e",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            3.7998440265655518,
+            -0.0005475878715515137,
+            -0.014776021242141724
+          ],
+          "orthographic_scale": 1.0642244815826416,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SharpD_generation_front_face_unlit.png",
+          "sha256": "e1f9472ec74ed592644b6e7ade55200bfc5541c17f86da9170778d15f4b92cbf",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            3.7998440265655518,
+            -0.0005475878715515137,
+            0.22277407348155975
+          ],
+          "orthographic_scale": 0.5321122407913208,
+          "height_crop_fraction": 0.5
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\costume\\redraw\\generation-c22df695\\model.glb",
+        "sha256": "4aa4206f7cf4f57c62f1d6c38eaf0c860a274404136c774dbb13dfaa679b2ca6",
+        "bytes": 16009208,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "Color_c22df695-2859-42aa-87d0-0504cdecf250",
+            "size": [
+              8192,
+              8192
+            ],
+            "format": "JPEG",
+            "sha256": "b5c55c65fa3086c72e76b968ce79af8a9e829b1c1a91a74f978e3f8ccf0690e6",
+            "bytes": 9031325
+          },
+          {
+            "index": 1,
+            "name": "ORM_c22df695-2859-42aa-87d0-0504cdecf250",
+            "size": [
+              4096,
+              4096
+            ],
+            "format": "JPEG",
+            "sha256": "a76e1733543ed0cd752afd7af2c084ef6685f2db4a43670306f629547e0604c3",
+            "bytes": 2419321
+          },
+          {
+            "index": 2,
+            "name": "NormalGL_c22df695-2859-42aa-87d0-0504cdecf250",
+            "size": [
+              4096,
+              4096
+            ],
+            "format": "PNG",
+            "sha256": "da0921791d34efeb76e218553efc6f4f187bbcebd586255d573325ef243d31b3",
+            "bytes": 3941670
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 0,
+        "materials": [
+          {
+            "name": "tripo_material_c22df695-2859-42aa-87d0-0504cdecf250",
+            "metallic": 1.0,
+            "roughness": 1.0,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    },
+    {
+      "name": "SharpD_rig",
+      "source": "art\\models\\costume\\redraw\\tripo-out\\costume-haloarcherm-sharpd-rig-96aa4858\\model.glb",
+      "source_sha256": "ce5e406725c98fb9a431a32854f1e57569b6f3ace4fbd390507625c92a70e10e",
+      "source_unchanged": true,
+      "bounds_blender": {
+        "min": [
+          -0.9510578513145447,
+          -0.9999999403953552,
+          -1.0
+        ],
+        "max": [
+          0.9510578513145447,
+          0.9999999403953552,
+          1.0
+        ]
+      },
+      "renders": [
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SharpD_rig_front_full_unlit.png",
+          "sha256": "72a20d1e367048803305b748f2878fbc8447dd1c04d2473da780f263b6aaf6d3",
+          "size": [
+            640,
+            640
+          ],
+          "camera_location": [
+            8.0,
+            0.0,
+            0.0
+          ],
+          "orthographic_scale": 2.240000009536743,
+          "height_crop_fraction": 0
+        },
+        {
+          "path": "docs\\art\\verification_2026-10-04\\all_3d_eye_audit\\SharpD_rig_front_face_unlit.png",
+          "sha256": "caa635f2ec70715f65a1cda01a30dacbcdfd5bb79cf8f146750abbe4627e3f11",
+          "size": [
+            768,
+            768
+          ],
+          "camera_location": [
+            8.0,
+            0.0,
+            0.7350000143051147
+          ],
+          "orthographic_scale": 0.5712000131607056,
+          "height_crop_fraction": 0.5
+        }
+      ],
+      "inventory": {
+        "path": "art\\models\\costume\\redraw\\tripo-out\\costume-haloarcherm-sharpd-rig-96aa4858\\model.glb",
+        "sha256": "ce5e406725c98fb9a431a32854f1e57569b6f3ace4fbd390507625c92a70e10e",
+        "bytes": 16161904,
+        "embedded_images": [
+          {
+            "index": 0,
+            "name": "NormalGL_c22df695-2859-42aa-87d0-0504cdecf250",
+            "size": [
+              4096,
+              4096
+            ],
+            "format": "PNG",
+            "sha256": "da0921791d34efeb76e218553efc6f4f187bbcebd586255d573325ef243d31b3",
+            "bytes": 3941670
+          },
+          {
+            "index": 1,
+            "name": "Color_c22df695-2859-42aa-87d0-0504cdecf250",
+            "size": [
+              8192,
+              8192
+            ],
+            "format": "JPEG",
+            "sha256": "b5c55c65fa3086c72e76b968ce79af8a9e829b1c1a91a74f978e3f8ccf0690e6",
+            "bytes": 9031325
+          },
+          {
+            "index": 2,
+            "name": "ORM_c22df695-2859-42aa-87d0-0504cdecf250",
+            "size": [
+              4096,
+              4096
+            ],
+            "format": "JPEG",
+            "sha256": "a76e1733543ed0cd752afd7af2c084ef6685f2db4a43670306f629547e0604c3",
+            "bytes": 2419321
+          }
+        ],
+        "mesh_count": 1,
+        "joint_count": 23,
+        "materials": [
+          {
+            "name": "tripo_material_c22df695-2859-42aa-87d0-0504cdecf250",
+            "metallic": 1,
+            "roughness": 1,
+            "has_metallic_roughness_texture": true
+          }
+        ]
+      },
+      "review_status": "metadata only; direct review is in visual_findings.json"
+    }
+  ],
+  "scope_counts": {
+    "fixed_avatars": 18,
+    "front_expression_candidates": 18,
+    "monsters_existing": 7,
+    "monsters_clothed": 2,
+    "sharpd_existing_models": 2
+  },
+  "candidate_choice_is_user_approval": false,
+  "all_native_qa_completed": false,
+  "paid_calls": 0,
+  "uploads": 0,
+  "source_mutations": 0
+}

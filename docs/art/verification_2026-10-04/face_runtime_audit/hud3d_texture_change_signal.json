@@ -1,0 +1,25 @@
+{
+  "originalRestored": true,
+  "rows": [
+    {
+      "sourceTexture": "rbxassetid://114282379234661",
+      "portraitTexture": "rbxassetid://114282379234661",
+      "passed": true,
+      "expression": "Neutral"
+    },
+    {
+      "sourceTexture": "rbxassetid://130810730029380",
+      "portraitTexture": "rbxassetid://130810730029380",
+      "passed": true,
+      "expression": "Serious"
+    },
+    {
+      "sourceTexture": "rbxassetid://96983789676579",
+      "portraitTexture": "rbxassetid://96983789676579",
+      "passed": true,
+      "expression": "SoftSmile"
+    }
+  ],
+  "passed": true,
+  "scope": "Temporary Client Play texture changes, not gameplay event testing"
+}

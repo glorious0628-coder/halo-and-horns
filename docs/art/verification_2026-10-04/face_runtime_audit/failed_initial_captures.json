@@ -1,0 +1,13 @@
+{
+  "visual_status": "FAIL_WHITE_3D_VIEWPORT",
+  "files": [
+    "production_Automatic_default.jpeg",
+    "production_Automatic_close.jpeg",
+    "production_Level21_default.jpeg",
+    "production_Level21_close.jpeg"
+  ],
+  "superseded_by": "production_*_v2.jpeg",
+  "capture_permission_probe": "StudioCaptureService permission=false; standard MCP screen_capture used",
+  "temporary_capture_probe": "CaptureService screenshot rbxtemp could not be read by EditableImage",
+  "settings_restored": true
+}

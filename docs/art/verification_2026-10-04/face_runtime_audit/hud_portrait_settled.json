@@ -1,0 +1,116 @@
+{
+  "enabled": true,
+  "faction": "Halo",
+  "portraits": [
+    {
+      "visible": true,
+      "image": "rbxthumb://type=AvatarHeadShot&id=LOCAL_USER&w=150&h=150",
+      "name": "Headshot",
+      "rect_size": [
+        0,
+        0
+      ],
+      "loaded": true,
+      "rect_offset": [
+        0,
+        0
+      ],
+      "absolute_size": [
+        31.828916549682617,
+        30.548439025878906
+      ]
+    },
+    {
+      "visible": true,
+      "image": "rbxassetid://102492452438180",
+      "name": "Ring",
+      "rect_size": [
+        0,
+        0
+      ],
+      "loaded": true,
+      "rect_offset": [
+        0,
+        0
+      ],
+      "absolute_size": [
+        44.400001525878906,
+        45.60000228881836
+      ]
+    },
+    {
+      "visible": false,
+      "image": "rbxassetid://130781962577620",
+      "name": "ClassPortrait",
+      "rect_size": [
+        743,
+        743
+      ],
+      "loaded": false,
+      "rect_offset": [
+        139,
+        0
+      ],
+      "absolute_size": [
+        31.828916549682617,
+        30.548439025878906
+      ]
+    },
+    {
+      "visible": true,
+      "image": "rbxassetid://134988581827453",
+      "name": "Character",
+      "rect_size": [
+        0,
+        0
+      ],
+      "loaded": true,
+      "rect_offset": [
+        0,
+        0
+      ],
+      "absolute_size": [
+        192,
+        183.60000610351562
+      ]
+    },
+    {
+      "visible": true,
+      "image": "rbxassetid://102544376554965",
+      "name": "Character",
+      "rect_size": [
+        0,
+        0
+      ],
+      "loaded": true,
+      "rect_offset": [
+        0,
+        0
+      ],
+      "absolute_size": [
+        192,
+        183.60000610351562
+      ]
+    },
+    {
+      "visible": true,
+      "image": "rbxassetid://90265187612649",
+      "name": "Character",
+      "rect_size": [
+        0,
+        0
+      ],
+      "loaded": true,
+      "rect_offset": [
+        0,
+        0
+      ],
+      "absolute_size": [
+        192,
+        183.60000610351562
+      ]
+    }
+  ],
+  "class": "Archer",
+  "gender": "M"
+}

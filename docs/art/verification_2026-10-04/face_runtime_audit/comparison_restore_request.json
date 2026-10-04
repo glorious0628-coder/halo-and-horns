@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "\ngame:GetService(\"RunService\"):UnbindFromRenderStep(\"FaceSharpAuditCamera\")\nworkspace.CurrentCamera.CameraType=Enum.CameraType.Custom\nlocal old=_G.HHC_FaceAudit\nif old then\n local r=settings().Rendering;r.QualityLevel=old.quality;r.EditQualityLevel=old.edit;r.EnableFRM=old.frm\n for _,v in old.gui do if v[1].Parent then v[1].Enabled=v[2] end end\n for _,v in old.tracks do pcall(function() v[1]:AdjustSpeed(v[2]) end) end\n _G.HHC_FaceAudit=nil\nend\nreturn \"Original quality, billboards, animation speeds and Custom camera restored\"\n"
+}

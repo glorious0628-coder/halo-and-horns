@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Server",
+  "code": "local h=game.Players:GetPlayers()[1].Character:FindFirstChildOfClass(\"Humanoid\")\nh.Health=0\nreturn \"Play-only death triggered\""
+}

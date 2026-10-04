@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "require(game.ReplicatedStorage.Shared.Net).Get(\"SetCostume\"):FireServer(true,\"F\")\nreturn \"SetCostume remote sent\""
+}

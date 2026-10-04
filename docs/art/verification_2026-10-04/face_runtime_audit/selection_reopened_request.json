@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local N=require(game.ReplicatedStorage.Shared.Net)\nN.Get(\"ChooseFaction\"):FireServer(\"Halo\")\ntask.wait(1.5)\nN.Get(\"ChooseClass\"):FireServer(\"Archer\",\"M\")\nreturn \"selection sent\"\n"
+}

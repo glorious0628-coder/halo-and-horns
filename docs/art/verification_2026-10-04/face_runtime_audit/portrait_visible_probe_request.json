@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local im=game.Players.LocalPlayer.PlayerGui:FindFirstChild(\"ClassPortrait\",true)\nim.Visible=true;im.BackgroundTransparency=1\nreturn game:GetService(\"HttpService\"):JSONEncode({loaded=im.IsLoaded,visible=im.Visible})\n"
+}

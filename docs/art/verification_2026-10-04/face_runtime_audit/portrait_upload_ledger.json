@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-04",
+  "asset_id": "rbxassetid://130781962577620",
+  "file": "art\\ui\\UIP_PortraitHaloArcherM.png",
+  "sha256": "22770a24994241295791c4e85db10349a93be46964b87b9c29b0aa56836827bb",
+  "source_size": [
+    1254,
+    1254
+  ],
+  "approved_source": "art/out/Avatar_HaloArcherM_Neutral_Balanced_F.png",
+  "approval_quote": "좋아, 이걸로 해줘",
+  "personally_viewed": true,
+  "displayed_to_user": true,
+  "batch_count": 1,
+  "upload_tool": "studio_mcp.upload_image",
+  "image_paths": [
+    "http://127.0.0.1:8765/UIP_PortraitHaloArcherM.png"
+  ],
+  "actual_response": {
+    "http://127.0.0.1:8765/UIP_PortraitHaloArcherM.png": "rbxassetid://130781962577620"
+  },
+  "tripo_credits": 0,
+  "editable_image_size": [
+    1024,
+    1024
+  ],
+  "editable_image_size_is_not_remote_original_size": true
+}

@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Server",
+  "code": "local p=game.Players:GetPlayers()[1]\nlocal c=p.Character\nc:PivotTo(CFrame.new(28,4,-425))\nlocal root=c:FindFirstChild(\"HumanoidRootPart\")\nroot.AssemblyLinearVelocity=Vector3.zero\nroot.AssemblyAngularVelocity=Vector3.zero\nreturn \"Play-only quiet spawn position\"\n"
+}

@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local H=game:GetService(\"HttpService\")\nlocal result=nil\nlocal ok,err=pcall(function()\n game:GetService(\"CaptureService\"):CaptureScreenshot(function(id) result=id end)\nend)\nlocal deadline=os.clock()+12\nwhile ok and not result and os.clock()<deadline do task.wait(0.1) end\nif not result then return H:JSONEncode({ok=ok,error=tostring(err),callback=false}) end\nlocal success,e=pcall(function() return game:GetService(\"AssetService\"):CreateEditableImageAsync(Content.fromUri(result)) end)\nif not success or not e then return H:JSONEncode({ok=success,error=tostring(e),callback=true,content_id=result}) end\nlocal sz=e.Size\nlocal b=e:ReadPixelsBuffer(Vector2.zero,sz)\ne:Destroy()\nreturn H:JSONEncode({ok=true,callback=true,size={sz.X,sz.Y},encoding=\"rgba\",base64=buffer.tostring(game:GetService(\"EncodingService\"):Base64Encode(b))})\n"
+}

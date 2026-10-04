@@ -1,0 +1,713 @@
+{
+  "schema": 1,
+  "known_production_texture_ids": [
+    "114282379234661",
+    "84211055370691",
+    "106725946673245"
+  ],
+  "cache_scan": [
+    {
+      "cache_relative_path": "Roblox\\rbx-storage",
+      "files": 606,
+      "bytes": 172213396,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Roblox\\rbx-storage-sc",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\http",
+      "files": 1,
+      "bytes": 400,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\http-wob",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_10248",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_10460",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_10476",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_10764",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_10956",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_11088",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_11480",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_11616",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_11812",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_11908",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_12160",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_12224",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_12296",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_1292",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_13640",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_14240",
+      "files": 21,
+      "bytes": 4189662,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_14712",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_14780",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_15148",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_15396",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_15560",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_15824",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_16092",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_16628",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_16636",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_17024",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_17288",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_17468",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_17624",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_17684",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_17784",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_18348",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_18532",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_18792",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_18880",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_19132",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_1932",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_2028",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_20588",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_21352",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_2144",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_22016",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_22060",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_22256",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_22324",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_22512",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_23172",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_23400",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_23592",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_2384",
+      "files": 8,
+      "bytes": 3325369,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_23928",
+      "files": 2,
+      "bytes": 1143779,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_24200",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_24540",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_24596",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_24600",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_24688",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_24848",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_25140",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_25200",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_25208",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_25356",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_25624",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_2564",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_25660",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_26000",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_26028",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_26240",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_26364",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_26632",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_26932",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_26996",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_27008",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_27224",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_27332",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_27348",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_27436",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_27464",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_27812",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_28152",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_2832",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_28472",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_28660",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_28752",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_29460",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_29688",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_29836",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_30112",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_30416",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_30548",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_30640",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_31112",
+      "files": 3,
+      "bytes": 1371629,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_3344",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_3728",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_4004",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_4008",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_4468",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_476",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_4976",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_5516",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_6020",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_6276",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_6736",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_8132",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_8200",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_8240",
+      "files": 5,
+      "bytes": 2062249,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_9076",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_9608",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_9620",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_9836",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    },
+    {
+      "cache_relative_path": "Temp\\Roblox\\ContentProvider_9904",
+      "files": 0,
+      "bytes": 0,
+      "read_failures": 0
+    }
+  ],
+  "database": {
+    "opened_read_only": true,
+    "rows_scanned": 1492,
+    "explicit_id_matches": 0,
+    "tables": [
+      "files",
+      "sqlite_stat1"
+    ]
+  },
+  "findings": [],
+  "explicit_asset_id_to_response_mapping_found": false,
+  "remote_original_dimensions_confirmed": false,
+  "downloaded_texture_dimensions_confirmed": false,
+  "scope_ko": "알려진 캐시 파일과 읽기 전용 storage DB에서 세 에셋 ID의 ASCII/UTF16 문자열만 확인했다. 로그·인증 저장소·쿠키·설정 파일은 읽지 않았다.",
+  "limitation_ko": "명시 ID→응답 매핑이 없으면 이미지 파일 크기·갱신 시각·유사한 그림만으로 실제 다운로드 에셋 크기를 추정하지 않는다. 압축된 내부 매핑 또는 해시 키만 남은 항목은 이 문자 검색으로 판별할 수 없다.",
+  "network_calls": 0,
+  "studio_calls": 0,
+  "credentials_read_or_output": false,
+  "source_mutations": 0
+}

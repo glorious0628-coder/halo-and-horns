@@ -1,0 +1,23 @@
+{
+  "source": "art\\models\\costume\\redraw\\generation-c22df695\\model.glb",
+  "source_sha256": "4aa4206f7cf4f57c62f1d6c38eaf0c860a274404136c774dbb13dfaa679b2ca6",
+  "method": "Atlas diagnostic only. BaseColor resized nearest to ORM dimensions; bright-neutral mask min RGB>=180 and max-min<25.",
+  "bright_neutral_atlas_samples": 1418944,
+  "metallic_blue_percentiles": {
+    "0": 0.0,
+    "10": 0.0,
+    "50": 4.0,
+    "90": 125.0,
+    "100": 255.0
+  },
+  "sample_fraction_metallic_at_least_128": 0.09840980334671418,
+  "roughness_green_percentiles": {
+    "0": 10.0,
+    "10": 50.0,
+    "50": 61.0,
+    "90": 78.0,
+    "100": 254.0
+  },
+  "limitation": "Not white-clothing segmentation. Includes unused atlas space, pale skin and accessories; no claim that all white clothing is metallic.",
+  "source_modified": false
+}

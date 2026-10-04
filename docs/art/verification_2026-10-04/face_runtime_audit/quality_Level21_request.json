@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local r=settings().Rendering\nr.QualityLevel=Enum.QualityLevel.Level21;r.EditQualityLevel=Enum.QualityLevel.Level21;r.EnableFRM=false\nreturn tostring(r.QualityLevel)..\"/\"..tostring(r.EditQualityLevel)..\"/FRM=\"..tostring(r.EnableFRM)"
+}

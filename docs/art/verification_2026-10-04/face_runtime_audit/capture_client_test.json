@@ -1,0 +1,6 @@
+{
+  "ok": false,
+  "content_id": "rbxtemp://191",
+  "error": "AssetService:CreateEditableImageAsync cannot currently create editable image from temporary texture id.",
+  "callback": true
+}
