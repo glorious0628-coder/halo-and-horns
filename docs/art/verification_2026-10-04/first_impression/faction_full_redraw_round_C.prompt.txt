@@ -1,0 +1,52 @@
+Create a completely NEW, cleanly drawn, high-resolution Korean Roblox fantasy game faction-selection screen. Generate FROM SCRATCH, do not edit, trace, warp, or patch a previous bitmap. The user rejected the old typography as ugly and the old painted borders as wobbly. This new UI must look deliberately designed, geometrically straight, polished and inviting to a Roblox player, with excellent friendly Korean game lettering.
+
+Canvas: landscape 1600 x 1000 approximately, flat straight-on UI screenshot, NOT perspective, NOT a photograph. All UI planar and perfectly horizontal/vertical. Crisp high-quality illustrated game UI over a softly blurred stylized Roblox town background. No readable background signs, no floating player names, no chat or HUD behind the modal. Preserve only a small unobtrusive Roblox/menu/chat system icon group at upper left. No browser chrome.
+
+Art identity: warm pale parchment and polished gold for angel faction, red/dark volcanic stone with gold edging for demon faction, teal/wood with gold edging for artisan faction. These are cute approachable fantasy game teams, not horror. No characters or people. Create clean restrained embellishment, smooth symmetric geometry. Sun/halo crest, rounded red horns crest, teal gear/anvil crest. Do NOT add decorative creatures, new badges, new buttons, currency, glitter, weapons, mascots, icons not needed by the text. Avoid elaborate warped scroll curls and excessive baroque flourishes.
+
+Critical typography: REPLACE generic stiff square Korean system-font appearance with beautifully crafted friendly rounded Hangul game lettering. Softly rounded terminals, generous counters, slightly plump letterforms, balanced glyph widths, confident clean strokes and consistent baseline. Title and faction names have a cute, premium casual RPG logotype quality. Body is a matching rounded, comfortably spaced medium weight Korean font, NOT ultra bold. Exact readable Hangul and numerals, no malformed characters. No thick black/white double outlines. On pale parchment use dark warm-brown lettering with NO outline. On dark red panels use ivory lettering with only an extremely subtle shadow. Buttons use clear warm ivory lettering with a fine shadow only. No stretched type, condensed letters, handwriting, calligraphy, serifs, rigid newspaper/PPT font, uneven stroke widths, smeared or wavering contours. Do not imitate the old generic heavy black font.
+
+Layout with disciplined grid:
+- Center a clean gold-edged title ribbon across the upper middle, about x500..1100 y72..160. Text large and delightful: "어느 편에 설래요?"
+- Below it, a wide straight-edged softly rounded parchment strip x245..1355 y182..284. Keep the following THREE sentences on their own three evenly spaced centered lines, at comfortably readable size, no clipping:
+"세상을 지키던 균형의 왕관이 부서졌다."
+"조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다."
+"조각을 더 많이 모으는 쪽이 세상을 다시 만든다."
+- Three individual upright cards, consistent 328px width and 570px height, identical outer bounding boxes in a straight row, top y314 and bottom y884 exactly. Centers x440,800,1160. 32px gaps. All emblems contained INSIDE these boxes; no protruding tips below or above common card boundaries. Identical corner geometry and proportions despite different faction materials. Rectangular structural edges must be ruler-straight, parallel, symmetric, NO ripples. Balanced border thickness all around. Clearly align name strips, descriptions, motto strips, all four perk rows, and the three bottom buttons on identical baselines.
+- Each card upper emblem occupies y332..460. Faction name y490, short lore y530, motto y570, four perk rows y624/667/710/753, button centered y825 with equal height. Plenty of internal padding so nothing touches the frame. Text must not be crammed.
+- Bottom small parchment footer x270..1330 y916..967, centered single line legible text. Keep modest quiet weight.
+
+Card 1 text exactly:
+"빛의 기사단"
+"후광을 얻은 자들."
+"지키고, 치유하고, 되찾아 줘라!"
+"경험치 +30%"
+"체력 +20%, 계속 회복"
+"발사하면 동료 치유"
+"주머니 골드 자동 저금"
+Button: "이 편으로!"
+
+Card 2:
+"뿔 군단"
+"뿔을 얻은 자들."
+"털고, 버티고, 괴수가 되어라!"
+"골드 +25%"
+"공격력 +15%, 체력 흡수"
+"발사 게이지 175"
+"별 5개면 괴수 변신!"
+Button: "이 편으로!"
+
+Card 3:
+"장인 길드"
+"조각을 다듬는 자들."
+"줍지 말고, 다듬고, 만들어라!"
+"싸움 버프 없음"
+"PvP 없음 (안전)"
+"약탈·현상수배 걱정 없음"
+"제작 특화 (곧 추가)"
+Button: "이 편으로!"
+
+Footer exact:
+"나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)"
+
+Use small clean appropriate perk pictograms in a consistent left column if space allows; typography is the priority. Keep all statements and numbers unchanged, no new copy. The three team choices should feel equally appealing and equally sized. Final image should feel like a carefully typeset, crisp premium Roblox game screen with friendly round Korean lettering, not a painting of a screen.

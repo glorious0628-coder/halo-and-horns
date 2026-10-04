@@ -1,0 +1,44 @@
+Create one freshly rendered full-screen Korean fantasy Roblox faction-choice UI by combining ONLY the selected qualities of TWO references. This is a full, clean redraw, not a wobbly painted patch or an overlay of new letters on visible old letters.
+
+Reference 1 (the ornate three cards image) is the AUTHORITATIVE CARD ART AND LAYOUT reference. Preserve the ornate sculpted gold/white sun medal with laurels on the left, the red horned skull and cracked volcanic rock card in the middle, and the teal gear/anvil with chunky wooden frame on the right. Preserve their distinctive shield silhouettes and carved trims, the parchment title scroll, the wide story parchment, the gold/red/teal glossy capsule buttons, and the quiet blurred Roblox town background. The user explicitly prefers these cool elaborate cards. Do not replace them with simple rectangles, flat borders, new symbols or the bland rectangular cards from reference 2. Redraw the same chosen ornate designs cleanly with intentional smooth curves, even borders, no accidental waves or distortion.
+
+Reference 2 (the rectangular cards image) is TYPOGRAPHY STYLE ONLY. Use its friendly plump rounded Korean lettering from the main heading, team titles and buttons. Recreate that softer rounded letter anatomy: rounded stroke ends, roomy enclosed spaces, slightly playful broad proportions, balanced Hangul glyphs, no condensed square default Gothic. Do not copy its rectangular card frames, sunny environment or new emblems. Body copy should be clean round medium-weight Hangul with ample spacing. Dark warm brown on parchment, creamy ivory on dark areas, extremely fine shadow at most. REMOVE all the old font from reference 1. No thick black outline or double outline around white type. The user specifically likes reference 2's lettering.
+
+Keep the three illustrated cards same visual total height and their uppermost ornament tips and bottommost frame tips aligned. Their title ribbons, four perks and button centers should share consistent baselines. Preserve recognisable shape with no warping or horizontal squashing. All cards equally prominent. Keep story strip and footer clear of cards. Render the whole art anew sharply, with steady contours and high resolution. All text large enough for a Roblox selection screen; no tiny cramped dense paragraphs. 1600x1000 approximate landscape, complete screenshot composition, no external caption or sample labels.
+
+Exact Korean text, use proper readable Hangul. Main title EXACTLY "어느 편에 설래요?" (설래요, the second syllable uses 래). Story three centered lines:
+"세상을 지키던 균형의 왕관이 부서졌다."
+"조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다."
+"조각을 더 많이 모으는 쪽이 세상을 다시 만든다."
+
+Left:
+"빛의 기사단"
+"후광을 얻은 자들."
+"지키고, 치유하고, 되찾아 줘라!"
+"경험치 +30%"
+"체력 +20%, 계속 회복"
+"발사하면 동료 치유"
+"주머니 골드 자동 저금"
+
+Center:
+"뿔 군단"
+"뿔을 얻은 자들."
+"털고, 버티고, 괴수가 되어라!"
+"골드 +25%"
+"공격력 +15%, 체력 흡수"
+"발사 게이지 175"
+"별 5개면 괴수 변신!"
+
+Right:
+"장인 길드"
+"조각을 다듬는 자들."
+"줍지 말고, 다듬고, 만들어라!"
+"싸움 버프 없음"
+"PvP 없음 (안전)"
+"약탈·현상수배 걱정 없음"
+"제작 특화 (곧 추가)"
+
+Each of the three buttons: "이 편으로!"
+Footer: "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)"
+
+Keep all claims and numbers and the art's team colors exactly. No new characters, logos, badges or promotional copy. No game HUD or background floating nameplates/chat. Small Roblox top-left system icons may stay as reference1. Must feel like ornate reference1 with genuinely charming rounded reference2 typography, freshly and cleanly drawn, never the heavy rigid old font.

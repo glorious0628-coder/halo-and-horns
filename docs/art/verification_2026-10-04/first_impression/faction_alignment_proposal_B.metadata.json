@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date_kst": "2026-10-04",
   "asset_type": "진영 선택 화면 GPT 단일 정렬 수정 시안",
-  "status": "alignment_target_not_met",
+  "status": "ornate_card_style_selected_typography_rejected",
   "user_approval": null,
   "tool": "built-in image_gen",
   "mode": "edit",
@@ -51,5 +51,26 @@
       "A와 B 모두 보존한다. 추가 생성은 요청받지 않아 실행하지 않는다.",
       "제작 후보 및 GPT 시각 제안이며 실제 게임 적용·최종 합격 증거가 아니다."
     ]
+  },
+  "user_feedback": {
+    "date_kst": "2026-10-04",
+    "status": "rejected_typography",
+    "text": "시안에서도 글씨체가 못생겼어 ㅋㅋㅋ",
+    "followup": "부분 수정하지 말고 새로 그리기. 그림이 울어 보임."
+  },
+  "component_selection": {
+    "user_text": "이 카드들이 더 멋있어.글씨체는 지금이 더 좋고",
+    "selected": "ornate_card_art_style_only",
+    "reference": {
+      "path": "docs/art/verification_2026-10-04/first_impression/user_card_preference.png",
+      "size": [
+        1608,
+        978
+      ],
+      "sha256": "d5f9b5996d9b6f88696e91c7c07613b37e0016900f9fd6bcd6711847a2fd6a7d",
+      "copied_without_pixel_changes": true,
+      "source": "C:\\Users\\glori\\AppData\\Local\\Temp\\codex-clipboard-0fa72ef7-af40-4fdd-a5bf-fa2e17b4f736.png"
+    },
+    "full_layout_approval": null
   }
 }

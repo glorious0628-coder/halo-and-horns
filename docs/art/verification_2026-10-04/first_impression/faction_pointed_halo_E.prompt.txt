@@ -1,0 +1,42 @@
+Use case: precise-object-edit.
+Asset: a freshly redrawn full-screen Korean Roblox fantasy faction-selection UI.
+Image 1 is the current selected ornate-card/rounded-type composition. Preserve its polished illustrated style, layout, lettering, text, background and palette. The user has just requested: "빛의 기사단도 아래 위가 뾰족한 카드로 그려줘 그래야 키가 맞아보일듯". Make the left LIGHT KNIGHTS card pointed at BOTH its top and bottom so its silhouette reads as the same height as the other two cards.
+
+Redraw the whole composition cleanly; do not create patch seams, overpaint blur, wobbly edges, doubled lettering or mismatched additions.
+The left card must keep its white/cream and gold sun/laurel identity. Reshape its gold frame into an elegant symmetrical shield card: a clearly upward-pointing centered gold finial at the top, continuous intentional shaped shoulders around the sun/laurel emblem, and a clearly downward-pointing centered V-shaped gold shield tip below the yellow button. The bottom tip must be the natural continuation of the outer frame, NOT an isolated floating diamond or an added spear hanging from a flat rectangular base. The old straight horizontal bottom silhouette must become a crisp shallow V ending at the centered point. Preserve space around the button and all text.
+Match the three cards' highest ornament tips to one common horizontal line, and their lowest center points to one common horizontal line. Keep the center red card and right teal card's distinctive silhouettes. Use their common bottom baseline as the left card's new bottom tip, not a longer protrusion beyond them. Keep all three buttons at the same height, as well as the team-name ribbons. Equal visual overall heights, stable verticals, crisp symmetric curves, no squeezing the content. No extra ornaments beyond this requested silhouette.
+
+Keep EXACTLY the rounded, thick and friendly Hangul typography in the reference: main title, team titles, body and buttons. Preserve wording and numbers, no copy edits.
+Title: "어느 편에 설래요?"
+Story:
+"세상을 지키던 균형의 왕관이 부서졌다."
+"조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다."
+"조각을 더 많이 모으는 쪽이 세상을 다시 만든다."
+Left:
+"빛의 기사단"
+"후광을 얻은 자들."
+"지키고, 치유하고, 되찾아 줘라!"
+"경험치 +30%"
+"체력 +20%, 계속 회복"
+"발사하면 동료 치유"
+"주머니 골드 자동 저금"
+Center:
+"뿔 군단"
+"뿔을 얻은 자들."
+"털고, 버티고, 괴수가 되어라!"
+"골드 +25%"
+"공격력 +15%, 체력 흡수"
+"발사 게이지 175"
+"별 5개면 괴수 변신!"
+Right:
+"장인 길드"
+"조각을 다듬는 자들."
+"줍지 말고, 다듬고, 만들어라!"
+"싸움 버프 없음"
+"PvP 없음 (안전)"
+"약탈·현상수배 걱정 없음"
+"제작 특화 (곧 추가)"
+Three buttons: "이 편으로!"
+Footer: "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)"
+
+Keep the same blurred Roblox town, title parchment, story strip, footer, top-left system icons and the three existing palettes. Complete landscape 1586x992-like composition, no cropping, no guide lines or measurements in the art. High resolution, polished crisp final illustration.

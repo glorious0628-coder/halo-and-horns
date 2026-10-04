@@ -1,0 +1,44 @@
+{
+  "date_kst": "2026-10-04",
+  "status": "typography_selected_layout_not_selected",
+  "tool": "built-in image_gen",
+  "mode": "new_generation",
+  "referenced_image_paths": [],
+  "user_request": "부분 수정하지 말고 새로 그리기. 기존 시안 글씨체 거절 및 그림이 우는 문제.",
+  "output": {
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_full_redraw_round_C.png",
+    "size": [
+      1586,
+      992
+    ],
+    "sha256": "75b174c7136158b2d247d96e72f752809de5af610acd33cbcf4eb44ffa46f981",
+    "generated_original": "C:\\Users\\glori\\.codex\\generated_images\\01a104e3-9120-72f1-82f4-2b2f5eb9f802\\exec-314e6e7b-54e6-4884-a522-9dec3d762c44.png",
+    "copied_without_pixel_changes": true
+  },
+  "prompt": {
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_full_redraw_round_C.prompt.txt",
+    "sha256": "96fa0fdfaba08d89647e8fcea162fd12a1ec109902f67e22bc368eb2dedf7cb8"
+  },
+  "user_approval": null,
+  "review": {
+    "method": "직접 이미지 검사. 생성 프롬프트의 좌표는 합격 실측치가 아니다.",
+    "observations": [
+      "카드·문장·제목까지 새로 생성. 이전 비트맵 부분 편집 아님.",
+      "제목과 진영 이름은 둥근 한글, 본문은 더 작은 글자 계층.",
+      "3개 직사각형 카드 외곽과 버튼 줄이 육안상 정렬됨.",
+      "팀별 금색/붉은색/청록색 구분, 이름과 보너스 수치 유지."
+    ],
+    "limitations": [
+      "실제 Roblox 폰트 적용·폰 해상도 검증은 아직 수행하지 않음.",
+      "카드 끝선의 픽셀 단위 완전 일치는 아직 판정하지 않음."
+    ]
+  },
+  "game_source_changes": 0,
+  "roblox_upload_count": 0,
+  "tripo_credits_spent": 0,
+  "component_selection": {
+    "user_text": "이 카드들이 더 멋있어.글씨체는 지금이 더 좋고",
+    "selected": "rounded_typography_only",
+    "full_layout_approval": null
+  }
+}

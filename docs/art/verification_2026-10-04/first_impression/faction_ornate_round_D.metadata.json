@@ -1,0 +1,58 @@
+{
+  "date_kst": "2026-10-04",
+  "status": "superseded_by_E_shape_request",
+  "tool": "built-in image_gen",
+  "mode": "reference_guided_full_redraw",
+  "user_request": "이 카드들이 더 멋있어.글씨체는 지금이 더 좋고",
+  "output": {
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_ornate_round_D.png",
+    "size": [
+      1586,
+      992
+    ],
+    "sha256": "4c443ae02ff5bc603a315727be6e469c33e65c3b77f306029ebc954d5979fbb7",
+    "copied_without_pixel_changes": true,
+    "source": "C:\\Users\\glori\\.codex\\generated_images\\01a104e3-9120-72f1-82f4-2b2f5eb9f802\\exec-5730093f-5213-41b5-bfab-d2bd20180e55.png"
+  },
+  "inputs": [
+    {
+      "path": "docs/art/verification_2026-10-04/first_impression/user_card_preference.png",
+      "size": [
+        1608,
+        978
+      ],
+      "sha256": "d5f9b5996d9b6f88696e91c7c07613b37e0016900f9fd6bcd6711847a2fd6a7d",
+      "copied_without_pixel_changes": true,
+      "source": "C:\\Users\\glori\\AppData\\Local\\Temp\\codex-clipboard-0fa72ef7-af40-4fdd-a5bf-fa2e17b4f736.png"
+    },
+    {
+      "path": "docs/art/verification_2026-10-04/first_impression/faction_full_redraw_round_C.png",
+      "size": [
+        1586,
+        992
+      ],
+      "sha256": "75b174c7136158b2d247d96e72f752809de5af610acd33cbcf4eb44ffa46f981",
+      "generated_original": "C:\\Users\\glori\\.codex\\generated_images\\01a104e3-9120-72f1-82f4-2b2f5eb9f802\\exec-314e6e7b-54e6-4884-a522-9dec3d762c44.png",
+      "copied_without_pixel_changes": true
+    }
+  ],
+  "prompt": {
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_ornate_round_D.prompt.txt",
+    "sha256": "9312b7ed905ed3d5a7b3d7870f7d556a4511e370cf5245ca3320840ff16ae29b"
+  },
+  "user_approval": null,
+  "review": {
+    "method": "직접 이미지 시각 검사. 목표 좌표를 실측값으로 사용하지 않음.",
+    "observations": [
+      "첨부의 화려한 카드 장식과 C의 둥근 한글을 조합한 전체 재생성.",
+      "빛 카드의 평평한 아래 끝 때문에 다른 두 카드보다 짧게 보임."
+    ],
+    "limitations": [
+      "카드 높이 및 끝선의 완전 일치 미달.",
+      "사용자가 빛 카드 위아래를 뾰족하게 바꾸도록 후속 지시."
+    ]
+  },
+  "game_source_changes": 0,
+  "roblox_upload_count": 0,
+  "tripo_credits_spent": 0
+}

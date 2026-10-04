@@ -65,6 +65,14 @@
   "file": "art/out/UI_HUD_Final.png",
   "note": "시안 C+A 합본 1 + 왼쪽 위 카드는 합본 2"
  },
+ "UI_Faction_Point_E": {
+  "status": "approved",
+  "file": "docs/art/verification_2026-10-04/first_impression/faction_pointed_halo_E.png",
+  "sha256": "662bbc5809f88afce69512766fa18d5b786f4c148f0c3e4f013067ed9fcf98bd",
+  "approvedAt": "2026-10-04",
+  "userApproval": "좋아 좋아!",
+  "note": "최신 진영 화면: 화려한 카드 + C의 둥근 글씨 + 빛 기사단 위아래 뾰족한 금장. 게임 구현·업로드 전. 기존 UI_Faction_B는 과거 승인 기록이며 최신 구현 기준은 E."
+ },
  "UI_Faction_B": {
   "status": "approved",
   "file": "art/out/UI_Faction_B.png"
