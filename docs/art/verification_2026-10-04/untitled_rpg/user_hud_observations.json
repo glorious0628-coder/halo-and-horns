@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "image_sha256": "dbff3ddbc2a4b6463bae5c42814377e6d48e3918c8d1bbfc0ed0e4bc2046481a",
+  "observation_method": "Direct visual inspection of the user-provided screenshot; one static image only",
+  "visible": {
+    "level": "Lv.1",
+    "experience": "20/73.93",
+    "red_vital_value": "100/100",
+    "blue_vital_value": "100/100",
+    "quest_title": "첫 사냥",
+    "quest_target": "고블린을 10마리 처치하세요.",
+    "quest_progress": "(0/10)",
+    "top_menu_labels": [
+      "업데이트",
+      "길드",
+      "서버",
+      "게임패스",
+      "설정",
+      "메뉴"
+    ],
+    "bottom_menu_labels": [
+      "가방",
+      "스탯",
+      "스킬",
+      "퀘스트",
+      "도감"
+    ],
+    "right_skill_keys": [
+      "E",
+      "R",
+      "T"
+    ],
+    "right_skill_text": [
+      "없음",
+      "없음",
+      "없음"
+    ],
+    "minimap_location": "upper left, large circular panel",
+    "view": "central world and avatars remain visible; controlled avatar is small relative to total screenshot"
+  },
+  "transfer_proposals": [
+    "Group level, EXP and large HP/MP values into a clear reading hierarchy.",
+    "Keep the current beginner task and numeric progress visible.",
+    "Keep the central combat view open; group persistent menus by purpose."
+  ],
+  "not_directly_copied": [
+    "Large minimap footprint",
+    "Three large empty skill panels",
+    "Desktop-wide layout and distant character framing"
+  ],
+  "requires_validation": [
+    "Actual phone readability and touch overlap",
+    "Camera follow during movement and respawn",
+    "Whether quest progress and vital values update correctly",
+    "New visual styling needs GPT mockup selection"
+  ],
+  "implementation_approved_by_this_image": false
+}

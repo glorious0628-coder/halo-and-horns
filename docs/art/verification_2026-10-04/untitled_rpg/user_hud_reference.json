@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "date_kst": "2026-10-04",
+  "recorded_at_utc": "2026-10-04T05:15:50.342637+00:00",
+  "provenance": "User-provided screenshot identified by user as Untitled RPG reference; not captured by the agent",
+  "source_path": "C:/Users/glori/AppData/Local/Temp/codex-clipboard-4ac4e24a-d61f-4e80-a6cf-bdb0fc8c45b0.png",
+  "archive_path": "docs/art/verification_2026-10-04/untitled_rpg/user_hud_reference.png",
+  "sha256": "dbff3ddbc2a4b6463bae5c42814377e6d48e3918c8d1bbfc0ed0e4bc2046481a",
+  "source_sha256": "dbff3ddbc2a4b6463bae5c42814377e6d48e3918c8d1bbfc0ed0e4bc2046481a",
+  "byte_identical_copy": true,
+  "bytes": 4558442,
+  "width": 2558,
+  "height": 1463,
+  "format": "PNG",
+  "mode": "RGBA",
+  "image_altered": false,
+  "visually_inspected": true,
+  "computer_screen_control": false,
+  "game_played_by_agent": false,
+  "capture_time_and_device": "not independently verified",
+  "credit_spend": 0
+}
