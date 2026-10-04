@@ -1,0 +1,282 @@
+{
+  "date_kst": "2026-10-04",
+  "batch_size": 6,
+  "tool": "tools/studio_mcp.py upload_image",
+  "user_authorization": "이걸로 적용하자.",
+  "images_reviewed_and_shown_individually": true,
+  "uploads": [
+    {
+      "file": "art/ui/UIP_FactionCardHaloE.png",
+      "size": [
+        380,
+        636
+      ],
+      "sha256": "95803be1aeb628743df8998452434dea5f6dab59af9307bd825f728b1819e1ad",
+      "source_rect": [
+        238,
+        259,
+        602,
+        886
+      ],
+      "guide_rect": [
+        198,
+        258,
+        585,
+        895
+      ],
+      "source_alpha_bounds": [
+        5,
+        2,
+        360,
+        624
+      ],
+      "alpha_bounds": [
+        13,
+        8,
+        367,
+        628
+      ],
+      "visible_height_px": 620,
+      "scale": 0.9967845659163987,
+      "paste_offset": [
+        13,
+        8
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionCardHaloE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0,
+      "key": "FactionCardHaloE",
+      "asset_id": "rbxassetid://115165874013728"
+    },
+    {
+      "file": "art/ui/UIP_FactionCardHornsE.png",
+      "size": [
+        380,
+        636
+      ],
+      "sha256": "f583c2573488506a29292e0af29ff6e4be62bfaefd79539260219e0357ac0712",
+      "source_rect": [
+        610,
+        261,
+        974,
+        883
+      ],
+      "guide_rect": [
+        589,
+        258,
+        988,
+        893
+      ],
+      "source_alpha_bounds": [
+        2,
+        6,
+        359,
+        620
+      ],
+      "alpha_bounds": [
+        10,
+        8,
+        370,
+        628
+      ],
+      "visible_height_px": 620,
+      "scale": 1.009771986970684,
+      "paste_offset": [
+        10,
+        8
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionCardHornsE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0,
+      "key": "FactionCardHornsE",
+      "asset_id": "rbxassetid://117803151290007"
+    },
+    {
+      "file": "art/ui/UIP_FactionCardNeutralE.png",
+      "size": [
+        380,
+        636
+      ],
+      "sha256": "cc5a9689a373390b74101caccd700510bda5f479ac29f85e9a71b3d87cc0aad7",
+      "source_rect": [
+        977,
+        264,
+        1340,
+        880
+      ],
+      "guide_rect": [
+        988,
+        258,
+        1370,
+        893
+      ],
+      "source_alpha_bounds": [
+        2,
+        2,
+        355,
+        608
+      ],
+      "alpha_bounds": [
+        9,
+        9,
+        370,
+        628
+      ],
+      "visible_height_px": 619,
+      "scale": 1.023102310231023,
+      "paste_offset": [
+        9,
+        8
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionCardNeutralE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0,
+      "key": "FactionCardNeutralE",
+      "asset_id": "rbxassetid://78748710982730"
+    },
+    {
+      "file": "art/ui/UIP_FactionTitleRibbonE.png",
+      "size": [
+        550,
+        109
+      ],
+      "sha256": "881fefa7bd080a793f75ac667a2cb621c54e796c1c5d9015296c9014f385d2c1",
+      "source_rect": [
+        514,
+        25,
+        1071,
+        136
+      ],
+      "guide_rect": [
+        483,
+        3,
+        1104,
+        131
+      ],
+      "source_alpha_bounds": [
+        4,
+        3,
+        550,
+        108
+      ],
+      "alpha_bounds": [
+        2,
+        2,
+        548,
+        107
+      ],
+      "visible_height_px": 105,
+      "scale": 1,
+      "paste_offset": [
+        2,
+        2
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionTitleRibbonE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0,
+      "key": "FactionTitleRibbonE",
+      "asset_id": "rbxassetid://113802062878933"
+    },
+    {
+      "file": "art/ui/UIP_FactionPremisePanelE.png",
+      "size": [
+        1024,
+        130
+      ],
+      "sha256": "a0ec52009c89eaf0fec872a9c6d1d199926efeade8819dfd24eabda46e61f662",
+      "source_rect": [
+        240,
+        127,
+        1340,
+        264
+      ],
+      "guide_rect": [
+        225,
+        115,
+        1354,
+        272
+      ],
+      "source_alpha_bounds": [
+        11,
+        0,
+        1090,
+        133
+      ],
+      "alpha_bounds": [
+        2,
+        2,
+        1022,
+        128
+      ],
+      "visible_height_px": 126,
+      "scale": 0.9453197405004634,
+      "paste_offset": [
+        2,
+        2
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionPremisePanelE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0,
+      "key": "FactionPremisePanelE",
+      "asset_id": "rbxassetid://96509939493433"
+    },
+    {
+      "file": "art/ui/UIP_FactionFooterPanelE.png",
+      "size": [
+        913,
+        84
+      ],
+      "sha256": "4550ed992bff0589735519356f99ce34c905437d3948c605d6e29bb637880c09",
+      "source_rect": [
+        326,
+        882,
+        1255,
+        966
+      ],
+      "guide_rect": [
+        300,
+        881,
+        1286,
+        980
+      ],
+      "source_alpha_bounds": [
+        8,
+        3,
+        917,
+        83
+      ],
+      "alpha_bounds": [
+        2,
+        2,
+        911,
+        82
+      ],
+      "visible_height_px": 80,
+      "scale": 1,
+      "paste_offset": [
+        2,
+        2
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionFooterPanelE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0,
+      "key": "FactionFooterPanelE",
+      "asset_id": "rbxassetid://90564665429214"
+    }
+  ],
+  "tripo_credits_spent": 0,
+  "button_rects": {
+    "Halo": [
+      0.20995938399052294,
+      0.811886994681389,
+      0.6216787950583855,
+      0.09873809379360553
+    ],
+    "Horns": [
+      0.19638265043716785,
+      0.817538360682605,
+      0.6483799074232813,
+      0.09526150820478152
+    ],
+    "Neutral": [
+      0.20407330206704882,
+      0.8281648919608942,
+      0.6488622546465173,
+      0.09651908587085123
+    ]
+  }
+}

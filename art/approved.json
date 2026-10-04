@@ -177,5 +177,17 @@
    "approvalQuote": "기준 그림은 하나다: art/out/APose_HaloArcherM_Sharp_D.png",
    "sha256": "649ce86f007b2762e70bb1fc8d494351520de4f024d1a876c9225b94e6160b0a",
    "note": "사용자의 R2 작업지시서가 지정한 유일 기준. F/E 기본표정 승인과 별도이며 R2 아직 유료0/업로드0/G2대기."
+ },
+ "UI_FactionPremise_FreshTyped": {
+  "status": "approved",
+  "file": "art/ui/UIP_FactionPremise_FreshTyped.png",
+  "sourceArt": "art/out/UI_FactionPremise_E_BlankFresh.png",
+  "typographySource": "docs/art/verification_2026-10-04/faction_e/fresh_premise_preview.html",
+  "approvedDate": "2026-10-04",
+  "approvalQuote": "ㅇㅇㅇ",
+  "approvalQuestion": "방금 보여드린 새 설명판과 둥근 글씨로 적용할까요? 밝고 어두운 배경, 글자 6배 확대본까지 확인했습니다.",
+  "sha256": "de9cc448e03eb9d81602f6181da761fcca742893bce58cffaa758afa71491384",
+  "assetId": "rbxassetid://105024415024705",
+  "note": "GPT 새 빈 판과 Jua 실제 글꼴을 개별 조판. 부분 보정·이전 패널 조각 사용0. 설명판1종 승인·적용이며 나머지5종은 전면 재제작 진행."
  }
 }

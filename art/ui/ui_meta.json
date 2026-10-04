@@ -894,5 +894,97 @@
  "UIP_IconPotionMP": {
   "w": 194,
   "h": 256
+ },
+ "UIP_FactionCardHaloE": {
+  "w": 380,
+  "h": 636,
+  "baked_text_locale": "ko",
+  "source": "docs/art/verification_2026-10-04/first_impression/faction_pointed_halo_E.png",
+  "sha256": "95803be1aeb628743df8998452434dea5f6dab59af9307bd825f728b1819e1ad",
+  "alpha_bounds": [
+   13,
+   8,
+   367,
+   628
+  ]
+ },
+ "UIP_FactionCardHornsE": {
+  "w": 380,
+  "h": 636,
+  "baked_text_locale": "ko",
+  "source": "docs/art/verification_2026-10-04/first_impression/faction_pointed_halo_E.png",
+  "sha256": "f583c2573488506a29292e0af29ff6e4be62bfaefd79539260219e0357ac0712",
+  "alpha_bounds": [
+   10,
+   8,
+   370,
+   628
+  ]
+ },
+ "UIP_FactionCardNeutralE": {
+  "w": 380,
+  "h": 636,
+  "baked_text_locale": "ko",
+  "source": "docs/art/verification_2026-10-04/first_impression/faction_pointed_halo_E.png",
+  "sha256": "cc5a9689a373390b74101caccd700510bda5f479ac29f85e9a71b3d87cc0aad7",
+  "alpha_bounds": [
+   9,
+   9,
+   370,
+   628
+  ]
+ },
+ "UIP_FactionTitleRibbonE": {
+  "w": 549,
+  "h": 108,
+  "baked_text_locale": "ko",
+  "source": "docs/art/verification_2026-10-04/first_impression/faction_pointed_halo_E.png",
+  "sha256": "509aba484291567e1e650da0cfd5d73cd53736f373134df132d0364f6963e4d2",
+  "alpha_bounds": [
+   2,
+   2,
+   547,
+   106
+  ]
+ },
+ "UIP_FactionPremisePanelE": {
+  "w": 1024,
+  "h": 130,
+  "baked_text_locale": "ko",
+  "source": "docs/art/verification_2026-10-04/first_impression/faction_pointed_halo_E.png",
+  "sha256": "36da50c6ecd706bbeb3b201c1986bd118d5a106b1d314536fbeaa334b2a58167",
+  "alpha_bounds": [
+   2,
+   2,
+   1022,
+   128
+  ]
+ },
+ "UIP_FactionFooterPanelE": {
+  "w": 928,
+  "h": 86,
+  "baked_text_locale": "ko",
+  "source": "docs/art/verification_2026-10-04/first_impression/faction_pointed_halo_E.png",
+  "sha256": "d4c80a6cffd931e52e785eef32a08b981fbd81ec3b5776a6f80ca9ad8199b1b7",
+  "alpha_bounds": [
+   2,
+   2,
+   926,
+   84
+  ]
+ },
+ "UIP_FactionPremise_FreshTyped": {
+  "w": 1024,
+  "h": 174,
+  "baked_text_locale": "ko",
+  "source": "art/out/UI_FactionPremise_E_BlankFresh.png",
+  "typography": "Jua Regular; separate HTML source, rasterized at output resolution",
+  "sha256": "de9cc448e03eb9d81602f6181da761fcca742893bce58cffaa758afa71491384",
+  "alpha_bounds": [
+   0,
+   0,
+   1024,
+   174
+  ]
  }
 }

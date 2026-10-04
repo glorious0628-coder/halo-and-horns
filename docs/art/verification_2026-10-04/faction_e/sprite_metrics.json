@@ -1,0 +1,251 @@
+{
+  "source": "docs/art/verification_2026-10-04/first_impression/faction_pointed_halo_E.png",
+  "source_sha256": "662bbc5809f88afce69512766fa18d5b786f4c148f0c3e4f013067ed9fcf98bd",
+  "alpha_guide": "art/out/UI_Faction_E_Transparent_Guide.png",
+  "alpha_guide_sha256": "a5221451f5b5ec43418478eceee6c4811e9e3155c6e5a485d4ec36fc7b5d5f45",
+  "method": "GPT cutout alpha guide, per-object registration and edge refinement. Approved source RGB only; uniform final resizing.",
+  "sprites": {
+    "FactionCardHaloE": {
+      "file": "art/ui/UIP_FactionCardHaloE.png",
+      "size": [
+        380,
+        636
+      ],
+      "sha256": "95803be1aeb628743df8998452434dea5f6dab59af9307bd825f728b1819e1ad",
+      "source_rect": [
+        238,
+        259,
+        602,
+        886
+      ],
+      "guide_rect": [
+        198,
+        258,
+        585,
+        895
+      ],
+      "source_alpha_bounds": [
+        5,
+        2,
+        360,
+        624
+      ],
+      "alpha_bounds": [
+        13,
+        8,
+        367,
+        628
+      ],
+      "visible_height_px": 620,
+      "scale": 0.9967845659163987,
+      "paste_offset": [
+        13,
+        8
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionCardHaloE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0
+    },
+    "FactionCardHornsE": {
+      "file": "art/ui/UIP_FactionCardHornsE.png",
+      "size": [
+        380,
+        636
+      ],
+      "sha256": "f583c2573488506a29292e0af29ff6e4be62bfaefd79539260219e0357ac0712",
+      "source_rect": [
+        610,
+        261,
+        974,
+        883
+      ],
+      "guide_rect": [
+        589,
+        258,
+        988,
+        893
+      ],
+      "source_alpha_bounds": [
+        2,
+        6,
+        359,
+        620
+      ],
+      "alpha_bounds": [
+        10,
+        8,
+        370,
+        628
+      ],
+      "visible_height_px": 620,
+      "scale": 1.009771986970684,
+      "paste_offset": [
+        10,
+        8
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionCardHornsE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0
+    },
+    "FactionCardNeutralE": {
+      "file": "art/ui/UIP_FactionCardNeutralE.png",
+      "size": [
+        380,
+        636
+      ],
+      "sha256": "cc5a9689a373390b74101caccd700510bda5f479ac29f85e9a71b3d87cc0aad7",
+      "source_rect": [
+        977,
+        264,
+        1340,
+        880
+      ],
+      "guide_rect": [
+        988,
+        258,
+        1370,
+        893
+      ],
+      "source_alpha_bounds": [
+        2,
+        2,
+        355,
+        608
+      ],
+      "alpha_bounds": [
+        9,
+        9,
+        370,
+        628
+      ],
+      "visible_height_px": 619,
+      "scale": 1.023102310231023,
+      "paste_offset": [
+        9,
+        8
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionCardNeutralE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0
+    },
+    "FactionTitleRibbonE": {
+      "file": "art/ui/UIP_FactionTitleRibbonE.png",
+      "size": [
+        549,
+        108
+      ],
+      "sha256": "509aba484291567e1e650da0cfd5d73cd53736f373134df132d0364f6963e4d2",
+      "source_rect": [
+        514,
+        25,
+        1071,
+        136
+      ],
+      "guide_rect": [
+        483,
+        3,
+        1104,
+        131
+      ],
+      "source_alpha_bounds": [
+        4,
+        4,
+        549,
+        108
+      ],
+      "alpha_bounds": [
+        2,
+        2,
+        547,
+        106
+      ],
+      "visible_height_px": 104,
+      "scale": 1,
+      "paste_offset": [
+        2,
+        2
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionTitleRibbonE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0
+    },
+    "FactionPremisePanelE": {
+      "file": "art/ui/UIP_FactionPremisePanelE.png",
+      "size": [
+        1024,
+        130
+      ],
+      "sha256": "36da50c6ecd706bbeb3b201c1986bd118d5a106b1d314536fbeaa334b2a58167",
+      "source_rect": [
+        240,
+        127,
+        1340,
+        264
+      ],
+      "guide_rect": [
+        225,
+        115,
+        1354,
+        272
+      ],
+      "source_alpha_bounds": [
+        5,
+        1,
+        1095,
+        136
+      ],
+      "alpha_bounds": [
+        2,
+        2,
+        1022,
+        128
+      ],
+      "visible_height_px": 126,
+      "scale": 0.9357798165137615,
+      "paste_offset": [
+        2,
+        2
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionPremisePanelE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0
+    },
+    "FactionFooterPanelE": {
+      "file": "art/ui/UIP_FactionFooterPanelE.png",
+      "size": [
+        928,
+        86
+      ],
+      "sha256": "d4c80a6cffd931e52e785eef32a08b981fbd81ec3b5776a6f80ca9ad8199b1b7",
+      "source_rect": [
+        326,
+        882,
+        1255,
+        966
+      ],
+      "guide_rect": [
+        300,
+        881,
+        1286,
+        980
+      ],
+      "source_alpha_bounds": [
+        3,
+        2,
+        927,
+        84
+      ],
+      "alpha_bounds": [
+        2,
+        2,
+        926,
+        84
+      ],
+      "visible_height_px": 82,
+      "scale": 1,
+      "paste_offset": [
+        2,
+        2
+      ],
+      "source_cutout": "docs/art/verification_2026-10-04/faction_e/FactionFooterPanelE_source_cutout.png",
+      "source_cutout_rgb_max_delta": 0
+    }
+  },
+  "roblox_upload_count": 0,
+  "upload_count_note": "Preparation script is upload-free. Actual successful uploads=9; see upload_record.json, panel_reupload_record.json, metrics.json."
+}

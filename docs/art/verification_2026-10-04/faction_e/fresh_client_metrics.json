@@ -1,0 +1,135 @@
+{
+  "date_kst": "2026-10-04",
+  "approved_redraw_parts": 1,
+  "total_requested_redraw_parts": 6,
+  "successful_roblox_uploads_total": 10,
+  "successful_roblox_uploads_this_step": 1,
+  "active_parts": 6,
+  "tripo_credits_spent": 0,
+  "compiler": {
+    "files": [
+      "Config.luau",
+      "FactionPicker.luau"
+    ],
+    "passed": 2
+  },
+  "screenshots": [
+    "fresh_desktop.jpeg",
+    "fresh_phone.jpeg",
+    "fresh_phone_cards.jpeg"
+  ],
+  "device_restored": {
+    "ok": true,
+    "error": "nil",
+    "device": "default"
+  },
+  "source_art": "art/out/UI_FactionPremise_E_BlankFresh.png",
+  "typed_export": "art/ui/UIP_FactionPremise_FreshTyped.png",
+  "pending_redraw": [
+    "Halo card",
+    "Horns card",
+    "Neutral card",
+    "Title ribbon",
+    "Footer panel"
+  ],
+  "original_reported_problems_resolved": 1,
+  "original_reported_problem_groups": 6,
+  "limits": [
+    "MCP 3D background grey; UI inspection only.",
+    "Touch gesture feel not tested; simulator canvas movement used."
+  ],
+  "desktop": {
+    "viewport": [
+      793,
+      451
+    ],
+    "images_ready": 6,
+    "card_heights": [
+      243.00001525878906,
+      243.00001525878906,
+      243.00001525878906
+    ],
+    "minimum_button_height": 47.400001525878906,
+    "premise": {
+      "attrs": {
+        "FactionEPreloaded": true,
+        "FactionESemantic": true,
+        "FactionEReady": true,
+        "FactionECanDisplay": true,
+        "FactionEFetchStatus": "Enum.AssetFetchStatus.Success",
+        "FactionEFetchFailed": false
+      },
+      "name": "Premise",
+      "position": [
+        159,
+        52.80000305175781
+      ],
+      "loaded": true,
+      "size": [
+        472.20001220703125,
+        79.80000305175781
+      ]
+    },
+    "page": {
+      "position": [
+        0,
+        0
+      ],
+      "canvas": [
+        792.6000366210938,
+        450.6000061035156
+      ],
+      "size": [
+        792.6000366210938,
+        450.6000061035156
+      ]
+    }
+  },
+  "phone": {
+    "viewport": [
+      749,
+      361
+    ],
+    "images_ready": 6,
+    "card_heights": [
+      261.75,
+      261.75,
+      261.75
+    ],
+    "minimum_button_height": 48,
+    "premise": {
+      "attrs": {
+        "FactionEPreloaded": true,
+        "FactionESemantic": true,
+        "FactionEReady": true,
+        "FactionECanDisplay": true,
+        "FactionEFetchStatus": "Enum.AssetFetchStatus.Success",
+        "FactionEFetchFailed": false
+      },
+      "name": "Premise",
+      "position": [
+        7.5,
+        111
+      ],
+      "loaded": true,
+      "size": [
+        732.75,
+        124.5
+      ]
+    },
+    "page": {
+      "position": [
+        0,
+        0
+      ],
+      "canvas": [
+        748.5,
+        545
+      ],
+      "size": [
+        748.5,
+        286.5
+      ]
+    }
+  }
+}

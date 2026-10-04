@@ -1,0 +1,47 @@
+{
+  "fontLoaded": true,
+  "lines": [
+    {
+      "text": "세상을 지키던 균형의 왕관이 부서졌다.",
+      "width": 1892,
+      "scrollWidth": 1892
+    },
+    {
+      "text": "조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다.",
+      "width": 1892,
+      "scrollWidth": 1892
+    },
+    {
+      "text": "조각을 더 많이 모으는 쪽이 세상을 다시 만든다.",
+      "width": 1892,
+      "scrollWidth": 1892
+    }
+  ],
+  "copyBox": {
+    "x": 140,
+    "y": 221,
+    "width": 1892,
+    "height": 271
+  },
+  "glyphColor": "rgb(71, 32, 8)",
+  "export": {
+    "file": "art/ui/UIP_FactionPremise_FreshTyped.png",
+    "size": [
+      1024,
+      174
+    ],
+    "crop": {
+      "x": 67,
+      "y": 184,
+      "width": 2038,
+      "height": 345
+    },
+    "scale": 0.5024533856722276,
+    "fontRenderedAtTargetResolution": true
+  },
+  "previewOnly": false,
+  "artworkEdited": false,
+  "robloxFontAvailability": "Jua has no verified native Roblox FontFamily. This is a local font preview, not proof of native Roblox support.",
+  "approval": "approved",
+  "uploaded": true
+}

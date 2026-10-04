@@ -1,0 +1,7 @@
+Use case: ui-mockup
+Create exactly ONE completely new, isolated, blank fantasy RPG UI story panel from scratch. No previous image inputs; do not retouch any prior image.
+Transparent PNG with real alpha outside the panel.
+A long horizontal rectangle, width:height about 8:1, occupying 90% of the canvas width with transparent space around all four sides. Full border completely visible.
+A polished gold continuous double-beveled frame, subtly clipped corners, thin warm brown outer contour. Elegant cheerful Korean fantasy game style, softly dimensional golden metal frame with controlled highlights, clear clean silhouette. No flourishes intruding into the inner area. The interior is an entirely clean, smooth, even, very pale warm ivory/cream field.
+NO TEXT ANYWHERE. No characters, numbers, symbols, runes, crowns, icons, ribbons, stars, logo, watermark, shadow behind the panel, or scene background. No paper grain, texture, mottling, stains, ghost lettering, gradients or brush patches inside the blank cream field.
+This is one standalone production UI component, not an entire screen and not multiple panels. Crisp border at high resolution. Do not draw a checkerboard background.

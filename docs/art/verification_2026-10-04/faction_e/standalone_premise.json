@@ -1,0 +1,24 @@
+{
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a104e3-9120-72f1-82f4-2b2f5eb9f802\\exec-1d83cabc-9ff7-449c-91dc-f75269f6b47d.png",
+  "file": "art/out/UI_FactionPremise_E_Standalone.png",
+  "sha256": "102b0af674cd6ddbbae1173961b895032b0fd409d1a4b6f53fa62f473837065b",
+  "size": [
+    2072,
+    759
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "alpha_bounds": [
+    13,
+    8,
+    2057,
+    734
+  ],
+  "approval": "rejected",
+  "uploaded": false,
+  "method": "GPT separate standalone asset with transparent_background true, not extracted from a full UI screenshot.",
+  "rejection_reason": "User reported mottled/uneven glyphs at magnification and explicitly requested complete redraw without partial edits."
+}

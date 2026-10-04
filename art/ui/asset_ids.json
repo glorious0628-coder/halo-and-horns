@@ -164,5 +164,12 @@
   "Tex_Limestone": "rbxassetid://113099053145664",
   "UI_MapParchment": "rbxassetid://133911744102396",
   "UIP_IconPotionHP": "rbxassetid://100061379621289",
-  "UIP_IconPotionMP": "rbxassetid://133725941898063"
+  "UIP_IconPotionMP": "rbxassetid://133725941898063",
+  "UIP_FactionCardHaloE": "rbxassetid://115165874013728",
+  "UIP_FactionCardHornsE": "rbxassetid://117803151290007",
+  "UIP_FactionCardNeutralE": "rbxassetid://78748710982730",
+  "UIP_FactionTitleRibbonE": "rbxassetid://77703498329138",
+  "UIP_FactionPremisePanelE": "rbxassetid://101379550181314",
+  "UIP_FactionFooterPanelE": "rbxassetid://99568724265364",
+  "UIP_FactionPremise_FreshTyped": "rbxassetid://105024415024705"
 }

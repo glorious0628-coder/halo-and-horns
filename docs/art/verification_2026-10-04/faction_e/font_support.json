@@ -1,0 +1,388 @@
+{
+  "schema": 1,
+  "collected_at_utc": "2026-10-04T05:16:00.642965+00:00",
+  "purpose": "Approved faction E rounded Korean lettering: verify native Roblox FontFace availability without modifying source or downloading fonts.",
+  "queries": [
+    {
+      "keyword": "Jua",
+      "url": "https://apis.roblox.com/toolbox-service/v1/marketplace/73?keyword=Jua&pageNumber=0",
+      "http_status": 200,
+      "response_sha256": "8233123e2ad837f2df5012d5fc5e618c7b9f88b1d77bedb0c5f9641ae73ce0b9",
+      "response_json": {
+        "totalResults": 0,
+        "filteredKeyword": "Jua",
+        "spellCheckerResult": {
+          "correctionState": 0
+        },
+        "queryFacets": {
+          "appliedFacets": [],
+          "availableFacets": []
+        },
+        "data": []
+      },
+      "is_control": false
+    },
+    {
+      "keyword": "Gowun",
+      "url": "https://apis.roblox.com/toolbox-service/v1/marketplace/73?keyword=Gowun&pageNumber=0",
+      "http_status": 200,
+      "response_sha256": "0d9f7ede7d8e9379adb44a91515722aa7ea3d25dea6e5efc8a54ee8c325f9a20",
+      "response_json": {
+        "totalResults": 0,
+        "filteredKeyword": "Gowun",
+        "spellCheckerResult": {
+          "correctionState": 0
+        },
+        "queryFacets": {
+          "appliedFacets": [],
+          "availableFacets": []
+        },
+        "data": []
+      },
+      "is_control": false
+    },
+    {
+      "keyword": "Gaegu",
+      "url": "https://apis.roblox.com/toolbox-service/v1/marketplace/73?keyword=Gaegu&pageNumber=0",
+      "http_status": 200,
+      "response_sha256": "35030fe8a37c4dddfe1da587bc7f3300567e046605a4d2f0ca14f615b1eca641",
+      "response_json": {
+        "totalResults": 0,
+        "filteredKeyword": "Gaegu",
+        "spellCheckerResult": {
+          "correctionState": 0
+        },
+        "queryFacets": {
+          "appliedFacets": [],
+          "availableFacets": []
+        },
+        "data": []
+      },
+      "is_control": false
+    },
+    {
+      "keyword": "Nanum",
+      "url": "https://apis.roblox.com/toolbox-service/v1/marketplace/73?keyword=Nanum&pageNumber=0",
+      "http_status": 200,
+      "response_sha256": "7a31f059b41264d7662902aaf9b2f15486004685b0936116c6d9c30393b14412",
+      "response_json": {
+        "totalResults": 1,
+        "filteredKeyword": "Nanum",
+        "spellCheckerResult": {
+          "correctionState": 0
+        },
+        "queryFacets": {
+          "appliedFacets": [],
+          "availableFacets": []
+        },
+        "data": [
+          {
+            "id": 12187361718,
+            "searchResultSource": "LexicalWithSort"
+          }
+        ]
+      },
+      "is_control": true
+    },
+    {
+      "keyword": "Noto",
+      "url": "https://apis.roblox.com/toolbox-service/v1/marketplace/73?keyword=Noto&pageNumber=0",
+      "http_status": 200,
+      "response_sha256": "9011eed7a181543c03d2f50df2ed9d7bdfa3ea7cc52f80a748e37ef8acfe2ac7",
+      "response_json": {
+        "totalResults": 6,
+        "filteredKeyword": "Noto",
+        "spellCheckerResult": {
+          "correctionState": 0
+        },
+        "queryFacets": {
+          "appliedFacets": [],
+          "availableFacets": []
+        },
+        "data": [
+          {
+            "id": 12187376739,
+            "searchResultSource": "LexicalWithSort"
+          },
+          {
+            "id": 12187369639,
+            "searchResultSource": "LexicalWithSort"
+          },
+          {
+            "id": 12187370747,
+            "searchResultSource": "LexicalWithSort"
+          },
+          {
+            "id": 12187362892,
+            "searchResultSource": "LexicalWithSort"
+          },
+          {
+            "id": 12187368093,
+            "searchResultSource": "LexicalWithSort"
+          },
+          {
+            "id": 12187366846,
+            "searchResultSource": "LexicalWithSort"
+          }
+        ]
+      },
+      "is_control": true
+    }
+  ],
+  "local_family_lists": [
+    {
+      "directory": "C:\\Users\\glori\\AppData\\Local\\Roblox\\Versions\\version-02c37bc51a384b8f\\content\\fonts\\families",
+      "count": 43,
+      "names": [
+        "AccanthisADFStd.json",
+        "AmaticSC.json",
+        "Arimo.json",
+        "Balthazar.json",
+        "Bangers.json",
+        "BuilderExtended.json",
+        "BuilderMono.json",
+        "BuilderSans.json",
+        "ComicNeueAngular.json",
+        "Creepster.json",
+        "DenkOne.json",
+        "Fondamento.json",
+        "FredokaOne.json",
+        "GrenzeGotisch.json",
+        "Guru.json",
+        "HighwayGothic.json",
+        "Inconsolata.json",
+        "IndieFlower.json",
+        "JosefinSans.json",
+        "Jura.json",
+        "Kalam.json",
+        "LegacyArial.json",
+        "LegacyArimo.json",
+        "LuckiestGuy.json",
+        "Merriweather.json",
+        "Michroma.json",
+        "Montserrat.json",
+        "NotoSansCJKFallback.json",
+        "Nunito.json",
+        "Oswald.json",
+        "PatrickHand.json",
+        "PermanentMarker.json",
+        "PressStart2P.json",
+        "Roboto.json",
+        "RobotoCondensed.json",
+        "RobotoMono.json",
+        "RomanAntique.json",
+        "Sarpanch.json",
+        "SourceSansPro.json",
+        "SpecialElite.json",
+        "TitilliumWeb.json",
+        "Ubuntu.json",
+        "Zekton.json"
+      ],
+      "candidate_name_matches": []
+    },
+    {
+      "directory": "C:\\Users\\glori\\AppData\\Local\\Roblox\\Versions\\version-76e1a02649ad4f35\\content\\fonts\\families",
+      "count": 43,
+      "names": [
+        "AccanthisADFStd.json",
+        "AmaticSC.json",
+        "Arimo.json",
+        "Balthazar.json",
+        "Bangers.json",
+        "BuilderExtended.json",
+        "BuilderMono.json",
+        "BuilderSans.json",
+        "ComicNeueAngular.json",
+        "Creepster.json",
+        "DenkOne.json",
+        "Fondamento.json",
+        "FredokaOne.json",
+        "GrenzeGotisch.json",
+        "Guru.json",
+        "HighwayGothic.json",
+        "Inconsolata.json",
+        "IndieFlower.json",
+        "JosefinSans.json",
+        "Jura.json",
+        "Kalam.json",
+        "LegacyArial.json",
+        "LegacyArimo.json",
+        "LuckiestGuy.json",
+        "Merriweather.json",
+        "Michroma.json",
+        "Montserrat.json",
+        "NotoSansCJKFallback.json",
+        "Nunito.json",
+        "Oswald.json",
+        "PatrickHand.json",
+        "PermanentMarker.json",
+        "PressStart2P.json",
+        "Roboto.json",
+        "RobotoCondensed.json",
+        "RobotoMono.json",
+        "RomanAntique.json",
+        "Sarpanch.json",
+        "SourceSansPro.json",
+        "SpecialElite.json",
+        "TitilliumWeb.json",
+        "Ubuntu.json",
+        "Zekton.json"
+      ],
+      "candidate_name_matches": []
+    }
+  ],
+  "local_cmap_checks": [
+    {
+      "file": "C:\\Users\\glori\\AppData\\Local\\Roblox\\Versions\\version-76e1a02649ad4f35\\content\\fonts\\FredokaOne-Regular.ttf",
+      "sha256": "08a0193637baffaa1d9926085fe2a2716c1ce06136b74a9627e61663649c0f37",
+      "checked_unicode_range": "U+AC00–U+D7A3 (Hangul syllables)",
+      "unicode_cmap_records": [
+        {
+          "platform_id": 0,
+          "encoding_id": 3,
+          "format": 4,
+          "hangul_syllable_overlap_ranges": []
+        },
+        {
+          "platform_id": 3,
+          "encoding_id": 1,
+          "format": 4,
+          "hangul_syllable_overlap_ranges": []
+        }
+      ],
+      "hangul_syllable_overlap_range_count": 0,
+      "method": "Read TrueType table directory and Unicode cmap formats 4/12 with Python struct. No font editing or rendering.",
+      "limit": "Confirms these installed Regular font files lack Hangul syllable coverage; not a test of all remotely available family faces or actual Roblox fallback rendering."
+    },
+    {
+      "file": "C:\\Users\\glori\\AppData\\Local\\Roblox\\Versions\\version-76e1a02649ad4f35\\content\\fonts\\Nunito-Regular.ttf",
+      "sha256": "022bea9b64e6afc9146cc03d85a19fe8cca08ab9119142f90ea4ceb1577cdaa8",
+      "checked_unicode_range": "U+AC00–U+D7A3 (Hangul syllables)",
+      "unicode_cmap_records": [
+        {
+          "platform_id": 0,
+          "encoding_id": 3,
+          "format": 4,
+          "hangul_syllable_overlap_ranges": []
+        },
+        {
+          "platform_id": 3,
+          "encoding_id": 1,
+          "format": 4,
+          "hangul_syllable_overlap_ranges": []
+        }
+      ],
+      "hangul_syllable_overlap_range_count": 0,
+      "method": "Read TrueType table directory and Unicode cmap formats 4/12 with Python struct. No font editing or rendering.",
+      "limit": "Confirms these installed Regular font files lack Hangul syllable coverage; not a test of all remotely available family faces or actual Roblox fallback rendering."
+    }
+  ],
+  "google_metadata": [
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/jua/METADATA.pb",
+      "http_status": 200,
+      "sha256": "c6b70d2a511edacbfb1f216140d2b46e7375118b60113c82af492f489bbf7d67",
+      "family": "Jua",
+      "weights": [
+        400
+      ],
+      "subsets": [
+        "korean",
+        "latin",
+        "menu"
+      ],
+      "font_binary_downloaded": false
+    },
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/gowundodum/METADATA.pb",
+      "http_status": 200,
+      "sha256": "030c76da312a2b23eb97d1a65a05a06bc13ca1a7936f26ff4b2c4fa06b39cf2d",
+      "family": "Gowun Dodum",
+      "weights": [
+        400
+      ],
+      "subsets": [
+        "korean",
+        "latin",
+        "latin-ext",
+        "menu",
+        "vietnamese"
+      ],
+      "font_binary_downloaded": false
+    },
+    {
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/gaegu/METADATA.pb",
+      "http_status": 200,
+      "sha256": "4e264dd655a6f7f8e27ec89f735f197cd43cd4aa4c73b03deaf48a0f20383e91",
+      "family": "Gaegu",
+      "weights": [
+        300,
+        400,
+        700
+      ],
+      "subsets": [
+        "korean",
+        "latin",
+        "menu"
+      ],
+      "font_binary_downloaded": false
+    }
+  ],
+  "official_sources": [
+    {
+      "url": "https://create.roblox.com/docs/projects/assets",
+      "observed_claim": "Font assets cannot be imported; Creator Store fonts can be used.",
+      "short_quote": "You cannot import fonts",
+      "verification": "Official documentation retrieved with web tool in this session."
+    },
+    {
+      "url": "https://create.roblox.com/docs/reference/engine/datatypes/Font",
+      "observed_claim": "Font.fromName constructs a local content/fonts/families asset path; Font.fromId constructs a font family asset reference.",
+      "verification": "Official documentation retrieved with web tool in this session."
+    }
+  ],
+  "roblox_runtime_render_test": false,
+  "studio_mcp_calls": 0,
+  "paid_calls": 0,
+  "font_downloads": 0,
+  "source_changes": 0,
+  "verified_roblox_control_assets": [
+    {
+      "asset_id": 12187361718,
+      "url": "https://economy.roblox.com/v2/assets/12187361718/details",
+      "http_status": 200,
+      "name": "Nanum Gothic",
+      "asset_type_id": 73,
+      "creator": {
+        "Id": 1,
+        "Name": "Roblox",
+        "CreatorType": "User",
+        "CreatorTargetId": 1,
+        "HasVerifiedBadge": true
+      },
+      "native_styles_excerpt": "Native styles:\nRegular, Bold, Extra Bold"
+    },
+    {
+      "asset_id": 12187370747,
+      "url": "https://economy.roblox.com/v2/assets/12187370747/details",
+      "http_status": 200,
+      "name": "Noto Sans",
+      "asset_type_id": 73,
+      "creator": {
+        "Id": 1,
+        "Name": "Roblox",
+        "CreatorType": "User",
+        "CreatorTargetId": 1,
+        "HasVerifiedBadge": true
+      },
+      "native_styles_excerpt": "Native styles:\nThin, Thin Italic, Extra Light, Extra Light Italic, Light, Light Italic, Regular, Italic, Medium, Medium Italic, Semi Bold, Semi Bold Italic, Bold, Bold Italic, Extra Bold, Extra Bold Italic, Black, Black Italic"
+    }
+  ],
+  "interpretation": {
+    "candidate_native_availability": "No usable Roblox asset ID was found for Jua/Gowun/Gaegu in these exact public queries or installed font-family lists. This is a scoped negative search, not a claim about every private or future Roblox asset.",
+    "google_vs_roblox": "Korean coverage in Google Fonts metadata does not make that font available in Roblox.",
+    "from_name_warning": "Constructing a Font value or successfully measuring fallback text does not prove the requested Korean typeface loaded.",
+    "recommended": "Preserve approved E RGB lettering in E-specific image assets for fixed strings; retain live native text for dynamic strings and load failure; do not globally re-enable unrelated C lettering.",
+    "locale_strategy": "Use locale+exact current string to select an approved image. Hide native text only after confirmed asset load. For absent locale images or changed text, display localized native text. English lettering images require the existing GPT approval/upload workflow."
+  }
+}

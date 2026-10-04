@@ -1,0 +1,88 @@
+{
+  "blank_art": "art/out/UI_FactionPremise_E_BlankFresh.png",
+  "blank_art_sha256": "8772c538756367bba1037b1106259532c24bfbc1587f3bd35c1396c843709428",
+  "generated_with": "built_in_imagegen",
+  "reference_images": [],
+  "source_art_modified": false,
+  "font": "Jua Regular",
+  "font_source": "https://github.com/google/fonts/tree/main/ofl/jua",
+  "preview_html": "fresh_premise_preview.html",
+  "preview_render": "fresh_premise_typed.png",
+  "approval": "approved",
+  "uploaded": true,
+  "samples": [
+    {
+      "method": "Jua font typesetting",
+      "file": "fresh_premise_typed.png",
+      "region": [
+        140,
+        221,
+        2032,
+        492
+      ],
+      "selection": "R<125,G<95,B<70; 3x3 erosion by 1 pixel excludes edge antialiasing",
+      "interior_pixels": 33026,
+      "unique_rgb_count": 1,
+      "channel_min": [
+        71,
+        32,
+        8
+      ],
+      "channel_max": [
+        71,
+        32,
+        8
+      ],
+      "exact_type_color_pixels": 33026
+    },
+    {
+      "method": "Generated text",
+      "file": "fresh_premise_light_dark.png",
+      "region": [
+        140,
+        221,
+        2032,
+        492
+      ],
+      "selection": "R<125,G<95,B<70; 3x3 erosion by 1 pixel excludes edge antialiasing",
+      "interior_pixels": 66353,
+      "unique_rgb_count": 5000,
+      "channel_min": [
+        45,
+        4,
+        1
+      ],
+      "channel_max": [
+        108,
+        54,
+        29
+      ],
+      "exact_type_color_pixels": 0
+    }
+  ],
+  "limitations": [
+    "Jua is rasterized at the production output size rather than registered as a native Roblox FontFamily.",
+    "Edge pixels retain normal antialiasing; finite raster resolution still matters when enlarged.",
+    "Client screenshots validate UI; 3D background was grey in MCP captures."
+  ],
+  "approval_quote": "ㅇㅇㅇ",
+  "approval_question": "방금 보여드린 새 설명판과 둥근 글씨로 적용할까요? 밝고 어두운 배경, 글자 6배 확대본까지 확인했습니다.",
+  "approved_preview_sha256": "b702e236ece1f4560b45686ca11615c6eec9ce9e8453440ea73538efe201258c",
+  "production_export": "art/ui/UIP_FactionPremise_FreshTyped.png",
+  "production_export_sha256": "de9cc448e03eb9d81602f6181da761fcca742893bce58cffaa758afa71491384",
+  "production_export_size": [
+    1024,
+    174
+  ],
+  "production_font": "Jua rendered into a fixed text raster at output resolution; no unverified native FontFace required.",
+  "asset_id": "rbxassetid://105024415024705",
+  "client_verified": true,
+  "client_evidence": [
+    "fresh_desktop.json",
+    "fresh_desktop.jpeg",
+    "fresh_phone.json",
+    "fresh_phone.jpeg",
+    "fresh_phone_cards.jpeg",
+    "fresh_device_restored.json"
+  ]
+}

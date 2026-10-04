@@ -1,0 +1,98 @@
+{
+  "date_kst": "2026-10-04",
+  "desktop": {
+    "viewport": [
+      793,
+      451
+    ],
+    "all_cards_ready": true,
+    "all_panels_ready": true,
+    "card_canvas_heights": [
+      256.8000183105469,
+      256.8000183105469,
+      256.8000183105469
+    ],
+    "visible_card_heights": [
+      250.33964049141363,
+      250.33964049141363,
+      249.93586687771779
+    ],
+    "minimum_button_height": 47.400001525878906,
+    "world_labels_enabled_during_picker": 0,
+    "core_chat_during_picker": false,
+    "page": {
+      "position": [
+        0,
+        0
+      ],
+      "canvas": [
+        792.6000366210938,
+        450.6000061035156
+      ],
+      "size": [
+        792.6000366210938,
+        450.6000061035156
+      ]
+    }
+  },
+  "phone": {
+    "viewport": [
+      750,
+      362
+    ],
+    "all_cards_ready": true,
+    "all_panels_ready": true,
+    "card_canvas_heights": [
+      261.75,
+      261.75,
+      261.75
+    ],
+    "visible_card_heights": [
+      255.16509433962264,
+      255.16509433962264,
+      254.75353773584905
+    ],
+    "minimum_button_height": 48,
+    "world_labels_enabled_during_picker": 0,
+    "core_chat_during_picker": false,
+    "page": {
+      "position": [
+        0,
+        156.74998474121094
+      ],
+      "canvas": [
+        750,
+        515
+      ],
+      "size": [
+        750,
+        288
+      ]
+    }
+  },
+  "final_screenshots": [
+    "desktop_fixed.jpeg",
+    "phone_cards.jpeg",
+    "phone_fixed.jpeg"
+  ],
+  "source_rgb_max_delta": 0,
+  "successful_roblox_uploads": 9,
+  "current_parts_used": 6,
+  "tripo_credits_spent": 0,
+  "user_alpha_report_sha256": "d8d40d23f3b05d933309225d2338619cc2db5a3d95a9bada73ad9eb96c83f19e",
+  "play_evidence": [
+    "choice_play.json",
+    "travel_play.json",
+    "hunt_play.json",
+    "hunt_finish_play.json",
+    "reward_play.json"
+  ],
+  "limits": [
+    "Studio MCP engine movement/remotes used; no mouse/keyboard/touch feel test.",
+    "MCP screenshots show UI but 3D scene is grey/white. User report contains the rendered 3D world. No 3D appearance pass claimed.",
+    "Studio DataStore unavailable; test was in-memory, not a persistence pass.",
+    "Phone page uses vertical scrolling; card row has no internal vertical clipping."
+  ],
+  "visual_final_approval": false,
+  "current_visual_status": "Superseded for current runtime numbers by fresh_client_metrics.json. New description panel approved/applied, 1 of 6 redrawn parts. Original E data below is historical."
+}

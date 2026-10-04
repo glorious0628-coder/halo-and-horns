@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "status": "applied_and_verified",
+  "timestamp_utc": "20261004T060632465630Z",
+  "originals_identical": true,
+  "original_bytes": 12524310,
+  "original_sha256": "0dba3bc50912b3ce1a39b1ef0bd70874d001fdc71c9a22a8ad603c4012923f0f",
+  "updated_bytes": 12525170,
+  "updated_sha256": "d5c889688cc2a006bccd3985274ca934586a557e4720eb1f29aabf6646141f34",
+  "changed": true,
+  "checks": {
+    "instance_count": 4501,
+    "source_replacements": [
+      {
+        "instance_path": "StarterPlayer/StarterPlayerScripts/FactionPicker",
+        "referent": "RBX12E12F3B642E486C9C4ACF5B42554FF5",
+        "source_file": "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau",
+        "changed": true,
+        "old_source_sha256": "e2b04bdf5064e1c5c531d1ba21a07602055f21412c4c9036842faf89d9a623e2",
+        "old_body_bytes": 78288,
+        "new_body_bytes": 78996,
+        "source_sha256": "3d0b7dcb7bf2de3ab310e00e6d131dbe9c7744925fb81f2791b5edd5eb5921ba"
+      },
+      {
+        "instance_path": "ReplicatedStorage/Shared/Config",
+        "referent": "RBX69436A65202049959533F9E0CF169092",
+        "source_file": "src/ReplicatedStorage/Shared/Config.luau",
+        "changed": true,
+        "old_source_sha256": "21a2acd67ad4bc1113e5d145f06a893dd3b7044044ed2278465e91241d5f0b0f",
+        "old_body_bytes": 100353,
+        "new_body_bytes": 100505,
+        "source_sha256": "dfaff741f150235bf2441af9ffbac30fc133a66e1ccef1417678c45a73965bf6"
+      }
+    ],
+    "all_other_bytes_unchanged": true,
+    "both_sources_match_files": true,
+    "asset_changes_allowed_only_inside_target_sources": true,
+    "untouched_bytes_sha256": "214807870861893369970376bb9fd2a63a0997c5af76a624960e3971c5f55f21",
+    "xml_except_target_sources_sha256": "9759e0db57533258d899c835038e3922adbf85d7efc57b4127ce7bd7d0085ddd",
+    "asset_fields_outside_target_sources_count": 520,
+    "asset_fields_outside_target_sources_sha256": "6fe913536ba9f13f14b5aeb975a2de940f9c28bfc123b16d418f8c6325d1b0cd",
+    "second_run_byte_identical": true
+  },
+  "targets": [
+    {
+      "path": "build/GoodEvil.rbxlx",
+      "backup": "build/faction_source_backups/20261004T060632465630Z/build_GoodEvil.rbxlx",
+      "backup_sha256": "0dba3bc50912b3ce1a39b1ef0bd70874d001fdc71c9a22a8ad603c4012923f0f"
+    },
+    {
+      "path": "place/GoodEvil.rbxlx",
+      "backup": "build/faction_source_backups/20261004T060632465630Z/place_GoodEvil.rbxlx",
+      "backup_sha256": "0dba3bc50912b3ce1a39b1ef0bd70874d001fdc71c9a22a8ad603c4012923f0f"
+    }
+  ],
+  "final_files_identical": true
+}

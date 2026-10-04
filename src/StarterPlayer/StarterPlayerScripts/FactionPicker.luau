@@ -12,6 +12,9 @@ local GuiService = game:GetService("GuiService")
 local TweenService = game:GetService("TweenService")
 local TextService = game:GetService("TextService")
 local UserInputService = game:GetService("UserInputService")
+local ContentProvider = game:GetService("ContentProvider")
+local StarterGui = game:GetService("StarterGui")
+local TextChatService = game:GetService("TextChatService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -49,6 +52,23 @@ local Art = {
 	Colors = type(ART.Colors) == "table" and ART.Colors or {},
 	Fonts = type(ART.Fonts) == "table" and ART.Fonts or {},
 }
+
+-- E owns its parts; shared CardHalo/TitleRibbon/PanelParchment are also used by other screens.
+local E = {
+	Config = type(ART.FactionE) == "table" and ART.FactionE or {},
+	World = { Active = false, Records = {}, Connections = {}, LegacyChat = nil, CoreChat = nil },
+	Warnings = {},
+}
+E.Enabled = Art.Enabled and E.Config.Enabled == true
+E.Parts = type(E.Config.Parts) == "table" and E.Config.Parts or {}
+E.Layout = type(E.Config.Layout) == "table" and E.Config.Layout or {}
+E.Semantics = type(E.Config.SemanticText) == "table" and E.Config.SemanticText or {}
+E.BakedText = E.Config.BakedText == true
+E.Enabled = E.Enabled and E.BakedText
+E.Keys = { Halo = "FactionCardHaloE", Horns = "FactionCardHornsE", Neutral = "FactionCardNeutralE",
+	Title = "FactionTitleRibbonE", Premise = "FactionPremisePanelE", Footer = "FactionFooterPanelE" }
+E.Rects = { Title = { 0.3258, 0.0282, 0.3460, 0.1007 }, Premise = { 0.1553, 0.1309, 0.6869, 0.1320 },
+	Cards = { 0.1515, 0.2638, 0.6881, 0.6254 }, Footer = { 0.2071, 0.8892, 0.5808, 0.0806 } }
 
 -- art layout tunables (canvas units = inside MainGui's UIScale)
 local LAY = {
@@ -290,8 +310,13 @@ end
 
 local function applyFont(label, font)
 	local title = font == Enum.Font.GothamBlack or font == Art.Fonts.Title
+	local fonts = E.Enabled and E.Config.Fonts
+	local explicit = type(fonts) == "table" and fonts[title and "Title" or "Body"]
 	if UIKit and type(UIKit.ApplyFont) == "function" then
-		pcall(UIKit.ApplyFont, label, title and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
+		pcall(UIKit.ApplyFont, label, typeof(explicit) == "Font" and explicit
+			or (title and Enum.FontWeight.Bold or Enum.FontWeight.Regular))
+	elseif typeof(explicit) == "Font" then
+		pcall(function() label.FontFace = explicit end)
 	end
 	return label
 end
@@ -458,6 +483,110 @@ local function region(r, W, H)
 	return (r[1] or 0) * W, (r[2] or 0) * H, (r[3] or 1) * W, (r[4] or 1) * H
 end
 
+function E.warn(key, message)
+	if E.Warnings[key] then return end
+	E.Warnings[key] = true
+	Util.Warn(TAG, "E " .. tostring(message))
+end
+
+function E.key(role)
+	local key = E.Parts[role]
+	return type(key) == "string" and key ~= "" and key or E.Keys[role]
+end
+
+function E.sameLines(actual, expected)
+	if type(actual) ~= "table" or type(expected) ~= "table" or #actual ~= #expected then return false end
+	for i, line in actual do
+		if type(line) ~= "string" or line ~= expected[i] then return false end
+	end
+	return true
+end
+
+function E.semantic(role, id)
+	if not E.BakedText then return true end
+	-- This is an approved Korean image, not an English localization implementation.
+	if E.Config.Locale ~= "ko" then return false end
+	local expected = E.Semantics[role]
+	if role == "Title" then return expected == T.Title end
+	if role == "Footer" then return expected == T.Footer end
+	if role == "Premise" then return E.sameLines(Config.Story.Premise, expected) end
+	local definitions = E.Semantics.Cards
+	expected = type(definitions) == "table" and definitions[id]
+	if type(expected) ~= "table" then return false end
+	local def, perks = factionDef(id), {}
+	for _, row in perkRows(id) do table.insert(perks, row.Text) end
+	return expected.Name == def.Name and expected.Desc == LAY.LoreShort[id]
+		and expected.Motto == def.Pitch and expected.Button == T.Choose
+		and E.sameLines(perks, expected.Perks)
+end
+
+function E.part(role)
+	local key = E.key(role)
+	return key, partSize(key), artId(key)
+end
+
+-- Never hide readable fallback content before the full image is actually ready.
+function E.watchImage(image, state, role, id, apply)
+	state.Image = image
+	state.Failed, state.Ready, state.CanDisplay, state.Preloaded = false, false, true, false
+	state.Semantic = E.semantic(role, id)
+	if not state.Semantic then E.warn(role .. tostring(id), "문구 스냅샷 불일치: " .. role .. tostring(id or "")) end
+	state.Update = function()
+		if not image.Parent then return end
+		if image.IsLoaded and (not state.Preloaded or state.Failed) then
+			-- A first fetch can time out while the renderer later finishes the same asset.
+			local ok, status = pcall(ContentProvider.GetAssetFetchStatus, ContentProvider, image.Image)
+			if ok and status == Enum.AssetFetchStatus.Success then
+				state.Preloaded, state.Failed = true, false
+				state.FetchStatus = tostring(status)
+			end
+		end
+		local ready = state.Semantic and state.Preloaded and not state.Failed and state.CanDisplay and image.IsLoaded
+		state.Ready = ready
+		-- Invisible ImageLabels can remain disk-cached without becoming IsLoaded. Let the renderer
+		-- prepare a nearly transparent image while the complete readable fallback stays above/below it.
+		image.Visible = state.Semantic and not state.Failed and state.CanDisplay and image.Image ~= ""
+		image.ImageTransparency = ready and 0 or 0.999
+		image:SetAttribute("FactionEReady", ready)
+		image:SetAttribute("FactionESemantic", state.Semantic)
+		image:SetAttribute("FactionEPreloaded", state.Preloaded)
+		image:SetAttribute("FactionEFetchFailed", state.Failed)
+		image:SetAttribute("FactionECanDisplay", state.CanDisplay)
+		image:SetAttribute("FactionEFetchStatus", state.FetchStatus or "Pending")
+		apply(ready)
+	end
+	image:GetPropertyChangedSignal("IsLoaded"):Connect(state.Update)
+	state.Update()
+	if image.Image == "" then return end
+	task.spawn(function()
+		local failed = false
+		local ok, err = pcall(function()
+			ContentProvider:PreloadAsync({ image }, function(_, status)
+				state.FetchStatus = tostring(status)
+				if status ~= Enum.AssetFetchStatus.Success then failed = true end
+			end)
+		end)
+		if not image.Parent then return end
+		state.Failed = not ok or failed
+		state.Preloaded = not state.Failed
+		if not ok then state.FetchStatus = tostring(err) end
+		if state.Failed then E.warn("load" .. role .. tostring(id), "이미지 로드 실패, 글자 대체 표시: " .. role .. tostring(id or "")) end
+		state.Update()
+	end)
+end
+
+function E.refreshImages()
+	if not E.Enabled or not root or not root.Visible then return end
+	-- Scrolling an offscreen image into view can finish rendering without an IsLoaded signal.
+	-- The existing visibility poll reconciles all six images; no additional timer is needed.
+	for _, state in E.Panels or {} do
+		if state.Update then state.Update() end
+	end
+	for _, card in cards do
+		if card.E and card.E.Update then card.E.Update() end
+	end
+end
+
 local function tween(obj, t, props)
 	if not obj or not obj.Parent then return end
 	local ok, tw = pcall(function()
@@ -612,7 +741,14 @@ local function refreshButtons()
 	for _, c in cards do
 		local btn = c.Button
 		btn:SetAttribute("Disabled", not enabled)
-		if c.Art then
+		if c.E then
+			c.E.FallbackButton:SetAttribute("Disabled", not enabled)
+			c.E.FallbackButton.Text = enabled and T.Choose or T.Wait
+			c.E.FallbackButton.BackgroundColor3 = enabled and c.Color or c.Color:Lerp(DISABLED, 0.7)
+			c.E.FallbackButton.TextTransparency = enabled and 0 or 0.4
+			c.E.FallbackButton.AutoButtonColor = false
+			if not enabled then c.Down = false end
+		elseif c.Art then
 			c.Label.Text = enabled and T.Choose or T.Wait
 			c.Label.TextTransparency = enabled and 0 or 0.35
 			if not enabled then c.Down = false end
@@ -632,6 +768,7 @@ local function updateBadges()
 	for id, c in cards do
 		-- the +300 sign-on bonus exists only between Halo and Horns (A6)
 		c.Badge.Visible = (id == "Halo" or id == "Horns") and weaker == id
+		if c.E then c.E.FallbackBadge.Visible = false end
 	end
 end
 
@@ -944,6 +1081,89 @@ local function buildOldCard(c, id)
 	c.Aspect = LAY.OldAspect
 end
 
+function E.aspect()
+	local configured = E.Config.CardAspect
+	if type(configured) == "number" and configured > 0.1 and configured < 2 then return configured end
+	local size = partSize(E.key("Halo"))
+	return size and size.X / size.Y or 360 / 640
+end
+
+function E.buttonRect(id)
+	local cardLayout = Art.Layout[E.key(id)]
+	local supplied = E.Config.ButtonRects
+	local r = type(supplied) == "table" and supplied[id]
+	if type(r) ~= "table" then r = type(cardLayout) == "table" and cardLayout.Button end
+	if type(r) == "table" and #r == 4 then
+		local valid = true
+		for _, value in r do
+			if type(value) ~= "number" or value ~= value or value < 0 or value > 1 then valid = false end
+		end
+		if valid and r[3] > 0 and r[4] > 0 and r[1] + r[3] <= 1 and r[2] + r[4] <= 1 then return r end
+	end
+	E.warn("button" .. id, "선택 버튼 영역 없음: " .. id)
+	return { 0.12, 0.82, 0.76, 0.12 }
+end
+
+function E.buildCard(c, id)
+	-- The complete old code card remains readable while the E asset is missing or rejected.
+	buildOldCard(c, id)
+	local fallbackPanel = c.Body:FindFirstChild("Panel")
+	local oldButton, oldBadge = c.Button, c.Badge
+	local key, size, imageId = E.part(id)
+	local bg = newImage(c.Body, "FactionEArt", 3)
+	bg.Size = UDim2.fromScale(1, 1)
+	bg.ScaleType = Enum.ScaleType.Fit
+	bg.Image = imageId or ""
+	bg.Visible = false
+	local hit = Instance.new("ImageButton")
+	hit.Name = "ChooseButtonE"
+	hit.BackgroundTransparency = 1
+	hit.BorderSizePixel = 0
+	hit.AutoButtonColor = false
+	hit.Image = ""
+	hit.Visible = false
+	hit.ZIndex = 6
+	hit.Parent = c.Body
+	local rect = E.buttonRect(id)
+	local shade = newImage(c.Body, "ButtonShadeE", 4)
+	shade.ScaleType = Enum.ScaleType.Stretch
+	shade.Image = imageId or ""
+	shade.ImageColor3 = LAY.LockTint
+	shade.ImageTransparency = 1
+	shade.Visible = false
+	if size then
+		shade.ImageRectOffset = Vector2.new(rect[1] * size.X, rect[2] * size.Y)
+		shade.ImageRectSize = Vector2.new(rect[3] * size.X, rect[4] * size.Y)
+	end
+	local badge = sliceFrame(c.Body, "WeakerBadgeE", "Pill", 7)
+	badge.Visible = false
+	local badgeText = artLabel(badge, "Text", 1)
+	badgeText.AnchorPoint = Vector2.new(0.5, 0.5)
+	badgeText.Position = UDim2.fromScale(0.5, 0.5)
+	badgeText.Size = UDim2.fromScale(0.86, 0.8)
+	badgeText.Text = weakerText()
+	styleText(badgeText, "ink")
+	c.E = { Key = key, FallbackPanel = fallbackPanel, FallbackButton = oldButton,
+		FallbackBadge = oldBadge, ButtonRect = rect, Background = bg }
+	c.Button, c.Shade, c.Badge, c.BadgeText = hit, shade, badge, badgeText
+	c.Aspect = E.aspect()
+	wirePress(c, id)
+	oldButton.SelectionGained:Connect(function() c.Hover = true; cardVisual(c) end)
+	oldButton.SelectionLost:Connect(function() c.Hover = false; cardVisual(c) end)
+	E.watchImage(bg, c.E, "Card", id, function(ready)
+		fallbackPanel.Visible = not ready
+		oldBadge.Visible = false
+		hit.Visible = ready
+		shade.Visible = ready
+		c.Body:SetAttribute("FactionERenderMode", ready and "BakedKorean" or "LiveFallback")
+	end)
+	if size and math.abs(size.X / size.Y - c.Aspect) > 0.002 then
+		c.E.Semantic = false
+		E.warn("aspect" .. id, "공통 카드 비율 불일치: " .. id)
+		c.E.Update()
+	end
+end
+
 -- one card slot in the row: Body (scaled on hover / press) holding the art card or the code-styled card + glow
 local function buildCard(id, order)
 	local slot = Instance.new("Frame")
@@ -970,7 +1190,16 @@ local function buildCard(id, order)
 		Aspect = LAY.OldAspect, Art = false, Hover = false, Down = false,
 	}
 	local key, lay, img, imageId = cardArt(id)
-	if key then
+	if E.Enabled then
+		local ok, err = pcall(E.buildCard, c, id)
+		if not ok then
+			E.warn("build" .. id, "카드 생성 실패, 대체 표시: " .. id .. " " .. tostring(err))
+			for _, child in body:GetChildren() do
+				if child ~= scale then child:Destroy() end
+			end
+			c.E, c.Art, c.Shade = nil, false, nil
+		end
+	elseif key then
 		local ok, err = pcall(buildArtCard, c, id, lay, img, imageId)
 		if not ok then
 			Util.Warn(TAG, "art card " .. key .. " failed, drawing the code card: " .. tostring(err))
@@ -980,7 +1209,7 @@ local function buildCard(id, order)
 			c.Art, c.Shade, c.Layout, c.Perks = false, nil, nil, nil
 		end
 	end
-	if not c.Art then buildOldCard(c, id) end
+	if not c.Art and not c.E then buildOldCard(c, id) end
 	buildGlow(c)
 	wireHover(c)
 	cards[id] = c
@@ -997,8 +1226,28 @@ local function layoutOldCard(c, compact, s)
 	c.Name.Size = UDim2.new(1, -16, 0, math.floor(hh * 0.38))
 	c.Scroll.Position = UDim2.new(0, 10, 0, hh + 10)
 	c.Scroll.Size = UDim2.new(1, -20, 1, -(hh + 10 + bh + 20))
-	c.Button.Position = UDim2.new(0.5, 0, 1, -10)
-	c.Button.Size = UDim2.new(1, -24, 0, bh)
+	local button = c.E and c.E.FallbackButton or c.Button
+	button.Position = UDim2.new(0.5, 0, 1, -10)
+	button.Size = UDim2.new(1, -24, 0, bh)
+end
+
+function E.layoutCard(c, W, H, minT, s)
+	layoutOldCard(c, H < 420, s)
+	if not c.E then return end
+	local x, y, w, h = region(c.E.ButtonRect, W, H)
+	place(c.Shade, x, y, w, h)
+	-- Offsets are raster-rounded after UIScale, and the pressed card scales down by 0.95.
+	local minHit = math.ceil((LAY.TouchTarget + 1) / (s * LAY.PressScale))
+	local hitH = math.min(H, math.max(h, minHit))
+	local hitW = math.min(W, math.max(w, minHit))
+	place(c.Button, math.clamp(x + w / 2 - hitW / 2, 0, math.max(0, W - hitW)),
+		math.clamp(y + h / 2 - hitH / 2, 0, math.max(0, H - hitH)), hitW, hitH)
+	local badgeH = math.max(minT * 2.7, H * 0.085)
+	place(c.Badge, W * 0.03, H * 0.008, W * 0.94, badgeH)
+	setTextRange(c.BadgeText, minT, math.max(minT, badgeH * 0.34))
+	c.Body:SetAttribute("FactionECardHeight", H * s)
+	c.Body:SetAttribute("FactionEButtonCenterY", (y + h / 2) * s)
+	c.E.DisplayHeight = H * s
 end
 
 -- A full sentence can shrink until the real 11px floor. If it still cannot fit, try every approved compact
@@ -1180,6 +1429,11 @@ end
 
 -- Match the three original bitmap widths and their baked button centres without stretching any card.
 local function prepareCardBalance()
+	if E.Enabled then
+		LAY.CardAspect, LAY.BalancedHeight = E.aspect(), 1
+		for _, c in cards do c.HeightFactor, c.YFactor = 1, 0 end
+		return
+	end
 	local aspect, baseline = math.huge, 0
 	for _, id in FACTION_IDS do
 		local c = cards[id]
@@ -1204,7 +1458,12 @@ local function prepareCardBalance()
 	end
 end
 
--- Desktop A always fits complete cards into the final area. Only a narrow touch viewport retains scroll.
+local function fittedCardHeight(areaW, areaH, sumAspect, gaps, balancedHeight, s)
+	return math.min(math.max(1, areaH - 4) / (balancedHeight + 2 * LAY.Lift),
+		LAY.CardMaxH / s, math.max(1, areaW - gaps - 4) / (sumAspect + 2 * LAY.Lift))
+end
+
+-- Desktop cards fit their slot; E switches to the whole-page flow before they become unreadable.
 local function placeCards(x, y, areaW, areaH, needH, minT, s)
 	prepareCardBalance()
 	local n, sumA = 0, 0
@@ -1217,10 +1476,8 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 	end
 	if n == 0 then return end
 	local gaps = LAY.Gap * (n - 1)
-	local phone = UserInputService.TouchEnabled and areaW * s < 700
-	local cardH = math.min(math.max(1, areaH - 4) / (LAY.BalancedHeight + 2 * LAY.Lift), LAY.CardMaxH / s)
-	local fitH = math.max(1, areaW - gaps - 4) / (sumA + 2 * LAY.Lift)
-	cardH = math.min(cardH, fitH)
+	local phone = (UserInputService.TouchEnabled and areaW * s < 700) or (E.Enabled and needH > 0)
+	local cardH = fittedCardHeight(areaW, areaH, sumA, gaps, LAY.BalancedHeight, s)
 	if phone then cardH = math.max(needH, cardH) end
 	cardH = math.max(1, math.floor(cardH))
 	local lift = math.ceil(cardH * LAY.Lift)
@@ -1248,9 +1505,11 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 		local c = cards[id]
 		if c then
 			local cw = math.floor(cardH * LAY.CardAspect)
-			local ch = cw / c.Aspect
+			local ch = E.Enabled and cw / LAY.CardAspect or cw / c.Aspect
 			place(c.Slot, cx, lift + (cw / LAY.CardAspect) * c.YFactor, cw, ch)
-			if c.Art then
+			if E.Enabled then
+				E.layoutCard(c, cw, ch, minT, s)
+			elseif c.Art then
 				layoutArtCard(c, cw, ch, minT, s)
 			else
 				layoutOldCard(c, ch < 420, s)
@@ -1260,11 +1519,183 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 	end
 end
 
+function E.buildPanels()
+	E.Panels = {}
+	for role, fallback in { Title = heading.Frame, Premise = premiseFrame, Footer = note.Frame } do
+		local key, size, imageId = E.part(role)
+		local image = newImage(root, "FactionE" .. role, 3)
+		image.Image = imageId or ""
+		image.ScaleType = Enum.ScaleType.Fit
+		image.Visible = false
+		local state = { Key = key, Size = size, Fallback = fallback }
+		E.Panels[role] = state
+		E.watchImage(image, state, role, nil, function(ready) fallback.Visible = not ready end)
+	end
+	-- One outer vertical canvas owns the entire small-screen choice, including its buttons.
+	-- The card row may scroll sideways, but never gets a short independent vertical window.
+	local scroll = Instance.new("ScrollingFrame")
+	scroll.Name = "FactionEContent"
+	scroll.BackgroundTransparency = 1
+	scroll.BorderSizePixel = 0
+	scroll.ScrollingDirection = Enum.ScrollingDirection.Y
+	scroll.ScrollingEnabled = false
+	scroll.ScrollBarThickness = 0
+	scroll.ScrollBarImageColor3 = artColor("Gold", theme.Gold)
+	scroll.ElasticBehavior = Enum.ElasticBehavior.WhenScrollable
+	scroll.CanvasSize = UDim2.fromOffset(0, 0)
+	scroll.Active = true
+	scroll.ZIndex = 2
+	scroll.Parent = root
+	local content = Instance.new("Frame")
+	content.Name = "Content"
+	content.BackgroundTransparency = 1
+	content.BorderSizePixel = 0
+	content.Parent = scroll
+	for _, state in E.Panels do
+		state.Image.Parent = content
+		state.Fallback.Parent = content
+	end
+	cardsRow.Parent = content
+	E.Scroll, E.Content = scroll, content
+end
+
+function E.rect(role)
+	local rect = E.Layout[role]
+	if type(rect) == "table" and #rect == 4 then
+		local valid = true
+		for _, value in rect do
+			if type(value) ~= "number" or value ~= value or value < 0 or value > 1 then valid = false end
+		end
+		if valid and rect[3] > 0 and rect[4] > 0 then return rect end
+	end
+	return E.Rects[role]
+end
+
+function E.placePanel(role, x, y, w, h, s, minT, compact)
+	local state = E.Panels and E.Panels[role]
+	if not state then return end
+	place(state.Image, x, y, w, h)
+	place(state.Fallback, x, y, w, h)
+	local minimums = type(E.Config.MinBakedWidth) == "table" and E.Config.MinBakedWidth or {}
+	local defaultMinimum = role == "Premise" and 480 or (role == "Footer" and 380 or 200)
+	state.CanDisplay = w * s >= (tonumber(minimums[role]) or defaultMinimum)
+	if role == "Title" then
+		setTextRange(heading.Text, minT, h * 0.46)
+	elseif role == "Premise" then
+		local pad = math.max(4 / s, h * 0.08)
+		local rowH = math.max(1, (h - pad * 2) / math.max(1, #premiseLabels))
+		for i, label in premiseLabels do
+			label.TextWrapped = compact
+			place(label, pad * 2, pad + (i - 1) * rowH, w - pad * 4, rowH)
+			setTextRange(label, minT, math.max(minT, math.min(rowH * 0.7, (compact and 13 or 16) / s)))
+		end
+	else
+		local iconW = math.min(h * 0.65, 30 / s)
+		local pad = math.max(6 / s, h * 0.10)
+		place(note.Icon, pad, (h - iconW) / 2, iconW, iconW)
+		place(note.Text, pad * 2 + iconW, pad, math.max(1, w - pad * 3 - iconW), h - pad * 2)
+		note.Text.TextWrapped = compact
+		setTextRange(note.Text, minT, math.max(minT, math.min(h * 0.4, (compact and 12 or 16) / s)))
+	end
+	state.Update()
+end
+
+function E.layoutScreen(w, h, top, s, minT)
+	local reference = E.Layout.ReferenceSize
+	if typeof(reference) ~= "Vector2" or reference.X <= 0 or reference.Y <= 0 then reference = Vector2.new(1584, 993) end
+	local fit = math.min(w / reference.X, h / reference.Y)
+	local W, H = reference.X * fit, reference.Y * fit
+	local _, _, areaW, areaH = region(E.rect("Cards"), W, H)
+	local count = 0
+	for _, id in FACTION_IDS do if cards[id] then count += 1 end end
+	local aspect = E.aspect()
+	local fitH = fittedCardHeight(areaW, areaH, count * aspect, LAY.Gap * math.max(0, count - 1), 1, s)
+	-- Match both raster-rounding steps in placeCards so a changed reference layout cannot select
+	-- the desktop path and then drop its artwork for a sub-minimum-height code card.
+	local desktopCardH = math.floor(math.max(1, math.floor(fitH)) * aspect) / aspect * s
+	local narrow = w * s < 700 or h * s < 420 or (UserInputService.TouchEnabled and h * s < 460)
+		or desktopCardH < (tonumber(E.Config.MinBakedCardHeight) or 240)
+	local scroll, content = E.Scroll, E.Content
+	if E.Narrow ~= narrow then
+		scroll.CanvasPosition = Vector2.zero
+		cardsRow.CanvasPosition = Vector2.zero
+	end
+	E.Narrow = narrow
+	if narrow then
+		-- Keep complete cards in the page. Only the whole page scrolls vertically on short screens.
+		local gutter, gap = 8 / s, 6 / s
+		local innerW = math.max(1, w - gutter * 2)
+		local usableH = math.max(1, h - top - gutter)
+		place(scroll, 0, top, w, usableH)
+		local titleH = math.min(56 / s, innerW / 4, math.max(28 / s, usableH * 0.12))
+		local titleSize = E.Panels and E.Panels.Title and E.Panels.Title.Size
+		local titleAspect = typeof(titleSize) == "Vector2" and titleSize.X / math.max(1, titleSize.Y) or 5.4
+		local minimums = type(E.Config.MinBakedWidth) == "table" and E.Config.MinBakedWidth or {}
+		-- Keep the approved title legible on a short landscape viewport too; retain its source ratio.
+		local minimumTitleW = ((tonumber(minimums.Title) or 200) + 2) / s
+		titleH = math.min(innerW / titleAspect, math.max(titleH, minimumTitleW / titleAspect))
+		local titleW = titleH * titleAspect
+		local y = 0
+		E.placePanel("Title", (w - titleW) / 2, y, titleW, titleH, s, minT, true)
+		y += titleH + gap
+		local premiseSize = E.Panels.Premise.Size
+		local premiseAspect = typeof(premiseSize) == "Vector2" and premiseSize.X / math.max(1, premiseSize.Y) or 8
+		local premiseH = math.max(84 / s, innerW / premiseAspect)
+		E.placePanel("Premise", gutter, y, innerW, premiseH, s, minT, true)
+		y += premiseH + gap
+		-- Fit the entire ornamented row in one page viewport, including hover and raster rounding.
+		local cardH = math.max(1, math.min(300 / s, (usableH - 4 / s) / (1 + 2 * LAY.Lift)))
+		local areaH = math.min(usableH, math.ceil(cardH * (1 + 2 * LAY.Lift)) + 4 / s)
+		placeCards(gutter, y, innerW, areaH, cardH, minT, s)
+		-- No child Y scrolling: its full canvas height stays inside this outer page.
+		cardsRow.ScrollingDirection = Enum.ScrollingDirection.X
+		cardsRow.CanvasPosition = Vector2.new(cardsRow.CanvasPosition.X, 0)
+		y += areaH + gap
+		local footerSize = E.Panels.Footer.Size
+		local footerAspect = typeof(footerSize) == "Vector2" and footerSize.X / math.max(1, footerSize.Y) or 11
+		local footerH = math.max(48 / s, innerW / footerAspect)
+		E.placePanel("Footer", gutter, y, innerW, footerH, s, minT, true)
+		local contentH = y + footerH + gutter
+		place(content, 0, 0, w, contentH)
+		scroll.CanvasSize = UDim2.fromOffset(w, math.ceil(contentH))
+		scroll.ScrollingEnabled = contentH > usableH
+		scroll.ScrollBarThickness = scroll.ScrollingEnabled and LAY.ScrollBar or 0
+		scroll.CanvasPosition = Vector2.new(0, math.clamp(scroll.CanvasPosition.Y, 0, math.max(0, contentH - usableH)))
+	else
+		place(scroll, 0, 0, w, h)
+		place(content, 0, 0, w, h)
+		scroll.CanvasSize = UDim2.fromOffset(w, h)
+		scroll.ScrollingEnabled = false
+		scroll.ScrollBarThickness = 0
+		scroll.CanvasPosition = Vector2.zero
+		local left, upper = (w - W) / 2, (h - H) / 2
+		for _, role in { "Title", "Premise", "Footer" } do
+			local x, y, rw, rh = region(E.rect(role), W, H)
+			E.placePanel(role, left + x, upper + y, rw, rh, s, minT, false)
+		end
+		local x, y, rw, rh = region(E.rect("Cards"), W, H)
+		placeCards(left + x, upper + y, rw, rh, 0, minT, s)
+	end
+	root:SetAttribute("FactionEPageScroll", scroll.ScrollingEnabled)
+	root:SetAttribute("FactionEPageHeight", content.Size.Y.Offset * s)
+	root:SetAttribute("FactionEPageViewportHeight", scroll.Size.Y.Offset * s)
+	for _, c in cards do
+		if c.E then
+			c.E.CanDisplay = (c.E.DisplayHeight or 0) >= (tonumber(E.Config.MinBakedCardHeight) or 240)
+			c.E.Update()
+		end
+	end
+end
+
 local function layoutNow()
 	if not root then return end
 	local w, h, top, s = canvas(root.Parent)
 	place(root, 0, 0, w, h)
 	local minT = minTextFor(s)
+	if E.Enabled then
+		E.layoutScreen(w, h, top, s, minT)
+		return
+	end
 	local physicalCaption = math.clamp(math.floor(h * s * LAY.TextFrac), 12, LAY.TextMax)
 	local size = math.ceil(physicalCaption / math.min(s, 1))
 	local compact = h * s < 560
@@ -1376,7 +1807,7 @@ local function build()
 	local anyArt = false
 	for i, id in FACTION_IDS do
 		buildCard(id, i)
-		if cards[id] and cards[id].Art then anyArt = true end
+		if cards[id] and (cards[id].Art or cards[id].E) then anyArt = true end
 	end
 	if anyArt then root.BackgroundTransparency = LAY.DimArt end
 
@@ -1393,6 +1824,7 @@ local function build()
 	note.Frame, note.Icon, note.Text = nf, icon, text
 
 	root.Parent = gui
+	if E.Enabled then E.buildPanels() end
 	built = true
 	layout()
 	return true
@@ -1415,6 +1847,90 @@ local function setBlur(on)
 	end
 end
 
+function E.holdBackground(instance)
+	local world = E.World
+	if not world.Active or world.Records[instance] then return end
+	local ok, enabled = pcall(function() return instance.Enabled end)
+	if not ok or type(enabled) ~= "boolean" then return end
+	local record = { Value = enabled, Connection = nil }
+	world.Records[instance] = record
+	pcall(function() instance.Enabled = false end)
+	-- Newly replicated state must not re-expose world text while this picker is open.
+	pcall(function()
+		record.Connection = instance:GetPropertyChangedSignal("Enabled"):Connect(function()
+			if not world.Active then return end
+			pcall(function() if instance.Enabled then instance.Enabled = false end end)
+		end)
+	end)
+end
+
+function E.backgroundAdded(instance)
+	if instance:IsA("BillboardGui") or instance:IsA("SurfaceGui")
+		or (instance:IsA("ScreenGui") and instance.Name == "TouchGui") then E.holdBackground(instance) end
+end
+
+function E.hideLegacyChat()
+	local world = E.World
+	if not world.Active then return end
+	-- Studio may still show legacy help text while TextChatService is selected. Hide only Chat;
+	-- leave Roblox/Menu untouched, and retry the protected call as CoreGui finishes starting.
+	if world.CoreChat == nil then
+		local got, enabled = pcall(StarterGui.GetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Chat)
+		if got and type(enabled) == "boolean" then world.CoreChat = enabled end
+	end
+	if world.CoreChat ~= nil then
+		pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Chat, false)
+	end
+	if world.LegacyChat ~= nil then return end
+	local ok, legacy = pcall(function() return TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService end)
+	if not ok or not legacy then return end
+	local got, active = pcall(StarterGui.GetCore, StarterGui, "ChatActive")
+	if got and type(active) == "boolean" then
+		world.LegacyChat = active
+		pcall(StarterGui.SetCore, StarterGui, "ChatActive", false)
+	end
+end
+
+function E.background(on)
+	if not E.Enabled then return end
+	local world = E.World
+	if on == world.Active then return end
+	world.Active = on
+	if on then
+		world.Records, world.Connections, world.LegacyChat, world.CoreChat = {}, {}, nil, nil
+		local pg = player:FindFirstChildOfClass("PlayerGui")
+		for _, scope in { workspace, pg } do
+			if scope then
+				table.insert(world.Connections, scope.DescendantAdded:Connect(E.backgroundAdded))
+				for _, instance in scope:GetDescendants() do E.backgroundAdded(instance) end
+			end
+		end
+		local classes = { ChatWindowConfiguration = true, ChatInputBarConfiguration = true,
+			ChannelTabsConfiguration = true, BubbleChatConfiguration = true }
+		local function chatAdded(instance)
+			if classes[instance.ClassName] then E.holdBackground(instance) end
+		end
+		table.insert(world.Connections, TextChatService.ChildAdded:Connect(chatAdded))
+		for _, child in TextChatService:GetChildren() do chatAdded(child) end
+		E.hideLegacyChat()
+	else
+		for _, connection in world.Connections do connection:Disconnect() end
+		world.Connections = {}
+		for instance, record in world.Records do
+			if record.Connection then record.Connection:Disconnect() end
+			pcall(function() instance.Enabled = record.Value end)
+		end
+		world.Records = {}
+		if world.LegacyChat ~= nil then pcall(StarterGui.SetCore, StarterGui, "ChatActive", world.LegacyChat) end
+		world.LegacyChat = nil
+		if world.CoreChat ~= nil then
+			pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Chat, world.CoreChat)
+		end
+		world.CoreChat = nil
+	end
+	if root then root:SetAttribute("FactionEBackgroundHidden", on) end
+end
+
 local function playPremise()
 	premiseToken += 1
 	local token = premiseToken
@@ -1434,6 +1950,7 @@ local function refresh()
 	visible = open
 	root.Visible = open
 	setBlur(open)
+	E.background(open)
 	chosenId = nil
 	for _, c in cards do
 		c.Hover, c.Down = false, false
@@ -1494,6 +2011,12 @@ end
 function FactionPicker.Start()
 	loadTheme()
 	build()
+	if root and E.Enabled then
+		root.Destroying:Connect(function()
+			E.background(false)
+			setBlur(false)
+		end)
+	end
 	hookCamera()
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(hookCamera)
 	local gui = root and root.Parent
@@ -1519,7 +2042,11 @@ function FactionPicker.Start()
 	task.spawn(function()
 		while true do
 			task.wait(POLL_INTERVAL)
-			local ok, err = pcall(refresh)
+			if E.World.Active then E.hideLegacyChat() end
+			local ok, err = pcall(function()
+				refresh()
+				E.refreshImages()
+			end)
 			if not ok then warnThrottled("refresh error: " .. tostring(err)) end
 		end
 	end)

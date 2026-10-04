@@ -1,0 +1,15 @@
+Use case: ui-mockup
+Create ONE brand-new production game UI asset from scratch. Do not reuse, modify, retouch, repair, upscale, or incorporate any earlier image. There are no reference image inputs.
+
+Asset: a single wide horizontal Korean fantasy RPG story-description panel, isolated on genuinely transparent alpha. Not a screenshot and not a sheet of multiple UI parts.
+Canvas: very high resolution landscape; the panel nearly fills the width, centered with ample transparent space above and below. Actual panel width-to-height ratio approximately 8:1. The only opaque area is the panel itself and its continuous gold border.
+
+Design: a pristine pale ivory/cream interior, uniform smooth flat fill without parchment texture, mottling, paper stains, paint patches, grain or old-letter ghosts. A continuous symmetrical polished warm-gold beveled frame with clipped/rounded corners, restrained simple fantasy detailing, crisp defined silhouette. No crown, no ribbon, no icons, no outside objects. The whole top and bottom border remains uninterrupted.
+
+Typography: exactly three centered lines of friendly heavy rounded Korean sans-serif lettering, even stroke widths and generous interline spacing. Letters are a SINGLE SOLID dark warm brown fill. Clean flat typesetting, crisp hard edges with regular antialiasing only. Absolutely no letter texture, inner highlights, embossing, blur, soft white outlines, halos, shadows, doubled edges, smears, gradients or dirty patches around the text. The cream background must be identical directly beside letters and elsewhere.
+Exact text, three lines:
+세상을 지키던 균형의 왕관이 부서졌다.
+조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다.
+조각을 더 많이 모으는 쪽이 세상을 다시 만든다.
+
+Quality requirement: the user will inspect enlarged letter strokes and background closely. Produce fresh clean artwork throughout, legible accurate Korean, carefully separated glyphs, no marks left from another version. Transparent PNG output, no checkerboard drawn into the image, no watermark.

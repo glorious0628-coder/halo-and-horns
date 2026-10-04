@@ -1,0 +1,35 @@
+{
+  "candidate": "UI_FactionPremise_E_Fresh",
+  "source": "C:\\Users\\glori\\.codex\\generated_images\\01a104e3-9120-72f1-82f4-2b2f5eb9f802\\exec-f8f29645-b61f-4e93-9366-28ec20323d9c.png",
+  "output": "art/out/UI_FactionPremise_E_Fresh.png",
+  "method": "built_in_imagegen_new_generation",
+  "referenced_image_paths": [],
+  "num_last_images_to_include": null,
+  "transparent_background": true,
+  "generated_output_modified": false,
+  "size": [
+    2172,
+    724
+  ],
+  "mode": "RGBA",
+  "sha256": "112cc4b7703d3d30e5f7cbb3f21f2743b220058c545a91fbdcce64571bc9f1b9",
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "alpha_bbox": [
+    0,
+    51,
+    2164,
+    684
+  ],
+  "approval": "rejected_by_local_qa",
+  "uploaded": false,
+  "prompt": "art/prompts/UI_FactionPremise_E_Fresh.txt",
+  "qa": [
+    "fresh_premise_light_dark.png",
+    "fresh_premise_text_400pct.png"
+  ],
+  "notes": "New independent generation. QA images are background composites and nearest-neighbor crops only, not production inputs.",
+  "reason": "400% enlargement shows uneven letter fill and pale letter halo despite fresh generation. Do not upload."
+}

@@ -1093,6 +1093,14 @@ Config.UIArt = {
 		IconClover = { Id = "rbxassetid://132542570098556", Size = Vector2.new(246, 256) },
 		IconScroll = { Id = "rbxassetid://103880967919087", Size = Vector2.new(256, 192) },
 		IconSlime = { Id = "rbxassetid://112355880587310", Size = Vector2.new(256, 245) },
+		-- User-approved E sprites; shared legacy keys remain unchanged.
+		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
+		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },
+		FactionCardNeutralE = { Id = "rbxassetid://78748710982730", Size = Vector2.new(380, 636) },
+		FactionTitleRibbonE = { Id = "rbxassetid://77703498329138", Size = Vector2.new(549, 108) },
+		FactionPremisePanelE = { Id = "rbxassetid://101379550181314", Size = Vector2.new(1024, 130) },
+		FactionPremiseFreshTyped = { Id = "rbxassetid://105024415024705", Size = Vector2.new(1024, 174) },
+		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
 		-- pick screens (mockups art/out/UI_Faction_B.png, UI_Class_A.png): text-free card backgrounds, regions in CardLayout
 		CardHalo = { Id = "rbxassetid://116168194185824" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(635, 1024) },
 		CardHorns = { Id = "rbxassetid://104067051233656" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(617, 1024) },
@@ -1371,6 +1379,51 @@ Config.UIArt.FactionPerks = {
 		{ Icon = "IconNoLoot", Text = "약탈·현상수배 걱정 없음", Short = "약탈·수배 걱정 없음" },
 		{ Icon = "IconHammer", Text = "제작 특화 (곧 추가)" },
 	},
+}
+
+-- E approval: 2026-10-04. Fixed Korean glyphs preserve the approved illustration.
+-- English/localized sprites are a separate release item; live fallbacks stay available.
+Config.UIArt.FactionE = {
+    Enabled = true,
+    Locale = "ko",
+    BakedText = true,
+    BakedPerkIcons = true,
+    BakedFooterIcon = true,
+    CardAspect = 380 / 636,
+    Parts = {
+        Halo = "FactionCardHaloE", Horns = "FactionCardHornsE", Neutral = "FactionCardNeutralE",
+        Title = "FactionTitleRibbonE", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterPanelE",
+    },
+    ButtonRects = {
+		Halo = { 0.20995938, 0.81188699, 0.62167880, 0.09873809 },
+		Horns = { 0.19638265, 0.81753836, 0.64837991, 0.09526151 },
+		Neutral = { 0.20407330, 0.82816489, 0.64886225, 0.09651909 },
+    },
+    MinBakedWidth = { Premise = 460 },
+    Layout = {
+        ReferenceSize = Vector2.new(1584, 1050),
+        Title = { 514/1584, 5/1050, 557/1584, 111/1050 },
+        Premise = { 240/1584, 124/1050, 1100/1584, 187/1050 },
+        Cards = { 238/1584, 318/1050, 1102/1584, 627/1050 },
+        Footer = { 326/1584, 953/1050, 929/1584, 84/1050 },
+    },
+    SemanticText = {
+        Title = "어느 편에 설래요?",
+        Premise = {
+            "세상을 지키던 균형의 왕관이 부서졌다.",
+            "조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다.",
+            "조각을 더 많이 모으는 쪽이 세상을 다시 만든다.",
+        },
+        Footer = "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)",
+        Cards = {
+            Halo = {Name="빛의 기사단",Desc="후광을 얻은 자들.",Motto="지키고, 치유하고, 되찾아 줘라!",Button="이 편으로!",
+                Perks={"경험치 +30%","체력 +20%, 계속 회복","발사하면 동료 치유","주머니 골드 자동 저금"}},
+            Horns = {Name="뿔 군단",Desc="뿔을 얻은 자들.",Motto="털고, 버티고, 괴수가 되어라!",Button="이 편으로!",
+                Perks={"골드 +25%","공격력 +15%, 체력 흡수","발사 게이지 175","별 5개면 괴수 변신!"}},
+            Neutral = {Name="장인 길드",Desc="조각을 다듬는 자들.",Motto="줍지 말고, 다듬고, 만들어라!",Button="이 편으로!",
+                Perks={"싸움 버프 없음","PvP 없음 (안전)","약탈·현상수배 걱정 없음","제작 특화 (곧 추가)"}},
+        },
+    },
 }
 
 -- addendum A1: optional custom visual models in ServerStorage[FolderName] named by monster id or GooseId
