@@ -1,0 +1,852 @@
+{
+  "schema": 1,
+  "review_date_kst": "2026-10-04",
+  "review_scope": "장인 길드 6종 원본 GPT APose·중립 얼굴 PNG·현존 정면 CG와 전신자료 개별 확인",
+  "inventory": {
+    "path": "C:/Users/glori/Documents/Game/build/remaining_asset_inventory_20261004.json",
+    "sha256": "6f63f2e877127adc9627caa09a5703de5e22ccbe369015b37a1bfd0f160b4888",
+    "bytes": 468068,
+    "workspace_relative": "build/remaining_asset_inventory_20261004.json"
+  },
+  "production_registered_count": 2,
+  "local_remaining_count": 16,
+  "neutral_count": 6,
+  "images_directly_viewed_count": 24,
+  "native_18_avatar_verification_claimed": false,
+  "neutral_live_studio_verified_this_review": false,
+  "candidate_selection_made": false,
+  "approval_or_upload_completed_by_this_review": false,
+  "summary": "6종 모두 원본 GPT보다 눈 외곽과 세부가 거칠다. 중립 PNG에서도 이미 번짐·계단이 보여 게임 Bloom 하나로 원인을 확정할 수 없다. 전사 여성 입 큰 역삼각형, 연금술사 남성 눈·고글 면경계, 연금술사 여성 입 끝 삼각 음영은 후속 표면 검토가 필요하다.",
+  "avatars": [
+    {
+      "name": "Costume_NeutralWarriorM",
+      "display_name_ko": "대장장이 남성",
+      "production_registered_at_handoff": false,
+      "candidate_selection_made": false,
+      "inspected_render_boundary": "입 복원 v1 정면·전신 후보",
+      "original_fixed_source": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_NeutralWarriorM.glb",
+        "sha256": "0aecac75ca002dfac8646ce981820137b7a94966e6af6f2beb0d75141fb2ebfd",
+        "bytes": 3519632,
+        "workspace_relative": "art/models/costume/fixed/Costume_NeutralWarriorM.glb"
+      },
+      "original_fixed_sha_matches_inventory": true,
+      "original_APose_sha_matches_inventory": true,
+      "Neutral_PNG_sha_matches_inventory": true,
+      "images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_NeutralWarriorM.png",
+          "sha256": "bef7a8940b54f89cfc41b9cc04ef9e1f56496870d896c9c89b8c1d9c9772ef57",
+          "bytes": 1267320,
+          "workspace_relative": "art/out/APose_NeutralWarriorM.png",
+          "dimensions_pixels": [
+            1024,
+            1024
+          ],
+          "role": "approved_original_GPT_APose",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_Neutral_face.png",
+          "sha256": "0e61dd71bb86a84b1babe1a0f8180c87453a36fbe57acdd50458f09cdff22602",
+          "bytes": 1286888,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_Neutral_face.png",
+          "dimensions_pixels": [
+            1254,
+            1254
+          ],
+          "role": "GPT_Neutral_face_PNG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_Neutral_face.json",
+            "sha256": "4dac3fe6bbde76f335856773b60e4f0daeb003c19f406aaa5450c245f7724852",
+            "bytes": 1012,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_Neutral_face.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-948cb463-83e8-4fdb-8c37-d16bf4820cb7.png",
+            "sha256": "0e61dd71bb86a84b1babe1a0f8180c87453a36fbe57acdd50458f09cdff22602",
+            "bytes": 1286888
+          },
+          "sidecar_source_kind": "image_or_other",
+          "sidecar_source_expected_sha256": null,
+          "sidecar_source_sha_matches": null,
+          "sidecar_source_unchanged_claim": null
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralWarriorM/rest_mouth_v1_lit/Neutral_front.png",
+          "sha256": "c019f3cc4f572615a535591cf1e407fb223da6dbd77523fd92f9b1d86aa588de",
+          "bytes": 704706,
+          "workspace_relative": "build/expr_qa/Costume_NeutralWarriorM/rest_mouth_v1_lit/Neutral_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_candidate_face_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralWarriorM/rest_mouth_v1_lit/Neutral_front.json",
+            "sha256": "8585f26f678aabc4f6b374d090b2760147997c84efd3e0dd3ab8efb38f2fc712",
+            "bytes": 979,
+            "workspace_relative": "build/expr_qa/Costume_NeutralWarriorM/rest_mouth_v1_lit/Neutral_front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_FaceUnionMouthRestored_v1.glb",
+            "sha256": "37ce5944971a43d6841d5ffa10610c774a2f2178f9bd9cca9e138633db937024",
+            "bytes": 5991000,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_FaceUnionMouthRestored_v1.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "37ce5944971a43d6841d5ffa10610c774a2f2178f9bd9cca9e138633db937024",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralWarriorM/full_body_mouth_v1/front.png",
+          "sha256": "3857139b1099e8c87942911ef02dc67bbfade07640a02e14f9f552e2db025d63",
+          "bytes": 976712,
+          "workspace_relative": "build/expr_qa/Costume_NeutralWarriorM/full_body_mouth_v1/front.png",
+          "dimensions_pixels": [
+            768,
+            1024
+          ],
+          "role": "existing_local_fullbody_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralWarriorM/full_body_mouth_v1/front.json",
+            "sha256": "8c5f15ceeaa05e018fd180def7467ebd90c155be24a15696c7e39c127059f3ec",
+            "bytes": 921,
+            "workspace_relative": "build/expr_qa/Costume_NeutralWarriorM/full_body_mouth_v1/front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_FaceUnionMouthRestored_v1.glb",
+            "sha256": "37ce5944971a43d6841d5ffa10610c774a2f2178f9bd9cca9e138633db937024",
+            "bytes": 5991000,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_FaceUnionMouthRestored_v1.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "37ce5944971a43d6841d5ffa10610c774a2f2178f9bd9cca9e138633db937024",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        }
+      ],
+      "quality": {
+        "eyes": {
+          "severity": "중간",
+          "observation": "원본의 매끈한 흰자·동공 외곽보다 Neutral PNG와 CG의 윗눈선·흰자 경계가 울퉁불퉁하고 약간 퍼져 있다."
+        },
+        "clothing_details": {
+          "status": "보강 필요",
+          "observation": "앞치마·고글·도구의 큰 형태는 유지되지만 기어 이빨, 금속 테두리, 무릎 리벳·부츠 끈이 둔해졌다."
+        },
+        "model_surface": {
+          "status": "보강 필요",
+          "observation": "고글 테두리의 다각형과 머리 끝의 각이 뚜렷하다. 정면 CG 코·볼에 작은 사선 음영이 보이며 입은 얇은 일자로 보인다."
+        },
+        "modesty": {
+          "status": "정면에서 단정함 확인",
+          "observation": "긴소매·앞치마·긴바지·장갑·부츠로 몸통과 어깨가 덮인다."
+        }
+      },
+      "overall_status": "품질 보강 필요; 새 업로드·생산 승격 승인 아님",
+      "all_angles_and_animation_verified": false
+    },
+    {
+      "name": "Costume_NeutralWarriorF",
+      "display_name_ko": "대장장이 여성",
+      "production_registered_at_handoff": false,
+      "candidate_selection_made": false,
+      "inspected_render_boundary": "입 복원 v1 정면·전신 후보",
+      "original_fixed_source": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_NeutralWarriorF.glb",
+        "sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+        "bytes": 3415136,
+        "workspace_relative": "art/models/costume/fixed/Costume_NeutralWarriorF.glb"
+      },
+      "original_fixed_sha_matches_inventory": true,
+      "original_APose_sha_matches_inventory": true,
+      "Neutral_PNG_sha_matches_inventory": true,
+      "images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_NeutralWarriorF.png",
+          "sha256": "12d889a6583ff1b606cb39e78d2c69beed53e282bc9e77d302bcdb134a62f4cf",
+          "bytes": 1357968,
+          "workspace_relative": "art/out/APose_NeutralWarriorF.png",
+          "dimensions_pixels": [
+            1024,
+            1024
+          ],
+          "role": "approved_original_GPT_APose",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_Neutral_face.png",
+          "sha256": "1272adeb79c8c4b120b19285b9c46ae700614fe044f83d56f3d32805d2f6de56",
+          "bytes": 1393848,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_Neutral_face.png",
+          "dimensions_pixels": [
+            1254,
+            1254
+          ],
+          "role": "GPT_Neutral_face_PNG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_Neutral_face.json",
+            "sha256": "5037a0dda1386fd87db2bd7adbab252c8d45191c5531bc0ac32a29684ff2d929",
+            "bytes": 993,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_Neutral_face.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-7ef219a1-fedc-4f7e-a555-5b406fa7c5e8.png",
+            "sha256": "1272adeb79c8c4b120b19285b9c46ae700614fe044f83d56f3d32805d2f6de56",
+            "bytes": 1393848
+          },
+          "sidecar_source_kind": "image_or_other",
+          "sidecar_source_expected_sha256": null,
+          "sidecar_source_sha_matches": null,
+          "sidecar_source_unchanged_claim": null
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralWarriorF/rest_mouth_v1_lit/Neutral_front.png",
+          "sha256": "3322849e4a2c39ca89b0aca3fcc19752b770125d52cc2692be13511d6cc004cf",
+          "bytes": 769748,
+          "workspace_relative": "build/expr_qa/Costume_NeutralWarriorF/rest_mouth_v1_lit/Neutral_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_candidate_face_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralWarriorF/rest_mouth_v1_lit/Neutral_front.json",
+            "sha256": "314121cc24621b88b9e5c6dac47e207866fd37a9063dc35b0761ede5c4ee83a6",
+            "bytes": 966,
+            "workspace_relative": "build/expr_qa/Costume_NeutralWarriorF/rest_mouth_v1_lit/Neutral_front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.glb",
+            "sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+            "bytes": 5953424,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralWarriorF/full_body_mouth_v1/front.png",
+          "sha256": "3b8689b08908f1b7bda881a0c2f00f7079572a90f9a0470c999c024061a9f508",
+          "bytes": 1021154,
+          "workspace_relative": "build/expr_qa/Costume_NeutralWarriorF/full_body_mouth_v1/front.png",
+          "dimensions_pixels": [
+            768,
+            1024
+          ],
+          "role": "existing_local_fullbody_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralWarriorF/full_body_mouth_v1/front.json",
+            "sha256": "cdb2d44d272fee7b626661a932dc69066815fdd1524989495d029a3de015e1a8",
+            "bytes": 892,
+            "workspace_relative": "build/expr_qa/Costume_NeutralWarriorF/full_body_mouth_v1/front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.glb",
+            "sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+            "bytes": 5953424,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        }
+      ],
+      "quality": {
+        "eyes": {
+          "severity": "중간",
+          "observation": "Neutral PNG의 양눈 흰자·홍채 하단과 윗눈선에 거친 경계가 있고 CG에서도 남는다. 원본 눈의 매끈한 곡선과 다르다."
+        },
+        "clothing_details": {
+          "status": "보강 필요",
+          "observation": "도구·앞치마 기어·허리 버클·주머니는 구분되지만 세부 금속면과 가장자리가 뭉개지고 일부 원형 장식이 합쳐 보인다."
+        },
+        "model_surface": {
+          "status": "보류",
+          "observation": "정면과 전신 CG 입에 큰 역삼각형 음영·구멍처럼 보이는 부분이 있다. Neutral PNG의 일자 입과 달라 최종 외형으로 승인할 수 없다. 고글·머리 곡선도 각이 진다."
+        },
+        "modesty": {
+          "status": "정면에서 단정함 확인",
+          "observation": "긴소매·앞치마·긴바지·장갑·부츠로 몸통과 어깨가 덮인다."
+        }
+      },
+      "overall_status": "품질 보강 필요; 새 업로드·생산 승격 승인 아님",
+      "all_angles_and_animation_verified": false
+    },
+    {
+      "name": "Costume_NeutralMageM",
+      "display_name_ko": "연금술사 남성",
+      "production_registered_at_handoff": false,
+      "candidate_selection_made": false,
+      "inspected_render_boundary": "입 복원 v2 얼굴 후보; 전신은 이전 preserved_v1 자료",
+      "original_fixed_source": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_NeutralMageM.glb",
+        "sha256": "04481a1c0dbe593fc6f9b2629f4949571dca15cc8de516a80898464fd35dc28c",
+        "bytes": 3485164,
+        "workspace_relative": "art/models/costume/fixed/Costume_NeutralMageM.glb"
+      },
+      "original_fixed_sha_matches_inventory": true,
+      "original_APose_sha_matches_inventory": true,
+      "Neutral_PNG_sha_matches_inventory": true,
+      "images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_NeutralMageM.png",
+          "sha256": "c67d171f43bce2c6aa9d1d4c5b1c5df60fc68e2f939dafd91a2a12886a32a78a",
+          "bytes": 1335128,
+          "workspace_relative": "art/out/APose_NeutralMageM.png",
+          "dimensions_pixels": [
+            1024,
+            1024
+          ],
+          "role": "approved_original_GPT_APose",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralMageM/Costume_NeutralMageM_Expression_Neutral_face.png",
+          "sha256": "dd1c70a833992f0657c5c3e76947c64803fdb89b3336930e93cb601918d05b5c",
+          "bytes": 1301128,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralMageM/Costume_NeutralMageM_Expression_Neutral_face.png",
+          "dimensions_pixels": [
+            1254,
+            1254
+          ],
+          "role": "GPT_Neutral_face_PNG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralMageM/Costume_NeutralMageM_Expression_Neutral_face.json",
+            "sha256": "25178dc30b0c3e081a0563ff02010c7ed1adc060e0742dc2eb083ee9918b0cf6",
+            "bytes": 994,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralMageM/Costume_NeutralMageM_Expression_Neutral_face.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-851bf5d1-46a0-43c6-a871-ec39a00ccaaa.png",
+            "sha256": "dd1c70a833992f0657c5c3e76947c64803fdb89b3336930e93cb601918d05b5c",
+            "bytes": 1301128
+          },
+          "sidecar_source_kind": "image_or_other",
+          "sidecar_source_expected_sha256": null,
+          "sidecar_source_sha_matches": null,
+          "sidecar_source_unchanged_claim": null
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralMageM/mouth_v2_lit/Neutral_front.png",
+          "sha256": "f60fb99b8b6d480a5e74ccca6c3f8dfa6a2ccdd022857cc1897d8d6f2857fc95",
+          "bytes": 757762,
+          "workspace_relative": "build/expr_qa/Costume_NeutralMageM/mouth_v2_lit/Neutral_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_candidate_face_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralMageM/mouth_v2_lit/Neutral_front.json",
+            "sha256": "d56ee1e416b0e2a83ca9bd1f7ccc7023ae7dc15077d519e6b294d5227ace846c",
+            "bytes": 955,
+            "workspace_relative": "build/expr_qa/Costume_NeutralMageM/mouth_v2_lit/Neutral_front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralMageM/Costume_NeutralMageM_FaceUnionMouthRestored_v2.glb",
+            "sha256": "16f80c7cdb84203b6df6eb19307541fd67e278f52c222d77b849f10464b50775",
+            "bytes": 6248720,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralMageM/Costume_NeutralMageM_FaceUnionMouthRestored_v2.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "16f80c7cdb84203b6df6eb19307541fd67e278f52c222d77b849f10464b50775",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/motion_final_v6/rest_skin_front.png",
+          "sha256": "c32bb171f09862bd6577fb51d7b8393f7a0f61c7eba0b0d0a05932798e9ddfa6",
+          "bytes": 534446,
+          "workspace_relative": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/motion_final_v6/rest_skin_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_fullbody_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "motion_qa_sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/motion_final_v6/motion_qa.json",
+            "sha256": "17b3b258f6d63794406e1e4bc11c26629653aea3203567fa8b5527ac7ad671ec",
+            "bytes": 5887,
+            "workspace_relative": "build/costume_r15/skin_candidates/Costume_NeutralMageM_preserved_v1/motion_final_v6/motion_qa.json"
+          },
+          "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\Costume_NeutralMageM_preserved_v1\\Costume_NeutralMageM_skin.skin.json",
+          "sidecar_runtime_verified": false
+        }
+      ],
+      "quality": {
+        "eyes": {
+          "severity": "큼",
+          "observation": "Neutral PNG부터 굵은 검은 윗눈선과 흰자 경계가 퍼지고 계단이 보인다. 최근 CG의 양눈동자에는 얇은 검은 선도 보여 표면 검토가 필요하다."
+        },
+        "clothing_details": {
+          "status": "보강 필요",
+          "observation": "이전 전신자료에서 녹색·보라·파랑 물약은 구분되지만 버클·기어·코트 금테가 원본보다 거칠고 작은 금속이 뭉친다. 최신 v2 전신 검증으로 쓰지 않는다."
+        },
+        "model_surface": {
+          "status": "보류",
+          "observation": "최근 CG의 고글 렌즈에 꺾인 삼각형 면 음영, 머리 끝의 검은 틈과 양눈동자 선이 보인다. 중립 입은 일자이나 코 아래 작은 면 음영이 남는다."
+        },
+        "modesty": {
+          "status": "정면에서 단정함 확인",
+          "observation": "긴소매·코트·앞치마·긴바지·장갑으로 몸통과 어깨가 덮인다."
+        }
+      },
+      "overall_status": "품질 보강 필요; 새 업로드·생산 승격 승인 아님",
+      "all_angles_and_animation_verified": false
+    },
+    {
+      "name": "Costume_NeutralMageF",
+      "display_name_ko": "연금술사 여성",
+      "production_registered_at_handoff": false,
+      "candidate_selection_made": false,
+      "inspected_render_boundary": "입 복원 v2 얼굴 후보; 전신은 이전 preserved_v1 자료",
+      "original_fixed_source": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_NeutralMageF.glb",
+        "sha256": "8d1dfd965602d0e78b85815fd6d3f76704f3121b6d7463b416b0a736dd8df583",
+        "bytes": 3370608,
+        "workspace_relative": "art/models/costume/fixed/Costume_NeutralMageF.glb"
+      },
+      "original_fixed_sha_matches_inventory": true,
+      "original_APose_sha_matches_inventory": true,
+      "Neutral_PNG_sha_matches_inventory": true,
+      "images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_NeutralMageF.png",
+          "sha256": "c18af3ae20b8b981ec51e4fbcd0845734ecdf861bba32dd0b99dec88ea915522",
+          "bytes": 1301325,
+          "workspace_relative": "art/out/APose_NeutralMageF.png",
+          "dimensions_pixels": [
+            1024,
+            1024
+          ],
+          "role": "approved_original_GPT_APose",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Neutral_face.png",
+          "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7",
+          "bytes": 1411206,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Neutral_face.png",
+          "dimensions_pixels": [
+            1254,
+            1254
+          ],
+          "role": "GPT_Neutral_face_PNG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Neutral_face.json",
+            "sha256": "6a1664b13621978032deb41eb8f381483cfac5842bfa34ff37b036ef143a67c3",
+            "bytes": 994,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Neutral_face.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-3ea628fb-5ea4-46dd-9061-d15f80aee9b0.png",
+            "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7",
+            "bytes": 1411206
+          },
+          "sidecar_source_kind": "image_or_other",
+          "sidecar_source_expected_sha256": null,
+          "sidecar_source_sha_matches": null,
+          "sidecar_source_unchanged_claim": null
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralMageF/mouth_v2_lit/Neutral_front.png",
+          "sha256": "2f866c55aa6db0341e59c68aad08c56d1fecce83c8770ce6d4a00a43a7208135",
+          "bytes": 767709,
+          "workspace_relative": "build/expr_qa/Costume_NeutralMageF/mouth_v2_lit/Neutral_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_candidate_face_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_NeutralMageF/mouth_v2_lit/Neutral_front.json",
+            "sha256": "88645a0d68122c5eb8077d6b9f24b3bed8d2c09b6ee654894450d75a8527b3ff",
+            "bytes": 960,
+            "workspace_relative": "build/expr_qa/Costume_NeutralMageF/mouth_v2_lit/Neutral_front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_FaceUnionMouthRestored_v2.glb",
+            "sha256": "2772134346519b54148507a8ed5be735ffa042880394dc2aea906babea5285fb",
+            "bytes": 6053612,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_FaceUnionMouthRestored_v2.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "2772134346519b54148507a8ed5be735ffa042880394dc2aea906babea5285fb",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/motion_final_v6/rest_skin_front.png",
+          "sha256": "3eea4ca4b78367f30fbc08cce3503bf6e2bc87a812b2b5c30e33abfef1197796",
+          "bytes": 542821,
+          "workspace_relative": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/motion_final_v6/rest_skin_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_fullbody_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "motion_qa_sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/motion_final_v6/motion_qa.json",
+            "sha256": "139e73cd44dcdb7b5cbc59ec14574503df3fffcb95aed7535808b00c5a61e2d8",
+            "bytes": 5882,
+            "workspace_relative": "build/costume_r15/skin_candidates/Costume_NeutralMageF_preserved_v1/motion_final_v6/motion_qa.json"
+          },
+          "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\Costume_NeutralMageF_preserved_v1\\Costume_NeutralMageF_skin.skin.json",
+          "sidecar_runtime_verified": false
+        }
+      ],
+      "quality": {
+        "eyes": {
+          "severity": "중간",
+          "observation": "Neutral PNG의 흰자 가장자리와 홍채 하단에 잔털 같은 번짐·계단이 보이고 CG에서도 남는다. 눈 하이라이트와 외곽이 원본만큼 매끈하지 않다."
+        },
+        "clothing_details": {
+          "status": "보강 필요",
+          "observation": "이전 전신자료에서 물약 세 가지 색과 코트·앞치마 구성은 유지되지만 버클·기어의 금속 모양과 장갑·천 주름이 뭉친다. 최신 v2 전신 승인을 뜻하지 않는다."
+        },
+        "model_surface": {
+          "status": "보류",
+          "observation": "최근 CG의 입 오른쪽 끝에 작은 검은 삼각형 음영이 붙고 머리카락 끝에 각진 어두운 부분이 보인다. 중립 입 표면을 다시 봐야 한다."
+        },
+        "modesty": {
+          "status": "정면에서 단정함 확인",
+          "observation": "긴소매·코트·앞치마·긴바지·장갑으로 몸통과 어깨가 덮인다."
+        }
+      },
+      "overall_status": "품질 보강 필요; 새 업로드·생산 승격 승인 아님",
+      "all_angles_and_animation_verified": false
+    },
+    {
+      "name": "Costume_NeutralArcherM",
+      "display_name_ko": "사냥꾼 남성",
+      "production_registered_at_handoff": false,
+      "candidate_selection_made": false,
+      "inspected_render_boundary": "입 복원 v1 정면·전신 후보",
+      "original_fixed_source": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_NeutralArcherM.glb",
+        "sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+        "bytes": 3353384,
+        "workspace_relative": "art/models/costume/fixed/Costume_NeutralArcherM.glb"
+      },
+      "original_fixed_sha_matches_inventory": true,
+      "original_APose_sha_matches_inventory": true,
+      "Neutral_PNG_sha_matches_inventory": true,
+      "images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_NeutralArcherM.png",
+          "sha256": "f5a50906817a4c4b416f21a33e149cf6ec710e81e010b984f78913d5df3fefed",
+          "bytes": 813443,
+          "workspace_relative": "art/out/APose_NeutralArcherM.png",
+          "dimensions_pixels": [
+            1024,
+            1024
+          ],
+          "role": "approved_original_GPT_APose",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.png",
+          "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+          "bytes": 1321952,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.png",
+          "dimensions_pixels": [
+            1254,
+            1254
+          ],
+          "role": "GPT_Neutral_face_PNG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.json",
+            "sha256": "155e973369d6c6e4d5af7651804575aaa777447b28b4c795d95ea072c11f8083",
+            "bytes": 987,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-1d588894-98f7-4d91-91bf-9213d1a0f071.png",
+            "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+            "bytes": 1321952
+          },
+          "sidecar_source_kind": "image_or_other",
+          "sidecar_source_expected_sha256": null,
+          "sidecar_source_sha_matches": null,
+          "sidecar_source_unchanged_claim": null
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/Neutral_front.png",
+          "sha256": "bbf6e788203be5d779cb99d606ab281f7e5680388cdb0d46984d9048ce4b37fe",
+          "bytes": 703069,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/Neutral_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_candidate_face_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/Neutral_front.json",
+            "sha256": "9eadda628d0e976dc58bb669b95d1d9dc0c99deae2e307884ee42da55bb62a69",
+            "bytes": 973,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/Neutral_front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb",
+            "sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+            "bytes": 5799824,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_full_body_previews/front.png",
+          "sha256": "d196dc224a1977b081bd93bbd6c45ce7694dcfac4685985de2efa0a0a7531b1d",
+          "bytes": 974506,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_full_body_previews/front.png",
+          "dimensions_pixels": [
+            768,
+            1024
+          ],
+          "role": "existing_local_fullbody_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_full_body_previews/front.json",
+            "sha256": "a8b6131d55aafb540a51773a025c8816b019c2844a7413739378ab72fa32c958",
+            "bytes": 927,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_full_body_previews/front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb",
+            "sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+            "bytes": 5799824,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        }
+      ],
+      "quality": {
+        "eyes": {
+          "severity": "중간",
+          "observation": "Neutral PNG와 CG의 양눈 흰자·홍채 외곽이 거칠고 하단 둥근 선이 흔들린다. 화면 오른쪽 눈의 바깥 검은 선이 여러 조각으로 보인다."
+        },
+        "clothing_details": {
+          "status": "보강 필요",
+          "observation": "망토·털·대각 벨트·주머니 배치는 유지된다. 기어 속 작은 구조, 털 알갱이, 스티치·부츠 끈은 원본보다 단순하거나 둔해졌다."
+        },
+        "model_surface": {
+          "status": "보강 필요",
+          "observation": "머리 끝과 고글은 다각형이지만 최근 정면 입은 일자로 보이며 큰 삼각형 입 오류는 보이지 않는다. 정면 CG만으로 옆면·움직임을 승인하지 않는다."
+        },
+        "modesty": {
+          "status": "정면에서 단정함 확인",
+          "observation": "긴소매·망토·긴바지·장갑·부츠로 몸통과 어깨가 덮인다."
+        }
+      },
+      "overall_status": "품질 보강 필요; 새 업로드·생산 승격 승인 아님",
+      "all_angles_and_animation_verified": false
+    },
+    {
+      "name": "Costume_NeutralArcherF",
+      "display_name_ko": "사냥꾼 여성",
+      "production_registered_at_handoff": false,
+      "candidate_selection_made": false,
+      "inspected_render_boundary": "표정 preserved_v1 얼굴 후보; 전신은 별도 weight_corrected_v7 후보",
+      "original_fixed_source": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_NeutralArcherF.glb",
+        "sha256": "380acd5fce8365f60cd5a1660140979932ca09ec714f61c030b0d7ee6f370579",
+        "bytes": 3496172,
+        "workspace_relative": "art/models/costume/fixed/Costume_NeutralArcherF.glb"
+      },
+      "original_fixed_sha_matches_inventory": true,
+      "original_APose_sha_matches_inventory": true,
+      "Neutral_PNG_sha_matches_inventory": true,
+      "images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_NeutralArcherF.png",
+          "sha256": "5868527868eaba9cd913e5dd68e2ce67303f791217d5007697b1f0405cc0eb68",
+          "bytes": 1367994,
+          "workspace_relative": "art/out/APose_NeutralArcherF.png",
+          "dimensions_pixels": [
+            1024,
+            1024
+          ],
+          "role": "approved_original_GPT_APose",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_Expression_Neutral_face.png",
+          "sha256": "31beeee0614eb2dd6d2fe6bb82d0ee2425678fbf3a784ef4d6481aa566b0f5be",
+          "bytes": 1374998,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_Expression_Neutral_face.png",
+          "dimensions_pixels": [
+            1254,
+            1254
+          ],
+          "role": "GPT_Neutral_face_PNG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_Expression_Neutral_face.json",
+            "sha256": "9f0b292e3e09fdd4c317735b6816a1d35f67b5a4a9f42bd3bd51b83c95a40fed",
+            "bytes": 1185,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_Expression_Neutral_face.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-00a1c467-e68b-4aa2-8d92-93eeca6771cb.png",
+            "sha256": "31beeee0614eb2dd6d2fe6bb82d0ee2425678fbf3a784ef4d6481aa566b0f5be",
+            "bytes": 1374998
+          },
+          "sidecar_source_kind": "image_or_other",
+          "sidecar_source_expected_sha256": null,
+          "sidecar_source_sha_matches": null,
+          "sidecar_source_unchanged_claim": null
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/Neutral_front.png",
+          "sha256": "e91a71622a1d7b0dedbf5bfa169c77bfea15a24d07c10408fd2cba8cc9707177",
+          "bytes": 810261,
+          "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/Neutral_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_candidate_face_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "sidecar": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/Neutral_front.json",
+            "sha256": "96bf9becb7c96449022cf3b656ddf43f1febac63e5fc6121988c1622f727245e",
+            "bytes": 919,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherF/paid_skin_v1_previews/Neutral_front.json"
+          },
+          "sidecar_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_PreservedSkinExpressions_v1.glb",
+            "sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+            "bytes": 6087700,
+            "workspace_relative": "art/models/costume/expressions/Costume_NeutralArcherF/Costume_NeutralArcherF_PreservedSkinExpressions_v1.glb"
+          },
+          "sidecar_source_kind": "GLB",
+          "sidecar_source_expected_sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+          "sidecar_source_sha_matches": true,
+          "sidecar_source_unchanged_claim": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/weight_corrections/NeutralArcherF_v7/corrected_motion_qa/rest_skin_front.png",
+          "sha256": "c98e5a4b1af662d7f240c04fa35834abdada30588e5df1861205f82dc86d9d2a",
+          "bytes": 558137,
+          "workspace_relative": "build/costume_r15/skin_candidates/weight_corrections/NeutralArcherF_v7/corrected_motion_qa/rest_skin_front.png",
+          "dimensions_pixels": [
+            768,
+            768
+          ],
+          "role": "existing_local_fullbody_CG",
+          "directly_viewed": true,
+          "view_tool": "functions.view_image",
+          "view_detail": "original",
+          "motion_qa_sidecar": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/weight_corrections/NeutralArcherF_v7/corrected_motion_qa/motion_qa.json",
+            "sha256": "4ce655c0a3ff74089cd96e0d58bba2a9a4468197ed47ef44e41c14dfbea44ac7",
+            "bytes": 6045,
+            "workspace_relative": "build/costume_r15/skin_candidates/weight_corrections/NeutralArcherF_v7/corrected_motion_qa/motion_qa.json"
+          },
+          "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\weight_corrections\\NeutralArcherF_v7\\Costume_NeutralArcherF_skin_corrected.skin.json",
+          "sidecar_runtime_verified": false
+        }
+      ],
+      "quality": {
+        "eyes": {
+          "severity": "중간",
+          "observation": "원래 윙크는 유지되지만 Neutral PNG부터 열린 눈 흰자·윗눈선과 닫힌 눈 양끝이 번져 보인다. CG에서도 원본의 매끈한 윤곽을 회복하지 못한다."
+        },
+        "clothing_details": {
+          "status": "보강 필요",
+          "observation": "털 테두리·고글·기어·버클·무릎 X 장식·주머니 세부가 원본보다 덩어리져 있다. 땋은 머리와 털의 큰 형태는 유지된다."
+        },
+        "model_surface": {
+          "status": "보강 필요",
+          "observation": "얼굴 CG의 턱·머리·털 가장자리에 각진 작은 틈이 보인다. 얼굴 렌더와 v7 전신은 다른 후보이므로 하나의 최종 캐릭터 검증으로 합치지 않는다."
+        },
+        "modesty": {
+          "status": "의상 계약 점검 필요",
+          "observation": "몸통·어깨·배는 덮이고 성적인 포즈는 없다. APose의 반바지와 부츠 사이 작은 피부 띠는 새 업로드 최종 의상검토와 분리한다."
+        }
+      },
+      "overall_status": "품질 보강 필요; 새 업로드·생산 승격 승인 아님",
+      "all_angles_and_animation_verified": false
+    }
+  ],
+  "action_limits": {
+    "existing_art_modified": false,
+    "image_geometry_or_png_edits": false,
+    "studio_touched": false,
+    "roblox_uploads": 0,
+    "paid_API_calls": 0,
+    "git_commit_or_push": false
+  }
+}

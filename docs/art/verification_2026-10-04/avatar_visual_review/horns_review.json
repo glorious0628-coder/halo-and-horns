@@ -1,0 +1,978 @@
+{
+  "schema": 1,
+  "reviewed_at_kst": "2026-10-04T11:27:21.100258+09:00",
+  "scope": "뿔군단 남녀전사/궁수/마법사6종 실제이미지검토",
+  "personal_view_image_count": 30,
+  "pure_cg_renders_created": 0,
+  "studio_calls": 0,
+  "api_calls": 0,
+  "uploads": 0,
+  "source_files_modified": false,
+  "images_modified": false,
+  "art_out_v1_opened_or_uploaded": false,
+  "metadata_only_quality_judgment": false,
+  "summary": [
+    "승인 APose6종의눈·의상장식은선명하다",
+    "현재 Neutral1254PNG6종은파일자체에눈꺼풀/흰자/홍채번짐·톱니가보여Studio업로드전에손실이존재한다",
+    "원본3D/CG의뿔·금속·보석·코트장식도APose보다둔하다",
+    "최신 남궁수 winding과남마법사 combined winding 피격CG에얼굴패치경계가남는다",
+    "6종정면/전신범위에서는몸통·어깨·다리가단정하게가려졌다",
+    "다른후보의rest/피격CG를동일완성본검증으로합산하지않는다",
+    "실제 Native 표정·모션최종품질은이검토에서승인하지않는다"
+  ],
+  "asset_inventory_reference": {
+    "path": "C:/Users/glori/Documents/Game/build/remaining_asset_inventory_20261004.json",
+    "sha256": "6f63f2e877127adc9627caa09a5703de5e22ccbe369015b37a1bfd0f160b4888",
+    "bytes": 468068,
+    "workspace_relative": "build/remaining_asset_inventory_20261004.json"
+  },
+  "avatars": [
+    {
+      "avatar": "Costume_HornsWarriorM",
+      "label": "뿔 전사 남",
+      "review_is_personal_visual": true,
+      "eye_detail_status": "수정 필요",
+      "body_detail_status": "APose 대비 세부 손실",
+      "modesty_visual_status": "확인된 정면·전신 범위 단정",
+      "native_runtime_status": "이 검토에서는 실행하지 않음",
+      "final_quality_approved": false,
+      "notes": {
+        "eyes": "APose의 홍채 그라데이션·작은 반사는 선명하다. Neutral1254PNG 자체의 눈꺼풀/흰자 외곽은 픽셀성 톱니와 번짐이 있고 눈 반사가 단순해졌다. 연속표정 정면CG에도 그대로 보인다.",
+        "details": "APose의 뿔 균열·목갑옷·허리체인·보석 모서리가 전신CG에서는 굵은 얼룩/둥근 덩어리로 합쳐졌다. 색과 큰 장비 배치는 유지한다.",
+        "deformation": "얼굴웨이트v3 큰피격CG에서 머리/어깨가 기울며 원래 웃는 얼굴은 붙어 있다. 목 하단의 검은 거친 경계와 눈꺼풀 번짐은 남는다. 이 표본은 원본 얼굴 atlas이며 GPT표정 연결 완료의 증거가 아니다.",
+        "modesty": "APose/전신CG 모두 목아래 몸통·어깨·팔·다리를 검은 옷/갑옷/장갑/부츠로 덮었다. 얼굴 이외 노출 없음.",
+        "priority": "눈 원본/UV 품질 개선 필요, 현재 최종 외형 승인 보류",
+        "stage": "일반 cap 연속표정 정면CG와 별도 얼굴웨이트v3 원본skin 전신/피격을 구분"
+      },
+      "observed_images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HornsWarriorM.png",
+          "sha256": "729280544a856a162b244ec0cd0a5909a6a6a055b120f2e67d7113d5bab63da2",
+          "bytes": 1340084,
+          "workspace_relative": "art/out/APose_HornsWarriorM.png",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "사용자승인원본 APose"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_Neutral_face.png",
+          "sha256": "401eb33583a5fe7707fe5cdbab2f21e1f8b1e3765254e46cc4ef5b6db9297277",
+          "bytes": 1354253,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_Neutral_face.png",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "현재 GPT Neutral얼굴PNG",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_Neutral_face.json",
+            "sha256": "554ae4eaf2400d7d0c739dbb6f8bd3fba0acb9e8d65b10ff0475acbea91167a5",
+            "bytes": 1000,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_Expression_Neutral_face.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-7199f971-d6f9-494f-b09c-d90091a1443d.png"
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-7199f971-d6f9-494f-b09c-d90091a1443d.png",
+            "sha256": "401eb33583a5fe7707fe5cdbab2f21e1f8b1e3765254e46cc4ef5b6db9297277",
+            "bytes": 1354253,
+            "dimensions": [
+              1254,
+              1254
+            ],
+            "personally_viewed_with_view_image": true,
+            "view_image_detail": "original"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorM/paid_skin_v1_previews/Neutral_front.png",
+          "sha256": "59cfd27112485f957ccbc69ff4408816cbd6c07b83d65fbae4309072a4937a1a",
+          "bytes": 804973,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorM/paid_skin_v1_previews/Neutral_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제표정재질 CG정면",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorM/paid_skin_v1_previews/Neutral_front.json",
+            "sha256": "42bb171605f383fd76fd0d4953111b2066c6dfd45ec2460b2f832aa59ff969c2",
+            "bytes": 914,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorM/paid_skin_v1_previews/Neutral_front.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_PreservedSkinExpressions_v1.glb",
+            "source_sha256": "3ce715191c3ff7303545ef536eacf4d68b06f4fa0d849fa34f9df08d44f1f497",
+            "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorM\\Costume_HornsWarriorM_Expression_Neutral_face.png",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_PreservedSkinExpressions_v1.glb",
+            "sha256": "3ce715191c3ff7303545ef536eacf4d68b06f4fa0d849fa34f9df08d44f1f497",
+            "bytes": 5780708,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorM/Costume_HornsWarriorM_PreservedSkinExpressions_v1.glb"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/actual_armature_six_pose/rest_skin_front.png",
+          "sha256": "b57530d621e75afa669ced37d4505f10ee0564b2a821930d51d1bfc07a03a2bc",
+          "bytes": 513314,
+          "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/actual_armature_six_pose/rest_skin_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제재질 CG전신",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/actual_armature_six_pose/motion_qa.json",
+            "sha256": "26cbdd58f417c3c752d2ce42c85a72506dbc0ab609e87a6fc0e674f52ec8bbdc",
+            "bytes": 6057,
+            "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/actual_armature_six_pose/motion_qa.json"
+          },
+          "metadata_fields": {
+            "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsWarriorM_v3\\Costume_HornsWarriorM_skin_face_corrected.skin.json",
+            "proxy_plan": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HornsWarriorM_face_fixed\\joints.json"
+          }
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/game_fx_comparison/HurtBig_0_06_after.png",
+          "sha256": "3827389aa9a637540596451af86f212169f7cebe9524b4d2c777bced392677f7",
+          "bytes": 754981,
+          "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/game_fx_comparison/HurtBig_0_06_after.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "별도후보 동작CG 표본",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/game_fx_comparison/HurtBig_0_06_after.json",
+            "sha256": "5813d713ff3f6612902b16cf5c953e7ea27543bf5395481f5d3e065d5fa97482",
+            "bytes": 1809,
+            "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/game_fx_comparison/HurtBig_0_06_after.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsWarriorM_v3\\Costume_HornsWarriorM_skin_face_corrected.glb",
+            "source_sha256": "cd8d72f28757467470f7a492f4c4c914eceafa5c03c79a229eb2a2e9f772a036",
+            "expression": null,
+            "shading_policy": "flat emission texture colors",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/Costume_HornsWarriorM_skin_face_corrected.glb",
+            "sha256": "cd8d72f28757467470f7a492f4c4c914eceafa5c03c79a229eb2a2e9f772a036",
+            "bytes": 4074772,
+            "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorM_v3/Costume_HornsWarriorM_skin_face_corrected.glb"
+          },
+          "source_sha_matches_metadata": true
+        }
+      ],
+      "original_fixed_glb": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_HornsWarriorM.glb",
+        "sha256": "7ea12e5e584203c5555f468a03851f90c9d70b936810ddb0a8360ae747898221",
+        "bytes": 3401332,
+        "workspace_relative": "art/models/costume/fixed/Costume_HornsWarriorM.glb"
+      }
+    },
+    {
+      "avatar": "Costume_HornsWarriorF",
+      "label": "뿔 전사 여",
+      "review_is_personal_visual": true,
+      "eye_detail_status": "수정 필요",
+      "body_detail_status": "APose 대비 세부 손실",
+      "modesty_visual_status": "확인된 정면·전신 범위 단정",
+      "native_runtime_status": "이 검토에서는 실행하지 않음",
+      "final_quality_approved": false,
+      "notes": {
+        "eyes": "APose의 눈동자 반사와 속눈썹 윤곽은 선명하다. Neutral1254PNG는 속눈썹 끝이 뭉치고 흰자/홍채 경계가 톱니처럼 흐린다. CG의 눈과 금발 이마 경계에도 각진 작은 색조각이 보인다.",
+        "details": "APose의 은색 판금 모서리·허리 세공·신발 보석은 CG에서 뭉친 금속/붉은 점으로 단순해지고 금발 가는 선이 넓은 밝은 면으로 바뀐다.",
+        "deformation": "얼굴웨이트v3 피격CG에서 얼굴/머리와 어깨 갑옷이 함께 회전한다. 큰 명백한 얼굴 분리는 표본에서 보이지 않지만 머리끝/속눈썹/목의 거친 경계는 남는다. GPT표정/Native연속동작 검증은 아니다.",
+        "modesty": "목·어깨·몸통·허벅지까지 갑옷과 검은 바지로 덮고 부츠·장갑을 착용했다. 짧은 빨간 앞천 아래에도 바지가 있다. 몸통/다리 노출 없음.",
+        "priority": "눈/금발/갑옷 세부 개선 필요, 현재 최종 외형 승인 보류",
+        "stage": "일반 cap 연속표정 정면CG와 별도 얼굴웨이트v3 원본skin 전신/피격을 구분"
+      },
+      "observed_images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HornsWarriorF.png",
+          "sha256": "37fdf47eb2cda39240d07c94a463a2444b6f0a29fec04fcc3f9513019689866e",
+          "bytes": 1369573,
+          "workspace_relative": "art/out/APose_HornsWarriorF.png",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "사용자승인원본 APose"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorF/Costume_HornsWarriorF_Expression_Neutral_face.png",
+          "sha256": "df3506ed238e712c9c4326f73d864a1a112673160d580349d760edda8312f2b2",
+          "bytes": 1303735,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorF/Costume_HornsWarriorF_Expression_Neutral_face.png",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "현재 GPT Neutral얼굴PNG",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorF/Costume_HornsWarriorF_Expression_Neutral_face.json",
+            "sha256": "dd7593be59120488b64aec2e45803598b12d4342e4c9b89b2849a2ae6bfbbc39",
+            "bytes": 1000,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorF/Costume_HornsWarriorF_Expression_Neutral_face.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-b31ba6c8-1470-496e-a177-1dcd49da10e4.png"
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-b31ba6c8-1470-496e-a177-1dcd49da10e4.png",
+            "sha256": "df3506ed238e712c9c4326f73d864a1a112673160d580349d760edda8312f2b2",
+            "bytes": 1303735,
+            "dimensions": [
+              1254,
+              1254
+            ],
+            "personally_viewed_with_view_image": true,
+            "view_image_detail": "original"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorF/paid_skin_v1_previews/Neutral_front.png",
+          "sha256": "d342539afd89dd68c15b074b795b082b77daf203d35c05f8318ee9f4dafdfce3",
+          "bytes": 779603,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorF/paid_skin_v1_previews/Neutral_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제표정재질 CG정면",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorF/paid_skin_v1_previews/Neutral_front.json",
+            "sha256": "2eda0dc824d3ef78266340d9b79025964a3b81937c17ce5ff30976a1e196ea99",
+            "bytes": 916,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorF/paid_skin_v1_previews/Neutral_front.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_PreservedSkinExpressions_v1.glb",
+            "source_sha256": "a554b1d807ae6d85ef5142e6845239ed1ddbfa47b4cd3409735d7ed6c3e01a12",
+            "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsWarriorF\\Costume_HornsWarriorF_Expression_Neutral_face.png",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsWarriorF/Costume_HornsWarriorF_PreservedSkinExpressions_v1.glb",
+            "sha256": "a554b1d807ae6d85ef5142e6845239ed1ddbfa47b4cd3409735d7ed6c3e01a12",
+            "bytes": 5732428,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsWarriorF/Costume_HornsWarriorF_PreservedSkinExpressions_v1.glb"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/actual_armature_six_pose/rest_skin_front.png",
+          "sha256": "105337e74b64de1a637b57a295f7ad7783f36212441308fb427c723b1669dede",
+          "bytes": 542482,
+          "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/actual_armature_six_pose/rest_skin_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제재질 CG전신",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/actual_armature_six_pose/motion_qa.json",
+            "sha256": "b9c36a10ecc7d6d24b3a333c91fe75655d96b7ba4e30fd437733701888b724be",
+            "bytes": 6052,
+            "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/actual_armature_six_pose/motion_qa.json"
+          },
+          "metadata_fields": {
+            "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsWarriorF_v3\\Costume_HornsWarriorF_skin_face_corrected.skin.json",
+            "proxy_plan": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HornsWarriorF\\joints.json"
+          }
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/game_fx_comparison/HurtBig_0_06_after.png",
+          "sha256": "45c328d1003dd7ab8c3cba80a4d547289de2665cbab11fedd090e225397a1ea2",
+          "bytes": 771129,
+          "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/game_fx_comparison/HurtBig_0_06_after.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "별도후보 동작CG 표본",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/game_fx_comparison/HurtBig_0_06_after.json",
+            "sha256": "47e9f7408dd3aad6b962c5bf304154178181942b5e83cbb96e17d63d86536a53",
+            "bytes": 1811,
+            "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/game_fx_comparison/HurtBig_0_06_after.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsWarriorF_v3\\Costume_HornsWarriorF_skin_face_corrected.glb",
+            "source_sha256": "826d6fcf314e2c763667429ff9b8cf739b4e2e93f9a755b5b9c6685c02131e88",
+            "expression": null,
+            "shading_policy": "flat emission texture colors",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/Costume_HornsWarriorF_skin_face_corrected.glb",
+            "sha256": "826d6fcf314e2c763667429ff9b8cf739b4e2e93f9a755b5b9c6685c02131e88",
+            "bytes": 4480940,
+            "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsWarriorF_v3/Costume_HornsWarriorF_skin_face_corrected.glb"
+          },
+          "source_sha_matches_metadata": true
+        }
+      ],
+      "original_fixed_glb": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_HornsWarriorF.glb",
+        "sha256": "f54fb171f56bbaeca3772ca6aee7e3f30fbaf331576df19e0a4cb15ba3eb1b0e",
+        "bytes": 3502876,
+        "workspace_relative": "art/models/costume/fixed/Costume_HornsWarriorF.glb"
+      }
+    },
+    {
+      "avatar": "Costume_HornsMageM",
+      "label": "뿔 마법사 남",
+      "review_is_personal_visual": true,
+      "eye_detail_status": "수정 필요",
+      "body_detail_status": "APose 대비 세부 손실",
+      "modesty_visual_status": "확인된 정면·전신 범위 단정",
+      "native_runtime_status": "이 검토에서는 실행하지 않음",
+      "final_quality_approved": false,
+      "notes": {
+        "eyes": "APose에서는 큰 붉은 홍채·작은 반사가 또렷하다. Neutral1254PNG의 위속눈썹은 뭉친 검정띠, 눈꼬리는 번진 선, 홍채는 단순한 붉은 원에 가깝다. 최신 combined winding 피격CG의 눈가가 늘어나고 거칠다.",
+        "details": "APose의 뿔 빛균열·금색 소매/가슴 테두리·허리체인이 CG에서 흐린 굵은 얼룩으로 합쳐진다. 옷의 검정/빨강·긴 코트 실루엣은 유지한다.",
+        "deformation": "최신 combined winding 큰피격CG에 볼·턱·입 옆의 삼각형 색이음/검은 선이 뚜렷하다. 얼굴이 길어지고 눈 주변이 눌린다. 실제 Native에서 허용되는지 미검증이며 현재 외형 보류 사유다.",
+        "modesty": "긴 소매·높은 목깃·긴 코트·검은 바지·부츠가 몸통/어깨/다리를 덮고 손만 보인다. 부적/털장식은 피부로 보이지 않는다.",
+        "priority": "눈 번짐과 최신 얼굴 패치 경계 모두 우선 보류",
+        "stage": "기존 cap 정면, 얼굴웨이트v3 전신, 별도 combined head/arm+mouth/winding 피격은 서로 다른 후보이므로 하나의완성본으로 합산금지"
+      },
+      "observed_images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HornsMageM.png",
+          "sha256": "db03833776043f3fd9f8482852fa1d0355884f4d91c772fc65154ec607f62c47",
+          "bytes": 1489186,
+          "workspace_relative": "art/out/APose_HornsMageM.png",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "사용자승인원본 APose"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_Neutral_face.png",
+          "sha256": "64169b99a50ff904b8c2d7e6be3289960814c3a24be82d9f3477494aa5af5b11",
+          "bytes": 1364324,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_Neutral_face.png",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "현재 GPT Neutral얼굴PNG",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_Neutral_face.json",
+            "sha256": "9cdf9664d18ef020ebede682169fc9499b592333b7e446af6c02675cf7edfa1f",
+            "bytes": 1161,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_Expression_Neutral_face.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-272ce8dc-d199-4840-afb0-02c2426af80d.png"
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-272ce8dc-d199-4840-afb0-02c2426af80d.png",
+            "sha256": "64169b99a50ff904b8c2d7e6be3289960814c3a24be82d9f3477494aa5af5b11",
+            "bytes": 1364324,
+            "dimensions": [
+              1254,
+              1254
+            ],
+            "personally_viewed_with_view_image": true,
+            "view_image_detail": "original"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/Neutral_front.png",
+          "sha256": "7c5c34ae216ee83eb130faedcf500c82dc439e82e980e756847ff43d54f514e2",
+          "bytes": 816059,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/Neutral_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제표정재질 CG정면",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/Neutral_front.json",
+            "sha256": "7871e49587ab3740223855befb83e990f1a7de40a570768788701bde95ae21ac",
+            "bytes": 901,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsMageM/paid_skin_v1_previews/Neutral_front.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_PreservedSkinExpressions_v1.glb",
+            "source_sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+            "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_Expression_Neutral_face.png",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_PreservedSkinExpressions_v1.glb",
+            "sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+            "bytes": 5721016,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsMageM/Costume_HornsMageM_PreservedSkinExpressions_v1.glb"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsMageM_v3/actual_armature_six_pose/rest_skin_front.png",
+          "sha256": "1ae17008be4009b28f5ee7f68cba840ff245ffaf7ab094bed7cb947147243c27",
+          "bytes": 548640,
+          "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsMageM_v3/actual_armature_six_pose/rest_skin_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제재질 CG전신",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsMageM_v3/actual_armature_six_pose/motion_qa.json",
+            "sha256": "1f61bebeacfb3f7db60c64b345770488ed5ae4d21b82df46061a30a401fbd6f4",
+            "bytes": 6042,
+            "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsMageM_v3/actual_armature_six_pose/motion_qa.json"
+          },
+          "metadata_fields": {
+            "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsMageM_v3\\Costume_HornsMageM_skin_face_corrected.skin.json",
+            "proxy_plan": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HornsMageM\\joints.json"
+          }
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsMageM/game_fx_neck_hmm_combined_winding_v1_lit/HurtBig_0_06_expression.png",
+          "sha256": "0fce15352c749e51ee0f81f95029785eedc9a90434ce190be5f1661972edea18",
+          "bytes": 644033,
+          "workspace_relative": "build/expr_qa/Costume_HornsMageM/game_fx_neck_hmm_combined_winding_v1_lit/HurtBig_0_06_expression.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "별도후보 동작CG 표본",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsMageM/game_fx_neck_hmm_combined_winding_v1_lit/HurtBig_0_06_expression.json",
+            "sha256": "c5b096938372055b30a38e46cf55e1e09e4d0633563b62303f3e936495e07c37",
+            "bytes": 1984,
+            "workspace_relative": "build/expr_qa/Costume_HornsMageM/game_fx_neck_hmm_combined_winding_v1_lit/HurtBig_0_06_expression.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\build\\horns_mage_arm_anatomy\\combined_expression_union_v1\\Costume_HornsMageM\\Costume_HornsMageM_face_union_mouth_winding_v1.glb",
+            "source_sha256": "d34d3cbb46c5159bef3402fcd64de6bcb6a62b5d7454877eaa847aa90f8ac967",
+            "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_Expression_Serious_face.png",
+            "shading_policy": "original imported material with geometry QA area lights",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/build/horns_mage_arm_anatomy/combined_expression_union_v1/Costume_HornsMageM/Costume_HornsMageM_face_union_mouth_winding_v1.glb",
+            "sha256": "d34d3cbb46c5159bef3402fcd64de6bcb6a62b5d7454877eaa847aa90f8ac967",
+            "bytes": 6699756,
+            "workspace_relative": "build/horns_mage_arm_anatomy/combined_expression_union_v1/Costume_HornsMageM/Costume_HornsMageM_face_union_mouth_winding_v1.glb"
+          },
+          "source_sha_matches_metadata": true
+        }
+      ],
+      "original_fixed_glb": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_HornsMageM.glb",
+        "sha256": "5f89379362c2362d034075fb17c13ff760b0f063a08c4ace48fc0de6e87e7804",
+        "bytes": 3447768,
+        "workspace_relative": "art/models/costume/fixed/Costume_HornsMageM.glb"
+      }
+    },
+    {
+      "avatar": "Costume_HornsMageF",
+      "label": "뿔 마법사 여",
+      "review_is_personal_visual": true,
+      "eye_detail_status": "수정 필요",
+      "body_detail_status": "APose 대비 세부 손실",
+      "modesty_visual_status": "확인된 정면·전신 범위 단정",
+      "native_runtime_status": "이 검토에서는 실행하지 않음",
+      "final_quality_approved": false,
+      "notes": {
+        "eyes": "APose의 붉은 홍채/반사/속눈썹은 선명하다. Neutral1254PNG 자체부터 홍채 외곽/흰자/위아래 속눈썹이 크게 번지고 중첩된 톱니가 보인다. 6종 중 눈 PNG의 세부 손실이 가장 두드러지는 편이다. 기존 머리 CG도 그대로 흐리다.",
+        "details": "APose의 긴 코트 붉은 불꽃 문양·목/가슴 보석 테두리·소매 장식이 원본 연속skin 전신CG에서 둥근 얼룩과 두꺼운 줄로 바뀐다. 뿔 분할 경계/머리카락 각짐도 보인다.",
+        "deformation": "v7 교정 영역 공격CG에서 팔을 굽힌 실루엣과 머리/코트 영역이 보이지만 보라색 진단영역이 덮여 있다. 따라서 최신교정후보의 의상색/표정최종품질 판정은 불가하고 Native QA도 미검증이다. 이전 원본 rest CG를 v7 완료 증거로 쓰지 않는다.",
+        "modesty": "APose/원본 전신CG 모두 높은목깃·어깨와 긴소매·무릎 아래 코트·검은바지·부츠. 손/얼굴 외 노출 없음.",
+        "priority": "눈 PNG 개선 우선, 최종표정skin 결합/교정 실동작 검증 대기",
+        "stage": "머리만 표정CG/원본 fullskin rest/교정v7 진단영역 공격CG 세 범위를 구분"
+      },
+      "observed_images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HornsMageF.png",
+          "sha256": "da24275db259e92fcf43eec0b58477333e9642fa2bb43c09f14dce52feb85af2",
+          "bytes": 1442531,
+          "workspace_relative": "art/out/APose_HornsMageF.png",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "사용자승인원본 APose"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageF/Costume_HornsMageF_Expression_Neutral_face.png",
+          "sha256": "eda3e88e669c6d059e079c9cd024989b8c831728cda9dce9323417c397db9fa7",
+          "bytes": 1415202,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsMageF/Costume_HornsMageF_Expression_Neutral_face.png",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "현재 GPT Neutral얼굴PNG",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageF/Costume_HornsMageF_Expression_Neutral_face.json",
+            "sha256": "eccc3d96ae06951fed63f8df04da57e4d409bcf1d53ca8cc4b31789d178575f5",
+            "bytes": 1161,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsMageF/Costume_HornsMageF_Expression_Neutral_face.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-12463e70-b00f-46da-9522-b4c44bbb40e2.png"
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-12463e70-b00f-46da-9522-b4c44bbb40e2.png",
+            "sha256": "eda3e88e669c6d059e079c9cd024989b8c831728cda9dce9323417c397db9fa7",
+            "bytes": 1415202,
+            "dimensions": [
+              1254,
+              1254
+            ],
+            "personally_viewed_with_view_image": true,
+            "view_image_detail": "original"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageF/previews/Neutral_front.png",
+          "sha256": "99440718166e4c38e594b4dc8554a121727be450d19dec624b7011c5d55a9915",
+          "bytes": 816746,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsMageF/previews/Neutral_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제표정재질 CG정면",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageF/previews/Neutral_front.json",
+            "sha256": "d8c0b9e493a01dddcb64bc67a88b0c38d7e4d5a6ca0afa8e4358c3a49b931cbf",
+            "bytes": 1237,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsMageF/previews/Neutral_front.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_HeadExpressions_R15.glb",
+            "source_sha256": "6a4d6d20f89b7481692623d5c6093ac8c5459e6b855ccf5870983a805caa955e",
+            "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageF\\Costume_HornsMageF_Expression_Neutral_face.png",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsMageF/Costume_HornsMageF_HeadExpressions_R15.glb",
+            "sha256": "6a4d6d20f89b7481692623d5c6093ac8c5459e6b855ccf5870983a805caa955e",
+            "bytes": 3254624,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsMageF/Costume_HornsMageF_HeadExpressions_R15.glb"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/motion_final_v6/rest_skin_front.png",
+          "sha256": "bbfdbde14b32cbf94b652e944a89af16ae467e774081697c43a9e3f856c9205a",
+          "bytes": 539373,
+          "workspace_relative": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/motion_final_v6/rest_skin_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제재질 CG전신",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/motion_final_v6/motion_qa.json",
+            "sha256": "9090fd5179197b0f147023842f6ab08a9b19e31a743d22ad4f5816f2a1f359e2",
+            "bytes": 5888,
+            "workspace_relative": "build/costume_r15/skin_candidates/Costume_HornsMageF_preserved_v1/motion_final_v6/motion_qa.json"
+          },
+          "metadata_fields": {
+            "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\Costume_HornsMageF_preserved_v1\\Costume_HornsMageF_skin.skin.json",
+            "proxy_plan": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HornsMageF\\joints.json"
+          }
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/weight_corrections/HornsMageF_v7/region_overlay/attack_stress_skin_front.png",
+          "sha256": "bf1dfc94aa5cb4615355cdf982a66d9d787fce2161b086d468fd1346c89de777",
+          "bytes": 531141,
+          "workspace_relative": "build/costume_r15/skin_candidates/weight_corrections/HornsMageF_v7/region_overlay/attack_stress_skin_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "별도후보 동작CG 표본",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/weight_corrections/HornsMageF_v7/region_overlay/motion_qa.json",
+            "sha256": "6ac78c9bdeafd0a30758d581a992882be2b179ca7883e9fa091c736914f0d4e6",
+            "bytes": 6109,
+            "workspace_relative": "build/costume_r15/skin_candidates/weight_corrections/HornsMageF_v7/region_overlay/motion_qa.json"
+          },
+          "metadata_fields": {
+            "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\Costume_HornsMageF_preserved_v1\\Costume_HornsMageF_skin.skin.json",
+            "proxy_plan": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HornsMageF\\joints.json"
+          }
+        }
+      ],
+      "original_fixed_glb": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_HornsMageF.glb",
+        "sha256": "f8d11d1577b78a285867bf2be68734168251b73a82a4d0d20e27a372b8352fc2",
+        "bytes": 3485944,
+        "workspace_relative": "art/models/costume/fixed/Costume_HornsMageF.glb"
+      }
+    },
+    {
+      "avatar": "Costume_HornsArcherM",
+      "label": "뿔 궁수 남",
+      "review_is_personal_visual": true,
+      "eye_detail_status": "수정 필요",
+      "body_detail_status": "APose 대비 세부 손실",
+      "modesty_visual_status": "확인된 정면·전신 범위 단정",
+      "native_runtime_status": "이 검토에서는 실행하지 않음",
+      "final_quality_approved": false,
+      "notes": {
+        "eyes": "APose의 눈 윤곽과 작은 복수반사는 선명하다. Neutral1254PNG는 흰자/눈꼬리에 톱니·번짐이 있고 원본의 고운 홍채 세부가 소실됐다. 최신 lit winding 정면에서는 눈 반사가 퍼지고 눈 가장자리가 거칠다.",
+        "details": "APose의 목깃/단추/허리 금속 장식과 뿔 균열은 전신CG에서 뭉친 어두운 면/빨간 덩어리로 바뀐다. 큰 망토·갑옷 실루엣은 유지한다.",
+        "deformation": "최신 winding 정면에서 코 양옆에 작고 검은 삼각형 표시, 큰피격CG에서 볼·턱을 가르는 다각형 패치선/색이음이 뚜렷하다. 눈 주위도 늘어져 보인다. source가 움직인 CG표본일 뿐 Native 피부변형 승인이 아니며 외형 보류다.",
+        "modesty": "높은 목깃·긴팔·장갑·긴코트·검은바지·부츠가 몸통·어깨·허벅지를 덮었다. 얼굴 외 노출 없음.",
+        "priority": "눈 세부와 최신 얼굴 패치 경계 우선 보류",
+        "stage": "얼굴웨이트v3 전신 원본과 FaceUnionMouthWinding_v1 정면/피격을 구분, 국소입P/N+winding 예외 별도검증 필요"
+      },
+      "observed_images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HornsArcherM.png",
+          "sha256": "3ffc65d93e8a0f464d1eaf5d85f3bc56b08bc9cd7784207f558272faff7c0a39",
+          "bytes": 1306596,
+          "workspace_relative": "art/out/APose_HornsArcherM.png",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "사용자승인원본 APose"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_Neutral_face.png",
+          "sha256": "61b768429e570bc03f4ad33ab59aa49b9d8523b948fca3431b86e345331daa41",
+          "bytes": 1353596,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_Neutral_face.png",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "현재 GPT Neutral얼굴PNG",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_Neutral_face.json",
+            "sha256": "9e6261da0dd29927d4f43bfc1c7dcc80f37d89d79a9373ee7f660cf5e891c79c",
+            "bytes": 994,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_Neutral_face.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-fade62a4-ab68-4df4-8854-8fdb215702f1.png"
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-fade62a4-ab68-4df4-8854-8fdb215702f1.png",
+            "sha256": "61b768429e570bc03f4ad33ab59aa49b9d8523b948fca3431b86e345331daa41",
+            "bytes": 1353596,
+            "dimensions": [
+              1254,
+              1254
+            ],
+            "personally_viewed_with_view_image": true,
+            "view_image_detail": "original"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsArcherM/mouth_winding_v1_lit/Neutral_front.png",
+          "sha256": "6c8f7650010142118746475031a6b7105d65389a20874f73d4cb035a144f27f5",
+          "bytes": 710610,
+          "workspace_relative": "build/expr_qa/Costume_HornsArcherM/mouth_winding_v1_lit/Neutral_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제표정재질 CG정면",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsArcherM/mouth_winding_v1_lit/Neutral_front.json",
+            "sha256": "f949123ef6fbc02a3bb5b73b45b99b35fa2ab8375184e44d4355959566cd6acf",
+            "bytes": 963,
+            "workspace_relative": "build/expr_qa/Costume_HornsArcherM/mouth_winding_v1_lit/Neutral_front.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+            "source_sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+            "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_Expression_Neutral_face.png",
+            "shading_policy": "original imported material with geometry QA area lights",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+            "sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+            "bytes": 6588956,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsArcherM_v3/actual_armature_six_pose/rest_skin_front.png",
+          "sha256": "953a2839ceac12467e112bab0664dfe7c757dc237e91f3c06f1240f9df51604e",
+          "bytes": 520698,
+          "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsArcherM_v3/actual_armature_six_pose/rest_skin_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제재질 CG전신",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/costume_r15/skin_candidates/face_weight_corrections/HornsArcherM_v3/actual_armature_six_pose/motion_qa.json",
+            "sha256": "19c5be5fbe9be457c9fa19c0403c6bbfce458359457ebc43e425a44aa4873b88",
+            "bytes": 6058,
+            "workspace_relative": "build/costume_r15/skin_candidates/face_weight_corrections/HornsArcherM_v3/actual_armature_six_pose/motion_qa.json"
+          },
+          "metadata_fields": {
+            "skin_manifest": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsArcherM_v3\\Costume_HornsArcherM_skin_face_corrected.skin.json",
+            "proxy_plan": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\Costume_HornsArcherM_face_fixed_v2\\joints.json"
+          }
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsArcherM/game_fx_neck_mouth_winding_v1_lit/HurtBig_0_06_expression.png",
+          "sha256": "fff7ad3d3df7dc96ec58a6b9320e2fb4d6a49309a8e5fbc6828839b88023f144",
+          "bytes": 670830,
+          "workspace_relative": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_mouth_winding_v1_lit/HurtBig_0_06_expression.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "별도후보 동작CG 표본",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsArcherM/game_fx_neck_mouth_winding_v1_lit/HurtBig_0_06_expression.json",
+            "sha256": "1dab5a295d28d17bf6414f9b2870896398d5d8e5b9019c195a334eb509d9039a",
+            "bytes": 1954,
+            "workspace_relative": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_mouth_winding_v1_lit/HurtBig_0_06_expression.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+            "source_sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+            "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_Expression_Serious_face.png",
+            "shading_policy": "original imported material with geometry QA area lights",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+            "sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+            "bytes": 6588956,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb"
+          },
+          "source_sha_matches_metadata": true
+        }
+      ],
+      "original_fixed_glb": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_HornsArcherM.glb",
+        "sha256": "9410d599c8b275df966a97efffa3c0991760944a8d4a0f504ccdabe4e6f9b1fb",
+        "bytes": 3464080,
+        "workspace_relative": "art/models/costume/fixed/Costume_HornsArcherM.glb"
+      }
+    },
+    {
+      "avatar": "Costume_HornsArcherF",
+      "label": "뿔 궁수 여",
+      "review_is_personal_visual": true,
+      "eye_detail_status": "수정 필요",
+      "body_detail_status": "APose 대비 세부 손실",
+      "modesty_visual_status": "확인된 정면·전신 범위 단정",
+      "native_runtime_status": "이 검토에서는 실행하지 않음",
+      "final_quality_approved": false,
+      "notes": {
+        "eyes": "APose의 홍채·눈반사·짙은 속눈썹 경계는 또렷하다. Neutral1254PNG의 홍채 바깥 테두리/아랫눈꺼풀은 톱니·번짐이 있고 하이라이트가 단순해졌다. 최신 mouth lit 정면에서도 눈꼬리와 흰자가 거칠다.",
+        "details": "APose의 빨강/검정 갑옷·허리벨트·보석 테두리·무릎장식은 CG에서 굵은 형태로 유지되지만 세공은 흐려졌다. 긴 머리 부피는 유지하고 가는 머리결은 거의 없다.",
+        "deformation": "mouth후보 공격 stress 전신CG에서 팔과 다리 굽힘이 보이고 큰 열린 관절틈은 보이지 않는다. 최신 정면의 코 옆 작은 검은 삼각형/점은 남는다. 작은 전신CG만으로 얼굴 세밀변형이나 Native활시위 동작을 승인할 수 없다.",
+        "modesty": "몸통/어깨/팔은 갑옷, 허벅지/다리는 검은바지와 부츠로 덮였다. 짧은 붉은앞천은 바지 위다. 손가락/얼굴만 노출.",
+        "priority": "눈 세부 개선과 코 옆 경계 Native 확인 필요",
+        "stage": "15Bone 수동skin mouth후보 전신/공격CG; Native실제등록·표정·활 최종모션 미검증"
+      },
+      "observed_images": [
+        {
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HornsArcherF.png",
+          "sha256": "13713640aee57035f1812aa7d535a1bd2999db496aa233f22f9c268128200f9a",
+          "bytes": 1387017,
+          "workspace_relative": "art/out/APose_HornsArcherF.png",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "사용자승인원본 APose"
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_Expression_Neutral_face.png",
+          "sha256": "c6a2ce6c35f02f3099a42141436d124450637306a77d30a899fff7d1c8d32cfe",
+          "bytes": 1324187,
+          "workspace_relative": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_Expression_Neutral_face.png",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "현재 GPT Neutral얼굴PNG",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_Expression_Neutral_face.json",
+            "sha256": "e4d8987bbeab575ac16dd14c784905ee9b52cb9096c6eb40078a80606c15657c",
+            "bytes": 975,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_Expression_Neutral_face.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-a9847760-aa7f-4f31-a68a-d9bb912da702.png"
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/.codex/generated_images/01a1013b-c18d-7870-87c3-f859469e24cf/exec-a9847760-aa7f-4f31-a68a-d9bb912da702.png",
+            "sha256": "c6a2ce6c35f02f3099a42141436d124450637306a77d30a899fff7d1c8d32cfe",
+            "bytes": 1324187,
+            "dimensions": [
+              1254,
+              1254
+            ],
+            "personally_viewed_with_view_image": true,
+            "view_image_detail": "original"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsArcherF/rest_mouth_v1_lit/Neutral_front.png",
+          "sha256": "a2ccc33092ac977daf6e65cf4cbca08845aa2104efb922ebd8a94dcde526f00f",
+          "bytes": 747559,
+          "workspace_relative": "build/expr_qa/Costume_HornsArcherF/rest_mouth_v1_lit/Neutral_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제표정재질 CG정면",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsArcherF/rest_mouth_v1_lit/Neutral_front.json",
+            "sha256": "37f9ac9251d07538649f5d4f6080361198956d4d320e777023026a8d506a3e69",
+            "bytes": 951,
+            "workspace_relative": "build/expr_qa/Costume_HornsArcherF/rest_mouth_v1_lit/Neutral_front.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb",
+            "source_sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+            "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_Expression_Neutral_face.png",
+            "shading_policy": "original imported material with geometry QA area lights",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb",
+            "sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+            "bytes": 5823716,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsArcherF/full_body_mouth_v1/front.png",
+          "sha256": "f7e983c524195e434cf7232f5d48ddc17ec4c8333dec936acf65a486ebab7c46",
+          "bytes": 1000196,
+          "workspace_relative": "build/expr_qa/Costume_HornsArcherF/full_body_mouth_v1/front.png",
+          "dimensions": [
+            768,
+            1024
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "실제재질 CG전신",
+          "render_metadata": {
+            "path": "C:/Users/glori/Documents/Game/build/expr_qa/Costume_HornsArcherF/full_body_mouth_v1/front.json",
+            "sha256": "df70542b4790dd7f4a47fb00b96d9ea7e3bf4a629968bd9cd682ee944b110eea",
+            "bytes": 888,
+            "workspace_relative": "build/expr_qa/Costume_HornsArcherF/full_body_mouth_v1/front.json"
+          },
+          "metadata_fields": {
+            "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb",
+            "source_sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+            "shading_policy": "original imported material; full-body lit QA",
+            "source_unchanged": true
+          },
+          "rendered_source": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb",
+            "sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+            "bytes": 5823716,
+            "workspace_relative": "art/models/costume/expressions/Costume_HornsArcherF/Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb"
+          },
+          "source_sha_matches_metadata": true
+        },
+        {
+          "path": "C:/Users/glori/Documents/Game/build/manual_partition_candidates/HornsArcherF_expression_mouth_v1_motion/attack_stress_front.png",
+          "sha256": "dc61cf503084491b9232eecb16d7ac5814bf4fe5b754af5e813af5b5859feb91",
+          "bytes": 529278,
+          "workspace_relative": "build/manual_partition_candidates/HornsArcherF_expression_mouth_v1_motion/attack_stress_front.png",
+          "dimensions": [
+            768,
+            768
+          ],
+          "personally_viewed_with_view_image": true,
+          "view_image_detail": "original",
+          "role": "별도후보 동작CG 표본"
+        }
+      ],
+      "original_fixed_glb": {
+        "path": "C:/Users/glori/Documents/Game/art/models/costume/fixed/Costume_HornsArcherF.glb",
+        "sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+        "bytes": 3323080,
+        "workspace_relative": "art/models/costume/fixed/Costume_HornsArcherF.glb"
+      }
+    }
+  ]
+}

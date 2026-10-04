@@ -1,0 +1,228 @@
+{
+  "date": "2026-10-04",
+  "scope": "root_direct_view_of_18_unchanged_fixed_front_CG",
+  "native_qa": false,
+  "new_design": false,
+  "source_assets_mutated": false,
+  "paid_calls": 0,
+  "uploads": 0,
+  "rows": [
+    {
+      "avatar": "Costume_HaloWarriorM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HaloWarriorM_fixed_unlit.png",
+      "archived_png": "fixed_front/HaloWarriorM_fixed_unlit.png",
+      "sha256": "2a19b97ff2dbabeaa4c690cab89de32a11e8d0f06fe7dade6aea6dd44bc80a3b",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HaloWarriorF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HaloWarriorF_fixed_unlit.png",
+      "archived_png": "fixed_front/HaloWarriorF_fixed_unlit.png",
+      "sha256": "9ac9f5109997e73644bc4430b5eba7ff23f9bcb345b79651ea232c58eb61ff46",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HaloArcherM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HaloArcherM_fixed_unlit.png",
+      "archived_png": "fixed_front/HaloArcherM_fixed_unlit.png",
+      "sha256": "fb4bf9b72e0825483eb3c0273b33273271558b9eb6af8da54a23a20c559f358a",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HaloArcherF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HaloArcherF_fixed_unlit.png",
+      "archived_png": "fixed_front/HaloArcherF_fixed_unlit.png",
+      "sha256": "5193b4450006975860b6008b412759173a9ffb822952791418974b7cf5150a62",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HaloMageM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HaloMageM_fixed_unlit.png",
+      "archived_png": "fixed_front/HaloMageM_fixed_unlit.png",
+      "sha256": "45151363ce13b8c36d9e2d866b9eec7785560e8b246765b7d39527bee6803f9c",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HaloMageF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HaloMageF_fixed_unlit.png",
+      "archived_png": "fixed_front/HaloMageF_fixed_unlit.png",
+      "sha256": "79ccf0ba23a7d1a4d6304c5ab9cf2e786fbd06bee0c5e9db0e82f422f7454647",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HornsWarriorM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HornsWarriorM_fixed_unlit.png",
+      "archived_png": "fixed_front/HornsWarriorM_fixed_unlit.png",
+      "sha256": "c4b62f6284f477b68423ac28ca94cb8a6ab31e36d80bf58b2df6ff4d0722f855",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HornsWarriorF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HornsWarriorF_fixed_unlit.png",
+      "archived_png": "fixed_front/HornsWarriorF_fixed_unlit.png",
+      "sha256": "1dedae61fb0b331cacf8fbb291dc8bce89e8a17822b50f6b94ac1f2c99e1b71c",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HornsArcherM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HornsArcherM_fixed_unlit.png",
+      "archived_png": "fixed_front/HornsArcherM_fixed_unlit.png",
+      "sha256": "adc384f80b085ff8f8b30f99141fe6fc084cf04e39c4416005a10ac0288a70f8",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HornsArcherF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HornsArcherF_fixed_unlit.png",
+      "archived_png": "fixed_front/HornsArcherF_fixed_unlit.png",
+      "sha256": "ad5f29625ba59e334e4c7902b0dd0efdac9a730396e8937bac30a93c1216a219",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HornsMageM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HornsMageM_fixed_unlit.png",
+      "archived_png": "fixed_front/HornsMageM_fixed_unlit.png",
+      "sha256": "84d403304b859d13c57cd933c467bf0ab9fce4237c6f247ba6e0f8cf73e38d11",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_HornsMageF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/HornsMageF_fixed_unlit.png",
+      "archived_png": "fixed_front/HornsMageF_fixed_unlit.png",
+      "sha256": "7a6a6752e30fa81117058dd06cb7a8f134ca5414924f24533cc397f02c6905da",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_NeutralWarriorM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/NeutralWarriorM_fixed_unlit.png",
+      "archived_png": "fixed_front/NeutralWarriorM_fixed_unlit.png",
+      "sha256": "a775ce11d0b3b4939c8ac9a2c8d8cd5efa890f856c283771669e8e9c3c18d27b",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_NeutralWarriorF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/NeutralWarriorF_fixed_unlit.png",
+      "archived_png": "fixed_front/NeutralWarriorF_fixed_unlit.png",
+      "sha256": "184d0ac8952a831e66f141ead0b26016abe1cf0a410aef10cf7beb7d72873a4c",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/NeutralArcherM_fixed_unlit.png",
+      "archived_png": "fixed_front/NeutralArcherM_fixed_unlit.png",
+      "sha256": "3ccba13f5e8b7ef38e45fc0e3013964a5cd5320d2f55df5095c6d89723bb7705",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_NeutralArcherF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/NeutralArcherF_fixed_unlit.png",
+      "archived_png": "fixed_front/NeutralArcherF_fixed_unlit.png",
+      "sha256": "18f83b4ce19644410244fbe26603ec4070f0bcc2e05fe0b2d92d59fa37b7c995",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_NeutralMageM",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/NeutralMageM_fixed_unlit.png",
+      "archived_png": "fixed_front/NeutralMageM_fixed_unlit.png",
+      "sha256": "9c44cbe878f975fbf099b273bc7a7c50844ea1b4398b7e72cb5f971334575037",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    },
+    {
+      "avatar": "Costume_NeutralMageF",
+      "source_diagnostic_png": "build/face_quality_audit_20261004/all_source_renders/NeutralMageF_fixed_unlit.png",
+      "archived_png": "fixed_front/NeutralMageF_fixed_unlit.png",
+      "sha256": "6417bf26dc3e62bdfab5cd6f9954702f90bd8a27decfd12b849bfb416e95a481",
+      "dimensions": [
+        768,
+        768
+      ],
+      "personally_viewed_by_root": true,
+      "root_observation": "Eye/lash boundaries and small head/costume details are visibly rough or soft; this is the static fixed atlas, not the latest projected expression mesh."
+    }
+  ],
+  "report_basis": "Same 768 camera, original fixed geometry/UV/baseColor, software bilinear z-buffer. Individual latest face PNG/CG checks are recorded separately by faction."
+}

@@ -1,0 +1,561 @@
+{
+  "schema": 1,
+  "generated_at_utc": "2026-10-04T02:28:23.334914+00:00",
+  "reviewer": "face_quality_agent",
+  "scope": "빛 성기사/궁수/마법사 남녀 6종 직접 시각 검토",
+  "reviewed_count": 6,
+  "directly_viewed_image_count": 19,
+  "production_registered_count_in_scope": 2,
+  "local_only_count_in_scope": 4,
+  "rows": [
+    {
+      "avatar": "Costume_HaloWarriorM",
+      "label_ko": "빛 성기사 남",
+      "production_registered": true,
+      "production_type": "rigid_head_expressions",
+      "latest_reviewed_cg_is_production_source": false,
+      "latest_reviewed_cg_scope": "local_diagnostic_candidate_only",
+      "directly_reviewed_images": [
+        {
+          "role": "original_gpt_apose",
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HaloWarriorM.png",
+          "sha256": "06f5852ec124151554ae687796658e6c8f62c5fff821cdfab97144c7ec88c42d",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "current_neutral_face_png",
+          "path": "C:/Users/glori/Documents/Game/art/out/Costume_HaloWarriorM_Expression_Neutral_face.png",
+          "sha256": "cc040072b0bad26912a5bbcd1ee35c024ed037c888043a0c58ee83e80d7f1e53",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "mode": "RGB",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "latest_local_front_cg",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorM/face_union_mouth_winding_v1_previews/Neutral_front.png",
+          "sha256": "0c0dde931f4a244ce9881f6579eda8260d797bc7ed9a84ff0ca58e000bc14052",
+          "dimensions": [
+            768,
+            768
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false,
+          "cg_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorM/face_union_mouth_winding_v1_previews/Neutral_front.json",
+            "sha256": "81ae7fa252071832045bc406c489bb4d6693a02c094e1858abfc3f7915b40fdd",
+            "source_glb": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorM/Costume_HaloWarriorM_FaceUnionMouthWinding_v1.glb",
+            "declared_source_sha256": "bd1283994aa956ad4a0d07d1e15f5a2ca6b927a2824a85e3b64030a82995098d",
+            "actual_source_sha256": "bd1283994aa956ad4a0d07d1e15f5a2ca6b927a2824a85e3b64030a82995098d",
+            "source_sha_matches": true,
+            "shading_policy": "original imported material with geometry QA area lights",
+            "view_selector": "source-front",
+            "runtime_or_native_qa": false
+          }
+        },
+        {
+          "role": "production_rigid_front_cg",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorM/previews/Neutral_front.png",
+          "sha256": "9def137a685d18eef8b445f6bddd6c66478fd4d12355041f2432854d86f3e53c",
+          "dimensions": [
+            768,
+            768
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false,
+          "cg_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorM/previews/Neutral_front.json",
+            "source_glb": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorM/Costume_HaloWarriorM_HeadExpressions_R15.glb",
+            "declared_source_sha256": "d8000e76a841f1d4675a8dbfc202168ec938551fdcf6e4e6bbeccff41c974611",
+            "actual_source_sha256": "d8000e76a841f1d4675a8dbfc202168ec938551fdcf6e4e6bbeccff41c974611",
+            "source_sha_matches": true,
+            "runtime_or_native_qa": false
+          }
+        }
+      ],
+      "visual_quality_hold": true,
+      "eye_blur_or_edge_distortion_observed": true,
+      "clothing_upload_hold": false,
+      "clothing_review_ko": "원화는 몸통·어깨·팔·다리 모두 갑옷으로 덮여 있다.",
+      "observed_findings_ko": [
+        "원화는 눈동자·테두리·황금 갑옷 장식 경계가 분명하다.",
+        "1254 얼굴에서 두 눈 홍채와 속눈썹 경계가 뭉개지고 작은 흰 반사점은 들쭉날쭉하다.",
+        "최신 skin CG에서도 눈 경계 번짐과 큰 머리카락 덩어리/검은 이음이 보인다. 평상시 입 옆 작은 어두운 대각선은 추가 근접 검증 대상이다.",
+        "생산 rigid 정면 CG에서도 눈이 흐리고 작은 갑옷 원형 장식이 뭉개진다. 헤일로가 정면에서 얇은 수평 막대로 보이는 것은 카메라 영향도 있어 이 사진만으로 형상 오류로 단정하지 않는다."
+      ],
+      "proposed_next_step_ko": "눈·머리카락·갑옷 장식 선명도 재제작 우선",
+      "independent_texel_density_evidence": {
+        "audit_path": "C:/Users/glori/Documents/Game/build/face_quality_audit_20261004/audit_v2.json",
+        "head_fixed_to_raw_linear_density_median": 0.7145295951520849,
+        "raw_image_resolution": [
+          2048,
+          2048
+        ],
+        "fixed_head_resolution": [
+          1024,
+          1024
+        ],
+        "geometry_maximum_world_position_error": 0.0,
+        "inference_ko": "이전 전체 18종 UV 삼각형 면적 감사 수치다. 번짐 원인의 일부를 뒷받침하지만 현재 1254 얼굴 PNG에 자동 적용되는 품질 수치는 아니다."
+      },
+      "design_changed": false,
+      "uploaded": false,
+      "native_validated_in_this_review": false
+    },
+    {
+      "avatar": "Costume_HaloWarriorF",
+      "label_ko": "빛 성기사 여",
+      "production_registered": false,
+      "production_type": null,
+      "latest_reviewed_cg_is_production_source": false,
+      "latest_reviewed_cg_scope": "local_diagnostic_candidate_only",
+      "directly_reviewed_images": [
+        {
+          "role": "original_gpt_apose",
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HaloWarriorF.png",
+          "sha256": "62bf94feab90c94157f852a7e173d05d4a425071e80aaee1a8ca13885350f185",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "current_neutral_face_png",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorF/Costume_HaloWarriorF_Expression_Neutral_face.png",
+          "sha256": "1c7a2e67c3eb5152e9858c09177a4ba4abcdbe55b339a784880bb19484d2b5f1",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "mode": "RGB",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "latest_local_front_cg",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorF/face_union_mouth_winding_v1_previews/Neutral_front.png",
+          "sha256": "daa2f6663f1a12171d43621728d3750155e10d4d778b8b983b14d64d86a3f28f",
+          "dimensions": [
+            768,
+            768
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false,
+          "cg_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorF/face_union_mouth_winding_v1_previews/Neutral_front.json",
+            "sha256": "c58879e2a08d8261a00f2c7ca2d6f72dc04d92cdfc61522570ea1d9000506562",
+            "source_glb": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloWarriorF/Costume_HaloWarriorF_FaceUnionMouthWinding_v1.glb",
+            "declared_source_sha256": "1364e95a2c33145313a9c5c80b550f8668b66f9d01f4a850f933d6001e451d38",
+            "actual_source_sha256": "1364e95a2c33145313a9c5c80b550f8668b66f9d01f4a850f933d6001e451d38",
+            "source_sha_matches": true,
+            "shading_policy": "original imported material with geometry QA area lights",
+            "view_selector": "source-front",
+            "runtime_or_native_qa": false
+          }
+        }
+      ],
+      "visual_quality_hold": true,
+      "eye_blur_or_edge_distortion_observed": true,
+      "clothing_upload_hold": false,
+      "clothing_review_ko": "원화는 갑옷과 흰 하의로 몸통·어깨·팔·다리를 덮고 있다.",
+      "observed_findings_ko": [
+        "원화의 눈 반사 다이아몬드와 곱슬머리·갑옷 장식이 분명하다.",
+        "1254 얼굴의 홍채 바깥과 흰자 가장자리가 번지고 들쭉날쭉하며 속눈썹이 덩어리로 합쳐 보인다.",
+        "최신 CG에서 눈 테두리 번짐이 남고 머리카락 세부와 관 장식이 둔해진다.",
+        "헤일로는 타원 링을 유지하지만 링 단면과 작은 장식이 각져 보인다."
+      ],
+      "proposed_next_step_ko": "눈 경계·곱슬머리·작은 금속 장식 재제작 필요",
+      "independent_texel_density_evidence": {
+        "audit_path": "C:/Users/glori/Documents/Game/build/face_quality_audit_20261004/audit_v2.json",
+        "head_fixed_to_raw_linear_density_median": 0.7515422276080267,
+        "raw_image_resolution": [
+          2048,
+          2048
+        ],
+        "fixed_head_resolution": [
+          1024,
+          1024
+        ],
+        "geometry_maximum_world_position_error": 7.450580596923828e-09,
+        "inference_ko": "이전 전체 18종 UV 삼각형 면적 감사 수치다. 번짐 원인의 일부를 뒷받침하지만 현재 1254 얼굴 PNG에 자동 적용되는 품질 수치는 아니다."
+      },
+      "design_changed": false,
+      "uploaded": false,
+      "native_validated_in_this_review": false
+    },
+    {
+      "avatar": "Costume_HaloArcherM",
+      "label_ko": "빛 궁수 남",
+      "production_registered": true,
+      "production_type": "skin_face_union_mouth_restored",
+      "latest_reviewed_cg_is_production_source": true,
+      "latest_reviewed_cg_scope": "current_production_source_offline_preview",
+      "directly_reviewed_images": [
+        {
+          "role": "original_gpt_apose",
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HaloArcherM.png",
+          "sha256": "4534e82d4407fa7956ef50be299092a0c19770181139fb0285b7bf3852422c63",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "current_neutral_face_png",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_Expression_Neutral_face.png",
+          "sha256": "9943b2a53752470f41d290466c96fc6aed4b9e7b4bd1a295588b111bc4832e1a",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "mode": "RGB",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "latest_local_front_cg",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_previews/Neutral_front.png",
+          "sha256": "77fb8f7edd46baea5aaafac2444818e420d45b9f04f71a16e1e3bd4fb1ee7ed3",
+          "dimensions": [
+            768,
+            768
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false,
+          "cg_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloArcherM/face_union_mouth_v1_previews/Neutral_front.json",
+            "sha256": "f848b50c7140c547e575eb82aeb9628a2d087b9413000ae1d577c1f55bbcc72d",
+            "source_glb": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_FaceUnionMouthRestored_v1.glb",
+            "declared_source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+            "actual_source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+            "source_sha_matches": true,
+            "shading_policy": "original imported material with geometry QA area lights",
+            "view_selector": "source-front",
+            "runtime_or_native_qa": false
+          }
+        }
+      ],
+      "visual_quality_hold": true,
+      "eye_blur_or_edge_distortion_observed": true,
+      "clothing_upload_hold": false,
+      "clothing_review_ko": "몸통·어깨는 덮여 있고 남자 반바지 위 허벅지 일부가 보인다. 이 원화 자체의 선정적 자세는 보이지 않는다.",
+      "observed_findings_ko": [
+        "원화는 윙크 선과 열린 눈의 홍채·반사점이 분명하다.",
+        "1254 얼굴의 윙크 외곽에 갈색 붓자국 같은 번짐이 있고 열린 눈 흰자·위쪽 속눈썹 경계가 흐리거나 각져 보인다.",
+        "최신 생산 MouthRestored CG에서도 같은 눈 번짐이 남으며 머리끝 검은 틈/이음과 큰 머리카락 덩어리가 보인다.",
+        "헤일로 표면과 흰 옷의 황금 선이 원화보다 뭉개진다."
+      ],
+      "proposed_next_step_ko": "승인 D/새 전신 원화의 별도 Tripo 재제작 대상; 기존 생산 원본 유지",
+      "independent_texel_density_evidence": {
+        "audit_path": "C:/Users/glori/Documents/Game/build/face_quality_audit_20261004/audit_v2.json",
+        "head_fixed_to_raw_linear_density_median": 0.6985587786765024,
+        "raw_image_resolution": [
+          2048,
+          2048
+        ],
+        "fixed_head_resolution": [
+          1024,
+          1024
+        ],
+        "geometry_maximum_world_position_error": 0.0,
+        "inference_ko": "이전 전체 18종 UV 삼각형 면적 감사 수치다. 번짐 원인의 일부를 뒷받침하지만 현재 1254 얼굴 PNG에 자동 적용되는 품질 수치는 아니다."
+      },
+      "design_changed": false,
+      "uploaded": false,
+      "native_validated_in_this_review": false
+    },
+    {
+      "avatar": "Costume_HaloArcherF",
+      "label_ko": "빛 궁수 여",
+      "production_registered": false,
+      "production_type": null,
+      "latest_reviewed_cg_is_production_source": false,
+      "latest_reviewed_cg_scope": "local_diagnostic_candidate_only",
+      "directly_reviewed_images": [
+        {
+          "role": "original_gpt_apose",
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HaloArcherF.png",
+          "sha256": "f8440a00ef2a55f166c9f6687fa003b9ac664889dc52c535ef437cb8a11d5b26",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "current_neutral_face_png",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_Neutral_face.png",
+          "sha256": "7c94c1b4d477ff6d6ecf98e8629e7db8bff762954ca269042638e5ec0db94898",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "mode": "RGB",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "latest_local_front_cg",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_previews/Neutral_front.png",
+          "sha256": "025d37617738b53a2a5674e52cb1d4968fb92ca5051cc684695a8cb3f867fd62",
+          "dimensions": [
+            768,
+            768
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false,
+          "cg_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_previews/Neutral_front.json",
+            "sha256": "4b808414df2c8695990501f04f8fde6614a8a0b1302cb0f14ca5ab1a9f2eeba1",
+            "source_glb": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_FaceUnionMouthRestored_v1.glb",
+            "declared_source_sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+            "actual_source_sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+            "source_sha_matches": true,
+            "shading_policy": "original imported material with geometry QA area lights",
+            "view_selector": "source-front",
+            "runtime_or_native_qa": false
+          }
+        }
+      ],
+      "visual_quality_hold": true,
+      "eye_blur_or_edge_distortion_observed": true,
+      "clothing_upload_hold": false,
+      "clothing_review_ko": "원화는 몸통·어깨·팔·다리를 흰 바지와 긴 소매/장갑으로 덮고 있다.",
+      "observed_findings_ko": [
+        "원화는 흰 바지·긴 소매와 장갑으로 덮여 있고 윙크·열린 눈 선이 명확하다.",
+        "1254 얼굴에서 열린 눈 흰자에 삼각형 조각/중복 선이 보이고 홍채가 아래로 뾰족해진다.",
+        "닫힌 눈은 원화보다 두껍고 각진 갈색 블록처럼 보인다. 열린 눈 위에 작은 검은 점/조각도 보인다.",
+        "최신 CG에서 이 눈 조각과 각진 윤곽이 그대로 남으며 머리 장식 꽃잎·리본·목의 별 장식 세부가 뭉개진다."
+      ],
+      "proposed_next_step_ko": "눈의 삼각형/중복 경계 최우선; 현 후보 시각 품질 보류",
+      "independent_texel_density_evidence": {
+        "audit_path": "C:/Users/glori/Documents/Game/build/face_quality_audit_20261004/audit_v2.json",
+        "head_fixed_to_raw_linear_density_median": 0.6910450215147357,
+        "raw_image_resolution": [
+          2048,
+          2048
+        ],
+        "fixed_head_resolution": [
+          1024,
+          1024
+        ],
+        "geometry_maximum_world_position_error": 7.450580596923828e-09,
+        "inference_ko": "이전 전체 18종 UV 삼각형 면적 감사 수치다. 번짐 원인의 일부를 뒷받침하지만 현재 1254 얼굴 PNG에 자동 적용되는 품질 수치는 아니다."
+      },
+      "design_changed": false,
+      "uploaded": false,
+      "native_validated_in_this_review": false
+    },
+    {
+      "avatar": "Costume_HaloMageM",
+      "label_ko": "빛 마법사 남",
+      "production_registered": false,
+      "production_type": null,
+      "latest_reviewed_cg_is_production_source": false,
+      "latest_reviewed_cg_scope": "local_diagnostic_candidate_only",
+      "directly_reviewed_images": [
+        {
+          "role": "original_gpt_apose",
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HaloMageM.png",
+          "sha256": "ac9c1b8bdb77a7c77137413b1718ffaa26510ba80a2acd08e6266b8731a33c9c",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "current_neutral_face_png",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloMageM/Costume_HaloMageM_Expression_Neutral_face.png",
+          "sha256": "f5bfee0efaaa3299caf4fc570a2210098781d17e1ab03461047f7d6f521285aa",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "mode": "RGB",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "latest_local_front_cg",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloMageM/face_union_v2_previews/Neutral_front.png",
+          "sha256": "87e69e9b15206aedd47b6a2a802ac7d7a3c96fc4b911b81f35c968823e1586de",
+          "dimensions": [
+            768,
+            768
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false,
+          "cg_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloMageM/face_union_v2_previews/Neutral_front.json",
+            "sha256": "7bd648e5a1bf546c5b0d3ad675c6c5285c3431b9a9b2abe9836039c45281f740",
+            "source_glb": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloMageM/Costume_HaloMageM_FaceUnionSkin_v2.glb",
+            "declared_source_sha256": "9a9df979d5ad8534bbb93e52af8abc7f2e86e4d6e07a96664e08be6b99132fc8",
+            "actual_source_sha256": "9a9df979d5ad8534bbb93e52af8abc7f2e86e4d6e07a96664e08be6b99132fc8",
+            "source_sha_matches": true,
+            "shading_policy": "flat emission texture colors",
+            "view_selector": "source-front",
+            "runtime_or_native_qa": false
+          }
+        }
+      ],
+      "visual_quality_hold": true,
+      "eye_blur_or_edge_distortion_observed": true,
+      "clothing_upload_hold": false,
+      "clothing_review_ko": "몸통·어깨는 로브로 덮여 있고 짧은 튜닉 아래 허벅지 일부가 보인다. 새 전신 원화 준비 시 하의 덮임을 함께 확인한다.",
+      "observed_findings_ko": [
+        "원화는 홍채·흰 반사점·태양 장식이 분명하다.",
+        "1254 얼굴의 홍채와 흰자 가장자리가 부드럽게 번지고 반사점 외곽이 흐리다.",
+        "최신 로컬 FaceUnion v2 CG에 평상시 입 위 붉은 조각 두 개가 추가로 나타난다. 얼굴 PNG에는 없는 조각이므로 현 CG/후보 연결을 보류해야 한다.",
+        "헤일로·머리 장식은 원화보다 각지고 머리카락 색과 세부가 평평해 보인다. 이 CG만 flat emission이므로 다른 lit CG와 밝기를 직접 비교하지 않았다."
+      ],
+      "proposed_next_step_ko": "입 위 붉은 조각 해결 전 현 후보 연결 보류; 눈·장식 선명도 재제작 필요",
+      "independent_texel_density_evidence": {
+        "audit_path": "C:/Users/glori/Documents/Game/build/face_quality_audit_20261004/audit_v2.json",
+        "head_fixed_to_raw_linear_density_median": 0.6349308996923135,
+        "raw_image_resolution": [
+          2048,
+          2048
+        ],
+        "fixed_head_resolution": [
+          1024,
+          1024
+        ],
+        "geometry_maximum_world_position_error": 0.0,
+        "inference_ko": "이전 전체 18종 UV 삼각형 면적 감사 수치다. 번짐 원인의 일부를 뒷받침하지만 현재 1254 얼굴 PNG에 자동 적용되는 품질 수치는 아니다."
+      },
+      "design_changed": false,
+      "uploaded": false,
+      "native_validated_in_this_review": false
+    },
+    {
+      "avatar": "Costume_HaloMageF",
+      "label_ko": "빛 마법사 여",
+      "production_registered": false,
+      "production_type": null,
+      "latest_reviewed_cg_is_production_source": false,
+      "latest_reviewed_cg_scope": "local_diagnostic_candidate_only",
+      "directly_reviewed_images": [
+        {
+          "role": "original_gpt_apose",
+          "path": "C:/Users/glori/Documents/Game/art/out/APose_HaloMageF.png",
+          "sha256": "646356b5049ae50154128dbe06c30909cfa97b1d6f8fd83a49bf1295b1d9f8f1",
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "current_neutral_face_png",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_Expression_Neutral_face.png",
+          "sha256": "27aebf29d62ad85502fb4fcad443f52a070522656236789ea1b7e3ec1274d13b",
+          "dimensions": [
+            1254,
+            1254
+          ],
+          "mode": "RGB",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false
+        },
+        {
+          "role": "latest_local_front_cg",
+          "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_v1_previews/Neutral_front.png",
+          "sha256": "601f5acb6d1f1052f06b9222040be7c71b08371ec09f063dd475d7f2ce813743",
+          "dimensions": [
+            768,
+            768
+          ],
+          "mode": "RGBA",
+          "directly_viewed_with_view_image": true,
+          "image_modified": false,
+          "cg_metadata": {
+            "path": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloMageF/face_union_mouth_v1_previews/Neutral_front.json",
+            "sha256": "4b12d56bd4f7beee1719483e184117e06d45440017dfda30af96bfd89557c7de",
+            "source_glb": "C:/Users/glori/Documents/Game/art/models/costume/expressions/Costume_HaloMageF/Costume_HaloMageF_FaceUnionMouthRestored_v1.glb",
+            "declared_source_sha256": "4d5fe892fc32a9c8a5135d72a1a819edbbe764617d2b993e3e58e897501233f3",
+            "actual_source_sha256": "4d5fe892fc32a9c8a5135d72a1a819edbbe764617d2b993e3e58e897501233f3",
+            "source_sha_matches": true,
+            "shading_policy": "original imported material with geometry QA area lights",
+            "view_selector": "source-front",
+            "runtime_or_native_qa": false
+          }
+        }
+      ],
+      "visual_quality_hold": true,
+      "eye_blur_or_edge_distortion_observed": true,
+      "clothing_upload_hold": true,
+      "clothing_review_ko": "원화의 치마가 무릎 위이고 맨 허벅지가 보인다. 현재 AGENTS의 치마 무릎길이 이상+타이츠 조건을 충족하는 새 GPT 원화 선택 전 업로드 보류.",
+      "observed_findings_ko": [
+        "원화의 눈과 황금 장식 선은 분명하다.",
+        "1254 얼굴에서 홍채·흰자·반사점·속눈썹 가장자리가 공통으로 번지고 작은 별 반사 모양이 부드럽게 뭉개진다.",
+        "최신 CG에서 눈 경계 번짐과 둔한 머리카락/장식이 남는다. 헤일로 좌우 별 두 개가 원화와 달리 머리 장식 쪽에 붙어 보이는 형상/위치 차이가 있다."
+      ],
+      "proposed_next_step_ko": "눈·헤일로 위치와 세부 개선 및 단정한 하의 GPT 원화 선택 필요",
+      "independent_texel_density_evidence": {
+        "audit_path": "C:/Users/glori/Documents/Game/build/face_quality_audit_20261004/audit_v2.json",
+        "head_fixed_to_raw_linear_density_median": 0.781701276025478,
+        "raw_image_resolution": [
+          2048,
+          2048
+        ],
+        "fixed_head_resolution": [
+          1024,
+          1024
+        ],
+        "geometry_maximum_world_position_error": 7.450580596923828e-09,
+        "inference_ko": "이전 전체 18종 UV 삼각형 면적 감사 수치다. 번짐 원인의 일부를 뒷받침하지만 현재 1254 얼굴 PNG에 자동 적용되는 품질 수치는 아니다."
+      },
+      "design_changed": false,
+      "uploaded": false,
+      "native_validated_in_this_review": false
+    }
+  ],
+  "scope_limits_ko": [
+    "사진 19장을 view_image로 직접 봤다. 단순 목록/수치 요약을 시각 검토로 대신하지 않았다.",
+    "정면 CG 대부분은 얼굴/상반신이므로 복장 전신 검토는 APose 원화를 기준으로 했다. 실시간 몸 전체/공격/큰 피격 모션 검증은 이 조사에 포함되지 않는다.",
+    "CG 조명은 일부 달라 밝기와 노란 색조를 종별 상대 순위로 비교하지 않았다. 눈 경계/입 조각/형상 차이 관찰만 기록했다.",
+    "1254 얼굴 자체의 번짐이 있으므로 Roblox UI 축소나 조명만 원인으로 단정하지 않는다.",
+    "승인 D/새 전신 Tripo 재제작은 별도 작업이다. 기존 Face1254 UV에 승인 D 전체 초상을 바로 넣지 않는다. A/B/C는 거절 상태를 유지한다.",
+    "최상 Tripo 모델/가격/유료 실행 계획은 부모 에이전트가 공식 문서로 확인하며 이 조사에서 유료 실행하지 않았다."
+  ],
+  "preservation": {
+    "existing_source_files_modified": false,
+    "production_changed": false,
+    "uploads": 0,
+    "paid_tripo_calls": 0,
+    "studio_calls": 0,
+    "git_commit_or_push": false,
+    "output_files_only": [
+      "build/avatar_visual_review_20261004/halo_review.json",
+      "build/avatar_visual_review_20261004/halo_review.md"
+    ]
+  }
+}
