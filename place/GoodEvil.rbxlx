@@ -127815,7 +127815,7 @@ local function moneyLine(parent, name, icon, x, y, w)
 	}), 12)
 end
 
--- PanelCard (gold rim, navy inside). Desktop: portrait ring + avatar headshot (U7), level badge, title / class, XP
+-- PanelCard (gold rim, navy inside). Desktop: portrait ring + live-character 3D snapshot, level badge, title / class, XP
 -- bar, 금고 / 주머니. Touch (U5): level badge + XP bar + 금고 only. Horns get a wanted-stars / bounty row on both.
 local function buildStats(root)
 	local W = L.StatsW
@@ -127886,7 +127886,7 @@ local function buildStats(root)
 
 	local x0 = IS_TOUCH and 62 or 80 -- left edge of the XP bar / money column
 	if not IS_TOUCH then
-		-- portrait: avatar headshot (rbxthumb, no upload) inside the gold PortraitRing (U7)
+		-- The current character is rendered in this same ring; the account thumbnail only covers loading gaps.
 		local holder = UIKit.Create("Frame", {
 			Name = "Portrait",
 			BackgroundTransparency = 1,
@@ -127906,6 +127906,8 @@ local function buildStats(root)
 			ZIndex = 1,
 			Parent = holder,
 		}, { corner(UDim.new(0.5, 0)) })
+		ui.portraitHolder = holder
+		ui.portraitHeadshot = head
 		local ring = UIKit.ArtImage("PortraitRing", {
 			Name = "Ring",
 			Size = UDim2.fromScale(1, 1),
@@ -128787,6 +128789,244 @@ local function buildButtons(root)
 end
 
 ----------------------------------------------------------------- refresh: stats
+function L.PortraitDisconnect(connections)
+	for _, connection in connections do connection:Disconnect() end
+	table.clear(connections)
+end
+
+function L.PortraitClear()
+	local state = ui.portrait
+	if not state then return end
+	L.PortraitDisconnect(state.AppearanceConnections)
+	if state.Clone then state.Clone:Destroy(); state.Clone = nil end
+	state.View.ImageTransparency = 1
+	state.View.BackgroundTransparency = 1
+	ui.portraitHeadshot.Visible = true
+end
+
+-- Match duplicate-named children by class/name/occurrence without changing the source character.
+function L.PortraitPairs(source, copy, pairs)
+	pairs[source] = copy
+	local children, used = {}, {}
+	for _, child in copy:GetChildren() do
+		local key = child.ClassName .. "/" .. child.Name
+		children[key] = children[key] or {}
+		table.insert(children[key], child)
+	end
+	for _, child in source:GetChildren() do
+		local key = child.ClassName .. "/" .. child.Name
+		used[key] = (used[key] or 0) + 1
+		local target = children[key] and children[key][used[key]]
+		if target then L.PortraitPairs(child, target, pairs) end
+	end
+end
+
+function L.PortraitAppearance(object)
+	return object:IsA("BasePart") or object:IsA("DataModelMesh") or object:IsA("Decal")
+		or object:IsA("SurfaceAppearance") or object:IsA("BodyColors") or object:IsA("Clothing")
+		or object:IsA("ShirtGraphic") or object:IsA("Accessory") or object:IsA("CharacterMesh")
+		or object:IsA("Bone") or object:IsA("JointInstance") or object:IsA("WeldConstraint")
+end
+
+function L.PortraitLoad(state, copy, revision)
+	state.LoadRevision = (state.LoadRevision or 0) + 1
+	local loadRevision = state.LoadRevision
+	state.View.ImageTransparency = 1
+	state.View.BackgroundTransparency = 1
+	ui.portraitHeadshot.Visible = true
+	local head = copy:FindFirstChild("Head")
+	local required, seen = {}, {}
+	local function include(object)
+		if object and object:IsDescendantOf(copy) and not seen[object] then
+			seen[object] = true
+			table.insert(required, object)
+		end
+	end
+	include(head)
+	for _, object in copy:GetDescendants() do
+		if object:IsA("BasePart") and (object.Name == "HeadBase" or object.Name == "FaceExpression") then
+			include(object)
+		elseif object:IsA("Weld") or object:IsA("WeldConstraint") then
+			-- Hair, hats and face accessories can be separate parts welded to the real head.
+			if object.Part0 == head then include(object.Part1)
+			elseif object.Part1 == head then include(object.Part0) end
+		end
+	end
+	local hasAsset = false
+	for _, object in required do
+		local objects = object:GetDescendants()
+		table.insert(objects, object)
+		for _, child in objects do
+			if child:IsA("MeshPart") and (child.MeshId ~= "" or child.TextureID ~= "")
+				or child:IsA("SpecialMesh") and (child.MeshId ~= "" or child.TextureId ~= "")
+				or child:IsA("Decal") and child.Texture ~= ""
+				or child:IsA("SurfaceAppearance") and (child.ColorMap ~= "" or child.MetalnessMap ~= ""
+					or child.NormalMap ~= "" or child.RoughnessMap ~= "") then hasAsset = true end
+		end
+	end
+	state.View:SetAttribute("PreloadComplete", false)
+	state.View:SetAttribute("PreloadRequiredObjects", #required)
+	task.spawn(function()
+		local successes, failures = 0, 0
+		local ok = pcall(function()
+			game:GetService("ContentProvider"):PreloadAsync(required, function(_, status)
+				if status == Enum.AssetFetchStatus.Success then successes += 1 else failures += 1 end
+			end)
+		end)
+		if state.Clone ~= copy or state.Revision ~= revision or state.LoadRevision ~= loadRevision
+			or state.Character ~= LocalPlayer.Character then return end
+		local loaded = ok and failures == 0 and (not hasAsset or successes > 0)
+		state.View:SetAttribute("PreloadSuccess", successes)
+		state.View:SetAttribute("PreloadFailures", failures)
+		state.View:SetAttribute("PreloadComplete", loaded)
+		if loaded then
+			state.View.ImageTransparency = 0
+			state.View.BackgroundTransparency = 0
+			ui.portraitHeadshot.Visible = false
+		end
+	end)
+end
+
+function L.PortraitRebuild(state, revision)
+	if ui.portrait ~= state or state.Revision ~= revision then return end
+	L.PortraitClear()
+	local character = state.Character
+	local head = character and character:FindFirstChild("Head")
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if character ~= LocalPlayer.Character or not character or not character.Parent
+		or not head or not head:IsA("BasePart") or not root or not root:IsA("BasePart") then return end
+	local archivable = character.Archivable
+	character.Archivable = true
+	local ok, copy = pcall(function() return character:Clone() end)
+	character.Archivable = archivable
+	if not ok or not copy then return end
+	copy.Name = "PortraitCharacter"
+	local pairs = {}
+	L.PortraitPairs(character, copy, pairs)
+	if not pairs[head] or not pairs[root] then copy:Destroy(); return end
+	-- The clone remains unparented until all executable/UI/physics effects have been removed.
+	for source, target in pairs do
+		if target:IsA("LuaSourceContainer") or target:IsA("LayerCollector") or target:IsA("GuiObject")
+			or target:IsA("Tool") or (target:IsA("Model") and target.Name == "WeaponModel")
+			or target:IsA("ParticleEmitter") or target:IsA("Trail") or target:IsA("Beam")
+			or target:IsA("Fire") or target:IsA("Smoke") or target:IsA("Sparkles")
+			or target:IsA("Sound") or target:IsA("Light") or target:IsA("Highlight")
+			or target:IsA("BodyMover") or target:IsA("Animator") or target:IsA("AnimationController")
+			or (target:IsA("Constraint") and not target:IsA("WeldConstraint")) then
+			target:Destroy()
+		elseif target:IsA("BasePart") then
+			target.Anchored = true
+			target.CanCollide = false
+			target.CanTouch = false
+			target.CanQuery = false
+			target.AssemblyLinearVelocity = Vector3.zero
+			target.AssemblyAngularVelocity = Vector3.zero
+			target.LocalTransparencyModifier = 0
+			target.CFrame = source.CFrame
+		elseif target:IsA("Bone") or target:IsA("Motor6D") then
+			target.Transform = source.Transform -- snapshot the real skin pose; keep its internal bone/weld graph
+		elseif target:IsA("Humanoid") then
+			target.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			target.AutoRotate = false
+		end
+	end
+	-- Only external references are cleared; shared-bone ObjectValues and internal welds must survive.
+	for _, object in copy:GetDescendants() do
+		if object:IsA("ObjectValue") and object.Value and not object.Value:IsDescendantOf(copy) then object.Value = nil end
+	end
+	state.Clone = copy
+	copy.Parent = state.World
+	state.View:SetAttribute("CharacterName", character.Name)
+	state.View:SetAttribute("CostumeId", character:GetAttribute("HHC_CostumeId") or "")
+	-- Head is the live R15 proxy on skinned costumes. MeshPart.CFrame can still be at the mesh bind origin.
+	local up = root.CFrame.UpVector
+	local costume = type(character:GetAttribute("HHC_CostumeId")) == "string"
+		and character:GetAttribute("HHC_CostumeId") ~= ""
+	local focus = head.Position - up * head.Size.Y * (costume and 0.23 or 0.04)
+	local span = math.max(head.Size.X, head.Size.Y) * (costume and 0.65 or 0.85)
+	local distance = span / (2 * math.tan(math.rad(state.Camera.FieldOfView / 2))) + head.Size.Z * 0.5
+	state.Camera.CFrame = CFrame.lookAt(focus + root.CFrame.LookVector * distance, focus, up)
+	state.Camera.Focus = CFrame.new(focus)
+	state.View:SetAttribute("CameraSpan", span)
+	for source, target in pairs do
+		if target:IsDescendantOf(copy) then
+			local properties = nil
+			if source:IsA("MeshPart") then properties = { "TextureID" }
+			elseif source:IsA("Decal") then properties = { "Texture" }
+			elseif source:IsA("SurfaceAppearance") then properties = { "ColorMap", "MetalnessMap", "NormalMap", "RoughnessMap" }
+			end
+			if properties then
+				for _, property in properties do
+					table.insert(state.AppearanceConnections, source:GetPropertyChangedSignal(property):Connect(function()
+						if state.Clone ~= copy or not target.Parent then return end
+						pcall(function() target[property] = source[property] end)
+						L.PortraitLoad(state, copy, revision)
+					end))
+				end
+			end
+			if source:IsA("BasePart") then
+				for _, property in { "Size", "Color", "Transparency" } do
+					table.insert(state.AppearanceConnections, source:GetPropertyChangedSignal(property):Connect(L.RefreshPortrait))
+				end
+			elseif source:IsA("BodyColors") or source:IsA("Clothing") or source:IsA("ShirtGraphic")
+				or source:IsA("CharacterMesh") or source:IsA("DataModelMesh") then
+				table.insert(state.AppearanceConnections, source.Changed:Connect(L.RefreshPortrait))
+			end
+		end
+	end
+	L.PortraitLoad(state, copy, revision)
+end
+
+function L.RefreshPortrait()
+	local headshot = ui.portraitHeadshot
+	if not headshot then return end -- the compact touch layout has no portrait
+	if not ui.portrait then
+		local view = UIKit.Create("ViewportFrame", {
+			Name = "AvatarPortrait3D", Position = headshot.Position, Size = headshot.Size,
+			BackgroundColor3 = headshot.BackgroundColor3, BackgroundTransparency = 1,
+			ImageTransparency = 1, ZIndex = headshot.ZIndex, Parent = ui.portraitHolder,
+		})
+		corner(UDim.new(0.5, 0)).Parent = view
+		local stroke = headshot:FindFirstChildOfClass("UIStroke")
+		if stroke then stroke:Clone().Parent = view end
+		local camera = UIKit.Create("Camera", { Name = "PortraitCamera", FieldOfView = 32, Parent = view })
+		view.CurrentCamera = camera
+		ui.portrait = { View = view, Camera = camera, World = UIKit.Create("WorldModel", { Parent = view }),
+			CharacterConnections = {}, AppearanceConnections = {}, Revision = 0 }
+	end
+	local state = ui.portrait
+	local character = LocalPlayer.Character
+	if state.Character ~= character then
+		L.PortraitDisconnect(state.CharacterConnections)
+		L.PortraitClear()
+		state.Character = character
+		if character then
+			for _, signal in { character.DescendantAdded, character.DescendantRemoving } do
+				table.insert(state.CharacterConnections, signal:Connect(function(object)
+					if L.PortraitAppearance(object) then L.RefreshPortrait() end
+				end))
+			end
+			table.insert(state.CharacterConnections, character:GetAttributeChangedSignal("HHC_CostumeId"):Connect(L.RefreshPortrait))
+		end
+	end
+	state.Revision += 1
+	local revision = state.Revision
+	task.delay(0.2, function()
+		if state.Revision ~= revision then return end
+		local ok, err = pcall(L.PortraitRebuild, state, revision)
+		if not ok then L.PortraitClear(); warnThrottled("portrait error: " .. tostring(err)) end
+	end)
+end
+
+function L.PortraitRemoving(character)
+	local state = ui.portrait
+	if not state or state.Character ~= character then return end
+	state.Revision += 1
+	L.PortraitDisconnect(state.CharacterConnections)
+	L.PortraitClear()
+	state.Character = nil
+end
+
 local function refreshStats()
 	local f = getFaction()
 	local level = math.floor(num("Level", 1))
@@ -130302,6 +130542,7 @@ function HUD.Start()
 	end)
 	UIKit.OnAttr({ "Level", "XP", "Faction", "Class", "Honor", "Infamy", "FallMarks", "RedeemMarks", "SessionTitle",
 		"BankGold", "CarriedGold", "WantedStars", "Bounty" }, refreshStats)
+	UIKit.OnAttr({ "Faction", "Class", "ClassChosen", "CharacterGender", "CostumeEnabled", "CostumeApplied", "SizeMult" }, L.RefreshPortrait)
 	UIKit.OnAttr({ "Charge", "ChargeCap", "Faction" }, refreshCharge)
 	UIKit.OnAttr({ "PerfectUntil" }, refreshPerfect)
 	UIKit.OnAttr({ "AutoAttack", "Level" }, refreshAuto)
@@ -130324,6 +130565,9 @@ function HUD.Start()
 	UserInputService.WindowFocusReleased:Connect(clearHolds)
 
 	LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+	LocalPlayer.CharacterAdded:Connect(L.RefreshPortrait)
+	LocalPlayer.CharacterRemoving:Connect(L.PortraitRemoving)
+	LocalPlayer.CharacterAppearanceLoaded:Connect(L.RefreshPortrait)
 
 	-- layout follows viewport / UIScale / top-bar changes
 	UIKit.Gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(requestLayout)

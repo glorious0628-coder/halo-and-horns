@@ -1,0 +1,41 @@
+{
+  "candidate": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\v5\\Costume_HaloArcherM_ApprovedD_DirectFaceUV_v5.glb",
+  "candidate_sha256": "be71d8ee5a9c9f51f46da412ab76aa72dc2319b0d2be2de506f160cdee7eae20",
+  "source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "new_default_eyes_open_required": true,
+  "candidate_is_wink_technical_diagnostic_only": true,
+  "only_explicit_mesh_primitive_refs_face_uv_and_image_changes_after_normalization": true,
+  "all_original_views_bytes_exact": true,
+  "crop_pixel_exact": true,
+  "visually_reviewed_files": [
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\source_production_v5_comparison.png",
+      "sha256": "461f514f230f6985e7227d622b4f439b93f26eee44d50dccf012367d9a7b9f41"
+    },
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\v5_front_lit.png",
+      "sha256": "8bb4d9b25ecaad8d84be0e56a66fbf18a036dae67b81d4759d340970ca66312c"
+    },
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\v5_quarter_lit.png",
+      "sha256": "d21809935564edcb9ead3fe6b57170ddc85fc2cd49b257180c9c0deed5e79e5a"
+    },
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\v5_full_body\\front.png",
+      "sha256": "5e5f9d54c63ab39491a4d73584e21af3de6acec0be3288825b526afd4e5dadcf"
+    },
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\v1_face_partition_mask.png",
+      "sha256": "b3cec738ffb5e6a005669498e763f5361ff91ce432b56e5c78f777a1105a46d3"
+    },
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\v5_face_partition_mask.png",
+      "sha256": "7665fa33ecaca57c47ca01c0762c34a2583015af21688c91aa413759559e3a4a"
+    }
+  ],
+  "visual_result": "눈의 내부 삼각형 혼합이 제거됐고 선명도가 개선됨. 이마/앞머리 경계는 추가 정렬 필요. 새 기본 표정 승인 전에는 적용 금지.",
+  "ready_for_game": false,
+  "uploads": 0,
+  "credits_used": 0,
+  "production_changes": 0
+}

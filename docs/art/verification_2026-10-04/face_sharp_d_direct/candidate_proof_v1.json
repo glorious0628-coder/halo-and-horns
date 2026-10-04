@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "status": "offline_candidate_requires_visual_review",
+  "source_glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_FaceUnionMouthRestored_v1.glb",
+  "source_glb_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "candidate_glb": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\v1\\Costume_HaloArcherM_ApprovedD_DirectFaceUV_v1.glb",
+  "candidate_glb_sha256": "eafc61e805f5c8087f13a00c54de028ef0d80e65e755a688636b27c94de5fc42",
+  "approved_art": "C:\\Users\\glori\\Documents\\Game\\art\\out\\Avatar_HaloArcherM_FullRedraw_D.png",
+  "approved_art_sha256": "62d746d88297d8939065ca6c36a02edc85995e975087b439f42a763631156470",
+  "approval": {
+    "status": "approved",
+    "file": "art/out/Avatar_HaloArcherM_FullRedraw_D.png",
+    "approvedDate": "2026-10-04",
+    "approvalQuote": "ㅇㅋㅇㅋ 좋아!",
+    "note": "기존 승인3D 꼬마 스타일을 유지한 전체 새 렌더. 이전 A/B 눈 부분수정·C 다른 그림체는 거절. 게임용 UV·3표정·Native 확인은 별도이며 승인 시점 업로드0/생산 변경0."
+  },
+  "texture": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\v1\\HaloArcherM_ApprovedD_Face_1024x512.png",
+  "texture_sha256": "379e9b86168a7cba127cde550ee5badacb485d6b572ea0febb72a31971e70c9e",
+  "texture_size": [
+    1024,
+    512
+  ],
+  "crop_xyxy": [
+    128,
+    384,
+    1152,
+    896
+  ],
+  "source_size": [
+    1254,
+    1254
+  ],
+  "crop_pixels_exact": true,
+  "resampling_sharpening_painting": false,
+  "old_chart_feature_centres": [
+    [
+      461.0,
+      957.0
+    ],
+    [
+      783.0,
+      934.0
+    ],
+    [
+      624.0,
+      1056.0
+    ]
+  ],
+  "approved_D_feature_centres": [
+    [
+      490.0,
+      651.0
+    ],
+    [
+      744.0,
+      629.0
+    ],
+    [
+      625.0,
+      715.0
+    ]
+  ],
+  "feature_order": [
+    "wink_centre",
+    "open_eye_iris_centre",
+    "mouth_centre"
+  ],
+  "old_pixels_to_D_pixels_affine": [
+    [
+      0.7929660089258147,
+      -0.019816431358239777
+    ],
+    [
+      0.05804586409184026,
+      0.6790917001150804
+    ],
+    [
+      68.89277794930825,
+      10.24461784601667
+    ]
+  ],
+  "feature_alignment_method": "manual feature centre correspondences; exact affine solve; no automatic quality approval",
+  "face_vertices_referenced": 606,
+  "face_triangles": 438,
+  "face_active_uv_min": [
+    0.22044659411821654,
+    0.19196266097619974
+  ],
+  "face_active_uv_max": [
+    0.7653038602999984,
+    0.791869733574347
+  ],
+  "checks": {
+    "nodes_json_exact": true,
+    "skins_json_exact": true,
+    "animations_json_exact": true,
+    "materials_json_exact": true,
+    "textures_json_exact": true,
+    "samplers_json_exact": true,
+    "scenes_json_exact": true,
+    "scene_json_exact": true,
+    "body_and_head_primitives_exact": true,
+    "face_POSITION_exact": true,
+    "face_NORMAL_exact": true,
+    "face_JOINTS_0_exact": true,
+    "face_WEIGHTS_0_exact": true,
+    "face_indices_exact": true,
+    "all_original_views_bytes_exact": true,
+    "body_head_image_bytes_exact": true,
+    "face_png_embedded_exact": true,
+    "only_explicit_uv_and_image_json_changes": true,
+    "production_source_bytes_unchanged": true
+  },
+  "credits_used": 0,
+  "uploads": 0,
+  "studio_called": false,
+  "ready_for_game": false,
+  "limitations": [
+    "Neutral only; existing Serious/SoftSmile cannot use changed UV without separate approved source alignment.",
+    "Original geometry/hair/body proportions are retained; new D character silhouette is not recreated.",
+    "Front affine registration can show colour seams or hair sampled into the existing face; inspect lit front and quarter render.",
+    "Offline renders do not prove actual Roblox texture compression, quality-level rendering, or gameplay."
+  ]
+}

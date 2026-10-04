@@ -1,0 +1,12 @@
+{
+  "attributes": {
+    "CharacterName": "Darugi_S2",
+    "CameraSpan": 1.5570183992385864,
+    "PreloadComplete": true,
+    "PreloadRequiredObjects": 4,
+    "CostumeId": "Costume_HaloArcherM",
+    "PreloadFailures": 0,
+    "PreloadSuccess": 4
+  },
+  "transparency": 0
+}

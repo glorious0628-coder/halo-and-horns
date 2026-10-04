@@ -1,0 +1,74 @@
+{
+  "source_glb_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "partition_base_sha256": "be71d8ee5a9c9f51f46da412ab76aa72dc2319b0d2be2de506f160cdee7eae20",
+  "candidate": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\f1\\Costume_HaloArcherM_ApprovedF_Neutral_DirectFaceUV_f1.glb",
+  "candidate_sha256": "37da85b676bb05ed7766cda5bc874f17d372ec4683f4449551fdac3c0479893e",
+  "approved_art": "C:\\Users\\glori\\Documents\\Game\\art\\out\\Avatar_HaloArcherM_Neutral_Balanced_F.png",
+  "approved_art_sha256": "22770a24994241295791c4e85db10349a93be46964b87b9c29b0aa56836827bb",
+  "approval_quote": "좋아, 이걸로 해줘",
+  "approval_source": "root directly relayed latest explicit user selection; art/approved.json registration pending at preparation",
+  "crop_box": [
+    128,
+    384,
+    1152,
+    896
+  ],
+  "texture_size": [
+    1024,
+    512
+  ],
+  "crop_pixels_exact": true,
+  "texture_pixels_resampled_or_painted": false,
+  "old_feature_centres": [
+    [
+      468.0,
+      942.0
+    ],
+    [
+      783.0,
+      942.0
+    ],
+    [
+      624.0,
+      1056.0
+    ]
+  ],
+  "approved_feature_centres": [
+    [
+      509.0,
+      639.0
+    ],
+    [
+      743.0,
+      639.0
+    ],
+    [
+      625.0,
+      715.0
+    ]
+  ],
+  "feature_order": [
+    "left_open_eye",
+    "right_open_eye",
+    "mouth"
+  ],
+  "old_pixels_to_F_pixels_affine": [
+    [
+      0.7428571428571429,
+      1.4320884481116324e-16
+    ],
+    [
+      0.0010025062656644824,
+      0.6666666666666662
+    ],
+    [
+      160.3984962406011,
+      11.000000000000362
+    ]
+  ],
+  "ready_for_game": false,
+  "credits_used": 0,
+  "uploads": 0,
+  "studio_called": false,
+  "production_changed": false
+}

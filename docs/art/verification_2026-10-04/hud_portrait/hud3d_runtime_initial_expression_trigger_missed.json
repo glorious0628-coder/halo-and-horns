@@ -1,0 +1,182 @@
+{
+  "scope": "Actual single-client Studio Play HUD, existing production character assets",
+  "expression_trigger": "production ExpressionService Attack/Talk invoked in Play",
+  "costume_trigger": "real SetCostume remote; missing F template falls back to actual account avatar",
+  "face_candidate_applied": false,
+  "checks": {
+    "neutral": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 27
+    },
+    "serious": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 27
+    },
+    "smile": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 27
+    },
+    "off": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "costumeId": "",
+      "passed": true,
+      "bones": 0,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": false,
+      "scripts": 0,
+      "gender": "M",
+      "costumeApplied": false,
+      "parts": 24
+    },
+    "on": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 27
+    },
+    "female_missing_template": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "costumeId": "",
+      "passed": true,
+      "bones": 0,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "gender": "F",
+      "costumeApplied": false,
+      "parts": 24
+    },
+    "male_restored": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 27
+    },
+    "respawn": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 27
+    }
+  },
+  "capture": "hud3d_verified.jpeg",
+  "credits_spent": 0,
+  "expression_verification_valid": false,
+  "correction": "Attack/Talk calls observed Neutral only; they do not prove expression changes."
+}

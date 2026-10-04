@@ -1,0 +1,4 @@
+{
+  "datamodel_type": "Client",
+  "code": "local v=game.Players.LocalPlayer.PlayerGui:FindFirstChild(\"AvatarPortrait3D\",true)\nreturn game:GetService(\"HttpService\"):JSONEncode({attributes=v:GetAttributes(),transparency=v.ImageTransparency})"
+}

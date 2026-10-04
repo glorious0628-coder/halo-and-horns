@@ -1,0 +1,313 @@
+{
+  "source": "build\\face_sharp_d_direct\\f6\\Costume_HaloArcherM_ApprovedF_Neutral_DirectFaceUV_f6.glb",
+  "records": [
+    {
+      "pixel": [
+        380,
+        550
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 331,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        496.6288146972656,
+        260.95867919921875
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        376,
+        542
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 330,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        491.3052978515625,
+        252.59854125976562
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        403,
+        553
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 323,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        528.25439453125,
+        250.27642822265625
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        388,
+        566
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 518,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        507.10479736328125,
+        276.98992919921875
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        364,
+        558
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 332,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        475.71044921875,
+        264.1969909667969
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        416,
+        558
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 323,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        543.8455200195312,
+        245.86972045898438
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        285,
+        562
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 548,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        379.0081787109375,
+        238.76040649414062
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        325,
+        587
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 527,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        427.5670166015625,
+        265.97393798828125
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        338,
+        548
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 435,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        443.4013366699219,
+        236.77490234375
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        350,
+        562
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 435,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        458.1611328125,
+        270.6777801513672
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        436,
+        488
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 104,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        567.0068969726562,
+        137.31036376953125
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        301,
+        515
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 398,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        398.3382568359375,
+        187.598876953125
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        288,
+        510
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 430,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        382.55206298828125,
+        182.14471435546875
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        289,
+        550
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 532,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        383.8403625488281,
+        225.69778442382812
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        289,
+        579
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 376,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        383.8875732421875,
+        257.2657470703125
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        482,
+        550
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 224,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        617.9388427734375,
+        225.69818115234375
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        482,
+        578
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 482,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        617.98486328125,
+        256.1769714355469
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        383,
+        650
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 173,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        498.0240478515625,
+        334.8188781738281
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        245,
+        547
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 539,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        330.4656982421875,
+        222.43222045898438
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        319,
+        571
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 381,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        420.2630310058594,
+        248.55718994140625
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        521,
+        540
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 266,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        665.2274169921875,
+        214.81253051757812
+      ],
+      "material": "FaceExpressionMat"
+    },
+    {
+      "pixel": [
+        440,
+        500
+      ],
+      "mesh": "FaceExpression",
+      "polygon": 104,
+      "texture_name": "FaceExpression_Neutral",
+      "texture_pixel": [
+        569.1565551757812,
+        160.34674072265625
+      ],
+      "material": "FaceExpressionMat"
+    }
+  ]
+}

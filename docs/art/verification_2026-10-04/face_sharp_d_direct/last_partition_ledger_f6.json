@@ -1,0 +1,13 @@
+{
+  "newly_visible_after_wink_PN_restoration": true,
+  "source_head_polygon": 3724,
+  "triangle_vertices": [
+    4629,
+    4833,
+    4586
+  ],
+  "evidence": "f5_feature_rays.json pixel 285,562",
+  "candidate": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\f6\\Costume_HaloArcherM_ApprovedF_Neutral_DirectFaceUV_f6.glb",
+  "candidate_sha256": "750e1556875cad8cb792a7459a93452bc5c4723ec27ca27440285c12472bd8c0",
+  "ready": false
+}

@@ -1,0 +1,870 @@
+{
+  "source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "v1_sha256": "eafc61e805f5c8087f13a00c54de028ef0d80e65e755a688636b27c94de5fc42",
+  "candidate_sha256": "514ec1a5f3e3687fdd1e36e2f422d2bdf6a313147e231ed08641ff17257098f7",
+  "candidate": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\v4\\Costume_HaloArcherM_ApprovedD_DirectFaceUV_v4.glb",
+  "regions_old_1254_chart": {
+    "closed_eye": [
+      338,
+      890,
+      565,
+      1012
+    ],
+    "open_eye": [
+      694,
+      832,
+      913,
+      1026
+    ]
+  },
+  "selection": "original visible raycast hits in eye boxes, dark/neutral original source pixels, explicit missing_front_rays.json ledger; visual review required",
+  "moved_head_triangle_indices": [
+    2524,
+    2777,
+    2821,
+    2822,
+    2823,
+    2824,
+    2825,
+    2826,
+    2827,
+    2828,
+    2829,
+    2830,
+    2831,
+    2832,
+    2833,
+    2835,
+    2837,
+    2838,
+    2840,
+    2841,
+    2843,
+    2853,
+    2854,
+    2857,
+    2858,
+    2859,
+    2860,
+    2861,
+    2863,
+    2864,
+    2865,
+    2866,
+    2867,
+    2868,
+    2869,
+    2870,
+    2899,
+    2900,
+    2901,
+    2902,
+    2903,
+    2904,
+    2905,
+    2907,
+    2909,
+    2919,
+    2921,
+    2924,
+    2925,
+    2926,
+    2929,
+    2947,
+    2948,
+    2949,
+    2950,
+    3816,
+    3817,
+    3818,
+    3819,
+    3821,
+    3823,
+    3829,
+    3837
+  ],
+  "moved_head_triangles": [
+    {
+      "head_index": 2524,
+      "vertices": [
+        1850,
+        1948,
+        1812
+      ],
+      "old_chart_centroid": [
+        861.5574671030045,
+        953.9768570661545
+      ]
+    },
+    {
+      "head_index": 2777,
+      "vertices": [
+        2098,
+        1945,
+        1885
+      ],
+      "old_chart_centroid": [
+        875.1038113832474,
+        950.5987420082092
+      ]
+    },
+    {
+      "head_index": 2821,
+      "vertices": [
+        1600,
+        1542,
+        1419
+      ],
+      "old_chart_centroid": [
+        814.1419484615326,
+        962.4626685380936
+      ]
+    },
+    {
+      "head_index": 2822,
+      "vertices": [
+        1600,
+        1419,
+        1452
+      ],
+      "old_chart_centroid": [
+        810.757056593895,
+        969.2324522733688
+      ]
+    },
+    {
+      "head_index": 2823,
+      "vertices": [
+        1600,
+        1452,
+        1499
+      ],
+      "old_chart_centroid": [
+        814.1419484615326,
+        972.6240960359573
+      ]
+    },
+    {
+      "head_index": 2824,
+      "vertices": [
+        1499,
+        1452,
+        1290
+      ],
+      "old_chart_centroid": [
+        800.592240691185,
+        986.1636635065079
+      ]
+    },
+    {
+      "head_index": 2825,
+      "vertices": [
+        1717,
+        1818,
+        1772
+      ],
+      "old_chart_centroid": [
+        846.3220528364182,
+        921.8034547567368
+      ]
+    },
+    {
+      "head_index": 2826,
+      "vertices": [
+        1717,
+        1772,
+        1697
+      ],
+      "old_chart_centroid": [
+        839.545517206192,
+        913.3310972452164
+      ]
+    },
+    {
+      "head_index": 2827,
+      "vertices": [
+        1697,
+        1772,
+        1661
+      ],
+      "old_chart_centroid": [
+        836.1538734436035,
+        896.3999109268188
+      ]
+    },
+    {
+      "head_index": 2828,
+      "vertices": [
+        1661,
+        1772,
+        1746
+      ],
+      "old_chart_centroid": [
+        839.5387653112411,
+        884.5494134426117
+      ]
+    },
+    {
+      "head_index": 2829,
+      "vertices": [
+        1661,
+        1746,
+        1610
+      ],
+      "old_chart_centroid": [
+        831.0731596946716,
+        867.6181772947311
+      ]
+    },
+    {
+      "head_index": 2830,
+      "vertices": [
+        1358,
+        1656,
+        1500
+      ],
+      "old_chart_centroid": [
+        810.7469162940979,
+        991.2578810453415
+      ]
+    },
+    {
+      "head_index": 2831,
+      "vertices": [
+        1358,
+        1500,
+        1291
+      ],
+      "old_chart_centroid": [
+        795.5081385374069,
+        994.6360210180283
+      ]
+    },
+    {
+      "head_index": 2832,
+      "vertices": [
+        1358,
+        1291,
+        1110
+      ],
+      "old_chart_centroid": [
+        776.8811054229736,
+        999.7167347669601
+      ]
+    },
+    {
+      "head_index": 2833,
+      "vertices": [
+        1110,
+        1291,
+        1114
+      ],
+      "old_chart_centroid": [
+        765.0272444486618,
+        998.014160990715
+      ]
+    },
+    {
+      "head_index": 2835,
+      "vertices": [
+        1656,
+        1358,
+        1402
+      ],
+      "old_chart_centroid": [
+        805.666202545166,
+        996.3385947942734
+      ]
+    },
+    {
+      "head_index": 2837,
+      "vertices": [
+        1656,
+        1402,
+        1692
+      ],
+      "old_chart_centroid": [
+        819.2159103155136,
+        991.2578810453415
+      ]
+    },
+    {
+      "head_index": 2838,
+      "vertices": [
+        1692,
+        1402,
+        1417
+      ],
+      "old_chart_centroid": [
+        810.7503046989441,
+        996.3385947942734
+      ]
+    },
+    {
+      "head_index": 2840,
+      "vertices": [
+        1199,
+        1156,
+        864
+      ],
+      "old_chart_centroid": [
+        753.1699701547623,
+        998.0276896953583
+      ]
+    },
+    {
+      "head_index": 2841,
+      "vertices": [
+        1199,
+        864,
+        860
+      ],
+      "old_chart_centroid": [
+        743.0085426568985,
+        994.6360708475113
+      ]
+    },
+    {
+      "head_index": 2843,
+      "vertices": [
+        1768,
+        1813,
+        1821
+      ],
+      "old_chart_centroid": [
+        851.40276658535,
+        950.5987170934677
+      ]
+    },
+    {
+      "head_index": 2853,
+      "vertices": [
+        1288,
+        1201,
+        1323
+      ],
+      "old_chart_centroid": [
+        778.5769273042679,
+        967.5299283266068
+      ]
+    },
+    {
+      "head_index": 2854,
+      "vertices": [
+        1543,
+        1288,
+        1420
+      ],
+      "old_chart_centroid": [
+        800.592240691185,
+        957.3819547891617
+      ]
+    },
+    {
+      "head_index": 2857,
+      "vertices": [
+        1852,
+        1822,
+        1814
+      ],
+      "old_chart_centroid": [
+        854.7876584529877,
+        940.4372646808624
+      ]
+    },
+    {
+      "head_index": 2858,
+      "vertices": [
+        1284,
+        1289,
+        1450
+      ],
+      "old_chart_centroid": [
+        790.4341766834259,
+        986.1636635065079
+      ]
+    },
+    {
+      "head_index": 2859,
+      "vertices": [
+        1292,
+        1286,
+        1160
+      ],
+      "old_chart_centroid": [
+        775.1886470317841,
+        989.5553072690964
+      ]
+    },
+    {
+      "head_index": 2860,
+      "vertices": [
+        1292,
+        1160,
+        1115
+      ],
+      "old_chart_centroid": [
+        766.7196779251099,
+        992.9334472417831
+      ]
+    },
+    {
+      "head_index": 2861,
+      "vertices": [
+        1287,
+        1325,
+        1161
+      ],
+      "old_chart_centroid": [
+        776.8811054229736,
+        984.474618434906
+      ]
+    },
+    {
+      "head_index": 2863,
+      "vertices": [
+        818,
+        1111,
+        1116
+      ],
+      "old_chart_centroid": [
+        746.3968229293823,
+        994.6360210180283
+      ]
+    },
+    {
+      "head_index": 2864,
+      "vertices": [
+        818,
+        1116,
+        867
+      ],
+      "old_chart_centroid": [
+        737.9278289079666,
+        987.8527584075928
+      ]
+    },
+    {
+      "head_index": 2865,
+      "vertices": [
+        818,
+        867,
+        729
+      ],
+      "old_chart_centroid": [
+        724.378121137619,
+        974.3131660223007
+      ]
+    },
+    {
+      "head_index": 2866,
+      "vertices": [
+        1820,
+        1851,
+        1824
+      ],
+      "old_chart_centroid": [
+        854.7876584529877,
+        921.8034547567368
+      ]
+    },
+    {
+      "head_index": 2867,
+      "vertices": [
+        1820,
+        1824,
+        1773
+      ],
+      "old_chart_centroid": [
+        851.40276658535,
+        913.3310972452164
+      ]
+    },
+    {
+      "head_index": 2868,
+      "vertices": [
+        1773,
+        1720,
+        1700
+      ],
+      "old_chart_centroid": [
+        839.545517206192,
+        887.9410821199417
+      ]
+    },
+    {
+      "head_index": 2869,
+      "vertices": [
+        1700,
+        1720,
+        1606
+      ],
+      "old_chart_centroid": [
+        831.0799115896225,
+        876.0905846357346
+      ]
+    },
+    {
+      "head_index": 2870,
+      "vertices": [
+        1700,
+        1606,
+        1546
+      ],
+      "old_chart_centroid": [
+        824.3033759593964,
+        872.6989159584045
+      ]
+    },
+    {
+      "head_index": 2899,
+      "vertices": [
+        1332,
+        1363,
+        1124
+      ],
+      "old_chart_centroid": [
+        778.5735638141632,
+        876.0770061016083
+      ]
+    },
+    {
+      "head_index": 2900,
+      "vertices": [
+        1548,
+        1360,
+        1663
+      ],
+      "old_chart_centroid": [
+        812.4427381753922,
+        874.3879610300064
+      ]
+    },
+    {
+      "head_index": 2901,
+      "vertices": [
+        1611,
+        1547,
+        1662
+      ],
+      "old_chart_centroid": [
+        822.6075540781021,
+        867.6181772947311
+      ]
+    },
+    {
+      "head_index": 2902,
+      "vertices": [
+        1121,
+        1117,
+        1330
+      ],
+      "old_chart_centroid": [
+        766.7197028398514,
+        877.7796297073364
+      ]
+    },
+    {
+      "head_index": 2903,
+      "vertices": [
+        1113,
+        958,
+        866
+      ],
+      "old_chart_centroid": [
+        743.0085426568985,
+        982.7720695734024
+      ]
+    },
+    {
+      "head_index": 2904,
+      "vertices": [
+        1159,
+        1041,
+        959
+      ],
+      "old_chart_centroid": [
+        751.4775117635727,
+        976.0157896280289
+      ]
+    },
+    {
+      "head_index": 2905,
+      "vertices": [
+        959,
+        1041,
+        869
+      ],
+      "old_chart_centroid": [
+        741.3160842657089,
+        964.15178835392
+      ]
+    },
+    {
+      "head_index": 2907,
+      "vertices": [
+        730,
+        862,
+        865
+      ],
+      "old_chart_centroid": [
+        726.0705795288086,
+        977.7048097848892
+      ]
+    },
+    {
+      "head_index": 2909,
+      "vertices": [
+        862,
+        730,
+        725
+      ],
+      "old_chart_centroid": [
+        720.9898657798767,
+        969.2324522733688
+      ]
+    },
+    {
+      "head_index": 2919,
+      "vertices": [
+        873,
+        1118,
+        1122
+      ],
+      "old_chart_centroid": [
+        748.0892813205719,
+        882.8603185415268
+      ]
+    },
+    {
+      "head_index": 2921,
+      "vertices": [
+        877,
+        1166,
+        1207
+      ],
+      "old_chart_centroid": [
+        753.1699701547623,
+        879.4686498641968
+      ]
+    },
+    {
+      "head_index": 2924,
+      "vertices": [
+        839,
+        1172,
+        840
+      ],
+      "old_chart_centroid": [
+        743.0085426568985,
+        884.5493885278702
+      ]
+    },
+    {
+      "head_index": 2925,
+      "vertices": [
+        839,
+        840,
+        756
+      ],
+      "old_chart_centroid": [
+        727.7664014101028,
+        899.7915297746658
+      ]
+    },
+    {
+      "head_index": 2926,
+      "vertices": [
+        840,
+        1172,
+        815
+      ],
+      "old_chart_centroid": [
+        741.3160842657089,
+        881.1577198505402
+      ]
+    },
+    {
+      "head_index": 2929,
+      "vertices": [
+        1165,
+        1362,
+        1404
+      ],
+      "old_chart_centroid": [
+        783.6508891582489,
+        872.6853374242783
+      ]
+    },
+    {
+      "head_index": 2947,
+      "vertices": [
+        1361,
+        1549,
+        1403
+      ],
+      "old_chart_centroid": [
+        802.2813106775284,
+        870.9962923526764
+      ]
+    },
+    {
+      "head_index": 2948,
+      "vertices": [
+        1458,
+        1462,
+        1170
+      ],
+      "old_chart_centroid": [
+        793.8224569559097,
+        860.8483686447144
+      ]
+    },
+    {
+      "head_index": 2949,
+      "vertices": [
+        1170,
+        1462,
+        1174
+      ],
+      "old_chart_centroid": [
+        780.2727491855621,
+        857.4567248821259
+      ]
+    },
+    {
+      "head_index": 2950,
+      "vertices": [
+        1170,
+        1174,
+        814
+      ],
+      "old_chart_centroid": [
+        753.173333644867,
+        869.3071974515915
+      ]
+    },
+    {
+      "head_index": 3816,
+      "vertices": [
+        4373,
+        4395,
+        4116
+      ],
+      "old_chart_centroid": [
+        521.15279763937,
+        957.3684011697769
+      ]
+    },
+    {
+      "head_index": 3817,
+      "vertices": [
+        4373,
+        4116,
+        4278
+      ],
+      "old_chart_centroid": [
+        526.2334989309311,
+        953.9768072366714
+      ]
+    },
+    {
+      "head_index": 3818,
+      "vertices": [
+        4373,
+        4531,
+        4556
+      ],
+      "old_chart_centroid": [
+        500.8299177289009,
+        938.7346410751343
+      ]
+    },
+    {
+      "head_index": 3819,
+      "vertices": [
+        4556,
+        4531,
+        4628
+      ],
+      "old_chart_centroid": [
+        490.66849023103714,
+        928.573188662529
+      ]
+    },
+    {
+      "head_index": 3821,
+      "vertices": [
+        4075,
+        4280,
+        4117
+      ],
+      "old_chart_centroid": [
+        538.0890790224075,
+        955.679356098175
+      ]
+    },
+    {
+      "head_index": 3823,
+      "vertices": [
+        4879,
+        4558,
+        4589
+      ],
+      "old_chart_centroid": [
+        475.4229605793953,
+        926.8841435909271
+      ]
+    },
+    {
+      "head_index": 3829,
+      "vertices": [
+        4835,
+        4878,
+        4587
+      ],
+      "old_chart_centroid": [
+        461.87326526641846,
+        921.8034049272537
+      ]
+    },
+    {
+      "head_index": 3837,
+      "vertices": [
+        5323,
+        5271,
+        5239
+      ],
+      "old_chart_centroid": [
+        380.5851464867592,
+        926.8841435909271
+      ]
+    }
+  ],
+  "original_head_triangles": 4574,
+  "original_face_triangles": 438,
+  "candidate_head_triangles": 4511,
+  "candidate_face_triangles": 501,
+  "checks": {
+    "nodes_exact": true,
+    "skins_exact": true,
+    "animations_exact": true,
+    "materials_exact": true,
+    "textures_exact": true,
+    "samplers_exact": true,
+    "scenes_exact": true,
+    "scene_exact": true,
+    "body_primitive_exact": true,
+    "head_attributes_exact": true,
+    "face_position_normal_joint_weight_exact": true,
+    "source_face_head_JW_equal": true,
+    "exact_original_triangle_multiset": true,
+    "all_original_buffer_views_bytes_exact": true,
+    "body_head_png_exact": true,
+    "face_png_v1_exact": true,
+    "source_unchanged": true
+  },
+  "ready": false,
+  "uploads": 0,
+  "credits_used": 0
+}

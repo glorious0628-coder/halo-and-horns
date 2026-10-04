@@ -1,0 +1,163 @@
+{
+  "scope": "Actual single-client Studio Play HUD, existing production character assets",
+  "expression_trigger": "Temporary Client Play TextureID changes; each expected ID asserted and original restored. Gameplay trigger coverage is separate.",
+  "costume_trigger": "real SetCostume remote; missing F template falls back to actual account avatar",
+  "face_candidate_applied": false,
+  "checks": {
+    "neutral": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 21
+    },
+    "texture_change_signal": {
+      "originalRestored": true,
+      "rows": [
+        {
+          "sourceTexture": "rbxassetid://114282379234661",
+          "portraitTexture": "rbxassetid://114282379234661",
+          "passed": true,
+          "expression": "Neutral"
+        },
+        {
+          "sourceTexture": "rbxassetid://130810730029380",
+          "portraitTexture": "rbxassetid://130810730029380",
+          "passed": true,
+          "expression": "Serious"
+        },
+        {
+          "sourceTexture": "rbxassetid://96983789676579",
+          "portraitTexture": "rbxassetid://96983789676579",
+          "passed": true,
+          "expression": "SoftSmile"
+        }
+      ],
+      "passed": true,
+      "scope": "Temporary Client Play texture changes, not gameplay event testing"
+    },
+    "off": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "costumeId": "",
+      "passed": true,
+      "bones": 0,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": false,
+      "scripts": 0,
+      "gender": "M",
+      "costumeApplied": false,
+      "parts": 18
+    },
+    "on": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 21
+    },
+    "female_missing_template": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "costumeId": "",
+      "passed": true,
+      "bones": 0,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "gender": "F",
+      "costumeApplied": false,
+      "parts": 18
+    },
+    "male_restored": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 21
+    },
+    "respawn": {
+      "position": [
+        15.240960121154785,
+        19.484375
+      ],
+      "imageTransparency": 0,
+      "portraitTexture": "rbxassetid://114282379234661",
+      "costumeId": "Costume_HaloArcherM",
+      "passed": true,
+      "expression": "Neutral",
+      "bones": 23,
+      "size": [
+        31.828916549682617,
+        30.548439025878906
+      ],
+      "costumeEnabled": true,
+      "scripts": 0,
+      "sourceTexture": "rbxassetid://114282379234661",
+      "gender": "M",
+      "costumeApplied": true,
+      "parts": 21
+    }
+  },
+  "capture": "hud3d_verified.jpeg",
+  "credits_spent": 0,
+  "capture_visual_pass": false,
+  "capture_failure": "Studio not foreground; 3D viewport blank. Visual enlargement review pending."
+}

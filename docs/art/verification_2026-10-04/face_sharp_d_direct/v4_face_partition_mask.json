@@ -1,0 +1,164 @@
+{
+  "source": "build\\face_sharp_d_direct\\v4\\Costume_HaloArcherM_ApprovedD_DirectFaceUV_v4.glb",
+  "sha256": "514ec1a5f3e3687fdd1e36e2f422d2bdf6a313147e231ed08641ff17257098f7",
+  "white": "FaceExpression",
+  "green": "HeadBase",
+  "traces": [
+    {
+      "render_pixel": [
+        473,
+        547
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 228,
+      "texture_pixel": [
+        605.1599731445312,
+        217.46969604492188
+      ]
+    },
+    {
+      "render_pixel": [
+        490,
+        559
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 253,
+      "texture_pixel": [
+        628.308349609375,
+        230.22549438476562
+      ]
+    },
+    {
+      "render_pixel": [
+        507,
+        588
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 212,
+      "texture_pixel": [
+        653.0678100585938,
+        261.8313903808594
+      ]
+    },
+    {
+      "render_pixel": [
+        480,
+        606
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 462,
+      "texture_pixel": [
+        619.8153076171875,
+        282.6640167236328
+      ]
+    },
+    {
+      "render_pixel": [
+        536,
+        572
+      ],
+      "material": "HeadMat",
+      "mesh": "HeadBase",
+      "face": 2774,
+      "texture_pixel": [
+        339.4742126464844,
+        57.4188232421875
+      ]
+    },
+    {
+      "render_pixel": [
+        458,
+        533
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 492,
+      "texture_pixel": [
+        584.4118041992188,
+        202.4312744140625
+      ]
+    },
+    {
+      "render_pixel": [
+        533,
+        534
+      ],
+      "material": "HeadMat",
+      "mesh": "HeadBase",
+      "face": 2800,
+      "texture_pixel": [
+        694.3118286132812,
+        901.4091033935547
+      ]
+    },
+    {
+      "render_pixel": [
+        317,
+        578
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 385,
+      "texture_pixel": [
+        406.1147155761719,
+        256.8909454345703
+      ]
+    },
+    {
+      "render_pixel": [
+        246,
+        589
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 364,
+      "texture_pixel": [
+        315.22900390625,
+        271.38507080078125
+      ]
+    },
+    {
+      "render_pixel": [
+        407,
+        552
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 327,
+      "texture_pixel": [
+        520.1796875,
+        225.14932250976562
+      ]
+    },
+    {
+      "render_pixel": [
+        544,
+        625
+      ],
+      "material": "FaceExpressionMat",
+      "mesh": "FaceExpression",
+      "face": 117,
+      "texture_pixel": [
+        704.48095703125,
+        301.6609802246094
+      ]
+    },
+    {
+      "render_pixel": [
+        220,
+        610
+      ],
+      "material": "HeadMat",
+      "mesh": "HeadBase",
+      "face": 3691,
+      "texture_pixel": [
+        924.88916015625,
+        840.2282409667969
+      ]
+    }
+  ]
+}

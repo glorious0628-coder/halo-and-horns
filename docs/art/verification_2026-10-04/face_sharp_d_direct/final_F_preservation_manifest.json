@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "candidate": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\f7\\Costume_HaloArcherM_ApprovedF_Neutral_DirectFaceUV_f7.glb",
+  "candidate_sha256": "95818951e8dcb5a282576858432b494e3fd5f1e9e0fc244c7d340a18c1de3736",
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherM\\Costume_HaloArcherM_FaceUnionMouthRestored_v1.glb",
+  "source_sha256": "17972af93f7ecd176f96af8db81fdff00c04e055a1d340b9dd9f288196d54584",
+  "approved_art": "C:\\Users\\glori\\Documents\\Game\\art\\out\\Avatar_HaloArcherM_Neutral_Balanced_F.png",
+  "approved_art_sha256": "22770a24994241295791c4e85db10349a93be46964b87b9c29b0aa56836827bb",
+  "approval": {
+    "status": "approved",
+    "file": "art/out/Avatar_HaloArcherM_Neutral_Balanced_F.png",
+    "approvedDate": "2026-10-04",
+    "approvalQuote": "좋아, 이걸로 해줘",
+    "note": "기본 표정은 윙크가 아니라 양눈 뜬 얼굴. E의 눈 크기 불균형을 거절한 뒤 균형 수정 F 승인. 같은 얼굴을 직업 HUD 초상화와 별도 3D 얼굴 텍스처에 사용. 기존 D와 생산 파일 보존."
+  },
+  "face_texture_dimensions": [
+    1024,
+    512
+  ],
+  "face_texture_sha256": "0e531710e6aabc3d9d3075c1b6c8b3dcd437d4f2930d7f6d1187707db589a6b5",
+  "face_crop_exact": true,
+  "face_resampling_sharpening_painting": false,
+  "checks": {
+    "nodes_exact": true,
+    "skins_exact": true,
+    "animations_exact": true,
+    "materials_exact": true,
+    "textures_exact": true,
+    "samplers_exact": true,
+    "scenes_exact": true,
+    "scene_exact": true,
+    "body_mesh_primitive_exact": true,
+    "all_original_binary_views_exact": true,
+    "body_head_PNG_bytes_exact": true,
+    "head_original_UV_values_exact": true,
+    "head_face_JW_exact": true,
+    "exact_original_head_triangle_union": true,
+    "PN_changes_only_explicit_wink_ledger_vertices": true,
+    "PN_values_match_exact_float32_ledger": true,
+    "approved_F_crop_pixels_exact": true,
+    "embedded_face_PNG_exact": true,
+    "normalized_doc_only_declared_mesh_accessor_image_refs": true,
+    "explicit_F_approval": true
+  },
+  "original_bones": 23,
+  "original_total_head_triangles": 5012,
+  "final_face_triangles": 532,
+  "final_head_triangles": 4480,
+  "changed_position_vertices": 115,
+  "changed_normal_vertices": 115,
+  "maximum_local_wink_displacement_studs": 0.05112302209496665,
+  "PN_exception_ledger": "wink_PN_exception_ledger_f4.json",
+  "partition_ledgers": [
+    "partition_ledger_f2.json",
+    "ear_partition_ledger_f5.json",
+    "last_partition_ledger_f6.json",
+    "hair_uv_ledger_f7.json"
+  ],
+  "active_face_texture_pixel_bbox": [
+    278.27337646484375,
+    43.36940002441406,
+    724.6206665039062,
+    402.9970397949219
+  ],
+  "selected_visible_feature_ray_count": 16,
+  "selected_visible_feature_rays_all_direct_F": true,
+  "actual_Roblox_native_quality_test": false,
+  "ready_for_game": false,
+  "uploads": 0,
+  "credits_used": 0,
+  "production_changes": 0,
+  "personally_reviewed_files": [
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\approved_F_production_f7_comparison.png",
+      "sha256": "d5f2e104a8124b79e91fb6eb1dff67109f26dbfeaea0dc55a6f8661cfbfcf82a"
+    },
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\f7_front_lit.png",
+      "sha256": "35ad273d1d9830cabbbcf771581e231137cc5324c34905b71a512bf67dffcadd"
+    },
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\f7_quarter_lit.png",
+      "sha256": "98b913f2e4ceb937ad4abe3c713f161fc6b024977827f5dee20583ef9acd59df"
+    },
+    {
+      "path": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\f7_full_body\\front.png",
+      "sha256": "36445f24b1bc19d7306d572be4533fe5b767c096e8177a2a899d7be56fdd4cbb"
+    }
+  ],
+  "visual_review_scope": "Selected offline front, quarter and full-body renders; approved source comparison; not Roblox playback.",
+  "visual_review_result": "Both eye highlights and lashes are clear. The old wink relief and erroneous skin-coloured forelock band were removed. Existing original coarse hair/body detail remains.",
+  "preserved_candidate": "art/models/costume/expressions/Costume_HaloArcherM/Costume_HaloArcherM_ApprovedF_Neutral_DirectFaceUV_f7.glb",
+  "production_applied": false,
+  "scope_note": "Local F candidate preserved before R2. R2 uses only APose_HaloArcherM_Sharp_D; no Roblox upload here."
+}

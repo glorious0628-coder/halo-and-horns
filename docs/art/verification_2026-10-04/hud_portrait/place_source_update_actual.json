@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "applied_and_verified",
+  "timestamp_utc": "20261004T033958102978Z",
+  "originals_identical": true,
+  "original_bytes": 12485472,
+  "original_sha256": "a76a5001a7cce124fcea5dca846e7778aa2d09fb5d97e16453c812ab5b7ba8cb",
+  "updated_bytes": 12496449,
+  "updated_sha256": "f060d91989bec14cb757723a764bec094a8ce4704616f92e383ccc57a8432f04",
+  "checks": {
+    "instance_count": 4500,
+    "source_replacements": [
+      {
+        "instance_path": "StarterPlayer/StarterPlayerScripts/HUD",
+        "referent": "RBXBAB043E5C6764A74BD246020688AAE03",
+        "source_file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+        "old_body_bytes": 108795,
+        "new_body_bytes": 119772,
+        "source_sha256": "96928ef3c256784a05bce5baed41945b2e3412546ef6619fbbe6ae722e4fc96f"
+      },
+      {
+        "instance_path": "ReplicatedStorage/Shared/Config",
+        "referent": "RBX69436A65202049959533F9E0CF169092",
+        "source_file": "src/ReplicatedStorage/Shared/Config.luau",
+        "old_body_bytes": 97288,
+        "new_body_bytes": 97288,
+        "source_sha256": "8e9cfa44e5e86f894218a1e2bb384ac5a0ba7c33abafc899425a631bd2ebbaf3"
+      }
+    ],
+    "all_other_bytes_unchanged": true,
+    "untouched_bytes_sha256": "ea552cf403e1a6776396450aa6c4ae8a750e43e7525890b02892eac64451ec3a",
+    "xml_except_target_sources_sha256": "72db8faf01c687cd545a4f16e05d34adf8cb09374994518c453b1177bb4e9943",
+    "asset_fields_outside_target_sources_count": 521,
+    "asset_fields_outside_target_sources_sha256": "560aad0cfc10e5fa9409ac574338cafd986a2788da2cc74f9769fde601ea6adb"
+  },
+  "targets": [
+    {
+      "path": "build/GoodEvil.rbxlx",
+      "backup": "build/source_backups/20261004T033958102978Z/build_GoodEvil.rbxlx",
+      "backup_sha256": "a76a5001a7cce124fcea5dca846e7778aa2d09fb5d97e16453c812ab5b7ba8cb"
+    },
+    {
+      "path": "place/GoodEvil.rbxlx",
+      "backup": "build/source_backups/20261004T033958102978Z/place_GoodEvil.rbxlx",
+      "backup_sha256": "a76a5001a7cce124fcea5dca846e7778aa2d09fb5d97e16453c812ab5b7ba8cb"
+    }
+  ],
+  "final_files_identical": true
+}

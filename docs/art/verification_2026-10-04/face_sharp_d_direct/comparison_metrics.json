@@ -1,0 +1,176 @@
+{
+  "status": "technical_candidate_only_new_default_eyes_open_required",
+  "scope": "offline_Blend​​er_renders_not_Roblox",
+  "metrics_method": "strict RGB threshold on material diagnostic masks; boxes are explicit local diagnostic ROIs, not all visible feature segmentation",
+  "partition_mask_metrics": {
+    "v1": {
+      "open_iris_interior": {
+        "pixel_box_xyxy": [
+          452,
+          548,
+          515,
+          604
+        ],
+        "pixels": 3528,
+        "headbase_pixels": 568,
+        "face_pixels": 2747,
+        "headbase_fraction": 0.16099773242630386,
+        "face_fraction": 0.7786281179138322
+      },
+      "closed_lash_interior": {
+        "pixel_box_xyxy": [
+          235,
+          578,
+          331,
+          604
+        ],
+        "pixels": 2496,
+        "headbase_pixels": 114,
+        "face_pixels": 2328,
+        "headbase_fraction": 0.04567307692307692,
+        "face_fraction": 0.9326923076923077
+      },
+      "mouth": {
+        "pixel_box_xyxy": [
+          359,
+          638,
+          410,
+          658
+        ],
+        "pixels": 1020,
+        "headbase_pixels": 0,
+        "face_pixels": 1020,
+        "headbase_fraction": 0.0,
+        "face_fraction": 1.0
+      }
+    },
+    "v3": {
+      "open_iris_interior": {
+        "pixel_box_xyxy": [
+          452,
+          548,
+          515,
+          604
+        ],
+        "pixels": 3528,
+        "headbase_pixels": 487,
+        "face_pixels": 2846,
+        "headbase_fraction": 0.13803854875283447,
+        "face_fraction": 0.8066893424036281
+      },
+      "closed_lash_interior": {
+        "pixel_box_xyxy": [
+          235,
+          578,
+          331,
+          604
+        ],
+        "pixels": 2496,
+        "headbase_pixels": 20,
+        "face_pixels": 2451,
+        "headbase_fraction": 0.008012820512820512,
+        "face_fraction": 0.9819711538461539
+      },
+      "mouth": {
+        "pixel_box_xyxy": [
+          359,
+          638,
+          410,
+          658
+        ],
+        "pixels": 1020,
+        "headbase_pixels": 0,
+        "face_pixels": 1020,
+        "headbase_fraction": 0.0,
+        "face_fraction": 1.0
+      }
+    },
+    "v4": {
+      "open_iris_interior": {
+        "pixel_box_xyxy": [
+          452,
+          548,
+          515,
+          604
+        ],
+        "pixels": 3528,
+        "headbase_pixels": 0,
+        "face_pixels": 3528,
+        "headbase_fraction": 0.0,
+        "face_fraction": 1.0
+      },
+      "closed_lash_interior": {
+        "pixel_box_xyxy": [
+          235,
+          578,
+          331,
+          604
+        ],
+        "pixels": 2496,
+        "headbase_pixels": 0,
+        "face_pixels": 2496,
+        "headbase_fraction": 0.0,
+        "face_fraction": 1.0
+      },
+      "mouth": {
+        "pixel_box_xyxy": [
+          359,
+          638,
+          410,
+          658
+        ],
+        "pixels": 1020,
+        "headbase_pixels": 0,
+        "face_pixels": 1020,
+        "headbase_fraction": 0.0,
+        "face_fraction": 1.0
+      }
+    },
+    "v5": {
+      "open_iris_interior": {
+        "pixel_box_xyxy": [
+          452,
+          548,
+          515,
+          604
+        ],
+        "pixels": 3528,
+        "headbase_pixels": 0,
+        "face_pixels": 3528,
+        "headbase_fraction": 0.0,
+        "face_fraction": 1.0
+      },
+      "closed_lash_interior": {
+        "pixel_box_xyxy": [
+          235,
+          578,
+          331,
+          604
+        ],
+        "pixels": 2496,
+        "headbase_pixels": 0,
+        "face_pixels": 2496,
+        "headbase_fraction": 0.0,
+        "face_fraction": 1.0
+      },
+      "mouth": {
+        "pixel_box_xyxy": [
+          359,
+          638,
+          410,
+          658
+        ],
+        "pixels": 1020,
+        "headbase_pixels": 0,
+        "face_pixels": 1020,
+        "headbase_fraction": 0.0,
+        "face_fraction": 1.0
+      }
+    }
+  },
+  "source_image_pixels_resampled_for_texture": false,
+  "comparison_resampled_for_display_only": true,
+  "uploads": 0,
+  "credits_used": 0,
+  "production_changes": 0
+}

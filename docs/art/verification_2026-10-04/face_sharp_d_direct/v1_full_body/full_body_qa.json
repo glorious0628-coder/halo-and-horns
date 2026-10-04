@@ -1,0 +1,76 @@
+{
+  "records": [
+    {
+      "source": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\v1\\Costume_HaloArcherM_ApprovedD_DirectFaceUV_v1.glb",
+      "source_sha256": "eafc61e805f5c8087f13a00c54de028ef0d80e65e755a688636b27c94de5fc42",
+      "view": "front",
+      "source_unchanged": true,
+      "geometry_uv_weights_png_edits": false,
+      "camera_location": [
+        -1.3779934644699097,
+        14.851313591003418,
+        1.2110466957092285
+      ],
+      "camera_rotation": [
+        1.5597708225250244,
+        0.06119605526328087,
+        -3.05853009223938
+      ],
+      "camera_scale": 6.123143672943115,
+      "render": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\v1_full_body\\front.png",
+      "render_sha256": "9dcd9a0a6c956c0873d37f0afd4ce1cfbb80faa2abf7b90502717c605706d5e8",
+      "shading_policy": "original imported material; full-body lit QA",
+      "ready": false,
+      "studio_called": false
+    },
+    {
+      "source": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\v1\\Costume_HaloArcherM_ApprovedD_DirectFaceUV_v1.glb",
+      "source_sha256": "eafc61e805f5c8087f13a00c54de028ef0d80e65e755a688636b27c94de5fc42",
+      "view": "back",
+      "source_unchanged": true,
+      "geometry_uv_weights_png_edits": false,
+      "camera_location": [
+        1.1310253143310547,
+        -15.04175853729248,
+        0.8809064030647278
+      ],
+      "camera_rotation": [
+        1.5818219184875488,
+        -0.06119605153799057,
+        0.08306247740983963
+      ],
+      "camera_scale": 6.123143672943115,
+      "render": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\v1_full_body\\back.png",
+      "render_sha256": "e66a37a806524565da16e25709d15aee102f555f2d9690e8545a7df8322bd878",
+      "shading_policy": "original imported material; full-body lit QA",
+      "ready": false,
+      "studio_called": false
+    },
+    {
+      "source": "C:\\Users\\glori\\Documents\\Game\\build\\face_sharp_d_direct\\v1\\Costume_HaloArcherM_ApprovedD_DirectFaceUV_v1.glb",
+      "source_sha256": "eafc61e805f5c8087f13a00c54de028ef0d80e65e755a688636b27c94de5fc42",
+      "view": "side",
+      "source_unchanged": true,
+      "geometry_uv_weights_png_edits": false,
+      "camera_location": [
+        14.7968168258667,
+        1.1469541788101196,
+        1.9633443355560303
+      ],
+      "camera_rotation": [
+        1.509596586227417,
+        -0.011004894971847534,
+        1.6545332670211792
+      ],
+      "camera_scale": 6.123143672943115,
+      "render": "C:\\Users\\glori\\Documents\\Game\\docs\\art\\verification_2026-10-04\\face_sharp_d_direct\\v1_full_body\\side.png",
+      "render_sha256": "7c679ddeea18e61d4082e8ea1db2b4c73aaaa17e5be0a3bc16ee99c9435837a4",
+      "shading_policy": "original imported material; full-body lit QA",
+      "ready": false,
+      "studio_called": false
+    }
+  ],
+  "personally_reviewed": false,
+  "source_unchanged": true,
+  "ready": false
+}

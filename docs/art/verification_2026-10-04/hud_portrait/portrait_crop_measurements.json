@@ -1,0 +1,391 @@
+{
+  "purpose": "Crops of existing approved class art; no image bytes changed or uploaded.",
+  "rows": [
+    {
+      "key": "CharHaloArcherF",
+      "source": "art/ui/UIP_CharHaloArcherF.png",
+      "size": [
+        406,
+        512
+      ],
+      "portrait_rect": [
+        64,
+        0,
+        294,
+        230
+      ],
+      "sha256": "461c3947478319fde376003ab3a1abe14fcd1ee49513dff6c2bbd901db8b7a44",
+      "within_original_image": true,
+      "crop_size": [
+        230,
+        230
+      ],
+      "existing_asset_id": "rbxassetid://73817434891295"
+    },
+    {
+      "key": "CharHaloArcherM",
+      "source": "art/ui/UIP_CharHaloArcherM.png",
+      "size": [
+        501,
+        512
+      ],
+      "portrait_rect": [
+        106,
+        12,
+        350,
+        256
+      ],
+      "sha256": "fbe7aea9bf9d94ec24230abc0c2979eb74ea9b8cc5a00c0ae558aaf3d54fae00",
+      "within_original_image": true,
+      "crop_size": [
+        244,
+        244
+      ],
+      "existing_asset_id": "rbxassetid://90265187612649"
+    },
+    {
+      "key": "CharHaloMageF",
+      "source": "art/ui/UIP_CharHaloMageF.png",
+      "size": [
+        478,
+        512
+      ],
+      "portrait_rect": [
+        132,
+        12,
+        360,
+        240
+      ],
+      "sha256": "b90fbe254441920c6fc622d99af5ae417263c94a70126b21dd3192e4593e9b18",
+      "within_original_image": true,
+      "crop_size": [
+        228,
+        228
+      ],
+      "existing_asset_id": "rbxassetid://113432552037923"
+    },
+    {
+      "key": "CharHaloMageM",
+      "source": "art/ui/UIP_CharHaloMageM.png",
+      "size": [
+        460,
+        512
+      ],
+      "portrait_rect": [
+        130,
+        10,
+        344,
+        224
+      ],
+      "sha256": "cb01d7c8bbaf167579c8947b56415f97115d47a531923ca4bcbb7ad4b9b6f53b",
+      "within_original_image": true,
+      "crop_size": [
+        214,
+        214
+      ],
+      "existing_asset_id": "rbxassetid://102544376554965"
+    },
+    {
+      "key": "CharHaloWarriorF",
+      "source": "art/ui/UIP_CharHaloWarriorF.png",
+      "size": [
+        464,
+        512
+      ],
+      "portrait_rect": [
+        136,
+        12,
+        364,
+        240
+      ],
+      "sha256": "eb2549d086778d9ad6c4a3cc2a409a2dce2c1da8764fb3f30e9c14e91f6e809c",
+      "within_original_image": true,
+      "crop_size": [
+        228,
+        228
+      ],
+      "existing_asset_id": "rbxassetid://78286000819352"
+    },
+    {
+      "key": "CharHaloWarriorM",
+      "source": "art/ui/UIP_CharHaloWarriorM.png",
+      "size": [
+        420,
+        512
+      ],
+      "portrait_rect": [
+        90,
+        6,
+        330,
+        246
+      ],
+      "sha256": "657f567c997d48dd069af7640d79ae5c5cb6e268ba6606d2a02c51fe56d6cda0",
+      "within_original_image": true,
+      "crop_size": [
+        240,
+        240
+      ],
+      "existing_asset_id": "rbxassetid://134988581827453"
+    },
+    {
+      "key": "CharHornsArcherF",
+      "source": "art/ui/UIP_CharHornsArcherF.png",
+      "size": [
+        467,
+        512
+      ],
+      "portrait_rect": [
+        72,
+        12,
+        304,
+        244
+      ],
+      "sha256": "1fe9799d029c8bb2da0663429a07a09e78a3a70165c17e2298b6b5fa9ed65b18",
+      "within_original_image": true,
+      "crop_size": [
+        232,
+        232
+      ],
+      "existing_asset_id": "rbxassetid://130533135861283"
+    },
+    {
+      "key": "CharHornsArcherM",
+      "source": "art/ui/UIP_CharHornsArcherM.png",
+      "size": [
+        488,
+        512
+      ],
+      "portrait_rect": [
+        100,
+        4,
+        338,
+        242
+      ],
+      "sha256": "134f2fb07b781c1d9cb449cec35f55e4b85eac0260eaf211b68c7e1915fc7171",
+      "within_original_image": true,
+      "crop_size": [
+        238,
+        238
+      ],
+      "existing_asset_id": "rbxassetid://88045973583949"
+    },
+    {
+      "key": "CharHornsMageF",
+      "source": "art/ui/UIP_CharHornsMageF.png",
+      "size": [
+        449,
+        512
+      ],
+      "portrait_rect": [
+        110,
+        4,
+        348,
+        242
+      ],
+      "sha256": "8554e20daf87d2811e032d33371466d87204628560b1eba24f48b783cc9e72c8",
+      "within_original_image": true,
+      "crop_size": [
+        238,
+        238
+      ],
+      "existing_asset_id": "rbxassetid://118395974592567"
+    },
+    {
+      "key": "CharHornsMageM",
+      "source": "art/ui/UIP_CharHornsMageM.png",
+      "size": [
+        474,
+        512
+      ],
+      "portrait_rect": [
+        128,
+        4,
+        360,
+        236
+      ],
+      "sha256": "812593926d75b3b61911c98273e2a97fea44af273035884efe2d122a4999c547",
+      "within_original_image": true,
+      "crop_size": [
+        232,
+        232
+      ],
+      "existing_asset_id": "rbxassetid://72321159201625"
+    },
+    {
+      "key": "CharHornsWarriorF",
+      "source": "art/ui/UIP_CharHornsWarriorF.png",
+      "size": [
+        472,
+        512
+      ],
+      "portrait_rect": [
+        136,
+        4,
+        368,
+        236
+      ],
+      "sha256": "070e0de825ff9c3d258d23221d6843224e7aea2e16a5322ab8f9cb9dc32eea60",
+      "within_original_image": true,
+      "crop_size": [
+        232,
+        232
+      ],
+      "existing_asset_id": "rbxassetid://91437880088798"
+    },
+    {
+      "key": "CharHornsWarriorM",
+      "source": "art/ui/UIP_CharHornsWarriorM.png",
+      "size": [
+        446,
+        512
+      ],
+      "portrait_rect": [
+        154,
+        10,
+        378,
+        234
+      ],
+      "sha256": "122acf4ccda1e626ff9e36cc29d8b2e081293ecf03979c359dba0bb42ef84c1d",
+      "within_original_image": true,
+      "crop_size": [
+        224,
+        224
+      ],
+      "existing_asset_id": "rbxassetid://115730141032244"
+    },
+    {
+      "key": "CharNeutralArcherF",
+      "source": "art/ui/UIP_CharNeutralArcherF.png",
+      "size": [
+        463,
+        512
+      ],
+      "portrait_rect": [
+        26,
+        0,
+        280,
+        254
+      ],
+      "sha256": "b83e976df4692f6b24c7dc2e46559953169bef5d5b0dcee41405ba78b6d629a4",
+      "within_original_image": true,
+      "crop_size": [
+        254,
+        254
+      ],
+      "existing_asset_id": "rbxassetid://101214489604794"
+    },
+    {
+      "key": "CharNeutralArcherM",
+      "source": "art/ui/UIP_CharNeutralArcherM.png",
+      "size": [
+        416,
+        512
+      ],
+      "portrait_rect": [
+        64,
+        0,
+        300,
+        236
+      ],
+      "sha256": "90bae0c08553115e8efd2b2b57d2bdb3e4c0e226ff80cc853d6fdf7f8dc0cf21",
+      "within_original_image": true,
+      "crop_size": [
+        236,
+        236
+      ],
+      "existing_asset_id": "rbxassetid://118794739229907"
+    },
+    {
+      "key": "CharNeutralMageF",
+      "source": "art/ui/UIP_CharNeutralMageF.png",
+      "size": [
+        457,
+        512
+      ],
+      "portrait_rect": [
+        112,
+        0,
+        346,
+        234
+      ],
+      "sha256": "a411a78a4544bb49ac13e0196bf6b492c497786a8142dda9e9cbc33303335f14",
+      "within_original_image": true,
+      "crop_size": [
+        234,
+        234
+      ],
+      "existing_asset_id": "rbxassetid://114214067792680"
+    },
+    {
+      "key": "CharNeutralMageM",
+      "source": "art/ui/UIP_CharNeutralMageM.png",
+      "size": [
+        465,
+        512
+      ],
+      "portrait_rect": [
+        120,
+        0,
+        350,
+        230
+      ],
+      "sha256": "bec40bcd7261e945851897d08b591fadcb1feb9cdf8cc0285038d9e35322322e",
+      "within_original_image": true,
+      "crop_size": [
+        230,
+        230
+      ],
+      "existing_asset_id": "rbxassetid://103288933310374"
+    },
+    {
+      "key": "CharNeutralWarriorF",
+      "source": "art/ui/UIP_CharNeutralWarriorF.png",
+      "size": [
+        476,
+        512
+      ],
+      "portrait_rect": [
+        98,
+        0,
+        344,
+        246
+      ],
+      "sha256": "3fb96d0364e2ecf03b7c677116ee1302dc40aa263ffc97e37bb7ed308f8c5609",
+      "within_original_image": true,
+      "crop_size": [
+        246,
+        246
+      ],
+      "existing_asset_id": "rbxassetid://123242512932772"
+    },
+    {
+      "key": "CharNeutralWarriorM",
+      "source": "art/ui/UIP_CharNeutralWarriorM.png",
+      "size": [
+        485,
+        512
+      ],
+      "portrait_rect": [
+        122,
+        0,
+        364,
+        242
+      ],
+      "sha256": "80e8bd411b93ea687047f784cd941df525e46b8053fdf70aa736a6ea012f4f6d",
+      "within_original_image": true,
+      "crop_size": [
+        242,
+        242
+      ],
+      "existing_asset_id": "rbxassetid://117733913914622"
+    }
+  ],
+  "local_measurement": {
+    "image_count": 18,
+    "all_rectangles_in_bounds": true,
+    "image_bytes_changed": 0,
+    "uploads": 0,
+    "paid_credits": 0,
+    "studio_runtime_verified": false
+  }
+}

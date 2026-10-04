@@ -1,0 +1,49 @@
+{
+  "restored_outer_ear_face_triangle_indices_f4": [
+    13,
+    14,
+    15,
+    16,
+    346,
+    347
+  ],
+  "triangle_vertex_indices": [
+    [
+      2767,
+      2922,
+      2526
+    ],
+    [
+      5834,
+      5853,
+      5540
+    ],
+    [
+      5834,
+      5540,
+      5578
+    ],
+    [
+      2769,
+      2527,
+      2591
+    ],
+    [
+      5835,
+      5800,
+      6044
+    ],
+    [
+      5615,
+      5835,
+      5579
+    ]
+  ],
+  "selection_old_uv_x_centroid": {
+    "left_max": 345,
+    "right_min": 926
+  },
+  "ready": false,
+  "source_pngs_unchanged": true,
+  "triangles_positions_normals_uvs_weights_unchanged": true
+}
