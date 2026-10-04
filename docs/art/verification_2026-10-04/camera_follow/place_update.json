@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "status": "applied_and_verified",
+  "timestamp_utc": "20261004T044221366081Z",
+  "originals_identical": true,
+  "original_sha256": "f060d91989bec14cb757723a764bec094a8ce4704616f92e383ccc57a8432f04",
+  "original_bytes": 12496449,
+  "updated_sha256": "144eac69bd655c7929e8cdfcbd5515dcb6482e017367e5a3f2750233cbc6f6d7",
+  "updated_bytes": 12499191,
+  "changed": true,
+  "checks": {
+    "instances_before": 4500,
+    "instances_after": 4501,
+    "camera_module_added": true,
+    "source_changes": [
+      {
+        "instance_path": "StarterPlayer/StarterPlayerScripts/ClientMain",
+        "source_file": "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau",
+        "referent": "RBXC52C08A098264186982FB40C2ADE946B",
+        "operation": "source_update",
+        "changed": true,
+        "source_sha256": "509b56947acb1e076e1bc23cf259f6bb3b96f428b2952f6ed62e4ae8c5683355"
+      },
+      {
+        "instance_path": "StarterPlayer/StarterPlayerScripts/CameraFollow",
+        "source_file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+        "referent": "RBX7B1CABFF3F0A27CBC48954A3E5C0DB8C",
+        "operation": "insert_module",
+        "changed": true,
+        "source_sha256": "3dcc38ae8bee404adbf9cc93d8c1fe62b812483d8810a6d7e28d5ce104a5753e"
+      }
+    ],
+    "all_other_bytes_unchanged": true,
+    "both_sources_match_files": true,
+    "preserved_bytes_sha256": "16eb9110dcdfd79e2cd074549ef933b8341a9ca161791b3b63fb891e3652cbe9",
+    "preserved_structure_sha256": "8325d8164677e8a0c91c7297a8f7791f7c801400c2ba69cdfc7cd979b1e35d00",
+    "asset_fields_outside_target_sources_count": 522,
+    "asset_fields_outside_target_sources_sha256": "4f6d394809d084021896ad73547dc97529ae9f78bea579d2f771c370ec22a666",
+    "second_run_byte_identical": true
+  },
+  "targets": [
+    {
+      "path": "build/GoodEvil.rbxlx",
+      "backup": "build/camera_source_backups/20261004T044221366081Z/build_GoodEvil.rbxlx",
+      "backup_sha256": "f060d91989bec14cb757723a764bec094a8ce4704616f92e383ccc57a8432f04"
+    },
+    {
+      "path": "place/GoodEvil.rbxlx",
+      "backup": "build/camera_source_backups/20261004T044221366081Z/place_GoodEvil.rbxlx",
+      "backup_sha256": "f060d91989bec14cb757723a764bec094a8ce4704616f92e383ccc57a8432f04"
+    }
+  ],
+  "final_files_identical": true
+}

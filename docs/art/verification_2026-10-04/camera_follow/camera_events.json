@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "jumpHeight": 6.75774621963501,
+  "customReturnRebound": true,
+  "newCameraRebound": true,
+  "staleSubjectRepaired": true,
+  "jumpSubjectMatches": true,
+  "scriptablePreserved": true,
+  "landedSubjectMatches": true
+}

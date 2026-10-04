@@ -1,0 +1,39 @@
+{
+  "faction": "Halo",
+  "class": "Warrior",
+  "classChosen": true,
+  "snapshots": [
+    {
+      "subjectMatches": true,
+      "subject": "Workspace.Darugi_S2.Humanoid",
+      "label": "initial_avatar",
+      "costume": "OwnerAvatar",
+      "cameraType": "Custom",
+      "health": 130
+    },
+    {
+      "subjectMatches": true,
+      "subject": "Workspace.Darugi_S2.Humanoid",
+      "label": "costume_on",
+      "costume": "Costume_HaloWarriorM",
+      "cameraType": "Custom",
+      "health": 156
+    },
+    {
+      "subjectMatches": true,
+      "subject": "Workspace.Darugi_S2.Humanoid",
+      "label": "costume_off",
+      "costume": "OwnerAvatar",
+      "cameraType": "Custom",
+      "health": 156
+    },
+    {
+      "subjectMatches": true,
+      "subject": "Workspace.Darugi_S2.Humanoid",
+      "label": "costume_on_again",
+      "costume": "Costume_HaloWarriorM",
+      "cameraType": "Custom",
+      "health": 156
+    }
+  ]
+}

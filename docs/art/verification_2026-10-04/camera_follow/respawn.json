@@ -1,0 +1,8 @@
+{
+  "deadSubjectMatches": true,
+  "respawnCostume": "Costume_HaloWarriorM",
+  "before": true,
+  "characterChanged": true,
+  "beforeSubjectMatches": true,
+  "respawnSubjectMatches": true
+}

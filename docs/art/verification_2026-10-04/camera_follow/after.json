@@ -1,0 +1,61 @@
+{
+  "subjectIsCurrentHumanoid": true,
+  "character": "Workspace.Darugi_S2",
+  "cameraType": "Custom",
+  "focus": [
+    14.15300178527832,
+    3.8270039558410645,
+    -415.0400390625
+  ],
+  "cameraOffset": [
+    0,
+    0,
+    0
+  ],
+  "playerMode": "Classic",
+  "cameraPosition": [
+    16.121463775634766,
+    7.06224250793457,
+    -426.95257568359375
+  ],
+  "userComputerCamera": "Default",
+  "costumeId": "Costume_HaloWarriorM",
+  "userTouchCamera": "Default",
+  "scripts": [
+    {
+      "name": "Players.Darugi_S2.PlayerScripts.BubbleChat",
+      "enabled": true
+    },
+    {
+      "name": "Players.Darugi_S2.PlayerScripts.RbxCharacterSounds",
+      "enabled": true
+    },
+    {
+      "name": "Players.Darugi_S2.PlayerScripts.ChatScript",
+      "enabled": true
+    },
+    {
+      "name": "Players.Darugi_S2.PlayerScripts.PlayerScriptsLoader",
+      "enabled": true
+    },
+    {
+      "name": "Players.Darugi_S2.PlayerScripts.ClientMain",
+      "enabled": true
+    }
+  ],
+  "zoom": [
+    6,
+    40
+  ],
+  "camera": "Workspace.Camera",
+  "subject": "Workspace.Darugi_S2.Humanoid",
+  "devTouchCamera": "UserChoice",
+  "devComputerCamera": "UserChoice",
+  "subjectInWorkspace": true,
+  "health": 156,
+  "rootPosition": [
+    14.15300178527832,
+    1.8270039558410645,
+    -415.0400390625
+  ]
+}

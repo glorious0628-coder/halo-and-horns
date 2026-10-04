@@ -1,0 +1,52 @@
+{
+  "scope": "Camera follow only. Existing costume/HUD visuals unchanged.",
+  "cause": "Custom CameraSubject remained the unparented old Humanoid after server costume replacement.",
+  "before": {
+    "root_travel_studs": 11.626187324523926,
+    "focus_travel_studs": 0,
+    "final_horizontal_error": 11.832552909851074
+  },
+  "after": {
+    "root_travel_studs": 11.66667366027832,
+    "focus_travel_studs": 11.66667366027832,
+    "final_horizontal_error": 0
+  },
+  "checks": {
+    "initial_avatar": true,
+    "costume_on": true,
+    "costume_off": true,
+    "costume_on_again": true,
+    "customReturnRebound": true,
+    "newCameraRebound": true,
+    "staleSubjectRepaired": true,
+    "jumpSubjectMatches": true,
+    "scriptablePreserved": true,
+    "landedSubjectMatches": true,
+    "deadSubjectMatches": true,
+    "characterChanged": true,
+    "beforeSubjectMatches": true,
+    "respawnSubjectMatches": true,
+    "walked_at_least_6_studs": true,
+    "camera_followed_same_displacement": true,
+    "movement_all_subjects_current": true,
+    "stopped_focus_xz_error_under_0_1": true
+  },
+  "passed": 18,
+  "total": 18,
+  "all_passed": true,
+  "syntax_check": {
+    "files": 2,
+    "passed": true
+  },
+  "studio_sync": {
+    "changed": 2,
+    "unchanged": 41,
+    "deleted": 0
+  },
+  "credits_spent": 0,
+  "source_sha256": {
+    "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau": "3dcc38ae8bee404adbf9cc93d8c1fe62b812483d8810a6d7e28d5ce104a5753e",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "8c2497f29ed75c7da79802e472e8ddb01b636194b9c773efb101eb91c8dcb807"
+  },
+  "api_reference": "https://create.roblox.com/docs/reference/engine/classes/Camera#CameraSubject"
+}
