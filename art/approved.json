@@ -249,5 +249,49 @@
   "sha256": "e1d708c9ee3546f70bbb40addec3edb79c4fe21c5f375349a2bb7a48b7c70462",
   "assetId": "rbxassetid://128423642459976",
   "note": "사용자 전면 새 제작·적용 지시 및 계속 진행 요청. 새 GPT 빈 그림과 실제 Jua 조판. 한 장씩 표시·검사 후 각 1개 업로드. 별도 개별 선택 문구를 받은 것으로 기록하지 않음."
+ },
+ "UI_FactionCardHalo_Aligned": {
+  "status": "rejected_design_changed",
+  "file": "art/ui/UIP_FactionCardHalo_Aligned.png",
+  "sha256": "88878a91f8b0176b09eec6240ad8b4e94cddcf2034fa2423adace48bc2ebe84f",
+  "assetId": "rbxassetid://94038908843133",
+  "authorizationQuote": "ㅇㅇ 너무 좋아. 중립까지 쭉 풀로 달리자 내 허락 안 받아두 돼",
+  "correctionQuote": "엥 왜 키가 달라?",
+  "manifest": "docs/art/verification_2026-10-04/faction_parts/production_files.json",
+  "rejectionQuote": "디자인 바꾸면 어케 내가 오케이한거를",
+  "active": false,
+  "note": "사용자 거절: 승인 카드의 디자인 자체가 달라짐. 원래 FreshTyped 3종으로 복구. 아래는 실패 이력: 독립 새 GPT 부품18개와 새 혜택아이콘11종, 공통 글자/버튼 좌표. 원본편집0. 한장씩 최종 표시·검사 후3개 업로드. 개별재승인 문구를 받았다는 뜻 아님."
+ },
+ "UI_FactionCardHorns_Aligned": {
+  "status": "rejected_design_changed",
+  "file": "art/ui/UIP_FactionCardHorns_Aligned.png",
+  "sha256": "1998d736aa7da8c561b71944389491110695232fd537f1f4b715ccd67145a1fc",
+  "assetId": "rbxassetid://105456650033490",
+  "authorizationQuote": "ㅇㅇ 너무 좋아. 중립까지 쭉 풀로 달리자 내 허락 안 받아두 돼",
+  "correctionQuote": "엥 왜 키가 달라?",
+  "manifest": "docs/art/verification_2026-10-04/faction_parts/production_files.json",
+  "rejectionQuote": "디자인 바꾸면 어케 내가 오케이한거를",
+  "active": false,
+  "note": "사용자 거절: 승인 카드의 디자인 자체가 달라짐. 원래 FreshTyped 3종으로 복구. 아래는 실패 이력: 독립 새 GPT 부품18개와 새 혜택아이콘11종, 공통 글자/버튼 좌표. 원본편집0. 한장씩 최종 표시·검사 후3개 업로드. 개별재승인 문구를 받았다는 뜻 아님."
+ },
+ "UI_FactionCardNeutral_Aligned": {
+  "status": "rejected_design_changed",
+  "file": "art/ui/UIP_FactionCardNeutral_Aligned.png",
+  "sha256": "a55964e76a2353ec737f72b0a222dc7c26fbf922466e6a93759dd66d9dbedabb",
+  "assetId": "rbxassetid://73553448533219",
+  "authorizationQuote": "ㅇㅇ 너무 좋아. 중립까지 쭉 풀로 달리자 내 허락 안 받아두 돼",
+  "correctionQuote": "엥 왜 키가 달라?",
+  "manifest": "docs/art/verification_2026-10-04/faction_parts/production_files.json",
+  "rejectionQuote": "디자인 바꾸면 어케 내가 오케이한거를",
+  "active": false,
+  "note": "사용자 거절: 승인 카드의 디자인 자체가 달라짐. 원래 FreshTyped 3종으로 복구. 아래는 실패 이력: 독립 새 GPT 부품18개와 새 혜택아이콘11종, 공통 글자/버튼 좌표. 원본편집0. 한장씩 최종 표시·검사 후3개 업로드. 개별재승인 문구를 받았다는 뜻 아님."
+ },
+ "UI_FactionTitle_FreshTyped_Balanced": {
+  "status": "authorized_typography_fix",
+  "file": "art/ui/UIP_FactionTitle_FreshTyped_Balanced.png",
+  "sha256": "721cd2ac637e2a30ac7bc5d7442678150ca3907ab705426ef211cebbbc075485",
+  "assetId": "rbxassetid://81044633324158",
+  "correctionQuote": "글씨 균형이 안맞아",
+  "note": "원본빈리본보존, 별도글자레이어만 실제 획 기준으로중앙정렬. 한장검사표시후업로드."
  }
 }

@@ -1,0 +1,786 @@
+{
+  "dateKst": "2026-10-04",
+  "source": {
+    "size": [
+      2172,
+      724
+    ],
+    "alphaNonzeroBounds": [
+      64,
+      7,
+      2108,
+      702
+    ],
+    "components": {
+      "0": {
+        "count": 173,
+        "largest": {
+          "pixels": 567589,
+          "bounds": [
+            64,
+            139,
+            2108,
+            547
+          ],
+          "maxAlpha": 255
+        },
+        "detachedPixels": 367,
+        "detachedMaxAlpha": 1,
+        "largestDetached": [
+          {
+            "pixels": 30,
+            "bounds": [
+              1504,
+              61,
+              1510,
+              72
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 17,
+            "bounds": [
+              459,
+              122,
+              465,
+              129
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 14,
+            "bounds": [
+              904,
+              633,
+              909,
+              640
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 13,
+            "bounds": [
+              445,
+              129,
+              451,
+              134
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 12,
+            "bounds": [
+              1511,
+              63,
+              1514,
+              72
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 12,
+            "bounds": [
+              443,
+              122,
+              447,
+              127
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 6,
+            "bounds": [
+              1536,
+              59,
+              1541,
+              61
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 6,
+            "bounds": [
+              1070,
+              633,
+              1072,
+              638
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 6,
+            "bounds": [
+              1368,
+              638,
+              1372,
+              641
+            ],
+            "maxAlpha": 1
+          },
+          {
+            "pixels": 5,
+            "bounds": [
+              441,
+              128,
+              445,
+              130
+            ],
+            "maxAlpha": 1
+          }
+        ]
+      },
+      "16": {
+        "count": 1,
+        "largest": {
+          "pixels": 551746,
+          "bounds": [
+            67,
+            141,
+            2105,
+            544
+          ],
+          "maxAlpha": 255
+        },
+        "detachedPixels": 0,
+        "detachedMaxAlpha": 0,
+        "largestDetached": []
+      },
+      "128": {
+        "count": 1,
+        "largest": {
+          "pixels": 548155,
+          "bounds": [
+            68,
+            142,
+            2105,
+            543
+          ],
+          "maxAlpha": 255
+        },
+        "detachedPixels": 0,
+        "detachedMaxAlpha": 0,
+        "largestDetached": []
+      }
+    },
+    "cropOutsideNonzeroPixels": 306,
+    "cropOutsideAlphaMax": 1
+  },
+  "sourceSha256": "c56d0f4620f57fc7e2e119b9aea14828e8ee7c502cba92bae0b52f20dfeb45ca",
+  "html": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_preview.html",
+  "htmlSha256": "541a22c21d3aab14d1ffa650b4b48111fa6be3d8f51c29f7b628f62d3420d9ba",
+  "font": "art/fonts/jua/Jua-Regular.ttf",
+  "fontSha256": "769677aef240bfc3b9965f2b50748075bff885e6c6992fc591a3fb268279f898",
+  "configTitle": "어느 편에 설래요?",
+  "pickerTitle": "어느 편에 설래요?",
+  "semanticMatchesConfig": true,
+  "configSha256": "e9b6960327bc3163eceaa9d29a0c5995ea3dff372f5eba9c8f3c5e9a584e2874",
+  "pickerSha256": "cc505e0ae34fe2fcf23306eda828f2972a67486a46fdf5fb815dcad7fc1fe438",
+  "native": {
+    "text": "어느 편에 설래요?",
+    "fontLoaded": true,
+    "fontFamily": "Jua, sans-serif",
+    "fontSizeNative": 180,
+    "glyphColor": "rgb(71, 32, 8)",
+    "textShadow": "none",
+    "textStroke": "0px",
+    "box": [
+      460.5,
+      242,
+      1256,
+      210
+    ],
+    "range": [
+      475.046875,
+      256.5,
+      1226.890625,
+      180
+    ],
+    "overflow": false
+  },
+  "originalModified": false,
+  "retouch": false,
+  "alphaMaskEdited": false,
+  "upload": false,
+  "studioValidation": false,
+  "optical": {
+    "method": "Actual isolated glyph alpha pixel bounding box; DOM Range is not used as ink.",
+    "blank": {
+      "method": "Longest contiguous opaque ivory run at x500..1650 step25, y175..485: R>200 G>185 B>160 saturation<0.28 alpha>240. Median column center, blank panel symmetry x1086.",
+      "columns": [
+        {
+          "x": 500,
+          "top": 258,
+          "bottom": 462,
+          "center": 360
+        },
+        {
+          "x": 525,
+          "top": 254,
+          "bottom": 460,
+          "center": 357
+        },
+        {
+          "x": 550,
+          "top": 250,
+          "bottom": 457,
+          "center": 353.5
+        },
+        {
+          "x": 575,
+          "top": 247,
+          "bottom": 456,
+          "center": 351.5
+        },
+        {
+          "x": 600,
+          "top": 244,
+          "bottom": 455,
+          "center": 349.5
+        },
+        {
+          "x": 625,
+          "top": 241,
+          "bottom": 453,
+          "center": 347
+        },
+        {
+          "x": 650,
+          "top": 238,
+          "bottom": 452,
+          "center": 345
+        },
+        {
+          "x": 675,
+          "top": 235,
+          "bottom": 450,
+          "center": 342.5
+        },
+        {
+          "x": 700,
+          "top": 233,
+          "bottom": 450,
+          "center": 341.5
+        },
+        {
+          "x": 725,
+          "top": 231,
+          "bottom": 449,
+          "center": 340
+        },
+        {
+          "x": 750,
+          "top": 229,
+          "bottom": 448,
+          "center": 338.5
+        },
+        {
+          "x": 775,
+          "top": 226,
+          "bottom": 447,
+          "center": 336.5
+        },
+        {
+          "x": 800,
+          "top": 224,
+          "bottom": 446,
+          "center": 335
+        },
+        {
+          "x": 825,
+          "top": 222,
+          "bottom": 445,
+          "center": 333.5
+        },
+        {
+          "x": 850,
+          "top": 220,
+          "bottom": 446,
+          "center": 333
+        },
+        {
+          "x": 875,
+          "top": 218,
+          "bottom": 445,
+          "center": 331.5
+        },
+        {
+          "x": 900,
+          "top": 216,
+          "bottom": 444,
+          "center": 330
+        },
+        {
+          "x": 925,
+          "top": 213,
+          "bottom": 444,
+          "center": 328.5
+        },
+        {
+          "x": 950,
+          "top": 213,
+          "bottom": 444,
+          "center": 328.5
+        },
+        {
+          "x": 975,
+          "top": 210,
+          "bottom": 444,
+          "center": 327
+        },
+        {
+          "x": 1000,
+          "top": 209,
+          "bottom": 443,
+          "center": 326
+        },
+        {
+          "x": 1025,
+          "top": 208,
+          "bottom": 443,
+          "center": 325.5
+        },
+        {
+          "x": 1050,
+          "top": 207,
+          "bottom": 443,
+          "center": 325
+        },
+        {
+          "x": 1075,
+          "top": 208,
+          "bottom": 443,
+          "center": 325.5
+        },
+        {
+          "x": 1100,
+          "top": 206,
+          "bottom": 443,
+          "center": 324.5
+        },
+        {
+          "x": 1125,
+          "top": 208,
+          "bottom": 443,
+          "center": 325.5
+        },
+        {
+          "x": 1150,
+          "top": 209,
+          "bottom": 445,
+          "center": 327
+        },
+        {
+          "x": 1175,
+          "top": 210,
+          "bottom": 445,
+          "center": 327.5
+        },
+        {
+          "x": 1200,
+          "top": 210,
+          "bottom": 444,
+          "center": 327
+        },
+        {
+          "x": 1225,
+          "top": 212,
+          "bottom": 444,
+          "center": 328
+        },
+        {
+          "x": 1250,
+          "top": 214,
+          "bottom": 444,
+          "center": 329
+        },
+        {
+          "x": 1275,
+          "top": 216,
+          "bottom": 445,
+          "center": 330.5
+        },
+        {
+          "x": 1300,
+          "top": 219,
+          "bottom": 445,
+          "center": 332
+        },
+        {
+          "x": 1325,
+          "top": 219,
+          "bottom": 445,
+          "center": 332
+        },
+        {
+          "x": 1350,
+          "top": 221,
+          "bottom": 446,
+          "center": 333.5
+        },
+        {
+          "x": 1375,
+          "top": 224,
+          "bottom": 447,
+          "center": 335.5
+        },
+        {
+          "x": 1400,
+          "top": 227,
+          "bottom": 447,
+          "center": 337
+        },
+        {
+          "x": 1425,
+          "top": 229,
+          "bottom": 448,
+          "center": 338.5
+        },
+        {
+          "x": 1450,
+          "top": 231,
+          "bottom": 449,
+          "center": 340
+        },
+        {
+          "x": 1475,
+          "top": 233,
+          "bottom": 450,
+          "center": 341.5
+        },
+        {
+          "x": 1500,
+          "top": 236,
+          "bottom": 451,
+          "center": 343.5
+        },
+        {
+          "x": 1525,
+          "top": 239,
+          "bottom": 452,
+          "center": 345.5
+        },
+        {
+          "x": 1550,
+          "top": 241,
+          "bottom": 453,
+          "center": 347
+        },
+        {
+          "x": 1575,
+          "top": 245,
+          "bottom": 454,
+          "center": 349.5
+        },
+        {
+          "x": 1600,
+          "top": 247,
+          "bottom": 456,
+          "center": 351.5
+        },
+        {
+          "x": 1625,
+          "top": 250,
+          "bottom": 458,
+          "center": 354
+        },
+        {
+          "x": 1650,
+          "top": 255,
+          "bottom": 461,
+          "center": 358
+        }
+      ],
+      "center": [
+        1086,
+        335.5
+      ]
+    },
+    "before": {
+      "bounds": [
+        479,
+        249,
+        1688,
+        400
+      ],
+      "center": [
+        1083.5,
+        324.5
+      ]
+    },
+    "after": {
+      "bounds": [
+        482,
+        260,
+        1690,
+        410
+      ],
+      "center": [
+        1086,
+        335
+      ]
+    },
+    "deltaNative": [
+      2.5,
+      11
+    ],
+    "balancedPosition": [
+      460.5,
+      242
+    ],
+    "fontSizeUnchanged": 180,
+    "beforeCenterError": [
+      -2.5,
+      -11
+    ],
+    "afterCenterError": [
+      0,
+      -0.5
+    ]
+  },
+  "previousProduction": {
+    "file": "art/ui/UIP_FactionTitle_FreshTyped.png",
+    "sha256": "a07679875246246b951808ad7819215098b9559610976e24090dbc04389de919"
+  },
+  "approval": "User requested new title; generated/type candidate not yet a runtime completion",
+  "cropAuthorization": "Largest alpha>0 connected body +2 native pixels rectangle; no threshold or mask edit. Detached alpha=1 pixels outside are transparent-margin crop only.",
+  "export": {
+    "file": "art/ui/UIP_FactionTitle_FreshTyped_Balanced.png",
+    "sha256": "721cd2ac637e2a30ac7bc5d7442678150ca3907ab705426ef211cebbbc075485",
+    "size": [
+      1024,
+      210
+    ],
+    "uniformScale": 0.498046875,
+    "translation": [
+      -28.87890625,
+      -66.232421875
+    ],
+    "sourceCropBounds": [
+      62,
+      137,
+      2110,
+      549
+    ],
+    "paddingPixels": 2,
+    "nonzeroAlphaMargins": [
+      3,
+      3,
+      3,
+      4
+    ],
+    "alpha": {
+      "size": [
+        1024,
+        210
+      ],
+      "alphaNonzeroBounds": [
+        3,
+        3,
+        1021,
+        206
+      ],
+      "components": {
+        "0": {
+          "count": 1,
+          "largest": {
+            "pixels": 141718,
+            "bounds": [
+              3,
+              3,
+              1021,
+              206
+            ],
+            "maxAlpha": 255
+          },
+          "detachedPixels": 0,
+          "detachedMaxAlpha": 0,
+          "largestDetached": []
+        },
+        "16": {
+          "count": 1,
+          "largest": {
+            "pixels": 137698,
+            "bounds": [
+              4,
+              4,
+              1020,
+              205
+            ],
+            "maxAlpha": 255
+          },
+          "detachedPixels": 0,
+          "detachedMaxAlpha": 0,
+          "largestDetached": []
+        },
+        "128": {
+          "count": 1,
+          "largest": {
+            "pixels": 135949,
+            "bounds": [
+              5,
+              5,
+              1019,
+              204
+            ],
+            "maxAlpha": 255
+          },
+          "detachedPixels": 0,
+          "detachedMaxAlpha": 0,
+          "largestDetached": []
+        }
+      },
+      "cropOutsideNonzeroPixels": null,
+      "cropOutsideAlphaMax": null
+    },
+    "text": {
+      "text": "어느 편에 설래요?",
+      "fontLoaded": true,
+      "fontFamily": "Jua, sans-serif",
+      "fontSizeNative": 180,
+      "glyphColor": "rgb(71, 32, 8)",
+      "textShadow": "none",
+      "textStroke": "0px",
+      "box": [
+        200.4716796875,
+        54.294921875,
+        625.546875,
+        104.58984375
+      ],
+      "range": [
+        207.71670532226562,
+        61.5166015625,
+        611.049072265625,
+        89.6484375
+      ],
+      "overflow": false
+    },
+    "fontPixelsAtOutput": 89.6484375,
+    "fontPixelsAtRuntimeWidth238_8": 20.906295776367188,
+    "nativeFontFaceInRoblox": false,
+    "fontRasterizedAtOutputResolution": true
+  },
+  "outputInk": {
+    "blankCenter": [
+      512,
+      100.8623046875
+    ],
+    "before": {
+      "bounds": [
+        210,
+        58,
+        812,
+        132
+      ],
+      "center": [
+        511,
+        95
+      ],
+      "error": [
+        -1,
+        -5.8623046875
+      ]
+    },
+    "after": {
+      "bounds": [
+        211,
+        63,
+        814,
+        137
+      ],
+      "center": [
+        512.5,
+        100
+      ],
+      "error": [
+        0.5,
+        -0.8623046875
+      ]
+    }
+  },
+  "evidence": [
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_export_light.png",
+      "sha256": "429f3dfb8fb80249ac6a5c65f45dd6965db1a9b55778ac2c870e025392dfc875",
+      "nearestNeighborZoom": 1,
+      "background": "#ffffff",
+      "crop": null
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_export_4x_light.png",
+      "sha256": "6204850120bec9d42b65ac9198d1601faf3b02e64794b10bb8f283f6d1e1ab07",
+      "nearestNeighborZoom": 4,
+      "background": "#ffffff",
+      "crop": null
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_text_4x_light.png",
+      "sha256": "1235e3fc75e471264dbbfce0ee6b0c2e447c8e971fbae6fb42e88c88622d98b3",
+      "nearestNeighborZoom": 4,
+      "background": "#ffffff",
+      "crop": [
+        196,
+        50,
+        830,
+        163
+      ]
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_export_dark.png",
+      "sha256": "7cdc92321df80d433c2b08c9fd7cdd7a99c4f11c068b45b4d41938b9b3785314",
+      "nearestNeighborZoom": 1,
+      "background": "#20242c",
+      "crop": null
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_export_4x_dark.png",
+      "sha256": "7cabff69bc0669e07806684faf149a47f03c1a456f86b70ab598c52efae5bbd9",
+      "nearestNeighborZoom": 4,
+      "background": "#20242c",
+      "crop": null
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_text_4x_dark.png",
+      "sha256": "0ddaef2ae078960a7799256a7f3e328f3ae2064d9e779668c04b5a49e764c5dc",
+      "nearestNeighborZoom": 4,
+      "background": "#20242c",
+      "crop": [
+        196,
+        50,
+        830,
+        163
+      ]
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_before_after_light.png",
+      "sha256": "2bf67aba54a1c11c95b4e6089787d4f00cb0ebb9f089918c8c97e68a4904284f",
+      "background": "#ffffff",
+      "renderWidth": 1024,
+      "localGameScaleSample": false,
+      "actualStudioCapture": false
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_runtime_238_8_light.png",
+      "sha256": "9e8f202b0e7c3e5cdef19cc26da05aabf9f4f3af236258cd2dfbcc59b957e1f4",
+      "background": "#ffffff",
+      "renderWidth": 238.8,
+      "localGameScaleSample": true,
+      "actualStudioCapture": false
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_before_after_dark.png",
+      "sha256": "e649e212be7f767348af710fd5652a4b6eee9c4f703dcb323c8004731cde34e5",
+      "background": "#20242c",
+      "renderWidth": 1024,
+      "localGameScaleSample": false,
+      "actualStudioCapture": false
+    },
+    {
+      "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_runtime_238_8_dark.png",
+      "sha256": "15d861166a9669d7ac425b903eb9131e89c223f63527338b988d224c03e69d12",
+      "background": "#20242c",
+      "renderWidth": 238.8,
+      "localGameScaleSample": true,
+      "actualStudioCapture": false
+    }
+  ]
+}

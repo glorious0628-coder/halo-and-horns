@@ -1,12 +1,12 @@
 {
   "schema": 1,
   "status": "applied_and_verified",
-  "timestamp_utc": "20261004T063536601285Z",
+  "timestamp_utc": "20261004T071043624536Z",
   "originals_identical": true,
-  "original_bytes": 12525885,
-  "original_sha256": "b9da5608d1d82079079420ad5821fb26002c28a2cf515d049987f1035e32f60f",
-  "updated_bytes": 12526092,
-  "updated_sha256": "56dda2b88fb3c6f66575dd6c46c34b164dc20e380cf762c57a84c93a5796d1c3",
+  "original_bytes": 12526485,
+  "original_sha256": "66e560822a4bd3c284c03b1e9fe0c74b4ccd5963a1724c9ebf16628386fe4cad",
+  "updated_bytes": 12526206,
+  "updated_sha256": "28e47624c43dee7f3f0799ad20893dd1f71254e0db289d3b2016fb3607ef6f15",
   "changed": true,
   "checks": {
     "instance_count": 4501,
@@ -26,10 +26,10 @@
         "referent": "RBX69436A65202049959533F9E0CF169092",
         "source_file": "src/ReplicatedStorage/Shared/Config.luau",
         "changed": true,
-        "old_source_sha256": "ff9b4283dff27cef8ff81d54593344a645de7d2ae10c59b69b1b0283be8d6b96",
-        "old_body_bytes": 101024,
-        "new_body_bytes": 101231,
-        "source_sha256": "91583bf7e0d5e7afe46afbcddd528349f0fcc6c56efd387a8418031781834e73"
+        "old_source_sha256": "a1845a6775aab6dcb4254aa0b2058e3254857012f9d85da8121e8ffcf70d642f",
+        "old_body_bytes": 101624,
+        "new_body_bytes": 101345,
+        "source_sha256": "12dded5bcf62f53a84f59c19bdccb761d73cbfe952de3582eaf2590c3b8ffa49"
       }
     ],
     "all_other_bytes_unchanged": true,
@@ -44,13 +44,13 @@
   "targets": [
     {
       "path": "build/GoodEvil.rbxlx",
-      "backup": "build/faction_source_backups/20261004T063536601285Z/build_GoodEvil.rbxlx",
-      "backup_sha256": "b9da5608d1d82079079420ad5821fb26002c28a2cf515d049987f1035e32f60f"
+      "backup": "build/faction_source_backups/20261004T071043624536Z/build_GoodEvil.rbxlx",
+      "backup_sha256": "66e560822a4bd3c284c03b1e9fe0c74b4ccd5963a1724c9ebf16628386fe4cad"
     },
     {
       "path": "place/GoodEvil.rbxlx",
-      "backup": "build/faction_source_backups/20261004T063536601285Z/place_GoodEvil.rbxlx",
-      "backup_sha256": "b9da5608d1d82079079420ad5821fb26002c28a2cf515d049987f1035e32f60f"
+      "backup": "build/faction_source_backups/20261004T071043624536Z/place_GoodEvil.rbxlx",
+      "backup_sha256": "66e560822a4bd3c284c03b1e9fe0c74b4ccd5963a1724c9ebf16628386fe4cad"
     }
   ],
   "final_files_identical": true

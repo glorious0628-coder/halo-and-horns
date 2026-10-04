@@ -1064,5 +1064,64 @@
   ],
   "baked_text_locale": "ko",
   "typography": "Separate Jua HTML typesetting"
+ },
+ "UIP_FactionTitle_FreshTyped_Balanced": {
+  "w": 1024,
+  "h": 210,
+  "source": "art/out/UI_FactionTitle_Fresh.png",
+  "typography": "Jua visible glyph ink centered; separate HTML layer",
+  "sha256": "721cd2ac637e2a30ac7bc5d7442678150ca3907ab705426ef211cebbbc075485",
+  "alpha_bounds": [
+   3,
+   3,
+   1021,
+   206
+  ],
+  "baked_text_locale": "ko"
+ },
+ "UIP_FactionCardHalo_Aligned": {
+  "w": 570,
+  "h": 954,
+  "source_manifest": "docs/art/verification_2026-10-04/faction_parts/production_files.json",
+  "sha256": "88878a91f8b0176b09eec6240ad8b4e94cddcf2034fa2423adace48bc2ebe84f",
+  "alpha_bounds": [
+   9,
+   12,
+   562,
+   942
+  ],
+  "baked_text_locale": "ko",
+  "typography": "Jua visible glyph ink centered on shared grid",
+  "all_art_new": true
+ },
+ "UIP_FactionCardHorns_Aligned": {
+  "w": 570,
+  "h": 954,
+  "source_manifest": "docs/art/verification_2026-10-04/faction_parts/production_files.json",
+  "sha256": "1998d736aa7da8c561b71944389491110695232fd537f1f4b715ccd67145a1fc",
+  "alpha_bounds": [
+   25,
+   12,
+   545,
+   942
+  ],
+  "baked_text_locale": "ko",
+  "typography": "Jua visible glyph ink centered on shared grid",
+  "all_art_new": true
+ },
+ "UIP_FactionCardNeutral_Aligned": {
+  "w": 570,
+  "h": 954,
+  "source_manifest": "docs/art/verification_2026-10-04/faction_parts/production_files.json",
+  "sha256": "a55964e76a2353ec737f72b0a222dc7c26fbf922466e6a93759dd66d9dbedabb",
+  "alpha_bounds": [
+   14,
+   11,
+   555,
+   942
+  ],
+  "baked_text_locale": "ko",
+  "typography": "Jua visible glyph ink centered on shared grid",
+  "all_art_new": true
  }
 }

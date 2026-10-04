@@ -142888,6 +142888,7 @@ Config.UIArt = {
 		FactionCardHaloFreshTyped = { Id = "rbxassetid://76818879022385", Size = Vector2.new(570, 954) },
 		FactionCardHornsFreshTyped = { Id = "rbxassetid://137806621328187", Size = Vector2.new(570, 954) },
 		FactionCardNeutralFreshTyped = { Id = "rbxassetid://127475794518664", Size = Vector2.new(570, 954) },
+		FactionTitleFreshTypedBalanced = { Id = "rbxassetid://81044633324158", Size = Vector2.new(1024, 210) },
 		FactionTitleFreshTyped = { Id = "rbxassetid://111239293270560", Size = Vector2.new(1024, 210) },
 		FactionFooterFreshTyped = { Id = "rbxassetid://128423642459976", Size = Vector2.new(1024, 126) },
 		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
@@ -143182,7 +143183,7 @@ Config.UIArt.FactionE = {
     CardAspect = 380 / 636,
     Parts = {
         Halo = "FactionCardHaloFreshTyped", Horns = "FactionCardHornsFreshTyped", Neutral = "FactionCardNeutralFreshTyped",
-        Title = "FactionTitleFreshTyped", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterFreshTyped",
+        Title = "FactionTitleFreshTypedBalanced", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterFreshTyped",
     },
     ButtonRects = {
 		Halo = { 0.24793872, 0.80211072, 0.50513279, 0.07605582 },

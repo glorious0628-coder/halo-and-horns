@@ -1,0 +1,1202 @@
+{
+  "canvas": [
+    570,
+    954
+  ],
+  "slots": {
+    "Frame": {
+      "cy": 597,
+      "h": 690,
+      "maxW": 550
+    },
+    "Crest": {
+      "cy": 152,
+      "h": 280,
+      "maxW": 560
+    },
+    "Name": {
+      "cy": 358,
+      "h": 70,
+      "maxW": 540
+    },
+    "Desc": {
+      "cy": 437.5,
+      "h": 33,
+      "maxW": 470
+    },
+    "Motto": {
+      "cy": 491.5,
+      "h": 34,
+      "maxW": 540
+    },
+    "Button": {
+      "cy": 864,
+      "h": 76,
+      "maxW": 460
+    }
+  },
+  "labels": [
+    {
+      "role": "name",
+      "cy": 363,
+      "x": 70,
+      "w": 430,
+      "h": 54,
+      "font": 40
+    },
+    {
+      "role": "desc",
+      "cy": 437.5,
+      "x": 85,
+      "w": 400,
+      "h": 36,
+      "font": 27
+    },
+    {
+      "role": "motto",
+      "cy": 491.5,
+      "x": 63,
+      "w": 444,
+      "h": 30,
+      "font": 20
+    },
+    {
+      "role": "perk0",
+      "cy": 565,
+      "x": 163,
+      "w": 340,
+      "h": 50,
+      "font": 36,
+      "left": true
+    },
+    {
+      "role": "perk1",
+      "cy": 627,
+      "x": 163,
+      "w": 340,
+      "h": 50,
+      "font": 36,
+      "left": true
+    },
+    {
+      "role": "perk2",
+      "cy": 689,
+      "x": 163,
+      "w": 340,
+      "h": 50,
+      "font": 36,
+      "left": true
+    },
+    {
+      "role": "perk3",
+      "cy": 751,
+      "x": 163,
+      "w": 340,
+      "h": 50,
+      "font": 36,
+      "left": true
+    },
+    {
+      "role": "button",
+      "cy": 864,
+      "x": 115,
+      "w": 340,
+      "h": 58,
+      "font": 44
+    }
+  ],
+  "method": "Separate new GPT parts; shared coordinates; uniform scale; actual Jua typesetting.",
+  "temporaryLegacyBenefitIcons": false,
+  "cards": {
+    "Halo": {
+      "images": [
+        {
+          "size": [
+            1102,
+            1427
+          ],
+          "bounds": [
+            11,
+            14,
+            1091,
+            1395
+          ],
+          "sha256": "da96ed3ace0ee4c42c9357f023513b0216579074d64a317565da50b78c83e8a4",
+          "file": "art/out/UI_FactionParts_Halo_Frame_Wide.png",
+          "scale": 0.499637943519189,
+          "visibleRect": [
+            15.195510499637919,
+            252,
+            539.6089790007242,
+            690
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1664,
+            945
+          ],
+          "bounds": [
+            43,
+            46,
+            1622,
+            847
+          ],
+          "sha256": "6c9cdc64ce101053a8d67fcd93e0732ed1d5401005e09803e8d192035cb90153",
+          "file": "art/out/UI_FactionParts_Halo_Crest.png",
+          "scale": 0.3495630461922597,
+          "visibleRect": [
+            9.019975031210947,
+            11.999999999999986,
+            551.9600499375781,
+            280
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1983,
+            793
+          ],
+          "bounds": [
+            32,
+            253,
+            1952,
+            527
+          ],
+          "sha256": "caee258342300f06d9ff20b81aa089bb3833a752686c63bd3ea2369fa3ed164a",
+          "file": "art/out/UI_FactionParts_Halo_Name_Clear.png",
+          "scale": 0.25547445255474455,
+          "visibleRect": [
+            39.74452554744522,
+            330.55474452554745,
+            490.51094890510956,
+            70
+          ],
+          "blankCenterY": 363
+        },
+        {
+          "size": [
+            1916,
+            821
+          ],
+          "bounds": [
+            32,
+            330,
+            1884,
+            468
+          ],
+          "sha256": "2e68eecee1d4b68dbf4a067e869b719b2ca838bc5973df5b6c44a1630bf68477",
+          "file": "art/out/UI_FactionParts_Halo_Desc.png",
+          "scale": 0.2391304347826087,
+          "visibleRect": [
+            63.565217391304344,
+            421,
+            442.8695652173913,
+            33
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1944,
+            809
+          ],
+          "bounds": [
+            30,
+            317,
+            1915,
+            469
+          ],
+          "sha256": "c70eeef9c3ca2139ae0a5a0a7a7bf8d3ea90c04f7bd172c7e549a81c4392dc71",
+          "file": "art/out/UI_FactionParts_Halo_Motto.png",
+          "scale": 0.2236842105263158,
+          "visibleRect": [
+            74.17763157894737,
+            474.5,
+            421.64473684210526,
+            34
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1983,
+            793
+          ],
+          "bounds": [
+            8,
+            181,
+            1976,
+            597
+          ],
+          "sha256": "6e62c768119c0783b67df8e20f9b0f03316f358dc80e87f00e90cfac907237b7",
+          "file": "art/out/UI_FactionParts_Halo_Button.png",
+          "scale": 0.18269230769230768,
+          "visibleRect": [
+            105.23076923076925,
+            826,
+            359.5384615384615,
+            76
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            165,
+            121,
+            1082,
+            1086
+          ],
+          "sha256": "dbee19e707a222601ee0fec82678420b65423fa25e11b9ce31014b4e4ecde465",
+          "file": "art/out/UI_IconExp_Redraw.png",
+          "scale": 0.0538860103626943,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            40,
+            140,
+            1213,
+            1127
+          ],
+          "sha256": "9e4aa26a89158030e3c2794234c14a7329dabe452076396e659764ddc3ebfd5f",
+          "file": "art/out/UI_IconHeart_Redraw.png",
+          "scale": 0.0443307757885763,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1586,
+            992
+          ],
+          "bounds": [
+            56,
+            220,
+            1531,
+            751
+          ],
+          "sha256": "5997cbb508ab9bc53dbcdd38731749c030737fe3a00103c1363d31cc337aa005",
+          "file": "art/out/UI_IconWings_Redraw.png",
+          "scale": 0.03525423728813559,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1457,
+            1080
+          ],
+          "bounds": [
+            97,
+            98,
+            1381,
+            986
+          ],
+          "sha256": "7970d147327d8054b2679793046f37101ca11552ef59d231b6586d372d96250c",
+          "file": "art/out/UI_IconGoldPile_Redraw.png",
+          "scale": 0.040498442367601244,
+          "legacyIcon": false
+        }
+      ],
+      "labels": [
+        {
+          "role": "name",
+          "text": "빛의 기사단",
+          "centerY": 363,
+          "inkCenterY": 363,
+          "inkShift": [
+            -0.8993682861328125,
+            2.5
+          ],
+          "font": 40,
+          "ink": [
+            196.9600067138672,
+            345.5,
+            176.07998657226562,
+            35
+          ],
+          "overflow": false
+        },
+        {
+          "role": "desc",
+          "text": "후광을 얻은 자들.",
+          "centerY": 437.5,
+          "inkCenterY": 437.5,
+          "inkShift": [
+            0.20304107666015625,
+            2
+          ],
+          "font": 27,
+          "ink": [
+            197.82804107666016,
+            425,
+            174.3439178466797,
+            25
+          ],
+          "overflow": false
+        },
+        {
+          "role": "motto",
+          "text": "지키고, 치유하고, 되찾아 줘라!",
+          "centerY": 491.5,
+          "inkCenterY": 491.5,
+          "inkShift": [
+            0.9644317626953125,
+            1.5
+          ],
+          "font": 20,
+          "ink": [
+            169.2300567626953,
+            482,
+            231.53988647460938,
+            19
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk0",
+          "text": "경험치 +30%",
+          "centerY": 565,
+          "inkCenterY": 565,
+          "inkShift": [
+            -1,
+            3
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            549,
+            185.83993530273438,
+            32
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk1",
+          "text": "체력 +20%, 계속 회복",
+          "centerY": 627,
+          "inkCenterY": 627,
+          "inkShift": [
+            0,
+            3
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            611,
+            308.15191650390625,
+            32
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk2",
+          "text": "발사하면 동료 치유",
+          "centerY": 689,
+          "inkCenterY": 689,
+          "inkShift": [
+            0,
+            2.5
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            673.5,
+            253.6839141845703,
+            31
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk3",
+          "text": "주머니 골드 자동 저금",
+          "centerY": 751,
+          "inkCenterY": 751,
+          "inkShift": [
+            0,
+            2.5
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            735.5,
+            287.99188232421875,
+            31
+          ],
+          "overflow": false
+        },
+        {
+          "role": "button",
+          "text": "이 편으로!",
+          "centerY": 864,
+          "inkCenterY": 864,
+          "inkShift": [
+            0.9933929443359375,
+            3
+          ],
+          "font": 44,
+          "ink": [
+            202.88401794433594,
+            846,
+            164.23196411132812,
+            36
+          ],
+          "overflow": false
+        }
+      ],
+      "file": "docs\\art\\verification_2026-10-04\\faction_parts\\Halo_card.png",
+      "sha256": "88878a91f8b0176b09eec6240ad8b4e94cddcf2034fa2423adace48bc2ebe84f",
+      "buttonRect": [
+        0.11052631578947368,
+        0.8658280922431866,
+        0.7789473684210526,
+        0.07966457023060797
+      ],
+      "productionFile": "art/ui/UIP_FactionCardHalo_Aligned.png",
+      "productionSha256": "88878a91f8b0176b09eec6240ad8b4e94cddcf2034fa2423adace48bc2ebe84f",
+      "alpha16Bounds": [
+        9,
+        12,
+        562,
+        942
+      ]
+    },
+    "Horns": {
+      "images": [
+        {
+          "size": [
+            1100,
+            1430
+          ],
+          "bounds": [
+            27,
+            14,
+            1073,
+            1405
+          ],
+          "sha256": "17345054af1f1364c14a953fa5d73520f838332b688a7a4126486093987e5921",
+          "file": "art/out/UI_FactionParts_Horns_Frame_Wide.png",
+          "scale": 0.49604601006470167,
+          "visibleRect": [
+            25.567936736161016,
+            252,
+            518.864126527678,
+            690
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1659,
+            948
+          ],
+          "bounds": [
+            12,
+            11,
+            1647,
+            915
+          ],
+          "sha256": "6679d50b20ac9c96c26e3e85625ad518f894061c140566fe0e17ed2dedcada2d",
+          "file": "art/out/UI_FactionParts_Horns_Crest.png",
+          "scale": 0.30973451327433627,
+          "visibleRect": [
+            31.792035398230098,
+            12.000000000000021,
+            506.4159292035398,
+            280
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            2022,
+            778
+          ],
+          "bounds": [
+            21,
+            176,
+            2002,
+            540
+          ],
+          "sha256": "b7ac0192a4d266973310f8e6cc7f590b6984f9ee2cc5cdfd978720a07aac2e37",
+          "file": "art/out/UI_FactionParts_Horns_Name.png",
+          "scale": 0.19230769230769232,
+          "visibleRect": [
+            94.51923076923075,
+            323.86538461538464,
+            380.9615384615385,
+            70
+          ],
+          "blankCenterY": 363
+        },
+        {
+          "size": [
+            1956,
+            804
+          ],
+          "bounds": [
+            18,
+            316,
+            1938,
+            480
+          ],
+          "sha256": "769e5c3dc8b49d34e4222a2036eb431961c2454ca65090b73e883edd86f532af",
+          "file": "art/out/UI_FactionParts_Horns_Desc.png",
+          "scale": 0.20121951219512196,
+          "visibleRect": [
+            91.82926829268291,
+            420.99999999999994,
+            386.3414634146342,
+            33
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1916,
+            821
+          ],
+          "bounds": [
+            25,
+            338,
+            1892,
+            481
+          ],
+          "sha256": "5cc0c3667641261eaab296c4adacc0e1a2862c01d6a2703d94a1138354a59d87",
+          "file": "art/out/UI_FactionParts_Horns_Motto.png",
+          "scale": 0.23776223776223776,
+          "visibleRect": [
+            63.04895104895104,
+            474.5,
+            443.9020979020979,
+            34
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1994,
+            789
+          ],
+          "bounds": [
+            55,
+            186,
+            1939,
+            589
+          ],
+          "sha256": "fe8e0bd7cdb2889ed34a148dcd4d85462072f25606897bc4f7f37c243137313b",
+          "file": "art/out/UI_FactionParts_Horns_Button.png",
+          "scale": 0.18858560794044665,
+          "visibleRect": [
+            107.35235732009926,
+            826,
+            355.2952853598015,
+            76
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1457,
+            1080
+          ],
+          "bounds": [
+            97,
+            98,
+            1381,
+            986
+          ],
+          "sha256": "7970d147327d8054b2679793046f37101ca11552ef59d231b6586d372d96250c",
+          "file": "art/out/UI_IconGoldPile_Redraw.png",
+          "scale": 0.040498442367601244,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            63,
+            58,
+            1191,
+            1195
+          ],
+          "sha256": "75ba717fbb028dd00bb7c291bc393bbaf73e1460d58ec6d9c68d90acd3b8457e",
+          "file": "art/out/UI_IconBloodSword_Redraw.png",
+          "scale": 0.04573438874230431,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1983,
+            793
+          ],
+          "bounds": [
+            75,
+            222,
+            1904,
+            558
+          ],
+          "sha256": "ac2a5dabf6e50198232426923c23a428ec4e25e91507ce306e950ac2a23b3d06",
+          "file": "art/out/UI_IconGauge_Redraw.png",
+          "scale": 0.028430836522689993,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            35,
+            81,
+            1218,
+            1152
+          ],
+          "sha256": "57a817fec00bc8390ed9d2ea850a83860bb139f9b16ac317cb253616ca904acf",
+          "file": "art/out/UI_IconDemon_Redraw.png",
+          "scale": 0.04395604395604396,
+          "legacyIcon": false
+        }
+      ],
+      "labels": [
+        {
+          "role": "name",
+          "text": "뿔 군단",
+          "centerY": 363,
+          "inkCenterY": 363,
+          "inkShift": [
+            -0.3993682861328125,
+            3.5
+          ],
+          "font": 40,
+          "ink": [
+            230.4600067138672,
+            345.5,
+            109.07998657226562,
+            35
+          ],
+          "overflow": false
+        },
+        {
+          "role": "desc",
+          "text": "뿔을 얻은 자들.",
+          "centerY": 437.5,
+          "inkCenterY": 437.5,
+          "inkShift": [
+            0.20191192626953125,
+            2
+          ],
+          "font": 27,
+          "ink": [
+            208.65503692626953,
+            425,
+            152.68992614746094,
+            25
+          ],
+          "overflow": false
+        },
+        {
+          "role": "motto",
+          "text": "털고, 버티고, 괴수가 되어라!",
+          "centerY": 491.5,
+          "inkCenterY": 491.5,
+          "inkShift": [
+            0.455047607421875,
+            1
+          ],
+          "font": 20,
+          "ink": [
+            177.83004760742188,
+            482.5,
+            214.33990478515625,
+            18
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk0",
+          "text": "골드 +25%",
+          "centerY": 565,
+          "inkCenterY": 565,
+          "inkShift": [
+            0,
+            2
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            551,
+            155.1239471435547,
+            28
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk1",
+          "text": "공격력 +15%, 체력 흡수",
+          "centerY": 627,
+          "inkCenterY": 627,
+          "inkShift": [
+            0,
+            2
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            611,
+            327.555908203125,
+            32
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk2",
+          "text": "발사 게이지 175",
+          "centerY": 689,
+          "inkCenterY": 689,
+          "inkShift": [
+            0,
+            2.5
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            673.5,
+            225.1999053955078,
+            31
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk3",
+          "text": "별 5개면 괴수 변신!",
+          "centerY": 751,
+          "inkCenterY": 751,
+          "inkShift": [
+            -2,
+            3
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            736,
+            265.119873046875,
+            30
+          ],
+          "overflow": false
+        },
+        {
+          "role": "button",
+          "text": "이 편으로!",
+          "centerY": 864,
+          "inkCenterY": 864,
+          "inkShift": [
+            0.9933929443359375,
+            3
+          ],
+          "font": 44,
+          "ink": [
+            202.88401794433594,
+            846,
+            164.23196411132812,
+            36
+          ],
+          "overflow": false
+        }
+      ],
+      "file": "docs\\art\\verification_2026-10-04\\faction_parts\\Horns_card.png",
+      "sha256": "1998d736aa7da8c561b71944389491110695232fd537f1f4b715ccd67145a1fc",
+      "buttonRect": [
+        0.11052631578947368,
+        0.8658280922431866,
+        0.7789473684210526,
+        0.07966457023060797
+      ],
+      "productionFile": "art/ui/UIP_FactionCardHorns_Aligned.png",
+      "productionSha256": "1998d736aa7da8c561b71944389491110695232fd537f1f4b715ccd67145a1fc",
+      "alpha16Bounds": [
+        25,
+        12,
+        545,
+        942
+      ]
+    },
+    "Neutral": {
+      "images": [
+        {
+          "size": [
+            1122,
+            1402
+          ],
+          "bounds": [
+            49,
+            50,
+            1074,
+            1360
+          ],
+          "sha256": "d211de692a9a82577a541f7787e3d788b3a79528935e78877496455b0d2b934d",
+          "file": "art/out/UI_FactionParts_Neutral_Frame.png",
+          "scale": 0.5267175572519084,
+          "visibleRect": [
+            15.05725190839695,
+            252.00000000000003,
+            539.8854961832061,
+            690
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1665,
+            945
+          ],
+          "bounds": [
+            50,
+            55,
+            1616,
+            875
+          ],
+          "sha256": "0cff7358f6fc5001d4af428112dc133534cade16c454df9fe0c1ba127b5b8d16",
+          "file": "art/out/UI_FactionParts_Neutral_Crest.png",
+          "scale": 0.34146341463414637,
+          "visibleRect": [
+            17.634146341463406,
+            12,
+            534.7317073170732,
+            280
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            2027,
+            776
+          ],
+          "bounds": [
+            65,
+            219,
+            1962,
+            538
+          ],
+          "sha256": "e36a10560d07c2fd0749633b5faaf85d42bb3f9c21d72e0f31976da0a047ff30",
+          "file": "art/out/UI_FactionParts_Neutral_Name.png",
+          "scale": 0.219435736677116,
+          "visibleRect": [
+            76.86520376175548,
+            320.97805642633233,
+            416.26959247648904,
+            70
+          ],
+          "blankCenterY": 363
+        },
+        {
+          "size": [
+            1947,
+            808
+          ],
+          "bounds": [
+            47,
+            323,
+            1899,
+            476
+          ],
+          "sha256": "accb1d216414152c81597c8269d5a37846b5d940d9beedd304b9c9ed34b14c12",
+          "file": "art/out/UI_FactionParts_Neutral_Desc.png",
+          "scale": 0.21568627450980393,
+          "visibleRect": [
+            85.27450980392155,
+            421,
+            399.4509803921569,
+            33
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1983,
+            793
+          ],
+          "bounds": [
+            30,
+            326,
+            1953,
+            451
+          ],
+          "sha256": "ae0a93ac09f91e5b8c45c4dfe7180c710beb362dd584cca83df061903819559f",
+          "file": "art/out/UI_FactionParts_Neutral_Motto_Wide.png",
+          "scale": 0.272,
+          "visibleRect": [
+            23.47199999999998,
+            474.5,
+            523.056,
+            34
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1983,
+            793
+          ],
+          "bounds": [
+            99,
+            218,
+            1885,
+            561
+          ],
+          "sha256": "f5135f6d3f2cfeeedf37604aac28d38975ec4627386f380a36236e6e6571f31b",
+          "file": "art/out/UI_FactionParts_Neutral_Button.png",
+          "scale": 0.22157434402332363,
+          "visibleRect": [
+            87.134110787172,
+            826,
+            395.731778425656,
+            76
+          ],
+          "blankCenterY": null
+        },
+        {
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            91,
+            119,
+            1164,
+            1124
+          ],
+          "sha256": "2a1907cb41f27e859ef6f9c00b61889e847a8a8f6563ccf225f8976669f5cf89",
+          "file": "art/out/UI_IconNoBuff_Redraw.png",
+          "scale": 0.048462255358807084,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            163,
+            63,
+            1092,
+            1190
+          ],
+          "sha256": "9b1698f23c05428d2aad2379a57afad6f9920f165afaf3fd23cec107426eaa8e",
+          "file": "art/out/UI_IconShieldBlue_Redraw.png",
+          "scale": 0.04614019520851819,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            54,
+            39,
+            1212,
+            1158
+          ],
+          "sha256": "6f7399879988296a99c2852d01c721f72b8e9ec2672b2dc53aafa9bf1327e452",
+          "file": "art/out/UI_IconNoLoot_Redraw.png",
+          "scale": 0.044905008635578586,
+          "legacyIcon": false
+        },
+        {
+          "size": [
+            1254,
+            1254
+          ],
+          "bounds": [
+            22,
+            26,
+            1231,
+            1192
+          ],
+          "sha256": "ed955a56b82f3b47ec1fe9ed454a6563dac3468a81fc84a17347a463ce18d113",
+          "file": "art/out/UI_IconHammer_Redraw.png",
+          "scale": 0.043010752688172046,
+          "legacyIcon": false
+        }
+      ],
+      "labels": [
+        {
+          "role": "name",
+          "text": "장인 길드",
+          "centerY": 363,
+          "inkCenterY": 363,
+          "inkShift": [
+            0.088134765625,
+            3
+          ],
+          "font": 40,
+          "ink": [
+            213.760009765625,
+            347,
+            142.47998046875,
+            32
+          ],
+          "overflow": false
+        },
+        {
+          "role": "desc",
+          "text": "조각을 다듬는 자들.",
+          "centerY": 437.5,
+          "inkCenterY": 437.5,
+          "inkShift": [
+            0.2032928466796875,
+            1.5
+          ],
+          "font": 27,
+          "ink": [
+            186.6095428466797,
+            425.5,
+            196.78091430664062,
+            24
+          ],
+          "overflow": false
+        },
+        {
+          "role": "motto",
+          "text": "줍지 말고, 다듬고, 만들어라!",
+          "centerY": 491.5,
+          "inkCenterY": 491.5,
+          "inkShift": [
+            0.45128631591796875,
+            1.5
+          ],
+          "font": 20,
+          "ink": [
+            177.92003631591797,
+            483,
+            214.15992736816406,
+            17
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk0",
+          "text": "싸움 버프 없음",
+          "centerY": 565,
+          "inkCenterY": 565,
+          "inkShift": [
+            0,
+            2.5
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            549.5,
+            197.91993713378906,
+            31
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk1",
+          "text": "PvP 없음 (안전)",
+          "centerY": 627,
+          "inkCenterY": 627,
+          "inkShift": [
+            -1,
+            2
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            611,
+            222.14791870117188,
+            32
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk2",
+          "text": "약탈·현상수배 걱정 없음",
+          "centerY": 689,
+          "inkCenterY": 689,
+          "inkShift": [
+            0,
+            3
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            673,
+            323.33489990234375,
+            32
+          ],
+          "overflow": false
+        },
+        {
+          "role": "perk3",
+          "text": "제작 특화 (곧 추가)",
+          "centerY": 751,
+          "inkCenterY": 751,
+          "inkShift": [
+            0,
+            2.5
+          ],
+          "font": 36,
+          "ink": [
+            163,
+            734.5,
+            260.40789794921875,
+            33
+          ],
+          "overflow": false
+        },
+        {
+          "role": "button",
+          "text": "이 편으로!",
+          "centerY": 864,
+          "inkCenterY": 864,
+          "inkShift": [
+            0.9933929443359375,
+            3
+          ],
+          "font": 44,
+          "ink": [
+            202.88401794433594,
+            846,
+            164.23196411132812,
+            36
+          ],
+          "overflow": false
+        }
+      ],
+      "file": "docs\\art\\verification_2026-10-04\\faction_parts\\Neutral_card.png",
+      "sha256": "a55964e76a2353ec737f72b0a222dc7c26fbf922466e6a93759dd66d9dbedabb",
+      "buttonRect": [
+        0.11052631578947368,
+        0.8658280922431866,
+        0.7789473684210526,
+        0.07966457023060797
+      ],
+      "productionFile": "art/ui/UIP_FactionCardNeutral_Aligned.png",
+      "productionSha256": "a55964e76a2353ec737f72b0a222dc7c26fbf922466e6a93759dd66d9dbedabb",
+      "alpha16Bounds": [
+        14,
+        11,
+        555,
+        942
+      ]
+    }
+  },
+  "uploaded": false,
+  "maxLabelCenterDelta": 0,
+  "all_source_hashes_preserved": true,
+  "reviewed_and_shown_individually_before_upload": true
+}

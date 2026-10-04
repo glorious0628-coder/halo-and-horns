@@ -1,0 +1,222 @@
+{
+  "status": "local_visual_review_pass_F1_closed_runtime_readability_pending",
+  "reviewedBy": "faction_mockup independent local artifact QA",
+  "scope": "Read-only current metrics, renderer and all three actual dark PNGs; fresh11icon paths and source hashes checked. No Studio runtime claim.",
+  "checkedArtifacts": [
+    {
+      "card": "Halo",
+      "file": "docs/art/verification_2026-10-04/faction_parts/Halo_card.png",
+      "sha256": "88878a91f8b0176b09eec6240ad8b4e94cddcf2034fa2423adace48bc2ebe84f",
+      "matchesMetricsSha": true,
+      "alphaOver16Bounds": [
+        9,
+        12,
+        562,
+        942
+      ],
+      "alphaOver16Height": 930,
+      "inkCenterY": [
+        363,
+        437.5,
+        491.5,
+        565,
+        627,
+        689,
+        751,
+        864
+      ],
+      "semanticMatchesConfig": true,
+      "iconToTextGaps": [
+        10.293264248704673,
+        9.0,
+        9.0,
+        9.0
+      ],
+      "nameFont": 40,
+      "nameInkTop": 345.5,
+      "perkFont": 36,
+      "labelOverflow": false
+    },
+    {
+      "card": "Horns",
+      "file": "docs/art/verification_2026-10-04/faction_parts/Horns_card.png",
+      "sha256": "1998d736aa7da8c561b71944389491110695232fd537f1f4b715ccd67145a1fc",
+      "matchesMetricsSha": true,
+      "alphaOver16Bounds": [
+        25,
+        12,
+        545,
+        942
+      ],
+      "alphaOver16Height": 930,
+      "inkCenterY": [
+        363,
+        437.5,
+        491.5,
+        565,
+        627,
+        689,
+        751,
+        864
+      ],
+      "semanticMatchesConfig": true,
+      "iconToTextGaps": [
+        9.0,
+        9.20580474934036,
+        9.0,
+        9.0
+      ],
+      "nameFont": 40,
+      "nameInkTop": 345.5,
+      "perkFont": 36,
+      "labelOverflow": false
+    },
+    {
+      "card": "Neutral",
+      "file": "docs/art/verification_2026-10-04/faction_parts/Neutral_card.png",
+      "sha256": "a55964e76a2353ec737f72b0a222dc7c26fbf922466e6a93759dd66d9dbedabb",
+      "matchesMetricsSha": true,
+      "alphaOver16Bounds": [
+        14,
+        11,
+        555,
+        942
+      ],
+      "alphaOver16Height": 931,
+      "inkCenterY": [
+        363,
+        437.5,
+        491.5,
+        565,
+        627,
+        689,
+        751,
+        864
+      ],
+      "semanticMatchesConfig": true,
+      "iconToTextGaps": [
+        9.0,
+        13.567879325643304,
+        9.0,
+        9.0
+      ],
+      "nameFont": 40,
+      "nameInkTop": 347,
+      "perkFont": 36,
+      "labelOverflow": false
+    }
+  ],
+  "rendererSha256": "4ea9120282c578ac449a6e1849445585155b83e072fafd7793540c40e77fa93b",
+  "metricsSha256": "82d531446bbc97875c37309432db6a2ea5b91892bf1955deb9aecee0d5a10ad5",
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "P2",
+      "status": "closed",
+      "area": "name ribbons",
+      "description": "Final three dark PNGs directly reviewed. Halo Name_Clear provides a larger clean center, and each ribbon blank-area source anchor is translated to glyph center y363. Names now remain within their painted writing faces.",
+      "resolution": "New Halo Name_Clear original plus translation-only blank-area anchor alignment for all names; uniform scaling retained; common font40/cy363 unchanged.",
+      "verifiedCards": [
+        "Halo",
+        "Horns",
+        "Neutral"
+      ],
+      "nameGeometry": {
+        "Halo": {
+          "file": "art/out/UI_FactionParts_Halo_Name_Clear.png",
+          "blankCenterY": 363,
+          "outerVisibleRect": [
+            39.74452554744522,
+            330.55474452554745,
+            490.51094890510956,
+            70
+          ],
+          "glyphCenterY": 363
+        },
+        "Horns": {
+          "file": "art/out/UI_FactionParts_Horns_Name.png",
+          "blankCenterY": 363,
+          "outerVisibleRect": [
+            94.51923076923075,
+            323.86538461538464,
+            380.9615384615385,
+            70
+          ],
+          "glyphCenterY": 363
+        },
+        "Neutral": {
+          "file": "art/out/UI_FactionParts_Neutral_Name.png",
+          "blankCenterY": 363,
+          "outerVisibleRect": [
+            76.86520376175548,
+            320.97805642633233,
+            416.26959247648904,
+            70
+          ],
+          "glyphCenterY": 363
+        }
+      }
+    }
+  ],
+  "checks": {
+    "eightLabelInkCenterDelta": 0,
+    "allTextMatchesConfig": true,
+    "labelRectangleOverflow": false,
+    "benefitIconTextOverlap": false,
+    "minimumIconTextGapPixels": 9.0,
+    "visibleTopBottomCropping": false,
+    "visibleColorContrastProblemAtNativeSize": false,
+    "alphaHeightDifferencePixels": 1,
+    "allImageSourceHashesMatch": true,
+    "nameRibbonOverlap": false,
+    "legacyIconPlacementCount": 0,
+    "freshIconPlacementCount": 12,
+    "freshUniqueIconCount": 11,
+    "nameOuterBoundingBoxesClaimedEqual": false
+  },
+  "runtimeCaution": {
+    "pcInspectionCardHeight": 243,
+    "phoneInspectionCardHeight": 261.75,
+    "calculatedFontPixels": {
+      "243": {
+        "name": 10.18867924528302,
+        "desc": 6.877358490566038,
+        "motto": 5.09433962264151,
+        "perk": 9.169811320754716,
+        "button": 11.20754716981132
+      },
+      "261.75": {
+        "name": 10.974842767295597,
+        "desc": 7.408018867924528,
+        "motto": 5.487421383647798,
+        "perk": 9.877358490566039,
+        "button": 12.072327044025156
+      }
+    },
+    "status": "243 is the PC inspection height, not a mobile assumption. Phone inspection height supplied by root is261.75. Actual runtime readability remains pending, especially motto and description.",
+    "additional": "Fresh Gauge remains52x10 at source card scale, so assess thin gauge together with motto/description in actual PC/phone rendering."
+  },
+  "newArtRebuildStatus": {
+    "complete": true,
+    "scope": "Current faction card composition:18separate faction parts and11unique benefit icons,12placements. Not a claim about all game art.",
+    "legacyUniqueIconCount": 0,
+    "legacyIcons": [],
+    "freshUniqueIconCount": 11,
+    "freshIcons": [
+      "art/out/UI_IconBloodSword_Redraw.png",
+      "art/out/UI_IconDemon_Redraw.png",
+      "art/out/UI_IconExp_Redraw.png",
+      "art/out/UI_IconGauge_Redraw.png",
+      "art/out/UI_IconGoldPile_Redraw.png",
+      "art/out/UI_IconHammer_Redraw.png",
+      "art/out/UI_IconHeart_Redraw.png",
+      "art/out/UI_IconNoBuff_Redraw.png",
+      "art/out/UI_IconNoLoot_Redraw.png",
+      "art/out/UI_IconShieldBlue_Redraw.png",
+      "art/out/UI_IconWings_Redraw.png"
+    ],
+    "remaining": "Runtime readability and upload/runtime asset verification remain outside this local image review."
+  },
+  "mutations": "Only final_review.md and final_review.json updated; no image, renderer, Studio or upload changes.",
+  "reviewRound": 3
+}

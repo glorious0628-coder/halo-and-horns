@@ -1,0 +1,41 @@
+{
+  "batch_size": 3,
+  "tripo_credits_spent": 0,
+  "inspected_and_shown_individually_before_upload": true,
+  "uploads": [
+    {
+      "faction": "Halo",
+      "file": "art/ui/UIP_FactionCardHalo_Aligned.png",
+      "sha256": "88878a91f8b0176b09eec6240ad8b4e94cddcf2034fa2423adace48bc2ebe84f",
+      "asset_id": "rbxassetid://94038908843133",
+      "size": [
+        570,
+        954
+      ]
+    },
+    {
+      "faction": "Horns",
+      "file": "art/ui/UIP_FactionCardHorns_Aligned.png",
+      "sha256": "1998d736aa7da8c561b71944389491110695232fd537f1f4b715ccd67145a1fc",
+      "asset_id": "rbxassetid://105456650033490",
+      "size": [
+        570,
+        954
+      ]
+    },
+    {
+      "faction": "Neutral",
+      "file": "art/ui/UIP_FactionCardNeutral_Aligned.png",
+      "sha256": "a55964e76a2353ec737f72b0a222dc7c26fbf922466e6a93759dd66d9dbedabb",
+      "asset_id": "rbxassetid://73553448533219",
+      "size": [
+        570,
+        954
+      ]
+    }
+  ],
+  "cumulative_first_screen_successful_uploads": 19,
+  "active_images": 6,
+  "old_icon_reuse_count": 0,
+  "max_glyph_center_delta": 0
+}

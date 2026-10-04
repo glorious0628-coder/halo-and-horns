@@ -176,5 +176,9 @@
   "UIP_FactionCardHorns_FreshTyped": "rbxassetid://137806621328187",
   "UIP_FactionCardNeutral_FreshTyped": "rbxassetid://127475794518664",
   "UIP_FactionTitle_FreshTyped": "rbxassetid://111239293270560",
-  "UIP_FactionFooter_FreshTyped": "rbxassetid://128423642459976"
+  "UIP_FactionFooter_FreshTyped": "rbxassetid://128423642459976",
+  "UIP_FactionTitle_FreshTyped_Balanced": "rbxassetid://81044633324158",
+  "UIP_FactionCardHalo_Aligned": "rbxassetid://94038908843133",
+  "UIP_FactionCardHorns_Aligned": "rbxassetid://105456650033490",
+  "UIP_FactionCardNeutral_Aligned": "rbxassetid://73553448533219"
 }

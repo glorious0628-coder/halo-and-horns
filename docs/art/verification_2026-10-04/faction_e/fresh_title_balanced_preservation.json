@@ -1,0 +1,58 @@
+{
+  "sameAlpha": false,
+  "changedPixels": 14443,
+  "changedPixelsOutsideInkUnion": 0,
+  "outputInk": {
+    "blankCenter": [
+      512,
+      100.8623046875
+    ],
+    "before": {
+      "bounds": [
+        210,
+        58,
+        812,
+        132
+      ],
+      "center": [
+        511,
+        95
+      ],
+      "error": [
+        -1,
+        -5.8623046875
+      ]
+    },
+    "after": {
+      "bounds": [
+        211,
+        63,
+        814,
+        137
+      ],
+      "center": [
+        512.5,
+        100
+      ],
+      "error": [
+        0.5,
+        -0.8623046875
+      ]
+    }
+  },
+  "productionOriginalPreserved": true,
+  "sourceOriginalPreserved": true,
+  "fontUnchanged": true,
+  "sizeUnchanged": true,
+  "localVisualInspection": "passed light/dark before-after, 238.8px light/dark samples, 4x dark text",
+  "actualStudioCapture": false,
+  "upload": false,
+  "creditUsed": 0,
+  "alphaDifferenceNote": "Text moves across original art alpha values. Alpha changes are inside glyph union only; all pixels outside old/new glyph union are byte-identical.",
+  "nodeSyntaxCheck": "passed",
+  "gitDiffCheck": "passed",
+  "userReference": {
+    "file": "docs/art/verification_2026-10-04/faction_e/fresh_title_balanced_user_reference.png",
+    "sha256": "8045ddb1f36679f7d2effcf307a748f2e03a902295fbc97024e113d6b5fc161b"
+  }
+}
