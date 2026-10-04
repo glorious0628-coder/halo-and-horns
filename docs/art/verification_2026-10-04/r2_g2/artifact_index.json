@@ -1,0 +1,32 @@
+{
+  "phase": "G2",
+  "paid_credits": 0,
+  "roblox_uploads": 0,
+  "canonical_directory": "art/models/costume/redraw/r2",
+  "files": [
+    {
+      "file": "B0H_sheet.png",
+      "sha256": "7d3785f0ac455df160c18f4995cf8ab8ea3f01c76d81be9ee78f4d51ec12730a"
+    },
+    {
+      "file": "metrics.json",
+      "sha256": "9eb24e342b04d6b10c423d28a8cbb1d310bcc772ca38a18949b40ab785845a23"
+    },
+    {
+      "file": "regions_on_source.png",
+      "sha256": "161bad0ad47eea679c2eef1a1b4548b096d1325d8f6dcc1ae5cb7ba7f622c91c"
+    },
+    {
+      "file": "scoreboard.png",
+      "sha256": "afd1ea0aacf4d1197468d24e1db966a2a147f96df3f94509b63e5d9bb5870a78"
+    },
+    {
+      "file": "source_metrics.json",
+      "sha256": "255dbfb2e317f22fbe5fede44d85a183fc6d6ed525ea36df817006f9a6d8d13f"
+    },
+    {
+      "file": "source_regions.json",
+      "sha256": "732ea6360d1f6dce50d54c1cdcfc99134a79633148fe5202c40610df7a9efe84"
+    }
+  ]
+}

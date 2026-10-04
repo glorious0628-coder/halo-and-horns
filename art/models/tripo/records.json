@@ -2101,5 +2101,34 @@
    "file": "art\\models\\costume\\raw\\C2k_NeutralArcherM.glb",
    "credits": 0.0
   }
+ ],
+ "Costume_HaloArcherM_SharpD_R1": [
+  {
+   "event": "historical_R1_reconciled",
+   "task_id": "c22df695-2859-42aa-87d0-0504cdecf250",
+   "operation": "image_to_model",
+   "status": "success",
+   "credits": 70.0,
+   "source_record": "art\\models\\costume\\redraw\\generation-c22df695\\task.json",
+   "reconciled_at_utc": "2026-10-04T03:43:17.686378+00:00"
+  },
+  {
+   "event": "historical_R1_reconciled",
+   "task_id": "a532384f-c191-45f2-8d9d-7e56bd100665",
+   "operation": "animate_prerigcheck",
+   "status": "success",
+   "credits": 0.0,
+   "source_record": "art\\models\\costume\\redraw\\tripo-out\\costume-haloarcherm-sharpd-rig-c-a532384f\\task.json",
+   "reconciled_at_utc": "2026-10-04T03:43:18.546031+00:00"
+  },
+  {
+   "event": "historical_R1_reconciled",
+   "task_id": "96aa4858-cc0c-408d-ba38-f78e7e8a72ad",
+   "operation": "animate_rig",
+   "status": "success",
+   "credits": 25.0,
+   "source_record": "art\\models\\costume\\redraw\\tripo-out\\costume-haloarcherm-sharpd-rig-96aa4858\\task.json",
+   "reconciled_at_utc": "2026-10-04T03:43:19.479563+00:00"
+  }
  ]
 }

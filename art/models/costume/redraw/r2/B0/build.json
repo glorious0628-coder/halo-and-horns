@@ -1,0 +1,19 @@
+{
+  "source": "art\\models\\costume\\redraw\\generation-c22df695\\model.glb",
+  "source_sha256": "4aa4206f7cf4f57c62f1d6c38eaf0c860a274404136c774dbb13dfaa679b2ca6",
+  "original_binary_prefix_preserved": true,
+  "original_attribute_accessors_preserved": true,
+  "original_images_preserved": true,
+  "normal_texture_preserved": true,
+  "metallic_factor": 0,
+  "roughness_factor": 0.8,
+  "ahoge_world_y": 0.42758458852767944,
+  "sole_world_y": -0.4898762106895447,
+  "pixels_per_unit": 1233.8401825623725,
+  "alignment_body_axis_gltf_z": 0.0,
+  "paid_calls": 0,
+  "roblox_uploads": 0,
+  "model": "art\\models\\costume\\raw\\r2\\B0\\model.glb",
+  "sha256": "afaff5a98a0ac63f4497894c544db75a3fcd88ad5010995e49bf86f1878cf2e4",
+  "triangles": 17709
+}

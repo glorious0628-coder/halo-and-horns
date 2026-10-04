@@ -1,0 +1,189 @@
+{
+  "model": "art\\models\\costume\\raw\\r2\\B0\\model.glb",
+  "source_sha256": "afaff5a98a0ac63f4497894c544db75a3fcd88ad5010995e49bf86f1878cf2e4",
+  "model_unchanged": true,
+  "alignment": {
+    "method": "Same geometry scale from character-only ahoge/sole; no hand-width fitting",
+    "pixels_per_model_unit": 1233.8401825623725,
+    "ahoge_source_y": 71,
+    "sole_source_y": 1203,
+    "body_axis_source_x": 620,
+    "camera_target": [
+      0.0,
+      0.005673344247043133,
+      -0.02304103411734104
+    ],
+    "ortho_scale": 1.0163390832318013,
+    "resolution": [
+      1254,
+      1254
+    ]
+  },
+  "color_management": {
+    "view": "Standard",
+    "look": "None",
+    "exposure": 0,
+    "gamma": 1
+  },
+  "lit_environment": {
+    "path": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\blender-run\\5.2\\datafiles\\studiolights\\world\\studio.exr",
+    "strength": 1,
+    "sha256": "c36c7fd390b2cdf8693360cf3662cb1d710c95fa799d9f822f42997167839b56"
+  },
+  "material_changes_by_renderer": false,
+  "renders": [
+    {
+      "file": "flat_yaw_0.png",
+      "sha256": "7cdb69737cbfc5869a54da68a8493062108e8bff04116bf4ee376939f48f161d",
+      "engine": "BLENDER_WORKBENCH",
+      "yaw_degrees": 0,
+      "orthographic_scale": 1.0163390636444092,
+      "camera_position": [
+        3.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ],
+      "focus": [
+        0.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ]
+    },
+    {
+      "file": "flat_yaw_90.png",
+      "sha256": "a6008fe57341b4b757daae1bd1d7599c1bbf25dfe2cd2127b577c6001e4751e7",
+      "engine": "BLENDER_WORKBENCH",
+      "yaw_degrees": 90,
+      "orthographic_scale": 1.0163390636444092,
+      "camera_position": [
+        1.8369701465288538e-16,
+        3.005673408508301,
+        -0.02304103411734104
+      ],
+      "focus": [
+        0.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ]
+    },
+    {
+      "file": "flat_yaw_180.png",
+      "sha256": "67f6d2355f44a0c69ad48639780396bcfe54ef1eb1d7afb0a3ecb531f2519e22",
+      "engine": "BLENDER_WORKBENCH",
+      "yaw_degrees": 180,
+      "orthographic_scale": 1.0163390636444092,
+      "camera_position": [
+        -3.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ],
+      "focus": [
+        0.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ]
+    },
+    {
+      "file": "flat_yaw_270.png",
+      "sha256": "e9d7e39314db5713384820437a1b3ee89afb86d88fa8185040c5804f0bcf8137",
+      "engine": "BLENDER_WORKBENCH",
+      "yaw_degrees": 270,
+      "orthographic_scale": 1.0163390636444092,
+      "camera_position": [
+        -5.510910704284357e-16,
+        -2.994326591491699,
+        -0.02304103411734104
+      ],
+      "focus": [
+        0.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ]
+    },
+    {
+      "file": "flat_quarter.png",
+      "sha256": "9157184b13e743777fa45c27df984bbe11ebd35fbb385cf6eb3243144b09265c",
+      "engine": "BLENDER_WORKBENCH",
+      "yaw_degrees": 30,
+      "orthographic_scale": 1.0163390636444092,
+      "camera_position": [
+        2.598076105117798,
+        1.5056732892990112,
+        -0.02304103411734104
+      ],
+      "focus": [
+        0.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ]
+    },
+    {
+      "file": "lit_front.png",
+      "sha256": "fa9cb55f4e04c35849b6da5d6314dfc78fcbde42cc2f9fdb9b4c80cadfe7ad26",
+      "engine": "BLENDER_EEVEE",
+      "yaw_degrees": 0,
+      "orthographic_scale": 1.0163390636444092,
+      "camera_position": [
+        3.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ],
+      "focus": [
+        0.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ]
+    },
+    {
+      "file": "lit_quarter.png",
+      "sha256": "2a768700a5d574e789e12594c9b9d7000edb8f8c0dd4909442f8f8412437d900",
+      "engine": "BLENDER_EEVEE",
+      "yaw_degrees": 30,
+      "orthographic_scale": 1.0163390636444092,
+      "camera_position": [
+        2.598076105117798,
+        1.5056732892990112,
+        -0.02304103411734104
+      ],
+      "focus": [
+        0.0,
+        0.005673344247043133,
+        -0.02304103411734104
+      ]
+    },
+    {
+      "file": "ear_plus60.png",
+      "sha256": "d9155dc8ac8b0d7034fe734b8f7f19ac65fbd1ccc9cc53abe810624b036c663d",
+      "engine": "BLENDER_WORKBENCH",
+      "yaw_degrees": 60,
+      "orthographic_scale": 0.4376579821109772,
+      "camera_position": [
+        1.5,
+        2.598076105117798,
+        0.23793280124664307
+      ],
+      "focus": [
+        0.0,
+        0.0,
+        0.23793280124664307
+      ]
+    },
+    {
+      "file": "ear_minus60.png",
+      "sha256": "5d7a598c4becdcee07aba79239230a5c3e50d322e62a52f05fa248443a0baa02",
+      "engine": "BLENDER_WORKBENCH",
+      "yaw_degrees": -60,
+      "orthographic_scale": 0.4376579821109772,
+      "camera_position": [
+        1.5,
+        -2.598076105117798,
+        0.23793280124664307
+      ],
+      "focus": [
+        0.0,
+        0.0,
+        0.23793280124664307
+      ]
+    }
+  ]
+}

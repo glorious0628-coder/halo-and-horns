@@ -1,0 +1,46 @@
+{
+  "sha256": "e6860989610c49d574cd02fa8a9ee94b320121bd5c556ee719e0e633db66e371",
+  "materials": [
+    {
+      "index": 0,
+      "name": "tripo_material_c22df695-2859-42aa-87d0-0504cdecf250",
+      "factor": 0,
+      "factor_explicit": true,
+      "has_mr_texture": false,
+      "roughness_factor": 0.8,
+      "effective_max": 0.0,
+      "all_texel_fraction_over_0_1": 0.0
+    },
+    {
+      "index": 1,
+      "name": "Halo_Gold_SourceMean",
+      "factor": 0,
+      "factor_explicit": true,
+      "has_mr_texture": false,
+      "roughness_factor": 0.8,
+      "effective_max": 0.0,
+      "all_texel_fraction_over_0_1": 0.0
+    }
+  ],
+  "meshes": [
+    {
+      "index": 0,
+      "name": "tripo_mesh_c22df695-2859-42aa-87d0-0504cdecf250",
+      "triangles": 17421,
+      "within_20000": true
+    },
+    {
+      "index": 1,
+      "name": "Halo",
+      "triangles": 784,
+      "within_20000": true
+    }
+  ],
+  "T8": {
+    "required": true,
+    "pass": true,
+    "effective_metallic_max": 0.0,
+    "non_gold_fraction_over_0_1": 0,
+    "method": "Independent GLB factors and embedded MR B channels. All materials have zero effective metallic, which also proves zero for every non-gold region."
+  }
+}

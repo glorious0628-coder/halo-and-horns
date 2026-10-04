@@ -1,0 +1,509 @@
+{
+  "source": "art\\out\\APose_HaloArcherM_Sharp_D.png",
+  "source_sha256": "649ce86f007b2762e70bb1fc8d494351520de4f024d1a876c9225b94e6160b0a",
+  "status": "G2 baseline; unresolved tests are null, never counted as passes",
+  "candidates": {
+    "B0": {
+      "model": "art\\models\\costume\\raw\\r2\\B0\\model.glb",
+      "sha256": "afaff5a98a0ac63f4497894c544db75a3fcd88ad5010995e49bf86f1878cf2e4",
+      "alignment": {
+        "method": "Same geometry scale from character-only ahoge/sole; no hand-width fitting",
+        "pixels_per_model_unit": 1233.8401825623725,
+        "ahoge_source_y": 71,
+        "sole_source_y": 1203,
+        "body_axis_source_x": 620,
+        "camera_target": [
+          0.0,
+          0.005673344247043133,
+          -0.02304103411734104
+        ],
+        "ortho_scale": 1.0163390832318013,
+        "resolution": [
+          1254,
+          1254
+        ]
+      },
+      "selected_front_yaw": 0,
+      "metrics": {
+        "T1": {
+          "value": 0.9117420905395589,
+          "pass": true,
+          "required": true,
+          "yaw_scores": {
+            "0": 0.9117420905395589,
+            "90": 0.4693451988447946,
+            "180": 0.8277916625379385,
+            "270": 0.46487421138124685
+          }
+        },
+        "T2": {
+          "value": 0.3568904593639576,
+          "reference": 0.3489399293286219,
+          "pass": true,
+          "tolerance": 0.015
+        },
+        "T3": {
+          "value": 0.16584158415841585,
+          "reference": 0.1670886075949367,
+          "pass": true,
+          "tolerance": 0.015
+        },
+        "T4": {
+          "value": 1.1216216216216217,
+          "reference": 1.1275626423690206,
+          "pass": true,
+          "tolerance": 0.04
+        },
+        "T5": {
+          "value": 0.29328621908127206,
+          "reference": 0.2950530035335689,
+          "pass": true,
+          "tolerance": 0.015
+        },
+        "T6": {
+          "value": {
+            "axis_x": 621,
+            "top_y": 32,
+            "ring_top_y": 57.0,
+            "protrusion_px": 25.0,
+            "contiguous_gold_px": 15
+          },
+          "reference": {
+            "axis_x": 617,
+            "top_y": 0,
+            "ring_top_y": 54.0,
+            "protrusion_px": 54.0,
+            "contiguous_gold_px": 103
+          },
+          "required": true,
+          "pass": false
+        },
+        "T7": {
+          "required": true,
+          "ring_tilt_degrees": 10.328804243570211,
+          "star_protrusion_px": 42.0,
+          "star_protrusion_body_height_ratio": 0.037102473498233215,
+          "pass": false,
+          "method": "Side ortho gold mask; robust median slope, 12px inliers, refit column-run centres; ring top median minus top gold row.",
+          "fit_slope": 0.18225017961587833,
+          "fit_intercept": -40.663139883456836,
+          "inlier_columns": 255,
+          "all_columns": 319
+        },
+        "T8": {
+          "required": true,
+          "pass": true,
+          "effective_metallic_max": 0.0,
+          "non_gold_fraction_over_0_1": 0,
+          "method": "Independent GLB factors and embedded MR B channels. All materials have zero effective metallic, which also proves zero for every non-gold region."
+        },
+        "T9": {
+          "value": {
+            "hair": {
+              "mean_rgb": [
+                242.4761038961039,
+                205.7769696969697,
+                169.4012987012987
+              ],
+              "mean_hsv_saturation": 0.3060933105111584
+            },
+            "skin": {
+              "mean_rgb": [
+                251.5555087423636,
+                215.83716031177585,
+                196.23930903728672
+              ],
+              "mean_hsv_saturation": 0.22067135771551252
+            },
+            "sleeve": {
+              "mean_rgb": [
+                243.32391713747646,
+                234.00282485875707,
+                231.74482109227873
+              ],
+              "mean_hsv_saturation": 0.04769485759800902
+            },
+            "boot_toe": {
+              "mean_rgb": [
+                237.89177693761815,
+                225.47778827977316,
+                220.92769376181474
+              ],
+              "mean_hsv_saturation": 0.07204676493319201
+            },
+            "leggings": {
+              "mean_rgb": [
+                140.9545945945946,
+                87.81945945945947,
+                56.28594594594595
+              ],
+              "mean_hsv_saturation": 0.613663170494982
+            }
+          },
+          "reference": {
+            "hair": {
+              "mean_rgb": [
+                246.50623376623378,
+                213.951341991342,
+                180.87324675324675
+              ],
+              "mean_hsv_saturation": 0.2717675373056624
+            },
+            "skin": {
+              "mean_rgb": [
+                253.17779650305457,
+                218.98609648198862,
+                202.93806614704025
+              ],
+              "mean_hsv_saturation": 0.1990604049312474
+            },
+            "sleeve": {
+              "mean_rgb": [
+                245.43408662900188,
+                238.42310106716886,
+                238.08317639673572
+              ],
+              "mean_hsv_saturation": 0.030559273131686316
+            },
+            "boot_toe": {
+              "mean_rgb": [
+                239.85207939508507,
+                229.95604914933838,
+                227.59971644612477
+              ],
+              "mean_hsv_saturation": 0.05139738160752167
+            },
+            "leggings": {
+              "mean_rgb": [
+                139.73081081081082,
+                90.86864864864864,
+                60.891351351351354
+              ],
+              "mean_hsv_saturation": 0.572926496872878
+            }
+          },
+          "absolute_channel_deltas": {
+            "hair": [
+              4.030129870129883,
+              8.17437229437229,
+              11.471948051948033
+            ],
+            "skin": [
+              1.6222877606909663,
+              3.148936170212778,
+              6.6987571097535294
+            ],
+            "sleeve": [
+              2.1101694915254257,
+              4.420276208411792,
+              6.3383553044569965
+            ],
+            "boot_toe": [
+              1.9603024574669234,
+              4.478260869565219,
+              6.672022684310036
+            ],
+            "leggings": [
+              1.223783783783773,
+              3.0491891891891783,
+              4.605405405405406
+            ]
+          },
+          "pass": true
+        },
+        "T10": {
+          "hair_mean_saturation": 0.141826654862195,
+          "pass": false
+        },
+        "T11": {
+          "required": true,
+          "source_meshes": [
+            {
+              "index": 0,
+              "name": "tripo_mesh_c22df695-2859-42aa-87d0-0504cdecf250",
+              "triangles": 17709,
+              "within_20000": true
+            }
+          ],
+          "pass": null,
+          "status": "G2 static source under20k; selected existing rig convert --dry is required at Step4, not yet run."
+        },
+        "T12": {
+          "pass": null,
+          "status": "human review of side/back/ears/hands required"
+        },
+        "T13": {
+          "pass": null,
+          "status": "not applicable to B0/B0H; C1/C2 and G1 views do not exist"
+        },
+        "T14": {
+          "mean_absolute_rgb_delta": 23.713626543209877,
+          "pass": null,
+          "ranking_only": true
+        }
+      },
+      "face_eye_texels": {
+        "value": null,
+        "pass": false,
+        "required_minimum": 200,
+        "status": "Face not separated at G2; no Roblox texture delivered. Whole-atlas eye remains unresolved."
+      },
+      "final_acceptance": false,
+      "paid_credits": 0
+    },
+    "B0H": {
+      "model": "art\\models\\costume\\raw\\r2\\B0H\\model.glb",
+      "sha256": "e6860989610c49d574cd02fa8a9ee94b320121bd5c556ee719e0e633db66e371",
+      "alignment": {
+        "method": "Same geometry scale from character-only ahoge/sole; no hand-width fitting",
+        "pixels_per_model_unit": 1233.8401825623725,
+        "ahoge_source_y": 71,
+        "sole_source_y": 1203,
+        "body_axis_source_x": 620,
+        "camera_target": [
+          0.0,
+          0.005673344247043133,
+          -0.02304103411734104
+        ],
+        "ortho_scale": 1.0163390832318013,
+        "resolution": [
+          1254,
+          1254
+        ]
+      },
+      "selected_front_yaw": 0,
+      "metrics": {
+        "T1": {
+          "value": 0.8921791863641443,
+          "pass": true,
+          "required": true,
+          "yaw_scores": {
+            "0": 0.8921791863641443,
+            "90": 0.46595953478030866,
+            "180": 0.8118911508268893,
+            "270": 0.46008063054382686
+          }
+        },
+        "T2": {
+          "value": 0.3568904593639576,
+          "reference": 0.3489399293286219,
+          "pass": true,
+          "tolerance": 0.015
+        },
+        "T3": {
+          "value": 0.16584158415841585,
+          "reference": 0.1670886075949367,
+          "pass": true,
+          "tolerance": 0.015
+        },
+        "T4": {
+          "value": 1.1216216216216217,
+          "reference": 1.1275626423690206,
+          "pass": true,
+          "tolerance": 0.04
+        },
+        "T5": {
+          "value": 0.29328621908127206,
+          "reference": 0.2950530035335689,
+          "pass": true,
+          "tolerance": 0.015
+        },
+        "T6": {
+          "value": {
+            "axis_x": 619,
+            "top_y": 3,
+            "ring_top_y": 69.0,
+            "protrusion_px": 66.0,
+            "contiguous_gold_px": 93
+          },
+          "reference": {
+            "axis_x": 617,
+            "top_y": 0,
+            "ring_top_y": 54.0,
+            "protrusion_px": 54.0,
+            "contiguous_gold_px": 103
+          },
+          "required": true,
+          "pass": true
+        },
+        "T7": {
+          "required": true,
+          "ring_tilt_degrees": 0.3521995895502496,
+          "star_protrusion_px": 65.0,
+          "star_protrusion_body_height_ratio": 0.05742049469964664,
+          "pass": true,
+          "method": "Side ortho gold mask; robust median slope, 12px inliers, refit column-run centres; ring top median minus top gold row.",
+          "fit_slope": -0.006147119887312012,
+          "fit_intercept": 79.51008184688081,
+          "inlier_columns": 278,
+          "all_columns": 323
+        },
+        "T8": {
+          "required": true,
+          "pass": true,
+          "effective_metallic_max": 0.0,
+          "non_gold_fraction_over_0_1": 0,
+          "method": "Independent GLB factors and embedded MR B channels. All materials have zero effective metallic, which also proves zero for every non-gold region."
+        },
+        "T9": {
+          "value": {
+            "hair": {
+              "mean_rgb": [
+                242.4761038961039,
+                205.7769696969697,
+                169.4012987012987
+              ],
+              "mean_hsv_saturation": 0.3060933105111584
+            },
+            "skin": {
+              "mean_rgb": [
+                251.5555087423636,
+                215.83716031177585,
+                196.23930903728672
+              ],
+              "mean_hsv_saturation": 0.22067135771551252
+            },
+            "sleeve": {
+              "mean_rgb": [
+                243.32391713747646,
+                234.00282485875707,
+                231.74482109227873
+              ],
+              "mean_hsv_saturation": 0.04769485759800902
+            },
+            "boot_toe": {
+              "mean_rgb": [
+                237.89177693761815,
+                225.47778827977316,
+                220.92769376181474
+              ],
+              "mean_hsv_saturation": 0.07204676493319201
+            },
+            "leggings": {
+              "mean_rgb": [
+                140.9545945945946,
+                87.81945945945947,
+                56.28594594594595
+              ],
+              "mean_hsv_saturation": 0.613663170494982
+            }
+          },
+          "reference": {
+            "hair": {
+              "mean_rgb": [
+                246.50623376623378,
+                213.951341991342,
+                180.87324675324675
+              ],
+              "mean_hsv_saturation": 0.2717675373056624
+            },
+            "skin": {
+              "mean_rgb": [
+                253.17779650305457,
+                218.98609648198862,
+                202.93806614704025
+              ],
+              "mean_hsv_saturation": 0.1990604049312474
+            },
+            "sleeve": {
+              "mean_rgb": [
+                245.43408662900188,
+                238.42310106716886,
+                238.08317639673572
+              ],
+              "mean_hsv_saturation": 0.030559273131686316
+            },
+            "boot_toe": {
+              "mean_rgb": [
+                239.85207939508507,
+                229.95604914933838,
+                227.59971644612477
+              ],
+              "mean_hsv_saturation": 0.05139738160752167
+            },
+            "leggings": {
+              "mean_rgb": [
+                139.73081081081082,
+                90.86864864864864,
+                60.891351351351354
+              ],
+              "mean_hsv_saturation": 0.572926496872878
+            }
+          },
+          "absolute_channel_deltas": {
+            "hair": [
+              4.030129870129883,
+              8.17437229437229,
+              11.471948051948033
+            ],
+            "skin": [
+              1.6222877606909663,
+              3.148936170212778,
+              6.6987571097535294
+            ],
+            "sleeve": [
+              2.1101694915254257,
+              4.420276208411792,
+              6.3383553044569965
+            ],
+            "boot_toe": [
+              1.9603024574669234,
+              4.478260869565219,
+              6.672022684310036
+            ],
+            "leggings": [
+              1.223783783783773,
+              3.0491891891891783,
+              4.605405405405406
+            ]
+          },
+          "pass": true
+        },
+        "T10": {
+          "hair_mean_saturation": 0.14182869204070275,
+          "pass": false
+        },
+        "T11": {
+          "required": true,
+          "source_meshes": [
+            {
+              "index": 0,
+              "name": "tripo_mesh_c22df695-2859-42aa-87d0-0504cdecf250",
+              "triangles": 17421,
+              "within_20000": true
+            },
+            {
+              "index": 1,
+              "name": "Halo",
+              "triangles": 784,
+              "within_20000": true
+            }
+          ],
+          "pass": null,
+          "status": "G2 static source under20k; selected existing rig convert --dry is required at Step4, not yet run."
+        },
+        "T12": {
+          "pass": null,
+          "status": "human review of side/back/ears/hands required"
+        },
+        "T13": {
+          "pass": null,
+          "status": "not applicable to B0/B0H; C1/C2 and G1 views do not exist"
+        },
+        "T14": {
+          "mean_absolute_rgb_delta": 23.713626543209877,
+          "pass": null,
+          "ranking_only": true
+        }
+      },
+      "face_eye_texels": {
+        "value": null,
+        "pass": false,
+        "required_minimum": 200,
+        "status": "Face not separated at G2; no Roblox texture delivered. Whole-atlas eye remains unresolved."
+      },
+      "final_acceptance": false,
+      "paid_credits": 0
+    }
+  }
+}

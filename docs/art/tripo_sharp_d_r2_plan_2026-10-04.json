@@ -1,0 +1,54 @@
+{
+  "status": "G2_ready_awaiting_user",
+  "gates": [
+    "G2",
+    "G1",
+    "G3"
+  ],
+  "prior_work_commits": [
+    "0f7549e",
+    "79ddb8b"
+  ],
+  "source": "art\\out\\APose_HaloArcherM_Sharp_D.png",
+  "source_sha256": "649ce86f007b2762e70bb1fc8d494351520de4f024d1a876c9225b94e6160b0a",
+  "balance_start": {
+    "balance": 4465.0,
+    "frozen": 0.0
+  },
+  "paid_submissions": 0,
+  "paid_credits": 0,
+  "automatic_paid_retries": 0,
+  "roblox_uploads": 0,
+  "credits": {
+    "image_to_multiview": 10,
+    "optional_edit_multiview_max": 20,
+    "three_candidates": 180,
+    "optional_retexture_max": 40,
+    "selected_rig": 25,
+    "base_total": 215,
+    "maximum_total": 275,
+    "B0H_existing_rig_reuse": 0
+  },
+  "G2_approval": null,
+  "G1_approval": null,
+  "G3_selection": null,
+  "paid_transport": "tools/tripo_api.py REST only; paid POST retries=0",
+  "reference_only_previews": true,
+  "balance_at_G2": {
+    "balance": 4465.0,
+    "frozen": 0.0
+  },
+  "final_acceptance": false,
+  "remaining": [
+    "Face texture >=200 texels not delivered",
+    "T10 lit hair saturation below .25",
+    "T11 selected rig conversion pending",
+    "T12 ears/hands/back human review"
+  ],
+  "source_chin_method": "central60px skin majority boundary; same function on source/render, annotated for review",
+  "artifacts": {
+    "sheet": "art/models/costume/redraw/r2/eval/B0H_sheet.png",
+    "metrics": "art/models/costume/redraw/r2/eval/metrics.json",
+    "scoreboard": "art/models/costume/redraw/r2/eval/scoreboard.png"
+  }
+}

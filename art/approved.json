@@ -161,5 +161,13 @@
   "approvedDate": "2026-10-04",
   "approvalQuote": "ㅇㅋㅇㅋ 좋아!",
   "note": "기존 승인3D 꼬마 스타일을 유지한 전체 새 렌더. 이전 A/B 눈 부분수정·C 다른 그림체는 거절. 게임용 UV·3표정·Native 확인은 별도이며 승인 시점 업로드0/생산 변경0."
+ },
+ "APose_HaloArcherM_Sharp_D": {
+   "status": "approved_reference_R2",
+   "file": "art/out/APose_HaloArcherM_Sharp_D.png",
+   "approvedDate": "2026-10-04",
+   "approvalQuote": "기준 그림은 하나다: art/out/APose_HaloArcherM_Sharp_D.png",
+   "sha256": "649ce86f007b2762e70bb1fc8d494351520de4f024d1a876c9225b94e6160b0a",
+   "note": "사용자의 R2 작업지시서가 지정한 유일 기준. F/E 기본표정 승인과 별도이며 R2 아직 유료0/업로드0/G2대기."
  }
 }

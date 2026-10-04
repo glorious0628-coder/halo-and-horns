@@ -1,5 +1,16 @@
 # HANDOFF_CODEX — 지금까지 한 것, 지금 상태, 다음에 할 것 (2026-10-04 기준)
 
+## R2 무료 기준선 G2 준비 (유료 승인 전)
+
+- 기존 작업을 `0f7549e`, `79ddb8b`로 분리해 push한 뒤 R2를 시작했다. R2 기준은 SHA `649ce86f...`의 `APose_HaloArcherM_Sharp_D.png` 한 장이며 F/E·HUD·Config·Studio MCP·얼굴 감사 파일을 고치지 않았다.
+- R1 실제 GET 검사: 생성70 + rig-check0 + rig25 = **95cr**. 기존 장부에 3건을 `record()`로 보완했고 R1 plan의 실제 제출2건/사용95를 보정했다. 아래 예전 '95 승인 대기/유료0'는 당시 기록이다. 현재 잔액 **4465cr**, R2 사용 **0cr**.
+- B0는 MR 맵 연결을 제거하고 metallic0/roughness0.8로 만들었다. B0H는 기존 링·별288면만 제거하고 별도 Halo784면으로 교체했다. 아호게와 나머지 원본 attribute/image bytes는 보존했다. 두 GLB는 제외 폴더 `art/models/costume/raw/r2/`에 있다.
+- 실제 Blender 정면·옆·뒤·3/4, flat/lit, 귀·손 확대와 측정은 `art/models/costume/redraw/r2/`에 있다. G2 복사본은 `docs/art/verification_2026-10-04/r2_g2/`이다. B0H 실루엣 IoU0.8922, 별 돌출66px/원본54px, 연결 금색93px/원본103px, 옆 링 기울기 약0.35도, 실효 metallic0이다. 판정에 Tripo preview를 쓰지 않았다.
+- **최종 합격은 아니다.** T10 lit 금발 채도 약0.142로0.25 미달, 얼굴200텍셀 분리와 선택 리그의 T11 변환 검증은 대기다. 귀·손·등은 사람 검토 대상이다. Workbench와 EEVEE 차이를 숨기지 않는다. 정면 정사영의 수평 링은 옆면으로 보이며 원화의 타원 원근과 다르다. 링 깊이는 원본 정면만으로 확정할 수 없어 원형으로 둔 가정을 기록했다.
+- G2에서 무료 B0H로 계속할지, 새 후보 기본215/최대275cr 한도를 승인할지 사용자 답변을 기다린다. 답 전 Step1·GPT 입력뷰·유료 호출·리깅·Roblox 업로드 금지. 순서 G2→G1→G3를 지킨다. REST 신규 endpoint 및 모든 유료 POST retries0 검증은 유료 진행을 선택하면 제출 전에 완성해야 한다.
+- 루트 `--output`은 삭제하지 않고 `r2/records/r1_cli_output.json`으로 이동했다. 실제 내용은 Tripo CLI 출력이 아닌 HornsMageM 입 웨이트 관련 메타데이터였으며 출처·SHA를 함께 기록했다.
+
+
 ## R2 시작 전 기존 작업 정리
 
 - 얼굴 감사·F/E 승인 기록과47GLB 검사는 `0f7549e`로 별도 커밋·push했다. F7 양눈 얼굴은 로컬 보존 검사20개/특징ray16점/UV뒤집힘0 통과 후보로 저장하며 Roblox에 적용하지 않았다. 최신 R2는 APose Sharp D만 기준으로 쓰므로 F/E를 섞지 않는다.

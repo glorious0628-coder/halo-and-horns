@@ -1,0 +1,8 @@
+{
+  "at_utc": "2026-10-04T03:43:16.899646+00:00",
+  "endpoint": "GET /v3/account/balance",
+  "response": {
+    "balance": 4465.0,
+    "frozen": 0.0
+  }
+}
