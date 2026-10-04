@@ -15,6 +15,14 @@ Read this file first, then `docs/HANDOFF_CODEX.md` (full state, history and next
 3. Never touch the user's other place `somssi-dev.rbxlx`. The game place is `build/GoodEvil.rbxlx` (Studio saves there; `place/GoodEvil.rbxlx` is the committed copy).
 4. Secrets: the Tripo API key lives only in the git-ignored `.env` (`TRIPO_API_KEY=`). Never print it, never ask the user to paste it in chat.
 5. Commit + push to `main` after each meaningful round (`https://github.com/glorious0628-coder/halo-and-horns`, private). `build/` is ignored.
+6. **No screen control by default (user complaint, 2026-10-04).** Do NOT use computer-use / desktop screen control (mouse, keyboard, desktop screenshots) for work that tools can do. Use these instead:
+   - files, `py`/PIL and the Blender CLI for checks and renders;
+   - `tools/studio_mcp.py` for Studio (`execute_luau`, `screen_capture`, `start_stop_play`, `multi_edit`).
+   - If a step truly needs a GUI no tool can reach:
+     1. Ask the user first, in Korean, saying what you will click and for how long.
+     2. Wait for OK, then do it in one short burst.
+     3. Release control immediately.
+   - Never keep screen control on while doing file checks or other work.
 
 ## Code conventions (Luau, Roblox)
 - `src/` is a Rojo-style tree (no Rojo installed): `*.server.luau` = Script, `*.client.luau` = LocalScript, `*.luau` = ModuleScript. Services follow `Init(S)` / `Start()`; entry points `src/ServerScriptService/Main.server.luau` and `src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau`.
