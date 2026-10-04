@@ -21,6 +21,9 @@ from preserve_skin import node_matrices
 ROOT=Path(__file__).resolve().parents[2]
 NAMES={"Costume_"+f+c+g for f in ("Halo","Horns","Neutral") for c in ("Warrior","Archer","Mage") for g in ("M","F")}
 MOUTH_KIND="original_connected_mouth_pn_exception_v1"
+WINDING_KIND="original_connected_mouth_pn_winding_exception_v1"
+INFERRED_BIND_ORIGIN="corrected_preserved_bind_skin_proxy_candidate"
+ORIGINS=("preserved_source_skin_proxy_candidate","inferred_manual_candidate","corrected_preserved_source_skin_proxy_candidate",INFERRED_BIND_ORIGIN)
 
 
 def sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -34,17 +37,36 @@ def local_input(base,value):
 
 
 def load(path,proxy_override=None):
-    path=Path(path).resolve();data=json.loads(path.read_text(encoding="utf-8"));package=None;expression_data=None
-    if data.get("kind")=="preserved_original_skin_pending":
+    path=Path(path).resolve();data=json.loads(path.read_text(encoding="utf-8"));package=None;expression_data=None;corrected_proof=None;inferred_proof=None;face_proof=None
+    corrected_package=data.get("kind")=="corrected_preserved_skin_pending"
+    if corrected_package:
+        from skin_corrected_weight_proof import validate_package
+        verified,corrected_inputs,_=validate_package(path);corrected_proof=verified["corrected_weight_proof"]
+    elif data.get("rig_origin")=="corrected_preserved_source_skin_proxy_candidate":
+        import skin_face_weight_schema as face_adapter
+        if face_adapter.matches(data):
+            data=face_adapter.validate_sidecar(path);face_proof=data["face_weight_proof"]
+        else:
+            from skin_corrected_weight_proof import validate_sidecar
+            data,_,_=validate_sidecar(path);corrected_proof=data["corrected_weight_proof"]
+    elif data.get("rig_origin")==INFERRED_BIND_ORIGIN:
+        from skin_inferred_bind_schema import validate_sidecar
+        data=validate_sidecar(path);inferred_proof=data["inferred_bind_proof"]
+    if data.get("kind") in ("preserved_original_skin_pending","corrected_preserved_skin_pending"):
         package=data
         if data.get("schema")!=1 or data.get("rig_ready_for_game") is not False: raise RigError("Only unpromoted preserved packages are supported")
         inputs={key:local_input(path.parent,data[key]) for key in ("skin_glb","skin_manifest","proxy_plan")}
         if any(sha(value)!=data["sha256"][key] for key,value in inputs.items()): raise RigError("Package file hashes changed")
         data=json.loads(inputs["skin_manifest"].read_text(encoding="utf-8"));manifest_path=inputs["skin_manifest"]
+        if corrected_proof: data["corrected_weight_proof"]=corrected_proof
         skin,plan=inputs["skin_glb"],inputs["proxy_plan"]
         name=package["name"];name=name if name.startswith("Costume_") else "Costume_"+name
     else:
         manifest_path=path
+        if data.get("rig_origin") not in ORIGINS:
+            raise RigError("Unknown skin origins never inherit original-source validation")
+        if data.get("rig_origin") not in ("corrected_preserved_source_skin_proxy_candidate",INFERRED_BIND_ORIGIN) and (data.get("weight_correction_plan") or data.get("original_source_weights_exact") is False):
+            raise RigError("Corrected weights require their explicit independently verified source origin")
         manual=data.get("rig_origin")=="inferred_manual_candidate"
         legacy_manual=manual and "skin_source" not in data
         skin=Path(data["output"] if legacy_manual else data["skin_source"] if manual else data["output"]).resolve()
@@ -60,15 +82,29 @@ def load(path,proxy_override=None):
             if name and name!=expression_name: raise RigError("Expression sidecar costume identity changed")
             name=expression_name
         name=name or re.sub(r"_skin$","",skin.stem)
-    if name not in NAMES or data.get("schema",1 if data.get("rig_origin")=="inferred_manual_candidate" else None)!=1 or data.get("rig_ready_for_game") is not False: raise RigError("An exact unpromoted eighteen-way costume is required")
+    if data.get("rig_origin") not in ORIGINS:
+        raise RigError("Unknown skin origins never inherit original-source validation")
+    if data.get("rig_origin")=="corrected_preserved_source_skin_proxy_candidate" and not (corrected_proof or face_proof):
+        raise RigError("A corrected origin requires its independently verified source proof")
+    if data.get("rig_origin")==INFERRED_BIND_ORIGIN and not inferred_proof:
+        raise RigError("An inferred bind requires its independently recomputed limited proof")
+    if data.get("rig_origin") not in ("corrected_preserved_source_skin_proxy_candidate",INFERRED_BIND_ORIGIN) and (data.get("weight_correction_plan") or data.get("original_source_weights_exact") is False):
+        raise RigError("Corrected weights cannot be relabeled as an exact original")
+    expected_schema=2 if inferred_proof else 1
+    if name not in NAMES or data.get("schema",1 if data.get("rig_origin")=="inferred_manual_candidate" else None)!=expected_schema or data.get("rig_ready_for_game") is not False: raise RigError("An exact unpromoted eighteen-way costume is required")
     kind=data.get("expression_validation_kind")
     mouth=bool(expression_data and expression_data.get("validation_kind")==MOUTH_KIND)
-    if kind is not None and kind!=MOUTH_KIND: raise RigError("Unknown expression geometry exception is never inferred")
+    winding=bool(expression_data and expression_data.get("validation_kind")==WINDING_KIND)
+    if kind is not None and kind not in (MOUTH_KIND,WINDING_KIND): raise RigError("Unknown expression geometry exception is never inferred")
     if kind==MOUTH_KIND or mouth:
         from skin_face_union_proof import mouth_selection,MOUTH_RULES
         if not mouth or kind!=MOUTH_KIND or name not in MOUTH_RULES or data.get("expression_original_mouth_pn_restored") is not True:
             raise RigError("This explicitly selected avatar's mouth-only sidecar is required")
         mouth_selection(expression_data,skin,path,data)
+    if kind==WINDING_KIND or winding:
+        from skin_mouth_winding_proof import selection
+        if not winding or kind!=WINDING_KIND:raise RigError("The separately selected winding sidecar is required")
+        selection(expression_data,skin,path,data)
     manual=data.get("rig_origin")=="inferred_manual_candidate"
     legacy_manual=manual and "skin_source" not in data
     original=data["original_source_sha256"] if manual and not legacy_manual else data["source_sha256"]
@@ -116,7 +152,7 @@ def load(path,proxy_override=None):
             current=lookup.get(current["parent"])
     surfaces=[m.get("name","") for m in gltf["meshes"]]
     if len(surfaces) not in (2,3) or len(set(surfaces))!=len(surfaces): raise RigError("An exact two/three material surface package is required")
-    source_claim=False if manual else True
+    source_claim=False if manual or inferred_proof else True
     return {"schema":2,"draft":True,"name":name,"skin_glb":str(skin),"proxy_plan":str(plan),
             "skin_sha256":expected_skin,"original_sha256":original,"original_local_file_verified":original_path.is_file(),
             "contract_sha256":sha(manifest_path),"proxy_plan_sha256":sha(plan),"unique_bones":count,"principal_bones":15,
@@ -129,9 +165,15 @@ def load(path,proxy_override=None):
             "expression_validation":data.get("expression_validation"),
             "expression_validation_sha256":data.get("expression_validation_sha256"),
             "expression_validation_kind":kind,
-            "expression_original_mouth_pn_restored":bool(mouth),
+            "expression_original_mouth_pn_restored":bool(mouth or winding),
+            "expression_original_mouth_winding_corrected":bool(winding),
             "expression_mouth_ledger":data.get("expression_mouth_ledger"),
             "expression_mouth_ledger_sha256":data.get("expression_mouth_ledger_sha256"),
+            "expression_mouth_winding_ledger":data.get("expression_mouth_winding_ledger"),
+            "expression_mouth_winding_ledger_sha256":data.get("expression_mouth_winding_ledger_sha256"),
+            "corrected_weight_proof":corrected_proof,
+            "inferred_bind_proof":inferred_proof,
+            "face_weight_proof":face_proof,
             "path_policy":"package-local relative files override stale absolute sidecar paths" if package else "explicit current sidecar paths",
             "api_calls":0,"studio_calls":0}
 

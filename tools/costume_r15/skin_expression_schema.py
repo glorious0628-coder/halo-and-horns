@@ -37,17 +37,21 @@ def load(path,blueprint):
         raise RigError("The selected expression manifest differs from its exact sidecar")
     validation_path=workspace_file(manifest["validation_report"]) if manifest.get("validation_report") else path.with_name("skin_validation.json")
     mouth=manifest.get("validation_kind")=="original_connected_mouth_pn_exception_v1"
-    if manifest.get("validation_kind") is not None and not mouth: raise RigError("Unknown geometry exceptions are not expression validation")
+    winding=manifest.get("validation_kind")=="original_connected_mouth_pn_winding_exception_v1"
+    if manifest.get("validation_kind") is not None and not (mouth or winding): raise RigError("Unknown geometry exceptions are not expression validation")
     if mouth:
         if path.name!="face_union_mouth_manifest_v1.json" or blueprint.get("expression_validation_kind")!=manifest["validation_kind"]:
             raise RigError("Only the explicitly selected mouth manifest may use its separate validator")
+    elif winding:
+        if path.name!="face_union_mouth_winding_manifest_v1.json" or blueprint.get("expression_validation_kind")!=manifest["validation_kind"]:
+            raise RigError("Only the exact selected winding manifest may use its separate validator")
     elif not validation_path.name.endswith("_validation.json"): raise RigError("A specifically named local validation report is required")
     if blueprint.get("expression_validation") and (workspace_file(blueprint["expression_validation"])!=validation_path or skin_schema.sha(validation_path)!=blueprint.get("expression_validation_sha256")):
         raise RigError("The declared validation report differs from its exact sidecar")
     validation=json.loads(validation_path.read_text(encoding="utf-8"))
     required=("validated","source_models_unchanged","original_non_facial_png_bytes_exact","original_body_primitive_exact","original_headbase_uv_exact",
               "original_face_position_normal_joint_weight_values_exact","original_skin_inverse_bind_and_bone_hierarchy_exact","original_oriented_triangles_partition_exact","reviewed_face_uv_signatures_exact")
-    if not mouth and (any(validation.get(key) is not True for key in required) or validation.get("skin_sha256")!=blueprint["skin_sha256"]):
+    if not (mouth or winding) and (any(validation.get(key) is not True for key in required) or validation.get("skin_sha256")!=blueprint["skin_sha256"]):
         raise RigError("Current exact geometry/UV/image/shared-skeleton expression proof is required")
     prep=(ROOT/manifest["prepare_report"]).resolve() if manifest.get("prepare_report") else path.with_name("prepare_report.json")
     prep.relative_to(ROOT)
@@ -60,6 +64,9 @@ def load(path,blueprint):
     if mouth:
         from skin_face_union_proof import verify_mouth
         mouth_result,checked,report,doc,binary=verify_mouth(manifest,path,blueprint,validation_path,workspace_file)
+    elif winding:
+        from skin_mouth_winding_proof import verify
+        mouth_result,checked,report,doc,binary=verify(manifest,path,blueprint,validation_path,workspace_file)
     else:
         # The existing canonical cap/original-union exact P/N check remains
         # unconditional on every non-mouth path, even if JSON says otherwise.
@@ -132,6 +139,12 @@ ASSEMBLE = r'''
             model:SetAttribute("HHC_ExpressionMouthRuntimeContractSHA256",DATA.expression.mouth_runtime_contract_sha256)
             model:SetAttribute("HHC_ExpressionMouthPNExceptionKind",DATA.expression.validation_kind)
         end
+        if DATA.expression.mouth_winding_schema then
+            model:SetAttribute("HHC_ExpressionMouthWindingSchema",DATA.expression.mouth_winding_schema)
+            model:SetAttribute("HHC_ExpressionMouthWindingLedgerSHA256",DATA.expression.mouth_winding_ledger_sha256)
+            model:SetAttribute("HHC_ExpressionMouthWindingOriginalTriangles",DATA.expression.mouth_winding_original_triangles)
+            model:SetAttribute("HHC_ExpressionMouthWindingParentSHA256",DATA.expression.mouth_winding_parent_sha256)
+        end
         model:SetAttribute("HHC_ExpressionSkinValidated",false);model:SetAttribute("HHC_ExpressionRuntimeValidated",false)
         face:SetAttribute("HHC_ExpressionMeshValidated",false);face:SetAttribute("HHC_ExpressionSkinValidated",false)
         face:SetAttribute("HHC_SkinSourceSHA256",DATA.skin_sha256)
@@ -142,6 +155,12 @@ ASSEMBLE = r'''
 
 VERIFY = r'''
 if DATA.expression then
+    if DATA.expression.mouth_winding_schema then
+        requireCheck(model:GetAttribute("HHC_ExpressionMouthWindingSchema")==DATA.expression.mouth_winding_schema
+            and model:GetAttribute("HHC_ExpressionMouthWindingLedgerSHA256")==DATA.expression.mouth_winding_ledger_sha256
+            and model:GetAttribute("HHC_ExpressionMouthWindingOriginalTriangles")==DATA.expression.mouth_winding_original_triangles
+            and model:GetAttribute("HHC_ExpressionMouthWindingParentSHA256")==DATA.expression.mouth_winding_parent_sha256,"제한된 원본 입 면 방향 교정 출처")
+    end
     if DATA.expression.mouth_restoration_schema then
         requireCheck(model:GetAttribute("HHC_ExpressionMouthRestorationSchema")==DATA.expression.mouth_restoration_schema
             and model:GetAttribute("HHC_ExpressionMouthRestorationLedgerSHA256")==DATA.expression.mouth_restoration_ledger_sha256

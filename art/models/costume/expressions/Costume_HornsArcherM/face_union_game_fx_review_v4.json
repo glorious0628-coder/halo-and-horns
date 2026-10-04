@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HornsArcherM",
+  "expression_sha256": "cfb11bc096dd51657bcc0ea844207a18e4a7126984ae6e74e51f6502e17e8ce2",
+  "original_skin_sha256": "891b63cc324b42d60dc1bff4c6571421b6c7d2242459de24118bf2d3726374c0",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "original_proxy_package": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin_corrected\\Costume_HornsArcherM_weights_v4\\package.json",
+  "original_proxy_package_sha256": "fcc8e4e0ab5e95520a1202413f6fff25032a95b0283c8b4e9f337bb2a6c2a3c5",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "ArcherSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/ArcherSwing_0_19_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/ArcherSwing_0_19_expression.png",
+      "original_render_sha256": "f98ea6639e8486125b0cb2db9c8dc95feb5c822f6553c5ff347c09408b7aefb8",
+      "original_render_metadata": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/ArcherSwing_0_19_original.json",
+      "original_render_metadata_sha256": "36092dee05c6d90d261480673bdd9d91da26f446267d76c8fe5edaa0308f4f4c",
+      "expression_render_sha256": "3d99a418b7bdd872ce720b28e6186f7bd24be67418136c9fea7a63a2ce68c620",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/ArcherSwing_0_19_expression.json",
+      "expression_render_metadata_sha256": "ca83136d6075828a289c0745c67a610ad8400d57c094773e1740ce80a35799d1"
+    },
+    {
+      "clip": "ArcherRelease",
+      "time_seconds": 0.16,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/ArcherRelease_0_16_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/ArcherRelease_0_16_expression.png",
+      "original_render_sha256": "b350432076ad2f5844da666c26162a911a6bc593c9ec47db4834c5fc8f72b8d5",
+      "original_render_metadata": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/ArcherRelease_0_16_original.json",
+      "original_render_metadata_sha256": "5d495626beb5b2bea0627d5b52900480537f80c5c482e2d9c48bf8402dede176",
+      "expression_render_sha256": "162605eac53c710240f6c0ed995672a5fd3f834e009bc33de2f93a9a947db10e",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/ArcherRelease_0_16_expression.json",
+      "expression_render_metadata_sha256": "3f86ffaa6107fafca1352bf1861f78f42c4740525fb5fe4751920d4ccae1de38"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/HurtBig_0_06_expression.png",
+      "original_render_sha256": "5e0caac67183e3f46ed514ff3d13de9d18eae62082ebc50764126f04c9e7ec38",
+      "original_render_metadata": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "7a8883c14c5b9f7d4376d4f27b56d41b0d61630fb3a5fed1c7ab8b3b63d07089",
+      "expression_render_sha256": "defdd50c93e7a84b4056c74bf4f04dac63f4d86d447b828098212c976363a960",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "a894c4e13313d13ba2120032a064ab214893c5625e2f996dc086bb9e35c34882"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v4/game_fx_neck_qa.json",
+  "report_source_sha256": "bc8d80f2287572c39e0ea83aa11c403ccf79f527c0011fe4be64d9d864097934",
+  "visual_quality_hold": true,
+  "review_notes": "The separately corrected source v2 already breaks eye cavities, hair and ears at actual ArcherSwing/Release and HurtBig. Original-only expression union removes no geometry and preserves all corrected-source values, but repeats the source breakage and projected face boundary. Source v2 is not approved. Missing original mouth3 triangles are included without new vertices or PNG edits; further head-region weight analysis is required. No final manifest or runtime sidecar.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralWarriorM",
+  "expression_skin_sha256": "5dd1f6699c0c256896ba7b4bde4c236e30f521c12a334c52b0f75649ce5ced18",
+  "comparison_manifest": "art/models/costume/expressions/Costume_NeutralWarriorM/expressions_manifest.json",
+  "comparison_manifest_sha256": "06a50659188d630d119360170e938874b8fd1a6b67f75d7a3c541f26d337c5f8",
+  "normalized_original_face_uv_sha256": "32854dc3c34ed7fd0a57839f4b9ba3d4cb5f9326846f4a24ed9b38488e2bcea2",
+  "canonical_normalized_original_face_uv_sha256": "32854dc3c34ed7fd0a57839f4b9ba3d4cb5f9326846f4a24ed9b38488e2bcea2",
+  "normalized_original_face_uv_float32_exact": true,
+  "approved_png_bytes_unchanged": true,
+  "comparison_uv_basis": "Exact approved normalized projection checked by inspect against original fixed/skin corners",
+  "expression_pngs": [
+    {
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_Neutral_face.png",
+      "sha256": "0e61dd71bb86a84b1babe1a0f8180c87453a36fbe57acdd50458f09cdff22602"
+    },
+    {
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_SoftSmile_face.png",
+      "sha256": "847358409e93c8822d973cc7a38e72fa8510eb55f98fcb31d66988b40dc8bf47"
+    },
+    {
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_Serious_face.png",
+      "sha256": "365cb2894a91e81d94df99b0a4830afb323c2512a3deea2f9ec2f0c4ac7d7a1e"
+    }
+  ],
+  "mesh_asset_reimport_required": true,
+  "texture_reuse_policy": "Actual upload-ledger PNG SHA must match.",
+  "geometry_comparison_only": true,
+  "ready": false
+}

@@ -4,7 +4,9 @@
 
 현재 게임용 **2/18종**: 성기사 남 기존 강체+빛 궁수 남 BindingSchema1/23Bone/3표면. 새 MouthRestored SHA `17972af9…`는 원래438면/Body/UV/JW/Bone/PNG를 보존하고 승인된 입71개 P/N만 별도 strict manifest/ledger로 복원했다. 일반 exact P/N gate는 유지한다.
 
-새 실제 engine691검사(root1/internal3)와 Play2497프레임/fault0/최대0.000221093stud, 성장1→2→1/OFF·ON/사망·3표정 실제 이벤트를 통과했다. 루트가 Native 기본/진지/미소/HurtBig에서 웃는 입 홈 제거와 피부 변형을 직접 확인해 생산 승격했다. 실제 production source의 새15초 Play에서도 QATrial 없이 실제 Halo/Archer 선택→Active/ExpressionReady/새 Mesh120232648183385/Binding1을 확인했다. 단일 클라이언트/진단 고정 pose 범위다.
+최신 Shared 실제23검사(1→2→1·disabled/duplicate/이름변경 Neck·schema1·rigid 회귀)와 새 실제 engine691검사(root1/internal3), Play2497프레임/fault0/최대0.000221093stud, 성장1→2→1/OFF·ON/사망·3표정 실제 이벤트를 통과했다. 루트가 Native 기본/진지/미소/HurtBig에서 웃는 입 홈 제거와 피부 변형을 직접 확인해 생산 승격했다. 실제 production source의 새15초 Play에서도 QATrial 없이 실제 Halo/Archer 선택→Active/ExpressionReady/새 Mesh120232648183385/Binding1을 확인했다. 단일 클라이언트/진단 고정 pose 범위다.
+
+`skin_binding_contract_actual.json`은 최신23검사다. 이전19검사는 `skin_binding_contract_19_actual_legacy.json`에 원래 SHA로 보존했다. 아래 당시19검사 언급은 역사적 결과이며 최신파일과 구분한다.
 
 `halo_archer_m_face_union_mouth_binding_*`는 새 Import/inspect/조립/691matcher/표정ID 재사용/Play/Native 검토/생산 승격/원래 source smoke 증거다. `*_promotion_actual.json.scale_contract=[1,2,1]`는 새 Edit 구조 계약이며 trial 이벤트는 별도 mechanics다. 중첩 user_id 제거 후에도 원래 QA/inspection SHA를 덮어쓰지 않았다. 첫 UI 초기화 조건 실패는 최종 JSON 재실행 전 사건으로 별도 남기며 성공 JSON에서 실패 전체 결과를 복원할 수 없다고 명시한다.
 

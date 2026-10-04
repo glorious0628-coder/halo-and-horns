@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloMageF",
+  "expression_sha256": "d815dee2edd09aeb8536ef1327bf280da3a62e2fc64ec034d216d4ab4ab17ac0",
+  "original_skin_sha256": "d5386846aefeb8fed9b4cd3f9f41611b262825dc76860bfa03def6918d2fb24f",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "MageSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          12.0,
+          -18.0,
+          -4.0
+        ],
+        "Head": [
+          -4.0,
+          12.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          34.0,
+          -8.0,
+          12.0
+        ],
+        "RightLowerArm": [
+          40.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -72.0,
+          0.0,
+          8.0
+        ],
+        "LeftUpperArm": [
+          78.0,
+          8.0,
+          -22.0
+        ],
+        "LeftLowerArm": [
+          42.0,
+          0.0,
+          0.0
+        ],
+        "LeftHand": [
+          -85.0,
+          0.0,
+          -12.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/MageSwing_0_19_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/MageSwing_0_19_expression.png",
+      "original_render_sha256": "1309e17ec3eb289445bcb16b925691f30517c875769bc0d2ea9cb1ddad406503",
+      "original_render_metadata": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/MageSwing_0_19_original.json",
+      "original_render_metadata_sha256": "815ee97bf3bac8cf2f8f9b754b0e47a8436db3a84bf1cd8bbcdbd4c0069267d5",
+      "expression_render_sha256": "0e841c4280e9adcef51ff5fdb2d191d5e4c96caa16b9195f3fbc6f29984c13bc",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/MageSwing_0_19_expression.json",
+      "expression_render_metadata_sha256": "63bb95b420e9ba12894852959b802d45b467ad9e37b5f31bc417d7af43bf2792"
+    },
+    {
+      "clip": "MageRelease",
+      "time_seconds": 0.33,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          16.0,
+          -18.0,
+          0.0
+        ],
+        "Head": [
+          16.0,
+          12.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          36.0,
+          -8.0,
+          18.0
+        ],
+        "RightLowerArm": [
+          38.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -72.0,
+          0.0,
+          8.0
+        ],
+        "LeftUpperArm": [
+          116.0,
+          0.0,
+          -28.0
+        ],
+        "LeftLowerArm": [
+          24.0,
+          0.0,
+          0.0
+        ],
+        "LeftHand": [
+          -95.0,
+          0.0,
+          -12.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/MageRelease_0_33_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/MageRelease_0_33_expression.png",
+      "original_render_sha256": "1370ca1fc33a4bfd2b08a483a7ace92401514d9eaf3fed4ae0d49f38fd80aa38",
+      "original_render_metadata": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/MageRelease_0_33_original.json",
+      "original_render_metadata_sha256": "1dc94760faa118b222bffa3b239f706d7b944e8eeeccf5fb062e2d5e4a92bd87",
+      "expression_render_sha256": "f5d3a081c3b925133e167958afcb0fcc3db90a6fcfd6c999adb782f1ab0570c3",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/MageRelease_0_33_expression.json",
+      "expression_render_metadata_sha256": "bf8b5fe29834c530040aceac04e6f5a8c5cfeb10d74b10f0210bc4fc04a71649"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/HurtBig_0_06_expression.png",
+      "original_render_sha256": "4d8698075e678fb080630dd9aa7389f1bff4bb89d3d2090c3b410c6ec1553f0a",
+      "original_render_metadata": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "30e8db40161f65491ff6d0ece433588cd05594626d93b8a650477c400db3319d",
+      "expression_render_sha256": "9e1e6a3c475e39ac7a579beed9a84f4fa65f1e5fbb209289952444d9cdbe4f9c",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "d3402ba033fcb73c4cb17d55a5c8617a3cb06e0ae84243f807c203a51b966190"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HaloMageF/game_fx_neck_v1/game_fx_neck_qa.json",
+  "report_source_sha256": "4ef53f1e6390d553344f9a5969e9cd249ca4a4337ad171847c6bfc73560151db",
+  "visual_quality_hold": false,
+  "review_notes": "Personally reviewed all six exact-Fx source/expression CG pairs. MageSwing, MageRelease and HurtBig show no added mouth-cover boundary or jaw opening in the expression candidate; source mouth recess is covered. Hair/body original texture colors and shape remain consistent. Mild original/GPT color faceting persists at close view; actual game three-state QA remains pending.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

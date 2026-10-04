@@ -61,7 +61,7 @@
     "texture_quality extreme: higher price tier",
     "geometry detailed (Ultra): extra HD credit"
   ],
-  "plan_status": "awaiting_specific_paid_execution_approval",
+  "plan_status": "approved_execution_starting",
   "date": "2026-10-04",
   "cli_version": "0.5.1",
   "cli_alias": "tripo-v3.1",
@@ -88,5 +88,11 @@
   "preserve_existing_sources": true,
   "native_quality_approval": false,
   "user_requested_highest_model_quality": true,
-  "scope": "first_approved_D_avatar_only; audit_all_18_before_any_submission"
+  "scope": "first_approved_D_avatar_only; audit_all_18_before_any_submission",
+  "execution_approval": {
+    "quote": "ㅇㅇ 가보자",
+    "date": "2026-10-04",
+    "scope": "one SharpD HaloArcherM, approved exact three-step plan, at most 95 estimated credits",
+    "automatic_paid_retries_allowed": false
+  }
 }

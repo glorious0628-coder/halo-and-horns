@@ -1,0 +1,24 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_FaceUnionSkin_v1.glb",
+  "source_sha256": "a81ba5413010532d8bb20627cbd19b75e7f19601901896b3967ef412eeda7a6f",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\face_union_v1_previews\\Serious_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -0.040727779269218445,
+    9.79340648651123,
+    2.40565824508667
+  ],
+  "camera_rotation": [
+    1.5707961320877075,
+    -9.153701086006549e-08,
+    3.141592264175415
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "shading_policy": "flat emission texture colors"
+}

@@ -31,6 +31,14 @@ MOUTH_RULES={
                          "ledger_sha":"7e6332a62564ca9741a13b684f2c82109908d23b5acf007bf3a645cff6843700",
                          "union_sha":"c12e13cb6479e91a443c2cc4655515108f78574794c5973cef16129926025d9d",
                          "faces":347,"vertices":75,"maximum_delta":0.021164,"reference_kind":"geometry_comparison_only"},
+    "Costume_NeutralArcherM":{"glb_sha":"407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+                         "ledger_sha":"84427c9b85e406adfa35a301f941f5c9676a1a63b7050595a090bedb73ca4a29",
+                         "union_sha":"4eaebb39192f1f3b24f7bfe212f953c026018da3459d1925d911c25e4357d3ce",
+                         "faces":357,"vertices":41,"maximum_delta":0.006936,"reference_kind":"geometry_comparison_only"},
+}
+GEOMETRY_RULES={**MOUTH_RULES,
+    "Costume_HaloWarriorF":{"union_sha":"a81ba5413010532d8bb20627cbd19b75e7f19601901896b3967ef412eeda7a6f",
+        "faces":300,"reference_kind":"geometry_comparison_only"},
 }
 
 
@@ -108,7 +116,7 @@ def verify_mouth(manifest,path,blueprint,validation_path,workspace_file):
     # normally, including the canonical cap reference. Nothing is inherited
     # from a 'validated' boolean or exempted on that original path.
     from skin_expression_schema import load as original_load
-    original_blueprint=skin_schema.load(baseline_glb.with_suffix(".skin.json"))
+    original_blueprint=skin_schema.load(baseline_glb.with_suffix(".skin.json"),blueprint["proxy_plan"] if blueprint["rig_origin"]=="inferred_manual_candidate" else None)
     if rule["reference_kind"]=="geometry_comparison_only":
         from finalize_skin_assets import inspect
         old_checked,old_report,old_doc,old_binary=inspect(baseline_glb,workspace_file(baseline["prepare_report"]))
@@ -156,7 +164,7 @@ def verify_mouth(manifest,path,blueprint,validation_path,workspace_file):
 
 def geometry_reference_uv(manifest,blueprint,checked,report,doc,binary,compatibility,workspace_file):
     """Unapproved MageF union is a geometry/UV baseline, never a ready asset."""
-    rule=MOUTH_RULES[blueprint["name"]]
+    rule=GEOMETRY_RULES[blueprint["name"]]
     if rule["reference_kind"]!="geometry_comparison_only" or manifest.get("original_triangles_only") is not True or checked["selected_original_face_triangles"]!=rule["faces"]:
         raise RigError("The exact geometry-only facial scope changed")
     if compatibility.get("geometry_comparison_only") is not True or compatibility.get("ready") is not False:
@@ -166,12 +174,36 @@ def geometry_reference_uv(manifest,blueprint,checked,report,doc,binary,compatibi
     baseline=json.loads(baseline_path.read_text(encoding="utf-8"))
     if baseline.get("avatar")!=blueprint["name"] or set(baseline.get("approved_states",[]))!={"Neutral","SoftSmile","Serious"}:
         raise RigError("Geometry-only comparison uses a foreign facial image scope")
-    rigid=workspace_file(baseline["head_asset"])
-    coordinate=report["preserved_skin_coordinate_proof"]
-    if skin_schema.sha(rigid)!=baseline["head_sha256"] or coordinate["approved_baseline_head_sha256"]!=baseline["head_sha256"] or Path(coordinate["approved_baseline_head"]).resolve()!=rigid:
-        raise RigError("Original exact normalized-UV projection references a different rigid head")
-    if coordinate["approved_face_original_triangles"]!=rule["faces"] or coordinate["approved_face_uv_maximum_error"]>1e-6:
-        raise RigError("Original fixed/skin/rigid facial UV projection was not verified")
+    if blueprint["name"]=="Costume_NeutralArcherM" and blueprint["rig_origin"]=="inferred_manual_candidate":
+        prepare=json.loads(workspace_file(manifest["prepare_report"]).read_text(encoding="utf-8"))
+        # The pinned manual union was checked against its unchanged fixed
+        # GLB and explicit normalized projection by inspect(), not a paid
+        # affine proof or a claimed genuine source skeleton.
+        if blueprint["unique_bones"]!=15 or blueprint["original_bones_claimed"] is not False or report.get("original_bones_claimed") is not False or report.get("source_skin_bones")!=15:
+            raise RigError("The manual reference must retain its explicit fifteen inferred bones")
+        if skin_schema.sha(workspace_file(prepare["source"]))!=prepare["source_sha256"] or prepare["source_sha256"]!=report["source_fixed_sha256"] or not prepare["reviewed_profile"].get("facial_boundary_polygon") or prepare.get("preserved_skin_coordinate_proof"):
+            raise RigError("Exact original manual fixed source and reviewed boundary are required")
+        if checked["normalized_face_uv_max_error"]>1e-6 or checked.get("reviewed_face_uv_signatures_exact") is not True:
+            raise RigError("Manual original-face projection was not independently checked")
+        prior_glb=workspace_file(baseline["skin_asset"])
+        if skin_schema.sha(prior_glb)!=baseline["skin_sha256"] or baseline["source_skin_sha256"]!=manifest["source_skin_sha256"] or baseline["source_fixed_sha256"]!=report["source_fixed_sha256"]:
+            raise RigError("Manual canonical facial comparison/source changed")
+        from finalize_skin_assets import inspect
+        _,_,prior_doc,prior_binary=inspect(prior_glb,workspace_file(manifest["prepare_report"]))
+        prior_uv=array(prior_doc,prior_binary,prior_doc["meshes"][2]["primitives"][0],"TEXCOORD_0")
+        face=doc["meshes"][2]["primitives"][0]
+        current_uv=array(doc,binary,face,"TEXCOORD_0")
+        if not np.array_equal(current_uv,prior_uv[:len(current_uv)]):
+            raise RigError("Manual whole original normalized facial UV no longer matches the actual canonical comparison")
+    else:
+        rigid=workspace_file(baseline["head_asset"])
+        if skin_schema.sha(rigid)!=baseline["head_sha256"]:
+            raise RigError("Original exact normalized-UV projection references a different rigid head")
+        coordinate=report["preserved_skin_coordinate_proof"]
+        if coordinate["approved_baseline_head_sha256"]!=baseline["head_sha256"] or Path(coordinate["approved_baseline_head"]).resolve()!=rigid:
+            raise RigError("Original rigid affine comparison changed")
+        if coordinate["approved_face_original_triangles"]!=rule["faces"] or coordinate["approved_face_uv_maximum_error"]>1e-6:
+            raise RigError("Original fixed/skin/rigid facial UV projection was not verified")
     face=doc["meshes"][2]["primitives"][0];uv=array(doc,binary,face,"TEXCOORD_0")
     current=digest(uv,"<f4")
     if current!=compatibility["normalized_original_face_uv_sha256"] or current!=compatibility["canonical_normalized_original_face_uv_sha256"] or compatibility.get("normalized_original_face_uv_float32_exact") is not True or compatibility.get("approved_png_bytes_unchanged") is not True or compatibility.get("mesh_asset_reimport_required") is not True:
@@ -194,7 +226,7 @@ def geometry_reference_uv(manifest,blueprint,checked,report,doc,binary,compatibi
 
 def verify(manifest,blueprint,checked,report,doc,binary,prepare_path,workspace_file,geometry_reference_only=False):
     if geometry_reference_only:
-        rule=MOUTH_RULES.get(blueprint["name"],{})
+        rule=GEOMETRY_RULES.get(blueprint["name"],{})
         if rule.get("reference_kind")!="geometry_comparison_only" or blueprint["skin_sha256"]!=rule.get("union_sha") or skin_schema.sha(blueprint["skin_glb"])!=rule["union_sha"] or manifest.get("candidate_variant")!="original_triangle_union_geometry_comparison_only" or manifest.get("geometry_comparison_only") is not True or manifest.get("visual_quality_hold") is not True or manifest.get("ready") is not False:
             raise RigError("Only the exact preserved unapproved geometry reference is allowed internally")
         raw_doc,raw_binary,_=read_glb(blueprint["skin_glb"])

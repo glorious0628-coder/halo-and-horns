@@ -1,0 +1,80 @@
+{
+  "positive": true,
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb",
+  "sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+  "mutations": [
+    {
+      "mutation": "non-mouth position",
+      "rejected": true,
+      "reason": "Non-mouth original P/N changed"
+    },
+    {
+      "mutation": "non-mouth normal",
+      "rejected": true,
+      "reason": "Non-mouth original P/N changed"
+    },
+    {
+      "mutation": "Body position",
+      "rejected": true,
+      "reason": "Original union binary prefix changed"
+    },
+    {
+      "mutation": "Face normalized UV",
+      "rejected": true,
+      "reason": "Original union binary prefix changed"
+    },
+    {
+      "mutation": "Head skin weight",
+      "rejected": true,
+      "reason": "Original union binary prefix changed"
+    },
+    {
+      "mutation": "Head skin joint",
+      "rejected": true,
+      "reason": "Original union binary prefix changed"
+    },
+    {
+      "mutation": "original facial triangle index",
+      "rejected": true,
+      "reason": "Original union binary prefix changed"
+    },
+    {
+      "mutation": "original Bone hierarchy",
+      "rejected": true,
+      "reason": "Only HeadBase/Face P/N accessor references may change"
+    },
+    {
+      "mutation": "original PNG byte",
+      "rejected": true,
+      "reason": "Original union binary prefix changed"
+    },
+    {
+      "mutation": "false original vertex provenance",
+      "rejected": true,
+      "reason": "Ledger is not the exact original vertex"
+    },
+    {
+      "mutation": "mouth radius outside approved profile",
+      "rejected": true,
+      "reason": "Mouth region differs from the approved profile"
+    },
+    {
+      "mutation": "missing shared boundary ledger vertex",
+      "rejected": true,
+      "reason": "Non-mouth original P/N changed"
+    },
+    {
+      "mutation": "self-consistent out-of-curve P/N ledger",
+      "rejected": true,
+      "reason": "Original mouth P/N are not the documented smooth curve"
+    },
+    {
+      "mutation": "false runtime promotion",
+      "rejected": true,
+      "reason": "Offline mouth candidate must remain unpromoted"
+    }
+  ],
+  "all_rejected": true,
+  "source_unchanged": true,
+  "ready": false
+}

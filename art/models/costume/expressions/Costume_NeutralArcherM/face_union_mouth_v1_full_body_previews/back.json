@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherM\\Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb",
+  "source_sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+  "view": "back",
+  "source_unchanged": true,
+  "geometry_uv_weights_png_edits": false,
+  "camera_location": [
+    -1.3113416343912832e-06,
+    -15.053811073303223,
+    1.121999979019165
+  ],
+  "camera_rotation": [
+    1.5707963705062866,
+    -0.0,
+    -8.742277657347586e-08
+  ],
+  "camera_scale": 6.159999847412109,
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralArcherM\\face_union_mouth_v1_full_body_previews\\back.png",
+  "render_sha256": "5116133ae2270f41b6a91b8369e534bdeecde0908b496b55cf1b658ba49982b4",
+  "shading_policy": "original imported material; full-body lit QA",
+  "ready": false,
+  "studio_called": false
+}

@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HornsWarriorM",
+  "expression_sha256": "3ce715191c3ff7303545ef536eacf4d68b06f4fa0d849fa34f9df08d44f1f497",
+  "original_skin_sha256": "e5537e521fd98af7c8e248ec5bc215af4b5544ceb6e1c49cb94378b33713359e",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "WarriorSwing",
+      "time_seconds": 0.17,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          12.0,
+          -30.0,
+          -6.0
+        ],
+        "Head": [
+          -4.0,
+          20.0,
+          3.0
+        ],
+        "RightUpperArm": [
+          145.0,
+          -12.0,
+          28.0
+        ],
+        "RightLowerArm": [
+          72.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -75.0,
+          0.0,
+          18.0
+        ],
+        "LeftUpperArm": [
+          38.0,
+          0.0,
+          -25.0
+        ],
+        "LeftLowerArm": [
+          25.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/WarriorSwing_0_17_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/WarriorSwing_0_17_expression.png",
+      "original_render_sha256": "b38f9cefd2502e6ff0392e8d4be69befb5a09a2e31e79e784f05c281746f98e0",
+      "original_render_metadata": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/WarriorSwing_0_17_original.json",
+      "original_render_metadata_sha256": "1255f3f9ec0b6d21296ac20b913510011500a0d285df48772011d7948f9ac3fc",
+      "expression_render_sha256": "b62011c19b7060ba7938fc7b1f932430f967e930d8e1f3fc8448e52f81074e10",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/WarriorSwing_0_17_expression.json",
+      "expression_render_metadata_sha256": "240fad0f403f63446d1db74ee3b347807c52d686fea423e3021fa3f57a0d1124"
+    },
+    {
+      "clip": "WarriorRelease",
+      "time_seconds": 0.24,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          -32.0,
+          6.0,
+          0.0
+        ],
+        "Head": [
+          18.0,
+          0.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          58.0,
+          0.0,
+          -12.0
+        ],
+        "RightLowerArm": [
+          6.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -75.0,
+          0.0,
+          0.0
+        ],
+        "LeftUpperArm": [
+          55.0,
+          0.0,
+          12.0
+        ],
+        "LeftLowerArm": [
+          12.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/WarriorRelease_0_24_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/WarriorRelease_0_24_expression.png",
+      "original_render_sha256": "49edde8b12eb785e52412bcdb04b97d1c58f15d765f9dd962b1ac460aed9618d",
+      "original_render_metadata": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/WarriorRelease_0_24_original.json",
+      "original_render_metadata_sha256": "f8f8f8ce28fa82c013a971cc1998957a9755e1cbdd71b5541b82d5ca6fe2697a",
+      "expression_render_sha256": "5f7207d2e54b17515fa2bc0e94a8723bc330dbd4a77d5908bab2d94fe968c611",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/WarriorRelease_0_24_expression.json",
+      "expression_render_metadata_sha256": "584fcb9885568a35b0b15bba0d51dbbb81d73cc96b2d1e8eb8123c913684b1e0"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/HurtBig_0_06_expression.png",
+      "original_render_sha256": "babc0aa155a677a66ba8df78b2e915c56bc1705047588fb9b48b4ff6b6859a58",
+      "original_render_metadata": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "99fed1c8cb0b5674e7202d87e6a20865b9231a55da300bdfcc13a3db6d5a90b7",
+      "expression_render_sha256": "1f50685854808822ea43cde7613338940ab072e4df5dd6daf2541dab94b18f6f",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "500be4133e2c0ad12a85035f028e9d993ba413baf4d1ad1dc1ea479f5e47131e"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HornsWarriorM/game_fx_neck_v1/game_fx_neck_qa.json",
+  "report_source_sha256": "ead56cd21a7a4b0eecf29df1a1a8e0b74112973d93027ca8937a6772597017e8",
+  "visual_quality_hold": true,
+  "review_notes": "Exact WarriorSwing/Release already show source jaw dark slits; the projected/cap expression boundary adds conspicuous jaw lines. Original and replacement skin motion quality is held.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

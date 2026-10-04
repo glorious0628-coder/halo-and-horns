@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloMageM",
+  "expression_sha256": "8a562d3f09acf72fbe80ee09e44c076adad9a0b16ee5915758f3ea72d8aa9e00",
+  "original_skin_sha256": "11722b180f091066987653b888cdcd157f98946f7cb7c6948262acd20e5b8782",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "original_proxy_package": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HaloMageM_preserved_v1\\package.json",
+  "original_proxy_package_sha256": "93ddc0e5462563b7c753bc70680d440edcb357918a4e1cb6078970ec50c161ee",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "shading_policy": "original imported shaded materials",
+  "records": [
+    {
+      "clip": "MageSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          12.0,
+          -18.0,
+          -4.0
+        ],
+        "Head": [
+          -4.0,
+          12.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          34.0,
+          -8.0,
+          12.0
+        ],
+        "RightLowerArm": [
+          40.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -72.0,
+          0.0,
+          8.0
+        ],
+        "LeftUpperArm": [
+          78.0,
+          8.0,
+          -22.0
+        ],
+        "LeftLowerArm": [
+          42.0,
+          0.0,
+          0.0
+        ],
+        "LeftHand": [
+          -85.0,
+          0.0,
+          -12.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/MageSwing_0_19_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/MageSwing_0_19_expression.png",
+      "original_render_sha256": "300b36a13507c61ab7b6187ffe680e74b1179b06b2a0540826e9d31f29285562",
+      "original_render_metadata": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/MageSwing_0_19_original.json",
+      "original_render_metadata_sha256": "b2c2b1a1f916f7210bde489a705363a0a5891cd27c2203954c35c6a2379ad81d",
+      "expression_render_sha256": "82f0a158b2fbdf68ef7e4c8eb57190e580d20d7b1e0a3c35c2194a33afa6f768",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/MageSwing_0_19_expression.json",
+      "expression_render_metadata_sha256": "c09869cf7e23b374a884fa8718763dd8ddd5df88bc8446ba6d46a01fa3674f30"
+    },
+    {
+      "clip": "MageRelease",
+      "time_seconds": 0.33,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          16.0,
+          -18.0,
+          0.0
+        ],
+        "Head": [
+          16.0,
+          12.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          36.0,
+          -8.0,
+          18.0
+        ],
+        "RightLowerArm": [
+          38.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -72.0,
+          0.0,
+          8.0
+        ],
+        "LeftUpperArm": [
+          116.0,
+          0.0,
+          -28.0
+        ],
+        "LeftLowerArm": [
+          24.0,
+          0.0,
+          0.0
+        ],
+        "LeftHand": [
+          -95.0,
+          0.0,
+          -12.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/MageRelease_0_33_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/MageRelease_0_33_expression.png",
+      "original_render_sha256": "584c9162d0d181e26d1ecedc7462f8ca488df349ca6720bbe3110a23e434f0e5",
+      "original_render_metadata": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/MageRelease_0_33_original.json",
+      "original_render_metadata_sha256": "a0554871119485437e7d1f87800683ce25f0fc1f8f9ca6d298c972c4adf634b7",
+      "expression_render_sha256": "f0db83292646acd8658c6d291e5918d898dd5a38ad8d1fa548169c8f180682cd",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/MageRelease_0_33_expression.json",
+      "expression_render_metadata_sha256": "32d38d3bf3f7775aeadd046150d2cb5ba4789db44ea1426d01421b726444a829"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/HurtBig_0_06_expression.png",
+      "original_render_sha256": "db500ae07cde7e819fda8d0570711fe5925d4acbf21a1ca69b09b36746fddae6",
+      "original_render_metadata": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "aae17d335afc369b5d91ad266c3c3d62cd3e12b4df1bf2869520f55f71605d0f",
+      "expression_render_sha256": "15c987fdfdcec2196e5da1da9524d44af594f12202e8c046edea80942c2d2c82",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "c812420bf74bb3c69714c85c77c5b0e0703a4a3a697c8f73333676cee9bb444c"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HaloMageM/game_fx_neck_mouth_restored_v1_lit/game_fx_neck_qa.json",
+  "report_source_sha256": "e6061c6fdbf914c78246ec891101fb32497e980d11134ce12b96e2e14e3ac7c0",
+  "visual_quality_hold": true,
+  "review_notes": "All six actual Fx original/expression images and six lit rest states personally reviewed. The P/N-only candidate preserves original deformation but inward mouth-wall winding leaves black upper/lower lip fragments, and one uniquely ray-proven HeadBase inner-mouth face still retains the original red texture. Keep quality hold; no native or production approval.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

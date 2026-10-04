@@ -23,7 +23,7 @@ FOLDER=ROOT/"art/models/costume/expressions/Costume_HaloArcherM"
 OUTPUT=ROOT/"build/skin_runtime_v2/face_union_mouth_v1"
 
 
-def main(avatar="Costume_HaloArcherM"):
+def main(avatar="Costume_HaloArcherM",proxy_plan=None):
     global FOLDER,OUTPUT
     rule=proof.MOUTH_RULES[avatar]
     FOLDER=ROOT/"art/models/costume/expressions"/avatar
@@ -33,7 +33,7 @@ def main(avatar="Costume_HaloArcherM"):
     manifest=json.loads(path.read_text(encoding="utf-8"));glb=ROOT/manifest["skin_asset"]
     sidecar_path=glb.with_suffix(".skin.json")
     sidecar=json.loads(sidecar_path.read_text(encoding="utf-8"))
-    blueprint=skin_schema.load(sidecar_path)
+    blueprint=skin_schema.load(sidecar_path,proxy_plan)
     result=schema.load(path,blueprint)
     document,binary,_=read_glb(glb)
     report=json.loads(glb.with_suffix(".json").read_text(encoding="utf-8"))
@@ -58,7 +58,7 @@ def main(avatar="Costume_HaloArcherM"):
         (result["original_position_normal_values_preserved"] is False,"P/N exception not disguised as exact preservation"),
         (result["original_joint_weight_values_preserved"] is True,"weights and joint slots remain exact"),
         (result["actual_texture_ids_reused"] is False,"texture IDs never inferred"),
-        (blueprint["unique_bones"]==23,"all actual source bones retained"),
+        (blueprint["unique_bones"]==(15 if blueprint["rig_origin"]=="inferred_manual_candidate" else 23),"all explicitly identified source bones retained"),
         (blueprint["rig_ready_for_game"] is False and result["runtime_validated"] is False,"not promoted by an offline proof"),
         (result["manifest_sha256"]==skin_schema.sha(path),"current mouth manifest SHA, not baseline SHA"),
         (result["validation_sha256"]==skin_schema.sha(ROOT/manifest["validation_report"]),"current mouth validation SHA"),
@@ -169,7 +169,7 @@ def main(avatar="Costume_HaloArcherM"):
         reject("normal exact P/N inspector still rejects valid exception",lambda:original_inspect(glb,ROOT/manifest["prepare_report"]))
         oldpath=FOLDER/"face_union_manifest.json"
         old=json.loads(oldpath.read_text(encoding="utf-8"));oldglb=ROOT/old["skin_asset"]
-        oldblueprint=skin_schema.load(oldglb.with_suffix(".skin.json"))
+        oldblueprint=skin_schema.load(oldglb.with_suffix(".skin.json"),proxy_plan)
         if rule["reference_kind"]=="geometry_comparison_only":
             reject("unapproved geometry-only baseline is not a playable expression candidate",lambda:schema.load(oldpath,oldblueprint))
         else:
@@ -196,4 +196,6 @@ def main(avatar="Costume_HaloArcherM"):
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--avatar",choices=tuple(proof.MOUTH_RULES),default="Costume_HaloArcherM")
-    raise SystemExit(main(parser.parse_args().avatar))
+    parser.add_argument("--proxy-plan",type=Path)
+    args=parser.parse_args()
+    raise SystemExit(main(args.avatar,args.proxy_plan))

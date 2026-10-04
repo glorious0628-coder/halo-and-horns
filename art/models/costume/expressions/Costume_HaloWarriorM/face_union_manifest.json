@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloWarriorM",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_HaloWarriorM/Costume_HaloWarriorM_FaceUnionSkin_v1.glb",
+  "skin_sha256": "caf11c749650db3d8ae3caf0a1491a2f3561fad87b01776fe5479b2b5b2796c4",
+  "source_skin_sha256": "8f131c49bdc6035db43b67c734bf01c0b336353e040288f133bc8ee46fc6707d",
+  "source_fixed_sha256": "3ccfc2f9c4c404a9e37c06d9cbea7ea1d8b5b3d35e91779b7dc8f589eb3c7917",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "prepare_report": "art/models/costume/expressions/Costume_HaloWarriorM/face_union_prepare_report.json",
+  "validation_report": "art/models/costume/expressions/Costume_HaloWarriorM/face_union_validation.json",
+  "original_triangles_only": true,
+  "selected_original_face_triangles": 504,
+  "new_mouth_cap_vertices": 0,
+  "candidate_variant": "original_triangle_union_geometry_comparison_only",
+  "geometry_comparison_only": true,
+  "visual_quality_hold": true,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "state": "Neutral",
+      "trigger": "\ud3c9\uc18c",
+      "png": "art/out/Costume_HaloWarriorM_Expression_Neutral_face.png",
+      "sha256": "cc040072b0bad26912a5bbcd1ee35c024ed037c888043a0c58ee83e80d7f1e53",
+      "size": [
+        1254,
+        1254
+      ],
+      "builtin_gpt_generated": true,
+      "prompt": "art/prompts/Costume_HaloWarriorM_Expression_Neutral_face.txt",
+      "closed_mouth_offline_render_verified": false,
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "quality_status": "geometry comparison only; visual quality hold",
+      "offline_previews": []
+    },
+    {
+      "state": "SoftSmile",
+      "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+      "png": "art/out/Costume_HaloWarriorM_Expression_SoftSmile_face.png",
+      "sha256": "af6e5403e8fca4e1399fd03a23742c9d90b2ce4da2a2d966d14b78d7d1ae6e8c",
+      "size": [
+        1254,
+        1254
+      ],
+      "builtin_gpt_generated": true,
+      "prompt": "art/prompts/Costume_HaloWarriorM_Expression_SoftSmile_face.txt",
+      "closed_mouth_offline_render_verified": false,
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "quality_status": "geometry comparison only; visual quality hold",
+      "offline_previews": []
+    },
+    {
+      "state": "Serious",
+      "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+      "png": "art/out/Costume_HaloWarriorM_Expression_Serious_face.png",
+      "sha256": "e677f1dd733c1e1d99a3c502d571c070904dea061e4127202b35b5640378cdbf",
+      "size": [
+        1254,
+        1254
+      ],
+      "builtin_gpt_generated": true,
+      "prompt": "art/prompts/Costume_HaloWarriorM_Expression_Serious_face.txt",
+      "closed_mouth_offline_render_verified": false,
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "quality_status": "geometry comparison only; visual quality hold",
+      "offline_previews": []
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "original_face_provenance": "art/models/costume/expressions/Costume_HaloWarriorM/face_union_provenance.json",
+  "original_face_provenance_sha256": "d7677a0b4bff412a7a540d0212cbf312bd9d5da16da2185b59efe3f624e79999",
+  "uv_texture_compatibility": "art/models/costume/expressions/Costume_HaloWarriorM/face_union_uv_compatibility.json",
+  "uv_texture_compatibility_sha256": "9e5d48e029fdd652340549c527c706d9a7cfc4bac930137a6db2b0bc80ed688c",
+  "offline_visual_review": "Geometry comparison only; original mouth depression remains and is not visually approved.",
+  "limitations": [
+    "Exact preservation comparison only; a separate mouth-restored copy requires strict exception and lit/native QA."
+  ]
+}

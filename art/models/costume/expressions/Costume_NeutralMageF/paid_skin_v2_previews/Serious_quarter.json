@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_PreservedSkinExpressions_v2.glb",
+  "source_sha256": "26a2362fadcbe623356dba379c8094aa7274cd91954810a017cfebf252bc5ebb",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\Costume_NeutralMageF_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageF\\paid_skin_v2_previews\\Serious_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    5.310773849487305,
+    8.35492992401123,
+    2.2287697792053223
+  ],
+  "camera_rotation": [
+    1.6052707433700562,
+    0.13401548564434052,
+    2.548903465270996
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

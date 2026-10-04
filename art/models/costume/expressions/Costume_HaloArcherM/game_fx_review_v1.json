@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloArcherM",
+  "expression_sha256": "f23871e89b092cb69eb0547c2c77180ff4150ffbb8593eb47a220ac87aff060a",
+  "original_skin_sha256": "7d09b5aec17a52f0a161835bdab5db2a81dcd035baa1f2f8f64a226cb6977756",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "ArcherSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/ArcherSwing_0_19_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/ArcherSwing_0_19_expression.png",
+      "original_render_sha256": "8c1136bba425be9eb90318854deab062f010983bce1fa013a4e428d2d7959616",
+      "original_render_metadata": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/ArcherSwing_0_19_original.json",
+      "original_render_metadata_sha256": "b3a166f8caeb2c263502b0fbfbfede306be0c83de1ed4c36241dcb7a7281243d",
+      "expression_render_sha256": "91620935590c56f4daedc11dccd47d09fa5e571cab1c9bedcb8da6181e5567fa",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/ArcherSwing_0_19_expression.json",
+      "expression_render_metadata_sha256": "c31acd6abc5660a47e6303c13e432693e11c4f4843b9c72b77bd38d18952f18a"
+    },
+    {
+      "clip": "ArcherRelease",
+      "time_seconds": 0.16,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/ArcherRelease_0_16_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/ArcherRelease_0_16_expression.png",
+      "original_render_sha256": "3d7989e0a03bae09b1d5d5ec250194629e3b0d63fad76371f71d1c9208e9fed5",
+      "original_render_metadata": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/ArcherRelease_0_16_original.json",
+      "original_render_metadata_sha256": "df0f094498631ccb9300c722421cd507ff9f0f6e41d8c2aecd32c86bdc751330",
+      "expression_render_sha256": "3e2bb45fb5f0d21e26d4646286519b92828c50b616990f2de48775cebc7e4c7e",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/ArcherRelease_0_16_expression.json",
+      "expression_render_metadata_sha256": "874ec1a43722a307a8b29d7450dadf7a0ca9f7d9059636364ca489721622c41e"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/HurtBig_0_06_expression.png",
+      "original_render_sha256": "48127725870cd191828bd19f5ab5a782e34622ca8260bd6c1d93136a8e92b56c",
+      "original_render_metadata": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "2352b0e7ad2b8aac48d32f36a4172f29552e53eeb68b559a96d3b3cad304d87b",
+      "expression_render_sha256": "cb92e957016e44fc89165b6bc852169de64bf7e92f49122ed3dfa61ba33bd135",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "951d0e405e465098eb31b36a4a4d90a6e6f5975d23cf737001a488f7b3ae06ce"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_v1/game_fx_neck_qa.json",
+  "report_source_sha256": "5c6dbf7024b70efc33e3ff94fbbaf0357b47dcc8f26d22a7c26901ca3d763c94",
+  "visual_quality_hold": true,
+  "review_notes": "The cap candidate shows an added rectangular projected mouth boundary at exact HurtBig; original-only FaceUnion is the separate replacement under engine QA. Original jaw weights still require comparison.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

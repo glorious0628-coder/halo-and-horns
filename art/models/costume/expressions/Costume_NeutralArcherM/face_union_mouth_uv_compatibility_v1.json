@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralArcherM",
+  "expression_skin_sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+  "comparison_manifest": "art/models/costume/expressions/Costume_NeutralArcherM/skin_expressions_manifest.json",
+  "comparison_manifest_sha256": "e04d4b95cbdf3d31b328655e4e865350b846dec528d4040f3d745202549d65fd",
+  "normalized_original_face_uv_sha256": "ef604cef251ee5095727e305a5f2510dcb1e4f2e377927b27f934bdedbebf0ed",
+  "canonical_normalized_original_face_uv_sha256": "ef604cef251ee5095727e305a5f2510dcb1e4f2e377927b27f934bdedbebf0ed",
+  "normalized_original_face_uv_float32_exact": true,
+  "approved_png_bytes_unchanged": true,
+  "comparison_uv_basis": "Exact approved normalized projection checked by inspect against original fixed/skin corners",
+  "expression_pngs": [
+    {
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.png",
+      "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f"
+    },
+    {
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_SoftSmile_face.png",
+      "sha256": "79d5bdc0549dcf6a2b3b8c463c4a9a42b9f95f7e9f83d9d87fdd805cbea99ac5"
+    },
+    {
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Serious_face.png",
+      "sha256": "1389e58f8b8be8c8104b1885d84f81ada131c7b10d55efd8c93149b3465cac13"
+    }
+  ],
+  "mesh_asset_reimport_required": true,
+  "texture_reuse_policy": "Actual upload-ledger PNG SHA must match.",
+  "geometry_comparison_only": true,
+  "ready": false,
+  "comparison_union": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionSkin_v1.glb",
+  "comparison_union_sha256": "4eaebb39192f1f3b24f7bfe212f953c026018da3459d1925d911c25e4357d3ce",
+  "original_geometry_preserved": false,
+  "geometry_exception": "recorded original mouth P/N only",
+  "mouth_restoration_ledger": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_restoration_ledger_sha256": "84427c9b85e406adfa35a301f941f5c9676a1a63b7050595a090bedb73ca4a29"
+}

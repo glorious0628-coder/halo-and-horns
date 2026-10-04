@@ -1,0 +1,78 @@
+{
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_FaceUnionMouthRestored_v1.glb",
+  "sha256": "72a225b9f49e28db965b65bb8950b34bc230df74a83eb09fc5e56f86d981d9d1",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\HornsArcherF_skin_v1\\Costume_HornsArcherF_skin.glb",
+  "source_skin_sha256": "0c5000a1cf32e27bbfe574d62c9536a3a08e203a95987bff21908f592970474a",
+  "source_fixed": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsArcherF.glb",
+  "source_fixed_sha256": "e3da574a517a25fbdedef5c4c7638c0ede2bf45e2ebf7fc397630e614fd68258",
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "source_skin_bones": 15,
+  "skin_joints_inverse_binds_preserved": true,
+  "original_position_normal_joint_weight_values_preserved": false,
+  "original_binary_prefix_preserved": true,
+  "original_non_facial_texture_bytes_preserved": true,
+  "original_body_primitive_unchanged": true,
+  "original_headbase_uv_unchanged": true,
+  "facial_signature_uv_convention": "Blender V = 1 - original glTF V; original UV bytes unchanged",
+  "original_head_triangles": 5807,
+  "original_face_triangles": 395,
+  "headbase_triangles": 5412,
+  "new_mouth_cap_triangles": 0,
+  "new_mouth_cap_vertices": 0,
+  "mouth_cap_weight_method": "none: exact original facial triangle union",
+  "original_triangles_only": true,
+  "mouth_cap_source_surface_distance_max": 0,
+  "source_to_game_affine": [
+    -5.629537077528581,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    5.629537077528581,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -5.629537077528581,
+    0.0,
+    0.009470549932744267,
+    -2.0625,
+    -0.14525680460965318,
+    1.0
+  ],
+  "expected_glb_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "camera_scale": 2.6565,
+  "camera_center": [
+    0.010759048714527236,
+    2.2824999999999998
+  ],
+  "camera_target": [
+    0.010759048714527236,
+    0.14525680460965318,
+    2.2824999999999998
+  ],
+  "source_front_camera_scale": 2.6565,
+  "camera_front_direction": [
+    0,
+    1,
+    0
+  ],
+  "camera_front_up": [
+    0,
+    0,
+    1
+  ],
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "limitations": [
+    "Only original connected mouth P/N restored in a new copy; exact original UV/JW/source bones/images remain.",
+    "Lit three-state and exact-Fx plus native game QA still required."
+  ],
+  "original_joint_weight_values_preserved": true,
+  "mouth_geometry_restoration_ledger": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherF\\Costume_HornsArcherF_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_geometry_restoration_ledger_sha256": "7e90e6995bf2b80707dc1ee9660a0d4e476f2d3690e72402878bf508c8934e2f",
+  "source_models_unchanged": true
+}

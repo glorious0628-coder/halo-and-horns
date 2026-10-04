@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HornsArcherM",
+  "expression_skin_sha256": "92bb3964a270e558bd8ac1c885fd3b30045d9761d75a71f894352666fa581c54",
+  "comparison_manifest": "art/models/costume/expressions/Costume_HornsArcherM/expressions_manifest.json",
+  "comparison_manifest_sha256": "28cde86fbfe2e2c3cb0b689424db6a2d13ef512b68a0296fac76da923909b67e",
+  "comparison_skin_sha256": "13f152a00379cab2572dfdcfee5a3eff345392418024c69aeaceda0331864a5f",
+  "original_head_vertices_compared": 9080,
+  "normalized_original_face_uv_sha256": "ee95c3a4dfb10a6972d35e41f53c313dc5fb98cc9ae4d882742d58bfdfe1fdae",
+  "canonical_normalized_original_face_uv_sha256": "ee95c3a4dfb10a6972d35e41f53c313dc5fb98cc9ae4d882742d58bfdfe1fdae",
+  "canonical_skin_comparison_available": false,
+  "comparison_uv_basis": "normalized projection rederived from approved rigid-head original-face correspondence",
+  "normalized_original_face_uv_float32_exact": true,
+  "approved_png_bytes_unchanged": true,
+  "expression_pngs": [
+    {
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_Neutral_face.png",
+      "sha256": "61b768429e570bc03f4ad33ab59aa49b9d8523b948fca3431b86e345331daa41",
+      "existing_uploaded_texture_reusable_if_asset_sha_matches": true
+    },
+    {
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_SoftSmile_face.png",
+      "sha256": "e63def068e084c6c01afefd769d48433c9d6147806978c7120c6e083533db107",
+      "existing_uploaded_texture_reusable_if_asset_sha_matches": true
+    },
+    {
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HornsArcherM/Costume_HornsArcherM_Expression_Serious_face.png",
+      "sha256": "8712c7a7a8faa6a89249e22f99cfebb8ba063d535c5d069ef0d949312278cd10",
+      "existing_uploaded_texture_reusable_if_asset_sha_matches": true
+    }
+  ],
+  "mesh_asset_reimport_required": true,
+  "texture_reuse_policy": "Reuse an actual texture ID only after matching its upload ledger PNG SHA; never reuse the old Face mesh ID.",
+  "ready": false
+}

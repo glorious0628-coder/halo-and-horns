@@ -1,0 +1,24 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+  "source_sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\face_union_mouth_winding_v1_previews\\Serious_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.3544114828109741,
+    9.91000747680664,
+    2.543395519256592
+  ],
+  "camera_rotation": [
+    1.56239914894104,
+    0.0008247919613495469,
+    -3.02066969871521
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "shading_policy": "original imported material with geometry QA area lights"
+}

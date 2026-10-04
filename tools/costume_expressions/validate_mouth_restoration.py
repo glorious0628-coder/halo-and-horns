@@ -17,6 +17,7 @@ ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tools/costume_r15'))
 from glb_io import read_glb,accessor_values
 from finalize_skin_assets import inspect
+from skin_frames import resolve
 
 
 def sha(path):
@@ -86,7 +87,10 @@ def check(glb):
     if not np.allclose(center,ledger['mouth_center_screen'],atol=1e-9) or not np.allclose(radii,ledger['mouth_radii_screen'],atol=1e-9):
         raise ValueError('Mouth region differs from the approved profile')
     frame=np.asarray(ledger['fixed_to_skin_affine'])
-    if not np.allclose(frame,report['preserved_skin_coordinate_proof']['fixed_to_skin_affine'],atol=1e-12):
+    source=Path(ledger['source_skin'])
+    source_sidecar=json.loads(source.with_suffix('.skin.json').read_text(encoding='utf-8'))
+    verified_frame,verified_origin,original_bones_claimed=resolve(prep,source,source_sidecar)
+    if report['rig_origin']!=verified_origin or not np.allclose(frame,verified_frame,atol=1e-12):
         raise ValueError('Exact original coordinate proof required')
     fixed=(np.column_stack((positions,np.ones(len(positions))))@np.linalg.inv(frame).T)[:,:3]
     restored=(np.column_stack((new_p,np.ones(len(new_p))))@np.linalg.inv(frame).T)[:,:3]

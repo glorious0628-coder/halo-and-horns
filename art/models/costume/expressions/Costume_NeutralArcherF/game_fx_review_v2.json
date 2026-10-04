@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralArcherF",
+  "expression_sha256": "28de3273e39dcb40620739d395b6bc77921dc5f427e85f0acacc6fb7c49f8426",
+  "original_skin_sha256": "0fb94b04e5eb38102c547b58a2a8002917a874a2ca6d6c8bea7fb6221bfd5029",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "original_proxy_package": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin_corrected\\Costume_NeutralArcherF_weights_v7\\package.json",
+  "original_proxy_package_sha256": "da624e19135d1122b54f73152804ab7325c28332d1b6479925e1f82c97cfaca6",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "ArcherSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/ArcherSwing_0_19_original.png",
+      "expression_render": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/ArcherSwing_0_19_expression.png",
+      "original_render_sha256": "9797323e4c2b1b0c58ef1a2355ad4f32e5b8674cc848f2a02e4e1aa12c7622c4",
+      "original_render_metadata": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/ArcherSwing_0_19_original.json",
+      "original_render_metadata_sha256": "6d669c1077ea808868c7ec0b1458f30901e1fa5913d273c41f18fbffd976ba12",
+      "expression_render_sha256": "61159f73b95ad953734f77a45cc6da0973f4bb48d7958838e650443d594dbfec",
+      "expression_render_metadata": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/ArcherSwing_0_19_expression.json",
+      "expression_render_metadata_sha256": "ccaf5756289c1222abe73a48381a9a5789b6730bf44365e3fa3aa753be6ca93b"
+    },
+    {
+      "clip": "ArcherRelease",
+      "time_seconds": 0.16,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/ArcherRelease_0_16_original.png",
+      "expression_render": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/ArcherRelease_0_16_expression.png",
+      "original_render_sha256": "2176975b13617b5f18f6a0678fb0433f02702cd52c80e501ca9dbe3ad4e2d6a8",
+      "original_render_metadata": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/ArcherRelease_0_16_original.json",
+      "original_render_metadata_sha256": "8018f3896438c16e5d0a9e2f83a2598ab94a8b95bc3d2f9fdb08d80b3cd883b5",
+      "expression_render_sha256": "d62b2c53f1c9ee4d3b305dd07ee13d0f1b1fbacd202bbb55d0843667114b704f",
+      "expression_render_metadata": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/ArcherRelease_0_16_expression.json",
+      "expression_render_metadata_sha256": "454fa8558485ca16d58cad2697b8824e3e3bd188019a7feb6f181d01f3594b72"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/HurtBig_0_06_expression.png",
+      "original_render_sha256": "3a964193012facfa9229967ecb32cd41c38cb21e10034956f967db374ea7752e",
+      "original_render_metadata": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "f60ecbfb74b835d5e0a7dca2c82acaf28625b1277a4b547d3e35aeb0fa97e76e",
+      "expression_render_sha256": "cc6def3f3f9805feccb9404f2b3c56432cb1991bb04ef8315feb22d4e2e1690c",
+      "expression_render_metadata": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "def1700519670f54105d46fe5e2f037e9584ca0bdf8c1793a6a02246f0bdec3f"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_NeutralArcherF/game_fx_neck_v2/game_fx_neck_qa.json",
+  "report_source_sha256": "e9ebb1537e8ba5200316e3d5f4fef4c333f7c370173c72c45a249893517a3ed0",
+  "visual_quality_hold": true,
+  "review_notes": "All six original/expression exact Fx comparisons reviewed with the actual lower-torso-y root bind. Original hood/cloth corners remain around the jaw and must not be classified as face. The cap leaves a small lower-jaw color/geometry patch at HurtBig; original-triangle union and lit mouth QA are required before native visual promotion.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

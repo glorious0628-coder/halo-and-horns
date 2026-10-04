@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloArcherF",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_FaceUnionMouthRestored_v1.glb",
+  "skin_sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+  "source_skin_sha256": "0b72fb526d6049712ade5db365de9deffa3264e9a80875a9191b089d3bbcc26f",
+  "source_fixed_sha256": "07451eec71f0b9785f867a53aac20e66d4af65e8259dce574a7c684826dad976",
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "source_skin_bones": 15,
+  "prepare_report": "art/models/costume/expressions/Costume_HaloArcherF/face_union_prepare_report.json",
+  "validation_report": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_restoration_validation_v1.json",
+  "original_triangles_only": true,
+  "selected_original_face_triangles": 114,
+  "new_mouth_cap_vertices": 0,
+  "candidate_variant": "original_triangle_union_mouth_restored_v1",
+  "geometry_comparison_only": false,
+  "visual_quality_hold": false,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_HaloArcherF",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7c94c1b4d477ff6d6ecf98e8629e7db8bff762954ca269042638e5ec0db94898",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-64be88de-3508-4394-a6c0-75ae62561be4.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloArcherF/prompts/Neutral.txt",
+      "quality_status": "lit expressions/full-body/basic Armature walk personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_previews/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HaloArcherF",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d5e26aec9478f1716f4c683a7391a0deae9680a6a67562aaa124190e2585a7b2",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-c6769837-6305-4482-b6b9-31836c1407a6.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloArcherF/prompts/SoftSmile.txt",
+      "quality_status": "lit expressions/full-body/basic Armature walk personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_previews/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_HaloArcherF",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "d1b29f2347675d23b76f4246a6d7761481aab23ffe656b99d32b5914504a147a",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-3d94b6d0-d7cf-466b-ae70-030cf62eb2d4.png",
+      "prompt": "art/models/costume/expressions/Costume_HaloArcherF/prompts/Serious.txt",
+      "quality_status": "lit expressions/full-body/basic Armature walk personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_previews/Serious_quarter.png"
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "original_face_provenance": "art/models/costume/expressions/Costume_HaloArcherF/face_union_provenance.json",
+  "original_face_provenance_sha256": "479b8b374971c11b5f7ce3dbacf5948c248546da03eef4a3cf8530dc8aabdd25",
+  "uv_texture_compatibility": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_uv_compatibility_v1.json",
+  "uv_texture_compatibility_sha256": "7689e4db2c1b2417e22cc901b330cbcb49247d39631dc21126a776619b8b0694",
+  "offline_visual_review": "Six shaded front/quarter expressions, three full-body views and eight actual Armature rest/walk/head-turn views personally reviewed.",
+  "limitations": [
+    "15 bones are inferred from reviewed landmarks; original Tripo bones are not claimed.",
+    "Only exact ledger-listed mouth P/N changes; no new vertices/triangles/cap and source Body/UV/JW/PNG remain exact.",
+    "Offline Armature walk/head-turn is not stock Animate, exact game Fx or Native approval. Actual Importer and idle/walk/FQ/ONOFF QA remain pending."
+  ],
+  "validation_kind": "original_connected_mouth_pn_exception_v1",
+  "original_geometry_preserved": false,
+  "original_position_normal_values_preserved": false,
+  "original_joint_weight_values_preserved": true,
+  "mouth_restoration_ledger": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_restoration_ledger_sha256": "f7baeaf30fff7001882a2b5ee4a2cce305a6662ce24842b88fbbaf53b76f2fb4",
+  "strict_validation_tool": "tools/costume_expressions/validate_mouth_restoration.py",
+  "original_face_provenance_role": "baseline source vertices/UV/JW; P/N exception is the separate mouth ledger",
+  "original_union_baseline": "art/models/costume/expressions/Costume_HaloArcherF/face_union_manifest.json",
+  "original_union_baseline_sha256": "1d9efe67454993866168a4b6aad31eba9cc20ab088b886a45427d38b3cd6e302",
+  "mouth_negative_tests": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_contract_tests_v1.json",
+  "mouth_negative_tests_sha256": "299dda6d1f2bd5b07ecfa90e9d99ec4f35f3ed6b6ae4ee61321e0c8493cdd6d5",
+  "offline_visual_notes": [
+    "Six lit expression closeups and three full-body views have natural closed-mouth lines without a raised round cap.",
+    "Eight actual Armature rest/walk/head-turn views preserve the face/neck surface and modest full outfit. Native idle/walk/FQ/ONOFF remain pending."
+  ],
+  "basic_motion_offline_review": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_visual_review_v1.json",
+  "basic_motion_offline_review_sha256": "92c86828d157fac694491e316e122a45ea571f7e0e76a15195135ae481a8a804",
+  "game_fx_offline_verified": false,
+  "stock_animate_verified": false,
+  "modest_outfit_offline_verified": true,
+  "full_body_offline_previews": [
+    "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/front.png",
+    "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/back.png",
+    "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/side.png"
+  ]
+}

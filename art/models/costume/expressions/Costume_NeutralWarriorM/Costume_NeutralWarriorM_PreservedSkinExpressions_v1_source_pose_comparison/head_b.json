@@ -1,0 +1,28 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_NeutralWarriorM_preserved_v1\\Costume_NeutralWarriorM_skin.glb",
+  "source_sha256": "b54e953b68d793d886ee68ac14c9ad0e797cb31054fc07519a2d1d8a297c7f34",
+  "expression": null,
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorM\\Costume_NeutralWarriorM_PreservedSkinExpressions_v1_source_pose_comparison\\head_b.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -0.46098005771636963,
+    10.102245330810547,
+    1.2579030990600586
+  ],
+  "camera_rotation": [
+    -1.412040114402771,
+    3.100015640258789,
+    0.0393272303044796
+  ],
+  "face_texture_size": null,
+  "source_unchanged": true,
+  "skin_pose": {
+    "Head": [
+      -8,
+      0,
+      -25
+    ]
+  },
+  "skin_pose_policy": "temporary offline original shared Head bone rotation; no source writes"
+}

@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_FaceUnionMouthWinding_v1.glb",
+  "source_sha256": "1364e95a2c33145313a9c5c80b550f8668b66f9d01f4a850f933d6001e451d38",
+  "view": "back",
+  "source_unchanged": true,
+  "geometry_uv_weights_png_edits": false,
+  "camera_location": [
+    -0.04073595255613327,
+    -15.179137229919434,
+    0.8106584548950195
+  ],
+  "camera_rotation": [
+    1.570796251296997,
+    9.153701086006549e-08,
+    -3.610729493175313e-07
+  ],
+  "camera_scale": 6.159998893737793,
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\face_union_mouth_winding_v1_full_body_previews\\back.png",
+  "render_sha256": "5934e3000e1c3f8e2065c10eb793a0cda4ea53c68c6b864b1f1eda897d64cc3f",
+  "shading_policy": "original imported material; full-body lit QA",
+  "ready": false,
+  "studio_called": false
+}

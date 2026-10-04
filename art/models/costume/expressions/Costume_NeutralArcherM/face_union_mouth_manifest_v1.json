@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralArcherM",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionMouthRestored_v1.glb",
+  "skin_sha256": "407691c8b31de0d3d163ceb2866f94b4027d8d7a94adc520c80ad815fa0dcf75",
+  "source_skin_sha256": "fce99186fffb203d7b973e60611faa5195124f4f23b5e73aa2212ce607a4ffac",
+  "source_fixed_sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "source_skin_bones": 15,
+  "prepare_report": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_prepare_report.json",
+  "validation_report": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_restoration_validation_v1.json",
+  "original_triangles_only": true,
+  "selected_original_face_triangles": 357,
+  "new_mouth_cap_vertices": 0,
+  "candidate_variant": "original_triangle_union_mouth_restored_v1",
+  "geometry_comparison_only": false,
+  "visual_quality_hold": false,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1d588894-98f7-4d91-91bf-9213d1a0f071.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/Neutral.txt",
+      "quality_status": "lit expressions/full-body/basic Armature walk personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/Neutral_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/Neutral_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "79d5bdc0549dcf6a2b3b8c463c4a9a42b9f95f7e9f83d9d87fdd805cbea99ac5",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1932879f-90bf-4e0b-8531-45a31d47d5d0.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/SoftSmile.txt",
+      "quality_status": "lit expressions/full-body/basic Armature walk personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/SoftSmile_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/SoftSmile_quarter.png"
+      ]
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "1389e58f8b8be8c8104b1885d84f81ada131c7b10d55efd8c93149b3465cac13",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-27355c67-876b-4bb0-a988-246c4a83b418.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/Serious.txt",
+      "quality_status": "lit expressions/full-body/basic Armature walk personally reviewed; native game quality pending",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": true,
+      "offline_previews": [
+        "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/Serious_front.png",
+        "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_v1_previews/Serious_quarter.png"
+      ]
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "original_face_provenance": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_provenance.json",
+  "original_face_provenance_sha256": "433492b71b04458bbf1c16656bd4664b72ad9c4675e8993b62e4ac4fdc478632",
+  "uv_texture_compatibility": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_uv_compatibility_v1.json",
+  "uv_texture_compatibility_sha256": "13817164583b32c333dd258601af47a6987d4b45449e0d772d07408f4bec013d",
+  "offline_visual_review": "Six shaded front/quarter expressions, three full-body views and eight actual Armature rest/walk/head-turn views personally reviewed.",
+  "limitations": [
+    "15 bones are inferred from reviewed landmarks; original Tripo bones are not claimed.",
+    "Only exact ledger-listed mouth P/N changes; no new vertices/triangles/cap and source Body/UV/JW/PNG remain exact.",
+    "Offline Armature walk/head-turn is not stock Animate, exact game Fx or Native approval. Actual Importer and idle/walk/FQ/ONOFF QA remain pending."
+  ],
+  "validation_kind": "original_connected_mouth_pn_exception_v1",
+  "original_geometry_preserved": false,
+  "original_position_normal_values_preserved": false,
+  "original_joint_weight_values_preserved": true,
+  "mouth_restoration_ledger": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_restoration_ledger_sha256": "84427c9b85e406adfa35a301f941f5c9676a1a63b7050595a090bedb73ca4a29",
+  "strict_validation_tool": "tools/costume_expressions/validate_mouth_restoration.py",
+  "original_face_provenance_role": "baseline source vertices/UV/JW; P/N exception is the separate mouth ledger",
+  "original_union_baseline": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_manifest.json",
+  "original_union_baseline_sha256": "1b27513c2d2dcfbd6391fc10d7d1a85d252ae042f4c71344a5694a4c5dbcbede",
+  "mouth_negative_tests": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_contract_tests_v1.json",
+  "mouth_negative_tests_sha256": "416c496c25a22be55b99ba3b3d99a05b89e735a33e7394c0f043a3ad56fcbfec",
+  "offline_visual_notes": [
+    "Six lit expression closeups and three full-body views have natural closed-mouth lines without a raised round cap.",
+    "Eight actual Armature rest/walk/head-turn views preserve the face/neck surface and modest full outfit. Native idle/walk/FQ/ONOFF remain pending."
+  ],
+  "basic_motion_offline_review": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_mouth_visual_review_v1.json",
+  "basic_motion_offline_review_sha256": "86cf13782d6f017744a1128b054e62dd2dfc52638f27d624e4833859699c67ac",
+  "game_fx_offline_verified": false,
+  "stock_animate_verified": false,
+  "modest_outfit_offline_verified": true
+}

@@ -16,6 +16,12 @@ def sha(path):
 
 
 def resolve(prep, source, sidecar):
+    inferred_bind=sidecar.get('rig_origin')=='corrected_preserved_bind_skin_proxy_candidate'
+    if inferred_bind:
+        from skin_inferred_bind_proof import validate
+        validate(source.with_suffix('.skin.json'))
+        if sidecar.get('original_bones_claimed') is not False:
+            raise ValueError('Explicit inferred bind must not claim all original source bones')
     proof = prep.get('preserved_skin_coordinate_proof')
     if not proof:
         if sha(sidecar['source']) != prep['source_sha256'] or not prep['reviewed_profile'].get('facial_boundary_polygon'):
@@ -65,7 +71,7 @@ def resolve(prep, source, sidecar):
     if max_error > 1e-5 or seen != set(table):
         raise ValueError('Paid fixed-to-skin full original corner proof failed')
     verify_union_extension(prep, source, sp, su, st, frame)
-    return frame, 'preserved_original_paid_skin_candidate', True
+    return frame, ('corrected_preserved_bind_skin_proxy_candidate' if inferred_bind else 'preserved_original_paid_skin_candidate'), not inferred_bind
 
 
 def verify_union_extension(prep, source, positions, uv, triangles, frame):

@@ -1,0 +1,287 @@
+{
+  "schema": 1,
+  "expression_sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+  "personally_reviewed": true,
+  "review_scope": "inferred-15 actual Armature rest, walk-left/right and head-turn; not game Fx/Animate",
+  "game_fx_verified": false,
+  "stock_animate_verified": false,
+  "visual_quality_hold": false,
+  "records": [],
+  "review_notes": [
+    "Six lit expression closeups and three full-body views have natural closed-mouth lines without a raised round cap.",
+    "Eight actual Armature rest/walk/head-turn views preserve the face/neck surface and modest full outfit. Native idle/walk/FQ/ONOFF remain pending."
+  ],
+  "motion_numeric_report": {
+    "schema": 1,
+    "skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherF\\Costume_HaloArcherF_FaceUnionMouthRestored_v1.glb",
+    "skin_sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+    "rig_origin": "inferred_manual_candidate",
+    "rig_ready_for_game": false,
+    "studio_motion_validated": false,
+    "offline_linear_blend_skinning": true,
+    "actual_imported_armature_rendered": true,
+    "source_or_texture_edits": 0,
+    "maximum_import_position_match_error": 8.630541969978367e-07,
+    "poses": {
+      "rest": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 1.1944189326376765e-07,
+        "maximum_actual_armature_vs_lbs_error": 2.525516041618331e-07,
+        "rotations_radians": {}
+      },
+      "walk_left": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 2.525516041618331e-07,
+        "rotations_radians": {
+          "LeftUpperLeg": [
+            [
+              "X",
+              0.35
+            ]
+          ],
+          "RightUpperLeg": [
+            [
+              "X",
+              -0.35
+            ]
+          ],
+          "RightLowerLeg": [
+            [
+              "X",
+              0.45
+            ]
+          ],
+          "LeftUpperArm": [
+            [
+              "X",
+              -0.25
+            ]
+          ],
+          "RightUpperArm": [
+            [
+              "X",
+              0.25
+            ]
+          ]
+        }
+      },
+      "walk_right": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 2.5636927089222153e-07,
+        "rotations_radians": {
+          "LeftUpperLeg": [
+            [
+              "X",
+              -0.35
+            ]
+          ],
+          "RightUpperLeg": [
+            [
+              "X",
+              0.35
+            ]
+          ],
+          "LeftLowerLeg": [
+            [
+              "X",
+              0.45
+            ]
+          ],
+          "LeftUpperArm": [
+            [
+              "X",
+              0.25
+            ]
+          ],
+          "RightUpperArm": [
+            [
+              "X",
+              -0.25
+            ]
+          ]
+        }
+      },
+      "arm_bend": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 2.548762929901082e-07,
+        "rotations_radians": {
+          "LeftUpperArm": [
+            [
+              "X",
+              -0.6
+            ],
+            [
+              "Z",
+              -0.25
+            ]
+          ],
+          "RightUpperArm": [
+            [
+              "X",
+              -0.6
+            ],
+            [
+              "Z",
+              0.25
+            ]
+          ],
+          "LeftLowerArm": [
+            [
+              "X",
+              -0.8
+            ]
+          ],
+          "RightLowerArm": [
+            [
+              "X",
+              -0.8
+            ]
+          ]
+        }
+      },
+      "attack_stress": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 3.686345347181454e-07,
+        "rotations_radians": {
+          "UpperTorso": [
+            [
+              "Y",
+              0.16
+            ]
+          ],
+          "LeftUpperArm": [
+            [
+              "X",
+              -0.8
+            ]
+          ],
+          "RightUpperArm": [
+            [
+              "X",
+              -1.0
+            ]
+          ],
+          "RightLowerArm": [
+            [
+              "X",
+              -0.8
+            ]
+          ],
+          "LeftUpperLeg": [
+            [
+              "X",
+              -0.15
+            ]
+          ],
+          "RightUpperLeg": [
+            [
+              "X",
+              0.15
+            ]
+          ]
+        }
+      },
+      "head_turn": {
+        "maximum_shared_position_gap": 0.0,
+        "maximum_rest_position_error": 0.0,
+        "maximum_actual_armature_vs_lbs_error": 2.546924609419696e-07,
+        "rotations_radians": {
+          "Head": [
+            [
+              "Y",
+              0.4
+            ]
+          ]
+        }
+      }
+    },
+    "limitations": [
+      "Continuity does not prove good anatomical deformation, collisions, exact Animate or class combat timing.",
+      "Full skin Importer and R15 proxy/shared-joint integration still require Studio validation."
+    ]
+  },
+  "basic_motion_images": [
+    {
+      "pose": "rest",
+      "view": "front",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_basic_previews/rest_front.png",
+      "sha256": "e390a0185e1d93b9fa6b30fa78bb28d5ce20b3a7f0fb350769cfc737958badeb"
+    },
+    {
+      "pose": "rest",
+      "view": "side",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_basic_previews/rest_side.png",
+      "sha256": "80bbef8fcecfa577aa5ecd70a19069b185d8ccdc47142e9b02150c2ebb5e345d"
+    },
+    {
+      "pose": "walk_left",
+      "view": "front",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_basic_previews/walk_left_front.png",
+      "sha256": "30cf54b7703cbf32ab9e67de0512de894293ee6ae8be529db0079a9eed45f2a9"
+    },
+    {
+      "pose": "walk_left",
+      "view": "side",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_basic_previews/walk_left_side.png",
+      "sha256": "91ece97508f24e9a3eec9db0cc930300940c21274fc23b2c1f7bb20a60bf87a3"
+    },
+    {
+      "pose": "walk_right",
+      "view": "front",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_basic_previews/walk_right_front.png",
+      "sha256": "fd50ccc31876f71ba13a94ab902e4a626690528125c2f8061fa264e62bfd8077"
+    },
+    {
+      "pose": "walk_right",
+      "view": "side",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_basic_previews/walk_right_side.png",
+      "sha256": "8b11bf06ac549698ba76c98f5b9b1c394669de442cff14fcfb31b311d5821023"
+    },
+    {
+      "pose": "head_turn",
+      "view": "front",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_basic_previews/head_turn_front.png",
+      "sha256": "524545721f4adc0533aef3ed7a3079dff15b5e48536cd4a92c54a10ee9de3596"
+    },
+    {
+      "pose": "head_turn",
+      "view": "side",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_basic_previews/head_turn_side.png",
+      "sha256": "157a36e2f6afd6910769e727ed709bf2a0828a9bd9248b35e280e4f59b4bd5aa"
+    }
+  ],
+  "full_body_images": [
+    {
+      "view": "front",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/front.png",
+      "sha256": "97757e06b0689edd85d5cfb6b31b7a96423c52b484f648f67472e7e21336422f",
+      "metadata": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/front.json",
+      "metadata_sha256": "96a7a4f9289760e1c9a448aef0ee3a8a935208c6a411b5b3eba0fad608c56c81"
+    },
+    {
+      "view": "back",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/back.png",
+      "sha256": "6b576e04f422eb81b87621b12a09c14e352df1970f1354ac1f5e48512be8961f",
+      "metadata": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/back.json",
+      "metadata_sha256": "c4fdd9ed38a7fe1ef0cd9a81d83e991907f3cef1fee328e9858653e16f38432e"
+    },
+    {
+      "view": "side",
+      "render": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/side.png",
+      "sha256": "7fbf21d3499da963fffdebb54f554745d3992777a60fa37bacd5493708dbcb4b",
+      "metadata": "art/models/costume/expressions/Costume_HaloArcherF/face_union_mouth_v1_full_body_previews/side.json",
+      "metadata_sha256": "412cab53011d7899bf0a5df2e5d3e15b67bdbf5695b602290ebc6cf3f2ed9a17"
+    }
+  ],
+  "full_body_personally_reviewed": true,
+  "modest_outfit_offline_verified": true,
+  "rest_previews_personally_reviewed": true,
+  "rest_shading_policy": "original imported material with geometry QA area lights",
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false
+}

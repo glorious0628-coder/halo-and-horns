@@ -1,0 +1,144 @@
+{
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_FaceUnionMouthRestored_v1.glb",
+  "sha256": "7c5aa47e9b576c611d665422bf291a1b0e009f32742d70a3bd0a68b7efa2cd1a",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HaloWarriorF_preserved_v1\\Costume_HaloWarriorF_skin.glb",
+  "source_skin_sha256": "028c52651a0fe42d3d0ef77a38639f1349b3e9d8622b933f7672f3f38531e2f6",
+  "source_fixed": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloWarriorF.glb",
+  "source_fixed_sha256": "b1f8d7677ecd9c84998617137f279993eb3077a23c9b7ff96838f9822360606a",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "skin_joints_inverse_binds_preserved": true,
+  "original_position_normal_joint_weight_values_preserved": false,
+  "original_binary_prefix_preserved": true,
+  "original_non_facial_texture_bytes_preserved": true,
+  "original_body_primitive_unchanged": true,
+  "original_headbase_uv_unchanged": true,
+  "facial_signature_uv_convention": "Blender V = 1 - original glTF V; original UV bytes unchanged",
+  "original_head_triangles": 5091,
+  "original_face_triangles": 300,
+  "headbase_triangles": 4791,
+  "new_mouth_cap_triangles": 0,
+  "new_mouth_cap_vertices": 0,
+  "mouth_cap_weight_method": "none: exact original facial triangle union",
+  "original_triangles_only": true,
+  "mouth_cap_source_surface_distance_max": 0,
+  "source_to_game_affine": [
+    -5.499998222951427,
+    2.610549156865436e-07,
+    -1.571474185275974e-06,
+    0.0,
+    2.610549001176774e-07,
+    5.499998222951654,
+    5.4961744685330556e-08,
+    0.0,
+    1.571474186942583e-06,
+    5.4961671889447054e-08,
+    -5.499998222951434,
+    0.0,
+    -0.04073082950522275,
+    -1.9393415533906735,
+    0.23351985452874113,
+    1.0
+  ],
+  "expected_glb_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "camera_scale": 2.5956156316940167,
+  "camera_center": [
+    -0.04031101143481196,
+    2.3060753183042557
+  ],
+  "camera_target": [
+    -0.04073051628832301,
+    -0.20659304712264748,
+    2.4056568252898933
+  ],
+  "source_front_camera_scale": 2.656499484691281,
+  "camera_front_direction": [
+    2.736501728466227e-07,
+    0.9999999999999514,
+    1.49740436459887e-07
+  ],
+  "camera_front_up": [
+    9.153700317367649e-08,
+    -2.6489691956159708e-08,
+    0.9999999999999954
+  ],
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "limitations": [
+    "Only original connected mouth P/N restored in a new copy; exact original UV/JW/23 bones/images remain.",
+    "Lit three-state and exact-Fx plus native game QA still required."
+  ],
+  "preserved_skin_coordinate_proof": {
+    "skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HaloWarriorF_preserved_v1\\Costume_HaloWarriorF_skin.glb",
+    "skin_sha256": "028c52651a0fe42d3d0ef77a38639f1349b3e9d8622b933f7672f3f38531e2f6",
+    "source_sidecar_sha256": "76192b768c49f37904eeacf0c6eb0f39599c25505269bafd785402ecf2ebd083",
+    "fixed_to_skin_affine": [
+      [
+        1.0234565229210821,
+        -4.510624755658261e-08,
+        1.2355684153783404e-08,
+        7.81002431134073e-05
+      ],
+      [
+        -1.534726782509784e-08,
+        1.0234564209946315,
+        1.4302538493717683e-07,
+        -1.4225557571020263e-07
+      ],
+      [
+        -1.3590598715020874e-08,
+        -1.688358358356283e-08,
+        1.0234564900578424,
+        0.00014051848332158746
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "matched_original_head_triangles": 5091,
+    "matched_original_corners": 15273,
+    "maximum_coordinate_error": 1.4281206996835425e-07,
+    "approved_unchanged_headbase_coordinate_error": 2.948513494449885e-07,
+    "approved_unchanged_headbase_corners": 13250,
+    "old_mouth_geometry_modified_headbase_corners_excluded": 7,
+    "approved_baseline_head": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_HeadExpressions_R15.glb",
+    "approved_baseline_head_sha256": "549dd62570ad691f1f6653a2d697165f05712578dc4df0bf2c100eb009a66daf",
+    "approved_face_uv_maximum_error": 7.71227558482579e-08,
+    "approved_face_original_triangles": 300,
+    "source_front_camera_scale": 2.656499484691281,
+    "camera_target": [
+      -0.04073051628832301,
+      -0.20659304712264748,
+      2.4056568252898933
+    ],
+    "camera_front_direction": [
+      2.736501728466227e-07,
+      0.9999999999999514,
+      1.49740436459887e-07
+    ],
+    "camera_front_up": [
+      9.153700317367649e-08,
+      -2.6489691956159708e-08,
+      0.9999999999999954
+    ],
+    "original_bones_claimed": true,
+    "source_skin_bones": 23,
+    "runtime_validated": false
+  },
+  "approved_rigid_face_scope": {
+    "reviewed": true,
+    "approved_rigid_face_scope": true,
+    "baseline_manifest": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\expressions_manifest.json",
+    "baseline_manifest_sha256": "4aca42a6aa92bc6b0475dfaad0993c41cf251d20914657c99936c64ccafb6ec3"
+  },
+  "original_joint_weight_values_preserved": true,
+  "mouth_geometry_restoration_ledger": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\Costume_HaloWarriorF_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_geometry_restoration_ledger_sha256": "f83fe81cdb7d280d71adee9dd762f459a9c985ab76315fa520352c99d1f9715e",
+  "source_models_unchanged": true
+}

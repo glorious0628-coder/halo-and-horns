@@ -1,0 +1,309 @@
+{
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthRestored_v2.glb",
+  "sha256": "b8bd6b6a833463504a7140ba21150b31bcc3a1b2840750ef6e379c01884bd539",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsArcherM_v3\\Costume_HornsArcherM_skin_face_corrected.glb",
+  "source_skin_sha256": "45682297d43b8b6d817faa439e08156e3be83637f2e975a11eaa3db1ee7380e4",
+  "source_fixed": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HornsArcherM.glb",
+  "source_fixed_sha256": "9410d599c8b275df966a97efffa3c0991760944a8d4a0f504ccdabe4e6f9b1fb",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "skin_joints_inverse_binds_preserved": true,
+  "original_position_normal_joint_weight_values_preserved": false,
+  "original_binary_prefix_preserved": true,
+  "original_non_facial_texture_bytes_preserved": true,
+  "original_body_primitive_unchanged": true,
+  "original_headbase_uv_unchanged": true,
+  "facial_signature_uv_convention": "Blender V = 1 - original glTF V; original UV bytes unchanged",
+  "original_head_triangles": 6200,
+  "original_face_triangles": 368,
+  "headbase_triangles": 5832,
+  "new_mouth_cap_triangles": 0,
+  "new_mouth_cap_vertices": 0,
+  "mouth_cap_weight_method": "none: exact original facial triangle union",
+  "original_triangles_only": true,
+  "mouth_cap_source_surface_distance_max": 0,
+  "source_to_game_affine": [
+    -5.454662089954625,
+    -0.00453265444683693,
+    0.6628271200389647,
+    0.0,
+    0.0010664234577050739,
+    5.494592740800322,
+    0.04635004950449856,
+    0.0,
+    -0.6628417599672578,
+    0.046140214474211426,
+    -5.454467043942554,
+    0.0,
+    -0.13532704288363023,
+    -1.8822521375083867,
+    0.09204211048542413,
+    1.0
+  ],
+  "expected_glb_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "camera_scale": 2.5923469968373882,
+  "camera_center": [
+    -0.13342212387980912,
+    2.357668487721797
+  ],
+  "camera_target": [
+    -0.14810034181912318,
+    -0.01661073407789798,
+    2.4594244605332523
+  ],
+  "source_front_camera_scale": 2.653982739575889,
+  "camera_front_direction": [
+    -0.12063111365550186,
+    0.9926618876097338,
+    0.008397101006510824
+  ],
+  "camera_front_up": [
+    0.00019418453201533106,
+    -0.008435231735793202,
+    0.999964403945426
+  ],
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "limitations": [
+    "Only original connected mouth P/N restored in a new copy; exact original UV/JW/23 bones/images remain.",
+    "Lit three-state and exact-Fx plus native game QA still required."
+  ],
+  "preserved_skin_coordinate_proof": {
+    "skin": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsArcherM_v3\\Costume_HornsArcherM_skin_face_corrected.glb",
+    "skin_sha256": "45682297d43b8b6d817faa439e08156e3be83637f2e975a11eaa3db1ee7380e4",
+    "source_sidecar_sha256": "7a4bfa8e733be75c1774552d2b23f7298e45080daa6be99975c701706f4b8dc9",
+    "fixed_to_skin_affine": [
+      [
+        1.0237762650819044,
+        -1.1248912432883407e-07,
+        1.2692549711157177e-07,
+        0.0002030571387522847
+      ],
+      [
+        -1.1340360307677666e-07,
+        1.0237760387840353,
+        1.4673051450848409e-08,
+        9.883474773037107e-08
+      ],
+      [
+        -1.1153350975637738e-07,
+        3.073062854194265e-08,
+        1.0237761818499982,
+        -0.00015623039784802342
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "matched_original_head_triangles": 6200,
+    "matched_original_corners": 18600,
+    "maximum_coordinate_error": 1.7586953096177837e-07,
+    "approved_unchanged_headbase_coordinate_error": 2.6801571923165856e-07,
+    "approved_unchanged_headbase_corners": 11982,
+    "old_mouth_geometry_modified_headbase_corners_excluded": 0,
+    "approved_baseline_head": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_HeadExpressions_R15.glb",
+    "approved_baseline_head_sha256": "13f152a00379cab2572dfdcfee5a3eff345392418024c69aeaceda0331864a5f",
+    "approved_face_uv_maximum_error": 7.865545670338037e-08,
+    "approved_face_original_triangles": 365,
+    "complete_coincident_projected_uv_groups": [],
+    "source_front_camera_scale": 2.653982739575889,
+    "camera_target": [
+      -0.14810034181912318,
+      -0.01661073407789798,
+      2.4594244605332523
+    ],
+    "camera_front_direction": [
+      -0.12063111365550186,
+      0.9926618876097338,
+      0.008397101006510824
+    ],
+    "camera_front_up": [
+      0.00019418453201533106,
+      -0.008435231735793202,
+      0.999964403945426
+    ],
+    "original_bones_claimed": true,
+    "source_skin_bones": 23,
+    "runtime_validated": false
+  },
+  "approved_rigid_face_scope": {
+    "reviewed": true,
+    "approved_rigid_face_scope": true,
+    "baseline_manifest": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\expressions_manifest.json",
+    "baseline_manifest_sha256": "28cde86fbfe2e2c3cb0b689424db6a2d13ef512b68a0296fac76da923909b67e"
+  },
+  "verified_original_face_union_extension": {
+    "method": "Exact original mouth HeadBase triangle uniquely traced from recorded rest CG pixel and original UV",
+    "original_prepare_report": "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_HornsArcherM\\union_v2_prepare\\prepare_report.json",
+    "original_prepare_report_sha256": "b8a9bb029e3d6a1a357b7fb8ec69cf50a3fb67695eb313d9f976897a2fe87cec",
+    "ray_report": "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_HornsArcherM\\union_mouth_trace_v2_quarter.json",
+    "ray_report_sha256": "a68c6d2d5057a0dd7160a4ac7d0d8f68eb9b65ede18816bb65a6d6e7f915dede",
+    "source_skin_sha256": "6ab861994ce9740468837560a21b8d7e8fe1ac6223c61bb79227db73eb5791d8",
+    "original_scope_triangles": 366,
+    "added_original_mouth_triangles": [
+      {
+        "original_head_face_index": 3577,
+        "original_vertex_indices": [
+          617,
+          613,
+          610
+        ],
+        "original_gltf_uv": [
+          [
+            0.3669845759868622,
+            0.007433950901031494
+          ],
+          [
+            0.3698425590991974,
+            0.010577738285064697
+          ],
+          [
+            0.3701283633708954,
+            0.008005499839782715
+          ]
+        ],
+        "normalized_expression_uv": [
+          [
+            0.5546957372746361,
+            0.705378745256554
+          ],
+          [
+            0.5546957250326855,
+            0.6932180403777136
+          ],
+          [
+            0.5546957236964942,
+            0.7053788688938553
+          ]
+        ],
+        "ray_pixels": [
+          [
+            507,
+            541
+          ]
+        ]
+      },
+      {
+        "original_head_face_index": 3578,
+        "original_vertex_indices": [
+          613,
+          617,
+          573
+        ],
+        "original_gltf_uv": [
+          [
+            0.3698425590991974,
+            0.010577738285064697
+          ],
+          [
+            0.3669845759868622,
+            0.007433950901031494
+          ],
+          [
+            0.3669845759868622,
+            0.010863542556762695
+          ]
+        ],
+        "normalized_expression_uv": [
+          [
+            0.5546957250326855,
+            0.6932180403777136
+          ],
+          [
+            0.5546957372746361,
+            0.705378745256554
+          ],
+          [
+            0.550644798578352,
+            0.6891750439821681
+          ]
+        ],
+        "ray_pixels": [
+          [
+            506,
+            538
+          ]
+        ]
+      }
+    ],
+    "new_geometry_vertices": 0,
+    "approved_png_changes": 0,
+    "ready": false
+  },
+  "previous_verified_union_extensions": [
+    {
+      "method": "Exact original mouth HeadBase triangle uniquely traced from recorded rest CG pixel and original UV",
+      "original_prepare_report": "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_HornsArcherM\\paid_skin_v1\\prepare_report.json",
+      "original_prepare_report_sha256": "ea81c115bef8398477255884bc6032911fee31e823deabf57f56ae837a137b3d",
+      "ray_report": "C:\\Users\\glori\\Documents\\Game\\build\\expr_qa\\Costume_HornsArcherM\\union_mouth_trace_v1.json",
+      "ray_report_sha256": "57af295aaaa4df50fed0964005417182a6be5848fa7e3b86b2563528518fa77a",
+      "source_skin_sha256": "6ab861994ce9740468837560a21b8d7e8fe1ac6223c61bb79227db73eb5791d8",
+      "original_scope_triangles": 365,
+      "added_original_mouth_triangles": [
+        {
+          "original_head_face_index": 3582,
+          "original_vertex_indices": [
+            327,
+            278,
+            616
+          ],
+          "original_gltf_uv": [
+            [
+              0.11480429768562317,
+              0.23604214191436768
+            ],
+            [
+              0.11080310493707657,
+              0.23775696754455566
+            ],
+            [
+              0.11451849341392517,
+              0.24290132522583008
+            ]
+          ],
+          "normalized_expression_uv": [
+            [
+              0.5303860468876431,
+              0.7256579020482488
+            ],
+            [
+              0.5263351105673676,
+              0.7053787485723519
+            ],
+            [
+              0.5546957372746361,
+              0.705378745256554
+            ]
+          ],
+          "ray_pixels": [
+            [
+              410,
+              545
+            ],
+            [
+              411,
+              551
+            ],
+            [
+              416,
+              548
+            ]
+          ]
+        }
+      ],
+      "new_geometry_vertices": 0,
+      "approved_png_changes": 0,
+      "ready": false
+    }
+  ],
+  "original_joint_weight_values_preserved": true,
+  "mouth_geometry_restoration_ledger": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthRestored_v2.mouth.json",
+  "mouth_geometry_restoration_ledger_sha256": "f6b7bfe21275a19b6179f2c420777bb75fc20e4115342a1bf1f0c09372a4ee2a",
+  "source_models_unchanged": true
+}

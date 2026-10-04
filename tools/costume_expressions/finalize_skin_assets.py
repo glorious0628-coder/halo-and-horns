@@ -40,7 +40,7 @@ def png_size(path):
 
 def inspect(glb, prepared):
     report = json.loads(glb.with_suffix('.json').read_text(encoding='utf-8'))
-    if report['sha256'] != sha(glb) or report['rig_origin'] not in ['inferred_manual_candidate', 'preserved_original_paid_skin_candidate']:
+    if report['sha256'] != sha(glb) or report['rig_origin'] not in ['inferred_manual_candidate', 'preserved_original_paid_skin_candidate', 'corrected_preserved_bind_skin_proxy_candidate']:
         raise ValueError('Current explicitly identified skin candidate is required')
     source = Path(report['source_skin'])
     if sha(source) != report['source_skin_sha256'] or sha(report['source_fixed']) != report['source_fixed_sha256']:
@@ -205,7 +205,7 @@ def main():
     manifest = {'schema': 1, 'avatar': avatar, 'pipeline': 'preserved_continuous_skin_expression',
                 'skin_asset': relative(glb), 'skin_sha256': sha(glb), 'source_skin_sha256': report['source_skin_sha256'],
                 'source_fixed_sha256': report['source_fixed_sha256'], 'rig_origin': result['rig_origin'],
-                'original_bones_claimed': paid, 'source_skin_bones': result['source_skin_bones'],
+                'original_bones_claimed': result['original_bones_claimed'], 'source_skin_bones': result['source_skin_bones'],
                 'prepare_report': relative(prepare_destination),
                 'validation_report': relative(folder / args.validation_name),
                 'original_triangles_only': result['original_triangles_only'],

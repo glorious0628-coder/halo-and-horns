@@ -16,6 +16,9 @@ import skin_runtime as base
 import skin_schema
 import skin_expression_schema
 import skin_binding_schema
+import skin_corrected_weight_proof
+import skin_inferred_bind_schema
+import skin_face_weight_schema
 from skin_verify import VERIFY
 from assemble import manifest as proxy_manifest
 from constraints import JOINTS, PRIMARY, RigError
@@ -25,9 +28,19 @@ from preserve_skin import node_matrices
 
 def proxy_data(blueprint,input_path):
     plan=Path(blueprint["proxy_plan"])
-    package_path=Path(input_path)
+    package_path=Path(input_path).resolve()
     package=json.loads(package_path.read_text(encoding="utf-8"))
-    if package.get("kind")=="preserved_original_skin_pending":
+    if package.get("rig_origin")==skin_schema.INFERRED_BIND_ORIGIN:
+        proof=blueprint.get("inferred_bind_proof")
+        if not proof or proof.get("source_contract_sha256")!=base.sha(package_path): raise RigError("Exact independently reviewed inferred bind is required")
+        runtime_path=Path(proof["proxy_runtime"]).resolve()
+        runtime_path.relative_to(package_path.parent.resolve())
+        package={"kind":"inferred_bind_proxy_sidecar","proxy_runtime":str(runtime_path.relative_to(package_path.parent)),
+            "sha256":{"proxy_runtime":proof["proxy_runtime_sha256"]},"source_frame_policy":package["source_frame_policy"]}
+    if package.get("kind") in ("preserved_original_skin_pending","corrected_preserved_skin_pending","inferred_bind_proxy_sidecar"):
+        if package.get("kind")=="corrected_preserved_skin_pending":
+            proof=blueprint.get("corrected_weight_proof")
+            if not proof or proof.get("package_sha256")!=base.sha(package_path): raise RigError("Exact independently verified correction package is required")
         runtime_path=skin_schema.local_input(package_path.parent,package.get("proxy_runtime", "proxy_runtime.json"))
         expected=package.get("sha256",{}).get("proxy_runtime")
         if "proxy_runtime" in package and (not expected or not runtime_path.is_file()):
@@ -146,6 +159,9 @@ def prepare(path,model_path,proxy_override=None,pending_name=None,expression_man
           "joints_sha256":blueprint["proxy_plan_sha256"],"rig_origin":blueprint["rig_origin"],"original_bones_claimed":blueprint["original_bones_claimed"],
           "meshes":meshes,"bones":bones,"proxy_parts":parts,"root":proxy["root"],"joints":proxy["joints"],"hip_height":proxy["hip_height"],"target_height":5.5,"ready":False}
     if expression: data["expression"]=expression
+    if blueprint.get("corrected_weight_proof"): data["corrected_weight_proof"]=blueprint["corrected_weight_proof"]
+    if blueprint.get("inferred_bind_proof"): data["inferred_bind_proof"]=blueprint["inferred_bind_proof"]
+    if blueprint.get("face_weight_proof"): data["face_weight_proof"]=blueprint["face_weight_proof"]
     if binding_schema: data["binding_schema"]=binding_schema
     return data,points
 
@@ -184,7 +200,7 @@ def assembly():
         'model:SetAttribute("HHC_OriginalBonesClaimed",false)':'model:SetAttribute("HHC_OriginalBonesClaimed",DATA.original_bones_claimed)',
         'model:SetAttribute("HHC_SkinRuntimeSchema",1)':'model:SetAttribute("HHC_SkinRuntimeSchema",2)',
         'destination="ServerStorage.CostumePendingRigs."..DATA.name':'destination="ServerStorage.CostumePendingRigs."..DATA.pending_name',
-        '    local humanoid=Instance.new("Humanoid")':SCHEMA_METADATA+skin_expression_schema.ASSEMBLE+'\n    local humanoid=Instance.new("Humanoid")',
+        '    local humanoid=Instance.new("Humanoid")':SCHEMA_METADATA+skin_expression_schema.ASSEMBLE+skin_corrected_weight_proof.ASSEMBLE+skin_inferred_bind_schema.ASSEMBLE+skin_face_weight_schema.ASSEMBLE+'\n    local humanoid=Instance.new("Humanoid")',
     }
     for before,after in replacements.items():
         if before not in code: raise RigError("The guarded base assembler boundary changed: "+before)
@@ -202,7 +218,7 @@ def write_payload(data,mode,output,inspection=None,fit=None):
         code+=assembly().replace("__SNAP__",base.literal(inspection)).replace("__FIT__",base.literal(fit))
     elif mode=="verify":
         if inspection is None or fit is None: raise RigError("A strictly validated actual imported inventory is required")
-        matcher=skin_binding_schema.verify(VERIFY).replace('return HttpService:JSONEncode({schema=2',skin_expression_schema.VERIFY+'\nreturn HttpService:JSONEncode({schema=2')
+        matcher=skin_binding_schema.verify(VERIFY).replace('return HttpService:JSONEncode({schema=2',skin_expression_schema.VERIFY+skin_corrected_weight_proof.VERIFY+skin_inferred_bind_schema.VERIFY+skin_face_weight_schema.VERIFY+'\nreturn HttpService:JSONEncode({schema=2')
         code+=matcher.replace("__SNAP__",base.literal(inspection)).replace("__FIT__",base.literal(fit))
     else: raise RigError("Unknown generic mode")
     return base.write_draft(output,{"code":code,"datamodel_type":"Edit"})

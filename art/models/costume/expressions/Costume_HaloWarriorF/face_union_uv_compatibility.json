@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloWarriorF",
+  "expression_skin_sha256": "a81ba5413010532d8bb20627cbd19b75e7f19601901896b3967ef412eeda7a6f",
+  "comparison_manifest": "art/models/costume/expressions/Costume_HaloWarriorF/expressions_manifest.json",
+  "comparison_manifest_sha256": "4aca42a6aa92bc6b0475dfaad0993c41cf251d20914657c99936c64ccafb6ec3",
+  "normalized_original_face_uv_sha256": "f24c673cc9d03964894f7216e1dc54772aa8cfb13d0efee8295e88540812f0c0",
+  "canonical_normalized_original_face_uv_sha256": "f24c673cc9d03964894f7216e1dc54772aa8cfb13d0efee8295e88540812f0c0",
+  "normalized_original_face_uv_float32_exact": true,
+  "approved_png_bytes_unchanged": true,
+  "comparison_uv_basis": "Exact approved normalized projection checked by inspect against original fixed/skin corners",
+  "expression_pngs": [
+    {
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HaloWarriorF/Costume_HaloWarriorF_Expression_Neutral_face.png",
+      "sha256": "1c7a2e67c3eb5152e9858c09177a4ba4abcdbe55b339a784880bb19484d2b5f1"
+    },
+    {
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HaloWarriorF/Costume_HaloWarriorF_Expression_SoftSmile_face.png",
+      "sha256": "8ff4a08eda1d773190cde3978eeb007091c7086c11d1cf971c9274aa1b95d892"
+    },
+    {
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HaloWarriorF/Costume_HaloWarriorF_Expression_Serious_face.png",
+      "sha256": "d279152e3ca3a6e250a6ccdd54f3afd127a7d4b838fc718293b77608ab30f055"
+    }
+  ],
+  "mesh_asset_reimport_required": true,
+  "texture_reuse_policy": "Actual upload-ledger PNG SHA must match.",
+  "geometry_comparison_only": true,
+  "ready": false
+}

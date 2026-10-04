@@ -3,6 +3,7 @@ import argparse
 import datetime
 import hashlib
 import json
+import re
 import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -14,14 +15,17 @@ from studio_mcp import Client
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('name')
+    parser.add_argument('--tag', default='')
     args=parser.parse_args()
     assert args.name.startswith('Costume_') and args.name.replace('_','').isalnum()
+    assert not args.tag or re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{0,40}',args.tag)
     root=Path(__file__).resolve().parents[2]
-    folder=root/'build/costume_skin_expression_imports'/args.name
+    folder=root/'build/costume_skin_expression_imports'/(args.name+('_'+args.tag if args.tag else ''))
     p=folder/'texture_upload_ledger.json'
     d=json.loads(p.read_text(encoding='utf-8'))
     imported=json.loads((folder/'importer_ledger.json').read_text(encoding='utf-8'))
     assert imported['stage']=='Complete' and imported['model']==args.name
+    assert imported.get('batch_tag', '')==args.tag
     assert d['stage']=='Prepared' and d['root_reviewed'] and d['whole_batch_maximum_assets']<=10
     assert d['states']==['Serious','SoftSmile'] and d['maximum_assets']==2
     data={}

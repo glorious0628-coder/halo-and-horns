@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherF\\Costume_HaloArcherF_FaceUnionMouthRestored_v1.glb",
+  "source_sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+  "view": "back",
+  "source_unchanged": true,
+  "geometry_uv_weights_png_edits": false,
+  "camera_location": [
+    -1.3709462791666738e-06,
+    -15.15606689453125,
+    0.5775001049041748
+  ],
+  "camera_rotation": [
+    1.5707963705062866,
+    -0.0,
+    -8.742277657347586e-08
+  ],
+  "camera_scale": 6.159999847412109,
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherF\\face_union_mouth_v1_full_body_previews\\back.png",
+  "render_sha256": "6b576e04f422eb81b87621b12a09c14e352df1970f1354ac1f5e48512be8961f",
+  "shading_policy": "original imported material; full-body lit QA",
+  "ready": false,
+  "studio_called": false
+}

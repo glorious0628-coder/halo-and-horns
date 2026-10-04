@@ -170,20 +170,25 @@ def apply(plan_path,output,reviewed):
             joint['world' if collection is runtime['joints'] else 'joint_position']=position.tolist()
             joint['C0']=(position-centers[joint['part0']]).tolist()+IDENTITY
             joint['C1']=(position-centers[joint['part1']]).tolist()+IDENTITY
-    output.parent.mkdir(parents=True)
+    output.parent.mkdir(parents=True,exist_ok=True)
     proxy_path=output.parent/'proxy_joints.json';runtime_out=output.parent/'proxy_runtime.json'
     proxy.update(rig_origin='inferred_arm_bind_correction_candidate',original_bones_claimed=False,rig_ready_for_game=False,source_rest_positions_preserved=True)
     dump(proxy_path,proxy)
-    # Schema 2 is deliberate: the existing preserved-original schema 1 loader
-    # derives original_bones_claimed=True for every nonmanual source. A corrected
-    # bind must receive an explicit new runtime contract before any assembly.
-    manifest.update(schema=2,bind_correction_schema=1,rig_origin='corrected_preserved_bind_skin_proxy_candidate',original_bones_claimed=False,
+    # Schema 2 is deliberate: the separate inferred-bind proof is required;
+    # the preserved-original gate cannot claim these corrected binds as exact.
+    # A corrected bind needs its explicit contract before any assembly.
+    benchmark=manifest.get('original_benchmark_skin',str(source))
+    benchmark_sha=manifest.get('original_benchmark_skin_sha256',sha(source))
+    previous_count=manifest.get('changed_skin_vertices',0)
+    manifest.update(schema=2,name='Costume_HornsMageM',bind_correction_schema=1,rig_origin='corrected_preserved_bind_skin_proxy_candidate',original_bones_claimed=False,
         inferred_bind_joints=['LeftLowerArm','LeftHand'],bind_correction_plan=str(plan_path),bind_correction_plan_sha256=sha(plan_path),
-        original_benchmark_skin=str(source),original_benchmark_skin_sha256=sha(source),
+        original_benchmark_skin=benchmark,original_benchmark_skin_sha256=benchmark_sha,
+        bind_parent_skin=str(source),bind_parent_skin_sha256=sha(source),
         original_binary_prefix_preserved=True,original_geometry_uv_normals_material_images_preserved=True,
         original_mesh_skin_accessors_binary_images_materials_preserved=False,original_source_weights_exact=False,
         proxy_plan=str(proxy_path),proxy_plan_sha256=sha(proxy_path),proxy_runtime=str(runtime_out),
-        changed_skin_vertices=len(document['changes']),output=str(output),rig_ready_for_game=False,studio_motion_validated=False,
+        changed_skin_vertices=previous_count+len(document['changes']),changed_arm_vertices= len(document['changes']),
+        changed_skin_vertices_this_bind_stage=len(document['changes']),output=str(output),rig_ready_for_game=False,studio_motion_validated=False,
         original_rest_shape_preserved=True,requires_inferred_bind_contract_review=True,
         existing_original_skin_producer_compatible=False)
     manifest.pop('output_sha256',None)
@@ -262,9 +267,12 @@ def self_test(plan_path,candidate):
         except RigError:checks+=1
         else:raise AssertionError('Invalid measured point accepted')
     from skin_schema import load as production_load
-    try:production_load(candidate.with_suffix('.skin.json'))
-    except RigError:checks+=1
-    else:raise AssertionError('Inferred changed binds entered original-exact production path')
+    admitted=production_load(candidate.with_suffix('.skin.json'))
+    assert admitted['rig_origin']=='corrected_preserved_bind_skin_proxy_candidate'
+    assert admitted['original_bones_claimed'] is False
+    assert admitted['inferred_bind_proof']['changed_bind_joints']==['LeftLowerArm','LeftHand']
+    assert admitted['inferred_bind_proof']['changed_arm_vertices']==843
+    checks+=4
     with tempfile.TemporaryDirectory(prefix='arm_bind_guards_',dir=ROOT/'build') as temp:
         temp=Path(temp);gltf,binary,_=read_glb(candidate)
         def static_attribute(g):g['meshes'][0]['primitives'][0]['attributes']['POSITION']=g['meshes'][0]['primitives'][0]['attributes']['NORMAL']
@@ -289,7 +297,8 @@ def self_test(plan_path,candidate):
             except RigError:checks+=1
             else:raise AssertionError('Unreviewed/tampered application accepted')
     assert sha(source)==document['source_skin_sha256'];checks+=1
-    return {'meaningful_guard_checks':checks,'original_unchanged':True,'ready':False,'production_bind_contract_compatible':False}
+    return {'meaningful_guard_checks':checks,'original_unchanged':True,'ready':False,
+            'separate_inferred_contract_compatible':True,'actual_studio_validated':False}
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);sub=parser.add_subparsers(dest='command',required=True)

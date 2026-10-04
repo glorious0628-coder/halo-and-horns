@@ -177,7 +177,7 @@ def main():
                   mouth_geometry_restoration_ledger=str(ledger_path),
                   mouth_geometry_restoration_ledger_sha256=sha(ledger_path),
                   source_models_unchanged=True,ready=False,runtime_validated=False,roblox_uploaded=False,
-                  limitations=['Only original connected mouth P/N restored in a new copy; exact original UV/JW/23 bones/images remain.',
+                  limitations=['Only original connected mouth P/N restored in a new copy; exact original UV/JW/source bones/images remain.',
                                'Lit three-state and exact-Fx plus native game QA still required.'])
     output.with_suffix('.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     if sha(union)!=ledger['input_union_sha256'] or sha(source)!=ledger['source_skin_sha256']:

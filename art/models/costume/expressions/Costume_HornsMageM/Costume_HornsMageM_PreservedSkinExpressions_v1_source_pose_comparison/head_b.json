@@ -1,0 +1,28 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HornsMageM_preserved_v1\\Costume_HornsMageM_skin.glb",
+  "source_sha256": "0adfc9fa8827cd02229db055afd4cd68afde342cac1af16cb6437ec2545ad477",
+  "expression": null,
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsMageM\\Costume_HornsMageM_PreservedSkinExpressions_v1_source_pose_comparison\\head_b.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.8995990753173828,
+    9.861055374145508,
+    1.6842808723449707
+  ],
+  "camera_rotation": [
+    1.6925458908081055,
+    -0.023317139595746994,
+    -2.953981876373291
+  ],
+  "face_texture_size": null,
+  "source_unchanged": true,
+  "skin_pose": {
+    "Head": [
+      -8,
+      0,
+      -25
+    ]
+  },
+  "skin_pose_policy": "temporary offline original shared Head bone rotation; no source writes"
+}

@@ -1,0 +1,24 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_FaceUnionSkin_v1.glb",
+  "source_sha256": "c12e13cb6479e91a443c2cc4655515108f78574794c5973cef16129926025d9d",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\Costume_HaloMageF_Expression_Neutral_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageF\\face_union_v1_previews\\Neutral_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    4.898185729980469,
+    8.407236099243164,
+    2.293410539627075
+  ],
+  "camera_rotation": [
+    1.5707963705062866,
+    -3.4641277579794405e-07,
+    2.6179940700531006
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "shading_policy": "flat emission texture colors"
+}

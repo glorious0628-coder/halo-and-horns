@@ -1,0 +1,67 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HaloWarriorF_preserved_v1\\Costume_HaloWarriorF_skin.glb",
+  "source_sha256": "028c52651a0fe42d3d0ef77a38639f1349b3e9d8622b933f7672f3f38531e2f6",
+  "expression": null,
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorF\\face_union_mouth_winding_v1_fx_previews\\WarriorRelease_0_24_original.png",
+  "angle": 0,
+  "view_selector": "source-front",
+  "camera_location": [
+    -0.040727779269218445,
+    9.79340648651123,
+    2.40565824508667
+  ],
+  "camera_rotation": [
+    1.5707961320877075,
+    -9.153701086006549e-08,
+    3.141592264175415
+  ],
+  "face_texture_size": null,
+  "source_unchanged": true,
+  "shading_policy": "original imported material with geometry QA area lights",
+  "proxy_rotation_degrees": {
+    "UpperTorso": [
+      -32.0,
+      6.0,
+      0.0
+    ],
+    "Head": [
+      18.0,
+      0.0,
+      0.0
+    ],
+    "RightUpperArm": [
+      58.0,
+      0.0,
+      -12.0
+    ],
+    "RightLowerArm": [
+      6.0,
+      0.0,
+      0.0
+    ],
+    "RightHand": [
+      -75.0,
+      0.0,
+      0.0
+    ],
+    "LeftUpperArm": [
+      55.0,
+      0.0,
+      12.0
+    ],
+    "LeftLowerArm": [
+      12.0,
+      0.0,
+      0.0
+    ]
+  },
+  "pose_source": {
+    "file": "C:\\Users\\glori\\Documents\\Game\\src\\StarterPlayer\\StarterPlayerScripts\\Fx.luau",
+    "sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+    "clip": "WarriorRelease",
+    "time_seconds": 0.24
+  },
+  "maximum_proxy_part_bind_reproduction_error": 0.0,
+  "maximum_desired_bone_matrix_error": 4.057500541110315e-07,
+  "skin_pose_policy": "existing game Fx joint angles through exact original proxy world delta and all original shared bones; offline only; no source writes"
+}

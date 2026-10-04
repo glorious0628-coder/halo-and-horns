@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloArcherM",
+  "expression_sha256": "77a99d609d0d7264b2931587ce040bc64d27beca262fd33444bbf8fd31c2734e",
+  "original_skin_sha256": "7d09b5aec17a52f0a161835bdab5db2a81dcd035baa1f2f8f64a226cb6977756",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "ArcherSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_union_v1/ArcherSwing_0_19_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_union_v1/ArcherSwing_0_19_expression.png",
+      "original_render_sha256": "670f8c7c76dc265526581376077aadc493b08dac89912e8689d97520f1d0c97d",
+      "expression_render_sha256": "21ee20ea374a71d9f22118ee23a2a06232c479d3cc05527203d3116f544f84dd"
+    },
+    {
+      "clip": "ArcherRelease",
+      "time_seconds": 0.16,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_union_v1/ArcherRelease_0_16_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_union_v1/ArcherRelease_0_16_expression.png",
+      "original_render_sha256": "fa3fb00edc8a8a90083ca8938aa45fde0a42c2aefd03a62aaed38d4784ea03a1",
+      "expression_render_sha256": "8dd66772a706b21053ef73192566aaa2f00cca7ace071265447f2c616226b1dc"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_union_v1/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_union_v1/HurtBig_0_06_expression.png",
+      "original_render_sha256": "0918223e9839c8078f61ddf0d5fc42415767692e13b66c11e962447a05754d70",
+      "expression_render_sha256": "d62ca10e1fc76ea56c43eec6beb3f051f4c84e55016465c262bd3e5a506ddf35"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HaloArcherM/game_fx_neck_union_v1/game_fx_neck_qa.json",
+  "report_source_sha256": "444d29172a2ce08fdd91f93126c4147de21aa38f53e5a28545365055a42cdbfb",
+  "review_notes": "Original-only surface avoids the cap interpolation boundary. Original source skin deformation and mouth recess remain; actual game Animator/physics and three-state quality must still be checked."
+}

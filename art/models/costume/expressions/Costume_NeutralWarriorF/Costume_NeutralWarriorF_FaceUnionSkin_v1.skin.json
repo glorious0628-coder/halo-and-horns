@@ -1,0 +1,381 @@
+{
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "rig_ready_for_game": false,
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralWarriorF.glb",
+  "source_sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+  "landmark_config": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\NeutralWarriorF_v3\\manual_landmarks.json",
+  "weight_policy": "continuous_original_surface_edges_4ring_16passes",
+  "bone_names": [
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+  ],
+  "original_geometry_accessors_reused": true,
+  "surface_or_uv_design_changed": false,
+  "requires_studio_skin_motion_validation": true,
+  "source_to_game_affine": [
+    -5.618130240967611,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    5.618130240967611,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -5.618130240967611,
+    0.0,
+    -0.0001714203347960309,
+    -1.6774999999999998,
+    0.27475137406444344,
+    1.0
+  ],
+  "affine_layout": "gltf_column_major_16",
+  "target_height_studs": 5.5,
+  "source_frame_policy": "gltf-positive-z",
+  "source_original_local_vertex_bytes_preserved": true,
+  "output": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_FaceUnionSkin_v1.glb",
+  "output_sha256": "ae5d19c43d9f3f8777339f6917d1e9ef49d0d507915145979e9f2a4fcf7264c5",
+  "original_triangles": 14710,
+  "original_images_preserved": true,
+  "source_file_unchanged": true,
+  "unique_surface_positions": 7334,
+  "boundary_positions": 766,
+  "smoothing_band_positions": 4295,
+  "maximum_influences": 4,
+  "shared_position_weight_error": 0,
+  "meshes": 3,
+  "images": 3,
+  "api_calls": 0,
+  "studio_calls": 0,
+  "studio_motion_validated": false,
+  "expression_origin": "inferred_manual_candidate",
+  "original_two_surface_skin": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\NeutralWarriorF_skin_v3\\Costume_NeutralWarriorF_skin.glb",
+  "original_two_surface_skin_sha256": "319c07b1b688385bb4060834db8f18fb006a59d226f12370a17d643229c61939",
+  "original_sidecar_sha256": "10594bf3e4a8c5d9eafc098a1da3f9debe1ef665eda19f6a94cbafaede6bcae7",
+  "estimated_assets": 7,
+  "active_original_images": 2,
+  "expression_surfaces": [
+    {
+      "name": "CostumeSkinBody",
+      "mesh": 0,
+      "node": 0,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 9517,
+      "accessor_vertices": 13532,
+      "referenced_unique_vertices": 13532,
+      "unused_accessor_vertices": 0,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.3074951469898224,
+          0.0,
+          -0.2039795219898224
+        ],
+        "maximum": [
+          0.3074341118335724,
+          0.5709075927734375,
+          0.1887512505054474
+        ],
+        "center": [
+          -3.0517578125e-05,
+          0.28545379638671875,
+          -0.0076141357421875
+        ],
+        "size": [
+          0.6149292588233948,
+          0.5709075927734375,
+          0.3927307724952698
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.3074951469898224,
+          0.0,
+          -0.2039795219898224
+        ],
+        "maximum": [
+          0.3074341118335724,
+          0.5709075927734375,
+          0.1887512505054474
+        ],
+        "center": [
+          -3.0517578125e-05,
+          0.28545379638671875,
+          -0.0076141357421875
+        ],
+        "size": [
+          0.6149292588233948,
+          0.5709075927734375,
+          0.3927307724952698
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -1.7273763011320076,
+          -1.6774999999999998,
+          -0.7856777344206636
+        ],
+        "maximum": [
+          1.7273763639195059,
+          1.5299332117584714,
+          1.4207348950935823
+        ],
+        "center": [
+          3.1393749155839146e-08,
+          -0.07378339412076418,
+          0.31752858033645937
+        ],
+        "size": [
+          3.4547526650515135,
+          3.207433211758471,
+          2.206412629514246
+        ]
+      }
+    },
+    {
+      "name": "HeadBase",
+      "mesh": 1,
+      "node": 1,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 4985,
+      "accessor_vertices": 7204,
+      "referenced_unique_vertices": 6953,
+      "unused_accessor_vertices": 251,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.2749328911304474,
+          0.5268440246582031,
+          -0.2039795219898224
+        ],
+        "maximum": [
+          0.2729492485523224,
+          0.978973388671875,
+          0.2040863335132599
+        ],
+        "center": [
+          -0.0009918212890625,
+          0.7529087066650391,
+          5.340576171875e-05
+        ],
+        "size": [
+          0.5478821396827698,
+          0.4521293640136719,
+          0.4080658555030823
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.2749328911304474,
+          0.5268440246582031,
+          -0.2039795219898224
+        ],
+        "maximum": [
+          0.2729492485523224,
+          0.978973388671875,
+          0.2040863335132599
+        ],
+        "center": [
+          -0.0009918212890625,
+          0.7529087066650391,
+          5.340576171875e-05
+        ],
+        "size": [
+          0.5478821396827698,
+          0.4521293640136719,
+          0.4080658555030823
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -1.5336358478759833,
+          1.282378347205337,
+          -0.8718322280146036
+        ],
+        "maximum": [
+          1.5444373695618263,
+          3.8225000000000002,
+          1.4207348950935823
+        ],
+        "center": [
+          0.005400760842921515,
+          2.552439173602669,
+          0.27445133353948936
+        ],
+        "size": [
+          3.07807321743781,
+          2.5401216527946633,
+          2.292567123108186
+        ]
+      }
+    },
+    {
+      "name": "FaceExpression",
+      "mesh": 2,
+      "node": 18,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 208,
+      "accessor_vertices": 7204,
+      "referenced_unique_vertices": 373,
+      "unused_accessor_vertices": 6831,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.1350860893726349,
+          0.5632400512695312,
+          -0.1541595757007599
+        ],
+        "maximum": [
+          0.11779022216796875,
+          0.737579345703125,
+          0.2021637260913849
+        ],
+        "center": [
+          -0.008647933602333069,
+          0.6504096984863281,
+          0.0240020751953125
+        ],
+        "size": [
+          0.25287631154060364,
+          0.17433929443359375,
+          0.3563233017921448
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.2749328911304474,
+          0.5268440246582031,
+          -0.2039795219898224
+        ],
+        "maximum": [
+          0.2729492485523224,
+          0.978973388671875,
+          0.2040863335132599
+        ],
+        "center": [
+          -0.0009918212890625,
+          0.7529087066650391,
+          5.340576171875e-05
+        ],
+        "size": [
+          0.5478821396827698,
+          0.4521293640136719,
+          0.4080658555030823
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -0.6619322295869547,
+          1.4868559649615016,
+          -0.8610307691162589
+        ],
+        "maximum": [
+          0.7587598235036574,
+          2.4663168272078306,
+          1.1408399482436182
+        ],
+        "center": [
+          0.04841379695835135,
+          1.9765863960846661,
+          0.13990458956367968
+        ],
+        "size": [
+          1.4206920530906122,
+          0.979460862246329,
+          2.001870717359877
+        ]
+      }
+    }
+  ],
+  "expression_face_unused_original_head_positions_preserved": true,
+  "native_bounds_policy": "Compare actual Importer observations to both referenced and full-accessor bounds; never guess a basis, pad extents, or claim a successful import offline.",
+  "expression_manifest": "art/models/costume/expressions/Costume_NeutralWarriorF/face_union_manifest.json",
+  "expression_manifest_sha256": "d13ef2157d88fc9f5b98c60718dde7922b3fbb39779c4d85129ba9964d3e45b7",
+  "expression_validation": "art/models/costume/expressions/Costume_NeutralWarriorF/face_union_validation.json",
+  "expression_validation_sha256": "c2e36e7ed24272a23ba6e5602d134c2a972a639fb8767d98afa1ba44d79447ee",
+  "expression_meshes_validated_offline": true,
+  "expression_runtime_validated": false,
+  "api_called": false,
+  "uploads": 0,
+  "expression_states": {
+    "Neutral": {
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_Neutral_face.png",
+      "sha256": "1272adeb79c8c4b120b19285b9c46ae700614fe044f83d56f3d32805d2f6de56"
+    },
+    "SoftSmile": {
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_SoftSmile_face.png",
+      "sha256": "aac68839b2280e983a10d689de03ec192f9e5a77def6fa1aebc45ad82c471a7a"
+    },
+    "Serious": {
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorF/Costume_NeutralWarriorF_Expression_Serious_face.png",
+      "sha256": "559f49fb5fac2d10c324baf4cb0ca97aa6f1d0881497cba03c275b84ffc41534"
+    }
+  },
+  "requires_expression_root_weld_and_shared_actual_bone_host": true
+}

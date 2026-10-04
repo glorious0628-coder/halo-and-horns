@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralWarriorM",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_FaceUnionSkin_v1.glb",
+  "skin_sha256": "5dd1f6699c0c256896ba7b4bde4c236e30f521c12a334c52b0f75649ce5ced18",
+  "source_skin_sha256": "b54e953b68d793d886ee68ac14c9ad0e797cb31054fc07519a2d1d8a297c7f34",
+  "source_fixed_sha256": "0aecac75ca002dfac8646ce981820137b7a94966e6af6f2beb0d75141fb2ebfd",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "prepare_report": "art/models/costume/expressions/Costume_NeutralWarriorM/face_union_prepare_report.json",
+  "validation_report": "art/models/costume/expressions/Costume_NeutralWarriorM/face_union_validation.json",
+  "original_triangles_only": true,
+  "selected_original_face_triangles": 493,
+  "new_mouth_cap_vertices": 0,
+  "candidate_variant": "original_triangle_union_geometry_comparison_only",
+  "geometry_comparison_only": true,
+  "visual_quality_hold": true,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_NeutralWarriorM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0e61dd71bb86a84b1babe1a0f8180c87453a36fbe57acdd50458f09cdff22602",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-948cb463-83e8-4fdb-8c37-d16bf4820cb7.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralWarriorM/prompts/Neutral.txt",
+      "quality_status": "geometry comparison only; visual quality hold",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\ud3c9\uc18c",
+      "closed_mouth_offline_render_verified": false,
+      "offline_previews": []
+    },
+    {
+      "avatar": "Costume_NeutralWarriorM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "847358409e93c8822d973cc7a38e72fa8510eb55f98fcb31d66988b40dc8bf47",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-5ae77a55-a978-4ac8-be0a-68e4f3ecfff2.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralWarriorM/prompts/SoftSmile.txt",
+      "quality_status": "geometry comparison only; visual quality hold",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "NPC/\uc720\uc800 \ub300\ud654",
+      "closed_mouth_offline_render_verified": false,
+      "offline_previews": []
+    },
+    {
+      "avatar": "Costume_NeutralWarriorM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralWarriorM/Costume_NeutralWarriorM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "365cb2894a91e81d94df99b0a4830afb323c2512a3deea2f9ec2f0c4ac7d7a1e",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-992b8893-a60c-4a60-b10a-9d6cd71278af.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralWarriorM/prompts/Serious.txt",
+      "quality_status": "geometry comparison only; visual quality hold",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "trigger": "\uacf5\uaca9/\ud53c\uaca9",
+      "closed_mouth_offline_render_verified": false,
+      "offline_previews": []
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "original_face_provenance": "art/models/costume/expressions/Costume_NeutralWarriorM/face_union_provenance.json",
+  "original_face_provenance_sha256": "87183116a28e2a1a71eb6166ff670b9ffd7a6b6a172d5dbb0975933a3013af68",
+  "uv_texture_compatibility": "art/models/costume/expressions/Costume_NeutralWarriorM/face_union_uv_compatibility.json",
+  "uv_texture_compatibility_sha256": "dfeacb48820a19fed2cbbb3c1258185b6198e7b9d70c9f04b99b582da545684f",
+  "offline_visual_review": "Geometry comparison only; original mouth depression remains and is not visually approved.",
+  "limitations": [
+    "Exact preservation comparison only; a separate mouth-restored copy requires strict exception and lit/native QA."
+  ]
+}

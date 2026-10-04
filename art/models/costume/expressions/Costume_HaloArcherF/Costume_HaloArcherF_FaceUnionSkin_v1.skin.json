@@ -1,0 +1,381 @@
+{
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "rig_ready_for_game": false,
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_HaloArcherF.glb",
+  "source_sha256": "07451eec71f0b9785f867a53aac20e66d4af65e8259dce574a7c684826dad976",
+  "landmark_config": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_audit\\HaloArcherF_manual_landmarks_v3.json",
+  "weight_policy": "continuous_original_surface_edges_4ring_16passes",
+  "bone_names": [
+    "LowerTorso",
+    "UpperTorso",
+    "Head",
+    "LeftUpperArm",
+    "LeftLowerArm",
+    "LeftHand",
+    "RightUpperArm",
+    "RightLowerArm",
+    "RightHand",
+    "LeftUpperLeg",
+    "LeftLowerLeg",
+    "LeftFoot",
+    "RightUpperLeg",
+    "RightLowerLeg",
+    "RightFoot"
+  ],
+  "original_geometry_accessors_reused": true,
+  "surface_or_uv_design_changed": false,
+  "requires_studio_skin_motion_validation": true,
+  "source_to_game_affine": [
+    -5.615154536390827,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    5.615154536390827,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -5.615154536390827,
+    0.0,
+    0.0009425268810268413,
+    -2.1725,
+    0.15675241997092218,
+    1.0
+  ],
+  "affine_layout": "gltf_column_major_16",
+  "target_height_studs": 5.5,
+  "source_frame_policy": "gltf-positive-z",
+  "source_original_local_vertex_bytes_preserved": true,
+  "output": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloArcherF\\Costume_HaloArcherF_FaceUnionSkin_v1.glb",
+  "output_sha256": "c0961da7bca93d8b5e9f9b7f3e75ec340992390ed55a0c282f7e211d9f6dc013",
+  "original_triangles": 14545,
+  "original_images_preserved": true,
+  "source_file_unchanged": true,
+  "unique_surface_positions": 7250,
+  "boundary_positions": 935,
+  "smoothing_band_positions": 4791,
+  "maximum_influences": 4,
+  "shared_position_weight_error": 0,
+  "meshes": 3,
+  "images": 3,
+  "api_calls": 0,
+  "studio_calls": 0,
+  "studio_motion_validated": false,
+  "expression_origin": "inferred_manual_candidate",
+  "original_two_surface_skin": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\HaloArcherF_skin_v1\\Costume_HaloArcherF_skin.glb",
+  "original_two_surface_skin_sha256": "0b72fb526d6049712ade5db365de9deffa3264e9a80875a9191b089d3bbcc26f",
+  "original_sidecar_sha256": "5292757a608092a21b561e65b0f35074ec800920d51618a95bb551a49d3672c9",
+  "estimated_assets": 7,
+  "active_original_images": 2,
+  "expression_surfaces": [
+    {
+      "name": "CostumeSkinBody",
+      "mesh": 0,
+      "node": 0,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 9173,
+      "accessor_vertices": 12689,
+      "referenced_unique_vertices": 12689,
+      "unused_accessor_vertices": 0,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.2844848930835724,
+          0.0,
+          -0.2040100395679474
+        ],
+        "maximum": [
+          0.2848205864429474,
+          0.5616226196289062,
+          0.1620941460132599
+        ],
+        "center": [
+          0.0001678466796875,
+          0.2808113098144531,
+          -0.02095794677734375
+        ],
+        "size": [
+          0.5693054795265198,
+          0.5616226196289062,
+          0.3661041855812073
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.2844848930835724,
+          0.0,
+          -0.2040100395679474
+        ],
+        "maximum": [
+          0.2848205864429474,
+          0.5616226196289062,
+          0.1620941460132599
+        ],
+        "center": [
+          0.0001678466796875,
+          0.2808113098144531,
+          -0.02095794677734375
+        ],
+        "size": [
+          0.5693054795265198,
+          0.5616226196289062,
+          0.3661041855812073
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -1.598369081141585,
+          -2.1725,
+          -0.7534312593378313
+        ],
+        "maximum": [
+          1.5983691648139078,
+          0.981097800348953,
+          1.3023003191201543
+        ],
+        "center": [
+          4.1836161424058105e-08,
+          -0.5957010998255234,
+          0.2744345298911615
+        ],
+        "size": [
+          3.1967382459554927,
+          3.153597800348953,
+          2.0557315784579857
+        ]
+      }
+    },
+    {
+      "name": "HeadBase",
+      "mesh": 1,
+      "node": 1,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 5258,
+      "accessor_vertices": 7726,
+      "referenced_unique_vertices": 7610,
+      "unused_accessor_vertices": 116,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.249969482421875,
+          0.5328750610351562,
+          -0.2078399956226349
+        ],
+        "maximum": [
+          0.2503052055835724,
+          0.9794921875,
+          0.2080841362476349
+        ],
+        "center": [
+          0.00016786158084869385,
+          0.7561836242675781,
+          0.0001220703125
+        ],
+        "size": [
+          0.5002746880054474,
+          0.44661712646484375,
+          0.4159241318702698
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.249969482421875,
+          0.5328750610351562,
+          -0.2078399956226349
+        ],
+        "maximum": [
+          0.2503052055835724,
+          0.9794921875,
+          0.2080841362476349
+        ],
+        "center": [
+          0.00016786158084869385,
+          0.7561836242675781,
+          0.0001220703125
+        ],
+        "size": [
+          0.5002746880054474,
+          0.44661712646484375,
+          0.4159241318702698
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -1.4045598837338082,
+          0.8196758163010966,
+          -1.0116721616309519
+        ],
+        "maximum": [
+          1.4045598000614854,
+          3.3275,
+          1.3238061142348103
+        ],
+        "center": [
+          -4.1836161424058105e-08,
+          2.0735879081505484,
+          0.15606697630192923
+        ],
+        "size": [
+          2.8091196837952936,
+          2.5078241836989035,
+          2.3354782758657624
+        ]
+      }
+    },
+    {
+      "name": "FaceExpression",
+      "mesh": 2,
+      "node": 18,
+      "skin": 0,
+      "source_world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "referenced_triangles": 114,
+      "accessor_vertices": 7726,
+      "referenced_unique_vertices": 194,
+      "unused_accessor_vertices": 7532,
+      "referenced_source_bounds": {
+        "minimum": [
+          -0.09471133351325989,
+          0.594207763671875,
+          0.08158113807439804
+        ],
+        "maximum": [
+          0.1046295166015625,
+          0.7379608154296875,
+          0.1908417046070099
+        ],
+        "center": [
+          0.004959091544151306,
+          0.6660842895507812,
+          0.13621142134070396
+        ],
+        "size": [
+          0.1993408501148224,
+          0.1437530517578125,
+          0.10926056653261185
+        ]
+      },
+      "full_accessor_source_bounds": {
+        "minimum": [
+          -0.249969482421875,
+          0.5328750610351562,
+          -0.2078399956226349
+        ],
+        "maximum": [
+          0.2503052055835724,
+          0.9794921875,
+          0.2080841362476349
+        ],
+        "center": [
+          0.00016786158084869385,
+          0.7561836242675781,
+          0.0001220703125
+        ],
+        "size": [
+          0.5002746880054474,
+          0.44661712646484375,
+          0.4159241318702698
+        ]
+      },
+      "referenced_game_bounds": {
+        "minimum": [
+          -0.5865683779046162,
+          1.1640684197407776,
+          -0.9148532433856876
+        ],
+        "maximum": [
+          0.5327613009056327,
+          1.9712640204386838,
+          -0.30133827757146037
+        ],
+        "center": [
+          -0.026903538499491786,
+          1.5676662200897307,
+          -0.6080957604785739
+        ],
+        "size": [
+          1.119329678810249,
+          0.8071956006979062,
+          0.6135149658142273
+        ]
+      }
+    }
+  ],
+  "expression_face_unused_original_head_positions_preserved": true,
+  "native_bounds_policy": "Compare actual Importer observations to both referenced and full-accessor bounds; never guess a basis, pad extents, or claim a successful import offline.",
+  "expression_manifest": "art/models/costume/expressions/Costume_HaloArcherF/face_union_manifest.json",
+  "expression_manifest_sha256": "1d9efe67454993866168a4b6aad31eba9cc20ab088b886a45427d38b3cd6e302",
+  "expression_validation": "art/models/costume/expressions/Costume_HaloArcherF/face_union_validation.json",
+  "expression_validation_sha256": "e2f8ed37de94bf31e9b6496cec42109ce18ed8af57868eab987eaa4cef107c83",
+  "expression_meshes_validated_offline": true,
+  "expression_runtime_validated": false,
+  "api_called": false,
+  "uploads": 0,
+  "expression_states": {
+    "Neutral": {
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_Neutral_face.png",
+      "sha256": "7c94c1b4d477ff6d6ecf98e8629e7db8bff762954ca269042638e5ec0db94898"
+    },
+    "SoftSmile": {
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_SoftSmile_face.png",
+      "sha256": "d5e26aec9478f1716f4c683a7391a0deae9680a6a67562aaa124190e2585a7b2"
+    },
+    "Serious": {
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_Serious_face.png",
+      "sha256": "d1b29f2347675d23b76f4246a6d7761481aab23ffe656b99d32b5914504a147a"
+    }
+  },
+  "requires_expression_root_weld_and_shared_actual_bone_host": true
+}

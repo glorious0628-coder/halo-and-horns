@@ -1,0 +1,559 @@
+{
+  "schema": 1,
+  "kind": "original_mouth_wall_winding_only_v1",
+  "input_mouth_glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorM\\Costume_HaloWarriorM_FaceUnionMouthRestored_v1.glb",
+  "input_mouth_glb_sha256": "b348678aff8dd134374058dada7ea45ce2e07fb35361aea4dc2e08c29460d052",
+  "mouth_geometry_ledger": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorM\\Costume_HaloWarriorM_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_geometry_ledger_sha256": "0570367a0a24c263ace08c7d9a3227bea13ab2bbf948fcd78bf0532e4ca1ca3f",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HaloWarriorM_v3\\Costume_HaloWarriorM_skin_face_corrected.glb",
+  "source_skin_sha256": "8f131c49bdc6035db43b67c734bf01c0b336353e040288f133bc8ee46fc6707d",
+  "desired_original_surface_normal_sign": 1,
+  "changed_triangles": [
+    {
+      "expression_face_index": 207,
+      "original_head_face_index": 3936,
+      "old_original_vertex_indices": [
+        694,
+        710,
+        595
+      ],
+      "new_vertex_indices": [
+        694,
+        595,
+        710
+      ],
+      "original_fixed_cross_normal": [
+        -1.1573491969263492e-06,
+        2.323817558558882e-06,
+        -1.4639232111631793e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 215,
+      "original_head_face_index": 3944,
+      "old_original_vertex_indices": [
+        715,
+        793,
+        711
+      ],
+      "new_vertex_indices": [
+        715,
+        711,
+        793
+      ],
+      "original_fixed_cross_normal": [
+        -3.6632633463574707e-06,
+        2.2007011859778952e-06,
+        -1.830284787191116e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 216,
+      "original_head_face_index": 3945,
+      "old_original_vertex_indices": [
+        695,
+        713,
+        708
+      ],
+      "new_vertex_indices": [
+        695,
+        708,
+        713
+      ],
+      "original_fixed_cross_normal": [
+        1.828469433750251e-18,
+        4.1865224796454144e-12,
+        -3.4818594618202955e-11
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 221,
+      "original_head_face_index": 3950,
+      "old_original_vertex_indices": [
+        791,
+        712,
+        638
+      ],
+      "new_vertex_indices": [
+        791,
+        638,
+        712
+      ],
+      "original_fixed_cross_normal": [
+        -2.196780983593046e-06,
+        1.2316643698082408e-07,
+        -1.097582672268377e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 222,
+      "original_head_face_index": 3951,
+      "old_original_vertex_indices": [
+        638,
+        712,
+        579
+      ],
+      "new_vertex_indices": [
+        638,
+        579,
+        712
+      ],
+      "original_fixed_cross_normal": [
+        -3.791634234835398e-06,
+        4.451423186778505e-07,
+        -2.1929823320985437e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 223,
+      "original_head_face_index": 3952,
+      "old_original_vertex_indices": [
+        638,
+        579,
+        441
+      ],
+      "new_vertex_indices": [
+        638,
+        441,
+        579
+      ],
+      "original_fixed_cross_normal": [
+        -5.957136693195488e-06,
+        3.4798856826511954e-07,
+        -4.3876036875693245e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 224,
+      "original_head_face_index": 3953,
+      "old_original_vertex_indices": [
+        441,
+        579,
+        387
+      ],
+      "new_vertex_indices": [
+        441,
+        387,
+        579
+      ],
+      "original_fixed_cross_normal": [
+        -5.195184798969243e-06,
+        1.1098162054325932e-06,
+        -4.387604204893603e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 225,
+      "original_head_face_index": 3954,
+      "old_original_vertex_indices": [
+        443,
+        388,
+        83
+      ],
+      "new_vertex_indices": [
+        443,
+        83,
+        388
+      ],
+      "original_fixed_cross_normal": [
+        -2.9248581979211733e-06,
+        2.504195191040155e-07,
+        -5.116477847359742e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 226,
+      "original_head_face_index": 3955,
+      "old_original_vertex_indices": [
+        83,
+        388,
+        64
+      ],
+      "new_vertex_indices": [
+        83,
+        64,
+        388
+      ],
+      "original_fixed_cross_normal": [
+        -1.7221427160129047e-06,
+        1.7763841539113923e-06,
+        -4.375765156875734e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 227,
+      "original_head_face_index": 3956,
+      "old_original_vertex_indices": [
+        83,
+        64,
+        4079
+      ],
+      "new_vertex_indices": [
+        83,
+        4079,
+        64
+      ],
+      "original_fixed_cross_normal": [
+        1.6899104357109871e-06,
+        2.220469309749619e-06,
+        -5.469681534070798e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 228,
+      "original_head_face_index": 3957,
+      "old_original_vertex_indices": [
+        83,
+        4079,
+        4136
+      ],
+      "new_vertex_indices": [
+        83,
+        4136,
+        4079
+      ],
+      "original_fixed_cross_normal": [
+        2.9513755548142734e-06,
+        -6.29639660057573e-08,
+        -6.213310492574922e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 229,
+      "original_head_face_index": 3958,
+      "old_original_vertex_indices": [
+        4136,
+        4079,
+        4291
+      ],
+      "new_vertex_indices": [
+        4136,
+        4291,
+        4079
+      ],
+      "original_fixed_cross_normal": [
+        5.166373737165287e-06,
+        9.822634692711554e-07,
+        -4.387602884185948e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 230,
+      "original_head_face_index": 3959,
+      "old_original_vertex_indices": [
+        4136,
+        4291,
+        4342
+      ],
+      "new_vertex_indices": [
+        4136,
+        4342,
+        4291
+      ],
+      "original_fixed_cross_normal": [
+        5.997980945871486e-06,
+        1.507915110636771e-07,
+        -4.387602323288371e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 231,
+      "original_head_face_index": 3960,
+      "old_original_vertex_indices": [
+        4342,
+        4291,
+        4386
+      ],
+      "new_vertex_indices": [
+        4342,
+        4386,
+        4291
+      ],
+      "original_fixed_cross_normal": [
+        3.777270420448136e-06,
+        3.349961851497411e-07,
+        -2.1929789976281628e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 234,
+      "original_head_face_index": 3963,
+      "old_original_vertex_indices": [
+        592,
+        447,
+        576
+      ],
+      "new_vertex_indices": [
+        592,
+        576,
+        447
+      ],
+      "original_fixed_cross_normal": [
+        6.586678695930136e-19,
+        1.275447661201029e-12,
+        -1.3938627437716046e-11
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 235,
+      "original_head_face_index": 3964,
+      "old_original_vertex_indices": [
+        576,
+        447,
+        430
+      ],
+      "new_vertex_indices": [
+        576,
+        430,
+        447
+      ],
+      "original_fixed_cross_normal": [
+        6.729676765935416e-19,
+        1.275447581598944e-12,
+        -1.3938626799672076e-11
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 236,
+      "original_head_face_index": 3965,
+      "old_original_vertex_indices": [
+        594,
+        578,
+        692
+      ],
+      "new_vertex_indices": [
+        594,
+        692,
+        578
+      ],
+      "original_fixed_cross_normal": [
+        1.8692233585018616e-18,
+        4.418465586690488e-12,
+        -3.476286080605416e-11
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 237,
+      "original_head_face_index": 3966,
+      "old_original_vertex_indices": [
+        449,
+        97,
+        432
+      ],
+      "new_vertex_indices": [
+        449,
+        432,
+        97
+      ],
+      "original_fixed_cross_normal": [
+        2.7507188428008404e-19,
+        2.415848456005633e-13,
+        -6.94134006858898e-12
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 238,
+      "original_head_face_index": 3967,
+      "old_original_vertex_indices": [
+        432,
+        97,
+        62
+      ],
+      "new_vertex_indices": [
+        432,
+        62,
+        97
+      ],
+      "original_fixed_cross_normal": [
+        1.206227856449327e-19,
+        1.0569336175211407e-13,
+        -3.03683608547157e-12
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 247,
+      "original_head_face_index": 3976,
+      "old_original_vertex_indices": [
+        4389,
+        4284,
+        4382
+      ],
+      "new_vertex_indices": [
+        4389,
+        4382,
+        4284
+      ],
+      "original_fixed_cross_normal": [
+        1.0858728048218618e-06,
+        2.2425521355166342e-06,
+        -1.4639238470874998e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 254,
+      "original_head_face_index": 3983,
+      "old_original_vertex_indices": [
+        586,
+        704,
+        698
+      ],
+      "new_vertex_indices": [
+        586,
+        698,
+        704
+      ],
+      "original_fixed_cross_normal": [
+        -1.163502387245901e-06,
+        3.1524491193639824e-07,
+        -7.290347814112782e-06
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 256,
+      "original_head_face_index": 3985,
+      "old_original_vertex_indices": [
+        586,
+        700,
+        589
+      ],
+      "new_vertex_indices": [
+        586,
+        589,
+        700
+      ],
+      "original_fixed_cross_normal": [
+        3.8383600322469735e-19,
+        1.41020065338277e-12,
+        -6.941446839198383e-12
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 259,
+      "original_head_face_index": 3988,
+      "old_original_vertex_indices": [
+        583,
+        587,
+        391
+      ],
+      "new_vertex_indices": [
+        583,
+        391,
+        587
+      ],
+      "original_fixed_cross_normal": [
+        3.02777496213288e-19,
+        1.6066478121304486e-12,
+        -3.498538114078123e-12
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 260,
+      "original_head_face_index": 3989,
+      "old_original_vertex_indices": [
+        391,
+        587,
+        383
+      ],
+      "new_vertex_indices": [
+        391,
+        383,
+        587
+      ],
+      "original_fixed_cross_normal": [
+        3.02777496213288e-19,
+        1.6066478121304486e-12,
+        -3.4985381140781228e-12
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 405,
+      "original_head_face_index": 5197,
+      "old_original_vertex_indices": [
+        4383,
+        4432,
+        4387
+      ],
+      "new_vertex_indices": [
+        4383,
+        4387,
+        4432
+      ],
+      "original_fixed_cross_normal": [
+        3.6512180389622297e-06,
+        2.0990948650819833e-06,
+        -1.830288073479559e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 406,
+      "original_head_face_index": 5198,
+      "old_original_vertex_indices": [
+        4387,
+        4432,
+        4343
+      ],
+      "new_vertex_indices": [
+        4387,
+        4343,
+        4432
+      ],
+      "original_fixed_cross_normal": [
+        2.189557285143727e-06,
+        6.805285588767328e-08,
+        -1.097584643103564e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 412,
+      "original_head_face_index": 5204,
+      "old_original_vertex_indices": [
+        4395,
+        4401,
+        4297
+      ],
+      "new_vertex_indices": [
+        4395,
+        4297,
+        4401
+      ],
+      "original_fixed_cross_normal": [
+        1.1664189531897883e-06,
+        2.747662474061493e-07,
+        -7.29035760161745e-06
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    }
+  ],
+  "triangle_vertex_sets_preserved": true,
+  "position_normal_uv_joint_weight_bones_images_unchanged_from_parent": true,
+  "new_vertices": 0,
+  "new_triangles": 0,
+  "ready": false,
+  "runtime_validated": false
+}

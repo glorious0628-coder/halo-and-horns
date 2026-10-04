@@ -1,0 +1,85 @@
+{
+  "positive": true,
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorM\\Costume_HaloWarriorM_FaceUnionMouthWinding_v1.glb",
+  "sha256": "bd1283994aa956ad4a0d07d1e15f5a2ca6b927a2824a85e3b64030a82995098d",
+  "mutations": [
+    {
+      "mutation": "unlisted original triangle reversal",
+      "rejected": true,
+      "reason": "Non-mouth triangle indices changed"
+    },
+    {
+      "mutation": "replacement original vertex set",
+      "rejected": true,
+      "reason": "Only exact winding reversal of original three vertices allowed"
+    },
+    {
+      "mutation": "missing corrected original face",
+      "rejected": true,
+      "reason": "Only and all originally inverted, bounded mouth-wall triangles may reverse"
+    },
+    {
+      "mutation": "false original face provenance",
+      "rejected": true,
+      "reason": "Winding ledger does not match the exact original triangle"
+    },
+    {
+      "mutation": "wrong original surface orientation",
+      "rejected": true,
+      "reason": "Only and all originally inverted, bounded mouth-wall triangles may reverse"
+    },
+    {
+      "mutation": "Body original position",
+      "rejected": true,
+      "reason": "Only one appended triangle-index array is allowed"
+    },
+    {
+      "mutation": "Head restored position",
+      "rejected": true,
+      "reason": "Only one appended triangle-index array is allowed"
+    },
+    {
+      "mutation": "Head restored normal",
+      "rejected": true,
+      "reason": "Only one appended triangle-index array is allowed"
+    },
+    {
+      "mutation": "Face approved UV",
+      "rejected": true,
+      "reason": "Only one appended triangle-index array is allowed"
+    },
+    {
+      "mutation": "Head skin weights",
+      "rejected": true,
+      "reason": "Only one appended triangle-index array is allowed"
+    },
+    {
+      "mutation": "Head skin joints",
+      "rejected": true,
+      "reason": "Only one appended triangle-index array is allowed"
+    },
+    {
+      "mutation": "original Bone hierarchy",
+      "rejected": true,
+      "reason": "Only original Face triangle index reference may change"
+    },
+    {
+      "mutation": "original PNG byte",
+      "rejected": true,
+      "reason": "Only one appended triangle-index array is allowed"
+    },
+    {
+      "mutation": "false new triangle count",
+      "rejected": true,
+      "reason": "Original face and vertex counts must stay unchanged"
+    },
+    {
+      "mutation": "false engine promotion",
+      "rejected": true,
+      "reason": "Offline candidate may not claim engine promotion"
+    }
+  ],
+  "all_rejected": true,
+  "source_unchanged": true,
+  "ready": false
+}

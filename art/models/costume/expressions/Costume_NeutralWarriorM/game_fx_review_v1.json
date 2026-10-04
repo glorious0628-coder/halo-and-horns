@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralWarriorM",
+  "expression_sha256": "108547a10747590bbe4589f599fd12bf6c22209d49cd9c31c9afb39753db9c8e",
+  "original_skin_sha256": "b54e953b68d793d886ee68ac14c9ad0e797cb31054fc07519a2d1d8a297c7f34",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "original_proxy_package": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_NeutralWarriorM_preserved_v1\\package.json",
+  "original_proxy_package_sha256": "333aa54f6ce917d44d07c1f9d428d438496438fd4cbb0024a577029d4fa634fb",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "WarriorSwing",
+      "time_seconds": 0.17,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          12.0,
+          -30.0,
+          -6.0
+        ],
+        "Head": [
+          -4.0,
+          20.0,
+          3.0
+        ],
+        "RightUpperArm": [
+          145.0,
+          -12.0,
+          28.0
+        ],
+        "RightLowerArm": [
+          72.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -75.0,
+          0.0,
+          18.0
+        ],
+        "LeftUpperArm": [
+          38.0,
+          0.0,
+          -25.0
+        ],
+        "LeftLowerArm": [
+          25.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/WarriorSwing_0_17_original.png",
+      "expression_render": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/WarriorSwing_0_17_expression.png",
+      "original_render_sha256": "5619f6f3157d68f20342710dd13bd8b642a1a5b8526d6affc614ab27079c5df4",
+      "original_render_metadata": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/WarriorSwing_0_17_original.json",
+      "original_render_metadata_sha256": "65fb3f3f4e4220c7248b6cbf917107e8ffd626c8889a77b57e412eddb02b951c",
+      "expression_render_sha256": "b2d889cb79d05bb78ccf89c55bfb117b2b0c390fcbeb70bdf685d5fc418369af",
+      "expression_render_metadata": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/WarriorSwing_0_17_expression.json",
+      "expression_render_metadata_sha256": "7e9289e546b7c59fe320da0a7ca1f1415dbb5a47ca92e6cd179e3411f0aaf2db"
+    },
+    {
+      "clip": "WarriorRelease",
+      "time_seconds": 0.24,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          -32.0,
+          6.0,
+          0.0
+        ],
+        "Head": [
+          18.0,
+          0.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          58.0,
+          0.0,
+          -12.0
+        ],
+        "RightLowerArm": [
+          6.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -75.0,
+          0.0,
+          0.0
+        ],
+        "LeftUpperArm": [
+          55.0,
+          0.0,
+          12.0
+        ],
+        "LeftLowerArm": [
+          12.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/WarriorRelease_0_24_original.png",
+      "expression_render": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/WarriorRelease_0_24_expression.png",
+      "original_render_sha256": "e72da830904a1b3a0063c12de849ad148dd8dcc9c0cac38c18bde80428626192",
+      "original_render_metadata": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/WarriorRelease_0_24_original.json",
+      "original_render_metadata_sha256": "b01c6cf31b36645803f31f68f057b6647766e868ec7d42aec8615204ad1e5b1a",
+      "expression_render_sha256": "e9e9b4b141c7009ca25c31c1d7f353a0000bc557108b21589bf1cad8d432c48e",
+      "expression_render_metadata": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/WarriorRelease_0_24_expression.json",
+      "expression_render_metadata_sha256": "114868a7baac29a591bb965f60c222ee0a82c7c1ee22fbdbf3f004e64149b49b"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/HurtBig_0_06_expression.png",
+      "original_render_sha256": "9e1f6a2a83ac1e409f27270db602ddaf83dc8574f5fb837d484f5e4e94684ea6",
+      "original_render_metadata": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "cf7979974da5204c10940438dffce8711a0b91a9b9d49cfdff48ab6e2f92c27a",
+      "expression_render_sha256": "924c87b7555b1af6a6318bdde28b34405b1ca33a5455a925e9938e78bdb2ff0f",
+      "expression_render_metadata": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "c12854cffcd1ae88ed8d560205ba99d7eee7d4861e092b536431068d50d11d07"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_NeutralWarriorM/game_fx_neck_v1/game_fx_neck_qa.json",
+  "report_source_sha256": "f572d7e0c1f97da7380e48f191f50ebb67a91c41563f04645700d4c8cff70819",
+  "visual_quality_hold": true,
+  "review_notes": "All six original/expression exact Fx comparisons reviewed. Original source lower-jaw/neck clothing stretches at HurtBig; added mouth cap creates a visible lower-face edge and narrow slit. Hold visual promotion until no-cap union and lit geometry QA.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

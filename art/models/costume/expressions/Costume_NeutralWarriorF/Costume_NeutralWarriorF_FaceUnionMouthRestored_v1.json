@@ -1,0 +1,78 @@
+{
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.glb",
+  "sha256": "bd3caf5a4cdaeb9a7f026dced28a998090a77756a46ba2c010a83fdf4847cf28",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\build\\manual_partition_candidates\\NeutralWarriorF_skin_v3\\Costume_NeutralWarriorF_skin.glb",
+  "source_skin_sha256": "319c07b1b688385bb4060834db8f18fb006a59d226f12370a17d643229c61939",
+  "source_fixed": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralWarriorF.glb",
+  "source_fixed_sha256": "aca6993af7bf19dd4c975731fae249af01b780a3664e116e9ce7bde96b6181f9",
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "source_skin_bones": 15,
+  "skin_joints_inverse_binds_preserved": true,
+  "original_position_normal_joint_weight_values_preserved": false,
+  "original_binary_prefix_preserved": true,
+  "original_non_facial_texture_bytes_preserved": true,
+  "original_body_primitive_unchanged": true,
+  "original_headbase_uv_unchanged": true,
+  "facial_signature_uv_convention": "Blender V = 1 - original glTF V; original UV bytes unchanged",
+  "original_head_triangles": 5193,
+  "original_face_triangles": 208,
+  "headbase_triangles": 4985,
+  "new_mouth_cap_triangles": 0,
+  "new_mouth_cap_vertices": 0,
+  "mouth_cap_weight_method": "none: exact original facial triangle union",
+  "original_triangles_only": true,
+  "mouth_cap_source_surface_distance_max": 0,
+  "source_to_game_affine": [
+    -5.618130240967611,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    5.618130240967611,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -5.618130240967611,
+    0.0,
+    -0.0001714203347960309,
+    -1.6774999999999998,
+    0.27475137406444344,
+    1.0
+  ],
+  "expected_glb_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "camera_scale": 2.6565,
+  "camera_center": [
+    3.139374912325887e-08,
+    2.6675
+  ],
+  "camera_target": [
+    3.139374912325887e-08,
+    -0.27475137406444344,
+    2.6675
+  ],
+  "source_front_camera_scale": 2.6565,
+  "camera_front_direction": [
+    0,
+    1,
+    0
+  ],
+  "camera_front_up": [
+    0,
+    0,
+    1
+  ],
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "limitations": [
+    "Only original connected mouth P/N restored in a new copy; exact original UV/JW/source bones/images remain.",
+    "Lit three-state and exact-Fx plus native game QA still required."
+  ],
+  "original_joint_weight_values_preserved": true,
+  "mouth_geometry_restoration_ledger": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralWarriorF\\Costume_NeutralWarriorF_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_geometry_restoration_ledger_sha256": "f4f632c94b547f00d7e9ab01a455adbf7c7efbf54ce2215bc6256a04a044d289",
+  "source_models_unchanged": true
+}

@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HornsArcherM",
+  "expression_sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+  "original_skin_sha256": "45682297d43b8b6d817faa439e08156e3be83637f2e975a11eaa3db1ee7380e4",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "original_proxy_package": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin_corrected\\Costume_HornsArcherM_weights_v4\\package.json",
+  "original_proxy_package_sha256": "fcc8e4e0ab5e95520a1202413f6fff25032a95b0283c8b4e9f337bb2a6c2a3c5",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "shading_policy": "original imported shaded materials",
+  "records": [
+    {
+      "clip": "ArcherSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/ArcherSwing_0_19_original.png",
+      "expression_render": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/ArcherSwing_0_19_expression.png",
+      "original_render_sha256": "0241a6229de8962b5c646ed684786e9981d65f6e3c9f527e179a132d42ea2968",
+      "original_render_metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/ArcherSwing_0_19_original.json",
+      "original_render_metadata_sha256": "d171d71ad77f257d907e14ff1ca28aedd2326d67e72f6473936704b69894d9b9",
+      "expression_render_sha256": "a836d9da7ec8366691b65d7e0f409584732eb1a96a54d5c70f927e2d32cc469e",
+      "expression_render_metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/ArcherSwing_0_19_expression.json",
+      "expression_render_metadata_sha256": "c19f7c2df20a709ce4b86c92ab0d4c174215a034a24462aab8cb89aa5b4fd03f"
+    },
+    {
+      "clip": "ArcherRelease",
+      "time_seconds": 0.16,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/ArcherRelease_0_16_original.png",
+      "expression_render": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/ArcherRelease_0_16_expression.png",
+      "original_render_sha256": "9a1ed203c8e2fb77fce146c7d0987ed4f9d648993bd0ba227e28361732b85e6c",
+      "original_render_metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/ArcherRelease_0_16_original.json",
+      "original_render_metadata_sha256": "2f10e14b4557a9bbeab3be17966673c92f8b426bd815dbb0dfa3e6e11789d12a",
+      "expression_render_sha256": "2ddbc485fe1f814f75a0c5f82b86e9325f452c5d161188f26f2cb6918d058a91",
+      "expression_render_metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/ArcherRelease_0_16_expression.json",
+      "expression_render_metadata_sha256": "847e5c848cb320c80ef9ec8e312e904114fb7400f04d8fba3669170d67cb3822"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/HurtBig_0_06_original.png",
+      "expression_render": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/HurtBig_0_06_expression.png",
+      "original_render_sha256": "163e5c9848d5bb506f7a74ecaf2d8e1b7e195196efcd3077547220834228f244",
+      "original_render_metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "3277c6c2429445d67d29f264e56c7c104de6f019d61039a3049681bfe2b2a458",
+      "expression_render_sha256": "fff7ad3d3df7dc96ec58a6b9320e2fb4d6a49309a8e5fbc6828839b88023f144",
+      "expression_render_metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_fx_previews/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "42a677a131f1bc0eb836be5cdd7a0c06ce139f65ed49edb72f35ce4ad39ef3f3"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_mouth_winding_v1_lit/game_fx_neck_qa.json",
+  "report_source_sha256": "55a48da59771552729c54ba9be3ab67727678823f03ec76ca55ebcf642632278",
+  "visual_quality_hold": true,
+  "review_notes": "All six shaded original/expression exact Fx comparisons reviewed. Reversing five original inward mouth-wall triangle orders removes the major black shaded mouth slash. Small original corner shading and lower-jaw/neck boundary remain, especially at HurtBig. Only exact original vertex-set winding changes; PN inherited from bounded parent; all UV/JW/Bone/PNG exact. Visual promotion remains on hold.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ],
+  "rest_previews_personally_reviewed": true,
+  "rest_evidence": [
+    {
+      "image": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/Neutral_front.png",
+      "sha256": "6c8f7650010142118746475031a6b7105d65389a20874f73d4cb035a144f27f5",
+      "metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/Neutral_front.json",
+      "metadata_sha256": "76448b796c814bdfa907ee3cb5ee1ceccbc33683064bcd4a7bea36e17c3dfcb5"
+    },
+    {
+      "image": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/Neutral_quarter.png",
+      "sha256": "4fbe922b31a2254f2310530017dffece7ef5fc5ce800216cc6dc5f65bb6c3f3e",
+      "metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/Neutral_quarter.json",
+      "metadata_sha256": "feb4c3516eeb6be58323fe73807b2af83af01507a0114bf1b370f6f706d46b9b"
+    },
+    {
+      "image": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/SoftSmile_front.png",
+      "sha256": "2e05843b27b4001ef2f08da4b04396f7dbe6d49a982b869216e519258c2a0b60",
+      "metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/SoftSmile_front.json",
+      "metadata_sha256": "15266f1a80ec8825a97147244929da79e151e6af580c5273ac509e90d95ac909"
+    },
+    {
+      "image": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/SoftSmile_quarter.png",
+      "sha256": "0d30b0ddeb4225735176ccb7a76f548deef9155af78965dfa75deebb875295c1",
+      "metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/SoftSmile_quarter.json",
+      "metadata_sha256": "8b594ca49952ae3faf09f744161832d77e0ea1bfc17397ea45b5c6c404576b7e"
+    },
+    {
+      "image": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/Serious_front.png",
+      "sha256": "b6fb44cc0686102ed491fb61f7948ca815982ededbe74adb50a7216cb794979f",
+      "metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/Serious_front.json",
+      "metadata_sha256": "bc4c2e547142235873020c03790cecffa557ccfb7e2960511ae3d745d9a4d377"
+    },
+    {
+      "image": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/Serious_quarter.png",
+      "sha256": "3ba09d9ddd311b6196f1bf7c5067b5e23a9dd5f44825c0f806d852649bdac25a",
+      "metadata": "art/models/costume/expressions/Costume_HornsArcherM/face_union_mouth_winding_v1_previews/Serious_quarter.json",
+      "metadata_sha256": "fcf60aff9a752f351296deb5617b39ec27dce662b34600d01daa27e2c466d5fb"
+    }
+  ],
+  "roblox_uploaded": false
+}

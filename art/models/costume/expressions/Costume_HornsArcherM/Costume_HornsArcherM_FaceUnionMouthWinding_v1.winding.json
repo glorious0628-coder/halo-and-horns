@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "kind": "original_mouth_wall_winding_only_v1",
+  "input_mouth_glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthRestored_v2.glb",
+  "input_mouth_glb_sha256": "b8bd6b6a833463504a7140ba21150b31bcc3a1b2840750ef6e379c01884bd539",
+  "mouth_geometry_ledger": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthRestored_v2.mouth.json",
+  "mouth_geometry_ledger_sha256": "f6b7bfe21275a19b6179f2c420777bb75fc20e4115342a1bf1f0c09372a4ee2a",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\build\\costume_r15\\skin_candidates\\face_weight_corrections\\HornsArcherM_v3\\Costume_HornsArcherM_skin_face_corrected.glb",
+  "source_skin_sha256": "45682297d43b8b6d817faa439e08156e3be83637f2e975a11eaa3db1ee7380e4",
+  "desired_original_surface_normal_sign": -1,
+  "changed_triangles": [
+    {
+      "expression_face_index": 174,
+      "original_head_face_index": 3577,
+      "old_original_vertex_indices": [
+        617,
+        613,
+        610
+      ],
+      "new_vertex_indices": [
+        617,
+        610,
+        613
+      ],
+      "original_fixed_cross_normal": [
+        6.41510560122468e-06,
+        2.370727742514448e-12,
+        3.211027556962066e-11
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 185,
+      "original_head_face_index": 3588,
+      "old_original_vertex_indices": [
+        277,
+        4285,
+        4289
+      ],
+      "new_vertex_indices": [
+        277,
+        4289,
+        4285
+      ],
+      "original_fixed_cross_normal": [
+        1.3565226659245348e-10,
+        -2.503117645894128e-10,
+        9.885298634618612e-10
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 186,
+      "original_head_face_index": 3589,
+      "old_original_vertex_indices": [
+        4289,
+        4285,
+        4709
+      ],
+      "new_vertex_indices": [
+        4289,
+        4709,
+        4285
+      ],
+      "original_fixed_cross_normal": [
+        -1.167655002094302e-10,
+        -2.489660665248542e-10,
+        1.0068113157561081e-09
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 187,
+      "original_head_face_index": 3590,
+      "old_original_vertex_indices": [
+        4709,
+        4285,
+        4706
+      ],
+      "new_vertex_indices": [
+        4709,
+        4706,
+        4285
+      ],
+      "original_fixed_cross_normal": [
+        -2.475141275530219e-06,
+        -2.1383809066630546e-06,
+        3.281293886552301e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    },
+    {
+      "expression_face_index": 188,
+      "original_head_face_index": 3591,
+      "old_original_vertex_indices": [
+        4709,
+        4706,
+        5078
+      ],
+      "new_vertex_indices": [
+        4709,
+        5078,
+        4706
+      ],
+      "original_fixed_cross_normal": [
+        -6.084811086191981e-06,
+        -1.6631406524897653e-06,
+        2.5520559259436365e-05
+      ],
+      "reason": "Original inward mouth-wall projected winding opposes the approved adjacent skin normal after depression restoration"
+    }
+  ],
+  "triangle_vertex_sets_preserved": true,
+  "position_normal_uv_joint_weight_bones_images_unchanged_from_parent": true,
+  "new_vertices": 0,
+  "new_triangles": 0,
+  "ready": false,
+  "runtime_validated": false
+}

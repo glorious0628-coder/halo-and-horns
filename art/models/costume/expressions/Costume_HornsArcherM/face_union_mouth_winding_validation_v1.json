@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "kind": "original_mouth_wall_winding_only_v1",
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthWinding_v1.glb",
+  "sha256": "5cb843a3fa0322761c90847ee94eebff6f08147d4f4d8ecb590b967aee3ad64b",
+  "ledger": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionMouthWinding_v1.winding.json",
+  "ledger_sha256": "1b7b862e2d89b42dc4b83b7d1da462a4fe4ee9758c22bb817a43f4c171b9807e",
+  "parent_mouth_glb_sha256": "b8bd6b6a833463504a7140ba21150b31bcc3a1b2840750ef6e379c01884bd539",
+  "source_skin_sha256": "45682297d43b8b6d817faa439e08156e3be83637f2e975a11eaa3db1ee7380e4",
+  "parent_mouth_changed_original_vertices": 78,
+  "changed_original_mouth_triangles": 5,
+  "changed_expression_face_indices": [
+    174,
+    185,
+    186,
+    187,
+    188
+  ],
+  "original_triangle_vertex_sets_exact": true,
+  "new_vertices": 0,
+  "new_triangles": 0,
+  "parent_position_normal_uv_joint_weight_bones_images_exact": true,
+  "body_headbase_indices_exact": true,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false
+}

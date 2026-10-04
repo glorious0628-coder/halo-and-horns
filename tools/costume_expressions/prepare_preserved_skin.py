@@ -95,6 +95,12 @@ def main():
         raise ValueError('Original fixed texture/shape reference changed')
     sd, sb, _ = read_glb(skin); fd, fb, _ = read_glb(fixed)
     sidecar = load(skin.with_suffix('.skin.json'))
+    inferred_bind=sidecar.get('rig_origin')=='corrected_preserved_bind_skin_proxy_candidate'
+    if inferred_bind:
+        from skin_inferred_bind_proof import validate
+        validate(skin.with_suffix('.skin.json'))
+        if sidecar.get('original_bones_claimed') is not False:
+            raise ValueError('Inferred bind may not claim all original bones')
     if sidecar['output_sha256'] != sha(skin) or sidecar.get('source_skin_bones') != 23:
         raise ValueError('Exact original 23-bone paid skin required')
     fp, fixed_node = primitive_named(fd, 'Head')
@@ -228,7 +234,7 @@ def main():
                 'complete_coincident_projected_uv_groups': [{'fixed_faces': list(group), 'approved_baseline_faces': [r['baseline_face'] for r in rows]} for group, rows in coincident_uv_groups.items()],
                 'source_front_camera_scale': float(scale*factor), 'camera_target': target.tolist(),
                 'camera_front_direction': front.tolist(), 'camera_front_up': up.tolist(),
-                'original_bones_claimed': True, 'source_skin_bones': 23,
+                'original_bones_claimed': not inferred_bind, 'source_skin_bones': 23,
                 'runtime_validated': False}, 'original_sources_unchanged': True,
               'semantic_images_edited': False, 'ready': False}
     args.output.parent.mkdir(parents=True, exist_ok=True)

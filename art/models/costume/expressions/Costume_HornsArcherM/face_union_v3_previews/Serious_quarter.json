@@ -1,0 +1,23 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_FaceUnionSkin_v3.glb",
+  "source_sha256": "16efe883ff33f813e4fcf61e6d59b6b756fc58fd2eb60f85eb26c77ec253dc72",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\Costume_HornsArcherM_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HornsArcherM\\face_union_v3_previews\\Serious_quarter.png",
+  "angle": null,
+  "view_selector": "source-quarter",
+  "camera_location": [
+    3.7706916332244873,
+    9.183235168457031,
+    2.536269426345825
+  ],
+  "camera_rotation": [
+    1.563111662864685,
+    -0.0034842451568692923,
+    2.738933563232422
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true
+}

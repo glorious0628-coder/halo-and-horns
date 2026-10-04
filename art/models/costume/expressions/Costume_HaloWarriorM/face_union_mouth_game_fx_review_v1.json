@@ -1,0 +1,175 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloWarriorM",
+  "expression_sha256": "b348678aff8dd134374058dada7ea45ce2e07fb35361aea4dc2e08c29460d052",
+  "original_skin_sha256": "8f131c49bdc6035db43b67c734bf01c0b336353e040288f133bc8ee46fc6707d",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "original_proxy_package": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_HaloWarriorM_preserved_v1\\package.json",
+  "original_proxy_package_sha256": "879c49f2135f731349044c958fcdbf8ff22776d55353df2ef0c47e2dbb60f96e",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "shading_policy": "original imported shaded materials",
+  "records": [
+    {
+      "clip": "WarriorSwing",
+      "time_seconds": 0.17,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          12.0,
+          -30.0,
+          -6.0
+        ],
+        "Head": [
+          -4.0,
+          20.0,
+          3.0
+        ],
+        "RightUpperArm": [
+          145.0,
+          -12.0,
+          28.0
+        ],
+        "RightLowerArm": [
+          72.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -75.0,
+          0.0,
+          18.0
+        ],
+        "LeftUpperArm": [
+          38.0,
+          0.0,
+          -25.0
+        ],
+        "LeftLowerArm": [
+          25.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/WarriorSwing_0_17_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/WarriorSwing_0_17_expression.png",
+      "original_render_sha256": "cff73142853a47c6a2bc7e2584b05231fb9eec73e73eb4802f832f80408216d8",
+      "original_render_metadata": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/WarriorSwing_0_17_original.json",
+      "original_render_metadata_sha256": "8feb3f54b380949b1b623972110b1d2a48c2b85db64df4636d3ede67de0ab1f9",
+      "expression_render_sha256": "07694c5c40291fbf4e10d1b8e63cdfb5c0b3007b1837ab7ff3ef77ff43f9b4d7",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/WarriorSwing_0_17_expression.json",
+      "expression_render_metadata_sha256": "eca95c5ec87bbe664ce40c37ebc9642988792c8c78ecc911acbe3e4ea72b5b8f"
+    },
+    {
+      "clip": "WarriorRelease",
+      "time_seconds": 0.24,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          -32.0,
+          6.0,
+          0.0
+        ],
+        "Head": [
+          18.0,
+          0.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          58.0,
+          0.0,
+          -12.0
+        ],
+        "RightLowerArm": [
+          6.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -75.0,
+          0.0,
+          0.0
+        ],
+        "LeftUpperArm": [
+          55.0,
+          0.0,
+          12.0
+        ],
+        "LeftLowerArm": [
+          12.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/WarriorRelease_0_24_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/WarriorRelease_0_24_expression.png",
+      "original_render_sha256": "d793f22fd545467e0786b80d080cf125a9a39b4075df13f1f49c225c449f6f5d",
+      "original_render_metadata": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/WarriorRelease_0_24_original.json",
+      "original_render_metadata_sha256": "1599eba41513b546acfe1a725197fe4af850439ed2965ed8b8bcd86670c2e58b",
+      "expression_render_sha256": "30a1e141dfc2d1359e3cf239afd7d30b8f128411a03c364ad02f81a875666aee",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/WarriorRelease_0_24_expression.json",
+      "expression_render_metadata_sha256": "214010504101f33b3d39d08c78cfec18f800b24d002d3b88b7cc12be01c1b9ef"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/HurtBig_0_06_expression.png",
+      "original_render_sha256": "19ee840067d3f61b1411fb6c92011640116ba096af61a4a7e5d062f3c2b46d29",
+      "original_render_metadata": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "e378a7f3a52397628046e787ea1967cfdc801fd613aab18e2f4681c202bb8392",
+      "expression_render_sha256": "b5588f18aa94f8ce20b783671d889a7385be5600eb192897a7fdd1a6106de7f9",
+      "expression_render_metadata": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "febed5add71227341001177a1663cf8674146de235756c632e42e72c54475231"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HaloWarriorM/game_fx_neck_mouth_restored_v1_lit/game_fx_neck_qa.json",
+  "report_source_sha256": "4a57cfdb04018c4c758c940dc4bb94ea941b000b91da38c54f901c6e9ecc6fa5",
+  "visual_quality_hold": true,
+  "review_notes": "Lit rest and actual Swing/Release/HurtBig preserve original skin deformation, but original inward mouth-wall triangle winding leaves black upper-mouth fragments after P/N restoration. Keep this P/N-only diagnostic on hold; a separately approved winding-only copy is being reviewed.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

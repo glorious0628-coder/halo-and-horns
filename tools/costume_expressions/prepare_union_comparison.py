@@ -18,9 +18,12 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('glb',type=Path)
     parser.add_argument('prepare',type=Path)
+    parser.add_argument('--manifest',type=Path,help='Explicit approved PNG manifest for inferred manual skin')
+    parser.add_argument('--version',default='',help='Optional new alphanumeric evidence suffix; old comparison records remain unchanged')
     args=parser.parse_args()
     glb=args.glb.resolve();folder=glb.parent
-    names={k:folder/n for k,n in {'manifest':'face_union_manifest.json','validation':'face_union_validation.json',
+    if args.version and not args.version.isalnum():raise ValueError('Use an alphanumeric version suffix')
+    names={k:folder/(n.replace('.json','_'+args.version+'.json') if args.version else n) for k,n in {'manifest':'face_union_manifest.json','validation':'face_union_validation.json',
         'prepare':'face_union_prepare_report.json','provenance':'face_union_provenance.json',
         'compatibility':'face_union_uv_compatibility.json'}.items()}
     if any(p.exists() for p in names.values()) or glb.with_suffix('.skin.json').exists():
@@ -51,7 +54,7 @@ def main():
         'joint_slot_order':[sd['nodes'][i]['name'] for i in sd['skins'][0]['joints']],
         'geometry_normal_joint_weight_values_exact':True,'new_interpolated_vertices':0,'source_unchanged':True,
         'geometry_comparison_only':True,'visual_quality_hold':True,'ready':False}
-    baseline_path=folder/'expressions_manifest.json'
+    baseline_path=args.manifest.resolve() if args.manifest else folder/'expressions_manifest.json'
     baseline=json.loads(baseline_path.read_text(encoding='utf-8'))
     for row in baseline['records']:
         if sha(ROOT/row['png'])!=row['sha256']:raise ValueError('Approved GPT PNG changed')

@@ -1,0 +1,103 @@
+{
+  "checks": [
+    {
+      "scale": 1,
+      "accepted": true,
+      "label": "real imported internal graph"
+    },
+    {
+      "scale": 2,
+      "accepted": true,
+      "label": "real ScaleTo 2"
+    },
+    {
+      "scale": 1,
+      "accepted": true,
+      "label": "scale restored 1"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "missing binding schema"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "unknown binding schema"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "missing host ref"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "wrong host ref"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "disabled internal Weld"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "disabled root WeldConstraint"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "old outside HRP graph"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "wrong internal bind translation"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "wrong internal bind rotation"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "nonuniform root scale"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "child Model breaks skin namespace"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "anchored mesh"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "massful mesh"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "colliding mesh"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "second moving Head attachment"
+    },
+    {
+      "scale": 1,
+      "accepted": false,
+      "label": "extra internal constraint"
+    }
+  ],
+  "temporary_clones_removed": true,
+  "source_unchanged": true,
+  "schema": 1,
+  "passed": true
+}

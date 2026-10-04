@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralArcherM",
+  "pipeline": "preserved_continuous_skin_expression",
+  "skin_asset": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_FaceUnionSkin_v1.glb",
+  "skin_sha256": "4eaebb39192f1f3b24f7bfe212f953c026018da3459d1925d911c25e4357d3ce",
+  "source_skin_sha256": "fce99186fffb203d7b973e60611faa5195124f4f23b5e73aa2212ce607a4ffac",
+  "source_fixed_sha256": "ae6d11b9a400cdd67973e030e837beaf9c40db208690cd4ea39b208f5537a3a9",
+  "rig_origin": "inferred_manual_candidate",
+  "original_bones_claimed": false,
+  "source_skin_bones": 15,
+  "prepare_report": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_prepare_report.json",
+  "validation_report": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_validation.json",
+  "original_triangles_only": true,
+  "selected_original_face_triangles": 357,
+  "new_mouth_cap_vertices": 0,
+  "candidate_variant": "original_triangle_union_geometry_comparison_only",
+  "geometry_comparison_only": true,
+  "visual_quality_hold": true,
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "approved_states": [
+    "Neutral",
+    "SoftSmile",
+    "Serious"
+  ],
+  "approval_preview": "art/out/Avatar_Expressions_Preview_A.png",
+  "records": [
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Neutral_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "2e4c630ddb9c0632b9be41b94e06b096aae798377d8f28106188d86385231c4f",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1d588894-98f7-4d91-91bf-9213d1a0f071.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/Neutral.txt",
+      "quality_status": "geometry comparison only; visual quality hold",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": false,
+      "offline_previews": []
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_SoftSmile_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "79d5bdc0549dcf6a2b3b8c463c4a9a42b9f95f7e9f83d9d87fdd805cbea99ac5",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-1932879f-90bf-4e0b-8531-45a31d47d5d0.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/SoftSmile.txt",
+      "quality_status": "geometry comparison only; visual quality hold",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": false,
+      "offline_previews": []
+    },
+    {
+      "avatar": "Costume_NeutralArcherM",
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralArcherM/Costume_NeutralArcherM_Expression_Serious_face.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "1389e58f8b8be8c8104b1885d84f81ada131c7b10d55efd8c93149b3465cac13",
+      "builtin_gpt_generated": true,
+      "source": "C:\\Users\\glori\\.codex\\generated_images\\01a1013b-c18d-7870-87c3-f859469e24cf\\exec-27355c67-876b-4bb0-a988-246c4a83b418.png",
+      "prompt": "art/models/costume/expressions/Costume_NeutralArcherM/prompts/Serious.txt",
+      "quality_status": "geometry comparison only; visual quality hold",
+      "roblox_uploaded": false,
+      "runtime_validated": false,
+      "closed_mouth_offline_render_verified": false,
+      "offline_previews": []
+    }
+  ],
+  "meshes": [
+    "CostumeSkinBody",
+    "HeadBase",
+    "FaceExpression"
+  ],
+  "glb_expected_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "original_face_provenance": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_provenance.json",
+  "original_face_provenance_sha256": "433492b71b04458bbf1c16656bd4664b72ad9c4675e8993b62e4ac4fdc478632",
+  "uv_texture_compatibility": "art/models/costume/expressions/Costume_NeutralArcherM/face_union_uv_compatibility.json",
+  "uv_texture_compatibility_sha256": "f9ff52d33d887a696e3dc835451b2354c3680286d5c936c58a40f3e0a40b9711",
+  "offline_visual_review": "Geometry comparison only; original mouth depression remains and is not visually approved.",
+  "limitations": [
+    "Exact preservation comparison only; a separate mouth-restored copy requires strict exception and lit/native QA."
+  ]
+}

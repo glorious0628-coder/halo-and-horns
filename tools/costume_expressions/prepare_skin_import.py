@@ -9,13 +9,13 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('name');p.add_argument('--reviewed',action='store_true')
- p.add_argument('--tag',default='');p.add_argument('--manifest',choices=['skin_expressions_manifest.json','face_union_manifest.json','face_union_mouth_manifest_v1.json'],default='skin_expressions_manifest.json')
+ p.add_argument('--tag',default='');p.add_argument('--manifest',choices=['skin_expressions_manifest.json','face_union_manifest.json','face_union_mouth_manifest_v1.json','face_union_mouth_winding_manifest_v1.json'],default='skin_expressions_manifest.json')
  p.add_argument('--reuse-textures',action='store_true');a=p.parse_args()
  name=a.name
  assert name in {'Costume_'+f+c+g for f in ['Halo','Horns','Neutral'] for c in ['Warrior','Archer','Mage'] for g in ['M','F']}
  assert a.reviewed,'Root must inspect and show the exact images before preparing upload'
  assert not a.tag or re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{0,40}',a.tag)
- required_tags={'face_union_manifest.json':'FaceUnion_v1','face_union_mouth_manifest_v1.json':'FaceUnionMouth_v1'}
+ required_tags={'face_union_manifest.json':'FaceUnion_v1','face_union_mouth_manifest_v1.json':'FaceUnionMouth_v1','face_union_mouth_winding_manifest_v1.json':'FaceUnionMouthWinding_v1'}
  assert a.manifest=='skin_expressions_manifest.json' or a.tag==required_tags[a.manifest]
  source=ROOT/'art/models/costume/expressions'/name
  manifest_path=source/a.manifest;manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
@@ -31,13 +31,32 @@ def main():
   assert manifest['original_triangles_only'] and manifest['new_mouth_cap_vertices']==0
   current=check(glb)
   assert current['sha256']==validation['sha256']==manifest['skin_sha256']
-  expected_mouth_vertices={'Costume_HaloArcherM':71,'Costume_HaloMageF':75}.get(a.name)
+  expected_mouth_vertices={'Costume_HaloArcherM':71,'Costume_HaloMageF':75,'Costume_NeutralArcherM':41}.get(a.name)
   assert expected_mouth_vertices is not None,'Unreviewed mouth-restoration model'
   assert current['changed_original_mouth_vertices']==validation['changed_original_mouth_vertices']==expected_mouth_vertices
   assert current['new_vertices']==current['new_triangles']==0
   for key in ['body_topology_uv_joints_weights_bones_images_exact','non_mouth_position_normal_exact','headbase_face_shared_position_normal_exact','original_source_and_baseline_unchanged']:
    assert current[key] is validation[key] is True,key
-  for file_key in ['mouth_restoration_ledger','original_union_baseline','mouth_negative_tests','original_face_provenance','uv_texture_compatibility','game_fx_offline_review']:
+  motion_review_key='game_fx_offline_review'
+  if a.name=='Costume_NeutralArcherM':
+   assert manifest['game_fx_offline_verified'] is False and manifest['stock_animate_verified'] is False
+   assert manifest['modest_outfit_offline_verified'] is True
+   motion_review_key='basic_motion_offline_review'
+  for file_key in ['mouth_restoration_ledger','original_union_baseline','mouth_negative_tests','original_face_provenance','uv_texture_compatibility',motion_review_key]:
+   file=(ROOT/manifest[file_key]).resolve();file.relative_to(source.resolve());assert sha(file)==manifest[file_key+'_sha256']
+ elif a.manifest=='face_union_mouth_winding_manifest_v1.json':
+  from validate_mouth_winding import check
+  assert a.name=='Costume_HaloWarriorF','Unreviewed original-mouth winding model'
+  assert manifest['validation_kind']=='original_connected_mouth_pn_winding_exception_v1'
+  assert manifest['skin_sha256']=='1364e95a2c33145313a9c5c80b550f8668b66f9d01f4a850f933d6001e451d38'
+  assert manifest['original_triangles_only'] and manifest['new_mouth_cap_vertices']==0
+  current=check(glb)
+  assert current==validation and current['sha256']==manifest['skin_sha256']
+  assert current['parent_mouth_changed_original_vertices']==108 and current['changed_original_mouth_triangles']==21
+  assert current['new_vertices']==current['new_triangles']==0
+  for key in ['original_triangle_vertex_sets_exact','parent_position_normal_uv_joint_weight_bones_images_exact','body_headbase_indices_exact']:
+   assert current[key] is True,key
+  for file_key in ['mouth_restoration_ledger','mouth_winding_ledger','original_union_baseline','mouth_negative_tests','original_face_provenance','uv_texture_compatibility','game_fx_offline_review']:
    file=(ROOT/manifest[file_key]).resolve();file.relative_to(source.resolve());assert sha(file)==manifest[file_key+'_sha256']
  else:
   assert validation.get('validated') is True

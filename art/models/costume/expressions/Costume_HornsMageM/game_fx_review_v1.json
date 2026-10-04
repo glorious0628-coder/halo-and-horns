@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HornsMageM",
+  "expression_sha256": "3c5d10c349034f724385478a9f854f4ce406d74bdb3adc250cc540d0db518058",
+  "original_skin_sha256": "0adfc9fa8827cd02229db055afd4cd68afde342cac1af16cb6437ec2545ad477",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "MageSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          12.0,
+          -18.0,
+          -4.0
+        ],
+        "Head": [
+          -4.0,
+          12.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          34.0,
+          -8.0,
+          12.0
+        ],
+        "RightLowerArm": [
+          40.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -72.0,
+          0.0,
+          8.0
+        ],
+        "LeftUpperArm": [
+          78.0,
+          8.0,
+          -22.0
+        ],
+        "LeftLowerArm": [
+          42.0,
+          0.0,
+          0.0
+        ],
+        "LeftHand": [
+          -85.0,
+          0.0,
+          -12.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/MageSwing_0_19_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/MageSwing_0_19_expression.png",
+      "original_render_sha256": "ddbdccbe646ba6df19ec9138ff1ecc817175610963c99cc461f83b2345d4bcbb",
+      "original_render_metadata": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/MageSwing_0_19_original.json",
+      "original_render_metadata_sha256": "88b7ced676a6bf68585644f55c9fd2dcd8debfb67054f879700a92ea57206deb",
+      "expression_render_sha256": "934263b693989f82d7e0967a7d6d609e87d2148dcba5d8a477293d9753711932",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/MageSwing_0_19_expression.json",
+      "expression_render_metadata_sha256": "5100c30627fbe7058e5c19869f7a45b8943dc2178e6ea532a916b22a3f25c677"
+    },
+    {
+      "clip": "MageRelease",
+      "time_seconds": 0.33,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          16.0,
+          -18.0,
+          0.0
+        ],
+        "Head": [
+          16.0,
+          12.0,
+          0.0
+        ],
+        "RightUpperArm": [
+          36.0,
+          -8.0,
+          18.0
+        ],
+        "RightLowerArm": [
+          38.0,
+          0.0,
+          0.0
+        ],
+        "RightHand": [
+          -72.0,
+          0.0,
+          8.0
+        ],
+        "LeftUpperArm": [
+          116.0,
+          0.0,
+          -28.0
+        ],
+        "LeftLowerArm": [
+          24.0,
+          0.0,
+          0.0
+        ],
+        "LeftHand": [
+          -95.0,
+          0.0,
+          -12.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/MageRelease_0_33_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/MageRelease_0_33_expression.png",
+      "original_render_sha256": "498965e0bb4078168425839897ca09fcc0ce84862792c156e0a2c3321e183db8",
+      "original_render_metadata": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/MageRelease_0_33_original.json",
+      "original_render_metadata_sha256": "1a0048231e11279b1a27d062405ed6ae4ea2c22a005c8b1bc0322ba963ea7dfe",
+      "expression_render_sha256": "e2ccf06a9887f95b1f46be666f57ba6134892ec29639bf5e98e39c28d91fb291",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/MageRelease_0_33_expression.json",
+      "expression_render_metadata_sha256": "7acb3bf4b3090c98f4b6a720bb355f4a6ea0ac20b0fafe3d19b41c19d766510d"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/HurtBig_0_06_expression.png",
+      "original_render_sha256": "e9a67fe5f113defde731cb70384a5c88914b458e7add80a732d307717d65db27",
+      "original_render_metadata": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/HurtBig_0_06_original.json",
+      "original_render_metadata_sha256": "8611a9fdac4bbf7fafe6c9cf8dfef8e0112cb68ee693877f8d51314498f35a54",
+      "expression_render_sha256": "08111effd0aca6558e001864ac54dd9d691bcb3c620150070bf9d3abcc08ab71",
+      "expression_render_metadata": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/HurtBig_0_06_expression.json",
+      "expression_render_metadata_sha256": "18ed85c83076916f855abc1a05a698b0bf76a2044bc1e04f0c597363dffa7caf"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HornsMageM/game_fx_neck_v1/game_fx_neck_qa.json",
+  "report_source_sha256": "7548f0063f9f8cebb51ccc76edea5092233f321187e53efcdbf5ee59d6c4bb2c",
+  "visual_quality_hold": true,
+  "review_notes": "Exact MageRelease shows source jaw stretching and a conspicuous added cap/projection edge. Motion quality is held; a separate source weight correction and original-only union need verification.",
+  "offline_only": true,
+  "limitations": [
+    "Stock Animate base layer is identity offline.",
+    "Actual importer, Animator, physics, growth and three-state switching remain separate engine QA."
+  ]
+}

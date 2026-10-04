@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "avatar": "Costume_NeutralMageF",
+  "expression_skin_sha256": "95c5171d3dc933cfd21121d7212b79fee3b51e9d77315756244172ad62a522c1",
+  "comparison_manifest": "art/models/costume/expressions/Costume_NeutralMageF/expressions_manifest.json",
+  "comparison_manifest_sha256": "8f186f4fb7926f0e875aa318d41686c3b6fd23c418c73b464bcf33ffc81bdf96",
+  "normalized_original_face_uv_sha256": "3f6a8e02ea5a2cb2b8a28624a909266b3cb957f50c423a1f0bb7980839a8e00f",
+  "canonical_normalized_original_face_uv_sha256": "3f6a8e02ea5a2cb2b8a28624a909266b3cb957f50c423a1f0bb7980839a8e00f",
+  "normalized_original_face_uv_float32_exact": true,
+  "approved_png_bytes_unchanged": true,
+  "comparison_uv_basis": "Exact approved normalized projection checked by inspect against original fixed/skin corners",
+  "expression_pngs": [
+    {
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Neutral_face.png",
+      "sha256": "2f9ecc8718629bcee2d7cf5c501d2298e3fc9764c6d755419768f89280d835b7"
+    },
+    {
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_SoftSmile_face.png",
+      "sha256": "a266b96ac23e3e273abbc82ddb3123303872c8b9317b76bc294103360d6e1778"
+    },
+    {
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_NeutralMageF/Costume_NeutralMageF_Expression_Serious_face.png",
+      "sha256": "6ee6d507f7d3809106cd06512c8a110d3086c7e5915e841aa58575fcb19ae5e9"
+    }
+  ],
+  "mesh_asset_reimport_required": true,
+  "texture_reuse_policy": "Actual upload-ledger PNG SHA must match.",
+  "geometry_comparison_only": true,
+  "ready": false
+}

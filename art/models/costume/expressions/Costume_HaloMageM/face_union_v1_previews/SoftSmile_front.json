@@ -1,0 +1,24 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_FaceUnionSkin_v1.glb",
+  "source_sha256": "34928f74a5510c7b84f59387fd89fbaed8e7fe0855ab6a238a4983448ab1874e",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\Costume_HaloMageM_Expression_SoftSmile_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloMageM\\face_union_v1_previews\\SoftSmile_front.png",
+  "angle": null,
+  "view_selector": "source-front",
+  "camera_location": [
+    -0.04664229229092598,
+    9.935093879699707,
+    2.399420976638794
+  ],
+  "camera_rotation": [
+    1.5707963705062866,
+    -4.9497600684844656e-08,
+    3.141592264175415
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "shading_policy": "flat emission texture colors"
+}

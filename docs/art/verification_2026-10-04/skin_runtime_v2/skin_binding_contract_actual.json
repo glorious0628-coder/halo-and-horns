@@ -94,6 +94,26 @@
       "scale": 1,
       "accepted": false,
       "label": "extra internal constraint"
+    },
+    {
+      "server_template": true,
+      "accepted": true,
+      "label": "valid actual skin template"
+    },
+    {
+      "server_template": true,
+      "accepted": false,
+      "label": "disabled duplicate Neck"
+    },
+    {
+      "server_template": true,
+      "accepted": false,
+      "label": "renamed required Neck"
+    },
+    {
+      "server_template": true,
+      "accepted": true,
+      "label": "existing production rigid template"
     }
   ],
   "temporary_clones_removed": true,

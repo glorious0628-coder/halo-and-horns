@@ -1,0 +1,13 @@
+{
+  "avatar": "Costume_HaloWarriorM",
+  "reviewed": true,
+  "review_basis": "Previously approved original pilot; exact existing prepare_face_uv.py default alignment, not a new design",
+  "source_sha256": "3ccfc2f9c4c404a9e37c06d9cbea7ea1d8b5b3d35e91779b7dc8f589eb3c7917",
+  "mouth_center_screen": [385, 614],
+  "screen_scale": [1, 1],
+  "mouth_flatten_radius": [48, 40],
+  "mouth_cap_radius": [43, 32],
+  "crop_start_fraction": 0.58,
+  "surface_normal_sign": 1,
+  "runtime_validated": false
+}

@@ -165,10 +165,11 @@
     {
       "file": "skin_binding_contract_actual.json",
       "original_workspace_relative_path": "build/skin_binding_contract_actual.json",
-      "original_sha256": "71fa73fe7b2d8cb454256768a06c72d85a591d4507d61f3767ad6db2869a3054",
-      "copied_sha256": "71fa73fe7b2d8cb454256768a06c72d85a591d4507d61f3767ad6db2869a3054",
+      "original_sha256": "c623bd37e0a4ac6dcd67d5e566a068a0b1dd9edbfe6764cb294b4911877cc607",
+      "copied_sha256": "c623bd37e0a4ac6dcd67d5e566a068a0b1dd9edbfe6764cb294b4911877cc607",
       "removed_user_id_fields": 0,
-      "original_unchanged": true
+      "original_unchanged": true,
+      "actual_checks": 23
     },
     {
       "file": "halo_archer_m_face_union_binding_mechanics_actual.json",
@@ -345,6 +346,16 @@
       "copied_sha256": "5b2d65680a527dbb31e48678410f6d56534c8f9a810ddfef1cee5273e618fee3",
       "removed_user_id_fields": 0,
       "original_unchanged": true
+    },
+    {
+      "file": "skin_binding_contract_19_actual_legacy.json",
+      "original_workspace_relative_path": "build/skin_binding_contract_actual.json",
+      "original_sha256": "71fa73fe7b2d8cb454256768a06c72d85a591d4507d61f3767ad6db2869a3054",
+      "copied_sha256": "71fa73fe7b2d8cb454256768a06c72d85a591d4507d61f3767ad6db2869a3054",
+      "removed_user_id_fields": 0,
+      "original_unchanged": true,
+      "source_reexecuted_after_copy": true,
+      "note": "Earlier actual 19-check snapshot. Root later overwrote the build response with 23 checks; this original SHA remains historical."
     }
   ],
   "redaction": "Nested JSON objects and JSON strings have user_id/UserId/userId removed; original raw-file SHA remains the provenance reference.",
@@ -386,5 +397,6 @@
     "remaining_monster_asset_warnings": true
   },
   "latest_game_eligible_costumes": 2,
-  "latest_scope": "MouthRestored BindingSchema1 native diagnostic + actual events + production smoke; single-client only"
+  "latest_scope": "MouthRestored BindingSchema1 native diagnostic + actual events + production smoke; single-client only",
+  "latest_shared_binding_checks": 23
 }

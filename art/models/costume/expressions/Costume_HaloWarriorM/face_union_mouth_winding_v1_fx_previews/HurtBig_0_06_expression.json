@@ -1,0 +1,65 @@
+{
+  "source": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorM\\Costume_HaloWarriorM_FaceUnionMouthWinding_v1.glb",
+  "source_sha256": "bd1283994aa956ad4a0d07d1e15f5a2ca6b927a2824a85e3b64030a82995098d",
+  "expression": "C:\\Users\\glori\\Documents\\Game\\art\\out\\Costume_HaloWarriorM_Expression_Serious_face.png",
+  "render": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_HaloWarriorM\\face_union_mouth_winding_v1_fx_previews\\HurtBig_0_06_expression.png",
+  "angle": 0,
+  "view_selector": "source-front",
+  "camera_location": [
+    -1.7755136489868164,
+    9.754316329956055,
+    2.3931307792663574
+  ],
+  "camera_rotation": [
+    1.5860644578933716,
+    -0.012462825514376163,
+    -2.9698519706726074
+  ],
+  "face_texture_size": [
+    1254,
+    1254
+  ],
+  "source_unchanged": true,
+  "shading_policy": "original imported material with geometry QA area lights",
+  "proxy_rotation_degrees": {
+    "UpperTorso": [
+      24.0,
+      0.0,
+      10.0
+    ],
+    "Head": [
+      26.0,
+      0.0,
+      8.0
+    ],
+    "RightUpperArm": [
+      35.0,
+      0.0,
+      45.0
+    ],
+    "LeftUpperArm": [
+      35.0,
+      0.0,
+      -45.0
+    ],
+    "RightLowerArm": [
+      50.0,
+      0.0,
+      0.0
+    ],
+    "LeftLowerArm": [
+      50.0,
+      0.0,
+      0.0
+    ]
+  },
+  "pose_source": {
+    "file": "C:\\Users\\glori\\Documents\\Game\\src\\StarterPlayer\\StarterPlayerScripts\\Fx.luau",
+    "sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+    "clip": "HurtBig",
+    "time_seconds": 0.06
+  },
+  "maximum_proxy_part_bind_reproduction_error": 0.0,
+  "maximum_desired_bone_matrix_error": 2.7089591497775345e-07,
+  "skin_pose_policy": "existing game Fx joint angles through exact original proxy world delta and all original shared bones; offline only; no source writes"
+}

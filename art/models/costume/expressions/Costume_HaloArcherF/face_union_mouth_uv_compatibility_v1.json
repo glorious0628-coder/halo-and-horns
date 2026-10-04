@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HaloArcherF",
+  "expression_skin_sha256": "6176e23b78cb594932ae7d2b6108f87a2659ec3092b5e294484793764afe2fe0",
+  "comparison_manifest": "art/models/costume/expressions/Costume_HaloArcherF/skin_expressions_manifest.json",
+  "comparison_manifest_sha256": "92b29953fd7b4f5f21dcbc345b070c1a4ca8d0dca7015468b6bacdf82bced345",
+  "normalized_original_face_uv_sha256": "efe9049ed0f9c4b9e5e1f552dac1c39cbe937b6f53472bd7e2da5f25d98b78ca",
+  "canonical_normalized_original_face_uv_sha256": "efe9049ed0f9c4b9e5e1f552dac1c39cbe937b6f53472bd7e2da5f25d98b78ca",
+  "normalized_original_face_uv_float32_exact": true,
+  "approved_png_bytes_unchanged": true,
+  "comparison_uv_basis": "Exact approved normalized projection checked by inspect against original fixed/skin corners",
+  "expression_pngs": [
+    {
+      "state": "Neutral",
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_Neutral_face.png",
+      "sha256": "7c94c1b4d477ff6d6ecf98e8629e7db8bff762954ca269042638e5ec0db94898"
+    },
+    {
+      "state": "SoftSmile",
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_SoftSmile_face.png",
+      "sha256": "d5e26aec9478f1716f4c683a7391a0deae9680a6a67562aaa124190e2585a7b2"
+    },
+    {
+      "state": "Serious",
+      "png": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_Expression_Serious_face.png",
+      "sha256": "d1b29f2347675d23b76f4246a6d7761481aab23ffe656b99d32b5914504a147a"
+    }
+  ],
+  "mesh_asset_reimport_required": true,
+  "texture_reuse_policy": "Actual upload-ledger PNG SHA must match.",
+  "geometry_comparison_only": true,
+  "ready": false,
+  "comparison_union": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_FaceUnionSkin_v1.glb",
+  "comparison_union_sha256": "c0961da7bca93d8b5e9f9b7f3e75ec340992390ed55a0c282f7e211d9f6dc013",
+  "original_geometry_preserved": false,
+  "geometry_exception": "recorded original mouth P/N only",
+  "mouth_restoration_ledger": "art/models/costume/expressions/Costume_HaloArcherF/Costume_HaloArcherF_FaceUnionMouthRestored_v1.mouth.json",
+  "mouth_restoration_ledger_sha256": "f7baeaf30fff7001882a2b5ee4a2cce305a6662ce24842b88fbbaf53b76f2fb4"
+}

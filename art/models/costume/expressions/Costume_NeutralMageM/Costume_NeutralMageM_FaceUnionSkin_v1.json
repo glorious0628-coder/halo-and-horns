@@ -1,0 +1,141 @@
+{
+  "glb": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_FaceUnionSkin_v1.glb",
+  "sha256": "c3c68c288a7bb03f6f9bf9a0274d5ec23c3635aa6b5acc7d130521239a976c68",
+  "source_skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_NeutralMageM_preserved_v1\\Costume_NeutralMageM_skin.glb",
+  "source_skin_sha256": "62abccef62b87a9eaffece53c2ef664bd7f1f4bf9de773936570ad43c38a16ef",
+  "source_fixed": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\fixed\\Costume_NeutralMageM.glb",
+  "source_fixed_sha256": "04481a1c0dbe593fc6f9b2629f4949571dca15cc8de516a80898464fd35dc28c",
+  "rig_origin": "preserved_original_paid_skin_candidate",
+  "original_bones_claimed": true,
+  "source_skin_bones": 23,
+  "skin_joints_inverse_binds_preserved": true,
+  "original_position_normal_joint_weight_values_preserved": true,
+  "original_binary_prefix_preserved": true,
+  "original_non_facial_texture_bytes_preserved": true,
+  "original_body_primitive_unchanged": true,
+  "original_headbase_uv_unchanged": true,
+  "facial_signature_uv_convention": "Blender V = 1 - original glTF V; original UV bytes unchanged",
+  "original_head_triangles": 6295,
+  "original_face_triangles": 464,
+  "headbase_triangles": 5831,
+  "new_mouth_cap_triangles": 0,
+  "new_mouth_cap_vertices": 0,
+  "mouth_cap_weight_method": "none: exact original facial triangle union",
+  "original_triangles_only": true,
+  "mouth_cap_source_surface_distance_max": 0,
+  "source_to_game_affine": [
+    -5.449235369223583,
+    -0.07236255863846644,
+    -0.40226337803975354,
+    0.0,
+    -0.05090123470765108,
+    5.456495717495391,
+    -0.29203051837373944,
+    0.0,
+    0.4055381973500103,
+    -0.28746551004197485,
+    -5.441885760049393,
+    0.0,
+    -0.1032234775851598,
+    -1.7520928370129931,
+    0.20593869706699,
+    1.0
+  ],
+  "expected_glb_import_assets": 7,
+  "full_set_maximum_import_assets": 9,
+  "camera_scale": 2.5777550618157,
+  "camera_center": [
+    -0.14208092268137004,
+    2.45790852222561
+  ],
+  "camera_target": [
+    -0.14343567787686198,
+    0.024765555401555384,
+    2.558538731149312
+  ],
+  "source_front_camera_scale": 2.63937295926719,
+  "camera_front_direction": [
+    0.07421258164775295,
+    0.9958539766844676,
+    -0.05260560661096391
+  ],
+  "camera_front_up": [
+    -0.009314826880601167,
+    0.053441090310412546,
+    0.9985275578904262
+  ],
+  "ready": false,
+  "runtime_validated": false,
+  "roblox_uploaded": false,
+  "limitations": [
+    "Original paid skeleton is preserved; new expression copy is not engine validated.",
+    "Exact original mouth recess and inner surface remain; no new mouth-cover geometry."
+  ],
+  "preserved_skin_coordinate_proof": {
+    "skin": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\prepared\\skin\\Costume_NeutralMageM_preserved_v1\\Costume_NeutralMageM_skin.glb",
+    "skin_sha256": "62abccef62b87a9eaffece53c2ef664bd7f1f4bf9de773936570ad43c38a16ef",
+    "source_sidecar_sha256": "a04d1a3a8ca2b1eee632963a5407c5f4b3b3bd47766b77cadefec57782c052a8",
+    "fixed_to_skin_affine": [
+      [
+        1.02390385739567,
+        1.2863180340999317e-08,
+        8.173784305883977e-08,
+        7.815082421608753e-05
+      ],
+      [
+        9.278993977718984e-10,
+        1.0239037053458733,
+        -4.907275832203084e-09,
+        2.2717547953522483e-07
+      ],
+      [
+        -3.8039841081349105e-08,
+        1.0428017578438753e-07,
+        1.0239039754324333,
+        5.462537694762162e-05
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "matched_original_head_triangles": 6295,
+    "matched_original_corners": 18885,
+    "maximum_coordinate_error": 1.394356087407624e-07,
+    "approved_unchanged_headbase_coordinate_error": 2.581232619123575e-07,
+    "approved_unchanged_headbase_corners": 15132,
+    "old_mouth_geometry_modified_headbase_corners_excluded": 0,
+    "approved_baseline_head": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\Costume_NeutralMageM_HeadExpressions_R15.glb",
+    "approved_baseline_head_sha256": "cb626256f6b06e3216a1294d2d41d1c6f28d855062e38ac32b769bfb6670bc7d",
+    "approved_face_uv_maximum_error": 7.939853818861309e-08,
+    "approved_face_original_triangles": 464,
+    "complete_coincident_projected_uv_groups": [],
+    "source_front_camera_scale": 2.63937295926719,
+    "camera_target": [
+      -0.14343567787686198,
+      0.024765555401555384,
+      2.558538731149312
+    ],
+    "camera_front_direction": [
+      0.07421258164775295,
+      0.9958539766844676,
+      -0.05260560661096391
+    ],
+    "camera_front_up": [
+      -0.009314826880601167,
+      0.053441090310412546,
+      0.9985275578904262
+    ],
+    "original_bones_claimed": true,
+    "source_skin_bones": 23,
+    "runtime_validated": false
+  },
+  "approved_rigid_face_scope": {
+    "reviewed": true,
+    "approved_rigid_face_scope": true,
+    "baseline_manifest": "C:\\Users\\glori\\Documents\\Game\\art\\models\\costume\\expressions\\Costume_NeutralMageM\\expressions_manifest.json",
+    "baseline_manifest_sha256": "c8f8f7faf32ec6b9092ef5e6d3f2cca941856ab219b79282056ee5d1d532f95d"
+  }
+}

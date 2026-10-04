@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "avatar": "Costume_HornsArcherM",
+  "expression_sha256": "92bb3964a270e558bd8ac1c885fd3b30045d9761d75a71f894352666fa581c54",
+  "original_skin_sha256": "6ab861994ce9740468837560a21b8d7e8fe1ac6223c61bb79227db73eb5791d8",
+  "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+  "pose_basis": "actual proxy parts[].cframe and joints[].C0/C1 FK into all original shared Bone matrices",
+  "records": [
+    {
+      "clip": "ArcherSwing",
+      "time_seconds": 0.19,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v1/ArcherSwing_0_19_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v1/ArcherSwing_0_19_expression.png",
+      "original_render_sha256": "7dcf9f477cae82e10241c5f665bc87e5ab32ec3edcaf492b4cc7ad2be4d0013f",
+      "expression_render_sha256": "9fb8269ce1e9210ad6a1e3344aef526105e1aa12eea1ef2cac575ba9560c23c0"
+    },
+    {
+      "clip": "ArcherRelease",
+      "time_seconds": 0.16,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          0.0,
+          -65.0,
+          0.0
+        ],
+        "Head": [
+          0.0,
+          65.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v1/ArcherRelease_0_16_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v1/ArcherRelease_0_16_expression.png",
+      "original_render_sha256": "3685d0f059f29da5468eea889caf7092c8cf2fe1b973fd7c57e093b7fb79e0b9",
+      "expression_render_sha256": "58786f9bb7f7605de5ad915e206a6912f6a2a36bd19ed01fea4ff699e2528c32"
+    },
+    {
+      "clip": "HurtBig",
+      "time_seconds": 0.06,
+      "proxy_rotation_degrees": {
+        "UpperTorso": [
+          24.0,
+          0.0,
+          10.0
+        ],
+        "Head": [
+          26.0,
+          0.0,
+          8.0
+        ],
+        "RightUpperArm": [
+          35.0,
+          0.0,
+          45.0
+        ],
+        "LeftUpperArm": [
+          35.0,
+          0.0,
+          -45.0
+        ],
+        "RightLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ],
+        "LeftLowerArm": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      "animator_base_layer": "identity; stock Animate not captured offline",
+      "fx_sha256": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+      "original_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v1/HurtBig_0_06_original.png",
+      "expression_render": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v1/HurtBig_0_06_expression.png",
+      "original_render_sha256": "35ebd9689a5d877f9e290021fcf6ac2f25dbe810d19557dbe2b26f773f1d34f6",
+      "expression_render_sha256": "74862c833800dddc789fa62a0c7d20d8a567dcfc1cb42ee36bb0ad36e9319d92"
+    }
+  ],
+  "personally_reviewed": true,
+  "runtime_validated": false,
+  "ready": false,
+  "studio_called": false,
+  "paid_api_calls": 0,
+  "report_source": "build/expr_qa/Costume_HornsArcherM/game_fx_neck_union_v1/game_fx_neck_qa.json",
+  "report_source_sha256": "b5b4769efc0ae1561d7d8f6e7aa90de97e2652e2a408ea414382ff423631e32c",
+  "visual_quality_hold": true,
+  "review_notes": "Original mouth white corner remains in all three rest expressions. Exact original weights distort cheeks/jaw at HurtBig and the projected face boundary is visible. No final package or quality approval; investigate missing original mouth triangles and wait for separately approved weight correction."
+}
