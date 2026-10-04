@@ -13,6 +13,7 @@ Read this file first, then `docs/HANDOFF_CODEX.md` (full state, history and next
 - Does **not** want explanations or design theory. Wants a working, playable Roblox Studio game. Report briefly: what changed, what to click/play.
 - **All visual design is done with GPT image generation** (you can generate images natively). Generate options, show them one by one, let the user pick, then implement exactly the picked image. Never invent visual styling in code.
 - The user has GPT Pro: generate images freely.
+- **Cutout quality (user-confirmed 2026-10-04):** Check transparent assets enlarged on both light and dark backgrounds, then in the actual client. Preserve the approved artwork's border and lettering; remove detached fragments, background-colored fringes, and holes. A successful upload is not visual approval. Fix visible cutout defects before reporting completion.
 
 ## Hard rules
 1. **Roblox moderation safety.** The user's old Roblox account was suspended on 2026-10-03 for "sexual content" (anime female characters with revealing outfits). Every character/creature image must have modest, kid-friendly clothing (torso fully covered, no cleavage/bare midriff/bare shoulders, skirts knee-length+ with tights, no suggestive poses; avoid gore). Before **any** Roblox upload: look at every image yourself, show the user, upload in small batches (≤ 10, spaced out). **Never upload anything from `art/out/v1/`** (old/rejected/revealing images live there, incl. `art/out/v1/revealing/`).

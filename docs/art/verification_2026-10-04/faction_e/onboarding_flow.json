@@ -1,0 +1,408 @@
+{
+  "schema_version": 1,
+  "date_kst": "2026-10-04",
+  "review_mode": "read_only_source_and_existing_root_runtime_evidence",
+  "reviewer_played_game": false,
+  "studio_calls": 0,
+  "code_changes": 0,
+  "paid_credits": 0,
+  "uploads": 0,
+  "report": "docs/art/onboarding_story_review_2026-10-04.md",
+  "scope_limitations": [
+    "이 작성자는 Studio 또는 화면 제어를 사용하지 않았다.",
+    "폰 가독성, 실제 보행 경로, 3D 외형은 검증하지 않았다.",
+    "root가 남긴 엔진 동작 JSON은 재검토했으나 세계 렌더가 흰색인 캡처를 외형 합격 근거로 쓰지 않는다.",
+    "Config와 FactionPicker는 병행 작업 중이므로 SHA는 읽기 시점의 값이다."
+  ],
+  "latest_user_direction": {
+    "quote": "무기 강화를 하는 주문서를 몬스터들이 떨어뜨려야지",
+    "desired_loop": [
+      "몬스터 사냥",
+      "실제 주문서 및 골드 전리품",
+      "현재 무기 주문서 강화 또는 마을 귀환",
+      "대장간에서 골드로 다음 무기 선택/구매",
+      "다음 도전"
+    ],
+    "gold_tier_purchase_is_recommended": true,
+    "scroll_system_implemented_in_reviewed_sources": false,
+    "unresolved_rules": [
+      "드롭률",
+      "강화 주문서 필요량",
+      "강화 결과 판정/한도",
+      "첫 획득 보장 여부",
+      "강화 수치와 WeaponTier 분리 및 티어 전환 처리",
+      "대장간 위치/외형/화면",
+      "기본/희귀 상점 경계",
+      "판매 스킬 목록",
+      "보스/재료/레시피",
+      "베타/정식 수용 기능"
+    ],
+    "note": "사용자 누적 확정: 현재 무기는 주문서 강화, 다음 기본 무기는 마을 대장간 골드 구매, 기본 잡화/무기/스킬은 상점, 희귀는 드롭/고난도 퀘스트, 최상급은 보스 재료 제작. 상세 규칙/시각/일정 미정.",
+    "decision_record": "docs/art/weapon_progression_user_decisions_2026-10-04.md",
+    "gold_tier_purchase_context": "마을 대장간에서 구매, 현행 HUD 즉시 구매는 교체",
+    "current_weapon_enhancement": "몬스터가 떨어뜨리는 강화 주문서",
+    "blacksmith_delivery_implemented_in_reviewed_sources": false,
+    "fun_priority": "피로감은 덜하게, 버튼 하나 즉시 완료보다 사냥 기대감/전리품/선택의 재미 우선",
+    "basic_shop_direction": [
+      "잡화 기본 물품",
+      "기본 무기",
+      "기본 스킬"
+    ],
+    "rare_reward_direction": [
+      "몬스터 희귀 드롭",
+      "매우 어려운 퀘스트 보상",
+      "까다로운 보스 재료 제작"
+    ],
+    "shop_does_not_sell_all_rare_tiers": true,
+    "release_scope_and_dates_for_new_contract": "미확정, RELEASE_PLAN 기존 출시일 변경 없음"
+  },
+  "observed_flow": [
+    {
+      "stage": "faction",
+      "trigger": "DataLoaded 이후 Faction None에서 ChooseFaction",
+      "visible_text": [
+        "어느 편에 설래요?",
+        "이 편으로!",
+        "세상을 지키던 균형의 왕관이 부서졌다."
+      ],
+      "completion": "Faction 저장, 팀 배정, 진영 홈 리스폰",
+      "sources": [
+        "src/ServerScriptService/FactionService.luau:274",
+        "src/ReplicatedStorage/Shared/Config.luau:745",
+        "src/ReplicatedStorage/Shared/Config.luau:1442"
+      ],
+      "gap": "세계관 뒤에 개인 첫 임무가 연결되지 않는다."
+    },
+    {
+      "stage": "class",
+      "trigger": "DataLoaded true, Faction not None, ClassChosen false, 진영 선택창 닫힘",
+      "visible_text": [
+        "직업을 골라요!",
+        "이 직업으로!",
+        "%s이(가) 되었어요!"
+      ],
+      "completion": "ChooseClass 서버 승인 및 ClassChosen true",
+      "sources": [
+        "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau:1539",
+        "src/ServerScriptService/ClassService.luau:64"
+      ],
+      "gap": "선택한 진영의 목적과 첫 행동 사이 서사 연결이 없다."
+    },
+    {
+      "stage": "first_combat",
+      "tutorial_step": 0,
+      "trigger": "진영 및 직업 선택 후 생존 상태",
+      "personal_monster": {
+        "kind": "Slime",
+        "golden": true,
+        "hp": 10,
+        "spawn_distance_studs": 8,
+        "lifetime_seconds": 120
+      },
+      "visible_text": [
+        "몬스터를 때리면 왕관 조각의 힘이 모여요! (공격 버튼)",
+        "발사 게이지가 꽉 차서 금빛 고리가 빛나면 바로 [발사]!",
+        "10분마다 왕관의 주인이 바뀌어요. 우리 편을 도와주세요!"
+      ],
+      "neutral_last_text": "장인 길드는 전쟁·PvP에 끼지 않아요. 마음 놓고 사냥하세요!",
+      "intro_interval_seconds": 3,
+      "intro_duration_seconds": 4,
+      "intro_once_condition": "이번 세션 ClassChosen false->true, Level<=1",
+      "completion": "몬스터 최초 처치 또는 개인 몬스터 소멸/만료. 생성 3회 실패 시에도 다음 단계.",
+      "sources": [
+        "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau:28",
+        "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau:542",
+        "src/ServerScriptService/QuestService.luau:332",
+        "src/ServerScriptService/QuestService.luau:385"
+      ],
+      "gap": "Step0 전용 Pinned 목표가 없다. 토스트를 놓치면 일반 일일 퀘스트만 남을 수 있다."
+    },
+    {
+      "stage": "travel",
+      "tutorial_step": 1,
+      "trigger": "Step0 종료",
+      "visible_text": [
+        "여기로!"
+      ],
+      "guide_priority": [
+        "Map.Pads.Pad_SlimeMeadow",
+        "Map.Gates.Gate_SlimeMeadow",
+        "Config.Zones.SlimeMeadow.Spawn"
+      ],
+      "existing_alternative": "메뉴 > 이동 > 말랑 초원, 3초 채널",
+      "completion": "ZoneId SlimeMeadow; 이미 초원에 있으면 즉시 Step2",
+      "sources": [
+        "src/StarterPlayer/StarterPlayerScripts/HUD.luau:2691",
+        "src/StarterPlayer/StarterPlayerScripts/HUD.luau:2804",
+        "src/StarterPlayer/StarterPlayerScripts/Panels.luau:1182",
+        "src/ServerScriptService/ZoneService.luau:447"
+      ],
+      "gap": "목적지와 이동 방법이 글로 없고 빔은 직선 방향만 나타낸다."
+    },
+    {
+      "stage": "five_kills",
+      "tutorial_step": 2,
+      "trigger": "초원 진입 또는 Step1 진입 시 이미 초원",
+      "visible_text": [
+        "튜토리얼 퀘스트: 말랑 슬라임 5마리 잡기! (보상 120골드)",
+        "안내",
+        "말랑 슬라임 5마리 잡기",
+        "0/5"
+      ],
+      "accepted_monster_kinds": [
+        "Slime",
+        "BigSlime"
+      ],
+      "counting": "MonsterKilled 기여 이벤트마다 1, 첫 Step0 처치는 제외",
+      "completion": "서버 tutorialProgress>=5",
+      "persistent_progress": false,
+      "rejoin_progress": 0,
+      "sources": [
+        "src/ServerScriptService/QuestService.luau:48",
+        "src/ServerScriptService/QuestService.luau:410",
+        "src/ServerScriptService/QuestService.luau:737",
+        "src/ServerScriptService/QuestService.luau:780"
+      ],
+      "gap": "초원 선이동자는 총 6킬이며, 재접속 4/5 또는 미수령5/5가 0/5로 초기화된다."
+    },
+    {
+      "stage": "claim_reward",
+      "trigger": "Step2, tutorialProgress>=5",
+      "visible_text": [
+        "튜토리얼 퀘스트 완료! [받기]를 눌러요.",
+        "튜토리얼 보상 +120골드! 업그레이드 버튼으로 새 무기를 사 보세요!"
+      ],
+      "request": "ClaimQuest(tutorial)",
+      "reward": {
+        "bank_gold": 120,
+        "xp": 0
+      },
+      "completion": "TutorialStep99를 먼저 설정하고 한 번 지급",
+      "sources": [
+        "src/ServerScriptService/QuestService.luau:421",
+        "src/StarterPlayer/StarterPlayerScripts/HUD.luau:2615"
+      ],
+      "gap": "안내 행이 사라지고 HUD 즉시 골드 구매 토스트만 남는다. 주문서 강화/마을 대장간 구매로 구분하는 최신 방향과 충돌한다."
+    },
+    {
+      "stage": "current_next_goal",
+      "trigger": "튜토리얼 받기 이후",
+      "visible_text": [
+        "오늘의 퀘스트 (%d/%d)",
+        "다음: %s",
+        "%sG",
+        "Lv %d 필요",
+        "구매 가능!"
+      ],
+      "current_weapon_contract": {
+        "tier_2_gold": 150,
+        "tier_2_level": 1,
+        "tier_3_gold": 800,
+        "tier_3_level": 5
+      },
+      "phone_weapon_card_visible": "canBuy only",
+      "existing_growth_unlocks": {
+        "auto_attack_level": 5,
+        "goblin_woods_level": 10,
+        "skeleton_ruins_level": 25,
+        "zone_guide_seconds": 90
+      },
+      "sources": [
+        "src/StarterPlayer/StarterPlayerScripts/HUD.luau:2033",
+        "src/StarterPlayer/StarterPlayerScripts/HUD.luau:2135",
+        "src/StarterPlayer/StarterPlayerScripts/HUD.luau:2534",
+        "src/StarterPlayer/StarterPlayerScripts/Fx.luau:1662"
+      ],
+      "gap": "첫 이야기 다음 단계가 랜덤 일일/HUD 구매로 갈라진다. 골드 다음 티어 구매는 유지하되 대장간 전달 경로로 변경해야 한다."
+    }
+  ],
+  "root_runtime_evidence": {
+    "files": [
+      "choice_play.json",
+      "travel_play.json",
+      "hunt_play.json",
+      "hunt_finish_play.json",
+      "reward_play.json"
+    ],
+    "hunting_total_kills": [
+      0,
+      5,
+      6
+    ],
+    "first_five_kill_batch_tutorial_steps": [
+      0,
+      2
+    ],
+    "bank_before_claim": 4,
+    "carried_before_claim": 41,
+    "bank_after_first_claim": 124,
+    "carried_after_first_claim": 41,
+    "duplicate_claim_bank_delta": 0,
+    "bank_after_legacy_purchase": 15,
+    "carried_after_legacy_purchase": 0,
+    "weapon_tier_after_legacy_purchase": 2,
+    "meaning": "현행 서버 지급/구매 동작 확인이며 주문서 기능 또는 사용자 만족 합격이 아니다.",
+    "hp_mp_zero_snapshot_interpretation": "사망 증거로 사용하지 않음"
+  },
+  "calculated_legacy_economy_cases": {
+    "assumptions": "초기 골드0, Halo/Neutral, 추가 보너스/일일 보상/소비 없음, 사냥 종류는 명시된 경우만",
+    "personal_golden_then_five_regular_gold": 165,
+    "timeout_then_five_regular_gold": 135,
+    "travel_first_then_six_regular_gold": 138,
+    "legacy_first_weapon_price": 150,
+    "runtime_guarantee": false,
+    "future_recommendation": false
+  },
+  "faction_purpose_proposals": {
+    "Halo": {
+      "purpose": "왕관의 힘으로 동료를 지키는 기사로 자라나요.",
+      "first_mission": "빛의 기사단의 첫 훈련: 말랑 초원에서 슬라임 5마리를 쓰러뜨려요."
+    },
+    "Horns": {
+      "purpose": "강해져서 뿔 군단이 왕관을 차지하도록 도와요.",
+      "first_mission": "뿔 군단의 첫 도전: 말랑 초원에서 슬라임 5마리를 쓰러뜨려요."
+    },
+    "Neutral": {
+      "purpose": "전쟁에 얽매이지 않고 사냥과 성장의 길을 걸어요.",
+      "first_mission": "장인 길드의 첫 준비: 말랑 초원에서 슬라임 5마리를 쓰러뜨려요."
+    }
+  },
+  "future_flow_constraints": [
+    "실제 왕관 조각 인벤토리 획득을 약속하지 않는다.",
+    "강화 주문서를 얻었다는 문구는 실제 서버 획득 후에만 표시한다.",
+    "120골드 첫 보상을 주문서 보상으로 바꿀지와 첫 획득 보장은 아직 별도 결정이다.",
+    "일반 사냥은 Halo/Horns 전쟁 점수에 기여하지만 개인 튜토리얼 몬스터와 Neutral은 0이다.",
+    "거위는 서버 시각 기준 매10분 이벤트이며 접속 후5분 등장 보장 없음.",
+    "처음5분 PvP/약탈 필수 임무 금지: 환생 전 Lv15 미만 또는 플레이1시간 미만은 새싹 보호.",
+    "첫5분이라는 시간은 연결 설계 목표이며 완료 시간을 실측한 주장이 아니다.",
+    "현재 무기 주문서 강화와 다음 티어 골드 구매는 다른 행동이다.",
+    "대장간 구현 후 마을 귀환/조건 확인/선택/구매를 연결한다.",
+    "최신 요구인 보스 재료 제작을 반영하되 일반 채집 경제/거래소/잦은 왕복은 임의 추가하지 않는다.",
+    "기본품 상점/희귀 드롭 및 고난도 퀘스트/최상급 보스 재료 제작의 보상 경로를 구분한다.",
+    "새 성장 계약의 베타/정식 수용 범위와 완료일은 미정이다."
+  ],
+  "change_classes": {
+    "TEXT_ONLY": [
+      "첫 전투 목적",
+      "목적지/이동 방법",
+      "몹 이름 일치",
+      "골드 구매 강요 문구 정리"
+    ],
+    "EXISTING_STATE_BINDING": [
+      "Step0/1 고정 목표",
+      "사냥 후 현재 목표",
+      "Level/ZoneId 기반 성장 연결"
+    ],
+    "PERSISTENCE_FIX": [
+      "5킬 진행 및 미수령 상태 복구"
+    ],
+    "APPROVED_DIRECTION_NEEDS_RULES": [
+      "강화 주문서 드롭",
+      "획득/보유량/저장",
+      "소모/강화 판정",
+      "기존 무기 데이터 전환"
+    ],
+    "NEEDS_DESIGN": [
+      "새 NPC",
+      "새 대화창/컷신",
+      "새 임무 패널",
+      "새 지도 길 표시"
+    ],
+    "APPROVED_PURCHASE_DELIVERY_CHANGE": [
+      "다음 기본 무기 골드 구매를 마을 대장간에서 제공",
+      "기본 잡화/스킬 상점 경로",
+      "서버 위치 검증",
+      "모든 최고 등급까지 골드 구매하는 현행 계약과 구분"
+    ],
+    "APPROVED_RARE_PROGRESSION_NEEDS_RULES": [
+      "희귀 몬스터 드롭",
+      "고난도 퀘스트 보상",
+      "까다로운 보스 재료 제작"
+    ],
+    "UNREQUESTED_SCOPE": [
+      "왕관 조각 인벤토리",
+      "일반 재료 채집 경제",
+      "거래소",
+      "별도 진영 화폐"
+    ]
+  },
+  "findings": [
+    {
+      "id": "O1",
+      "label": "첫 목표 고정 지연",
+      "status": "OPEN",
+      "confidence": "source_confirmed"
+    },
+    {
+      "id": "O2",
+      "label": "첫1킬과 후속5킬 혼동",
+      "status": "OPEN",
+      "confidence": "source_and_root_runtime"
+    },
+    {
+      "id": "O3",
+      "label": "5킬 진행 재접속 손실",
+      "status": "OPEN",
+      "confidence": "source_confirmed_runtime_pending"
+    },
+    {
+      "id": "O4",
+      "label": "보상 후 목표 단절 및 HUD 즉시 구매 흐름의 최신 의도 충돌",
+      "status": "OPEN",
+      "confidence": "source_confirmed_and_user_direction"
+    },
+    {
+      "id": "O5",
+      "label": "현행 무기 구매 성공이 성장 재미 합격은 아님",
+      "status": "OPEN",
+      "confidence": "root_runtime_and_user_direction"
+    },
+    {
+      "id": "O6",
+      "label": "폰에서 구매 전 목표 카드 숨김",
+      "status": "OPEN",
+      "confidence": "source_confirmed_visual_pending"
+    },
+    {
+      "id": "O7",
+      "label": "진영 목적과 일반 사냥 기여 연결 부족",
+      "status": "OPEN",
+      "confidence": "source_confirmed"
+    },
+    {
+      "id": "O8",
+      "label": "이동 빔은 안전한 보행 경로 아님",
+      "status": "OPEN",
+      "confidence": "source_geometry_inference_runtime_pending"
+    }
+  ],
+  "finding_count": 8,
+  "resolved_by_this_review": 0,
+  "source_sha256": {
+    "docs/GDD.md": "4e293999534bdd798e8867eac0c67e88b35c5d3cfedc7caafe51e61baffce95b",
+    "docs/RELEASE_PLAN.md": "705a79109844b149db50d7e92205fdcc47a15a97c22ed5cd96928958faabcae2",
+    "src/ReplicatedStorage/Shared/Config.luau": "adf064c3005edc812da92e81b81737ce4f84f2e75fd1f0f48fc333f2814aaa91",
+    "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau": "6790b71f4d2be18c8aba1b1af2b2974fe1a835370d6c33be92c50d4e4e0318dc",
+    "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau": "45b45b48ffbe211bf34be44737163d35c9a4e4078d31e51303a5c96244219cbc",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "96928ef3c256784a05bce5baed41945b2e3412546ef6619fbbe6ae722e4fc96f",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "b42e991a419eb9038029f89c842761b12844915d4052f1509866e39154c082e5",
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "98bfea7ff63dfb2fc598876793feaa09970ce7b6490a85eb02378c0c487fac9f",
+    "src/ServerScriptService/FactionService.luau": "aca72b68ba1cdbbf70e9dade600f27ed4b9282d58df211425f621728aaf0bc98",
+    "src/ServerScriptService/ClassService.luau": "b9aeced80b0944ccbde8ff230c89deeb94a5629bd8be37392a01d1f1ea4d0e60",
+    "src/ServerScriptService/QuestService.luau": "7838234b7652ab63c3a0b45923a831a8a25aaf533c0e18e935bdb9f640dd1194",
+    "src/ServerScriptService/MonsterService.luau": "1888b7185870b62dbceb1cb8331399e5187db1a317e51d6e6ddad71a50147fc1",
+    "src/ServerScriptService/ProgressionService.luau": "f62b8cf30b56c3897607ee68a86c826ea2fd2af0a1780501be07ea9e85902ea8",
+    "src/ServerScriptService/ShopService.luau": "89b1be4f9687ef36beadf64bc669258377dea5f40d6255dc45537ea221b61388",
+    "src/ServerScriptService/ZoneService.luau": "be02405bbb9199384f0bb3f874328ba4972bf9909cbb596e2d4a968ea7fa9add",
+    "src/ServerScriptService/WarService.luau": "eadabadb4900c348e3ab00a0bc030baea464cd3201bc5efade62836444fbe075",
+    "src/ServerScriptService/PvPService.luau": "bba6b9b96f46530d2f85157d00f6d11af669ad967c614263bc0012a2611d6ee7"
+  },
+  "runtime_evidence_sha256": {
+    "choice_play.json": "ccfc3c2e910a9d9c32001d66f46503f4dfd6bafcb8a88ef53f5dd1171e186f89",
+    "travel_play.json": "252bd5e587d0b6c30e8601b89ad3c561f9079e8808d3648ef537aa2c112b58f7",
+    "hunt_play.json": "552b541ac7a4c199606e15227a3595531ef76871243442e0cf948858eb745184",
+    "hunt_finish_play.json": "6124535746d385351700b64751f75da6761d8cf80e60829e4b148fa31812acd6",
+    "reward_play.json": "f7a789bdd6c6773ccd05b528d6247dc06b1e5681f0c6ebe2dc90d623a0967c0f"
+  },
+  "recorded_at": "2026-10-04T14:41:42.024414+09:00"
+}
