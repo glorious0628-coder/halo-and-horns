@@ -1,0 +1,17 @@
+Use case: stylized-concept
+Create ONE completely new standalone faction-selection CARD for a cheerful Korean fantasy RPG, from scratch. No input images, no old bitmap fragments, no partial retouching. True transparent PNG alpha. Portrait canvas aspect 380:636. Entire card visible, including top/bottom points, with a clear small transparent margin on all four sides. One card only, not a screenshot and not a contact sheet.
+
+Theme: neutral ARTISAN GUILD. Premium ornate crafted timber frame with teal enamel plates and rich gold corner bands/studs. Warm wood edging, deep turquoise/teal ornaments, pale ivory reading areas. Symmetric tall collectible-card architecture with a centered pointed golden peak at the top and a centered pointed golden diamond finial at the bottom, consistent top-to-bottom height. Crisp sculpted game illustration, polished gold and smooth teal, not a photoreal photograph, no noise or mottled patches behind text.
+
+Upper 0–33% of card: a large rich TEAL SHIELD medallion with engraved gold rim, bearing a prominent GOLDEN ANVIL and a GOLD COGWHEEL behind it. Small balanced engraved leaf motifs at the shield sides; chunky stylized wood and gold construction. No people, no creature face, no crown.
+
+ALL lettering will be typeset separately. Absolutely no letters, numbers, runes, faux text, or watermark.
+- 34–42%: broad ivory name ribbon with golden rolled edges, centered and completely blank.
+- 43–49%: small pale ivory blank subtitle strip.
+- 50–55%: rich teal blank motto banner with gold trim.
+- 56–81%: large clean uniform pale ivory panel for four benefits; no stains, grain, creases or painterly patches in the reading area.
+ Four small crisp icons aligned down the left at59%,65%,71%,77%: crossed silver swords with a small red X indicating no combat boost; simple bright blue shield; little brown/gold coin pouch with a small red protective/no-threat accent; artisan hammer with a tiny golden cog. Leave the wide right side blank.
+- 83–94%: wide glossy turquoise/teal rounded button with polished gold framing, completely blank center.
+- 95–100%: pointed centered golden bottom continuation of frame.
+
+Rich inviting fantasy game UI with clean precise detail. No floating effects, no cast shadow outside the card, no checkerboard, no scene backdrop. Match the architecture of tall light-knight and horned-legion faction cards while keeping the wood/teal artisan identity.

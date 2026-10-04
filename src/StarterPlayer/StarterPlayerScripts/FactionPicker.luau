@@ -1145,6 +1145,8 @@ function E.buildCard(c, id)
 	styleText(badgeText, "ink")
 	c.E = { Key = key, FallbackPanel = fallbackPanel, FallbackButton = oldButton,
 		FallbackBadge = oldBadge, ButtonRect = rect, Background = bg }
+	local hitTops = E.Config.ButtonHitTop
+	c.E.ButtonHitTop = type(hitTops) == "table" and math.clamp(tonumber(hitTops[id]) or 0, 0, 1) or 0
 	c.Button, c.Shade, c.Badge, c.BadgeText = hit, shade, badge, badgeText
 	c.Aspect = E.aspect()
 	wirePress(c, id)
@@ -1240,8 +1242,9 @@ function E.layoutCard(c, W, H, minT, s)
 	local minHit = math.ceil((LAY.TouchTarget + 1) / (s * LAY.PressScale))
 	local hitH = math.min(H, math.max(h, minHit))
 	local hitW = math.min(W, math.max(w, minHit))
+	local hitY = math.max(y + h / 2 - hitH / 2, H * (c.E.ButtonHitTop or 0))
 	place(c.Button, math.clamp(x + w / 2 - hitW / 2, 0, math.max(0, W - hitW)),
-		math.clamp(y + h / 2 - hitH / 2, 0, math.max(0, H - hitH)), hitW, hitH)
+		math.clamp(hitY, 0, math.max(0, H - hitH)), hitW, hitH)
 	local badgeH = math.max(minT * 2.7, H * 0.085)
 	place(c.Badge, W * 0.03, H * 0.008, W * 0.94, badgeH)
 	setTextRange(c.BadgeText, minT, math.max(minT, badgeH * 0.34))

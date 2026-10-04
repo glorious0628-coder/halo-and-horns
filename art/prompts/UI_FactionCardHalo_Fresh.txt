@@ -1,0 +1,17 @@
+Use case: stylized-concept
+Create ONE entirely new standalone faction-selection CARD asset for a cheerful Korean fantasy RPG, from scratch. Do not edit, copy, retouch, or reuse any earlier bitmap. No input images. Produce a high-resolution portrait transparent PNG, target canvas aspect 380:636. Only this ONE card on transparent alpha, not a game screenshot, sheet, or multiple-card composition. Leave a small clear transparent margin around its entire silhouette.
+
+Theme: heroic light/angel knights. An ornate pristine ivory-and-rich-gold card with elaborate symmetrical gold filigree edging. The silhouette has a prominent centered upward-pointing gold finial at the very top and a centered downward-pointing diamond/spear-shaped gold finial at the very bottom. Both tips must be complete and unclipped. The sides are largely straight and balanced; this must look like a tall collectible fantasy card with equal apparent top-to-bottom height to companion cards.
+
+Upper 0–33%: large beautiful eight-point golden SUN MEDALLION with a round convex golden center, surrounded by a balanced golden laurel wreath and a light thin golden halo arc, crisp sculpted gold. Highly polished game illustration, appetizing warm highlights, dimensional ornamental gold without noisy sparkle particles. No human characters.
+
+Dedicated EMPTY text surfaces (absolutely no letters, numbers or pseudo-writing):
+- Broad ivory ribbon across the card at about 34–42% of card height, edged and folded in gold, for the faction name.
+- Small smooth ivory bordered strip at 43–49%, for a short subtitle.
+- Dark warm-brown ribbon edged in gold at 50–55%, for a one-line motto.
+- Large pristine pale-cream interior at 56–81%, for four benefit rows. This interior must be smooth, clean, uniform, NOT paper grain or mottled parchment.
+  Exactly four crisp colorful small icons in an aligned left column at 59%,65%,71%,77%: green upward arrow with tiny gold sparkle; plump red heart; white feathered wings with a small cyan center gem; pile of golden coins. Leave the wide area to their right completely blank.
+- At 83–94%, a wide convex glossy golden-yellow rounded button, surrounded by ornamental gold. Its center is fully blank for a later text label.
+- At 95–100%, the centered downward gold point continues the frame.
+
+Style: premium colorful hand-rendered fantasy game UI, meticulous symmetric frame, crisp clean surfaces, clear high-contrast icon silhouettes, restrained smooth material shading. Keep all blank text areas clean. No text anywhere, no watermark, no dark scene backdrop, no drawn checkerboard, no drop shadow beyond the silhouette, no floating decorations.

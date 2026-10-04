@@ -24,14 +24,14 @@ if root then
                 local b=body:FindFirstChild("ChooseButtonE")
                 table.insert(out.cards,{id=id,position=xy(card.AbsolutePosition-root.AbsolutePosition),
                     size=xy(card.AbsoluteSize),mode=body:GetAttribute("FactionERenderMode"),
-                    loaded=art and art.IsLoaded,attrs=art and art:GetAttributes(),
+                    loaded=art and art.IsLoaded,image=art and art.Image,scaleType=art and tostring(art.ScaleType),attrs=art and art:GetAttributes(),
                     button={size=xy(b.AbsoluteSize),position=xy(b.AbsolutePosition-root.AbsolutePosition),visible=b.Visible}})
             end
         end
     end
     for _,name in {"Title","Premise","Footer"} do
         local a=root:FindFirstChild("FactionE"..name,true)
-        if a then table.insert(out.panels,{name=name,attrs=a:GetAttributes(),loaded=a.IsLoaded,
+        if a then table.insert(out.panels,{name=name,image=a.Image,scaleType=tostring(a.ScaleType),attrs=a:GetAttributes(),loaded=a.IsLoaded,
             size=xy(a.AbsoluteSize),position=xy(a.AbsolutePosition-root.AbsolutePosition)}) end
     end
 end

@@ -1,12 +1,15 @@
 # HANDOFF_CODEX — 지금까지 한 것, 지금 상태, 다음에 할 것 (2026-10-04 기준)
 
-## 최신 상태: 새 설명판 승인·게임 적용, 나머지 개별 그림 대기
+## 최신 상태: 새 카드3종·설명판 적용, 전체 디자인 재제작 범위 추가
+
+- **사용자 새 범위:** “어느편에 설래요? 이것도! 지금 게임 안에 들어가는 디자인 모두 다 싹 다 다시해야 돼...다 투명...하나하나씩 정확하게”. 제목·하단 안내부터 개별 투명 이미지로 순차 재제작하고 전체 게임 내 디자인 목록을 조사한다. **전체 범위의 분모는 아직 미정**이며 첫 화면4/6을 전체 디자인 완료율로 쓰지 않는다. 중간 확인 질문 없이 허용된 상세 작업을 이어 가되, 개별 검사·업로드 규칙과 완료 증거는 유지한다. RELEASE_PLAN의 날짜·베타 순서는 바꾸지 않는다.
 
 - **새 설명판은 “ㅇㅇㅇ”로 승인받아 게임에 적용했다.** 참조 이미지 없이 새로 그린 GPT 빈 판 원본에 실제 Jua TTF를 출력 해상도에서 조판해 PNG 한 장으로 합성했다. `art/ui/UIP_FactionPremise_FreshTyped.png` 1024×174, ID `105024415024705`, Config 키 `FactionPremiseFreshTyped`다. **Roblox 네이티브 Jua 설정이 아닌 고정 글씨 이미지**다. 앞선 Standalone 사용자 거절과 Fresh 확대 얼룩 로컬 불합격은 미업로드 이력으로 보존한다. 증거는 `faction_e/fresh_premise_blank_type.json`, `fresh_premise_upload.json`이다.
-- **개별 재제작은 설명판 1/6 완료:** 카드3장·제목·하단 안내5종은 미완료이며 다음은 빛 카드 개별 생성이다. 원래 사용자 문제의 해결 집계와 다른 숫자다. 기존9개에 새 설명판1개를 더해 **Roblox 업로드 성공 누적10개, 현재 활성6개**다. 최신 PC793×451은 카드 캔버스243px 동일·버튼47.4px, 폰749×361은 카드261.75px·버튼48px·전체 페이지 세로 스크롤, 두 환경 모두6개 ready다. `fresh_desktop.json/.jpeg`, `fresh_phone.json/.jpeg`, `fresh_phone_cards.jpeg`를 따른다. `fresh_device_restored.json`은 기기 default 복원을 확인한다. 기존 `metrics.json`의256.8px·업로드9개는 교체 전 이력이다.
+- **첫 화면 개별 재제작4/6 완료:** 설명판과 Halo/Horns/Neutral 카드3종을 적용했다. 사용자가 **“ㅇㅇ 너무 좋아. 중립까지 쭉 풀로 달리자 내 허락 안 받아두 돼”**라고 승인·진행을 허용해 세 카드를 각각 확인·표시한 뒤3개 배치로 업로드했다. 새 원본+Jua 조판570×954, alpha>16의 보이는 높이930px로 동일하다. 버튼 그림 중심 높이는 원본대로 차이가 남아 있으며243px 표시 기준 최대약6.72px다. 제목과 하단 안내2종은 미완료이며 사용자 명시 요청에 따라 순차 재제작 중이다.
+- **Roblox 업로드 성공 누적13개·활성6개:** 최신 `fresh_cards_desktop.json/.jpeg`는 PC793×451, 카드243px·버튼47.4px; `fresh_cards_phone.json/.jpeg`는 폰749×361, 카드261.75px·버튼48px·전체 페이지 세로 스크롤이다. 두 환경6개 ready, `fresh_cards_device_restored.json`은 default 복원이다. 새 PC 캡처는3D 배경도 정상 렌더되며 이전 흰색 캡처와 구분한다. 업로드/SHA는 `fresh_cards_upload.json`, 높이·버튼 차이는 `fresh_cards_export_comparison.json`에 있다. 후자의 `not_uploaded`는 로컬 출력 당시 상태이고 최신 업로드 장부가 우선한다. 이전 설명판 단계는 `7621d84` main push/pull 완료다.
 - **진행률은 카메라 1/6 해결 그대로**다. 글씨·첫 화면을 해결로 올리지 않는다. 별도 첫 플레이/스토리 감사는 **발견8개·해결0개**다. `docs/art/playthrough_progress_2026-10-04.md`, `docs/art/onboarding_story_review_2026-10-04.md`를 따른다.
 - 최신 엔진 플레이: 진영→직업 선택·중복 진영 선택 차단·초원 이동·총6킬(첫1킬 단계 전환+후속5킬 퀘스트)·카메라 표본**24/24** 정상. 120골드1회 수령/중복0, 현행 다음 무기 구매150골드·티어1→2·잔액15 확인. **이것은 주문서 강화가 아니다.** 증거는 `docs/art/verification_2026-10-04/faction_e/README.md`, `metrics.json`, `desktop_fixed.json`, `phone_cards.json`, `choice_play.json`, `travel_play.json`, `hunt_play.json`, `hunt_finish_play.json`, `reward_play.json`이다.
-- 검증 한계: 화면 제어 없이 MCP 클라이언트 Humanoid·RemoteEvent를 사용했다. 마우스/터치 체감은 미검증, MCP 캡처의3D 월드는 흰색/회색이므로 UI 외형 범위만 확인했다. Studio 메모리 데이터 검사이며 재접속 영속 저장 통과가 아니다. 새 Tripo 유료 호출·사용 크레딧0.
+- 검증 한계: 화면 제어 없이 MCP 클라이언트 Humanoid·RemoteEvent를 사용했다. 마우스/터치 체감은 미검증이다. 이전 전투 증거의 흰색/회색 캡처와 새 카드 PC 캡처의 정상3D 배경을 구분하며, 캐릭터/맵 전체 품질 합격으로 확대하지 않는다. Studio 메모리 데이터 검사이며 재접속 영속 저장 통과가 아니다. 새 Tripo 유료 호출·사용 크레딧0.
 - **별도 미완료 작업:** `src/ServerScriptService/ShopService.luau`에 WIP가 있으며 **미커밋·미적용**이다. E UI 반영/검증과 섞어 완료 처리하지 않는다. 물약 구매 경로와 재고0 버튼도 미완료다. 최신 성장 계약은 **현재 무기=몬스터 드롭 주문서 강화, 기본 다음 무기=마을 대장간 골드 구매, 기본 잡화·스킬=상점, 희귀=드롭·고난도 퀘스트, 최상급=보스 재료 제작**이며 구현·일정 확정을 뜻하지 않는다. GDD §0-1과 `docs/art/weapon_progression_user_decisions_2026-10-04.md`를 따른다.
 - 카메라 수정 `49fe53a`는 push·GoodEvil 저장 완료다. 제거된 이전 Humanoid를 보던 문제를 CameraFollow로 복구했고 기본 카메라 조작·줌·Scriptable 모드를 유지한다. 이전 이동11.626stud/초점0 → 수정 후11.667stud/초점11.667, 수평오차0; 코스튬·점프·부활·카메라 교체 **18/18**과 이번 별도 사냥 표본24/24를 구분한다. 이전 E 선택(화려한 카드+C 둥근 한글, 빛 카드 위아래 뾰족, “좋아 좋아!”)과 실패/중간 에셋은 기록으로 보존한다.
 

@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-04",
+  "status": "applied_and_studio_verified",
+  "scope": "fresh three faction cards",
+  "redraw_completed": 4,
+  "redraw_first_screen_total": 6,
+  "original_issues_resolved": 1,
+  "original_issues_total": 6,
+  "story_issues_resolved": 0,
+  "story_issues_total": 8,
+  "roblox_successful_uploads_cumulative": 13,
+  "active_first_screen_images": 6,
+  "tripo_credits_spent": 0,
+  "device_restored": {
+    "ok": true,
+    "error": "nil",
+    "device": "default"
+  },
+  "screens": {
+    "desktop": {
+      "viewport": [
+        793,
+        451
+      ],
+      "ready_images": 6,
+      "card_canvas_height": 243.00001525878906,
+      "visible_alpha16_height": 236.88680732775035,
+      "min_button_height": 47.400001525878906,
+      "world_render_seen": true,
+      "screenshot": "fresh_cards_desktop.jpeg",
+      "new_three_image_ids_verified": true,
+      "all_cards_same_height": true
+    },
+    "phone": {
+      "viewport": [
+        749,
+        361
+      ],
+      "ready_images": 6,
+      "card_canvas_height": 261.75,
+      "visible_alpha16_height": 255.16509433962264,
+      "min_button_height": 48,
+      "world_render_seen": true,
+      "screenshot": "fresh_cards_phone.jpeg",
+      "new_three_image_ids_verified": true,
+      "all_cards_same_height": true
+    }
+  },
+  "limitations": [
+    "Mouse/touch human interaction feel not tested; MCP only.",
+    "Separate card button artwork centers retain 26.3707 export-pixel difference; overall visible card bodies equal height.",
+    "DataStore persistence not verified.",
+    "Title and footer still old at this checkpoint."
+  ]
+}

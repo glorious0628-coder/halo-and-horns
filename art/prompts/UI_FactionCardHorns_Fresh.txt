@@ -1,0 +1,16 @@
+Use case: stylized-concept
+Create exactly ONE completely new standalone fantasy RPG faction-selection card from scratch, on true transparent PNG alpha. NO earlier image inputs, no retouching, no fragments of old cards. Portrait canvas aspect 380:636. Card occupies 92% of canvas height with clear transparent margins including its highest and lowest points. Do not crop anything. One card only, not a screen or sheet.
+
+Theme: "horns legion", a bold playful fantasy rival faction. Symmetric ornate obsidian/dark stone card with glowing red fissures confined to the OUTER ornamental border, polished gold edging and elegant red-metal accents. Straight balanced tall silhouette. A complete centered pointed peak at the top and a complete downward-pointing gold/red diamond finial at the bottom. Same overall architecture as a tall ornate collectible card. Premium dimensional cartoon game UI, precise clean edges and rich controlled shading.
+
+Upper 0–33% of the CARD: large ornate off-white/gold stylized skull-HELMET emblem with glowing small red eye gems, two imposing glossy ruby-red horns curling symmetrically upwards and inwards. Friendly stylized armor emblem, no gore, no human figure. Obsidian shield backing, engraved gold trim. Do not make a realistic skull photo.
+
+All text will be typeset later. ABSOLUTELY NO letters, numbers, symbols resembling text, or watermark.
+- At 34–42%, broad completely blank crimson banner with gold rolled trim for faction name.
+- 43–49%: blank smooth pale ivory subtitle strip.
+- 50–55%: blank bright red motto banner edged in dark gold.
+- 56–81%: large CLEAN dark charcoal inset for four benefit rows. Uniform dark charcoal central reading area; stone relief/fissures stay in the border only. No mottled patches or grain behind future lettering.
+  Four crisp small colorful icons in a left-aligned column at 59%,65%,71%,77%: pile of gold coins; two crossed silver swords with gold hilts; yellow arrow pointing left; small cute purple horned monster-face icon. Wide blank reading area to the right.
+- 83–94%: large glossy crimson rounded button with red/gold ornamental border, fully blank center.
+- 95–100%: decorative pointed bottom continuation.
+Everything outside the silhouette transparent, no scene, no cast shadow, no floating sparks, no checkerboard.

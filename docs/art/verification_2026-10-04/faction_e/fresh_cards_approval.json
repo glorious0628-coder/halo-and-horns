@@ -1,0 +1,67 @@
+{
+  "requested": "full independent redraw of three cards",
+  "approval_quote": "ㅇㅇ 너무 좋아. 중립까지 쭉 풀로 달리자 내 허락 안 받아두 돼",
+  "approval_scope": "Halo preview accepted; subsequent Horns and Neutral cards authorized to implement without further permission within the same design direction. Every final asset must still be inspected and shown before upload.",
+  "tripo_credits_spent": 0,
+  "cards": [
+    {
+      "faction": "Halo",
+      "source": "art/out/UI_FactionCardHalo_Fresh.png",
+      "size": [
+        969,
+        1622
+      ],
+      "sha256": "5164eef83e32185784ab3504bd9f313bab97e170ff97518f0fbbbf6f884d8449",
+      "alpha_bbox_above16": [
+        36,
+        0,
+        933,
+        1615
+      ],
+      "source_method": "built_in_imagegen_new_generation",
+      "reference_images": [],
+      "source_image_modified": false,
+      "prompt": "art/prompts/UI_FactionCardHalo_Fresh.txt"
+    },
+    {
+      "faction": "Horns",
+      "source": "art/out/UI_FactionCardHorns_Fresh.png",
+      "size": [
+        969,
+        1623
+      ],
+      "sha256": "5ca317e5f3d5696b4ef14807f94b3f113470731fb5815de3298bf7b2f080610c",
+      "alpha_bbox_above16": [
+        15,
+        2,
+        955,
+        1621
+      ],
+      "source_method": "built_in_imagegen_new_generation",
+      "reference_images": [],
+      "source_image_modified": false,
+      "prompt": "art/prompts/UI_FactionCardHorns_Fresh.txt"
+    },
+    {
+      "faction": "Neutral",
+      "source": "art/out/UI_FactionCardNeutral_Fresh.png",
+      "size": [
+        969,
+        1623
+      ],
+      "sha256": "9c8b1941e9720c7500243560b07e1f615e67e7ca7f13bea683c9a01d49f0bc8a",
+      "alpha_bbox_above16": [
+        61,
+        13,
+        909,
+        1581
+      ],
+      "source_method": "built_in_imagegen_new_generation",
+      "reference_images": [],
+      "source_image_modified": false,
+      "prompt": "art/prompts/UI_FactionCardNeutral_Fresh.txt"
+    }
+  ],
+  "uploaded": true,
+  "upload_record": "fresh_cards_upload.json"
+}

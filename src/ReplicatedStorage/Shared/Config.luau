@@ -1100,6 +1100,9 @@ Config.UIArt = {
 		FactionTitleRibbonE = { Id = "rbxassetid://77703498329138", Size = Vector2.new(549, 108) },
 		FactionPremisePanelE = { Id = "rbxassetid://101379550181314", Size = Vector2.new(1024, 130) },
 		FactionPremiseFreshTyped = { Id = "rbxassetid://105024415024705", Size = Vector2.new(1024, 174) },
+		FactionCardHaloFreshTyped = { Id = "rbxassetid://76818879022385", Size = Vector2.new(570, 954) },
+		FactionCardHornsFreshTyped = { Id = "rbxassetid://137806621328187", Size = Vector2.new(570, 954) },
+		FactionCardNeutralFreshTyped = { Id = "rbxassetid://127475794518664", Size = Vector2.new(570, 954) },
 		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
 		-- pick screens (mockups art/out/UI_Faction_B.png, UI_Class_A.png): text-free card backgrounds, regions in CardLayout
 		CardHalo = { Id = "rbxassetid://116168194185824" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(635, 1024) },
@@ -1391,14 +1394,16 @@ Config.UIArt.FactionE = {
     BakedFooterIcon = true,
     CardAspect = 380 / 636,
     Parts = {
-        Halo = "FactionCardHaloE", Horns = "FactionCardHornsE", Neutral = "FactionCardNeutralE",
+        Halo = "FactionCardHaloFreshTyped", Horns = "FactionCardHornsFreshTyped", Neutral = "FactionCardNeutralFreshTyped",
         Title = "FactionTitleRibbonE", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterPanelE",
     },
     ButtonRects = {
-		Halo = { 0.20995938, 0.81188699, 0.62167880, 0.09873809 },
-		Horns = { 0.19638265, 0.81753836, 0.64837991, 0.09526151 },
-		Neutral = { 0.20407330, 0.82816489, 0.64886225, 0.09651909 },
+		Halo = { 0.24793872, 0.80211072, 0.50513279, 0.07605582 },
+		Horns = { 0.20268785, 0.78690554, 0.59458409, 0.07466372 },
+		Neutral = { 0.17223303, 0.81271190, 0.65554510, 0.07833555 },
     },
+    -- Last benefit glyph bottom + 6px in each 570x954 export; enlarged touch hitboxes stay below it.
+    ButtonHitTop = { Halo = 0.76277029, Horns = 0.75550551, Neutral = 0.77759915 },
     MinBakedWidth = { Premise = 460 },
     Layout = {
         ReferenceSize = Vector2.new(1584, 1050),
