@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "date_kst": "2026-10-04",
+  "asset_type": "진영 선택 화면 GPT 단일 정렬 수정 시안",
+  "status": "alignment_target_not_met",
+  "user_approval": null,
+  "tool": "built-in image_gen",
+  "mode": "edit",
+  "generation_count": 1,
+  "total_round_generation_count": 2,
+  "paid_tripo_credits": 0,
+  "roblox_upload_count": 0,
+  "production_code_changes": 0,
+  "output": {
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_alignment_proposal_B.png",
+    "size": [
+      1608,
+      978
+    ],
+    "bytes": 2036201,
+    "sha256": "49d1448fbe8009449af02c16f4ee908f4c70a2873e231f18cfb21e8e29ca0d6e",
+    "generated_original": "C:/Users/glori/.codex/generated_images/01a10536-e3d6-7bd0-a1be-e107fb43fb7a/exec-c736c1bf-8e9a-49a1-aef6-46b97ee4407d.png",
+    "copied_without_pixel_changes": true
+  },
+  "input": {
+    "role": "edit_target",
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_alignment_proposal_A.png",
+    "sha256": "8de0bf40af4e5bc2dbd76b26120e61eab261e93e3e352761204aa3bd740ceea1"
+  },
+  "prompt": {
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_alignment_prompt_B.txt",
+    "sha256": "68bc750efa6ed2031857a86db7ed905367c64de4368c2f191bd08ab0a1b80b56"
+  },
+  "requested_alignment": {
+    "top_y": 262,
+    "bottom_y": 858,
+    "height_px": 596,
+    "button_center_y": 796
+  },
+  "review": {
+    "method": "직접 시각 검사. 요청 좌표는 생성 프롬프트의 목표이며 실측 결과가 아님.",
+    "passed": [
+      "A의 문구·배경·팔레트·카드 스타일 유지",
+      "새 UI 요소 추가 없음"
+    ],
+    "failed": [
+      "세 카드 외곽 전체 높이와 하단 장식끝의 정확한 일치는 여전히 육안 미달"
+    ],
+    "notes": [
+      "요청 좌표대로 수정됐다고 보고하지 않는다.",
+      "A와 B 모두 보존한다. 추가 생성은 요청받지 않아 실행하지 않는다.",
+      "제작 후보 및 GPT 시각 제안이며 실제 게임 적용·최종 합격 증거가 아니다."
+    ]
+  }
+}

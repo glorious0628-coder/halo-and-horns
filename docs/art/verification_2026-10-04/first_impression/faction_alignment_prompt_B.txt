@@ -1,0 +1,12 @@
+Use case: precise-object-edit.
+The attached image is the EDIT TARGET, the previous Halo & Horns faction-selection mockup. Make ONE surgical alignment correction only. Keep the 1608 x 978 canvas, exact Korean wording, typography, icons, artwork, palette, background, story panel, header and bottom hint unchanged. Do not redesign, repaint or add anything.
+
+CRITICAL ONLY CHANGE: make the three card artworks have the EXACT SAME VISIBLE OVERALL HEIGHT AND BASELINE, not just approximately.
+In the supplied 1608 x 978 target:
+- All three topmost ornament tips must sit on the identical horizontal line y = 262.
+- All three bottommost outer frame/ornament tips must sit on the identical horizontal line y = 858.
+- The complete visible extent of EACH card, including protruding crown tips and bottom diamond ornaments, must span y262 through y858: total height 596 pixels.
+- All three selection button centers stay aligned on y = 796.
+- Keep all existing card headings, tagline ribbons and benefit text rows aligned and unchanged.
+The middle red/demon card currently protrudes too far down. Move/reshape only its bottom pointed ornament into the common bottom y858 line. Its top crest must also meet y262. The left white/gold card currently ends too high; extend its lowest existing frame edge to the same y858 without adding new decorations. The right teal/brown card also must end exactly y858 and top exactly y262.
+Do not draw measurement guides, arrows, labels or any added overlay. Keep the cards' existing widths and horizontal centers unchanged. Keep all buttons at the same current height. This is ONLY an exact alignment repair of those outer card silhouettes. All text must remain exactly unchanged. One complete final game screenshot proposal, no comparison montage.

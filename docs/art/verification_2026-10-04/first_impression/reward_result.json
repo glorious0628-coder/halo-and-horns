@@ -1,0 +1,48 @@
+{
+  "before": {
+    "tutorial": 2,
+    "mp": 0,
+    "weapon": 1,
+    "carried": 21,
+    "hp": 0,
+    "bank": 21
+  },
+  "firstClaim": {
+    "tutorial": 99,
+    "mp": 0,
+    "weapon": 1,
+    "carried": 21,
+    "hp": 0,
+    "bank": 141
+  },
+  "upgrade": {
+    "tutorial": 99,
+    "mp": 0,
+    "weapon": 2,
+    "carried": 0,
+    "hp": 0,
+    "bank": 12
+  },
+  "merchantEnabled": false,
+  "secondClaim": {
+    "tutorial": 99,
+    "mp": 0,
+    "weapon": 1,
+    "carried": 21,
+    "hp": 0,
+    "bank": 141
+  },
+  "potionAttempt": {
+    "tutorial": 99,
+    "mp": 0,
+    "weapon": 2,
+    "carried": 0,
+    "hp": 0,
+    "bank": 12
+  },
+  "notices": [
+    "튜토리얼 보상 +120골드! 업그레이드 버튼으로 새 무기를 사 보세요!",
+    "나무 검 장착!",
+    "물약 상인 가까이에서 구매해 주세요."
+  ]
+}

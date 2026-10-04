@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "after": {
+    "kills": 5,
+    "tutorial": 2,
+    "gold": 0,
+    "health": 138,
+    "level": 2,
+    "xp": 33,
+    "carried": 42
+  },
+  "samples": [
+    {
+      "subjectMatches": true,
+      "kills": 2,
+      "nearestDistance": 3.141676187515259,
+      "charge": 22,
+      "hp": 132,
+      "second": 1.1
+    },
+    {
+      "subjectMatches": true,
+      "kills": 3,
+      "nearestDistance": 3.537527322769165,
+      "charge": 24,
+      "hp": 135,
+      "second": 2.2
+    },
+    {
+      "subjectMatches": true,
+      "kills": 5,
+      "nearestDistance": 2.8529160022735596,
+      "charge": 26,
+      "hp": 138,
+      "second": 3.3000000000000003
+    }
+  ],
+  "before": {
+    "kills": 2,
+    "tutorial": 2,
+    "gold": 0,
+    "level": 2,
+    "xp": 12,
+    "carried": 33
+  }
+}

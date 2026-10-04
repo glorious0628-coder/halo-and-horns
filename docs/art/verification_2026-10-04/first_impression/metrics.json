@@ -1,0 +1,101 @@
+{
+  "date_kst": "2026-10-04",
+  "status": "measured_awaiting_visual_choice",
+  "production_layout_changed": false,
+  "runtime_picker_was_visible": false,
+  "note": "Live layout properties were sampled after choosing a faction; this is geometry evidence, not a screenshot of visible cards. Screenshot pixels can differ due to Studio display scale.",
+  "cause": "prepareCardBalance/placeCards normalizes bitmap width and baked button center, so different image aspect ratios produce different heights and Y offsets.",
+  "cards": [
+    {
+      "id": "Halo",
+      "image": "art/ui/UIP_CardHalo.png",
+      "source_size": [
+        635,
+        1024
+      ],
+      "alpha_threshold": 16,
+      "alpha_bbox": [
+        1,
+        1,
+        634,
+        1022
+      ],
+      "runtime_layout_px": [
+        145.8000030517578,
+        234.60000610351562
+      ],
+      "runtime_position_px": [
+        170.4000244140625,
+        123.19999694824219
+      ],
+      "predicted_alpha_bounds_px": [
+        170.62963071808102,
+        123.42909851670265,
+        315.9704211618018,
+        357.3417999148369
+      ]
+    },
+    {
+      "id": "Horns",
+      "image": "art/ui/UIP_CardHorns.png",
+      "source_size": [
+        617,
+        1024
+      ],
+      "alpha_threshold": 16,
+      "alpha_bbox": [
+        2,
+        1,
+        616,
+        1023
+      ],
+      "runtime_layout_px": [
+        145.8000030517578,
+        241.8000030517578
+      ],
+      "runtime_position_px": [
+        323.4000244140625,
+        129.80001831054688
+      ],
+      "predicted_alpha_bounds_px": [
+        323.8726338242789,
+        130.0361511260271,
+        468.96372276071213,
+        371.36388854682446
+      ]
+    },
+    {
+      "id": "Neutral",
+      "image": "art/ui/UIP_CardNeutral.png",
+      "source_size": [
+        612,
+        1024
+      ],
+      "alpha_threshold": 16,
+      "alpha_bbox": [
+        1,
+        1,
+        611,
+        1023
+      ],
+      "runtime_layout_px": [
+        145.8000030517578,
+        243.60000610351562
+      ],
+      "runtime_position_px": [
+        476.4000549316406,
+        120.80000305175781
+      ],
+      "predicted_alpha_bounds_px": [
+        476.6382902307448,
+        121.03789368271828,
+        621.9618226842942,
+        364.162118524313
+      ]
+    }
+  ],
+  "maximum_layout_height_difference_px": 9.0,
+  "user_image_sha256": "9bc78839e425dbdb6c6fa07b57a7e727833c0993ea8082f699338c0de2312383",
+  "proposal_B_user_approval": null,
+  "credits_spent": 0
+}

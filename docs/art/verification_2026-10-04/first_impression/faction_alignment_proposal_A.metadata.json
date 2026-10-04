@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "date_kst": "2026-10-04",
+  "asset_type": "진영 선택 화면 GPT 수정 시안",
+  "status": "pending_user_selection",
+  "tool": "built-in image_gen",
+  "mode": "edit",
+  "generation_count": 1,
+  "paid_tripo_credits": 0,
+  "roblox_upload_count": 0,
+  "production_code_changes": 0,
+  "output": {
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_alignment_proposal_A.png",
+    "size": [
+      1608,
+      978
+    ],
+    "bytes": 2052651,
+    "sha256": "8de0bf40af4e5bc2dbd76b26120e61eab261e93e3e352761204aa3bd740ceea1",
+    "generated_original": "C:/Users/glori/.codex/generated_images/01a10536-e3d6-7bd0-a1be-e107fb43fb7a/exec-857d599b-8b2a-4ad7-b6e7-d2d9dd5ce6f6.png",
+    "copied_without_pixel_changes": true
+  },
+  "inputs": [
+    {
+      "role": "edit_target",
+      "path": "C:/Users/glori/AppData/Local/Temp/codex-clipboard-d0295aaa-082e-4d52-931b-d3227f2a0a35.png",
+      "sha256": "9bc78839e425dbdb6c6fa07b57a7e727833c0993ea8082f699338c0de2312383"
+    },
+    {
+      "role": "approved_style_reference",
+      "path": "art/out/UI_Faction_Layout_A.png",
+      "sha256": "a7e8eec321b025b0fc2b022c3f40419a903ea2f8fbc19a039d9489d7ed83c4b9"
+    }
+  ],
+  "prompt": {
+    "path": "docs/art/verification_2026-10-04/first_impression/faction_alignment_prompt.txt",
+    "sha256": "b805c5e887dce4485b17d8fd575859a3e9607bbab37ca5b6836a59b0d6fd8f7c"
+  },
+  "review": {
+    "method": "생성 결과 직접 시각 검사 및 PIL 크기/SHA 검사. 실제 Roblox 캡처나 구현 합격 자료가 아님.",
+    "passed": [
+      "기존 금색·빨강·청록 진영 카드 정체성 보존",
+      "한국어 제목·수치·3줄 이야기 문구 보존",
+      "본문이 이전 캡처보다 크고 굵어짐",
+      "설명 아래 줄 잘림 제거",
+      "배경 월드 간판·플레이어 이름·채팅 도움말 제거",
+      "왼쪽 위 Roblox 시스템 아이콘 유지",
+      "새 캐릭터·의상·노출·유혈 추가 없음"
+    ],
+    "limitations": [
+      "GPT 시안의 카드 장식 상단·하단은 완전히 동일한 픽셀 기준선이 아니다. 직접 관찰 추정으로 상단 약8px, 하단 약17px 차이가 남는다. 이 추정치는 자동 경계 측정값이 아니다.",
+      "승인 후 구현 때는 기존 아트 alpha 경계와 버튼 위치를 별도 측정하여 정확한 동일 높이·기준선을 확인해야 한다.",
+      "화면의 게임 규칙과 '제작 특화 (곧 추가)' 문구는 원본 그대로이며 기능 구현 완료를 의미하지 않는다."
+    ],
+    "approval_record_changed": false
+  }
+}

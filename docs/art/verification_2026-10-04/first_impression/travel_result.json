@@ -1,0 +1,67 @@
+{
+  "tutorialStep": 2,
+  "zone": "SlimeMeadow",
+  "monsters": [
+    {
+      "attributes": {
+        "Golden": false,
+        "ExpressionReady": false,
+        "BodyHeight": 3,
+        "RootHeight": 1.5,
+        "MonsterKind": "Slime",
+        "Expression": "Neutral"
+      },
+      "distance": 66.06269073486328,
+      "name": "Slime",
+      "position": [
+        237.40769958496094,
+        1.675122618675232,
+        -67.2783203125
+      ]
+    },
+    {
+      "attributes": {
+        "Golden": false,
+        "ExpressionReady": false,
+        "BodyHeight": 3,
+        "RootHeight": 1.5,
+        "MonsterKind": "Slime",
+        "Expression": "Neutral"
+      },
+      "distance": 76.64804077148438,
+      "name": "Slime",
+      "position": [
+        276.177734375,
+        1.675121784210205,
+        42.01171875
+      ]
+    },
+    {
+      "attributes": {
+        "Golden": true,
+        "ExpressionReady": false,
+        "BodyHeight": 3,
+        "RootHeight": 1.5,
+        "MonsterKind": "Slime",
+        "Expression": "Neutral"
+      },
+      "distance": 85.2441177368164,
+      "name": "Slime",
+      "position": [
+        221.876953125,
+        1.675122618675232,
+        -89.93651580810547
+      ]
+    }
+  ],
+  "subjectMatches": true,
+  "position": [
+    215.5821990966797,
+    1.8270039558410645,
+    -4.925263404846191
+  ],
+  "notices": [
+    "이동 중...",
+    "튜토리얼 퀘스트: 말랑 슬라임 5마리 잡기! (보상 120골드)"
+  ]
+}

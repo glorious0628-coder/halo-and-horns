@@ -1,0 +1,275 @@
+{
+  "tutorialStep": 1,
+  "picker": [
+    {
+      "visible": true,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.HUD.Potions.HPPotion",
+      "name": "HPPotion",
+      "active": false,
+      "pos": [
+        7.1999969482421875,
+        104.60000610351562
+      ],
+      "children": [
+        {
+          "bounds": [
+            0,
+            18
+          ],
+          "text": "",
+          "name": "Label",
+          "textSize": 16
+        },
+        {
+          "bounds": [
+            23.5,
+            11
+          ],
+          "text": "HP0개",
+          "name": "Title",
+          "textSize": 19
+        },
+        {
+          "bounds": [
+            14,
+            11
+          ],
+          "text": "구매",
+          "name": "Status",
+          "textSize": 18
+        },
+        {
+          "bounds": [
+            5,
+            11
+          ],
+          "text": "1",
+          "name": "Key",
+          "textSize": 18
+        }
+      ],
+      "size": [
+        82.20000457763672,
+        30.000001907348633
+      ]
+    },
+    {
+      "visible": true,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.HUD.Potions.MPPotion",
+      "name": "MPPotion",
+      "active": false,
+      "pos": [
+        93,
+        104.60000610351562
+      ],
+      "children": [
+        {
+          "bounds": [
+            0,
+            18
+          ],
+          "text": "",
+          "name": "Label",
+          "textSize": 16
+        },
+        {
+          "bounds": [
+            24.5,
+            11
+          ],
+          "text": "MP0개",
+          "name": "Title",
+          "textSize": 19
+        },
+        {
+          "bounds": [
+            14,
+            11
+          ],
+          "text": "구매",
+          "name": "Status",
+          "textSize": 18
+        },
+        {
+          "bounds": [
+            5,
+            11
+          ],
+          "text": "2",
+          "name": "Key",
+          "textSize": 18
+        }
+      ],
+      "size": [
+        82.20000457763672,
+        30.000001907348633
+      ]
+    },
+    {
+      "visible": false,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.FactionPicker",
+      "name": "FactionPicker",
+      "active": true,
+      "pos": [
+        0,
+        -58
+      ],
+      "children": [],
+      "size": [
+        792.6000366210938,
+        474.6000061035156
+      ]
+    },
+    {
+      "visible": true,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.FactionPicker.Cards.Card_Halo",
+      "name": "Card_Halo",
+      "active": false,
+      "pos": [
+        170.4000244140625,
+        123.19999694824219
+      ],
+      "children": [],
+      "size": [
+        145.8000030517578,
+        234.60000610351562
+      ]
+    },
+    {
+      "visible": true,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.FactionPicker.Cards.Card_Horns",
+      "name": "Card_Horns",
+      "active": false,
+      "pos": [
+        323.4000244140625,
+        129.80001831054688
+      ],
+      "children": [],
+      "size": [
+        145.8000030517578,
+        241.8000030517578
+      ]
+    },
+    {
+      "visible": true,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.FactionPicker.Cards.Card_Neutral",
+      "name": "Card_Neutral",
+      "active": false,
+      "pos": [
+        476.4000549316406,
+        120.80000305175781
+      ],
+      "children": [],
+      "size": [
+        145.8000030517578,
+        243.60000610351562
+      ]
+    },
+    {
+      "visible": true,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.ClassPicker.Cards.Card_Warrior",
+      "name": "Card_Warrior",
+      "active": false,
+      "pos": [
+        96.60002136230469,
+        68.89999389648438
+      ],
+      "children": [
+        {
+          "bounds": [
+            28.5,
+            15
+          ],
+          "text": "성기사",
+          "name": "ClassName",
+          "textSize": 26
+        },
+        {
+          "bounds": [
+            59,
+            16
+          ],
+          "text": "이 직업으로!",
+          "name": "ChooseLabel",
+          "textSize": 28
+        }
+      ],
+      "size": [
+        192,
+        304.20001220703125
+      ]
+    },
+    {
+      "visible": true,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.ClassPicker.Cards.Card_Mage",
+      "name": "Card_Mage",
+      "active": false,
+      "pos": [
+        300.0000305175781,
+        68.89999389648438
+      ],
+      "children": [
+        {
+          "bounds": [
+            50.5,
+            15
+          ],
+          "text": "빛의 마법사",
+          "name": "ClassName",
+          "textSize": 26
+        },
+        {
+          "bounds": [
+            59,
+            16
+          ],
+          "text": "이 직업으로!",
+          "name": "ChooseLabel",
+          "textSize": 28
+        }
+      ],
+      "size": [
+        192,
+        304.20001220703125
+      ]
+    },
+    {
+      "visible": true,
+      "path": "Players.Darugi_S2.PlayerGui.MainGui.ClassPicker.Cards.Card_Archer",
+      "name": "Card_Archer",
+      "active": false,
+      "pos": [
+        503.4000244140625,
+        68.89999389648438
+      ],
+      "children": [
+        {
+          "bounds": [
+            28.5,
+            15
+          ],
+          "text": "레인저",
+          "name": "ClassName",
+          "textSize": 26
+        },
+        {
+          "bounds": [
+            59,
+            16
+          ],
+          "text": "이 직업으로!",
+          "name": "ChooseLabel",
+          "textSize": 28
+        }
+      ],
+      "size": [
+        192,
+        304.20001220703125
+      ]
+    }
+  ],
+  "position": "4.681027889251709, 1.8270039558410645, -412.07574462890625",
+  "monsters": [],
+  "potions": [],
+  "totalKills": 0
+}

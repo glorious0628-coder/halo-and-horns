@@ -1,0 +1,42 @@
+Use case: precise-object-edit / ui-mockup.
+Create exactly ONE edited high fidelity game UI proposal, wide landscape approximately 1595 x 970. This is a readable layout repair of the first input screenshot for the Roblox game Halo & Horns, not a new visual identity.
+Input 1 is the EDIT TARGET: current faction selection game screenshot.
+Input 2 is a supporting APPROVED STYLE reference: keep its established parchment, gold ornament, painted fantasy toy-game art identity.
+Preserve the actual original three card designs and emblems: left gold sun/wreath and cream parchment, middle red horned crest and dark volcanic stone, right teal smith guild shield/anvil and brown wood. Preserve their fine details, existing symbols, meanings and palette. Do not add characters, extra badges, new decoration or new UI. Keep the Roblox black top-left logo/menu/chat system icons exactly recognizable and in their existing corner. Keep the underlying Roblox village but blur it gently and uniformly; remove all floating player names, world sign text and the left-side chat help text. The UI should be the only readable text.
+REPAIR: enlarge the existing three cards enough for readable content, and make all three have EXACTLY the same visible total height, aligned topmost ornament tips, aligned bottommost frame tips, aligned name ribbons, aligned benefit rows, and exactly aligned bottom selection button centers. No uneven card height. Equal gaps and equal main visual widths. Keep all card content comfortably within each frame with breathing room. Existing gilded parchment title centered above, long cream story panel below it, then three cards, then bottom change-faction hint. All within screen with balanced margins. The story panel must contain all THREE full lines with comfortable padding, not cropped at bottom. Buttons remain inside their card frames, with sufficient margin.
+Typography: natural clean bold Korean title and faction names, medium-weight clear Korean body; noticeably larger and more legible than input1. High contrast but no fuzzy heavy outlines on body text. Crisp numerals and percentages. Text must render VERBATIM as follows:
+Title: 어느 편에 설래요?
+Story exactly three centered lines:
+세상을 지키던 균형의 왕관이 부서졌다.
+조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다.
+조각을 더 많이 모으는 쪽이 세상을 다시 만든다.
+LEFT card:
+빛의 기사단
+후광을 얻은 자들.
+지키고, 치유하고, 되찾아 줘라!
+경험치 +30%
+체력 +20%, 계속 회복
+발사하면 동료 치유
+주머니 골드 자동 저금
+이 편으로!
+MIDDLE card:
+뿔 군단
+뿔을 얻은 자들.
+털고, 버티고, 괴수가 되어라!
+골드 +25%
+공격력 +15%, 체력 흡수
+발사 게이지 175
+별 5개면 괴수 변신!
+이 편으로!
+RIGHT card:
+장인 길드
+조각을 다듬는 자들.
+줍지 말고, 다듬고, 만들어라!
+싸움 버프 없음
+PvP 없음 (안전)
+약탈·현상수배 걱정 없음
+제작 특화 (곧 추가)
+이 편으로!
+BOTTOM hint:
+나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)
+Invariants: preserve the user's chosen fantasy card artwork and original three card identities. Do not turn it into minimalist modern web UI, do not invent visual assets, do not change gameplay claims/numbers, do not add titles like A안 to the image. Child-friendly, no gore, no revealing characters. Render only one complete proposal image, no comparison montage.
