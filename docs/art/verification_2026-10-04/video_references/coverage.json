@@ -1,0 +1,322 @@
+{
+  "date": "2026-10-04",
+  "user_videos": 14,
+  "additional_videos": 3,
+  "all_videos_fully_watched": false,
+  "method_limit": "Visual screenshot review and available exported text, not full audio transcription. No whole-video viewing claim for sampled segments.",
+  "videos": [
+    {
+      "video_id": "8-zDed5iU_w",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "playback": "continuous_replay_with_sampled_screens",
+      "endpoint_evidence": "continuous playback; 23:18 captured, subsequent automatic next video observed; exact endpoint not captured",
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/ui_intro.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_scale_offset.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_position_and_anchor.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_shop_design.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_current.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_font_setup.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_grid_layout.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_image_search_field.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_open_close.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_surface_gui.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_billboard.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_closing.jpg",
+        "docs/art/verification_2026-10-04/video_references/ui_final_lesson.jpg"
+      ],
+      "transcript": "provided_text_read_in_full",
+      "transcript_sources": [
+        {
+          "local_path": "C:/Users/glori/AppData/Local/Temp/browser-use/exports/youtube-8-zDed5iU_w-f6148c24-b8f2-4eb7-96f6-23bec519f87a.txt",
+          "sha256": "e27c673cb42433302981e314ac2cec2ad92ced279b5fe3fffdf10ec90ac583b5",
+          "bytes": 26914
+        }
+      ]
+    },
+    {
+      "video_id": "25olpo56QT4",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=25olpo56QT4",
+      "playback": "continuous_replay_with_sampled_screens",
+      "endpoint_evidence": "duration=currentTime=212.661, paused=true",
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/feedback_game_feel.jpg",
+        "docs/art/verification_2026-10-04/video_references/feedback_impact.jpg",
+        "docs/art/verification_2026-10-04/video_references/feedback_closing.jpg",
+        "docs/art/verification_2026-10-04/video_references/feedback_finished.jpg",
+        "docs/art/verification_2026-10-04/video_references/feedback_hit.jpg",
+        "docs/art/verification_2026-10-04/video_references/feedback_buttons.jpg"
+      ],
+      "transcript": "provided_text_read_in_full",
+      "transcript_sources": [
+        {
+          "local_path": "C:/Users/glori/AppData/Local/Temp/browser-use/exports/youtube-25olpo56QT4-a4749ecc-9bf8-4a27-bdcb-5a12553c919b.txt",
+          "sha256": "f137354ff6a157c6d08031a34af6c76682f68c9f1db9b935bf5701d8a81fb1fe",
+          "bytes": 3854
+        }
+      ]
+    },
+    {
+      "video_id": "r1vDkVqD0Z4",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=r1vDkVqD0Z4",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/komme_ui_50m.jpg",
+        "docs/art/verification_2026-10-04/video_references/komme_ui_color.jpg",
+        "docs/art/verification_2026-10-04/video_references/komme_3d_portrait.jpg"
+      ],
+      "transcript": "provided_text_read_in_full",
+      "transcript_sources": [
+        {
+          "local_path": "C:/Users/glori/AppData/Local/Temp/browser-use/exports/youtube-r1vDkVqD0Z4-d4d43a39-f93d-4e87-85de-0263becf31e4.txt",
+          "sha256": "4125ba815e8470066450ca6b206ab9bddb3d04e712e5368b6cda328c134506e0",
+          "bytes": 83996
+        }
+      ]
+    },
+    {
+      "video_id": "AIWuYq_ZU_E",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=AIWuYq_ZU_E",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/skills_intro.jpg",
+        "docs/art/verification_2026-10-04/video_references/skills_fire_demo.jpg",
+        "docs/art/verification_2026-10-04/video_references/skills_lightning_meteor.jpg",
+        "docs/art/verification_2026-10-04/video_references/skills_meteor_end.jpg"
+      ],
+      "transcript": "provided_text_read_in_full",
+      "transcript_sources": [
+        {
+          "local_path": "C:/Users/glori/AppData/Local/Temp/browser-use/exports/youtube-AIWuYq_ZU_E-28bac573-943c-4ec1-90ec-dd747bf2d97e.txt",
+          "sha256": "00e472a7224c4f76ddc6494abb2ed999c2affab0e16aabf34944ae97da618126",
+          "bytes": 11834
+        }
+      ]
+    },
+    {
+      "video_id": "J7RVD-6VJkg",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=J7RVD-6VJkg",
+      "playback": "continuous_replay_with_sampled_screens",
+      "endpoint_evidence": "continuous playback; 05:37 captured, subsequent advertisement observed",
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/plugins_intro.jpg",
+        "docs/art/verification_2026-10-04/video_references/plugins_part1.jpg",
+        "docs/art/verification_2026-10-04/video_references/plugins_scale.jpg",
+        "docs/art/verification_2026-10-04/video_references/plugins_part3.jpg",
+        "docs/art/verification_2026-10-04/video_references/plugins_brush.jpg",
+        "docs/art/verification_2026-10-04/video_references/plugins_hand_grip.jpg",
+        "docs/art/verification_2026-10-04/video_references/plugins_end.jpg"
+      ],
+      "transcript": "provided_text_read_in_full",
+      "transcript_sources": [
+        {
+          "local_path": "C:/Users/glori/AppData/Local/Temp/browser-use/exports/youtube-J7RVD-6VJkg-8bb049c7-d74e-4686-bc18-f9ca3a877382.txt",
+          "sha256": "b80ba17979501d2f5b42dc420cf8e487e2381220c42e5a4994dd5b36f3fc4ef1",
+          "bytes": 8052
+        }
+      ]
+    },
+    {
+      "video_id": "gGWW68gmQd8",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=gGWW68gmQd8",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/tutorial_opening.jpg",
+        "docs/art/verification_2026-10-04/video_references/tutorial_mario_learning.jpg",
+        "docs/art/verification_2026-10-04/video_references/tutorial_late.jpg"
+      ],
+      "transcript": "provided_text_read_in_full",
+      "transcript_sources": [
+        {
+          "local_path": "C:/Users/glori/AppData/Local/Temp/browser-use/exports/youtube-gGWW68gmQd8-d3cfa804-d7d5-40c6-8001-9f9c029745fc.txt",
+          "sha256": "965fb8ad85710a643e5d911159256831f0a6836b3a85617f35d172aaaaf2b0ed",
+          "bytes": 8708
+        }
+      ]
+    },
+    {
+      "video_id": "7vlaKjH2OZE",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=7vlaKjH2OZE",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/patch_opening.jpg",
+        "docs/art/verification_2026-10-04/video_references/patch_midpoint.jpg",
+        "docs/art/verification_2026-10-04/video_references/patch_late.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "3z8qOT6bT9I",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=3z8qOT6bT9I",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/twodev_opening.jpg",
+        "docs/art/verification_2026-10-04/video_references/twodev_midpoint.jpg",
+        "docs/art/verification_2026-10-04/video_references/twodev_late.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "mu8WudcdqgY",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=mu8WudcdqgY",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/failure_opening.jpg",
+        "docs/art/verification_2026-10-04/video_references/failure_early_case.jpg",
+        "docs/art/verification_2026-10-04/video_references/failure_middle.jpg",
+        "docs/art/verification_2026-10-04/video_references/failure_closing.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "i6qaNzUWAcA",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=i6qaNzUWAcA",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/devtips_opening.jpg",
+        "docs/art/verification_2026-10-04/video_references/devtips_early_case.jpg",
+        "docs/art/verification_2026-10-04/video_references/devtips_middle.jpg",
+        "docs/art/verification_2026-10-04/video_references/devtips_late.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "BQCJT0DGg4I",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=BQCJT0DGg4I",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/story_opening.jpg",
+        "docs/art/verification_2026-10-04/video_references/story_early_case.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "kzWUg1jIoFQ",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=kzWUg1jIoFQ",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/laws_opening.jpg",
+        "docs/art/verification_2026-10-04/video_references/laws_middle.jpg",
+        "docs/art/verification_2026-10-04/video_references/laws_late.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "zPEFwxdtR04",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=zPEFwxdtR04",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/zelda_opening.jpg",
+        "docs/art/verification_2026-10-04/video_references/zelda_early_case.jpg",
+        "docs/art/verification_2026-10-04/video_references/zelda_middle.jpg",
+        "docs/art/verification_2026-10-04/video_references/zelda_closing.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "QqW3JZYnXL4",
+      "origin": "user",
+      "url": "https://www.youtube.com/watch?v=QqW3JZYnXL4",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/solo_dev_intro.jpg",
+        "docs/art/verification_2026-10-04/video_references/solo_dev_interview_11m.jpg",
+        "docs/art/verification_2026-10-04/video_references/solo_dev_interview_15m.jpg",
+        "docs/art/verification_2026-10-04/video_references/solo_dev_interview_19m.jpg"
+      ],
+      "transcript": "provided_text_read_in_full",
+      "transcript_gap": "09:09-20:01 interview missing from exported text",
+      "transcript_sources": [
+        {
+          "local_path": "C:/Users/glori/AppData/Local/Temp/browser-use/exports/youtube-QqW3JZYnXL4-2c419e45-d4db-4935-866d-5b9d2e44f7cf.txt",
+          "sha256": "50b719c5926c43d8457ac9f50f7f1cb178bff145b4f15a6229d778c1db18bceb",
+          "bytes": 12845
+        }
+      ]
+    },
+    {
+      "video_id": "x4G8UNiE560",
+      "origin": "additional_international",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/gdc_text_intro.jpg",
+        "docs/art/verification_2026-10-04/video_references/gdc_reading_physiology.jpg",
+        "docs/art/verification_2026-10-04/video_references/gdc_text_examples.jpg",
+        "docs/art/verification_2026-10-04/video_references/gdc_text_navigation.jpg",
+        "docs/art/verification_2026-10-04/video_references/gdc_typography_15m.jpg",
+        "docs/art/verification_2026-10-04/video_references/gdc_text_size.jpg",
+        "docs/art/verification_2026-10-04/video_references/gdc_pacing_example.jpg",
+        "docs/art/verification_2026-10-04/video_references/gdc_text_summary.jpg",
+        "docs/art/verification_2026-10-04/video_references/gdc_closing.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "-GV814cWiAw",
+      "origin": "additional_international",
+      "url": "https://www.youtube.com/watch?v=-GV814cWiAw",
+      "playback": "selected_segments_only",
+      "endpoint_evidence": null,
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/gmtk_tutorial_intro.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_tutorial_early.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_tutorial_middle.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_tutorial_closing.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    },
+    {
+      "video_id": "216_5nu4aVQ",
+      "origin": "additional_international",
+      "url": "https://www.youtube.com/watch?v=216_5nu4aVQ",
+      "playback": "continuous_replay_with_sampled_screens",
+      "endpoint_evidence": "duration=currentTime=318.821, paused=true",
+      "screenshots": [
+        "docs/art/verification_2026-10-04/video_references/gmtk_juice_intro.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_juice_early.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_juice_motion.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_juice_late.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_juice_effects.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_juice_end.jpg",
+        "docs/art/verification_2026-10-04/video_references/gmtk_juice_finished.jpg"
+      ],
+      "transcript": "unavailable_in_browser_export",
+      "transcript_sources": []
+    }
+  ]
+}

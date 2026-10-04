@@ -1,0 +1,1145 @@
+{
+  "date": "2026-10-04",
+  "method": "CUA browser playback and screenshot; no desktop capture",
+  "note": "Samples prove only the displayed scenes. Filename labels are informal; use media.time and visible content. Playback completion and transcript coverage are separately stated in the Markdown notes.",
+  "excluded": {
+    "ui_finished": "automatic next video, not requested UI lecture",
+    "story_late": "advertisement, not story video",
+    "tutorial_initial": "thumbnail before playback"
+  },
+  "frames": [
+    {
+      "label": "feedback_game_feel",
+      "path": "docs/art/verification_2026-10-04/video_references/feedback_game_feel.jpg",
+      "title": "AI로 만든 게임이 아마추어처럼 보이는 진짜 이유 - YouTube",
+      "url": "https://www.youtube.com/watch?v=25olpo56QT4",
+      "media": [
+        {
+          "duration": 212.661,
+          "paused": false,
+          "speed": 2,
+          "time": 112.427346
+        }
+      ],
+      "sha256": "2a2058e417415ad65129702158fb4e9a9b094751d3b45005c74c65804be088e7"
+    },
+    {
+      "label": "feedback_impact",
+      "path": "docs/art/verification_2026-10-04/video_references/feedback_impact.jpg",
+      "title": "AI로 만든 게임이 아마추어처럼 보이는 진짜 이유 - YouTube",
+      "url": "https://www.youtube.com/watch?v=25olpo56QT4",
+      "media": [
+        {
+          "duration": 212.661,
+          "paused": false,
+          "speed": 2,
+          "time": 163.043242
+        }
+      ],
+      "sha256": "675574790190b6773561542164f6268e535082d3be89554faa917383f8163c8d"
+    },
+    {
+      "label": "feedback_closing",
+      "path": "docs/art/verification_2026-10-04/video_references/feedback_closing.jpg",
+      "title": "AI로 만든 게임이 아마추어처럼 보이는 진짜 이유 - YouTube",
+      "url": "https://www.youtube.com/watch?v=25olpo56QT4",
+      "media": [
+        {
+          "duration": 212.661,
+          "paused": false,
+          "speed": 2,
+          "time": 203.412802
+        }
+      ],
+      "sha256": "e0c7eeac65f5307a5cf8f1438eff8b6b8e666a96687c22014a67d4a973d6fbe2"
+    },
+    {
+      "label": "feedback_finished",
+      "path": "docs/art/verification_2026-10-04/video_references/feedback_finished.jpg",
+      "title": "AI로 만든 게임이 아마추어처럼 보이는 진짜 이유 - YouTube",
+      "url": "https://www.youtube.com/watch?v=25olpo56QT4",
+      "media": [
+        {
+          "duration": 212.661,
+          "paused": true,
+          "speed": 2,
+          "time": 212.661
+        }
+      ],
+      "sha256": "1bf405b9416e6ada8ee155f2eb8188225249518db4cf4369fa8aa299e7e3997b"
+    },
+    {
+      "label": "ui_intro",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_intro.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 54.887485
+        }
+      ],
+      "sha256": "68f9f663ad2a8b1a84da3ea0e4878c3a0db5b01ea6701813ed8d650173d2f5b4"
+    },
+    {
+      "label": "ui_scale_offset",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_scale_offset.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 137.569755
+        }
+      ],
+      "sha256": "4ea63add457d0b1b696c1a7e378aec08764a5a2314430ef2a6ae99c030e02632"
+    },
+    {
+      "label": "ui_position_and_anchor",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_position_and_anchor.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 323.663077
+        }
+      ],
+      "sha256": "2fde63632e290463b67f6c9fb042f5af5f78ae8b15f690c43b55c83acd2a1c36"
+    },
+    {
+      "label": "ui_shop_design",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_shop_design.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 479.405509
+        }
+      ],
+      "sha256": "eb57e3cbb42f003c16e74910e1972a57d5e502ef5058c9222b3b91250c8da6fa"
+    },
+    {
+      "label": "ui_current",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_current.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 634.941248
+        }
+      ],
+      "sha256": "b640f61a825f8f64f0f860b5cf12f07e7a9502008557353705d549c68b66bf23"
+    },
+    {
+      "label": "solo_dev_intro",
+      "path": "docs/art/verification_2026-10-04/video_references/solo_dev_intro.jpg",
+      "title": "1인 게임개발, 이것만은 꼭 알아야 합니다 (10년차 개발자의 경험) - YouTube",
+      "url": "https://www.youtube.com/watch?v=QqW3JZYnXL4",
+      "media": [
+        {
+          "duration": 1268.201,
+          "paused": false,
+          "speed": 1,
+          "time": 15.137475
+        }
+      ],
+      "sha256": "9178a8405d02e75cd8e9e721462ac1ad81563f6fbdfb535b69ae11cefdd5a82a"
+    },
+    {
+      "label": "ui_font_setup",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_font_setup.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 750.147003
+        }
+      ],
+      "sha256": "e212987ef183fa1498737f22694ed072e801b731e4974b459984f1d45d08c936"
+    },
+    {
+      "label": "solo_dev_interview_11m",
+      "path": "docs/art/verification_2026-10-04/video_references/solo_dev_interview_11m.jpg",
+      "title": "1인 게임개발, 이것만은 꼭 알아야 합니다 (10년차 개발자의 경험) - YouTube",
+      "url": "https://www.youtube.com/watch?v=QqW3JZYnXL4",
+      "media": [
+        {
+          "duration": 1268.201,
+          "paused": false,
+          "speed": 1,
+          "time": 640.259159
+        }
+      ],
+      "sha256": "559d0197b055d5de0ac851afcc75e76b7cef78e105a1c0f1bab97a4f706b4051"
+    },
+    {
+      "label": "solo_dev_interview_15m",
+      "path": "docs/art/verification_2026-10-04/video_references/solo_dev_interview_15m.jpg",
+      "title": "1인 게임개발, 이것만은 꼭 알아야 합니다 (10년차 개발자의 경험) - YouTube",
+      "url": "https://www.youtube.com/watch?v=QqW3JZYnXL4",
+      "media": [
+        {
+          "duration": 1268.201,
+          "paused": false,
+          "speed": 1,
+          "time": 897.865425
+        }
+      ],
+      "sha256": "4d86d8004c46770a0d11228e1bb1ccbb56c734a36067c78838d9c800558c7071"
+    },
+    {
+      "label": "solo_dev_interview_19m",
+      "path": "docs/art/verification_2026-10-04/video_references/solo_dev_interview_19m.jpg",
+      "title": "1인 게임개발, 이것만은 꼭 알아야 합니다 (10년차 개발자의 경험) - YouTube",
+      "url": "https://www.youtube.com/watch?v=QqW3JZYnXL4",
+      "media": [
+        {
+          "duration": 1268.201,
+          "paused": false,
+          "speed": 1,
+          "time": 1146.915198
+        }
+      ],
+      "sha256": "dfbdd880dc1b2fb1c8f1f160737f4222a8a6e467c1fe688cbff388bdc3d58c61"
+    },
+    {
+      "label": "tutorial_opening",
+      "path": "docs/art/verification_2026-10-04/video_references/tutorial_opening.jpg",
+      "title": "마리오는 왜 하필 '굼바'부터 내보냈을까 - YouTube",
+      "url": "https://www.youtube.com/watch?v=gGWW68gmQd8",
+      "media": [
+        {
+          "duration": 425.261,
+          "paused": false,
+          "speed": 1,
+          "time": 13.748815
+        }
+      ],
+      "sha256": "86dbcd7156899b63e818d16f4c0d952ee91a3ecbdeda812ec5907a510ccd0607"
+    },
+    {
+      "label": "ui_grid_layout",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_grid_layout.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 896.476095
+        }
+      ],
+      "sha256": "367fd237da93dda827c018235141057feb2d2af63513980e7f47141ed7247ac6"
+    },
+    {
+      "label": "tutorial_mario_learning",
+      "path": "docs/art/verification_2026-10-04/video_references/tutorial_mario_learning.jpg",
+      "title": "마리오는 왜 하필 '굼바'부터 내보냈을까 - YouTube",
+      "url": "https://www.youtube.com/watch?v=gGWW68gmQd8",
+      "media": [
+        {
+          "duration": 425.261,
+          "paused": false,
+          "speed": 1,
+          "time": 135.487234
+        }
+      ],
+      "sha256": "393d22083cac7d23a1c5abbdec28bfe9affedca9cc5738c3781c5630d49423a0"
+    },
+    {
+      "label": "tutorial_late",
+      "path": "docs/art/verification_2026-10-04/video_references/tutorial_late.jpg",
+      "title": "마리오는 왜 하필 '굼바'부터 내보냈을까 - YouTube",
+      "url": "https://www.youtube.com/watch?v=gGWW68gmQd8",
+      "media": [
+        {
+          "duration": 425.261,
+          "paused": false,
+          "speed": 1,
+          "time": 306.676035
+        }
+      ],
+      "sha256": "ede758c11b45d073edab1fb98b1eafca61c8fe1c0e2cdd3779b072d9982bbbea"
+    },
+    {
+      "label": "ui_image_search_field",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_image_search_field.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 972.394436
+        }
+      ],
+      "sha256": "f85dd905ce05c757e3d2722a4c19df3c1d6f0c003bb6ad620edb3cfd34772ed5"
+    },
+    {
+      "label": "patch_opening",
+      "path": "docs/art/verification_2026-10-04/video_references/patch_opening.jpg",
+      "title": "상남자 개발자 특) 지 맘대로 패치함 - YouTube",
+      "url": "https://www.youtube.com/watch?v=7vlaKjH2OZE",
+      "media": [
+        {
+          "duration": 291.301,
+          "paused": false,
+          "speed": 1,
+          "time": 6.412031
+        }
+      ],
+      "sha256": "a7e6c39d539880df10744a3a2c0cb9626b85b61ce7f06e2e2c23892f4a845b21"
+    },
+    {
+      "label": "patch_midpoint",
+      "path": "docs/art/verification_2026-10-04/video_references/patch_midpoint.jpg",
+      "title": "상남자 개발자 특) 지 맘대로 패치함 - YouTube",
+      "url": "https://www.youtube.com/watch?v=7vlaKjH2OZE",
+      "media": [
+        {
+          "duration": 291.301,
+          "paused": false,
+          "speed": 1,
+          "time": 128.829726
+        }
+      ],
+      "sha256": "bf9a656e44bde65ea1e23a32ff97b4ec97f028a971daec20704bc2a4e37e7ec4"
+    },
+    {
+      "label": "patch_late",
+      "path": "docs/art/verification_2026-10-04/video_references/patch_late.jpg",
+      "title": "상남자 개발자 특) 지 맘대로 패치함 - YouTube",
+      "url": "https://www.youtube.com/watch?v=7vlaKjH2OZE",
+      "media": [
+        {
+          "duration": 291.301,
+          "paused": false,
+          "speed": 1,
+          "time": 250.440915
+        }
+      ],
+      "sha256": "00e5815ccc43c6b33aad2ecf8281755fb8bccf44213d511f4f9cf5d3b11933a2"
+    },
+    {
+      "label": "twodev_opening",
+      "path": "docs/art/verification_2026-10-04/video_references/twodev_opening.jpg",
+      "title": "2인 개발로 400억 버는 치트키 공개 - YouTube",
+      "url": "https://www.youtube.com/watch?v=3z8qOT6bT9I",
+      "media": [
+        {
+          "duration": 285.341,
+          "paused": false,
+          "speed": 1,
+          "time": 12.85721
+        }
+      ],
+      "sha256": "8a691a73ca13904e9197418b409105f45e5931a9d88a1751fc9fa184f0b6b2ff"
+    },
+    {
+      "label": "ui_open_close",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_open_close.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 1112.684714
+        }
+      ],
+      "sha256": "4697937a1bf3a2d48c5d7d996d2a23f9949b788eeb65d3ceb3d2e60f342b200c"
+    },
+    {
+      "label": "twodev_midpoint",
+      "path": "docs/art/verification_2026-10-04/video_references/twodev_midpoint.jpg",
+      "title": "2인 개발로 400억 버는 치트키 공개 - YouTube",
+      "url": "https://www.youtube.com/watch?v=3z8qOT6bT9I",
+      "media": [
+        {
+          "duration": 285.341,
+          "paused": false,
+          "speed": 1,
+          "time": 134.696714
+        }
+      ],
+      "sha256": "abedc340ff2fd05bb450a290e986c6a360fafcbb81875cb9aa8cf85e495be7f5"
+    },
+    {
+      "label": "twodev_late",
+      "path": "docs/art/verification_2026-10-04/video_references/twodev_late.jpg",
+      "title": "2인 개발로 400억 버는 치트키 공개 - YouTube",
+      "url": "https://www.youtube.com/watch?v=3z8qOT6bT9I",
+      "media": [
+        {
+          "duration": 285.341,
+          "paused": false,
+          "speed": 1,
+          "time": 246.360954
+        }
+      ],
+      "sha256": "8e7c538552cbc47f2a1776bbbdc0db411bba608008621fb0ff1f940b69d12984"
+    },
+    {
+      "label": "failure_opening",
+      "path": "docs/art/verification_2026-10-04/video_references/failure_opening.jpg",
+      "title": "'무조건' 실패하는 게임 특징 (개발자 필수 시청) - YouTube",
+      "url": "https://www.youtube.com/watch?v=mu8WudcdqgY",
+      "media": [
+        {
+          "duration": 239.301,
+          "paused": false,
+          "speed": 1,
+          "time": 9.60203
+        }
+      ],
+      "sha256": "cad4f0b084605c00233c3b4e4f3b40a9fa7fe4778c353bbf8d6f48e00ebd73c1"
+    },
+    {
+      "label": "ui_surface_gui",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_surface_gui.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 1225.944075
+        }
+      ],
+      "sha256": "08652306b5b4377c0d2b0648665374711f9cdb42311c758883513e5525d17426"
+    },
+    {
+      "label": "failure_early_case",
+      "path": "docs/art/verification_2026-10-04/video_references/failure_early_case.jpg",
+      "title": "'무조건' 실패하는 게임 특징 (개발자 필수 시청) - YouTube",
+      "url": "https://www.youtube.com/watch?v=mu8WudcdqgY",
+      "media": [
+        {
+          "duration": 239.301,
+          "paused": false,
+          "speed": 1,
+          "time": 80.482354
+        }
+      ],
+      "sha256": "2223c1d072ad657b4802e129168e2cc695176e0545f8c35122083fded38d541d"
+    },
+    {
+      "label": "failure_middle",
+      "path": "docs/art/verification_2026-10-04/video_references/failure_middle.jpg",
+      "title": "'무조건' 실패하는 게임 특징 (개발자 필수 시청) - YouTube",
+      "url": "https://www.youtube.com/watch?v=mu8WudcdqgY",
+      "media": [
+        {
+          "duration": 239.301,
+          "paused": false,
+          "speed": 1,
+          "time": 168.033625
+        }
+      ],
+      "sha256": "ade064b6d0f459fe611260b9a80b50f6e6982668e19aa62d29caa24d002a248b"
+    },
+    {
+      "label": "failure_closing",
+      "path": "docs/art/verification_2026-10-04/video_references/failure_closing.jpg",
+      "title": "'무조건' 실패하는 게임 특징 (개발자 필수 시청) - YouTube",
+      "url": "https://www.youtube.com/watch?v=mu8WudcdqgY",
+      "media": [
+        {
+          "duration": 239.301,
+          "paused": false,
+          "speed": 1,
+          "time": 220.844277
+        }
+      ],
+      "sha256": "e42f6b3b776efe25f33df0ad15a9ea53a9e9aa96cc121b5ae40b4fc2c9927d63"
+    },
+    {
+      "label": "ui_billboard",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_billboard.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 1303.917524
+        }
+      ],
+      "sha256": "4791629ce84275c2946ec761ef0c99d00301927d86bcd283d3bec297062d991d"
+    },
+    {
+      "label": "devtips_opening",
+      "path": "docs/art/verification_2026-10-04/video_references/devtips_opening.jpg",
+      "title": "천재 개발자가 알려주는 게임 개발 개꿀팁!! - YouTube",
+      "url": "https://www.youtube.com/watch?v=i6qaNzUWAcA",
+      "media": [
+        {
+          "duration": 542.361,
+          "paused": false,
+          "speed": 1,
+          "time": 6.548566
+        }
+      ],
+      "sha256": "a202f53bdf05420cef2be2ceff3526bc9781a0ab723edda47a5f1d1c2727ca30"
+    },
+    {
+      "label": "devtips_early_case",
+      "path": "docs/art/verification_2026-10-04/video_references/devtips_early_case.jpg",
+      "title": "천재 개발자가 알려주는 게임 개발 개꿀팁!! - YouTube",
+      "url": "https://www.youtube.com/watch?v=i6qaNzUWAcA",
+      "media": [
+        {
+          "duration": 542.361,
+          "paused": false,
+          "speed": 1,
+          "time": 167.523489
+        }
+      ],
+      "sha256": "5258c38d35eeed192d73cff622710cc336ea1bee82352e8c6dfb85e24a78cebf"
+    },
+    {
+      "label": "devtips_middle",
+      "path": "docs/art/verification_2026-10-04/video_references/devtips_middle.jpg",
+      "title": "천재 개발자가 알려주는 게임 개발 개꿀팁!! - YouTube",
+      "url": "https://www.youtube.com/watch?v=i6qaNzUWAcA",
+      "media": [
+        {
+          "duration": 542.361,
+          "paused": false,
+          "speed": 1,
+          "time": 331.107001
+        }
+      ],
+      "sha256": "86ed1f482344f9c781ed3aa87ba0b033e2ebce80444a35a6ddef713ff05d782f"
+    },
+    {
+      "label": "ui_closing",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_closing.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 1357.66568
+        }
+      ],
+      "sha256": "f7cd943612ccf965f1975870a23eab6c251bf78f0b5d66fecfa0a947291e889d"
+    },
+    {
+      "label": "devtips_late",
+      "path": "docs/art/verification_2026-10-04/video_references/devtips_late.jpg",
+      "title": "천재 개발자가 알려주는 게임 개발 개꿀팁!! - YouTube",
+      "url": "https://www.youtube.com/watch?v=i6qaNzUWAcA",
+      "media": [
+        {
+          "duration": 542.361,
+          "paused": false,
+          "speed": 1,
+          "time": 493.802535
+        }
+      ],
+      "sha256": "0102100356fa41a3b7ee3cc7bbee7b2c962af081c393629e96b69bef12b7978f"
+    },
+    {
+      "label": "story_opening",
+      "path": "docs/art/verification_2026-10-04/video_references/story_opening.jpg",
+      "title": "계속 찾게 되는 개꿀잼 스토리 특징 - YouTube",
+      "url": "https://www.youtube.com/watch?v=BQCJT0DGg4I",
+      "media": [
+        {
+          "duration": 480.601,
+          "paused": false,
+          "speed": 1,
+          "time": 7.424149
+        }
+      ],
+      "sha256": "6cb10e95b62e6e6373d2b099639dcb024716e396a840e85fec8b05deb9e3f3f8"
+    },
+    {
+      "label": "ui_final_lesson",
+      "path": "docs/art/verification_2026-10-04/video_references/ui_final_lesson.jpg",
+      "title": "게임 UI 기초 (+UI 비율 최적화, 파트 GUI) [로블록스 스튜디오] - 옐롯 - YouTube",
+      "url": "https://www.youtube.com/watch?v=8-zDed5iU_w",
+      "media": [
+        {
+          "duration": 1426.201,
+          "paused": false,
+          "speed": 2,
+          "time": 1398.297881
+        }
+      ],
+      "sha256": "f91c324d66149a5e5cdf9fb906a922068a3d8a0561e23a5a748bf1ebe76f499a"
+    },
+    {
+      "label": "story_early_case",
+      "path": "docs/art/verification_2026-10-04/video_references/story_early_case.jpg",
+      "title": "계속 찾게 되는 개꿀잼 스토리 특징 - YouTube",
+      "url": "https://www.youtube.com/watch?v=BQCJT0DGg4I",
+      "media": [
+        {
+          "duration": 480.601,
+          "paused": false,
+          "speed": 1,
+          "time": 169.53318
+        }
+      ],
+      "sha256": "04b0853a4b7b3c37c7271e2c4a65df1e59af97973fe6e78163afddc038adf415"
+    },
+    {
+      "label": "laws_opening",
+      "path": "docs/art/verification_2026-10-04/video_references/laws_opening.jpg",
+      "title": "재밌는 게임의 법칙.. 생각보다 쉬운데? - YouTube",
+      "url": "https://www.youtube.com/watch?v=kzWUg1jIoFQ",
+      "media": [
+        {
+          "duration": 644.541,
+          "paused": false,
+          "speed": 1,
+          "time": 13.076888
+        }
+      ],
+      "sha256": "85091526f2b1ab4f402b8ef5c2135e49ae0def3b3140f799cec6608b3f83e42a"
+    },
+    {
+      "label": "gdc_text_intro",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_text_intro.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 17.442159
+        }
+      ],
+      "sha256": "7efe5de4be773db7b4f1ef88bab0b13533eb1263e7045132e0453b5aa61634a0"
+    },
+    {
+      "label": "laws_middle",
+      "path": "docs/art/verification_2026-10-04/video_references/laws_middle.jpg",
+      "title": "재밌는 게임의 법칙.. 생각보다 쉬운데? - YouTube",
+      "url": "https://www.youtube.com/watch?v=kzWUg1jIoFQ",
+      "media": [
+        {
+          "duration": 644.541,
+          "paused": false,
+          "speed": 1,
+          "time": 274.638284
+        }
+      ],
+      "sha256": "b88d65d5ea0deb896e8ebde017750d21234090890ff4ede5e492e8b77e7e2ad5"
+    },
+    {
+      "label": "gdc_reading_physiology",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_reading_physiology.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 398.872524
+        }
+      ],
+      "sha256": "04925343d4dff7650a98ca7802a0cdd9458b9a41547f9cf6cc9085719aca0c12"
+    },
+    {
+      "label": "laws_late",
+      "path": "docs/art/verification_2026-10-04/video_references/laws_late.jpg",
+      "title": "재밌는 게임의 법칙.. 생각보다 쉬운데? - YouTube",
+      "url": "https://www.youtube.com/watch?v=kzWUg1jIoFQ",
+      "media": [
+        {
+          "duration": 644.541,
+          "paused": false,
+          "speed": 1,
+          "time": 531.799993
+        }
+      ],
+      "sha256": "b4796b001a413e0b962048ce5cadfdfbee64e9fbcfcef8c67cd9129c6934c9ec"
+    },
+    {
+      "label": "gdc_text_examples",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_text_examples.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 766.864154
+        }
+      ],
+      "sha256": "b8430235ccd3b212390747258084a96a34853aada0f2cfd7bb9e51152ae4d6b2"
+    },
+    {
+      "label": "zelda_opening",
+      "path": "docs/art/verification_2026-10-04/video_references/zelda_opening.jpg",
+      "title": "??? : 젤다가 주인공 맞네.. : 젤다의 전설 스토리와 게임 디자인의 비밀 - YouTube",
+      "url": "https://www.youtube.com/watch?v=zPEFwxdtR04",
+      "media": [
+        {
+          "duration": 589.201,
+          "paused": false,
+          "speed": 1,
+          "time": 9.884728
+        }
+      ],
+      "sha256": "b5ec5b5aa3bc36163c37694c2fac79757aad4ff33475ea5be047581be3c55e06"
+    },
+    {
+      "label": "gdc_text_navigation",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_text_navigation.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 1101.58271
+        }
+      ],
+      "sha256": "f5988b13861f7588102de8113fca201d197ca5c1be87f96eb2da734f23786640"
+    },
+    {
+      "label": "zelda_early_case",
+      "path": "docs/art/verification_2026-10-04/video_references/zelda_early_case.jpg",
+      "title": "??? : 젤다가 주인공 맞네.. : 젤다의 전설 스토리와 게임 디자인의 비밀 - YouTube",
+      "url": "https://www.youtube.com/watch?v=zPEFwxdtR04",
+      "media": [
+        {
+          "duration": 589.201,
+          "paused": false,
+          "speed": 1,
+          "time": 187.110612
+        }
+      ],
+      "sha256": "9a209e52a8f8634e64979034c06419e9a67fd5705b3d1c5d72784caef28f5b54"
+    },
+    {
+      "label": "gdc_typography_15m",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_typography_15m.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 933.000744
+        }
+      ],
+      "sha256": "3f6bfc72320ce1ee83608a8aa8774068ca7f28076d434d89f06f8abb50347a48"
+    },
+    {
+      "label": "zelda_middle",
+      "path": "docs/art/verification_2026-10-04/video_references/zelda_middle.jpg",
+      "title": "??? : 젤다가 주인공 맞네.. : 젤다의 전설 스토리와 게임 디자인의 비밀 - YouTube",
+      "url": "https://www.youtube.com/watch?v=zPEFwxdtR04",
+      "media": [
+        {
+          "duration": 589.201,
+          "paused": false,
+          "speed": 1,
+          "time": 363.920008
+        }
+      ],
+      "sha256": "dbf8408e7981558d29f465e283888c6606b83f67328d297fcc5536b8b104e32b"
+    },
+    {
+      "label": "gdc_text_size",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_text_size.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 830.082637
+        }
+      ],
+      "sha256": "daabf2e08b01a25d9ef01ee8a8103337af12032a1e9ed2837246858956349748"
+    },
+    {
+      "label": "zelda_closing",
+      "path": "docs/art/verification_2026-10-04/video_references/zelda_closing.jpg",
+      "title": "??? : 젤다가 주인공 맞네.. : 젤다의 전설 스토리와 게임 디자인의 비밀 - YouTube",
+      "url": "https://www.youtube.com/watch?v=zPEFwxdtR04",
+      "media": [
+        {
+          "duration": 589.201,
+          "paused": false,
+          "speed": 1,
+          "time": 538.576494
+        }
+      ],
+      "sha256": "cf88d37e40dfd59530720e1476404a1bf9f87c7708e85397fd489be12bbae301"
+    },
+    {
+      "label": "gdc_pacing_example",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_pacing_example.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 1510.698791
+        }
+      ],
+      "sha256": "e70c9b52f243a1475a3f0f79af083c8c94f48eb2e7997ea3bfcd464a24d4a37a"
+    },
+    {
+      "label": "gmtk_tutorial_intro",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_tutorial_intro.jpg",
+      "title": "Can we Improve Tutorials for Complex Games? - YouTube",
+      "url": "https://www.youtube.com/watch?v=-GV814cWiAw",
+      "media": [
+        {
+          "duration": 1286.381,
+          "paused": false,
+          "speed": 1,
+          "time": 15.650714
+        }
+      ],
+      "sha256": "600f171fb717bdf23f057d0546a9262522a230a68cefcabc25a3d66ae520dc0a"
+    },
+    {
+      "label": "gdc_text_summary",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_text_summary.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 1666.819591
+        }
+      ],
+      "sha256": "67acde01459f4a445eba37f426eb8cf2133c12e1a561ff241b6cecc1ac4c1a5e"
+    },
+    {
+      "label": "gmtk_tutorial_early",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_tutorial_early.jpg",
+      "title": "Can we Improve Tutorials for Complex Games? - YouTube",
+      "url": "https://www.youtube.com/watch?v=-GV814cWiAw",
+      "media": [
+        {
+          "duration": 1286.381,
+          "paused": false,
+          "speed": 1,
+          "time": 429.693667
+        }
+      ],
+      "sha256": "7633fa2bd99aa28a9ffe85c45d5cc93d778022c14efc4deca807bdcdf2a28103"
+    },
+    {
+      "label": "gdc_closing",
+      "path": "docs/art/verification_2026-10-04/video_references/gdc_closing.jpg",
+      "title": "쉽게 읽히는 텍스트 UX 디자인하기 - YouTube",
+      "url": "https://www.youtube.com/watch?v=x4G8UNiE560",
+      "media": [
+        {
+          "duration": 1832.301,
+          "paused": false,
+          "speed": 2,
+          "time": 1793.218226
+        }
+      ],
+      "sha256": "e8e3d254ad023d79e5ff9ad1d6fc305287aa7c77d17e2cbd78277ff3fc277f43"
+    },
+    {
+      "label": "gmtk_tutorial_middle",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_tutorial_middle.jpg",
+      "title": "Can we Improve Tutorials for Complex Games? - YouTube",
+      "url": "https://www.youtube.com/watch?v=-GV814cWiAw",
+      "media": [
+        {
+          "duration": 1286.381,
+          "paused": false,
+          "speed": 1,
+          "time": 792.017426
+        }
+      ],
+      "sha256": "2c72a6c09c4b4939c2621a39cadf26bfde052a90063b8efba7627d9c7fd522b8"
+    },
+    {
+      "label": "gmtk_tutorial_closing",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_tutorial_closing.jpg",
+      "title": "Can we Improve Tutorials for Complex Games? - YouTube",
+      "url": "https://www.youtube.com/watch?v=-GV814cWiAw",
+      "media": [
+        {
+          "duration": 1286.381,
+          "paused": false,
+          "speed": 1,
+          "time": 1177.465823
+        }
+      ],
+      "sha256": "64683921ae5b265a9da5d632d2b4300f7dee86887ebc3bf6101ceb53c163636d"
+    },
+    {
+      "label": "gmtk_juice_intro",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_juice_intro.jpg",
+      "title": "'게임 느낌'과 '주스'에 관한 비밀｜게임 메이커즈 툴킷 - YouTube",
+      "url": "https://www.youtube.com/watch?v=216_5nu4aVQ",
+      "media": [
+        {
+          "duration": 318.821,
+          "paused": false,
+          "speed": 2,
+          "time": 11.417723
+        }
+      ],
+      "sha256": "8cca61f3e8fb41c96f8641c815883385ca1e551f0fa6749fbe0cd9a04821ef8c"
+    },
+    {
+      "label": "gmtk_juice_early",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_juice_early.jpg",
+      "title": "'게임 느낌'과 '주스'에 관한 비밀｜게임 메이커즈 툴킷 - YouTube",
+      "url": "https://www.youtube.com/watch?v=216_5nu4aVQ",
+      "media": [
+        {
+          "duration": 318.821,
+          "paused": false,
+          "speed": 2,
+          "time": 79.456666
+        }
+      ],
+      "sha256": "990a26ab5918dcf6e9706f514ec6484ecdd28629fe1e5c75243bc6a2404cf950"
+    },
+    {
+      "label": "gmtk_juice_motion",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_juice_motion.jpg",
+      "title": "'게임 느낌'과 '주스'에 관한 비밀｜게임 메이커즈 툴킷 - YouTube",
+      "url": "https://www.youtube.com/watch?v=216_5nu4aVQ",
+      "media": [
+        {
+          "duration": 318.821,
+          "paused": false,
+          "speed": 2,
+          "time": 130.156725
+        }
+      ],
+      "sha256": "3c32baf20c1d383d9cbce410ed4b9109d085636dd4ecf9edf1702f8190580fdc"
+    },
+    {
+      "label": "gmtk_juice_late",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_juice_late.jpg",
+      "title": "'게임 느낌'과 '주스'에 관한 비밀｜게임 메이커즈 툴킷 - YouTube",
+      "url": "https://www.youtube.com/watch?v=216_5nu4aVQ",
+      "media": [
+        {
+          "duration": 318.821,
+          "paused": false,
+          "speed": 2,
+          "time": 182.653289
+        }
+      ],
+      "sha256": "f1dbfef0a85d48dcc00b3852e33430a7dd38a90dad2bc8af49b456d52073a13f"
+    },
+    {
+      "label": "gmtk_juice_effects",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_juice_effects.jpg",
+      "title": "'게임 느낌'과 '주스'에 관한 비밀｜게임 메이커즈 툴킷 - YouTube",
+      "url": "https://www.youtube.com/watch?v=216_5nu4aVQ",
+      "media": [
+        {
+          "duration": 318.821,
+          "paused": false,
+          "speed": 2,
+          "time": 269.292069
+        }
+      ],
+      "sha256": "323dc4c0dcc9979ca313ff89179f6e3f6c3995c6a7ae39a1612d1fb1d3cb6540"
+    },
+    {
+      "label": "gmtk_juice_end",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_juice_end.jpg",
+      "title": "'게임 느낌'과 '주스'에 관한 비밀｜게임 메이커즈 툴킷 - YouTube",
+      "url": "https://www.youtube.com/watch?v=216_5nu4aVQ",
+      "media": [
+        {
+          "duration": 318.821,
+          "paused": false,
+          "speed": 2,
+          "time": 315.187257
+        }
+      ],
+      "sha256": "2c2d8218b79b557941eb6fd9ff5afe11e93a4aa5ccc47bc82ef0937a4da0bb97"
+    },
+    {
+      "label": "gmtk_juice_finished",
+      "path": "docs/art/verification_2026-10-04/video_references/gmtk_juice_finished.jpg",
+      "title": "'게임 느낌'과 '주스'에 관한 비밀｜게임 메이커즈 툴킷 - YouTube",
+      "url": "https://www.youtube.com/watch?v=216_5nu4aVQ",
+      "media": [
+        {
+          "duration": 318.821,
+          "paused": true,
+          "speed": 2,
+          "time": 318.821
+        }
+      ],
+      "sha256": "3dd1b05137d55acfff090456869f9c131ad3c1a3cf705c5f14ffbde8205072dc"
+    },
+    {
+      "label": "komme_ui_50m",
+      "path": "docs/art/verification_2026-10-04/video_references/komme_ui_50m.jpg",
+      "url": "https://www.youtube.com/watch?v=r1vDkVqD0Z4",
+      "observed_time_from_session": "50:08",
+      "media": null,
+      "sha256": "200d1b029127db5dc4324ccc86512f0dc0638e37baa0042b34f89bf63e18e30d"
+    },
+    {
+      "label": "komme_ui_color",
+      "path": "docs/art/verification_2026-10-04/video_references/komme_ui_color.jpg",
+      "url": "https://www.youtube.com/watch?v=r1vDkVqD0Z4",
+      "observed_time_from_session": "50:32",
+      "media": null,
+      "sha256": "2267e6f46b654a05ed1e164a741bbad78e653764bcbfc34be8c8cc6526a7956a"
+    },
+    {
+      "label": "komme_3d_portrait",
+      "path": "docs/art/verification_2026-10-04/video_references/komme_3d_portrait.jpg",
+      "url": "https://www.youtube.com/watch?v=r1vDkVqD0Z4",
+      "observed_time_from_session": "52:39",
+      "media": null,
+      "sha256": "794c4596617dff998c29b86ec935babc516be8c2ef13aff1a318e8cbef2c6a3c"
+    },
+    {
+      "label": "skills_intro",
+      "path": "docs/art/verification_2026-10-04/video_references/skills_intro.jpg",
+      "url": "https://www.youtube.com/watch?v=AIWuYq_ZU_E",
+      "observed_time_from_session": "00:00-00:09",
+      "media": null,
+      "sha256": "af56c99aef20f4b990a688e78b52646c5cd62f44b660c4d8e8e7cc87a5177d3f"
+    },
+    {
+      "label": "skills_fire_demo",
+      "path": "docs/art/verification_2026-10-04/video_references/skills_fire_demo.jpg",
+      "url": "https://www.youtube.com/watch?v=AIWuYq_ZU_E",
+      "observed_time_from_session": "11:33",
+      "media": null,
+      "sha256": "892b4bd4a16fdf61e1dc5bf282169244d5eebfc760bfa9552cbe6a3e700db3ac"
+    },
+    {
+      "label": "skills_lightning_meteor",
+      "path": "docs/art/verification_2026-10-04/video_references/skills_lightning_meteor.jpg",
+      "url": "https://www.youtube.com/watch?v=AIWuYq_ZU_E",
+      "observed_time_from_session": "11:41",
+      "media": null,
+      "sha256": "b57e607f66dcc42c62abc800efa89314d94d1bc21cec64ed1f209998be003b8a"
+    },
+    {
+      "label": "skills_meteor_end",
+      "path": "docs/art/verification_2026-10-04/video_references/skills_meteor_end.jpg",
+      "url": "https://www.youtube.com/watch?v=AIWuYq_ZU_E",
+      "observed_time_from_session": "11:47-11:49",
+      "media": null,
+      "sha256": "ee8c2b21bf5b22e6f22df29ac58d737c36c2b1d9673bbe3a30d38ff0f892f575"
+    },
+    {
+      "label": "plugins_intro",
+      "path": "docs/art/verification_2026-10-04/video_references/plugins_intro.jpg",
+      "url": "https://www.youtube.com/watch?v=J7RVD-6VJkg",
+      "observed_time_from_session": "00:27",
+      "media": null,
+      "sha256": "6e52a4c306902c78f3966e449e80dd9213a175bf7db26498974b175e997641c5"
+    },
+    {
+      "label": "plugins_part1",
+      "path": "docs/art/verification_2026-10-04/video_references/plugins_part1.jpg",
+      "url": "https://www.youtube.com/watch?v=J7RVD-6VJkg",
+      "observed_time_from_session": "01:10",
+      "media": null,
+      "sha256": "3061601bbfcee0eb953a43348d0876320c0fbb0c046dd4a755474a803b265221"
+    },
+    {
+      "label": "plugins_scale",
+      "path": "docs/art/verification_2026-10-04/video_references/plugins_scale.jpg",
+      "url": "https://www.youtube.com/watch?v=J7RVD-6VJkg",
+      "observed_time_from_session": "02:14",
+      "media": null,
+      "sha256": "5cce53983aa1dec6433c1f8b71baf8e493349dd777f1c478d804a931ca043950"
+    },
+    {
+      "label": "plugins_part3",
+      "path": "docs/art/verification_2026-10-04/video_references/plugins_part3.jpg",
+      "url": "https://www.youtube.com/watch?v=J7RVD-6VJkg",
+      "observed_time_from_session": "03:01",
+      "media": null,
+      "sha256": "3b410144a01a3ed917e5fa5b7d4832cb54a37437f9b7eb16aff3970dbe89f4b1"
+    },
+    {
+      "label": "plugins_brush",
+      "path": "docs/art/verification_2026-10-04/video_references/plugins_brush.jpg",
+      "url": "https://www.youtube.com/watch?v=J7RVD-6VJkg",
+      "observed_time_from_session": "03:45",
+      "media": null,
+      "sha256": "2b51b500d4b38274e81fa851040efa9376aa304f3f2a7f0825c8269aafb08cf9"
+    },
+    {
+      "label": "plugins_hand_grip",
+      "path": "docs/art/verification_2026-10-04/video_references/plugins_hand_grip.jpg",
+      "url": "https://www.youtube.com/watch?v=J7RVD-6VJkg",
+      "observed_time_from_session": "04:32",
+      "media": null,
+      "sha256": "97e574a18532ab628010364fc32fb92b2f96466430795018b72d9f1c26b59ff5"
+    },
+    {
+      "label": "plugins_end",
+      "path": "docs/art/verification_2026-10-04/video_references/plugins_end.jpg",
+      "url": "https://www.youtube.com/watch?v=J7RVD-6VJkg",
+      "observed_time_from_session": "05:37",
+      "media": null,
+      "sha256": "29aaab947711310b8c3c0dae85b9c781b38c01c706ec89917f26f3bccccd18b4"
+    },
+    {
+      "label": "feedback_hit",
+      "path": "docs/art/verification_2026-10-04/video_references/feedback_hit.jpg",
+      "url": "https://www.youtube.com/watch?v=25olpo56QT4",
+      "observed_time_from_session": "intro, exact time not logged",
+      "media": null,
+      "sha256": "265830a07b19977038f90dbfa7355eeeae23c706276bf3b31df9578352a3ec3b"
+    },
+    {
+      "label": "feedback_buttons",
+      "path": "docs/art/verification_2026-10-04/video_references/feedback_buttons.jpg",
+      "url": "https://www.youtube.com/watch?v=25olpo56QT4",
+      "observed_time_from_session": "01:31 approximate",
+      "media": null,
+      "sha256": "044bde63ba1503a99887ba8728ff159f250dcc4ef6a35111af6a5389bbe9a6d9"
+    }
+  ]
+}
