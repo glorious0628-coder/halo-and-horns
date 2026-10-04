@@ -2,6 +2,12 @@
 
 Read this file first, then `docs/HANDOFF_CODEX.md` (full state, history and next steps).
 
+**Priorities and dates:** `docs/RELEASE_PLAN.md` (user-confirmed 2026-10-04) overrides the HANDOFF task order.
+- Beta: 2026-10-31 11:00 KST.
+- Full launch: 2026-12-19.
+- Languages: Korean + English in one experience.
+- The core design rule is `docs/GDD.md` §0.
+
 ## The user (very important)
 - Korean-speaking beginner Roblox creator. **Every sentence you write to the user is Korean** (short progress notes too). Code, identifiers, paths and commit-body details may be English; commit titles are short Korean.
 - Does **not** want explanations or design theory. Wants a working, playable Roblox Studio game. Report briefly: what changed, what to click/play.

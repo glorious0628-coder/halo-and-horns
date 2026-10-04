@@ -1,5 +1,9 @@
 {
-  "status": "G2_ready_awaiting_user",
+  "status": "free_baseline_presented_paid_deferred_by_release_plan",
+  "latest_user_instruction": "유튜브 작업 뒤 RELEASE_PLAN을 따른다. 지금 하던 R2 무료 기준선(B0)은 끝내서 보여 주고, 그다음부터 베타 필수 순서대로 진행한다.",
+  "baseline_presented": ["B0", "B0H"],
+  "priority_document": "docs/RELEASE_PLAN.md",
+  "next_work": "Beta requirement 1: HaloArcherM sharp face pilot; user OK before applying to other 17 avatars",
   "gates": [
     "G2",
     "G1",
