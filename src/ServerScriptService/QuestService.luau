@@ -792,6 +792,10 @@ local function onClaimQuest(player, slot)
 	local claims = num(S.PlayerService.AddStat(player, "DailyClaims", 1))
 	if claims == Config.Quests.Slots then
 		payChest(player, data)
+		-- P8: say once that the day's homework is done (DailyClaims resets with the KST day, so this is once a day)
+		task.delay(2, function()
+			if player.Parent then pcall(Net.Notify, player, Config.Text.DailyAllDone, "good", 6) end
+		end)
 	end
 end
 

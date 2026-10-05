@@ -1837,7 +1837,7 @@ ITEMS = {
 	Mode = nil, -- nil | { Item = id, Tier?, From?, To? }
 	Rebuild = function(_keep) end, -- set to queueRebuild below (defined later in this file)
 	Attrs = { WeaponOwnedMask = true, WeaponTier = true, Level = true }, -- data rebuilds of the open list
-	Data = { Items = {}, Enhance = {} }, -- last "Inventory" payload (validated)
+	Data = { Items = {}, Enhance = {}, Seen = {} }, -- last "Inventory" payload (validated)
 	Version = 0, -- +1 per payload
 	-- { Kind = "Use", SentAt, ReadyAt, Item, Count, Answered? } | { Kind = "Equip", SentAt, ReadyAt, Tier, WeaponTier, Answered? }
 	Pending = nil,
@@ -1868,6 +1868,9 @@ ITEMS = {
 		SellKeepEnhF = "강화 +%d 기록은 저장돼요 (다시 얻으면 그대로)",
 		Plus = " +%d",
 		Weapons = "내 무기", Scrolls = "주문서", Materials = "재료",
+		Drops = "몬스터가 주는 것", DropsNone = "몬스터를 잡으면 무엇을 주는지 여기에 적혀요.", -- P7
+		DropLine = "%s: %s", DropPart = "%s %s", DropJackpot = "★전설 무기(대박) %s분의 1", DropPotion = "%s 물약",
+		DropWeapon = "%s 무기",
 		NoScrolls = "아직 없어요. 몬스터를 잡으면 가끔 떨어져요!",
 		NoMaterials = "아직 없어요. 몬스터를 잡으면 떨어져요!",
 		Equipped = "장착 중", Equip = "장착",
@@ -1914,7 +1917,13 @@ function ITEMS.OnInventory(payload)
 			end
 		end
 	end
-	ITEMS.Data = { Items = items, Enhance = enh }
+	local seen = {}
+	if type(payload.Seen) == "table" then
+		for kind, v in payload.Seen do
+			if type(kind) == "string" and v == true and loot.Tables[kind] then seen[kind] = true end
+		end
+	end
+	ITEMS.Data = { Items = items, Enhance = enh, Seen = seen }
 	ITEMS.Version += 1
 	ITEMS.CheckPending()
 	if currentId == "Items" then ITEMS.Rebuild(true) end -- the blacksmith polls ITEMS.Data in its update
@@ -2329,6 +2338,32 @@ BUILDERS.Items = function(parent)
 		end
 	end
 	addText(parent, anyMat and L.MaterialHint or L.NoMaterials, { Color = theme.SubText, Size = 16 })
+
+	-- P7: what each monster I have defeated can drop (text only; the picture book comes after launch)
+	addText(parent, L.Drops, { Color = theme.Gold, Font = theme.Font, Size = 20 })
+	local anyDrop = false
+	for _, kind in { "Slime", "BigSlime", "Goblin", "GoblinBrute", "Skeleton", "SkeletonKnight" } do
+		local rows = loot.Tables[kind]
+		if rows and ITEMS.Data.Seen and ITEMS.Data.Seen[kind] then
+			anyDrop = true
+			local parts = {}
+			for _, row in rows do
+				local name
+				if row.Item and loot.Items[row.Item] then name = loot.Items[row.Item].Name
+				elseif row.Potion then name = string.format(L.DropPotion, row.Potion)
+				elseif row.Weapon then name = string.format(L.DropWeapon, Config.WeaponGrade(row.Weapon).Name) end
+				if name then table.insert(parts, string.format(L.DropPart, name, Util.FormatPercent(row.P) .. "%")) end
+			end
+			local jp = loot.Jackpot
+			if jp and jp.Monsters and jp.Monsters[kind] then
+				table.insert(parts, string.format(L.DropJackpot, Util.FormatNumber(math.floor(1 / jp.Chance + 0.5))))
+			end
+			local m = Config.MonsterTypes[kind]
+			addText(parent, string.format(L.DropLine, m and (m.Short or m.Name) or kind, table.concat(parts, " · ")),
+				{ Name = "Drops_" .. kind, Size = 15 })
+		end
+	end
+	if not anyDrop then addText(parent, L.DropsNone, { Color = theme.SubText, Size = 16 }) end
 
 	-- 0.25 s: a pending request that got its answer / timed out, or the PvP combat tag flipping, rebuilds in place
 	return function()

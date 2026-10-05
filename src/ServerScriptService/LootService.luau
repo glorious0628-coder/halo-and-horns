@@ -135,7 +135,15 @@ local function inventoryPayload(data)
 	for tier = 1, Config.MaxWeaponTier do
 		enh[tier] = enhanceOf(data, tier)
 	end
-	return { Items = items, Enhance = enh }
+	-- P7: monsters this player has defeated (LootFlags "Seen:<kind>") -> the item list shows only their drop tables
+	local seen = {}
+	if type(data.LootFlags) == "table" then
+		for k, v in data.LootFlags do
+			local kind = type(k) == "string" and string.match(k, "^Seen:(%w+)$")
+			if kind and v == true and LOOT.Tables[kind] then seen[kind] = true end
+		end
+	end
+	return { Items = items, Enhance = enh, Seen = seen }
 end
 
 local function pushInventory(player)
@@ -261,6 +269,12 @@ function LootService.RollKill(player, info)
 	local data = getData(player)
 	if not data or type(info) ~= "table" or type(info.Kind) ~= "string" then return nil end
 	ensureTables(data)
+	-- P7: the first kill of a kind reveals its drop table in the item list
+	local seenKey = "Seen:" .. info.Kind
+	if LOOT.Tables[info.Kind] and data.LootFlags[seenKey] ~= true then
+		data.LootFlags[seenKey] = true
+		publish(player, data)
+	end
 	local gained = {}
 	local itemCounts = {}
 	local function giveItem(id, n)
