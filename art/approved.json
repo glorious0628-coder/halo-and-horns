@@ -339,5 +339,59 @@
   "approvalQuote": "좋아, 이 모습으로",
   "note": "산전수전 겪은 여유 있는 중년 장비상인 C 외형 승인. A/B 보존. 2D 외형 승인만 기록하며 3D 유료 제작은 미승인, Tripo 0크레딧, Roblox 업로드·NPC 연결 전.",
   "deleted": "deleted 2026-10-06 (old-art cleanup, docs/art/art_cleanup_2026-10-06.json)"
+ },
+ "CON_SlimeCube": {
+  "status": "approved",
+  "date": "2026-10-05",
+  "tool": "Adobe Firefly Image 5 (1:1, 2K)",
+  "prompt": "art/prompts/CON_SlimeCube.txt",
+  "preview": "art/review/CON_SlimeCube_preview.png",
+  "original": "not downloaded (user said no download yet, 2026-10-05); regenerate or download from Firefly history when 3D starts",
+  "note": "초원 슬라임 새 디자인(네모 젤리, 로블록스 블록 느낌). 사용자가 '슬라임이 로블록스랑 안 맞는다'고 해서 다시 그린 2안 중 1안을 골랐다. 3D(Tripo)는 사용자가 '아직 노노'(2026-10-05)."
+ },
+ "Pet_BabySlime": {
+  "status": "approved",
+  "date": "2026-10-05",
+  "tool": "Adobe Firefly Image 5 (1:1, 2K)",
+  "prompt": "art/prompts/Pet_BabySlime.txt",
+  "preview": "art/review/Pet_BabySlime_preview.png",
+  "original": "not downloaded (user said no download yet, 2026-10-05); regenerate or download from Firefly history when 3D starts",
+  "note": "베타 펫 아기 슬라임(네모 + 새싹, 민트빛 흰색). 슬라임 1안과 짝. 3D(Tripo)는 사용자가 '아직 노노'(2026-10-05)."
+ },
+ "CON_PumpkinSlime": {
+  "status": "approved",
+  "date": "2026-10-05",
+  "tool": "Adobe Firefly Image 5 (1:1, 2K)",
+  "prompt": "art/prompts/CON_PumpkinSlime.txt",
+  "preview": "art/review/CON_PumpkinSlime_preview.png",
+  "original": "not downloaded (user said no download yet, 2026-10-05); regenerate or download from Firefly history when 3D starts",
+  "note": "핼러윈 호박 슬라임(첫 시안에서 바로 OK). 3D(Tripo)는 사용자가 '아직 노노'(2026-10-05)."
+ },
+ "CON_PumpkinKing": {
+  "status": "approved",
+  "date": "2026-10-05",
+  "tool": "Adobe Firefly Image 5 (1:1, 2K)",
+  "prompt": "art/prompts/CON_PumpkinKing.txt",
+  "preview": "art/review/CON_PumpkinKing_preview.png",
+  "original": "not downloaded (user said no download yet, 2026-10-05); regenerate or download from Firefly history when 3D starts",
+  "note": "핼러윈 미니보스 호박 대왕. '너무 작다' → 크게+망토, '더 무서운 표정' → 화난 눈썹·네모 이빨 웃음으로 다시 그려 OK. 3D(Tripo)는 사용자가 '아직 노노'(2026-10-05)."
+ },
+ "CON_LittleGhost": {
+  "status": "approved",
+  "date": "2026-10-05",
+  "tool": "Adobe Firefly Image 5 (1:1, 2K)",
+  "prompt": "art/prompts/CON_LittleGhost.txt",
+  "preview": "art/review/CON_LittleGhost_preview.png",
+  "original": "not downloaded (user said no download yet, 2026-10-05); regenerate or download from Firefly history when 3D starts",
+  "note": "핼러윈 꼬마 유령(얼굴 없는 종이 등불). 3D(Tripo)는 사용자가 '아직 노노'(2026-10-05)."
+ },
+ "CON_BatGoblin": {
+  "status": "approved",
+  "date": "2026-10-05",
+  "tool": "Adobe Firefly Image 5 (1:1, 2K)",
+  "prompt": "art/prompts/CON_BatGoblin.txt",
+  "preview": "art/review/CON_BatGoblin_preview.png",
+  "original": "not downloaded (user said no download yet, 2026-10-05); regenerate or download from Firefly history when 3D starts",
+  "note": "핼러윈 박쥐 분장 고블린(보라 박쥐 두건+망토, 호박 사탕 통). 두건·망토는 기존 고블린 큰 귀와 겹쳐 파츠로 못 만들어서 3D는 새 모델이 필요(약 115크레딧). 3D(Tripo)는 사용자가 '아직 노노'(2026-10-05)."
  }
 }

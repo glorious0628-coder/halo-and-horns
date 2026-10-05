@@ -724,7 +724,9 @@ function Config.GooseReward(level, factionId, won, rare)
 	return math.floor(g * gm * m), math.floor(x * xm * m)
 end
 
-Config.Luck = { -- "단골 운"
+> **대체됨 (SPEC_ADDENDUM A23-18, 2026-10-05):** 단골 운(서버에 있던 분 수, `RegularMinutes`)은 **오늘의 운**으로 바뀌었다. `Config.Luck = { BaseRare = 0.05, PerEvent = 0.02, MaxRare = 0.125 }`, 저장 `data.LuckDay`/`LuckEvents`(한국 자정 `Config.DayIndex` 기준), `PlayerService.AddLuckEvent`/`GetLuckEvents`. 아래 `PerActiveMinute`/`MinuteSeconds`/`GetRegularMinutes`/`RegularMinutes` 계약은 역사 기록이다.
+
+Config.Luck = { -- "단골 운" (superseded by A23-18 오늘의 운)
 	BaseRare = 0.05,
 	PerActiveMinute = 0.0025, -- +0.25 percentage points per active minute on THIS server
 	MaxRare = 0.125,
@@ -1575,7 +1577,7 @@ PlayerService.Respawn(player)                              -- task.spawn(player.
 PlayerService.RefreshCharacter(player, fullHeal: boolean)  -- recompute MaxHealth + WalkSpeed (formula below)
 PlayerService.FinalizeLeave(player)                        -- idempotent: if ready -> PlayerLeaving:Fire + DataService.Release; always Util.ClearPlayer; ready = false
 PlayerService.MarkActive(player)                           -- "had input/combat now" (feeds Regular's Luck)
-PlayerService.GetRegularMinutes(player) -> number          -- active minutes on THIS server (session only)
+PlayerService.GetRegularMinutes(player) -> number          -- REMOVED (A23-18): use GetLuckEvents(player) -> number (events joined today, saved)
 PlayerService.GetLastActive(player) -> number              -- R1 CR-M20: os.clock() of the last MarkActive, 0 = never
 PlayerService.IsShuttingDown() -> boolean                  -- R1 CR-M2: true once BindToClose started
 PlayerService.PairReady(holder, otherUserId, kind, cooldown, commit?) -> boolean  -- R1 CR-M4: saved pair cooldown (A16-2)
@@ -2110,6 +2112,8 @@ Board text (via `S.MapBuilder.GetBoardLabel().Text`), newline-separated: `"현�
 or `"(아직 없음)"`.
 
 ### 4.14 GrudgeService (G7) — `ServerScriptService/GrudgeService.luau`
+
+> **갱신 (2026-10-05, A23-18 + mmorpg_painpoints P3):** 아래의 "나간 피해자 몫은 사라진다(destroyed)"는 **대체**됐다. 자루가 끝나는 순간 서버에 없는 피해자의 몫은 DataStore 우편(`HaloHorns_GrudgeMail_v1`, 키 `M_<userId>`, 최대 20통)으로 보내고, 다음 접속 때 먼저 비운 뒤 같은 생(`Rebirths` 같음)만 지급한다. 120%는 Avenged이고 `pairReady('refund')` 쿨다운이 지났을 때 첫 통만이다. **원한 유령 붙잡기:** 털린 피해자가 부활한 뒤 `GhostHold` 원격(인자 없음, 3초 제한, 살아 있을 때만)으로 자루 시간을 +2초씩, 자루당 최대 +10초(45→55초) 늘린다. 놓아주기·명예 보상은 없다. 구현: 커밋 735419e.
 ```
 GrudgeService.SackResolved : Signal(thief, outcome: "Paid" | "Avenged" | "Returned", total: number)
 
@@ -2641,7 +2645,7 @@ EventHUD.Init(C) ; EventHUD.Start()     -- no other public functions
   edge arrows stay below the top-bar inset.
 - Lore hint: the first time in a session that a sack-carrier arrow appears for a Halo player →
   `UIKit.Toast(string.format(Config.Story.SackLore), "info", 4)`.
-- Luck corner: `"단골 " .. RegularMinutes .. "분 · 희귀 " .. Util.FormatPercent(Config.RareChance(RegularMinutes)) .. "%"`
+- Luck corner (A23-18: now `"오늘의 운 · 희귀 X%"` from `LuckEvents`; the next line is history): `"단골 " .. RegularMinutes .. "분 · 희귀 " .. Util.FormatPercent(Config.RareChance(RegularMinutes)) .. "%"`
   and below `"응원별 ★★★☆☆ (" .. CheerStars .. "/5)"`.
 - Hidden while `C.FactionPicker.IsOpen()` or `C.ClassPicker.IsOpen()`.
 
