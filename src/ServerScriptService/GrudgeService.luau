@@ -163,7 +163,33 @@ function GrudgeService.MailPending()
 end
 
 -- a share for a victim who is not here: { Id, A = amount, R = rebirths when stolen, K = "Avenged" | "Returned", T }.
--- Id = thief + sack start + kind, so a retried write never adds the same letter twice (review of 735419e)
+-- Id = thief + sack start + kind, so a retried write never adds the same letter twice (review of 735419e).
+-- A taken (paid) letter leaves a tombstone { Id, Done = true, T } for MAIL.TombSeconds, so a Send retry whose first
+-- reply was lost cannot add it back after the victim already took it (review of 74345bf: no double pay).
+MAIL.TombSeconds = 600 -- far longer than Send's retry span (1 + 2 + 4 s)
+
+local function live(m)
+	return type(m) == "table" and m.Done ~= true and (tonumber(m.A) or 0) > 0
+end
+
+-- drop old tombstones, then trim to MailMax: tombstones go first, then the oldest letters
+local function tidy(list)
+	local out, now = {}, os.time()
+	for _, m in list do
+		if type(m) == "table" and (live(m) or (m.Done == true and now - (tonumber(m.T) or 0) < MAIL.TombSeconds)) then
+			table.insert(out, m)
+		end
+	end
+	while #out > Config.Grudge.MailMax do
+		local drop = 1
+		for i, m in out do
+			if m.Done == true then drop = i break end
+		end
+		table.remove(out, drop)
+	end
+	return out
+end
+
 function MAIL.Send(userId, entry, kind, letterId)
 	local amount = math.floor(tonumber(entry.Amount) or 0)
 	if amount <= 0 then return end
@@ -173,13 +199,12 @@ function MAIL.Send(userId, entry, kind, letterId)
 		for attempt = 1, 4 do
 			if not store then break end
 			local ok, err = pcall(store.UpdateAsync, store, "M_" .. tostring(userId), function(old)
-				local list = type(old) == "table" and old or {}
+				local list = tidy(type(old) == "table" and old or {})
 				for _, m in list do
-					if type(m) == "table" and m.Id == letterId then return nil end -- already written
+					if type(m) == "table" and m.Id == letterId then return nil end -- already written (or already taken)
 				end
 				table.insert(list, { Id = letterId, A = amount, R = tonumber(entry.Rebirths) or 0, K = kind, T = os.time() })
-				while #list > Config.Grudge.MailMax do table.remove(list, 1) end
-				return list
+				return tidy(list)
 			end)
 			if ok then break end
 			Util.Warn(TAG, ("grudge mail send %d/4 failed: %s"):format(attempt, tostring(err)))
@@ -193,36 +218,75 @@ local function canPay(victim)
 	return isPlaying(victim) and S.PlayerService.IsReady(victim) and type(S.PlayerService.GetData(victim)) == "table"
 end
 
+-- the victim could not be paid after the take: the letters go back (in FRONT of newer ones, tombstones removed);
+-- retried like Send, merged by Id so a lost reply never duplicates a letter
+function MAIL.WriteBack(store, key, letters)
+	for attempt = 1, 4 do
+		local ok, err = pcall(store.UpdateAsync, store, key, function(old)
+			local ids, list = {}, {}
+			for _, m in letters do
+				if live(m) and (m.Id == nil or not ids[m.Id]) then
+					if m.Id ~= nil then ids[m.Id] = true end
+					table.insert(list, m)
+				end
+			end
+			for _, m in (type(old) == "table" and old or {}) do
+				if type(m) == "table" and (m.Id == nil or not ids[m.Id]) then table.insert(list, m) end
+			end
+			return tidy(list)
+		end)
+		if ok then return end
+		Util.Warn(TAG, ("grudge mail write-back %d/4 failed: %s"):format(attempt, tostring(err)))
+		if attempt < 4 then task.wait(2 ^ (attempt - 1)) end
+	end
+	Util.Warn(TAG, "grudge mail write-back gave up (letters lost, never paid twice)")
+end
+
 -- at join: take every letter, pay those from this "life"; the 120% bonus needs Avenged and the victim's refund
 -- cooldown, and only the first such letter gets it. If the victim cannot be paid after the mailbox was emptied
 -- (left / not ready), the letters go back in (nothing was paid yet, so nothing can be paid twice).
+-- Counted in MAIL.Pending, so BindToClose waits for a take / write-back in flight.
 function MAIL.Receive(victim)
 	local store = MAIL.Get()
 	if not store or not canPay(victim) then return end
+	local shutting = S.PlayerService.IsShuttingDown and S.PlayerService.IsShuttingDown()
+	if shutting then return end -- the letters wait for the next join
+	MAIL.Pending += 1
+	local ok, err = pcall(MAIL.Take, store, victim)
+	MAIL.Pending -= 1
+	if not ok then Util.Warn(TAG, "grudge mail receive failed: " .. tostring(err)) end
+end
+
+function MAIL.Take(store, victim)
+	local key = "M_" .. tostring(victim.UserId)
 	local letters = nil
-	local ok, err = pcall(store.UpdateAsync, store, "M_" .. tostring(victim.UserId), function(old)
-		letters = type(old) == "table" and old or {}
+	local ok, err = pcall(store.UpdateAsync, store, key, function(old)
+		letters = {}
+		local keep = {}
+		for _, m in tidy(type(old) == "table" and old or {}) do
+			if live(m) then
+				table.insert(letters, m)
+				if m.Id ~= nil then table.insert(keep, { Id = m.Id, Done = true, T = os.time() }) end -- tombstone
+			else
+				table.insert(keep, m)
+			end
+		end
 		if #letters == 0 then return nil end
-		return {}
+		return keep
 	end)
 	if not ok then Util.Warn(TAG, "grudge mail read failed: " .. tostring(err)) return end
 	if type(letters) ~= "table" or #letters == 0 then return end
 	if not canPay(victim) then
-		-- the taken letters go back in FRONT of any newer ones, so a full box drops the oldest first
-		local back, backErr = pcall(store.UpdateAsync, store, "M_" .. tostring(victim.UserId), function(old)
-			local list = table.clone(letters)
-			for _, m in (type(old) == "table" and old or {}) do table.insert(list, m) end
-			while #list > Config.Grudge.MailMax do table.remove(list, 1) end
-			return list
-		end)
-		if not back then Util.Warn(TAG, "grudge mail write-back failed (letters lost): " .. tostring(backErr)) end
+		MAIL.WriteBack(store, key, letters)
 		return
 	end
 	local rebirths = tonumber(victim:GetAttribute("Rebirths")) or 0
-	local total, bonusUsed = 0, false
-	for _, m in letters do
+	local total, bonusUsed, seen = 0, false, {}
+	for i, m in letters do
 		local amount = math.floor(tonumber(type(m) == "table" and m.A or 0) or 0)
-		if amount > 0 and (tonumber(m.R) or 0) == rebirths then -- CR-M6 sameLife
+		local id = m.Id or i -- letters without an Id (first build) are each their own
+		if amount > 0 and not seen[id] and (tonumber(m.R) or 0) == rebirths then -- CR-M6 sameLife
+			seen[id] = true
 			local rate = Config.Grudge.ReturnRate
 			if m.K == "Avenged" and not bonusUsed and pairReady(victim, 0, "refund", Config.Grudge.RefundBonusCooldown) then
 				rate, bonusUsed = Config.Grudge.AvengeRefundRate, true

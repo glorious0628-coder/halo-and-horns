@@ -1,0 +1,1716 @@
+{
+  "status": "passed",
+  "checks": 9151,
+  "failedChecks": 0,
+  "namedChecks": 279,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config-contract",
+      "check": "Config.Keybinds.Actions exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "17 actions (BB1 table)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Actions order = the BB1 defaults table",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "default PC key = BB1 table",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "fixed gamepad button = BB1 table (A23-21)",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Group is Combat / Potion / Window / Other",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "the six window actions (Group Window, Window = Panels id) and only them",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "potion actions are the Potion group",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "every action has Label + LabelEn",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "every action has a touch name (Button + ButtonEn, A23-21)",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "only SkillZ has a Flag (Config.Skills.ZEnabled)",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "default key and pad names are real Enum.KeyCode names",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Skills.ZEnabled = false (BB9 turns it on)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Keybinds.Reserved = the BB1 Reserved set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "KeyUsable = Allowed (A-Z, 0-9, F1-F8, keypad digits, symbols, LeftControl, LeftAlt, CapsLock) minus Reserved",
+      "pass": 101,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "KeyReserved = the Reserved set",
+      "pass": 101,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "every Allowed name is a real Enum.KeyCode name",
+      "pass": 64,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "every Reserved name is a real Enum.KeyCode name",
+      "pass": 27,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "KeyUsable: non-strings and 25+ characters are never usable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "only R2 attack / L2 skill are wired (as before BB1; BB21 wires the rest)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.RateLimits.SetSettings = 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Data.Defaults.Settings = the BB2 defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Data.Version stays 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Settings is not mirrored to attributes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Settings.Defs = the BB2 definitions",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "every setting has Korean + English text",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "the collision toast text is the BB2 sentence",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "the English collision toast takes the same two values",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Settings.MaxBlobKeys = 16",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "unbound label 없음 / None",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "KeyMap({}) = the BB1 defaults (SkillZ has no key while its Flag is off)",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "KeyMap({}): 17 entries, no collisions",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "with Config.Skills.ZEnabled the Z skill gets Z",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "explicit entries first in Actions order: the later explicit holder of a taken key gets '' (not reported)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "an explicit key beats an earlier action's default; that default-only action is '' and reported",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "BB2: a saved Attack = J keeps J; the new Journal action gets '' and is reported once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "server view (liveSet nil = every Flag-on action) gives the same",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "a non-live window holds no key even with a saved key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "a non-live window's default key blocks nothing (no collision)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "once the window is live, its default-only key collides and is reported",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "Flag off: SkillZ is not live (no key, no collision)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "Flag off: a saved SkillZ key binds nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "Flag on: the new SkillZ default collides with my Attack = Z and is reported",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "explicit '' leaves the action unbound and is not reported",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "a reserved / unknown / non-string saved key falls back to the default",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "a non-table sparse map = the defaults",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "every action saved on one key: the first live action keeps it (never all blank)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "one changed key costs at most the one colliding default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "KeyMap = the BB2 collision rule (fuzz, 400 saves x live sets)",
+      "pass": 400,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "no two actions ever share a key (fuzz)",
+      "pass": 400,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "non-live actions hold no key (fuzz)",
+      "pass": 1089,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "never wipes all keys (fuzz)",
+      "pass": 400,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keymap-rules",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "Config.KeyLabel cases ('One'->'1', 'LeftControl'->'Ctrl', 'Keypad1'->'Num1', ''->'없음')",
+      "pass": 21,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "KeyLabel(nil / non-string) = 없음",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "KeyLabel English: '' -> None",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "the auto-combat unlock text carries the {Auto} token, no fixed R",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "{Auto} -> R by default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "{Auto} -> the player's key (V)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "the auto-combat quest step reads '자동 전투 켜기 (R)' by default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "GhostButton = '유령으로 붙잡기 ({GhostHold})' -> T",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "unknown {tokens} stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "an unbound action fills as 없음 / None",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keylabel-fillkeys",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "nil / non-table / empty -> the defaults",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "unknown top-level keys and unknown action ids are dropped (V = 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "BB2 test value Keys.Attack = 'Escape' is rejected (Attack stays F)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "every Reserved key is rejected",
+      "pass": 27,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "keys outside Allowed are rejected",
+      "pass": 15,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "every usable key is kept",
+      "pass": 57,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "a 1000-character key name is rejected",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "non-string key values are dropped",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "entries equal to the default are dropped (sparse)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "'' (unbound by choice) is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "BB2 test value 'two actions on one key': the later one is saved as ''",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "two actions on one key never both bind it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Sfx clamped to 0..1 and snapped to the 0.1 step (BB2 test value Sfx = 5 -> 1)",
+      "pass": 11,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "NaN / +-inf / non-numbers -> the default 1",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "bools must be boolean (else the default)",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "false is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "every enum option is kept",
+      "pass": 11,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "values outside Options -> the default (incl. a 1000-character string)",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Near exists for Tags only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "SanitizeSettings never changes its input",
+      "pass": 300,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "output fields are exactly V, Keys and the seven settings",
+      "pass": 300,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Sfx is always on the 0.1 grid inside 0..1",
+      "pass": 300,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Sfx = the nearest step of the clamped value",
+      "pass": 46,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "enums: an option is kept, anything else is the default",
+      "pass": 1200,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "bools: a boolean is kept, anything else is the default",
+      "pass": 600,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "saved keys: known action ids, '' or a usable key, never the default",
+      "pass": 929,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
+      "pass": 929,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "no two Flag-on actions save the same key",
+      "pass": 698,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "SanitizeSettings is idempotent",
+      "pass": 300,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "a non-finite / non-number Sfx -> 1",
+      "pass": 254,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "BB2: an old save without Settings loads with the defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "Version stays 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "a broken Settings blob is repaired field by field on load",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "Settings = a string -> the defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "a v2 save migrates to v3 with default Settings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "a brand-new player starts with the defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "DataService.Save works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "the saved row holds the settings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "the next visit (another server) loads the same settings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dataservice-settings",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "PlayerReady: one push { Seq = 0, saved settings }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "every player gets their own push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "Settings is never sent to all clients",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "zero arguments: echo { Seq = 0, my settings } to me only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "two arguments: refused (nothing saved, nothing sent)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "a non-table blob is refused",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "one nil argument is not 'zero arguments' (refused)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "fixture: 17-key blob",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "a blob with more than 16 top-level keys is refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "a 16-key blob is accepted (junk dropped) and echoed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "Seq: an integer clamped to 0..2^31 (missing / NaN / string = 0)",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "a second call inside 1 s is dropped silently (nothing saved or sent)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "still inside 1 s after 0.5 s: dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "1.05 s after the last accepted call: accepted (dropped calls never extend the wait)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "a player who is not ready gets nothing and saves nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "becoming ready pushes the settings once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "calls made before ready do not use up the rate limit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "the echo carries the cleaned value and the blob's Seq",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "every Settings send has one owner",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "another player's calls are never sent to me",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "Get repairs a missing Settings table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "KeyMap(player) = Config.KeyMap of the saved keys",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "no data (player left): nothing sent, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-remote",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "Get(action) = the Enum.KeyCode of the default key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "Get = nil for unbound / non-live / unknown actions",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "default keys F Q R T 1 2 E U M B -> their actions (no regression)",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "keys of windows that do not exist yet, the flagged Z and free keys do nothing",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "pad R2 = attack, L2 = skill (as before BB1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "the other pad buttons are data only until BB21",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "keyboard keys only from the keyboard, pad buttons only from Gamepad1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "mouse / nil / malformed input -> nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "PadFor = the fixed pad button (nil when none)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "Label: key labels on keyboards ('1' for One, 없음 when unbound)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "touch-only: Label = the button name",
+      "pass": 17,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "touch-only: the '(T)' key part is hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "touch screen + keyboard: key labels",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "Lang = en: unbound = None",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "Lang = en on touch: ButtonEn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "Fill: '{GhostHold}' -> T, '{Auto}' -> R, unknown tokens stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "StripKeys drops the '(T)' group",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "no collisions by default; not capturing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "IsLive: Flag on and (windows) registered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "WindowFor: the Panels id of a window action only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-core",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "SetLocal onto a live holder's key = swap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "swap: the holder gets my old key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "the keys work at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "Changed fires once with the new map",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "Settings.Keys holds only the changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "the Changed map is a copy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "swap back with an Enum.KeyCode argument",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "back on the defaults: nothing saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "the current key again: ok, nothing changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "a free key: set, the old key does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "Clear: no key (없음), U does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "a cleared action is saved as '' and never reported",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "swap from an unbound action: the holder gets ''",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "Reserved / not Allowed keys are refused and change nothing",
+      "pass": 11,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "non-live / unknown actions cannot be set",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "non-live / unknown actions cannot be cleared",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "Reset: every key back to the default (Changed once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "Apply with the same keys: no Changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "Apply with new keys: Changed once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "Apply cleans the keys (Escape -> the default)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-setlocal",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "before the bag exists: G does nothing, T = ghost hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "Refresh after Panels registers Bag: G = bag (Changed fired)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "G = bag only, T = ghost hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "a window key swaps like any key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "a window that is no longer registered holds no key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "a saved key of an unregistered window holds nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "SetLocal(Map, X) gives Map the key X although the unregistered Bag window has X saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "the stale Bag entry on X goes back to its default (not '')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "the same with an action before Bag in the Actions order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "once registered, Bag gets its default key G",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "swap: the holder gets my old key although an unregistered window has it saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "and that stale entry goes back to its default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "Config.Skills.ZEnabled: Z = SkillZ",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "registered windows: G C K L H J open their windows",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "no toast on a clean start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "BB2: saved Attack = J keeps J; Journal = 없음 and is reported",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "one toast: '새 동작 [퀘스트 일지]의 기본 키 J가 …'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "the toast shows once per action per session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "another action's collision gets its own toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "Collisions() returns a copy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "no toast before Start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "Start shows the pending collision toast once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-collisions",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "Capture: capturing, interact prompts off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "the capture sinks keyboard keys at priority 4000+",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "the captured key is sunk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "a free key: Set, the binding is removed, prompts on again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "a held key: Swap (the other action reported)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "swap toast names both keys",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "refused key: result + toast, key unchanged",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "Esc cancels",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "5 s without a key: Timeout",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "the Roblox menu (Esc) cancels",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "a non-live action cannot be captured",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-capture",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "prompts already in the world use the Interact key (E)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "a changed Interact key re-applies to every prompt (existing, added, shown)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "unbound Interact: prompts have no key (still clickable)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "Dispatch: press + release through Began / Ended, returns the action",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "Dispatch: pad input, Begin only, gameProcessed passed on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "Dispatch ignores malformed input",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "every UserInputService press / release is forwarded (with gameProcessed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "Start pulls once: SetSettings with zero arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "not loaded before the server answers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "Set works locally at once (Changed fromServer = false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "nothing is sent before the first server value",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "first server value: the server wins, except my unsent change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "Changed fromServer = true for an echo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "the waiting change goes out once the first value arrived (Seq 1, full blob)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "the blob = the sanitized settings + Seq (<= 16 keys)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "unknown fields are refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "Set cleans like the server (Sfx 5 -> 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "Set(Keys) with a reserved key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "a cleaned value equal to the current one sends nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "never two sends inside RateLimits.SetSettings + 0.05 s (pull included)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "12 changes in 3 s -> at most 5 sends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "the last change always goes out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "a change with a free slot goes out at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "Flush inside the limit does not send at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "Flush: the pending blob goes out at the slot time (one send)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "an echo older than the newest Seq sent is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "the newest echo: the server value wins",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "a change still waiting to be sent survives an echo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "and goes out next",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "malformed Settings payloads are ignored",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "the change goes out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "no resend while the echo may still come (slot + 2 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "no echo: the same value goes out again with a new Seq",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "the echo of the newest blob ends the resends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "the older echo changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "an older echo does not count: the newest blob is resent in full",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "resends keep the 1.05 s send slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "no answer at all: 5 resends, then it stops",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "the next change is sent again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settings-client",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "the pull reaches the server before the player is ready: no answer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "PlayerReady push: saved keys + settings arrive (Attack J, Journal 없음)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "the Journal collision is told once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "the key change is saved on the server",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "no call is dropped by the server's 1 s limit (every call after the early pull is answered)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "the server handles at most one call per second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "after the spam the server holds exactly the client's last value",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "rejoin: the keys and settings are the same",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "jitter: blobs sent 1.05 s apart reach the server 0.80 s apart, the second is dropped (no answer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "jitter: the client sends the dropped blob again, the last change is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "integration",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "net-names",
+      "check": "Net.Names has SetSettings and Settings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "net-names",
+      "check": "no duplicate remote names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "net-names",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "net-names",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [
+    {
+      "Group": "config-contract",
+      "Text": "BB1 lists Allowed 'Keypad0-Keypad9'; Roblox names them KeypadZero..KeypadNine, so those names are stored (KeyUsable('Keypad1') = false, KeyLabel('Keypad1') = Num1)."
+    }
+  ],
+  "staticChecks": 21,
+  "staticFailures": [],
+  "mutations": {
+    "total": 30,
+    "applied": 0,
+    "caught": 0,
+    "results": []
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "046ab477bb155b8f0eeadf679939653a40bb32ea87354088e869adb1868daea1",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ReplicatedStorage/Shared/Net.luau": "ad53b3e640f50045ed03839f33f9eb3cf8152d2fb05d662e55c4ab621c5ff95c",
+    "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
+    "src/ServerScriptService/SettingsService.luau": "aa11a9cb12e31fc89b54a63a34284a6349311a22af1b1c15b1c4dd28ae0c92b7",
+    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "b89f4a3f9f570c636ef7f7c16876be5a9a91838b861e8940fe49c639e77ca39a",
+    "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9"
+  },
+  "fixtureSHA256": "092eccc1d9508e61c74ba762c5da294cb8e5ea5e1d8688aa858e385ab1b3d9ee",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "docs/design/beta_basics_2026-10-05.md BB1 + BB2 (A23-21: PC keyboard keys only, fixed pad layout, button names on touch-only devices): 17 actions with the BB1 default keys / pad buttons, Reserved and Allowed key sets, KeyMap collision rule (explicit first in Actions order, a taken explicit key -> '', a live default-only action whose default is taken -> '' and reported once per session, non-live actions hold no key, never wipe all keys), KeyLabel, SanitizeSettings (unknown keys dropped, sparse Keys, Sfx clamp + 0.1 step, finite numbers, bools, enums), DataService fills Settings without a Version bump, SettingsService (<= 1 argument, <= 16 top-level keys, Seq clamped 0..2^31, ready + 1 s rate limit, dropped calls answered with nothing, owner-only echo, push on PlayerReady), Keybinds (Get / ActionFor / Label / PadFor / SetLocal swap / Clear / Reset / Apply / Changed / Collisions / Capture / Dispatch / prompts) and the Settings client (pull at Start, one pending blob at max(now, lastSent + 1.05 s), Flush through the same slot, older echoes ignored, unsent changes kept, a blob the server drops without an answer re-sent through the same slot, at most 5 times in a row). Review fixes 2026-10-06: a non-live action's stale saved key never blanks a live action in SetLocal; potion badges, quest-row key tokens and the in-flight resend are checked (static / offline).",
+  "limitations": "Offline doubles: virtual clock for os.clock / task.delay, cached EnumItems, remotes with a fixed or scripted latency, DataStore table, Panels.Has from a registered-window set, UIKit.Toast recorder. HUD / VitalsUI / GrudgeGhost / WorldMap / Panels / StoryQuestService wiring is only checked statically. Not certified here: real key presses in Studio, which non-letter keys Roblox swallows, whether ProximityPrompt accepts a changed KeyboardKeyCode, real DataStore saves across rejoins, multiple clients."
+}

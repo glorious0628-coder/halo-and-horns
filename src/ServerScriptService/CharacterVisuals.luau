@@ -55,6 +55,7 @@ local WATCH = {
 	Rookie = { "Nametag" },
 	GraduateGraceUntil = { "Nametag" }, -- A23-18: "졸업 유예" while the graduation grace runs
 	TitleSel = { "Nametag" }, -- BB16 selected title (e.g. A23-18 "베타 개척자")
+	TitlesOwned = { "Nametag" }, -- BB16: the pioneer mark on the second line
 	BullyStacks = { "Nametag" },
 	SessionTitle = { "Nametag" },
 	Nickname = { "Nametag" },
@@ -281,6 +282,12 @@ local function updateNametag(player, bb)
 	end
 
 	local line2 = "Lv " .. level .. " · " .. Config.ClassName(classId, f)
+	-- review 381f6a1: the beta pioneer title is a small mark here unless it is the selected (line 1) title
+	local pioneer = Config.TitleDefs and Config.TitleDefs.BetaPioneer
+	if pioneer and attrStr(player, "TitleSel", "") ~= "BetaPioneer"
+		and table.find(string.split(attrStr(player, "TitlesOwned", ""), ","), "BetaPioneer") then
+		line2 ..= " · " .. pioneer.Name
+	end
 	if rebirths > 0 then
 		line2 ..= "  환생 " .. rebirths
 	end

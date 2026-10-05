@@ -4,7 +4,8 @@
 -- town icons, Crossroads landmarks, the sky crown) plus live markers: the local player's arrow (10x/s while open),
 -- the golden goose while GameState says it is active, the active kaiju and, for Halo players only, grudge-sack
 -- carriers (the same attributes EventHUD reads). Pan by drag, zoom with wheel / pinch / buttons (0.5x-3x), close with
--- X / M / Escape / gamepad B. Presentation only: reads attributes, never sends anything to the server.
+-- X / the map key (Keybinds "Map", default M) / Escape / gamepad B. Presentation only: reads attributes, never sends
+-- anything to the server.
 --
 -- Public API: WorldMap.Init(C), WorldMap.Start(), WorldMap.Open(), WorldMap.Close(), WorldMap.Toggle(), WorldMap.IsOpen()
 local Players = game:GetService("Players")
@@ -145,7 +146,7 @@ local TXT = {
 	ZoomIn = "+",
 	ZoomOut = "−",
 	CloseX = "X",
-	HintMouse = "드래그: 이동 · 휠: 확대/축소 · M / Esc: 닫기",
+	HintMouse = "드래그: 이동 · 휠: 확대/축소 · {Map} / Esc: 닫기", -- {Map}: the current map key (WorldMap.HintText)
 	HintTouch = "드래그: 이동 · 두 손가락: 확대/축소",
 	Crown = "균형의 왕관",
 	Altar = "운명의 제단",
@@ -1266,6 +1267,8 @@ end
 local function onToggleAction(_, state, _input)
 	if state ~= Enum.UserInputState.Begin then return Enum.ContextActionResult.Pass end
 	if UserInputService:GetFocusedTextBox() then return Enum.ContextActionResult.Pass end
+	local kb = C and C.Keybinds -- BB1: a key being captured in the settings is not a map press
+	if type(kb) == "table" and type(kb.IsCapturing) == "function" and kb.IsCapturing() then return Enum.ContextActionResult.Pass end
 	if not isOpen and pickersOpen() then return Enum.ContextActionResult.Pass end
 	WorldMap.Toggle()
 	return Enum.ContextActionResult.Sink
@@ -1467,7 +1470,7 @@ local function build()
 	-- control hint (top-center)
 	hintLabel = label({
 		Name = "Hint",
-		Text = TXT.HintMouse,
+		Text = WorldMap.HintText(),
 		TextColor3 = COL.SubText,
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, 16),
@@ -1761,17 +1764,50 @@ function WorldMap.Start()
 	local ok, err = pcall(build)
 	if not ok then Util.Warn(TAG, "build failed: " .. tostring(err)) end
 
-	-- M toggles the map (A12). Bound through ContextActionService so the key press reaches UserInputService
-	-- listeners as gameProcessed. Ignored while typing in a TextBox.
-	if not toggleBound then
-		local okBind, errBind = pcall(function()
-			ContextActionService:BindActionAtPriority(ACTION_TOGGLE, onToggleAction, false, ACTION_PRIORITY, Enum.KeyCode.M)
+	-- the map key toggles the map (A12). Bound through ContextActionService so the key press reaches UserInputService
+	-- listeners as gameProcessed. Ignored while typing in a TextBox. BB1: the key comes from Keybinds and is bound
+	-- again whenever it changes.
+	if not toggleBound then WorldMap.BindKey() end
+	local kb = C and C.Keybinds
+	if type(kb) == "table" and type(kb.Changed) == "table" then
+		kb.Changed:Connect(function()
+			local ok, err = pcall(WorldMap.BindKey)
+			if not ok then Util.Warn(TAG, "map key rebind failed: " .. tostring(err)) end
 		end)
-		toggleBound = okBind
-		if not okBind then Util.Warn(TAG, "M key bind failed: " .. tostring(errBind)) end
 	end
 
 	print("[WorldMap] started")
+end
+
+-- BB1: (re)binds the toggle to Keybinds.Get("Map"); an unbound map key leaves only the button / X / Esc / pad B
+function WorldMap.BindKey()
+	local kb = C and C.Keybinds
+	local code = (type(kb) == "table" and type(kb.Get) == "function") and kb.Get("Map") or nil
+	if toggleBound and code == WorldMap.BoundKey then return end
+	pcall(function()
+		ContextActionService:UnbindAction(ACTION_TOGGLE)
+	end)
+	toggleBound, WorldMap.BoundKey = false, nil
+	if code ~= nil then
+		local okBind, errBind = pcall(function()
+			ContextActionService:BindActionAtPriority(ACTION_TOGGLE, onToggleAction, false, ACTION_PRIORITY, code)
+		end)
+		toggleBound = okBind
+		WorldMap.BoundKey = okBind and code or nil
+		if not okBind then Util.Warn(TAG, "map key bind failed: " .. tostring(errBind)) end
+	end
+	if hintLabel and not (UserInputService.TouchEnabled and not UserInputService.MouseEnabled) then
+		hintLabel.Text = WorldMap.HintText()
+	end
+end
+
+-- "{Map} / Esc: 닫기" with the current map key; without a map key only "Esc: 닫기"
+function WorldMap.HintText()
+	local kb = C and C.Keybinds
+	if type(kb) ~= "table" or type(kb.Fill) ~= "function" or kb.KeyName("Map") == "" then
+		return (string.gsub(TXT.HintMouse, "{Map} / ", ""))
+	end
+	return kb.Fill(TXT.HintMouse)
 end
 
 function WorldMap.Open()
@@ -1789,7 +1825,7 @@ function WorldMap.Open()
 	pcall(layoutRoot)
 	if hintLabel then
 		local touchOnly = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
-		hintLabel.Text = touchOnly and TXT.HintTouch or TXT.HintMouse
+		hintLabel.Text = touchOnly and TXT.HintTouch or WorldMap.HintText()
 	end
 	root.Visible = true
 	pcall(refreshView)

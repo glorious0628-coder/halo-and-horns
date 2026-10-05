@@ -2,7 +2,7 @@
 -- (no names, no chat; AnalyticsService ties events to the player by itself). Read-only observer: it only listens to
 -- existing signals / attributes and never changes game state. Every call is pcall'd and throttled; a missing
 -- AnalyticsService (Studio, old engine) costs nothing.
---   Onboarding funnel (once per player, saved in data.Telemetry.Onb): 1 Joined, 2 OpeningDone, 3 FactionChosen,
+--   Onboarding funnel (each step once per player, in any order; saved in data.Telemetry.Steps = { [n] = true }): 1 Joined, 2 OpeningDone, 3 FactionChosen,
 --     4 ClassChosen, 5 FirstMissionAccepted, 6 FirstMissionDone, 7 FirstWeaponOwned, 8 AutoCombatUnlocked
 --   Custom events: FirstDeath (cause Monster/PvP), AutoToggle (1/0), SackOutcome (Paid/Avenged/Returned),
 --     SessionMinutes (+ bucket), LeftAfterEnhanceDrop, RookieFirstKillSeconds (meadow entry -> first kill),
@@ -22,6 +22,7 @@ local T = {
 	MeadowAt = {}, -- [Player] = os.clock() of the first SlimeMeadow entry this session (rookies only)
 	EnhanceDropAt = {}, -- [Player] = os.clock() of the last enhance failure that lost a level
 	Throttle = {}, -- ["<userId>:<key>"] = os.clock()
+	Conns = {}, -- [Player] = { RBXScriptConnection } (attribute watchers, dropped on leave)
 	Steps = { "Joined", "OpeningDone", "FactionChosen", "ClassChosen", "FirstMissionAccepted", "FirstMissionDone",
 		"FirstWeaponOwned", "AutoCombatUnlocked" },
 }
@@ -51,9 +52,10 @@ local function throttled(player, key, seconds)
 	return false
 end
 
+-- review: no Parent check — leave-time events (session length, sack returned) fire while the Player is being removed
 function TelemetryService.Custom(player, name, value, a, b, c)
 	local svc = analytics()
-	if not svc or typeof(player) ~= "Instance" or player.Parent ~= Players then return end
+	if not svc or typeof(player) ~= "Instance" or not player:IsA("Player") then return end
 	pcall(svc.LogCustomEvent, svc, player, name, tonumber(value) or 1, fields(a, b, c))
 end
 
@@ -62,24 +64,31 @@ local function getData(player)
 	return ok and type(data) == "table" and data or nil
 end
 
--- onboarding funnel step (each step at most once per player, in order of first reach)
+-- onboarding funnel step: each step at most once per player, whatever order they happen in (S0 can finish before the
+-- first mission; review of 5493770). The first build saved only the highest step (Onb = n): read as steps 1..n.
 function TelemetryService.Step(player, step)
 	local data = getData(player)
 	if not data then return end
 	if type(data.Telemetry) ~= "table" then data.Telemetry = {} end
-	local done = tonumber(data.Telemetry.Onb) or 0
-	if step <= done then return end
-	data.Telemetry.Onb = step
+	local tel = data.Telemetry
+	if type(tel.Steps) ~= "table" then
+		tel.Steps = {}
+		for n = 1, math.clamp(math.floor(tonumber(tel.Onb) or 0), 0, #T.Steps) do tel.Steps[tostring(n)] = true end
+		tel.Onb = nil
+	end
+	if tel.Steps[tostring(step)] then return end
+	tel.Steps[tostring(step)] = true
 	local svc = analytics()
 	if not svc then return end
 	pcall(svc.LogOnboardingFunnelStepEvent, svc, player, step, T.Steps[step] or tostring(step))
 end
 
 local function watch(player, attr, fn)
-	player:GetAttributeChangedSignal(attr):Connect(function()
+	T.Conns[player] = T.Conns[player] or {}
+	table.insert(T.Conns[player], player:GetAttributeChangedSignal(attr):Connect(function()
 		local ok, err = pcall(fn, player:GetAttribute(attr))
 		if not ok then Util.Warn("TelemetryService", attr .. ": " .. tostring(err)) end
-	end)
+	end))
 end
 
 local function onReady(player, data)
@@ -89,10 +98,18 @@ local function onReady(player, data)
 	if data.IntroSeen == true then TelemetryService.Step(player, 2) end
 	if data.Faction ~= "None" then TelemetryService.Step(player, 3) end
 	if data.ClassChosen == true then TelemetryService.Step(player, 4) end
+	local tut = tonumber(data.TutorialStep) or 0
+	if tut >= 1 then TelemetryService.Step(player, 5) end
+	if tut == 99 then TelemetryService.Step(player, 6) end
+	if (tonumber(data.WeaponOwnedMask) or 1) > 1 then TelemetryService.Step(player, 7) end
+	if data.AutoCombatUnlocked == true then TelemetryService.Step(player, 8) end
+	for _, c in T.Conns[player] or {} do c:Disconnect() end
+	T.Conns[player] = nil
 	watch(player, "IntroSeen", function(v) if v == true then TelemetryService.Step(player, 2) end end)
 	watch(player, "ClassChosen", function(v) if v == true then TelemetryService.Step(player, 4) end end)
 	watch(player, "TutorialStep", function(v)
-		if v == 2 then TelemetryService.Step(player, 5) end
+		-- accepting the guide mission sets TutorialStep 1 (2 = arrived in the meadow, 99 = first mission claimed)
+		if (tonumber(v) or 0) >= 1 then TelemetryService.Step(player, 5) end
 		if v == 99 then TelemetryService.Step(player, 6) end
 	end)
 	watch(player, "WeaponOwnedMask", function(v)
@@ -117,6 +134,8 @@ local function onLeaving(player)
 		TelemetryService.Custom(player, "LeftAfterEnhanceDrop", math.floor(os.clock() - drop))
 	end
 	T.JoinedAt[player], T.MeadowAt[player], T.EnhanceDropAt[player] = nil, nil, nil
+	for _, c in T.Conns[player] or {} do c:Disconnect() end
+	T.Conns[player] = nil
 	for k in T.Throttle do
 		if string.sub(k, 1, #tostring(player.UserId) + 1) == tostring(player.UserId) .. ":" then T.Throttle[k] = nil end
 	end
@@ -149,9 +168,16 @@ function TelemetryService.Start()
 		if type(data.Telemetry) ~= "table" then data.Telemetry = {} end
 		if data.Telemetry.FirstDeath then return end
 		data.Telemetry.FirstDeath = true
-		local cause = "Monster"
-		local ok, attacker = pcall(S.CombatService.GetLastPvPAttacker, player) -- a player hit me within the combat tag
-		if ok and typeof(attacker) == "Instance" then cause = "PvP" end
+		-- PvP = a player hit me within the combat tag; Monster = any damage in the last 3 s (DamagePlayer); else a fall,
+		-- a reset or the void ("Other"). BB14 will provide the real By.
+		local cause = "Other"
+		local ok, attacker = pcall(S.CombatService.GetLastPvPAttacker, player)
+		local okHit, hitAt = pcall(S.CombatService.GetLastDamagedAt, player)
+		if ok and typeof(attacker) == "Instance" then
+			cause = "PvP"
+		elseif okHit and os.clock() - (tonumber(hitAt) or 0) <= 3 then
+			cause = "Monster"
+		end
 		TelemetryService.Custom(player, "FirstDeath", 1, cause, player:GetAttribute("ZoneId"))
 	end)
 	connect("GrudgeService", "SackResolved", function(thief, outcome, total)
@@ -175,8 +201,12 @@ function TelemetryService.Start()
 		local data = getData(player)
 		local st = data and data.Story
 		local s0 = type(st) == "table" and type(st.Subs) == "table" and st.Subs.S0
-		if type(s0) == "table" and s0.St == 2 and type(info) == "table" and info.Kind == "Slime" and info.SkillHit == true
-			and not throttled(player, "trialmiss", 300) then
+		-- only while trial "a" (basic-attack slimes) is still open; a skill kill during trial "b" is expected
+		local trialA = 3
+		pcall(function() trialA = Config.StoryQuests.Defs.S0.Steps[2].Obj.List[1].Count end)
+		local doneA = type(s0) == "table" and type(s0.T) == "table" and tonumber(s0.T.a) or 0
+		if type(s0) == "table" and s0.St == 2 and doneA < trialA and type(info) == "table" and info.Kind == "Slime"
+			and info.SkillHit == true and not throttled(player, "trialmiss", 300) then
 			TelemetryService.Custom(player, "CrownTrialMiss", 1, "SkillHit", info.Kind)
 		end
 	end)

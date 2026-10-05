@@ -194,6 +194,8 @@ local function fillDefaults(d, playerName)
 	if type(kills) ~= "number" or kills ~= kills or math.abs(kills) == math.huge then kills = 0 end
 	local target = (Config.Tutorial and Config.Tutorial.QuestKills) or 5
 	d.TutorialKills = math.clamp(math.floor(kills), 0, target)
+	-- BB2: additive settings blob (Version stays 3): unknown / broken fields fall back to the defaults, keys are checked
+	d.Settings = Config.SanitizeSettings(d.Settings)
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.

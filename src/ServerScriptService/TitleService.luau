@@ -13,6 +13,7 @@ local Util = require(Shared:WaitForChild("Util"))
 
 local TitleService = {}
 local S = nil
+local CONNS = {} -- [Player] = { RBXScriptConnection } (gray legend watchers, dropped on leave)
 
 local function titles(data)
 	if type(data.Titles) ~= "table" then data.Titles = {} end
@@ -53,9 +54,12 @@ end
 local function onReady(player, data)
 	local beta = Config.Beta
 	local pioneer = data.BetaPioneer == true or (beta.GrantPioneer == true and os.time() < beta.PioneerUntil)
-	if pioneer and TitleService.Grant(player, "BetaPioneer") and data.TitleSel == "" then
-		-- the first time only: a brand-new pioneer title goes on the nametag (the BB8 picker can switch back)
-		S.PlayerService.SetStat(player, "TitleSel", "BetaPioneer")
+	if pioneer then TitleService.Grant(player, "BetaPioneer") end
+	-- review 381f6a1: the faction rank (GDD §0) stays the default title; the pioneer shows as a small mark on the
+	-- nametag's second line instead. A TitleSel the player never picked (data.TitleSelAt, set only by SetTitle) was the
+	-- old one-time auto-select: back to automatic once. Owned titles stay.
+	if data.TitleSel == "BetaPioneer" and data.TitleSelAt == nil then
+		S.PlayerService.SetStat(player, "TitleSel", "")
 	end
 	checkGrayLegend(player)
 	-- a selected title the player no longer owns (data edited / removed def) falls back to automatic
@@ -63,8 +67,11 @@ local function onReady(player, data)
 		S.PlayerService.SetStat(player, "TitleSel", "")
 	end
 	publish(player, data)
-	player:GetAttributeChangedSignal("FallMarks"):Connect(function() pcall(checkGrayLegend, player) end)
-	player:GetAttributeChangedSignal("RedeemMarks"):Connect(function() pcall(checkGrayLegend, player) end)
+	for _, c in CONNS[player] or {} do c:Disconnect() end
+	CONNS[player] = {
+		player:GetAttributeChangedSignal("FallMarks"):Connect(function() pcall(checkGrayLegend, player) end),
+		player:GetAttributeChangedSignal("RedeemMarks"):Connect(function() pcall(checkGrayLegend, player) end),
+	}
 end
 
 local function onSetTitle(player, ...)
@@ -73,6 +80,8 @@ local function onSetTitle(player, ...)
 	if type(id) ~= "string" or #id > 32 then return end
 	if not S.PlayerService.IsReady(player) or not Util.RateLimit(player, "SetTitle", Config.RateLimits.SetTitle) then return end
 	if id ~= "" and not (Config.TitleDefs[id] and TitleService.Owns(player, id)) then return end
+	local data = S.PlayerService.GetData(player)
+	if type(data) == "table" then data.TitleSelAt = os.time() end -- an explicit pick (never undone by the migration)
 	S.PlayerService.SetStat(player, "TitleSel", id)
 end
 
@@ -84,6 +93,10 @@ function TitleService.Start()
 	S.PlayerService.PlayerReady:Connect(function(player, data)
 		local ok, err = pcall(onReady, player, data)
 		if not ok then Util.Warn("TitleService", "ready: " .. tostring(err)) end
+	end)
+	S.PlayerService.PlayerLeaving:Connect(function(player)
+		for _, c in CONNS[player] or {} do c:Disconnect() end
+		CONNS[player] = nil
 	end)
 	Net.Get("SetTitle").OnServerEvent:Connect(function(player, ...)
 		local ok, err = pcall(onSetTitle, player, ...)

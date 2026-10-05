@@ -201,12 +201,13 @@ end
 -- Draw order is fixed: one draw per row in table order, then one for the jackpot when this kind has one.
 local function rollRows(info, onHit)
 	local mult = info.Golden == true and LOOT.GoldenMult or 1
-	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows only, never the jackpot)
+	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows and the jackpot; not the first scroll)
 	for _, row in LOOT.Tables[info.Kind] or {} do
 		if rng:NextNumber() < math.min(1, num(row.P) * rowMult) then onHit(row, false) end
 	end
 	local jackpot = LOOT.Jackpot
-	if jackpot and jackpot.Monsters[info.Kind] and rng:NextNumber() < math.min(1, num(jackpot.Chance) * mult) then
+	-- A23-22 (review): the bully penalty halves the jackpot too (DropMult); the golden bonus applies as before
+	if jackpot and jackpot.Monsters[info.Kind] and rng:NextNumber() < math.min(1, num(jackpot.Chance) * rowMult) then
 		onHit({ Weapon = jackpot.Tier }, true)
 	end
 end

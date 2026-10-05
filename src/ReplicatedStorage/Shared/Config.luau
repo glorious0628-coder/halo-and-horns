@@ -128,6 +128,9 @@ Config.Data = {
 		BetaPioneer = false, -- A23-18 first build (legacy): migrated into Titles.BetaPioneer by TitleService
 		Titles = {}, -- BB16: { [Config.TitleDefs id] = os.time() first owned } (no stats)
 		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
+		-- BB2: one settings blob per account (SettingsService; never mirrored). Keys = sparse { [Keybinds action id] =
+		-- key name or "" (unbound) } holding only changes from the defaults. DataService runs Config.SanitizeSettings on it.
+		Settings = { V = 1, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = true, Lang = "Auto", BagSort = "Default" },
 		Telemetry = {}, -- P6: { Onb = last onboarding funnel step logged, FirstDeath = true } (analytics only)
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
@@ -410,6 +413,9 @@ Config.BasicSkill = {
 	ManaCost = 20, Cooldown = 3, DamageMultiplier = 6, Radius = 9,
 	SwingImmediate = 0.5, PvPCapPct = 0.35, HaloHealPct = 0.10, HaloHealCapPct = 0.30,
 }
+-- BB9 fills Order / Defs (skill names per class). ZEnabled = the A23-15 Z skill flag: the SkillZ key (Config.Keybinds)
+-- exists only while it is true.
+Config.Skills = { ZEnabled = false }
 Config.Charge = {
 	SwingImmediate = 0.5, -- a swing that hits deals 50% of the normal per-target damage right away
 	MinRelease = 10, -- minimum (floored) stacks to release
@@ -606,8 +612,7 @@ Config.Power = {
 	Text = {
 		Label = "전투력", LabelEn = "Power",
 		Formula = "레벨과 무기(강화 포함)로 정해져요", FormulaEn = "Set by your level and weapon (enhance included)",
-		PvPNote = "무기 공격력 차이가 커도 PvP 피해는 최대 %s배, 최소 %s배예요",
-		PvPNoteEn = "However strong the weapons, PvP damage stays between x%2$s and x%1$s",
+		-- PvPNote / PvPNoteEn: finished lines, filled from Config.PvP.PowerRatioMax / Min right after Config.PvP below
 		Up = "전투력 +%s", UpEn = "Power +%s",
 		Change = "전투력 %s → %s", ChangeEn = "Power %s → %s",
 	},
@@ -649,7 +654,7 @@ Config.Bully = {
 	BountyMult = 2, -- bounty for KOing a bully is doubled
 	-- A23-22 penalty while BullyStacks >= 1 (ends when every stack decayed): no auto combat, XP and drop rows x0.5.
 	-- Combat power and stats are NOT touched by it (the existing PerStack size / damage cut stays as it was).
-	-- The slime jackpot and the first king-slime scroll are not halved (the weekly +10% bonus skips them too).
+	-- DropMult halves the drop rows AND the slime jackpot (A23-22 has no exception); the first king-slime scroll stays.
 	Penalty = { NoAuto = true, XPMult = 0.5, DropMult = 0.5 },
 }
 
@@ -719,6 +724,12 @@ Config.PvP = {
 	CombatLogPenalty = 0.25, -- leaving while combat-tagged loses 25% of carried gold
 	BoardRefresh = 5,
 }
+
+-- BB4 help line (character window / help / PvP tips): the real damage clamp, finished text (no format at the caller)
+Config.Power.Text.PvPNote = string.format("무기 공격력 차이가 커도 PvP 피해는 최대 %s배, 최소 %s배예요",
+	tostring(Config.PvP.PowerRatioMax), tostring(Config.PvP.PowerRatioMin))
+Config.Power.Text.PvPNoteEn = string.format("However strong the weapons, PvP damage is at most x%s and at least x%s",
+	tostring(Config.PvP.PowerRatioMax), tostring(Config.PvP.PowerRatioMin))
 
 -- bounty on a player: stars (Horns) or bully stacks (anyone), doubled while the player is a bully
 function Config.Bounty(level, stars, bullyStacks)
@@ -1230,7 +1241,7 @@ Config.StoryQuests = {
 		Reward = "%s 완료! +%s골드",
 		RewardXP = "%s 완료! +%s골드 · 경험치 +%s",
 		RewardOnlyXP = "%s 완료! 경험치 +%s",
-		Unlocked = "자동 전투가 열렸어요! R키(폰은 자동 버튼)로 켜고 끌 수 있어요.",
+		Unlocked = "자동 전투가 열렸어요! {Auto}키(폰은 자동 버튼)로 켜고 끌 수 있어요.", -- {Auto}: BB1 key token (server fills)
 		Good = "조각이 빛 쪽으로 기울었어요 (명예 +%d)",
 		Evil = "조각이 어둠 쪽으로 기울었어요 (악명 +%d)",
 		Recorded = "선택을 기록했어요.",
@@ -1387,7 +1398,7 @@ Config.StoryQuests = {
 			Kind = "Sub", Title = "조각이 대신 싸워요", Speaker = "Shard", Requires = { Done = { "S0" } },
 			Start = "조각: 이제 내가 대신 싸울게. 사람은 네 손으로!",
 			Steps = {
-				{ Text = "자동 전투 켜기 (R)", Obj = { Type = "State", Key = "AutoOn" } },
+				{ Text = "자동 전투 켜기 ({Auto})", Obj = { Type = "State", Key = "AutoOn" } }, -- {Auto}: HUD fills it (phone: button name)
 				{ Text = "자동으로 처치 %d/%d", Obj = { Type = "AutoKill", Count = 5 } },
 			},
 			Reward = { Gold = 1 },
@@ -1570,7 +1581,236 @@ Config.RateLimits = {
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
 	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
+	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
 }
+
+----------------------------------------------------------------- keys + settings (BB1 / BB2)
+-- Contract: docs/design/beta_basics_2026-10-05.md BB1 / BB2; A23-21: only PC keyboard keys can be changed in the beta,
+-- the gamepad layout is fixed and touch-only devices show button names instead of keys.
+-- Actions (in order: the KeyMap order and the settings list order):
+--   Id, Group ("Combat" | "Potion" | "Window" | "Other"), Key = Enum.KeyCode name ("" = unbound), Pad = fixed gamepad
+--   button ("" = none), Label / LabelEn = the action's name, Button / ButtonEn = what a touch-only device calls it,
+--   Flag = "Table.Field" under Config (the action exists only while that is true), Window = Panels id (Group "Window").
+-- Live rule: Flag on and, for the Window group, the Panels window registered (client). Non-live actions hold no key and
+-- never take part in swaps. PadWired = the pad buttons that already work (BB21 wires the rest of the Pad column).
+Config.Keybinds = {
+	Actions = {
+		{ Id = "Attack", Group = "Combat", Key = "F", Pad = "ButtonR2", Label = "공격", LabelEn = "Attack", Button = "공격 버튼", ButtonEn = "Attack button" },
+		{ Id = "SkillQ", Group = "Combat", Key = "Q", Pad = "ButtonL2", Label = "스킬", LabelEn = "Skill", Button = "스킬 버튼", ButtonEn = "Skill button" },
+		{ Id = "SkillZ", Group = "Combat", Key = "Z", Pad = "ButtonL1", Label = "스킬 2", LabelEn = "Skill 2", Button = "스킬 2 버튼", ButtonEn = "Skill 2 button", Flag = "Skills.ZEnabled" },
+		{ Id = "Auto", Group = "Combat", Key = "R", Pad = "ButtonR1", Label = "자동 전투", LabelEn = "Auto combat", Button = "자동 버튼", ButtonEn = "Auto button" },
+		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "유령 붙잡기", LabelEn = "Ghost hold", Button = "유령 버튼", ButtonEn = "Ghost button" },
+		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP 물약", LabelEn = "HP potion", Button = "HP 물약 버튼", ButtonEn = "HP potion button" },
+		{ Id = "PotionMP", Group = "Potion", Key = "Two", Pad = "DPadDown", Label = "MP 물약", LabelEn = "MP potion", Button = "MP 물약 버튼", ButtonEn = "MP potion button" },
+		{ Id = "Interact", Group = "Other", Key = "E", Pad = "ButtonX", Label = "상호작용", LabelEn = "Interact", Button = "상호작용 버튼", ButtonEn = "Interact button" },
+		{ Id = "Upgrade", Group = "Other", Key = "U", Pad = "", Label = "다음 무기", LabelEn = "Next weapon", Button = "다음 무기 카드", ButtonEn = "Next weapon card" },
+		{ Id = "Bag", Group = "Window", Key = "G", Pad = "", Label = "가방", LabelEn = "Bag", Button = "가방 버튼", ButtonEn = "Bag button", Window = "Bag" },
+		{ Id = "Character", Group = "Window", Key = "C", Pad = "", Label = "내 캐릭터", LabelEn = "Character", Button = "메뉴 → 내 캐릭터", ButtonEn = "Menu → Character", Window = "Character" },
+		{ Id = "Skills", Group = "Window", Key = "K", Pad = "", Label = "스킬 창", LabelEn = "Skills", Button = "메뉴 → 스킬", ButtonEn = "Menu → Skills", Window = "Skills" },
+		{ Id = "Ranking", Group = "Window", Key = "L", Pad = "", Label = "랭킹", LabelEn = "Ranking", Button = "메뉴 → 랭킹", ButtonEn = "Menu → Ranking", Window = "Ranking" },
+		{ Id = "Help", Group = "Window", Key = "H", Pad = "", Label = "도움말", LabelEn = "Help", Button = "메뉴 → 도움말", ButtonEn = "Menu → Help", Window = "Help" },
+		{ Id = "Journal", Group = "Window", Key = "J", Pad = "", Label = "퀘스트 일지", LabelEn = "Quest journal", Button = "메뉴 → 퀘스트 일지", ButtonEn = "Menu → Quest journal", Window = "Journal" },
+		{ Id = "Map", Group = "Other", Key = "M", Pad = "DPadLeft", Label = "지도", LabelEn = "Map", Button = "지도 버튼", ButtonEn = "Map button" },
+		{ Id = "Menu", Group = "Other", Key = "B", Pad = "ButtonY", Label = "메뉴", LabelEn = "Menu", Button = "메뉴 버튼", ButtonEn = "Menu button" },
+	},
+	-- Roblox / the default camera use these (I/O zoom, Comma/Period + arrows + PageUp/PageDown camera, W A S D move,
+	-- Space jump, Shift lock, Tab player list, / and ` chat, Esc menu, F9-F12 Studio / developer keys). A key Roblox
+	-- turns out to swallow in a Studio Play check moves here.
+	Reserved = { "Escape", "Slash", "Tab", "Backquote", "Return", "KeypadEnter", "Space", "LeftShift", "RightShift",
+		"W", "A", "S", "D", "I", "O", "Comma", "Period", "PageUp", "PageDown", "Up", "Down", "Left", "Right",
+		"F9", "F10", "F11", "F12" },
+	-- filled below: A-Z, Zero-Nine, F1-F8, KeypadZero-KeypadNine, symbols, LeftControl, LeftAlt, CapsLock (minus Reserved)
+	Allowed = {},
+	PadWired = { Attack = true, SkillQ = true }, -- R2 attack, L2 skill (as before BB1); BB21 wires the other Pad buttons
+	MaxKeyLen = 24, -- longest key name a save may hold
+	Labels = { LeftControl = "Ctrl", LeftAlt = "Alt", CapsLock = "Caps", Minus = "-", Equals = "=", LeftBracket = "[",
+		RightBracket = "]", Semicolon = ";", Quote = "'", BackSlash = "\\" }, -- + digits / keypad digits below
+	None = "없음", -- label of an unbound action
+	NoneEn = "None",
+}
+do
+	local KB = Config.Keybinds
+	for c = string.byte("A"), string.byte("Z") do table.insert(KB.Allowed, string.char(c)) end
+	for i, n in { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" } do
+		table.insert(KB.Allowed, n)
+		table.insert(KB.Allowed, "Keypad" .. n)
+		KB.Labels[n] = tostring(i - 1)
+		KB.Labels["Keypad" .. n] = "Num" .. tostring(i - 1)
+	end
+	for i = 1, 8 do table.insert(KB.Allowed, "F" .. i) end
+	for _, n in { "Minus", "Equals", "LeftBracket", "RightBracket", "Semicolon", "Quote", "BackSlash", "LeftControl", "LeftAlt", "CapsLock" } do
+		table.insert(KB.Allowed, n)
+	end
+	KB.ReservedSet, KB.AllowedSet, KB.ById = {}, {}, {}
+	for _, n in KB.Reserved do KB.ReservedSet[n] = true end
+	for _, n in KB.Allowed do
+		if not KB.ReservedSet[n] then KB.AllowedSet[n] = true end
+	end
+	for _, a in KB.Actions do KB.ById[a.Id] = a end
+end
+
+-- true when the action's Flag ("Table.Field" under Config) is on; actions without a Flag always are
+function Config.KeyFlagOn(def)
+	if type(def) ~= "table" then return false end
+	if def.Flag == nil then return true end
+	local node = Config
+	for part in string.gmatch(tostring(def.Flag), "[^%.]+") do
+		if type(node) ~= "table" then return false end
+		node = node[part]
+	end
+	return node == true
+end
+
+-- a key a player may bind: an Allowed key name (24 chars or fewer) that Roblox does not use (not Reserved)
+function Config.KeyUsable(name)
+	local KB = Config.Keybinds
+	return type(name) == "string" and #name <= KB.MaxKeyLen and KB.AllowedSet[name] == true
+end
+
+function Config.KeyReserved(name)
+	return type(name) == "string" and Config.Keybinds.ReservedSet[name] == true
+end
+
+-- 'One' -> '1', 'KeypadOne' (or 'Keypad1') -> 'Num1', 'LeftControl' -> 'Ctrl', '' -> '없음' ('None' with en), letters stay
+function Config.KeyLabel(name, en)
+	local KB = Config.Keybinds
+	if type(name) ~= "string" or name == "" then return en == true and KB.NoneEn or KB.None end
+	local label = KB.Labels[name]
+	if label then return label end
+	local digit = string.match(name, "^Keypad(%d)$")
+	if digit then return "Num" .. digit end
+	return name
+end
+
+-- BB1 / BB2: saved sparse Keys + live set -> full map { [actionId] = key name or "" }, plus the live default-only
+-- actions whose default key was already taken (reported once per session by the client). Never wipes a player's keys:
+--   1. explicit entries first, in Actions order; an explicit key already taken becomes "";
+--   2. a live action without an explicit entry gets its default, or "" (and is reported) when that key is taken.
+-- liveSet = { [actionId] = true } (client: Flag on + Panels window registered); nil = every action whose Flag is on
+-- (server: it has no windows, and window keys never change the labels of the other actions).
+function Config.KeyMap(sparse, liveSet)
+	local KB = Config.Keybinds
+	local keys = type(sparse) == "table" and sparse or {}
+	local map, taken, collisions = {}, {}, {}
+	local function live(def)
+		if liveSet ~= nil then return type(liveSet) == "table" and liveSet[def.Id] == true end
+		return Config.KeyFlagOn(def)
+	end
+	local function explicit(def)
+		local v = keys[def.Id]
+		return type(v) == "string" and (v == "" or Config.KeyUsable(v))
+	end
+	for _, def in KB.Actions do
+		map[def.Id] = ""
+		if live(def) and explicit(def) then
+			local v = keys[def.Id]
+			if v ~= "" and not taken[v] then
+				map[def.Id], taken[v] = v, def.Id
+			end
+		end
+	end
+	for _, def in KB.Actions do
+		if live(def) and not explicit(def) and def.Key ~= "" then
+			if taken[def.Key] then
+				table.insert(collisions, def.Id)
+			else
+				map[def.Id], taken[def.Key] = def.Key, def.Id
+			end
+		end
+	end
+	return map, collisions
+end
+
+-- '{Auto}' / '{GhostHold}' / '{Map}' (any Keybinds action id) -> the key label from a KeyMap map; other {…} stay
+function Config.FillKeys(text, map, en)
+	if type(text) ~= "string" or not string.find(text, "{", 1, true) then return text end
+	return (string.gsub(text, "{(%w+)}", function(id)
+		if not Config.Keybinds.ById[id] then return nil end
+		return Config.KeyLabel(type(map) == "table" and map[id] or "", en)
+	end))
+end
+
+-- BB2 saved settings: value rules (defaults: Config.Data.Defaults.Settings). Text = the settings window (BB3) + toasts.
+Config.Settings = {
+	Version = 1, -- Settings.V
+	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the seven values, Seq)
+	Defs = {
+		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
+		Shake = { Type = "Bool" },
+		DmgNum = { Type = "Enum", Options = { "All", "Off" } },
+		Tags = { Type = "Enum", Options = { "All", "Near", "Off" } },
+		KeyBadges = { Type = "Bool" },
+		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
+		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
+	},
+	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort" },
+	Text = {
+		Sfx = "효과음 크기", SfxEn = "Sound effects",
+		Shake = "화면 흔들림", ShakeEn = "Screen shake",
+		DmgNum = "피해 숫자", DmgNumEn = "Damage numbers",
+		Tags = "다른 사람 이름표", TagsEn = "Other players' name tags",
+		KeyBadges = "키 표시", KeyBadgesEn = "Key hints",
+		Lang = "언어", LangEn = "Language",
+		BagSort = "가방 정렬", BagSortEn = "Bag order",
+		Options = {
+			All = "모두", AllEn = "All", Off = "끄기", OffEn = "Off", Near = "가까운 사람만", NearEn = "Nearby only",
+			Auto = "자동", AutoEn = "Auto", ko = "한국어", koEn = "한국어", en = "English", enEn = "English",
+			Default = "기본", DefaultEn = "Default", Grade = "등급순", GradeEn = "By grade", Count = "개수순", CountEn = "By count",
+		},
+		On = "켜기", OnEn = "On",
+		Off = "끄기", OffEn = "Off",
+		-- (action name, key) once per action per session: a new action's default key was already one of my keys
+		KeyCollision = "새 동작 [%s]의 기본 키 %s가 이미 쓰여서 비워 뒀어요. 설정에서 정해 주세요",
+		KeyCollisionEn = "The new action [%s] has no key: its default key %s is already in use. Pick one in Settings.",
+		Reserved = "그 키는 로블록스가 써요", ReservedEn = "Roblox uses that key",
+		NotAllowed = "그 키는 쓸 수 없어요", NotAllowedEn = "That key can't be used",
+		Swapped = "%s · %s 키를 서로 바꿨어요", SwappedEn = "Swapped the keys %s and %s", -- (key label, key label)
+	},
+}
+
+-- BB2 (pure, server + client): unknown keys dropped; numbers finite, clamped and snapped to Step; bools boolean; enums in
+-- Options; anything else -> the default. Keys: sparse action id -> "" or a usable key name (Config.KeyUsable), entries
+-- equal to the default dropped, and an explicit key already used by an earlier action (Actions order, actions whose
+-- Flag is on) becomes "" (the KeyMap rule, so two actions never save one key). Never reads more than the known fields.
+function Config.SanitizeSettings(t)
+	local ST = Config.Settings
+	local defaults = Config.Data.Defaults.Settings
+	local src = type(t) == "table" and t or {}
+	local out = { V = ST.Version, Keys = {} }
+	for key, def in ST.Defs do
+		local v, d = src[key], defaults[key]
+		if def.Type == "Number" then
+			if type(v) == "number" and v == v and v > -math.huge and v < math.huge then
+				v = math.clamp(v, def.Min, def.Max)
+				if type(def.Step) == "number" and def.Step > 0 then
+					v = def.Min + math.floor((v - def.Min) / def.Step + 0.5) * def.Step
+				end
+				v = math.clamp(math.floor(v * 1000 + 0.5) / 1000, def.Min, def.Max)
+			else
+				v = d
+			end
+		elseif def.Type == "Bool" then
+			if type(v) ~= "boolean" then v = d end
+		elseif def.Type == "Enum" then
+			if type(v) ~= "string" or not table.find(def.Options, v) then v = d end
+		else
+			v = d
+		end
+		out[key] = v
+	end
+	local keys = type(src.Keys) == "table" and src.Keys or {}
+	local used = {}
+	for _, a in Config.Keybinds.Actions do
+		local v = keys[a.Id]
+		if type(v) == "string" and (v == "" or Config.KeyUsable(v)) and v ~= a.Key then
+			if v ~= "" and Config.KeyFlagOn(a) then
+				if used[v] then v = "" else used[v] = true end
+			end
+			out.Keys[a.Id] = v
+		end
+	end
+	return out
+end
 
 -- A23-11 / A23-12 drops, items and scroll enhancement (user decisions 2026-10-05; LootService is the only writer).
 -- Every contributor of a kill gets an own server roll (MonsterKilled is fired per contributor). Items go straight
@@ -2173,7 +2413,7 @@ Config.Text = {
 	BullyDecay = "깡패 단계가 줄었어요 (%d단계)",
 	BullyNoAuto = "깡패 벌칙 중에는 자동 전투를 쓸 수 없어요. 단계가 다 빠지면 다시 돼요.", -- A23-22
 	BullyAutoOff = "무단 PvP 벌칙: 자동 전투가 꺼졌어요. 경험치·드랍도 절반이에요.", -- A23-22 (auto was ON)
-	BullyPenaltyEnd = "깡패 벌칙이 끝났어요! 자동 전투·경험치·드랍이 돌아왔어요.", -- A23-22
+	BullyPenaltyEnd = "깡패 벌칙이 끝났어요! 자동 전투를 다시 켤 수 있어요. 경험치·드랍도 원래대로예요.", -- A23-22
 	Revenge = "%s에게 복수하세요! 90초 동안 공격력 +25%%",
 	RevengeDone = "복수 성공!",
 	-- grudge sack
@@ -2186,7 +2426,7 @@ Config.Text = {
 	GhostHoldOk = "유령이 도둑을 붙잡았어요! 버텨야 하는 시간 +%d초 (최대 +%d초)", -- A23-18
 	GhostHoldMax = "이 자루는 더 붙잡을 수 없어요 (최대 +%d초).",
 	GhostHeld = "원한 유령이 붙잡고 있어요! 버텨야 하는 시간이 늘었어요.",
-	GhostButton = "유령으로 붙잡기",
+	GhostButton = "유령으로 붙잡기 ({GhostHold})", -- BB1 key token: the key part shows only on keyboards
 	GhostWait = "다시 붙잡기 %d초",
 	AvengerBonus = "복수 대행 보너스 +%s골드!",
 	GrudgeAvengedAll = "%s님이 %s의 원한 자루를 되찾았어요!",

@@ -3,9 +3,9 @@
   "srcBugs": [],
   "patches": [],
   "real": {
-    "checks": 275,
+    "checks": 276,
     "failedChecks": 0,
-    "namedChecks": 235,
+    "namedChecks": 236,
     "namedChecksFailing": 0,
     "failing": []
   },
@@ -973,7 +973,7 @@
     },
     {
       "group": "mail-receive",
-      "check": "a failed write-back is warned once (letters lost, never paid twice)",
+      "check": "a failed write-back is warned and retried: the letter is back in the box (never paid twice)",
       "pass": 1,
       "fail": 0
     },
@@ -1021,7 +1021,13 @@
     },
     {
       "group": "mail-roundtrip",
-      "check": "the shared mailbox is empty afterwards",
+      "check": "the shared mailbox has no letters left afterwards, only the two tombstones (no double pay)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-roundtrip",
+      "check": "the taken letter's tombstone keeps its Id",
       "pass": 1,
       "fail": 0
     },
@@ -1429,7 +1435,7 @@
   "analyzerUnknownGlobals": [],
   "mutations": {
     "baseline": "real",
-    "total": 67,
+    "total": 68,
     "applied": 0,
     "caught": 0,
     "results": []
@@ -1438,13 +1444,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ff857f6449e7ab41caa01edfaa851e22caee62955cb5ada633ed9ab04ce8ee8a",
-    "src/ReplicatedStorage/Shared/Net.luau": "2d17c8ffd4e4b06598f561909d0259427b62490d504b61b94bf7e882e0f26fdc",
+    "src/ReplicatedStorage/Shared/Config.luau": "046ab477bb155b8f0eeadf679939653a40bb32ea87354088e869adb1868daea1",
+    "src/ReplicatedStorage/Shared/Net.luau": "ad53b3e640f50045ed03839f33f9eb3cf8152d2fb05d662e55c4ab621c5ff95c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/GrudgeService.luau": "93f178d6bce71629514e3e38740ff741a97eac3c62268e6ddc0decb0940db0a2",
+    "src/ServerScriptService/GrudgeService.luau": "1b5c58a25d370c1b9a1623c06817e0b13b7c776533584519b187031d84b565b9",
     "src/ServerScriptService/PlayerService.luau": "81d5cf25b41a5578b4d20b798e48cab81e42fa62584df71600df876ea3b80fd5"
   },
-  "fixtureSHA256": "64a1bfd3fe704b3ed597fbc1a80b1fc796595396c02d1fdfc26c5842d22d1275",
+  "fixtureSHA256": "2cc4a50aa49ade409abea4599ac52fb59119b54f64cf1361804814aa511c5f6b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

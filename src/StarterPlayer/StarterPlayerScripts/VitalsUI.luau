@@ -13,6 +13,7 @@ local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, 
 	HPPotionReadyAt = true, MPPotionReadyAt = true, ClassChosen = true, DataLoaded = true, KaijuState = true,
 } }
 local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245) }
+local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of each potion button
 
 local function canUse()
 	if player.Parent ~= Players or player:GetAttribute("DataLoaded") ~= true
@@ -127,15 +128,43 @@ function VitalsUI.BuildPotions(parent, width, height, touch)
 		C.HUD.FitText(status, 11)
 		local key = nil
 		if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
-			key = UIKit.InkText({ Name = "Key", Parent = button, Text = tostring(i), TextSize = 11,
-				Position = UDim2.fromOffset(2, 0), Size = UDim2.fromOffset(15, 15) })
+			-- BB1: the badge shows the potion's current key (VitalsUI.RefreshKeys) and widens for "Ctrl" / "Num1"
+			key = UIKit.InkText({ Name = "Key", Parent = button, Text = "", TextSize = 11,
+				Position = UDim2.fromOffset(2, 0), Size = UDim2.fromOffset(15, 15), AutomaticSize = Enum.AutomaticSize.X })
 			C.HUD.FitText(key, 11)
 		end
-		ui.Potions[kind] = { Button = button, Title = title, Status = status, Key = key, Height = height, Width = w, Left = left }
+		ui.Potions[kind] = { Button = button, Title = title, Status = status, Key = key, Action = ACTION[kind],
+			Height = height, Width = w, Left = left }
 	end
 	VitalsUI.LayoutPotions()
+	VitalsUI.RefreshKeys()
 	if ui.Refresh then ui.Refresh() end
 	return row
+end
+
+-- BB1: each potion badge shows its action's current key (Keybinds.Label); hidden while that action has no key or
+-- Settings.KeyBadges is off. Runs on Keybinds.Changed and Settings.Changed.
+function VitalsUI.RefreshKeys()
+	local kb, st = C and C.Keybinds, C and C.Settings
+	local badges = true
+	if type(st) == "table" and type(st.Get) == "function" then
+		local ok, v = pcall(st.Get, "KeyBadges")
+		badges = not ok or v ~= false
+	end
+	for _, potion in ui.Potions do
+		local key = potion.Key
+		if key and key.Parent then
+			local label, bound = "", false
+			if type(kb) == "table" then
+				local okL, text = pcall(kb.Label, potion.Action)
+				local okK, name = pcall(kb.KeyName, potion.Action)
+				label = okL and type(text) == "string" and text or ""
+				bound = okK and type(name) == "string" and name ~= ""
+			end
+			key.Text = label
+			key.Visible = badges and bound and label ~= ""
+		end
+	end
 end
 
 local function refresh()
@@ -209,11 +238,20 @@ function VitalsUI.Start()
 	local starterGui = game:GetService("StarterGui")
 	pcall(starterGui.SetCoreGuiEnabled, starterGui, Enum.CoreGuiType.Backpack, false)
 	pcall(starterGui.SetCoreGuiEnabled, starterGui, Enum.CoreGuiType.Health, false)
-	UserInputService.InputBegan:Connect(function(input, processed)
-		if processed or UserInputService:GetFocusedTextBox() then return end
-		if input.KeyCode == Enum.KeyCode.One then requestPotion("HP") end
-		if input.KeyCode == Enum.KeyCode.Two then requestPotion("MP") end
+	-- BB1: the potion keys come from Keybinds (default 1 / 2); Keybinds forwards every key press (and Dispatch tests)
+	local keys = C.Keybinds
+	local began = type(keys) == "table" and type(keys.Began) == "table" and keys.Began or UserInputService.InputBegan
+	began:Connect(function(input, processed)
+		if processed or UserInputService:GetFocusedTextBox() or type(keys) ~= "table" or keys.IsCapturing() then return end
+		local action = keys.ActionFor(input)
+		if action == "PotionHP" then requestPotion("HP") end
+		if action == "PotionMP" then requestPotion("MP") end
 	end)
+	-- BB1: the potion badges follow key changes and Settings.KeyBadges
+	if type(keys) == "table" and type(keys.Changed) == "table" then keys.Changed:Connect(VitalsUI.RefreshKeys) end
+	local st = C.Settings
+	if type(st) == "table" and type(st.Changed) == "table" then st.Changed:Connect(VitalsUI.RefreshKeys) end
+	VitalsUI.RefreshKeys()
 	player.AttributeChanged:Connect(function(name)
 		if ui.WatchedAttributes[name] then ui.Refresh() end
 	end)

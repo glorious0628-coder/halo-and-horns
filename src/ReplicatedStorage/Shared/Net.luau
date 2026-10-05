@@ -17,6 +17,7 @@ Net.Names = {
 	"SetAnnounceName", -- (hide: boolean) P5: hide my name in server-wide chat announcements
 	"SetTitle", -- (id: string <= 32, owned Config.TitleDefs id or "" = automatic) BB16 nametag title
 	"GhostHold", -- no arguments: A23-18 the robbed victim holds the thief's grudge sack (+2 s, 3 s cooldown)
+	"SetSettings", -- (blob?) BB2: zero args = "send me mine"; one table <= 16 keys (SettingsService sanitizes + echoes)
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request
@@ -26,6 +27,7 @@ Net.Names = {
 	-- Payload { Items = { [itemId] = count >= 1 } (Config.Loot.Items ids only), Enhance = { [tier] = 0..MaxEnhance } }
 	-- for tiers 1..Config.MaxWeaponTier; fired by LootService on PlayerReady, each spawn and after every change.
 	"Inventory",
+	"Settings", -- BB2: { Seq, Settings } owner only: the echo of an accepted SetSettings and once on PlayerReady
 }
 
 Net.GameStateDefaults = {

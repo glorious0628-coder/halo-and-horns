@@ -47,6 +47,14 @@ local function runGroup(name, fn)
 end
 
 ------------------------------------------------------------------ helpers
+-- the letters still waiting in a mailbox (review of 74345bf: taken letters leave { Id, Done = true } tombstones)
+local function liveLetters(box)
+	local out = {}
+	for _, m in (type(box) == "table" and box or {}) do
+		if type(m) == "table" and m.Done ~= true then table.insert(out, m) end
+	end
+	return out
+end
 local function deepCopy(v)
 	if type(v) ~= "table" then return v end
 	local out = {}
@@ -779,8 +787,8 @@ runGroup("mail-retry", function()
 	k:Steal(Tk, Vk2, 30, 0)
 	k:Leave(Vk2)
 	k:KO(Tk, nil)
-	local kb = k:Mail(Vk.UserId)
-	check(k:BankOf(Vk2, "Refund") == 10 and type(kb) == "table" and #kb == 1 and kb[1].A == 30,
+	local kb = liveLetters(k:Mail(Vk.UserId))
+	check(k:BankOf(Vk2, "Refund") == 10 and #kb == 1 and kb[1].A == 30,
 		"the same thief's next sack (20 s later) is a new letter, not a duplicate", show({ k:BankOf(Vk2), kb }))
 end)
 
@@ -910,8 +918,10 @@ runGroup("mail-receive", function()
 		fw.FailNext = 1 -- the write-back call
 	end
 	fw:Add("Mailee", "Halo", { UserId = MAIL_UID })
+	fw:Advance(10) -- the write-back retries after 1 s (review of 74345bf: 4 tries like Send)
 	local wb = fw:Mail(MAIL_UID)
-	check(fw:TakeWarnings("grudge mail write-back failed") == 1, "a failed write-back is warned once (letters lost, never paid twice)",
+	check(fw:TakeWarnings("grudge mail write-back 1/4 failed") == 1 and #liveLetters(wb) == 1,
+		"a failed write-back is warned and retried: the letter is back in the box (never paid twice)",
 		show({ wb and #wb, fw.Warnings }))
 	-- GrudgeService's own pairReady fallback (no PlayerService.PairReady) follows the same rule
 	local fi, pi = receiveWorld({ letter(100, 0, "Avenged"), letter(50, 0, "Avenged") }, { Inline = true })
@@ -941,7 +951,15 @@ runGroup("mail-roundtrip", function()
 	local Vb = B:Add("Traveler", "Halo", { UserId = 555001, Rebirths = 1 })
 	check(B:BankOf(Vb, "Refund") == 360 + 40, "server B pays 300 x 120% + 40 x 100% at join", B:BankOf(Vb))
 	check(B:Told(Vb, B:Text("GrudgeMail", "400"), "good") == 1 and B:NoticeCount(Vb) == 1, "one GrudgeMail notice with 400")
-	check(type(rows["M_555001"]) == "table" and #rows["M_555001"] == 0, "the shared mailbox is empty afterwards")
+	local after = rows["M_555001"]
+	local tombs = 0
+	for _, m in (type(after) == "table" and after or {}) do if m.Done == true and m.Id then tombs += 1 end end
+	check(type(after) == "table" and #liveLetters(after) == 0 and tombs == 2,
+		"the shared mailbox has no letters left afterwards, only the two tombstones (no double pay)", show(after))
+	-- a Send retry whose first reply was lost lands after the take: the tombstone (same Id) refuses it
+	local seenTomb = false
+	for _, m in (type(after) == "table" and after or {}) do if m.Done == true and m.Id == box[1].Id then seenTomb = true end end
+	check(seenTomb, "the taken letter's tombstone keeps its Id", show(after))
 	local C = grudgeWorld({ Rows = rows })
 	local Vc = C:Add("Traveler", "Halo", { UserId = 555001, Rebirths = 1 })
 	check(C:BankOf(Vc) == 0 and C:NoticeCount(Vc) == 0, "a third server pays nothing (never double-paid)")

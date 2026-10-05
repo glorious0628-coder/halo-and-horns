@@ -2693,7 +2693,7 @@ end
 local POTION = {
 	Gold = "보유 %s골드",
 	Stock = "보유 %d / %d병",
-	Name = { HP = "HP 물약 (1번 키)", MP = "MP 물약 (2번 키)" },
+	Name = { HP = "HP 물약 ({PotionHP} 키)", MP = "MP 물약 ({PotionMP} 키)" }, -- BB1: key part only on keyboards
 	Effect = { HP = "최대 HP의 %d%% 회복", MP = "최대 MP의 %d%% 회복" },
 	Buy = "%d병 · %s골드",
 	Pending = "구매 확인 중…",
@@ -2715,7 +2715,14 @@ BUILDERS.PotionShop = function(parent)
 		local col = addColumn(parent, 1, 0, 5)
 		col.Name = "Potion" .. kind
 		local ui = { Kind = kind, Key = key }
-		ui.Name = addText(col, POTION.Name[kind], { Size = 22, Color = theme.Gold, Font = theme.Font })
+		local kb = C and C.Keybinds
+		local name = POTION.Name[kind]
+		if type(kb) == "table" and type(kb.Fill) == "function" then
+			name = kb.Fill(name, true)
+		else
+			name = (string.gsub(name, "%s?%([^()]-{%w+}[^()]-%)", ""))
+		end
+		ui.Name = addText(col, name, { Size = 22, Color = theme.Gold, Font = theme.Font })
 		local pct = math.floor(((kind == "HP" and tune.HPRecovery or tune.MPRecovery) or 0) * 100 + 0.5)
 		addText(col, string.format(POTION.Effect[kind], pct), { Size = 16 })
 		ui.Stock = addText(col, "", { Size = 16, Color = theme.SubText })
@@ -2882,6 +2889,12 @@ ITEMS.Rebuild = queueRebuild
 -- BB5: callers that open a window which may not exist yet (e.g. "Character" before BB8) check first
 function Panels.Has(id)
 	return type(id) == "string" and BUILDERS[id] ~= nil
+end
+Panels.IsRegistered = Panels.Has -- BB13 name; BB1 Keybinds: a window key is live once its window is registered
+
+-- BB1: id of the open window, or nil (a window key closes its own window and switches from any other)
+function Panels.CurrentId()
+	return currentId
 end
 
 function Panels.Open(id, arg)

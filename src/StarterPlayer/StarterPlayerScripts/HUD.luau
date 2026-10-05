@@ -45,8 +45,9 @@ local ATTACK_FALLBACK = UI.AttackFallbackOffset or Vector2.new(-200, -170)
 -- at UIScale 0.75) and the slim U5 layout. UI units (before MainGui's UIScale), grouped in one table because this chunk
 -- is close to Luau's 200-locals limit.
 local IS_TOUCH = UserInputService.TouchEnabled
-local SHOW_KEYS = UserInputService.KeyboardEnabled and not IS_TOUCH -- U1: key badges for keyboards only
 local L = {
+	KeyDevice = UserInputService.KeyboardEnabled and not IS_TOUCH, -- U1: key badges for keyboards only (never touch)
+	ShowKeys = UserInputService.KeyboardEnabled and not IS_TOUCH, -- BB1: KeyDevice and Settings.KeyBadges (L.RefreshKeys)
 	Attack = IS_TOUCH and 136 or 120,
 	Release = IS_TOUCH and 102 or 90,
 	Square = IS_TOUCH and 72 or 60, -- 자동 / 지도 / 메뉴 parchment squares
@@ -54,7 +55,7 @@ local L = {
 	BtnGap = IS_TOUCH and 12 or 10,
 	RowGap = IS_TOUCH and 10 or 8, -- between the squares and above the row
 	Edge = IS_TOUCH and 24 or 16,
-	StatsW = IS_TOUCH and 212 or 280, -- player card
+	StatsW = IS_TOUCH and 212 or 300, -- player card (BB5: 300 on desktop so "전투력 25,488" fits next to the class)
 	StatsH = IS_TOUCH and 110 or 132,
 	PotionH = IS_TOUCH and 64 or 50,
 	StarsH = IS_TOUCH and 22 or 20, -- extra wanted-stars row (Horns)
@@ -171,7 +172,7 @@ local jumpButton = nil
 local jumpConns = {}
 local layoutPending = false
 
-local holdSources = {} -- [source] = true; source = "mouse" | "keyF" | "padR2" | InputObject (button press)
+local holdSources = {} -- [source] = true; source = "mouse" | "key:<KeyCode>" | "pad:<KeyCode>" | InputObject (button press)
 local holdToken = 0
 local lastAction = {}
 
@@ -638,28 +639,32 @@ function L.PowerSet(n)
 	if ui.power then ui.power.Text = L.PowerText(n) end
 end
 
--- gold "+N" floating up from the number, and the number counting up to the new value
-function L.PowerPopup(from, to)
+-- gold "+N" floating up from the number, and the number counting up to the new value. The popup lives on the
+-- stats card (the label clips its children: UIKit.FitText), just above the number's right edge. delta = the real rise
+-- (from is only where the count-up starts; it may be mid-way through an earlier count-up).
+function L.PowerPopup(from, to, delta)
 	local label = ui.power
 	if not label or not label.Parent then L.PowerSet(to) return end
 	L.Pow.Seq += 1
 	local seq = L.Pow.Seq
+	local x = label.Position.X.Offset + (label.TextXAlignment == Enum.TextXAlignment.Left and 90 or label.Size.X.Offset)
+	local y = label.Position.Y.Offset
 	local pop = artLabel(false, {
 		Name = "PowerUp",
 		AnchorPoint = Vector2.new(1, 1),
-		Position = UDim2.new(1, 0, 0, 0),
+		Position = UDim2.fromOffset(x, y),
 		Size = UDim2.fromOffset(90, IS_TOUCH and 22 or 18),
 		TextScaled = true,
 		MaxTextSize = IS_TOUCH and 18 or 15,
 		Number = true,
 		Color = ac("GoldText", Theme.Gold),
 		TextXAlignment = Enum.TextXAlignment.Right,
-		Text = "+" .. Util.FormatInt(to - from), -- next to the number, so the bare "+N"
+		Text = "+" .. Util.FormatInt(delta or (to - from)), -- next to the number, so the bare "+N"
 		ZIndex = (label.ZIndex or 1) + 3,
-		Parent = label,
+		Parent = label.Parent,
 	})
 	TweenService:Create(pop, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Position = UDim2.new(1, 0, 0, -22), TextTransparency = 1,
+		Position = UDim2.fromOffset(x, y - 22), TextTransparency = 1,
 	}):Play()
 	task.delay(1.2, function() pop:Destroy() end)
 	task.spawn(function()
@@ -686,7 +691,7 @@ function L.PowerSettle()
 	local n, base = L.PowerValue(), P.Base or L.PowerValue()
 	P.Base = n
 	if n > base and os.clock() - P.LevelAt > P.Merge + 0.3 then
-		L.PowerPopup(P.Shown or base, n)
+		L.PowerPopup(P.Shown or base, n, n - base)
 	else
 		P.Seq += 1 -- stop a running count-up
 		L.PowerSet(n)
@@ -858,9 +863,9 @@ local function buildStats(root)
 	L.FitText(ui.xpText, 11)
 
 	if IS_TOUCH then
-		local half = math.floor((barW - 6) / 2) -- BB5: 금고 | 전투력
-		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 78, half)
-		L.PowerBuild(f, x0 + half + 6, 78, barW - half - 6, 20)
+		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 78, barW)
+		L.PowerBuild(f, x0, 100, barW, 20) -- BB5 touch: its own row under 금고 (749x361: half rows cut both off)
+		ui.power.TextXAlignment = Enum.TextXAlignment.Left
 		L.PowerHit(badge)
 	else
 		local half = math.floor((barW - 6) / 2)
@@ -948,7 +953,7 @@ function L.LayoutStats(s)
 	C.VitalsUI.LayoutStats(hpY, vitalH, 2)
 	local moneyY = hpY + vitalH * 2 + 6
 	local moneyH = math.max(IS_TOUCH and 20 or 18, textH)
-	for _, label in { ui.bank, ui.carried or (IS_TOUCH and ui.power) or nil } do -- touch: 금고 | 전투력 (BB5)
+	for _, label in { ui.bank, ui.carried } do
 		label.Position = UDim2.fromOffset(label.Position.X.Offset, moneyY)
 		label.Size = UDim2.fromOffset(label.Size.X.Offset, moneyH)
 	end
@@ -956,7 +961,13 @@ function L.LayoutStats(s)
 		local icon = ui.stats:FindFirstChild(name)
 		if icon then icon.Position = UDim2.fromOffset(icon.Position.X.Offset, moneyY) end
 	end
-	ui.statsBaseH = math.max(L.StatsH, moneyY + moneyH + 10)
+	local bottom = moneyY + moneyH
+	if IS_TOUCH and ui.power then -- BB5 touch: the power row sits under 금고
+		ui.power.Position = UDim2.fromOffset(ui.power.Position.X.Offset, bottom + 2)
+		ui.power.Size = UDim2.fromOffset(ui.power.Size.X.Offset, moneyH)
+		bottom += 2 + moneyH
+	end
+	ui.statsBaseH = math.max(L.StatsH, bottom + 10)
 	ui.stats.Size = UDim2.fromOffset(L.StatsW, ui.statsBaseH + (getFaction() == "Horns" and L.StarsH or 0))
 	ui.stars.Position = UDim2.fromOffset(IS_TOUCH and 12 or 14, ui.statsBaseH - 8)
 end
@@ -1428,19 +1439,54 @@ local function roundButton(name, size, part, fallbackColor)
 	return btn, art
 end
 
--- small key badge (U1: keyboards only, never on touch)
-local function keyHint(parent, text, position, anchor)
-	if not SHOW_KEYS then return end
-	L.FitText(UIKit.Create("TextLabel", {
+-- BB1: the action's current key label (Keybinds; "" before Keybinds exists)
+function L.KeyText(action)
+	local kb = C and C.Keybinds
+	if type(kb) ~= "table" or type(kb.Label) ~= "function" then return "" end
+	local ok, text = pcall(kb.Label, action)
+	return ok and type(text) == "string" and text or ""
+end
+
+-- BB1: true when the action has a key right now (an unbound action shows no badge)
+function L.KeyBound(action)
+	local kb = C and C.Keybinds
+	if type(kb) ~= "table" or type(kb.KeyName) ~= "function" then return false end
+	local ok, key = pcall(kb.KeyName, action)
+	return ok and type(key) == "string" and key ~= ""
+end
+
+-- BB1: badges follow Keybinds.Changed and Settings.KeyBadges (BB3 [기타] 키 표시)
+function L.RefreshKeys()
+	local st = C and C.Settings
+	local badges = true
+	if type(st) == "table" and type(st.Get) == "function" then
+		local ok, v = pcall(st.Get, "KeyBadges")
+		badges = not ok or v ~= false
+	end
+	L.ShowKeys = L.KeyDevice and badges
+	for _, h in ui.keyHints or {} do
+		if h.Label.Parent then
+			h.Label.Text = L.KeyText(h.Action)
+			h.Label.Visible = L.ShowKeys and L.KeyBound(h.Action)
+		end
+	end
+end
+
+-- small key badge (U1: keyboards only, never on touch). BB1: `action` = Config.Keybinds action id; the badge shows its
+-- current key (it widens for "Ctrl" / "Num1") and L.RefreshKeys redraws it.
+local function keyHint(parent, action, position, anchor)
+	if not L.KeyDevice then return end
+	local label = L.FitText(UIKit.Create("TextLabel", {
 		Name = "KeyHint",
 		AnchorPoint = anchor,
 		Position = position,
 		Size = UDim2.fromOffset(18, 18),
+		AutomaticSize = Enum.AutomaticSize.X,
 		BackgroundColor3 = ac("KeyHintBg", COL.Black),
 		TextColor3 = ac("KeyHintText", COL.White),
 		Font = af("Number", Theme.Font),
 		TextSize = 13,
-		Text = text,
+		Text = L.KeyText(action),
 		ZIndex = 8,
 		Parent = parent,
 	}, {
@@ -1451,13 +1497,18 @@ local function keyHint(parent, text, position, anchor)
 			Transparency = 0.15,
 			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		}),
+		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 3), PaddingRight = UDim.new(0, 3) }),
 	}), 11)
+	if not label then return end
+	ui.keyHints = ui.keyHints or {}
+	table.insert(ui.keyHints, { Label = label, Action = action })
+	label.Visible = L.ShowKeys and L.KeyBound(action)
 end
 
 local doUpgrade, openMenu, openMap -- forward (defined with the input code)
 
--- parchment square (BtnSquare art): icon over a short ink label, key badge on the corner
-local function squareButton(name, icon, text, key, onClick)
+-- parchment square (BtnSquare art): icon over a short ink label, key badge on the corner (action = Keybinds id)
+local function squareButton(name, icon, text, action, onClick)
 	local btn = UIKit.ArtButton("BtnSquare", {
 		Name = name,
 		AnchorPoint = Vector2.new(0.5, 0.5),
@@ -1481,7 +1532,7 @@ local function squareButton(name, icon, text, key, onClick)
 		Text = text,
 		Parent = btn,
 	})
-	keyHint(btn, key, UDim2.new(1, 3, 1, 3), Vector2.new(1, 1))
+	keyHint(btn, action, UDim2.new(1, 3, 1, 3), Vector2.new(1, 1))
 	L.FitText(label, 12)
 	return btn, label, img
 end
@@ -1517,7 +1568,7 @@ local function buildButtons(root)
 		Parent = ui.attack,
 	})
 	L.FitText(ui.attack:FindFirstChild("Label"), 16, true)
-	keyHint(ui.attack, "F", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
+	keyHint(ui.attack, "Attack", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
 	-- Keep the approved skill button artwork; only MP and cooldown determine readiness.
 	local rel, relArt = roundButton("Release", L.Release, "BtnSpecial", COL.ReleaseFill)
@@ -1557,18 +1608,18 @@ local function buildButtons(root)
 		Parent = rel,
 	})
 	L.FitText(ui.skillTimer, 16)
-	keyHint(rel, "Q", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
+	keyHint(rel, "SkillQ", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
-	-- 자동 / 지도 / 메뉴 (U1: the menu key is B; Esc belongs to Roblox and M opens the map)
-	ui.map = squareButton("Map", "IconMap", TXT.Map, "M", function()
+	-- 자동 / 지도 / 메뉴 (U1: the menu key is B by default; Esc belongs to Roblox and M opens the map; BB1 Keybinds)
+	ui.map = squareButton("Map", "IconMap", TXT.Map, "Map", function()
 		openMap()
 	end)
-	ui.menu, ui.menuLabel = squareButton("Menu", "IconGear", TXT.Menu, "B", function()
+	ui.menu, ui.menuLabel = squareButton("Menu", "IconGear", TXT.Menu, "Menu", function()
 		openMenu()
 	end)
 	ui.menuGlow = makeGlow(ui.menu, UDim.new(0, 12))
 	-- A23-1 auto combat ON/OFF: hidden until the crown-shard quest unlocks it (no "unlocks at ..." teaser)
-	ui.auto, ui.autoLabel = squareButton("Auto", "Crown", TXT.AutoOff, "R", function()
+	ui.auto, ui.autoLabel = squareButton("Auto", "Crown", TXT.AutoOff, "Auto", function()
 		L.ToggleAuto()
 	end)
 	ui.autoGlow = makeGlow(ui.auto, UDim.new(0, 12))
@@ -1647,7 +1698,7 @@ local function buildButtons(root)
 	L.FitText(ui.upgradeTitle, 13, true)
 	L.FitText(ui.upgradePrice, 12)
 	L.FitText(ui.upgradeText, 11)
-	keyHint(ui.upgrade, "U", UDim2.new(1, -4, 0, 4), Vector2.new(1, 0))
+	keyHint(ui.upgrade, "Upgrade", UDim2.new(1, -4, 0, 4), Vector2.new(1, 0))
 end
 
 ----------------------------------------------------------------- refresh: stats
@@ -2125,6 +2176,20 @@ local function refreshTravel()
 end
 
 ----------------------------------------------------------------- quests
+-- BB1 / A23-21: quest rows carry raw key tokens ('자동 전투 켜기 ({Auto})'; the server cannot know the device). Keyboards
+-- show the current key (the "(…)" group goes while that action has no key), touch-only devices the button name
+-- ('자동 버튼'). Rows are drawn again on Keybinds.Changed.
+function L.QuestText(text)
+	if type(text) ~= "string" or not string.find(text, "{", 1, true) then return text end
+	local kb = C and C.Keybinds
+	if type(kb) == "table" and type(kb.Fill) == "function" then
+		-- keyOnly except on touch-only devices: there Keybinds.Label gives the button name
+		local ok, out = pcall(kb.Fill, text, not (IS_TOUCH and not UserInputService.KeyboardEnabled))
+		if ok and type(out) == "string" then return out end
+	end
+	return Config.FillKeys(text, (Config.KeyMap(nil, nil)))
+end
+
 local function parseQuests()
 	local data = questState.Data -- CR-L50: last "Quests" remote payload (array of entries)
 	if type(data) ~= "table" then return {} end
@@ -2142,7 +2207,7 @@ local function parseQuests()
 			local entry = {
 				Id = tostring(e.Id or ""),
 				Kind = tostring(e.Kind or "Extra"),
-				Text = tostring(e.Text or ""),
+				Text = L.QuestText(tostring(e.Text or "")),
 				Progress = math.max(0, finite(e.Progress, 0)),
 				Target = math.max(1, finite(e.Target, 1)),
 				RewardGold = math.max(0, finite(e.RewardGold, 0)),
@@ -3108,35 +3173,53 @@ openMap = function()
 	end
 end
 
+-- BB1: hold source of a key / pad button press ("key:F", "pad:ButtonR2"); the release of that same key ends the hold
+-- even when the binding changed in between
+function L.HoldSource(input)
+	return (input.UserInputType == Enum.UserInputType.Keyboard and "key:" or "pad:") .. input.KeyCode.Name
+end
+
+-- BB1: the window keys (Keybinds group "Window") and the menu key run before inputAllowed() (a window covers the
+-- screen). The same key closes its window, another window's key switches to it, a window that does not exist yet
+-- (not registered in Panels) does nothing. The menu key keeps U1: it closes any open window, else opens the menu.
+-- Returns true when the action was one of these keys.
+function L.WindowKey(action)
+	local kb, panels = C and C.Keybinds, C and C.Panels
+	local target = kb and kb.WindowFor(action)
+	if action ~= "Menu" and not target then return false end
+	if type(panels) ~= "table" then return true end
+	local open = type(panels.IsOpen) == "function" and panels.IsOpen()
+	if action == "Menu" then
+		if open or inputAllowed() then openMenu() end
+		return true
+	end
+	if type(panels.Has) ~= "function" or not panels.Has(target) then return true end
+	if not (open or inputAllowed()) or throttled("windowKey", 0.25) then return true end
+	local ok, err
+	if type(panels.CurrentId) == "function" and panels.CurrentId() == target then
+		ok, err = pcall(panels.Close, true)
+	else
+		ok, err = pcall(panels.Open, target)
+	end
+	if not ok then warnThrottled("window key failed: " .. tostring(err)) end
+	return true
+end
+
+-- every key goes through Keybinds (BB1); nothing reacts while a key is being captured or a TextBox has focus
 local function onInputBegan(input, gameProcessed)
-	-- B also closes an open panel (inputAllowed is false while a panel covers the screen)
-	if not gameProcessed and input.KeyCode == Enum.KeyCode.B and C and C.Panels
-		and type(C.Panels.IsOpen) == "function" and C.Panels.IsOpen() then
-		openMenu()
-		return
-	end
-	if gameProcessed or not inputAllowed() then return end
-	local t = input.UserInputType
-	if t == Enum.UserInputType.Keyboard then
-		local k = input.KeyCode
-		if k == Enum.KeyCode.F then
-			startHold("keyF")
-		elseif k == Enum.KeyCode.Q then -- E is the Roblox-standard interact key (blacksmith / altar / merchant prompts)
-			doRelease()
-		elseif k == Enum.KeyCode.U then
-			doUpgrade()
-		elseif k == Enum.KeyCode.R then
-			L.ToggleAuto()
-		elseif k == Enum.KeyCode.B then
-			openMenu() -- U1: Esc belongs to Roblox
-		end -- M is bound by WorldMap (A12)
-	elseif t == Enum.UserInputType.Gamepad1 then
-		if input.KeyCode == Enum.KeyCode.ButtonR2 then
-			startHold("padR2")
-		elseif input.KeyCode == Enum.KeyCode.ButtonL2 then
-			doRelease()
-		end
-	end
+	local kb = C and C.Keybinds
+	if gameProcessed or type(kb) ~= "table" or kb.IsCapturing() or UserInputService:GetFocusedTextBox() then return end
+	local action = kb.ActionFor(input)
+	if not action or L.WindowKey(action) or not inputAllowed() then return end
+	if action == "Attack" then
+		startHold(L.HoldSource(input))
+	elseif action == "SkillQ" then -- E stays the Roblox interact key (blacksmith / altar / merchant prompts)
+		doRelease()
+	elseif action == "Upgrade" then
+		doUpgrade()
+	elseif action == "Auto" then
+		L.ToggleAuto()
+	end -- Map: WorldMap's binding (A12); potions: VitalsUI; GhostHold: GrudgeGhost; Interact: the prompts (Keybinds)
 end
 
 -- releases are handled even when gameProcessed (e.g. the mouse is let go over a button)
@@ -3151,10 +3234,8 @@ local function onInputEnded(input)
 		end
 	elseif t == Enum.UserInputType.Touch then
 		stopHold(input)
-	elseif t == Enum.UserInputType.Keyboard then
-		if input.KeyCode == Enum.KeyCode.F then stopHold("keyF") end
-	elseif t == Enum.UserInputType.Gamepad1 then
-		if input.KeyCode == Enum.KeyCode.ButtonR2 then stopHold("padR2") end
+	elseif t == Enum.UserInputType.Keyboard or t == Enum.UserInputType.Gamepad1 then
+		stopHold(L.HoldSource(input))
 	end
 end
 
@@ -3508,8 +3589,21 @@ function HUD.Start()
 
 	bindButtonInput()
 	task.spawn(placeLegacyChat)
-	UserInputService.InputBegan:Connect(onInputBegan)
-	UserInputService.InputEnded:Connect(onInputEnded)
+	-- BB1: Keybinds forwards every UserInputService press / release (plus its Dispatch test inputs)
+	local kb = C.Keybinds
+	if type(kb) == "table" and type(kb.Began) == "table" then
+		kb.Began:Connect(onInputBegan)
+		kb.Ended:Connect(onInputEnded)
+		kb.Changed:Connect(L.RefreshKeys)
+		kb.Changed:Connect(function() -- quest rows show the new key (L.QuestText)
+			if questState.Started then refreshQuests() end
+		end)
+	else
+		UserInputService.InputBegan:Connect(onInputBegan)
+		UserInputService.InputEnded:Connect(onInputEnded)
+	end
+	if type(C.Settings) == "table" and type(C.Settings.Changed) == "table" then C.Settings.Changed:Connect(L.RefreshKeys) end
+	L.RefreshKeys()
 	UserInputService.WindowFocusReleased:Connect(clearHolds)
 
 	LocalPlayer.CharacterAdded:Connect(onCharacterAdded)

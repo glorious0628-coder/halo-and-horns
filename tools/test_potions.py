@@ -100,9 +100,12 @@ def make_harness(sources: dict[str, str]) -> str:
     if not weapons:
         raise ValueError("Config.Weapons boundary changed; update the test extractor.")
     max_tier = len(re.findall(r"\{\s*Tier\s*=\s*\d+", weapons.group(1)))
+    # BB2: DataService.fillDefaults runs Config.SanitizeSettings (pure; the keys + settings section after RateLimits)
+    settings = between(config, "----------------------------------------------------------------- keys + settings (BB1 / BB2)",
+                       "\nConfig.Loot = {")
     set_stat = between(sources["PLAYER_SOURCE"], "function PlayerService.SetStat(", "function PlayerService.AddStat(")
     bindings = {
-        "CONFIG_SOURCE": prefix + "\n" + rates.group() + "\n" + texts.group()
+        "CONFIG_SOURCE": prefix + "\n" + rates.group() + "\n" + settings + "\n" + texts.group()
                          + f"\nConfig.MaxWeaponTier = {max_tier} -- extracted: number of Config.Weapons rows\nreturn Config",
         "NET_SOURCE": sources["NET_SOURCE"],
         "DATA_SOURCE": sources["DATA_SOURCE"],

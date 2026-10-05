@@ -48,8 +48,17 @@ local function dirty(player)
 	end
 end
 
+-- BB1: '{Auto}'-style key tokens -> this player's saved key labels (Config.KeyMap of data.Settings.Keys), for toasts.
+-- Quest rows keep the raw tokens: the client fills them (HUD L.QuestText: a phone shows the button name, A23-21) and
+-- redraws them when the keys change.
+local function keyText(data, text)
+	if type(text) ~= "string" or not string.find(text, "{", 1, true) then return text end
+	local settings = type(data) == "table" and data.Settings or nil
+	return Config.FillKeys(text, (Config.KeyMap(type(settings) == "table" and settings.Keys or nil, nil)))
+end
+
 local function notify(player, text, kind)
-	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, text, kind or "info") end
+	if type(text) == "string" and text ~= "" then pcall(Net.Notify, player, keyText(getData(player), text), kind or "info") end
 end
 
 ------------------------------------------------------------------ data
@@ -386,7 +395,7 @@ local function rowFor(player, data, id, track)
 	end
 	return {
 		Id = "story:" .. id, Kind = def.Kind, Pinned = def.Kind == "Main", TutorialStep = TUT_DONE,
-		Text = text, Progress = progress, Target = target,
+		Text = text, Progress = progress, Target = target, -- raw '{Auto}' tokens (client fills them)
 		RewardGold = 0, RewardXP = 0,
 		CanClaim = track.Claim == true, ShowProgress = target > 1 and not track.Claim,
 		Story = { Id = id, St = track.St, Panel = step and step.Panel == true or nil, Guide = step and step.Guide or nil },

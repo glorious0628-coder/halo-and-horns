@@ -1,6 +1,7 @@
 -- GrudgeGhost.luau : A23-18 "원한 유령 붙잡기". While a thief carries a grudge sack with MY plundered gold
--- (server attribute GrudgeThiefId), a button (and the G key on keyboards) lets me hold the sack: each press adds 2 s to
--- the time the thief must survive (server: rate limit 2.7 s, max +10 s per sack). Display only; the server decides.
+-- (server attribute GrudgeThiefId), a button (and the Keybinds "GhostHold" key on keyboards, default T; BB1 moved it off
+-- G, which opens the bag) lets me hold the sack: each press adds 2 s to the time the thief must survive (server: rate
+-- limit 2.7 s, max +10 s per sack). Display only; the server decides.
 -- Its own module so HUD.luau (near the 200-locals limit) stays untouched. Uses the approved BtnSquare part through
 -- UIKit.ArtButton (code fallback otherwise), sits left of the HUD's bottom-right button cluster (HUD.Layout) above
 -- the HUD layer, and is at least 44 real px on every screen (review of 735419e).
@@ -106,9 +107,18 @@ function G.Refresh()
 	if not on then return end
 	G.Place(b)
 	local wait = math.ceil(G.ReadyAt - os.clock())
-	local text = wait > 0 and string.format(Config.Text.GhostWait, wait) or Config.Text.GhostButton
-	if wait <= 0 and keyboard() then text ..= " (G)" end -- the key hint only where there is a keyboard
-	G.Label.Text = text
+	G.Label.Text = wait > 0 and string.format(Config.Text.GhostWait, wait) or G.ButtonText()
+end
+
+-- "유령으로 붙잡기 ({GhostHold})": the current key only where there is a keyboard and the action has a key (BB1)
+function G.ButtonText()
+	local text = Config.Text.GhostButton
+	local kb = C and C.Keybinds
+	if type(kb) ~= "table" or type(kb.Fill) ~= "function" then
+		return (string.gsub(text, "%s?%([^()]-{%w+}[^()]-%)", ""))
+	end
+	if not keyboard() then return kb.StripKeys(text) end
+	return kb.Fill(text, true)
 end
 
 function GrudgeGhost.Init(registry)
@@ -117,10 +127,15 @@ end
 
 function GrudgeGhost.Start()
 	me:GetAttributeChangedSignal("GrudgeThiefId"):Connect(G.Refresh)
-	UserInputService.InputBegan:Connect(function(input, processed)
-		if processed or input.KeyCode ~= Enum.KeyCode.G then return end
-		G.Press()
-	end)
+	-- BB1: the hold key comes from Keybinds (Keybinds forwards every key press, plus its Dispatch test inputs)
+	local keys = C and C.Keybinds
+	if type(keys) == "table" and type(keys.Began) == "table" then
+		keys.Began:Connect(function(input, processed)
+			if processed or keys.IsCapturing() or UserInputService:GetFocusedTextBox() then return end
+			if keys.ActionFor(input) == "GhostHold" then G.Press() end
+		end)
+		keys.Changed:Connect(function() pcall(G.Refresh) end)
+	end
 	task.spawn(function()
 		while true do
 			task.wait(0.5)

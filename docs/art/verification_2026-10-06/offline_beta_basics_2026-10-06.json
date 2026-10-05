@@ -1,0 +1,1334 @@
+{
+  "status": "passed",
+  "checks": 228,
+  "failedChecks": 0,
+  "namedChecks": 214,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "power-samples",
+      "check": "CombatPower(1, 1, 0) = 283 (Lv1 starting weapon)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "CombatPower(1, 2, 0) = 387 (Lv1 wood weapon (tier 2, bought with the first 150 gold))",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "CombatPower(5, 3, 0) = 758 (Lv5 iron weapon)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "CombatPower(10, 3, 3) = 1052 (Lv10 iron weapon +3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "CombatPower(20, 5, 0) = 2829 (Lv20 tier 5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "CombatPower(1, 8, 0) = 872 (Lv1 jelly legendary (tier 8))",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "CombatPower(1, 4, 0) = 938 (Lv1 tier 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "Lv1 jelly legendary 872 < Lv1 tier 4 938 (weapons count by damage, not by tier index)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "the spec's 387 is Lv1 tier 2 (wood weapon) +0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "Config.Power.DisplayScale = 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "CombatPower = floor(PowerOf(level, tier, 1, +N) x 10 + 0.5), an integer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "missing +N = +0, above +10 counts as +10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "no cached maximum before the first call",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "MaxCombatPower() = 25,488",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "the maximum is cached in Config.Power.MaxCache",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "a second call returns the cached value (no recompute)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "maximum = Lv100 + the highest-DAMAGE weapon at +10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "the tier-index cap (MaxWeaponTier = jelly legendary) would give 7,027",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "no level / weapon / +N goes above MaxCombatPower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-samples",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-monotonic",
+      "check": "Lv1 -> Lv100 always raises the number (every weapon, every +N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-monotonic",
+      "check": "+0 -> +10 always raises the number (every weapon, every level)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-monotonic",
+      "check": "ordered by weapon Damage the number never goes down (strictly up when Damage is higher)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-monotonic",
+      "check": "damage order: tier 8 (76) sits between tier 3 (38) and tier 4 (88); tier 7 is the strongest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-monotonic",
+      "check": "tier index order is NOT the power order (tier 8 < tier 7)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-monotonic",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-monotonic",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.Label is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.LabelEn is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.Up is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.UpEn is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.Change is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.ChangeEn is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.Formula is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.FormulaEn is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.PvPNote is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Power.Text.PvPNoteEn is a non-empty string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Label 전투력 / Power",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Up / UpEn format one number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Change / ChangeEn format (old, new)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "PvPNote formats (PowerRatioMax, PowerRatioMin): 최대 1.5배, 최소 0.8배",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "PvPNoteEn formats with Luau string.format and the same (max, min) arguments as PvPNote",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Bully.Text Title / TitleEn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Bully.Text has 3 Lines and 3 LinesEn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Bully numbers 0.5 / 15 s / 3 KOs / 600 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "line 1 (weak victim) says 50%",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "line 2 (fresh respawn) says 15 s",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "line 3 (repeat KOs) says 3 times / 10 minutes",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Korean lines: 50% / 15초 / 10분 / 3번",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "Config.Bully number lines found once each (fixture probe)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "line 1 follows WeakPowerRatio",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "line 2 follows FreshSpawnSeconds",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "line 3 follows RepeatKOs / RepeatWindow",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "GetCombatPower reads Level / WeaponTier / WeaponEnhance = Config.CombatPower",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "no rebirth bonus in the combat power",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "GetPower (faction power) stays as it was: rebirth bonus included",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "missing attributes = Lv1 tier 1 +0 = 283",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "level floor 1, tier clamped to MaxWeaponTier, +N clamped to +10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "nil player -> 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "an integer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-getcombatpower",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "CombatPower attribute is set on PlayerReady (before the frame ends)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "the PlayerReady value is a Config.CombatPower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "after the join frame: Lv10 iron +3 = 1,052 (WeaponEnhance from the save)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "equip: no CombatPower write before the frame ends (task.defer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "equip tier 3 +3 -> tier 1 +0: exactly one CombatPower write",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "equip tier 1 +0 -> tier 3 +3: exactly one CombatPower write",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "level-up + equip in one frame: one write",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "enhance scroll (WeaponEnhance only): one write",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "level-up only: one write",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "RebirthBonus / Rebirths / Honor never touch CombatPower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "a change that keeps the number (+10 -> +12 clamps) writes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "two players changed in one frame: one write each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "each player keeps their own number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "while in game: Level / WeaponEnhance watched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "no CombatPower write after PlayerLeaving (pending refresh dropped)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "PlayerLeaving disconnects the Level / WeaponEnhance watchers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "another player is unaffected",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "rejoin: CombatPower from the saved Level / WeaponTier / +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "justice-attribute",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult victim 120% -> x2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult victim 119.9% -> x1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult equal -> x1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult victim exactly 80% -> x1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult victim 79.9% -> x0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult much stronger -> x2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult killer power 0 -> x1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult NaN -> x1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult NaN victim -> x1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "Config.PvP boldness 1.2 / 0.8 / x2 / x0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "bully: victim exactly 50% is NOT weak",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "bully: victim below 50% is weak",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "bully: 141 < 141.5 weak, 142 not (displayed integers)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "fallback = Config.CombatPower(data Level, data WeaponTier, WeaponEnhance attribute)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "fallback without data reads the attributes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "fallback clamps level >= 1 and the tier",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "a failing JusticeService.GetCombatPower falls back to Config.CombatPower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "a non-number from JusticeService falls back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "JusticeService.GetCombatPower wins when it works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "BoldMult (server) = x2 / x1 / x0.5 from the displayed CombatPower numbers (rebirth ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "bully weak test (server) = displayed victim < 50% of displayed killer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-power",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "Config.TitleDefs / TitleOrder exist",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "every TitleOrder id has a TitleDefs entry",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "TitleOrder has no duplicates",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "every TitleDefs id is in TitleOrder (picker)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "TitleDefs entry has Name / NameEn / Color",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "title ids fit the 32-char SetTitle limit",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "BetaPioneer = 베타 개척자 / Beta Pioneer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "GrayLegend name = Config.Story.GrayLegendTitle (회색 전설)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "Config.Beta.GrantPioneer = true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "PioneerUntil = 1797645600 = 2026-12-19 11:00 KST (02:00 UTC)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "RateLimits.SetTitle = 0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "Data.Defaults.Titles = {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "Data.Defaults.TitleSel = \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "legacy Data.Defaults.BetaPioneer kept as false (migrated by TitleService)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "Data.Version stays 3 (additive fields)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "TitleSel is mirrored (attribute for nametag / HUD)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "BetaPioneer / Titles / TitlesOwned are not mirrored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "session title beats a selected title",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "selected title beats gray legend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "no session title (nil): selected",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "\"\" selected = automatic: gray legend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "unknown selected id falls through to gray legend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "unknown selected id falls through to the rank",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "non-string selected falls through",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "selected GrayLegend shows without marks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "old 5-argument call = faction rank (군벌 at 60 infamy)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "non-string session title is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "no faction: 모험가",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "display-title",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "joined before PioneerUntil: Titles.BetaPioneer = os.time()",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "TitlesOwned = \"BetaPioneer\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "first grant keeps TitleSel \"\" (rank stays the title)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "no TitleSel SetStat on the first grant",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "SetTitle(BetaPioneer) is an explicit pick (TitleSelAt)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "SetTitle(\"\") = automatic",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "saved: TitleSel \"\" and the owned title",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "a player who chose \"\" keeps \"\" on the next join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "not granted again (first-owned time kept, no SetStat)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "after PioneerUntil the owned title stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "an owned pioneer title can still be selected after the launch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "fresh player exactly at PioneerUntil: no title",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "fresh player after PioneerUntil: no title",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "legacy data.BetaPioneer == true migrates even after PioneerUntil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "legacy migration keeps TitleSel \"\" (no auto-select)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "GrantPioneer = false: no new grant before PioneerUntil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "GrantPioneer = false: an owned pioneer title (and its selection) stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "GrantPioneer = false: the legacy boolean still migrates (it is an owned title)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "GrantPioneer = false: TitlesOwned \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "new pioneer grant keeps a selected GrayLegend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "no TitleSel SetStat for that player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "old auto-selected BetaPioneer (no TitleSelAt) goes back to automatic once; still owned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "an explicitly picked BetaPioneer (TitleSelAt) is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-pioneer",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "ready: known but unowned GrayLegend -> \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "ready: unknown id -> \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "ready: BetaPioneer selected but not owned -> \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "ready: owned in data but unknown to Config -> \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "ready: owned GrayLegend kept -> GrayLegend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "ready: owned BetaPioneer kept -> BetaPioneer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "TitlesOwned lists only Config.TitleDefs ids",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "non-string saved TitleSel -> \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "an old record without Titles / TitleSel gets {} / \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-ready-fallback",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "Config.Rebirth.GrayLegendMin = 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "both marks >= 3 at ready: GrayLegend granted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "GrayLegend is never auto-selected",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "3 / 2 marks: no GrayLegend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "RedeemMarks reaching 3 later grants it at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "2 / 3 marks: none yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "FallMarks reaching 3 later grants it at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "one mark alone (5 / 1 -> 4 / 1) never grants it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "GrayLegend stays when the marks drop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "TitlesOwned = owned ids in Config.TitleOrder, joined by \",\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "pioneer + gray legend in TitleOrder order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-gray-legend",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "accepted: owned GrayLegend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "accepted: \"\" (automatic)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "accepted: owned BetaPioneer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "accepted: owned id of exactly 32 chars",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "accepted: back to GrayLegend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: no argument",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: two arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: two arguments (second nil)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: boolean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: owned id of 33 chars (too long)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: unknown id",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: known but unowned id (GrayLegend for the other player)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "other player unchanged by the refused call",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: player not ready",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "accepted after a pause",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "ignored: a second call 0.25 s later (inside RateLimits.SetTitle)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "accepted 0.5 s after the last accepted call",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "SetTitle writes only the TitleSel attribute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "title changes never change CombatPower / power",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "the last accepted choice is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "title-set-remote",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [
+    {
+      "Group": "power-samples",
+      "Text": "BB4 sample 387 = Lv1 tier 2 +0 or Lv3 tier 1 +5 (the spec does not label it; the test pins Lv1 tier 2 +0, the wood weapon bought with the first 150-gold mission reward)."
+    },
+    {
+      "Group": "justice-attribute",
+      "Text": "Join of a Lv10 iron +3 player: 1 CombatPower write(s) inside PlayerReady (923, the WeaponEnhance attribute is not set yet because JusticeService connects PlayerReady at Init, LootService at Start) and 2 in total once the frame's deferred refresh ran (final 1052). Same frame, so the client normally sees only the last value."
+    },
+    {
+      "Group": "pvp-power",
+      "Text": "Boldness over 288 x 288 sampled pairs: 16 pairs would change multiplier if the unrounded PowerOf were compared instead of the displayed integer."
+    }
+  ],
+  "staticChecks": 10,
+  "staticFailures": [],
+  "mutations": {
+    "total": 28,
+    "applied": 0,
+    "caught": 0,
+    "results": []
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "046ab477bb155b8f0eeadf679939653a40bb32ea87354088e869adb1868daea1",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
+    "src/ServerScriptService/JusticeService.luau": "c82185555c4263dd843d25e56c28d2aa9dd11d23f123a0f5c89fff7f6c47719c",
+    "src/ServerScriptService/TitleService.luau": "58513f878a63f4a0f438bde1f3ff0f3cff2dfbdfdfcd118ebf31be1904ce6081",
+    "src/ServerScriptService/PlayerService.luau": "81d5cf25b41a5578b4d20b798e48cab81e42fa62584df71600df876ea3b80fd5",
+    "src/ServerScriptService/PvPService.luau": "f1267b1d3840c163c95b558eac4b98a659c16136f994e0b501497117ba36d248"
+  },
+  "fixtureSHA256": "abfa0009205edee650bb5618281bac512646007f0d99658f6dffbb64ea366c79",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "BB4 (docs/design/beta_basics_2026-10-05.md): Config.CombatPower(level, tier, +N) = floor(PowerOf(level, tier, 1, +N) x DisplayScale 10 + 0.5) with samples 283 (Lv1 T1) / 387 (Lv1 T2) / 758 (Lv5 T3) / 1,052 (Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 25,488 (Lv100, highest-damage weapon, +10; cached; tier-index cap would be 7,027); rises with level and +N, ordered by weapon Damage; Config.Power.Text (Label/Up/Change/Formula/PvPNote + En) and Config.Bully.Text (Title + 3 lines KO/EN built from WeakPowerRatio 50% / FreshSpawnSeconds 15 / RepeatKOs 3 in RepeatWindow 10 min); JusticeService.GetCombatPower = Config.CombatPower from the Level / WeaponTier / WeaponEnhance attributes (no rebirth bonus), GetPower unchanged; the CombatPower attribute is set on PlayerReady, follows Level / WeaponTier / WeaponEnhance with ONE task.defer-coalesced refresh per frame (an equip = one change) and is disconnected on PlayerLeaving; PvPService combatPower fallback = Config.CombatPower, BoldMult x2 at ratio >= 1.2, x0.5 below 0.8, bully weak test victim < 50% of killer, all on the displayed integer. BB16: Data Titles {} / TitleSel \"\" (TitleSel mirrored), Config.TitleDefs / TitleOrder / Beta (GrantPioneer, PioneerUntil 2026-12-19 11:00 KST); BetaPioneer granted on PlayerReady before PioneerUntil (legacy data.BetaPioneer always), first grant with TitleSel \"\" auto-selects it via PlayerService.SetStat, a later \"\" choice survives rejoin, GrantPioneer=false stops new grants; GrayLegend when FallMarks and RedeemMarks >= Rebirth.GrayLegendMin (at ready and on change); TitlesOwned = owned TitleOrder ids joined by \",\"; unowned/unknown TitleSel -> \"\" at ready; SetTitle remote: exactly one string <= 32 chars, \"\" or owned, ready, RateLimits.SetTitle 0.5 s, else ignored; titles never change stats; DisplayTitle order session > selected > gray legend > rank.",
+  "limitations": "Offline doubles: DataStore = in-memory rows (deep copies), PlayerService ready/leave flow and signals modelled on the real one (real SetStat / AddStat), LootService reduced to its WeaponEnhance attribute writes, attribute-changed signals fire immediately and only on a real change, task.defer flushed by the fixture, os.time / os.clock doubles. PvPService is tested through extracted helpers (num, combatPower, BoldMult, the bully weak line), not the whole KO flow. Client HUD / CharacterVisuals / BB8 picker are only checked statically. Studio play, replication and multiple clients are not certified here."
+}

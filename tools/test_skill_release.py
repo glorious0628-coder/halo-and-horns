@@ -18,20 +18,28 @@ FILES = {
 }
 FIXTURE = ROOT / "tools/fixtures/skill_release_offline.luau"
 HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
+CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 
 
 def key_checks():
-    """2026-10-06: the skill key is Q only; E stays the Roblox interact key for prompts (static HUD check)."""
+    """2026-10-06: the skill key is Q only; E stays the Roblox interact key for prompts (static HUD check).
+    BB1 (2026-10-05 beta basics): keys live in Config.Keybinds and HUD dispatches by action id through Keybinds, so the
+    default skill key Q / pad L2 and the interact key E are checked in Config.Keybinds and the action wiring in HUD."""
     hud = HUD.read_text(encoding="utf-8-sig")
     code = "\n".join(line.split("--", 1)[0] for line in hud.splitlines())  # ignore comments
+    config = "\n".join(line.split("--", 1)[0] for line in CONFIG.read_text(encoding="utf-8-sig").splitlines())
     failures = []
-    if not re.search(r"k == Enum\.KeyCode\.Q then\s*doRelease\(\)", code):
-        failures.append("HUD does not bind the skill (doRelease) to Q")
-    if re.search(r"KeyCode\.E\b", code):
-        failures.append("HUD binds KeyCode.E (reserved for interact prompts)")
-    if len(re.findall(r"doRelease\(\)", code)) < 2:  # keyboard Q + gamepad L2 (+ the touch button)
+    if not re.search(r'action == "SkillQ" then\s*doRelease\(\)', code):
+        failures.append("HUD does not bind the skill (doRelease) to the SkillQ action")
+    if not re.search(r'\{ Id = "SkillQ",[^\n}]*Key = "Q", Pad = "ButtonL2"', config) \
+            or not re.search(r"PadWired = \{[^}]*\bSkillQ = true", config):
+        failures.append("Config.Keybinds: the SkillQ default is not Q / gamepad L2 (wired)")
+    if re.search(r"KeyCode\.E\b", code) or not re.search(r'\{ Id = "Interact",[^\n}]*Key = "E"', config) \
+            or re.search(r'\{ Id = "(?!Interact")\w+",[^\n}]*Key = "E"', config):
+        failures.append("E is not kept as the interact key (HUD binds KeyCode.E or another action defaults to E)")
+    if len(re.findall(r"doRelease\(\)", code)) < 2:  # keyboard Q / gamepad L2 action + the touch button
         failures.append("skill input bindings missing")
-    return 3, failures
+    return 4, failures
 
 
 def literal(value):
