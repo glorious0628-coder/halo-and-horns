@@ -399,5 +399,29 @@
   "original": "art/out/CON_BatGoblin.png (downloaded via Adobe MCP presigned URL, 2026-10-05)",
   "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 3D 완료(Tripo 합계 325크레딧: 생성 250 + 박쥐 고블린 뼈대·동작 75). 작업 세션이 Studio에 적용한다.",
   "model3d": "art/models/tripo/MonsterBatGoblin_raw.glb (+ _Idle/_Walk/_Slash/_Hurt/_Fall rigged clips)"
+ },
+ "IconPetBabySlime": {
+  "status": "approved",
+  "date": "2026-10-05",
+  "tool": "Adobe Firefly · GPT Image 2.5 Sunburst, Medium",
+  "prompt": "art/prompts/IconPetBabySlime.txt",
+  "original": "art/out/Icon_PetBabySlime_src.png",
+  "file": "art/ui/IconPetBabySlime.png",
+  "size": "512x512 RGBA",
+  "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
+  "preview": "art/review/icons_pet_candy_preview.png",
+  "note": "사용자 승인(둘 다 넣기). Config.UIArt.Parts 키 이름 그대로. 작업 세션이 업로드·Id 교체·Studio 적용."
+ },
+ "IconCandy": {
+  "status": "approved",
+  "date": "2026-10-05",
+  "tool": "Adobe Firefly · GPT Image 2.5 Sunburst, Medium",
+  "prompt": "art/prompts/IconCandy.txt",
+  "original": "art/out/Item_Candy_src.png",
+  "file": "art/ui/IconCandy.png",
+  "size": "512x512 RGBA",
+  "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
+  "preview": "art/review/icons_pet_candy_preview.png",
+  "note": "사용자 승인(둘 다 넣기). Config.UIArt.Parts 키 이름 그대로. 작업 세션이 업로드·Id 교체·Studio 적용."
  }
 }
