@@ -341,45 +341,57 @@
   "deleted": "deleted 2026-10-06 (old-art cleanup, docs/art/art_cleanup_2026-10-06.json)"
  },
  "CON_SlimeCube": {
-  "status": "redo",
+  "status": "approved",
   "date": "2026-10-05",
-  "design_approved": true,
+  "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_SlimeCube.txt",
-  "note": "초원 슬라임 새 디자인(네모 젤리, 로블록스 블록 느낌). 사용자가 '슬라임이 로블록스랑 안 맞는다'고 해서 다시 그린 2안 중 1안을 골랐다. 사용자 결정(2026-10-05 저녁): 디자인은 그대로, 그림은 GPT Image 2.5(Firefly 파트너 모델)로 다시 만든다. Firefly Image 5 판 미리보기·원본은 삭제했다. 3D는 사용자 OK('3D 가보자공'), 원본 내려받기 OK."
+  "preview": "art/review/CON_SlimeCube_preview.png",
+  "original": "not downloaded yet: Firefly generate-page history carousel index 25 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_SlimeCube.png (user OK given)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
  },
  "Pet_BabySlime": {
-  "status": "redo",
+  "status": "approved",
   "date": "2026-10-05",
-  "design_approved": true,
+  "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/Pet_BabySlime.txt",
-  "note": "베타 펫 아기 슬라임(네모 + 새싹, 민트빛 흰색). 슬라임 1안과 짝. 사용자 결정(2026-10-05 저녁): 디자인은 그대로, 그림은 GPT Image 2.5(Firefly 파트너 모델)로 다시 만든다. Firefly Image 5 판 미리보기·원본은 삭제했다. 3D는 사용자 OK('3D 가보자공'), 원본 내려받기 OK."
+  "preview": "art/review/Pet_BabySlime_preview.png",
+  "original": "not downloaded yet: Firefly generate-page history carousel index 26 (0-based, blob thumbs) on 2026-10-05; download to art/out/Pet_BabySlime.png (user OK given)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
  },
  "CON_PumpkinSlime": {
-  "status": "redo",
+  "status": "approved",
   "date": "2026-10-05",
-  "design_approved": true,
+  "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_PumpkinSlime.txt",
-  "note": "핼러윈 호박 슬라임(첫 시안에서 바로 OK). 사용자 결정(2026-10-05 저녁): 디자인은 그대로, 그림은 GPT Image 2.5(Firefly 파트너 모델)로 다시 만든다. Firefly Image 5 판 미리보기·원본은 삭제했다. 3D는 사용자 OK('3D 가보자공'), 원본 내려받기 OK."
+  "preview": "art/review/CON_PumpkinSlime_preview.png",
+  "original": "not downloaded yet: Firefly generate-page history carousel index 27 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_PumpkinSlime.png (user OK given)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
  },
  "CON_PumpkinKing": {
-  "status": "redo",
+  "status": "approved",
   "date": "2026-10-05",
-  "design_approved": true,
+  "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_PumpkinKing.txt",
-  "note": "핼러윈 미니보스 호박 대왕. '너무 작다' → 크게+망토, '더 무서운 표정' → 화난 눈썹·네모 이빨 웃음으로 다시 그려 OK. 사용자 결정(2026-10-05 저녁): 디자인은 그대로, 그림은 GPT Image 2.5(Firefly 파트너 모델)로 다시 만든다. Firefly Image 5 판 미리보기·원본은 삭제했다. 3D는 사용자 OK('3D 가보자공'), 원본 내려받기 OK."
+  "preview": "art/review/CON_PumpkinKing_preview.png",
+  "original": "not downloaded yet: Firefly generate-page history carousel index 30 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_PumpkinKing.png (user OK given)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
  },
  "CON_LittleGhost": {
-  "status": "redo",
+  "status": "approved",
   "date": "2026-10-05",
-  "design_approved": true,
+  "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_LittleGhost.txt",
-  "note": "핼러윈 꼬마 유령(얼굴 없는 종이 등불). 사용자 결정(2026-10-05 저녁): 디자인은 그대로, 그림은 GPT Image 2.5(Firefly 파트너 모델)로 다시 만든다. Firefly Image 5 판 미리보기·원본은 삭제했다. 3D는 사용자 OK('3D 가보자공'), 원본 내려받기 OK."
+  "preview": "art/review/CON_LittleGhost_preview.png",
+  "original": "not downloaded yet: Firefly generate-page history carousel index 28 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_LittleGhost.png (user OK given)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
  },
  "CON_BatGoblin": {
-  "status": "redo",
+  "status": "approved",
   "date": "2026-10-05",
-  "design_approved": true,
+  "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_BatGoblin.txt",
-  "note": "핼러윈 박쥐 분장 고블린(보라 박쥐 두건+망토, 호박 사탕 통). 두건·망토는 기존 고블린 큰 귀와 겹쳐 파츠로 못 만들어서 3D는 새 모델이 필요(약 115크레딧). 사용자 결정(2026-10-05 저녁): 디자인은 그대로, 그림은 GPT Image 2.5(Firefly 파트너 모델)로 다시 만든다. Firefly Image 5 판 미리보기·원본은 삭제했다. 3D는 사용자 OK('3D 가보자공'), 원본 내려받기 OK."
+  "preview": "art/review/CON_BatGoblin_preview.png",
+  "original": "not downloaded yet: Firefly generate-page history carousel index 29 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_BatGoblin.png (user OK given)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
  }
 }
