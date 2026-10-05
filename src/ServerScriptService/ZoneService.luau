@@ -390,6 +390,11 @@ function ZoneService.MarkTeleported(player, seconds)
 	markTeleported(player, seconds)
 end
 
+-- true while a server teleport / correction grace runs (PlayerService ignores that movement as "walking")
+function ZoneService.IsTeleportGrace(player)
+	return (move.graceUntil[player] or 0) > os.clock()
+end
+
 -- Server-only appearance replacement: keep the old position/time/velocity sample and its existing grace.
 -- No new spawn/teleport exemption is granted merely because the character Model changed.
 function ZoneService.CaptureMovementTrack(player)

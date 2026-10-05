@@ -630,7 +630,6 @@ local function autoReady(player)
 		and player:GetAttribute("AutoCombatUnlocked") == true and player:GetAttribute("AutoCombatEnabled") == true
 		and player:GetAttribute("ClassChosen") == true and kstate(player) == "None"
 		and player:GetAttribute("AutoResting") ~= true -- P2: away for 15 min
-		and player:GetAttribute("ChoicePending") ~= true -- P2: a good/evil choice card waits for the player
 		and S.PlayerService.IsReady(player) and Util.IsAlive(player)
 end
 
@@ -1275,7 +1274,7 @@ end
 local function autoTick(p)
 	-- P2: a resting player wakes the moment they act; the rest flag never outlives auto combat being ON
 	if p:GetAttribute("AutoResting") == true and p:GetAttribute("AutoCombatEnabled") == true
-		and p:GetAttribute("ChoicePending") ~= true and S.PlayerService.IsReady(p) then
+		and S.PlayerService.IsReady(p) then
 		AUTO_IDLE.Check(p)
 		return
 	end

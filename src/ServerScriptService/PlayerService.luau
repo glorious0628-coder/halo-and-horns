@@ -592,17 +592,29 @@ function PlayerService.Start()
 	end)
 	-- P2: walking counts as activity (MarkActive) even without remote calls, so idle = no input AND no movement
 	task.spawn(function()
-		local lastPos = {}
+		-- review of 5c977d6: only a living player's own walking counts (horizontal), never a respawn, ragdoll or a
+		-- server teleport/correction: the baseline is re-taken when the root changes, the player is dead, or a
+		-- MarkTeleported grace is running
+		local lastPos = {} -- [Player] = { Root = BasePart, Pos = Vector3 }
 		while true do
 			task.wait(1)
 			local studs = Config.Combat.AutoIdleMoveStuds or 1.5
 			for _, p in PlayerService.GetReadyPlayers() do
-				local root = Util.GetRoot(p)
-				if root then
+				local ok, err = pcall(function()
+					local root = Util.GetRoot(p)
 					local prev = lastPos[p]
-					if prev and (root.Position - prev).Magnitude > studs then PlayerService.MarkActive(p) end
-					lastPos[p] = root.Position
-				end
+					local zs = S.ZoneService
+					local teleported = zs and type(zs.IsTeleportGrace) == "function" and zs.IsTeleportGrace(p) == true
+					if not root or not Util.IsAlive(p) then
+						lastPos[p] = nil
+						return
+					end
+					if prev and prev.Root == root and not teleported and Util.FlatDistance(root.Position, prev.Pos) > studs then
+						PlayerService.MarkActive(p)
+					end
+					lastPos[p] = { Root = root, Pos = root.Position }
+				end)
+				if not ok then loopWarn("walk activity", err) end
 			end
 			for p in lastPos do
 				if p.Parent == nil then lastPos[p] = nil end

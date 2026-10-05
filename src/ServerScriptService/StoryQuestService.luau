@@ -353,19 +353,9 @@ local function refresh(player)
 			if done then advance(player, data, t.Id, tr) end
 		end
 	end
-	-- P2: while a good / evil choice card waits, auto combat pauses (no choice is ever skipped by hunting AFK)
-	local choice = false
-	for _, t in tracks(data) do
-		local tr = t.Track
-		local step = (not tr.Claim) and stepOf(player, DEFS[t.Id], tr.St) or nil
-		if step and step.Obj and step.Obj.Type == "Choice" then choice = true end
-	end
-	if (player:GetAttribute("ChoicePending") == true) ~= choice then
-		player:SetAttribute("ChoicePending", choice)
-		if choice and player:GetAttribute("AutoCombatEnabled") == true then
-			notify(player, Config.Text.AutoChoiceWait, "info")
-		end
-	end
+	-- user 2026-10-05: no window or waiting choice card ever pauses auto combat ("아이템 열어도 그대로 자동 전투"),
+	-- and monsters keep attacking as usual; the old ChoicePending flag is cleared for saves/servers that set it
+	if player:GetAttribute("ChoicePending") == true then player:SetAttribute("ChoicePending", false) end
 	if changed then dirty(player) end
 end
 
@@ -434,7 +424,9 @@ function StoryQuestService.SubRows(player, data)
 			-- before the first mission is accepted only S0 shows (A23-3: one goal at a time)
 			if num(data.TutorialStep) ~= 0 or id == "S0" then
 				local row = rowFor(player, data, id, tr)
-				row.Rank = (tr.Claim and 0) or (def.Show and 1) or (id == "S0" and 2) or 3
+				local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
+				local waiting = step ~= nil and step.Panel == true -- a Talk / Choice card waits: never hidden by MaxSubs
+				row.Rank = ((tr.Claim or waiting) and 0) or (def.Show and 1) or (id == "S0" and 2) or 3
 				table.insert(rows, row)
 			end
 		end
