@@ -423,7 +423,12 @@ function WarService.Init(registry)
 		S.PvPService.PlayerKO:Connect(function(killer, _victim, info)
 			if type(info) == "table" and info.Rewarded == true then
 				local stars = tonumber(info.VictimStars) or 0
-				WarService.AddPoints(killer, Config.War.PvPKOPoints + Config.War.PvPKOPerStar * stars)
+				local points = Config.War.PvPKOPoints + Config.War.PvPKOPerStar * stars
+				local bold = tonumber(info.BoldMult) -- A23-18 boldness (x2 strong victim / x0.5 weak victim)
+				if bold and bold > 0 and bold ~= 1 and S.PvPService.ScalePoints then
+					points = S.PvPService.ScalePoints(points, bold)
+				end
+				if points > 0 then WarService.AddPoints(killer, points) end
 			end
 		end)
 	else

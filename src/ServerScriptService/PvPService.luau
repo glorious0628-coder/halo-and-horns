@@ -39,6 +39,8 @@ local S = nil
 local stars = {} -- [Player] = number
 local lastStarChange = {} -- [Player] = os.clock()
 local protectedUntil = {} -- [Player] = os.clock() (0 = not protected)
+local graceUntil = {} -- [Player] = os.clock() end of the A23-18 graduation grace
+local wasRookie = {} -- [Player] = last rookie state seen by tickPlayer (graduation edge)
 local spawnedAt = {} -- [Player] = os.clock() of the last CharacterSpawned
 -- CR-M15: [attacker][victim] = { { T = os.clock(), A = damage }, ... } within Config.Bully.BaitWindow (bait check)
 local dmgLog = {}
@@ -208,6 +210,25 @@ local function combatPower(p)
 	local tier = math.clamp(math.floor(num(p, "WeaponTier", 1)), 1, Config.MaxWeaponTier)
 	-- review B5: the equipped scroll +N counts. Read the attribute directly: data.WeaponEnhance is the per-tier table.
 	return Config.PowerOf(level, tier, 1, tonumber(p:GetAttribute("WeaponEnhance")) or 0)
+end
+
+-- A23-18 boldness: x2 vs a much stronger victim, x0.5 vs a much weaker one (honor / infamy / war points only)
+function PvPService.BoldMult(killer, victim)
+	local P = Config.PvP
+	local mine, theirs = combatPower(killer), combatPower(victim)
+	if type(mine) ~= "number" or type(theirs) ~= "number" or mine ~= mine or theirs ~= theirs or mine <= 0 then return 1 end
+	local ratio = theirs / mine
+	if ratio >= P.BoldStrongRatio then return P.BoldStrongMult end
+	if ratio < P.BoldWeakRatio then return P.BoldWeakMult end
+	return 1
+end
+
+-- integer points x mult with fair rounding (x0.5 of 1 point = 50% chance of 1), so weak KOs still average half
+function PvPService.ScalePoints(points, mult)
+	local v = (tonumber(points) or 0) * (tonumber(mult) or 1)
+	local whole = math.floor(v)
+	if Util.Random:NextNumber() < v - whole then whole += 1 end
+	return whole
 end
 
 -- addendum A10-V3-3: inside a PvP zone, or combat-tagged (Config.PvP.CombatTagTime) anywhere outside a town
@@ -417,6 +438,10 @@ function PvPService.CanAttack(attacker, victim)
 	if PvPService.IsRookie(attacker) or PvPService.IsRookie(victim) then
 		return false, "Rookie"
 	end
+	local nowC = os.clock()
+	if (graceUntil[attacker] or 0) > nowC or (graceUntil[victim] or 0) > nowC then
+		return false, "Rookie" -- A23-18: 60 s graduation grace, both ways
+	end
 	if victim:GetAttribute("Protected") == true then
 		return false, "Protected"
 	end
@@ -522,6 +547,9 @@ function PvPService.HandleKO(victim, killer)
 	else
 		-- 5. pair cooldown for minted rewards (CR-M4: kept in the killer's save as "ko:<victimUserId>")
 		local pairOk = pairReady(killer, victim.UserId, "ko", P.PairRewardCooldown)
+		local bold = PvPService.BoldMult(killer, victim) -- A23-18: honor / infamy / war points only
+		if pairOk and bold > 1 then notify(killer, fmt("BoldStrong"), "reward")
+		elseif pairOk and bold < 1 then notify(killer, fmt("BoldWeak"), "info") end
 		local vLevel = num(victim, "Level", 1)
 
 		if fk == "Horns" then
@@ -550,7 +578,8 @@ function PvPService.HandleKO(victim, killer)
 				end
 			end
 			if stolen == 0 and pairOk then
-				S.PlayerService.AddStat(killer, "Infamy", 1) -- no sack to carry it
+				local inf = PvPService.ScalePoints(1, bold) -- A23-18 boldness
+				if inf > 0 then S.PlayerService.AddStat(killer, "Infamy", inf) end -- no sack to carry it
 			end
 			local bullyBounty = 0
 			if bountyBully > 0 and pairOk then
@@ -563,15 +592,18 @@ function PvPService.HandleKO(victim, killer)
 			end
 			info = {
 				Kind = "Plunder", Bully = false, VictimStars = starsBefore,
-				Stolen = stolen, Bounty = bullyBounty, Rewarded = pairOk,
+				Stolen = stolen, Bounty = bullyBounty, Rewarded = pairOk, BoldMult = bold,
 			}
 		elseif starsBefore == 0 and bountyBully == 0 then
 			-- 6b. Halo KO a clean Horns (or a bully whose bounty was already claimed): honor
 			if pairOk then
-				S.PlayerService.AddStat(killer, "Honor", P.HonorPerKOMin)
-				notify(killer, fmt("HonorGain", P.HonorPerKOMin), "reward")
+				local honor = PvPService.ScalePoints(P.HonorPerKOMin, bold) -- A23-18 boldness
+				if honor > 0 then
+					S.PlayerService.AddStat(killer, "Honor", honor)
+					notify(killer, fmt("HonorGain", honor), "reward")
+				end
 			end
-			info = { Kind = "Honor", Bully = false, VictimStars = 0, Stolen = 0, Bounty = 0, Rewarded = pairOk }
+			info = { Kind = "Honor", Bully = false, VictimStars = 0, Stolen = 0, Bounty = 0, Rewarded = pairOk, BoldMult = bold }
 		else
 			-- 6c. Halo KO a Wanted (or bully) Horns: bounty
 			local bounty = pairOk and Config.Bounty(vLevel, starsBefore, bountyBully) or 0
@@ -581,7 +613,7 @@ function PvPService.HandleKO(victim, killer)
 				end
 				Progression.AddBankGold(killer, bounty, "Bounty")
 			end
-			local honor = pairOk and math.max(1, starsBefore) or 0
+			local honor = pairOk and PvPService.ScalePoints(math.max(1, starsBefore), bold) or 0 -- A23-18 boldness
 			if honor > 0 then
 				S.PlayerService.AddStat(killer, "Honor", honor)
 			end
@@ -600,7 +632,7 @@ function PvPService.HandleKO(victim, killer)
 			end
 			info = {
 				Kind = "Bounty", Bully = false, VictimStars = starsBefore,
-				Stolen = 0, Bounty = bounty, Rewarded = pairOk,
+				Stolen = 0, Bounty = bounty, Rewarded = pairOk, BoldMult = bold,
 			}
 		end
 	end
@@ -700,7 +732,19 @@ local function tickPlayer(p, now)
 		end
 	end
 	refreshStarAttrs(p)
-	setAttr(p, "Rookie", rookieAttr(p))
+	local isRookie = rookieAttr(p)
+	if wasRookie[p] == true and isRookie == false then
+		-- A23-18: the rookie shield just ended -> 60 s grace, then fights are allowed
+		graceUntil[p] = now + Config.PvP.GraduateGraceSeconds
+		setAttr(p, "GraduateGraceUntil", Util.Now() + Config.PvP.GraduateGraceSeconds)
+		notify(p, fmt("GraduateStart"), "reward")
+	elseif graceUntil[p] and now >= graceUntil[p] then
+		graceUntil[p] = nil
+		setAttr(p, "GraduateGraceUntil", 0)
+		notify(p, fmt("GraduateEnd"), "info")
+	end
+	wasRookie[p] = isRookie
+	setAttr(p, "Rookie", isRookie)
 
 	-- revenge expiry
 	local r = revenge[p]
@@ -826,6 +870,7 @@ local function cleanupPlayer(player)
 end
 
 local function onPlayerLeaving(player, data)
+	graceUntil[player], wasRookie[player] = nil, nil
 	-- CR-M11: runs before KaijuService's handler (init order) and while JusticeService still reports the bully
 	-- stacks (CR-L1 defers their cleanup)
 	local okPay, paid = pcall(payLeaveBounty, player)

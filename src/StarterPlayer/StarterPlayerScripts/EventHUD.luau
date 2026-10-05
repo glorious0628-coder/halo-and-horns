@@ -113,7 +113,7 @@ local TXT = {
 	Sack = "원한 자루 %s · %d초 (PvP 지역에서만 줄어요)",
 	KaijuSelf = "괴수 변신 중! %s 버티면 전설의 악당",
 	Revenge = "복수 대상: %s · %s",
-	Luck = "단골 %d분 · 희귀 %s%%",
+	Luck = "오늘의 운 · 희귀 %s%%", -- A23-18 (events taken part in today, KST day)
 	Cheer = "응원별 %s (%d/%d)",
 	CheerLabel = "응원별",
 	CheerCount = "%d/%d",
@@ -1077,8 +1077,8 @@ end
 
 -- luck numbers: line 1 text ("단골 12분 · 희귀 5.25%"), cheer stars, stars needed, filled stars
 local function luckData()
-	local minutes = math.max(0, math.floor(num(myAttr("RegularMinutes", 0))))
-	local line1 = string.format(TXT.Luck, minutes, Util.FormatPercent(Config.RareChance(minutes)))
+	local events = math.max(0, math.floor(num(myAttr("LuckEvents", 0))))
+	local line1 = string.format(TXT.Luck, Util.FormatPercent(Config.RareChance(events)))
 	local need = math.floor(num(Config.Goose and Config.Goose.CheerStarsForRare))
 	if need <= 0 then need = 5 end
 	local stars = math.max(0, math.floor(num(myAttr("CheerStars", 0))))

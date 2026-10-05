@@ -558,8 +558,8 @@ local function rewardPlayer(p, result, f, share)
 		rare = true
 		call("PlayerService", "AddStat", p, "CheerStars", -Config.Goose.CheerStarsForRare)
 	else
-		local minutes = tonumber(call("PlayerService", "GetRegularMinutes", p)) or 0
-		rare = Util.Random:NextNumber() < Config.RareChance(minutes)
+		local events = tonumber(call("PlayerService", "GetLuckEvents", p)) or 0 -- A23-18 오늘의 운
+		rare = Util.Random:NextNumber() < Config.RareChance(events)
 	end
 
 	local level = math.max(1, math.floor(getNum(p, "Level")))

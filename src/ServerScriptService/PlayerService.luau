@@ -29,7 +29,6 @@ local leftFired = {}
 local removed = setmetatable({}, { __mode = "k" }) -- [Player] = true once PlayerRemoving fired
 local conns = {} -- [Player] = { RBXScriptConnection }
 local lastActive = {} -- [Player] = os.clock() of the last input/combat
-local regularMinutes = {} -- [Player] = active minutes on this server
 local mirrored = {} -- [key] = true for every key of Config.Data.Mirrored
 local characterLoading = {} -- [Player] = true while a normal spawn is being installed
 local respawnQueued = {} -- [Player] = one additional requested respawn while the current load yields
@@ -463,12 +462,10 @@ local function onJoin(player)
 			player:SetAttribute(key, v)
 		end
 	end
-	regularMinutes[player] = 0
 	-- A saved nickname is untrusted until the global reservation and current text filter are verified.
 	player:SetAttribute("Nickname", "")
 	player:SetAttribute("NicknameVerified", false)
 	player:SetAttribute("NicknameStatus", "Loading")
-	player:SetAttribute("RegularMinutes", 0)
 	buildLeaderstats(player)
 
 	-- connected before PlayerReady so a Respawn() from a PlayerReady handler is never missed
@@ -566,23 +563,36 @@ function PlayerService.Start()
 		end
 	end)
 
-	-- Regular's Luck: one minute counts if the player had input/combat within it
-	task.spawn(function()
-		local period = Config.Luck.MinuteSeconds
-		while true do
-			task.wait(period)
-			local now = os.clock()
-			for _, p in PlayerService.GetReadyPlayers() do
-				local ok, err = pcall(function()
-					local t = lastActive[p]
-					if t and now - t <= period then
-						local n = (regularMinutes[p] or 0) + 1
-						regularMinutes[p] = n
-						p:SetAttribute("RegularMinutes", n)
-					end
-				end)
-				if not ok then loopWarn("regular-minutes loop", err) end
+	-- A23-18 오늘의 운: every goose / kaiju event a player took part in raises today's rare chance
+	local function luckSignal(service, signal, fn)
+		local svc = S[service]
+		local sig = svc and svc[signal]
+		if type(sig) == "table" and type(sig.Connect) == "function" then sig:Connect(fn) end
+	end
+	luckSignal("GooseService", "GooseFinished", function(_result, counts)
+		if type(counts) ~= "table" then return end
+		for p, n in counts do
+			if typeof(p) == "Instance" and p:IsA("Player") and tonumber(n) and n > 0 then
+				pcall(PlayerService.AddLuckEvent, p)
 			end
+		end
+	end)
+	luckSignal("KaijuService", "KaijuEnded", function(kaiju, _outcome, participants)
+		local seen = {}
+		for _, p in (type(participants) == "table" and participants or {}) do
+			if typeof(p) == "Instance" and p:IsA("Player") and not seen[p] then
+				seen[p] = true
+				pcall(PlayerService.AddLuckEvent, p)
+			end
+		end
+		if typeof(kaiju) == "Instance" and kaiju:IsA("Player") and not seen[kaiju] then pcall(PlayerService.AddLuckEvent, kaiju) end
+	end)
+	-- a new KST day shows 0 at once: on join and once a minute (the roll itself always re-checks the day)
+	PlayerService.PlayerReady:Connect(function(p) pcall(PlayerService.GetLuckEvents, p) end)
+	task.spawn(function()
+		while true do
+			task.wait(60)
+			for _, p in PlayerService.GetReadyPlayers() do pcall(PlayerService.GetLuckEvents, p) end
 		end
 	end)
 
@@ -812,7 +822,6 @@ function PlayerService.FinalizeLeave(player)
 	leftFired[player] = nil
 	Util.ClearPlayer(player)
 	lastActive[player] = nil
-	regularMinutes[player] = nil
 	characterLoading[player] = nil
 	respawnQueued[player] = nil
 	nativeRestore[player] = nil
@@ -875,8 +884,31 @@ function PlayerService.PairReady(holder, otherUserId, kind, cooldown, commit)
 	return true
 end
 
-function PlayerService.GetRegularMinutes(player)
-	return regularMinutes[player] or 0
+-- A23-18: today's event count (0 on a new KST day); the saved day keeps it across servers
+local function luckToday(player)
+	local data = PlayerService.GetData(player)
+	if type(data) ~= "table" then return nil, 0 end
+	local today = Config.DayIndex(os.time())
+	if tonumber(data.LuckDay) ~= today then
+		data.LuckDay, data.LuckEvents = today, 0
+		player:SetAttribute("LuckEvents", 0)
+	end
+	local n = tonumber(data.LuckEvents) or 0
+	if n ~= n or n < 0 then n = 0 end
+	return data, math.floor(n)
+end
+
+function PlayerService.GetLuckEvents(player)
+	local _, n = luckToday(player)
+	return n
+end
+
+function PlayerService.AddLuckEvent(player)
+	local data, n = luckToday(player)
+	if not data then return 0 end
+	n = math.min(n + 1, 99)
+	PlayerService.SetStat(player, "LuckEvents", n)
+	return n
 end
 
 return PlayerService

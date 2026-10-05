@@ -122,6 +122,8 @@ Config.Data = {
 		WeaponEnhance = {},
 		LootFlags = {},
 		HideAnnounceName = false, -- P5: server-wide chat announcements show "<faction> 한 명" instead of my name
+		LuckDay = 0, -- A23-18 오늘의 운: Config.DayIndex of LuckEvents (another day -> 0)
+		LuckEvents = 0, -- goose / kaiju events taken part in on LuckDay
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
 		-- "kolog:<victimUserId>" = { t1, t2 } (last two KOs). Pruned at PlayerReady (> 1800 s old, at most 200 keys).
@@ -136,7 +138,7 @@ Config.Data = {
 	Mirrored = {
 		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "WeaponOwnedMask", "BlacksmithVisited", "Faction", "Class", "ClassChosen",
 		"CharacterGender",
-		"HPPotionCount", "MPPotionCount", "HideAnnounceName",
+		"HPPotionCount", "MPPotionCount", "HideAnnounceName", "LuckEvents",
 		"Rebirths", "RebirthBonus", "FallMarks", "RedeemMarks", "Honor", "Infamy", "SwitchCount",
 		"LastSwitchTime", "PlaytimeSeconds", "TotalKills", "DailyDay", "DailyClaims",
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
@@ -617,6 +619,15 @@ Config.Switch = {
 Config.PvP = {
 	RookieLevel = 15, -- rookie if Rebirths == 0 and (Level < 15 or PlaytimeSeconds < 3600)
 	RookiePlaytime = 3600,
+	-- A23-18 rookie graduation: for this many seconds after the rookie shield ends the player can neither hit nor be
+	-- hit by players (the shield can't be used to strike first)
+	GraduateGraceSeconds = 60,
+	-- A23-18 boldness: honor / infamy / war points from a PvP KO x2 when the victim's power (Config.PowerOf) is at least
+	-- StrongRatio of mine, x0.5 below WeakRatio. Gold, stars and grudge sacks are unchanged. (WeakPowerRatio stays.)
+	BoldStrongRatio = 1.2,
+	BoldWeakRatio = 0.8,
+	BoldStrongMult = 2,
+	BoldWeakMult = 0.5,
 	SpawnProtection = 10, -- seconds; broken early when the protected player damages a player
 	HitPctOfMaxHP = 0.10, -- normal per-target PvP hit = victim BASE MaxHealth * 0.10 * powerRatio * ... (§4.9)
 	PowerRatioMin = 0.8,
@@ -811,15 +822,19 @@ function Config.GooseReward(level, factionId, won, rare, share)
 	return math.floor(g * gm * m), math.floor(x * xm * m)
 end
 
-Config.Luck = { -- "단골 운"
+-- A23-18 "오늘의 운" (replaces the per-server "단골 운" minutes): golden-goose / kaiju events I took part in TODAY
+-- (KST day, saved with the day so a server hop or a dropped phone keeps it). 3 events = 11%, 4 events = the 12.5% cap
+-- ("15~30분 동안 이벤트 3~4번이면 거의 최대").
+Config.Luck = {
 	BaseRare = 0.05,
-	PerActiveMinute = 0.0025, -- +0.25 percentage points per active minute on THIS server
+	PerEvent = 0.02, -- +2 percentage points per event today
 	MaxRare = 0.125,
-	MinuteSeconds = 60, -- a minute counts if the player had input/combat within it
 }
 
-function Config.RareChance(activeMinutes)
-	return math.min(Config.Luck.MaxRare, Config.Luck.BaseRare + Config.Luck.PerActiveMinute * (activeMinutes or 0))
+function Config.RareChance(eventsToday)
+	local n = tonumber(eventsToday) or 0
+	if n ~= n or n < 0 then n = 0 end
+	return math.min(Config.Luck.MaxRare, Config.Luck.BaseRare + Config.Luck.PerEvent * math.floor(n))
 end
 
 Config.Economy = {
@@ -2052,6 +2067,10 @@ Config.Text = {
 	PlunderGain = "골드 %s을(를) 원한 자루에 담았어요! PvP 지역에서 45초 버티면 내 것! (현상수배 별 %d개)",
 	PlunderTooSoon = "방금 턴 상대예요. 3분 동안은 또 털 수 없어요.",
 	HonorGain = "명예 +%d",
+	GraduateStart = "새싹 졸업! 60초 뒤부터 대결 가능", -- A23-18
+	GraduateEnd = "이제 다른 진영과 대결할 수 있어요!",
+	BoldStrong = "센 상대를 이겼어요! 명예·악명·전쟁 점수 ×2",
+	BoldWeak = "약한 상대라 명예·악명·전쟁 점수가 절반이에요.",
 	BountyGain = "현상금 %s골드 획득! 명예 +%d",
 	BountyAnnounce = "[빛의 기사단] %s님이 현상금 %s골드를 받았어요!",
 	BullyBountyGain = "깡패 현상금 %s골드 획득!",
