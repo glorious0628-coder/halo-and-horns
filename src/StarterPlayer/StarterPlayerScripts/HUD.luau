@@ -121,6 +121,7 @@ local TXT = {
 	PvP = "PvP 지역",
 	PvPNeutral = "PvP 지역 · 장인은 안전",
 	Rookie = "새싹 보호중",
+	RookieGrace = "새싹 졸업 · %d초 뒤 대결", -- A23-18 graduation grace (GraduateGraceUntil)
 	Protected = "부활 보호",
 	InCombat = "전투 중",
 	Size = "덩치 저울 ×%.2f",
@@ -1827,7 +1828,10 @@ local function refreshChips()
 		setChip(ui.chip.Zone, false)
 	end
 
-	setChip(ui.chip.Rookie, attr("Rookie", false) == true and f ~= "Neutral", TXT.Rookie, Theme.XP, false, pal.Rookie, true)
+	local graceLeft = math.ceil(num("GraduateGraceUntil", 0) - now) -- A23-18: the shield's 60 s afterglow
+	local rookieOn = attr("Rookie", false) == true and f ~= "Neutral"
+	setChip(ui.chip.Rookie, rookieOn or graceLeft > 0, (not rookieOn and graceLeft > 0)
+		and string.format(TXT.RookieGrace, graceLeft) or TXT.Rookie, Theme.XP, false, pal.Rookie, true)
 	setChip(ui.chip.Protected, attr("Protected", false) == true, TXT.Protected, Theme.XP)
 	setChip(ui.chip.Combat, num("InCombatUntil", 0) > now, TXT.InCombat, Theme.Revenge)
 	local size = num("SizeMult", 1)

@@ -56,7 +56,7 @@ function A.Show(msg)
 	local g = Config.WeaponGrades[msg.Grade] or Config.WeaponGrades.Rare
 	-- big news is also visible without opening the chat: a banner for Legendary, a toast for Epic. Not for the
 	-- finder (they already got their own toast) and never over the opening / pickers / first mission: then a
-	-- Legendary banner waits in UIKit.HeldBanners (max 2, like Notify) and an Epic toast is skipped.
+	-- Legendary banner / Epic toast waits in UIKit.HeldBanners (max 2, like Notify) until FlushBanners.
 	local ui = C and C.UIKit
 	if type(ui) == "table" and msg.Self ~= true and g.Rank >= 4 then
 		local hold = false
@@ -72,7 +72,12 @@ function A.Show(msg)
 			elseif type(ui.Announce) == "function" then
 				pcall(ui.Announce, line, 6)
 			end
-		elseif not hold and type(ui.Toast) == "function" then
+		elseif hold then
+			-- A23-15: deferred, not dropped: shown as a toast by UIKit.FlushBanners after the opening / first mission
+			if type(ui.HeldBanners) ~= "table" then ui.HeldBanners = {} end
+			table.insert(ui.HeldBanners, { line, 4, "toast" })
+			if #ui.HeldBanners > 2 then table.remove(ui.HeldBanners, 1) end
+		elseif type(ui.Toast) == "function" then
 			pcall(ui.Toast, line, "reward", 4)
 		end
 	end

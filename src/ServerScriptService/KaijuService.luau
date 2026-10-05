@@ -446,7 +446,7 @@ local function stomp(p)
 		if v ~= p and factionOf(v) == "Halo" and Util.IsAlive(v) then
 			local r = Util.GetRoot(v)
 			if r and Util.FlatDistance(r.Position, pos) <= Config.Kaiju.StompRadius
-				and call("PvPService", "IsRookie", v) ~= true
+				and call("PvPService", "IsShielded", v) ~= true -- rookie shield or graduation grace (A23-18)
 				and v:GetAttribute("Protected") ~= true
 				and call("ZoneService", "IsTown", v) ~= true then
 				local hum = Util.GetHumanoid(v)

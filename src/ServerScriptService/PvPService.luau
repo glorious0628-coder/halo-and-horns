@@ -371,6 +371,38 @@ function PvPService.IsRookie(player)
 		or num(player, "PlaytimeSeconds", 0) < Config.PvP.RookiePlaytime
 end
 
+-- A23-18 graduation grace (review of c08c382): started on the rookie -> graduate edge for Halo / Horns only, saved as
+-- an absolute time (data.GraduateGraceUntil) so a rejoin keeps the rest; checked lazily wherever PvP damage is decided
+local function startGrace(p, seconds)
+	if seconds <= 0 then return end
+	graceUntil[p] = os.clock() + seconds
+	local data = S.PlayerService.GetData(p)
+	if type(data) == "table" then data.GraduateGraceUntil = os.time() + math.ceil(seconds) end
+	setAttr(p, "GraduateGraceUntil", Util.Now() + seconds)
+end
+
+local function checkGraduation(p)
+	if not isPlaying(p) then return end
+	local isRookie = PvPService.IsRookie(p)
+	local f = faction(p)
+	if wasRookie[p] == true and not isRookie and (f == "Halo" or f == "Horns") and not graceUntil[p] then
+		startGrace(p, Config.PvP.GraduateGraceSeconds)
+		notify(p, fmt("GraduateStart"), "reward")
+	end
+	wasRookie[p] = isRookie
+end
+
+function PvPService.InGrace(p)
+	if not p then return false end
+	checkGraduation(p) -- closes the up-to-1 s gap before the next tick
+	return (graceUntil[p] or 0) > os.clock()
+end
+
+-- rookie shield or graduation grace: no PvP damage either way (CanAttack, kaiju stomp)
+function PvPService.IsShielded(p)
+	return PvPService.IsRookie(p) or PvPService.InGrace(p)
+end
+
 function PvPService.HasRevenge(attacker, victim)
 	local r = attacker and revenge[attacker]
 	return r ~= nil and victim ~= nil and r.Target == victim and os.clock() < r.Until
@@ -438,8 +470,7 @@ function PvPService.CanAttack(attacker, victim)
 	if PvPService.IsRookie(attacker) or PvPService.IsRookie(victim) then
 		return false, "Rookie"
 	end
-	local nowC = os.clock()
-	if (graceUntil[attacker] or 0) > nowC or (graceUntil[victim] or 0) > nowC then
+	if PvPService.InGrace(attacker) or PvPService.InGrace(victim) then
 		return false, "Rookie" -- A23-18: 60 s graduation grace, both ways
 	end
 	if victim:GetAttribute("Protected") == true then
@@ -568,7 +599,7 @@ function PvPService.HandleKO(victim, killer)
 					stolen = math.floor(tonumber(Progression.TakeCarriedGold(victim, stolen)) or 0)
 				end
 				if stolen > 0 then
-					S.GrudgeService.AddToSack(killer, victim, stolen, pairOk and 1 or 0)
+					S.GrudgeService.AddToSack(killer, victim, stolen, pairOk and PvPService.ScalePoints(1, bold) or 0) -- A23-18 boldness
 					local from, to = rootPos(victim), rootPos(killer)
 					if from and to then
 						Net.Fx(nil, "Plunder", { From = from, To = to, Amount = stolen })
@@ -732,19 +763,15 @@ local function tickPlayer(p, now)
 		end
 	end
 	refreshStarAttrs(p)
-	local isRookie = rookieAttr(p)
-	if wasRookie[p] == true and isRookie == false then
-		-- A23-18: the rookie shield just ended -> 60 s grace, then fights are allowed
-		graceUntil[p] = now + Config.PvP.GraduateGraceSeconds
-		setAttr(p, "GraduateGraceUntil", Util.Now() + Config.PvP.GraduateGraceSeconds)
-		notify(p, fmt("GraduateStart"), "reward")
-	elseif graceUntil[p] and now >= graceUntil[p] then
+	checkGraduation(p)
+	if graceUntil[p] and now >= graceUntil[p] then
 		graceUntil[p] = nil
+		local data = S.PlayerService.GetData(p)
+		if type(data) == "table" then data.GraduateGraceUntil = 0 end
 		setAttr(p, "GraduateGraceUntil", 0)
 		notify(p, fmt("GraduateEnd"), "info")
 	end
-	wasRookie[p] = isRookie
-	setAttr(p, "Rookie", isRookie)
+	setAttr(p, "Rookie", rookieAttr(p))
 
 	-- revenge expiry
 	local r = revenge[p]
@@ -819,14 +846,14 @@ local function payLeaveBounty(player)
 	end
 	local bully = bountyBullyStacks(player) -- 0 when this bully's bounty was already claimed
 	local bounty = Config.Bounty(num(player, "Level", 1), s, bully)
-	local honor = math.max(1, s)
+	local honor = PvPService.ScalePoints(math.max(1, s), PvPService.BoldMult(a, player)) -- A23-18 boldness (same as a KO)
 	if bounty > 0 then
 		if bully > 0 then
 			claimBullyBounty(player)
 		end
 		S.ProgressionService.AddBankGold(a, bounty, "Bounty")
 	end
-	S.PlayerService.AddStat(a, "Honor", honor)
+	if honor > 0 then S.PlayerService.AddStat(a, "Honor", honor) end
 	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
 	if s >= Config.PvP.GlowStars and bounty > 0 then
 		Net.NotifyAll(fmt("BountyAnnounce", Util.PlayerDisplayName(a), Util.FormatNumber(bounty)))
@@ -848,6 +875,13 @@ local function onPlayerReady(player, data)
 	player:SetAttribute("WantedStars", 0)
 	player:SetAttribute("Bounty", 0)
 	player:SetAttribute("Rookie", rookieAttr(player))
+	wasRookie[player] = PvPService.IsRookie(player) -- graduation edge starts from the loaded state
+	local saved = tonumber(type(data) == "table" and data.GraduateGraceUntil or 0) or 0
+	if saved > os.time() then
+		startGrace(player, saved - os.time()) -- a rejoin keeps the rest of the 60 s grace
+	else
+		player:SetAttribute("GraduateGraceUntil", 0)
+	end
 	player:SetAttribute("Protected", false)
 	player:SetAttribute("RevengeTargetId", 0)
 	player:SetAttribute("RevengeUntil", 0)

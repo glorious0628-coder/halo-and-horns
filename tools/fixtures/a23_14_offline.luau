@@ -595,7 +595,7 @@ local function gooseWorld(roster)
 	end
 	local ps = { PlayerReady = signal(), PlayerLeaving = signal(),
 		IsReady = function(p) return p.Ready == true and p.Parent ~= nil end, GetData = function(p) return p.Data end,
-		GetReadyPlayers = ready, GetRegularMinutes = function() return 0 end }
+		GetReadyPlayers = ready, GetLuckEvents = function() return 0 end }
 	function ps.AddStat(p, key, n) p.Data[key] = (p.Data[key] or 0) + n; return p.Data[key] end
 	local registry = { PlayerService = ps,
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return p.Faction end,

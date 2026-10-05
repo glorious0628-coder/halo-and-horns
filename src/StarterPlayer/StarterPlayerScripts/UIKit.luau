@@ -1847,7 +1847,11 @@ function UIKit.FlushBanners()
 	UIKit.HeldBanners = {}
 	task.delay(3, function()
 		for _, b in held do
-			UIKit.Announce(b[1], b[2])
+			if b[3] == "toast" then
+				UIKit.Toast(b[1], "reward", b[2]) -- held server-wide Epic toast (A23-15)
+			else
+				UIKit.Announce(b[1], b[2])
+			end
 			task.wait(3)
 		end
 	end)

@@ -577,7 +577,7 @@ function PlayerService.Start()
 			end
 		end
 	end)
-	luckSignal("KaijuService", "KaijuEnded", function(kaiju, _outcome, participants)
+	luckSignal("KaijuService", "KaijuEnded", function(kaiju, outcome, participants)
 		local seen = {}
 		for _, p in (type(participants) == "table" and participants or {}) do
 			if typeof(p) == "Instance" and p:IsA("Player") and not seen[p] then
@@ -585,7 +585,10 @@ function PlayerService.Start()
 				pcall(PlayerService.AddLuckEvent, p)
 			end
 		end
-		if typeof(kaiju) == "Instance" and kaiju:IsA("Player") and not seen[kaiju] then pcall(PlayerService.AddLuckEvent, kaiju) end
+		-- a kaiju cancelled before it started is not an event (review of c08c382)
+		if outcome ~= "Cancelled" and typeof(kaiju) == "Instance" and kaiju:IsA("Player") and not seen[kaiju] then
+			pcall(PlayerService.AddLuckEvent, kaiju)
+		end
 	end)
 	-- P2: walking counts as activity (MarkActive) even without remote calls, so idle = no input AND no movement
 	task.spawn(function()

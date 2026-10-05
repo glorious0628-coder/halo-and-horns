@@ -124,6 +124,7 @@ Config.Data = {
 		HideAnnounceName = false, -- P5: server-wide chat announcements show "<faction> 한 명" instead of my name
 		LuckDay = 0, -- A23-18 오늘의 운: Config.DayIndex of LuckEvents (another day -> 0)
 		LuckEvents = 0, -- goose / kaiju events taken part in on LuckDay
+		GraduateGraceUntil = 0, -- A23-18: os.time() when the rookie graduation grace ends (survives a rejoin)
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
 		-- "kolog:<victimUserId>" = { t1, t2 } (last two KOs). Pruned at PlayerReady (> 1800 s old, at most 200 keys).

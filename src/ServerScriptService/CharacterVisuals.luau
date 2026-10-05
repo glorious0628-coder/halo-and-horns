@@ -53,6 +53,7 @@ local WATCH = {
 	WantedStars = { "Nametag", "WantedGlow" },
 	Bounty = { "Nametag" },
 	Rookie = { "Nametag" },
+	GraduateGraceUntil = { "Nametag" }, -- A23-18: "졸업 유예" while the graduation grace runs
 	BullyStacks = { "Nametag" },
 	SessionTitle = { "Nametag" },
 	Nickname = { "Nametag" },
@@ -282,6 +283,8 @@ local function updateNametag(player, bb)
 	end
 	if player:GetAttribute("Rookie") == true and f ~= NEUTRAL_ID then
 		line2 ..= "  새싹 보호"
+	elseif attrNum(player, "GraduateGraceUntil", 0) > Util.Now() and f ~= NEUTRAL_ID then
+		line2 ..= "  졸업 유예" -- A23-18 (the attribute goes back to 0 when the grace ends -> rebuilt)
 	end
 
 	local bits = {}
