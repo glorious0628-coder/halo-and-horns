@@ -526,7 +526,13 @@ local function onClose()
 	end
 
 	local t0 = os.clock()
-	while (pending > 0 or next(finalizing) ~= nil or next(joining) ~= nil) and os.clock() - t0 < CLOSE_TIMEOUT do
+	local function mailPending() -- P3: grudge letters still being written (GrudgeService)
+		local g = S.GrudgeService
+		local ok, n = pcall(function() return g and g.MailPending and g.MailPending() or 0 end)
+		return ok and tonumber(n) or 0
+	end
+	while (pending > 0 or next(finalizing) ~= nil or next(joining) ~= nil or mailPending() > 0)
+		and os.clock() - t0 < CLOSE_TIMEOUT do
 		task.wait(0.1)
 	end
 end

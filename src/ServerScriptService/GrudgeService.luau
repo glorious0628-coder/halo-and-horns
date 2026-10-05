@@ -129,9 +129,9 @@ local function closeSack(thief, sack, outcome, tellThief)
 	sacks[thief] = nil
 	publish(thief, nil)
 	if isPlaying(thief) then thief:SetAttribute("SackHeldUntil", 0) end
-	for userId in sack.Entries do -- A23-18: the hold button disappears with the sack
+	for userId in sack.Entries do -- A23-18: the hold button moves to another open sack with my share, or hides
 		local v = Players:GetPlayerByUserId(userId)
-		if v and v:GetAttribute("GrudgeThiefId") == thief.UserId then v:SetAttribute("GrudgeThiefId", 0) end
+		if v then pointVictim(v) end
 	end
 	if tellThief and outcome ~= "Paid" then
 		notify(thief, fmt("SackLost"), "bad")
@@ -140,7 +140,7 @@ local function closeSack(thief, sack, outcome, tellThief)
 end
 
 ------------------------------------------------------------------ P3 grudge mail
-local MAIL = { Store = nil, Tried = false }
+local MAIL = { Store = nil, Tried = false, Pending = 0 }
 
 function MAIL.Get()
 	if not MAIL.Tried then
@@ -151,28 +151,48 @@ function MAIL.Get()
 	return MAIL.Store
 end
 
--- a share for a victim who is not here: { A = amount, R = rebirths when stolen, K = "Avenged" | "Returned", T }
-function MAIL.Send(userId, entry, kind)
+-- in-flight letters (PlayerService's BindToClose waits for them)
+function GrudgeService.MailPending()
+	return MAIL.Pending
+end
+
+-- a share for a victim who is not here: { Id, A = amount, R = rebirths when stolen, K = "Avenged" | "Returned", T }.
+-- Id = thief + sack start + kind, so a retried write never adds the same letter twice (review of 735419e)
+function MAIL.Send(userId, entry, kind, letterId)
 	local amount = math.floor(tonumber(entry.Amount) or 0)
 	if amount <= 0 then return end
+	MAIL.Pending += 1
 	task.spawn(function()
 		local store = MAIL.Get()
-		if not store then return end
-		local ok, err = pcall(store.UpdateAsync, store, "M_" .. tostring(userId), function(old)
-			local list = type(old) == "table" and old or {}
-			table.insert(list, { A = amount, R = tonumber(entry.Rebirths) or 0, K = kind, T = os.time() })
-			while #list > Config.Grudge.MailMax do table.remove(list, 1) end
-			return list
-		end)
-		if not ok then Util.Warn(TAG, "grudge mail send failed: " .. tostring(err)) end
+		for attempt = 1, 4 do
+			if not store then break end
+			local ok, err = pcall(store.UpdateAsync, store, "M_" .. tostring(userId), function(old)
+				local list = type(old) == "table" and old or {}
+				for _, m in list do
+					if type(m) == "table" and m.Id == letterId then return nil end -- already written
+				end
+				table.insert(list, { Id = letterId, A = amount, R = tonumber(entry.Rebirths) or 0, K = kind, T = os.time() })
+				while #list > Config.Grudge.MailMax do table.remove(list, 1) end
+				return list
+			end)
+			if ok then break end
+			Util.Warn(TAG, ("grudge mail send %d/4 failed: %s"):format(attempt, tostring(err)))
+			if attempt < 4 then task.wait(2 ^ (attempt - 1)) end
+		end
+		MAIL.Pending -= 1
 	end)
 end
 
--- at join: take every letter (cleared first, so a crash can lose but never double-pay), pay those from this "life";
--- the 120% bonus needs Avenged and the victim's refund cooldown, and only the first such letter gets it
+local function canPay(victim)
+	return isPlaying(victim) and S.PlayerService.IsReady(victim) and type(S.PlayerService.GetData(victim)) == "table"
+end
+
+-- at join: take every letter, pay those from this "life"; the 120% bonus needs Avenged and the victim's refund
+-- cooldown, and only the first such letter gets it. If the victim cannot be paid after the mailbox was emptied
+-- (left / not ready), the letters go back in (nothing was paid yet, so nothing can be paid twice).
 function MAIL.Receive(victim)
 	local store = MAIL.Get()
-	if not store then return end
+	if not store or not canPay(victim) then return end
 	local letters = nil
 	local ok, err = pcall(store.UpdateAsync, store, "M_" .. tostring(victim.UserId), function(old)
 		letters = type(old) == "table" and old or {}
@@ -180,7 +200,16 @@ function MAIL.Receive(victim)
 		return {}
 	end)
 	if not ok then Util.Warn(TAG, "grudge mail read failed: " .. tostring(err)) return end
-	if type(letters) ~= "table" or #letters == 0 or not isPlaying(victim) then return end
+	if type(letters) ~= "table" or #letters == 0 then return end
+	if not canPay(victim) then
+		pcall(store.UpdateAsync, store, "M_" .. tostring(victim.UserId), function(old)
+			local list = type(old) == "table" and old or {}
+			for _, m in letters do table.insert(list, m) end
+			while #list > Config.Grudge.MailMax do table.remove(list, 1) end
+			return list
+		end)
+		return
+	end
 	local rebirths = tonumber(victim:GetAttribute("Rebirths")) or 0
 	local total, bonusUsed = 0, false
 	for _, m in letters do
@@ -197,6 +226,20 @@ function MAIL.Receive(victim)
 		S.ProgressionService.AddBankGold(victim, total, "Refund")
 		notify(victim, fmt("GrudgeMail", Util.FormatNumber(total)), "good")
 	end
+end
+
+-- A23-18: point the victim's hold button at an open sack that still carries their share from this life
+-- (several thieves: when one sack closes, the button moves to the next one instead of disappearing)
+local function pointVictim(victim)
+	if not isPlaying(victim) then return end
+	local target = 0
+	for thief, sack in sacks do
+		local entry = sack.Entries[victim.UserId]
+		if entry and isPlaying(thief) and sameLife(victim, entry) and (tonumber(entry.Amount) or 0) > 0 then
+			target = thief.UserId
+		end
+	end
+	if victim:GetAttribute("GrudgeThiefId") ~= target then victim:SetAttribute("GrudgeThiefId", target) end
 end
 
 ------------------------------------------------------------------ outcomes
@@ -222,7 +265,7 @@ local function returnShares(sack)
 				notify(victim, fmt("GrudgeReturned", Util.FormatNumber(amount)), "good")
 			end
 		elseif not victim then
-			MAIL.Send(userId, entry, "Returned") -- P3: paid at the next join (sameLife checked then)
+			MAIL.Send(userId, entry, "Returned", sack.Id .. ":Returned") -- P3: paid at the next join (sameLife then)
 		end
 	end
 end
@@ -247,7 +290,7 @@ local function avenge(thief, sack, killer)
 				end
 			end
 		elseif not victim then
-			MAIL.Send(userId, entry, "Avenged") -- P3: 120% decided at the next join (refund cooldown, first letter)
+			MAIL.Send(userId, entry, "Avenged", sack.Id .. ":Avenged") -- P3: 120% decided at the next join
 		end
 	end
 
@@ -301,7 +344,8 @@ function GrudgeService.AddToSack(thief, victim, amount, infamy)
 
 	local sack = sacks[thief]
 	if not sack then
-		sack = { Entries = {}, Total = 0, Remaining = 0, Infamy = 0, LastVictimName = "" }
+		sack = { Entries = {}, Total = 0, Remaining = 0, Infamy = 0, LastVictimName = "", Held = 0,
+			Id = tostring(thief.UserId) .. ":" .. tostring(os.time()) } -- grudge mail letter ids
 		sacks[thief] = sack
 	end
 	-- CR-M6: remember the victim's rebirth count; a share stolen before a rebirth is never refunded after it
@@ -318,8 +362,9 @@ function GrudgeService.AddToSack(thief, victim, amount, infamy)
 		sack.Entries[victim.UserId] = { Amount = amount, Name = Util.PlayerDisplayName(victim), Rebirths = rebirths }
 	end
 	sack.Total += amount
-	sack.Remaining = Config.Grudge.SackSeconds -- every new steal resets the countdown
-	sack.Held = sack.Held or 0 -- A23-18 ghost hold seconds added to this sack so far
+	-- every new steal restarts the countdown, keeping any ghost-hold seconds already added (never shortens it)
+	sack.Held = sack.Held or 0
+	sack.Remaining = math.max(sack.Remaining, Config.Grudge.SackSeconds + sack.Held)
 	victim:SetAttribute("GrudgeThiefId", thief.UserId) -- A23-18: the victim's [유령으로 붙잡기] button targets this sack
 	sack.Infamy += infamy
 	sack.LastVictimName = Util.PlayerDisplayName(victim)
@@ -390,7 +435,10 @@ local function onGhostHold(victim, ...)
 	local thief = Players:GetPlayerByUserId(tonumber(victim:GetAttribute("GrudgeThiefId")) or 0)
 	local sack = thief and sacks[thief]
 	local entry = sack and sack.Entries[victim.UserId]
-	if not entry or not sameLife(victim, entry) then return end
+	if not entry or not sameLife(victim, entry) then
+		pointVictim(victim) -- stale target (other life / sack moved): fix the button instead of failing silently
+		return
+	end
 	local room = G.HoldMaxSeconds - (sack.Held or 0)
 	if room <= 0 then
 		notify(victim, fmt("GhostHoldMax", G.HoldMaxSeconds), "info")
@@ -418,10 +466,7 @@ local function onPlayerReady(player)
 	player:SetAttribute("SackVictimName", "")
 	player:SetAttribute("SackHeldUntil", 0)
 	player:SetAttribute("GrudgeThiefId", 0)
-	-- a rejoin on THIS server while the thief still carries the share: the hold button comes back
-	for thief, sack in sacks do
-		if sack.Entries[player.UserId] then player:SetAttribute("GrudgeThiefId", thief.UserId) end
-	end
+	pointVictim(player) -- a rejoin on THIS server while a thief still carries my share: the hold button comes back
 	task.spawn(function() -- P3: shares mailed while this victim was away
 		local ok, err = pcall(MAIL.Receive, player)
 		if not ok then Util.Warn(TAG, "grudge mail: " .. tostring(err)) end
@@ -448,6 +493,10 @@ function GrudgeService.Init(registry)
 	S.PlayerService.PlayerReady:Connect(onPlayerReady)
 	S.PlayerService.PlayerLeaving:Connect(onPlayerLeaving)
 	S.FactionService.FactionChanged:Connect(onFactionChanged)
+	if S.ProgressionService and S.ProgressionService.Rebirthed then
+		-- a rebirth starts a new "life": older shares are no longer mine to hold (CR-M6)
+		S.ProgressionService.Rebirthed:Connect(function(player) pcall(pointVictim, player) end)
+	end
 end
 
 function GrudgeService.Start()

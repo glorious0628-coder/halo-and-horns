@@ -1511,7 +1511,7 @@ Config.RateLimits = {
 	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
-	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, GhostHold = 3,
+	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
 }
 
 -- A23-11 / A23-12 drops, items and scroll enhancement (user decisions 2026-10-05; LootService is the only writer).
@@ -2118,7 +2118,7 @@ Config.Text = {
 	GhostHoldOk = "유령이 도둑을 붙잡았어요! 버텨야 하는 시간 +%d초 (최대 +%d초)", -- A23-18
 	GhostHoldMax = "이 자루는 더 붙잡을 수 없어요 (최대 +%d초).",
 	GhostHeld = "원한 유령이 붙잡고 있어요! 버텨야 하는 시간이 늘었어요.",
-	GhostButton = "유령으로 붙잡기 (G)",
+	GhostButton = "유령으로 붙잡기",
 	GhostWait = "다시 붙잡기 %d초",
 	AvengerBonus = "복수 대행 보너스 +%s골드!",
 	GrudgeAvengedAll = "%s님이 %s의 원한 자루를 되찾았어요!",

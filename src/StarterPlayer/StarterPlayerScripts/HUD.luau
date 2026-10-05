@@ -1830,6 +1830,7 @@ local function refreshChips()
 
 	local graceLeft = math.ceil(num("GraduateGraceUntil", 0) - now) -- A23-18: the shield's 60 s afterglow
 	local rookieOn = attr("Rookie", false) == true and f ~= "Neutral"
+	if f == "Neutral" then graceLeft = 0 end -- Neutral never fights players (A6): no grace chip either
 	setChip(ui.chip.Rookie, rookieOn or graceLeft > 0, (not rookieOn and graceLeft > 0)
 		and string.format(TXT.RookieGrace, graceLeft) or TXT.Rookie, Theme.XP, false, pal.Rookie, true)
 	setChip(ui.chip.Protected, attr("Protected", false) == true, TXT.Protected, Theme.XP)
