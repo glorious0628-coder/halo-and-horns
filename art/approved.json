@@ -423,5 +423,70 @@
   "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
   "preview": "art/review/icons_pet_candy_preview.png",
   "note": "사용자 승인(둘 다 넣기). Config.UIArt.Parts 키 이름 그대로. 작업 세션이 업로드·Id 교체·Studio 적용."
+ },
+ "IconMonSlime": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "prompt": "art/prompts/IconMonSlime.txt",
+  "original": "art/out/IconMonSlime_src.png",
+  "firefly_urn": "2f55002a-cd02-4a76-b4a8-b0cce6c0fcb2",
+  "file": "art/ui/IconMonSlime.png",
+  "size": "512x512 RGBA",
+  "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
+  "preview": "art/review/icons_monheads_preview.png",
+  "note": "새 초원 슬라임(네모 젤리) 머리 아이콘 — 퀘스트 줄·드랍 알림용. 사용자 승인 2026-10-06 (다 넣기)."
+ },
+ "IconMonPumpkinSlime": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "prompt": "art/prompts/IconMonPumpkinSlime.txt",
+  "original": "art/out/IconMonPumpkinSlime_src.png",
+  "firefly_urn": "1358286f-85e7-4c91-8399-b4a49bd4b240",
+  "file": "art/ui/IconMonPumpkinSlime.png",
+  "size": "512x512 RGBA",
+  "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
+  "preview": "art/review/icons_monheads_preview.png",
+  "note": "호박 슬라임 머리 아이콘 — 퀘스트 줄·드랍 알림용. 사용자 승인 2026-10-06 (다 넣기)."
+ },
+ "IconMonLittleGhost": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "prompt": "art/prompts/IconMonLittleGhost.txt",
+  "original": "art/out/IconMonLittleGhost_src.png",
+  "firefly_urn": "4a7418d3-42fc-4252-8537-178ff5d506ef",
+  "file": "art/ui/IconMonLittleGhost.png",
+  "size": "512x512 RGBA",
+  "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
+  "preview": "art/review/icons_monheads_preview.png",
+  "note": "꼬마 유령 머리 아이콘 — 퀘스트 줄·드랍 알림용. 사용자 승인 2026-10-06 (다 넣기)."
+ },
+ "IconMonBatGoblin": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "prompt": "art/prompts/IconMonBatGoblin.txt",
+  "original": "art/out/IconMonBatGoblin_src.png",
+  "firefly_urn": "053cfa23-6dff-4633-9f0a-e4ff43ab362a",
+  "file": "art/ui/IconMonBatGoblin.png",
+  "size": "512x512 RGBA",
+  "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
+  "preview": "art/review/icons_monheads_preview.png",
+  "note": "박쥐 고블린 머리 아이콘 — 퀘스트 줄·드랍 알림용. 사용자 승인 2026-10-06 (다 넣기)."
+ },
+ "IconMonPumpkinKing": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "prompt": "art/prompts/IconMonPumpkinKing.txt",
+  "original": "art/out/IconMonPumpkinKing_src.png",
+  "firefly_urn": "810dfc60-0ba3-48a0-9249-28b543e76dd3",
+  "file": "art/ui/IconMonPumpkinKing.png",
+  "size": "512x512 RGBA",
+  "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
+  "preview": "art/review/icons_monheads_preview.png",
+  "note": "호박 대왕(보스) 머리 아이콘 — 퀘스트 줄·드랍 알림용. 사용자 승인 2026-10-06 (다 넣기)."
  }
 }
