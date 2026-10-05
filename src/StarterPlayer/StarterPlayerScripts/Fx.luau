@@ -3539,9 +3539,11 @@ handlers.Loot = function(data)
 			local def = type(it.Item) == "string" and Config.Loot and Config.Loot.Items[it.Item] or nil
 			local weapon = it.Weapon ~= nil
 			rare = rare or weapon
-			local color = weapon and COLOR_GOLD or (def and def.Color) or WHITE
+			local tier = weapon and math.floor(asNum(it.Weapon, 0)) or 0
+			local color = (weapon and Config.WeaponGrade and Config.WeaponGrade(tier).Color) or (def and def.Color) or WHITE
 			local okT, text = pcall(string.format, n > 1 and (lootText.GotN or "+%s ×%d") or (lootText.Got or "+%s"), it.Name, n)
 			if not okT then text = "+" .. it.Name end
+			if weapon and Config.WeaponStars then text = Config.WeaponStars(tier) .. " " .. text end -- design §1 B2
 			if pos and nearCamera(pos) and line < LOOT_UI.MaxLines then
 				-- B14: 1.6-2 s, wider labels stacked in screen space (no overlap with the +G / +XP numbers below)
 				pcall(spawnNumber, pos + Vector3.new(0, 4.6, 0), text, color, weapon and LOOT_UI.WeaponScale or LOOT_UI.Scale,

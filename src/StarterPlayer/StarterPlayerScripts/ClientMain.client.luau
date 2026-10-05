@@ -1,5 +1,5 @@
 -- ClientMain.client.luau : the ONLY client entry point.
-local ORDER = { "CameraFollow", "UIKit", "Fx", "VitalsUI", "HUD", "EventHUD", "Panels", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion" }
+local ORDER = { "CameraFollow", "UIKit", "Fx", "VitalsUI", "HUD", "EventHUD", "Panels", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce" }
 
 local C = {}
 for _, name in ORDER do

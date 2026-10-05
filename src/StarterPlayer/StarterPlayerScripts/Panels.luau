@@ -21,7 +21,7 @@ local player = Players.LocalPlayer
 local FACTION_IDS = { "Halo", "Horns", "Neutral" }
 local TICKET_ATTR = { Class = "ClassTickets", Faction = "FactionTickets" }
 -- attribute changes that change a panel's STRUCTURE (rebuild); everything else is polled by the update loop
-local REBUILD_ATTRS = { DataLoaded = true, Faction = true, Class = true, ClassChosen = true, VacationDays = true }
+local REBUILD_ATTRS = { DataLoaded = true, Faction = true, Class = true, ClassChosen = true, VacationDays = true, HideAnnounceName = true }
 local UPDATE_INTERVAL = 0.25
 local VACATION_DELAY = 2 -- seconds after both pickers are closed
 local WINDOW_MAX_W, WINDOW_MAX_H = 780, 600
@@ -1242,6 +1242,9 @@ BUILDERS.Menu = function(parent)
 		{ Text = T.MenuMap, Id = "Map" },
 		{ Text = T.MenuNickname, Id = "Nickname" },
 		{ Text = (Config.Story and Config.Story.OpeningReplay) or "오프닝 다시 보기", Id = "Intro" },
+		-- P5: hide / show my name in server-wide chat announcements (server-saved, HideAnnounceName attribute)
+		{ Text = attr("HideAnnounceName", false) == true and Config.Announce.Text.MenuHide or Config.Announce.Text.MenuShow,
+			Id = "AnnounceName" },
 	}
 	if num("TutorialStep") == 0 and attr("ClassChosen", false) == true and type(WELCOME.Definition()) == "table" then
 		table.insert(entries, 1, { Text = T.MenuWelcome, Id = "Welcome" })
@@ -1273,6 +1276,8 @@ BUILDERS.Menu = function(parent)
 		local b = makeButton(grid, e.Text, color, UDim2.fromOffset(200, 70), function()
 			if id == "Welcome" then
 				if WELCOME.Ready() then fire("RequestTutorial") end
+			elseif id == "AnnounceName" then
+				fire("SetAnnounceName", attr("HideAnnounceName", false) ~= true) -- the menu redraws on the attribute
 			elseif id == "Map" then
 				local wm = C and C.WorldMap
 				if wm and wm.Open then wm.Open() end
@@ -1868,6 +1873,7 @@ ITEMS = {
 		Equipped = "장착 중", Equip = "장착",
 		Use = "사용", Cancel = "취소",
 		Legend = "★ ",
+		Strongest = " · 가장 셈",
 		ScrollEnh = "%s ×%d · 성공하면 +%d",
 		ScrollMove = "%s ×%d · 다른 무기로 강화 전부 옮기기",
 		MaterialLine = "%s ×%d · 개당 %d골드",
@@ -2035,7 +2041,7 @@ function ITEMS.MaterialValue(items)
 end
 
 -- one list row: label on the left, an optional button on the right (B14: button = ITEMS.TapH, row = button + 14)
-function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClick)
+function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClick, sub)
 	local tapH = ITEMS.TapH(44)
 	local row = Instance.new("Frame")
 	row.Name = "ItemRow"
@@ -2046,8 +2052,13 @@ function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClic
 	corner(row, 10)
 	row.Parent = parent
 	local hasButton = buttonText ~= nil
-	placeLabel(row, text, 18, color or theme.Text, UDim2.fromOffset(14, 0),
-		UDim2.new(1, hasButton and -170 or -28, 1, 0))
+	local w = UDim2.new(1, hasButton and -170 or -28, sub and 0.58 or 1, 0)
+	placeLabel(row, text, 18, color or theme.Text, UDim2.fromOffset(14, 0), w)
+	if sub then
+		-- second line: grade · where it comes from (design §1 B1/B4)
+		placeLabel(row, sub, 14, theme.SubText, UDim2.new(0, 14, 0.52, 0),
+			UDim2.new(1, hasButton and -170 or -28, 0.42, 0))
+	end
 	local b = nil
 	if hasButton then
 		b = makeButton(row, buttonText, buttonColor or PALETTE.Button, UDim2.fromOffset(140, tapH), onClick)
@@ -2060,8 +2071,13 @@ function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClic
 end
 
 function ITEMS.WeaponName(tier)
-	local def = Config.Weapons[tier]
-	return ((def and def.Legend) and ITEMS.T.Legend or "") .. Config.WeaponName(tier, currentClass(), myFaction())
+	return Config.WeaponName(tier, currentClass(), myFaction())
+end
+
+-- "★★★ 숲도둑 황금 지팡이" in the grade color; stars are rarity, not power
+function ITEMS.GradeLabel(tier)
+	local g = Config.WeaponGrade(tier)
+	return Config.WeaponStars(tier) .. " " .. ITEMS.WeaponName(tier), g.Color, g
 end
 
 -- the chosen step, dropped back to its last still-valid part (used-up scroll, weapon at +Max, empty source, sold)
@@ -2130,6 +2146,7 @@ BUILDERS.Items = function(parent)
 	local mask = math.floor(num("WeaponOwnedMask"))
 	if mask < 1 then mask = 1 end
 	local equipped = math.floor(num("WeaponTier"))
+	local level = math.max(1, math.floor(num("Level")))
 	local function owns(tier)
 		return type(tier) == "number" and tier >= 1 and tier <= Config.MaxWeaponTier
 			and (ITEMS.Owns(mask, tier) or tier == equipped)
@@ -2226,16 +2243,18 @@ BUILDERS.Items = function(parent)
 	for tier = Config.MaxWeaponTier, 1, -1 do
 		if owns(tier) then table.insert(order, tier) end
 	end
+	-- strongest first (real damage at my level with each weapon's own +N); stars are only rarity
+	local power = {}
+	for _, t in order do power[t] = Config.WeaponDamage(t, level, ITEMS.Enh(enh, t)) end
 	table.sort(order, function(a, b)
-		local la, lb = Config.Weapons[a].Legend == true, Config.Weapons[b].Legend == true
-		if la ~= lb then return la end
+		if power[a] ~= power[b] then return power[a] > power[b] end
 		return a > b
 	end)
-	for _, tier in order do
-		local w = Config.Weapons[tier]
+	for i, tier in order do
 		local plus = ITEMS.Enh(enh, tier)
-		local label = ITEMS.WeaponName(tier) .. (plus > 0 and string.format("  +%d", plus) or "")
-		local color = w.Legend and theme.Gold or theme.Text
+		local name, color, grade = ITEMS.GradeLabel(tier)
+		local label = name .. (plus > 0 and string.format("  +%d", plus) or "")
+		local sub = grade.Name .. " · " .. Config.WeaponSource(tier) .. (i == 1 and #order > 1 and L.Strongest or "")
 		local bText, bColor, enabled, click = nil, PALETTE.Button, true, nil
 		if mode and def and def.Kind == "Enhance" then
 			bText = plus >= loot.MaxEnhance and L.Max or L.Enhance
@@ -2273,7 +2292,7 @@ BUILDERS.Items = function(parent)
 				end
 			end
 		end
-		local row = ITEMS.Row(parent, label, color, bText, bColor, enabled, click or function() end)
+		local row = ITEMS.Row(parent, label, color, bText, bColor, enabled, click or function() end, sub)
 		row.Name = "Weapon" .. tostring(tier)
 	end
 
@@ -2453,8 +2472,9 @@ BUILDERS.WeaponShop = function(parent)
 		for _, ui in rows do
 			local info, buyReason, sellReason = WSHOP.Offer(ui.Tier)
 			if info and buyReason == nil then buyReason = WSHOP.EquipBlock() end -- buy or re-equip (both equip)
-			ui.Name.Text = info and (info.Name .. ITEMS.PlusText(ITEMS.Enh(enh, ui.Tier)) .. " · " .. (info.Equipped and T.WeaponEquipped
-				or (info.Owned and T.WeaponOwned or T.WeaponUnowned))) or T.WeaponInvalid
+			ui.Name.Text = info and (Config.WeaponStars(ui.Tier) .. " " .. info.Name .. ITEMS.PlusText(ITEMS.Enh(enh, ui.Tier))
+				.. " · " .. (info.Equipped and T.WeaponEquipped or (info.Owned and T.WeaponOwned or T.WeaponUnowned))) or T.WeaponInvalid
+			ui.Name.TextColor3 = Config.WeaponGrade(ui.Tier).Color -- design §1 B2: grade color everywhere a weapon is listed
 			ui.Price.Visible, ui.Sale.Visible = info ~= nil, info ~= nil
 			if info then
 				ui.DisplayedAction = info.Owned and "Equip" or "Buy"

@@ -14,9 +14,11 @@ Net.Names = {
 	"UseItem", -- (itemId, tier [, toTier]) A23-12 enhance / transfer scroll on owned weapons
 	"EquipWeapon", -- (tier) equip an owned weapon from the item list (drops / legendary)
 	"SellMaterials", -- no arguments; sells every material at the blacksmith anvil
+	"SetAnnounceName", -- (hide: boolean) P5: hide my name in server-wide chat announcements
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request
+	"Announce", -- A23-15: { Key, Args, Grade, UserId } to every client (server-wide chat line)
 	"Quests", -- CR-L50: the owner's quest list (replaces the replicated QuestsJson attribute), fired only on change
 	-- review B11: the owner's items and per-tier scroll +N (replaces the replicated ItemsJson / EnhanceJson attributes).
 	-- Payload { Items = { [itemId] = count >= 1 } (Config.Loot.Items ids only), Enhance = { [tier] = 0..MaxEnhance } }

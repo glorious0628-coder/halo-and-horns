@@ -121,6 +121,7 @@ Config.Data = {
 		Items = {},
 		WeaponEnhance = {},
 		LootFlags = {},
+		HideAnnounceName = false, -- P5: server-wide chat announcements show "<faction> 한 명" instead of my name
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
 		-- "kolog:<victimUserId>" = { t1, t2 } (last two KOs). Pruned at PlayerReady (> 1800 s old, at most 200 keys).
@@ -135,7 +136,7 @@ Config.Data = {
 	Mirrored = {
 		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "WeaponOwnedMask", "BlacksmithVisited", "Faction", "Class", "ClassChosen",
 		"CharacterGender",
-		"HPPotionCount", "MPPotionCount",
+		"HPPotionCount", "MPPotionCount", "HideAnnounceName",
 		"Rebirths", "RebirthBonus", "FallMarks", "RedeemMarks", "Honor", "Infamy", "SwitchCount",
 		"LastSwitchTime", "PlaytimeSeconds", "TotalKills", "DailyDay", "DailyClaims",
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
@@ -1476,7 +1477,7 @@ Config.RateLimits = {
 	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
-	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1,
+	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5,
 }
 
 -- A23-11 / A23-12 drops, items and scroll enhancement (user decisions 2026-10-05; LootService is the only writer).
@@ -1596,6 +1597,25 @@ Config.Loot = {
 		SellDone = "재료 %d개 판매! 골드 +%s",
 		SellNothing = "팔 재료가 없어요.",
 		SellFar = "대장간 모루 가까이에서 재료를 팔 수 있어요.",
+	},
+}
+
+-- A23-15 server-wide chat announcements (AnnounceService -> remote "Announce" -> client Announce.luau). Server sends
+-- { Key, Args, Grade }; the client formats Text[Key] in its language and shows a TextChatService system message.
+Config.Announce = {
+	WindowSeconds = 10, -- one player's announcements within this window are grouped into one "…외 N개" line
+	MinWeaponGrade = 3, -- weapon drops of this grade rank or better are announced (3 = 희귀)
+	Text = {
+		Subject = "%s님이", -- the finder's game nickname
+		Anon = "%s 한 명이", -- name hidden (P5): "빛의 기사단 한 명이"
+		RareWeapon = "%s %s에게서 %s 무기 [%s]을(를) 얻었어요!", -- subject, monster, grade, weapon
+		Jackpot = "★ 대박! %s 슬라임에게서 전설 무기 [%s]을(를) 얻었어요! ★", -- subject, weapon
+		FirstMax = "%s [%s]을(를) 처음으로 +10까지 강화했어요!", -- subject, weapon
+		More = "%s 좋은 것을 %d개 더 얻었어요!", -- subject, count (grouped)
+		NameHidden = "이제 전체 알림에 내 이름 대신 진영 이름이 나와요.",
+		NameShown = "이제 전체 알림에 내 이름이 나와요.",
+		MenuShow = "알림에 내 이름: 보여요",
+		MenuHide = "알림에 내 이름: 숨겨요",
 	},
 }
 

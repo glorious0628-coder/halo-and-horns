@@ -202,7 +202,22 @@ local function rollRows(info, onHit)
 	end
 end
 
-local function grantWeapon(player, data, tier, gained, isJackpot)
+-- A23-15 server-wide chat line (AnnounceService); never blocks or breaks the grant itself
+local function announce(player, key, args, tier)
+	local svc = S.AnnounceService
+	if type(svc) ~= "table" or type(svc.Announce) ~= "function" then return end
+	local info = Config.WeaponInfo and Config.WeaponInfo[tier]
+	pcall(svc.Announce, player, key, args, info and info.Grade or "Common")
+end
+
+-- the first time any of my weapons reaches +MaxEnhance (once per player, LootFlags.FirstMax)
+local function firstMax(player, data, tier, after)
+	if after < LOOT.MaxEnhance or data.LootFlags.FirstMax == true then return end
+	data.LootFlags.FirstMax = true
+	announce(player, "FirstMax", { Weapon = tier }, tier)
+end
+
+local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 	if not validTier(tier) then return end
 	if owns(data, tier) then
 		local gold = LOOT.DuplicateWeaponGold[tier] or 0
@@ -218,9 +233,13 @@ local function grantWeapon(player, data, tier, gained, isJackpot)
 	table.insert(gained, { Weapon = tier, Name = name })
 	if isJackpot then
 		notify(player, string.format(TXT.JackpotSelf, name), "reward")
-		pcall(Net.NotifyAll, string.format(TXT.JackpotAll, Util.PlayerDisplayName(player), name), "announce", 8)
+		announce(player, "Jackpot", { Weapon = tier }, tier) -- everyone sees it in chat (A23-15)
 	else
 		notify(player, string.format(TXT.RareWeapon, name), "reward")
+		local g = Config.WeaponGrade(tier)
+		if g.Rank >= ((Config.Announce and Config.Announce.MinWeaponGrade) or 3) then
+			announce(player, "RareWeapon", { Weapon = tier, Monster = kind }, tier)
+		end
 	end
 end
 
@@ -270,7 +289,7 @@ function LootService.RollKill(player, info)
 		elseif row.Potion then
 			grantPotion(player, data, row.Potion, gained)
 		elseif row.Weapon then
-			grantWeapon(player, data, row.Weapon, gained, isJackpot)
+			grantWeapon(player, data, row.Weapon, gained, isJackpot, info.Kind)
 		end
 	end)
 
@@ -309,6 +328,7 @@ local function useEnhance(player, data, id, def, tier)
 	data.WeaponEnhance[tier] = after
 	publish(player, data)
 	if success then
+		firstMax(player, data, tier, after)
 		notify(player, string.format(TXT.EnhanceOk, name, before, after,
 			math.floor(Config.EnhanceMult(before) * 100 + 0.5), math.floor(Config.EnhanceMult(after) * 100 + 0.5)), "reward")
 	elseif after < before then
@@ -336,6 +356,7 @@ local function useTransfer(player, data, id, def, fromTier, toTier)
 		-- only what does not fit stays on the source (no enhancement ever disappears)
 		after = math.min(LOOT.MaxEnhance, target + amount)
 		data.WeaponEnhance[toTier] = after
+		firstMax(player, data, toTier, after)
 		data.WeaponEnhance[fromTier] = amount - (after - target)
 		notify(player, string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after), "reward")
 	else

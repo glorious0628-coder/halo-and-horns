@@ -3,20 +3,21 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
 local Net = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Net"))
+local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 Net.CreateAll() -- remotes + GameState folder exist before anything else runs
 
 local INIT_ORDER = {
 	"DataService", "PlayerService", "NicknameService", "MonetizationService", "MapBuilder", "ZoneService", "FactionService",
 	"ClassService", "VitalsService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
 	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "StoryQuestService",
-	"LootService", "CharacterVisuals",
+	"AnnounceService", "LootService", "CharacterVisuals",
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
 local START_ORDER = {
 	"MapBuilder", "ZoneService", "FactionService", "ClassService", "VitalsService", "JusticeService", "ProgressionService",
 	"CombatService", "MonsterService", "PvPService", "GrudgeService", "WarService", "KaijuService", "GooseService",
-	"ShopService", "QuestService", "StoryQuestService", "LootService", "MonetizationService", "CharacterVisuals", "DataService",
+	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "LootService", "MonetizationService", "CharacterVisuals", "DataService",
 	"NicknameService", "PlayerService",
 }
 
@@ -77,6 +78,12 @@ if game:GetService("RunService"):IsStudio() then
 		elseif key == "Item" then -- Studio test aid: value = "Enh70" or "Enh70:5" (A23-12 item id[:count])
 			local id, n = string.match(tostring(value), "^(%w+):?(%d*)$")
 			return S.LootService.DebugGive(player, id, tonumber(n) or 1)
+		elseif key == "Announce" then -- Studio test aid: "RareWeapon:4:Goblin" / "Jackpot:8" / "FirstMax:3" (real service)
+			local k, t, m = string.match(tostring(value), "^(%a+):?(%d*):?(%a*)$")
+			local tier = tonumber(t) or 4
+			local info = Config.WeaponInfo and Config.WeaponInfo[tier]
+			S.AnnounceService.Announce(player, k, { Weapon = tier, Monster = m ~= "" and m or nil }, info and info.Grade or "Rare")
+			return "sent " .. tostring(k)
 		elseif key == "LootReset" then -- Studio test aid: clear items / scroll +N / loot flags (value = weapon mask to keep)
 			return S.LootService.DebugReset(player, tonumber(value) or 1)
 		elseif key == "LootRoll" then -- Studio test aid (review B12): "Slime:200" or "Slime:200:golden" = COUNT-ONLY rolls
