@@ -1,9 +1,12 @@
 -- GrudgeService.luau : the grudge sack ("원한 돈자루"). Gold plundered by a Horns thief rides in ONE sack on the
 -- thief's back; its 45 s countdown ticks only inside PvP zones. Survive -> Paid to the thief. A Halo KO in time ->
 -- Avenged (victims get 120% to the bank, the avenger a bonus). Any other death / leaving -> Returned (100%).
+-- P3 (2026-10-05): a victim who is not on this server gets their share by grudge mail at the next join.
+-- A23-18: the respawned victim can hold the sack ([유령으로 붙잡기], +2 s per 3 s, max +10 s per sack).
 -- Server only. See TECH_SPEC §4.14.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
@@ -125,10 +128,75 @@ end
 local function closeSack(thief, sack, outcome, tellThief)
 	sacks[thief] = nil
 	publish(thief, nil)
+	if isPlaying(thief) then thief:SetAttribute("SackHeldUntil", 0) end
+	for userId in sack.Entries do -- A23-18: the hold button disappears with the sack
+		local v = Players:GetPlayerByUserId(userId)
+		if v and v:GetAttribute("GrudgeThiefId") == thief.UserId then v:SetAttribute("GrudgeThiefId", 0) end
+	end
 	if tellThief and outcome ~= "Paid" then
 		notify(thief, fmt("SackLost"), "bad")
 	end
 	GrudgeService.SackResolved:Fire(thief, outcome, sack.Total)
+end
+
+------------------------------------------------------------------ P3 grudge mail
+local MAIL = { Store = nil, Tried = false }
+
+function MAIL.Get()
+	if not MAIL.Tried then
+		MAIL.Tried = true
+		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, Config.Grudge.MailStore)
+		MAIL.Store = ok and store or nil
+	end
+	return MAIL.Store
+end
+
+-- a share for a victim who is not here: { A = amount, R = rebirths when stolen, K = "Avenged" | "Returned", T }
+function MAIL.Send(userId, entry, kind)
+	local amount = math.floor(tonumber(entry.Amount) or 0)
+	if amount <= 0 then return end
+	task.spawn(function()
+		local store = MAIL.Get()
+		if not store then return end
+		local ok, err = pcall(store.UpdateAsync, store, "M_" .. tostring(userId), function(old)
+			local list = type(old) == "table" and old or {}
+			table.insert(list, { A = amount, R = tonumber(entry.Rebirths) or 0, K = kind, T = os.time() })
+			while #list > Config.Grudge.MailMax do table.remove(list, 1) end
+			return list
+		end)
+		if not ok then Util.Warn(TAG, "grudge mail send failed: " .. tostring(err)) end
+	end)
+end
+
+-- at join: take every letter (cleared first, so a crash can lose but never double-pay), pay those from this "life";
+-- the 120% bonus needs Avenged and the victim's refund cooldown, and only the first such letter gets it
+function MAIL.Receive(victim)
+	local store = MAIL.Get()
+	if not store then return end
+	local letters = nil
+	local ok, err = pcall(store.UpdateAsync, store, "M_" .. tostring(victim.UserId), function(old)
+		letters = type(old) == "table" and old or {}
+		if #letters == 0 then return nil end
+		return {}
+	end)
+	if not ok then Util.Warn(TAG, "grudge mail read failed: " .. tostring(err)) return end
+	if type(letters) ~= "table" or #letters == 0 or not isPlaying(victim) then return end
+	local rebirths = tonumber(victim:GetAttribute("Rebirths")) or 0
+	local total, bonusUsed = 0, false
+	for _, m in letters do
+		local amount = math.floor(tonumber(type(m) == "table" and m.A or 0) or 0)
+		if amount > 0 and (tonumber(m.R) or 0) == rebirths then -- CR-M6 sameLife
+			local rate = Config.Grudge.ReturnRate
+			if m.K == "Avenged" and not bonusUsed and pairReady(victim, 0, "refund", Config.Grudge.RefundBonusCooldown) then
+				rate, bonusUsed = Config.Grudge.AvengeRefundRate, true
+			end
+			total += math.floor(amount * rate)
+		end
+	end
+	if total > 0 then
+		S.ProgressionService.AddBankGold(victim, total, "Refund")
+		notify(victim, fmt("GrudgeMail", Util.FormatNumber(total)), "good")
+	end
 end
 
 ------------------------------------------------------------------ outcomes
@@ -153,6 +221,8 @@ local function returnShares(sack)
 				S.ProgressionService.AddBankGold(victim, amount, "Refund")
 				notify(victim, fmt("GrudgeReturned", Util.FormatNumber(amount)), "good")
 			end
+		elseif not victim then
+			MAIL.Send(userId, entry, "Returned") -- P3: paid at the next join (sameLife checked then)
 		end
 	end
 end
@@ -176,6 +246,8 @@ local function avenge(thief, sack, killer)
 					Net.Fx(victim, "Plunder", { From = thiefPos, To = victimPos, Amount = refund })
 				end
 			end
+		elseif not victim then
+			MAIL.Send(userId, entry, "Avenged") -- P3: 120% decided at the next join (refund cooldown, first letter)
 		end
 	end
 
@@ -247,6 +319,8 @@ function GrudgeService.AddToSack(thief, victim, amount, infamy)
 	end
 	sack.Total += amount
 	sack.Remaining = Config.Grudge.SackSeconds -- every new steal resets the countdown
+	sack.Held = sack.Held or 0 -- A23-18 ghost hold seconds added to this sack so far
+	victim:SetAttribute("GrudgeThiefId", thief.UserId) -- A23-18: the victim's [유령으로 붙잡기] button targets this sack
 	sack.Infamy += infamy
 	sack.LastVictimName = Util.PlayerDisplayName(victim)
 	pairReady(victim, thief.UserId, "steal", 0) -- CR-M4: record the steal in the victim's save (RestealWindow)
@@ -307,11 +381,51 @@ local function tickAll(dt)
 	end
 end
 
+------------------------------------------------------------------ A23-18 grudge ghost hold
+local function onGhostHold(victim, ...)
+	if select("#", ...) ~= 0 or not isPlaying(victim) or not S.PlayerService.IsReady(victim) then return end
+	if not Util.IsAlive(victim) then return end -- the respawned victim holds, not the corpse
+	if not Util.RateLimit(victim, "GhostHold", Config.RateLimits.GhostHold or Config.Grudge.HoldCooldown) then return end
+	local G = Config.Grudge
+	local thief = Players:GetPlayerByUserId(tonumber(victim:GetAttribute("GrudgeThiefId")) or 0)
+	local sack = thief and sacks[thief]
+	local entry = sack and sack.Entries[victim.UserId]
+	if not entry or not sameLife(victim, entry) then return end
+	local room = G.HoldMaxSeconds - (sack.Held or 0)
+	if room <= 0 then
+		notify(victim, fmt("GhostHoldMax", G.HoldMaxSeconds), "info")
+		return
+	end
+	local add = math.min(G.HoldAddSeconds, room)
+	sack.Held = (sack.Held or 0) + add
+	sack.Remaining += add
+	publish(thief, sack)
+	-- the ghost above the thief glows hard while held, so other knights see the chase is on (no chat needed)
+	local glowUntil = Util.Now() + G.HoldGlowSeconds
+	thief:SetAttribute("SackHeldUntil", glowUntil)
+	task.delay(G.HoldGlowSeconds + 0.1, function()
+		if isPlaying(thief) and thief:GetAttribute("SackHeldUntil") == glowUntil then thief:SetAttribute("SackHeldUntil", 0) end
+	end)
+	notify(victim, fmt("GhostHoldOk", add, G.HoldMaxSeconds), "good")
+	notify(thief, fmt("GhostHeld"), "bad")
+	S.PlayerService.MarkActive(victim)
+end
+
 ------------------------------------------------------------------ signal handlers
 local function onPlayerReady(player)
 	player:SetAttribute("SackGold", 0)
 	player:SetAttribute("SackSeconds", 0)
 	player:SetAttribute("SackVictimName", "")
+	player:SetAttribute("SackHeldUntil", 0)
+	player:SetAttribute("GrudgeThiefId", 0)
+	-- a rejoin on THIS server while the thief still carries the share: the hold button comes back
+	for thief, sack in sacks do
+		if sack.Entries[player.UserId] then player:SetAttribute("GrudgeThiefId", thief.UserId) end
+	end
+	task.spawn(function() -- P3: shares mailed while this victim was away
+		local ok, err = pcall(MAIL.Receive, player)
+		if not ok then Util.Warn(TAG, "grudge mail: " .. tostring(err)) end
+	end)
 end
 
 local function onPlayerLeaving(player)
@@ -337,6 +451,10 @@ function GrudgeService.Init(registry)
 end
 
 function GrudgeService.Start()
+	Net.Get("GhostHold").OnServerEvent:Connect(function(player, ...)
+		local ok, err = pcall(onGhostHold, player, ...)
+		if not ok then warnLoop(err) end
+	end)
 	-- (the anti-collusion cooldowns are in the saves now, CR-M4; PlayerService prunes them at PlayerReady)
 	task.spawn(function()
 		while true do

@@ -15,6 +15,7 @@ Net.Names = {
 	"EquipWeapon", -- (tier) equip an owned weapon from the item list (drops / legendary)
 	"SellMaterials", -- no arguments; sells every material at the blacksmith anvil
 	"SetAnnounceName", -- (hide: boolean) P5: hide my name in server-wide chat announcements
+	"GhostHold", -- no arguments: A23-18 the robbed victim holds the thief's grudge sack (+2 s, 3 s cooldown)
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request

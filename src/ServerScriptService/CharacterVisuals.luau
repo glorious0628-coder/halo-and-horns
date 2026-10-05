@@ -65,6 +65,7 @@ local WATCH = {
 	CarriedGold = { "GoldSack" },
 	SackGold = { "GrudgeSack", "GrudgeGhost" },
 	SackVictimName = { "GrudgeGhost" },
+	SackHeldUntil = { "GrudgeGhost" }, -- A23-18: the ghost glows hard while the victim holds the sack
 	KaijuState = { "WantedGlow", "KaijuFire" },
 }
 
@@ -662,16 +663,25 @@ local function buildGrudgeGhost(player, character)
 	if not head then return end
 	local sc = charScale(character)
 	local base = head.CFrame * CFrame.new(0, V.GhostHeight * sc, 0)
+	local held = attrNum(player, "SackHeldUntil", 0) > Util.Now()
+	local transparency = held and 0.15 or V.GhostTransparency
 	local body = accPart({
 		Name = "GhostBody", Size = Vector3.new(1.6, 2, 0.8) * sc,
-		Material = Enum.Material.Neon, Color = V.GhostColor, Transparency = V.GhostTransparency,
+		Material = Enum.Material.Neon, Color = V.GhostColor, Transparency = transparency,
 		CFrame = base,
 	})
 	local ghostHead = accPart({
 		Name = "GhostHead", Shape = Enum.PartType.Ball, Size = Vector3.new(1.2, 1.2, 1.2) * sc,
-		Material = Enum.Material.Neon, Color = V.GhostColor, Transparency = V.GhostTransparency,
+		Material = Enum.Material.Neon, Color = V.GhostColor, Transparency = transparency,
 		CFrame = base * CFrame.new(0, 1.6 * sc, 0),
 	})
+	if held then -- A23-18 hold glow (existing ghost colour, brighter; no new art)
+		local light = Instance.new("PointLight")
+		light.Color = V.GhostColor
+		light.Brightness = 4
+		light.Range = 14 * sc
+		light.Parent = body
+	end
 
 	local victim = attrStr(player, "SackVictimName", "")
 	if victim == "" then victim = "누군가" end

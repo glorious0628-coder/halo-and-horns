@@ -681,6 +681,16 @@ Config.Grudge = {
 	-- PvP.PairRewardCooldown, whatever the thief (CR-L6: per-pair keys paid once per thief alt)
 	AvengerBonus = 100,
 	Tick = 0.25,
+	-- P3 grudge mail (2026-10-05): a victim who left / is on another server gets their share at the next join instead of
+	-- it being destroyed (TECH_SPEC §4.14 replaced). Separate DataStore, at most MailMax letters kept.
+	MailStore = "HaloHorns_GrudgeMail_v1",
+	MailMax = 20,
+	-- A23-18 grudge ghost hold: the respawned victim presses [유령으로 붙잡기] once per HoldCooldown -> the thief must
+	-- survive HoldAddSeconds longer, at most HoldMaxSeconds per sack (45 -> 55 s). No release option, no honor.
+	HoldCooldown = 3,
+	HoldAddSeconds = 2,
+	HoldMaxSeconds = 10,
+	HoldGlowSeconds = 3,
 }
 
 ----------------------------------------------------------------- wanted kaiju ("수배범 괴수화")
@@ -1500,7 +1510,7 @@ Config.RateLimits = {
 	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
-	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5,
+	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, GhostHold = 3,
 }
 
 -- A23-11 / A23-12 drops, items and scroll enhancement (user decisions 2026-10-05; LootService is the only writer).
@@ -2097,6 +2107,12 @@ Config.Text = {
 	SackLost = "원한 자루를 빼앗겼어요!",
 	GrudgeRefund = "%s님이 원한 자루를 되찾아 줬어요! 골드 %s이(가) 금고로!",
 	GrudgeReturned = "도둑이 쓰러져서 빼앗긴 골드 %s이(가) 금고로 돌아왔어요.",
+	GrudgeMail = "원한 우편이 왔어요! 털렸던 골드 %s이(가) 금고로 돌아왔어요.", -- P3
+	GhostHoldOk = "유령이 도둑을 붙잡았어요! 버텨야 하는 시간 +%d초 (최대 +%d초)", -- A23-18
+	GhostHoldMax = "이 자루는 더 붙잡을 수 없어요 (최대 +%d초).",
+	GhostHeld = "원한 유령이 붙잡고 있어요! 버텨야 하는 시간이 늘었어요.",
+	GhostButton = "유령으로 붙잡기 (G)",
+	GhostWait = "다시 붙잡기 %d초",
 	AvengerBonus = "복수 대행 보너스 +%s골드!",
 	GrudgeAvengedAll = "%s님이 %s의 원한 자루를 되찾았어요!",
 	-- travel / blocks
