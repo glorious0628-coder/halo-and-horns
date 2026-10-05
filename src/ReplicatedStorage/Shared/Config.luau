@@ -183,15 +183,60 @@ Config.Weapons = {
 }
 Config.MaxWeaponTier = #Config.Weapons
 
--- display names per class; tier 7 is a table keyed by faction
+-- display names per class; tier 7 is a table keyed by faction. Index = saved tier key: only ever APPEND tiers.
+-- T4-T6 names come from the monsters that drop them (design skills_weapons_pets_2026-10-05 §1 B3).
 Config.WeaponNames = {
-	Warrior = { "나뭇가지", "나무 검", "철 검", "황금 검", "크리스탈 검", "네온 검",
+	Warrior = { "나뭇가지", "나무 검", "철 검", "숲도둑 황금 검", "옛 왕국 수정 검", "수호령 검",
 		{ Halo = "여명의 검", Horns = "파멸의 검", None = "왕관 조각 검" }, "젤리 왕관 검" },
-	Mage = { "마른 지팡이", "참나무 지팡이", "철 지팡이", "황금 지팡이", "크리스탈 지팡이", "네온 지팡이",
+	Mage = { "마른 지팡이", "참나무 지팡이", "철 지팡이", "숲도둑 황금 지팡이", "옛 왕국 수정 지팡이", "수호령 지팡이",
 		{ Halo = "여명의 지팡이", Horns = "파멸의 지팡이", None = "왕관 조각 지팡이" }, "젤리 왕관 지팡이" },
-	Archer = { "새총 활", "나무 활", "철 활", "황금 활", "크리스탈 활", "네온 활",
+	Archer = { "새총 활", "나무 활", "철 활", "숲도둑 황금 활", "옛 왕국 수정 활", "수호령 활",
 		{ Halo = "여명의 활", Horns = "파멸의 활", None = "왕관 조각 활" }, "젤리 왕관 활" },
 }
+-- English names (localization later; same indexes)
+Config.WeaponNamesEn = {
+	Warrior = { "Twig", "Wooden Sword", "Iron Sword", "Goblin Thief's Golden Sword", "Old Kingdom Crystal Sword", "Guardian Spirit Sword",
+		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword" },
+	Mage = { "Dry Staff", "Oak Staff", "Iron Staff", "Goblin Thief's Golden Staff", "Old Kingdom Crystal Staff", "Guardian Spirit Staff",
+		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff" },
+	Archer = { "Slingshot Bow", "Wooden Bow", "Iron Bow", "Goblin Thief's Golden Bow", "Old Kingdom Crystal Bow", "Guardian Spirit Bow",
+		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow" },
+}
+
+-- Weapon grades (design §1 B1): stars are RARITY, not power. Colors = ART_DIRECTION 2.3 grade strokes.
+Config.WeaponGrades = {
+	Common = { Name = "일반", NameEn = "Common", Stars = 1, Color = Color3.fromRGB(200, 200, 200), Rank = 1 },
+	Fine = { Name = "고급", NameEn = "Fine", Stars = 2, Color = Color3.fromRGB(90, 200, 90), Rank = 2 },
+	Rare = { Name = "희귀", NameEn = "Rare", Stars = 3, Color = Color3.fromRGB(70, 140, 255), Rank = 3 },
+	Epic = { Name = "영웅", NameEn = "Epic", Stars = 4, Color = Color3.fromRGB(170, 90, 230), Rank = 4 },
+	Legend = { Name = "전설", NameEn = "Legendary", Stars = 5, Color = Color3.fromRGB(255, 160, 40), Rank = 5 },
+}
+-- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith)
+Config.WeaponInfo = {
+	{ Grade = "Common", Source = "처음부터 가진 무기" },
+	{ Grade = "Common", Source = "대장간에서 사요" },
+	{ Grade = "Fine", Source = "대장간에서 사요 (Lv5부터)" },
+	{ Grade = "Rare", Source = "고블린·고블린 우두머리가 드물게" },
+	{ Grade = "Epic", Source = "해골 병사·해골 기사가 드물게" },
+	{ Grade = "Epic", Source = "해골 기사가 아주 드물게" },
+	{ Grade = "Legend", Source = "정식 출시 때 장인 제작" },
+	{ Grade = "Legend", Source = "슬라임이 아주아주 드물게 (대박!)" },
+}
+
+function Config.WeaponGrade(tier)
+	local info = Config.WeaponInfo[tier]
+	return Config.WeaponGrades[info and info.Grade or "Common"] or Config.WeaponGrades.Common
+end
+
+function Config.WeaponSource(tier)
+	local info = Config.WeaponInfo[tier]
+	return info and info.Source or ""
+end
+
+-- "★★★" (filled stars only; rarity, not power)
+function Config.WeaponStars(tier)
+	return string.rep("★", Config.WeaponGrade(tier).Stars)
+end
 
 function Config.WeaponName(tier, classId, factionId)
 	local names = Config.WeaponNames[classId] or Config.WeaponNames.Warrior
@@ -1637,47 +1682,47 @@ Config.UIArt = {
 		FactionFooterFreshTyped = { Id = "rbxassetid://128423642459976", Size = Vector2.new(1024, 126) },
 		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
 		-- pick screens (mockups art/out/UI_Faction_B.png, UI_Class_A.png): text-free card backgrounds, regions in CardLayout
-		CardHalo = { Id = "rbxassetid://116168194185824" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(635, 1024) },
-		CardHorns = { Id = "rbxassetid://104067051233656" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(617, 1024) },
-		CardNeutral = { Id = "rbxassetid://138991972922636" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(612, 1024) },
-		ClassCardHalo = { Id = "rbxassetid://125017026560821" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(647, 1024) },
-		ClassCardHorns = { Id = "rbxassetid://105501650454200" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(608, 1024) },
-		ClassCardNeutral = { Id = "rbxassetid://106618683671422" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(618, 1024) },
-		ShieldNeutral = { Id = "rbxassetid://101381231096931" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(251, 256) },
-		TitleRibbon = { Id = "rbxassetid://73292535588441" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
+		CardHalo = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(635, 1024) },
+		CardHorns = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(617, 1024) },
+		CardNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(612, 1024) },
+		ClassCardHalo = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(647, 1024) },
+		ClassCardHorns = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(608, 1024) },
+		ClassCardNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(618, 1024) },
+		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
+		TitleRibbon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
 		-- class characters (transparent chibi): Char<Faction><Class><M|F>
-		CharHaloWarriorM = { Id = "rbxassetid://134988581827453" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(420, 512) },
-		CharHaloWarriorF = { Id = "rbxassetid://78286000819352" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(464, 512) },
-		CharHaloMageM = { Id = "rbxassetid://102544376554965" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(460, 512) },
-		CharHaloMageF = { Id = "rbxassetid://113432552037923" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(478, 512) },
-		CharHaloArcherM = { Id = "rbxassetid://90265187612649" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(501, 512) },
-		CharHaloArcherF = { Id = "rbxassetid://73817434891295" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(406, 512) },
-		CharHornsWarriorM = { Id = "rbxassetid://115730141032244" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(446, 512) },
-		CharHornsWarriorF = { Id = "rbxassetid://91437880088798" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(472, 512) },
-		CharHornsMageM = { Id = "rbxassetid://72321159201625" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(474, 512) },
-		CharHornsMageF = { Id = "rbxassetid://118395974592567" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(449, 512) },
-		CharHornsArcherM = { Id = "rbxassetid://88045973583949" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(488, 512) },
-		CharHornsArcherF = { Id = "rbxassetid://130533135861283" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(467, 512) },
-		CharNeutralWarriorM = { Id = "rbxassetid://117733913914622" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(485, 512) },
-		CharNeutralWarriorF = { Id = "rbxassetid://123242512932772" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(476, 512) },
-		CharNeutralMageM = { Id = "rbxassetid://103288933310374" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(465, 512) },
-		CharNeutralMageF = { Id = "rbxassetid://114214067792680" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(457, 512) },
-		CharNeutralArcherM = { Id = "rbxassetid://118794739229907" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(416, 512) },
-		CharNeutralArcherF = { Id = "rbxassetid://101214489604794" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(463, 512) },
+		CharHaloWarriorM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(420, 512) },
+		CharHaloWarriorF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(464, 512) },
+		CharHaloMageM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(460, 512) },
+		CharHaloMageF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(478, 512) },
+		CharHaloArcherM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(501, 512) },
+		CharHaloArcherF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(406, 512) },
+		CharHornsWarriorM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(446, 512) },
+		CharHornsWarriorF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(472, 512) },
+		CharHornsMageM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(474, 512) },
+		CharHornsMageF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(449, 512) },
+		CharHornsArcherM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(488, 512) },
+		CharHornsArcherF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(467, 512) },
+		CharNeutralWarriorM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(485, 512) },
+		CharNeutralWarriorF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(476, 512) },
+		CharNeutralMageM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(465, 512) },
+		CharNeutralMageF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(457, 512) },
+		CharNeutralArcherM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(416, 512) },
+		CharNeutralArcherF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(463, 512) },
 		-- perk / misc icons
-		IconExp = { Id = "rbxassetid://126693522209557" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(229, 256) },
-		IconHeart = { Id = "rbxassetid://136034394484764" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 222) },
-		IconWings = { Id = "rbxassetid://126719552618804" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 166) },
-		IconGoldPile = { Id = "rbxassetid://84180626478301" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 166) },
-		IconBloodSword = { Id = "rbxassetid://132217044566905" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 239) },
-		IconGauge = { Id = "rbxassetid://120312988080031" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 70) },
-		IconDemon = { Id = "rbxassetid://127767718578535" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 231) },
-		IconNoBuff = { Id = "rbxassetid://137931613383299" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 243) },
-		IconShieldBlue = { Id = "rbxassetid://89142524062230" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(227, 256) },
-		IconNoLoot = { Id = "rbxassetid://128404798093606" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(243, 256) },
-		IconHammer = { Id = "rbxassetid://80311803840434" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(236, 256) },
-		IconAltar = { Id = "rbxassetid://92739557390353" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(241, 256) },
-		IconBoot = { Id = "rbxassetid://75175931189814" --[[blocked upload 2026-10-03, re-upload]] , Size = Vector2.new(256, 232) },
+		IconExp = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(229, 256) },
+		IconHeart = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 222) },
+		IconWings = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 166) },
+		IconGoldPile = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 166) },
+		IconBloodSword = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 239) },
+		IconGauge = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 70) },
+		IconDemon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 231) },
+		IconNoBuff = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 243) },
+		IconShieldBlue = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(227, 256) },
+		IconNoLoot = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(243, 256) },
+		IconHammer = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(236, 256) },
+		IconAltar = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(241, 256) },
+		IconBoot = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 232) },
 		-- A15 hit/pain art; empty IDs retain the code fallback.
 		FxSlash = { Id = "rbxassetid://99494789057875", Size = Vector2.new(256, 251) },
 		FxHitSpark = { Id = "rbxassetid://76401646477744", Size = Vector2.new(254, 256) },
