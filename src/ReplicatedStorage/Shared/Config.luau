@@ -126,6 +126,7 @@ Config.Data = {
 		LuckEvents = 0, -- goose / kaiju events taken part in on LuckDay
 		GraduateGraceUntil = 0, -- A23-18: os.time() when the rookie graduation grace ends (survives a rejoin)
 		BetaPioneer = false, -- A23-18: joined before the full launch -> "베타 개척자" nametag title (no stats)
+		Telemetry = {}, -- P6: { Onb = last onboarding funnel step logged, FirstDeath = true } (analytics only)
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
 		-- "kolog:<victimUserId>" = { t1, t2 } (last two KOs). Pruned at PlayerReady (> 1800 s old, at most 200 keys).

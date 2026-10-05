@@ -10,14 +10,14 @@ local INIT_ORDER = {
 	"DataService", "PlayerService", "NicknameService", "MonetizationService", "MapBuilder", "ZoneService", "FactionService",
 	"ClassService", "VitalsService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
 	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "StoryQuestService",
-	"AnnounceService", "LootService", "CharacterVisuals",
+	"AnnounceService", "LootService", "TelemetryService", "CharacterVisuals",
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
 local START_ORDER = {
 	"MapBuilder", "ZoneService", "FactionService", "ClassService", "VitalsService", "JusticeService", "ProgressionService",
 	"CombatService", "MonsterService", "PvPService", "GrudgeService", "WarService", "KaijuService", "GooseService",
-	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "LootService", "MonetizationService", "CharacterVisuals", "DataService",
+	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "LootService", "TelemetryService", "MonetizationService", "CharacterVisuals", "DataService",
 	"NicknameService", "PlayerService",
 }
 
@@ -77,6 +77,9 @@ if game:GetService("RunService"):IsStudio() then
 		elseif key == "StoryDump" then -- Studio test aid: the saved story quest state as JSON
 			local data = S.PlayerService.GetData(player)
 			return game:GetService("HttpService"):JSONEncode(data and data.Story or {})
+		elseif key == "DataDump" then -- Studio test aid: one saved data field as JSON (value = field name, e.g. "Telemetry")
+			local data = S.PlayerService.GetData(player)
+			return game:GetService("HttpService"):JSONEncode({ [tostring(value)] = data and data[tostring(value)] })
 		elseif key == "Item" then -- Studio test aid: value = "Enh70" or "Enh70:5" (A23-12 item id[:count])
 			local id, n = string.match(tostring(value), "^(%w+):?(%d*)$")
 			return S.LootService.DebugGive(player, id, tonumber(n) or 1)
