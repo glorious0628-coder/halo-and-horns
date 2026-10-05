@@ -1612,7 +1612,6 @@ Config.Loot = {
 		EquipDead = "쓰러진 동안에는 무기를 바꿀 수 없어요.",
 		RareWeapon = "%s 무기! %s 획득!", -- grade name (희귀 / 영웅 / 전설), weapon
 		DuplicateWeapon = "이미 가진 %s → %s골드로 바뀌었어요.",
-		JackpotAll = "★ 대박! %s님이 슬라임에게서 전설 무기 [%s]을(를) 얻었어요! ★",
 		JackpotSelf = "전설 무기 [%s]! 메뉴 → 아이템에서 장착해요.",
 		FirstScroll = "주문서를 얻었어요! 메뉴 → 아이템에서 무기를 강화해 봐요. (실패해도 무기는 안전해요)",
 		EnhanceOk = "강화 성공! %s +%d → +%d (공격 %d%% → %d%%)",

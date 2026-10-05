@@ -370,8 +370,8 @@ local function useTransfer(player, data, id, def, fromTier, toTier)
 		-- only what does not fit stays on the source (no enhancement ever disappears)
 		after = math.min(LOOT.MaxEnhance, target + amount)
 		data.WeaponEnhance[toTier] = after
-		firstMax(player, data, toTier, after)
 		data.WeaponEnhance[fromTier] = amount - (after - target)
+		firstMax(player, data, toTier, after) -- after both tiers are saved
 		notify(player, string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after), "reward")
 	else
 		notify(player, string.format(TXT.MoveFail, fromName, amount), "info")

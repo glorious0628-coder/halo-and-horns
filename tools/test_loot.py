@@ -1,4 +1,4 @@
-"""A23-11 / A23-12 / A23-14 loot (+ review B1-B13): run the current LootService (+ Config, DataService,
+"""A23-11 / A23-12 / A23-14 loot (+ review B1-B13, + the A23-15 announcements LootService makes): run the current LootService (+ Config, DataService,
 ProgressionService, CombatService, and the JusticeService / PvPService power helpers) offline.
 
 No Studio, network, DataStore or Roblox API calls. The real repository sources are injected into
@@ -45,6 +45,12 @@ STATIC_ONLY = {
     "PANELS": ROOT / "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
 }
 COMPILED = ("CONFIG_SOURCE", "GOLD_SOURCE", "COMBAT_SOURCE", "LOOT_SOURCE", "JUSTICE_SOURCE", "PVP_SOURCE")
+
+SET_OWNED = ('S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 1)), '
+             'bit32.lshift(1, tier - 1)))')
+JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained, { Weapon = tier, Name = name })\n\tif isJackpot then\n'
+                  '\t\tnotify(player, string.format(TXT.JackpotSelf, name), "reward")\n'
+                  '\t\tannounce(player, "Jackpot", { Weapon = tier }, tier) -- everyone sees it in chat (A23-15)\n')
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
 MUTATIONS = [
@@ -130,6 +136,58 @@ MUTATIONS = [
      "and Util.RateLimit(player, key, Config.RateLimits[key] or 0.5)", "and true"),
     ("WeaponEnhance attribute not refreshed on equip", "LOOT_SOURCE",
      "if d then player:SetAttribute(\"WeaponEnhance\"", "if false then player:SetAttribute(\"WeaponEnhance\""),
+    # P7 seen monsters (LootFlags "Seen:<kind>" -> Inventory payload Seen)
+    ("first kill never marks the kind seen", "LOOT_SOURCE",
+     "data.LootFlags[seenKey] = true", "local _ = seenKey"),
+    ("first kill of a kind not pushed", "LOOT_SOURCE",
+     "data.LootFlags[seenKey] = true\n\t\tpublish(player, data)", "data.LootFlags[seenKey] = true"),
+    ("kinds without a drop table marked seen", "LOOT_SOURCE",
+     "if LOOT.Tables[info.Kind] and data.LootFlags[seenKey] ~= true then", "if data.LootFlags[seenKey] ~= true then"),
+    ("payload Seen lists unknown kinds", "LOOT_SOURCE",
+     "if kind and v == true and LOOT.Tables[kind] then", "if kind and v then"),
+    # A23-15 announcements (AnnounceService stub in the fixture)
+    ("jackpot not announced", "LOOT_SOURCE",
+     "announce(player, \"Jackpot\", { Weapon = tier }, tier)", "local _ = tier"),
+    ("jackpot also announced as a RareWeapon line", "LOOT_SOURCE",
+     "announce(player, \"Jackpot\", { Weapon = tier }, tier)",
+     "announce(player, \"Jackpot\", { Weapon = tier }, tier); announce(player, \"RareWeapon\", { Weapon = tier, Monster = kind }, tier)"),
+    ("jackpot announced before the legendary is saved", "LOOT_SOURCE",
+     SET_OWNED + "\n\t" + JACKPOT_BRANCH + "\telse\n",
+     JACKPOT_BRANCH + "\t\t" + SET_OWNED + "\n\telse\n\t\t" + SET_OWNED + "\n"),
+    ("weapon drops of every grade announced", "LOOT_SOURCE",
+     "if g.Rank >= ((Config.Announce and Config.Announce.MinWeaponGrade) or 3) then", "if true then"),
+    ("RareWeapon threshold off by one (Rare not announced)", "LOOT_SOURCE",
+     "if g.Rank >= ((Config.Announce", "if g.Rank > ((Config.Announce"),
+    ("RareWeapon threshold ignores Config.Announce.MinWeaponGrade", "LOOT_SOURCE",
+     "((Config.Announce and Config.Announce.MinWeaponGrade) or 3)", "3"),
+    ("RareWeapon announce without the monster kind", "LOOT_SOURCE",
+     "{ Weapon = tier, Monster = kind }", "{ Weapon = tier }"),
+    ("announce grade always Common", "LOOT_SOURCE",
+     "info and info.Grade or \"Common\"", "\"Common\""),
+    ("announce not protected by pcall", "LOOT_SOURCE",
+     "pcall(svc.Announce, player, key, args, info and info.Grade or \"Common\")",
+     "svc.Announce(player, key, args, info and info.Grade or \"Common\")"),
+    ("missing AnnounceService not skipped", "LOOT_SOURCE",
+     "if type(svc) ~= \"table\" or type(svc.Announce) ~= \"function\" then return end", ""),
+    ("FirstMax announced at every +10", "LOOT_SOURCE",
+     "if after < LOOT.MaxEnhance or data.LootFlags.FirstMax == true then return end",
+     "if after < LOOT.MaxEnhance then return end"),
+    ("FirstMax announced below +10", "LOOT_SOURCE",
+     "if after < LOOT.MaxEnhance or data.LootFlags.FirstMax", "if false or data.LootFlags.FirstMax"),
+    ("FirstMax flag not kept", "LOOT_SOURCE",
+     "data.LootFlags.FirstMax = true", "data.LootFlags.FirstMax = nil"),
+    ("FirstMax flag set after the announce", "LOOT_SOURCE",
+     "data.LootFlags.FirstMax = true\n\tannounce(player, \"FirstMax\", { Weapon = tier }, tier)",
+     "announce(player, \"FirstMax\", { Weapon = tier }, tier)\n\tdata.LootFlags.FirstMax = true"),
+    ("FirstMax never from an enhance scroll", "LOOT_SOURCE",
+     "\t\tfirstMax(player, data, tier, after)\n", "\n"),
+    ("FirstMax never from a transfer scroll", "LOOT_SOURCE",
+     "\t\tfirstMax(player, data, toTier, after)\n", "\n"),
+    ("transfer FirstMax names the source tier", "LOOT_SOURCE",
+     "firstMax(player, data, toTier, after)", "firstMax(player, data, fromTier, after)"),
+    ("transfer FirstMax before the target +10 is written", "LOOT_SOURCE",
+     "data.WeaponEnhance[toTier] = after\n\t\tfirstMax(player, data, toTier, after)",
+     "firstMax(player, data, toTier, after)\n\t\tdata.WeaponEnhance[toTier] = after"),
     ("rebirth resets the weapons (old rule)", "GOLD_SOURCE",
      "S.PlayerService.SetStat(player, \"XP\", 0)\n\n\tlocal newRebirths",
      "S.PlayerService.SetStat(player, \"XP\", 0)\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", 129)"
@@ -198,7 +256,8 @@ def make_harness(sources: dict[str, str], scale: float) -> str:
     justice = between(sources["JUSTICE_SOURCE"], "local function levelAndTier(", "-- 1 for \"None\"")
     bindings["JUSTICE_POWER_SOURCE"] = "local Config = ...\nlocal JusticeService = {}\n" + justice + "\nreturn JusticeService"
     pvp_num = function_block(sources["PVP_SOURCE"], "local function num(p, key, default)")
-    pvp_power = between(sources["PVP_SOURCE"], "local function combatPower(p)", "-- addendum A10-V3-3")
+    # only the local function itself: PvPService.BoldMult / ScalePoints (A23-18) follow it and need the whole service
+    pvp_power = function_block(sources["PVP_SOURCE"], "local function combatPower(p)")
     bindings["PVP_POWER_SOURCE"] = ("local Config = ...\nlocal S = nil\n" + pvp_num + "\n" + pvp_power
                                     + "\nreturn { combatPower = function(p, registry) S = registry; return combatPower(p) end }")
     head = "\n".join(f"local {key} = {literal(value)}" for key, value in bindings.items())
@@ -374,9 +433,15 @@ def main() -> int:
                     "full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (6 s guide, Fx First); "
                     "LootRoll debug is count-only; rebirth resets only Level/XP (gold, weapons, enhancement, items kept); "
                     "first BigSlime = one Enh70 once; Slime jackpot tier 8 at 1/20000 (x3 golden); duplicate weapons -> gold; "
-                    "materials sold only at the anvil, removed before payment.",
+                    "materials sold only at the anvil, removed before payment. A23-15: a new non-jackpot weapon drop of grade rank >= "
+                    "Config.Announce.MinWeaponGrade (3 = Rare) -> AnnounceService.Announce(player, \"RareWeapon\", { Weapon, "
+                    "Monster }, grade id), Common/Fine never; a new jackpot legendary -> exactly one \"Jackpot\" { Weapon } "
+                    "(grade Legend), ownership saved first, a duplicate jackpot = gold only, no Net.NotifyAll; the first weapon "
+                    "to reach +10 per player (enhance or transfer scroll) sets LootFlags.FirstMax then announces \"FirstMax\" "
+                    "{ Weapon } once (saved, survives reload); a missing or failing AnnounceService never blocks the grant.",
         "limitations": "Offline service doubles (DataStore = JSON round trip, rate limit clock, ShopService.CanBuyWeapon and "
-                       "CombatService.IsInCombat stubbed for LootService, a stand-in character for Util.IsAlive, task.defer "
+                       "CombatService.IsInCombat stubbed for LootService, AnnounceService a recording stub (its 10 s grouping, name "
+                       "hiding and client chat text are not exercised), a stand-in character for Util.IsAlive, task.defer "
                        "flushed by the fixture, Inventory remote captured). Justice/PvP power helpers are extracted functions, "
                        "not the whole services. Client item panel, Fx, real MonsterService kills, multiplayer and Studio play "
                        "are not certified here.",

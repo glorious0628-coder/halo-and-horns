@@ -1,8 +1,9 @@
--- A23-11 / A23-12 loot, items and scroll enhancement, run offline.
+-- A23-11 / A23-12 loot, items and scroll enhancement (+ the A23-15 announcements LootService asks for), run offline.
 -- tools/test_loot.py injects the CURRENT repository sources before this file (CONFIG_SOURCE, NET_SOURCE, UTIL_SOURCE,
 -- DATA_SOURCE, SET_STAT_SOURCE = PlayerService.SetStat/AddStat, GOLD_SOURCE = ProgressionService, COMBAT_SOURCE,
 -- LOOT_SOURCE, and the extracted power helpers JUSTICE_POWER_SOURCE / PVP_POWER_SOURCE) plus SAMPLE_SCALE. Only engine /
--- service boundaries are doubles: no Studio, no network, no DataStore.
+-- service boundaries are doubles: no Studio, no network, no DataStore. AnnounceService is a recording stub
+-- (f.Announces = { Player, Key, Args, Grade, Extra }); the real chat grouping / client text is not exercised here.
 -- Every check is named and collected (a failure never aborts the run); the result is one JSON line at the end.
 
 ------------------------------------------------------------------ check collection
@@ -349,7 +350,7 @@ local function fixture(opts)
 	serial += 1
 	local f = { Now = 1000, Time = 1.8e9, Ready = true, ReadySet = {}, NearAnvil = true, InCombat = false, Draws = 0,
 		Script = {}, ScriptConst = nil, Notices = {}, All = {}, FxLog = {}, Warnings = {}, GoldLog = {}, Active = 0,
-		Tasks = {}, PlayerList = {}, EnhLog = {}, Deferred = {}, Inventory = {}, Leaks = {}, Dead = false }
+		Tasks = {}, PlayerList = {}, EnhLog = {}, Deferred = {}, Inventory = {}, Leaks = {}, Dead = false, Announces = {} }
 	table.insert(groupFixtures, f)
 	local config = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local L = config.Loot
@@ -431,6 +432,14 @@ local function fixture(opts)
 		KaijuService = { GetState = function() return "None" end },
 		WarService = { HasBlessing = function() return false end },
 		JusticeService = { GetBullyStacks = function() return 0 end, GetDamageMult = function() return 1 end },
+		-- A23-15: LootService.announce -> AnnounceService.Announce(player, key, args, gradeId). Recorded (args copied at the
+		-- call), then f.OnAnnounce(player, key, args, grade) runs; f.AnnounceThrows = true makes the stub raise afterwards.
+		-- Tests remove it with f.Registry.AnnounceService = nil (LootService must skip silently).
+		AnnounceService = { Announce = function(player, key, args, grade, ...)
+			table.insert(f.Announces, { Player = player, Key = key, Args = deepCopy(args), Grade = grade, Extra = select("#", ...) })
+			if f.OnAnnounce then f.OnAnnounce(player, key, args, grade) end
+			if f.AnnounceThrows then error("AnnounceService stub failure") end
+		end },
 	}
 	f.Registry, f.PS, f.DS = registry, ps, ds
 
@@ -509,6 +518,12 @@ local function fixture(opts)
 		local n = 0
 		for _, e in self.Notices do if e.Text == text then n += 1 end end
 		return n
+	end
+	-- the recorded AnnounceService calls with this key (in call order)
+	function f:Announced(key)
+		local out = {}
+		for _, a in self.Announces do if a.Key == key then table.insert(out, a) end end
+		return out
 	end
 	function f:State()
 		local d = self.Data
@@ -674,6 +689,21 @@ runGroup("config", function()
 	check(#L.Order == count(L.Items), "Loot.Order lists every item exactly once", #L.Order)
 	check(count(L.Jackpot.Monsters) == 1 and L.Jackpot.Monsters.Slime == true, "jackpot monsters = { Slime } only", show(L.Jackpot.Monsters))
 	check(L.Jackpot.Chance == 1 / 20000 and L.Jackpot.Tier == 8, "jackpot 1/20000 for tier 8", show(L.Jackpot))
+	-- A23-15 announcements: Rare (rank 3) and better weapon drops, the jackpot (Legend) and the first +10
+	local A = C.Announce
+	check(type(A) == "table" and A.MinWeaponGrade == 3, "Config.Announce.MinWeaponGrade is 3 (희귀)", show(A and A.MinWeaponGrade))
+	for _, key in { "RareWeapon", "Jackpot", "FirstMax" } do
+		check(A and type(A.Text) == "table" and type(A.Text[key]) == "string" and A.Text[key] ~= "",
+			"Config.Announce.Text." .. key .. " is a Korean string (AnnounceService ignores unknown keys)", key)
+	end
+	check(C.WeaponGrades.Common.Rank == 1 and C.WeaponGrades.Fine.Rank == 2 and C.WeaponGrades.Rare.Rank == 3
+		and C.WeaponGrades.Epic.Rank == 4 and C.WeaponGrades.Legend.Rank == 5, "weapon grade ranks Common 1 .. Legend 5")
+	check(C.WeaponInfo[L.Jackpot.Tier] and C.WeaponInfo[L.Jackpot.Tier].Grade == "Legend", "the jackpot tier's grade is Legend",
+		show(C.WeaponInfo[L.Jackpot.Tier]))
+	for tier = 1, C.MaxWeaponTier do
+		local info = C.WeaponInfo[tier]
+		check(info and C.WeaponGrades[info.Grade] ~= nil, "every weapon tier has a real grade id (the announce grade)", tier)
+	end
 	check(L.FirstScroll.Monster == "BigSlime" and L.FirstScroll.Item == "Enh70", "FirstScroll = BigSlime -> Enh70", show(L.FirstScroll))
 	-- A23-14: rebirth keeps every weapon, so the old legendary-only keep list is gone
 	check(L.KeepOnRebirth == nil, "Config.Loot.KeepOnRebirth removed (A23-14 rebirth keeps all weapons)", show(L.KeepOnRebirth))
@@ -739,8 +769,12 @@ runGroup("sanitize", function()
 	check(payload and type(payload.Enhance) == "table" and #payload.Enhance == f.Config.MaxWeaponTier and deepEqual(payload.Enhance, wantEnh),
 		"Inventory payload Enhance is the 8-tier array", show(payload and payload.Enhance))
 	local keys = 0
-	for k in payload or {} do keys += 1; check(k == "Items" or k == "Enhance", "Inventory payload has only Items and Enhance", tostring(k)) end
-	check(keys == 2, "Inventory payload shape { Items, Enhance }", keys)
+	for k in payload or {} do
+		keys += 1
+		check(k == "Items" or k == "Enhance" or k == "Seen", "Inventory payload has only Items, Enhance and Seen", tostring(k))
+	end
+	check(keys == 3, "Inventory payload shape { Items, Enhance, Seen }", keys)
+	check(payload and type(payload.Seen) == "table" and next(payload.Seen) == nil, "P7 no kills yet: payload Seen = {}", show(payload and payload.Seen))
 	check(f.Player:GetAttribute("WeaponEnhance") == 10, "WeaponEnhance attribute = +N of the equipped tier (4)", f.Player:GetAttribute("WeaponEnhance"))
 	-- unknown ids can never be used, sold or given
 	f.Notices, f.Draws = {}, 0
@@ -790,7 +824,7 @@ runGroup("sanitize", function()
 	local n = fixture({ Fresh = true })
 	local np = n:LastPayload()
 	check(deepEqual(n.Data.Items, {}) and #n.Data.WeaponEnhance == 8 and n.Player:GetAttribute("WeaponEnhance") == 0
-		and np and deepEqual(np, { Items = {}, Enhance = { 0, 0, 0, 0, 0, 0, 0, 0 } }),
+		and np and deepEqual(np, { Items = {}, Enhance = { 0, 0, 0, 0, 0, 0, 0, 0 }, Seen = {} }),
 		"new player: empty items, 8 tiers, Inventory pushed and WeaponEnhance attribute 0", show(np))
 	-- a burst of changes in one frame is one push; a player who left gets none; a real spawn resends (safety net)
 	n:Give("Jelly", 1); n:Give("Jelly", 1); n:Give("Bone", 1)
@@ -1058,7 +1092,7 @@ runGroup("rollkill", function()
 			j.ScriptConst, j.Draws = 0, 0
 			j:Roll(kind, true)
 			check(not bit32.btest(j.Data.WeaponOwnedMask, bit32.lshift(1, L.Jackpot.Tier - 1)) and #j.All == 0
-				and j.Draws == #L.Tables[kind], "no jackpot roll for non-slime kinds", kind)
+				and #j:Announced("Jackpot") == 0 and j.Draws == #L.Tables[kind], "no jackpot roll for non-slime kinds", kind)
 		end
 	end
 	local js = fixture()
@@ -1096,16 +1130,16 @@ runGroup("lootroll", function()
 	local function quiet(label, fn)
 		local before = f:State()
 		local rows = deepCopy(f.Rows)
-		f.Notices, f.FxLog, f.All, f.GoldLog, f.EnhLog = {}, {}, {}, {}, {}
+		f.Notices, f.FxLog, f.All, f.GoldLog, f.EnhLog, f.Announces = {}, {}, {}, {}, {}, {}
 		local granted = 0
 		local conn = f.Loot.ItemsGranted:Connect(function() granted += 1 end)
 		local result = fn()
 		conn:Disconnect()
 		local _, pushes = f:LastPayload()
 		check(deepEqual(before, f:State()) and deepEqual(rows, f.Rows), label .. ": no save data changed", show(f:State().Items))
-		check(#f.Notices == 0 and #f.FxLog == 0 and #f.All == 0 and #f.GoldLog == 0 and granted == 0 and pushes == 0,
-			label .. ": no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
-			show({ #f.Notices, #f.FxLog, #f.All, #f.GoldLog, granted, pushes }))
+		check(#f.Notices == 0 and #f.FxLog == 0 and #f.All == 0 and #f.Announces == 0 and #f.GoldLog == 0 and granted == 0 and pushes == 0,
+			label .. ": no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push",
+			show({ #f.Notices, #f.FxLog, #f.All, #f.Announces, #f.GoldLog, granted, pushes }))
 		return result
 	end
 	-- every row succeeds: the tally counts everything, nothing is granted (not even the legendary or the first scroll)
@@ -1143,24 +1177,93 @@ runGroup("lootroll", function()
 	end
 end)
 
+------------------------------------------------------------------ 2c. P7 seen monsters (the item list shows only defeated kinds' drop tables)
+runGroup("seen", function()
+	local f = fixture()
+	local L = f.L
+	f.Data.LootFlags.FirstScroll = true
+	f:Pushes()
+	f.ScriptConst = 0.999999 -- nothing drops: the push below comes from the first-kill flag alone
+	f:Kill("Slime")
+	local p1, n1 = f:LastPayload()
+	check(f.Data.LootFlags["Seen:Slime"] == true, "the first slime kill sets LootFlags[\"Seen:Slime\"]", show(f.Data.LootFlags))
+	check(n1 == 1 and p1 and deepEqual(p1.Seen, { Slime = true }), "the first kill of a kind pushes the Inventory with Seen[kind], even with no drop",
+		show({ n1, p1 and p1.Seen }))
+	f:Kill("Slime")
+	local _, n2 = f:LastPayload()
+	check(n2 == 0, "a later no-drop kill of a seen kind sends no Inventory push", n2)
+	for _, kind in { "Dragon", "", "slime" } do f:Roll(kind) end
+	local _, n3 = f:LastPayload()
+	check(n3 == 0 and f.Data.LootFlags["Seen:Dragon"] == nil and f.Data.LootFlags["Seen:"] == nil and f.Data.LootFlags["Seen:slime"] == nil,
+		"kinds without a drop table are never marked seen", show(f.Data.LootFlags))
+	local want = {}
+	for kind in L.Tables do
+		f:Kill(kind, { Auto = true })
+		want[kind] = true
+	end
+	local pAll = f:LastPayload()
+	check(pAll and deepEqual(pAll.Seen, want), "every drop-table kind killed once is listed in Seen (auto kills count)", show(pAll and pAll.Seen))
+	-- the count-only debug roll never marks anything
+	local d = fixture()
+	d.ScriptConst = 0
+	d.Loot.DebugSimulate("Goblin", 5)
+	check(d.Data.LootFlags["Seen:Goblin"] == nil, "DebugSimulate never marks a kind seen", show(d.Data.LootFlags))
+	-- saved, and the payload shows only real drop-table kinds flagged exactly true
+	f:Release()
+	local row = f.Rows["P_" .. f.UserId]
+	check(row.LootFlags["Seen:Slime"] == true and row.LootFlags["Seen:SkeletonKnight"] == true, "Seen flags are in the saved record",
+		show(row.LootFlags))
+	local re = fixture({ Rows = f.Rows, UserId = f.UserId })
+	local pr = re:LastPayload()
+	check(pr and deepEqual(pr.Seen, want), "Seen survives reload (sent with the join push)", show(pr and pr.Seen))
+	local saved = deepCopy(DEFAULT_ROW)
+	saved.LootFlags = { ["Seen:Goblin"] = true, ["Seen:Dragon"] = true, ["Seen:Skeleton"] = "yes", ["Seen:Bad Kind"] = true,
+		["Seen:"] = true, Seen = true, FirstScroll = true }
+	local g = fixture({ Saved = saved })
+	local pg = g:LastPayload()
+	check(pg and deepEqual(pg.Seen, { Goblin = true }), "payload Seen lists only real drop-table kinds flagged true (unknown / malformed keys hidden)",
+		show(pg and pg.Seen))
+end)
+
 ------------------------------------------------------------------ 3. weapons
 runGroup("weapons", function()
 	local f = fixture()
 	local L = f.L
 	f.Data.LootFlags.FirstScroll = true
+	local C = f.Config
+	local gradesSeen = {}
 	for kind, rows in L.Tables do
 		for i, row in rows do
 			if row.Weapon then
 				local w = fixture()
 				w.Data.LootFlags.FirstScroll = true
 				local bitMask = bit32.lshift(1, row.Weapon - 1)
+				local ownedAtAnnounce = nil
+				w.OnAnnounce = function(_, key) if key == "RareWeapon" then ownedAtAnnounce = bit32.btest(w.Data.WeaponOwnedMask, bitMask) end end
 				local g = w:Force(kind, { [i] = true })
 				check(w.Data.WeaponOwnedMask == bit32.bor(1, bitMask) and w.Player:GetAttribute("WeaponOwnedMask") == w.Data.WeaponOwnedMask,
 					"unowned weapon drop sets its mask bit (saved + mirrored)", kind .. " tier " .. row.Weapon)
 				check(w:Gained(g, "Weapon", row.Weapon) == 1 and #w.GoldLog == 0, "new weapon is reported once and pays no gold")
 				check(w.Data.WeaponTier == 1, "a weapon drop never auto-equips")
 				local name = w.Config.WeaponName(row.Weapon, "Warrior", "Halo")
-				check(w:Noticed(string.format(L.Text.RareWeapon, name)) == 1, "rare weapon notice", name)
+				-- the personal notice names the grade (review of 0db0764: "영웅 무기! … 획득!")
+				check(w:Noticed(string.format(L.Text.RareWeapon, w.Config.WeaponGrade(row.Weapon).Name, name)) == 1,
+					"rare weapon notice", name)
+				-- A23-15: a new Rare+ drop is announced server-wide once, with the monster kind (the client names the weapon)
+				local grade = C.WeaponInfo[row.Weapon].Grade
+				gradesSeen[grade] = true
+				local rare = w:Announced("RareWeapon")
+				if C.WeaponGrade(row.Weapon).Rank >= C.Announce.MinWeaponGrade then
+					check(#rare == 1 and #w.Announces == 1, "a new Rare+ weapon drop calls AnnounceService exactly once (RareWeapon)",
+						kind .. " tier " .. row.Weapon .. " " .. show(w.Announces))
+					check(rare[1] ~= nil and rare[1].Player == w.Player and deepEqual(rare[1].Args, { Weapon = row.Weapon, Monster = kind })
+						and rare[1].Grade == grade and rare[1].Extra == 0,
+						"RareWeapon announce = (player, { Weapon = tier, Monster = kind }, the tier's grade id)", show(rare[1]))
+					check(ownedAtAnnounce == true, "weapon ownership is saved before the RareWeapon announce", kind .. " tier " .. row.Weapon)
+				else
+					check(#w.Announces == 0, "a Common / Fine drop is never announced", kind .. " tier " .. row.Weapon)
+				end
+				check(#w.All == 0, "weapon drops never use Net.NotifyAll", #w.All)
 				local maskBefore, carried = w.Data.WeaponOwnedMask, w.Data.CarriedGold
 				g = w:Force(kind, { [i] = true })
 				local gold = L.DuplicateWeaponGold[row.Weapon]
@@ -1168,30 +1271,99 @@ runGroup("weapons", function()
 				check(w.Data.CarriedGold == carried + gold and #w.GoldLog == 1 and w.GoldLog[1].Amount == gold and w.GoldLog[1].Source == "Loot",
 					"duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)", show(w.GoldLog))
 				check(w:Gained(g, "Weapon", row.Weapon) == 0, "duplicate is not reported as a new weapon")
+				check(#w:Announced("RareWeapon") == #rare and #w.Announces == #rare, "a duplicate weapon drop is not announced again",
+					show(w.Announces))
 			end
 		end
 	end
-	-- jackpot: legendary tier 8, saved before any announcement, NotifyAll exactly once
+	check(gradesSeen.Rare == true and gradesSeen.Epic == true, "the real drop tables cover Rare and Epic weapon drops", show(gradesSeen))
+
+	-- the grade threshold on a probe monster kind (test-only table, this fixture only): tiers 2 Common, 3 Fine, 4 Rare, 5 Epic
+	local function probe(setup)
+		local p = fixture()
+		p.Data.LootFlags.FirstScroll = true
+		p.L.Tables.AnnounceProbe = { { Weapon = 2, P = 1 }, { Weapon = 3, P = 1 }, { Weapon = 4, P = 1 }, { Weapon = 5, P = 1 } }
+		if setup then setup(p) end
+		local g = p:Force("AnnounceProbe", { true, true, true, true })
+		local tiers, grades = {}, {}
+		for _, a in p:Announced("RareWeapon") do
+			table.insert(tiers, a.Args.Weapon)
+			table.insert(grades, a.Grade)
+			check(a.Args.Monster == "AnnounceProbe", "RareWeapon announce names the monster kind that dropped it", show(a.Args))
+		end
+		return p, g, tiers, grades
+	end
+	local p, g, tiers, grades = probe()
+	check(p:Gained(g, "Weapon", 2) == 1 and p:Gained(g, "Weapon", 3) == 1 and p:Gained(g, "Weapon", 4) == 1 and p:Gained(g, "Weapon", 5) == 1,
+		"probe: all four new weapons are granted", show(g))
+	check(deepEqual(tiers, { 4, 5 }) and deepEqual(grades, { "Rare", "Epic" }) and #p.Announces == 2,
+		"only Rare / Epic drops are announced (Common tier 2 / Fine tier 3 are not)", show({ tiers, grades }))
+	for tier = 2, 5 do
+		local nm = p.Config.WeaponName(tier, "Warrior", "Halo")
+		check(p:Noticed(string.format(L.Text.RareWeapon, p.Config.WeaponGrade(tier).Name, nm)) == 1,
+			"every new weapon still gets the personal grade notice (announced or not)", tier)
+	end
+	-- the rule reads the tier's grade (Config.WeaponInfo) and Config.Announce.MinWeaponGrade, not fixed tiers
+	p, g, tiers, grades = probe(function(x) x.Config.WeaponInfo[2].Grade = "Epic"; x.Config.WeaponInfo[4].Grade = "Fine" end)
+	check(deepEqual(tiers, { 2, 5 }) and deepEqual(grades, { "Epic", "Epic" }), "announce follows Config.WeaponInfo grades (tier 2 as Epic, tier 4 as Fine)",
+		show({ tiers, grades }))
+	p, g, tiers = probe(function(x) x.Config.Announce.MinWeaponGrade = 2 end)
+	check(deepEqual(tiers, { 3, 4, 5 }), "the threshold is Config.Announce.MinWeaponGrade (2 = Fine and up)", show(tiers))
+	p, g, tiers = probe(function(x) x.Config.Announce.MinWeaponGrade = 5 end)
+	check(#tiers == 0, "MinWeaponGrade 5: Epic drops are not announced", show(tiers))
+
+	-- jackpot: legendary tier 8, saved before any announcement, exactly one Jackpot announce (grade Legend)
 	local j = fixture()
 	local tierBit = bit32.lshift(1, L.Jackpot.Tier - 1)
 	local ownedAtAnnounce = nil
-	j.OnNotifyAll = function() ownedAtAnnounce = bit32.btest(j.Data.WeaponOwnedMask, tierBit) end
-	local g = j:Force("Slime", nil, true)
-	check(bit32.btest(j.Data.WeaponOwnedMask, tierBit) and j:Gained(g, "Weapon", L.Jackpot.Tier) == 1, "jackpot grants the legendary tier")
-	check(#j.All == 1, "jackpot calls NotifyAll exactly once", #j.All)
-	local name = j.Config.WeaponName(L.Jackpot.Tier, "Warrior", "Halo")
-	check(j.All[1] and j.All[1].Text == string.format(L.Text.JackpotAll, j.Player.DisplayName, name) and j.All[1].Kind == "announce",
-		"server-wide jackpot announcement text / kind", j.All[1] and j.All[1].Text)
+	j.OnAnnounce = function(_, key) if key == "Jackpot" then ownedAtAnnounce = bit32.btest(j.Data.WeaponOwnedMask, tierBit) end end
+	local jg = j:Force("Slime", nil, true)
+	check(bit32.btest(j.Data.WeaponOwnedMask, tierBit) and j:Gained(jg, "Weapon", L.Jackpot.Tier) == 1, "jackpot grants the legendary tier")
+	local jp = j:Announced("Jackpot")
+	check(#jp == 1 and #j.Announces == 1, "a new jackpot legendary calls AnnounceService exactly once (Jackpot, no RareWeapon line)",
+		show(j.Announces))
+	check(jp[1] ~= nil and jp[1].Player == j.Player and deepEqual(jp[1].Args, { Weapon = L.Jackpot.Tier }) and jp[1].Grade == "Legend"
+		and jp[1].Extra == 0, "Jackpot announce = (player, { Weapon = tier }, \"Legend\")", show(jp[1]))
+	check(#j.All == 0, "the jackpot no longer uses Net.NotifyAll (AnnounceService line only)", #j.All)
 	check(ownedAtAnnounce == true, "legendary ownership is saved before the announcement")
+	local name = j.Config.WeaponName(L.Jackpot.Tier, "Warrior", "Halo")
 	check(j:Noticed(string.format(L.Text.JackpotSelf, name)) == 1, "jackpot owner notice")
 	local carried = j.Data.CarriedGold
 	j:Force("Slime", nil, true)
-	check(#j.All == 1 and j.Data.CarriedGold == carried + L.DuplicateWeaponGold[L.Jackpot.Tier],
-		"second jackpot = duplicate gold, no second announcement", show({ #j.All, j.Data.CarriedGold }))
+	check(#j.Announces == 1 and #j.All == 0 and j.Data.CarriedGold == carried + L.DuplicateWeaponGold[L.Jackpot.Tier],
+		"second jackpot = duplicate gold, no second announcement", show({ #j.Announces, #j.All, j.Data.CarriedGold }))
+	local jg2 = fixture()
+	jg2:Force("Slime", nil, true, true, { Auto = true })
+	check(#jg2:Announced("Jackpot") == 1 and deepEqual(jg2.Announces[1].Args, { Weapon = L.Jackpot.Tier }),
+		"a golden / auto-kill jackpot is announced the same way", show(jg2.Announces))
 	local m = fixture()
 	m:Set("Class", "Mage")
 	m:Force("Slime", nil, true)
-	check(m.All[1] and string.find(m.All[1].Text, m.Config.WeaponName(8, "Mage", "Halo"), 1, true) ~= nil, "jackpot names the class weapon")
+	local mj = m:Announced("Jackpot")
+	check(m:Noticed(string.format(L.Text.JackpotSelf, m.Config.WeaponName(8, "Mage", "Halo"))) == 1 and #mj == 1
+		and deepEqual(mj[1].Args, { Weapon = 8 }),
+		"jackpot: the owner's notice names the class weapon; the announce carries the tier (each client names it)", show(mj))
+
+	-- the announcement never blocks or breaks the grant: AnnounceService missing, or raising inside Announce
+	local na = fixture()
+	na.Registry.AnnounceService = nil
+	na.FxLog = {}
+	local okMissing, gMissing = pcall(function() return na:Force("Slime", nil, true) end)
+	check(okMissing and bit32.btest(na.Data.WeaponOwnedMask, tierBit) and na:Gained(gMissing, "Weapon", L.Jackpot.Tier) == 1
+		and na.FxLog[1] ~= nil and na.FxLog[1].Kind == "Loot", "without AnnounceService the jackpot is still granted (announce skipped)",
+		tostring(gMissing))
+	local thr = fixture()
+	thr.Data.LootFlags.FirstScroll = true
+	thr.AnnounceThrows = true
+	thr.FxLog = {}
+	local okThrow, gThrow = pcall(function() return thr:Force("Slime", nil, true) end)
+	check(okThrow and bit32.btest(thr.Data.WeaponOwnedMask, tierBit) and thr:Gained(gThrow, "Weapon", L.Jackpot.Tier) == 1
+		and thr.FxLog[1] ~= nil and thr.FxLog[1].Kind == "Loot" and #thr:Announced("Jackpot") == 1,
+		"an error inside AnnounceService.Announce never breaks the jackpot grant (pcall)", tostring(gThrow))
+	local goblinWeapon = rowIndex(L, "Goblin", "Weapon", 4)
+	local okRare, gRare = pcall(function() return thr:Force("Goblin", { [goblinWeapon] = true }) end)
+	check(okRare and bit32.btest(thr.Data.WeaponOwnedMask, 8) and thr:Gained(gRare, "Weapon", 4) == 1 and #thr:Announced("RareWeapon") == 1,
+		"an error inside AnnounceService.Announce never breaks a rare weapon grant (pcall)", tostring(gRare))
 end)
 
 ------------------------------------------------------------------ 4. UseItem: enhance scrolls
@@ -1468,6 +1640,108 @@ runGroup("transfer", function()
 	r:FireRaw("UseItem", "Move70", 1, 2)
 	r:FireRaw("UseItem", "Move70", 1, 2)
 	check(r:Count("Move70") == before - 1, "transfer rate limited")
+end)
+
+------------------------------------------------------------------ 5b. first +10 announcement (A23-15 FirstMax, once per player)
+runGroup("firstmax", function()
+	local f = fixture()
+	local C = f.Config
+	f:Set("WeaponOwnedMask", 1 + 2 + 4 + 128) -- tiers 1, 2, 3, 8
+	-- what the save looks like at the moment of the announcement
+	local atAnnounce = nil
+	local function watch(x)
+		x.OnAnnounce = function(_, key, args)
+			if key == "FirstMax" then atAnnounce = { Flag = x.Data.LootFlags.FirstMax, Enh = x:Enh(args.Weapon) } end
+		end
+	end
+	watch(f)
+	local function enhance(x, tier, start, id, script)
+		x.Data.WeaponEnhance[tier] = start
+		x:Give(id, 1)
+		x.Script = script
+		x:Use(id, tier)
+		x.Script = {}
+		return x:Enh(tier)
+	end
+	check(enhance(f, 1, 3, "Enh30", { 0 }) == 6 and #f.Announces == 0 and f.Data.LootFlags.FirstMax == nil,
+		"a success below +10 is not announced and sets no flag", show(f.Announces))
+	check(enhance(f, 1, 9, "Enh70", { 0.95, 0.9 }) == 9 and #f.Announces == 0 and f.Data.LootFlags.FirstMax == nil,
+		"a failure at +9 is not announced", show(f.Announces))
+	-- the first weapon to reach +10
+	check(enhance(f, 1, 9, "Enh70", { 0 }) == 10, "+9 -> +10 with an enhance scroll", f:Enh(1))
+	local fm = f:Announced("FirstMax")
+	check(#fm == 1 and #f.Announces == 1, "the first +10 (enhance scroll) calls AnnounceService exactly once (FirstMax)", show(f.Announces))
+	check(fm[1] ~= nil and fm[1].Player == f.Player and deepEqual(fm[1].Args, { Weapon = 1 }) and fm[1].Grade == C.WeaponInfo[1].Grade
+		and fm[1].Extra == 0, "FirstMax announce = (player, { Weapon = tier }, that tier's grade id)", show(fm[1]))
+	check(f.Data.LootFlags.FirstMax == true and atAnnounce and atAnnounce.Flag == true and atAnnounce.Enh == 10,
+		"LootFlags.FirstMax and the +10 are saved before the announcement", show(atAnnounce))
+	-- once per player: a second weapon (overflow +8 + 5 capped at +10), the same weapon again, a legendary
+	check(enhance(f, 2, 8, "Enh10", { 0 }) == 10 and #f:Announced("FirstMax") == 1,
+		"a second weapon reaching +10 is not announced again (once per player)", show(f.Announces))
+	check(enhance(f, 1, 9, "Enh30", { 0 }) == 10 and #f:Announced("FirstMax") == 1,
+		"the same weapon reaching +10 again is not announced", show(f.Announces))
+	check(enhance(f, 8, 7, "Enh30", { 0 }) == 10 and #f:Announced("FirstMax") == 1 and #f.Announces == 1,
+		"a later legendary +10 is not announced either", show(f.Announces))
+	-- a transfer reaching +10 after the first max: nothing
+	f.Data.WeaponEnhance[2], f.Data.WeaponEnhance[3] = 4, 6
+	f:Give("Move70", 1)
+	f.Script = { 0 }
+	f:Use("Move70", 2, 3)
+	f.Script = {}
+	check(f:Enh(3) == 10 and #f.Announces == 1, "a transfer reaching +10 after the first max is not announced", show(f.Announces))
+	-- the flag is saved and survives a reload
+	f:Release()
+	check(f.Rows["P_" .. f.UserId].LootFlags.FirstMax == true, "LootFlags.FirstMax is in the saved record", show(f.Rows["P_" .. f.UserId].LootFlags))
+	local re = fixture({ Rows = f.Rows, UserId = f.UserId })
+	check(re.Data.LootFlags.FirstMax == true, "LootFlags.FirstMax survives reload (sanitize keeps it)", show(re.Data.LootFlags))
+	check(enhance(re, 3, 9, "Enh70", { 0 }) == 10 and #re.Announces == 0, "no FirstMax after reload when it was already announced",
+		show(re.Announces))
+	-- a save that already has the flag (announced in an earlier session)
+	local saved = deepCopy(DEFAULT_ROW)
+	saved.LootFlags = { FirstMax = true }
+	local pre = fixture({ Saved = saved })
+	check(enhance(pre, 1, 9, "Enh70", { 0 }) == 10 and #pre.Announces == 0, "a saved FirstMax flag blocks the announcement", show(pre.Announces))
+
+	-- transfer path on a fresh player: the TARGET tier is announced when it reaches +10 first
+	local t = fixture()
+	t:Set("WeaponOwnedMask", 1 + 2)
+	watch(t)
+	local function move(fromN, toN, roll)
+		t.Data.WeaponEnhance[1], t.Data.WeaponEnhance[2] = fromN, toN
+		t:Give("Move70", 1)
+		t.Script = { roll }
+		t:Use("Move70", 1, 2)
+		t.Script = {}
+		return t:Enh(1), t:Enh(2)
+	end
+	local a, b = move(6, 7, 0.95)
+	check(a == 6 and b == 7 and #t.Announces == 0 and t.Data.LootFlags.FirstMax == nil, "a failed transfer is not announced", show(t.Announces))
+	a, b = move(2, 3, 0)
+	check(a == 0 and b == 5 and #t.Announces == 0, "a transfer below +10 is not announced", show(t.Announces))
+	atAnnounce = nil
+	a, b = move(6, 7, 0)
+	local tm = t:Announced("FirstMax")
+	check(a == 3 and b == 10 and #tm == 1 and #t.Announces == 1, "the first +10 reached by a transfer scroll is announced once (FirstMax)",
+		show({ a, b, t.Announces }))
+	check(tm[1] ~= nil and tm[1].Player == t.Player and deepEqual(tm[1].Args, { Weapon = 2 }) and tm[1].Grade == C.WeaponInfo[2].Grade,
+		"transfer FirstMax names the target tier with its grade", show(tm[1]))
+	check(t.Data.LootFlags.FirstMax == true and atAnnounce and atAnnounce.Flag == true and atAnnounce.Enh == 10,
+		"transfer: LootFlags.FirstMax and the target +10 are saved before the announcement", show(atAnnounce))
+	a, b = move(5, 5, 0)
+	check(b == 10 and #t:Announced("FirstMax") == 1, "a second transfer +10 is not announced", show(t.Announces))
+	-- after a transfer max, an enhance-scroll max is not announced either
+	check(enhance(t, 1, 9, "Enh70", { 0 }) == 10 and #t.Announces == 1, "one FirstMax per player across enhance and transfer", show(t.Announces))
+	-- missing / failing AnnounceService: the +10 and the flag still happen
+	local na = fixture()
+	na.Registry.AnnounceService = nil
+	local okMissing = pcall(enhance, na, 1, 9, "Enh70", { 0 })
+	check(okMissing and na:Enh(1) == 10 and na.Data.LootFlags.FirstMax == true and #na.EnhLog == 1,
+		"without AnnounceService the +10 still lands (flag set, Enhanced fired)", show(na.Data.LootFlags))
+	local thr = fixture()
+	thr.AnnounceThrows = true
+	local okThrow = pcall(enhance, thr, 1, 9, "Enh70", { 0 })
+	check(okThrow and thr:Enh(1) == 10 and thr.Data.LootFlags.FirstMax == true and #thr.EnhLog == 1 and #thr:Announced("FirstMax") == 1,
+		"an error inside AnnounceService.Announce never breaks the enhancement (pcall)", show(thr.Data.LootFlags))
 end)
 
 ------------------------------------------------------------------ 6. EquipWeapon
