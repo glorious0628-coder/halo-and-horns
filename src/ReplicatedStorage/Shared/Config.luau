@@ -125,7 +125,9 @@ Config.Data = {
 		LuckDay = 0, -- A23-18 오늘의 운: Config.DayIndex of LuckEvents (another day -> 0)
 		LuckEvents = 0, -- goose / kaiju events taken part in on LuckDay
 		GraduateGraceUntil = 0, -- A23-18: os.time() when the rookie graduation grace ends (survives a rejoin)
-		BetaPioneer = false, -- A23-18: joined before the full launch -> "베타 개척자" nametag title (no stats)
+		BetaPioneer = false, -- A23-18 first build (legacy): migrated into Titles.BetaPioneer by TitleService
+		Titles = {}, -- BB16: { [Config.TitleDefs id] = os.time() first owned } (no stats)
+		TitleSel = "", -- BB16: the title shown on the nametag ("" = automatic: faction rank / gray legend)
 		Telemetry = {}, -- P6: { Onb = last onboarding funnel step logged, FirstDeath = true } (analytics only)
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
@@ -141,7 +143,7 @@ Config.Data = {
 	Mirrored = {
 		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "WeaponOwnedMask", "BlacksmithVisited", "Faction", "Class", "ClassChosen",
 		"CharacterGender",
-		"HPPotionCount", "MPPotionCount", "HideAnnounceName", "LuckEvents", "BetaPioneer",
+		"HPPotionCount", "MPPotionCount", "HideAnnounceName", "LuckEvents", "TitleSel",
 		"Rebirths", "RebirthBonus", "FallMarks", "RedeemMarks", "Honor", "Infamy", "SwitchCount",
 		"LastSwitchTime", "PlaytimeSeconds", "TotalKills", "DailyDay", "DailyClaims",
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
@@ -565,8 +567,11 @@ function Config.GetTitle(factionId, honor, infamy)
 end
 
 -- title shown on nametag / HUD: session title > gray legend > rank title
-function Config.DisplayTitle(factionId, honor, infamy, fallMarks, redeemMarks, sessionTitle)
+-- BB16 order: session title (kaiju) > selected title (TitleSel) > gray legend > faction rank
+function Config.DisplayTitle(factionId, honor, infamy, fallMarks, redeemMarks, sessionTitle, selected)
 	if type(sessionTitle) == "string" and sessionTitle ~= "" then return sessionTitle end
+	local def = type(selected) == "string" and selected ~= "" and Config.TitleDefs[selected] or nil
+	if def then return def.Name end
 	if (fallMarks or 0) >= Config.Rebirth.GrayLegendMin and (redeemMarks or 0) >= Config.Rebirth.GrayLegendMin then
 		return Config.Story.GrayLegendTitle
 	end
@@ -1512,7 +1517,7 @@ Config.RateLimits = {
 	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
-	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
+	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
 }
 
 -- A23-11 / A23-12 drops, items and scroll enhancement (user decisions 2026-10-05; LootService is the only writer).
@@ -1655,9 +1660,16 @@ Config.Announce = {
 
 -- A23-18 beta: saves carry over to the full launch; everyone who plays before it gets the stat-free title
 Config.Beta = {
+	GrantPioneer = true, -- BB16: false stops new grants (owned titles stay)
 	PioneerUntil = 1797645600, -- 2026-12-19 11:00 KST (full launch)
-	PioneerTag = "★베타 개척자",
 }
+
+-- BB16 selectable nametag titles (never give stats). TitleOrder = picker order.
+Config.TitleDefs = {
+	BetaPioneer = { Name = "★베타 개척자", NameEn = "★Beta Pioneer", Color = Color3.fromRGB(255, 210, 60) },
+	GrayLegend = { Name = "회색 전설", NameEn = "Gray Legend", Color = Color3.fromRGB(190, 190, 200) },
+}
+Config.TitleOrder = { "BetaPioneer", "GrayLegend" }
 
 Config.Sounds = { -- optional built-in files; client must pcall and ignore failures
 	Swing = "rbxasset://sounds/swordslash.wav",

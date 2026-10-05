@@ -15,6 +15,7 @@ Net.Names = {
 	"EquipWeapon", -- (tier) equip an owned weapon from the item list (drops / legendary)
 	"SellMaterials", -- no arguments; sells every material at the blacksmith anvil
 	"SetAnnounceName", -- (hide: boolean) P5: hide my name in server-wide chat announcements
+	"SetTitle", -- (id: string <= 32, owned Config.TitleDefs id or "" = automatic) BB16 nametag title
 	"GhostHold", -- no arguments: A23-18 the robbed victim holds the thief's grudge sack (+2 s, 3 s cooldown)
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",

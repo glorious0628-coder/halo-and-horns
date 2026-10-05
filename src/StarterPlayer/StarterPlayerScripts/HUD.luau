@@ -1750,7 +1750,7 @@ local function refreshStats()
 
 	if ui.title then
 		local title = Config.DisplayTitle(f, num("Honor", 0), num("Infamy", 0), num("FallMarks", 0),
-			num("RedeemMarks", 0), attr("SessionTitle", ""))
+			num("RedeemMarks", 0), attr("SessionTitle", ""), attr("TitleSel", ""))
 		local prefix = ""
 		if f == "Neutral" then
 			local emblem = factionDef(f).Emblem
@@ -3322,7 +3322,7 @@ function HUD.Start()
 		end
 		refreshGuides()
 	end)
-	UIKit.OnAttr({ "Level", "XP", "Faction", "Class", "Honor", "Infamy", "FallMarks", "RedeemMarks", "SessionTitle",
+	UIKit.OnAttr({ "Level", "XP", "Faction", "Class", "Honor", "Infamy", "FallMarks", "RedeemMarks", "SessionTitle", "TitleSel",
 		"BankGold", "CarriedGold", "WantedStars", "Bounty" }, refreshStats)
 	UIKit.OnAttr({ "Faction", "Class", "ClassChosen", "CharacterGender", "SizeMult" }, L.RefreshPortrait)
 	UIKit.OnAttr({ "AutoCombatUnlocked", "AutoCombatEnabled", "ClassChosen" }, L.RefreshAuto)
