@@ -1,0 +1,810 @@
+# 그림 방향과 베타 그림 순서 (2026-10-05)
+
+사용자 요청: "디자인도! ui, 펫, 무기 등등 내가 말한 것보다 더 많이!"
+
+- **만든 과정:** 5개 분야(UI·HUD, 펫, 무기, 캐릭터·NPC·몬스터, 그 밖의 것)를 따로 조사하고 설계했다. 그다음 두 번 비판 검증했다(어린이 안전·심의, 일관성·실현성). 마지막으로 하나로 합쳤다.
+- **자료:** 원자료는 `visual_direction_2026-10-05.json`에 있다(조사 출처 포함). Firefly 문구는 `firefly_prompt_pack_2026-10-05.md`에 있다.
+- **규칙 순서:** AGENTS.md의 그림 규칙(단정한 옷, 투명 누끼 검사, 한 장씩 승인, 업로드 10장 이하)이 이 문서보다 먼저다.
+- **진영 카드:** 2026-10-05 사용자 결정("이전 그림 싹 다 지우고")에 따라 승인된 FreshTyped 카드는 Firefly 새 카드가 승인될 때까지만 쓴다. 새 카드는 승인 카드의 모양을 본뜬다.
+
+## 1. 스타일 가이드 (모든 그림 공통)
+
+## 스타일: 금테 장난감 상자 (Glossy Gold-Trim Toybox)
+- 기준은 승인된 진영 카드의 금테, 보석, 광택이다. 블록 아바타와 폰 화면에 맞게 더 통통하고 단순하게 만든다.
+- 재질은 '반짝이는 장난감 플라스틱' 하나로 통일한다. 빛은 늘 왼쪽 위에서 온다. 각진 로우폴리와 무광 비닐은 쓰지 않는다.
+- 모델은 Firefly Image 5 하나만 쓰고 끝까지 바꾸지 않는다. 설정: Art, 프리셋과 효과 끔, 강도 중간.
+
+## 그림 종류 7가지와 종류별 표현
+1. UI 틀, 버튼, 칸: 남색 테 + 금테 + 크림 속지. 9조각으로 늘어나야 한다.
+   - HUD 판은 얇고 어둡게 만든다.
+   - 화려한 금테는 창, 카드, 축하 배너에만 쓴다.
+2. 아이콘(무기, 아이템, 스킬, 펫 아이콘, 알, 배지, 지도 표시): 둥근 3D 장난감 모양에 굵은 남색 외곽선을 두른다.
+3. 흰 글리프: 흰 채움 + 남색 외곽선 + 옅은 금빛 음영.
+4. 사람: 블록 장난감 아바타. 네모 머리, 남녀가 같은 네모 몸통, 점 눈. 외곽선은 없다.
+5. 생물(펫, 몬스터): 통통한 광택 비닐 장난감. 큰 둥근 눈(눈동자와 흰 반짝임), 볼 홍조.
+6. 효과와 해·달: 검은 바탕에 흰 모양으로 그린다. 밝기를 투명도로 바꾸고, 색은 게임 안에서 입힌다.
+7. 불투명 그림: 장면, 썸네일, 게임 아이콘, 지도 양피지, 깃발, 지형 타일(이음새 없는 정사각형).
+
+## 외곽선
+- 2D 그림은 모두 남색 #1B2140 하나로 그린다. 굵기는 다음과 같다.
+  - UI: 짧은 변의 1.5%
+  - 아이콘: 폭의 3%
+  - 글리프: 4%
+- 외곽선이 없는 그림: 사람, 3D 시안, Tripo 입력, 장면, 깃발, 효과.
+- 펫 아이콘은 승인된 원화를 누끼한 뒤 같은 남색 3% 테두리를 PIL로 두른다. 이 처리는 스타일 보드에서 미리 보여 준다.
+
+## 색
+**UI 기본색**
+- 크림 #FFF3D6, 크림 위 글자 #3A2A14
+- 금 #F5C542, 남색 테 #24346E
+
+**버튼 색의 뜻**
+- 금 = 주요 버튼
+- 파랑 = 보조 버튼과 스킬. 스킬 테두리는 MP와 같은 #3B5BDB
+- 초록 #45C063 = 받기
+- 주황 #FF9A1F = 공격
+- 빨강 #D9363E = 뿔 군단과 위험에만 쓴다
+
+**진영 표시 (색과 모양을 늘 같이 쓴다)**
+- 빛: 상아, 금, 하늘색 + 둥근 고리
+- 뿔: 자두숯색, 진홍, 불씨 주황 + 끝이 둥근 뿔 두 개
+- 장인: 청록, 황동, 나무색 + 톱니
+
+**등급 (기존 5색 유지, 색약을 위해 장식을 함께 쓴다)**
+- 일반: 민무늬
+- 고급: 잎 2개
+- 희귀: 사파이어
+- 영웅: 자수정 + 모서리 별. 날개는 4·5계급 전용이라 쓰지 않는다
+- 전설: 작은 왕관 + 반짝임. 움직이는 것은 전설뿐이다
+
+**바와 예약된 색**
+- 바: HP는 초록(30% 미만이면 빨강), MP는 로열 블루, XP는 하늘색.
+- 청록은 장인 전용이다.
+- 회색은 회색 전설과 금 간 후광 전용이다. 돌은 모래색으로 칠한다.
+- 펫에는 적 몬스터의 색을 쓰지 않는다.
+- 옮기기 70% 주문서는 청록과 헷갈리지 않게 민트그린(110,220,150)으로 바꾼다. Config 값도 함께 바꾼다.
+
+## 안전 (계정 정지 이력)
+- 사람은 얼굴과 손만 보인다. 턱 아래 살은 보이면 안 된다. 치비나 애니 눈은 쓰지 않는다.
+- 여자 그림은 승인된 남자 그림을 구조 참조로 걸어 몸통이 같게 만든다.
+- 쓰지 않는 것: 해골 문양, 피, 송곳니, 무서운 얼굴, 별 모양 마법진, 십자가, 태극, 브랜드·플랫폼 이름.
+- 뿔 쪽은 '장난꾸러기' 느낌으로 그린다.
+- 핼러윈은 둥근 눈과 웃는 호박만 쓴다. 세모 눈은 쓰지 않는다.
+- 해골왕도 눈동자가 있는 둥근 눈에 웃긴 찡그림으로 그린다.
+
+## 프롬프트 규칙
+- 순서: 대상 한 문장 → 안전 줄 → 진영 → 그림 종류 블록 → 배경 → 글자 없음. 길이는 약 700자 이하.
+- 'no / not' 같은 부정 대신 긍정으로 쓴다.
+- 위험 단어(해골, 피, 악마, holy, 잭오랜턴, 말풍선 등)는 부정문으로도 쓰지 않는다.
+- 각 분야 프롬프트는 영어 블록의 다시 쓰기 규칙대로 고친 뒤 쓴다.
+
+## 배경
+- 누끼할 그림은 모두 중간 회색 배경에서 만든다. 흰색, 크림색 대상도 마찬가지다.
+- 흰 배경은 회색, 은색, 돌, 뼈 대상에만 쓴다.
+- 검정 배경은 효과와 해·달에만 쓴다.
+- 남색이나 숯색 배경은 쓰지 않는다. 외곽선이 배경에 먹혀서 누끼가 깨진다.
+
+## 투명과 빛
+- 젤리, 수정, 영혼 불꽃은 불투명한 광택으로 그린다. 투명함은 게임 설정으로 낸다.
+- 빛과 반짝임은 외곽선 안에만 그린다.
+- 따로 떠 있는 빛, 빛살, 반짝이는 공용 효과 텍스처 하나씩만 쓴다.
+- 떠 있는 후광과 톱니, 링 구멍, 활시위 틈은 누끼 뒤에 꼭 확인한다.
+- Tripo 입력 그림에서는 떠 있는 후광과 톱니를 뺀다. 게임 부품으로 따로 만든다.
+
+## 글자
+- 그림에는 글자와 숫자를 넣지 않는다. 모든 글자는 게임 글자(한/영)로 넣는다.
+- 영어는 한국어보다 30~50% 길어도 9조각으로 늘어나 들어가야 한다.
+- 글자 크기는 최소 16, 본문 20. 대비는 글자 4.5:1, 아이콘·버튼 테두리 3:1 이상.
+
+## 크기
+| 대상 | 크기 |
+|---|---|
+| 100px 이하로 보이는 아이콘(무기 포함) | 512 |
+| 48px 이하로 보이는 아이콘 | 256 |
+| 입자 | 128 |
+| 진영 카드 | 570x954 |
+| 직업 그림 | 약 420x512 (직업 카드 창도 3:4 아치로 만든다) |
+| 지도 양피지 | 1536x1024 |
+| 썸네일 | 1920x1080 |
+| 게임 아이콘 | 512 |
+- 2048 원본은 art/out에 보관한다.
+
+## 등급 칸 안쪽 색
+- 안쪽은 밝은 색으로 한다(크림 또는 연한 청회색).
+- 스타일 보드에서 실제 아이콘 3개(철 검, 뿔 T7, 젤리)를 48px로 놓고 비교해 정한다.
+
+## 마스터 그림 4장
+- UI = PanelMain, 아이콘 = 철 검, 사람 = 빛 전사(남), 생물 = 아기 슬라임.
+- 같은 종류의 그림은 마스터를 스타일 참조(60~70)로 건다. 형제 그림은 첫 승인작을 구조 참조(약 50)로 건다.
+- 옛 그림, v1, 거절작은 참조로 쓰지 않는다.
+- 예외: 승인된 FreshTyped 진영 카드에서 글자만 지운 판은 새 진영 카드의 구조·스타일 참조로 쓴다.
+
+## 검사와 적용 순서
+1. 생성
+2. 배경 제거
+3. 흰 바탕과 남색 바탕에서 400% 확대해 찌꺼기, 구멍, 가짜 글자를 확인한다.
+4. prep_ui로 다듬는다. 9조각 부품은 좌우를 맞추고 가운데를 평평하게 한다.
+5. 실제 표시 크기로 확인한다: 아이콘 48px, 배지 24px, 초상 170px, 게임 아이콘 150px.
+6. 처리가 끝난 최종 파일을 사용자에게 보여 준다.
+7. approved.json에 기록한다.
+8. 10장 이하씩 나눠 업로드한다.
+9. Config 키를 고친다. Size, Slice, SliceScale, Inner, Tone을 함께 바꾸고, 대체 화면 색도 새 팔레트로 맞춘다.
+10. 실행 중인 Studio에서 확인한다: PC, 749x361, 844x390, 한/영, 그림을 끈 화면.
+- 업로드 성공은 승인이 아니다.
+- 무기 아이콘은 Config.Weapons의 색, 재질, 이름 변경과 같은 커밋으로 넣는다.
+  - T6: 연보라
+  - T8: 슬라임 초록
+  - T5: Glass 재질 제거
+  - 이름: 숲도둑 황금 / 옛 왕국 수정 / 수호령
+
+## 중복 정리 (한 자리에 한 그림)
+- 등급 칸은 UIP_Slot 5종 + 빈 칸만 쓴다.
+- 별, 빛살, 반짝이는 각각 하나씩만 둔다. 별은 색을 입히는 UIP_Star다.
+- 알은 펫 세트 6개 + 골드 알만 쓴다.
+- 둥지지기는 캐릭터 분야 디자인 하나만 쓴다.
+- 펫 카드, 이름표, 발바닥 아이콘은 UI 키트의 것을 쓴다.
+- 깃발은 불투명 한 세트만 쓴다.
+- 지도는 빈 양피지 + 지도 표시로 만든다. 그림 지도는 나중이다.
+- 속도 아이콘은 날개 신발 하나를 직업 선택 화면과 펫이 같이 쓴다. 궁수 X 스킬은 바람 소용돌이 + 화살로 그린다.
+
+## 화면 배치 (그림 전에 회색 상자로 승인)
+- 왼쪽 위: 상태판.
+- 가운데 위: 전쟁 미터, 그 아래 상태 칩.
+- 오른쪽 위: [가방] [지도] [메뉴].
+- 오른쪽 아래: 공격 150, 스킬 96, 물약 72, 자동 버튼.
+- 누르는 범위는 60 이상이다.
+- 왼쪽 아래(조이스틱 자리)와 화면 가운데는 비운다.
+- 화면 높이가 560 미만일 때:
+  - 퀘스트 판을 48 높이 1줄로 접는다.
+  - 스킬은 공격 버튼 왼쪽 위로 부채꼴 배치한다.
+  - 행운 표시는 전쟁 미터 아래 칩 줄로 옮긴다.
+
+## 2. 분야별 방향 요약
+
+### 2-1. UI·HUD (89항목)
+
+## 한 줄 방향
+- 이미 승인된 진영 카드의 반짝이는 금테·보석·광택 느낌을 게임 UI 전체의 기본으로 삼는다.
+- 블록 아바타와 어울리게 모양은 더 통통하고 단순하게 만든다. 가는 덩굴 장식 대신 굵은 테두리와 모서리 보석을 쓴다.
+- 그림에는 글자를 넣지 않는다. 글자는 게임 안에서 한국어·영어로 올린다.
+- 이름: '금테 장난감 상자' 스타일.
+
+## 색과 모양
+- **공통 창:** 남색 테두리 + 금테 + 크림 속지. 어느 진영이 열어도 어울리는 중립 틀 하나로 모든 창을 만든다.
+- **진영 표시는 작은 자리에만:** 레벨 배지, 진영·직업 카드, 창 머리띠 왼쪽 동그라미.
+  - 빛의 기사단: 상아·금·하늘색, 후광.
+  - 뿔 군단: 검붉은 돌·진홍·금, 만화 뿔. 해골 문양은 쓰지 않는다(어린이 안전).
+  - 장인 길드: 청록·황동·나무, 톱니.
+- **버튼 색 = 뜻:**
+  - 금색 = 주요 버튼(사기·확인)
+  - 파랑 = 보조 버튼과 스킬(MP 바와 같은 색)
+  - 초록 = 받기
+  - 주황금 = 공격
+  - 빨강은 뿔 군단과 위험 알림에만 쓴다.
+- **등급:** 5색(일반 회색, 고급 초록, 희귀 파랑, 영웅 보라, 전설 주황)은 지금 색을 그대로 쓴다. 아이템 칸 테두리 장식도 등급마다 다르게 만들어(잎 → 보석 → 날개 → 왕관) 색을 못 구분해도 별 개수와 함께 알아볼 수 있게 한다.
+- **깊이 3단계:**
+  1. HUD: 얇은 남색 판. 세상이 잘 보이게 한다.
+  2. 창: 불투명한 남색 + 크림.
+  3. 축하·경고: 금빛 리본, 빛살, 빨간 경고 띠.
+
+## 폰 가로 화면 배치
+기준은 1280×720이고, 작은 폰 749×361까지 맞춘다.
+- **왼쪽 위 — 내 상태판:** 3D 얼굴 링, 진영 모양 레벨 배지, HP(초록)·MP(파랑)·경험치(하늘색) 바, 골드. 지금처럼 세로로 길게 늘어놓지 않고 한 덩어리로 묶는다.
+- **가운데 위 — 전쟁 미터:** 왼쪽 금빛 후광 ↔ 오른쪽 빨간 뿔, 가운데 왕관 표시.
+  - 그 아래 상태 칩: 안전/PvP/새싹과 지역 이름.
+  - 그 아래 알림: 최대 3줄.
+  - 지역 이름은 화면 칩과 배너로 보여 줘서, 3D 간판이 전쟁 미터와 겹치는 문제를 없앤다.
+- **오른쪽 위 — 버튼 줄:** [가방] [지도] [메뉴]. 그림 아래에 짧은 글자를 단다. 가방을 바로 꺼내 주문서·물약을 빨리 쓰게 한다. 정식 때 [펫]을 더한다.
+- **오른쪽 가운데 — 퀘스트 판:** 이야기 1줄 + 서브 줄. 작은 폰에서는 2줄까지 보이고 접을 수 있다. 왼쪽 가운데는 조이스틱이 잡히는 자리라서 누르는 판을 두지 않는다.
+- **오른쪽 아래 — 전투 묶음(점프 버튼 기준):**
+  - 큰 공격 버튼
+  - 그 위로 스킬 Q·Z를 부채꼴로 배치
+  - 점프 버튼 위에 자동 버튼. 켜지면 금빛 화살 고리가 돈다.
+  - 공격 버튼 왼쪽에 HP·MP 물약 칸(남은 개수 표시). HP가 30% 아래로 떨어지면 물약 칸이 깜빡인다.
+- **왼쪽 아래(화면 왼쪽 약 40%, 아래쪽 약 2/3):** 조이스틱 전용이라 비운다. 화면 가운데도 비워 캐릭터·몬스터·공격 범위가 보이게 한다.
+- **크기:**
+  - 누르는 것은 최소 60(폰에서 약 45pt). 공격 150, 스킬 96, 물약 72, 메뉴 버튼 64, 목록 줄 높이 64, 아이템 칸 88.
+  - 글자는 최소 16, 본문 20. 숫자는 굵게, 모든 글자에 어두운 외곽선을 붙인다.
+- **안전 영역:** 모든 UI는 Roblox 상단바 아래 안전 영역 안에 둔다. 버튼은 누르는 순간 반응하게 한다.
+- **채팅:** 채팅 창을 열면 왼쪽 위 상태판과 겹친다. 폰에서는 채팅이 기본으로 닫혀 있어서 허용한다.
+
+## 창 부품 키트
+모두 글자 없는 빈 판이고, 9조각으로 늘어난다.
+- **판과 머리띠:** 기본 창, 어두운 판, 창 머리띠(왼쪽에 문장 자리), 제목 리본, 탭(켜짐·꺼짐)
+- **버튼:** 버튼 3색, 네모·동그라미 아이콘 버튼
+- **목록과 입력:** 목록 줄(기본·선택됨), 입력 칸
+- **표시:** 칩, 새 소식 점, 알림 줄, 큰 축하 배너, 경고 배너, 보상 빛살, 별
+- **아이템 칸:** 등급 5종 + 빈 칸
+- **대화:** 대화창과 이름표(초상화 틀은 정식), NPC 머리 위 표시 말풍선
+- **HUD 전용:** 상태판, 바 틀과 채움, 진영 레벨 배지 4종, 공격·스킬·물약 버튼, 자동 고리, 전쟁 미터 틀과 왕관 표시, 퀘스트 줄과 탭, 흰색 아이콘 13종
+- **색 입히기:** 바 채움과 칩은 흰색으로 그려 두고 게임에서 승인된 색을 입힌다(HP가 낮으면 빨강, 전쟁 미터는 금/빨강).
+- **키 이름:** 기존 Config 부품 키 이름을 그대로 쓰면 코드를 고치지 않고 그림만 바꿀 수 있다.
+
+## 로딩·아이콘·썸네일
+- **게임 아이콘 3안:**
+  1. 머리 한쪽에 후광, 다른 쪽에 뿔을 단 블록 아바타 아이가 왕관 조각을 든 모습
+  2. 반은 금빛, 반은 진홍인 부서진 왕관
+  3. 후광과 뿔을 단 아기 슬라임
+  - 고를 때 150px로 줄인 모습도 같이 본다.
+- **썸네일:**
+  1. 분수 광장에서 빛 팀과 뿔 팀이 마주 선 장면
+  2. 초원 슬라임 사냥과 희귀 무기 빛기둥
+  3. 핼러윈 몬스터 — 호박 슬라임, 꼬마 유령, 박쥐 고블린 (1~3은 베타)
+  4. 펫 진화 (정식)
+  - 모든 사람 캐릭터는 어깨·몸통·배·다리를 가린 옷을 입는다.
+  - 실제 게임과 너무 다르면 쓰지 않는다.
+  - 로고 판은 Firefly로 만들고, 로고 글자는 글꼴로 한/영 두 벌을 따로 만든다.
+- **로딩 화면(정식):** 광장에서 하늘의 부서진 왕관을 올려다보는 그림. 아래에 진행 바와 팁을 둔다.
+
+## 순서
+1. 진영 화면 6장
+2. 직업 카드 3장
+3. 공통 창 키트
+4. HUD
+5. 아이템 칸·별
+6. 아이콘·썸네일
+7. 지도
+8. 정식용 부품
+
+## 사용자에게 물을 것 (이것만)
+1. 그림을 만들기 전에 Studio에서 회색 상자로 만든 배치 시안 1장(폰·PC 스크린샷)을 승인해 주세요.
+2. 그림은 한 장씩 승인해 주세요.
+3. 아이콘 3안과 썸네일을 골라 주세요.
+4. 버튼 3색, 등급 칸 5개, 흰 아이콘 13개처럼 비슷한 형제 부품은 한 화면에 나란히 보여 드려서 한 번에 승인받아도 될까요? 베타 부품이 약 80장이라 시간을 크게 줄일 수 있어요.
+
+### 2-2. 펫 (56항목)
+
+펫 그림 방향 (2026-10-05, 펫 담당)
+
+한 줄 방향: 펫은 '손바닥만 한 장난감 피규어'다. 몸은 둥글고 머리는 크고 색은 파스텔이다. 종마다 큰 특징 하나(긴 귀, 큰 꼬리, 껍데기, 날개)가 있어 폰 화면에서도 바로 알아본다. 적 몬스터와 절대 헷갈리지 않게 한다.
+
+1. 스타일 정하는 순서
+- 아기 슬라임 한 마리로 스타일 2안을 먼저 보여 준다.
+  - A: 살짝 각진 로우폴리 장난감
+  - B: 매끈한 말랑 비닐 장난감
+- 사용자가 고른 그림을 Firefly '스타일 참조'로 걸고, 나머지 펫을 모두 같은 느낌으로 만든다.
+- 둥지 지기 같은 사람 캐릭터는 블록 장난감 아바타 스타일(로블록스 스타일)로 그린다. 어깨·몸통·배·다리를 옷으로 다 가린다. 동물 펫은 옷이 필요 없다.
+- Firefly는 투명 배경을 바로 만들지 못한다. 그래서 이렇게 한다.
+  - 흰 배경으로 만든다. 흰색·크림색 대상은 회색 배경으로 만든다.
+  - 배경을 지운다.
+  - 밝은 배경과 어두운 배경에서 확대해 검사한다.
+  - 64px로 줄여서도 검사한다.
+
+2. 알아보기 쉬운 모양 규칙
+- 검은색으로 칠해 48px로 줄여도 종이 구분돼야 통과다.
+- 종마다 대표 모양이 하나씩 있다.
+  - 토끼: 긴 귀 / 여우: 빛나는 큰 꼬리 / 다람쥐: 도토리 안기
+  - 달팽이·거북: 껍데기 / 부엉이·박쥐: 날개
+  - 개구리: 버섯 모자 / 양: 구름 털 / 딱정벌레: 등의 톱니
+- 크기는 3단계다. 아바타 키는 약 5 stud다.
+  - 아주 작음 1.5 stud: 슬라임, 병아리, 달팽이
+  - 작음 2 stud: 토끼, 다람쥐, 개구리, 고양이, 딱정벌레, 돌정령
+  - 중간 2.5 stud: 여우, 거북, 양, 부엉이, 박쥐
+- 날아다니는 펫(부엉이, 박쥐, 돌정령, 딱정벌레)은 2 stud 위에 떠서 따라온다.
+- 색 약속(ART_DIRECTION)을 지킨다.
+  - 빨강은 뿔 군단 펫(박쥐의 뿔)에만 쓴다.
+  - 청록은 장인 길드 펫(딱정벌레)과 균형 모습에만 쓴다.
+  - 회색은 '회색 전설' 전용이라 쓰지 않는다. 돌은 따뜻한 모래색으로 칠한다.
+- 적과 구분한다. 펫은 적 색(슬라임 초록, 왕 슬라임 파랑, 해골 뼈색)을 그대로 쓰지 않는다. 몸집이 작고, 머리 위에 이름표가 있다.
+
+3. 펫 목록: 베타 1종 + 정식 13종 + 나중 1~3종
+- 능력·확률은 기존 설계 문서를 따른다. '새로 추가' 2종의 능력은 제안이다.
+- 아기 슬라임 [베타] (희귀·이동 속도)
+  - 얻는 곳: 퀘스트 P1, 정식부터는 말랑 알에서도 3%.
+  - 모습: 연한 민트빛 흰 젤리, 머리 위 새싹 잎, 볼 홍조.
+- 말랑 알 (초원)
+  - 솜털 병아리 (일반·경험치): 버터색 솜뭉치, 머리 위 곱슬 깃털.
+  - 젤리 달팽이 (일반·MP 회복): 라벤더색 몸, 하늘색 투명 젤리 껍데기.
+  - 클로버 토끼 (고급·이동 속도): 흰 토끼, 귀 끝에 네잎클로버, 초록 목도리.
+- 숲 알
+  - 도토리 다람쥐 (고급·골드): 황금 도토리를 안고 있음, 크게 말린 꼬리.
+  - 버섯 개구리 (고급·경험치, 새로 추가): 연두 개구리, 주황 버섯 모자. 빨간 버섯은 뿔 군단 색이라 피한다.
+  - 이끼 거북 (희귀·MP 회복): 이끼 덮인 등껍질, 작은 버섯.
+  - 반딧불 여우 (영웅·이동 속도): 주황 아기 여우, 꼬리 끝이 반딧불처럼 빛남.
+- 유적 알
+  - 꼬마 돌정령 (희귀·몬스터 공격): 모래색 둥근 돌, 보라색으로 빛나는 눈.
+  - 룬 고양이 (희귀·이동 속도, 새로 추가): 라일락색 고양이, 보석 목걸이, 등에 보라색으로 빛나는 줄무늬.
+  - 별빛 부엉이 (영웅·경험치): 남색 깃털, 하얀 별 주근깨.
+- 진영 알 (계급 2, 자기 마을에서만 판다)
+  - 새벽 양 (빛, 영웅·MP 회복): 구름 같은 털, 작은 금 후광, 금 방울.
+  - 꼬마 박쥐 (뿔, 영웅·몬스터 공격): 자두색 몸, 둥근 빨간 뿔, 장난스러운 웃음. 송곳니는 없다.
+  - 태엽 딱정벌레 (장인, 영웅·골드): 청록 등껍질, 황동 톱니, 태엽 열쇠.
+- 나중
+  - 왕관 젤리 (전설, 해골왕에게서 얻음)
+  - 계절 펫: 호박 슬라임 아기, 눈송이 펭귄
+
+4. Lv10 모습 3가지 (힘은 같고 모습만 다르다)
+- 천사: 작은 금 후광 고리, 작은 흰 깃털 날개, 따뜻한 금빛 반짝이.
+- 악마: 둥근 작은 빨간 뿔 2개, 작은 화살 꼬리, 보라·분홍 소용돌이 반짝이. 송곳니·불·빨간 눈은 넣지 않는다. '장난꾸러기' 느낌으로 만든다.
+- 균형: 머리 위 청록 톱니 볏, 옆을 도는 작은 황동 톱니, 청록 반짝이.
+- 만드는 법:
+  - 아기 슬라임으로 시안 3장을 만들어 승인받는다.
+  - 장식 3세트(후광, 뿔, 톱니)는 Blender로 직접 만든다(무료). 모든 펫의 머리와 등에 붙인다.
+  - 아이콘은 종마다 1장만 만든다. 모습은 아이콘 구석의 작은 배지로 표시한다.
+
+5. 등급 테두리 (무기 등급과 같이 쓰니 한 번만 만든다)
+- 색약인 아이도 구분하도록 색과 모양을 같이 쓴다.
+  - 일반: 회색, 민무늬
+  - 고급: 초록, 잎 2개
+  - 희귀: 파랑, 보석 1개
+  - 영웅: 보라, 모서리 별
+  - 전설: 주황금, 작은 왕관, 반짝이. 움직이는 반짝임은 전설에만 넣는다.
+
+6. 알 (지역 색을 그대로 쓴다)
+- 말랑 알: 민트색, 크림색 물방울무늬, 클로버
+- 숲 알: 도토리 갈색, 잎 띠
+- 유적 알: 모래색, 보라색으로 빛나는 무늬(글자 모양 아님)
+- 새벽 알: 진주색, 금 띠, 작은 후광
+- 저주받은 알: 자두색, 작고 둥근 뿔. 해골은 넣지 않는다.
+- 톱니 알: 청록, 황동 톱니
+- 부화 연출: 알이 3번 흔들림 → 금이 감 → 등급색 빛줄기 → 펫 등장, 별·하트 색종이.
+
+7. 펫 화면·이름표·도감
+- 내 펫 줄: 등급 테두리 안의 아이콘, 이름, 별, 능력 아이콘.
+- 이름표: 머리 위의 작은 판에 고른 선택을 배지로 붙인다.
+  - 보살펴요: 후광 하트
+  - 길들여요: 둥근 뿔
+  - 장인: 톱니
+- 도감: 스티커북처럼 만든다.
+  - 모르는 펫은 어두운 그림자와 '어디서 나와요' 힌트로 보여 준다.
+  - 찾은 펫에는 발바닥 도장을 찍는다.
+  - 지역 탭은 알 아이콘을 다시 써서 새 그림을 줄인다.
+- 펫 둥지: 교차로에 큰 짚 둥지와 알 진열대를 두고, 둥지 지기 NPC를 세운다.
+
+8. 3D
+- 베타: 지금 슬라임 3D를 0.35배로 써서 Tripo가 필요 없다.
+- 정식: Tripo로 20개를 만든다(펫 13 + 알 6 + 둥지 1).
+  - 비용은 몬스터 레시피 1개 약 30크레딧이라 합계 약 600크레딧이다. 실패해서 다시 만드는 비용은 따로다.
+  - 만들기 전에 총액을 다시 묻는다.
+- 펫 1마리는 삼각형 3,000개 이하, 텍스처 512로 만든다. 뼈대는 넣지 않고, 깡충·둥실 움직임은 코드로 한다.
+
+9. 장수
+- 베타 12장:
+  - 아기 슬라임 1, 등급 테두리 5, 이름표 1, 선택 배지 3, 발바닥 아이콘 1, 속도 아이콘 1
+  - 아이콘 없이 글자만으로도 펫은 동작한다. 그림 전면 교체 단계의 아이콘 차례에 같이 넣는다.
+- 정식: 약 38장, 3D 20개.
+- 나중: 왕관 젤리, 모자 장식, 재주·기분 아이콘, 계절 펫·알.
+- Firefly 생성 횟수 예상: 한 장당 2~3번 시도해서 베타 약 30회, 정식 약 100회.
+
+10. 사용자에게 물어볼 것 (2개만)
+- Q1. 아기 슬라임을 적 슬라임과 다르게 보이게 할까요?
+  - A(추천): 연한 민트빛 흰색에 머리 위 새싹을 붙여요. 베타에서는 지금 3D에 색만 바꾸고 새싹 하나를 붙여서 무료예요.
+  - B: 적 슬라임과 같은 초록색으로 두고 크기만 작게 해요.
+- Q2. 장인 길드 펫 '태엽 딱정벌레'는 언제 줄까요?
+  - A(추천): 정식 때 '톱니 알'로 줘요. 빛의 새벽 알, 뿔의 저주받은 알처럼 장인 계급 2가 되면 교차로에서 사요.
+  - B: 기존 계획대로 나중에 재료로 만들게 해요.
+
+### 2-3. 무기 (65항목)
+
+무기 그림 방향 (쉽게 정리)
+
+1) 아이콘 모양 규칙
+- 무기 아이콘은 한 장씩 따로 만든다. 모두 같은 각도(손잡이 왼쪽 아래 → 끝 오른쪽 위, 45도), 같은 크기(칸의 80%), 두꺼운 남색 테두리.
+- 느낌: 통통한 장난감 블록 같은 3D 그림, 밝은 색, 아이 친화.
+- 흰 배경에서 만든 뒤 배경을 지우고(누끼), 밝은 바탕·어두운 바탕에서 크게 확대해 확인한다.
+- 직업별 기본 모양은 끝까지 지킨다: 검 = 곧은 날 + 손잡이 가로대, 지팡이 = 긴 막대 + 머리 장식, 활 = 휜 활대 + 줄.
+
+2) 등급은 그림에 넣지 않는다
+- 아이콘 칸 테두리 색 + 별 개수 + 무기 빛으로 보여 준다. 그래서 등급이 바뀌어도 그림을 다시 그리지 않는다.
+- 등급 색은 이미 정한 5색 그대로: 일반 흰 · 고급 초록 · 희귀 파랑 · 영웅 보라 · 전설 주황.
+- 전설만 반짝이며 움직인다.
+
+3) 색의 역할
+- 진영색 = 누구 편, 등급색 = 얼마나 귀한지, 강화 = 얼마나 밝은지.
+- 빨강은 뿔 군단·위험에만, 청록은 장인 길드에만 쓴다.
+- 그래서 수호령은 지금의 민트색 대신 연보라 영혼 불꽃으로, 젤리 왕관은 청록이 아닌 슬라임 초록으로 그린다.
+
+4) 3D 전까지 게임 속 무기
+- 지금 블록 무기에 등급 빛·반짝이·휘두르기 궤적만 입힌다(기존 효과 재사용).
+- 희귀부터 빛이 나고, 영웅은 반짝이, 전설은 금빛 궤적과 바닥 빛기둥.
+- 강화: +4 살짝 빛남 → +7 빛과 반짝이 → +10 강한 빛 + 궤적 + 작은 별이 무기 주위를 돈다.
+- 강화 실패는 회색 연기와 방패 표시로 보여 준다(빨강 금지).
+- 적용 전 스튜디오 화면을 보여 드리고 승인받는다.
+
+5) 계열 이야기(모양)
+- 나뭇가지: 잎 달린 막대
+- 나무: 연습용 나무 무기
+- 철: 단단한 기본 무기
+- 숲도둑 황금: 고블린이 훔친 금. 삐뚤빼뚤 갈고리 모양 + 고블린 이빨 장식
+- 옛 왕국 수정: 하얀 돌 + 파란 수정, 왕관 무늬
+- 수호령: 옛 기사 손잡이 + 연보라 영혼 불꽃. 해골은 없음
+- 여명: 흰 대리석 + 금, 후광 고리, 작은 날개
+- 파멸: 검은 돌 + 용암 금, 만화 악당 뿔
+- 왕관 조각: 황동 톱니 + 청록 조각
+- 젤리 왕관: 말랑 초록 젤리 + 작은 금관, 동글동글
+- 나중: 핼러윈 호박 등불 계열, 잠든 왕·말랑 방울·눈꽃 계열
+
+6) 순서
+- 베타: ① 무기 스타일 기준 1장(철 검) 승인 → ② 젤리 왕관 3개(지금 그림이 아예 없음) → ③ 1~3단계 9개(첫 10분에 보임) → ④ 4~6단계 9개 → ⑤ 등급 칸 테두리·별.
+- 시간이 모자라면 ④부터 정식으로 미룬다. 옛 아이콘도 일단은 작동한다.
+- 정식: 진영 무기 8개, 3D용 계열 시안(Tripo는 총액 먼저), 강화 빛·궤적 텍스처.
+- 장인 길드 궁수의 진영 활(왕관 조각 활)은 펫 훈련사로 바뀔 수 있어 그림을 보류한다.
+
+7) 사용자에게 물을 것(모바일로 짧게)
+- Q1. 무기 스타일 기준 1장(철 검)을 보여 드릴게요. 이 느낌으로 전부 갈까요? (그림 승인)
+- Q2. 강화 빛(+4/+7/+10)을 베타에 넣을까요, 정식에 넣을까요? 추천: 정식. 베타는 등급 빛만.
+- 이름·모양·색 세부는 세션이 정하고, 그림 시안만 한 장씩 보여 드린다.
+
+### 2-4. 캐릭터·NPC·몬스터 (48항목)
+
+한 줄 방향: 사람 캐릭터는 모두 '블록 장난감 아바타'처럼 그린다. 네모난 머리, 똑같은 네모 몸, 단순한 그림 얼굴이고, 치비·애니 눈은 쓰지 않는다. 진영은 색 → 머리 위 모양 → 소품 순서로 1초 안에 읽혀야 한다. 빛은 흰색·금색에 동그라미와 후광, 뿔은 검붉은색에 세모(끝은 둥글게)와 짧은 뿔, 장인은 청록·황동에 네모와 톱니다.
+
+옷 규칙(계정 안전): 모든 사람은 높은 깃, 긴소매, 장갑, 긴바지(치마는 무릎 길이에 불투명 타이츠), 부츠를 입는다. 보이는 곳은 얼굴과 손뿐이고 몸 모양은 모두 같은 네모다.
+
+NPC는 멀리서도 소품 하나로 구별되게 했다.
+- 빛 안내자(여): 기사단장, 하늘색 망토와 지도 두루마리
+- 뿔 안내자(남): 장난꾸러기 선배, 후드 위로 뿔이 나오고 동전 자루를 멘다
+- 장인 안내자(여): 말수 적은 장인, 큰 렌치와 고글, 귀에 연필
+- 스킬 선생님: 할아버지, 학사모와 큰 책. 금·빨강 반반 목도리로 '균형'을 나타낸다
+- 장비 상인 C: 지친 베테랑, 큰 망치와 코코아 머그, 주황 두건
+- 물약 상인: 병이 가득 든 큰 배낭
+- 알 둥지지기(여): 챙 위에 둥지(병아리가 앉음)가 있는 밀짚모자, 알 바구니
+
+핼러윈 몬스터는 무섭지 않고 귀엽게 만든다. 로블록스 연령 표시 '최소'는 무서운 장면이 가끔·약할 때만 허용된다. 그래서 빨강 대신 주황·보라를 쓴다.
+- 호박 슬라임: 호박 모양 젤리
+- 꼬마 유령: 수면 모자를 쓰고 사탕 등불을 든다
+- 박쥐 고블린: 박쥐 망토로 분장하고 사탕 바구니를 든다
+- 미니보스 아이디어: 촛불 왕관을 쓴 '호박 대왕 슬라임'
+
+제작 순서와 방법:
+- 순서: ① 직업 그림 18장(첫 1분 화면이고 옛 그림 ID가 막힘) → ② 안내자 초상 3장(환영 대화의 170px 자리) → ③ 핼러윈 3종 시안 → Tripo 총액 안내 → ④ 나머지(정식).
+- 첫 장(빛 전사 남)을 4안 보여 드리고, 고르신 그림을 Firefly '스타일 참조'로 걸어 나머지를 같은 그림체로 만든다.
+- 3D로 가는 그림은 정면 A자세로 그려서 승인 그림을 그대로 Tripo에 넣는다.
+
+물어볼 것(모바일로 번호만 답하시면 돼요):
+Q1. NPC를 게임 안에서 어떻게 만들까요?
+- A: 로블록스 기본 블록 몸에 새 얼굴·옷 그림을 입히기. 무료이고 진짜 로블록스 느낌이라 추천해요.
+- B: Tripo 3D로 만들기. 유료라 총액을 먼저 알려 드려요.
+Q2. 핼러윈 몬스터는요?
+- A: 기존 슬라임·고블린 모델에 호박 껍질·박쥐 망토를 씌우고, 유령만 새로 만들기. 싸고 빨라서 추천해요.
+- B: 셋 다 Tripo로 새로 만들기. 총액을 먼저 알려 드려요.
+Q3. '호박 대왕 슬라임' 미니보스를 10/31 베타에 넣을까요? 초원에 정해진 시간마다 나와서 같이 잡는 방식이에요. 기능 마감 10/24 일정이 빠듯해요. Q2를 A로 하시면 넣는 걸 추천해요(네/아니오).
+
+### 2-5. 더 많이(성장 표식·배지·아이템·지도·시즌) (103항목)
+
+목표는 하나예요. "모든 행동이 천사 아니면 악마 쪽으로 기운다"를 눈으로 보이게 하는 거예요.
+
+1) 머리 위 표시가 계급과 같이 자라요.
+- 빛(명예): 얇은 금고리 → 진주 박힌 고리 → 빛살 두 겹 고리 → (4계급) 깃털 장식 고리와 작은 흰 깃털 날개 → (5계급) 햇살 후광과 큰 흰금 날개.
+- 뿔(악명): 작은 뿔 → 짧게 휜 뿔 → 쇠고리 감긴 숫양 뿔 → (4계급) 불씨가 갈라진 큰 뿔과 작은 박쥐 날개 → (5계급) 네 뿔 왕관과 큰 박쥐 날개.
+- 뿔 쪽도 무섭지 않은 만화 악당으로 그려요.
+- 플레이어는 자기 아바타를 쓰니까 몸은 그리지 않아요. 회색 블록 마네킹 위에 모양만 정하는 시안을 받고, 그대로 3D 부품으로 만들어요.
+
+2) 편을 바꾼 흔적이 남아요.
+- 타락: 찢어진 검은 망토. 안감은 불씨 빨강이에요.
+- 구원: 금 간 후광을 금으로 이어 붙인 모습이에요.
+- 회색 전설: 작은 뿔이 달린 회색 후광과 회색 안개예요. 양쪽을 다 겪은 사람이라는 뜻이에요.
+
+3) 칭호 배지:
+- 이름표 칭호 옆에 작은 배지를 붙여요. 빛 5장, 뿔 5장, 장인·회색 전설·전설의 악당 각 1장이에요.
+- 24픽셀에서도 알아보게 개수가 아니라 모양(리본·빛살·날개·왕관)으로 구분해요.
+
+4) 왕관 조각:
+- 기본 금빛 조각 1장이 있어요.
+- 결과 3장: 정화(흰금과 작은 후광), 삼킴(진홍과 불씨 균열), 다듬기(청록 보석). 왕관 조각 퀘스트의 선택과 맞춰요.
+
+5) 전쟁 결과:
+- 하늘 상자(6면)는 Firefly로 맞추기 어려워요. 대신 해·달 그림 2장을 써요. 빛이 이기면 금빛 후광 해, 뿔이 이기면 진홍 월식 달이에요.
+- 교차로 깃발도 이긴 진영 것으로 10분 동안 바꿔요. 비기면 왕관 깃발이에요.
+- 운명의 제단 바닥 문양, 빛 성당 장미창, 현상수배 빈 포스터도 그려요.
+
+6) 지도:
+- 글자 없는 새 양피지를 그리고 지명은 게임 글자로 넣어요.
+- 지금 기호 글자(◯ ▲ 장 등)를 대신할 그림 아이콘 18장과 나침반을 그려요.
+
+7) 스킬 아이콘:
+- 직업마다 색을 정해요. 전사 주황금, 마법사 보라, 궁수 초록이에요.
+- Q·Z는 베타, X는 정식이에요. 진영 색은 버튼 테두리가 맡아요.
+
+8) 아이템 아이콘:
+- 재료 6개, 핼러윈 사탕, 주문서 6개, 물약 2개를 그려요.
+- 주문서 색은 Config 색을 그대로 쓰고, 성공률 숫자는 게임 글자로 넣어요.
+- 알 5개는 정식이에요.
+
+9) 감정 스티커:
+- 지금 쓰는 5개(아야·눈물·어지러움·화남·당황)를 글자 없이 다시 그려요. "아야!"는 게임 글자로 넣어요.
+- 새 스티커 6개는 나중이에요.
+
+10) 시즌:
+- 핼러윈·크리스마스 스킨은 고리·두 뿔·톱니 모양을 그대로 두고 재질만 바꿔요. 그래야 어느 편인지 계속 보여요.
+- 크리스마스 마을 장식은 정식 계획에 맞춰요.
+
+작업 방식:
+- 가족마다 첫 장만 후보 4장을 뽑아 한 장씩 보여 드리고 고르시게 해요. 나머지 장은 그 승인작을 Firefly 스타일 참조로 붙여 같은 느낌을 지켜요.
+- Firefly는 투명 배경을 못 만들어요. 흰 배경에 생성해요. 흰색·밝은 물체는 짙은 남색 배경에 생성해요. 그다음 배경을 지우고, 밝은 배경과 어두운 배경에서 확대해 검사해요.
+- 베타(10/24 전) 순서: 아이템 아이콘 → Q·Z 스킬 → 감정 스티커 5 → 지도 양피지 → 왕관 조각 기본. 나머지는 정식이나 나중에 해요.
+
+## 3. 베타 그림 순서 (묶음 0–21)
+
+- 필수는 0~11번 묶음이고, 약 93장을 올린다. 12~21번은 여유가 있을 때만 한다.
+- 10/20 점검에서 늦으면 뒤에서부터 정식으로 미룬다.
+- 승인이 느리면 최저선 약 50장만 한다.
+
+| 묶음 | 이름 | 그림 | 이유 |
+|---|---|---|---|
+| 0 | 선행 시안 (지금 바로, 기능 작업을 막는 것) | Pet_BabySlime, CON_PumpkinSlime, CON_LittleGhost, CON_BatGoblin, CON_SlimeRound, CON_PumpkinKing | 10/24 기능 마감 전에 펫 색·새싹 파츠, 핼러윈 Tripo·뼈대 작업을 하려면 지금 승인이 필요해서 6단계보다 먼저 한다. 아기 슬라임은 2안(민트빛 흰색+새싹 추천 / 초록)을 보여 주고, 승인작은 생물 마스터가 된다. 박쥐 고블린은 기존 Goblin.glb 정면 렌더를 구조 참조로 쓴다. CON_SlimeRound는 질문 2에서 A+일 때만, CON_PumpkinKing은 미니보스를 '네'로 답했을 때만 만든다. 시안은 Tripo 입력·참고용이라 Roblox에 올리지 않는다. 아기 슬라임 아이콘은 9번 묶음에서 올린다. |
+| 1 | 스타일 보드 (마스터 한 화면) | UIP_PanelMain, UIP_BtnPrimary, UIP_SlotRare, Weapon_Warrior_T3, Item_PotionHP, CLS_HaloWarrior_M | 그림 작업 첫날이고 회색 상자 배치 승인 다음 차례다. 칸마다 4안을 만들어 한 장에 모아 폰으로 보낸다. 승인된 아기 슬라임 아이콘(PIL 남색 3% 테두리)도 같은 장에 놓는다. 등급 칸 안쪽 색은 실제 아이콘 3개를 48px로 놓고 크림·연한 청회색·남색을 비교해 정한다. 프롬프트 끝맺음 비교, Firefly 크레딧 확인, 처음 5장 작업 시간 측정도 이때 한다. 승인되면 각 칸이 그 종류의 스타일 참조가 된다. 업로드는 아래 해당 묶음에서 한다. |
+| 2 | 진영 화면 (빈 카드·제목·설명판·하단 + 직업 카드 틀) | UIP_FactionCardHalo, UIP_FactionCardHorns, UIP_FactionCardArtisan, UIP_FactionTitle, UIP_FactionPremise, UIP_FactionFooter, UIP_ClassCardHalo, UIP_ClassCardHorns, UIP_ClassCardArtisan | 6단계 첫 순서다. 승인 카드에 옛 문구('발사하면…', '발사 게이지 175')가 그림으로 박혀 있어 틀렸고, 영어판도 막는다. 승인 FreshTyped 카드에서 글자만 지운 판을 구조·스타일 참조로 써서 모양을 지킨다. 뿔 카드 문장은 질문 6의 답을 따른다. 직업 카드 창은 3:4 아치로 만든다. 코드도 같이 고친다: BakedText=false, 실제 글자 자리(이름·설명·혜택·버튼), 버튼 영역 다시 재기. |
+| 3 | 진영 특성 아이콘 1 | Icon_Exp, Icon_Heart, Icon_HealWings, Icon_BankPouch, Icon_GoldPile, Icon_LifestealSword, Icon_GoldGuard, Icon_Kaiju, Icon_NoBuff, Icon_NoLoot | 빈 카드로 바꾸면 혜택 줄 아이콘이 비고, 지금 특성 아이콘 ID는 '업로드 막힘' 상태다. 기존 키에 연결한다: IconExp, IconHeart, IconWings, IconPouch, IconGoldPile, IconBloodSword(그림은 아이 안전한 흡수 검), IconShieldBlue, IconDemon(그림은 귀여운 괴수), IconNoBuff, IconNoLoot. 철 검 마스터를 스타일 참조로 쓰고, 형제 한 장으로 보여 준다. |
+| 4 | 진영·직업 선택 마무리 + 공통 창 1 | Icon_Safe, Icon_Hammer, Icon_StatSpeed, Icon_StatAttack, UIP_PanelMain, UIP_PanelDark, UIP_PanelHeader, UIP_TitleRibbon, UIP_BtnPrimary, UIP_BtnSecondary | 특성 아이콘 나머지와 직업 선택 능력 아이콘(IconBoot, IconAttack)으로 첫 화면을 끝낸다. 날개 신발은 펫 속도 아이콘과 같이 쓴다. 이어서 HUD·공통 화면 단계를 시작한다. 키는 PanelParchment, PanelCard, RibbonHeader를 재사용하고 Size·Slice·SliceScale·Inner·Tone을 같이 바꾼다. |
+| 5 | 공통 창 2 + HUD 상태판 | UIP_BtnConfirm, UIP_BtnSquare, UIP_BtnRound, UIP_ListRow, UIP_Chip, UIP_DialogBox, UIP_GlyphClose, UIP_StatusPlate, UIP_BarTrack, UIP_BarFill | 모든 창(상점·대장간·아이템·대화)과 왼쪽 위 상태판에 쓴다. Chip은 새 키로 만들고 기존 Pill(크림)은 남긴다. 그래야 칩 12곳이 하얗게 되지 않는다. BarFill은 흰색으로 그려 HP 초록, MP 로열블루, XP 하늘색을 코드로 입힌다. VitalsUI 색 변경도 이 묶음에 포함한다. 버튼 3색은 형제 한 장으로 보여 준다. |
+| 6 | HUD 전투 버튼·레벨 배지·직업 글리프 | UIP_PortraitRing, UIP_BtnAttack, UIP_BtnSkill, UIP_BtnPotion, UIP_LevelBadge, UIP_LevelBadgeHalo, UIP_LevelBadgeHorns, UIP_LevelBadgeArtisan, UIP_GlyphSword, UIP_GlyphStaff | 오른쪽 아래 전투 묶음(공격 150 주황, 스킬 96 MP색 테두리, 물약 72)과 진영 레벨 배지 4종이다. 진영 배지는 HUD의 ShieldHalo/Horns 자리도 대신한다. 공격 버튼 대체 색(COL.AttackFill)도 빨강에서 주황으로 바꾼다. 얼굴 링 구멍이 뚫렸는지 누끼 후 확인한다. |
+| 7 | HUD 버튼 줄 글리프 + 등급 칸 | UIP_GlyphBow, UIP_GlyphBag, UIP_GlyphMap, UIP_GlyphMenu, UIP_SlotCommon, UIP_SlotUncommon, UIP_SlotRare, UIP_SlotEpic, UIP_SlotLegendary, UIP_SlotEmpty | 오른쪽 위 [가방][지도][메뉴] 줄과 드랍·아이템·대장간 칸이다. 등급 칸 하나를 펫과 무기가 같이 쓰고, 펫·무기 쪽 테두리 설계는 버린다. 영웅은 자수정과 모서리 별이다. 전설만 UIGradient로 반짝인다. 6칸을 형제 한 장으로 보여 준다. |
+| 8 | 아이콘: 별·주문서·물약·젤리 | UIP_Star, Item_Jelly, Item_Enh70, Item_Enh30, Item_Enh10, Item_Move70, Item_Move30, Item_Move10, Item_PotionHP, Item_PotionMP | 아이콘 단계다. 베타 드랍·주문서·물약 상점(A23-11·12·14)이 바로 쓰고, 지금은 그림이 없거나 옛 그림이다. 별은 색 입히는 한 장으로 IconStar/IconStarEmpty를 대신한다. 옮기기 70%는 Config 색도 민트그린 110,220,150으로 같이 바꾼다. 주문서 6장은 형제 한 장으로 보여 주고, 퍼센트는 게임 글자로 쓴다. |
+| 9 | 아이콘: 젤리 왕관 무기·상태 아이콘·아기 슬라임 | Weapon_Warrior_T3, Weapon_Warrior_T8, Weapon_Mage_T8, Weapon_Archer_T8, Item_Candy, Icon_Coin, Icon_Sprout, Icon_WantedStar, Pet_BabySlime | T8 젤리 왕관은 베타에서 얻을 수 있는데 그림이 아예 없다. 새 키 Weapon_<Class>_T8을 추가하고, Config.Weapons T8 색을 청록에서 슬라임 초록 110,210,110으로 같은 커밋에서 바꾼다. 골드·새싹·수배 별은 HUD와 EventHUD에서 지금 쓰는 아이콘이다. 사탕은 핼러윈 드랍이다. 아기 슬라임 아이콘을 올린다. 업로드는 무기 포함 512로 한다. |
+| 10 | 캐릭터: 직업 그림 9 (진영×직업, 남녀 섞음) | CLS_HaloWarrior_M, CLS_HaloMage_F, CLS_HaloArcher_M, CLS_HornsWarrior_F, CLS_HornsMage_M, CLS_HornsArcher_F, CLS_ArtisanWarrior_M, CLS_ArtisanMage_F, CLS_ArtisanArcher_M | 캐릭터 단계다. 옛 직업 그림 ID는 업로드가 막혀 첫 1분 화면이 사실상 비어 있다. 플레이어는 본인 아바타를 쓰니 베타는 9장만 하고 성별 버튼은 잠시 숨긴다. 여자 그림은 승인된 남자 마스터를 구조 참조(약 70)로 써서 몸통을 같게 만든다. 모든 그림을 단정한 옷 기준으로 검사한다. 승인 후 CardLayout을 다시 잰다. |
+| 11 | 캐릭터: 안내자 초상 + 게임 아이콘·썸네일 | PTR_GuideHalo, PTR_GuideHorns, PTR_GuideArtisan, GameIcon_A_SplitHero, GameIcon_B_Crown, GameIcon_C_BabySlime, Thumb_A_FactionClash, Thumb_C_Halloween | 환영 대화 170px 초상 3장은 지금 직업 그림을 빌려 쓰고 있어서 필요하다. 초상에도 단정한 옷 줄을 넣는다. 아이콘·썸네일은 승인된 몬스터 시안·아기 슬라임·직업 그림을 참조로 가장 나중에 만든다. 아이콘은 3안과 예전 승인 아이콘을 512·150px로 나란히 보여 주고 1장만 올린다. 썸네일은 실제 베타 모습(평범한 블록 아바타 + 후광·뿔 + 무기)에 맞춘다. 여기까지가 베타 필수다. |
+| 12 | [여유] 추가 HUD·창 1 | UIP_ListRowSelected, UIP_Toast, UIP_BannerGold, UIP_NameTag, UIP_WarMeterFrame, UIP_WarCrownPip, UIP_QuestRow, UIP_AutoRingOn, UIP_NpcMarkerBubble, UIP_RewardRays | 필수 다음 순서로, 6단계 순서를 다시 따라간다(HUD → 아이콘 → 캐릭터 → 지형). 전쟁 미터·퀘스트 줄·자동 고리·NPC 머리 위 표시는 첫 10분 길 찾기를 좋게 한다. 이름표는 펫·NPC와 같이 쓴다. 빛살은 흰색-검정 효과 하나로 만들어 보상·부화·전리품 팝업에 같이 쓴다. 왕관 표시는 Crown 키를 대신한다. |
+| 13 | [여유] 추가 창·글리프 2 | UIP_TabOn, UIP_TabOff, UIP_InputField, UIP_QuestTab, UIP_BannerAlert, UIP_GlyphQuest, UIP_GlyphAuto, UIP_GlyphBack, UIP_GlyphLock, UIP_GlyphCheck | 아이템 창 탭, 닉네임 입력 칸(베타 5단계), 괴수·PvP 경고 배너, 잠긴 퀘스트 표시, 자동 버튼 글리프다. 없으면 기존 그림과 대체 화면으로 동작한다. |
+| 14 | [여유] 스킬 Q·Z + 재료 1 | Skill_Warrior_Q, Skill_Mage_Q, Skill_Archer_Q, Skill_Warrior_Z, Skill_Mage_Z, Skill_Archer_Z, Item_SlimeCore, Item_GoblinTooth, Item_BruteHorn, Item_Bone | 지금 Q·Z가 '발사' 날개 별(IconSpecial) 하나를 같이 써서 뜻이 틀리다. Z 스킬은 베타 플래그 기능이다. 스킬은 버튼 안에 75%로 채운다. 재료는 대장간 판매(A23-12) 목록이다. 10/20에 Z를 끄면 Z 3장은 정식으로 미룬다. |
+| 15 | [여유] 무기 T1~T3 + 기사 문장·느낌표 | Weapon_Warrior_T1, Weapon_Mage_T1, Weapon_Archer_T1, Weapon_Warrior_T2, Weapon_Mage_T2, Weapon_Archer_T2, Weapon_Mage_T3, Weapon_Archer_T3, Item_KnightCrest, UIP_GlyphExclaim | 첫 10분에 보이는 시작 무기와 첫 대장간 구매 무기다. 철 검의 칼·지팡이·활 첫 승인작을 구도 참조로 써서 45° 각도를 같게 맞춘다. 옛 아이콘도 동작하므로 늦으면 정식으로 미룬다. |
+| 16 | [여유] 무기 T4~T6 (이름 변경과 함께) | Weapon_Warrior_T4, Weapon_Mage_T4, Weapon_Archer_T4, Weapon_Warrior_T5, Weapon_Mage_T5, Weapon_Archer_T5, Weapon_Warrior_T6, Weapon_Mage_T6, Weapon_Archer_T6 | 숲도둑 황금, 옛 왕국 수정, 수호령 그림이다. 승인할 때 Config.Weapons(T6 민트를 연보라 180,150,255로, T5 Glass를 SmoothPlastic/Neon으로)와 WeaponNames(한/영) 변경을 같은 커밋으로 Studio에 반영한다. 그래야 손에 든 무기와 아이콘이 맞는다. |
+| 17 | [여유] 펫 선택 배지·감정 스티커·이벤트 아이콘 | Badge_LeanCare, Badge_LeanTame, Badge_LeanGuild, Emo_Ouch, Emo_Tears, Emo_Dizzy, Emo_Angry, Emo_Stress, Icon_Goose, Icon_Clover | P1 퀘스트 선택 배지(펫 이름표 옆)다. 스티커 5장은 지금 한국어 글자가 박혀 있어 영어 전환을 막으므로 글자 없이 다시 그리고 '아야!'는 게임 글자로 쓴다. 거위·행운은 EventHUD 아이콘이다. |
+| 18 | [여유] 출시 장식 | Thumb_B_HuntLoot, UIP_LogoPlate, UIP_EventBannerHalloween, UI_MapParchment, Shard_Base, Icon_Altar | 사냥·전리품 썸네일, 로고 바탕(글자는 글꼴로 한/영 두 벌), 핼러윈 알림 배너(늦으면 가장 먼저 뺌)다. 빈 지도 양피지는 1536x1024로 MapParchment 키 크기를 유지한다(코드가 땅을 그림). 왕관 조각은 S0 대화·보상 알림용이며, 나중에 하늘 왕관과 초상의 구조 기준이 된다. |
+| 19 | [여유] 직업 그림 나머지 9 | CLS_HaloWarrior_F, CLS_HaloMage_M, CLS_HaloArcher_F, CLS_HornsWarrior_M, CLS_HornsMage_F, CLS_HornsArcher_M, CLS_ArtisanWarrior_F, CLS_ArtisanMage_M, CLS_ArtisanArcher_F | 성별 버튼을 다시 켜려면 필요하다. 승인된 같은 직업 그림을 구조 참조로 써서 머리와 얼굴만 바꾼다. 시간이 없으면 정식으로 미룬다. |
+| 20 | [여유] 지형 타일 1 | Tex_Grass, Tex_LeafyGrass, Tex_HaloTiles, Tex_Ground, Tex_DirtPath, Tex_CrownShardGround, Tex_CrackedLava, Tex_Cobblestone | 6단계 마지막 순서인 바닥 지형이다. 이음새 없는 불투명 정사각 타일(1024)이고 누끼하지 않는다. 바둑판처럼 3x3으로 이어 붙여 이음새를 확인한 뒤 보여 준다. 지금 지형은 새 계정 ID로 동작하므로 늦으면 가장 먼저 정식으로 미룬다. |
+| 21 | [여유] 지형 타일 2 | Tex_Basalt, Tex_WoodPlanks, Tex_Slate, Tex_Sand, Tex_Rock, Tex_Marble, Tex_Limestone | 나머지 지형 7장이다. MaterialVariant 15개의 ID만 바꾼다. 회색 위주인 돌·점판암 타일은 따뜻한 색을 섞어 '회색 전설' 색과 겹치지 않게 한다. |
+
+> 프롬프트가 아직 없는 항목(프롬프트 모음의 ICON·TILE 블록으로 새로 쓴다): Icon_Altar, Icon_BankPouch, Icon_Clover, Icon_Coin, Icon_Exp, Icon_GoldGuard, Icon_GoldPile, Icon_Goose, Icon_Hammer, Icon_HealWings, Icon_Heart, Icon_Kaiju, Icon_LifestealSword, Icon_NoBuff, Icon_NoLoot, Icon_Safe, Icon_Sprout, Icon_StatAttack, Icon_StatSpeed, Icon_WantedStar, Tex_Basalt, Tex_Cobblestone, Tex_CrackedLava, Tex_CrownShardGround, Tex_DirtPath, Tex_Grass, Tex_Ground, Tex_HaloTiles, Tex_LeafyGrass, Tex_Limestone, Tex_Marble, Tex_Rock, Tex_Sand, Tex_Slate, Tex_WoodPlanks, UIP_Star
+
+## 4. 정식·나중
+
+## 베타 운영 규칙
+- 필수 범위는 0~11번 묶음, 업로드 약 93장이다.
+- 12~21번 묶음은 여유가 있을 때만 한다.
+- 10/20 점검에서 늦으면 순서의 뒤에서부터 정식으로 미룬다. 빼는 순서:
+  1. 지형
+  2. 직업 그림 나머지 9장
+  3. 출시 장식
+  4. 배지·스티커
+  5. 무기 T4~T6
+  6. 무기 T1~T3
+  7. 스킬
+  8. 추가 HUD
+- 승인이 느리면 최저선 약 50장만 한다.
+  - 대상: 선행 시안, 스타일 보드, 진영 화면·특성 아이콘, 아이템·T8·상태 아이콘, 안내자 초상, 아이콘·썸네일.
+  - HUD와 공통 창은 지금 그림 그대로 두고 배치만 바꾼다.
+- 옛 그림은 새 그림이 승인되고 적용될 때 하나씩 지운다.
+
+## 정식(12/19)까지
+**UI**
+- 베타에서 못 한 창 부품
+- 설정 글리프(톱니·발바닥), 스위치, 대화 초상화 틀
+- 환영 머리 그림, 로딩 화면
+- 펫 카드·도감 책·도감 빈칸·발견 도장·완성 메달: 모두 UI 키트 스타일로 만든다.
+- 겨울 이벤트 배너
+- 썸네일 4: 펫 진화
+
+**아이콘**
+- X 스킬 3장
+- 진영 T7 무기 8장: 장인 활은 펫 훈련사 결정 뒤에 만든다.
+- 재료 나머지
+- 지도 표시 18장 + 나침반
+- 계급 배지 13장: 빛 5, 뿔 5, 장인, 회색 전설, 전설의 악당. 각 진영은 5계급을 먼저 승인받는다.
+- 타락·구원 표식
+- 왕관 조각 3상태: 정화, 삼킴, 다듬기
+- 알 7개: 말랑·숲·유적·새벽·저주받은·톱니(장인 펫 결정 때)·골드 알. 저주받은 알은 이름만 유지하고 그림은 귀여운 밤 알로 그린다.
+- 부화기, 펫 능력 아이콘(공격·MP), 새 무기 자랑 받침대
+- 전투 효과 5장(베기·타격·충격파·마법·먼지): 흰색-검정 효과로 다시 그린다.
+
+**효과**
+- 휘두르기 궤적, 네 갈래 반짝이, 빛 공, 드랍 빛기둥
+- 강화 빛 +4/+7/+10은 정식 기본으로 넣는다. 베타는 등급 빛만 쓴다.
+- 강화 결과 표시: 성공은 등급색 반짝임. 실패는 방패와 함께 '그대로예요' 또는 '-1 (무기는 안전해요)'로 보여 주고, 빨강은 쓰지 않는다.
+
+**캐릭터·NPC**
+- 직업 그림 나머지 9장(베타에서 못 했을 때)
+- 안내자 전신 3명: 실제로 마을 입구에 세운다.
+- 스킬 선생님·상인 C·물약 상인·둥지지기: 초상과 전신을 만든다. 둥지지기는 캐릭터 분야 디자인 하나만 쓴다. 추천은 Roblox 기본 블록 몸에 얼굴·옷 그림을 입히는 무료 방식이다.
+- 펫 원화 13장 + Lv10 천사·악마·균형 기준 시안 3장
+- 동글 슬라임(베타에서 안 했을 때), 해골왕
+- 왕관 조각·분수 조각 초상: Shard_Base를 구조 기준으로 쓴다.
+- P1 삽화
+
+**세계**
+- 깃발 한 세트(빛·뿔·장인·교차로, 불투명 512x1024): 뿔 문장은 진영 카드 결정을 따른다.
+- 현상수배 포스터 1장: 스스로 현상금을 얻은 사람만, 필터된 이름으로 올린다.
+- 제단 바닥 원판, 빛 성채 유리 원판
+- 금빛 해, 진홍 월식 달
+- 하늘 왕관 3상태 시안
+- 후광·뿔 5단계 성장 시안(4·5계급 작은 날개), 타락 망토, 구원 후광, 회색 전설 시안: 승인 뒤 Blender나 파츠로 만든다.
+- 교차로 크리스마스 꾸밈 시안, 펫 둥지 건물
+
+**3D**
+- 펫·알·둥지, 무기 30~36개, 해골왕
+- Tripo는 묶음마다 총액을 먼저 승인받는다.
+
+## 나중(정식 이후)
+- 왕관 젤리 전설 펫
+- 펫 모자 8, 재주 아이콘 5, 기분 말풍선 6
+- 계절 펫·알: 호박·눈꽃
+- 감정 스티커 휠 6: 고마워·도와줘·메롱·복수다·좋아·미안해. 메롱은 같은 사람에게 쿨다운을 둔다.
+- 계절 후광·뿔·톱니 스킨(핼러윈·크리스마스, 매년 돌아옴, 압박 문구 없음)
+- 교차로 핼러윈 꾸밈
+- 호박 등불·눈꽃 무기 계열, 계열별 처치 효과 8(몬스터 처치에만)
+- 장인 톱니 성장, 마을 주민 3종
+- 그림 지도: 코드가 땅을 그리지 않게 바뀔 때만 만든다.
+- 무기 손 자세 참고 시트: 업로드하지 않는다.
+
+## 버린 중복 (생성하지 않음)
+- 펫: 등급 테두리 5, 부화 빛줄기, 펫 카드, 펫 이름표, 발바닥 아이콘, 천사 반짝이, 색종이 별, 둥지지기
+- 무기: 등급 칸 바탕·테두리, 전리품 빛살
+- UI: 금별·빈별(색 입히는 별 하나로 합침), 그림 지도 UIP_MapBoard
+- 더 많이: 알 4종(슬라임·고블린·새벽·밤). Egg_Dawn 이름 충돌도 이것으로 해결된다.
+- 캐릭터: 오려낸 깃발 BAN_*, 중복 현상수배 포스터
+
+## 5. 3D (Tripo 유료 — 묶음마다 총액을 먼저 승인받는다)
+
+- [베타·A안, 추천에 포함] CON_LittleGhost: Tripo로 그림→3D + HD 텍스처, 뼈대 없음(둥실 움직임은 코드). 약 40크레딧($0.40).
+- [베타·A안] 무료 재사용(0크레딧): 호박 슬라임 = 슬라임 모델에 색 + 꼭지·잎 파츠. 박쥐 고블린 = 기존 고블린 뼈대·동작 + 두건·박쥐 망토 파츠. 호박 대왕 미니보스 = 호박 슬라임 2.5배 + 촛불 왕관 파츠.
+- [베타·A+안, 추천] CON_SlimeRound: 동글 슬라임 새 모델(멀티뷰 10 + 3D 40), 약 50크레딧. 옆에서 보면 납작한 지금 슬라임을 고치고, 호박 슬라임·호박 대왕도 이 몸에 색만 바꿔 쓴다. A+ 합계는 유령 포함 약 90크레딧($0.90).
+- [베타·B안] 셋 다 새로: 호박 슬라임 40 + 유령 40 + 박쥐 고블린(40 + 뼈대 25 + 동작 5개 50) = 약 195크레딧($1.95). 재시도까지 하면 최대 약 390.
+- [베타] Pet_BabySlime: 0크레딧. 지금 슬라임 모델을 0.35배로 줄이고 승인 색 + 새싹 파츠를 붙인다.
+- [정식] 펫 13종 + 알 6종 + 펫 둥지 1 = 20개 × 30~40, 약 600~800크레딧. 3천 삼각형 이하, 512 텍스처, 뼈대 없음(깡충·둥실은 코드). 톱니 알은 장인 펫 결정 때만 만든다. 골드 알은 말랑 알 모델에 색만 바꾼다(0). 천사·악마·균형 장식은 Blender로 만든다(무료).
+- [정식] 무기 27종 + 젤리 왕관 T8 3종 = 30개, 약 900~1,200크레딧. 새 계열(잠든 왕·말랑 방울) 6개를 더하면 약 1,080~1,440. 계열 시안을 승인받은 뒤 무기 1개씩 외곽선 없는 2048 측면 그림을 다시 만들어 입력한다(시트를 잘라 쓰지 않음). 장인 활 T7은 펫 훈련사 결정 뒤에 만든다.
+- [정식] CON_SkeletonKing 해골왕 보스: 3D 40~60 + 뼈대 25 + 동작 5개 50 = 약 115~135크레딧.
+- [정식·선택] NPC 7명(안내자 3·스킬 선생님·상인 C·물약 상인·둥지지기). 추천 A = Roblox 기본 블록 몸 + Firefly 얼굴 데칼·옷 무늬 + 파츠 소품, 0크레딧. B = Tripo 뼈대 포함, 약 455~800크레딧.
+- [무료·Blender/파츠, Tripo 안 씀] 후광·뿔·톱니 성장 표식과 4·5계급 날개, 펫 모습 장식 3세트, 왕관 조각 3상태, 하늘 왕관, 크리스마스·핼러윈 꾸밈, 계절 스킨.
+- [합계] 베타 0~390크레딧(추천 A+ 약 90 = $0.90). 정식 약 1,850~3,250크레딧($18~33, 재시도 별도). 1크레딧 = $0.01이고, 실패하거나 취소한 작업은 환불된다. 만들기 전에 묶음마다 총액을 사용자에게 먼저 승인받는다.
+
+## 6. 사용자 승인이 필요한 것
+
+- 1. 【지금 · 그림 고르기】 아기 슬라임 2안: ① 연한 민트빛 흰색 + 머리 새싹(적 슬라임과 구분돼요, 추천) ② 적과 같은 초록, 크기만 작게. 핼러윈 몬스터 3종(호박 슬라임·꼬마 유령·박쥐 분장 고블린) 시안도 한 장씩 보여 드려요. 마음에 드는 번호만 답해 주세요.
+- 2. 【지금 · 돈】 핼러윈 3D를 어떻게 할까요? A+ 약 90크레딧($0.90, 추천): 동글 슬라임 새 모델 + 꼬마 유령만 새로 만들고, 호박 슬라임·박쥐 고블린은 기존 모델에 색·망토를 입혀요. 납작한 슬라임 문제도 같이 고쳐져요. A 약 40크레딧($0.40): 유령만 새로. B 약 195크레딧($1.95, 재시도하면 최대 약 390): 셋 다 새로. 그리고 호박 대왕 미니보스(같은 몸 재사용, 추가 비용 0)를 베타에 넣을까요? 예: 'A+, 네'
+- 3. 【진행 방식】 버튼 3색, 등급 칸 6, 아이콘 묶음, 직업 그림 9처럼 비슷한 형제 그림을 한 장에 나란히 보여 드리고 한 번에 승인받아도 될까요? 추천은 '네'예요. 승인 횟수가 약 100번에서 약 20번으로 줄어요. 마음에 안 드는 칸만 번호로 말해 주시면 그것만 다시 그려요.
+- 4. 【그림 시작 때 · 고르기】 화면 배치 회색 상자 시안 1장(폰 749x361·844x390, PC, 태블릿 스크린샷을 한 장에 모아서)을 승인해 주세요.
+- 5. 【고르기】 스타일 보드 1장(창, 금색 버튼, 등급 칸 속 철 검, 체력 물약, 아기 슬라임, 빛 전사)을 승인해 주세요. 이 한 장이 모든 그림의 기준이 돼요.
+- 6. 【고르기】 진영 카드는 승인된 모양을 그대로 본뜨고, 그림에 박힌 옛 글자('발사하면…')만 뺀 빈 카드로 바꿔요. 뿔 카드 문장만 두 가지를 나란히 보여 드릴게요. A 지금의 뿔 달린 가면 / B 귀여운 뿔 투구(추천, 심의에 더 안전). 둘 중 하나를 골라 주세요.
+- 7. 【고르기】 게임 아이콘 3안(후광·뿔 반쪽 아이 / 반반 왕관 / 아기 슬라임)과 예전 승인 아이콘을 512px·150px 크기로 나란히 보여 드릴게요. 썸네일(빛 대 뿔, 핼러윈)도 고르기만 하시면 돼요.
+- ※ 나머지는 한 장(또는 형제 한 장)씩 보여 드리면 고르기만 해 주세요. 직업 그림은 베타에 9장(진영×직업, 남녀 섞어서)을 넣고 나머지 9장은 시간이 남으면 넣을게요. 정식용 Tripo(펫·무기·해골왕, 합계 약 1,850~3,250크레딧 = $18~33)와 Firefly 크레딧이 모자랄 때만 그때 총액을 다시 여쭤볼게요.
+
+## 7. 더 많이 — 추가 아이디어
+
+- 동글 슬라임 새 모델 하나로 세 가지를 해결해요(약 50크레딧). '옆에서 보면 납작한 슬라임'을 고치고, 핼러윈 호박 슬라임과 호박 대왕 미니보스는 색만 바꿔 같은 몸을 써요.
+- NPC 머리 위 금빛 말풍선 하나에 안쪽 아이콘만 바꿔 넣어요. 안내자는 !, 상점은 가방, 물약 상인은 물약, 스킬 선생님은 별이에요. 첫 10분에 누구한테 가야 할지 멀리서도 보여요.
+- 퀘스트 줄 왼쪽에 목표 종류 아이콘을 붙여요. 칼은 사냥, 동전은 골드, 발자국은 이동, 말풍선은 대화예요. 글을 다 읽지 않아도 할 일을 알아요.
+- 희귀 이상 무기가 떨어지면 등급색 빛기둥(희귀는 짧은 파랑, 전설은 높은 금빛 + 효과음)이 서요. 처음 얻으면 1.5초 자랑 화면이 뜨는데 건너뛸 수 있고, 전투·PvP 중에는 미뤄요. 텍스처 1장으로 돼요.
+- 움직이는 반짝임은 전설에만 줘요. 아래 등급은 멈춰 있어서 전설이 더 특별해 보여요.
+- 새로 생긴 버튼과 받을 보상에 금빛 새 소식 점을 달고 0.5초 통통 튀게 해요. HP가 30% 아래로 떨어지면 물약 칸이 깜빡이고 화면 가장자리에 붉은 맥박이 뛰어요. 물약 쓰는 때를 자연스럽게 배워요.
+- 선택이 겉모습에 쌓여요(GDD §0). 명예·악명 계급이 오르면 레벨 배지와 머리 위 후광·뿔이 커지고, 4·5계급에는 작은 날개가 생겨요(능력 없음). 계급이 오르는 순간 기존 레벨업 배너에 새 배지를 크게 한 번 보여 줘요.
+- 전쟁 결과 무대: 이긴 진영의 깃발이 교차로 분수 둘레에 10분 걸리고, 하늘에 금빛 후광 해나 진홍 월식 달이 떠요. 3D 모델 없이 데칼과 하늘 그림만 바꾸면 돼요. 마을 주민도 이긴 편이 환호하거나 춤춰요.
+- 왕관 조각 친구: S0에서 정화를 고르면 금빛, 삼킴을 고르면 붉은 작은 조각 빛이 어깨 옆에 떠다녀요. 선택이 내 모습에 남는 첫걸음이고, 파츠와 빛 효과만으로 만들어요.
+- 핼러윈 선악 서브 퀘스트 '사탕 바구니': 박쥐 고블린이 훔쳐 간 사탕을 되찾아요. 주인에게 [돌려줘요]를 고르면 명예, [내 주머니에!]를 고르면 악명이 오르고, 장인은 기록만 해요. 기존 이야기 엔진과 사탕 재료만 써요.
+- 호박 대왕을 잡으면 서버 전체에 '호박 대왕이 사탕을 와르르 쏟았다!' 알림이 떠요. 이미 정한 좋은 아이템 알림 방식을 그대로 써요.
+- 펫이 자라는 재미: 펫 레벨마다 재주를 하나씩 배워요(깡충·앉기·빙글·응원·모습 자랑). 주인 상황에 따라 기분 말풍선도 떠요(레벨업은 별, 체력 낮으면 땀방울, 좋은 아이템은 하트). 글자가 없어서 한/영 그대로 써요.
+- 펫 도감 스티커북: 아직 못 찾은 펫은 어두운 그림자와 '어디서 나와요' 한 줄로 보여요. 찾으면 발바닥 도장이 '쾅' 찍히고, 한 지역을 다 모으면 메달과 칭호(예: 초원 펫 박사)를 받아요.
+- 진영 행동에 펫이 반응해요. 빛 펫은 치유할 때 반짝이고, 뿔 펫은 원한 자루를 받으면 깡충 뛰고, 장인 펫은 강화에 성공하면 등의 톱니가 돌아요.
+- 계절 스킨은 고리·두 뿔·톱니 모양을 그대로 두고 재질만 바꿔요(호박빛 고리, 사탕 줄무늬 뿔, 생강빵 톱니). 무료 이벤트 보상이고 매년 돌아오며 '마지막 기회' 같은 압박 문구는 쓰지 않아요.
+- 시즌 모서리 장식: 같은 9조각 창 위에 핼러윈(호박·박쥐)이나 겨울(눈) 모서리 장식만 따로 얹어요. 그림 4장 정도로 게임 전체 분위기가 바뀌어요.
+- 설정에 버튼 크기 3단계(작게·보통·크게)를 둬요. 손이 작은 아이, 작은 폰, 태블릿 모두 편해져요(정식).
+- Firefly 커스텀 모델: 승인 그림이 10~30장 모이면 '선악 키우기 블록 그림체' 전용 모델을 학습시켜, 주민·크리스마스 NPC를 같은 그림체로 빠르게 뽑아요. 요금제 크레딧을 확인해야 해서 그때 여쭤볼게요.
+
+## 8. 비판 검증 요약
+
+The content safety baseline is good:
+- No brand or platform name appears in any of the roughly 340 prompts.
+- Every full-body human prompt has explicit coverage wording.
+- Horns imagery is skull-free cartoon horns.
+- Weapons are toy-like with no realistic violence.
+- Halloween is mostly cute.
+
+The real risks are Firefly mechanics and set consistency. Fix the five high items before generating the first master image:
+1. Five incompatible style blocks: glossy vs matte, vector vs 3D, faceted vs smooth.
+2. Three different outline inks: navy, plum, and brown or none.
+3. Dark outlines generated on dark navy or charcoal backgrounds in about 70 UI, icon, skill, badge and map prompts. The cutouts will eat the outlines, which breaks the user's cutout rule.
+4. Negated trigger words inside prompts ('no skull', 'not scary', 'no text') in 4 of the 5 areas.
+5. About 25 cross-area duplicates: rarity slots x3, stars, rays x3, eggs (including an Egg_Dawn id collision), banners, wanted poster, nest keeper NPC, and two world-map approaches. These would double the user's one-by-one approvals.
+
+Medium items:
+- Portrait prompts are missing the MODEST token; the female guides are the highest moderation exposure.
+- 'Building-block' drifts toward a brick-minifigure look.
+- Halloween eye and pumpkin-face wording reads spooky.
+- The Skeleton King has glowing-socket skull eyes.
+- Altar, sigil and magic-circle wording drifts toward occult imagery.
+- Text-prone props (books, seals, maps, stamps, speech bubbles).
+- Translucent jelly harms cutouts and Tripo inputs.
+- Glows are cut out with the AI remover.
+- Floating halos and ring holes need an explicit cutout check.
+- Prompts are too long, with safety clauses at the tail.
+- 9-slice symmetry needs fixing after approval.
+- Navy-outlined icons sit on navy slot interiors.
+- Too many style anchors and inconsistent fill ratios.
+
+All fixes are prompt rewrites or dedupe decisions the orchestrator can make. None needs a user question. The user should still see only the first master of each family, one at a time, and judge the processed final file.
+
+- **[ALL areas: shared style blocks]** The five areas use five incompatible style blocks, so icons that share one inventory or drop list will look like they come from different games. UI CORE says 'crisp clean vector-like rendering, glossy'. Pets say 'low-poly ... soft subtle facets, smooth matte vinyl', which contradicts itself. Weapons say 'blocky low-poly shapes, smooth matte plastic'. More-than-asked says 'chunky glossy 3D cartoon'. Characters say '3D-rendered ... smooth matte plastic'. The conflicts are glossy vs matte, flat vector vs 3D render, and faceted vs smooth. Weapon icons, materials, scrolls, potions, eggs and pet stat icons all appear side by side in Menu > 아이템 and in drop toasts.  
+  → 고침: Route every prompt through the single global guide below. Use one material phrase ('soft glossy toy plastic') and one render phrase ('3D-rendered'). Family blocks only add framing. Remove 'vector-like' from UI CORE. Run the pets A/B style lock once (faceted or smooth), then use only the winning phrase for pets, eggs and forms.
+- **[ALL icon/UI families: outline colour]** The outline ink differs by area. UI and weapons use dark navy #1B2140. More-than-asked uses dark plum #1E1A20. Pet icons use an unspecified 'clean dark rim'. Pet UI parts use 'thin warm brown'. Characters have none. Material, skill, badge and map icons will not match the weapon icons or the UI kit.  
+  → 고침: Use one ink for every UI part, icon, glyph, badge, map marker, sticker and item: 'thick even dark navy outline' (#1B2140). Use no outline only on characters, 3D concepts, Tripo inputs, scenes, banners and FX textures. Rewrite ICON_W/ICON_D/SKILL/BADGE/MAP/STICKER (more-than-asked) and the pets ICON/UI PART blocks.
+- **[UI BG_D + GLYPH; more-than-asked ICON_D, SKILL, BADGE_D, MAP_D]** Dark-outlined subjects are generated on dark backgrounds: a navy outline on 'dark charcoal' (all UIP_Glyph*, FactionCardHalo, FactionTitle, ClassCardHalo, TitleRibbon, ListRow*, InputField, Chip, LevelBadgeHalo, AutoRingOn, PetCard, EventBannerWinter) and a plum outline on 'dark navy' (all Skill_* x9, Item_Enh*/Move* x6, Item_GoblinTooth, Item_Bone, Badge_HaloR1-5, Badge_GrayLegend, Mark_Redeem, Map_HaloCastle, Map_SkeletonRuins, Shard_Purified, Egg_Dawn). Remove background cannot separate a near-black outline from a near-black background. It will eat or fringe the outline, which breaks the user-confirmed cutout rule. Stickers are fine because their white die-cut border separates them.  
+  → 고침: Default to 'isolated on a plain flat medium-gray background with a wide empty margin' for every cut-out subject, including white, cream and ivory ones, since the dark outline gives the edge. Use plain white only for gray, silver, stone or bone subjects. Use pure black only for luminance-alpha FX and additive sky textures. Never put navy, charcoal or slate behind a dark-outlined subject.
+- **[UI, pets, weapons, more-than-asked prompts: negations and trigger words]** Firefly has no reliable negative prompt (the characters research notes Adobe paused it), so 'no X' can add X. Four of the five areas put negated kid-safety trigger words in the positive text: UIP_FactionCardHorns 'no skull, not scary'; Map_SkeletonRuins 'no skulls'; Thumb_C_Halloween 'no skulls'; Badge_HornsR4/R5, Shard_Swallowed, Map_Kaiju, Emo_Cheeky, CON-style 'not scary'; plus 'no text, no letters, no numbers' and 'no hands, no characters' on almost every asset. Only the characters area writes positively.  
+  → 고침: Rewrite every prompt positively, as the characters area does. Examples: 'wordless, blank unmarked surfaces'; 'cute friendly prankster look, big round eyes, smiling'; 'a big glossy toy helmet crest with two curved red horns'; 'broken pale stone pillars with a soft purple flame'. Never write skull, blood, fang, demon, gore or scary in a prompt, even negated. Use Firefly's Exclude field only if the chosen model shows one; otherwise negative_notes are the QA checklist only.
+- **[Cross-area duplicates]** About 25 assets are designed twice or three times, with conflicting looks, which multiplies the user's one-by-one approvals:
+- Rarity slots: UIP_Slot* (navy inner, epic = amethyst + wings), UI_RarityFrame_* (cream inner, epic = corner stars), UIP_GradeSlotBack/Rim (tintable).
+- Stars: UIP_StarFull/Empty vs UIP_GradeStar.
+- Rays: UIP_RewardRays, UIP_LootRays, UI_HatchRays.
+- Sparkles: FX_PetSparkleHalo vs Fx_Sparkle4.
+- Eggs: pets Egg_Meadow/Forest/Ruins/Dawn/Cursed/Gear vs more Egg_Slime/Goblin/Dawn/Night/Nest. Egg_Dawn is the same id with different prompts.
+- Banners: BAN_* (cut-out) vs Banner_* (opaque).
+- UI_WantedPoster: same id, two designs.
+- Pet cards: UIP_PetCard vs UI_PetCard.
+- Paw icons: UIP_GlyphPaw vs Icon_PetPaw.
+- Nest keeper: pets NPC_NestKeeper (cream shirt, brown overalls) vs characters FB/PTR_NestKeeper (mustard, denim, chick hat).
+- World map: illustrated UIP_MapBoard vs blank UI_MapParchment plus 18 Map_* icons.  
+  → 고침: Give each asset one owner and drop the rest before generating:
+- Slots and stars go to the UI kit (6 slots, with colour + ornament per grade, and 1-2 stars).
+- All rays and sparkles become one luminance FX set.
+- Pets owns eggs and pet UI.
+- Characters owns NPCs (FB/PTR_NestKeeper).
+- Keep the opaque Banner_* (correct for 3D flag Decals).
+- Keep one UI_WantedPoster.
+- Choose one map approach. Blank parchment plus icons is safer: there is no fake text and it is easier to keep accurate.
+The orchestrator can decide all of this without asking the user.
+
+판정: 다섯 분야의 색은 ART_DIRECTION 팔레트와 거의 일치해요. 다만 외곽선 색(남색/자두색/갈색/없음), 아이콘 렌더(로우폴리 각진 vs 매끈 광택), 누끼 배경(숯색·남색이 남색 외곽선을 먹음), 중복 설계(등급 칸 3종, 별 2, 빛살 3, 알 2세트, 둥지지기 2명, 지도 2방식, 깃발 2방식)가 엇갈려요. 위 스타일 가이드 하나로 통일해야 해요. 크기는 진영 카드(570x954)·제목·설명판·하단 띠·직업 그림(약 420x512)·무기 키가 Config와 맞아요. 다만 기존 키를 재사용하려면 Id·Size·Slice뿐 아니라 SliceScale·Inner·Tone도 같이 바꿔야 해요(BtnSquare 남색 면에 갈색 글자, Pill 흰색화 등). 지도는 코드가 땅을 그리므로 빈 양피지만 써야 해요.
+
+물량: 분야 합계 약 362항목(세트 포함 약 385장), 베타 표시 166장 + 빠진 HUD/특성 아이콘 약 15장이에요. 10/24까지 작업 세션 1개 + 사용자 승인으로는 불가능해요(기능 작업이 19일 중 약 16일을 차지해서 그림은 3~5일분).
+
+베타 컷 제안 — MUST 약 89장(지금 깨졌거나 빠진 것, 첫 10분, 출시 필수):
+- 진영 화면 6: 빈 카드 3, 제목, 설명판, 하단. 지금 승인 카드에 옛 '발사' 문구가 박혀 있어서 필요해요.
+- 상태·특성 아이콘 13: 골드, 금고, XP, 하트, 치유 날개, 흡수 검, 괴수, 버프 없음, 안전 방패, 약탈 없음, 망치, 새싹, 수배 별.
+- 직업 카드 3 + 직업 그림 9(진영×직업, 성별 1종).
+- 공통 창 11: PanelMain, PanelDark, PanelHeader, TitleRibbon, 버튼 3색, 네모·동그라미 버튼, ListRow, Chip, DialogBox. 버튼 3색 = BtnPrimary·BtnSecondary·BtnConfirm이라 이 줄은 실제로는 13장이에요(합계에서는 11로 셌어요).
+- HUD 11: 상태판, 바 틀, 바 채움, 레벨 배지 4, 얼굴 링, 공격, 스킬, 물약.
+- 흰 글리프 7: 칼, 지팡이, 활, 가방, 지도, 메뉴, 닫기.
+- 등급 칸 5 + 색 입히는 별 1.
+- 아이템 10: 젤리, 주문서 6, 물약 2, 사탕.
+- 무기 T8 젤리 왕관 3: 지금 그림이 없어요.
+- 아기 슬라임 1.
+- 안내자 초상 3.
+- 핼러윈 몬스터 시안 3.
+- 게임 아이콘 1(3안 중) + 썸네일 2(대치, 핼러윈).
+
+STRETCH 약 45장(이 순서로 추가, 10/20에 아래부터 뺌):
+- Q·Z 스킬 6
+- 무기 T1~T3 9
+- 창·HUD 추가 10: 확인 버튼, 선택 줄, 알림, 축하 배너, 이름표, 전쟁 미터, 왕관 표시, 퀘스트 줄, 자동 고리, NPC 말풍선
+- 글리프 6
+- 재료 5
+- 선택 배지 3
+- 감정 스티커 5
+- 썸네일 B + 로고판
+- 직업 그림 여 9
+- 무기 T4~T6 9
+
+나머지는 모두 정식/나중이에요. 승인이 느리면 최저선 약 48장만 해요: 진영, 직업, T8, 아이템, 특성 아이콘, 슬라임, 핼러윈 시안, 아이콘·썸네일. HUD·창은 옛 그림을 유지하고 배치만 바꿔요.
+
+먼저 할 일:
+- 핼러윈 시안 3장과 아기 슬라임은 기능 작업을 막으니 이번 주에 먼저 승인받아요.
+- 첫 작업은 스타일 보드 1장(창·버튼·등급 칸+철 검·물약·아기 슬라임·빛 전사)으로 해요.
+- Firefly 크레딧 잔액을 확인하고 처음 5장 걸린 시간을 재서 컷을 다시 맞춰요.
+- 폰 749x361에서 오른쪽 가운데 퀘스트 판이 Q·Z 부채꼴·자동 버튼과 겹쳐요. 회색 상자 시안에서 접기 규칙을 꼭 확인해요.
+- 무기 아이콘 승인 때 Config.Weapons 색·재질·이름도 함께 바꿔요. T6 민트를 연보라로, T8 청록을 슬라임 초록으로, T5 Glass를 다른 재질로 바꾸고, 이름도 바꿔요.
+
+Tripo(유료, 1크레딧=$0.01):
+- 베타 핼러윈: A안(기존 슬라임·고블린 재사용 + 유령만) 약 40크레딧, B안(셋 다 새로) 약 195~345크레딧. 아기 슬라임은 0이에요.
+- 정식: 펫·알·둥지 20개 약 600~800, 무기 30~35개 약 1,050~1,440, 해골왕 약 135, 둥근 슬라임 약 50, NPC 7명을 Tripo로 하면 약 455~800.
+- 정식 합계는 재시도 빼고 약 1,850~3,250크레딧($18~33)이에요.
+- also_3d 표시에 tripo/blender/parts/reuse 구분이 필요해요.
+
+사용자에게 물을 것(모바일, 번호로 답):
+- Q1. 형제 그림(버튼 3색, 등급 칸 5, 아이콘 묶음, 직업 그림 9)을 한 장에 나란히 보여 드리고 한 번에 승인해도 될까요? (추천: 예. 승인 횟수가 약 100회에서 약 20회로 줄어요.)
+- Q2. 승인된 진영 카드에 옛 문구('발사하면 동료 치유', '발사 게이지 175')가 그림에 박혀 있어요. 같은 모양을 본뜬 글자 없는 새 카드로 바꿀까요? 뿔 카드 문장은 (A) 지금 뿔 달린 가면 유지 / (B) 귀여운 뿔 투구.
+- Q3. 이제 본인 아바타로 하니 직업 그림은 베타에 9장(성별 버튼 숨김)만 넣고, 여자 버전 9장은 정식에 넣을까요?
+- Q4. 핼러윈 몬스터는 (A) 약 40크레딧 / (B) 약 195~345크레딧 중 어느 쪽으로 할까요? 호박 대왕 미니보스를 베타에 넣을까요(네/아니오)?
+- Q5. HUD 회색 상자 배치 시안 1장(폰·PC)을 승인해 주세요.
+- Q6. 그림 시작 전 스타일 보드 1장을 승인해 주세요.
+
+NPC 제작 방식(A 무료 블록 몸 / B Tripo)과 정식 Tripo 총액은 정식 작업 때 따로 물어요.
+
+- **[Beta scope (all five areas)]** The beta list is not realistic. Raw beta assets: UI 78, pets 12, weapons 24, characters 24, extra areas 28, so 166 images. About 15 HUD and perk icons that are in use today are missing on top of that. The five areas total about 362 entries, about 385 images counting the sets. AGENTS.md requires one-by-one approval, cutout QA and uploads of 10 or fewer, which comes to 17+ upload batches and 100+ approval rounds. RELEASE_PLAN puts art after gameplay steps 1-5, and the design doc already books about 16 of the 19 days before the 10/24 freeze for weapons 1.5d, pet 2-3d, Z skill 5-6d, Halloween monsters, potion shop and the layout redesign. That leaves about 3-5 working days for art.  
+  → 고침: Use the cut in 'overall'. MUST is about 89 approved images: what is broken or missing now, the first 10 minutes, and release requirements. STRETCH is about 45, in a fixed order. Everything else goes to launch. Without group approval of sibling parts, fall back to the floor set of about 48 (faction screen, class picker, T8, items, perk icons, baby slime, Halloween concepts, icon/thumbnails); the HUD and panel kit keep their current working art and only the layout changes.
+- **[Cross-area duplicates and conflicts]** Several areas designed the same slot in incompatible ways. (1) Grade slot frames have 3 designs: UI UIP_Slot* x6 (navy inner; epic gets wings), pets UI_RarityFrame_* x5 (cream inner, soft painted, grey background; epic gets corner stars), weapons UIP_GradeSlotBack+Rim (near-white tintable, no ornaments). (2) Stars: UIP_StarFull/StarEmpty (gold) vs UIP_GradeStar (tintable). (3) Ray bursts x3: UIP_RewardRays, UI_HatchRays, UIP_LootRays. (4) 4-point sparkle x3: FX_PetSparkleHalo, Fx_Sparkle4, FX_HatchConfetti star. (5) Two egg sets with a clashing id: pets Egg_Meadow/Forest/Ruins/Dawn/Cursed/Gear vs extras Egg_Slime/Goblin/Dawn/Night/Nest, and Egg_Dawn has two different prompts. (6) Two different nest-keeper looks: pets NPC_NestKeeper (cream shirt, brown overalls) vs characters PTR/FB_NestKeeper (mustard shirt, denim, chick-nest hat). (7) Pet card x2 (UIP_PetCard, UI_PetCard). (8) Name tag x2 (UIP_NameTag, UI_PetNameTag). (9) Paw icon x2 (UIP_GlyphPaw, Icon_PetPaw). (10) UI_WantedPoster x2 with different prompts. (11) Faction banners x2: BAN_* (transparent, scalloped, 9:16) vs Banner_* (opaque, full-bleed). (12) World map x2: illustrated UIP_MapBoard vs blank UI_MapParchment. (13) Winged boot used 3 times with different meanings: pet speed, Archer X skill, class-picker IconBoot.  
+  → 고침: Use the ownership and dedupe map in the style guide. Keep: UIP_Slot x5 + UIP_SlotEmpty, with epic = amethyst + 4 corner stars (no wings; wings mean Halo rank 4-5); one tintable UIP_Star; one UIP_RewardRays drawn white-on-black and tinted; one Fx_Sparkle4; the pets egg set plus Egg_Nest (7 eggs); the characters nest keeper; UIP_PetCard and UIP_NameTag; UIP_GlyphPaw; one wanted poster; one banner set (opaque 512x1024); the blank parchment map. Speed stat = boot; Archer X = wind swirl + arrow.
+- **[Missing assets: HUD, faction perk, class picker and combat FX icons]** No area redraws art that is in active use today. HUD.luau and EventHUD use IconCoin, IconPouch, IconGoose, IconClover, IconSprout, IconSafe, IconStar, Crown, ShieldHalo and ShieldHorns. ClassPicker uses IconHeart, IconBoot and IconAttack. Fx uses FxSlash, FxHitSpark, FxShockRing, FxMagicBurst and FxDust. The new blank faction cards need 10 perk icons (XP, heart, heal wings, gold pile, lifesteal sword, kaiju, no-buff, shield, no-loot, hammer). Today those icons are baked into the FreshTyped cards, and the Config perk-icon IDs are marked 'blocked upload'. Mixing new Firefly frames with old GPT icons breaks the single visual language. Removing the baked icons leaves the perk rows empty.  
+  → 고침: Add a 'status/perk icon set' to the extras area as MUST (13 new icons, merging the faction-perk and HUD uses): Coin, Bank pouch, XP, HP heart, Heal wings, Lifesteal sword, Kaiju, No-buff, Safe shield, No-loot, Craft hammer, Sprout, Wanted star. Goose and Clover are STRETCH. Use the ICON block on the approved style board. LevelBadgeHalo/Horns can replace the ShieldHalo/Horns HUD uses, and UIP_WarCrownPip replaces Crown. The 5 combat FX sprites go to launch, drawn white on black and tinted.
+- **[Faction screen (UIP_FactionCard*, Title, Premise, Footer)]** Two rules collide. AGENTS.md says the approved FreshTyped cards stay fixed: the 'Aligned' remake was rejected for changing the design. The UI area's blank remake changes the Horns emblem from the approved horned skull-mask with red eyes to a 'cartoon horned helmet', and its prompts do not reference the approved cards. The baked art is also factually stale: the Halo card says '발사하면 동료 치유' and the Horns card says '발사 게이지 175', while Config.UIArt.FactionPerks says '스킬로 동료 치유' and '약탈한 골드 지켜내기'; charge/release was removed by A22/A23. Switching to blank cards also needs code work: FactionE.BakedText=false, new live-text regions for Name/Desc/Motto/Perks/Button (CardLayout-style), ButtonRects/ButtonHitTop re-measured, and the perk icons from the problem above.  
+  → 고침: Ask the user once (Q2). Recommended: a blank remake that keeps the approved look. Use the FreshTyped card with its text regions masked (PIL fill) as the Firefly Structure reference (~50-60%) and Style reference (~70%), keeping the 570x954 export. The Horns emblem is a user choice: (A) keep the approved horned mask, or (B) switch to the kid-safe cartoon helmet, which is recommended for moderation. Re-measure the text regions with prep_ui and verify the Korean and the longest English strings in the client.
+- **[HUD layout on 749x361 phones (UI area direction)]** At the 0.75 touch UIScale, the virtual canvas is about 999x481. Placing the 70 px Roblox jump button at about x872-965 / y361-454 virtual gives: attack 150 at about y304-454, Q/Z 96 fanned above it at about y196-292, Auto 64 above jump at about y285-349. The right-middle quest panel (header 32 + 2x64 rows, starting under the 64+label rail at about y169) spans about y169-337, so it overlaps both the skill fan and the Auto button. EventHUD's top-right luck panel (210x58, L.LuckW) also collides with the new [가방][지도][메뉴] rail. The UI area did not account for it.  
+  → 고침: Before any HUD art, the grey-box mock (UI Q1) must include these cases. When virtual height is under 560: collapse the quest panel to one 48-high row directly under the rail, which expands as the existing touch overlay (CR-M25); fan the skills up-left of attack rather than straight up; move the luck readout into the chip line under the war meter. Verify at 749x361, 844x390, 1280x720 and 1024x768.
