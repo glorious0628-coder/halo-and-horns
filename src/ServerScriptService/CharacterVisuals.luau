@@ -54,6 +54,7 @@ local WATCH = {
 	Bounty = { "Nametag" },
 	Rookie = { "Nametag" },
 	GraduateGraceUntil = { "Nametag" }, -- A23-18: "졸업 유예" while the graduation grace runs
+	BetaPioneer = { "Nametag" }, -- A23-18 title
 	BullyStacks = { "Nametag" },
 	SessionTitle = { "Nametag" },
 	Nickname = { "Nametag" },
@@ -279,6 +280,9 @@ local function updateNametag(player, bb)
 	end
 
 	local line2 = "Lv " .. level .. " · " .. Config.ClassName(classId, f)
+	if player:GetAttribute("BetaPioneer") == true and Config.Beta then
+		line2 ..= "  " .. Config.Beta.PioneerTag
+	end
 	if rebirths > 0 then
 		line2 ..= "  환생 " .. rebirths
 	end

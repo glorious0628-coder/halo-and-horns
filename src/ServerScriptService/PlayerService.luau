@@ -474,6 +474,10 @@ local function onJoin(player)
 	end))
 
 	ready[player] = true
+	-- A23-18: anyone who joins before the full launch keeps the "베타 개척자" title for good (no stats)
+	if data.BetaPioneer ~= true and os.time() < (Config.Beta and Config.Beta.PioneerUntil or 0) then
+		PlayerService.SetStat(player, "BetaPioneer", true)
+	end
 	player:SetAttribute("DataLoaded", true)
 	PlayerService.PlayerReady:Fire(player, data)
 

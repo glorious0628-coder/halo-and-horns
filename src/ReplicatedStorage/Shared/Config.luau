@@ -125,6 +125,7 @@ Config.Data = {
 		LuckDay = 0, -- A23-18 오늘의 운: Config.DayIndex of LuckEvents (another day -> 0)
 		LuckEvents = 0, -- goose / kaiju events taken part in on LuckDay
 		GraduateGraceUntil = 0, -- A23-18: os.time() when the rookie graduation grace ends (survives a rejoin)
+		BetaPioneer = false, -- A23-18: joined before the full launch -> "베타 개척자" nametag title (no stats)
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
 		-- "kolog:<victimUserId>" = { t1, t2 } (last two KOs). Pruned at PlayerReady (> 1800 s old, at most 200 keys).
@@ -139,7 +140,7 @@ Config.Data = {
 	Mirrored = {
 		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "WeaponOwnedMask", "BlacksmithVisited", "Faction", "Class", "ClassChosen",
 		"CharacterGender",
-		"HPPotionCount", "MPPotionCount", "HideAnnounceName", "LuckEvents",
+		"HPPotionCount", "MPPotionCount", "HideAnnounceName", "LuckEvents", "BetaPioneer",
 		"Rebirths", "RebirthBonus", "FallMarks", "RedeemMarks", "Honor", "Infamy", "SwitchCount",
 		"LastSwitchTime", "PlaytimeSeconds", "TotalKills", "DailyDay", "DailyClaims",
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
@@ -1649,6 +1650,12 @@ Config.Announce = {
 		MenuShow = "알림에 내 이름: 보여요",
 		MenuHide = "알림에 내 이름: 숨겨요",
 	},
+}
+
+-- A23-18 beta: saves carry over to the full launch; everyone who plays before it gets the stat-free title
+Config.Beta = {
+	PioneerUntil = 1797645600, -- 2026-12-19 11:00 KST (full launch)
+	PioneerTag = "★베타 개척자",
 }
 
 Config.Sounds = { -- optional built-in files; client must pcall and ignore failures
