@@ -387,8 +387,10 @@ Config.Combat = {
 	-- addendum A3-H3 / CR-M17: after a manual swing the auto loop skips the player for the class SwingInterval +
 	-- ManualYieldPad (a fixed 1.0 s window was <= the Warrior / Mage interval, so held manual attacks went auto).
 	ManualYieldPad = 0.3,
-	-- P2 (2026-10-05): no input / movement for this long -> auto combat rests (Zzz, monsters don't start fights with
-	-- the resting player); a warning comes AutoIdleWarnSeconds before; any input or a step resumes at once
+	-- P2 idle rest: OFF by user decision (2026-10-05 "계속 사냥": auto combat keeps hunting while the player is away;
+	-- Roblox itself disconnects a player after 20 min without input). Kept switchable: true = after AutoIdleSeconds
+	-- auto rests (Zzz, monsters don't start fights) with a warning AutoIdleWarnSeconds before.
+	AutoIdleRest = false,
 	AutoIdleSeconds = 900,
 	AutoIdleWarnSeconds = 30,
 	AutoIdleMoveStuds = 1.5, -- moving this far within a second counts as activity (server-side check)

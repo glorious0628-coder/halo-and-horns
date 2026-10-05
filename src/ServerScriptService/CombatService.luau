@@ -666,6 +666,10 @@ end
 -- true while the auto loop must wait: idle rest (with the 30 s warning first) or a pending choice card
 function AUTO_IDLE.Check(p)
 	local cfg = Config.Combat
+	if cfg.AutoIdleRest ~= true then -- user 2026-10-05: auto keeps hunting while away
+		if p:GetAttribute("AutoResting") == true then AUTO_IDLE.SetResting(p, false) end
+		return false
+	end
 	local last = S.PlayerService.GetLastActive(p)
 	if last <= 0 then
 		S.PlayerService.MarkActive(p) -- nothing seen on this server yet: start counting now
