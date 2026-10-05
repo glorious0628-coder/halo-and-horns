@@ -353,6 +353,19 @@ local function refresh(player)
 			if done then advance(player, data, t.Id, tr) end
 		end
 	end
+	-- P2: while a good / evil choice card waits, auto combat pauses (no choice is ever skipped by hunting AFK)
+	local choice = false
+	for _, t in tracks(data) do
+		local tr = t.Track
+		local step = (not tr.Claim) and stepOf(player, DEFS[t.Id], tr.St) or nil
+		if step and step.Obj and step.Obj.Type == "Choice" then choice = true end
+	end
+	if (player:GetAttribute("ChoicePending") == true) ~= choice then
+		player:SetAttribute("ChoicePending", choice)
+		if choice and player:GetAttribute("AutoCombatEnabled") == true then
+			notify(player, Config.Text.AutoChoiceWait, "info")
+		end
+	end
 	if changed then dirty(player) end
 end
 

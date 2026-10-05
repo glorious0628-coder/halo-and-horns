@@ -1288,7 +1288,8 @@ end
 -- A10-V3-2 (a) + A3-M4: a player this (non-personal) monster may chase: in the monster's own zone, not in a town,
 -- not in the water
 local function targetable(rec, info)
-	return not info.Town and info.Zone == rec.ZoneId and info.Pos.Y >= OUT_Y
+	-- P2: a player whose auto combat rests (away 15 min) is never chased (no penalty for stepping away)
+	return not info.Town and info.Zone == rec.ZoneId and info.Pos.Y >= OUT_Y and not info.Resting
 end
 
 -- turns the root (whole assembly) toward the target on the floor plane when it is far off the look direction
@@ -1323,7 +1324,8 @@ local function landAttack(rec, token, target)
 		if target ~= rec.Owner or tpos.Y < OUT_Y or isPlayerInTown(target, tpos) then return end
 	else
 		if rec._returning then return end
-		local info = { Pos = tpos, Town = isPlayerInTown(target, tpos), Zone = Config.ZoneAt(tpos).Id }
+		local info = { Pos = tpos, Town = isPlayerInTown(target, tpos), Zone = Config.ZoneAt(tpos).Id,
+			Resting = target:GetAttribute("AutoResting") == true }
 		if not targetable(rec, info) then return end
 	end
 
@@ -1615,7 +1617,8 @@ local function aiTick()
 			local root = Util.GetRoot(p)
 			if root then
 				local pos = root.Position
-				table.insert(plist, { Player = p, Pos = pos, Town = isPlayerInTown(p, pos), Zone = Config.ZoneAt(pos).Id })
+				table.insert(plist, { Player = p, Pos = pos, Town = isPlayerInTown(p, pos), Zone = Config.ZoneAt(pos).Id,
+					Resting = p:GetAttribute("AutoResting") == true })
 			end
 		end
 	end

@@ -68,9 +68,11 @@ if game:GetService("RunService"):IsStudio() then
 		elseif key == "StoryStep" then -- Studio test aid: "M2_3:1" moves the active main quest back/forward to that step
 			local id, st = string.match(tostring(value), "^([%w_]+):(%d+)$")
 			local data = S.PlayerService.GetData(player)
-			local main = data and type(data.Story) == "table" and data.Story.Main
-			if not main or main.Id ~= id then return "main quest is not " .. tostring(id) end
-			main.St, main.P, main.T, main.Claim = tonumber(st), 0, {}, false
+			local story = data and type(data.Story) == "table" and data.Story
+			local main = story and story.Main
+			local track = (main and main.Id == id) and main or (story and type(story.Subs) == "table" and story.Subs[id])
+			if not track then return "no active quest " .. tostring(id) end
+			track.St, track.P, track.T, track.Claim = tonumber(st), 0, {}, false
 			return "ok"
 		elseif key == "StoryDump" then -- Studio test aid: the saved story quest state as JSON
 			local data = S.PlayerService.GetData(player)
@@ -78,6 +80,9 @@ if game:GetService("RunService"):IsStudio() then
 		elseif key == "Item" then -- Studio test aid: value = "Enh70" or "Enh70:5" (A23-12 item id[:count])
 			local id, n = string.match(tostring(value), "^(%w+):?(%d*)$")
 			return S.LootService.DebugGive(player, id, tonumber(n) or 1)
+		elseif key == "AutoIdle" then -- Studio test aid: seconds before auto combat rests (P2), this server only
+			Config.Combat.AutoIdleSeconds = math.max(10, tonumber(value) or 900)
+			return "AutoIdleSeconds=" .. Config.Combat.AutoIdleSeconds
 		elseif key == "Announce" then -- Studio test aid: "RareWeapon:4:Goblin" / "Jackpot:8" / "FirstMax:3" (real service)
 			local k, t, m = string.match(tostring(value), "^(%a+):?(%d*):?(%a*)$")
 			local tier = tonumber(t) or 4

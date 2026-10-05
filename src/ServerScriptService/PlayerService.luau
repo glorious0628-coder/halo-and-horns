@@ -587,6 +587,25 @@ function PlayerService.Start()
 		end
 		if typeof(kaiju) == "Instance" and kaiju:IsA("Player") and not seen[kaiju] then pcall(PlayerService.AddLuckEvent, kaiju) end
 	end)
+	-- P2: walking counts as activity (MarkActive) even without remote calls, so idle = no input AND no movement
+	task.spawn(function()
+		local lastPos = {}
+		while true do
+			task.wait(1)
+			local studs = Config.Combat.AutoIdleMoveStuds or 1.5
+			for _, p in PlayerService.GetReadyPlayers() do
+				local root = Util.GetRoot(p)
+				if root then
+					local prev = lastPos[p]
+					if prev and (root.Position - prev).Magnitude > studs then PlayerService.MarkActive(p) end
+					lastPos[p] = root.Position
+				end
+			end
+			for p in lastPos do
+				if p.Parent == nil then lastPos[p] = nil end
+			end
+		end
+	end)
 	-- a new KST day shows 0 at once: on join and once a minute (the roll itself always re-checks the day)
 	PlayerService.PlayerReady:Connect(function(p) pcall(PlayerService.GetLuckEvents, p) end)
 	task.spawn(function()

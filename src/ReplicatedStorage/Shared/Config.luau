@@ -387,6 +387,11 @@ Config.Combat = {
 	-- addendum A3-H3 / CR-M17: after a manual swing the auto loop skips the player for the class SwingInterval +
 	-- ManualYieldPad (a fixed 1.0 s window was <= the Warrior / Mage interval, so held manual attacks went auto).
 	ManualYieldPad = 0.3,
+	-- P2 (2026-10-05): no input / movement for this long -> auto combat rests (Zzz, monsters don't start fights with
+	-- the resting player); a warning comes AutoIdleWarnSeconds before; any input or a step resumes at once
+	AutoIdleSeconds = 900,
+	AutoIdleWarnSeconds = 30,
+	AutoIdleMoveStuds = 1.5, -- moving this far within a second counts as activity (server-side check)
 	ManualPriority = 1.0, -- legacy fixed window (pre CR-M17); kept only so old references never read nil
 	AutoPvPHintCooldown = 60, -- addendum A3-M3: "under attack" hint at most once per this many seconds
 }
@@ -2067,6 +2072,10 @@ Config.Text = {
 	PlunderGain = "골드 %s을(를) 원한 자루에 담았어요! PvP 지역에서 45초 버티면 내 것! (현상수배 별 %d개)",
 	PlunderTooSoon = "방금 턴 상대예요. 3분 동안은 또 털 수 없어요.",
 	HonorGain = "명예 +%d",
+	AutoSleepy = "조각이 졸려요… 한 걸음 움직여 볼까? (30초 뒤 자동 전투가 쉬어요)", -- P2
+	AutoRestOn = "자리를 비운 것 같아 자동 전투가 쉬어요. 움직이면 바로 다시 돌아요.",
+	AutoRestOff = "다시 왔네요! 자동 전투가 다시 돌아요.",
+	AutoChoiceWait = "선택 카드가 기다리고 있어요. 고르면 자동 전투가 다시 돌아요.",
 	GraduateStart = "새싹 졸업! 60초 뒤부터 대결 가능", -- A23-18
 	GraduateEnd = "이제 다른 진영과 대결할 수 있어요!",
 	BoldStrong = "센 상대를 이겼어요! 명예·악명·전쟁 점수 ×2",

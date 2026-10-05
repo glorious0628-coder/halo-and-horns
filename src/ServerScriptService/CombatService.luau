@@ -629,7 +629,63 @@ local function autoReady(player)
 	return isPlayer(player) and player.Parent ~= nil
 		and player:GetAttribute("AutoCombatUnlocked") == true and player:GetAttribute("AutoCombatEnabled") == true
 		and player:GetAttribute("ClassChosen") == true and kstate(player) == "None"
+		and player:GetAttribute("AutoResting") ~= true -- P2: away for 15 min
+		and player:GetAttribute("ChoicePending") ~= true -- P2: a good/evil choice card waits for the player
 		and S.PlayerService.IsReady(player) and Util.IsAlive(player)
+end
+
+-- P2 idle rest: Zzz above the head while resting (plain text label, removed on wake)
+local AUTO_IDLE = { Warned = {} }
+function AUTO_IDLE.SetResting(p, on)
+	if (p:GetAttribute("AutoResting") == true) == on then return end
+	p:SetAttribute("AutoResting", on)
+	local head = p.Character and p.Character:FindFirstChild("Head")
+	local old = head and head:FindFirstChild("HHC_AutoZzz")
+	if old then old:Destroy() end
+	if on and head then
+		local bb = Instance.new("BillboardGui")
+		bb.Name = "HHC_AutoZzz"
+		bb.Size = UDim2.fromOffset(80, 40)
+		bb.StudsOffset = Vector3.new(0, 3.2, 0)
+		bb.AlwaysOnTop = false
+		bb.MaxDistance = 80
+		local label = Instance.new("TextLabel")
+		label.BackgroundTransparency = 1
+		label.Size = UDim2.fromScale(1, 1)
+		label.Text = "Zzz"
+		label.TextScaled = true
+		label.Font = Enum.Font.FredokaOne
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.TextStrokeTransparency = 0.2
+		label.Parent = bb
+		bb.Parent = head
+	end
+	pcall(Net.Notify, p, Config.Text[on and "AutoRestOn" or "AutoRestOff"], "info")
+end
+
+-- true while the auto loop must wait: idle rest (with the 30 s warning first) or a pending choice card
+function AUTO_IDLE.Check(p)
+	local cfg = Config.Combat
+	local last = S.PlayerService.GetLastActive(p)
+	if last <= 0 then
+		S.PlayerService.MarkActive(p) -- nothing seen on this server yet: start counting now
+		last = os.clock()
+	end
+	local idle = os.clock() - last
+	if idle >= cfg.AutoIdleSeconds then
+		AUTO_IDLE.SetResting(p, true)
+		return true
+	end
+	if p:GetAttribute("AutoResting") == true then AUTO_IDLE.SetResting(p, false) end
+	if idle >= cfg.AutoIdleSeconds - cfg.AutoIdleWarnSeconds then
+		if not AUTO_IDLE.Warned[p] then
+			AUTO_IDLE.Warned[p] = true
+			pcall(Net.Notify, p, Config.Text.AutoSleepy, "info", cfg.AutoIdleWarnSeconds)
+		end
+	else
+		AUTO_IDLE.Warned[p] = nil
+	end
+	return false
 end
 
 ------------------------------------------------------------------ swing (public)
@@ -1213,7 +1269,17 @@ end
 -- one auto step: a swing when its interval is up and a monster is in reach; the skill when MP / cooldown allow
 -- and the blast would hit at least one monster (no whiffs, no MP wasted)
 local function autoTick(p)
+	-- P2: a resting player wakes the moment they act; the rest flag never outlives auto combat being ON
+	if p:GetAttribute("AutoResting") == true and p:GetAttribute("AutoCombatEnabled") == true
+		and p:GetAttribute("ChoicePending") ~= true and S.PlayerService.IsReady(p) then
+		AUTO_IDLE.Check(p)
+		return
+	end
+	if p:GetAttribute("AutoResting") == true and p:GetAttribute("AutoCombatEnabled") ~= true then
+		AUTO_IDLE.SetResting(p, false)
+	end
 	if not autoReady(p) then return end
+	if AUTO_IDLE.Check(p) then return end
 	local root = Util.GetRoot(p)
 	if not root then return end
 	local c = cls(p)
