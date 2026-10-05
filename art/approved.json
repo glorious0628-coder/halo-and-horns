@@ -346,8 +346,9 @@
   "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_SlimeCube.txt",
   "preview": "art/review/CON_SlimeCube_preview.png",
-  "original": "not downloaded yet: Firefly generate-page history carousel index 25 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_SlimeCube.png (user OK given)",
-  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
+  "original": "art/out/CON_SlimeCube.png (downloaded via Adobe MCP presigned URL, 2026-10-05)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 3D 완료(Tripo 합계 325크레딧: 생성 250 + 박쥐 고블린 뼈대·동작 75). 작업 세션이 Studio에 적용한다.",
+  "model3d": "art/models/tripo/MonsterSlimeCube_raw.glb"
  },
  "Pet_BabySlime": {
   "status": "approved",
@@ -355,8 +356,9 @@
   "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/Pet_BabySlime.txt",
   "preview": "art/review/Pet_BabySlime_preview.png",
-  "original": "not downloaded yet: Firefly generate-page history carousel index 26 (0-based, blob thumbs) on 2026-10-05; download to art/out/Pet_BabySlime.png (user OK given)",
-  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
+  "original": "art/out/Pet_BabySlime.png (downloaded via Adobe MCP presigned URL, 2026-10-05)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 3D 완료(Tripo 합계 325크레딧: 생성 250 + 박쥐 고블린 뼈대·동작 75). 작업 세션이 Studio에 적용한다.",
+  "model3d": "art/models/tripo/PetBabySlime_raw.glb"
  },
  "CON_PumpkinSlime": {
   "status": "approved",
@@ -364,8 +366,9 @@
   "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_PumpkinSlime.txt",
   "preview": "art/review/CON_PumpkinSlime_preview.png",
-  "original": "not downloaded yet: Firefly generate-page history carousel index 27 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_PumpkinSlime.png (user OK given)",
-  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
+  "original": "art/out/CON_PumpkinSlime.png (downloaded via Adobe MCP presigned URL, 2026-10-05)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 3D 완료(Tripo 합계 325크레딧: 생성 250 + 박쥐 고블린 뼈대·동작 75). 작업 세션이 Studio에 적용한다.",
+  "model3d": "art/models/tripo/MonsterPumpkinSlime_raw.glb"
  },
  "CON_PumpkinKing": {
   "status": "approved",
@@ -373,8 +376,9 @@
   "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_PumpkinKing.txt",
   "preview": "art/review/CON_PumpkinKing_preview.png",
-  "original": "not downloaded yet: Firefly generate-page history carousel index 30 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_PumpkinKing.png (user OK given)",
-  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
+  "original": "art/out/CON_PumpkinKing.png (downloaded via Adobe MCP presigned URL, 2026-10-05)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 3D 완료(Tripo 합계 325크레딧: 생성 250 + 박쥐 고블린 뼈대·동작 75). 작업 세션이 Studio에 적용한다.",
+  "model3d": "art/models/tripo/MonsterPumpkinKing_raw.glb"
  },
  "CON_LittleGhost": {
   "status": "approved",
@@ -382,8 +386,9 @@
   "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_LittleGhost.txt",
   "preview": "art/review/CON_LittleGhost_preview.png",
-  "original": "not downloaded yet: Firefly generate-page history carousel index 28 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_LittleGhost.png (user OK given)",
-  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
+  "original": "art/out/CON_LittleGhost.png (downloaded via Adobe MCP presigned URL, 2026-10-05)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 3D 완료(Tripo 합계 325크레딧: 생성 250 + 박쥐 고블린 뼈대·동작 75). 작업 세션이 Studio에 적용한다.",
+  "model3d": "art/models/tripo/MonsterLittleGhost_raw.glb"
  },
  "CON_BatGoblin": {
   "status": "approved",
@@ -391,7 +396,8 @@
   "tool": "Adobe Firefly · GPT Image 2.5 Sunburst (partner model), quality Medium (unlimited), 1:1",
   "prompt": "art/prompts/CON_BatGoblin.txt",
   "preview": "art/review/CON_BatGoblin_preview.png",
-  "original": "not downloaded yet: Firefly generate-page history carousel index 29 (0-based, blob thumbs) on 2026-10-05; download to art/out/CON_BatGoblin.png (user OK given)",
-  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 다음: 원본 내려받기 → Tripo 3D(사용자 OK, 약 295크레딧) → 작업 세션이 바로 Studio 적용·플레이."
+  "original": "art/out/CON_BatGoblin.png (downloaded via Adobe MCP presigned URL, 2026-10-05)",
+  "note": "사용자가 Sunburst/Flare 비교 후 '전부 Sunburst' 선택(2026-10-05 저녁). 디자인은 이전 승인과 같다. 3D 완료(Tripo 합계 325크레딧: 생성 250 + 박쥐 고블린 뼈대·동작 75). 작업 세션이 Studio에 적용한다.",
+  "model3d": "art/models/tripo/MonsterBatGoblin_raw.glb (+ _Idle/_Walk/_Slash/_Hurt/_Fall rigged clips)"
  }
 }

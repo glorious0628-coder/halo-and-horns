@@ -2517,5 +2517,192 @@
    "file": "art\\models\\tripo\\MonsterSkeletonKnight_Fall.glb",
    "bytes": 2608880
   }
+ ],
+ "PetBabySlime": [
+  {
+   "event": "generation_submitted",
+   "task_id": "70254c68-cef4-42f1-875e-7630ad832673",
+   "image": "art\\out\\Pet_BabySlime.png",
+   "recipe": "monster",
+   "seed": 39016
+  },
+  {
+   "task_id": "70254c68-cef4-42f1-875e-7630ad832673",
+   "image": "art\\out\\Pet_BabySlime.png",
+   "recipe": "monster",
+   "seed": 39016,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\PetBabySlime_raw.glb",
+   "bytes": 729284,
+   "at": "2026-10-05 19:35:36"
+  }
+ ],
+ "MonsterPumpkinSlime": [
+  {
+   "event": "generation_submitted",
+   "task_id": "04809327-9d1d-411f-824b-87f8aa988ca2",
+   "image": "art\\out\\CON_PumpkinSlime.png",
+   "recipe": "character",
+   "seed": 28444
+  },
+  {
+   "task_id": "04809327-9d1d-411f-824b-87f8aa988ca2",
+   "image": "art\\out\\CON_PumpkinSlime.png",
+   "recipe": "character",
+   "seed": 28444,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\MonsterPumpkinSlime_raw.glb",
+   "bytes": 2208144,
+   "at": "2026-10-05 19:36:19"
+  }
+ ],
+ "MonsterSlimeCube": [
+  {
+   "event": "generation_submitted",
+   "task_id": "6783fd35-3ed8-4af4-bc4b-3c4e5eec4d09",
+   "image": "art\\out\\CON_SlimeCube.png",
+   "recipe": "character",
+   "seed": 51101
+  },
+  {
+   "task_id": "6783fd35-3ed8-4af4-bc4b-3c4e5eec4d09",
+   "image": "art\\out\\CON_SlimeCube.png",
+   "recipe": "character",
+   "seed": 51101,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\MonsterSlimeCube_raw.glb",
+   "bytes": 2103984,
+   "at": "2026-10-05 19:36:00"
+  }
+ ],
+ "MonsterLittleGhost": [
+  {
+   "event": "generation_submitted",
+   "task_id": "e7bcae1f-b86d-4afd-aa1c-2a16b6abd29c",
+   "image": "art\\out\\CON_LittleGhost.png",
+   "recipe": "character",
+   "seed": 28989
+  },
+  {
+   "task_id": "e7bcae1f-b86d-4afd-aa1c-2a16b6abd29c",
+   "image": "art\\out\\CON_LittleGhost.png",
+   "recipe": "character",
+   "seed": 28989,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\MonsterLittleGhost_raw.glb",
+   "bytes": 2337484,
+   "at": "2026-10-05 19:37:49"
+  }
+ ],
+ "MonsterPumpkinKing": [
+  {
+   "event": "generation_submitted",
+   "task_id": "b8a63546-7f59-4002-bf47-d9e0ca12c61c",
+   "image": "art\\out\\CON_PumpkinKing.png",
+   "recipe": "boss",
+   "seed": 24407
+  },
+  {
+   "task_id": "b8a63546-7f59-4002-bf47-d9e0ca12c61c",
+   "image": "art\\out\\CON_PumpkinKing.png",
+   "recipe": "boss",
+   "seed": 24407,
+   "credits": 60.0,
+   "file": "art\\models\\tripo\\MonsterPumpkinKing_raw.glb",
+   "bytes": 3005252,
+   "at": "2026-10-05 19:38:43"
+  }
+ ],
+ "MonsterBatGoblin": [
+  {
+   "event": "generation_submitted",
+   "task_id": "2aeeb099-91f7-4697-b40e-53062de99ec4",
+   "image": "art\\out\\CON_BatGoblin.png",
+   "recipe": "character",
+   "seed": 76358
+  },
+  {
+   "task_id": "2aeeb099-91f7-4697-b40e-53062de99ec4",
+   "image": "art\\out\\CON_BatGoblin.png",
+   "recipe": "character",
+   "seed": 76358,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\MonsterBatGoblin_raw.glb",
+   "bytes": 2926624,
+   "at": "2026-10-05 19:38:20"
+  },
+  {
+   "operation": "rig",
+   "event": "rig_submitted",
+   "spec": "tripo",
+   "rig_task_id": "d7bd0d9c-7db8-43c8-8c8e-41b34dabd8a5"
+  },
+  {
+   "operation": "rig",
+   "event": "rig_completed",
+   "spec": "tripo",
+   "rig_task_id": "d7bd0d9c-7db8-43c8-8c8e-41b34dabd8a5",
+   "credits": 25.0
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "586056fb-2bd6-4216-a78c-420263519705",
+   "clip": "Idle",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterBatGoblin_Idle.glb",
+   "bytes": 3256688
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "4412d93a-9cdc-448f-b00e-25150c1c13b9",
+   "clip": "Walk",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterBatGoblin_Walk.glb",
+   "bytes": 3114292
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "7cd72da7-7907-496d-8440-ba45c312c9b5",
+   "clip": "Slash",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterBatGoblin_Slash.glb",
+   "bytes": 3162724
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "d5e92b47-d922-48d4-845c-ce85e8ab6370",
+   "clip": "Hurt",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterBatGoblin_Hurt.glb",
+   "bytes": 3233476
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "11801516-70b9-4975-9999-5b0fafa1bad6",
+   "clip": "Fall",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterBatGoblin_Fall.glb",
+   "bytes": 3121932
+  }
+ ],
+ "MonsterBatGoblin_src": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "03896cec-084b-4d90-a749-d629af3057a8",
+   "file": "art\\models\\tripo\\MonsterBatGoblin_raw.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "03896cec-084b-4d90-a749-d629af3057a8",
+   "file": "art\\models\\tripo\\MonsterBatGoblin_raw.glb",
+   "credits": 0.0
+  }
  ]
 }
