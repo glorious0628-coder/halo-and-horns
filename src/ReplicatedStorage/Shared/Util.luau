@@ -76,6 +76,16 @@ function Util.FormatNumber(n)
 	return sign .. tostring(math.floor(n))
 end
 
+-- 1052 -> "1,052" (whole numbers with thousands separators; BB4 power, ranking, Tab list)
+function Util.FormatInt(n)
+	n = math.floor((tonumber(n) or 0) + 0.5)
+	local sign = n < 0 and "-" or ""
+	local s = tostring(math.abs(n))
+	local out = string.reverse((string.gsub(string.reverse(s), "(%d%d%d)", "%1,")))
+	if string.sub(out, 1, 1) == "," then out = string.sub(out, 2) end
+	return sign .. out
+end
+
 function Util.FormatTime(seconds)
 	seconds = math.max(0, math.floor(seconds or 0))
 	return string.format("%d:%02d", seconds // 60, seconds % 60)

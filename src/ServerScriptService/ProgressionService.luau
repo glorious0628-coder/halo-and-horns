@@ -136,6 +136,9 @@ function M.GetXPMult(player)
 		+ (hasBlessing(player) and Config.War.BlessingXP or 0)
 		+ num(data.RebirthBonus)
 		+ num(data.RedeemMarks) * Config.Rebirth.RedeemXPPer
+	-- A23-22 unruly-PvP penalty: XP x0.5 while the player is a bully
+	local pen = Config.Bully.Penalty
+	if type(pen) == "table" and num(player:GetAttribute("BullyStacks")) >= 1 then mult *= num(pen.XPMult) end
 	return math.max(0, mult)
 end
 

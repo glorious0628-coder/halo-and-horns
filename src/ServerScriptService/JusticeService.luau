@@ -193,11 +193,44 @@ function JusticeService.GetPower(player)
 	return Config.PowerOf(level, tier, 1 + rebirthBonus, enhance)
 end
 
--- CR-L5: combat power for the weak-victim (bully) rule; the rebirth bonus is gold / XP only, so it is left out
+-- BB4 "전투력" (integer, Config.CombatPower): the weak-victim (bully) rule and the boldness ratios compare it.
+-- CR-L5: the rebirth bonus is gold / XP only, so it is left out
 function JusticeService.GetCombatPower(player)
 	if not player then return 0 end
 	local level, tier, enhance = levelAndTier(player)
-	return Config.PowerOf(level, tier, 1, enhance)
+	return Config.CombatPower(level, tier, enhance)
+end
+
+-- BB4: the CombatPower attribute follows Level / WeaponTier / WeaponEnhance. One deferred refresh per frame, because
+-- LootService writes WeaponEnhance right after WeaponTier (an equip changes the attribute exactly once).
+local POWER = { Conns = {}, Pending = {} }
+
+function POWER.Refresh(player)
+	POWER.Pending[player] = nil
+	if player.Parent == nil or not POWER.Conns[player] then return end
+	local n = JusticeService.GetCombatPower(player)
+	if player:GetAttribute("CombatPower") ~= n then player:SetAttribute("CombatPower", n) end
+end
+
+function POWER.Schedule(player)
+	if POWER.Pending[player] then return end
+	POWER.Pending[player] = true
+	task.defer(POWER.Refresh, player)
+end
+
+function POWER.Drop(player)
+	for _, c in POWER.Conns[player] or {} do c:Disconnect() end
+	POWER.Conns[player], POWER.Pending[player] = nil, nil
+end
+
+function POWER.Watch(player)
+	POWER.Drop(player)
+	local list = {}
+	for _, attr in { "Level", "WeaponTier", "WeaponEnhance" } do
+		table.insert(list, player:GetAttributeChangedSignal(attr):Connect(function() POWER.Schedule(player) end))
+	end
+	POWER.Conns[player] = list
+	POWER.Refresh(player)
 end
 
 -- 1 for "None" and "Neutral" (A6)
@@ -233,6 +266,20 @@ function JusticeService.GetBullyStacks(player)
 	return b and b.Stacks or 0
 end
 
+-- A23-22: os.time() when the last stack decays (0 = no penalty); the HUD shows "(N분)" from it.
+-- The BullyStacks attribute and this one are written together through publishBully.
+local function publishBully(player, b)
+	local stacks = b and b.Stacks or 0
+	local endsAt = 0
+	if stacks > 0 then
+		local period = math.max(1, tonumber(Config.Bully.DecaySeconds) or 300)
+		local left = (stacks - 1) * period + math.max(0, period - (os.clock() - b.Last))
+		endsAt = os.time() + math.ceil(left)
+	end
+	player:SetAttribute("BullyStacks", stacks)
+	player:SetAttribute("BullyEndsAt", endsAt)
+end
+
 function JusticeService.AddBullyStack(player)
 	if not player then return 0 end
 	if not isFighterFaction(factionOf(player)) then return 0 end -- A6: Neutral / None never become bullies
@@ -243,7 +290,7 @@ function JusticeService.AddBullyStack(player)
 	end
 	b.Stacks = math.min(Config.Bully.MaxStacks, b.Stacks + 1)
 	b.Last = os.clock()
-	player:SetAttribute("BullyStacks", b.Stacks)
+	publishBully(player, b)
 	JusticeService.RefreshScale(player)
 	return b.Stacks
 end
@@ -335,7 +382,7 @@ local function restoreBully(player, data)
 	if stacks <= 0 then return end
 	-- keep the running decay period: the next stack drops `period` after the last drop, not after the join
 	bully[player] = { Stacks = stacks, Last = os.clock() - (elapsed - decayed * period) }
-	player:SetAttribute("BullyStacks", stacks)
+	publishBully(player, bully[player])
 	JusticeService.RefreshScale(player)
 end
 
@@ -344,14 +391,17 @@ local function onPlayerReady(player, data)
 	clearPlayer(player)
 	player:SetAttribute("SizeMult", 1)
 	player:SetAttribute("BullyStacks", 0)
+	player:SetAttribute("BullyEndsAt", 0)
 	player:SetAttribute("VisualScale", 1)
 	local ok, err = pcall(restoreBully, player, data)
 	if not ok then warnThrottled("bullyrestore", "bully restore failed: " .. tostring(err)) end
+	POWER.Watch(player)
 	requestRecompute()
 end
 
 local function onPlayerLeaving(player, data)
 	leaving[player] = true
+	POWER.Drop(player)
 	-- CR-M12: save the stacks; SavedBullyAt = os.time() of the start of the running decay period
 	if type(data) == "table" then
 		local b = bully[player]
@@ -438,7 +488,7 @@ local function decayStep(player, b)
 	b.Stacks -= 1
 	b.Last = os.clock()
 	if player.Parent ~= Players then return end
-	player:SetAttribute("BullyStacks", b.Stacks)
+	publishBully(player, b)
 	Net.Notify(player, string.format(Config.Text.BullyDecay, b.Stacks), "info")
 	JusticeService.RefreshScale(player)
 end
@@ -458,7 +508,7 @@ function JusticeService.Init(registry)
 				bully[player] = nil
 				if had then
 					local ok, err = pcall(function()
-						player:SetAttribute("BullyStacks", 0)
+						publishBully(player, nil)
 						JusticeService.RefreshScale(player)
 					end)
 					if not ok then warnThrottled("bullyclear", "bully clear failed: " .. tostring(err)) end

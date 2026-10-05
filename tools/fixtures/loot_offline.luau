@@ -2001,12 +2001,13 @@ runGroup("damage", function()
 	local noAttr = attrPlayer({ Level = 30, WeaponTier = 3, RebirthBonus = 0.5 })
 	check(math.abs(justice.GetPower(hero) - C.PowerOf(30, 3, 1.5, 10)) < 1e-9 and justice.GetPower(hero) > justice.GetPower(plain),
 		"JusticeService.GetPower passes the WeaponEnhance attribute (rebirth bonus included)", show({ justice.GetPower(hero), justice.GetPower(plain) }))
-	check(math.abs(justice.GetCombatPower(hero) - C.PowerOf(30, 3, 1, 10)) < 1e-9,
+	-- BB4: the combat power is the displayed integer Config.CombatPower (PowerOf x DisplayScale, rounded)
+	check(justice.GetCombatPower(hero) == C.CombatPower(30, 3, 10) and C.CombatPower(30, 3, 10) == math.floor(C.PowerOf(30, 3, 1, 10) * 10 + 0.5),
 		"JusticeService.GetCombatPower passes the WeaponEnhance attribute (no rebirth bonus)", justice.GetCombatPower(hero))
-	check(justice.GetCombatPower(noAttr) == C.PowerOf(30, 3, 1, 0), "missing WeaponEnhance attribute = +0")
+	check(justice.GetCombatPower(noAttr) == C.CombatPower(30, 3, 0), "missing WeaponEnhance attribute = +0")
 	-- PvPService: J missing -> its own fallback (data.WeaponEnhance is the per-tier TABLE, so it must read the attribute)
 	local fallbackS = { PlayerService = { GetData = function() return { Level = 30, WeaponTier = 3, WeaponEnhance = { 9, 9, 9, 9, 9, 9, 9, 9 } } end } }
-	check(math.abs(pvpPower.combatPower(hero, fallbackS) - C.PowerOf(30, 3, 1, 10)) < 1e-9,
+	check(pvpPower.combatPower(hero, fallbackS) == C.CombatPower(30, 3, 10),
 		"PvPService combatPower fallback reads the WeaponEnhance attribute (not the per-tier table)", pvpPower.combatPower(hero, fallbackS))
 	local viaJ = { PlayerService = fallbackS.PlayerService, JusticeService = { GetCombatPower = function() return 1234 end } }
 	check(pvpPower.combatPower(hero, viaJ) == 1234, "PvPService combatPower prefers JusticeService.GetCombatPower")

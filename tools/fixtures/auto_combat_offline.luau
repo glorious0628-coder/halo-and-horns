@@ -50,7 +50,17 @@ local function fixture(opts)
 		for k,v in attrs or {} do p.Attrs[k]=v end
 		function p:IsA(kind) return kind=="Player" end
 		function p:GetAttribute(key) return self.Attrs[key] end
-		function p:SetAttribute(key,value) self.Attrs[key]=value end
+		p.AttrSignals={}
+		-- A23-22: CombatService watches BullyStacks (changed signals fire on a real value change)
+		function p:GetAttributeChangedSignal(key)
+			self.AttrSignals[key]=self.AttrSignals[key] or signal()
+			return self.AttrSignals[key]
+		end
+		function p:SetAttribute(key,value)
+			local old=self.Attrs[key]
+			self.Attrs[key]=value
+			if old~=value and self.AttrSignals[key] then self.AttrSignals[key]:Fire() end
+		end
 		function p.Hum:TakeDamage(amount) self.Health=math.max(0,self.Health-amount) end
 		table.insert(f.Players,p)
 		return p

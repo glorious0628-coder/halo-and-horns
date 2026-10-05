@@ -126,6 +126,7 @@ local TXT = {
 	InCombat = "전투 중",
 	Size = "덩치 저울 ×%.2f",
 	Bully = "깡패 %d단계",
+	BullyPenalty = "깡패 벌칙: 자동 전투 불가 · 경험치·드랍 절반 (%d분)", -- A23-22
 	KaijuQueued = "괴수 대기 중",
 	QuestHeader = "오늘의 퀘스트 (%d/%d)",
 	QuestAllDone = "오늘 일일 완료! 추가 퀘스트 진행 중",
@@ -577,6 +578,135 @@ local function moneyLine(parent, name, icon, x, y, w)
 	}), 12)
 end
 
+------------------------------------------------------------------ BB5 "전투력" (Config.CombatPower, server attribute)
+-- Desktop: right half of the class row; touch: right half of the bank row. A rise floats a gold "+N" and counts the
+-- number up (not when the level changed in the same moment: the level-up banner already celebrates). Drops are silent.
+-- Changes within 0.4 s merge; while the opening / a picker is open one pending popup waits. Tap -> "Character" window.
+L.Pow = { Shown = nil, Base = nil, Seq = 0, LevelAt = -10, MergeAt = 0, Pending = false, Merge = 0.4, Count = 0.6 }
+
+function L.PowerValue()
+	local v = tonumber(attr("CombatPower", nil))
+	if v then return math.floor(v) end
+	local lv = math.floor(num("Level", 1))
+	local tier = math.clamp(math.floor(num("WeaponTier", 1)), 1, Config.MaxWeaponTier)
+	return Config.CombatPower(lv, tier, num("WeaponEnhance", 0)) -- before the server's first set
+end
+
+function L.PowerText(n)
+	return Config.Power.Text.Label .. " " .. Util.FormatInt(n)
+end
+
+function L.PowerOpen()
+	local P = C and C.Panels
+	if type(P) == "table" and type(P.Has) == "function" and P.Has("Character") then pcall(P.Open, "Character") end
+end
+
+-- a transparent tap area (>= 44 real px tall where possible) over a label / portrait
+function L.PowerHit(target)
+	local hit = UIKit.Create("TextButton", {
+		Name = "OpenCharacter",
+		BackgroundTransparency = 1,
+		Text = "",
+		AutoButtonColor = false,
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = (target.ZIndex or 1) + 2,
+		Parent = target,
+	})
+	hit.Activated:Connect(L.PowerOpen)
+	return hit
+end
+
+function L.PowerBuild(parent, x, y, w, h)
+	ui.power = L.FitText(artLabel(false, {
+		Name = "Power",
+		Position = UDim2.fromOffset(x, y),
+		Size = UDim2.fromOffset(w, h),
+		TextScaled = true,
+		MaxTextSize = IS_TOUCH and 16 or 13,
+		Number = true,
+		Color = ac("GoldText", Theme.Gold),
+		TextXAlignment = Enum.TextXAlignment.Right,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		Text = L.PowerText(L.PowerValue()),
+		Parent = parent,
+	}), 11, true)
+	L.PowerHit(ui.power)
+end
+
+function L.PowerSet(n)
+	L.Pow.Shown = n
+	if ui.power then ui.power.Text = L.PowerText(n) end
+end
+
+-- gold "+N" floating up from the number, and the number counting up to the new value
+function L.PowerPopup(from, to)
+	local label = ui.power
+	if not label or not label.Parent then L.PowerSet(to) return end
+	L.Pow.Seq += 1
+	local seq = L.Pow.Seq
+	local pop = artLabel(false, {
+		Name = "PowerUp",
+		AnchorPoint = Vector2.new(1, 1),
+		Position = UDim2.new(1, 0, 0, 0),
+		Size = UDim2.fromOffset(90, IS_TOUCH and 22 or 18),
+		TextScaled = true,
+		MaxTextSize = IS_TOUCH and 18 or 15,
+		Number = true,
+		Color = ac("GoldText", Theme.Gold),
+		TextXAlignment = Enum.TextXAlignment.Right,
+		Text = "+" .. Util.FormatInt(to - from), -- next to the number, so the bare "+N"
+		ZIndex = (label.ZIndex or 1) + 3,
+		Parent = label,
+	})
+	TweenService:Create(pop, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Position = UDim2.new(1, 0, 0, -22), TextTransparency = 1,
+	}):Play()
+	task.delay(1.2, function() pop:Destroy() end)
+	task.spawn(function()
+		local t0 = os.clock()
+		while seq == L.Pow.Seq do
+			local k = math.clamp((os.clock() - t0) / L.Pow.Count, 0, 1)
+			L.PowerSet(math.floor(from + (to - from) * k + 0.5))
+			if k >= 1 then break end
+			task.wait(1 / 30)
+		end
+	end)
+end
+
+-- 0.4 s after the first change: compare with the value shown before it
+function L.PowerSettle()
+	local P = L.Pow
+	if pickersOpen() then
+		P.Pending = true -- one popup waits for the opening / picker to close (checked again by the next change / loop)
+		task.delay(1, L.PowerSettle)
+		return
+	end
+	P.Pending = false
+	P.MergeAt = 0
+	local n, base = L.PowerValue(), P.Base or L.PowerValue()
+	P.Base = n
+	if n > base and os.clock() - P.LevelAt > P.Merge + 0.3 then
+		L.PowerPopup(P.Shown or base, n)
+	else
+		P.Seq += 1 -- stop a running count-up
+		L.PowerSet(n)
+	end
+end
+
+function L.PowerChanged()
+	local P = L.Pow
+	-- the baseline starts only after the save loaded and the class was picked (no popup for the first number)
+	if attr("DataLoaded", false) ~= true or attr("ClassChosen", false) ~= true or P.Base == nil then
+		if attr("DataLoaded", false) == true and attr("ClassChosen", false) == true then P.Base = L.PowerValue() end
+		P.Seq += 1
+		L.PowerSet(L.PowerValue())
+		return
+	end
+	if P.MergeAt > 0 or P.Pending then return end -- already waiting: the settle reads the latest value
+	P.MergeAt = os.clock()
+	task.delay(P.Merge, L.PowerSettle)
+end
+
 -- PanelCard (gold rim, navy inside). Desktop: portrait ring + live-character 3D snapshot, level badge, title / class, XP
 -- bar, 금고 / 주머니. Touch (U5): level badge + XP bar + 금고 only. Horns get a wanted-stars / bounty row on both.
 local function buildStats(root)
@@ -695,10 +825,11 @@ local function buildStats(root)
 			TextTruncate = Enum.TextTruncate.AtEnd,
 			Parent = f,
 		})
+		local classW = math.floor((W - 138) * 0.5) -- BB5: the class name shares its row with the power number
 		ui.class = artLabel(false, {
 			Name = "Class",
 			Position = UDim2.fromOffset(126, 29),
-			Size = UDim2.fromOffset(W - 138, 14),
+			Size = UDim2.fromOffset(classW, 14),
 			TextSize = 12,
 			Color = ac("LightSub", Theme.SubText),
 			TextXAlignment = Enum.TextXAlignment.Left,
@@ -707,6 +838,8 @@ local function buildStats(root)
 		})
 		L.FitText(ui.title, 13, true)
 		L.FitText(ui.class, 12)
+		L.PowerBuild(f, 126 + classW + 4, 30, W - 138 - classW - 4, 14)
+		L.PowerHit(holder)
 	end
 
 	-- XP bar on the BarTrack art (bright blue fill)
@@ -725,7 +858,10 @@ local function buildStats(root)
 	L.FitText(ui.xpText, 11)
 
 	if IS_TOUCH then
-		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 78, barW)
+		local half = math.floor((barW - 6) / 2) -- BB5: 금고 | 전투력
+		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 78, half)
+		L.PowerBuild(f, x0 + half + 6, 78, barW - half - 6, 20)
+		L.PowerHit(badge)
 	else
 		local half = math.floor((barW - 6) / 2)
 		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 104, half)
@@ -789,8 +925,13 @@ function L.LayoutStats(s)
 		local classH = math.max(14, textH)
 		local classY = math.max(29, 10 + titleH + 2)
 		ui.title.Size = UDim2.fromOffset(L.StatsW - 138, titleH)
+		local classW = math.floor((L.StatsW - 138) * 0.5) -- BB5: the right half is the power number
 		ui.class.Position = UDim2.fromOffset(126, classY)
-		ui.class.Size = UDim2.fromOffset(L.StatsW - 138, classH)
+		ui.class.Size = UDim2.fromOffset(classW, classH)
+		if ui.power then
+			ui.power.Position = UDim2.fromOffset(126 + classW + 4, classY)
+			ui.power.Size = UDim2.fromOffset(L.StatsW - 138 - classW - 4, classH)
+		end
 		xpY = math.max(xpY, classY + classH + 4)
 	end
 	if ui.levelTag then
@@ -807,7 +948,7 @@ function L.LayoutStats(s)
 	C.VitalsUI.LayoutStats(hpY, vitalH, 2)
 	local moneyY = hpY + vitalH * 2 + 6
 	local moneyH = math.max(IS_TOUCH and 20 or 18, textH)
-	for _, label in { ui.bank, ui.carried } do
+	for _, label in { ui.bank, ui.carried or (IS_TOUCH and ui.power) or nil } do -- touch: 금고 | 전투력 (BB5)
 		label.Position = UDim2.fromOffset(label.Position.X.Offset, moneyY)
 		label.Size = UDim2.fromOffset(label.Size.X.Offset, moneyH)
 	end
@@ -1838,7 +1979,8 @@ local function refreshChips()
 	local size = num("SizeMult", 1)
 	setChip(ui.chip.Size, size > 1.001, string.format(TXT.Size, size), Theme.Gold)
 	local bully = math.floor(num("BullyStacks", 0))
-	setChip(ui.chip.Bully, bully > 0, string.format(TXT.Bully, bully), Theme.Bad)
+	local bullyLeft = math.max(1, math.ceil((num("BullyEndsAt", 0) - now) / 60)) -- A23-22 penalty minutes
+	setChip(ui.chip.Bully, bully > 0, string.format(TXT.BullyPenalty, bullyLeft), Theme.Bad)
 	setChip(ui.chip.Kaiju, attr("KaijuState", "None") == "Queued", TXT.KaijuQueued, Theme.Bad)
 end
 
@@ -3325,6 +3467,8 @@ function HUD.Start()
 	UIKit.OnAttr({ "Level", "XP", "Faction", "Class", "Honor", "Infamy", "FallMarks", "RedeemMarks", "SessionTitle", "TitleSel",
 		"BankGold", "CarriedGold", "WantedStars", "Bounty" }, refreshStats)
 	UIKit.OnAttr({ "Faction", "Class", "ClassChosen", "CharacterGender", "SizeMult" }, L.RefreshPortrait)
+	UIKit.OnAttr({ "Level" }, function() L.Pow.LevelAt = os.clock() end) -- BB5: no "+N" next to a level-up banner
+	UIKit.OnAttr({ "CombatPower", "DataLoaded", "ClassChosen" }, L.PowerChanged)
 	UIKit.OnAttr({ "AutoCombatUnlocked", "AutoCombatEnabled", "ClassChosen" }, L.RefreshAuto)
 	-- 2026-10-06 playtest: on a short desktop window the bottom-left chat window + input bar sat on top of the quest
 	-- rows and swallowed the [받기] click (CoreGui wins). Desktop chat goes to the bottom middle, which the HUD leaves free.

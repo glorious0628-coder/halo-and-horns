@@ -62,9 +62,19 @@ def static_checks() -> tuple[int, list[str], dict]:
     combat = FILES["COMBAT_SOURCE"].read_text(encoding="utf-8-sig")
     toggle = re.search(r"local function onSetAutoAttackRemote\(.*?\nend\n", combat, re.S)
     unlock = re.search(r"function CombatService\.UnlockAutoCombat\(.*?\nend\n", combat, re.S)
-    check(len(writers["AutoCombatEnabled"]) == 1 and toggle is not None
-          and 'SetStat(player, "AutoCombatEnabled", enabled)' in toggle.group(),
-          f"AutoCombatEnabled must be written only by the SetAutoAttack toggle; writers: {writers['AutoCombatEnabled']}")
+    # A23-22 (2026-10-05): the unruly-PvP penalty may switch auto combat OFF (literal false); nothing else may write it,
+    # so no quest/unlock path can switch it ON by itself
+    src_lines = {}
+    def line_of(ref: str) -> str:
+        file, number = ref.rsplit(":", 1)
+        if file not in src_lines:
+            src_lines[file] = (ROOT / file).read_text(encoding="utf-8-sig").splitlines()
+        return src_lines[file][int(number) - 1]
+    others = [w for w in writers["AutoCombatEnabled"] if 'SetStat(player, "AutoCombatEnabled", enabled)' not in line_of(w)]
+    check(len(writers["AutoCombatEnabled"]) - len(others) == 1 and toggle is not None
+          and 'SetStat(player, "AutoCombatEnabled", enabled)' in toggle.group()
+          and all('"AutoCombatEnabled", false)' in line_of(w) for w in others),
+          f"AutoCombatEnabled must be written only by the SetAutoAttack toggle (others may only write false); writers: {writers['AutoCombatEnabled']}")
     check(len(writers["AutoCombatUnlocked"]) == 1 and unlock is not None
           and 'SetStat(player, "AutoCombatUnlocked", true)' in unlock.group() and "AutoCombatEnabled" not in unlock.group(),
           f"AutoCombatUnlocked must be written only by UnlockAutoCombat; writers: {writers['AutoCombatUnlocked']}")

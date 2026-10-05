@@ -2879,6 +2879,11 @@ local function queueRebuild(keep)
 end
 ITEMS.Rebuild = queueRebuild
 
+-- BB5: callers that open a window which may not exist yet (e.g. "Character" before BB8) check first
+function Panels.Has(id)
+	return type(id) == "string" and BUILDERS[id] ~= nil
+end
+
 function Panels.Open(id, arg)
 	local fromMenu = pendingFromMenu
 	pendingFromMenu = false

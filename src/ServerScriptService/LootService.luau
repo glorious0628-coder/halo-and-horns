@@ -201,8 +201,9 @@ end
 -- Draw order is fixed: one draw per row in table order, then one for the jackpot when this kind has one.
 local function rollRows(info, onHit)
 	local mult = info.Golden == true and LOOT.GoldenMult or 1
+	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows only, never the jackpot)
 	for _, row in LOOT.Tables[info.Kind] or {} do
-		if rng:NextNumber() < math.min(1, num(row.P) * mult) then onHit(row, false) end
+		if rng:NextNumber() < math.min(1, num(row.P) * rowMult) then onHit(row, false) end
 	end
 	local jackpot = LOOT.Jackpot
 	if jackpot and jackpot.Monsters[info.Kind] and rng:NextNumber() < math.min(1, num(jackpot.Chance) * mult) then
@@ -297,6 +298,11 @@ function LootService.RollKill(player, info)
 		end
 	end
 
+	local pen = Config.Bully.Penalty
+	if type(pen) == "table" and num(player:GetAttribute("BullyStacks")) >= 1 then
+		info = table.clone(info) -- A23-22: drop rows x0.5 while a bully (the caller's info stays untouched)
+		info.DropMult = num(pen.DropMult, 1)
+	end
 	rollRows(info, function(row, isJackpot)
 		if row.Item then
 			giveItem(row.Item, math.max(1, math.floor(num(row.N, 1))))

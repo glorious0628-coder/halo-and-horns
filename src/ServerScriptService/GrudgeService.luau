@@ -125,6 +125,8 @@ local function presentVictim(userId)
 end
 
 -- removes the sack, resets the thief's attributes, tells the thief (unless leaving) and fires SackResolved
+local pointVictim -- A23-18 hold-button target (defined below with the grudge mail; closeSack calls it)
+
 local function closeSack(thief, sack, outcome, tellThief)
 	sacks[thief] = nil
 	publish(thief, nil)
@@ -147,6 +149,10 @@ function MAIL.Get()
 		MAIL.Tried = true
 		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, Config.Grudge.MailStore)
 		MAIL.Store = ok and store or nil
+		if not ok then
+			Util.Warn(TAG, "grudge mail store unavailable: " .. tostring(store))
+			task.delay(60, function() MAIL.Tried = false end) -- try again later instead of never
+		end
 	end
 	return MAIL.Store
 end
@@ -202,12 +208,14 @@ function MAIL.Receive(victim)
 	if not ok then Util.Warn(TAG, "grudge mail read failed: " .. tostring(err)) return end
 	if type(letters) ~= "table" or #letters == 0 then return end
 	if not canPay(victim) then
-		pcall(store.UpdateAsync, store, "M_" .. tostring(victim.UserId), function(old)
-			local list = type(old) == "table" and old or {}
-			for _, m in letters do table.insert(list, m) end
+		-- the taken letters go back in FRONT of any newer ones, so a full box drops the oldest first
+		local back, backErr = pcall(store.UpdateAsync, store, "M_" .. tostring(victim.UserId), function(old)
+			local list = table.clone(letters)
+			for _, m in (type(old) == "table" and old or {}) do table.insert(list, m) end
 			while #list > Config.Grudge.MailMax do table.remove(list, 1) end
 			return list
 		end)
+		if not back then Util.Warn(TAG, "grudge mail write-back failed (letters lost): " .. tostring(backErr)) end
 		return
 	end
 	local rebirths = tonumber(victim:GetAttribute("Rebirths")) or 0
@@ -230,7 +238,7 @@ end
 
 -- A23-18: point the victim's hold button at an open sack that still carries their share from this life
 -- (several thieves: when one sack closes, the button moves to the next one instead of disappearing)
-local function pointVictim(victim)
+function pointVictim(victim)
 	if not isPlaying(victim) then return end
 	local target = 0
 	for thief, sack in sacks do

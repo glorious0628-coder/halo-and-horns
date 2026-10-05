@@ -1,0 +1,1453 @@
+{
+  "status": "passed",
+  "srcBugs": [],
+  "patches": [],
+  "real": {
+    "checks": 275,
+    "failedChecks": 0,
+    "namedChecks": 235,
+    "namedChecksFailing": 0,
+    "failing": []
+  },
+  "patched": null,
+  "named": [
+    {
+      "group": "config-contract",
+      "check": "Config.Grudge: 45 s, 120% / 100%, refund bonus per 600 s, avenger 100, resteal 180 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Grudge mail: DataStore HaloHorns_GrudgeMail_v1, MailMax 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "A23-18 hold numbers: +2 s, max +10 s per sack, glow 3 s, client cooldown 3 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.RateLimits.GhostHold = 2.7 (a bit under the 3 s client cooldown, so network jitter never eats a press)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "avenger bonus cooldown = Config.PvP.PairRewardCooldown 300",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Net.Names has the GhostHold remote",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.GrudgeMail has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.GhostHoldOk has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.GhostHoldMax has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.GhostHeld has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.SackPaid has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.SackLost has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.GrudgeRefund has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.GrudgeReturned has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.AvengerBonus has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "Config.Text.GrudgeAvengedAll has exactly its %s/%d arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "GhostHoldOk reads +2 s (max +10 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-contract",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "close-sack",
+      "check": "closing a sack with a victim on the server raises no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "close-sack",
+      "check": "closeSack finishes: SackLost to the thief, SackResolved fired",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "close-sack",
+      "check": "closeSack clears the victim's hold button",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "close-sack",
+      "check": "the victim is refunded and the sack is gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "close-sack",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "close-sack",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "no sack before a steal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "CanSteal: a fresh pair is allowed, nil refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "AddToSack opens a sack with the stolen gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "the thief's SackGold / SackSeconds 45 / SackVictimName are published",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "A23-18: AddToSack sets the victim's GrudgeThiefId = thief.UserId",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "CR-M4: the steal is recorded in the victim's save (PairCD steal:<thief>)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "the same thief cannot steal from the same victim again; other victims can be robbed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "steals accumulate in ONE sack (fractions floored), the last victim is shown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "zero / negative / non-number amounts and nil players are ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "10 s in a PvP zone: 35 s left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "every new steal restarts the countdown at 45 s (no hold seconds yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "re-steal still blocked at 179 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "re-steal allowed again after RestealWindow 180 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "Returned: each victim gets the accumulated share 100% to the bank (source Refund)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "Returned: the thief gets neither gold nor infamy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "GrudgeReturned notice with the amount",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-add",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "outside a PvP zone the countdown never ticks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "inside a PvP zone it ticks (4 x 0.25 s = 1 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "a 5 s server hitch counts at most 1 s (MAX_TICK_STEP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "a dead carrier is never ticked or paid (the death pipeline resolves)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "no character (not alive): no tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "1 s left: not paid yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "0.25 s left: still not paid (SackSeconds = ceil)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "45 s survived in PvP zones: the sack resolves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "Paid: the whole sack to the thief's carried gold (source Plunder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "Paid: the sack's infamy is added once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "SackPaid to the thief (no SackLost)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "Paid: victims get nothing back and no mail is written",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "SackResolved(thief, Paid, 200) fires once, after the sack is removed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "the thief's sack attributes reset",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "the victim's hold target is cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "a paid sack is never paid twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "Paid with an absent victim: no grudge mail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-countdown-paid",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "thief leaves: Returned 100% to the victim, the thief is never paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "a leaving thief is not told",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "the victim gets GrudgeReturned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "SackResolved Returned 120",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "the victim's hold target is cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "thief gone without PlayerLeaving: the next tick returns the sack",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "faction change: Returned 100%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "faction change tells the thief (SackLost)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "KO without a present Halo killer -> Returned 100%",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "no avenger bonus without a Halo killer",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "no server-wide avenged line; the thief is told SackLost",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "Returned: a present victim who rebirthed since gets no pay and no mail (CR-M6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "OnCarrierDown without a sack does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-returned",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "Avenged: present same-life victims get 120% (floored) to the bank",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "GrudgeRefund names the avenger and the amount",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "Plunder Fx flies from the thief to the victim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "the Halo killer gets the avenger bonus 100 (Bounty)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "server-wide avenged line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "the thief is told SackLost",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "SackResolved Avenged 155",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "cooldowns live in the saves: victims refund:0, avenger avenge:0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "present victims get no mail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "100 s later: the victim gets 100% (refund bonus used), no avenger bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "301 s: the avenger bonus is back (300 s), the victim's 120% still waits (600 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "600 s: the victim's 120% is back; the avenger bonus waits again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "a different thief within 600 s: still 100% (the bonus is per victim, whatever the thief)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "CR-M6: a victim who rebirthed since gets nothing (no pay, no mail, refund cooldown untouched)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "the avenger bonus still pays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "a share stolen before a rebirth stays in the sack total",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "only the share stolen in the current life is refunded",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack-avenged",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "Avenged + absent victim: one letter { A = 100, R = 2 (rebirths when stolen), K = Avenged, T = os.time() } at M_<userId>",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "the letter Id = <thief UserId>:<os.time at sack start>:<kind>",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "the mailbox is DataStore HaloHorns_GrudgeMail_v1 (opened once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "GrudgeService.MailPending() is 0 once the letter is written",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "the absent victim is not paid now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "a present victim is paid directly (120%) and gets no mail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "the avenger bonus does not depend on who is present",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "Returned + absent victim: K = Returned, Id ends in :Returned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "a victim who is in the server but not ready gets mail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "a present victim from another life gets no pay and no mail (CR-M6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "thief leaves: absent victims get a Returned letter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "MailMax 20: letters are appended and the oldest are dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "a failing mail send never blocks the sack: it resolves and present victims are paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "DataStore down: 4 caught tries, each warned, then MailPending back to 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "GetDataStore failing: the sack resolves without a crash, nothing is written or left pending",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "GetDataStore failing is warned (and retried later)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-send",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "a failed send stays pending (MailPending 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "no retry before 1 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "second try 1 s later (fails again)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "no third try before 2 more seconds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "third try (2 s after the second) writes the letter once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "MailPending back to 0 after the write",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "each failed try is warned with its number (1/4, 2/4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "no further tries after the success",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "a write whose reply was lost is retried",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "the retry sees the letter Id and does not append it twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "the lost reply is warned once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "after 6.9 s: 3 tries, still pending",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "the 4th try at 7 s is the last; MailPending 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "no 5th try; 4 warnings (1/4..4/4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "the same thief's next sack (20 s later) is a new letter, not a duplicate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-retry",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "mail at join: one Avenged letter with the refund bonus ready pays 120%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "one bank payment (ProgressionService.AddBankGold, source Refund)",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "the mailbox was already cleared ({}) when the gold was paid",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "exactly one GrudgeMail notice with the total",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "a second join pays nothing (letters were taken)",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "mail at join: only the first Avenged letter gets 120%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "mail at join: Returned letters never get the bonus; the first Avenged one does",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "mail at join: refund bonus on cooldown (10 s ago) pays 100%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "mail at join: refund cooldown just over (600 s ago) pays 120%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "mail at join: other-life letters are skipped; the bonus goes to the first same-life Avenged letter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "mail at join: malformed letters are skipped (numbers as strings still count)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "a mailed 120% commits the victim's refund:0 cooldown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "skipped (negative / other-life) and Returned letters never use the refund bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "a refused bonus does not restart the cooldown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "nothing to pay -> no gold and no notice",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "nothing to pay -> the refund bonus is not consumed",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "no mailbox: the reader writes nothing (UpdateAsync returns nil)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "other-life letters are taken (cleared) and never paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "DataStore error at join: nothing paid, no notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "the read error is caught (pcall) and warned once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "the letters stay for the next join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "the next join pays them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "no save data (cannot be paid): the mailbox is not touched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "... and no notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "leaving during the read: nothing paid, the letters are written back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "... and the refund bonus is not consumed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "the next join pays the written-back letters (120 + 30)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "the write-back keeps at most MailMax letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "write-back puts the taken (older) letters in front: a full box drops the oldest, never the newest letter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "a failed write-back is warned once (letters lost, never paid twice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "fallback pairReady: 120% for the first Avenged letter only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "fallback pairReady respects the refund cooldown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-receive",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-roundtrip",
+      "check": "server A wrote one letter per resolved sack (accumulated share, R = 1, own Ids)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-roundtrip",
+      "check": "server B pays 300 x 120% + 40 x 100% at join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-roundtrip",
+      "check": "one GrudgeMail notice with 400",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-roundtrip",
+      "check": "the shared mailbox is empty afterwards",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-roundtrip",
+      "check": "a third server pays nothing (never double-paid)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-roundtrip",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mail-roundtrip",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "5 s in a PvP zone: 40 s left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "a dead victim cannot hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "the respawned victim holds: +2 s on the thief's countdown (SackSeconds published)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "thief SackHeldUntil = Util.Now() + HoldGlowSeconds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "GhostHoldOk to the victim (+2, max 10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "GhostHeld to the thief",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "the holding victim is marked active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "a second press 2.5 s later is refused (RateLimit GhostHold 2.7)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "2.75 s after the first press the next one counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "an older press's timer does not switch off a newer glow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "the glow stays on until HoldGlowSeconds + 0.1 after the last press",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "then it switches off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "five presses = +10 s (45 -> 55 s for this sack)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "at the +10 s cap nothing changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "the victim gets GhostHoldMax at the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "at the cap the thief is not told and does not glow again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "10 s later: 40 s left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "a new steal restarts at 45 + held seconds (holds are kept, never shortened)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "still carrying 0.25 s before the end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "paid after the full 55 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "GhostHold with any argument (even one nil) is refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "the plain call right after works (refused calls do not use the rate limit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "a victim who is not ready cannot hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "a victim without a character cannot hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "a player who was not robbed cannot hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "a stale GrudgeThiefId without a share in that sack cannot hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "... and the stale button is fixed (pointVictim -> 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "a victim of another thief holds only that thief's sack",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "a victim who rebirthed since cannot hold (sameLife)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "... and the other-life button is fixed to 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "after the thief leaves the hold does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "the last press adds only the room left (+1 s up to max 9)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "then GhostHoldMax",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "a new steal into the same sack keeps the used hold seconds (cap per sack, countdown 45 + held)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "a new sack starts with Held 0 and can be held again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-hold-refusals",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "PlayerReady resets the sack / ghost attributes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "the newest thief is the hold target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "closing ANOTHER thief's sack keeps my target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "still holding the newer thief",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "closing the last sack with my share hides the hold button",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "two thieves: closing one sack moves the button to the other open sack",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "... and the victim can hold that sack",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "... and the button hides when it closes too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "an open sack whose thief already left is not a hold target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "Rebirthed: the button of an other-life share hides at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "... and a hold does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "a new-life steal points at the new thief",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "closing it does not fall back to the other-life sack",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "the hold lights the glow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "closing the sack switches the glow off at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "the pending glow timer leaves it off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "a rejoin while the thief still carries my share restores GrudgeThiefId",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "the rejoined victim can hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "the rejoined victim is paid directly (no mail)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "and the hold button goes away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "a player with no share gets 0 at PlayerReady",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "a rejoin in another life gets no button for the old share",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-target",
+      "check": "no unexpected service warnings (pcall-swallowed errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "namedFrom": "real",
+  "findings": [],
+  "staticChecks": 15,
+  "staticFailures": [],
+  "analyzerUnknownGlobals": [],
+  "mutations": {
+    "baseline": "real",
+    "total": 67,
+    "applied": 0,
+    "caught": 0,
+    "results": []
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "ff857f6449e7ab41caa01edfaa851e22caee62955cb5ada633ed9ab04ce8ee8a",
+    "src/ReplicatedStorage/Shared/Net.luau": "2d17c8ffd4e4b06598f561909d0259427b62490d504b61b94bf7e882e0f26fdc",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/GrudgeService.luau": "93f178d6bce71629514e3e38740ff741a97eac3c62268e6ddc0decb0940db0a2",
+    "src/ServerScriptService/PlayerService.luau": "81d5cf25b41a5578b4d20b798e48cab81e42fa62584df71600df876ea3b80fd5"
+  },
+  "fixtureSHA256": "64a1bfd3fe704b3ed597fbc1a80b1fc796595396c02d1fdfc26c5842d22d1275",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Grudge sack (TECH_SPEC 4.14 + CR-M4/M6/L6): one sack per thief, shares per victim, 45 s countdown only in PvP zones (1 s max per hitch), a new steal restarts at 45 s + held seconds, Paid -> carried gold + infamy, Avenged by a present Halo killer -> 120% once per victim per 600 s (else 100%) + avenger 100 once per 300 s, Returned (other death, leave, faction change) -> 100%, no refund across a rebirth. P3 grudge mail: absent victims get { Id = <thief>:<sack start>:<kind>, A, R, K, T } in DataStore HaloHorns_GrudgeMail_v1 key M_<userId> (max 20, oldest dropped), 4 tries (1/2/4 s back-off), a letter Id is never appended twice, MailPending counts in-flight sends; at join (only if the victim can be paid) the mailbox is cleared first, then same-life letters are paid to the bank (Refund), only the first Avenged letter at 120% if the refund cooldown allows, one GrudgeMail notice; if the victim can no longer be paid the letters are written back (capped); DataStore errors caught. A23-18 ghost hold: GrudgeThiefId set by AddToSack, re-pointed by pointVictim (open sack of a present thief with a same-life share) at close / join / rebirth / stale press; GhostHold (no args) for a ready, alive, same-life victim of that sack, server rate limit 2.7 s, +2 s up to +10 s per sack, SackHeldUntil glow for 3 s, GhostHoldOk / GhostHeld / GhostHoldMax notices.",
+  "limitations": "Offline doubles: Players / characters, an in-memory DataStore whose calls never yield (no real UpdateAsync retries, throttling or concurrent writers), task.spawn runs at once, task.wait / task.delay / the 0.25 s loop are driven by a fixture clock (os.clock = server time), Net sends and ProgressionService are recorders. PvPService (who may steal, how much), CombatService (death pipeline order), the GrudgeGhost client and BindToClose are only checked statically. Studio play, real multi-server mail and several clients are not certified here."
+}

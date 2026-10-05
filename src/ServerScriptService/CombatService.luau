@@ -625,8 +625,14 @@ end
 -- Unlocked by the optional quest "내 싸움을 배우는 왕관 조각", starts OFF, toggled and saved by the player.
 -- The server loop calls the same Swing / Release paths with the auto flag: same interval, MP, cooldown, range and
 -- "one cast = one hit" rules; the auto branches never select players (monsters / goose only, no PvP).
+-- A23-22: a bully (BullyStacks >= 1) cannot use auto combat until every stack decayed
+local function bullyNoAuto(player)
+	local pen = Config.Bully.Penalty
+	return type(pen) == "table" and pen.NoAuto == true and (tonumber(player:GetAttribute("BullyStacks")) or 0) >= 1
+end
+
 local function autoReady(player)
-	return isPlayer(player) and player.Parent ~= nil
+	return isPlayer(player) and player.Parent ~= nil and not bullyNoAuto(player)
 		and player:GetAttribute("AutoCombatUnlocked") == true and player:GetAttribute("AutoCombatEnabled") == true
 		and player:GetAttribute("ClassChosen") == true and kstate(player) == "None"
 		and player:GetAttribute("AutoResting") ~= true -- P2: away for 15 min
@@ -1138,6 +1144,21 @@ local function onPlayerReady(player, _data)
 	player:SetAttribute("AutoAttack", false)
 	player:SetAttribute("InCombatUntil", 0)
 	resetLegacyCharge(player)
+	-- A23-22: becoming a bully switches auto combat OFF (with the reason); the end of the penalty is announced
+	local wasBully = bullyNoAuto(player)
+	player:GetAttributeChangedSignal("BullyStacks"):Connect(function()
+		local now = bullyNoAuto(player)
+		if now and not wasBully and player:GetAttribute("AutoCombatEnabled") == true and S.PlayerService.IsReady(player) then
+			S.PlayerService.SetStat(player, "AutoCombatEnabled", false)
+			Net.Notify(player, Config.Text.BullyAutoOff, "bad")
+		elseif wasBully and not now and (tonumber(player:GetAttribute("BullyStacks")) or 0) <= 0 then
+			Net.Notify(player, Config.Text.BullyPenaltyEnd, "good")
+		end
+		wasBully = now
+	end)
+	if wasBully and player:GetAttribute("AutoCombatEnabled") == true then
+		S.PlayerService.SetStat(player, "AutoCombatEnabled", false) -- rejoined with saved stacks
+	end
 end
 
 local function onCharacterSpawned(player, _character, _humanoid, cosmetic)
@@ -1257,6 +1278,10 @@ local function onSetAutoAttackRemote(player, enabled, ...)
 	end
 	if player:GetAttribute("AutoCombatUnlocked") ~= true or player:GetAttribute("ClassChosen") ~= true
 		or not Util.IsAlive(player) then
+		return
+	end
+	if enabled and bullyNoAuto(player) then
+		Net.Notify(player, Config.Text.BullyNoAuto, "bad")
 		return
 	end
 	S.PlayerService.SetStat(player, "AutoCombatEnabled", enabled)

@@ -4,12 +4,12 @@
   "keyStaticChecks": 3,
   "keyStaticFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "810d154c99fa9f12a2c3cb487406e8538bce96645d84a9912eb3ed2ea699cc44",
-    "src/ServerScriptService/CombatService.luau": "596c3d6085be13f5328ba2e13e4f52ba002106d6e7ff476e4a2f86ea24ace5c3",
+    "src/ReplicatedStorage/Shared/Config.luau": "d7c3f887a4e1a6d3d676b6219dbfb6e7bae0d96c2ee7ed20f34b9d5943e5b0a8",
+    "src/ServerScriptService/CombatService.luau": "7c6e02a75a4f9fddf06693027a0d9f696595bafb1e1a82c1da21d3bbff451e92",
     "src/ServerScriptService/VitalsService.luau": "9a5d62e6644ada52a0abcacc1e3f9fdcccd3630f97616f036207b115536fa699",
-    "src/ReplicatedStorage/Shared/Util.luau": "e266e115374db1c243b0f2057905c325ff3ca2e824812c8034d30b9c625f347e"
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c"
   },
-  "fixtureSHA256": "9231e03442a074c46c6be2b842b0d26efcd193c9e61276bc9dc0364432469399",
+  "fixtureSHA256": "a1e832a5975b0798b7d89c4c60674ed2c175c712f152f5df90831c7b4d9b2748",
   "studioCalls": 0,
   "apiCalls": 0,
   "scope": "Real server source: manual MP skill, cooldown, legacy gauge zero, Released.MonstersHit for A23 skill quests, auto combat locked/OFF by default (SetAutoAttack refused before unlock, AutoCombatLoop present at Config.Combat.AutoTick but idle), Mage MageSwingCost 2 / SwingInterval 1.1, class patterns, support and PvP cap. Auto ON paths: tools/test_auto_combat.py.",

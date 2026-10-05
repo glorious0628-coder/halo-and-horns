@@ -596,6 +596,39 @@ function Config.PowerOf(level, weaponTier, rebirthMult, enhance)
 	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * Config.BaseHealth(level)) * (rebirthMult or 1)
 end
 
+-- BB4 "전투력": the one power number players see = level + equipped weapon incl. scroll +N. It leaves out class,
+-- faction, rebirth, Size Justice, bully, buffs and pets: same level + same weapon = same number for everyone.
+-- The bully rule and the A23-18 boldness ratios compare this number (JusticeService.GetCombatPower).
+-- Anything meaning "strongest weapon" sorts by Config.Weapons[t].Damage, never by the tier index (tier 8 is the
+-- jelly legendary, damage 76 < tier 4).
+Config.Power = {
+	DisplayScale = 10,
+	Text = {
+		Label = "전투력", LabelEn = "Power",
+		Formula = "레벨과 무기(강화 포함)로 정해져요", FormulaEn = "Set by your level and weapon (enhance included)",
+		PvPNote = "무기 공격력 차이가 커도 PvP 피해는 최대 %s배, 최소 %s배예요",
+		PvPNoteEn = "However strong the weapons, PvP damage stays between x%2$s and x%1$s",
+		Up = "전투력 +%s", UpEn = "Power +%s",
+		Change = "전투력 %s → %s", ChangeEn = "Power %s → %s",
+	},
+}
+
+function Config.CombatPower(level, tier, enhance)
+	return math.floor(Config.PowerOf(level, tier, 1, enhance) * Config.Power.DisplayScale + 0.5)
+end
+
+-- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N); cached
+function Config.MaxCombatPower()
+	if not Config.Power.MaxCache then
+		local best = 0
+		for t = 1, Config.MaxWeaponTier do
+			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance))
+		end
+		Config.Power.MaxCache = best
+	end
+	return Config.Power.MaxCache
+end
+
 -- S for a faction: weaker side = clamp(sqrt(enemy / ours), 1.0, 1.6); the stronger side naturally clamps to 1.0
 function Config.SizeJustice(ourSum, enemySum)
 	if ourSum <= 0 or enemySum <= 0 then return 1 end
@@ -614,6 +647,25 @@ Config.Bully = {
 	PerStack = 0.15, -- each stack: -15% visual size and -15% damage (multiplies with S)
 	DecaySeconds = 300, -- one stack decays per 5 min without a new bully KO
 	BountyMult = 2, -- bounty for KOing a bully is doubled
+	-- A23-22 penalty while BullyStacks >= 1 (ends when every stack decayed): no auto combat, XP and drop rows x0.5.
+	-- Combat power and stats are NOT touched by it (the existing PerStack size / damage cut stays as it was).
+	-- The slime jackpot and the first king-slime scroll are not halved (the weekly +10% bonus skips them too).
+	Penalty = { NoAuto = true, XPMult = 0.5, DropMult = 0.5 },
+}
+
+-- BB4: the bully rules in plain words (character window, help, first-time tips, PvP warnings share these lines)
+Config.Bully.Text = {
+	Title = "깡패가 되는 경우", TitleEn = "When you become a bully",
+	Lines = {
+		string.format("내 전투력의 %d%%보다 약한 상대를 쓰러뜨릴 때", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
+		string.format("막 부활한 상대(%d초 안)를 쓰러뜨릴 때", Config.Bully.FreshSpawnSeconds),
+		string.format("같은 상대를 %d분 안에 %d번 쓰러뜨릴 때", math.floor(Config.Bully.RepeatWindow / 60), Config.Bully.RepeatKOs),
+	},
+	LinesEn = {
+		string.format("KO a player weaker than %d%% of your power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
+		string.format("KO a player who respawned less than %d s ago", Config.Bully.FreshSpawnSeconds),
+		string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60)),
+	},
 }
 
 function Config.BullyMult(stacks)
@@ -2119,6 +2171,9 @@ Config.Text = {
 	BullyKO = "깡패 처치! 보상 없음, 덩치·공격력 -15%% (깡패 %d단계)",
 	BullyVictim = "깡패에게 당했어요. 잃은 건 없어요!",
 	BullyDecay = "깡패 단계가 줄었어요 (%d단계)",
+	BullyNoAuto = "깡패 벌칙 중에는 자동 전투를 쓸 수 없어요. 단계가 다 빠지면 다시 돼요.", -- A23-22
+	BullyAutoOff = "무단 PvP 벌칙: 자동 전투가 꺼졌어요. 경험치·드랍도 절반이에요.", -- A23-22 (auto was ON)
+	BullyPenaltyEnd = "깡패 벌칙이 끝났어요! 자동 전투·경험치·드랍이 돌아왔어요.", -- A23-22
 	Revenge = "%s에게 복수하세요! 90초 동안 공격력 +25%%",
 	RevengeDone = "복수 성공!",
 	-- grudge sack
