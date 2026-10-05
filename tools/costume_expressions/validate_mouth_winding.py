@@ -1,4 +1,9 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Validate a separate original-mouth-only winding exception after strict P/N QA."""
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import copy
 import json
 from pathlib import Path

@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """검토한 Roblox 기본 R15 Animate를 GoodEvil Edit에 재현 설치한다. 기본값/--dry는 Studio에 연결하지 않는다.
 
 py tools/costume_r15/install_animate.py --dry
@@ -5,6 +6,7 @@ py tools/costume_r15/install_animate.py --apply [--studio-id <GoodEvil ID>]
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import json

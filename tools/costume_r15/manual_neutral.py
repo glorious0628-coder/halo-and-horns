@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Offline, explicitly inferred Neutral R15 candidates; never an original/validated skeleton.
 
 py tools/costume_r15/manual_neutral.py NeutralWarriorF --dry
@@ -11,6 +12,7 @@ Each existing triangle receives exactly one mechanical owner; anatomy needs actu
 Continuous skin candidates preserve all original static accessors and add only weights/bones
 plus an optional global game-coordinate wrapper. Never run these through the rigid converter.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 from collections import Counter, defaultdict
 import copy

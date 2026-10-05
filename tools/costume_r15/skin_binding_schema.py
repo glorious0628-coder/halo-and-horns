@@ -1,3 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Exact same-Model skin binding graph for actual inspected Pending clones.
 
 The shared Bone host is connected once to the invisible R15 root; every other
@@ -6,6 +9,8 @@ This prepares payloads only. It never claims rendered deformation or Ready.
 """
 from __future__ import annotations
 
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import copy
 
 from constraints import RigError

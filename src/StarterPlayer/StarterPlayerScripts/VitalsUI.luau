@@ -20,7 +20,7 @@ local function canUse()
 	if ui.Character ~= player.Character or ui.Humanoid ~= Util.GetHumanoid(player) then return false end
 	local kaiju = player:GetAttribute("KaijuState")
 	if kaiju == "Active" or kaiju == "Siren" then return false end
-	for _, name in { "FactionPicker", "ClassPicker", "WorldMap", "Panels" } do
+	for _, name in { "Intro", "FactionPicker", "ClassPicker", "WorldMap", "Panels" } do
 		local module = C[name]
 		if module and type(module.IsOpen) == "function" then
 			local ok, open = pcall(module.IsOpen)
@@ -44,7 +44,7 @@ local function potionState(kind)
 	if ui.Character ~= player.Character or not Util.IsAlive(player) then return count, "부활", false end
 	local kaiju = player:GetAttribute("KaijuState")
 	if kaiju == "Active" or kaiju == "Siren" then return count, "괴수", false end
-	if count <= 0 then return 0, "구매", false end
+	if count <= 0 then return 0, Config.Vitals.MerchantEnabled == true and "구매" or "준비 중", false end
 	if not canUse() then return count, "대기", false end
 	local humanoid = Util.GetHumanoid(player)
 	local amount = kind == "HP" and humanoid.Health or finiteNumber(player:GetAttribute("Mana"), 0)

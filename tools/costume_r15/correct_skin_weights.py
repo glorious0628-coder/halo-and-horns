@@ -1,3 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Explicit, reviewed hair/cape weight corrections on new local candidates.
 
 The original GLB/binary prefix, geometry, UVs, normals, materials, embedded
@@ -7,6 +10,8 @@ Planning is not approval. Inspect the region overlay before --reviewed apply.
 """
 from __future__ import annotations
 
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import copy
 import hashlib

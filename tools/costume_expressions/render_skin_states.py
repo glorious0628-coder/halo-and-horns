@@ -1,4 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Render all already approved skin expression PNGs for offline visual QA."""
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import json
 from pathlib import Path

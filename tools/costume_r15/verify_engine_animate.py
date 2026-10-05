@@ -1,4 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """설치된 Roblox 기본 R15 RBXM의 Source를 읽어 캡처와 비교한다. 파일/Studio를 바꾸지 않는다."""
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import hashlib
 import json
 import os

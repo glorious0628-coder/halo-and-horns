@@ -87,7 +87,7 @@ local LAY = {
 	MottoTiny = { Halo = "지키고되찾아라!", Horns = "털고버텨괴수가돼라!", Neutral = "다듬고만들어라!" },
 	PerkTiny = {
 		Halo = { "경험치+30%", "체력+20%·회복", "동료치유", "골드자동지급" },
-		Horns = { "골드+25%", { "공격+15%·흡혈", "공격+15% 흡혈", "공격+15%흡혈" }, { "발사게이지175", "발사175" }, "별5개괴수변신" },
+		Horns = { "골드+25%", { "공격+15%·흡혈", "공격+15% 흡혈", "공격+15%흡혈" }, "약탈골드지키기", "별5개괴수변신" },
 		Neutral = { "싸움버프없음", "안전(PvP없음)", "약탈·수배없음", { "제작특화(준비중)", "제작특화준비중", "제작특화(준비)", "제작특화준비" } },
 	},
 	TitleText = { 0.17, 0.08, 0.66, 0.6 }, -- text box inside UIP_TitleRibbon (fractions of the ribbon)
@@ -1953,7 +1953,7 @@ local function refresh()
 	visible = open
 	root.Visible = open
 	setBlur(open)
-	E.background(open)
+	FactionPicker.HoldWorld("faction", open)
 	chosenId = nil
 	for _, c in cards do
 		c.Hover, c.Down = false, false
@@ -1991,10 +1991,31 @@ local function hookCamera()
 end
 
 ------------------------------------------------------------------ public
+-- Full-screen pickers / the opening share one "hide chat + world text" hold (ClassPicker, Intro):
+-- the background comes back only when no holder is left.
+E.Holders = {}
+function FactionPicker.HoldWorld(key, on)
+	if type(key) ~= "string" then return end
+	E.Holders[key] = on == true or nil
+	E.background(next(E.Holders) ~= nil)
+end
+
 function FactionPicker.IsOpen()
 	if player:GetAttribute("DataLoaded") ~= true then return false end
 	local f = player:GetAttribute("Faction")
-	return f == nil or f == "None"
+	if not (f == nil or f == "None") then return false end
+	-- A23-9: the first-time opening plays before the cards
+	local intro = C and C.Intro
+	if type(intro) == "table" and type(intro.Blocking) == "function" then
+		local ok, blocking = pcall(intro.Blocking)
+		if ok and blocking then return false end
+	end
+	return true
+end
+
+-- the opening calls this when it ends (the cards then appear without waiting for an attribute)
+function FactionPicker.Refresh()
+	if built then pcall(refresh) end
 end
 
 function FactionPicker.Init(c)

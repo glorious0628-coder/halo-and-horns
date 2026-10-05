@@ -171,7 +171,8 @@ local function fixture(options)
 	local storage=node(s,"ServerStorage","ServerStorage")
 	local player=node(s,"Player","Owner"..serial,delay);player.Parent=players;player.UserId=serial
 	player:SetAttribute("ClassChosen",true);player:SetAttribute("Faction","Halo")
-	local config=execute(CONFIG_SOURCE)
+	-- Config.Vitals now holds Color3 literals (A23-6 merchant colors); inert constructors are enough offline.
+	local config=execute(CONFIG_SOURCE,{Color3={fromRGB=function(r,g,b) return {R=r,G=g,B=b} end,new=function(r,g,b) return {R=r,G=g,B=b} end}})
 	-- The restored class formula is a fixture constant; production formulas are outside this lifecycle test.
 	config.MaxHealth=function() return options.MaxHealth or 100 end
 	config.Classes={Warrior={WalkSpeedMult=1}}

@@ -1,4 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Summarize validated local expression assets without claiming Roblox readiness."""
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import json
 from datetime import datetime, timezone
 from pathlib import Path

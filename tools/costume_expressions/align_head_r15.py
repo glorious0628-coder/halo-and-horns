@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Align new facial head to the exact existing R15 bone-weight partition.
 
 No source GLB changes or uploads. Match original per-face UV signatures rather
 than guessing the neck height; preserve existing R15 coordinate and Head center.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import hashlib
 import json
 import math

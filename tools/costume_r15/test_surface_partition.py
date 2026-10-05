@@ -1,4 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Exact original surface coverage, source-bone slab and final local outputs."""
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import hashlib
 import json
 from pathlib import Path

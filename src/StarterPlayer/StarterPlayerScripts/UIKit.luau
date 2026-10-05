@@ -1829,9 +1829,37 @@ function UIKit.Init(registry)
 	bindCamera()
 end
 
+function UIKit.ShouldHoldBanners()
+	local me = game:GetService("Players").LocalPlayer
+	if me:GetAttribute("TutorialStep") == 0 then return true end
+	local intro = C and C.Intro
+	if type(intro) == "table" and type(intro.IsOpen) == "function" then
+		local ok, open = pcall(intro.IsOpen)
+		if ok and open then return true end
+	end
+	return false
+end
+
+-- show the held world banners (called when the first mission is accepted / the opening ends)
+function UIKit.FlushBanners()
+	if type(UIKit.HeldBanners) ~= "table" or #UIKit.HeldBanners == 0 or UIKit.ShouldHoldBanners() then return end
+	local held = UIKit.HeldBanners
+	UIKit.HeldBanners = {}
+	task.delay(3, function()
+		for _, b in held do
+			UIKit.Announce(b[1], b[2])
+			task.wait(3)
+		end
+	end)
+end
+
 function UIKit.Start()
 	-- re-read the inset once the top bar has settled (it can be 0 during the first frames)
 	task.delay(1, applyScale)
+
+	UIKit.HeldBanners = {}
+	local me = game:GetService("Players").LocalPlayer
+	me:GetAttributeChangedSignal("TutorialStep"):Connect(function() UIKit.FlushBanners() end)
 
 	-- the remote normally exists already; never block the other client modules' Start on it
 	task.spawn(function()
@@ -1842,6 +1870,13 @@ function UIKit.Start()
 			if type(text) ~= "string" or text == "" then return end
 			local duration = tonumber(payload.Duration)
 			if payload.Kind == "announce" then
+				-- A23-3 / A23-9: world banners (goose / war / kaiju / bounty) wait until the first mission is
+				-- accepted and while the opening plays
+				if UIKit.ShouldHoldBanners() then
+					table.insert(UIKit.HeldBanners, { text, duration })
+					if #UIKit.HeldBanners > 2 then table.remove(UIKit.HeldBanners, 1) end
+					return
+				end
 				UIKit.Announce(text, duration)
 			else
 				UIKit.Toast(text, payload.Kind, duration)

@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Blender-only local preparation: a real Mixamo skin -> 15 rigid R15 pieces and actual bone joint positions.
 
 blender --background --factory-startup --python tools/costume_r15/convert.py -- INPUT.glb OUT_DIR --height 5.5 [--dry]
 No network, uploads, generation, rigging, UV packing, texture baking, or source-file writes.
 """
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 from collections import Counter
 import hashlib

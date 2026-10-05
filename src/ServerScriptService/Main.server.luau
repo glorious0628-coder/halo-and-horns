@@ -7,15 +7,17 @@ Net.CreateAll() -- remotes + GameState folder exist before anything else runs
 
 local INIT_ORDER = {
 	"DataService", "PlayerService", "NicknameService", "MonetizationService", "MapBuilder", "ZoneService", "FactionService",
-	"ClassService", "CostumeService", "VitalsService", "ExpressionService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
-	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "CharacterVisuals",
+	"ClassService", "VitalsService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
+	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "StoryQuestService",
+	"LootService", "CharacterVisuals",
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
 local START_ORDER = {
-	"MapBuilder", "ZoneService", "FactionService", "ClassService", "CostumeService", "VitalsService", "ExpressionService", "JusticeService", "ProgressionService",
+	"MapBuilder", "ZoneService", "FactionService", "ClassService", "VitalsService", "JusticeService", "ProgressionService",
 	"CombatService", "MonsterService", "PvPService", "GrudgeService", "WarService", "KaijuService", "GooseService",
-	"ShopService", "QuestService", "MonetizationService", "CharacterVisuals", "DataService", "NicknameService", "PlayerService",
+	"ShopService", "QuestService", "StoryQuestService", "LootService", "MonetizationService", "CharacterVisuals", "DataService",
+	"NicknameService", "PlayerService",
 }
 
 local S = {}
@@ -62,18 +64,27 @@ if game:GetService("RunService"):IsStudio() then
 			S.VitalsService.DebugSetMana(player, value)
 		elseif key == "Charge" then
 			return S.CombatService.DebugSetCharge(player, value) and "ok" or "invalid charge"
-		elseif key == "CostumePilot" then
+		elseif key == "StoryStep" then -- Studio test aid: "M2_3:1" moves the active main quest back/forward to that step
+			local id, st = string.match(tostring(value), "^([%w_]+):(%d+)$")
 			local data = S.PlayerService.GetData(player)
-			if value ~= "Costume_HaloWarriorM" or not data or data.Faction ~= "Halo"
-				or data.Class ~= "Warrior" or data.CharacterGender ~= "M" or not data.ClassChosen then
-				return "select male Halo Warrior for pilot"
-			end
-			local folder = game:GetService("ServerStorage"):FindFirstChild("CostumePendingRigs")
-			local rig = folder and folder:FindFirstChild(value)
-			if not S.CostumeService.ValidateTemplate(rig) then return "invalid pending pilot" end
-			local sharedConfig = require(ReplicatedStorage.Shared.Config)
-			sharedConfig.Costumes.TemplateFolder = "CostumePendingRigs" -- this Play session only
-			S.CostumeService.RequestRefresh(player)
+			local main = data and type(data.Story) == "table" and data.Story.Main
+			if not main or main.Id ~= id then return "main quest is not " .. tostring(id) end
+			main.St, main.P, main.T, main.Claim = tonumber(st), 0, {}, false
+			return "ok"
+		elseif key == "StoryDump" then -- Studio test aid: the saved story quest state as JSON
+			local data = S.PlayerService.GetData(player)
+			return game:GetService("HttpService"):JSONEncode(data and data.Story or {})
+		elseif key == "Item" then -- Studio test aid: value = "Enh70" or "Enh70:5" (A23-12 item id[:count])
+			local id, n = string.match(tostring(value), "^(%w+):?(%d*)$")
+			return S.LootService.DebugGive(player, id, tonumber(n) or 1)
+		elseif key == "LootReset" then -- Studio test aid: clear items / scroll +N / loot flags (value = weapon mask to keep)
+			return S.LootService.DebugReset(player, tonumber(value) or 1)
+		elseif key == "LootRoll" then -- Studio test aid (review B12): "Slime:200" or "Slime:200:golden" = COUNT-ONLY rolls
+			-- with the real drop tables; nothing is granted, saved or announced (returns a JSON tally)
+			local kind, n, golden = string.match(tostring(value), "^(%w+):?(%d*):?(%a*)$")
+			local tally = S.LootService.DebugSimulate(kind, math.clamp(tonumber(n) or 1, 1, 100000), golden == "golden")
+			if not tally then return "unknown monster kind: " .. tostring(kind) end
+			return game:GetService("HttpService"):JSONEncode(tally)
 		elseif key == "Gold" then
 			S.ProgressionService.AddCarriedGold(player, value, "Other")
 		elseif key == "Stars" then

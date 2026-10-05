@@ -1,4 +1,7 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# It required SkinBindingContract, CostumeService and ServerStorage Costume* folders, all removed with the costumes.
 """Check actual imported skin joint guards in Edit; temporary clones are always removed."""
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import json
 from pathlib import Path
 

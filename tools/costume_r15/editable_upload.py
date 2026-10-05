@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Offline GLB -> EditableMesh payloads with source geometry/texture verification.
 
 The default command generates a read-only, zero-upload reference probe. No
@@ -5,6 +6,7 @@ Studio connection, upload, API call, texture bake or original-file edit occurs.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import json

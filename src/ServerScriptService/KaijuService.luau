@@ -638,6 +638,7 @@ function KaijuService.Init(registry)
 	S.CombatService.Released:Connect(function(player, info)
 		if phase ~= "Active" or current == nil then return end
 		if not isPlayer(player) or type(info) ~= "table" or type(info.Healed) ~= "table" then return end
+		if info.Auto == true then return end -- A23-1: kaiju rewards come from direct input only
 		if factionOf(player) ~= "Halo" then return end
 		for _, h in info.Healed do
 			if (dmg[h] or 0) > 0 then

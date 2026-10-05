@@ -1,9 +1,10 @@
 -- QuestService.luau : 3 quest slots (KST dailies first, then rolling extras), claim, daily chest, reroll,
 -- vacation bonus and quest-list publishing to the owner only via the "Quests" remote (TECH_SPEC §4.20, CR-L50),
--- plus the first-60-seconds tutorial
--- (SPEC_ADDENDUM A4 / A5-C4..C6 / N1) and the faction-filtered quest pool (A6 Neutral).
+-- plus persistent first-hunt guidance (2026-10-04: no personal monster in a safe town)
+-- and the faction-filtered quest pool (A6 Neutral).
 -- data.Quests is mutated directly (documented exception); every other persisted stat goes through SetStat/AddStat.
 local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
@@ -25,7 +26,7 @@ local PROGRESS_EPS = 1e-6 -- Kill/Golden progress is fractional (killWeight)
 local TUT_CFG = Config.Tutorial
 local TUT_ID = TUT_CFG.QuestId -- claim id (N1) and quest-list Id of the pinned tutorial entry
 local TUT_KIND = "Tutorial"
-local STEP_KILL = TUT_CFG.Steps.Kill -- 0: personal golden slime
+local STEP_WELCOME = TUT_CFG.Steps.Kill -- 0: faction guide dialogue; only explicit acceptance advances
 local STEP_GUIDE = TUT_CFG.Steps.Guide -- 1: HUD guide beam to GuideZone
 local STEP_QUEST = TUT_CFG.Steps.Quest -- 2: pinned tutorial quest
 local TUT_DONE = TUT_CFG.Steps.Done -- 99
@@ -34,16 +35,12 @@ local TUT_GOLD = TUT_CFG.QuestRewardGold
 local TUT_XP = TUT_CFG.QuestRewardXP or 0
 local TUT_TEXT = string.format(TUT_CFG.QuestText, TUT_TARGET)
 local TUT_ZONE = TUT_CFG.GuideZone
-local TUT_MONSTER = TUT_CFG.Monster
-local TUT_MONSTER_OPTS = { Golden = TUT_CFG.Golden == true, HP = TUT_CFG.MonsterHP }
--- toast texts: Config.Text has no tutorial keys, so they stay private (plain format strings)
-local TUT_START_TEXT = "튜토리얼 퀘스트: %s! (보상 %s골드)" -- (TUT_TEXT, gold)
-local TUT_READY_TEXT = "튜토리얼 퀘스트 완료! [받기]를 눌러요."
-local TUT_CLAIMED_TEXT = "튜토리얼 보상 +%s골드! 업그레이드 버튼으로 새 무기를 사 보세요!"
-local SPAWN_DELAY_ON_SPAWN = 1 -- s after CharacterSpawned before the personal slime is placed
-local SPAWN_DELAY_ON_CLASS = 0.5 -- s after the first class pick
-local SPAWN_RETRY = 10 -- s between failed SpawnPersonal attempts
-local SPAWN_MAX_FAILS = 3 -- then step 0 is skipped (the tutorial must never get stuck)
+local TUT_MESSAGES = TUT_CFG.Text or {}
+local TUT_START_TEXT = TUT_MESSAGES.QuestStart or "첫 임무: %s! (보상 %s골드)" -- (TUT_TEXT, gold)
+local TUT_READY_TEXT = TUT_MESSAGES.QuestReady or "첫 임무 완료! [받기]를 눌러요."
+local TUT_CLAIMED_TEXT = TUT_MESSAGES.Claimed or "첫 임무 보상 +%s골드! 다음 목표를 확인해요."
+local RESUME_DELAY_ON_SPAWN = 1
+local RESUME_DELAY_ON_CLASS = 0.5
 
 -- kills that count for the tutorial quest: monsters living in Slime Meadow
 local TUTORIAL_KINDS = {}
@@ -62,17 +59,15 @@ end
 -- A6: quests that need a Halo/Horns side (PvP, plunder, bounty, goose tug, kaiju). Neutral and "None" never get them.
 local SIDE_ONLY_IDS = { Hunt = true, Plunder = true, Goose = true, Bounty = true, Kaiju = true }
 
+-- A23-14: short, different Lv1-9 dailies and their smaller rewards (nil table = old behaviour everywhere)
+local NEWBIE = Config.Quests.Newbie
+
 ------------------------------------------------------------------ state (session only)
 local dirty = {} -- [Player] = true -> quest list republished by the publish loop
 local lastSent = {} -- [Player] = last JSON fired on the "Quests" remote (CR-L50: fire only on change)
 local rerollReadyAt = {} -- [Player] = server time
-local tutorialProgress = {} -- [Player] = tutorial quest kills (step 2)
-local personal = {} -- [Player] = { Model = Model, Conn = RBXScriptConnection }
-local spawning = {} -- [Player] = true while SpawnPersonal is in flight
-local spawnRetryAt = {} -- [Player] = os.clock()
-local spawnFailures = {} -- [Player] = number
 local lastLoopWarn = {} -- [loopName] = os.clock()
-local warnedNoSpawnPersonal = false
+local welcomeShown = {} -- [Player] = true after this session's first automatic guide dialogue
 
 ------------------------------------------------------------------ helpers
 local function num(v, default)
@@ -156,6 +151,33 @@ local function isSide(faction)
 	return faction == "Halo" or faction == "Horns"
 end
 
+-- A23-14: Lv1..Newbie.MaxLevel get the short newbie dailies and the smaller newbie chest
+local function isNewbieLevel(level)
+	return type(NEWBIE) == "table" and type(NEWBIE.Dailies) == "table" and #NEWBIE.Dailies > 0
+		and level <= num(NEWBIE.MaxLevel, 0)
+end
+
+-- full-set chest at one level; Lv1-9 pays Newbie.ChestMinutes of hunting instead of Daily's
+local function chestAt(level)
+	if isNewbieLevel(level) then
+		return Config.HuntValue(level, num(NEWBIE.ChestMinutes, Config.Daily.ChestMinutes))
+	end
+	return Config.DailyChestReward(level)
+end
+
+-- the chest pays the SMALLER of the current level's chest and the chest of the level the day's dailies were generated
+-- at (genLevel, saved as data.DailyLevel; 0 = unknown -> current only). A Lv9 player who levels to 10 before the last
+-- claim therefore gets the newbie chest (144/240), not the Lv10 one (1920/3360); a reborn player never gets more either.
+local function chestReward(level, genLevel)
+	local g, x = chestAt(level)
+	genLevel = math.floor(num(genLevel))
+	if genLevel >= 1 and genLevel ~= level then
+		local gg, gx = chestAt(math.min(genLevel, Config.Levels.MaxLevel))
+		g, x = math.min(g, gg), math.min(x, gx)
+	end
+	return g, x
+end
+
 local function templateFitsFaction(t, faction)
 	if t.Faction ~= nil and t.Faction ~= faction then return false end
 	if not isSide(faction) and (t.PvP or SIDE_ONLY_IDS[t.Id]) then return false end
@@ -187,6 +209,8 @@ local function newQuest(player, kind, others)
 	local data = S.PlayerService.GetData(player)
 	local level = getLevel(data)
 	local faction = getFaction(player)
+	-- A23-14: Lv1-9 dailies come from Config.Quests.Newbie.Dailies (rows reuse a template Id); everything else as before
+	local newbie = kind == "Daily" and isNewbieLevel(level)
 
 	local otherIds, otherPvP = {}, 0
 	for _, q in others or {} do
@@ -201,35 +225,57 @@ local function newQuest(player, kind, others)
 		and otherPvP < (Config.Quests.MaxPvPQuests or 1)
 		and not S.PvPService.IsRookie(player)
 
+	-- rows = templates, or A23-14 newbie rows ({ Id = template Id, Targets, Monster?, Strict? })
 	local candidates, preferred = {}, {}
-	for _, t in Config.Quests.Templates do
-		if templateFitsFaction(t, faction) and (not t.PvP or pvpAllowed) then
-			table.insert(candidates, t)
-			if not otherIds[t.Id] then
-				table.insert(preferred, t)
+	for _, row in (if newbie then NEWBIE.Dailies else Config.Quests.Templates) do
+		local rt = type(row) == "table" and TEMPLATE_BY_ID[row.Id]
+		if rt and templateFitsFaction(rt, faction) and (not rt.PvP or pvpAllowed) then
+			table.insert(candidates, row)
+			if not otherIds[row.Id] then
+				table.insert(preferred, row)
 			end
 		end
 	end
 	local pool = (#preferred > 0) and preferred or candidates
-	local t
+	local row
 	if #pool > 0 then
-		t = pickWeighted(pool)
+		row = pickWeighted(pool)
 	else
-		t = TEMPLATE_BY_ID.Kill or Config.Quests.Templates[1]
+		newbie = false -- nothing fits: the old Kill daily (sizes and reward) is the safe fallback
+		row = TEMPLATE_BY_ID.Kill or Config.Quests.Templates[1]
 	end
+	local t = TEMPLATE_BY_ID[row.Id] or row
 
-	local unitsList = (kind == "Daily" and t.DailyUnits) or t.Units
+	local unitsList
+	if newbie then
+		unitsList = row.Targets
+	else
+		unitsList = (kind == "Daily" and t.DailyUnits) or t.Units
+	end
 	if type(unitsList) ~= "table" or #unitsList == 0 then unitsList = { 1 } end
 	local units = num(unitsList[Util.Random:NextInteger(1, #unitsList)], 1)
 
 	local mainId = Config.ZoneMainMonster[Config.QuestZoneForLevel(level)]
 	local main = Config.MonsterTypes[mainId]
-	local target = (t.Id == "Gold") and units * main.Gold or units
+	-- the monster a Kill/Golden quest counts: the zone's unit monster, or the newbie row's Monster (e.g. BigSlime)
+	local unitId = mainId
+	if newbie and type(row.Monster) == "string" and type(Config.MonsterTypes[row.Monster]) == "table" then
+		unitId = row.Monster
+	end
+	local unitDef = Config.MonsterTypes[unitId]
+	local target = units -- newbie Targets are exact (a Gold row already says gold)
+	if t.Id == "Gold" and not newbie then
+		target = units * main.Gold
+	end
 	target = math.max(1, math.floor(target))
 
 	local rewardGold, rewardXP
 	if kind == "Daily" then
-		rewardGold, rewardXP = Config.DailyQuestReward(level)
+		if newbie then
+			rewardGold, rewardXP = Config.HuntValue(level, num(NEWBIE.RewardMinutes, Config.Daily.QuestMinutes))
+		else
+			rewardGold, rewardXP = Config.DailyQuestReward(level)
+		end
 	else
 		local per = num(t.RewardPerUnit, 1)
 		local mult = Config.Quests.ExtraRewardMult
@@ -241,7 +287,7 @@ local function newQuest(player, kind, others)
 	if t.Id == "Gold" then
 		text = string.format(t.Text, tostring(target)) -- CR-L31: exact number (FormatNumber rounds to "3.2K")
 	elseif t.Id == "Kill" or t.Id == "Golden" then
-		text = string.format(t.Text, tostring(main.Short or main.Name), target) -- CR-M27: (monster name, target)
+		text = string.format(t.Text, tostring(unitDef.Short or unitDef.Name), target) -- CR-M27: (monster name, target)
 	else
 		text = string.format(t.Text, target)
 	end
@@ -260,7 +306,8 @@ local function newQuest(player, kind, others)
 		RewardXP = math.floor(num(rewardXP)),
 		Text = text,
 		MinStacks = t.MinStacks,
-		Unit = mainId, -- Kill/Golden progress is measured in kills of this monster (see killWeight)
+		Unit = unitId, -- Kill/Golden progress is measured in kills of this monster (see killWeight)
+		Strict = (newbie and row.Strict == true) or nil, -- A23-14: only Unit (or stronger) kills count, 1 each
 	}
 end
 
@@ -273,6 +320,10 @@ local function ensureSlots(player, data)
 		local q = old[i]
 		if isValidQuest(q) then
 			q.Progress = math.clamp(q.Progress, 0, q.Target)
+			if q.Id == "Release" then
+				q.MinStacks = nil
+				q.Text = string.format(TEMPLATE_BY_ID.Release.Text, q.Target)
+			end
 			fixed[i] = q
 		end
 	end
@@ -297,121 +348,96 @@ local function getStep(player)
 	return step
 end
 
-local function clearPersonal(player)
-	local rec = personal[player]
-	personal[player] = nil
-	if rec and rec.Conn then
-		rec.Conn:Disconnect()
-	end
+-- A saved counter, not a session cache: 4/5 and unclaimed 5/5 survive a normal save/rejoin.
+local function getTutorialKills(data)
+	return math.clamp(math.floor(num(data and data.TutorialKills)), 0, TUT_TARGET)
 end
 
 local function setStep(player, step)
 	if not getData(player) then return end
+	local previous = getStep(player)
 	S.PlayerService.SetStat(player, "TutorialStep", step)
+	dirty[player] = true -- step 0/1 guidance is published too, even before there is a kill quest
 	-- defensive mirror in case TutorialStep is missing from Config.Data.Mirrored
 	if player:GetAttribute("TutorialStep") ~= step then
 		player:SetAttribute("TutorialStep", step)
-	end
-	if step ~= STEP_KILL then
-		clearPersonal(player) -- stop tracking; MonsterService despawns the slime on its own (Lifetime / kill)
 	end
 	if step == STEP_GUIDE then
 		if S.ZoneService.GetZoneId(player) == TUT_ZONE then
 			setStep(player, STEP_QUEST) -- already standing in the meadow
 		end
-	elseif step == STEP_QUEST then
-		tutorialProgress[player] = 0
-		dirty[player] = true
+	elseif step == STEP_QUEST and previous ~= STEP_QUEST then
 		Net.Notify(player, string.format(TUT_START_TEXT, TUT_TEXT, Util.FormatNumber(TUT_GOLD)), "good")
-	else
-		tutorialProgress[player] = nil
-		dirty[player] = true
 	end
 end
 
--- the personal slime left the world (killed, timed out, or despawned with its owner)
-local function onPersonalGone(player, model)
-	local rec = personal[player]
-	if not rec or rec.Model ~= model then return end
-	clearPersonal(player)
-	if getStep(player) ~= STEP_KILL then return end
-	if Util.IsAlive(player) then
-		setStep(player, STEP_GUIDE) -- A5-C4: a timed-out sandbag advances the tutorial
-	end
-	-- owner dead: stay on step 0; the next spawn places a new slime
+local function canWelcome(player)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players
+		or not Util.IsAlive(player) then return false end
+	local data = getData(player)
+	local welcome = TUT_CFG.Welcome
+	return data ~= nil and data.ClassChosen == true and Config.Classes[data.Class] ~= nil
+		and getStep(player) == STEP_WELCOME and type(welcome) == "table"
+		and type(welcome[getFaction(player)]) == "table"
 end
 
-local function spawnPersonalSlime(player)
-	local monsterService = S.MonsterService
-	if type(monsterService.SpawnPersonal) ~= "function" then
-		if not warnedNoSpawnPersonal then
-			warnedNoSpawnPersonal = true
-			Util.Warn(TAG, "MonsterService.SpawnPersonal is missing; tutorial step 0 is skipped")
-		end
-		setStep(player, STEP_GUIDE)
-		return
-	end
-	spawning[player] = true
-	task.spawn(function()
-		local ok, model = pcall(monsterService.SpawnPersonal, player, TUT_MONSTER, table.clone(TUT_MONSTER_OPTS))
-		spawning[player] = nil
-		if player.Parent == nil or getData(player) == nil then return end -- left mid-call (MonsterService cleans up)
-		if getStep(player) ~= STEP_KILL then return end
-		if ok and typeof(model) == "Instance" and model:IsDescendantOf(workspace) then
-			spawnFailures[player] = nil
-			clearPersonal(player)
-			local rec = { Model = model, Conn = nil }
-			rec.Conn = model.AncestryChanged:Connect(function()
-				if not model:IsDescendantOf(workspace) then
-					task.defer(onPersonalGone, player, model)
-				end
-			end)
-			personal[player] = rec
-		else
-			if not ok then
-				Util.Warn(TAG, "SpawnPersonal failed: " .. tostring(model))
-			end
-			local fails = (spawnFailures[player] or 0) + 1
-			spawnFailures[player] = fails
-			spawnRetryAt[player] = os.clock() + SPAWN_RETRY
-			if fails >= SPAWN_MAX_FAILS then
-				setStep(player, STEP_GUIDE)
-			end
-		end
-	end)
+local function openWelcome(player)
+	if not canWelcome(player) then return end
+	Net.Get("OpenPanel"):FireClient(player, "Welcome")
+	welcomeShown[player] = true
 end
 
--- idempotent: (re)starts the current tutorial step (A5-C4); called on spawn, first class pick and every second
+local function onRequestTutorial(player, ...)
+	if select("#", ...) ~= 0 or not canWelcome(player) then return end
+	if not Util.RateLimit(player, "RequestTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
+	openWelcome(player)
+end
+
+-- A23-9: the client reports the first-time opening ended; only the server writes the saved flag
+local function onIntroSeen(player, ...)
+	if select("#", ...) ~= 0 or not S.PlayerService.IsReady(player) then return end
+	if not Util.RateLimit(player, "IntroSeen", 1) then return end
+	local data = getData(player)
+	if not data or data.IntroSeen == true then return end
+	S.PlayerService.SetStat(player, "IntroSeen", true)
+end
+
+local function onAcceptTutorial(player, ...)
+	if select("#", ...) ~= 0 or not canWelcome(player) then return end
+	if not Util.RateLimit(player, "AcceptTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
+	welcomeShown[player] = true
+	S.PlayerService.SetStat(player, "TutorialKills", 0) -- a fresh acceptance never inherits stale kills
+	setStep(player, STEP_GUIDE) -- acceptance in the meadow can enter step 2, without crediting any kill
+end
+
+-- Restore existing accepted progress. Step 0 only opens dialogue; closing it never accepts a mission.
 local function tryTutorial(player)
 	local data = getData(player)
 	if not data then return end
 	local step = getStep(player)
+	if step == TUT_DONE then
+		-- The existing watchdog observes purchases and level changes; publish deduplicates identical JSON.
+		dirty[player] = true
+		return
+	end
 	if step == STEP_GUIDE then
 		if S.ZoneService.GetZoneId(player) == TUT_ZONE then
 			setStep(player, STEP_QUEST)
 		end
 		return
 	end
-	if step ~= STEP_KILL then return end
-	-- step 0 starts after the first faction + class pick and a spawn
-	if data.ClassChosen ~= true or getFaction(player) == "None" then return end
-	if not Util.IsAlive(player) then return end
-	local rec = personal[player]
-	if rec then
-		if rec.Model and rec.Model:IsDescendantOf(workspace) then return end
-		onPersonalGone(player, rec.Model)
-		return
-	end
-	if spawning[player] then return end
-	if os.clock() < (spawnRetryAt[player] or 0) then return end
-	spawnPersonalSlime(player)
+	if step ~= STEP_WELCOME or welcomeShown[player] then return end
+	openWelcome(player)
 end
 
 local function tutorialKill(player, info)
-	local cur = tutorialProgress[player] or 0
-	if cur >= TUT_TARGET or not TUTORIAL_KINDS[info.Kind] then return end
+	local data = getData(player)
+	if not data then return end
+	local cur = getTutorialKills(data)
+	if cur >= TUT_TARGET or not TUTORIAL_KINDS[info.Kind] or info.Personal == true
+		or info.ZoneId ~= TUT_ZONE then return end
 	cur += 1
-	tutorialProgress[player] = cur
+	S.PlayerService.SetStat(player, "TutorialKills", cur)
 	dirty[player] = true
 	if cur >= TUT_TARGET then
 		Net.Notify(player, string.format(TUT_READY_TEXT), "good")
@@ -420,7 +446,7 @@ end
 
 local function claimTutorial(player)
 	if getStep(player) ~= STEP_QUEST then return end
-	if (tutorialProgress[player] or 0) < TUT_TARGET then return end
+	if getTutorialKills(getData(player)) < TUT_TARGET then return end
 	setStep(player, TUT_DONE) -- first, so it can never be paid twice
 	S.ProgressionService.AddBankGold(player, TUT_GOLD, "Quest")
 	if TUT_XP > 0 then
@@ -429,29 +455,92 @@ local function claimTutorial(player)
 	Net.Notify(player, string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(TUT_GOLD)), "reward")
 end
 
+-- A23-3: one fixed next-goal line after the blacksmith visit, from existing state only (no new reward).
+local IRON_TIER = 3
+local NEXT_ZONE = "GoblinWoods"
+local hadNextGoal = {} -- [Player] = true while the pinned row shows a next goal (GuideDone toast on its end)
+local function nextGoalText(data)
+	local level = getLevel(data)
+	local iron = Config.Weapons[IRON_TIER]
+	local owned = math.floor(num(data.WeaponOwnedMask, 1))
+	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or num(data.WeaponTier, 1) >= IRON_TIER
+	if iron and not hasIron then
+		if level < iron.MinLevel then
+			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level)
+		end
+		local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
+		return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold))
+	end
+	local zone = Config.Zones[NEXT_ZONE]
+	if zone and level < zone.MinLevel then
+		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level)
+	end
+	return nil
+end
+
+local function tutorialEntry(player, data)
+	local step = getStep(player)
+	local entry = {
+		Id = TUT_ID, Kind = TUT_KIND, Pinned = true, TutorialStep = step,
+		Progress = 0, Target = 1, RewardGold = 0, RewardXP = 0,
+		CanClaim = false, ShowProgress = false,
+	}
+	if step == STEP_WELCOME then
+		entry.Text = TUT_MESSAGES.Welcome or "첫 임무: 메뉴 > 안내자 대화에서 임무를 받아요."
+	elseif step == STEP_GUIDE then
+		entry.Text = TUT_MESSAGES.Travel or "말랑 초원으로 가요 · 메뉴 > 이동 > 말랑 초원"
+	elseif step == STEP_QUEST then
+		entry.Progress, entry.Target = getTutorialKills(data), TUT_TARGET
+		entry.Text = if entry.Progress >= TUT_TARGET then TUT_READY_TEXT else TUT_TEXT
+		entry.RewardGold, entry.RewardXP = TUT_GOLD, TUT_XP
+		entry.CanClaim, entry.ShowProgress = true, true
+	elseif step == TUT_DONE and data.ClassChosen == true and getFaction(player) ~= "None" then
+		if data.BlacksmithVisited ~= true then
+			entry.Text = TUT_MESSAGES.VisitBlacksmith
+				or "무기 살펴보기 · 교차로 마을 대장간"
+		else
+			local text = nextGoalText(data)
+			if not text then return nil end
+			entry.Text = text
+			entry.NextGoal = true
+		end
+	else
+		return nil
+	end
+	return entry
+end
+
 ------------------------------------------------------------------ publish
 local function publish(player)
 	dirty[player] = nil
 	if player.Parent == nil then
 		lastSent[player] = nil -- left: never fire to (or keep state for) a removed player
+		hadNextGoal[player] = nil
 		return
 	end
 	local data = getData(player)
 	if not data then return end
 	local list = {}
-	if getStep(player) == STEP_QUEST then
-		-- A5-C6: pinned tutorial first; no Slot, cannot be rerolled, claimed with "tutorial"
-		table.insert(list, {
-			Id = TUT_ID,
-			Kind = TUT_KIND,
-			Text = TUT_TEXT,
-			Progress = math.min(TUT_TARGET, tutorialProgress[player] or 0),
-			Target = TUT_TARGET,
-			RewardGold = TUT_GOLD,
-			RewardXP = TUT_XP,
-			Pinned = true,
-		})
+	local tutorial = tutorialEntry(player, data)
+	-- after the first mission the story main row takes the pinned slot (the next-goal line stays the fallback)
+	local story = S.StoryQuestService
+	if getStep(player) == TUT_DONE and story and type(story.MainRow) == "function" then
+		local okMain, main = pcall(story.MainRow, player, data)
+		if okMain and main then tutorial = main end
 	end
+	if tutorial then table.insert(list, tutorial) end -- always first, never occupies/rerolls a daily slot
+	if story and type(story.SubRows) == "function" then
+		local okSubs, subs = pcall(story.SubRows, player, data)
+		if okSubs and type(subs) == "table" then
+			for _, row in subs do table.insert(list, row) end
+		end
+	end
+	-- the guide chain just ran out (iron weapon owned and Lv10 reached): say so once, then the row disappears
+	local hasGoal = tutorial ~= nil and (tutorial.NextGoal == true or tutorial.Story ~= nil)
+	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE then
+		Net.Notify(player, TUT_MESSAGES.GuideDone or "안내는 여기까지! 이제 사냥하며 강해져요.", "good")
+	end
+	hadNextGoal[player] = hasGoal or nil
 	if type(data.Quests) == "table" then
 		-- CR-M6: dailies show what a claim pays now (stored reward capped to the current level; stored value kept)
 		local capG, capX = Config.DailyQuestReward(getLevel(data))
@@ -503,9 +592,11 @@ local function payReward(player, gold, xp)
 	end
 end
 
--- bonus chest for the full set of dailies (claimed by hand, or completed by the midnight auto-pay: CR-M21)
-local function payChest(player, data)
-	local cg, cx = Config.DailyChestReward(getLevel(data))
+-- bonus chest for the full set of dailies (claimed by hand, or completed by the midnight auto-pay: CR-M21).
+-- genLevel = level the set was generated at (default data.DailyLevel; the midnight auto-pay passes the OLD day's)
+local function payChest(player, data, genLevel)
+	if genLevel == nil then genLevel = data.DailyLevel end
+	local cg, cx = chestReward(getLevel(data), genLevel)
 	cg, cx = math.floor(num(cg)), math.floor(num(cx))
 	payReward(player, cg, cx)
 	Net.Notify(player, string.format(Config.Text.DailyChest, Util.FormatNumber(cg), Util.FormatNumber(cx)), "reward")
@@ -522,12 +613,16 @@ end
 local function completeQuest(player, data, index, q)
 	q.Progress = q.Target
 	dirty[player] = true
+	-- A23-3: before the first mission is accepted the dailies are folded on screen, so no "done" toasts either
+	local quiet = getStep(player) == STEP_WELCOME
 	if q.Kind == "Extra" then
 		-- replace first so the finished quest can never be paid twice
 		data.Quests[index] = newQuest(player, "Extra", othersExcept(data.Quests, index))
 		payReward(player, math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP)))
-		Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(q.RewardGold)), "reward")
-	else
+		if not quiet then
+			Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(q.RewardGold)), "reward")
+		end
+	elseif not quiet then
 		-- dailies stay in their slot until claimed
 		Net.Notify(player, string.format(Config.Text.DailyReady), "good")
 	end
@@ -543,8 +638,13 @@ local function killWeight(q, kind, level)
 	end
 	local unit = Config.MonsterTypes[unitId]
 	local def = Config.MonsterTypes[kind]
-	if type(unit) ~= "table" or type(def) ~= "table" or num(unit.XP) <= 0 then return 1 end
-	return math.clamp(num(def.XP) / unit.XP, 0, 1)
+	local strict = q.Strict == true -- A23-14 "왕 슬라임 3마리": a weaker monster counts 0, not a fraction
+	if type(unit) ~= "table" or type(def) ~= "table" or num(unit.XP) <= 0 then
+		return if strict and kind ~= unitId then 0 else 1
+	end
+	local w = math.clamp(num(def.XP) / unit.XP, 0, 1)
+	if strict and w < 1 then return 0 end
+	return w
 end
 
 -- amount: number, or function(q) -> number (per-quest amount); accept(q) optional filter
@@ -604,18 +704,28 @@ local function runDayCheck(player)
 	local slots = Config.Quests.Slots
 	local prevClaims = math.clamp(math.floor(num(data.DailyClaims)), 0, slots)
 	local claims = math.min(slots, prevClaims + #toPay)
+	-- the old day's dailies were generated at this level (0 = unknown save -> the current level's band)
+	local oldGenLevel = math.floor(num(data.DailyLevel))
+	local level = getLevel(data)
 
 	-- commit: the day flips before anything is paid, so a failure can never double-pay
 	S.PlayerService.SetStat(player, "DailyDay", today)
 	S.PlayerService.SetStat(player, "DailyClaims", 0)
+	data.DailyLevel = level -- the fresh set's band (caps its chest, see chestReward)
 
 	-- CR-M21: vacation days = (1 - f) for the old day + every whole missed day (fractional, no floor), where
 	-- f = share of a full day's daily value (3 dailies + chest) earned on the old day. A partly played day
-	-- therefore never pays less than an absent one.
+	-- therefore never pays less than an absent one. A23-14 review: f uses the minutes of the old day's band (Lv1-9 =
+	-- Newbie 2 x 3 + 4, else Daily 5 x 3 + 10) and Config.VacationReward the current level's band, so a missed
+	-- Lv1-9 day (252 gold / 420 XP) pays less than a played one (360 / 600).
 	if dailyDay > 0 and today > dailyDay then
 		local D = Config.Daily
-		local fullDay = D.QuestMinutes * slots + D.ChestMinutes
-		local earned = claims * D.QuestMinutes + ((claims >= slots) and D.ChestMinutes or 0)
+		local band = oldGenLevel >= 1 and oldGenLevel or level
+		local newbieDay = isNewbieLevel(band)
+		local perQuest = newbieDay and num(NEWBIE.RewardMinutes, D.QuestMinutes) or D.QuestMinutes
+		local chestMin = newbieDay and num(NEWBIE.ChestMinutes, D.ChestMinutes) or D.ChestMinutes
+		local fullDay = perQuest * slots + chestMin
+		local earned = claims * perQuest + ((claims >= slots) and chestMin or 0)
 		local f = if fullDay > 0 then math.clamp(earned / fullDay, 0, 1) else 1
 		local add = (1 - f) + math.max(0, today - dailyDay - 1)
 		if add > 0 then
@@ -641,15 +751,21 @@ local function runDayCheck(player)
 	if paidGold > 0 then
 		Net.Notify(player, string.format(Config.Text.DailyAutoPaid, Util.FormatNumber(paidGold)), "reward")
 	end
-	-- CR-M21: an auto-pay that completes the set also pays the bonus chest
+	-- CR-M21: an auto-pay that completes the set also pays the bonus chest (capped to the OLD day's band)
 	if prevClaims < slots and claims >= slots then
-		payChest(player, data)
+		payChest(player, data, oldGenLevel)
 	end
 end
 
 ------------------------------------------------------------------ remotes
 local function onClaimQuest(player, slot)
 	if not S.PlayerService.IsReady(player) then return end
+	if type(slot) == "string" and string.sub(slot, 1, 6) == "story:" then -- story rows claim by id
+		if not Util.RateLimit(player, "ClaimQuest", Config.RateLimits.ClaimQuest) then return end
+		local story = S.StoryQuestService
+		if story and type(story.Claim) == "function" then pcall(story.Claim, player, string.sub(slot, 7)) end
+		return
+	end
 	local isTutorial = (slot == TUT_ID)
 	if not isTutorial and not isSlotIndex(slot) then return end
 	if not Util.RateLimit(player, "ClaimQuest", Config.RateLimits.ClaimQuest) then return end
@@ -734,38 +850,34 @@ local function onPlayerReady(player, data)
 	if player:GetAttribute("TutorialStep") ~= step then
 		player:SetAttribute("TutorialStep", step)
 	end
-	if step == STEP_QUEST then
-		tutorialProgress[player] = 0 -- tutorial quest progress is session only
-	end
+	-- Never reset the saved TutorialKills here: a reconnect can have an unclaimed completed quest.
 
 	ensureSlots(player, data)
 	runDayCheck(player)
+	tryTutorial(player) -- pending dialogue opens once when choices and a living character are ready
 	publish(player)
 end
 
 local function onPlayerLeaving(player)
-	clearPersonal(player)
 	dirty[player] = nil
 	lastSent[player] = nil
 	rerollReadyAt[player] = nil
-	tutorialProgress[player] = nil
-	spawning[player] = nil
-	spawnRetryAt[player] = nil
-	spawnFailures[player] = nil
+	welcomeShown[player] = nil
+	hadNextGoal[player] = nil
 end
 
 local function onCharacterSpawned(player)
 	-- CR-L50 safety net: resend the quest list once per spawn (the client keeps the last payload; same content)
 	lastSent[player] = nil
 	dirty[player] = true
-	task.delay(SPAWN_DELAY_ON_SPAWN, function()
+	task.delay(RESUME_DELAY_ON_SPAWN, function()
 		local ok, err = pcall(tryTutorial, player)
 		if not ok then Util.Warn(TAG, "tutorial on spawn: " .. tostring(err)) end
 	end)
 end
 
 local function onClassChanged(player)
-	task.delay(SPAWN_DELAY_ON_CLASS, function()
+	task.delay(RESUME_DELAY_ON_CLASS, function()
 		local ok, err = pcall(tryTutorial, player)
 		if not ok then Util.Warn(TAG, "tutorial on class pick: " .. tostring(err)) end
 	end)
@@ -781,7 +893,7 @@ local function onMonsterKilled(player, info)
 	if type(info) ~= "table" then return end
 	local data = getData(player)
 	if not data then return end
-	local step = getStep(player) -- read before any transition so the step-0 kill never counts for step 2
+	local step = getStep(player)
 	local level = getLevel(data)
 	local function weight(q)
 		return killWeight(q, info.Kind, level)
@@ -790,9 +902,12 @@ local function onMonsterKilled(player, info)
 	if info.Golden == true then
 		addProgress(player, "Golden", weight)
 	end
-	if step == STEP_KILL then
-		setStep(player, STEP_GUIDE) -- the personal slime (or any first kill: every step is skippable by playing)
-	elseif step == STEP_QUEST then
+	if step == STEP_QUEST then
+		tutorialKill(player, info)
+	elseif step == STEP_GUIDE and info.Personal ~= true and info.ZoneId == TUT_ZONE
+		and TUTORIAL_KINDS[info.Kind] then
+		-- The kill signal may precede ZoneChanged by one tick.
+		setStep(player, STEP_QUEST)
 		tutorialKill(player, info)
 	end
 end
@@ -802,13 +917,12 @@ local function onGoldEarned(player, amount, source)
 	addProgress(player, "Gold", math.floor(num(amount)))
 end
 
--- A3-L3: automatic releases count too
+-- Only a server-confirmed manual skill that hit at least one monster counts (A23-1; no whiffs in town).
 local function onReleased(player, info)
 	if type(info) ~= "table" then return end
-	local stacks = num(info.Stacks)
-	addProgress(player, "Release", 1, function(q)
-		return stacks >= num(q.MinStacks)
-	end)
+	if info.Auto == true then return end
+	if num(info.MonstersHit) < 1 then return end
+	addProgress(player, "Release", 1)
 end
 
 local function onGooseFinished(_result, counts)
@@ -928,7 +1042,15 @@ function M.Init(registry)
 	connectSignal("ZoneService", "ZoneChanged", onZoneChanged)
 end
 
+-- StoryQuestService asks for a fresh quest list after story progress
+function M.MarkDirty(player)
+	if typeof(player) == "Instance" and player:IsA("Player") then dirty[player] = true end
+end
+
 function M.Start()
+	Net.Get("RequestTutorial").OnServerEvent:Connect(onRequestTutorial)
+	Net.Get("AcceptTutorial").OnServerEvent:Connect(onAcceptTutorial)
+	Net.Get("IntroSeen").OnServerEvent:Connect(onIntroSeen)
 	Net.Get("ClaimQuest").OnServerEvent:Connect(onClaimQuest)
 	Net.Get("RerollQuest").OnServerEvent:Connect(onRerollQuest)
 	Net.Get("ClaimVacation").OnServerEvent:Connect(onClaimVacation)
@@ -959,13 +1081,15 @@ function M.Start()
 		end
 	end)
 
-	-- tutorial watchdog: (re)starts step 0 / detects the meadow for step 1, so it can never get stuck
+	-- Step 0 only opens the welcome once; entering the meadow advances accepted step 1, never bypasses acceptance.
 	task.spawn(function()
 		while true do
 			task.wait(TUTORIAL_TICK)
 			for _, p in S.PlayerService.GetReadyPlayers() do
 				local ok, err = pcall(tryTutorial, p)
 				if not ok then loopWarn("tutorial loop", err) end
+				-- the next-goal line reads level/gold; publish() only fires when the JSON really changed
+				if getStep(p) == TUT_DONE then dirty[p] = true end
 			end
 		end
 	end)

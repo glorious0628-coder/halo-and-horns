@@ -1,7 +1,9 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Render prepared GLB with an expression PNG referenced by FaceExpressionMat.
 
 No UV changes, geometry changes, PNG edits, or source file writes.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import hashlib
 import json
 import math

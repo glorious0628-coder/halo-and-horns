@@ -175,26 +175,29 @@ local function countsForSums(player, now)
 	return not (since and now - since >= COUNT_RULE.TownSeconds)
 end
 
+-- level, equipped weapon tier and its scroll +N (review B5: the server-written WeaponEnhance attribute;
+-- Config.EnhanceMult clamps it to 0..Config.Loot.MaxEnhance and treats a missing value as +0)
 local function levelAndTier(player)
 	local level = math.max(1, tonumber(player:GetAttribute("Level")) or 1)
 	local tier = math.clamp(math.floor(tonumber(player:GetAttribute("WeaponTier")) or 1), 1, Config.MaxWeaponTier)
-	return level, tier
+	local enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0
+	return level, tier, enhance
 end
 
 ------------------------------------------------------------------ public API
 -- faction-sum power (includes the rebirth bonus)
 function JusticeService.GetPower(player)
 	if not player then return 0 end
-	local level, tier = levelAndTier(player)
+	local level, tier, enhance = levelAndTier(player)
 	local rebirthBonus = tonumber(player:GetAttribute("RebirthBonus")) or 0
-	return Config.PowerOf(level, tier, 1 + rebirthBonus)
+	return Config.PowerOf(level, tier, 1 + rebirthBonus, enhance)
 end
 
 -- CR-L5: combat power for the weak-victim (bully) rule; the rebirth bonus is gold / XP only, so it is left out
 function JusticeService.GetCombatPower(player)
 	if not player then return 0 end
-	local level, tier = levelAndTier(player)
-	return Config.PowerOf(level, tier, 1)
+	local level, tier, enhance = levelAndTier(player)
+	return Config.PowerOf(level, tier, 1, enhance)
 end
 
 -- 1 for "None" and "Neutral" (A6)

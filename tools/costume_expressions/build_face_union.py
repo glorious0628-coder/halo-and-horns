@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Build a new no-cap face-skin candidate and read-only rest/actual-Fx CGs.
 
 Reuses only the previously approved GPT PNGs and original facial triangle scope.
 Does not finalize visual review, upload assets or modify the canonical package.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import json
 from pathlib import Path

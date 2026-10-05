@@ -61,7 +61,6 @@ local COLOR_HURT = Color3.fromRGB(255, 55, 55)
 local COLOR_GOLD = Color3.fromRGB(255, 210, 60)
 local COLOR_XP = Color3.fromRGB(90, 170, 255)
 local COLOR_PERFECT = Color3.fromRGB(255, 215, 70)
-local COLOR_AUTO = Color3.fromRGB(215, 215, 225)
 local COLOR_FALLBACK = Color3.fromRGB(175, 175, 185)
 local COLOR_STOMP = Color3.fromRGB(255, 50, 40)
 local COLOR_DUST = Color3.fromRGB(170, 150, 120)
@@ -80,15 +79,21 @@ local FONT_NUMBER = Enum.Font.GothamBlack
 local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11 -- addendum M1
 
 -- A7-3 level-up announce (private Korean strings; client-only feature).
--- "Unlocked" / "LevelUpNext" live in Config.Text (G1); the private copies below are fallbacks only.
-local TXT_UNLOCK_AUTO = "자동 공격"
+-- Announce completed unlocks only; future unlock advertising was removed by user request.
 local TXT_UNLOCK_ZONE = "%s 입장"
 local TXT_UNLOCK_REBIRTH = "환생"
 local TXT_UNLOCKED_FALLBACK = "해금! %s"
-local TXT_LEVELUP_NEXT_FALLBACK = "레벨 업! Lv %d · 다음 해금: Lv %d %s"
-local TXT_NEXT_UNLOCK = "다음 해금: Lv %d %s"
 local TXT_BANK = "금고 +%s"
-local TXT_AUTO_RELEASE = "자동 발사"
+
+-- B14 loot popups / toasts (2026-10-05 loot review). One table: Fx.luau is close to the 200-locals limit.
+-- Popups live Life s (damage numbers keep NUMBER_LIFE), are Wide x wider and stack by Step label heights in screen
+-- space (BillboardGui.SizeOffset), so a king-slime drop stays readable on a phone. Scroll drops also get a toast;
+-- the first one of a session (item list not opened yet) carries the "where to use it" hint for HintSeconds.
+local LOOT_UI = {
+	Life = 1.8, Wide = 1.9, Scale = 0.9, WeaponScale = 1.2, Step = 1.05, MaxLines = 5,
+	ToastSeconds = 2.5, HintSeconds = 6, Hinted = false,
+	Text = { Hint = "%s · 메뉴 → 아이템에서 써요 (실패해도 무기는 안전해요)" },
+}
 
 -- attack motion tuning, one table (Fx.luau is close to Luau's 200-locals-per-function limit)
 local MOTION = {
@@ -842,7 +847,8 @@ local function restartNumberLife(e, sizeMode)
 		e.FadeTween:Cancel()
 		e.FadeTween = nil
 	end
-	local w, h = NUMBER_W * e.Scale, NUMBER_H * e.Scale
+	local w, h = NUMBER_W * e.Scale * (e.Wide or 1), NUMBER_H * e.Scale
+	local life = e.Life or NUMBER_LIFE
 	if sizeMode == "pop" then
 		if e.SizeTween then e.SizeTween:Cancel() end
 		e.Gui.Size = UDim2.fromOffset(w * POP_SCALE, h * POP_SCALE)
@@ -858,8 +864,8 @@ local function restartNumberLife(e, sizeMode)
 	local token = e.Token
 	e.Label.TextTransparency = 0
 	e.Label.TextStrokeTransparency = 0.25
-	e.FadeTween = tween(e.Label, 0.35, { TextTransparency = 1, TextStrokeTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, NUMBER_LIFE - 0.35)
-	task.delay(NUMBER_LIFE + 0.02, function()
+	e.FadeTween = tween(e.Label, 0.35, { TextTransparency = 1, TextStrokeTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, life - 0.35)
+	task.delay(life + 0.02, function()
 		if e.Token == token then
 			e.Gui.Enabled = false
 			e.MergeKey = nil
@@ -867,8 +873,9 @@ local function restartNumberLife(e, sizeMode)
 	end)
 end
 
--- shows text on the oldest pooled number (round robin). merge = { Key, Amount, Prefix, Suffix, Crit } or nil
-local function spawnNumber(worldPos, text, color, scale, pop, merge)
+-- shows text on the oldest pooled number (round robin). merge = { Key, Amount, Prefix, Suffix, Crit } or nil.
+-- look (B14 loot lines, optional) = { Life = s, Wide = width factor, Stack = labels up in screen space }
+local function spawnNumber(worldPos, text, color, scale, pop, merge, look)
 	ensurePool()
 	if #pool == 0 then return end
 	poolCursor = poolCursor % #pool + 1 -- round robin = the oldest popup is reused first
@@ -878,6 +885,9 @@ local function spawnNumber(worldPos, text, color, scale, pop, merge)
 		e.RiseTween = nil
 	end
 	e.Scale = math.clamp(asNum(scale, 1), 0.3, 4)
+	e.Life = look and math.clamp(asNum(look.Life, NUMBER_LIFE), 0.5, 4) or nil
+	e.Wide = look and math.clamp(asNum(look.Wide, 1), 1, 3) or nil
+	e.Gui.SizeOffset = Vector2.new(0, look and math.clamp(asNum(look.Stack, 0), 0, 8) or 0)
 	e.Part.CFrame = CFrame.new(worldPos)
 	e.Label.Text = tostring(text or "")
 	e.Label.TextColor3 = typeof(color) == "Color3" and color or WHITE
@@ -893,7 +903,7 @@ local function spawnNumber(worldPos, text, color, scale, pop, merge)
 	else
 		e.MergeKey = nil
 	end
-	e.RiseTween = tween(e.Part, NUMBER_LIFE, { CFrame = CFrame.new(worldPos + Vector3.new(0, NUMBER_RISE, 0)) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	e.RiseTween = tween(e.Part, e.Life or NUMBER_LIFE, { CFrame = CFrame.new(worldPos + Vector3.new(0, NUMBER_RISE, 0)) }, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 	restartNumberLife(e, pop and "pop" or "set")
 end
 
@@ -1042,6 +1052,112 @@ end
 local function leanCF(rootHeight, offset, pitchDeg)
 	local pivot = CFrame.new(0, -rootHeight, 0)
 	return CFrame.new(offset) * pivot * CFrame.Angles(math.rad(pitchDeg), 0, 0) * pivot:Inverse()
+end
+
+-- living-motion layer (2026-10-06 playtest: "슬라임인데 너무 딱딱해 보여"): local VisualJoint.C1 only, so the lunge /
+-- recoil tweens on C0 still play on top. Slimes hop with stretch in the air and a squash on landing (and breathe
+-- when still); other monsters waddle while walking. Only monsters near the camera move; nothing is sent anywhere.
+local WOBBLE = { State = {}, Range = 140, StartedAt = os.clock() }
+
+function WOBBLE.track(model)
+	local joint, root = visualJoint(model), monsterRoot(model)
+	if not joint or not joint:IsA("Weld") or not root then return nil end
+	local mesh = nil
+	local cv = model:FindFirstChild("CustomVisual")
+	if cv then
+		for _, d in cv:GetDescendants() do
+			if d:IsA("MeshPart") then mesh = d break end
+		end
+	end
+	local h = monsterSize(model)
+	local st = { Joint = joint, Root = root, Mesh = mesh, Base = mesh and mesh.Size, Slime = isSlimeModel(model),
+		H = h, Phase = math.random() * 6.283, Active = false, HitAt = -math.huge,
+		-- monsters that appear while I watch pop in (not the ones already standing there when I join)
+		BornAt = (os.clock() - WOBBLE.StartedAt > 3) and os.clock() or -math.huge }
+	WOBBLE.State[model] = st
+	if st.Slime and st.Base then
+		-- user 2026-10-06: the slime mesh is flat from the side (3.1 wide x 2.1 deep): show it round (depth = width)
+		local w = math.max(st.Base.X, st.Base.Z)
+		st.Base = Vector3.new(w, st.Base.Y * 1.05, w)
+		mesh.Size = st.Base
+	end
+	model:GetAttributeChangedSignal(MOTION.HURT_SEQ_ATTR):Connect(function()
+		st.HitAt = os.clock() -- jelly wobble (slimes) / a quick flinch bob (others)
+	end)
+	model.AncestryChanged:Connect(function(_, parent)
+		if parent == nil then WOBBLE.State[model] = nil end
+	end)
+	return st
+end
+
+function WOBBLE.rest(st)
+	if not st.Active then return end
+	st.Active = false
+	st.Joint.C1 = CFrame.identity
+	if st.Mesh and st.Base then st.Mesh.Size = st.Base end
+end
+
+function WOBBLE.step(dt)
+	local cam = workspace.CurrentCamera
+	local folder = workspace:FindFirstChild("Monsters")
+	if not cam or not folder then return end
+	local camPos = cam.CFrame.Position
+	for _, model in folder:GetChildren() do
+		local st = WOBBLE.State[model]
+		if not st and model:IsA("Model") then st = WOBBLE.track(model) end
+		local mm = C and C.MonsterMotion
+		if st and mm and type(mm.IsRigged) == "function" and mm.IsRigged(model) then
+			WOBBLE.rest(st) -- a rigged monster moves its own bones (MonsterMotion); no extra wobble on top
+			st = nil
+		end
+		if st and st.Joint.Parent and st.Root.Parent then
+			if st.Root.Anchored and st.Slime and st.Active and st.Mesh and st.Base and not st.Splat then
+				-- dying slime: splat flat while the server's death pop shrinks and fades it
+				st.Splat = true
+				TweenService:Create(st.Mesh, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+					{ Size = Vector3.new(st.Base.X * 1.45, st.Base.Y * 0.35, st.Base.Z * 1.45) }):Play()
+				st.Joint.C1 = CFrame.new(0, st.Base.Y * 0.32, 0)
+			elseif st.Root.Anchored or (st.Root.Position - camPos).Magnitude > WOBBLE.Range then
+				if not st.Splat then WOBBLE.rest(st) end
+			else
+				st.Active = true
+				local v = st.Root.AssemblyLinearVelocity
+				local moving = v.X * v.X + v.Z * v.Z > 2.25
+				if st.Slime then
+					st.Phase += dt * math.pi * (moving and 2.6 or 1.3)
+					local s = math.sin(st.Phase)
+					local hop, sy = 0, 1 + s * 0.05 -- breathing while still
+					if moving then
+						hop = math.max(0, s) * st.H * 0.32 -- in the air on the upper half of the wave
+						sy = 1 + math.max(0, s) * 0.12 - math.max(0, -s) * 0.24 -- stretch up, squash on landing
+					end
+					local since = os.clock() - st.HitAt -- hit: a damped jelly wobble
+					if since < 0.8 then sy += -0.28 * math.exp(-since * 5) * math.cos(since * 26) end
+					local sx = 1 / math.sqrt(math.max(0.5, sy)) -- keeps the jelly's volume
+					local born = os.clock() - st.BornAt -- pop-in: grow with a little overshoot
+					if born < 0.4 then
+						local k = born / 0.4
+						local g = math.max(0.05, 1 + 0.25 * math.sin(k * math.pi) - (1 - k) * (1 - k))
+						sx, sy = sx * g, sy * g
+					end
+					local half = 0
+					if st.Mesh and st.Base then
+						st.Mesh.Size = Vector3.new(st.Base.X * sx, st.Base.Y * sy, st.Base.Z * sx)
+						half = st.Base.Y * 0.5
+					end
+					st.Joint.C1 = CFrame.new(0, -(hop + (sy - 1) * half), 0) -- bottom stays on the floor
+				else
+					st.Phase += dt * math.pi * (moving and 3.2 or 1.0)
+					local s = math.sin(st.Phase)
+					local bob = moving and math.abs(s) * 0.22 or s * 0.03
+					local roll = moving and s * math.rad(6) or 0
+					local since = os.clock() - st.HitAt -- hit: a short shudder on top of the C0 recoil
+					if since < 0.35 then roll += math.rad(5) * math.exp(-since * 9) * math.sin(since * 60) end
+					st.Joint.C1 = (CFrame.new(0, bob, 0) * CFrame.Angles(0, 0, roll)):Inverse()
+				end
+			end
+		end
+	end
 end
 
 -- tweens VisualJoint.C0 through steps { { C0, time, style?, direction? }, ... }; a newer sequence cancels a running one.
@@ -1672,7 +1788,6 @@ local function buildUnlocks()
 			list[level] = { text }
 		end
 	end
-	add(Config.Combat.AutoUnlockLevel, TXT_UNLOCK_AUTO)
 	for _, zoneId in Config.ZoneOrder do
 		local z = Config.Zones[zoneId]
 		if type(z) == "table" and z.Town ~= true and type(z.MinLevel) == "number" and z.MinLevel > 1 then
@@ -1685,7 +1800,7 @@ local function buildUnlocks()
 	local classId = asStr(myAttr("Class", "Warrior"), "Warrior")
 	local factionId = asStr(myAttr("Faction", "None"), "None")
 	for t, w in Config.Weapons do
-		if t > tier and type(w) == "table" then
+		if t > tier and t <= Config.WeaponShop.MaxSoldTier and type(w) == "table" then
 			add(w.MinLevel, Config.WeaponName(t, classId, factionId))
 		end
 	end
@@ -1712,22 +1827,9 @@ local function announceLevelUp(level)
 			for _, zoneId in z do table.insert(reachedZones, zoneId) end
 		end
 	end
-	local nextLevel = nil
-	for lvl in unlocks do
-		if lvl > level and (nextLevel == nil or lvl < nextLevel) then nextLevel = lvl end
-	end
-	local nextText, nextItems = nil, nil
-	if nextLevel then
-		nextItems = table.concat(unlocks[nextLevel], ", ")
-		nextText = string.format(TXT_NEXT_UNLOCK, nextLevel, nextItems)
-	end
-
 	local base = fmt("LevelUp", level)
 	if #reached > 0 then
 		uiCall("Announce", base .. " · " .. textOr("Unlocked", TXT_UNLOCKED_FALLBACK, table.concat(reached, ", ")))
-		if nextText then
-			uiCall("Toast", nextText, "info", 4)
-		end
 		-- crown-shard story one-liners, only at zone unlocks and only before the first rebirth
 		local lines = Config.StoryLines
 		if type(lines) == "table" and asNum(myAttr("Rebirths", 0), 0) == 0 then
@@ -1742,8 +1844,6 @@ local function announceLevelUp(level)
 				end
 			end
 		end
-	elseif nextLevel then
-		uiCall("Announce", textOr("LevelUpNext", TXT_LEVELUP_NEXT_FALLBACK, level, nextLevel, nextItems))
 	else
 		uiCall("Announce", base)
 	end
@@ -3194,6 +3294,7 @@ handlers.Swing = function(data)
 	if not ctx then return end
 	local own = isOwn(data)
 	if own then
+		Fx.LastFightAt = os.clock() -- B15: Panels keeps story pages back while I fight (manual or auto)
 		Fx.PlaySound("Swing")
 		animateOwnAttack(data, "Swing")
 	end
@@ -3210,7 +3311,8 @@ handlers.Swing = function(data)
 	local radius = math.clamp(asNum(data.Radius, 0), 0, 60)
 	local targets = validTargets(data.Targets)
 	local hits = data.Hits
-	local feel = { Stop = classId == "Warrior", Kick = data.Manual == true } -- my hits: hit-stop / camera kick
+	-- my manual hits: hit-stop / camera kick; auto-combat hits stay quiet (A23-1: no shake, no hit-stop)
+	local feel = data.Manual == true and { Stop = classId == "Warrior", Kick = true } or nil
 	local launch = math.clamp(asNum(data.LaunchDelay, classId == "Mage" and MOTION.CAST_DELAY or MOTION.SHOT_DELAY), 0, 1)
 	local flight = math.clamp(asNum(data.FlightTime, classId == "Mage" and 0.2 or 0.15), 0, 1)
 
@@ -3267,6 +3369,7 @@ handlers.Release = function(data)
 	if not ctx then return end
 	local own = isOwn(data)
 	if own then
+		Fx.LastFightAt = os.clock() -- B15
 		animateOwnAttack(data, "Release")
 	else
 		local okAnim, errAnim = pcall(Feel.animateOther, data, "Release")
@@ -3276,15 +3379,13 @@ handlers.Release = function(data)
 	if not pos then
 		if own then
 			Fx.PlaySound("Release")
-			Fx.Shake(SHAKE_OWN, 0.35)
+			if data.Auto ~= true then Fx.Shake(SHAKE_OWN, 0.35) end
 		end
 		return
 	end
 	local classId = asStr(data.Class, "Warrior")
 	local radius = math.clamp(asNum(data.Radius, 8), 1, 200)
-	local perfect = data.Perfect == true
-	local auto = data.Auto == true
-	local color = perfect and COLOR_PERFECT or factionColor(data.Faction)
+	local color = factionColor(data.Faction)
 	local visible = nearCamera(pos)
 	local impactDelay = math.clamp(asNum(data.ContactDelay, MOTION.RELEASE_CONTACT[classId] or MOTION.SMASH_AT), 0, 1)
 	if classId == "Mage" then
@@ -3335,23 +3436,18 @@ handlers.Release = function(data)
 					Acceleration = Vector3.new(0, -4, 0), Drag = 3,
 				})
 			end
-			showHits(data.Hits, own, true, { Stop = classId == "Warrior", Kick = true }) -- (the release shake wins)
+			showHits(data.Hits, own, true, data.Auto ~= true and { Stop = classId == "Warrior", Kick = true } or nil)
 			local total = asNum(data.Total, 0)
 			local top = pos + Vector3.new(0, 6, 0)
 			if total > 0 then
 				-- A9-2: my Release numbers pop (PopScale -> 1 in PopTime)
 				Fx.ShowNumber(top, Util.FormatNumber(total), own and COLOR_GOLD or WHITE, HUGE_SCALE, { Pop = own })
 			end
-			if perfect then
-				Fx.ShowNumber(top + Vector3.new(0, 3.5, 0), "PERFECT!", COLOR_PERFECT, 1.8)
-			elseif auto then
-				Fx.ShowNumber(top + Vector3.new(0, 3, 0), TXT_AUTO_RELEASE, COLOR_AUTO, 1.0)
-			end
 		end
 		if own then
-			Fx.Shake(SHAKE_OWN, 0.35)
+			if data.Auto ~= true then Fx.Shake(SHAKE_OWN, 0.35) end -- auto skills: no camera shake
 			Fx.PlaySound("Release")
-		else
+		elseif data.Auto ~= true then
 			local root = getOwnRoot()
 			if root and (root.Position - pos).Magnitude <= SHAKE_NEAR_DIST then
 				Fx.Shake(SHAKE_NEAR, 0.3)
@@ -3368,6 +3464,7 @@ handlers.Release = function(data)
 end
 
 handlers.Hurt = function(data)
+	Fx.LastFightAt = os.clock() -- B15: being hit counts as fighting too
 	local amount = asNum(data.Amount, 0)
 	local char = LocalPlayer and LocalPlayer.Character
 	local head = char and char:FindFirstChild("Head")
@@ -3422,6 +3519,85 @@ handlers.Reward = function(data)
 			Size = 0.9, SpeedMin = 10, SpeedMax = 22, LifeMin = 0.6, LifeMax = 1.2, LightEmission = 1,
 		})
 		ring(pos, 6, COLOR_GOLD, { Grow = 0.2, Fade = 0.4, Transparency = 0.35 })
+	end
+end
+
+-- A23-12: { Pos, Items = { { Item | Potion | Weapon, Name, N } } } = my own drops (already saved on the server).
+-- Uses the existing number popups and bursts only (no new art): "+슬라임 젤리" rises above the kill spot.
+handlers.Loot = function(data)
+	local pos = asVec(data.Pos)
+	local items = type(data.Items) == "table" and data.Items or {}
+	local rare = false
+	local lootText = (Config.Loot and type(Config.Loot.Text) == "table") and Config.Loot.Text or {}
+	local line = 0
+	-- the guaranteed first scroll: the server already shows the one-time Text.FirstScroll guide (6 s) -> no 2nd toast
+	local firstId = data.First == true and Config.Loot and type(Config.Loot.FirstScroll) == "table"
+		and Config.Loot.FirstScroll.Item or nil
+	for i, it in items do
+		if type(it) == "table" and type(it.Name) == "string" and i <= 6 then
+			local n = math.max(1, math.floor(asNum(it.N, 1)))
+			local def = type(it.Item) == "string" and Config.Loot and Config.Loot.Items[it.Item] or nil
+			local weapon = it.Weapon ~= nil
+			rare = rare or weapon
+			local color = weapon and COLOR_GOLD or (def and def.Color) or WHITE
+			local okT, text = pcall(string.format, n > 1 and (lootText.GotN or "+%s ×%d") or (lootText.Got or "+%s"), it.Name, n)
+			if not okT then text = "+" .. it.Name end
+			if pos and nearCamera(pos) and line < LOOT_UI.MaxLines then
+				-- B14: 1.6-2 s, wider labels stacked in screen space (no overlap with the +G / +XP numbers below)
+				pcall(spawnNumber, pos + Vector3.new(0, 4.6, 0), text, color, weapon and LOOT_UI.WeaponScale or LOOT_UI.Scale,
+					weapon, nil, { Life = LOOT_UI.Life, Wide = LOOT_UI.Wide, Stack = line * LOOT_UI.Step })
+				line += 1
+			end
+			-- B14: scroll drops (the only items the player acts on) also get a short toast; the session's first one
+			-- carries where to use it until the item list was opened once (weapons / jackpot have server toasts)
+			if def and firstId ~= nil and it.Item == firstId then
+				firstId, LOOT_UI.Hinted = nil, true -- covered by the server's first-scroll guide
+			elseif def and (def.Kind == "Enhance" or def.Kind == "Transfer") then
+				local panels = C and C.Panels
+				local seen = true
+				if type(panels) == "table" and type(panels.ItemsSeen) == "function" then
+					local okS, s = pcall(panels.ItemsSeen)
+					seen = okS and s == true
+				end
+				if not seen and not LOOT_UI.Hinted then
+					LOOT_UI.Hinted = true
+					local okH, hint = pcall(string.format, LOOT_UI.Text.Hint, text)
+					uiCall("Toast", okH and hint or text, "reward", LOOT_UI.HintSeconds)
+				else
+					uiCall("Toast", text, "reward", LOOT_UI.ToastSeconds)
+				end
+			end
+		end
+	end
+	if pos and nearCamera(pos) and #items > 0 then
+		burst(pos + Vector3.new(0, 1.2, 0), rare and COLOR_GOLD or WHITE, rare and 50 or 10, {
+			Size = rare and 0.9 or 0.45, SpeedMin = 6, SpeedMax = rare and 22 or 12, LifeMin = 0.4, LifeMax = 0.9, LightEmission = 1,
+		})
+		if rare then ring(pos, 8, COLOR_GOLD, { Grow = 0.25, Fade = 0.5, Transparency = 0.3 }) end
+	end
+	if rare then Fx.PlaySound("Coin") end
+end
+
+-- A23-12: my scroll result { Success, Before, After, Move? } -> a gold burst on success, a small grey puff on failure
+handlers.Enhance = function(data)
+	-- B14: the open item list shows this result and ends its "결과 확인 중…"
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.OnEnhanceResult) == "function" then
+		local ok, err = pcall(panels.OnEnhanceResult, data)
+		if not ok then warnThrottled("enhance result failed: " .. tostring(err)) end
+	end
+	local pos = LocalPlayer and getPlayerRootPos(LocalPlayer.UserId)
+	if not pos then return end
+	if data.Success == true then
+		burst(pos + Vector3.new(0, 2, 0), COLOR_GOLD, 45, {
+			Size = 0.8, SpeedMin = 8, SpeedMax = 20, LifeMin = 0.5, LifeMax = 1.1, LightEmission = 1,
+		})
+		ring(pos, 7, COLOR_GOLD, { Grow = 0.25, Fade = 0.45, Transparency = 0.3 })
+		Fx.PlaySound("Coin")
+	else
+		burst(pos + Vector3.new(0, 2, 0), Color3.fromRGB(150, 150, 160), 14, {
+			Size = 0.5, SpeedMin = 3, SpeedMax = 8, LifeMin = 0.4, LifeMax = 0.8,
+		})
 	end
 end
 
@@ -3660,6 +3836,10 @@ function Fx.Shake(magnitude, duration)
 end
 
 function Fx.Start()
+	RunService.RenderStepped:Connect(function(dt)
+		local okW, errW = pcall(WOBBLE.step, dt)
+		if not okW then warnThrottled("monster wobble failed: " .. tostring(errW)) end
+	end)
 	local ok, err = pcall(buildScreenFx)
 	if not ok then Util.Warn("Fx", "screen effects not built: " .. tostring(err)) end
 	-- A14-4 procedural clips (a failure leaves Feel.Clips empty -> stock animations everywhere)

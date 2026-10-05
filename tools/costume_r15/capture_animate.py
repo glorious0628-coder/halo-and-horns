@@ -1,6 +1,8 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """GoodEvil Play 서버의 기본 R15 Animate를 읽어 저장한다. Studio 상태를 바꾸지 않는다."""
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import json

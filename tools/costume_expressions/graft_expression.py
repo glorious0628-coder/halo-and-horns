@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Build an offline, guarded pilot expression graft payload; never call Studio.
 
 Only a clone in CostumePendingExpressions is changed. Actual two-piece importer
@@ -7,6 +8,7 @@ C0/C1, attachment and auxiliary weld can stay unchanged.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import json

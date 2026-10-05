@@ -4,6 +4,9 @@
 
 파일 업로드, API 호출, 소스/에셋 수정 기능은 없다. 업로드 목록은 아래 고정 목록만
 사용하며 art/ui/*.png 전체나 art/out/v1/를 대상으로 삼지 않는다.
+
+2026-10-06: 치비 3D 코스튬이 게임에서 빠져(A23-5) 코스튬 18종 점검(CostumeService·
+art/models/costume·APose 그림 참조)을 뺐다. 나머지 UI·글자·무기·텍스처·지도·몬스터 점검은 그대로다.
 """
 
 from __future__ import annotations
@@ -175,7 +178,6 @@ def build_report() -> dict:
     old_ids = read_json(ROOT / "art" / "ui" / "asset_ids.json")
     meta = read_json(ROOT / "art" / "ui" / "ui_meta.json")
     labels = read_json(ROOT / "art" / "ui" / "text_labels.json")
-    tasks = read_json(ROOT / "art" / "models" / "costume" / "tripo_tasks.json")
     source = CONFIG.read_text(encoding="utf-8")
     parts = config_parts(source)
     records = read_json(ROOT / "build" / "ui_upload_ledger.json").get("records", {})
@@ -224,25 +226,7 @@ def build_report() -> dict:
                 ),
             },
         })
-    for faction in FACTIONS:
-        for class_id in CLASSES:
-            for gender in GENDERS:
-                name = f"{faction}{class_id}{gender}"
-                entries.append({
-                    "name": f"Costume_{name}",
-                    "category": "costume",
-                    "source": file_info(ROOT / "art" / "models" / "costume" / "fixed" / f"Costume_{name}.glb"),
-                    "reference": file_info(ROOT / "art" / "out" / f"APose_{name}.png"),
-                    "generation_task_id": tasks.get(name),
-                    "faction": faction,
-                    "class_id": class_id,
-                    "gender": gender,
-                    "target": None,
-                    "config": {
-                        "key": None,
-                        "costume_service_file_present": (ROOT / "src" / "ServerScriptService" / "CostumeService.luau").is_file(),
-                    },
-                })
+    # 코스튬 18종 점검은 2026-10-06에 뺐다(A23-5: 코스튬 제거, CostumeService 삭제).
 
     excluded = [
         {"path": "art/out/v1/", "reason": "폐기/거절/노출 이미지 폴더 전체를 제외한다", "recursive": True},
@@ -256,9 +240,9 @@ def build_report() -> dict:
             })
 
     counts = {category: sum(e["category"] == category for e in entries) for category in (
-        "ui", "fx_emo", "text", "weapon", "texture", "map", "monster", "costume",
+        "ui", "fx_emo", "text", "weapon", "texture", "map", "monster",
     )}
-    expected = {"ui": 68, "fx_emo": 10, "text": 42, "weapon": 27, "texture": 15, "map": 1, "monster": 7, "costume": 18}
+    expected = {"ui": 68, "fx_emo": 10, "text": 42, "weapon": 27, "texture": 15, "map": 1, "monster": 7}
     if counts != expected:
         raise ValueError(f"고정 대상 개수가 예상과 다릅니다: {counts}")
     image_entries = [e for e in entries if "prepared" in e]
@@ -284,7 +268,6 @@ def build_report() -> dict:
             "metadata_size_mismatches": [e["name"] for e in image_entries if e["metadata"]["matches_prepared_size"] is False],
             "config_size_mismatches": [e["name"] for e in image_entries if e["config_size_matches_prepared"] is False],
             "unregistered_config_parts": [e["name"] for e in image_entries if e["config"]["key"] and not e["config"]["present"]],
-            "unrigged_costumes": [e["name"] for e in entries if e["category"] == "costume" and e["source"].get("glb", {}).get("skins") == 0],
             "file_read_errors": [e["source"]["path"] for e in entries if "error" in e["source"]],
         },
         "excluded": excluded,
@@ -309,9 +292,9 @@ def main() -> None:
     print(f"목록 저장: {relative(REPORT)}")
     print(f"대상 {summary['total']}개: UI {counts['ui'] + counts['fx_emo']}, 그림 글자 {counts['text']}, "
           f"무기 {counts['weapon']}, 텍스처/지도 {counts['texture'] + counts['map']}, "
-          f"몬스터 {counts['monster']}, 코스튬 {counts['costume']}")
+          f"몬스터 {counts['monster']} (코스튬 점검은 A23-5로 제외)")
     print(f"원본 누락 {len(summary['missing_source'])}개, 준비 파일 누락 {len(summary['missing_prepared'])}개, "
-          f"Config의 옛 ID {len(summary['old_ids_still_in_config'])}개, 리깅 전 코스튬 {len(summary['unrigged_costumes'])}개")
+          f"Config의 옛 ID {len(summary['old_ids_still_in_config'])}개")
     print(f"메타 크기 불일치 {len(summary['metadata_size_mismatches'])}개, "
           f"Config 크기 불일치 {len(summary['config_size_mismatches'])}개")
     print("업로드/API 호출 없음. v1/ 전체와 성별 없는 잔여 캐릭터 9개 제외.")

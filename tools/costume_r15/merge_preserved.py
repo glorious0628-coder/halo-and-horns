@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Join static GLB object packaging without touching any geometry/image bytes.
 
 No API, rigging, upload, Blender or Studio calls. A successful local merge does
@@ -5,6 +6,7 @@ not mean Tripo accepts the model, and does not create a playable R15 rig.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import copy
 import hashlib

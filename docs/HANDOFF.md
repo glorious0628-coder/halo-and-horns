@@ -1,5 +1,7 @@
 # 클라우드 세션 인수인계 프롬프트
 
+> **폐기된 옛 프롬프트(2026-10-03 무렵).** "main에 push 금지", 자동 장전/손 발사 고정, Codex 그림 파이프라인, A1–A12 등 지금과 맞지 않는다. 사용하지 말고 `AGENTS.md`와 `docs/HANDOFF_CODEX.md` 맨 위 절, `docs/review/worker_prompt_2026-10-06.md`를 쓴다.
+
 아래 블록 전체를 클라우드 Claude Code 세션의 첫 메시지로 붙여 넣으세요.
 
 ---

@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Prepare a temporary continuous facial UV chart and close mouth recess geometry.
 
 Only the new copy is exported. Original GLB, textures, non-facial UVs and body
@@ -5,6 +6,7 @@ geometry are preserved. No raster image editing is performed. Output textures
 are Blender CG renders/bakes intended as input to GPT image editing.
 """
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import colorsys
 import hashlib
 import json

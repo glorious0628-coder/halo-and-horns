@@ -1,3 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Validate exact preserved skin expressions and save their separate offline manifest.
 
 No image edits, API, Studio, upload, registry promotion or original model writes.
@@ -5,6 +8,8 @@ Run finalization only after personally viewing all six generated CG previews.
 """
 from __future__ import annotations
 
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 from collections import Counter
 import copy

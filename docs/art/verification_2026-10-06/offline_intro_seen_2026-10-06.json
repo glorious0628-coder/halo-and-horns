@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "checks": 37,
+  "staticChecks": 7,
+  "staticFailures": [],
+  "failure": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "810d154c99fa9f12a2c3cb487406e8538bce96645d84a9912eb3ed2ea699cc44",
+    "src/ReplicatedStorage/Shared/Net.luau": "4371d076e211e9c98842c738dc105c0e0c534bc68f7cf448d13cb8279bbd3f6e",
+    "src/ServerScriptService/DataService.luau": "fc52f4bd0eec0acc5fca6a2c7b870048d5296771d24cfcd53abd7a56eadce5a5",
+    "src/ServerScriptService/QuestService.luau": "d7d6046f76e4865e27be33c66f1448158ff860e7fab9ac7ee2b383f9b28598c1"
+  },
+  "introSHA256": "362dae023de61a8bbb8b828652b27e13191f311f5db45d8a25dfca01cef6d742",
+  "fixtureSHA256": "28a43f54ffc3d5d41fd7605226c64cae39a484508deca61445b7e25d95a46aba",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "networkCalls": 0,
+  "coverage": [
+    "Net registry has one IntroSeen; default false; mirrored",
+    "remote with any argument (incl. explicit nil, false, extra args) rejected before the rate limit",
+    "unready and rate-limited (1 s per player) requests rejected",
+    "a client attribute is not the saved flag",
+    "zero-argument remote sets IntroSeen exactly once via SetStat, mirrored, survives save/reload, never rewritten",
+    "tutorial/quest/claim/reroll/vacation remotes never write IntroSeen",
+    "corrupt saved values (string/number/table) load as unseen",
+    "static: the only writer in src/ is QuestService SetStat; client Intro.luau fires once, no args, not on replay"
+  ],
+  "limitations": "Offline store and scheduler doubles; the client opening itself, skip/replay UI and live reconnect are not certified here."
+}

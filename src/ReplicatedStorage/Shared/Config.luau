@@ -21,17 +21,18 @@ Config.Player = {
 Config.Vitals = {
 	MaxMana = 100,
 	ManaRegen = 4, -- per second; session state, not persisted
-	MageSwingCost = 3,
+	MageSwingCost = 2, -- 2026-10-06 user: mage a bit stronger (was 3)
 	ReleaseCost = 20,
 	HPRecovery = 0.30,
 	MPRecovery = 0.40,
 	PotionCooldown = 10, -- HP and MP have independent server deadlines
-	PotionPrices = { HP = 10, MP = 10 }, -- gold per bottle; implementation default, not a user-selected price
+	PotionPrices = { HP = 25, MP = 25 }, -- gold per bottle (user 2026-10-06)
 	PotionInventoryCap = 99,
 	PotionMerchantName = "PotionMerchant", -- server-owned workspace.Map.NPCs model; missing NPC rejects buying
 	PotionMerchantDistance = 12,
-	MerchantEnabled = false, -- enable only after the user selects the GPT potion-shop preview
-	PotionMerchantTemplate = "Costume_HaloWarriorM", -- approved armor, from ready CostumeRigs only
+	MerchantEnabled = true, -- A23-6: shop screen works; price 25 confirmed by the user 2026-10-06
+	-- A23-6: temporary default Roblox-style NPC (HumanoidDescription, no new art) until the Firefly redraw
+	PotionMerchantColors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(46, 120, 92), Legs = Color3.fromRGB(70, 55, 45) },
 	PotionMerchantPrompt = "PotionShopPrompt",
 	PotionMerchantPromptRate = 0.5,
 	PotionMerchantOffset = { X = 12, Z = -9 }, -- beside the Crossroads spawn, off the north road/pads
@@ -61,24 +62,26 @@ Config.Nickname = {
 Config.Data = {
 	StoreName = "HaloHorns_Player_v1", -- unchanged on purpose: v1 saves are migrated in place by DataService
 	KeyPrefix = "P_",
-	Version = 2,
+	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. An older server refuses a newer record (CR-L3).
+	Version = 3,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	LoadRetries = 5,
 	LoadRetryDelay = 3,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 2,
+		Version = 3,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
 		CarriedGold = 0,
 		WeaponTier = 1, -- v1 name: SwordTier (migrated by DataService)
+		WeaponOwnedMask = 1, -- tier N uses bit N-1; the free starting weapon is always owned
+		BlacksmithVisited = false,
 		Faction = "None",
 		Class = "Warrior",
 		ClassChosen = false, -- false -> ClassPicker shows (first pick is free and keeps level)
 		CharacterGender = "M",
-		CostumeEnabled = true,
 		Nickname = "", -- filtered cache only; NicknameService's global directory is authoritative
 		HPPotionCount = 0,
 		MPPotionCount = 0,
@@ -95,6 +98,7 @@ Config.Data = {
 		Quests = {},
 		DailyDay = 0, -- Config.DayIndex of the day the current dailies were generated (0 = never)
 		DailyClaims = 0, -- dailies claimed on DailyDay (0..3)
+		DailyLevel = 0, -- level when DailyDay's dailies were generated (0 = unknown); caps the chest to that band
 		VacationDays = 0, -- pending vacation reward (0 = nothing pending)
 		VacationGold = 0,
 		VacationXP = 0,
@@ -106,6 +110,17 @@ Config.Data = {
 		-- addendum A4 / A5-C5: onboarding step (0 = brand-new, 1 = guide, 2 = tutorial quest, 99 = done).
 		-- DataService sets 99 for any STORED record lacking the field BEFORE this default fill.
 		TutorialStep = 0,
+		TutorialKills = 0, -- saved owner-only progress; quest remote supplies the HUD
+		IntroSeen = false, -- A23-9: the first-time opening was watched or skipped (set only by the server)
+		AutoCombatUnlocked = false, -- A23-1: set once by the crown-shard quest
+		AutoCombatEnabled = false, -- A23-1: the player's saved ON/OFF (starts OFF, never auto-enabled)
+		-- story quests (StoryQuestService): active main + subs, finished ids, choices, one-time firsts
+		Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = {} },
+		-- A23-12 drops (LootService): item id -> count, scroll enhancement per weapon tier (array, kept through
+		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first king-slime scroll)
+		Items = {},
+		WeaponEnhance = {},
+		LootFlags = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
 		-- (never mirrored). ["<kind>:<otherUserId>"] = os.time() of the last reward (PlayerService.PairReady);
 		-- "kolog:<victimUserId>" = { t1, t2 } (last two KOs). Pruned at PlayerReady (> 1800 s old, at most 200 keys).
@@ -118,13 +133,15 @@ Config.Data = {
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
-		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "Faction", "Class", "ClassChosen",
-		"CharacterGender", "CostumeEnabled",
+		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "WeaponOwnedMask", "BlacksmithVisited", "Faction", "Class", "ClassChosen",
+		"CharacterGender",
 		"HPPotionCount", "MPPotionCount",
 		"Rebirths", "RebirthBonus", "FallMarks", "RedeemMarks", "Honor", "Infamy", "SwitchCount",
 		"LastSwitchTime", "PlaytimeSeconds", "TotalKills", "DailyDay", "DailyClaims",
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
-		"TutorialStep", -- addendum A4
+		"TutorialStep", "TutorialKills", -- addendum A4 (kills: meadow guide after a mid-mission death)
+		"IntroSeen", -- A23-9
+		"AutoCombatUnlocked", "AutoCombatEnabled", -- A23-1
 	},
 }
 
@@ -147,6 +164,8 @@ end
 
 ----------------------------------------------------------------- weapons (7 tiers shared by every class)
 -- Damage = normal per-target swing damage at Lv 1 for class Damage multiplier 1.0, BEFORE the 50% immediate rule.
+Config.WeaponShop = { MaxSoldTier = 3, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
+
 Config.Weapons = {
 	{ Tier = 1, Damage = 8, Price = 0, MinLevel = 1, Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood, Length = 3 },
 	{ Tier = 2, Damage = 15, Price = 150, MinLevel = 1, Color = Color3.fromRGB(165, 120, 75), Material = Enum.Material.WoodPlanks, Length = 3.5 },
@@ -158,17 +177,20 @@ Config.Weapons = {
 		RequiresFaction = true,
 		FactionColors = { Halo = Color3.fromRGB(255, 230, 120), Horns = Color3.fromRGB(200, 30, 40) },
 	},
+	-- A23-12: the slime jackpot ("젤리 왕관" legendary). Never sold; dropped only by Config.Loot.Jackpot monsters,
+	-- exactly 2x the best shop weapon (tier 3: 38 -> 76, so the tier-4 drop at 88 stays an upgrade), usable at any level.
+	{ Tier = 8, Damage = 76, Price = 0, MinLevel = 1, Legend = true, Color = Color3.fromRGB(120, 240, 190), Material = Enum.Material.Neon, Length = 4.5 },
 }
 Config.MaxWeaponTier = #Config.Weapons
 
 -- display names per class; tier 7 is a table keyed by faction
 Config.WeaponNames = {
 	Warrior = { "나뭇가지", "나무 검", "철 검", "황금 검", "크리스탈 검", "네온 검",
-		{ Halo = "여명의 검", Horns = "파멸의 검", None = "왕관 조각 검" } },
+		{ Halo = "여명의 검", Horns = "파멸의 검", None = "왕관 조각 검" }, "젤리 왕관 검" },
 	Mage = { "마른 지팡이", "참나무 지팡이", "철 지팡이", "황금 지팡이", "크리스탈 지팡이", "네온 지팡이",
-		{ Halo = "여명의 지팡이", Horns = "파멸의 지팡이", None = "왕관 조각 지팡이" } },
+		{ Halo = "여명의 지팡이", Horns = "파멸의 지팡이", None = "왕관 조각 지팡이" }, "젤리 왕관 지팡이" },
 	Archer = { "새총 활", "나무 활", "철 활", "황금 활", "크리스탈 활", "네온 활",
-		{ Halo = "여명의 활", Horns = "파멸의 활", None = "왕관 조각 활" } },
+		{ Halo = "여명의 활", Horns = "파멸의 활", None = "왕관 조각 활" }, "젤리 왕관 활" },
 }
 
 function Config.WeaponName(tier, classId, factionId)
@@ -198,10 +220,31 @@ function Config.WeaponColor(tier, factionId)
 	return w.Color
 end
 
--- normal per-target damage of the weapon at this level (before class, bonuses and multipliers)
-function Config.WeaponDamage(tier, level)
+-- A23-12: scroll enhancement +N multiplies weapon damage by 1 + 0.10 * N (N = 0..Config.Loot.MaxEnhance)
+function Config.EnhanceMult(enhance)
+	if type(enhance) ~= "number" or enhance ~= enhance or math.abs(enhance) == math.huge then return 1 end
+	local loot = Config.Loot
+	return 1 + loot.EnhancePerLevel * math.clamp(math.floor(enhance), 0, loot.MaxEnhance)
+end
+
+-- normal per-target damage of the weapon at this level and enhancement (before class, bonuses and multipliers)
+function Config.WeaponDamage(tier, level, enhance)
 	local w = Config.Weapons[tier] or Config.Weapons[1]
-	return w.Damage * (1 + Config.Combat.LevelDamagePerLevel * (level - 1))
+	return w.Damage * (1 + Config.Combat.LevelDamagePerLevel * (level - 1)) * Config.EnhanceMult(enhance)
+end
+
+-- basic attacks to defeat a monster with the server's swing formula (no crit / perks / faction bonuses):
+-- what actually changes when the blacksmith sells a weapon (the shop never shows raw weapon Damage)
+function Config.SwingHitsToKill(tier, level, classId, monsterId, factionId, enhance)
+	local m = Config.MonsterTypes and Config.MonsterTypes[monsterId]
+	local c = Config.Classes[classId] or Config.Classes.Warrior
+	if type(m) ~= "table" or type(m.HP) ~= "number" then return nil end
+	local f = factionId and Config.Factions[factionId]
+	local bonus = (type(f) == "table" and type(f.DamageBonus) == "number") and f.DamageBonus or 0 -- Horns +15%
+	local per = Config.WeaponDamage(tier, math.max(1, level or 1), enhance) * (c.Damage or 1) * (1 + bonus)
+		* ((Config.BasicSkill and Config.BasicSkill.SwingImmediate) or 0.5)
+	per = math.max(1, math.floor(per + 0.5)) -- Util.RoundDamage
+	return math.ceil(m.HP / per)
 end
 
 ----------------------------------------------------------------- classes
@@ -217,7 +260,8 @@ Config.Classes = {
 		HealthMult = 1.3, Damage = 1.0, SwingInterval = 1.0,
 		Pattern = "Around", -- every valid target within Range of self
 		Range = 10, Targets = 0, Splash = 0, -- Targets 0 = unlimited
-		ReleaseCenter = "Self", -- shockwave on self
+		AimCone = 75, -- user 2026-10-06: every class attacks where it faces (basic swing = a front sweep)
+		ReleaseCenter = "Self", -- shockwave on self (the skill stays an all-around blast)
 		ChargeAuto = 1, ChargeManual = 2,
 		Ranged = false, PvPMult = 1.0,
 		WalkSpeedMult = 1.0,
@@ -231,9 +275,10 @@ Config.Classes = {
 		Desc = "멀리 있는 적에게 마법 구슬! 맞은 곳 주변까지 펑!",
 		PickLine = "조금 떨어져서 넓게 펑", -- addendum A7-4
 		Weapon = "Staff",
-		HealthMult = 0.8, Damage = 1.3, SwingInterval = 1.25,
+		HealthMult = 0.8, Damage = 1.3, SwingInterval = 1.1, -- 2026-10-06 user: mage a bit stronger (was 1.25)
 		Pattern = "Splash", -- nearest valid target within Range, then every valid target within Splash of it
 		Range = 35, Targets = 1, Splash = 7,
+		AimCone = 80, -- only targets within 80 degrees of where I face (2026-10-06: no shots behind / sideways)
 		ReleaseCenter = "Target", -- meteor on the nearest target within Range (self if none)
 		ChargeAuto = 1, ChargeManual = 2,
 		Ranged = true, PvPMult = 0.85,
@@ -251,6 +296,7 @@ Config.Classes = {
 		HealthMult = 1.0, Damage = 0.55, SwingInterval = 0.5,
 		Pattern = "Multi", -- the Targets nearest valid targets within Range
 		Range = 30, Targets = 2, Splash = 0,
+		AimCone = 80, -- only targets within 80 degrees of where I face (2026-10-06: no shots behind / sideways)
 		ReleaseCenter = "Target", -- arrow rain on the nearest target within Range (self if none)
 		ChargeAuto = 0.5, ChargeManual = 1, -- swings twice as often, so half the stacks per swing
 		Ranged = true, PvPMult = 0.85,
@@ -266,12 +312,26 @@ function Config.ClassName(classId, factionId)
 	return c.Names[factionId] or c.Names.None
 end
 
+-- A23-14 class change (user 2026-10-05): below Lv FreeKeepLevelBelow a free change keeps level and XP (the server
+-- then never spends a ticket, even when one was requested); from that level on: free = back to Lv 1 / XP 0,
+-- change ticket = level kept. Server: ClassService.onChangeClass. Client previews use Config.ClassChangeKeepsLevel.
+Config.ClassChange = {
+	FreeKeepLevelBelow = 5,
+}
+
+-- true when a free class change at `level` keeps the level (same rule as the server)
+function Config.ClassChangeKeepsLevel(level)
+	local lv = tonumber(level)
+	if lv == nil or lv ~= lv then return false end
+	return math.floor(lv) < (tonumber(Config.ClassChange.FreeKeepLevelBelow) or 0)
+end
+
 ----------------------------------------------------------------- combat
 Config.Combat = {
 	CritChance = 0.10, -- PvE swings only (never releases, never PvP)
 	CritMult = 2,
 	LevelDamagePerLevel = 0.02, -- weapon damage * (1 + 0.02 * (level - 1))
-	AutoUnlockLevel = 5,
+	AutoTick = 0.2, -- A23-1 auto-combat loop (unlocked by the crown-shard quest, never by level)
 	TownRegenPerSec = 0.10, -- fraction of max HP per second inside Town zones (all factions)
 	AutoLoopInterval = 0.1,
 	RegenTick = 1,
@@ -285,6 +345,11 @@ Config.Combat = {
 
 ----------------------------------------------------------------- charge & release ("자동은 장전, 손은 발사")
 -- Design intent: pure idle (auto swings + auto release) ~= 1.25x baseline DPS; auto swings + PERFECT release ~= 2.5x.
+-- Compatibility constants for old fixtures only. Active combat uses BasicSkill and no charge state.
+Config.BasicSkill = {
+	ManaCost = 20, Cooldown = 3, DamageMultiplier = 6, Radius = 9,
+	SwingImmediate = 0.5, PvPCapPct = 0.35, HaloHealPct = 0.10, HaloHealCapPct = 0.30,
+}
 Config.Charge = {
 	SwingImmediate = 0.5, -- a swing that hits deals 50% of the normal per-target damage right away
 	MinRelease = 10, -- minimum (floored) stacks to release
@@ -331,11 +396,11 @@ Config.Factions = {
 		PartyAuraPerAlly = 0.05, PartyAuraMaxAllies = 3, PartyAuraRadius = 30,
 		CanBeWanted = false,
 		ChargeCap = 150,
-		ReleaseSupport = true, -- release heals allies + shares stacks (Config.Charge.Halo*)
+		ReleaseSupport = true, -- MP skill heals allies (Config.BasicSkill)
 		Perks = {
 			"경험치 +30% (레벨이 빨리 올라요)",
 			"체력 +20%, 계속 체력 회복",
-			"발사하면 주변 동료 치유 + 게이지 +10",
+			"스킬을 쓰면 주변 동료 치유",
 			"주머니 골드 절반 자동 저금",
 			"원한 자루 도둑을 잡아 골드를 되찾아 줘요",
 		},
@@ -357,7 +422,7 @@ Config.Factions = {
 		Perks = {
 			"골드 +25% (빨리 부자가 돼요)",
 			"공격력 +15%, 때리면 체력 흡수",
-			"발사 게이지가 더 높이 쌓여요 (175)",
+			"약탈한 골드를 지켜내면 내 것으로",
 			"기사단을 털어 원한 자루를 지켜라",
 			"현상수배 별 5개면 괴수로 변신!",
 		},
@@ -462,9 +527,10 @@ Config.Justice = {
 	ScaleTick = 0.1,
 }
 
--- "base power" of a player (no Size Justice, no kaiju); rebirthMult = 1 + RebirthBonus
-function Config.PowerOf(level, weaponTier, rebirthMult)
-	return math.sqrt(Config.WeaponDamage(weaponTier, level) * Config.BaseHealth(level)) * (rebirthMult or 1)
+-- "base power" of a player (no Size Justice, no kaiju); rebirthMult = 1 + RebirthBonus.
+-- enhance = scroll +N of the equipped weapon (the WeaponEnhance attribute); nil counts as +0 (Config.EnhanceMult).
+function Config.PowerOf(level, weaponTier, rebirthMult, enhance)
+	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * Config.BaseHealth(level)) * (rebirthMult or 1)
 end
 
 -- S for a faction: weaker side = clamp(sqrt(enemy / ours), 1.0, 1.6); the stronger side naturally clamps to 1.0
@@ -633,14 +699,69 @@ Config.Goose = {
 	RareMult = 5,
 	WinWarPoints = 60,
 	Tick = 0.25,
+	-- anti-AFK: a reward (and GooseFinished/quest credit) needs this many ACCEPTED manual hits this event; auto hits
+	-- still pull but never pay (review fix, kept by A23-14)
+	MinManualHits = 3,
+	-- A23-14 "함께 구조" (co-op): when the goose lands and only ONE of Halo/Horns has ready players on the server, the
+	-- event is co-op for that side for its whole 60 s (fixed at start; a rival joining later cannot pull this time).
+	-- Gauge target = CoopPerPerson x that side's ready players at the start (min 1 person). 20 = 10 manual hits per
+	-- person (Warrior ~10 s, Mage ~11 s, Archer ~5 s), so one player alone can fill it. A full gauge stays full (totals
+	-- never go down) and the event still runs to its timer so late teammates can join. Success = CoopWinShare (70%) of
+	-- the winner reward, no war points, no cheer star; a gauge not filled = the tie path (LoserShare 40% + 1 cheer star).
+	CoopPerPerson = 20,
+	CoopWinShare = 0.7,
+	-- Korean texts (string.format). Mode name: Halo "함께 구조", Horns "함께 밀렵" (구조/밀렵 flavour of GooseStart).
+	Text = {
+		NeedManual = "황금 거위 보상은 직접 %d번 이상 때린 사람만 받아요! (자동 전투 타격은 세지 않아요)", -- (MinManualHits)
+		CoopStart = { -- NotifyAll when the event becomes co-op (at start, or when the first faction player appears)
+			Halo = "황금 거위가 교차로 마을에 내려왔어요! 지금은 뿔 군단이 없어서 '함께 구조'예요. 기사단끼리 게이지를 채워요!",
+			Horns = "황금 거위가 교차로 마을에 내려왔어요! 지금은 기사단이 없어서 '함께 밀렵'이에요. 뿔 군단끼리 게이지를 채워요!",
+		},
+		CoopFull = { -- NotifyAll once when the gauge is full (MinManualHits)
+			Halo = "게이지 가득! 함께 구조 성공이에요. 끝나기 전에 직접 %d번 이상 때린 기사단은 보상을 받아요!",
+			Horns = "게이지 가득! 함께 밀렵 성공이에요. 끝나기 전에 직접 %d번 이상 때린 뿔 군단은 보상을 받아요!",
+		},
+		CoopResult = { -- NotifyAll at the end, gauge filled
+			Halo = "기사단이 힘을 모아 황금 거위를 구조했어요! 조각이 빛을 되찾았어요.",
+			Horns = "뿔 군단이 힘을 모아 황금 거위를 밀렵했어요! 조각이 어둠에 물들었어요.",
+		},
+		CoopFail = "게이지를 다 채우지 못해서 황금 거위가 날아가 버렸어요!", -- NotifyAll at the end, gauge not filled
+		RivalLeft = "상대 진영이 모두 떠나서 '함께' 규칙으로 정했어요. %s", -- (CoopResult / CoopFail) tug whose rival left
+		RivalWait = { -- to a rival who tries to pull during co-op (once per event), keyed by the CO-OP side
+			Halo = "이번 황금 거위는 기사단의 '함께 구조'예요. 다음 거위부터 줄다리기로 겨뤄요!",
+			Horns = "이번 황금 거위는 뿔 군단의 '함께 밀렵'이에요. 다음 거위부터 줄다리기로 겨뤄요!",
+		},
+		CoopReward = { -- (gold, xp) personal toast for a co-op success
+			Halo = "함께 구조 성공 보상! +%s골드 +%s 경험치",
+			Horns = "함께 밀렵 성공 보상! +%s골드 +%s 경험치",
+		},
+		-- EventHUD labels while GameState GooseActive and GooseMode == "Coop" (side = GooseCoopSide)
+		HudTitle = { Halo = "함께 구조! %s", Horns = "함께 밀렵! %s" }, -- (time left)
+		HudProgress = "%d / %d", -- (side total = GooseRescue for Halo / GoosePoach for Horns, GooseCoopTarget)
+		HudPeople = "%d명이 함께", -- (GooseCoopPeople)
+		HudSub = { -- (my GooseCount) players of the co-op side, gauge not full yet
+			Halo = "내 기여 %d · 기사단끼리 게이지를 채워요!",
+			Horns = "내 기여 %d · 뿔 군단끼리 게이지를 채워요!",
+		},
+		HudFull = { -- (my GooseCount, MinManualHits) players of the co-op side, gauge full
+			Halo = "내 기여 %d · 구조 성공! 직접 %d번 때리면 보상",
+			Horns = "내 기여 %d · 밀렵 성공! 직접 %d번 때리면 보상",
+		},
+		HudOther = { -- the other tug faction during co-op (keyed by the CO-OP side)
+			Halo = "이번 거위는 기사단의 함께 구조예요",
+			Horns = "이번 거위는 뿔 군단의 함께 밀렵이에요",
+		},
+	},
 }
 
--- gold, xp of one golden-goose reward
-function Config.GooseReward(level, factionId, won, rare)
+-- gold, xp of one golden-goose reward. share (optional, A23-14 co-op success) replaces the won/lost multiplier.
+function Config.GooseReward(level, factionId, won, rare, share)
 	local g, x = Config.HuntValue(level, Config.Goose.RewardMinutes)
 	local gm, xm = Config.Goose.MainShare, Config.Goose.OffShare -- Horns shape (gold-heavy)
 	if factionId == "Halo" then gm, xm = Config.Goose.OffShare, Config.Goose.MainShare end -- XP-heavy
-	local m = (won and 1 or Config.Goose.LoserShare) * (rare and Config.Goose.RareMult or 1)
+	local base = won and 1 or Config.Goose.LoserShare
+	if type(share) == "number" and share == share and share >= 0 then base = share end
+	local m = base * (rare and Config.Goose.RareMult or 1)
 	return math.floor(g * gm * m), math.floor(x * xm * m)
 end
 
@@ -886,8 +1007,8 @@ function Config.QuestZoneForLevel(level)
 end
 
 ----------------------------------------------------------------- first-60-seconds onboarding (addendum A4 / A5)
--- TutorialStep transitions are owned by QuestService. Step 0: personal golden slime ~8 studs in front of the spawn
--- (MonsterService.SpawnPersonal(player, Monster, { Golden = true, HP = MonsterHP })); kill or timeout -> step 1.
+-- TutorialStep transitions are owned by QuestService. Step 0 waits for the faction guide mission acceptance.
+-- After acceptance: step 1 guides the player to the meadow. No personal monster spawns in the safe town.
 -- Step 1: HUD guide beam to the GuideZone pad/entrance; entering GuideZone -> step 2. Step 2: pinned quest
 -- (first quest-list entry, Id = QuestId, Pinned = true, Slot = nil; sent by the "Quests" remote since CR-L50);
 -- claim -> step 99.
@@ -899,12 +1020,259 @@ Config.Tutorial = {
 	SpawnDistance = 8, -- studs in front of the player's spawn
 	Lifetime = 120, -- personal monster despawns after this many seconds (then the tutorial advances to step 1)
 	GuideZone = "SlimeMeadow",
-	GuideText = "여기로!", -- plain
+	GuideText = "말랑 초원 · 빛나는 발판을 밟아요", -- plain
 	QuestId = "tutorial",
 	QuestKills = 5,
-	QuestText = "말랑 슬라임 %d마리 잡기", -- string.format(QuestText, QuestKills)
-	QuestRewardGold = 120, -- with starting gold enough for the 2nd weapon tier in ~60 s
+	QuestText = "보급로 되찾기 · 슬라임 %d마리", -- string.format(QuestText, QuestKills)
+	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
+	WelcomeRate = 0.5,
+	Welcome = { -- existing approved faction/class portrait; no world NPC is spawned by this dialogue
+		Halo = {
+			Name = "빛의 안내자",
+			Lines = {
+				"빛의 기사단에 와 줘서 고마워요. 거창한 맹세는 나중에 해도 돼요. 지금은 당신 도움이 필요해요.",
+				"균형의 왕관이 부서진 뒤, 조각에 이끌린 슬라임이 말랑 초원의 보급로를 막았어요.",
+				"슬라임 5마리를 물리쳐 길을 되찾아 주세요. 전쟁에서 동료를 지키는 영웅도, 누군가의 길을 열어 주는 일부터 시작하니까요.",
+			},
+		},
+		Horns = {
+			Name = "뿔 군단 안내자",
+			Lines = {
+				"잘 왔어, 신입! 우리 편이 되어 줘서 고맙다. 세상을 차지하기 전에… 군단의 점심부터 구하자.",
+				"부서진 왕관 조각에 이끌린 슬라임이 말랑 초원의 보급로를 차지했어. 식량도 장비도 못 지나간다니까!",
+				"슬라임 5마리를 물리치고 길을 되찾아 줘. 전쟁을 이끄는 건 힘만 센 녀석이 아니라, 동료를 움직이게 하는 녀석이야.",
+			},
+		},
+		Neutral = {
+			Name = "길드 안내자",
+			Lines = {
+				"장인 길드에 와 줘서 고마워요. 전쟁은 칼로만 이기는 게 아니죠. 그 칼을 고칠 사람도 있어야 하니까요.",
+				"왕관 조각에 이끌린 슬라임 때문에 말랑 초원의 보급로가 막혔어요.",
+				"슬라임 5마리를 물리쳐 길을 되찾아 주세요. 동료들의 장비 보급을 돕는 첫걸음이에요.",
+			},
+		},
+	},
+	Text = {
+		FirstFight = "직업을 고른 뒤 안내자에게 첫 임무를 받아요.",
+		Welcome = "첫 임무 · 메뉴에서 안내자 만나기",
+		Travel = "보급로 되찾기 · 메뉴 > 이동 > 말랑 초원",
+		QuestStart = "첫 임무: %s! (보상 %s골드)",
+		QuestReady = "보급로 임무 완료! [받기]를 눌러요.",
+		Claimed = "보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 장비를 살펴봐요.",
+		VisitBlacksmith = "무기 살펴보기 · 교차로 마을 대장간",
+		-- A23-3: next goal after the blacksmith visit (computed from existing state only; no new reward)
+		NextIronLevel = "다음 목표 · Lv%d 되면 철 무기 (지금 Lv%d)",
+		NextIronGold = "다음 목표 · 철 무기 %s골드 (보유 %s)",
+		NextZone = "다음 목표 · Lv%d 되면 %s (지금 Lv%d)",
+		GuideDone = "안내는 여기까지! 이제 사냥하며 강해져요.",
+		DailiesOpened = "일일 임무가 열렸어요! 첫 임무와 함께 해 봐요.",
+	},
+}
+
+----------------------------------------------------------------- story quests "부서진 왕관 이야기" (user OK 2026-10-06)
+-- Design: docs/design/quest_chain_2026-10-06.md (decisions 1-8 = recommended). Main = one chain after the first
+-- mission (TutorialStep 99); Subs are accepted automatically and listed under the main row (S0 right after the
+-- class pick). Step Obj types (StoryQuestService): Kill{Kind,Zone,Golden,Near,Radius,Count} BasicKill SafeKill{MinHP}
+-- AutoKill SkillHit{Min,Count} WarPoints{Count} EarnGold{Source,Count} Enter{Zone|"OwnTown"|"AnyTown"} Level{Level}
+-- State{Key} Goose WarChest Talk Choice{Good,Evil,Neutral} Trials{List}. Rewards: Gold / XP = minutes of
+-- Config.HuntValue (1 = one minute of hunting), Claim = true -> the player presses [받기] (chapter ends).
+Config.StoryQuests = {
+	MaxSubs = 2, -- sub rows sent with the quest list (after the main row)
+	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
+	Speakers = { Shard = "왕관 조각", Fountain = "분수의 조각", Smith = "대장장이", Guild = "길드 안내자" },
+	Badge = { Main = "메인", Sub = "선택" },
+	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7" },
+	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
+	-- comes from quests, the crafter and monster drops
+	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2" },
+	Text = {
+		Claim = "%s 완료! [받기]를 눌러요.",
+		Done = "%s 완료!",
+		Reward = "%s 완료! +%s골드",
+		RewardXP = "%s 완료! +%s골드 · 경험치 +%s",
+		RewardOnlyXP = "%s 완료! 경험치 +%s",
+		Unlocked = "자동 전투가 열렸어요! R키(폰은 자동 버튼)로 켜고 끌 수 있어요.",
+		Good = "조각이 빛 쪽으로 기울었어요 (명예 +%d)",
+		Evil = "조각이 어둠 쪽으로 기울었어요 (악명 +%d)",
+		Recorded = "선택을 기록했어요.",
+		-- shown under the two choice buttons on the last page (what a pick does, before picking)
+		ChoiceHint = "고르면 → 왼쪽: 명예 +%d (천사 쪽) · 오른쪽: 악명 +%d (악마 쪽)",
+		ChoiceHintNeutral = "장인 길드는 선악 점수 없이 고른 것만 기록돼요.",
+		OddHalo = "안내자: 음… 그것도 당신 선택이에요.",
+		OddHorns = "안내자: 착하게 갔네? 그것도 네 맘이야!",
+		GooseFirstHalo = "황금 거위 구조에 처음 함께했어요! (명예 +%d)",
+		GooseFirstHorns = "황금 거위 밀렵에 처음 함께했어요! (악명 +%d)",
+		Next = "다음",
+		Ok = "알겠어요",
+		Later = "나중에",
+		Title = "%s · %s",
+	},
+	Defs = {
+		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a king slime
+		S0 = {
+			Kind = "Sub", Title = "내 싸움을 배우는 왕관 조각", Speaker = "Shard", Requires = { ClassChosen = true },
+			Steps = {
+				{ Text = "왕 슬라임 잡고 조각 찾기 %d/%d", Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
+				{ Text = "조각의 시험 %d/3", Guide = "SlimeMeadow", Start = "조각: 네가 싸우는 법을 보여 줘!",
+					Obj = { Type = "Trials", List = {
+						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3 },
+						{ Key = "b", Type = "SkillHit", Min = 2, Count = 1 },
+						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1 },
+					} } },
+				{ Text = "조각을 어떻게 할까요?", Panel = true,
+					Lines = { All = { "다 봤어! 이제 나는 너처럼 싸울 수 있어.", "나를 어떻게 할래?" } },
+					Obj = { Type = "Choice", Good = { Label = "정화해요", Points = 2, Pick = "Purify" },
+						Evil = { Label = "삼켜요", Points = 2, Pick = "Devour" },
+						Neutral = { A = "정화해요", B = "삼켜요" } } },
+			},
+			Unlock = "AutoCombat",
+		},
+		M1_1 = {
+			Kind = "Main", Chapter = 1, Title = "반짝이는 젤리", Speaker = "Smith",
+			Steps = { { Text = "대장장이에게 젤리 보이기", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
+			Finish = "대장장이: 왕관 조각 가루네! 제일 많이 먹은 건 왕 슬라임이지.",
+		},
+		M1_2 = {
+			Kind = "Main", Chapter = 1, Title = "가루를 삼킨 왕",
+			Start = "가루를 잔뜩 삼킨 왕 슬라임이 초원을 돌아다녀요.",
+			Steps = { { Text = "왕 슬라임 %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Finish = "가루가 와르르 쏟아졌어요!", Reward = { Gold = 1 },
+		},
+		M1_3 = {
+			Kind = "Main", Chapter = 1, Title = "한 번에 펑!",
+			Start = "가루 먹은 슬라임은 떼로 다녀요. 스킬은 MP를 써요!",
+			Steps = { { Text = "스킬로 몬스터 맞히기 %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 1, Count = 3 } } },
+			Reward = { Gold = 1 },
+		},
+		M1_4 = {
+			Kind = "Main", Chapter = 1, Title = "우리 편에 보고", Claim = true,
+			Steps = {
+				{ Text = "우리 마을로 가요", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
+				{ Text = "안내자에게 보고하기", Panel = true, Obj = { Type = "Talk" }, Lines = {
+					Halo = { "영웅의 길 석상 봤어요? 조각을 지킨 기사들이에요." },
+					Horns = { "용암 틈 보여? 우리 뿔 힘은 여기서 끓어!" },
+					Neutral = { "좋은 가루네요. 길드는 줍지 않고 다듬어요." },
+				} },
+			},
+			Reward = { Gold = 2, XP = 2 },
+		},
+		M2_1 = {
+			Kind = "Main", Chapter = 2, Title = "하늘의 왕관",
+			Start = "하늘 왕관은 조각을 더 모은 편 색으로 빛나요. 1마리 = 우리 편 1점!",
+			Steps = { { Text = "왕관 점수 %d/%d", Obj = { Type = "WarPoints", Count = 15 },
+				Neutral = { Text = "보급 골드 %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 45 } } } },
+			Reward = { Gold = 1 },
+		},
+		M2_2 = {
+			Kind = "Main", Chapter = 2, Title = "연못의 반짝임",
+			Start = "가루가 연못에 녹았대요. 연못가 슬라임이 수상해요.",
+			Steps = { { Text = "연못가 슬라임 %d/%d", Guide = "SlimePond",
+				Obj = { Type = "Kill", Kind = "Slime", Near = "SlimePond", Radius = 40, Count = 4 } } },
+			Reward = { Gold = 1 },
+		},
+		M2_3 = {
+			Kind = "Main", Chapter = 2, Title = "균형의 분수", Speaker = "Fountain",
+			Start = "교차로 마을 분수에 왕관 조각이 박혀 있대요. 분수 앞으로 가 봐요! (퀘스트 줄을 누르면 길 안내)",
+			Steps = {
+				-- user 2026-10-05 ("균형의 분수가 뭐야? 튜토리얼이 없어서 엥?"): walk up to the fountain, then talk
+				{ Text = "교차로 분수 앞으로 가요 (눌러서 길 안내)", Guide = "Fountain",
+					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
+				{ Text = "분수의 조각과 이야기", Panel = true,
+					Lines = { All = {
+						"나는 분수에 박힌 왕관 조각이야. 하늘의 왕관이 깨질 때 여기로 떨어졌어.",
+						"네가 연못 슬라임에게서 모은 반짝이 가루, 그게 사실 왕관 가루야.",
+						"가루를 분수에 돌려주면 세상이 빛 쪽으로, 네가 가지면 어둠 쪽으로 기울어. 어떻게 할래?",
+					} },
+					Obj = { Type = "Choice", Good = { Label = "분수에 돌려줘요", Points = 2 }, Evil = { Label = "내가 가질래요", Points = 2 },
+						Neutral = { A = "다듬어서 돌려줘요", B = "길드에 맡겨요" } } },
+			},
+			Reward = { Gold = 1 },
+		},
+		M2_4 = {
+			Kind = "Main", Chapter = 2, Title = "보급로 기금",
+			Start = "보급로를 고칠 골드를 모아요. 마을에 들어가면 금고에 쏙!",
+			Steps = {
+				{ Text = "사냥 골드 %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 60 } },
+				{ Text = "마을 금고에 넣기", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "AnyTown" } },
+			},
+			Reward = { Gold = 1 },
+		},
+		M2_5 = {
+			Kind = "Main", Chapter = 2, Title = "가루 먹은 슬라임 떼",
+			Start = "가루 냄새에 슬라임이 떼로 몰려와요! 모아서 한 방에!",
+			Steps = { { Text = "스킬 한 번에 3마리 %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 3, Count = 2 } } },
+			Reward = { Gold = 1 },
+		},
+		M2_6 = {
+			Kind = "Main", Chapter = 2, Title = "언덕의 작은 발자국",
+			Start = "왕 슬라임 가루가 사라졌어요. 작은 발자국이 숲 쪽으로…",
+			Steps = { { Text = "왕 슬라임 %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Finish = "고블린이 가루를 훔쳐 갔대요!", Reward = { Gold = 1 },
+		},
+		M2_7 = {
+			Kind = "Main", Chapter = 2, Title = "숲 너머의 부름", Claim = true,
+			Steps = {
+				{ Text = "Lv10 · 고블린 숲 (지금 Lv%d)", Obj = { Type = "Level", Level = 10 } },
+				{ Text = "안내자의 경고 듣기", Panel = true, Obj = { Type = "Talk" }, Lines = {
+					All = { "숲 너머에서 왕관 조각이 부른다. 도둑을 조심해!",
+						"숲에선 들고 있는 골드를 뺏길 수 있어요. 마을 금고에 먼저!",
+						"Lv15·1시간 전까지는 새싹 보호예요." },
+					Neutral = { "숲 너머에서 왕관 조각이 부른다. 도둑을 조심해!", "장인 길드는 숲에서도 공격받지 않아요." },
+				} },
+				{ Text = "고블린 숲으로 가요", Guide = "GoblinWoods", Obj = { Type = "Enter", Zone = "GoblinWoods" } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+		},
+		S1 = {
+			Kind = "Sub", Title = "조각을 품은 황금 거위", Factions = { Halo = true, Horns = true },
+			Requires = { Tutorial = true }, Show = "GooseSoon",
+			Steps = { { Text = "황금 거위 직접 3번 때리기", Guide = "Goose", Obj = { Type = "Goose", Count = 1 } } },
+			FirstPoints = 1, -- 구조(빛) 명예 / 밀렵(뿔) 악명, 첫 1회만; 거위 보상은 GooseService가 그대로 준다
+		},
+		S2 = {
+			Kind = "Sub", Title = "왕관 쟁탈전 첫 상자", Factions = { Halo = true, Horns = true }, Requires = { Done = { "M2_1" } },
+			Steps = { { Text = "한 판에 내 점수 30 · 상자 받기", Obj = { Type = "WarChest", Count = 1 } } },
+		},
+		S3 = {
+			Kind = "Sub", Title = "금빛 젤리", Requires = { Done = { "M1_4" } },
+			Steps = {
+				{ Text = "황금 몬스터 %d/%d", Obj = { Type = "Kill", Golden = true, Count = 1 } },
+				{ Text = "금빛 가루를 어떻게 할까요?", Panel = true,
+					Lines = { All = { "가루를 아주 많이 먹으면 금빛이 돼요!", "이 금빛 가루, 어떻게 할래요?" } },
+					Obj = { Type = "Choice", Good = { Label = "분수에 돌려줘요", Points = 1 }, Evil = { Label = "내 주머니에!", Points = 1 },
+						Neutral = { A = "분수에 돌려줘요", B = "길드에 맡겨요" } } },
+			},
+		},
+		S4 = {
+			Kind = "Sub", Title = "조각이 대신 싸워요", Speaker = "Shard", Requires = { Done = { "S0" } },
+			Start = "조각: 이제 내가 대신 싸울게. 사람은 네 손으로!",
+			Steps = {
+				{ Text = "자동 전투 켜기 (R)", Obj = { Type = "State", Key = "AutoOn" } },
+				{ Text = "자동으로 처치 %d/%d", Obj = { Type = "AutoKill", Count = 5 } },
+			},
+			Reward = { Gold = 1 },
+		},
+		N1 = {
+			Kind = "Sub", Title = "장인의 손놀림", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" } },
+			Start = "길드 안내자: 다듬기는 정확하게. 한 번에 두 마리!",
+			Steps = { { Text = "스킬 한 번에 2마리 %d/%d", Obj = { Type = "SkillHit", Min = 2, Count = 3 } } },
+			Reward = { Gold = 1 },
+		},
+		N2 = {
+			Kind = "Sub", Title = "길드 보급 장부", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M2_1" } },
+			Start = "길드 안내자: 두 편 다 우리 장비가 필요해요. 보급 골드를 모아요.",
+			Steps = {
+				{ Text = "보급 장부 %d/2", Obj = { Type = "Trials", List = {
+					{ Key = "a", Type = "Kill", Kind = "BigSlime", Count = 3 },
+					{ Key = "b", Type = "EarnGold", Source = "Monster", Count = 60 },
+				} } },
+				{ Text = "교차로로 가요", Guide = "Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } },
+			},
+			Reward = { Gold = 1 },
+		},
+	},
 }
 
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
@@ -917,7 +1285,7 @@ Config.Quests = {
 	PvPMinLevel = 15,
 	ExtraRewardMult = 0.5, -- extras pay floor(units * mainMonster.Gold|XP * RewardPerUnit * ExtraRewardMult)
 	-- Units = extra-quest sizes, DailyUnits = daily sizes (~5 min of play). For Id "Gold": Target = units * mainMonster.Gold.
-	-- Every DAILY pays Config.DailyQuestReward(level at generation) regardless of template.
+	-- Every Lv10+ DAILY pays Config.DailyQuestReward(level at generation) regardless of template (Lv1-9: see Newbie).
 	-- CR-M27: Kill / Golden Text = string.format(Text, mainMonsterName, target) (the level zone's unit monster). Their
 	-- progress per kill = killed monster XP / unit monster XP (max 1), so it can be fractional (shown with 1 decimal).
 	-- Every other template: string.format(Text, target) ("Gold" passes the target as a string).
@@ -928,8 +1296,8 @@ Config.Quests = {
 			Text = "황금 %s %d마리 처치" },
 		{ Id = "Gold", Weight = 20, Units = { 40, 60 }, DailyUnits = { 50, 60 }, RewardPerUnit = 0.5,
 			Text = "사냥으로 골드 %s 벌기" },
-		{ Id = "Release", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8, MinStacks = 50,
-			Text = "게이지 50 이상으로 %d번 발사하기" },
+		{ Id = "Release", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8,
+			Text = "몬스터에게 스킬 %d번 맞히기" },
 		{ Id = "Goose", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20,
 			Text = "황금 거위 줄다리기 %d번 참여" },
 		{ Id = "Hunt", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true,
@@ -937,14 +1305,40 @@ Config.Quests = {
 		{ Id = "Plunder", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true,
 			Text = "빛의 기사단 %d명 털기" },
 	},
+	-- A23-14 (user 2026-10-05 "짧고 다양하게"): DAILIES generated at Lv1..Newbie.MaxLevel (meadow levels; Goblin Woods
+	-- opens at Lv10) come from Newbie.Dailies instead of Templates[].DailyUnits. The "different template" rule picks one
+	-- row per Id, so the 3 slots are always 3 different goals (kill / skill / gold). Extras and Lv10+ dailies unchanged.
+	-- Row: Id = a Templates Id (its Text, progress rule and faction filter are reused, so saves stay valid).
+	--   Targets = exact targets (Kill: kills, Release: manual skills that hit >= 1 monster, Gold: hunting gold).
+	--   Monster = the monster a Kill row counts (default: the level zone's unit monster).
+	--   Strict = only that monster (or a stronger one) counts, 1 per kill: no fractional slime progress.
+	-- Size: about 1-3 min each at an assumed manual pace of ~5 kills/min in the meadow (not hand-measured yet); the
+	-- three progress together while hunting, so the whole set is about 3-5 min.
+	-- Rewards: each daily pays Config.HuntValue(level, RewardMinutes), the full-set chest HuntValue(level, ChestMinutes).
+	-- Lv1-9: 72 gold + 120 XP per daily, chest 144 gold + 240 XP -> one day's set = 360 gold + 600 XP, below the
+	-- 1381 XP from Lv1 to Lv10 (was 3 x 300 + 600 = 1500 XP). Vacation follows the same band (Config.DailyDayMinutes):
+	-- a missed Lv1-9 day pays 70% of 10 min = 252 gold + 420 XP, below a played day; 3 days = 1260 XP < 1381.
+	-- The full-set chest never pays more than the band the day's dailies were generated in (QuestService DailyLevel).
+	Newbie = {
+		MaxLevel = 9,
+		RewardMinutes = 2,
+		ChestMinutes = 4,
+		Dailies = {
+			{ Id = "Kill", Weight = 3, Monster = "BigSlime", Strict = true, Targets = { 3 } }, -- 왕 슬라임 3마리
+			{ Id = "Kill", Weight = 1, Monster = "Slime", Targets = { 12, 15 } }, -- sometimes / on reroll: 슬라임 12~15마리
+			{ Id = "Release", Weight = 3, Targets = { 3, 4, 5 } }, -- 몬스터에게 스킬 3~5번 맞히기
+			{ Id = "Gold", Weight = 3, Targets = { 40, 50, 60 } }, -- 사냥으로 골드 40~60 벌기
+		},
+	},
 }
 
 Config.Daily = {
 	TimezoneOffset = 9 * 3600, -- KST: the day flips at 00:00 Korea time
-	QuestMinutes = 5, -- each daily pays HuntValue(level, 5)
-	ChestMinutes = 10, -- claiming all 3 dailies pays a bonus chest of HuntValue(level, 10)
+	QuestMinutes = 5, -- each Lv10+ daily pays HuntValue(level, 5) (Lv1-9: Config.Quests.Newbie.RewardMinutes)
+	ChestMinutes = 10, -- claiming all 3 Lv10+ dailies pays a bonus chest of HuntValue(level, 10) (Lv1-9: Newbie.ChestMinutes)
 	ChestTicketChance = 0.10, -- the chest also drops 1 class change ticket with this chance
-	VacationRate = 0.7, -- per missed whole day: 70% of a full day (3 dailies + chest) at the CURRENT level
+	-- per missed whole day: 70% of a full day (3 dailies + chest, Config.DailyDayMinutes) at the CURRENT level
+	VacationRate = 0.7,
 	VacationMaxDays = 3,
 	CheckInterval = 30, -- seconds between day-rollover checks for online players
 }
@@ -961,10 +1355,24 @@ function Config.DailyChestReward(level) -- gold, xp
 	return Config.HuntValue(level, Config.Daily.ChestMinutes)
 end
 
+-- minutes of hunting one full day of dailies is worth (all dailies + the chest) in the daily band of `level`:
+-- Lv1..Quests.Newbie.MaxLevel = Newbie.RewardMinutes x Slots + Newbie.ChestMinutes (10), else Daily's (25)
+function Config.DailyDayMinutes(level)
+	local nb = Config.Quests.Newbie
+	local slots = Config.Quests.Slots
+	if type(nb) == "table" and type(nb.Dailies) == "table" and #nb.Dailies > 0
+		and (tonumber(level) or 1) <= (tonumber(nb.MaxLevel) or 0) then
+		return (tonumber(nb.RewardMinutes) or Config.Daily.QuestMinutes) * slots
+			+ (tonumber(nb.ChestMinutes) or Config.Daily.ChestMinutes)
+	end
+	return Config.Daily.QuestMinutes * slots + Config.Daily.ChestMinutes
+end
+
 function Config.VacationReward(level, days) -- gold, xp for `days` missed days (clamped)
 	local d = math.clamp(days or 0, 0, Config.Daily.VacationMaxDays)
-	local g, x = Config.HuntValue(level, Config.Daily.QuestMinutes * Config.Quests.Slots + Config.Daily.ChestMinutes)
-	return math.floor(g * Config.Daily.VacationRate * d), math.floor(x * Config.Daily.VacationRate * d)
+	local g, x = Config.HuntValue(level, Config.DailyDayMinutes(level))
+	-- + 1e-6: 360 * 0.7 is 251.99999999999997 in floating point; the documented day pays 252
+	return math.floor(g * Config.Daily.VacationRate * d + 1e-6), math.floor(x * Config.Daily.VacationRate * d + 1e-6)
 end
 
 ----------------------------------------------------------------- Robux change tickets ("변경권")
@@ -1020,9 +1428,130 @@ end
 ----------------------------------------------------------------- remotes / misc
 -- minimum seconds between two accepted calls of the same remote from the same player (Util.RateLimit)
 Config.RateLimits = {
-	ChooseFaction = 1, ChooseClass = 1, SetCostume = 1, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
-	UpgradeWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
+	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
+	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
+	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1,
+}
+
+-- A23-11 / A23-12 drops, items and scroll enhancement (user decisions 2026-10-05; LootService is the only writer).
+-- Every contributor of a kill gets an own server roll (MonsterKilled is fired per contributor). Items go straight
+-- into the save (no ground pickup, no bag screen besides the menu "아이템" list) and are never lost on death.
+Config.Loot = {
+	MaxEnhance = 10, -- +10 = attack x2
+	EnhancePerLevel = 0.10, -- +1 = attack +10% (Config.EnhanceMult)
+	FailDropChance = 0.5, -- a failed enhance scroll: 50% the weapon loses one level (never below +0), 50% it stays
+	ItemCap = 999, -- per item id
+	FullNoticeSeconds = 300, -- review B7: a "가득 찼어요" notice repeats at most once per item id per 5 minutes
+	GoldenMult = 3, -- golden monsters: every drop chance x3 (capped at 100%)
+	-- Kind: Material (sold at the blacksmith; crafting comes with the full launch), Enhance (+Plus to one owned weapon
+	-- with Chance), Transfer (with Chance ADDS all of one weapon's +N onto another owned weapon up to MaxEnhance, the
+	-- rest stays on the source; failure keeps both — no enhancement is ever lost)
+	Items = {
+		Jelly = { Kind = "Material", Name = "슬라임 젤리", Sell = 2, Color = Color3.fromRGB(110, 210, 110) },
+		SlimeCore = { Kind = "Material", Name = "왕 슬라임 핵", Sell = 8, Color = Color3.fromRGB(80, 160, 235) },
+		GoblinTooth = { Kind = "Material", Name = "고블린 이빨", Sell = 6, Color = Color3.fromRGB(235, 225, 190) },
+		BruteHorn = { Kind = "Material", Name = "우두머리 뿔", Sell = 18, Color = Color3.fromRGB(200, 150, 100) }, -- review ui-brutehorn-contrast: readable on the row
+		Bone = { Kind = "Material", Name = "낡은 뼛조각", Sell = 14, Color = Color3.fromRGB(225, 225, 210) },
+		KnightCrest = { Kind = "Material", Name = "녹슨 기사 문장", Sell = 40, Color = Color3.fromRGB(150, 150, 170) },
+		Enh70 = { Kind = "Enhance", Name = "강화 주문서 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255) },
+		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
+		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
+		Enh30 = { Kind = "Enhance", Name = "강화 주문서 30%", Chance = 0.3, Plus = 3, Color = Color3.fromRGB(190, 130, 255) },
+		Enh10 = { Kind = "Enhance", Name = "강화 주문서 10%", Chance = 0.1, Plus = 5, Color = Color3.fromRGB(255, 190, 60) },
+		Move70 = { Kind = "Transfer", Name = "강화 옮기기 주문서 70%", Chance = 0.7, Color = Color3.fromRGB(120, 230, 200) },
+		Move30 = { Kind = "Transfer", Name = "강화 옮기기 주문서 30%", Chance = 0.3, Color = Color3.fromRGB(210, 150, 255) },
+		Move10 = { Kind = "Transfer", Name = "강화 옮기기 주문서 10%", Chance = 0.1, Color = Color3.fromRGB(255, 210, 90) },
+	},
+	-- display order in the item list
+	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
+		"Jelly", "SlimeCore", "GoblinTooth", "BruteHorn", "Bone", "KnightCrest" },
+	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
+	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
+	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
+	-- about 1/3 of the same row. Move30 / Move10 stay in the tables (A23-11 "three kinds") at those tiny rates; they
+	-- move the same amount as Move70 with lower odds, so they are a rare free retry, never a better pick.
+	-- Review B13: potion chances are about half of the first values (≈ 8-14 potions per hour of manual hunting).
+	Tables = {
+		Slime = {
+			{ Item = "Jelly", P = 0.30 },
+			{ Item = "Enh70", P = 0.003 }, { Item = "Enh30", P = 0.0008 }, { Item = "Enh10", P = 0.0002 },
+			{ Item = "Move70", P = 0.001 }, { Item = "Move30", P = 0.0003 }, { Item = "Move10", P = 0.0001 },
+			{ Potion = "HP", P = 0.01 }, { Potion = "MP", P = 0.01 },
+		},
+		BigSlime = {
+			{ Item = "SlimeCore", P = 0.5 }, { Item = "Jelly", P = 0.5, N = 2 },
+			{ Item = "Enh70", P = 0.03 }, { Item = "Enh30", P = 0.008 }, { Item = "Enh10", P = 0.002 },
+			{ Item = "Move70", P = 0.01 }, { Item = "Move30", P = 0.003 }, { Item = "Move10", P = 0.0007 },
+			{ Potion = "HP", P = 0.03 }, { Potion = "MP", P = 0.03 },
+		},
+		Goblin = {
+			{ Item = "GoblinTooth", P = 0.4 },
+			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+			{ Weapon = 4, P = 0.001 },
+		},
+		GoblinBrute = {
+			{ Item = "BruteHorn", P = 0.5 },
+			{ Item = "Enh70", P = 0.05 }, { Item = "Enh30", P = 0.014 }, { Item = "Enh10", P = 0.0035 },
+			{ Item = "Move70", P = 0.017 }, { Item = "Move30", P = 0.0047 }, { Item = "Move10", P = 0.0012 },
+			{ Potion = "HP", P = 0.04 }, { Potion = "MP", P = 0.04 },
+			{ Weapon = 4, P = 0.005 },
+		},
+		Skeleton = {
+			{ Item = "Bone", P = 0.4 },
+			{ Item = "Enh70", P = 0.025 }, { Item = "Enh30", P = 0.007 }, { Item = "Enh10", P = 0.0018 },
+			{ Item = "Move70", P = 0.008 }, { Item = "Move30", P = 0.0023 }, { Item = "Move10", P = 0.0006 },
+			{ Potion = "HP", P = 0.025 }, { Potion = "MP", P = 0.025 },
+			{ Weapon = 5, P = 0.0005 },
+		},
+		SkeletonKnight = {
+			{ Item = "KnightCrest", P = 0.5 },
+			{ Item = "Enh70", P = 0.08 }, { Item = "Enh30", P = 0.022 }, { Item = "Enh10", P = 0.006 },
+			{ Item = "Move70", P = 0.027 }, { Item = "Move30", P = 0.0073 }, { Item = "Move10", P = 0.002 },
+			{ Potion = "HP", P = 0.05 }, { Potion = "MP", P = 0.05 },
+			{ Weapon = 5, P = 0.003 }, { Weapon = 6, P = 0.0005 },
+		},
+	},
+	-- "레벨1 몬스터" jackpot (user 2026-10-05): any player level, auto kills included, golden x GoldenMult.
+	Jackpot = { Monsters = { Slime = true }, Chance = 1 / 20000, Tier = 8 },
+	-- the first king slime a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
+	-- NoticeSeconds; that kill's Loot Fx carries First = true so the client skips its own "where to use it" toast)
+	FirstScroll = { Monster = "BigSlime", Item = "Enh70", NoticeSeconds = 6 },
+	-- a weapon drop the player already owns turns into gold
+	DuplicateWeaponGold = { [4] = 300, [5] = 1000, [6] = 3000, [7] = 9000, [8] = 3000 },
+	Text = {
+		Got = "+%s",
+		GotN = "+%s ×%d",
+		Potion = { HP = "HP 물약", MP = "MP 물약" },
+		PotionFull = "물약이 가득 차서 %s은(는) 못 받았어요.",
+		-- full-stack notices: at most once per item id (or potion kind) per player per FullNoticeSeconds, kind "info"
+		ItemFull = "%s이(가) 가득 찼어요 (최대 %d개). 대장간에서 팔 수 있어요.", -- materials
+		ItemFullUse = "%s이(가) 가득 찼어요 (최대 %d개). 메뉴 → 아이템에서 써 보세요.", -- scrolls (not sellable)
+		UseCombat = "전투 중에는 주문서를 쓸 수 없어요.",
+		EquipDead = "쓰러진 동안에는 무기를 바꿀 수 없어요.",
+		RareWeapon = "희귀 무기! %s 획득!",
+		DuplicateWeapon = "이미 가진 %s → %s골드로 바뀌었어요.",
+		JackpotAll = "★ 대박! %s님이 슬라임에게서 전설 무기 [%s]을(를) 얻었어요! ★",
+		JackpotSelf = "전설 무기 [%s]! 메뉴 → 아이템에서 장착해요.",
+		FirstScroll = "주문서를 얻었어요! 메뉴 → 아이템에서 무기를 강화해 봐요. (실패해도 무기는 안전해요)",
+		EnhanceOk = "강화 성공! %s +%d → +%d (공격 %d%% → %d%%)",
+		EnhanceFailDown = "강화 실패… %s +%d → +%d (무기는 안전해요)",
+		EnhanceFailKeep = "강화 실패… 그래도 %s +%d 그대로예요!",
+		EnhanceMax = "이미 최대 강화(+%d)예요.",
+		MoveOk = "옮기기 성공! %s +%d · %s +%d",
+		MoveFail = "옮기기 실패… %s +%d 그대로 남아 있어요.",
+		MoveSame = "다른 무기를 골라 주세요.",
+		MoveNothing = "옮길 강화가 없어요.",
+		NotOwned = "가지고 있지 않은 무기예요.",
+		NoItem = "그 아이템이 없어요.",
+		Equip = "%s 장착!",
+		EquipCombat = "전투 중에는 무기를 바꿀 수 없어요.",
+		SellDone = "재료 %d개 판매! 골드 +%s",
+		SellNothing = "팔 재료가 없어요.",
+		SellFar = "대장간 모루 가까이에서 재료를 팔 수 있어요.",
+	},
 }
 
 Config.Sounds = { -- optional built-in files; client must pcall and ignore failures
@@ -1160,50 +1689,6 @@ Config.UIArt = {
 		EmoDizzy = { Id = "rbxassetid://124025733418147", Size = Vector2.new(256, 232) },
 		EmoAngry = { Id = "rbxassetid://123879588166068", Size = Vector2.new(256, 232) },
 		EmoStress = { Id = "rbxassetid://135439617637591", Size = Vector2.new(256, 213) },
-		-- Approved C lettering; source PNG sizes and alpha bounds (no new styling).
-		-- Upload full-size TXT PNGs; replace these measured bounds if a file is cropped later.
-		TXT_Attack = { Id = "rbxassetid://98250821822904", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(47, 276), ImageRectSize = Vector2.new(930, 494) },
-		TXT_Release = { Id = "rbxassetid://116194627847547", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(19, 219), ImageRectSize = Vector2.new(1005, 602) },
-		TXT_Menu = { Id = "rbxassetid://92283001237959", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(43, 290), ImageRectSize = Vector2.new(961, 452) },
-		TXT_Map = { Id = "rbxassetid://73294834221789", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(11, 264), ImageRectSize = Vector2.new(1001, 523) },
-		TXT_Claim = { Id = "rbxassetid://118427675820272", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(50, 282), ImageRectSize = Vector2.new(924, 460) },
-		TXT_Reroll = { Id = "rbxassetid://73825749957607", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(64, 287), ImageRectSize = Vector2.new(902, 454) },
-		TXT_Quests = { Id = "rbxassetid://117681934543569", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(46, 395), ImageRectSize = Vector2.new(931, 225) },
-		TXT_Light = { Id = "rbxassetid://110514325808489", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(73, 102), ImageRectSize = Vector2.new(900, 827) },
-		TXT_Horn = { Id = "rbxassetid://103663739588779", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(107, 120), ImageRectSize = Vector2.new(820, 766) },
-		TXT_Safe = { Id = "rbxassetid://89303273670959", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(42, 371), ImageRectSize = Vector2.new(935, 277) },
-		TXT_Rookie = { Id = "rbxassetid://76344573196272", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(22, 367), ImageRectSize = Vector2.new(980, 307) },
-		TXT_Regular = { Id = "rbxassetid://87813963027105", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(53, 260), ImageRectSize = Vector2.new(934, 494) },
-		TXT_CheerStars = { Id = "rbxassetid://91912542746649", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(32, 338), ImageRectSize = Vector2.new(958, 345) },
-		TXT_Next = { Id = "rbxassetid://125486764311560", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(62, 304), ImageRectSize = Vector2.new(901, 425) },
-		TXT_PickFaction = { Id = "rbxassetid://122632489644785", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(14, 415), ImageRectSize = Vector2.new(1000, 218) },
-		TXT_PickClass = { Id = "rbxassetid://100333047732355", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(42, 411), ImageRectSize = Vector2.new(940, 183) },
-		TXT_ThisSide = { Id = "rbxassetid://106328910658398", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(35, 362), ImageRectSize = Vector2.new(957, 290) },
-		TXT_ThisClass = { Id = "rbxassetid://139552040478610", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(17, 383), ImageRectSize = Vector2.new(995, 262) },
-		TXT_Halo = { Id = "rbxassetid://84253679534085", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(40, 386), ImageRectSize = Vector2.new(947, 244) },
-		TXT_Horns = { Id = "rbxassetid://122733028453143", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(17, 314), ImageRectSize = Vector2.new(998, 419) },
-		TXT_Neutral = { Id = "rbxassetid://123316362815459", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(46, 372), ImageRectSize = Vector2.new(926, 262) },
-		TXT_Paladin = { Id = "rbxassetid://76514962497375", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(41, 332), ImageRectSize = Vector2.new(945, 353) },
-		TXT_LightMage = { Id = "rbxassetid://73151603946140", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(23, 377), ImageRectSize = Vector2.new(988, 279) },
-		TXT_Ranger = { Id = "rbxassetid://106790531366000", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(37, 330), ImageRectSize = Vector2.new(946, 357) },
-		TXT_Berserker = { Id = "rbxassetid://115473512483755", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(11, 303), ImageRectSize = Vector2.new(1003, 417) },
-		TXT_DarkMage = { Id = "rbxassetid://123003479662317", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(52, 389), ImageRectSize = Vector2.new(919, 261) },
-		TXT_ShadowHunter = { Id = "rbxassetid://80860403354341", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(14, 399), ImageRectSize = Vector2.new(997, 235) },
-		TXT_Blacksmith = { Id = "rbxassetid://89380033426515", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(22, 352), ImageRectSize = Vector2.new(979, 323) },
-		TXT_Alchemist = { Id = "rbxassetid://84174178184020", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(37, 365), ImageRectSize = Vector2.new(957, 284) },
-		TXT_Hunter = { Id = "rbxassetid://72300636973949", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(28, 319), ImageRectSize = Vector2.new(972, 409) },
-		TXT_Male = { Id = "rbxassetid://74628967381797", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(60, 104), ImageRectSize = Vector2.new(918, 838) },
-		TXT_Female = { Id = "rbxassetid://79119143008950", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(57, 105), ImageRectSize = Vector2.new(902, 847) },
-		TXT_LevelUp = { Id = "rbxassetid://87685207336169", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(24, 345), ImageRectSize = Vector2.new(976, 329) },
-		TXT_GoldenGoose = { Id = "rbxassetid://118344018643742", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(26, 366), ImageRectSize = Vector2.new(969, 280) },
-		TXT_Crossroads = { Id = "rbxassetid://121634705034244", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(14, 373), ImageRectSize = Vector2.new(997, 277) },
-		TXT_HaloTown = { Id = "rbxassetid://112063601867600", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(35, 363), ImageRectSize = Vector2.new(951, 294) },
-		TXT_HornsTown = { Id = "rbxassetid://95993978315203", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(12, 301), ImageRectSize = Vector2.new(1001, 394) },
-		TXT_Meadow = { Id = "rbxassetid://137041154773318", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(30, 367), ImageRectSize = Vector2.new(964, 279) },
-		TXT_GoblinWoods = { Id = "rbxassetid://85681760418016", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(31, 354), ImageRectSize = Vector2.new(962, 298) },
-		TXT_SkeletonRuins = { Id = "rbxassetid://95378982488216", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(30, 370), ImageRectSize = Vector2.new(972, 280) },
-		TXT_SafeZone = { Id = "rbxassetid://126144617681076", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(15, 370), ImageRectSize = Vector2.new(992, 309) },
-		TXT_PvPZone = { Id = "rbxassetid://95155412805850", Size = Vector2.new(1024, 1024), ImageRectOffset = Vector2.new(11, 361), ImageRectSize = Vector2.new(1002, 312) },
 		Weapon_Warrior_T1 = { Id = "rbxassetid://110253568224769", Size = Vector2.new(1024, 1024) },
 		Weapon_Warrior_T2 = { Id = "rbxassetid://134296432983209", Size = Vector2.new(1024, 1024) },
 		Weapon_Warrior_T3 = { Id = "rbxassetid://118676171420516", Size = Vector2.new(1024, 1024) },
@@ -1248,51 +1733,8 @@ Config.UIArt = {
 		Tex_Limestone = { Id = "rbxassetid://113099053145664", Size = Vector2.new(1024, 1024) },
 		MapParchment = { Id = "rbxassetid://133911744102396", Size = Vector2.new(1536, 1024) },
 	},
-	-- Exact static text only; numbers, suffixes and unknown/dynamic messages retain their TextLabel.
-	TextLabels = {
-		["공격"] = "TXT_Attack",
-		["발사"] = "TXT_Release",
-		["메뉴"] = "TXT_Menu",
-		["지도"] = "TXT_Map",
-		["받기"] = "TXT_Claim",
-		["교체"] = "TXT_Reroll",
-		["오늘의 퀘스트"] = "TXT_Quests",
-		["빛"] = "TXT_Light",
-		["뿔"] = "TXT_Horn",
-		["안전 지대"] = "TXT_Safe",
-		["새싹 보호"] = "TXT_Rookie",
-		["단골"] = "TXT_Regular",
-		["응원별"] = "TXT_CheerStars",
-		["다음"] = "TXT_Next",
-		["어느 편에 설래요?"] = "TXT_PickFaction",
-		["직업을 골라요!"] = "TXT_PickClass",
-		["이 편으로!"] = "TXT_ThisSide",
-		["이 직업으로!"] = "TXT_ThisClass",
-		["빛의 기사단"] = "TXT_Halo",
-		["뿔 군단"] = "TXT_Horns",
-		["장인 길드"] = "TXT_Neutral",
-		["성기사"] = "TXT_Paladin",
-		["빛의 마법사"] = "TXT_LightMage",
-		["레인저"] = "TXT_Ranger",
-		["광전사"] = "TXT_Berserker",
-		["흑마법사"] = "TXT_DarkMage",
-		["그림자 사냥꾼"] = "TXT_ShadowHunter",
-		["대장장이"] = "TXT_Blacksmith",
-		["연금술사"] = "TXT_Alchemist",
-		["사냥꾼"] = "TXT_Hunter",
-		["남"] = "TXT_Male",
-		["여"] = "TXT_Female",
-		["레벨 업!"] = "TXT_LevelUp",
-		["황금 거위"] = "TXT_GoldenGoose",
-		["교차로 마을"] = "TXT_Crossroads",
-		["빛의 성채"] = "TXT_HaloTown",
-		["뿔 소굴"] = "TXT_HornsTown",
-		["말랑 초원"] = "TXT_Meadow",
-		["고블린 숲"] = "TXT_GoblinWoods",
-		["해골 유적"] = "TXT_SkeletonRuins",
-		["안전 지역"] = "TXT_SafeZone",
-		["위험 지역"] = "TXT_PvPZone",
-	},
+	-- Lettering images (TXT_*) were deleted 2026-10-06 (unused: UseTextImages=false). Text stays live TextLabels.
+	TextLabels = {},
 	-- picked from the mockup (UI_HUD_Final.png) and the part images
 	Colors = {
 		-- text
@@ -1370,13 +1812,13 @@ Config.UIArt.FactionPerks = {
 	Halo = {
 		{ Icon = "IconExp", Text = "경험치 +30%" },
 		{ Icon = "IconHeart", Text = "체력 +20%, 계속 회복" },
-		{ Icon = "IconWings", Text = "발사하면 동료 치유" },
+		{ Icon = "IconWings", Text = "스킬로 동료 치유" },
 		{ Icon = "IconGoldPile", Text = "주머니 골드 자동 저금" },
 	},
 	Horns = {
 		{ Icon = "IconGoldPile", Text = "골드 +25%" },
 		{ Icon = "IconBloodSword", Text = "공격력 +15%, 체력 흡수", Short = "공격력 +15%, 흡혈" },
-		{ Icon = "IconGauge", Text = "발사 게이지 175" },
+		{ Icon = "IconGoldPile", Text = "약탈한 골드 지켜내기" },
 		{ Icon = "IconDemon", Text = "별 5개면 괴수 변신!" },
 	},
 	Neutral = {
@@ -1425,9 +1867,9 @@ Config.UIArt.FactionE = {
         Footer = "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)",
         Cards = {
             Halo = {Name="빛의 기사단",Desc="후광을 얻은 자들.",Motto="지키고, 치유하고, 되찾아 줘라!",Button="이 편으로!",
-                Perks={"경험치 +30%","체력 +20%, 계속 회복","발사하면 동료 치유","주머니 골드 자동 저금"}},
+                Perks={"경험치 +30%","체력 +20%, 계속 회복","스킬로 동료 치유","주머니 골드 자동 저금"}},
             Horns = {Name="뿔 군단",Desc="뿔을 얻은 자들.",Motto="털고, 버티고, 괴수가 되어라!",Button="이 편으로!",
-                Perks={"골드 +25%","공격력 +15%, 체력 흡수","발사 게이지 175","별 5개면 괴수 변신!"}},
+                Perks={"골드 +25%","공격력 +15%, 체력 흡수","약탈한 골드 지켜내기","별 5개면 괴수 변신!"}},
             Neutral = {Name="장인 길드",Desc="조각을 다듬는 자들.",Motto="줍지 말고, 다듬고, 만들어라!",Button="이 편으로!",
                 Perks={"싸움 버프 없음","PvP 없음 (안전)","약탈·현상수배 걱정 없음","제작 특화 (곧 추가)"}},
         },
@@ -1441,10 +1883,8 @@ Config.CustomModels = {
 	GoldenFillTransparency = 0.5, -- golden variant: gold Highlight instead of recoloring parts
 }
 
-Config.Costumes = {
-	TemplateFolder = "CostumeRigs",
-	TemplatePrefix = "Costume_",
-}
+-- A23-5 (2026-10-05): every chibi 3D class costume is out of the game (CostumeService and its folders were removed
+-- 2026-10-06); players are their own Roblox avatar + class weapon + halo/horns. Roblox-style outfits come later.
 
 ----------------------------------------------------------------- story ("세계관": flavor text only)
 Config.Story = {
@@ -1454,16 +1894,14 @@ Config.Story = {
 		"조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다.",
 		"조각을 더 많이 모으는 쪽이 세상을 다시 만든다.",
 	},
-	Intro = { -- one-time toasts right after the first class choice (auto-dismiss, never blocking)
-		"몬스터를 때리면 왕관 조각의 힘이 모여요! (공격 버튼)",
-		"발사 게이지가 꽉 차서 금빛 고리가 빛나면 바로 [발사]!",
-		"10분마다 왕관의 주인이 바뀌어요. 우리 편을 도와주세요!",
-	},
-	IntroNeutral = { -- CR-L29: same toasts for 장인 길드 (Faction "Neutral"), without the war call
-		"몬스터를 때리면 왕관 조각의 힘이 모여요! (공격 버튼)",
-		"발사 게이지가 꽉 차서 금빛 고리가 빛나면 바로 [발사]!",
-		"장인 길드는 전쟁·PvP에 끼지 않아요. 마음 놓고 사냥하세요!",
-	},
+	-- The server opens Config.Tutorial.Welcome after the first class choice. Do not overlap it with old toasts.
+	Intro = {},
+	-- A23-9 opening (subtitles = Premise lines; plain text)
+	OpeningAsk = "어느 편에 설래?",
+	OpeningSkip = "건너뛰기",
+	OpeningReplay = "오프닝 다시 보기",
+	OpeningReplayUnsafe = "오프닝은 마을 안에서 다시 볼 수 있어요.",
+	IntroNeutral = {},
 	FactionLore = {
 		Halo = "왕관 조각이 후광이 된 자들. 조각을 지키고 세상을 고친다.",
 		Horns = "왕관 조각이 뿔이 된 자들. 조각을 빼앗아 세상을 차지한다.",
@@ -1490,7 +1928,7 @@ Config.Story = {
 		Horns = "뿔 군단이 황금 거위를 밀렵했어요! 조각이 어둠에 물들었어요.",
 		Tie = "황금 거위가 날아가 버렸어요! 무승부예요.",
 	},
-	GooseNoRival = "상대 진영이 없어서 이번 황금 거위는 무승부예요.", -- CR-L8: one faction had 0 players online
+	-- (GooseNoRival removed by A23-14: a goose with no rival is now "함께 구조", texts in Config.Goose.Text)
 	KaijuSiren = "경보! %s이(가) 왕관 조각의 어둠에 삼켜지고 있어요! 10초 뒤 괴수가 돼요!",
 	KaijuStart = "괴수 %s 출현! 기사단은 어디서든 공격할 수 있어요!",
 	KaijuDefeated = "기사단이 괴수 %s을(를) 쓰러뜨렸어요! 보상 %s골드를 나눠 가져요.", -- (name, gold actually paid: CR-L19)
@@ -1532,10 +1970,18 @@ Config.Text = {
 	NotEnoughGold = "골드가 부족해요.",
 	WeaponBought = "%s 장착!",
 	WeaponMaxed = "이미 최고의 무기예요!",
-	WeaponNeedLevel = "이 무기는 레벨 %d부터 쓸 수 있어요.",
+	WeaponNeedLevel = "이 무기는 레벨 %d부터 살 수 있어요.", -- purchase gate only: an owned weapon is always re-equippable
 	NeedFaction = "먼저 진영을 골라야 해요.",
-	AutoLocked = "자동 공격은 레벨 %d부터 쓸 수 있어요.",
-	ReleaseNeed = "게이지가 %d 이상이어야 발사할 수 있어요.",
+	-- ShopService (blacksmith / potion merchant)
+	WeaponShopFar = "대장간 모루 가까이에서 무기를 구매해 주세요.",
+	WeaponNotSold = "이 무기는 대장간 상점에서 판매하지 않아요.",
+	WeaponSellFar = "대장간 모루 가까이에서 무기를 판매해 주세요.",
+	WeaponSold = "%s 판매! 골드 +%s", -- (weaponName, gold)
+	BlacksmithPromptAction = "무기 보기",
+	BlacksmithPromptObject = "대장간",
+	PotionShopFar = "물약 상인 가까이에서 구매해 주세요.",
+	PotionStockFull = "물약은 종류별 %d개까지 보관할 수 있어요.", -- (PotionInventoryCap)
+	PotionBought = "%s 물약 %d개를 구매했어요!", -- (kind, amount)
 	-- PvP
 	Plundered = "%s에게 골드 %s을(를) 빼앗겼어요! 기사단이 45초 안에 도둑을 잡으면 120%%로 돌아와요.",
 	PlunderGain = "골드 %s을(를) 원한 자루에 담았어요! PvP 지역에서 45초 버티면 내 것! (현상수배 별 %d개)",
@@ -1577,7 +2023,10 @@ Config.Text = {
 	NoTicket = "변경권이 없어요. 메뉴 > 변경권 상점에서 살 수 있어요.",
 	TicketSaving = "변경권 구매를 저장하는 중이에요. 잠시 뒤 다시 눌러 주세요.", -- CR-L25: UseTicket returned "Pending"
 	ClassChosen = "%s이(가) 되었어요!",
-	ClassChangedFree = "%s(으)로 직업을 바꿨어요! 레벨 1부터 다시 시작해요.",
+	ClassChangedFree = "%s(으)로 직업을 바꿨어요! 레벨 1부터 다시 시작해요.", -- free change from Lv ClassChange.FreeKeepLevelBelow on
+	ClassChangedFreeKeep = "%s(으)로 직업을 바꿨어요! (Lv%d 전이라 레벨 유지)", -- A23-14 (className, FreeKeepLevelBelow)
+	ClassFreeKeepLevelF = "Lv%d 전에는 레벨 유지", -- A23-14 client preview (FreeKeepLevelBelow)
+	ClassChangeRuleF = "직업은 나중에 메뉴 > 직업 변경에서 바꿀 수 있어요 (무료: Lv%d 전에는 레벨 유지, 그 뒤엔 Lv1부터 / 변경권: 레벨 유지)", -- A23-14 ClassPicker footer (FreeKeepLevelBelow)
 	ClassChangedTicket = "%s(으)로 직업을 바꿨어요! (변경권 사용, 레벨 유지)",
 	ClassSame = "이미 그 직업이에요.",
 	ClassNeedSafe = "직업은 안전 지대에서만 바꿀 수 있어요.",
@@ -1586,7 +2035,7 @@ Config.Text = {
 	ProductNotReady = "상품 준비 중이에요.",
 	-- rebirth
 	RebirthNeed = "환생하려면 레벨 %d이(가) 필요해요.",
-	RebirthDone = "환생 완료! 골드·경험치 영구 +%d%%",
+	RebirthDone = "환생 완료! 레벨만 처음부터, 골드·무기·아이템은 그대로예요. 골드·경험치 영구 +%d%%", -- A23-14
 	RebirthAnnounce = "%s님이 %d번째 환생을 했어요!",
 	-- quests
 	QuestDone = "추가 퀘스트 완료! +%s골드",
@@ -1611,10 +2060,9 @@ Config.Text = {
 	AutoUnderAttack = "공격받는 중! 공격 버튼으로 반격하세요", -- M3: auto ON + took PvP damage (once per 60 s)
 	EnemyTown = "상대 진영 마을에는 들어갈 수 없어요!", -- L1: bounced to Crossroads (also Neutral in either town)
 	-- addendum A7-3 (next goal, client)
-	LevelUpNext = "레벨 업! Lv %d · 다음 해금: Lv %d %s", -- (level, unlockLevel, unlockText)
 	Unlocked = "해금! %s", -- (unlockText)
 	KillsToAfford = "%s %d마리 더!", -- (monsterName, kills)
-	CanAfford = "%s 살 수 있어요!", -- (weaponName)
+	CanAfford = "교차로 대장간에서 %s 구입 가능!", -- (weaponName)
 	Recommended = "추천", -- Travel panel badge
 	-- addendum A7-4 (pick / change screens, client)
 	FirstTimeRecommend = "처음이면 추천", -- Warrior class card

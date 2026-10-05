@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Compile/run the actual draft module offline; Roblox objects are test doubles.
 
 Never calls Studio, network, upload, API, src editing or a playable registry.
@@ -5,6 +6,7 @@ Uses preserved actual 15/23-bone source sidecars for test hierarchy/matrices.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import ast
 import hashlib
 import json

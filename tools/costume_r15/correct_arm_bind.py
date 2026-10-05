@@ -1,3 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Explicit inferred elbow/wrist rebind on a reviewed, unregistered skin copy.
 
 No generation, API, Studio, source geometry or image writes. The original byte
@@ -6,6 +9,8 @@ binds, reviewed arm weights and matching proxy hinges may change on the copy.
 This intentionally uses a new origin kind and cannot masquerade as exact bones.
 """
 from __future__ import annotations
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse,copy,json,struct,tempfile
 from pathlib import Path
 import numpy as np

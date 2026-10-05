@@ -1,3 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Copy a genuine skin into an unregistered R15-proxy visual candidate.
 
 Original geometry, UVs, normals, images, joints, weights and inverse binds are
@@ -6,6 +9,8 @@ change. Auxiliary source bones remain; this is not a native R15 avatar asset.
 """
 from __future__ import annotations
 
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import copy
 import hashlib

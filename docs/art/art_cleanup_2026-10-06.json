@@ -1,0 +1,4860 @@
+{
+ "date": "2026-10-06",
+ "decision": "AGENTS.md 2026-10-05: delete unused old art now; active art when its Firefly replacement is applied",
+ "active_ids": 205,
+ "active_keys": [
+  "TXT_Alchemist",
+  "TXT_Attack",
+  "TXT_Berserker",
+  "TXT_Blacksmith",
+  "TXT_CheerStars",
+  "TXT_Claim",
+  "TXT_Crossroads",
+  "TXT_DarkMage",
+  "TXT_Female",
+  "TXT_GoblinWoods",
+  "TXT_GoldenGoose",
+  "TXT_Halo",
+  "TXT_HaloTown",
+  "TXT_Horn",
+  "TXT_Horns",
+  "TXT_HornsTown",
+  "TXT_Hunter",
+  "TXT_LevelUp",
+  "TXT_Light",
+  "TXT_LightMage",
+  "TXT_Male",
+  "TXT_Map",
+  "TXT_Meadow",
+  "TXT_Menu",
+  "TXT_Neutral",
+  "TXT_Next",
+  "TXT_Paladin",
+  "TXT_PickClass",
+  "TXT_PickFaction",
+  "TXT_PvPZone",
+  "TXT_Quests",
+  "TXT_Ranger",
+  "TXT_Regular",
+  "TXT_Release",
+  "TXT_Reroll",
+  "TXT_Rookie",
+  "TXT_Safe",
+  "TXT_SafeZone",
+  "TXT_ShadowHunter",
+  "TXT_SkeletonRuins",
+  "TXT_ThisClass",
+  "TXT_ThisSide",
+  "Tex_Basalt",
+  "Tex_Cobblestone",
+  "Tex_CrackedLava",
+  "Tex_CrownShardGround",
+  "Tex_DirtPath",
+  "Tex_Grass",
+  "Tex_Ground",
+  "Tex_HaloTiles",
+  "Tex_LeafyGrass",
+  "Tex_Limestone",
+  "Tex_Marble",
+  "Tex_Rock",
+  "Tex_Sand",
+  "Tex_Slate",
+  "Tex_WoodPlanks",
+  "UIP_BarTrack",
+  "UIP_BtnAttack",
+  "UIP_BtnSpecial",
+  "UIP_BtnSquare",
+  "UIP_CardHalo",
+  "UIP_CardHorns",
+  "UIP_CardNeutral",
+  "UIP_CharHaloArcherF",
+  "UIP_CharHaloArcherM",
+  "UIP_CharHaloMageF",
+  "UIP_CharHaloMageM",
+  "UIP_CharHaloWarriorF",
+  "UIP_CharHaloWarriorM",
+  "UIP_CharHornsArcherF",
+  "UIP_CharHornsArcherM",
+  "UIP_CharHornsMageF",
+  "UIP_CharHornsMageM",
+  "UIP_CharHornsWarriorF",
+  "UIP_CharHornsWarriorM",
+  "UIP_CharNeutralArcherF",
+  "UIP_CharNeutralArcherM",
+  "UIP_CharNeutralMageF",
+  "UIP_CharNeutralMageM",
+  "UIP_CharNeutralWarriorF",
+  "UIP_CharNeutralWarriorM",
+  "UIP_ClassCardHalo",
+  "UIP_ClassCardHorns",
+  "UIP_ClassCardNeutral",
+  "UIP_Crown",
+  "UIP_EmoAngry",
+  "UIP_EmoDizzy",
+  "UIP_EmoOuch",
+  "UIP_EmoStress",
+  "UIP_EmoTears",
+  "UIP_FactionCardHaloE",
+  "UIP_FactionCardHalo_FreshTyped",
+  "UIP_FactionCardHornsE",
+  "UIP_FactionCardHorns_FreshTyped",
+  "UIP_FactionCardNeutralE",
+  "UIP_FactionCardNeutral_FreshTyped",
+  "UIP_FactionFooterPanelE",
+  "UIP_FactionFooter_FreshTyped",
+  "UIP_FactionPremisePanelE",
+  "UIP_FactionPremise_FreshTyped",
+  "UIP_FactionTitleRibbonE",
+  "UIP_FactionTitle_FreshTyped",
+  "UIP_FactionTitle_FreshTyped_Balanced",
+  "UIP_FxDust",
+  "UIP_FxHitSpark",
+  "UIP_FxMagicBurst",
+  "UIP_FxShockRing",
+  "UIP_FxSlash",
+  "UIP_IconAltar",
+  "UIP_IconAttack",
+  "UIP_IconBloodSword",
+  "UIP_IconBoot",
+  "UIP_IconClover",
+  "UIP_IconCoin",
+  "UIP_IconDemon",
+  "UIP_IconExp",
+  "UIP_IconGauge",
+  "UIP_IconGear",
+  "UIP_IconGoldPile",
+  "UIP_IconGoose",
+  "UIP_IconHammer",
+  "UIP_IconHeart",
+  "UIP_IconLock",
+  "UIP_IconMap",
+  "UIP_IconNoBuff",
+  "UIP_IconNoLoot",
+  "UIP_IconPotionHP",
+  "UIP_IconPotionMP",
+  "UIP_IconPouch",
+  "UIP_IconSafe",
+  "UIP_IconScroll",
+  "UIP_IconShieldBlue",
+  "UIP_IconSlime",
+  "UIP_IconSpecial",
+  "UIP_IconSprout",
+  "UIP_IconStar",
+  "UIP_IconStarEmpty",
+  "UIP_IconSword",
+  "UIP_IconWings",
+  "UIP_LevelBadge",
+  "UIP_PanelCard",
+  "UIP_PanelParchment",
+  "UIP_Pill",
+  "UIP_PortraitRing",
+  "UIP_RibbonHeader",
+  "UIP_ShieldHalo",
+  "UIP_ShieldHorns",
+  "UIP_ShieldNeutral",
+  "UIP_TitleRibbon",
+  "UI_MapParchment",
+  "Weapon_Archer_T1",
+  "Weapon_Archer_T2",
+  "Weapon_Archer_T3",
+  "Weapon_Archer_T4",
+  "Weapon_Archer_T5",
+  "Weapon_Archer_T6",
+  "Weapon_Archer_T7_Halo",
+  "Weapon_Archer_T7_Horns",
+  "Weapon_Archer_T7_Neutral",
+  "Weapon_Mage_T1",
+  "Weapon_Mage_T2",
+  "Weapon_Mage_T3",
+  "Weapon_Mage_T4",
+  "Weapon_Mage_T5",
+  "Weapon_Mage_T6",
+  "Weapon_Mage_T7_Halo",
+  "Weapon_Mage_T7_Horns",
+  "Weapon_Mage_T7_Neutral",
+  "Weapon_Warrior_T1",
+  "Weapon_Warrior_T2",
+  "Weapon_Warrior_T3",
+  "Weapon_Warrior_T4",
+  "Weapon_Warrior_T5",
+  "Weapon_Warrior_T6",
+  "Weapon_Warrior_T7_Halo",
+  "Weapon_Warrior_T7_Horns",
+  "Weapon_Warrior_T7_Neutral"
+ ],
+ "counts": {
+  "delete": 287,
+  "keep_until_replaced": 267,
+  "keep": 222
+ },
+ "files": [
+  {
+   "file": "art/ui/TXT_Alchemist.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Attack.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Berserker.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Blacksmith.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_CheerStars.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Claim.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Crossroads.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_DarkMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Female.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_GoblinWoods.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_GoldenGoose.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Halo.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_HaloTown.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Horn.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Horns.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_HornsTown.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Hunter.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_LevelUp.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Light.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_LightMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Male.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Map.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Meadow.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Menu.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Neutral.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Next.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Paladin.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_PickClass.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_PickFaction.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_PvPZone.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Quests.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Ranger.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Regular.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Release.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Reroll.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Rookie.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_Safe.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_SafeZone.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_ShadowHunter.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_SkeletonRuins.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_ThisClass.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/TXT_ThisSide.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/ui/Tex_Basalt.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://103343555671461)"
+  },
+  {
+   "file": "art/ui/Tex_Cobblestone.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://115522078544414)"
+  },
+  {
+   "file": "art/ui/Tex_CrackedLava.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://91957054731134)"
+  },
+  {
+   "file": "art/ui/Tex_CrownShardGround.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://114856730896342)"
+  },
+  {
+   "file": "art/ui/Tex_DirtPath.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://98968179009156)"
+  },
+  {
+   "file": "art/ui/Tex_Grass.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78282434254609)"
+  },
+  {
+   "file": "art/ui/Tex_Ground.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://91532028025941)"
+  },
+  {
+   "file": "art/ui/Tex_HaloTiles.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://108329087203475)"
+  },
+  {
+   "file": "art/ui/Tex_LeafyGrass.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://97617252360457)"
+  },
+  {
+   "file": "art/ui/Tex_Limestone.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://113099053145664)"
+  },
+  {
+   "file": "art/ui/Tex_Marble.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://116081327339487)"
+  },
+  {
+   "file": "art/ui/Tex_Rock.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://106576322424276)"
+  },
+  {
+   "file": "art/ui/Tex_Sand.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://95940507315556)"
+  },
+  {
+   "file": "art/ui/Tex_Slate.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://121489633827695)"
+  },
+  {
+   "file": "art/ui/Tex_WoodPlanks.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://109420001270116)"
+  },
+  {
+   "file": "art/ui/UIP_BarTrack.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://84705987817804)"
+  },
+  {
+   "file": "art/ui/UIP_BtnAttack.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://98283109958452)"
+  },
+  {
+   "file": "art/ui/UIP_BtnSpecial.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://88592946691017)"
+  },
+  {
+   "file": "art/ui/UIP_BtnSquare.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118044680000027)"
+  },
+  {
+   "file": "art/ui/UIP_CardHalo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://116168194185824)"
+  },
+  {
+   "file": "art/ui/UIP_CardHorns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://104067051233656)"
+  },
+  {
+   "file": "art/ui/UIP_CardNeutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://138991972922636)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloArcher.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "byte copy of a revealing image (Hard rule 1)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloArcherF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://73817434891295)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloArcherM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://90265187612649)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloMageF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://113432552037923)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloMageM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://102544376554965)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloWarrior.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloWarriorF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78286000819352)"
+  },
+  {
+   "file": "art/ui/UIP_CharHaloWarriorM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134988581827453)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsArcher.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "byte copy of a revealing image (Hard rule 1)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsArcherF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://130533135861283)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsArcherM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://88045973583949)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "byte copy of a revealing image (Hard rule 1)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsMageF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118395974592567)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsMageM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://72321159201625)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsWarrior.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "byte copy of a revealing image (Hard rule 1)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsWarriorF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://91437880088798)"
+  },
+  {
+   "file": "art/ui/UIP_CharHornsWarriorM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://115730141032244)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralArcher.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralArcherF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://101214489604794)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralArcherM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118794739229907)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralMageF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://114214067792680)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralMageM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://103288933310374)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralWarrior.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralWarriorF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://123242512932772)"
+  },
+  {
+   "file": "art/ui/UIP_CharNeutralWarriorM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://117733913914622)"
+  },
+  {
+   "file": "art/ui/UIP_ClassCardHalo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://125017026560821)"
+  },
+  {
+   "file": "art/ui/UIP_ClassCardHorns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://105501650454200)"
+  },
+  {
+   "file": "art/ui/UIP_ClassCardNeutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://106618683671422)"
+  },
+  {
+   "file": "art/ui/UIP_Crown.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://87428837580998)"
+  },
+  {
+   "file": "art/ui/UIP_EmoAngry.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://123879588166068)"
+  },
+  {
+   "file": "art/ui/UIP_EmoDizzy.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://124025733418147)"
+  },
+  {
+   "file": "art/ui/UIP_EmoOuch.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://72032537654477)"
+  },
+  {
+   "file": "art/ui/UIP_EmoStress.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://135439617637591)"
+  },
+  {
+   "file": "art/ui/UIP_EmoTears.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://70917213593538)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardHaloE.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://115165874013728)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardHalo_Aligned.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardHalo_FreshTyped.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://76818879022385)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardHornsE.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://117803151290007)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardHorns_Aligned.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardHorns_FreshTyped.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://137806621328187)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardNeutralE.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78748710982730)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardNeutral_Aligned.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_FactionCardNeutral_FreshTyped.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://127475794518664)"
+  },
+  {
+   "file": "art/ui/UIP_FactionFooterPanelE.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://99568724265364)"
+  },
+  {
+   "file": "art/ui/UIP_FactionFooter_FreshTyped.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://128423642459976)"
+  },
+  {
+   "file": "art/ui/UIP_FactionPremisePanelE.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://101379550181314)"
+  },
+  {
+   "file": "art/ui/UIP_FactionPremise_FreshTyped.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://105024415024705)"
+  },
+  {
+   "file": "art/ui/UIP_FactionTitleRibbonE.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://77703498329138)"
+  },
+  {
+   "file": "art/ui/UIP_FactionTitle_FreshTyped.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://111239293270560)"
+  },
+  {
+   "file": "art/ui/UIP_FactionTitle_FreshTyped_Balanced.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://81044633324158)"
+  },
+  {
+   "file": "art/ui/UIP_FxDust.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://108076168454993)"
+  },
+  {
+   "file": "art/ui/UIP_FxHitSpark.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://76401646477744)"
+  },
+  {
+   "file": "art/ui/UIP_FxMagicBurst.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://92519617657939)"
+  },
+  {
+   "file": "art/ui/UIP_FxShockRing.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://135827777163619)"
+  },
+  {
+   "file": "art/ui/UIP_FxSlash.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://99494789057875)"
+  },
+  {
+   "file": "art/ui/UIP_IconAltar.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://92739557390353)"
+  },
+  {
+   "file": "art/ui/UIP_IconAttack.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://110857011116269)"
+  },
+  {
+   "file": "art/ui/UIP_IconBloodSword.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://132217044566905)"
+  },
+  {
+   "file": "art/ui/UIP_IconBoot.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://75175931189814)"
+  },
+  {
+   "file": "art/ui/UIP_IconClover.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://132542570098556)"
+  },
+  {
+   "file": "art/ui/UIP_IconCoin.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://109221625076322)"
+  },
+  {
+   "file": "art/ui/UIP_IconDemon.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://127767718578535)"
+  },
+  {
+   "file": "art/ui/UIP_IconExp.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://126693522209557)"
+  },
+  {
+   "file": "art/ui/UIP_IconGauge.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://120312988080031)"
+  },
+  {
+   "file": "art/ui/UIP_IconGear.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://99179510720767)"
+  },
+  {
+   "file": "art/ui/UIP_IconGoldPile.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://84180626478301)"
+  },
+  {
+   "file": "art/ui/UIP_IconGoose.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://105838105764489)"
+  },
+  {
+   "file": "art/ui/UIP_IconHammer.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://80311803840434)"
+  },
+  {
+   "file": "art/ui/UIP_IconHeart.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://136034394484764)"
+  },
+  {
+   "file": "art/ui/UIP_IconLock.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://91132729692542)"
+  },
+  {
+   "file": "art/ui/UIP_IconMap.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://90459703873799)"
+  },
+  {
+   "file": "art/ui/UIP_IconNoBuff.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://137931613383299)"
+  },
+  {
+   "file": "art/ui/UIP_IconNoLoot.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://128404798093606)"
+  },
+  {
+   "file": "art/ui/UIP_IconPotionHP.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://100061379621289)"
+  },
+  {
+   "file": "art/ui/UIP_IconPotionMP.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://133725941898063)"
+  },
+  {
+   "file": "art/ui/UIP_IconPouch.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://123337208513871)"
+  },
+  {
+   "file": "art/ui/UIP_IconSafe.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://136639253247722)"
+  },
+  {
+   "file": "art/ui/UIP_IconScroll.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://103880967919087)"
+  },
+  {
+   "file": "art/ui/UIP_IconShieldBlue.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://89142524062230)"
+  },
+  {
+   "file": "art/ui/UIP_IconSlime.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://112355880587310)"
+  },
+  {
+   "file": "art/ui/UIP_IconSpecial.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://96492143551436)"
+  },
+  {
+   "file": "art/ui/UIP_IconSprout.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://76742471774514)"
+  },
+  {
+   "file": "art/ui/UIP_IconStar.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://117033474251317)"
+  },
+  {
+   "file": "art/ui/UIP_IconStarEmpty.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78608910520884)"
+  },
+  {
+   "file": "art/ui/UIP_IconSword.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://112025111517770)"
+  },
+  {
+   "file": "art/ui/UIP_IconWings.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://126719552618804)"
+  },
+  {
+   "file": "art/ui/UIP_LevelBadge.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://88211694815402)"
+  },
+  {
+   "file": "art/ui/UIP_PanelCard.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://98336983830443)"
+  },
+  {
+   "file": "art/ui/UIP_PanelParchment.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://71017857503225)"
+  },
+  {
+   "file": "art/ui/UIP_Pill.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://116332974579615)"
+  },
+  {
+   "file": "art/ui/UIP_PortraitHaloArcherM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/ui/UIP_PortraitRing.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://102492452438180)"
+  },
+  {
+   "file": "art/ui/UIP_RibbonHeader.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118684607039365)"
+  },
+  {
+   "file": "art/ui/UIP_ShieldHalo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://137212311874878)"
+  },
+  {
+   "file": "art/ui/UIP_ShieldHorns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134547958841068)"
+  },
+  {
+   "file": "art/ui/UIP_ShieldNeutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://101381231096931)"
+  },
+  {
+   "file": "art/ui/UIP_TitleRibbon.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://73292535588441)"
+  },
+  {
+   "file": "art/ui/UI_MapParchment.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://133911744102396)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T1.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://114530628874023)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T2.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://77934186009567)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T3.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://107992927949121)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T4.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://135806799928152)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T5.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://76246016710761)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T6.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://111067065096221)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T7_Halo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://123944650415871)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T7_Horns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://129557918253283)"
+  },
+  {
+   "file": "art/ui/Weapon_Archer_T7_Neutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134108221476202)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T1.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://94017465082266)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T2.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://124480073241910)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T3.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://98652791112835)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T4.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://114114689990814)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T5.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://82923455323942)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T6.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://86455721876057)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T7_Halo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://83762763419599)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T7_Horns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://112320137471828)"
+  },
+  {
+   "file": "art/ui/Weapon_Mage_T7_Neutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://111298666053873)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T1.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://110253568224769)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T2.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134296432983209)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T3.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118676171420516)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T4.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://121628920172881)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T5.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78787056413343)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T6.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134912361470616)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T7_Halo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://81358930713578)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T7_Horns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://109996418847092)"
+  },
+  {
+   "file": "art/ui/Weapon_Warrior_T7_Neutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://113768226721190)"
+  },
+  {
+   "file": "art/ui/asset_ids.json",
+   "tracked": true,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/ui/text_labels.json",
+   "tracked": true,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/ui/ui_meta.json",
+   "tracked": true,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/APose_HaloArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HaloArcherM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HaloArcherM_Sharp_D.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HaloMageF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HaloMageF_Modest_v2.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HaloMageM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HaloWarriorF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HaloWarriorM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HornsArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HornsArcherM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HornsMageF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HornsMageM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HornsWarriorF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_HornsWarriorM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_NeutralArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_NeutralArcherM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_NeutralMageF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_NeutralMageM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_NeutralWarriorF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/APose_NeutralWarriorM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Avatar_Expressions_Preview_A.json",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Avatar_Expressions_Preview_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Avatar_HaloArcherM_EyesSharp_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Avatar_HaloArcherM_EyesSharp_B.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Avatar_HaloArcherM_FullRedraw_C.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Avatar_HaloArcherM_FullRedraw_D.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Avatar_HaloArcherM_Neutral_Balanced_F.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Avatar_HaloArcherM_Neutral_OpenEyes_E.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/BigSlime.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Costume_HaloWarriorM_Expression_Neutral_face.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Costume_HaloWarriorM_Expression_Neutral_face_v2.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Costume_HaloWarriorM_Expression_Neutral_head.json",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Costume_HaloWarriorM_Expression_Neutral_head.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Costume_HaloWarriorM_Expression_Neutral_head.qa.json",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Costume_HaloWarriorM_Expression_Serious_face.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Costume_HaloWarriorM_Expression_SoftSmile_face.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Emblem_Halo.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Emblem_Horns.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Emblem_Neutral.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/GameIcon.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "experience page icon/thumbnail source"
+  },
+  {
+   "file": "art/out/Goblin.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/GoblinBrute.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/GoldenGoose.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Icon_CheerStar.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Icon_ClassTicket.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Icon_CrownShard.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Icon_FactionTicket.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Icon_Gold.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Icon_GrudgeSack.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Icon_RewardChest.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Icon_XP.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Motion_Class_Attacks_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/NPC_EquipmentMerchant_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/NPC_EquipmentMerchant_B_Tired.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/NPC_EquipmentMerchant_C_Veteran.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Nickname_Form_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Potion_Shop_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Skeleton.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/SkeletonKing.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/SkeletonKing_Clothed.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/SkeletonKnight.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Skeleton_Clothed.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Slime.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/TXT_Alchemist.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Attack.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Berserker.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Blacksmith.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_CheerStars.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Claim.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Crossroads.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_DarkMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Female.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_GoblinWoods.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_GoldenGoose.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Halo.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_HaloTown.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Horn.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Horns.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_HornsTown.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Hunter.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_LevelUp.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Light.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_LightMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Male.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Map.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Meadow.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Menu.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Neutral.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Next.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Paladin.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_PickClass.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_PickFaction.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_PvPZone.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Quests.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Ranger.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Regular.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Release.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Reroll.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Rookie.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_Safe.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_SafeZone.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_ShadowHunter.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_SkeletonRuins.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_ThisClass.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/TXT_ThisSide.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06 (TXT lettering cleanup): not shown on screen; see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/out/Tex_Basalt.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://103343555671461)"
+  },
+  {
+   "file": "art/out/Tex_Cobblestone.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://115522078544414)"
+  },
+  {
+   "file": "art/out/Tex_CrackedLava.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://91957054731134)"
+  },
+  {
+   "file": "art/out/Tex_CrownShardGround.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://114856730896342)"
+  },
+  {
+   "file": "art/out/Tex_DirtPath.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://98968179009156)"
+  },
+  {
+   "file": "art/out/Tex_Grass.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78282434254609)"
+  },
+  {
+   "file": "art/out/Tex_Ground.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://91532028025941)"
+  },
+  {
+   "file": "art/out/Tex_HaloTiles.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://108329087203475)"
+  },
+  {
+   "file": "art/out/Tex_LeafyGrass.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://97617252360457)"
+  },
+  {
+   "file": "art/out/Tex_Limestone.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://113099053145664)"
+  },
+  {
+   "file": "art/out/Tex_Marble.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://116081327339487)"
+  },
+  {
+   "file": "art/out/Tex_Rock.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://106576322424276)"
+  },
+  {
+   "file": "art/out/Tex_Sand.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://95940507315556)"
+  },
+  {
+   "file": "art/out/Tex_Slate.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://121489633827695)"
+  },
+  {
+   "file": "art/out/Tex_WoodPlanks.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://109420001270116)"
+  },
+  {
+   "file": "art/out/Thumbnail_Kaiju.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "experience page icon/thumbnail source"
+  },
+  {
+   "file": "art/out/UIP_BarTrack.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://84705987817804)"
+  },
+  {
+   "file": "art/out/UIP_BtnAttack.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://98283109958452)"
+  },
+  {
+   "file": "art/out/UIP_BtnSpecial.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://88592946691017)"
+  },
+  {
+   "file": "art/out/UIP_BtnSquare.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118044680000027)"
+  },
+  {
+   "file": "art/out/UIP_CardHalo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://116168194185824)"
+  },
+  {
+   "file": "art/out/UIP_CardHorns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://104067051233656)"
+  },
+  {
+   "file": "art/out/UIP_CardNeutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://138991972922636)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloArcher.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "byte copy of a revealing image (Hard rule 1)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloArcherF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://73817434891295)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloArcherM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://90265187612649)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloMageF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://113432552037923)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloMageM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://102544376554965)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloWarrior.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloWarriorF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78286000819352)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloWarriorM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134988581827453)"
+  },
+  {
+   "file": "art/out/UIP_CharHaloWarriorM_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsArcher.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "byte copy of a revealing image (Hard rule 1)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsArcherF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://130533135861283)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsArcherM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://88045973583949)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "byte copy of a revealing image (Hard rule 1)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsMageF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118395974592567)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsMageM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://72321159201625)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsWarrior.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "byte copy of a revealing image (Hard rule 1)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsWarriorF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://91437880088798)"
+  },
+  {
+   "file": "art/out/UIP_CharHornsWarriorM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://115730141032244)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralArcher.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralArcherF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://101214489604794)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralArcherM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118794739229907)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralMage.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralMageF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://114214067792680)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralMageM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://103288933310374)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralWarrior.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralWarriorF.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://123242512932772)"
+  },
+  {
+   "file": "art/out/UIP_CharNeutralWarriorM.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://117733913914622)"
+  },
+  {
+   "file": "art/out/UIP_ClassCardHalo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://125017026560821)"
+  },
+  {
+   "file": "art/out/UIP_ClassCardHorns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://105501650454200)"
+  },
+  {
+   "file": "art/out/UIP_ClassCardNeutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://106618683671422)"
+  },
+  {
+   "file": "art/out/UIP_Crown.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://87428837580998)"
+  },
+  {
+   "file": "art/out/UIP_EmoAngry.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://123879588166068)"
+  },
+  {
+   "file": "art/out/UIP_EmoDizzy.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://124025733418147)"
+  },
+  {
+   "file": "art/out/UIP_EmoOuch.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://72032537654477)"
+  },
+  {
+   "file": "art/out/UIP_EmoStress.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://135439617637591)"
+  },
+  {
+   "file": "art/out/UIP_EmoTears.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://70917213593538)"
+  },
+  {
+   "file": "art/out/UIP_FxDust.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://108076168454993)"
+  },
+  {
+   "file": "art/out/UIP_FxHitSpark.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://76401646477744)"
+  },
+  {
+   "file": "art/out/UIP_FxMagicBurst.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://92519617657939)"
+  },
+  {
+   "file": "art/out/UIP_FxShockRing.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://135827777163619)"
+  },
+  {
+   "file": "art/out/UIP_FxSlash.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://99494789057875)"
+  },
+  {
+   "file": "art/out/UIP_IconAltar.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://92739557390353)"
+  },
+  {
+   "file": "art/out/UIP_IconAttack.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://110857011116269)"
+  },
+  {
+   "file": "art/out/UIP_IconBloodSword.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://132217044566905)"
+  },
+  {
+   "file": "art/out/UIP_IconBoot.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://75175931189814)"
+  },
+  {
+   "file": "art/out/UIP_IconClover.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://132542570098556)"
+  },
+  {
+   "file": "art/out/UIP_IconCoin.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://109221625076322)"
+  },
+  {
+   "file": "art/out/UIP_IconDemon.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://127767718578535)"
+  },
+  {
+   "file": "art/out/UIP_IconExp.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://126693522209557)"
+  },
+  {
+   "file": "art/out/UIP_IconGauge.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://120312988080031)"
+  },
+  {
+   "file": "art/out/UIP_IconGear.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://99179510720767)"
+  },
+  {
+   "file": "art/out/UIP_IconGoldPile.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://84180626478301)"
+  },
+  {
+   "file": "art/out/UIP_IconGoose.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://105838105764489)"
+  },
+  {
+   "file": "art/out/UIP_IconHammer.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://80311803840434)"
+  },
+  {
+   "file": "art/out/UIP_IconHeart.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://136034394484764)"
+  },
+  {
+   "file": "art/out/UIP_IconLock.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://91132729692542)"
+  },
+  {
+   "file": "art/out/UIP_IconMap.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://90459703873799)"
+  },
+  {
+   "file": "art/out/UIP_IconNoBuff.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://137931613383299)"
+  },
+  {
+   "file": "art/out/UIP_IconNoLoot.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://128404798093606)"
+  },
+  {
+   "file": "art/out/UIP_IconPotionHP.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://100061379621289)"
+  },
+  {
+   "file": "art/out/UIP_IconPotionMP.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://133725941898063)"
+  },
+  {
+   "file": "art/out/UIP_IconPouch.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://123337208513871)"
+  },
+  {
+   "file": "art/out/UIP_IconSafe.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://136639253247722)"
+  },
+  {
+   "file": "art/out/UIP_IconScroll.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://103880967919087)"
+  },
+  {
+   "file": "art/out/UIP_IconShieldBlue.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://89142524062230)"
+  },
+  {
+   "file": "art/out/UIP_IconSlime.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://112355880587310)"
+  },
+  {
+   "file": "art/out/UIP_IconSpecial.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://96492143551436)"
+  },
+  {
+   "file": "art/out/UIP_IconSprout.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://76742471774514)"
+  },
+  {
+   "file": "art/out/UIP_IconStar.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://117033474251317)"
+  },
+  {
+   "file": "art/out/UIP_IconStarEmpty.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78608910520884)"
+  },
+  {
+   "file": "art/out/UIP_IconSword.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://112025111517770)"
+  },
+  {
+   "file": "art/out/UIP_IconWings.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://126719552618804)"
+  },
+  {
+   "file": "art/out/UIP_LevelBadge.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://88211694815402)"
+  },
+  {
+   "file": "art/out/UIP_PanelCard.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://98336983830443)"
+  },
+  {
+   "file": "art/out/UIP_PanelParchment.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://71017857503225)"
+  },
+  {
+   "file": "art/out/UIP_Pill.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://116332974579615)"
+  },
+  {
+   "file": "art/out/UIP_PortraitRing.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://102492452438180)"
+  },
+  {
+   "file": "art/out/UIP_RibbonHeader.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118684607039365)"
+  },
+  {
+   "file": "art/out/UIP_ShieldHalo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://137212311874878)"
+  },
+  {
+   "file": "art/out/UIP_ShieldHorns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134547958841068)"
+  },
+  {
+   "file": "art/out/UIP_ShieldNeutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://101381231096931)"
+  },
+  {
+   "file": "art/out/UIP_TitleRibbon.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://73292535588441)"
+  },
+  {
+   "file": "art/out/UI_Class_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionCardHalo_ApprovedBalanced.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionCardHalo_Fresh.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionCardHorns_Fresh.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionCardNeutral_Fresh.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionFooter_Fresh.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Halo_Button.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Halo_Crest.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Halo_Desc.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Halo_Frame.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Halo_Frame_Wide.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Halo_Motto.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Halo_Name.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Halo_Name_Clear.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Button.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Button_Capsule.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Crest.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Crest_v2.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Desc.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Desc_v2.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Frame.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Frame_Wide.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Motto.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Motto_v2.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Horns_Name.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Neutral_Button.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Neutral_Crest.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Neutral_Desc.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Neutral_Frame.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Neutral_Motto.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Neutral_Motto_RejectedGlow.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Neutral_Motto_Wide.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionParts_Neutral_Name.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionPremise_E_BlankFresh.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionPremise_E_Fresh.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionPremise_E_Standalone.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_FactionTitle_Fresh.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Faction_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Faction_B.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Faction_E_Transparent_Guide.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Faction_Layout_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Gameplay_Cleanup_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Gameplay_Cleanup_A_v2.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_HUD_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_HUD_B.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_HUD_C.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_HUD_CA1.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_HUD_CA2.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_HUD_Final.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_HUD_Vitals_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconBloodSword_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconDemon_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconExp_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconGauge_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconGoldPile_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconHammer_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconHeart_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconNoBuff_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconNoLoot_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconShieldBlue_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_IconWings_Redraw.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Lettering_A.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Lettering_B.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_Lettering_C.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/UI_MapParchment.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://133911744102396)"
+  },
+  {
+   "file": "art/out/WP_ApprenticeStaff_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/WP_HandAxe_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/WP_HuntingBow_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/WP_ShortWand_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/WP_Slingshot_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/WP_StarterBranch_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/WP_WornCrossbow_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/WP_WornSpellbook_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/WP_WornSword_A.png",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T1.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://114530628874023)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T2.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://77934186009567)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T3.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://107992927949121)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T4.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://135806799928152)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T5.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://76246016710761)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T6.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://111067065096221)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T7_Halo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://123944650415871)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T7_Horns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://129557918253283)"
+  },
+  {
+   "file": "art/out/Weapon_Archer_T7_Neutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134108221476202)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T1.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://94017465082266)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T2.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://124480073241910)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T3.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://98652791112835)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T4.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://114114689990814)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T5.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://82923455323942)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T6.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://86455721876057)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T7_Halo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://83762763419599)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T7_Horns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://112320137471828)"
+  },
+  {
+   "file": "art/out/Weapon_Mage_T7_Neutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://111298666053873)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T1.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://110253568224769)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T2.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134296432983209)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T3.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://118676171420516)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T4.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://121628920172881)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T5.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78787056413343)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T6.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://134912361470616)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T7_Halo.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://81358930713578)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T7_Horns.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://109996418847092)"
+  },
+  {
+   "file": "art/out/Weapon_Warrior_T7_Neutral.png",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://113768226721190)"
+  },
+  {
+   "file": "art/out/ref_PlayerCard_CA2.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/out/logs/APose_HaloArcherF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HaloArcherM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HaloMageF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HaloMageM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HaloWarriorF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HaloWarriorM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HornsArcherF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HornsArcherM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HornsMageF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HornsMageM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HornsWarriorF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_HornsWarriorM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_NeutralArcherF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_NeutralArcherM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_NeutralMageF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_NeutralMageM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_NeutralWarriorF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/APose_NeutralWarriorM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/BigSlime.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Emblem_Halo.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Emblem_Horns.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Emblem_Neutral.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/GameIcon.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Goblin.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/GoblinBrute.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/GoldenGoose.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Icon_CheerStar.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Icon_ClassTicket.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Icon_CrownShard.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Icon_FactionTicket.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Icon_Gold.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Icon_GrudgeSack.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Icon_RewardChest.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Icon_XP.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Skeleton.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/SkeletonKing.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/SkeletonKnight.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Slime.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Alchemist.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Attack.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Berserker.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Blacksmith.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_CheerStars.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Claim.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Crossroads.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_DarkMage.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Female.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_GoblinWoods.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_GoldenGoose.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Halo.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_HaloTown.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Horn.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Horns.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_HornsTown.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Hunter.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_LevelUp.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Light.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_LightMage.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Male.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Map.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Meadow.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Menu.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Neutral.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Next.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Paladin.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_PickClass.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_PickFaction.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_PvPZone.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Quests.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Ranger.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Regular.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Release.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Reroll.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Rookie.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_Safe.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_SafeZone.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_ShadowHunter.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_SkeletonRuins.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_ThisClass.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/TXT_ThisSide.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Basalt.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Cobblestone.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_CrackedLava.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_CrownShardGround.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_DirtPath.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Grass.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Ground.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_HaloTiles.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_LeafyGrass.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Limestone.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Marble.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Rock.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Sand.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_Slate.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Tex_WoodPlanks.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Thumbnail_Crown.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Thumbnail_Kaiju.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_BarTrack.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_BtnAttack.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_BtnSpecial.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_BtnSquare.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CardHalo.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CardHorns.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CardNeutral.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHaloArcher.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHaloArcherF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHaloArcherM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHaloMage.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHaloMageM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHaloWarrior.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHaloWarriorM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsArcher.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsArcherF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsArcherM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsMage.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsMageF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsMageM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsWarrior.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsWarriorF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharHornsWarriorM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharNeutralArcher.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharNeutralArcherM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharNeutralMage.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharNeutralMageM.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharNeutralWarrior.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_CharNeutralWarriorF.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_ClassCardHalo.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_ClassCardHorns.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_ClassCardNeutral.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_Crown.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_EmoAngry.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_EmoDizzy.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_EmoOuch.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_EmoStress.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_EmoTears.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_FxDust.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_FxHitSpark.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_FxMagicBurst.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_FxShockRing.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_FxSlash.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconAltar.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconAttack.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconBloodSword.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconBoot.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconClover.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconCoin.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconDemon.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconExp.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconGauge.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconGear.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconGoldPile.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconGoose.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconHammer.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconHeart.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconLock.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconMap.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconNoBuff.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconNoLoot.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconPouch.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconSafe.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconScroll.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconShieldBlue.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconSlime.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconSpecial.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconSprout.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconStar.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconStarEmpty.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconSword.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_IconWings.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_LevelBadge.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_PanelCard.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_PanelParchment.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_Pill.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_PortraitRing.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_RibbonHeader.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_ShieldHalo.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_ShieldHorns.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_ShieldNeutral.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UIP_TitleRibbon.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_Class_A.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_Faction_A.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_Faction_B.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_HUD_A.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_HUD_B.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_HUD_C.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_HUD_CA1.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_HUD_CA2.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_HUD_Final.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_Lettering_A.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_Lettering_B.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_Lettering_C.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/UI_MapParchment.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T1.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T2.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T3.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T4.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T5.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T6.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T7_Halo.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T7_Horns.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Archer_T7_Neutral.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T1.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T2.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T3.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T4.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T5.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T6.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T7_Halo.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T7_Horns.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Mage_T7_Neutral.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T1.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T2.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T3.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T4.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T5.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T6.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T7_Halo.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T7_Horns.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/logs/Weapon_Warrior_T7_Neutral.log",
+   "tracked": false,
+   "action": "keep",
+   "reason": "metadata/non-image"
+  },
+  {
+   "file": "art/out/v1/APose_HornsArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/APose_HornsMageM_wrong.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/APose_HornsMageM_wrong2.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/APose_HornsWarriorM_wrong.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/APose_HornsWarriorM_wrong2.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/APose_NeutralWarriorM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/BigSlime.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/BigSlime_blue.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/BigSlime_blue2.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/GameIcon.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/GoldenGoose.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/Thumbnail_Crown.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/Thumbnail_Kaiju.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/UIP_CharNeutralWarrior_blocky.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/UIP_ClassCardNeutral_stats.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/UIP_IconAttack_withButton.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/UIP_IconSpecial_coin.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/APose_HaloArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/APose_HornsArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/APose_HornsArcherM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/APose_HornsMageF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/APose_HornsMageM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/APose_HornsWarriorF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/APose_HornsWarriorM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/out_UIP_CharHaloArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/out_UIP_CharHornsArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/out_UIP_CharHornsArcherM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/out_UIP_CharHornsMageF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/out_UIP_CharHornsMageM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/out_UIP_CharHornsWarriorF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/out_UIP_CharHornsWarriorM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/ui_UIP_CharHaloArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/ui_UIP_CharHornsArcherF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/ui_UIP_CharHornsArcherM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/ui_UIP_CharHornsMageF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/ui_UIP_CharHornsMageM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/ui_UIP_CharHornsWarriorF.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/out/v1/revealing/ui_UIP_CharHornsWarriorM.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "art/out/v1 (old/rejected/revealing)"
+  },
+  {
+   "file": "art/test/GameIcon.codex.txt",
+   "tracked": false,
+   "action": "keep_until_replaced",
+   "reason": "experience page icon/thumbnail source"
+  },
+  {
+   "file": "art/test/GameIcon.log",
+   "tracked": false,
+   "action": "keep_until_replaced",
+   "reason": "experience page icon/thumbnail source"
+  },
+  {
+   "file": "art/test/GameIcon.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06: old Codex test output, not the experience-page source (art/out has the active file); see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/test/GameIcon.prompt.txt",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "experience page icon/thumbnail source"
+  },
+  {
+   "file": "art/test/Slime.codex.txt",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/test/Slime.log",
+   "tracked": false,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/test/Slime.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/test/Slime.prompt.txt",
+   "tracked": true,
+   "action": "delete",
+   "reason": "not used in the game (candidate/rejected/chibi/old GPT/unused)"
+  },
+  {
+   "file": "art/test/Tex_Grass.codex.txt",
+   "tracked": false,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78282434254609)"
+  },
+  {
+   "file": "art/test/Tex_Grass.log",
+   "tracked": false,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78282434254609)"
+  },
+  {
+   "file": "art/test/Tex_Grass.png",
+   "tracked": true,
+   "action": "delete",
+   "reason": "amended 2026-10-06: old Codex test output, not the experience-page source (art/out has the active file); see docs/art/art_cleanup_2026-10-06_txt.json"
+  },
+  {
+   "file": "art/test/Tex_Grass.prompt.txt",
+   "tracked": true,
+   "action": "keep_until_replaced",
+   "reason": "active in game (rbxassetid://78282434254609)"
+  }
+ ],
+ "amendments": [
+  {
+   "date": "2026-10-06",
+   "record": "docs/art/art_cleanup_2026-10-06_txt.json",
+   "note": "86 files reclassified keep_until_replaced -> delete and removed (git rm): 42 art/ui/TXT_*.png, 42 art/out/TXT_*.png (never displayed: UIKit FONT.UseTextImages = false) and 2 art/test PNGs. active_ids/active_keys are the original snapshot and still list the 42 TXT_* keys because Config.UIArt.Parts held their ids at that time.",
+   "counts_before": {
+    "delete": 201,
+    "keep_until_replaced": 353,
+    "keep": 222
+   }
+  }
+ ]
+}

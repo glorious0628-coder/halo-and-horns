@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Render source and rigid rest meshes in the same measured frame/camera.
 
 Offline Blender only. Does not assert Studio readiness or create new designs.
 Two lighting modes show original UV coverage and the small subdivision shading
 change separately. Existing output images are never overwritten.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import json
 import math

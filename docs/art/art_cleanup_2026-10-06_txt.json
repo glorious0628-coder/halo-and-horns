@@ -1,0 +1,803 @@
+{
+ "date": "2026-10-06",
+ "decision": "Reviewer item 7 (docs/review/checkpoint_2026-10-05_1400_findings.json, progress-txt-kept-as-active) and AGENTS.md 2026-10-05: delete unused old art now. Amends docs/art/art_cleanup_2026-10-06.json, which had kept these files as keep_until_replaced.",
+ "verification": {
+  "uikit_flag": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau:23 local FONT = { ..., UseTextImages = false, ... } (local table, never exported or reassigned)",
+  "uikit_gate": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 if FONT.UseTextImages == false then return label end",
+  "textlabels_readers": [
+   "src/StarterPlayer/StarterPlayerScripts/UIKit.luau:509 (copies Config.UIArt.TextLabels)",
+   "src/StarterPlayer/StarterPlayerScripts/UIKit.luau:1082-1083 (inside BindArtText, after the gate)"
+  ],
+  "bindarttext_callers": [
+   "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau:457",
+   "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau:423"
+  ],
+  "other_TXT_references_in_src": "none (Fx.luau, GooseService.luau, KaijuService.luau only have local TXT_* string constants; no part key)",
+  "place_file": "place/GoodEvil.rbxlx: the 42 TXT asset ids occur only inside script Source (Config), 0 times in other instances; its UIKit also has UseTextImages = false",
+  "config_left_for_lead": "Config.UIArt.Parts TXT_* (42) and Config.UIArt.TextLabels (42) still hold the ids; the lead removes them in src"
+ },
+ "counts": {
+  "files": 86,
+  "tracked": 86,
+  "untracked": 0,
+  "art_ui_TXT": 42,
+  "art_out_TXT": 42,
+  "art_test_png": 2
+ },
+ "not_deleted_here": [
+  "art/out/logs/TXT_*.log (42, gitignored generation logs; not in this worker's file list)",
+  "art/test/GameIcon.prompt.txt, art/test/Tex_Grass.prompt.txt (tracked) and art/test/*.log, *.codex.txt (untracked) sidecars; not in this worker's file list"
+ ],
+ "files": [
+  {
+   "file": "art/ui/TXT_Alchemist.png",
+   "tracked": "yes",
+   "bytes": 522921,
+   "sha256": "0a9db267e82740888b65a5a8d7270574fc3e530cd709c92c858eebdc480fc377",
+   "assetId": "rbxassetid://84174178184020",
+   "textLabel": "연금술사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Attack.png",
+   "tracked": "yes",
+   "bytes": 771303,
+   "sha256": "283a915ee5977190f3f20c53d157ef780652651faf91d334ddb87e1eed2240de",
+   "assetId": "rbxassetid://98250821822904",
+   "textLabel": "공격",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Berserker.png",
+   "tracked": "yes",
+   "bytes": 757686,
+   "sha256": "ead3bc5a34b48cba3e4ce36693976f2fd141ea08ba4a7fddb95c493d47ae2841",
+   "assetId": "rbxassetid://115473512483755",
+   "textLabel": "광전사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Blacksmith.png",
+   "tracked": "yes",
+   "bytes": 660770,
+   "sha256": "9aca43a020e32d304ebc5a39f3db68287d986dd26a8c3677683664c5b6c339c0",
+   "assetId": "rbxassetid://89380033426515",
+   "textLabel": "대장장이",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_CheerStars.png",
+   "tracked": "yes",
+   "bytes": 747579,
+   "sha256": "a285f288372d7ddeefba415d52b8cfe399c9880c9adcd317f5e94ddd6fdfcb4a",
+   "assetId": "rbxassetid://91912542746649",
+   "textLabel": "응원별",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Claim.png",
+   "tracked": "yes",
+   "bytes": 717152,
+   "sha256": "c21bb4e1aebe39116d6df2910e4efba2d0ee1a884d3fc8dbbac8371ef3ee77b3",
+   "assetId": "rbxassetid://118427675820272",
+   "textLabel": "받기",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Crossroads.png",
+   "tracked": "yes",
+   "bytes": 514147,
+   "sha256": "de6ce7b42787cfe2d390aab0f8caa053c6c13aa05fdf876bec65cd809cf0021b",
+   "assetId": "rbxassetid://121634705034244",
+   "textLabel": "교차로 마을",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_DarkMage.png",
+   "tracked": "yes",
+   "bytes": 456809,
+   "sha256": "abdf759d5756621d0cf2d988d5a8300e138573754bade7b3fe2a1ff4c24ee7c3",
+   "assetId": "rbxassetid://123003479662317",
+   "textLabel": "흑마법사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Female.png",
+   "tracked": "yes",
+   "bytes": 1255634,
+   "sha256": "0cb5fd213f31ec5554ee401ccf496f5795bb42b3a27fdd67f713697e54604873",
+   "assetId": "rbxassetid://79119143008950",
+   "textLabel": "여",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_GoblinWoods.png",
+   "tracked": "yes",
+   "bytes": 484277,
+   "sha256": "3f0b20aa029ed16f279f74d96840bff173cb091c5560c02247c0c0d2b422179e",
+   "assetId": "rbxassetid://85681760418016",
+   "textLabel": "고블린 숲",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_GoldenGoose.png",
+   "tracked": "yes",
+   "bytes": 514523,
+   "sha256": "44acceaac6ab0b975768d3297672332872d927a1d931a093476a2402860f0c11",
+   "assetId": "rbxassetid://118344018643742",
+   "textLabel": "황금 거위",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Halo.png",
+   "tracked": "yes",
+   "bytes": 443262,
+   "sha256": "68bf733082a67ae085c9d9d3642020482fdde4e1fa7502abd693296c5ce3ab03",
+   "assetId": "rbxassetid://84253679534085",
+   "textLabel": "빛의 기사단",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_HaloTown.png",
+   "tracked": "yes",
+   "bytes": 523915,
+   "sha256": "826b7f2e6287a99ade14168d0cbf6a8508bc7604c8378fe39634429c6526c8bb",
+   "assetId": "rbxassetid://112063601867600",
+   "textLabel": "빛의 성채",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Horn.png",
+   "tracked": "yes",
+   "bytes": 1012367,
+   "sha256": "cfb4ac708ddefcc126895508e2626c598a04b5ffe9594485127f971584b7ee1e",
+   "assetId": "rbxassetid://103663739588779",
+   "textLabel": "뿔",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Horns.png",
+   "tracked": "yes",
+   "bytes": 781013,
+   "sha256": "1e08416d1ee8ab44e17025bd7069784d6442a6e6971b2d592d9816f9c1fa83b6",
+   "assetId": "rbxassetid://122733028453143",
+   "textLabel": "뿔 군단",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_HornsTown.png",
+   "tracked": "yes",
+   "bytes": 809404,
+   "sha256": "5ce3198a1ac25daad712bbd9c4a7a3f0dc153a06345a5d72471db594c916d045",
+   "assetId": "rbxassetid://95993978315203",
+   "textLabel": "뿔 소굴",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Hunter.png",
+   "tracked": "yes",
+   "bytes": 758925,
+   "sha256": "a16019df542cb9cd547e6190b7252484abfc36f775b54ea7819c626d97f6f135",
+   "assetId": "rbxassetid://72300636973949",
+   "textLabel": "사냥꾼",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_LevelUp.png",
+   "tracked": "yes",
+   "bytes": 575041,
+   "sha256": "b62004551d4adedac696621735c085588d1f2bddbd8c3e7432058b71042f3b36",
+   "assetId": "rbxassetid://87685207336169",
+   "textLabel": "레벨 업!",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Light.png",
+   "tracked": "yes",
+   "bytes": 1511545,
+   "sha256": "49aa1c9170f7954712a3eb84c8cd77e6b16dd4d47105dafb0033414627c9d965",
+   "assetId": "rbxassetid://110514325808489",
+   "textLabel": "빛",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_LightMage.png",
+   "tracked": "yes",
+   "bytes": 604816,
+   "sha256": "9f6c7a5643af7c4a2754903492159fba297a0b4b2f349cc42c1618be6870c551",
+   "assetId": "rbxassetid://73151603946140",
+   "textLabel": "빛의 마법사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Male.png",
+   "tracked": "yes",
+   "bytes": 1464932,
+   "sha256": "89b548c8e153f5123796b4735049c1ef14b707ac846621e3b93f31f8c2ace763",
+   "assetId": "rbxassetid://74628967381797",
+   "textLabel": "남",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Map.png",
+   "tracked": "yes",
+   "bytes": 912553,
+   "sha256": "47839438b99249852b29b80591415318b6c985e3e83d83d9c2fc86bf42caace2",
+   "assetId": "rbxassetid://73294834221789",
+   "textLabel": "지도",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Meadow.png",
+   "tracked": "yes",
+   "bytes": 545505,
+   "sha256": "3ec55d2a42b0dfdd7dd32ba4095f3c37d71de21d149b64a59483bcf12694baab",
+   "assetId": "rbxassetid://137041154773318",
+   "textLabel": "말랑 초원",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Menu.png",
+   "tracked": "yes",
+   "bytes": 808021,
+   "sha256": "d1e19aa19dc4b0e795e39c4c0ee6c83b2a303321c4ce4fd38cb14710e361ed3c",
+   "assetId": "rbxassetid://92283001237959",
+   "textLabel": "메뉴",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Neutral.png",
+   "tracked": "yes",
+   "bytes": 467249,
+   "sha256": "5be917411a58ed147f694fc67366cbfdf217c19adaef7428614b2e43132b4ae8",
+   "assetId": "rbxassetid://123316362815459",
+   "textLabel": "장인 길드",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Next.png",
+   "tracked": "yes",
+   "bytes": 745463,
+   "sha256": "1d4797e3f713fd1bb844002c7accb86c525f20ebccaa3e2bd4e9b5228ec2c179",
+   "assetId": "rbxassetid://125486764311560",
+   "textLabel": "다음",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Paladin.png",
+   "tracked": "yes",
+   "bytes": 594164,
+   "sha256": "c2b161e340f68bddc2dd250e17fa9157e4b6f4c0484891cf743d2b37a3e66e60",
+   "assetId": "rbxassetid://76514962497375",
+   "textLabel": "성기사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_PickClass.png",
+   "tracked": "yes",
+   "bytes": 352871,
+   "sha256": "8e1c13129f30d53ae7c754d5a2a6672055a087a927245bb2cf8f731793b1660e",
+   "assetId": "rbxassetid://100333047732355",
+   "textLabel": "직업을 골라요!",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_PickFaction.png",
+   "tracked": "yes",
+   "bytes": 434139,
+   "sha256": "d86c057035368b261cd778a6af7a39d948c304621d311158663eeadca00c2183",
+   "assetId": "rbxassetid://122632489644785",
+   "textLabel": "어느 편에 설래요?",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_PvPZone.png",
+   "tracked": "yes",
+   "bytes": 711605,
+   "sha256": "e36a82673032153e77c07d70b4d8fe934f05d1a941c6d5d3d9660e5e41cdcc23",
+   "assetId": "rbxassetid://95155412805850",
+   "textLabel": "위험 지역",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Quests.png",
+   "tracked": "yes",
+   "bytes": 382290,
+   "sha256": "f0bf087068c68edc475819718c9ee388a881a62b256656e6f2ae7ebb503d1cae",
+   "assetId": "rbxassetid://117681934543569",
+   "textLabel": "오늘의 퀘스트",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Ranger.png",
+   "tracked": "yes",
+   "bytes": 595290,
+   "sha256": "d634e973d5349e5e84fc2a86b0ee61f4c9072773402ad87685d9ff28b48d8824",
+   "assetId": "rbxassetid://106790531366000",
+   "textLabel": "레인저",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Regular.png",
+   "tracked": "yes",
+   "bytes": 755591,
+   "sha256": "27d852302f3da5c075d1c3eb41d4ed19005441e229212be1c9fa3f5a93641a24",
+   "assetId": "rbxassetid://87813963027105",
+   "textLabel": "단골",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Release.png",
+   "tracked": "yes",
+   "bytes": 949926,
+   "sha256": "6e3a3bb1cda387129a0e723e8b7a1bbc682351d2052e62ea84679ae0a5f56848",
+   "assetId": "rbxassetid://116194627847547",
+   "textLabel": "발사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Reroll.png",
+   "tracked": "yes",
+   "bytes": 720120,
+   "sha256": "d138b3a391afeedcb8c2e3434af11518889f81dad95b9fc6ae4fef27311deb79",
+   "assetId": "rbxassetid://73825749957607",
+   "textLabel": "교체",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Rookie.png",
+   "tracked": "yes",
+   "bytes": 588405,
+   "sha256": "6d30b1f3013470e8f513af5308283ac63a07243a4d0e990bedb57af7eb5e46ea",
+   "assetId": "rbxassetid://76344573196272",
+   "textLabel": "새싹 보호",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_Safe.png",
+   "tracked": "yes",
+   "bytes": 526462,
+   "sha256": "ca0355dcd43062ceb310328bf9638b2d8f1d773f1a60c5a88553a2f59e3d10fd",
+   "assetId": "rbxassetid://89303273670959",
+   "textLabel": "안전 지대",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_SafeZone.png",
+   "tracked": "yes",
+   "bytes": 605087,
+   "sha256": "6d5fdc55d4e505dffc60531c67fcce03d2c16e563d437fd0209af4aee38b32b4",
+   "assetId": "rbxassetid://126144617681076",
+   "textLabel": "안전 지역",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_ShadowHunter.png",
+   "tracked": "yes",
+   "bytes": 458120,
+   "sha256": "20035bf7febb91e5bd6681c5ca29b99ab7c2c346b8049070860488ae8fc80b0c",
+   "assetId": "rbxassetid://80860403354341",
+   "textLabel": "그림자 사냥꾼",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_SkeletonRuins.png",
+   "tracked": "yes",
+   "bytes": 551254,
+   "sha256": "2a12453831ea7851bd2b2bd524d1d3a89c5a1a54b04f3f5f2c1dceaf0bd8ea62",
+   "assetId": "rbxassetid://95378982488216",
+   "textLabel": "해골 유적",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_ThisClass.png",
+   "tracked": "yes",
+   "bytes": 569660,
+   "sha256": "f3297b8a3bc5a0db95273fb3f15b0e8d57ed7be31b983995bd8f249fc4de5722",
+   "assetId": "rbxassetid://139552040478610",
+   "textLabel": "이 직업으로!",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/ui/TXT_ThisSide.png",
+   "tracked": "yes",
+   "bytes": 474486,
+   "sha256": "7d583ce6e4de9681cc3e7090c84a0810c546d222019165b4481916590a690fa8",
+   "assetId": "rbxassetid://106328910658398",
+   "textLabel": "이 편으로!",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Alchemist.png",
+   "tracked": "yes",
+   "bytes": 522921,
+   "sha256": "0a9db267e82740888b65a5a8d7270574fc3e530cd709c92c858eebdc480fc377",
+   "assetId": "rbxassetid://84174178184020",
+   "textLabel": "연금술사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Attack.png",
+   "tracked": "yes",
+   "bytes": 771303,
+   "sha256": "283a915ee5977190f3f20c53d157ef780652651faf91d334ddb87e1eed2240de",
+   "assetId": "rbxassetid://98250821822904",
+   "textLabel": "공격",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Berserker.png",
+   "tracked": "yes",
+   "bytes": 757686,
+   "sha256": "ead3bc5a34b48cba3e4ce36693976f2fd141ea08ba4a7fddb95c493d47ae2841",
+   "assetId": "rbxassetid://115473512483755",
+   "textLabel": "광전사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Blacksmith.png",
+   "tracked": "yes",
+   "bytes": 660770,
+   "sha256": "9aca43a020e32d304ebc5a39f3db68287d986dd26a8c3677683664c5b6c339c0",
+   "assetId": "rbxassetid://89380033426515",
+   "textLabel": "대장장이",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_CheerStars.png",
+   "tracked": "yes",
+   "bytes": 747579,
+   "sha256": "a285f288372d7ddeefba415d52b8cfe399c9880c9adcd317f5e94ddd6fdfcb4a",
+   "assetId": "rbxassetid://91912542746649",
+   "textLabel": "응원별",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Claim.png",
+   "tracked": "yes",
+   "bytes": 717152,
+   "sha256": "c21bb4e1aebe39116d6df2910e4efba2d0ee1a884d3fc8dbbac8371ef3ee77b3",
+   "assetId": "rbxassetid://118427675820272",
+   "textLabel": "받기",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Crossroads.png",
+   "tracked": "yes",
+   "bytes": 514147,
+   "sha256": "de6ce7b42787cfe2d390aab0f8caa053c6c13aa05fdf876bec65cd809cf0021b",
+   "assetId": "rbxassetid://121634705034244",
+   "textLabel": "교차로 마을",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_DarkMage.png",
+   "tracked": "yes",
+   "bytes": 456809,
+   "sha256": "abdf759d5756621d0cf2d988d5a8300e138573754bade7b3fe2a1ff4c24ee7c3",
+   "assetId": "rbxassetid://123003479662317",
+   "textLabel": "흑마법사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Female.png",
+   "tracked": "yes",
+   "bytes": 1255634,
+   "sha256": "0cb5fd213f31ec5554ee401ccf496f5795bb42b3a27fdd67f713697e54604873",
+   "assetId": "rbxassetid://79119143008950",
+   "textLabel": "여",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_GoblinWoods.png",
+   "tracked": "yes",
+   "bytes": 484277,
+   "sha256": "3f0b20aa029ed16f279f74d96840bff173cb091c5560c02247c0c0d2b422179e",
+   "assetId": "rbxassetid://85681760418016",
+   "textLabel": "고블린 숲",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_GoldenGoose.png",
+   "tracked": "yes",
+   "bytes": 514523,
+   "sha256": "44acceaac6ab0b975768d3297672332872d927a1d931a093476a2402860f0c11",
+   "assetId": "rbxassetid://118344018643742",
+   "textLabel": "황금 거위",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Halo.png",
+   "tracked": "yes",
+   "bytes": 443262,
+   "sha256": "68bf733082a67ae085c9d9d3642020482fdde4e1fa7502abd693296c5ce3ab03",
+   "assetId": "rbxassetid://84253679534085",
+   "textLabel": "빛의 기사단",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_HaloTown.png",
+   "tracked": "yes",
+   "bytes": 523915,
+   "sha256": "826b7f2e6287a99ade14168d0cbf6a8508bc7604c8378fe39634429c6526c8bb",
+   "assetId": "rbxassetid://112063601867600",
+   "textLabel": "빛의 성채",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Horn.png",
+   "tracked": "yes",
+   "bytes": 1012367,
+   "sha256": "cfb4ac708ddefcc126895508e2626c598a04b5ffe9594485127f971584b7ee1e",
+   "assetId": "rbxassetid://103663739588779",
+   "textLabel": "뿔",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Horns.png",
+   "tracked": "yes",
+   "bytes": 781013,
+   "sha256": "1e08416d1ee8ab44e17025bd7069784d6442a6e6971b2d592d9816f9c1fa83b6",
+   "assetId": "rbxassetid://122733028453143",
+   "textLabel": "뿔 군단",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_HornsTown.png",
+   "tracked": "yes",
+   "bytes": 809404,
+   "sha256": "5ce3198a1ac25daad712bbd9c4a7a3f0dc153a06345a5d72471db594c916d045",
+   "assetId": "rbxassetid://95993978315203",
+   "textLabel": "뿔 소굴",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Hunter.png",
+   "tracked": "yes",
+   "bytes": 758925,
+   "sha256": "a16019df542cb9cd547e6190b7252484abfc36f775b54ea7819c626d97f6f135",
+   "assetId": "rbxassetid://72300636973949",
+   "textLabel": "사냥꾼",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_LevelUp.png",
+   "tracked": "yes",
+   "bytes": 575041,
+   "sha256": "b62004551d4adedac696621735c085588d1f2bddbd8c3e7432058b71042f3b36",
+   "assetId": "rbxassetid://87685207336169",
+   "textLabel": "레벨 업!",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Light.png",
+   "tracked": "yes",
+   "bytes": 1511545,
+   "sha256": "49aa1c9170f7954712a3eb84c8cd77e6b16dd4d47105dafb0033414627c9d965",
+   "assetId": "rbxassetid://110514325808489",
+   "textLabel": "빛",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_LightMage.png",
+   "tracked": "yes",
+   "bytes": 604816,
+   "sha256": "9f6c7a5643af7c4a2754903492159fba297a0b4b2f349cc42c1618be6870c551",
+   "assetId": "rbxassetid://73151603946140",
+   "textLabel": "빛의 마법사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Male.png",
+   "tracked": "yes",
+   "bytes": 1464932,
+   "sha256": "89b548c8e153f5123796b4735049c1ef14b707ac846621e3b93f31f8c2ace763",
+   "assetId": "rbxassetid://74628967381797",
+   "textLabel": "남",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Map.png",
+   "tracked": "yes",
+   "bytes": 912553,
+   "sha256": "47839438b99249852b29b80591415318b6c985e3e83d83d9c2fc86bf42caace2",
+   "assetId": "rbxassetid://73294834221789",
+   "textLabel": "지도",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Meadow.png",
+   "tracked": "yes",
+   "bytes": 545505,
+   "sha256": "3ec55d2a42b0dfdd7dd32ba4095f3c37d71de21d149b64a59483bcf12694baab",
+   "assetId": "rbxassetid://137041154773318",
+   "textLabel": "말랑 초원",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Menu.png",
+   "tracked": "yes",
+   "bytes": 808021,
+   "sha256": "d1e19aa19dc4b0e795e39c4c0ee6c83b2a303321c4ce4fd38cb14710e361ed3c",
+   "assetId": "rbxassetid://92283001237959",
+   "textLabel": "메뉴",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Neutral.png",
+   "tracked": "yes",
+   "bytes": 467249,
+   "sha256": "5be917411a58ed147f694fc67366cbfdf217c19adaef7428614b2e43132b4ae8",
+   "assetId": "rbxassetid://123316362815459",
+   "textLabel": "장인 길드",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Next.png",
+   "tracked": "yes",
+   "bytes": 745463,
+   "sha256": "1d4797e3f713fd1bb844002c7accb86c525f20ebccaa3e2bd4e9b5228ec2c179",
+   "assetId": "rbxassetid://125486764311560",
+   "textLabel": "다음",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Paladin.png",
+   "tracked": "yes",
+   "bytes": 594164,
+   "sha256": "c2b161e340f68bddc2dd250e17fa9157e4b6f4c0484891cf743d2b37a3e66e60",
+   "assetId": "rbxassetid://76514962497375",
+   "textLabel": "성기사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_PickClass.png",
+   "tracked": "yes",
+   "bytes": 352871,
+   "sha256": "8e1c13129f30d53ae7c754d5a2a6672055a087a927245bb2cf8f731793b1660e",
+   "assetId": "rbxassetid://100333047732355",
+   "textLabel": "직업을 골라요!",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_PickFaction.png",
+   "tracked": "yes",
+   "bytes": 434139,
+   "sha256": "d86c057035368b261cd778a6af7a39d948c304621d311158663eeadca00c2183",
+   "assetId": "rbxassetid://122632489644785",
+   "textLabel": "어느 편에 설래요?",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_PvPZone.png",
+   "tracked": "yes",
+   "bytes": 711605,
+   "sha256": "e36a82673032153e77c07d70b4d8fe934f05d1a941c6d5d3d9660e5e41cdcc23",
+   "assetId": "rbxassetid://95155412805850",
+   "textLabel": "위험 지역",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Quests.png",
+   "tracked": "yes",
+   "bytes": 382290,
+   "sha256": "f0bf087068c68edc475819718c9ee388a881a62b256656e6f2ae7ebb503d1cae",
+   "assetId": "rbxassetid://117681934543569",
+   "textLabel": "오늘의 퀘스트",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Ranger.png",
+   "tracked": "yes",
+   "bytes": 595290,
+   "sha256": "d634e973d5349e5e84fc2a86b0ee61f4c9072773402ad87685d9ff28b48d8824",
+   "assetId": "rbxassetid://106790531366000",
+   "textLabel": "레인저",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Regular.png",
+   "tracked": "yes",
+   "bytes": 755591,
+   "sha256": "27d852302f3da5c075d1c3eb41d4ed19005441e229212be1c9fa3f5a93641a24",
+   "assetId": "rbxassetid://87813963027105",
+   "textLabel": "단골",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Release.png",
+   "tracked": "yes",
+   "bytes": 949926,
+   "sha256": "6e3a3bb1cda387129a0e723e8b7a1bbc682351d2052e62ea84679ae0a5f56848",
+   "assetId": "rbxassetid://116194627847547",
+   "textLabel": "발사",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Reroll.png",
+   "tracked": "yes",
+   "bytes": 720120,
+   "sha256": "d138b3a391afeedcb8c2e3434af11518889f81dad95b9fc6ae4fef27311deb79",
+   "assetId": "rbxassetid://73825749957607",
+   "textLabel": "교체",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Rookie.png",
+   "tracked": "yes",
+   "bytes": 588405,
+   "sha256": "6d30b1f3013470e8f513af5308283ac63a07243a4d0e990bedb57af7eb5e46ea",
+   "assetId": "rbxassetid://76344573196272",
+   "textLabel": "새싹 보호",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_Safe.png",
+   "tracked": "yes",
+   "bytes": 526462,
+   "sha256": "ca0355dcd43062ceb310328bf9638b2d8f1d773f1a60c5a88553a2f59e3d10fd",
+   "assetId": "rbxassetid://89303273670959",
+   "textLabel": "안전 지대",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_SafeZone.png",
+   "tracked": "yes",
+   "bytes": 605087,
+   "sha256": "6d5fdc55d4e505dffc60531c67fcce03d2c16e563d437fd0209af4aee38b32b4",
+   "assetId": "rbxassetid://126144617681076",
+   "textLabel": "안전 지역",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_ShadowHunter.png",
+   "tracked": "yes",
+   "bytes": 458120,
+   "sha256": "20035bf7febb91e5bd6681c5ca29b99ab7c2c346b8049070860488ae8fc80b0c",
+   "assetId": "rbxassetid://80860403354341",
+   "textLabel": "그림자 사냥꾼",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_SkeletonRuins.png",
+   "tracked": "yes",
+   "bytes": 551254,
+   "sha256": "2a12453831ea7851bd2b2bd524d1d3a89c5a1a54b04f3f5f2c1dceaf0bd8ea62",
+   "assetId": "rbxassetid://95378982488216",
+   "textLabel": "해골 유적",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_ThisClass.png",
+   "tracked": "yes",
+   "bytes": 569660,
+   "sha256": "f3297b8a3bc5a0db95273fb3f15b0e8d57ed7be31b983995bd8f249fc4de5722",
+   "assetId": "rbxassetid://139552040478610",
+   "textLabel": "이 직업으로!",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/out/TXT_ThisSide.png",
+   "tracked": "yes",
+   "bytes": 474486,
+   "sha256": "7d583ce6e4de9681cc3e7090c84a0810c546d222019165b4481916590a690fa8",
+   "assetId": "rbxassetid://106328910658398",
+   "textLabel": "이 편으로!",
+   "reason": "TXT lettering image never shown on screen: its only reader is UIKit.BindArtText (src/StarterPlayer/StarterPlayerScripts/UIKit.luau:974 returns early because FONT.UseTextImages = false at UIKit.luau:23; Config.UIArt.TextLabels is read only after that return at UIKit.luau:1082-1083). No other src code or place instance uses a TXT_ part or its asset id."
+  },
+  {
+   "file": "art/test/GameIcon.png",
+   "tracked": "yes",
+   "bytes": 2942000,
+   "sha256": "306542098c0f68fe687e1f6d896f559b7c0d6e2774683b75a14987659eae2c5b",
+   "reason": "old Codex test output (retired tools/gen_images.sh); bytes differ from the active art/out and art/ui file of the same name; not referenced by src, Config.UIArt or asset_ids.json"
+  },
+  {
+   "file": "art/test/Tex_Grass.png",
+   "tracked": "yes",
+   "bytes": 2151556,
+   "sha256": "f65182bf6cb36330f933faf26eae72213a346621587c79c9b6b456731b41b798",
+   "reason": "old Codex test output (retired tools/gen_images.sh); bytes differ from the active art/out and art/ui file of the same name; not referenced by src, Config.UIArt or asset_ids.json"
+  }
+ ]
+}

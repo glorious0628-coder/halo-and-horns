@@ -1,4 +1,4 @@
--- ClassPicker.luau : first class choice (faction-specific names) + one-time intro toasts.
+-- ClassPicker.luau : first class choice (faction-specific names). The server opens the welcome dialogue.
 -- Visible exactly when DataLoaded == true, Faction ~= "None", ClassChosen == false and the FactionPicker is closed.
 -- Look = GPT mockup art/out/UI_Class_A.png (addendum A14-3): faction shield + "직업을 골라요!" ribbon + 남|여 pill, three
 -- text-free class card images (Config.UIArt.Parts.ClassCard<Faction>, regions in Config.UIArt.CardLayout) holding the
@@ -25,8 +25,6 @@ local player = Players.LocalPlayer
 
 local CLICK_LOCK = 2 -- seconds the choose buttons stay disabled after a click
 local OPEN_LOCK = 0.6 -- CR-M26: card input ignored this long after the picker opens (fast 2nd tap on "이 편으로!")
-local INTRO_STEP = 3 -- seconds between intro toasts
-local INTRO_DURATION = 4
 local POLL_INTERVAL = 0.5
 local WARN_INTERVAL = 10
 local ZINDEX = 60
@@ -109,9 +107,19 @@ local T = {
 	StartWeaponF = "시작 무기: %s",
 	Male = "남",
 	Female = "여",
-	-- same rule as ClassService.onChangeClass / Panels "직업 변경": free = back to Lv 1, ticket = level kept
-	Footer = "직업은 나중에 메뉴 > 직업 변경에서 바꿀 수 있어요 (무료: Lv1부터 다시 / 변경권: 레벨 유지)",
+	-- same rule as ClassService.onChangeClass / Panels "직업 변경" (A23-14): a free change below
+	-- Config.ClassChange.FreeKeepLevelBelow keeps the level, from there free = back to Lv 1; a ticket keeps the level.
+	-- Fallback only: Config.Text.ClassChangeRuleF (formatted with that level) replaces it below.
+	Footer = "직업은 나중에 메뉴 > 직업 변경에서 바꿀 수 있어요 (무료: Lv5 전에는 레벨 유지, 그 뒤엔 Lv1부터 / 변경권: 레벨 유지)",
 }
+do
+	local below = type(Config.ClassChange) == "table" and tonumber(Config.ClassChange.FreeKeepLevelBelow) or nil
+	local rule = type(Config.Text) == "table" and Config.Text.ClassChangeRuleF or nil
+	if below and type(rule) == "string" then
+		local ok, s = pcall(string.format, rule, math.floor(below))
+		if ok then T.Footer = s end
+	end
+end
 
 local DEFAULT_THEME = {
 	Text = Color3.new(1, 1, 1),
@@ -143,8 +151,6 @@ local built = false
 local visible = false
 local lockedUntil = 0
 local shownFaction = nil
-local prevClassChosen = nil
-local introPlayed = false
 local lastWarnAt = -math.huge
 local cameraConn = nil
 local scaleConn = nil
@@ -345,13 +351,6 @@ local function fire(remoteName, ...)
 	end)
 end
 
-local function toast(text, kind, duration)
-	if UIKit and type(UIKit.Toast) == "function" then
-		local ok, err = pcall(UIKit.Toast, text, kind, duration)
-		if not ok then warnThrottled("toast failed: " .. tostring(err)) end
-	end
-end
-
 ------------------------------------------------------------------ art helpers
 local function artColor(key, fallback)
 	local c = Art.Colors[key]
@@ -536,34 +535,6 @@ local function statValue(id, key)
 	local ds = def and def.DisplayStats
 	local v = type(ds) == "table" and tonumber(ds[key]) or 3
 	return math.clamp(math.floor(v + 0.5), 0, 5)
-end
-
------------------------------------------------------------------- intro toasts
-local function playIntro()
-	local lines = Config.Story.Intro
-	-- CR-L29: 장인 길드 stays out of the war and PvP, so it gets the intro without the "help your side" call
-	if myFaction() == "Neutral" and type(Config.Story.IntroNeutral) == "table" then lines = Config.Story.IntroNeutral end
-	if type(lines) ~= "table" then return end
-	task.spawn(function()
-		for i, line in lines do
-			if i > 1 then task.wait(INTRO_STEP) end
-			if not player.Parent then return end
-			toast(tostring(line), "info", INTRO_DURATION)
-		end
-	end)
-end
-
--- ClassChosen flipping false -> true during this session, still at Lv 1 -> intro (once)
-local function onClassChosenChanged()
-	local now = player:GetAttribute("ClassChosen")
-	if prevClassChosen == false and now == true and not introPlayed then
-		local level = player:GetAttribute("Level")
-		if (type(level) == "number" and level or 1) <= 1 then
-			introPlayed = true
-			playIntro()
-		end
-	end
-	prevClassChosen = now
 end
 
 ------------------------------------------------------------------ buttons / texts
@@ -1498,6 +1469,9 @@ local function refresh()
 	visible = open
 	root.Visible = open
 	setBlur(open)
+	-- the chat window (bottom-left) covered the first card's button on small screens: hide it like FactionPicker
+	local fp = C and C.FactionPicker
+	if type(fp) == "table" and type(fp.HoldWorld) == "function" then pcall(fp.HoldWorld, "class", open) end
 	if open then
 		applyFaction()
 		layout()
@@ -1541,10 +1515,12 @@ function ClassPicker.IsOpen()
 	local f = player:GetAttribute("Faction")
 	if type(f) ~= "string" or f == "None" then return false end
 	if player:GetAttribute("ClassChosen") ~= false then return false end
-	local fp = C and C.FactionPicker
-	if type(fp) == "table" and type(fp.IsOpen) == "function" then
-		local ok, open = pcall(fp.IsOpen)
-		if ok and open then return false end
+	for _, name in { "Intro", "FactionPicker" } do
+		local m = C and C[name]
+		if type(m) == "table" and type(m.IsOpen) == "function" then
+			local ok, open = pcall(m.IsOpen)
+			if ok and open then return false end
+		end
 	end
 	return true
 end
@@ -1559,15 +1535,10 @@ function ClassPicker.Init(c)
 	UIKit = c and c.UIKit
 	loadTheme()
 	gender = player:GetAttribute("CharacterGender") == "F" and "F" or "M"
-	prevClassChosen = player:GetAttribute("ClassChosen")
 	player.AttributeChanged:Connect(function(name)
 		if name == "CharacterGender" then
 			local ok, err = pcall(setGender, player:GetAttribute("CharacterGender") == "F" and "F" or "M")
 			if not ok then warnThrottled("gender error: " .. tostring(err)) end
-		end
-		if name == "ClassChosen" then
-			local ok, err = pcall(onClassChosenChanged)
-			if not ok then warnThrottled("intro error: " .. tostring(err)) end
 		end
 		if name == "DataLoaded" or name == "Faction" or name == "ClassChosen" then
 			if built then

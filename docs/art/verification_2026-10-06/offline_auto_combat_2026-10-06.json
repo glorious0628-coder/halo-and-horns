@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "checks": 590,
+  "staticChecks": 3,
+  "staticFailures": [],
+  "staticFindings": {
+    "callersOfUnlockAutoCombat": [
+      "src/ServerScriptService/StoryQuestService.luau"
+    ],
+    "writers": {
+      "AutoCombatEnabled": [
+        "src/ServerScriptService/CombatService.luau:1203"
+      ],
+      "AutoCombatUnlocked": [
+        "src/ServerScriptService/CombatService.luau:1209"
+      ]
+    }
+  },
+  "failure": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "810d154c99fa9f12a2c3cb487406e8538bce96645d84a9912eb3ed2ea699cc44",
+    "src/ServerScriptService/CombatService.luau": "596c3d6085be13f5328ba2e13e4f52ba002106d6e7ff476e4a2f86ea24ace5c3",
+    "src/ServerScriptService/VitalsService.luau": "9a5d62e6644ada52a0abcacc1e3f9fdcccd3630f97616f036207b115536fa699",
+    "src/ReplicatedStorage/Shared/Util.luau": "e266e115374db1c243b0f2057905c325ff3ca2e824812c8034d30b9c625f347e",
+    "src/ServerScriptService/KaijuService.luau": "602dbbd2a50515e4bcd36ba6c0ad8d3f42306c8e907a838c2a3a3a4087f3a8f7"
+  },
+  "fixtureSHA256": "c4f0d9006aa79dd592b48ca1b8c63b6a38d7be66fe6f96d1afa2bd61baeaaf2e",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-1 / GDD 0-2: auto combat starts OFF and locked; UnlockAutoCombat only sets AutoCombatUnlocked; the player toggles AutoCombatEnabled (saved via SetStat); auto attacks and auto skills hit monsters only.",
+  "coverage": [
+    "defaults AutoCombatUnlocked/AutoCombatEnabled false and mirrored; exactly one loop at Config.Combat.AutoTick",
+    "legacy AutoAttack attribute, unlock alone and repeated unlock never start auto combat",
+    "SetAutoAttack: one boolean only, unlocked/ready/alive/class-chosen, rate limited, saved through SetStat",
+    "auto stops when OFF, not unlocked, dead, no root, not ready, left, class not chosen, kaiju Active/Siren/Queued",
+    "no monster in reach: no swing, no skill, no MP",
+    "auto skill: MP cost and 3 s cooldown, Released Auto=true with MonstersHit, never MarkActive",
+    "manual swing makes auto yield SwingInterval + ManualYieldPad (Warrior/Mage/Archer)",
+    "auto Swing/Release (loop and direct calls) never damage players or an Active kaiju for Around/Splash/Multi, Halo and Horns attackers, PvP allowed; manual positive control does hit them",
+    "KaijuService Released handler ignores info.Auto heals (real handler source extracted)",
+    "static: AutoCombatEnabled written only by the SetAutoAttack toggle, AutoCombatUnlocked only by CombatService.UnlockAutoCombat (StoryQuestService unlock calls it), no client caller"
+  ],
+  "limitations": "Offline service/physics doubles; real client toggle UI, the unlock quest, animation timing, multiplayer and Studio play are not certified here."
+}

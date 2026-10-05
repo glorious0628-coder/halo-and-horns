@@ -2130,5 +2130,392 @@
    "source_record": "art\\models\\costume\\redraw\\tripo-out\\costume-haloarcherm-sharpd-rig-96aa4858\\task.json",
    "reconciled_at_utc": "2026-10-04T03:43:19.479563+00:00"
   }
+ ],
+ "MonsterGoblin_src": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "eee33149-a782-4f46-aadd-76865e5e40bc",
+   "file": "art\\models\\Goblin.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "eee33149-a782-4f46-aadd-76865e5e40bc",
+   "file": "art\\models\\Goblin.glb",
+   "credits": 0.0
+  }
+ ],
+ "MonsterGoblin": [
+  {
+   "operation": "rig",
+   "source_task_id": "eee33149-a782-4f46-aadd-76865e5e40bc",
+   "rig_parameters": {
+    "input": "eee33149-a782-4f46-aadd-76865e5e40bc",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-05 14:26:23",
+   "rig_check_task_id": "9ccf7cca-327b-48ff-ad27-b1d64dc9b177",
+   "event": "rig_check_submitted"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "eee33149-a782-4f46-aadd-76865e5e40bc",
+   "rig_parameters": {
+    "input": "eee33149-a782-4f46-aadd-76865e5e40bc",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-05 14:26:23",
+   "rig_check_task_id": "9ccf7cca-327b-48ff-ad27-b1d64dc9b177",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "event": "rig_check_completed"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "eee33149-a782-4f46-aadd-76865e5e40bc",
+   "rig_parameters": {
+    "input": "eee33149-a782-4f46-aadd-76865e5e40bc",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-05 14:26:23",
+   "rig_check_task_id": "9ccf7cca-327b-48ff-ad27-b1d64dc9b177",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "rig_task_id": "f922ef75-659f-4408-8ee3-00702fb26e96",
+   "event": "rig_submitted"
+  },
+  {
+   "operation": "rig",
+   "source_task_id": "eee33149-a782-4f46-aadd-76865e5e40bc",
+   "rig_parameters": {
+    "input": "eee33149-a782-4f46-aadd-76865e5e40bc",
+    "model": "v1.0-20240301",
+    "rig_type": "biped",
+    "spec": "mixamo",
+    "out_format": "glb"
+   },
+   "at": "2026-10-05 14:26:23",
+   "rig_check_task_id": "9ccf7cca-327b-48ff-ad27-b1d64dc9b177",
+   "rig_check": {
+    "riggable": true,
+    "rig_type": "biped"
+   },
+   "rig_check_credits": 0.0,
+   "rig_task_id": "f922ef75-659f-4408-8ee3-00702fb26e96",
+   "rig_file": "art\\models\\tripo\\MonsterGoblin_rig_f922ef75-659f-4408-8ee3-00702fb26e96.glb",
+   "bytes": 2491704,
+   "rig_credits": 25.0,
+   "event": "rig_completed"
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_submitted",
+   "task_id": "64f1c26b-86ec-4ac8-b851-5ee8d8af52dd",
+   "animations": [
+    "preset:idle",
+    "preset:walk",
+    "preset:slash",
+    "preset:hurt",
+    "preset:fall"
+   ]
+  },
+  {
+   "operation": "rig",
+   "event": "rig_submitted",
+   "spec": "tripo",
+   "rig_task_id": "82ac2597-0c93-4971-957c-d424d7cebcce"
+  },
+  {
+   "operation": "rig",
+   "event": "rig_completed",
+   "spec": "tripo",
+   "rig_task_id": "82ac2597-0c93-4971-957c-d424d7cebcce",
+   "credits": 25.0
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "f9959d68-49e2-4867-b4eb-b08188d95d8b",
+   "animation": "preset:walk",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblin_tripo_walk.glb"
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "f0d2feed-0e79-482d-82a9-67ca074fa042",
+   "clip": "Idle",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblin_Idle.glb",
+   "bytes": 2697168
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "ec9d5eb6-2178-4f30-9142-739f00d8b412",
+   "clip": "Slash",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblin_Slash.glb",
+   "bytes": 2603352
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "516ff861-df8b-4087-97c1-eb7d41538f8e",
+   "clip": "Hurt",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblin_Hurt.glb",
+   "bytes": 2674236
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "7e46f783-68b3-45ac-8aaf-0b9d7a7320ae",
+   "clip": "Fall",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblin_Fall.glb",
+   "bytes": 2562700
+  }
+ ],
+ "MonsterGoblinBrute_src": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "db7a66b5-017a-4944-babc-26862263ebf0",
+   "file": "art\\models\\GoblinBrute.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "db7a66b5-017a-4944-babc-26862263ebf0",
+   "file": "art\\models\\GoblinBrute.glb",
+   "credits": 0.0
+  }
+ ],
+ "MonsterGoblinBrute": [
+  {
+   "operation": "rig",
+   "event": "rig_submitted",
+   "spec": "tripo",
+   "rig_task_id": "cd48c877-e95d-4eaa-890a-0300325c94ee"
+  },
+  {
+   "operation": "rig",
+   "event": "rig_completed",
+   "spec": "tripo",
+   "rig_task_id": "cd48c877-e95d-4eaa-890a-0300325c94ee",
+   "credits": 25.0
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "827850d0-adc5-481d-901c-4acceb4c16c6",
+   "clip": "Idle",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblinBrute_Idle.glb",
+   "bytes": 2598616
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "0886f509-26b1-4dec-94ca-8f28b1d00000",
+   "clip": "Walk",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblinBrute_Walk.glb",
+   "bytes": 2455924
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "270a46fe-179d-4883-b66a-9b353ace765a",
+   "clip": "Slash",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblinBrute_Slash.glb",
+   "bytes": 2504944
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "425cde66-5619-4820-908f-578c0658a60b",
+   "clip": "Hurt",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblinBrute_Hurt.glb",
+   "bytes": 2575412
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "48a6de0e-b4fa-457b-8e49-9f5aa87f7cd8",
+   "clip": "Fall",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblinBrute_Fall.glb",
+   "bytes": 2463872
+  }
+ ],
+ "MonsterSkeleton_src": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "b73bfaad-7ec6-40d0-b72c-a56b45fe102e",
+   "file": "art\\models\\tripo\\SkeletonClothed_raw.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "b73bfaad-7ec6-40d0-b72c-a56b45fe102e",
+   "file": "art\\models\\tripo\\SkeletonClothed_raw.glb",
+   "credits": 0.0
+  }
+ ],
+ "MonsterSkeleton": [
+  {
+   "operation": "rig",
+   "event": "rig_submitted",
+   "spec": "tripo",
+   "rig_task_id": "855126b4-748f-41b3-b10b-b62e4f2682cc"
+  },
+  {
+   "operation": "rig",
+   "event": "rig_completed",
+   "spec": "tripo",
+   "rig_task_id": "855126b4-748f-41b3-b10b-b62e4f2682cc",
+   "credits": 25.0
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "25e1c0d7-2a5f-4b8d-8567-182cc12d8f89",
+   "clip": "Idle",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeleton_Idle.glb",
+   "bytes": 1421140
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "e9f5a33b-b8ed-4d30-9687-ed735597f3e8",
+   "clip": "Walk",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeleton_Walk.glb",
+   "bytes": 1278596
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "96ddc1af-c8b8-4081-90ae-d712048fec82",
+   "clip": "Slash",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeleton_Slash.glb",
+   "bytes": 1327596
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "dffb2138-27d2-44e8-baff-bef770285f9a",
+   "clip": "Hurt",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeleton_Hurt.glb",
+   "bytes": 1398060
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "0055f8ef-ba2e-49e3-bb3b-c544ffdfd438",
+   "clip": "Fall",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeleton_Fall.glb",
+   "bytes": 1286392
+  }
+ ],
+ "MonsterSkeletonKnight_src": [
+  {
+   "operation": "import",
+   "event": "import_submitted",
+   "task_id": "035c9dd5-9a6a-4e03-a98f-9b2f7c70f09c",
+   "file": "art\\models\\SkeletonKnight.glb"
+  },
+  {
+   "operation": "import",
+   "event": "import_completed",
+   "task_id": "035c9dd5-9a6a-4e03-a98f-9b2f7c70f09c",
+   "file": "art\\models\\SkeletonKnight.glb",
+   "credits": 0.0
+  }
+ ],
+ "MonsterSkeletonKnight": [
+  {
+   "operation": "rig",
+   "event": "rig_submitted",
+   "spec": "tripo",
+   "rig_task_id": "348435e6-ddea-4464-a648-dc27d864130a"
+  },
+  {
+   "operation": "rig",
+   "event": "rig_completed",
+   "spec": "tripo",
+   "rig_task_id": "348435e6-ddea-4464-a648-dc27d864130a",
+   "credits": 25.0
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "dc3b3d22-aa6b-4760-9118-57f4bdc4992c",
+   "clip": "Idle",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeletonKnight_Idle.glb",
+   "bytes": 2743204
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "eaf8cbb6-1e18-4b8b-b085-080b29920676",
+   "clip": "Walk",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeletonKnight_Walk.glb",
+   "bytes": 2601204
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "d91bc4b7-31d1-46b3-8496-942a989e3c7a",
+   "clip": "Slash",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeletonKnight_Slash.glb",
+   "bytes": 2649380
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "2abf0b41-1737-48d5-98ee-3fa399a57c67",
+   "clip": "Hurt",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeletonKnight_Hurt.glb",
+   "bytes": 2720392
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "5e9c0eed-602b-43c4-bb0a-68e2df7b6f67",
+   "clip": "Fall",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeletonKnight_Fall.glb",
+   "bytes": 2608880
+  }
  ]
 }

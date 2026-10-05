@@ -1,0 +1,578 @@
+{
+ "a": {
+  "lessons": [
+   {
+    "id": "x5d-01",
+    "timestamp": "0:00-1:10",
+    "observation": "The session opens on a lobby (update vote, server list, rules). The player then spawns in a town with world leaderboards and gets a guide bar with a quest of one line, \"첫 무기 챙기기\" (수락/닫기), within about 20 s. There is no faction or class choice at start; the job choice is held back as the Lv10 goal.",
+    "lesson_for_us": "The first seconds show the world and give one safe, concrete task. Choices come after the player has a reason to make them. Our join goes straight into a full-screen, blurred faction picker before the player has seen anything, which is the abrupt feeling the user described. A short in-world opening that shows the broken crown and both faction homes gives the pick a reason and adds no taps.",
+    "our_status": "missing. FactionPicker opens as soon as DataLoaded is true and Faction is \"None\". It blurs the camera and hides world GUIs, TouchGui and chat. The premise is three text lines that fade in 0.6 s apart. src has no ReplicatedFirst, loading or cutscene code. The set pieces already exist in the map: the broken CrownOfBalance at (0,350,0), the CrownShard with a light beam over the Crossroads fountain at (0,22,0), and the Halo/Horns towns at z = -400 and +400.",
+    "action": "Add a skippable camera opening of 10-15 s as a phase inside FactionPicker (details in opening_advice). IsOpen() stays true, so the HUD and ClassPicker gating does not change. Use close cuts only (A12 fog), show the premise lines as subtitles, end on the player's own avatar, then show the cards. Measure the time from join to first hit before and after. Needs the user's OK.",
+    "priority": "now",
+    "code_refs": [
+     "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau:1994-1998",
+     "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau:1949-1973",
+     "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau:1837-1851",
+     "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau:1897-1935",
+     "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau:32-33",
+     "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau:1937-1947",
+     "src/ReplicatedStorage/Shared/Config.luau:1498-1502",
+     "tools/preview_map.lua:301-328",
+     "tools/preview_map.lua:508-528",
+     "src/ReplicatedStorage/Shared/Config.luau:724-729",
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:282-291",
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:2926-2931",
+     "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau:99-100"
+    ],
+    "conflicts": "A7-4 (SPEC_ADDENDUM.md:240-243; FactionPicker.luau:3) requires faction → class → play in 3 taps and no draw animation at start. The opening adds no required tap and is not a gacha draw, but it is time before the first tap, so keep it at 15 s or less and skippable. A12: only the World Map shows the whole world, so use close shots and no top-down overview. The lessons doc lists a '짧은 3D 오프닝(Firefly 스토리보드)' as post-launch; this camera-only version needs no new art.",
+    "reinforces_existing": "tutorials-25, tutorials-06, tutorials-26"
+   },
+   {
+    "id": "x5d-02",
+    "timestamp": "0:52-1:10 (frame 0:55)",
+    "observation": "The guide dialog is a compact bar over the lower third. It has the title \"가이드 — <quest name>\", one or two lines of text and 수락/닫기 buttons. There is no portrait.",
+    "lesson_for_us": "One short line with accept on the same screen is enough, and putting the quest name in the title tells the player what they are accepting. Our 3-page dialog has a 170 px portrait and shows accept only on page 3. On 749×361 the accept button is hidden.",
+    "our_status": "partial. BUILDERS.Welcome has a 170 px chibi portrait row and accepts only when page == #Lines. The panel title is the generic \"안내자 대화\". Review A#5 found that accept is hidden under the scroll on phone.",
+    "action": "In the existing panel: show 수락 on every page and keep 다음 for players who want to read. Set the title to \"안내자 · 보급로 되찾기\". Hide the portrait row when the viewport is short, or always until the Roblox-style redraw. Keep the text in Config.Tutorial. No new art.",
+    "priority": "now",
+    "code_refs": [
+     "src/StarterPlayer/StarterPlayerScripts/Panels.luau:1158-1218",
+     "src/StarterPlayer/StarterPlayerScripts/Panels.luau:1165-1172",
+     "src/StarterPlayer/StarterPlayerScripts/Panels.luau:1187-1196",
+     "src/StarterPlayer/StarterPlayerScripts/Panels.luau:64"
+    ],
+    "conflicts": "AGENTS says approved art stays until replaced. Hiding the portrait on short screens is a layout choice, not a redraw, but confirm with the user.",
+    "reinforces_existing": "review A#5, tutorials-33, sweep-taps-to-first-hit, main-b-42"
+   },
+   {
+    "id": "x5d-03",
+    "timestamp": "0:52-1:10",
+    "observation": "The first guide step says bare hands are dangerous and sends the player to get a free wooden club from the weapon shop. The first visit to a service succeeds for certain.",
+    "lesson_for_us": "The first visit to a town service should always succeed. Our first shop visit comes after the mission reward and only succeeds if the reward covers the wood weapon.",
+    "our_status": "partial. QuestRewardGold is still 120 in code, while the wood weapon costs 150; the user's 150-gold decision (A23-3) is not applied yet. The starting weapon is already owned and equipped, so a free-weapon step is not needed.",
+    "action": "Set Config.Tutorial.QuestRewardGold to 150 (A23-3). Keep the hunt → shop order, which gives a sooner first hit. In the timed test, confirm that buying the wood weapon works right after claiming.",
+    "priority": "now",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:916",
+     "src/ReplicatedStorage/Shared/Config.luau:157",
+     "src/ReplicatedStorage/Shared/Config.luau:76-77"
+    ],
+    "reinforces_existing": "review A#4, games-quest-teaches-each-service, tutorials-31"
+   },
+   {
+    "id": "x5d-04",
+    "timestamp": "4:00, 6:23-7:12",
+    "observation": "After the basics the guide says: \"기본기를 다 배우셨어요. 10레벨까지 성장해 보세요. 직업을 가질 수 있게 됩니다.\" At Lv10 it says the player has earned a job and \"다음이 마지막 안내랍니다\".",
+    "lesson_for_us": "The most motivating line in the session is a goal that names its unlock. The guide also says clearly when the guided part ends. Our guidance disappears after the blacksmith visit.",
+    "our_status": "missing. tutorialEntry returns nil once BlacksmithVisited is true, and the A23-3 next-goal line is not implemented.",
+    "action": "Implement the A23-3 line from existing state: \"Lv5 · 대장간에 철 무기가 열려요\" → \"철 무기 800골드 · 보유 N\" → \"Lv10 · 고블린 숲이 열려요\". When the pinned guide chain ends, show one toast such as \"안내는 여기까지! 이제 사냥하며 Lv5를 노려요\" so the player knows they are on their own. Name only unlocks that exist: the iron weapon unlocks at MinLevel 5 and Goblin Woods at MinLevel 10.",
+    "priority": "now",
+    "code_refs": [
+     "src/ServerScriptService/QuestService.luau:409-415",
+     "src/ReplicatedStorage/Shared/Config.luau:158",
+     "src/ReplicatedStorage/Shared/Config.luau:734-736",
+     "src/ReplicatedStorage/Shared/Config.luau:951-952"
+    ],
+    "reinforces_existing": "review A#3, lessons #2, tutorials-24, main-b-01"
+   },
+   {
+    "id": "x5d-05",
+    "timestamp": "2:41-3:58, 7:12, 7:55-8:28",
+    "observation": "The village-chief chain is all kill or collect quests with growing counts (5 rabbits → 10 drops → 10 rabbits → 6 antlers → ... → 30 pigs). At \"여우 50마리… 귀찮아. 이것만 계속 반복하고 있잖아\" the streamer stops playing.",
+    "lesson_for_us": "The same verb with a bigger number feels like a chore, and \"50마리\" reads as a wall even when it takes about 5 minutes. Our dailies show this exact number from minute 0.",
+    "our_status": "at risk. Kill extras roll 25-40 and Kill dailies 50-60 (\"%s %d마리 쓰러뜨리기\"). Dailies roll at PlayerReady whatever the TutorialStep, and new quests start 10-20% done.",
+    "action": "(1) Do lessons #4: keep dailies folded until the first mission is claimed. (2) Propose to the user that Kill quest sizes be at most about 20-30, since the reward per daily stays HuntValue(5 min) anyway, or that Goose, Golden and Release templates get more weight. Never chain kill quests with a growing N. (3) Keep the crown-shard trials (A23-2) as the counter-pattern: three different verbs, at most 3 kills each.",
+    "priority": "beta",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:971-972",
+     "src/ReplicatedStorage/Shared/Config.luau:960-961",
+     "src/ReplicatedStorage/Shared/Config.luau:990",
+     "src/ServerScriptService/QuestService.luau:718-719"
+    ],
+    "conflicts": "The quest sizes are numbers the user decides (lessons #10). GDD §8 uses \"고블린 30마리\" as its example.",
+    "reinforces_existing": "lessons #4, tutorials-11, main-b-11, games-quests-against-hunting-boredom"
+   },
+   {
+    "id": "x5d-06",
+    "timestamp": "1:31-1:57, 2:41-3:58",
+    "observation": "Rabbits spawn densely just outside town, and the streamer enjoys \"사냥하는 맛\". This holds even though items have no illustrations and some effects look odd.",
+    "lesson_for_us": "The first hunt feels good when targets are in view on arrival, and art matters less. This supports doing gameplay first.",
+    "our_status": "partial and not measured. The meadow is 260×260 with 12 Slime and 4 BigSlime, plus 2 per extra player up to a cap of 72. A starved player gets respawns 18-28 studs away.",
+    "action": "In the timed test (lessons #1), record the slimes within 30 studs when the player reaches the meadow and the time from arrival to 5/5, solo and with 3 players. If it takes more than 60-90 s or the screen is empty, cluster the first spawns near the meadow spawn at (220,0,0) or raise the Slime Count. No art.",
+    "priority": "now",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:731-733",
+     "src/ReplicatedStorage/Shared/Config.luau:881-882",
+     "src/ReplicatedStorage/Shared/Config.luau:872",
+     "src/ReplicatedStorage/Shared/Config.luau:876"
+    ],
+    "reinforces_existing": "lessons #1, lessons #16, games-a7-spawn-spread, main-a-34"
+   },
+   {
+    "id": "x5d-07",
+    "timestamp": "4:00-6:23",
+    "observation": "The streamer reaches Lv10 at about 6:23, helped by 141 dungeon kills, just as the guide's Lv10 goal pays off.",
+    "lesson_for_us": "A named level goal only works if it can be reached in the same session. Ours needs about 276 slimes (about 23 min) for Lv10, so the first next goal must be Lv5, not Lv10.",
+    "our_status": "partial. Early levels need ×0.5 XP. The Config comment still says Lv10 in 10-12 minutes, which is stale for manual combat.",
+    "action": "Keep the A23-3 order (Lv5 first). Measure real Lv5 and Lv10 times in the timed test, then let the user choose which number to tune (lessons #10). Fix the stale comment.",
+    "priority": "beta",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:135-149"
+    ],
+    "reinforces_existing": "lessons #10, sweep-early-level-pace-remeasure"
+   },
+   {
+    "id": "x5d-08",
+    "timestamp": "4:07-4:20",
+    "observation": "The potion seller says \"물약은 아직 준비 중이야. 다음 업데이트를 기다려 줘.\" The streamer moves on without complaining.",
+    "lesson_for_us": "Players accept an honest \"not yet\", but not a button that does nothing.",
+    "our_status": "missing. The merchant is disabled, yet the potion slot shows \"구매\" at 0 stock. The server tells players to use or buy potions (\"MP 물약을 사용해요!\", \"물약 상인에게서 구매해 주세요\"). The town already has an honest world label: \"거래소 (준비 중)\".",
+    "action": "Until the A23-6 potion NPC works, show \"준비 중\" on the potion slot instead of \"구매\" and remove the two buy/use lines. When the temporary NPC is up, flip MerchantEnabled.",
+    "priority": "now",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:33",
+     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau:47",
+     "src/ServerScriptService/VitalsService.luau:34",
+     "src/ServerScriptService/VitalsService.luau:60",
+     "tools/preview_map.lua:597-598"
+    ],
+    "reinforces_existing": "review A#7, lessons #5, main-b-27, games-potion-shop-loop"
+   },
+   {
+    "id": "x5d-09",
+    "timestamp": "4:07-4:20, 6:23-7:12",
+    "observation": "The guide's last step is to gather 5 wood from trees, then \"목재로 무기를 강화해 봐요… 한 번만 시도해 보세요. 실패해도 인정.\" The smith panel has a weapon slot, stats, materials and an enhance button. Enhancing costs gold and wood (crystals later), +1 gives ATK +1, and the first try succeeds.",
+    "lesson_for_us": "Teach enhancing with one guided try that hands out its own material and shows the exact change. Because our enhancement always succeeds, the \"failure is OK\" worry disappears.",
+    "our_status": "missing. src has no scroll or enhancement data or UI; the only match is the IconScroll asset. The rules are still waiting for the user (lessons #15).",
+    "action": "Once the user sets the rules: guarantee the first scroll (for example from the first Big Slime, or as the crown-shard reward if approved). Add one guided step, \"주문서로 한 번 강화해 봐요 · 항상 성공\", in the same anvil panel. Show the result as \"+1 · 공격 N→M (슬라임 3방→2방)\". Use one material for beta: no gathering from trees and no crystals.",
+    "priority": "beta",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:1140",
+     "src/StarterPlayer/StarterPlayerScripts/Panels.luau:1804-1924"
+    ],
+    "conflicts": "By default A23-2 gives no extra reward for the crown-shard quest, so a scroll there needs the user's OK.",
+    "reinforces_existing": "lessons #15, lessons #6, games-enhance-panel-clarity, sweep-scroll-drop-readability, main-b-11"
+   },
+   {
+    "id": "x5d-10",
+    "timestamp": "2:01-2:22",
+    "observation": "The Robux shop sells an enhancement \"파괴 방지권\" (destruction protection ticket).",
+    "lesson_for_us": "A protection ticket only exists because the game sells the fear of losing gear.",
+    "our_status": "not applicable. Our enhancement never fails or destroys gear (GDD §0-1, persona rules).",
+    "action": "Never add enhancement failure, destruction, or items that protect against them.",
+    "priority": "avoid",
+    "code_refs": [
+     "docs/GDD.md:26"
+    ],
+    "conflicts": "Would break the persona rule \"새로운 강화 실패·장비 파괴·능력치 과금은 도입하지 않는다\".",
+    "reinforces_existing": "main-a-32"
+   },
+   {
+    "id": "x5d-11",
+    "timestamp": "2:01-2:22",
+    "observation": "The Robux shop sells 자동 공격, 자동 스킬 and 자동 물약.",
+    "lesson_for_us": "Selling automation turns the core loop into a purchase. Our auto combat is earned through an optional quest, starts OFF, hits monsters only and is never sold.",
+    "our_status": "Auto combat is not built yet; SetAutoAttack forces false. The rule is written in GDD §3 (\"팔지 않아요\"), the GDD reference table (Pet Sim row) and A23-1.",
+    "action": "Build A23-1 and A23-2 as written. Do not add auto potions to the auto contract, and create no product IDs for any automation.",
+    "priority": "avoid",
+    "code_refs": [
+     "src/ServerScriptService/CombatService.luau:1149-1160",
+     "docs/GDD.md:123",
+     "docs/GDD.md:460"
+    ],
+    "reinforces_existing": "sweep-auto-never-monetized, games-gacha-paid-boost-conflict"
+   },
+   {
+    "id": "x5d-12",
+    "timestamp": "2:01-2:22",
+    "observation": "The Robux shop sells VIP (more gold), 골드 2배, 전리품 2배 and EXP & 골드 2배.",
+    "lesson_for_us": "Speed multipliers sell progression. Our promise is that only change tickets are sold for now.",
+    "our_status": "Config.Products has only the Class and Faction tickets. GDD §2 says the change tickets are the only Robux sale. Future cash items stay plans in §10-1.",
+    "action": "No change now. If the user ever designs §10-1 items, revisit there and start from cosmetics.",
+    "priority": "avoid",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:1019-1022",
+     "docs/GDD.md:109",
+     "docs/GDD.md:348-356"
+    ],
+    "conflicts": "§10-1 leaves future cash items to the user. This means \"not now\", not \"never\".",
+    "reinforces_existing": "main-b-34, games-gacha-paid-boost-conflict"
+   },
+   {
+    "id": "x5d-13",
+    "timestamp": "2:01-2:22",
+    "observation": "The Robux shop sells a floor trap that stuns other users for 3 minutes. The streamer calls it too malicious.",
+    "lesson_for_us": "Paid power over other players is griefing, especially with a young audience. It would also get around our new-player protection and bully rules.",
+    "our_status": "None exist. We have new-player protection (Lv15 / 60 min) and bully rules. GDD §14 lists \"악당 테마가 괴롭힘처럼 느껴짐\" as a risk.",
+    "action": "Never sell or add items that act on other players. Devil-side actions stay inside the PvP rules, such as plunder and the grudge sack, where they can be undone.",
+    "priority": "avoid",
+    "code_refs": [
+     "docs/GDD.md:243-251",
+     "docs/GDD.md:447"
+    ]
+   },
+   {
+    "id": "x5d-14",
+    "timestamp": "0:30-0:45",
+    "observation": "The world has a \"로벅스 랭킹\" donation board (top 56,800 R$) next to a 후원하기 stand with 5-250 R$ buttons, and a world-boss ranking.",
+    "lesson_for_us": "A public ranking of Robux spent pressures kids and has nothing to do with angel or devil. Our in-world boards should rank angel and devil deeds.",
+    "our_status": "There is no donation board. MostWantedBoard stands in Crossroads (devil side only). Leaderstats show Level, Gold, Honor and Infamy.",
+    "action": "Never add donation boards. Later, add an angel-side board next to MostWantedBoard.",
+    "priority": "avoid",
+    "code_refs": [
+     "src/ServerScriptService/MapBuilder.luau:948-975",
+     "src/ServerScriptService/PlayerService.luau:47",
+     "docs/GDD.md:354"
+    ],
+    "reinforces_existing": "games-ranking-board-both-sides"
+   },
+   {
+    "id": "x5d-15",
+    "timestamp": "0:00-0:30, 2:01-2:22",
+    "observation": "The Robux shop sells nickname and guild-name change tickets. In the lobby the streamer wondered whether duplicate names are allowed.",
+    "lesson_for_us": "Changing your name should be free, and the uniqueness rule should be shown where you type.",
+    "our_status": "implemented. Name changes are free with a 10 s rate limit, names are unique across servers, and the input shows \"2~20글자 · 다른 사람과 중복 불가\".",
+    "action": "Keep name changes free. No guild names until guilds exist.",
+    "priority": "avoid",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:53-59",
+     "src/StarterPlayer/StarterPlayerScripts/Panels.luau:240"
+    ]
+   },
+   {
+    "id": "x5d-16",
+    "timestamp": "2:01-2:22",
+    "observation": "The Robux shop sells weapon skins (for example a greatsword) and gifting.",
+    "lesson_for_us": "Cosmetics are the only paid category that fits us. For us that means halo, horn and wing cosmetics, which fit GDD §0.",
+    "our_status": "plan only (GDD §10-1).",
+    "action": "Nothing now. When the user designs §10-1, start from halo/horns cosmetics with odds shown and PolicyService checks.",
+    "priority": "later",
+    "code_refs": [
+     "docs/GDD.md:348-356"
+    ]
+   },
+   {
+    "id": "x5d-17",
+    "timestamp": "0:52-1:10 (frame 0:55)",
+    "observation": "The bottom hotbar has skill slots locked with Lv10/Lv20/Lv30/Lv40 labels, plus consumable slots and an F key hint.",
+    "lesson_for_us": "Locked slots tease a skill system that we have not built.",
+    "our_status": "The HUD has no locked slots: attack is F, skill is Q, potions are built in VitalsUI. Unused leftover strings remain: AutoLocked = \"Lv%d 해금\" and AutoOn/AutoOff.",
+    "action": "Add no locked slots and no level teasers. When building the A23 auto button, delete AutoLocked, because auto is unlocked by a quest, not a level.",
+    "priority": "avoid",
+    "code_refs": [
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:148-150",
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:1369",
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:1409",
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:730"
+    ],
+    "conflicts": "A22 and A23-1 forbid \"다음 해금\" previews.",
+    "reinforces_existing": "main-b-32, tutorials-16, games-locked-feature-teaser"
+   },
+   {
+    "id": "x5d-18",
+    "timestamp": "2:26-2:35, 4:00",
+    "observation": "The character panel shows \"초보자\" and a grid of locked jobs. The streamer says jobs are the flower of an RPG and makes the Lv10 job his main goal.",
+    "lesson_for_us": "A visible identity goal pulls players forward. Our class is chosen at minute 0 and job advancement is not built, so our identity goal is faction rank plus halo/horns growth (GDD §0). Right now Honor and Infamy come only from PvP, which starts at Lv15 or after 60 minutes.",
+    "our_status": "missing early on. Honor and Infamy are earned only in PvP and the grudge sack. Rank thresholds are 0/10/50/200/1000. The A23-2 crown-shard choice will give the first small points.",
+    "action": "Do not add a locked job grid. After A23-2, show rank progress next to the next goal for Halo/Horns (\"기사까지 명예 N\"), and only when the player has a real way to earn it.",
+    "priority": "later",
+    "code_refs": [
+     "src/ServerScriptService/PvPService.luau:552-585",
+     "src/ServerScriptService/GrudgeService.luau:139",
+     "src/ReplicatedStorage/Shared/Config.luau:436"
+    ],
+    "conflicts": "A22 forbids previews of unbuilt systems; job advancement is a later update (GDD §0-2).",
+    "reinforces_existing": "review A#11, lessons #13, tutorials-20"
+   },
+   {
+    "id": "x5d-19",
+    "timestamp": "1:16-1:30",
+    "observation": "The inventory has tabs for weapon, armor, accessory, shoes, rune, consumable and skin. The first quest teaches \"equip from inventory\".",
+    "lesson_for_us": "A 7-tab bag is a whole system to build and teach. Our design has no pickup and no bag, and weapons are equipped at the anvil, which saves those taps.",
+    "our_status": "There is no inventory, by design (GDD §11). Weapons are owned and equipped at the anvil; potion counts are on the HUD.",
+    "action": "Do not build an inventory for beta. Show the scroll count in the anvil panel and toast when one drops.",
+    "priority": "avoid",
+    "code_refs": [
+     "docs/GDD.md:366",
+     "src/StarterPlayer/StarterPlayerScripts/Panels.luau:1804-1924"
+    ],
+    "reinforces_existing": "games-side-systems-not-beta, main-b-39"
+   },
+   {
+    "id": "x5d-20",
+    "timestamp": "4:07-4:20, 5:21-5:57",
+    "observation": "The town has many separate services: weapon merchant (two-column rows of icon, name, price and buy, coloured by tier), general store, sell merchant, enhancement smith, potion seller, dimension gate and arena.",
+    "lesson_for_us": "Splitting buy, sell and enhance across different NPCs means more walking. Keep weapon buy, sell, equip and later enhance at our one anvil, put the potion NPC within sight of it, and label both in the world.",
+    "our_status": "partial. The anvil at ArtisanGuild (about (39,45)) handles buy, equip and sell. The potion NPC is planned beside the spawn (offset → about (12,-34)), roughly 85 studs from the anvil. The HUD card says \"장비 상인\" but the target is a bare anvil.",
+    "action": "A23-6: place the temporary weapon NPC at the anvil and the potion NPC within sight of it, with a world label on each. Tier colours in the list are optional; the \"what changes\" line (lessons #6) matters more.",
+    "priority": "beta",
+    "code_refs": [
+     "src/ServerScriptService/ShopService.luau:145-147",
+     "tools/preview_map.lua:601-620",
+     "src/ReplicatedStorage/Shared/Config.luau:37",
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:1908-1910"
+    ],
+    "reinforces_existing": "lessons #5, lessons #6, games-service-signs, sweep-town-service-placement, main-a-08"
+   },
+   {
+    "id": "x5d-21",
+    "timestamp": "5:21-5:57, 6:04-6:20",
+    "observation": "Weapon names come from another YouTuber's content, and the pigs look like Minecraft pigs. The streamer notices both.",
+    "lesson_for_us": "Borrowed names and looks risk takedowns, and players notice them.",
+    "our_status": "Our weapon names are original. AGENTS tells Firefly prompts to describe looks without brand names.",
+    "action": "Keep it that way: no names or designs from other creators or games in prompts or Config.",
+    "priority": "avoid",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:170"
+    ],
+    "reinforces_existing": "tutorials-35"
+   },
+   {
+    "id": "x5d-22",
+    "timestamp": "4:24-5:21",
+    "observation": "Using a key teleports the streamer into \"지하세계 던전\" without explanation. The monsters look like Lv61, crystals must be mined before each next room, the run feels long, and the streamer dies. A result board shows 141 kills, 32 tokens and 3 crystals.",
+    "lesson_for_us": "Entries into harder content should state the level and goal before you go in. Forced gathering between rooms drags. A short result summary gives a run closure.",
+    "our_status": "We have no dungeons (\"4인 던전\" is on the later roadmap). Under-level zone entry is bounced with a reason, and Travel shows \"Lv N 필요\".",
+    "action": "Nothing for beta. For future instances: a confirm screen with level and goal, no mining gates, and a summary at the end.",
+    "priority": "later",
+    "code_refs": [
+     "src/ServerScriptService/ZoneService.luau:307-310",
+     "docs/GDD.md:430"
+    ],
+    "reinforces_existing": "main-b-20, main-b-12, lessons #3, lessons #17"
+   },
+   {
+    "id": "x5d-23",
+    "timestamp": "2:41-3:58, 7:34-7:55",
+    "observation": "A stranger's party invite popup appears, and later a duel request popup. The streamer declines both (\"결투는… 그냥 사냥이나 해야지\").",
+    "lesson_for_us": "Pop-up requests from strangers interrupt a solo first session.",
+    "our_status": "None exist. Our PvP is zone-based, with new-player protection.",
+    "action": "Keep it that way. If party or duel features come later, show non-blocking toasts with a block option, and never send them to protected new players.",
+    "priority": "avoid",
+    "code_refs": [
+     "docs/GDD.md:243"
+    ]
+   },
+   {
+    "id": "x5d-24",
+    "timestamp": "7:12-7:30",
+    "observation": "The streamer's name is red and he does not know why.",
+    "lesson_for_us": "Every name colour should be explained when it changes, and the player should be able to look it up again.",
+    "our_status": "partial. Toasts explain bully state changes, and the HUD shows a \"깡패 %d단계\" chip. GDD §11 lists the colours. The B-menu rules page is deferred.",
+    "action": "In the 3-player test, check that both the wanted or bully player and the others can say why a name is red. The rules page comes later.",
+    "priority": "later",
+    "code_refs": [
+     "src/ReplicatedStorage/Shared/Config.luau:1585-1587",
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:127",
+     "src/StarterPlayer/StarterPlayerScripts/HUD.luau:1822",
+     "docs/GDD.md:371"
+    ],
+    "reinforces_existing": "main-b-26, tutorials-28, main-a-15"
+   },
+   {
+    "id": "x5d-25",
+    "timestamp": "6:04-6:20",
+    "observation": "There is a tower with an unexplained rune that does not react (\"아무런 반응이 없다\").",
+    "lesson_for_us": "A cheap, unexplained landmark makes players curious.",
+    "our_status": "We already have such landmarks: the broken CrownOfBalance in the sky and the CrownShard over the fountain, plus story lines shown when a zone unlocks.",
+    "action": "Use them in the opening (x5d-01). Later, add a ProximityPrompt at the fountain shard that replays the premise and shows the current crown war, without promising any reward.",
+    "priority": "later",
+    "code_refs": [
+     "tools/preview_map.lua:301-328",
+     "tools/preview_map.lua:508-528",
+     "src/ReplicatedStorage/Shared/Config.luau:1548-1551"
+    ]
+   },
+   {
+    "id": "x5d-26",
+    "timestamp": "6:23-7:12",
+    "observation": "A top banner reads \"1617초 뒤 재시작 · 내구도 패치 및 신기루 패치\".",
+    "lesson_for_us": "Live patches need a warning with a reason. A countdown in seconds only is hard to read.",
+    "our_status": "BindToClose saves data, but there is no restart notice.",
+    "action": "Before launch, add a notice in minutes using the existing toast or top bar.",
+    "priority": "launch",
+    "code_refs": [
+     "src/ServerScriptService/PlayerService.luau:559"
+    ]
+   },
+   {
+    "id": "x5d-27",
+    "timestamp": "frames (bottom-right)",
+    "observation": "A beta version label is shown in the bottom-right corner.",
+    "lesson_for_us": "A visible \"베타\" label sets expectations for features that say \"준비 중\".",
+    "our_status": "none.",
+    "action": "Add a small \"베타 v0.x\" TextLabel in a corner for the 10/31 beta, using UIKit code text and no art.",
+    "priority": "beta"
+   },
+   {
+    "id": "x5d-28",
+    "timestamp": "0:00-0:30, 5:21-6:20",
+    "observation": "The video also shows fishing, double jump, the \"신기루 아레나\" 1v1 ranked PvP, a dimension gate, a world-boss ranking, and a lobby with an update vote and server list.",
+    "lesson_for_us": "None of this is needed for our first 10 minutes or before the 10/24 feature freeze. A custom lobby adds taps before play.",
+    "our_status": "None present; feature freeze is 2026-10-24.",
+    "action": "Don't add these. Roblox's own server list is enough.",
+    "priority": "avoid",
+    "reinforces_existing": "main-b-39, games-side-systems-not-beta, main-a-33"
+   }
+  ],
+  "opening_advice": "What the video does: a Roblox lobby (update vote, server list, rules) leads to a spawn in a town with world boards. Within about 20 s a compact guide bar gives one safe, rewarded task (\"첫 무기 챙기기\": a free club from the shop). The first hunt is just outside town. No faction or class is chosen at start; the job is held back as the Lv10 goal. The first minute is: see the world, get one concrete task, succeed.\n\nWhat we do: the default loading screen goes straight into FactionPicker, the moment DataLoaded is true and Faction is \"None\" (FactionPicker.luau:1994-1998, 1949-1973). It blurs the camera, hides every world label, the joystick and chat (1837-1851, 1897-1935), fades in three premise lines 0.6 s apart (32-33, 1937-1947) and shows three cards. The player chooses a side in a world they have not seen yet, and that is the abruptness the user describes.\n\nWe should keep the pick, because GDD §0 is our core, but give it a reason first. My answer to \"애니메이션을 만들까?\" is yes: a short one, built from what is already in the place, with no new art:\n1. A camera opening of 10-15 s on first join only (Faction == \"None\"). After 1 s, a tap, click or any key skips it.\n   - Shot 1 (3-4 s): from the Crossroads plaza, look up at the broken CrownOfBalance at (0,350,0) with its gaps and fragments (tools/preview_map.lua:301-328). Subtitle: Premise[1] \"세상을 지키던 균형의 왕관이 부서졌다.\"\n   - Shot 2 (3-4 s): tilt down the light beam to the CrownShard over the fountain at (0,22,0) (preview_map.lua:508-528). Subtitle: Premise[2].\n   - Shot 3 (two cuts of about 2 s each): HaloTown's marble at (0,0,-400), then HornsTown's slate at (0,0,400) (Config.luau:724-729).\n   - Shot 4 (2-3 s): back on the player's own avatar at the Crossroads spawn (0,0,-25). Subtitle: Premise[3]. Then the cards appear, with the premise strip already filled instead of fading in again.\n   - Use close shots only. A12 says only the World Map shows the whole world (fog 120-650), so no top-down overview.\n2. Implementation, kept small:\n   - Make the opening a phase inside FactionPicker, so IsOpen() stays true. The HUD then stays hidden through pickersOpen() (HUD.luau:282-291, 2926-2931) and ClassPicker still waits.\n   - Reuse E.background(true) to hide labels, TouchGui and chat.\n   - Drive the camera with CameraType Scriptable and TweenService. CameraFollow already leaves Scriptable cameras alone (CameraFollow.luau:99-100).\n   - Restore CameraType Custom and the Humanoid subject on finish, skip, respawn or resize.\n   - Build subtitles from existing UIKit/PanelParchment text, using Config.Story.Premise (Config.luau:1498-1502), which is already in the central text table for English later.\n   - No server, remote or DataStore changes.\n3. Rules:\n   - A7-4 stays satisfied: no new required tap, not a gacha draw, still faction → class → play in 3 taps.\n   - Keep the total at 15 s or less.\n   - The skip button is at least 44 px, and subtitles sit in the lower third, readable at 749×361.\n   - The Firefly storyboard opening stays post-launch.\n   - Get the user's OK, because it is new scope inside the \"first 10 minutes\" step.\n4. After the pick, copy the video's real strength: one safe, concrete task within about 20-30 s.\n   - Make the guide dialog compact, with accept on page 1 (x5d-02).\n   - Get the first hit within about 60 s of choosing a class.\n   - The crown and shard the player just saw are the same things the guide and the crown-shard quest talk about, so the story connects at no art cost.\n5. Don't copy: a custom lobby, server list or update vote; a wall of rules; a donation board in the first view.\n6. Optional later variant: end the camera on the avatar 25 studs from the fountain shard and point to it with the existing guide beam (HUD.luau:2484). Touching the shard opens the picker titled \"조각이 무엇이 될까?\", so the pick becomes the player's first action (GDD §0). This needs gating for movement and input while Faction is None, so ship the passive version first.\n7. Measure join → faction tap → first hit on PC and phone, with and without the opening (tutorials-26).",
+  "summary": "I read the whole notes file for X5d5hqhB2os (one streamer's first 8.5 minutes of 환장 오디세이, from transcript and frames), the decision docs (AGENTS latest decisions, A23, GDD §0/§0-2/§10-1, RELEASE_PLAN) and the existing review and lessons. I turned the video into 28 lessons and checked each against current code with file:line references. I changed no files.\n\n**What the video adds beyond the existing docs:**\n- **Quest fatigue:** kill-N chains with growing N made the streamer quit at \"여우 50마리\". Our Kill dailies are 50-60 (Config.luau:971) and appear from minute 0.\n- **Honest \"not yet\" is accepted:** the potion seller says \"준비 중\" and the streamer moves on. Ours instead shows \"구매\" and tells players to buy potions while the merchant is disabled.\n- **Next goal that names an unlock:** \"Lv10 → 직업\", plus a clear signal when guidance ends.\n- **Compact guide bar:** one line, accept on the same screen, no portrait.\n- **Dense spawns near town:** the hunt felt good even without item art.\n- **Guided first enhancement:** one try with its own material and the exact stat change shown.\n\n**Code facts found along the way:**\n- QuestRewardGold is still 120 (Config.luau:916); the 150 decision is not in code yet.\n- The next goal disappears after the blacksmith visit (QuestService.luau:409-415).\n- An unused \"Lv%d 해금\" string remains in HUD.luau:150.\n- Auto combat is not built (CombatService.luau:1149-1160).\n- There is no scroll or enhancement code.\n\n**Marked avoid:** paid auto (attack, skill, potion), x2/VIP boosts, the 3-minute stun griefing trap, the destruction-protection ticket, the donation board, selling name changes, locked Lv-slot teasers, a 7-tab inventory, IP reuse, unsolicited duel or party popups, and scope creep (fishing, arena, lobby).\n\n**On the user's opening question:** the video starts with no faction pick, just a quick, safe, rewarded task. For us, a 10-15 s skippable camera opening built from parts already in the map (the broken sky crown, the shard and beam over the fountain, both faction towns, then the player's own avatar) gives the pick a reason. It needs no new art and no extra tap, and it should run as a phase inside FactionPicker.\n\n**Conflicts to tell the user about:**\n- A7-4 (3 taps, no draw animation at start) and A12 (no whole-world view): handled by keeping the opening short and skippable, with close shots only.\n- The quest-size and enhancement numbers are the user's decision."
+ },
+ "c": {
+  "verdicts": [
+   {
+    "id": "x5d-01",
+    "verdict": "revise",
+    "note": "Built on an out-of-date baseline. The user already chose this opening (A23-9 'A안', SPEC_ADDENDUM.md:55-59; GDD.md:69; RELEASE_PLAN.md:9; worker_prompt_2026-10-06.md:51). The decided spec is 15-25 s, skip button always visible, IntroSeen saved, a menu '오프닝 다시 보기', and scenes in this order: altar ruins crown breaks → shards fly to HaloTown/HornsTown → a shard drops in front of my avatar with '어느 편에 설래?' → cards. The lesson's 10-15 s, 'needs user OK' and 'Firefly opening stays post-launch' are wrong or stale; reference_lessons line 60 is superseded. Evidence: the video has no cinematic at all. It supports 'world first, then one concrete task in about 20 s', not an animation. Priority 'now' is right, since it is Stage 2 in the worker prompt."
+   },
+   {
+    "id": "x5d-02",
+    "verdict": "revise",
+    "note": "Partly stale. The working tree already hides the portrait when viewport height is under 520 (Panels.luau:1165-1170), which is review A#5's fix. Still true: accept appears only on the last page (Panels.luau:1214), and the title is the generic '안내자 대화' (Panels.luau:64). The '짧은3쪽 대화' is a documented user flow (GDD.md:69), so 수락 on every page is a usability tweak to propose, not a given. The video evidence (one-line bar, frame 0:55) is solid but thin."
+   },
+   {
+    "id": "x5d-03",
+    "verdict": "drop",
+    "note": "Already done in the working tree: QuestRewardGold = 150 (Config.luau:916, edited 13:10 today). HEAD had 120, so the claim was true only for HEAD. The remaining check, 'buy right after claim', is already in lessons #1 and the worker prompt. Reinforces review A#4 and adds nothing new."
+   },
+   {
+    "id": "x5d-04",
+    "verdict": "revise",
+    "note": "The A23-3 next-goal line is already implemented: nextGoalText at QuestService.luau:394-414 and texts at Config.luau:952-956. The status 'missing' is stale. The genuinely new part is real and cheap: when nextGoalText returns nil (Lv10+ with iron owned), the pinned line disappears silently. Add the one-time 'guided part ends' toast. Video support is good (4:00 and 6:23 lines)."
+   },
+   {
+    "id": "x5d-05",
+    "verdict": "revise",
+    "note": "The quote is real (7:55-8:28), but the streamer was also ending the recording ('피곤하니까 여기까지'), so it is not a clean 'quit because of quests'. Ours are parallel dailies, not an escalating chain. The proposed fix is economically wrong: shrinking Kill N to 20-30 while each daily still pays HuntValue(5 min) raises reward per kill, and lessons #10 already says early dailies are too generous. The real lever is Config.Economy.KillsPerMinute = 12 (Config.luau:669), which sizes DailyUnits 50-60 = 12×5. That number comes from the auto/charge era: measure manual kills/min, then resize so a daily stays about 5 min. The numbers are the user's call. Note that folding only covers step 0 (HUD.luau:1987-1993)."
+   },
+   {
+    "id": "x5d-06",
+    "verdict": "revise",
+    "note": "Spawn density is supported (2:41-3:58). 'Art matters less' over-reads the streamer, who only noted the missing item art. Fold this into lessons #1/#16 as two metrics: slimes within 30 studs on arrival, and arrival → first hit. Back-of-envelope: 12 slimes over 260×260 means about 75 studs mean spacing, and SpawnSpread only acts on respawn (Config.luau:876). An empty arrival screen is therefore plausible. Measure first and change Count only with the user."
+   },
+   {
+    "id": "x5d-07",
+    "verdict": "drop",
+    "note": "Duplicates lessons #10 almost word for word (Lv5 about 45 and Lv10 about 276 slimes, stale comment at Config.luau:139-140; my recomputation agrees, 1381 XP). The streamer reaching Lv10 at 6:23 used a dungeon in another game with an unknown XP curve, so it is no evidence for our numbers."
+   },
+   {
+    "id": "x5d-08",
+    "verdict": "drop",
+    "note": "Already fixed in the working tree. VitalsUI.luau:47 shows '준비 중' when MerchantEnabled is false. VitalsService.luau:34 and :60 messages are gated on MerchantEnabled ('물약 상점은 준비 중이에요'). What remains is the A23-6 potion NPC, which review A#7 and lessons #5 already cover."
+   },
+   {
+    "id": "x5d-09",
+    "verdict": "revise",
+    "note": "Supported (6:23-7:12). It still depends entirely on the pending user rules (lessons #15). Fold the two new asks into #15's question list: (1) a guaranteed first scroll, (2) one guided try that shows 'N→M (슬라임 3방→2방)' and '항상 성공'. Taking the scroll from the crown-shard quest conflicts with A23-2's no-extra-reward default, as the lesson notes, so offer the first BigSlime drop as the default. Put the scroll count and drop toast here, not in x5d-19."
+   },
+   {
+    "id": "x5d-10",
+    "verdict": "keep",
+    "note": "Supported (2:01-2:22). This restates an existing rule (GDD.md:26, persona). Merge x5d-10/11/12/13/14 into one 'Robux-shop anti-patterns' entry with no new work."
+   },
+   {
+    "id": "x5d-11",
+    "verdict": "revise",
+    "note": "Paid auto attack, skill and potion is supported. Our status is correct: SetAutoAttack forces false (CombatService.luau:1159), and GDD.md:123/460 back the no-sale rule. 'Do not add auto potions' is a new rule nobody decided. Phrase it as a flag for the user: auto potions plus auto combat would make AFK farming indefinitely survivable. Merge into the anti-pattern entry."
+   },
+   {
+    "id": "x5d-12",
+    "verdict": "drop",
+    "note": "Pure repeat of GDD §10 and §10-1 ('변경권만', no stat sale) and main-b-34. No action."
+   },
+   {
+    "id": "x5d-13",
+    "verdict": "revise",
+    "note": "Strong evidence ('too malicious'). 'Never add items that act on other players' is too broad, because plunder and bounty are the devil/angel core (GDD §0). Narrow it to: nothing paid, and nothing automated or AFK, that affects other players. A23-1 already keeps auto combat monsters-only. Merge into the anti-pattern entry."
+   },
+   {
+    "id": "x5d-14",
+    "verdict": "keep",
+    "note": "Supported (0:30-0:45). A cheap 'never' that fits the kids audience and GDD §10-1 ('강요·속임수 없음'). The angel-side board is a separate, later idea (games-ranking-board-both-sides). Merge."
+   },
+   {
+    "id": "x5d-15",
+    "verdict": "drop",
+    "note": "Already implemented: free change, 10 s limit, '중복 불가' hint. No action. 'Never sell renames' is not a user decision; §10-1 leaves future items to the user."
+   },
+   {
+    "id": "x5d-16",
+    "verdict": "drop",
+    "note": "GDD §10-1 already names halo, horn and wing cosmetics as the direction. No new evidence or action."
+   },
+   {
+    "id": "x5d-17",
+    "verdict": "revise",
+    "note": "The frame evidence is fine. But A23-1 explicitly allows a lock display for the auto button before unlock, as long as it has no '다음 해금' text, so 'add no locked slots' over-states the rule. The useful bit is trivial: TXT.AutoLocked 'Lv%d 해금' (HUD.luau:150) is unreferenced dead text with the wrong unlock condition. Delete or replace it while building A23-1."
+   },
+   {
+    "id": "x5d-18",
+    "verdict": "revise",
+    "note": "Duplicates lessons #13 and review A#11. Mark it 'reinforces #13' and keep it 'later'. Adding a second rank-progress line next to the one-line next goal fights A23-3's one-line rule and the phone one-line view."
+   },
+   {
+    "id": "x5d-19",
+    "verdict": "drop",
+    "note": "GDD §11 already says no pickup and no bag. The scroll count and toast belong in x5d-09. No separate lesson needed."
+   },
+   {
+    "id": "x5d-20",
+    "verdict": "revise",
+    "note": "'More walking' is the analyst's inference; the notes show no complaint about it. The concrete, cheap fix is name consistency: the HUD card says '장비 상인' (HUD.luau:1908), the world label now says '대장간 · 장인 길드' (preview_map.lua, working tree) and the panel says '대장간'. Pick one. The potion NPC is about 84 studs from the anvil, (12,-34) vs (39,45), which is visible at fog 120, so moving it is optional during A23-6."
+   },
+   {
+    "id": "x5d-21",
+    "verdict": "drop",
+    "note": "Already policy, and our weapon and monster names are generic (Config.luau:170-172). No action."
+   },
+   {
+    "id": "x5d-22",
+    "verdict": "drop",
+    "note": "No dungeons before launch, so no beta action. The future-instance advice duplicates main-b-20 and main-b-12."
+   },
+   {
+    "id": "x5d-23",
+    "verdict": "revise",
+    "note": "'None exist' is inaccurate. We have server-wide interrupts: GooseStart, KaijuSiren/Start, war results, MostWanted and BountyAnnounce (Config.Story/Text). These are our analogue of stranger popups. This reinforces lessons #4 (defer goose and war popups before the first mission), and they should also be queued while the A23-9 opening and the pickers are open."
+   },
+   {
+    "id": "x5d-24",
+    "verdict": "keep",
+    "note": "Supported (7:12-7:30). 'Later' plus a check in the 3-player test is proportionate."
+   },
+   {
+    "id": "x5d-25",
+    "verdict": "revise",
+    "note": "A23-9 already includes a menu replay. A fountain-shard ProximityPrompt would be a second replay entry, so treat it as optional after A23-9, without a reward promise. The rune-tower evidence is one line."
+   },
+   {
+    "id": "x5d-26",
+    "verdict": "keep",
+    "note": "Supported by the 6:23 banner. A minutes-based shutdown notice is cheap and correctly marked 'launch'."
+   },
+   {
+    "id": "x5d-27",
+    "verdict": "revise",
+    "note": "Frame-only evidence. A new visible HUD element on the approved layout needs the user's OK (AGENTS: no invented visual styling). It is cheap, but make it 'ask user, beta, optional', not a default task."
+   },
+   {
+    "id": "x5d-28",
+    "verdict": "keep",
+    "note": "Correct scope guard (10/24 freeze). Keep it as one line, and fold 'no custom lobby or server list before the opening' into the opening advice."
+   }
+  ],
+  "missing": [
+   "Re-baseline before handing off. The working tree was being edited at 13:10-13:12 KST today, probably by a concurrent worker, and already has: 150 gold (Config.luau:916), the A23-3 next-goal line (QuestService.luau:394-414), potion '준비 중' (VitalsUI.luau:47, VitalsService.luau:34/60), the short-screen portrait hide (Panels.luau:1165-1170) and dailies folded at step 0 (HUD.luau:1987-1993). x5d-03/04/08/02 describe HEAD, not the current tree.",
+   "A23-9 scene 1 has no set piece. '왕관 제단 폐허 (900,0,−60)' exists only in ART_DIRECTION.md:180. Neither tools/preview_map.lua nor MapBuilder builds it; SkeletonRuins has only scattered pillars, tombstones and arches at x≥1020. Either build a small parts-only altar (no images) or substitute the existing sky CrownOfBalance (0,350,0). Either choice changes the scene the user picked, so ask.",
+   "The A23-9 architecture cannot be 'a phase inside FactionPicker'. Menu replay happens after Faction is set, when FactionPicker.IsOpen() is false. It needs its own client module with IsOpen(). Add it to every picker check: HUD pickersOpen (HUD.luau:282-291, used at 2986), EventHUD.luau:207, Panels.luau:806, VitalsUI.luau:26 and ClassPicker.luau:1505. FactionPicker.refresh must also wait until the opening ends.",
+   "Opening safety and input gaps. F/Q/potion input must be ignored during the cutscene (on replay the class is chosen, so Swing would fire). Allow replay only in a safe town (A23-9: '연출 중 캐릭터 안전'). Start only after DataLoaded, so returning players never see a flash. On finish, skip, respawn or CharacterAdded, restore CameraType Custom and the Humanoid subject (CameraFollow.luau:99-100 only re-subjects Custom cameras).",
+   "IntroSeen persistence needs a DataService default plus a rate-limited remote or server-set attribute. The analysis's 'no server/DataStore change' contradicts A23-9's '본 기록은 저장한다'.",
+   "Economy reference: Config.Economy.KillsPerMinute = 12 (Config.luau:669) sizes the Kill dailies (50-60) and every HuntValue reward. It dates from the auto/charge era. Under manual combat a '5-minute' daily of 50 slimes may take 8-10 minutes, which is exactly the '여우 50마리' wall. Measure manual kills/min in the timed test and propose resizing to the user.",
+   "Our own next-goal chain has a 50-foxes wall. After Lv5 the line becomes '철 무기 800골드 · 보유 N'. At 3 gold per slime that is about 267 slimes, minus dailies (about 180 each). Measure the Lv5 → iron time. If it is well over 10 minutes, propose a price or varied-verb change to the user.",
+   "Extend the timed playtest to about 15 minutes, not 10. The streamer's fatigue hit around minute 8, right after the guided part, which is where our Lv5/800-gold stretch starts.",
+   "Two picks before any combat. The video defers the job choice to Lv10; we keep faction → class (A7-4). Low-cost mitigation for later and the user's call: keep '처음이면 추천' and tell new players that an early class change loses little.",
+   "Opening timing budget: in the video the first concrete task arrives about 20 s after spawn. Ours is opening (≤25 s) + 2 picks + 3-page dialog + Menu > 이동. Lessons #2 ('tap the pinned line to open the action') matters more to time-to-first-hit than the opening's length."
+  ],
+  "opening_critique": "The opening advice answers a question the user has already settled. On 2026-10-05 the user chose A23-9 'A안' (SPEC_ADDENDUM.md:55-59, GDD.md:69, RELEASE_PLAN.md:9, worker_prompt_2026-10-06.md:51). The advice contradicts it in several places:\n\n- **Length:** 10-15 s instead of 15-25 s.\n- **Skip:** skip only after 1 s, instead of a skip button that is always visible.\n- **Saving and replay:** 'no server/DataStore change' and no replay, instead of IntroSeen saved plus a menu '오프닝 다시 보기'.\n- **Scenes:** sky crown → fountain beam → towns → avatar, instead of altar-ruins crown breaks → shards fly to the two towns → a shard falls in front of my avatar with '어느 편에 설래?'.\n- **Status:** it says 'needs the user's OK' and 'Firefly opening stays post-launch'. The approval is already given, and reference_lessons line 60 is superseded.\n\nIt should be rewritten as an implementation plan for A23-9. Any deviation goes to the user as a question.\n\nThe deviation that is actually needed is not flagged. The '왕관 제단 폐허' named in A23-9 exists only in ART_DIRECTION.md:180, at (900,0,−60). No code builds it. The sky CrownOfBalance may be the right substitute, but the user must choose.\n\nThe proposed architecture also fails the decided feature. A 'phase inside FactionPicker' relies on IsOpen() being true while Faction is 'None', so it cannot support replay from the menu. Use a separate module with its own IsOpen() and wire it into every picker check (HUD.luau:282-291/2986, EventHUD:207, Panels:806, VitalsUI:26, ClassPicker:1505). It must also:\n- block attack, skill and potion input;\n- allow replay only in a safe town;\n- start only after DataLoaded;\n- restore the Custom camera on skip, finish or respawn.\n\nEvidence framing is weak. The video contains no cinematic. What it shows is 'see the world, then one safe concrete task in about 20 s', so the opening's seconds count against time-to-first-hit. The bigger delays after it are two picks, a 3-page dialog and Menu > 이동 travel, which is lessons #2.\n\nParts to keep:\n- close cuts only (A12 fog 120-650; towns at ±400 need cuts, not pans);\n- a Scriptable camera, which CameraFollow already leaves alone (CameraFollow.luau:99-100);\n- subtitles from Config.Story.Premise (actually Config.luau:1501-1507, not 1498-1502);\n- not re-fading the premise strip in the picker;\n- no lobby, rules wall or donation board;\n- measuring join → first hit with and without the opening.\n\nDrop optional variant 6. A picker titled '조각이 무엇이 될까?' would alter the approved baked title-ribbon art, and walking to the shard adds movement gating.\n\nOne cited ref is wrong: HUD.luau:2926-2931 is layout code. The HUD gating is at line 2986."
+ }
+}

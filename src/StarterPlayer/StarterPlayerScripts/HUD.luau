@@ -99,8 +99,6 @@ local COL = {
 -- quest Id -> icon part (slime for monster kills, scroll otherwise)
 local QUEST_ICON = { tutorial = "IconSlime", Kill = "IconSlime", Golden = "IconSlime", Goose = "IconGoose" }
 
-local REWARD_SAMPLES = NEXT.RewardSamples or 10
-local MAX_KILLS_SHOWN = NEXT.MaxKillsShown or 99
 local GUIDE_SECONDS = NEXT.GuideSeconds or 90
 local GUIDE_ZONES = NEXT.GuideZones or { "GoblinWoods", "SkeletonRuins" }
 local TUT_GUIDE_STEP = (type(TUT.Steps) == "table" and TUT.Steps.Guide) or 1
@@ -139,23 +137,25 @@ local TXT = {
 	BadgeDaily = "일일",
 	BadgeExtra = "추가",
 	BadgePinned = "안내",
+	BadgeMain = "메인",
+	BadgeSub = "선택",
 	Claim = "받기",
 	Reroll = "교체", -- Gotham has no ↻ glyph (rendered as tofu)
 	RerollTitle = "퀘스트 바꾸기", -- CR-M25 confirm dialog
 	RerollBody = "진행도가 사라져요. 바꿀까요?",
 	RerollYes = "바꾸기",
 	Attack = "공격",
-	Release = "발사",
+	Release = "스킬",
+	ReleaseCost = "MP%d",
 	Perfect = "PERFECT!",
-	AutoOn = "자동 ON",
-	AutoOff = "자동 OFF",
-	AutoLocked = "Lv%d 해금",
+	AutoOn = "자동 켬",
+	AutoOff = "자동 끔",
 	UpgradeNext = "다음: %s",
 	UpgradePrice = "%sG",
-	UpgradeMax = "최고 등급",
+	UpgradeMax = "기본 무기 준비 완료",
 	UpgradeNeedLevel = "Lv %d 필요",
 	UpgradeNeedFaction = "진영 선택 필요",
-	UpgradeReady = "구매 가능!",
+	UpgradeReady = "대장간에서 구입 · 길 안내",
 	Map = "지도",
 	Menu = "메뉴",
 	TravelLeft = "%s %.1f초",
@@ -173,23 +173,21 @@ local holdSources = {} -- [source] = true; source = "mouse" | "keyF" | "padR2" |
 local holdToken = 0
 local lastAction = {}
 
-local recentGold = {} -- gold of the last REWARD_SAMPLES kill rewards (Fx "Reward")
 local prevLevel = nil
 local levelBaselineReady = false
 
-local perfectOn = false
-local perfectTween = nil
 local menuGlowOn = nil
 local menuGlowTween = nil
-local afford = { Baseline = false, Was = false, Streak = 0, Notified = {} }
 
 local questRows = {}
 local questExpanded = false -- collapsed list shows the header + one row
 -- CR-M24: 교체 is ignored for ClaimLock s after a claim and a row for RowLock s after its quest changed;
 -- CR-M25: touch opens the rows' overlay from the header (OverlayOpen);
 -- CR-L50: Data = the last quest list from the "Quests" remote, Started = HUD.Start ran (rows may refresh)
+-- B15: StoryKey = "id|St" of the story page Panels holds back (fight / other window), CallEntry = its quest entry,
+-- Pulse = the gentle gold pulse on that row (touch: on the header line)
 local questState = { ClaimAt = -math.huge, ClaimLock = 1.5, RowLock = 0.8, OverlayOpen = false, Data = nil,
-	Started = false }
+	Started = false, StoryKey = "", CallEntry = nil, Pulse = { Target = nil, Stroke = nil, Tween = nil } }
 local guide = nil -- { Tag, Part, Att0, Att1, Beam, Billboard, Tween }
 local guideAnchors = {}
 
@@ -286,7 +284,7 @@ local function playSound(name)
 end
 
 local function pickersOpen()
-	for _, name in { "FactionPicker", "ClassPicker" } do
+	for _, name in { "Intro", "FactionPicker", "ClassPicker" } do
 		local m = C and C[name]
 		if type(m) == "table" and type(m.IsOpen) == "function" then
 			local ok, open = pcall(m.IsOpen)
@@ -1116,6 +1114,11 @@ local function buildQuests(root)
 		Size = UDim2.fromOffset(L.QuestW, hh),
 		Parent = ui.quests,
 	}, function()
+		-- B15: on touch the header line reads "…말을 걸어요 — 눌러서 보기" while a story waits: one tap opens it
+		if IS_TOUCH and questState.CallEntry and L.PinnedTap then
+			L.PinnedTap(questState.CallEntry)
+			return
+		end
 		toggleQuests()
 	end, { CornerRadius = UDim.new(0, 10) })
 	local is = hh - 8
@@ -1309,7 +1312,7 @@ local function keyHint(parent, text, position, anchor)
 	}), 11)
 end
 
-local toggleAuto, doUpgrade, openMenu, openMap -- forward (defined with the input code)
+local doUpgrade, openMenu, openMap -- forward (defined with the input code)
 
 -- parchment square (BtnSquare art): icon over a short ink label, key badge on the corner
 local function squareButton(name, icon, text, key, onClick)
@@ -1374,42 +1377,9 @@ local function buildButtons(root)
 	L.FitText(ui.attack:FindFirstChild("Label"), 16, true)
 	keyHint(ui.attack, "F", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
-	-- 발사: gold disc + winged star, charge count badge on the top edge, the charge ring around it
+	-- Keep the approved skill button artwork; only MP and cooldown determine readiness.
 	local rel, relArt = roundButton("Release", L.Release, "BtnSpecial", COL.ReleaseFill)
 	ui.release, ui.releaseArt = rel, relArt
-	-- charge gauge: a disc behind the button filling bottom-up (UIGradient "Level"), visible as a ring around it
-	local gauge = UIKit.Create("Frame", {
-		Name = "Gauge",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromScale(1.16, 1.16),
-		BackgroundColor3 = ac("NavyDeep", COL.ReleaseFill),
-		BackgroundTransparency = 0.2,
-		ZIndex = 1,
-		Parent = rel,
-	}, {
-		corner(UDim.new(0.5, 0)),
-		UIKit.Create("UIStroke", {
-			Name = "Ring",
-			Thickness = 4,
-			Color = COL.RingIdle,
-			Transparency = 0.35,
-			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-		}),
-	})
-	ui.ring = gauge:FindFirstChild("Ring")
-	ui.chargeFill = UIKit.Create("Frame", {
-		Name = "Fill",
-		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = COL.Charge,
-		BackgroundTransparency = 0.2,
-		Visible = false,
-		Parent = gauge,
-	}, {
-		corner(UDim.new(0.5, 0)),
-		UIKit.Create("UIGradient", { Name = "Level", Rotation = -90 }),
-	})
-	ui.chargeGradient = ui.chargeFill:FindFirstChild("Level")
 	ui.releaseIcon = UIKit.ArtImage("IconSpecial", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
@@ -1418,7 +1388,7 @@ local function buildButtons(root)
 		ZIndex = 3,
 		Parent = rel,
 	})
-	ui.chargeSub = artLabel(false, {
+	ui.skillLabel = artLabel(false, {
 		Name = "Sub",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.74),
@@ -1430,8 +1400,8 @@ local function buildButtons(root)
 		ZIndex = 4,
 		Parent = rel,
 	})
-	L.FitText(ui.chargeSub, 14, true)
-	ui.chargeTimer = artLabel(false, {
+	L.FitText(ui.skillLabel, 14, true)
+	ui.skillTimer = artLabel(false, {
 		Name = "Timer",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.45),
@@ -1444,33 +1414,10 @@ local function buildButtons(root)
 		ZIndex = 4,
 		Parent = rel,
 	})
-	local countBadge = UIKit.ArtFrame("LevelBadge", {
-		Name = "CountBadge",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.04),
-		Size = UDim2.fromScale(0.44, 0.44),
-		ZIndex = 5,
-		Parent = rel,
-	}, { StrokeThickness = 2 })
-	local facePos, faceSize = UIKit.ArtInner("LevelBadge")
-	ui.chargeNum = artLabel(false, {
-		Name = "Count",
-		Position = facePos or UDim2.fromScale(0.17, 0.18),
-		Size = faceSize or UDim2.fromScale(0.65, 0.61),
-		TextScaled = true,
-		MaxTextSize = 22,
-		Number = true,
-		Text = "0",
-		Parent = countBadge,
-	})
-	L.FitText(ui.chargeNum, 14, true)
-	L.FitText(ui.chargeTimer, 16)
+	L.FitText(ui.skillTimer, 16)
 	keyHint(rel, "Q", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
 	-- 자동 / 지도 / 메뉴 (U1: the menu key is B; Esc belongs to Roblox and M opens the map)
-	ui.auto, ui.autoLabel, ui.autoIcon = squareButton("Auto", "IconLock", TXT.AutoOff, "R", function()
-		toggleAuto()
-	end)
 	ui.map = squareButton("Map", "IconMap", TXT.Map, "M", function()
 		openMap()
 	end)
@@ -1478,6 +1425,16 @@ local function buildButtons(root)
 		openMenu()
 	end)
 	ui.menuGlow = makeGlow(ui.menu, UDim.new(0, 12))
+	-- A23-1 auto combat ON/OFF: hidden until the crown-shard quest unlocks it (no "unlocks at ..." teaser)
+	ui.auto, ui.autoLabel = squareButton("Auto", "Crown", TXT.AutoOff, "R", function()
+		L.ToggleAuto()
+	end)
+	ui.autoGlow = makeGlow(ui.auto, UDim.new(0, 12))
+	local autoKey = ui.auto:FindFirstChild("KeyHint")
+	if autoKey then -- the longer "자동 끔" label needs the bottom-right corner
+		autoKey.AnchorPoint, autoKey.Position = Vector2.new(1, 0), UDim2.new(1, 3, 0, -3)
+	end
+	ui.auto.Visible = false
 
 	-- next-weapon card: sword + "다음: 나무 검" + coin price, progress bar / A7-3 "N마리 더!" line
 	local upW, upH = 3 * L.Square + 2 * L.RowGap, L.UpgradeH
@@ -1700,13 +1657,9 @@ function L.PortraitRebuild(state, revision)
 	state.Clone = copy
 	copy.Parent = state.World
 	state.View:SetAttribute("CharacterName", character.Name)
-	state.View:SetAttribute("CostumeId", character:GetAttribute("HHC_CostumeId") or "")
-	-- Head is the live R15 proxy on skinned costumes. MeshPart.CFrame can still be at the mesh bind origin.
 	local up = root.CFrame.UpVector
-	local costume = type(character:GetAttribute("HHC_CostumeId")) == "string"
-		and character:GetAttribute("HHC_CostumeId") ~= ""
-	local focus = head.Position - up * head.Size.Y * (costume and 0.23 or 0.04)
-	local span = math.max(head.Size.X, head.Size.Y) * (costume and 0.65 or 0.85)
+	local focus = head.Position - up * head.Size.Y * 0.04
+	local span = math.max(head.Size.X, head.Size.Y) * 0.85
 	local distance = span / (2 * math.tan(math.rad(state.Camera.FieldOfView / 2))) + head.Size.Z * 0.5
 	state.Camera.CFrame = CFrame.lookAt(focus + root.CFrame.LookVector * distance, focus, up)
 	state.Camera.Focus = CFrame.new(focus)
@@ -1769,7 +1722,6 @@ function L.RefreshPortrait()
 					if L.PortraitAppearance(object) then L.RefreshPortrait() end
 				end))
 			end
-			table.insert(state.CharacterConnections, character:GetAttributeChangedSignal("HHC_CostumeId"):Connect(L.RefreshPortrait))
 		end
 	end
 	state.Revision += 1
@@ -1927,155 +1879,26 @@ local function refreshWar()
 	refreshChips()
 end
 
------------------------------------------------------------------ refresh: charge ring / release
-local function setChargeFill(f)
-	f = math.clamp(f, 0, 1)
-	if f <= 0.002 then
-		ui.chargeFill.Visible = false
-		return
-	end
-	ui.chargeFill.Visible = true
-	if f >= 0.995 then
-		ui.chargeGradient.Transparency = NumberSequence.new(0)
-	else
-		ui.chargeGradient.Transparency = NumberSequence.new({
-			NumberSequenceKeypoint.new(0, 0),
-			NumberSequenceKeypoint.new(f, 0),
-			NumberSequenceKeypoint.new(math.min(f + 0.004, 0.999), 1),
-			NumberSequenceKeypoint.new(1, 1),
-		})
-	end
-end
-
-local function refreshCharge()
-	local charge = math.max(0, num("Charge", 0))
-	local cap = num("ChargeCap", 0)
-	if cap <= 0 then cap = factionDef(getFaction()).ChargeCap or 150 end
-	local n = math.floor(charge)
-	ui.chargeNum.Text = tostring(n)
-	setChargeFill(charge / cap)
-	local ready = n >= Config.Charge.MinRelease
-	ui.chargeNum.TextColor3 = ready and Theme.Text or COL.Grey
+----------------------------------------------------------------- refresh: MP skill
+local function refreshSkill()
+	local remaining = math.max(0, num("SkillReadyAt", 0) - Util.Now())
+	local ready = remaining <= 0 and num("Mana", 0) >= Config.BasicSkill.ManaCost
+	-- the MP price on the button itself ("스킬 MP20"), so an MP shortage is never a surprise
+	ui.skillLabel.Text = string.format(TXT.ReleaseCost, Config.BasicSkill.ManaCost)
+	ui.skillTimer.Visible = remaining > 0
+	ui.skillTimer.Text = string.format("%.1f", remaining)
+	if ui.releaseIcon then ui.releaseIcon.Visible = remaining <= 0 end
 	if isImage(ui.releaseArt) then
 		ui.releaseArt.ImageColor3 = ready and COL.White or COL.DimTint
 	elseif ui.releaseArt then
 		ui.releaseArt.BackgroundTransparency = ready and 0.05 or 0.35
 	end
-	if not perfectOn then
-		ui.chargeFill.BackgroundColor3 = (charge >= cap) and Theme.Gold or COL.Charge
-		ui.chargeFill.BackgroundTransparency = ready and 0.15 or 0.45
-		ui.ring.Color = ready and Theme.Gold or COL.RingIdle
-		ui.ring.Transparency = ready and 0.15 or 0.35
-	end
-end
-
-local function setPerfect(on)
-	if on == perfectOn then return end
-	perfectOn = on
-	if perfectTween then
-		perfectTween:Cancel()
-		perfectTween = nil
-	end
-	if ui.releaseIcon then ui.releaseIcon.Visible = not on end -- the countdown takes the icon's spot
-	if on then
-		ui.ring.Color = Theme.Gold
-		ui.ring.Transparency = 0
-		ui.ring.Thickness = 6
-		perfectTween = TweenService:Create(ui.ring,
-			TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 12 })
-		perfectTween:Play()
-		ui.chargeSub.Text = TXT.Perfect
-		ui.chargeSub.TextColor3 = Theme.Gold
-		ui.chargeTimer.Visible = true
-		ui.chargeFill.BackgroundColor3 = Theme.Gold
-		ui.chargeFill.BackgroundTransparency = 0.05
-	else
-		ui.ring.Thickness = 4
-		ui.chargeSub.Text = TXT.Release
-		ui.chargeSub.TextColor3 = Theme.Text
-		ui.chargeTimer.Visible = false
-		refreshCharge()
-	end
-end
-
-local function refreshPerfect()
-	local untilT = num("PerfectUntil", 0)
-	local remaining = untilT - Util.Now()
-	setPerfect(untilT > 0 and remaining > 0)
-	if perfectOn then
-		ui.chargeTimer.Text = string.format("%.1f", math.max(0, remaining))
-	end
-end
-
------------------------------------------------------------------ refresh: auto / upgrade / menu
-local function refreshAuto()
-	local unlock = Config.Combat.AutoUnlockLevel
-	local locked = num("Level", 1) < unlock
-	local on = (not locked) and attr("AutoAttack", false) == true
-	if locked then
-		ui.autoLabel.Text = string.format(TXT.AutoLocked, unlock)
-	else
-		ui.autoLabel.Text = on and TXT.AutoOn or TXT.AutoOff
-	end
-	ui.autoLabel.TextColor3 = locked and ac("InkSoft", COL.Grey) or ac("Ink", COL.Dark)
-	if locked then
-		paint(ui.auto, COL.LockedTint, ac("ParchmentDark", COL.Grey))
-	elseif on then
-		paint(ui.auto, COL.HotTint, Theme.Good)
-	else
-		paint(ui.auto, COL.White, ac("Parchment", Theme.SubText))
-	end
-	if ui.autoIcon then
-		ui.autoIcon.Image = UIKit.ArtId(locked and "IconLock" or "IconAttack") or ui.autoIcon.Image
-	end
-end
-
-local function upgradeInfo()
-	local tier = math.floor(num("WeaponTier", 1))
-	local level = math.floor(num("Level", 1))
-	local f = getFaction()
-	local total = math.max(0, num("BankGold", 0)) + math.max(0, num("CarriedGold", 0))
-	local nextDef = Config.Weapons[tier + 1]
-	if tier >= Config.MaxWeaponTier or not nextDef then
-		return { Max = true, Total = total, Level = level }
-	end
-	return {
-		Max = false,
-		Tier = tier + 1,
-		Name = Config.WeaponName(tier + 1, getClass(), f),
-		Price = nextDef.Price or 0,
-		MinLevel = nextDef.MinLevel or 1,
-		LevelShort = level < (nextDef.MinLevel or 1),
-		NeedFaction = nextDef.RequiresFaction == true and f == "None",
-		Total = total,
-		Level = level,
-	}
-end
-
-local function avgRecentGold()
-	if #recentGold == 0 then return 0 end
-	local sum = 0
-	for _, g in recentGold do
-		sum += g
-	end
-	return sum / #recentGold
-end
-
--- the monster the player is (most likely) farming: current zone's main monster, else the level's quest zone
-local function farmMonsterName(level)
-	local zoneId = attr("ZoneId", "")
-	local id = Config.ZoneMainMonster[zoneId] or Config.ZoneMainMonster[Config.QuestZoneForLevel(level)]
-	local def = id and Config.MonsterTypes[id]
-	if type(def) ~= "table" then return TXT.Monster end
-	return def.Short or def.Name or TXT.Monster -- optional short name (Config.MonsterTypes[*].Short)
 end
 
 local function refreshUpgrade()
-	local info = upgradeInfo()
-	-- Use the next tier for the current class/faction; missing art keeps the existing sword/text fallback.
 	local iconKey = "IconSword"
 	if type(Config.WeaponArtKey) == "function" then
-		local weaponKey = Config.WeaponArtKey(info.Tier or Config.MaxWeaponTier, getClass(), getFaction())
+		local weaponKey = Config.WeaponArtKey(math.floor(num("WeaponTier", 1)), getClass(), getFaction())
 		if UIKit.ArtId(weaponKey) then iconKey = weaponKey end
 	end
 	if not UIKit.ArtId(iconKey) then iconKey = nil end
@@ -2097,100 +1920,29 @@ local function refreshUpgrade()
 		ui.upgradePrice.Position = UDim2.fromOffset(px, 27)
 		ui.upgradePrice.Size = UDim2.new(1, -px - 10, 0, 18)
 	end
-	local canBuy = false
-	if info.Max then
-		ui.upgradeTitle.Text = TXT.UpgradeMax
-		ui.upgradePrice.Text = ""
-		ui.setUpgrade(1, ac("UpgradeGold", Theme.Gold))
-		ui.upgradeText.Text = ""
-	else
-		ui.upgradeTitle.Text = string.format(TXT.UpgradeNext, tostring(info.Name))
-		ui.upgradePrice.Text = string.format(TXT.UpgradePrice, fmtNum(info.Price))
-		local frac = info.Price > 0 and (info.Total / info.Price) or 1
-		if info.LevelShort then
-			ui.setUpgrade(frac, COL.Grey)
-			ui.upgradeText.Text = string.format(TXT.UpgradeNeedLevel, info.MinLevel)
-		elseif info.NeedFaction then
-			ui.setUpgrade(frac, COL.Grey)
-			ui.upgradeText.Text = TXT.UpgradeNeedFaction
-		elseif info.Total >= info.Price then
-			canBuy = true
-			ui.setUpgrade(1, Theme.Good)
-			ui.upgradeText.Text = TXT.UpgradeReady
-		else
-			ui.setUpgrade(frac, ac("UpgradeGold", Theme.Gold))
-			local text = fmtNum(info.Total) .. " / " .. fmtNum(info.Price)
-			-- A7-3: "<몬스터> N마리 더!" from the average of the last kill rewards
-			local avg = avgRecentGold()
-			if avg > 0 then
-				local n = math.ceil((info.Price - info.Total) / avg)
-				if n >= 1 and n <= MAX_KILLS_SHOWN then
-					text = textOr("KillsToAfford", "%s %d마리 더!", farmMonsterName(info.Level), n)
-				end
-			end
-			ui.upgradeText.Text = text
-		end
-	end
-	if ui.upgradeCoin then ui.upgradeCoin.Visible = not info.Max end
-	-- U5 slim touch layout: the card shows only while the next weapon can be bought, so phones can still buy it
-	local show = (not IS_TOUCH) or canBuy
-	if ui.upgrade.Visible ~= show then
-		ui.upgrade.Visible = show
-		requestLayout() -- HUD.Layout.ClusterTop includes the card while it shows (CR-L37)
+	ui.upgradeTitle.Text = "대장간" -- one name everywhere: HUD card, panel title, world sign ("대장간 · 장인 길드")
+	ui.upgradePrice.Text = "무기 선택 · 구매 · 판매"
+	ui.upgradeText.Text = "교차로 마을"
+	ui.setUpgrade(1, ac("UpgradeGold", Theme.Gold))
+	if ui.upgradeCoin then ui.upgradeCoin.Visible = false end
+	-- The shop is a choice, not a prescribed next-tier purchase.
+	if not ui.upgrade.Visible then
+		ui.upgrade.Visible = true
+		requestLayout()
 	end
 end
 
-local function pulseUpgrade()
-	local stroke = ui.upgradeGlow
-	if stroke then
-		stroke.Transparency = 0
-		stroke.Thickness = 2
-		local t = TweenService:Create(stroke,
-			TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 5, true), { Thickness = 7 })
-		t.Completed:Once(function()
-			if stroke.Parent then
-				stroke.Transparency = 1
-				stroke.Thickness = 3
-			end
-		end)
-		t:Play()
-	end
-	local sc = ui.upgrade:FindFirstChild("PressScale")
-	if sc then
-		TweenService:Create(sc, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 2, true), {
-			Scale = 1.08,
-		}):Play()
-	end
-end
-
--- A7-3 (lowest priority): first moment the next weapon becomes affordable, once per tier per session.
--- Requires two consecutive ticks so the BankGold/CarriedGold pair of an auto-bank never fakes a moment.
-local function checkAffordable()
-	if attr("DataLoaded", false) ~= true then return end
-	local info = upgradeInfo()
-	local ok = (not info.Max) and (not info.LevelShort) and (not info.NeedFaction) and info.Total >= info.Price
-	if not afford.Baseline then
-		afford.Baseline = true
-		afford.Was = ok
-		return
-	end
-	if not ok then
-		afford.Was = false
-		afford.Streak = 0
-		return
-	end
-	afford.Streak += 1
-	if afford.Was or afford.Streak < 2 then return end
-	afford.Was = true
-	if afford.Notified[info.Tier] then return end
-	afford.Notified[info.Tier] = true
-	playSound("Coin")
-	UIKit.Toast(textOr("CanAfford", "%s 살 수 있어요!", tostring(info.Name)), "reward", 3)
-	pulseUpgrade()
+-- B14: Panels.ItemsHint = I hold a scroll and have not opened 메뉴 → 아이템 this session
+function L.ItemsHint()
+	local panels = C and C.Panels
+	if type(panels) ~= "table" or type(panels.ItemsHint) ~= "function" then return false end
+	local ok, hint = pcall(panels.ItemsHint)
+	return ok and hint == true
 end
 
 local function refreshMenuGlow()
 	local glow = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
+		or L.ItemsHint()
 	if glow == menuGlowOn then return end
 	menuGlowOn = glow
 	if menuGlowTween then
@@ -2248,10 +2000,27 @@ local function parseQuests()
 				Target = math.max(1, finite(e.Target, 1)),
 				RewardGold = math.max(0, finite(e.RewardGold, 0)),
 				Pinned = isPinned,
+				CanClaim = e.CanClaim ~= false,
+				ShowProgress = e.ShowProgress ~= false,
+				TutorialStep = finite(e.TutorialStep, -1),
+				NextGoal = e.NextGoal == true,
+				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
 			table.insert(isPinned and pinned or normal, entry)
 		end
+	end
+	-- A23-3: before the first mission is accepted (step 0) dailies keep progressing on the server but stay folded
+	local folded = pinned[1] ~= nil and pinned[1].TutorialStep == 0
+	if questState.Folded == true and not folded and pinned[1] ~= nil and pinned[1].TutorialStep > 0 and #normal > 0 then
+		UIKit.Toast((type(TUT.Text) == "table" and TUT.Text.DailiesOpened) or "일일 임무가 열렸어요!", "good", 4)
+	end
+	questState.Folded = folded
+	if folded then
+		for _, e in normal do
+			if e.Kind == "Sub" then table.insert(pinned, e) end -- S0 shows even before the first mission (A23-2)
+		end
+		return pinned
 	end
 	for _, e in normal do
 		table.insert(pinned, e)
@@ -2298,10 +2067,12 @@ end
 
 local function onClaim(r)
 	local e = r.Entry
-	if not e or throttled("claim", 0.35) then return end
+	if not e or not e.CanClaim or e.Progress < e.Target or throttled("claim", 0.35) then return end
 	if os.clock() < (r.LockUntil or 0) then return end -- CR-M24: the row just changed under the finger
 	local arg = nil
-	if e.Pinned then
+	if e.Story then
+		arg = e.Id -- "story:<id>"
+	elseif e.Pinned then
 		arg = TUT_QUEST_ID
 	else
 		arg = e.Slot
@@ -2361,6 +2132,9 @@ function L.LayoutQuestRow(r, s)
 	r.TextShort = W - textX - R.Reroll - 14
 	r.Text.Position = UDim2.fromOffset(textX, 5)
 	r.Text.Size = UDim2.fromOffset(r.Reroll.Visible and r.TextShort or r.TextLong, R.BtnH + 1)
+	if r.Entry and not r.Entry.ShowProgress then
+		r.Text.Size = UDim2.fromOffset(r.TextLong, H - 10)
+	end
 	local barY, rx = H - R.BarH - 9, W - R.Reward - 8
 	r.Bar.Position = UDim2.fromOffset(x0, barY)
 	r.Bar.Size = UDim2.fromOffset(W - x0 - R.Reward - 14, R.BarH)
@@ -2389,6 +2163,19 @@ local function makeQuestRow(index)
 		Parent = ui.questList,
 	})
 	local r = { Frame = row, IsArt = isArt, Entry = nil, Key = nil, LockUntil = 0 }
+	-- tapping the pinned guide row opens its action (claim / reroll sit above it at ZIndex 3)
+	r.Tap = UIKit.Create("TextButton", {
+		Name = "Tap",
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
+		Text = "",
+		ZIndex = 2,
+		Visible = false,
+		Parent = row,
+	})
+	r.Tap.Activated:Connect(function()
+		if r.Entry and (r.Entry.Pinned or r.Entry.Story) and L.PinnedTap then L.PinnedTap(r.Entry) end
+	end)
 	local iconS = L.QuestRowH - 20
 	r.Icon = UIKit.ArtImage("IconScroll", {
 		Name = "Icon",
@@ -2519,9 +2306,58 @@ local function refreshRerollTimers()
 	end
 end
 
+-- B15: the story page Panels holds back ({ Id, St, Label }) or nil
+function L.StoryPending()
+	local panels = C and C.Panels
+	if type(panels) ~= "table" or type(panels.StoryPending) ~= "function" then return nil end
+	local ok, p = pcall(panels.StoryPending)
+	if ok and type(p) == "table" and type(p.Id) == "string" and type(p.Label) == "string" then return p end
+	return nil
+end
+
+-- B15: one gentle gold pulse (a glow stroke) on `target` (a quest row, or the touch header line); nil stops it
+function L.SetStoryPulse(target)
+	local p = questState.Pulse
+	if p.Target == target then return end
+	if p.Tween then
+		p.Tween:Cancel()
+		p.Tween = nil
+	end
+	if p.Stroke and p.Stroke.Parent then
+		p.Stroke.Transparency, p.Stroke.Thickness = 1, 3
+	end
+	p.Target, p.Stroke = target, nil
+	if typeof(target) ~= "Instance" or not target.Parent then return end
+	local holder = target:FindFirstChild("StoryGlow")
+	local stroke = holder and holder:FindFirstChild("GlowStroke")
+	if not stroke then
+		stroke = makeGlow(target, UDim.new(0, 10))
+		if stroke and stroke.Parent then stroke.Parent.Name = "StoryGlow" end
+	end
+	if not stroke then return end
+	p.Stroke = stroke
+	stroke.Transparency, stroke.Thickness = 0.6, 2
+	p.Tween = TweenService:Create(stroke, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+		{ Transparency = 0, Thickness = 4 })
+	p.Tween:Play()
+end
+
 refreshQuests = function()
 	if not ui.quests then return end -- Init stopped before buildQuests (CR-L50 binds the remote earlier)
 	local entries = parseQuests()
+	-- B15: a story page waiting for a calm moment turns its row into "…말을 걸어요 — 눌러서 보기" (pulsing)
+	local call = L.StoryPending()
+	questState.StoryKey = call and (call.Id .. "|" .. tostring(call.St)) or ""
+	local callIndex = nil
+	if call then
+		for i, e in entries do
+			if e.Story and e.Story.Panel and e.Story.Id == call.Id then
+				callIndex = i
+				break
+			end
+		end
+	end
+	questState.CallEntry = callIndex and entries[callIndex] or nil
 	local blockWasVisible = ui.quests.Visible
 	ui.quests.Visible = #entries > 0
 	if #entries == 0 and ui.questOverlay then
@@ -2535,7 +2371,7 @@ refreshQuests = function()
 	local claimable, firstClaim, firstDaily = 0, nil, nil
 	for i, e in entries do
 		local done = e.Progress >= e.Target
-		if done and (e.Pinned or e.Kind == "Daily") then
+		if done and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") then
 			claimable += 1
 			if not firstClaim then firstClaim = i end
 		elseif not done and e.Kind == "Daily" and not firstDaily then
@@ -2543,7 +2379,9 @@ refreshQuests = function()
 		end
 	end
 	local shown = nil
-	if entries[1] and entries[1].Pinned then
+	if callIndex then
+		shown = callIndex -- B15: the collapsed list shows the story that is waiting
+	elseif entries[1] and entries[1].Pinned then
 		shown = 1
 	else
 		shown = firstClaim or firstDaily or 1
@@ -2557,11 +2395,14 @@ refreshQuests = function()
 		-- U5: one line (what to do now); tapping it opens the overlay with the rows
 		local line = head
 		local se = entries[shown]
-		if hot then
+		local mission = se and se.Pinned and se.TutorialStep >= 0 and se.TutorialStep < 99
+		if callIndex then
+			line = call.Label -- B15: one tap on the header opens it (the header handler)
+		elseif hot and not mission and not (se and se.Pinned and se.CanClaim and se.Progress >= se.Target) then
 			line = string.format(TXT.QuestTouchClaim, claimable)
 		elseif se then
 			local p, t = questNums(se) -- CR-M27 / CR-L31
-			line = string.format(TXT.QuestTouchLine, p, t, se.Text)
+			line = se.ShowProgress and string.format(TXT.QuestTouchLine, p, t, se.Text) or se.Text
 		end
 		ui.questHeaderText.Text = line
 		ui.questChevron.Text = questState.OverlayOpen and TXT.QuestCollapse or TXT.QuestExpand
@@ -2586,15 +2427,19 @@ refreshQuests = function()
 			questRows[i] = r
 		end
 		-- CR-M24: a row whose quest just changed ignores taps for RowLock seconds
-		local key = e.Id .. "|" .. tostring(e.Slot) .. "|" .. e.Kind
+		local key = e.Id .. "|" .. tostring(e.Slot) .. "|" .. e.Kind .. "|" .. tostring(e.TutorialStep) .. "|" .. e.Text
 		if r.Key ~= key then
 			r.Key = key
 			r.LockUntil = os.clock() + questState.RowLock
 		end
 		r.Entry = e
+		r.Tap.Visible = e.Pinned or e.Story ~= nil
 		r.Frame.Visible = IS_TOUCH or questExpanded or i == shown -- touch: every row, inside the overlay
 		if r.Frame.Visible then visibleNow += 1 end
-		if e.Pinned then
+		if e.Story then
+			r.Badge.Text = e.Kind == "Main" and TXT.BadgeMain or TXT.BadgeSub
+			r.Badge.BackgroundColor3 = e.Kind == "Main" and Theme.XP or COL.Grey
+		elseif e.Pinned then
 			r.Badge.Text = TXT.BadgePinned
 			r.Badge.BackgroundColor3 = Theme.XP
 		elseif e.Kind == "Daily" then
@@ -2607,12 +2452,15 @@ refreshQuests = function()
 		if r.Icon then
 			r.Icon.Image = UIKit.ArtId(QUEST_ICON[e.Id] or "IconScroll") or r.Icon.Image
 		end
-		r.Text.Text = e.Text
+		r.Text.Text = (i == callIndex) and call.Label or e.Text
+		r.Text.TextWrapped = not e.ShowProgress
+		r.Text.TextTruncate = e.ShowProgress and Enum.TextTruncate.AtEnd or Enum.TextTruncate.None
+		r.Bar.Visible = e.ShowProgress
 		local done = e.Progress >= e.Target
 		r.SetBar(e.Progress / e.Target, done and ac("UpgradeGold", Theme.Gold) or ac("QuestBlue", Theme.Good))
 		local p, t = questNums(e) -- CR-M27 / CR-L31
 		r.BarText.Text = p .. "/" .. t
-		local canClaim = done and (e.Pinned or e.Kind == "Daily")
+		local canClaim = done and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub")
 		local canReroll = (not done) and (not e.Pinned) and e.Slot ~= nil
 		r.Reward.Text = e.RewardGold > 0 and ("+" .. fmtNum(e.RewardGold)) or ""
 		r.Reward.Visible = not canClaim -- 받기 covers the reward slot
@@ -2620,6 +2468,7 @@ refreshQuests = function()
 		r.Claim.Visible = canClaim
 		r.Reroll.Visible = canReroll
 		r.Text.Size = UDim2.fromOffset(canReroll and r.TextShort or r.TextLong, r.Text.Size.Y.Offset)
+		L.LayoutQuestRow(r, currentScale())
 		-- claimable rows turn green (art tint, or the fallback's rim)
 		if r.IsArt then
 			r.Frame.ImageColor3 = canClaim and COL.RowHotTint or COL.White
@@ -2636,6 +2485,8 @@ refreshQuests = function()
 		r.Entry = nil
 		r.Frame.Visible = false
 	end
+	local callRow = callIndex and questRows[callIndex]
+	L.SetStoryPulse(callIndex and (IS_TOUCH and ui.questHeader or (callRow and callRow.Frame)) or nil)
 	refreshRerollTimers()
 	-- CR-L36: the block's visibility also moves the war meter column's left edge
 	if visibleBefore ~= visibleNow or blockWasVisible ~= ui.quests.Visible then
@@ -2799,6 +2650,32 @@ local function isZoneGuide(tag)
 	return type(tag) == "string" and string.sub(tag, 1, 5) == "zone:"
 end
 
+function L.BlacksmithTarget()
+	local map = workspace:FindFirstChild("Map")
+	local landmarks = map and map:FindFirstChild("Landmarks")
+	local guild = landmarks and landmarks:FindFirstChild("ArtisanGuild")
+	local anvil = guild and guild:FindFirstChild("Anvil")
+	return anvil and anvil:IsA("BasePart") and anvil or nil
+end
+
+-- the meadow beam from a faction town first points at that island's bridge (a straight line crossed the water);
+-- from the Crossroads it points at the meadow pad
+local HOME_BRIDGE = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }
+function L.MeadowTarget(zone)
+	local bridge = HOME_BRIDGE[zone]
+	local map = workspace:FindFirstChild("Map")
+	local decor = map and map:FindFirstChild("Decor")
+	local part = bridge and decor and resolvePart(decor:FindFirstChild(bridge))
+	return part or findTravelTarget(TUT_GUIDE_ZONE)
+end
+
+-- step 1, or step 2 with kills left (e.g. died mid-mission and respawned in town): guide back to the meadow
+function L.NeedsMeadowGuide(step)
+	if step == TUT_GUIDE_STEP then return true end
+	local quest = (type(TUT.Steps) == "table" and TUT.Steps.Quest) or 2
+	return step == quest and num("TutorialKills", 0) < (tonumber(TUT.QuestKills) or 5)
+end
+
 -- tutorial step 1: guide to the SlimeMeadow pad; cleared when the step changes or the player enters the zone.
 -- Zone guides (Lv 10 / Lv 25) are cleared when the player enters that zone.
 local function refreshGuides()
@@ -2806,14 +2683,21 @@ local function refreshGuides()
 	local step = num("TutorialStep", 99)
 	local zone = attr("ZoneId", "")
 	if guide then
-		if guide.Tag == "tutorial" and (step ~= TUT_GUIDE_STEP or zone == TUT_GUIDE_ZONE) then
+		if guide.Tag == "tutorial" and (not L.NeedsMeadowGuide(step) or zone == TUT_GUIDE_ZONE or guide.From ~= zone) then
 			HUD.ClearGuide()
 		elseif isZoneGuide(guide.Tag) and zone == string.sub(guide.Tag, 6) then
 			HUD.ClearGuide()
+		elseif guide.Tag == "blacksmith" and (attr("BlacksmithVisited", false) == true or zone ~= "Crossroads") then
+			HUD.ClearGuide()
+		elseif guide.Tag == "smith:manual" and zone ~= "Crossroads" then
+			HUD.ClearGuide()
 		end
 	end
-	if step == TUT_GUIDE_STEP and zone ~= TUT_GUIDE_ZONE and not (guide and guide.Tag == "tutorial") then
-		showGuide(findTravelTarget(TUT_GUIDE_ZONE), TUT_GUIDE_TEXT, "tutorial", nil)
+	if L.NeedsMeadowGuide(step) and zone ~= TUT_GUIDE_ZONE and not (guide and guide.Tag == "tutorial") then
+		if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "tutorial", nil) and guide then guide.From = zone end
+	elseif step == 99 and attr("BlacksmithVisited", false) ~= true and zone == "Crossroads"
+		and not (guide and guide.Tag == "blacksmith") then
+		showGuide(L.BlacksmithTarget(), "대장간 · 모루와 상호작용", "blacksmith", nil)
 	end
 end
 
@@ -2840,7 +2724,10 @@ end
 
 ----------------------------------------------------------------- input
 local function inputAllowed()
-	return ui.root ~= nil and ui.root.Visible
+	if not ui.root or not ui.root.Visible then return false end
+	if C and C.Panels and C.Panels.IsOpen() then return false end
+	if C and C.WorldMap and C.WorldMap.IsOpen() then return false end
+	return true
 end
 
 local function swingInterval()
@@ -2855,7 +2742,7 @@ local function clearHolds()
 	pressScale(ui.attack, false)
 end
 
--- press = one Swing now; hold = repeat every class SwingInterval (the server queues jitter-early requests)
+-- One deliberate press sends one Swing; holding no longer attacks repeatedly.
 local function startHold(source)
 	if source == nil then return end
 	local wasHeld = next(holdSources) ~= nil
@@ -2864,18 +2751,13 @@ local function startHold(source)
 	holdToken += 1
 	local token = holdToken
 	pressScale(ui.attack, true)
-	fire("Swing")
-	task.spawn(function()
-		while true do
-			task.wait(swingInterval())
-			if holdToken ~= token or next(holdSources) == nil then break end
-			if not inputAllowed() then
-				clearHolds()
-				break
-			end
-			fire("Swing")
-		end
-	end)
+	-- ranged classes turn to the nearest monster first; the server only hits what I face (Config AimCone)
+	if L.FaceTarget() then
+		task.delay(0.08, function() fire("Swing") end) -- let the new facing replicate before the swing
+	else
+		fire("Swing")
+	end
+
 end
 
 local function stopHold(source)
@@ -2889,30 +2771,167 @@ end
 
 local function doRelease()
 	if throttled("release", 0.2) then return end
-	local n = math.floor(num("Charge", 0))
-	if n < Config.Charge.MinRelease then
-		if not throttled("releaseNeed", 1.5) then
-			UIKit.Toast(UIKit.Fmt("ReleaseNeed", Config.Charge.MinRelease), "bad", 1.5)
-		end
+	if num("SkillReadyAt", 0) > Util.Now() then return end
+	if num("Mana", 0) < Config.BasicSkill.ManaCost then
+		if not throttled("skillMana", 1.5) then UIKit.Toast("MP가 부족해요.", "bad", 1.5) end
 		return
 	end
-	fire("Release")
-end
-
-toggleAuto = function()
-	if throttled("auto", 0.3) then return end
-	local unlock = Config.Combat.AutoUnlockLevel
-	local on = attr("AutoAttack", false) == true
-	if not on and num("Level", 1) < unlock then
-		UIKit.Toast(UIKit.Fmt("AutoLocked", unlock), "bad")
-		return
+	if L.FaceTarget() then
+		task.delay(0.08, function() fire("Release") end)
+	else
+		fire("Release")
 	end
-	fire("SetAutoAttack", not on)
 end
 
 doUpgrade = function()
 	if throttled("upgrade", 0.35) then return end
-	fire("UpgradeWeapon")
+	local panels = C and C.Panels
+	if type(panels) ~= "table" or type(panels.Open) ~= "function" then return end
+	if attr("ZoneId", "") ~= "Crossroads" then
+		panels.Open("Travel")
+		UIKit.Toast("교차로 마을로 이동한 뒤 대장간 모루를 찾아요.", "info", 4)
+		return
+	end
+	showGuide(L.BlacksmithTarget(), "대장간 · 모루와 상호작용", "smith:manual", 30)
+	panels.Open("WeaponShop")
+end
+
+-- ranged classes (AimCone): face the nearest living monster in range unless one is already in front of me.
+-- Returns true when the character was turned. Shift lock keeps its own facing (the camera turns the body).
+function L.FaceTarget()
+	local def = Config.Classes[getClass()]
+	if type(def) ~= "table" or type(def.AimCone) ~= "number" then return false end
+	if UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter then return false end
+	local char = LocalPlayer.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	local folder = workspace:FindFirstChild("Monsters")
+	if not root or not hum or hum.Health <= 0 or not folder then return false end
+	local look = root.CFrame.LookVector * Vector3.new(1, 0, 1)
+	local cosCone = math.cos(math.rad(def.AimCone))
+	local best, bestDist = nil, (def.Range or 30)
+	for _, m in folder:GetChildren() do
+		local r = m:FindFirstChild("HumanoidRootPart")
+		local mh = m:FindFirstChildOfClass("Humanoid")
+		if r and r:IsA("BasePart") and not r.Anchored and (not mh or mh.Health > 0) then
+			local dir = (r.Position - root.Position) * Vector3.new(1, 0, 1)
+			local d = dir.Magnitude
+			if d <= (def.Range or 30) then
+				if d > 1 and look.Magnitude > 0.01 and look.Unit:Dot(dir.Unit) >= cosCone then return false end
+				if d < bestDist then best, bestDist = r, d end
+			end
+		end
+	end
+	if not best or bestDist < 1 then return false end
+	root.CFrame = CFrame.lookAt(root.Position, Vector3.new(best.Position.X, root.Position.Y, best.Position.Z))
+	return true
+end
+
+-- story rows: a talk / choice step reopens its dialogue; otherwise travel + the guide beam to where it happens
+local STORY_SPOT = { SlimePond = Vector3.new(280, 3, -45) }
+function L.StoryTap(st, zone, panels)
+	if st.Panel then
+		-- B15: my own tap: the server's reply opens the page even mid-fight (auto opens wait for a calm moment)
+		if panels and type(panels.ExpectStory) == "function" then pcall(panels.ExpectStory, st.Id) end
+		fire("StoryAction", st.Id, "Open")
+		return
+	end
+	local g = st.Guide
+	if g == nil then return end
+	if g == "Blacksmith" then
+		doUpgrade()
+		return
+	end
+	local target = g
+	if g == "OwnTown" then target = Config.HomeZoneId(getFaction()) end
+	if g == "SlimePond" then target = "SlimeMeadow" end
+	if g == "Fountain" or g == "Goose" then target = "Crossroads" end
+	if Config.Zones[target] and zone ~= target then
+		if panels and panels.Open then panels.Open("Travel") end
+		if target == TUT_GUIDE_ZONE then
+			if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "zone:" .. target, 30) and guide then guide.From = zone end
+		else
+			showGuide(findTravelTarget(target), tostring(Config.Zones[target].Name), "zone:" .. target, 30)
+		end
+		return
+	end
+	if g == "SlimePond" then
+		local a = Instance.new("Part")
+		a.Name, a.Anchored, a.CanCollide, a.CanQuery, a.CanTouch, a.Transparency = "HUDStoryAnchor", true, false, false, false, 1
+		a.Size, a.Position, a.Parent = Vector3.new(1, 1, 1), STORY_SPOT.SlimePond, workspace
+		game:GetService("Debris"):AddItem(a, 35)
+		showGuide(a, "연못", "story", 30)
+	elseif g == "Fountain" then
+		-- the shard in the fountain; MapBuilder only builds Landmarks.Fountain, so fall back to that model and then to a
+		-- temporary anchor at Config.StoryQuests.Landmarks.Fountain (the beam must always point somewhere)
+		local map = workspace:FindFirstChild("Map")
+		local lm = map and map:FindFirstChild("Landmarks")
+		local shard = lm and lm:FindFirstChild("CrownShard")
+		local part = shard and (shard:IsA("BasePart") and shard or shard:FindFirstChildWhichIsA("BasePart", true))
+		local fountain = not part and lm and lm:FindFirstChild("Fountain")
+		if fountain then
+			part = (fountain:IsA("BasePart") and fountain)
+				or (fountain:IsA("Model") and fountain.PrimaryPart) or fountain:FindFirstChildWhichIsA("BasePart", true)
+		end
+		if not part then
+			local spot = Config.StoryQuests and Config.StoryQuests.Landmarks and Config.StoryQuests.Landmarks.Fountain
+			if typeof(spot) == "Vector3" then
+				part = Instance.new("Part")
+				part.Name, part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch, part.Transparency =
+					"HUDStoryAnchor", true, false, false, false, 1
+				part.Size, part.Position, part.Parent = Vector3.new(1, 1, 1), spot + Vector3.new(0, 4, 0), workspace
+				game:GetService("Debris"):AddItem(part, 35)
+			end
+		end
+		local name = Config.StoryQuests and Config.StoryQuests.Speakers and Config.StoryQuests.Speakers.Fountain
+		if part then showGuide(part, type(name) == "string" and name or "분수", "story", 30) end
+	end
+end
+
+-- A23-1: the saved ON/OFF lives on the server; the button only asks to flip it
+function L.ToggleAuto()
+	if attr("AutoCombatUnlocked", false) ~= true or throttled("autoToggle", 0.4) then return end
+	fire("SetAutoAttack", attr("AutoCombatEnabled", false) ~= true)
+end
+
+function L.RefreshAuto()
+	if not ui.auto then return end
+	local unlocked = attr("AutoCombatUnlocked", false) == true and attr("ClassChosen", false) == true
+	local on = unlocked and attr("AutoCombatEnabled", false) == true
+	ui.auto.Visible = unlocked
+	if ui.autoLabel then ui.autoLabel.Text = on and TXT.AutoOn or TXT.AutoOff end
+	if ui.autoGlow then ui.autoGlow.Transparency = on and 0 or 1 end
+end
+
+-- tapping the pinned guide row: step 0 guide dialogue, step 1/2 travel to the meadow, blacksmith step and the
+-- iron-weapon goal -> the existing doUpgrade path, level goals -> the existing beam to the hunting ground.
+function L.PinnedTap(e)
+	if throttled("pinnedTap", 0.5) then return end
+	if IS_TOUCH and questState.OverlayOpen and toggleQuests then toggleQuests(false) end
+	local step, zone = e.TutorialStep, attr("ZoneId", "")
+	local panels = C and C.Panels
+	if e.Story then
+		L.StoryTap(e.Story, zone, panels)
+		return
+	end
+	if step == 0 then
+		fire("RequestTutorial")
+	elseif step == 1 or step == 2 then
+		if zone ~= TUT_GUIDE_ZONE then
+			if panels and panels.Open then panels.Open("Travel") end
+			if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "tutorial", nil) and guide then guide.From = zone end
+		end
+	elseif step == 99 then
+		local level = math.floor(num("Level", 1))
+		local iron = Config.Weapons[3]
+		if not e.NextGoal or (iron and level >= iron.MinLevel and string.find(e.Text, "골드", 1, true)) then
+			doUpgrade()
+		elseif zone ~= TUT_GUIDE_ZONE then
+			showGuide(findTravelTarget(TUT_GUIDE_ZONE), TUT_GUIDE_TEXT, "zone:" .. TUT_GUIDE_ZONE, 30)
+		else
+			UIKit.Toast("슬라임과 큰 슬라임을 사냥해 경험치를 모아요.", "info", 3)
+		end
+	end
 end
 
 openMenu = function()
@@ -2922,7 +2941,7 @@ openMenu = function()
 	if type(panels.IsOpen) == "function" and type(panels.Close) == "function" then
 		local ok, open = pcall(panels.IsOpen)
 		if ok and open then
-			pcall(panels.Close)
+			pcall(panels.Close, true)
 			return
 		end
 	end
@@ -2943,20 +2962,24 @@ openMap = function()
 end
 
 local function onInputBegan(input, gameProcessed)
+	-- B also closes an open panel (inputAllowed is false while a panel covers the screen)
+	if not gameProcessed and input.KeyCode == Enum.KeyCode.B and C and C.Panels
+		and type(C.Panels.IsOpen) == "function" and C.Panels.IsOpen() then
+		openMenu()
+		return
+	end
 	if gameProcessed or not inputAllowed() then return end
 	local t = input.UserInputType
-	if t == Enum.UserInputType.MouseButton1 then
-		startHold("mouse")
-	elseif t == Enum.UserInputType.Keyboard then
+	if t == Enum.UserInputType.Keyboard then
 		local k = input.KeyCode
 		if k == Enum.KeyCode.F then
 			startHold("keyF")
-		elseif k == Enum.KeyCode.Q or k == Enum.KeyCode.E then
+		elseif k == Enum.KeyCode.Q then -- E is the Roblox-standard interact key (blacksmith / altar / merchant prompts)
 			doRelease()
-		elseif k == Enum.KeyCode.R then
-			toggleAuto()
 		elseif k == Enum.KeyCode.U then
 			doUpgrade()
+		elseif k == Enum.KeyCode.R then
+			L.ToggleAuto()
 		elseif k == Enum.KeyCode.B then
 			openMenu() -- U1: Esc belongs to Roblox
 		end -- M is bound by WorldMap (A12)
@@ -3165,7 +3188,7 @@ applyLayout = function()
 	end
 	ui.menu.Position = UDim2.fromOffset(right - SQ / 2, rowY)
 	ui.map.Position = UDim2.fromOffset(right - SQ * 1.5 - RG, rowY)
-	ui.auto.Position = UDim2.fromOffset(right - SQ * 2.5 - 2 * RG, rowY)
+	if ui.auto then ui.auto.Position = UDim2.fromOffset(right - SQ * 2.5 - RG * 2, rowY) end
 	ui.upgrade.Position = UDim2.fromOffset(right - rowW / 2, rowY - SQ / 2 - RG - L.UpgradeH / 2)
 
 	-- CR-L37: top / left edge of the bottom-right button cluster (공격 + 발사; on touch also the square row and, while
@@ -3206,28 +3229,19 @@ local function onCharacterAdded(character)
 	end)
 end
 
-local function onFx(kind, data)
-	if kind ~= "Reward" or type(data) ~= "table" then return end
-	if data.Golden == true then return end -- CR-L32: golden (x10) rewards would shrink the "N마리 더!" estimate
-	local g = tonumber(data.Gold)
-	if not g or g ~= g or g <= 0 or g == math.huge then return end
-	table.insert(recentGold, g)
-	while #recentGold > REWARD_SAMPLES do
-		table.remove(recentGold, 1)
-	end
-	refreshUpgrade()
-end
-
 local function tick()
 	tickCount += 1
 	if not refreshVisibility() then return end
 	refreshWarTime()
 	refreshChips()
-	refreshPerfect()
+	refreshSkill()
 	refreshTravel()
 	refreshRerollTimers()
-	checkAffordable()
+	-- B15: Panels holding back / releasing a story page re-draws the quest rows (label + pulse)
+	local call = L.StoryPending()
+	if (call and (call.Id .. "|" .. tostring(call.St)) or "") ~= questState.StoryKey then refreshQuests() end
 	if tickCount % 5 == 0 then
+		refreshMenuGlow() -- B14: the item hint (a scroll, item list not opened yet) has no attribute of its own
 		if UserInputService.TouchEnabled then
 			local jb = findJumpButton()
 			if jb ~= jumpButton then hookJumpButton(jb) end
@@ -3305,10 +3319,32 @@ function HUD.Start()
 	end)
 	UIKit.OnAttr({ "Level", "XP", "Faction", "Class", "Honor", "Infamy", "FallMarks", "RedeemMarks", "SessionTitle",
 		"BankGold", "CarriedGold", "WantedStars", "Bounty" }, refreshStats)
-	UIKit.OnAttr({ "Faction", "Class", "ClassChosen", "CharacterGender", "CostumeEnabled", "CostumeApplied", "SizeMult" }, L.RefreshPortrait)
-	UIKit.OnAttr({ "Charge", "ChargeCap", "Faction" }, refreshCharge)
-	UIKit.OnAttr({ "PerfectUntil" }, refreshPerfect)
-	UIKit.OnAttr({ "AutoAttack", "Level" }, refreshAuto)
+	UIKit.OnAttr({ "Faction", "Class", "ClassChosen", "CharacterGender", "SizeMult" }, L.RefreshPortrait)
+	UIKit.OnAttr({ "AutoCombatUnlocked", "AutoCombatEnabled", "ClassChosen" }, L.RefreshAuto)
+	-- 2026-10-06 playtest: on a short desktop window the bottom-left chat window + input bar sat on top of the quest
+	-- rows and swallowed the [받기] click (CoreGui wins). Desktop chat goes to the bottom middle, which the HUD leaves free.
+	if not IS_TOUCH then
+		pcall(function()
+			local cw = TextChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+			if cw then
+				cw.HorizontalAlignment = Enum.HorizontalAlignment.Center
+				cw.VerticalAlignment = Enum.VerticalAlignment.Bottom
+				cw.WidthScale = math.min(cw.WidthScale, 0.7)
+				cw.HeightScale = math.min(cw.HeightScale, 0.7)
+			end
+		end)
+	end
+	-- auto combat + ranged class: while I stand still, keep facing the nearest monster so the server's aim cone fits
+	task.spawn(function()
+		while true do
+			task.wait(0.25)
+			if attr("AutoCombatEnabled", false) == true then
+				local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+				if hum and hum.MoveDirection.Magnitude < 0.1 then pcall(L.FaceTarget) end
+			end
+		end
+	end)
+	UIKit.OnAttr({ "Mana", "SkillReadyAt" }, refreshSkill)
 	UIKit.OnAttr({ "WeaponTier", "Level", "Class", "Faction", "BankGold", "CarriedGold", "ZoneId" }, refreshUpgrade)
 	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays" }, refreshMenuGlow)
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
@@ -3318,7 +3354,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "WarPoints", "Faction" }, refreshWar)
 	UIKit.OnGameAttr({ "WarHaloScore", "WarHornsScore", "WarMode", "WarBlessing", "WarRoundEndsAt" }, refreshWar)
 	UIKit.OnAttr({ "TravelingUntil" }, refreshTravel)
-	UIKit.OnAttr({ "TutorialStep", "ZoneId" }, refreshGuides)
+	UIKit.OnAttr({ "TutorialStep", "ZoneId", "BlacksmithVisited", "TutorialKills" }, refreshGuides)
 	UIKit.OnAttr({ "Level" }, onLevelChanged)
 
 	bindButtonInput()
@@ -3352,13 +3388,9 @@ function HUD.Start()
 		end)
 	end
 
-	-- kill rewards feed the "N마리 더!" estimate (A7-3); never block Start on the remote
-	task.spawn(function()
-		local fx = Net.Get("Fx")
-		fx.OnClientEvent:Connect(function(kind, data)
-			local ok, err = pcall(onFx, kind, data)
-			if not ok then warnThrottled("Fx handler error: " .. tostring(err)) end
-		end)
+	-- A world click attacks only after release; a left drag belongs to camera rotation.
+	C.CameraFollow.PrimaryClick:Connect(function()
+		if inputAllowed() then fire("Swing") end
 	end)
 
 	task.spawn(function()

@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Prepare reviewed skin-expression inspectors and exact actual-match payloads.
 
 No Studio, upload, remote API, ledger writes or Ready promotion. Missing native
@@ -6,6 +7,7 @@ The root's existing importer/recorder/uploader tools are deliberately untouched.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import json
 from pathlib import Path

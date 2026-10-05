@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Compare an original weighted visual with its rigid R15 proxy offline.
 
 Bone matrices are driven by the same proxy world deltas. This verifies actual
 Blender Armature deformation against independent LBS; it is not Studio QA.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import json

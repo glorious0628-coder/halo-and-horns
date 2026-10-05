@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Save a separate, unpromoted mouth-restored manifest and shared-skin contract.
 
 The strict P/N exception validator must pass; normal skin validators stay exact.
 Existing original union, canonical cap and rigid baselines are never replaced.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import copy
 import json

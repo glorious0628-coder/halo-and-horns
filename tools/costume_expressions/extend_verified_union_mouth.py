@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Add only ray-proven original mouth triangles to a new no-cap preparation.
 
 No vertex, normal, skin weight, source texture or approved PNG modifications.
 The ray report must prove a visible original HeadBase triangle within the
 existing approved mouth-cover footprint. Ambiguous/outside matches are refused.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import copy
 import json

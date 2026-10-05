@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Read-only final-expression byte proof and poisoned-manifest checks.
 
 These checks do not claim native importer or engine motion success.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import copy
 import json
 from pathlib import Path

@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Read-only audit of genuine source skin regions and exact tied face patches.
 
 This does not invent weights or geometry. Positive patches are measured from
@@ -6,6 +7,7 @@ No API, upload, Studio or Blender call is made.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 from collections import Counter
 import hashlib

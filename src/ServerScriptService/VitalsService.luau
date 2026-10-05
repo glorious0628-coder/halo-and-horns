@@ -31,7 +31,7 @@ function VitalsService.TrySpendMana(player, amount, silent)
 		local now = workspace:GetServerTimeNow()
 		if not silent and now - st.NoticeAt >= 2 then
 			st.NoticeAt = now
-			Net.Notify(player, "MP가 부족해요. MP 물약을 사용해요!", "bad")
+			Net.Notify(player, (TUNE.MerchantEnabled == true and "MP가 부족해요. MP 물약을 사용해요!") or "MP가 부족해요. 잠시 기다리면 차올라요.", "bad")
 		end
 		return false
 	end
@@ -57,7 +57,7 @@ local function usePotion(player, kind)
 	local count = type(data) == "table" and data[stockKey]
 	if type(count) ~= "number" or count ~= count or count < 1 or count > TUNE.PotionInventoryCap
 		or count ~= math.floor(count) then
-		Net.Notify(player, "물약이 없어요. 물약 상인에게서 구매해 주세요.", "bad")
+		Net.Notify(player, (TUNE.MerchantEnabled == true and "물약이 없어요. 물약 상인에게서 구매해 주세요.") or "물약이 없어요. 물약 상점은 준비 중이에요.", "bad")
 		return
 	end
 	local humanoid = Util.GetHumanoid(player)

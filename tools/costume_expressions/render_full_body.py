@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Read-only three-view lit full-body QA of the exact imported skin candidate.
 
 Blender --background --python ... -- candidate.glb new-output-directory
 Uses the recorded original source front; never edits GLB, UV or raster pixels.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import hashlib
 import json
 import math

@@ -1,0 +1,1590 @@
+{
+ "dims": [
+  {
+   "key": "loot-server",
+   "summary": "I reviewed the server side of loot: LootService, DataService, Net, Main, plus the hooks it touches in Monster, Combat, Progression, Shop and Justice. I also ran an offline harness that loads the real Config.luau and LootService.luau with stubs (scratch: .../scratchpad/loot/loot-server/combined2.luau, combined3.luau). Every changed .luau file compiles with luau-compile.\n\n**Files changed while I was reviewing.** LootService.luau and Config.luau were rewritten at 15:43:19 and Panels.luau at 15:43:41. In the version I read first, a successful transfer scroll replaced the target weapon's +N with the source's, so a +5 target could fall to +3. The new version adds the source's +N to the target, caps at +10, and leaves any overflow on the source. Server and client confirm text now agree, and the harness confirmed it. My findings are against the final hashes (LootService b35c3e9e…, Config 12b0d564…); nothing changed again up to 15:53.\n\n**Core loot logic is sound:**\n- Each kill contributor gets exactly one roll, using server-only RNG.\n- Auto-combat kills go through the same DamageMonster path, so they count for the jackpot.\n- The first King Slime scroll is paid exactly once.\n- Duplicate weapon drops become gold.\n- Item caps, data cleanup and remote type checks all hold.\n- Selling materials requires being near the anvil and pays once.\n- No handler yields between its check and its write.\n- PvP limits still hold: enhancement and the legendary only move the 0.8–1.5 ratio, and skills stay capped at 35%.\n\n**Main problems:**\n1. **Legendary kept through rebirth (`KeepOnRebirth[8]`).** This contradicts GDD §9 and A23-4, which reset all weapons. The decision appears only in the handoff notes, so it needs the user's confirmation.\n2. **Data version not bumped for tier 8.** A server running older code clamps an equipped tier 8 down to tier 7. Back on a new server, that turns into permanent ownership of the 90,000-gold tier-7 weapon. Today this only affects test accounts in the DataStore-enabled private place; after beta it would hit real players during an update.\n3. **Smaller issues:**\n   - Bully and faction-balance power checks ignore enhancement.\n   - The legendary's damage (90) is 2.37× the tier-3 weapon (38) and above the tier-4 weapon (88).\n   - Scrolls can be used mid-PvP, and weapons can be equipped while dead.\n   - A full item stack sends a \"full\" toast on about a third of slime kills.\n   - Debug commands write to the real save in the test place.\n   - Unknown item ids are deleted when data is cleaned up.\n   - Item lists are copied to every client.",
+   "checked_ok": [
+    "Each kill contributor gets one roll. Contributors are keyed by player (MonsterService.luau:1053-1061) and the list is cleared before MonsterKilled fires once per contributor (:1062-1067). killRecord sets Alive=false and DamageMonster refuses dead records (:1092), so a hit inside a handler cannot fire it again. The only damage path is CombatService.luau:589, so auto-combat kills roll too, as A23-12 requires.",
+    "RNG is server-only: LootService.luau:22 `local rng = Random.new()`. The client only sends item id and tiers.",
+    "Jackpot: Slime only, chance 1/20000, golden monsters x3 (LootService.luau:195, Config.luau:1389). Harness: 200k golden slime rolls gave the legendary plus about 23 duplicates turned into 3000 gold each (expected about 30 jackpots).",
+    "First King Slime scroll: the flag is set in the same save table before the item is given (LootService.luau:176-180), so both save together. Harness: 5 BigSlime kills gave exactly 1 hint, the flag stayed true, and the flag survives cleanup (only `true` values are kept).",
+    "Duplicate weapon drops give DuplicateWeaponGold and nothing else. A new weapon's ownership bit is written via SetStat before any notice (LootService.luau:129-146).",
+    "Data cleanup at PlayerReady (LootService.luau:66-87, 353-357). Harness: NaN and negative counts dropped, 1e300 capped at 999, 2.7 floored to 2, non-string or unknown ids dropped. WeaponEnhance {NaN,-3,99,2.5,'x'} became 0,0,10,2,0,0,0,0 (always 8 entries, safe to save). Non-true flags removed. Defaults Items, WeaponEnhance and LootFlags exist (Config.luau Defaults) and fillDefaults resets wrong types. Save size is tiny (12 item ids, 8 numbers).",
+    "Enhance odds match A23-11/12. Harness with 10% scrolls from +5: 9.9% success to +8, 44.4% drop to +4, 45.7% stay. 2000 failures at +0 never went negative. Max +10 is enforced before the scroll is used.",
+    "Transfer scroll (final version): adds onto the target, caps at +10 and leaves the rest on the source. Harness: +7 onto +6 gave source +3 and target +10. A target already at +10, or an unowned target, is refused without using the scroll. A failure keeps both values. Panels confirm text (Panels.luau:1823, 1922-1923) now matches the server.",
+    "UseItem argument checks. Harness: tiers NaN, 1.5, '1', inf, -1, 0 and 9 were rejected with no scroll used. An enhance call with an extra tier was rejected. Table ids and material ids do nothing. Rate limits: UseItem 0.4s, EquipWeapon 0.3s, SellMaterials 1s (Config.luau:1312).",
+    "SellMaterials uses ShopService.CanBuyWeapon: ready, alive, class chosen and within 12 studs of the real anvil prompt (ShopService.luau:180-194). Items are cleared before gold is paid; a second call pays nothing and an extra argument is rejected (harness: 10 Jelly + 2 Crest paid 100, then 'no materials').",
+    "No yields between check and write in UseItem, SellMaterials or RollKill (Notify, Fx and SetStat are all synchronous), so two calls in the same frame or a sale during scroll use cannot double-spend.",
+    "EquipWeapon checks ownership, class chosen, MinLevel, faction requirement and PvP combat tag (LootService.luau:286-306). Harness: legendary equips at Lv1, an unowned tier 4 is refused, and tier 3 is refused below Lv5.",
+    "The legendary can be neither bought nor sold: ShopService.luau:50 and :116 limit both to MaxSoldTier 3, and Price=0 is also refused at :126.",
+    "Rebirth keeps enhancement: only LootService writes WeaponEnhance, and ProgressionService resets WeaponTier to 1, which updates the WeaponEnhance attribute through the WeaponTier listener (LootService.luau:358-361).",
+    "PvP caps: enhancement and the legendary only feed the ratio, which is clamped 0.8-1.5 (CombatService.luau:412-418). Basic hits keep SwingImmediate 0.5 and skills keep the 35% cap (:928-933).",
+    "Debug commands Item, LootReset and LootRoll exist only under RunService:IsStudio() on a server-side BindableFunction (Main.server.luau:54-84); clients cannot reach them.",
+    "Net.Names declares UseItem, EquipWeapon and SellMaterials, and every remote the client fires is declared. Main INIT/START order puts LootService after MonsterService and before PlayerService.",
+    "luau-compile exit 0 for every changed .luau under src/ (LootService, DataService, Net, Main, Config, Combat, Progression, Shop, Quest, Monster, Panels, Fx, HUD, etc.), re-run after the 15:43 changes."
+   ],
+   "findings": [
+    {
+     "id": "loot-server-legend-kept-through-rebirth",
+     "title": "Legendary weapon survives rebirth, against GDD §9 and A23-4",
+     "severity": "medium",
+     "kind": "rule-violation",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1395,
+       "quote": "KeepOnRebirth = { [8] = true },"
+      },
+      {
+       "file": "src/ServerScriptService/ProgressionService.luau",
+       "line": 386,
+       "quote": "for keepTier, keep in (Config.Loot and Config.Loot.KeepOnRebirth) or {} do"
+      },
+      {
+       "file": "docs/GDD.md",
+       "line": 331,
+       "quote": "**초기화:** 레벨, 골드, 무기."
+      },
+      {
+       "file": "docs/SPEC_ADDENDUM.md",
+       "line": 39,
+       "quote": "WeaponTier = 1`과 함께 `WeaponOwnedMask = 1`"
+      }
+     ],
+     "explanation": "GDD §9 and A23-4 reset every weapon at rebirth (WeaponOwnedMask = 1). A23-12 says only that enhancement is stored per tier and kept; its note assumes weapons are reset and come back later. The worker added a tier-8 exception, recorded only in HANDOFF_CODEX (\"전설은 환생 때도 남는다\"), with no user confirmation in the spec. Effect: right after rebirth a Lv1 player can re-equip a 90-damage weapon (MinLevel 1) plus any saved +N, which skips the early climb that rebirth is meant to reset.",
+     "suggested_fix": "Ask the user in one Korean line whether the legendary should survive rebirth. Until confirmed, follow the spec: remove KeepOnRebirth (rebirth sets mask = 1). The tier-8 +N stays saved and reapplies if the weapon drops again.",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Re-read. Config.luau:1405 (moved from 1395 by the 15:58 edit) still has `KeepOnRebirth = { [8] = true },`. ProgressionService.luau:386-392 keeps that bit through rebirth. GDD.md:331 says rebirth resets weapons (\"초기화: 레벨, 골드, 무기\"), and SPEC_ADDENDUM.md:39 sets `WeaponOwnedMask = 1`. A23-12 (SPEC_ADDENDUM.md:82) repeats that rebirth resets weapon ownership, and says to confirm the enhancement handling with the user in one line. The tier-8 exception is recorded only in the worker's HANDOFF_CODEX.md:23, with no user confirmation. WeaponEnhance[8] also survives, and a Move scroll can stack it to +10. Result: a Lv1 player right after rebirth can equip 90×2 = 180 base damage (MinLevel 1). Needs a user decision."
+    },
+    {
+     "id": "loot-server-data-version-mixed-servers",
+     "title": "Tier 8 added without a data version bump; older servers can grant a free tier-7 weapon",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 65,
+       "quote": "Version = 2,"
+      },
+      {
+       "file": "src/ServerScriptService/DataService.luau",
+       "line": 170,
+       "quote": "d.WeaponOwnedMask = bit32.bor(owned, 1, bit32.lshift(1, d.WeaponTier - 1))"
+      },
+      {
+       "file": "src/ServerScriptService/DataService.luau",
+       "line": 167,
+       "quote": "local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1"
+      }
+     ],
+     "explanation": "The save format changed: WeaponTier 8, mask bit 7, and new Items/WeaponEnhance/LootFlags fields. But Config.Data.Version stays 2, so the existing guard that stops an older server from rewriting a newer save does nothing. Failure path:\n1. A player has the legendary equipped and joins a server on older code (HEAD 9f71510, MaxWeaponTier 7).\n2. That server clamps WeaponTier 8 down to 7, equips tier 7 (damage 1000) and saves it.\n3. Back on a new server, DataService.luau:170 adds the tier-7 ownership bit.\nResult: a permanent free 90,000-gold faction weapon. An older server that already has the new mask cleanup would also reset any mask above 127 to 1, wiping owned weapons. HANDOFF says the private published place (universe 10769445522) has DataStore on and Studio Play writes the real save, so Studio (new code) and published servers (older code) share data today. After beta, the same thing happens on every rolling update.",
+     "suggested_fix": "Set Config.Data.Version and Defaults.Version to 3; migrate needs nothing for v2 to v3. Older servers will then refuse to load these saves (kick with LoadFailed) instead of corrupting them. Optionally, in fillDefaults, add the ownership bit from WeaponTier only for tiers ≤ MaxSoldTier or when the bit was already set.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Config.luau:65 and :72 are still `Version = 2`. Reproduced against HEAD (9f71510). HEAD's Config has 7 tiers, and its DataService.luau:162 clamps WeaponTier to MaxWeaponTier = 7. HEAD has no WeaponOwnedMask handling, so it keeps the mask (bit 7 set) as an unknown field and saves WeaponTier = 7. Back on new code, DataService.luau:170 ORs in bit 6, so the player permanently owns tier 7 (1000 damage, 90,000 gold) and has it equipped. Loading does not check MinLevel. The CR-L3 guard (DataService.luau:314) works only on a version bump. The second scenario (an intermediate server that has the mask cleanup at :167-169 resets masks above 127 to 1) applies only if such a build is deployed, which I could not verify. Today the exposure is small: the place is private and only the user's account plays on it. The real risk starts with rolling updates from beta onward. The suggested fix (Version 3, no migration body needed) is correct."
+    },
+    {
+     "id": "loot-server-power-ignores-enhance",
+     "title": "Bully and faction-balance power checks ignore scroll enhancement",
+     "severity": "low",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/JusticeService.luau",
+       "line": 197,
+       "quote": "return Config.PowerOf(level, tier, 1)"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 516,
+       "quote": "return math.sqrt(Config.WeaponDamage(weaponTier, level) * Config.BaseHealth(level)) * (rebirthMult or 1)"
+      },
+      {
+       "file": "src/ServerScriptService/PvPService.luau",
+       "line": 476,
+       "quote": "local weak = combatPower(victim) < B.WeakPowerRatio * combatPower(killer) -- CR-L5"
+      }
+     ],
+     "explanation": "PowerOf calls WeaponDamage(tier, level) without the enhance argument, so +10 (x2 damage, x1.41 power) is invisible to the weak-victim bully rule (WeakPowerRatio 0.5) and to the faction power sums (GetPower). GDD §5-6 says combat power is computed from level and weapon. Effect: a heavily enhanced attacker can beat weaker players without being flagged, and a heavily enhanced victim looks weaker than they are.",
+     "suggested_fix": "Read the server-set WeaponEnhance attribute in JusticeService.levelAndTier and pass it through: Config.PowerOf(level, tier, mult, enhance) → Config.WeaponDamage(tier, level, enhance). Do the same in the PvPService.combatPower fallback.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:515-516 `PowerOf` calls `Config.WeaponDamage(weaponTier, level)` without the enhance argument. Both callers ignore enhancement: JusticeService.luau:190/197 (GetPower and GetCombatPower) and the PvPService.luau:199-209 fallback. CombatService.luau:392/413/416 do include enhancement, so the bully check at PvPService.luau:476 and the faction power sums now disagree with real damage. At +10 power is ×√2 ≈ 1.41."
+    },
+    {
+     "id": "loot-server-legend-damage",
+     "title": "Legendary damage 90 is 2.37x tier 3 and above tier 4, not about 2x",
+     "severity": "low",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 180,
+       "quote": "{ Tier = 8, Damage = 90, Price = 0, MinLevel = 1, Legend = true,"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 171,
+       "quote": "{ Tier = 4, Damage = 88, Price = 3000, MinLevel = 12,"
+      }
+     ],
+     "explanation": "A23-12 says the legendary should be about twice the best shop weapon (tier 3, damage 38), i.e. about 76. 90 is 2.37x and beats the tier-4 drop (88, Lv12, worth 3000 gold) while being usable at Lv1. With +10 it reaches 180 at Lv1. Combined with rebirth persistence (finding above), it carries far past the slime meadow.",
+     "suggested_fix": "Set Damage = 76 (exactly 2x tier 3), or confirm 90 with the user, and update the HANDOFF line '공격 90 ≈ … 약 2배'.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:180 sets Damage = 90; tier 3 is 38 (:170) and tier 4 is 88 (:171). 90/38 = 2.37×. A23-12 (SPEC_ADDENDUM.md:75) asks for about 2× tier 3 (≈76). 90 also beats the tier-4 drop (Lv12) while usable at Lv1, so the first actual upgrade is tier 5 (200, Lv20). HANDOFF_CODEX.md:23 describes 90 as \"약 2배\". Balance tuning only, not a cap break, since the PvP ratio clamp still applies."
+    },
+    {
+     "id": "loot-server-useitem-state-checks",
+     "title": "UseItem has no combat or alive check; EquipWeapon has no alive check; extra arguments not rejected",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 270,
+       "quote": "local function onUseItem(player, id, a, b)"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 301,
+       "quote": "if S.CombatService.IsInCombat(player) then notify(player, TXT.EquipCombat, \"bad\"); return end"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 337,
+       "quote": "Net.Get(\"UseItem\").OnServerEvent:Connect(function(player, ...)"
+      }
+     ],
+     "explanation": "EquipWeapon refuses during PvP combat, but enhance and transfer scrolls can be used mid-fight. That changes the WeaponEnhance attribute that feeds ComputePvPHit's ratio straight away (the 1.5 clamp still applies). Neither remote checks Util.IsAlive, so equipping while dead rebuilds the weapon on a dead character. Unlike ShopService (`select(\"#\", ...) ~= 1`), these handlers silently ignore extra arguments. None of this breaks caps, but it is inconsistent with the other remotes.",
+     "suggested_fix": "In onUseItem, return early with a notice if CombatService.IsInCombat(player). In onEquipWeapon, require Util.IsAlive(player). Optionally check select('#', ...) the way ShopService does (UseItem 2–3 args, EquipWeapon 1, SellMaterials 0).",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "LootService.luau:270-284: onUseItem has no IsInCombat or IsAlive check. :286-306: onEquipWeapon checks IsInCombat (:301) but not Util.IsAlive. Extra arguments: Enhance rejects a 3rd argument (`b ~= nil`, :277), but Transfer ignores extras and EquipWeapon ignores all extras. ShopService.luau:290/295 use `select(\"#\", ...) ~= 1`. These are consistency gaps only. Enhancing mid-PvP moves the ratio, which stays clamped at 0.8-1.5 (CombatService.luau:418), and nothing exceeds a cap."
+    },
+    {
+     "id": "loot-server-cap-toast-spam",
+     "title": "Full item stack sends a 'full' toast on most capped drops",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 112,
+       "quote": "notify(player, string.format(TXT.ItemFull, def.Name, LOOT.ItemCap), \"bad\")"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 155,
+       "quote": "notify(player, string.format(TXT.PotionFull, TXT.Potion[kind] or kind), \"info\")"
+      }
+     ],
+     "explanation": "Harness: with 999 Jelly, 100 slime kills produced 33 red 'full' toasts. With 99 potions, 2–10% of kills (depending on monster) add an info toast. Auto-combat makes this constant noise until the player goes to the anvil.",
+     "suggested_fix": "Toast once per item id per session (or once per minute) and skip the rest silently; the item list already shows the count.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "LootService.luau:111-113 shows a red ItemFull toast on every capped roll, and :154-156 shows a PotionFull info toast. My numbers: at 999 Jelly a slime kill toasts with probability 0.96×0.30 + 0.04×0.90 = 32.4%, matching the 33/100 harness result. Correction on potions: the rate is P for each full potion type (×3 for golden), so 2-10% per type. With both HP and MP at 99 it is 4% (slime) up to about 20% (SkeletonKnight), so the '2-10%' figure is an undercount."
+    },
+    {
+     "id": "loot-server-debug-writes-real-save",
+     "title": "Studio debug commands change the real save in the DataStore-enabled place",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/Main.server.luau",
+       "line": 75,
+       "quote": "elseif key == \"LootRoll\" then -- Studio test aid: \"Slime:200\" = that many real loot rolls for this player"
+      },
+      {
+       "file": "src/ServerScriptService/Main.server.luau",
+       "line": 70,
+       "quote": "elseif key == \"Item\" then -- Studio test aid: value = \"Enh70\" or \"Enh70:5\" (A23-12 item id[:count])"
+      }
+     ],
+     "explanation": "HANDOFF says Studio Play in the private place writes the real DataStore. LootRoll calls the real RollKill up to 2000 times. It grants items, potions and weapons to the test account's persistent save, uses up the one-time first-scroll flag if the kind is BigSlime, and fires one Fx/Notify per roll. A jackpot also sends a server-wide announcement. That test data would carry into beta if the account is not reset.",
+     "suggested_fix": "Make LootRoll a dry-run tally (roll against a copy of the data with no Fx/Notify), or always follow it with LootReset. Add 'LootReset or tools/reset_test_save.py before beta' to the test checklist.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Main.server.luau changed at 16:00 (StoryStep was added), so the lines moved: Item is now :77 and LootRoll :82. The code is unchanged and still inside the IsStudio() gate at :54. LootRoll calls the real RollKill up to 2000 times on the live session data. HANDOFF_CODEX.md:7 confirms that Studio Play in this place writes the real DataStore. Each roll that gains something fires Net.Fx, so one call can flood the client with hundreds of Loot events. Kind=BigSlime uses up LootFlags.FirstScroll, and a jackpot roll fires NotifyAll. LootReset (:79) and tools/reset_test_save.py can undo it, so this is test hygiene only."
+    },
+    {
+     "id": "loot-server-unknown-ids-deleted",
+     "title": "Data cleanup permanently deletes item ids missing from Config.Loot.Items",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 70,
+       "quote": "if type(id) == \"string\" and LOOT.Items[id] then"
+      }
+     ],
+     "explanation": "Every join rebuilds data.Items with only the ids currently in Config. If a later update renames or removes an item, or ships a temporary config typo, every affected player's stack is erased at the next save, with no way to recover it.",
+     "suggested_fix": "Keep unknown string ids with valid counts in the save but ignore them for display and use; or add an explicit rename map when an item id changes.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "LootService.luau:66-76: sanitize rebuilds data.Items with only `LOOT.Items[id]` ids and runs at every PlayerReady (:356). A renamed or removed id is dropped and lost at the next save. As a side effect, a +inf count is also dropped rather than capped, because num() returns 0."
+    },
+    {
+     "id": "loot-server-items-attr-broadcast",
+     "title": "Item and enhancement lists are copied to every client",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 100,
+       "quote": "if okI then player:SetAttribute(\"ItemsJson\", items) end"
+      }
+     ],
+     "explanation": "Player attributes replicate to all clients, so every drop sends each player's full item JSON to everyone (20 players × auto-combat kills). The project already moved quest JSON to an owner-only remote for the same reason (CR-L50). Payload is small, so this is low priority.",
+     "suggested_fix": "Send ItemsJson and EnhanceJson to the owner through a dedicated remote, as with Quests, and keep only the numeric WeaponEnhance attribute for the equipped weapon.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "LootService.luau:100-101 set ItemsJson and EnhanceJson as Player attributes, which replicate to every client. The project already moved quest JSON to an owner-only remote for the same reason (Net.luau:20, CR-L50). The payload is small (at most 12 ids plus an 8-entry array), and it is resent only on a gain or a use."
+    }
+   ],
+   "missed": [
+    "low — LootService.luau:175-179: the first-King-Slime guarantee sets `data.LootFlags.FirstScroll = true` and then calls giveItem. If the Enh70 stack is already at ItemCap (999), addItem returns 0 and the one-time guarantee is used up with no scroll; the FirstScroll toast still shows. This is a rare edge case; it would be enough to set the flag only when given > 0 or to skip the cap for this grant.",
+    "low — LootService.luau:221/227: useEnhance refuses only when `before >= MaxEnhance`. A +2 (30%) or +3 (10%) scroll used at +8 or +9 is consumed, and a success is truncated to +10, wasting the excess. A failure can still drop a level (:228). This differs from the transfer rule, which loses nothing (A23-12), and the server gives no warning. Either refuse when before + Plus > MaxEnhance or make sure the client states it.",
+    "info — The rest of this scope checked out. MonsterService.luau:1025-1067 fires MonsterKilled once per eligible contributor: the dictionary is keyed by player, cleared at :1061, and Alive=false and records[id]=nil are set before firing. DamageMonster rejects dead records (:1092), and Util.Signal is synchronous and pcall'd. So each contributor gets exactly one roll per kill and there is no re-entry. RNG runs only on the server (Random.new at LootService.luau:22). The jackpot is 1/20000 × GoldenMult 3 on Slime with no auto-kill exclusion (:194-197, Config.luau:1399). Duplicate weapons become gold (:129-135), and ownership is set before any announcement (:138). Transfer follows the A23-12 no-loss rule: it refuses before consuming the scroll when the target is +10 or the source is +0 (:245-262). Remote handlers have no yields between check and write, SellMaterials clears items before paying (:320), and UseItem has a 0.4 s rate limit. SellMaterials goes through ShopService.CanBuyWeapon (alive, ClassChosen, 12-stud anvil distance). Debug commands are inside IsStudio(). luau-compile exits 0 for LootService, Config (15:58 version), Net, Main (16:00 version), DataService, CombatService, ProgressionService, QuestService, ShopService, MonsterService, Panels, Fx and HUD.",
+    "note — files changed during the review: Config.luau at 15:58 (Loot block shifted +10 lines, Loot values unchanged), Main.server.luau at 16:00 (StoryStep debug key added, loot debug lines shifted +7), StoryQuestService and Panels at 15:58. LootService (15:43), DataService (14:47) and ProgressionService (15:29) did not change during the review. Scratch copies are under scratchpad/loot/verify-loot-server/."
+   ]
+  },
+  {
+   "key": "enhance",
+   "summary": "Enhance/transfer review (key: enhance). Note: the worker changed files while I was reviewing. LootService.luau and Config.luau were saved at 15:43:19 and Panels.luau at 15:43:41. In that edit, transfer success went from overwriting the target (\"data.WeaponEnhance[toTier] = amount\", which silently destroyed the target's own +M; that would have been a high-severity bug) to adding the source onto the target, capped at +10, with any remainder staying on the source. The UI confirm text was updated to match. All findings below are on the post-change files. Everything compiles offline (LootService, Config, Panels, Progression, Combat, Shop). I also ran a Luau harness in scratch (loot/enhance/combined.luau) that uses the real LootService source and real Config.Loot.Text. All 19 cases passed: +9 with a +3 scroll clamps to +10 and uses the scroll; at +10 the scroll is not used; fail-down and fail-keep rolls work; failing at +0 does not drop; unowned, same-tier, max-target and bad-argument requests are refused without using the scroll; transfer to the legend works; 5000 random transfers kept the total enhancement unchanged; every EquipWeapon refusal case holds. The core enhancement rules match A23-11/A23-12. Remaining issues are design and consistency, not crashes. (1) The add-style transfer is a new interpretation and is not documented. It also lets players get around the user-chosen 50% fail-drop by enhancing spare +0 weapons and merging them. A swap rule, or the user's OK, is needed. (2) On any weapon already +1 or higher, the 10% (+3) scroll loses enhancement on average (-0.15 per use), so the rarest drop is the worst one. (3) Config.PowerOf ignores enhancement, so bully and Size Justice checks under-count up to about 1.41x. (4) Keeping the legend through rebirth goes against GDD §9 and was not confirmed by the user, and the rebirth confirm text still says weapons reset. Smaller UX and text items follow.",
+   "checked_ok": [
+    "Scroll odds and gains match A23-11: Config.luau:1334-1336 Enh70 Chance 0.7 Plus 1 / Enh30 0.3 Plus 2 / Enh10 0.1 Plus 3. The server rolls the odds (LootService.luau:224).",
+    "Failure rule matches A23-12: LootService.luau:228 'elseif before > 0 and rng:NextNumber() < LOOT.FailDropChance then after = before - 1' (FailDropChance 0.5). At +0 there is no second roll and it stays at 0 (harness).",
+    "Cap: LootService.luau:221 refuses at +10 BEFORE takeItem, so a scroll is never used at +10. At +9 with a +3 scroll, success clamps to +10 (line 227 math.min) and uses the scroll; the UI preview shows '+9 → 성공하면 +10' because Panels.luau:1912 also clamps.",
+    "EnhanceMult/WeaponDamage math (Config.luau:222-232): 1+0.10*clamp(floor(N),0,10), and non-number/NaN/inf input → 1. Values at each tier's MinLevel, +0/+10: T1 8/16, T2 15/30, T3 41.0/82.1, T4 107.4/214.7, T5 276/552, T6 711/1422, T7 1780/3560, T8 legend 90/180. SwingHitsToKill passes enhance through (Config.luau:236-245), and Panels.luau:2145-2147 uses each tier's own +N.",
+    "Per-tier storage: data.WeaponEnhance is a dense array 1..MaxWeaponTier, sanitized and clamped 0..10 (LootService.luau:77-82). It is mirrored as EnhanceJson, and the client decode accepts both numeric and string keys (Panels.luau:1841-1843). It is not in Config.Data.Mirrored, so its name does not collide with the 'WeaponEnhance' number attribute.",
+    "The WeaponEnhance attribute follows the equipped tier through publish() and the WeaponTier change hook (LootService.luau:102, 353-356). This covers equip, shop buy/sell, rebirth and DebugReset. CombatService reads it in ComputeMonsterHit (392) and both sides of the ComputePvPHit ratio (413-416).",
+    "Transfer guards (current code): both tiers owned, not the same tier, source > 0, target < +10 — all checked before takeItem (LootService.luau:246-252). A failure uses only the scroll and keeps both values. A success keeps the total unchanged (fuzz test, 5000 cases). Transfer to/from the legend works.",
+    "EquipWeapon (LootService.luau:286-306): integer tier check, ready plus rate limit, ClassChosen, ownership, no-op when already equipped, MinLevel, T7 RequiresFaction vs 'None', IsInCombat. Every refusal was verified in the harness.",
+    "Remote argument validation: non-string id, NaN or fractional tier, extra argument on an enhance scroll, missing or out-of-range second tier on a transfer — all ignored with nothing used (harness case 13). UseItem rate limit is 0.4s.",
+    "Rebirth (ProgressionService.luau:381-392) does not touch data.WeaponEnhance. Per-tier enhancement survives and applies again when the tier is re-owned, as A23-12 says. WeaponTier goes to 1 and the mask to 1|KeepOnRebirth bits.",
+    "PvP caps hold: enhancement and the legend only change the attacker/victim weapon ratio, clamped to PowerRatioMin/Max 0.8-1.5 (CombatService.luau:414-418). Basic hit = MaxHP*0.10*ratio*SwingImmediate 0.5 = 5% x ratio (at most 7.5%). The skill stays capped at PvPCapPct 0.35 (CombatService.luau:929). No one-shot.",
+    "Shop: SellWeapon only for tier <= MaxSoldTier 3, so the legend can never be sold. The sale price ignores enhancement, so there is no sell/rebuy gold exploit (ShopService.luau:112-127).",
+    "UI confirm texts match the current server rules: ConfirmEnh shows the clamped result plus FailDown ('50% 확률로 한 단계') or FailZero at +0; ConfirmMove (Panels.luau:1823) now shows 'target +M → +min(10,M+N)' and 'nothing disappears'; the 받기 button is disabled at +10 and the 보내기 button at +0.",
+    "Format-string argument counts for every Config.Loot.Text string used by LootService match their calls (harness ran with the real texts and no string.format errors).",
+    "Offline luau-compile OK: LootService, Config, Panels, ProgressionService, CombatService, ShopService."
+   ],
+   "findings": [
+    {
+     "id": "enhance-transfer-merge-rule",
+     "title": "Transfer now ADDS onto the target: new, undocumented rule that also lets players bypass the 50% fail-drop by merging",
+     "severity": "medium",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 259,
+       "quote": "after = math.min(LOOT.MaxEnhance, target + amount)"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 261,
+       "quote": "data.WeaponEnhance[fromTier] = amount - (after - target)"
+      },
+      {
+       "file": "docs/SPEC_ADDENDUM.md",
+       "line": 78,
+       "quote": "성공하면 항상 전부 옮긴다"
+      },
+      {
+       "file": "docs/HANDOFF_CODEX.md",
+       "line": 21,
+       "quote": "옮기기 주문서 70/30/10% — 성공하면 전부 옮김, 실패하면 그대로."
+      },
+      {
+       "file": "docs/GDD.md",
+       "line": 22,
+       "quote": "새 무기에 강화를 옮길 수 있다"
+      }
+     ],
+     "explanation": "During this review (15:43) the worker replaced the overwrite rule ('the source's +N replaces the target's'). The old rule silently destroyed the target's +M; for example, source +3 onto target +7 left the target at +3. That would have been high severity, and it is now fixed. The new rule merges: target = min(10, M+N), and the rest stays on the source. Nothing is lost. But merging is a new design: A23-12 and the GDD only say 'move all to a new weapon', and the docs and HANDOFF were not updated. Merging also creates a hidden best strategy. A weapon at +0 has no failure penalty, so players can use scrolls (especially the risky 10% and 30% ones) on spare +0 weapons such as the free T1, T2 or T3, then merge the result onto their main weapon with a transfer scroll, which never loses anything on failure. That avoids the user-chosen '50% 한 단계 하락' for anyone who owns transfer scrolls, which drop at about 1/4 of the Enh70 rate. It also gets back the +2 that is wasted when a +3 scroll lands at +9.",
+     "suggested_fix": "Recommended rule: SWAP. On success the target gets the source's +N and the source gets the target's old +M. 'All moves' still holds, nothing is lost, and merging is impossible, so the fail-drop rule keeps its meaning. A simpler alternative is to refuse (without using the scroll) when the target already has +1 or more, with the message '받는 무기가 +0일 때만 옮길 수 있어요'. If the user prefers the current add rule, keep it but record it in A23-12, GDD §0-1 and HANDOFF. In every case, update the ConfirmMove text to match. Ask the user one line: '옮기기 성공 시 받는 무기에 이미 강화가 있으면: 서로 바꾸기(추천) / 더하기 / 막기?'",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Re-opened the code at its 15:43 version. LootService.luau:259 'after = math.min(LOOT.MaxEnhance, target + amount)' and :261 'data.WeaponEnhance[fromTier] = amount - (after - target)' do ADD onto the target. SPEC_ADDENDUM.md:78, HANDOFF_CODEX.md:21 and GDD.md:22 only say 'move all'. No doc records a user decision to merge; I grepped docs for 더하/합쳐/합산. The bypass is real. Enh10 at +0 has EV +0.30 with no downside, against -0.15 at +1 or higher, and Move70 drops 3.3x more often than Enh10 (Slime 0.005 vs 0.0015). So the best play is to use Enh10/Enh30 on a +0 spare and then merge. Move scrolls drop at about 1/4 the Enh70 rate (0.005/0.02, 0.02/0.08, 0.03/0.12). Small corrections: only T1 is free (T2/T3 cost 150/800 gold), and the add rule IS documented in the Config.luau:1324-1326 comment, just not in the docs. A further contradiction: when target+source > 10 the remainder stays on the source. That breaks A23-12 '항상 전부 옮긴다' and the Panels.luau:1813 row text '강화 전부 옮기기'. The SWAP proposal does stop merging. Note the interaction with the next finding: if merging is removed, the Enh10 trap gets worse."
+    },
+    {
+     "id": "enhance-rare-scroll-negative-ev",
+     "title": "The rarest 10% (+3) scroll loses enhancement on average on any weapon already at +1 or higher",
+     "severity": "medium",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1336,
+       "quote": "Enh10 = { Kind = \"Enhance\", Name = \"강화 주문서 10%\", Chance = 0.1, Plus = 3"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1335,
+       "quote": "Enh30 = { Kind = \"Enhance\", Name = \"강화 주문서 30%\", Chance = 0.3, Plus = 2"
+      }
+     ],
+     "explanation": "With a 50% chance of -1 on failure, the expected change per use at +1 or higher is: Enh70 +0.55, Enh30 +0.25, Enh10 -0.15 (0.1x3 - 0.9x0.5). Simulated scrolls needed to go from +0 to +10: Enh70 about 18, Enh30 about 33, Enh10 about 198. The 10% scroll drops about 13x less often than the 70% one (Slime 0.0015 vs 0.02), yet using it on a weapon already at +1 or higher costs enhancement on average. For a child, finding the rarest scroll and then mostly losing a level ('실패… +5 → +4') is the frustration the user wanted to avoid. A23-11 marks the +1/+2/+3 values as a proposal to tune after play ('수치는 플레이 후 조정').",
+     "suggested_fix": "Propose to the user: 30% = +3 and 10% = +5 (expected change at +1 or higher: +0.55 and +0.05). Alternatively keep the gains but add a hint on the confirm screen: '+0 무기에 쓰면 실패해도 손해 없어요'. Re-measure in the 15-minute drop test.",
+     "needs_user": true,
+     "verdict": "partly",
+     "verified_severity": "medium",
+     "verifier_note": "Recomputed. EV at +1 or higher: Enh70 0.7-0.15=+0.55, Enh30 0.6-0.35=+0.25, Enh10 0.3-0.45=-0.15. My simulation of scrolls from +0 to +10: 17.7 / 32.8 / 196. Drop ratio Slime 0.02/0.0015 = 13.3x. Proposed 30%=+3 / 10%=+5 gives +0.55 / +0.05, and the simulation needs 17.1 / 42.1 scrolls. One correction: an Enh10 use at +1 or higher is 45% down / 45% keep / 10% up, not 'mostly losing a level'. At +0 the UI shows the FailZero text and EV is +0.30, so the scroll is a trap only on weapons already enhanced. A23-11 explicitly says the +1/+2/+3 values are to be tuned after play, so this is a tuning question for the user, not a code defect."
+    },
+    {
+     "id": "enhance-power-ignores-enhance",
+     "title": "Config.PowerOf (bully check / Size Justice / war power) ignores scroll enhancement",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 516,
+       "quote": "return math.sqrt(Config.WeaponDamage(weaponTier, level) * Config.BaseHealth(level)) * (rebirthMult or 1)"
+      },
+      {
+       "file": "src/ServerScriptService/JusticeService.luau",
+       "line": 197,
+       "quote": "return Config.PowerOf(level, tier, 1)"
+      },
+      {
+       "file": "src/ServerScriptService/PvPService.luau",
+       "line": 209,
+       "quote": "return Config.PowerOf(level, tier, 1)"
+      }
+     ],
+     "explanation": "PvP damage uses enhancement (CombatService.luau:413-416), but combat power does not, because WeaponDamage is called with no enhance argument and so gets multiplier 1. A +10 player's damage is 2x, so true power is sqrt(2), about 1.41x, what is counted. Effect 1: an enhanced attacker hitting a genuinely weaker player can avoid being flagged by the GDD §6 bully rule ('상대 전투력이 내 절반 미만' — power from level and weapon). Effect 2: an enhanced victim is under-counted, so attacking them can wrongly flag the attacker as a bully. The faction power sums used for Size Justice also miss all enhancement. The legend tier itself is counted correctly (Damage 90).",
+     "suggested_fix": "Add an enhance parameter: Config.PowerOf(level, weaponTier, rebirthMult, enhance) → Config.WeaponDamage(weaponTier, level, enhance). In JusticeService.levelAndTier and the PvPService.combatPower fallback, also read player:GetAttribute(\"WeaponEnhance\").",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Config.luau:516 calls WeaponDamage(weaponTier, level) with no enhance argument, so the multiplier is 1. JusticeService.luau:190 (GetPower, Size Justice sums) and :197 (GetCombatPower, bully check) and the PvPService.luau:209 fallback all inherit this. Meanwhile CombatService.luau:392/413/416 use the WeaponEnhance attribute. Concrete case: two Lv10 players, attacker T3 +10 vs victim T2 +0. Counted power ratio is sqrt(15/38)=0.63, so no bully flag. True ratio is sqrt(15/76)=0.44, which is below 0.5, so it should be bully. HANDOFF_CODEX.md:24 shows the worker scoped enhancement to the PvP ratio on purpose, but the bully and Size Justice rules then misjudge enhanced players. The fix is as suggested: pass the enhance value into PowerOf."
+    },
+    {
+     "id": "enhance-legend-kept-on-rebirth",
+     "title": "Keeping the legendary weapon through rebirth was not confirmed by the user and contradicts GDD §9 and the rebirth UI text",
+     "severity": "medium",
+     "kind": "rule-violation",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1395,
+       "quote": "KeepOnRebirth = { [8] = true },"
+      },
+      {
+       "file": "src/ServerScriptService/ProgressionService.luau",
+       "line": 382,
+       "quote": "bought and dropped weapons are reset too, except Config.Loot.KeepOnRebirth (the slime legendary, A23-12)"
+      },
+      {
+       "file": "docs/GDD.md",
+       "line": 331,
+       "quote": "**초기화:** 레벨, 골드, 무기."
+      },
+      {
+       "file": "docs/SPEC_ADDENDUM.md",
+       "line": 79,
+       "quote": "주의: 환생은 무기 보유를 초기화한다(GDD §9, A23-4)."
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 107,
+       "quote": "초기화: 레벨, 골드, 무기\\n유지: 직업, 명예·악명, 환생 보너스, 표식, 변경권"
+      }
+     ],
+     "explanation": "A23-12 only says that ENHANCEMENT is kept per tier. It explicitly repeats that rebirth resets owned weapons and asks the worker to confirm with the user in one line. Keeping the T8 legend comes from the worker (HANDOFF_CODEX.md:23 '전설은 환생 때도 남는다'), not from the user. Combined with per-tier enhancement, a reborn Lv1 player can equip legend +10 at once (180 damage at Lv1, versus 107 for T4 at Lv12). The PvP clamp still limits PvP, but early PvE progress after rebirth becomes trivial. The GDD §9 text and the rebirth confirm dialog still say weapons reset, so players are told something that is not true.",
+     "suggested_fix": "Ask the user one line: '전설 무기(젤리 왕관)는 환생해도 남길까요? 강화 수치는 무기별로 저장돼서 그 무기를 다시 얻으면 돌아와요.' If yes, update GDD §9, A23-12 and the rebirth confirm text (see enhance-rebirth-ui-text). If no, set KeepOnRebirth = {}.",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Config.luau:1395 'KeepOnRebirth = { [8] = true }' and ProgressionService.luau:382-391 keep the legend bit. The only source for this is HANDOFF_CODEX.md:23, written by the worker. No user decision exists in the docs. The SPEC note is at line 80, not 79: '주의: 환생은 무기 보유를 초기화한다… 사용자에게 한 줄로 확인한다'. GDD.md:331 and Panels.luau:107 still say weapons reset. Numbers check out: legend +10 at Lv1 = 90x1x2 = 180, and T4 at Lv12 = 88x1.22 = 107.4. Rebirth sets WeaponTier to 1, but the legend has MinLevel 1, so it can be equipped right away from the menu."
+    },
+    {
+     "id": "enhance-rebirth-ui-text",
+     "title": "Rebirth confirm and weapon list never say that enhancement, items and the legend are kept, and +N on drop-only tiers becomes stranded",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 107,
+       "quote": "RebirthConfirmBodyF = \"%s(으)로 다시 태어날까요?\\n초기화: 레벨, 골드, 무기"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1947,
+       "quote": "if ITEMS.Owns(mask, tier) or tier == equipped then table.insert(order, tier) end"
+      }
+     ],
+     "explanation": "A player with T5 +10 sees '무기 초기화' and assumes the +10 is gone. It is actually kept per tier, but it is effectively stranded until another T5 drops (Skeleton 0.05%, Knight 0.3%). The item list shows only owned tiers, so stored +N on unowned tiers is never visible. Before rebirth, players are not told that they could move the +N to T1 or the legend with a transfer scroll. Scrolls and materials also survive rebirth, but the 유지 list omits them. Separately, keeping materials lets players carry gold value past the reset: up to 999 per material x Sell value, about 88k gold in theory, by holding materials and selling them after rebirth. Whether materials should reset is a user decision.",
+     "suggested_fix": "Rebirth confirm: add '유지: … 아이템·주문서, 무기별 강화(그 무기를 다시 얻으면 돌아와요)' and, if the user agrees, the legend. Optionally list stored +N on unowned tiers in the item list as greyed '저장된 강화 +N'. Ask the user whether materials should be sold or cleared at rebirth.",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Panels.luau:107 does not mention that items, enhancement or the legend are kept. The quoted list filter is at :1948 (not :1947), and it shows only owned tiers, so +N stored on unowned tiers is invisible. ProgressionService never touches data.Items, so materials and scrolls survive rebirth. Theoretical carry-over is 999 x (2+8+6+18+14+40=88) = 87,912 gold. T4-T7 can only come from drops because MaxSoldTier is 3: T4 Goblin 0.1% / Brute 0.5%, T5 Skeleton 0.05% / Knight 0.3%. So +N on those tiers really is stranded after rebirth."
+    },
+    {
+     "id": "enhance-legend-damage-value",
+     "title": "Legend Damage 90 is 2.37x T3, not about 2x, and above T4 (88), so a T4 drop is never an upgrade for legend owners",
+     "severity": "low",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 180,
+       "quote": "{ Tier = 8, Damage = 90, Price = 0, MinLevel = 1, Legend = true"
+      },
+      {
+       "file": "docs/SPEC_ADDENDUM.md",
+       "line": 75,
+       "quote": "상점 최고 무기(티어3, 피해 38)의 약 2배"
+      }
+     ],
+     "explanation": "2 x 38 = 76. At 90, the legend at Lv1 beats T4 (88, MinLevel 12) at every level, so the 'eventually switch to a higher tier' step skips T4 entirely. HANDOFF calls 90 '약 2배'. With per-tier +10, legend +10 = 180 at Lv1.",
+     "suggested_fix": "Set Damage to about 76-80 so that T4 (88) stays an upgrade, or report the 2.37x figure to the user honestly.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:180 Damage 90. 90/38 = 2.37x, and 2x would be 76. Both weapons share the same level scaling (LevelDamagePerLevel 0.02), so the legend beats T4 (88) at every level when enhancement is equal. With unequal enhancement T4 can still win (T4 +3 = 114 vs legend +0 = 90). T4 and T5 come only from drops, so the legend effectively stays best until T5. HANDOFF calls 90 '약 2배'."
+    },
+    {
+     "id": "enhance-confirm-resets-mode",
+     "title": "Each scroll use needs 3 taps because the confirm handler clears the selected scroll and weapon",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1935,
+       "quote": "ITEMS.Mode = nil"
+      }
+     ],
+     "explanation": "After '강화하기' the mode resets, so the next scroll needs 사용 → pick weapon → 강화하기 again. Reaching +10 takes about 18 Enh70 scrolls, so roughly 54 taps. AGENTS persona: '불필요한 클릭·왕복·반복 확인은 줄인다'. The server re-checks everything, so keeping the selection is safe.",
+     "suggested_fix": "After go(), keep ITEMS.Mode = { Item = mode.Item, Tier = mode.Tier } (Rebuild already drops it when the scroll count reaches 0). The confirm text then refreshes with the new +N from EnhanceJson, so repeated '강화하기' taps are one tap each.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Panels.luau:1935 'ITEMS.Mode = nil' runs right after go(). Each use costs 3 taps (사용, then weapon, then 강화하기), about 54 taps for the ~18 Enh70 scrolls needed for +10. This also contradicts the :1800 comment that Mode survives rebuilds. One caveat for the fix: with the selection kept, :1909-1916 still builds go() when before >= MaxEnhance. The server refuses at :221 before consuming the scroll, so this is harmless, but the button should be hidden or disabled at +10."
+    },
+    {
+     "id": "enhance-overflow-hint",
+     "title": "No warning when a +2/+3 scroll would overflow +10 and waste levels",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 227,
+       "quote": "after = math.min(LOOT.MaxEnhance, before + def.Plus)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1912,
+       "quote": "local after = math.min(loot.MaxEnhance, before + def.Plus)"
+      }
+     ],
+     "explanation": "This behavior is correct and the preview shows '+9 → +10'. But a rare 10% scroll used at +8 or +9 silently wastes 1-2 levels, and the player is not told that a 70% scroll would be the better choice there.",
+     "suggested_fix": "When before + Plus > MaxEnhance, add a line to the confirm text: '최대 +10이라 +%d만 올라요 (70% 주문서가 더 좋아요)'.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "LootService.luau:221-222: the scroll is consumed at +9 with a +3 scroll, and after is clamped to 10 (:227). It is refused without being consumed only at +10. The Panels.luau:1912 preview shows the clamped value. Nothing warns about the wasted levels, so this is a UX point only."
+    },
+    {
+     "id": "enhance-ui-text-hygiene",
+     "title": "Korean particle error in ConfirmMove and hard-coded 50% in FailDown",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1823,
+       "quote": "성공하면 받는 무기가 +%d이 돼요"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1821,
+       "quote": "FailDown = \"실패하면 50% 확률로 한 단계 내려가요."
+      }
+     ],
+     "explanation": "'+2이/+4이/+5이/+9이 돼요' is wrong Korean; those numbers need '가'. FailDown hard-codes 50% while the server uses Config.Loot.FailDropChance, so tuning one would silently desync the text.",
+     "suggested_fix": "Use '받는 무기: +%d' or '+%d(으)로 바뀌어요'. Build FailDown with string.format from math.floor(Config.Loot.FailDropChance*100).",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Panels.luau:1823 '+%d이 돼요' is wrong for 2(이), 4(사), 5(오) and 9(구), which need '가'. :1821 hard-codes '50%' while the server uses Config.Loot.FailDropChance (0.5). Also note that :1813 '강화 전부 옮기기' is inaccurate when the merged total would pass +10."
+    },
+    {
+     "id": "enhance-sell-enhanced-confirm",
+     "title": "Selling an enhanced weapon does not show its +N or say that the +N stays saved",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 168,
+       "quote": "WeaponSellConfirmF = \"%s을(를) %s골드에 팔까요?\\n보유 목록에서 사라져요.\""
+      }
+     ],
+     "explanation": "Selling T3 +7 for 80 gold reads like losing the +7. In fact it stays in WeaponEnhance[3] and returns on rebuy, which the player is never told. A23-11 lists '강화된 무기 판매가' as undecided.",
+     "suggested_fix": "When the stored +N > 0, append '강화 +N은 저장돼요 (다시 사면 돌아와요)' to the confirm. Ask the user if enhanced weapons should be sellable at all.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Panels.luau:168 confirmed. ShopService.luau:101-136 (onSellWeapon) clears only the owned bit and never touches data.WeaponEnhance, so +N comes back on rebuy. T3 sells for floor(800x0.1) = 80. Only T2 and T3 can be sold (MaxSoldTier 3), and the legend cannot (8 > 3)."
+    },
+    {
+     "id": "enhance-tier-index-persistent",
+     "title": "Weapon tier index is now a persistent save key, and the legend at index 8 passes '>= tier' ordering checks",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 180,
+       "quote": "{ Tier = 8, Damage = 90"
+      },
+      {
+       "file": "src/ServerScriptService/QuestService.luau",
+       "line": 411,
+       "quote": "or num(data.WeaponTier, 1) >= IRON_TIER"
+      },
+      {
+       "file": "src/ServerScriptService/StoryQuestService.luau",
+       "line": 133,
+       "quote": "or num(player:GetAttribute(\"WeaponTier\"), 1) >= 3"
+      }
+     ],
+     "explanation": "WeaponOwnedMask bits and the WeaponEnhance array are keyed by Config.Weapons index. Inserting or reordering a weapon later would move saved +N and ownership onto the wrong weapon. Also, any 'WeaponTier >= N means stronger' check treats the legend (index 8) as above T7. For example, equipping the legend satisfies the 'has iron weapon' quest checks.",
+     "suggested_fix": "Add a comment on Config.Weapons that indices are save keys: append only, never reorder. Replace 'WeaponTier >= 3' checks with the mask check alone, or with Damage comparisons.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "The save-key hygiene point stands: WeaponOwnedMask bits, WeaponEnhance[tier] and DataService.luau:163-170 are all indexed by Config.Weapons position. QuestService.luau:411 and StoryQuestService.luau:133 '>= 3' are accurate, and the legend (8) passes them. That is arguably harmless or intended, since the legend (90) beats iron (38), and pushing a legend owner to buy iron would be pointless. The legend is also 1/20000, so this is not a real defect, only a fragile pattern."
+    }
+   ],
+   "missed": [
+    "low: ShopService.luau:93 'S.PlayerService.SetStat(player, \"WeaponTier\", selectedTier)'. Equipping an already-owned T1-T3 at the anvil has no IsInCombat check, but menu equip refuses during combat (LootService.luau:301). The two equip paths behave differently.",
+    "low: LootService.luau:259-262 together with SPEC_ADDENDUM.md:78 '성공하면 항상 전부 옮긴다' and Panels.luau:1813 '다른 무기로 강화 전부 옮기기'. When target+source > 10, only part of the enhancement moves and the remainder stays on the source. Nothing is lost, but both the doc and the UI wording promise a full move. The MoveOk text (Config.luau:1411) does show the remainder.",
+    "low: Panels.luau:1800 comment says 'the chosen scroll step (ITEMS.Mode) survives those rebuilds', but the confirm handler at :1935 clears it. The comment and the code disagree.",
+    "checked_ok: odds and gains are exact (rng:NextNumber() < Chance; Enh70 +1 / Enh30 +2 / Enh10 +3, Config.luau:1334-1336). Failure drops one level only when before > 0, with a 50% second roll (LootService.luau:228-229). +10 is refused before the scroll is consumed (:221). A +3 at +9 is consumed and clamped to +10 (:227).",
+    "checked_ok: transfer validation (LootService.luau:246-252) runs before the scroll is consumed. Both tiers must be owned, they must differ, the source must be +1 or higher, and the target must be below +10. On failure nothing changes. The legend works as a source or a target. All of this runs synchronously with no yields, so there is no TOCTOU.",
+    "checked_ok: EquipWeapon (LootService.luau:286-306) checks ClassChosen, ownership, already-equipped, MinLevel, RequiresFaction (T7, refused for None) and in-combat.",
+    "checked_ok: per-tier storage. data.WeaponEnhance is a dense array 1..MaxWeaponTier, clamped 0..10 in sanitize (:77-82). The client mirror EnhanceJson is read through ITEMS.Enh with numeric or string keys. DataService deep-copies defaults and saves the whole table, so the direct mutations persist.",
+    "checked_ok: EnhanceMult/WeaponDamage math at Lv1, +0 / +10: T1 8/16, T2 15/30, T3 38/76, T4 88/176, T5 200/400, T6 450/900, T7 1000/2000, T8 90/180. Non-number enhancement gives multiplier 1. PvP uses enhancement only inside the ratio clamp 0.8-1.5 (CombatService.luau:413-418). A basic hit is 0.10 x 0.5 SwingImmediate = 5% of base HP x ratio.",
+    "checked_ok: the legend cannot be bought or sold (ShopService saleLimit 3), and rebirth keeps the per-tier WeaponEnhance (ProgressionService never resets it), as A23-12 requires. The ConfirmMove text matches the add rule as implemented (Panels.luau:1921-1923).",
+    "checked_ok: LootService, Config, Panels, ProgressionService and CombatService all compile with luau-compile. Files were last modified at 15:43 and have not changed during this review."
+   ]
+  },
+  {
+   "key": "pvp-balance",
+   "summary": "PvP limits still hold after the enhancement and legendary-weapon changes. The \"MaxHP×0.10×clamp(0.8..1.5)\" formula is not new: HitPctOfMaxHP 0.10 and PowerRatioMin/Max 0.8/1.5 are the same at HEAD (TECH_SPEC §4.9). The worker only added WeaponEnhance to both sides of the power ratio (CombatService.luau:413/416). The worker's \"15% per basic hit\" reading leaves out SwingImmediate 0.5, so a real basic hit is 0.10×ratio×0.5: 5% of the target's base HP at equal power, 4–7.5% across the clamp for an unbuffed Warrior. A legend+10 Warrior at Lv15 against a fresh Lv15 T1/T3 defender hits the 1.5 cap and does 23/312 (7.4%) to a Horns Warrior or 32/374 (8.6%) to a Halo Warrior. Mage does 8.3–9.6% and Archer 3.5–4.0%. That top value was already reachable before enhancement, because any one-tier gap (T2/T1 = 1.875) hits the cap. Enhancement now also lets two players with the same tier and level reach it at +5, and a defender's enhancement can lower incoming damage by at most 20% (the 0.8 floor). The skill (MP) on a player is min(D×6, 0.35×current MaxHealth), so it is always about 35% and never one-shots. The worst single moment is basic hit + skill = 57.0% (Horns Mage with 5 stars, revenge and S1.6). The worst basic hit alone is 21.9% of base HP, from older multipliers, not from this work. With Size Justice: a victim on the weaker side takes 7.5% of base HP, which is 4.7% of their bigger current HP. An attacker on the weaker side does 12.0–15.2% of base HP before stars or revenge. Kaiju (8% skill cap, 6% stomp) and goose (counts hits, not damage) are unaffected. Monster side, a legend+10 at each zone's entry level deals: basic hit one-shots everything in the meadow from Lv1 and Goblins from Lv10 (106 ≥ 90); the skill one-shots every non-golden monster (Lv10 1274 ≥ Brute 260; Lv25 1598 ≥ Knight 1300). That is about T5+0 strength and acceptable for a 1/20000 drop plus a +10 grind. Real problems: (1) Config.PowerOf ignores enhancement, so Size Justice totals and the bully weak-victim rule undercount enhanced players. (2) Keeping the legendary through rebirth is not in the user-confirmed rules (A23-4 and GDD §9 reset weapons), and together with the kept +10 a rebirthed Lv1 has 22.5× starter-weapon damage. Minor: legendary damage 90 is 2.37× T3, not \"about 2×\". Leftover Config.Charge.PvPCapPct is a dead tuning value. Files did not change during the review (mtimes 15:28–15:43), and offline compile passed for Combat, Loot, Config, Justice and Progression.",
+   "checked_ok": [
+    "ComputePvPHit (CombatService.luau:404-425) matches HEAD and TECH_SPEC §4.9 except for enhancement in the ratio: HitPctOfMaxHP 0.10 (Config.luau:558), PowerRatioMin/Max 0.8/1.5 (Config.luau:559-560); the HEAD Config values are the same (HEAD Config:509-511).",
+    "Basic PvP hit = base MaxHP × 0.10 × ratio × SwingImmediate 0.5 (CombatService.luau:781-782): 5% at ratio 1 and 4–7.5% across the clamp (Warrior), consistent with GDD §5-2 '손 공격 ≈5%'. The '15%' reading leaves out the ×0.5.",
+    "Legend+10 attacker vs a fresh Lv15 T1 or T3 defender: ratio 22.5 or 4.7, capped at 1.5. Basic hit: Warrior 7.4–8.6%, Mage 8.3–9.6%, Archer 3.5–4.0% of victim HP; same ceiling as before enhancement (T2 vs T1 = 1.875 was already capped).",
+    "Enhancement on the defender only lowers the ratio to the 0.8 floor (e.g. T3+0 vs T3+10 = 0.5, raised to 0.8), at most 20% less damage.",
+    "Skill on players: min(D×6, 0.35×vHum.MaxHealth) (CombatService.luau:928-933), so always ≤35% and never a one-shot. Worst basic hit + skill at the same moment = 57.0% (Horns Mage, 5 stars + revenge, S1.6); fastest KO is 1 skill + 3 basic hits ≈ 2.2 s, unchanged by enhancement.",
+    "Size Justice both ways: a weaker-side victim's basic damage is based on BASE HP, so 7.5% of base = 4.7% of current HP, and the skill cap uses current MaxHealth. A weaker-side attacker with S1.6 does 12.0% (Halo Warrior), 13.8% (Horns Warrior), 15.2% (Horns Mage) of base HP, from existing multipliers only.",
+    "Kaiju: skill on an Active kaiju capped at Kaiju.ReleaseCapPct 8% of current MaxHealth (CombatService.luau:930-932); basic hits use the kaiju's base HP (≤0.4% of kaiju HP); stomp = 6% of victim MaxHealth regardless of weapon (KaijuService.luau:457); the kaiju's own hits use only S×bully. KaijuService/GooseService diffs only touch auto rewards and text.",
+    "Goose: GooseService.RegisterHit (GooseService.luau:625-661) counts hits (ManualCount/AutoCount × faction S) and does not use weapon damage or WeaponEnhance.",
+    "Auto combat never hits players: Swing adds players only when isManual (CombatService.luau:298-301/259-265/279-284); Release adds players only when not isAuto (CombatService.luau:923).",
+    "Enhancement is applied consistently: ComputeMonsterHit (392), PvP ratio (413/416) and Config.SwingHitsToKill (236-245) all use Config.WeaponDamage(t,l,enh); EnhanceMult clamps 0..10 and treats nil/NaN/inf as ×1 (Config.luau:222-226).",
+    "The WeaponEnhance attribute stays in sync: LootService.publish (102) runs on every item/enhance/transfer, the WeaponTier change listener (358-361) handles equip/sell/rebirth, and PlayerService starts last (Main.server.luau:15-20), so the PlayerReady handler is connected in time.",
+    "Weapons cannot be swapped mid-PvP: EquipWeapon refuses while IsInCombat (LootService.luau:301); the shop refuses tier > MaxSoldTier 3, so tier 8 cannot be bought (ShopService.luau:47-50).",
+    "Lifesteal (3% MaxHP per action) and the Halo skill heal (30% MaxHP cap) keep their caps when enhanced damage is larger.",
+    "Monster one-shots with legend+10 at each zone's entry level, judged acceptable: basic hit one-shots Slime/BigSlime from Lv1 (90) and Goblin from Lv10 (106); the skill one-shots every non-golden monster in every zone (Lv25 Warrior 1598 ≥ Knight 1300). This matches T5+0 at the same level (1776), while T3+0 cannot (Lv25 skill 337 < Skeleton 450).",
+    "Offline luau-compile OK: CombatService, LootService, Config, JusticeService, ProgressionService; source mtimes did not change during the review."
+   ],
+   "findings": [
+    {
+     "id": "pvp-balance-power-ignores-enhance",
+     "title": "Combat power (Size Justice and bully rule) ignores weapon enhancement",
+     "severity": "medium",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 516,
+       "quote": "return math.sqrt(Config.WeaponDamage(weaponTier, level) * Config.BaseHealth(level)) * (rebirthMult or 1)"
+      },
+      {
+       "file": "src/ServerScriptService/JusticeService.luau",
+       "line": 178,
+       "quote": "local function levelAndTier(player)"
+      },
+      {
+       "file": "src/ServerScriptService/JusticeService.luau",
+       "line": 194,
+       "quote": "function JusticeService.GetCombatPower(player)"
+      },
+      {
+       "file": "src/ServerScriptService/PvPService.luau",
+       "line": 209,
+       "quote": "return Config.PowerOf(level, tier, 1)"
+      }
+     ],
+     "explanation": "The worker gave Config.WeaponDamage an enhance parameter, and PvP damage now uses it in the ratio (CombatService.luau:413/416). Config.PowerOf calls WeaponDamage without enhance, so EnhanceMult(nil) = 1. As a result, Size Justice faction totals (JusticeService.GetPower) and the bully weak-victim rule (GetCombatPower, Bully.WeakPowerRatio 0.5) treat a +10 weapon (2× damage, √2 = 1.41× power) as +0. Same level (15): legend+10 vs T3+0 gives victim/attacker 0.650 (not a bully KO); counting enhancement it is 0.459 (bully). T4+10 vs T3+0: 0.657 vs 0.465. A side full of +10 players can stay at S=1.0 while the other side is never compensated. GDD §5-6/§5-7 define power as level + weapon, and enhancement is weapon strength; the two definitions of power now disagree.",
+     "suggested_fix": "Give Config.PowerOf an optional 4th parameter: PowerOf(level, tier, rebirthMult, enhance) = sqrt(WeaponDamage(tier, level, enhance) × BaseHealth(level)) × rebirthMult. In JusticeService.levelAndTier, also return the player's WeaponEnhance attribute (clamped 0..Config.Loot.MaxEnhance) and pass it from GetPower and GetCombatPower. Do the same in PvPService.combatPower's fallback (PvPService.luau:206-209). Optionally call JusticeService.RefreshScale or Recompute when WeaponEnhance changes; the 30 s recompute already picks it up.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Re-opened (no file changes since 15:43). Config.luau:516 `Config.WeaponDamage(weaponTier, level)` passes no enhance, so EnhanceMult(nil)=1. JusticeService.luau:178-197 (levelAndTier returns level and tier only; GetPower and GetCombatPower) and the PvPService.luau:199-209 fallback all route through it, and PvPService.luau:476 uses it for the weak-victim test. Meanwhile CombatService.luau:392/413/416 do count WeaponEnhance. GDD §5-6/§5-7 (GDD.md:247,257) define power as level·weapon. My recomputation at Lv15 matches: legend+0 vs T3+0 = sqrt(38/90) = 0.650; legend+10 = sqrt(38/180) = 0.459; T4+0 0.657, T4+10 0.465. Frequency is low in beta (+10 needs about 18 net 70% scrolls), but the fix is about 4 lines. Keep medium."
+    },
+    {
+     "id": "pvp-balance-legend-kept-on-rebirth",
+     "title": "Legendary weapon survives rebirth (not user-confirmed); with its kept +10 a rebirthed Lv1 has 22.5× starter damage",
+     "severity": "medium",
+     "kind": "rule-violation",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1395,
+       "quote": "KeepOnRebirth = { [8] = true },"
+      },
+      {
+       "file": "src/ServerScriptService/ProgressionService.luau",
+       "line": 382,
+       "quote": "-- A23-4: bought and dropped weapons are reset too, except Config.Loot.KeepOnRebirth (the slime legendary, A23-12)."
+      },
+      {
+       "file": "docs/HANDOFF_CODEX.md",
+       "line": 23,
+       "quote": "전설은 환생 때도 남는다(`Config.Loot.KeepOnRebirth`)."
+      }
+     ],
+     "explanation": "A23-4 says rebirth resets weapons ('WeaponTier = 1과 함께 WeaponOwnedMask = 1') and GDD §9 lists 무기 under 초기화. A23-12 only keeps the per-tier enhancement through rebirth, and only says to confirm re-applying it when the tier is owned again. Nothing user-confirmed says the legendary weapon itself is kept; the worker recorded it in HANDOFF as a decision. Damage impact: enhancement is also kept per tier and the legendary has MinLevel 1, so right after rebirth a Lv1 player can re-equip legend+10 = 180 base damage. That is 22.5× T1 and 4.4× T3 at Lv5. Its basic hit (90) one-shots all meadow monsters, its skill (1080) one-shots all of Goblin Woods once Lv10 opens, and Goblins die to one basic hit at Lv10. The rebirth climb (Lv1→50) becomes trivial for jackpot owners, on top of the rebirth XP bonus.",
+     "suggested_fix": "Ask the user once whether the slime legendary should survive rebirth. Until confirmed, follow A23-4: set Config.Loot.KeepOnRebirth = {} so the owned-weapon mask goes back to 1; the stored enhancement still re-applies if the tier is owned again. If the user approves keeping it, add the decision to SPEC_ADDENDUM A23-12 and GDD §9, and consider not keeping the legendary's +N (e.g. reset WeaponEnhance[8]).",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Config.luau:1395 `KeepOnRebirth = { [8] = true }`. ProgressionService.luau:382-392 keeps bit 8 in WeaponOwnedMask. That contradicts A23-4 (SPEC_ADDENDUM.md:39 'WeaponOwnedMask = 1') and GDD.md:331 ('초기화: 레벨, 골드, 무기'). A23-12 (SPEC_ADDENDUM.md:74) says the legend is eventually replaced, and nothing user-confirmed says it is kept. HANDOFF_CODEX.md:23 is new and uncommitted (not in HEAD), so it is the worker's own decision. Damage claims recomputed: data.WeaponEnhance is untouched on rebirth (LootService only re-mirrors it on the WeaponTier change, :358-360), and EquipWeapon (:286-305) checks MinLevel 1, so a Lv1 rebirth gets legend+10 = 180 = 22.5x T1 (8) and 4.39x T3 at Lv5 (41.04). Warrior basic 90 one-shots non-golden Slime/BigSlime (a golden BigSlime has 120 HP and needs a crit or 2 hits). At Lv10, skill 1274 is greater than Brute 260 and basic 106 is greater than Goblin 90. Also, a rebirthed player is never a rookie (Rebirths > 0), so the legend reaches PvP at Lv10 Goblin Woods; the PvP clamp still holds there. needs_user is correct."
+    },
+    {
+     "id": "pvp-balance-legend-damage-2x",
+     "title": "Legendary damage 90 is 2.37× T3, above T4 (88), not the spec's \"about 2×\"",
+     "severity": "low",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 180,
+       "quote": "{ Tier = 8, Damage = 90, Price = 0, MinLevel = 1, Legend = true,"
+      }
+     ],
+     "explanation": "A23-12: '전설 무기 세기 = 상점 최고 무기(티어3, 피해 38)의 약 2배' would be 76. The code uses 90 = 2.37×, which beats T4 (88, MinLevel 12, now drop-only from Goblin 0.1% / Brute 0.5%) at any level from Lv1. So a T4 drop is a downgrade for a legendary owner, and the legendary stays best until T5 (Lv20). At +10 it is 180, close to T5+0 (200). The PvP effect is limited by the ratio cap.",
+     "suggested_fix": "Use Damage = 76–80 to match 'about 2×' and stay below T4, or keep 90 and note the exact multiplier in A23-12 and GDD §0-1 ('약 2.4배').",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:180 Damage = 90 is 2.37x T3 (38). A23-12 (SPEC_ADDENDUM.md:74) says '약 2배', which is 76. 90 is above T4 88 (Config.luau:171), and T4 is drop-only (WeaponShop.MaxSoldTier = 3, Config.luau:165; Goblin 0.1% / Brute 0.5%), so a T4 drop is always a downgrade for a legend owner. T5 (200, MinLevel 20) is also drop-only (Skeleton 0.05%, Knight 0.3%), so in practice the legend stays best until a T5 drop, not just until Lv20. PvP is unaffected because the ratio is clamped at 1.5."
+    },
+    {
+     "id": "pvp-balance-legend10-skill-oneshots",
+     "title": "Legend+10 skill one-shots every non-golden monster in every zone at entry level (acceptable; watch with auto combat)",
+     "severity": "low",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 433,
+       "quote": "local releaseMult = (skill.DamageMultiplier or 6) * (c.ReleaseMult or 1)"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1388,
+       "quote": "Jackpot = { Monsters = { Slime = true }, Chance = 1 / 20000, Tier = 8 },"
+      }
+     ],
+     "explanation": "Real numbers, Warrior Halo / Mage Horns. Lv1: basic hit 90/135, skill 1080/1615. Lv10: 106/159, skill 1274/1905 (Goblin 90 dies to one basic hit, Brute 260 to one skill). Lv25: 133/199, skill 1598/2390 (≥ Knight 1300). Without enhancement, legend+0 at Lv25 Warrior needs 2 skills for a Knight, and T3+0 cannot one-shot a Skeleton with the skill (337 < 450). This is T5+0 strength (Lv25 skill 1776), behind a 1/20000 drop plus a +10 grind of about 18 net 70% scrolls, so acceptable. With auto combat the skill fires every ~5 s (MP regen 4/s vs cost 20), which makes an AFK Knight farm in Skeleton Ruins possible for that rare player.",
+     "suggested_fix": "No code change needed now. Record drop income for legend/+10 players separately in the 15-minute measurement; if auto-farming Knights shows up, lower the auto skill multiplier or golden-only jackpot odds later.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "The numbers check out for Warrior Halo and Mage Horns: Lv1 90/1080 and 135/1615 (Mage Horns basic = 180x1.3x1.15x0.5 = 134.6, so 135 rounded); Lv10 106/1274 and 159/1905; Lv25 133/1598 and 199/2390. The '18 net 70% scrolls' figure holds (net about 0.7 - 0.15 = 0.55 per scroll). Corrections: (1) 'every non-golden monster in every zone' is false for Archer. Archer legend+10 skill is 594 at Lv1, 701 at Lv10 and 879 at Lv25; 879 is below SkeletonKnight's 1300, so it needs 2 skills, and Archer basic needs 2 hits on a Goblin. (2) CombatService:433 is stale: releaseMult is now at CombatService.luau:889. Jackpot is at Config.luau:1389, not 1388. (3) Auto skill (autoTick CombatService.luau:1213-1234) fires about every 5 s only for Warrior and Archer. Auto Mage also pays MageSwingCost 2 per 1.1 s swing (:657), so net regen is about 2.2/s and the skill comes about every 9 s. Acceptable at 1/20000 plus a long scroll grind."
+    },
+    {
+     "id": "pvp-balance-stale-charge-cap",
+     "title": "Dead PvP tuning values: Config.Charge.PvPCapPct/SwingImmediate are unused but still referenced as the live cap",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 349,
+       "quote": "PvPCapPct = 0.35, -- release damage to a player <= 35% of the target's current MaxHealth"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 627,
+       "quote": "(players: Charge.PvPCapPct)"
+      }
+     ],
+     "explanation": "Live combat reads Config.BasicSkill.PvPCapPct and SwingImmediate (Config.luau:335; CombatService.luau:312/782/929). Config.Charge is used only by the dead helpers ReleaseRadius/ReleaseDamage (Config.luau:356-363). The kaiju comment still points tuners at Charge.PvPCapPct, so tuning that copy of the 35% cap or the 50% basic-hit factor silently does nothing.",
+     "suggested_fix": "Change the Kaiju.ReleaseCapPct comment to 'players: BasicSkill.PvPCapPct'. Remove or mark PvPCapPct and SwingImmediate in Config.Charge as dead (or delete Config.Charge together with ReleaseRadius/ReleaseDamage once no fixture needs them).",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:349 Charge.PvPCapPct and :339 Charge.SwingImmediate are dead: a repo-wide grep finds `Charge.`, ReleaseDamage and ReleaseRadius only inside Config.luau (helpers at :356/:361 are unused). The live values are BasicSkill (Config.luau:333-336), used at CombatService.luau:763, 782, 857 and 929 (skill.PvPCapPct). Config.luau:627 still says '(players: Charge.PvPCapPct)'. Minor citation error: CombatService.luau:312 is the aimed() helper, not a SwingImmediate read; the reads are at 763 and 782."
+    }
+   ],
+   "missed": [
+    "checked_ok: The question premise (\"0.10x1.5 = 15% per basic hit\") is wrong. HitPctOfMaxHP 0.10 and the 0.8-1.5 clamp were already in HEAD (HEAD Config.luau:509-511), and the HEAD swing multiplied by Charge.SwingImmediate 0.5 (HEAD CombatService.luau:798). The current swing still multiplies by BasicSkill.SwingImmediate 0.5 (CombatService.luau:781-782). So a basic hit is 5% of the victim's base MaxHealth at ratio 1 and 7.5% at the ratio cap, before class, faction and S multipliers, exactly as before. The only diff in ComputePvPHit (CombatService.luau:413/416) is the enhancement inside the clamped ratio, so enhancement and the legend cannot raise PvP damage above the old maximum; they only make the 1.5 clamp easier to reach (T3+5 vs T3+0 already hits 1.5).",
+    "checked_ok: no one-shots and skill <= 35% still hold with legend+10. Example: Lv15 Warrior Halo legend+10 vs fresh Lv15 T1 Warrior Horns (base HP 312). Ratio 22.5 is clamped to 1.5. Basic = 23 (7.5%), or 37 (12%) with attacker S = 1.6. Skill raw 281 is capped to 0.35 x hum.MaxHealth = 109 (CombatService.luau:928-935). Worst single basic hit across all combinations (Mage Horns, 5 stars + revenge, S 1.6, ratio 1.5, PvPMult 0.85) = 21.9% of base HP, still under 35%. PvP swings never crit (CombatService.luau:781). Size Justice is never >1 on both sides at once (Config.SizeJustice clamps the stronger side to 1.0); with victim S 1.6 the basic hit drops to 4.7% of actual HP and the cap scales with the victim's MaxHealth.",
+    "checked_ok: Kaiju and goose. Kaiju stomp is hum.MaxHealth x 0.06 (KaijuService.luau:457), and the skill on an Active kaiju is capped at 8% (CombatService.luau:930-931); neither depends on weapon or enhancement. The goose takes no damage: RegisterHit counts Manual 2 / Auto 1 x faction S (GooseService.luau:647-649), so enhancement has no effect. The kaiju/goose diffs are text-only plus an Auto filter (KaijuService.luau:641).",
+    "CombatService.luau:927-935 + Config.luau:333-336 (low, comes from the A22 manual-combat change, not from loot): for Warrior and Mage the skill's raw PvP damage is always at or above the 35% cap, even at ratio 0.8 (Warrior 48%, Mage 53% of victim base HP). Every skill therefore deals exactly 35% of the victim's MaxHealth regardless of attacker level, tier or enhancement. With MaxMana 100, cost 20 and a 3 s cooldown, three skills KO any full-HP defender (no S advantage on the victim's side) in 6 s. In HEAD the same 35% release needed 10+ charge stacks first. This is not a one-shot, but gear has no effect on skill PvP and the time-to-kill floor is 6 s; worth noting for the PvP measurement.",
+    "Config.luau:1389-1395 / LootService (low, scope note): the legend plus a kept Rebirths > 0 means a rebirthed player is never a rookie (rookie rule requires Rebirths == 0, Config.PvP.RookieLevel). They can enter Goblin Woods PvP at Lv10 with legend+10. PvP damage stays clamped at ratio 1.5, but the bully power check sees the legend as +0 (finding 1). This compounds findings 1 and 2; fixing either reduces it."
+   ]
+  },
+  {
+   "key": "economy",
+   "summary": "Economy review of the drop/item system v1 (read-only). Offline compile of LootService.luau and Config.luau is OK. LootService/Config changed at 15:43:19 and Panels at 15:43:41 while I was reviewing: the transfer scroll now ADDS +N to the target (capped at +10, the overflow stays on the source), and server and client text now agree. All numbers are golden-averaged: 4% golden, drop chance ×3, gold ×10. Kill mix follows spawn counts.\n\nExpected value per kill as (kill gold before faction/rebirth mult / material sale gold): Slime 4.08 / 0.65, BigSlime 13.6 / 6.24, Goblin 21.8 / 2.54, GoblinBrute 54.4 / 9.36, Skeleton 88.4 / 5.94, SkeletonKnight 231 / 20.8.\n\nBy zone, materials add +32% (Meadow), +14% (Woods) and +8% (Ruins) to kill gold. Manual pace of 5 kills/min in the Meadow gives 32 kill gold + 10 material gold per minute. The bot pace of 29/min gives about 187 + 59, which matches the worker's reported \"52 material gold / 29 kills\".\n\nMaterial selling does not trivialize the early weapon goals. The first 10 minutes yield about 70-80 material gold. Iron (800) arrives about 3.5-4.5 minutes sooner (about 25%), at about 15-19 minutes instead of 19-24 without dailies. Dailies (180 gold per quest + 360 chest at Lv1-9) and the Lv5 gate matter more.\n\nThe real problems are elsewhere. (1) Scroll drop rates are far too generous for a +10 (×2 damage) cap that persists through rebirth. Monte Carlo medians: +3 in 14 min, +5 in 30 min, +10 in about 70 min of manual Meadow play; at the bot pace +10 takes about 12 min. (2) Scrolls per minute do not rise with zone difficulty, so auto-farming the Meadow is the best scroll source. (3) The rarer scrolls are worse: Enh10 has negative expected value at +1 and above. (4) The jackpot works out to 1 per 18,519 slime kills: about 82 h manual but about 10.6 h at the auto/bot pace. The legend (90 damage) also beats T4 (88).\n\nPotion drops are reasonable in gold terms but flood supply (cap 99 in under 1 h of auto) and spam full-cap toasts. Drop rates and potion drop rates are the worker's call under A23-12. The jackpot rate, scroll payoffs, a possible level-gap rule and gold sinks should go to the user.",
+   "checked_ok": [
+    "Material sale (LootService.luau:303-324) clears items before paying, so repeat requests cannot double-pay. It requires the anvil distance via ShopService.CanBuyWeapon, is RateLimited at 1 s and pays raw Sell prices (no faction/rebirth/star gold mult) through AddCarriedGold(..., \"Sale\").",
+    "Sale and duplicate-weapon gold (sources \"Sale\"/\"Loot\") do not feed the daily 'earn gold' quest (QuestService.luau:843-846 only counts \"Monster\") or story EarnGold (Config Source = \"Monster\"), so materials cannot be farmed into quest rewards.",
+    "First-10-minute impact: about 35-40 manual kills give about 70-80 gold of materials (wood weapon 150 is already covered by the 150-gold first mission). Iron 800 arrives about 3.5-4.5 min sooner (≈25%): about 15-19 min vs 19-24 min without dailies. Lv5 at about 8-12 min and the dailies (180 gold + 300 XP each, chest 360 at Lv1-9) dominate. Verdict: fine as is.",
+    "Material share of income by zone is sane: Meadow +32% (mostly BigSlime SlimeCore 8 + Jelly×2), Woods +14%, Ruins +8% of golden-averaged kill gold. The worker's bot sample (52 material gold vs 369 kill gold in 29 kills) matches my model (≈59 material gold for 29 Meadow kills).",
+    "Per HP, BigSlime (≈19.8 gold per 40 HP incl. materials) and Slime (≈4.7 per 10 HP) pay about the same, so the materials do not create a Meadow target-selection exploit.",
+    "DuplicateWeaponGold T4 300 / T5 1000 / T6 3000 equals 10% of the Config price, consistent with SellWeapon floor(price×0.1) (A23-4). T4+ stay unsellable at the smithy. T8 duplicate = 3000.",
+    "Potions cannot be sold, so potion drops create no gold arbitrage against the 25-gold merchant price. grantPotion respects PotionInventoryCap 99.",
+    "Transfer scroll re-checked after the worker's 15:43 edit (LootService.luau useTransfer). Success adds +N to the target up to MaxEnhance, the overflow stays on the source, and failure keeps everything. This matches the Panels ConfirmMove text ('강화는 하나도 안 사라져요'). The earlier replace-the-target behavior that destroyed value is gone.",
+    "FirstScroll guarantee: the flag is set before granting, so it is paid at most once. With current rates a new player gets 1 guaranteed + ≈1.3 more Enh70 in the first ~35 Meadow kills, so the 'try enhancing' moment lands in the first 10 minutes.",
+    "Jackpot roll includes golden ×3 and auto kills as the user decided (A23-12). Effective chance is 1/18,519 per slime kill.",
+    "Offline compile OK: luau-compile on LootService.luau and Config.luau (after the 15:43 edits).",
+    "Enhancement multiplier is applied in both PvE swing damage and the PvP power ratio (CombatService.luau:392, 413-416), so the economy model's damage assumptions hold."
+   ],
+   "findings": [
+    {
+     "id": "economy-enhance-pace",
+     "title": "+10 (attack x2, the cap) is reached in about 70 min of manual play and about 12 min at auto/bot pace",
+     "severity": "high",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1349,
+       "quote": "{ Item = \"Enh70\", P = 0.02 }, { Item = \"Enh30\", P = 0.006 }, { Item = \"Enh10\", P = 0.0015 },"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1355,
+       "quote": "{ Item = \"Enh70\", P = 0.08 }, { Item = \"Enh30\", P = 0.025 }, { Item = \"Enh10\", P = 0.006 },"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1321,
+       "quote": "FailDropChance = 0.5"
+      }
+     ],
+     "explanation": "With the 50% drop-on-fail rule, Enh70 adds +0.55 per scroll on average, so +10 needs only ~18 scrolls. Golden-averaged Meadow mix (12 Slime : 4 BigSlime): 1 Enh70 per 26 kills, 1 Enh30 per 86, 1 Enh10 per 353. Monte Carlo over 1500 runs, using every scroll on the main weapon. Medians at 5 manual kills/min in the Meadow: +3 in 14 min, +5 in 30 min, +10 in 70 min (p90 126 min). Woods at 5/min: +10 in 43 min. Ruins: 34 min. Bot pace (29/min, the worker's measured upper bound): +3 in 2 min, +5 in 5 min, +10 in 12 min. Enhancement is stored per tier and kept through rebirth, so every tier a player touches is maxed within the first hours. T3 +10 (38×2 = 76) almost matches T4 (88, Lv12, drop-only) at Lv5. This undercuts the persona's 'meaningful growth / no instant completion' and makes scroll drops worthless after about an hour.",
+     "suggested_fix": "Cut scroll rates and make them rise with zone (A23-12 lets the worker set drop rates). Proposed Enh70/Enh30/Enh10: Slime 0.003/0.0008/0.0002, BigSlime 0.03/0.008/0.002, Goblin 0.015/0.004/0.001, GoblinBrute 0.05/0.014/0.0035, Skeleton 0.025/0.007/0.0018, SkeletonKnight 0.08/0.022/0.006. Move70/30/10 at about 1/3 of each row's Enh rates (Slime 0.001/0.0003/0.0001, BigSlime 0.01/0.003/0.001, etc.). Simulated medians at manual pace: Meadow +3 0.9 h, +5 1.7 h, +10 4.3 h; Woods +10 2.1 h; Ruins +10 1.6 h. That is in line with the T4 (≈1.8 h) and T5 (≈3.9 h) drop times. The first session keeps 1 guaranteed Enh70 plus about one more within ~20 min. Re-measure in the 15-minute drop-income run.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "high",
+     "verifier_note": "Re-opened Config.luau:1321 'FailDropChance = 0.5', :1349 and :1355 (unchanged; Config and LootService mtime 15:43). My own Monte Carlo (1500 runs, every scroll used on one weapon, 4% golden at x3, first-BigSlime Enh70) gives these medians. Meadow at 5 kills/min: +3 in 14 min, +5 in 31, +10 in 72 (p90 126). At 10/min: 7/15/36 min. At 29/min: 2/5/12 min. Woods at 5/min reaches +10 in 46 min (58 at 4/min). Ruins at 5/min: 35 min. EV per scroll (+0.55 for Enh70) and the 26/86/353 kills per scroll are correct. The 5/min manual pace is conservative: Config.Economy.KillsPerMinute = 12 (Config.luau:708) and the A7-2 'Lv10 in 10-12 min' target imply about 12-15/min, so +10 likely comes in about 30-40 min of real play. Amplifier the finding missed: useTransfer adds the whole +N onto another tier (LootService.luau:259 'after = math.min(LOOT.MaxEnhance, target + amount)'), and failure costs nothing. After the first +10, one Move70 carries it to every new T4/T5/legend, so enhance scrolls lose nearly all value for good (it is also kept through rebirth). The proposed table also reproduces: Meadow 5/min +3 52 min, +5 108, +10 261; Woods at 4/min +10 134 min; Ruins at 3/min 102 min; bot 45 min. Minor inconsistency: the Woods pace is 5/min here but 4/min in the next finding. Rates are the worker's call under A23-12."
+    },
+    {
+     "id": "economy-meadow-auto-scroll-farm",
+     "title": "Scroll income per minute does not rise with zone; auto-farming slimes is the best scroll source",
+     "severity": "medium",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1347,
+       "quote": "Slime = {"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1380,
+       "quote": "SkeletonKnight = {"
+      }
+     ],
+     "explanation": "Enh70 per minute, manual: Meadow 0.19 (5/min), Woods 0.25 (4/min), Ruins 0.24 (3/min). It is flat across zones, while gold rises 32 → 124 → 408 per minute. Auto (spawn-limited): Meadow 1.10/min at 29 kills/min vs Woods about 0.6 and Ruins about 0.5. Per swing, slimes pay about 2x the scrolls of goblins and skeletons (Slime 0.02 per ≈1.5 swings vs Knight 0.12 per ≈20 swings). The jackpot already pulls high levels to slimes by user design. Now scrolls do too, which breaks 'hunt → loot → harder challenge' for everything except gold. Even with the reduced table above, auto in the Meadow still reaches +10 in about 0.7 h.",
+     "suggested_fix": "1) Apply the zone-rising table from economy-enhance-pace (no user needed). 2) Optionally (user decision, since a kid may read it as unfair and the user stressed 'high levels farm slimes'): add a level-gap rule for NON-jackpot drops only. Example: scroll and material chances ×0.25 when the player's level is ≥ the next zone's MinLevel + 5 (Meadow: Lv15+), with the jackpot unchanged.",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Reproduced Enh70 per minute: Meadow 0.0378/kill x5 = 0.189, Woods 0.0617 x4 = 0.247, Ruins 0.0792 x3 = 0.238; at 29/min the Meadow gives 1.10. The Woods ~0.6 and Ruins ~0.5 auto rates are unmeasured estimates. Strengthening point: the Meadow is a non-PvP zone, while Woods and Ruins are PvP (Config.luau:771-777 PvP=true). So slime scroll farming is also risk-free, and high levels have one less reason to enter PvP zones (gold and XP still rise per zone). The level-gap option touches the user's 'high levels farm slimes' picture (A23-12), even with the jackpot excluded, so needs_user is right."
+    },
+    {
+     "id": "economy-scroll-ev-inverted",
+     "title": "Rarer scrolls are worse: Enh10 lowers the weapon on average at +1 and above; Move10/30 are strictly dominated",
+     "severity": "medium",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1335,
+       "quote": "Enh30 = { Kind = \"Enhance\", Name = \"강화 주문서 30%\", Chance = 0.3, Plus = 2,"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1336,
+       "quote": "Enh10 = { Kind = \"Enhance\", Name = \"강화 주문서 10%\", Chance = 0.1, Plus = 3,"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1339,
+       "quote": "Move10 = { Kind = \"Transfer\", Name = \"강화 옮기기 주문서 10%\", Chance = 0.1,"
+      }
+     ],
+     "explanation": "Expected change per use = Chance×Plus − (1−Chance)×0.5 at +1..+9. Enh70 +0.55, Enh30 +0.25, Enh10 −0.15. At +0 (no downside): +0.70 / +0.60 / +0.30. So the rarest drop (1 per 353 Meadow kills) is a trap for a naive kid who already has +1. Move10 and Move30 do exactly what Move70 does with lower odds, so they are pure junk. Informed players can dodge the downside: put 30%/10% scrolls on the always-owned T1 at +0 (risk-free), then Move70 the result additively onto the main weapon. The 50% drop rule then only hurts players who do not know the trick. A23-11 says 'lower odds, bigger gain' with Plus values to be tuned after play.",
+     "suggested_fix": "Ask the user, with the numbers. Option A (keeps the 50% fail rule): 70% → +1, 30% → +3, 10% → +5. EV at +1..+9 becomes +0.55 / +0.55 / +0.05, and at +0 +0.70 / +0.90 / +0.50, so the 10% scroll becomes an exciting gamble rather than a loss. Option B: the 10%/30% scrolls never drop a level on failure. For Move30/Move10, either drop them only after giving them a bonus (e.g. +1 / +2 extra on success) or set their drop rates to 0 until they have a reason to exist.",
+     "needs_user": true,
+     "verdict": "partly",
+     "verified_severity": "medium",
+     "verifier_note": "The EV math is right (Config.luau:1334-1336). Per use at +1..+9: Enh70 +0.55, Enh30 +0.25, Enh10 -0.15. At +0: 0.70/0.60/0.30. Option A numbers check out. The T1-at-+0 dodge works: T1 is always owned, useEnhance only drops when before > 0 (LootService.luau:228), and Move adds onto the target losslessly (:259). Overstated: Move30 and Move10 are dominated but not 'pure junk'. A failed move costs only the scroll (:263-264), so a held Move10 is still a free 10% roll. Their 'odds only' behaviour is the user's explicit A23-12 rule ('확률만 다르고 성공하면 항상 전부 옮긴다'), so present it as a question, not a defect. The Enh10 negative EV is the real trap. Changing the Plus values needs the user (A23-11 gives defaults 'tune after play')."
+    },
+    {
+     "id": "economy-jackpot-rate",
+     "title": "Jackpot works out to ~10.6 h of AFK auto per legend (82 h manual); the legend (90) also beats T4 (88) at Lv1",
+     "severity": "medium",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1389,
+       "quote": "Jackpot = { Monsters = { Slime = true }, Chance = 1 / 20000, Tier = 8 },"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 180,
+       "quote": "{ Tier = 8, Damage = 90, Price = 0, MinLevel = 1, Legend = true,"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 195,
+       "quote": "rng:NextNumber() < math.min(1, num(jackpot.Chance) * mult)"
+      }
+     ],
+     "explanation": "Effective chance with golden ×3: 1/18,519 per slime kill. Expected time: manual Meadow mix (3.75 slimes/min) ≈ 82 h (1.2% per hour); manual slimes only (5/min) ≈ 62 h; auto at 12/min ≈ 26 h; bot pace 29/min ≈ 10.6 h (61% within 10 h). Because auto kills count (user decision) and Roblox's idle kick is easily bypassed, a dedicated AFK farmer expects one within about a day. That is not really 'extremely rare' across a 7-week beta. The legend is 90 damage = 2.37× T3, not the ≈2× (76) stated in A23-12. It is usable at Lv1, stronger than T4 (88, Lv12), kept through rebirth, and with +10 reaches 180 (≈ T5 200 at Lv20). Duplicates pay 3000 gold, which is negligible.",
+     "suggested_fix": "Show the user the expected-hours table. Default options: (a) 1/50,000 → about 26 h auto/bot, 150-200 h manual; or (b) keep 1/20,000 but halve it for auto kills (the user rejected 'manual only', so a partial cut needs their OK). Separately, set Tier 8 Damage to 76 to match the confirmed '≈2× T3' wording (this keeps it below T4 at 88), unless the user prefers 90.",
+     "needs_user": true,
+     "verdict": "partly",
+     "verified_severity": "medium",
+     "verifier_note": "Config.luau:1389 '1 / 20000', :180 'Damage = 90', LootService.luau:195 (golden x3) confirmed. Effective chance 1.08/20000 = 1/18,519. Manual Meadow mix 3.75 slimes/min: 82 h (1.2%/h). Slimes only at 5/min: 62 h. 12/min: 26 h. Correction: 10.6 h treats all 29 bot kills as slimes. The worker's 29-kill minute was a Meadow mix (HANDOFF_CODEX.md:25 '29킬, 재료 약 52골드'). 52 gold matches the 3:1 mix (2.05 gold/kill, so 59 expected), not slimes only (0.65/kill, so 19). That is about 22 slimes/min, about 14 h (about 49% within 10 h). In the other direction, groups multiply it: every contributor gets its own jackpot roll (see missed). Legend 90 = 2.37x T3 (A23-12 says '약 2배' = 76). It beats T4 88 at MinLevel 1, is kept on rebirth (Config.luau:1395), and reaches 180 at +10. Both the rate and the damage go to the user."
+    },
+    {
+     "id": "economy-potion-drops",
+     "title": "Free potion drops (~19/h manual, ~110/h at auto pace) undercut the 25-gold merchant and hit the 99 cap in under an hour of auto",
+     "severity": "low",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1351,
+       "quote": "{ Potion = \"HP\", P = 0.02 }, { Potion = \"MP\", P = 0.02 },"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 29,
+       "quote": "PotionPrices = { HP = 25, MP = 25 }"
+      }
+     ],
+     "explanation": "Golden-averaged potions per kill: Meadow 0.065, Woods 0.111, Ruins 0.144. At manual pace that is about 19, 27 and 26 potions per hour (HP+MP). At the 29/min bot pace in the Meadow it is about 113/h, so the 99 cap is hit in under 1 h. In gold terms a slime's potion drops are worth 1.08 gold-equivalent per kill at 25 each, more than its Jelly (0.65). Meadow monsters barely hurt (Slime dmg 2), so the potion merchant the user just priced becomes nearly unused after the first session. There is no arbitrage, since potions cannot be sold.",
+     "suggested_fix": "Roughly halve potion drops (worker's call under A23-12): Slime 0.01 each, BigSlime 0.03, Goblin 0.02, GoblinBrute 0.04, Skeleton 0.025, SkeletonKnight 0.05. That gives about 8-14 potions per hour of manual play. Re-check in the 15-minute drop-income measurement.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Rates reproduced (Config.luau:1351 etc.): potions per kill 0.0648 Meadow, 0.111 Woods, 0.144 Ruins. That is 19, 27 and 26 per hour at 5, 4 and 3 kills/min, and 113/h at 29/min. A slime's potion value is 1.08 gold vs Jelly 0.65, correct. Wrong: the 99 cap is per kind, not combined. grantPotion checks HPPotionCount and MPPotionCount separately against PotionInventoryCap 99 (LootService.luau:150-158; Config.luau:30). At 29/min that is about 56/h per kind, so about 1.75 h to fill from empty, not under 1 h. A23-12 asks for '가끔 물약', and 1 per ~15 Meadow kills (about every 3 min at 5/min) is arguably 'occasional'. Halving is within the worker's remit (A23-12: potion drop rates are the worker's call)."
+    },
+    {
+     "id": "economy-cap-toast-spam",
+     "title": "Every drop at a full cap shows a toast; auto farmers get ~9 '가득 찼어요' toasts per minute",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 112,
+       "quote": "notify(player, string.format(TXT.ItemFull, def.Name, LOOT.ItemCap), \"bad\")"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 155,
+       "quote": "notify(player, string.format(TXT.PotionFull, TXT.Potion[kind] or kind), \"info\")"
+      }
+     ],
+     "explanation": "The Meadow yields about 0.5 Jelly per kill, so at the 29/min auto pace Jelly hits ItemCap 999 in about 70 min (materials only leave via a smithy visit). After that, each Jelly drop (~8-9 per minute) shows a red 'bad' toast. The potion cap (above) adds about 2 'info' toasts per minute. This buries real notifications (PvP, goose, jackpot) during AFK/auto play.",
+     "suggested_fix": "Throttle the full-cap notices: once per item id per 5 min (or once per session), and use 'info' instead of 'bad'. Optionally say where to empty it, e.g. '대장간에서 팔 수 있어요'.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "The server side is as described: LootService.luau:112 sends a 'bad' toast on every full-cap drop, and :155 an 'info' one. Jelly is 0.503 per Meadow kill, so 999 at 29/min takes about 68 min. Two corrections. (1) The client merges identical text: UIKit.luau:1388-1392 refreshes the existing toast instead of adding one, and DEFAULT_TOAST_SECONDS = 2.5 (:73). The result is one recurring red toast in 1 of 4 slots, not a stack of 9 per minute. (2) Jelly drop events are 0.373 per kill, about 10.8/min at 29/min (not 8-9), so the toast shows about 45% of the time. It still clutters. The throttle fix is fine."
+    },
+    {
+     "id": "economy-materials-survive-rebirth",
+     "title": "Materials (and scrolls) survive rebirth, so they act as a gold store around the GDD §9 gold reset",
+     "severity": "low",
+     "kind": "rule-violation",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/ProgressionService.luau",
+       "line": 379,
+       "quote": "S.PlayerService.SetStat(player, \"BankGold\", 0)"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1322,
+       "quote": "ItemCap = 999, -- per item id"
+      }
+     ],
+     "explanation": "Rebirth resets level, gold and weapons (GDD §9), but data.Items is untouched. A player can hold materials until after rebirth and sell them at Lv1. The hard cap is 999 × (2+8+6+18+14+40) = 87,912 gold, realistically a few thousand. Today the impact is small because gold only buys T2 (150), T3 (800, Lv5) and potions. Once crafting arrives (12/19) or more gold sinks exist, it becomes a real bypass. Scrolls carrying over is consistent with 'enhancement kept'.",
+     "suggested_fix": "Ask the user one line: should materials be kept through rebirth (document it as intended) or cleared with gold? If cleared, wipe only Kind = \"Material\" ids in TryRebirth (keep scrolls) and say so on the rebirth confirm screen.",
+     "needs_user": true,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "The facts hold. ProgressionService.luau:377-391 resets Level, XP, Bank/Carried gold, WeaponTier and the mask, and data.Items is untouched. The cap is 999 x 88 = 87,912. Not a rule violation: GDD §9 lists reset (level, gold, weapons) and keep (class, honor, bonus, marks, tickets), and items are on neither list, so this is an unspecified case. Potions bought with gold (up to 99+99) already survive rebirth by the same route. A23-13 (auction house at full launch, materials and scrolls first) will matter more for this than rebirth. A one-line user question is right."
+    },
+    {
+     "id": "economy-no-gold-sink-after-t3",
+     "title": "After the 800-gold iron weapon, gold buys only potions; material and duplicate gold pile up without purpose",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 165,
+       "quote": "Config.WeaponShop = { MaxSoldTier = 3,"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1393,
+       "quote": "DuplicateWeaponGold = { [4] = 300, [5] = 1000, [6] = 3000, [7] = 9000, [8] = 3000 },"
+      }
+     ],
+     "explanation": "T4+ are drop-only (Goblin woods: 1 T4 per 432 kills; Ruins: 1 T5 per 694, 1 T6 per 5,556; T7 has no source). Total shop spend is 950 gold plus 25-gold potions. Woods income is about 155 gold/min (+22 materials) and Ruins about 680 (+55), so gold, material selling and duplicate-weapon gold have nothing to buy from about Lv5 until rebirth wipes them. This is pre-existing scope, but the loot system adds more gold into a pool with no outlet, and selling materials now may clash with crafting value at full launch.",
+     "suggested_fix": "No number change now. Put it on the user's list: decide a mid-game gold sink for the beta (e.g. a crafting fee, a scroll vendor with daily limits, cosmetics) or accept that gold is meaningless after T3 until crafting arrives. Keep material Sell prices low (current values are fine) so future crafting stays attractive.",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "SpendGold is called only from ShopService (ShopService.luau:86 for weapons, :262 for potions), with MaxSoldTier 3 (Config.luau:165). T4 1/432 Woods kills, T5 1/694, T6 1/5,556 reproduced, and there is no T7 source, so DuplicateWeaponGold[7] = 9000 is dead data. Not completely meaningless: carried gold is still a PvP stake (grudge sacks and plunder). The issue predates this change; it is a user scope question."
+    }
+   ],
+   "missed": [
+    "Answer to the task's iron-weapon question (no change needed). Golden-averaged sell value from materials is 2.05 gold per Meadow kill against 6.46 kill gold (+32%; slimes only 0.65 vs 4.08, +16%). Woods: 4.49 vs 31.1 (+14%). Ruins: 10.9 vs 136 (+8%). Iron 800 from zero at 5 kills/min takes 25 min of hunting without materials and 19 min with them; at 10/min it is 12 vs 9.4 min. Wood (150) is already paid by the tutorial reward (Config.luau:950). The 3 dailies plus chest pay 180x3 + 360 = 900 gold at Lv<10 (HuntValue uses KillsPerMinute 12, Config.luau:708-717, 1230-1231), so dailies, not materials, drive the first-session iron purchase. Selling materials does not make the 10-minute goals trivial. Keep the current Sell prices.",
+    "Group drop multiplication is not considered in any finding (low-medium). Any damage at all registers a contributor (MonsterService.luau:1097-1098 'record._contributors[player] = os.clock()'), and every contributor within 15 s gets its own MonsterKilled (MonsterService.luau:1063-1066), so LootService.RollKill gives full scroll and jackpot rolls to each one. Warrior 'Around' swings and auto combat tag whole packs. In a 3-4 player Meadow group, each player's scroll and jackpot rate scales with the group's kill rate (density up to 2x Count, Config.luau:912). The 29-kill bot minute and every hour estimate here are solo. Per-contributor rolls are the user's A23-12 choice; the point is only that the 15-minute drop-income measurement and the rate tuning should include a 2+ player run.",
+    "checked_ok: sale and duplicate-weapon gold do not count toward 'earn gold' quests. AddCarriedGold(…, \"Sale\"/\"Loot\") (LootService.luau:325, :132) is filtered by QuestService.luau:843-844 'if source ~= \"Monster\" then return end', and every StoryQuest EarnGold uses Source = \"Monster\" (Config.luau:1090, 1115, 1187). Stockpiled materials cannot insta-complete quests.",
+    "checked_ok: SellMaterials removes items before paying (LootService.luau:320) and requires the smithy (CanBuyWeapon, :310). The jackpot and rare weapons record ownership before announcing (:138). Debug Item/LootRoll are Studio-only (Main.server.luau:53). No personal monsters are spawned (no SpawnPersonal callers), so the missing Personal filter in RollKill has no effect today. Config.luau and LootService.luau were unchanged during this review (mtime 15:43:19)."
+   ]
+  },
+  {
+   "key": "ui",
+   "summary": "I reviewed the client side of drop/item system v1: the Panels ITEMS list, the smithy \"재료 팔기\" button, the per-tier +N in the smithy 'N방→M방' line, Fx handlers.Loot/Enhance, and the phone layout at 749x361 (UIScale clamps to 0.75). The worker edited Panels.luau, Config.luau and LootService.luau at 15:43 while I was reviewing. Transfer is now additive with a +10 cap, ConfirmMove was reworded, and \"받기\" is disabled at max. All findings are against that version (Panels md5 68b452e6, Config f118f176, LootService 28b4f524, Fx d49b8bb4). An earlier concern that a transfer success could lower the receiving weapon is fixed in that version. luau-compile exits 0 for Panels, Fx and HUD, and also for Config and LootService. The core flow is correct and nil-safe: menu → 아이템 → 사용 → pick weapon(s) → confirm showing the success rate, the attack %, and that the weapon never breaks. It uses only existing Panels fallbacks and the existing Fx pool, and I found no connection leaks. Nothing is a blocker. There are 5 medium issues: (1) the ITEMS buttons are below the project's 44 real-px touch rule on phone; (2) any attribute-driven rebuild jumps the list back to the top and ignores taps for 0.35 s, and drops arrive while auto-combat (server-side) or party kills continue with the panel open; (3) loot popups use the 0.8 s damage-number pool and are crowded on phone, and scroll drops get no toast; (4) the one-time first-scroll hint is a default 2.5 s toast that is never repeated; (5) the worker's observation is confirmed: the server auto-opens the Story modal on kills, covering about 80% of a phone screen, and it replaces an open Items panel and its scroll selection. The rest are low: no pending/result state, combat-blind equip button, repeat-use friction, scattered/hard-coded text against the central-text rule, a Korean particle error, low-contrast BruteHorn text, +N hidden in the smithy, and one-tap sell-all without a confirm. I made no Studio or in-client observation. Pixel figures are calculated from the layout code.",
+   "checked_ok": [
+    "luau-compile exit 0 for Panels.luau, Fx.luau and HUD.luau, plus Config.luau and LootService.luau, re-run after the 15:43 mid-review edits; no 200-local overflow.",
+    "Menu entry opens the Items sub-panel through openSub (Panels.luau:1224/1275). Title T.Titles.Items='아이템', and the back button shows when opened from the menu.",
+    "Weapon list (Panels.luau:1946-1988): legendary first, then highest tier; '★ ' prefix and '  +N' label; equipped / 'Lv%d부터' / 장착 states. Every Config.Weapons entry including tier 8 has MinLevel, so string.format(L.NeedLevel, w.MinLevel) cannot get nil.",
+    "Enhance confirm (Panels.luau:1909-1916) shows weapon, +before→+after, attack % via Config.EnhanceMult(after), success rate, and FailDown/FailZero ('무기는 절대 안 부서져요'), matching A23-11 ('사용 전 화면에 성공률과 실패 시 결과') and A23-12 (50% -1, min 0).",
+    "Transfer flow (15:43 version): 보내기 needs +1 or more; 받기 shows 최대 and is disabled at MaxEnhance, matching the server's EnhanceMax refusal. ConfirmMove previews min(10, target+amount) and failure keeps the original. The server is now additive with the remainder left on the source (LootService.luau:255-262), so no enhancement is lost, matching A23-12 '전부 옮긴다'.",
+    "Format strings match their argument counts: ConfirmEnh 6, ConfirmMove 6, ScrollEnh 3, ScrollMove 2, MaterialLine 3, SellMat 2, server MoveOk 4, EnhanceOk 5. '%%' is used inside formats, and FailDown's literal '50%' is passed as an argument, not a format.",
+    "Empty states: NoScrolls / NoMaterials lines. The weapon section always has at least the starter (mask<1 → 1).",
+    "Nil-safety: num() returns 0, ITEMS.Decode returns {} on missing or bad JSON (pcall), ITEMS.Count/Enh guard NaN and clamp. Enh accepts both an array-decoded EnhanceJson and string keys. handlers.Loot guards Pos/Items/N/def and runs under pcall in Fx.Play.",
+    "No connection leaks on rebuild: ITEMS only creates buttons under `content`, which clearContent destroys. There is one global player.AttributeChanged hookup (Panels.luau:2549), and the Items builder returns nil (no polling closure).",
+    "No invented visuals: ITEMS uses the existing Panels PALETTE/makeButton/addText/placeLabel code fallbacks (AGENTS gameplay-first exception). Fx reuses spawnNumber/burst/ring with no new art.",
+    "ITEMS.Mode is cleared on panel switch and close (Panels.luau:2458/2476), cleared when the chosen scroll runs out, and survives same-panel rebuilds as documented.",
+    "Smithy sell button sits inside `details`, which is hidden when away from the anvil. The 0.25 s update loop refreshes its label and disabled state. The server re-checks distance and clears materials before paying (LootService.luau onSellMaterials).",
+    "Smithy 'N방→M방' passes the per-tier +N into Config.SwingHitsToKill (Panels.luau:2147-2149). This matches CombatService using Config.WeaponDamage(tier, level, WeaponEnhance) (CombatService.luau:392).",
+    "Shop catalog stays capped at MaxSoldTier ≤ 3 (WSHOP.CatalogLimit), so the Price-0 legendary tier 8 never appears for sale. The WSHOP.Offer mask bound scales with MaxWeaponTier=8.",
+    "Server result toasts (EnhanceOk/FailDown/FailKeep/MoveOk/EquipCombat/SellFar…) render at UIKit Z_TOASTS=95, above the Panels root (Z 50), so they stay visible over the open Items panel."
+   ],
+   "findings": [
+    {
+     "id": "ui-touch-targets",
+     "title": "Item-list and sell buttons are below the 44 real-px touch target on phone",
+     "severity": "medium",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1876,
+       "quote": "makeButton(row, buttonText, buttonColor or PALETTE.Button, UDim2.fromOffset(140, 44), onClick)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1933,
+       "quote": "UDim2.new(0.5, -5, 0, 52)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2031,
+       "quote": "makeButton(row, \"\", PALETTE.Free, UDim2.new(1, -20, 0, 52)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 35,
+       "quote": "TouchTarget = 44, -- CR-L41: real px of the X / back buttons on touch screens"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1438,
+       "quote": "ScaleMin = 0.75, -- UIScale = clamp(viewportY / 720, ScaleMin, ScaleMax)"
+      }
+     ],
+     "explanation": "On a 749x361 touch phone, UIScale = clamp(361/720, 0.75, 1.25) = 0.75. Panel sizes are canvas px, so a canvas size becomes 0.75x in real px. Results: ITEMS.Row buttons (사용/취소/장착/강화/보내기/받기) are 140x44 canvas = 105x33 real px. 강화하기/옮기기/취소 and the smithy '재료 팔기' are 52 canvas = 39 real px. The rows are 58 canvas (43.5 real) and sit stacked 10 canvas (7.5 real px) apart, so mis-taps between neighbouring weapon rows are likely. Other panels use 60-canvas buttons (Welcome, WeaponShop, Story), which give 45 real px, and the chrome enforces 44 real px via GUARD.TouchTarget. The new item list is the smallest tap target in the panel set.",
+     "suggested_fix": "Size ITEMS buttons as other panels do: height 60 canvas (or math.max(44, math.ceil(GUARD.TouchTarget / s)) using canvas()'s scale), row height about 68 (like the Travel rows), and confirm/cancel/sell at 60. Re-check the 749x361 layout in Studio's device emulator.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Re-checked; the files have not changed since 15:43. On touch, UIKit.luau:253 sets s=clamp(361/720,0.75,1.25)=0.75. ITEMS.Row button at Panels.luau:1876 'UDim2.fromOffset(140, 44)' is 105x33 real px. Confirm/cancel at :1933/:1940 and sell at :2031 are 52 canvas = 39 real px. Rows are 58 canvas (43.5 real) with content list padding of 10 (:908). Only chrome gets the GUARD.TouchTarget fix (:817). Correction: not all other panels use 60. Travel uses 156x48 (:1323, 36 real) and Shop uses 240x52 (:2346, 39 real), so sub-44 targets already existed. The ITEMS row button (44 canvas) is still the smallest in the panel set."
+    },
+    {
+     "id": "ui-rebuild-scroll-reset",
+     "title": "Drops during auto-combat or party kills rebuild the open item list, snap it to the top and swallow taps",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1804,
+       "quote": "Attrs = { ItemsJson = true, EnhanceJson = true, WeaponOwnedMask = true, WeaponTier = true, Level = true },"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2555,
+       "quote": "elseif currentId and (REBUILD_ATTRS[name] or (currentId == \"Items\" and ITEMS.Attrs[name])) then"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2413,
+       "quote": "content.CanvasPosition = Vector2.new(0, 0)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2415,
+       "quote": "inputGuardUntil = os.clock() + GUARD.InputAfterRender"
+      }
+     ],
+     "explanation": "Every change to ItemsJson/EnhanceJson/Level/WeaponTier re-renders the whole Items panel. render() always resets the scroll to the top and starts the 0.35 s input guard, during which taps are dropped silently. The server auto-combat loop (CombatService autoTick) keeps killing while a panel is open. Slimes drop Jelly 30% of the time, and kills by party members within the contributor window also roll your loot. So ItemsJson changes every few seconds while the player browses. On a phone the visible content area is about 290 canvas px. That is much less than up to 8 weapon rows (58+10 each) plus the scroll and material sections. A player scrolling down to '사용' keeps getting thrown back to the top, and a tap on 강화하기/사용 that lands just after a rebuild does nothing.",
+     "suggested_fix": "Separate open-renders from refresh-renders. On attribute-driven rebuilds of the same panel, keep content.CanvasPosition (clamped to the new canvas) and do not set inputGuardUntil. Alternatively, debounce ItemsJson rebuilds while ITEMS.Mode is nil, or update the counts and +N labels in place through an update closure instead of a full rebuild.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Panels.luau:2555 queues a full render when an ITEMS.Attrs attribute changes (:1804). render() always sets 'content.CanvasPosition = Vector2.new(0, 0)' (:2413) and 'inputGuardUntil = os.clock() + GUARD.InputAfterRender' (:2415). makeButton then drops taps for 0.35 s (:573). Auto combat runs server-side regardless of the UI (CombatService.luau:1213 autoTick, Config AutoTick 0.2). Slime HP is 10 and Jelly P=0.30 (Config.luau:1346), so ItemsJson changes about every 3-7 s while auto-fighting. Correction: there is no party system. Loot also rolls for any kill you damaged within ContributorWindow=15 s (MonsterService.luau:1053-1066, Config.luau:897)."
+    },
+    {
+     "id": "ui-loot-popup-readability",
+     "title": "Loot popups are short-lived and crowded on phone, and scroll drops get no toast",
+     "severity": "medium",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+       "line": 3522,
+       "quote": "pcall(spawnNumber, pos + Vector3.new(0, 4.6 + (i - 1) * 1.1, 0), text, color, weapon and 1.3 or 0.75, weapon, nil)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+       "line": 43,
+       "quote": "local NUMBER_W, NUMBER_H = 140, 44"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+       "line": 45,
+       "quote": "local NUMBER_LIFE = 0.8"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 179,
+       "quote": "notify(player, TXT.FirstScroll, \"reward\")"
+      }
+     ],
+     "explanation": "handlers.Loot reuses the damage-number BillboardGui pool. Labels are a fixed 105x33 px at scale 0.75, use TextScaled with a minimum size of 11, fade from about 0.45 s and are hidden at 0.8 s. Lines are 1.1 studs apart, starting 1.4 studs above the gold number. On a 361-px-tall phone at roughly 20 studs camera distance (FOV 70), one stud is about 13 px. So consecutive loot lines are about 14 px apart but 33 px tall: a BigSlime kill (SlimeCore + Jelly ×2 + scroll + potion) piles into an unreadable stack over the +G/+XP numbers. This is a geometric estimate, not seen in the client. Long names such as '+강화 옮기기 주문서 70%' shrink to the 11 px floor. Only weapons, the jackpot and the first-ever scroll get a toast. Ordinary scroll drops, including the rare Enh10/Move10 (0.04–0.15%), get only this 0.8 s label. They are the only items the player can act on, and the A23-12 promise is a '+슬라임 젤리'-style notice. Config.Loot.Text.Got/GotN exist but nothing uses them.",
+     "suggested_fix": "Send a short reward toast for Enhance/Transfer drops: from LootService, or client-side in handlers.Loot through uiCall('Toast', …) with Config.Loot.Text.Got/GotN. Give loot labels their own longer life (for example 1.6–2 s) and spacing in screen space rather than studs (or one merged line such as '+젤리 ×2 · +주문서'). Keep materials on the world popup only.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "medium",
+     "verifier_note": "Confirmed: Fx.luau:3522 reuses the damage-number pool at scale 0.75 (105x33 BillboardGui). The label fades from 0.45 s and is hidden at 0.8 s (:45, :856-857). Lines are 1.1 studs apart, starting 1.4 studs above +G (Reward is at 3.2). Ordinary Enh/Move drops get no toast: LootService notifies only for weapons, the jackpot, the first scroll and cap messages (:133-179). Config.Loot.Text.Got/GotN (Config.luau:1397-1398) are unused (grep). Overstated: the 'unreadable stack'. TextScaled glyphs in a 105-px-wide box come out about 11-13 px tall, not 33. At Roblox's default ~12.5-stud zoom one stud is about 21 px, so lines are about 14-23 px apart: tight, not stacked. The 0.04-0.15% range is Slime-only; Enh10 reaches 1% on SkeletonKnight. The real defect is the 0.8 s life and no persistent notice for scrolls."
+    },
+    {
+     "id": "ui-first-scroll-hint",
+     "title": "One-time first-scroll guidance is a default 2.5 s toast that is never repeated",
+     "severity": "medium",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 177,
+       "quote": "data.LootFlags.FirstScroll = true -- flag first: the guarantee is paid at most once"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 179,
+       "quote": "notify(player, TXT.FirstScroll, \"reward\")"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1406,
+       "quote": "FirstScroll = \"주문서를 얻었어요! 메뉴 → 아이템에서 무기를 강화해 봐요. (실패해도 무기는 안전해요)\","
+      }
+     ],
+     "explanation": "A23-12 asks for a one-time usage hint with the guaranteed first King Slime scroll. The hint is a roughly 45-character toast with no duration, so the client uses the 2.5 s default (UIKit.Toast). It fires on the same BigSlime kill that advances S0 step 1 → 2, whose 'Start' toast StoryQuestService sends first (that service starts before LootService). Phones keep only 2 toasts (TOAST_PHONE.Max). The flag is saved first, so the hint never comes back. The menu '아이템' button has no indicator of unused scrolls. A player who misses those 2.5 s may never find the scroll mechanic.",
+     "suggested_fix": "Pass a longer duration (Net.Notify already takes one, for example 6 s). Also add a persistent cue with existing styling: paint the menu '아이템' button gold the way 'Rebirth (가능!)' is painted (paintButton) while there are scrolls and none has been used yet. Or put a one-line 'how to use' at the top of the Items list until the first use.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "medium",
+     "verifier_note": "Confirmed: LootService.luau:179 'notify(player, TXT.FirstScroll, \"reward\")' passes no duration, so UIKit.Toast uses DEFAULT_TOAST_SECONDS=2.5 (UIKit.luau:73) for a 49-character line (Config.luau:1406). There is no persistent cue on the menu '아이템' entry (Panels.luau:1224). Corrections: 'shown once' is what A23-12 asks for ('사용법 안내를 한 번만'), so repeating it is not the fix. QuestService, StoryQuestService and LootService connect MonsterKilled in Start order (Main.server.luau:19, Util.Signal fires in order), so the FirstScroll toast is the newest one. The 2-toast phone cap (UIKit.luau:72, :261) evicts the older S0 'Start' toast, not this one. The actual problem is the short duration plus the missing persistent cue."
+    },
+    {
+     "id": "ui-story-modal-centre",
+     "title": "Server auto-opens the full-screen Story modal on kills (worker's observation), replacing an open Items panel",
+     "severity": "medium",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/StoryQuestService.luau",
+       "line": 216,
+       "quote": "Net.Get(\"OpenPanel\"):FireClient(player, \"Story\", { Id = id, St = track.St })"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 857,
+       "quote": "root.BackgroundTransparency = 0.45"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2458,
+       "quote": "ITEMS.Mode = nil"
+      }
+     ],
+     "explanation": "advance() calls openStep right after the kill that completes a step. For example, S0's 'Choice' step opens on the trial-completing BigSlime kill in the meadow, and a later step opens on entering the town. The Story view uses the shared Panels window. On a 749x361 phone that is about 780x381 of a 998x481 canvas (about 78%x79% of the screen) over a 45% black overlay, and root.Active swallows taps, so the player is blinded mid-fight with monsters still attacking. Panels.Open also replaces whatever is open. If the player is in the Items panel during auto-combat, the Story pop-up wipes the half-done scroll selection (ITEMS.Mode = nil when id ~= currentId), or it interrupts a smithy visit.",
+     "suggested_fix": "Do not auto-open Story while another panel is open or while InCombatUntil is in the future. Queue it (as WELCOME.PendingOpen does) and open it when the current panel closes and combat ends, or only flash the quest row ('조각이 말을 걸어요 — 눌러서 보기'). The user should choose whether a compact bottom-anchored Story layout (layout only, existing parts) is wanted.",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "StoryQuestService.luau:216 fires OpenPanel 'Story' from advance() (:226) with no combat or open-panel check. Panels.Open (:2433-2466) only defers for pickers. If id ~= currentId it clears ITEMS.Mode (:2458) and replaces the open panel. Root has a 0.45 overlay with Active=true (:857-859). Window is min(780, w-24) x min(600, availH), about 780x381-410 canvas on 749x361 (78% x 79-85%). Correction: the S0 Choice step opens on whichever event completes the last of 3 trials (basic Slime kills, a 2-target skill hit, or a SafeKill BigSlime, Config.luau:1043-1047). It is not necessarily a BigSlime kill. M1_4/M2_3 Talk/Choice panels open on zone entry. Needs the user's call on the queue/compact layout."
+    },
+    {
+     "id": "ui-no-pending-result",
+     "title": "Scroll use, equip and material sale have no pending or result state in the panel; dropped requests are silent",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1934,
+       "quote": "go()"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2032,
+       "quote": "fire(\"SellMaterials\")"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 213,
+       "quote": "local function ready(player, key)"
+      }
+     ],
+     "explanation": "Pressing 강화하기/옮기기 fires and clears ITEMS.Mode at once. The list re-renders with the old +N until EnhanceJson arrives, and the only result is a 2.5 s toast. The panel never shows 'last result: 철 검 +3 → +4 성공'. When ready() fails (rate limit 0.4/0.3/1 s, or PlayerService not ready), the request is dropped with no notify, so the player gets no feedback at all. If the panel is opened before DataLoaded, WeaponTier=0, so no row reads '장착 중'. The starter then shows an enabled '장착' that the server ignores.",
+     "suggested_fix": "Keep a small ITEMS.Pending {SentAt} that disables the confirm and sell buttons and shows '결과 확인 중…' until ItemsJson/EnhanceJson change, or for about 5 s, then a 'try again' line (as WSHOP does). Store the last result line from the Enhance Fx payload for the ItemStep area. Show T.WeaponLoading when DataLoaded ~= true.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Confirmed: :1934-1936 fires, clears Mode and rebuilds with no pending or result line. The result comes only from server toasts (2.5 s) and the Fx burst. ready() failures return with no notify (LootService.luau:213-216, :271, :287, :309). In practice the UseItem 0.4 s limit is hard to hit, because each step costs a re-render plus the 0.35 s guard. Wrong: the pre-DataLoaded case. With the WeaponTier/Level attributes absent, num() returns 0. The starter row then hits 'level < (w.MinLevel or 1)' (:1981) and shows a disabled 'Lv1부터', not an enabled '장착'. That is still a misleading state; it should show T.WeaponLoading as the WeaponShop does at :1689."
+    },
+    {
+     "id": "ui-equip-in-combat",
+     "title": "'장착' stays enabled in combat; the server then rejects it",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1985,
+       "quote": "click = function() fire(\"EquipWeapon\", tier) end"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 301,
+       "quote": "if S.CombatService.IsInCombat(player) then notify(player, TXT.EquipCombat, \"bad\"); return end"
+      }
+     ],
+     "explanation": "Panels already has inCombat() (InCombatUntil) and uses it for travel, class and rebirth. The Items builder returns no update function and does not watch InCombatUntil, so the button invites a tap that always fails during a fight.",
+     "suggested_fix": "Return a small update closure from BUILDERS.Items that disables 장착 and labels it '전투 중' while inCombat(). The 0.25 s loop already calls currentUpdate.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "BUILDERS.Items returns nil (:2023), so nothing refreshes 장착. inCombat() exists (:286). The server rejects at LootService.luau:301 with a toast, so it is not silent. Note: 'combat' here is only the PvP tag. CombatService.IsInCombat uses lastPvPTime (:526-528) and InCombatUntil is set by tagCombat (:447-450), so this only matters in PvP zones."
+    },
+    {
+     "id": "ui-repeat-use-friction",
+     "title": "Using several scrolls on one weapon takes a scroll down and 3 taps each time",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1935,
+       "quote": "ITEMS.Mode = nil"
+      }
+     ],
+     "explanation": "After each use, Mode resets and the list returns to the top. The scrolls section sits below up to 8 weapon rows, so every next attempt is: scroll down → 사용 → pick weapon → 강화하기. The persona asks to cut unnecessary clicks and round trips, and 70% scrolls are expected to be used back to back.",
+     "suggested_fix": "After go(), keep {Item, Tier} (or {Item, From, To}) when the scroll count is still ≥1. The confirm re-renders with the new +N and rate on the next rebuild, so the rate and failure text are still shown before each send. Alternatively, list the scrolls section above the weapons.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": ":1935 resets ITEMS.Mode after go() and render resets the scroll. The scrolls section comes after all owned weapons (:1944-1990 then :1992). Each use needs 사용 → weapon 강화 → 강화하기 (3 taps). A scroll-down is needed on phone only once about 3+ weapons push the scroll rows past the roughly 290-canvas content height."
+    },
+    {
+     "id": "ui-text-centralisation",
+     "title": "Loot UI strings are scattered or hard-coded (central-text rule for KO+EN)",
+     "severity": "low",
+     "kind": "rule-violation",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1224,
+       "quote": "{ Text = \"아이템\", Id = \"Items\" },"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+       "line": 3521,
+       "quote": "local text = n > 1 and string.format(\"+%s ×%d\", it.Name, n) or (\"+\" .. it.Name)"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1397,
+       "quote": "Got = \"+%s\","
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1821,
+       "quote": "FailDown = \"실패하면 50% 확률로 한 단계 내려가요. 무기는 절대 안 부서져요!\","
+      }
+     ],
+     "explanation": "AGENTS.md:13 requires Korean source text in central text tables for localization. The menu entry hard-codes '아이템' even though T.Titles.Items exists. Fx re-implements the drop label format while Config.Loot.Text.Got/GotN sit unused. FailDown hard-codes '50%' instead of Config.Loot.FailDropChance, so the confirm text silently goes stale if the chance is tuned. Client loot text is split between Panels ITEMS.T and Config.Loot.Text.",
+     "suggested_fix": "Add T.MenuItems. Use Config.Loot.Text.Got/GotN in handlers.Loot. Format FailDown from Config.Loot.FailDropChance. Consider moving ITEMS.T into Config.Loot.Text.UI so all loot text lives in one table.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Panels.luau:1224 hard-codes '아이템' although T.Titles.Items exists ('지도' next to it is older). Fx.luau:3521 re-implements '+%s ×%d' while Config.luau:1397-1398 Got/GotN are unused. Panels.luau:1821 FailDown hard-codes '50%' instead of Config.Loot.FailDropChance (Config.luau:1322). AGENTS.md:13 requires central text tables."
+    },
+    {
+     "id": "ui-korean-particle-move",
+     "title": "Transfer confirm uses the wrong Korean particle and omits the leftover at the cap",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1823,
+       "quote": "성공하면 받는 무기가 +%d이 돼요 (강화는 하나도 안 사라져요)"
+      }
+     ],
+     "explanation": "'+%d이' is wrong for +2/+4/+5/+9, which need '가'. Other strings use the 이(가)/을(를) convention. When target+amount exceeds 10, the server leaves the rest on the source (LootService.luau:261), but the confirm only says '하나도 안 사라져요' without saying where the rest goes.",
+     "suggested_fix": "Reword without a particle, for example '성공하면 받는 무기 +%d', and add '· 넘친 +%d은(는) 보내는 무기에 남아요' when target+amount > MaxEnhance.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Panels.luau:1823 '성공하면 받는 무기가 +%d이 돼요' is wrong for 2/4/5/9 (이→가). PickTo (:1819) uses '을(를)'. The server keeps the overflow on the source (LootService.luau:259-261), but the confirm says only '강화는 하나도 안 사라져요' and never where the rest goes."
+    },
+    {
+     "id": "ui-brutehorn-contrast",
+     "title": "BruteHorn row text has low contrast on the row background",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1331,
+       "quote": "BruteHorn = { Kind = \"Material\", Name = \"우두머리 뿔\", Sell = 18, Color = Color3.fromRGB(150, 110, 70) },"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1866,
+       "quote": "row.BackgroundColor3 = PALETTE.Row"
+      }
+     ],
+     "explanation": "Item rows tint the label with def.Color. (150,110,70) on PALETTE.Row (40,42,58) works out to about 3.1:1, below 4.5:1 for 18-canvas text (13.5 real px on phone). The other item colours compute to about 4.9:1 or higher.",
+     "suggested_fix": "Lighten BruteHorn's display colour (for example 200,150,100), or tint only a leading dot and keep the label in theme.Text.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Recomputed WCAG contrast on PALETTE.Row (40,42,58) (Panels.luau:206). BruteHorn (150,110,70) (Config.luau:1331) = 3.11:1. KnightCrest = 4.88 (lowest of the rest), SlimeCore = 5.11, others higher. The 18-canvas label is 13.5 real px, below the large-text threshold, so 4.5:1 applies. The suggested (200,150,100) gives 5.4:1."
+    },
+    {
+     "id": "ui-shop-plus-hidden",
+     "title": "Smithy hit counts include the stored +N, but the smithy never shows +N (and the sell confirm does not mention it)",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2147,
+       "quote": "local enh = ITEMS.Decode(\"EnhanceJson\") -- A23-12: each tier keeps its own scroll +N"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2136,
+       "quote": "ui.Name.Text = info and (info.Name .. \" · \" .. (info.Equipped and T.WeaponEquipped"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 168,
+       "quote": "WeaponSellConfirmF = \"%s을(를) %s골드에 팔까요?\\n보유 목록에서 사라져요.\","
+      }
+     ],
+     "explanation": "'N방→M방' correctly uses the per-tier enhancement, including the +N kept for unowned or sold tiers (A23-12: re-applied when re-acquired). The row name, CurrentName and the sell confirm show the bare weapon name. A '미보유 철 검' can therefore show fewer hits than a fresh iron sword with no visible reason. Selling a +5 weapon also does not say the +5 stays saved for that tier, since ShopService leaves WeaponEnhance untouched.",
+     "suggested_fix": "Append '  +N' (ITEMS.Enh) to the smithy row name and CurrentName. When N>0, add '강화 +N은 저장돼요 (다시 얻으면 그대로)' to the sell confirm.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Hit counts use per-tier +N (Panels.luau:2147-2149). Row names (:2136), CurrentName and Name (WSHOP.Offer :1753-1754) and the sell confirm (:2107, T.WeaponSellConfirmF :168) never show +N. ShopService does not touch WeaponEnhance (grep), so the saved +N is invisible."
+    },
+    {
+     "id": "ui-sell-all-no-confirm",
+     "title": "'재료 팔기' sells every material in one tap with no confirm",
+     "severity": "low",
+     "kind": "ux",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2032,
+       "quote": "fire(\"SellMaterials\")"
+      },
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 315,
+       "quote": "data.Items[id] = nil -- removed before paying: a repeated request cannot pay twice"
+      }
+     ],
+     "explanation": "Panels' header rule says irreversible choices go through UIKit.Confirm, and weapon sale does. Selling all materials cannot be undone. A23-12 says crafting from materials arrives at full launch, so whether beta players should be able to dump BruteHorn/KnightCrest in one tap without warning is a design question.",
+     "suggested_fix": "Either keep one-tap sale (it fits the persona's fewer-confirmations goal while materials have no other use) or add confirm('재료 팔기', '%d개 → %s골드', …). The user should decide whether beta materials must stay keepable for launch crafting.",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Panels.luau:2031-2032 sells every material in one tap with no confirm. The file header (:3) says irreversible choices go through UIKit.Confirm. Small citation fix: the 'data.Items[id] = nil -- removed before paying' line is LootService.luau:320, not 315. Keeping or confirming is a product decision for the user (needs_user)."
+    }
+   ],
+   "missed": [
+    "low, LootService.luau:328: SellDone toast formats gold with tostring(gold), while the sell button uses exactNumber (Panels.luau:2037), so large sales lose the thousands separators.",
+    "low, Config.luau:1328-1339: 12 new code-picked item tint colours (Config.Loot.Items[*].Color) drive the item-list labels (Panels.luau:1999, 2016) and the loot popups (Fx.luau:3518). This is borderline 'never invent visual styling in code'; the user should approve it or the colours should come from the existing palette.",
+    "low, Panels.luau:1910-1914: near the cap, Enh30 (+2) or Enh10 (+3) silently waste part of the gain (e.g. +9 with Enh10 → +10). The confirm shows the capped value but gives no hint that a 70% scroll gives the same result.",
+    "low, Panels.luau:2147: WeaponShop update JSON-decodes EnhanceJson once per row every 0.25 s, and sellUpdate decodes ItemsJson every tick (:2036). Decoding once per update would be enough.",
+    "info: luau-compile passes (rc=0) for Panels.luau, Fx.luau, HUD.luau, LootService.luau and Config.luau.",
+    "checked_ok: ITEMS.Decode, Count and Enh are nil- and NaN-safe and handle array or string keys (Panels.luau:1832-1846). No connection leaks: the builder makes no signal connections beyond button Activated, which is destroyed with clearContent. Empty states show NoScrolls/NoMaterials. ITEMS.Mode survives rebuilds and resets when the scroll runs out or the panel changes. The confirm shows the rate and the failure result before sending (A23-11). Only existing PALETTE/makeButton/UIKit parts are used. The ★ glyph is on the known-render list (Util.luau:96). HUD falls back to IconSword for tier 8 (HUD.luau:1893-1897).",
+    "unchanged: the files were not modified during this review (Panels 15:43:41, Fx 15:41:27, Config/LootService 15:43:19)."
+   ]
+  },
+  {
+   "key": "tests",
+   "summary": "Sandboxed offline test run on the drop/item v1 sources. The worker edited Config.luau, LootService.luau and Panels.luau at 15:43, while my first run was going, so I ran everything a second time. The run2 hashes then stayed the same up to 15:50 KST. I copied the tests to scratch/loot/tests and changed only ROOT, the harness paths and the report write paths (diff proof in copy_diff.txt). No repo file was written: the only files modified after 15:42 are the worker's own edits.\n\nResults on the latest sources:\n- 7 of 8 requested runners pass with exactly the check counts recorded in docs/art/verification_2026-10-06: auto_combat 590+3, blacksmith 1460, camera_input 44, intro_seen 37+7, potions 1009+27, skill_release 265+3, owner_restore 365 checks / 28 cases. The extra test_nickname run also passes (790).\n- test_onboarding FAILS. The cause is an intended change, not a gameplay regression: the new legendary tier 8 makes masks 128/255 and tier 99 valid, and the fixture still assumes 7 tiers. In a scratch soft-assert run, all other checks pass; only these 6 fail.\n- All 61 src/**/*.luau files compile with luau-compile 0.741.\n- There is no tools/test_loot.py. My scratch smoke harness runs the real Config and LootService code with stand-in engine services: 42/42 checks pass for the A23-11/12 rules.\n- Six of the seven offline_*.json reports carry source hashes from before the loot round (camera_input is current). offline_onboarding still says \"passed\" for sources that now fail.\n- Git hygiene: nothing sensitive is staged (.env, .tripo/ and build/ are ignored; the real key prefix appears nowhere outside .env/build). The index holds only 239 staged deletions, while LootService.luau is still untracked.\n- The place file is not saved. place/ and build/GoodEvil.rbxlx are identical (2026-10-04 17:03) and contain none of today's modules. A Studio lock is open on place/GoodEvil.rbxlx.",
+   "checked_ok": [
+    "Sandbox proof: the copies differ from tools/*.py only in ROOT (pinned to the repo), a SCRATCH constant, harness/report write targets moved to scratch/loot/tests/out, and the report print lines (diff --strip-trailing-cr saved in copy_diff.txt). The Luau CLI under build/luau_cli_0_741 is only read and executed. The only repo files modified after 15:42 are the worker's own edits (Config, LootService, Panels, docs/design/idea_backlog.md); no file under build/ or docs/art/verification_2026-10-06 changed.",
+    "Run 2 was on the latest sources: Config sha 12b0d564..., LootService b35c3e9e... All src/tools hashes stayed the same from run2 start (15:45) to the final check (15:50).",
+    "test_skill_release: SKILL_RELEASE_OFFLINE_OK checks=265, SKILL_KEY_STATIC_OK checks=3; matches offline_skill_release_2026-10-06.json.",
+    "test_camera_input: CAMERA_INPUT_SUMMARY checks=44 failed=0; matches the report and its source sha (CameraFollow did not change).",
+    "test_potions: POTION_OFFLINE_OK checks=1009, COSTUME_REMOVAL_STATIC_OK checks=27; matches the report.",
+    "gameplay_blacksmith_check: BLACKSMITH_OFFLINE_OK checks=1460; matches the report. Tier 8 is still refused by the shop (MaxSoldTier 3).",
+    "test_auto_combat: AUTO_COMBAT_OFFLINE_OK checks=590, static 3; matches the report.",
+    "test_intro_seen: INTRO_SEEN_OFFLINE_OK checks=37, static 7; matches the report.",
+    "test_owner_restore: OWNER_RESTORE_SUMMARY checks=365 cases=28 failed=0 (report goes to scratch in place of build/).",
+    "Extra: test_nickname (sandboxed) NICKNAME_OFFLINE_OK checks=790.",
+    "Offline compile: all 61 src/**/*.luau files compile with build/luau_cli_0_741/luau-compile.exe, so the 200-local limit holds in Fx/HUD/Panels.",
+    "Onboarding soft-assert rerun (scratch only): 538 checks with no CONTRACT_FAILURE. The only hard failures are the 6 tier-8 normalization rows, so nothing else in onboarding/DataService/QuestService regressed.",
+    "Scratch LootService smoke (real Config + LootService.luau, stand-in engine services, 42/42): scroll odds 70/30/10 give +1/+2/+3 (lower odds, bigger gain). A failure drops 1 level or keeps it (50/50, rolled), never below +0, and never removes the weapon. +10 is the maximum and a refused use keeps the scroll. Enhancement is stored per tier and the equipped +N is mirrored to the WeaponEnhance attribute. A successful transfer moves everything (+7 onto +6 gives 3/10, nothing lost); a failed one keeps both values and still uses up the scroll; same-tier, unowned or empty transfers are refused without using it. The first King Slime kill guarantees one Enh70 exactly once (a Slime kill does not use up the guarantee). The jackpot comes only from Slime and is announced to the server; a duplicate legend turns into 3000 gold; Goblin kills make no jackpot roll. Golden monsters roll ×3. SellMaterials works only at the anvil, rejects extra arguments, keeps scrolls, pays once with source 'Sale', and a repeat pays nothing. EquipWeapon is refused in combat or for an unowned tier, and the legend equips at Lv1. Corrupt Items, WeaponEnhance and LootFlags saves are sanitized.",
+    "Config.EnhanceMult: +1 = 1.1x, +10 = 2.0x; values above 10, negative or NaN are clamped. Config.Loot.MaxEnhance=10 and FailDropChance=0.5 (Config.luau:1318+).",
+    "CombatService.ComputePvPHit clamps the attacker/victim power ratio after enhancement (CombatService.luau:418 'ratio = math.clamp(ratio, Config.PvP.PowerRatioMin, Config.PvP.PowerRatioMax)'), so enhancement or the legend cannot push past PowerRatioMax 1.5. The PvP swing still applies SwingImmediate 0.5 (line ~781).",
+    "ProgressionService rebirth keeps only KeepOnRebirth bits (ProgressionService.luau:384-392) and leaves data.WeaponEnhance as is.",
+    "Net registry: UseItem/EquipWeapon/SellMaterials are each registered once (32 names, no duplicates), with RateLimits UseItem 0.4 / EquipWeapon 0.3 / SellMaterials 1 (Config.luau:1312). The only client callers are in Panels.luau.",
+    "The DebugCommand Item/LootReset/LootRoll hooks exist only inside RunService:IsStudio() (Main.server.luau:54).",
+    "Secrets: .env (.gitignore:20), .tripo/ (.gitignore:23) and build/ (.gitignore:2) are ignored and none is tracked or staged. Searching for the real Tripo key prefix found it nowhere outside .env/build (the vendor docs only contain the 'tsk_XX...' placeholder). The lock file is ignored by *.rbxlx.lock.",
+    "The staged src deletions are only the six A23-5 costume modules (CostumeService, ExpressionService, ExpressionSkinContract, SkinRetargetClient, SkinBindingContract, ExpressionAssets); the potions static check confirms nothing still requires them. The approved art/ui/UIP_FactionCard*_FreshTyped.png files are not deleted (only the rejected _Aligned cards are staged for deletion).",
+    "The verification_2026-10-06 folder name follows the AGENTS.md:105 rule ('write new results under new dated names'), even though the files were written on 2026-10-05."
+   ],
+   "findings": [
+    {
+     "id": "tests-onboarding-tier8-fixture",
+     "title": "test_onboarding fails: fixture still assumes 7 weapon tiers (intended change, fixture not updated)",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "tools/fixtures/onboarding_offline.luau",
+       "line": 504,
+       "quote": "{ Value = 7.9, Expected = 5 }, { Value = 128, Expected = 5 }, { Value = 255, Expected = 5 },"
+      },
+      {
+       "file": "tools/fixtures/onboarding_offline.luau",
+       "line": 520,
+       "quote": "{ Value = 3.8, Tier = 3, Mask = 5 }, { Value = 99, Tier = 7, Mask = 65 },"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 182,
+       "quote": "Config.MaxWeaponTier = #Config.Weapons"
+      },
+      {
+       "file": "src/ServerScriptService/DataService.luau",
+       "line": 167,
+       "quote": "local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1"
+      }
+     ],
+     "explanation": "Sandboxed run of tools/test_onboarding.py exits 1 with 'invalid ownership was not safely normalized' (harness line 3590/4097). Adding Weapons[8] (legend) raised MaxWeaponTier to 8, so DataService now treats masks up to 255 and tiers up to 8 as valid. Current results: mask 128 -> 133 (fixture expects 5), mask 255 -> 255 (expects 5), WeaponTier 99 -> tier 8 / mask 129 (expects 7 / 65). A soft-assert copy in scratch shows these 6 checks are the only failures out of 538, with no CONTRACT_FAILURE. This is an intended consequence of A23-12, not a regression elsewhere. Still, the onboarding runner, the main DataService save/migration regression test, is red for the current tree, and because it aborts on the first failed check it hides every later check.",
+     "suggested_fix": "Update the fixture rows for the 8-tier contract: replace 128/255 with values that are now out of range (256, 511, 4294967552). Add a valid legend-mask row (129 -> 129) and a tier-99 row matching the chosen normalization (see tests-corrupt-tier-legend). Then rerun tools/test_onboarding.py and regenerate offline_onboarding_2026-10-06.json.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Reproduced in a fresh sandbox (scratchpad/loot/verify-tests; diff of the copies shows only the ROOT line and the build/ and docs/ write targets changed; repo hashes were identical before and after). tools/test_onboarding.py exits 1 with 'invalid ownership was not safely normalized' at harness line 3590 (check), called from 4097. A soft-assert copy finds exactly 6 hard failures out of 538 checks and no CONTRACT_FAILURE: mask 128 gives 133, mask 255 gives 255, and tier 99 gives tier 8 / mask 129. Each failure appears twice, once at load and once after save/reload. The cited lines are still current: fixture lines 504 and 520, Config.luau:182 'Config.MaxWeaponTier = #Config.Weapons', DataService.luau:163 clamp and :167 'local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1'. These failures are an intended consequence of adding Weapons[8], not a regression."
+    },
+    {
+     "id": "tests-no-loot-test",
+     "title": "No committed offline test for LootService / A23-11 / A23-12",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "line": 218,
+       "quote": "local function useEnhance(player, data, id, def, tier)"
+      },
+      {
+       "file": "tools/fixtures/skill_release_offline.luau",
+       "line": 240,
+       "quote": "local f=fixture(\"Warrior\",\"Horns\");local victim=f:NewPlayer(999,\"Halo\");f.AllowPvP=true"
+      }
+     ],
+     "explanation": "tools/test_loot.py does not exist, and no fixture mentions LootService, UseItem, EquipWeapon, SellMaterials or Items. Only auto_combat/skill_release mention PvP, and neither sets a WeaponEnhance attribute. The whole drop/enhance economy (RNG odds, fail 50% -1/keep, transfer, +10 cap, first King Slime scroll, jackpot, sell-at-smithy-only, sanitize on load) has no automated guard. My throwaway scratch harness (real Config + LootService with stand-in engine services) passes 42/42, so the logic currently matches the contract. Still not covered anywhere: PvP hits with WeaponEnhance (ratio clamp with enhancement), rebirth KeepOnRebirth plus WeaponEnhance survival, MonsterService firing MonsterKilled once per contributor including auto kills (needed for the auto-kill jackpot), and DataService save/reload of Items/WeaponEnhance/LootFlags.",
+     "suggested_fix": "Add tools/test_loot.py + tools/fixtures/loot_offline.luau, following the pattern of the existing runners (inject real Config/LootService sources and control Random.NextNumber with a queue). The 42 scenarios in the scratch harness (scratchpad/loot/tests/loot_fixture.luau) can be the starting set. Add a WeaponEnhance=10 + legend attacker case to skill_release_offline.luau's PvP block, and a rebirth case to the potions/blacksmith GOLD_SOURCE fixture.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Still true that tools/test_loot.py does not exist, so no loot test can run. However, the worker is adding coverage right now: tools/fixtures/loot_offline.luau appeared at 15:54:09 (1458 lines). It has groups config, sanitize, rollkill, weapons, enhance, transfer, equip, sell, rebirth and damage. It covers DataService save/reload of LootFlags (:831-836), one MonsterKilled equals one roll (:676), the jackpot on auto/personal kills (:856), rebirth with the legend at +9 (:1289-1295), and real ComputePvPHit with WeaponEnhance and clamp sweeps (:1378-1444). So most of the 'not covered anywhere' list is being addressed. I reran the reviewer's scratch harness against the current Config (sha 12b0d564) and LootService (sha b35c3e99): LOOT_SMOKE_OK checks=42."
+    },
+    {
+     "id": "tests-stale-evidence",
+     "title": "verification_2026-10-06 offline reports are stale; onboarding report says 'passed' for sources that now fail",
+     "severity": "medium",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "docs/art/verification_2026-10-06/offline_onboarding_2026-10-06.json",
+       "quote": "\"status\": \"passed\""
+      },
+      {
+       "file": "docs/art/verification_2026-10-06/offline_skill_release_2026-10-06.json",
+       "quote": "\"sourceSHA256\""
+      }
+     ],
+     "explanation": "The reports were written 15:09-15:17 KST. Config/Net/CombatService/ProgressionService changed at 15:28-15:43 (loot round), so every offline_*.json except camera_input records a sourceSHA256 that no longer matches the tree: auto_combat (Config, CombatService), blacksmith (Config, Net, ProgressionService), intro_seen (Config, Net, QuestService), onboarding (Config, Net), potions (Config, Net, ProgressionService), skill_release (Config, CombatService). Rerun results: status and check counts match exactly for the 6 passing runners. offline_onboarding (claimed passed, 535 checks) now fails. Committing these files as evidence for the loot round would certify code they never ran against.",
+     "suggested_fix": "After fixing the onboarding fixture, rerun all runners (they rewrite these JSONs) before committing. Treat sourceSHA256 matching the committed tree as part of 'verified'.",
+     "needs_user": false,
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Report mtimes are 15:09:25-15:17:46. Source mtimes: Net 15:28:30, CombatService 15:28:40, ProgressionService 15:29:05, Config 15:43:19, QuestService 15:12:10. I recomputed the sourceSHA256 values and the stale files are exactly as listed: auto_combat (Config, CombatService), blacksmith (Config, ProgressionService, Net; its key is 'source_sha256'), intro_seen (Config, Net, QuestService), onboarding (Config, Net), potions (Config, Net, ProgressionService), skill_release (Config, CombatService). camera_input's sha 0dfa2194 still matches CameraFollow.luau. Reruns give the same status and counts as the docs: auto_combat 590+3, blacksmith 1460, camera 44, intro_seen 37+7, potions 1009, skill_release 265. owner_restore (build/ report) gives 365 checks / 28 cases. offline_onboarding says passed/535 but now fails. All 61 src/**/*.luau files compile offline with luau-compile."
+    },
+    {
+     "id": "tests-place-unsaved",
+     "title": "Local place file not saved: place/ and build/GoodEvil.rbxlx are from 2026-10-04 17:03 and lack today's modules",
+     "severity": "medium",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "place/GoodEvil.rbxlx",
+       "quote": "M place/GoodEvil.rbxlx (mtime 2026-10-04 17:03, identical to build/GoodEvil.rbxlx)"
+      },
+      {
+       "file": "place/GoodEvil.rbxlx.lock",
+       "quote": "RobloxStudioBeta (created 2026-10-05 13:21)"
+      },
+      {
+       "file": "docs/HANDOFF_CODEX.md",
+       "line": 7,
+       "quote": "커밋 전에는 반드시 파일 > 다른 이름으로 파일 저장 → `build/GoodEvil.rbxlx` → 시간·해시 확인 → `place/`로 복사"
+      }
+     ],
+     "explanation": "cmp shows build/GoodEvil.rbxlx and place/GoodEvil.rbxlx are byte-identical (12,550,601 bytes, 2026-10-04 17:03). Neither contains a LootService, StoryQuestService, Intro, MonsterMotion or MonsterAnims instance (grep count 0). git still lists place/GoodEvil.rbxlx as modified against HEAD, so a commit now would push a place missing about a day of synced code. The Studio lock sits on place/GoodEvil.rbxlx itself (not build/), so a plain Ctrl+S in that window could write straight into the committed copy, skipping the build/ save-and-hash step in HANDOFF.",
+     "suggested_fix": "Before committing: after sync_to_studio, do File > Save to File As build/GoodEvil.rbxlx (GUI step: ask the user per AGENTS rule 6), check the time and hash, then copy to place/. Until then, leave place/GoodEvil.rbxlx out of the commit.",
+     "needs_user": true,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Facts confirmed: build/GoodEvil.rbxlx and place/GoodEvil.rbxlx are byte-identical (cmp), 12,550,601 bytes, mtime 2026-10-04 17:03. Neither has a LootService or Intro instance (0 matches for '>LootService<' or '>Intro<'). place/GoodEvil.rbxlx.lock (RobloxStudioBeta) was created 13:21:47. Correction: HANDOFF_CODEX.md:7 (edited 15:40) now says the working Studio window is the published private place 81671223175574 and that Ctrl+S may be a cloud save. So the claim that a plain Ctrl+S would write straight into place/ is speculative. Also, HEAD's place equally lacks these modules, so committing the M place file would not remove code; it would only stay stale. src/ remains the source of truth, and HANDOFF already requires the Save-As-to-build plus hash step before commit. This is a pre-commit hygiene item, needs_user (GUI save)."
+    },
+    {
+     "id": "tests-corrupt-tier-legend",
+     "title": "Corrupt saved WeaponTier above 8 now normalizes to the drop-only legend, which rebirth keeps forever",
+     "severity": "low",
+     "kind": "exploit",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/DataService.luau",
+       "line": 163,
+       "quote": "d.WeaponTier = math.clamp(math.floor(weaponTier), 1, Config.MaxWeaponTier)"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1395,
+       "quote": "KeepOnRebirth = { [8] = true },"
+      }
+     ],
+     "explanation": "Before, an out-of-range saved tier (e.g. 99) clamped to tier 7, which is reset on rebirth. Now it clamps to tier 8 and DataService ORs bit 128 into the mask (tier 99 gives tier 8, mask 129 in the onboarding rerun). That turns any corrupt or legacy above-range tier into the 1/20000 slime legendary, which KeepOnRebirth then keeps permanently. Clients cannot write saves, so this is low risk, but clamping garbage to the best item now has a bigger effect.",
+     "suggested_fix": "In fillDefaults, normalize tiers above Config.MaxWeaponTier to 1 (or to the highest valid owned bit) instead of clamping to the maximum, and update fixture row 520 to match. Masks of 128..255 stay valid because they can be a legitimate legend.",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Mechanics confirmed: DataService.luau:163 clamps to MaxWeaponTier=8, and the rerun gives tier 99 → tier 8 / mask 129. Config.luau:1395 'KeepOnRebirth = { [8] = true }' plus ProgressionService.luau:383-392 keep bit 128 through rebirth. Correction: before the change, the same garbage clamped to T7 (Damage 1000, the strongest weapon). The damage effect of the clamp is therefore now much smaller (90). What is new is only the permanence through rebirth and the jackpot-only legend status, not 'a bigger effect'. Clients cannot write saves, so this is only reachable through corruption or legacy data. Mapping out-of-range tiers to 1 is still the cleaner fix."
+    },
+    {
+     "id": "tests-legend-ratio",
+     "title": "Legend damage is 2.37x T3 (and above T4), not ≈2x T3",
+     "severity": "low",
+     "kind": "balance",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 180,
+       "quote": "{ Tier = 8, Damage = 90, Price = 0, MinLevel = 1, Legend = true,"
+      }
+     ],
+     "explanation": "The A23-12 contract and the Config comment both say the legendary is about 2x the best shop weapon (T3 Damage 38). 90/38 = 2.37, and it also beats T4 (88, MinLevel 12) at Lv1. With +10 enhancement (2.0x) it deals 180 base. PvP stays bounded by the PowerRatioMax clamp, but PvE early-game balance comes out above the documented 2x.",
+     "suggested_fix": "Set Damage to about 76 (2.0x T3), or record the user-approved ratio in SPEC_ADDENDUM A23-12 if 90 is intentional.",
+     "needs_user": true,
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:180 'Tier = 8, Damage = 90'. T3 is Damage 38 (:170) and T4 is 88 at MinLevel 12 (:171). 90/38 = 2.37 and 90/88 = 1.02. EnhanceMult(10) = 1 + 0.10*10 = 2.0, so +10 gives 180 base at Lv1. The reviewer's harness prints the same 'legend/T3 = 2.37; legend/T4 = 1.02'. SPEC_ADDENDUM.md:75 says '상점 최고 무기(티어3, 피해 38)의 약 2배'. Whether 2.37 counts as '약 2배' and as beating T4 at Lv1 is a user call."
+    },
+    {
+     "id": "tests-index-partial",
+     "title": "Index holds only 239 staged deletions while LootService.luau and other new sources are untracked",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/LootService.luau",
+       "quote": "?? src/ServerScriptService/LootService.luau"
+      }
+     ],
+     "explanation": "git diff --cached contains only deletions (174 art/out, 55 art/ui, 4 art/test, 6 costume src modules). Every modification and every new file (LootService, StoryQuestService, Intro, MonsterMotion, MonsterAnims, the new test runners and fixtures) is unstaged or untracked. A plain 'git commit' would record only the deletions, leaving a tree where Main.server.luau requires an untracked LootService. Nothing sensitive is staged.",
+     "suggested_fix": "When committing the round, stage the related src/tools/docs explicitly (git add src tools docs ...). Check git status for untracked src/*.luau before committing, and leave out place/ until it is saved (see tests-place-unsaved).",
+     "needs_user": false,
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Counts confirmed: git diff --cached has only 239 deletions (174 art/out, 55 art/ui, 4 art/test, 6 src). Everything else is unstaged or untracked, including src/ServerScriptService/LootService.luau. Nothing sensitive is staged; .env and .tripo/ are ignored (.gitignore:20 plus the new .tripo/ line), and art/models/tripo/records.json contains no signed URLs. Correction to the failure mechanism: a plain 'git commit' would keep HEAD's Main.server.luau, which does not reference LootService. The real breakage is the opposite: HEAD:src/ServerScriptService/Main.server.luau:10/16 still lists \"CostumeService\" and \"ExpressionService\", and HEAD:src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau:2 lists \"SkinRetargetClient\". Those modules are staged as deleted, so the committed tree would require missing modules."
+    }
+   ],
+   "missed": [
+    "tools/fixtures/loot_offline.luau:2 ('tools/test_loot.py injects the CURRENT repository sources before this file') references a runner that does not exist yet (fixture written 15:54:09 while the worker is still active). It cannot run, and there is no offline_loot report. Before the round is called verified, the runner must exist, write into docs/art/verification_2026-10-06/, and be rerun together with the other seven runners.",
+    "Staged-only commit hazard (correction to tests-index-partial): HEAD:src/ServerScriptService/Main.server.luau:10 lists \"CostumeService\", \"ExpressionService\" and HEAD:src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau:2 lists \"SkinRetargetClient\", while the index stages deletion of those modules (src/ServerScriptService/CostumeService.luau, ExpressionService.luau, ExpressionSkinContract.luau, src/StarterPlayer/StarterPlayerScripts/SkinRetargetClient.luau, src/ReplicatedStorage/Shared/ExpressionAssets.luau, SkinBindingContract.luau). A commit of only the index would leave the server and client entry points requiring deleted modules.",
+    "Checked OK (for the record): all 61 src/**/*.luau compile with luau-compile 0.741. Sandboxed reruns: skill_release 265+3 static, camera_input 44, potions 1009+27 static, blacksmith 1460, auto_combat 590+3, intro_seen 37 (+7 static in report), owner_restore 365/28 cases all PASS; onboarding is the only FAIL. No repo file changed during or after the runs (sha snapshot of docs/art/verification_2026-10-06/*.json, build/*offline* and git status: identical). Config/LootService/DataService hashes were stable across the verification window. Process note: one compile loop wrote a stderr temp file to Git-Bash /tmp (outside the repo) instead of the scratch dir."
+   ]
+  }
+ ]
+}

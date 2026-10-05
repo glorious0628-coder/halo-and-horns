@@ -1,5 +1,7 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Blender-only source/rest/joint-stress previews; no animation-readiness assertion or upload."""
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import json
 import math

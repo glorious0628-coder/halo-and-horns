@@ -1,0 +1,15 @@
+{
+  "method": "tools/fixtures/hunt_bot_client.luau in the worker's own Studio test Play (private place 81671223175574): walks to the nearest living meadow monster, presses attack once per class SwingInterval when in reach, skill when MP/cooldown allow and a monster is near (same remotes as F/Q). Efficient-human upper bound; real players are slower (estimate 60-75%).",
+  "start": "Lv1, WeaponTier 1, faction Horns (no Halo +30% XP), SlimeMeadow around (300,6,10), 180 s each",
+  "results": [
+    {"class": "Warrior", "kills": 79, "kpm": 26.3, "gold": 649, "level": "1->7", "swings": 141, "skills": 52},
+    {"class": "Mage", "kills": 60, "kpm": 20.0, "gold": 564, "level": "1->7", "swings": 132, "skills": 30},
+    {"class": "Archer", "kills": 85, "kpm": 28.3, "gold": 702, "level": "1->8", "swings": 275, "skills": 47}
+  ],
+  "xp_table_cumulative": {"Lv5": 227, "Lv10": 1381, "Lv13": 3967},
+  "monster_rewards": {"Slime": {"xp": 5, "gold": 3}, "BigSlime": {"xp": 18, "gold": 10}},
+  "daily_reward_lv1_lv5": {"gold": 180, "xp": 300},
+  "derived_estimates_bot": {"xp_per_min": "about 200", "gold_per_min": "about 190-235", "lv5_minutes_of_hunting": "about 1-1.5", "lv10_minutes": "about 7", "iron_800_gold_after_first_mission": "about 3-4 min", "daily_50_60_kills": "about 2-3 min"},
+  "observed_first_session_claude_run1": {"meadow_arrival_s": 96, "slimes_within_30_studs_at_arrival": 1, "first_mission_5_5_s": 170, "notes": "times include MCP input latency"},
+  "config_reference": "Config.Economy.KillsPerMinute = 12 (auto-combat era value); not changed (user OK required)"
+}

@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Record a completed rigid expression registration from actual QA evidence.
 
 Offline only. This does not upload, call Studio, edit game source, promote rigs,
 or change the local-production manifests. The resulting record is an audited
 snapshot of a root-owned import/engine validation, not a fresh Studio query.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import json

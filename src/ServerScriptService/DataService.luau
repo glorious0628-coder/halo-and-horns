@@ -1,4 +1,4 @@
--- DataService.luau : DataStore load/save with a session lock, retries, autosave, v1 -> v2 migration and an
+-- DataService.luau : DataStore load/save with a session lock, retries, autosave, v1 -> v2 -> v3 migration and an
 -- in-memory fallback for Studio sessions without API access. BindToClose is owned by PlayerService.
 local DataStoreService = game:GetService("DataStoreService")
 local HttpService = game:GetService("HttpService")
@@ -102,7 +102,7 @@ local function hasStoredData(old)
 	return false
 end
 
--- v1 -> v2 (idempotent)
+-- stepwise v1 -> v2 -> v3 (each step idempotent; a record runs every step it has not reached yet)
 local function migrate(d, player)
 	if (tonumber(d.Version) or 1) < 2 then
 		d.WeaponTier = d.WeaponTier or d.SwordTier or 1 -- v1 field SwordTier is renamed
@@ -113,6 +113,13 @@ local function migrate(d, player)
 		d.Quests = {} -- QuestService regenerates (DailyDay = 0 -> fresh dailies, no vacation)
 		d.Version = 2
 		print("[DataService] migrated v1 -> v2 for " .. player.Name)
+	end
+	-- B4 (A23-12): v3 adds weapon tier 8 (slime legendary, mask bit 7) and the Items / WeaponEnhance / LootFlags
+	-- tables. No field changes: the new tables come from the defaults and fillDefaults normalizes the weapon fields.
+	-- The bump exists so an older v2 server refuses these records (CR-L3 guard in loadLocked) instead of clamping an
+	-- equipped tier 8 down to tier 7 and saving it (a free 90,000-gold weapon once the record is back on new code).
+	if (tonumber(d.Version) or 1) < 3 then
+		d.Version = 3
 	end
 end
 
@@ -152,14 +159,41 @@ local function fillDefaults(d, playerName)
 	if not Config.Classes[d.Class] then d.Class = "Warrior" end
 	-- Appearance preferences are additive save fields; older records do not need a version reset.
 	if d.CharacterGender ~= "M" and d.CharacterGender ~= "F" then d.CharacterGender = "M" end
-	if type(d.CostumeEnabled) ~= "boolean" then d.CostumeEnabled = true end
 	-- Never re-save a cached name before today's filter and global claim check. The separate directory is authoritative.
 	d.Nickname = ""
 	for _, key in { "HPPotionCount", "MPPotionCount" } do
 		d[key] = Config.NormalizePotionCount(d[key])
 	end
 	d.Level = math.clamp(math.floor(tonumber(d.Level) or 1), 1, Config.Levels.MaxLevel)
-	d.WeaponTier = math.clamp(math.floor(tonumber(d.WeaponTier) or 1), 1, Config.MaxWeaponTier)
+	-- B4: a stored tier that is not an integer in 1..MaxWeaponTier is corrupted -> the free starting weapon.
+	-- Never clamp: clamping turned e.g. tier 9 into the last tier (8 = the never-sold slime legendary).
+	local weaponTier = d.WeaponTier
+	if type(weaponTier) ~= "number" or weaponTier ~= math.floor(weaponTier) or weaponTier < 1
+		or weaponTier > Config.MaxWeaponTier then weaponTier = 1 end -- NaN fails the floor test, +-inf the range test
+	d.WeaponTier = weaponTier
+	-- Older saves only prove ownership of the equipped weapon. Preserve it, including rare tiers,
+	-- without granting speculative earlier purchases. Always retain the free starting weapon.
+	-- B4 + review: a value that is not an integer mask of the weapon tiers (non-number, NaN, +-inf, < 1, fraction, or
+	-- above validMask = any bit beyond MaxWeaponTier) is corrupted -> only the starting weapon (plus the equipped tier
+	-- below). v3 records never carry higher bits (an older server refuses v3, a v2 server reset them), so keeping the
+	-- low bits of e.g. 0xFFFFFFFF would hand out every weapon incl. T7 and the never-sold legendary.
+	local owned = d.WeaponOwnedMask
+	local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1
+	if type(owned) ~= "number" or owned ~= owned or owned < 1 or owned > validMask
+		or owned ~= math.floor(owned) then
+		owned = 1
+	end
+	d.WeaponOwnedMask = bit32.bor(owned, 1, bit32.lshift(1, d.WeaponTier - 1))
+	-- Additive onboarding progress. Do not re-open a claimed/legacy tutorial or erase an unclaimed 5/5.
+	local steps = Config.Tutorial and Config.Tutorial.Steps or { Kill = 0, Guide = 1, Quest = 2, Done = 99 }
+	if d.TutorialStep ~= steps.Kill and d.TutorialStep ~= steps.Guide
+		and d.TutorialStep ~= steps.Quest and d.TutorialStep ~= steps.Done then
+		d.TutorialStep = TUTORIAL_DONE
+	end
+	local kills = d.TutorialKills
+	if type(kills) ~= "number" or kills ~= kills or math.abs(kills) == math.huge then kills = 0 end
+	local target = (Config.Tutorial and Config.Tutorial.QuestKills) or 5
+	d.TutorialKills = math.clamp(math.floor(kills), 0, target)
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.

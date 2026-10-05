@@ -201,7 +201,7 @@ local function uiToast(text, kind, duration)
 end
 
 local function pickersOpen()
-	for _, name in { "FactionPicker", "ClassPicker" } do
+	for _, name in { "Intro", "FactionPicker", "ClassPicker" } do
 		local m = C and C[name]
 		if type(m) == "table" and type(m.IsOpen) == "function" then
 			local ok, open = pcall(m.IsOpen)
@@ -907,6 +907,47 @@ local function updateGoose(now)
 		setVisible(ui.TugSub, true)
 		local rescue = math.max(0, num(gsAttr("GooseRescue", 0)))
 		local poach = math.max(0, num(gsAttr("GoosePoach", 0)))
+		local timeLeft = Util.FormatTime(num(gsAttr("GooseEndsAt", 0)) - now)
+		local faction = myAttr("Faction", "None")
+		local mine = math.floor(math.max(0, num(myAttr("GooseCount", 0))))
+		-- A23-14 "함께 구조 / 함께 밀렵": only one tug side is on the server, so its own total fills toward
+		-- GooseCoopTarget in that side's colour (no rival bar, no "줄다리기" title). Texts: Config.Goose.Text.Hud*.
+		local gt = Config.Goose and Config.Goose.Text
+		local side = gsAttr("GooseCoopSide", "None")
+		if gsAttr("GooseMode", "Versus") == "Coop" and (side == "Halo" or side == "Horns")
+			and type(gt) == "table" and type(gt.HudTitle) == "table" then
+			local total = (side == "Halo") and rescue or poach
+			local target = math.max(1, math.floor(num(gsAttr("GooseCoopTarget", 0))))
+			local fill = math.clamp(total / target, 0, 1)
+			local col = (side == "Halo") and AC.WarHalo or AC.WarHorns
+			if ui.TugLeft.BackgroundColor3 ~= col then ui.TugLeft.BackgroundColor3 = col end
+			setVisible(ui.TugRight, false)
+			ui.TugLeft.Size = UDim2.fromScale(fill, 1)
+			setVisible(ui.TugLeft, fill > 0.001)
+			setText(ui.TugLeftText, safeFormat(gt.HudProgress, math.floor(total), target))
+			setText(ui.TugRightText, safeFormat(gt.HudPeople, math.floor(num(gsAttr("GooseCoopPeople", 0)))))
+			setText(ui.TugCenterText, safeFormat(gt.HudTitle[side], timeLeft))
+			local coopSub
+			if faction == side then
+				if total < target then
+					coopSub = safeFormat(type(gt.HudSub) == "table" and gt.HudSub[side] or nil, mine)
+				else
+					coopSub = safeFormat(type(gt.HudFull) == "table" and gt.HudFull[side] or nil, mine,
+						math.floor(num(Config.Goose.MinManualHits)))
+				end
+			elseif faction == "Halo" or faction == "Horns" then
+				coopSub = type(gt.HudOther) == "table" and gt.HudOther[side] or ""
+			elseif faction == "Neutral" then
+				coopSub = TXT.HintNeutral
+			else
+				coopSub = string.format(TXT.MyCount, mine)
+			end
+			setText(ui.TugSub, coopSub)
+			return
+		end
+		-- tug (Versus): restore the pieces the co-op view changed
+		if ui.TugLeft.BackgroundColor3 ~= AC.WarHalo then ui.TugLeft.BackgroundColor3 = AC.WarHalo end
+		setVisible(ui.TugRight, true)
 		local total = rescue + poach
 		local frac = 0.5
 		if total > 0 then frac = math.clamp(rescue / total, 0, 1) end
@@ -915,9 +956,7 @@ local function updateGoose(now)
 		setVisible(ui.TugLeft, frac > 0.001)
 		setText(ui.TugLeftText, string.format(TXT.Rescue, math.floor(rescue)))
 		setText(ui.TugRightText, string.format(TXT.Poach, math.floor(poach)))
-		setText(ui.TugCenterText, string.format(TXT.GooseTitle, Util.FormatTime(num(gsAttr("GooseEndsAt", 0)) - now)))
-		local faction = myAttr("Faction", "None")
-		local mine = math.floor(math.max(0, num(myAttr("GooseCount", 0))))
+		setText(ui.TugCenterText, string.format(TXT.GooseTitle, timeLeft))
 		local sub
 		if faction == "Halo" then
 			sub = string.format(TXT.MyCount, mine) .. " · " .. TXT.HintHalo

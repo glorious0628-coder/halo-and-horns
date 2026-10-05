@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Two original female archer static surfaces -> explicit inferred candidates.
 
 Only local original-face ownership / measured landmark JSON is produced. The
 chosen visual design, geometry, UVs, normals, material and images are untouched.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 from collections import Counter
 import hashlib

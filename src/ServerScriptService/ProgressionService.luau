@@ -1,5 +1,6 @@
 -- ProgressionService.luau : XP / levels, carried + bank gold, auto-bank, reward multipliers, monster kill rewards,
--- turncoat rebirth (TECH_SPEC §4.18 + SPEC_ADDENDUM A3-L2 / A6 Neutral) and ResetLevel (free class change).
+-- turncoat rebirth (TECH_SPEC §4.18 + SPEC_ADDENDUM A6 Neutral; A23-14: resets only Level/XP) and ResetLevel
+-- (free class change).
 -- Gold is changed ONLY through this service; Level/XP only through AddXP / ResetLevel / rebirth.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -373,12 +374,11 @@ function M.TryRebirth(player, factionId)
 	local mark = markFor(old, factionId)
 	local pos = rootPosition(player) or Vector3.zero
 
-	-- reset (A3-L2): level, XP, carried + bank gold, weapon tier
+	-- A23-14 (user 2026-10-05): rebirth resets ONLY the level and its XP. Carried + bank gold, the equipped weapon
+	-- (WeaponTier), every owned weapon incl. the legendary (WeaponOwnedMask), per-tier enhancement (WeaponEnhance),
+	-- items/materials (Items) and LootFlags are kept untouched (replaces A3-L2 / GDD §9 / A23-4 "reset gold + weapons").
 	S.PlayerService.SetStat(player, "Level", 1)
 	S.PlayerService.SetStat(player, "XP", 0)
-	S.PlayerService.SetStat(player, "BankGold", 0)
-	S.PlayerService.SetStat(player, "CarriedGold", 0)
-	S.PlayerService.SetStat(player, "WeaponTier", 1)
 
 	local newRebirths = rebirths + 1
 	S.PlayerService.SetStat(player, "Rebirths", newRebirths)

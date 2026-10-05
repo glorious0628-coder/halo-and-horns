@@ -1,3 +1,5 @@
+-- RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it errors immediately if run.
+error("RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.")
 -- Offline engine doubles: no Studio, network, persistence or actual promotion.
 local checks,failed=0,0
 local function check(value,label) checks+=1;if not value then failed+=1;print("FAIL "..label) end end

@@ -1,5 +1,17 @@
 # TECH_SPEC — Halo & Horns (선악 키우기) MVP v2
 
+> **2026-10-05 최신 사용자 변경:** `SPEC_ADDENDUM.md` **A23**이 이 문서보다 우선한다 — 수동 전투 + 왕관 조각 선택 퀘스트로
+> 얻는 자동 전투 켜기/끄기(자동은 몬스터만), 대장간 선택 구매/판매 계약(옛 "UpgradeWeapon = 다음 티어 자동 장착" 대체),
+> 환생 시 보유 무기 초기화, 치비 3D 코스튬 제거, Firefly 그림. 아래 §1.1의 "No asset IDs"(지금은 승인 이미지 ID를 `Config.UIArt`로 사용)와
+> "Do NOT run sync_to_studio/playtest/build_place — the lead does integration"(지금은 작업 세션이 통합·플레이 테스트를 한다;
+> `build_place.py`는 여전히 실행 금지)은 과거 규칙이다. 규칙 순서는 `AGENTS.md` "Which rule wins".
+>
+> **2026-10-04 사용자 변경:** 사용자가 자동 전투 방향에서 마음을 바꿔 수동 전투를 선택했다.
+> `SPEC_ADDENDUM.md` **A22**와 `GDD.md` **§0-2**가 이 문서의 자동 공격·충전 게이지·PERFECT·자동 발사·스택 조건,
+> 다음 해금 예고 및 옛 튜토리얼 계약보다 우선한다. 아래 v2 코드 예제·피해 계산·검사 목록의 해당 부분은 과거 기준이다.
+> 현재 스킬은 MP·재사용 시간으로 동작하며 기본 구현값은 MP20·3초다. 과거 기능을 복구하지 않는다.
+> 현재 소스 반영과 실제 Studio 통합 검증 완료는 구분한다. 새 실행 검증은 2026-10-06 작업 재개 후 진행한다.
+
 Audience: implementer agents writing files **in parallel without talking to each other**. Every cross-file contract
 (module names, function signatures, signal names, remote names, payload shapes, attribute names, data keys, config keys)
 is defined here. **If something is not in this document, do not invent a public contract for it** — keep it private
@@ -16,7 +28,7 @@ GameState `UnderdogFaction`/`UnderdogTier`), the 10-level-gap rule, the "2 KOs i
 justice refund (`JusticeRefundRate`, `stolenThisLife`), the "first switch free + 30 min" rule, and everything named
 `Sword*` (now `Weapon*`).
 
-> **Later changes:** `docs/SPEC_ADDENDUM.md` (A1–A16) overrides this document where they conflict. Code review R1
+> **Later changes:** `docs/SPEC_ADDENDUM.md` (A1–A23, newest first) overrides this document where they conflict. Code review R1
 > (2026-10-03) changed many contracts below; they are marked "R1 / CR-xx" here and listed in full in **A16**.
 
 ---

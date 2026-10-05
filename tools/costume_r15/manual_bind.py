@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Bind approved static triangles to explicit inferred R15 landmarks offline.
 
 The JSON supplies every original face owner and all 15 inferred joint positions.
@@ -6,6 +7,7 @@ or mark it playable. Original corner attributes/materials/images are retained.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 from collections import Counter
 import copy

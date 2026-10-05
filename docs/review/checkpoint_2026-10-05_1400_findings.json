@@ -1,0 +1,1913 @@
+{
+ "dims": [
+  {
+   "key": "costume",
+   "summary": "Checkpoint 14:00, costume key (A23-5/A23-6). Read-only review. Studio was not touched. The chibi costume removal is clean at the code level. src/ has no require, WaitForChild, Net.Get or S.<Service> reference to any of the 6 staged-deleted modules. Main INIT/START lists, the ClientMain ORDER, the MapBuilder top-level require, the CombatService ExpressionService calls and the Net 'SetCostume' remote are all gone. Every listed module exists, so nothing can hang. Spawning is a plain player:LoadCharacter(). The B-menu costume button and all its text are removed. The potion merchant no longer clones Costume_HaloWarriorM: it builds a default R15 NPC from a HumanoidDescription and stays gated by MerchantEnabled (still false). The HUD portrait and the R15/R6 weapon attach code are unchanged. All 20 touched Luau files compile offline. Fallout found: (1) the offline potion/merchant test (tools/test_potions.py + fixtures/potions_offline.luau) still reads the deleted CostumeService.luau and the removed PotionMerchantTemplate, so it now fails. The new NPC path has no test and has never run because the merchant is disabled. (2) No recorded R15/R6 check before the deletion. The saved place forces R15 (GameSettingsAvatar=1). (3) The saved place still has the ServerStorage Costume* folders; step 5 is not saved yet. (4) Harmless dead leftovers: SetCostume rate limit, the CostumeEnabled data/mirror, Config.Costumes, HHC_CostumeId/CostumeStatus hooks, the unused PlayerService replace/restore code and stale tools. (5) The 남|여 toggle now only changes the card art, which may need a user decision. Config.luau, CombatService.luau, Fx.luau and HUD.luau changed after the 14:00 snapshot while I was reviewing. I re-grepped and re-compiled all four: still clean.",
+   "checked_ok": [
+    "src/ has no require/WaitForChild/Net.Get/S.<svc> reference to CostumeService, ExpressionService, ExpressionSkinContract, ExpressionAssets, SkinBindingContract or SkinRetargetClient. The only requires left are Shared Config/Util/Net, the ClientMain list, PlayerModule and a MapBuilder doc comment.",
+    "Main.server.luau INIT_ORDER/START_ORDER (lines 8-19) no longer list CostumeService/ExpressionService. All 21 listed modules exist as files. The CostumePilot debug key is removed.",
+    "ClientMain ORDER (line 2) drops SkinRetargetClient and adds Intro. All 11 modules exist.",
+    "MapBuilder top-level 'require(script.Parent.CostumeService)' is removed.",
+    "CombatService: both 'S.ExpressionService.Attack(player)' calls (Swing and Release) are removed.",
+    "Net.Names no longer has SetCostume. Every Net.Get(\"...\") literal in src exists in Net.Names (no client infinite WaitForChild). Panels/ClassPicker/FactionPicker fire() only use valid names.",
+    "PlayerService.loadCharacter line 162 is 'player:LoadCharacter() -- A23-5: always the player's own Roblox avatar'. cosmeticContext/nativeRestore are never set, so onCharacterAdded takes the normal spawn path.",
+    "CharacterSpawned 'cosmetic' flag is now always false. CombatService:1046, PvPService:853, VitalsService:107 and ZoneService:590 all treat it as optional, so a spawn resets MP, skill cooldown, spawn protection and zone normally.",
+    "B menu: the Costume entry, fire('SetCostume'), the costumeBtn status updater and all MenuCostume*/CostumePreparing strings are removed. No '코스튬'/'치비' text is left in src.",
+    "Potion merchant: the CostumeRigs template lookup, ValidateTemplate and Costume_HaloWarriorM clone are removed, and Config.Vitals.PotionMerchantTemplate is replaced by PotionMerchantColors. It builds an R15 NPC from a HumanoidDescription inside task.spawn (Build stays non-yielding). Scripts are stripped and parts anchored. It sets HHC_PotionMerchant, PrimaryPart and the prompt, and deduplicates if built meanwhile.",
+    "Merchant is still gated: Config.Vitals.MerchantEnabled = false (Config:33). MapBuilder disableExisting() returns early. ShopService:205/212 still require MerchantEnabled, HHC_PotionMerchant and PrimaryPart.",
+    "While the merchant is off, VitalsService:34/60 and VitalsUI:47 show the '준비 중' / '잠시 기다리면 차올라요' wording instead of 'buy potions'.",
+    "The saved place has no pre-existing workspace PotionMerchant model, so no old chibi clone can survive the 'if merchant then ensureMerchantPrompt' reuse branch.",
+    "HUD 3D portrait code is unchanged. Plain avatars use the non-costume branch (focus 0.04, span 0.85), based on Head + HumanoidRootPart, which exist on both R15 and R6.",
+    "CharacterVisuals weapon attach is unchanged: RightHand/'Right Arm', bow in LeftHand/'Left Arm', Right/LeftGripAttachment with a fallback. The only diff there is nametag PlayerToHideFrom.",
+    "Costume GLB originals are intact: art/models/costume/fixed has 54 files and no git changes (A23-5 ⑤ 'GLB 원본은 지우지 않기').",
+    "tools/sync_to_studio.py deletes scripts not present in src/, so the deleted ModuleScripts will not linger in Studio after a sync.",
+    "luau-compile OK: Main.server, ClientMain.client, PlayerService, CombatService, MapBuilder, Config, Net, DataService, CharacterVisuals, HUD, Panels, ClassPicker, CameraFollow, VitalsService, ZoneService, ShopService, PvPService, JusticeService, ClassService, Intro. Config, CombatService, Fx and HUD were re-compiled after they changed mid-review."
+   ],
+   "findings": [
+    {
+     "id": "costume-potion-test-broken",
+     "title": "Offline potion/merchant test still reads deleted CostumeService and the removed template path",
+     "severity": "medium",
+     "kind": "regression",
+     "locations": [
+      {
+       "file": "tools/test_potions.py",
+       "line": 28,
+       "quote": "\"COSTUME_SOURCE\": ROOT / \"src/ServerScriptService/CostumeService.luau\","
+      },
+      {
+       "file": "tools/test_potions.py",
+       "line": 64,
+       "quote": "\"MAP_MERCHANT_SOURCE\": \"local Config, ServerStorage, CostumeService, CollectionService, Util, TAG, retire = ..."
+      },
+      {
+       "file": "tools/fixtures/potions_offline.luau",
+       "line": 338,
+       "quote": "local template=object(\"Model\",cfg.Vitals.PotionMerchantTemplate)"
+      },
+      {
+       "file": "src/ServerScriptService/MapBuilder.luau",
+       "line": 851,
+       "quote": "return game:GetService(\"Players\"):CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)"
+      }
+     ],
+     "explanation": "tools/test_potions.py reads src/ServerScriptService/CostumeService.luau at startup. That file is now staged-deleted, so the potion/merchant offline regression test fails before running. The fixture also builds a CostumeRigs template named by Config.Vitals.PotionMerchantTemplate, which no longer exists, and asserts ValidateTemplate on it (potions_offline.luau:333-360). The new HumanoidDescription NPC path (async task.spawn, CreateHumanoidModelFromDescription) has no offline coverage. It has never run in Studio either, because MerchantEnabled=false. Step 6 (potion shop, beta item 3) depends on this test.",
+     "suggested_fix": "Before step 6: remove COSTUME_SOURCE / COSTUME_VALIDATOR_SOURCE from test_potions.py and drop CostumeService from the MAP_MERCHANT_SOURCE parameter list. In potions_offline.luau, mock Players:CreateHumanoidModelFromDescription and task.spawn, then assert: no build when disabled, one NPC with HHC_PotionMerchant/PrimaryPart/prompt, duplicate guard, scripts stripped. When MerchantEnabled is turned on, check the NPC in Studio (position, prompt E/tap, modest default look).",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Re-checked at 14:10 and still present. tools/test_potions.py:28 lists \"COSTUME_SOURCE\": ROOT / \"src/ServerScriptService/CostumeService.luau\", and :88 reads every FILES entry, so the test stops with FileNotFoundError because the file is gone from disk (ls confirms). Lines 64-69 still pass CostumeService and call ValidateTemplate. The fixture at tools/fixtures/potions_offline.luau:337-338 still builds a CostumeRigs folder holding a Model named cfg.Vitals.PotionMerchantTemplate; that key was removed from Config (the diff replaces it with PotionMerchantColors). Line :360 still asserts validator.ValidateTemplate. The new HumanoidDescription NPC at MapBuilder.luau:841-884 (task.spawn + CreateHumanoidModelFromDescription) has no offline coverage, and it never runs in play because Config.luau:33 has MerchantEnabled = false. Medium is right: this blocks the step-6 potion regression test but does not affect play."
+    },
+    {
+     "id": "costume-r6-unverified",
+     "title": "No recorded R15/R6 avatar check before deleting the costume modules (step 3 order)",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "docs/review/worker_prompt_2026-10-06.md",
+       "line": 82,
+       "quote": "R15·R6 아바타로 확인: 걷기·점프·공격·스킬·무기 부착(활 왼손 포함)·헤일로/뿔 위치·사망/부활·HUD 3D 프로필. R6는 처음 확인하는 것."
+      },
+      {
+       "file": "build/GoodEvil.rbxlx",
+       "line": 122674,
+       "quote": "<token name=\"GameSettingsAvatar\">1</token>"
+      },
+      {
+       "file": "src/ServerScriptService/JusticeService.luau",
+       "line": 99,
+       "quote": "if not hum or hum.RigType ~= Enum.HumanoidRigType.R15 then return end"
+      }
+     ],
+     "explanation": "The worker went straight to phase 2: the modules are staged-deleted. The required phase-1 check (walk, jump, attack, skill, weapon attach incl. left-hand bow, halo/horn position, death/respawn, HUD 3D portrait on R15 and R6) has no evidence on disk. Today's only log, docs/art/verification_2026-10-06/first15_claude_run1.jsonl, has no rig/R6/avatar entries. Observation: the saved place has StarterPlayer GameSettingsAvatar=1 (R15), so R6 avatars are forced to R15 and the R6 path may be unreachable. JusticeService also skips scaling for non-R15. I cannot see Studio, so the worker may have checked without recording it.",
+     "suggested_fix": "Ask the worker to report the real R15 check results, item by item, from the play-test. For R6: state whether the experience's avatar type is R15-only (then R6 is not reachable, so say so) or player-choice (then test one R6 avatar, including the left-hand bow and the portrait).",
+     "confidence": "low",
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Real part: nothing on disk records the phase-1 check. docs/art/verification_2026-10-06/first15_claude_run1.jsonl (13:55) has 0 matches for r6/r15/rig/avatar/costume/portrait. Correct part: StarterPlayer in place/GoodEvil.rbxlx and build/ at line 122674 has GameSettingsAvatar=1 (Enum.GameAvatarType.R15), so R6 avatars are converted to R15 and the R6 path cannot be reached. A23-5 (SPEC_ADDENDUM:44) says players appear as their own avatar \"(R15·R6)\", so the worker or user should say whether the experience stays R15-only. Overstated part: JusticeService:99 only skips the R15-specific HipHeight fix. Scaling itself (Util.SafeScaleTo at :122) applies to every rig type, so this is not a defect. Process gap only, not a verified bug; the fix is to ask the worker for its R15 play-test results."
+    },
+    {
+     "id": "costume-serverstorage-folders",
+     "title": "Saved place still contains the ServerStorage Costume* folders (A23-5 step 5 not saved)",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "build/GoodEvil.rbxlx",
+       "line": 239023,
+       "quote": "<string name=\"Name\">CostumeRigs</string>"
+      },
+      {
+       "file": "build/GoodEvil.rbxlx",
+       "line": 176727,
+       "quote": "<string name=\"Name\">CostumePendingRigs</string>"
+      },
+      {
+       "file": "build/GoodEvil.rbxlx",
+       "line": 261620,
+       "quote": "<string name=\"Name\">CostumeRigArchive</string>"
+      }
+     ],
+     "explanation": "place/GoodEvil.rbxlx and build/ (both Oct 4 17:03, identical size) still hold CostumeImports, CostumeAnimationControllers, CostumeMeshPreviews, CostumePendingRigs, CostumeRigs, CostumeExpressionImports, CostumePendingExpressions, CostumeRigArchive and CostumeExpressionSkinImports. No code reads them any more, so this is harmless at runtime, but it bloats the place and is the remaining A23-5 ⑤ step. The live Studio state is not visible to me.",
+     "suggested_fix": "After the R15 check: delete the Costume* folders in Studio Edit mode, save, and copy to place/GoodEvil.rbxlx. Keep the GLB originals on disk (they are intact).",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "place/GoodEvil.rbxlx and build/GoodEvil.rbxlx are byte-identical (cmp), both dated Oct 4 17:03. Both still contain CostumeImports (:160756), CostumeAnimationControllers (:174088), CostumeMeshPreviews (:175875), CostumePendingRigs (:176727), CostumeRigs (:239023), CostumeExpressionImports (:256719), CostumePendingExpressions (:257174), CostumeRigArchive (:261620) and CostumeExpressionSkinImports (:273107). The committed place also still holds the six deleted script instances: SkinRetargetClient :141135, SkinBindingContract :143788, ExpressionAssets :143824, ExpressionService :155181, ExpressionSkinContract :158616, CostumeService :159018. This is harmless at runtime: tools/sync_to_studio.py:157-169 deletes stale scripts from the live Studio, and no src module requires them. The live Studio state is not visible to me. There is no saved Map.NPCs.PotionMerchant instance, so an old costume clone cannot be reused when the merchant is enabled."
+    },
+    {
+     "id": "costume-dead-config-data",
+     "title": "Leftover costume config/data keys (SetCostume rate limit, CostumeEnabled mirror, Config.Costumes)",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1093,
+       "quote": "ChooseFaction = 1, ChooseClass = 1, SetCostume = 1,"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 129,
+       "quote": "\"CharacterGender\", \"CostumeEnabled\","
+      },
+      {
+       "file": "src/ServerScriptService/DataService.luau",
+       "line": 155,
+       "quote": "if type(d.CostumeEnabled) ~= \"boolean\" then d.CostumeEnabled = true end"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1518,
+       "quote": "TemplateFolder = \"CostumeRigs\","
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 33,
+       "quote": "MerchantEnabled = false, -- enable only after the user selects the GPT potion-shop preview"
+      }
+     ],
+     "explanation": "No running code reads these any more. Every player still gets a mirrored CostumeEnabled=true attribute. Config.Costumes.TemplateFolder/TemplatePrefix/Enabled are unused (nothing reads Enabled). The RateLimits entry is for a remote that no longer exists. The MerchantEnabled comment still says 'GPT preview', but A23-6/A23-7 say: enable when the shop UI, prices and stock work (Firefly art later). None of this breaks play.",
+     "suggested_fix": "In a cleanup pass: drop SetCostume from RateLimits and CostumeEnabled from Mirrored. The saved CostumeEnabled data key can stay or be removed; removal is harmless. Reduce Config.Costumes to a comment or delete it, and update the MerchantEnabled comment to the A23-6 condition. Note: tools/test_potions.py regex-extracts Config.RateLimits.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "All quotes are present at the cited lines in the current files (Config.luau changed after 14:00 and was re-read). Config.luau:1093 has SetCostume = 1 although Net.Names no longer has SetCostume. Config.luau:84 has the default CostumeEnabled = true and :129 mirrors CostumeEnabled. DataService.luau:155 still normalizes it. Config.luau:1514-1520 Costumes{Enabled=false, TemplateFolder, TemplatePrefix} is not read by anything in src (grep Config.Costumes finds only the definition). The comment at Config.luau:33 still says 'GPT potion-shop preview', but A23-6/A23-7 call for enabling once the shop works, with Firefly art later. Hygiene only."
+    },
+    {
+     "id": "costume-dead-hooks",
+     "title": "Dead costume hooks in HUD/Panels/CharacterVisuals and unused PlayerService replace/restore code",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 1653,
+       "quote": "local costume = type(character:GetAttribute(\"HHC_CostumeId\")) == \"string\""
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 3115,
+       "quote": "\"CharacterGender\", \"CostumeEnabled\", \"CostumeApplied\", \"SizeMult\" }, L.RefreshPortrait)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 2139,
+       "quote": "and (name == \"CostumeStatus\" or name == \"CostumeEnabled\" or name == \"CostumeApplied\") then"
+      },
+      {
+       "file": "src/ServerScriptService/CharacterVisuals.luau",
+       "line": 426,
+       "quote": "if hand:GetAttribute(\"HHC_SourcePart\") == hand.Name then"
+      },
+      {
+       "file": "src/ServerScriptService/PlayerService.luau",
+       "line": 701,
+       "quote": "function PlayerService.RestoreOwnerCharacter(player, description, expectedOld, stillWanted)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+       "line": 1,
+       "quote": "-- Keep Roblox's default camera attached when the server replaces an avatar with a costume rig."
+      }
+     ],
+     "explanation": "HHC_CostumeId, CostumeStatus, CostumeApplied and HHC_SourcePart are never set any more, so these branches are inert and plain avatars take the correct non-costume path. PlayerService.SpawnCharacter/ReplaceCharacter/RestoreOwnerCharacter/installCharacter plus cosmeticContext/nativeRestore/cosmeticPivot (about 150 lines) have no callers left in src. Their only remaining user is tools/fixtures/owner_restore_offline.luau. They are safe to keep but are now unmaintained surface.",
+     "suggested_fix": "Optional, after the R15 check: remove the HHC_CostumeId/CostumeStatus branches (HUD L.PortraitRebuild uses the plain 0.04/0.85 framing) and the HHC_SourcePart branch. Either delete the unused PlayerService replace/restore helpers with their fixture or leave a note that they are reserved for future Roblox-style outfits. Do not do this mid-play-test.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "These branches are inert. Nothing in src sets HHC_CostumeId, CostumeStatus, CostumeApplied or HHC_SourcePart: grep finds only readers, at HUD.luau:1650/1653-1654/1719/3115, Panels.luau:2139 and CharacterVisuals.luau:426. PlayerService.SpawnCharacter (:677), ReplaceCharacter (:681) and RestoreOwnerCharacter (:701) have no callers in src; the only remaining users are tools/test_owner_restore.py and tools/fixtures/owner_restore_offline.luau. Without them cosmeticContext/nativeRestore stay nil, so CharacterSpawned fires with cosmetic=false (:416, context ~= nil), and the Combat, PvP, Vitals and Zone 'cosmetic' guards follow the normal spawn path. CameraFollow.luau:1 still has the stale costume comment. Also verified OK: (1) no require or WaitForChild of any deleted module remains in src; Main INIT/START lists, the ClientMain ORDER list, the MapBuilder top-level require (now only Config/Util), CombatService ExpressionService calls and the Panels SetCostume fire are all removed; (2) loadCharacter is now only player:LoadCharacter() (PlayerService.luau:162); (3) the B-menu costume button and all MenuCostume* strings are removed, and grep for 코스튬 in src finds nothing; (4) the merchant uses an R15 HumanoidDescription NPC, still gated by MerchantEnabled (MapBuilder:827), strips scripts, guards duplicates and sets HHC_PotionMerchant, which ShopService:212 checks; (5) the HUD portrait diff has no costume changes, so plain avatars take the existing 0.04/0.85 branch; (6) CharacterVisuals changes only add the nametag PlayerToHideFrom, so weapon attach is unchanged; (7) luau-compile passes for all 25 modified src files plus Intro.luau."
+    },
+    {
+     "id": "costume-stale-tools",
+     "title": "Other tools still read the deleted costume/expression sources",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "tools/test_costume_physics.py",
+       "line": 143,
+       "quote": "source = (ROOT / 'src/ServerScriptService/CostumeService.luau').read_text(encoding='utf-8')"
+      },
+      {
+       "file": "tools/costume_expressions/record_actual_registration.py",
+       "line": 61,
+       "quote": "default=ROOT / 'src/ReplicatedStorage/Shared/ExpressionAssets.luau')"
+      },
+      {
+       "file": "tools/fixtures/skill_release_offline.luau",
+       "line": 87,
+       "quote": "ExpressionService={Attack=function() f.Expressions=(f.Expressions or 0)+1 end},"
+      }
+     ],
+     "explanation": "test_costume_physics.py and record_actual_registration.py crash with FileNotFoundError if run. The skill_release fixture still mocks ExpressionService. That mock is harmless: the check at line 174 expects nil and still passes because combat no longer calls it.",
+     "suggested_fix": "Retire the costume-only tools: delete them or move them to an archive folder with a README note, and drop the ExpressionService mock from skill_release_offline.luau, so nobody reports a broken test as a game regression.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "tools/test_costume_physics.py:143 and tools/costume_expressions/record_actual_registration.py:61 (default path) point to deleted files. The ExpressionService mock at tools/fixtures/skill_release_offline.luau:87 is harmless: the check at :174 (f.Expressions==nil) still passes. Also stale: tools/test_skin_binding_studio.py:9/:44 requires SkinBindingContract and CostumeService inside Studio and would error there. tools/costume_r15/* reference SkinRetargetClient. tools/asset_preflight.py:243 only calls is_file() and stays safe."
+    },
+    {
+     "id": "costume-gender-pill",
+     "title": "Class picker 남|여 toggle now only changes the card art, not the avatar",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau",
+       "line": 611,
+       "quote": "local function setGender(g)"
+      },
+      {
+       "file": "src/ServerScriptService/ClassService.luau",
+       "line": 77,
+       "quote": "if gender ~= nil then S.PlayerService.SetStat(player, \"CharacterGender\", gender) end"
+      }
+     ],
+     "explanation": "CharacterGender used to pick the chibi costume (M/F). After A23-5 it only switches the 2D class card portraits (refreshPortraits). A new player may expect 여/남 to change their in-game character. The pill is part of the approved class-picker design, so it must not be removed silently.",
+     "suggested_fix": "Do not change the approved UI. Mention it to the user in one Korean line and ask whether to keep the toggle (card art now, Roblox-style class outfits later) or hide it.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "ClassPicker.luau:611-616 setGender only calls refreshGender() and refreshPortraits() (2D card art via artId(base..gender), :587-593), and :581 sends the gender with ChooseClass. ClassService.luau:77/:129 only saves CharacterGender. No server code reads CharacterGender any more apart from DataService normalization and the HUD refresh hook, so the 남|여 toggle no longer changes the in-game character. The toggle is part of the approved UI, so ask the user before hiding it."
+    }
+   ],
+   "missed": [
+    "tools/test_skin_binding_studio.py:9 and :44 run inside Studio and still require the deleted modules: 'require(game.ReplicatedStorage.Shared.SkinBindingContract)' and 'require(game.ServerScriptService.CostumeService:Clone())'. They will error if run after sync. Low; retire it together with the other costume-only tools.",
+    "place/GoodEvil.rbxlx:141135-159018 (committed copy) still contains the six deleted script instances (SkinRetargetClient, SkinBindingContract, ExpressionAssets, ExpressionService, ExpressionSkinContract, CostumeService) alongside the Costume* folders. Nothing requires them, and sync_to_studio removes them from the live Studio, but the committed place is stale until Studio is saved and copied. Low; fold this into the A23-5 step-5 save."
+   ]
+  },
+  {
+   "key": "intro",
+   "summary": "Intro/guide checkpoint (14:00 snapshot; HUD.luau changed mid-review at 14:04:48, hash b2433dee…, so I re-checked its gating and recompiled it). The new A23-9 opening is a separate module, Intro.luau. Its wiring is in place: IsOpen()/Blocking() are checked by HUD, EventHUD, Panels, VitalsUI, ClassPicker and WorldMap, and FactionPicker waits for the opening and is refreshed when it finishes. It starts only after DataLoaded when Faction is None and IntroSeen is false, and runs about 22 s. The skip button is always created and Space, Enter and gamepad A/B also skip. Finishing, skipping or respawning restores CameraType Custom and the Humanoid camera subject. IntroSeen is written only by the server, through a no-argument remote that checks the player is ready, is rate-limited to once per second and has no effect after the first time; DataService fills and type-checks the default. World announcements are held while the opening plays or TutorialStep is 0. The opening adds no new image assets. The guide dialog meets A23-3: \"함께할게요\" shows from page 1, closing never accepts, and the title is \"안내자 · 보급로 되찾기\". On a 749x361 phone the layout should fit without scrolling (my estimate, not tested in the engine). The server sends the \"안내는 여기까지\" toast. All 17 touched files pass luau-compile. Two medium problems: (1) camera tweens keep running after skip, respawn or finish and fight the restored Custom camera; (2) the menu replay is allowed in the monster meadow, where the player is frozen while slimes can attack, although the code comment says \"never mid-fight\". Four low items: Space (the jump key) permanently skips the one-time opening; the guide-done toast can repeat; a yield before state.Done in Finish can soft-lock the faction cards; the goose rare-reward alert is not held. Nothing was tested in Studio (read-only review).",
+   "checked_ok": [
+    "Intro.luau is a separate client module with IsOpen()/Blocking(); ClientMain ORDER loads it after Panels and before FactionPicker (ClientMain.client.luau:2)",
+    "First-run gate: DataLoaded == true AND Faction None/nil AND IntroSeen ~= true (Intro.luau:41-45); Start waits up to 60 s for DataLoaded and up to 10 s for the character; existing players get state.Done = true immediately",
+    "FactionPicker.IsOpen returns false while Intro.Blocking() (FactionPicker.luau:2004-2013); Intro.Finish calls FactionPicker.Refresh so the cards open right after",
+    "Intro is in every screen-covered check: HUD pickersOpen, EventHUD pickersOpen, Panels pickerOpen (Panels.Open refuses), VitalsUI canUse, ClassPicker.IsOpen, WorldMap pickersOpen",
+    "Attack/skill/potion input is ignored during the opening: HUD root hidden -> inputAllowed false (F/Q/R2/L2/buttons/PrimaryClick); CameraFollow click blocked because the camera is Scriptable; VitalsUI canUse false",
+    "Timeline about 21.5 s plus 0.5 s pre-delay, inside 15-25 s; subtitles are the three Config.Story.Premise lines plus OpeningAsk",
+    "Skip: ArtButton 'Pill' (existing art) with TextButton fallback, always created, plus CAS Space/Enter/pad A/B at priority 3000 with Sink; on touch the TouchGui is hidden by HoldWorld and controls are disabled, so no jump-button overlap",
+    "Camera: Finish sets CameraType Custom and CameraSubject = Humanoid; CharacterAdded during the opening calls Finish; CameraFollow re-subjects only in Custom mode",
+    "Movement is disabled through PlayerModule controls and re-enabled on Finish; chat and world billboards are hidden through a shared keyed HoldWorld ('intro'/'faction'/'class')",
+    "IntroSeen: Config default false + Mirrored; DataService fillDefaults type-normalizes old saves; the server sets it only via QuestService.onIntroSeen (no arguments, IsReady, RateLimit 1 s, idempotent); the client fires it only on the first run, never on replay",
+    "Held world banners: UIKit.ShouldHoldBanners holds 'announce' kind (goose start/result, kaiju, war, bounty, MostWanted, rebirth) while the opening is open or TutorialStep == 0; flushed on Finish and on TutorialStep change",
+    "Scene: CrownOfBalance pivot (fallback (15,344,-18)), CrownShard at (0,22,0), Halo/Horns towns at z=-/+400, own avatar's HumanoidRootPart; close shots only, no top-down full-map view; StreamingEnabled=false so the far towns render",
+    "No new image assets: no rbxassetid in Intro.luau; only Neon parts, default ParticleEmitter texture and the existing Pill art",
+    "Menu replay entry 'Opening replay' exists; blocked in PvP zones and while dead; replay never re-sends IntroSeen",
+    "Welcome dialog: 함께할게요 is visible and enabled from page 1; 다음 cycles pages (처음부터 on the last); 나중에/X close without AcceptTutorial; title T.Titles.Welcome = '안내자 · 보급로 되찾기'",
+    "Phone 749x361: the short layout (ViewportSize.Y < 520) drops the portrait; my estimate is about 220 canvas px of content vs about 319 available at UIScale 0.75, so no scroll needed (estimate, not engine-verified)",
+    "Guide chain end: the server sends Config.Tutorial.Text.GuideDone once per hasGoal->none transition with TutorialStep 99 (QuestService.luau:470-476)",
+    "luau-compile OK: Intro, Panels, HUD (re-checked after the 14:04 change), FactionPicker, ClassPicker, EventHUD, VitalsUI, WorldMap, UIKit, CameraFollow, ClientMain, QuestService, DataService, Net, Config, PlayerService, Main"
+   ],
+   "findings": [
+    {
+     "id": "intro-camera-tween-not-cancelled",
+     "title": "Skip/respawn/finish does not cancel the running camera tween, so it fights the restored Custom camera for up to 5.5 s",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Intro.luau",
+       "line": 189,
+       "quote": "TweenService:Create(cam, TweenInfo.new(seconds, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Intro.luau",
+       "line": 270,
+       "quote": "cam.CameraType = Enum.CameraType.Custom"
+      }
+     ],
+     "explanation": "shot() starts a TweenService tween on Camera.CFrame (3-5.5 s) and keeps no reference to it. Finish() bumps the token, sets CameraType Custom and the Humanoid subject, but never cancels the tween. Roblox's camera controller takes its look direction from camera.CFrame every frame, so the leftover tween keeps forcing the view along its path (shot 1 ends looking almost straight up at the crown). It also overrides the player's own camera rotation until the tween ends. This shows on menu-replay skips and on respawns. A23-9 asks for an exact camera restore and warns about the earlier camera-restore bug.",
+     "suggested_fix": "Keep the tween in state.CamTween. Cancel the previous tween in shot() before starting a new one, and in Finish() before setting CameraType Custom. Optionally save camera.CFrame in Play(true) and set it back on Finish so a replay returns to the old view.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Re-read at 14:19 with no change. Intro.luau:189-190 starts a camera.CFrame tween and keeps no reference to it. Finish() (Intro.luau:260-283) changes the CameraType to Custom and sets the subject, but never cancels that tween. The default camera takes its direction from camera.CFrame every frame; CameraFollow.luau relies on the same fact (its comment says 'Only the direction is changed; Roblox computes the subject position, distance and collision next'). So the leftover tween (3 to 5.5 s) keeps steering or fighting the player's view after a skip, a respawn or the end of a replay. CameraFollow restores only the subject; nothing in the code cancels tweens. Fix: keep the tween in state, call :Cancel() in shot() before starting a new one and in Finish() before switching to Custom. Optionally save the camera CFrame before a replay and put it back afterwards."
+    },
+    {
+     "id": "intro-replay-unsafe-meadow",
+     "title": "Menu replay is allowed in the monster meadow (only ZonePvP and dead are checked) although the comment says 'never mid-fight'",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1264,
+       "quote": "-- A23-9: replay only where nobody can attack you (towns / meadow), never mid-fight"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1266,
+       "quote": "if attr(\"ZonePvP\", false) == true or isDead() then"
+      },
+      {
+       "file": "src/ServerScriptService/MonsterService.luau",
+       "line": 1573,
+       "quote": "target = nearest alive player within AggroRadius standing in THIS zone, outside towns and water"
+      }
+     ],
+     "explanation": "SlimeMeadow has PvP = false and Town = false, and its monsters attack players there. A replay disables movement, hides the HUD and blocks attack, skill and potion input for about 22 s. A player who replays mid-hunt stands frozen while slimes hit them. Nothing checks for combat or nearby monsters, and InCombatUntil only tracks PvP. A23-9 says replay is only for a safe area.",
+     "suggested_fix": "Allow replay only when Config.Zones[ZoneId].Town == true (Crossroads, Halo, Horns). Otherwise show the toast and change OpeningReplayUnsafe to say towns only. Alternatively, also refuse while any monster is targeting the player.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Panels.luau:1266 refuses a replay only when 'attr(\"ZonePvP\", false) == true or isDead()'. SlimeMeadow has 'PvP = false, Town = false' (Config.luau:749-750). MonsterService.luau:1289-1291 targetable() lets monsters chase any player in their own zone who is not in a town, so slimes attack a frozen replaying player. The refusal text itself, Config.luau:1536 '안전한 마을이나 초원에서', wrongly calls the meadow safe. Correction: the skip button and keys are always available, so the player can escape at any time. This is still a break of A23-9 '안전 지역에서만'. Fix: require attr(\"ZoneTown\") == true (ZoneService already sets ZoneTown) and change OpeningReplayUnsafe to say towns only."
+    },
+    {
+     "id": "intro-space-skips-forever",
+     "title": "Space (the jump key) skips the one-time opening and saves IntroSeen permanently",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Intro.luau",
+       "line": 301,
+       "quote": "end, false, 3000, Enum.KeyCode.Space, Enum.KeyCode.Return, Enum.KeyCode.ButtonA, Enum.KeyCode.ButtonB)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Intro.luau",
+       "line": 277,
+       "quote": "pcall(function() Net.Get(\"IntroSeen\"):FireServer() end)"
+      }
+     ],
+     "explanation": "A brand-new player's first instinct is often to press Space (jump) or gamepad A. The first press, even in the opening's first second, ends the opening and the client then reports IntroSeen, so it never plays again automatically. This cuts into the first-10-minutes goal.",
+     "suggested_fix": "Ignore skip keys for the first ~1.5 s after Play(). Alternatively keep Enter and the on-screen button and drop Space/ButtonA, keeping ButtonB for pads, and update the '(Space)' hint.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Intro.luau:298-301 binds Space, Return, ButtonA and ButtonB at priority 3000, and the first Begin press calls Finish(). On the first viewing Finish() then sends IntroSeen (Intro.luau:276-277), which is saved for good. Space and pad A are the jump keys, and movement is disabled during the opening, so a reflexive jump press ends it. A23-9 does require a PC skip key, so this is a choice of key, not a missing feature. Suggest ignoring skip keys for about 1.5 s after Play(), or using Enter plus the button and pad B only, and updating the '(Space)' hint."
+    },
+    {
+     "id": "intro-finish-yield-before-done",
+     "title": "Finish() can yield on Net.Get before state.Done/Refresh, which would hide the faction cards for good",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Intro.luau",
+       "line": 277,
+       "quote": "pcall(function() Net.Get(\"IntroSeen\"):FireServer() end)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Intro.luau",
+       "line": 279,
+       "quote": "state.Done = true"
+      }
+     ],
+     "explanation": "On the client, Net.Get uses WaitForChild with no timeout. If the IntroSeen remote is missing (for example a Studio session where the server copy of Net was not re-synced), Finish waits forever before state.Done = true and FactionPicker.Refresh. Intro.Blocking() then stays true, so FactionPicker.IsOpen() stays false and the new player is stuck with no cards and no HUD. This should not happen in production, where both sides share Net.",
+     "suggested_fix": "Set state.Done = true and call FactionPicker.Refresh/FlushBanners before reporting. Send the remote inside task.spawn, or look it up with FindFirstChild instead of waiting.",
+     "confidence": "medium",
+     "verdict": "refuted",
+     "verified_severity": "low",
+     "verifier_note": "The failure path cannot happen. Net is a single shared ModuleScript (ReplicatedStorage/Shared/Net.luau), so there is no separate server copy that could fall out of sync. Net.CreateAll creates every Net.Names entry, including \"IntroSeen\" (Net.luau:12), when the server starts. The client's WaitForChild in Net.Get (Net.luau:60-62) therefore returns at once, more than 15 s after DataLoaded. If the remote were missing, every remote would be missing and the game would be broken anyway. Setting state.Done before the FireServer call is only a harmless tidy-up."
+    },
+    {
+     "id": "intro-guidedone-repeats",
+     "title": "The 'guide is over' toast can repeat because its one-time state lives only in memory",
+     "severity": "low",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/QuestService.luau",
+       "line": 473,
+       "quote": "if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE then"
+      },
+      {
+       "file": "src/ServerScriptService/QuestService.luau",
+       "line": 476,
+       "quote": "hadNextGoal[player] = hasGoal or nil"
+      }
+     ],
+     "explanation": "A23-3 asks for the toast only once. hadNextGoal is per session, not saved. After a rebirth (level reset and, per A23-4, WeaponOwnedMask = 1), or after selling and re-buying the iron weapon at Lv10+, the next-goal row comes back and the toast fires again when it ends. Rejoining does not repeat it.",
+     "suggested_fix": "Save a server-only flag (e.g. GuideDoneShown) and check it, or ask the user whether a repeat after rebirth is fine.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "hadNextGoal is in memory only (QuestService.luau:406, 473-476) and is cleared only when the player leaves (QuestService.luau:772). Rebirth resets the level and sets WeaponOwnedMask to 1 (ProgressionService.luau:382). Selling the iron weapon (IRON_TIER = 3, QuestService.luau:404; ShopService.luau:128 clears the bit) also brings the next-goal row back. Either way, the GuideDone toast fires again once the goal is met. A23-3 only says to toast once when the row disappears, so whether a repeat after rebirth is acceptable is for the user to decide. Rejoining does not repeat the toast."
+    },
+    {
+     "id": "intro-goose-rare-toast-not-held",
+     "title": "Server-wide goose rare-reward alert is sent as an 'info' toast, so it is not held during the opening or pickers",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/GooseService.luau",
+       "line": 467,
+       "quote": "Net.NotifyAll(string.format(Config.Text.RareAnnounce, Util.PlayerDisplayName(p)), \"info\")"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+       "line": 1872,
+       "quote": "if payload.Kind == \"announce\" then"
+      }
+     ],
+     "explanation": "A23-9/A23-3 defer server-wide goose/kaiju/war/bounty alerts while the opening or selection screens are open, but only the 'announce' kind is held. The goose rare-reward message to all players (and GrudgeAvengedAll, also 'info') still shows as a toast during the opening and the first mission.",
+     "suggested_fix": "Send these NotifyAll messages with the 'announce' kind (or a kind the client holds), or hold toasts from NotifyAll while UIKit.ShouldHoldBanners() is true.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "GooseService.luau:467 sends RareAnnounce to everyone with \"info\" (this was already the case at HEAD), and GrudgeService.luau:188 sends GrudgeAvengedAll with \"info\". UIKit.luau:1872 holds only payloads of kind \"announce\", so these two still show as toasts during the opening and the pickers. The other server-wide alerts are held correctly: the Kaiju, War, Bounty, MostWanted and Rebirth NotifyAll calls take the default kind \"announce\" (Net.luau:73-75). Fix: send these two with \"announce\", or have toasts that arrived through NotifyAll go through ShouldHoldBanners."
+    }
+   ],
+   "missed": [
+    "low | UIKit.luau:1832-1841 ShouldHoldBanners() holds banners only when 'TutorialStep == 0' or Intro.IsOpen(). It never checks FactionPicker.IsOpen or ClassPicker.IsOpen, although A23-9 also asks to hold alerts while the selection screens are open. New players are covered because their TutorialStep is 0. Two groups are not: a returning player with Faction 'None' and TutorialStep 99 (an old save, or a corrupted faction reset to None at FactionService.luau:395), and a v1-migrated player with ClassChosen=false (DataService.luau:112). For them, goose, kaiju, war and bounty banners show over the pickers. Fix: add the two picker IsOpen checks to ShouldHoldBanners, and refresh the picker state when it closes.",
+    "low | Intro.luau:321-323 with 328-333: the server loads the first character only after setting DataLoaded (PlayerService.luau:480-484). Intro.Start waits at most 10 s for HumanoidRootPart and then plays anyway from a fallback position. If the character arrives later, the CharacterAdded handler calls Finish() right away. Because state.Replay is false, Finish also sends IntroSeen, so the new player loses the opening permanently after about a second. Fix: in Intro.Start, do not play until a character exists, falling back to the cards; or report IntroSeen only for a real skip or end, not for a respawn-triggered Finish."
+   ]
+  },
+  {
+   "key": "first10",
+   "summary": "Read-only check of the worker's step-2 changes (first 10 minutes) at about 14:00–14:10 KST. HUD.luau (14:04:48), CombatService.luau and Config.luau (14:01:47) changed after the 14:00 snapshot, because the worker is now on step 4 (auto combat). Line numbers are from the files as of about 14:06. QuestService, Panels, ShopService, UIKit, Intro, ZoneService, ProgressionService, VitalsService, VitalsUI and GooseService match their snapshot hashes. All 25 changed src .luau files plus the new Intro.luau compile with the offline luau-compile.exe. luau-analyze found no unknown globals (no forward-reference nils) in the 18 files I checked.\n\n**Review A table (#1–#15), step-2 items**\n- Done: 7 — #2, #3, #4, #6, #7, #8, #14.\n- Partly done: 3.\n  - #5: the short-screen layout is in the code but has not been checked in the engine at 749×361.\n  - #13: death re-shows the route, but the beam still crosses water and the place file still has the old ⚙ sign.\n  - #15: TutorialKills reset and the goose wording are done; the other small items are still open.\n- Not yet in scope (later steps or another reviewer): #1, #9, #10, #11, #12.\n\n**Addendum items:** all present in code — accept button on page 1, quest-name title, GuideDone toast, DailiesOpened toast, world-banner hold, one blacksmith name, weapon-effect line. The weapon-effect line has a bug for Horns players (finding 1).\n\n**Worker's live log** (docs/art/verification_2026-10-06/first15_claude_run1.jsonl):\n- Claim credited exactly 150: bank 9 → 159 at about 197 s.\n- Wood weapon bought for 150 at about 538 s.\n- From arriving in Crossroads (352 s) to BlacksmithVisited (459 s) took about 107 s.\n- In the second run (Horns Mage) the 5/5 quest stayed unclaimed for more than 450 s.\n\nThese are observations only. There is no before/after timing comparison yet.\n\n**Scope interpretation for the coordinator:** dailies are folded and world banners held only while TutorialStep == 0 (before acceptance) and while the opening plays. That matches the worker prompt's \"첫 임무 받을 때까지\". The computed task said \"until claimed / steps 0-2\". A23-3 is still met: the mission row stays first and the phone one-liner shows the mission.",
+   "checked_ok": [
+    "#2 Skill quest: QuestService.luau:827-832 'if info.Auto == true then return end' / 'if num(info.MonstersHit) < 1 then return end'. CombatService.luau:977 'MonstersHit = monstersHit' counts only monsters that took damage (killed or applied>0). The remote calls 'CombatService.Release(player, false)' (CombatService.luau:1155), so a client cannot mark a cast as auto. Old Release dailies migrate (QuestService.luau:268-271 drops MinStacks).",
+    "#4 First reward: Config.luau:934 'QuestRewardGold = 150'. Claim text Config.luau:969 '보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 장비를 살펴봐요.' The step is set to 99 before paying (QuestService claimTutorial), so no double pay. The worker log shows bank 9→159. The WeaponShop panel refreshes BankGold+CarriedGold every 0.25 s.",
+    "#3 Next goal: QuestService.luau:407-427 nextGoalText reads only level, WeaponOwnedMask/WeaponTier and gold, plus Config.Zones.GoblinWoods.MinLevel, and creates no reward. Order: 'Lv5 되면 철 무기' → '철 무기 800골드 (보유 N)' → 'Lv10 되면 고블린 숲' → nil. The GuideDone toast fires once when the chain ends (QuestService.luau:472-476). The helpers it calls are declared earlier in the file; no nil access.",
+    "Pinned-row tap: HUD.luau:2715-2738 L.PinnedTap. Step 0 → fire('RequestTutorial') (zero args; server rate-limited + canWelcome). Step 1/2 → Travel panel + meadow beam. Visit row and iron-gold row → existing doUpgrade. Level goals → meadow beam, or a hunt toast when already in the meadow. Claim and reroll buttons sit above the tap layer (ZIndex 3 vs 2).",
+    "Death during step 2: HUD.luau:2581-2585 L.NeedsMeadowGuide is true at step 2 while TutorialKills<5. TutorialKills is mirrored (Config Mirrored) and refreshGuides listens to TutorialKills/ZoneId, so the meadow beam comes back after respawn and is not shown once the quest is 5/5.",
+    "#6 Dailies: HUD.luau:1998-2003 folds dailies on the client while the pinned row is at TutorialStep 0. The server still publishes and advances them. The DailiesOpened toast shows once on unfold. The phone one-liner keeps the mission line for steps 0-2 (HUD.luau:2324-2329).",
+    "World banners (goose/war/kaiju/bounty) use Net.NotifyAll with the default kind 'announce'. UIKit.luau:1834/1875 holds them while TutorialStep==0 or the opening is open, and FlushBanners runs on the TutorialStep change and in Intro.Finish. The top timers (EventHUD) are not affected.",
+    "#7 Potions: VitalsUI.luau:47 shows '준비 중' when MerchantEnabled is false. VitalsService.luau:34/60 drop the buy/use hints while it is false. The HUD toast is just 'MP가 부족해요.' No other buy-potion hint is left in src.",
+    "#8 Rebirth: ProgressionService.luau:382 'SetStat(player, \"WeaponOwnedMask\", 1)' next to WeaponTier=1.",
+    "TutorialKills reset: QuestService.luau:354 'SetStat(player, \"TutorialKills\", 0)' on accept. Accept is gated by canWelcome (step 0 only), so it cannot be repeated. Closing the dialog is never acceptance.",
+    "Goose text: GooseService.luau:24 now '(자동 전투 타격은 세지 않아요)'. No '자동 공격' left in src outside comments.",
+    "#14 Returning-player guide: doUpgrade uses its own 'smith:manual' tag with a 30 s timer (HUD.luau:2694). It is cleared only on leaving Crossroads (HUD.luau:2600), not by BlacksmithVisited.",
+    "Blacksmith name: HUD card title '대장간' (HUD.luau:1917), panel title '대장간' (Panels Titles), prompt ObjectText '대장간' (ShopService.luau:162), sign source '대장간 · 장인 길드' (tools/preview_map.lua:623). No '장비 상인' left in src.",
+    "Guide dialog: Panels.luau:1184-1197 shows [다음][함께할게요][나중에] from page 1. Title is '안내자 · 보급로 되찾기'. On short viewports (ViewportSize.Y<520, Panels.luau:1163) the 170 px portrait is hidden and the text is smaller; my estimate is about 250 units of content against about 290-320 visible.",
+    "Weapon rows: Panels.luau:1899-1902 show '슬라임 기본 공격 N방 → M방' and never the raw Damage number (one faction bug, see finding 1).",
+    "ShopService: tier argument checked (exactly 1 arg, integer, 1..MaxSoldTier). Anvil 12-stud re-check on every buy/sell. Gold is spent before the owned bit is set, with no yield in between. On sale the owned bit is cleared before paying. Tier 1 is equip-only. No exploit found.",
+    "MapBuilder: the CostumeService require is removed. The potion NPC is now HumanoidDescription R15 and is built in task.spawn only when MerchantEnabled. Rebuild race guarded by FindFirstChild after the yield. Prompt key E with hold 0 (merchant disabled).",
+    "ZoneService: being hit no longer cancels Travel in zones with PvP false. Sack, wanted-stars and kaiju blocks are unchanged.",
+    "All 25 changed src .luau files + Intro.luau pass build/luau_cli_0_741/luau-compile.exe. luau-analyze: no unknown non-Roblox globals in QuestService/HUD/Panels/ShopService/UIKit/Intro/ZoneService/CombatService/Config/VitalsUI/VitalsService/MapBuilder/ProgressionService/GooseService/EventHUD/FactionPicker/ClassPicker/CameraFollow.",
+    "Deleted costume modules: no require or reference left in src. Main/ClientMain lists were updated (ClientMain adds 'Intro')."
+   ],
+   "findings": [
+    {
+     "id": "first10-horns-hits-to-kill",
+     "title": "Weapon-row 'slime N hits → M hits' ignores the Horns +15% damage, so Horns players see a gain that is not real",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 224,
+       "quote": "local per = Config.WeaponDamage(tier, math.max(1, level or 1)) * (c.Damage or 1)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1899,
+       "quote": "local now = Config.SwingHitsToKill(info.EquippedTier, info.Level, cls, \"Slime\")"
+      },
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 374,
+       "quote": "* (1 + CombatService.GetDamageBonus(attacker, nil))"
+      }
+     ],
+     "explanation": "The server swing damage is WeaponDamage × class Damage × (1 + faction DamageBonus) × JusticeMult × 0.5, rounded. Horns has DamageBonus = 0.15 (Config Factions). SwingHitsToKill leaves the faction bonus out. Horns Warrior Lv1, Slime HP 10: really tier1 = round(4.6) = 5 → 2 hits and tier2 = round(8.6) = 9 → 2 hits, but the shop shows '3방 → 2방'. Horns Archer: really 4 → 2, shown 5 → 3. So a Horns warrior pays 150 gold for a promised change that does not happen against slimes. The prompt asked for the count to come from the server damage formula.",
+     "suggested_fix": "Add the faction's static DamageBonus to SwingHitsToKill, e.g. take a factionId argument and multiply by (1 + ((Config.Factions[factionId] or {}).DamageBonus or 0)), then pass myFaction() from Panels. Leave out the dynamic Halo party aura and Justice factors.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Config.luau:220-227 SwingHitsToKill = WeaponDamage × class Damage × SwingImmediate. It has no faction term. Server CombatService.luau:371-375 (ComputeMonsterHit) multiplies by (1+GetDamageBonus), and :741 applies RoundDamage(d×0.5). FactionService.GetPerks returns Config.Factions[f], where Horns DamageBonus = 0.15 (Config:376). Recomputed for slime HP10, Lv1. Horns Warrior: real 5 dmg → 2 hits, then 9 → 2 hits; the shop shows 3→2. Horns Archer: real 4→2 hits, shown 5→3. Horns Mage: 2→1 either way, so it is correct. Halo/Neutral are correct. Panels.luau:1899-1902 renders '슬라임 기본 공격 %d방 → %d방'. The shown gain on a 150g purchase is false for Horns warriors. Fix as suggested: add the static faction DamageBonus."
+    },
+    {
+     "id": "first10-beam-over-water",
+     "title": "Step-1 meadow beam still runs straight from the Halo/Horns home island over the sea (not fixed); respawn after death now shows it too",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2605,
+       "quote": "showGuide(findTravelTarget(TUT_GUIDE_ZONE), TUT_GUIDE_TEXT, \"tutorial\", nil)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2465,
+       "quote": "local part = resolvePart(pads and pads:FindFirstChild(\"Pad_\" .. zoneId))"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 930,
+       "quote": "GuideText = \"말랑 초원 · 빛나는 발판을 밟아요\""
+      }
+     ],
+     "explanation": "Worker prompt step 2 asks: '1단계 빔이 다리 밖 물 위로 안 가게'. findTravelTarget and the guide target did not change. The beam is still a straight Beam from the HumanoidRootPart to the Crossroads pad. Halo/Horns players start, and now also respawn after a step-2 death (L.NeedsMeadowGuide), on the home island. Baseline geometry: the line leaves the island at x≈13-15 while the bridge half-width is 9, and the label says to step on the glowing pad.",
+     "suggested_fix": "When ZoneId is HaloTown or HornsTown, aim the beam at the home Gate_/bridge first (Map.Gates) and switch to the Crossroads pad after entering Crossroads. Or keep the beam but label it '메뉴 > 이동 > 말랑 초원'. Existing widgets only.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Not fixed. findTravelTarget (HUD.luau:2464, now +2 lines after a 14:19 edit) is byte-identical to HEAD. The tutorial guide is still at HUD:2607 and is now also used by PinnedTap, HUD:2727 and :2735; the :2735 Lv-goal beam has the same problem. Geometry from Config.Map: HaloTown spawn (0,-410) → Pad_SlimeMeadow (52,-24). The beam crosses z=-300 (island edge) at x≈14.8 and z=-173 at x≈31.9. The Halo bridge is 18 wide (|x|≤9). Horns is symmetric (x≈13.2 at z=300). Respawn is at the home zone (PlayerService:414), and L.NeedsMeadowGuide (step 2, kills<5) re-shows this beam after a death."
+    },
+    {
+     "id": "first10-anvil-sign-not-in-place",
+     "title": "Anvil sign fixed only in tools/preview_map.lua; both saved place files still show '⚙ 장인 길드'",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "tools/preview_map.lua",
+       "line": 623,
+       "quote": "billboard(anvil, \"대장간 · 장인 길드\", 6, RGB(120, 235, 225))"
+      },
+      {
+       "file": "place/GoodEvil.rbxlx",
+       "quote": "<string name=\"Text\">&#226;&#154;&#153; &#236;&#158;&#165;&#236;&#157;&#184; &#234;&#184;&#184;&#235;&#147;&#156;</string> (= '⚙ 장인 길드' under Anvil/BillboardGui)"
+      }
+     ],
+     "explanation": "The map, including ArtisanGuild/Anvil/BillboardGui, is baked into the place. MapBuilder and ShopService do not set this text at runtime. place/GoodEvil.rbxlx and build/GoodEvil.rbxlx were both last saved 2026-10-04 17:03 and still hold the old text. If the worker changed it live in Studio, that is not saved yet; I could not check Studio (read-only).",
+     "suggested_fix": "In Studio Edit mode, set workspace.Map.Landmarks.ArtisanGuild.Anvil.BillboardGui TextLabel.Text = '대장간 · 장인 길드', or set it in ShopService.EnsureBlacksmithPrompt. Then save and copy build→place with the step-10 commit.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Only tools/preview_map.lua:623 changed. src/ has no runtime setter: ShopService.EnsureBlacksmithPrompt only sets ProximityPrompt texts, and MapBuilder does not touch the Anvil billboard. place/GoodEvil.rbxlx still contains the escaped '⚙ 장인 길드' string once. place and build were last written 10-04 17:03 and the place hash is unchanged since the snapshot. Studio has place/GoodEvil.rbxlx open (lock file in place/), so a live edit would be unsaved. I did not check Studio."
+    },
+    {
+     "id": "first10-b-key-cannot-close-menu",
+     "title": "B key can no longer close an open panel: new inputAllowed() returns false while Panels is open",
+     "severity": "low",
+     "kind": "regression",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2636,
+       "quote": "if C and C.Panels and C.Panels.IsOpen() then return false end"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2768,
+       "quote": "if gameProcessed or not inputAllowed() then return end"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2747,
+       "quote": "pcall(panels.Close, true)"
+      }
+     ],
+     "explanation": "At HEAD, inputAllowed was only 'ui.root ~= nil and ui.root.Visible', so B toggled the menu open and closed. onInputBegan now returns before the B branch whenever a panel is open, so openMenu's close branch is unreachable from the keyboard. Panels has no B handler of its own, so PC players must click X. Blocking F/Q while a panel is open is intended; blocking B (and U for the shop toggle) is a side effect.",
+     "suggested_fix": "In onInputBegan, handle KeyCode.B (and optionally U) before the inputAllowed() check, or exempt them from the panel check.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "HEAD inputAllowed was 'return ui.root ~= nil and ui.root.Visible'. It now also returns false while Panels.IsOpen() (HUD:2638, was 2636). onInputBegan returns early (HUD:2770), so the B→openMenu close branch (HUD:2749 'pcall(panels.Close, true)') is unreachable by keyboard. U is unreachable too. No other module binds B (grep: only HUD; WorldMap binds Escape only for itself). Line numbers shifted +2 after the worker's 14:19 HUD edit (MP cost label); the logic is unchanged."
+    },
+    {
+     "id": "first10-daily-toast-while-folded",
+     "title": "Server 'daily complete, press [받기]' toast still fires while the dailies are folded at step 0",
+     "severity": "low",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/QuestService.luau",
+       "line": 554,
+       "quote": "Net.Notify(player, string.format(Config.Text.DailyReady), \"good\")"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2003,
+       "quote": "if folded then return pinned end"
+      }
+     ],
+     "explanation": "Dailies keep progressing on the server during step 0 (correct), but completeQuest still sends '일일 퀘스트 완료! [받기]를 눌러요.'. The rows and claim button are hidden on the client and the claimable count includes only pinned rows. Rare (step 0 lasts until acceptance), but it points the new player at a button they cannot see.",
+     "suggested_fix": "In completeQuest, skip the DailyReady notify while getStep(player) == STEP_WELCOME. The DailiesOpened toast on unfold already announces them.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "QuestService.luau:554 still sends Config.Text.DailyReady '일일 퀘스트 완료! [받기]를 눌러요.' with no step check. The client folds dailies and extras at step 0 (HUD:2005 'if folded then return pinned end'), and claimable counts only visible entries. Related: Extra quests completed at step 0 still auto-pay with a QuestDone toast for a row the player cannot see (QuestService:549-551). That one is harmless because it needs no button. Rare in practice."
+    },
+    {
+     "id": "first10-shop-trade-not-visited",
+     "title": "Buying/selling from the HUD/U-key panel still does not set BlacksmithVisited (A23-4 says trades count)",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/ShopService.luau",
+       "line": 200,
+       "quote": "S.PlayerService.SetStat(player, \"BlacksmithVisited\", true)"
+      },
+      {
+       "file": "src/ServerScriptService/ShopService.luau",
+       "line": 93,
+       "quote": "S.PlayerService.SetStat(player, \"WeaponTier\", selectedTier)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2606,
+       "quote": "elseif step == 99 and attr(\"BlacksmithVisited\", false) ~= true and zone == \"Crossroads\""
+      }
+     ],
+     "explanation": "Baseline shop-6 is still open. doUpgrade opens WeaponShop on the client. Once within 12 studs the player can buy without pressing the E prompt. Only onBlacksmithPrompt sets the flag, so the pinned '무기 살펴보기' row stays, the auto anvil beam stays, and the next-goal chain never starts.",
+     "suggested_fix": "After the CanBuyWeapon check in onUpgradeWeapon and onSellWeapon, SetStat BlacksmithVisited=true if it is not already set.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "ShopService.luau has a single SetStat BlacksmithVisited, at :200, inside onBlacksmithPrompt. onUpgradeWeapon (:25-98) and onSellWeapon (:100-134) never set it. A23-4 says 'BlacksmithVisited: 서버가 확인한 모루/상인 상호작용(구매·판매 포함)으로만 true'. doUpgrade (HUD ~:2686-2697) opens WeaponShop from anywhere in Crossroads, and the panel stays open as the player walks in. Within 12 studs a purchase succeeds and the flag stays false. The pinned '무기 살펴보기' row and the 'blacksmith' beam (HUD:2608) then persist."
+    },
+    {
+     "id": "first10-skill-quest-text",
+     "title": "Release quest text '스킬 N번 사용하기' does not say only monster hits count",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1002,
+       "quote": "Text = \"스킬 %d번 사용하기\" },"
+      },
+      {
+       "file": "src/ServerScriptService/QuestService.luau",
+       "line": 270,
+       "quote": "q.Text = string.format(\"스킬 %d번 사용하기\", q.Target)"
+      }
+     ],
+     "explanation": "The server now correctly ignores casts that hit no monster (the user's rule). A beginner who casts in town or into the air sees no progress and no reason why.",
+     "suggested_fix": "Use '몬스터에게 스킬 %d번 맞히기' in both places. Text only, no reward change.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:1002 and QuestService.luau:270 both read '스킬 %d번 사용하기'. The server logic is correct: QuestService:827-832 skips info.Auto and MonstersHit<1, and CombatService.Release fires MonstersHit=monstersHit (:970-977). Only the text is misleading, so low."
+    },
+    {
+     "id": "first10-banners-held-at-step0",
+     "title": "World banners are held indefinitely for anyone who never accepts the first mission; only the last 2 are kept",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+       "line": 1834,
+       "quote": "if me:GetAttribute(\"TutorialStep\") == 0 then return true end"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+       "line": 1877,
+       "quote": "if #UIKit.HeldBanners > 2 then table.remove(UIKit.HeldBanners, 1) end"
+      }
+     ],
+     "explanation": "Holding is keyed only on TutorialStep == 0. A player who closes the guide and plays on without accepting (allowed; closing is not acceptance) never sees goose/war/kaiju/bounty banners in any session. After a late acceptance, two stale results (possibly minutes old) replay. This matches the worker prompt literally, so it may be acceptable.",
+     "suggested_fix": "Optionally cap the hold, e.g. release after N minutes at step 0, and drop held banners older than about 60 s. Confirm the intended scope with the user if unsure.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "UIKit.luau:1832-1841 ShouldHoldBanners holds when TutorialStep==0 or Intro.IsOpen(), and :1876-1879 keeps only the last 2. FlushBanners runs only on a TutorialStep change and on Intro.Finish, so a player who never accepts never sees goose/war/kaiju/bounty 'announce' banners. GooseService:467 RareAnnounce and Grudge use 'info' toasts and are not held. This literally matches the prompt ('그동안' = while dailies are folded), so it is a design risk, not a bug."
+    },
+    {
+     "id": "first10-intro-replay-meadow",
+     "title": "Opening replay is allowed in Slime Meadow while the opening disables movement for about 23 s",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1266,
+       "quote": "if attr(\"ZonePvP\", false) == true or isDead() then"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "quote": "OpeningReplayUnsafe = \"오프닝은 안전한 마을이나 초원에서 다시 볼 수 있어요.\","
+      }
+     ],
+     "explanation": "A23-9 says replay only in a safe area. The check only rejects PvP zones, so the meadow (and Outskirts) qualify. Intro.Play disables controls (setMovement(false)) and the camera, and meadow slimes and big slimes can keep hitting the frozen player. A respawn ends the opening, so it is not a soft-lock. This keeps the placeholder opening working; no polish requested.",
+     "suggested_fix": "Allow replay only when attr('ZoneTown') == true.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Panels.luau:1266 rejects only ZonePvP or dead. Its own comment says 'towns / meadow', so meadow is allowed on purpose. A23-9 says '다시 보기는 안전 지역에서만'. Intro.Play (Intro.luau:302) calls setMovement(false) for about 23 s. Meadow slimes and BigSlimes do attack players (MonsterService:1320-1335 DamagePlayer). CharacterAdded → Finish (Intro:321-323) prevents a soft-lock. Restricting to attr('ZoneTown')==true is the simple fix. The opening is a placeholder, and this does not ask to polish it."
+    },
+    {
+     "id": "first10-travel-escape-outskirts",
+     "title": "Combat no longer blocks Travel in Outskirts, which wraps the PvP zones and has PvP = false",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/ZoneService.luau",
+       "line": 125,
+       "quote": "local function combatBlocksTravel(player, start)"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 737,
+       "quote": "everything else (incl. sea, bridges, the pass) is Outskirts."
+      }
+     ],
+     "explanation": "The change was meant to stop slime bites cancelling a meadow trip home (a good first-10 fix). But a player tagged InCombat in GoblinWoods or SkeletonRuins can step onto the pass (Outskirts) and start Travel at once, which HEAD blocked. Sack, stars and kaiju checks still apply, so impact is small.",
+     "suggested_fix": "Exempt only Town zones and SlimeMeadow (or zones with Town==true or MinLevel==1 and no PvP neighbours), or keep the inCombat check whenever the combat tag came from PvP.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "ZoneService.luau:125-129 combatBlocksTravel returns false in any zone with PvP~=true, and it replaced the inCombat checks in channelBroken, finishChannel and Travel. Outskirts is PvP=false (Config:758-759) and covers the 870..960 x gap and |z|>150 of LandWild. A PvP-tagged player can step out of GoblinWoods and start Travel at once, which HEAD blocked. No PvP damage is possible in Outskirts anyway, so the practical gain is only a faster exit."
+    },
+    {
+     "id": "first10-small-items-open",
+     "title": "Review A#15 leftovers not yet done (pending lock, kaiju at anvil, personal-slime config, legacy nag, per-second republish)",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1768,
+       "quote": "function WSHOP.Reconcile(session)"
+      },
+      {
+       "file": "src/ServerScriptService/ShopService.luau",
+       "line": 178,
+       "quote": "function M.CanBuyWeapon(player)"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 924,
+       "quote": "Monster = \"Slime\","
+      },
+      {
+       "file": "src/ServerScriptService/QuestService.luau",
+       "line": 993,
+       "quote": "if getStep(p) == TUT_DONE then dirty[p] = true end"
+      }
+     ],
+     "explanation": "Still open:\n- (shop-7) session.Pending is cleared only on success, so a server refusal leaves the buttons disabled until reopen.\n- CanBuyWeapon has no KaijuState check, so a kaiju can buy at the anvil.\n- Config.Tutorial keeps the personal-slime keys (Monster, MonsterHP, Golden, SpawnDistance, Lifetime).\n- Legacy step-99 players get a pinned '무기 살펴보기' row plus a beam.\n- Every step-99 player is now marked dirty twice a second (tryTutorial line 365 and watchdog line 993), so the list is JSON-encoded every second. This is now deliberate for the next-goal row; sends are deduplicated, so it costs CPU only.",
+     "suggested_fix": "Bundle with the next round:\n- Clear Pending after a 5 s timeout or on a 'bad' Notify.\n- Add a KaijuState=='None' check to CanBuyWeapon.\n- Delete the unused Tutorial keys.\n- Mark dirty on Level/BankGold/CarriedGold/WeaponOwnedMask attribute changes instead of every tick.",
+     "confidence": "high",
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Real:\n- shop-7: Pending is cleared only in Reconcile on success (Panels:1768-1782). After 5 s the status only switches to WeaponSlow (:1883). The session resets on close (:2057), so the lock lasts until reopen.\n- CanBuyWeapon (ShopService:178-192) has no KaijuState check.\n- Config.Tutorial still has Monster/MonsterHP/Golden/SpawnDistance/Lifetime (Config:923-927). Correction: MonsterService:48-49 still reads SpawnDistance/Lifetime with fallbacks, so deleting them is safe but they are not strictly unreferenced.\n- Legacy step-99 players get the VisitBlacksmith pinned row (QuestService tutorialEntry) plus the Crossroads beam.\nOverstated: 'marked dirty twice a second' is wrong. TUTORIAL_TICK=1 (QuestService:21), and tryTutorial:365 and the watchdog at :993 both mark in the same 1 s iteration. The result is one republish (JSON encode, deduped send) per second per step-99 player, CPU only."
+    },
+    {
+     "id": "first10-no-after-measure",
+     "title": "No before/after first-10/15-minute timing after the step-2 fixes, and no 749×361 check of the guide dialog yet",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "docs/art/verification_2026-10-06/first15_claude_run1.jsonl",
+       "quote": "\"TutorialStep\": 2, ... \"TutorialKills\": 5 (Horns Mage run: 5/5 from wall 1027 s, still unclaimed at 1487 s)"
+      }
+     ],
+     "explanation": "Step 2's last bullet asks to re-run the step-1 timing and compare. Only run1 (13:55) exists. Run1 also shows about 107 s from arriving in Crossroads (352 s) to BlacksmithVisited (459 s), over the 60-second 'unclear next action' threshold. In the second run the completed quest went unclaimed for more than 450 s across rejoins. Both may be deliberate tester behaviour; this is observation, not a cause. The phone guide-dialog fix (#5) has not been checked in the engine.",
+     "suggested_fix": "After syncing step 2, run the timing again on a fresh save (one Halo/Horns spawn, one Neutral) and record the arrive→anvil and 5/5→claim times. Check the Welcome dialog in Studio device emulation at 749×361.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "docs/art/verification_2026-10-06/ holds only first15_claude_run1.jsonl (13:55, 39 lines). Run 1, Halo Warrior: Crossroads at 351.9 s → BlacksmithVisited at 459.4 s (107 s). The claim at 197.2 s shows bank 9→159, which confirms the 150-gold reward ran live. Run 2, Horns Mage: 5/5 at 1026.7 s, still unclaimed at 1487.6 s across rejoins. That is an observation, not a cause. There is no post-fix run and no 749×361 Welcome evidence. The code fix exists: Panels:1161-1163 hides the portrait when ViewportSize.Y<520. Pending step, not a defect."
+    }
+   ],
+   "missed": [
+    "Low: blacksmith name not fully unified (addendum item 5). Panels.luau:145 WeaponLocation still reads '교차로 마을 → 장인 길드 모루 · 가까이에서 상호작용'. Everything else says '대장간 모루': HUD:2691/2694, ShopService:33/106, Panels:146. Suggest '교차로 마을 → 대장간 모루'.",
+    "Note: HUD.luau was edited again at 14:19:34, after the 14:00 snapshot (MP cost on the skill button: TXT.ReleaseCost '%s MP%d'). Config.luau and CombatService.luau were rewritten at 14:01:47. The cited HUD lines moved by +2 (2605→2607, 2636→2638, 2768→2770, 2747→2749, 2003→2005); the logic of every finding is unchanged.",
+    "Checked OK (for progress count):\n- All 26 changed or new src files (25 modified + Intro.luau) compile with luau-compile 0.741. No references remain to the deleted Costume/Expression/Skin modules.\n- Release quest counts only manual casts that hit ≥1 monster (QuestService:827-832 + CombatService Released info).\n- First mission pays 150 bank gold (Config:933), with claim text 'Claimed'.\n- nextGoalText uses only Level, WeaponOwnedMask, WeaponTier, Bank and Carried gold; GuideDone toast fires once.\n- Pinned-row tap routes: step 0 → RequestTutorial, step 1/2 → Travel + beam, VisitBlacksmith/iron gold → doUpgrade, level goal → meadow beam.\n- Death at step 2 re-shows the meadow beam (L.NeedsMeadowGuide).\n- Dailies are folded on the client at step 0 only, the server keeps progress, the DailiesOpened toast shows once, and the phone one-line keeps the mission row for steps 0-2.\n- Potion slot shows '준비 중' and the VitalsService texts drop the buy hints while MerchantEnabled=false.\n- Rebirth sets WeaponOwnedMask=1 (ProgressionService:382).\n- TutorialKills is reset on accept.\n- Goose text now reads '자동 전투 타격은 세지 않아요'.\n- Returning-player guide uses the separate 'smith:manual' tag (30 s) and is no longer wiped by BlacksmithVisited.\n- Welcome accept button shows from page 1, and the title is '안내자 · 보급로 되찾기'.\n- Intro is a separate module and is added to the HUD/EventHUD/Panels/VitalsUI/ClassPicker/WorldMap cover checks.\n- MapBuilder: CostumeService require removed, default HumanoidDescription NPC built in task.spawn.\n- ZoneService: meadow and town slime hits no longer cancel Travel."
+   ]
+  },
+  {
+   "key": "combat",
+   "summary": "Combat/camera checkpoint, read-only, reviewed up to 14:12. The worker kept editing during the review. At the 14:00 snapshot auto combat had NOT started: CombatService still returned early for any non-manual call (\"automatic attacks were removed\"). Between 14:01 and 14:04 the worker began step 4 (A23-1) in CombatService.luau, Config.luau, HUD.luau and Fx.luau: a server auto loop through the same Swing/Release paths, a validated SetAutoAttack toggle, UnlockAutoCombat, saved AutoCombatUnlocked/AutoCombatEnabled defaults, an R-key/touch button hidden until unlock, and quiet auto Fx. Fx.luau changed again at 14:10 (monster wobble, visual only; compiles). NOT started yet: the A23-2 crown-shard quest (no quest code, no ShardChoice; UnlockAutoCombat has no caller, so players cannot reach auto yet) and the skill button's MP cost (step 5). Camera: a shift-lock/LockCenter fix landed at 13:49.\n\nOffline evidence (scratchpad only, repo untouched):\n- luau-compile 0.741 passes all 38 src files plus the 14:00, 14:02 and 14:12 snapshots.\n- The existing skill_release fixture passes 251 checks on the WIP CombatService. Its one remaining check expects exactly 2 background loops and now fails because the new auto loop is a third.\n- My own scratch auto test passed 72 checks across 3 classes x Halo/Horns: locked or OFF does nothing; ON hits monsters only and never a nearby enemy player; no protection break; no MarkActive; skill cadence follows the 3 s cooldown and MP 20; kaiju or dead players do not auto; no cast when only a player is near; the toggle needs unlock, a bool and no extra args; unlock does not turn auto ON.\n- The camera fixture crashes on the new CameraFollow.\n\nMain issues:\n- Auto Halo skill heals still give kaiju raid-share credit with no manual input.\n- The camera and skill fixtures are stale, so neither change has a passing offline test.\n- The blacksmith hits-to-kill line ignores the Horns +15% damage bonus, so it misstates hits for Horns Warrior/Archer.\n- Smaller items: an auto MP toast; Release quest wording; stale auto/charge Config comments; the free-cursor drag still unlocked and needs a hands-on test with the user.",
+   "checked_ok": [
+    "Manual combat still one press = at most one server swing: onSwingRemote rate-limits, queues at most one early press, ignores other early repeats (CombatService.luau:1127-1146); client startHold fires Swing once (HUD.luau ~2652)",
+    "Skill (Release) intact: cooldown checked before MP is spent, MP spent once, SkillReadyAt mirrored, failed MP does not consume the cooldown (CombatService.luau:836-841); existing offline fixture passes 251 checks on the WIP source",
+    "Auto shares the manual code paths: Swing/Release only accept auto when autoReady (unlocked AND enabled AND class chosen AND ready AND alive AND kaiju state None) (CombatService.luau:605-611, 614, 819)",
+    "Auto never hits players: the player-selection and PvP branches are gated by isManual / not isAuto; no BreakProtection, no MarkActive for auto (scratch test, 6 class/faction combos)",
+    "Auto skills respect MP 20 and the 3 s cooldown and only fire with a monster in reach (autoTick CombatService.luau:1184-1201; scratch test: 2 casts in 6 s)",
+    "Auto starts OFF and is saved: Config.Data.Defaults AutoCombatUnlocked/AutoCombatEnabled = false plus Mirrored list; DataService fillDefaults fills missing or wrong-typed fields; rebirth does not reset them",
+    "UnlockAutoCombat sets only AutoCombatUnlocked and never AutoCombatEnabled (scratch test)",
+    "SetAutoAttack remote: needs IsReady, a boolean, no extra args, rate limit, unlocked and ClassChosen (CombatService.luau:1159-1173; scratch test)",
+    "Skill quest: auto skills excluded and only skills that hit 1+ monster count (QuestService.luau:829-830), so town whiff farming is closed",
+    "Goose: auto hits count only AutoCount and the reward still needs 3 manual hits; the goose sits in safe Crossroads (Config Goose Position) so auto never swings there; goose text updated to '(자동 전투 타격은 세지 않아요)'",
+    "No charge/PERFECT/stack revival: legacy attributes stay 0 (resetLegacyCharge), Released sends Stacks=0, Perfect=false",
+    "No auto potion anywhere (VitalsService/VitalsUI have no auto path)",
+    "Config.Combat.AutoUnlockLevel removed (Config and Fx level-up unlock list); HUD TXT.AutoLocked removed at 14:02; Config.Text.AutoLocked/ReleaseNeed/LevelUpNext removed",
+    "Fx: auto swings get feel=nil (no hit-stop, kick or crit shake); auto skills skip own and nearby camera shake (Fx.luau:3193, 3259, 3325)",
+    "HUD auto button: hidden until unlocked (no teaser), R key, uses existing Crown art, fills the empty 3rd square slot (row already sized for 3), 72 px on touch above the attack button, labels '자동 켬/끔', refreshed via OnAttr",
+    "Camera: shift-lock/first-person (MouseBehavior not Default) now skips the custom rotation, so no double rotation and a click while turning attacks (CameraFollow.luau:53); drag delta now measured from cursor Position; no MouseBehavior writes, so touch and gamepad are unaffected",
+    "VitalsService MP/potion messages no longer point to an unavailable potion shop while MerchantEnabled=false; VitalsUI shows '준비 중' for 0 stock",
+    "CombatService no longer references ExpressionService/CostumeService; Main INIT/START and ClientMain ORDER updated (Intro added, SkinRetargetClient removed)",
+    "luau-compile 0.741: all 38 current src/**/*.luau plus HUD (14:04) and Fx (14:10) snapshots compile with exit 0 (also covers the 200-locals limit)",
+    "Not started yet (stated, not a defect): A23-2 crown-shard quest, ShardChoice, Purify/Devour Honor/Infamy, Neutral record-only, skill button MP cost"
+   ],
+   "findings": [
+    {
+     "id": "combat-kaiju-auto-heal-credit",
+     "title": "Auto Halo skill heals still earn a kaiju raid reward share with no manual input",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/KaijuService.luau",
+       "line": 638,
+       "quote": "S.CombatService.Released:Connect(function(player, info)"
+      },
+      {
+       "file": "src/ServerScriptService/KaijuService.luau",
+       "line": 644,
+       "quote": "healers[player] = true"
+      },
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 979,
+       "quote": "Healed = healed,"
+      },
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 926,
+       "quote": "if perks.ReleaseSupport == true and fac == \"Halo\" then"
+      }
+     ],
+     "explanation": "Auto Release (isAuto=true) still runs the Halo heal and fires Released with Healed and Auto=true. KaijuService's Released listener never checks info.Auto: any Halo caster whose heal touched a kaiju damager is added to healers. participantList() then pays healers an equal share ((1-DamageShare)/n) of the raid pool. An AFK Halo player with auto ON whose blast can reach a monster near a kaiju fight therefore collects kaiju gold without pressing anything, and dilutes the real fighters' shares. The worker prompt says goose/kaiju/bounty rewards stay manual-only. A23-1 allows auto healing itself, but not reward credit.",
+     "suggested_fix": "In the KaijuService Released listener add `if info.Auto == true then return end`, or have CombatService send an empty Healed list when isAuto. Keep the heal itself.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Still present at 14:18. KaijuService.luau:638-647 never checks info.Auto: 'healers[player] = true' is set whenever a Halo caster's heal reaches a kaiju damager. CombatService.luau:926-941 heals Halo allies on auto casts too ('if perks.ReleaseSupport == true and fac == \"Halo\" then'), and line 979 sends 'Healed = healed'. participantList (KaijuService:293) then pays those healers. QuestService.onReleased does drop auto ('if info.Auto == true then return end'); KaijuService is the only Released listener that does not. The bug is latent today because UnlockAutoCombat has no caller, but it goes live as soon as A23-2 ships. That breaks the worker-prompt rule '거위·괴수·현상금 보상은 계속 직접 3번 이상' (worker_prompt:93). Suggested fix: add `if info.Auto == true then return end` in the KaijuService listener."
+    },
+    {
+     "id": "combat-camera-fixture-stale",
+     "title": "Camera offline fixture (moved into tools/fixtures for commit) crashes on the new CameraFollow; the camera change has no passing test",
+     "severity": "medium",
+     "kind": "regression",
+     "locations": [
+      {
+       "file": "tools/fixtures/camera_input_offline.luau",
+       "line": 86,
+       "quote": "function f:Move(x, y, processed) input.InputChanged:Fire({ UserInputType = \"Move\", Delta = { X = x, Y = y } }, processed == true) end"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+       "line": 55,
+       "quote": "local pos = Vector2.new(input.Position.X, input.Position.Y)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+       "line": 53,
+       "quote": "if UserInputService.MouseBehavior ~= Enum.MouseBehavior.Default then drag.Last = nil; return end"
+      }
+     ],
+     "explanation": "I built the same harness as tools/test_camera_input.py in the scratchpad and ran it with luau.exe. It aborts: \"CameraFollow:44: attempt to index nil with 'new'\". The doubles have no Vector2, the moves carry only Delta (no Position), and UserInputService has no MouseBehavior. The new Position-based drag and the LockCenter skip are therefore untested offline. tools/test_camera_input.py also still writes its report into docs/art/verification_2026-10-04/gameplay_10min/, overwriting old evidence.",
+     "suggested_fix": "Update the fixture: add Vector2.new, Position on input objects and UserInputService.MouseBehavior. Add cases: free-cursor drag rotates via Position; in LockCenter there is no custom rotation and the release still emits one click; pressing MB2 cancels. Point the runner's output at docs/art/verification_2026-10-06/ with a new name.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Reproduced in scratch: harness = current CameraFollow + tools/fixtures/camera_input_offline.luau aborts at CameraFollow:44 'attempt to index nil with 'new'' (Vector2 missing). f:Move at fixture:86 carries only Delta, the code now reads input.Position (CameraFollow:55), and the doubles have no MouseBehavior (CameraFollow:53). The whole left-drag block is new versus HEAD, and the fixture (dated Oct 4, untracked) matched the baseline working tree, where it passed 33 checks. tools/test_camera_input.py still writes to docs/art/verification_2026-10-04/gameplay_10min/camera_input_offline.json. So the Position-based drag and the LockCenter skip have no passing offline test."
+    },
+    {
+     "id": "combat-skill-fixture-stale",
+     "title": "Skill fixture now fails on the new auto loop and has no A23-1 auto cases",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "tools/fixtures/skill_release_offline.luau",
+       "line": 147,
+       "quote": "check(#f.Tasks==2,\"unexpected auto-attack/charge timer remains\") -- Vitals regen + HP regen only"
+      },
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 1269,
+       "quote": "startPlayerLoop(\"AutoCombatLoop\", Config.Combat.AutoTick or 0.2, autoTick)"
+      }
+     ],
+     "explanation": "Run offline against the WIP CombatService/Config, the fixture fails at line 147. With only that assertion changed to 3 tasks, all other 251 checks pass. Its stated scope is still 'no automatic combat'. Step 4 of the worker prompt requires new fixtures: auto never hits players, skill-quest counting, no duplicate completion or reward, and progress kept after rejoin. None exist yet. My scratch test (72 checks) shows the WIP server side behaves, but nothing equivalent is in the repo.",
+     "suggested_fix": "Change the task-count check to expect the AutoCombatLoop. Add auto cases: locked/OFF does nothing; ON hits monsters only and never a nearby enemy (AllowPvP=true); no BreakProtection or MarkActive; skills follow the cooldown and MP; kaiju or dead players do not auto; the toggle needs unlock, a bool and no extra args; unlock does not enable. Write results to the 10-06 evidence folder.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Reproduced: the current sources plus tools/fixtures/skill_release_offline.luau fail at fixture:147 'unexpected auto-attack/charge timer remains', because startPlayerLoop(\"AutoCombatLoop\") is at CombatService:1269. Changing only that check to 3 gives 'SKILL_RELEASE_OFFLINE_OK checks=251'. The runner's scope string still reads 'no automatic combat'. It also writes into docs/art/verification_2026-10-04/gameplay_10min/skill_release_offline.json, the same untracked-evidence overwrite as the camera runner. None of the A23-1 auto cases required by step 4 exist."
+    },
+    {
+     "id": "combat-forge-hits-ignore-faction",
+     "title": "Blacksmith 'slime hits' line skips the Horns +15% damage bonus and shows wrong numbers for Horns",
+     "severity": "medium",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 224,
+       "quote": "local per = Config.WeaponDamage(tier, math.max(1, level or 1)) * (c.Damage or 1)"
+      },
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 374,
+       "quote": "* (1 + CombatService.GetDamageBonus(attacker, nil))"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1900,
+       "quote": "local with = Config.SwingHitsToKill(ui.Tier, info.Level, cls, \"Slime\")"
+      }
+     ],
+     "explanation": "The server's ComputeMonsterHit multiplies by (1 + DamageBonus), and Horns has DamageBonus = 0.15 (Config.luau:376). SwingHitsToKill leaves that out. Lv1 Horns Warrior: the wood row says '슬라임 기본 공격 3방 → 2방', but the real hit is 8*1.15*0.5 = 4.6 -> 5, so tier 1 already kills in 2 (no change). Lv1 Horns Archer: the panel says 5 -> 3, the server gives 4 -> 2. The worker prompt asked for this line to use the server damage formula, and AGENTS forbids promising things the game does not do.",
+     "suggested_fix": "Pass the faction and include the static perk: `* (1 + ((Config.Factions[faction] or {}).DamageBonus or 0))`. Situational bonuses (party aura, stars, justice) can stay out; optionally label the number as the base value.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Config.luau:219-224: SwingHitsToKill deliberately omits faction ('no crit / perks / faction bonuses'). The server's ComputeMonsterHit (CombatService:371-375) multiplies by (1 + GetDamageBonus), and Horns DamageBonus = 0.15 (Config:376). With Util.RoundDamage = floor(x+0.5), Slime HP 10 and weapon damage 8/15: Lv1 Horns Warrior, panel 3→2 vs real 2→2 (4.6→5, 8.6→9). Lv1 Horns Archer (Damage 0.55), panel 5→3 vs real 4→2. Panels.luau:1899-1902 shows these numbers through WeaponEffectF '슬라임 기본 공격 %d방 → %d방'. worker_prompt:77 requires '서버 피해 공식으로 계산'. JusticeService faction scale is situational and can stay out."
+    },
+    {
+     "id": "combat-camera-free-cursor",
+     "title": "Left-drag fix is partial: free cursor still unlocked, GUI crossing cancels the drag, a quick click with mouse travel still becomes a drag",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+       "line": 51,
+       "quote": "if processed or blocked() then cancelDrag(); return end"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+       "line": 17,
+       "quote": "local DRAG_THRESHOLD, RADIANS_PER_PIXEL, PITCH_LIMIT = 6, 0.003, math.rad(80)"
+      }
+     ],
+     "explanation": "Baseline client-ui-02 parts (b) and (c) are fixed for shift-lock/first-person. Part (a) remains in normal free-cursor mode. The cursor is never locked, so rotation stops at the window edge. A drag that passes over the right-side HUD buttons gets processed=true and is cancelled. A click whose mouse path reaches 6 px is treated as a drag and sends no attack. The worker's note says Delta reads 0 with a free cursor (my inference: probably why the cursor-lock suggestion was not taken). Engine behaviour is not verified here.",
+     "suggested_fix": "Ignore `processed` on MouseMovement once a drag has started. Optionally count a press shorter than about 0.25 s as a click even with small movement. Report this as needing the user's hands-on PC test (with and without shift-lock), not as fixed.",
+     "confidence": "medium",
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Code reading is accurate. In free-cursor mode nothing sets MouseBehavior, so the cursor is not locked, and CameraFollow:51 cancels the drag when processed. Shift-lock and first-person are now skipped (line 53), and a click there still fires on release, which fixes baseline parts (b) and (c). Overstated parts: cancelling over processed GUI and the 6 px threshold are both intended and were asserted by the baseline fixture ('moving over processed GUI cancels', 'threshold drag never attacks'), so they are not regressions. The engine's gameProcessed behaviour on MouseMovement is unverified offline. Touch is ignored (only MouseButton1/2 and MouseMovement are handled), so this is safe on phones. Report it as needing a hands-on PC test, not as fixed."
+    },
+    {
+     "id": "combat-auto-mp-toast",
+     "title": "Auto skill can toast 'MP가 부족해요' to an idle auto player; toggle remote skips the alive check",
+     "severity": "low",
+     "kind": "bug",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 1196,
+       "quote": "if numAttr(p, \"Mana\", 0) < (skill.ManaCost or Config.Vitals.ReleaseCost) then return end"
+      },
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 839,
+       "quote": "if not S.VitalsService.TrySpendMana(player, skill.ManaCost or Config.Vitals.ReleaseCost, false) then return end"
+      },
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 1169,
+       "quote": "if player:GetAttribute(\"AutoCombatUnlocked\") ~= true or player:GetAttribute(\"ClassChosen\") ~= true then"
+      }
+     ],
+     "explanation": "VitalsService publishes Mana rounded to 0.1 (st.Mana 19.96 shows as 20.0), and regen adds ManaRegen*dt, so fractions are common. autoTick's pre-check passes on the rounded attribute. Release then calls TrySpendMana with silent=false, which fails and sends 'MP가 부족해요. 잠시 기다리면 차올라요.' (at most every 2 s) to a player who pressed nothing. Separately, A23-1 says toggle requests are accepted only from living players; the remote does not check alive (harmless: the loop checks it every tick).",
+     "suggested_fix": "Call `TrySpendMana(player, cost, isAuto)` so auto attempts are silent. Optionally add `Util.IsAlive(player)` to onSetAutoAttackRemote to match A23-1.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "VitalsService:15 publishes Mana rounded to 0.1. autoTick (CombatService:1196) checks that attribute, and Release then calls TrySpendMana(..., false) (line 839). TrySpendMana fails when st.Mana + 0.0001 < 20 and sends 'MP가 부족해요. 잠시 기다리면 차올라요.' (at most every 2 s). This only happens while true MP is in [19.95, 20): regen is +about 2.0 per 0.5 s tick, so it is rare but real, and latent until unlock. The Mage auto swing already passes silent (line 634). Separately, onSetAutoAttackRemote (1159-1173) has no Util.IsAlive check, although A23-1 says requests are accepted only from living players. This is harmless because autoReady checks alive every tick. Fix: pass isAuto as the silent flag."
+    },
+    {
+     "id": "combat-release-quest-text",
+     "title": "Skill quest text '스킬 %d번 사용하기' does not say only monster-hitting manual skills count",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1002,
+       "quote": "Text = \"스킬 %d번 사용하기\" },"
+      },
+      {
+       "file": "src/ServerScriptService/QuestService.luau",
+       "line": 830,
+       "quote": "if num(info.MonstersHit) < 1 then return end"
+      }
+     ],
+     "explanation": "The server now ignores skills that hit no monster and all auto skills (QuestService.luau:829-830, the user's decision). A player who casts in the air, or whose auto skills hit monsters, sees no progress on '스킬 3번 사용하기' and will think the quest is broken.",
+     "suggested_fix": "Reword to '몬스터에게 스킬 %d번 맞히기'. Optionally add '(직접 사용)' once auto combat ships.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:1002 reads 'Text = \"스킬 %d번 사용하기\" },' while QuestService:827-831 counts only manual casts with MonstersHit >= 1. The same wording is also hardcoded in the save migration at QuestService.luau:270 ('q.Text = string.format(\"스킬 %d번 사용하기\", q.Target)'), so a rename must change both places or existing saved quests keep the old text."
+    },
+    {
+     "id": "combat-stale-auto-config",
+     "title": "Stale auto/charge comments and dead keys now misdescribe the new auto loop",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 304,
+       "quote": "ManualYieldPad = 0.3,"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 310,
+       "quote": "-- Design intent: pure idle (auto swings + auto release) ~= 1.25x baseline DPS; auto swings + PERFECT release ~= 2.5x."
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1680,
+       "quote": "AutoUnderAttack = \"공격받는 중! 공격 버튼으로 반격하세요\", -- M3: auto ON + took PvP damage (once per 60 s)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+       "line": 1,
+       "quote": "-- Keep Roblox's default camera attached when the server replaces an avatar with a costume rig."
+      }
+     ],
+     "explanation": "Config.Combat's comment (lines 302-303) says the auto loop yields for SwingInterval+ManualYieldPad after a manual swing. The new autoTick has no such yield (HEAD had lastManualAt), so manual and auto swings compete for the same slot. This matters little, because the goose sits in a monster-free town. AutoLoopInterval (AutoTick is used instead), ChargeTick, ManualPriority, AutoPvPHintCooldown and the 'pure idle ... PERFECT' header are leftovers. With auto back, AutoUnderAttack is dead text: either re-wire the hint for AutoCombatEnabled players hit in PvP zones, or delete it. The CameraFollow header still mentions costume rigs.",
+     "suggested_fix": "Rewrite the Config.Combat/Charge comments to the A23-1 behaviour. Remove the unused keys, or mark them compatibility-only. Decide on the AutoUnderAttack hint (it may help AFK auto players in PvP zones). Update the CameraFollow header.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Config.luau:299 AutoLoopInterval, :301 ChargeTick, :304 ManualYieldPad, :305 ManualPriority and :306 AutoPvPHintCooldown have no readers in src. The :302-303 comment describes a yield that no longer exists. :310 still carries the 'pure idle ... PERFECT' header. :1680 AutoUnderAttack is unused (HEAD used it at CombatService:545). CameraFollow:1 still mentions 'costume rig'. AutoLocked and AutoUnlockLevel are correctly gone. The missing manual yield has a real gameplay effect, filed separately under missed."
+    },
+    {
+     "id": "combat-kpm-bot-upper-bound",
+     "title": "Kill-rate bot is a perfect-timing upper bound; report it separately from the user's manual pace",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "tools/fixtures/hunt_bot_client.luau",
+       "line": 45,
+       "quote": "nextSwing = os.clock() + (def.SwingInterval or 1) + 0.05"
+      },
+      {
+       "file": "tools/fixtures/hunt_bot_client.luau",
+       "line": 49,
+       "quote": "Net.Get(\"Release\"):FireServer()"
+      }
+     ],
+     "explanation": "The new measurement bot walks straight to the nearest slime, swings exactly every SwingInterval+0.05 s, and fires the skill whenever MP and cooldown allow. Its kills per minute is a mechanical ceiling, not 'manual combat' pace. The worker prompt asks for the manual kill rate and the Lv5/800-gold timing to feed numbers the user will approve, and asks that mechanical checks be kept apart from the user's direct feel. The header comment limits it to the worker's own test Play, which is fine.",
+     "suggested_fix": "Label bot results 'bot upper bound' in the report and evidence. Pair them with the user's hands-on run before proposing KillsPerMinute, daily or reward changes.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "tools/fixtures/hunt_bot_client.luau:45 swings every SwingInterval + 0.05 s and :48-49 fires Release whenever MP and cooldown allow. The header calls it an 'efficient human'. No report or doc uses its numbers yet, and Config.Economy.KillsPerMinute = 12 is unchanged (Config:687). This is a precaution: label the results 'bot upper bound'."
+    },
+    {
+     "id": "combat-shard-quest-not-started",
+     "title": "A23-2 crown-shard quest and the skill MP-cost label are not started; auto cannot be unlocked yet",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 1176,
+       "quote": "function CombatService.UnlockAutoCombat(player)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 1877,
+       "quote": "ui.skillLabel.Text = TXT.Release"
+      }
+     ],
+     "explanation": "There is no quest code for '내 싸움을 배우는 왕관 조각' (BigSlime shard, 3 trials, Purify/Devour giving small Honor/Infamy, Neutral record-only, saved progress, no duplicate completion), no ShardChoice save field, and no caller of UnlockAutoCombat. Auto combat is therefore unreachable in play. The skill button still shows only '스킬', with no MP 20 (step 5 / baseline client-ui-07). This is expected for work in progress.",
+     "suggested_fix": "When A23-2 lands, call UnlockAutoCombat exactly once at quest completion, save the step and ShardChoice through Config.Data.Defaults, and give Honor/Infamy only to Halo/Horns. Then add the fixture cases (no duplicate completion or reward, rejoin keeps the step). Until then, do not report auto combat as done.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "No caller of CombatService.UnlockAutoCombat (CombatService:1176) and no ShardChoice in src. The only '왕관 조각' hits are lore and weapon names. HUD changed at 14:04 and the line moved from 1877 to 1881, but it is still 'ui.skillLabel.Text = TXT.Release' with TXT.Release = '스킬' (HUD:146), so the MP cost is still not shown. Parts already done: AutoCombatUnlocked/Enabled defaults false and mirrored (Config:114-115, 136); the toggle needs unlock, a bool and no extra args; the HUD button stays hidden until unlock (HUD:2704-2711, R key); auto Fx is quiet (Fx:3288, 3354, 3420); no auto potion; no charge or PERFECT revival. All changed combat files pass luau-compile."
+    }
+   ],
+   "missed": [
+    "medium (latent until unlock): the new auto loop dropped HEAD's manual-priority yield (HEAD CombatService:1262-1263 'if lm and os.clock() - lm < (c.SwingInterval or 1) + (Config.Combat.ManualYieldPad or 0.3)', CR-M17) and the AutoUnderAttack PvP hint (HEAD :542-545). autoTick runs every 0.2 s and swings at monsters as soon as nextSwingAt passes (CombatService:1191 'if os.clock() >= (nextSwingAt[p] or 0) and #monstersNear(p, pos, range) > 0 then'). onSwingRemote silently ignores a manual press with more than MANUAL_GRACE 0.2 s remaining (CombatService:1138-1145 '-- otherwise an early repeat of a manual swing: silently ignored'). Result: with auto ON near monsters, about 80% of a Warrior's manual presses meant to hit an attacking player are dropped, and auto swings never hit players. Fix: restore a lastManualAt yield in autoTick, or make the auto loop skip a player who pressed manually within SwingInterval + pad."
+   ]
+  },
+  {
+   "key": "art",
+   "summary": "Art cleanup (checked against the 14:00 state; the art files have not changed since the snapshot) is mostly correct and safe. Nothing used in the game was removed early. The manifest docs/art/art_cleanup_2026-10-06.json counts 201 files to delete, 353 keep_until_replaced and 222 keep. It matches the disk and the git index exactly. There are 147 tracked deletions staged with git rm and 54 untracked files removed; the 201 files are 195 images plus 6 sidecars. Nothing marked delete is still on disk, nothing marked keep is missing, and no staged art deletion falls outside the manifest. What remains: art/ui has 178 PNGs, all active, plus 3 JSON files. art/out has 167 PNGs (165 active sources and the 2 experience-page images GameIcon and Thumbnail_Kaiju) plus 219 gitignored logs. art/test has 2 PNGs. art/out/v1 is gone. Config.luau has no asset ID added, removed or emptied (178 rbxassetid lines in both HEAD and the working tree, 0 empty Ids in both). Every ID used in src or in the place maps to an existing art/ui file. One deviation from the worker prompt: the 42 TXT lettering images (84 PNGs) were kept although they are never displayed (UseTextImages=false) and the prompt says to delete them. The other findings are low-severity hygiene and risk items. Still to do at commit time: the record JSON and tools/art_cleanup_inventory.py are untracked and must be committed together with the 147 staged deletions. Suggested report to the user once the TXT images are handled: \"옛 그림 195장 지웠어요, 게임 속 138장(TXT 정리 후)은 새 그림으로 바꿀 때 지워요\". 138 = 136 in-game keys + the 2 experience-page images. Without the TXT fix the numbers are 195 and 180.",
+   "checked_ok": [
+    "Manifest, disk and git index agree. Of the 201 files marked delete, 147 are tracked (all staged as 'D ') and 54 were untracked and removed. 0 delete-marked files remain on disk, 0 kept files are missing, and there are 0 staged art deletions outside the manifest.",
+    "art/out/v1 is fully removed (38 tracked files, 21 of them in revealing/). The index has 0 files under art/out/v1. A byte-hash scan of art/, docs/ and build/ found no copy of any v1 or revealing image. The only two matches are GameIcon.png and Thumbnail_Kaiju.png, which match v1's non-revealing copies; I viewed both and they are modest.",
+    "All 8 revealing byte-copies (art/ui and art/out UIP_Char{HaloArcher,HornsArcher,HornsMage,HornsWarrior}.png) are gone from disk and from the index.",
+    "Rejected material deleted: the 3 Aligned cards in art/ui, 27 UI_FactionParts_* parts, UI_FactionCardHalo_ApprovedBalanced, 11 UI_Icon*_Redraw, 9 WP_* candidates, 3 NPC_EquipmentMerchant_*, UIP_CharHaloWarriorM_Redraw, and the chibi/APose/Avatar/Costume sources (20 APose + 13 v1 APose, 8 Avatar, 7 Costume). The 52 matching prompt .txt files are still untracked in art/prompts. The untracked candidates cannot be recovered, as instructed. Light/dark previews of the merchants and weapons remain as evidence in docs/art/verification_2026-10-04/.",
+    "Config.luau has no asset ID changes: 178 rbxassetid lines in both HEAD and the working tree, and 0 empty Ids in both. The only IDs removed from src are the 7 chibi-costume IDs in the deleted ExpressionAssets.luau (A23-5). No IDs were added; Intro.luau uses no new art, only a default ParticleEmitter.",
+    "All 178 asset_ids keys used by src or by the place have art/ui/<key>.png on disk. That covers the 15 Tex_* files (matching the 15 GE_* MaterialVariant ColorMaps; their 15 TexturePack IDs are generated by Roblox), UI_MapParchment, the 27 Weapon_* icons, both potion icons, the FreshTyped cards/title/premise/footer, the E fallback parts, all HUD UIP_* parts and the 18 M/F class illustrations. 165 matching art/out sources are also kept.",
+    "The 4 keys marked deleted in asset_ids.json (UIP_PortraitHaloArcherM and the 3 *_Aligned cards) are not referenced anywhere in src or in place/GoodEvil.rbxlx (which is identical to build/). None of the asset IDs recorded for deleted files is used in src or the place.",
+    "art/approved.json (46 entries) and art/ui/asset_ids.json (182 entries) both parse. No keys were removed and no statuses changed; the only edits are 32 added 'deleted' fields and 4 values rewritten as 'deleted 2026-10-06 (was rbxassetid://...)'. One entry was added: NPC_EquipmentMerchant_C_Veteran, marked deleted.",
+    "Left untouched as instructed: art/models (1650 tracked files in both HEAD and the index), art/fonts (4 = 4) and the tracked docs images (417 = 417), with no deletions under docs. No active art file was modified and no new image was added under art/.",
+    "The hazard of running prep_ui.py with no arguments is reduced: art/out/UIP_* now contains only active parts and no revealing copies.",
+    "Nothing in src loads the deleted modules: there are no requires or WaitForChild calls for ExpressionAssets, SkinBindingContract, CostumeService, ExpressionService, ExpressionSkinContract or SkinRetargetClient."
+   ],
+   "findings": [
+    {
+     "id": "art-txt-overkept",
+     "title": "42 TXT lettering images (84 PNGs) kept as 'in game' although never displayed; the worker prompt says to delete them",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "docs/review/worker_prompt_2026-10-06.md",
+       "line": 43,
+       "quote": "화면에 안 쓰는 TXT 글자 그림"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+       "line": 23,
+       "quote": "UseTextImages = false"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+       "line": 974,
+       "quote": "if FONT.UseTextImages == false then return label end"
+      },
+      {
+       "file": "tools/art_cleanup_inventory.py",
+       "line": 22,
+       "quote": "used |= set(re.findall(r\"rbxassetid://(\\d+)\""
+      }
+     ],
+     "explanation": "The inventory treats any rbxassetid string in src as active, so all 42 TXT_* keys in Config.UIArt.Parts (Config.luau:1235 onward) became keep_until_replaced: 42 files in art/ui and 42 in art/out. They are only reachable through UIKit.BindArtText, which returns early because UseTextImages=false, and no other code path uses them, so none of them is ever on screen. The Firefly plan puts all text in TextLabels, so these images will never be 'replaced' and would stay forever under the current rule. This also inflates the user-facing count of in-game images: 180 instead of 138.",
+     "suggested_fix": "git rm art/ui/TXT_*.png and art/out/TXT_*.png. Mark the 42 TXT_* entries in asset_ids.json as 'deleted 2026-10-06 (was rbxassetid://…)' and update the manifest. The Config TXT_* Ids and TextLabels can stay, since they are dead code with UseTextImages=false and the screen does not change, or they can be removed in the same commit. Then report N=195+84 (images deleted) and M=138 (in-game images left).",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Re-checked at 14:16 and nothing has changed since the review. The worker prompt says to delete these at docs/review/worker_prompt_2026-10-06.md:43 (\"화면에 안 쓰는 TXT 글자 그림\"). Config.luau has 42 TXT_* Parts entries starting at line 1235, and every one has its art/ui and art/out PNG kept as keep_until_replaced (42+42), plus 42 gitignored logs. UIKit.luau:23 sets \"UseTextImages = false\" and nothing else writes that flag. UIKit.luau:974 returns early, and Art.TextLabels is only read inside BindArtText (UIKit.luau:1082), so these images are never shown. The counts check out: 195 images deleted, 180 kept stems, which is 138 without TXT. One caveat: AGENTS's wording \"an ID used in Config.UIArt\" could be read as covering TXT. The worker prompt is explicit, and deleting them cannot blank the screen. Everything else in scope (1)-(5) passed. Every rbxassetid in src (183 distinct, minus 5 Fx stock IDs) maps to an asset_ids key with an art/ui PNG. All 15 Tex_* files are present in both art/ui and art/out. The Config.luau diff has no added, removed or emptied Ids. The only IDs removed from src are the expression/costume ones, which the user decided to drop (A23-5). art/out/v1 (38 files) is gone. All 8 revealing copies are deleted, along with the 3 Aligned cards, 147 tracked and 54 untracked candidates (NPC_*, WP_*, UI_FactionParts_*, *_Redraw, ApprovedBalanced) and the APose/chibi sources. Both JSON files parse. art/models, art/fonts and the docs evidence images are untouched. The untracked prompts for the deleted candidates are still in art/prompts."
+    },
+    {
+     "id": "art-tools-dangling",
+     "title": "Repo tools still read files deleted in this round",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "tools/test_potions.py",
+       "line": 28,
+       "quote": "\"COSTUME_SOURCE\": ROOT / \"src/ServerScriptService/CostumeService.luau\","
+      },
+      {
+       "file": "tools/test_potions.py",
+       "line": 88,
+       "quote": "sources = {key: path.read_text(encoding=\"utf-8-sig\") for key, path in FILES.items()}"
+      },
+      {
+       "file": "tools/asset_preflight.py",
+       "line": 235,
+       "quote": "\"reference\": file_info(ROOT / \"art\" / \"out\" / f\"APose_{name}.png\"),"
+      }
+     ],
+     "explanation": "test_potions.py will raise FileNotFoundError: it reads the staged-deleted CostumeService.luau, and the potion and merchant work needs this test. Other scripts also reference deleted sources: asset_preflight.py points at art/out monster and APose PNGs, monster_import_preflight.py:184 at art/out/BigSlime.png, and also costume_expressions/*, test_costume_physics.py and test_skin_binding_studio.py. The game itself does not read files from disk, so play is not affected.",
+     "suggested_fix": "Remove the COSTUME_SOURCE binding (and its fixture slice) from test_potions.py. Mark the retired costume, face and monster-source tools as retired in AGENTS Tools, or delete them.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "tools/test_potions.py:28 binds the staged-deleted CostumeService.luau, and line 88 read_text will raise FileNotFoundError. However, no current doc requires this test: neither the worker prompt nor the addendum mentions it. The other references are stale but do not crash. asset_preflight.py:235 goes through file_info, which returns exists:false for a missing file (lines 77-80). monster_import_preflight.py:184 is only a string literal. There are more stale paths in retired avatar/face tools: approved_avatar_quality_check.py:26, fidelity_check.py:17, prepare_tripo_r2_records.py:22, prep_faction_e.py:19 (UI_Faction_E_Transparent_Guide.png, deleted), audit_halo_archer_face_source.py:104-105, audit_halo_archer_runtime_images.py:47, face_quality_candidate.py:180 and test_costume_physics.py:143. The active test runners (test_skill_release, test_onboarding, test_camera_input, gameplay_blacksmith_check) read only files that still exist."
+    },
+    {
+     "id": "art-records-stale",
+     "title": "Some records still point at deleted files without a 'deleted' mark",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "art/approved.json",
+       "line": 224,
+       "quote": "\"sourceArt\": \"art/out/UI_FactionCardHalo_Fresh.png\","
+      },
+      {
+       "file": "art/ui/ui_meta.json",
+       "line": 1082,
+       "quote": "\"UIP_FactionCardHalo_Aligned\": {"
+      },
+      {
+       "file": "docs/HANDOFF_CODEX.md",
+       "line": 12,
+       "quote": "노출 그림과 바이트가 같은 사본8장(`art/ui`·`art/out`의 `UIP_Char{HaloArcher,HornsArcher,HornsMage,HornsWarrior}.png`)이 v1 밖에 있다."
+      }
+     ],
+     "explanation": "In approved.json, 6 FreshTyped entries (lines 212, 224, 236, 248, 260 and 272) keep sourceArt paths to the deleted art/out/UI_Faction*_Fresh/BlankFresh PNGs without a deleted note. ui_meta.json still has 12 entries for deleted art/ui files: the 9 old UIP_Char*, which include the 4 revealing copies, and the 3 Aligned cards. HANDOFF_CODEX.md:12 still says the revealing copies exist. Separately, both JSON files were rewritten with CRLF line endings (git will normalize them), and asset_ids.json lost its trailing newline.",
+     "suggested_fix": "Add a note such as \"sourceArtDeleted\": \"deleted 2026-10-06\" to the 6 FreshTyped entries. Drop or mark the 12 stale ui_meta keys. Change HANDOFF_CODEX line 12 to 'deleted 2026-10-06'. Restore the trailing newline in asset_ids.json.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "approved.json has 6 FreshTyped entries whose sourceArt points at a deleted file with no deleted mark: lines 212, 224, 236, 248, 260 and 272. ui_meta.json has exactly 12 keys with no art/ui file: 9 UIP_Char* plus 3 Aligned (Aligned is at line 1082). HANDOFF_CODEX.md:12 still says the revealing copies exist. Corrections: approved.json also lost its trailing newline (HEAD ended with \\n), not only asset_ids.json. The CRLF is harmless because .gitattributes has \"* text=auto eol=lf\". The CRLF in ui_meta.json predates this round (mtime 2026-10-04, git shows it unmodified). A further stale note is approved.json:107, where ClassCharacters still points at art/out/v1/revealing."
+    },
+    {
+     "id": "art-cleanup-rerun-footgun",
+     "title": "Re-running the cleanup tool with --force --delete would wipe new Firefly candidates",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "tools/art_cleanup_inventory.py",
+       "line": 76,
+       "quote": "os.remove(r[\"file\"])"
+      },
+      {
+       "file": "tools/art_cleanup_inventory.py",
+       "line": 53,
+       "quote": "add(p, \"delete\", \"not used in the game (candidate/rejected/chibi/old GPT/unused)\")"
+      }
+     ],
+     "explanation": "In step 8, Firefly outputs are saved to art/out/<id>.png before they are approved and uploaded. Any file not referenced by an ID in src is classified 'delete', and untracked files are removed with os.remove, which cannot be undone. The guard requires --force, but the 'old file deleted after replacement' step invites a rerun.",
+     "suggested_fix": "Restrict --delete to paths that appear in the existing record, or require an explicit file list. Alternatively, document in AGENTS Tools that the tool must not be rerun with --delete during the Firefly phase.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "tools/art_cleanup_inventory.py:76 calls os.remove on untracked files that were classified as delete. The cited line 53 is the active-key check; the 'delete' add is at line 57. A rerun without --force exits because the record already exists. With --force --delete, any untracked Firefly output in art/out that has no ID in src yet would be removed for good. The tool's mtime (12:58:38) is after the record's (12:58:29), so the guard was added after the run. Nothing tells the worker to rerun it, so this is a risk only."
+    },
+    {
+     "id": "art-minor-overkept",
+     "title": "Unused images kept only because their file name matches an active key",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "tools/art_cleanup_inventory.py",
+       "line": 47,
+       "quote": "if base in active_keys:"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 1177,
+       "quote": "FactionTitleFreshTyped = { Id = \"rbxassetid://111239293270560\""
+      }
+     ],
+     "explanation": "art/test/GameIcon.png and art/test/Tex_Grass.png are old Codex test outputs with different bytes from the active art/out and art/ui files (sha256 306542… vs 7b7f6a…, and f65182… vs c2dd5a…). They were kept only because of the stem match. UIP_FactionTitle_FreshTyped (the non-Balanced title) is defined in Config but not referenced at runtime, because FactionE.Parts.Title uses FactionTitleFreshTypedBalanced. Under the AGENTS definition it is still 'an ID in Config.UIArt', so keeping it is defensible.",
+     "suggested_fix": "git rm the two art/test PNGs and their prompt sidecars. Leave the superseded title as it is, or drop it together with its Config entry; that is the coordinator's call.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "The sha256 values match the finding. art/test/GameIcon.png is 306542… and art/out/GameIcon.png is 7b7f6a…. art/test/Tex_Grass.png is f65182…, while art/out and art/ui both have c2dd5a…. Both art/test files and their prompt sidecars are tracked. They were kept by stem match: GameIcon through EXPERIENCE_PAGE and Tex_Grass through active_keys. The cited line 47 is wrong; the check is at line 53. Config.luau:1177 FactionTitleFreshTyped is defined but not referenced elsewhere, since FactionE uses FactionTitleFreshTypedBalanced at line 1471. Keeping it is defensible."
+    }
+   ],
+   "missed": [
+    "Low (hygiene): art/out/logs keeps 59 orphan logs for deleted images, e.g. APose_HaloArcherF.log. The inventory treats a sidecar in logs/ as 'keep: metadata/non-image' because it looks for the image in the logs/ dir (tools/art_cleanup_inventory.py:47-52). The folder is gitignored (.gitignore:11), so the repo is unaffected.",
+    "Low (record): approved.json was also rewritten without a trailing newline (it is CRLF, 336 lines, does not end with \\n, while HEAD ended with \\n). The JSON still parses. Fix it alongside asset_ids.json.",
+    "Info: the unlettered source art of the 6 active FreshTyped parts was git rm'd (art/out/UI_FactionCard{Halo,Horns,Neutral}_Fresh.png, UI_FactionTitle_Fresh.png, UI_FactionFooter_Fresh.png, UI_FactionPremise_E_BlankFresh.png). The in-game art/ui/UIP_*_FreshTyped.png files and their Config IDs are intact, and the sources can be recovered from HEAD 9f71510. This fits the AGENTS rule 'do not patch or re-letter until replaced', so it is not a violation. Only the records need the deleted mark (art-records-stale)."
+   ]
+  },
+  {
+   "key": "tests",
+   "summary": "Checkpoint at 14:00 (re-checked at 14:08 after Config, CombatService, Fx and HUD changed at 14:01–14:04). Build: all 38 src/**/*.luau files compile offline with luau-compile 0.741, and the compiler still reports syntax errors correctly. No src file references the 6 deleted modules. Main INIT/START and ClientMain ORDER are updated (Intro added). Every Net.Get name is registered.\n\nTests: all five offline harnesses fail on the current sources. I ran them in the sandbox with zero repo writes. Every failure comes from the worker's intended A23 changes:\n- onboarding: reward 120→150, the pinned next-goal row continues past the blacksmith, skill quest needs MonstersHit.\n- skill: new AutoCombatLoop task.\n- camera: cursor-Position drag needs Vector2.\n- potions: hard-requires the deleted CostumeService.luau; merchant block obsolete.\n- blacksmith: prompt key G/0.3 → E/0.\n\nAfter minimal scratch-only adaptations, all pass with no regression: onboarding 460, skill 251, camera 33, potions 816 (113 obsolete merchant checks removed), blacksmith 1348. The repo fixtures themselves are stale, so the worker currently has no passing offline gate. There is no fixture yet for auto combat, Intro or IntroSeen. The crown-shard quest that calls UnlockAutoCombat does not exist yet.\n\nProcess risks:\n- Studio has place/GoodEvil.rbxlx open (lock created 13:21:47), not build/. Studio saves would go to the committed copy, and step 10 \"copy build→place\" would undo them.\n- studio_mcp.py now also matches a published place id. With two Studio windows open it may pick the wrong one.\n- reset_test_save.py deletes a live DataStore record for any userId, with no allowlist and no backup. Its Edit-only guard does not stop it while Play is running.\n- Five scripts still write into the untracked gameplay_10min evidence folder. None of them ran today.\n\nEvidence: gameplay_10min is intact (all files dated 2026-10-04). first15_claude_run1.jsonl is a server-attribute timeline from 13:30–13:55. It was recorded before Intro.luau existed and before the 13:57 Combat/Net/Main changes, so it shows only the earlier flow with the 150 reward (+150 seen live).\n\nplace/ and build/ are byte-identical (sha f0b7568c…, 2026-10-04 17:03) but stale against src: 24 modules differ, Intro is missing, and the 6 deleted modules are still inside. Do not commit it.\n\nGit: no commits since 9f71510. Only 153 deletions are staged (147 art + 6 src); .env and build/ are not staged. .tripo/ is still not in .gitignore. Files dated \"2026-10-06\" are written on the real date 2026-10-05. The folder and record names follow the prompt; the code comments claiming a \"2026-10-06 playtest\" are wrong dates.",
+   "checked_ok": [
+    "Offline compile: 38/38 src/**/*.luau pass with build/luau_cli_0_741/luau-compile.exe, including new Intro.luau. Re-run at 14:08 after Config/CombatService/Fx/HUD changed: still 0 failures. A planted syntax-error file is reported with rc=1.",
+    "No src file references the deleted ExpressionAssets, SkinBindingContract, CostumeService, ExpressionService, ExpressionSkinContract or SkinRetargetClient. Main INIT_ORDER/START_ORDER and ClientMain ORDER are updated; Intro is in ClientMain ORDER.",
+    "Every Net.Get(\"...\") name used in src is registered in Net.Names. IntroSeen, RequestTutorial, AcceptTutorial and SellWeapon were added; SetCostume was removed and has no caller.",
+    "Top-level local statements are well under the 200 limit: HUD 146, Fx 166, Panels 130, Intro 31.",
+    "Sandboxed copies of the 5 test scripts: ROOT is pinned to the repo and every harness/report write goes to scratch/cp1400/tests/out. A find -newer check showed zero repo files written across all runs.",
+    "Onboarding fixture adapted only for the intended changes (150 reward, pinned next goal after blacksmith, MonstersHit>=1): ONBOARDING_OFFLINE_OK checks=460 on current src. No regression.",
+    "Skill fixture adapted only for the auto-loop task count (2→3): SKILL_RELEASE_OFFLINE_OK checks=251. The legacy SetAutoAttack(true) does not enable auto without the unlock, and direct Swing(false)/Release(true) are no-ops without the unlock.",
+    "Camera fixture adapted only for cursor-Position input (Vector2 stub, MouseBehavior Default): CAMERA_INPUT_SUMMARY checks=33 failed=0. The drag/click/blocking logic still holds.",
+    "Potions fixture with the obsolete costume-merchant block removed and a Color3 stub: POTION_OFFLINE_OK checks=816. Buying and using potions has no regression.",
+    "Blacksmith check adapted only for prompt key E / HoldDuration 0: BLACKSMITH_OFFLINE_OK checks=1348. Skill is now Q only in HUD (Q/E→Q); no UI text still mentions an E skill key.",
+    "QuestService.onReleased ignores Auto events and requires MonstersHit>=1. Config QuestRewardGold = 150, and the observed live claim gave +150 (BankGold 9→159).",
+    "Evidence docs/art/verification_2026-10-04/gameplay_10min/*: all 50 files still have 2026-10-04 mtimes (16:35–17:32), so none were overwritten today. build/ test outputs are also unchanged since 2026-10-04.",
+    "Art cleanup matches its record docs/art/art_cleanup_2026-10-06.json exactly: 147 tracked deletions staged = 147 tracked delete rows, 54 untracked deleted, 0 delete rows left on disk, 0 keep rows missing. art/out/v1 is gone, as are all 8 revealing copies. No asset ID used in HEAD or current src was deleted. The approved FreshTyped faction cards are still present. asset_ids.json and approved.json mark the removed entries.",
+    "art_cleanup_inventory.py is limited to art/ui, art/out and art/test (art/models, art/fonts and docs are untouched) and refuses to rewrite its record without --force.",
+    "observe_play.py is read-only: it reads player attributes from the Server DataModel and sends no input or character movement.",
+    "build/GoodEvil.rbxlx and place/GoodEvil.rbxlx are byte-identical (sha256 f0b7568c…).",
+    "Git: no commits since 9f71510 (main == origin/main). Staged = 153 deletions only (147 art + 6 src). Nothing else staged; .env and build/ are ignored and not staged; .env was not read."
+   ],
+   "findings": [
+    {
+     "id": "tests-studio-opened-place-copy",
+     "title": "Studio has place/GoodEvil.rbxlx open, not build/; step-10 build→place copy would discard Studio saves",
+     "severity": "high",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "place/GoodEvil.rbxlx.lock",
+       "line": 2,
+       "quote": "RobloxStudioBeta"
+      },
+      {
+       "file": "AGENTS.md",
+       "line": 77,
+       "quote": "The game place is `build/GoodEvil.rbxlx` (Studio saves there; `place/GoodEvil.rbxlx` is the committed copy"
+      }
+     ],
+     "explanation": "The only Studio lock is place/GoodEvil.rbxlx.lock, created 2026-10-05 13:21:47. build/ has no lock. So Studio opened the committed copy, and Ctrl+S will write there. Both files are still the 2026-10-04 17:03 version, so nothing has been saved yet. The worker prompt's step 10 says to copy build/GoodEvil.rbxlx over place/. Done after a Studio save, that copy would replace place/ with the stale build/ and lose Studio-only work: the ServerStorage Costume* folder deletion required by A23-5, MaterialService changes, and synced script sources.",
+     "suggested_fix": "Tell the worker: before any Studio save, close Studio and reopen build/GoodEvil.rbxlx (or save-as to build/). At step 10, check which file Studio actually saved (mtime and lock) before copying, and never copy an older file over a newer one.",
+     "confidence": "medium",
+     "verdict": "partly",
+     "verified_severity": "high",
+     "verifier_note": "The risk is real, but the save mechanism is different from what the finding says. Lock file: place/GoodEvil.rbxlx.lock line 1 \"26340\", line 2 \"RobloxStudioBeta\", created 13:21:47. build/ has no lock. The window of PID 26340 is now titled \"선악 키우기 - Roblox Studio\", which is the published private place 81671223175574 that studio_mcp.py:78 targets, not \"GoodEvil.rbxlx\". So Ctrl+S most likely saves to Roblox cloud, not to place/ or build/. build/ and place/ are byte-identical (sha f0b7568c…, both 2026-10-04 17:03), so nothing has been saved locally. Step 10 (prompt line 152: \"Studio 저장 → build/GoodEvil.rbxlx를 place/로 복사\") would therefore copy the stale 10-04 build over place/. The worker must use File > Save to File As build/GoodEvil.rbxlx, then check the mtime and sha before copying. A second Studio is also open (PID 21460, \"...fashion\\output\\Threadbound-recovery.rbxlx\"), which is unrelated."
+    },
+    {
+     "id": "tests-fixtures-stale",
+     "title": "All 5 offline harnesses fail on current src; the failures are intended A23 changes, but the repo fixtures were not updated",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "tools/fixtures/onboarding_offline.luau",
+       "line": 217,
+       "quote": "check(f.Data.BankGold == before + 120 and f.Data.TutorialStep == 99, \"completed reward missing\")"
+      },
+      {
+       "file": "tools/fixtures/skill_release_offline.luau",
+       "line": 147,
+       "quote": "check(#f.Tasks==2,\"unexpected auto-attack/charge timer remains\") -- Vitals regen + HP regen only"
+      },
+      {
+       "file": "tools/fixtures/camera_input_offline.luau",
+       "line": 86,
+       "quote": "Delta = { X = x, Y = y } }"
+      },
+      {
+       "file": "tools/test_potions.py",
+       "line": 28,
+       "quote": "\"COSTUME_SOURCE\": ROOT / \"src/ServerScriptService/CostumeService.luau\","
+      },
+      {
+       "file": "tools/gameplay_blacksmith_check.py",
+       "line": 146,
+       "quote": "check(f.Prompt.KeyboardKeyCode==\"KeyCode.G\" and f.Prompt.HoldDuration==0.3,\"prompt combat key collision\")"
+      }
+     ],
+     "explanation": "Sandboxed runs on the current sources (repeated after the 14:01–14:04 edits):\n- onboarding: fails at the 120 reward (now 150, A23-3).\n- skill: fails because the new AutoCombatLoop adds a third task (A23-1, CombatService.luau:1269).\n- camera: `attempt to index nil with 'new'`, because CameraFollow now builds Vector2 from input.Position and the double has neither.\n- potions: FileNotFoundError for the deleted CostumeService.luau, and Config line 35 now needs Color3.\n- blacksmith: prompt key G→E and hold 0.3→0.\n\nEach assertion encodes pre-A23 behaviour. With scratch-only adaptations the suites pass (460 / 251 / 33 / 816 / 1348), so there is no regression, but the repo has no working offline gate. Any \"기계 검사 통과\" claim made now would be untrue. Onboarding also needs two more intended adaptations after the reward: the pinned next-goal row shown after the blacksmith visit (fixture lines 305–324 expect it gone), and MonstersHit>=1 on manual skill events (lines 360–363).",
+     "suggested_fix": "Update the fixtures to the A23 contract:\n- 150 reward.\n- Next-goal row after the blacksmith (Lv5 → iron 800 → Lv10 → GuideDone toast).\n- MonstersHit in Released events.\n- Expect AutoCombatLoop, and add checks that it is a no-op without AutoCombatUnlocked.\n- Camera doubles that provide Vector2 and a cursor Position.\n- Drop COSTUME_SOURCE and the CostumeRigs merchant block from test_potions; add a HumanoidDescription-NPC merchant test.\n- E/0 prompt key.\nThen rerun with output paths outside gameplay_10min.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Reproduced in sandbox (cp1400/verify-tests; grep shows no repo writes). All 5 fail exactly as described:\n- onboarding: \"completed reward missing\" (fixture line 217, +120; Config now QuestRewardGold = 150).\n- skill: #f.Tasks==2 fails because of AutoCombatLoop at CombatService.luau:1269.\n- camera: \"attempt to index nil with 'new'\" at CameraFollow:44 Vector2.new(input.Position…).\n- potions: FileNotFoundError on CostumeService.luau.\n- blacksmith: \"prompt combat key collision\"; ShopService.luau:163-164 is now E / HoldDuration 0.\nThe fixture lines quoted at 305–324 and 360–363 match.\nSpot-check: with only the E/0 change, blacksmith passes 1348; with only Tasks==3, skill passes 251. All are intended A23 changes and none is a regression.\nAlso checked OK: luau-compile on all 38 src/**/*.luau, 0 failures."
+    },
+    {
+     "id": "tests-no-auto-intro-fixtures",
+     "title": "No offline coverage yet for auto combat (never hits players), IntroSeen, or the crown-shard unlock",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 1176,
+       "quote": "function CombatService.UnlockAutoCombat(player)"
+      },
+      {
+       "file": "src/ServerScriptService/QuestService.luau",
+       "line": 342,
+       "quote": "local function onIntroSeen(player, ...)"
+      }
+     ],
+     "explanation": "Step 4 of the worker prompt requires new fixtures for: no duplicate completion or reward, quest stage kept across rejoin, auto never hits players, and the skill-quest count. tools/fixtures has no new file since 2026-10-04 17:24. Nothing in src calls UnlockAutoCombat, so the crown-shard quest is not implemented yet and auto combat cannot currently be reached in play. The IntroSeen remote (no arguments, server-set flag) and Intro.luau have no test. This is in progress and not a defect yet, but auto-combat code is landing with no test.",
+     "suggested_fix": "Before reporting step 4 done, add fixtures for autoTick/Swing(false)/Release(true) that hit monsters only, never players or PvP (including Horns/Halo in PvP zones). Also cover UnlockAutoCombat idempotence and the persisted AutoCombatEnabled save/reload, and the IntroSeen remote: extra args rejected, set once, survives rejoin.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "grep finds no caller of CombatService.UnlockAutoCombat (defined at CombatService.luau:1176), so auto combat cannot be reached yet. onIntroSeen (QuestService.luau:342-348) and Intro.luau have no test. One correction: tools/fixtures now has a new file, hunt_bot_client.luau (14:05:55). It is a measurement bot with no assertions, so it adds no coverage (see missed)."
+    },
+    {
+     "id": "tests-evidence-overwrite-paths",
+     "title": "Scripts that overwrite the untracked 2026-10-04 evidence still have their old output paths",
+     "severity": "medium",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "tools/test_skill_release.py",
+       "line": 57,
+       "quote": "out = ROOT / \"docs/art/verification_2026-10-04/gameplay_10min/skill_release_offline.json\""
+      },
+      {
+       "file": "tools/test_camera_input.py",
+       "line": 33,
+       "quote": "path = ROOT / \"docs/art/verification_2026-10-04/gameplay_10min/camera_input_offline.json\""
+      },
+      {
+       "file": "tools/update_gameplay_place.py",
+       "line": 32,
+       "quote": "AUDIT = \"docs/art/verification_2026-10-04/gameplay_10min/place_update.json\""
+      }
+     ],
+     "explanation": "The prompt says to change these output paths before running. They have not been changed, and build/gameplay_runtime.py:7 and build/probe_live_context.py:13 also still write into gameplay_10min. None ran today: all gameplay_10min mtimes are 2026-10-04. But the next fixture-update rerun would overwrite skill_release_offline.json and camera_input_offline.json. The folder is untracked, so the overwrite cannot be recovered. update_gameplay_place.py --apply would also rewrite both place files while Studio holds place/.",
+     "suggested_fix": "Point the report paths at docs/art/verification_2026-10-06/<new name>.json (or take an --out argument) before rerunning any of these. Do not run update_gameplay_place.py --apply while Studio has a place open.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "All quoted lines are present: test_skill_release.py:57, test_camera_input.py:33, update_gameplay_place.py:32, build/gameplay_runtime.py:7, build/probe_live_context.py:13. update_gameplay_place.py:17 sets PLACE_PATHS to both build/ and place/. The gameplay_10min folder has 0 tracked files and none newer than 2026-10-04 17:32, so nothing has been overwritten yet."
+    },
+    {
+     "id": "tests-reset-save-guard",
+     "title": "reset_test_save.py deletes a live DataStore record for any userId; its Edit-only guard does not stop it during Play",
+     "severity": "medium",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "tools/reset_test_save.py",
+       "line": 13,
+       "quote": "if game:GetService(\"RunService\"):IsRunning() then error(\"Edit 모드에서만\") end"
+      },
+      {
+       "file": "tools/reset_test_save.py",
+       "line": 18,
+       "quote": "store:RemoveAsync(key)"
+      }
+     ],
+     "explanation": "The tool calls RemoveAsync on the real Config.Data.StoreName (\"HaloHorns_Player_v1\") through Studio API access. That this is the live store is confirmed by the jsonl: BankGold 168 persisted across a Play restart (t reset to 0.7 at wall 329). It accepts any userId: no allowlist of test accounts, no confirmation, no backup of the removed value (it reads `before` but only prints whether it existed). The code runs in the Edit DataModel, where IsRunning() is false even while a Play session runs. So it can delete while the user plays, and the Play server's autosave would then race or rewrite. The record is the user's own account (Darugi_S2) and the game is pre-launch, so this is test data today. After the 10-31 beta the same tool would delete real player saves.",
+     "suggested_fix": "Add a hard allowlist of test userIds, and refuse to run while any Play session is running (check via get_studio_state). Write the removed JSON to scratch or build/ before RemoveAsync, and print the experience/place id it acted on.",
+     "confidence": "medium",
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "The code facts are true. Line 13 is an IsRunning guard executed in the Edit datamodel. Line 18 calls RemoveAsync. There is no userId allowlist, and `before` is only used for tostring(before ~= nil), so nothing is backed up. The severity is overstated:\n- If it runs during Play, the running server's session save rewrites the record, so the reset fails rather than corrupting live play.\n- The target is the private test place and the user's own pre-launch account.\nThe jsonl shows one use (Darugi_S2 went from BG18/WT2 at wall 538 to a fresh save at 873), which matches the requested fresh-save test. The post-beta risk applies only if the beta reuses the same universe and store. An allowlist and a backup are still worthwhile."
+    },
+    {
+     "id": "tests-studio-mcp-multimatch",
+     "title": "studio_mcp.py now matches GoodEvil OR a published place id and takes the first match",
+     "severity": "medium",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "tools/studio_mcp.py",
+       "line": 78,
+       "quote": "want = os.environ.get(\"STUDIO_NAME\", \"GoodEvil|81671223175574\")"
+      }
+     ],
+     "explanation": "The comment says this targets the user's published private place (2026-10-06). If both a local GoodEvil window and the cloud place window are open, the code returns whichever list_roblox_studios gives first. sync_to_studio, reset_test_save and observe_play could then act on a different Studio from the one the user is playing. Saves from a cloud-place window go to Roblox, not build/GoodEvil.rbxlx, which conflicts with AGENTS rule 3 and the step-10 place-commit procedure.",
+     "suggested_fix": "Prefer an exact single target. Fail if more than one Studio matches and print the names. State in the report which Studio (file or cloud place) is the working copy.",
+     "confidence": "medium",
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "The code matches the description: studio_mcp.py:78 is \"GoodEvil|81671223175574\" and the first match is returned. There is no multi-match today. The two running Studios are PID 26340 \"선악 키우기\", the published place and the only match, and PID 21460 \"Threadbound-recovery.rbxlx\", which matches neither token. The real issue is that the working copy is the cloud place: see the finding above, and AGENTS.md:77 still says Studio saves to build/."
+    },
+    {
+     "id": "tests-place-stale-vs-src",
+     "title": "place/ (== build/) is the 2026-10-04 build: 24 modules differ from src, Intro missing, 6 deleted modules still present",
+     "severity": "low",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "place/GoodEvil.rbxlx",
+       "quote": "ServerScriptService/CostumeService (script still present in place XML)"
+      }
+     ],
+     "explanation": "I parsed the XML in scratch. Of the 37 src modules found in the place, 13 match and 24 differ: Config, Net, CombatService, QuestService, ShopService, MapBuilder, HUD, Panels, CameraFollow and others. Intro is absent. ExpressionAssets, SkinBindingContract, CostumeService, ExpressionService, ExpressionSkinContract and SkinRetargetClient are still present. place/ is modified against HEAD (1069 lines). Studio may hold synced code in memory, but nothing has been saved to disk since 2026-10-04 17:03.",
+     "suggested_fix": "Do not commit place/ until Studio is saved after a full sync and a script-source-vs-src hash check shows 38/38 matching, 0 extra modules, and the Costume* storage folders gone.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "Reproduced by parsing the place XML in scratch:\n- 38 src files: 13 match, 24 differ (same list), Intro missing.\n- ExpressionAssets, SkinBindingContract, CostumeService, ExpressionService, ExpressionSkinContract and SkinRetargetClient are still present.\n- place == build (sha f0b7568c…).\n- git diff of place is +727/-342 (1069 lines)."
+    },
+    {
+     "id": "tests-first15-evidence-scope",
+     "title": "first15_claude_run1.jsonl is a server-attribute log of pre-change code; it is not first-15-minute verification of the current build",
+     "severity": "low",
+     "kind": "overclaim",
+     "locations": [
+      {
+       "file": "docs/art/verification_2026-10-06/first15_claude_run1.jsonl",
+       "quote": "\"Darugi_S2\": {\"Faction\": \"None\", \"Class\": \"Warrior\", \"ClassChosen\": false, \"TutorialStep\": 0"
+      }
+     ],
+     "explanation": "39 rows spanning wall 4.7–1487.6 s, recorded 13:30–13:55.\n- Run 1, Halo Warrior: class at ~15 s, accept at ~44 s, meadow at ~98 s, first kill at ~108 s, 5/5 at ~183 s, claim (+150) at ~195 s, blacksmith visit at ~459 s (spanning a Play restart at 329 s), wood bought at ~538 s.\n- Run 2 starts on a fresh save at ~873 s (Horns, then Mage, later Archer): it reached 5/5 at about wall 1027 and was still unclaimed at 1487 s, across two Play restarts.\n\nThe log has only attributes: no UI, input, IntroSeen, auto-combat or source hash. It ends before Intro.luau (created 13:45:57) could be synced, and before the 13:57 Combat/Net/Main/PlayerService edits. observe_play.py appends (\"a\") and swallows every exception (line 43), so a silent observer failure looks the same as no change.",
+     "suggested_fix": "Cite it only as the before-measurement of the pre-A23 flow. For the after-measurement, use a new file per run with the src hash and studio name in the first line. Track IntroSeen, AutoCombatUnlocked and AutoCombatEnabled, and log observer errors instead of passing.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "The jsonl has 39 rows, wall 4.7–1487.6, and only the attributes listed in observe_play.py:15-16: no IntroSeen, no AutoCombat*, no source hash. Appending (line 33) and the swallowed exceptions (lines 43-44) are confirmed. Intro.luau was written at 13:45:57; Net/Main/PlayerService/MapBuilder/ClientMain at 13:57:15. Small corrections:\n- Run 1 has a second Play restart between wall 459 and 538 (t 130.8 → 29.3).\n- Run 2 matches the description: TK5 at 1026.7, returned to HornsTown at 1078.4, TutorialStep still 2 at 1487.6."
+    },
+    {
+     "id": "tests-costume-phase2-no-evidence",
+     "title": "Costume code was removed (phase 2) with no recorded phase-1 R15/R6 check",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/Main.server.luau",
+       "line": 10,
+       "quote": "\"ClassService\", \"VitalsService\", \"JusticeService\", \"ProgressionService\""
+      }
+     ],
+     "explanation": "The prompt orders phase 1 first (Enabled=false, verify R15 and R6: walk, jump, attack, skill, weapon attach incl. bow left hand, halo/horns, death/respawn, HUD 3D profile), then phase 2 (remove modules). The 6 modules are already staged for deletion. The only new evidence (the jsonl) has no avatar or R6 check. The worker may have checked in chat; it is not recorded.",
+     "suggested_fix": "Record the R15/R6 avatar check (Studio screen_capture plus a short JSON under verification_2026-10-06) before reporting A23-5 done.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "docs/art/verification_2026-10-06/ contains only first15_claude_run1.jsonl, so there is no recorded R15/R6 check. The 6 modules are staged for deletion. src has no remaining require of CostumeService, SkinRetarget, Expression* or SkinBinding, and compile is OK. The prompt's phase order is at lines 81-86."
+    },
+    {
+     "id": "tests-stale-tools-deleted-modules",
+     "title": "Repo tools still require the deleted costume modules",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "tools/test_skin_binding_studio.py",
+       "line": 9,
+       "quote": "local binding=require(game.ReplicatedStorage.Shared.SkinBindingContract)"
+      },
+      {
+       "file": "tools/test_costume_physics.py",
+       "line": 143,
+       "quote": "source = (ROOT / 'src/ServerScriptService/CostumeService.luau').read_text(encoding='utf-8')"
+      }
+     ],
+     "explanation": "These tracked tools now fail immediately: test_skin_binding_studio.py:9/44, test_costume_physics.py:143, and tools/asset_preflight.py:243, which checks CostumeService presence. test_potions.py has the same problem (covered above). Leftover costume config and attributes also remain: Config.Data.Defaults CostumeEnabled, RateLimits SetCostume, and HUD/Panels reading HHC_CostumeId and CostumeEnabled.",
+     "suggested_fix": "Move the costume-only tests out of the active tools set (or delete them with the costume pipeline), and drop the costume fields when the A23-5 cleanup is committed.",
+     "confidence": "high",
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Two of the three tools do break:\n- test_skin_binding_studio.py:9 requires SkinBindingContract.\n- test_costume_physics.py:143 reads CostumeService.luau.\nOverstated: tools/asset_preflight.py:243 does not fail. It only records \"costume_service_file_present\": False.\nThe leftover costume fields are confirmed: Config.luau:84 CostumeEnabled = true and :129, Config.luau:1093 SetCostume = 1, DataService.luau:155, HUD.luau:1650-1654 and 3115, Panels.luau:2139."
+    },
+    {
+     "id": "tests-gitignore-tripo",
+     "title": ".tripo/ is still untracked and not ignored",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": ".gitignore",
+       "line": 20,
+       "quote": ".env"
+      }
+     ],
+     "explanation": ".gitignore has build/, *.rbxlx.lock and .env but no .tripo/. git status shows `?? .tripo/` (contains context.json). Step 10 says to add it. Nothing is staged now, but a path-based add of `.` or tools would pick it up.",
+     "suggested_fix": "Add `.tripo/` to .gitignore in the first commit.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": ".gitignore (20 lines) has build/, *.rbxlx.lock and .env but no .tripo/. .tripo/context.json is untracked. Also checked OK:\n- 153 staged paths, all deletions under art/ and src/.\n- No .env, .tripo, build/ or lock file staged.\n- No commits after 9f71510."
+    },
+    {
+     "id": "tests-date-labels",
+     "title": "Files and comments say 2026-10-06 although the work and playtest happened 2026-10-05",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+       "line": 54,
+       "quote": "MouseMovement Delta stays 0 with a free cursor (2026-10-06 Studio playtest)"
+      },
+      {
+       "file": "src/ServerScriptService/ShopService.luau",
+       "line": 163,
+       "quote": "the skill is Q only (2026-10-06 playtest)"
+      },
+      {
+       "file": "src/ServerScriptService/MapBuilder.luau",
+       "line": 44,
+       "quote": "the skill is Q only (2026-10-06 playtest)"
+      },
+      {
+       "file": "tools/studio_mcp.py",
+       "line": 77,
+       "quote": "(Darugi_S2 private place 81671223175574, 2026-10-06)"
+      }
+     ],
+     "explanation": "Also dated 2026-10-06:\n- docs/art/art_cleanup_2026-10-06.json (\"date\": \"2026-10-06\")\n- docs/art/verification_2026-10-06/\n- \"deleted 2026-10-06\" markers: 32 in art/approved.json, 4 in art/ui/asset_ids.json\n- tools/art_cleanup_inventory.py\n\nThe folder and record names follow the review-written prompt (worker_prompt_2026-10-06.md), so they are prompt-induced. The code comments that name a \"2026-10-06 playtest\" give a wrong date: the observed playtest was 2026-10-05 13:30–13:55.",
+     "suggested_fix": "Use the real date (2026-10-05) in new code comments and the deletion markers, or state once in HANDOFF that the 2026-10-06 labels mean the work session that began 2026-10-05.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "All quotes are present: CameraFollow.luau:54, ShopService.luau:163, MapBuilder.luau:44, studio_mcp.py:77, and art_cleanup_2026-10-06.json \"date\": \"2026-10-06\". There are 32 markers in approved.json and 4 in asset_ids.json. One more since the snapshot: Fx.luau:1042 \"living-motion layer (2026-10-06 playtest\", written at 14:14."
+    }
+   ],
+   "missed": [
+    "medium: tools/fixtures/hunt_bot_client.luau (new 14:05:55) and tools/bot_wait.py (new 14:06:28) form a Client-side bot run via execute_luau in Play. It walks the character itself (hunt_bot_client.luau:38 `hum:MoveTo(best.Position)`) and fires Swing (line 42) and Release (line 49). In Studio Play solo the only client is the user's own character. Running it while the user plays breaks AGENTS.md:61 (\"사용자 플레이 중에는 ... 임의로 캐릭터를 움직이지 않는다\") and prompt line 20. Its \"efficient human\" kill-rate is an upper bound from a bot, not the 수동 전투 기준 분당 처치 수 the addendum asks for (Config.luau:687 KillsPerMinute = 12). Any number reported from it must be labelled as a bot measurement and must not drive reward or price changes without the user's OK. It is also not a fixture: it has no assertions.",
+    "medium: In run 2 of the first-15 evidence (Horns, then Mage), TutorialKills reached 5 at wall 1026.7. The player was back in HornsTown at 1078.4 (BG67), yet TutorialStep stayed 2 through 1487.6 across two Play restarts, so the +150 claim never happened in about 460 s. In run 1 (Halo Warrior) the claim came 12 s after 5/5. Either the claim action is unclear or something blocks it on that path. This should be reproduced before first-10 is reported as fixed.",
+    "low: The working Studio is the published cloud place \"선악 키우기\" (PID 26340, opened from place/GoodEvil.rbxlx at 13:21). The only record of place 81671223175574 is the comment at studio_mcp.py:77. AGENTS.md:77 still says Studio saves to build/, and nothing in HANDOFF says which copy (cloud or file) is authoritative now. This should be documented, together with the Save-to-File step before any place commit."
+   ]
+  },
+  {
+   "key": "progress",
+   "summary": "Progress checkpoint at about 14:10 (read-only). The worker is still active: after the 13:59 snapshot, Config.luau and CombatService.luau changed at 14:01, HUD.luau at 14:04 and Fx.luau at 14:10. Two new untracked files also appeared: tools/fixtures/hunt_bot_client.luau and tools/bot_wait.py. All 38 src .luau files compile offline. No commit since 9f71510.\n\n**What is done in code**\n- The art cleanup is done, except for the TXT lettering images. art/out/v1 (38 files) and the 8 revealing copies are deleted. No deleted file still has an active ID in Config. Old evidence in verification_2026-10-04 is untouched.\n- Step 2 is mostly done in code:\n  - the 3D opening is its own Intro module with IsOpen, and every screen-covering check (HUD, EventHUD, Panels, VitalsUI, ClassPicker, WorldMap) includes it;\n  - IntroSeen is set only by the server;\n  - the guide dialog shows accept from page 1 under the title \"안내자 · 보급로 되찾기\";\n  - the first-mission reward is 150 gold, and the observed run shows BankGold going 9→159;\n  - the skill quest counts only casts that hit a monster;\n  - the next-goal line, tapping the pinned row, dailies folded at step 0, potion \"준비 중\", rebirth mask reset, and the blacksmith name unified.\n- Steps 3 and 4 are only partly done:\n  - the six costume modules are deleted and nothing references them;\n  - the server auto-combat loop and the ON/OFF toggle exist, but the crown-shard quest does not, so auto combat cannot be unlocked yet.\n- Steps 5 to 10 are mostly not started.\n\n**Review table A (#1-15)**\n- 7 done in code: #2, #3, #4, #6, #7, #8, #14.\n- 5 partly done: #1, #5, #10, #13, #15.\n- 3 not started: #9, #11, #12.\n- Only #4 has runtime evidence.\n\n**Worker prompt and addendum**\n- Prompt steps 1-10: 4 partly done (1-4), 1 barely started (5: camera fix, kill-rate bot), 5 not started (6-10).\n- Addendum items 1-6: 3 done in code (1, 2, 5), 1 partly done (3), 2 not done (4, 6).\n\n**Docs**\n- The worker did not edit AGENTS.md, HANDOFF_CODEX.md, SPEC_ADDENDUM.md, GDD.md or RELEASE_PLAN.md. All their mtimes are at or before 13:24, and the content matches the reviewer's changes. They now understate progress and need updating before the commit.\n\n**Evidence and the \"apply to Studio right away\" rule**\n- The only new evidence file is docs/art/verification_2026-10-06/first15_claude_run1.jsonl (raw observation of the user's play).\n- It suggests the worker applies changes to Studio right away: the 150 reward was live at about 13:33, and Play restarted about 20 s and 76 s after the source edits at 13:49 and 13:52.\n- No machine-check evidence exists for today's changes, and the existing onboarding fixture would now fail.\n- Studio state from today is unsaved: build/ and place/ both date from 10-04 17:03.\n\n**Overclaims and rule gaps**\n- The art cleanup record lists 84 TXT lettering images as \"active in game\", but they are not shown on screen.\n- Costume phase 2 (deleting the modules) was done before the phase-1 R15/R6 check.\n- Studio has place/GoodEvil.rbxlx open, and studio_mcp.py now also targets a published private place.\n\n**Cannot be verified from files**\n- What the worker said to the user (counts, Korean play-along lines, Firefly credits, questions for steps 5-7).\n- Whether the edits from 13:57 onward were synced to Studio.\n- Whether the costume folders were deleted in live Studio, and the anvil sign text in live Studio.\n- Phone layout at 749×361, R6 behavior, and whether the opening actually plays.",
+   "checked_ok": [
+    "DONE: Offline compile of all 38 src .luau files (43 - 6 deleted + Intro.luau) passes with luau-compile 0.741",
+    "DONE: Art cleanup step 1.4-1.6: docs/art/art_cleanup_2026-10-06.json lists 776 files (201 delete / 353 keep_until_replaced / 222 keep); every delete-marked file is gone and every keep-marked file exists; art/out/v1 (38 tracked) staged-deleted; the 8 revealing copies removed (art/ui + art/out UIP_Char{HaloArcher,HornsArcher,HornsMage,HornsWarrior}.png); Aligned cards removed; approved.json has 32 'deleted 2026-10-06' marks and asset_ids.json has 4; no deleted file's key still has an rbxassetid in Config; art/models, art/fonts and docs images untouched",
+    "DONE: Old evidence not overwritten: docs/art/verification_2026-10-04/gameplay_10min/* mtimes are all 10-04",
+    "PARTLY: Step 1 Studio sync. Indirect evidence only: the 150 reward was live in Studio at ~13:33 (BankGold 9->159 in first15_claude_run1.jsonl) and Play restarted about 20 s and 76 s after the source edits at 13:49 and 13:52. No hash-readback or 15 s playtest log; Studio not saved today",
+    "PARTLY: Step 1 baseline timing: raw observe log only (39 lines; fresh save, run 1 reached claim at 195 s, purchase at ~538 s wall; Lv5 not reached; no KPM / 30-stud slime count / taps per kill / 60 s gaps)",
+    "DONE: Addendum 1 / A23-9 opening in code: Intro.luau own module with IsOpen/Blocking (Intro.luau:48-55), ~21.5 s close-cut sequence with Config.Story.Premise subtitles, skip button + Space/Enter/pad, CharacterAdded->Finish restores CameraType Custom + Humanoid subject (Intro.luau:260-283), server-only IntroSeen (QuestService.luau:342-348), default in Config.Data, menu replay blocked in PvP/dead (Panels.luau:1263-1270), included in HUD/EventHUD/Panels/VitalsUI/ClassPicker/WorldMap checks, FactionPicker waits (FactionPicker.luau:2004-2014), world banners held (UIKit.luau:1831-1880). Runtime unverified",
+    "DONE: Addendum 2 guide dialog: accept '함께할게요' from page 1, '다음' pages, '나중에' is not acceptance (Panels.luau:1182-1200); title '안내자 · 보급로 되찾기' (Panels.luau:64); '안내는 여기까지!' toast once when the next-goal chain ends (QuestService.luau:473-475)",
+    "DONE: #2 skill quest counts only manual casts that hit a monster (QuestService.luau:830 'if num(info.MonstersHit) < 1 then return end')",
+    "DONE: #3 / A23-3 next-goal line after the blacksmith visit from existing state: Lv5 iron -> 800 gold/held -> Lv10 Goblin Woods (QuestService.luau:407-427), no new reward",
+    "DONE: #4 first mission reward 150 (Config.luau:934) and observed in Studio play (bank 9->159)",
+    "DONE: #6 dailies folded on screen at step 0 + one '일일 임무가 열렸어요' toast (HUD.luau:1998); phone line keeps the mission row",
+    "DONE: #7 potion hints gated on MerchantEnabled (VitalsService.luau:34,60) and 0-stock button '준비 중' (VitalsUI.luau:47)",
+    "DONE: #8 rebirth resets WeaponOwnedMask to 1 (ProgressionService.luau:382)",
+    "DONE: #14 manual blacksmith guide uses its own 'smith:manual' tag, cleared only when leaving Crossroads (HUD.luau:2596, 2694)",
+    "DONE: Pinned guide row tap opens its action: step 0 RequestTutorial, step 1/2 Travel+beam, blacksmith -> doUpgrade, later -> beam (HUD L.PinnedTap ~2715)",
+    "DONE: Death mid-mission shows the meadow beam again (HUD L.NeedsMeadowGuide uses TutorialKills, ~2581)",
+    "DONE: Small items from prompt step 2: TutorialKills=0 on accept (QuestService.luau:354); goose text no longer says '자동 공격' (GooseService.luau:24)",
+    "DONE: Weapon row shows the real effect '슬라임 기본 공격 N방 → M방' via Config.SwingHitsToKill (Panels.luau:1899-1902); raw weapon damage not shown",
+    "DONE: Addendum 5: no auto potion in autoTick; blacksmith named '대장간' on the HUD card, panel and sign source; TXT.AutoLocked / Config.Text.AutoLocked / Combat.AutoUnlockLevel removed",
+    "PARTLY: Step 3 costume removal: Main/ClientMain lists and the MapBuilder require cleaned; six modules staged-deleted; PlayerService always LoadCharacter; no src reference left; menu costume button gone; potion NPC now HumanoidDescription R15 (MapBuilder.luau:840-882) but only built when MerchantEnabled=true, so it has never run. R15/R6 check and ServerStorage Costume* folder deletion+save not evidenced",
+    "PARTLY: Step 4 auto combat: server loop reuses Swing/Release with an auto flag, monsters only (player branches gated by isManual / not isAuto), MP/cooldown kept, auto hits don't MarkActive, no shake/hit-stop for auto (Fx), saved AutoCombatUnlocked/Enabled start OFF, toggle remote + R key + hidden button. Crown-shard quest, unlock caller, optional quest line and new fixtures missing",
+    "PARTLY: #10 camera: shift-lock / locked cursor skips the custom drag (CameraFollow.luau:52-53); no cursor lock while dragging; not confirmed with the user",
+    "PARTLY: #5 phone dialog: portrait hidden when viewport height < 520 (Panels.luau:1163); no 749x361 evidence",
+    "PARTLY: #13: death route done; anvil label fixed only in tools/preview_map.lua:623 (saved place still has the old gear glyph label); beam over water not fixed",
+    "PARTLY: #15 small items: 2 of ~9 sub-items fixed (TutorialKills, goose text)",
+    "PARTLY: Addendum 3 measurement: observe log + a hunt bot created at 14:05 for kill rate; no numbers saved yet",
+    "TODO: #9 basic-attack 50% (BasicSkill.SwingImmediate still 0.5; correctly unchanged without the user's OK)",
+    "TODO: #11 good/evil line and crown-shard choice (no '왕관 점수' text in src)",
+    "TODO: #12 loot scrolls / step 7 questions (chat not visible)",
+    "TODO: Step 5 MP cost on the skill button (HUD.luau:1881 sets the label to '스킬' only)",
+    "TODO: Step 6 potion shop UI (MerchantEnabled=false)",
+    "TODO: Step 8 Firefly redraw",
+    "TODO: Step 9 phone/multiplayer",
+    "TODO: Step 10 / addendum 6 commit; .tripo/ not yet in .gitignore; no commit since 9f71510",
+    "DONE: Worker did not edit AGENTS.md, HANDOFF_CODEX.md, SPEC_ADDENDUM.md, GDD.md or RELEASE_PLAN.md (mtimes 12:34-13:24, AGENTS/GDD/SPEC written in the same second 13:24:04; content is the reviewer's)",
+    "DONE: Observe tool reads server attributes only (no input); the first15 log shows the user playing, not the worker driving"
+   ],
+   "findings": [
+    {
+     "id": "progress-txt-kept-as-active",
+     "title": "Art cleanup kept 84 unused TXT lettering images labelled 'active in game'",
+     "severity": "medium",
+     "kind": "overclaim",
+     "locations": [
+      {
+       "file": "docs/art/art_cleanup_2026-10-06.json",
+       "quote": "\"file\": \"art/ui/TXT_Alchemist.png\", \"tracked\": true, \"action\": \"keep_until_replaced\", \"reason\": \"active in game (rbxassetid://84174178184020)\""
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+       "line": 974,
+       "quote": "if FONT.UseTextImages == false then return label end"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/UIKit.luau",
+       "line": 23,
+       "quote": "UseTextImages = false"
+      },
+      {
+       "file": "docs/review/worker_prompt_2026-10-06.md",
+       "quote": "화면에 안 쓰는 TXT 글자 그림"
+      }
+     ],
+     "explanation": "Prompt step 1.2 says to delete TXT lettering images that are not shown on screen. The cleanup kept all 42 art/out/TXT_*.png and 42 art/ui/TXT_*.png as keep_until_replaced with the reason 'active in game', only because Config.UIArt has IDs for them. They are only drawn through UIKit.BindArtText, which returns early when UseTextImages=false. Nothing else in src references a TXT_ part. Any 'M images still in the game' count given to the user is therefore inflated by 84.",
+     "suggested_fix": "Reclassify TXT_* as unused (reason: UseTextImages=false) and delete them per step 1. Use git rm by explicit path for tracked files and mark the records 'deleted 2026-10-06'. Or ask the user once whether to keep them. Then correct the count reported to the user.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "Re-checked at 14:12 and still true. docs/art/art_cleanup_2026-10-06.json has 84 TXT_*.png records (42 in art/out, 42 in art/ui), all action keep_until_replaced with reason 'active in game (rbxassetid://...)'. The other 42 TXT records are .log files. UIKit.luau:23 is 'UseTextImages = false' (same in HEAD) and UIKit.luau:974 returns early. TXT parts are reached only through Art.TextLabels inside BindArtText (UIKit.luau:1082-1083); no other src file uses a TXT_ part. The 347 'active in game' count is therefore inflated by 84. The rest of the cleanup is consistent: all 201 'delete' files are gone (147 tracked, staged; 54 untracked), art/out/v1 is gone, and approved.json has 32 entries marked 'deleted 2026-10-06'."
+    },
+    {
+     "id": "progress-costume-phase-skip",
+     "title": "Costume phase 2 (module deletion) done without the phase-1 R15/R6 check; costume folders still in the saved place",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "docs/review/worker_prompt_2026-10-06.md",
+       "quote": "2차(1차 확인 후)"
+      },
+      {
+       "file": "src/ServerScriptService/PlayerService.luau",
+       "line": 162,
+       "quote": "player:LoadCharacter() -- A23-5: always the player's own Roblox avatar (no costume rig)"
+      },
+      {
+       "file": "place/GoodEvil.rbxlx",
+       "quote": "name=\"Name\">CostumeRigs<"
+      },
+      {
+       "file": "src/ServerScriptService/MapBuilder.luau",
+       "line": 827,
+       "quote": "if tune.MerchantEnabled ~= true then disableExisting(); return end"
+      }
+     ],
+     "explanation": "CostumeService, ExpressionService, ExpressionSkinContract, SkinRetargetClient, SkinBindingContract and ExpressionAssets were staged-deleted. The Main and ClientMain lists were edited at 13:57. There is no evidence of the phase-1 check the prompt requires first: R15 and R6 for walk, jump, attack, skill, weapon attach (bow in the left hand), halo/horns position, death/respawn and the HUD 3D profile. R6 has never been checked. The saved place still contains CostumeService and the CostumeRigs, CostumePendingRigs and other Costume* folders. The new HumanoidDescription potion NPC is only built when MerchantEnabled is true, so that path has never executed.",
+     "suggested_fix": "Before reporting step 3, run the R15 and R6 checks in Studio and save evidence under verification_2026-10-06. Delete the ServerStorage Costume* folders in Studio Edit mode and save; keep the GLBs. Report the NPC as built but untested until step 6 enables the merchant.",
+     "confidence": "high",
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Confirmed facts:\n- The 6 modules are staged-deleted.\n- Main and ClientMain were edited (mtime 13:57:15).\n- No R15/R6 evidence exists; verification_2026-10-06 holds only first15_claude_run1.jsonl.\n- place/GoodEvil.rbxlx still has CostumeService and the CostumeRigs, CostumePendingRigs and other Costume* folders.\n- Config.luau:33 has 'MerchantEnabled = false', so the HumanoidDescription NPC path has never run.\nOverstated: the saved place forces R15 ('<token name=\"GameSettingsAvatar\">1</token>'), so R6 cannot occur unless that setting changes. A live phase-1 check cannot be excluded; there is only no evidence of it. The Costume* folders are still in the file because nothing was saved today (same cause as progress-save-path). Phase 2 itself is clean: grep finds no reference to the deleted modules in src or sync_to_studio.py, sync_to_studio.py deletes stale scripts (lines 157-186), and all 38 src files compile offline."
+    },
+    {
+     "id": "progress-no-machine-checks",
+     "title": "No machine-check evidence for today's changes; onboarding fixture now asserts the old 120 reward; test runners still target 10-04 paths",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "tools/fixtures/onboarding_offline.luau",
+       "line": 217,
+       "quote": "check(f.Data.BankGold == before + 120 and f.Data.TutorialStep == 99, \"completed reward missing\")"
+      },
+      {
+       "file": "tools/fixtures/skill_release_offline.luau",
+       "line": 145,
+       "quote": "check(f.Player.Attrs.AutoAttack==false,\"legacy auto remote enabled auto combat\")"
+      },
+      {
+       "file": "tools/test_skill_release.py",
+       "line": 57,
+       "quote": "docs/art/verification_2026-10-04/gameplay_10min/skill_release_offline.json"
+      },
+      {
+       "file": "tools/update_gameplay_place.py",
+       "line": 32,
+       "quote": "AUDIT = \"docs/art/verification_2026-10-04/gameplay_10min/place_update.json\""
+      }
+     ],
+     "explanation": "docs/art/verification_2026-10-06/ contains only first15_claude_run1.jsonl, a raw attribute log. No fixture was updated today: their mtimes are from 10-04. With QuestRewardGold=150, the onboarding fixture fails at line 217. The skill fixture still encodes the A22 'no auto' contract and has no A23 cases. The prompt requires fixtures for: no duplicate completion or reward, rejoin keeps the step, auto never hits players, and skill-quest counting. Any 'machine check passed' for steps 2-4 has no backing. The runners would also overwrite 10-04 evidence, which the prompt forbids.",
+     "suggested_fix": "Update the reward in onboarding_offline to read Config.Tutorial.QuestRewardGold. Add A23 fixture cases: IntroSeen server-only, MonstersHit gate, auto loop never selecting players, unlock without auto-ON. Point every runner at verification_2026-10-06/<new name> before running. Report only results saved there.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "onboarding_offline.luau:217-219 asserts '+ 120' and runs the real Config. Config.luau:934 now has 'QuestRewardGold = 150', and QuestService.luau:396 pays TUT_GOLD, so the fixture fails. The skill fixture is worse than the finding says. skill_release_offline.luau:147 checks '#f.Tasks==2' (comment: 'Vitals regen + HP regen only'). CombatService.Start now also spawns 'AutoCombatLoop' (CombatService.luau:1269), giving 3 tasks, so that check most likely fails too. The fixture mtimes are 10-04 (16:53-17:24). test_skill_release.py:57 and update_gameplay_place.py:32 still write to verification_2026-10-04. Those 10-04 evidence files were not overwritten today (all mtimes are 10-04)."
+    },
+    {
+     "id": "progress-auto-unreachable",
+     "title": "Auto combat is built server-side but cannot be unlocked (crown-shard quest missing)",
+     "severity": "medium",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/CombatService.luau",
+       "line": 1176,
+       "quote": "function CombatService.UnlockAutoCombat(player)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2708,
+       "quote": "ui.auto.Visible = unlocked"
+      }
+     ],
+     "explanation": "UnlockAutoCombat has no caller anywhere in src. There is no quest data, quest line or QuestService code for '내 싸움을 배우는 왕관 조각'. The toggle button stays hidden until AutoCombatUnlocked is true, so no player can reach auto combat. Review item #11 (good/evil choice: purify/swallow) depends on this quest and is also not started. This is fine as work in progress, but step 4 and #11 must not be counted as done.",
+     "suggested_fix": "Implement the optional quest per A23-2: shown under the pinned row; skip/reopen; stages; purify/swallow; then UnlockAutoCombat. Add the fixtures, apply in Studio, and report step 4 as partly done until then.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "UnlockAutoCombat (CombatService.luau:1176) has no caller in src or tools. There is no crown-shard quest code. HUD.luau:2708 is 'ui.auto.Visible = unlocked'. Hiding the button before unlock matches A23-1, and nothing claims step 4 is done, so this is a work-in-progress status, not a defect; I lowered it to low. Done parts of step 4: AutoUnlockLevel and AutoLocked are removed (grep returns 0), and the server loop reuses Swing(p,false) and Release(p,true) behind autoReady."
+    },
+    {
+     "id": "progress-save-path",
+     "title": "Studio has place/ open (not build/), may be tied to a published private place, and nothing was saved today",
+     "severity": "medium",
+     "kind": "risk",
+     "locations": [
+      {
+       "file": "place/GoodEvil.rbxlx.lock",
+       "quote": "(lock file created 2026-10-05 13:21:47; no build/GoodEvil.rbxlx.lock)"
+      },
+      {
+       "file": "tools/studio_mcp.py",
+       "line": 77,
+       "quote": "want = os.environ.get(\"STUDIO_NAME\", \"GoodEvil|81671223175574\")"
+      },
+      {
+       "file": "AGENTS.md",
+       "quote": "The game place is `build/GoodEvil.rbxlx` (Studio saves there; `place/GoodEvil.rbxlx` is the committed copy and must be byte-identical to `build/` when committed)"
+      }
+     ],
+     "explanation": "build/GoodEvil.rbxlx and place/GoodEvil.rbxlx are byte-identical and both date from 10-04 17:03. They still contain CostumeService, the Costume* folders and the old anvil billboard text (escaped bytes of the gear glyph + '장인 길드'). So all of today's Studio state is unsaved. Studio opened the committed copy place/ directly, so a Ctrl+S writes the committed file and leaves build/ stale. The studio_mcp.py comment says the place was published to a private experience ('Darugi_S2 private place 81671223175574'); after a publish, Studio saves may go to the cloud. Step 10's flow (Studio save -> build/ -> byte-copy to place/) may not work as written. Who published, and with what approval, cannot be seen from files.",
+     "suggested_fix": "Have the worker state where Studio saves (local file vs cloud place). Save to a local file (build/GoodEvil.rbxlx), byte-copy to place/ and verify. Record the published place id and its purpose in HANDOFF. Do not commit the current place file.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "medium",
+     "verifier_note": "- place/GoodEvil.rbxlx.lock was created 13:21:47; there is no lock under build/.\n- build/ and place/ have the same SHA1 (5dd8cb2b…) and an mtime of 10-04 17:03.\n- The saved place still has the gear-glyph anvil text, decoded as '[GEAR] 장인 길드'.\n- studio_mcp.py:77 matches 'GoodEvil|81671223175574'.\nExtra evidence: the new tools/reset_test_save.py (13:30) runs DataStore RemoveAsync 'in the private test place'. Run 2 in the jsonl starts from a fresh save (Faction None, step 0 at wall 873.6). Together these confirm a published, DataStore-enabled place and a save reset.\nRisk for step 10: Studio is saving into place/. Copying build/ (10-04) to place/ as step 10 says would overwrite today's saved state.\nUnverified: whether Ctrl+S goes to the cloud. The published place id is not recorded in AGENTS or HANDOFF (grep returns 0)."
+    },
+    {
+     "id": "progress-beam-anvil",
+     "title": "#13 only partly fixed: guide beam over water unchanged; anvil sign fixed only in preview_map.lua",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 2458,
+       "quote": "local function findTravelTarget(zoneId)"
+      },
+      {
+       "file": "tools/preview_map.lua",
+       "line": 623,
+       "quote": "billboard(anvil, \"대장간 · 장인 길드\", 6, RGB(120, 235, 225))"
+      }
+     ],
+     "explanation": "The step-1 beam still points straight at Pad_SlimeMeadow from the home islands. findTravelTarget is unchanged; only GuideText changed to '말랑 초원 · 빛나는 발판을 밟아요'. The anvil sign text lives in the place and is built by preview_map.lua in Edit mode. The saved place still has the old label, and whether live Studio was updated cannot be verified. The HUD comment says the world sign reads '대장간 · 장인 길드', which is true only after that.",
+     "suggested_fix": "Aim the step-1 beam at the home gate or bridge when ZoneId is not Crossroads. Change the anvil billboard text in Studio with a targeted edit rather than a full map rebuild, then save.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "findTravelTarget (now at HUD.luau:2462) is unchanged and still returns Pad_<zone> first. The step-1 guide still calls showGuide(findTravelTarget(TUT_GUIDE_ZONE)…). The anvil-sign fix is only in the preview_map.lua:623 diff; src has no anvil billboard, and the saved place still has the glyph. Part of #13 is done: the death-midmission route re-shows the meadow guide through L.NeedsMeadowGuide (step 2 with kills below 5), so #13 is partly done, not untouched."
+    },
+    {
+     "id": "progress-timing-raw-only",
+     "title": "Baseline/after timing not summarized; new hunt bot must be labelled as a bot and not run during user play",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "docs/art/verification_2026-10-06/first15_claude_run1.jsonl",
+       "quote": "{\"players\": {\"Darugi_S2\": {... \"TutorialStep\": 0, ...}}, \"t\": 2.80, \"wall\": 4.7}"
+      },
+      {
+       "file": "tools/fixtures/hunt_bot_client.luau",
+       "line": 1,
+       "quote": "-- Test-only \"efficient human\" hunter for kill-rate measurements (run in MY test Play via execute_luau, Client)."
+      }
+     ],
+     "explanation": "Step 1 and addendum 3 ask for the following, measured before and after the fixes:\n- milestone times;\n- kills per minute in manual combat and slimes within 30 studs on arrival;\n- taps per kill for each class;\n- Lv5 -> iron weapon time and daily N-kill minutes;\n- 60 s+ stretches where the next action was unclear.\nOnly a raw attribute log exists, and Lv5 was never reached. In run 2 (Horns), TutorialKills hit 5 at t=155.6 s, but TutorialStep stayed 2 (unclaimed) for the rest of the log. That is roughly 9 minutes across two Play restarts; the cause is unknown (intentional or claim hard to find). The bot created at 14:05 fires Swing at exactly SwingInterval and moves the character with Humanoid:MoveTo. Its kills/min is an upper bound, and RELEASE_PLAN forbids reporting bot hunting as a new-player result.",
+     "suggested_fix": "Write a summary JSON under verification_2026-10-06 with the listed numbers, labelled 'user play' vs 'bot estimate'. Run the bot only in the worker's own Play, after telling the user. Ask the user whether the unclaimed 5/5 in run 2 was intentional.",
+     "confidence": "medium",
+     "verdict": "partly",
+     "verified_severity": "low",
+     "verifier_note": "Real: the only evidence is the raw jsonl from observe_play.py, a server-side observation of the user's Play. There is no summary or bot labelling, and the maximum level reached is 3, so Lv5 was never reached. Two corrections:\n- The run-2 TutorialKills=5 at wall 1026.7 stays unclaimed (step 2) until the last row at wall 1487.6. That is about 7.7 minutes across two Play restarts, not about 9 minutes.\n- hunt_bot_client.luau:45 waits SwingInterval+0.05, not exactly SwingInterval. It does MoveTo, fires Swing and Release, and runs as the logged-in user.\nThe bot's kills/min is still an upper bound."
+    },
+    {
+     "id": "progress-unlisted-changes",
+     "title": "Rule/UI changes outside the prompt and A23 are not recorded; comments are dated 2026-10-06 although today is 10-05",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "src/ServerScriptService/ZoneService.luau",
+       "line": 125,
+       "quote": "local function combatBlocksTravel(player, start)"
+      },
+      {
+       "file": "src/ServerScriptService/CharacterVisuals.luau",
+       "line": 246,
+       "quote": "bb.PlayerToHideFrom = player"
+      },
+      {
+       "file": "src/ServerScriptService/MapBuilder.luau",
+       "line": 44,
+       "quote": "local ALTAR_PROMPT_KEY = Enum.KeyCode.E -- Roblox-standard interact key; the skill is Q only (2026-10-06 playtest)"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau",
+       "line": 54,
+       "quote": "(2026-10-06 Studio playtest)"
+      }
+     ],
+     "explanation": "Several changes were made that are not in the prompt or A23:\n- in non-PvP zones, taking damage no longer cancels Travel;\n- the player's own nametag is hidden;\n- the interact key changed from G to E (skill is now Q only);\n- shop prompts open on a tap (HoldDuration 0);\n- a slime wobble motion layer was added in Fx.\nThey are probably from the user's playtest feedback, but no doc records them. Their comments cite a '2026-10-06 playtest' on 2026-10-05, which will mislead later readers about when they were tested.",
+     "suggested_fix": "Confirm with the worker that each one came from the user. Record them in SPEC_ADDENDUM or HANDOFF (for example an A23 note). Use real dates in comments.",
+     "confidence": "medium",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "All five changes are present:\n- ZoneService.luau:125 combatBlocksTravel returns false in non-PvP zones.\n- CharacterVisuals.luau:246 sets 'bb.PlayerToHideFrom = player'.\n- MapBuilder.luau:44 changes KeyCode G to E; HEAD:45 was G. HUD.luau:2774 now makes Q the only skill key.\n- HoldDuration is 0 at MapBuilder.luau:811 and ShopService.luau:164.\n- Fx.luau has a new wobble layer.\nNone of them appears in SPEC_ADDENDUM, HANDOFF, GDD or AGENTS. Fx.luau:1042 quotes the user ('슬라임인데 너무 딱딱해 보여'), which supports user origin. The '2026-10-06' dates follow the prompt's own naming (worker_prompt_2026-10-06, verification_2026-10-06), so the mislabel comes from the prompt rather than the worker."
+    },
+    {
+     "id": "progress-docs-stale",
+     "title": "Contract/status docs now understate the code and still say 120 gold / not implemented",
+     "severity": "low",
+     "kind": "hygiene",
+     "locations": [
+      {
+       "file": "docs/GDD.md",
+       "quote": "자동 전투 켜기/끄기·왕관 조각 퀘스트·150골드·스킬 퀘스트 집계 변경은 아직 구현 전이다"
+      },
+      {
+       "file": "docs/SPEC_ADDENDUM.md",
+       "quote": "수락 → 초원 → 슬라임5마리 → 기존120골드 보상이며"
+      },
+      {
+       "file": "docs/HANDOFF_CODEX.md",
+       "quote": "**오늘 사용자 결정(문서 반영 완료, 코드는 아직):**"
+      }
+     ],
+     "explanation": "The worker correctly did not touch the reviewer's docs, and no worker status lines exist in them. Step 10 commits these docs together with the code, so as written they will contradict the committed code: 150 gold, MonstersHit gate, costume removal, Intro and the partial auto combat.",
+     "suggested_fix": "Before the step-10 commit, update the HANDOFF top section, the GDD 'current state' line and A22's 120 -> 150 with verified status only. Keep 'Studio-verified' separate from 'in code'.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "All three quotes are present: GDD.md:48 ('…150골드·스킬 퀘스트 집계 변경은 아직 구현 전이다'), SPEC_ADDENDUM.md:76 ('기존120골드') and HANDOFF_CODEX.md:7 ('문서 반영 완료, 코드는 아직'). The worker did not edit any of them. AGENTS, GDD and SPEC_ADDENDUM all have mtime 13:24:04, the same as the reviewer's prompt files; RELEASE_PLAN is 13:00 and HANDOFF_CODEX 12:49. None needs changing until the step-10 commit."
+    },
+    {
+     "id": "progress-small-items-open",
+     "title": "Most #15 small items and the skill MP cost are still open",
+     "severity": "low",
+     "kind": "missing",
+     "locations": [
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+       "line": 1881,
+       "quote": "ui.skillLabel.Text = TXT.Release"
+      },
+      {
+       "file": "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+       "line": 1882,
+       "quote": "(os.clock() - pending.SentAt >= 5 and T.WeaponSlow or T.WeaponSent)"
+      },
+      {
+       "file": "src/ServerScriptService/ShopService.luau",
+       "line": 200,
+       "quote": "S.PlayerService.SetStat(player, \"BlacksmithVisited\", true)"
+      },
+      {
+       "file": "src/ReplicatedStorage/Shared/Config.luau",
+       "line": 927,
+       "quote": "Lifetime = 120, -- personal monster despawns after this many seconds (then the tutorial advances to step 1)"
+      }
+     ],
+     "explanation": "Still open:\n- the skill button shows no MP cost (client-ui-07);\n- the shop panel stays 'pending' after a server rejection (shop-7);\n- an active kaiju can still trade at the anvil (no KaijuState check in ShopService);\n- trades made through the HUD/U-key panel do not set BlacksmithVisited (shop-6);\n- personal-slime leftovers remain in Config.Tutorial;\n- all 39 'blocked upload' comments are unchanged;\n- existing completers still get the pinned '무기 살펴보기' row.",
+     "suggested_fix": "Fold these into the current steps (MP cost in step 5, the shop fixes in step 6), or list them as remaining when reporting 'N/15'.",
+     "confidence": "high",
+     "verdict": "confirmed",
+     "verified_severity": "low",
+     "verifier_note": "All cited items are still open; some lines have shifted.\n- HUD.luau:1881 still sets 'TXT.Release' ('스킬', no MP cost).\n- The Panels pending line is now 1883.\n- ShopService.luau:200 is the only BlacksmithVisited setter, and CanBuyWeapon (178-192) has no Kaiju check.\n- The Config.Tutorial personal-slime fields (Monster, MonsterHP, Golden, SpawnDistance; Lifetime is now line 928) remain.\n- 'blocked upload' appears 39 times.\n- QuestService.luau:443 still pins '무기 살펴보기' for completers with BlacksmithVisited false.\nAlready fixed from #15: TutorialKills=0 on accept (QuestService.luau:354), the goose text (GooseService.luau:24), and the guide-done toast (QuestService publish)."
+    }
+   ],
+   "missed": [
+    "low: A23-5 costume cleanup leaves dead data and UI remnants. Config.luau:84 'CostumeEnabled = true' is still a saved default and is mirrored at Config.luau:129. DataService.luau:155 still defaults it to true. Config.luau:1093 still has the RateLimit 'SetCostume = 1'. HUD.luau:1650-1654 still reads HHC_CostumeId for the portrait, and Panels.luau:2139 still handles CostumeStatus/CostumeEnabled. These are harmless, but the 'remove costumes' item should not be reported as fully clean.",
+    "low: the new tools/reset_test_save.py (untracked, 13:30) permanently deletes a player's Config.Data save with 'store:RemoveAsync(key)' in the published place's DataStore. The jsonl shows a fresh save at wall 873.6, so it was probably used. Neither HANDOFF nor AGENTS records the tool or the published place 81671223175574. The worker should confirm that this place is test-only and that the user approved resetting the save."
+   ]
+  }
+ ]
+}

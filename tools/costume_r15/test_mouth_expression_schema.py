@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Exercise the explicit mouth-only exception and preserve every normal gate.
 
 Only disposable build copies are changed. No art/source rewrites, Studio,
@@ -5,6 +6,7 @@ uploads, paid calls, production readiness or runtime motion claims.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import copy
 import argparse
 import json

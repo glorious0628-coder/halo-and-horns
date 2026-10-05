@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-06",
+  "place": "private published place 81671223175574 (Studio test Play, worker's own session)",
+  "change": "A23-5: chibi costumes removed (CostumeService, ExpressionService, ExpressionSkinContract, SkinRetargetClient, SkinBindingContract, ExpressionAssets deleted; ServerStorage Costume* folders deleted in Edit)",
+  "server_start": "[Main] Halo & Horns server started (21/21 services) after removal; later 22/22 with StoryQuestService",
+  "checks": [
+    {"rig": "R15 (own avatar Darugi_S2)", "class": "Mage (Horns)", "result": "own avatar parts + hair accessory, FactionMark (horns) on head, WeaponModel (staff) attached; CostumeStatus Avatar"},
+    {"rig": "R15", "class": "Archer", "result": "bow welded to LeftHand (WeldConstraint LeftHand->Arc1..5, String)"},
+    {"rig": "R6 (CreateHumanoidModelFromDescription R6, assigned as character in test Play)", "class": "Warrior", "result": "WeaponModel welded to 'Right Arm', FactionMark present (CharacterVisuals R6 fallbacks FindPart(LeftHand|Left Arm, RightHand|Right Arm, UpperTorso|Torso))"}
+  ],
+  "not_checked": ["death/respawn animation on R6 by real input", "phone layout", "multi-player"],
+  "note": "The place's avatar type setting was not changed; R6 was exercised by spawning an R6 model in a test Play only."
+}

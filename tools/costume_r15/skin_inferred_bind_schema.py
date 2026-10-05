@@ -1,9 +1,14 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Explicit HornsMageM two-bind exception, never an original-skeleton claim.
 
 The independent proof recomputes geometry, weights, inverse binds, proxy hinges
 and local visual evidence. This adapter does not loosen any ordinary source
 gate or promote a candidate, and never calls Studio or an upload API.
 """
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 from pathlib import Path
 import json
 

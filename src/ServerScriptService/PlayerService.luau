@@ -159,11 +159,7 @@ local function loadCharacter(player)
 	-- CR-H2: the new character appears at a spawn point first; onCharacterAdded marks again before placing it
 	markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2)
 	local ok, err = pcall(function()
-		local costumes = S.CostumeService
-		local custom = costumes and costumes.CreateSpawnCharacter(player)
-		if custom and PlayerService.SpawnCharacter(player, custom) then return end
-		if custom then custom:Destroy() end
-		player:LoadCharacter()
+		player:LoadCharacter() -- A23-5: always the player's own Roblox avatar (no costume rig)
 	end)
 	characterLoading[player] = nil
 	if not ok then

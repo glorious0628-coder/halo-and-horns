@@ -120,6 +120,16 @@ local function lastDamagedAt(player)
 	return tonumber(t) or 0
 end
 
+-- Being hit / fighting only stops Travel where players can fight players (anti-escape). In a no-PvP zone
+-- (meadow, towns) a slime's bite no longer cancels the trip home; kaiju / sack / stars rules still apply.
+local function combatBlocksTravel(player, start)
+	local zoneId = zoneIds[player] or DEFAULT_ZONE
+	local zone = Config.Zones[zoneId]
+	-- Outskirts touch the PvP woods: a fight that spills out of them still blocks the escape there
+	if zone and zone.PvP ~= true and zoneId ~= "Outskirts" then return false end
+	return lastDamagedAt(player) >= start or inCombat(player)
+end
+
 ------------------------------------------------------------------ movement check (CR-H2)
 local function acNum(key, default)
 	local v = AC[key]
@@ -267,8 +277,7 @@ end
 -- CR-L18: true when a running Travel channel must stop (the finishChannel conditions, checked every zone tick)
 local function channelBroken(player, ch)
 	return not Util.IsAlive(player)
-		or lastDamagedAt(player) >= ch.Start
-		or inCombat(player)
+		or combatBlocksTravel(player, ch.Start)
 		or hasSack(player)
 		or isKaiju(player)
 		or getStars(player) >= Config.PvP.NoTravelStars
@@ -430,8 +439,7 @@ local function finishChannel(player, zoneId, start)
 	local canGo = zone ~= nil
 		and S.PlayerService.IsReady(player)
 		and Util.IsAlive(player)
-		and lastDamagedAt(player) < start
-		and not inCombat(player) -- swings / releases landed during the channel tag the attacker (no escape by Travel)
+		and not combatBlocksTravel(player, start) -- PvP zones: swings / releases landed during the channel block it
 		and not hasSack(player)
 		and not isKaiju(player)
 		and getStars(player) < Config.PvP.NoTravelStars
@@ -461,7 +469,7 @@ function ZoneService.Travel(player, destId, instant)
 	if getStars(player) >= Config.PvP.NoTravelStars then
 		return false, fmt("TravelBlockedStars")
 	end
-	if inCombat(player) then
+	if combatBlocksTravel(player, math.huge) then
 		return false, fmt("TravelBlockedCombat")
 	end
 	if channels[player] or (tonumber(player:GetAttribute("TravelingUntil")) or 0) > Util.Now() then

@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Offline rigid R15 candidate poses; never an engine gameplay pass.
 
 blender --background --factory-startup --python-exit-code 2 --python
 tools/costume_r15/render_manual_motion.py -- JOINTS.json NEW_BUILD_DIRECTORY
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import json

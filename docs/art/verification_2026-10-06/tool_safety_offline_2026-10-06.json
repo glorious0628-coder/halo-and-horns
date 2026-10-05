@@ -1,0 +1,71 @@
+{
+ "date": "2026-10-06",
+ "kind": "offline tool-safety checks (no Studio MCP, no Play, no network)",
+ "reviewer_items": [
+  6,
+  7,
+  8
+ ],
+ "results": {
+  "retired_costume_tools": {
+   "files": "tools/test_costume_physics.py, tools/test_skin_binding_studio.py, tools/costume_r15/*.py|*.luau|README.md, tools/costume_expressions/*.py|README.md",
+   "static_guard_first_statement": "112/112",
+   "py_compile": "112/112",
+   "direct_run_exits_with_RETIRED_message": "112/112 (run with LOCALAPPDATA pointed at a missing folder so Studio MCP could not start)",
+   "library_modules_still_importable": "25/25 (only exit when __name__ == '__main__'; imported by tools/monster_import_preflight.py, tools/test_weapon_motion.py and GLB audit tools)",
+   "live_tool_imports": "monster_import_preflight + test_weapon_motion import OK",
+   "luau_fixtures": "2/2 compile, 2/2 error immediately when run with luau.exe",
+   "untouched": "tools/costume_r15/vendor/* (captured Roblox Animate source with provenance), tools/costume_expressions/skin_runtime_contract.json (data)"
+  },
+  "asset_preflight": {
+   "costume_entries_removed": true,
+   "counts": {
+    "ui": 68,
+    "fx_emo": 10,
+    "text": 42,
+    "weapon": 27,
+    "texture": 15,
+    "map": 1,
+    "monster": 7
+   },
+   "total": 170,
+   "other_summary_lists_unchanged_vs_before": true,
+   "main_run": "pass (report redirected to scratch)"
+  },
+  "art_cleanup_inventory": {
+   "--delete refused": "pass",
+   "--force refused (record never rewritten)": "pass",
+   "--deleteall / extra args refused": "pass",
+   "dry_listing": "pass -> build/art_inventory_dry.json {unused_old:0, keep_until_replaced:261, keep:228, keep_new_since_cleanup:0}",
+   "record_docs/art/art_cleanup_2026-10-06.json_unchanged": true,
+   "art_file_count_unchanged": true,
+   "fake_tree_new_file_listed_keep_new_since_cleanup": "pass"
+  },
+  "reset_test_save": {
+   "python_fake_client_cases": "10/10",
+   "luau_mock_cases": "6/6 (2 compile + read, remove matching version, refuse changed version, refuse while running)",
+   "cases": [
+    "other userId refused before Studio contact",
+    "bad args refused",
+    "Play mode refused before read",
+    "backup written+read back before RemoveAsync, version passed",
+    "Play started between read and remove -> refused, backup kept",
+    "no record -> no backup/no remove",
+    "version changed -> not removed",
+    "removed value differs -> extra _removed.json",
+    "missing version refused",
+    "odd version string refused (no Luau injection)"
+   ],
+   "real_studio_run": "not done (Studio in use; MCP forbidden for this worker)"
+  },
+  "bot_wait": {
+   "offline_cases": "5/5 (no --mine refused without Studio contact, timeout-only refused, bad arg refused, --mine prints ResultKind 'bot upper bound', timeout message)"
+  },
+  "hunt_bot_client": {
+   "luau_compile": "pass",
+   "header_guard_comment": true,
+   "Result.Kind": "bot upper bound"
+  },
+  "py_compile_all_changed_python": "116/116"
+ }
+}

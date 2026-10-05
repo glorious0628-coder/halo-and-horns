@@ -21,7 +21,6 @@ local CollectionService = game:GetService("CollectionService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
-local CostumeService = require(script.Parent.CostumeService) -- ValidateTemplate is pure; Build never uses its registry
 
 local MapBuilder = {}
 
@@ -42,7 +41,7 @@ local PERCH_DIAMETER = 10
 local PERCH_HEIGHT = 1
 local GROUND_THICKNESS = 4 -- minimal ground plates: top at Y = 0
 local BRIDGE_WIDTH = 18 -- default deck width when Config.Map.Bridges has no Width
-local ALTAR_PROMPT_KEY = Enum.KeyCode.G -- not E: HUD binds Q/E to Release (would spend stacks while holding the prompt)
+local ALTAR_PROMPT_KEY = Enum.KeyCode.E -- Roblox-standard interact key; the skill is Q only (2026-10-06 playtest)
 
 local RGB = Color3.fromRGB
 local SP = Enum.Material.SmoothPlastic
@@ -800,8 +799,7 @@ local function buildPreviewSpawn(ctx, landmarks)
 	if decal then decal:Destroy() end
 end
 
--- No new NPC artwork: copy only the approved, ready paladin rig and keep all mesh/texture data.
--- The shop stays absent/disabled until its GPT preview is selected. Pending/static imports are not eligible.
+-- The potion shop NPC: prompt on its root. The shop stays absent/disabled until Config.Vitals.MerchantEnabled.
 local function ensureMerchantPrompt(merchant, tune)
 	local root = merchant.PrimaryPart
 	if not root or not root:IsA("BasePart") or not root:IsDescendantOf(merchant) then return false end
@@ -809,10 +807,10 @@ local function ensureMerchantPrompt(merchant, tune)
 	if prompt and not prompt:IsA("ProximityPrompt") then retire(prompt, "_Old"); prompt = nil end
 	if not prompt then prompt = Instance.new("ProximityPrompt"); prompt.Name = tune.PotionMerchantPrompt end
 	prompt.ActionText, prompt.ObjectText = "물약 구매", "물약 상인"
-	prompt.KeyboardKeyCode = Enum.KeyCode.G -- Q/E are combat keys
-	prompt.HoldDuration, prompt.MaxActivationDistance = 0.3, tune.PotionMerchantDistance
+	prompt.KeyboardKeyCode = Enum.KeyCode.E -- standard interact key; the skill is Q only
+	prompt.HoldDuration, prompt.MaxActivationDistance = 0, tune.PotionMerchantDistance -- a shop opens on a tap
 	prompt.RequiresLineOfSight, prompt.Enabled = false, true
-	prompt:SetAttribute("Conversation", true) -- verified NPC interaction; ExpressionService owns the smile
+	prompt:SetAttribute("Conversation", true) -- verified NPC interaction
 	prompt.Parent = root
 	CollectionService:AddTag(merchant, "NPC")
 	return true
@@ -827,9 +825,6 @@ local function ensurePotionMerchant(ctx, folder)
 		if prompt and prompt:IsA("ProximityPrompt") then prompt.Enabled = false end
 	end
 	if tune.MerchantEnabled ~= true then disableExisting(); return end
-	local rigs = ServerStorage:FindFirstChild("CostumeRigs")
-	local template = rigs and rigs:IsA("Folder") and rigs:FindFirstChild(tune.PotionMerchantTemplate)
-	if not CostumeService.ValidateTemplate(template) then disableExisting(); return end
 	if merchant and (not merchant:IsA("Model") or merchant:GetAttribute("HHC_PotionMerchant") ~= true) then
 		Util.Warn(TAG, "PotionMerchant name is occupied by unrelated content; skipped")
 		return
@@ -841,37 +836,50 @@ local function ensurePotionMerchant(ctx, folder)
 	local offset = tune.PotionMerchantOffset
 	if type(offset) ~= "table" or type(offset.X) ~= "number" or type(offset.Z) ~= "number"
 		or offset.X ~= offset.X or offset.Z ~= offset.Z or math.abs(offset.X) > 30 or math.abs(offset.Z) > 30 then return end
-	local ok, copied = pcall(template.Clone, template)
-	if not ok or not copied then Util.Warn(TAG, "PotionMerchant template clone failed"); return end
-	merchant = copied
-	local prepared, why = pcall(function()
-		merchant.Name = tune.PotionMerchantName
-		for _, child in merchant:GetDescendants() do
-			if child:IsA("LuaSourceContainer") or child:IsA("Tool") or child:IsA("ForceField") or child:IsA("ProximityPrompt") then
-				child:Destroy()
-			elseif child:IsA("BasePart") then
-				child.Anchored = true
-				child.CanCollide, child.CanTouch, child.CanQuery = false, false, false
-			end
-		end
-		local humanoid = merchant:FindFirstChildOfClass("Humanoid")
-		local root = merchant:FindFirstChild("HumanoidRootPart")
-		assert(humanoid and root and root:IsA("BasePart"), "approved merchant rig has no root/humanoid")
-		humanoid.WalkSpeed, humanoid.JumpPower, humanoid.AutoRotate = 0, 0, false
-		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
-		merchant.PrimaryPart = root
-		local pivot = merchant:GetPivot()
-		local bounds, size = merchant:GetBoundingBox()
-		local target = Config.Zones.Crossroads.Spawn + Vector3.new(offset.X, 0, offset.Z)
-		merchant:PivotTo(pivot + Vector3.new(target.X - pivot.Position.X,
-			target.Y - (bounds.Position.Y - size.Y * 0.5), target.Z - pivot.Position.Z))
-		merchant:SetAttribute("HHC_PotionMerchant", true)
-		merchant:SetAttribute("HHC_MerchantTemplate", tune.PotionMerchantTemplate)
-		assert(ensureMerchantPrompt(merchant, tune), "approved merchant root is invalid")
-		merchant.Parent = folder
-	end)
-	if not prepared then merchant:Destroy(); Util.Warn(TAG, "PotionMerchant preparation failed: " .. tostring(why)); return end
 	ctx.pieces += 1
+	-- A23-6: a temporary default Roblox-style NPC built from a HumanoidDescription (no costume rig, no new art).
+	-- Building the body loads Roblox's default meshes (yields), so it runs after Build returns (Build never yields).
+	task.spawn(function()
+		local colors = tune.PotionMerchantColors or {}
+		local made, npc = pcall(function()
+			local desc = Instance.new("HumanoidDescription")
+			desc.HeadColor = colors.Head or Color3.fromRGB(234, 184, 146)
+			desc.LeftArmColor, desc.RightArmColor = desc.HeadColor, desc.HeadColor
+			desc.TorsoColor = colors.Torso or Color3.fromRGB(46, 120, 92)
+			desc.LeftLegColor = colors.Legs or Color3.fromRGB(70, 55, 45)
+			desc.RightLegColor = desc.LeftLegColor
+			return game:GetService("Players"):CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)
+		end)
+		if not made or not npc then Util.Warn(TAG, "PotionMerchant NPC build failed: " .. tostring(npc)); return end
+		if folder:FindFirstChild(tune.PotionMerchantName) then npc:Destroy(); return end -- built meanwhile
+		local prepared, why = pcall(function()
+			npc.Name = tune.PotionMerchantName
+			for _, child in npc:GetDescendants() do
+				if child:IsA("LuaSourceContainer") then
+					child:Destroy()
+				elseif child:IsA("BasePart") then
+					child.Anchored = true
+					child.CanCollide, child.CanTouch, child.CanQuery = false, false, false
+				end
+			end
+			local humanoid = npc:FindFirstChildOfClass("Humanoid")
+			local root = npc:FindFirstChild("HumanoidRootPart")
+			assert(humanoid and root and root:IsA("BasePart"), "default NPC has no root/humanoid")
+			humanoid.WalkSpeed, humanoid.JumpPower, humanoid.AutoRotate = 0, 0, false
+			humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			npc.PrimaryPart = root
+			local pivot = npc:GetPivot()
+			local bounds, size = npc:GetBoundingBox()
+			local target = Config.Zones.Crossroads.Spawn + Vector3.new(offset.X, 0, offset.Z)
+			npc:PivotTo(pivot + Vector3.new(target.X - pivot.Position.X,
+				target.Y - (bounds.Position.Y - size.Y * 0.5), target.Z - pivot.Position.Z))
+			npc:SetAttribute("HHC_PotionMerchant", true)
+			npc:SetAttribute("HHC_MerchantLook", "DefaultNPC") -- final look: Firefly redraw (A23-6)
+			assert(ensureMerchantPrompt(npc, tune), "default NPC root is invalid")
+			npc.Parent = folder
+		end)
+		if not prepared then npc:Destroy(); Util.Warn(TAG, "PotionMerchant preparation failed: " .. tostring(why)) end
+	end)
 end
 
 ------------------------------------------------------------------ public API

@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Finalize a separate original-triangle face candidate without replacing baselines.
 
 Original geometry, joints, weights and the approved GPT PNGs remain untouched.
@@ -6,6 +7,7 @@ No Studio, registry, upload or paid API operations occur here.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 from collections import defaultdict
 import hashlib

@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Add an expression skin primitive while retaining original skin bytes.
 
 No Blender skin re-export, original vertex movement, raster edits, or uploads.
 Only original front-face index membership, its projected UV, and new mouth-cover
 vertices are added. All original skin/geometry/image buffer data stay intact.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import copy
 import hashlib

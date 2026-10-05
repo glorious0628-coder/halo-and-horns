@@ -1,4 +1,5 @@
--- ShopService.luau : weapon upgrades and server-priced potion stock from the physical merchant.
+-- ShopService.luau : chosen basic weapons at the blacksmith and potions from their merchant.
+-- UpgradeWeapon is the legacy purchase remote name; it does not enhance the current weapon.
 -- CharacterVisuals rebuilds the weapon model from the WeaponTier attribute change.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -11,35 +12,60 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local M = {}
 
 local S = nil
+local BLACKSMITH = { PromptName = "HHC_BlacksmithPrompt", Distance = 12, PromptRate = 0.5 }
+
+local function finite(value)
+	return type(value) == "number" and value == value and value > -math.huge and value < math.huge
+end
 
 local function notifyBad(player, key, ...)
 	Net.Notify(player, string.format(Config.Text[key], ...), "bad")
 end
 
-local function onUpgradeWeapon(player)
+local function onUpgradeWeapon(player, selectedTier)
+	-- Client chooses only the catalog tier. Price, ownership and all eligibility stay on the server.
+	if not finite(selectedTier) or selectedTier ~= math.floor(selectedTier) or selectedTier < 1
+		or selectedTier > Config.MaxWeaponTier then return end
 	if not S.PlayerService.IsReady(player) then return end
 	if not Util.RateLimit(player, "UpgradeWeapon", Config.RateLimits.UpgradeWeapon) then return end
+	-- Recheck the physical shop on EVERY purchase, even if its panel was opened earlier.
+	if not M.CanBuyWeapon(player) then
+		Net.Notify(player, Config.Text.WeaponShopFar, "bad")
+		return
+	end
 
 	local data = S.PlayerService.GetData(player)
 	if type(data) ~= "table" then return end
 
 	local maxTier = Config.MaxWeaponTier
-	local tier = math.clamp(math.floor(tonumber(data.WeaponTier) or 1), 1, maxTier)
-	if tier >= maxTier then
-		notifyBad(player, "WeaponMaxed")
+	local tier = data.WeaponTier
+	if not finite(tier) or tier ~= math.floor(tier) or tier < 1 or tier > maxTier then return end
+	local shop = Config.WeaponShop
+	local saleLimit = type(shop) == "table" and shop.MaxSoldTier or nil
+	-- An absent/malformed sale list must never silently expose rare tiers for gold.
+	if not finite(saleLimit) or saleLimit ~= math.floor(saleLimit) or saleLimit < 1 or saleLimit > maxTier then
+		Util.Warn("ShopService", "invalid WeaponShop.MaxSoldTier; weapon purchase refused")
 		return
 	end
-
-	local nextTier = tier + 1
-	local nextDef = Config.Weapons[nextTier]
-	if type(nextDef) ~= "table" then
-		notifyBad(player, "WeaponMaxed")
+	if selectedTier > saleLimit then
+		Net.Notify(player, Config.Text.WeaponNotSold, "info")
 		return
 	end
+	local selectedDef = Config.Weapons[selectedTier]
+	if type(selectedDef) ~= "table" then return end
+	local ownedMask = data.WeaponOwnedMask
+	local validMask = bit32.lshift(1, maxTier) - 1
+	if not finite(ownedMask) or ownedMask ~= math.floor(ownedMask) or ownedMask < 1
+		or ownedMask > validMask or bit32.band(ownedMask, 1) == 0 then return end
+	local selectedBit = bit32.lshift(1, selectedTier - 1)
+	local alreadyOwned = bit32.band(ownedMask, selectedBit) ~= 0
+	if selectedTier == 1 and not alreadyOwned then return end -- starting gear is equip-only, never a purchase
 
-	local level = tonumber(data.Level) or 1
-	local minLevel = tonumber(nextDef.MinLevel) or 1
-	if level < minLevel then
+	-- A23-4 / review: MinLevel gates the PURCHASE only; an owned weapon is always a free re-equip (also at Lv1 after a
+	-- rebirth or a free class change, same rule as LootService.onEquipWeapon)
+	local level, minLevel = data.Level, selectedDef.MinLevel
+	if not finite(level) or not finite(minLevel) then return end
+	if not alreadyOwned and level < minLevel then
 		notifyBad(player, "WeaponNeedLevel", minLevel)
 		return
 	end
@@ -47,28 +73,143 @@ local function onUpgradeWeapon(player)
 	-- the faction weapon needs a chosen faction (Halo, Horns or Neutral — never "None")
 	local faction = S.FactionService.GetFaction(player)
 	if type(faction) ~= "string" then faction = "None" end
-	if nextDef.RequiresFaction and faction == "None" then
+	if selectedDef.RequiresFaction and faction == "None" then
 		notifyBad(player, "NeedFaction")
 		return
 	end
-
-	if not S.ProgressionService.SpendGold(player, tonumber(nextDef.Price) or 0) then
-		notifyBad(player, "NotEnoughGold")
+	-- review B6: the same state rules as the item-list equip (LootService.onEquipWeapon): alive (CanBuyWeapon above)
+	-- and not in PvP combat. Checked before any gold is spent; a purchase always equips, so it is refused too.
+	if S.CombatService.IsInCombat(player) then
+		Net.Notify(player, Config.Loot.Text.EquipCombat, "bad")
 		return
 	end
 
-	S.PlayerService.SetStat(player, "WeaponTier", nextTier)
-	local weaponName = Config.WeaponName(nextTier, S.ClassService.GetClass(player), faction)
-	Net.Notify(player, string.format(Config.Text.WeaponBought, weaponName), "reward")
-	Net.Fx(player, "Upgrade", { Tier = nextTier })
+	if not alreadyOwned then
+		local price = selectedDef.Price
+		if not finite(price) or price <= 0 or price ~= math.floor(price) then
+			Util.Warn("ShopService", "invalid weapon price; weapon purchase refused")
+			return
+		end
+		-- No yields between debit, ownership and equipment: duplicate requests cannot debit twice.
+		if not S.ProgressionService.SpendGold(player, price) then
+			notifyBad(player, "NotEnoughGold")
+			return
+		end
+		S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(ownedMask, selectedBit))
+	end
+
+	S.PlayerService.SetStat(player, "WeaponTier", selectedTier)
+	S.PlayerService.SetStat(player, "BlacksmithVisited", true) -- A23-4: a verified anvil trade counts as the visit
+	S.PlayerService.MarkActive(player)
+	local weaponName = Config.WeaponName(selectedTier, S.ClassService.GetClass(player), faction)
+	local equipFmt = (Config.Loot and Config.Loot.Text and Config.Loot.Text.Equip) or Config.Text.WeaponBought
+	Net.Notify(player, string.format(alreadyOwned and equipFmt or Config.Text.WeaponBought, weaponName), alreadyOwned and "info" or "reward")
+	if tier ~= selectedTier then Net.Fx(player, "Upgrade", { Tier = selectedTier }) end
 end
 
-local function finite(value)
-	return type(value) == "number" and value == value and value > -math.huge and value < math.huge
+local function onSellWeapon(player, selectedTier)
+	if not finite(selectedTier) or selectedTier ~= math.floor(selectedTier) or selectedTier < 2
+		or selectedTier > Config.MaxWeaponTier then return end
+	if not S.PlayerService.IsReady(player) then return end
+	if not Util.RateLimit(player, "SellWeapon", Config.RateLimits.SellWeapon or Config.RateLimits.UpgradeWeapon) then return end
+	if not M.CanBuyWeapon(player) then
+		Net.Notify(player, Config.Text.WeaponSellFar, "bad")
+		return
+	end
+	local data = S.PlayerService.GetData(player)
+	if type(data) ~= "table" then return end
+	local maxTier = Config.MaxWeaponTier
+	local shop = Config.WeaponShop
+	local saleLimit = type(shop) == "table" and shop.MaxSoldTier or nil
+	if not finite(saleLimit) or saleLimit ~= math.floor(saleLimit) or saleLimit < 1 or saleLimit > maxTier then return end
+	if selectedTier > saleLimit then return end
+	local tier, ownedMask = data.WeaponTier, data.WeaponOwnedMask
+	if not finite(tier) or tier ~= math.floor(tier) or tier < 1 or tier > maxTier then return end
+	local validMask = bit32.lshift(1, maxTier) - 1
+	if not finite(ownedMask) or ownedMask ~= math.floor(ownedMask) or ownedMask < 1
+		or ownedMask > validMask or bit32.band(ownedMask, 1) == 0 then return end
+	local selectedBit = bit32.lshift(1, selectedTier - 1)
+	if bit32.band(ownedMask, selectedBit) == 0 then return end
+	local definition = Config.Weapons[selectedTier]
+	local price = type(definition) == "table" and definition.Price or nil
+	if not finite(price) or price <= 0 or price ~= math.floor(price) then return end
+	local proceeds = math.floor(price * 0.1)
+	-- Remove ownership before emitting any gold signal: a repeated or reentrant sale cannot pay twice.
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.band(ownedMask, bit32.bnot(selectedBit)))
+	if tier == selectedTier then S.PlayerService.SetStat(player, "WeaponTier", 1) end
+	S.ProgressionService.AddCarriedGold(player, proceeds, "Sale")
+	S.PlayerService.SetStat(player, "BlacksmithVisited", true)
+	S.PlayerService.MarkActive(player)
+	local weaponName = Config.WeaponName(selectedTier, S.ClassService.GetClass(player), S.FactionService.GetFaction(player))
+	Net.Notify(player, string.format(Config.Text.WeaponSold, weaponName, tostring(proceeds)), "good")
 end
 
 local function finitePosition(value)
 	return typeof(value) == "Vector3" and finite(value.X) and finite(value.Y) and finite(value.Z)
+end
+
+local function blacksmithAnvil()
+	local map = workspace:FindFirstChild("Map")
+	if not map or map.Parent ~= workspace or (not map:IsA("Folder") and not map:IsA("Model")) then return nil end
+	local landmarks = map:FindFirstChild("Landmarks")
+	if not landmarks or not landmarks:IsA("Folder") or landmarks.Parent ~= map then return nil end
+	local guild = landmarks:FindFirstChild("ArtisanGuild")
+	if not guild or not guild:IsA("Model") or guild.Parent ~= landmarks then return nil end
+	local anvil = guild:FindFirstChild("Anvil")
+	if not anvil or not anvil:IsA("BasePart") or anvil.Parent ~= guild or not anvil.Anchored then return nil end
+	return anvil
+end
+
+-- Attach the interaction to the existing approved map prop; create no new NPC or scenery.
+function M.EnsureBlacksmithPrompt()
+	local anvil = blacksmithAnvil()
+	if not anvil then return false end
+	local prompt = anvil:FindFirstChild(BLACKSMITH.PromptName)
+	if prompt and not prompt:IsA("ProximityPrompt") then return false end
+	if not prompt then
+		prompt = Instance.new("ProximityPrompt")
+		prompt.Name = BLACKSMITH.PromptName
+	end
+	prompt.ActionText, prompt.ObjectText = Config.Text.BlacksmithPromptAction, Config.Text.BlacksmithPromptObject
+	prompt.KeyboardKeyCode = Enum.KeyCode.E -- standard interact key; the skill is Q only (2026-10-06 playtest)
+	prompt.HoldDuration, prompt.MaxActivationDistance = 0, BLACKSMITH.Distance -- a shop opens on a tap, no hold
+	prompt.RequiresLineOfSight, prompt.Enabled = false, true
+	prompt.Parent = anvil
+	return true
+end
+
+local function blacksmith()
+	local anvil = blacksmithAnvil()
+	if not anvil then return nil end
+	local prompt = anvil:FindFirstChild(BLACKSMITH.PromptName)
+	if not prompt or not prompt:IsA("ProximityPrompt") or prompt.Parent ~= anvil or not prompt.Enabled then return nil end
+	return anvil, prompt
+end
+
+function M.CanBuyWeapon(player)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players
+		or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return false end
+	local data = S.PlayerService.GetData(player)
+	if type(data) ~= "table" or data.ClassChosen ~= true then return false end
+	local anvil, prompt = blacksmith()
+	local root = Util.GetRoot(player)
+	if not anvil or not root or not root:IsA("BasePart")
+		or not finitePosition(anvil.Position) or not finitePosition(root.Position) then return false end
+	local activation = prompt.MaxActivationDistance
+	if not finite(activation) or activation <= 0 then return false end
+	-- Increasing a prompt's radius never expands the purchase radius beyond the server contract.
+	local distance = (root.Position - anvil.Position).Magnitude
+	return finite(distance) and distance <= math.min(BLACKSMITH.Distance, activation)
+end
+
+local function onBlacksmithPrompt(prompt, player)
+	if typeof(prompt) ~= "Instance" or not prompt:IsA("ProximityPrompt")
+		or prompt.Name ~= BLACKSMITH.PromptName or not M.CanBuyWeapon(player) then return end
+	local _, expected = blacksmith()
+	if expected ~= prompt then return end -- cloned/renamed prompts cannot open the weapon shop
+	if not Util.RateLimit(player, "BlacksmithPrompt", BLACKSMITH.PromptRate) then return end
+	S.PlayerService.SetStat(player, "BlacksmithVisited", true)
+	Net.Get("OpenPanel"):FireClient(player, "WeaponShop")
 end
 
 function M.CanBuyPotions(player)
@@ -112,7 +253,7 @@ function M.BuyPotion(player, kind, amount)
 		or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return false, "NotReady" end
 	if not Util.RateLimit(player, "BuyPotion", Config.RateLimits.BuyPotion) then return false, "Cooldown" end
 	if not M.CanBuyPotions(player) then
-		Net.Notify(player, "물약 상인 가까이에서 구매해 주세요.", "bad")
+		Net.Notify(player, Config.Text.PotionShopFar, "bad")
 		return false, "MerchantDistance"
 	end
 	local data = S.PlayerService.GetData(player)
@@ -120,7 +261,7 @@ function M.BuyPotion(player, kind, amount)
 	local count, cap = data[key], Config.Vitals.PotionInventoryCap
 	if not finite(count) or count < 0 or count ~= math.floor(count) or count > cap then return false, "InvalidStock" end
 	if count + amount > cap then
-		Net.Notify(player, string.format("물약은 종류별 %d개까지 보관할 수 있어요.", cap), "bad")
+		Net.Notify(player, string.format(Config.Text.PotionStockFull, cap), "bad")
 		return false, "FullStock"
 	end
 	local price = Config.Vitals.PotionPrices[kind]
@@ -133,7 +274,7 @@ function M.BuyPotion(player, kind, amount)
 	end
 	S.PlayerService.SetStat(player, key, count + amount)
 	S.PlayerService.MarkActive(player)
-	Net.Notify(player, string.format("%s 물약 %d개를 구매했어요!", kind, amount), "good")
+	Net.Notify(player, string.format(Config.Text.PotionBought, kind, amount), "good")
 	return true, "Bought"
 end
 
@@ -142,12 +283,28 @@ function M.Init(registry)
 end
 
 function M.Start()
+	if not M.EnsureBlacksmithPrompt() then
+		-- Minimal/headless maps may intentionally omit this optional town prop.
+		print("[ShopService] no ArtisanGuild.Anvil; weapon shop stays closed")
+	end
 	-- Global, exact-instance validation survives a MapBuilder rebuild and rejects cloned/renamed prompts.
 	ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
 		local ok, err = pcall(onPotionPrompt, prompt, player)
 		if not ok then Util.Warn("ShopService", "potion prompt: " .. tostring(err)) end
+		local shopOk, shopErr = pcall(onBlacksmithPrompt, prompt, player)
+		if not shopOk then Util.Warn("ShopService", "blacksmith prompt: " .. tostring(shopErr)) end
 	end)
-	Net.Get("UpgradeWeapon").OnServerEvent:Connect(onUpgradeWeapon)
+	Net.Get("UpgradeWeapon").OnServerEvent:Connect(function(player, ...)
+		-- Exactly one catalog tier is accepted; prices, quantities or extra payloads are rejected.
+		if select("#", ...) ~= 1 then return end
+		local ok, err = pcall(onUpgradeWeapon, player, ...)
+		if not ok then Util.Warn("ShopService", "weapon purchase: " .. tostring(err)) end
+	end)
+	Net.Get("SellWeapon").OnServerEvent:Connect(function(player, ...)
+		if select("#", ...) ~= 1 then return end
+		local ok, err = pcall(onSellWeapon, player, ...)
+		if not ok then Util.Warn("ShopService", "weapon sale: " .. tostring(err)) end
+	end)
 	Net.Get("BuyPotion").OnServerEvent:Connect(function(player, kind, amount)
 		local ok, err = pcall(M.BuyPotion, player, kind, amount)
 		if not ok then Util.Warn("ShopService", tostring(err)) end

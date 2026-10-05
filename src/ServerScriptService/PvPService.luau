@@ -206,7 +206,8 @@ local function combatPower(p)
 	end
 	local level = math.max(1, num(p, "Level", 1))
 	local tier = math.clamp(math.floor(num(p, "WeaponTier", 1)), 1, Config.MaxWeaponTier)
-	return Config.PowerOf(level, tier, 1)
+	-- review B5: the equipped scroll +N counts. Read the attribute directly: data.WeaponEnhance is the per-tier table.
+	return Config.PowerOf(level, tier, 1, tonumber(p:GetAttribute("WeaponEnhance")) or 0)
 end
 
 -- addendum A10-V3-3: inside a PvP zone, or combat-tagged (Config.PvP.CombatTagTime) anywhere outside a town

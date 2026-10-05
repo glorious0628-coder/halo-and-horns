@@ -74,13 +74,14 @@ class Client:
     def studio_id(self):
         # 스튜디오는 프록시가 뜬 뒤 몇 초 지나야 접속하므로 잠깐 기다리며 다시 묻는다
         import time
-        want = os.environ.get("STUDIO_NAME", "GoodEvil")
+        # GoodEvil local file, or the published private experience (Darugi_S2 private place 81671223175574, 2026-10-06)
+        want = os.environ.get("STUDIO_NAME", "GoodEvil|81671223175574")
         studios = []
         for _ in range(30):
             res = self.request("tools/call", {"name": "list_roblox_studios", "arguments": {}})
             studios = json.loads(res["content"][0]["text"])["studios"]
             for s in studios:
-                if want.lower() in (s.get("name") or "").lower():
+                if any(w.lower() in (s.get("name") or "").lower() for w in want.split("|")):
                     return s["id"]
             time.sleep(0.5)
         raise RuntimeError(f"'{want}' 스튜디오 창을 찾지 못했습니다: {[s.get('name') for s in studios]}")

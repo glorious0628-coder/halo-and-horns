@@ -242,6 +242,8 @@ local function createNametag(player)
 	bb.MaxDistance = V.NametagMaxDistance
 	bb.LightInfluence = 0
 	bb.AlwaysOnTop = false
+	-- user OK 2026-10-06: my own tag covered the middle of small screens; the HUD card shows level / class / status
+	bb.PlayerToHideFrom = player
 
 	local layout = Instance.new("UIListLayout")
 	layout.SortOrder = Enum.SortOrder.LayoutOrder

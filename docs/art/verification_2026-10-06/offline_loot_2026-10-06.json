@@ -1,0 +1,3158 @@
+{
+  "status": "passed",
+  "checks": 910,
+  "failedChecks": 0,
+  "namedChecks": 356,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "MaxEnhance is 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "EnhancePerLevel is 0.10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "FailDropChance is 0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ItemCap is 999",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GoldenMult is 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "MaxWeaponTier is 8",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tier 8 is the legendary: Legend=true, MinLevel 1, never sold, no faction gate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "enhance scroll Enh30 chance/plus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B1: no enhance scroll loses enhancement on average (+1..+9 before the cap)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B1 expected gain per use at +1..+9 = +0.55 / +0.55 / +0.05",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "enhance scroll Enh10 chance/plus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "enhance scroll Enh70 chance/plus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B2 scroll drop chance = reviewer table",
+      "pass": 18,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B2 transfer scroll chance is about 1/3 (1/4..1/2) of the same enhance row (kept: A23-11 three kinds)",
+      "pass": 18,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B2 scroll chance rises meadow < woods < ruins",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B13 potion chances halved (HP = MP)",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B13 meadow potions per manual hour (5 kills/min) at most 14",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B7 FullNoticeSeconds is 300 (5 min per item id)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "first-scroll guide shows 6 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Loot.Text.UseCombat is a Korean string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Loot.Text.EquipDead is a Korean string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Loot.Text.EquipCombat is a Korean string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Loot.Text.ItemFull is a Korean string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Loot.Text.ItemFullUse is a Korean string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B7 ItemFull (materials) says they sell at the blacksmith",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "B3 legendary damage 76 = 2 x tier 3, below tier 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "transfer scroll Move70 chance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "transfer scroll Move30 chance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "transfer scroll Move10 chance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "item kinds are Material/Enhance/Transfer",
+      "pass": 12,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "items have a Korean display name",
+      "pass": 12,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every item id is in Loot.Order",
+      "pass": 12,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "materials have a positive integer Sell price",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Loot.Order lists every item exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "jackpot monsters = { Slime } only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "jackpot 1/20000 for tier 8",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "FirstScroll = BigSlime -> Enh70",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Loot.KeepOnRebirth removed (A23-14 rebirth keeps all weapons)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "duplicate legendary has a gold value",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "drop table kinds are real monster kinds",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "each drop row is exactly one of Item / Potion / Weapon",
+      "pass": 60,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "drop chances are in (0, 1]",
+      "pass": 60,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "drop rows name real item ids",
+      "pass": 43,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "potion rows name HP/MP",
+      "pass": 12,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "weapon rows are real tiers with a duplicate-gold value",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Data.Defaults Items / WeaponEnhance / LootFlags are empty tables",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "table save fields are never mirrored as attributes",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "RateLimits.UseItem is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "RateLimits.EquipWeapon is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "RateLimits.SellMaterials is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Net registers remote UseItem exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Net registers remote EquipWeapon exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Net registers remote SellMaterials exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Net registers remote Inventory exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "stored garbage Items normalize (floor, 1..999, drop <=0/non-number; unknown ids kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "stored garbage WeaponEnhance normalizes to 8 tiers clamped 0..10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "LootFlags keeps only string keys set to true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "no ItemsJson / EnhanceJson attributes are published",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "PlayerReady sends exactly one Inventory push (deferred, coalesced)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Inventory payload Items = known ids only (unknown ids hidden)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Inventory payload Enhance is the 8-tier array",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Inventory payload has only Items and Enhance",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Inventory payload shape { Items, Enhance }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "WeaponEnhance attribute = +N of the equipped tier (4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "unknown saved ids cannot be used (kept, no roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "DebugGive refuses unknown ids",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "sanitize is idempotent",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "sanitized save data survives the DataStore JSON round trip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "saved row equals the sanitized tables (unknown ids preserved)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "NaN/inf/non-string-key Items are dropped, >cap capped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "NaN/inf/out-of-range WeaponEnhance entries normalize",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "WeaponEnhance keys are exactly tiers 1..8",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "WeaponEnhance always has MaxWeaponTier entries",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "LootFlags drops non-true values and non-string keys",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Inventory republished after sanitize",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Legacy: Items {} / WeaponEnhance 8 zeros / LootFlags {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Legacy: WeaponEnhance attribute 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "WrongTypes: Items {} / WeaponEnhance 8 zeros / LootFlags {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "WrongTypes: WeaponEnhance attribute 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "new player: empty items, 8 tiers, Inventory pushed and WeaponEnhance attribute 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "several changes in one frame = one Inventory push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "a real CharacterSpawned resends the Inventory; a cosmetic respawn does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "no Inventory push to a player who left before the frame ended",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "LootService.Refresh re-sends the owner's Inventory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "RollKill sanitizes missing tables before granting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "DebugGive caps at ItemCap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "one RollKill = one draw per row (+ jackpot draw)",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "RollKill returns the gained list",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "one MonsterKilled signal = exactly one roll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "auto / skill / personal kills roll like any kill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "two contributors = two independent rolls",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "contributor rolls are independent (own result each)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "unknown Kind gives nothing and draws nothing",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "non-string Kind / non-table info returns nil",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "malformed kills changed nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "row drops iff draw < P",
+      "pass": 58,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "row drops iff draw < P x GoldenMult",
+      "pass": 52,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "GoldenMult applies only for Golden == true",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "drop rate within 5 sigma of Config.Loot.Tables P",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "jackpot rate within 5 sigma of 1/20000",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "drop rate within 5 sigma of Config.Loot.Tables P x 3 (capped at 1)",
+      "pass": 19,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "jackpot rate within 5 sigma of 1/20000 x 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "rows with N > 1 grant N per drop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "full item stays at 999 and is not reported as gained",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "full material sends the ItemFull notice (kind info, mentions the blacksmith)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "ItemFull repeats at most once per item id per 5 minutes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "partial room grants only up to the cap and reports the real count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "after 5 minutes a partly-fitting drop (998 + 2) sends the ItemFull notice again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "full scroll sends ItemFullUse (own window per item id)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "potion drops add 1 to HP/MPPotionCount (saved + mirrored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "potions are reported as gained and never enter Items",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "potion at PotionInventoryCap is not granted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "full potion stock sends the PotionFull notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "PotionFull is throttled like items (once per 5 minutes per potion kind)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "PotionFull shows again after 5 minutes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "slime kills never trigger the first-scroll guarantee",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "first BigSlime kill guarantees exactly one Enh70",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "first-scroll hint shown once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "first-scroll hint stays 6 s (Config.Loot.FirstScroll.NoticeSeconds)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "that kill's Loot Fx carries First = true (client skips its own toast)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "later Loot Fx never carries First",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "the guarantee is never paid twice in a session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "LootFlags.FirstScroll is in the saved record",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "LootFlags and the scroll survive reload",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "no second guarantee after reload",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "first guarantee adds exactly one even when scrolls are already owned / golden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no guide",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "B8 the kept guarantee pays on the next king slime once there is room",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "B8 the guarantee is still paid only once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "no jackpot roll for non-slime kinds",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "slime jackpot also pays for auto / personal kills",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "jackpot threshold exact (golden x3)",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "death / leave handlers never touch Items or enhancement",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "all rows hit: no save data changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "all rows hit: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "tally.Kills = n",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "tally counts every row and the jackpot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "one draw per row (+ jackpot) per simulated kill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "simulated jackpot / king slime grant nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "king slime: no save data changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "king slime: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "rows with N count N per drop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "golden false: no save data changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "golden false: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "golden true: no save data changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "golden true: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "golden == true uses GoldenMult (0.3 x 3 > 0.5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "n clamps low: no save data changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "n clamps low: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "n < 1 counts one kill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "n floors: no save data changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "n floors: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "fractional n is floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "bad kind: no save data changed",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "bad kind: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "unknown monster kind returns nil",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "unowned weapon drop sets its mask bit (saved + mirrored)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "new weapon is reported once and pays no gold",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "a weapon drop never auto-equips",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "rare weapon notice",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "duplicate weapon drop does not change the mask",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "duplicate is not reported as a new weapon",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "jackpot grants the legendary tier",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "jackpot calls NotifyAll exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "server-wide jackpot announcement text / kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "legendary ownership is saved before the announcement",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "jackpot owner notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "second jackpot = duplicate gold, no second announcement",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "jackpot names the class weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "every valid use is accepted",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "enhance success rate ~ Chance",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "a failure from >+0 drops one level ~50%",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "exactly one scroll consumed per accepted use",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "success = +Plus capped at 10; failure = -1 or unchanged, +0 stays +0",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "enhancement never below +0 or above +10",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "WeaponEnhance attribute follows the equipped tier",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "+9 success caps at +10",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "at +10 the scroll is refused and kept",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "EnhanceMax notice at +10",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "failed scroll with drop roll < 0.5 loses exactly one level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "failed scroll with drop roll >= 0.5 keeps the level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "failure at +0 stays +0 without a drop roll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "success adds exactly Plus (+1/+3/+5), capped at +10",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "unowned tier refused, scroll kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "unowned tier refused, scroll kept (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "missing scroll refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "missing scroll refused (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "bad tier argument refused (non-number / fractional / out of range)",
+      "pass": 9,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "missing tier argument refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "extra argument refused (Enh70, 1, 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "extra argument refused (Enh70, 1, 'x')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "trailing extra argument refused (Enh70, 1, nil, 5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "unknown item id refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "non-string item id refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "enhance refused while CombatService.IsInCombat, scroll kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "enhance refused while CombatService.IsInCombat, scroll kept (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "material item cannot be used",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "not-ready player refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "player that left refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "UseItem rate limited (second call in the window ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "UseItem still limited just before the window ends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "UseItem accepted after the window",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "enhancing a non-equipped tier keeps the equipped +N attribute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "an accepted use marks the player active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enhance",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "every valid transfer is accepted",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "transfer success rate ~ Chance",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "exactly one transfer scroll consumed per accepted use",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "no enhancement is ever lost (source + target sum unchanged)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "success adds the source +N onto the target up to +10, overflow stays; failure changes nothing",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "success +3 onto +4 -> source +0, target +7",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "success +6 onto +7 -> target +10, the 3 that do not fit stay on the source",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "success onto +0 moves everything",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "success +10 onto +9 -> +9 / +10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "failure leaves both, consumes the scroll (1 given, 1 used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "MoveFail notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "equipped target: attribute follows the new +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "equipped source: attribute shows the remaining +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "target already +10: refused, scroll kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "target already +10: refused, scroll kept (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "source +0: refused, scroll kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "source +0: refused, scroll kept (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "from == to: refused, scroll kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "from == to: refused, scroll kept (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "unowned target: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "unowned target: refused (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "unowned source: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "unowned source: refused (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "missing transfer scroll: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "missing transfer scroll: refused (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "transfer refused while in PvP combat, scroll kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "transfer refused while in PvP combat, scroll kept (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "bad transfer arguments refused",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "trailing extra argument refused (Move70, 1, 2, 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "transfer rate limited",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "unowned tier refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "unowned tier refused (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "fixture is below tier 3's MinLevel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "owned tier equips below its MinLevel (saved + mirrored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "no level refusal for an owned weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "WeaponEnhance attribute follows the equipped tier's +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "equip notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "refused while dead (Util.IsAlive)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "refused while dead (Util.IsAlive) (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "legendary tier 8 equips at any level with its +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "RequiresFaction (tier 7) needs a faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "RequiresFaction (tier 7) needs a faction (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "tier 7 equips with a faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "refused while CombatService.IsInCombat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "refused while CombatService.IsInCombat (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "refused before the class is chosen",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "equipping the equipped tier is a no-op",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "bad tier argument refused",
+      "pass": 9,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "missing tier refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "trailing extra argument refused (1, 'x')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "not-ready player refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "EquipWeapon rate limited",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "attribute back to tier 1's +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "WeaponEnhance attribute follows a WeaponTier change from another service",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "refused away from the anvil (ShopService.CanBuyWeapon false), items unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "refused away from the anvil (ShopService.CanBuyWeapon false), items unchanged (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "extra argument refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "trailing extra argument refused (nil, 'x')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "not-ready player refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "sells only Kind == Material; scrolls stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "pays sum(count x Sell) exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "materials are removed before the gold is paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "selling marks BlacksmithVisited",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "SellDone notice with count and gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "Inventory republished after the sale",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "a second sale pays nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "SellNothing notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "SellMaterials rate limited (one payment)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "unknown ids are not sold and stay saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sell",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "equipped legendary +9 before rebirth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "TryRebirth succeeds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "rebirth resets Level to 1 and XP to 0 (Rebirths 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "every owned weapon is kept (mask 255 incl. the legendary)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "the equipped weapon stays equipped with its +9",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "WeaponEnhance is not reset by rebirth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "items (incl. unknown saved ids) and LootFlags are kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "carried and bank gold are kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "reborn Lv1 player equips the kept tier 5 (+6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "and swaps back to the legendary with its +9",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "weapons, enhancement, items and the reset level survive save / reload after rebirth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "gold survives the reload (carried gold banked on leave)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "rebirth with a faction switch also keeps weapons / gold / enhancement",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "the faction switch happened",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "rebirth below the required level is refused and changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "WeaponDamage(t, l, e) = base x (1 + 0.1 x clamp(floor(e), 0, 10)); nil/NaN/inf/non-number -> x1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "EnhanceMult endpoints (+10 = x2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "legendary base damage = 2 x the best shop tier, below tier 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "PowerOf uses the enhanced weapon damage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "+10 = x2 damage = x sqrt(2) power",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "PowerOf: missing / NaN enhance = +0, clamped at +10, missing mult = 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "legendary power = sqrt(2) x iron (2 x damage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "JusticeService.GetPower passes the WeaponEnhance attribute (rebirth bonus included)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "JusticeService.GetCombatPower passes the WeaponEnhance attribute (no rebirth bonus)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "missing WeaponEnhance attribute = +0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "PvPService combatPower fallback reads the WeaponEnhance attribute (not the per-tier table)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "PvPService combatPower prefers JusticeService.GetCombatPower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "SwingHitsToKill(..., enhance) uses the enhanced weapon damage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "more enhancement never needs more hits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "missing enhance = +0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "ComputeMonsterHit scales with the WeaponEnhance attribute",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "tier 8 +10 Lv100 vs tier 1 +0 Lv1 clamps at PowerRatioMax",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "tier 1 +0 vs tier 8 +10 clamps at PowerRatioMin",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "enhancement moves the ratio (+2 vs +0 = 1.2)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "+10 vs +0 on the same weapon is clamped",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "victim enhancement lowers the ratio (clamped)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "equal gear = ratio 1",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "ComputePvPHit ratio always within [PowerRatioMin, PowerRatioMax]",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "damage",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [
+    {
+      "Group": "config",
+      "Text": "B13 estimate: 7.5 potions per manual meadow hour at 5 kills/min (assumed 1 king slime per 8 kills); 18.0 at Config.Economy.KillsPerMinute 12. Target 8-14/h: re-measure in the 15-minute hand run."
+    }
+  ],
+  "measuredRates": {
+    "BigSlime(golden).Enh10": {
+      "Expected": 0.006,
+      "Hits": 30,
+      "N": 4000,
+      "Rate": 0.0075
+    },
+    "BigSlime(golden).Enh30": {
+      "Expected": 0.024,
+      "Hits": 101,
+      "N": 4000,
+      "Rate": 0.02525
+    },
+    "BigSlime(golden).Enh70": {
+      "Expected": 0.09,
+      "Hits": 353,
+      "N": 4000,
+      "Rate": 0.08825
+    },
+    "BigSlime(golden).Jelly": {
+      "Expected": 1,
+      "Hits": 4000,
+      "N": 4000,
+      "Rate": 1
+    },
+    "BigSlime(golden).Move10": {
+      "Expected": 0.0021,
+      "Hits": 4,
+      "N": 4000,
+      "Rate": 0.001
+    },
+    "BigSlime(golden).Move30": {
+      "Expected": 0.009000000000000001,
+      "Hits": 36,
+      "N": 4000,
+      "Rate": 0.009
+    },
+    "BigSlime(golden).Move70": {
+      "Expected": 0.03,
+      "Hits": 114,
+      "N": 4000,
+      "Rate": 0.0285
+    },
+    "BigSlime(golden).PotionHP": {
+      "Expected": 0.09,
+      "Hits": 329,
+      "N": 4000,
+      "Rate": 0.08225
+    },
+    "BigSlime(golden).PotionMP": {
+      "Expected": 0.09,
+      "Hits": 380,
+      "N": 4000,
+      "Rate": 0.095
+    },
+    "BigSlime(golden).SlimeCore": {
+      "Expected": 1,
+      "Hits": 4000,
+      "N": 4000,
+      "Rate": 1
+    },
+    "Enh10.failDrop": {
+      "Expected": 0.5,
+      "Hits": 4858,
+      "N": 9718,
+      "Rate": 0.4998970981683474
+    },
+    "Enh10.success": {
+      "Expected": 0.1,
+      "Hits": 1205,
+      "N": 12000,
+      "Rate": 0.10041666666666667
+    },
+    "Enh30.failDrop": {
+      "Expected": 0.5,
+      "Hits": 3835,
+      "N": 7615,
+      "Rate": 0.5036112934996717
+    },
+    "Enh30.success": {
+      "Expected": 0.3,
+      "Hits": 3538,
+      "N": 12000,
+      "Rate": 0.29483333333333334
+    },
+    "Enh70.failDrop": {
+      "Expected": 0.5,
+      "Hits": 1650,
+      "N": 3338,
+      "Rate": 0.49430796884361894
+    },
+    "Enh70.success": {
+      "Expected": 0.7,
+      "Hits": 8309,
+      "N": 12000,
+      "Rate": 0.6924166666666667
+    },
+    "Move10.success": {
+      "Expected": 0.1,
+      "Hits": 1025,
+      "N": 10000,
+      "Rate": 0.1025
+    },
+    "Move30.success": {
+      "Expected": 0.3,
+      "Hits": 3020,
+      "N": 10000,
+      "Rate": 0.302
+    },
+    "Move70.success": {
+      "Expected": 0.7,
+      "Hits": 6973,
+      "N": 10000,
+      "Rate": 0.6973
+    },
+    "SkeletonKnight.Enh10": {
+      "Expected": 0.006,
+      "Hits": 117,
+      "N": 20000,
+      "Rate": 0.00585
+    },
+    "SkeletonKnight.Enh30": {
+      "Expected": 0.022,
+      "Hits": 471,
+      "N": 20000,
+      "Rate": 0.02355
+    },
+    "SkeletonKnight.Enh70": {
+      "Expected": 0.08,
+      "Hits": 1583,
+      "N": 20000,
+      "Rate": 0.07915
+    },
+    "SkeletonKnight.KnightCrest": {
+      "Expected": 0.5,
+      "Hits": 10004,
+      "N": 20000,
+      "Rate": 0.5002
+    },
+    "SkeletonKnight.Move10": {
+      "Expected": 0.002,
+      "Hits": 42,
+      "N": 20000,
+      "Rate": 0.0021
+    },
+    "SkeletonKnight.Move30": {
+      "Expected": 0.0073,
+      "Hits": 142,
+      "N": 20000,
+      "Rate": 0.0071
+    },
+    "SkeletonKnight.Move70": {
+      "Expected": 0.027,
+      "Hits": 545,
+      "N": 20000,
+      "Rate": 0.02725
+    },
+    "SkeletonKnight.PotionHP": {
+      "Expected": 0.05,
+      "Hits": 992,
+      "N": 20000,
+      "Rate": 0.0496
+    },
+    "SkeletonKnight.PotionMP": {
+      "Expected": 0.05,
+      "Hits": 1050,
+      "N": 20000,
+      "Rate": 0.0525
+    },
+    "SkeletonKnight.Weapon5": {
+      "Expected": 0.003,
+      "Hits": 60,
+      "N": 20000,
+      "Rate": 0.003
+    },
+    "SkeletonKnight.Weapon6": {
+      "Expected": 0.0005,
+      "Hits": 10,
+      "N": 20000,
+      "Rate": 0.0005
+    },
+    "Slime(golden).Enh10": {
+      "Expected": 0.0006000000000000001,
+      "Hits": 19,
+      "N": 40000,
+      "Rate": 0.000475
+    },
+    "Slime(golden).Enh30": {
+      "Expected": 0.0024000000000000002,
+      "Hits": 104,
+      "N": 40000,
+      "Rate": 0.0026
+    },
+    "Slime(golden).Enh70": {
+      "Expected": 0.009000000000000001,
+      "Hits": 381,
+      "N": 40000,
+      "Rate": 0.009525
+    },
+    "Slime(golden).Jackpot": {
+      "Expected": 0.00015000000000000001,
+      "Hits": 4,
+      "N": 40000,
+      "Rate": 0.0001
+    },
+    "Slime(golden).Jelly": {
+      "Expected": 0.8999999999999999,
+      "Hits": 36031,
+      "N": 40000,
+      "Rate": 0.900775
+    },
+    "Slime(golden).Move10": {
+      "Expected": 0.00030000000000000003,
+      "Hits": 16,
+      "N": 40000,
+      "Rate": 0.0004
+    },
+    "Slime(golden).Move30": {
+      "Expected": 0.0009,
+      "Hits": 43,
+      "N": 40000,
+      "Rate": 0.001075
+    },
+    "Slime(golden).Move70": {
+      "Expected": 0.003,
+      "Hits": 128,
+      "N": 40000,
+      "Rate": 0.0032
+    },
+    "Slime(golden).PotionHP": {
+      "Expected": 0.03,
+      "Hits": 1243,
+      "N": 40000,
+      "Rate": 0.031075
+    },
+    "Slime(golden).PotionMP": {
+      "Expected": 0.03,
+      "Hits": 1225,
+      "N": 40000,
+      "Rate": 0.030625
+    },
+    "Slime.Enh10": {
+      "Expected": 0.0002,
+      "Hits": 56,
+      "N": 300000,
+      "Rate": 0.00018666666666666666
+    },
+    "Slime.Enh30": {
+      "Expected": 0.0008,
+      "Hits": 210,
+      "N": 300000,
+      "Rate": 0.0007
+    },
+    "Slime.Enh70": {
+      "Expected": 0.003,
+      "Hits": 920,
+      "N": 300000,
+      "Rate": 0.0030666666666666668
+    },
+    "Slime.Jackpot": {
+      "Expected": 5e-05,
+      "Hits": 13,
+      "N": 300000,
+      "Rate": 4.3333333333333334e-05
+    },
+    "Slime.Jelly": {
+      "Expected": 0.3,
+      "Hits": 90070,
+      "N": 300000,
+      "Rate": 0.30023333333333335
+    },
+    "Slime.Move10": {
+      "Expected": 0.0001,
+      "Hits": 32,
+      "N": 300000,
+      "Rate": 0.00010666666666666667
+    },
+    "Slime.Move30": {
+      "Expected": 0.0003,
+      "Hits": 94,
+      "N": 300000,
+      "Rate": 0.0003133333333333333
+    },
+    "Slime.Move70": {
+      "Expected": 0.001,
+      "Hits": 295,
+      "N": 300000,
+      "Rate": 0.0009833333333333332
+    },
+    "Slime.PotionHP": {
+      "Expected": 0.01,
+      "Hits": 3084,
+      "N": 300000,
+      "Rate": 0.01028
+    },
+    "Slime.PotionMP": {
+      "Expected": 0.01,
+      "Hits": 2943,
+      "N": 300000,
+      "Rate": 0.00981
+    }
+  },
+  "staticChecks": 8,
+  "staticFailures": [],
+  "mutations": {
+    "total": 49,
+    "applied": 49,
+    "caught": 49,
+    "results": [
+      {
+        "mutation": "enhance failure may go below +0",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: WeaponEnhance attribute follows the equipped tier",
+          "enhance :: enhancement never below +0 or above +10",
+          "enhance :: failure at +0 stays +0 without a drop roll",
+          "enhance :: success = +Plus capped at 10; failure = -1 or unchanged, +0 stays +0"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "enhance success not capped at +10",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: +9 success caps at +10",
+          "enhance :: WeaponEnhance attribute follows the equipped tier",
+          "enhance :: enhancement never below +0 or above +10",
+          "enhance :: success = +Plus capped at 10; failure = -1 or unchanged, +0 stays +0",
+          "enhance :: success adds exactly Plus (+1/+3/+5), capped at +10"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "enhance failure always drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: a failure from >+0 drops one level ~50%",
+          "enhance :: failed scroll with drop roll >= 0.5 keeps the level"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "enhance success chance off by 10%",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: enhance success rate ~ Chance"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "scroll at +10 consumed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: EnhanceMax notice at +10",
+          "enhance :: at +10 the scroll is refused and kept"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "enhance on an unowned tier",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: unowned tier refused, scroll kept",
+          "enhance :: unowned tier refused, scroll kept (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "scroll never consumed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: UseItem accepted after the window",
+          "enhance :: UseItem rate limited (second call in the window ignored)",
+          "enhance :: UseItem still limited just before the window ends",
+          "enhance :: exactly one scroll consumed per accepted use",
+          "transfer :: exactly one transfer scroll consumed per accepted use",
+          "transfer :: failure leaves both, consumes the scroll (1 given, 1 used)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "first scroll flag not kept",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: B8 the kept guarantee pays on the next king slime once there is room",
+          "rollkill :: LootFlags and the scroll survive reload",
+          "rollkill :: LootFlags.FirstScroll is in the saved record",
+          "rollkill :: first BigSlime kill guarantees exactly one Enh70",
+          "rollkill :: later Loot Fx never carries First",
+          "rollkill :: no second guarantee after reload"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "golden multiplier ignored",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lootroll :: golden == true uses GoldenMult (0.3 x 3 > 0.5)",
+          "rollkill :: GoldenMult applies only for Golden == true",
+          "rollkill :: drop rate within 5 sigma of Config.Loot.Tables P x 3 (capped at 1)",
+          "rollkill :: jackpot threshold exact (golden x3)",
+          "rollkill :: row drops iff draw < P x GoldenMult"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "golden multiplier for any truthy Golden",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: GoldenMult applies only for Golden == true"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "jackpot for every monster kind",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: no jackpot roll for non-slime kinds",
+          "rollkill :: one RollKill = one draw per row (+ jackpot draw)",
+          "rollkill :: unknown Kind gives nothing and draws nothing"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "two rolls per kill signal",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: auto / skill / personal kills roll like any kill",
+          "rollkill :: one MonsterKilled signal = exactly one roll",
+          "rollkill :: two contributors = two independent rolls"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "item cap ignored on drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no guide",
+          "rollkill :: B8 the kept guarantee pays on the next king slime once there is room",
+          "rollkill :: ItemFull repeats at most once per item id per 5 minutes",
+          "rollkill :: after 5 minutes a partly-fitting drop (998 + 2) sends the ItemFull notice again",
+          "rollkill :: full item stays at 999 and is not reported as gained",
+          "rollkill :: full material sends the ItemFull notice (kind info, mentions the blacksmith)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "item cap ignored by sanitize",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: NaN/inf/non-string-key Items are dropped, >cap capped",
+          "sanitize :: saved row equals the sanitized tables (unknown ids preserved)",
+          "sanitize :: stored garbage Items normalize (floor, 1..999, drop <=0/non-number; unknown ids kept)",
+          "sanitize :: unknown saved ids cannot be used (kept, no roll)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "potion cap ignored",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: PotionFull is throttled like items (once per 5 minutes per potion kind)",
+          "rollkill :: PotionFull shows again after 5 minutes",
+          "rollkill :: full potion stock sends the PotionFull notice",
+          "rollkill :: potion at PotionInventoryCap is not granted"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "duplicate weapon pays no gold",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)",
+          "weapons :: second jackpot = duplicate gold, no second announcement"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "duplicate weapon re-announced as new",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: duplicate is not reported as a new weapon",
+          "weapons :: duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)",
+          "weapons :: second jackpot = duplicate gold, no second announcement"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "transfer replaces instead of adding",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer :: equipped source: attribute shows the remaining +N",
+          "transfer :: equipped target: attribute follows the new +N",
+          "transfer :: success +3 onto +4 -> source +0, target +7",
+          "transfer :: success +6 onto +7 -> target +10, the 3 that do not fit stay on the source",
+          "transfer :: success adds the source +N onto the target up to +10, overflow stays; failure changes nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "transfer keeps the source +N (duplicates)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer :: equipped source: attribute shows the remaining +N",
+          "transfer :: no enhancement is ever lost (source + target sum unchanged)",
+          "transfer :: success +10 onto +9 -> +9 / +10",
+          "transfer :: success +3 onto +4 -> source +0, target +7",
+          "transfer :: success +6 onto +7 -> target +10, the 3 that do not fit stay on the source",
+          "transfer :: success adds the source +N onto the target up to +10, overflow stays; failure changes nothing"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "transfer loses the overflow",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer :: equipped source: attribute shows the remaining +N",
+          "transfer :: no enhancement is ever lost (source + target sum unchanged)",
+          "transfer :: success +10 onto +9 -> +9 / +10",
+          "transfer :: success +6 onto +7 -> target +10, the 3 that do not fit stay on the source",
+          "transfer :: success adds the source +N onto the target up to +10, overflow stays; failure changes nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "transfer onto +10 allowed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer :: target already +10: refused, scroll kept",
+          "transfer :: target already +10: refused, scroll kept (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "transfer from +0 allowed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer :: source +0: refused, scroll kept",
+          "transfer :: source +0: refused, scroll kept (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip gates an OWNED weapon by MinLevel again",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: RequiresFaction (tier 7) needs a faction (notice)",
+          "equip :: WeaponEnhance attribute follows the equipped tier's +N",
+          "equip :: equip notice",
+          "equip :: owned tier equips below its MinLevel (saved + mirrored)",
+          "equip :: refused while dead (Util.IsAlive) (notice)",
+          "equip :: tier 7 equips with a faction"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "equip ignores combat",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: equipping the equipped tier is a no-op",
+          "equip :: refused while CombatService.IsInCombat",
+          "equip :: refused while CombatService.IsInCombat (notice)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "equip ignores a dead character",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: refused while dead (Util.IsAlive)",
+          "equip :: refused while dead (Util.IsAlive) (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "scroll usable in PvP combat",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: enhance refused while CombatService.IsInCombat, scroll kept",
+          "enhance :: enhance refused while CombatService.IsInCombat, scroll kept (notice)",
+          "transfer :: transfer refused while in PvP combat, scroll kept",
+          "transfer :: transfer refused while in PvP combat, scroll kept (notice)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "full notice not throttled",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: ItemFull repeats at most once per item id per 5 minutes",
+          "rollkill :: PotionFull is throttled like items (once per 5 minutes per potion kind)",
+          "rollkill :: PotionFull shows again after 5 minutes",
+          "rollkill :: after 5 minutes a partly-fitting drop (998 + 2) sends the ItemFull notice again"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "first scroll flag set although the stack was full",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no guide",
+          "rollkill :: B8 the kept guarantee pays on the next king slime once there is room"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "unknown saved ids deleted by sanitize",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebirth :: weapons, enhancement, items and the reset level survive save / reload after rebirth",
+          "sanitize :: DebugGive refuses unknown ids",
+          "sanitize :: saved row equals the sanitized tables (unknown ids preserved)",
+          "sanitize :: stored garbage Items normalize (floor, 1..999, drop <=0/non-number; unknown ids kept)",
+          "sanitize :: unknown saved ids cannot be used (kept, no roll)",
+          "sell :: unknown ids are not sold and stay saved"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "unknown ids shown in the Inventory payload",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Inventory payload Items = known ids only (unknown ids hidden)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Inventory sent to every client",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lootroll :: no remote fired to all clients / no unexpected client publication",
+          "sanitize :: Inventory payload Enhance is the 8-tier array",
+          "sanitize :: Inventory payload Items = known ids only (unknown ids hidden)",
+          "sanitize :: Inventory payload shape { Items, Enhance }",
+          "sanitize :: Inventory republished after sanitize",
+          "sanitize :: LootService.Refresh re-sends the owner's Inventory"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "LootRoll grants real drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lootroll :: all rows hit: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+          "lootroll :: all rows hit: no save data changed",
+          "lootroll :: golden true: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+          "lootroll :: golden true: no save data changed",
+          "lootroll :: king slime: no notice / Fx / announcement / gold / ItemsGranted / Inventory push",
+          "lootroll :: king slime: no save data changed"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "equip ignores RequiresFaction",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: RequiresFaction (tier 7) needs a faction",
+          "equip :: RequiresFaction (tier 7) needs a faction (notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "sell away from the anvil",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sell :: SellDone notice with count and gold",
+          "sell :: a second sale pays nothing",
+          "sell :: pays sum(count x Sell) exactly once",
+          "sell :: refused away from the anvil (ShopService.CanBuyWeapon false), items unchanged",
+          "sell :: refused away from the anvil (ShopService.CanBuyWeapon false), items unchanged (notice)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "sell also sells scrolls",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sell :: SellDone notice with count and gold",
+          "sell :: SellMaterials rate limited (one payment)",
+          "sell :: SellNothing notice",
+          "sell :: a second sale pays nothing",
+          "sell :: materials are removed before the gold is paid",
+          "sell :: no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "remote rate limit bypassed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enhance :: UseItem accepted after the window",
+          "enhance :: UseItem rate limited (second call in the window ignored)",
+          "enhance :: UseItem still limited just before the window ends",
+          "equip :: EquipWeapon rate limited",
+          "equip :: attribute back to tier 1's +N",
+          "transfer :: transfer rate limited"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "WeaponEnhance attribute not refreshed on equip",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: WeaponEnhance attribute follows a WeaponTier change from another service",
+          "equip :: WeaponEnhance attribute follows the equipped tier's +N",
+          "equip :: attribute back to tier 1's +N",
+          "equip :: legendary tier 8 equips at any level with its +N",
+          "equip :: tier 7 equips with a faction",
+          "rebirth :: reborn Lv1 player equips the kept tier 5 (+6)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "rebirth resets the weapons (old rule)",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebirth :: every owned weapon is kept (mask 255 incl. the legendary)",
+          "rebirth :: rebirth with a faction switch also keeps weapons / gold / enhancement",
+          "rebirth :: reborn Lv1 player equips the kept tier 5 (+6)",
+          "rebirth :: the equipped weapon stays equipped with its +9",
+          "rebirth :: weapons, enhancement, items and the reset level survive save / reload after rebirth"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "rebirth resets the gold (old rule)",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebirth :: carried and bank gold are kept",
+          "rebirth :: gold survives the reload (carried gold banked on leave)",
+          "rebirth :: rebirth with a faction switch also keeps weapons / gold / enhancement"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "rebirth resets enhancement and items",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebirth :: WeaponEnhance is not reset by rebirth",
+          "rebirth :: and swaps back to the legendary with its +9",
+          "rebirth :: items (incl. unknown saved ids) and LootFlags are kept",
+          "rebirth :: rebirth with a faction switch also keeps weapons / gold / enhancement",
+          "rebirth :: reborn Lv1 player equips the kept tier 5 (+6)",
+          "rebirth :: weapons, enhancement, items and the reset level survive save / reload after rebirth"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "rebirth keeps the level",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebirth :: rebirth resets Level to 1 and XP to 0 (Rebirths 1)",
+          "rebirth :: rebirth with a faction switch also keeps weapons / gold / enhancement",
+          "rebirth :: weapons, enhancement, items and the reset level survive save / reload after rebirth"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "legendary damage back to 90",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: B3 legendary damage 76 = 2 x tier 3, below tier 4",
+          "damage :: legendary base damage = 2 x the best shop tier, below tier 4",
+          "damage :: legendary power = sqrt(2) x iron (2 x damage)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "10% scroll back to +3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: B1 expected gain per use at +1..+9 = +0.55 / +0.55 / +0.05",
+          "config :: B1: no enhance scroll loses enhancement on average (+1..+9 before the cap)",
+          "config :: enhance scroll Enh10 chance/plus",
+          "enhance :: success adds exactly Plus (+1/+3/+5), capped at +10"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "PowerOf ignores enhancement",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: +10 = x2 damage = x sqrt(2) power",
+          "damage :: JusticeService.GetPower passes the WeaponEnhance attribute (rebirth bonus included)",
+          "damage :: PowerOf uses the enhanced weapon damage"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "JusticeService power ignores WeaponEnhance",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: JusticeService.GetCombatPower passes the WeaponEnhance attribute (no rebirth bonus)",
+          "damage :: JusticeService.GetPower passes the WeaponEnhance attribute (rebirth bonus included)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvP combatPower fallback ignores WeaponEnhance",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: PvPService combatPower fallback reads the WeaponEnhance attribute (not the per-tier table)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "EnhanceMult not clamped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: EnhanceMult endpoints (+10 = x2)",
+          "damage :: PowerOf: missing / NaN enhance = +0, clamped at +10, missing mult = 1",
+          "damage :: WeaponDamage sample",
+          "damage :: WeaponDamage(t, l, e) = base x (1 + 0.1 x clamp(floor(e), 0, 10)); nil/NaN/inf/non-number -> x1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "PvP power ratio not clamped",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: +10 vs +0 on the same weapon is clamped",
+          "damage :: ComputePvPHit ratio always within [PowerRatioMin, PowerRatioMax]",
+          "damage :: tier 1 +0 vs tier 8 +10 clamps at PowerRatioMin",
+          "damage :: tier 8 +10 Lv100 vs tier 1 +0 Lv1 clamps at PowerRatioMax",
+          "damage :: victim enhancement lowers the ratio (clamped)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "monster hit ignores enhancement",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "damage :: ComputeMonsterHit scales with the WeaponEnhance attribute"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "810d154c99fa9f12a2c3cb487406e8538bce96645d84a9912eb3ed2ea699cc44",
+    "src/ReplicatedStorage/Shared/Net.luau": "4371d076e211e9c98842c738dc105c0e0c534bc68f7cf448d13cb8279bbd3f6e",
+    "src/ReplicatedStorage/Shared/Util.luau": "e266e115374db1c243b0f2057905c325ff3ca2e824812c8034d30b9c625f347e",
+    "src/ServerScriptService/DataService.luau": "fc52f4bd0eec0acc5fca6a2c7b870048d5296771d24cfcd53abd7a56eadce5a5",
+    "src/ServerScriptService/PlayerService.luau": "7d8da32dab887ec6ece9d9f7730817b6ddc451ff2ffc9ec5a637136a74543f70",
+    "src/ServerScriptService/ProgressionService.luau": "5d6828a50dd0b6cb9cbf88328d206b4e70eb759064dd87435a967d02a7cfb856",
+    "src/ServerScriptService/CombatService.luau": "596c3d6085be13f5328ba2e13e4f52ba002106d6e7ff476e4a2f86ea24ace5c3",
+    "src/ServerScriptService/LootService.luau": "0f777a1e3d66a40ad1ee47d55e065553b3f5c132f0550013f470d5b77aa2e66d",
+    "src/ServerScriptService/JusticeService.luau": "03e31fe9378bdf8d1fac06eaaf5b63965d3579ca99fe0bd7eb07298f20abf150",
+    "src/ServerScriptService/PvPService.luau": "1f4b7886fc5d1205c41dd05eb5530ea0543e4224af84713af66e6c1b2c7e97d0"
+  },
+  "fixtureSHA256": "2703c9912ffd887b86cab1c280d2dec8a1a97d300e4cc1e37310fa274c950982",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-11 / A23-12 / A23-14 + review B1-B13 (2026-10-05): one own server roll per kill contributor; items auto-granted, never lost; enhance scrolls 70% +1 / 30% +3 / 10% +5, failure 50% -1 (never below +0) else kept, max +10, refused at +10; transfer scrolls 70/30/10% ADD the source +N onto the target up to +10 and leave the rest on the source (lossless), refused when the target is +10 or the source +0, failure changes nothing but uses the scroll; scrolls refused in PvP combat (kept); equip needs a living character and no PvP combat, MinLevel gates purchases only (owned weapons re-equip at any level); drop tables: scroll chances rise with the zone (reviewer B2 table, transfer ~1/3), potions halved; legendary damage 76 = 2 x tier 3; PowerOf includes enhancement (Justice/PvP read the WeaponEnhance attribute); owner-only Inventory remote { Items = known ids, Enhance = 8 tiers } replaces ItemsJson/EnhanceJson; unknown saved ids kept but hidden; full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (6 s guide, Fx First); LootRoll debug is count-only; rebirth resets only Level/XP (gold, weapons, enhancement, items kept); first BigSlime = one Enh70 once; Slime jackpot tier 8 at 1/20000 (x3 golden); duplicate weapons -> gold; materials sold only at the anvil, removed before payment.",
+  "limitations": "Offline service doubles (DataStore = JSON round trip, rate limit clock, ShopService.CanBuyWeapon and CombatService.IsInCombat stubbed for LootService, a stand-in character for Util.IsAlive, task.defer flushed by the fixture, Inventory remote captured). Justice/PvP power helpers are extracted functions, not the whole services. Client item panel, Fx, real MonsterService kills, multiplayer and Studio play are not certified here."
+}

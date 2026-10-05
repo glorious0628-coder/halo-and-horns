@@ -1,0 +1,832 @@
+{
+ "count": 40,
+ "ranked": [
+  {
+   "id": "fairness-3",
+   "lens": "fairness",
+   "title": "조각의 시험: 다음 시험을 문장으로 보여 주고, 안 셌으면 이유를 한 번 알려 주기",
+   "player_experience": "지금 상황: 퀘스트 줄에는 \"조각의 시험 1/3\"만 보인다. 무엇이 남았는지 알 수 없다. 스킬로 잡은 슬라임은 시험 ①(공격만으로 3마리)에 조용히 안 세지고, 체력이 반 아래일 때 잡은 왕 슬라임도 조용히 안 세진다. 자동 전투를 얻는 유일한 길에서 아이가 막혀 포기한다.\n바꾼 뒤:\n- 줄에 지금 할 시험이 바로 보인다: \"공격만으로 슬라임 2/3\" → \"스킬 한 번에 2마리\" → \"체력 반 넘게 왕 슬라임\".\n- 안 셌을 때 이유를 한 번만 알려 준다: \"스킬이 닿은 슬라임은 안 세요 · 공격 버튼만!\", \"체력이 반보다 적었어요 · 물약 먹고 다시!\"",
+   "why_fun": "시험이 숨은 규칙이 아니라 바로 도전할 짧은 목표가 된다. 가장 큰 편의 보상(자동 전투)과 첫 선악 선택(정화/삼킴)까지 막힘 없이 이어진다.",
+   "grounded_in": "src/ServerScriptService/StoryQuestService.luau:\n- rowFor(355-364): Trials 분기는 완료 개수만 넣어 string.format(\"조각의 시험 %d/3\")을 보냄\n- eventAmount(158-163): BasicKill(info.SkillHit)·SafeKill(체력<MinHP)을 알림 없이 0으로 처리\n\nConfig.StoryQuests.Defs.S0(Trials a/b/c)\n\nSPEC_ADDENDUM A23-2\n\nquest_chain 원칙 8(줄은 한글 14자 안팎, 대사는 1~2줄)\n\nreview_2026-10-05 A11(첫 10분 선악)",
+   "implementation": "1) 줄 문구\n- Config S0 Trials의 각 항목에 Label을 둔다(예: \"공격만으로 슬라임 %d/%d\").\n- rowFor는 첫 미완료 항목의 Label과 그 항목의 P/Count로 text·progress를 만든다.\n- 전체 \"시험 n/3\"은 PC에서 펼쳤을 때만 보인다.\n\n2) 안 센 이유\n- eventAmount가 0을 돌려주는 두 경우, 플레이어마다 5분에 한 번만 Net.Notify를 보낸다(쿨다운은 모듈 표 안에 둔다).\n\n3) 같은 방식\n- N2(Trials)에도 Label을 두고, 없으면 지금 문구로 대체한다.\n- 폰 한 줄 14자를 749×361 화면에서 확인한다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "없음(문구만). 용어는 '평타' 대신 '공격 버튼만' 추천",
+   "risks_conflicts": "- 폰 한 줄 길이 제한이 있다.\n- 안 센 이유 알림이 사냥 중 반복되지 않도록 쿨다운을 둔다.\n- 서버 판정·보상은 바뀌지 않아 A23-2 계약과 충돌하지 않는다.",
+   "score": 28,
+   "judge_notes": [
+    "검증: rowFor는 Trials를 '조각의 시험 %d/3'로만 보여 주고, BasicKill(SkillHit)과 SafeKill은 조용히 0으로 처리한다. 자동 전투 해금 관문에서 막히는 실제 원인이다. 가장 싸고 확실한 명확성 개선이다.",
+    "rowFor는 '조각의 시험 %d/3'만 보내고, BasicKill·SafeKill은 알림 없이 0을 돌려준다(확인). S0은 자동 전투를 여는 유일한 길이라 막히면 안 된다. 문구와 쿨다운만 추가하고 판정은 그대로라 비용 대비 가치가 가장 크다.",
+    "확인: rowFor의 Trials 분기는 '조각의 시험 %d/3'만 보내고, eventAmount는 BasicKill(SkillHit)과 SafeKill(MinHP)을 알림 없이 0으로 처리함. 베타 필수인 S0(자동 전투 해금 경로)의 막힘을 문구와 5분 쿨다운 Notify로 없앰. 서버 판정은 그대로라 A23-2 계약과 충돌 없음. 1순위급."
+   ],
+   "dups": []
+  },
+  {
+   "id": "first15-6",
+   "lens": "first15",
+   "title": "성장 체감 알림: '이제 왕 슬라임 10방 → 5방!'",
+   "player_experience": "나무 검을 사면 큰 글씨로 '이제 슬라임 2방 · 왕 슬라임 5방!'이 뜬다. 궁수가 나무 활을 사면 '이제 스킬 한 방에 왕 슬라임!', 주문서 +1에 성공하면 '왕 슬라임 5방 → 4방', 레벨업으로 숫자가 바뀌는 순간에도 레벨업 문구 옆에 붙는다.",
+   "why_fun": "공격력 숫자(8 → 15)는 아이에게 와닿지 않지만 '몇 방'은 손으로 느낀다. 상점 구매, A23-11/12 주문서 강화, 레벨업이 모두 같은 말로 '내가 세졌다'를 보여 주면 '사냥 → 전리품 → 준비 → 더 어려운 도전'의 준비 단계가 기분 좋은 순간이 된다. 다음 목표(철 무기 = 왕 슬라임 3방)에도 이유가 생긴다.",
+   "grounded_in": "Config.SwingHitsToKill(tier, level, classId, monsterId, factionId, enhance)·Config.WeaponDamage·Config.EnhanceMult(Config.luau:221-245, 대장간 줄 '슬라임 N방'에 이미 쓰는 중이고 뿔 +15%도 반영됨); Fx announceLevelUp(Fx.luau:1796)·handlers.Upgrade(:3599)·showMilestone(:1725); reference_lessons_2026-10-05.md #6, X5 '공격 N→M (슬라임 3방→2방) 표시'",
+   "implementation": "Fx의 Feel 표 안(200 local 한도)에 Feel.hitsSnapshot()을 만든다. 지금 지역 주 몬스터와 BigSlime(Lv<10)에 대해 평타 몇 방(SwingHitsToKill)과 스킬 한 방 가능 여부(WeaponDamage×class.Damage×(1+진영 보너스)×BasicSkill.DamageMultiplier ≥ HP)를 계산한다. Level·WeaponTier·무기 강화 속성이 바뀔 때 전후를 비교해서 줄었으면 기존 Announce에 ' · 왕 슬라임 10방 → 5방' 또는 '스킬 한 방에 왕 슬라임!'을 붙인다. 레벨업이면 같은 Announce에 붙이고, 구매·강화 결과 뒤에는 uiCall(\"Announce\")를 쓴다. 문구는 Config.Text에 둬서 번역할 수 있게 한다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "문구만 확인하면 된다(없으면 추천안대로).",
+   "risks_conflicts": "치명타·스킬·버프 때문에 실제와 조금 다를 수 있으니 '평타 기준'으로 계산하고 표현한다. 레벨당 피해 2%라 레벨업으로 숫자가 바뀌는 일은 드물다(바뀔 때만 나오니 의도대로다). 강화 속성 이름은 지금 만드는 중인 LootService에 맞춘다. 대장간 줄과 같은 함수를 써야 숫자가 어긋나지 않는다.",
+   "score": 27.333333333333332,
+   "judge_notes": [
+    "검증: Config.SwingHitsToKill(enhance 포함)를 대장간 줄에서 이미 쓴다. LootService는 'Enhance' Fx를 보내지만 Fx에 handlers.Enhance가 없어서 자연스럽게 붙일 자리가 있다. 지금 강화 성공 문구는 '공격 %'인데, '몇 방'이 아이에게 가장 와닿는 성장 표현이다.",
+    "Config.SwingHitsToKill(enhance 인자 포함)이 있고 Panels 대장간이 이미 사용 중. 같은 함수를 구매·강화·레벨업 알림에 재사용하면 된다. reference #6 권고와 일치. 새 그림 없음, 위험 낮음.",
+    "Config.SwingHitsToKill(enhance 인자 포함)이 이미 있음. 숫자도 검증함: 나무 검이면 슬라임 2방·왕 슬라임 5방, 궁수 티어2 스킬은 49.5로 40 이상이라 한 방. 클라이언트에서 Announce에 글자만 붙이면 됨. '준비 → 강해짐' 순간을 거의 공짜로 만들어 줌. Fx는 local이 167개라 Feel 표 안에 둘 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "first15-1",
+   "lens": "first15",
+   "title": "새싹 일일 임무: '슬라임 50마리'를 없애고 짧고 다양한 목표로, 1장 끝난 뒤 열기",
+   "player_experience": "첫 임무를 받자마자 '슬라임 50~60마리 쓰러뜨리기'가 뜨는 일이 없어진다. Lv1~9의 일일 임무는 '왕 슬라임 3마리', '스킬로 몬스터 3번 맞히기', '황금 몬스터 1마리', '사냥 골드 40', '거위 참여 1번'처럼 3~5분짜리 서로 다른 목표 3개가 된다. 첫날에는 1장 끝(M1-4 받기, 약 11분)에 '일일 임무가 열렸어요' 토스트와 함께 펼쳐진다. 그 전까지 화면에는 메인 1줄과 S0만 보인다.",
+   "why_fun": "참고 스트리머는 같은 동사에 숫자만 커지는 처치 사슬('여우 50마리') 앞에서 녹화를 끝냈다. 지금 코드에서는 Lv1 신규의 약 86%가 첫 1분 안에 바로 그 형태의 목표를 받는다(Kill 가중치 40, DailyUnits 50~60). 게다가 일일 1개 보상(180골드+300XP)이 첫 임무 150골드나 장 끝 보상(72골드+120XP)보다 커서, 아이가 이야기를 두고 슬라임 50마리 노가다를 고르게 된다. 짧고 서로 다른 동사로 바꾸면 '다음 행동 → 보상'이 3~5분마다 바뀐다.",
+   "grounded_in": "src/ReplicatedStorage/Shared/Config.luau Config.Quests.Templates(Kill/Gold DailyUnits {50,60}, Weight 40/20), Config.Daily.QuestMinutes=5, Config.DailyQuestReward; src/ServerScriptService/QuestService.luau newQuest(:178, 일일은 레벨과 상관없이 DailyQuestReward 지급); src/StarterPlayer/StarterPlayerScripts/HUD.luau:1998 접기 조건(지금은 수락하는 순간 TutorialStep>0이 되어 펼침); docs/review/reference_lessons_X5d5hqhB2os_2026-10-05.md 'N마리 벽'; reference_lessons_2026-10-05.md #4·#10(Lv1~9 일일 보상 크기가 실제 조절 손잡이); quest_chain_2026-10-06.md 원칙 4(처치 수 1~6, 같은 동사 3분 이하)",
+   "implementation": "Config.Quests에 Newbie = { MaxLevel = 9, QuestMinutes = 2, DailyUnits = { Kill = {12,15}, Gold = {12,15}, Release = {3}, Golden = {1}, Goose = {1} } }를 추가한다. QuestService.newQuest에서 kind==\"Daily\"이고 level<=9이면 Newbie 단위와 Config.HuntValue(level, Newbie.QuestMinutes) 보상을 쓴다(이미 있는 '다른 템플릿 우선' 규칙으로 3개가 서로 달라진다). 펼치는 시점은 서버가 메인 줄에 DailiesOpen 플래그(data.Story.Done.M1_4 또는 Lv5 이상)를 실어 보내고, HUD 1998줄의 folded 조건을 그 플래그로 바꾼다. 진행은 지금처럼 접혀 있는 동안에도 서버에서 센다. 새 크기는 다음 생성(다음 날·리롤)부터 적용하고 옛 세이브는 건드리지 않는다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "(1) Lv1~9 일일 크기와 보상: 추천 12~15단위, 2분어치(Lv1 72골드+120XP). 지금은 50~60단위, 5분어치(180골드+300XP). (2) 펼치는 시점: 추천은 1장 끝(약 11분)이다. 기존 lessons #4 기본안은 '첫 임무 받은 직후'였다.",
+   "risks_conflicts": "일일 XP가 줄면 Lv10 도달이 늦어져 quest_chain §4의 '25~30분 Lv10 대기' 위험 구간이 길어진다. 새 세이브 30분 실측으로 확인하고, 필요하면 예비 M2-R을 켠다. 휴가 보상(Config.VacationReward)은 기존 QuestMinutes를 계속 쓰도록 분리한다. publish의 CR-M6 보상 상한(capTo)은 낮추기만 하므로 문제없다. 장인 길드는 Goose 템플릿이 없으니 후보 풀이 비지 않는지 확인한다.",
+   "score": 25,
+   "judge_notes": [
+    "검증: Kill/Gold DailyUnits {50,60}, 일일 보상=HuntValue(lv,5), HUD 1998은 수락하자마자 펼침(확인). 서로 다른 3개를 뽑으면 Kill이나 Gold가 거의 항상 하나는 낀다. 아이 체감 개선이 가장 큰 항목이다. 다만 Goose(최대 10분 대기)와 Golden(4% 운)은 '3~5분' 약속과 맞지 않으니 새싹 풀에서 빼거나 가중치를 낮춘다. fairness-7을 흡수한다.",
+    "코드 확인: Kill/Gold DailyUnits {50,60}, 가중치 40/20, 일일 보상 HV(5)=Lv1 180골드+300XP, HUD 1998줄은 수락 순간 펼침. 실제 문제다. 다만 승인된 quest_chain 타임라인은 3:15에 일일을 연다 → 11분으로 미루려면 사용자 결정. fairness-7의 실측 분당 처치 공식을 합칠 것. Lv10 도달 시간 재측정 필요.",
+    "코드 확인: Kill 가중치 40/100, Kill·Gold DailyUnits {50,60}, DailyQuestReward=HuntValue(lv,5)=Lv1 180골드+300XP로 첫 임무 150골드보다 큼(QuestService.newQuest:223). 지금 접기는 수락(TutorialStep>0) 순간 풀림(HUD:1998). Config 표 하나와 newQuest 분기, HUD 조건 한 줄이라 마감 안에 싸고 안전함. VacationReward는 기존 QuestMinutes를 계속 쓰게 분리할 것. 다만 quest_chain 4절 타임라인은 3:15에 '일일 열림'이라 펼치는 시점(M1-4)은 사용자 결정이 필요함. 1순위 추천."
+   ],
+   "dups": []
+  },
+  {
+   "id": "goodevil-2",
+   "lens": "goodevil",
+   "title": "내 사냥이 하늘 왕관을 물들인다",
+   "player_experience": "빛·뿔 플레이어가 몬스터를 잡을 때마다 진영색 '+1'이 캐릭터에서 화면 위 왕관 쟁탈 게이지로 날아가 꽂히고, 게이지가 살짝 출렁인다. 황금 몬스터는 '+5'로 크게 날아간다. 교차로 분수 위 조각의 빛기둥과 하늘의 부서진 왕관은 지금 앞서는 편의 색(금빛↔붉은빛)으로 천천히 실시간 물든다. 판이 끝나면 '이번 판 내 점수 23 · 우리 편 점수의 12%' 한 줄이 뜬다.",
+   "why_fun": "슬라임 한 마리도 '우리 편 왕관'에 보탠다는 것을 매 순간 눈으로 본다. 그래서 '모든 행동이 기운다'가 그대로 보인다. 새싹도 PvP 없이 진영 싸움에 참여한다는 느낌을 받는다. 판 끝에 하늘색이 바뀌는 연출(이미 있음)이 '내가 보탠 결과'로 이어진다.",
+   "grounded_in": "WarService.luau: setPersonal이 플레이어 속성 WarPoints를 설정한다(85-90행). publish가 GameState에 WarHaloScore/WarHornsScore/WarMode를 쓴다(279-289행). payChests(305-322행), Siege 모드와 SiegeTarget=150(Config.luau 638행), 판 끝 하늘색 변경(applySky, 340-341행). MonsterService의 info.WarPoints(1036-1066행, 황금 몬스터 5점). HUD refreshWar와 MyWar 표시(1849-1869행, 3259-3260행). tools/preview_map.lua의 CrownOfBalance Neon Trim(302-312행)과 CrownShard Core/Shard/Beam(508-520행). Intro.luau의 crownPos/shard/burst(205-240행). reference_lessons_2026-10-05.md #13('사냥으로 우리 편 왕관 점수에도 기여' 제안), #8(자동 타격은 조용하게).",
+   "implementation": "모두 클라이언트 작업이고, (3)만 서버에 한 줄 추가한다. (1) HUD: WarPoints 속성이 오르면 캐릭터의 화면 좌표에서 WarMeter의 우리 편 칸까지 '+n' TextLabel을 트윈한다. 0.3초에 최대 1개만 띄우고, AutoCombatEnabled일 때는 크기와 빈도를 절반으로 줄이며 화면 흔들림은 없다. (2) 1초 간격 클라이언트 루프: WarHaloScore/WarHornsScore 비율로 색을 정한다(Siege 모드는 SiegeTarget 진행률). CrownOfBalance의 Trim과 CrownShard의 Core/Shard/Beam 색을 금빛(255,205,90)과 Config.Factions.Horns.Color 사이에서 로컬 Lerp한다. 동점이면 연한 흰금색이고, Intro.IsOpen() 중에는 원래 색을 둔다. (3) WarService.payChests 옆에서 기여자에게 'Config.Text.WarMyShare' 한 줄을 Notify한다. 장인 길드에게는 '+n'이 뜨지 않는다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "왕관 색이 실시간으로 바뀌는 연출을 넣을지(판 끝 하늘 변화와 둘 다 둘지) 정해야 한다. 날아가는 '+1'을 자동 전투 중에도 보여 줄지도 정해야 한다.",
+   "risks_conflicts": "처치가 몰리면 UI가 도배될 수 있다. 스로틀을 걸고 숫자를 합쳐서 보여 준다. 맵 오브젝트는 Studio 저장본에 있으므로 이름(Map/Landmarks/CrownOfBalance)을 찾지 못하면 조용히 건너뛴다. Fx·HUD 지역 변수 한도에 주의한다. 오프닝의 금빛 연출과 겹치지 않게 Intro가 열린 동안은 잠근다. 첫 임무 중 알림 미루기 규칙(결정 8)과 판 끝 한 줄이 겹치는지 확인한다.",
+   "score": 24.666666666666668,
+   "judge_notes": [
+    "검증: WarPoints 속성과 GameState WarHalo/HornsScore가 있고 reference_lessons #13과 맞는다. 슬라임 한 마리도 우리 편에 보탠다는 걸 매번 눈으로 보여 줘서 GDD §0을 첫 10분에 느끼게 한다. 폰에서는 '+1'을 스로틀하고 합쳐야 하며, 자동 전투 중에는 줄인다.",
+    "M2-1 시작 문구가 이미 '하늘 왕관은 조각을 더 모은 편 색으로 빛나요'라고 약속하는데, CrownOfBalance를 칠하는 코드는 없다(Intro만 참조). 이 약속을 지키는 아이디어다. WarPoints 속성·GameState 점수 확인. '+1' 날리기는 스로틀하고 자동 중엔 줄일 것.",
+    "확인: WarPoints 속성, OnAttr refreshWar(HUD:3259), Intro가 CrownOfBalance를 이미 찾음. 거의 클라이언트만 바뀌어 S. 다만 날아가는 +1은 처치마다 나와서 소음이 생기고, HUD 전면 재설계 때 위치가 바뀜. 판 끝 '내 점수' 한 줄과 왕관 색 바꾸기만 넣어도 충분함(reference_lessons #13 수준)."
+   ],
+   "dups": []
+  },
+  {
+   "id": "social-2",
+   "lens": "social",
+   "title": "'함께!' 표시: 같이 잡아도 둘 다 다 받는다는 걸 보여 주기",
+   "player_experience": "친구가 슬라임을 때리고 내가 마지막 한 방을 쳐도, 둘 다 머리 위에 '+3골드 · 함께!'가 뜬다. 처음 한 번만 '같이 잡아도 둘 다 골드·경험치·퀘스트·드랍을 전부 받아요!' 토스트가 나온다.",
+   "why_fun": "로블록스 아이들은 '스틸'에 예민하고 그 때문에 다툰다. 우리 게임은 이미 15초 안에 때린 모두에게 보상을 전부 주고 드랍도 각자 따로 굴리지만, 이 사실을 화면에서 알려 주지 않는다. 알려 주기만 해도 낯선 사람 옆에서도 같이 사냥하는 분위기가 되고, 친구와 함께 일일 퀘스트를 채우는 재미가 보인다. 거의 공짜로 협동 게임처럼 느껴지게 하는 방법이다.",
+   "grounded_in": "MonsterService.luau killRecord(1049-1067줄)가 eligible 목록과 perFaction을 만들고 기여자마다 MonsterKilled를 따로 쏜다. 근거는 다음과 같다:\n- Config.Monsters.ContributorWindow = 15\n- SPEC_ADDENDUM A23-12 '기여자마다 따로 굴리는 개인 보상(뺏기 없음)', LootService의 플레이어별 굴림\n- ProgressionService.luau:439 Net.Fx(player, 'Reward', {Pos, Gold, XP, Golden})\n- quest_chain M3-3 문구 '친구랑 같이 잡아도 다 인정!'",
+   "implementation": "killRecord에서 info.Together = #eligible을 넣는다. ProgressionService.onMonsterKilled의 Reward Fx에 Together를 함께 보낸다. Fx.luau Reward 처리에서 Together가 2 이상이면 골드 숫자 옆에 작은 '함께!' 글자를 붙인다(기존 숫자 스타일, 내 화면의 내 처치만). 첫 함께 처치 때만 토스트를 1회 띄운다. 플래그는 data.LootFlags.TogetherHint를 재사용하거나 세션 1회로 한다. Fx.luau는 지역 변수 한도가 가까우므로 기존 표(MOTION 등) 안에만 추가한다. 영어 번역을 위해 문구는 Config 텍스트 표에 둔다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "문구만 확인하면 된다('함께!' 표시와 첫 안내 한 문장).",
+   "risks_conflicts": "사람 많은 서버에서도 내 처치에만 붙으므로 소음은 작다. 자동 전투 둘이 같이 잡아도 표시되는데, 그래도 괜찮다. 결정이 필요한 위험은 거의 없다.",
+   "score": 24.666666666666668,
+   "judge_notes": [
+    "검증: killRecord는 15초 안의 기여자마다 MonsterKilled를 따로 쏜다. 이미 있는 규칙을 '함께!' 한 단어로 보여 주기만 하면 된다. 거의 공짜로 스틸 걱정을 풀어 준다. Fx 지역 변수 한도만 주의한다.",
+    "killRecord는 15초 안 기여자 모두에게 전체 보상을 보낸다(확인). 보상 Fx에 Together 수만 실어 보내면 된다. '스틸' 걱정을 줄이는 아주 싼 협동 신호다. 내 처치에만 붙여 소음도 작다.",
+    "killRecord가 이미 eligible 목록을 만들고 기여자마다 MonsterKilled를 쏨(:1052-1066). info.Together 필드 하나와 Fx Reward에 글자만 더하면 됨. '스틸' 다툼을 막는 안내를 거의 공짜로 넣음. 문구 확인만 필요함."
+   ],
+   "dups": []
+  },
+  {
+   "id": "first15-3",
+   "lens": "first15",
+   "title": "왕 슬라임이 터지면 꼬마 슬라임 3마리가 튀어나옴 (스킬 한 방의 맛)",
+   "player_experience": "왕 슬라임을 잡으면 '퐁!' 하고 슬라임 3마리가 그 자리에서 튀어나온다. 바로 Q를 누르면 한 방에 3마리가 터지고 '스킬 한 번에 3마리'(M2-5), S0 시험 ②, N1이 몰이 사냥 없이 자연스럽게 채워진다.",
+   "why_fun": "초원은 260×260칸에 슬라임 12마리와 왕 슬라임 4마리가 넓게 흩어져 있어서, 지금 '한 번에 2~3마리' 단계는 슬라임을 모으는 지루한 걷기가 된다. 분열하면 큰 적 → 작은 떼로 전투 리듬이 바뀌고, 매번 작은 깜짝이 생기며, 스킬을 쓰는 이유가 눈앞에 생긴다. 새 그림 없이 슬라임다운 고전 연출이다.",
+   "grounded_in": "MonsterService.spawnMonster(kind, opts{Position, Golden, FaceTo, HP})(MonsterService.luau:820), killRecord(:1025), aiStep 사망 분기의 scheduleRespawn(:1486-1488); Config.MonsterDensity 주석 'Lowering the target never despawns'(초과분은 재생성만 멈춤); Config.MonsterTypes.Slime/BigSlime; 무리를 요구하는 단계 S0 Trials b(SkillHit Min 2), M1_3, M2_5(Min 3 ×2), N1(Min 2 ×3); quest_chain §4-1 '몰이 사냥'; Fx deathPop·슬라임 WOBBLE",
+   "implementation": "Config.MonsterTypes.BigSlime.Split = { Kind = \"Slime\", Count = 3, Spread = 4, Life = 45 }를 추가한다. killRecord에서 MonsterKilled를 쏜 뒤, 개인 몬스터가 아니고 def.Split이 있으면 groundPoint(죽은 위치 + 4칸 안 무작위)에 Slime을 Count마리 spawnMonster(Golden=false)로 만든다. 새 레코드에는 _split=true, _noRespawn=true, _noAggroUntil=지금+1초를 붙인다. aiStep 사망 분기에서 _noRespawn이면 scheduleRespawn을 건너뛴다. Life초 동안 아무도 안 때리면 despawn(rec, fade)한다. 분열 슬라임은 일반 공용 처치라 퀘스트·일일·왕관 점수·A23-12 드랍에 그대로 들어간다. 살아 있는 동안 Slime 수가 목표를 넘어 일반 재생성이 잠깐 멈추므로 전체 마릿수는 저절로 맞춰진다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "분열 슬라임 보상(추천: 일반 슬라임 그대로, 또는 골드 0·경험치만), 대박(젤리 왕관) 굴림 포함 여부(추천: 포함. A23-12 '레벨1 몬스터'라 규칙이 단순함), 마릿수 3 대 2.",
+   "risks_conflicts": "여럿이 왕 슬라임을 같이 잡으면 순간 마릿수가 늘어난다(GlobalCap 72, Life로 정리). 왕 슬라임 사냥 가치가 약 2배가 되므로 M1-2·M2-6·N2와 일일 경제를 실측해야 한다. 분열 슬라임이 왕 슬라임 자리에 몰려 있는 동안에는 다른 곳 슬라임 재생성이 잠깐 멈춘다. 첫 임무 '슬라임 5마리'가 빨라지는데 이건 좋은 쪽이다. 개인(튜토리얼) 몬스터는 제외한다.",
+   "score": 24.333333333333332,
+   "judge_notes": [
+    "검증: spawnMonster opts.Position이 있고, killRecord는 공용 처치다. scheduleRespawn은 목표 수까지만 채우므로 _noRespawn 없이도 수가 저절로 맞는다. 폰에서 '펑 → 3마리 → Q 한 방' 손맛이 최고이고 M2-5·S0②·N1을 자연스럽게 채운다. 왕 슬라임 1마리가 슬라임 드랍 굴림 3번(대박 포함)을 더 만드니 경제를 측정해야 한다.",
+    "spawnMonster opts(Position/Golden/HP) 확인. 단 재생성 호출은 aiStep이 아니라 killRecord 끝(scheduleRespawn)에 있다. scheduleRespawn은 목표 수를 넘으면 안 만드므로 저절로 맞춰진다. 수명 정리와 GlobalCap 확인은 필요(spawnMonster 자체는 상한 검사 없음). 왕 슬라임 드랍 가치(Enh70 8%)가 두 배 가까이 되므로 실측.",
+    "spawnMonster(kind,{Position,Golden,HP})는 MonsterService 내부 local이라 분열 코드도 MonsterService 안에 둬야 함. 정정: 실제 재생성 예약은 aiStep이 아니라 killRecord:1073의 scheduleRespawn이므로 _noRespawn은 거기서 확인해야 함. reevaluate가 5초마다 수를 채우므로 Life 소멸 뒤에도 수가 맞음. 왕 슬라임 경제 가치가 약 2배가 되고 다인 시 마릿수가 순간 늘어남(GlobalCap 72). 새 그림 없이 무리 맞히기 단계(M2-5, S0 ②, N1)를 살리는 가성비가 좋음."
+   ],
+   "dups": []
+  },
+  {
+   "id": "first15-4",
+   "lens": "first15",
+   "title": "'함께할게요'를 누르면 바로 초원으로 출발 (첫 2분의 빈 걷기 제거)",
+   "player_experience": "안내자 대화에서 '함께할게요 · 초원으로'를 누르면 '초원으로 출발해요! (3초)'가 뜨고, 말랑 초원 입구에서 슬라임이 보이는 곳에 도착한다. 빛나는 발판 쓰는 법은 대장간 다음 단계(M1-2, 교차로 → 초원)에서 모루 바로 옆 발판으로 배운다.",
+   "why_fun": "Roblox 아이들이 가장 많이 나가는 때는 첫 1~2분이다. 지금은 빛·뿔 신규가 섬(z=±410)에서 태어나 수락 뒤 초원까지 약 54초를 걷는다(LOG: 수락 44초 → 초원 98초). 1단계 빛줄기는 섬에서 바다 위로 곧게 가서 길을 헷갈리게 한다. 수락하는 순간 바로 사냥이 시작되면 '선택 → 행동'이 끊기지 않는다.",
+   "grounded_in": "QuestService AcceptTutorial 흐름(setStep(STEP_GUIDE), QuestService.luau ~355); ZoneService.Travel(player, destId)(ZoneService.luau:455, Config.Travel.ChannelSeconds=3); PlayerService 스폰 = Config.HomeZoneId(섬); Config.Map.Pads(초원 발판 (52,0,-24)은 교차로 모루 근처); docs/review/checkpoint_2026-10-05_1400.md #7(빛줄기가 바다 위로 감); quest_chain §4 타임라인 측정값; AGENTS 페르소나 '불필요한 왕복 줄이기'",
+   "implementation": "수락을 처리하는 서버 코드에서 setStep(STEP_GUIDE) 뒤, ZoneService.GetZoneId가 SlimeMeadow가 아니면 pcall(S.ZoneService.Travel, player, \"SlimeMeadow\")을 부르고 Notify '초원으로 출발해요!'를 보낸다. 도착하면 ZoneChanged로 기존 1→2단계 전환이 저절로 일어난다. 채널이 취소되면 지금의 고정 줄 누르기와 빛줄기가 그대로 대신한다. Welcome 수락 버튼 글자만 '함께할게요 · 초원으로'로 바꾼다(Config 텍스트). M1-2 단계의 Guide에 발판 빛줄기를 주고 문구를 '빛나는 발판을 밟아 초원으로'로 바꿔 발판 배우기를 옮긴다.",
+   "effort": "S",
+   "needs_user_decision": "첫 이동을 자동 출발로 할지(추천), 아니면 [함께할게요]와 [바로 초원으로] 두 버튼으로 할지. 발판 배우기를 M0에서 M1-2로 옮기는 것.",
+   "needs_art": false,
+   "risks_conflicts": "quest_chain M0의 '배우는 것: 발판 이동'을 M1-2로 옮기므로 문서 갱신이 필요하다. 오프닝·선택 화면 가리기 순서(A23-9) 안에서만 출발해야 한다. 3초 채널 동안 대화창 닫기와 이동 연출이 겹치지 않는지 Studio에서 확인한다. 걷기로 세계를 보는 맛은 줄지만, 오프닝이 이미 세계를 보여 준다. 장인 길드는 교차로에서 태어나 차이가 작다.",
+   "score": 24.333333333333332,
+   "judge_notes": [
+    "검증: ZoneService.Travel(player,dest,instant)에 3초 채널이 있다. 이탈이 가장 많은 첫 1~2분에서 54초 걷기를 없애는 이득이 크다. 채널이 취소돼도 기존 빛줄기가 대신한다. 발판 배우기를 M1-2로 옮기고 quest_chain을 갱신해야 한다.",
+    "ZoneService.Travel(3초 채널), 진영 섬 스폰, LOG 44초→98초 확인. 첫 2분 빈 걷기를 없애는 효과는 크다. 다만 승인된 M0 '발판 이동 배우기'를 옮기는 변경이라 사용자 결정 필요. A23-9 오프닝·선택 화면 순서 안에서만 출발.",
+    "ZoneService.Travel(player,dest,instant)과 onAcceptTutorial→setStep(STEP_GUIDE)를 확인함. pcall 한 줄과 문구 변경이라 매우 쌈. 첫 2분의 54초 빈 걷기를 없애는 효과가 큼. 발판 배우기를 M1-2로 옮기므로 quest_chain M0 문서 수정과 사용자 확인이 필요함. 오프닝(A23-9) 뒤에만 실행되는지 Studio에서 확인할 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "loot-3",
+   "lens": "loot",
+   "title": "강화 빛이 무기에 보인다 (진영 색)",
+   "player_experience": "+4부터 무기가 은은하게 빛나고, +7부터 반짝이 가루가 날리고, +10은 네온 빛줄기가 생긴다. 빛 색은 내 진영 색이다(빛의 기사단 금색, 뿔 군단 붉은색, 장인 청록). 마을에서 남의 +10 칼을 보면 '나도 저거' 하게 된다. 무기 이름에는 \"철 검 +7\"이 붙는다.",
+   "why_fun": "강화가 숫자로만 남으면 자랑할 수 없다. GDD §0의 '겉모습으로 보인다'를 장비에도 적용하면, 어떻게 키웠는지가 남에게 보이고 진영 정체성이 강해진다. 치비 코스튬이 빠지면서 줄어든 겉모습 차이(A23-5)를 메운다.",
+   "grounded_in": "GDD §0 '겉모습으로 보인다'. A23-5에서 본인 아바타 + 무기 + 헤일로/뿔만 남았다. CharacterVisuals.buildWeapon(525줄)과 속성 → 재빌드 맵(63줄 'WeaponTier = { \"WeaponModel\" }')을 쓴다. 색은 Config.WeaponColor와 티어7 FactionColors를 따른다. 단계형 겉모습의 선례는 Config.Visuals.MarkScalePerRank(계급마다 헤일로·뿔 15%)이고, 컬링은 Config.Visuals.FxCullDistance를 쓴다.",
+   "implementation": "장착 무기의 강화값을 Player 속성 WeaponEnhance로 미러링하고 CharacterVisuals 재빌드 맵에 추가한다. buildWeapon은 단계별로 PointLight, Rate 낮은 ParticleEmitter, Neon 줄기 Part를 붙이고 색은 진영 색을 쓴다. Config.Visuals.EnhanceGlowSteps = {4, 7, 10}.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "빛 단계(+4/+7/+10)와 진영 색을 써도 되는지, 무기 이름·이름표에 +N을 표시할지.",
+   "risks_conflicts": "폰 성능을 고려해 파티클 수를 제한하고 남의 무기는 거리로 컬링한다. 젤리 왕관 검(티어8)은 이미 Neon이라 빛이 겹치지 않게 따로 처리한다. 승인 UI가 아닌 3D 무기 장식이라 승인 디자인을 바꾸는 것은 아니지만, 새 시각 효과이므로 한 번 보여 주고 확인받는다.",
+   "score": 24.333333333333332,
+   "judge_notes": [
+    "검증: LootService가 이미 WeaponEnhance 속성을 쓴다. CharacterVisuals 재빌드 맵에 한 줄만 더하면 연결된다. 남에게 보이는 빛나는 칼은 아이에게 최고의 자랑거리다. 폰 파티클 수, 티어8 네온과의 겹침, 새 시각 효과를 한 번 확인받는다.",
+    "LootService가 이미 WeaponEnhance 속성을 내보낸다. CharacterVisuals WATCH에 추가하고 buildWeapon만 손보면 된다. 자랑거리라 재미는 크다. 그러나 새 코드 시각 효과라 사용자에게 한 번 보여 주고 확인받아야 한다. 폰 성능 컬링.",
+    "확인: LootService.publish가 이미 WeaponEnhance 속성을 미러링함. CharacterVisuals WATCH에 WeaponEnhance={'WeaponModel'}를 더하고 buildWeapon에서 빛을 단계별로 붙이면 됨. 강화를 남에게 보여 주는 동기가 큼. 폰 파티클 수 제한, 티어8 Neon과의 겹침, 새 효과라 한 번 보여 주고 확인받는 것이 필요함."
+   ],
+   "dups": []
+  },
+  {
+   "id": "fairness-2",
+   "lens": "fairness",
+   "title": "PvP 지역에 도착하는 순간 10초 보호 + 새싹 졸업 60초 유예",
+   "player_experience": "지금 상황:\n- Lv15가 된 아이가 이동 메뉴나 교차로 발판으로 고블린 숲에 가면, 항상 같은 도착 지점(590,0,0)에 보호막 없이 떨어진다. 거기서 기다리던 뿔 군단 세 명에게 바로 쓰러진다. 서로 다른 사람이라 깡패 KO도 아니다.\n- 숲에서 사냥하다 Lv15가 되는 순간 새싹 보호가 즉시 꺼져, 싸우던 중에 갑자기 공격 대상이 된다.\n\n바꾼 뒤:\n- 도착하면 부활 때와 같은 보호막이 10초 켜진다. 내가 사람을 때리면 바로 풀린다.\n- 그 10초 안의 KO는 '부활 15초 안 KO'처럼 깡패 KO로 친다.\n- 숲 안에서 새싹을 졸업하면 \"새싹 보호가 60초 뒤 끝나요\" 칩이 뜬다. 60초가 지나거나 숲을 나가면 풀린다.",
+   "why_fun": "도착 매복으로 당하는 억울한 죽음을 없애, 싸움이 서로 준비된 상태에서 시작된다. 뿔 군단의 털기·45초 버티기 재미는 숲 안 사냥터에서 그대로 살아 있다.",
+   "grounded_in": "src/ServerScriptService/ZoneService.luau:\n- teleport(245-253), Travel(455-500; 발판은 instant): 도착은 GetSpawnCFrame(zone.Spawn ±6)\n\nConfig.Zones.GoblinWoods: Spawn (590,0,0), PvP 지역 경계 x=570\n\nsrc/ServerScriptService/PvPService.luau:\n- 보호막은 onCharacterSpawned(853-857)에서만 켜짐\n- 깡패 fresh 판정(487)은 부활만 셈(Config.Bully.FreshSpawnSeconds=15)\n- IsRookie(341-350)는 매번 새로 계산해서 레벨업 순간 바로 바뀜\n\ndocs/design/quest_chain_2026-10-06.md: M2-7·M3-5(새싹 졸업 대화)\n\nGDD §5-7",
+   "implementation": "1) 도착 보호\n- ZoneService.teleport가 성공한 뒤, 목적지 zone.PvP이면 S.PvPService.Protect(player, Config.PvP.SpawnProtection)를 부른다.\n- 새 함수 PvPService.MarkArrival(player)로 spawnedAt을 갱신한다. 기존 fresh(깡패) 판정을 그대로 재사용한다.\n\n2) 졸업 유예\n- PvPService.tickPlayer에서 rookie가 true에서 false로 바뀌는 순간 inPvP이면 graceUntil = now + 60.\n- IsRookie는 graceUntil 안이면 true를 돌려준다. PvP 지역을 나가면 graceUntil을 지운다.\n\n3) 표시\n- Config.Text에 문구 2줄을 추가한다.\n- 칩은 기존 ChipRookie 색을 쓴다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "- 도착 보호 시간: 부활과 같은 10초 추천\n- 졸업 유예: 60초 추천",
+   "risks_conflicts": "- 보호를 정찰에 쓰는 경우: 사람을 때리면 즉시 풀리는 기존 규칙으로 충분하다.\n- 별3 이상, 원한 자루, 괴수는 원래 이동 금지라 악당이 악용할 길이 없다.\n- 걸어서 들어오는 길(다리 → 바깥 들판 → x=570)은 대상이 아니다.\n- IsRookie를 쓰는 곳(일일 PvP 퀘스트, 저울 합계)에 유예가 섞여도 문제없는지 확인한다.\n- 오프라인 fixture에 '이동 후 보호' 검사를 추가한다.",
+   "score": 24.333333333333332,
+   "judge_notes": [
+    "검증: Protect는 onCharacterSpawned에서만 켜지고 ZoneService에는 호출이 없다. IsRookie는 매번 새로 계산한다. 도착 매복을 막는 싼 공정성 수정이다. Lv10 이상 대상이라 첫 10분에는 영향이 없다.",
+    "보호막은 CharacterSpawned에서만 켜지고 teleport에는 없다(확인). PvPService.Protect가 공개 함수라 한두 줄로 된다. 도착 매복을 막는 공정성 수정으로 깡패·새싹 규칙과 맞는다. IsRookie 유예가 일일 PvP·저울에 섞여도 되는지 확인.",
+    "확인: PvPService.Protect는 onCharacterSpawned(:856)에서만 불리고, 깡패 fresh 판정은 spawnedAt만 보며, IsRookie는 매번 다시 계산됨. teleport 뒤 Protect를 부르고 spawnedAt을 갱신하는 몇 줄과 졸업 유예라 S이고, 기존 '사람을 때리면 해제' 규칙을 재사용함. 베타 며칠 뒤 Lv15 첫 PvP의 억울한 죽음을 막음. 오프라인 fixture를 추가할 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "loot-1",
+   "lens": "loot",
+   "title": "드랍 등급 연출 사다리 (재료 → 70% → 30% → 10% → 대박)",
+   "player_experience": "슬라임이 터지는 순간 작은 빛 구슬이 내 몸으로 휙 날아오고 \"+슬라임 젤리\"가 뜬다. 같은 재료는 \"+슬라임 젤리 x3\"으로 합쳐진다. 주문서는 색이 다른 구슬과 조금 더 높은 '띵' 소리가 나고, 10% 주문서는 짧은 빛기둥까지 선다. 화면을 안 봐도 소리만으로 무엇이 떨어졌는지 안다.",
+   "why_fun": "처치할 때마다 복권을 긁는 맛이 생긴다. 등급별 소리와 색을 한 번 익히면 귀만으로도 두근거린다. 줍기 없는 자동 획득(A23-12)의 허전함은 '날아드는 구슬'이 채운다. 자주 나오는 재료는 가볍게, 드문 것만 크게 연출해 피로를 막는다.",
+   "grounded_in": "A23-12의 '죽는 순간 자동 획득, 바닥에는 반짝 연출만'. Fx.luau에 이미 있는 효과를 쓴다: orb(from,to,time,color)(677줄), burst/ring/pillar, showAmount의 Key 병합(findMergeTarget). 이벤트 처리는 handlers.Reward·handlers.Rare 패턴을, 소리는 Fx.PlaySound + SOUND_VOLUME + Config.Sounds(Coin·Release)를 따른다. MonsterService.killRecord가 기여자마다 MonsterKilled를 쏘는 구조를 쓴다. reference_lessons #8의 '자주 나오는 효과는 가볍게, 자동 타격은 조용하게'를 따른다.",
+   "implementation": "LootService가 처치 한 번의 굴림 결과를 Net.Fx(p,\"Loot\",{Pos,Drops={{Id,Rarity}},Auto})로 한 번에 보낸다. Fx에는 handlers.Loot와 LOOT 상수 테이블을 넣는다(200 locals 한계 대비). 연출 단계: Material = 흰 구슬 + 작은 burst, S70 = 초록, S30 = 파랑, S10 = 보라 + 짧은 pillar, Legend = 기존 handlers.Rare 재사용. 소리는 같은 Coin/Release 파일에 PlaybackSpeed만 1.0/1.2/1.4로 바꾸고, soundCache 키만 나눈다. 자동 전투 처치는 재료의 구슬·소리를 빼고 글자만 띄우되, 10% 이상은 자동이어도 연출한다. 글자는 중앙 텍스트 표에 넣어 한영 전환에 대비한다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "등급 색(흰/초록/파랑/보라/금)을 임시 코드 색으로 써도 되는지. 최종 색·아이콘은 Firefly 재그림 때 맞춘다.",
+   "risks_conflicts": "다인 서버와 고블린 숲에서 구슬이 너무 많이 뜰 수 있다. 내 드랍만 구슬로 보이고 남의 드랍은 10% 이상만 보이게 하며, nearCamera·FxCullDistance(150)·MaxDamagePopups를 재사용한다. Fx.luau는 locals 200개 한계에 가깝다. 색 연출이 '새 시각 스타일'로 읽힐 수 있으니 한 번 보여 주고 확인받는다.",
+   "score": 24,
+   "judge_notes": [
+    "검증: Fx handlers.Loot가 이미 아이템 색 글자와 버스트(무기는 금색 링)를 보여 준다. 남은 건 등급별 소리 높이, 10% 빛기둥, 자동 처치 재료를 조용히 하는 정도라 작은 다듬기(S)다. 귀로 듣는 레어 신호는 아이에게 강력하다.",
+    "Fx handlers.Loot는 이미 있고 Config.Loot.Items 색(70% 파랑, 30% 보라, 10% 주황)과 burst를 쓴다. 이 안은 구슬 날아오기, 소리 높이, 10% 빛기둥, 자동 처치 조용히를 더하는 증분이다. 싸고 손맛이 크다. 한 번 보여 주고 확인.",
+    "이미 상당 부분 구현됨: Fx handlers.Loot(:3509)가 아이템 색으로 '+이름 ×n'을 띄우고, 무기는 금 burst·ring·Coin 소리를 냄. Enhance 핸들러도 있음. 남은 것은 몸으로 날아오는 구슬, 등급별 소리 높이, 10%짜리 빛기둥 정도라 S짜리 다듬기임. 우선순위는 중간."
+   ],
+   "dups": []
+  },
+  {
+   "id": "social-4",
+   "lens": "social",
+   "title": "친구랑 같은 편 고르기 + 친구 합류 알림 + 친구 있는 곳으로 이동",
+   "player_experience": "친구를 따라 '참여'로 들어온 아이가 오프닝 뒤 진영 카드를 보면, 빛 카드 위 작은 띠에 '친구 2명이 여기 있어요'가 보인다. 게임 중 친구가 들어오면 '친구 민수님이 들어왔어요!'가 뜬다. 이동 창에는 '친구: 민수 (말랑 초원)' 줄이 있어 누르면 그 지역으로 간다. 메뉴에는 로블록스 기본 '친구 초대' 버튼이 있다.",
+   "why_fun": "로블록스는 친구 따라 들어오는 게임이다. 그런데 지금은 둘이 따로 진영을 고르면 숲에서 서로 적이 되어 치유·동료 공격력 보너스를 못 받고, 친구가 어디 있는지도 모른다. 같은 편에 서서 같이 크는 게 이 게임 최고의 재미이므로 첫 선택부터 친구가 보여야 한다. 코드 어디에도 친구 처리가 없는 지금 가장 비어 있는 부분이다.",
+   "grounded_in": "src 전체에 IsFriendsWith·SocialService 사용이 0건이다. FactionPicker.luau:765 updateBadges는 이미 카드 위 'WeakerBadge' 알약(약한 편 +300)을 켜고 끄는 자리가 있다. GameState HaloCount/HornsCount(FactionService.luau:91), CombatService PartyAura(빛 동료 +5%)와 빛 스킬 동료 치유(같은 편만), Config.Travel.Destinations와 Panels 이동 창도 근거다.",
+   "implementation": "(1) 클라이언트: 서버 안 다른 플레이어마다 LocalPlayer:IsFriendsWith(userId)를 pcall로 한 번만 묻고 결과를 저장한다. 진영 속성별로 세어 FactionPicker 기존 배지 알약에 '친구 N명'을 띄운다. 약한 편 배지와 겹치면 두 줄로 쓰거나 우선순위를 정한다.\n(2) PlayerAdded + 친구면 토스트 1회를 띄운다.\n(3) Panels 이동 창 맨 위에 친구 줄을 둔다(이름 + 지역 이름). 누르면 기존 Travel(zoneId)을 부르고, 레벨 제한·상대 마을 튕김은 서버 규칙 그대로 적용한다. 다른 편 친구는 '다른 편' 표시를 붙인다.\n(4) 메뉴에 SocialService:PromptGameInvite 버튼을 둔다. 초대 보상은 주지 않는다.",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "승인된 진영 화면에 '친구 N명' 글자를 기존 배지 알약으로 띄워도 되는지 정해야 한다. 그림은 바꾸지 않고, 약한 편 배지와 같은 부품이다. 친구 초대 버튼을 넣을지도 정해야 한다(보상 없음 추천).",
+   "risks_conflicts": "IsFriendsWith는 웹 호출이라 느리거나 실패할 수 있으므로 pcall과 캐시가 필요하다. '약한 편 +300'과 '친구 쪽'이 서로 다른 카드를 가리킬 수 있지만 아이가 고르면 된다. 친구에게만 위치를 보이므로 낯선 사람 추적 위험은 없다. 초대에 보상을 주면 로블록스 정책상 위험하니 절대 주지 않는다. 진영 화면은 승인 디자인이라 배지 위치는 사용자 확인이 먼저다.",
+   "score": 24,
+   "judge_notes": [
+    "검증: src 전체에 IsFriendsWith·SocialService 사용이 0건이고, FactionPicker의 WeakerBadge 알약을 재사용할 수 있다. 친구와 같은 편은 로블록스 재미의 핵심이다. 승인된 진영 화면에 글자를 띄우는 건 사용자 확인이 먼저다. 초대 보상은 주지 않는다. M이다.",
+    "src 전체에 IsFriendsWith·SocialService가 0건(확인)이라 가장 비어 있는 부분이다. 친구와 같은 편에 서는 것은 Roblox의 핵심 동기다. 진영 화면은 승인 그림이므로 기존 배지 알약에 글자만 넣는 것도 사용자 확인이 먼저다. pcall과 캐시 필수, 초대 보상은 절대 금지.",
+    "확인: src 전체에 IsFriendsWith·SocialService 사용이 0건임. 로블록스는 친구 따라 들어오는 구조라 리텐션 효과가 가장 큼. '친구 합류 토스트 + 이동 창 친구 줄'은 S로 먼저 넣을 수 있음. 진영 카드 배지는 승인 화면 변경이라 사용자 확인이 먼저임. 초대 보상은 절대 주지 말 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "goodevil-1",
+   "lens": "goodevil",
+   "title": "점수 하나마다 반응하는 후광·뿔과 계급이 오르는 순간",
+   "player_experience": "거위 구조, 조각 정화 등으로 명예 +1을 받으면 내 머리 위 후광이 한 번 '팅' 하고 빛나며 작은 '+1'이 뜬다. 다음 계급에 가까워질수록 후광의 빛과 반짝임이 점점 진해진다. 크기는 지금처럼 계급이 오를 때만 커진다. HUD 칭호 줄이나 메뉴에 '명예 7 · 기사까지 3'이 보인다. 10점이 되는 순간 후광이 커지는 연출과 함께 '기사가 되었어요!'가 뜨고, 같은 지역 사람에게 '○○님이 기사가 되었어요'가 보인다. 뿔(약탈자)도 똑같다. 장인 길드는 바뀌지 않는다.",
+   "why_fun": "지금은 0~10점 구간(설계상 첫 40~60분)에 겉모습이 전혀 바뀌지 않아서, 선택이 숫자 토스트로만 끝난다. 점수 하나하나가 몸에 보이면 GDD §0 '겉모습으로 보인다'를 첫 10분 안에 느낀다. 계급이 오르는 순간은 남에게 자랑할 거리가 된다.",
+   "grounded_in": "src/ServerScriptService/CharacterVisuals.luau: WATCH 표에서 Honor/Infamy가 바뀌면 FactionMark를 다시 만든다(50-51행). buildFactionMark는 계급별 크기만 계산한다(367-411행). sparkle/addLight 헬퍼가 있다(188-212행). Config.Titles 문턱은 0/10/50/200/1000(Config.luau 474-492행), Config.Visuals.MarkScalePerRank(1277행). HUD.refreshStats는 칭호 글자만 보여 준다(1738-1753행). 메뉴의 MarkLore 줄은 Panels.luau 1281행. PlayerService.SetStat/AddStat(610-625행)가 모든 명예/악명 변경 경로(PvPService·GrudgeService·StoryQuestService)를 거친다. 계급 오름을 처리하는 코드는 없다(grep 0건). quest_chain_2026-10-06.md 3-1절: 10점이 되면 계급 2이고 후광·뿔이 15% 커진다.",
+   "implementation": "(1) buildFactionMark에서 진행률 p = (점수 - 현재 문턱) / (다음 문턱 - 현재 문턱)을 구한다. addLight 밝기(예: 0.8→1.8)와 sparkle 비율(0→8)만 p에 비례시키고 크기 공식은 그대로 둔다. (2) 클라이언트 Fx에 'TiltPulse'를 추가한다. 내 Honor/Infamy 속성이 오르면 FactionMark에 0.4초 밝기 펄스를 주고, 기존 피해 숫자 풀에서 '+n'을 띄운다. (3) PlayerService.SetStat에서 key가 Honor/Infamy이고 값이 오를 때, 바뀌기 전과 후의 Config.GetTitle 계급을 비교한다. 계급이 오르면 본인에게 Net.Notify, 근처에 Fx burst, 같은 지역 플레이어에게 한 줄 알림을 보낸다. 이 알림은 오프닝·첫 임무 중 알림을 미루는 규칙(결정 8)을 따른다. (4) 'Config.Text.TiltProgress = \"%s %d · %s까지 %d\"' 한 줄을 HUD 칭호 옆이나 메뉴 MarkLore 아래에 넣는다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "코드로 만드는 반짝임·밝기 변화를 써도 되는지 정해야 한다. 계급 오름을 누구에게 알릴지(본인만 / 같은 지역 / 서버 전체)도 정해야 한다.",
+   "risks_conflicts": "Fx.luau와 HUD.luau는 지역 변수 200개 한도에 가깝다. 새 상태는 MOTION/L/TXT 표 안에만 넣는다. 반짝임은 폰 성능을 고려해 FxCullDistance 안에서만 켠다. 다음 단계의 HUD 전면 재설계 때 표시 위치가 바뀔 수 있지만, 텍스트 한 줄이라 옮기기 쉽다. 크기 규칙은 유지하므로 승인된 디자인을 바꾸는 것이 아니다. 아래 다른 아이디어들이 점수원을 늘리면 계급 2가 설계 예산(결정 3)보다 빨리 올 수 있다. 이것은 하루 상한으로 조절한다.",
+   "score": 23.666666666666668,
+   "judge_notes": [
+    "검증: WATCH에서 Honor/Infamy가 바뀌면 FactionMark를 다시 만들고, 크기는 계급만 반영한다. 점수는 1시간에 몇 번뿐이라 펄스는 드물게 뜨고, 핵심은 계급 2 축하 순간이다. RELEASE_PLAN은 '선택이 겉모습에 쌓임'을 정식 출시 + Firefly 시안 항목으로 두었으니, 밝기·반짝임 코드 효과도 한 번 보여 주고 확인한다.",
+    "계급 오름 처리 코드는 없다(GetTitle은 CharacterVisuals에서만 씀). 계급 오름 순간 알림과 '기사까지 3' 진행 글자는 싸고 좋다. 하지만 후광 밝기·반짝임을 코드로 바꾸는 것은 새 겉모습이다. RELEASE_PLAN은 '겉모습으로 쌓여 보이게'를 정식에 Firefly 시안 먼저로 잡았으므로 지금은 알림만.",
+    "확인: WATCH 표에서 Honor/Infamy가 바뀌면 FactionMark를 다시 만들고, 계급 오름 처리는 grep 결과 0건(GetTitle 사용처는 CharacterVisuals:378뿐). SetStat에서 전후 계급을 비교하는 일은 작음. 첫 1시간의 '겉모습으로 보인다'(GDD §0)를 채움. 코드 밝기·반짝임도 새 시각 효과이므로 한 번 보여 주고 승인받을 것. 정식의 Firefly '겉모습 누적' 계획과 충돌하지 않게 크기 규칙은 유지할 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "social-3",
+   "lens": "social",
+   "title": "이벤트 알림을 누르면 바로 가기 (거위·괴수, 폰 우선)",
+   "player_experience": "말랑 초원에서 사냥하는데 위쪽 칩에 '황금 거위까지 0:45'가 보인다. 칩을 톡 누르면 이동 창이 열리고 교차로 광장까지 빛줄기가 생긴다. 거위가 내려왔다는 알림 토스트에도 [가기]가 붙어 있다. 빛 진영은 괴수 칩을 누르면 괴수 쪽으로 화살표와 빔이 켜진다.",
+   "why_fun": "서버가 살아 있다고 느끼는 핵심은 10분마다 모두가 한 광장에 모이는 순간이다. 지금 폰 유저는 메뉴 → 이동 → 교차로를 찾아야 해서, 짧게 접속한 아이는 이벤트를 놓친다. 한 번 누르는 길만 있어도 광장이 꽉 차고 거위 협동(아이디어 1)도 살아난다.",
+   "grounded_in": "EventHUD.luau 머리말 'sends nothing to the server': 칩은 지금 누를 수 없다. HUD.luau:2761 L.StoryTap은 Guide='Goose'일 때 이미 이동 창 + 교차로 빔을 연다(퀘스트 S1용). Config.Goose.Position 광장, GDD §7 '화면에 항상 황금 거위까지 4:59', ZoneService Travel 채널(CR-L18 검증)도 근거다.",
+   "implementation": "EventHUD의 거위 카운트다운 칩, 줄다리기 바, 괴수 칩을 TextButton 겹 위에 둔다(기존 그림 그대로). 거위가 60초 이내이거나 진행 중일 때만 누를 수 있다. 누르면 C.HUD 쪽 L.StoryTap({Guide='Goose'})를 부른다. 이미 교차로면 광장 빔만 켠다. GooseStart 알림 토스트에는 60초 동안 [가기] 액션을 붙인다(UIKit.Toast에 콜백 옵션). 서버 쪽 변경은 없고, 이동 검증(전투 중·자루·별·괴수 금지)은 기존 그대로다. HUD 지역 변수는 L 표 안에만 둔다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "없음. 알림 토스트에 [가기] 버튼을 붙여도 되는지만 확인하면 된다.",
+   "risks_conflicts": "폰에서 전투 중 칩을 잘못 누를 수 있다. 바로 순간이동하지 않고 이동 창만 열어 피해는 없지만, 폰 749×361 화면에서 공격 버튼과 떨어져 있는지 확인해야 한다. HUD 배치 전면 재설계(RELEASE_PLAN 6번) 때 자리를 다시 잡아야 한다.",
+   "score": 23.666666666666668,
+   "judge_notes": [
+    "검증: EventHUD는 서버에 아무것도 보내지 않고, L.StoryTap은 Guide='Goose'일 때 이동 창과 빛줄기를 이미 처리한다. 재사용만 하면 된다. 폰 아이가 거위를 놓치지 않게 하는 싼 개선이다. 공격 버튼과 떨어져 있는지 확인한다.",
+    "EventHUD는 표시 전용이라는 것 확인. L.StoryTap의 Goose는 이동 창과 빔을 열지만, 이미 교차로면 아무것도 안 하므로 둥지 빔 추가가 필요하다. HUD의 L은 지역 표라서 EventHUD에 공개 함수가 필요하다. HUD 재설계 때 자리를 다시 잡는다.",
+    "확인: EventHUD는 'sends nothing'이고 칩을 누를 수 없음. L.StoryTap은 Guide='Goose'일 때 이동 창과 교차로 빔을 이미 열지만 HUD 내부 local L이라 HUD 함수로 내보내야 함(작음). 서버 변경이 없고 이동 검증도 기존 그대로라 안전함. 폰에서 공격 버튼과 잘못 눌리지 않는지 확인할 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "fairness-8",
+   "lens": "fairness",
+   "title": "직업 맛보기: Lv5 전에는 직업 변경이 무료이고 레벨도 유지",
+   "player_experience": "지금 상황: 직업은 시작 50초쯤 직접 써 보기 전에 고른다. 마법사를 고른 아이가 6분 뒤 친구의 전사를 보고 바꾸고 싶어진다. 그러면 'Lv4를 버리고 Lv1부터' 또는 '로벅스 변경권(약 49 R$)'이라는 두 길이 뜨고, 부모 카드로 사고 싶은 마음이 생긴다.\n바꾼 뒤: Lv5 전(첫 환생 전)에는 \"지금은 무료로 바꿔도 레벨이 그대로예요\"라고 뜨고, 바로 바꿀 수 있다.",
+   "why_fun": "첫 선택의 부담이 사라지고 세 직업을 다 맛본 뒤 정착해, 내 직업에 정이 붙는다. 어린이에게 실수 구매를 부르는 유료 압박을 출시 전에 없앤다.",
+   "grounded_in": "src/ServerScriptService/ClassService.luau onChangeClass(85-134): 무료 변경은 ProgressionService.ResetLevel(Lv1), 레벨을 지키려면 MonetizationService.UseTicket(\"Class\")\n\nConfig.Classes: 세 직업의 손맛 차이가 큼(전사 근접 주변 공격, 마법사 35칸 + 평타 MP2, 궁수 ×0.55 0.5초)\n\nquest_chain 4절: 직업 선택은 0:25~0:50\n\nGDD:\n- §10: 모든 바꾸기는 무료 또는 변경권\n- §2 '착하게 만들기 약속'\n- §10-1: 어린이 구매 유도 금지",
+   "implementation": "- onChangeClass에서 useTicket=false이고 Level < Config.ClassChange.FreeKeepLevel(5), Rebirths==0이면 ResetLevel을 건너뛴다.\n- 패널의 무료 길 문구에 \"레벨 유지\" 한 줄을 추가한다(Config.Text).\n- 안전 지대, 깡패·별 상태 같은 나머지 조건은 그대로 둔다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "유일한 판매 상품(직업 변경권)의 초반 가치를 줄이는 결정이다. 기준은 Lv5 추천, 대안은 첫 30분.",
+   "risks_conflicts": "- 변경권 초반 매출이 조금 줄 수 있다. 초반 구매는 대부분 실수 구매라 불만·환불 위험이 오히려 준다.\n- 레벨을 내리지 않으므로 이야기·일일 퀘스트의 레벨 기준 처리는 더 단순해진다.\n- GDD §10의 '두 길' 원칙에 저레벨 예외를 문서로 남겨야 한다.",
+   "score": 23.666666666666668,
+   "judge_notes": [
+    "검증: onChangeClass의 무료 경로는 항상 ResetLevel을 부른다. 초반에 직업을 맛보는 건 아이에게 재미이자 후회 방지이고, 실수 구매 압박도 없앤다. 유일한 판매 상품의 가치를 줄이는 결정이라 사용자가 정해야 한다. 조건 한 줄이라 매우 싸다.",
+    "무료 변경은 ResetLevel(Lv1)이다(확인). Lv5 전 레벨 유지는 한 줄 수정이고 아이의 실수 구매 압박을 줄인다. 하지만 유일한 로벅스 상품의 초반 가치를 낮추므로 사용자 결정이 필요하고, GDD §10 문서도 고쳐야 한다. Lv4까지는 잃는 양이 작아 체감 이득은 보통이다.",
+    "확인: ClassService.onChangeClass의 무료 경로는 ResetLevel을 부름. 조건 한 줄(Level<5 그리고 Rebirths==0)로 첫 선택 부담과 실수 구매 유도를 없앰. 변경권 상품은 아직 Id=0(준비 중)이라 매출 영향도 없음. 유일한 판매 상품 가치와 GDD §10 '두 길' 예외라 사용자 확인과 문서 기록이 필요함."
+   ],
+   "dups": []
+  },
+  {
+   "id": "loot-4",
+   "lens": "loot",
+   "title": "대박 순간: 서버 확성기 + 우리 편 왕관 점수 + 사냥 기록",
+   "player_experience": "슬라임을 잡는 순간 금빛 기둥이 하늘로 솟고, 서버 전체에 \"[뿔 군단] ○○님이 슬라임 속에서 젤리 왕관 검을 찾았어요!\"가 뜬다. 우리 편 왕관 쟁탈전 게이지가 쑥 오른다(젤리 왕관 = 왕관 조각을 품은 젤리). 근처 사람들은 그 기둥을 직접 본다. 아이템 목록에는 \"젤리 왕관 사냥 기록 · 슬라임 1,284마리\"가 쌓이다가, 찾는 순간 \"1,285마리 만에 찾았어요!\"로 바뀐다. +10 강화 성공도 작은 확성기로 알린다.",
+   "why_fun": "희귀 드랍 재미의 절반은 '남이 아는 것'이다. 같은 서버 사람들이 \"나도 슬라임 잡으러 갈래\"가 되는 순간이 생긴다. 진영 점수까지 오르니 개인의 행운이 우리 편의 자랑이 된다(GDD §0). 사냥 기록 숫자는 긴 운 사냥을 허탈함 대신 '기록'으로 남긴다.",
+   "grounded_in": "GooseService 희귀 보상의 Net.Fx(p,\"Rare\") + Net.NotifyAll(Config.Text.RareAnnounce)(466–467줄)와 똑같은 패턴이다. Fx handlers.Rare(3636줄)는 금 burst + ring + pillar를 이미 낸다. WarService.AddFactionPoints(factionId, n)(379줄)가 있다. Config.Weapons 티어8 '젤리 왕관 검'과 Slime 이름 '조각먹은 슬라임'이 설정으로 이어진다. 저장은 Data.LootFlags(Config.luau 121줄)를 쓴다. A23-9는 연출·선택 화면이 열린 동안 서버 전체 알림을 줄 세워 미루라고 정했다(EventHUD의 IsOpen 검사).",
+   "implementation": "LootService가 대박을 확정하면 다음 순서로 처리한다. ① 획득자에게 Net.Fx(\"Rare\")를 재사용하고, 주변에는 그 위치의 pillar를 보낸다. ② Net.NotifyAll로 진영 이름과 Util.PlayerDisplayName을 알린다. ③ WarService.AddFactionPoints(진영, Config.Loot.JackpotWarPoints)를 부른다(예: 30, 장인 길드는 없음). ④ LootFlags.JackpotHunt(슬라임 처치 수)를 저장하고 목록에 보여 준다. 확성기는 서버 전체에서 20초에 1번으로 묶고, +10 성공 알림은 한 사람당 10분에 1번만 낸다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "대박 때 진영 점수를 줄지, 준다면 얼마인지(30 = 황금 몬스터 6마리분). 젤리 왕관 검을 이미 가진 사람에게 또 나오면 어떻게 할지(추천: 비싸게 팔리는 '젤리 왕관 조각' 또는 10% 주문서 1장으로 바꿔 대박이 버려지지 않게). +10 강화 확성기를 넣을지.",
+   "risks_conflicts": "닉네임 노출은 이미 있는 거위 희귀 알림과 같은 수준이다. 오프닝·진영 선택 중에는 알림 대기열이 꼭 필요하다(A23-9). 자동 전투 처치도 대박 굴림에 포함되므로(A23-12 사용자 선택) 자리를 비운 사이 대박 확성기가 나올 수 있다. 사용자 결정대로 허용하고, Roblox 기본 무입력 퇴장은 그대로 둔다.",
+   "score": 23.333333333333332,
+   "judge_notes": [
+    "검증: 대박 NotifyAll, JackpotSelf, 중복 무기 골드(티어8 3000)는 이미 구현돼 있다. 남은 건 근처 빛기둥, 진영 점수, 'N마리 만에' 기록이라 S다. A23-9 알림 미루기 큐를 거치는지 확인해야 한다.",
+    "JackpotAll NotifyAll과 중복 시 3000골드 전환은 이미 구현돼 있다. 남은 것은 진영 왕관 점수, 근처 빛기둥, 사냥 기록 숫자, +10 확성기다. A23-9 오프닝 중 알림 미루기가 이 알림에도 걸리는지 확인할 것.",
+    "이미 구현됨: grantWeapon이 대박 때 NotifyAll(JackpotAll,'announce',8)을 보내고, 이미 가진 무기는 DuplicateWeaponGold로 골드가 됨. 남은 것은 AddFactionPoints, 주변 빛기둥, 사냥 기록 숫자임. 주의: LootService.sanitize는 LootFlags에서 true 값만 남기므로 처치 수 카운터는 다른 필드가 필요함. A23-9 알림 미루기 큐에 들어가는지 확인할 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "goodevil-5",
+   "lens": "goodevil",
+   "title": "소문이 난 NPC — 대장장이·물약 상인·안내자가 내 기울기를 알아본다",
+   "player_experience": "대장간이나 물약 상점을 열면 맨 위에 상인의 한마디가 나온다. 빛 플레이어가 방금 거위를 구조했으면 '거위 구조대 왔구나! 칼 좀 봐 줄까?', 뿔이 밀렵했으면 '밀렵꾼 손님이네. 현금이지?', 빛인데 조각을 삼켰으면 '후광이… 좀 어둑하네?', 장인 길드에게는 '길드 장부에 잘 적어 뒀어요.' 내 마을에 처음 들어가면 안내자도 한 줄 말한다.",
+   "why_fun": "내가 한 선택을 세계가 기억한다는 느낌(GDD §0 '결과가 따라온다')을 새 시스템 없이 문장만으로 준다. 같은 상점을 여러 번 열어도 말이 달라져서 마을이 살아 있게 느껴진다.",
+   "grounded_in": "GDD §0-1 'NPC는 상황에 맞게 반응한다 — 현재 구현은 미리 작성한 문구의 상황 분기'. StoryQuestService의 data.Story.Pick/First.Goose(9행, 497-514행). Config.StoryQuests.Speakers와 TXT.OddHalo/OddHorns(Config.luau 1011행, 1020-1030행대). Panels.luau BUILDERS.WeaponShop(1795행)과 PotionShop(2023행)의 상단 addText 패턴. quest_chain 5절 'Pick에 따라 조각 말투가 달라지는 토스트'(정식 출시 항목)와 원칙 8(악마 쪽은 만화 악당처럼 장난스럽게). M1-4 진영 마을 대사.",
+   "implementation": "Config에 NPCLines = { Smith = {…}, Potion = {…}, Guide = {…} }를 만들고 상태마다 2~3줄을 넣는다(중앙 텍스트 표라 영어 번역 가능). 고르는 순서: 이번 접속의 최근 사건(거위 결과, 계급 오름) > 가장 최근 Pick > 반대편 기울기(빛인데 Infamy가 Honor보다 큼 등) > 계급 > 기본 대사. 서버는 Pick을 저장할 때와 PlayerReady 때 플레이어 속성 'LastPick'과 'LastTiltEvent'를 설정한다. 클라이언트 Panels가 상점을 열 때 한 줄을 고른다. 안내자는 ZoneChanged로 내 마을에 처음 들어갈 때 1회 토스트를 띄운다. 새 원격도 새 보상도 없다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "진영별 대사 문구를 승인받아야 한다(특히 뿔 쪽 장난스러운 말투). 반대편을 고른 일을 NPC가 언급해도 되는지도 정해야 한다.",
+   "risks_conflicts": "대사가 길어지면 읽기 숙제가 된다. 14자 안팎 한 줄로 쓴다. 아이 대상이라 비꼬거나 잔인한 말은 쓰지 않는다(원칙 8). 상점 화면 맨 위에 한 줄만 추가하므로 승인된 UI 구조는 유지된다. Pick 데이터를 속성으로 내보낼 때 기존 속성 이름과 겹치지 않는지 확인한다.",
+   "score": 23,
+   "judge_notes": [
+    "문구만 추가해서 싸지만, 아이는 상점 맨 위 한 줄을 거의 읽지 않는다. '세상이 나를 기억한다'는 맛은 있어도 체감은 작다. 정식 출시 후보로 둔다.",
+    "GDD §0-1 '미리 쓴 문구의 상황 분기' 그대로다. 새 원격·보상·그림 없이 Config 문구와 Panels 상단 한 줄만 쓴다. 대사 승인만 받으면 된다. 짧은 한 줄과 장난스러운 악당 말투(원칙 8)를 지킬 것.",
+    "Config 문구 표와 Panels 상단 한 줄이라 매우 싸고 안전함. 다만 아이들은 상점 윗줄을 잘 읽지 않아 재미 효과는 작음. quest_chain 5절은 'Pick 말투'를 정식 항목으로 둠. 문구 승인(특히 뿔 말투)이 필요함. 여유가 남으면 넣을 항목."
+   ],
+   "dups": []
+  },
+  {
+   "id": "social-1",
+   "lens": "social",
+   "title": "황금 거위 '함께 끌기' 모드 (상대 진영이 없을 때)",
+   "player_experience": "조용한 서버에 빛의 기사단 3명만 있다. 거위가 내려오면 양쪽 줄다리기 대신 게이지 하나가 뜬다: '함께 구조 31/45 · 0:24'. 셋이 같이 때려 게이지를 채우면 '구조 성공!' 축하와 함께 보상을 받는다. 못 채우면 지금처럼 40% 보상과 응원별을 받는다.",
+   "why_fun": "베타 초반 서버는 작아서 한 진영만 접속해 있는 일이 많다. 지금 코드는 그때마다 무조건 무승부로 처리하고 '상대 진영이 없어서 … 무승부예요'를 띄운다. 10분마다 오는 대표 서버 이벤트가 소규모 서버에서는 매번 김이 빠진다는 뜻이다. 인원수에 맞춘 협동 목표로 바꾸면 친구 2~3명만 있어도 '같이 해냈다'는 순간이 생긴다. 전쟁의 '몬스터 포위전'과 같은 생각이다.",
+   "grounded_in": "src/ServerScriptService/GooseService.luau finish()의 noRival 분기(CR-L8, 약 505-531줄)가 상대 0명이면 result를 Tie로 바꾼다. Config.Story.GooseNoRival이 있다. Config.War.SiegeTarget과 GDD §5-4 '한 편만 서버에 있으면 몬스터 포위전'이 같은 패턴이다. Config.Goose ManualCount/AutoCount/MaxCountsPerSecond와 MIN_MANUAL_HITS=3, EventHUD.luau 줄다리기 바, 퀘스트 S1(거위 첫 참여)도 근거다.",
+   "implementation": "GooseService.start()에서 FactionService.GetCounts를 확인해 거위 진영이 한쪽뿐이면 mode='Coop'으로 고정한다. GameState에 GooseMode와 GooseTarget을 넣는다. target은 Config.Goose.CoopPerHead(예: 15점, 수동 2점 × 약 8번)에 시작 때 그 진영의 준비된 인원(최소 1)을 곱한다. finish()에서 Coop이고 그 진영 합계가 target 이상이면 result를 그 진영으로 하고 보상 배율 Config.Goose.CoopWinShare를 적용한다. 못 넘기면 기존 Tie 경로를 탄다. 직접 3번 이상 때려야 하는 규칙, 장인 길드 제외, GooseFinished(rewarded)는 그대로 둔다. EventHUD는 바 하나를 target 대비로 채우고 글자만 바꾼다(기존 BarTrack 사용). 1명·2명 클라이언트로 검사한다.",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "협동 성공 보상 크기. 추천은 이긴 편 보상의 70%다(무승부 40% < 협동 70% < 진짜 승리 100%). 혼자 접속해도 target이 1인분이라 성공할 수 있게 둘지도 정해야 한다(추천: 허용).",
+   "risks_conflicts": "혼자 서버에서도 10분마다 사냥 10분어치의 70%를 받으면 수입이 크게 오른다. 측정한 뒤 배율을 조정해야 한다. 작업 세션이 지금 GooseService와 S1 퀘스트를 만지고 있어 충돌하지 않게 순서를 맞춰야 한다. 끝나기 직전 상대 진영이 들어오는 경우도 시작 때 정한 모드로 끝까지 가게 해야 결과가 흔들리지 않는다.",
+   "score": 22.666666666666668,
+   "judge_notes": [
+    "검증: GooseService.finish는 상대 진영이 0명이면 Tie로 강제한다(CR-L8). 베타 초반 소서버에서는 10분마다 오는 대표 이벤트가 매번 무승부가 되니 고칠 가치가 크다. '함께 구조 31/45' 게이지 하나가 아이에게 명확하다. 작업 세션이 GooseService와 S1을 만지는 중이라 순서를 맞추고, 보상은 승리보다 낮게 둔다.",
+    "goodevil-3과 같은 '상대 진영이 없을 때 거위' 해결안이다. 인원 비례 목표와 70% 보상 배율은 좋은 세부라 goodevil-3에 합칠 것. 작업 세션이 지금 GooseService·S1을 만지고 있어 순서 조율 필요.",
+    "goodevil-3을 흡수한 대표안. 작은 베타 서버에서 10분마다 오는 대표 이벤트가 매번 '무승부'로 끝나는 문제(CR-L8)를 고침. 꼭 할 것: Coop 승리 때 WinWarPoints(60)를 주지 않기(CR-L8 악용 방지), 보상 70%, 시작 때 정한 모드 고정, MIN_MANUAL_HITS 유지. 작업 세션이 GooseService·S1을 수정 중이라 그 뒤에 넣을 것. 1~3명 클라이언트 테스트가 필요해 M."
+   ],
+   "dups": [
+    "goodevil-3"
+   ]
+  },
+  {
+   "id": "fairness-6",
+   "lens": "fairness",
+   "title": "쓰러짐·연결 끊김 안심 세트: 잃은 것 한 줄 + [그 자리로] 버튼 + 끊겨도 털린 것보다 더 잃지 않기",
+   "player_experience": "지금 상황:\n- 마법사 아이가 왕 슬라임 시험 중 쓰러지면, 아무 말 없이 빛의 성채 섬에서 깨어난다. 뭘 잃었는지, 초원에 어떻게 돌아가는지 모른다.\n- 숲에서 맞던 중 폰 통신이 끊기거나 앱을 바꾼 Lv20 아이는 들고 있던 골드의 25%를 바닥값도 상한도 없이 잃는다. 그 순간 털렸을 때보다 더 많이 잃는다.\n\n바꾼 뒤:\n- 부활하면 \"왕 슬라임에게 쓰러졌어요 · 잃은 건 없어요!\"와 [말랑 초원으로] 버튼(기존 3초 이동)이 뜬다.\n- 처음 쓰러졌을 때만 \"체력이 낮으면 물약 버튼\" 팁을 한 번 보여 준다.\n- 연결이 끊겨도 털렸을 때와 같은 양까지만 잃는다.",
+   "why_fun": "죽음이 헤매는 시간이 아니라 '다시 도전' 한 번 누르기가 된다. 폰 끊김이 죽음보다 비싼 이상한 상황을 없앤다.",
+   "grounded_in": "죽었을 때 안내:\n- PvE 사망 문구가 없음(Config.Text)\n- HUD.luau:2601의 길 안내는 첫 임무 2단계에만 있음\n- 부활 장소는 Config.HomeZoneId(진영 섬), 이동은 Config.Travel ChannelSeconds 3\n- 근거 문서: review_2026-10-05 A13, reference_lessons #3, GDD §5-7(몬스터에게 죽으면 잃는 것 없음)\n\n연결 끊김:\n- ProgressionService.onPlayerLeaving(451-463): CombatService.IsInCombat(PvP 15초)이면 carried×(1-0.25)\n- 같은 상황의 KO 손실(PvPService.luau:525-531): 안전 바닥 Lv×10 뒤 20%, 상한 Lv×100",
+   "implementation": "1) 쓰러졌을 때\n- PlayerService.CharacterDied에서 PvP 킬러가 없으면 ZoneId와 마지막 몬스터 가해자 종류를 세션 표에 적는다(몬스터가 플레이어를 때릴 때 LastHitByMonster 속성).\n- 부활 뒤 Net.Notify 한 줄을 보내고, 고정 줄을 누르면 HUD StoryTap의 이동 경로(Travel 패널 + 빔)를 연다.\n- 버튼 목적지는 안전 지역(초원 등)만이다. PvP 지역에서 죽으면 기존 털림 문구에 \"금고 골드는 안전해요\"만 붙인다.\n\n2) 연결 끊김\n- 손실 = min(floor(max(0, carried − SafeFloorPerLevel×Lv) × CombatLogPenalty), PlunderCapPerLevel×Lv)\n- 괴수 경로(KaijuService.luau:508)는 그대로 둔다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "연결 끊김 벌칙을 KO 수준(안전 바닥 + 상한)으로 낮출지. 지금은 주머니 전체의 25%다.",
+   "risks_conflicts": "- [그 자리로]가 PvP 지역 재돌격 도구가 되면 안 되므로 안전 지역 목적지만 둔다.\n- 맞다가 일부러 나가 골드를 지키는 악용은, KO와 같은 손실이라 이득이 없다.\n- 별이 있는 악당이 나가면 마지막으로 때린 기사가 현상금을 받는 기존 규칙(payLeaveBounty)과 괴수 벌칙은 그대로다.",
+   "score": 22.666666666666668,
+   "judge_notes": [
+    "검증: onPlayerLeaving은 전투 태그 중이면 주머니 전체의 25%를 깎는다(바닥·상한 없음). KO 손실에는 바닥 Lv×10과 상한 Lv×100이 있다. 끊김이 KO보다 비싼 건 버그급이다. 쓰러진 뒤 [그 자리로] 버튼은 길 잃음을 막는다.",
+    "연결 끊김 벌칙이 상한 없는 25%이고 KO는 바닥과 상한이 있다(확인). PvE 사망 안내 문구도 없다. 단 현상수배 뿔은 PvE 사망에서도 25%를 잃으므로(VillainLossOnWantedPvEDeath) '잃은 건 없어요'는 분기해야 한다.",
+    "확인: onPlayerLeaving은 IsInCombat(PvP 태그)이면 주머니 전체의 25%를 바닥값·상한 없이 깎음. KO 손실은 바닥값 Lv×10과 상한 Lv×100이 있음. 공식 한 줄로 '끊김이 털림보다 비싼' 모순을 없앰. 몬스터 사망 안내와 [초원으로] 버튼도 기존 Travel·StoryTap 재사용이라 S. 버튼 목적지는 안전 지역으로만 둘 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "social-7",
+   "lens": "social",
+   "title": "말랑 대왕 습격: 초원에서 모두가 함께 잡는 정기 보스",
+   "player_experience": "'말랑 초원에 말랑 대왕이 나타났어요! (2:00)' 알림이 뜬다. 초원 가운데 금빛 왕 슬라임이 크게 출렁이고, Lv1 새싹, 장인 길드, 고렙이 모두 몰려와 때린다. 15초 안에 한 대라도 때린 사람은 전원 보상을 받는다. 빛과 뿔 중 더 많이 때린 편 쪽으로 왕관 점수가 기운다. 2분 안에 못 잡으면 '말랑 대왕이 도망갔어요!'로 끝난다.",
+   "why_fun": "지금 서버 레이드인 괴수는 별 5개 뿔 유저가 있어야 해서 베타 서버에서는 거의 안 나온다. 거위는 장인 길드와 상대 진영이 없는 서버에서 반쪽짜리다. 안전 지역에서 누구나 끼는 협동 보스가 있으면 서버에 사람이 있다는 게 느껴진다. 이야기 체인의 '25–30분 Lv10 대기'와 '장인 길드는 5분 박자가 없음' 위험 구간도 채운다. 공유 처치 보상이 이미 있어 협동이 자연스럽다.",
+   "grounded_in": "MonsterService.luau:820 spawnMonster(kind, opts)가 이미 opts.HP·opts.Golden·opts.Position을 받는다. 다른 근거는 다음과 같다:\n- Config.MonsterTypes.BigSlime, Config.Monsters.ContributorWindow=15\n- LootService 굴림의 mult(황금 배율 경로)\n- KaijuService의 '근처 인원당 체력 +15%' 패턴(Config.Kaiju.HPPerNearbyHalo)\n- quest_chain §4 '위험 구간 25–30분'·'장인 길드… 실측 1순위'\n- RELEASE_PLAN 사용자 메모(핼러윈 베타에 몬스터 다양성 원함), GDD §0",
+   "implementation": "새 작은 서버 모듈 또는 MonsterService 함수로 만든다:\n- 주기: Config.MeadowBoss.Interval(예: 15~20분, 거위·전쟁 끝과 겹치지 않게 오프셋)과 GameState MeadowBossNextAt/EndsAt.\n- 생성: spawnMonster('BigSlime', {Golden=true, HP=기본×(1+0.5×초원 인원), Position=초원 중앙})과 이름표 '말랑 대왕'. buildRig에 Scale 옵션을 작게 추가하거나, 금빛 Highlight만 쓴다.\n- 보상: 기존 처치 경로 그대로(기여자 전원, 개인 드랍)에 LootService mult를 올려 준다(예: ×5). 개인 점수와 WarShare는 그대로다.\n- 종료: 120초가 지나면 소멸하고 알림을 띄운다.\n- 화면: EventHUD에 거위 칩과 같은 모양의 칩을 두고, 아이디어 3처럼 눌러서 갈 수 있게 한다.",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "주기(추천: 20분), 보상 배율(추천: 드랍 ×5 + 왕 슬라임 기본 보상, 새 아이템 없음), 이름('말랑 대왕' 등)을 정해야 한다. 베타에 넣을지도 정해야 한다(10/24 마감 안, 이야기 체인 다음 순서).",
+   "risks_conflicts": "전쟁·거위·보스가 겹치면 알림이 너무 잦으므로 오프셋과 미루기 규칙이 필요하다. 고렙이 순식간에 잡으면 새싹이 못 끼므로 체력을 인원에 비례시키고 최소 생존 시간을 둔다. 몬스터 전체 상한(GlobalCap 72)에서 따로 빼야 한다. 자동 전투도 드랍에 포함된다(A23-12), 방치형 파밍이 늘 수 있다. 나중에 핼러윈·크리스마스 그림 테마로 쓸 수 있지만, 지금은 새 그림 없이 만든다.",
+   "score": 22.333333333333332,
+   "judge_notes": [
+    "spawnMonster(opts HP/Golden/Position)를 재사용할 수 있다. 누구나 끼는 협동 보스는 폰 아이에게 가장 신나는 순간이고, Lv10 대기 구간과 장인 길드의 빈 박자도 채운다. first15-8과 목적이 겹치는데 둘 중 이쪽이 더 강하다. 사용자의 핼러윈 몬스터 다양성 메모와도 맞는다.",
+    "spawnMonster(HP, Golden, Position)과 괴수 인원 비례 HP 패턴이 있다. 황금 x3에 드랍 x5를 곱하면 대박 확률이 x15가 되어 인플레이션이 생긴다. first15-8과 같은 '초원 정기 이벤트' 자리라 하나만 고를 것. GlobalCap에서 따로 빼야 한다.",
+    "first15-8을 흡수한 대표 초원 이벤트. spawnMonster가 HP·Golden·Position을 받지만 MonsterService 내부 local이라 공개 함수가 필요함. 25~30분 Lv10 대기 구간과 장인 길드의 빈 박자를 채움. 주의: LootService 배율이 GoldenMult 3과 곱해지면 대박 확률이 커지니(1/20000×3×5) 상한을 정할 것. 알림 오프셋과 GlobalCap 제외도 필요해 M. 이야기 체인이 끝난 뒤 넣을 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "first15-2",
+   "lens": "first15",
+   "title": "조각의 한마디: 60초 길 잃음 구조 + 필요한 순간 한 줄 힌트 (정화·삼킴에 따라 말투가 바뀜)",
+   "player_experience": "60초 동안 퀘스트 숫자가 그대로이고 내가 공격도 안 했으면 '조각: 다음은 왕 슬라임 0/2야! 빛줄기를 따라가 봐'라는 한 줄이 뜨고 목표 쪽 빛줄기가 켜진다. 금빛 몬스터가 근처에 처음 나타나면 '저 금빛 녀석, 골드 10배야!', 체력이 처음 35% 밑으로 내려가면 '마을에 가면 금방 회복돼', MP 부족이 처음 나면 'MP가 모자라! 평타로 버텨', 첫 전리품을 받으면 '메뉴 > 아이템에 들어갔어'라고 말해 준다. S0에서 정화를 고르면 따뜻한 말투, 삼킴을 고르면 장난꾸러기 악당 말투가 된다.",
+   "why_fun": "아이는 설명창을 읽지 않고, 모르는 순간에 그만둔다(X5: 설명 없는 던전 입장, 빨간 이름). 필요한 순간에 한 줄로 알려 주면 길을 잃지 않는다. 오프닝에서 내 앞에 떨어진 조각이 '동료 목소리'가 되어 오프닝 → S0 → 자동 전투('조각이 대신 싸워요')를 하나의 이야기로 묶는다. 고른 쪽에 따라 말투가 달라지면 첫 선악 선택(약 9분)이 계속 귀에 들려서 GDD §0을 체감하게 된다.",
+   "grounded_in": "Config.StoryQuests.Speakers.Shard, Text.OddHalo/OddHorns(Config.luau ~1018-1045); data.Story.Pick.S0와 Story.First(StoryQuestService.luau 머리말, 1회용 플래그 저장 자리가 이미 있음); HUD.ShowGuide(:2573)·L.StoryTap(:2761) 빛줄기와 이동; PlayerService.GetLastActive(:836); 몬스터 모델 'Golden' 속성(MonsterService.luau:799)을 Fx trackMonster가 추적; VitalsService.TrySpendMana 실패 토스트; Fx handlers.Loot(A23-12); reference_lessons_2026-10-05.md #1(60초 넘게 할 일이 불분명한 구간), quest_chain §4·§5(실측 항목)",
+   "implementation": "먼저 클라이언트만으로 만든다(원격 추가 없음). Config.StoryQuests.Barks = { Idle, Golden, LowHP, NoMP, FirstLoot }를 두고, 각각 Purify/Devour/기본 문구를 넣는다. 말하는 이는 S0 1단계 전에는 진영 안내자, 그 뒤에는 '왕관 조각'이다. HUD는 지역 변수 한도 때문에 L.Bark 표 안에 상태를 둔다(lastQuestJsonAt, lastOwnAttackAt, lastBarkAt). Idle 조건은 고정 줄이 있고, Quests 원격 변화도 내 Swing/Release Fx도 60초 동안 없을 때다. 그러면 토스트를 띄우고 L.StoryTap(row)의 빛줄기만 켠다(이동창은 자동으로 열지 않음). 규칙: Lv<10에만, 말과 말 사이 45초 이상, 종류마다 세션당 1번(Idle만 3번), Intro.IsOpen·선택 화면·Panels가 열려 있으면 쉬기. 길 잃음 구조만 먼저 넣으면 S다.",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "새 대사 문구 승인(quest_chain 결정 7 '새 설정 문장'과 같은 범위), 정화·삼킴 말투 차등 여부, 60초 기준.",
+   "risks_conflicts": "기존 토스트(DailiesOpened, GuideDone, 전리품 팝업, 거위 알림)와 겹쳐 시끄러워질 수 있어 쿨다운을 같이 써야 한다. HUD 최상위 local이 약 148개라 새 상태는 반드시 표 안에 둔다. 상점이나 패널을 보는 중인데 '멍때림'으로 잘못 잡을 수 있으니 패널이 열려 있으면 제외한다. 옛 치비 초상화는 쓰지 않고 이름만 보인다(quest_chain 6-5). 나중에 Firefly 조각 그림이 생기면 붙일 수 있지만 필수는 아니다.",
+   "score": 22,
+   "judge_notes": [
+    "60초 길 잃음 구조(S)를 먼저 넣는 게 가성비가 가장 좋다. 말 5종과 정화·삼킴 말투 차등은 글이 늘어 아이가 안 읽고 토스트가 시끄러워진다. HUD local 한도에 주의한다. 새 대사는 승인이 필요하다.",
+    "Speakers.Shard, OddHalo, Story.First, GetLastActive, L.StoryTap 모두 확인. 60초 길 잃음 구조만 먼저 S로 넣는 것이 가치가 크다. 정화/삼킴 말투 차등은 quest_chain 5절에서 정식 항목으로 잡혀 있어 뒤로. 폰 토스트 최대 2개라 다른 알림과 부딪힘 주의.",
+    "근거 확인: Speakers.Shard, OddHalo/OddHorns, Story.Pick/First, GetLastActive(:835), L.StoryTap이 모두 있음. 60초 길 잃음 구조만 먼저 넣으면 S이고 효과가 가장 큼. 대사 5종과 말투 차등은 문구 승인과 토스트 소음 조율이 필요해 M. HUD 최상위 local이 약 148개라 반드시 L 표 안에 둘 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "goodevil-3",
+   "lens": "goodevil",
+   "title": "상대 진영이 없어도 거위 구조·밀렵이 성공하는 '거위 버티기' 모드",
+   "player_experience": "서버에 빛만 있거나 뿔만 있을 때 거위가 내려오면 '상대가 없어서 거위가 스스로 버텨요! 60초 안에 끌어와요'라는 안내가 뜬다. 줄다리기 바의 반대쪽은 '거위'가 당긴다. 같은 편끼리 힘을 모아 이기면 '기사단이 황금 거위를 구조했어요!' 또는 '뿔 군단이 밀렵했어요!'가 뜨고, 조금 줄인 승리 보상을 받는다. 지면 지금처럼 무승부다.",
+   "why_fun": "베타 초반 서버는 작아서 한 진영만 있는 경우가 많다. 지금은 그럴 때 거위가 무조건 무승부라서, 10분마다 오는 유일한 새싹용 '구조 vs 밀렵' 사건이 매번 '무승부'로 끝난다. 이기고 지는 긴장과 진영 결과 문구('조각이 빛을 되찾았어요/어둠에 물들었어요')가 살아나야 선악 기울기를 느낄 수 있다.",
+   "grounded_in": "GooseService.luau finish: CR-L8 noRival이면 강제 Tie로 끝난다(480-548행). MIN_MANUAL_HITS=3(23행). Config.Goose(667-685행: LoserShare 0.4, WinWarPoints 60), Config.GooseReward(688-692행). WarService.modeFor/decideWinner의 'Siege'(271-303행)와 Config.War.SiegeTarget(638행): 전쟁에는 이미 한 진영 전용 승리 규칙이 있다. Config.Story.GooseResult/GooseNoRival. quest_chain_2026-10-06.md 1절(상대가 없으면 강제 무승부라서 S1 보상을 '첫 참여 +1'로 바꿈), S1.",
+   "implementation": "GooseService.start에서 FactionService.GetCounts로 한쪽 인원이 0이면 solo=true로 두고 GameState 'GooseMode'='Solo'를 쓴다. tick마다 없는 쪽 합계에 저항값을 더한다: Config.Goose.SoloResistPerSec × 참여자 수 보정(최소 1). publishTotals로 내보내면 EventHUD 줄다리기 바가 그대로 그리고, 반대쪽 이름표만 '거위'로 바꾼다. finish에서 solo이고 있는 편이 저항을 넘으면 그 편이 이긴다. 보상 배율은 Config.Goose.SoloWinShare(예: 0.7)를 쓰고, 전쟁 점수는 0 또는 절반만 준다. 못 넘으면 Tie다. 직접 3번 조건, 응원별, S1 첫 참여 점수는 그대로 둔다. 도중에 상대 진영이 들어오면 finish 시점 기준으로 정상 규칙을 쓰고 저항값은 버린다. 안내 문구는 Config.Story에 추가한다.",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "혼자 이겼을 때 보상 크기(승리 보상의 70%? 100%?)와 전쟁 점수를 줄지 정해야 한다. 저항 세기도 정해야 한다(예: 2명이 40초 동안 직접 때리면 이기는 정도).",
+   "risks_conflicts": "CR-L8은 '상대 없이 공짜 승리 보상과 전쟁 점수 60점'을 받는 악용을 막으려던 수정이다. 저항이 너무 약하면 같은 문제가 돌아온다. 그래서 보상을 줄이고 전쟁 점수는 빼는 쪽을 권한다. 자동 전투 타격은 1점만 주므로 방치만으로 이길 수 없는지 확인한다. Studio에서 클라이언트 3명으로 테스트해야 한다.",
+   "score": 22,
+   "judge_notes": [
+    "social-1과 같은 문제(상대가 없으면 CR-L8이 강제 무승부, 확인)와 같은 해법이다. 아이에게는 '함께 끌기 게이지 하나'(social-1)가 '거위가 당기는 저항값'보다 이해하기 쉽다.",
+    "GooseService finish의 CR-L8 noRival→Tie 확인. 작은 베타 서버에서 대표 이벤트가 매번 무승부로 끝나는 문제는 실제다. CR-L8 악용이 돌아오지 않게 보상은 줄이고 전쟁 점수는 뺀다. social-1의 인원 비례 목표를 합칠 것. 클라이언트 3명 테스트 필요.",
+    "social-1과 같은 '상대 없을 때 거위 승리 경로'임. 확인: finish()의 CR-L8 noRival이 강제로 Tie를 만듦(:489-498). 이 안의 장점인 '전쟁 점수 0, 보상 축소'는 social-1에 반드시 옮겨야 함(지금 finish는 승자에게 WinWarPoints 60을 줌). 작업 세션이 지금 GooseService(S1)를 수정 중이라 순서 충돌에 주의할 것."
+   ],
+   "dups": [
+    "social-1",
+    "social-1"
+   ]
+  },
+  {
+   "id": "social-8",
+   "lens": "social",
+   "title": "서버에 보이는 순간: '이번 판 영웅'과 선악 선택 빛 폭발",
+   "player_experience": "왕관 쟁탈전이 끝나면 '이번 판 왕관은 빛의 기사단! 가장 많이 싸운 기사: 하늘 (52점)'이 뜬다. 다음 10분 동안 하늘님 이름표 아래에 '이번 판 영웅'이 붙는다. 옆 사람이 왕관 조각을 '삼켜요'로 고르는 순간에는 그 아바타에서 붉은 연기가 확 피어오르고, 근처 사람들에게 '민수님이 조각을 삼켰어요…'가 보인다.",
+   "why_fun": "GDD §0의 '겉모습으로 보인다, 남도 한눈에 알아본다'를 지금 있는 재료로 바로 살리는 방법이다. 내 활약과 선택이 남에게 보여야 서버에 다른 사람이 있다는 게 느껴진다. 이름이 불리는 건 짧게 접속하는 아이에게도 큰 동기다. 순위를 매기는 대신 1명만 칭찬하고 나쁜 순위는 없다.",
+   "grounded_in": "WarService.luau endRound()가 이미 personal 점수 snapshot을 들고 payChests와 WarWin 알림을 보낸다(325-352줄). CharacterVisuals 이름표에 2·3번째 줄이 있다(LINE2_COLOR 등). ProgressionService.luau:415 Net.Fx(nil,'Rebirth',{UserId,Pos,Mark})는 모두에게 보이는 표식 연출 선례다. StoryQuestService 선택 처리(S0 Purify/Devour, M2-3 분수)와 Config.StoryQuests.Text Good/Evil도 근거다.",
+   "implementation": "(1) endRound에서 snapshot 중 진영별 최고 점수를 고른다. 그 진영 참가자가 2명 이상이고 30점 이상일 때만 WarWin 알림 뒤에 '…: 이름 (N점)' 한 줄을 붙인다. 이긴 편만 붙일지, 양쪽 다 붙일지는 정해야 한다. 그 플레이어에게 RoundHeroUntil 속성을 넣고, CharacterVisuals가 이름표 2번째 줄에 '이번 판 영웅'을 띄운다(10분).\n(2) StoryAction 선택이 저장되면 Net.Fx(nil,'Choice',{UserId, Side})를 보낸다. Fx는 반경 60칸 안 클라이언트만 기존 파티클로 금빛/붉은 폭발을 보여 준다. 근처 알림은 같은 사람 1회, 서버 전체 30초에 1회로 묶는다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "이름을 서버 전체에 부를지 정해야 한다(추천: 이긴 편 1명만). 선택 연출을 근처 사람에게 보여 줄지도 정해야 한다(추천: 보여 줌, 글자 알림은 근처만).",
+   "risks_conflicts": "표시 이름은 이미 서버 알림(대박·현상금)에 쓰고 있어 새 위험은 아니지만, 닉네임 필터(NicknameService)를 거친 이름만 써야 한다. 이름표 줄이 깡패·수배 줄과 겹치면 우선순위를 정해야 한다. 붐비는 서버에서 선택 알림이 쏟아지지 않게 묶음 규칙이 필요하다. 선택 연출은 새 파티클 그림 없이 기존 Fx만 쓴다.",
+   "score": 21.666666666666668,
+   "judge_notes": [
+    "WarService의 판 끝 snapshot과 Rebirth 공개 Fx라는 선례가 있다. 이름이 불리는 건 짧게 접속하는 아이에게 큰 동기이고, 선택 연출은 GDD §0의 '남도 알아본다'에 맞는다. 필터된 표시 이름만 쓰고, 이름표 줄 우선순위를 정해야 한다.",
+    "endRound의 snapshot과 이름표 2번째 줄이 있어 싸다. 선택이 남에게 보여 GDD §0 '겉모습으로 보인다'에 맞는다. 필터된 닉네임만 쓰고, 나쁜 순위 없이 이긴 편 1명만, 선택 알림은 묶어서.",
+    "endRound가 personal snapshot으로 payChests를 이미 부름(:325-343). Rebirth Fx(nil,...)도 전체 표시 선례가 있음. 이름표 줄 우선순위(깡패·수배와 겹침)와 표시 이름 필터 확인이 필요함. 선택 폭발 연출은 기존 Fx로 S, 영웅 표시는 S~M."
+   ],
+   "dups": []
+  },
+  {
+   "id": "fairness-7",
+   "lens": "fairness",
+   "title": "일일 처치 수를 실측 속도로: 목표 크기와 보상 크기를 따로 조절",
+   "player_experience": "지금 상황: Lv1~9 일일 '슬라임 50~60마리'(골드 퀘스트도 같은 단위)는 설계상 5분이다. 그런데 이 숫자는 자동 전투 시절 분당 12마리 기준이다. 수동으로는 약 9~15분 걸린다(추정: 분당 4~6마리, 시작 진행 10~20% 감안). 자동 전투를 얻기 전의 아이에게 하루 첫 숙제가 15분짜리 반복이 된다. 다른 게임 영상에서도 숫자만 커지는 처치 퀘스트에서 8분쯤 지쳐 녹화를 끝냈다.\n바꾼 뒤: 측정한 수동 속도(예: 분당 6마리)로 목표를 정하면 '슬라임 30마리 (약 5분)'처럼 정말 5분 분량이 된다. 보상(180골드 + 300경험치)은 그대로 둘지 사용자가 정한다.",
+   "why_fun": "숙제가 '조금만 하면 끝나는' 크기가 되어, 거위·이야기·대장간 같은 다른 재미로 넘어간다. 실측 숫자 하나로 처치 목표와 철 무기까지의 속도를 함께 예측할 수 있다.",
+   "grounded_in": "Config.luau:\n- Economy.KillsPerMinute=12 (708)\n- Quests.Templates: Kill·Gold DailyUnits {50,60}, extra Units {25,40} (1205-1216)\n- DailyQuestReward = HuntValue(level,5) (1242)\n- Weapons tier3 800골드\n\n관련 문서:\n- worker_addendum_2026-10-05 3번(측정 지시, 사용자 OK 없이 변경 금지)\n- quest_chain(\"HV는 실제 사냥의 2~3배\")\n- reference_lessons_X5d5hqhB2os('N마리 벽')",
+   "implementation": "- Config.Economy.QuestKillsPerMinute(실측값)를 추가한다.\n- QuestService가 일일·추가 퀘스트를 만들 때 Kill·Gold 목표를 QuestMinutes × QuestKPM × (0.9~1.1)로 계산한다. 템플릿의 고정 숫자를 대신한다. Goblin 지역은 따로 잰 값을 쓴다.\n- KillsPerMinute는 보상 크기(HuntValue)에만 남긴다.\n- 선택: 줄 끝에 \"(약 N분)\"을 붙인다.\n- 이미 만들어진 오늘 일일은 그대로 두고, 다음 날부터 적용한다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "- 실측 분당 처치 수(직업별)\n- 목표를 줄일지, 보상을 줄일지: 지금 같은 손잡이였던 것을 둘로 나눈다\n- \"(약 N분)\" 표시 여부",
+   "risks_conflicts": "- 자동 해금 뒤에는 자동 처치도 세므로 더 쉬워진다. 의도에 맞음.\n- 목표만 줄이면 일일 보상 비중이 커져 Lv10 도달이 빨라진다. 30~40분 Lv10 대기 구간에는 도움이 되지만, 철 무기 800골드 시간과 함께 다시 재야 한다.\n- 고블린 숲(HP 90)은 직업별 속도 차이가 커서 따로 측정해야 한다.\n- 측정 전 숫자는 확정이 아니다.",
+   "score": 21.666666666666668,
+   "judge_notes": [
+    "first15-1과 같은 문제(일일 50~60마리, 확인)이고 같은 손잡이다. first15-1이 목표 종류 다양화와 펼치는 시점까지 다뤄서 더 완성형이다. 실측 분당 처치 수로 목표를 계산하는 부분은 first15-1에 합치면 좋다.",
+    "first15-1과 같은 손잡이(일일 처치 목표 크기)다. KillsPerMinute=12가 자동 시절 값이라는 것은 맞다. '실측 분당 처치로 목표 계산, 보상은 따로'라는 공식은 first15-1에 합칠 것.",
+    "first15-1과 같은 문제('일일 50~60마리', KillsPerMinute=12는 자동 시절 기준)를 다룸. 실측 KPM으로 목표와 보상 손잡이를 나누자는 생각은 좋지만 실측이 먼저 필요함. 마감 전에는 first15-1(Lv1~9 범위)로 처리하고, 고블린 숲 이후 크기는 30분 실측 뒤 Config 값만 조정할 것."
+   ],
+   "dups": [
+    "first15-1",
+    "first15-1",
+    "first15-1"
+   ]
+  },
+  {
+   "id": "first15-8",
+   "lens": "first15",
+   "title": "초원 '가루 소동': 왕 슬라임 언덕에 2.5분 박자로 슬라임 떼",
+   "player_experience": "초원에 있으면 '왕 슬라임 언덕에 가루 비가 내려요! 30초 뒤 슬라임 떼!'가 뜨고 언덕 위에 빛기둥이 선다. 달려가면 슬라임 6마리와 왕 슬라임 1마리가 한데 모여 튀어나와 스킬 한 방에 여러 마리가 터진다. 끝나면 '가루 소동 정리! 빛 9점 · 뿔 6점, 왕관 점수에 들어갔어요'(장인은 '보급 골드 +N')가 나온다.",
+   "why_fun": "신규는 처음 25분을 거의 초원에서 보내는데, 초원에는 아무 일도 일어나지 않는다. 거위와 전쟁 결과는 교차로에서 5분 박자로 열린다. 같은 들판, 같은 슬라임의 반복을 '기다릴 거리'와 '모이는 장소'로 끊고, 지금은 '힌트로만' 쓰는 왕 슬라임 언덕에 의미를 준다. 우리 편 점수 집계로 '편'(GDD §0)을 첫 10분에 한 번 더 느끼게 하고, M2-5·S0 ②·N1 같은 무리 맞히기 단계가 자연스럽게 된다.",
+   "grounded_in": "tools/preview_map.lua:778 KingSlimeHill (420,-19,-45)(quest_chain에서 '언덕은 힌트로만'); MonsterService.spawnMonster opts.Position(:820)·groundPoint(:294); Config.Goose Interval 600 / OffsetFromWarEnd 300과 GameState GooseNextAt(GooseService.luau:486, Net.luau:33); Config.War.MonsterPoints/GoldenPoints(MonsterKilled info.WarPoints); Fx pillar/handlers.LevelUp의 빛기둥; A23-9와 quest_chain 결정 8(서버 알림 미루기); Config.MonsterDensity GlobalCap 72",
+   "implementation": "작은 서버 모듈 MeadowEventService(Init/Start, Main 목록에 등록)를 만든다. GooseNextAt 기준으로 전쟁 끝과 거위 사이에 끼워(약 2.5분마다 무언가 일어나게) 실행하되, 첫 임무를 받은 준비된 플레이어가 초원에 1명 이상 있을 때만 연다. 시작 30초 전에 초원 플레이어에게만 Notify를 보내고 Net.Fx 'Beacon'(기존 pillar 재사용)을 띄운다. 언덕 꼭대기 15칸 안에 Slime 6과 BigSlime 1을 _event/_noRespawn으로 스폰하고, 90초 뒤 남은 것은 fade despawn한다. _event 처치의 WarPoints를 진영별로 합산해 끝 토스트를 보낸다. 추가 보상은 없다(일반 처치 보상과 A23-12 드랍만).",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "주기(추천: 거위·전쟁 사이로 2.5분 박자, 아니면 5분), 규모(6+1), 황금 확률을 올릴지, 분열(아이디어 3)과 겹칠 때 왕 슬라임도 분열할지.",
+   "risks_conflicts": "groundPoint의 레이캐스트가 Decor인 KingSlimeHill 공을 맞히지 않으면 몬스터가 언덕 속에 생긴다. 또 이 언덕이 실제 게임 장소 파일에 있는지 확인해야 한다(checkpoint #7: preview_map 수정 일부가 장소에 미반영). 오프닝·선택 화면·첫 임무 수락 전에는 알림을 미뤄야 한다. 사람이 몰려도 기여 15초 공유 규칙 덕분에 뺏기는 없다. GlobalCap과 폰 성능을 확인한다. 거위 알림과 같은 시간에 겹치지 않게 일정을 고정한다.",
+   "score": 21.333333333333332,
+   "judge_notes": [
+    "KingSlimeHill이 place 파일에 있는 것을 확인했다. 초원에 박자를 만드는 건 좋지만 social-7(말랑 대왕)과 목적이 겹치니 둘 중 하나만 넣는다. 2.5분 박자에 거위와 판 끝까지 더하면 알림이 너무 많아진다. 새 서비스라 M이다.",
+    "새 서버 모듈과 일정이 필요한 M. KingSlimeHill은 preview_map의 Decor 공이라 저장된 place와 레이캐스트 확인 필요. 진영 점수 집계로 GDD §0과 맞음. social-7과 같은 '초원 정기 이벤트' 자리라 하나만 고를 것. 오프닝·첫 임무 중 알림 미루기 규칙 준수.",
+    "social-7(말랑 대왕)과 같은 '초원 정기 모임 이벤트'라 둘 중 하나만 넣어야 함. 이 안의 위험이 더 큼: KingSlimeHill은 preview_map의 Decor 공이라 groundPoint 레이캐스트와 장소 반영 여부가 불확실하고, 2.5분 박자는 거위·전쟁·토스트와 겹쳐 시끄러움. 새 모듈과 스폰 함수 노출이 필요해 M."
+   ],
+   "dups": [
+    "social-7"
+   ]
+  },
+  {
+   "id": "loot-6",
+   "lens": "loot",
+   "title": "왕관 가루: 돌려줄까, 가질까 (사냥 전리품으로 반복하는 선악 선택)",
+   "player_experience": "슬라임과 왕 슬라임이 가끔 '반짝 왕관 가루'를 떨군다. 10개를 모으면 교차로 분수(왕관 조각 빛기둥)에서 고른다. [분수에 돌려줘요]는 명예 +1과 우리 편 왕관 점수 +10이다. [내가 가질래요]는 골드(재료 판매보다 조금 많게)와 악명 +1이다. 장인 길드는 [다듬어서 보급해요]로 골드만 받고 선택은 기록된다. 하루 최대 3번까지 고를 수 있다.",
+   "why_fun": "이야기 퀘스트(S0 정화/삼킴, M2-3 분수)가 묻는 '돌려줄까, 가질까'가 사냥 전리품에서 계속 반복되어 사냥이 곧 편 고르기가 된다. GDD §0을 가장 직접적으로 구현하는 방법이다. 빛은 명예와 전쟁 기여, 뿔은 실속 있는 골드를 얻어 진영 성격이 전리품 쓰는 법에서 드러난다.",
+   "grounded_in": "GDD §0. quest_chain §1 한 줄 요약('조각은 초원 슬라임이 먹은 가루 → … 돌려줄까/가질까'), M2-3 분수 선택, 3-1 점수 흐름. A23-2의 정화 → 명예, 삼킴 → 악명, 장인은 기록만. StoryQuestService의 Choose 처리(462–468줄, Good → Honor, Evil → Infamy)와 WarService.AddFactionPoints를 쓴다. Config.Titles 임계값(10/50/200), MapBuilder의 CrownShard 분수 빔(A23-9 ② 장면), A23-12 재료 드랍도 근거다.",
+   "implementation": "Config.Loot 재료 표에 CrownDust를 하나 추가한다. 분수 근처 ProximityPrompt(E, HoldDuration 0, A23-10) 또는 아이템 목록 버튼에서 서버 remote OfferDust(choice)를 부른다. 서버는 거리, 10개 보유, 일일 횟수를 확인한 뒤 Honor/Infamy AddStat, AddFactionPoints, 골드를 처리한다. 선택 문구는 StoryQuestService Choice 스타일을 따르고, 악마 쪽은 장난스럽게 쓴다(quest_chain 원칙 8).",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "새 재료 1종 추가, 점수·골드 값, 하루 횟수 상한. 빛 진영이 [가질래요]를 고르면 A23-2처럼 고른 쪽 점수(악명)를 줄지도 정한다.",
+   "risks_conflicts": "칭호 쌓기용 반복을 막도록 하루 상한을 두고, 이야기 선택(+2~+3)보다 작은 값으로 한다. 정식(12/19) 장인 제작에서 가루를 재료로 쓰게 되면 그때 조정한다. 10/24 기능 마감이 빠듯하면 베타 선택 항목으로 둔다.",
+   "score": 21.333333333333332,
+   "judge_notes": [
+    "goodevil-4와 같은 '돌려줄까/가질까' 반복 선택이다. 새 재료, 분수 프롬프트, 10개 모으기, 이동이 더 필요해서 무겁고 아이에게 덜 즉각적이다.",
+    "사냥 전리품으로 '돌려줄까/가질까'를 반복하는 가장 직접적인 GDD §0 구현이다. 이미 있는 Items 체계와 분수(대장간과 같은 교차로)를 쓴다. 하루 상한과 점수 예산(결정 3)은 필수. '돌려주기'에 우리 편 왕관 점수를 주면 뿔 플레이어도 천사 쪽을 고르게 되므로 조정 필요.",
+    "GDD §0을 가장 직접 반복하는 안이고, Loot.Items 표·분수 위치·ProximityPrompt 패턴을 재사용할 수 있음. 하지만 새 재료, 새 원격, 하루 상한 저장, 점수 예산(결정 3) 조정이 필요해 M이고 베타 범위 밖임. 반복 점수원(goodevil-4/6/8, social-5)과 하나로 묶고 하루 공통 상한을 둘 것. 일정이 빠듯하면 베타 선택 항목."
+   ],
+   "dups": [
+    "goodevil-4"
+   ]
+  },
+  {
+   "id": "loot-8",
+   "lens": "loot",
+   "title": "주문서가 스트레스·노가다 벽이 되지 않게 (기댓값 바로잡기 + 가뭄 방지 + 실패 조각)",
+   "player_experience": "아껴 둔 10% 주문서를 +7 무기에 썼다가 +6이 되는 일이 '평균적으로 손해'가 되지 않는다. 주문서가 30분 넘게 하나도 안 나오는 가뭄도 없다. 실패하면 '주문서 조각'이 남고, 5개를 모으면 모루에서 70% 주문서 1장이 된다.",
+   "why_fun": "지금 값(성공 시 70% = +1, 30% = +2, 10% = +3, 실패 시 50% 한 단계 하락)으로 계산하면 이미 강화된 무기에서의 기댓값은 70% = +0.55, 30% = +0.25, 10% = -0.15단계다. 가장 희귀한 주문서가 평균적으로 손해이고(+0 무기에서만 손해가 없다), 아이들은 '제일 좋은 걸 썼는데 망했다'를 겪게 된다. 기댓값을 바로잡고 가뭄 방지와 실패 조각을 넣으면, 사용자가 말한 '스트레스 받잖아'(A23-11)를 지키면서 확률의 두근거림은 남는다.",
+   "grounded_in": "A23-11에서 상승량(+3/+2/+1)은 '기본 제안, 플레이 후 조정'이고, 사용자는 \"파괴 없음 하자 스트레스 받잖아\"라고 했다. A23-12는 실패 시 50% 하락, 최대 +10, 드랍률은 작업 세션이 정하고 15분 측정에 드랍 수입을 기록하라고 정했다. quest_chain에는 '수동 전투는 분당 4~6마리'라고 되어 있다. Config.Economy.KillsPerMinute = 12는 자동 시절 값이다. reference_lessons_X5는 '같은 동사 + 커지는 숫자'가 8분쯤 피로를 만든다고 봤다. 저장은 Data.Items와 LootFlags를 쓴다.",
+   "implementation": "① 기댓값: 선택지를 표 한 줄로 사용자에게 보여 준다. (a) 30%·10% 실패는 항상 유지(70%만 50/50 하락) (b) 10% = +4, 30% = +3으로 올림 (c) 그대로. ② 가뭄 방지: 주문서 굴림에 의사난수 카운터(LootFlags.ScrollDry)를 단다. 못 얻을수록 확률이 오르고 얻으면 초기화되므로 평균 간격은 그대로이고 긴 가뭄만 사라진다. 수동 분당 5마리 기준 예시값은 재료 약 3처치마다 1개, 70% 주문서 약 40처치(약 8분), 30% 약 150처치, 10% 약 500처치, 왕 슬라임은 x3이다. ③ 실패 조각: Items.ScrollShard를 두고, 모루에서 5개를 70% 주문서로 바꾼다. ④ 15분 실측(PC 수동·자동 각각)으로 드랍 수입과 주문서 수를 기록한 뒤 조정한다. 참고로 70% 주문서만으로 +10까지는 평균 약 18장이 든다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "기댓값 처리 방식(a/b/c), 실패 조각을 넣을지, 가뭄 방지를 대박에도 적용할지. 추천은 대박은 순수 확률로 두고 사냥 기록 숫자만 보여 주는 것이다.",
+   "risks_conflicts": "사용자가 확정한 규칙(A23-11·A23-12)을 건드리므로 반드시 사용자 확인이 필요하다. 자동 전투가 수동보다 빨리 잡으면 주문서가 넘쳐날 수 있으니 자동·수동 처치 속도를 실측한 뒤 확률을 정한다. 무기마다 강화가 따로 저장되므로 철 무기로 바꿀 때 나무 무기 강화가 묶이는 체감도 함께 측정한다. 옮기기 주문서가 너무 드물면 초반 강화가 아깝게 느껴진다(reference_lessons #15).",
+   "score": 21.333333333333332,
+   "judge_notes": [
+    "직접 계산해 확인했다. 실패 50% 하락 규칙에서 이미 강화된 무기의 기댓값은 70%=+0.55, 30%=+0.25, 10%=-0.15이다. 가장 귀한 주문서가 평균적으로 손해인 실제 설계 문제라 사용자에게 보여 줄 가치가 높다. A23-11/12 확정 규칙을 바꾸는 것이라 결정이 필요하다. 조각 시스템은 범위가 늘어나는 추가분이다.",
+    "Config(Plus 1/2/3, FailDropChance 0.5)로 기댓값을 다시 계산했다. 70% +0.55, 30% +0.25, 10% −0.15로 맞다. 가장 희귀한 주문서가 손해인 것은 실제 문제다. 사용자가 확정한 A23-11/12를 건드리므로 반드시 선택지로 물어야 한다. 가뭄 방지 카운터는 싸다. 실패 조각은 아이템이 하나 늘어난다.",
+    "기댓값 계산 확인: 실패하면 50% 하락이라 강화된 무기 기준으로 70%=+0.55, 30%=+0.25, 10%=−0.15단계임. 가장 희귀한 주문서가 손해라는 실제 설계 결함임. 정정: 제안 (b) '10%=+4'도 0.4−0.45=−0.05로 여전히 손해임. 효과가 있는 것은 (a) '10%·30% 실패 시 유지'뿐임. 사용자 확정값(A23-12)을 바꾸므로 결정이 필요함. 가뭄 방지와 실패 조각은 저장 필드가 새로 필요하니 정식으로 미루고, 마감 전에는 (a)만 넣을 것을 권함."
+   ],
+   "dups": []
+  },
+  {
+   "id": "social-5",
+   "lens": "social",
+   "title": "새싹을 도우면 천사 쪽으로 (선배 도움 → 명예)",
+   "player_experience": "Lv18 기사가 대박 무기를 노리고 말랑 초원에 왔다가, Lv3 새싹이 때리던 왕 슬라임을 같이 잡는다. 새싹 화면에는 '선배 하늘님이 같이 싸워 줬어요!'가 뜬다. 선배는 새싹과 함께 잡은 처치가 10번 쌓이면 '새싹을 도왔어요 · 명예 +1 (빛 쪽으로 기울었어요)'를 받는다.",
+   "why_fun": "GDD §0의 첫 줄이 '다른 플레이어를 도울지 털지, 그 선택이 천사나 악마 쪽으로 쌓인다'인데, 지금 '돕기' 쪽에는 PvP 밖의 행동이 거의 없다. 대박 드랍(A23-12) 때문에 고렙이 초원에 오면 생길 수 있는 '쓸어 가기'를 '도와주기'로 바꿔 준다. 새싹은 처음 본 고렙에게서 좋은 첫인상을 받는다.",
+   "grounded_in": "GDD §0, quest_chain §3-1('점수는 고른 쪽으로'), §3 나중 후보 S7·S12 '함께'가 근거다. 기존 코드 근거는 다음과 같다:\n- PvPService.IsRookie(:341, 공개 함수), Config.PvP.RookieLevel=15/RookiePlaytime=3600\n- MonsterService killRecord의 eligible 기여자 목록\n- PlayerService.AddStat(p,'Honor',n), Config.DayIndex(일일 한도)\n- A23-12 대박 드랍 '고렙도 슬라임을 잡는 그림'",
+   "implementation": "killRecord에서 eligible에 새싹이 있으면, 새싹이 아니고 새싹보다 5레벨 이상 높은 기여자 각각에게 info.HelpedRookie=true를 실어 보낸다. 받는 쪽(StoryQuestService나 ProgressionService의 MonsterKilled 처리)은 다음 순서로 처리한다:\n- 세션 카운터를 올리고, 10번마다 Honor +1을 준다.\n- 한도는 하루(KST) +3이다. 새 저장 필드 HelpDay와 HelpHonor를 Config.Data.Defaults에 넣고, Version은 2 그대로 둔다.\n- 새싹에게는 같은 선배당 세션 1회만 토스트를 띄운다.\n- 장인 길드 선배는 점수 없이 문구만 보여 준다(선택 기록 규칙과 같음).\n- 개인 몬스터는 제외한다.",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "명예를 몇 번에 1점, 하루 최대 몇 점 줄지 정해야 한다(추천: 10처치당 +1, 하루 +3). 뿔 군단 선배도 명예를 받을지도 정해야 한다(추천: 받음. '돕기는 천사 쪽' 원칙이고, 칭호는 자기 진영 점수만 세므로 뿔 칭호에는 영향이 없다).",
+   "risks_conflicts": "부계정 새싹으로 명예를 쌓는 꼼수는 하루 한도와 레벨 차 조건으로 막는다. 계급 2가 10점이므로 하루 3점이면 영향이 크다고 볼 수도 있어 사용자 판단이 필요하다. 고렙이 한 방에 잡아 새싹이 못 때리면 인정되지 않는데, 이것은 의도한 것이다. 처치 정보 필드를 추가하므로 작업 세션의 StoryQuestService 훅과 맞춰야 한다.",
+   "score": 21.333333333333332,
+   "judge_notes": [
+    "fairness-1의 '선배가 새싹을 도우면 명예' 부분과 같다. fairness-1은 새싹 쪽의 억울함(공유 인정)까지 해결해서 더 낫다. 하루 +3은 계급 2(10점) 예산에 비해 크다.",
+    "'돕기=천사'라는 GDD §0 첫 줄의 PvE 버전이다. 대박 드랍으로 고렙이 초원에 오는 상황을 돕기로 바꾼다. IsRookie·PairReady 공개 함수 확인. 부계정 농사와 계급 2(10점) 예산 때문에 하루 상한은 사용자 결정.",
+    "loot-5의 선배 보너스를 흡수한 대표안. IsRookie(공개), killRecord의 eligible, AddStat, PairReady가 모두 있음. 새 저장 필드와 일일 상한이 필요하고 계급 2(10점) 예산에 영향이 커서 사용자 판단이 필요함. 고렙이 초원에 오는 것은 베타 며칠 뒤부터라 급하지 않음. 정식 전 권장."
+   ],
+   "dups": [
+    "fairness-1"
+   ]
+  },
+  {
+   "id": "first15-5",
+   "lens": "first15",
+   "title": "자동 전투가 '직접 스킬' 단계에서는 스킬을 양보 (MP 바닥·진행 안 오름 혼란 방지)",
+   "player_experience": "자동을 켠 채로 '스킬 한 번에 3마리'(M2-5), N1, 일일 '스킬 맞히기'가 남아 있으면 그 줄에 '(직접 Q)'가 붙고, 자동은 평타만 친다. 처음 한 번은 '조각: 이번 스킬은 네 손으로 보여 줘!'가 뜬다. MP가 남아 있어서 Q를 누르면 숫자가 바로 오른다.",
+   "why_fun": "지금 자동은 MP가 되면 스킬을 먼저 써 버리는데, 자동 스킬은 퀘스트에 안 센다(A23-1). S4가 약 9분에 자동을 켜게 하므로, 그 뒤 아이는 MP가 늘 바닥이고 '스킬 맞히기'가 왜 안 오르는지 모른 채 막힌다. 이건 길 잃음 그 자체다. 양보하면 '내 손으로 하는 순간'과 '조각이 대신 하는 순간'이 분명히 갈린다.",
+   "grounded_in": "CombatService.autoTick(CombatService.luau:1213, MP≥20이고 사거리 안에 몬스터가 있으면 Release(p, true)); StoryQuestService.eventAmount('SkillHit'에서 ev.Info.Auto==true이면 0); Config.Quests.Templates Release(일일, 수동만 셈); SPEC_ADDENDUM A23-1 퀘스트 집계; Config.StoryQuests S4 '자동 전투 켜기 (R)'·M2_5·N1",
+   "implementation": "StoryQuestService.NeedsManualSkill(player)를 추가한다. 활성 메인·서브 단계의 Obj.Type이 SkillHit이거나, Trials 안에 덜 끝난 SkillHit이 있으면 true다. 여기에 QuestService.HasOpenRelease(player)(받기 전인 Release 일일)를 합친다. 결과는 1초마다 캐시한다. autoTick은 그 값이 true면 자동 Release를 건너뛴다(평타는 계속). MainRow/SubRows/publish는 AutoCombatEnabled일 때 해당 줄에 TXT '(직접 Q)'를 붙인다. 처음 한 번만 Story.First.ManualSkillHint로 Notify를 보낸다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "A23-1 '자동은 스킬도 쓴다'에 상황별 예외를 두는 것이라 사용자 확인이 필요하다. 다른 길은 자동 스킬도 퀘스트에 세는 것인데, 사용자가 '안 셈, 플레이 후 조정 가능'으로 정해 둔 상태다.",
+   "risks_conflicts": "Release 일일이 하루 종일 열려 있으면 자동이 그날 내내 스킬을 안 쓸 수 있다. 일일은 '진행이 목표의 절반 미만일 때만'처럼 범위를 줄이는 걸 검토한다. '자동인데 스킬을 안 써요'라는 오해는 줄 옆 표시로 설명한다. 괴수·거위의 '직접 3번' 규칙과 PvP 금지 분기는 그대로다.",
+   "score": 21,
+   "judge_notes": [
+    "검증: autoTick은 MP가 20 이상이면 Release(p,true)를 쓰고, SkillHit은 Auto면 0으로 센다. 그래서 자동을 켜 둔 아이는 MP가 늘 바닥이고 M2-5와 Release 일일이 이유 없이 막힌다. 실제로 있는 함정이다. A23-1의 예외라 사용자 확인이 필요하고, Release 일일 범위를 반드시 제한해야 한다.",
+    "autoTick은 MP 20 이상이면 스킬을 쓰고, 자동 스킬은 SkillHit에 안 센다(eventAmount Auto==true→0) 확인. 소모 20/3초가 회복 4/초보다 커서 수동 Q가 MP 부족으로 막히는 문제는 실제다. 그러나 A23-1 '자동은 스킬도 씀'의 예외라 사용자 확인 필요. 일일 Release 범위 축소 검토.",
+    "실제 막힘 확인: autoTick은 MP≥20이고 사거리 안에 몬스터가 있으면 바로 Release(p,true)를 씀. 회복이 4/s라 자동 중에는 MP가 늘 20 근처라 수동 Q가 거의 안 나감. eventAmount는 Auto=true인 SkillHit을 0으로 처리함. S4(약 9분) 뒤 M2-5·N1·Release 일일이 막힘. A23-1 예외라 사용자 결정이 필요함. 더 싼 대안은 줄에 '(직접 Q · 자동 끄기)' 표시와 토스트 1회만 넣는 것."
+   ],
+   "dups": []
+  },
+  {
+   "id": "goodevil-4",
+   "lens": "goodevil",
+   "title": "황금 몬스터를 잡을 때마다 '금빛 가루를 돌려줄까, 가질까?'",
+   "player_experience": "황금 몬스터(4%)를 잡으면 기본 보상은 그대로 받는다. 그다음 화면 아래에 작은 카드가 8초 동안 뜬다: [분수에 돌려줘요 → 경험치 조금 + 명예 +1] / [내 주머니에! → 골드 조금 + 악명 +1]. 무시하면 아무 일도 없고, 카드는 전투를 막지 않는다. 장인 길드는 점수 없이 [다듬기(경험치)] / [장부(골드)]를 고른다.",
+   "why_fun": "수동 사냥 기준으로 4~6분마다 짧은 선악 선택이 온다. 빛=경험치, 뿔=골드라는 진영 성격(거위 보상과 같은 모양)과 이어진다. '레벨을 빨리 올릴까, 철 무기 800골드를 빨리 모을까'라는 실제 이득과 손해가 있다. 한 번뿐인 S3(금빛 젤리)를 매번 오는 작은 선택으로 넓힌다.",
+   "grounded_in": "MonsterService.luau: 황금 판정(827-830행)과 info.Golden(1036-1066행). Config 몬스터 값 GoldenChance 0.04, GoldenGoldMult 10, GoldenXPMult 3(899-902행). Config.StoryQuests.Defs.S3의 Choice('분수에 돌려줘요'/'내 주머니에!', +1). StoryQuestService.onStoryAction의 점수 지급과 반대편 선택 반응 TXT.OddHalo/OddHorns(444-479행). Config.GooseReward의 빛 경험치·뿔 골드 모양(688-692행). Config.HuntValue. quest_chain 3-1절(작은 선택 +1).",
+   "implementation": "S3를 끝낸 뒤부터 동작한다. MonsterKilled(Golden=true, 개인 몬스터 아님)가 오면 서버에 pending[player] = { ExpiresAt = 지금+10초 }를 만든다. 새 원격 'TiltChoice'(Net.Names와 Config.RateLimits에 추가)로 카드를 연다. 클라이언트는 UIKit.ArtButton 코드 대체 그림으로 버튼 2개짜리 비모달 카드를 띄운다(스킬 버튼과 겹치지 않게). 서버 검증: pending이 있고 만료 전이며, option은 'Good'/'Evil'(장인은 'A'/'B')만 받는다. Good이면 HuntValue(level,1)의 경험치와 AddStat Honor 1, Evil이면 HuntValue(level,1)의 골드를 주머니에 넣고 Infamy 1을 준다. 하루 점수 상한(예: 5)은 data.TiltDaily = { Day, Golden }에 저장하고, 상한을 넘으면 보상만 준다. 자동 전투로 잡아도 카드는 뜬다(무시하면 아무 일 없음).",
+   "effort": "M",
+   "needs_art": false,
+   "needs_user_decision": "보너스 크기(1분어치?)와 하루 점수 상한을 정해야 한다. 자동 전투 중에도 카드를 띄울지, 반대 진영 쪽을 고르면 기존 안내자 반응(OddHalo/OddHorns)을 다시 쓸지도 정해야 한다.",
+   "risks_conflicts": "점수 예산(결정 3: 첫 숲 선택에서 계급 2)이 앞당겨진다. 하루 상한으로 조절한다. HUD는 다음 단계에서 전면 재설계될 예정이라 카드 위치는 임시다. 기여자가 여럿이면 각자 카드를 받는다(개인 보상, 뺏기 없음 — A23-12와 같은 원칙). A23-12 드랍 알림('+슬라임 젤리')과 같은 순간에 겹치지 않게 정리해야 한다. 새 원격에는 서버 검증과 호출 간격 제한이 필수다.",
+   "score": 21,
+   "judge_notes": [
+    "S3 Choice 문구를 그대로 재사용하고, 4~6분마다 짧은 선악 선택이 온다. 하지만 전투 중 폰 카드가 손을 가리고, 반복되면 늘 같은 버튼만 누르는 소음이 될 수 있다. 새 원격, 하루 상한, 점수 예산 조정이 필요하다. 즉시성이 높아 loot-6보다 나은 대표안이다.",
+    "S3 선택을 황금 처치마다 반복하는 안. loot-6과 같은 '돌려줄까/가질까' 반복 기울기다. 싸우는 중에 카드가 뜨고 자동 방치 중에도 떠서 소음이 크다. 새 원격과 새 카드 UI가 필요하다. 점수 예산(결정 3)을 앞당긴다.",
+    "loot-6과 같은 '사냥 전리품에서 반복되는 돌려줄까/가질까 + 하루 상한'임. 이 안은 새 원격, pending 상태, 비모달 카드 UI가 모두 새로 필요하고 전투 중에 팝업이 뜸. 반복 점수원은 하나만 고르고 하루 공통 상한을 둘 것을 권함."
+   ],
+   "dups": [
+    "loot-6",
+    "loot-6"
+   ]
+  },
+  {
+   "id": "fairness-5",
+   "lens": "fairness",
+   "title": "폰에서 반격할 때 돌아보기: 나를 때린 적과 황금 거위 쪽으로 먼저 돌기",
+   "player_experience": "지금 상황:\n- 숲에서 폰으로 고블린을 잡던 아이가 뒤에서 뿔 군단에게 맞는다. 공격 버튼을 누르면 앞의 고블린만 때리다 쓰러진다. PC는 시프트락으로 돌아설 수 있다.\n- 황금 거위 줄다리기에서는 거위를 바라보지 않고 누르면 헛손질이라, S1 '직접 3번 때리기'와 거위 보상 조건(직접 3번)을 못 채운다.\n\n바꾼 뒤:\n- PvP 지역에서 3초 안에 나를 때린 적이 사거리 안에 있으면, 누를 때 그쪽으로 먼저 돈다.\n- 거위가 내려와 있으면 거위도 돌아볼 대상이 된다.",
+   "why_fun": "폰 아이도 '맞으면 돌아서서 싸운다'가 된다. 복수(주황 화살표)와 현상금 사냥이 폰에서도 공정하게 재미있어진다.",
+   "grounded_in": "src/StarterPlayer/StarterPlayerScripts/HUD.luau:\n- L.FaceTarget(2728-2752): workspace.Monsters만 보고, 앞쪽 원뿔에 몬스터가 하나라도 있으면 돌지 않음\n- 자동 루프도 FaceTarget을 부름(3241-3249)\n\n서버 AimCone 75/80: Config.Classes, CombatService aimed\n\nCombatService.GetLastPvPAttacker(535) 이미 있음\n\n거위 모델은 effects 폴더(GooseService.luau:387)라 FaceTarget 대상이 아님. GooseService MIN_MANUAL_HITS=3.\n\nSPEC_ADDENDUM A23-12: 바라보는 방향 = 공격 방향. 폰 체감은 아직 미확인.",
+   "implementation": "1) 서버\n- CombatService가 PvP 피해를 줄 때 victim에 LastPvPAttackerId와 LastPvPAttackerAt 속성을 쓴다(기존 lastPvPAttacker 표의 값).\n\n2) 클라이언트: L.FaceTarget(opts)\n- 수동 입력이고 ZonePvP이면 고르는 순서: (1) 3초 안의 공격자(생존, 다른 진영, Rookie·Protected 아님, Range 안) (2) RevengeTargetId (3) 기존 몬스터.\n- GameState GooseActive이고 교차로에 있으면 Config.Goose.Position도 후보로 넣는다.\n\n3) 자동 루프는 FaceTarget({MonstersOnly=true})로 부른다.\n\n4) 서버의 원뿔·CanAttack 판정은 그대로 둔다.",
+   "effort": "S",
+   "needs_art": false,
+   "needs_user_decision": "사용자 요청 '바라보는 방향 = 공격 방향' 안에서, 누를 때 사람·거위 쪽으로도 도는 보조를 켤지",
+   "risks_conflicts": "- 자동 루프가 사람 쪽으로 돌면 몬스터를 못 때리므로 MonstersOnly가 꼭 필요하다(자동은 몬스터만, A23-1).\n- 새싹·보호막·같은 편 쪽으로 돌지 않게 속성으로 거른다.\n- 기존 0.08초 회전 복제 지연 처리를 재사용한다.\n- PC 시프트락은 지금처럼 영향이 없다.",
+   "score": 21,
+   "judge_notes": [
+    "검증: L.FaceTarget은 Monsters 폴더만 보는데, 서버는 거위도 inAim(AimCone)으로 판정한다. 그래서 폰에서 거위에 헛손질하면 S1과 거위 보상(직접 3번)을 놓칠 수 있다. 첫 10~20분에는 거위 부분의 가치가 크다. 자동 루프에는 MonstersOnly가 반드시 필요하다.",
+    "L.FaceTarget은 workspace.Monsters만 본다(확인). 수동으로 누를 때만 공격자·거위 쪽으로 도는 것은 A23-12 '보는 방향=공격'과 '사람은 수동만' 안에 든다. 같은 편·새싹·보호막 필터와 자동 루프 MonstersOnly는 필수. 폰 체감은 미검증.",
+    "확인: L.FaceTarget는 workspace.Monsters만 보고, 거위 타격은 모든 직업에서 inAim(AimCone 75/80)이 필요함. 폰에서 거위와 반격 문제는 실제로 있음. 다만 사람 쪽 자동 회전은 조준 보조로 느껴질 수 있고, 자동 루프는 MonstersOnly로 반드시 분리해야 함. 거위 대상 추가만 먼저 넣으면 S이고 안전함."
+   ],
+   "dups": []
+  }
+ ],
+ "synth": {
+  "top": [
+   {
+    "rank": 1,
+    "title": "막히면 이유를 알려 주는 퀘스트 줄 (조각의 시험·직접 스킬)",
+    "pitch_ko": "퀘스트 줄에 '조각의 시험 1/3' 대신 지금 할 일이 바로 보여요. 예: '공격 버튼만으로 슬라임 2/3'. 숫자가 안 올랐으면 '스킬이 닿은 슬라임은 안 세요 · 공격 버튼만!'을 한 번 알려 줘요. 자동 전투를 켠 채 스킬 퀘스트가 남아 있으면 줄 끝에 '(직접 Q)'가 붙어요. 자동 전투를 얻는 유일한 길에서 아이가 이유도 모르고 막혀 그만두는 일을 막아요.",
+    "implementation": "① Config.StoryQuests.Defs.S0(N2도) Trials 항목마다 Label을 둔다(예: \"공격 버튼만으로 슬라임 %d/%d\"). StoryQuestService rowFor(~362)의 Trials 분기는 첫 미완료 항목의 Label과 그 항목의 P/Count로 text·progress를 만든다. Label이 없으면 지금 문구를 그대로 쓴다.\n② eventAmount(158-166)가 BasicKill+info.SkillHit일 때, 또는 SafeKill에서 MinHP 미달일 때 0을 돌려준다. 이 두 경우에 Net.Notify를 1회 보낸다. 쿨다운은 플레이어별 5분이고 모듈 표 안에 두며, 문구는 Config 텍스트 표에 넣는다.\n③ AutoCombatEnabled이고 활성 단계의 Obj.Type이 SkillHit이면(Trials 안에 덜 끝난 SkillHit이 있어도) MainRow/SubRows 텍스트 끝에 TXT '(직접 Q)'를 붙인다. Story.First.ManualSkillHint로 1회 토스트를 띄운다.\n서버 판정과 보상은 그대로다(A23-2 계약 유지). 폰 749×361에서 한 줄 14자 안팎인지 확인한다.",
+    "effort": "S",
+    "needs_user_decision": "문구만 확인하면 된다. 용어는 '평타' 대신 '공격 버튼만'을 추천한다. 별도 질문 하나: 스킬 퀘스트가 남아 있는 동안 자동 전투가 스킬을 양보하게 할지(autoTick에서 Release를 건너뜀). A23-1 '자동은 스킬도 씀'의 예외라 사용자 OK가 있어야 한다. OK가 없으면 ③ 표시만 넣는다.",
+    "when": "now",
+    "source_ids": [
+     "fairness-3",
+     "first15-5"
+    ]
+   },
+   {
+    "rank": 2,
+    "title": "새싹 일일 임무: '슬라임 50마리' 대신 짧고 서로 다른 목표",
+    "pitch_ko": "Lv1~9 일일 임무가 '슬라임 50~60마리' 대신 3~5분짜리 서로 다른 목표 3개가 돼요. 예: '왕 슬라임 3마리', '스킬로 3번 맞히기', '사냥 골드 40'. 지금은 수동으로 10분이 넘는 반복 노동이에요. 그런데 보상이 이야기 보상보다 커서 아이가 이야기를 두고 노가다를 고르게 돼요.",
+    "implementation": "Config.Quests.Newbie = { MaxLevel = 9, QuestMinutes = 2, DailyUnits = { Kill = {12,15}, Gold = {12,15}, Release = {3} } }를 추가한다. Goose(최대 10분 대기)와 Golden(4% 운)은 3~5분 약속에 맞지 않으니 새싹 풀에서 빼거나 가중치를 낮춘다.\nQuestService.newQuest(~178/223)에서 kind=='Daily'이고 level<=9이면 Newbie 단위와 Config.HuntValue(level, Newbie.QuestMinutes) 보상을 쓴다. 이미 있는 '다른 템플릿 우선' 규칙으로 3개가 서로 달라진다. VacationReward는 기존 Config.Daily.QuestMinutes를 그대로 쓰도록 분리한다.\nLv10 이상: Config.Economy.QuestKillsPerMinute(30분 수동 실측값)를 새로 두고 Target = QuestMinutes × QuestKPM × (0.9~1.1)로 계산한다. KillsPerMinute=12는 자동 시절 값이므로 보상 크기에만 남긴다.\n새 크기는 다음 생성(다음 날·리롤)부터 적용하고 옛 세이브는 건드리지 않는다.\n(선택) 펼치는 시점을 바꾸려면 서버가 메인 줄에 DailiesOpen 플래그(M1_4 완료 또는 Lv5 이상)를 보내고, HUD.luau 1998줄의 folded 조건을 그 플래그로 바꾼다.",
+    "effort": "S",
+    "needs_user_decision": "(1) Lv1~9 일일 크기와 보상. 추천은 12~15단위·2분어치(Lv1 약 72골드+120XP)이고, 지금은 50~60단위·180골드+300XP다. (2) 일일을 펼치는 시점. 승인된 quest_chain 타임라인은 3:15(첫 임무 받기)다. 1장 끝(약 11분)으로 미룰지 정해야 한다. 미루지 않아도 크기만 바꾸면 효과가 크다. 일일 XP가 줄면 25~30분 'Lv10 대기' 구간이 길어지니 새 세이브 30분 실측이 필요하다.",
+    "when": "now",
+    "source_ids": [
+     "first15-1",
+     "fairness-7"
+    ]
+   },
+   {
+    "rank": 3,
+    "title": "'함께할게요'를 누르면 바로 초원으로 출발",
+    "pitch_ko": "안내자 대화에서 '함께할게요 · 초원으로'를 누르면 3초 뒤 슬라임이 보이는 초원 입구에 도착해요. 지금은 섬에서 초원까지 약 54초를 빈손으로 걸어요. 아이들이 가장 많이 나가는 첫 1~2분이라, 선택한 순간 바로 사냥이 시작돼야 해요.",
+    "implementation": "QuestService의 첫 임무 수락 처리에서 setStep(STEP_GUIDE) 직후(~355), ZoneService.GetZoneId가 'SlimeMeadow'가 아니면 pcall(S.ZoneService.Travel, player, 'SlimeMeadow')을 부르고 Notify '초원으로 출발해요!'를 보낸다.\n도착하면 기존 ZoneChanged로 1→2단계가 저절로 바뀐다. 채널이 취소되면 지금의 빛줄기와 고정 줄이 그대로 대신한다.\nWelcome 수락 버튼 글자만 Config 텍스트로 바꾼다.\n발판 배우기는 M1-2(교차로 → 초원)로 옮긴다. Guide에 모루 옆 발판 빛줄기를 켜고 문구를 '빛나는 발판을 밟아 초원으로'로 바꾼다.\nIntro.IsOpen()과 선택 화면이 닫힌 뒤에만 실행한다(A23-9). Studio에서 3초 채널과 대화창 닫힘이 겹치지 않는지 확인한다.",
+    "effort": "S",
+    "needs_user_decision": "첫 이동 방식: 자동 출발(추천) 또는 [함께할게요]/[바로 초원으로] 두 버튼. 승인된 quest_chain M0의 '발판 이동 배우기'를 M1-2로 옮기는 것도 확인받고 문서를 갱신해야 한다.",
+    "when": "now",
+    "source_ids": [
+     "first15-4"
+    ]
+   },
+   {
+    "rank": 4,
+    "title": "성장 체감 알림: '왕 슬라임 10방 → 5방!'",
+    "pitch_ko": "나무 검을 사면 '이제 슬라임 2방 · 왕 슬라임 5방!'이 크게 떠요. 강화에 성공하면 '왕 슬라임 5방 → 4방'이 떠요. 공격력 숫자는 아이에게 와닿지 않지만 '몇 방'은 손으로 느껴요. 준비해서 강해지는 순간이 기분 좋아지고, 다음 무기를 살 이유도 생겨요.",
+    "implementation": "대장간 줄이 이미 쓰는 Config.SwingHitsToKill(tier, level, classId, monsterId, factionId, enhance)를 그대로 재사용한다. 그래야 숫자가 대장간 줄과 어긋나지 않는다.\nFx.luau의 Feel 표 안에 hitsSnapshot()을 만든다(top-level local이 약 167개라 표 안에 둔다). 지금 지역의 주 몬스터와 BigSlime(Lv<10)에 대해 평타 몇 방, 그리고 스킬 한 방 가능 여부(WeaponDamage × class.Damage × 진영 보너스 × BasicSkill.DamageMultiplier ≥ HP)를 계산한다.\nLevel·WeaponTier·WeaponEnhance 속성이 바뀔 때 전후를 비교해 줄었을 때만 문구를 붙인다. 붙일 곳은 announceLevelUp(:1796), handlers.Upgrade(:3599), 강화 결과 Announce이고, 붙이는 문구는 ' · 왕 슬라임 10방 → 5방' 또는 '스킬 한 방에 왕 슬라임!'이다.\n문구는 Config.Text에 두고 '평타 기준'으로 표현한다.",
+    "effort": "S",
+    "needs_user_decision": "없음. 문구만 확인하면 되고, 확인이 없으면 추천안대로 넣는다.",
+    "when": "now",
+    "source_ids": [
+     "first15-6"
+    ]
+   },
+   {
+    "rank": 5,
+    "title": "왕 슬라임이 터지면 꼬마 슬라임 3마리 (스킬 한 방의 맛)",
+    "pitch_ko": "왕 슬라임을 잡으면 '퐁!' 하고 꼬마 슬라임 3마리가 튀어나와요. 바로 Q 한 방에 셋이 터져서, '스킬 한 번에 여러 마리' 퀘스트(M2-5, 시험 ②, N1)가 슬라임을 몰고 다니지 않아도 채워져요. 큰 적 다음에 작은 떼가 나와서 싸움 리듬도 바뀌어요. 새 그림은 필요 없어요.",
+    "implementation": "Config.MonsterTypes.BigSlime.Split = { Kind='Slime', Count=3, Spread=4, Life=45 }를 추가한다.\nspawnMonster는 MonsterService 내부 local이므로 분열 코드도 MonsterService 안에 둔다. killRecord에서 MonsterKilled를 쏜 뒤, 개인(튜토리얼) 몬스터가 아니고 def.Split이 있으면 groundPoint(죽은 위치 ±4)에 spawnMonster('Slime', {Position=..., Golden=false})를 Count번 부른다. 새 레코드에는 _split, _noRespawn, _noAggroUntil=now+1을 붙인다.\n재생성 예약은 aiStep이 아니라 killRecord 끝의 scheduleRespawn(~1073)이므로, _noRespawn 확인도 거기서 한다(목표 수를 넘으면 원래 만들지 않기도 한다).\nLife초 동안 아무도 안 때리면 fade로 없앤다.\n분열 슬라임은 일반 공용 처치라 퀘스트·일일·왕관 점수·A23-12 드랍에 그대로 들어간다. spawnMonster 자체는 상한 검사가 없으니 GlobalCap 72를 확인한다.",
+    "effort": "S",
+    "needs_user_decision": "정할 것:\n- 분열 슬라임 보상: 일반 슬라임 그대로(추천), 또는 골드 0·경험치만\n- 대박(젤리 왕관) 굴림 포함 여부: 포함 추천(규칙이 단순함)\n- 3마리 대 2마리\n왕 슬라임 사냥 가치가 약 2배가 되므로 15분 실측으로 경제를 확인해야 한다.",
+    "when": "before-freeze",
+    "source_ids": [
+     "first15-3"
+    ]
+   },
+   {
+    "rank": 6,
+    "title": "같이 놀기가 보이게: '함께!' 표시 + 친구 합류 알림 + 친구 있는 곳으로 이동",
+    "pitch_ko": "친구와 같이 슬라임을 잡으면 둘 다 '+3골드 · 함께!'가 떠요. 친구가 들어오면 '민수님이 들어왔어요!'가 뜨고, 이동 창 맨 위 '친구: 민수 (말랑 초원)'을 누르면 그 지역으로 가요. 지금도 같이 때린 모두가 보상을 다 받는데 화면에 안 보여서 '스틸' 다툼이 생겨요. 친구 따라 들어온 아이는 친구가 어디 있는지 못 찾아요.",
+    "implementation": "① 함께 표시: MonsterService.killRecord(1049-1067)에서 info.Together=#eligible을 넣는다. ProgressionService.onMonsterKilled의 Net.Fx(player,'Reward',{...,Together})로 함께 보낸다. Fx Reward 처리에서 Together가 2 이상이면 골드 숫자 옆에 '함께!'를 붙인다(기존 숫자 스타일, 내 처치에만). 첫 1회만 토스트 '같이 잡아도 둘 다 전부 받아요!'를 띄운다.\n② 친구(지금 src 전체에 IsFriendsWith·SocialService 사용이 0건이다):\n- 클라이언트에서 다른 플레이어마다 pcall(LocalPlayer.IsFriendsWith)을 한 번만 묻고 결과를 캐시한다.\n- 친구가 들어오면(PlayerAdded) 토스트를 1회 띄운다.\n- Panels 이동 창 맨 위에 친구 줄(이름 + 지역 이름, 다른 편이면 '다른 편' 표시)을 둔다. 누르면 기존 Travel(zoneId)을 부르고, 레벨 제한과 상대 마을 튕김은 서버 규칙 그대로다.\n③ (선택) 메뉴에 SocialService:PromptGameInvite 버튼을 두되 보상은 주지 않는다.\n진영 카드 위 '친구 N명' 배지는 승인 화면이라 이번에는 넣지 않는다. 문구는 Config 텍스트 표에 두고, Fx 상태는 표 안에 둔다.",
+    "effort": "S(①) + S~M(②③), 합쳐 약 1일",
+    "needs_user_decision": "정할 것:\n- '함께!'와 첫 안내 문구\n- 친구 초대 버튼을 넣을지(보상 없음 추천, 보상을 주면 Roblox 정책 위험)\n- 진영 선택 화면 '친구 N명' 배지는 승인 화면 변경이라 따로 물어볼 것",
+    "when": "before-freeze",
+    "source_ids": [
+     "social-2",
+     "social-4"
+    ]
+   },
+   {
+    "rank": 7,
+    "title": "내 사냥이 우리 편 왕관을 물들인다 + 계급이 오르는 순간",
+    "pitch_ko": "몬스터를 잡을 때마다 진영색 '+1'이 화면 위 왕관 게이지로 날아가요. 교차로 조각 빛기둥과 하늘 왕관은 앞서는 편 색으로 물들어요. 판이 끝나면 '이번 판 내 점수 23'이 뜨고, 명예가 10이 되는 순간 '기사가 되었어요!'가 떠요. 슬라임 한 마리도 우리 편에 보탠다는 게 보여서, 모든 행동이 천사나 악마 쪽으로 기운다는 걸 첫 10분에 느껴요.",
+    "implementation": "① HUD: WarPoints 속성이 오르면 캐릭터의 화면 좌표에서 WarMeter의 우리 칸까지 '+n' TextLabel을 트윈한다. 0.3초에 1개만 띄우고 숫자는 합쳐서 보여 준다. AutoCombatEnabled면 크기·빈도를 절반으로 줄이고 흔들림은 없다. 장인 길드에는 띄우지 않는다. 상태는 HUD의 L 표 안에 둔다.\n② 1초 간격 클라이언트 루프로 GameState WarHaloScore/WarHornsScore 비율에 따라 색을 정한다(Siege 모드는 SiegeTarget 진행률). CrownOfBalance의 Trim과 CrownShard의 Core/Shard/Beam 색을 금빛과 Config.Factions.Horns.Color 사이에서 로컬 Lerp한다. Map/Landmarks에서 못 찾으면 조용히 건너뛰고, Intro.IsOpen() 동안은 원래 색을 둔다. M2-1 문구가 이미 이 연출을 약속하는데, 칠하는 코드가 없다.\n③ WarService.payChests 옆에서 기여자에게 Config.Text.WarMyShare 한 줄을 Notify한다.\n④ PlayerService.SetStat(610-625)에서 Honor/Infamy가 오를 때 Config.GetTitle의 전후 계급을 비교한다. 계급이 오르면 본인에게 Notify를 보내고 근처에 기존 Fx burst를 낸다. HUD 칭호 옆이나 메뉴 MarkLore에 '명예 7 · 기사까지 3'(Config.Text.TiltProgress)을 보여 준다.\n후광·뿔의 크기 규칙과 그림은 그대로 둔다. 모든 알림은 A23-9 미루기 큐를 거친다.",
+    "effort": "S~M (네 부분 각각 S)",
+    "needs_user_decision": "정할 것:\n- 왕관·조각 색을 실시간으로 바꿀지(판 끝 하늘 변화와 둘 다 둘지)\n- 자동 전투 중에도 '+1'을 보일지\n- 계급 오름을 누구에게 알릴지(본인만 추천, 또는 같은 지역)\n후광 밝기·반짝임 같은 새 코드 효과는 넣지 않는다(Firefly 이후 결정).",
+    "when": "before-freeze",
+    "source_ids": [
+     "goodevil-2",
+     "goodevil-1"
+    ]
+   },
+   {
+    "rank": 8,
+    "title": "10% 주문서가 평균 손해인 문제 바로잡기",
+    "pitch_ko": "지금 규칙(실패하면 50% 확률로 한 단계 하락)으로 계산하면, 강화된 무기에서 가장 귀한 10% 주문서가 평균 −0.15단계, 즉 쓸수록 손해예요. 아이가 '제일 좋은 걸 아껴 썼는데 망했다'를 겪지 않도록, 확정 규칙 중 이 한 줄만 사용자에게 다시 물어봐요.",
+    "implementation": "Config.Loot.Items의 주문서 항목마다 FailDrop 필드를 둔다(추천: Enh70=0.5, Enh30=0, Enh10=0). LootService 강화 처리는 공통 FailDropChance(0.5) 대신 이 값을 쓴다.\n추천안 (a)의 기댓값: 70%=+0.55, 30%=+0.6, 10%=+0.3단계.\n정정: '10%=+4로 올리기'만 하면 여전히 −0.05라 효과가 없다.\n현재 기댓값(+0.55/+0.25/−0.15)과 추천 기댓값을 표 한 줄로 사용자에게 보여 주고 고르게 한다.\n가뭄 방지 카운터와 실패 조각은 저장 필드가 새로 필요하니 정식 출시 이후로 미룬다. LootService.sanitize는 LootFlags에서 true 값만 남기므로, 숫자 카운터는 별도 필드가 필요하다.\n작업 세션이 지금 LootService를 만드는 중이라 지금 묻는 것이 가장 싸다.",
+    "effort": "S",
+    "needs_user_decision": "A23-11/12 확정값을 바꾸는 것이라 반드시 사용자가 골라야 한다. (a) 30%·10% 주문서는 실패해도 하락 없음(추천) / (c) 그대로 두기.",
+    "when": "now",
+    "source_ids": [
+     "loot-8"
+    ]
+   },
+   {
+    "rank": 9,
+    "title": "상대 진영이 없어도 황금 거위 '함께 구조'",
+    "pitch_ko": "서버에 빛 진영만 있어도 거위가 내려오면 '함께 구조 31/45 · 0:24' 게이지 하나가 떠요. 같이 때려 채우면 '구조 성공!'과 보상을 받아요. 지금은 상대 진영이 없으면 무조건 무승부라, 사람이 적은 베타 서버에서 10분마다 오는 대표 이벤트가 매번 김이 빠져요.",
+    "implementation": "GooseService.start에서 FactionService.GetCounts로 확인해 한쪽 인원이 0이면 mode='Coop'으로 둔다. 모드는 시작 때 정하고, 도중에 상대가 들어와도 끝까지 유지한다.\nGameState에 GooseMode와 GooseTarget을 쓴다. target = Config.Goose.CoopPerHead(예: 15) × 시작 때 준비된 그 진영 인원(최소 1).\nfinish(~491 noRival 분기)에서 Coop이고 합계가 target 이상이면 그 진영이 이긴다. 보상은 Config.Goose.CoopWinShare(0.7) 배율을 쓰고, WinWarPoints(60)는 주지 않는다(CR-L8 악용 방지 유지). 못 채우면 기존 Tie 경로다.\nMIN_MANUAL_HITS=3, 장인 길드 제외, 자동 타격 1점은 그대로 둬서 방치만으로는 못 이기게 한다.\nEventHUD는 기존 BarTrack을 target 대비로 채우고 글자만 바꾼다.\n1·2·3명 클라이언트로 검사한다. 작업 세션의 GooseService/S1 수정이 끝난 뒤에 넣는다.",
+    "effort": "M",
+    "needs_user_decision": "정할 것:\n- 협동 성공 보상: 추천은 이긴 편 보상의 70%(무승부 40% < 협동 70% < 진짜 승리 100%)\n- 혼자 접속해도 1인분 목표로 성공을 허용할지(추천: 허용)\n- 전쟁 점수: 0 추천",
+    "when": "before-freeze",
+    "source_ids": [
+     "social-1",
+     "goodevil-3"
+    ]
+   },
+   {
+    "rank": 10,
+    "title": "억울한 손실 막기: 쓰러짐 안내 + 숲 도착 보호 + 연결 끊김 벌칙 상한",
+    "pitch_ko": "바뀌는 것:\n- 몬스터에게 쓰러지면 '왕 슬라임에게 쓰러졌어요 · 잃은 건 없어요!'와 [말랑 초원으로] 버튼이 떠요.\n- 고블린 숲으로 순간이동하면 10초 보호막이 켜지고, 숲에서 Lv15가 되면 새싹 보호가 60초 뒤에 꺼져요.\n- 폰 통신이 끊겨도 털렸을 때보다 더 잃지 않아요.\n죽음이 헤매는 시간이 되지 않게 하고, 도착 매복이나 끊김처럼 억울한 손실을 없애요.",
+    "implementation": "① PvE 사망: PlayerService.CharacterDied에서 PvP 킬러가 없으면 ZoneId와 마지막 몬스터 종류(LastHitByMonster 속성)를 적는다. 부활 뒤 Net.Notify를 보내고, 누르면 HUD StoryTap의 이동 경로를 연다(목적지는 안전 지역만). 현상수배 뿔은 PvE 사망에서도 25%를 잃으므로(VillainLossOnWantedPvEDeath) 문구를 나눈다.\n② 도착 보호: ZoneService.teleport가 성공한 뒤 목적지가 zone.PvP이면 S.PvPService.Protect(player, Config.PvP.SpawnProtection)를 부른다. 새 함수 PvPService.MarkArrival이 spawnedAt을 갱신해서 기존 깡패 fresh 판정을 그대로 재사용한다.\n③ 졸업 유예: PvPService.tickPlayer에서 rookie가 true에서 false로 바뀌는 순간 inPvP이면 graceUntil=now+60. IsRookie는 그 시간 안이면 true를 돌려주고, PvP 지역을 나가면 graceUntil을 지운다.\n④ 연결 끊김: ProgressionService.onPlayerLeaving(459-461)의 손실을 min(floor(max(0, carried − SafeFloorPerLevel×Lv) × CombatLogPenalty), PlunderCapPerLevel×Lv)로 바꾼다. 괴수 경로와 payLeaveBounty는 그대로 둔다.\n오프라인 fixture에 '이동 후 보호'와 '끊김 손실' 검사를 추가한다.",
+    "effort": "S~M (네 부분 각각 S)",
+    "needs_user_decision": "도착 보호 10초와 졸업 유예 60초(추천). 연결 끊김 벌칙을 KO 수준(안전 바닥 + 상한)으로 낮출지 정해야 한다. 지금은 주머니 전체의 25%다.",
+    "when": "before-freeze",
+    "source_ids": [
+     "fairness-6",
+     "fairness-2"
+    ]
+   }
+  ],
+  "warnings": [
+   "Lv1~9 일일 퀘스트가 'Kill/Gold DailyUnits {50,60}'이다(Config.luau 1211/1215). KillsPerMinute=12는 자동 시절 값이라 수동으로는 9~15분 걸린다. 그런데 일일 1개 보상(HuntValue(lv,5): Lv1 180골드+300XP)이 첫 임무(150골드)보다 커서 이야기 대신 반복 노동을 고르게 만든다. 참고 영상에서도 '숫자만 커지는 처치' 앞에서 이탈했다.",
+   "S0 '내 싸움을 배우는 왕관 조각'은 자동 전투를 얻는 유일한 길이다. 그런데 eventAmount가 BasicKill+SkillHit과 SafeKill MinHP 미달을 알림 없이 0으로 처리하고(StoryQuestService 158-162), 줄에는 '조각의 시험 n/3'만 보인다. 아이가 이유를 모른 채 막힌다.",
+   "자동 전투를 켜면 autoTick이 MP 20 이상마다 Release(p,true)를 쓴다(CombatService ~1228-1233). MP 회복이 초당 4라 MP가 늘 바닥이어서 수동 Q가 막힌다. 자동 스킬은 SkillHit에 안 센다(StoryQuestService 166). 그래서 S4(약 9분) 뒤 M2-5·N1·Release 일일이 이유 없이 안 오른다.",
+   "주문서 기댓값이 거꾸로다. FailDropChance 0.5와 Plus 1/2/3 기준, 강화된 무기에서 70%=+0.55, 30%=+0.25, 10%=−0.15단계로, 가장 희귀한 주문서가 평균 손해다. '10%=+4로 올리기'만으로는 여전히 −0.05다.",
+   "상대 진영이 0명이면 거위는 CR-L8에 따라 항상 무승부다(GooseService ~491-498). 베타 소서버에서 10분 대표 이벤트가 매번 김빠진다. 고칠 때 협동 승리에 WinWarPoints(60)를 주면 CR-L8 악용이 되살아나니 주지 말 것.",
+   "연결 끊김 벌칙이 주머니 골드 25%이고 바닥값·상한이 없다(ProgressionService 459-461). KO 손실에는 바닥 Lv×10과 상한 Lv×100이 있어서, 폰 통신이 끊긴 아이가 털렸을 때보다 더 잃는다.",
+   "보호막은 onCharacterSpawned에서만 켜진다(PvPService ~856). 이동 메뉴나 발판으로 고블린 숲에 도착하면 고정 도착점(590,0,0)에 보호 없이 떨어져 매복당한다. IsRookie는 매번 다시 계산되어 사냥 중 Lv15가 되는 순간 보호가 바로 꺼진다.",
+   "직업 무료 변경은 항상 Lv1로 리셋된다(ClassService.onChangeClass → ResetLevel). 직접 써 보기 전에 고른 직업을 바꾸려는 아이에게 Robux 변경권 압박이 생긴다. GDD §10-1 '어린이 구매 유도 금지'와 긴장 관계다. Lv5 전에는 레벨을 유지하는 안을 사용자에게 물어볼 가치가 있다(변경권 상품은 아직 Id=0).",
+   "M2-1 문구는 '하늘 왕관은 조각을 더 모은 편 색으로 빛나요'라고 약속한다. 그런데 CrownOfBalance나 CrownShard를 칠하는 코드가 없다(Intro만 참조). 지키지 않는 약속이 화면에 나간다.",
+   "알림 소음 주의: 위 아이디어 여러 개가 토스트를 더한다. 폰 토스트 최대 2개, 공통 쿨다운, A23-9 오프닝·선택 화면 중 미루기 큐를 반드시 함께 쓴다. 자동 전투 중 자주 나오는 효과는 조용하게 한다(reference_lessons #8).",
+   "Luau local 한도: Fx.luau는 top-level local이 약 167개, HUD.luau는 약 148개다. 새 상태와 상수는 반드시 기존 표(Feel/MOTION/L/TXT/COL) 안에 둔다.",
+   "코드로 만드는 새 시각 효과(무기 강화 빛, 후광 밝기·반짝임, 드랍 등급 색, 선택 폭발)는 '코드로 새 스타일을 만들지 않는다' 규칙에 걸릴 수 있다. 사용자에게 한 번 보여 주고 승인받거나, Firefly 재그림 이후로 미룬다.",
+   "작업 세션이 지금 GooseService·S1·LootService를 고치는 중이다. 거위 협동 모드와 주문서 하락 규칙은 그 작업과 순서를 맞춘다. LootService.sanitize는 LootFlags에서 true 값만 남기므로 숫자 카운터(사냥 기록·가뭄 방지)는 별도 필드가 필요하다.",
+   "점수 예산: 반복 선악 점수원(황금 가루 돌려주기/가지기, 선배 도움 명예 등)을 여러 개 넣으면 계급 2(10점) 설계 예산이 무너진다. 넣는다면 하나만, 하루 공통 상한과 함께 넣는다. 이벤트 드랍 배율은 황금 배율(×3)과 곱해지면 대박 확률이 폭증하니 상한을 둔다.",
+   "quest_chain 승인 타임라인을 바꾸는 안(3:15 일일 열림, M0 발판 배우기)은 사용자 확인 후 문서를 갱신한다. 일일 XP를 줄이면 25~30분 'Lv10 대기' 위험 구간이 길어지니 새 세이브 30분 실측으로 확인한다.",
+   "참고로 보류한 좋은 안(정식 출시 전 후보):\n- 말랑 대왕 정기 보스(social-7, M, 초원 가루 소동 first15-8과 같은 자리라 하나만)\n- 60초 길 잃음 구조 토스트(first15-2의 S 부분)\n- 이벤트 칩을 누르면 바로 가기(social-3, S)\n- 강화 단계별 무기 빛(loot-3, 승인 필요)\n- 드랍 등급 소리 높이·10% 빛기둥(loot-1)\n- 대박 진영 점수와 사냥 기록(loot-4)\n- 선배가 새싹을 도우면 명예(social-5, 일일 상한 필요)\n- 황금 가루 돌려줄까/가질까(loot-6/goodevil-4 중 하나만)\n- 폰 반격 시 공격자·거위 쪽 돌아보기(fairness-5, 거위 부분 먼저)\n- 판 영웅 표시(social-8)\n- NPC 기울기 한마디(goodevil-5)\n- Lv5 전 직업 변경 레벨 유지(fairness-8, 사용자 결정)"
+  ]
+ },
+ "crit": {
+  "verdicts": [
+   {
+    "rank": 1,
+    "verdict": "revise",
+    "note": "코드 주장은 맞다. StoryQuestService.luau 158-167에서 BasicKill+SkillHit와 SafeKill HP 미달을 알림 없이 0으로 처리하고, rowFor(361-367)는 '조각의 시험 n/3'만 보여 준다. 고칠 점 1: ③은 S0에는 해당하지 않는다. 자동 전투는 S0을 끝내야 열리기 때문이다. 실제로 막히는 곳은 S4 뒤의 M1-3, M2-5, N1, 일일 Release다. 고칠 점 2: autoTick(CombatService 1213-1240)을 건너뛰게 할지 사용자에게 묻지 말고, 이미 있는 '내 입력이 먼저' 규칙(lastManualAt, 1218-1219줄)을 MP까지 넓힌다. 수동 Q가 MP 부족으로 실패하면 약 6초 동안 자동이 스킬을 쓰지 않아서 다음 MP20이 내 Q로 간다. 자동은 계속 스킬을 쓰므로 A23-1과 부딪히지 않고 사용자 결정도 필요 없다. 고칠 점 3: feed()의 Trials 경로는 하위 시험을 끝내도 아무 알림이 없다. 시험 하나를 통과할 때 '조각: 기본 공격 시험 통과!' 토스트를 붙인다. 문구 확인 질문은 뺀다. idea_backlog 규칙상 문구는 세션이 정한다. 작업량 S, 지금."
+   },
+   {
+    "rank": 2,
+    "verdict": "revise",
+    "note": "이미 계획된 일이다. worker_prompt 단계 5와 reference_lessons #10이 'Lv1~9 일일 보상 크기를 측정 뒤 추천안으로 묻기'를 담고 있으니 그 질문에 합친다. 근거가 틀렸다. 처치는 QuestService와 StoryQuestService가 동시에 세기 때문에 '이야기 대신 노가다를 고르는' 선택은 없다. 진짜 문제는 둘이다. ① 50~60마리라는 숫자 벽이다. 시작 진행 10~20%를 빼도 40~54마리이고, 수동 분당 4~6마리로 8~13분 걸린다. ② 속도 붕괴다. Lv1 일일 3개+상자 = 경험치 1500인데, Lv10까지 필요한 경험치가 약 1380(슬라임 276마리 × 5)이다. 그래서 일일만으로 2장 'Lv10' 관문이 사라질 수 있다. 이건 아이디어가 걱정한 'Lv10 대기가 길어짐'과 반대 방향이다. DailyUnits 크기 조정(수동 실측 분당 처치 수 기준)과 보상 분량을 같은 질문 하나로 묶는다. 거위 템플릿은 S1과 이어지므로 새싹 풀에서 빼지 않는다. 작업량 S. 보상 분량은 사용자 결정."
+   },
+   {
+    "rank": 3,
+    "verdict": "keep",
+    "note": "코드 근거는 맞다. ZoneService.Travel(455)은 공개 함수이고 3초 채널이 있다. 안전 지역에서는 맞아도 끊기지 않는다(A23-10). teleport 뒤 updateZone이 지역 변경을 일으켜 tryTutorial이 STEP_GUIDE에서 STEP_QUEST로 저절로 넘어간다. 다만 승인된 quest_chain은 '서장(이미 있음, 바꾸지 않음)'이고 M0이 '발판 이동'을 가르치므로 사용자 OK가 필요하다(아이디어에도 표시돼 있음). 고정 줄을 누르면 1단계에서 이동 창이 열리는 기능은 이미 계획돼 있다. 그래서 얻는 것은 실측 약 54초(수락 44초 → 초원 98초)의 빈 걸음이다. 첫 2분 이탈 구간이라 가치가 크다. 발판은 M1-2(교차로 → 초원)에서 가르치는 것이 자연스럽다. 질문은 다른 질문과 한 번에 묶는다. 작업량 S."
+   },
+   {
+    "rank": 4,
+    "verdict": "revise",
+    "note": "일부는 이미 있거나 계획돼 있다. 대장간 줄이 이미 '슬라임 기본 공격 %d방 → %d방'을 보여 준다(Panels 2146-2153, T.WeaponEffectF). 강화 결과 '+1 · 공격 N→M (슬라임 3방→2방)'은 worker_prompt 단계 7에 들어 있다. 레벨업 부분은 거의 나오지 않는다. LevelDamagePerLevel이 0.02라 한 레벨에 2%씩이다. 새로 넣을 것은 구매·강화 직후 토스트 한 줄뿐이다. 대장간과 같은 TXT 형식과 '슬라임' 기준을 쓰고, 슬라임 방 수가 그대로일 때만 왕 슬라임(HP40)을 보탠다. Fx top-level local은 167개이니 Feel 표 안에 둔다. 사용자 질문은 없다. 작업량 S."
+   },
+   {
+    "rank": 5,
+    "verdict": "keep",
+    "note": "새 그림 없이 S0 ②, M1-3, M2-5, N1, 일일 Release를 자연스럽게 채워 준다. 재미 대비 비용이 가장 좋다. 코드 고칠 점: ① 분열 슬라임도 aliveCountOf('Slime')에 들어가서 일반 슬라임 재생성을 막는다. scheduleRespawn은 지연 뒤에 개수를 다시 확인한다(1010-1021). 그래서 경제 효과는 2배보다 작다. ② aiStep의 모델 분실 경로(1486-1488)도 scheduleRespawn(kind)를 부르므로 _noRespawn 확인을 거기에도 넣는다. Life가 끝나면 despawn(rec,true)를 써서 보상과 재생성을 모두 막는다. ③ Jackpot.Monsters는 Slime만 들어 있어서(Config 1399) 왕 슬라임 1마리마다 대박 굴림이 3번 늘어난다. 15분 측정에서 기록한다. 보상과 마리 수는 idea_backlog 규칙상 세션이 정한다. 작업량 S~M(테스트 포함 0.5~1일), 기능 마감 전."
+   },
+   {
+    "rank": 6,
+    "verdict": "keep",
+    "note": "주장은 맞다. killRecord(1049-1067)가 기여자마다 XP와 골드 전액을 보내고, src 전체에 IsFriendsWith·SocialService 사용이 0건이다. ①'함께!' 표시와 ②친구 합류 알림·이동 창 친구 줄은 약 1일이다. 초대 버튼은 보상 없이만 둔다. 하나를 꼭 보탠다. 친구를 따라 들어온 아이가 친구와 다른 편을 고르면 PvP 적이 되고 친구 마을에서 튕긴다. 그래서 진영 선택 직전에 '친구 민수님은 빛의 기사단이에요'를 토스트나 오프닝 마지막 자막 TextLabel로 보여 준다. 승인 카드 그림은 건드리지 않으므로 승인 디자인 변경이 아니다. 같은 IsFriendsWith 캐시를 쓴다."
+   },
+   {
+    "rank": 7,
+    "verdict": "revise",
+    "note": "넷으로 나눈다. ④ 계급 오름 알림은 지금 코드가 없다. CharacterVisuals 378은 후광만 조용히 키운다. GDD §0 '겉모습으로 보인다'와 직접 이어지므로 그대로 둔다(S). ② M2-1 Start 문구가 '하늘 왕관이 앞선 편 색으로 빛나요'라고 약속하지만 CrownOfBalance나 CrownShard를 칠하는 코드가 없다(Intro와 HUD 길 안내만 참조). 지금 당장 문구를 고친다. 판 끝 WarTint 하늘 색은 이미 있다. 왕관을 실시간으로 다시 칠하는 것은 코드로 만드는 새 시각 효과라 사용자에게 보여 준 뒤 하거나 Firefly 뒤로 미룬다. ① 날아가는 '+1'은 새 연출이다. 기존 Fx handlers.Reward 숫자에 왕관 점수를 함께 싣는 정도로 줄인다. worker 단계 4의 '우리 편 왕관 점수에도 기여했어요' 1회 알림과 겹친다. ③ WarChest 알림은 이미 있다(WarService 316). 내 점수만 덧붙인다."
+   },
+   {
+    "rank": 8,
+    "verdict": "keep",
+    "note": "계산을 검증했다. FailDropChance 0.5이고 Plus는 1/2/3이며, LootService 228에서 before>0일 때만 내려간다. 기댓값은 +0.55/+0.25/−0.15다. 다만 A23-12에서 사용자가 1시간 전에 확정한 규칙을 다시 여는 것이다. 작업 세션이 이미 물으려는 주문서 질문에 한 줄(현재와 추천 기댓값 표)로만 붙인다. 주의: 추천 (a)여도 10%는 +0.3으로 셋 중 가장 낮다(70%는 +0.55, 30%는 +0.6). '가장 귀한 것이 가장 좋다'를 원하면 (a)에 더해 Enh10의 Plus를 4로 올리는 안(+0.4)이나 '대박용' 설명을 함께 보여 준다. 사용 전 화면에 '+0 무기에 쓰면 잃을 게 없어요' 팁을 넣는 것은 규칙 변경 없이 바로 할 수 있다. 작업량 S, 지금."
+   },
+   {
+    "rank": 9,
+    "verdict": "keep",
+    "note": "주장은 맞다. GooseService 488-498에서 상대 진영이 없으면 무조건 무승부가 되고, 525에서 WinWarPoints를 준다. 베타 소서버에서는 10분마다 오는 대표 이벤트가 매번 김빠지므로 가치가 크다. 한쪽만 있을 때 GDD §7 줄다리기 규칙을 바꾸는 것이라 사용자 OK가 필요하다(표시돼 있음). WinWarPoints 0, MIN_MANUAL_HITS 유지가 맞다. 작업 세션의 GooseService 수정이 끝난 뒤 넣는다. 작업량 M, 기능 마감 전."
+   },
+   {
+    "rank": 10,
+    "verdict": "revise",
+    "note": "①은 지금 할 가치가 있다. PvE로 쓰러지면 HandleNonPvPDeath(426-445)에 따라 현상수배범만 25%를 잃으므로 '잃은 건 없어요' 안내는 사실이다. 사망 뒤에 다시 가는 길은 이미 StoryTap이 맡는다(작업량 S). ②③은 새싹이 아닌 사람(Lv15 이상이면서 1시간 이상)만 해당해서 베타 첫 주에는 적다. ④는 과장이다. CombatService.IsInCombat(526-528)은 PvP 태그만 보므로 사냥 중 폰 통신이 끊긴 아이는 벌칙을 받지 않는다. PvP 중 끊긴 사람에게 KO 수준의 바닥값·상한을 맞추는 공정성 수정으로 낮춘다. ②③④는 오프라인 fixture와 함께 S 묶음으로 기능 마감 전에, 수치 질문은 한 번에 묻는다."
+   }
+  ],
+  "missing": [
+   "자동 전투 중 수동 Q 우선권: 수동 Release가 MP 부족으로 실패하면 약 6초 동안 autoTick이 스킬을 쓰지 않게 해서 다음 MP20이 내 Q로 가게 한다. 지금 코드의 '내 입력이 먼저' 규칙(CombatService 1218-1219 lastManualAt)을 넓히는 것이다. 자동은 계속 스킬을 쓰므로 A23-1 결정과 부딪히지 않는다. S4 뒤 M2-5·N1·일일 Release가 이유 없이 안 오르는 문제를 사용자 질문 없이 푼다. 작업량 S, 지금.",
+   "친구 편 안내: 친구 따라 들어온 아이가 진영을 고르기 직전에 '친구 민수님은 빛의 기사단이에요'를 토스트나 오프닝 마지막 자막 TextLabel로 보여 준다. 승인 카드 그림은 바꾸지 않는다. 친구와 다른 편이 되면 서로 PvP 적이 되고 마을에서 튕기는 일을 막는다. IsFriendsWith 캐시는 6번과 함께 쓴다. 작업량 S.",
+   "S0 시험 통과 알림: StoryQuestService feed()의 Trials 경로는 하위 시험 하나를 끝내도 dirty만 하고 알림이 없다. 시험마다 '조각: 기본 공격 시험 통과! (1/3)'처럼 조각 대사 토스트를 띄워 자동 전투로 가는 유일한 길의 진행을 느끼게 한다. 작업량 S, 지금.",
+   "M2-1 문구 즉시 정정: Config M2_1 Start가 '하늘 왕관은 조각을 더 모은 편 색으로 빛나요'라고 약속하지만 칠하는 코드가 없다. 지금 바로 문구를 실제 동작(판 끝 하늘 색 WarTint, 상단 왕관 게이지)에 맞추고, 왕관 실시간 색 변경은 그림 단계에서 따로 정한다. 작업량 S, 지금.",
+   "일일 경험치가 Lv10 관문을 지움: Lv1 일일 3개+상자 = 경험치 1500인데, Lv10까지 필요한 경험치가 약 1380이다. 그래서 일일만으로 2장 M2-7 'Lv10' 대기가 사라지거나 1장 도중에 Lv10이 될 수 있다. 작업 세션 단계 5의 'Lv1~9 일일 보상' 질문에 이 계산과 DailyUnits 크기 조정을 함께 넣고, 새 세이브 30분 실측으로 Lv5·Lv10 시각을 확인한다."
+  ]
+ }
+}

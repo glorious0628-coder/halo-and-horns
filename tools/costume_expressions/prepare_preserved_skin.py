@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Reuse an approved rigid face UV/cover on the exact original paid skin.
 
 Read-only original models. Exact original Head UV triangles prove fixed-to-skin
 coordinates; the approved rigid face's normalized UV triangles select the same
 facial region. Only its new 129-vertex cover is reconstructed. No image edits.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import itertools

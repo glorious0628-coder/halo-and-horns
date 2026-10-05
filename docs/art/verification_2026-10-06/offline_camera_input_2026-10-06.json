@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "checks": 44,
+  "failed": 0,
+  "sourceSHA256": "0dfa21940b16b0427df5634f378e7cdef7836dc4dfe363b9afd8a04c79214ef4",
+  "fixtureSHA256": "0e22bec4e78f8395461b44d23770804b3b7b67cbade6ad5402770087a4d09133",
+  "studioCalls": 0,
+  "physicalInputTested": false,
+  "contract": "A23: left-drag measured from input.Position differences (Vector2), Delta ignored; skipped while MouseBehavior ~= Default; short click fires once; drag never attacks.",
+  "limitations": "Engine input propagation, default-camera follow/zoom/occlusion and real mouse/touch need runtime validation."
+}

@@ -1,4 +1,6 @@
--- ClassService.luau : first class pick (free, keeps level) and class change (free = Lv 1 / ticket = keep level).
+-- ClassService.luau : first class pick (free, keeps level) and class change. A23-14: below
+-- Config.ClassChange.FreeKeepLevelBelow (Lv 5) a free change keeps level and XP (no ticket is ever spent there);
+-- from that level on: free = back to Lv 1 / XP 0, change ticket = level kept.
 -- Class ids: "Warrior", "Mage", "Archer". Display names depend on the faction (incl. "Neutral", addendum A6)
 -- and always go through Config.ClassName.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -45,6 +47,20 @@ local function isClassChosen(player)
 	local data = S.PlayerService.GetData(player)
 	if data and type(data.ClassChosen) == "boolean" then return data.ClassChosen end
 	return player:GetAttribute("ClassChosen") == true
+end
+
+-- saved level (data first, attribute as fallback); always an integer >= 1
+local function currentLevel(player)
+	local data = S.PlayerService.GetData(player)
+	local lv = data and tonumber(data.Level)
+	if lv == nil then lv = tonumber(player:GetAttribute("Level")) end
+	if lv == nil or lv ~= lv or lv == math.huge or lv == -math.huge then return 1 end
+	return math.max(1, math.floor(lv))
+end
+
+-- A23-14: true when a free class change at the player's level keeps the level (Lv < FreeKeepLevelBelow)
+local function freeKeepsLevel(player)
+	return Config.ClassChangeKeepsLevel(currentLevel(player)) == true
 end
 
 ------------------------------------------------------------------ public API
@@ -111,6 +127,10 @@ local function onChangeClass(player, classId, useTicket, gender)
 		notify(player, "TravelBlockedCombat", "bad")
 		return
 	end
+	-- A23-14: below Lv FreeKeepLevelBelow the free change already keeps everything, so a ticket request is served
+	-- as a free change and the ticket is NOT spent (a paid ticket must never buy nothing).
+	local keepLevel = freeKeepsLevel(player)
+	if keepLevel then useTicket = false end
 	if useTicket then
 		local okTicket, why = S.MonetizationService.UseTicket(player, "Class")
 		if not okTicket then
@@ -120,18 +140,26 @@ local function onChangeClass(player, classId, useTicket, gender)
 		end
 	end
 
-	if not useTicket then
-		-- free: Level 1, XP 0 (gold, bank, weapon tier, rebirth bonus, marks, tickets, quests are kept)
+	if not useTicket and not keepLevel then
+		-- free from Lv FreeKeepLevelBelow on: Level 1, XP 0 (gold, bank, weapons, enhancement, items, rebirth bonus,
+		-- marks, tickets, quests are kept)
 		S.ProgressionService.ResetLevel(player)
 	end
 
 	local old = ClassService.GetClass(player)
 	if gender ~= nil then S.PlayerService.SetStat(player, "CharacterGender", gender) end
 	S.PlayerService.SetStat(player, "Class", classId)
-	S.PlayerService.RefreshCharacter(player, true)
+	-- review (A23-14): a keep-level change below Lv5 costs nothing, so it must not be a free full heal either
+	-- (Warrior -> Mage -> Warrior mid-hunt). It keeps the HP fraction; the paid / level-losing paths still heal fully.
+	S.PlayerService.RefreshCharacter(player, not keepLevel)
 	ClassService.ClassChanged:Fire(player, classId, old)
 	local name = Config.ClassName(classId, factionOf(player))
-	notify(player, useTicket and "ClassChangedTicket" or "ClassChangedFree", "good", name)
+	if keepLevel then
+		local below = math.floor(tonumber(Config.ClassChange.FreeKeepLevelBelow) or 0)
+		notify(player, "ClassChangedFreeKeep", "good", name, below)
+	else
+		notify(player, useTicket and "ClassChangedTicket" or "ClassChangedFree", "good", name)
+	end
 end
 
 ------------------------------------------------------------------ lifecycle

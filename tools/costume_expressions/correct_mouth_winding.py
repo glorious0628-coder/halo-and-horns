@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Reverse only inverted original mouth-wall triangles in a new P/N copy.
 
 No vertices, UV, normals, weights, bones or images are changed. Each corrected
 triangle keeps its same three original vertex indices; only its order reverses.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import copy
 import json
 from pathlib import Path

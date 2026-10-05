@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Read-only exact CG pixel-to-original-skin-triangle provenance.
 
 Uses the recorded orthographic camera and current source SHA, without changing
@@ -5,6 +6,7 @@ textures, UVs, geometry, skin weights or either original/candidate model.
 Run with Blender --background --python ... -- candidate.glb render.json
 '[[x,y],...]' new_report.json.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import hashlib
 import json
 from pathlib import Path

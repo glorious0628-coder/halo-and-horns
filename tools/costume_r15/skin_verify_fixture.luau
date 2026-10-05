@@ -1,3 +1,5 @@
+-- RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it errors immediately if run.
+error("RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.")
 -- Actual native import inventories drive these offline object doubles.
 -- No imported file, asset, Studio model or game registry is changed.
 VM.__div=function(a,b) return Vec.new(a.X/b,a.Y/b,a.Z/b) end

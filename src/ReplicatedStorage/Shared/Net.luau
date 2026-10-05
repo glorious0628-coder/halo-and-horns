@@ -6,12 +6,22 @@ local Net = {}
 
 Net.Names = {
 	-- client -> server
-	"ChooseFaction", "ChooseClass", "Swing", "Release", "SetAutoAttack", "UpgradeWeapon",
-	"Rebirth", "SwitchFaction", "ChangeClass", "SetCostume", "SetNickname", "UsePotion", "BuyPotion", "Travel", "RerollQuest", "ClaimQuest", "ClaimVacation",
+	"ChooseFaction", "ChooseClass", "Swing", "Release", "SetAutoAttack", "UpgradeWeapon", "SellWeapon",
+	"Rebirth", "SwitchFaction", "ChangeClass", "SetNickname", "UsePotion", "BuyPotion", "Travel", "RerollQuest", "ClaimQuest", "ClaimVacation",
+	"RequestTutorial", "AcceptTutorial", -- no arguments; pending faction-guide dialogue and mission acceptance
+	"IntroSeen", -- no arguments; the first-time opening ended (watched or skipped)
+	"StoryAction", -- (questId, "Talk" | "Choose" | "Open", option?) for the active story step only
+	"UseItem", -- (itemId, tier [, toTier]) A23-12 enhance / transfer scroll on owned weapons
+	"EquipWeapon", -- (tier) equip an owned weapon from the item list (drops / legendary)
+	"SellMaterials", -- no arguments; sells every material at the blacksmith anvil
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request
 	"Quests", -- CR-L50: the owner's quest list (replaces the replicated QuestsJson attribute), fired only on change
+	-- review B11: the owner's items and per-tier scroll +N (replaces the replicated ItemsJson / EnhanceJson attributes).
+	-- Payload { Items = { [itemId] = count >= 1 } (Config.Loot.Items ids only), Enhance = { [tier] = 0..MaxEnhance } }
+	-- for tiers 1..Config.MaxWeaponTier; fired by LootService on PlayerReady, each spawn and after every change.
+	"Inventory",
 }
 
 Net.GameStateDefaults = {
@@ -25,6 +35,8 @@ Net.GameStateDefaults = {
 	HaloPower = 0, HornsPower = 0, HaloSize = 1, HornsSize = 1, WeakerFaction = "None",
 	-- GooseService
 	GooseNextAt = 0, GooseActive = false, GooseEndsAt = 0, GooseRescue = 0, GoosePoach = 0,
+	-- A23-14 "함께 구조" mirror (GooseService.publishMode; EventHUD.updateGoose)
+	GooseMode = "Versus", GooseCoopSide = "None", GooseCoopTarget = 0, GooseCoopPeople = 0,
 	-- KaijuService
 	KaijuPhase = "None", KaijuUserId = 0, KaijuName = "", KaijuEndsAt = 0,
 }

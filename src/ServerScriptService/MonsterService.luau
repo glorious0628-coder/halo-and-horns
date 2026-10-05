@@ -1062,6 +1062,7 @@ local function killRecord(rec)
 	for _, e in eligible do
 		local i = table.clone(info)
 		i.WarShare = info.WarPoints / math.max(1, perFaction[e.Faction] or 1)
+		i.SkillHit = type(rec._skillBy) == "table" and rec._skillBy[e.Player] == true -- story S0: "basic attacks only"
 		MonsterService.MonsterKilled:Fire(e.Player, i)
 	end
 

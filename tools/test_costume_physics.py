@@ -1,8 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# It tested src/ServerScriptService/CostumeService.luau, which was deleted with the costumes.
 """Run the actual costume preparation function against native/custom physics profiles.
 
 Requires an installed official Luau CLI; no Studio/API calls or simulated physics claims.
 The engine still needs an ON/OFF standing, walking and jump playtest.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 from pathlib import Path
 import argparse
 import json

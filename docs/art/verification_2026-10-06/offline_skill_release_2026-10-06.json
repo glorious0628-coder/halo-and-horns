@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "checks": 265,
+  "keyStaticChecks": 3,
+  "keyStaticFailures": [],
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "810d154c99fa9f12a2c3cb487406e8538bce96645d84a9912eb3ed2ea699cc44",
+    "src/ServerScriptService/CombatService.luau": "596c3d6085be13f5328ba2e13e4f52ba002106d6e7ff476e4a2f86ea24ace5c3",
+    "src/ServerScriptService/VitalsService.luau": "9a5d62e6644ada52a0abcacc1e3f9fdcccd3630f97616f036207b115536fa699",
+    "src/ReplicatedStorage/Shared/Util.luau": "e266e115374db1c243b0f2057905c325ff3ca2e824812c8034d30b9c625f347e"
+  },
+  "fixtureSHA256": "9231e03442a074c46c6be2b842b0d26efcd193c9e61276bc9dc0364432469399",
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "scope": "Real server source: manual MP skill, cooldown, legacy gauge zero, Released.MonstersHit for A23 skill quests, auto combat locked/OFF by default (SetAutoAttack refused before unlock, AutoCombatLoop present at Config.Combat.AutoTick but idle), Mage MageSwingCost 2 / SwingInterval 1.1, class patterns, support and PvP cap. Auto ON paths: tools/test_auto_combat.py.",
+  "limitations": "Offline service/physics doubles; real UI, animations, mouse/touch, damage timing, multiplayer and Studio play are not certified."
+}

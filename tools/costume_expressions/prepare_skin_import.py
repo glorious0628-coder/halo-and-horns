@@ -1,4 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Prepare a reviewed expression-skin import ledger; no uploads or Studio calls."""
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse,datetime,hashlib,json,re,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]

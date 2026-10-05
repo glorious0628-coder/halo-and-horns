@@ -255,7 +255,7 @@ local function moduleOpen(name)
 end
 
 local function pickersOpen()
-	return moduleOpen("FactionPicker") or moduleOpen("ClassPicker")
+	return moduleOpen("Intro") or moduleOpen("FactionPicker") or moduleOpen("ClassPicker")
 end
 
 local function panelsOpen()

@@ -61,7 +61,8 @@ local T = {
 	Titles = {
 		Menu = "메뉴", Travel = "이동", Rebirth = "전향 환생", Altar = "운명의 제단",
 		Class = "직업 변경", Shop = "변경권 상점", Vacation = "휴가 보너스",
-		Nickname = "게임 닉네임",
+		Nickname = "게임 닉네임", WeaponShop = "대장간", Welcome = "안내자 · 보급로 되찾기", PotionShop = "물약 상점",
+		Items = "아이템",
 	},
 	Back = "← 메뉴",
 	Close = "X",
@@ -73,13 +74,17 @@ local T = {
 	MenuShop = "변경권 상점",
 	MenuVacation = "휴가 보너스",
 	MenuNickname = "게임 닉네임",
-	MenuCostumeOn = "직업 코스튬: ON",
-	MenuCostumeOff = "직업 코스튬: OFF",
-	MenuCostumePreparing = "직업 코스튬: 준비 중 (켜짐)",
-	MenuCostumeWaitingOn = "직업 코스튬: 처리 대기 (켜짐)",
-	MenuCostumeWaitingOff = "직업 코스튬: 처리 대기 (꺼짐)",
-	MenuCostumeError = "직업 코스튬: 적용 실패 (켜짐)",
-	CostumePreparing = { MissingTemplate = true, InvalidRig = true, PendingRig = true, WaitingAnimation = true, WaitingAppearance = true },
+	MenuWelcome = "안내자 만나기",
+	MenuItems = "아이템",
+	MenuMap = "지도",
+	WelcomePrevious = "이전",
+	WelcomeNext = "다음",
+	WelcomeFirst = "처음부터",
+	WelcomeAccept = "함께할게요",
+	WelcomeLater = "나중에",
+	WelcomePending = "수락 확인 중",
+	WelcomeRetry = "수락을 확인하지 못했어요. 다시 눌러 주세요.",
+	WelcomeUnavailable = "직업을 고른 뒤 안내자에게 다시 말해 주세요.",
 	MenuAltarHint = "진영 변경은 교차로 마을의 운명의 제단에서!",
 	-- travel
 	TravelGo = "이동",
@@ -98,10 +103,11 @@ local T = {
 	RebirthBonusF = "+%d%%",
 	RebirthBonusUnderdogF = "+%d%%! (인원이 적은 편)",
 	RebirthCurrent = "(지금 진영)",
-	RebirthResets = "초기화: 레벨, 골드, 무기",
-	RebirthKeeps = "유지: 직업, 명예·악명, 환생 보너스, 표식, 변경권",
+	-- A23-14 (user 2026-10-05): rebirth resets the level (and XP) only; gold, weapons, enhancement and items stay
+	RebirthResets = "초기화: 레벨만 처음부터 (경험치 포함)",
+	RebirthKeeps = "그대로: 골드·무기·강화·아이템, 직업, 명예·악명, 환생 보너스, 표식, 변경권",
 	RebirthConfirmTitle = "전향 환생",
-	RebirthConfirmBodyF = "%s(으)로 다시 태어날까요?\n초기화: 레벨, 골드, 무기\n유지: 직업, 명예·악명, 환생 보너스, 표식, 변경권",
+	RebirthConfirmBodyF = "%s(으)로 다시 태어날까요?\n레벨만 처음부터, 골드·무기·아이템은 그대로\n유지: 직업, 명예·악명, 환생 보너스, 표식, 변경권",
 	RebirthConfirmOk = "환생!",
 	-- altar
 	AltarCurrentF = "지금 진영: %s → 어느 편으로 갈까요?",
@@ -131,7 +137,8 @@ local T = {
 	ClassHeaderF = "%s(으)로 바꾸기",
 	ClassLossLevelF = "Lv %d → Lv 1",
 	ClassLossXPF = "경험치 %d 초기화",
-	ClassKeeps = "골드·무기·환생 보너스는 그대로",
+	ClassKeeps = "골드·무기·아이템·환생 보너스는 그대로",
+	ClassFreeKeepF = "Lv%d 전에는 레벨 유지", -- A23-14 fallback for Config.Text.ClassFreeKeepLevelF
 	ClassConfirmTitle = "직업 변경",
 	ClassConfirmFreeF = "%s(으)로 바꿀까요?\n무료: %s",
 	ClassConfirmTicketF = "변경권 1장을 써서 %s(으)로 바꿀까요?\n레벨 그대로 유지돼요.",
@@ -140,6 +147,41 @@ local T = {
 	ShopNote = "변경권은 능력치가 아니에요. 진행도를 지키는 선택권이에요. 무료로도 언제든 바꿀 수 있어요!",
 	ProductPending = "상품 준비 중",
 	ProductBuyF = "로벅스로 구매 (%s R$)",
+	WeaponLocation = "교차로 마을 → 장인 길드 모루 · 가까이에서 상호작용",
+	WeaponFar = "대장간 모루 가까이에서 무기를 살펴볼 수 있어요.",
+	WeaponLoading = "캐릭터 준비가 끝나면 다시 확인해 주세요.",
+	WeaponNote = "기본 무기를 골라 구입해요. 보유 무기는 무료로 다시 장착할 수 있어요.",
+	WeaponCurrentF = "현재 무기: %s",
+	WeaponPriceF = "가격 %s골드 · 필요 Lv %d · 현재 Lv %d",
+	WeaponEffectF = "슬라임 기본 공격 %d방 → %d방",
+	WeaponEffectNowF = "슬라임 기본 공격 %d방",
+	WeaponGoldF = "보유 %s골드 (금고 %s + 주머니 %s)",
+	WeaponShortF = "%s골드가 더 필요해요.",
+	WeaponBuyF = "구입 · %s골드",
+	WeaponSellF = "판매 · %s골드",
+	WeaponEquip = "무료 장착",
+	WeaponEquipped = "현재 장착 중",
+	WeaponOwned = "보유 중",
+	WeaponUnowned = "미보유",
+	WeaponStarter = "시작 무기 · 무료 재장착 · 판매 불가",
+	WeaponStarterNoSell = "시작 무기 판매 불가",
+	WeaponNoSell = "보유 무기만 판매 가능",
+	WeaponSaleNoteF = "판매가 %s골드 (구매가의 1/10)",
+	WeaponSaleEquipped = "장착 중인 무기를 팔면 시작 무기로 바뀌어요.",
+	WeaponSellTitle = "무기 판매",
+	WeaponSellConfirmF = "%s을(를) %s골드에 팔까요?\n보유 목록에서 사라져요.",
+	WeaponSellConfirm = "판매하기",
+	WeaponUnavailable = "대장간에서 판매하지 않는 무기예요.",
+	WeaponInvalid = "무기 정보를 확인할 수 없어요. 잠시 뒤 다시 열어 주세요.",
+	WeaponChanged = "보유하거나 장착한 무기가 바뀌었어요. 목록을 다시 확인해 주세요.",
+	WeaponSent = "거래 결과를 확인하고 있어요.",
+	WeaponSlow = "거래 결과를 받지 못했어요. 알림을 확인하고 다시 눌러 주세요.",
+	WeaponPending = "거래 확인 중",
+	WeaponByeBrowse = "마음에 드는 게 없나? 천천히 골라도 돼!",
+	WeaponByeBuy = "좋은 선택이야. 써 보고 또 들러!",
+	WeaponByeSell = "무기는 잘 받았어. 필요한 게 생기면 또 들러!",
+	WeaponByeEquip = "손에 잘 맞는 무기로 골랐구나. 조심히 다녀와!",
+	WeaponByePending = "거래 결과를 확인해 줘. 또 들러!",
 	-- vacation
 	VacationHeaderF = "휴가 보너스! %d일 동안 못 왔지만 괜찮아요.",
 	VacationRewardF = "+%s 골드 · +%s 경험치",
@@ -197,6 +239,11 @@ local cameraConn = nil
 local scaleConn = nil
 local NICK = { UI = nil, Draft = nil, Message = "", Pending = false, Request = 0,
 	Rule = "2~20글자 · 다른 사람과 중복 불가", Unavailable = "저장 연결을 확인해 주세요." }
+local WSHOP = { Distance = 12, PromptName = "HHC_BlacksmithPrompt",
+	PendingTimeout = 5, SlowNoteSeconds = 4 } -- s: an unanswered trade unlocks the row, then T.WeaponSlow shows
+local WELCOME = { PendingOpen = false }
+local ITEMS -- A23-12 item list state + helpers (assigned below the blacksmith helpers; the menu reads ITEMS.Hint)
+local RENDER = { Reset = false } -- B14: a queued rebuild resets the scroll (user / structure) unless only data changed
 
 local disabledButtons = setmetatable({}, { __mode = "k" })
 local baseColors = setmetatable({}, { __mode = "k" })
@@ -748,8 +795,14 @@ local function classBlock()
 	return nil
 end
 
+-- A23-14: below Lv Config.ClassChange.FreeKeepLevelBelow a free change keeps level and XP (nothing is lost, so the
+-- ticket option is hidden; the server never spends a ticket there). From that level on: free = back to Lv 1.
 local function classLossText()
 	local level, xp = math.floor(num("Level")), math.floor(num("XP"))
+	local keepBelow = type(Config.ClassChange) == "table" and tonumber(Config.ClassChange.FreeKeepLevelBelow) or nil
+	if keepBelow and type(Config.ClassChangeKeepsLevel) == "function" and Config.ClassChangeKeepsLevel(math.max(1, level)) then
+		return cfgFmt("ClassFreeKeepLevelF", T.ClassFreeKeepF, math.floor(keepBelow)), false
+	end
 	if level > 1 then return cfgFmt("LossLevel", T.ClassLossLevelF, level), true end
 	if xp > 0 then return string.format(T.ClassLossXPF, xp), true end
 	return T.LossNone, false
@@ -757,7 +810,7 @@ end
 
 local function pickerOpen()
 	if not C then return false end
-	for _, name in { "FactionPicker", "ClassPicker" } do
+	for _, name in { "Intro", "FactionPicker", "ClassPicker" } do
 		local m = C[name]
 		if type(m) == "table" and type(m.IsOpen) == "function" then
 			local ok, open = pcall(m.IsOpen)
@@ -799,7 +852,8 @@ local function layoutRoot()
 	end
 	local availH = math.max(220, h - top - 12)
 	local winW = math.max(280, math.min(WINDOW_MAX_W, w - 24))
-	local winH = math.min(WINDOW_MAX_H, availH)
+	-- a story page is a few lines + one row of buttons: a short window keeps the world visible around it
+	local winH = math.min(currentId == "Story" and 360 or WINDOW_MAX_H, availH)
 	window.Size = UDim2.fromOffset(winW, winH)
 	window.Position = UDim2.fromOffset(w / 2, top + availH / 2)
 	layoutChrome(s)
@@ -839,7 +893,7 @@ local function ensureRoot()
 	titleLabel = placeLabel(window, "", 26, theme.Gold, UDim2.fromOffset(18, 10), UDim2.new(1, -220, 0, 44))
 
 	closeButton = makeButton(window, T.Close, PALETTE.Close, UDim2.fromOffset(52, 44), function()
-		Panels.Close()
+		Panels.Close(true) -- only an explicit close gets the merchant's situational farewell
 	end)
 	closeButton.AnchorPoint = Vector2.new(1, 0)
 	closeButton.Position = UDim2.new(1, -12, 0, 10)
@@ -1100,16 +1154,98 @@ end
 
 BUILDERS.Nickname = function() return NICK.Build() end
 
+function WELCOME.Definition()
+	local config = Config.Tutorial and Config.Tutorial.Welcome
+	return type(config) == "table" and config[myFaction()] or nil
+end
+
+function WELCOME.Ready()
+	return attr("DataLoaded", false) == true and attr("ClassChosen", false) == true
+		and num("TutorialStep") == 0 and type(WELCOME.Definition()) == "table"
+		and Config.Classes[attr("Class", "")] ~= nil and not isDead()
+end
+
+-- Existing panel, portrait and buttons only. Pages never advance the quest; only the final intent can.
+BUILDERS.Welcome = function(parent)
+	local def = WELCOME.Definition()
+	if type(def) ~= "table" or type(def.Lines) ~= "table" or #def.Lines == 0 then
+		addText(parent, T.WelcomeUnavailable, { Align = Enum.TextXAlignment.Center })
+		return nil
+	end
+	local faction, page, pending, sentAt = myFaction(), 1, false, 0
+	-- short phone screens (e.g. 749x361): no portrait, smaller text, so 다음/함께할게요 never need a scroll
+	local cam = workspace.CurrentCamera
+	local short = cam ~= nil and cam.ViewportSize.Y < 520
+	local portraitRow = addRow(parent, short and 0 or 170, 0)
+	portraitRow.Name = "WelcomePortrait"
+	portraitRow.Visible = not short
+	if not short and UIKit and type(UIKit.ArtImage) == "function" then
+		local ok, portrait = pcall(UIKit.ArtImage, "Char" .. faction .. "WarriorM", {
+			Name = "Guide", Parent = portraitRow, Size = UDim2.fromOffset(170, 170), ScaleType = Enum.ScaleType.Fit,
+		})
+		if not ok then Util.Warn(TAG, "welcome portrait failed: " .. tostring(portrait)) end
+	end
+	addText(parent, def.Name, { Name = "WelcomeName", Size = short and 18 or 24, Color = theme.Gold,
+		Align = Enum.TextXAlignment.Center, Font = theme.Font })
+	local pageLabel = addText(parent, "", { Name = "WelcomePage", Size = short and 13 or 16, Color = theme.SubText,
+		Align = Enum.TextXAlignment.Center })
+	local line = addText(parent, "", { Name = "WelcomeLine", Size = short and 16 or 22, Align = Enum.TextXAlignment.Center })
+	local status = addText(parent, "", { Name = "WelcomeStatus", Size = 16, Color = theme.SubText,
+		Align = Enum.TextXAlignment.Center })
+	local actions = addRow(parent, 64, 10)
+	local readMore, nextButton, later, update
+	-- 함께할게요 is there from page 1 (no forced reading); 다음 still pages through the lines; closing never accepts
+	readMore = makeButton(actions, T.WelcomeNext, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
+		if pending then return end
+		page = (page % #def.Lines) + 1; status.Text = ""; update()
+	end)
+	readMore.Name = "WelcomeReadMore"
+	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(1 / 3, -7, 0, 60), function()
+		if pending or currentId ~= "Welcome" or faction ~= myFaction() then return end
+		if WELCOME.Ready() then
+			pending, sentAt = true, os.clock()
+			fire("AcceptTutorial") -- exact zero arguments; the server owns the saved step
+			update()
+		end
+	end)
+	nextButton.Name = "WelcomeNext"
+	later = makeButton(actions, T.WelcomeLater, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
+		if not pending then Panels.Close() end -- closing is never acceptance
+	end)
+	later.Name = "WelcomeLater"
+	update = function()
+		if currentId ~= "Welcome" or not line.Parent then return end
+		if num("TutorialStep") ~= 0 then Panels.Close(); return end
+		if pending and os.clock() - sentAt >= 5 then
+			pending = false; status.Text = T.WelcomeRetry
+		end
+		line.Text = tostring(def.Lines[page])
+		pageLabel.Text = string.format("%d / %d", page, #def.Lines)
+		nextButton.Text = pending and T.WelcomePending or T.WelcomeAccept
+		readMore.Text = page < #def.Lines and T.WelcomeNext or T.WelcomeFirst
+		setEnabled(readMore, not pending and #def.Lines > 1)
+		setEnabled(nextButton, not pending and faction == myFaction() and WELCOME.Ready())
+		setEnabled(later, not pending)
+		if not pending and isDead() then status.Text = T.WaitRespawn
+		elseif status.Text == T.WaitRespawn then status.Text = "" end
+	end
+	return update
+end
+
 BUILDERS.Menu = function(parent)
 	local entries = {
 		{ Text = T.MenuTravel, Id = "Travel" },
+		{ Text = T.MenuItems, Id = "Items" },
 		{ Text = T.MenuRebirth, Id = "Rebirth" },
 		{ Text = T.MenuClass, Id = "Class" },
 		{ Text = T.MenuShop, Id = "Shop" },
-		{ Text = "지도", Id = "Map" },
-		{ Text = T.MenuCostumeOn, Id = "Costume" },
+		{ Text = T.MenuMap, Id = "Map" },
 		{ Text = T.MenuNickname, Id = "Nickname" },
+		{ Text = (Config.Story and Config.Story.OpeningReplay) or "오프닝 다시 보기", Id = "Intro" },
 	}
+	if num("TutorialStep") == 0 and attr("ClassChosen", false) == true and type(WELCOME.Definition()) == "table" then
+		table.insert(entries, 1, { Text = T.MenuWelcome, Id = "Welcome" })
+	end
 	if num("VacationDays") > 0 then
 		table.insert(entries, { Text = T.MenuVacation, Id = "Vacation" })
 	end
@@ -1130,43 +1266,42 @@ BUILDERS.Menu = function(parent)
 	gl.Parent = grid
 	grid.Parent = parent
 
-	local rebirthBtn, costumeBtn = nil, nil
+	local rebirthBtn, itemsBtn = nil, nil
 	for _, e in entries do
 		local id = e.Id
 		local color = (id == "Vacation") and PALETTE.Free or PALETTE.Button
 		local b = makeButton(grid, e.Text, color, UDim2.fromOffset(200, 70), function()
-			if id == "Map" then
+			if id == "Welcome" then
+				if WELCOME.Ready() then fire("RequestTutorial") end
+			elseif id == "Map" then
 				local wm = C and C.WorldMap
 				if wm and wm.Open then wm.Open() end
-			elseif id == "Costume" then
-				fire("SetCostume", player:GetAttribute("CostumeEnabled") == false)
+			elseif id == "Intro" then
+				-- A23-9: replay only inside a town (safe and calm), never mid-fight
+				local intro = C and C.Intro
+				if attr("ZoneTown", false) ~= true or isDead() then
+					toast((Config.Story and Config.Story.OpeningReplayUnsafe) or "안전한 곳에서 다시 볼 수 있어요.", "bad")
+				elseif type(intro) == "table" and type(intro.Play) == "function" then
+					Panels.Close()
+					intro.Play(true)
+				end
 			else
 				openSub(id)
 			end
 		end)
 		b.TextSize = 22
 		if id == "Rebirth" then rebirthBtn = b end
-		if id == "Costume" then costumeBtn = b end
+		if id == "Items" then itemsBtn = b end
 	end
 
 	addText(parent, T.MenuAltarHint, { Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 	addText(parent, Config.Story.MarkLore, { Color = theme.SubText, Size = 16, Align = Enum.TextXAlignment.Center })
 
 	return function()
-		if costumeBtn then
-			local enabled = player:GetAttribute("CostumeEnabled") ~= false
-			local status = player:GetAttribute("CostumeStatus")
-			if status == "Deferred" or (not enabled and player:GetAttribute("CostumeApplied") == true) then
-				costumeBtn.Text = enabled and T.MenuCostumeWaitingOn or T.MenuCostumeWaitingOff
-			elseif not enabled then
-				costumeBtn.Text = T.MenuCostumeOff
-			elseif T.CostumePreparing[status] then
-				costumeBtn.Text = T.MenuCostumePreparing
-			elseif status == "Error" then
-				costumeBtn.Text = T.MenuCostumeError
-			else
-				costumeBtn.Text = T.MenuCostumeOn
-			end
+		-- B14: '아이템' glows gold while I hold a scroll and have not opened the item list this session
+		if itemsBtn then
+			local hint = ITEMS.Hint()
+			paintButton(itemsBtn, hint and theme.Gold or PALETTE.Button, hint and PALETTE.DarkText or theme.Text)
 		end
 		if not rebirthBtn then return end
 		local ready = num("Level") >= Config.RebirthLevel(num("Rebirths"))
@@ -1565,6 +1700,1010 @@ BUILDERS.Class = function(parent)
 	end
 end
 
+-- Display-side checks only: ShopService repeats the exact-instance and 3D distance checks on every purchase.
+function WSHOP.Finite(value)
+	return type(value) == "number" and value == value and value > -math.huge and value < math.huge
+end
+
+function WSHOP.Access()
+	if attr("DataLoaded", false) ~= true then return T.WeaponLoading end
+	if isDead() then return cfgFmt("WaitRespawn", T.WaitRespawn) end
+	if attr("ClassChosen", false) ~= true then return T.ClassPickFirst end
+	local map = workspace:FindFirstChild("Map")
+	local landmarks = map and map:FindFirstChild("Landmarks")
+	local guild = landmarks and landmarks:FindFirstChild("ArtisanGuild")
+	local anvil = guild and guild:FindFirstChild("Anvil")
+	local character = player.Character
+	local hrp = character and character:FindFirstChild("HumanoidRootPart")
+	if not map or (not map:IsA("Folder") and not map:IsA("Model")) or map.Parent ~= workspace
+		or not landmarks or not landmarks:IsA("Folder") or landmarks.Parent ~= map
+		or not guild or not guild:IsA("Model") or guild.Parent ~= landmarks
+		or not anvil or not anvil:IsA("BasePart") or anvil.Parent ~= guild or not anvil.Anchored
+		or not character or not character:IsDescendantOf(workspace)
+		or not hrp or not hrp:IsA("BasePart") then return T.WeaponFar end
+	local prompt = anvil:FindFirstChild(WSHOP.PromptName)
+	if not prompt or not prompt:IsA("ProximityPrompt") or prompt.Parent ~= anvil or not prompt.Enabled then
+		return T.WeaponFar
+	end
+	local limit, distance = prompt.MaxActivationDistance, (hrp.Position - anvil.Position).Magnitude
+	if not WSHOP.Finite(limit) or limit <= 0 or not WSHOP.Finite(distance)
+		or distance > math.min(WSHOP.Distance, limit) then return T.WeaponFar end
+	return nil
+end
+
+function WSHOP.CatalogLimit()
+	local shop = Config.WeaponShop
+	local cap = type(shop) == "table" and shop.MaxSoldTier
+	if not WSHOP.Finite(cap) or cap ~= math.floor(cap) or cap < 1
+		or cap > 3 or cap > Config.MaxWeaponTier then return nil end
+	return cap
+end
+
+function WSHOP.Owns(mask, tier)
+	return bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0
+end
+
+-- B6/B14: re-equipping AND buying (a purchase always equips) wait for the PvP combat tag (the server refuses both)
+function WSHOP.EquipBlock()
+	if not inCombat() then return nil end
+	local tx = Config.Loot and Config.Loot.Text
+	return (tx and type(tx.EquipCombat) == "string" and tx.EquipCombat) or ITEMS.T.EquipCombatLong
+end
+
+function WSHOP.Offer(selectedTier)
+	local cap = WSHOP.CatalogLimit()
+	if not cap then return nil, T.WeaponInvalid end
+	if not WSHOP.Finite(selectedTier) or selectedTier ~= math.floor(selectedTier)
+		or selectedTier < 1 or selectedTier > cap then return nil, T.WeaponUnavailable end
+	local tier, level, ownedMask = attr("WeaponTier"), attr("Level"), attr("WeaponOwnedMask")
+	if not WSHOP.Finite(tier) or tier ~= math.floor(tier) or tier < 1 or tier > Config.MaxWeaponTier
+		or not WSHOP.Finite(level) or level < 1 or not WSHOP.Finite(ownedMask)
+		or ownedMask ~= math.floor(ownedMask) or ownedMask < 1
+		or ownedMask > bit32.lshift(1, Config.MaxWeaponTier) - 1 or not WSHOP.Owns(ownedMask, 1) then
+		return nil, T.WeaponInvalid
+	end
+	local def = Config.Weapons[selectedTier]
+	if type(def) ~= "table" or not WSHOP.Finite(def.Price) or def.Price < 0
+		or (selectedTier > 1 and def.Price == 0) or def.Price ~= math.floor(def.Price)
+		or not WSHOP.Finite(def.MinLevel) or def.MinLevel < 1 then return nil, T.WeaponInvalid end
+	local bank, carried = attr("BankGold"), attr("CarriedGold")
+	if not WSHOP.Finite(bank) or bank < 0 or not WSHOP.Finite(carried) or carried < 0 then
+		return nil, T.WeaponInvalid
+	end
+	local total, faction = bank + carried, myFaction()
+	if not WSHOP.Finite(total) then return nil, T.WeaponInvalid end
+	local info = {
+		Tier = selectedTier, Price = def.Price, SellPrice = math.floor(def.Price / 10),
+		MinLevel = def.MinLevel, Level = level, Owned = WSHOP.Owns(ownedMask, selectedTier),
+		Equipped = tier == selectedTier, EquippedTier = tier,
+		Bank = bank, Carried = carried, Total = total,
+		CurrentName = Config.WeaponName(tier, currentClass(), faction),
+		Name = Config.WeaponName(selectedTier, currentClass(), faction),
+	}
+	local sellReason = selectedTier == 1 and T.WeaponStarterNoSell or (not info.Owned and T.WeaponNoSell or nil)
+	if info.Equipped then return info, T.WeaponEquipped, sellReason end
+	if def.RequiresFaction and faction ~= "Halo" and faction ~= "Horns" and faction ~= "Neutral" then
+		return info, fmtText("NeedFaction"), sellReason
+	end
+	-- A23-4: MinLevel gates the purchase only; an owned weapon is always re-equippable (server: ShopService / LootService)
+	if not info.Owned and level < def.MinLevel then return info, fmtText("WeaponNeedLevel", def.MinLevel), sellReason end
+	if not info.Owned and total < def.Price then
+		return info, string.format(T.WeaponShortF, exactNumber(def.Price - total)), sellReason
+	end
+	return info, nil, sellReason
+end
+
+-- These are fixed situational lines, not a connection to an AI dialogue service.
+-- A request alone is not a completed transaction: wait for the authoritative attributes.
+function WSHOP.Reconcile(session)
+	local pending = session and session.Pending
+	if not pending then return end
+	local info = WSHOP.Offer(pending.Tier)
+	if not info then return end
+	local done = (pending.Action == "Buy" and info.Owned and info.Equipped)
+		or (pending.Action == "Equip" and info.Owned and info.Equipped)
+		or (pending.Action == "Sell" and not info.Owned and not info.Equipped)
+	if done then
+		-- Re-equipping after a purchase/sale does not erase that visit's completed trade.
+		if pending.Action ~= "Equip" or not session.LastAction then session.LastAction = pending.Action end
+		session.Pending = nil
+		session.CooldownUntil = math.max(session.CooldownUntil or 0, os.clock() + 0.4)
+	end
+end
+
+function WSHOP.Farewell()
+	local session = WSHOP.Session
+	if not session or session.Class ~= currentClass() or session.Faction ~= myFaction() or WSHOP.Access() then return nil end
+	WSHOP.Reconcile(session)
+	if session.Pending then return T.WeaponByePending end
+	if session.LastAction == "Buy" then return T.WeaponByeBuy end
+	if session.LastAction == "Sell" then return T.WeaponByeSell end
+	if session.LastAction == "Equip" then return T.WeaponByeEquip end
+	return T.WeaponByeBrowse
+end
+
+-- A23-12 item list (menu → 아이템): owned weapons (+N, equip), scrolls (use → pick weapon(s) → confirm with the
+-- success rate and the failure result before anything is sent), materials (sold at the blacksmith anvil).
+-- Display only: the server re-checks everything. B11: items and per-tier +N arrive only on the owner's "Inventory"
+-- remote ({ Items = { [id] = n }, Enhance = { [tier] = n } }); the last payload is cached in ITEMS.Data (empty until the
+-- first one). A new payload or a weapon attribute change rebuilds the open list in place (scroll kept, no input
+-- guard); the chosen scroll step (ITEMS.Mode) survives those rebuilds and a scroll use, so the next try is one tap.
+ITEMS = {
+	Mode = nil, -- nil | { Item = id, Tier?, From?, To? }
+	Rebuild = function(_keep) end, -- set to queueRebuild below (defined later in this file)
+	Attrs = { WeaponOwnedMask = true, WeaponTier = true, Level = true }, -- data rebuilds of the open list
+	Data = { Items = {}, Enhance = {} }, -- last "Inventory" payload (validated)
+	Version = 0, -- +1 per payload
+	-- { Kind = "Use", SentAt, ReadyAt, Item, Count, Answered? } | { Kind = "Equip", SentAt, ReadyAt, Tier, WeaponTier, Answered? }
+	Pending = nil,
+	-- review: the server drops a 2nd UseItem / EquipWeapon inside Config.RateLimits[key] WITHOUT a reply, so the client
+	-- never sends inside that interval (+ GapMargin for network jitter): os.clock() when the next send is allowed
+	ReadyAt = { UseItem = 0, EquipWeapon = 0 },
+	GapMargin = 0.15,
+	SellPending = nil, -- { SentAt, Ver } for the blacksmith "재료 팔기"
+	PendingTimeout = 3, -- s without an answer -> T.Slow (a refused request only gets the server toast)
+	Result = nil, -- last scroll result from the Fx "Enhance" payload (Panels.OnEnhanceResult)
+	ResultAt = 0,
+	Note = nil, -- one-off status line (timeout)
+	Seen = false, -- the item list was opened this session (menu '아이템' glow until then)
+	T = {
+		-- B14 / B9 (2026-10-05 loot review)
+		Pending = "결과 확인 중…",
+		Slow = "결과를 받지 못했어요. 알림을 확인하고 다시 눌러 주세요.",
+		UseCombat = "전투 중에는 주문서를 쓸 수 없어요.", -- fallback for Config.Loot.Text.UseCombat
+		EquipPending = "확인 중…",
+		EquipCombat = "전투 중",
+		EquipCombatLong = "전투 중에는 무기를 바꿀 수 없어요.", -- fallback for Config.Loot.Text.EquipCombat
+		FailDownF = "실패하면 %d%% 확률로 한 단계 내려가요. 무기는 절대 안 부서져요!", -- Config.Loot.FailDropChance
+		FailKeep = "실패해도 그대로예요. 무기는 절대 안 부서져요!",
+		OverflowF = "최대 +%d이라 +%d만 올라요", -- (MaxEnhance = 10 → "+10이라")
+		MoveOverflowF = "넘친 +%d은(는) 보내는 무기에 남아요 (강화는 하나도 안 사라져요)",
+		MoveSafe = "강화는 하나도 안 사라져요",
+		SellPending = "판매 확인 중…",
+		SellKeepEnhF = "강화 +%d 기록은 저장돼요 (다시 얻으면 그대로)",
+		Plus = " +%d",
+		Weapons = "내 무기", Scrolls = "주문서", Materials = "재료",
+		NoScrolls = "아직 없어요. 몬스터를 잡으면 가끔 떨어져요!",
+		NoMaterials = "아직 없어요. 몬스터를 잡으면 떨어져요!",
+		Equipped = "장착 중", Equip = "장착",
+		Use = "사용", Cancel = "취소",
+		Legend = "★ ",
+		ScrollEnh = "%s ×%d · 성공하면 +%d",
+		ScrollMove = "%s ×%d · 다른 무기로 강화 전부 옮기기",
+		MaterialLine = "%s ×%d · 개당 %d골드",
+		MaterialHint = "재료는 대장간 모루에서 한 번에 팔 수 있어요.",
+		PickEnhance = "강화할 무기를 골라요.",
+		PickFrom = "강화를 보낼 무기를 골라요 (+1 이상).",
+		PickTo = "+%d을(를) 받을 무기를 골라요.",
+		Enhance = "강화", Max = "최대", From = "보내기", To = "받기",
+		ConfirmEnh = "%s +%d → 성공하면 +%d (공격 %d%%)\n성공률 %d%% · %s",
+		FailZero = "실패해도 +0 그대로예요. 무기는 절대 안 부서져요!",
+		-- B9: no particle after the number ("+%d이" was wrong for +2/+4/+5/+9)
+		ConfirmMove = "%s +%d → %s +%d\n성공률 %d%% · 성공하면 받는 무기는 +%d 강화가 돼요 · 실패해도 그대로 남아요",
+		Go = "강화하기", GoMove = "옮기기",
+		SellMat = "재료 팔기 · %d개 → %s골드", SellNone = "팔 재료 없음",
+	},
+}
+
+-- B11: the owner's "Inventory" payload. Only ids of Config.Loot.Items with a count >= 1 and tiers 1..MaxWeaponTier
+-- (+0..MaxEnhance) are kept; anything else is ignored (the server keeps unknown ids in the save, the list hides them).
+function ITEMS.OnInventory(payload)
+	if type(payload) ~= "table" then return end
+	local loot = Config.Loot
+	local items, enh = {}, {}
+	if type(payload.Items) == "table" then
+		for id, n in payload.Items do
+			if type(id) == "string" and loot.Items[id] ~= nil and type(n) == "number" and n == n and n >= 1 and n < math.huge then
+				items[id] = math.floor(n)
+			end
+		end
+	end
+	local src = payload.Enhance
+	if type(src) == "table" then
+		for tier = 1, Config.MaxWeaponTier do
+			local n = src[tier]
+			if n == nil then n = src[tostring(tier)] end
+			if type(n) == "number" and n == n and n > -math.huge and n < math.huge then
+				enh[tier] = math.clamp(math.floor(n), 0, loot.MaxEnhance)
+			end
+		end
+	end
+	ITEMS.Data = { Items = items, Enhance = enh }
+	ITEMS.Version += 1
+	ITEMS.CheckPending()
+	if currentId == "Items" then ITEMS.Rebuild(true) end -- the blacksmith polls ITEMS.Data in its update
+end
+
+-- binds the owner-only remote early (Init) so the first payload after PlayerReady is never missed; an old server
+-- without the remote leaves the cache empty
+function ITEMS.Bind()
+	local function hook(r)
+		r.OnClientEvent:Connect(function(payload)
+			local ok, err = pcall(ITEMS.OnInventory, payload)
+			if not ok then warnThrottled("inventory update error: " .. tostring(err)) end
+		end)
+	end
+	local folder = ReplicatedStorage:FindFirstChild("Remotes")
+	local remote = folder and folder:FindFirstChild("Inventory")
+	if remote and remote:IsA("RemoteEvent") then
+		hook(remote)
+		return
+	end
+	task.spawn(function()
+		local f = ReplicatedStorage:WaitForChild("Remotes", 30)
+		local r = f and f:WaitForChild("Inventory", 30)
+		if r and r:IsA("RemoteEvent") then hook(r) else Util.Warn(TAG, "remote missing: Inventory") end
+	end)
+end
+
+-- seconds between two sends of one remote: the server's rate limit + ITEMS.GapMargin
+function ITEMS.Gap(key)
+	local rl = Config.RateLimits
+	local v = type(rl) == "table" and tonumber(rl[key]) or nil
+	if v == nil or v ~= v or v < 0 then v = (key == "EquipWeapon") and 0.3 or 0.4 end
+	return v + ITEMS.GapMargin
+end
+
+-- fires UseItem / EquipWeapon and records the pending request; false when the server would still drop it
+function ITEMS.Send(key, pending, ...)
+	local now = os.clock()
+	if ITEMS.Pending or now < (ITEMS.ReadyAt[key] or 0) then return false end
+	fire(key, ...)
+	pending.SentAt, pending.ReadyAt = now, now + ITEMS.Gap(key)
+	ITEMS.ReadyAt[key] = pending.ReadyAt
+	ITEMS.Pending, ITEMS.Note = pending, nil
+	return true
+end
+
+-- clears a pending request once its answer is visible AND the server's rate-limit interval has passed (or after
+-- PendingTimeout); true when something changed. An answered request keeps the confirm / equip button busy until
+-- ReadyAt, so the next tap is never dropped silently (the 0.25 s update rebuilds once it clears).
+function ITEMS.CheckPending()
+	local now, changed = os.clock(), false
+	local p = ITEMS.Pending
+	if p then
+		local done = p.Answered == true
+		if not done then
+			if p.Kind == "Use" then
+				done = ITEMS.Count(ITEMS.Data.Items, p.Item) ~= p.Count or ITEMS.ResultAt > p.SentAt
+			elseif p.Kind == "Equip" then
+				done = math.floor(num("WeaponTier")) ~= p.WeaponTier
+			end
+			if done then p.Answered, changed = true, true end
+		end
+		if done then
+			if now >= (p.ReadyAt or 0) then ITEMS.Pending, changed = nil, true end
+		elseif now - p.SentAt >= ITEMS.PendingTimeout then
+			ITEMS.Pending, ITEMS.Note, changed = nil, ITEMS.T.Slow, true
+		end
+	end
+	local sp = ITEMS.SellPending
+	if sp and (ITEMS.Version ~= sp.Ver or now - sp.SentAt >= ITEMS.PendingTimeout) then
+		ITEMS.SellPending, changed = nil, true
+	end
+	return changed
+end
+
+function ITEMS.HasScroll()
+	for id, n in ITEMS.Data.Items do
+		local def = Config.Loot.Items[id]
+		if def and def.Kind ~= "Material" and type(n) == "number" and n >= 1 then return true end
+	end
+	return false
+end
+
+-- B14: the menu '아이템' (and the HUD 메뉴 square) glow while I hold a scroll and have not opened the list this session
+function ITEMS.Hint()
+	return not ITEMS.Seen and ITEMS.HasScroll()
+end
+
+-- B14: tap height in canvas px. Touch: >= GUARD.TouchTarget real px (60 canvas = 45 px at the 0.75 phone UIScale).
+function ITEMS.TapH(desktop)
+	if not UserInputService.TouchEnabled then return desktop or 44 end
+	local _, _, _, s = canvas(root and root.Parent)
+	return math.max(60, math.ceil(GUARD.TouchTarget / s))
+end
+
+function ITEMS.PlusText(n)
+	return n > 0 and string.format(ITEMS.T.Plus, n) or ""
+end
+
+function ITEMS.Count(items, id)
+	local n = items[id]
+	return (type(n) == "number" and n == n) and math.floor(n) or 0
+end
+
+function ITEMS.Enh(enh, tier)
+	local n = enh[tier] or enh[tostring(tier)]
+	return (type(n) == "number" and n == n) and math.clamp(math.floor(n), 0, Config.Loot.MaxEnhance) or 0
+end
+
+function ITEMS.Owns(mask, tier)
+	return bit32.btest(mask, bit32.lshift(1, tier - 1))
+end
+
+function ITEMS.MaterialValue(items)
+	local count, gold = 0, 0
+	for id, def in Config.Loot.Items do
+		if def.Kind == "Material" then
+			local n = ITEMS.Count(items, id)
+			count += n
+			gold += n * def.Sell
+		end
+	end
+	return count, gold
+end
+
+-- one list row: label on the left, an optional button on the right (B14: button = ITEMS.TapH, row = button + 14)
+function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClick)
+	local tapH = ITEMS.TapH(44)
+	local row = Instance.new("Frame")
+	row.Name = "ItemRow"
+	row.BackgroundColor3 = PALETTE.Row
+	row.BorderSizePixel = 0
+	row.Size = UDim2.new(1, 0, 0, tapH + 14)
+	row.LayoutOrder = nextOrder()
+	corner(row, 10)
+	row.Parent = parent
+	local hasButton = buttonText ~= nil
+	placeLabel(row, text, 18, color or theme.Text, UDim2.fromOffset(14, 0),
+		UDim2.new(1, hasButton and -170 or -28, 1, 0))
+	local b = nil
+	if hasButton then
+		b = makeButton(row, buttonText, buttonColor or PALETTE.Button, UDim2.fromOffset(140, tapH), onClick)
+		b.AnchorPoint = Vector2.new(1, 0.5)
+		b.Position = UDim2.new(1, -8, 0.5, 0)
+		b.TextSize = 18
+		setEnabled(b, enabled ~= false)
+	end
+	return row, b
+end
+
+function ITEMS.WeaponName(tier)
+	local def = Config.Weapons[tier]
+	return ((def and def.Legend) and ITEMS.T.Legend or "") .. Config.WeaponName(tier, currentClass(), myFaction())
+end
+
+-- the chosen step, dropped back to its last still-valid part (used-up scroll, weapon at +Max, empty source, sold)
+function ITEMS.ValidMode(items, enh, owns)
+	local m = ITEMS.Mode
+	local def = m and Config.Loot.Items[m.Item]
+	if not m or not def or def.Kind == "Material" or ITEMS.Count(items, m.Item) < 1 then
+		ITEMS.Mode = nil
+		return nil
+	end
+	local max = Config.Loot.MaxEnhance
+	if def.Kind == "Enhance" then
+		if m.Tier and (not owns(m.Tier) or ITEMS.Enh(enh, m.Tier) >= max) then m = { Item = m.Item } end
+	else
+		if m.From and (not owns(m.From) or ITEMS.Enh(enh, m.From) <= 0) then m = { Item = m.Item } end
+		if m.To and (not owns(m.To) or m.To == m.From or ITEMS.Enh(enh, m.To) >= max) then
+			m = { Item = m.Item, From = m.From }
+		end
+	end
+	ITEMS.Mode = m
+	return m
+end
+
+-- the last scroll result in the server's own words (Config.Loot.Text), or nil
+function ITEMS.ResultText()
+	local r = ITEMS.Result
+	if not r then return nil end
+	local TX = (Config.Loot and Config.Loot.Text) or {}
+	local function f(key, ...)
+		local s = TX[key]
+		if type(s) ~= "string" then return nil end
+		local ok, out = pcall(string.format, s, ...)
+		return ok and out or nil
+	end
+	local name = ITEMS.WeaponName(r.Tier)
+	if r.Move then
+		local fromName = r.From and ITEMS.WeaponName(r.From) or ""
+		local left = r.From and ITEMS.Enh(ITEMS.Data.Enhance, r.From) or 0
+		if r.Success then return f("MoveOk", fromName, left, name, r.After) end
+		return f("MoveFail", fromName, left)
+	end
+	if r.Success then
+		return f("EnhanceOk", name, r.Before, r.After, math.floor(Config.EnhanceMult(r.Before) * 100 + 0.5),
+			math.floor(Config.EnhanceMult(r.After) * 100 + 0.5))
+	end
+	if r.After < r.Before then return f("EnhanceFailDown", name, r.Before, r.After) end
+	return f("EnhanceFailKeep", name, r.Before)
+end
+
+-- the failure line of the enhance confirm (B9: the chance comes from Config.Loot.FailDropChance)
+function ITEMS.FailText(before)
+	if before <= 0 then return ITEMS.T.FailZero end
+	local chance = tonumber(Config.Loot.FailDropChance) or 0
+	if chance <= 0 then return ITEMS.T.FailKeep end
+	return string.format(ITEMS.T.FailDownF, math.floor(math.clamp(chance, 0, 1) * 100 + 0.5))
+end
+
+BUILDERS.Items = function(parent)
+	local L, loot = ITEMS.T, Config.Loot
+	if attr("DataLoaded", false) ~= true then
+		addText(parent, T.WeaponLoading, { Name = "ItemsLoading", Color = theme.SubText })
+		return nil -- DataLoaded is a REBUILD_ATTRS key: the list appears once the save is loaded
+	end
+	ITEMS.CheckPending()
+	local items, enh = ITEMS.Data.Items, ITEMS.Data.Enhance
+	local mask = math.floor(num("WeaponOwnedMask"))
+	if mask < 1 then mask = 1 end
+	local equipped = math.floor(num("WeaponTier"))
+	local function owns(tier)
+		return type(tier) == "number" and tier >= 1 and tier <= Config.MaxWeaponTier
+			and (ITEMS.Owns(mask, tier) or tier == equipped)
+	end
+	local mode = ITEMS.ValidMode(items, enh, owns)
+	local def = mode and loot.Items[mode.Item]
+	local pending = ITEMS.Pending
+	local combat = inCombat()
+	local tapH = ITEMS.TapH(52)
+	local function setMode(m)
+		ITEMS.Mode, ITEMS.Note = m, nil
+		ITEMS.Rebuild()
+	end
+
+	-- B14: waiting for the server / the last scroll result / a timeout note, above everything else.
+	-- B6 review: a chosen scroll during the PvP combat tag says why it cannot be used (the server refuses it too)
+	local status, statusColor = nil, theme.SubText
+	if pending and pending.Kind == "Use" and not pending.Answered then
+		status, statusColor = L.Pending, theme.Gold
+	elseif combat and mode and def then
+		local tx = loot.Text
+		status, statusColor = (type(tx) == "table" and type(tx.UseCombat) == "string" and tx.UseCombat) or L.UseCombat, theme.Bad
+	elseif ITEMS.Note then
+		status, statusColor = ITEMS.Note, theme.Bad
+	else
+		status = ITEMS.ResultText()
+		if status and ITEMS.Result and ITEMS.Result.Success then statusColor = theme.Good end
+	end
+	if status then addText(parent, status, { Name = "ItemStatus", Color = statusColor, Size = 17 }) end
+
+	-- the chosen scroll's step + confirmation (rate and failure result shown before sending)
+	if mode and def then
+		local text, go = nil, nil
+		if def.Kind == "Enhance" then
+			if mode.Tier then
+				local before = ITEMS.Enh(enh, mode.Tier)
+				local plus = math.max(0, math.floor(tonumber(def.Plus) or 0))
+				local after = math.min(loot.MaxEnhance, before + plus)
+				text = string.format(L.ConfirmEnh, ITEMS.WeaponName(mode.Tier), before, after,
+					math.floor(Config.EnhanceMult(after) * 100 + 0.5), math.floor(def.Chance * 100 + 0.5),
+					ITEMS.FailText(before))
+				-- B9: +8/+9 with a +3/+5 scroll stops at the cap
+				if before + plus > loot.MaxEnhance then
+					text ..= "\n" .. string.format(L.OverflowF, loot.MaxEnhance, after - before)
+				end
+				local item, tier = mode.Item, mode.Tier
+				go = { item, tier } -- UseItem args
+			else
+				text = L.PickEnhance
+			end
+		elseif mode.From and mode.To then
+			local amount, target = ITEMS.Enh(enh, mode.From), ITEMS.Enh(enh, mode.To)
+			local after = math.min(loot.MaxEnhance, target + amount)
+			text = string.format(L.ConfirmMove, ITEMS.WeaponName(mode.From), amount, ITEMS.WeaponName(mode.To),
+				target, math.floor(def.Chance * 100 + 0.5), after)
+			-- B9: what does not fit under the cap stays on the source (LootService "손해 0" rule)
+			local left = amount - (after - target)
+			text ..= "\n" .. (left > 0 and string.format(L.MoveOverflowF, left) or L.MoveSafe)
+			local item, from, to = mode.Item, mode.From, mode.To
+			go = { item, from, to } -- UseItem args
+		elseif mode.From then
+			text = string.format(L.PickTo, ITEMS.Enh(enh, mode.From))
+		else
+			text = L.PickFrom
+		end
+		addText(parent, def.Name .. "\n" .. text, { Name = "ItemStep", Color = theme.Gold, Size = 18 })
+		local actions = addRow(parent, tapH + 4, 10)
+		if go then
+			local b = makeButton(actions, def.Kind == "Enhance" and L.Go or L.GoMove, PALETTE.Free, UDim2.new(0.5, -5, 0, tapH), function()
+				if ITEMS.Pending or inCombat() then return end
+				-- B14: the scroll and weapon(s) stay chosen; the next try is one tap once the answer is in (and the
+				-- server's UseItem interval has passed: ITEMS.Send refuses earlier taps instead of losing them)
+				if ITEMS.Send("UseItem", { Kind = "Use", Item = mode.Item, Count = ITEMS.Count(ITEMS.Data.Items, mode.Item) },
+					table.unpack(go)) then
+					ITEMS.Rebuild(true)
+				end
+			end)
+			b.Name = "ItemConfirm"
+			if pending then
+				b.Text = L.Pending
+				setEnabled(b, false)
+			elseif combat then
+				b.Text = L.EquipCombat -- "전투 중": the server refuses scrolls in PvP combat (status line says why)
+				setEnabled(b, false)
+			end
+		end
+		local cancel = makeButton(actions, L.Cancel, PALETTE.Button, UDim2.new(0.5, -5, 0, tapH), function() setMode(nil) end)
+		cancel.Name = "ItemCancel"
+	end
+
+	-- weapons (legendary first, then highest tier)
+	addText(parent, L.Weapons, { Color = theme.Gold, Font = theme.Font, Size = 20 })
+	local order = {}
+	for tier = Config.MaxWeaponTier, 1, -1 do
+		if owns(tier) then table.insert(order, tier) end
+	end
+	table.sort(order, function(a, b)
+		local la, lb = Config.Weapons[a].Legend == true, Config.Weapons[b].Legend == true
+		if la ~= lb then return la end
+		return a > b
+	end)
+	for _, tier in order do
+		local w = Config.Weapons[tier]
+		local plus = ITEMS.Enh(enh, tier)
+		local label = ITEMS.WeaponName(tier) .. (plus > 0 and string.format("  +%d", plus) or "")
+		local color = w.Legend and theme.Gold or theme.Text
+		local bText, bColor, enabled, click = nil, PALETTE.Button, true, nil
+		if mode and def and def.Kind == "Enhance" then
+			bText = plus >= loot.MaxEnhance and L.Max or L.Enhance
+			enabled = plus < loot.MaxEnhance
+			bColor = mode.Tier == tier and PALETTE.CardSelected or PALETTE.Ticket
+			click = function() setMode({ Item = mode.Item, Tier = tier }) end
+		elseif mode and def and def.Kind == "Transfer" then
+			if not mode.From then
+				bText, enabled, bColor = L.From, plus > 0, PALETTE.Ticket
+				click = function() setMode({ Item = mode.Item, From = tier }) end
+			elseif tier == mode.From then
+				bText, enabled, bColor = L.From, true, PALETTE.CardSelected
+				click = function() setMode({ Item = mode.Item }) end
+			else
+				bText = plus >= loot.MaxEnhance and L.Max or L.To
+				bColor = mode.To == tier and PALETTE.CardSelected or PALETTE.Free
+				enabled = plus < loot.MaxEnhance
+				click = function() setMode({ Item = mode.Item, From = mode.From, To = tier }) end
+			end
+		elseif tier == equipped then
+			bText, enabled = L.Equipped, false
+		-- A23-4 review: no level check here. Every listed weapon is owned and MinLevel only gates the purchase, so a
+		-- reborn Lv1 player can always switch back to a kept T5 (server: LootService.onEquipWeapon matches)
+		elseif pending and pending.Kind == "Equip" and pending.Tier == tier then
+			bText, enabled = L.EquipPending, false
+		elseif combat then
+			-- B14: the server refuses a weapon swap during PvP combat; say so instead of a dead button
+			bText, enabled = L.EquipCombat, false
+		else
+			bText, bColor, enabled = L.Equip, PALETTE.Free, pending == nil
+			click = function()
+				if inCombat() then return end
+				if ITEMS.Send("EquipWeapon", { Kind = "Equip", Tier = tier, WeaponTier = equipped }, tier) then
+					ITEMS.Rebuild(true)
+				end
+			end
+		end
+		local row = ITEMS.Row(parent, label, color, bText, bColor, enabled, click or function() end)
+		row.Name = "Weapon" .. tostring(tier)
+	end
+
+	-- scrolls
+	addText(parent, L.Scrolls, { Color = theme.Gold, Font = theme.Font, Size = 20 })
+	local anyScroll = false
+	for _, id in loot.Order do
+		local d = loot.Items[id]
+		local n = ITEMS.Count(items, id)
+		if d and d.Kind ~= "Material" and n > 0 then
+			anyScroll = true
+			local text = d.Kind == "Enhance" and string.format(L.ScrollEnh, d.Name, n, d.Plus)
+				or string.format(L.ScrollMove, d.Name, n)
+			local chosen = mode and mode.Item == id
+			local row = ITEMS.Row(parent, text, d.Color, chosen and L.Cancel or L.Use,
+				chosen and PALETTE.Button or PALETTE.Buy, true, function()
+					if chosen then setMode(nil) else setMode({ Item = id }) end
+				end)
+			row.Name = "Scroll_" .. id
+		end
+	end
+	if not anyScroll then addText(parent, L.NoScrolls, { Color = theme.SubText, Size = 16 }) end
+
+	-- materials
+	addText(parent, L.Materials, { Color = theme.Gold, Font = theme.Font, Size = 20 })
+	local anyMat = false
+	for _, id in loot.Order do
+		local d = loot.Items[id]
+		local n = ITEMS.Count(items, id)
+		if d and d.Kind == "Material" and n > 0 then
+			anyMat = true
+			local row = ITEMS.Row(parent, string.format(L.MaterialLine, d.Name, n, d.Sell), d.Color)
+			row.Name = "Material_" .. id
+		end
+	end
+	addText(parent, anyMat and L.MaterialHint or L.NoMaterials, { Color = theme.SubText, Size = 16 })
+
+	-- 0.25 s: a pending request that got its answer / timed out, or the PvP combat tag flipping, rebuilds in place
+	return function()
+		if currentId ~= "Items" then return end
+		if ITEMS.CheckPending() or inCombat() ~= combat then ITEMS.Rebuild(true) end
+	end
+end
+
+-- blacksmith add-on: one "sell every material" button (server re-checks the anvil distance and the counts)
+function ITEMS.SellButton(parent)
+	local row = addRow(parent, 64, 10)
+	row.Name = "SellMaterials"
+	local b = nil
+	b = makeButton(row, "", PALETTE.Free, UDim2.new(1, -20, 0, 60), function()
+		if ITEMS.SellPending or ITEMS.MaterialValue(ITEMS.Data.Items) <= 0 then return end
+		ITEMS.SellPending = { SentAt = os.clock(), Ver = ITEMS.Version }
+		fire("SellMaterials")
+		b.Text = ITEMS.T.SellPending
+		setEnabled(b, false)
+	end)
+	b.Name = "SellMaterialsButton"
+	return function()
+		ITEMS.CheckPending()
+		if ITEMS.SellPending then
+			b.Text = ITEMS.T.SellPending
+			setEnabled(b, false)
+			return
+		end
+		local count, gold = ITEMS.MaterialValue(ITEMS.Data.Items)
+		b.Text = count > 0 and string.format(ITEMS.T.SellMat, count, exactNumber(gold)) or ITEMS.T.SellNone
+		setEnabled(b, count > 0)
+	end
+end
+
+BUILDERS.WeaponShop = function(parent)
+	local session = WSHOP.Session
+	if not session or session.Class ~= currentClass() or session.Faction ~= myFaction() then
+		session = { Class = currentClass(), Faction = myFaction() }
+		WSHOP.Session = session
+	end
+	addText(parent, T.WeaponLocation, { Name = "BlacksmithLocation", Color = theme.SubText })
+	local accessLabel = addText(parent, "", { Name = "BlacksmithAccess", Color = theme.Bad })
+	local details = addColumn(parent, 1, 0, 10)
+	details.Name = "WeaponCatalog"
+	addText(details, T.WeaponNote, { Size = 16, Color = theme.SubText })
+	local current = addText(details, "", { Name = "CurrentWeapon", Size = 18 })
+	local gold = addText(details, "", { Name = "WeaponGold", Size = 18 })
+	local status = addText(details, "", { Name = "WeaponTransaction", Color = theme.SubText, Size = 16 })
+	local sellUpdate = ITEMS.SellButton(details) -- A23-12: materials are sold here (crafting comes with the full launch)
+	local rows, update = {}, nil
+	local function live()
+		return currentId == "WeaponShop" and WSHOP.Session == session and details.Parent ~= nil
+			and session.Class == currentClass() and session.Faction == myFaction()
+	end
+	local function send(tier, action, expectedEquipped)
+		if not live() or session.Pending or os.clock() < (session.CooldownUntil or 0) then return end
+		if action ~= "Buy" and action ~= "Equip" and action ~= "Sell" then return end
+		local access = WSHOP.Access()
+		local info, buyReason, sellReason = WSHOP.Offer(tier)
+		local reason = buyReason
+		if action == "Sell" then reason = sellReason end
+		-- B6/B14: same rule as 아이템 → 장착; a purchase equips too, so the server refuses it in PvP combat as well
+		if (action == "Equip" or action == "Buy") and reason == nil then reason = WSHOP.EquipBlock() end
+		-- Never turn an old 'equip' click into a paid purchase after ownership changed.
+		if info and ((action == "Buy" and info.Owned) or (action == "Equip" and not info.Owned)
+			or (action == "Sell" and expectedEquipped ~= info.EquippedTier)) then reason = T.WeaponChanged end
+		if access or reason or not info then
+			toast(access or reason or T.WeaponInvalid, "bad")
+			update()
+			return
+		end
+		session.Pending = { Tier = tier, Action = action, SentAt = os.clock() }
+		update()
+		fire(action == "Sell" and "SellWeapon" or "UpgradeWeapon", tier)
+	end
+	local cap = WSHOP.CatalogLimit()
+	for tier = 1, cap or 0 do
+		local row = addColumn(details, 1, 0, 5)
+		row.Name = "WeaponTier" .. tostring(tier)
+		local ui = {
+			Tier = tier,
+			Name = addText(row, "", { Size = 22, Color = theme.Gold, Font = theme.Font }),
+			Price = addText(row, "", { Size = 16 }),
+			Effect = addText(row, "", { Size = 16, Color = theme.Good or theme.Text }),
+			Sale = addText(row, "", { Size = 16, Color = theme.SubText }),
+			Reason = addText(row, "", { Size = 16, Color = theme.Bad }),
+		}
+		local buttons = addRow(row, 60, 10)
+		ui.Buy = makeButton(buttons, "", PALETTE.Free, UDim2.new(0.5, -5, 0, 60), function()
+			send(tier, ui.DisplayedAction)
+		end)
+		ui.Buy.Name = "BuyOrEquipWeapon" .. tostring(tier)
+		ui.Sell = makeButton(buttons, "", PALETTE.Button, UDim2.new(0.5, -5, 0, 60), function()
+			if not live() or session.Pending or os.clock() < (session.CooldownUntil or 0) then return end
+			local info, _, reason = WSHOP.Offer(tier)
+			local access = WSHOP.Access()
+			if access or reason or not info then
+				toast(access or reason or T.WeaponInvalid, "bad")
+				update()
+				return
+			end
+			local plus = ITEMS.Enh(ITEMS.Data.Enhance, tier)
+			local body = string.format(T.WeaponSellConfirmF, info.Name .. ITEMS.PlusText(plus), exactNumber(info.SellPrice))
+			if info.Equipped then body ..= "\n" .. T.WeaponSaleEquipped end
+			-- B14: the tier's +N stays in the save (A23-12) and comes back when the weapon is owned again
+			if plus > 0 then body ..= "\n" .. string.format(ITEMS.T.SellKeepEnhF, plus) end
+			confirm(T.WeaponSellTitle, body, T.WeaponSellConfirm, function()
+				send(tier, "Sell", info.EquippedTier)
+			end)
+		end)
+		ui.Sell.Name = "SellWeapon" .. tostring(tier)
+		setEnabled(ui.Buy, false)
+		setEnabled(ui.Sell, false)
+		table.insert(rows, ui)
+	end
+	update = function()
+		WSHOP.Reconcile(session)
+		-- a request the server refused silently (or a lost answer) must never freeze every button: after
+		-- WSHOP.PendingTimeout the row unlocks and the status says to check the toast (no double charge: a repeated
+		-- 'Buy' of a weapon that turned out owned is refused by the client and only re-equips on the server)
+		local stale = session.Pending
+		if stale and os.clock() - stale.SentAt >= WSHOP.PendingTimeout then
+			session.Pending = nil
+			session.SlowUntil = os.clock() + WSHOP.SlowNoteSeconds
+		end
+		local access = WSHOP.Access()
+		accessLabel.Text, accessLabel.Visible = access or "", access ~= nil
+		details.Visible = access == nil
+		local first = WSHOP.Offer(1)
+		local enh = ITEMS.Data.Enhance -- B11: per-tier scroll +N from the owner's Inventory payload (A23-12)
+		current.Visible, gold.Visible = first ~= nil, first ~= nil
+		if first then
+			current.Text = string.format(T.WeaponCurrentF, first.CurrentName .. ITEMS.PlusText(ITEMS.Enh(enh, first.EquippedTier)))
+			gold.Text = string.format(T.WeaponGoldF, exactNumber(first.Total), exactNumber(first.Bank), exactNumber(first.Carried))
+		end
+		local pending = session.Pending
+		status.Text = not first and T.WeaponInvalid or (pending and T.WeaponSent)
+			or (os.clock() < (session.SlowUntil or 0) and T.WeaponSlow) or ""
+		status.Visible = status.Text ~= ""
+		local blocked = access ~= nil or pending ~= nil or os.clock() < (session.CooldownUntil or 0)
+		for _, ui in rows do
+			local info, buyReason, sellReason = WSHOP.Offer(ui.Tier)
+			if info and buyReason == nil then buyReason = WSHOP.EquipBlock() end -- buy or re-equip (both equip)
+			ui.Name.Text = info and (info.Name .. ITEMS.PlusText(ITEMS.Enh(enh, ui.Tier)) .. " · " .. (info.Equipped and T.WeaponEquipped
+				or (info.Owned and T.WeaponOwned or T.WeaponUnowned))) or T.WeaponInvalid
+			ui.Price.Visible, ui.Sale.Visible = info ~= nil, info ~= nil
+			if info then
+				ui.DisplayedAction = info.Owned and "Equip" or "Buy"
+				ui.Price.Text = ui.Tier == 1 and T.WeaponStarter
+					or string.format(T.WeaponPriceF, exactNumber(info.Price), info.MinLevel, info.Level)
+				ui.Sale.Text = ui.Tier == 1 and "" or (string.format(T.WeaponSaleNoteF, exactNumber(info.SellPrice))
+					.. (info.Equipped and ("\n" .. T.WeaponSaleEquipped) or ""))
+				ui.Sale.Visible = ui.Tier > 1
+				local cls = currentClass()
+				local now = Config.SwingHitsToKill(info.EquippedTier, info.Level, cls, "Slime", myFaction(), ITEMS.Enh(enh, info.EquippedTier))
+				local with = Config.SwingHitsToKill(ui.Tier, info.Level, cls, "Slime", myFaction(), ITEMS.Enh(enh, ui.Tier))
+				ui.Effect.Text = (now and with) and (info.Equipped and string.format(T.WeaponEffectNowF, now)
+					or string.format(T.WeaponEffectF, now, with)) or ""
+				ui.Effect.Visible = ui.Effect.Text ~= ""
+				ui.Buy.Text = info.Equipped and T.WeaponEquipped or (info.Owned and T.WeaponEquip
+					or string.format(T.WeaponBuyF, exactNumber(info.Price)))
+				ui.Sell.Text = ui.Tier == 1 and T.WeaponStarterNoSell
+					or string.format(T.WeaponSellF, exactNumber(info.SellPrice))
+			else
+				ui.DisplayedAction = nil
+				ui.Buy.Text, ui.Sell.Text = T.WeaponInvalid, T.WeaponNoSell
+			end
+			if pending and pending.Tier == ui.Tier then
+				if pending.Action == "Sell" then ui.Sell.Text = T.WeaponPending else ui.Buy.Text = T.WeaponPending end
+			end
+			ui.Reason.Text = (buyReason ~= T.WeaponEquipped and buyReason) or ""
+			ui.Reason.Visible = ui.Reason.Text ~= ""
+			setEnabled(ui.Buy, info ~= nil and not blocked and buyReason == nil)
+			setEnabled(ui.Sell, info ~= nil and not blocked and sellReason == nil)
+		end
+	end
+	return function()
+		update()
+		sellUpdate()
+	end
+end
+
+-- story quest dialogue (StoryQuestService): speaker + quest title, 1-2 short lines per page, then [알겠어요] for a
+-- Talk step or two choice buttons for a Choice step. Closing is never a choice; the quest row reopens it.
+-- No portrait (old chibi art is being replaced); existing buttons only.
+-- B15: a server auto-open never covers a fight or another window. Then the page waits in STORY.Pending, the HUD quest
+-- row shows STORY.Text.Row* with a gentle pulse, and tapping that row (HUD → Panels.ExpectStory + StoryAction "Open")
+-- opens it even mid-fight. "Fight" = PvP combat tag, dead, or my own attack / hurt Fx within CalmSeconds.
+local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, CalmSeconds = 4, Toasted = nil,
+	Text = {
+		RowShard = "조각이 말을 걸어요 — 눌러서 보기",
+		RowOther = "할 이야기가 있어요 — 눌러서 보기",
+		ToastShard = "조각이 말을 걸어요! 퀘스트 줄을 눌러서 봐요.",
+		ToastOther = "할 이야기가 기다려요! 퀘스트 줄을 눌러서 봐요.",
+	},
+}
+
+function STORY.Label(id, forToast)
+	local defs = Config.StoryQuests and Config.StoryQuests.Defs
+	local def = defs and defs[id]
+	local shard = type(def) == "table" and (def.Speaker == "Shard" or def.Speaker == "Fountain")
+	if forToast then return shard and STORY.Text.ToastShard or STORY.Text.ToastOther end
+	return shard and STORY.Text.RowShard or STORY.Text.RowOther
+end
+
+function STORY.Busy()
+	if currentId ~= nil and currentId ~= "Story" then return true end
+	local wm = C and C.WorldMap
+	if type(wm) == "table" and type(wm.IsOpen) == "function" then
+		local ok, open = pcall(wm.IsOpen)
+		if ok and open then return true end
+	end
+	if inCombat() or isDead() then return true end
+	local fx = C and C.Fx
+	local last = type(fx) == "table" and fx.LastFightAt or nil
+	return type(last) == "number" and os.clock() - last < STORY.CalmSeconds
+end
+
+function STORY.Queue(arg)
+	STORY.Pending = { Id = arg.Id, St = arg.St }
+	local key = arg.Id .. "|" .. tostring(arg.St)
+	if STORY.Toasted ~= key and not pickerOpen() then
+		STORY.Toasted = key
+		toast(STORY.Label(arg.Id, true), "info", 4)
+	end
+end
+
+function STORY.Def()
+	local arg = STORY.Arg
+	local defs = Config.StoryQuests and Config.StoryQuests.Defs
+	return arg and defs and defs[arg.Id], arg
+end
+
+function STORY.Title()
+	local def = STORY.Def()
+	if not def then return "" end
+	local sq = Config.StoryQuests
+	local speaker = def.Speaker and sq.Speakers[def.Speaker]
+	if not speaker then
+		local w = Config.Tutorial.Welcome[myFaction()]
+		speaker = w and w.Name or "안내자"
+	end
+	return string.format(sq.Text.Title, speaker, def.Title)
+end
+
+BUILDERS.Story = function(parent)
+	local def, arg = STORY.Def()
+	local step = def and def.Steps[arg.St]
+	if not step or not step.Panel then
+		addText(parent, "", {})
+		return nil
+	end
+	local f = myFaction()
+	local over = step[f]
+	local obj = (type(over) == "table" and over.Obj) or step.Obj
+	local lines = (step.Lines and (step.Lines[f] or step.Lines.All)) or {}
+	local TXT = Config.StoryQuests.Text
+	local page = 1
+	local line = addText(parent, "", { Name = "StoryLine", Size = 22, Align = Enum.TextXAlignment.Center })
+	local pageLabel = addText(parent, "", { Name = "StoryPage", Size = 15, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
+	local actions = addRow(parent, 64, 10)
+	-- what a pick does, shown with the choice buttons on the last page (user 2026-10-05: the flow must explain itself)
+	local hint = nil
+	if obj.Type == "Choice" then
+		local neutralPick = f ~= "Halo" and f ~= "Horns"
+		hint = addText(parent, neutralPick and TXT.ChoiceHintNeutral
+			or string.format(TXT.ChoiceHint, (obj.Good and obj.Good.Points) or 0, (obj.Evil and obj.Evil.Points) or 0),
+			{ Name = "StoryChoiceHint", Size = 16, Color = theme.Gold, Align = Enum.TextXAlignment.Center })
+	end
+	local buttons = {}
+	local update
+	local function send(option)
+		-- B15: an answer may unlock the next dialogue step at once; it continues even if auto combat is fighting
+		STORY.ForceUntil = os.clock() + STORY.ForceSeconds
+		if obj.Type == "Talk" then
+			fire("StoryAction", arg.Id, "Talk")
+		else
+			fire("StoryAction", arg.Id, "Choose", option)
+		end
+		Panels.Close()
+	end
+	local last = function() return page >= #lines end
+	local nextBtn = makeButton(actions, TXT.Next, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
+		if not last() then page += 1; update() end
+	end)
+	nextBtn.Name = "StoryNext"
+	if obj.Type == "Choice" then
+		local isNeutral = f ~= "Halo" and f ~= "Horns"
+		local left = isNeutral and (obj.Neutral and obj.Neutral.A) or obj.Good.Label
+		local right = isNeutral and (obj.Neutral and obj.Neutral.B) or obj.Evil.Label
+		buttons[1] = makeButton(actions, left, PALETTE.Free, UDim2.new(0.5, -5, 0, 60), function()
+			if last() then send(isNeutral and "A" or "Good") end
+		end)
+		buttons[1].Name = "StoryChoiceGood"
+		buttons[2] = makeButton(actions, right, PALETTE.Ticket or PALETTE.Button, UDim2.new(0.5, -5, 0, 60), function()
+			if last() then send(isNeutral and "B" or "Evil") end
+		end)
+		buttons[2].Name = "StoryChoiceEvil"
+	else
+		buttons[1] = makeButton(actions, TXT.Ok, PALETTE.Free, UDim2.new(1 / 3, -7, 0, 60), function()
+			if last() then send(nil) end
+		end)
+		buttons[1].Name = "StoryOk"
+		local later = makeButton(actions, TXT.Later, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
+			Panels.Close()
+		end)
+		later.Name = "StoryLater"
+	end
+	update = function()
+		if currentId ~= "Story" or not line.Parent then return end
+		line.Text = tostring(lines[page] or "")
+		pageLabel.Text = #lines > 1 and string.format("%d / %d", page, #lines) or ""
+		-- one thing to press at a time: [다음] while reading, the answer buttons only on the last page
+		nextBtn.Visible = not last()
+		for _, b in buttons do
+			b.Visible = last()
+			setEnabled(b, last())
+		end
+		if hint then hint.Visible = last() end
+	end
+	return update
+end
+
+-- A23-6 / beta 3: potion shop at the temporary default NPC (Crossroads). Blacksmith-style screen: price, my gold,
+-- stock, 1 / 5 bottles, the server's answer (stock / gold attributes) and why a purchase failed (server toasts).
+local POTION = {
+	Gold = "보유 %s골드",
+	Stock = "보유 %d / %d병",
+	Name = { HP = "HP 물약 (1번 키)", MP = "MP 물약 (2번 키)" },
+	Effect = { HP = "최대 HP의 %d%% 회복", MP = "최대 MP의 %d%% 회복" },
+	Buy = "%d병 · %s골드",
+	Pending = "구매 확인 중…",
+	Full = "가득 찼어요",
+	Short = "골드 부족",
+}
+
+BUILDERS.PotionShop = function(parent)
+	local tune = Config.Vitals or {}
+	if tune.MerchantEnabled ~= true then
+		addText(parent, "물약 상점은 준비 중이에요.", { Align = Enum.TextXAlignment.Center })
+		return nil
+	end
+	local gold = addText(parent, "", { Name = "PotionGold", Size = 18 })
+	local rows, pending = {}, nil
+	local update
+	for _, kind in { "HP", "MP" } do
+		local key = Config.PotionStockKey(kind)
+		local col = addColumn(parent, 1, 0, 5)
+		col.Name = "Potion" .. kind
+		local ui = { Kind = kind, Key = key }
+		ui.Name = addText(col, POTION.Name[kind], { Size = 22, Color = theme.Gold, Font = theme.Font })
+		local pct = math.floor(((kind == "HP" and tune.HPRecovery or tune.MPRecovery) or 0) * 100 + 0.5)
+		addText(col, string.format(POTION.Effect[kind], pct), { Size = 16 })
+		ui.Stock = addText(col, "", { Size = 16, Color = theme.SubText })
+		local buttons = addRow(col, 60, 10)
+		ui.Buttons = {}
+		for _, amount in { 1, 5 } do
+			local b = makeButton(buttons, "", PALETTE.Free, UDim2.new(0.5, -5, 0, 60), function()
+				if pending then return end
+				local price = (tune.PotionPrices or {})[kind] or 0
+				local have = num(key)
+				if have + amount > (tune.PotionInventoryCap or 99) then toast(POTION.Full, "bad"); return end
+				if num("BankGold") + num("CarriedGold") < price * amount then toast(POTION.Short, "bad"); return end
+				pending = { Kind = kind, From = have, At = os.clock() }
+				fire("BuyPotion", kind, amount) -- the server re-checks distance, stock cap and gold
+				update()
+			end)
+			b.Name = "Buy" .. kind .. amount
+			ui.Buttons[amount] = b
+		end
+		table.insert(rows, ui)
+	end
+	update = function()
+		if currentId ~= "PotionShop" or not gold.Parent then return end
+		if pending and (num(Config.PotionStockKey(pending.Kind)) ~= pending.From or os.clock() - pending.At > 3) then
+			pending = nil -- the stock changed (bought) or the server refused (its toast says why)
+		end
+		local bank, carried = num("BankGold"), num("CarriedGold")
+		gold.Text = string.format(POTION.Gold, exactNumber(bank + carried))
+		for _, ui in rows do
+			local cap = tune.PotionInventoryCap or 99
+			local have = num(ui.Key)
+			ui.Stock.Text = string.format(POTION.Stock, have, cap)
+			local price = (tune.PotionPrices or {})[ui.Kind] or 0
+			for amount, b in ui.Buttons do
+				local busy = pending ~= nil
+				b.Text = (busy and pending.Kind == ui.Kind) and POTION.Pending or string.format(POTION.Buy, amount, exactNumber(price * amount))
+				setEnabled(b, not busy and have + amount <= cap and bank + carried >= price * amount)
+			end
+		end
+	end
+	return update
+end
+
 BUILDERS.Shop = function(parent)
 	local rows = {}
 	for _, kind in { "Class", "Faction" } do
@@ -1619,8 +2758,10 @@ BUILDERS.Vacation = function(parent)
 end
 
 ------------------------------------------------------------------ render / open / close
-local function render()
+-- keep = true: a data refresh of the same panel (B14) keeps the scroll position and skips the input guard
+local function render(keep)
 	if not currentId or not ensureRoot() then return end
+	local keptY = (keep == true and content) and content.CanvasPosition.Y or 0
 	if currentId == "Nickname" then
 		window.Visible = false
 	else
@@ -1633,6 +2774,7 @@ local function render()
 	currentUpdate = nil
 	titleLabel.Text = T.Titles[currentId] or ""
 	backButton.Visible = openedFromMenu and currentId ~= "Menu"
+	if currentId == "Story" then titleLabel.Text = STORY.Title() end
 	local ok, result = pcall(BUILDERS[currentId], content)
 	if not ok then
 		Util.Warn(TAG, "failed to build " .. tostring(currentId) .. ": " .. tostring(result))
@@ -1644,38 +2786,81 @@ local function render()
 		if not ok2 then Util.Warn(TAG, "update error in " .. tostring(currentId) .. ": " .. tostring(err)) end
 	end
 	if currentId == "Nickname" then layoutRoot() end
+	if keep == true then
+		-- the rebuilt list has about the same height: stay where the player was (re-applied once the new canvas
+		-- size is known, clamped to it)
+		local id, frame = currentId, content
+		frame.CanvasPosition = Vector2.new(0, keptY)
+		task.defer(function()
+			if currentId ~= id or content ~= frame or not frame.Parent then return end
+			local maxY = frame.AbsoluteCanvasSize.Y - frame.AbsoluteWindowSize.Y
+			if maxY <= 0 then return end -- not measured yet (or no scroll): the engine's own clamp is enough
+			local y = math.min(keptY, maxY)
+			if math.abs(frame.CanvasPosition.Y - y) > 0.5 then frame.CanvasPosition = Vector2.new(0, y) end
+		end)
+		return
+	end
 	content.CanvasPosition = Vector2.new(0, 0)
 	-- CR-L26: the 2nd tap of a double tap on a menu entry must not press what just appeared under the finger
 	inputGuardUntil = os.clock() + GUARD.InputAfterRender
 end
 
-local function queueRebuild()
+-- keep = true only for data refreshes (B14); any other queued rebuild in the same frame resets the scroll
+local function queueRebuild(keep)
+	if keep ~= true then RENDER.Reset = true end
 	if rebuildQueued then return end
 	rebuildQueued = true
 	task.defer(function()
 		rebuildQueued = false
+		local reset = RENDER.Reset
+		RENDER.Reset = false
 		if not currentId then return end
 		if pickerOpen() then
 			Panels.Close()
 			return
 		end
-		render()
+		render(not reset)
 	end)
 end
+ITEMS.Rebuild = queueRebuild
 
-function Panels.Open(id)
+function Panels.Open(id, arg)
 	local fromMenu = pendingFromMenu
 	pendingFromMenu = false
 	if type(id) ~= "string" or BUILDERS[id] == nil then
 		Util.Warn(TAG, "unknown panel id: " .. tostring(id))
 		return
 	end
+	if id == "Welcome" then
+		local step = player:GetAttribute("TutorialStep")
+		if type(step) == "number" and step ~= 0 then WELCOME.PendingOpen = false; return end
+		if pickerOpen() or not WELCOME.Ready() then WELCOME.PendingOpen = true; return end
+		WELCOME.PendingOpen = false
+		if currentId == "Welcome" then return end -- duplicate server opens must not rewind a page
+	end
+	if id == "Story" then
+		-- B15: the opening / pickers, another window or a fight own the screen: the page waits (STORY.Pending) and the
+		-- HUD quest row pulses until the player taps it (that tap sets ForceUntil, so the reply opens even mid-fight)
+		if type(arg) ~= "table" or type(arg.Id) ~= "string" then return end
+		local forced = os.clock() < STORY.ForceUntil
+		if pickerOpen() or (not forced and STORY.Busy()) then
+			STORY.Queue(arg)
+			return
+		end
+		STORY.ForceUntil = 0
+		if STORY.Pending and STORY.Pending.Id == arg.Id then STORY.Pending = nil end
+		STORY.Arg = arg
+	end
 	if pickerOpen() then return end -- the full-screen pickers own the screen
 	if not ensureRoot() then return end
 	if id ~= currentId then
 		selectedClass = nil
 		selectedTarget = nil
+		ITEMS.Mode = nil
+		ITEMS.Result, ITEMS.Note = nil, nil -- a fresh item list starts without an old result line
+		WSHOP.Session = nil -- switching panels is not a manual shop farewell
 	end
+	if id == "Items" then ITEMS.Seen = true end -- B14: the menu glow stops once the list was seen
 	openedFromMenu = fromMenu
 	currentId = id
 	-- The nickname result is displayed in its own panel; transient game tips stay behind it.
@@ -1684,19 +2869,66 @@ function Panels.Open(id)
 	render()
 end
 
-function Panels.Close()
+function Panels.Close(manual)
+	local farewell = manual == true and currentId == "WeaponShop" and WSHOP.Farewell() or nil
+	-- A picker's automatic close must not discard an earlier server welcome waiting on replicated attributes.
+	if currentId == "Welcome" or manual == true or not pickerOpen() then WELCOME.PendingOpen = false end
 	currentId = nil
 	currentUpdate = nil
+	WSHOP.Session = nil
+	ITEMS.Mode = nil
 	openedFromMenu = false
 	selectedClass = nil
 	selectedTarget = nil
 	if root then root.Visible = false end
 	NICK.Destroy()
 	clearContent()
+	if farewell then toast(farewell, "info", 4) end
 end
 
 function Panels.IsOpen()
 	return currentId ~= nil
+end
+
+-- B15: the story page waiting for a calm moment ({ Id, St, Label } copy) or nil; HUD pulses that quest row
+function Panels.StoryPending()
+	local p = STORY.Pending
+	if not p then return nil end
+	return { Id = p.Id, St = p.St, Label = STORY.Label(p.Id, false) }
+end
+
+-- B15: the player tapped that story's quest row: the server's reply opens it even mid-fight
+function Panels.ExpectStory(id)
+	if type(id) ~= "string" then return end
+	STORY.ForceUntil = os.clock() + STORY.ForceSeconds
+end
+
+-- B14: true while the HUD 메뉴 square / menu '아이템' should glow (a scroll and the list not opened this session)
+function Panels.ItemsHint()
+	return ITEMS.Hint()
+end
+
+function Panels.ItemsSeen()
+	return ITEMS.Seen == true
+end
+
+-- B14: my scroll result (Fx "Enhance" payload { Tier, Before, After, Success, Move?, From? }) for the item list
+function Panels.OnEnhanceResult(data)
+	if type(data) ~= "table" then return end
+	local function tierOf(v)
+		if type(v) ~= "number" or v ~= v or v < 1 or v > Config.MaxWeaponTier then return nil end
+		return math.floor(v)
+	end
+	local function enhOf(v)
+		if type(v) ~= "number" or v ~= v then return nil end
+		return math.clamp(math.floor(v), 0, Config.Loot.MaxEnhance)
+	end
+	local r = { Success = data.Success == true, Move = data.Move == true, Tier = tierOf(data.Tier), From = tierOf(data.From),
+		Before = enhOf(data.Before), After = enhOf(data.After) }
+	if not r.Tier or not r.Before or not r.After then return end
+	ITEMS.Result, ITEMS.ResultAt, ITEMS.Note = r, os.clock(), nil
+	ITEMS.CheckPending()
+	if currentId == "Items" then ITEMS.Rebuild(true) end
 end
 
 ------------------------------------------------------------------ loops / wiring
@@ -1748,6 +2980,7 @@ function Panels.Init(c)
 	C = c
 	UIKit = c and c.UIKit
 	loadTheme()
+	ITEMS.Bind() -- B11: before any Start, so the first Inventory payload is never missed
 end
 
 function Panels.Start()
@@ -1759,12 +2992,16 @@ function Panels.Start()
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(hookCamera)
 
 	player.AttributeChanged:Connect(function(name)
-		if currentId and REBUILD_ATTRS[name] then
-			queueRebuild()
-		elseif currentId == "Menu" and currentUpdate
-			and (name == "CostumeStatus" or name == "CostumeEnabled" or name == "CostumeApplied") then
+		if currentId == "Welcome" and name == "TutorialStep" and currentUpdate then
 			local ok, err = pcall(currentUpdate)
-			if not ok then warnThrottled("costume status update error: " .. tostring(err)) end
+			if not ok then warnThrottled("welcome update error: " .. tostring(err)) end
+		elseif currentId == "Menu" and name == "TutorialStep" then
+			queueRebuild()
+		elseif currentId and REBUILD_ATTRS[name] then
+			queueRebuild()
+		elseif currentId == "Items" and ITEMS.Attrs[name] then
+			ITEMS.CheckPending() -- an equip answer is the WeaponTier change itself
+			queueRebuild(true) -- B14: data refresh: scroll kept, no input guard
 		elseif currentId == "Nickname" and (name == "Nickname" or name == "NicknameVerified" or name == "NicknameStatus") then
 			NICK.Update()
 		end
@@ -1772,8 +3009,8 @@ function Panels.Start()
 
 	task.spawn(function()
 		local ok, err = pcall(function()
-			Net.Get("OpenPanel").OnClientEvent:Connect(function(panelId)
-				if type(panelId) == "string" then Panels.Open(panelId) end
+			Net.Get("OpenPanel").OnClientEvent:Connect(function(panelId, arg)
+				if type(panelId) == "string" then Panels.Open(panelId, arg) end
 			end)
 		end)
 		if not ok then Util.Warn(TAG, "OpenPanel hookup failed: " .. tostring(err)) end
@@ -1782,6 +3019,10 @@ function Panels.Start()
 	task.spawn(function()
 		while true do
 			task.wait(UPDATE_INTERVAL)
+			if WELCOME.PendingOpen then
+				local ok, err = pcall(Panels.Open, "Welcome")
+				if not ok then warnThrottled("welcome open error: " .. tostring(err)) end
+			end
 			if currentId and currentUpdate then
 				local ok, err = pcall(currentUpdate)
 				if not ok then warnThrottled("update error in " .. tostring(currentId) .. ": " .. tostring(err)) end

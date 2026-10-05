@@ -1,3 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Plan/apply narrowly scoped facial skin repairs; no Studio or API calls.
 
 Approved original facial UV triangle signatures identify the scope. The initial
@@ -8,6 +11,8 @@ new four-slot skin arrays are appended to a separate unregistered build copy.
 """
 from __future__ import annotations
 
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import copy
 import json

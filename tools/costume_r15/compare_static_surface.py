@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Read-only world-space triangle comparison of raw and fixed source GLBs.
 
 An exact oriented triangle bijection after sub-micrometer float rounding shows
 the existing fixed model uses the same surface; it does not prove riggability
 or that two different texture layouts share the same UVs.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 from collections import Counter
 import argparse
 import hashlib

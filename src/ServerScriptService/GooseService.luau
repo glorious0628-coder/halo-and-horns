@@ -4,8 +4,14 @@
 -- SPEC_ADDENDUM A6: only Halo/Horns players add tug counts and receive tug rewards (Neutral/None count 0).
 -- Review fixes: a reward needs >= MIN_MANUAL_HITS manual counts (auto-only AFK players still pull, never get paid), and a
 -- faction switch mid-event forfeits that player's entry (no pulling for one side and collecting the other's win).
--- CR-L8: a win with no rival faction online becomes a Tie. CR-L21: GetPosition follows the tug pivot; RegisterHit
--- returns the count actually added (0 = rejected).
+-- CR-L21: GetPosition follows the tug pivot; RegisterHit returns the count actually added (0 = rejected).
+-- A23-14 "함께 구조" (co-op, replaces CR-L8's forced tie): if only one of Halo/Horns has ready players when the goose
+-- lands, the event is co-op for that side (fixed for the whole event; "Pending" while nobody is eligible, fixed by the
+-- first eligible player). Gauge target = Config.Goose.CoopPerPerson x that side's ready players at that moment (min 1).
+-- Success pays Config.Goose.CoopWinShare of the winner reward, 0 war points; a gauge not filled takes the tie path.
+-- A tug whose rival side left before the end is judged the same way (no 100% win, no war points without a rival).
+-- GameState for the HUD: GooseMode ("Versus" | "Coop"), GooseCoopSide ("Halo" | "Horns" | "None"), GooseCoopTarget,
+-- GooseCoopPeople. GooseFinished keeps (result, counts) and adds an optional 3rd arg { Mode, Side, Success, Target }.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local RunService = game:GetService("RunService")
@@ -19,9 +25,9 @@ local GOOSE_LABEL = "황금 거위" -- billboard text required verbatim by TECH_
 local CUSTOM_FOLDER = (Config.CustomModels and Config.CustomModels.FolderName) or "CustomModels" -- A1
 local CUSTOM_ID = (Config.CustomModels and Config.CustomModels.GooseId) or "GoldenGoose" -- A1
 -- review fix (anti-AFK): rewards (and GooseFinished participation) need this many ACCEPTED manual counts this event;
--- auto-attack counts still move the tug but alone never pay. Candidate for Config.Goose.MinManualHits (G1).
-local MIN_MANUAL_HITS = 3
-local TXT_NEED_MANUAL = "황금 거위 보상은 직접 %d번 이상 때린 사람만 받아요! (자동 공격만으로는 보상 없음)"
+-- auto-attack counts still move the tug but alone never pay.
+local MIN_MANUAL_HITS = math.max(1, math.floor(tonumber(Config.Goose.MinManualHits) or 3))
+local TXT = Config.Goose.Text or {} -- Korean goose texts (NeedManual + A23-14 co-op)
 local MAX_SIDE_OFFSET = 6 -- studs; tug pivot clamp (§4.16)
 local VISUAL_BOTTOM = -2.0 -- procedural body bottom relative to the goose center
 local VISUAL_HEIGHT = 6.9 -- procedural body height (body bottom -> crown-shard tip)
@@ -73,6 +79,9 @@ local sideOf = {} -- [Player] = faction the player's counts were made for ("Halo
 local hitTimes = {} -- [Player] = { os.clock() } accepted counts within the rolling 1 s window
 local publishedRescue = -1
 local publishedPoach = -1
+-- A23-14 event mode: "Idle" between events, "Pending" (active, nobody eligible yet), "Versus" or "Coop"
+local mode = "Idle"
+local coop = { Side = "None", People = 0, Target = 0, Full = false, Told = {} } -- Told[Player] = RivalWait sent
 
 -- model state
 local gooseModel = nil
@@ -148,6 +157,63 @@ end
 
 local function round1(x)
 	return math.floor(x * 10 + 0.5) / 10
+end
+
+-- string.format(fmt, ...) of a Config.Goose.Text entry (fmt may be a { Halo, Horns } table keyed by side); nil if
+-- the text is missing or the format fails, so a text typo never breaks the event
+local function txt(key, side, ...)
+	local fmt = TXT[key]
+	if type(fmt) == "table" then fmt = fmt[side] end
+	if type(fmt) ~= "string" then
+		warnThrottled("txt." .. tostring(key), "missing Config.Goose.Text." .. tostring(key))
+		return nil
+	end
+	local ok, s = pcall(string.format, fmt, ...)
+	if not ok then
+		warnThrottled("txtfmt." .. tostring(key), "bad Config.Goose.Text." .. tostring(key) .. ": " .. tostring(s))
+		return nil
+	end
+	return s
+end
+
+-- ready Halo / Horns players (FactionService.GetCounts: ready, still in Players, not leaving; Neutral/None never count)
+local function factionCounts()
+	local fs = S and S.FactionService
+	if fs and type(fs.GetCounts) == "function" then
+		local ok, halo, horns = pcall(fs.GetCounts) -- called directly: the call helper only returns the first result
+		if ok then
+			return math.max(0, math.floor(tonumber(halo) or 0)), math.max(0, math.floor(tonumber(horns) or 0))
+		end
+		warnThrottled("counts", "FactionService.GetCounts failed: " .. tostring(halo))
+	end
+	local halo, horns = 0, 0
+	local players = call("PlayerService", "GetReadyPlayers")
+	if type(players) == "table" then
+		for _, p in players do
+			if isPlayer(p) and p.Parent then
+				local f = factionOf(p)
+				if f == "Halo" then
+					halo += 1
+				elseif f == "Horns" then
+					horns += 1
+				end
+			end
+		end
+	end
+	return halo, horns
+end
+
+-- this event's pull total of one side (the co-op gauge)
+local function sideTotal(side)
+	if side == "Halo" then return rescue end
+	if side == "Horns" then return poach end
+	return 0
+end
+
+local function coopTargetFor(people)
+	local per = tonumber(Config.Goose.CoopPerPerson) or 20
+	if per ~= per or per <= 0 then per = 20 end
+	return math.max(1, math.floor(per * math.max(1, people) + 0.5))
 end
 
 local function gooseCenter()
@@ -404,6 +470,39 @@ local function publishTotals(force)
 	end
 end
 
+-- GameState mirror of the event mode for EventHUD (anything but a fixed co-op shows as the normal tug)
+local function publishMode()
+	local isCoop = (mode == "Coop")
+	setGame("GooseMode", isCoop and "Coop" or "Versus")
+	setGame("GooseCoopSide", isCoop and coop.Side or "None")
+	setGame("GooseCoopTarget", isCoop and coop.Target or 0)
+	setGame("GooseCoopPeople", isCoop and coop.People or 0)
+end
+
+-- A23-14: fix a "Pending" event's mode from who is on the server right now: both tug factions -> Versus, exactly one
+-- -> Coop for it (target from its ready headcount now), nobody -> stays Pending. Once fixed it never changes for this
+-- event (no mid-event flips). announce = NotifyAll the co-op start line when this call made it co-op.
+local function fixMode(announce)
+	if mode ~= "Pending" then return end
+	local halo, horns = factionCounts()
+	if halo > 0 and horns > 0 then
+		mode = "Versus"
+	elseif halo > 0 or horns > 0 then
+		mode = "Coop"
+		coop.Side = (halo > 0) and "Halo" or "Horns"
+		coop.People = (halo > 0) and halo or horns
+		coop.Target = coopTargetFor(coop.People)
+		coop.Full = false
+	else
+		return
+	end
+	publishMode()
+	if mode == "Coop" and announce then
+		local msg = txt("CoopStart", coop.Side)
+		if msg then pcall(Net.NotifyAll, msg) end
+	end
+end
+
 local function start()
 	if active then return end
 	active = true
@@ -413,6 +512,11 @@ local function start()
 	manualHits = {}
 	sideOf = {}
 	hitTimes = {}
+	-- A23-14: mode first, so the HUD never shows an active goose with the previous event's mode
+	mode = "Pending"
+	coop = { Side = "None", People = 0, Target = 0, Full = false, Told = {} }
+	fixMode(false)
+	publishMode()
 	publishTotals(true)
 	setGame("GooseEndsAt", endsAt)
 	setGame("GooseActive", true)
@@ -428,7 +532,8 @@ local function start()
 	if not ok then
 		warnThrottled("spawn", "goose model failed: " .. tostring(err))
 	end
-	Net.NotifyAll(string.format(Config.Story.GooseStart))
+	local startMsg = (mode == "Coop") and txt("CoopStart", coop.Side) or nil
+	Net.NotifyAll(startMsg or string.format(Config.Story.GooseStart))
 end
 
 -- forget a player's entry for this event; what they already pulled stays in the side totals (like a leaver)
@@ -443,7 +548,8 @@ local function dropEntry(p)
 end
 
 -- f = the side the player's counts were made for, re-verified against the current faction by finish()
-local function rewardPlayer(p, result, f)
+-- share = A23-14 co-op success multiplier (Config.Goose.CoopWinShare) or nil for the normal won/lost split
+local function rewardPlayer(p, result, f, share)
 	if not isTugFaction(f) then return end -- A6: Neutral (and None) get no tug rewards
 	local won = (result == f)
 
@@ -457,10 +563,11 @@ local function rewardPlayer(p, result, f)
 	end
 
 	local level = math.max(1, math.floor(getNum(p, "Level")))
-	local gold, xp = Config.GooseReward(level, f, won, rare)
+	local gold, xp = Config.GooseReward(level, f, won, rare, share)
 	if gold > 0 then call("ProgressionService", "AddBankGold", p, gold, "Event") end
 	if xp > 0 then call("ProgressionService", "AddXP", p, xp) end
-	Net.Notify(p, string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp)), "reward")
+	local msg = (share ~= nil) and txt("CoopReward", f, Util.FormatNumber(gold), Util.FormatNumber(xp)) or nil
+	Net.Notify(p, msg or string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp)), "reward")
 
 	if rare then
 		Net.Fx(p, "Rare", { Gold = gold, XP = xp })
@@ -485,52 +592,66 @@ local function finish()
 	nextAt = computeNextAt(Util.Now(), nextAt)
 	setGame("GooseNextAt", nextAt)
 
-	local result = (rescue > poach) and "Halo" or ((poach > rescue) and "Horns" or "Tie")
-	-- CR-L8: no rival faction online -> no winner (no 100% winner reward, no war points). Called directly: the call
-	-- helper only returns the first result.
-	local noRival = false
-	local fs = S and S.FactionService
-	if result ~= "Tie" and fs and type(fs.GetCounts) == "function" then
-		local okC, halo, horns = pcall(fs.GetCounts)
-		if okC and ((tonumber(halo) or 0) <= 0 or (tonumber(horns) or 0) <= 0) then
-			result = "Tie"
-			noRival = true
+	-- A23-14 judgment. judged = "Versus" | "Coop" | "Pending" (nobody eligible ever pulled -> plain tie)
+	local judged, side, target, rivalLeft = mode, coop.Side, coop.Target, false
+	local result = "Tie"
+	if judged == "Versus" then
+		result = (rescue > poach) and "Halo" or ((poach > rescue) and "Horns" or "Tie")
+		-- CR-L8 kept in spirit: a tug side with nobody left at the end gives no 100% win and no war points. The side
+		-- still here is judged like co-op against its current headcount instead of a forced tie.
+		local halo, horns = factionCounts()
+		if halo <= 0 or horns <= 0 then
+			rivalLeft = true
+			judged = "Coop"
+			side = (halo > 0) and "Halo" or ((horns > 0) and "Horns" or "None")
+			target = coopTargetFor((side == "Halo") and halo or horns)
 		end
 	end
+	local success = false
+	if judged == "Coop" then
+		success = isTugFaction(side) and sideTotal(side) >= target
+		result = success and side or "Tie"
+	end
+	local share = (judged == "Coop" and success) and (tonumber(Config.Goose.CoopWinShare) or 0.7) or nil
 	local fxPos = (gooseRoot and gooseRoot.Parent) and gooseRoot.Position or gooseCenter()
 	local finalCounts, finalManual, finalSide = counts, manualHits, sideOf
 	counts = {}
 	manualHits = {}
 	sideOf = {}
 	hitTimes = {}
+	mode = "Idle"
+	coop = { Side = "None", People = 0, Target = 0, Full = false, Told = {} }
 
 	-- paid participants: counts > 0, still on the side they pulled for, and enough MANUAL hits (auto-only = AFK)
 	local rewarded = {}
 	for p, n in finalCounts do
 		if type(n) == "number" and n > 0 and isReady(p) then
 			local f = factionOf(p)
-			if isTugFaction(f) and finalSide[p] == f then
+			-- co-op pays only the co-op side (a rival never pulls in co-op; this also covers odd leftovers)
+			if isTugFaction(f) and finalSide[p] == f and (judged ~= "Coop" or f == side) then
 				if (finalManual[p] or 0) >= MIN_MANUAL_HITS then
 					rewarded[p] = n
-					local ok, err = pcall(rewardPlayer, p, result, f)
+					local ok, err = pcall(rewardPlayer, p, result, f, share)
 					if not ok then warnThrottled("reward", "goose reward failed for " .. p.Name .. ": " .. tostring(err)) end
 				else
-					pcall(Net.Notify, p, string.format(TXT_NEED_MANUAL, MIN_MANUAL_HITS), "info")
+					local msg = txt("NeedManual", nil, MIN_MANUAL_HITS)
+					if msg then pcall(Net.Notify, p, msg, "info") end
 				end
 			end
 		end
 	end
 
-	if result ~= "Tie" then
+	if judged == "Versus" and result ~= "Tie" then -- A23-14: co-op never gives war points
 		call("WarService", "AddFactionPoints", result, Config.Goose.WinWarPoints)
 	end
 	local okSend, sendErr = pcall(function()
-		if noRival and Config.Story.GooseNoRival then
-			Net.NotifyAll(string.format(Config.Story.GooseNoRival)) -- CR-L8: replaces the plain tie banner
-		else
-			Net.NotifyAll(string.format(Config.Story.GooseResult[result]))
+		local msg = nil
+		if judged == "Coop" and isTugFaction(side) then
+			msg = success and txt("CoopResult", side) or txt("CoopFail")
+			if msg and rivalLeft then msg = txt("RivalLeft", nil, msg) or msg end
 		end
-		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result })
+		Net.NotifyAll(msg or string.format(Config.Story.GooseResult[result]))
+		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result, Coop = (judged == "Coop") })
 	end)
 	if not okSend then warnThrottled("send", "goose result broadcast failed: " .. tostring(sendErr)) end
 
@@ -541,10 +662,20 @@ local function finish()
 	publishTotals(true)
 	setGame("GooseActive", false)
 	setGame("GooseEndsAt", 0)
+	publishMode() -- back to Versus / None / 0 between events
 
 	-- same shape as the spec's counts ({ [Player]: number }), limited to the players who were actually paid,
-	-- so quest progress never goes to AFK auto-swingers or side-switchers
-	GooseService.GooseFinished:Fire(result, rewarded)
+	-- so quest progress never goes to AFK auto-swingers or side-switchers. Co-op participants are in it on success
+	-- and on failure (like tug losers), so a co-op goose counts for StoryQuestService/QuestService. The optional 3rd
+	-- arg tells listeners how the event was judged (Mode "Versus" | "Coop" | "Pending" = nobody eligible).
+	local info = { Mode = judged }
+	if judged == "Coop" then
+		info.Side = side
+		info.Success = success
+		info.Target = target
+		info.RivalLeft = rivalLeft
+	end
+	GooseService.GooseFinished:Fire(result, rewarded, info)
 end
 
 local function tick()
@@ -557,8 +688,20 @@ local function tick()
 		finish()
 		return
 	end
-	local total = rescue + poach
-	sideTarget = math.clamp((poach - rescue) / math.max(1, total) * MAX_SIDE_OFFSET, -MAX_SIDE_OFFSET, MAX_SIDE_OFFSET)
+	if mode == "Pending" then fixMode(true) end -- e.g. the only player just picked a faction
+	if mode == "Coop" then
+		-- co-op: the goose slides toward the co-op side as the gauge fills (Halo = -X like a rescue lead)
+		local fill = math.clamp(sideTotal(coop.Side) / math.max(1, coop.Target), 0, 1)
+		sideTarget = ((coop.Side == "Halo") and -1 or 1) * fill * MAX_SIDE_OFFSET
+		if not coop.Full and fill >= 1 then
+			coop.Full = true -- totals never go down, so a full gauge stays a success until the timer ends
+			local msg = txt("CoopFull", coop.Side, MIN_MANUAL_HITS)
+			if msg then pcall(Net.NotifyAll, msg, "good") end
+		end
+	else
+		local total = rescue + poach
+		sideTarget = math.clamp((poach - rescue) / math.max(1, total) * MAX_SIDE_OFFSET, -MAX_SIDE_OFFSET, MAX_SIDE_OFFSET)
+	end
 	publishTotals(false)
 end
 
@@ -571,11 +714,12 @@ function GooseService.Init(registry)
 		end
 	end)
 	S.PlayerService.PlayerLeaving:Connect(function(player)
-		-- the leaver's contribution stays in the side totals
+		-- the leaver's contribution stays in the side totals (and in a co-op gauge)
 		counts[player] = nil
 		manualHits[player] = nil
 		sideOf[player] = nil
 		hitTimes[player] = nil
+		coop.Told[player] = nil
 	end)
 	-- review fix: switching sides mid-event (altar is next to the perch) forfeits this event's entry, so nobody can pull
 	-- for one side and then collect the winner share of the other. Pulling again after the switch starts a new entry.
@@ -597,6 +741,7 @@ function GooseService.Start()
 	setGame("GooseNextAt", nextAt)
 	setGame("GooseActive", false)
 	setGame("GooseEndsAt", 0)
+	publishMode()
 	publishTotals(true)
 
 	task.spawn(function()
@@ -627,6 +772,16 @@ function GooseService.RegisterHit(player, isManual)
 	if not isReady(player) then return 0 end
 	local f = factionOf(player)
 	if not isTugFaction(f) then return 0 end -- A6: Neutral swings on the goose count 0
+	if mode == "Pending" then fixMode(true) end -- first eligible hit before the next tick fixed the mode
+	if mode == "Coop" and f ~= coop.Side then
+		-- A23-14: the rival side arrived after this goose became co-op -> no pull this time, told once per event
+		if not coop.Told[player] then
+			coop.Told[player] = true
+			local msg = txt("RivalWait", coop.Side)
+			if msg then pcall(Net.Notify, player, msg, "info") end
+		end
+		return 0
+	end
 	if sideOf[player] ~= nil and sideOf[player] ~= f then
 		dropEntry(player) -- defensive: faction changed without a FactionChanged signal -> fresh entry for the new side
 	end

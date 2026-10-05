@@ -620,7 +620,7 @@ part({ Name = "GearPost", Size = Vector3.new(1, 8, 1), Position = gpos + Vector3
 local anvil = part({ Name = "Anvil", Size = Vector3.new(4, 3, 2), Position = gpos + Vector3.new(-5, 1.5, -13), Color = RGB(70, 70, 75), Material = Enum.Material.Metal }, guild)
 local forge = prop({ Name = "Forge", Size = Vector3.new(3, 1, 3), Position = gpos + Vector3.new(5, 0.5, -13), Color = RGB(255, 140, 60), Material = NEON }, guild)
 light(forge, RGB(255, 140, 60), 14, 1.5)
-billboard(anvil, "⚙ 장인 길드", 6, RGB(120, 235, 225))
+billboard(anvil, "대장간 · 장인 길드", 6, RGB(120, 235, 225))
 
 -- 황금 거위 둥지 (이벤트 무대)
 local nest = model("GoosePerch", folders.Landmarks)

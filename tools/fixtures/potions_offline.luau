@@ -17,6 +17,9 @@ do
 	check(names.BuyPotion == 1, "actual Net registry missing/duplicated BuyPotion")
 	check(names.UsePotion == 1, "actual Net registry missing/duplicated UsePotion")
 end
+-- Config literals need only inert value constructors offline.
+local CONFIG_ENV = { Color3 = { fromRGB = function(r, g, b) return { R = r, G = g, B = b } end,
+	new = function(r, g, b) return { R = r, G = g, B = b } end } }
 local function copy(value)
 	if type(value) ~= "table" then return value end
 	local result = {}
@@ -53,15 +56,18 @@ end
 local serial = 0
 local function fixture(saved, missingMerchant)
 	serial += 1
-	local config = execute(CONFIG_SOURCE)
+	local config = execute(CONFIG_SOURCE, CONFIG_ENV)
 	config.Levels = { MaxLevel = 100 }
-	config.MaxWeaponTier = 7
+	check(config.MaxWeaponTier == 8, "extracted Config.MaxWeaponTier is not 8 (Data Version 3 weapon tiers)")
 	config.Tickets = { MaxReceiptsKept = 100 }
 	config.Rebirth = { BonusNormal = .25 }
 	config.Factions = { None = {}, Halo = {}, Horns = {}, Neutral = {} }
 	config.Classes = { Warrior = {}, Mage = {}, Archer = {} }
-	config.Text = { NotEnoughGold = "골드가 부족해요." }
-	config.Vitals.MerchantEnabled = true -- explicit offline activation; production remains gated by GPT selection
+	-- The real Config.Text table (extracted by the runner): ShopService's player-facing strings live there.
+	check(type(config.Text) == "table" and type(config.Text.NotEnoughGold) == "string"
+		and type(config.Text.PotionBought) == "string" and type(config.Text.PotionStockFull) == "string"
+		and type(config.Text.PotionShopFar) == "string", "ShopService potion strings missing from Config.Text")
+	check(config.Vitals.MerchantEnabled == true, "A23-6 production potion merchant is disabled")
 	local attrs = { ClassChosen=true }
 	local players = {}
 	local player = { Parent=players, UserId=serial, Name="Tester"..serial, __kind="Instance", IsA=function(_,kind) return kind=="Player" end }
@@ -226,11 +232,12 @@ end
 -- Both bottle kinds, amount1/5, real carried-first SpendGold, exact price, cap and mirrored stock.
 for _,kind in {"HP","MP"} do
 	for _,amount in {1,5} do
-		local f=fixture(); f:Gold(7,100)
+		local f=fixture(); local price=f.Config.Vitals.PotionPrices[kind]; f:Gold(7,200)
+		check(price==25,"potion price is not 25 gold")
 		check(f:Buy(kind,amount)==true,"valid purchase rejected")
 		local key=f.Config.PotionStockKey(kind)
 		check(f.Data[key]==amount and f.Attrs[key]==amount,"purchased stock not mirrored")
-		check(f.Data.CarriedGold==0 and f.Data.BankGold==107-amount*10,"gold price/carried-first deduction wrong")
+		check(f.Data.CarriedGold==0 and f.Data.BankGold==207-amount*price,"gold price/carried-first deduction wrong")
 		check(f.Registry.DataService.Save(f.Player,false),"mock save failed")
 		local row=f.StoreRows["P_"..f.Player.UserId]
 		check(row[key]==amount,"purchased stock not in persisted record")
@@ -261,6 +268,7 @@ for _,mutate in {
 	function(f) f:Stock(1.5,0) end,
 	function(f) f:Stock(100,0) end,
 	function(f) f:Gold(4,5) end,
+	function(f) f:Gold(100,24) end, -- 124 < 5 x 25
 } do
 	local f=fixture(); f:Gold(100,100); mutate(f); local before=f:Snapshot()
 	check(f:Buy("HP",5)==false,"invalid shop state accepted"); f:Unchanged(before)
@@ -271,12 +279,14 @@ do
 	local g=fixture(); g.Root.Position=vector(12,0,0); g:Gold(100,0)
 	check(g:Buy("HP",1),"distance boundary rejected")
 	g:Stock(98,0); check(g:Buy("HP",1) and g.Data.HPPotionCount==99,"exact cap rejected")
-	local h=fixture();h:Gold(50,0); check(h:Buy("MP",5) and h.Data.CarriedGold==0,"exact gold rejected")
+	local h=fixture();h:Gold(5*h.Config.Vitals.PotionPrices.MP,0); check(h:Buy("MP",5) and h.Data.CarriedGold==0,"exact gold rejected")
 end
 
--- The actual map helper and R15 validator: ready folder only, immutable approved geometry, no scripts/physics.
+-- The actual MapBuilder merchant helper (A23-6): a temporary default Roblox-style NPC built from a HumanoidDescription.
+-- No costume rig, ServerStorage template or new art is read; the NPC body comes from
+-- Players:CreateHumanoidModelFromDescription (doubled here; the real call loads Roblox default meshes and yields).
 do
-	local enum={KeyCode={G="G"},HumanoidRigType={R15="R15"},HumanoidDisplayDistanceType={None="None"}}
+	local enum={KeyCode={E="E",G="G"},HumanoidRigType={R15="R15",R6="R6"},HumanoidDisplayDistanceType={None="None"}}
 	local methods,mt={},{}
 	local function positionFrame(x,y,z)
 		local p={Position=vector(x,y,z)}
@@ -311,87 +321,115 @@ do
 	end
 	function methods:Destroy() for _,c in self:GetChildren() do c:Destroy() end;self.Parent=nil;self.Destroyed=true end
 	function methods:GetPivot() return self.Pivot end
-	function methods:GetBoundingBox() if self.BoundsError then error("invalid imported bounds") end;return self.Pivot,vector(3,5.5,2) end
-	function methods:PivotTo(pivot) self.Pivot=pivot;self.PrimaryPart.Position=pivot.Position end
-	function methods:Clone()
-		if self.CloneError then error("clone failed") end
-		local copies={}
-		local function allocate(src,parent)
-			local dest=object(src.ClassName,src.Name);copies[src]=dest;dest.Parent=parent
-			for _,c in src._children do allocate(c,dest) end
-			return dest
-		end
-		local result=allocate(self)
-		for src,dest in copies do
-			for key,value in src._p do if key~="Parent" then dest[key]=copies[value] or value end end
-			dest._attrs=table.clone(src._attrs)
-		end
-		self.LastClone=result;return result
-	end
-	local env={Enum=enum,Vector3={new=vector},Instance={new=object},
-		typeof=function(v) return type(v)=="table" and v.__kind or type(v) end}
-	local validator=execute(COSTUME_VALIDATOR_SOURCE,env)
+	function methods:GetBoundingBox() if self.BoundsError then error("invalid bounds") end;return self.Pivot,vector(4,5.2,2) end
+	function methods:PivotTo(pivot) self.Pivot=pivot;if self.PrimaryPart then self.PrimaryPart.Position=pivot.Position end end
+	local R15={"HumanoidRootPart","Head","UpperTorso","LowerTorso","LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm",
+		"RightLowerArm","RightHand","LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot"}
 	local function mapFixture()
-		local cfg=execute(CONFIG_SOURCE);cfg.Zones={Crossroads={Spawn=vector(0,0,-25)}}
-		local storage,npcs=object("ServerStorage"),object("Folder","NPCs")
-		local rigs=object("Folder","CostumeRigs");rigs.Parent=storage
-		local template=object("Model",cfg.Vitals.PotionMerchantTemplate);template.Pivot=positionFrame(0,2.75,0);template.Parent=rigs
-		local human=object("Humanoid","Humanoid");human.Health=100;human.RigType="R15";human.Parent=template
-		local parts={}
-		for _,name in {"HumanoidRootPart","Head","UpperTorso","LowerTorso","LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm","RightLowerArm","RightHand","LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot"} do
-			local part=object("MeshPart",name);part.MeshId="approved:"..name;part.TextureID="approved-texture:"..name
-			part.Position=vector(0,2.75,0);part.Anchored=false;part.CanCollide=true;part.CanTouch=true;part.CanQuery=true
-			part.Parent=template;parts[name]=part
+		local cfg=execute(CONFIG_SOURCE,CONFIG_ENV);cfg.Zones={Crossroads={Spawn=vector(0,0,-25)}}
+		local npcs=object("Folder","NPCs")
+		local t={Config=cfg,NPCs=npcs,Tags={},Warnings={},Ctx={pieces=0},Created={},Queue={},Defer=false}
+		-- Default R15 body as Roblox returns it: bounding-box center 2.6 studs above the feet, plus default scripts.
+		local players={}
+		function players:CreateHumanoidModelFromDescription(desc,rigType)
+			table.insert(t.Created,{Desc=desc,Rig=rigType})
+			if t.CreateError then error("avatar service unavailable") end
+			local npc=object("Model","Player");npc.Pivot=positionFrame(40,7.6,40)
+			local human=object("Humanoid","Humanoid");human.Health=100;human.WalkSpeed=16;human.JumpPower=50
+			human.AutoRotate=true;human.DisplayDistanceType="Viewer";human.Parent=npc
+			for _,name in R15 do
+				if not (t.NoRoot and name=="HumanoidRootPart") then
+					local part=object(name=="HumanoidRootPart" and "Part" or "MeshPart",name);part.Position=vector(40,7.6,40)
+					part.Anchored=false;part.CanCollide=true;part.CanTouch=true;part.CanQuery=true;part.Parent=npc
+				end
+			end
+			for _,kind in {"Script","LocalScript"} do local s=object(kind,"Animate"..kind);s.Parent=npc end
+			local nested=object("ModuleScript","Nested");nested.Parent=npc:FindFirstChild("Head")
+			if t.BadBounds then npc.BoundsError=true end
+			t.LastNpc=npc
+			return npc
 		end
-		for _,edge in {{"HumanoidRootPart","LowerTorso"},{"LowerTorso","UpperTorso"},{"UpperTorso","Head"},{"UpperTorso","LeftUpperArm"},{"LeftUpperArm","LeftLowerArm"},{"LeftLowerArm","LeftHand"},{"UpperTorso","RightUpperArm"},{"RightUpperArm","RightLowerArm"},{"RightLowerArm","RightHand"},{"LowerTorso","LeftUpperLeg"},{"LeftUpperLeg","LeftLowerLeg"},{"LeftLowerLeg","LeftFoot"},{"LowerTorso","RightUpperLeg"},{"RightUpperLeg","RightLowerLeg"},{"RightLowerLeg","RightFoot"}} do
-			local joint=object("Motor6D",edge[2].."Joint");joint.Enabled=true;joint.Part0=parts[edge[1]];joint.Part1=parts[edge[2]];joint.Parent=template
-		end
-		template.PrimaryPart=parts.HumanoidRootPart
-		for _,kind in {"Script","LocalScript","ModuleScript","Tool","ForceField","ProximityPrompt"} do local child=object(kind,"Unwanted"..kind);child.Parent=template end
-		local tags={};local warned={};local ctx={pieces=0}
-		local build=execute(MAP_MERCHANT_SOURCE,env,cfg,storage,validator,{AddTag=function(_,obj,tag) tags[obj]=tag end},
-			{Warn=function(_,msg) table.insert(warned,msg) end},"MapBuilder",function(inst,suffix) inst.Name..=suffix end)
-		return {Config=cfg,Storage=storage,NPCs=npcs,Rigs=rigs,Template=template,Parts=parts,Tags=tags,Warnings=warned,Ctx=ctx,
-			Build=function() build(ctx,npcs) end}
+		local env={Enum=enum,Vector3={new=vector},Color3={fromRGB=function(r,g,b) return {R=r,G=g,B=b} end},
+			Instance={new=function(kind) return object(kind,kind) end},
+			game={GetService=function(_,name) assert(name=="Players","merchant asked for "..tostring(name));return players end},
+			task={spawn=function(fn) if t.Defer then table.insert(t.Queue,fn) else fn() end end},
+			typeof=function(v) return type(v)=="table" and v.__kind or type(v) end}
+		local build=execute(MAP_MERCHANT_SOURCE,env,cfg,{AddTag=function(_,obj,tag) t.Tags[obj]=tag end},
+			{Warn=function(_,msg) table.insert(t.Warnings,msg) end},"MapBuilder",function(inst,suffix) inst.Name..=suffix end)
+		function t.Build() build(t.Ctx,npcs) end
+		function t.Flush() local q=t.Queue;t.Queue={};for _,fn in q do fn() end end
+		return t
 	end
-	local f=mapFixture();f.Build();check(#f.NPCs:GetChildren()==0 and f.Ctx.pieces==0,"unselected GPT merchant created visible NPC")
+	do
+		local prod=execute(CONFIG_SOURCE,CONFIG_ENV)
+		check(prod.Vitals.MerchantEnabled==true,"A23-6 production merchant is not enabled")
+		check(prod.Vitals.PotionPrices.HP==25 and prod.Vitals.PotionPrices.MP==25,"potion prices are not 25/25")
+		check(not string.find(MAP_MERCHANT_SOURCE,"CostumeService",1,true) and not string.find(MAP_MERCHANT_SOURCE,"CostumeRigs",1,true)
+			and not string.find(MAP_MERCHANT_SOURCE,"ServerStorage",1,true),"merchant still depends on the removed costume rig source")
+	end
+	local f=mapFixture();f.Config.Vitals.MerchantEnabled=false;f.Build()
+	check(#f.NPCs:GetChildren()==0 and f.Ctx.pieces==0 and #f.Created==0,"disabled merchant created an NPC")
 	f.Config.Vitals.MerchantEnabled=true;f.Build()
-	local npc=f.NPCs:FindFirstChild("PotionMerchant");check(npc~=nil and f.Ctx.pieces==1,"approved ready rig did not create merchant: "..table.concat(f.Warnings,"; "))
-	check(npc~=f.Template and f.Template.Parent==f.Rigs and validator.ValidateTemplate(f.Template),"merchant consumed/changed ready rig")
-	check(f.Tags[npc]=="NPC" and npc:GetAttribute("HHC_PotionMerchant")==true,"merchant NPC/ownership marker missing")
+	local npc=f.NPCs:FindFirstChild("PotionMerchant")
+	check(npc~=nil and f.Ctx.pieces==1 and #f.Created==1,"default NPC merchant was not built: "..table.concat(f.Warnings,"; "))
+	local made=f.Created[1]
+	check(made.Desc.ClassName=="HumanoidDescription" and made.Rig=="R15","merchant body is not a HumanoidDescription R15 default NPC")
+	local colors=f.Config.Vitals.PotionMerchantColors
+	check(made.Desc.HeadColor==colors.Head and made.Desc.LeftArmColor==colors.Head and made.Desc.RightArmColor==colors.Head
+		and made.Desc.TorsoColor==colors.Torso and made.Desc.LeftLegColor==colors.Legs and made.Desc.RightLegColor==colors.Legs,
+		"HumanoidDescription colors do not come from Config.Vitals.PotionMerchantColors")
+	check(f.Tags[npc]=="NPC" and npc:GetAttribute("HHC_PotionMerchant")==true and npc:GetAttribute("HHC_MerchantLook")=="DefaultNPC",
+		"merchant NPC tag/ownership/temporary-look markers missing")
+	check(npc.PrimaryPart==npc:FindFirstChild("HumanoidRootPart"),"merchant PrimaryPart is not the root")
 	local prompt=npc.PrimaryPart:FindFirstChild(f.Config.Vitals.PotionMerchantPrompt)
-	check(prompt and prompt.Enabled and prompt.KeyboardKeyCode=="G" and prompt.MaxActivationDistance==12,"merchant G/range prompt contract wrong")
-	check(prompt:GetAttribute("Conversation")==true and prompt.RequiresLineOfSight==false,"verified merchant conversation contract missing")
-	check(npc:GetPivot().Position.X==12 and npc:GetPivot().Position.Y==2.75 and npc:GetPivot().Position.Z==-34,"merchant not beside safe Crossroads spawn/standing height")
-	for name,original in f.Parts do
-		local copied=npc:FindFirstChild(name)
-		check(copied and copied.MeshId==original.MeshId and copied.TextureID==original.TextureID,"merchant altered approved mesh/texture")
-		check(copied.Anchored and not copied.CanCollide and not copied.CanTouch and not copied.CanQuery,"merchant has moving/collidable/queryable part")
-		check(not original.Anchored and original.CanCollide and original.Parent==f.Template,"NPC preparation modified avatar source part")
+	check(prompt and prompt.Enabled and prompt.KeyboardKeyCode=="E" and prompt.HoldDuration==0,"merchant prompt is not E key / HoldDuration 0")
+	check(prompt.MaxActivationDistance==12 and prompt.RequiresLineOfSight==false and prompt:GetAttribute("Conversation")==true,
+		"verified merchant conversation/range contract missing")
+	check(prompt.ActionText=="물약 구매" and prompt.ObjectText=="물약 상인","merchant prompt wording changed")
+	local pivot=npc:GetPivot().Position
+	check(pivot.X==12 and pivot.Z==-34 and math.abs(pivot.Y-2.6)<1e-9,"merchant not standing on the ground beside the Crossroads spawn")
+	local humanoid=npc:FindFirstChildOfClass("Humanoid")
+	check(humanoid.WalkSpeed==0 and humanoid.JumpPower==0 and humanoid.AutoRotate==false and humanoid.DisplayDistanceType=="None",
+		"merchant humanoid can move/turn or shows a name plate")
+	local parts=0
+	for _,child in npc:GetDescendants() do
+		check(not child:IsA("LuaSourceContainer"),"merchant kept a default script")
+		if child:IsA("BasePart") then
+			parts+=1
+			check(child.Anchored and not child.CanCollide and not child.CanTouch and not child.CanQuery,"merchant has moving/collidable/queryable part")
+		end
 	end
-	for _,child in npc:GetDescendants() do check(not child:IsA("LuaSourceContainer") and not child:IsA("Tool") and not child:IsA("ForceField"),"merchant retained executable/player-only child") end
-	f.Build();check(f.NPCs:FindFirstChild("PotionMerchant")==npc and #f.NPCs:GetChildren()==1 and f.Ctx.pieces==1,"map rebuild duplicated merchant")
-	prompt:Destroy();f.Build();check(npc.PrimaryPart:FindFirstChild(f.Config.Vitals.PotionMerchantPrompt)~=nil,"missing merchant prompt not repaired")
+	check(parts==#R15,"merchant body parts missing")
+	f.Build();check(f.NPCs:FindFirstChild("PotionMerchant")==npc and #f.NPCs:GetChildren()==1 and f.Ctx.pieces==1 and #f.Created==1,
+		"map rebuild duplicated or rebuilt the merchant")
+	prompt:Destroy();f.Build()
+	local repaired=npc.PrimaryPart:FindFirstChild(f.Config.Vitals.PotionMerchantPrompt)
+	check(repaired~=nil and repaired.KeyboardKeyCode=="E" and repaired.HoldDuration==0,"missing merchant prompt not repaired with E/0")
 	f.Config.Vitals.MerchantEnabled=false;f.Build()
-	check(not npc.PrimaryPart:FindFirstChild(f.Config.Vitals.PotionMerchantPrompt).Enabled,"disabled GPT merchant retained active prompt")
-	for _,mutate in {
-		function(t) t.Rigs.Name="CostumePendingRigs" end,
-		function(t) t.Rigs.Parent=nil end,
-		function(t) t.Rigs.ClassName="Model" end,
-		function(t) t.Template:FindFirstChild("Head"):Destroy() end,
-		function(t) t.Template:FindFirstChildOfClass("Humanoid").Health=0 end,
-		function(t) t.Template:FindFirstChild("LeftHandJoint").Enabled=false end,
-		function(t) t.Template.CloneError=true end,
-		function(t) t.Template.BoundsError=true end,
-		function(t) t.Config.Vitals.PotionMerchantOffset={X=math.huge,Z=0} end,
-		function(t) t.Config.Vitals.PotionMerchantOffset={X=0/0,Z=0} end,
-		function(t) local occupied=object("Model","PotionMerchant");occupied.Parent=t.NPCs end,
+	check(not repaired.Enabled and #f.Created==1,"disabled merchant retained an active prompt")
+	-- Failure modes: nothing half-built or server-owned is left, and the map build itself never throws.
+	for label,mutate in {
+		CreateError=function(t) t.CreateError=true end,
+		NoRoot=function(t) t.NoRoot=true end,
+		BadBounds=function(t) t.BadBounds=true end,
+		InfiniteOffset=function(t) t.Config.Vitals.PotionMerchantOffset={X=math.huge,Z=0} end,
+		NanOffset=function(t) t.Config.Vitals.PotionMerchantOffset={X=0/0,Z=0} end,
+		FarOffset=function(t) t.Config.Vitals.PotionMerchantOffset={X=31,Z=0} end,
+		Occupied=function(t) local occupied=object("Model","PotionMerchant");occupied.Parent=t.NPCs end,
 	} do
 		local t=mapFixture();t.Config.Vitals.MerchantEnabled=true;mutate(t);t.Build()
-		check(t.Ctx.pieces==0,"unready/pending/invalid/unrelated merchant source became NPC")
-		local unexpected=t.NPCs:FindFirstChild("PotionMerchant")
-		check(not unexpected or unexpected:GetAttribute("HHC_PotionMerchant")~=true,"failed preparation left server-owned NPC")
+		local found=t.NPCs:FindFirstChild("PotionMerchant")
+		check(not found or found:GetAttribute("HHC_PotionMerchant")~=true,label.." left a server-owned merchant")
+		if t.LastNpc and found~=t.LastNpc then check(t.LastNpc.Destroyed==true or t.LastNpc.Parent==nil,label.." leaked a half-built NPC") end
+		if label=="Occupied" or string.find(label,"Offset") then check(#t.Created==0,label.." still built an NPC") end
 	end
+	-- Two builds racing the yielding avatar load: only one merchant survives.
+	local race=mapFixture();race.Config.Vitals.MerchantEnabled=true;race.Defer=true
+	race.Build();race.Build();check(#race.Queue==2 and #race.NPCs:GetChildren()==0,"race fixture did not defer both builds")
+	race.Flush()
+	check(#race.NPCs:GetChildren()==1 and #race.Created==2,"racing builds left zero or two merchants")
+	local keep=race.NPCs:FindFirstChild("PotionMerchant")
+	check(keep and keep:GetAttribute("HHC_PotionMerchant")==true and race.LastNpc.Destroyed==true,"second racing NPC was not destroyed")
 end
 
 -- Stock consumption only after actual recovery, independent deadlines and no free refill on respawn/cosmetic.

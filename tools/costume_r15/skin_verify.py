@@ -1,9 +1,14 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Read-only engine matcher for an exact schema-2 Pending assembly.
 
 The payload compares the actual native import and its checked clone. It never
 repairs metadata, sets QA flags, overwrites a Pending or promotes a registry.
 """
 
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 VERIFY = r'''
 local SNAP=HttpService:JSONDecode(__SNAP__)
 local FIT=HttpService:JSONDecode(__FIT__)

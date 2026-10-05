@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Actual native 15/23-bone inventory and read-only schema-2 matcher tests.
 
 Python validation reads the real saved importer responses. Engine matcher tests
@@ -5,6 +6,7 @@ execute the unchanged Luau payload with CFrame/object doubles, never Studio.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import ast
 import copy
 import json

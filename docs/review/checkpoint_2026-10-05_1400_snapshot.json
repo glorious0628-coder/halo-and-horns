@@ -1,0 +1,1178 @@
+{
+ "taken": "2026-10-05 13:59:41",
+ "files": {
+  "AGENTS.md": {
+   "status": " M",
+   "sha256": "1c25fdca813d0c7ca9a42e895baabda6e66bf1b32aff6f05f7cc6e1f412d3cbd",
+   "bytes": 19731,
+   "mtime": "13:24:04"
+  },
+  "art/approved.json": {
+   "status": " M",
+   "sha256": "4bab92e2bb625b89456197c8b1cefe3e54a87ce701f365397b3512beb9498160",
+   "bytes": 19278,
+   "mtime": "12:58:30"
+  },
+  "art/out/APose_HaloArcherF.png": {
+   "status": "D "
+  },
+  "art/out/APose_HaloArcherM.png": {
+   "status": "D "
+  },
+  "art/out/APose_HaloArcherM_Sharp_D.png": {
+   "status": "D "
+  },
+  "art/out/APose_HaloMageF.png": {
+   "status": "D "
+  },
+  "art/out/APose_HaloMageF_Modest_v2.png": {
+   "status": "D "
+  },
+  "art/out/APose_HaloMageM.png": {
+   "status": "D "
+  },
+  "art/out/APose_HaloWarriorF.png": {
+   "status": "D "
+  },
+  "art/out/APose_HaloWarriorM.png": {
+   "status": "D "
+  },
+  "art/out/APose_HornsArcherF.png": {
+   "status": "D "
+  },
+  "art/out/APose_HornsArcherM.png": {
+   "status": "D "
+  },
+  "art/out/APose_HornsMageF.png": {
+   "status": "D "
+  },
+  "art/out/APose_HornsMageM.png": {
+   "status": "D "
+  },
+  "art/out/APose_HornsWarriorF.png": {
+   "status": "D "
+  },
+  "art/out/APose_HornsWarriorM.png": {
+   "status": "D "
+  },
+  "art/out/APose_NeutralArcherF.png": {
+   "status": "D "
+  },
+  "art/out/APose_NeutralArcherM.png": {
+   "status": "D "
+  },
+  "art/out/APose_NeutralMageF.png": {
+   "status": "D "
+  },
+  "art/out/APose_NeutralMageM.png": {
+   "status": "D "
+  },
+  "art/out/APose_NeutralWarriorF.png": {
+   "status": "D "
+  },
+  "art/out/APose_NeutralWarriorM.png": {
+   "status": "D "
+  },
+  "art/out/Avatar_Expressions_Preview_A.json": {
+   "status": "D "
+  },
+  "art/out/Avatar_Expressions_Preview_A.png": {
+   "status": "D "
+  },
+  "art/out/Avatar_HaloArcherM_EyesSharp_A.png": {
+   "status": "D "
+  },
+  "art/out/Avatar_HaloArcherM_EyesSharp_B.png": {
+   "status": "D "
+  },
+  "art/out/Avatar_HaloArcherM_FullRedraw_C.png": {
+   "status": "D "
+  },
+  "art/out/Avatar_HaloArcherM_FullRedraw_D.png": {
+   "status": "D "
+  },
+  "art/out/Avatar_HaloArcherM_Neutral_Balanced_F.png": {
+   "status": "D "
+  },
+  "art/out/Avatar_HaloArcherM_Neutral_OpenEyes_E.png": {
+   "status": "D "
+  },
+  "art/out/BigSlime.png": {
+   "status": "D "
+  },
+  "art/out/Costume_HaloWarriorM_Expression_Neutral_face.png": {
+   "status": "D "
+  },
+  "art/out/Costume_HaloWarriorM_Expression_Neutral_face_v2.png": {
+   "status": "D "
+  },
+  "art/out/Costume_HaloWarriorM_Expression_Neutral_head.json": {
+   "status": "D "
+  },
+  "art/out/Costume_HaloWarriorM_Expression_Neutral_head.png": {
+   "status": "D "
+  },
+  "art/out/Costume_HaloWarriorM_Expression_Neutral_head.qa.json": {
+   "status": "D "
+  },
+  "art/out/Costume_HaloWarriorM_Expression_Serious_face.png": {
+   "status": "D "
+  },
+  "art/out/Costume_HaloWarriorM_Expression_SoftSmile_face.png": {
+   "status": "D "
+  },
+  "art/out/Emblem_Halo.png": {
+   "status": "D "
+  },
+  "art/out/Emblem_Horns.png": {
+   "status": "D "
+  },
+  "art/out/Emblem_Neutral.png": {
+   "status": "D "
+  },
+  "art/out/Goblin.png": {
+   "status": "D "
+  },
+  "art/out/GoblinBrute.png": {
+   "status": "D "
+  },
+  "art/out/GoldenGoose.png": {
+   "status": "D "
+  },
+  "art/out/Icon_CheerStar.png": {
+   "status": "D "
+  },
+  "art/out/Icon_ClassTicket.png": {
+   "status": "D "
+  },
+  "art/out/Icon_CrownShard.png": {
+   "status": "D "
+  },
+  "art/out/Icon_FactionTicket.png": {
+   "status": "D "
+  },
+  "art/out/Icon_Gold.png": {
+   "status": "D "
+  },
+  "art/out/Icon_GrudgeSack.png": {
+   "status": "D "
+  },
+  "art/out/Icon_RewardChest.png": {
+   "status": "D "
+  },
+  "art/out/Icon_XP.png": {
+   "status": "D "
+  },
+  "art/out/Motion_Class_Attacks_A.png": {
+   "status": "D "
+  },
+  "art/out/Nickname_Form_A.png": {
+   "status": "D "
+  },
+  "art/out/Potion_Shop_A.png": {
+   "status": "D "
+  },
+  "art/out/Skeleton.png": {
+   "status": "D "
+  },
+  "art/out/SkeletonKing.png": {
+   "status": "D "
+  },
+  "art/out/SkeletonKing_Clothed.png": {
+   "status": "D "
+  },
+  "art/out/SkeletonKnight.png": {
+   "status": "D "
+  },
+  "art/out/Skeleton_Clothed.png": {
+   "status": "D "
+  },
+  "art/out/Slime.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharHaloArcher.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharHaloMage.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharHaloWarrior.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharHornsArcher.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharHornsMage.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharHornsWarrior.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharNeutralArcher.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharNeutralMage.png": {
+   "status": "D "
+  },
+  "art/out/UIP_CharNeutralWarrior.png": {
+   "status": "D "
+  },
+  "art/out/UI_Class_A.png": {
+   "status": "D "
+  },
+  "art/out/UI_FactionCardHalo_Fresh.png": {
+   "status": "D "
+  },
+  "art/out/UI_FactionCardHorns_Fresh.png": {
+   "status": "D "
+  },
+  "art/out/UI_FactionCardNeutral_Fresh.png": {
+   "status": "D "
+  },
+  "art/out/UI_FactionFooter_Fresh.png": {
+   "status": "D "
+  },
+  "art/out/UI_FactionPremise_E_BlankFresh.png": {
+   "status": "D "
+  },
+  "art/out/UI_FactionPremise_E_Fresh.png": {
+   "status": "D "
+  },
+  "art/out/UI_FactionPremise_E_Standalone.png": {
+   "status": "D "
+  },
+  "art/out/UI_FactionTitle_Fresh.png": {
+   "status": "D "
+  },
+  "art/out/UI_Faction_A.png": {
+   "status": "D "
+  },
+  "art/out/UI_Faction_B.png": {
+   "status": "D "
+  },
+  "art/out/UI_Faction_E_Transparent_Guide.png": {
+   "status": "D "
+  },
+  "art/out/UI_Faction_Layout_A.png": {
+   "status": "D "
+  },
+  "art/out/UI_Gameplay_Cleanup_A.png": {
+   "status": "D "
+  },
+  "art/out/UI_Gameplay_Cleanup_A_v2.png": {
+   "status": "D "
+  },
+  "art/out/UI_HUD_A.png": {
+   "status": "D "
+  },
+  "art/out/UI_HUD_B.png": {
+   "status": "D "
+  },
+  "art/out/UI_HUD_C.png": {
+   "status": "D "
+  },
+  "art/out/UI_HUD_CA1.png": {
+   "status": "D "
+  },
+  "art/out/UI_HUD_CA2.png": {
+   "status": "D "
+  },
+  "art/out/UI_HUD_Final.png": {
+   "status": "D "
+  },
+  "art/out/UI_HUD_Vitals_A.png": {
+   "status": "D "
+  },
+  "art/out/UI_Lettering_A.png": {
+   "status": "D "
+  },
+  "art/out/UI_Lettering_B.png": {
+   "status": "D "
+  },
+  "art/out/UI_Lettering_C.png": {
+   "status": "D "
+  },
+  "art/out/ref_PlayerCard_CA2.png": {
+   "status": "D "
+  },
+  "art/out/v1/APose_HornsArcherF.png": {
+   "status": "D "
+  },
+  "art/out/v1/APose_HornsMageM_wrong.png": {
+   "status": "D "
+  },
+  "art/out/v1/APose_HornsMageM_wrong2.png": {
+   "status": "D "
+  },
+  "art/out/v1/APose_HornsWarriorM_wrong.png": {
+   "status": "D "
+  },
+  "art/out/v1/APose_HornsWarriorM_wrong2.png": {
+   "status": "D "
+  },
+  "art/out/v1/APose_NeutralWarriorM.png": {
+   "status": "D "
+  },
+  "art/out/v1/BigSlime.png": {
+   "status": "D "
+  },
+  "art/out/v1/BigSlime_blue.png": {
+   "status": "D "
+  },
+  "art/out/v1/BigSlime_blue2.png": {
+   "status": "D "
+  },
+  "art/out/v1/GameIcon.png": {
+   "status": "D "
+  },
+  "art/out/v1/GoldenGoose.png": {
+   "status": "D "
+  },
+  "art/out/v1/Thumbnail_Crown.png": {
+   "status": "D "
+  },
+  "art/out/v1/Thumbnail_Kaiju.png": {
+   "status": "D "
+  },
+  "art/out/v1/UIP_CharNeutralWarrior_blocky.png": {
+   "status": "D "
+  },
+  "art/out/v1/UIP_ClassCardNeutral_stats.png": {
+   "status": "D "
+  },
+  "art/out/v1/UIP_IconAttack_withButton.png": {
+   "status": "D "
+  },
+  "art/out/v1/UIP_IconSpecial_coin.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/APose_HaloArcherF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/APose_HornsArcherF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/APose_HornsArcherM.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/APose_HornsMageF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/APose_HornsMageM.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/APose_HornsWarriorF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/APose_HornsWarriorM.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/out_UIP_CharHaloArcherF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/out_UIP_CharHornsArcherF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/out_UIP_CharHornsArcherM.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/out_UIP_CharHornsMageF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/out_UIP_CharHornsMageM.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/out_UIP_CharHornsWarriorF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/out_UIP_CharHornsWarriorM.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/ui_UIP_CharHaloArcherF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/ui_UIP_CharHornsArcherF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/ui_UIP_CharHornsArcherM.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/ui_UIP_CharHornsMageF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/ui_UIP_CharHornsMageM.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/ui_UIP_CharHornsWarriorF.png": {
+   "status": "D "
+  },
+  "art/out/v1/revealing/ui_UIP_CharHornsWarriorM.png": {
+   "status": "D "
+  },
+  "art/test/Slime.png": {
+   "status": "D "
+  },
+  "art/test/Slime.prompt.txt": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharHaloArcher.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharHaloMage.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharHaloWarrior.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharHornsArcher.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharHornsMage.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharHornsWarrior.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharNeutralArcher.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharNeutralMage.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_CharNeutralWarrior.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_FactionCardHalo_Aligned.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_FactionCardHorns_Aligned.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_FactionCardNeutral_Aligned.png": {
+   "status": "D "
+  },
+  "art/ui/UIP_PortraitHaloArcherM.png": {
+   "status": "D "
+  },
+  "art/ui/asset_ids.json": {
+   "status": " M",
+   "sha256": "18329cb05b086050e557814b0dbddccc3a51d8570ea87e72d72036f380a8250e",
+   "bytes": 9945,
+   "mtime": "12:58:30"
+  },
+  "docs/ART_DIRECTION.md": {
+   "status": " M",
+   "sha256": "c52d105803004604055d029b5c53ed1b87f0093426fb5f3ece1888f54621ad54",
+   "bytes": 34223,
+   "mtime": "12:34:40"
+  },
+  "docs/GDD.md": {
+   "status": " M",
+   "sha256": "88cd31174ae765134875d05d7c5276c79836718fb43ce923454ab9771a5082e0",
+   "bytes": 52073,
+   "mtime": "13:24:04"
+  },
+  "docs/HANDOFF.md": {
+   "status": " M",
+   "sha256": "7aaea98f482b2718e682db3f920d6f32808371dcba7b68fefa0a77559e39e708",
+   "bytes": 5224,
+   "mtime": "12:34:40"
+  },
+  "docs/HANDOFF_CODEX.md": {
+   "status": " M",
+   "sha256": "ea0551e567d45d21c75ca009f038110d0a2015e7e0048161f5b688b1783ec21d",
+   "bytes": 79931,
+   "mtime": "12:49:56"
+  },
+  "docs/RELEASE_PLAN.md": {
+   "status": " M",
+   "sha256": "4dfe4b1742d9d9699686e0b5d6983f2f7c7f33d9fac22bbecc1ce514a9c9c31a",
+   "bytes": 8127,
+   "mtime": "13:00:36"
+  },
+  "docs/SPEC_ADDENDUM.md": {
+   "status": " M",
+   "sha256": "4dea8cac38077716486bd6eb0de95d483ca022e0a048407765d9f0df1679e70c",
+   "bytes": 112575,
+   "mtime": "13:24:04"
+  },
+  "docs/TECH_SPEC.md": {
+   "status": " M",
+   "sha256": "252968dab9eb9381334809a0d22ad3d468a57b21d00fe041b40bad3b0b016ec7",
+   "bytes": 217531,
+   "mtime": "12:34:31"
+  },
+  "docs/art/onboarding_story_review_2026-10-04.md": {
+   "status": " M",
+   "sha256": "b1ff19be9cbbc9baec696902cf37e6f1b7ee6ab6b7aec29f2d2341eb81377951",
+   "bytes": 19737,
+   "mtime": "12:34:58"
+  },
+  "docs/art/weapon_progression_user_decisions_2026-10-04.md": {
+   "status": " M",
+   "sha256": "f548c44e3ac63281cb979e11fab2215e83c574dd414c1e905088abd8b3a42f48",
+   "bytes": 9540,
+   "mtime": "12:34:50"
+  },
+  "place/GoodEvil.rbxlx": {
+   "status": " M",
+   "sha256": "f0b7568cc1152fa35df0a27d33f4280025324c14b7ee5d8e2845a6657c001cfd",
+   "bytes": 12550601,
+   "mtime": "17:03:12"
+  },
+  "src/ReplicatedStorage/Shared/Config.luau": {
+   "status": " M",
+   "sha256": "52cd3ca010bc994c7514b3cd82327d375490c1ef0277bfa0e6dbd2e172323f86",
+   "bytes": 105288,
+   "mtime": "13:52:56"
+  },
+  "src/ReplicatedStorage/Shared/ExpressionAssets.luau": {
+   "status": "D "
+  },
+  "src/ReplicatedStorage/Shared/Net.luau": {
+   "status": " M",
+   "sha256": "f579472a503ca46f0e400c447b2134a36ab29edff0283e036cd0d29e1df5310d",
+   "bytes": 3329,
+   "mtime": "13:57:15"
+  },
+  "src/ReplicatedStorage/Shared/SkinBindingContract.luau": {
+   "status": "D "
+  },
+  "src/ServerScriptService/CharacterVisuals.luau": {
+   "status": " M",
+   "sha256": "0146d2491f75124569e8bff3fa7c675e097d3690e2d8eef55c40c7beb8855c95",
+   "bytes": 33659,
+   "mtime": "13:35:09"
+  },
+  "src/ServerScriptService/CombatService.luau": {
+   "status": " M",
+   "sha256": "5b0876ab1ad53d1be0b7a70f871e38f767f9205d8fd5481658e705a6fa6cb71e",
+   "bytes": 42788,
+   "mtime": "13:57:15"
+  },
+  "src/ServerScriptService/CostumeService.luau": {
+   "status": "D "
+  },
+  "src/ServerScriptService/DataService.luau": {
+   "status": " M",
+   "sha256": "c0c4f041aed10e96a1c3b2d0e6c0b345faa6abf50c3bc5a98b6066691d87ed76",
+   "bytes": 18263,
+   "mtime": "16:54:01"
+  },
+  "src/ServerScriptService/ExpressionService.luau": {
+   "status": "D "
+  },
+  "src/ServerScriptService/ExpressionSkinContract.luau": {
+   "status": "D "
+  },
+  "src/ServerScriptService/GooseService.luau": {
+   "status": " M",
+   "sha256": "dd6e578063087d12718fa8322c1d83c843ce0225e127988af06de57e7a4ef15f",
+   "bytes": 23969,
+   "mtime": "13:11:10"
+  },
+  "src/ServerScriptService/Main.server.luau": {
+   "status": " M",
+   "sha256": "b0943a55d91741f4c065cbff12594fa501478be43b5a5e77fee72e3d3c14ac7d",
+   "bytes": 3998,
+   "mtime": "13:57:15"
+  },
+  "src/ServerScriptService/MapBuilder.luau": {
+   "status": " M",
+   "sha256": "c746f3b97d459c6d3a4d5167ee92ba7853140895fa51d6add1c2f65c8916c156",
+   "bytes": 39256,
+   "mtime": "13:57:15"
+  },
+  "src/ServerScriptService/PlayerService.luau": {
+   "status": " M",
+   "sha256": "7d8da32dab887ec6ece9d9f7730817b6ddc451ff2ffc9ec5a637136a74543f70",
+   "bytes": 33211,
+   "mtime": "13:57:15"
+  },
+  "src/ServerScriptService/ProgressionService.luau": {
+   "status": " M",
+   "sha256": "ce1dfad22b5d63d408f33b3753a7133b3dd91323cca6f5ac9515e3af2ef25786",
+   "bytes": 18458,
+   "mtime": "13:11:37"
+  },
+  "src/ServerScriptService/QuestService.luau": {
+   "status": " M",
+   "sha256": "e69e85237d0bad364724cad4151a0c02ead84fb7bd2f125409229fe71f4f0657",
+   "bytes": 38140,
+   "mtime": "13:42:15"
+  },
+  "src/ServerScriptService/ShopService.luau": {
+   "status": " M",
+   "sha256": "165e74f92c6908a5f260e33c8e1e6edc664091d322525c4b12c76d4e13b568d5",
+   "bytes": 15874,
+   "mtime": "13:38:33"
+  },
+  "src/ServerScriptService/VitalsService.luau": {
+   "status": " M",
+   "sha256": "9a5d62e6644ada52a0abcacc1e3f9fdcccd3630f97616f036207b115536fa699",
+   "bytes": 5346,
+   "mtime": "13:12:13"
+  },
+  "src/ServerScriptService/ZoneService.luau": {
+   "status": " M",
+   "sha256": "f91abe7435a9946d522448a3131e9d9684279fc5dbc0302840b3e6064ce74af8",
+   "bytes": 24450,
+   "mtime": "13:34:48"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau": {
+   "status": " M",
+   "sha256": "0dfa21940b16b0427df5634f378e7cdef7836dc4dfe363b9afd8a04c79214ef4",
+   "bytes": 6801,
+   "mtime": "13:49:38"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/ClassPicker.luau": {
+   "status": " M",
+   "sha256": "30c9fad597b3e5317fbb89e807516effa4c9aa122472fa792a62b1eb828029a4",
+   "bytes": 56481,
+   "mtime": "13:41:47"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": {
+   "status": " M",
+   "sha256": "2374fae35dc62b7afc96ae966dbcd97449abc652bed8fb146e82bd7fc0d482a6",
+   "bytes": 672,
+   "mtime": "13:57:15"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": {
+   "status": " M",
+   "sha256": "a27b244787d9a63d6a5b70f9c47df4b848e465b47d994876bf7993bc24f185c3",
+   "bytes": 49843,
+   "mtime": "13:41:47"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/FactionPicker.luau": {
+   "status": " M",
+   "sha256": "adba39a4dca0abe5fbfccf2cbb1582946e6a06b3b1f903d9194b9cc06173f5ac",
+   "bytes": 79978,
+   "mtime": "13:41:47"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/Fx.luau": {
+   "status": " M",
+   "sha256": "1d5736f0754eae9c3904d3f5cc32f697f7bf2d7d16f47014449c9f2b6e41545b",
+   "bytes": 152132,
+   "mtime": "17:23:34"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/HUD.luau": {
+   "status": " M",
+   "sha256": "e3f2f8e0d6809870da3d5088f9e33b6d3d815f68160a221af488a47f49f72db4",
+   "bytes": 114052,
+   "mtime": "13:41:47"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/Panels.luau": {
+   "status": " M",
+   "sha256": "a49b5a26998ed0389c238d22b4c3f1c82e87d64958a96b6e7afa2acd9eb8f0e4",
+   "bytes": 88479,
+   "mtime": "13:57:30"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/SkinRetargetClient.luau": {
+   "status": "D "
+  },
+  "src/StarterPlayer/StarterPlayerScripts/UIKit.luau": {
+   "status": " M",
+   "sha256": "b45441485528dd883c7050871ce6d6c2770fcc276bd67695f5d2aff748b8dd60",
+   "bytes": 69791,
+   "mtime": "13:44:05"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": {
+   "status": " M",
+   "sha256": "293801dab24070407a94da39fffeabc15bd8a7c11826d5aeb900d70d22d07484",
+   "bytes": 10468,
+   "mtime": "13:41:47"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": {
+   "status": " M",
+   "sha256": "3d3231d0ce664c42d4a82cb5a2899e351579ce26b83ce36f09ebc723589058dd",
+   "bytes": 59016,
+   "mtime": "13:41:47"
+  },
+  "tools/preview_map.lua": {
+   "status": " M",
+   "sha256": "32bf1292cb02054d68e40003a5ea35788bdf18547b96fff9b0dc1301b06f37c9",
+   "bytes": 53349,
+   "mtime": "13:11:10"
+  },
+  "tools/studio_mcp.py": {
+   "status": " M",
+   "sha256": "3be47a57b00e5b47ae228b25864930388454a385f864a521f3ba822bddace73c",
+   "bytes": 5018,
+   "mtime": "13:23:03"
+  },
+  "art/prompts/NPC_EquipmentMerchant_A.txt": {
+   "status": "??",
+   "sha256": "b8b28a6ab88f528084098e2752606f7b840f86c8a85fac4d87c8c007b8ed5f17",
+   "bytes": 2431,
+   "mtime": "16:55:21"
+  },
+  "art/prompts/NPC_EquipmentMerchant_B_Tired.txt": {
+   "status": "??",
+   "sha256": "05ffca555455c4b005fe29bc7fe2a730c580c0c5694195db1f37b5ee52d3c28c",
+   "bytes": 2332,
+   "mtime": "16:58:49"
+  },
+  "art/prompts/NPC_EquipmentMerchant_C_Veteran.txt": {
+   "status": "??",
+   "sha256": "da08fb833fa2c56aec4ff879313addeebc78e32435a797b0f9811daced04d940",
+   "bytes": 2670,
+   "mtime": "17:02:22"
+  },
+  "art/prompts/UIP_CharHaloWarriorM_Redraw.txt": {
+   "status": "??",
+   "sha256": "dbf411854550190a0e0408b41aeb1d98d46467949c677f048a3dfb15bc4300f5",
+   "bytes": 1667,
+   "mtime": "15:35:30"
+  },
+  "art/prompts/UI_FactionCardHalo_ApprovedBalanced.txt": {
+   "status": "??",
+   "sha256": "67c1fb87618205d703976b17751c41175210329cab8e18ccfae52298b0f7f195",
+   "bytes": 2694,
+   "mtime": "16:18:50"
+  },
+  "art/prompts/UI_FactionParts_Halo_Button.txt": {
+   "status": "??",
+   "sha256": "3828197b212b185f39abcc395cc0d078c8b9793e1ec04a38f1c491e5a3649097",
+   "bytes": 972,
+   "mtime": "15:38:10"
+  },
+  "art/prompts/UI_FactionParts_Halo_Crest.txt": {
+   "status": "??",
+   "sha256": "78ef651ab58f9fe98cb5216fb17eb5304b77b00a08cfc0ed97c036ed4477b8a6",
+   "bytes": 1110,
+   "mtime": "15:38:10"
+  },
+  "art/prompts/UI_FactionParts_Halo_Desc.txt": {
+   "status": "??",
+   "sha256": "341e0368cdf9b6fc1536673a60e0eb1f30eb80b4825b22d62b29edaaf59d2077",
+   "bytes": 925,
+   "mtime": "15:38:10"
+  },
+  "art/prompts/UI_FactionParts_Halo_Frame.txt": {
+   "status": "??",
+   "sha256": "8d6b22a0df9dbf21bcd6941ad59502fcf9a65367a7311bc6e6281902b4ba88ad",
+   "bytes": 1685,
+   "mtime": "15:38:10"
+  },
+  "art/prompts/UI_FactionParts_Halo_Frame_Wide.txt": {
+   "status": "??",
+   "sha256": "de442ae288374a649859cabcf15fea8d24a1f2030043dd67a2b05f521329b09f",
+   "bytes": 2115,
+   "mtime": "15:48:14"
+  },
+  "art/prompts/UI_FactionParts_Halo_Motto.txt": {
+   "status": "??",
+   "sha256": "4ad21c47d64e5f46416dddaca4972b3af46f08e821e8ee638411ed24ee61ea14",
+   "bytes": 915,
+   "mtime": "15:38:10"
+  },
+  "art/prompts/UI_FactionParts_Halo_Name.txt": {
+   "status": "??",
+   "sha256": "13df1e93c500ac2b36585ef500425294a6cf5c2acfe61d81c69e1bcc54b5a9ac",
+   "bytes": 1030,
+   "mtime": "15:38:10"
+  },
+  "art/prompts/UI_FactionParts_Halo_Name_Clear.txt": {
+   "status": "??",
+   "sha256": "30d4d652c1a4e56b33d33f67c3bc4469692df74ee5bdc10362d5ca9137a264b7",
+   "bytes": 1924,
+   "mtime": "15:54:40"
+  },
+  "art/prompts/UI_FactionParts_Horns_Button.txt": {
+   "status": "??",
+   "sha256": "3daec2cf59e17294923b78e8adcb7d763ad7023191aa4dad4da48ceb25235dfe",
+   "bytes": 1380,
+   "mtime": "15:38:13"
+  },
+  "art/prompts/UI_FactionParts_Horns_Button_Capsule.txt": {
+   "status": "??",
+   "sha256": "d0e145506c44e5aae8942c3607eff81ebaea7844144957d7ac46f20379a0330d",
+   "bytes": 1676,
+   "mtime": "16:08:45"
+  },
+  "art/prompts/UI_FactionParts_Horns_Crest.txt": {
+   "status": "??",
+   "sha256": "099a99142ad1394b73dd27202c1901ccbfbdf798b3221012d939696556c3bd8a",
+   "bytes": 1568,
+   "mtime": "15:38:13"
+  },
+  "art/prompts/UI_FactionParts_Horns_Crest_v2.txt": {
+   "status": "??",
+   "sha256": "bf3f90959056a0a8569b3dfd76cd7ea50720c563060ac21f598d6e8cfc61b6fe",
+   "bytes": 1684,
+   "mtime": "15:41:59"
+  },
+  "art/prompts/UI_FactionParts_Horns_Desc.txt": {
+   "status": "??",
+   "sha256": "3af8dd8c715c1f92e6ce4070b817b94fd4d43c40584a4da742a095b9f91253c5",
+   "bytes": 1351,
+   "mtime": "15:38:13"
+  },
+  "art/prompts/UI_FactionParts_Horns_Desc_v2.txt": {
+   "status": "??",
+   "sha256": "bddcddfde24fdf4b3567f41164cfb4cc4ba12d236f7c1e3c3d535776fcbb1807",
+   "bytes": 1496,
+   "mtime": "15:41:59"
+  },
+  "art/prompts/UI_FactionParts_Horns_Frame.txt": {
+   "status": "??",
+   "sha256": "5d608f765865cb1c9ecb60b790851b76ac6b6721624d487249edf5263a334adf",
+   "bytes": 1658,
+   "mtime": "15:38:13"
+  },
+  "art/prompts/UI_FactionParts_Horns_Frame_Wide.txt": {
+   "status": "??",
+   "sha256": "9fed1a00cf5316bd0ab295fd7bec89208279e3cb4f09ee0ce2b828f820c246cc",
+   "bytes": 1747,
+   "mtime": "15:48:35"
+  },
+  "art/prompts/UI_FactionParts_Horns_Motto.txt": {
+   "status": "??",
+   "sha256": "e4b4238dfcca6449ff95cf3eec5e0e89da2012f998075f64c3a16a5ad0fb871c",
+   "bytes": 1309,
+   "mtime": "15:38:13"
+  },
+  "art/prompts/UI_FactionParts_Horns_Motto_v2.txt": {
+   "status": "??",
+   "sha256": "4b46d88905725dfcb214ab92fecc46af37d025f16eb016559724825751750ec7",
+   "bytes": 1405,
+   "mtime": "15:41:59"
+  },
+  "art/prompts/UI_FactionParts_Horns_Name.txt": {
+   "status": "??",
+   "sha256": "76795ab923992c3727160b76ae77b0fdd50bb8acf596343796a767cc8390b5c4",
+   "bytes": 1366,
+   "mtime": "15:38:13"
+  },
+  "art/prompts/UI_FactionParts_Neutral_Button.txt": {
+   "status": "??",
+   "sha256": "4d5395c3be38b351ef9c8980ba47bda8173685356f7099e8268fda2a3b176195",
+   "bytes": 1076,
+   "mtime": "15:38:56"
+  },
+  "art/prompts/UI_FactionParts_Neutral_Crest.txt": {
+   "status": "??",
+   "sha256": "e5a6b2a5933eb211cbf2f9b6dd2654b9f8c37322bf3f4a014e595a42fb1937ba",
+   "bytes": 1095,
+   "mtime": "15:38:56"
+  },
+  "art/prompts/UI_FactionParts_Neutral_Desc.txt": {
+   "status": "??",
+   "sha256": "c3df90bdc703be68e7ca16d53c1df199ecae5ffaefa5398b4139be7056a4befa",
+   "bytes": 1051,
+   "mtime": "15:38:56"
+  },
+  "art/prompts/UI_FactionParts_Neutral_Frame.txt": {
+   "status": "??",
+   "sha256": "0a84e528a6c9af4d660106e6337cb47f4fa26854d981d0c89445e76a9498519f",
+   "bytes": 1381,
+   "mtime": "15:38:56"
+  },
+  "art/prompts/UI_FactionParts_Neutral_Motto.txt": {
+   "status": "??",
+   "sha256": "a3136d092e3fed03043592de1f078408b16d9d24feec3ae29089753f63f31ed0",
+   "bytes": 1012,
+   "mtime": "15:42:33"
+  },
+  "art/prompts/UI_FactionParts_Neutral_Motto_RejectedGlow.txt": {
+   "status": "??",
+   "sha256": "b07ae2fb299bd3aff9c23e5ba50bc2689839ef3a0f849e65b6689ae3809b0bc7",
+   "bytes": 1042,
+   "mtime": "15:42:33"
+  },
+  "art/prompts/UI_FactionParts_Neutral_Motto_Wide.txt": {
+   "status": "??",
+   "sha256": "74eee19892787426ca0c8f00efe25cdd5dfe9e1f28b7c635e35d840fdda891aa",
+   "bytes": 1444,
+   "mtime": "15:46:39"
+  },
+  "art/prompts/UI_FactionParts_Neutral_Name.txt": {
+   "status": "??",
+   "sha256": "7fb6801d4a02bef523a2b39f480f113a87f9d00590d81c319590805b3bc81dc6",
+   "bytes": 1048,
+   "mtime": "15:38:56"
+  },
+  "art/prompts/UI_IconBloodSword_Redraw.txt": {
+   "status": "??",
+   "sha256": "90ca07036a03daa266993651c16fc2c60f5f89364f0891ab3e7e773be8c7e647",
+   "bytes": 1221,
+   "mtime": "15:55:37"
+  },
+  "art/prompts/UI_IconDemon_Redraw.txt": {
+   "status": "??",
+   "sha256": "bfc99f748135c1ea85e05cdece64b632f8712a6a84b781e570b8f3d1fc1fa6f4",
+   "bytes": 1323,
+   "mtime": "15:55:37"
+  },
+  "art/prompts/UI_IconExp_Redraw.txt": {
+   "status": "??",
+   "sha256": "3d030c4a285f0500e53f2edc4a114a7f77464fd3516bf6c5d8ee2af25c3f94cf",
+   "bytes": 1160,
+   "mtime": "15:55:46"
+  },
+  "art/prompts/UI_IconGauge_Redraw.txt": {
+   "status": "??",
+   "sha256": "dde9d1368cd70d2fb2fd4bedc58ef71f5d47ce1253b5b32bca6268883454554a",
+   "bytes": 1183,
+   "mtime": "15:55:37"
+  },
+  "art/prompts/UI_IconGoldPile_Redraw.txt": {
+   "status": "??",
+   "sha256": "f6a6ead9436c3423b9a3ea6dcb29f43ba1096ec47156c5eceb79770c8186b64a",
+   "bytes": 1140,
+   "mtime": "15:55:37"
+  },
+  "art/prompts/UI_IconHammer_Redraw.txt": {
+   "status": "??",
+   "sha256": "fafe67a08b3fb108be986977e1c7af5a282eee0fd647a4a80d08f8a1671b3a13",
+   "bytes": 1172,
+   "mtime": "15:55:20"
+  },
+  "art/prompts/UI_IconHeart_Redraw.txt": {
+   "status": "??",
+   "sha256": "eab4cb51bcfbb357ebcfb9177b1fe288f46ce08554e11da705e36238407fef8f",
+   "bytes": 1064,
+   "mtime": "15:55:46"
+  },
+  "art/prompts/UI_IconNoBuff_Redraw.txt": {
+   "status": "??",
+   "sha256": "1866d48fb3636f1059d8b7af39b64c8e47f90adeaa88d22b2ce1e86ae9abbe94",
+   "bytes": 1208,
+   "mtime": "15:55:20"
+  },
+  "art/prompts/UI_IconNoLoot_Redraw.txt": {
+   "status": "??",
+   "sha256": "88a8d72ccc6db147bcbbc8f77b37b302bb25685720ccaa9aa326f5e9278f8733",
+   "bytes": 1168,
+   "mtime": "15:55:20"
+  },
+  "art/prompts/UI_IconShieldBlue_Redraw.txt": {
+   "status": "??",
+   "sha256": "ff02f691ef2b216cdadc85fa2905f50bf9cd7fd2e9eba9b4d2d7dce4e05f3caa",
+   "bytes": 1110,
+   "mtime": "15:55:20"
+  },
+  "art/prompts/UI_IconWings_Redraw.txt": {
+   "status": "??",
+   "sha256": "dfaae449c6623c73e4d38f7394436bbee7cf6f76deaa516ba196ea576c1ada72",
+   "bytes": 1219,
+   "mtime": "15:55:46"
+  },
+  "art/prompts/WP_ApprenticeStaff_A.txt": {
+   "status": "??",
+   "sha256": "2dc35609a5c4d73c6b2b93d5465ce063b9220af29bdcabe756efee1549857c03",
+   "bytes": 1202,
+   "mtime": "17:12:45"
+  },
+  "art/prompts/WP_HandAxe_A.txt": {
+   "status": "??",
+   "sha256": "cebe2464015abea30faeb7d8cea56653167e1f09de4ecc67632dfc05a887d1c5",
+   "bytes": 1704,
+   "mtime": "17:07:32"
+  },
+  "art/prompts/WP_HuntingBow_A.txt": {
+   "status": "??",
+   "sha256": "127a164a2f7173b74d1208748772e5b763cc2f54e979362a53c4c27c1cbae303",
+   "bytes": 1945,
+   "mtime": "17:08:00"
+  },
+  "art/prompts/WP_ShortWand_A.txt": {
+   "status": "??",
+   "sha256": "cb064477e7a7f1497af584fbdd1ff6dfeff7be399c4ab007b347949d904d5db9",
+   "bytes": 1782,
+   "mtime": "17:08:32"
+  },
+  "art/prompts/WP_Slingshot_A.txt": {
+   "status": "??",
+   "sha256": "ec02de7d40dffe4d7814d8925435ea9143015e967ffb28de2588f9f27930f625",
+   "bytes": 1817,
+   "mtime": "17:07:20"
+  },
+  "art/prompts/WP_StarterBranch_A.txt": {
+   "status": "??",
+   "sha256": "51e7ac0d76dab737e23660a00be33464451f8a47570b3dcf16e3a5aa668f919e",
+   "bytes": 1647,
+   "mtime": "17:07:20"
+  },
+  "art/prompts/WP_WornCrossbow_A.txt": {
+   "status": "??",
+   "sha256": "25d2f9bcfdc79b171fc54aecd3ce8131106a0d821138158fea3a17e9ce73c206",
+   "bytes": 2365,
+   "mtime": "17:10:56"
+  },
+  "art/prompts/WP_WornSpellbook_A.txt": {
+   "status": "??",
+   "sha256": "5b5d275e0e6484539ebcac5897e19b99a73df27e10a72ca1d8f481394ebf186a",
+   "bytes": 1785,
+   "mtime": "17:08:32"
+  },
+  "art/prompts/WP_WornSword_A.txt": {
+   "status": "??",
+   "sha256": "ee98c78af0dfd720bce6cc27eeae4b8f544721615b9cd8f4a6149f941afe879f",
+   "bytes": 1718,
+   "mtime": "17:07:20"
+  },
+  "docs/art/art_cleanup_2026-10-06.json": {
+   "status": "??",
+   "sha256": "d05cccc3e38d143eef5802595b5f031fd0e7a49ca87347310330b1c52eed8d92",
+   "bytes": 131853,
+   "mtime": "12:58:29"
+  },
+  "docs/art/skills_progression_2026-10-04.md": {
+   "status": "??",
+   "sha256": "7d5c6aa8d778be6a015675b5c3e1f2ab56a408303f4e58ce341f62cc64280377",
+   "bytes": 17528,
+   "mtime": "17:31:50"
+  },
+  "docs/art/tutorial_openings_2026-10-04.md": {
+   "status": "??",
+   "sha256": "f2f4392cccdce6cc7ae655f70a5118e0b94eb55113b8c38877fc801353c4660a",
+   "bytes": 6418,
+   "mtime": "16:42:31"
+  },
+  "docs/art/tutorial_openings_2026-10-04_mmorpg_research.md": {
+   "status": "??",
+   "sha256": "a4dd3456f72d8c240ee388b4ec63fb20adaa3195495aaae9b8c2edbfe189ff13",
+   "bytes": 12015,
+   "mtime": "16:43:45"
+  },
+  "docs/art/tutorial_openings_2026-10-04_roblox_research.md": {
+   "status": "??",
+   "sha256": "0c47652452bdf2aeb035acbdb64fa188ae51a9502d6ae27ac3356ce04cef804f",
+   "bytes": 9865,
+   "mtime": "16:38:53"
+  },
+  "docs/art/verification_2026-10-06/first15_claude_run1.jsonl": {
+   "status": "??",
+   "sha256": "9b699d580ac6881ee64c29c388f465d7fcc364451154346c46656fa3f288fa67",
+   "bytes": 14525,
+   "mtime": "13:55:04"
+  },
+  "docs/review/reference_lessons_2026-10-05.json": {
+   "status": "??",
+   "sha256": "879cc93ceb8f027f4c343896fb4211c9894365a1c79f870033cb9c4d7988984f",
+   "bytes": 315186,
+   "mtime": "12:41:14"
+  },
+  "docs/review/reference_lessons_2026-10-05.md": {
+   "status": "??",
+   "sha256": "b198d6f4256b053f5cd7eee83f1b192fa267f81b2b1c3c077689272607e1014a",
+   "bytes": 10832,
+   "mtime": "12:50:05"
+  },
+  "docs/review/reference_lessons_X5d5hqhB2os_2026-10-05.json": {
+   "status": "??",
+   "sha256": "8cc11290466c7e003ef60aba353c19bb36aa463b069a7b598ece9b29b57acc33",
+   "bytes": 53622,
+   "mtime": "13:24:35"
+  },
+  "docs/review/reference_lessons_X5d5hqhB2os_2026-10-05.md": {
+   "status": "??",
+   "sha256": "68d4dd77ae50a9c2bfce945a37aa9b69cd263ea40d5a5c7157d0c333a546745b",
+   "bytes": 5070,
+   "mtime": "13:24:35"
+  },
+  "docs/review/review_2026-10-05.md": {
+   "status": "??",
+   "sha256": "f41f9ae4a32ab7bdbe1aae4dfb78a024ba98473d46d1f5236de53740a29a4797",
+   "bytes": 12548,
+   "mtime": "12:51:33"
+  },
+  "docs/review/review_2026-10-05_findings.json": {
+   "status": "??",
+   "sha256": "1807adc97c2ece1f00199709631d4998d525e6d52c2066f9b8c0d81d0d013ce4",
+   "bytes": 416417,
+   "mtime": "12:35:26"
+  },
+  "docs/review/worker_addendum_2026-10-05.md": {
+   "status": "??",
+   "sha256": "98d48e3383d04984df1f621bb52ae172ca56d1424b6a59d54937fdac78216815",
+   "bytes": 4085,
+   "mtime": "13:25:16"
+  },
+  "docs/review/worker_prompt_2026-10-06.md": {
+   "status": "??",
+   "sha256": "d214ac02b51232b328f2297c9e68424a6d91d8a1bbc6d37c3afd92b2ab4cd6f3",
+   "bytes": 18145,
+   "mtime": "13:24:55"
+  },
+  "src/StarterPlayer/StarterPlayerScripts/Intro.luau": {
+   "status": "??",
+   "sha256": "22163d019f7f8c53770f846b9987c37dd9cdaacf08d0eb934db07a9d8c8a2568",
+   "bytes": 14002,
+   "mtime": "13:45:57"
+  },
+  "tools/art_cleanup_inventory.py": {
+   "status": "??",
+   "sha256": "0dbedd7910d8cb04a0dcac2c8555f91d7c8921a7f82eb7fb896bae5f7a9e0b4b",
+   "bytes": 4532,
+   "mtime": "12:58:38"
+  },
+  "tools/fixtures/camera_input_offline.luau": {
+   "status": "??",
+   "sha256": "b3ba5a9b276734c46d9c636f7bb0171b7e5fa6c26499025979068532cc4b0913",
+   "bytes": 9229,
+   "mtime": "16:53:45"
+  },
+  "tools/fixtures/onboarding_offline.luau": {
+   "status": "??",
+   "sha256": "7fe572675d19adbade0ddce61eca65021c5afb72b1c7e321c665cdb175cbe278",
+   "bytes": 27792,
+   "mtime": "17:22:02"
+  },
+  "tools/fixtures/skill_release_offline.luau": {
+   "status": "??",
+   "sha256": "ca1c8d402ade0781f9fd1a60501c7e7060cc58608a2b1b4612fd409cbcd5a396",
+   "bytes": 14677,
+   "mtime": "17:24:45"
+  },
+  "tools/gameplay_blacksmith_check.py": {
+   "status": "??",
+   "sha256": "1507d41201ee5505e0e96f8d0f348674c40db0befd482dea87ab710f1eaf9058",
+   "bytes": 22149,
+   "mtime": "16:54:12"
+  },
+  "tools/observe_play.py": {
+   "status": "??",
+   "sha256": "b2f2e23848505e74a6e4c46f886da2a9dd84c3d7ada844ade207b8c279e4fbef",
+   "bytes": 2081,
+   "mtime": "13:26:06"
+  },
+  "tools/render_faction_parts.cjs": {
+   "status": "??",
+   "sha256": "ff55eb74b2ebbe4bd295f339f4f8d2d439c147b8e5f6bd206d31906a90b6358b",
+   "bytes": 10828,
+   "mtime": "16:09:16"
+  },
+  "tools/reset_test_save.py": {
+   "status": "??",
+   "sha256": "72d65f8e3e26b2a0024b831f237d03272e58118d12bb41318b4480cf251823d9",
+   "bytes": 1067,
+   "mtime": "13:30:05"
+  },
+  "tools/test_camera_input.py": {
+   "status": "??",
+   "sha256": "989df637b5cac90fe031f066210914dacfedee3fdc960b4dd3124c05923f8774",
+   "bytes": 2098,
+   "mtime": "16:53:08"
+  },
+  "tools/test_onboarding.py": {
+   "status": "??",
+   "sha256": "1ba4ef7c2ead5a8b53188b6cf8eb1f0459e4b20515894e23595a3ae02d2a32df",
+   "bytes": 5576,
+   "mtime": "17:22:18"
+  },
+  "tools/test_skill_release.py": {
+   "status": "??",
+   "sha256": "05afdf5a1e63cf04863fd9bd78e3bc25ba205039f3010d75cddf88f645067dc7",
+   "bytes": 3273,
+   "mtime": "17:17:09"
+  },
+  "tools/update_gameplay_place.py": {
+   "status": "??",
+   "sha256": "505716bf5b002d79982874854f9f6d67c9fc319e5ce118d1f2169a53fbe41d7f",
+   "bytes": 6591,
+   "mtime": "17:25:19"
+  }
+ }
+}

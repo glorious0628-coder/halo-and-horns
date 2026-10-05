@@ -7,6 +7,8 @@ Tripo 3D API(v3) 자동화 — 그림 → 3D(GLB) → (리깅) → 다운로드�
   py tools/tripo_api.py batch <목록.json> [--dry]                 -> [{"image":..,"name":..,"recipe":..,"rig":true}, ...]
   py tools/tripo_api.py task <task_id> [<저장할 이름>]            -> 작업 조회(+성공이면 다시 다운로드)
   py tools/tripo_api.py rig <task_id> <이름> [--dry]             -> 기존 모델 검사 → 사람형 Mixamo 리깅
+  py tools/tripo_api.py anim <모델.glb> <이름> --cap N [--rig <리깅id>] [--clips Idle,Walk] [--dry]
+                                                                  -> 가져오기(무료) → Tripo 뼈대 → 동작(제자리) 각각
 
 - API 키는 프로젝트의 .env(TRIPO_API_KEY=...) 또는 환경변수에서만 읽는다. 화면에 찍지 않는다.
 - 결과: art/models/tripo/<이름>_raw.glb (+ _rig.glb), 기록: art/models/tripo/records.json
@@ -274,6 +276,50 @@ def run_rig(task_id, name, dry=False):
         return None
 
 
+# 2026-10-06 monster motion: idle / walk / attack / hit / fall, one clip per call, played in place.
+# Tripo presets only retarget onto a Tripo-spec rig (a Mixamo-spec rig returned 1004 for every preset).
+MONSTER_ANIMS = {"Idle": "preset:idle", "Walk": "preset:walk", "Slash": "preset:slash", "Hurt": "preset:hurt",
+                 "Fall": "preset:fall"}
+RETARGET_COST_EACH = 10
+MONSTER_RIG = {"model": "v1.0-20240301", "rig_type": "biped", "spec": "tripo", "out_format": "glb"}
+
+
+def run_anim(path, name, cap, dry=False, rig_id=None, clips=None):
+    """Local GLB -> free import -> biped Tripo-spec rig -> one retarget per clip. Stops before going over `cap`."""
+    name = rig_name(name)
+    clips = clips or list(MONSTER_ANIMS)
+    estimate = (0 if rig_id else 25) + RETARGET_COST_EACH * len(clips)
+    if dry:
+        print(json.dumps({"name": name, "rig": rig_id or "new", "clips": clips, "credits_estimate": estimate}))
+        return {"estimate": estimate}
+    if estimate > cap:
+        raise TripoError(f"{name}: 예상 {estimate}크레딧이 남은 한도 {cap}를 넘어요 — 멈췄어요")
+    spent = 0.0
+    if not rig_id:
+        src = run_import(path, name + "_src")
+        rig_id = call("POST", "/animations/rig", json_body={"input": src, **MONSTER_RIG}, retries=0)["task_id"]
+        record(name, {"operation": "rig", "event": "rig_submitted", "spec": "tripo", "rig_task_id": rig_id})
+        done = wait(rig_id, label=name + " rig")
+        spent += float(done.get("credits_consumed") or 0)
+        record(name, {"operation": "rig", "event": "rig_completed", "spec": "tripo", "rig_task_id": rig_id,
+                      "credits": done.get("credits_consumed")})
+    files = {}
+    for clip in clips:
+        body = {"input": rig_id, "animation": MONSTER_ANIMS[clip], "out_format": "glb", "animate_in_place": True}
+        tid = call("POST", "/animations/retarget", json_body=body, retries=0)["task_id"]
+        done = wait(tid, label=f"{name} {clip}")
+        out_path = os.path.join(OUT_DIR, f"{name}_{clip}.glb")
+        size = download(done["output"]["model_url"], out_path)
+        billed = float(done.get("credits_consumed") or 0)
+        spent += billed
+        record(name, {"operation": "retarget", "event": "retarget_completed", "task_id": tid, "clip": clip,
+                      "credits": billed, "file": os.path.relpath(out_path, ROOT), "bytes": size})
+        files[clip] = out_path
+        print(f"[{name}] {clip} 완료 ({size // 1024}KB, {billed}크레딧)", flush=True)
+    print(f"[{name}] 이번 합계 {spent}크레딧 · rig {rig_id}", flush=True)
+    return {"files": files, "spent": spent, "rig": rig_id}
+
+
 def run_one(image, name, recipe="character", rig=False, seed=None, dry=False):
     seed = seed if seed is not None else (zlib.crc32(name.encode()) % 90000) + 10000  # stable per name
     body = gen_body("<file_token>", recipe, seed)
@@ -366,6 +412,10 @@ def main():
         print(json.dumps({k: v for k, v in d.items() if k != "output"}, ensure_ascii=False))
         if d.get("status") == "success" and len(a) > 2:
             print("저장:", download(d["output"]["model_url"], os.path.join(OUT_DIR, f"{a[2]}_raw.glb")), "bytes")
+    elif cmd == "anim":
+        cap = float(opt("--cap", "0"))
+        clips = opt("--clips")
+        run_anim(a[1], a[2], cap, dry, rig_id=opt("--rig"), clips=clips.split(",") if clips else None)
     elif cmd == "rig":
         parser = argparse.ArgumentParser(prog="tripo_api.py rig", description="기존 모델을 사람형 Mixamo 뼈대로 리깅해요.")
         parser.add_argument("task_id", type=rig_task_id)

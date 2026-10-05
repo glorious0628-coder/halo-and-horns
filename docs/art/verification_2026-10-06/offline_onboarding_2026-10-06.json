@@ -1,0 +1,65 @@
+{
+  "status": "passed",
+  "checks": 612,
+  "contractFailures": [],
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "810d154c99fa9f12a2c3cb487406e8538bce96645d84a9912eb3ed2ea699cc44",
+    "src/ServerScriptService/DataService.luau": "fc52f4bd0eec0acc5fca6a2c7b870048d5296771d24cfcd53abd7a56eadce5a5",
+    "src/ServerScriptService/QuestService.luau": "d7d6046f76e4865e27be33c66f1448158ff860e7fab9ac7ee2b383f9b28598c1",
+    "src/ReplicatedStorage/Shared/Net.luau": "4371d076e211e9c98842c738dc105c0e0c534bc68f7cf448d13cb8279bbd3f6e"
+  },
+  "fixtureSHA256": "8b4c7296bdcfc38d8698e8ddaef29fda0f99f97fe1acdbab0cc5d2eef8aaceb4",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "networkCalls": 0,
+  "prologueScope": {
+    "serverOpenPanel": "Welcome",
+    "requestRemote": "RequestTutorial",
+    "acceptRemote": "AcceptTutorial",
+    "remoteArgumentCount": 0,
+    "dialoguePagesPerFaction": 3,
+    "worldNpcCreated": false,
+    "newArtOrUploads": 0,
+    "clientPanelAndLiveEngineVerification": "pending_root"
+  },
+  "a23Facts": {
+    "firstMissionRewardGold": 150,
+    "nextGoalAfterBlacksmith": [
+      "NextIronLevel",
+      "NextIronGold",
+      "NextZone",
+      "GuideDone"
+    ],
+    "skillQuestCounts": "manual Released with MonstersHit >= 1 only (Auto ~= true)"
+  },
+  "coverage": [
+    "real Net registry includes unique RequestTutorial/AcceptTutorial names",
+    "faction guide three-page dialogue, once per session automatic open, explicit reopen/accept",
+    "no-argument remotes reject extra/nil payload, unready/dead/invalid choices and rate-limit denial",
+    "closed guide stays pending; zone/kill/respawn/watchdog cannot bypass acceptance",
+    "accepted step1/2/99 and pending step0 save/reload preserved without duplicate reward",
+    "welcome/travel pinned rows",
+    "first accepted meadow kill",
+    "personal/wrong-zone exclusion",
+    "four/five kills save-release-load",
+    "claim twice/reconnect no duplicate",
+    "legacy/corrupt counters",
+    "death/respawn/faction/class changes retain progress",
+    "A23-3 reward is 150 gold and covers the wood weapon price",
+    "A23-3 pinned next-goal row after the visit: NextIronLevel -> NextIronGold (live gold) -> NextZone -> removed with one GuideDone toast",
+    "next-goal row is never claimable, pays nothing, survives save/rejoin and keeps all ordinary quest slots",
+    "A23-3 pre-acceptance quest completion is paid quietly and never accepts the first mission",
+    "saved daily/extra Release quests migrate MinStacks50 to no stack gate and skill wording",
+    "A23-1 skill quests: auto, whiff (MonstersHit 0/absent), player-only and malformed MonstersHit rejected; one or many monsters count exactly once",
+    "skill quest wording equals the Config template after migration and reconnect (contract check)",
+    "migrated skill quest progress/rewards survive real DataService save/release/load",
+    "new ownership and mirrored fields",
+    "post-sale ownership save/release/load without item resurrection",
+    "legacy tier4 preserved without inventing earlier purchases",
+    "invalid/nonfinite mask, tier and visit repair",
+    "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
+    "B4 Data Version 3: fresh/v2/v1 records load and save as Version 3 with no field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
+    "finite-value save serialization guard and migration idempotence"
+  ],
+  "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here."
+}

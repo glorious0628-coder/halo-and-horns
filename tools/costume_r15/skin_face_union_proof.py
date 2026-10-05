@@ -1,3 +1,6 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
+# Still importable as a library ONLY because live tools import it (tools/monster_import_preflight.py,
+# tools/test_weapon_motion.py, GLB audit tools). Never run it directly.
 """Independently compare original-only face provenance to real GLB accessors.
 
 No metadata flag grants trust. Every declared original triangle/corner/vertex,
@@ -5,6 +8,8 @@ skin influence, approved UV mask and reusable PNG is re-read from actual files.
 """
 from __future__ import annotations
 
+if __name__ == "__main__":
+    raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import hashlib
 import json
 from pathlib import Path

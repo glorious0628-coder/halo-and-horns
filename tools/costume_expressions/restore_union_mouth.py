@@ -1,9 +1,11 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Restore the original connected mouth depression in a new union copy.
 
 Run with Blender --background --python this_file -- union.glb prepare.json
 profile.json new.glb. No new cap, triangles, UV, skin weights or image changes.
 Only the approved mouth ellipse's original connected positions/normals change.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import copy
 import hashlib
 import json

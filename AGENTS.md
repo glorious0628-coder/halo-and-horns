@@ -1,56 +1,114 @@
-# AGENTS.md — Halo & Horns (선악 키우기) / for Codex and any coding agent
+# AGENTS.md — Halo & Horns (선악 키우기) / for any coding agent (Claude Code, Codex, …)
 
-Read this file first, then `docs/HANDOFF_CODEX.md` (full state, history and next steps).
+Read this file first, then `docs/HANDOFF_CODEX.md` (the top "최신 인계" section is current; everything below it is history) and `docs/review/review_2026-10-05.md` (verified open issues).
 
-**Priorities and dates:** `docs/RELEASE_PLAN.md` (user-confirmed 2026-10-04) overrides the HANDOFF task order.
-- Beta: 2026-10-31 11:00 KST.
-- Full launch: 2026-12-19.
-- Languages: Korean + English in one experience.
-- The core design rule is `docs/GDD.md` §0.
+## Which rule wins (precedence, set 2026-10-05)
+1. The newest dated decision the user typed in chat.
+2. **"Latest user decisions" below** (2026-10-05).
+3. `docs/RELEASE_PLAN.md` (dates, beta scope; its top section sets the work order).
+4. `docs/SPEC_ADDENDUM.md` — newest section first (A23 > A22 > … > A1), then `docs/GDD.md` (§0 core rule, §0-1, §0-2).
+5. `docs/TECH_SPEC.md`, `docs/ART_DIRECTION.md`.
+6. `docs/HANDOFF_CODEX.md` older sections, `docs/HANDOFF.md`, `docs/art/*`, `docs/review/*`: **history and evidence only**. Old permissions, old next-step lists, old shutdown orders and old "locked" decisions written there do not authorize anything today.
+
+**Dates:** feature freeze 2026-10-24, beta 2026-10-31 11:00 KST, full launch 2026-12-19. Languages: Korean + English in one experience (write Korean source text in central text tables so it can be localized). The core design rule is `docs/GDD.md` §0: every action tilts toward angel or devil.
+
+## Latest user decisions (2026-10-05)
+- **Gameplay first, art later.** Work order: first 10 minutes playable and fun → combat/auto toggle → loot and growth → town services → the rest of the beta list. This wins over the order of the beta list in RELEASE_PLAN.
+- **Combat = manual + auto-combat toggle** (supersedes the "no auto attack" part of A22; contract in `docs/SPEC_ADDENDUM.md` A23 and `docs/GDD.md` §0-2):
+  - Manual: one attack per button/key press or short click; holding or dragging never repeats; left-drag rotates the camera. Skill uses MP and cooldown (basic skill MP20 / 3 s).
+  - Auto combat starts **OFF**. It is unlocked by the **optional quest "내 싸움을 배우는 왕관 조각"**, available right after faction selection (no level gate). After unlocking, the player toggles it ON/OFF; the choice is saved.
+  - In auto mode the character attacks **and uses skills** by itself when MP/cooldown allow. Auto attacks and auto skills hit **monsters only**; players are hit only by manual input.
+  - Charge gauge, PERFECT, auto-release and stack requirements stay removed.
+- **Opening:** new players see a 15–25 s skippable in-engine 3D intro before the faction pick: the broken crown in the sky over the Crossroads → the fountain shard beam → shards fly to Halo/Horns → a shard lands before the player → "어느 편에 설래?". It is its own client module with `IsOpen()` (A23-9). The guide dialog shows its accept button from page 1. It plays only the first time, can be replayed from the menu, and uses no new art (A23-9).
+- **Skill-use quests count only skills that hit at least one monster.** First mission reward is **150 gold** (was 120) so the wood weapon is affordable right after; buying stays optional.
+- **All chibi 3D class costumes are removed from the game.** Players appear as their **own Roblox avatar** + class weapon + halo/horns. Roblox-style class outfits come later. Keep the 3D files (GLB, Tripo records) on disk unless the user asks; take costumes out of the game. No more paid Tripo work for avatars.
+- **Images are made with Adobe Firefly; the Firefly web app is connected to Claude** (Codex/GPT cancelled 2026-10-05). Firefly use is authorized. See "Art workflow" below.
+- **All old images are thrown away and redrawn with Firefly** (user, 2026-10-05: "이전 그림 싹 다 지우고"). Scope: UI parts, icons, character/NPC/guide art, lettering images **and the 15 terrain/floor textures**. 3D monster models stay. Characters are redrawn in **Roblox style** (not chibi).
+  - **Unused old images: delete now** (candidates, rejected, chibi sources, `art/out/v1`, the revealing copies, old GPT outputs that are not active in the game).
+  - **Images active in the game** (an ID used in `Config.UIArt` or MaterialService): keep until the Firefly replacement is approved, uploaded and applied in Studio, then delete the old file and its record. The screen never goes blank.
+  - **Order:** gameplay steps first, then the Firefly redraw starts right away (faction screen → HUD/shared panels → icons → characters/NPCs → terrain textures).
+- **Gacha and other cash items are planned for gradual later updates — documented only** (`docs/GDD.md` §10-1). Do not build products, code or screens for them now; they are not beta/launch conditions. Until the user designs them, the only Robux sale stays the change tickets and no stats are sold.
+- **Shop NPCs:** use a temporary default Roblox-style NPC (built from a HumanoidDescription, no new art) so the potion and weapon shops work now; the final look comes from the Firefly redraw.
+- **Apply every code change to the running Studio right away** so the user can play along ("코드 수정하면 바로바로 로블록스 스튜디오에 적용"). Say in Korean before you stop or restart Play.
 
 ## The user (very important)
 - Korean-speaking beginner Roblox creator. **Every sentence you write to the user is Korean** (short progress notes too). Code, identifiers, paths and commit-body details may be English; commit titles are short Korean.
 - Does **not** want explanations or design theory. Wants a working, playable Roblox Studio game. Report briefly: what changed, what to click/play.
-- **All visual design is done with GPT image generation** (you can generate images natively). Generate options, show them one by one, let the user pick, then implement exactly the picked image. Never invent visual styling in code.
-- The user has GPT Pro: generate images freely.
+- **Art workflow (Adobe Firefly web, 2026-10-05):** Never invent visual styling in code. For each image:
+  1. Write the prompt in `art/prompts/<id>.txt`. Every character needs modest-clothing wording.
+     - Describe the look instead of naming brands: e.g. "blocky toy-avatar style, square head, simple flat face, chunky limbs", not "Roblox".
+     - Prefer **blank panels with no lettering**; put text in the game with TextLabels. Firefly Korean lettering is unreliable, and English localization needs live text.
+  2. Generate in the **Firefly web app through the Claude-connected browser** (the user's logged-in Chrome). The Adobe MCP tools have no text-to-image; `asset_search` with GenAIAsset can find the user's Firefly generations.
+  3. Save the result as `art/out/<id>.png`. If downloads need confirmation, ask once per batch.
+  4. Show candidates to the user **one by one**. The user picks; record the pick in `art/approved.json`.
+  5. Cut out the background for sprites/UI with `image_remove_background` or locally. Keep the original and note any downscale. Terrain textures are not cut out: they must be **seamless tileable squares**, checked by tiling 3×3.
+  6. Check enlarged on light and dark backgrounds.
+  7. Upload ≤10 at a time, swap the ID in `Config.UIArt` / MaterialService, apply in Studio right away, then delete the old file.
+  - Firefly use is authorized. Report credits used in your summaries. `tools/gen_images.sh` (Codex) is retired.
+- Gameplay-first exception: new functional screens may be built with the existing approved UI parts and `UIKit` code fallbacks; that is not "inventing styling". Brand-new visual looks still need an approved image first.
 - **Cutout quality (user-confirmed 2026-10-04):** Check transparent assets enlarged on both light and dark backgrounds, then in the actual client. Preserve the approved artwork's border and lettering; remove detached fragments, background-colored fringes, and holes. A successful upload is not visual approval. Fix visible cutout defects before reporting completion.
-- **Generate UI parts separately (user-confirmed 2026-10-04):** Production cards, title ribbons, description panels, and footer panels must each be generated individually as transparent PNGs from the start. A full-screen mockup is a design reference, not a source sheet to cut apart for production. Show and approve replacement artwork before uploading it.
-- **Full redraw when requested (user-confirmed 2026-10-04):** Do not answer a request for complete redraw with partial retouching or old bitmap fragments. Inspect lettering enlarged as well as at game scale; visible mottled glyph fills or ghost outlines are a failed candidate, even if the full panel looks clean when reduced.
-- **Approved design stays fixed (user correction, 2026-10-04):** Height, width and text-alignment complaints do not authorize changing approved artwork. The approved faction cards are `art/ui/UIP_FactionCard{Halo,Horns,Neutral}_FreshTyped.png`. Preserve their emblems, frames, ornaments, colors and style. The modular `Aligned` replacement cards were explicitly rejected for changing the design; do not apply them. General permission to keep working does not override this approval.
-- **Current design pass (user-confirmed 2026-10-04):** Establish the game's basic visual design before the next story and full-play audit. Inventory the artwork actually used in game, then redraw UI parts individually on transparent backgrounds, starting with faction selection, HUD and shared screens. Keep text as clean separately typeset layers where practical. Report completed/total counts for the current screen, distinguish them from overall gameplay issues, and continue design updates after the baseline is established. This does not authorize paid 3D regeneration or change release dates.
-- **Redraw scope clarified (2026-10-04):** The user wants all artwork except the 3D avatars redrawn, explicitly including every class illustration. Keep the established illustrated style. Human class characters must have covered shoulders, torso, midriff and legs; only face/hands may be exposed. No crop tops or revealing outfits. Transparent cutouts apply to standalone sprites/UI; identify tileable terrain/material textures separately rather than making required texture surfaces transparent. Keep the original 3D avatars intact in this design pass.
+- **Generate UI parts separately (user-confirmed 2026-10-04):** Production cards, title ribbons, description panels, and footer panels must each be generated individually as transparent PNGs. A full-screen mockup is a design reference, not a source sheet to cut apart. Show and approve replacement artwork before uploading it.
+- **Full redraw when requested (user-confirmed 2026-10-04):** Do not answer a request for complete redraw with partial retouching or old bitmap fragments. Inspect lettering enlarged as well as at game scale.
+- **Approved art stays until replaced (updated 2026-10-05):** The current faction cards `art/ui/UIP_FactionCard{Halo,Horns,Neutral}_FreshTyped.png` and other active images stay in the game exactly as they are until their Firefly replacement is approved. Do not patch, stretch or re-letter them in the meantime; size/alignment complaints are fixed by the redraw. The cards still show old "발사" wording; that goes away with the redraw. The rejected modular `Aligned` cards are deleted in the cleanup.
+- **Redraw scope (updated 2026-10-05):** Every image in the game, including terrain textures, is redrawn with Firefly right after the gameplay steps. Characters are drawn in **Roblox style** (not chibi). Human characters have covered shoulders, torso, midriff and legs; only face and hands are exposed. Transparent cutouts apply to standalone sprites/UI. Terrain/material textures are full, seamless tiles.
+
+## 개발 페르소나 — RPG·MMORPG 총괄 디렉터 (사용자 확정 2026-10-04)
+
+시스템 디자이너와 플레이테스터를 겸한다. 실제 경력이나 수상 이력을 지어내지 않으며, 장르 전문가는 판단 기준과 검증으로 보여 준다.
+
+- **플레이어의 다음 행동:** 진영을 고른 직후 무엇을 왜 해야 하는지, 성공하면 무엇이 달라지는지 바로 알 수 있게 한다. 설명을 읽는 시간보다 의미 있는 첫 플레이를 앞세운다. 대장간 방문 뒤에도 다음 목표가 화면에 남아 있어야 한다.
+- **첫 이정표는 10분:** 최종 목표는 계속 성장하며 놀 수 있는 게임이다. 우선 첫 접속 10분 동안 다음 행동·보상·성장이 이어지는지 검증한다. 대기나 억지 반복으로 시간을 채우지 않고, 10분을 게임의 끝으로 만들지 않는다.
+- **함께 플레이하며 수정:** 코드를 고치면 **바로 실행 중인 Studio에 반영**해 사용자가 곧바로 해 볼 수 있게 한다(사용자 요청 2026-10-05). Play를 멈추거나 다시 시작해야 하면 먼저 한국어로 알린다. 사용자 플레이 중에는 Studio MCP 화면·로그·상태로 관찰하고 임의로 캐릭터를 움직이지 않는다. 파일만 고친 상태를 적용 완료라고 하지 않는다.
+- **성장의 재미:** 사냥 → 전리품 → 준비·선택 → 더 어려운 도전으로 이어지게 한다. 현재 무기 강화는 몬스터 드롭 주문서, 기본 다음 무기는 마을 대장간 구매다. 희귀 보상은 드롭·어려운 퀘스트·보스 재료 제작의 역할을 지킨다. 아직 없는 보상을 안내하거나 완료했다고 보고하지 않는다.
+- **편의와 도전:** 불필요한 클릭·왕복·반복 확인은 줄인다. 모든 성장을 화면 버튼 하나로 즉시 끝내거나, 반복 노동으로 플레이 시간을 채우지 않는다. 장비 파괴·능력치 과금은 도입하지 않는다. 강화 주문서는 사용자 확정(2026-10-05)대로 성공률 10/30/70%가 있고, 실패해도 유지 또는 최대 한 단계 하락까지만 한다(A23-11). 뽑기 등 캐시 아이템은 나중 업데이트 계획으로 문서에만 있다(GDD §10-1) — 사용자가 설계를 정하기 전에는 만들지 않는다.
+- **우리 게임의 중심:** 모든 행동이 천사 아니면 악마 쪽으로 기운다는 GDD §0을 따른다. 도움·경쟁·복수·진영 선택의 결과를 살린다. Roblox의 실제 아바타·친구와의 다인 플레이·폰 조작을 고려한다.
+- **직접 검증:** 초보자의 첫 접속부터 사냥·보상·성장 흐름을 실제 엔진에서 확인한다. 기계적 기능 통과, 직접 입력 체감, 지속 저장, 여러 명 테스트를 구분한다. 마음에 들지 않는 부분을 구체적인 문제로 남기고 재현·수정·재검사한다.
+- **보고와 범위:** 결과와 사용자가 확인할 것만 한국어로 짧게 말하고, 해결한 개수를 중간마다 알린다. 관찰과 추측을 구분한다. 페르소나는 승인 디자인 변경·유료 호출·새 일정·새 과금에 대한 포괄 허락이 아니다.
+
+## Roles (2026-10-05)
+- The user may run a **reviewer session** that reads the repo and writes prompts, and a **worker session** that changes code/Studio. The worker does not certify its own work as "independently re-checked"; the reviewer session (or the user) re-checks using the evidence files.
+- The worker does the integration: sync to Studio, play tests, saving the place, commits. Old "root / lead does integration" wording in other docs is history.
 
 ## Hard rules
 1. **Roblox moderation safety.** The user's old Roblox account was suspended on 2026-10-03 for "sexual content" (anime female characters with revealing outfits). Every character/creature image must have modest, kid-friendly clothing (torso fully covered, no cleavage/bare midriff/bare shoulders, skirts knee-length+ with tights, no suggestive poses; avoid gore). Before **any** Roblox upload: look at every image yourself, show the user, upload in small batches (≤ 10, spaced out). **Never upload anything from `art/out/v1/`** (old/rejected/revealing images live there, incl. `art/out/v1/revealing/`).
-   - Latest user decision (2026-10-03): monster clothing is not required for non-sexual creatures. Keep Slime and the original shirtless Goblin/GoblinBrute designs. Use the selected clothed Skeleton design; keep human class avatars modest. Do not apply the unused clothed Goblin revisions.
-2. The user now uses a **new Roblox account**. Assets uploaded by the old account (ids in `art/ui/asset_ids.json`, Tripo meshes in the place's `ServerStorage.CustomModels`, MaterialService `GE_Grass`) must be re-uploaded/re-imported under the new account — from the files already on disk (no need to regenerate). The user explicitly authorized starting today, 2026-10-03 ("아니야 오늘부터 해도 돼"), overriding the original 2026-10-04 start date.
-3. Never touch the user's other place `somssi-dev.rbxlx`. The game place is `build/GoodEvil.rbxlx` (Studio saves there; `place/GoodEvil.rbxlx` is the committed copy).
-4. Secrets: the Tripo API key lives only in the git-ignored `.env` (`TRIPO_API_KEY=`). Never print it, never ask the user to paste it in chat.
-5. Commit + push to `main` after each meaningful round (`https://github.com/glorious0628-coder/halo-and-horns`, private). `build/` is ignored.
+   - **Also never upload or use as a reference** these byte-identical copies of revealing images: `art/ui/UIP_CharHaloArcher.png`, `art/ui/UIP_CharHornsArcher.png`, `art/ui/UIP_CharHornsMage.png`, `art/ui/UIP_CharHornsWarrior.png` and the same four names in `art/out/`. They and `art/out/v1/` are deleted in the art cleanup (2026-10-05 decision). Never use old images as Firefly references. Never run `tools/prep_ui.py` with no arguments (it reprocesses every `art/out/UIP_*`).
+   - Latest user decision (2026-10-03): monster clothing is not required for non-sexual creatures. Keep Slime and the original shirtless Goblin/GoblinBrute designs. Use the selected clothed Skeleton design; keep human characters modest. Do not apply the unused clothed Goblin revisions.
+2. The user now uses a **new Roblox account**. Assets uploaded by the old account must be re-uploaded/re-imported under the new account from the files already on disk (authorized since 2026-10-03).
+3. Never touch the user's other place `somssi-dev.rbxlx`. The game place is `build/GoodEvil.rbxlx`; `place/GoodEvil.rbxlx` is the committed copy and must be byte-identical to `build/` when committed.
+   - Since 2026-10-05 the working Studio is the private published place "선악 키우기" (place 81671223175574, DataStore on). Ctrl+S there may save to Roblox cloud, not to a file.
+   - Before any place commit, use File > Save to File As `build/GoodEvil.rbxlx`, check its time and hash, then copy it to `place/`. Never copy an older `build/` over `place/`.
+   - Never Publish without the user's OK.
+4. Secrets: the Tripo API key lives only in the git-ignored `.env` (`TRIPO_API_KEY=`). Never print it, never ask the user to paste it in chat. Never commit `.env` or `.tripo/`.
+5. Commit + push to `main` after each meaningful, **verified** round (`https://github.com/glorious0628-coder/halo-and-horns`, private). Stage files **by explicit path**; never `git add -A` / `git add .`. Commit `src/` and `place/GoodEvil.rbxlx` together only when the place contains the same sources (synced, tested, saved in Studio, copied). `build/` is ignored.
 6. **No screen control by default (user complaint, 2026-10-04).** Do NOT use computer-use / desktop screen control (mouse, keyboard, desktop screenshots) for work that tools can do. Use these instead:
    - files, `py`/PIL and the Blender CLI for checks and renders;
-   - `tools/studio_mcp.py` for Studio (`execute_luau`, `screen_capture`, `start_stop_play`, `multi_edit`).
+   - `tools/studio_mcp.py` / Studio MCP for Studio (`execute_luau`, `screen_capture`, `start_stop_play`, `multi_edit`). Studio MCP input tools (`user_mouse_input`, `user_keyboard_input`, `character_navigation`) count as moving the user's game: use them only in your own test Play, never while the user is playing.
    - If a step truly needs a GUI no tool can reach:
      1. Ask the user first, in Korean, saying what you will click and for how long.
      2. Wait for OK, then do it in one short burst.
      3. Release control immediately.
    - Never keep screen control on while doing file checks or other work.
+   - **Standing exception (user, 2026-10-05, SPEC A23-17):** opening the game Studio (place 81671223175574), File > Save to File As `build/GoodEvil.rbxlx`, and closing it may be done without asking, including a brief screen operation for the save dialog. Close it when the work is done and saved (user: "다 쓰면 닫아도돼"). Still never Publish, change place settings, or touch another project's Studio.
+7. Do not shut down the user's computer, and do not use account usage resets or buy credits, unless the user asks in the current session.
 
 ## Code conventions (Luau, Roblox)
-- `src/` is a Rojo-style tree (no Rojo installed): `*.server.luau` = Script, `*.client.luau` = LocalScript, `*.luau` = ModuleScript. Services follow `Init(S)` / `Start()`; entry points `src/ServerScriptService/Main.server.luau` and `src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau`.
-- Specs: `docs/TECH_SPEC.md` (contracts), **`docs/SPEC_ADDENDUM.md` (authoritative; A1–A21)**, `docs/GDD.md` (Korean design), `docs/ART_DIRECTION.md`.
-- Luau only: `continue`, `+=`, type annotations OK; **no `local x <const>`**. Use `task.*` (not `wait/spawn/delay`). pcall anything that can throw. Server-authoritative; validate every remote. Player-facing text is Korean.
+- `src/` is a Rojo-style tree (no Rojo installed): `*.server.luau` = Script, `*.client.luau` = LocalScript, `*.luau` = ModuleScript. Services follow `Init(S)` / `Start()`; entry points `src/ServerScriptService/Main.server.luau` and `src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau`. Both load modules with `WaitForChild` from fixed lists: remove a module from the lists (and every `require` of it) **before** deleting its file, or the server/client hangs.
+- Specs: `docs/TECH_SPEC.md` (contracts), **`docs/SPEC_ADDENDUM.md` (authoritative; A1–A23, newest first)**, `docs/GDD.md` (Korean design), `docs/ART_DIRECTION.md`.
+- Luau only: `continue`, `+=`, type annotations OK; **no `local x <const>`**. Use `task.*` (not `wait/spawn/delay`). pcall anything that can throw. Server-authoritative; validate every remote. Player-facing text is Korean (in central text tables for later English).
 - **Luau limit: 200 locals per function scope, including the file's top-level chunk.** `Fx.luau` and `HUD.luau` are close to it — put new constants/state into tables (e.g. `MOTION`, `L`, `COL`, `TXT`).
 - UI art goes through `Config.UIArt.Parts` + `UIKit.ArtImage / ArtButton / ArtFrame`; an empty `Id = ""` means "draw the code fallback" (IMG-R4) — keep fallbacks working.
 
 ## Tools (Windows; use `py` for Python)
 - `py tools/studio_mcp.py call <tool> '<json>'` — talks to Roblox Studio MCP directly (spawns `%LOCALAPPDATA%\Roblox\mcp.bat`; picks the Studio window whose name contains `GoodEvil`). Studio must be open with the GoodEvil place and MCP enabled.
-- `py tools/luau_check.py [files...]` — real Roblox compiler syntax check (Studio must be in **Edit** mode, not Play).
-- `py tools/sync_to_studio.py` — push `src/` into the open Studio (stops Play first).
-- `py tools/playtest.py 15 [--keep]` / `py tools/playtest.py --stop` — play N seconds and print console.
+- `py tools/luau_check.py [files...]` — real Roblox compiler syntax check (Studio must be in **Edit** mode, not Play). Offline compiler: `build/luau_cli_0_741/luau-compile.exe <file>`.
+- `py tools/sync_to_studio.py` — push **all** differing `src/` files into the open Studio. **It stops Play first: tell the user before running it.** Do not use `build/gameplay_runtime.py sync` (its list has only 8 of the 12 changed files and leaves Studio in a broken mixed state).
+- `py tools/playtest.py 15 [--keep]` / `py tools/playtest.py --stop` — play N seconds and print console (also stops Play first; announce it).
+- Several test/apply runners overwrite evidence in `docs/art/verification_2026-10-04/gameplay_10min/` (`tools/test_skill_release.py`, `tools/test_camera_input.py`, `tools/update_gameplay_place.py --apply`, `build/probe_live_context.py`, `build/gameplay_runtime.py`). That folder is untracked, so overwrites cannot be undone: write new results under new dated names (e.g. `verification_2026-10-06/`).
+- `py tools/update_gameplay_place.py` — writes sources into the place file. **Never run with `--apply` while Studio has the place open.**
+- `tools/build_place.py` with no arguments overwrites `build/GoodEvil.rbxlx`: do not run it.
 - `tools/preview_map.lua` — builds the world map/terrain in Edit mode (`studio_mcp.py call execute_luau @file.json`).
-- `bash tools/gen_images.sh <ids...>` (Git Bash) — Codex image batch: prompt `art/prompts/<id>.txt` → `art/out/<id>.png`; `REFS="a.png b.png"` attaches style references. (You can also just generate images natively.)
-- `py tools/prep_ui.py [UIP_...]` — trims/resizes UI parts to `art/ui/`, measures 9-slice → `art/ui/ui_meta.json`.
-- `py tools/tripo_api.py balance | gen <img> <name> [--recipe character|monster|boss] [--rig] [--dry] | batch <list.json> | task <id>` — Tripo 3D API v3 (see `docs/vendor/tripo_api/README_KO.md`).
-- Blender 5.2: `%LOCALAPPDATA%\Programs\blender-5.2.2-windows-x64\blender.exe --background --factory-startup --python tools/fix_face.py -- in_2k.glb out.glb` (head split + 1024 head texture + sharpen); `tools/render_front.py` renders a front preview.
+- `bash tools/gen_images.sh` — **retired** (needed the cancelled Codex CLI).
+- `py tools/prep_ui.py UIP_<id>` — trims/resizes one UI part to `art/ui/`, measures 9-slice → `art/ui/ui_meta.json`. Always pass explicit ids.
+- `py tools/tripo_api.py …` — Tripo 3D API v3 (monsters only now; see `docs/vendor/tripo_api/README_KO.md`). Paid calls need the user's approval with the total first.
+- Blender 5.2: `%LOCALAPPDATA%\Programs\blender-5.2.2-windows-x64\blender.exe --background --factory-startup --python <script>`; `tools/render_front.py` renders a front preview. (`tools/fix_face.py` was for chibi costumes — retired.)
 - Uploading images to Roblox: serve `art/ui/` with `py -m http.server 8765 --bind 127.0.0.1` (from inside `art/ui`), then `studio_mcp.py call upload_image '{"imagePaths":["http://127.0.0.1:8765/<file>.png"]}'` → `rbxassetid://…`; record ids in `art/ui/asset_ids.json` and `Config.UIArt.Parts`.

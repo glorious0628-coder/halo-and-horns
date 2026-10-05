@@ -1,3 +1,4 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Optional in-memory subdivisions of genuine skinned source triangles.
 
 The source disk file is never written. New corners are barycentric samples of
@@ -6,6 +7,7 @@ using the original elbow/wrist bone positions, never a guessed skeleton.
 """
 from __future__ import annotations
 
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 from collections import Counter
 import hashlib
 import json

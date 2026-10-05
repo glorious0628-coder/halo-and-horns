@@ -1,0 +1,1175 @@
+{
+  "status": "passed",
+  "checks": 2257,
+  "failedChecks": 0,
+  "namedChecks": 146,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "dailies-config",
+      "check": "Config.Quests.Newbie: Lv1-9, 2-minute dailies, 4-minute chest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "the newbie band ends where Goblin Woods opens (Lv10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "every newbie row reuses a non-PvP template Id",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "every newbie row has exact Targets",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "newbie pool = three different goals (kill / skill / gold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "no goose / golden-luck goals for rookies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "first kill row: 왕 슬라임 3마리, strict",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "Lv1-9 newbie daily 72 gold + 120 XP, chest 144 + 240",
+      "pass": 9,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "Lv1 -> Lv10 needs 1381 XP (Config.XPToNext, EarlyMult below Lv10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "one day's newbie set pays 600 XP < 1381 (no Lv10 from one day of dailies)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "a fresh Lv1 player who only claims one day's dailies ends below Lv10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "DailyDayMinutes: Lv1-9 = 2 x 3 + 4 = 10, Lv10+ = 25",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "a missed Lv1-9 day (70% of 10 minutes) pays less than a played day (360 + 600)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "a missed Lv1-9 day pays exactly the documented 252 gold (70% of 360; float floor must not lose 1 gold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "3 missed days (max) = 1260 XP < 1381 (no Lv10 from vacation alone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "Lv10+ vacation unchanged (70% of 25 minutes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "Lv1-9: three different dailies (kill / skill / gold)",
+      "pass": 126,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "all three are dailies",
+      "pass": 378,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "newbie daily reward = HuntValue(level, 2) (72 / 120)",
+      "pass": 378,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "a new daily starts unfinished",
+      "pass": 378,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "gold row: 40-60 hunting gold, template text",
+      "pass": 126,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "왕 슬라임 row: 3 kills, strict",
+      "pass": 94,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "kill text names the monster and the target",
+      "pass": 126,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "skill row: 3-5 monster hits, template text",
+      "pass": 126,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "skill row text says the skill must hit a monster",
+      "pass": 126,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "DailyLevel / DailyDay record the generation band",
+      "pass": 126,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "슬라임 row: 12-15 kills, not strict",
+      "pass": 32,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "both kill variants occur (king slime 3 more often than 12-15 slimes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "Lv10 dailies keep the old reward (DailyQuestReward) and are never strict",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "Lv10 kill daily = 50-60 goblins (old sizes)",
+      "pass": 9,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "DailyLevel and the newbie set survive a save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-generate",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "strict 왕 슬라임 row: a slime counts 0 (no fractions)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "a king slime counts exactly 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "a stronger monster counts 1 too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "an unknown monster never counts for a strict row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "auto casts / whiffs / malformed events do not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "one manual cast hitting monsters counts once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "sale / quest / event gold does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "monster gold counts 1:1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "all three can be finished by hunting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "finished dailies wait for a claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "finishing pays nothing before the claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "each claimed newbie daily pays 72 gold + 120 XP",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "a claimed daily slot becomes an extra quest",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "the third claim also pays the newbie chest (144 + 240)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "the full rookie day pays 360 gold + 600 XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "three claims recorded",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "a second claim of the same slot pays nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "슬라임 row: a slime and a king slime count 1 each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-progress",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-reroll-band",
+      "check": "a rerolled newbie daily stays a newbie daily",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-reroll-band",
+      "check": "the rerolled target comes from the newbie rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-reroll-band",
+      "check": "Lv9 set generated",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-reroll-band",
+      "check": "Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-reroll-band",
+      "check": "an old saved rookie daily is kept until the next day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-reroll-band",
+      "check": "the old daily pays its stored 180 / 300 (Lv1 cap = 5-minute value)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-reroll-band",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-reroll-band",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-day-change",
+      "check": "2 missed rookie days = VacationReward(1, 2) in the newbie band (840 XP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-day-change",
+      "check": "a fully claimed rookie day adds no vacation",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-day-change",
+      "check": "one claim of three = 2 of 10 rookie minutes -> 0.8 vacation day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-day-change",
+      "check": "midnight auto-pay: stored 72/120 x 3 + the chest of the OLD (Lv1) band",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-day-change",
+      "check": "the new day is generated in the current (Lv10) band",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-day-change",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-day-change",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "Config.Goose co-op numbers 20 / 0.7 / 3 manual hits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "only Halo on the server: GameState GooseMode Coop / Halo / target 20 / 1 person",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "co-op start line announced (Halo: 함께 구조)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "manual hits pull ManualCount 2 each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "no 'gauge full' line before the target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "'gauge full' announced exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "a full gauge does not end the event early",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "co-op success pays 70% of the winner reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "co-op never gives war points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "co-op success gives no cheer star",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "personal co-op reward toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "GooseFinished('Halo', { H1 = 20 }, { Mode Coop, Success })",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "co-op result line announced",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "GameState back to Versus / None / 0 after the event",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "only Horns: co-op for Horns (함께 밀렵)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "Horns co-op success: 70%, no war points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "3 Halo players -> target 60 (Neutral not counted)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "a Neutral player pulls 0 (A6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "a teammate joining later does not change the target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "2 Halo players -> target 40",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "gauge not full -> result Tie, co-op failed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "failed co-op pays the tie share (40%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "failed co-op gives +1 cheer star each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "both still get goose quest credit (GooseFinished rewarded)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "co-op fail line, no war points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "auto hits still fill the co-op gauge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "fewer than 3 manual hits (2 manual + autos, auto only): no reward, no quest credit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "they are told why (NeedManual)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "exactly 3 manual hits are paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "nobody eligible: not co-op (Pending shows as tug)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "Neutral pulls 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "Pending event ends as a plain tie",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "plain tie line, no war points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "the first eligible hit fixes the mode and counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "Pending -> co-op for the first eligible faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "the co-op line is announced when the mode is fixed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "both factions present: Versus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "versus winner by totals",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "versus pays 100% / 40%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "versus win gives war points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "a rival who arrives during co-op pulls 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "the rival is told once ('다음 거위부터 줄다리기')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "the rival is not paid; the co-op side still succeeds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "rival left: judged by the co-op rule against the remaining headcount",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "rival left: 70%, no war points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "rival left: the result line says why",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-modes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "Config.ClassChange.FreeKeepLevelBelow = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "Config.ClassChangeKeepsLevel(level)",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "below Lv5 a free change keeps level and XP",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "below Lv5 no ticket is ever spent (even when asked)",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "keep-level change keeps the HP fraction (no free full heal)",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "ClassChangedFreeKeep notice (Lv5 전이라 레벨 유지)",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "ClassChanged fired once",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "from Lv5 a free change goes back to Lv1 / XP 0 (old rule)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "level-losing change: full refresh and ClassChangedFree notice",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "from Lv5 a ticket change keeps the level and spends one ticket",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "ClassChangedTicket notice",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "no ticket: refused, nothing changes",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "no saved level: the Level attribute (3) decides -> keep",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "no saved level: Level attribute 12 -> the old reset rule",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "NaN level counts as Lv1 -> keep",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "refused: same class",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "refused: in PvP combat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "refused: in a PvP zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "refused: dead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "refused: bad class id",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "refused: non-boolean ticket flag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "ClassPicker footer text takes the Lv5 number from Config",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-change",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [
+    {
+      "Group": "dailies-config",
+      "Text": "Lv1 one-day daily XP: newbie 600 vs the old Lv10+ formula 1500 (Lv10 needs 1381); a Lv1 player who only claims dailies reaches Lv7 after day 1 and needs 3 days for Lv10."
+    }
+  ],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 19,
+    "applied": 19,
+    "caught": 19,
+    "results": [
+      {
+        "mutation": "newbie daily pays the 5-minute reward",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-generate :: DailyLevel and the newbie set survive a save",
+          "dailies-generate :: newbie daily reward = HuntValue(level, 2) (72 / 120)",
+          "dailies-progress :: each claimed newbie daily pays 72 gold + 120 XP",
+          "dailies-progress :: the full rookie day pays 360 gold + 600 XP",
+          "dailies-progress :: the third claim also pays the newbie chest (144 + 240)",
+          "dailies-reroll-band :: Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "newbie band includes Lv10",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-day-change :: the new day is generated in the current (Lv10) band",
+          "dailies-generate :: Lv10 dailies keep the old reward (DailyQuestReward) and are never strict",
+          "dailies-generate :: Lv10 kill daily = 50-60 goblins (old sizes)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "strict king-slime row counts slimes as fractions",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-progress :: a king slime counts exactly 1",
+          "dailies-progress :: a stronger monster counts 1 too",
+          "dailies-progress :: an unknown monster never counts for a strict row",
+          "dailies-progress :: strict 왕 슬라임 row: a slime counts 0 (no fractions)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "newbie chest pays the Lv10+ chest",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-day-change :: midnight auto-pay: stored 72/120 x 3 + the chest of the OLD (Lv1) band",
+          "dailies-progress :: the full rookie day pays 360 gold + 600 XP",
+          "dailies-progress :: the third claim also pays the newbie chest (144 + 240)",
+          "dailies-reroll-band :: Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "chest ignores the generation band",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-day-change :: midnight auto-pay: stored 72/120 x 3 + the chest of the OLD (Lv1) band",
+          "dailies-reroll-band :: Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "newbie rows allow a repeated goal",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-generate :: Lv1-9: three different dailies (kill / skill / gold)",
+          "dailies-progress :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "vacation uses the Lv10+ day value",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-config :: 3 missed days (max) = 1260 XP < 1381 (no Lv10 from vacation alone)",
+          "dailies-config :: a missed Lv1-9 day (70% of 10 minutes) pays less than a played day (360 + 600)",
+          "dailies-config :: a missed Lv1-9 day pays exactly the documented 252 gold (70% of 360; float floor must not lose 1 gold)",
+          "dailies-day-change :: 2 missed rookie days = VacationReward(1, 2) in the newbie band (840 XP)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "co-op success pays 100%",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: Horns co-op success: 70%, no war points",
+          "goose-coop :: co-op success pays 70% of the winner reward",
+          "goose-coop :: personal co-op reward toast",
+          "goose-coop-rules :: exactly 3 manual hits are paid",
+          "goose-modes :: rival left: 70%, no war points"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "co-op gives war points",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: Horns co-op success: 70%, no war points",
+          "goose-coop :: co-op never gives war points",
+          "goose-modes :: rival left: 70%, no war points"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "co-op target ignores the headcount",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop-rules :: 2 Halo players -> target 40",
+          "goose-coop-rules :: 3 Halo players -> target 60 (Neutral not counted)",
+          "goose-coop-rules :: a teammate joining later does not change the target"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "auto-only players are paid",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop-rules :: fewer than 3 manual hits (2 manual + autos, auto only): no reward, no quest credit",
+          "goose-coop-rules :: they are told why (NeedManual)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "rival pulls during co-op",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-modes :: a rival who arrives during co-op pulls 0",
+          "goose-modes :: the rival is told once ('다음 거위부터 줄다리기')"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no co-op when only one faction is present",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: 'gauge full' announced exactly once",
+          "goose-coop :: GooseFinished('Halo', { H1 = 20 }, { Mode Coop, Success })",
+          "goose-coop :: Horns co-op success: 70%, no war points",
+          "goose-coop :: co-op result line announced",
+          "goose-coop :: co-op start line announced (Halo: 함께 구조)",
+          "goose-coop :: co-op success gives no cheer star"
+        ],
+        "newFailingCount": 22
+      },
+      {
+        "mutation": "rival-left tug is a forced tie again",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-modes :: rival left: 70%, no war points",
+          "goose-modes :: rival left: judged by the co-op rule against the remaining headcount",
+          "goose-modes :: rival left: the result line says why"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "GooseFinished skipped for co-op",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: GooseFinished('Halo', { H1 = 20 }, { Mode Coop, Success })",
+          "goose-coop :: group ran to the end without a Lua error",
+          "goose-coop-rules :: group ran to the end without a Lua error",
+          "goose-modes :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "free change below Lv5 resets the level",
+        "file": "src/ServerScriptService/ClassService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-change :: ClassChangedFreeKeep notice (Lv5 전이라 레벨 유지)",
+          "class-change :: NaN level counts as Lv1 -> keep",
+          "class-change :: below Lv5 a free change keeps level and XP",
+          "class-change :: below Lv5 no ticket is ever spent (even when asked)",
+          "class-change :: keep-level change keeps the HP fraction (no free full heal)",
+          "class-change :: no saved level: the Level attribute (3) decides -> keep"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "ticket spent below Lv5",
+        "file": "src/ServerScriptService/ClassService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-change :: below Lv5 no ticket is ever spent (even when asked)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "keep-level change fully heals",
+        "file": "src/ServerScriptService/ClassService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-change :: keep-level change keeps the HP fraction (no free full heal)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "keep threshold off by one",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-change :: ClassChangedTicket notice",
+          "class-change :: Config.ClassChangeKeepsLevel(level)",
+          "class-change :: from Lv5 a free change goes back to Lv1 / XP 0 (old rule)",
+          "class-change :: from Lv5 a ticket change keeps the level and spends one ticket",
+          "class-change :: level-losing change: full refresh and ClassChangedFree notice",
+          "class-change :: no ticket: refused, nothing changes"
+        ],
+        "newFailingCount": 6
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "810d154c99fa9f12a2c3cb487406e8538bce96645d84a9912eb3ed2ea699cc44",
+    "src/ReplicatedStorage/Shared/Net.luau": "4371d076e211e9c98842c738dc105c0e0c534bc68f7cf448d13cb8279bbd3f6e",
+    "src/ServerScriptService/DataService.luau": "fc52f4bd0eec0acc5fca6a2c7b870048d5296771d24cfcd53abd7a56eadce5a5",
+    "src/ServerScriptService/QuestService.luau": "d7d6046f76e4865e27be33c66f1448158ff860e7fab9ac7ee2b383f9b28598c1",
+    "src/ServerScriptService/GooseService.luau": "b60ecce8b5f7bbb8774e7eacc6cf6c221fe7636efddc7bce63731b3fb067a02e",
+    "src/ServerScriptService/ClassService.luau": "0727ca8ffef339ad9d452963154118eb7091bc59956688a7295f27355bb79263"
+  },
+  "fixtureSHA256": "6241cea3a3b82f4ab80b5e4744633ba7754470854aefc901a36438f52d2e32d8",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-14 (user 2026-10-05): Lv1-9 dailies = three different short goals (king slime 3 strict / slime 12-15, skill hits 3-5, hunting gold 40-60), 72 gold + 120 XP each and a 144 + 240 chest (one day = 600 XP < 1381 for Lv10), vacation 252 + 420 per missed rookie day, chest capped to the generation band; golden goose co-op when only one of Halo/Horns is present: target 20 x headcount, 70% of the winner reward, 0 war points, 3 manual hits to be paid, Neutral excluded, GooseFinished still fired (quest credit), rival-left tug judged by the co-op rule; free class change below Lv5 keeps level/XP (no ticket spent, HP fraction kept), from Lv5 free = Lv1 / XP 0 and ticket = level kept.",
+  "limitations": "Offline doubles: DataStore table, seeded Util.Random, ProgressionService pay recorder (no level-ups), faction counts from the fixture roster, no goose 3D model, rate limits always pass. Client HUD/Panels are only checked statically. Studio play, multiple clients and the real timers are not certified here."
+}

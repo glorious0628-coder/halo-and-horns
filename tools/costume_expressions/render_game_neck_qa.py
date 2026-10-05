@@ -1,8 +1,10 @@
+# RETIRED 2026-10-06: costumes removed, A23-5. Kept on disk only as history; it exits immediately if run.
 """Compare original/expression shared skins at existing game Fx keyframes.
 
 Uses actual proxy Part bind CFrames and Motor C0/C1 FK, not original Bone Euler
 angles. The stock Animator layer is identity here; native gameplay remains QA.
 """
+raise SystemExit('RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run.')
 import argparse
 import hashlib
 import json
