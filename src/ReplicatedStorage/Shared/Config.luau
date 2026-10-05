@@ -1522,7 +1522,7 @@ Config.RateLimits = {
 
 -- A23-11 / A23-12 drops, items and scroll enhancement (user decisions 2026-10-05; LootService is the only writer).
 -- Every contributor of a kill gets an own server roll (MonsterKilled is fired per contributor). Items go straight
--- into the save (no ground pickup, no bag screen besides the menu "아이템" list) and are never lost on death.
+-- into the save (still no ground pickup; the bag window comes with A23-19 / BB7, until then the menu "아이템" list) and are never lost on death.
 Config.Loot = {
 	MaxEnhance = 10, -- +10 = attack x2
 	EnhancePerLevel = 0.10, -- +1 = attack +10% (Config.EnhanceMult)

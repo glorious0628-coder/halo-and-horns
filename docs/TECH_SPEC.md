@@ -1974,7 +1974,7 @@ ClassService.GetClassDef(player) -> table                           -- Config.Cl
 ```
 JusticeService.Init(S) ; JusticeService.Start()
 JusticeService.GetPower(player) -> number            -- Config.PowerOf(Level, WeaponTier, 1 + RebirthBonus)
-JusticeService.GetCombatPower(player) -> number      -- R1 CR-L5: Config.PowerOf(Level, WeaponTier, 1) (bully weak-victim test)
+JusticeService.GetCombatPower(player) -> number      -- R1 CR-L5: Config.PowerOf(Level, WeaponTier, 1) (bully weak-victim test); 2026-10-05 (beta_basics BB4): now includes the weapon enhance (+N scroll level, WeaponEnhance) and will return the integer Config.CombatPower(level, tier, enhance) (no rebirth); sets player attribute CombatPower. GetPower stays the faction-scale value ("진영 힘", with rebirth).
 JusticeService.GetFactionScale(factionId) -> number  -- current S of that faction (1 for "None")
 JusticeService.GetWeakerFaction() -> "Halo" | "Horns" | "None"
 JusticeService.GetDamageMult(player) -> number       -- GetFactionScale(faction) * Config.BullyMult(BullyStacks)
@@ -2062,7 +2062,7 @@ CR-M4). `lastHitOn` became `dmgLog[a][v] = { { T, A } }` (amount > 0, BaitWindow
    repeated = #koLog[killer][victim] >= Config.Bully.RepeatKOs
    bully = weak or fresh or repeated
    ```
-   **R1:** `weak` compares `JusticeService.GetCombatPower` (no rebirth bonus, CR-L5). The anti-bait line becomes
+   **R1:** `weak` compares `JusticeService.GetCombatPower` (no rebirth bonus, CR-L5; since BB4 it includes the weapon enhance, ratio unchanged). The anti-bait line becomes
    `baited = <victim's damage to the killer in dmgLog within BaitWindow> >= Config.Bully.BaitMinPct * Config.MaxHealth(killer
    Level, faction, class)` (CR-M15); `if weak and baited then weak = false end`; `defense = baited and (fresh or repeated)`;
    `if defense or kstate(killer) ~= "None" then bully = false end` (CR-M14). A `defense` KO builds
@@ -2110,10 +2110,19 @@ Board text (via `S.MapBuilder.GetBoardLabel().Text`), newline-separated: `"현�
 `"1. 이름 ★★★ 900G"` (players with `Bounty > 0`, sorted by Bounty desc; append `" 깡패"` when BullyStacks > 0) or
 `"(아직 없음)"`, blank line, `"빛의 기사단 명예 TOP 3"`, up to 3 lines `"1. 이름 명예 120"` (Halo players by Honor desc)
 or `"(아직 없음)"`.
+**갱신 (2026-10-05, beta_basics BB37):** the board also gets an Infamy TOP 3 block (`"뿔 군단 악명 TOP 3"`, Horns players by Infamy desc, up to 3 lines, `"(아직 없음)"` when empty). Every name on the board (and in every other server-wide announcement) goes through `AnnounceService.PublicName(player)`: it returns `Util.PlayerDisplayName(player)`, or the hidden-name text with the faction name (e.g. "빛의 기사단 한 명") when `data.HideAnnounceName == true`. The `" 깡패"` suffix stays; only the name becomes the public one.
 
 ### 4.14 GrudgeService (G7) — `ServerScriptService/GrudgeService.luau`
 
 > **갱신 (2026-10-05, A23-18 + mmorpg_painpoints P3):** 아래의 "나간 피해자 몫은 사라진다(destroyed)"는 **대체**됐다. 자루가 끝나는 순간 서버에 없는 피해자의 몫은 DataStore 우편(`HaloHorns_GrudgeMail_v1`, 키 `M_<userId>`, 최대 20통)으로 보내고, 다음 접속 때 먼저 비운 뒤 같은 생(`Rebirths` 같음)만 지급한다. 120%는 Avenged이고 `pairReady('refund')` 쿨다운이 지났을 때 첫 통만이다. **원한 유령 붙잡기:** 털린 피해자가 부활한 뒤 `GhostHold` 원격(인자 없음, 3초 제한, 살아 있을 때만)으로 자루 시간을 +2초씩, 자루당 최대 +10초(45→55초) 늘린다. 놓아주기·명예 보상은 없다. 구현: 커밋 735419e.
+>
+> **원한 우편 구현 상세 (커밋 735419e, 검수 수정 포함):**
+> - 피해자가 서버에 없을 때 그 몫을 편지 한 통으로 DataStore `HaloHorns_GrudgeMail_v1`, 키 `M_<userId>`에 쓴다 (`MAIL.Send`, `UpdateAsync`, 최대 `Config.Grudge.MailMax` = 20통, 넘으면 오래된 것부터 버림). 편지: `{ Id, A = 금액, R = 훔칠 때 환생 수, K = "Avenged" | "Returned", T }`.
+> - 편지 `Id` = 도둑 + 자루 시작 시각 + 종류 (`sack.Id .. ":Avenged"` / `":Returned"`, `sack.Id` = `thief.UserId:os.time()`). 같은 `Id`가 이미 있으면 다시 쓰지 않아서, 쓰기를 재시도(최대 4번, 1·2·4초 간격)해도 같은 편지가 두 통 생기지 않는다.
+> - 피해자가 다음에 접속하면 (`MAIL.Receive`) 우편함을 먼저 비운 뒤 같은 생(`R == Rebirths`)의 편지만 은행 금고로 지급한다. 환생한 뒤의 편지는 지급하지 않는다(CR-M6). 지급 전에 피해자가 나가거나 준비가 안 되면 편지를 도로 넣는다(아직 아무것도 안 줬으니 두 번 줄 수 없다).
+> - 120%는 `Avenged` 편지이고 `pairReady('refund')` 쿨다운이 지났을 때, 받은 편지 중 첫 통만이다. 나머지는 `Config.Grudge.ReturnRate`.
+> - 서버를 닫을 때 `PlayerService`의 `BindToClose`가 `GrudgeService.MailPending()`(쓰는 중인 편지 수)이 0이 될 때까지 (최대 `CLOSE_TIMEOUT`) 기다린다.
+> - **규칙: 서버가 꺼지면 편지를 잃을 수는 있어도 두 번 주지는 않는다.** (A crash may lose a letter, never double-pays.)
 ```
 GrudgeService.SackResolved : Signal(thief, outcome: "Paid" | "Avenged" | "Returned", total: number)
 
