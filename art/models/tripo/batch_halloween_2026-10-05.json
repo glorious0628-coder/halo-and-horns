@@ -1,0 +1,8 @@
+[
+ {"image": "art/out/CON_SlimeCube.png", "name": "MonsterSlimeCube", "recipe": "character"},
+ {"image": "art/out/Pet_BabySlime.png", "name": "PetBabySlime", "recipe": "monster"},
+ {"image": "art/out/CON_PumpkinSlime.png", "name": "MonsterPumpkinSlime", "recipe": "character"},
+ {"image": "art/out/CON_LittleGhost.png", "name": "MonsterLittleGhost", "recipe": "character"},
+ {"image": "art/out/CON_PumpkinKing.png", "name": "MonsterPumpkinKing", "recipe": "boss"},
+ {"image": "art/out/CON_BatGoblin.png", "name": "MonsterBatGoblin", "recipe": "character"}
+]
