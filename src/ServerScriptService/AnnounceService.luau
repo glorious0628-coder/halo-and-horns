@@ -1,9 +1,9 @@
 -- AnnounceService.luau : A23-15 "좋은 것 전체 채팅 알림" (design skills_weapons_pets §0-3, P5 name hiding).
--- The server only sends { Key, Args, Grade, UserId } to every client (remote "Announce"); each client formats the line
+-- The server only sends { Key, Args, Grade, Self? } to every client (remote "Announce"); each client formats the line
 -- from Config.Announce.Text in its own language and shows it as a TextChatService system message in RBXGeneral.
 -- Names are the game nickname (Util.PlayerDisplayName, filtered); a player can hide it (data.HideAnnounceName ->
--- "빛의 기사단 한 명이…"). One player's announcements within WindowSeconds are grouped: the first goes out at once,
--- the rest become one "…외 N개 더" line when the window ends (no chat spam from a lucky streak).
+-- "빛의 기사단 한 명이…"). RareWeapon lines within WindowSeconds of one player are grouped (same or lower grade than
+-- the opening line) into one "…좋은 것을 N개 더" line; jackpots, the first +10 and higher grades always show by name.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -16,7 +16,7 @@ local AnnounceService = {}
 local S = nil
 local TAG = "AnnounceService"
 local A = Config.Announce
-local window = {} -- [player] = { SentAt, Pending = n, Best = gradeRank, Grade, Scheduled }
+local window = {} -- [player] = { SentAt, OpenRank, Pending, Best, Grade, Token }
 
 local function getData(player)
 	local ok, data = pcall(S.PlayerService.GetData, player)
@@ -38,11 +38,18 @@ local function who(player)
 	}
 end
 
+-- everyone gets the line; the finder's copy says Self = true (chat line only, no second toast for them). No UserId
+-- is ever sent, so a hidden name cannot be recovered by another client (review of 0db0764).
 local function send(player, key, args, grade)
 	local payload = who(player)
 	for k, v in args or {} do payload[k] = v end
+	local msg = { Key = key, Args = payload, Grade = grade }
+	local mine = { Key = key, Args = payload, Grade = grade, Self = true }
 	pcall(function()
-		Net.Get("Announce"):FireAllClients({ Key = key, Args = payload, Grade = grade, UserId = player.UserId })
+		local remote = Net.Get("Announce")
+		for _, p in Players:GetPlayers() do
+			remote:FireClient(p, p == player and mine or msg)
+		end
 	end)
 end
 
@@ -51,28 +58,47 @@ local function gradeRank(grade)
 	return g and g.Rank or 0
 end
 
--- key: Config.Announce.Text key; args: plain values only (numbers / strings / booleans); grade: Config.WeaponGrades id
+-- one table per player: SentAt / OpenRank of the line that opened the window, Pending grouped RareWeapon lines
+local function state(player)
+	local w = window[player]
+	if not w then
+		w = { SentAt = -math.huge, OpenRank = 0, Pending = 0, Best = 0, Grade = nil, Token = 0 }
+		window[player] = w
+	end
+	return w
+end
+
+local function flush(player, w)
+	if w.Pending <= 0 or player.Parent ~= Players then
+		w.Pending, w.Best = 0, 0
+		return
+	end
+	local n, grade = w.Pending, w.Grade
+	w.Pending, w.Best = 0, 0
+	send(player, "More", { Count = n }, grade)
+end
+
+-- key: Config.Announce.Text key; args: plain values only (numbers / strings / booleans); grade: Config.WeaponGrades id.
+-- Only RareWeapon lines of the same or a lower grade than the line that opened the 10 s window are grouped into one
+-- "…좋은 것을 N개 더" line; Jackpot, FirstMax and higher grades always go out at once with their own text.
 function AnnounceService.Announce(player, key, args, grade)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players then return end
 	if type(A) ~= "table" or type(A.Text) ~= "table" or A.Text[key] == nil then return end
 	local now = os.clock()
-	local w = window[player]
-	if w and now - w.SentAt < A.WindowSeconds then
+	local w = state(player)
+	local rank = gradeRank(grade)
+	if key == "RareWeapon" and now - w.SentAt < A.WindowSeconds and rank <= w.OpenRank then
 		w.Pending += 1
-		if gradeRank(grade) > w.Best then w.Best, w.Grade = gradeRank(grade), grade end
-		if not w.Scheduled then
-			w.Scheduled = true
-			task.delay(math.max(0, A.WindowSeconds - (now - w.SentAt)), function()
-				w.Scheduled = false
-				if window[player] ~= w or w.Pending <= 0 or player.Parent ~= Players then return end
-				local n = w.Pending
-				w.Pending, w.SentAt, w.Best = 0, os.clock(), 0
-				send(player, "More", { Count = n }, w.Grade)
-			end)
-		end
+		if rank > w.Best then w.Best, w.Grade = rank, grade end
+		local token = w.Token
+		task.delay(math.max(0, A.WindowSeconds - (now - w.SentAt)), function()
+			if window[player] == w and w.Token == token then flush(player, w) end
+		end)
 		return
 	end
-	window[player] = { SentAt = now, Pending = 0, Best = 0, Grade = grade, Scheduled = false }
+	flush(player, w) -- anything grouped so far goes out first (never lost when a new window opens)
+	w.Token += 1
+	w.SentAt, w.OpenRank = now, rank
 	send(player, key, args, grade)
 end
 

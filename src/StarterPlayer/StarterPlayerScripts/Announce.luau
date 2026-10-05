@@ -54,13 +54,25 @@ function A.Show(msg)
 	local ok, line = pcall(A.Format, msg)
 	if not ok or type(line) ~= "string" then return end
 	local g = Config.WeaponGrades[msg.Grade] or Config.WeaponGrades.Rare
-	-- big news is also visible without opening the chat: a banner for Legendary, a toast for Epic (UIKit queues
-	-- banners while the opening / pickers own the screen)
+	-- big news is also visible without opening the chat: a banner for Legendary, a toast for Epic. Not for the
+	-- finder (they already got their own toast) and never over the opening / pickers / first mission: then a
+	-- Legendary banner waits in UIKit.HeldBanners (max 2, like Notify) and an Epic toast is skipped.
 	local ui = C and C.UIKit
-	if type(ui) == "table" then
-		if g.Rank >= 5 and type(ui.Announce) == "function" then
-			pcall(ui.Announce, line, 6)
-		elseif g.Rank >= 4 and type(ui.Toast) == "function" then
+	if type(ui) == "table" and msg.Self ~= true and g.Rank >= 4 then
+		local hold = false
+		if type(ui.ShouldHoldBanners) == "function" then
+			local okH, h = pcall(ui.ShouldHoldBanners)
+			hold = okH and h == true
+		end
+		if g.Rank >= 5 then
+			if hold then
+				if type(ui.HeldBanners) ~= "table" then ui.HeldBanners = {} end
+				table.insert(ui.HeldBanners, { line, 6 })
+				if #ui.HeldBanners > 2 then table.remove(ui.HeldBanners, 1) end
+			elseif type(ui.Announce) == "function" then
+				pcall(ui.Announce, line, 6)
+			end
+		elseif not hold and type(ui.Toast) == "function" then
 			pcall(ui.Toast, line, "reward", 4)
 		end
 	end

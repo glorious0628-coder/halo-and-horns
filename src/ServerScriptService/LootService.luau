@@ -235,7 +235,7 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 		notify(player, string.format(TXT.JackpotSelf, name), "reward")
 		announce(player, "Jackpot", { Weapon = tier }, tier) -- everyone sees it in chat (A23-15)
 	else
-		notify(player, string.format(TXT.RareWeapon, name), "reward")
+		notify(player, string.format(TXT.RareWeapon, Config.WeaponGrade(tier).Name, name), "reward")
 		local g = Config.WeaponGrade(tier)
 		if g.Rank >= ((Config.Announce and Config.Announce.MinWeaponGrade) or 3) then
 			announce(player, "RareWeapon", { Weapon = tier, Monster = kind }, tier)
