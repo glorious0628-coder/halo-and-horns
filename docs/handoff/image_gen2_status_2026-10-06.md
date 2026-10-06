@@ -53,3 +53,4 @@
 - 커밋: 2975f24 사람 그림 14장 사용자 OK → art/ui · 95e33ae 유령 가족 시안 8 · 2440d24 유령 아이콘 2(고름 A1·A2) + 묶음 18 작은 것 5(LogoPlate·EventBannerHalloween·MapParchment·ShardBase·IconAltar) · 9a8b47a 지도 표시 6 + BadgeDot·IconPetPaw·GradeSlotBack. 펫 속도 = IconBoot 공용(검수).
 - 규칙(검수 전달): 사용자 확인·고르기는 검수에게(시트 + 추천). 데스크톱 화면 조작은 바로 직전에 검수에게 "이미지 생성 2 — 무엇 — 몇 초"(OK 필요 없음). 내 브라우저 탭 작업은 알릴 필요 없음.
 - 진행 중: ① ToggleTrack·ToggleKnob·GlyphGear(BB3 설정 창, 언어 줄은 글자 EN/한) ② MapZoneHauntedHollow + 대왕 칩 아이콘(IconChipGhostKing·IconChipPumpkinKing) ③ 지도 표시 나머지 8(교차로·마을 3·사냥터 4). 시트 스크립트 scratchpad settings_sheet.py → art/review/s2/settings_chips_maps_sheet.png.
+- (오후 4) 648f8f9 설정 스위치·톱니·대왕 칩·지도 표시 15 세트 · 7fb375a 메뉴 칸 아이콘 7 · 3c9166a 랭킹 메달 3 · 9be09d8 칭호 배지 12 · 1124ced PortraitFrame·PetCard. 다음: A23-47 소품 2D(이미지 생성 1의 kit_<구역>.md 기다림, art/out/kit/<구역>/<이름>.png, 시트 먼저 검수) — 기다리는 동안 MapKaiju·MapGrudgeSack·MapPvP 생성 중.

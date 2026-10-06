@@ -4101,24 +4101,24 @@
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Badge_HaloR1.txt",
-  "original": "art/out/s2/Badge_HaloR1_1_src.png (Adobe MCP presigned download)",
+  "original": "art/out/s2/Badge_HaloR1c_1_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BadgeHaloR1.png",
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
-  "preview": "art/review/s2/rank_badges_sheet.png",
-  "note": "칭호 배지 빛 R1 견습 기사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음."
+  "preview": "art/review/s2/rank_badges_fix_sheet.png",
+  "note": "칭호 배지 빛 R1 견습 기사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. (검수 3차 지적 반영: 은테 흰 방패 + 은 후광으로 다시 — R2와 24px에서 구분.)"
  },
  "BadgeHaloR2": {
   "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Badge_HaloR2.txt",
-  "original": "art/out/s2/Badge_HaloR2b_1_src.png (Adobe MCP presigned download)",
+  "original": "art/out/s2/Badge_HaloR2c_1_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BadgeHaloR2.png",
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
-  "preview": "art/review/s2/rank_badges_sheet.png",
-  "note": "칭호 배지 빛 R2 기사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 1차가 둥근 판으로 나와 방패 모양으로 다시 생성(R2b)."
+  "preview": "art/review/s2/rank_badges_fix_sheet.png",
+  "note": "칭호 배지 빛 R2 기사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 1차가 둥근 판으로 나와 방패 모양으로 다시 생성(R2b). (검수 지적 반영: 금 방패 + 후광 + 양옆 작은 날개 싹으로 다시.)"
  },
  "BadgeHaloR3": {
   "status": "approved",
@@ -4152,8 +4152,8 @@
   "original": "art/out/s2/Badge_HaloR5_1_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BadgeHaloR5.png",
   "size": "512x512 RGBA",
-  "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
-  "preview": "art/review/s2/rank_badges_sheet.png",
+  "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px; tools/img2/outer_glow.py로 바깥 금빛 빛 한 겹(최고 단계 강조, 검수 지적)",
+  "preview": "art/review/s2/rank_badges_fix_sheet.png",
   "note": "칭호 배지 빛 R5 대천사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 단계 기준 그림(R5 먼저)."
  },
  "BadgeHornsR1": {
@@ -4161,12 +4161,12 @@
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Badge_HornsR1.txt",
-  "original": "art/out/s2/Badge_HornsR1_1_src.png (Adobe MCP presigned download)",
+  "original": "art/out/s2/Badge_HornsR1c_1_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BadgeHornsR1.png",
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
-  "preview": "art/review/s2/rank_badges_sheet.png",
-  "note": "칭호 배지 뿔 R1 불량배. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음."
+  "preview": "art/review/s2/rank_badges_fix_sheet.png",
+  "note": "칭호 배지 뿔 R1 불량배. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. (검수 지적 반영: 밝은 보라 면 + 주황·빨강 테 — 남색 이름표 위에서 안 묻힘.)"
  },
  "BadgeHornsR2": {
   "status": "approved",
@@ -4212,8 +4212,8 @@
   "original": "art/out/s2/Badge_HornsR5_1_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BadgeHornsR5.png",
   "size": "512x512 RGBA",
-  "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
-  "preview": "art/review/s2/rank_badges_sheet.png",
+  "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px; tools/img2/outer_glow.py로 바깥 주황 빛 한 겹(최고 단계 강조, 검수 지적)",
+  "preview": "art/review/s2/rank_badges_fix_sheet.png",
   "note": "칭호 배지 뿔 R5 마왕. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 단계 기준 그림(R5 먼저)."
  },
  "BadgeArtisan": {
@@ -4291,5 +4291,41 @@
    ]
   },
   "note": "펫 창·도감 카드 틀(크림 + 금테, 위 민트 둥근 창 + 이름 판 + 아래 능력 칸). 펫 그림은 창 위에, 이름·능력은 TextLabel. 검수 순서 ④. 2장 중 1."
+ },
+ "MapKaiju": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapKaiju.txt",
+  "original": "art/out/s2/MapKaiju_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapKaiju.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked 24/48px on navy/gray/beige",
+  "preview": "art/review/s2/rank_badges_fix_sheet.png",
+  "note": "지도 표시: 괴수(빨강 원 + 뿔 달린 큰 얼굴, 수배범 괴수화). 15개 세트와 같은 흰 테 원 틀."
+ },
+ "MapGrudgeSack": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapGrudgeSack.txt",
+  "original": "art/out/s2/MapX_b_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapGrudgeSack.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked 24/48px on navy/gray/beige",
+  "preview": "art/review/s2/rank_badges_fix_sheet.png",
+  "note": "지도 표시: 원한 자루(분홍 원 + 금화 자루 + 작은 유령, 제단 보라와 겹치지 않게 분홍). 15개 세트와 같은 흰 테 원 틀."
+ },
+ "MapPvP": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapPvP.txt",
+  "original": "art/out/s2/MapX_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapPvP.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked 24/48px on navy/gray/beige",
+  "preview": "art/review/s2/rank_badges_fix_sheet.png",
+  "note": "지도 표시: PvP(검정 원 + 엇갈린 검, 괴수 빨강과 겹치지 않게 검정). 15개 세트와 같은 흰 테 원 틀."
  }
 }
