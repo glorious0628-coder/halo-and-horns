@@ -320,6 +320,7 @@ The game must run with the procedural Part-built rigs, but the creator will late
   - Golden (4% variant) monsters: tint the custom visual by adding a gold `Highlight` (FillColor gold, FillTransparency ~0.5)
     instead of recoloring parts.
   - Simple "alive" motion for custom visuals: a small vertical bob/squash tween is enough (no animations required).
+    - (2026-10-06, 71c10bd) No server-side bob: the server must not tween Humanoid.HipHeight (it lifted whole monsters 0.18–0.45 stud off the ground). Idle/walk motion lives on the client only (MonsterMotion, Fx WOBBLE, blob shadows).
 - Owners: MonsterService (monsters), the service that spawns the golden goose (goose). Print once per Id at startup:
   `[MonsterService] custom model for <Id>: yes/no`.
 
