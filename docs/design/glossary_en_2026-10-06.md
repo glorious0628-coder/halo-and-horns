@@ -64,3 +64,6 @@
 | 전설 악당 / 회색 전설 / 베타 개척자 / 응원별 | **Legendary Villain / Gray Legend / Beta Pioneer / Cheer Star** | 칭호 |
 | 재료 | **Jelly · Slime Core · Goblin Tooth · Brute Horn · Old Bone · Rusty Knight Crest · Candy** | |
 | 강화 주문서 N% / 옮기기 주문서 N% | **Enhance Scroll N% / Transfer Scroll N%** | |
+| 빛 안내자 이름 / 뿔 안내자 이름 / 길드 안내자 이름 | **Hallie / Magpie / Kit** | 이름표 둘째 줄과 퀘스트·시스템 줄은 역할 이름(Guide of Light / Horn Legion Guide / Guild Guide). Hallie·Kit = she, Magpie = he(어른). Kit은 베타 숨김(A23-57). lines_pack §1 |
+| 대장장이 NPC / 물약 상인 NPC | **Otto / Fizzby** | 시스템 줄은 "The Blacksmith" / "Potion Seller" 그대로, 장소는 **Forge** |
+| 마을 꼬마 | **Bright · Smokey · Tiny** | Bright·Smokey = she(A23-59), Tiny = he. 왕관을 깬 두 아이 = Bright + Smokey(단짝, 연애 표현 없음) |
