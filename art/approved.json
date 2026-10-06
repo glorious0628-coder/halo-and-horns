@@ -3539,5 +3539,129 @@
   "preview": "art/review/s2/b19_people_sheet.png",
   "note": "상점 NPC 최종 모습(handoff 9번). 장비 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
   "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
+ },
+ "CON_GhostMinion": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/CON_GhostMinion_A.txt",
+  "original": "art/out/s2/CON_GhostMinion_A1_src.png (Adobe MCP presigned download)",
+  "file": "art/out/s2/CON_GhostMinion_A1_src.png",
+  "size": "1024x1024 RGB (concept, no cutout)",
+  "preview": "art/review/s2/ghost_family_sheet.png",
+  "note": "A23-45 똘마니 유령 시안(연보라 불꽃 방울, 팔 없음). 사용자 고름 A1(검수 전달 2026-10-06). 3D = 이미지 생성 1. 꼬마 유령(art/out/CON_LittleGhost.png)과 같은 가족 색·눈.",
+  "user_ok": "사용자 고름 2026-10-06"
+ },
+ "CON_GhostKing": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/CON_GhostKing_A.txt",
+  "original": "art/out/s2/CON_GhostKing_A2_src.png (Adobe MCP presigned download)",
+  "file": "art/out/s2/CON_GhostKing_A2_src.png",
+  "size": "1024x1024 RGB (concept, no cutout)",
+  "preview": "art/review/s2/ghost_family_sheet.png",
+  "note": "A23-45 유령 왕 시안(금관·흰 털 보라 망토·푸른 등불 홀). 사용자 고름 A2(검수 전달 2026-10-06). 3D = 이미지 생성 1. 꼬마 유령(art/out/CON_LittleGhost.png)과 같은 가족 색·눈.",
+  "user_ok": "사용자 고름 2026-10-06"
+ },
+ "IconMonGhostMinion": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "preview": "art/review/s2/b18_ghosticons_sheet.png",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconMonGhostMinion_A.txt",
+  "original": "art/out/s2/IconMonGhostMinion_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconMonGhostMinion.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 32px",
+  "note": "A23-45 똘마니 유령 머리 아이콘(IconMon* 틀). 사용자가 고른 시안 A1과 같은 모습(연보라 불꽃 방울)."
+ },
+ "IconMonGhostKing": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "preview": "art/review/s2/b18_ghosticons_sheet.png",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconMonGhostKing_A.txt",
+  "original": "art/out/s2/IconMonGhostKing_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconMonGhostKing.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 32px",
+  "note": "A23-45 유령 왕 머리·어깨 아이콘. 사용자가 고른 시안 A2와 같은 모습(금관·흰 털 보라 망토)."
+ },
+ "LogoPlate": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "preview": "art/review/s2/b18_ghosticons_sheet.png",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_LogoPlate.txt",
+  "original": "art/out/s2/LogoPlate_2_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/LogoPlate.png",
+  "size": "1024x731 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; checked magenta/navy",
+  "note": "묶음 18 로고 바탕 문장(빛 반·뿔 반 + 금 갈라진 왕관). 가운데 띠는 비어 있음 — Halo & Horns / 선악 키우기는 글꼴(TextLabel). 글자 칸 분수 약 (0.15,0.48,0.70,0.19). 2장 중 2(좌우 균형).",
+  "layout": {
+   "Title": [
+    0.15,
+    0.48,
+    0.7,
+    0.19
+   ]
+  }
+ },
+ "EventBannerHalloween": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "preview": "art/review/s2/b18_ghosticons_sheet.png",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_EventBannerHalloween.txt",
+  "original": "art/out/s2/EventBannerHalloween_2_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/EventBannerHalloween.png",
+  "size": "1024x316 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --holes --keep-largest; checked magenta/navy",
+  "note": "묶음 18 핼러윈 이벤트 배너(주황·보라 리본 + 웃는 호박·사탕, 가족 섞지 않음: 박쥐·유령 없음). 비율 그대로. 글자 칸 분수 약 (0.22,0.17,0.56,0.34). 2장 중 2.",
+  "layout": {
+   "Text": [
+    0.22,
+    0.17,
+    0.56,
+    0.34
+   ]
+  }
+ },
+ "MapParchment": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "preview": "art/review/s2/b18_ghosticons_sheet.png",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UI_MapParchment.txt",
+  "original": "art/out/s2/MapParchment_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapParchment.png",
+  "size": "1536x1024 RGB (opaque)",
+  "cutout": "no cutout; cropped 12px each side (gray corners) and resized back to 1536x1024; border has no gray",
+  "note": "묶음 18 세계 지도 양피지(빈 종이, 끝까지 꽉 참). 옛 MapParchment(같은 키·크기) 대체. 땅·길·이름은 코드."
+ },
+ "ShardBase": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "preview": "art/review/s2/b18_ghosticons_sheet.png",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Shard_Base.txt",
+  "original": "art/out/s2/Shard_Base_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/ShardBase.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 32px",
+  "note": "묶음 18 왕관 조각(금빛 수정 + 금관 띠 조각). S0 퀘스트 대화·보상 알림·지도 왕관 표시. 2장 중 1. 새 키."
+ },
+ "IconAltar": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "preview": "art/review/s2/b18_ghosticons_sheet.png",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconAltar.txt",
+  "original": "art/out/s2/IconAltar_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconAltar.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 32px",
+  "note": "묶음 18 제단 아이콘(둥근 돌 받침, 윗면 금/빨강 반반 + 왕관 조각). 진영 화면 하단 안내(FactionPicker IconAltar, 지금 Id 비어 있음). 2장 중 1."
  }
 }
