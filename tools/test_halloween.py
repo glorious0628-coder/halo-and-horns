@@ -2,10 +2,12 @@
 
 Runs the CURRENT Config, Net, Util, DataService, QuestService, StoryQuestService, LootService, AnnounceService,
 HalloweenService, Main.server.luau and the client Announce module, plus chunks cut from MonsterService (event spawn /
-kill / contributor payout / regular pool + GlobalCap split / golden roll / death pop and leave fade / targetable +
-landAttack: the king spares rookies), EventHUD (the
-Pumpkin King pill and its placement beside HUD's columns), Fx (WOBBLE float, leaving king without the splat) and
-Panels (drop list loop), and the BatGoblin / Goblin MonsterAnims clip modules. Everything is injected into
+kill / A23-27 contributor hits and damage + payout / regular pool + GlobalCap split + HW-13 season-end sweep / golden
+roll / death pop and leave fade / targetable + landAttack: the A23-27 king safety rule), EventHUD (the Pumpkin King pill,
+never narrower than its text, and its placement beside HUD's columns), Fx (WOBBLE float, grounded slime hop + Sink, blob
+shadows and landing dust, leaving king without the splat) and Panels (drop list loop), and the BatGoblin / Goblin
+MonsterAnims clip modules. Every Config copy reads a pinned server clock (Config.SeasonNow), so the A23-28 season end
+(Config.Halloween.EndsAt) is checked at EndsAt - 1 / EndsAt / EndsAt + 1 without depending on the machine's date. Everything is injected into
 tools/fixtures/halloween_offline.luau and run with the installed official Luau CLI (build/luau_cli_0_741). No Studio,
 network, DataStore or Roblox API calls. Every check is named and collected. A mutation step then breaks in-memory copies
 of the sources (never src/), runs them from a temporary directory and counts how many mutations the checks catch.
@@ -82,30 +84,83 @@ EOL_FILES = [FILES[k] for k in ("CONFIG_SOURCE", "NET_SOURCE", "QUEST_SOURCE", "
 
 # (name, source key, exact text, replacement): each must match exactly once in the current (LF-normalized) source
 MUTATIONS = [
-    ("pumpkin slimes take 2 slime slots (meadow density changes)", "CONFIG_SOURCE",
-     "Takes = { Slime = 3 }", "Takes = { Slime = 2 }"),
+    # A23-30 zone family: every Halloween kind in the PumpkinPatch, no Takes, the bat goblin counts as itself
+    ("a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)", "CONFIG_SOURCE",
+     "Zone = \"PumpkinPatch\", Count = 6, QuestAs = \"Slime\",", "Zone = \"SlimeMeadow\", Count = 6, QuestAs = \"Slime\","),
+    ("bat goblin takes goblin slots again (woods density changes)", "CONFIG_SOURCE",
+     "BatGoblin = { Name = \"박쥐 고블린\", Short = \"박쥐 고블린\", Zone = \"PumpkinPatch\", Count = 4,",
+     "BatGoblin = { Name = \"박쥐 고블린\", Short = \"박쥐 고블린\", Zone = \"PumpkinPatch\", Count = 4, Takes = { Goblin = 3 },"),
+    ("bat goblin counts as a goblin again (QuestAs)", "CONFIG_SOURCE",
+     "BatGoblin = { Name = \"박쥐 고블린\", Short = \"박쥐 고블린\", Zone = \"PumpkinPatch\", Count = 4,",
+     "BatGoblin = { Name = \"박쥐 고블린\", Short = \"박쥐 고블린\", Zone = \"PumpkinPatch\", Count = 4, QuestAs = \"Goblin\","),
+    ("PumpkinPatch land detached from the meadow (MinZ 180)", "CONFIG_SOURCE",
+     "MinZ = 175, MaxZ = 295 }, -- A23-30", "MinZ = 180, MaxZ = 295 }, -- A23-30"),
+    ("PumpkinPatch exists with the season off (ZoneAt ignores Season)", "CONFIG_SOURCE",
+     "(z.Season == nil or Config.SeasonOn(z.Season))", "true"),
     ("seasonal kinds counted with the season off", "CONFIG_SOURCE",
      "out[kind] = Config.MonsterActive(kind, seasonOn) and math.max(0, math.floor(tonumber(def.Count) or 0)) or 0",
      "out[kind] = math.max(0, math.floor(tonumber(def.Count) or 0))"),
-    ("seasonal slice not taken from the base kind's growth", "CONFIG_SOURCE",
+    ("patch kinds counted inside the GlobalCap", "CONFIG_SOURCE",
+     "return type(def) == \"table\" and def.Season ~= nil and type(def.Takes) ~= \"table\"", "return false"),
+    ("generic Takes: slice not taken from the base kind's growth", "CONFIG_SOURCE",
      "out[base] = math.max(0, out[base] - p)", "out[base] = math.max(0, out[base])"),
+    ("generic Takes: takers get their own cap share", "CONFIG_SOURCE",
+     "if type(only) == \"string\" and Config.MonsterTypes[only] ~= nil then return only end", ""),
     ("QuestKind ignores QuestAs", "CONFIG_SOURCE", "\t\treturn def.QuestAs\n", "\t\treturn kind\n"),
-    ("season flag ignored (always on)", "CONFIG_SOURCE",
-     "return type(s) == \"table\" and s.Enabled == true", "return type(s) == \"table\""),
+    # A23-28 HW-13 season end by the server clock
+    ("season flag ignored (Enabled)", "CONFIG_SOURCE",
+     "if type(s) ~= \"table\" or s.Enabled ~= true then return false end", "if type(s) ~= \"table\" then return false end"),
+    ("season never ends (EndsAt check dropped in Config.SeasonOn)", "CONFIG_SOURCE",
+     "return type(s.EndsAt) ~= \"number\" or Config.SeasonNow() < s.EndsAt", "return true"),
+    ("season still on at EndsAt (<=)", "CONFIG_SOURCE", "Config.SeasonNow() < s.EndsAt", "Config.SeasonNow() <= s.EndsAt"),
+    ("SeasonNow ignores the server clock", "CONFIG_SOURCE",
+     "local ok, t = pcall(function() return workspace:GetServerTimeNow() end)", "local ok, t = false, nil"),
+    ("season end moved a day (EndsAt)", "CONFIG_SOURCE", "EndsAt = 1794150000,", "EndsAt = 1794236400,"),
+    ("HalloweenService ignores the season (Enabled / EndsAt)", "HALLOWEEN_SOURCE",
+     "local function seasonOn()\n\treturn Config.SeasonOn(\"Halloween\")", "local function seasonOn()\n\treturn true"),
+    ("king stays after the season ends ('not on' dropped in tick)", "HALLOWEEN_SOURCE",
+     "elseif now >= K.EndsAt or (not on and not K.Debug) then", "elseif now >= K.EndsAt then"),
+    ("season end leaves the countdown up (NextAt not cleared)", "HALLOWEEN_SOURCE",
+     "if not on and K.NextAt > 0 then", "if false then"),
+    ("off-season debug king sent home at once (K.Debug never set)", "HALLOWEEN_SOURCE",
+     "K.Debug = ok and not seasonOn() or nil", "K.Debug = nil"),
+    ("patch sign stays after the season", "HALLOWEEN_SOURCE",
+     "d.Transparency = on and (d:GetAttribute(\"ShownTransparency\") or 0) or 1",
+     "d.Transparency = (d:GetAttribute(\"ShownTransparency\") or 0)"),
+    ("season-end sweep dropped (reevaluate)", "MONSTER_SOURCE", "for _, rec in gone do despawn(rec, true, true) end", ""),
+    ("season-end sweep splats (no leaving fade)", "MONSTER_SOURCE",
+     "for _, rec in gone do despawn(rec, true, true) end", "for _, rec in gone do despawn(rec, true) end"),
+    ("season-end sweep also takes the event king", "MONSTER_SOURCE",
+     "if rec.Alive and rec.Owner == nil and not rec.Event and not Config.MonsterActive(rec.Kind) then",
+     "if rec.Alive and rec.Owner == nil and not Config.MonsterActive(rec.Kind) then"),
+    # the season, the slime jackpot, the king's numbers and rows (A23-27)
     ("pumpkin slime loses the slime jackpot", "CONFIG_SOURCE",
      "Monsters = { Slime = true, PumpkinSlime = true }", "Monsters = { Slime = true }"),
     ("Pumpkin King HP tripled", "CONFIG_SOURCE", "HP = 9000,", "HP = 27000,"),
+    ("king scroll row back to 0.5 (Enh70)", "CONFIG_SOURCE", "{ Item = \"Enh70\", P = 0.25 }", "{ Item = \"Enh70\", P = 0.5 }"),
+    ("king weapon row pays 1 candy below MinLevel", "CONFIG_SOURCE",
+     "BelowLevel = { Item = \"Candy\", N = 3 }", "BelowLevel = { Item = \"Candy\", N = 1 }"),
+    ("king's RewardMinHits removed from Config", "CONFIG_SOURCE",
+     "RewardMinHits = 3, RewardMinDamageFrac = 0.005,", "RewardMinDamageFrac = 0.005,"),
+    ("king safe only below Lv4 (SafeBelowLevel)", "CONFIG_SOURCE", "SafeBelowLevel = 5,", "SafeBelowLevel = 4,"),
+    ("king safety playtime 60 s (SafePlaySeconds)", "CONFIG_SOURCE", "SafePlaySeconds = 600,", "SafePlaySeconds = 60,"),
+    ("patch sign names the season", "CONFIG_SOURCE",
+     "PatchSign = \"↓ 호박밭 · 호박 몬스터 사냥터\"", "PatchSign = \"↓ 핼러윈 호박밭 · 호박 몬스터 사냥터\""),
+    # quests / story count Config.QuestKind
     ("killWeight counts a seasonal kind by its own XP", "QUEST_SOURCE", "\tkind = Config.QuestKind(kind)\n", ""),
+    ("first mission ignores QuestKind", "QUEST_SOURCE",
+     "if cur >= TUT_TARGET or not TUTORIAL_KINDS[Config.QuestKind(info.Kind)] or info.Personal == true",
+     "if cur >= TUT_TARGET or not TUTORIAL_KINDS[info.Kind] or info.Personal == true"),
     ("story kill objectives ignore QuestKind", "STORY_SOURCE",
      "Config.QuestKind(info.Kind) ~= obj.Kind", "info.Kind ~= obj.Kind"),
+    # the Pumpkin King schedule / leave / announce
     ("first king without the 6-minute delay", "HALLOWEEN_SOURCE",
      "(Util.Now() + math.max(0, num(H.FirstDelay, 360)))", "(Util.Now())"),
     ("next king 10 min after an appearance", "HALLOWEEN_SOURCE",
      "if appear(now) then\n\t\tK.NextAt = now + interval", "if appear(now) then\n\t\tK.NextAt = now + interval / 2"),
-    ("king never leaves after its lifetime", "HALLOWEEN_SOURCE", "elseif now >= K.EndsAt then", "elseif false then"),
+    ("king never leaves after its lifetime", "HALLOWEEN_SOURCE",
+     "elseif now >= K.EndsAt or (not on and not K.Debug) then", "elseif (not on and not K.Debug) then"),
     ("a lost king is reported as defeated", "HALLOWEEN_SOURCE", "finish(num(rec.HP, 1) <= 0)", "finish(true)"),
-    ("HalloweenService ignores Config.Halloween.Enabled", "HALLOWEEN_SOURCE",
-     "local function seasonOn()\n\treturn H.Enabled == true", "local function seasonOn()\n\treturn true"),
     ("leaving king stays in the world", "HALLOWEEN_SOURCE",
      "local ok, err = pcall(svc.RemoveEvent, rec, true, true)", "local ok, err = true, nil"),
     ("leaving king squashes like a kill", "HALLOWEEN_SOURCE",
@@ -115,48 +170,86 @@ MUTATIONS = [
      "local goal = { Size = d.Size * 0.2, Transparency = 1 }"),
     ("Leaving set after the anchor", "MONSTER_SOURCE",
      "\tif leaving then model:SetAttribute(\"Leaving\", true) end", "\tif false then end"),
-    ("leaving slime still splats", "FX_SOURCE",
-     "\n\t\t\t\tand model:GetAttribute(\"Leaving\") ~= true then", " then"),
-    ("ghosts counted inside the GlobalCap", "CONFIG_SOURCE",
-     "return type(def) == \"table\" and def.Season ~= nil and type(def.Takes) ~= \"table\"", "return false"),
-    ("takers get their own cap share", "CONFIG_SOURCE",
-     "if type(only) == \"string\" and Config.MonsterTypes[only] ~= nil then return only end", ""),
-    ("ghosts wait for room under the cap", "MONSTER_SOURCE",
-     "while have < target and (outside or total < GLOBAL_CAP) and", "while have < target and total < GLOBAL_CAP and"),
-    ("pill measured from the screen edge (ignores HUD's left column)", "EVENTHUD_SOURCE",
-     "local room = x0 - gap - math.max(gap, num(hl.LeftX))", "local room = x0 - gap - gap"),
-    ("right slot ignores the kaiju pill", "EVENTHUD_SOURCE",
-     "local kaiju = (ui.KaijuChip and ui.KaijuChip.Visible) and (KAIJU_CHIP_W + gap) or 0", "local kaiju = 0"),
-    ("right slot ignores HUD's button cluster", "EVENTHUD_SOURCE",
-     "if room >= L.KingMinW and not blocked then", "if room >= L.KingMinW then"),
-    ("pill under the chips leaves the personal line in place", "EVENTHUD_SOURCE",
-     "\tKING.setBelow(below)\nend", "\tKING.setBelow(false)\nend"),
     ("Broadcast also sends non-event keys", "ANNOUNCE_SOURCE",
      "if type(A.Events) ~= \"table\" or A.Events[key] == nil then return end", ""),
     ("English twin ignored on the client", "ANNOUNCE_CLIENT_SOURCE",
      "local en = A.English() and text[msg.Key .. \"En\"]", "local en = false"),
     ("PumpkinKing debug key routed nowhere", "MAIN_SOURCE", "return S.HalloweenService.DebugSpawn()", "return \"ok\""),
-    ("king pays only the last 15 s of hitters", "MONSTER_SOURCE",
-     "local window = tonumber(def.ContributorWindow) or MC.ContributorWindow", "local window = MC.ContributorWindow"),
-    ("defeated king respawns", "MONSTER_SOURCE",
-     "elseif not rec.Event then\n\t\tscheduleRespawn(rec.Kind)", "else\n\t\tscheduleRespawn(rec.Kind)"),
-    ("event king and ghosts counted toward the global cap", "MONSTER_SOURCE",
-     "if rec.Alive and rec.Owner == nil and not rec.Event and not Config.MonsterOutsideCap(rec.Kind) then n += 1 end",
-     "if rec.Alive and rec.Owner == nil then n += 1 end"),
-    ("ghost walks on the floor (Float ignored)", "FX_SOURCE",
-     "Float = (float and float > 0 and def.Shape ~= \"Slime\") and float or nil,", "Float = nil,"),
-    ("HUD shows the countdown while the king is here", "EVENTHUD_SOURCE",
-     "if gsAttr(\"PumpkinKingActive\", false) == true then", "if false then"),
-    ("bat goblin slash loops", "CLIP_BatGoblin_Slash", "Loop = false", "Loop = true"),
     ("GameState defaults miss the king attributes", "NET_SOURCE",
      "PumpkinKingNextAt = 0, PumpkinKingActive = false, PumpkinKingEndsAt = 0,", "PumpkinKingNextAt = 0,"),
-    # review 2026-10-06: a boss (the Pumpkin King) never targets / hits a rookie (MonsterService targetable / landAttack)
-    ("every monster spares rookies (Boss check dropped)", "MONSTER_SOURCE",
+    # regular pool / cap (MonsterService)
+    ("patch kinds wait for room under the cap", "MONSTER_SOURCE",
+     "while have < target and (outside or total < GLOBAL_CAP) and", "while have < target and total < GLOBAL_CAP and"),
+    ("event king and Halloween kinds counted toward the global cap", "MONSTER_SOURCE",
+     "if rec.Alive and rec.Owner == nil and not rec.Event and not Config.MonsterOutsideCap(rec.Kind) then n += 1 end",
+     "if rec.Alive and rec.Owner == nil then n += 1 end"),
+    ("defeated king respawns", "MONSTER_SOURCE",
+     "elseif not rec.Event then\n\t\tscheduleRespawn(rec.Kind)", "else\n\t\tscheduleRespawn(rec.Kind)"),
+    # A23-27 rewards: own hits / damage, overkill excluded, the window
+    ("king pays only the last 15 s of hitters", "MONSTER_SOURCE",
+     "local window = tonumber(def.ContributorWindow) or MC.ContributorWindow", "local window = MC.ContributorWindow"),
+    ("king pays one-hit contributors (RewardMinHits ignored)", "MONSTER_SOURCE",
+     "local minHits = tonumber(def.RewardMinHits) or 0", "local minHits = 0"),
+    ("king pays chip damage (RewardMinDamageFrac ignored)", "MONSTER_SOURCE",
+     "local minDamage = (tonumber(def.RewardMinDamageFrac) or 0) * rec.MaxHP", "local minDamage = 0"),
+    ("overkill counted as damage", "MONSTER_SOURCE", "math.min(amount, math.max(0, record.HP))", "amount"),
+    ("hits not counted per hit", "MONSTER_SOURCE",
+     "record._hits[player] = (record._hits[player] or 0) + 1", "record._hits[player] = 1"),
+    ("3 hits not enough (> RewardMinHits)", "MONSTER_SOURCE", "(rec._hits[p] or 0) >= minHits", "(rec._hits[p] or 0) > minHits"),
+    ("exactly 0.5% of MaxHP not enough (> minDamage)", "MONSTER_SOURCE",
+     "(rec._dmg[p] or 0) >= minDamage", "(rec._dmg[p] or 0) > minDamage"),
+    # A23-27 king safety (MonsterService targetable / landAttack)
+    ("every monster spares new players (Boss check dropped)", "MONSTER_SOURCE",
      "if def and def.Boss and typeof(info.Player) == \"Instance\" then", "if def and typeof(info.Player) == \"Instance\" then"),
     ("king also spares Lv5 (<= SafeBelowLevel)", "MONSTER_SOURCE",
-     "or lv < safe then return false end", "or lv <= safe then return false end"),
+     "lv < (tonumber(H.SafeBelowLevel) or 0)", "lv <= (tonumber(H.SafeBelowLevel) or 0)"),
+    ("king also spares a 600 s player (<= SafePlaySeconds)", "MONSTER_SOURCE",
+     "played < (tonumber(H.SafePlaySeconds) or 0)", "played <= (tonumber(H.SafePlaySeconds) or 0)"),
+    ("king ignores the playtime rule", "MONSTER_SOURCE", " or played < (tonumber(H.SafePlaySeconds) or 0)", ""),
+    ("king spares the PvP Rookie shield again", "MONSTER_SOURCE",
+     "if lv < (tonumber(H.SafeBelowLevel) or 0) or",
+     "if info.Player:GetAttribute(\"Rookie\") == true or lv < (tonumber(H.SafeBelowLevel) or 0) or"),
     ("landAttack checks its target without the Player", "MONSTER_SOURCE",
      "local info = { Player = target, Pos = tpos,", "local info = { Pos = tpos,"),
+    # Fx WOBBLE: float, grounded slimes, blob shadows, dust (71c10bd / f965cd0)
+    ("ghost walks on the floor (Float ignored)", "FX_SOURCE",
+     "Float = (float and float > 0 and def.Shape ~= \"Slime\") and float or nil,", "Float = nil,"),
+    ("leaving slime still splats", "FX_SOURCE",
+     "\n\t\t\t\tand model:GetAttribute(\"Leaving\") ~= true then", " then"),
+    ("slime hop not capped at HopMax", "FX_SOURCE",
+     "local hopMax = math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)", "local hopMax = st.H * WOBBLE.HopRatio"),
+    ("slime sits on the ground surface (no Sink)", "FX_SOURCE",
+     "-(hop + (sy - 1) * half) + WOBBLE.Sink, 0)", "-(hop + (sy - 1) * half), 0)"),
+    ("slime shadow does not shrink in the air", "FX_SOURCE",
+     "WOBBLE.placeShadow(model, st.Root, st, pop * (hopMax > 0 and 1 - 0.35 * (hop / hopMax) or 1))",
+     "WOBBLE.placeShadow(model, st.Root, st, pop)"),
+    ("ghost shadow full size", "FX_SOURCE", "if faint then d *= 0.65 end", ""),
+    ("ghost shadow not fainter", "FX_SOURCE",
+     "Transparency = faint and math.min(0.95, ring[2] + 0.08) or ring[2],", "Transparency = ring[2],"),
+    ("anchored (dying) monster keeps its shadow", "FX_SOURCE",
+     "if sroot and not sroot.Anchored and not foreign and", "if sroot and not foreign and"),
+    ("shadow ignores WOBBLE.Range", "FX_SOURCE", "and (sroot.Position - camPos).Magnitude <= WOBBLE.Range then", "then"),
+    ("shadow kept after the model leaves", "FX_SOURCE",
+     "WOBBLE.State[model] = nil\n\t\t\tWOBBLE.dropShadow(model)", "WOBBLE.State[model] = nil"),
+    ("pop-in slime shadow measured at its first-frame size", "FX_SOURCE", "if st and st.Slime and st.Base then", "if false then"),
+    ("foreign monster gets a shadow and dust", "FX_SOURCE",
+     "local foreign = sroot ~= nil and Feel.isForeign(model)", "local foreign = false"),
+    ("foreign slime puffs landing dust", "FX_SOURCE",
+     "if lastS > 0 and s <= 0 and not foreign and", "if lastS > 0 and s <= 0 and"),
+    # EventHUD Pumpkin King pill (f0e011a)
+    ("HUD shows the countdown while the king is here", "EVENTHUD_SOURCE",
+     "if gsAttr(\"PumpkinKingActive\", false) == true then", "if false then"),
+    ("pill measured from the screen edge (ignores HUD's left column)", "EVENTHUD_SOURCE",
+     "local room = x0 - gap - math.max(gap, num(hl.LeftX))", "local room = x0 - gap - gap"),
+    ("right slot ignores the kaiju pill", "EVENTHUD_SOURCE",
+     "local kaiju = (ui.KaijuChip and ui.KaijuChip.Visible) and (KAIJU_CHIP_W + gap) or 0", "local kaiju = 0"),
+    ("right slot ignores HUD's button cluster", "EVENTHUD_SOURCE",
+     "if room >= minW and not blocked then", "if room >= minW then"),
+    ("pill squeezed below its text width (KING.need ignored)", "EVENTHUD_SOURCE",
+     "local minW, maxW = math.max(L.KingMinW, need), math.max(L.KingW, need)", "local minW, maxW = L.KingMinW, L.KingW"),
+    ("pill under the chips leaves the personal line in place", "EVENTHUD_SOURCE",
+     "\tKING.setBelow(below)\nend", "\tKING.setBelow(false)\nend"),
+    ("bat goblin slash loops", "CLIP_BatGoblin_Slash", "Loop = false", "Loop = true"),
 ]
 
 
@@ -212,7 +305,7 @@ def make_harness(sources: dict[str, str]) -> str:
         "local DENSITY = Config.MonsterDensity or {}\n"
         "local records, pending = H.records, H.pending\n"
         f"local MAX_SPAWNS_PER_KIND_PER_PASS = {per_pass.group(1)}\n"
-        "local spawnMonster, playersPerZone, warnThrottled = H.spawnMonster, H.playersPerZone, H.warnThrottled\n"
+        "local spawnMonster, playersPerZone, warnThrottled, despawn = H.spawnMonster, H.playersPerZone, H.warnThrottled, H.despawn\n"
         + between(mon, "local GLOBAL_CAP\n", "\n------------------------------------------------------------------ helpers") + "\n"
         + counting
         + between(mon, "local function targetCount(", "------------------------------------------------------------------ public queries")
@@ -265,7 +358,7 @@ def make_harness(sources: dict[str, str]) -> str:
             raise ValueError(f"EventHUD line {pattern!r} missing; update the test extractor.")
         hud_lines.append(m.group(0))
     bindings["KING_HUD_SOURCE"] = (
-        "local Config, Util, H = ...\nlocal C = H.C\nlocal ui = H.ui\nlocal IS_TOUCH = H.IsTouch == true\nlocal guiScale = nil\n"
+        "local Config, Util, H = ...\nlocal C = H.C\nlocal ui = H.ui\nlocal IS_TOUCH = H.IsTouch == true\nlocal guiScale = H.guiScale\n"
         "local gameState = nil\nlocal ReplicatedStorage = H.RS\nlocal hudBottom, relayout = H.hudBottom, H.relayout\n"
         + "\n".join(hud_lines) + "\n"
         + between(hud, "local L = {", "\n}\n") + "\n}\n"
@@ -280,6 +373,7 @@ def make_harness(sources: dict[str, str]) -> str:
     bindings["WOBBLE_SOURCE"] = (
         "local Config, H = ...\nlocal C = H.C\nlocal MOTION = H.MOTION\nlocal TweenService = H.TweenService\n"
         "local visualJoint, monsterRoot, monsterSize = H.visualJoint, H.monsterRoot, H.monsterSize\n"
+        "local makePart, groundY, burst, Feel = H.makePart, H.groundY, H.burst, H.Feel\n"
         + function_block(fx, "local function isSlimeModel(model)") + "\n"
         + between(fx, "local WOBBLE = {", "-- tweens VisualJoint.C0 through steps")
         + "return WOBBLE\n")
@@ -483,23 +577,44 @@ def main() -> int:
         "fixtureSHA256": hashlib.sha256(fixture_raw).hexdigest(),
         "sourcesChangedDuringRun": changed,
         "studioCalls": 0, "apiCalls": 0,
-        "contract": "Halloween season (lead design 2026-10-06, numbers provisional): Config.Halloween.Enabled gates every "
-                    "seasonal kind, the slot takeover, the Pumpkin King schedule and its HUD line. PumpkinSlime (meadow, 3 of "
-                    "the 12 slime slots, counts as Slime), LittleGhost (woods, +3, Float 1.5, counts as itself), BatGoblin "
-                    "(woods, 3 of the goblin slots, counts as Goblin, rigged: Tripo clips 32/36/31/16/46 frames at 15 fps), "
-                    "PumpkinKing (Count 0, Boss, never golden, never respawns): first 6 min after server start, then every "
-                    "20 min from the previous appearance, near the meadow center, leaves after 5 min with a friendly line; "
-                    "appear / defeat / leave lines go to every client without a name (AnnounceService.Broadcast, Korean + "
-                    "English twin); rewards only through MonsterService's kill path, one MonsterKilled per contributor "
-                    "(ContributorWindow 120 s for the king); GameState PumpkinKingNextAt / Active / EndsAt; Candy material "
-                    "(sell 5) and the four drop tables; the slime jackpot also on pumpkin slimes; quests / tutorial / story "
-                    "objectives count Config.QuestKind; Studio-only DebugCommand 'PumpkinKing'. Review 2026-10-06: a Boss "
-                    "kind (the king) never targets or hits a player with Rookie == true or Level < "
-                    "Config.Halloween.SafeBelowLevel (5); other kinds attack rookies as usual.",
+        "contract": "Halloween season (lead design 2026-10-06, numbers provisional; A23-27 / A23-28 / A23-30). "
+                    "Config.Halloween.Enabled AND the server clock before EndsAt 1794150000 (2026-11-09 00:00 KST; "
+                    "Config.SeasonOn via Config.SeasonNow = workspace:GetServerTimeNow, os.time fallback) gate every "
+                    "seasonal kind, the PumpkinPatch zone, the Pumpkin King schedule, its HUD line and the patch road sign. "
+                    "A23-30 zone family: Config.Zones.PumpkinPatch (Center 360,0,235, Size 160x120, MinLevel 1, no PvP, "
+                    "Season Halloween; LandPumpkinPatch x 280..440 z 175..295 joined to LandMeadow) holds every Halloween "
+                    "kind and only them: PumpkinSlime (Count 6, counts as Slime), LittleGhost (Count 4, HP 30, Float 1.5), "
+                    "BatGoblin (Count 4, HP 45, counts as itself; rigged: Tripo clips 32/36/31/16/46 frames at 15 fps), "
+                    "PumpkinKing (Count 0, Boss, never golden, never respawns); no Takes, so the meadow / woods / ruins keep "
+                    "their counts and capped targets in season; the three regular kinds sit outside the GlobalCap on their "
+                    "own targets; ZoneAt reads the patch as Outskirts off season. King: first 6 min after server start, then "
+                    "every 20 min from the previous appearance, at a SpawnSpot in the patch's far half, leaves after 5 min "
+                    "with a friendly line; appear / defeat / leave lines go to every client without a name "
+                    "(AnnounceService.Broadcast, Korean + English twin). A23-27 safety: a Boss kind never targets or hits a "
+                    "player with Level < SafeBelowLevel (5) or PlaytimeSeconds < SafePlaySeconds (600), whatever the faction "
+                    "or the PvP Rookie flag; other kinds attack new players as usual. A23-27 rewards: MonsterService counts "
+                    "each contributor's own hits and damage (overkill excluded) and pays the king only to contributors of "
+                    "the last 120 s with >= 3 hits and >= 0.5% of MaxHP (45 of 9000), one MonsterKilled each; kinds without "
+                    "RewardMinHits / RewardMinDamageFrac pay every contributor. King rows: Candy x8, Enh70 25%, Enh30 8%, "
+                    "Enh10 2%, Move70 8%, HP / MP potions 50%, tier-4 weapon 5% (3 candies below its MinLevel). A23-28 "
+                    "HW-13: at EndsAt no king appears, PumpkinKingNextAt goes to 0, a king still here goes home (leave "
+                    "fade + leave line), MonsterService.reevaluate sends the regular Halloween monsters home, the sign "
+                    "hides. GameState PumpkinKingNextAt / Active / EndsAt; Candy material (sell 5); the slime jackpot also "
+                    "on pumpkin slimes; quests / tutorial / story objectives count Config.QuestKind; Studio-only "
+                    "DebugCommand 'PumpkinKing'. Client: EventHUD king pill never narrower than its text (KING.need), "
+                    "moving to the next slot or under the chips (Korean / English, UIScale 1 / 0.75); Fx WOBBLE ghost "
+                    "float, slime hop <= min(0.15 x body, 0.6) with a 0.1 Sink, blob shadows (smaller in the air, 0.65 "
+                    "and fainter under a floater, rest-size for pop-ins, removed when anchored / out of range / gone, "
+                    "none and no dust for foreign personal monsters).",
         "limitations": "Offline doubles: Roblox Instances, a seeded / scripted Random, DataStore table, flat-ground stand-in "
-                       "for MonsterService.groundPoint, MonsterService.spawnMonster replaced by a record maker that uses the "
-                       "real golden roll, CFrame algebra limited to Z rolls. Studio models, real Weld rendering, MonsterMotion "
-                       "playback, phone layouts and multiplayer timing are not certified here.",
+                       "for MonsterService.groundPoint / pickSpawnPoint, MonsterService.spawnMonster replaced by a record "
+                       "maker that uses the real golden roll and creates the same _contributors / _hits / _dmg tables, "
+                       "MonsterService.despawn replaced by a recorder in the pool world (the real one runs in the king "
+                       "worlds), CFrame algebra limited to Z rolls, EventHUD placement from logical numbers (no real GUI "
+                       "layout), Fx makePart / groundY / burst / Feel.isForeign as recording doubles on flat ground. Studio "
+                       "models and Terrain, MapBuilder's patch land / sign build, real Weld / shadow rendering, MonsterMotion "
+                       "playback, real phone layouts, the live server clock crossing EndsAt and multiplayer timing are not "
+                       "certified here.",
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -431,6 +431,13 @@ local function onMonsterKilled(player, info)
 	if type(info) ~= "table" or not getData(player) then return end
 	local gold = math.floor(num(info.Gold) * M.GetGoldMult(player) + 0.5)
 	local xp = math.floor(num(info.XP) * M.GetXPMult(player) + 0.5)
+	-- A23-27: below def.XPCapBelowLevel a kill gives at most one level's XP (the Pumpkin King and a Lv1 player)
+	local def = type(info.Kind) == "string" and Config.MonsterTypes[info.Kind] or nil
+	local capBelow = def and tonumber(def.XPCapBelowLevel)
+	if capBelow then
+		local level = math.floor(num(getData(player).Level, 1))
+		if level < capBelow then xp = math.min(xp, math.floor(Config.XPToNext(level))) end
+	end
 	M.AddCarriedGold(player, gold, "Monster")
 	M.AddXP(player, xp)
 	S.PlayerService.AddStat(player, "TotalKills", 1)

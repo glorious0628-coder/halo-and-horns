@@ -122,7 +122,13 @@ local function step(dt)
 		local st = M.State[model]
 		if st == nil and model:IsA("Model") then
 			st = track(model)
-			if st == false then M.State[model] = false end
+			if st == false then
+				M.State[model] = false
+				-- review C-7: an untrackable model (no clips) is forgotten when it leaves, so the table never grows
+				model.AncestryChanged:Connect(function(_, parent)
+					if parent == nil then M.State[model] = nil end
+				end)
+			end
 		end
 		if st and st.Root and st.Root.Parent then
 			if (st.Root.Position - camPos).Magnitude > M.Range then

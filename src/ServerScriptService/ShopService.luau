@@ -61,12 +61,12 @@ local function onUpgradeWeapon(player, selectedTier)
 	local alreadyOwned = bit32.band(ownedMask, selectedBit) ~= 0
 	if selectedTier == 1 and not alreadyOwned then return end -- starting gear is equip-only, never a purchase
 
-	-- A23-4 / review: MinLevel gates the PURCHASE only; an owned weapon is always a free re-equip (also at Lv1 after a
-	-- rebirth or a free class change, same rule as LootService.onEquipWeapon)
+	-- A23-28: MinLevel gates the purchase AND the equip, an owned weapon too (after a rebirth / Lv5+ free class change
+	-- it is equippable again once the level is back; same rule as LootService.onEquipWeapon, Config.WeaponUsable)
 	local level, minLevel = data.Level, selectedDef.MinLevel
 	if not finite(level) or not finite(minLevel) then return end
-	if not alreadyOwned and level < minLevel then
-		notifyBad(player, "WeaponNeedLevel", minLevel)
+	if level < minLevel then
+		notifyBad(player, alreadyOwned and "EquipNeedLevel" or "WeaponNeedLevel", minLevel)
 		return
 	end
 

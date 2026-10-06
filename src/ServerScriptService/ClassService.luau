@@ -140,15 +140,15 @@ local function onChangeClass(player, classId, useTicket, gender)
 		end
 	end
 
-	if not useTicket and not keepLevel then
-		-- free from Lv FreeKeepLevelBelow on: Level 1, XP 0 (gold, bank, weapons, enhancement, items, rebirth bonus,
-		-- marks, tickets, quests are kept)
-		S.ProgressionService.ResetLevel(player)
-	end
-
 	local old = ClassService.GetClass(player)
 	if gender ~= nil then S.PlayerService.SetStat(player, "CharacterGender", gender) end
 	S.PlayerService.SetStat(player, "Class", classId)
+	if not useTicket and not keepLevel then
+		-- free from Lv FreeKeepLevelBelow on: Level 1, XP 0 (gold, bank, weapons, enhancement, items, rebirth bonus,
+		-- marks, tickets, quests are kept). After the new class is set, so LevelReset listeners see it (A23-28: the
+		-- weapon fit notice names the new class's weapon)
+		S.ProgressionService.ResetLevel(player)
+	end
 	-- review (A23-14): a keep-level change below Lv5 costs nothing, so it must not be a free full heal either
 	-- (Warrior -> Mage -> Warrior mid-hunt). It keeps the HP fraction; the paid / level-losing paths still heal fully.
 	S.PlayerService.RefreshCharacter(player, not keepLevel)

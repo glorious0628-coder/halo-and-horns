@@ -205,7 +205,8 @@ function TelemetryService.Start()
 		local trialA = 3
 		pcall(function() trialA = Config.StoryQuests.Defs.S0.Steps[2].Obj.List[1].Count end)
 		local doneA = type(s0) == "table" and type(s0.T) == "table" and tonumber(s0.T.a) or 0
-		if type(s0) == "table" and s0.St == 2 and doneA < trialA and type(info) == "table" and info.Kind == "Slime"
+		if type(s0) == "table" and s0.St == 2 and doneA < trialA and type(info) == "table"
+			and Config.QuestKind(info.Kind) == "Slime" -- review C-9: a pumpkin slime counts as a slime there too
 			and info.SkillHit == true and not throttled(player, "trialmiss", 300) then
 			TelemetryService.Custom(player, "CrownTrialMiss", 1, "SkillHit", info.Kind)
 		end

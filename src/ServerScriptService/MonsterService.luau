@@ -932,6 +932,8 @@ local function spawnMonster(kind, opts)
 		_scale = rig.Scale,
 		_rootOffset = rig.RootOffset,
 		_contributors = {},
+		_hits = {}, -- [Player] = own hits (A23-27)
+		_dmg = {}, -- [Player] = own damage, overkill excluded (A23-27)
 		_nextAttackAt = 0,
 		_nextWanderAt = os.clock() + Util.Random:NextNumber(1, WANDER_MAX),
 		_noAggroUntil = 0,
@@ -1082,15 +1084,17 @@ local function killRecord(rec)
 	local now = os.clock()
 	local eligible, perFaction = {}, {}
 	local window = tonumber(def.ContributorWindow) or MC.ContributorWindow -- a miniboss fight is longer
+	local minHits = tonumber(def.RewardMinHits) or 0
+	local minDamage = (tonumber(def.RewardMinDamageFrac) or 0) * rec.MaxHP
 	for p, t in rec._contributors do
-		if p.Parent and now - t <= window then
+		if p.Parent and now - t <= window and (rec._hits[p] or 0) >= minHits and (rec._dmg[p] or 0) >= minDamage then
 			local okF, f = pcall(factionOf, p)
 			if not okF or type(f) ~= "string" then f = "None" end
 			table.insert(eligible, { Player = p, Faction = f })
 			perFaction[f] = (perFaction[f] or 0) + 1
 		end
 	end
-	rec._contributors = {}
+	rec._contributors, rec._hits, rec._dmg = {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)
 		i.WarShare = info.WarPoints / math.max(1, perFaction[e.Faction] or 1)
@@ -1128,6 +1132,10 @@ function MonsterService.DamageMonster(record, amount, player, crit)
 	if record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then return false end
 	if player then
 		record._contributors[player] = os.clock()
+		-- A23-27: own hits and damage per contributor (a def with RewardMinHits / RewardMinDamageFrac pays only those
+		-- who met both); the overkill part of the last hit does not count
+		record._hits[player] = (record._hits[player] or 0) + 1
+		record._dmg[player] = (record._dmg[player] or 0) + math.min(amount, math.max(0, record.HP))
 	end
 	record.HP -= amount
 	if record.HP > 0 then
@@ -1363,12 +1371,14 @@ end
 -- A10-V3-2 (a) + A3-M4: a player this (non-personal) monster may chase: in the monster's own zone, not in a town,
 -- not in the water
 local function targetable(rec, info)
-	-- review 2026-10-06: a boss (the Pumpkin King) leaves rookies alone (Rookie shield or below SafeBelowLevel)
+	-- A23-27: a boss (the Pumpkin King) leaves new players alone whatever their faction: Level < SafeBelowLevel OR
+	-- PlaytimeSeconds < SafePlaySeconds (the PvP Rookie shield is not used: it means something else)
 	local def = Config.MonsterTypes[rec.Kind]
 	if def and def.Boss and typeof(info.Player) == "Instance" then
+		local H = Config.Halloween or {}
 		local lv = tonumber(info.Player:GetAttribute("Level")) or 1
-		local safe = tonumber(Config.Halloween and Config.Halloween.SafeBelowLevel) or 0
-		if info.Player:GetAttribute("Rookie") == true or lv < safe then return false end
+		local played = tonumber(info.Player:GetAttribute("PlaytimeSeconds")) or 0
+		if lv < (tonumber(H.SafeBelowLevel) or 0) or played < (tonumber(H.SafePlaySeconds) or 0) then return false end
 	end
 	-- user 2026-10-05: monsters always attack as usual (no window / rest state may become a safe spot to exploit)
 	return not info.Town and info.Zone == rec.ZoneId and info.Pos.Y >= OUT_Y
@@ -1716,6 +1726,15 @@ end
 
 ------------------------------------------------------------------ density (A3-M2 / A5-C1)
 local function reevaluate()
+	-- A23-28 HW-13: a seasonal kind whose season just ended goes home (floats up and fades, no rewards); event monsters
+	-- (the king) are closed by their own service
+	local gone = {}
+	for _, rec in records do
+		if rec.Alive and rec.Owner == nil and not rec.Event and not Config.MonsterActive(rec.Kind) then
+			table.insert(gone, rec)
+		end
+	end
+	for _, rec in gone do despawn(rec, true, true) end
 	local zoneCounts = playersPerZone()
 	local targets = cappedTargets(zoneCounts) -- CR-L13
 	local total = totalNonPersonal()

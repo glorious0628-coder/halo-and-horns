@@ -47,13 +47,15 @@ Keybinds.Changed = Util.Signal.new() -- (map copy) after the effective keys chan
 Keybinds.Began = Util.Signal.new() -- (input, gameProcessed) every UserInputService.InputBegan + Dispatch
 Keybinds.Ended = Util.Signal.new() -- (input, gameProcessed) every UserInputService.InputEnded + Dispatch
 
-local function touchOnly()
-	return UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-end
-
--- the one rule for key badges / key hints (HUD, VitalsUI, GrudgeGhost, texts): a keyboard is there (touch laptops too)
+-- the one rule for key badges / key hints (HUD, VitalsUI, GrudgeGhost, WorldMap, Intro, quest texts): a keyboard is
+-- there (touch laptops too). Review B5: no other device test decides whether a key is shown.
 function Keybinds.ShowsKeys()
 	return UserInputService.KeyboardEnabled == true
+end
+
+-- no keyboard: key labels become button names, "(… {Action} …)" groups go
+local function touchOnly()
+	return not Keybinds.ShowsKeys()
 end
 
 local function english()

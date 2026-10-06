@@ -377,7 +377,11 @@ local function clientWorld(opts)
 	w.Config = config
 	for _, id in opts.Windows or {} do w.Registered[id] = true end
 	local cenv = clock:Env()
-	local uis = { TouchEnabled = opts.Touch == true, KeyboardEnabled = opts.Touch ~= true, MouseEnabled = opts.Touch ~= true,
+	-- opts.Device = { Keyboard, Touch, Mouse } (review B5 device table); else opts.Touch = a phone, default = a desktop
+	local dev = opts.Device
+	local uis = { TouchEnabled = if dev then dev.Touch == true else opts.Touch == true,
+		KeyboardEnabled = if dev then dev.Keyboard == true else opts.Touch ~= true,
+		MouseEnabled = if dev then dev.Mouse == true else opts.Touch ~= true,
 		InputBegan = signal(), InputEnded = signal() }
 	function uis:GetFocusedTextBox() return nil end
 	local cas = { Bound = {}, Order = {} }
@@ -1568,6 +1572,180 @@ runGroup("net-names", function()
 		seen[n] = true
 	end
 	check(dup == nil, "no duplicate remote names", dup)
+end)
+
+------------------------------------------------------------------ 16. key hints: one rule (review B5, 2026-10-06)
+-- Every key badge / key hint asks Keybinds.ShowsKeys() (= UserInputService.KeyboardEnabled == true): a touch laptop with a
+-- keyboard shows keys; a phone, a tablet with a mouse but no keyboard and a gamepad do not. Keybinds runs for real. The HUD
+-- quest-row filler (L.QuestText), WorldMap.ShowsKeys / HintText, both map-hint blocks (BindKey, Open), Intro's TXT table
+-- and Intro.SkipText are cut from the CURRENT sources by tools/test_keys_settings.py (SNIPPETS) and run against it; each
+-- chunk is loaded again per device, as the module would load on that device.
+local HINT_DEVICES = {
+	{ Name = "desktop: keyboard + mouse", Keyboard = true, Touch = false, Mouse = true },
+	{ Name = "touch laptop: keyboard + touch + mouse", Keyboard = true, Touch = true, Mouse = true },
+	{ Name = "tablet with a keyboard, no mouse", Keyboard = true, Touch = true, Mouse = false },
+	{ Name = "phone: touch only", Keyboard = false, Touch = true, Mouse = false },
+	{ Name = "tablet with a mouse, no keyboard", Keyboard = false, Touch = true, Mouse = true },
+	{ Name = "gamepad / console: no keyboard, no touch", Keyboard = false, Touch = false, Mouse = false },
+}
+-- WorldMap TXT double (the real strings live in WorldMap.luau; only the {Map} token matters here)
+local WM_TXT = { HintMouse = "드래그: 이동 · 휠: 확대/축소 · {Map} / Esc: 닫기", HintTouch = "드래그: 이동 · 두 손가락: 확대/축소" }
+local SNIPPET_NAMES = { "HudQuestText", "WorldMapFns", "WorldMapBindHint", "WorldMapOpenHint", "IntroTxt", "IntroSkipText" }
+
+-- runs one cut chunk in env (globals behind it); returns its value or nil + why
+local function snippet(name, env)
+	local code = type(SNIPPETS) == "table" and SNIPPETS[name] or nil
+	if type(code) ~= "string" or code == "" then return nil, name .. " not found in the source" end
+	local fn, err = loadstring(code, "=" .. name)
+	if not fn then return nil, err end
+	setfenv(fn, setmetatable(env, { __index = getfenv() }))
+	local ok, out = pcall(fn)
+	if not ok then return nil, out end
+	return out
+end
+
+runGroup("key-hints-one-rule", function()
+	for _, name in SNIPPET_NAMES do
+		check(type(SNIPPETS) == "table" and type(SNIPPETS[name]) == "string" and SNIPPETS[name] ~= "",
+			"the key-hint code is found in HUD / WorldMap / Intro (cut for these behaviour checks)", name)
+	end
+	for _, d in HINT_DEVICES do
+		local keys = d.Keyboard -- the one rule
+		local w = clientWorld({ Device = d })
+		w:Echo(0, {})
+		local K = w.KB
+		local ById = w.Config.Keybinds.ById
+		local autoBtn = ById.Auto.Button
+		-- Keybinds (touchOnly = not ShowsKeys)
+		check(K.ShowsKeys() == keys, "Keybinds.ShowsKeys() = KeyboardEnabled (touch laptop: yes; phone, mouse tablet, gamepad: no)",
+			d.Name .. " " .. tostring(K.ShowsKeys()))
+		check(K.Label("Auto") == (keys and "R" or autoBtn) and K.Label("PotionHP") == (keys and "1" or ById.PotionHP.Button),
+			"Keybinds.Label: key labels exactly where keys are shown, button names on every device without a keyboard",
+			d.Name .. " " .. show({ K.Label("Auto"), K.Label("PotionHP") }))
+		local ghost, auto = K.Fill(w.Config.Text.GhostButton, true), K.Fill("{Auto}키")
+		check(ghost == (keys and "유령으로 붙잡기 (T)" or "유령으로 붙잡기") and auto == (keys and "R키" or autoBtn .. "키"),
+			"Keybinds.Fill: the '(T)' key part and '{Auto}' follow ShowsKeys", d.Name .. " " .. show({ ghost, auto }))
+		local cw = clientWorld({ Device = d, Windows = ALL_WINDOWS })
+		cw:Echo(0, { Keys = { Attack = "J" } })
+		check(deepEq(cw.KB.Collisions(), { "Journal" }) and #cw.Toasts == (keys and 1 or 0),
+			"the key-collision toast shows only where keys are shown", d.Name .. " " .. show(cw.Toasts))
+		-- HUD quest rows (L.QuestText; IS_TOUCH / UserInputService are there only for the old device test)
+		local hud, hudErr = snippet("HudQuestText", { C = w.C, Config = w.Config, IS_TOUCH = d.Touch, UserInputService = w.UIS })
+		local row = "자동 전투 켜기 ({Auto})"
+		local q1 = hud and hud.QuestText(row)
+		check(q1 == (keys and "자동 전투 켜기 (R)" or "자동 전투 켜기 (" .. autoBtn .. ")"),
+			"HUD L.QuestText: the current key where keys are shown, the button name without a keyboard",
+			d.Name .. " " .. tostring(q1 or hudErr))
+		K.Clear("Auto")
+		local q2 = hud and hud.QuestText(row)
+		check(q2 == (keys and "자동 전투 켜기" or "자동 전투 켜기 (" .. autoBtn .. ")"),
+			"HUD L.QuestText: an unbound key drops the '(…)' group only where keys are shown", d.Name .. " " .. tostring(q2 or hudErr))
+		K.Reset()
+		-- WorldMap hint
+		local hintKeys = "드래그: 이동 · 휠: 확대/축소 · M / Esc: 닫기"
+		local wm, wmErr = snippet("WorldMapFns", { C = w.C, UserInputService = w.UIS, TXT = WM_TXT })
+		-- HintText is only shown where keys are shown (its {Map} would read as the button name elsewhere)
+		check(wm ~= nil and wm.ShowsKeys() == keys and (not keys or wm.HintText() == hintKeys),
+			"WorldMap.ShowsKeys() = Keybinds.ShowsKeys(); HintText names the map key", d.Name .. " " .. tostring(wmErr))
+		local env = { WorldMap = wm, TXT = WM_TXT, UserInputService = w.UIS, C = w.C }
+		local openHint, openErr = snippet("WorldMapOpenHint", env)
+		local label = { Text = "" }
+		if openHint and wm then pcall(openHint, label) end
+		check(label.Text == (keys and hintKeys or WM_TXT.HintTouch),
+			"WorldMap.Open: the key hint where keys are shown, the touch hint without a keyboard",
+			d.Name .. " " .. tostring(openErr or label.Text))
+		local bindHint, bindErr = snippet("WorldMapBindHint", env)
+		label = { Text = "BEFORE" }
+		if bindHint and wm then pcall(bindHint, label) end
+		check(label.Text == (keys and hintKeys or "BEFORE"),
+			"WorldMap.BindKey: the new map key goes into the hint only where keys are shown",
+			d.Name .. " " .. tostring(bindErr or label.Text))
+		local early = snippet("WorldMapFns", { C = {}, UserInputService = w.UIS, TXT = WM_TXT })
+		check(early ~= nil and early.ShowsKeys() == d.Keyboard, "WorldMap.ShowsKeys before Keybinds is up = KeyboardEnabled", d.Name)
+		-- Intro skip button
+		local txt, txtErr = snippet("IntroTxt", { STORY = {}, UserInputService = w.UIS })
+		local intro, introErr = nil, txtErr
+		if txt then intro, introErr = snippet("IntroSkipText", { C = w.C, TXT = txt, UserInputService = w.UIS }) end
+		local skip = intro and intro.SkipText()
+		check(skip == "건너뛰기 ▶" .. (keys and " (Enter)" or ""), "Intro.SkipText: '(Enter)' exactly where keys are shown",
+			d.Name .. " " .. tostring(skip or introErr))
+		local introEarly = txt and snippet("IntroSkipText", { C = {}, TXT = txt, UserInputService = w.UIS })
+		local skipEarly = introEarly and introEarly.SkipText()
+		check(skipEarly == "건너뛰기 ▶" .. (d.Keyboard and " (Enter)" or ""),
+			"Intro.SkipText before Keybinds is up: '(Enter)' only with a keyboard", d.Name .. " " .. tostring(skipEarly))
+	end
+end)
+
+------------------------------------------------------------------ 17. Interact keeps a key the prompt draws (review of 27246d1)
+-- Keybinds.SetLocal swap guard: another action may take Interact's key only when Interact can hold that action's old key
+-- (Interact: NoClear + prompt keys only). Keybinds.Capture refuses keys the action cannot hold before SetLocal, with a toast.
+runGroup("keybinds-interact-guard", function()
+	local w = clientWorld()
+	w:Echo(0, {})
+	local K = w.KB
+	local prompt = w:Prompt(true)
+	local E, G = ENUM.KeyCode.E, ENUM.KeyCode.G
+	check(prompt.KeyboardKeyCode == E and K.KeyName("Interact") == "E", "start: Interact = E, the prompt draws E")
+	for _, old in { "CapsLock", "KeypadOne", "Minus", "" } do
+		local tag = old == "" and "(none)" or old
+		K.Reset()
+		if old == "" then K.Clear("Attack") else K.SetLocal("Attack", old) end
+		local saved = deepCopy(w.ST.Get("Keys"))
+		local fires = w.ChangedFires
+		local ok, reason, other = K.SetLocal("Attack", "E")
+		check(K.KeyName("Attack") == old and ok == false and reason == "NotAllowed" and other == nil,
+			"swap guard: an action whose old key Interact cannot hold (CapsLock, KeypadOne, Minus, none) cannot take E",
+			tag .. " " .. show({ ok = ok, reason = reason, other = other, attack = K.KeyName("Attack"), interact = K.KeyName("Interact") }))
+		check(K.KeyName("Interact") == "E" and K.KeyName("Attack") == old and K.ActionFor(key("E")) == "Interact"
+			and prompt.KeyboardKeyCode == E and deepEq(w.ST.Get("Keys"), saved) and #K.Collisions() == 0 and w.ChangedFires == fires,
+			"a refused swap changes nothing: Interact and its prompt keep E, nothing saved, no collision, no Changed",
+			tag .. " " .. show({ K.KeyName("Interact"), K.KeyName("Attack"), w.ST.Get("Keys"), K.Collisions() }))
+	end
+	K.Reset()
+	K.SetLocal("Attack", "G")
+	local ok, reason, other = K.SetLocal("Attack", "E")
+	check(ok == true and reason == "Swap" and other == "Interact" and K.KeyName("Attack") == "E" and K.KeyName("Interact") == "G"
+		and prompt.KeyboardKeyCode == G, "swap guard lets a key the prompt draws through: Attack G -> E, Interact and its prompt get G",
+		show({ ok, reason, other, K.KeyName("Interact") }))
+	K.Reset()
+	K.SetLocal("Attack", "CapsLock")
+	ok, reason = K.SetLocal("Interact", "CapsLock")
+	check(ok == false and reason == "NotAllowed" and K.KeyName("Interact") == "E" and K.KeyName("Attack") == "CapsLock"
+		and prompt.KeyboardKeyCode == E, "Interact cannot be swapped onto another action's key the prompt cannot draw (CapsLock)",
+		show({ ok, reason }))
+	K.Reset()
+	ok, reason, other = K.SetLocal("Interact", "Q")
+	check(ok == true and reason == "Swap" and other == "SkillQ" and K.KeyName("Interact") == "Q" and K.KeyName("SkillQ") == "E"
+		and prompt.KeyboardKeyCode == ENUM.KeyCode.Q, "Interact swapped onto a drawable key (Q): the holder gets E, the prompt Q",
+		show({ ok, reason, other }))
+	-- capture (BB3): keys Interact cannot hold are refused with a NotAllowed toast; G is taken
+	K.Reset()
+	local res = {}
+	local function cb(...) table.insert(res, table.pack(...)) end
+	for _, bad in { "CapsLock", "KeypadOne", "" } do
+		local tag = bad == "" and "(empty)" or bad
+		res = {}
+		local toasts = #w.Toasts
+		local started = K.Capture("Interact", cb)
+		local b = w:Capture()
+		if b then b.Fn("capture", ENUM.UserInputState.Begin, key(bad)) end
+		check(started == true and res[1] ~= nil and res[1][1] == "NotAllowed" and res[1][2] == bad and not K.IsCapturing()
+			and w.PPS.Enabled == true, "capture refuses keys Interact cannot hold (CapsLock, KeypadOne, empty): NotAllowed",
+			tag .. " " .. show(res[1]))
+		local last = w.Toasts[#w.Toasts]
+		check(#w.Toasts == toasts + 1 and last ~= nil and last.Text == w.Config.Settings.Text.NotAllowed and last.Kind == "bad",
+			"the capture refusal tells the player (one NotAllowed toast)", tag .. " " .. show(last))
+		check(K.KeyName("Interact") == "E" and prompt.KeyboardKeyCode == E and deepEq(w.ST.Get("Keys"), {}),
+			"a refused capture keeps Interact on E (its prompt too), nothing saved", tag .. " " .. show(w.ST.Get("Keys")))
+	end
+	res = {}
+	local toasts = #w.Toasts
+	check(K.Capture("Interact", cb) == true, "capture of Interact starts")
+	local b = w:Capture()
+	if b then b.Fn("capture", ENUM.UserInputState.Begin, key("G")) end
+	check(res[1] ~= nil and res[1][1] == "Set" and res[1][2] == "G" and K.KeyName("Interact") == "G" and prompt.KeyboardKeyCode == G
+		and #w.Toasts == toasts and deepEq(w.ST.Get("Keys"), { Interact = "G" }) and not K.IsCapturing(),
+		"capture accepts G for Interact: Set, the prompt draws G, saved, no toast", show(res[1]))
 end)
 
 ------------------------------------------------------------------ summary

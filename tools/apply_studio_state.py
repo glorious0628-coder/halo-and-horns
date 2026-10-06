@@ -8,8 +8,9 @@ Studio session (File > Save to File only writes build/GoodEvil.rbxlx). This scri
      uploads): rigged Goblin, GoblinBrute, Skeleton, SkeletonKnight, BatGoblin (41 bones each) and, since 2026-10-05
      evening, the static cube Slime, PetBabySlime, PumpkinSlime, LittleGhost and PumpkinKing (GPT image 2.5 Sunburst
      concepts). BigSlime = the cube Slime with its body hue-shifted to blue (art/models/tripo/BigSlimeCube_tex_blue.png,
-     uploaded as BIG_SLIME_TEXTURE). The Skeleton GLB faces +X (others +Z), so its PrimaryPart.PivotOffset gets +90
-     degrees around Y. Replaced models move to ServerStorage.MonsterModelArchive. Each placed model carries AssetId.
+     uploaded as BIG_SLIME_TEXTURE). FRONT_FIX yaws (PrimaryPart.PivotOffset) are applied to every model on every run.
+     A replaced model is destroyed (since 2026-10-06; it used to move to ServerStorage.MonsterModelArchive, whose old
+     entries' SurfaceAppearance TexturePacks belonged to the old account). Each placed model carries AssetId.
   2. ServerStorage Costume* folders are deleted (A23-5 chibi costume removal).
   3. The anvil sign reads "대장간 · 장인 길드" (tools/preview_map.lua).
 Safe to run repeatedly: a model that is already rigged is left alone. Studio must be in Edit mode.
@@ -64,8 +65,6 @@ return game:GetService("HttpService"):JSONEncode(need)'''
 
 SWAP = '''local SS=game:GetService("ServerStorage")
 local CM=SS:FindFirstChild("CustomModels")
-local AR=SS:FindFirstChild("MonsterModelArchive") or Instance.new("Folder")
-AR.Name="MonsterModelArchive" AR.Parent=SS
 local IC=SS:FindFirstChild("ImportCheck")
 local FRONT=game:GetService("HttpService"):JSONDecode(%s)
 local out={}
@@ -74,12 +73,7 @@ for id,kind in game:GetService("HttpService"):JSONDecode(%s) do
 	local scene=h and (h:FindFirstChild("Scene") or h:FindFirstChildWhichIsA("Model") or h)
 	if scene and scene:IsA("Model") then
 		local old=CM:FindFirstChild(kind)
-		if old then
-			local nm=kind.."_static"
-			local i=1
-			while AR:FindFirstChild(nm) do i+=1 nm=kind.."_static"..i end
-			old.Name=nm old.Parent=AR
-		end
+		if old then old:Destroy() end -- review 2026-10-06: not archived (old SurfaceAppearance TexturePacks warned)
 		local bones=0
 		for _,d in scene:GetDescendants() do if d:IsA("Bone") then d.Transform=CFrame.identity bones+=1 end end
 		pcall(scene.ScaleTo,scene,1)
@@ -103,7 +97,7 @@ local slime=CM:FindFirstChild("Slime")
 local big=CM:FindFirstChild("BigSlime")
 local bigMesh=big and big:FindFirstChildWhichIsA("MeshPart",true)
 if slime and slime:GetAttribute("AssetId") and (not bigMesh or bigMesh.TextureID~=%s) then
-	if big then big.Name="BigSlime_old" big.Parent=AR end
+	if big then big:Destroy() end
 	big=slime:Clone()
 	local mp=big:FindFirstChildWhichIsA("MeshPart",true)
 	for _,sa in mp:GetChildren() do if sa:IsA("SurfaceAppearance") then sa:Destroy() end end

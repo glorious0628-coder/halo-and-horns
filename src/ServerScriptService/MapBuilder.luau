@@ -885,6 +885,161 @@ end
 ------------------------------------------------------------------ public API
 -- ENSURE: reuse workspace.Map if present, create only what is missing. No S, no yields, idempotent.
 -- A reused map never gets ground or decor (its world is Terrain); a fresh one gets the A11-R3 minimal ground.
+------------------------------------------------------------------ A23-30 PumpkinPatch (Halloween field)
+-- Terrain land joined to the meadow's south shore (Config.Map.Lands "LandPumpkinPatch"; filled only while that spot is
+-- still sea), a dirt path from the meadow road, furrows, pumpkins and a fence (plain parts, no new art) in
+-- Map.Decor.PumpkinPatch, and the one road sign Map.Landmarks.PumpkinPatchSign (HalloweenService hides it out of
+-- season). Idempotent: every piece is looked up by name first.
+local PATCH = {
+	Land = "LandPumpkinPatch",
+	Pumpkin = RGB(235, 128, 34), Stem = RGB(92, 112, 44), Wood = RGB(128, 92, 58),
+	Soil = Enum.Material.Mud, -- the Tex_PumpkinSoil slot (Config.Zones.PumpkinPatch.FloorMaterial); Ground = ruins soil
+	PathX = 360, PathHalfW = 4, PathFromZ = 9, -- from the meadow road (|z| <= 8) south into the patch
+	-- the meadow's south shore is a rocky ridge (Y 30-40 at z 140-176): a pass is cut through it along the path
+	PassHalfW = 9, PassFromZ = 126, PassToZ = 194,
+	FurrowStep = 24, PostStep = 16, Gate = 10, -- a 4-stud furrow every 24 studs; fence post every 16; gate half-width
+	SignPos = Vector3.new(368, 0, 136), -- the meadow's south edge, beside the path
+}
+
+function PATCH.rect()
+	for _, l in (type(Config.Map.Lands) == "table" and Config.Map.Lands or {}) do
+		if type(l) == "table" and l.Name == PATCH.Land then return l end
+	end
+	return nil
+end
+
+-- true while the patch centre is still sea (or nothing): then the land is filled once
+function PATCH.landMissing(cx, cz)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { workspace.Terrain }
+	params.IgnoreWater = false
+	local hit = workspace:Raycast(Vector3.new(cx, 60, cz), Vector3.new(0, -120, 0), params)
+	return hit == nil or hit.Material == Enum.Material.Water
+end
+
+function PATCH.fillLand(l)
+	local T = workspace.Terrain
+	local w, d = l.MaxX - l.MinX, l.MaxZ - l.MinZ
+	local cx, cz = (l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2
+	-- tools/preview_map.lua land(): FillBlock tops land 2 cells above the asked top, so every fill sits 2 lower
+	T:FillBlock(CFrame.new(cx, -12, cz), Vector3.new(w + 16, 8, d + 16), Enum.Material.Sand)
+	-- pumpkin soil (Mud = the Tex_PumpkinSoil slot) with leafy rows between the furrows
+	T:FillBlock(CFrame.new(cx, -8, cz), Vector3.new(w, 12, d), PATCH.Soil)
+	for z = l.MinZ + PATCH.FurrowStep + 12, l.MaxZ - 12, PATCH.FurrowStep do
+		T:FillBlock(CFrame.new(cx, -4, z), Vector3.new(w - 24, 4, 4), Enum.Material.LeafyGrass)
+	end
+end
+
+-- true while the ridge still stands on the path between the meadow and the patch
+function PATCH.passBlocked()
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { workspace.Terrain }
+	local mid = (PATCH.PassFromZ + PATCH.PassToZ) / 2
+	local hit = workspace:Raycast(Vector3.new(PATCH.PathX, 120, mid), Vector3.new(0, -200, 0), params)
+	return hit ~= nil and hit.Position.Y > 3
+end
+
+-- the pass through the ridge (cleared above the floor, floor at Y = 0) and the dirt path from the meadow road
+function PATCH.cutPass()
+	local T = workspace.Terrain
+	local w, fromZ, toZ = PATCH.PassHalfW * 2, PATCH.PassFromZ, PATCH.PassToZ
+	local midZ = (fromZ + toZ) / 2
+	T:FillBlock(CFrame.new(PATCH.PathX, 50, midZ), Vector3.new(w, 100, toZ - fromZ), Enum.Material.Air)
+	T:FillBlock(CFrame.new(PATCH.PathX, -8, midZ), Vector3.new(w, 12, toZ - fromZ), Enum.Material.Grass)
+	local pFrom, pTo = PATCH.PathFromZ, toZ
+	T:FillBlock(CFrame.new(PATCH.PathX, -4, (pFrom + pTo) / 2), Vector3.new(PATCH.PathHalfW * 2, 4, pTo - pFrom),
+		PATCH.Soil)
+end
+
+function PATCH.decor(ctx, l, decor)
+	if decor:FindFirstChild("PumpkinPatch") then return end
+	local m = model("PumpkinPatch")
+	local rng = Random.new(1031) -- the same field every build
+	-- pumpkins on the furrows: an orange ball, a stem and one leaf
+	for z = l.MinZ + PATCH.FurrowStep, l.MaxZ - 10, PATCH.FurrowStep do
+		for x = l.MinX + 18, l.MaxX - 18, 26 do
+			local px, pz = x + rng:NextNumber(-6, 6), z + rng:NextNumber(-1.5, 1.5)
+			if math.abs(px - PATCH.PathX) > 8 then
+				local size = rng:NextNumber(2.2, 3.8)
+				prop(ctx, { Name = "Pumpkin", Shape = Enum.PartType.Ball, Size = Vector3.new(size, size, size),
+					Position = Vector3.new(px, size * 0.42, pz), Color = PATCH.Pumpkin }, m)
+				prop(ctx, { Name = "Stem", Size = Vector3.new(0.35, size * 0.3, 0.35),
+					Position = Vector3.new(px, size * 0.92, pz), Color = PATCH.Stem }, m)
+				prop(ctx, { Name = "Leaf", Size = Vector3.new(size * 0.45, 0.1, size * 0.3),
+					CFrame = CFrame.new(px + size * 0.3, size * 0.2, pz + size * 0.25) * CFrame.Angles(0, rng:NextNumber(0, 6.28), 0),
+					Color = PATCH.Stem }, m)
+			end
+		end
+	end
+	-- a low fence around the field with a gate in the north side (the path)
+	local function post(x, z)
+		prop(ctx, { Name = "FencePost", Size = Vector3.new(0.8, 3.2, 0.8), Position = Vector3.new(x, 1.6, z),
+			Color = PATCH.Wood, Material = Enum.Material.WoodPlanks }, m)
+	end
+	local function rail(a, b)
+		local mid, len = (a + b) / 2, (b - a).Magnitude
+		prop(ctx, { Name = "FenceRail", Size = Vector3.new(0.4, 0.45, len),
+			CFrame = CFrame.lookAt(mid + Vector3.new(0, 2.2, 0), b + Vector3.new(0, 2.2, 0)),
+			Color = PATCH.Wood, Material = Enum.Material.WoodPlanks }, m)
+	end
+	local corners = { Vector3.new(l.MinX, 0, l.MinZ), Vector3.new(l.MaxX, 0, l.MinZ), Vector3.new(l.MaxX, 0, l.MaxZ),
+		Vector3.new(l.MinX, 0, l.MaxZ) }
+	for i = 1, 4 do
+		local a, b = corners[i], corners[i % 4 + 1]
+		local n = math.max(1, math.floor((b - a).Magnitude / PATCH.PostStep + 0.5))
+		for k = 0, n - 1 do
+			local p0, p1 = a:Lerp(b, k / n), a:Lerp(b, (k + 1) / n)
+			local gate = i == 1 and math.abs((p0.X + p1.X) / 2 - PATCH.PathX) < PATCH.Gate
+			post(p0.X, p0.Z)
+			if not gate then rail(p0, p1) end
+		end
+	end
+	m.Parent = decor
+	ctx.pieces += 1
+end
+
+-- the one road sign (a post and a board with the Config.Halloween.Text.PatchSign billboard)
+function PATCH.sign(ctx, landmarks)
+	local text = (Config.Halloween and Config.Halloween.Text and Config.Halloween.Text.PatchSign) or "호박밭"
+	local sign = landmarks:FindFirstChild("PumpkinPatchSign")
+	if not sign then
+		sign = model("PumpkinPatchSign")
+		local p = PATCH.SignPos
+		local postPart = part(ctx, { Name = "Post", Size = Vector3.new(0.8, 6, 0.8), Position = p + Vector3.new(0, 3, 0),
+			Color = PATCH.Wood, Material = Enum.Material.WoodPlanks }, sign)
+		postPart:SetAttribute("ShownTransparency", 0)
+		postPart:SetAttribute("ShownCollide", true)
+		local board = part(ctx, { Name = "Board", Size = Vector3.new(6, 2.2, 0.4), Position = p + Vector3.new(0, 5.2, 0),
+			Color = PATCH.Pumpkin, Material = Enum.Material.WoodPlanks, CanCollide = false }, sign)
+		board:SetAttribute("ShownTransparency", 0)
+		board:SetAttribute("ShownCollide", false)
+		billboard(board, "SignGui", text, 3.2, RGB(255, 225, 160), 300, SIGN_MAX_DISTANCE, 46)
+		sign.Parent = landmarks
+		ctx.pieces += 1
+	end
+	local gui = sign:FindFirstChild("SignGui", true)
+	local label = gui and gui:FindFirstChild("Text")
+	if label and label:IsA("TextLabel") then label.Text = text end
+end
+
+-- also used by MapBuilder.EnsurePumpkinPatch (Studio command bar / checks)
+function PATCH.ensure(ctx, folders)
+	local l = PATCH.rect()
+	if not l then return end
+	if PATCH.landMissing((l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2) then
+		local ok, err = pcall(PATCH.fillLand, l)
+		if ok then ctx.pieces += 1 else Util.Warn(TAG, "PumpkinPatch land: " .. tostring(err)) end
+	end
+	if PATCH.passBlocked() then
+		local ok, err = pcall(PATCH.cutPass)
+		if ok then ctx.pieces += 1 else Util.Warn(TAG, "PumpkinPatch pass: " .. tostring(err)) end
+	end
+	PATCH.decor(ctx, l, folders.Decor)
+	PATCH.sign(ctx, folders.Landmarks)
+end
+
 function MapBuilder.Build()
 	local ctx = newCtx()
 	local map = workspace:FindFirstChild("Map")
@@ -911,6 +1066,8 @@ function MapBuilder.Build()
 	ensurePads(ctx, folders.Pads)
 	ensureLandmarks(ctx, folders.Landmarks)
 	ensurePotionMerchant(ctx, folders.NPCs)
+	local okPatch, errPatch = pcall(PATCH.ensure, ctx, folders) -- A23-30
+	if not okPatch then Util.Warn(TAG, "PumpkinPatch: " .. tostring(errPatch)) end
 
 	if fresh then
 		buildPreviewSpawn(ctx, folders.Landmarks)
@@ -932,6 +1089,18 @@ function MapBuilder.Build()
 		print(("[MapBuilder] reused workspace.Map (+%d missing pieces built)"):format(ctx.pieces))
 	end
 	return map
+end
+
+-- A23-30: only the PumpkinPatch pieces (land, pass, decor, sign); returns { land, pass } = what it had to make
+function MapBuilder.EnsurePumpkinPatch()
+	local map = workspace:FindFirstChild("Map")
+	if not map then return nil end
+	local folders = {}
+	for _, name in FOLDER_NAMES do folders[name] = getChildFolder(map, name) end
+	local l = PATCH.rect()
+	local made = { land = l ~= nil and PATCH.landMissing((l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2), pass = PATCH.passBlocked() }
+	PATCH.ensure(newCtx(), folders)
+	return made
 end
 
 -- destroy workspace.Map, then Build() (Studio command bar helper)

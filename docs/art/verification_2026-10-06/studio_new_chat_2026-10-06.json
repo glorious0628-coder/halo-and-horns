@@ -1,0 +1,13 @@
+{
+  "what": "User request 2026-10-06 (relayed by the reviewer): the main place uses the new chat. ChatVersion cannot be written by scripts (RobloxScript capability) and the one-time screen operation could not open the Properties dropdown, so the user switched TextChatService.ChatVersion = TextChatService by hand. ChatWindowConfiguration was reset by script to the Roblox default (HorizontalAlignment Left, VerticalAlignment Top, WidthScale 1, HeightScale 1; was Left/Bottom 0.85/0.80).",
+  "checks_own_test_play_pc_1280x720": {
+    "ChatVersion": "Enum.ChatVersion.TextChatService",
+    "channels": "RBXGeneral (me), RBXSystem (me), RBXTeamReally red (me = 뿔 군단), RBXTeamNew Yeller, RBXTeamTeal, RBXTeamMedium stone grey (CreateDefaultTextChannels: one team channel per faction Team)",
+    "announce_system_message": "DebugCommand Announce RareWeapon:4:Goblin -> RBXGeneral SYSTEM message '<font color=\"#468CFF\"><b>Darugi_S2님이 고블린에게서 희귀 무기 [숲도둑 황금 지팡이]을(를) 얻었어요!</b></font>' (Announce.luau new-chat path: DisplaySystemMessage)",
+    "team_chat": "RBXTeamReally red:SendAsync('진영 채팅 테스트') -> received on the team channel, bubble chat over the character (the /t command of CreateDefaultCommands switches to this channel)",
+    "filter": "TextChatService filters every message server-side in live servers; Studio does not run the full filter, so it is not certified here.",
+    "photo": "Studio MCP screen_capture does not include CoreGui (the chat window and the top bar), so no chat-window photo from here; the bubble is visible in the viewport capture. A real look at the chat window needs a person (or a desktop screenshot)."
+  },
+  "not_checked": "phone 749x361 chat window look (CoreGui not capturable), name-hiding vs chat names (chat always shows the Roblox display name, in the old chat too).",
+  "studio_state_after": "Play stopped, device default, Edit mode. Place not saved to file yet (next place commit)."
+}

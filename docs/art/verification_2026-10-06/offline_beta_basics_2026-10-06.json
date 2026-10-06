@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 234,
+  "checks": 237,
   "failedChecks": 0,
-  "namedChecks": 220,
+  "namedChecks": 223,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -285,6 +285,18 @@
     },
     {
       "group": "power-text",
+      "check": "PvPNote is exactly the finished KO sentence '무기 공격력 차이가 커도 PvP 피해는 최대 <Max>배, 최소 <Min>배예요'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "PvPNoteEn is exactly the finished EN sentence 'However strong the weapons, PvP damage is at most x<Max> and at least x<Min>'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
       "check": "Config.PvP PowerRatioMin / PowerRatioMax lines found once each (fixture probe)",
       "pass": 1,
       "fail": 0
@@ -298,6 +310,12 @@
     {
       "group": "power-text",
       "check": "PvPNoteEn follows Config.PvP.PowerRatioMax / PowerRatioMin (finished line, no '%')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-text",
+      "check": "PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished KO / EN sentences (max first, min second)",
       "pass": 1,
       "fail": 0
     },
@@ -1345,9 +1363,9 @@
   "staticChecks": 12,
   "staticFailures": [],
   "mutations": {
-    "total": 30,
-    "applied": 30,
-    "caught": 30,
+    "total": 33,
+    "applied": 33,
+    "caught": 33,
     "results": [
       {
         "mutation": "CombatPower drops DisplayScale",
@@ -1424,12 +1442,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "power-text :: PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished KO / EN sentences (max first, min second)",
           "power-text :: PvPNote contains the real Config.PvP.PowerRatioMax and PowerRatioMin numbers",
           "power-text :: PvPNote follows Config.PvP.PowerRatioMax / PowerRatioMin (finished line, no '%')",
           "power-text :: PvPNote is a finished line: a string with no '%' at all (no template left for the caller)",
+          "power-text :: PvPNote is exactly the finished KO sentence '무기 공격력 차이가 커도 PvP 피해는 최대 <Max>배, 최소 <Min>배예요'",
           "power-text :: PvPNote reads 최대 <PowerRatioMax>배, 최소 <PowerRatioMin>배"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "PvPNote numbers typed in, not from Config.PvP",
@@ -1438,9 +1458,46 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "power-text :: PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished KO / EN sentences (max first, min second)",
           "power-text :: PvPNote follows Config.PvP.PowerRatioMax / PowerRatioMin (finished line, no '%')"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvPNoteEn fills min into 'at most' and max into 'at least'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power-text :: PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished KO / EN sentences (max first, min second)",
+          "power-text :: PvPNoteEn is exactly the finished EN sentence 'However strong the weapons, PvP damage is at most x<Max> and at least x<Min>'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvPNoteEn wording swapped to 'at least ... and at most'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power-text :: PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished KO / EN sentences (max first, min second)",
+          "power-text :: PvPNoteEn is exactly the finished EN sentence 'However strong the weapons, PvP damage is at most x<Max> and at least x<Min>'"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvPNote reads 최소 first, 최대 second (numbers follow the words)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power-text :: PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished KO / EN sentences (max first, min second)",
+          "power-text :: PvPNote is exactly the finished KO sentence '무기 공격력 차이가 커도 PvP 피해는 최대 <Max>배, 최소 <Min>배예요'"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "GetCombatPower includes the rebirth bonus",
@@ -1732,18 +1789,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "a07e2114f44c59fd81fa908b4405305a6aea7c3eac80cc7a444145458ea58066",
+    "src/ReplicatedStorage/Shared/Config.luau": "67c35cafd892798ddedd0fc93d39cb4d1a5f7b8304fe5821d1f5d891a5a09aa6",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
     "src/ServerScriptService/JusticeService.luau": "c82185555c4263dd843d25e56c28d2aa9dd11d23f123a0f5c89fff7f6c47719c",
     "src/ServerScriptService/TitleService.luau": "58513f878a63f4a0f438bde1f3ff0f3cff2dfbdfdfcd118ebf31be1904ce6081",
-    "src/ServerScriptService/PlayerService.luau": "81d5cf25b41a5578b4d20b798e48cab81e42fa62584df71600df876ea3b80fd5",
-    "src/ServerScriptService/PvPService.luau": "f1267b1d3840c163c95b558eac4b98a659c16136f994e0b501497117ba36d248"
+    "src/ServerScriptService/PlayerService.luau": "ed4a8257dba02cd192261879411c812f783e1e0bb7fd77016e08d6f42cb2aa20",
+    "src/ServerScriptService/PvPService.luau": "29c7097a818c0a685c083793bf4bd9dc9f2633c10e7b438d72d1967d7365dd16"
   },
-  "fixtureSHA256": "1e134fbe311f4e87c98dc67a46831e366e66c927521142986c0328e3e5b9fa47",
+  "fixtureSHA256": "14ca073efb4d4ba952dbc7edfc67f4a7e3b275c4b1ae2e10b79c461eb70e6d64",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "BB4 (docs/design/beta_basics_2026-10-05.md): Config.CombatPower(level, tier, +N) = floor(PowerOf(level, tier, 1, +N) x DisplayScale 10 + 0.5) with samples 283 (Lv1 T1) / 387 (Lv1 T2) / 758 (Lv5 T3) / 1,052 (Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 25,488 (Lv100, highest-damage weapon, +10; cached; tier-index cap would be 7,027); rises with level and +N, ordered by weapon Damage; Config.Power.Text (Label/Up/Change/Formula + En; PvPNote / PvPNoteEn are finished lines built right after Config.PvP: strings with no '%', carrying the real PowerRatioMax / PowerRatioMin and following them) and Config.Bully.Text (Title + 3 lines KO/EN built from WeakPowerRatio 50% / FreshSpawnSeconds 15 / RepeatKOs 3 in RepeatWindow 10 min); JusticeService.GetCombatPower = Config.CombatPower from the Level / WeaponTier / WeaponEnhance attributes (no rebirth bonus), GetPower unchanged; the CombatPower attribute is set on PlayerReady, follows Level / WeaponTier / WeaponEnhance with ONE task.defer-coalesced refresh per frame (an equip = one change) and is disconnected on PlayerLeaving; PvPService combatPower fallback = Config.CombatPower, BoldMult x2 at ratio >= 1.2, x0.5 below 0.8, bully weak test victim < 50% of killer, all on the displayed integer. BB16: Data Titles {} / TitleSel \"\" (TitleSel mirrored), Config.TitleDefs / TitleOrder / Beta (GrantPioneer, PioneerUntil 2026-12-19 11:00 KST); BetaPioneer granted on PlayerReady before PioneerUntil (legacy data.BetaPioneer always); the first grant keeps TitleSel \"\" (no auto-select: the faction rank stays the title, no TitleSel SetStat); an old auto-selected TitleSel \"BetaPioneer\" without TitleSelAt goes back to \"\" once at ready (SetTitle records TitleSelAt, so an explicit pick is kept); the pioneer shows as a mark on the nametag's second line (CharacterVisuals, static check); a \"\" choice survives rejoin, GrantPioneer=false stops new grants; GrayLegend when FallMarks and RedeemMarks >= Rebirth.GrayLegendMin (at ready and on change); TitlesOwned = owned TitleOrder ids joined by \",\"; unowned/unknown TitleSel -> \"\" at ready; SetTitle remote: exactly one string <= 32 chars, \"\" or owned, ready, RateLimits.SetTitle 0.5 s, else ignored; titles never change stats; DisplayTitle order session > selected > gray legend > rank.",
+  "contract": "BB4 (docs/design/beta_basics_2026-10-05.md): Config.CombatPower(level, tier, +N) = floor(PowerOf(level, tier, 1, +N) x DisplayScale 10 + 0.5) with samples 283 (Lv1 T1) / 387 (Lv1 T2) / 758 (Lv5 T3) / 1,052 (Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 25,488 (Lv100, highest-damage weapon, +10; cached; tier-index cap would be 7,027); rises with level and +N, ordered by weapon Damage; Config.Power.Text (Label/Up/Change/Formula + En; PvPNote / PvPNoteEn are finished lines built right after Config.PvP: strings with no '%', following PowerRatioMax / PowerRatioMin and equal to exactly '무기 공격력 차이가 커도 PvP 피해는 최대 <Max>배, 최소 <Min>배예요' / 'However strong the weapons, PvP damage is at most x<Max> and at least x<Min>' (full-sentence compare: max first, min second) and Config.Bully.Text (Title + 3 lines KO/EN built from WeakPowerRatio 50% / FreshSpawnSeconds 15 / RepeatKOs 3 in RepeatWindow 10 min); JusticeService.GetCombatPower = Config.CombatPower from the Level / WeaponTier / WeaponEnhance attributes (no rebirth bonus), GetPower unchanged; the CombatPower attribute is set on PlayerReady, follows Level / WeaponTier / WeaponEnhance with ONE task.defer-coalesced refresh per frame (an equip = one change) and is disconnected on PlayerLeaving; PvPService combatPower fallback = Config.CombatPower, BoldMult x2 at ratio >= 1.2, x0.5 below 0.8, bully weak test victim < 50% of killer, all on the displayed integer. BB16: Data Titles {} / TitleSel \"\" (TitleSel mirrored), Config.TitleDefs / TitleOrder / Beta (GrantPioneer, PioneerUntil 2026-12-19 11:00 KST); BetaPioneer granted on PlayerReady before PioneerUntil (legacy data.BetaPioneer always); no automatic selection: a grant never sets TitleSel (it stays \"\", the faction rank stays the title, no TitleSel SetStat; only the player's SetTitle picks); legacy rows from the first build (TitleSel \"BetaPioneer\" without TitleSelAt) go back to \"\" once at ready (SetTitle records TitleSelAt, so an explicit pick is kept); the pioneer shows as a mark on the nametag's second line (CharacterVisuals, static check); a \"\" choice survives rejoin, GrantPioneer=false stops new grants; GrayLegend when FallMarks and RedeemMarks >= Rebirth.GrayLegendMin (at ready and on change); TitlesOwned = owned TitleOrder ids joined by \",\"; unowned/unknown TitleSel -> \"\" at ready; SetTitle remote: exactly one string <= 32 chars, \"\" or owned, ready, RateLimits.SetTitle 0.5 s, else ignored; titles never change stats; DisplayTitle order session > selected > gray legend > rank.",
   "limitations": "Offline doubles: DataStore = in-memory rows (deep copies), PlayerService ready/leave flow and signals modelled on the real one (real SetStat / AddStat), LootService reduced to its WeaponEnhance attribute writes, attribute-changed signals fire immediately and only on a real change, task.defer flushed by the fixture, os.time / os.clock doubles. PvPService is tested through extracted helpers (num, combatPower, BoldMult, the bully weak line), not the whole KO flow. Client HUD / CharacterVisuals / BB8 picker are only checked statically. Studio play, replication and multiple clients are not certified here."
 }

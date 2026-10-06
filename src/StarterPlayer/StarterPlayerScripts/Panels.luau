@@ -1871,6 +1871,7 @@ ITEMS = {
 		Drops = "몬스터가 주는 것", DropsNone = "몬스터를 잡으면 무엇을 주는지 여기에 적혀요.", -- P7
 		DropLine = "%s: %s", DropPart = "%s %s", DropJackpot = "★전설 무기(대박) %s분의 1", DropPotion = "%s 물약",
 		DropWeapon = "%s 무기",
+		DropCount = "%s ×%d", -- a row that gives N > 1 at once (the king's 8 candies); symbols only, same in English
 		NoScrolls = "아직 없어요. 몬스터를 잡으면 가끔 떨어져요!",
 		NoMaterials = "아직 없어요. 몬스터를 잡으면 떨어져요!",
 		Equipped = "장착 중", Equip = "장착",
@@ -2372,7 +2373,10 @@ BUILDERS.Items = function(parent)
 			local parts = {}
 			for _, row in rows do
 				local name
-				if row.Item and loot.Items[row.Item] then name = loot.Items[row.Item].Name
+				if row.Item and loot.Items[row.Item] then
+					name = loot.Items[row.Item].Name
+					local n = math.floor(tonumber(row.N) or 1)
+					if n > 1 then name = string.format(L.DropCount, name, n) end
 				elseif row.Potion then name = string.format(L.DropPotion, row.Potion)
 				elseif row.Weapon then name = string.format(L.DropWeapon, Config.WeaponGrade(row.Weapon).Name) end
 				if name then table.insert(parts, string.format(L.DropPart, name, Util.FormatPercent(row.P) .. "%")) end

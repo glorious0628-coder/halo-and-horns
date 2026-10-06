@@ -1,0 +1,38 @@
+{
+  "what": "C bundle (1614575 review C-1..10 + A23-27 + A23-28 HW-13 + A23-30 PumpkinPatch) checked in the main Studio (place 81671223175574), own test Play only; Play stopped after every batch.",
+  "pumpkin_patch_map": {
+    "built_by": "MapBuilder PATCH.ensure (runtime + Edit pre-bake): Terrain land x 280..440, z 175..295 (Config.Map.Lands LandPumpkinPatch) filled only while that spot is sea; a pass cut through the meadow's south ridge (Y 30-40) at x 351..369, z 126..194; Mud soil (Tex_PumpkinSoil slot) with LeafyGrass rows; Mud path from the meadow road; 25 pumpkins (ball + stem + leaf), a fence with a north gate, sign Map.Landmarks.PumpkinPatchSign at (368, 0, 136).",
+    "runtime_path_test": "Edit: refilled the pass with a Rock block (top Y 32.2), MapBuilder.EnsurePumpkinPatch() -> made pass=true, floor inside the pass Y 2.0 (0.8 / 1.8 at the ends), walls either side stay (Y 34-35).",
+    "terrain_after": "patch surface Y 0.02 Mud/LeafyGrass rows; meadow road and the patch joined by the pass.",
+    "walk": "Humanoid:MoveTo from the meadow road (360, 100): (360,150) reached in 2.8 s (zone Outskirts, inside the pass), (360,190) 2.2 s (zone PumpkinPatch), (360,225) 2.1 s.",
+    "photo": "pumpkin_patch_studio_2026-10-06.jpg (left: from the pass into the patch with its monsters; right: the meadow-side sign and the pass)"
+  },
+  "spawns_by_zone_8s_after_start": {
+    "SlimeMeadow": "Slime 12, BigSlime 4 (no Halloween kind; same as the season off)",
+    "GoblinWoods": "Goblin 10, GoblinBrute 4 (no Halloween kind)",
+    "SkeletonRuins": "Skeleton 8, SkeletonKnight 4",
+    "PumpkinPatch": "PumpkinSlime 6, LittleGhost 4, BatGoblin 4"
+  },
+  "king": {
+    "spawn": "DebugCommand PumpkinKing -> spawned at (390, 3.8, 255), Config.ZoneAt = PumpkinPatch; HUD line '호박 대왕 출현! 남은 시간 4:44'.",
+    "safety_A23_27": [
+      "Lv4 3000 s -> left alone (dist 14.0 -> 14.0, 0 attacks in 5 s)",
+      "Lv14 300 s -> left alone",
+      "Lv14 585 s (PlayerService adds +5 every 5 s, so <= 595 while measured) -> left alone",
+      "Lv14 600 s -> targeted (dist 12.6 -> 4.8, 3 attacks)",
+      "Lv5 3000 s -> targeted",
+      "Rookie = true, Lv12, 3000 s -> targeted (the PvP Rookie shield no longer protects from the king)"
+    ],
+    "note": "a first run showed Lv14 599 s as targeted: the playtime tick crossed 600 during the 5 s window (measurement artefact); re-measured from 585 s. Test account Level / PlaytimeSeconds restored (Level 14, Playtime original + elapsed).",
+    "photo": "pumpkin_king_patch_2026-10-06.jpg"
+  },
+  "season_sign": "Map.Landmarks.PumpkinPatchSign SignGui enabled with the season on, text '↓ 호박밭 · 호박 몬스터 사냥터' (season end hides it: HalloweenService.showSign; the end itself is checked offline at EndsAt-1 / EndsAt+1).",
+  "phone_header_one_tap": {
+    "setup": "749x361 (StudioDeviceSimulatorService), Horns mage in HornsTown, first mission 5/5 made the legit way (step 1 + 5 kills, step into the meadow, back)",
+    "result": "tap on the quest header line '5/5 보급로 임무 완료! [받기]를 눌러요.' -> TutorialStep 2 -> 99, BankGold +150, the list did NOT open. Next tap (nothing to claim) -> the list opens as before.",
+    "photo": "f104_phone_header_onetap_2026-10-06.jpg"
+  },
+  "archive_cleanup": "ServerStorage.MonsterModelArchive: Goblin_86969d1c..., GoblinBrute_2b302594..., Skeleton_static deleted (old-account SurfaceAppearance TexturePacks); apply_studio_state.py now destroys a replaced model instead of archiving it. The 3 'no access' warnings were from those three models.",
+  "not_checked_here": "season end in Studio (needs the clock past 2026-11-09: offline test), reward eligibility with a real kill of the 9000-HP king (offline test), XP cap below Lv8 (offline), multi-player.",
+  "studio_state_after": "Play stopped, device emulation default, Edit mode; place not saved to file yet (next place commit: apply_studio_state -> Save to File As -> copy)."
+}

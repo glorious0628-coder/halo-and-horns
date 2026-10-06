@@ -1,7 +1,8 @@
 -- A23-11 / A23-12 loot, items and scroll enhancement (+ the A23-15 announcements LootService asks for), run offline.
 -- tools/test_loot.py injects the CURRENT repository sources before this file (CONFIG_SOURCE, NET_SOURCE, UTIL_SOURCE,
 -- DATA_SOURCE, SET_STAT_SOURCE = PlayerService.SetStat/AddStat, GOLD_SOURCE = ProgressionService, COMBAT_SOURCE,
--- LOOT_SOURCE, and the extracted power helpers JUSTICE_POWER_SOURCE / PVP_POWER_SOURCE) plus SAMPLE_SCALE. Only engine /
+-- LOOT_SOURCE, the extracted power helpers JUSTICE_POWER_SOURCE / PVP_POWER_SOURCE and SHOP_BUY_SOURCE = ShopService's
+-- onUpgradeWeapon + finite + notifyBad) plus SAMPLE_SCALE. Only engine /
 -- service boundaries are doubles: no Studio, no network, no DataStore. AnnounceService is a recording stub
 -- (f.Announces = { Player, Key, Args, Grade, Extra }); the real chat grouping / client text is not exercised here.
 -- Every check is named and collected (a failure never aborts the run); the result is one JSON line at the end.
@@ -468,6 +469,10 @@ local function fixture(opts)
 	registry.LootService = loot
 	loot.Init(registry)
 	loot.Start()
+	-- A23-28: ShopService's weapon buy / re-equip handler (onUpgradeWeapon + finite + notifyBad, extracted by the runner)
+	-- with the real Config / Util / ProgressionService.SpendGold; the anvil distance check is a stub (f.NearAnvil)
+	local shopBuy = execute("ShopService.onUpgradeWeapon", SHOP_BUY_SOURCE, w.Env(), config, util, net, registry)
+	shopBuy.M.CanBuyWeapon = function() return f.NearAnvil == true end
 	loot.Enhanced:Connect(function(p, tier, before, after, success)
 		table.insert(f.EnhLog, { Player = p, Tier = tier, Before = before, After = after, Success = success })
 	end)
@@ -488,6 +493,7 @@ local function fixture(opts)
 	function f:FireRaw(remote, ...) remotes[remote].OnServerEvent:Fire(self.Player, ...) end
 	function f:Use(...) self:Fire("UseItem", ...) end
 	function f:Equip(...) self:Fire("EquipWeapon", ...) end
+	function f:ShopBuy(tier) self.Now += 1; return shopBuy.Buy(self.Player, tier) end
 	function f:Sell(...) self:Fire("SellMaterials", ...) end
 	function f:Set(key, value) ps.SetStat(self.Player, key, value) end
 	function f:Give(id, n) return loot.DebugGive(self.Player, id, n) end
@@ -574,6 +580,41 @@ end
 local function rowIndex(L, kind, key, value)
 	for i, row in L.Tables[kind] do if row[key] == value then return i end end
 	return nil
+end
+
+-- A23-27: weapon rows with a BelowLevel table are not drawn for a killer below that weapon's MinLevel (they pay the
+-- BelowLevel item instead). Counted from Config.Weapons[].MinLevel directly (not Config.WeaponUsable, which is tested).
+local function belowLevelRows(f, kind, level)
+	local n = 0
+	for _, row in f.L.Tables[kind] or {} do
+		if row.Weapon and type(row.BelowLevel) == "table" and level < f.Config.Weapons[row.Weapon].MinLevel then n += 1 end
+	end
+	return n
+end
+
+local function tierMask(...)
+	local m = 0
+	for _, t in { ... } do m = bit32.bor(m, bit32.lshift(1, t - 1)) end
+	return m
+end
+
+-- A23-28 notices sent to x's player: every possible WeaponAutoSwap (any MinLevel) / WeaponUsableNow text -> the tier it names
+local function weaponNotices(x, key)
+	local C = x.Config
+	local class, faction = x.Player:GetAttribute("Class") or "Warrior", x.Player:GetAttribute("Faction") or "None"
+	local set, out = {}, {}
+	for t = 1, C.MaxWeaponTier do
+		local name = C.WeaponName(t, class, faction)
+		if key == "WeaponAutoSwap" then
+			for m = 1, C.MaxWeaponTier do set[string.format(C.Text.WeaponAutoSwap, C.Weapons[m].MinLevel, name)] = t end
+		else
+			set[string.format(C.Text[key], name)] = t
+		end
+	end
+	for _, e in x.Notices do
+		if set[e.Text] then table.insert(out, { Tier = set[e.Text], Kind = e.Kind, Text = e.Text }) end
+	end
+	return out
 end
 
 ------------------------------------------------------------------ group runner
@@ -687,6 +728,45 @@ runGroup("config", function()
 		check(table.find(L.Order, id) ~= nil, "every item id is in Loot.Order", id)
 	end
 	check(#L.Order == count(L.Items), "Loot.Order lists every item exactly once", #L.Order)
+	-- A23-30 (2026-10-06): the pumpkin-patch kinds (Lv1 field) = candy + king-slime-level scroll rows + potions 0.015, no
+	-- goblin tooth and no weapon row; the little ghost has the same rows as the bat goblin
+	local FIELD = {
+		{ Item = "Candy", P = 0.45 },
+		{ Item = "Enh70", P = 0.006 }, { Item = "Enh30", P = 0.0016 }, { Item = "Enh10", P = 0.0004 },
+		{ Item = "Move70", P = 0.002 }, { Item = "Move30", P = 0.0006 }, { Item = "Move10", P = 0.0002 },
+		{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
+	}
+	check(deepEqual(L.Tables.BatGoblin, FIELD),
+		"A23-30 BatGoblin rows = Candy 0.45 + Enh 0.006/0.0016/0.0004 + Move 0.002/0.0006/0.0002 + HP/MP 0.015 (no tooth, no weapon)",
+		show(L.Tables.BatGoblin))
+	check(deepEqual(L.Tables.LittleGhost, FIELD), "A23-30 LittleGhost rows = the bat goblin's rows", show(L.Tables.LittleGhost))
+	-- A23-27 (2026-10-06): the Pumpkin King's rows (replaces the old scroll rows 0.5 / 0.15 / 0.04 / 0.15)
+	local KING = {
+		{ Item = "Candy", P = 1, N = 8 },
+		{ Item = "Enh70", P = 0.25 }, { Item = "Enh30", P = 0.08 }, { Item = "Enh10", P = 0.02 },
+		{ Item = "Move70", P = 0.08 },
+		{ Potion = "HP", P = 0.5 }, { Potion = "MP", P = 0.5 },
+		{ Weapon = 4, P = 0.05, BelowLevel = { Item = "Candy", N = 3 } },
+	}
+	check(deepEqual(L.Tables.PumpkinKing, KING),
+		"A23-27 PumpkinKing rows = Candy x8, Enh70 0.25 / Enh30 0.08 / Enh10 0.02, Move70 0.08, HP/MP 0.5, T4 0.05 (BelowLevel 3 Candy)",
+		show(L.Tables.PumpkinKing))
+	for kind, rows in L.Tables do
+		for i, row in rows do
+			if row.BelowLevel ~= nil then
+				local b = row.BelowLevel
+				check(row.Weapon ~= nil and type(b) == "table" and L.Items[b.Item] ~= nil and type(b.N) == "number" and b.N >= 1
+					and b.N == math.floor(b.N), "A23-27 BelowLevel only on weapon rows, = { Item = real id, N = integer >= 1 }", kind .. "#" .. i)
+			end
+		end
+	end
+	-- A23-28 player-facing lines (central text table, Korean + English)
+	for key, nArgs in { EquipNeedLevel = 1, WeaponAutoSwap = 2, WeaponUsableNow = 1, WeaponNeedLevel = 1 } do
+		local s = C.Text[key]
+		local okFmt = type(s) == "string" and pcall(string.format, s, table.unpack(nArgs == 2 and { 30, "x" } or { 5 }))
+		check(type(s) == "string" and s ~= "" and okFmt, "Config.Text." .. key .. " is a Korean format string", key)
+	end
+	check(C.Text.EquipNeedLevel ~= C.Text.WeaponNeedLevel, "EquipNeedLevel (owned weapon) differs from WeaponNeedLevel (purchase)")
 	-- Halloween: pumpkin slimes take level-1 slime slots in the season, so they carry the same jackpot
 	check(count(L.Jackpot.Monsters) == 2 and L.Jackpot.Monsters.Slime == true and L.Jackpot.Monsters.PumpkinSlime == true,
 		"jackpot monsters = { Slime, PumpkinSlime } only", show(L.Jackpot.Monsters))
@@ -862,14 +942,22 @@ runGroup("rollkill", function()
 	local f = fixture()
 	local L = f.L
 	f.ScriptConst = 0.999999
-	-- one call = one roll: one draw per table row (+1 jackpot draw for jackpot kinds)
-	for kind, rows in L.Tables do
-		f.Draws = 0
-		local g = f:Roll(kind)
-		local want = #rows + (L.Jackpot.Monsters[kind] and 1 or 0)
-		check(f.Draws == want, "one RollKill = one draw per row (+ jackpot draw)", kind .. " draws " .. f.Draws .. " want " .. want)
-		check(type(g) == "table", "RollKill returns the gained list", kind)
+	-- one call = one roll: one draw per table row (+1 jackpot draw for jackpot kinds); A23-27: a BelowLevel weapon row
+	-- (the king's T4) is not drawn for a killer below that weapon's MinLevel. Checked at Lv1 and at Lv12+.
+	for _, level in { 1, 12 } do
+		f:Set("Level", level)
+		for kind, rows in L.Tables do
+			f.Draws = 0
+			local g = f:Roll(kind)
+			local want = #rows + (L.Jackpot.Monsters[kind] and 1 or 0) - belowLevelRows(f, kind, level)
+			check(f.Draws == want, "one RollKill = one draw per row (+ jackpot draw; a BelowLevel row below its MinLevel draws nothing)",
+				kind .. " Lv" .. level .. " draws " .. f.Draws .. " want " .. want)
+			check(type(g) == "table", "RollKill returns the gained list", kind)
+		end
 	end
+	check(belowLevelRows(f, "PumpkinKing", 1) == 1 and belowLevelRows(f, "PumpkinKing", 12) == 0,
+		"the Pumpkin King has exactly one BelowLevel row (T4, MinLevel 12)")
+	f:Set("Level", 1)
 	f.Draws = 0
 	f:Kill("Slime")
 	check(f.Draws == #L.Tables.Slime + 1, "one MonsterKilled signal = exactly one roll", f.Draws)
@@ -902,6 +990,61 @@ runGroup("rollkill", function()
 		check(f.Loot.RollKill(f.Player, info) == nil, "non-string Kind / non-table info returns nil", show(info))
 	end
 	check(deepEqual(before, f:State()), "malformed kills changed nothing")
+
+	-- A23-27: the king's T4 row is rolled only at Level >= 12 (the weapon's MinLevel, the same rule as equipping); below
+	-- it the row pays its BelowLevel item (3 candies) with no draw. RollKill always uses the killer's saved Level (a clone
+	-- of the caller's info gets it); DebugSimulate (no Level) rolls the row as before (lootroll group).
+	do
+		local k = fixture()
+		local king = L.Tables.PumpkinKing
+		k.Data.LootFlags.FirstScroll = true
+		local function kingRoll(level, const, golden, info)
+			k:Set("Level", level)
+			k.Data.Items, k.Data.HPPotionCount, k.Data.MPPotionCount, k.Data.WeaponOwnedMask = {}, 0, 0, 1
+			k.ScriptConst, k.Draws, k.Notices, k.Announces = const, 0, {}, {}
+			local g
+			if info then g = k.Loot.RollKill(k.Player, info) else g = k:Roll("PumpkinKing", golden) end
+			k.ScriptConst = nil
+			return g, k:Gained(g, "Item", "Candy"), k:Gained(g, "Weapon", 4), k.Draws
+		end
+		local T4 = bit32.lshift(1, 3)
+		for _, level in { 1, 11 } do
+			local g, candy, weapon, draws = kingRoll(level, 0)
+			check(weapon == 0 and not bit32.btest(k.Data.WeaponOwnedMask, T4) and #k.Announces == 0 and #k.GoldLog == 0,
+				"A23-27 below Lv12 the king's T4 row never drops the weapon (every draw a hit)", "Lv" .. level .. " " .. show(g))
+			check(candy == 8 + 3 and k.Data.Items.Candy == 11, "A23-27 below Lv12 the king's T4 row pays its BelowLevel 3 candies (+ the 8-candy row)",
+				"Lv" .. level .. " candy " .. candy)
+			check(draws == #king - 1, "A23-27 below Lv12 the BelowLevel row uses no draw (rows - 1)", "Lv" .. level .. " draws " .. draws)
+			g, candy, weapon, draws = kingRoll(level, 0.999999)
+			check(candy == 11 and weapon == 0 and draws == #king - 1, "A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)",
+				"Lv" .. level .. " " .. show({ candy, weapon, draws }))
+			g, candy = kingRoll(level, 0.999999, true)
+			check(candy == 11, "A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)", candy)
+		end
+		for _, level in { 12, 40 } do
+			local g, candy, weapon, draws = kingRoll(level, 0)
+			check(weapon == 1 and bit32.btest(k.Data.WeaponOwnedMask, T4) and candy == 8 and draws == #king,
+				"A23-27 at Lv12+ the king's T4 row is drawn (hit = the weapon, no BelowLevel candies)", "Lv" .. level .. " " .. show(g))
+			g, candy, weapon, draws = kingRoll(level, 0.999999)
+			check(weapon == 0 and candy == 8 and draws == #king, "A23-27 at Lv12+ a missed T4 draw pays nothing extra", "Lv" .. level .. " " .. show({ candy, weapon, draws }))
+		end
+		-- the caller cannot pass its own Level: RollKill clones info and sets Level from the save
+		local info = { Kind = "PumpkinKing", Golden = false, Level = 99 }
+		local _, candy, weapon, draws = kingRoll(1, 0, nil, info)
+		check(weapon == 0 and candy == 11 and draws == #king - 1, "A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+			show({ candy, weapon, draws }))
+		check(info.Level == 99 and count(info) == 3, "RollKill never writes the caller's kill info (clone)", show(info))
+		local plain = { Kind = "PumpkinKing", Golden = false }
+		kingRoll(1, 0.999999, nil, plain)
+		check(plain.Level == nil and count(plain) == 2, "the caller's kill info gets no Level field (clone)", show(plain))
+		-- through the real MonsterKilled signal
+		k:Set("Level", 1)
+		k.Data.Items, k.ScriptConst = {}, 0
+		k:Kill("PumpkinKing")
+		k.ScriptConst = nil
+		check(k.Data.Items.Candy == 11 and not bit32.btest(k.Data.WeaponOwnedMask, T4), "A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+			show(k.Data.Items))
+	end
 
 	-- exact thresholds: a row drops iff draw < P (x GoldenMult when info.Golden == true)
 	local t = fixture()
@@ -1094,7 +1237,8 @@ runGroup("rollkill", function()
 			j.ScriptConst, j.Draws = 0, 0
 			j:Roll(kind, true)
 			check(not bit32.btest(j.Data.WeaponOwnedMask, bit32.lshift(1, L.Jackpot.Tier - 1)) and #j.All == 0
-				and #j:Announced("Jackpot") == 0 and j.Draws == #L.Tables[kind], "no jackpot roll for non-slime kinds", kind)
+				and #j:Announced("Jackpot") == 0 and j.Draws == #L.Tables[kind] - belowLevelRows(j, kind, j.Data.Level),
+				"no jackpot roll for non-slime kinds", kind .. " draws " .. j.Draws)
 		end
 	end
 	local js = fixture()
@@ -1140,6 +1284,8 @@ runGroup("bully", function()
 	check(type(pen) == "table" and pen.DropMult == HALF, "A23-22 Config.Bully.Penalty.DropMult is 0.5", show(pen))
 	local jackpotBit = bit32.lshift(1, L.Jackpot.Tier - 1)
 	t.Data.LootFlags.FirstScroll = true
+	-- A23-27: a Lv50 killer, so every row (also the king's BelowLevel T4 row) is a real draw here; below Lv12 see the end
+	t:Set("Level", 50)
 	local function setStacks(n) t.Player:SetAttribute("BullyStacks", n) end
 	-- one scripted roll: row `index` draws `draw`, every other row misses; the jackpot draw is `jackpotDraw` (else a miss).
 	-- Items / potions / owned weapons reset first so caps and duplicates never hide a drop.
@@ -1259,6 +1405,20 @@ runGroup("bully", function()
 	fs:Kill("BigSlime")
 	check(fs:Count("Enh70") == 1 and fs:Noticed(L.Text.FirstScroll) == 1, "BullyStacks 1: the guarantee is still paid only once",
 		fs:Count("Enh70"))
+
+	-- A23-27 below Lv12: the king's T4 row is not drawn and pays its 3 BelowLevel candies (no draw, so no x0.5 either);
+	-- the 8-candy row is halved like every row (P 1 x 0.5)
+	t:Set("Level", 1)
+	setStacks(1)
+	local king = L.Tables.PumpkinKing
+	t.ScriptConst, t.Draws = 0.999999, 0
+	t.Data.Items, t.Data.WeaponOwnedMask = {}, 1
+	local kg = t:Roll("PumpkinKing", false)
+	t.ScriptConst = nil
+	check(t:Gained(kg, "Item", "Candy") == 3 and t:Gained(kg, "Weapon", 4) == 0 and t.Draws == #king - 1,
+		"BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+		show({ t:Gained(kg, "Item", "Candy"), t.Draws }))
+	setStacks(0)
 end)
 
 ------------------------------------------------------------------ 2b. debug LootRoll = count only (review B12)
@@ -1293,6 +1453,11 @@ runGroup("lootroll", function()
 	f.ScriptConst = 0
 	local king = quiet("king slime", function() return f.Loot.DebugSimulate("BigSlime", 3, false) end)
 	check(king and king.Jelly == 3 * 2 and king.SlimeCore == 3, "rows with N count N per drop", show(king))
+	-- A23-27: DebugSimulate has no killer Level, so the Pumpkin King's BelowLevel T4 row is rolled as a normal row
+	f.ScriptConst, f.Draws = 0, 0
+	local pk = quiet("pumpkin king", function() return f.Loot.DebugSimulate("PumpkinKing", 4, false) end)
+	check(pk and pk.Weapon4 == 4 and pk.Candy == 4 * 8 and f.Draws == 4 * #L.Tables.PumpkinKing,
+		"A23-27 DebugSimulate (no Level) rolls the king's T4 row like any row (no BelowLevel candies)", show({ pk, f.Draws }))
 	-- golden multiplies chances exactly like RollKill
 	local jelly = rowIndex(L, "Slime", "Item", "Jelly")
 	local function scripted(golden)
@@ -1377,6 +1542,21 @@ runGroup("weapons", function()
 				local w = fixture()
 				w.Data.LootFlags.FirstScroll = true
 				local bitMask = bit32.lshift(1, row.Weapon - 1)
+				if type(row.BelowLevel) == "table" then
+					-- A23-27: below the weapon's MinLevel this row pays BelowLevel with no draw (one script value unused)
+					local b = fixture()
+					b.Data.LootFlags.FirstScroll = true
+					local min = C.Weapons[row.Weapon].MinLevel
+					b:Set("Level", min - 1)
+					local bg, unused = b:Force(kind, { [i] = true })
+					check(b.Data.WeaponOwnedMask == 1 and b:Gained(bg, "Weapon", row.Weapon) == 0 and #b.Announces == 0 and #b.GoldLog == 0
+						and unused == 1, "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
+						kind .. " tier " .. row.Weapon .. " Lv" .. (min - 1) .. " unused " .. unused)
+					check(b:Count(row.BelowLevel.Item) >= row.BelowLevel.N, "A23-27 ... and pays its BelowLevel item instead",
+						kind .. " " .. show(b.Data.Items))
+					-- the drop tests below need a killer at the weapon's MinLevel
+					w:Set("Level", min)
+				end
 				local ownedAtAnnounce = nil
 				w.OnAnnounce = function(_, key) if key == "RareWeapon" then ownedAtAnnounce = bit32.btest(w.Data.WeaponOwnedMask, bitMask) end end
 				local g = w:Force(kind, { [i] = true })
@@ -1898,13 +2078,31 @@ runGroup("equip", function()
 		if notice then check(f:Noticed(notice) == 1, label .. " (notice)") end
 	end
 	refusedCase("unowned tier refused", function() f:Equip(2) end, L.Text.NotOwned)
-	-- A23-4 / A23-14 review: MinLevel gates the PURCHASE only; an OWNED weapon re-equips at any level (Lv1 after a
-	-- rebirth or a free class change keeps every weapon)
-	check(f.Data.Level < C.Weapons[3].MinLevel, "fixture is below tier 3's MinLevel", f.Data.Level)
+	-- A23-28 (user 2026-10-06, replaces the A23-14 "owned weapons re-equip at any level" rule): equipping needs
+	-- Level >= MinLevel, an OWNED weapon too (owning and enhancing have no level limit; the legendary T8 has MinLevel 1)
+	check(f.Data.Level == 1 and C.Weapons[3].MinLevel == 5 and C.Weapons[7].MinLevel == 40 and C.Weapons[8].MinLevel == 1,
+		"fixture: Lv1; tier 3 needs Lv5, tier 7 Lv40, the legendary Lv1", show({ f.Data.Level, C.Weapons[3].MinLevel, C.Weapons[7].MinLevel }))
+	local needT3 = string.format(C.Text.EquipNeedLevel, C.Weapons[3].MinLevel)
+	refusedCase("A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged)", function() f:Equip(3) end, needT3)
+	local refusal = nil
+	for _, e in f.Notices do if e.Text == needT3 then refusal = e end end
+	check(refusal and refusal.Kind == "bad" and f:Noticed(string.format(C.Text.WeaponNeedLevel, C.Weapons[3].MinLevel)) == 0,
+		"A23-28 the refusal is Config.Text.EquipNeedLevel (kind bad), never the purchase text WeaponNeedLevel", show(refusal))
+	refusedCase("A23-28 tier 7 at Lv1 is refused by its MinLevel 40 (before the faction check)", function() f:Equip(7) end,
+		string.format(C.Text.EquipNeedLevel, 40))
+	f:Set("Level", 4)
+	refusedCase("A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused", function() f:Equip(3) end, needT3)
+	f:Set("Level", 1)
+	f.Notices = {}
+	f:Equip(8)
+	check(f.Data.WeaponTier == 8 and f.Player:GetAttribute("WeaponTier") == 8 and f.Player:GetAttribute("WeaponEnhance") == 7,
+		"A23-28 the legendary tier 8 (MinLevel 1) equips at Lv1 with its +N", show({ f.Data.WeaponTier, f.Player:GetAttribute("WeaponEnhance") }))
+	f:Set("Level", 5)
 	f.Notices = {}
 	f:Equip(3)
-	check(f.Data.WeaponTier == 3 and f.Player:GetAttribute("WeaponTier") == 3, "owned tier equips below its MinLevel (saved + mirrored)")
-	check(f:Noticed(string.format(C.Text.WeaponNeedLevel, C.Weapons[3].MinLevel)) == 0, "no level refusal for an owned weapon")
+	check(f.Data.WeaponTier == 3 and f.Player:GetAttribute("WeaponTier") == 3, "A23-28 an owned tier equips at exactly its MinLevel (tier 3 at Lv5, saved + mirrored)",
+		f.Data.WeaponTier)
+	check(f:Noticed(needT3) == 0, "no level refusal once the level is reached")
 	check(f.Player:GetAttribute("WeaponEnhance") == 4, "WeaponEnhance attribute follows the equipped tier's +N", f.Player:GetAttribute("WeaponEnhance"))
 	check(f:Noticed(string.format(L.Text.Equip, C.WeaponName(3, "Warrior", "Halo"))) == 1, "equip notice")
 	-- review B6: equip needs a living character (same as the blacksmith path)
@@ -1912,12 +2110,13 @@ runGroup("equip", function()
 	refusedCase("refused while dead (Util.IsAlive)", function() f:Equip(1) end, L.Text.EquipDead)
 	f.Dead = false
 	f:Equip(8)
-	check(f.Data.WeaponTier == 8 and f.Player:GetAttribute("WeaponEnhance") == 7, "legendary tier 8 equips at any level with its +N")
+	check(f.Data.WeaponTier == 8 and f.Player:GetAttribute("WeaponEnhance") == 7, "legendary tier 8 equips with its +N")
+	f:Set("Level", 40)
 	f:Set("Faction", "None")
 	refusedCase("RequiresFaction (tier 7) needs a faction", function() f:Equip(7) end, C.Text.NeedFaction)
 	f:Set("Faction", "Halo")
 	f:Equip(7)
-	check(f.Data.WeaponTier == 7 and f.Player:GetAttribute("WeaponEnhance") == 2, "tier 7 equips with a faction")
+	check(f.Data.WeaponTier == 7 and f.Player:GetAttribute("WeaponEnhance") == 2, "tier 7 equips with a faction at Lv40")
 	f.InCombat = true
 	refusedCase("refused while CombatService.IsInCombat", function() f:Equip(1) end, L.Text.EquipCombat)
 	f.InCombat = false
@@ -1949,6 +2148,217 @@ runGroup("equip", function()
 	-- any other WeaponTier writer (shop buy / rebirth) also refreshes the attribute
 	f:Set("WeaponTier", 8)
 	check(f.Player:GetAttribute("WeaponEnhance") == 7, "WeaponEnhance attribute follows a WeaponTier change from another service")
+end)
+
+------------------------------------------------------------------ 6a. ShopService weapon buy / re-equip (A23-28 level gate)
+-- The real ShopService onUpgradeWeapon (extracted with finite / notifyBad) on the loot fixture's save: an OWNED weapon
+-- below its MinLevel -> notifyBad "EquipNeedLevel"; buying below MinLevel -> "WeaponNeedLevel" (same rule as EquipWeapon).
+runGroup("shop", function()
+	local f = fixture()
+	local C = f.Config
+	f:Set("CarriedGold", 5000)
+	local function attempt(tier)
+		f.Notices = {}
+		local gold = f.Data.CarriedGold + f.Data.BankGold
+		f:ShopBuy(tier)
+		return gold - (f.Data.CarriedGold + f.Data.BankGold)
+	end
+	local needEquip = string.format(C.Text.EquipNeedLevel, C.Weapons[3].MinLevel)
+	local needBuy = string.format(C.Text.WeaponNeedLevel, C.Weapons[3].MinLevel)
+	-- an owned tier 3 (kept through a rebirth / free class change) at Lv1
+	f:Set("WeaponOwnedMask", tierMask(1, 3))
+	local spent = attempt(3)
+	check(f.Data.WeaponTier == 1 and f.Player:GetAttribute("WeaponTier") == 1 and spent == 0 and f.Data.WeaponOwnedMask == tierMask(1, 3),
+		"A23-28 shop: an owned weapon below its MinLevel is not equipped (tier 3 at Lv1, no gold)", show({ f.Data.WeaponTier, spent }))
+	local bad = nil
+	for _, e in f.Notices do if e.Text == needEquip then bad = e end end
+	check(bad and bad.Kind == "bad" and f:Noticed(needBuy) == 0,
+		"A23-28 shop: owned re-equip below MinLevel -> notifyBad EquipNeedLevel (not the purchase text)", show(f.Notices))
+	f:Set("Level", 4)
+	attempt(3)
+	check(f.Data.WeaponTier == 1 and f:Noticed(needEquip) == 1, "A23-28 shop: owned tier 3 at Lv4 (MinLevel - 1) still refused", f.Data.WeaponTier)
+	-- an unowned tier 3 below its MinLevel: the purchase text, nothing bought
+	f:Set("Level", 1)
+	f:Set("WeaponOwnedMask", 1)
+	spent = attempt(3)
+	check(f.Data.WeaponOwnedMask == 1 and f.Data.WeaponTier == 1 and spent == 0 and f:Noticed(needBuy) == 1 and f:Noticed(needEquip) == 0,
+		"shop: buying below MinLevel -> WeaponNeedLevel, nothing bought", show({ f.Data.WeaponOwnedMask, spent }))
+	-- at the MinLevel the owned weapon equips for free, an unowned one is bought
+	f:Set("WeaponOwnedMask", tierMask(1, 3))
+	f:Set("Level", 5)
+	spent = attempt(3)
+	check(f.Data.WeaponTier == 3 and f.Player:GetAttribute("WeaponTier") == 3 and spent == 0
+		and f:Noticed(string.format(C.Loot.Text.Equip, C.WeaponName(3, "Warrior", "Halo"))) == 1,
+		"A23-28 shop: the owned tier 3 equips at Lv5 for free (equip notice)", show({ f.Data.WeaponTier, spent }))
+	spent = attempt(2)
+	check(f.Data.WeaponTier == 2 and spent == C.Weapons[2].Price and bit32.btest(f.Data.WeaponOwnedMask, 2),
+		"shop: an unowned tier 2 (MinLevel 1) is bought and equipped", show({ f.Data.WeaponTier, spent }))
+end)
+
+------------------------------------------------------------------ 6b. A23-28 weapon level rule (auto-fit on a level drop, one notice per level-up crossing)
+runGroup("levelrule", function()
+	local base = fixture()
+	local C = base.Config
+	-- Config.WeaponUsable(tier, level) = level >= Weapons[tier].MinLevel
+	local usableBad = {}
+	for tier = 1, C.MaxWeaponTier do
+		local min = C.Weapons[tier].MinLevel
+		for _, level in { 1, min - 1, min, min + 1, 100 } do
+			if level >= 1 and C.WeaponUsable(tier, level) ~= (level >= min) then table.insert(usableBad, tier .. "@Lv" .. level) end
+		end
+	end
+	check(#usableBad == 0, "Config.WeaponUsable(tier, level) = level >= Weapons[tier].MinLevel", show(usableBad))
+	check(C.WeaponUsable(8, 1) and not C.WeaponUsable(3, 4) and C.WeaponUsable(3, 5) and not C.WeaponUsable(4, 11) and C.WeaponUsable(4, 12)
+		and not C.WeaponUsable(6, 29) and C.WeaponUsable(6, 30), "WeaponUsable boundaries: T8 at Lv1, T3 from Lv5, T4 from Lv12, T6 from Lv30")
+	check(not C.WeaponUsable(0, 50) and not C.WeaponUsable(9, 50) and not C.WeaponUsable("3", 50) and not C.WeaponUsable(nil, 50),
+		"WeaponUsable of an unknown tier is false")
+	check(C.WeaponUsable(2, nil) and not C.WeaponUsable(3, nil), "WeaponUsable with no level reads Lv1")
+	-- Config.BestUsableWeapon(mask, level): the owned (tier 1 always) usable tier with the highest Damage
+	for _, case in {
+		{ tierMask(1, 3, 6), 1, 1, "T1+T3+T6 at Lv1 -> T1 (T3 needs Lv5, T6 Lv30)" },
+		{ tierMask(1, 3, 6), 5, 3, "T1+T3+T6 at Lv5 -> T3" },
+		{ tierMask(1, 3, 6), 29, 3, "T1+T3+T6 at Lv29 -> T3" },
+		{ tierMask(1, 3, 6), 30, 6, "T1+T3+T6 at Lv30 -> T6" },
+		{ tierMask(1, 3, 6, 8), 1, 8, "the legendary T8 (76) at Lv1" },
+		{ tierMask(1, 3, 8), 5, 8, "T8 (76) beats a usable T3 (38)" },
+		{ tierMask(1, 3, 4, 8), 11, 8, "T4 not usable at Lv11 -> T8" },
+		{ tierMask(1, 3, 4, 8), 12, 4, "an owned usable T4 (88) beats T8 (76): by Damage, not tier number" },
+		{ tierMask(1, 2), 1, 2, "T1+T2 at Lv1 -> T2" },
+		{ 0, 50, 1, "tier 1 counts as owned even with mask 0" },
+		{ tierMask(1, 2, 3, 4, 5, 6, 7, 8), 100, 7, "everything owned at Lv100 -> T7 (1000)" },
+	} do
+		local got = C.BestUsableWeapon(case[1], case[2])
+		check(got == case[3], "Config.BestUsableWeapon: " .. case[4], "got " .. tostring(got))
+	end
+
+	local function mk(level, tier, owned, enh)
+		local saved = deepCopy(DEFAULT_ROW)
+		saved.Level, saved.WeaponTier, saved.WeaponOwnedMask = level, tier, owned
+		saved.WeaponEnhance = enh or { 1, 2, 3, 4, 5, 6, 7, 8 }
+		local x = fixture({ Saved = saved })
+		x.Data.LootFlags.FirstScroll = true
+		return x
+	end
+	local function name(x, t) return C.WeaponName(t, x.Player:GetAttribute("Class") or "Warrior", x.Player:GetAttribute("Faction") or "None") end
+	-- level up one level at a time through ProgressionService.AddXP (fires LeveledUp); returns { [level] = { tier named } }
+	local function levelUp(x, target)
+		local seen, guard = {}, 0
+		while x.Data.Level < target and guard < 200 do
+			guard += 1
+			x.Notices = {}
+			x.Prog.AddXP(x.Player, C.XPToNext(x.Data.Level) - math.floor(x.Data.XP or 0))
+			for _, n in weaponNotices(x, "WeaponUsableNow") do
+				seen[x.Data.Level] = seen[x.Data.Level] or {}
+				table.insert(seen[x.Data.Level], n.Tier)
+				check(n.Kind == "good", "A23-28 WeaponUsableNow notice kind is good", n.Kind)
+			end
+		end
+		return seen
+	end
+
+	-- (a) the reviewer case: Lv100, tier 6 equipped, tiers 1+3+6 owned -> rebirth to Lv1. Tier 3 needs Lv5, so the best
+	-- usable owned weapon at Lv1 is tier 1 (tier 3 comes back at Lv5 / via the save case (e) below)
+	local enhA = { 1, 0, 3, 0, 0, 6, 0, 0 }
+	local a = mk(100, 6, tierMask(1, 3, 6), enhA)
+	check(a.Data.WeaponTier == 6 and #weaponNotices(a, "WeaponAutoSwap") == 0, "A23-28 Lv100 with tier 6 equipped: nothing to fit at join")
+	a.Notices = {}
+	local okA = a.Prog.TryRebirth(a.Player, "Halo")
+	check(okA == true and a.Data.Level == 1 and a.Data.WeaponTier == 1 and a.Player:GetAttribute("WeaponTier") == 1,
+		"A23-28 reborn Lv1 with tier 6 equipped, tiers 1+3+6 owned -> tier 1 (best usable; tier 3 needs Lv5)",
+		show({ okA, a.Data.Level, a.Data.WeaponTier }))
+	local swapA = weaponNotices(a, "WeaponAutoSwap")
+	check(#swapA == 1 and swapA[1].Text == string.format(C.Text.WeaponAutoSwap, 30, name(a, 1)) and swapA[1].Kind == "info",
+		"A23-28 the rebirth auto-swap sends one WeaponAutoSwap notice (old MinLevel 30, new weapon name, info)", show(swapA))
+	check(a.Data.WeaponOwnedMask == tierMask(1, 3, 6) and a.Player:GetAttribute("WeaponOwnedMask") == tierMask(1, 3, 6),
+		"A23-28 the auto-swap keeps ownership (WeaponOwnedMask untouched)", a.Data.WeaponOwnedMask)
+	check(deepEqual(a.Data.WeaponEnhance, enhA), "A23-28 the auto-swap keeps every tier's +N", show(a.Data.WeaponEnhance))
+	check(a.Player:GetAttribute("WeaponEnhance") == 1, "A23-28 the WeaponEnhance attribute follows the swapped-in tier", a.Player:GetAttribute("WeaponEnhance"))
+	-- leveling back up: one notice per crossing of an owned stronger weapon's MinLevel, never an auto-equip
+	local upA = levelUp(a, 29)
+	check(upA[5] and #upA[5] == 1 and upA[5][1] == 3, "A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3", show(upA))
+	check(upA[6] == nil, "A23-28 no notice on the level-up after the crossing (Lv6)", show(upA[6]))
+	check(upA[12] == nil and upA[20] == nil, "A23-28 no notice at unowned tiers' MinLevel (tier 4 Lv12, tier 5 Lv20)", show(upA))
+	check(count(upA) == 1 and a.Data.Level == 29, "A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice", show(upA))
+	check(a.Data.WeaponTier == 1 and a.Player:GetAttribute("WeaponTier") == 1, "A23-28 level-ups never change WeaponTier (no auto-equip)",
+		a.Data.WeaponTier)
+	a:Equip(3)
+	check(a.Data.WeaponTier == 3, "the player equips tier 3 at Lv29", a.Data.WeaponTier)
+	upA = levelUp(a, 31)
+	check(upA[30] and #upA[30] == 1 and upA[30][1] == 6, "A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+		show(upA))
+	check(upA[31] == nil and count(upA) == 1, "A23-28 no notice on the next level-up (Lv31)", show(upA))
+	check(a.Data.WeaponTier == 3, "A23-28 reaching tier 6's MinLevel does not auto-equip it", a.Data.WeaponTier)
+
+	-- (b) the same with the legendary also owned -> tier 8 is chosen (76 > tier 1); tier 3 at Lv5 is weaker: no notice
+	local b = mk(100, 6, tierMask(1, 3, 6, 8), enhA)
+	b.Notices = {}
+	b.Prog.TryRebirth(b.Player, "Halo")
+	local swapB = weaponNotices(b, "WeaponAutoSwap")
+	check(b.Data.WeaponTier == 8 and #swapB == 1 and swapB[1].Text == string.format(C.Text.WeaponAutoSwap, 30, name(b, 8)),
+		"A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice", show({ b.Data.WeaponTier, swapB }))
+	check(b.Data.WeaponOwnedMask == tierMask(1, 3, 6, 8) and b.Player:GetAttribute("WeaponEnhance") == 0, "the legendary swap keeps ownership; +N follows tier 8")
+	local upB = levelUp(b, 31)
+	check(upB[5] == nil, "A23-28 no notice when the newly usable owned weapon is weaker than the equipped one (tier 3 vs the legendary)", show(upB))
+	check(upB[30] and upB[30][1] == 6 and count(upB) == 1 and b.Data.WeaponTier == 8, "A23-28 with the legendary equipped: one notice at Lv30 (tier 6)",
+		show(upB))
+
+	-- (c) the legendary equipped with tier 6 owned: usable at Lv1, it stays and nothing is said
+	local c = mk(100, 8, tierMask(1, 6, 8))
+	c.Notices = {}
+	c.Prog.TryRebirth(c.Player, "Halo")
+	check(c.Data.WeaponTier == 8 and #weaponNotices(c, "WeaponAutoSwap") == 0, "A23-28 an equipped legendary stays at Lv1 after rebirth (no swap, no notice)",
+		show({ c.Data.WeaponTier }))
+
+	-- (d) the free class change (ProgressionService.ResetLevel -> LevelReset) from Lv35 with tier 6 equipped
+	local enhD = { 0, 4, 0, 0, 0, 9, 0, 0 }
+	local d = mk(35, 6, tierMask(1, 2, 6), enhD)
+	d.Notices = {}
+	d.Prog.ResetLevel(d.Player)
+	local swapD = weaponNotices(d, "WeaponAutoSwap")
+	check(d.Data.Level == 1 and d.Data.WeaponTier == 2 and #swapD == 1 and swapD[1].Text == string.format(C.Text.WeaponAutoSwap, 30, name(d, 2)),
+		"A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice", show({ d.Data.WeaponTier, swapD }))
+	check(d.Data.WeaponOwnedMask == tierMask(1, 2, 6) and deepEqual(d.Data.WeaponEnhance, enhD) and d.Player:GetAttribute("WeaponEnhance") == 4,
+		"A23-28 the LevelReset swap keeps ownership and +N (attribute follows tier 2)", show(d.Data.WeaponEnhance))
+	-- a multi-level jump (one AddXP, one LeveledUp) past tier 6's MinLevel: still exactly one notice
+	local xp = 0
+	for l = 1, 39 do xp += C.XPToNext(l) end
+	d.Notices = {}
+	d.Prog.AddXP(d.Player, xp)
+	local nowD = weaponNotices(d, "WeaponUsableNow")
+	check(d.Data.Level == 40 and #nowD == 1 and nowD[1].Tier == 6 and d.Data.WeaponTier == 2,
+		"A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip", show({ d.Data.Level, nowD }))
+
+	-- (e) a save from before the rule (Lv10, tier 6 equipped, tiers 1+3+6): PlayerReady fits it -> tier 3 + notice
+	local e = mk(10, 6, tierMask(1, 3, 6), enhA)
+	local swapE = weaponNotices(e, "WeaponAutoSwap")
+	check(e.Data.WeaponTier == 3 and e.Player:GetAttribute("WeaponTier") == 3 and #swapE == 1
+		and swapE[1].Text == string.format(C.Text.WeaponAutoSwap, 30, name(e, 3)),
+		"A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice", show({ e.Data.WeaponTier, swapE }))
+	check(e.Player:GetAttribute("WeaponEnhance") == 3 and e.Data.WeaponOwnedMask == tierMask(1, 3, 6), "the join fit keeps ownership; +N follows tier 3")
+
+	-- (f) FitWeaponToLevel(player, quiet): swaps without the notice; without quiet the notice comes
+	local q = mk(30, 6, tierMask(1, 2, 6))
+	q:Set("Level", 3)
+	q.Notices = {}
+	q.Loot.FitWeaponToLevel(q.Player, true)
+	check(q.Data.WeaponTier == 2 and #weaponNotices(q, "WeaponAutoSwap") == 0 and q.Player:GetAttribute("WeaponEnhance") == 2,
+		"A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)", show({ q.Data.WeaponTier, q.Notices }))
+	q:Set("WeaponTier", 6)
+	q.Notices = {}
+	q.Loot.FitWeaponToLevel(q.Player)
+	check(q.Data.WeaponTier == 2 and #weaponNotices(q, "WeaponAutoSwap") == 1, "A23-28 FitWeaponToLevel(player) without quiet sends the notice",
+		show({ q.Data.WeaponTier, q.Notices }))
+
+	-- (g) nothing happens when the equipped tier is usable, even with a stronger usable owned weapon
+	local u = mk(30, 3, tierMask(1, 3, 6))
+	u:Pushes()
+	local before = u:State()
+	u.Notices = {}
+	u.Loot.FitWeaponToLevel(u.Player)
+	local _, pushes = u:LastPayload()
+	check(deepEqual(before, u:State()) and #u.Notices == 0 and pushes == 0,
+		"A23-28 FitWeaponToLevel does nothing when the equipped tier is usable (no swap to the stronger tier 6, no notice, no push)",
+		show({ u.Data.WeaponTier, #u.Notices, pushes }))
 end)
 
 ------------------------------------------------------------------ 7. SellMaterials
@@ -2051,9 +2461,18 @@ runGroup("rebirth", function()
 		"items (incl. unknown saved ids) and LootFlags are kept", show(f.Data.Items))
 	check(f.Data.CarriedGold == 123 and f.Data.BankGold == 4567, "carried and bank gold are kept",
 		show({ f.Data.CarriedGold, f.Data.BankGold }))
-	-- a kept weapon above the new level can be swapped away and back (MinLevel gates purchases only)
+	-- A23-28: the legendary (MinLevel 1) stays usable at Lv1, so the level fit changes nothing and says nothing
+	check(#weaponNotices(f, "WeaponAutoSwap") == 0, "A23-28 an equipped legendary needs no auto-swap after rebirth (no WeaponAutoSwap notice)",
+		show(weaponNotices(f, "WeaponAutoSwap")))
+	-- A23-28: a kept weapon above the new level stays owned with its +N but cannot be equipped until the level is back
+	f.Notices = {}
 	f:Equip(5)
-	check(f.Data.WeaponTier == 5 and f.Player:GetAttribute("WeaponEnhance") == 6, "reborn Lv1 player equips the kept tier 5 (+6)",
+	check(f.Data.WeaponTier == 8 and f:Noticed(string.format(C.Text.EquipNeedLevel, C.Weapons[5].MinLevel)) == 1
+		and f.Data.WeaponOwnedMask == 255 and f.Data.WeaponEnhance[5] == 6,
+		"A23-28 reborn Lv1 player cannot equip the kept tier 5 (EquipNeedLevel 20); ownership and its +6 stay",
+		show({ f.Data.WeaponTier, f.Data.WeaponOwnedMask, f.Data.WeaponEnhance[5] }))
+	f:Equip(1)
+	check(f.Data.WeaponTier == 1 and f.Player:GetAttribute("WeaponEnhance") == 2, "reborn Lv1 player equips tier 1 (+2)",
 		show({ f.Data.WeaponTier, f.Player:GetAttribute("WeaponEnhance") }))
 	f:Equip(8)
 	check(f.Data.WeaponTier == 8 and f.Player:GetAttribute("WeaponEnhance") == 9, "and swaps back to the legendary with its +9")
@@ -2068,9 +2487,14 @@ runGroup("rebirth", function()
 	s2.WeaponOwnedMask, s2.WeaponTier = 127, 7
 	local g = fixture({ Saved = s2 })
 	ok = g.Prog.TryRebirth(g.Player, "Horns")
-	check(ok == true and g.Data.WeaponOwnedMask == 127 and g.Data.WeaponTier == 7 and g.Data.BankGold == 4567
+	-- A23-28: the Lv40 tier 7 is not usable at Lv1 -> the best usable owned weapon (tiers 1..7 owned: tier 2, damage 15)
+	check(ok == true and g.Data.WeaponOwnedMask == 127 and g.Data.WeaponTier == 2 and g.Data.BankGold == 4567
 		and deepEqual(g.Data.WeaponEnhance, { 2, 3, 4, 5, 6, 7, 8, 9 }) and g.Data.Level == 1,
-		"rebirth with a faction switch also keeps weapons / gold / enhancement", show({ g.Data.WeaponOwnedMask, g.Data.WeaponTier }))
+		"rebirth with a faction switch keeps weapons / gold / enhancement; the Lv40 tier 7 is auto-swapped to tier 2",
+		show({ g.Data.WeaponOwnedMask, g.Data.WeaponTier }))
+	check(g:Noticed(string.format(C.Text.WeaponAutoSwap, 40, C.WeaponName(2, "Warrior", "Horns"))) == 1
+		and g.Player:GetAttribute("WeaponEnhance") == 3, "A23-28 faction-switch rebirth: one WeaponAutoSwap notice (Lv40 -> tier 2), +N follows",
+		show({ g.Player:GetAttribute("WeaponEnhance") }))
 	check(g.Player:GetAttribute("Faction") == "Horns", "the faction switch happened", g.Player:GetAttribute("Faction"))
 	-- below the rebirth level nothing changes
 	local low = deepCopy(saved)

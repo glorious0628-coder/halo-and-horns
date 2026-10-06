@@ -26,6 +26,7 @@ local rng = Random.new()
 local STATE = {
 	Pending = {}, -- [Player] = true while one deferred Inventory push is queued (a burst of changes sends once)
 	FullAt = {}, -- [Player] = { [itemId | "Potion:HP" | "Potion:MP"] = os.clock() of the last "가득 찼어요" notice }
+	Level = {}, -- [Player] = the level last seen (A23-28: one "you can use it now" notice per MinLevel crossing)
 	SavedIdMaxLen = 64, -- B10: unknown saved item ids are kept only when they are sane strings
 }
 
@@ -197,13 +198,20 @@ end
 
 ------------------------------------------------------------------ drops
 -- one kill's drop rows (and the slime jackpot) with the server RNG; onHit(row, isJackpot) for every success.
--- info = { Kind = monster kind, Golden = true? } (RollKill passes the MonsterKilled info, DebugSimulate a stand-in).
--- Draw order is fixed: one draw per row in table order, then one for the jackpot when this kind has one.
+-- info = { Kind = monster kind, Golden = true?, Level = killer's level? } (RollKill passes the MonsterKilled info,
+-- DebugSimulate a stand-in without Level). Draw order is fixed: one draw per row in table order, then one for the
+-- jackpot when this kind has one. A23-27: a weapon row with BelowLevel is not rolled below that weapon's MinLevel; it
+-- pays its BelowLevel item instead (the king's T4 row: 3 candies).
 local function rollRows(info, onHit)
 	local mult = info.Golden == true and LOOT.GoldenMult or 1
 	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows and the jackpot; not the first scroll)
 	for _, row in LOOT.Tables[info.Kind] or {} do
-		if rng:NextNumber() < math.min(1, num(row.P) * rowMult) then onHit(row, false) end
+		if row.Weapon and type(row.BelowLevel) == "table" and info.Level ~= nil
+			and not Config.WeaponUsable(row.Weapon, info.Level) then
+			onHit(row.BelowLevel, false)
+		elseif rng:NextNumber() < math.min(1, num(row.P) * rowMult) then
+			onHit(row, false)
+		end
 	end
 	local jackpot = LOOT.Jackpot
 	-- A23-22 (review): the bully penalty halves the jackpot too (DropMult); the golden bonus applies as before
@@ -299,10 +307,11 @@ function LootService.RollKill(player, info)
 		end
 	end
 
+	info = table.clone(info) -- the caller's info stays untouched
+	info.Level = math.floor(num(data.Level, 1)) -- A23-27 weapon rows with BelowLevel
 	local pen = Config.Bully.Penalty
 	if type(pen) == "table" and num(player:GetAttribute("BullyStacks")) >= 1 then
-		info = table.clone(info) -- A23-22: drop rows x0.5 while a bully (the caller's info stays untouched)
-		info.DropMult = num(pen.DropMult, 1)
+		info.DropMult = num(pen.DropMult, 1) -- A23-22: drop rows x0.5 while a bully
 	end
 	rollRows(info, function(row, isJackpot)
 		if row.Item then
@@ -419,8 +428,12 @@ local function onEquipWeapon(player, tier, ...)
 	if not owns(data, tier) then notify(player, TXT.NotOwned, "bad"); return end
 	if math.floor(num(data.WeaponTier, 1)) == tier then return end
 	local def = Config.Weapons[tier]
-	-- review (A23-4 / A23-14): MinLevel gates the PURCHASE only. An owned weapon is always re-equippable, so a reborn
-	-- or free-class-changed Lv1 player who swaps away from a kept T5 can always swap back (ShopService matches).
+	-- A23-28 (user 2026-10-06): equipping keeps MinLevel, an owned weapon too (ShopService matches). Owning and
+	-- enhancing have no level limit; after a rebirth the weapon is equippable again once the level is back.
+	if not Config.WeaponUsable(tier, num(data.Level, 1)) then
+		notify(player, string.format(Config.Text.EquipNeedLevel, math.floor(num(def.MinLevel, 1))), "bad")
+		return
+	end
 	if def.RequiresFaction and factionName(player) == "None" then
 		notify(player, Config.Text.NeedFaction, "bad")
 		return
@@ -458,6 +471,48 @@ local function onSellMaterials(player, ...)
 	notify(player, string.format(TXT.SellDone, count, tostring(gold)), "good")
 end
 
+------------------------------------------------------------------ A23-28 weapon level rule
+-- the level went down (rebirth / Lv5+ free class change) or the save holds an equipped weapon above the level: equip
+-- the best owned weapon usable now (ownership and +N untouched) and say so in one line
+function LootService.FitWeaponToLevel(player, quiet)
+	local data = getData(player)
+	if not data then return end
+	local level = math.floor(num(data.Level, 1))
+	STATE.Level[player] = level
+	local tier = math.floor(num(data.WeaponTier, 1))
+	if not validTier(tier) or Config.WeaponUsable(tier, level) then return end
+	local best = Config.BestUsableWeapon(data.WeaponOwnedMask, level)
+	if best == tier then return end
+	S.PlayerService.SetStat(player, "WeaponTier", best) -- CharacterVisuals rebuilds; WeaponEnhance follows (Start)
+	if not quiet then
+		notify(player, string.format(Config.Text.WeaponAutoSwap, math.floor(num(Config.Weapons[tier].MinLevel, 1)),
+			weaponName(player, best)), "info")
+	end
+	publish(player, data)
+end
+
+-- a level-up crossed the MinLevel of an owned weapon stronger than the equipped one: say it once (never auto-equip)
+local function onLeveledUp(player, level)
+	local data = getData(player)
+	if not data then return end
+	level = math.floor(num(level, num(data.Level, 1)))
+	local before = STATE.Level[player] or (level - 1)
+	STATE.Level[player] = level
+	if level <= before then return end
+	local equipped = Config.Weapons[math.floor(num(data.WeaponTier, 1))]
+	local bestDamage = equipped and num(equipped.Damage) or 0
+	local mask = math.floor(num(data.WeaponOwnedMask, 1))
+	local best = nil
+	for t, def in Config.Weapons do
+		local min = math.floor(num(def.MinLevel, 1))
+		if t ~= 1 and bit32.band(mask, bit32.lshift(1, t - 1)) ~= 0 and min > before and min <= level
+			and num(def.Damage) > bestDamage then
+			best, bestDamage = t, num(def.Damage)
+		end
+	end
+	if best then notify(player, string.format(Config.Text.WeaponUsableNow, weaponName(player, best)), "good") end
+end
+
 ------------------------------------------------------------------ lifecycle
 function LootService.Init(registry)
 	S = registry
@@ -485,6 +540,7 @@ function LootService.Start()
 		if not data then return end
 		sanitize(data)
 		publish(player, data)
+		LootService.FitWeaponToLevel(player) -- A23-28: a save from before the rule may hold a weapon above the level
 		player:GetAttributeChangedSignal("WeaponTier"):Connect(function()
 			local d = getData(player)
 			if d then player:SetAttribute("WeaponEnhance", enhanceOf(d, math.floor(num(d.WeaponTier, 1)))) end
@@ -498,9 +554,26 @@ function LootService.Start()
 			if not ok then Util.Warn(TAG, "Inventory resend: " .. tostring(err)) end
 		end)
 	end
+	-- A23-28: the level went down -> fit the equipped weapon; a level-up past an owned weapon's MinLevel -> one notice
+	local prog = S.ProgressionService
+	for _, sig in { prog and prog.LevelReset, prog and prog.Rebirthed } do
+		if type(sig) == "table" and type(sig.Connect) == "function" then
+			sig:Connect(function(player)
+				local ok, err = pcall(LootService.FitWeaponToLevel, player)
+				if not ok then Util.Warn(TAG, "FitWeaponToLevel: " .. tostring(err)) end
+			end)
+		end
+	end
+	if prog and type(prog.LeveledUp) == "table" then
+		prog.LeveledUp:Connect(function(player, level)
+			local ok, err = pcall(onLeveledUp, player, level)
+			if not ok then Util.Warn(TAG, "LeveledUp: " .. tostring(err)) end
+		end)
+	end
 	S.PlayerService.PlayerLeaving:Connect(function(player)
 		STATE.Pending[player] = nil
 		STATE.FullAt[player] = nil
+		STATE.Level[player] = nil
 	end)
 	print("[LootService] started")
 end

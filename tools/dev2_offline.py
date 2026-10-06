@@ -152,7 +152,9 @@ class Suite:
         ok = (compiled.returncode == 0 and main_run["returncode"] == 0 and marker is not None and not static_failures
               and not changed and all(m.get("applied") and m.get("caught") for m in mutations))
         report = {
-            "status": ("passed" if ok else "failed") + (" (mutations skipped: do not commit)" if args.no_mutations else ""),
+            # review 2026-10-06: never plain "passed" without the mutation step (all runners)
+            "status": ("passed-no-mutations" if args.no_mutations else "passed") if ok else "failed",
+            "mutationsSkipped": bool(args.no_mutations),
             "checks": result.get("Checks", 0) if result else 0,
             "failedChecks": result.get("Failed", 0) if result else 0,
             "namedChecks": len(named),

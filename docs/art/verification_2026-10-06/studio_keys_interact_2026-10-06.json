@@ -1,0 +1,12 @@
+{
+  "what": "B1 (27246d1 review, open_fixes B-1) Interact key rules in the main Studio, own test Play. The real SetSettings remote was fired from the client with one Interact key per request; the server's sanitized echo (Settings remote) and every ProximityPrompt's KeyboardKeyCode were read. The test account's settings blob was restored at the end.",
+  "server_refusal": [
+    "ask 'CapsLock'  -> server Keys.Interact = nil (default E kept)",
+    "ask 'KeypadOne' -> server Keys.Interact = nil (default E kept)",
+    "ask ''          -> server Keys.Interact = nil (Interact is NoClear: never empty)",
+    "ask 'G'         -> server Keys.Interact = G (accepted)"
+  ],
+  "prompt_follows_key": "standing at the blacksmith anvil (Map.Landmarks.ArtisanGuild.Anvil, the prompt shown): after 'G' the Anvil prompt KeyboardKeyCode = G (Altar / potion merchant, not shown, stay E until shown: Keybinds applies on PromptShown and to prompts already shown); restoring the original blob -> Anvil = E.",
+  "limitation": "repeating the 'G' request from the test script a second and third time did not re-apply the key on the client: the request was fired from outside the client Settings module (no local Seq / local copy update), so the client keeps its own copy. The real settings window changes its local copy first and then sends (Keybinds.Apply runs at once), so this does not affect players; recorded here so nobody reads the second run as a failure. Capture-step refusal in the window (CapsLock / KeypadOne) is covered by the offline keys suite.",
+  "studio_state_after": "Play stopped, Edit mode; test account settings restored (Keys.Interact = nil = E)."
+}

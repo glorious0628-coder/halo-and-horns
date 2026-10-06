@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9112,
+  "checks": 9217,
   "failedChecks": 0,
-  "namedChecks": 282,
+  "namedChecks": 310,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1698,6 +1698,174 @@
       "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "the key-hint code is found in HUD / WorldMap / Intro (cut for these behaviour checks)",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "Keybinds.ShowsKeys() = KeyboardEnabled (touch laptop: yes; phone, mouse tablet, gamepad: no)",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "Keybinds.Label: key labels exactly where keys are shown, button names on every device without a keyboard",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "Keybinds.Fill: the '(T)' key part and '{Auto}' follow ShowsKeys",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "the key-collision toast shows only where keys are shown",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "HUD L.QuestText: the current key where keys are shown, the button name without a keyboard",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "HUD L.QuestText: an unbound key drops the '(…)' group only where keys are shown",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "WorldMap.ShowsKeys() = Keybinds.ShowsKeys(); HintText names the map key",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "WorldMap.Open: the key hint where keys are shown, the touch hint without a keyboard",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "WorldMap.BindKey: the new map key goes into the hint only where keys are shown",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "WorldMap.ShowsKeys before Keybinds is up = KeyboardEnabled",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "Intro.SkipText: '(Enter)' exactly where keys are shown",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "Intro.SkipText before Keybinds is up: '(Enter)' only with a keyboard",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "key-hints-one-rule",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "start: Interact = E, the prompt draws E",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "swap guard: an action whose old key Interact cannot hold (CapsLock, KeypadOne, Minus, none) cannot take E",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "a refused swap changes nothing: Interact and its prompt keep E, nothing saved, no collision, no Changed",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "swap guard lets a key the prompt draws through: Attack G -> E, Interact and its prompt get G",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "Interact cannot be swapped onto another action's key the prompt cannot draw (CapsLock)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "Interact swapped onto a drawable key (Q): the holder gets E, the prompt Q",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "capture refuses keys Interact cannot hold (CapsLock, KeypadOne, empty): NotAllowed",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "the capture refusal tells the player (one NotAllowed toast)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "a refused capture keeps Interact on E (its prompt too), nothing saved",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "capture of Interact starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "capture accepts G for Interact: Set, the prompt draws G, saved, no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-interact-guard",
+      "check": "no warnings (Signal handler errors, Util.Warn, timer errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [
@@ -1706,12 +1874,12 @@
       "Text": "BB1 lists Allowed 'Keypad0-Keypad9'; Roblox names them KeypadZero..KeypadNine, so those names are stored (KeyUsable('Keypad1') = false, KeyLabel('Keypad1') = Num1)."
     }
   ],
-  "staticChecks": 21,
+  "staticChecks": 26,
   "staticFailures": [],
   "mutations": {
-    "total": 33,
-    "applied": 33,
-    "caught": 33,
+    "total": 42,
+    "applied": 42,
+    "caught": 42,
     "results": [
       {
         "mutation": "KeyMap: an explicit key already taken is kept",
@@ -1725,7 +1893,8 @@
           "keymap-rules :: explicit entries first in Actions order: the later explicit holder of a taken key gets '' (not reported)",
           "keymap-rules :: no two actions ever share a key (fuzz)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 4,
+        "newFailingStatic": []
       },
       {
         "mutation": "KeyMap: a default-only collision is not reported",
@@ -1735,13 +1904,14 @@
         "crashed": false,
         "newFailingChecks": [
           "integration :: the Journal collision is told once",
+          "key-hints-one-rule :: the key-collision toast shows only where keys are shown",
           "keybinds-collisions :: BB2: saved Attack = J keeps J; Journal = 없음 and is reported",
           "keybinds-collisions :: Collisions() returns a copy",
           "keybinds-collisions :: Start shows the pending collision toast once",
-          "keybinds-collisions :: another action's collision gets its own toast",
-          "keybinds-collisions :: one toast: '새 동작 [퀘스트 일지]의 기본 키 J가 …'"
+          "keybinds-collisions :: another action's collision gets its own toast"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 14,
+        "newFailingStatic": []
       },
       {
         "mutation": "KeyMap: a non-live action keeps its saved key",
@@ -1757,7 +1927,8 @@
           "keymap-rules :: Flag off: a saved SkillZ key binds nothing",
           "keymap-rules :: KeyMap = the BB2 collision rule (fuzz, 400 saves x live sets)"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 8,
+        "newFailingStatic": []
       },
       {
         "mutation": "Flag ignored (the Z skill is always live)",
@@ -1773,7 +1944,8 @@
           "keybinds-setlocal :: Reset: every key back to the default (Changed once)",
           "keybinds-setlocal :: non-live / unknown actions cannot be cleared"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 10,
+        "newFailingStatic": []
       },
       {
         "mutation": "Reserved letters become usable",
@@ -1788,7 +1960,8 @@
           "sanitize :: every Reserved key is rejected",
           "sanitize :: saved keys: known action ids, '' or a usable key, never the default"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 5,
+        "newFailingStatic": []
       },
       {
         "mutation": "Sfx not snapped to the 0.1 step",
@@ -1800,7 +1973,8 @@
           "sanitize :: Sfx clamped to 0..1 and snapped to the 0.1 step (BB2 test value Sfx = 5 -> 1)",
           "sanitize :: Sfx is always on the 0.1 grid inside 0..1"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 2,
+        "newFailingStatic": []
       },
       {
         "mutation": "enum settings accept any string",
@@ -1815,7 +1989,8 @@
           "service-remote :: BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
           "service-remote :: the echo carries the cleaned value and the blob's Seq"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 5,
+        "newFailingStatic": []
       },
       {
         "mutation": "saved keys keep entries equal to the default",
@@ -1828,7 +2003,8 @@
           "sanitize :: entries equal to the default are dropped (sparse)",
           "sanitize :: saved keys: known action ids, '' or a usable key, never the default"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 3,
+        "newFailingStatic": []
       },
       {
         "mutation": "two actions may save the same key",
@@ -1843,7 +2019,8 @@
           "service-remote :: BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
           "service-remote :: the echo carries the cleaned value and the blob's Seq"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 5,
+        "newFailingStatic": []
       },
       {
         "mutation": "Interact may be saved on any usable key",
@@ -1852,12 +2029,15 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (CapsLock)",
-          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (KeypadOne)",
-          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (Minus)",
-          "keymap-rules :: KeyMap = the BB2 collision rule (fuzz, 400 saves x live sets)"
+          "keybinds-interact-guard :: Interact cannot be swapped onto another action's key the prompt cannot draw (CapsLock)",
+          "keybinds-interact-guard :: a refused capture keeps Interact on E (its prompt too), nothing saved",
+          "keybinds-interact-guard :: a refused swap changes nothing: Interact and its prompt keep E, nothing saved, no collision, no Changed",
+          "keybinds-interact-guard :: capture refuses keys Interact cannot hold (CapsLock, KeypadOne, empty): NotAllowed",
+          "keybinds-interact-guard :: swap guard: an action whose old key Interact cannot hold (CapsLock, KeypadOne, Minus, none) cannot take E",
+          "keybinds-interact-guard :: the capture refusal tells the player (one NotAllowed toast)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 10,
+        "newFailingStatic": []
       },
       {
         "mutation": "Interact may be cleared",
@@ -1866,12 +2046,15 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "keybinds-prompts-dispatch :: Interact cannot be cleared: prompts keep their key",
-          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (CapsLock)",
-          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (KeypadOne)",
-          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (Minus)"
+          "keybinds-interact-guard :: a refused capture keeps Interact on E (its prompt too), nothing saved",
+          "keybinds-interact-guard :: a refused swap changes nothing: Interact and its prompt keep E, nothing saved, no collision, no Changed",
+          "keybinds-interact-guard :: capture refuses keys Interact cannot hold (CapsLock, KeypadOne, empty): NotAllowed",
+          "keybinds-interact-guard :: swap guard: an action whose old key Interact cannot hold (CapsLock, KeypadOne, Minus, none) cannot take E",
+          "keybinds-interact-guard :: the capture refusal tells the player (one NotAllowed toast)",
+          "keybinds-prompts-dispatch :: Interact cannot be cleared: prompts keep their key"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 9,
+        "newFailingStatic": []
       },
       {
         "mutation": "KeyMap leaves Interact empty",
@@ -1883,7 +2066,8 @@
           "keymap-rules :: KeyMap = the BB2 collision rule (fuzz, 400 saves x live sets)",
           "keymap-rules :: every action saved on one key: the first live action keeps it, Interact keeps E (never all blank)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 2,
+        "newFailingStatic": []
       },
       {
         "mutation": "unknown top-level settings are kept",
@@ -1899,7 +2083,8 @@
           "service-remote :: a 16-key blob is accepted (junk dropped) and echoed",
           "service-remote :: the echo carries the cleaned value and the blob's Seq"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 6,
+        "newFailingStatic": []
       },
       {
         "mutation": "old saves are not sanitized on load",
@@ -1910,7 +2095,8 @@
         "newFailingChecks": [
           "dataservice-settings :: a broken Settings blob is repaired field by field on load"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 1,
+        "newFailingStatic": []
       },
       {
         "mutation": "SetSettings accepts two arguments",
@@ -1925,7 +2111,8 @@
           "service-remote :: one nil argument is not 'zero arguments' (refused)",
           "service-remote :: two arguments: refused (nothing saved, nothing sent)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 5,
+        "newFailingStatic": []
       },
       {
         "mutation": "SetSettings accepts 17 top-level keys",
@@ -1936,7 +2123,8 @@
         "newFailingChecks": [
           "service-remote :: a blob with more than 16 top-level keys is refused"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 1,
+        "newFailingStatic": []
       },
       {
         "mutation": "Seq is not clamped",
@@ -1947,7 +2135,8 @@
         "newFailingChecks": [
           "service-remote :: Seq: an integer clamped to 0..2^31 (missing / NaN / string = 0)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 1,
+        "newFailingStatic": []
       },
       {
         "mutation": "SetSettings works before PlayerReady",
@@ -1962,7 +2151,8 @@
           "service-remote :: becoming ready pushes the settings once",
           "service-remote :: calls made before ready do not use up the rate limit"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 5,
+        "newFailingStatic": []
       },
       {
         "mutation": "SetSettings is not rate-limited",
@@ -1976,7 +2166,8 @@
           "service-remote :: a second call inside 1 s is dropped silently (nothing saved or sent)",
           "service-remote :: still inside 1 s after 0.5 s: dropped"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 4,
+        "newFailingStatic": []
       },
       {
         "mutation": "the echo goes to every client",
@@ -1992,7 +2183,8 @@
           "integration :: no call is dropped by the server's 1 s limit (every call after the early pull is answered)",
           "integration :: rejoin: the keys and settings are the same"
         ],
-        "newFailingCount": 17
+        "newFailingCount": 17,
+        "newFailingStatic": []
       },
       {
         "mutation": "the blob is saved without SanitizeSettings",
@@ -2006,7 +2198,8 @@
           "service-remote :: a 16-key blob is accepted (junk dropped) and echoed",
           "service-remote :: the echo carries the cleaned value and the blob's Seq"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 4,
+        "newFailingStatic": []
       },
       {
         "mutation": "no push on PlayerReady",
@@ -2022,7 +2215,8 @@
           "integration :: the key change is saved on the server",
           "service-remote :: PlayerReady: one push { Seq = 0, saved settings }"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 10,
+        "newFailingStatic": []
       },
       {
         "mutation": "SetLocal does not swap (the holder keeps its key)",
@@ -2032,13 +2226,14 @@
         "crashed": false,
         "newFailingChecks": [
           "keybinds-capture :: a held key: Swap (the other action reported)",
+          "keybinds-interact-guard :: Interact swapped onto a drawable key (Q): the holder gets E, the prompt Q",
+          "keybinds-interact-guard :: swap guard lets a key the prompt draws through: Attack G -> E, Interact and its prompt get G",
           "keybinds-live :: a window key swaps like any key",
           "keybinds-live :: swap: the holder gets my old key although an unregistered window has it saved",
-          "keybinds-setlocal :: Settings.Keys holds only the changes",
-          "keybinds-setlocal :: swap back with an Enum.KeyCode argument",
-          "keybinds-setlocal :: swap: the holder gets my old key"
+          "keybinds-setlocal :: Settings.Keys holds only the changes"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9,
+        "newFailingStatic": []
       },
       {
         "mutation": "touch-only devices see key labels",
@@ -2047,10 +2242,15 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "key-hints-one-rule :: HUD L.QuestText: an unbound key drops the '(…)' group only where keys are shown",
+          "key-hints-one-rule :: HUD L.QuestText: the current key where keys are shown, the button name without a keyboard",
+          "key-hints-one-rule :: Keybinds.Fill: the '(T)' key part and '{Auto}' follow ShowsKeys",
+          "key-hints-one-rule :: Keybinds.Label: key labels exactly where keys are shown, button names on every device without a keyboard",
           "keybinds-core :: Lang = en on touch: ButtonEn",
           "keybinds-core :: touch-only: Label = the button name"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 6,
+        "newFailingStatic": []
       },
       {
         "mutation": "every pad button is wired",
@@ -2062,7 +2262,8 @@
           "keybinds-core :: the other pad buttons are data only until BB21",
           "keybinds-live :: Config.Skills.ZEnabled: Z = SkillZ"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 2,
+        "newFailingStatic": []
       },
       {
         "mutation": "the client sends without waiting for the rate-limit slot",
@@ -2078,7 +2279,8 @@
           "settings-client :: never two sends inside RateLimits.SetSettings + 0.05 s (pull included)",
           "settings-client :: resends keep the 1.05 s send slot"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 6,
+        "newFailingStatic": []
       },
       {
         "mutation": "older echoes are applied",
@@ -2091,7 +2293,8 @@
           "settings-client :: an older echo does not count: the newest blob is resent in full",
           "settings-client :: the older echo changes nothing"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 3,
+        "newFailingStatic": []
       },
       {
         "mutation": "an echo overwrites changes not yet sent",
@@ -2106,7 +2309,8 @@
           "settings-client :: first server value: the server wins, except my unsent change",
           "settings-client :: the waiting change goes out once the first value arrived (Seq 1, full blob)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 5,
+        "newFailingStatic": []
       },
       {
         "mutation": "a blob the server drops is never sent again",
@@ -2122,7 +2326,8 @@
           "settings-client :: the echo of the newest blob ends the resends",
           "settings-client :: the next change is sent again"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 6,
+        "newFailingStatic": []
       },
       {
         "mutation": "an echo does not end the in-flight wait (needless resends)",
@@ -2134,7 +2339,8 @@
           "settings-client :: a cleaned value equal to the current one sends nothing",
           "settings-client :: the echo of the newest blob ends the resends"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 2,
+        "newFailingStatic": []
       },
       {
         "mutation": "an unanswered blob is resent forever",
@@ -2146,7 +2352,8 @@
           "settings-client :: no answer at all: 5 resends, then it stops",
           "settings-client :: the next change is sent again"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 2,
+        "newFailingStatic": []
       },
       {
         "mutation": "SetLocal keeps a non-live action's saved entry on the new key",
@@ -2161,7 +2368,8 @@
           "keybinds-live :: swap: the holder gets my old key although an unregistered window has it saved",
           "keybinds-live :: the stale Bag entry on X goes back to its default (not '')"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 5,
+        "newFailingStatic": []
       },
       {
         "mutation": "SetLocal keeps a non-live action's saved entry on the swapped holder's new key",
@@ -2173,7 +2381,142 @@
           "keybinds-live :: and that stale entry goes back to its default",
           "keybinds-live :: swap: the holder gets my old key although an unregistered window has it saved"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 2,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "B5: touchOnly back to 'TouchEnabled and not KeyboardEnabled' (a gamepad shows keys)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "key-hints-one-rule :: HUD L.QuestText: an unbound key drops the '(…)' group only where keys are shown",
+          "key-hints-one-rule :: HUD L.QuestText: the current key where keys are shown, the button name without a keyboard",
+          "key-hints-one-rule :: Keybinds.Fill: the '(T)' key part and '{Auto}' follow ShowsKeys",
+          "key-hints-one-rule :: Keybinds.Label: key labels exactly where keys are shown, button names on every device without a keyboard",
+          "key-hints-one-rule :: the key-collision toast shows only where keys are shown"
+        ],
+        "newFailingCount": 5,
+        "newFailingStatic": [
+          "B5 one rule: Keybinds touchOnly() goes through Keybinds.ShowsKeys() (= KeyboardEnabled); Keybinds.luau reads no TouchEnabled / MouseEnabled"
+        ]
+      },
+      {
+        "mutation": "B5: HUD L.QuestText back to the IS_TOUCH test",
+        "file": "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "key-hints-one-rule :: HUD L.QuestText: an unbound key drops the '(…)' group only where keys are shown",
+          "key-hints-one-rule :: HUD L.QuestText: the current key where keys are shown, the button name without a keyboard"
+        ],
+        "newFailingCount": 2,
+        "newFailingStatic": [
+          "B5 one rule: HUD L.QuestText decides keyOnly with kb.ShowsKeys() (no TouchEnabled / MouseEnabled / IS_TOUCH)",
+          "HUD fills quest row key tokens (keys shown: current key, no keyboard: button name)"
+        ]
+      },
+      {
+        "mutation": "B5: WorldMap.Open hint back to 'TouchEnabled and not MouseEnabled'",
+        "file": "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "key-hints-one-rule :: WorldMap.Open: the key hint where keys are shown, the touch hint without a keyboard"
+        ],
+        "newFailingCount": 1,
+        "newFailingStatic": [
+          "B5 one rule: WorldMap map hint (BindKey and Open, the only hintLabel.Text sites) goes through WorldMap.ShowsKeys() (no TouchEnabled / MouseEnabled)"
+        ]
+      },
+      {
+        "mutation": "B5: WorldMap.BindKey hint back to the MouseEnabled test",
+        "file": "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "key-hints-one-rule :: WorldMap.BindKey: the new map key goes into the hint only where keys are shown"
+        ],
+        "newFailingCount": 1,
+        "newFailingStatic": [
+          "B5 one rule: WorldMap map hint (BindKey and Open, the only hintLabel.Text sites) goes through WorldMap.ShowsKeys() (no TouchEnabled / MouseEnabled)"
+        ]
+      },
+      {
+        "mutation": "B5: WorldMap.ShowsKeys ignores Keybinds (= not TouchEnabled)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "key-hints-one-rule :: WorldMap.BindKey: the new map key goes into the hint only where keys are shown",
+          "key-hints-one-rule :: WorldMap.Open: the key hint where keys are shown, the touch hint without a keyboard",
+          "key-hints-one-rule :: WorldMap.ShowsKeys before Keybinds is up = KeyboardEnabled",
+          "key-hints-one-rule :: WorldMap.ShowsKeys() = Keybinds.ShowsKeys(); HintText names the map key"
+        ],
+        "newFailingCount": 4,
+        "newFailingStatic": [
+          "B5 one rule: WorldMap.ShowsKeys uses Keybinds.ShowsKeys (KeyboardEnabled before Keybinds is up; no TouchEnabled / MouseEnabled)"
+        ]
+      },
+      {
+        "mutation": "B5: Intro TXT.SkipKey back to the TouchEnabled test",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Intro.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "key-hints-one-rule :: Intro.SkipText before Keybinds is up: '(Enter)' only with a keyboard",
+          "key-hints-one-rule :: Intro.SkipText: '(Enter)' exactly where keys are shown"
+        ],
+        "newFailingCount": 2,
+        "newFailingStatic": [
+          "B5 one rule: Intro skip text goes through Intro.SkipText() / Keybinds.ShowsKeys (TXT.SkipKey and SkipText test no TouchEnabled / MouseEnabled; TXT.SkipKey used only there; both skip buttons use Intro.SkipText())"
+        ]
+      },
+      {
+        "mutation": "B5: Intro.SkipText decides with TouchEnabled",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Intro.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "key-hints-one-rule :: Intro.SkipText: '(Enter)' exactly where keys are shown"
+        ],
+        "newFailingCount": 1,
+        "newFailingStatic": [
+          "B5 one rule: Intro skip text goes through Intro.SkipText() / Keybinds.ShowsKeys (TXT.SkipKey and SkipText test no TouchEnabled / MouseEnabled; TXT.SkipKey used only there; both skip buttons use Intro.SkipText())"
+        ]
+      },
+      {
+        "mutation": "SetLocal: no swap guard (Interact can be handed a key it cannot hold or none)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "keybinds-interact-guard :: a refused swap changes nothing: Interact and its prompt keep E, nothing saved, no collision, no Changed",
+          "keybinds-interact-guard :: swap guard: an action whose old key Interact cannot hold (CapsLock, KeypadOne, Minus, none) cannot take E"
+        ],
+        "newFailingCount": 2,
+        "newFailingStatic": []
+      },
+      {
+        "mutation": "Capture: no refusal of keys the action cannot hold (no toast, straight to SetLocal)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "keybinds-capture :: refused key: result + toast, key unchanged",
+          "keybinds-interact-guard :: the capture refusal tells the player (one NotAllowed toast)"
+        ],
+        "newFailingCount": 2,
+        "newFailingStatic": []
       }
     ]
   },
@@ -2181,18 +2524,27 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "a07e2114f44c59fd81fa908b4405305a6aea7c3eac80cc7a444145458ea58066",
+    "src/ReplicatedStorage/Shared/Config.luau": "67c35cafd892798ddedd0fc93d39cb4d1a5f7b8304fe5821d1f5d891a5a09aa6",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
     "src/ServerScriptService/SettingsService.luau": "aa11a9cb12e31fc89b54a63a34284a6349311a22af1b1c15b1c4dd28ae0c92b7",
-    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "ed1bdd80a262754b59a4aa110fbe3980fcb6598da309686122118532e069aede",
-    "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9"
+    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "7acadc48447c9d7b7cf49effa25ef3f50941d3d358f3c9a132ee8ab2c7cc8dae",
+    "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "3761d945d6c9b67a455102a9e310e798c9baa58a2d27fdff66de521f004cb6c5",
+    "src/ServerScriptService/Main.server.luau": "2000ea96ef95f4ba3fbbf1da3e9d6197e4f671b36a97cb3b6b647d10bfcd2351",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "206aea9f8eef82296a580b11f4ec32be70ab12aa6c312a4c38ac4e56204ca05a",
+    "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "fe9f00bb93a5f0fb6a8e0b845908cdb34b65415a0a76eacf516785dfaa24263f",
+    "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "bb300553ea81ffd63248bbf3d37018d115c58352c646736b7493e2ba25991fd4",
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "a9d37ec221132fecd6515c6dd73ce148c0975343e1c78a85c3a6aad579a1e3f6",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "095dbe65f8bbbaf1ac41eb775e50ccb6c5bc31e7fc803c4a2eb2fc9add064a61",
+    "src/ServerScriptService/StoryQuestService.luau": "34ca99a517022184b1b1ddaf2bb9b62cf664fe5b51f02bf33b4dfaa5c20f9205",
+    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "11bb79a00b39b05d23bb021bca6861fec2346d19b166e6c027ce3769ac0ef03b"
   },
-  "fixtureSHA256": "3f64ac6b6304c5bdb3d596e7f5bf9b7bab075eea24a87d128a2fa448d1531e0b",
+  "fixtureSHA256": "de1d9075006a4c2392eedb0592cd7c1c0715763f2fb6817fb5fdde2140182ed6",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "docs/design/beta_basics_2026-10-05.md BB1 + BB2 (A23-21: PC keyboard keys only, fixed pad layout, button names on touch-only devices): 17 actions with the BB1 default keys / pad buttons, Reserved and Allowed key sets, KeyMap collision rule (explicit first in Actions order, a taken explicit key -> '', a live default-only action whose default is taken -> '' and reported once per session, non-live actions hold no key, never wipe all keys), KeyLabel, SanitizeSettings (unknown keys dropped, sparse Keys, Sfx clamp + 0.1 step, finite numbers, bools, enums), DataService fills Settings without a Version bump, SettingsService (<= 1 argument, <= 16 top-level keys, Seq clamped 0..2^31, ready + 1 s rate limit, dropped calls answered with nothing, owner-only echo, push on PlayerReady), Keybinds (Get / ActionFor / Label / PadFor / SetLocal swap / Clear / Reset / Apply / Changed / Collisions / Capture / Dispatch / prompts) and the Settings client (pull at Start, one pending blob at max(now, lastSent + 1.05 s), Flush through the same slot, older echoes ignored, unsent changes kept, a blob the server drops without an answer re-sent through the same slot, at most 5 times in a row). Review fixes 2026-10-06: a non-live action's stale saved key never blanks a live action in SetLocal; potion badges, quest-row key tokens and the in-flight resend are checked (static / offline).",
-  "limitations": "Offline doubles: virtual clock for os.clock / task.delay, cached EnumItems, remotes with a fixed or scripted latency, DataStore table, Panels.Has from a registered-window set, UIKit.Toast recorder. HUD / VitalsUI / GrudgeGhost / WorldMap / Panels / StoryQuestService wiring is only checked statically. Not certified here: real key presses in Studio, which non-letter keys Roblox swallows, whether ProximityPrompt accepts a changed KeyboardKeyCode, real DataStore saves across rejoins, multiple clients."
+  "contract": "docs/design/beta_basics_2026-10-05.md BB1 + BB2 (A23-21: PC keyboard keys only, fixed pad layout, button names on touch-only devices): 17 actions with the BB1 default keys / pad buttons, Reserved and Allowed key sets, KeyMap collision rule (explicit first in Actions order, a taken explicit key -> '', a live default-only action whose default is taken -> '' and reported once per session, non-live actions hold no key, never wipe all keys), KeyLabel, SanitizeSettings (unknown keys dropped, sparse Keys, Sfx clamp + 0.1 step, finite numbers, bools, enums), DataService fills Settings without a Version bump, SettingsService (<= 1 argument, <= 16 top-level keys, Seq clamped 0..2^31, ready + 1 s rate limit, dropped calls answered with nothing, owner-only echo, push on PlayerReady), Keybinds (Get / ActionFor / Label / PadFor / SetLocal swap / Clear / Reset / Apply / Changed / Collisions / Capture / Dispatch / prompts) and the Settings client (pull at Start, one pending blob at max(now, lastSent + 1.05 s), Flush through the same slot, older echoes ignored, unsent changes kept, a blob the server drops without an answer re-sent through the same slot, at most 5 times in a row). Review fixes 2026-10-06: a non-live action's stale saved key never blanks a live action in SetLocal; potion badges, quest-row key tokens and the in-flight resend are checked (static / offline). Review B5 2026-10-06: the one key-hint rule is Keybinds.ShowsKeys() (= KeyboardEnabled == true): Keybinds touchOnly / Label / Fill / the collision toast, HUD L.QuestText, WorldMap.ShowsKeys and both map-hint sites, Intro TXT.SkipKey / Intro.SkipText run on six devices (desktop, touch laptop, keyboard tablet: keys; phone, mouse tablet without keyboard, gamepad: no keys) and test no TouchEnabled / MouseEnabled (static). Review of 27246d1: Interact always keeps a key the default ProximityPrompt draws (SetLocal swap guard: no swap hands Interact CapsLock / KeypadOne / Minus / none; capture refuses CapsLock / KeypadOne / empty for Interact with a NotAllowed toast and accepts G).",
+  "limitations": "Offline doubles: virtual clock for os.clock / task.delay, cached EnumItems, remotes with a fixed or scripted latency, DataStore table, Panels.Has from a registered-window set, UIKit.Toast recorder. HUD / VitalsUI / GrudgeGhost / WorldMap / Panels / StoryQuestService wiring is only checked statically, except the B5 key-hint code (HUD L.QuestText, WorldMap.ShowsKeys / HintText / the BindKey and Open hint blocks, Intro TXT / SkipText), which is cut from the current source text and run against the real Keybinds with a UserInputService double (KeyboardEnabled / TouchEnabled / MouseEnabled); the rest of those modules does not run. Not certified here: real key presses in Studio, which non-letter keys Roblox swallows, whether ProximityPrompt accepts a changed KeyboardKeyCode, real DataStore saves across rejoins, multiple clients."
 }

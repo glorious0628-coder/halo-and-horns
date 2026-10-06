@@ -244,6 +244,28 @@ function Config.WeaponSource(tier)
 	return info and info.Source or ""
 end
 
+-- A23-28: a weapon is EQUIPPED only at Level >= its MinLevel (owning / enhancing it has no level limit; the legendary
+-- T8 has MinLevel 1). Server rule (LootService / ShopService); clients use it to show the lock.
+function Config.WeaponUsable(tier, level)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	if type(def) ~= "table" then return false end
+	return (tonumber(level) or 1) >= (tonumber(def.MinLevel) or 1)
+end
+
+-- the best owned tier (bit t-1 of ownedMask) usable at `level` (by Damage, so the legendary T8 counts as the 76-damage
+-- weapon it is); tier 1 is always owned and usable
+function Config.BestUsableWeapon(ownedMask, level)
+	local best, bestDamage = 1, -1
+	local mask = math.floor(tonumber(ownedMask) or 1)
+	for tier, def in Config.Weapons do
+		if type(def) == "table" and (tier == 1 or bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0)
+			and Config.WeaponUsable(tier, level) and (tonumber(def.Damage) or 0) > bestDamage then
+			best, bestDamage = tier, tonumber(def.Damage) or 0
+		end
+	end
+	return best
+end
+
 -- "★★★" (filled stars only; rarity, not power)
 function Config.WeaponStars(tier)
 	return string.rep("★", Config.WeaponGrade(tier).Stars)
@@ -977,7 +999,9 @@ end
 -- Crossroads across the sea, joined by bridges. Ground is Terrain with its top at Y = 0 on land (zone floor parts are
 -- invisible, non-colliding contract parts: A11); the sea/river surface is Config.Map.WaterTop. Size.Y is unused (0).
 -- Zones are XZ rectangles; first match in ZoneOrder wins; everything else (incl. sea, bridges, the pass) is Outskirts.
-Config.ZoneOrder = { "Crossroads", "HaloTown", "HornsTown", "SlimeMeadow", "GoblinWoods", "SkeletonRuins" }
+-- A23-30: PumpkinPatch (Season = "Halloween") is its own land south of the meadow; with its season off ZoneAt skips it
+-- (that ground reads as Outskirts) and nothing spawns there.
+Config.ZoneOrder = { "Crossroads", "HaloTown", "HornsTown", "SlimeMeadow", "PumpkinPatch", "GoblinWoods", "SkeletonRuins" }
 Config.Zones = {
 	Crossroads = { Id = "Crossroads", Name = "교차로 마을", Center = Vector3.new(0, 0, 0), Size = Vector3.new(160, 0, 160),
 		MinLevel = 1, PvP = false, Town = true, Faction = nil,
@@ -991,6 +1015,12 @@ Config.Zones = {
 	SlimeMeadow = { Id = "SlimeMeadow", Name = "말랑 초원", Center = Vector3.new(330, 0, 0), Size = Vector3.new(260, 0, 260),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil,
 		FloorColor = Color3.fromRGB(115, 195, 95), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(220, 0, 0) },
+	-- A23-30 (user 2026-10-06 "슬라임은 슬라임만, 고블린은 고블린, 호박은 호박!"): every Halloween kind lives here, a
+	-- Lv1-walkable field joined to the meadow's south shore (land x 280..440, z 175..295; MapBuilder fills it)
+	PumpkinPatch = { Id = "PumpkinPatch", Name = "호박밭", Center = Vector3.new(360, 0, 235), Size = Vector3.new(160, 0, 120),
+		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "Halloween",
+		-- Mud = the pumpkin-soil texture slot (Config.UIArt Tex_PumpkinSoil; Ground is the ruins soil)
+		FloorColor = Color3.fromRGB(150, 118, 72), FloorMaterial = Enum.Material.Mud, Spawn = Vector3.new(360, 0, 190) },
 	GoblinWoods = { Id = "GoblinWoods", Name = "고블린 숲", Center = Vector3.new(720, 0, 0), Size = Vector3.new(300, 0, 300),
 		MinLevel = 10, PvP = true, Town = false, Faction = nil,
 		FloorColor = Color3.fromRGB(60, 125, 55), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(590, 0, 0) },
@@ -1005,7 +1035,8 @@ Config.Zones = {
 function Config.ZoneAt(pos)
 	for _, id in Config.ZoneOrder do
 		local z = Config.Zones[id]
-		if math.abs(pos.X - z.Center.X) <= z.Size.X / 2 and math.abs(pos.Z - z.Center.Z) <= z.Size.Z / 2 then
+		if (z.Season == nil or Config.SeasonOn(z.Season)) -- a seasonal zone exists only while its season is on
+			and math.abs(pos.X - z.Center.X) <= z.Size.X / 2 and math.abs(pos.Z - z.Center.Z) <= z.Size.Z / 2 then
 			return z
 		end
 	end
@@ -1052,6 +1083,7 @@ Config.Map = {
 		{ Name = "LandWild", MinX = 530, MaxX = 1300, MinZ = -175, MaxZ = 175 },
 		{ Name = "IslandHalo", MinX = -110, MaxX = 110, MinZ = -500, MaxZ = -300 },
 		{ Name = "IslandHorns", MinX = -110, MaxX = 110, MinZ = 300, MaxZ = 500 },
+		{ Name = "LandPumpkinPatch", MinX = 280, MaxX = 440, MinZ = 175, MaxZ = 295 }, -- A23-30, joined to LandMeadow
 	},
 	-- bridge decks (top at Y = 0); the built models are workspace.Map.Decor["Bridge_" .. Name]
 	Bridges = {
@@ -1152,20 +1184,25 @@ Config.MonsterTypes = {
 	Skeleton = { Name = "옛 왕국 해골 병사", Short = "해골 병사", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
 	SkeletonKnight = { Name = "왕관을 지키던 해골 기사", Short = "해골 기사", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
 	-- Halloween (Config.Halloween; provisional numbers)
-	PumpkinSlime = { Name = "호박 슬라임", Short = "호박 슬라임", Zone = "SlimeMeadow", Count = 3, Takes = { Slime = 3 }, QuestAs = "Slime",
+	-- A23-30: all in the PumpkinPatch (no Takes: the meadow / woods keep their counts in the season); a Lv1-walkable
+	-- field, so the ghost / bat goblin sit between a slime and a king slime (they were Lv10 woods numbers)
+	PumpkinSlime = { Name = "호박 슬라임", Short = "호박 슬라임", Zone = "PumpkinPatch", Count = 6, QuestAs = "Slime",
 		Season = "Halloween", HP = 14, Damage = 2, XP = 6, Gold = 4, Speed = 10, Shape = "Slime", Scale = 1.1, Color = Color3.fromRGB(255, 150, 40) },
-	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = "GoblinWoods", Count = 3, Season = "Halloween", HP = 70, Damage = 5,
-		XP = 24, Gold = 14, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
-	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = "GoblinWoods", Count = 3, Takes = { Goblin = 3 }, QuestAs = "Goblin",
-		Season = "Halloween", HP = 95, Damage = 6, XP = 30, Gold = 17, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(120, 80, 150) },
+	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = "PumpkinPatch", Count = 4, Season = "Halloween", HP = 30, Damage = 3,
+		XP = 11, Gold = 6, Speed = 10, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
+	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = "PumpkinPatch", Count = 4,
+		Season = "Halloween", HP = 45, Damage = 4, XP = 15, Gold = 8, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(120, 80, 150) },
 	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
 	-- player with a tier 2-3 weapon, about 70 s for three. Per player DPS (Config.WeaponDamage x class Damage; swing =
 	-- 0.5 x D x 1.1 crit avg per SwingInterval; skill = 6 x D every 3 s while MP lasts: 100 MP + 4/s regen, 20 per
 	-- cast, mage swings 2 MP), averaged over Lv 8/10/12 x tier 2/3 x the three classes: 50.8 DPS over 240 s (tier 2
 	-- ~29, tier 3 ~73), 58.2 DPS over an 80 s fight (the full MP pool counts more). With 75% uptime (walking,
 	-- dodging, aim cone): 1 player 50.8 x 0.75 x 240 = 9141 -> 9000 HP; 3 players 9000 / (3 x 58.2 x 0.75) = 69 s.
-	PumpkinKing = { Name = "호박 대왕", Short = "호박 대왕", Zone = "SlimeMeadow", Count = 0, Boss = true, Season = "Halloween",
+	PumpkinKing = { Name = "호박 대왕", Short = "호박 대왕", Zone = "PumpkinPatch", Count = 0, Boss = true, Season = "Halloween",
 		ContributorWindow = 120, -- a 1-2 min fight: everyone who hit it in the last 2 minutes shares the kill
+		-- A23-27: paid only with >= RewardMinHits own hits (auto hits count) AND >= RewardMinDamageFrac of MaxHP; below
+		-- Lv XPCapBelowLevel the king's XP is capped to one level (Config.XPToNext of the current level)
+		RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8,
 		HP = 9000, Damage = 8, XP = 300, Gold = 150, Speed = 7, Shape = "Slime", Scale = 2.5, Color = Color3.fromRGB(255, 130, 30) },
 }
 
@@ -1180,11 +1217,20 @@ end
 
 -- true while a season id (MonsterTypes[*].Season) is on; nil = no season (always on). override = true / false forces
 -- every season on / off (tests, previews)
+-- the server clock seasons end on (A23-28 HW-13: workspace server time; os.time outside a running place)
+function Config.SeasonNow()
+	local ok, t = pcall(function() return workspace:GetServerTimeNow() end)
+	if ok and type(t) == "number" then return t end
+	return os.time()
+end
+
+-- Enabled and, when the season has an EndsAt (Unix seconds), before it
 function Config.SeasonOn(season, override)
 	if season == nil then return true end
 	if override ~= nil then return override == true end
 	local s = type(season) == "string" and Config[season] or nil
-	return type(s) == "table" and s.Enabled == true
+	if type(s) ~= "table" or s.Enabled ~= true then return false end
+	return type(s.EndsAt) ~= "number" or Config.SeasonNow() < s.EndsAt
 end
 
 -- the kind exists and its season (if any) is on: spawns, drop table rows and HUD lines use this
@@ -1291,24 +1337,32 @@ end
 -- PumpkinKingNextAt (server time of the next appearance, 0 = off), PumpkinKingActive, PumpkinKingEndsAt.
 Config.Halloween = {
 	Enabled = true,
+	-- A23-28 HW-13: the season switches itself off at 2026-11-09 00:00 KST (= 2026-11-08 15:00 UTC) by the server clock:
+	-- no seasonal spawns, no king, no PumpkinPatch zone / sign after it. Candy already earned stays in the bag.
+	EndsAt = 1794150000,
 	King = "PumpkinKing", -- the miniboss kind (Config.MonsterTypes)
 	FirstDelay = 360,
 	Interval = 1200,
 	Lifetime = 300,
 	RetryDelay = 10, -- no walkable spot found this time: try again this many seconds later
 	SpawnRadius = 12, -- studs around the chosen spot (walkable ground inside the zone, never in solid decor)
-	-- the meadow is x 200..460, z -130..130; players enter at x 220 (first mission) and the road runs along z 0:
-	-- the king appears in a far corner (one picked at random each time)
-	SpawnSpots = { Vector3.new(395, 0, 90), Vector3.new(395, 0, -90) },
-	-- rookies are safe from the king (first 10 minutes): it never targets or hits a player with the Rookie shield or
-	-- below this level. They can still hit it and share the candy.
+	-- A23-30: the king appears in the PumpkinPatch (x 280..440, z 175..295; entrance from the meadow at the north
+	-- edge), in its far half (one spot picked at random each time)
+	SpawnSpots = { Vector3.new(330, 0, 255), Vector3.new(390, 0, 255) },
+	-- A23-27: rookies are safe from the king whatever their faction: it never targets or hits a player below
+	-- SafeBelowLevel OR with less than SafePlaySeconds played (the PvP Rookie shield is NOT used here). They can still
+	-- hit it and share the candy (if they also meet the king's RewardMinHits / RewardMinDamageFrac).
 	SafeBelowLevel = 5,
+	SafePlaySeconds = 600,
 	Tick = 0.5,
 	-- EventHUD line (Next / Active take m:ss); kid-safe, no time pressure. A line that names the season says it comes
 	-- back every year.
 	Text = {
 		HudNext = "호박 대왕까지 %s", HudNextEn = "Pumpkin King in %s",
 		HudActive = "호박 대왕 출현! 남은 시간 %s", HudActiveEn = "Pumpkin King is here! %s left",
+		-- the one road sign on the meadow's south shore (MapBuilder; hidden when the season is off). It does not name
+		-- the season, so it needs no "comes back every year" line (P10)
+		PatchSign = "↓ 호박밭 · 호박 몬스터 사냥터", PatchSignEn = "↓ Pumpkin Patch · pumpkin monsters",
 	},
 }
 
@@ -2108,29 +2162,30 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.001 }, { Item = "Move30", P = 0.0003 }, { Item = "Move10", P = 0.0001 },
 			{ Potion = "HP", P = 0.01 }, { Potion = "MP", P = 0.01 },
 		},
-		LittleGhost = {
+		LittleGhost = { -- A23-30: PumpkinPatch (Lv1 field): the same rows as the bat goblin
 			{ Item = "Candy", P = 0.45 },
-			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
-			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
-			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+			{ Item = "Enh70", P = 0.006 }, { Item = "Enh30", P = 0.0016 }, { Item = "Enh10", P = 0.0004 },
+			{ Item = "Move70", P = 0.002 }, { Item = "Move30", P = 0.0006 }, { Item = "Move10", P = 0.0002 },
+			{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
 		},
-		BatGoblin = {
-			{ Item = "Candy", P = 0.3 }, { Item = "GoblinTooth", P = 0.3 },
-			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
-			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
-			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
-			{ Weapon = 4, P = 0.001 },
+		BatGoblin = { -- A23-30: a PumpkinPatch (Lv1 field) kind now: candy + king-slime-level scroll rows, no tooth / T4
+			{ Item = "Candy", P = 0.45 },
+			{ Item = "Enh70", P = 0.006 }, { Item = "Enh30", P = 0.0016 }, { Item = "Enh10", P = 0.0004 },
+			{ Item = "Move70", P = 0.002 }, { Item = "Move30", P = 0.0006 }, { Item = "Move10", P = 0.0002 },
+			{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
 		},
-		PumpkinKing = { -- every contributor rolls these once (MonsterKilled per contributor)
+		PumpkinKing = { -- every eligible contributor rolls these once (MonsterKilled per contributor; A23-27 rows)
 			{ Item = "Candy", P = 1, N = 8 },
-			{ Item = "Enh70", P = 0.5 }, { Item = "Enh30", P = 0.15 }, { Item = "Enh10", P = 0.04 },
-			{ Item = "Move70", P = 0.15 },
+			{ Item = "Enh70", P = 0.25 }, { Item = "Enh30", P = 0.08 }, { Item = "Enh10", P = 0.02 },
+			{ Item = "Move70", P = 0.08 },
 			{ Potion = "HP", P = 0.5 }, { Potion = "MP", P = 0.5 },
-			{ Weapon = 4, P = 0.05 },
+			-- rolled only at Level >= that weapon's MinLevel (A23-27); below it the row gives BelowLevel instead
+			{ Weapon = 4, P = 0.05, BelowLevel = { Item = "Candy", N = 3 } },
 		},
 	},
 	-- "레벨1 몬스터" jackpot (user 2026-10-05): any player level, auto kills included, golden x GoldenMult. Pumpkin
-	-- slimes take level-1 slime slots in the season, so they carry the same jackpot (it never gets rarer then).
+	-- slimes are level-1 slimes of the PumpkinPatch (A23-30, on top of the meadow's), so they carry the same jackpot;
+	-- the chance per kill is unchanged.
 	Jackpot = { Monsters = { Slime = true, PumpkinSlime = true }, Chance = 1 / 20000, Tier = 8 },
 	-- the first king slime a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
 	-- NoticeSeconds; that kill's Loot Fx carries First = true so the client skips its own "where to use it" toast)
@@ -2182,8 +2237,8 @@ Config.Announce = {
 		FirstMax = "%s [%s]을(를) 처음으로 +10까지 강화했어요!", -- subject, weapon
 		More = "%s 좋은 것을 %d개 더 얻었어요!", -- subject, count (grouped)
 		-- server-wide event lines (Events below; plain text, no names)
-		PumpkinKingAppear = "호박 대왕이 말랑 초원에 나타났어요! 함께 잡아요!",
-		PumpkinKingAppearEn = "The Pumpkin King appeared in the meadow! Let's beat it together!",
+		PumpkinKingAppear = "호박 대왕이 호박밭에 나타났어요! 함께 잡아요!", -- A23-30: it appears in the PumpkinPatch
+		PumpkinKingAppearEn = "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
 		PumpkinKingDefeat = "호박 대왕이 사탕을 와르르 쏟았다!",
 		PumpkinKingDefeatEn = "The Pumpkin King spilled a pile of candy!",
 		PumpkinKingLeave = "호박 대왕이 사탕 자루를 들고 돌아갔어요. 다음에 또 와요!",
@@ -2693,7 +2748,13 @@ Config.Text = {
 	NotEnoughGold = "골드가 부족해요.",
 	WeaponBought = "%s 장착!",
 	WeaponMaxed = "이미 최고의 무기예요!",
-	WeaponNeedLevel = "이 무기는 레벨 %d부터 살 수 있어요.", -- purchase gate only: an owned weapon is always re-equippable
+	WeaponNeedLevel = "이 무기는 레벨 %d부터 살 수 있어요.", -- purchase gate (an owned one: EquipNeedLevel)
+	-- A23-28: equipping keeps MinLevel too (also after a rebirth / Lv5+ free class change)
+	EquipNeedLevel = "이 무기는 레벨 %d부터 쓸 수 있어요.", EquipNeedLevelEn = "You can use this weapon from Lv %d.",
+	WeaponAutoSwap = "Lv %d부터 쓸 수 있는 무기예요 → %s 무기로 바꿨어요.",
+	WeaponAutoSwapEn = "That weapon needs Lv %d → switched to %s.",
+	WeaponUsableNow = "이제 %s 무기를 쓸 수 있어요! 대장간이나 메뉴 → 아이템에서 장착해요.",
+	WeaponUsableNowEn = "You can now use %s! Equip it at the blacksmith or in Menu → Items.",
 	NeedFaction = "먼저 진영을 골라야 해요.",
 	-- ShopService (blacksmith / potion merchant)
 	WeaponShopFar = "대장간 모루 가까이에서 무기를 구매해 주세요.",

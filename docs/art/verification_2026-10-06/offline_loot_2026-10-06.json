@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 2545,
+  "checks": 2624,
   "failedChecks": 0,
-  "namedChecks": 448,
+  "namedChecks": 544,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -213,6 +213,60 @@
     },
     {
       "group": "config",
+      "check": "A23-30 BatGoblin rows = Candy 0.45 + Enh 0.006/0.0016/0.0004 + Move 0.002/0.0006/0.0002 + HP/MP 0.015 (no tooth, no weapon)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-30 LittleGhost rows = the bat goblin's rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-27 PumpkinKing rows = Candy x8, Enh70 0.25 / Enh30 0.08 / Enh10 0.02, Move70 0.08, HP/MP 0.5, T4 0.05 (BelowLevel 3 Candy)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-27 BelowLevel only on weapon rows, = { Item = real id, N = integer >= 1 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Text.WeaponNeedLevel is a Korean format string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Text.EquipNeedLevel is a Korean format string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Text.WeaponAutoSwap is a Korean format string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Text.WeaponUsableNow is a Korean format string",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "EquipNeedLevel (owned weapon) differs from WeaponNeedLevel (purchase)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
       "check": "jackpot monsters = { Slime, PumpkinSlime } only",
       "pass": 1,
       "fail": 0
@@ -292,19 +346,19 @@
     {
       "group": "config",
       "check": "each drop row is exactly one of Item / Potion / Weapon",
-      "pass": 98,
+      "pass": 96,
       "fail": 0
     },
     {
       "group": "config",
       "check": "drop chances are in (0, 1]",
-      "pass": 98,
+      "pass": 96,
       "fail": 0
     },
     {
       "group": "config",
       "check": "drop rows name real item ids",
-      "pass": 71,
+      "pass": 70,
       "fail": 0
     },
     {
@@ -316,7 +370,7 @@
     {
       "group": "config",
       "check": "weapon rows are real tiers with a duplicate-gold value",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
@@ -621,14 +675,20 @@
     },
     {
       "group": "rollkill",
-      "check": "one RollKill = one draw per row (+ jackpot draw)",
-      "pass": 10,
+      "check": "one RollKill = one draw per row (+ jackpot draw; a BelowLevel row below its MinLevel draws nothing)",
+      "pass": 20,
       "fail": 0
     },
     {
       "group": "rollkill",
       "check": "RollKill returns the gained list",
-      "pass": 10,
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "the Pumpkin King has exactly one BelowLevel row (T4, MinLevel 12)",
+      "pass": 1,
       "fail": 0
     },
     {
@@ -670,6 +730,72 @@
     {
       "group": "rollkill",
       "check": "malformed kills changed nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 below Lv12 the king's T4 row never drops the weapon (every draw a hit)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 below Lv12 the king's T4 row pays its BelowLevel 3 candies (+ the 8-candy row)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 below Lv12 the BelowLevel row uses no draw (rows - 1)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 at Lv12+ the king's T4 row is drawn (hit = the weapon, no BelowLevel candies)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 at Lv12+ a missed T4 draw pays nothing extra",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "RollKill never writes the caller's kill info (clone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "the caller's kill info gets no Level field (clone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rollkill",
+      "check": "A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
       "pass": 1,
       "fail": 0
     },
@@ -940,31 +1066,31 @@
     {
       "group": "bully",
       "check": "BullyStacks 1: a row drops iff draw < P x 0.5 (capped at 1)",
-      "pass": 196,
+      "pass": 192,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: one draw per row (+ jackpot) per kill",
-      "pass": 195,
+      "pass": 191,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: the unpenalized chance P no longer drops",
-      "pass": 98,
+      "pass": 96,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
-      "pass": 195,
+      "pass": 191,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: the unpenalized chance P x GoldenMult no longer drops",
-      "pass": 97,
+      "pass": 95,
       "fail": 0
     },
     {
@@ -1012,19 +1138,19 @@
     {
       "group": "bully",
       "check": "BullyStacks 0: a row drops iff draw < P (capped at 1)",
-      "pass": 195,
+      "pass": 191,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 0: one draw per row (+ jackpot) per kill",
-      "pass": 183,
+      "pass": 179,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 0: a golden row drops iff draw < P x GoldenMult (capped at 1)",
-      "pass": 184,
+      "pass": 180,
       "fail": 0
     },
     {
@@ -1054,6 +1180,12 @@
     {
       "group": "bully",
       "check": "BullyStacks 1: the guarantee is still paid only once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
       "pass": 1,
       "fail": 0
     },
@@ -1132,6 +1264,24 @@
     {
       "group": "lootroll",
       "check": "rows with N count N per drop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "pumpkin king: no save data changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "pumpkin king: no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lootroll",
+      "check": "A23-27 DebugSimulate (no Level) rolls the king's T4 row like any row (no BelowLevel candies)",
       "pass": 1,
       "fail": 0
     },
@@ -1324,73 +1474,85 @@
     {
       "group": "weapons",
       "check": "unowned weapon drop sets its mask bit (saved + mirrored)",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "new weapon is reported once and pays no gold",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "a weapon drop never auto-equips",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "rare weapon notice",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "a new Rare+ weapon drop calls AnnounceService exactly once (RareWeapon)",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "RareWeapon announce = (player, { Weapon = tier, Monster = kind }, the tier's grade id)",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "weapon ownership is saved before the RareWeapon announce",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "weapon drops never use Net.NotifyAll",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "duplicate weapon drop does not change the mask",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "duplicate is not reported as a new weapon",
-      "pass": 7,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "a duplicate weapon drop is not announced again",
-      "pass": 7,
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "A23-27 ... and pays its BelowLevel item instead",
+      "pass": 1,
       "fail": 0
     },
     {
@@ -2151,19 +2313,67 @@
     },
     {
       "group": "equip",
-      "check": "fixture is below tier 3's MinLevel",
+      "check": "fixture: Lv1; tier 3 needs Lv5, tier 7 Lv40, the legendary Lv1",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "equip",
-      "check": "owned tier equips below its MinLevel (saved + mirrored)",
+      "check": "A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "equip",
-      "check": "no level refusal for an owned weapon",
+      "check": "A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged) (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "A23-28 the refusal is Config.Text.EquipNeedLevel (kind bad), never the purchase text WeaponNeedLevel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "A23-28 tier 7 at Lv1 is refused by its MinLevel 40 (before the faction check)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "A23-28 tier 7 at Lv1 is refused by its MinLevel 40 (before the faction check) (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused (notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "A23-28 the legendary tier 8 (MinLevel 1) equips at Lv1 with its +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "A23-28 an owned tier equips at exactly its MinLevel (tier 3 at Lv5, saved + mirrored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "no level refusal once the level is reached",
       "pass": 1,
       "fail": 0
     },
@@ -2193,7 +2403,7 @@
     },
     {
       "group": "equip",
-      "check": "legendary tier 8 equips at any level with its +N",
+      "check": "legendary tier 8 equips with its +N",
       "pass": 1,
       "fail": 0
     },
@@ -2211,7 +2421,7 @@
     },
     {
       "group": "equip",
-      "check": "tier 7 equips with a faction",
+      "check": "tier 7 equips with a faction at Lv40",
       "pass": 1,
       "fail": 0
     },
@@ -2301,6 +2511,354 @@
     },
     {
       "group": "equip",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "A23-28 shop: an owned weapon below its MinLevel is not equipped (tier 3 at Lv1, no gold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "A23-28 shop: owned re-equip below MinLevel -> notifyBad EquipNeedLevel (not the purchase text)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "A23-28 shop: owned tier 3 at Lv4 (MinLevel - 1) still refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "shop: buying below MinLevel -> WeaponNeedLevel, nothing bought",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "A23-28 shop: the owned tier 3 equips at Lv5 for free (equip notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "shop: an unowned tier 2 (MinLevel 1) is bought and equipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.WeaponUsable(tier, level) = level >= Weapons[tier].MinLevel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "WeaponUsable boundaries: T8 at Lv1, T3 from Lv5, T4 from Lv12, T6 from Lv30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "WeaponUsable of an unknown tier is false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "WeaponUsable with no level reads Lv1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: T1+T3+T6 at Lv1 -> T1 (T3 needs Lv5, T6 Lv30)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: T1+T3+T6 at Lv5 -> T3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: T1+T3+T6 at Lv29 -> T3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: T1+T3+T6 at Lv30 -> T6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: the legendary T8 (76) at Lv1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: T8 (76) beats a usable T3 (38)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: T4 not usable at Lv11 -> T8",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: an owned usable T4 (88) beats T8 (76): by Damage, not tier number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: T1+T2 at Lv1 -> T2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: tier 1 counts as owned even with mask 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: everything owned at Lv100 -> T7 (1000)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 Lv100 with tier 6 equipped: nothing to fit at join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 reborn Lv1 with tier 6 equipped, tiers 1+3+6 owned -> tier 1 (best usable; tier 3 needs Lv5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 the rebirth auto-swap sends one WeaponAutoSwap notice (old MinLevel 30, new weapon name, info)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 the auto-swap keeps ownership (WeaponOwnedMask untouched)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 the auto-swap keeps every tier's +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 the WeaponEnhance attribute follows the swapped-in tier",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 WeaponUsableNow notice kind is good",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 no notice on the level-up after the crossing (Lv6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 no notice at unowned tiers' MinLevel (tier 4 Lv12, tier 5 Lv20)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 level-ups never change WeaponTier (no auto-equip)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "the player equips tier 3 at Lv29",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 no notice on the next level-up (Lv31)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 reaching tier 6's MinLevel does not auto-equip it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "the legendary swap keeps ownership; +N follows tier 8",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 no notice when the newly usable owned weapon is weaker than the equipped one (tier 3 vs the legendary)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 with the legendary equipped: one notice at Lv30 (tier 6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 an equipped legendary stays at Lv1 after rebirth (no swap, no notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 the LevelReset swap keeps ownership and +N (attribute follows tier 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "the join fit keeps ownership; +N follows tier 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 FitWeaponToLevel(player) without quiet sends the notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "A23-28 FitWeaponToLevel does nothing when the equipped tier is usable (no swap to the stronger tier 6, no notice, no push)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
       "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
       "pass": 1,
       "fail": 0
@@ -2469,7 +3027,19 @@
     },
     {
       "group": "rebirth",
-      "check": "reborn Lv1 player equips the kept tier 5 (+6)",
+      "check": "A23-28 an equipped legendary needs no auto-swap after rebirth (no WeaponAutoSwap notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "A23-28 reborn Lv1 player cannot equip the kept tier 5 (EquipNeedLevel 20); ownership and its +6 stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "reborn Lv1 player equips tier 1 (+2)",
       "pass": 1,
       "fail": 0
     },
@@ -2493,7 +3063,13 @@
     },
     {
       "group": "rebirth",
-      "check": "rebirth with a faction switch also keeps weapons / gold / enhancement",
+      "check": "rebirth with a faction switch keeps weapons / gold / enhancement; the Lv40 tier 7 is auto-swapped to tier 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebirth",
+      "check": "A23-28 faction-switch rebirth: one WeaponAutoSwap notice (Lv40 -> tier 2), +N follows",
       "pass": 1,
       "fail": 0
     },
@@ -3004,12 +3580,12 @@
       "Rate": 0.00981
     }
   },
-  "staticChecks": 8,
+  "staticChecks": 9,
   "staticFailures": [],
   "mutations": {
-    "total": 73,
-    "applied": 73,
-    "caught": 73,
+    "total": 105,
+    "applied": 105,
+    "caught": 105,
     "results": [
       {
         "mutation": "enhance failure may go below +0",
@@ -3156,13 +3732,13 @@
         "crashed": false,
         "newFailingChecks": [
           "bully :: BullyStacks 0: one draw per row (+ jackpot) per kill",
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
           "bully :: BullyStacks 1: one draw per row (+ jackpot) per kill",
           "bully :: BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)",
-          "rollkill :: no jackpot roll for non-slime kinds",
-          "rollkill :: one RollKill = one draw per row (+ jackpot draw)",
-          "rollkill :: unknown Kind gives nothing and draws nothing"
+          "lootroll :: A23-27 DebugSimulate (no Level) rolls the king's T4 row like any row (no BelowLevel candies)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 15
       },
       {
         "mutation": "bully penalty not applied to the jackpot",
@@ -3186,14 +3762,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
           "bully :: BullyStacks 1: a golden jackpot pays iff draw < Chance x GoldenMult x 0.5",
           "bully :: BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
           "bully :: BullyStacks 1: a row drops iff draw < P x 0.5 (capped at 1)",
           "bully :: BullyStacks 1: the jackpot pays iff draw < Chance x 0.5",
-          "bully :: BullyStacks 1: the unpenalized chance P no longer drops",
-          "bully :: BullyStacks 1: the unpenalized chance P x GoldenMult no longer drops"
+          "bully :: BullyStacks 1: the unpenalized chance P no longer drops"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 11
       },
       {
         "mutation": "two rolls per kill signal",
@@ -3203,11 +3779,12 @@
         "crashed": false,
         "newFailingChecks": [
           "bully :: BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
           "rollkill :: auto / skill / personal kills roll like any kill",
           "rollkill :: one MonsterKilled signal = exactly one roll",
           "rollkill :: two contributors = two independent rolls"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "item cap ignored on drops",
@@ -3352,20 +3929,467 @@
         "newFailingCount": 2
       },
       {
-        "mutation": "equip gates an OWNED weapon by MinLevel again",
+        "mutation": "equip ignores MinLevel for an owned weapon (old A23-14 rule)",
         "file": "src/ServerScriptService/LootService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "equip :: A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged)",
+          "equip :: A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged) (notice)",
+          "equip :: A23-28 the refusal is Config.Text.EquipNeedLevel (kind bad), never the purchase text WeaponNeedLevel",
+          "equip :: A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused",
+          "equip :: A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused (notice)",
+          "equip :: A23-28 tier 7 at Lv1 is refused by its MinLevel 40 (before the faction check)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "equip level refusal uses the purchase text WeaponNeedLevel",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: A23-28 an owned tier below its MinLevel is refused (tier 3 at Lv1, WeaponTier unchanged) (notice)",
+          "equip :: A23-28 the refusal is Config.Text.EquipNeedLevel (kind bad), never the purchase text WeaponNeedLevel",
+          "equip :: A23-28 tier 3 at Lv4 (MinLevel - 1) is still refused (notice)",
+          "equip :: A23-28 tier 7 at Lv1 is refused by its MinLevel 40 (before the faction check) (notice)",
+          "rebirth :: A23-28 reborn Lv1 player cannot equip the kept tier 5 (EquipNeedLevel 20); ownership and its +6 stay"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "WeaponUsable off by one (level > MinLevel)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: A23-28 an owned tier equips at exactly its MinLevel (tier 3 at Lv5, saved + mirrored)",
+          "equip :: A23-28 the legendary tier 8 (MinLevel 1) equips at Lv1 with its +N",
           "equip :: RequiresFaction (tier 7) needs a faction (notice)",
           "equip :: WeaponEnhance attribute follows the equipped tier's +N",
           "equip :: equip notice",
-          "equip :: owned tier equips below its MinLevel (saved + mirrored)",
-          "equip :: refused while dead (Util.IsAlive) (notice)",
-          "equip :: tier 7 equips with a faction"
+          "equip :: no level refusal once the level is reached"
+        ],
+        "newFailingCount": 41
+      },
+      {
+        "mutation": "BestUsableWeapon compares tier numbers instead of Damage",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: Config.BestUsableWeapon: an owned usable T4 (88) beats T8 (76): by Damage, not tier number",
+          "levelrule :: Config.BestUsableWeapon: everything owned at Lv100 -> T7 (1000)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "BestUsableWeapon ignores the level",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 FitWeaponToLevel(player) without quiet sends the notice",
+          "levelrule :: A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)",
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "BestUsableWeapon ignores ownership",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 FitWeaponToLevel(player) without quiet sends the notice",
+          "levelrule :: A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)",
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "FitWeaponToLevel ignores quiet",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "FitWeaponToLevel picks the best owned weapon ignoring the level",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 FitWeaponToLevel(player) without quiet sends the notice",
+          "levelrule :: A23-28 FitWeaponToLevel(player, true) swaps quietly (no notice)",
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "FitWeaponToLevel also swaps a usable equipped weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 an equipped legendary stays at Lv1 after rebirth (no swap, no notice)",
+          "rebirth :: A23-28 an equipped legendary needs no auto-swap after rebirth (no WeaponAutoSwap notice)",
+          "rebirth :: equipped legendary +9 before rebirth"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "FitWeaponToLevel drops the unusable weapon's ownership",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+          "levelrule :: A23-28 the LevelReset swap keeps ownership and +N (attribute follows tier 2)",
+          "levelrule :: A23-28 the auto-swap keeps ownership (WeaponOwnedMask untouched)",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "WeaponAutoSwap notice names the old weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice",
+          "levelrule :: A23-28 the rebirth auto-swap sends one WeaponAutoSwap notice (old MinLevel 30, new weapon name, info)",
+          "rebirth :: A23-28 faction-switch rebirth: one WeaponAutoSwap notice (Lv40 -> tier 2), +N follows"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "WeaponAutoSwap notice shows the new weapon's MinLevel",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice",
+          "levelrule :: A23-28 the rebirth auto-swap sends one WeaponAutoSwap notice (old MinLevel 30, new weapon name, info)",
+          "rebirth :: A23-28 faction-switch rebirth: one WeaponAutoSwap notice (Lv40 -> tier 2), +N follows"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "FitWeaponToLevel not connected to Rebirthed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)",
+          "levelrule :: A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped, tiers 1+3+6 owned -> tier 1 (best usable; tier 3 needs Lv5)",
+          "levelrule :: A23-28 the WeaponEnhance attribute follows the swapped-in tier"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "FitWeaponToLevel not connected to LevelReset (free class change)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 the LevelReset swap keeps ownership and +N (attribute follows tier 2)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "FitWeaponToLevel not run on PlayerReady",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 PlayerReady: a saved Lv10 with tier 6 equipped (tiers 1+3+6) -> tier 3 + one notice",
+          "levelrule :: the join fit keeps ownership; +N follows tier 3"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "level-up notice repeats after the crossing (no min > before)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 no notice at unowned tiers' MinLevel (tier 4 Lv12, tier 5 Lv20)",
+          "levelrule :: A23-28 no notice on the level-up after the crossing (Lv6)",
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "level-up notice also for a weaker weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 no notice when the newly usable owned weapon is weaker than the equipped one (tier 3 vs the legendary)",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "level-up notice ignores ownership",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 no notice at unowned tiers' MinLevel (tier 4 Lv12, tier 5 Lv20)",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "level-up auto-equips the newly usable weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 reaching tier 6's MinLevel does not auto-equip it",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "LeveledUp never connected",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip",
+          "levelrule :: A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+          "levelrule :: A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+          "levelrule :: A23-28 with the legendary equipped: one notice at Lv30 (tier 6)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "BelowLevel branch dropped (king's T4 row rolled at any level)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)",
+          "rollkill :: A23-27 below Lv12 the BelowLevel row uses no draw (rows - 1)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "BelowLevel applied without a Level (DebugSimulate)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lootroll :: A23-27 DebugSimulate (no Level) rolls the king's T4 row like any row (no BelowLevel candies)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "BelowLevel gate off by one (Lv11 rolls the T4 row)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)",
+          "rollkill :: A23-27 below Lv12 the BelowLevel row uses no draw (rows - 1)",
+          "rollkill :: A23-27 below Lv12 the king's T4 row never drops the weapon (every draw a hit)",
+          "rollkill :: A23-27 below Lv12 the king's T4 row pays its BelowLevel 3 candies (+ the 8-candy row)",
+          "weapons :: A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "RollKill never sets info.Level",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)",
+          "rollkill :: A23-27 below Lv12 the BelowLevel row uses no draw (rows - 1)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "RollKill trusts the caller's info.Level",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RollKill writes into the caller's kill info (no clone)",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1: the caller's kill info is never given DropMult (cloned)",
+          "rollkill :: RollKill never writes the caller's kill info (clone)",
+          "rollkill :: the caller's kill info gets no Level field (clone)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "king T4 row without BelowLevel",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "config :: A23-27 PumpkinKing rows = Candy x8, Enh70 0.25 / Enh30 0.08 / Enh10 0.02, Move70 0.08, HP/MP 0.5, T4 0.05 (BelowLevel 3 Candy)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "king BelowLevel pays 2 candies",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1 below Lv12: the king pays only the 3 BelowLevel candies (8-candy row halved and missed, T4 row not drawn)",
+          "config :: A23-27 PumpkinKing rows = Candy x8, Enh70 0.25 / Enh30 0.08 / Enh10 0.02, Move70 0.08, HP/MP 0.5, T4 0.05 (BelowLevel 3 Candy)",
+          "rollkill :: A23-27 RollKill uses the killer's saved Level, not info.Level from the caller",
+          "rollkill :: A23-27 a Lv1 MonsterKilled king kill: 11 candies, no T4",
+          "rollkill :: A23-27 a golden king below Lv12: still exactly 3 BelowLevel candies (N fixed, no draw)",
+          "rollkill :: A23-27 below Lv12 the 3 candies need no lucky draw (every draw a miss)"
         ],
         "newFailingCount": 7
+      },
+      {
+        "mutation": "king scroll rows back to 0.5 / 0.15 / 0.04 / 0.15 (old)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-27 PumpkinKing rows = Candy x8, Enh70 0.25 / Enh30 0.08 / Enh10 0.02, Move70 0.08, HP/MP 0.5, T4 0.05 (BelowLevel 3 Candy)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bat goblin keeps the goblin tooth row",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-30 BatGoblin rows = Candy 0.45 + Enh 0.006/0.0016/0.0004 + Move 0.002/0.0006/0.0002 + HP/MP 0.015 (no tooth, no weapon)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "little ghost potions back to 0.01",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-30 LittleGhost rows = the bat goblin's rows"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "shop owned re-equip below MinLevel says WeaponNeedLevel",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: A23-28 shop: owned re-equip below MinLevel -> notifyBad EquipNeedLevel (not the purchase text)",
+          "shop :: A23-28 shop: owned tier 3 at Lv4 (MinLevel - 1) still refused"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "shop re-equips an owned weapon below MinLevel (old rule)",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: A23-28 shop: an owned weapon below its MinLevel is not equipped (tier 3 at Lv1, no gold)",
+          "shop :: A23-28 shop: owned re-equip below MinLevel -> notifyBad EquipNeedLevel (not the purchase text)",
+          "shop :: A23-28 shop: owned tier 3 at Lv4 (MinLevel - 1) still refused",
+          "shop :: shop: buying below MinLevel -> WeaponNeedLevel, nothing bought"
+        ],
+        "newFailingCount": 4
       },
       {
         "mutation": "equip ignores combat",
@@ -3466,14 +4490,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "levelrule :: no remote fired to all clients / no unexpected client publication",
           "lootroll :: no remote fired to all clients / no unexpected client publication",
           "sanitize :: Inventory payload Enhance is the 8-tier array",
           "sanitize :: Inventory payload Items = known ids only (unknown ids hidden)",
           "sanitize :: Inventory payload shape { Items, Enhance, Seen }",
-          "sanitize :: Inventory republished after sanitize",
-          "sanitize :: LootService.Refresh re-sends the owner's Inventory"
+          "sanitize :: Inventory republished after sanitize"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 20
       },
       {
         "mutation": "LootRoll grants real drops",
@@ -3482,14 +4506,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "lootroll :: A23-27 DebugSimulate (no Level) rolls the king's T4 row like any row (no BelowLevel candies)",
           "lootroll :: all rows hit: no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push",
           "lootroll :: all rows hit: no save data changed",
           "lootroll :: golden true: no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push",
           "lootroll :: golden true: no save data changed",
-          "lootroll :: king slime: no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push",
-          "lootroll :: king slime: no save data changed"
+          "lootroll :: king slime: no notice / Fx / announcement (NotifyAll or AnnounceService) / gold / ItemsGranted / Inventory push"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 12
       },
       {
         "mutation": "equip ignores RequiresFaction",
@@ -3557,14 +4581,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "equip :: A23-28 the legendary tier 8 (MinLevel 1) equips at Lv1 with its +N",
           "equip :: WeaponEnhance attribute follows a WeaponTier change from another service",
           "equip :: WeaponEnhance attribute follows the equipped tier's +N",
           "equip :: attribute back to tier 1's +N",
-          "equip :: legendary tier 8 equips at any level with its +N",
-          "equip :: tier 7 equips with a faction",
-          "rebirth :: reborn Lv1 player equips the kept tier 5 (+6)"
+          "equip :: legendary tier 8 equips with its +N",
+          "equip :: tier 7 equips with a faction at Lv40"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "first kill never marks the kind seen",
@@ -3870,13 +4894,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "rebirth :: every owned weapon is kept (mask 255 incl. the legendary)",
-          "rebirth :: rebirth with a faction switch also keeps weapons / gold / enhancement",
-          "rebirth :: reborn Lv1 player equips the kept tier 5 (+6)",
-          "rebirth :: the equipped weapon stays equipped with its +9",
-          "rebirth :: weapons, enhancement, items and the reset level survive save / reload after rebirth"
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 an equipped legendary stays at Lv1 after rebirth (no swap, no notice)",
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+          "levelrule :: A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+          "levelrule :: A23-28 reaching tier 6's MinLevel does not auto-equip it"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 18
       },
       {
         "mutation": "rebirth resets the gold (old rule)",
@@ -3887,7 +4912,7 @@
         "newFailingChecks": [
           "rebirth :: carried and bank gold are kept",
           "rebirth :: gold survives the reload (carried gold banked on leave)",
-          "rebirth :: rebirth with a faction switch also keeps weapons / gold / enhancement"
+          "rebirth :: rebirth with a faction switch keeps weapons / gold / enhancement; the Lv40 tier 7 is auto-swapped to tier 2"
         ],
         "newFailingCount": 3
       },
@@ -3898,14 +4923,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "levelrule :: A23-28 the WeaponEnhance attribute follows the swapped-in tier",
+          "levelrule :: A23-28 the auto-swap keeps every tier's +N",
+          "rebirth :: A23-28 faction-switch rebirth: one WeaponAutoSwap notice (Lv40 -> tier 2), +N follows",
+          "rebirth :: A23-28 reborn Lv1 player cannot equip the kept tier 5 (EquipNeedLevel 20); ownership and its +6 stay",
           "rebirth :: WeaponEnhance is not reset by rebirth",
-          "rebirth :: and swaps back to the legendary with its +9",
-          "rebirth :: items (incl. unknown saved ids) and LootFlags are kept",
-          "rebirth :: rebirth with a faction switch also keeps weapons / gold / enhancement",
-          "rebirth :: reborn Lv1 player equips the kept tier 5 (+6)",
-          "rebirth :: weapons, enhancement, items and the reset level survive save / reload after rebirth"
+          "rebirth :: and swaps back to the legendary with its +9"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 10
       },
       {
         "mutation": "rebirth keeps the level",
@@ -3914,11 +4939,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "rebirth :: rebirth resets Level to 1 and XP to 0 (Rebirths 1)",
-          "rebirth :: rebirth with a faction switch also keeps weapons / gold / enhancement",
-          "rebirth :: weapons, enhancement, items and the reset level survive save / reload after rebirth"
+          "levelrule :: A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice",
+          "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)",
+          "levelrule :: A23-28 no notice on the next level-up (Lv31)",
+          "levelrule :: A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
+          "levelrule :: A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3",
+          "levelrule :: A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 16
       },
       {
         "mutation": "legendary damage back to 90",
@@ -3929,9 +4957,10 @@
         "newFailingChecks": [
           "config :: B3 legendary damage 76 = 2 x tier 3, below tier 4",
           "damage :: legendary base damage = 2 x the best shop tier, below tier 4",
-          "damage :: legendary power = sqrt(2) x iron (2 x damage)"
+          "damage :: legendary power = sqrt(2) x iron (2 x damage)",
+          "levelrule :: Config.BestUsableWeapon: an owned usable T4 (88) beats T8 (76): by Damage, not tier number"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "10% scroll back to +3",
@@ -4029,21 +5058,22 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "a07e2114f44c59fd81fa908b4405305a6aea7c3eac80cc7a444145458ea58066",
+    "src/ReplicatedStorage/Shared/Config.luau": "67c35cafd892798ddedd0fc93d39cb4d1a5f7b8304fe5821d1f5d891a5a09aa6",
     "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
-    "src/ServerScriptService/PlayerService.luau": "81d5cf25b41a5578b4d20b798e48cab81e42fa62584df71600df876ea3b80fd5",
-    "src/ServerScriptService/ProgressionService.luau": "a8d824c0df00deee171e7a0f45404b7f11a9197c7580585ea116191bdb72e38a",
+    "src/ServerScriptService/PlayerService.luau": "ed4a8257dba02cd192261879411c812f783e1e0bb7fd77016e08d6f42cb2aa20",
+    "src/ServerScriptService/ProgressionService.luau": "71016aa2fec283813ad7173051ce8f17b6b9d2c892bfd601afed26209f5f3e70",
     "src/ServerScriptService/CombatService.luau": "dab2f0b0365811e9a4fcdfdc775f327499954ad480aaa7368c4eca8fda162a8d",
-    "src/ServerScriptService/LootService.luau": "a78cc5c5d98dcad3dd546e43097b59519e299ad4cf12dc629bfd8623190332fe",
+    "src/ServerScriptService/LootService.luau": "1051611e3aaa79f58e779c6338ce542c08de282a33fb7cd929673fc9dafd54c2",
     "src/ServerScriptService/JusticeService.luau": "c82185555c4263dd843d25e56c28d2aa9dd11d23f123a0f5c89fff7f6c47719c",
-    "src/ServerScriptService/PvPService.luau": "f1267b1d3840c163c95b558eac4b98a659c16136f994e0b501497117ba36d248"
+    "src/ServerScriptService/PvPService.luau": "29c7097a818c0a685c083793bf4bd9dc9f2633c10e7b438d72d1967d7365dd16",
+    "src/ServerScriptService/ShopService.luau": "05f186c207f216491798d1a87d4b56be3c42790ab07e2e07614749a795dbf30c"
   },
-  "fixtureSHA256": "53d0f8812741f5fa20b86f74aa51b3aec4a916081226bddfefb256c8dbeadf27",
+  "fixtureSHA256": "0bafd2d46ad1a650db4c74307e69f53c4c862a815f4f2aad85dd6257cba1b09b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-11 / A23-12 / A23-14 + review B1-B13 (2026-10-05): one own server roll per kill contributor; items auto-granted, never lost; enhance scrolls 70% +1 / 30% +3 / 10% +5, failure 50% -1 (never below +0) else kept, max +10, refused at +10; transfer scrolls 70/30/10% ADD the source +N onto the target up to +10 and leave the rest on the source (lossless), refused when the target is +10 or the source +0, failure changes nothing but uses the scroll; scrolls refused in PvP combat (kept); equip needs a living character and no PvP combat, MinLevel gates purchases only (owned weapons re-equip at any level); drop tables: scroll chances rise with the zone (reviewer B2 table, transfer ~1/3), potions halved; legendary damage 76 = 2 x tier 3; PowerOf includes enhancement (Justice/PvP read the WeaponEnhance attribute); owner-only Inventory remote { Items = known ids, Enhance = 8 tiers } replaces ItemsJson/EnhanceJson; unknown saved ids kept but hidden; full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (6 s guide, Fx First); LootRoll debug is count-only; rebirth resets only Level/XP (gold, weapons, enhancement, items kept); first BigSlime = one Enh70 once; Slime jackpot tier 8 at 1/20000 (x3 golden); duplicate weapons -> gold; materials sold only at the anvil, removed before payment. A23-15: a new non-jackpot weapon drop of grade rank >= Config.Announce.MinWeaponGrade (3 = Rare) -> AnnounceService.Announce(player, \"RareWeapon\", { Weapon, Monster }, grade id), Common/Fine never; a new jackpot legendary -> exactly one \"Jackpot\" { Weapon } (grade Legend), ownership saved first, a duplicate jackpot = gold only, no Net.NotifyAll; the first weapon to reach +10 per player (enhance or transfer scroll) sets LootFlags.FirstMax then announces \"FirstMax\" { Weapon } once (saved, survives reload); a missing or failing AnnounceService never blocks the grant.",
-  "limitations": "Offline service doubles (DataStore = JSON round trip, rate limit clock, ShopService.CanBuyWeapon and CombatService.IsInCombat stubbed for LootService, AnnounceService a recording stub (its 10 s grouping, name hiding and client chat text are not exercised), a stand-in character for Util.IsAlive, task.defer flushed by the fixture, Inventory remote captured). Justice/PvP power helpers are extracted functions, not the whole services. Client item panel, Fx, real MonsterService kills, multiplayer and Studio play are not certified here."
+  "contract": "A23-11 / A23-12 / A23-14 + review B1-B13 (2026-10-05): one own server roll per kill contributor; items auto-granted, never lost; enhance scrolls 70% +1 / 30% +3 / 10% +5, failure 50% -1 (never below +0) else kept, max +10, refused at +10; transfer scrolls 70/30/10% ADD the source +N onto the target up to +10 and leave the rest on the source (lossless), refused when the target is +10 or the source +0, failure changes nothing but uses the scroll; scrolls refused in PvP combat (kept); equip needs a living character and no PvP combat. A23-28 (2026-10-06): equipping an OWNED weapon also needs Level >= MinLevel (Config.WeaponUsable; refusal Config.Text.EquipNeedLevel, ShopService the same for an owned re-equip, WeaponNeedLevel for a purchase; the legendary T8 has MinLevel 1); Config.BestUsableWeapon = the owned (tier 1 always) usable tier with the highest Damage; LootService.FitWeaponToLevel (Rebirthed / LevelReset / PlayerReady) swaps an unusable equipped weapon to it with one WeaponAutoSwap notice (none when quiet), ownership and per-tier +N untouched, nothing when the equipped tier is usable; a LeveledUp crossing the MinLevel of an owned stronger weapon sends WeaponUsableNow once and never auto-equips. A23-27: a weapon row with BelowLevel (the king's T4) is not drawn below that weapon's MinLevel (RollKill sets the killer's saved Level on a clone of the info) and pays BelowLevel (3 Candy) instead; DebugSimulate (no Level) rolls it. A23-30 bat goblin / little ghost rows and the king's rows pinned. Drop tables: scroll chances rise with the zone (reviewer B2 table, transfer ~1/3), potions halved; legendary damage 76 = 2 x tier 3; PowerOf includes enhancement (Justice/PvP read the WeaponEnhance attribute); owner-only Inventory remote { Items = known ids, Enhance = 8 tiers } replaces ItemsJson/EnhanceJson; unknown saved ids kept but hidden; full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (6 s guide, Fx First); LootRoll debug is count-only; rebirth resets only Level/XP (gold, weapons, enhancement, items kept); first BigSlime = one Enh70 once; Slime jackpot tier 8 at 1/20000 (x3 golden); duplicate weapons -> gold; materials sold only at the anvil, removed before payment. A23-15: a new non-jackpot weapon drop of grade rank >= Config.Announce.MinWeaponGrade (3 = Rare) -> AnnounceService.Announce(player, \"RareWeapon\", { Weapon, Monster }, grade id), Common/Fine never; a new jackpot legendary -> exactly one \"Jackpot\" { Weapon } (grade Legend), ownership saved first, a duplicate jackpot = gold only, no Net.NotifyAll; the first weapon to reach +10 per player (enhance or transfer scroll) sets LootFlags.FirstMax then announces \"FirstMax\" { Weapon } once (saved, survives reload); a missing or failing AnnounceService never blocks the grant.",
+  "limitations": "Offline service doubles (DataStore = JSON round trip, rate limit clock, ShopService.CanBuyWeapon and CombatService.IsInCombat stubbed for LootService, AnnounceService a recording stub (its 10 s grouping, name hiding and client chat text are not exercised), a stand-in character for Util.IsAlive, task.defer flushed by the fixture, Inventory remote captured). Justice/PvP power helpers and ShopService's onUpgradeWeapon (with finite / notifyBad; anvil distance stubbed) are extracted functions, not the whole services. ProgressionService.LeveledUp / Rebirthed / LevelReset are the real signals (AddXP, TryRebirth, ResetLevel). Client item panel lock display, Fx, real MonsterService kills, the ClassService free class change flow around ResetLevel, multiplayer and Studio play are not certified here."
 }

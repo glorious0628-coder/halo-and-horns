@@ -24,7 +24,7 @@ local PREMISE = STORY.Premise or {}
 local TXT = {
 	Ask = STORY.OpeningAsk or "어느 편에 설래?",
 	Skip = STORY.OpeningSkip or "건너뛰기",
-	SkipKey = UserInputService.TouchEnabled and "" or " (Enter)",
+	SkipKey = " (Enter)", -- only where keys are shown (Intro.SkipText, review B5: Keybinds.ShowsKeys)
 }
 -- map anchors (A23-9): crown in the Crossroads sky, shard over the fountain, the two faction towns
 local SPOT = {
@@ -151,7 +151,7 @@ local function buildGui()
 	if UIKit and type(UIKit.ArtButton) == "function" then
 		local ok, b = pcall(UIKit.ArtButton, "Pill", {
 			Name = "Skip", AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -16, 1, -12),
-			Size = UDim2.fromOffset(170, 48), Text = TXT.Skip .. " ▶" .. TXT.SkipKey, TextSize = 18,
+			Size = UDim2.fromOffset(170, 48), Text = Intro.SkipText(), TextSize = 18,
 			TextStyle = "ink", ZIndex = 5, Parent = gui,
 		}, onSkip, { CornerRadius = UDim.new(0.5, 0) })
 		if ok then skip = b end
@@ -161,7 +161,7 @@ local function buildGui()
 		skip.Name = "Skip"
 		skip.AnchorPoint, skip.Position, skip.Size = Vector2.new(1, 1), UDim2.new(1, -16, 1, -12), UDim2.fromOffset(170, 48)
 		skip.BackgroundColor3, skip.TextColor3 = Color3.fromRGB(245, 232, 200), Color3.fromRGB(60, 40, 20)
-		skip.Font, skip.TextSize, skip.Text = Enum.Font.GothamBold, 18, TXT.Skip .. " ▶" .. TXT.SkipKey
+		skip.Font, skip.TextSize, skip.Text = Enum.Font.GothamBold, 18, Intro.SkipText()
 		local corner = Instance.new("UICorner")
 		corner.CornerRadius = UDim.new(0.5, 0)
 		corner.Parent = skip
@@ -318,6 +318,14 @@ function Intro.Play(replay)
 		end
 	end)
 	return true
+end
+
+-- "건너뛰기 ▶ (Enter)" where keys are shown (Keybinds.ShowsKeys), else "건너뛰기 ▶"
+function Intro.SkipText()
+	local kb = C and C.Keybinds
+	local shows = UserInputService.KeyboardEnabled == true
+	if type(kb) == "table" and type(kb.ShowsKeys) == "function" then shows = kb.ShowsKeys() == true end
+	return TXT.Skip .. " ▶" .. (shows and TXT.SkipKey or "")
 end
 
 function Intro.Init(c)

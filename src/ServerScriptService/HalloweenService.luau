@@ -1,9 +1,13 @@
 -- HalloweenService.luau : the Halloween season (Config.Halloween). The seasonal monster kinds spawn through
--- MonsterService's regular pool (Config.EffectiveMonsterCounts); this service only runs the Pumpkin King miniboss:
--- first FirstDelay s after server start, then every Interval s (counted from the previous appearance) near the meadow
--- center, for at most Lifetime s. Defeated -> every contributor is paid by MonsterService's normal kill path
--- (MonsterKilled once per contributor: XP / gold / war points / LootService drops; nothing extra here) and everyone
--- gets one chat line; not defeated in time -> it leaves with a friendly line. Enabled = false -> no schedule, no HUD.
+-- MonsterService's regular pool (Config.EffectiveMonsterCounts) in their own zone, the PumpkinPatch (A23-30); this
+-- service runs the Pumpkin King miniboss: first FirstDelay s after server start, then every Interval s (counted from the
+-- previous appearance) at one of Config.Halloween.SpawnSpots in the PumpkinPatch, for at most Lifetime s. Defeated ->
+-- every ELIGIBLE contributor is paid by MonsterService's normal kill path (A23-27: own hits >= RewardMinHits and damage
+-- >= RewardMinDamageFrac of MaxHP; MonsterKilled once each: XP / gold / war points / LootService drops; nothing extra
+-- here) and everyone gets one chat line; not defeated in time -> it leaves with a friendly line. The king never
+-- targets a player below SafeBelowLevel or with less than SafePlaySeconds played (MonsterService.targetable).
+-- Season off (Enabled = false, or past EndsAt: A23-28 HW-13, checked every tick) -> no schedule, no HUD line, a king
+-- that is still here leaves, and the PumpkinPatch road sign (MapBuilder) is hidden.
 -- GameState for EventHUD: PumpkinKingNextAt (Util.Now server time of the next appearance, 0 = season off),
 -- PumpkinKingActive, PumpkinKingEndsAt.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -32,8 +36,27 @@ local function num(v, default)
 	return default or 0
 end
 
+-- Enabled and before Config.Halloween.EndsAt (Config.SeasonOn reads the server clock)
 local function seasonOn()
-	return H.Enabled == true
+	return Config.SeasonOn("Halloween")
+end
+
+-- the PumpkinPatch road sign (MapBuilder: Map.Landmarks.PumpkinPatchSign) shows only while the season is on
+local function showSign(on)
+	if K.SignOn == on then return end
+	local map = workspace:FindFirstChild("Map")
+	local lm = map and map:FindFirstChild("Landmarks")
+	local sign = lm and lm:FindFirstChild("PumpkinPatchSign")
+	if not sign then return end -- MapBuilder has not built it yet: try again next tick
+	K.SignOn = on
+	for _, d in sign:GetDescendants() do
+		if d:IsA("BasePart") then
+			d.Transparency = on and (d:GetAttribute("ShownTransparency") or 0) or 1
+			d.CanCollide = on and d:GetAttribute("ShownCollide") == true
+		elseif d:IsA("BillboardGui") or d:IsA("SurfaceGui") then
+			d.Enabled = on
+		end
+	end
 end
 
 -- the miniboss kind id, or nil when Config has none
@@ -95,6 +118,7 @@ local function finish(defeated)
 	local rec = K.Rec
 	K.Rec = nil
 	K.EndsAt = 0
+	K.Debug = nil
 	if not defeated and type(rec) == "table" and rec.Alive then
 		local svc = S and S.MonsterService
 		if type(svc) == "table" and type(svc.RemoveEvent) == "function" then
@@ -109,12 +133,18 @@ end
 local function tick()
 	local now = Util.Now()
 	local interval = math.max(60, num(H.Interval, 1200))
+	local on = seasonOn()
+	showSign(on)
+	if not on and K.NextAt > 0 then
+		K.NextAt = 0 -- the season just ended (HW-13): no more appearances, the HUD line goes away
+		publish()
+	end
 	local rec = K.Rec
 	if rec ~= nil then
 		if not rec.Alive then
 			-- MonsterService's kill sets HP to 0; a lost model (fell out of the world) is removed with its HP left
 			finish(num(rec.HP, 1) <= 0)
-		elseif now >= K.EndsAt then
+		elseif now >= K.EndsAt or (not on and not K.Debug) then
 			finish(false)
 		elseif K.NextAt > 0 and now >= K.NextAt then
 			K.NextAt += interval -- a slot that comes while one is still here (Studio debug spawn) is skipped
@@ -152,15 +182,17 @@ function HalloweenService.IsKingActive()
 	return K.Rec ~= nil and K.Rec.Alive == true
 end
 
--- Studio test aid (Main DebugCommand "PumpkinKing"): the king appears now (also with the season off); the regular
--- schedule is unchanged
+-- Studio test aid (Main DebugCommand "PumpkinKing"): the king appears now; the regular schedule is unchanged. It needs
+-- the season on: with it off Config.ZoneAt skips the PumpkinPatch, so there is no king ground (A23-30)
 function HalloweenService.DebugSpawn()
 	if K.Rec ~= nil then
 		if K.Rec.Alive then return "already here" end
 		finish(num(K.Rec.HP, 1) <= 0) -- the previous one is gone but the tick has not closed it yet
 	end
 	if not kingKind() then return "no king kind in Config.Halloween.King" end
-	return appear(Util.Now()) and "spawned" or "no walkable spot found (try again)"
+	local ok = appear(Util.Now())
+	K.Debug = ok and not seasonOn() or nil -- a Studio king with the season off stays its Lifetime
+	return ok and "spawned" or "no walkable spot found (try again)"
 end
 
 return HalloweenService

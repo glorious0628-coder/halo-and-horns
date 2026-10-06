@@ -1796,9 +1796,16 @@ function WorldMap.BindKey()
 		WorldMap.BoundKey = okBind and code or nil
 		if not okBind then Util.Warn(TAG, "map key bind failed: " .. tostring(errBind)) end
 	end
-	if hintLabel and not (UserInputService.TouchEnabled and not UserInputService.MouseEnabled) then
+	if hintLabel and WorldMap.ShowsKeys() then
 		hintLabel.Text = WorldMap.HintText()
 	end
+end
+
+-- review B5: the one key-hint rule (Keybinds.ShowsKeys); before Keybinds is up, a keyboard is the test
+function WorldMap.ShowsKeys()
+	local kb = C and C.Keybinds
+	if type(kb) == "table" and type(kb.ShowsKeys) == "function" then return kb.ShowsKeys() == true end
+	return UserInputService.KeyboardEnabled == true
 end
 
 -- "{Map} / Esc: 닫기" with the current map key; without a map key only "Esc: 닫기"
@@ -1824,8 +1831,7 @@ function WorldMap.Open()
 	pcall(refreshLandmarks)
 	pcall(layoutRoot)
 	if hintLabel then
-		local touchOnly = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
-		hintLabel.Text = touchOnly and TXT.HintTouch or WorldMap.HintText()
+		hintLabel.Text = WorldMap.ShowsKeys() and WorldMap.HintText() or TXT.HintTouch
 	end
 	root.Visible = true
 	pcall(refreshView)

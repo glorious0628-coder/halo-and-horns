@@ -547,6 +547,19 @@ runGroup("power-text", function()
 	end
 	check(has(T.PvPNote, "최대 " .. hi .. "배") and has(T.PvPNote, "최소 " .. lo .. "배"),
 		"PvPNote reads 최대 <PowerRatioMax>배, 최소 <PowerRatioMin>배", show({ T.PvPNote, hi, lo }))
+	-- review 2026-10-06 (B6): the WHOLE finished sentences, not only containment, so a swapped max/min order (numbers or
+	-- the 최대/최소 · most/least words) fails. KO wording = docs/design/beta_basics_2026-10-05.md BB4 Config.Power line.
+	local NOTE = {
+		Ko = "무기 공격력 차이가 커도 PvP 피해는 최대 %s배, 최소 %s배예요",
+		En = "However strong the weapons, PvP damage is at most x%s and at least x%s",
+	}
+	local wantKo, wantEn = string.format(NOTE.Ko, hi, lo), string.format(NOTE.En, hi, lo)
+	check(T.PvPNote == wantKo,
+		"PvPNote is exactly the finished KO sentence '무기 공격력 차이가 커도 PvP 피해는 최대 <Max>배, 최소 <Min>배예요'",
+		show({ got = T.PvPNote, want = wantKo }))
+	check(T.PvPNoteEn == wantEn,
+		"PvPNoteEn is exactly the finished EN sentence 'However strong the weapons, PvP damage is at most x<Max> and at least x<Min>'",
+		show({ got = T.PvPNoteEn, want = wantEn }))
 	-- built from Config.PvP, not typed in: other numbers -> other lines (numbers replaced whatever they are now)
 	local pvpSrc, p1 = string.gsub(CONFIG_SOURCE, "PowerRatioMin = [%d%.]+,", "PowerRatioMin = 0.65,")
 	local p2
@@ -558,6 +571,10 @@ runGroup("power-text", function()
 		check(has(note, "1.35") and has(note, "0.65") and not has(note, "%"),
 			k .. " follows Config.PvP.PowerRatioMax / PowerRatioMin (finished line, no '%')", show(note))
 	end
+	check(altText.PvPNote == string.format(NOTE.Ko, "1.35", "0.65")
+		and altText.PvPNoteEn == string.format(NOTE.En, "1.35", "0.65"),
+		"PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished KO / EN sentences (max first, min second)",
+		show({ altText.PvPNote, altText.PvPNoteEn }))
 	-- Bully.Text
 	local B = C.Bully.Text
 	check(type(B) == "table" and type(B.Title) == "string" and B.Title ~= "" and type(B.TitleEn) == "string" and B.TitleEn ~= "",

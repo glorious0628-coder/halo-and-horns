@@ -72,6 +72,16 @@ MUTATIONS = [
     ("PvPNote numbers typed in, not from Config.PvP", "CONFIG_SOURCE",
      "\ttostring(Config.PvP.PowerRatioMax), tostring(Config.PvP.PowerRatioMin))\nConfig.Power.Text.PvPNoteEn",
      '\t"1.5", "0.8")\nConfig.Power.Text.PvPNoteEn'),
+    # review 2026-10-06 (B6): the full-sentence checks. Each swap below keeps both numbers (and the 최대/최소 · most/least
+    # words) inside the line, so only the exact finished-sentence comparison can catch it.
+    ("PvPNoteEn fills min into 'at most' and max into 'at least'", "CONFIG_SOURCE",
+     'at least x%s",\n\ttostring(Config.PvP.PowerRatioMax), tostring(Config.PvP.PowerRatioMin))',
+     'at least x%s",\n\ttostring(Config.PvP.PowerRatioMin), tostring(Config.PvP.PowerRatioMax))'),
+    ("PvPNoteEn wording swapped to 'at least ... and at most'", "CONFIG_SOURCE",
+     "PvP damage is at most x%s and at least x%s", "PvP damage is at least x%s and at most x%s"),
+    ("PvPNote reads 최소 first, 최대 second (numbers follow the words)", "CONFIG_SOURCE",
+     '최대 %s배, 최소 %s배예요",\n\ttostring(Config.PvP.PowerRatioMax), tostring(Config.PvP.PowerRatioMin))',
+     '최소 %s배, 최대 %s배예요",\n\ttostring(Config.PvP.PowerRatioMin), tostring(Config.PvP.PowerRatioMax))'),
     # JusticeService: GetCombatPower + the CombatPower attribute
     ("GetCombatPower includes the rebirth bonus", "JUSTICE_SOURCE",
      "return Config.CombatPower(level, tier, enhance)",
@@ -358,8 +368,10 @@ def main() -> int:
                     "(Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 25,488 (Lv100, highest-damage "
                     "weapon, +10; cached; tier-index cap would be 7,027); rises with level and +N, ordered by weapon Damage; "
                     "Config.Power.Text (Label/Up/Change/Formula + En; PvPNote / PvPNoteEn are finished lines built right "
-                    "after Config.PvP: strings with no '%', carrying the real PowerRatioMax / PowerRatioMin and following "
-                    "them) and Config.Bully.Text (Title + 3 lines KO/EN "
+                    "after Config.PvP: strings with no '%', following PowerRatioMax / PowerRatioMin and equal to exactly "
+                    "'무기 공격력 차이가 커도 PvP 피해는 최대 <Max>배, 최소 <Min>배예요' / 'However strong the weapons, PvP "
+                    "damage is at most x<Max> and at least x<Min>' (full-sentence compare: max first, min second) and "
+                    "Config.Bully.Text (Title + 3 lines KO/EN "
                     "built from WeakPowerRatio 50% / FreshSpawnSeconds 15 / RepeatKOs 3 in RepeatWindow 10 min); "
                     "JusticeService.GetCombatPower = Config.CombatPower from the Level / WeaponTier / WeaponEnhance attributes "
                     "(no rebirth bonus), GetPower unchanged; the CombatPower attribute is set on PlayerReady, follows "
@@ -368,10 +380,10 @@ def main() -> int:
                     "at ratio >= 1.2, x0.5 below 0.8, bully weak test victim < 50% of killer, all on the displayed integer. "
                     "BB16: Data Titles {} / TitleSel \"\" (TitleSel mirrored), Config.TitleDefs / TitleOrder / Beta "
                     "(GrantPioneer, PioneerUntil 2026-12-19 11:00 KST); BetaPioneer granted on PlayerReady before "
-                    "PioneerUntil (legacy data.BetaPioneer always); the first grant keeps TitleSel \"\" (no auto-select: "
-                    "the faction rank stays the title, no TitleSel SetStat); an old auto-selected TitleSel \"BetaPioneer\" "
-                    "without TitleSelAt goes back to \"\" once at ready (SetTitle records TitleSelAt, so an explicit "
-                    "pick is kept); the pioneer shows as a mark on the nametag's second line (CharacterVisuals, static "
+                    "PioneerUntil (legacy data.BetaPioneer always); no automatic selection: a grant never sets TitleSel "
+                    "(it stays \"\", the faction rank stays the title, no TitleSel SetStat; only the player's SetTitle "
+                    "picks); legacy rows from the first build (TitleSel \"BetaPioneer\" without TitleSelAt) go back to "
+                    "\"\" once at ready (SetTitle records TitleSelAt, so an explicit pick is kept); the pioneer shows as a mark on the nametag's second line (CharacterVisuals, static "
                     "check); a \"\" choice survives rejoin, GrantPioneer=false stops new grants; "
                     "GrayLegend when FallMarks and RedeemMarks >= Rebirth.GrayLegendMin (at ready and on change); "
                     "TitlesOwned = owned TitleOrder ids joined by \",\"; unowned/unknown TitleSel -> \"\" at ready; SetTitle "

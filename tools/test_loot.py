@@ -1,5 +1,6 @@
-"""A23-11 / A23-12 / A23-14 loot (+ review B1-B13, + the A23-15 announcements LootService makes): run the current LootService (+ Config, DataService,
-ProgressionService, CombatService, and the JusticeService / PvPService power helpers) offline.
+"""A23-11 / A23-12 / A23-14 loot (+ review B1-B13, + the A23-15 announcements LootService makes, + A23-27 BelowLevel rows and
+the A23-28 weapon level rule): run the current LootService (+ Config, DataService, ProgressionService, CombatService, the
+JusticeService / PvPService power helpers and ShopService's weapon buy / re-equip handler) offline.
 
 No Studio, network, DataStore or Roblox API calls. The real repository sources are injected into
 tools/fixtures/loot_offline.luau and run with the installed official Luau CLI (build/luau_cli_0_741).
@@ -37,14 +38,16 @@ FILES = {
     # review B5: only the power helpers are extracted (make_harness); the whole files are hashed and mutated
     "JUSTICE_SOURCE": ROOT / "src/ServerScriptService/JusticeService.luau",
     "PVP_SOURCE": ROOT / "src/ServerScriptService/PvPService.luau",
+    # A23-28: only onUpgradeWeapon (+ finite / notifyBad) is extracted and run; the whole file is hashed and mutated
+    "SHOP_SOURCE": ROOT / "src/ServerScriptService/ShopService.luau",
 }
-EXTRACTED_ONLY = ("PLAYER_SOURCE", "JUSTICE_SOURCE", "PVP_SOURCE")
+EXTRACTED_ONLY = ("PLAYER_SOURCE", "JUSTICE_SOURCE", "PVP_SOURCE", "SHOP_SOURCE")
 STATIC_ONLY = {
     "MONSTER": ROOT / "src/ServerScriptService/MonsterService.luau",
     "MAIN": ROOT / "src/ServerScriptService/Main.server.luau",
     "PANELS": ROOT / "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
 }
-COMPILED = ("CONFIG_SOURCE", "GOLD_SOURCE", "COMBAT_SOURCE", "LOOT_SOURCE", "JUSTICE_SOURCE", "PVP_SOURCE")
+COMPILED = ("CONFIG_SOURCE", "GOLD_SOURCE", "COMBAT_SOURCE", "LOOT_SOURCE", "JUSTICE_SOURCE", "PVP_SOURCE", "SHOP_SOURCE")
 
 SET_OWNED = ('S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 1)), '
              'bit32.lshift(1, tier - 1)))')
@@ -81,7 +84,7 @@ MUTATIONS = [
     ("bully penalty not applied to the jackpot", "LOOT_SOURCE",
      "num(jackpot.Chance) * rowMult", "num(jackpot.Chance) * mult"),
     ("bully penalty DropMult never set in RollKill", "LOOT_SOURCE",
-     "\t\tinfo.DropMult = num(pen.DropMult, 1)\n", ""),
+     "info.DropMult = num(pen.DropMult, 1)", "local _ = pen.DropMult"),
     ("two rolls per kill signal", "LOOT_SOURCE",
      "local ok, err = pcall(LootService.RollKill, player, info)",
      "pcall(LootService.RollKill, player, info); local ok, err = pcall(LootService.RollKill, player, info)"),
@@ -105,9 +108,97 @@ MUTATIONS = [
      "if target >= LOOT.MaxEnhance then", "if target > LOOT.MaxEnhance then"),
     ("transfer from +0 allowed", "LOOT_SOURCE",
      "if amount <= 0 then", "if amount < 0 then"),
-    ("equip gates an OWNED weapon by MinLevel again", "LOOT_SOURCE",
-     "\tlocal def = Config.Weapons[tier]\n",
-     "\tlocal def = Config.Weapons[tier]\n\tif num(data.Level, 1) < num(def.MinLevel, 1) then return end\n"),
+    # A23-28 equip rule (user 2026-10-06; replaces "MinLevel gates purchases only"): an OWNED weapon also needs MinLevel
+    ("equip ignores MinLevel for an owned weapon (old A23-14 rule)", "LOOT_SOURCE",
+     "if not Config.WeaponUsable(tier, num(data.Level, 1)) then", "if false then"),
+    ("equip level refusal uses the purchase text WeaponNeedLevel", "LOOT_SOURCE",
+     "string.format(Config.Text.EquipNeedLevel, math.floor(num(def.MinLevel, 1)))",
+     "string.format(Config.Text.WeaponNeedLevel, math.floor(num(def.MinLevel, 1)))"),
+    ("WeaponUsable off by one (level > MinLevel)", "CONFIG_SOURCE",
+     "return (tonumber(level) or 1) >= (tonumber(def.MinLevel) or 1)", "return (tonumber(level) or 1) > (tonumber(def.MinLevel) or 1)"),
+    # A23-28 BestUsableWeapon
+    ("BestUsableWeapon compares tier numbers instead of Damage", "CONFIG_SOURCE",
+     "and Config.WeaponUsable(tier, level) and (tonumber(def.Damage) or 0) > bestDamage then\n\t\t\tbest, bestDamage = tier, tonumber(def.Damage) or 0",
+     "and Config.WeaponUsable(tier, level) and tier > bestDamage then\n\t\t\tbest, bestDamage = tier, tier"),
+    ("BestUsableWeapon ignores the level", "CONFIG_SOURCE",
+     "and Config.WeaponUsable(tier, level) and (tonumber(def.Damage) or 0) > bestDamage then",
+     "and (tonumber(def.Damage) or 0) > bestDamage then"),
+    ("BestUsableWeapon ignores ownership", "CONFIG_SOURCE",
+     "(tier == 1 or bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0)", "true"),
+    # A23-28 FitWeaponToLevel (rebirth / free class change / join)
+    ("FitWeaponToLevel ignores quiet", "LOOT_SOURCE",
+     "if not quiet then\n\t\tnotify(player, string.format(Config.Text.WeaponAutoSwap",
+     "if true then\n\t\tnotify(player, string.format(Config.Text.WeaponAutoSwap"),
+    ("FitWeaponToLevel picks the best owned weapon ignoring the level", "LOOT_SOURCE",
+     "local best = Config.BestUsableWeapon(data.WeaponOwnedMask, level)",
+     "local best = Config.BestUsableWeapon(data.WeaponOwnedMask, math.huge)"),
+    ("FitWeaponToLevel also swaps a usable equipped weapon", "LOOT_SOURCE",
+     "if not validTier(tier) or Config.WeaponUsable(tier, level) then return end", "if not validTier(tier) then return end"),
+    ("FitWeaponToLevel drops the unusable weapon's ownership", "LOOT_SOURCE",
+     "\tS.PlayerService.SetStat(player, \"WeaponTier\", best) -- CharacterVisuals",
+     "\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band(math.floor(num(data.WeaponOwnedMask, 1)), "
+     "bit32.bnot(bit32.lshift(1, tier - 1))))\n\tS.PlayerService.SetStat(player, \"WeaponTier\", best) -- CharacterVisuals"),
+    ("WeaponAutoSwap notice names the old weapon", "LOOT_SOURCE",
+     "weaponName(player, best)), \"info\")", "weaponName(player, tier)), \"info\")"),
+    ("WeaponAutoSwap notice shows the new weapon's MinLevel", "LOOT_SOURCE",
+     "math.floor(num(Config.Weapons[tier].MinLevel, 1))", "math.floor(num(Config.Weapons[best].MinLevel, 1))"),
+    ("FitWeaponToLevel not connected to Rebirthed", "LOOT_SOURCE",
+     "for _, sig in { prog and prog.LevelReset, prog and prog.Rebirthed } do", "for _, sig in { prog and prog.LevelReset } do"),
+    ("FitWeaponToLevel not connected to LevelReset (free class change)", "LOOT_SOURCE",
+     "for _, sig in { prog and prog.LevelReset, prog and prog.Rebirthed } do", "for _, sig in { prog and prog.Rebirthed } do"),
+    ("FitWeaponToLevel not run on PlayerReady", "LOOT_SOURCE",
+     "\t\tLootService.FitWeaponToLevel(player) -- A23-28: a save from before the rule may hold a weapon above the level\n", ""),
+    # A23-28 level-up notice (once per MinLevel crossing, never an auto-equip)
+    ("level-up notice repeats after the crossing (no min > before)", "LOOT_SOURCE",
+     "and min > before and min <= level", "and min <= level"),
+    ("level-up notice also for a weaker weapon", "LOOT_SOURCE",
+     "\n\t\t\tand num(def.Damage) > bestDamage then", " then"),
+    ("level-up notice ignores ownership", "LOOT_SOURCE",
+     "bit32.band(mask, bit32.lshift(1, t - 1)) ~= 0 and min > before", "true and min > before"),
+    ("level-up auto-equips the newly usable weapon", "LOOT_SOURCE",
+     "if best then notify(player, string.format(Config.Text.WeaponUsableNow",
+     "if best then S.PlayerService.SetStat(player, \"WeaponTier\", best); notify(player, string.format(Config.Text.WeaponUsableNow"),
+    ("LeveledUp never connected", "LOOT_SOURCE",
+     "if prog and type(prog.LeveledUp) == \"table\" then", "if false then"),
+    # A23-27 BelowLevel weapon rows (the king's T4 row: 3 candies below Lv12)
+    ("BelowLevel branch dropped (king's T4 row rolled at any level)", "LOOT_SOURCE",
+     "if row.Weapon and type(row.BelowLevel) == \"table\" and info.Level ~= nil\n\t\t\tand not Config.WeaponUsable(row.Weapon, info.Level) then\n"
+     "\t\t\tonHit(row.BelowLevel, false)\n\t\telseif rng:NextNumber()",
+     "if rng:NextNumber()"),
+    ("BelowLevel applied without a Level (DebugSimulate)", "LOOT_SOURCE",
+     " and info.Level ~= nil\n\t\t\tand not Config.WeaponUsable", "\n\t\t\tand not Config.WeaponUsable"),
+    ("BelowLevel gate off by one (Lv11 rolls the T4 row)", "LOOT_SOURCE",
+     "and not Config.WeaponUsable(row.Weapon, info.Level) then", "and not Config.WeaponUsable(row.Weapon, info.Level + 1) then"),
+    ("RollKill never sets info.Level", "LOOT_SOURCE",
+     "\tinfo.Level = math.floor(num(data.Level, 1)) -- A23-27 weapon rows with BelowLevel\n", ""),
+    ("RollKill trusts the caller's info.Level", "LOOT_SOURCE",
+     "info.Level = math.floor(num(data.Level, 1))", "info.Level = info.Level or math.floor(num(data.Level, 1))"),
+    ("RollKill writes into the caller's kill info (no clone)", "LOOT_SOURCE",
+     "\tinfo = table.clone(info) -- the caller's info stays untouched\n", ""),
+    # A23-27 / A23-30 drop tables (2026-10-06)
+    ("king T4 row without BelowLevel", "CONFIG_SOURCE",
+     "{ Weapon = 4, P = 0.05, BelowLevel = { Item = \"Candy\", N = 3 } }", "{ Weapon = 4, P = 0.05 }"),
+    ("king BelowLevel pays 2 candies", "CONFIG_SOURCE",
+     "BelowLevel = { Item = \"Candy\", N = 3 }", "BelowLevel = { Item = \"Candy\", N = 2 }"),
+    ("king scroll rows back to 0.5 / 0.15 / 0.04 / 0.15 (old)", "CONFIG_SOURCE",
+     "{ Item = \"Enh70\", P = 0.25 }, { Item = \"Enh30\", P = 0.08 }, { Item = \"Enh10\", P = 0.02 },\n\t\t\t{ Item = \"Move70\", P = 0.08 },",
+     "{ Item = \"Enh70\", P = 0.5 }, { Item = \"Enh30\", P = 0.15 }, { Item = \"Enh10\", P = 0.04 },\n\t\t\t{ Item = \"Move70\", P = 0.15 },"),
+    ("bat goblin keeps the goblin tooth row", "CONFIG_SOURCE",
+     "no tooth / T4\n\t\t\t{ Item = \"Candy\", P = 0.45 },",
+     "no tooth / T4\n\t\t\t{ Item = \"Candy\", P = 0.45 }, { Item = \"GoblinTooth\", P = 0.4 },"),
+    ("little ghost potions back to 0.01", "CONFIG_SOURCE",
+     "the same rows as the bat goblin\n\t\t\t{ Item = \"Candy\", P = 0.45 },\n\t\t\t{ Item = \"Enh70\", P = 0.006 }, { Item = \"Enh30\", P = 0.0016 }, "
+     "{ Item = \"Enh10\", P = 0.0004 },\n\t\t\t{ Item = \"Move70\", P = 0.002 }, { Item = \"Move30\", P = 0.0006 }, { Item = \"Move10\", P = 0.0002 },\n"
+     "\t\t\t{ Potion = \"HP\", P = 0.015 }, { Potion = \"MP\", P = 0.015 },",
+     "the same rows as the bat goblin\n\t\t\t{ Item = \"Candy\", P = 0.45 },\n\t\t\t{ Item = \"Enh70\", P = 0.006 }, { Item = \"Enh30\", P = 0.0016 }, "
+     "{ Item = \"Enh10\", P = 0.0004 },\n\t\t\t{ Item = \"Move70\", P = 0.002 }, { Item = \"Move30\", P = 0.0006 }, { Item = \"Move10\", P = 0.0002 },\n"
+     "\t\t\t{ Potion = \"HP\", P = 0.01 }, { Potion = \"MP\", P = 0.01 },"),
+    # A23-28 ShopService (extracted onUpgradeWeapon)
+    ("shop owned re-equip below MinLevel says WeaponNeedLevel", "SHOP_SOURCE",
+     "notifyBad(player, alreadyOwned and \"EquipNeedLevel\" or \"WeaponNeedLevel\", minLevel)",
+     "notifyBad(player, \"WeaponNeedLevel\", minLevel)"),
+    ("shop re-equips an owned weapon below MinLevel (old rule)", "SHOP_SOURCE",
+     "if level < minLevel then", "if level < minLevel and not alreadyOwned then"),
     ("equip ignores combat", "LOOT_SOURCE",
      "if S.CombatService.IsInCombat(player) then notify(player, TXT.EquipCombat",
      "if false then notify(player, TXT.EquipCombat"),
@@ -265,6 +356,13 @@ def make_harness(sources: dict[str, str], scale: float) -> str:
     pvp_power = function_block(sources["PVP_SOURCE"], "local function combatPower(p)")
     bindings["PVP_POWER_SOURCE"] = ("local Config = ...\nlocal S = nil\n" + pvp_num + "\n" + pvp_power
                                     + "\nreturn { combatPower = function(p, registry) S = registry; return combatPower(p) end }")
+    # A23-28: ShopService's weapon buy / re-equip handler with its two local helpers (M.CanBuyWeapon is set by the fixture)
+    shop = sources["SHOP_SOURCE"]
+    shop_parts = [function_block(shop, "local function finite(value)"),
+                  function_block(shop, "local function notifyBad(player, key, ...)"),
+                  function_block(shop, "local function onUpgradeWeapon(player, selectedTier)")]
+    bindings["SHOP_BUY_SOURCE"] = ("local Config, Util, Net, S = ...\nlocal M = {}\n" + "\n".join(shop_parts)
+                                   + "\nreturn { Buy = onUpgradeWeapon, M = M }")
     head = "\n".join(f"local {key} = {literal(value)}" for key, value in bindings.items())
     return head + f"\nlocal SAMPLE_SCALE = {scale!r}\n" + FIXTURE.read_text(encoding="utf-8")
 
@@ -340,6 +438,12 @@ def static_checks(sources: dict[str, str]) -> tuple[int, list[str]]:
     check(branch is not None and "DebugSimulate(" in body and "100000" in body
           and "RollKill" not in body and "DebugGive" not in body,
           "Main LootRoll uses the count-only LootService.DebugSimulate with n capped at 100000")
+    # A23-28: ShopService refuses an OWNED weapon below its MinLevel with EquipNeedLevel (a purchase: WeaponNeedLevel);
+    # the branch itself also runs in the fixture's "shop" group (extracted onUpgradeWeapon)
+    shop = sources["SHOP_SOURCE"]
+    check(re.search(r'\n\tif level < minLevel then\n\t\tnotifyBad\(player, alreadyOwned and "EquipNeedLevel" or "WeaponNeedLevel", '
+                    r'minLevel\)\n\t\treturn\n\tend\n', shop) is not None,
+          "ShopService: level < MinLevel -> notifyBad(alreadyOwned and \"EquipNeedLevel\" or \"WeaponNeedLevel\") for owned weapons too")
     return count, failures
 
 
@@ -404,7 +508,7 @@ def main() -> int:
     caught = sum(1 for m in mutations if m.get("caught"))
     applied = sum(1 for m in mutations if m.get("applied"))
     ok = (compiled.returncode == 0 and main_run["returncode"] == 0 and marker is not None and not static_failures
-          and not changed and all(m.get("applied") for m in mutations))
+          and not changed and all(m.get("applied") and m.get("caught") for m in mutations))  # review #4: a missed mutation fails
     report = {
         "status": ("passed-no-mutations" if args.no_mutations else "passed") if ok else "failed",
         "mutationsSkipped": args.no_mutations,
@@ -431,8 +535,17 @@ def main() -> int:
                     "auto-granted, never lost; enhance scrolls 70% +1 / 30% +3 / 10% +5, failure 50% -1 (never below +0) else kept, "
                     "max +10, refused at +10; transfer scrolls 70/30/10% ADD the source +N onto the target up to +10 and leave the "
                     "rest on the source (lossless), refused when the target is +10 or the source +0, failure changes nothing but "
-                    "uses the scroll; scrolls refused in PvP combat (kept); equip needs a living character and no PvP combat, "
-                    "MinLevel gates purchases only (owned weapons re-equip at any level); drop tables: scroll chances rise with "
+                    "uses the scroll; scrolls refused in PvP combat (kept); equip needs a living character and no PvP combat. "
+                    "A23-28 (2026-10-06): equipping an OWNED weapon also needs Level >= MinLevel (Config.WeaponUsable; refusal "
+                    "Config.Text.EquipNeedLevel, ShopService the same for an owned re-equip, WeaponNeedLevel for a purchase; the "
+                    "legendary T8 has MinLevel 1); Config.BestUsableWeapon = the owned (tier 1 always) usable tier with the highest "
+                    "Damage; LootService.FitWeaponToLevel (Rebirthed / LevelReset / PlayerReady) swaps an unusable equipped weapon "
+                    "to it with one WeaponAutoSwap notice (none when quiet), ownership and per-tier +N untouched, nothing when the "
+                    "equipped tier is usable; a LeveledUp crossing the MinLevel of an owned stronger weapon sends WeaponUsableNow "
+                    "once and never auto-equips. A23-27: a weapon row with BelowLevel (the king's T4) is not drawn below that "
+                    "weapon's MinLevel (RollKill sets the killer's saved Level on a clone of the info) and pays BelowLevel (3 Candy) "
+                    "instead; DebugSimulate (no Level) rolls it. A23-30 bat goblin / little ghost rows and the king's rows pinned. "
+                    "Drop tables: scroll chances rise with "
                     "the zone (reviewer B2 table, transfer ~1/3), potions halved; legendary damage 76 = 2 x tier 3; PowerOf "
                     "includes enhancement (Justice/PvP read the WeaponEnhance attribute); owner-only Inventory remote "
                     "{ Items = known ids, Enhance = 8 tiers } replaces ItemsJson/EnhanceJson; unknown saved ids kept but hidden; "
@@ -448,9 +561,11 @@ def main() -> int:
         "limitations": "Offline service doubles (DataStore = JSON round trip, rate limit clock, ShopService.CanBuyWeapon and "
                        "CombatService.IsInCombat stubbed for LootService, AnnounceService a recording stub (its 10 s grouping, name "
                        "hiding and client chat text are not exercised), a stand-in character for Util.IsAlive, task.defer "
-                       "flushed by the fixture, Inventory remote captured). Justice/PvP power helpers are extracted functions, "
-                       "not the whole services. Client item panel, Fx, real MonsterService kills, multiplayer and Studio play "
-                       "are not certified here.",
+                       "flushed by the fixture, Inventory remote captured). Justice/PvP power helpers and ShopService's "
+                       "onUpgradeWeapon (with finite / notifyBad; anvil distance stubbed) are extracted functions, not the whole "
+                       "services. ProgressionService.LeveledUp / Rebirthed / LevelReset are the real signals (AddXP, TryRebirth, "
+                       "ResetLevel). Client item panel lock display, Fx, real MonsterService kills, the ClassService free class "
+                       "change flow around ResetLevel, multiplayer and Studio play are not certified here.",
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
