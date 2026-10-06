@@ -89,6 +89,7 @@ Read this file first, then `docs/HANDOFF_CODEX.md` (the top "최신 인계" sect
      2. Wait for OK, then do it in one short burst.
      3. Release control immediately.
    - Never keep screen control on while doing file checks or other work.
+   - **Every session (user, 2026-10-06):** before any desktop control — window restore/minimize, mouse, keyboard, desktop screenshot, or a computer-use permission prompt (request_access) — send 검수 "<세션> — 무엇 — 몇 초" and **wait for 검수's reply "전달함, 시작"** (검수 tells the user first). Then send "끝" when done. Never start on the notice alone.
    - **Standing exception (user, 2026-10-06, SPEC A23-42):** the 촬영 편집 session may record **only the Roblox Studio window of `build/FilmSet.rbxlx`** with ffmpeg gdigrab during its own test Play (no mouse/keyboard, no desktop or other windows), and may install the open-source TTS MeloTTS (MIT).
    - **Standing exception (user, 2026-10-05, SPEC A23-17):** opening the game Studio (place 81671223175574), File > Save to File As `build/GoodEvil.rbxlx`, and closing it may be done without asking, including a brief screen operation for the save dialog. Close it when the work is done and saved (user: "다 쓰면 닫아도돼"). Still never Publish, change place settings, or touch another project's Studio.
 7. Do not shut down the user's computer, and do not use account usage resets or buy credits, unless the user asks in the current session.
