@@ -70,13 +70,13 @@
     },
     {
       "device": "pc",
-      "mode": "busy",
-      "file": "build/skillbar_view/pc_busy.png",
+      "mode": "nomp",
+      "file": "build/skillbar_view/pc_nomp.png",
       "probe": {
         "States": {
           "Q": {
             "MPRed": false,
-            "Seconds": "2",
+            "Seconds": "",
             "Visible": true,
             "Lock": false
           },
@@ -202,13 +202,13 @@
     },
     {
       "device": "phone",
-      "mode": "busy",
-      "file": "build/skillbar_view/phone_busy.png",
+      "mode": "nomp",
+      "file": "build/skillbar_view/phone_nomp.png",
       "probe": {
         "States": {
           "Q": {
             "MPRed": false,
-            "Seconds": "2",
+            "Seconds": "",
             "Visible": true,
             "Lock": false
           },
@@ -265,139 +265,7 @@
         "skillX/skillZ": 11.5
       },
       "minGap": 7.4
-    },
-    {
-      "device": "844",
-      "mode": "start",
-      "file": "build/skillbar_view/844_start.png",
-      "probe": {
-        "States": {
-          "Q": {
-            "MPRed": false,
-            "Seconds": "",
-            "Visible": true,
-            "Lock": false
-          },
-          "X": {
-            "MPRed": false,
-            "Seconds": "",
-            "Visible": true,
-            "Lock": true
-          },
-          "Z": {
-            "MPRed": false,
-            "Seconds": "",
-            "Visible": true,
-            "Lock": true
-          }
-        },
-        "Screen": [
-          844,
-          390
-        ],
-        "Buttons": {
-          "skillX": [
-            627.5,
-            171.75,
-            72,
-            72
-          ],
-          "Attack": [
-            582.125,
-            248.625,
-            111.75,
-            111.75
-          ],
-          "skillQ": [
-            503,
-            259.5,
-            72,
-            72
-          ],
-          "skillZ": [
-            545,
-            187.5,
-            72,
-            72
-          ]
-        }
-      },
-      "gaps": {
-        "Attack/skillQ": 7.5,
-        "Attack/skillX": 8.2,
-        "Attack/skillZ": 7.2,
-        "skillQ/skillX": 80.3,
-        "skillQ/skillZ": 11.4,
-        "skillX/skillZ": 12.0
-      },
-      "minGap": 7.2
-    },
-    {
-      "device": "844",
-      "mode": "busy",
-      "file": "build/skillbar_view/844_busy.png",
-      "probe": {
-        "States": {
-          "Q": {
-            "MPRed": false,
-            "Seconds": "2",
-            "Visible": true,
-            "Lock": false
-          },
-          "X": {
-            "MPRed": false,
-            "Seconds": "",
-            "Visible": true,
-            "Lock": false
-          },
-          "Z": {
-            "MPRed": false,
-            "Seconds": "",
-            "Visible": true,
-            "Lock": false
-          }
-        },
-        "Screen": [
-          844,
-          390
-        ],
-        "Buttons": {
-          "skillX": [
-            627.5,
-            171.75,
-            72,
-            72
-          ],
-          "Attack": [
-            582.125,
-            248.625,
-            111.75,
-            111.75
-          ],
-          "skillQ": [
-            503,
-            259.5,
-            72,
-            72
-          ],
-          "skillZ": [
-            545,
-            187.5,
-            72,
-            72
-          ]
-        }
-      },
-      "gaps": {
-        "Attack/skillQ": 7.5,
-        "Attack/skillX": 8.2,
-        "Attack/skillZ": 7.2,
-        "skillQ/skillX": 80.3,
-        "skillQ/skillZ": 11.4,
-        "skillX/skillZ": 12.0
-      },
-      "minGap": 7.2
     }
   ],
-  "note": "gaps = circle-to-circle px between the visible round buttons (screen px); 'busy' = Lv10, Q cooling 2.4 s, Z ready, X short of MP (local attributes only); pc / 844 rows from the 19:3x three-screen run, phone rows from the rerun after the seam / level fixes"
+  "note": "A23-60 rerun (user 2026-10-06: no MP number on skill buttons): start = Lv1 (Z / X locked: shaded + lock + Lv N), nomp = Lv10 with 5 MP (Q dimmed, no number). The cooling state (busy: Q shade + seconds) and the 844x390 screen were checked in the 7cc9d60 run. The white 3D background = the UiSandbox window was not in front (GUI unaffected)."
 }

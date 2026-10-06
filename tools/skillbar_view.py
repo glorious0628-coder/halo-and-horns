@@ -24,6 +24,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, "build", "skillbar_view")
 SHEET = os.path.join(ROOT, "art", "review", "skillbar_2026-10-06.jpg")
 REPORT = os.path.join(ROOT, "docs", "art", "verification_2026-10-06", "skillbar_view_2026-10-06.json")
+# start = Lv1 (Z / X locked), busy = Lv10 + Q cooling, nomp = Lv10 + 5 MP (A23-60: the Q button dims, no MP number)
+MODES = ["start", "busy", "nomp"]
 
 SETUP = r'''
 local p = game.Players.LocalPlayer
@@ -36,6 +38,10 @@ if mode == "busy" then
 	p:SetAttribute("SkillReadyAtZ", 0)
 	p:SetAttribute("SkillReadyAtX", 0)
 	p:SetAttribute("Mana", 22)
+elseif mode == "nomp" then
+	p:SetAttribute("Level", 10)
+	p:SetAttribute("SkillReadyAt", 0)
+	p:SetAttribute("Mana", 5)
 end
 return tostring(p:GetAttribute("Level")) .. " mana " .. tostring(p:GetAttribute("Mana"))
 '''
@@ -106,7 +112,7 @@ def run(c, devices, rows):
         print(dev, dv.luau(c, qv.PLACE % (300, 0, 90), "Server").strip())
         time.sleep(2)
         dv.luau(c, qv.PIN, "Client")
-        for mode in ("start", "busy"):
+        for mode in MODES:
             print(dev, mode, dv.luau(c, SETUP % mode, "Client").strip())
             time.sleep(0.6)
             probe = json.loads(dv.luau(c, PROBE, "Client").strip())
@@ -171,6 +177,9 @@ def sheet(rows):
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     devices = [a for a in sys.argv[1:] if a in dv.DEVICES] or ["pc", "phone", "844"]
+    modes = [a for a in sys.argv[1:] if a in ("start", "busy", "nomp")]
+    if modes:
+        MODES[:] = modes
     rows = []
     with dv.sandbox() as c:
         run(c, devices, rows)

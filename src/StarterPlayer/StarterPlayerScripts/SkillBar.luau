@@ -3,12 +3,13 @@
 -- through SkillBar.Relayout).
 --   look   : the round skill disc (Config.UIArt "BtnSkill<Faction>" when that art exists, else the approved "BtnSpecial"),
 --            my kit's icon (Skill_<Kit>_<Slot>, ~74% of the disc; Blacksmith Q / Z use Warrior's, Alchemist Q / Z Mage's
---            in the beta), the MP badge inside the top-left; on PCs the name pill on the lower rim (NameEn) and the key
---            badge (Keybinds.Label, keyboards only); phones show the icon only (§6-2)
+--            in the beta); on PCs the name pill on the lower rim (NameEn) and the key badge (Keybinds.Label, keyboards
+--            only); phones show the icon only (§6-2). A23-60 (user 2026-10-06): no MP number on the button - the MP cost
+--            lives in the skill's description only
 --   state  : cooling down = a dark radial sweep + whole seconds left (attributes SkillReadyAt / SkillReadyAtZ /
---            SkillReadyAtX), then a short white flash; MP short = grey icon + red MP badge; locked (Level < Unlock) = dim +
---            lock glyph (+ "Lv N" on PCs); a slot whose flag is off (Config.Skills.ZEnabled / XEnabled) stays hidden and
---            keeps its rect free
+--            SkillReadyAtX), then a short white flash; MP short = the whole button dimmed (a press says "Not enough
+--            MP"); locked (Level < Unlock) = shaded face + lock glyph + "Lv N"; a slot whose flag is off
+--            (Config.Skills.ZEnabled / XEnabled) stays hidden and keeps its rect free
 --   input  : a press = SkillBar.Use(slot): one press, one cast. Inside the 0.5 s gap between casts one press waits in
 --            line (white rim) and goes when the gap ends. Refused here (locked, cooling, MP) -> the button shakes and a
 --            short word floats up. Q goes through HUD.Release (the live Release remote) until SkillService's UseSkill
@@ -76,7 +77,7 @@ local TXT = {
 	Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- until Config.Skills.Defs names the kit's skills
 	Level = "Lv %d",
 	Unlock = "Unlocks at Lv %d",
-	NeedMP = "Need MP",
+	NeedMP = "Not enough MP",
 	Wait = "Not yet",
 }
 
@@ -329,20 +330,6 @@ local function buildButton(slot)
 		Size = UDim2.fromScale(0.7, 0.42), TextScaled = true, ZIndex = 6, Visible = false, Parent = face,
 	}, "Number")
 
-	-- MP badge inside the top-left: a navy pill with the price (wide enough for "30" at the text floor; UiSandbox
-	-- 2026-10-06: a round badge cut "20" to "2" on phones)
-	b.Badge = UIKit.Create("Frame", {
-		Name = "MP", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.24, 0.18),
-		Size = UDim2.fromScale(0.42, 0.27), BackgroundColor3 = COL.Navy, ZIndex = 7, Active = false, Parent = holder,
-	}, {
-		corner(),
-		UIKit.Create("UIStroke", { Name = "Rim", Color = COL.Gold, Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
-	})
-	b.BadgeText = smallLabel({
-		Name = "Cost", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52),
-		Size = UDim2.fromScale(0.86, 0.8), TextScaled = true, ZIndex = 8, Parent = b.Badge,
-	}, "Number")
-
 	-- locked: lock glyph (+ "Lv N" on PCs)
 	b.Lock = UIKit.ArtImage("GlyphLock", {
 		Name = "Lock", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.4),
@@ -434,9 +421,8 @@ local function paintButton(b)
 		b.Icon.ImageColor3 = (st.Locked and COL.Locked) or (st.MPShort and COL.Dim) or COL.White
 	end
 	if st.Locked then setSweep(b, 1) end -- the face stays shaded while locked (the 10 Hz tick leaves it alone)
-	b.BadgeText.Text = tostring(math.floor(st.Def.MP + 0.5))
-	b.Badge.Visible = st.Def.MP > 0 and not st.Locked
-	b.Badge.BackgroundColor3 = st.MPShort and COL.Bad or COL.Navy
+	-- MP short: the whole button dims (A23-60: no MP number on it)
+	if b.Disc and b.Disc:IsA("ImageLabel") then b.Disc.ImageColor3 = (st.MPShort and not st.Locked) and COL.Dim or COL.White end
 	if b.Lock then b.Lock.Visible = st.Locked end
 	if b.LockText then
 		b.LockText.Visible = st.Locked
@@ -626,6 +612,8 @@ function SkillBar.Use(slot)
 	end
 	if st.MPShort then
 		shake(b, TXT.NeedMP)
+		local audio = C and C.Audio -- the 'no' sound once Audio.luau exists (quality ideas ①)
+		if type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "No") end
 		return false
 	end
 	if os.clock() < S.gapUntil then

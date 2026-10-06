@@ -181,7 +181,6 @@ local TXT = {
 	RerollYes = "Swap",
 	Attack = "Attack",
 	Release = "Skill",
-	ReleaseCost = "MP%d",
 	Perfect = "PERFECT!",
 	AutoOn = "Auto ON",
 	AutoOff = "Auto OFF",
@@ -2524,8 +2523,8 @@ end
 local function refreshSkill()
 	local remaining = math.max(0, num("SkillReadyAt", 0) - Util.Now())
 	local ready = remaining <= 0 and num("Mana", 0) >= Config.BasicSkill.ManaCost
-	-- the MP price on the button itself ("스킬 MP20"), so an MP shortage is never a surprise
-	ui.skillLabel.Text = string.format(TXT.ReleaseCost, Config.BasicSkill.ManaCost)
+	-- A23-60 (user 2026-10-06): no MP number on the button (the skill description says it); the button only dims
+	ui.skillLabel.Text = TXT.Release
 	ui.skillTimer.Visible = remaining > 0
 	ui.skillTimer.Text = string.format("%.1f", remaining)
 	if ui.releaseIcon then ui.releaseIcon.Visible = remaining <= 0 end
