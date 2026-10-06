@@ -29,6 +29,8 @@ local TICK = 1
 -- E4 Near.Stay: [Player] = { [questId .. ":" .. step] = os.clock() when the player came inside } (never saved: a rejoin
 -- or leaving the spot starts the count again)
 local stays = {}
+-- story_depth E1 / E2 / E3: a pick's side (Good / Purify / A on one side, Evil / Devour / B on the other)
+local SIDE = { Good = "Good", Purify = "Good", A = "Good", Evil = "Evil", Devour = "Evil", B = "Evil" }
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -103,6 +105,7 @@ local function sanitize(data)
 	for id in st.Done do
 		if not DEFS[id] then st.Done[id] = nil end
 	end
+	if st.LastSide ~= "Good" and st.LastSide ~= "Evil" then st.LastSide = nil end -- E2: the side of the last real pick
 end
 
 ------------------------------------------------------------------ step helpers
@@ -119,9 +122,16 @@ local function stepOf(player, def, index)
 	return step
 end
 
-local function linesFor(player, step)
-	local lines = step.Lines or {}
-	return lines[faction(player)] or lines.All or {}
+-- E2: the LinesBy entry this player sees (game dev 1's Story window reads it as Var): the exact pick of LinesBy.From
+-- when listed, else its side, else Default (an old save has no picks: every LinesBy has a Default). nil = plain Lines.
+local function varFor(data, step)
+	local by = step and step.LinesBy
+	if type(by) ~= "table" or type(data) ~= "table" then return nil end
+	local pick = story(data).Pick[by.From]
+	if pick ~= nil and by[pick] ~= nil then return pick end
+	local side = SIDE[pick]
+	if side ~= nil and by[side] ~= nil then return side end
+	return "Default"
 end
 
 local function homeZone(player)
@@ -246,6 +256,15 @@ local function complete(player, data, id)
 	notify(player, def.Finish or msg, "reward")
 	if def.Finish then notify(player, msg, "reward") end
 	if def.Clue then notify(player, def.Clue, "info") end -- story_depth §2-1: a clue toast after the closing lines
+	-- E3: a stat-free title (Reward.Title, or Reward.TitleBy by the side of this quest's own pick), once
+	local r = type(def.Reward) == "table" and def.Reward or nil
+	local titleId = r and (r.Title or (type(r.TitleBy) == "table" and r.TitleBy[SIDE[st.Pick[id]] or ""]) or nil)
+	local titles = S.TitleService
+	if type(titleId) == "string" and Config.TitleDefs[titleId] and type(titles) == "table" and type(titles.Grant) == "function" then
+		local ok, new = pcall(titles.Grant, player, titleId)
+		if not ok then Util.Warn(TAG, "TitleService.Grant: " .. tostring(new)) end
+		if ok and new == true then notify(player, string.format(TXT.NewTitle, Config.TitleDefs[titleId].Name), "reward") end
+	end
 	-- A23-34: the blacksmith's free first weapon (M1_1 GiveWeapon = tier; paid once, LootService.GrantFirstWeapon), its
 	-- own "전투력 X → Y" line after the story lines
 	if def.GiveWeapon and S.LootService and type(S.LootService.GrantFirstWeapon) == "function" then
@@ -261,8 +280,9 @@ local function openStep(player, id, track, manual)
 	local step = def and stepOf(player, def, track.St)
 	if not step or not step.Panel then return end
 	if step.Npc and manual ~= true then return end
+	local var = varFor(getData(player), step) -- E2
 	pcall(function()
-		Net.Get("OpenPanel"):FireClient(player, "Story", { Id = id, St = track.St })
+		Net.Get("OpenPanel"):FireClient(player, "Story", { Id = id, St = track.St, Var = var })
 	end)
 end
 
@@ -342,6 +362,12 @@ local function requirementsMet(player, data, def)
 	for _, need in req.Done or {} do
 		if not st.Done[need] then return false end
 	end
+	-- E1: Requires.Pick = { Id, Is }: Is "Good" / "Evil" = that side of the saved pick (Purify / A count as Good), else the
+	-- exact pick
+	if type(req.Pick) == "table" then
+		local pick = st.Pick[req.Pick.Id]
+		if pick == nil or (pick ~= req.Pick.Is and SIDE[pick] ~= req.Pick.Is) then return false end
+	end
 	return data.ClassChosen == true
 end
 
@@ -384,7 +410,7 @@ local function refresh(player)
 		local def = DEFS[id]
 		if def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
 			st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
-			if def.Start then notify(player, def.Start, "info") end
+			if def.Start and not def.Hidden then notify(player, def.Start, "info") end -- E5: a hidden sub stays secret
 			changed = true
 		elseif st.Subs[id] and def.Factions and not def.Factions[faction(player)] then
 			st.Subs[id] = nil -- faction changed: the faction-only sub leaves (A6 / design 6-3)
@@ -489,7 +515,7 @@ local function rowFor(player, data, id, track)
 		CanClaim = track.Claim == true, ShowProgress = target > 1 and not track.Claim,
 		-- Npc (A23-46): the town NPC this step is talked through (game dev 1: '!' over it, the row guides there)
 		Story = { Id = id, St = track.St, Panel = step and step.Panel == true or nil, Guide = step and step.Guide or nil,
-			Npc = (not track.Claim) and step and step.Npc or nil },
+			Npc = (not track.Claim) and step and step.Npc or nil, Var = (not track.Claim) and varFor(data, step) or nil },
 	}
 end
 
@@ -524,7 +550,9 @@ function StoryQuestService.SubRows(player, data)
 	for order, id in SQ.Subs do
 		local tr = st.Subs[id]
 		local def = DEFS[id]
-		if tr and def and (tr.Claim or visible(player, def)) then
+		-- E5: a hidden sub shows once it is found (past its first step, or waiting for [Claim])
+		local found = tr ~= nil and (tr.Claim or num(tr.St, 1) > 1)
+		if tr and def and (tr.Claim or visible(player, def)) and (not def.Hidden or found) then
 			-- before the first mission is accepted only S0 shows (A23-3: one goal at a time)
 			if num(data.TutorialStep) ~= 0 or id == "S0" then
 				local row = rowFor(player, data, id, tr)
@@ -614,6 +642,17 @@ local function payChoice(player, obj, side)
 	if #parts > 0 then notify(player, table.concat(parts, " · "), "reward") end
 end
 
+-- E2 (story_depth §7): a real pick (its Choice carries points) on the other side from the last real pick gets one kind
+-- line; its side is saved either way (data.Story.LastSide). 0-point picks (easter eggs) never count.
+local function changedMind(player, st, obj, pick)
+	local side = SIDE[pick]
+	if side == nil or (num(obj.Good and obj.Good.Points) <= 0 and num(obj.Evil and obj.Evil.Points) <= 0) then return end
+	if st.LastSide ~= nil and st.LastSide ~= side then
+		notify(player, side == "Good" and TXT.ChangedGood or TXT.ChangedEvil, "info")
+	end
+	st.LastSide = side
+end
+
 local function onStoryAction(player, id, action, option, ...)
 	if select("#", ...) ~= 0 then return end
 	if type(id) ~= "string" or type(action) ~= "string" or (option ~= nil and type(option) ~= "string") then return end
@@ -639,12 +678,19 @@ local function onStoryAction(player, id, action, option, ...)
 			if option ~= "Good" and option ~= "Evil" then return end
 			local pick = obj[option]
 			st.Pick[id] = pick.Pick or option -- saved before the points
-			pickScore(player, f, option, math.floor(num(pick.Points)))
+			local pts = math.floor(num(pick.Points))
+			if pts > 0 then
+				pickScore(player, f, option, pts)
+			else
+				notify(player, option == "Good" and TXT.LeanGood or TXT.LeanEvil, "info") -- E5: no "+0", the shard leans
+			end
+			changedMind(player, st, obj, st.Pick[id])
 			payChoice(player, obj, option)
 		else
 			if option ~= "A" and option ~= "B" then return end
 			st.Pick[id] = option -- Neutral: recorded only (no good/evil score, A6)
 			notify(player, TXT.Recorded, "info")
+			changedMind(player, st, obj, option)
 			payChoice(player, obj, option == "A" and "Good" or "Evil")
 		end
 		advance(player, data, id, tr)

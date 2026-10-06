@@ -99,6 +99,32 @@ MUTATIONS = [
     ("a started sub ranks like an untouched one", ST, '((started or id == "S0") and 2) or 3', '(id == "S0" and 2) or 3'),
     ("older quests first within a rank", ST, "\t\treturn a.Order > b.Order\n", "\t\treturn a.Order < b.Order\n"),
     ("the sort fields reach the client", ST, "\t\trows[i].Rank, rows[i].Order = nil, nil\n", ""),
+    # story_depth E1 / E2 / E3 / E5
+    ("E1: Requires.Pick ignored", ST,
+     "\t\tif pick == nil or (pick ~= req.Pick.Is and SIDE[pick] ~= req.Pick.Is) then return false end\n", ""),
+    ("E1: no side grouping (A is not Good)", ST, "(pick ~= req.Pick.Is and SIDE[pick] ~= req.Pick.Is)", "(pick ~= req.Pick.Is)"),
+    ("E2: the window gets no Var", ST, "{ Id = id, St = track.St, Var = var }", "{ Id = id, St = track.St }"),
+    ("E2: the row gets no Var", ST, "Var = (not track.Claim) and varFor(data, step) or nil },", "Var = nil },"),
+    ("E2: no Default", ST, '\treturn "Default"\nend', "\treturn nil\nend"),
+    ("E2: the side before the exact pick", ST,
+     "\tif pick ~= nil and by[pick] ~= nil then return pick end\n\tlocal side = SIDE[pick]\n\tif side ~= nil and by[side] ~= nil then return side end\n",
+     "\tlocal side = SIDE[pick]\n\tif side ~= nil and by[side] ~= nil then return side end\n\tif pick ~= nil and by[pick] ~= nil then return pick end\n"),
+    ("E2: no changed-mind line", ST, "\t\tnotify(player, side == \"Good\" and TXT.ChangedGood or TXT.ChangedEvil, \"info\")\n", ""),
+    ("E2: 0-point picks count as a change", ST,
+     "if side == nil or (num(obj.Good and obj.Good.Points) <= 0 and num(obj.Evil and obj.Evil.Points) <= 0) then return end",
+     "if side == nil then return end"),
+    ("E2: an artisan pick never counts", ST, "\t\t\tchangedMind(player, st, obj, option)\n", ""),
+    ("E2: a broken saved side kept", ST,
+     '\tif st.LastSide ~= "Good" and st.LastSide ~= "Evil" then st.LastSide = nil end', ""),
+    ("E3: no title", ST, "\t\tlocal ok, new = pcall(titles.Grant, player, titleId)\n", "\t\tlocal ok, new = false, nil\n"),
+    ("E3: TitleBy ignores the pick", ST, 'r.TitleBy[SIDE[st.Pick[id]] or ""]', "r.TitleBy.Good"),
+    ("E3: 'New title' for one already owned", ST, "if ok and new == true then notify", "if ok then notify"),
+    ("E5: a 0-point pick says nothing", ST,
+     '\t\t\t\tnotify(player, option == "Good" and TXT.LeanGood or TXT.LeanEvil, "info") -- E5: no "+0", the shard leans\n', ""),
+    ("E5: a hidden sub's Start toast", ST, "if def.Start and not def.Hidden then notify", "if def.Start then notify"),
+    ("E5: a hidden sub listed before it is found", ST, " and (not def.Hidden or found) then", " then"),
+    ("E5: found from the start", ST, "local found = tr ~= nil and (tr.Claim or num(tr.St, 1) > 1)",
+     "local found = tr ~= nil and (tr.Claim or num(tr.St, 1) >= 1)"),
 ]
 
 
@@ -140,7 +166,13 @@ SUITE = Suite(
              "false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs "
              "N1 / N2 are not offered; Neutral saves keep N3. quest_volume §2-6: StoryQuests.MaxSubs = 3 sub rows "
              "(claim / waiting card > situational > started or S0 > the rest, newer first in a rank, no Rank / Order "
-             "sent), so a town quest in progress stays on the list.",
+             "sent), so a town quest in progress stays on the list. story_depth E1: Requires.Pick { Id, Is } (Is Good / Evil = "
+             "that side: Purify / A = Good, Devour / B = Evil; else the exact pick). E2: LinesBy { From, Good, Evil, A, B, "
+             "Default } -> Var (exact pick, else its side, else Default) on the OpenPanel payload and row.Story.Var; every "
+             "LinesBy has a Default; a real pick (with points) on the other side from the last one adds ChangedGood / "
+             "ChangedEvil (data.Story.LastSide, bad values dropped at load). E3: Reward.Title / TitleBy -> "
+             "TitleService.Grant + 'New title: %s!' when new. E5: Hidden subs: no Start toast, no row until found (past "
+             "step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line).",
     limitations="NPC models, '!' markers, the talk window and the quest marker routes are game dev 1's (contract: tag "
                 "StoryNpc, attribute NpcId, row Story.Npc / Guide). Real walking, physics and the 1 s loop timing are "
                 "modelled by moving the root and calling Refresh each second.",

@@ -1,6 +1,6 @@
 # A23-46 마을 사람 퀘스트 H1·R1·N3 + A23-57 장인 스위치 + A23-58 선택 점수 + 결말 단서·E0 — 서버 계약 (게임성 개발 2, 2026-10-07)
 
-설계: `docs/design/town_npc_quests_2026-10-06.md` + `docs/design/story_depth_2026-10-06.md` §3·§5-⑥(검수 결정: 셋 다 M2_3 뒤, H1 3단계는 초원 왕 슬라임, 반전판 대사). 게임 글은 영어(A23-48). 오프라인 검사: `py tools/test_town_quests.py`(140검사, 변이 34/34), 맨손·조련사 검사와 같은 가짜 세계(`tools/fixtures/dev2_combat_world.luau`).
+설계: `docs/design/town_npc_quests_2026-10-06.md` + `docs/design/story_depth_2026-10-06.md` §3·§5-⑥(검수 결정: 셋 다 M2_3 뒤, H1 3단계는 초원 왕 슬라임, 반전판 대사). 게임 글은 영어(A23-48). 오프라인 검사: `py tools/test_town_quests.py`(191검사, 변이 51/51), 맨손·조련사 검사와 같은 가짜 세계(`tools/fixtures/dev2_combat_world.luau`).
 
 ## 1. 퀘스트 (Config.StoryQuests.Defs, Subs 끝에 H1·R1·N3)
 | id | 누구 | NPC | 단계 | 마지막 고르기 |
@@ -47,3 +47,14 @@
 - `Config.Features = { NeutralFaction = false }`, `Config.FeatureOn(name)`, `Config.Pickable(factionId)` = 새로 고를 수 있는 진영(빛·뿔, 장인은 스위치가 켜졌을 때만).
 - 서버: FactionService 진영 고르기(`ChooseFaction`)·제단(`SwitchFaction` 대상) — 장인 요청은 다른 잘못된 요청처럼 무시 + 로그 한 줄(10초 묶음). ProgressionService 환생 대상 장인도 거절 + 로그. StoryQuestService는 장인 전용 서브(N1 장인의 손놀림, N2 길드 보급 장부)를 주지 않는다. **코드·데이터는 지우지 않는다**, 이미 장인인 시험 저장은 그대로(진영·N3 유지).
 - `Config.FactionOrder`는 그대로(개발 1의 고르기 화면이 스위치를 읽어 카드 2장).
+
+## 8. story_depth 엔진 E1·E2·E3·E5 (3장·이스터에그 데이터용, 2026-10-07)
+- **고른 쪽 묶음:** Good·Purify·A = "Good" 쪽, Evil·Devour·B = "Evil" 쪽(`StoryQuestService` SIDE).
+- **E1 `Requires.Pick = { Id, Is }`:** `Is`가 "Good"/"Evil"이면 그 퀘스트에 저장된 고른 값의 쪽, 아니면 정확히 같은 값(예 `Is = "Purify"`). 고른 적 없으면(옛 세이브) 안 열림. 예: Pip1 `Requires = { Pick = { Id = "M3_4", Is = "Good" }, Level = 15 }`.
+- **E2 `LinesBy = { From = id, Good, Evil, A, B, Default }`**(각 칸은 Lines와 같은 모양: All/Halo/Horns/Neutral): 서버가 **`Var`** = From의 고른 값이 칸에 있으면 그 값, 없으면 그 쪽(Good/Evil), 없으면 "Default"를 `OpenPanel "Story" { Id, St, Var }`와 줄 `row.Story.Var`에 실어 보낸다. **모든 LinesBy에 Default 필수**(검사가 실제 Defs를 훑음). 자기 자신의 Pick도 된다(EG01: `From = "EG01"`).
+  - **개발 1에게(Panels 2715):** `local src = step.LinesBy and (step.LinesBy[arg.Var] or step.LinesBy.Default) or step.Lines` → `lines = src[f] or src.All`. Var가 없으면 지금처럼 Lines.
+  - **마음을 바꾼 사람(§7):** 점수가 걸린 선택(Good/Evil Points > 0)에서 지난번 선택과 반대쪽을 고르면 한 줄 `ChangedGood` "You kept it last time. Now you give. People change. Shards too." / `ChangedEvil` "You gave it last time. Now you keep. Shards change too.". 쪽은 `data.Story.LastSide`에 저장(잘못된 값은 불러올 때 지움). 0점 선택(이스터에그)은 세지 않는다. 장인 A/B도 센다.
+- **E3 `Reward.Title = id` / `Reward.TitleBy = { Good = id, Evil = id }`:** 끝날 때 `TitleService.Grant`(능력치 없음), 새로 얻었을 때만 "New title: %s!". TitleBy는 이 퀘스트에서 고른 쪽(장인 A = Good). id는 `Config.TitleDefs`에 있어야 함(데이터 넣을 때 같이 추가: Bench Detective, Actually Read It / Didn't Read It, Bug Reporter, Goose Fan, Sky Watcher, Third Band …).
+- **E5 `Hidden = true`(서브):** 열려도 Start 토스트 없음, **찾기 전에는 줄 없음**(찾음 = 1단계를 지남 또는 받기 대기). 한 단계짜리 숨은 서브(EG04 Near Stay 30)는 줄 없이 끝난다. 선택 `Points = 0`이면 점수 줄 대신 `LeanGood` "Your shard leaned to the light." / `LeanEvil` "Your shard leaned to the dark.".
+- 검사: test_town_quests 그룹 e1-pick-gate·e2-lines-by·e2-changed-mind·e3-titles·e5-hidden(시험용 퀘스트를 그 세계 Config에만 넣음), 191검사·변이 51/51.
+- **아직 데이터 없음:** M3_1·M3_3·M3_4·Pip1·Dibs 메아리, EG01~EG06·EG14, 두 겹 대사(가)는 영어 대사 확정 뒤 다음 묶음(story_depth 6-2 일정 10/17~18).

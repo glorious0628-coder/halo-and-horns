@@ -545,4 +545,232 @@ runGroup("max-subs", function()
 	end
 end)
 
+------------------------------------------------------------------ 12. story_depth E1 / E2 / E3 / E5 (the engine for 3장 and the easter eggs)
+-- test quests are added to this world's own Config (every world runs its own copy)
+local function addSub(w, id, def)
+	def.Kind = "Sub"
+	def.Title = def.Title or id
+	w.Config.StoryQuests.Defs[id] = def
+	table.insert(w.Config.StoryQuests.Subs, id)
+end
+local function choiceStep(goodPts, evilPts, extra)
+	local step = { Text = "Pick", Panel = true, Lines = { All = { "Which one?" } },
+		Obj = { Type = "Choice", Good = { Label = "Give", Points = goodPts }, Evil = { Label = "Keep", Points = evilPts },
+			Neutral = { A = "Give", B = "Keep" } } }
+	for k, v in extra or {} do step[k] = v end
+	return step
+end
+local function panelsOf(w)
+	local out = {}
+	local op = w.Net.Get("OpenPanel")
+	local base = op.FireClient
+	op.FireClient = function(self, p, kind, arg)
+		table.insert(out, { P = p, Kind = kind, Arg = arg })
+		return base(self, p, kind, arg)
+	end
+	return out
+end
+local function rowOf(w, p, d, id)
+	w.Config.StoryQuests.MaxSubs = 20
+	for _, r in w.Story.SubRows(p, d) do
+		if r.Story and r.Story.Id == id then return r end
+	end
+	return nil
+end
+local function said(w, p, from, text)
+	for _, t in w:NoticesFor(p, from) do
+		if t == text then return true end
+	end
+	return false
+end
+
+runGroup("e1-pick-gate", function()
+	local w = townWorld()
+	local CORE = { Text = "Visit the Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } }
+	addSub(w, "TX_Pip", { Requires = { Pick = { Id = "M2_3", Is = "Good" } }, Steps = { CORE } })
+	addSub(w, "TX_Dibs", { Requires = { Pick = { Id = "M2_3", Is = "Evil" } }, Steps = { CORE } })
+	addSub(w, "TX_Exact", { Requires = { Pick = { Id = "S0", Is = "Purify" } }, Steps = { CORE } })
+	local function joinWith(userId, faction, picks)
+		local p, d = joinAfterM23(w, userId, faction)
+		for k, v in picks do d.Story.Pick[k] = v end
+		w.Story.Refresh(p)
+		return p, d
+	end
+	local _, good = joinWith(801, "Halo", { M2_3 = "Good" })
+	local _, evil = joinWith(802, "Horns", { M2_3 = "Evil" })
+	local _, none = joinWith(803, "Halo", {})
+	local _, a = joinWith(804, "Neutral", { M2_3 = "A" })
+	local _, b = joinWith(805, "Neutral", { M2_3 = "B" })
+	local _, purify = joinWith(806, "Halo", { S0 = "Purify" })
+	local _, devour = joinWith(807, "Horns", { S0 = "Devour" })
+	check(w:Track(good, "TX_Pip") and not w:Track(good, "TX_Dibs"), "Pick M2_3 = Good: the Good-side sub only", show(good.Story.Subs))
+	check(w:Track(evil, "TX_Dibs") and not w:Track(evil, "TX_Pip"), "Pick M2_3 = Evil: the Evil-side sub only", show(evil.Story.Subs))
+	check(not w:Track(none, "TX_Pip") and not w:Track(none, "TX_Dibs"), "no pick yet (an old save): neither")
+	check(w:Track(a, "TX_Pip") and not w:Track(a, "TX_Dibs"), "an artisan's A counts as the Good side", show(a.Story.Subs))
+	check(w:Track(b, "TX_Dibs") and not w:Track(b, "TX_Pip"), "an artisan's B counts as the Evil side", show(b.Story.Subs))
+	check(w:Track(purify, "TX_Exact") and not w:Track(devour, "TX_Exact"), "Is = Purify: only that exact pick",
+		show({ purify.Story.Subs.TX_Exact ~= nil, devour.Story.Subs.TX_Exact ~= nil }))
+end)
+
+runGroup("e2-lines-by", function()
+	-- every LinesBy in the game's own quests has a Default and a real From (old saves have no picks)
+	for id, def in SQ0.Defs do
+		for i, step in def.Steps do
+			if step.LinesBy ~= nil then
+				check(type(step.LinesBy) == "table" and type(step.LinesBy.Default) == "table" and SQ0.Defs[step.LinesBy.From] ~= nil,
+					id .. " step " .. i .. ": LinesBy has a Default and a real From", show(step.LinesBy))
+			end
+		end
+	end
+	local w = townWorld()
+	local panels = panelsOf(w)
+	local by = { From = "M2_3", Good = { All = { "g" } }, Evil = { All = { "e" } }, A = { All = { "a" } }, Default = { All = { "d" } } }
+	addSub(w, "TX_Lines", { Requires = { Done = { "M2_3" } },
+		Steps = { { Text = "Talk", Panel = true, LinesBy = by, Obj = { Type = "Talk" } } } })
+	addSub(w, "TX_Side", { Requires = { Done = { "M2_3" } },
+		Steps = { { Text = "Talk", Panel = true, LinesBy = { From = "S0", Good = { All = { "g" } }, Default = { All = { "d" } } },
+			Obj = { Type = "Talk" } } } })
+	local cases = { { 811, "Halo", { M2_3 = "Good" }, "Good" }, { 812, "Horns", { M2_3 = "Evil" }, "Evil" },
+		{ 813, "Halo", {}, "Default" }, { 814, "Neutral", { M2_3 = "A" }, "A" }, { 815, "Neutral", { M2_3 = "B" }, "Evil" } }
+	for _, c in cases do
+		local p, d = joinAfterM23(w, c[1], c[2])
+		for k, v in c[3] do d.Story.Pick[k] = v end
+		local row = rowOf(w, p, d, "TX_Lines")
+		check(row ~= nil and row.Story.Var == c[4], c[2] .. " " .. show(c[3]) .. ": Var " .. c[4] .. " on the row",
+			show(row and row.Story.Var))
+		local n0 = #panels
+		w:Act(p, "TX_Lines", "Open")
+		local last = panels[#panels]
+		check(#panels == n0 + 1 and last.Kind == "Story" and last.Arg.Id == "TX_Lines" and last.Arg.Var == c[4],
+			c[2] .. " " .. show(c[3]) .. ": the window opens with Var " .. c[4], show(last and last.Arg))
+	end
+	-- a Purify pick reads the Good entry when the step lists no Purify one
+	local p, d = joinAfterM23(w, 816, "Halo")
+	d.Story.Pick.S0 = "Purify"
+	local row = rowOf(w, p, d, "TX_Side")
+	check(row ~= nil and row.Story.Var == "Good", "Purify -> its side (Good)", show(row and row.Story.Var))
+	-- a plain step sends no Var
+	local h1 = rowOf(w, p, d, "H1")
+	check(h1 ~= nil and h1.Story.Var == nil, "a step without LinesBy: no Var", show(h1 and h1.Story.Var))
+end)
+
+runGroup("e2-changed-mind", function()
+	local w = townWorld()
+	for i = 1, 4 do addSub(w, "TX_C" .. i, { Requires = { Done = { "M2_3" } }, Steps = { choiceStep(1, 1) } }) end
+	addSub(w, "TX_Egg", { Requires = { Done = { "M2_3" } }, Steps = { choiceStep(0, 0) } })
+	local p, d = joinAfterM23(w, 821, "Halo")
+	d.Honor = 5
+	local n0 = #w.Notices
+	w:Act(p, "TX_C1", "Choose", "Good")
+	check(not said(w, p, n0, SQ0.Text.ChangedGood) and not said(w, p, n0, SQ0.Text.ChangedEvil) and d.Story.LastSide == "Good",
+		"the first real pick: no line, its side saved", show({ d.Story.LastSide, w:NoticesFor(p, n0) }))
+	local n1 = #w.Notices
+	w:Act(p, "TX_C2", "Choose", "Evil")
+	check(said(w, p, n1, SQ0.Text.ChangedEvil) and d.Story.LastSide == "Evil", "Good then Evil: 'You gave it last time…'",
+		show(w:NoticesFor(p, n1)))
+	-- an easter egg (0 points) leans the shard, never counts as a change, never moves the score
+	local n2, honor = #w.Notices, d.Honor
+	w:Act(p, "TX_Egg", "Choose", "Good")
+	local eggLines = w:NoticesFor(p, n2)
+	check(said(w, p, n2, SQ0.Text.LeanGood) and not said(w, p, n2, SQ0.Text.ChangedGood) and d.Story.LastSide == "Evil"
+		and d.Honor == honor and d.Story.Pick.TX_Egg == "Good", "a 0-point pick: 'Your shard leaned to the light.', no change line, no score",
+		show({ eggLines, d.Story.LastSide, d.Honor }))
+	for _, t in eggLines do
+		check(t ~= string.format(SQ0.Text.Good, 0) and t ~= string.format(SQ0.Text.OffSideHalo, 0), "no '+0' / '-0' line", t)
+	end
+	local n3 = #w.Notices
+	w:Act(p, "TX_C3", "Choose", "Evil")
+	check(not said(w, p, n3, SQ0.Text.ChangedEvil) and not said(w, p, n3, SQ0.Text.ChangedGood), "Evil after Evil (the egg between): no line",
+		show(w:NoticesFor(p, n3)))
+	-- an artisan's A after B is a change too; a broken saved side is dropped at load
+	local q, e = joinAfterM23(w, 822, "Neutral")
+	e.Story.LastSide = "Sideways"
+	w.PS.PlayerReady:Fire(q, e)
+	local n4 = #w.Notices
+	w:Act(q, "TX_C1", "Choose", "B")
+	check(not said(w, q, n4, SQ0.Text.ChangedEvil) and e.Story.LastSide == "Evil", "a bad saved side is dropped: no line on the first pick",
+		show({ e.Story.LastSide, w:NoticesFor(q, n4) }))
+	local n5 = #w.Notices
+	w:Act(q, "TX_C2", "Choose", "A")
+	check(said(w, q, n5, SQ0.Text.ChangedGood), "an artisan's A after B: 'You kept it last time…'", show(w:NoticesFor(q, n5)))
+end)
+
+runGroup("e3-titles", function()
+	local w = townWorld()
+	local owned, grants = {}, {}
+	w.Registry.TitleService = { Grant = function(p, id)
+		table.insert(grants, id)
+		if owned[id] then return false end
+		owned[id] = true
+		return true
+	end }
+	w.Config.TitleDefs.TX_Plain = { Name = "Tester" }
+	w.Config.TitleDefs.TX_Give = { Name = "Giver" }
+	w.Config.TitleDefs.TX_Keep = { Name = "Keeper" }
+	local talk = { Text = "Talk", Panel = true, Lines = { All = { "Hi" } }, Obj = { Type = "Talk" } }
+	addSub(w, "TX_T1", { Requires = { Done = { "M2_3" } }, Steps = { talk }, Reward = { Title = "TX_Plain" } })
+	addSub(w, "TX_T2", { Requires = { Done = { "M2_3" } }, Steps = { choiceStep(0, 0) },
+		Reward = { TitleBy = { Good = "TX_Give", Evil = "TX_Keep" } } })
+	addSub(w, "TX_T3", { Requires = { Done = { "M2_3" } }, Steps = { talk }, Reward = { Title = "TX_Plain" } })
+	addSub(w, "TX_T4", { Requires = { Done = { "M2_3" } }, Steps = { talk }, Reward = { Title = "TX_NoSuchTitle" } })
+	local p, d = joinAfterM23(w, 831, "Horns")
+	local n0 = #w.Notices
+	w:Act(p, "TX_T1", "Talk")
+	check(d.Story.Done.TX_T1 and grants[1] == "TX_Plain" and said(w, p, n0, string.format(SQ0.Text.NewTitle, "Tester")),
+		"Reward.Title: granted once, 'New title: Tester!'", show({ grants, w:NoticesFor(p, n0) }))
+	local n1 = #w.Notices
+	w:Act(p, "TX_T2", "Choose", "Evil")
+	check(grants[2] == "TX_Keep" and said(w, p, n1, string.format(SQ0.Text.NewTitle, "Keeper")),
+		"Reward.TitleBy: the Evil pick gets the Evil title", show({ grants, w:NoticesFor(p, n1) }))
+	local n2 = #w.Notices
+	w:Act(p, "TX_T3", "Talk")
+	check(grants[3] == "TX_Plain" and not said(w, p, n2, string.format(SQ0.Text.NewTitle, "Tester")),
+		"a title already owned: no 'New title' line", show({ grants, w:NoticesFor(p, n2) }))
+	w:Act(p, "TX_T4", "Talk")
+	check(#grants == 3 and d.Story.Done.TX_T4, "an unknown title id: nothing granted, the quest still ends", show(grants))
+	local q = joinAfterM23(w, 832, "Neutral")
+	w:Act(q, "TX_T2", "Choose", "A")
+	check(grants[4] == "TX_Give", "an artisan's A gets the Good-side title", show(grants))
+end)
+
+runGroup("e5-hidden", function()
+	local w = townWorld()
+	local panels = panelsOf(w)
+	local spot = SQ0.Landmarks.Fountain
+	addSub(w, "TX_Egg", { Hidden = true, Start = "A secret!", Requires = { Done = { "M2_3" } }, Finish = "Egg found",
+		Steps = {
+			{ Text = "Find it", Obj = { Type = "Near", Spot = "Fountain", Radius = 6 } },
+			choiceStep(0, 0),
+			{ Text = "After", Panel = true, Obj = { Type = "Talk" },
+				LinesBy = { From = "TX_Egg", Good = { All = { "g" } }, Evil = { All = { "e" } }, Default = { All = { "d" } } } },
+		} })
+	addSub(w, "TX_Sky", { Hidden = true, Requires = { Done = { "M2_3" } }, Finish = "Sky found",
+		Steps = { { Text = "Look up %d/%d s", Obj = { Type = "Near", Spot = "Fountain", Radius = 6, Stay = 3 } } } })
+	local n0 = #w.Notices
+	local p, d = joinAfterM23(w, 841, "Halo", { Pos = vec(spot.X + 60, 0, spot.Z) })
+	check(w:Track(d, "TX_Egg") and not said(w, p, n0, "A secret!"), "a hidden sub is offered without its Start toast",
+		show(w:NoticesFor(p, n0)))
+	check(rowOf(w, p, d, "TX_Egg") == nil and rowOf(w, p, d, "TX_Sky") == nil, "…and no row before it is found")
+	-- found: past its first step (the choice card opens by itself; the row shows from now on)
+	w:MoveTo(p, vec(spot.X + 2, 0, spot.Z))
+	w:Tick(p, 1)
+	check(w:Track(d, "TX_Egg").St == 2 and rowOf(w, p, d, "TX_Egg") ~= nil, "found: step 2 and its row", show(w:Track(d, "TX_Egg")))
+	local card = panels[#panels]
+	check(card ~= nil and card.Arg.Id == "TX_Egg" and card.Arg.St == 2, "the pick card opens", show(card and card.Arg))
+	w:Tick(p, 1)
+	check(rowOf(w, p, d, "TX_Sky") == nil and w:Track(d, "TX_Sky").P >= 1, "a one-step egg counting its seconds stays hidden",
+		show(w:Track(d, "TX_Sky")))
+	local honor = d.Honor or 0
+	local n1 = #w.Notices
+	w:Act(p, "TX_Egg", "Choose", "Evil")
+	check(said(w, p, n1, SQ0.Text.LeanEvil) and (d.Honor or 0) == honor and d.Story.Pick.TX_Egg == "Evil",
+		"a 0-point egg pick: the lean line only (no score)", show({ w:NoticesFor(p, n1), d.Honor }))
+	local after = panels[#panels]
+	check(after.Arg.Id == "TX_Egg" and after.Arg.St == 3 and after.Arg.Var == "Evil", "LinesBy its own pick: Var Evil",
+		show(after.Arg))
+	w:Tick(p, 3)
+	check(d.Story.Done.TX_Sky and said(w, p, n1, "Sky found"), "the one-step egg ends after its seconds (never listed)",
+		show(w:Track(d, "TX_Sky")))
+end)
+
 finish()

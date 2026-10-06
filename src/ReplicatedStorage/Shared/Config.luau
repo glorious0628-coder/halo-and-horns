@@ -1579,6 +1579,15 @@ Config.Tutorial = {
 -- Gold } paid on that pick (a Neutral A takes Good's, B takes Evil's); a step with Npc = id is talked through that town
 -- NPC: game dev 1 tags its model CollectionService "StoryNpc" (NpcTag) with the attribute NpcId = id, and Talk / Choose
 -- / Open then need the player within NpcRange of it (before the NPC exists in the world, anywhere).
+-- story_depth E1 / E2 / E3 / E5 (게임성 개발 2, 2026-10-07). A pick's side: Good / Purify / A = "Good", Evil / Devour / B
+-- = "Evil". E1 Requires.Pick = { Id, Is }: Is "Good" / "Evil" = that side of the saved pick of Id, else the exact pick.
+-- E2 step.LinesBy = { From = id, Good, Evil, A, B, Default } (each entry shaped like Lines: All / Halo / Horns / Neutral):
+-- the server sends Var = the exact pick of From when listed, else its side, else "Default" (OpenPanel "Story" payload
+-- and row.Story.Var); every LinesBy needs a Default (old saves have no picks). A real pick (its Choice carries points)
+-- on the other side from the last real pick adds one line (ChangedGood / ChangedEvil). E3 Reward.Title = a
+-- Config.TitleDefs id, or Reward.TitleBy = { Good = id, Evil = id } by the side of this quest's own pick (TitleService,
+-- no stats). E5 Hidden = true (a sub): no Start toast and no row until it is found (past its first step or waiting for
+-- [Claim]); a Choice with Points = 0 leans the shard (LeanGood / LeanEvil) instead of a score line.
 Config.StoryQuests = {
 	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
 	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
@@ -1621,6 +1630,11 @@ Config.StoryQuests = {
 		Later = "Later",
 		Title = "%s · %s",
 		ChoiceGold = "+%s gold", -- E6: a pick's own reward line ("+Enhance Scroll 70%" / "+HP Potion ×3 · +60 gold")
+		LeanGood = "Your shard leaned to the light.", -- E5: a 0-point pick (no score)
+		LeanEvil = "Your shard leaned to the dark.",
+		ChangedGood = "You kept it last time. Now you give. People change. Shards too.", -- E2 (story_depth §7)
+		ChangedEvil = "You gave it last time. Now you keep. Shards change too.",
+		NewTitle = "New title: %s!", -- E3 (a stat-free title)
 	},
 	Defs = {
 		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a king slime
