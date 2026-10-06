@@ -1,0 +1,31 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false IntroSeen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 WeaponOwnedMask=0 CombatPower=0 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=false ZoneId=Crossroads weaponModel=false
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\unarmed_flow\01_after_opening.png
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true IntroSeen=true TutorialStep=0 TutorialKills=0 WeaponTier=0 WeaponOwnedMask=0 CombatPower=0 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=false ZoneId=Crossroads weaponModel=false
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\unarmed_flow\02_bare_hands_power0.png
+fired AcceptTutorial
+tutorial: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true IntroSeen=true TutorialStep=1 TutorialKills=0 WeaponTier=0 WeaponOwnedMask=0 CombatPower=0 Level=1 BankGold=0 CarriedGold=0 BlacksmithVisited=false ZoneId=HaloTown weaponModel=false
+tp 300,0.015625,-30
+slime at 5
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\unarmed_flow\03_punch_slime.png
+slime at 5
+slime at 5
+slime at 52
+slime at 3
+slime at 5
+slime at 9
+slime at 5
+hunt: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true IntroSeen=true TutorialStep=2 TutorialKills=5 WeaponTier=0 WeaponOwnedMask=0 CombatPower=12 Level=2 BankGold=0 CarriedGold=15 BlacksmithVisited=false ZoneId=SlimeMeadow weaponModel=false
+fired ClaimQuest
+claimed: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true IntroSeen=true TutorialStep=99 TutorialKills=5 WeaponTier=0 WeaponOwnedMask=0 CombatPower=12 Level=2 BankGold=150 CarriedGold=15 BlacksmithVisited=false ZoneId=SlimeMeadow weaponModel=false
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\unarmed_flow\04_claimed.png
+at anvil 39, 1.5, 45
+dispatch U: Upgrade
+after forge: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true IntroSeen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 WeaponOwnedMask=1 CombatPower=300 Level=2 BankGold=165 CarriedGold=0 BlacksmithVisited=true ZoneId=Crossroads weaponModel=Warrior
+panel: visible=true | 대장간 | X | 교차로 마을 → 장인 길드 모루 · 가까이에서 상호작용 | 기본 무기를 골라 구입해요. 보유 무기는 무료로 다시 장착할 수 있어요. | 현재 무기: 나뭇가지 | 보유 165골드 (금고 165 + 주머니 0) | 재료 팔기 · 2개 → 4골드 | ★ 나뭇가지 · 현재 장착 중 | First weapon · free to re-equip · can't be sold | 슬라임 기본 공격 3방 | 현재 장착 중 | The first weapon can't be sold | ★ 나무 검 · 미보유 | 가격 150골드 · 필요 Lv 1 · 현재 Lv 2 | 슬라임 기본 공격 3방 → 2방 | 판매가 15골드 (구매가의 1/10) | 구입 · 150골드 | 판매 · 15골드 | ★★ 철 검 · 미보유 | 가격 800골드 · 필요 Lv 5 · 현재 Lv 2 | 슬라임 기본 공격 3방 → 1방 | 판매가 80골드 (구매가의 1/10) | 이 무기는 레벨 5부터 살 수 있어요. | 구입 · 800골드 | 판매 · 80골드
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\unarmed_flow\05_first_weapon.png
+console: 
+play stopped
+fresh off
