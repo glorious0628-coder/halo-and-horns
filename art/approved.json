@@ -3225,5 +3225,29 @@
   "cutout": "tools/img2/cut_icon.py --holes; checked magenta/light",
   "preview": "art/review/s2/b1516_weapons_sheet.png",
   "note": "묶음 15. 느낌표 글리프(크림 면 + 남색 외곽선, 막대와 점 두 조각). NPC 표시(NpcMarkerBubble) 안·경고에 씀."
+ },
+ "GameIcon_A_SplitHero": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1 + Adobe image_generative_expand 120px each side",
+  "prompt": "art/prompts/GameIcon_A_SplitHero.txt",
+  "original": "art/out/icon/GameIcon_A_SplitHero_1_src.png (1024, Adobe MCP presigned download); expanded art/out/icon/GameIcon_A_SplitHero_1_expand.png (1264)",
+  "file": "art/ui/GameIcon_A_SplitHero.png",
+  "size": "512x512 RGB (불투명, 글자 없음)",
+  "cutout": "none — opaque game icon; edge margin by generative expand so halo/horn stay inside the rounded-corner safe area",
+  "preview": "art/review/gameicon_sheet_v1.jpg",
+  "note": "게임 아이콘 비교용 1/2(사용자 확정 2026-10-06 'A1 B1 써서 비교', 검수 경유). 후광·뿔 블록 영웅 + 왕관 조각. 사람 그림 — 사용자가 시트를 보고 고름. 업로드·바꿔 쓰기는 공개 때 사용자가 체험 설정에서(LAUNCH-OPS). 옛 'GameIcon' 키(art/out/GameIcon.png)는 대체됨."
+ },
+ "GameIcon_B_Crown": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1 + Adobe image_generative_expand 120px each side",
+  "prompt": "art/prompts/GameIcon_B_Crown.txt",
+  "original": "art/out/icon/GameIcon_B_Crown_1_src.png (1024, Adobe MCP presigned download); expanded art/out/icon/GameIcon_B_Crown_1_expand.png (1264)",
+  "file": "art/ui/GameIcon_B_Crown.png",
+  "size": "512x512 RGB (불투명, 글자 없음)",
+  "cutout": "none — opaque game icon; edge margin by generative expand",
+  "preview": "art/review/gameicon_sheet_v1.jpg",
+  "note": "게임 아이콘 비교용 2/2(사용자 확정 2026-10-06). 반은 금·후광, 반은 진홍·뿔인 깨진 왕관."
  }
 }
