@@ -1095,6 +1095,28 @@ function KING.setBelow(below)
 	relayout()
 end
 
+-- A23-45: the minibosses of Config.Halloween.Bosses (GameState <Key>Active / <Key>EndsAt / <Key>NextAt): the live one
+-- ending soonest wins, else the next one to appear. Returns key, active, seconds (nil when none is scheduled)
+KING.TEXT = { PumpkinKing = { "HudNext", "HudActive" }, GhostKing = { "GhostHudNext", "GhostHudActive" } }
+function KING.pick(now)
+	local H = Config.Halloween
+	local list = type(H) == "table" and type(H.Bosses) == "table" and H.Bosses or { { Key = "PumpkinKing" } }
+	local best, bestActive, bestT = nil, false, math.huge
+	for _, b in list do
+		local key = type(b) == "table" and b.Key or nil
+		if type(key) == "string" then
+			if gsAttr(key .. "Active", false) == true then
+				local t = num(gsAttr(key .. "EndsAt", 0)) - now
+				if not bestActive or t < bestT then best, bestActive, bestT = key, true, t end
+			elseif not bestActive then
+				local nextAt = num(gsAttr(key .. "NextAt", 0))
+				if nextAt > 0 and nextAt - now < bestT then best, bestT = key, nextAt - now end
+			end
+		end
+	end
+	return best, bestActive, best and bestT or nil
+end
+
 function KING.update(now)
 	local chip = ui.KingChip
 	if not chip then return end
@@ -1103,12 +1125,11 @@ function KING.update(now)
 	local line = nil
 	if text then
 		local en = KING.english()
-		if gsAttr("PumpkinKingActive", false) == true then
-			line = safeFormat((en and text.HudActiveEn) or text.HudActive,
-				Util.FormatTime(num(gsAttr("PumpkinKingEndsAt", 0)) - now))
-		else
-			local nextAt = num(gsAttr("PumpkinKingNextAt", 0))
-			if nextAt > 0 then line = safeFormat((en and text.HudNextEn) or text.HudNext, Util.FormatTime(nextAt - now)) end
+		local key, active, t = KING.pick(now)
+		local keys = key and (KING.TEXT[key] or KING.TEXT.PumpkinKing)
+		if keys then
+			local k = active and keys[2] or keys[1]
+			line = safeFormat((en and text[k .. "En"]) or text[k], Util.FormatTime(t))
 		end
 	end
 	setVisible(chip, line ~= nil and line ~= "")
@@ -1486,7 +1507,8 @@ function V2.tick()
 	end
 	-- seconds until each countdown (the live Pumpkin King counts as 0) for the layout-B event line
 	local now = Util.Now()
-	V2.KingIn = gsAttr("PumpkinKingActive", false) == true and 0 or math.max(0, num(gsAttr("PumpkinKingNextAt", 0)) - now)
+	local kingKey, kingActive, kingT = KING.pick(now) -- A23-45: the pumpkin king or the ghost king, whichever is sooner
+	V2.KingIn = kingKey and (kingActive and 0 or math.max(0, kingT)) or 0
 	V2.GooseIn = math.max(0, num(gsAttr("GooseNextAt", 0)) - now)
 	V2.layout() -- cheap key check: HUD's numbers / the UIScale changed (or HUD v2 just appeared)
 	V2.stack()

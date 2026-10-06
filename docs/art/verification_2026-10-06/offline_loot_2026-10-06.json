@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 2626,
+  "checks": 2978,
   "failedChecks": 0,
-  "namedChecks": 544,
+  "namedChecks": 545,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -213,13 +213,19 @@
     },
     {
       "group": "config",
-      "check": "A23-30 BatGoblin rows = Candy 0.45 + Enh 0.006/0.0016/0.0004 + Move 0.002/0.0006/0.0002 + HP/MP 0.015 (no tooth, no weapon)",
+      "check": "A23-45 BatGoblin rows = Candy 0.45 + GoblinTooth 0.2 + the goblin's scroll / transfer / potion rows + Weapon 4 0.001",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "A23-30 LittleGhost rows = the bat goblin's rows",
+      "check": "A23-45 LittleGhost rows = candy + the goblin's scroll / potion rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-45 GhostMinion rows = candy 0.3 + about half the little ghost's rows",
       "pass": 1,
       "fail": 0
     },
@@ -232,7 +238,7 @@
     {
       "group": "config",
       "check": "A23-27 BelowLevel only on weapon rows, = { Item = real id, N = integer >= 1 }",
-      "pass": 1,
+      "pass": 2,
       "fail": 0
     },
     {
@@ -340,37 +346,37 @@
     {
       "group": "config",
       "check": "drop table kinds are real monster kinds",
-      "pass": 10,
+      "pass": 12,
       "fail": 0
     },
     {
       "group": "config",
       "check": "each drop row is exactly one of Item / Potion / Weapon",
-      "pass": 96,
+      "pass": 115,
       "fail": 0
     },
     {
       "group": "config",
       "check": "drop chances are in (0, 1]",
-      "pass": 96,
+      "pass": 115,
       "fail": 0
     },
     {
       "group": "config",
       "check": "drop rows name real item ids",
-      "pass": 70,
+      "pass": 83,
       "fail": 0
     },
     {
       "group": "config",
       "check": "potion rows name HP/MP",
-      "pass": 20,
+      "pass": 24,
       "fail": 0
     },
     {
       "group": "config",
       "check": "weapon rows are real tiers with a duplicate-gold value",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
@@ -676,13 +682,13 @@
     {
       "group": "rollkill",
       "check": "one RollKill = one draw per row (+ jackpot draw; a BelowLevel row below its MinLevel draws nothing)",
-      "pass": 20,
+      "pass": 24,
       "fail": 0
     },
     {
       "group": "rollkill",
       "check": "RollKill returns the gained list",
-      "pass": 20,
+      "pass": 24,
       "fail": 0
     },
     {
@@ -1006,7 +1012,7 @@
     {
       "group": "rollkill",
       "check": "no jackpot roll for non-slime kinds",
-      "pass": 8,
+      "pass": 10,
       "fail": 0
     },
     {
@@ -1066,31 +1072,31 @@
     {
       "group": "bully",
       "check": "BullyStacks 1: a row drops iff draw < P x 0.5 (capped at 1)",
-      "pass": 192,
+      "pass": 230,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: one draw per row (+ jackpot) per kill",
-      "pass": 191,
+      "pass": 228,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: the unpenalized chance P no longer drops",
-      "pass": 96,
+      "pass": 115,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
-      "pass": 191,
+      "pass": 228,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 1: the unpenalized chance P x GoldenMult no longer drops",
-      "pass": 95,
+      "pass": 113,
       "fail": 0
     },
     {
@@ -1138,19 +1144,19 @@
     {
       "group": "bully",
       "check": "BullyStacks 0: a row drops iff draw < P (capped at 1)",
-      "pass": 191,
+      "pass": 228,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 0: one draw per row (+ jackpot) per kill",
-      "pass": 179,
+      "pass": 213,
       "fail": 0
     },
     {
       "group": "bully",
       "check": "BullyStacks 0: a golden row drops iff draw < P x GoldenMult (capped at 1)",
-      "pass": 180,
+      "pass": 215,
       "fail": 0
     },
     {
@@ -1474,85 +1480,85 @@
     {
       "group": "weapons",
       "check": "unowned weapon drop sets its mask bit (saved + mirrored)",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "new weapon is reported once and pays no gold",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "a weapon drop never auto-equips",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "rare weapon notice",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "a new Rare+ weapon drop calls AnnounceService exactly once (RareWeapon)",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "RareWeapon announce = (player, { Weapon = tier, Monster = kind }, the tier's grade id)",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "weapon ownership is saved before the RareWeapon announce",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "weapon drops never use Net.NotifyAll",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "duplicate weapon drop does not change the mask",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "duplicate is not reported as a new weapon",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "a duplicate weapon drop is not announced again",
-      "pass": 6,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "A23-27 a BelowLevel weapon row below MinLevel grants no weapon, no announce, no draw",
-      "pass": 1,
+      "pass": 2,
       "fail": 0
     },
     {
       "group": "weapons",
       "check": "A23-27 ... and pays its BelowLevel item instead",
-      "pass": 1,
+      "pass": 2,
       "fail": 0
     },
     {
@@ -3583,9 +3589,9 @@
   "staticChecks": 9,
   "staticFailures": [],
   "mutations": {
-    "total": 105,
-    "applied": 105,
-    "caught": 105,
+    "total": 106,
+    "applied": 106,
+    "caught": 106,
     "results": [
       {
         "mutation": "enhance failure may go below +0",
@@ -4344,13 +4350,13 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "bat goblin keeps the goblin tooth row",
+        "mutation": "bat goblin loses its goblin tooth row (A23-45 woods rows)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: A23-30 BatGoblin rows = Candy 0.45 + Enh 0.006/0.0016/0.0004 + Move 0.002/0.0006/0.0002 + HP/MP 0.015 (no tooth, no weapon)"
+          "config :: A23-45 BatGoblin rows = Candy 0.45 + GoblinTooth 0.2 + the goblin's scroll / transfer / potion rows + Weapon 4 0.001"
         ],
         "newFailingCount": 1
       },
@@ -4361,7 +4367,18 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: A23-30 LittleGhost rows = the bat goblin's rows"
+          "config :: A23-45 LittleGhost rows = candy + the goblin's scroll / potion rows"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ghost minion candy back to the little ghost's 0.45",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-45 GhostMinion rows = candy 0.3 + about half the little ghost's rows"
         ],
         "newFailingCount": 1
       },
@@ -5058,19 +5075,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "312c36eb8a6cac8cb7b4114776f705b9e6f7723147502523d43d087b870e497c",
-    "src/ReplicatedStorage/Shared/Net.luau": "286f998785063a11ad5899da5a8721bdf19d16647afa6027b3016508f860d4e2",
+    "src/ReplicatedStorage/Shared/Config.luau": "1e2769031801dea97dce29130a312418ff776377d9b0d045a4fde83ed0d343c0",
+    "src/ReplicatedStorage/Shared/Net.luau": "a9063fb3175f722682c1def371bb55bf60da5f9da440b23254ea0f2d198debd9",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "d360640bf7f1262d2bdf17d6eea7dd104cae44f4b29989c4263b94819b9316ba",
     "src/ServerScriptService/PlayerService.luau": "2ce4b689d4c44fa077774759ac33ef7a4efc853cb39e00d81aa810f4c71f4ac5",
     "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
-    "src/ServerScriptService/CombatService.luau": "58bdfb4f6544bbd889df5f5616ef8ee25f8ca99b5e168b5e0e7e3220ab97cc44",
+    "src/ServerScriptService/CombatService.luau": "55e50d8d24e25039b9a9142f1f9ab206ab07503aa1e1a9398191fdc32b9c0a1f",
     "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3",
     "src/ServerScriptService/JusticeService.luau": "c82185555c4263dd843d25e56c28d2aa9dd11d23f123a0f5c89fff7f6c47719c",
     "src/ServerScriptService/PvPService.luau": "6a74d3116f9ff4ca38505c81f37944f10e80d58a54bf4bcb426c04c05a177ecb",
     "src/ServerScriptService/ShopService.luau": "05f186c207f216491798d1a87d4b56be3c42790ab07e2e07614749a795dbf30c"
   },
-  "fixtureSHA256": "3a86c6164117b9a231743b416ffee3314bc4f31c77c50c8b150a4cbe67ca31a4",
+  "fixtureSHA256": "7d985bc68cd8ec5680149e7338eef950327613fa0311a56ae42295b53b0b807d",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

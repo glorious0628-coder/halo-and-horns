@@ -286,10 +286,17 @@ local function newConfig(tweak, clock)
 	return c
 end
 
-local SEASONAL = { "PumpkinSlime", "LittleGhost", "BatGoblin", "PumpkinKing" }
-local PATCH_KINDS = { "PumpkinSlime", "LittleGhost", "BatGoblin" } -- the regular seasonal kinds (the king is an event)
+local SEASONAL = { "PumpkinSlime", "BatGoblin", "GhostMinion", "LittleGhost", "PumpkinKing", "GhostKing" }
+-- A23-45: the regular seasonal kinds that add their Count in their own field, outside the GlobalCap (the kings are
+-- events; the bat goblin instead takes 3 goblin slots in the woods: TAKERS)
+local PATCH_KINDS = { "PumpkinSlime", "GhostMinion", "LittleGhost" }
+local TAKERS = { BatGoblin = { Goblin = 3 } }
 local BASE = { "Slime", "BigSlime", "Goblin", "GoblinBrute", "Skeleton", "SkeletonKnight" }
 local PATCH = "PumpkinPatch"
+local HOLLOW = "HauntedHollow"
+-- A23-45 one family per field
+local FAMILY = { PumpkinSlime = PATCH, PumpkinKing = PATCH, BatGoblin = "GoblinWoods", GhostMinion = HOLLOW, LittleGhost = HOLLOW,
+	GhostKing = HOLLOW }
 local function zoneSum(config, counts, zone)
 	local n = 0
 	for kind, c in counts do
@@ -300,19 +307,32 @@ local function zoneSum(config, counts, zone)
 end
 
 ------------------------------------------------------------------ 1. config contract
--- A23-30: every Halloween kind lives in the PumpkinPatch (no Takes: the meadow / woods keep their counts); the ghost
--- and the bat goblin got Lv1-field numbers; the bat goblin counts as itself (no QuestAs). A23-27: the king's reward rule.
+-- A23-45 (user 2026-10-06): one family per field. PumpkinPatch = pumpkin slimes + the pumpkin king; the bat goblins take
+-- 3 goblin slots in the GoblinWoods (woods numbers, counted as goblins); the HauntedHollow = the ghost family (minions in
+-- packs, little ghosts at woods numbers, the ghost king with the pumpkin king's rules). A23-27: the kings' reward rule.
 local SPEC = {
-	PumpkinSlime = { Name = "호박 슬라임", Short = "호박 슬라임", Zone = PATCH, Count = 6, HP = 14, Damage = 2, XP = 6, Gold = 4,
+	PumpkinSlime = { Name = "호박 슬라임", Short = "호박 슬라임", Zone = PATCH, Count = 10, HP = 14, Damage = 2, XP = 6, Gold = 4,
 		Speed = 10, Shape = "Slime", Scale = 1.1, Color = { 255, 150, 40 }, QuestAs = "Slime" },
-	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = PATCH, Count = 4, HP = 30, Damage = 3, XP = 11, Gold = 6,
-		Speed = 10, Shape = "Humanoid", Scale = 1.0, Color = { 220, 215, 255 }, Float = 1.5 },
-	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = PATCH, Count = 4, HP = 45, Damage = 4, XP = 15, Gold = 8,
-		Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = { 120, 80, 150 } },
+	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = "GoblinWoods", Count = 3, HP = 95, Damage = 6, XP = 30, Gold = 17,
+		Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = { 120, 80, 150 }, QuestAs = "Goblin", Takes = { Goblin = 3 } },
+	GhostMinion = { Name = "똘마니 유령", Short = "똘마니 유령", Zone = HOLLOW, Count = 8, HP = 40, Damage = 3, XP = 13, Gold = 7,
+		Speed = 12, Shape = "Humanoid", Scale = 0.7, Color = { 190, 220, 255 }, Float = 1.2 },
+	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = HOLLOW, Count = 4, HP = 70, Damage = 5, XP = 24, Gold = 14,
+		Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = { 220, 215, 255 }, Float = 1.5 },
 	PumpkinKing = { Name = "호박 대왕", Short = "호박 대왕", Zone = PATCH, Count = 0, Boss = true, Shape = "Slime", Scale = 2.5,
 		Color = { 255, 130, 30 }, Damage = 8, Speed = 7, XP = 300, Gold = 150, HP = 9000, ContributorWindow = 120,
 		RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8 },
+	GhostKing = { Name = "유령 왕", Short = "유령 왕", Zone = HOLLOW, Count = 0, Boss = true, Shape = "Humanoid", Scale = 2.4,
+		Color = { 200, 190, 255 }, Damage = 8, Speed = 7, XP = 300, Gold = 150, HP = 9000, ContributorWindow = 120,
+		RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, Float = 2.2 },
 }
+
+local function sameShallow(a, b)
+	if type(a) ~= "table" or type(b) ~= "table" then return false end
+	for k, v in a do if b[k] ~= v then return false end end
+	for k, v in b do if a[k] ~= v then return false end end
+	return true
+end
 
 runGroup("config-kinds", function()
 	local MT = CONFIG.MonsterTypes
@@ -326,6 +346,8 @@ runGroup("config-kinds", function()
 					local c = def.Color
 					check(type(c) == "table" and c.X == want[1] and c.Y == want[2] and c.Z == want[3], "colour = design RGB",
 						kind .. " " .. show(c and { c.X, c.Y, c.Z }))
+				elseif type(want) == "table" then
+					check(sameShallow(def[field], want), "table field = design value", kind .. "." .. field .. " = " .. show(def[field]))
 				else
 					check(def[field] == want, "number / text field = design value", kind .. "." .. field .. " = " .. tostring(def[field]))
 				end
@@ -354,7 +376,8 @@ runGroup("config-kinds", function()
 	check(#O == count(MT), "MonsterTypeOrder lists every MonsterTypes kind", #O .. " vs " .. count(MT))
 	for kind in MT do check(idx[kind] ~= nil, "every kind is in MonsterTypeOrder", kind) end
 	check(idx.PumpkinSlime and idx.PumpkinSlime > idx.Slime and idx.BatGoblin > idx.Goblin and idx.LittleGhost > idx.Goblin
-		and idx.PumpkinKing > idx.Slime, "seasonal kinds keep their list slots (pumpkin slime / king after the slime, bat goblin / ghost after the goblin)",
+		and idx.PumpkinKing > idx.Slime and idx.GhostMinion and idx.GhostMinion > idx.GoblinBrute and idx.GhostKing > idx.LittleGhost
+		and idx.GhostKing < idx.Skeleton, "seasonal kinds keep their list slots (pumpkins after the slime, bat goblin after the goblin, the ghost family between the woods and the ruins)",
 		show(idx))
 	for i = 2, #BASE do
 		check(idx[BASE[i - 1]] < idx[BASE[i]], "base kinds keep their order", BASE[i - 1] .. " < " .. BASE[i])
@@ -438,22 +461,53 @@ runGroup("config-patch", function()
 		"LandPumpkinPatch is joined to LandMeadow (its MinZ = the meadow's MaxZ, inside the meadow's x range)", show({ lp, lm }))
 	check(lp and Z and lp.MinX == Z.Center.X - Z.Size.X / 2 and lp.MaxX == Z.Center.X + Z.Size.X / 2
 		and lp.MinZ == Z.Center.Z - Z.Size.Z / 2 and lp.MaxZ == Z.Center.Z + Z.Size.Z / 2, "the zone rectangle = the land rectangle", show(lp))
-	-- one family per field: the meadow / woods / ruins have no Halloween kind, the patch only Halloween kinds
+	-- A23-45 one family per field: pumpkins in the patch, ghosts in the hollow, the bat goblin in the woods (taking 3
+	-- goblin slots); the meadow and the ruins have no Halloween kind
 	local perZone = {}
 	for kind, def in CONFIG.MonsterTypes do
 		perZone[def.Zone] = perZone[def.Zone] or { Season = 0, Base = 0 }
 		if def.Season ~= nil then perZone[def.Zone].Season += 1 else perZone[def.Zone].Base += 1 end
 		if def.Season == "Halloween" then
-			check(def.Zone == PATCH, "every Halloween kind lives in the PumpkinPatch", kind .. " " .. tostring(def.Zone))
-			check(def.Takes == nil, "no Halloween kind takes base slots (no Takes)", kind)
+			check(FAMILY[kind] ~= nil and def.Zone == FAMILY[kind], "every Halloween kind lives in its family's field (A23-45)",
+				kind .. " " .. tostring(def.Zone))
+			check(sameShallow(def.Takes or {}, TAKERS[kind] or {}), "only the bat goblin takes base slots (3 goblins)", kind)
 		end
 	end
-	for _, zone in { "SlimeMeadow", "GoblinWoods", "SkeletonRuins" } do
+	for _, zone in { "SlimeMeadow", "SkeletonRuins" } do
 		check(perZone[zone] and perZone[zone].Season == 0 and perZone[zone].Base == 2,
-			"meadow and woods (and the ruins) have 0 Halloween kinds", zone .. " " .. show(perZone[zone]))
+			"the meadow and the ruins have 0 Halloween kinds", zone .. " " .. show(perZone[zone]))
 	end
-	check(perZone[PATCH] and perZone[PATCH].Base == 0 and perZone[PATCH].Season == 4,
-		"PumpkinPatch has only Halloween kinds (all four)", show(perZone[PATCH]))
+	check(perZone.GoblinWoods and perZone.GoblinWoods.Base == 2 and perZone.GoblinWoods.Season == 1,
+		"the woods: goblins + the bat goblin only", show(perZone.GoblinWoods))
+	check(perZone[PATCH] and perZone[PATCH].Base == 0 and perZone[PATCH].Season == 2,
+		"PumpkinPatch: only the pumpkin family (slime + king)", show(perZone[PATCH]))
+	check(perZone[HOLLOW] and perZone[HOLLOW].Base == 0 and perZone[HOLLOW].Season == 3,
+		"HauntedHollow: only the ghost family (minion + little ghost + king)", show(perZone[HOLLOW]))
+	-- the HauntedHollow: a small seasonal field west of the patch, joined to it (land), Lv 8-14 recommended, no gate
+	local HZ = CONFIG.Zones[HOLLOW]
+	check(type(HZ) == "table" and HZ.Id == HOLLOW and HZ.Center and HZ.Center.X == 220 and HZ.Center.Z == 240 and HZ.Size
+		and HZ.Size.X == 104 and HZ.Size.Z == 90, "Config.Zones.HauntedHollow: Center (220, 0, 240), Size (104, 0, 90)",
+		show(HZ and { HZ.Center, HZ.Size }))
+	check(HZ and HZ.MinLevel == 1 and HZ.PvP == false and HZ.Town == false and HZ.Season == "Halloween" and HZ.Faction == nil,
+		"HauntedHollow: no level gate, no PvP, not a town, Season = \"Halloween\"", show(HZ and { HZ.MinLevel, HZ.PvP, HZ.Town, HZ.Season }))
+	check(HZ and HZ.Spawn and math.abs(HZ.Spawn.X - HZ.Center.X) <= HZ.Size.X / 2 and math.abs(HZ.Spawn.Z - HZ.Center.Z) <= HZ.Size.Z / 2,
+		"HauntedHollow spawn point lies inside it", show(HZ and HZ.Spawn))
+	local hn = 0
+	for _, id in CONFIG.ZoneOrder do if id == HOLLOW then hn += 1 end end
+	check(hn == 1, "HauntedHollow is in Config.ZoneOrder exactly once", hn)
+	local lh = lands.LandHauntedHollow
+	check(lh ~= nil and lh.MinX == 160 and lh.MaxX == 280 and lh.MinZ == 185 and lh.MaxZ == 295 and lh.Season == "Halloween",
+		"Config.Map.Lands has LandHauntedHollow { x 160..280, z 185..295, Season }", show(lh))
+	check(lh and lp and lh.MaxX == lp.MinX and lh.MinZ < lp.MaxZ and lh.MaxZ > lp.MinZ,
+		"LandHauntedHollow is joined to the patch's west edge", show({ lh, lp }))
+	check(lh and HZ and HZ.Center.X - HZ.Size.X / 2 >= lh.MinX and HZ.Center.X + HZ.Size.X / 2 <= lh.MaxX
+		and HZ.Center.Z - HZ.Size.Z / 2 >= lh.MinZ and HZ.Center.Z + HZ.Size.Z / 2 <= lh.MaxZ, "the hollow's zone lies on its land", show(lh))
+	check(HZ and Z and HZ.Center.X + HZ.Size.X / 2 <= Z.Center.X - Z.Size.X / 2, "the hollow and the patch rectangles do not overlap")
+	local offH = newConfig(function(c) c.Halloween.Enabled = false end)
+	for _, p in { vec(220, 0, 240), vec(170, 0, 197), vec(270, 0, 283) } do
+		check(CONFIG.ZoneAt(p).Id == HOLLOW, "ZoneAt: a point inside the hollow is HauntedHollow in season", show(p))
+		check(offH.ZoneAt(p).Id == "Outskirts", "ZoneAt: the same point is Outskirts with Enabled = false", show(p))
+	end
 	-- ZoneAt: the patch exists only while the season is on
 	local off = newConfig(function(c) c.Halloween.Enabled = false end)
 	for _, p in { PATCH_POINT, vec(281, 0, 176), vec(439, 0, 294), vec(360, 0, 180) } do
@@ -469,7 +523,7 @@ local function textsOf(config)
 	local H, A = config.Halloween, config.Announce
 	local lines = {}
 	for k, v in H.Text or {} do lines["Halloween.Text." .. k] = v end
-	for _, k in { "PumpkinKingAppear", "PumpkinKingDefeat", "PumpkinKingLeave" } do
+	for _, k in { "PumpkinKingAppear", "PumpkinKingDefeat", "PumpkinKingLeave", "GhostKingAppear", "GhostKingDefeat", "GhostKingLeave" } do
 		lines["Announce.Text." .. k] = A.Text[k]
 		lines["Announce.Text." .. k .. "En"] = A.Text[k .. "En"]
 	end
@@ -498,8 +552,25 @@ runGroup("config-halloween", function()
 	end
 	check(spotsOk, "every king spot (+ SpawnRadius) lies in the PumpkinPatch, in its far half (away from the meadow entrance)",
 		show({ H.SpawnSpots, H.SpawnRadius }))
+	-- A23-45: two minibosses, the ghost king 10 minutes after the pumpkin king, each in its family's field
+	local B = H.Bosses
+	check(type(B) == "table" and #B == 2 and B[1].Kind == "PumpkinKing" and B[1].Key == "PumpkinKing" and B[2].Kind == "GhostKing"
+		and B[2].Key == "GhostKing", "Config.Halloween.Bosses = { PumpkinKing, GhostKing }", show(B))
+	local g = type(B) == "table" and B[2] or {}
+	check(tonumber(g.FirstDelay) == H.FirstDelay + 600 and g.Interval == nil and g.Lifetime == nil,
+		"the ghost king comes 10 minutes after the pumpkin king, same Interval / Lifetime", show({ g.FirstDelay, H.FirstDelay }))
+	local hz = CONFIG.Zones[HOLLOW]
+	local gOk = type(g.SpawnSpots) == "table" and #g.SpawnSpots >= 1
+	for _, sp in g.SpawnSpots or {} do
+		for _, dx in { -1, 1 } do
+			for _, dz in { -1, 1 } do
+				if CONFIG.ZoneAt(vec(sp.X + dx * H.SpawnRadius * 0.7071, 0, sp.Z + dz * H.SpawnRadius * 0.7071)).Id ~= HOLLOW then gOk = false end
+			end
+		end
+	end
+	check(gOk and hz ~= nil, "every ghost king spot (+ SpawnRadius) lies in the HauntedHollow", show(g.SpawnSpots))
 	local T = H.Text or {}
-	for _, key in { "HudNext", "HudActive" } do
+	for _, key in { "HudNext", "HudActive", "GhostHudNext", "GhostHudActive" } do
 		local ko, en = T[key], T[key .. "En"]
 		check(type(ko) == "string" and select(2, string.gsub(ko, "%%s", "")) == 1, "HUD line has exactly one %s (m:ss)", key .. " " .. tostring(ko))
 		check(type(en) == "string" and en ~= ko and select(2, string.gsub(en, "%%s", "")) == 1 and not string.find(en, "[\128-\255]"),
@@ -510,7 +581,9 @@ runGroup("config-halloween", function()
 		tostring(T.HudActive))
 	local A = CONFIG.Announce
 	local want = { PumpkinKingAppear = "호박 대왕이 호박밭에 나타났어요! 함께 잡아요!", -- A23-30: the king appears in the PumpkinPatch PumpkinKingDefeat = "호박 대왕이 사탕을 와르르 쏟았다!",
-		PumpkinKingLeave = "호박 대왕이 사탕 자루를 들고 돌아갔어요. 다음에 또 와요!" }
+		PumpkinKingLeave = "호박 대왕이 사탕 자루를 들고 돌아갔어요. 다음에 또 와요!",
+		GhostKingAppear = "유령 왕이 유령 숲에 나타났어요! 함께 잡아요!", GhostKingDefeat = "유령 왕이 사탕을 우수수 떨어뜨렸어요!",
+		GhostKingLeave = "유령 왕이 스르르 사라졌어요. 다음에 또 만나요!" }
 	for key, text in want do
 		check(A.Text[key] == text, "server line text = the design line", key .. " " .. tostring(A.Text[key]))
 		local en = A.Text[key .. "En"]
@@ -519,8 +592,9 @@ runGroup("config-halloween", function()
 			"Config.Announce.Events lists the line with its colour", key)
 		check(not string.find(text, "%", 1, true) and not string.find(en or "", "%", 1, true), "event lines take no arguments (no name slot)", key)
 	end
-	check(A.Events and A.Events.PumpkinKingAppear.Toast == true and A.Events.PumpkinKingDefeat.Toast == true,
-		"appear and defeat lines also toast", show(A.Events))
+	check(A.Events and A.Events.PumpkinKingAppear.Toast == true and A.Events.PumpkinKingDefeat.Toast == true
+		and A.Events.GhostKingAppear.Toast == true and A.Events.GhostKingDefeat.Toast == true,
+		"appear and defeat lines also toast (both kings)", show(A.Events))
 	-- kid-safe, no time pressure; a line that names the season says it comes back every year
 	for where, text in textsOf(CONFIG) do
 		local low = string.lower(tostring(text))
@@ -555,12 +629,13 @@ runGroup("config-halloween", function()
 end)
 
 ------------------------------------------------------------------ 3. counts (Config shared functions)
--- A23-30: the meadow / woods / ruins keep their year-round counts in the season; the three regular Halloween kinds add
--- their own Count in the PumpkinPatch (outside the GlobalCap); the king is never in the regular pool
-local EXPECT_ON = { Slime = 12, PumpkinSlime = 6, BigSlime = 4, PumpkinKing = 0, Goblin = 10, BatGoblin = 4, LittleGhost = 4,
-	GoblinBrute = 4, Skeleton = 8, SkeletonKnight = 4 }
-local EXPECT_OFF = { Slime = 12, PumpkinSlime = 0, BigSlime = 4, PumpkinKing = 0, Goblin = 10, BatGoblin = 0, LittleGhost = 0,
-	GoblinBrute = 4, Skeleton = 8, SkeletonKnight = 4 }
+-- A23-45: the meadow / woods / ruins keep their year-round totals in the season (the 3 bat goblins take 3 goblin
+-- slots); the pumpkin slimes and the ghosts add their own Count in their own field (outside the GlobalCap); the kings
+-- are never in the regular pool
+local EXPECT_ON = { Slime = 12, PumpkinSlime = 10, BigSlime = 4, PumpkinKing = 0, Goblin = 7, BatGoblin = 3, GoblinBrute = 4,
+	GhostMinion = 8, LittleGhost = 4, GhostKing = 0, Skeleton = 8, SkeletonKnight = 4 }
+local EXPECT_OFF = { Slime = 12, PumpkinSlime = 0, BigSlime = 4, PumpkinKing = 0, Goblin = 10, BatGoblin = 0, GoblinBrute = 4,
+	GhostMinion = 0, LittleGhost = 0, GhostKing = 0, Skeleton = 8, SkeletonKnight = 4 }
 local FIELDS = { "SlimeMeadow", "GoblinWoods", "SkeletonRuins" }
 
 runGroup("counts", function()
@@ -579,12 +654,16 @@ runGroup("counts", function()
 	end
 	check(zoneSum(C, on, "SlimeMeadow") == 16 and zoneSum(C, on, "GoblinWoods") == 14, "meadow 16, woods 14 (year-round numbers)",
 		zoneSum(C, on, "SlimeMeadow") .. "/" .. zoneSum(C, on, "GoblinWoods"))
-	check(zoneSum(C, on, PATCH) == 14 and zoneSum(C, off, PATCH) == 0, "PumpkinPatch: 6 + 4 + 4 in season, empty out of season",
+	check(zoneSum(C, on, PATCH) == 10 and zoneSum(C, off, PATCH) == 0, "PumpkinPatch: 10 pumpkin slimes in season, empty out of season",
 		zoneSum(C, on, PATCH) .. "/" .. zoneSum(C, off, PATCH))
+	check(zoneSum(C, on, HOLLOW) == 12 and zoneSum(C, off, HOLLOW) == 0, "HauntedHollow: 8 minions + 4 little ghosts in season, empty out of season",
+		zoneSum(C, on, HOLLOW) .. "/" .. zoneSum(C, off, HOLLOW))
 	for _, kind in PATCH_KINDS do
-		check(C.MonsterOutsideCap(kind) == true, "every regular Halloween kind sits outside the GlobalCap (Config.MonsterOutsideCap)", kind)
-		check(C.MonsterCapGroup(kind) == kind, "a Halloween kind is its own cap group (it shares no base kind's part)", kind)
+		check(C.MonsterOutsideCap(kind) == true, "every add-on Halloween kind sits outside the GlobalCap (Config.MonsterOutsideCap)", kind)
+		check(C.MonsterCapGroup(kind) == kind, "an add-on Halloween kind is its own cap group (it shares no base kind's part)", kind)
 	end
+	check(C.MonsterOutsideCap("BatGoblin") == false and C.MonsterCapGroup("BatGoblin") == "Goblin",
+		"the bat goblin takes goblin slots: inside the cap, in the goblin's cap group")
 	-- the flag itself
 	local cOff = newConfig(function(c) c.Halloween.Enabled = false end)
 	local autoOff = cOff.EffectiveMonsterCounts()
@@ -600,9 +679,9 @@ runGroup("counts", function()
 	check(C.MonsterActive("Dragon") == false and C.MonsterActive(nil) == false, "unknown kinds are never active")
 	check(C.SeasonOn(nil) == true and C.SeasonOn("Halloween") == true and cOff.SeasonOn("Halloween") == false and C.SeasonOn("Nope") == false,
 		"SeasonOn: nil = always, Halloween = Enabled (before EndsAt), unknown season = off")
-	-- QuestKind: the pumpkin slime still counts as a slime; the bat goblin has no QuestAs now (it counts as itself)
-	local qk = { PumpkinSlime = "Slime", BatGoblin = "BatGoblin", LittleGhost = "LittleGhost", PumpkinKing = "PumpkinKing", Slime = "Slime",
-		Goblin = "Goblin", BigSlime = "BigSlime", Dragon = "Dragon" }
+	-- QuestKind: the pumpkin slime counts as a slime, the bat goblin as a goblin again (A23-45); ghosts count as themselves
+	local qk = { PumpkinSlime = "Slime", BatGoblin = "Goblin", LittleGhost = "LittleGhost", GhostMinion = "GhostMinion",
+		GhostKing = "GhostKing", PumpkinKing = "PumpkinKing", Slime = "Slime", Goblin = "Goblin", BigSlime = "BigSlime", Dragon = "Dragon" }
 	for kind, want in qk do check(C.QuestKind(kind) == want, "Config.QuestKind(kind) = QuestAs or kind", kind .. " -> " .. tostring(C.QuestKind(kind))) end
 	check(C.QuestKind(nil) == nil and C.QuestKind(5) == 5, "QuestKind passes odd values through")
 	local bad = newConfig(function(c) c.MonsterTypes.Odd = { QuestAs = "Nowhere", Zone = "SlimeMeadow", Count = 0 } end)
@@ -642,7 +721,7 @@ runGroup("counts-density", function()
 		local per, mult = C.MonsterDensity.ExtraPerPlayer, C.MonsterDensity.MaxZoneMult
 		local function grow(c, n) if c <= 0 then return 0 end return math.min(c + per * math.max(0, n - 1), c * mult) end
 		for _, n in { 0, 1, 2, 3, 4, 6, 9, 12 } do
-			local zp = { SlimeMeadow = n, GoblinWoods = n, SkeletonRuins = n, PumpkinPatch = n }
+			local zp = { SlimeMeadow = n, GoblinWoods = n, SkeletonRuins = n, PumpkinPatch = n, HauntedHollow = n }
 			local on, off = C.MonsterTargets(zp, true), C.MonsterTargets(zp, false)
 			local tag = variant[1] .. " n=" .. n
 			for _, zone in FIELDS do
@@ -651,23 +730,31 @@ runGroup("counts-density", function()
 			end
 			for _, kind in BASE do
 				local c = C.MonsterTypes[kind].Count
-				check(near(on[kind], grow(c, n)) and near(off[kind], grow(c, n)), "every base kind keeps min(Count + Extra x (n - 1), Count x MaxZoneMult) in and out of season",
-					tag .. " " .. kind .. " " .. show({ on[kind], off[kind], grow(c, n) }))
+				-- a base kind with a seasonal taker (the goblin) shares its target with it: base + taker = the year-round target
+				local taken = 0
+				for taker, t in TAKERS do if t[kind] then taken += on[taker] or 0 end end
+				check(near(on[kind] + taken, grow(c, n)) and near(off[kind], grow(c, n)), "every base kind keeps min(Count + Extra x (n - 1), Count x MaxZoneMult) in and out of season (with its taker)",
+					tag .. " " .. kind .. " " .. show({ on[kind], taken, off[kind], grow(c, n) }))
 			end
 			for _, kind in PATCH_KINDS do
 				local c = C.MonsterTypes[kind].Count
-				check(near(on[kind], grow(c, n)) and off[kind] == 0, "a Halloween kind grows on its own target with the patch's players (0 off season)",
+				check(near(on[kind], grow(c, n)) and off[kind] == 0, "an add-on Halloween kind grows on its own target with its field's players (0 off season)",
 					tag .. " " .. kind .. " " .. show({ on[kind], off[kind], grow(c, n) }))
 			end
-			check(on.PumpkinKing == 0 and off.PumpkinKing == 0, "the king never joins the regular pool", tag)
+			check(on.PumpkinKing == 0 and off.PumpkinKing == 0 and on.GhostKing == 0 and off.GhostKing == 0,
+				"the kings never join the regular pool", tag)
 		end
 		-- zones grow independently: a busy meadow leaves the patch at its Counts, a busy patch leaves the meadow alone
 		local mixed = C.MonsterTargets({ SlimeMeadow = 6 }, true)
-		check(near(mixed.Slime, grow(12, 6)) and mixed.PumpkinSlime == 6 and mixed.LittleGhost == 4 and mixed.BatGoblin == 4 and mixed.Goblin == 10,
-			"a busy meadow grows only the meadow", variant[1] .. " " .. show(mixed))
+		check(near(mixed.Slime, grow(12, 6)) and mixed.PumpkinSlime == 10 and mixed.LittleGhost == 4 and mixed.GhostMinion == 8
+			and mixed.BatGoblin + mixed.Goblin == 10, "a busy meadow grows only the meadow", variant[1] .. " " .. show(mixed))
 		local busyPatch = C.MonsterTargets({ PumpkinPatch = 6 }, true)
-		check(near(busyPatch.PumpkinSlime, grow(6, 6)) and near(busyPatch.LittleGhost, grow(4, 6)) and near(busyPatch.BatGoblin, grow(4, 6))
-			and busyPatch.Slime == 12 and busyPatch.Goblin == 10, "a busy patch grows only the patch kinds", variant[1] .. " " .. show(busyPatch))
+		check(near(busyPatch.PumpkinSlime, grow(10, 6)) and busyPatch.LittleGhost == 4 and busyPatch.GhostMinion == 8
+			and busyPatch.Slime == 12 and busyPatch.Goblin + busyPatch.BatGoblin == 10, "a busy patch grows only the pumpkin slimes",
+			variant[1] .. " " .. show(busyPatch))
+		local busyHollow = C.MonsterTargets({ HauntedHollow = 6 }, true)
+		check(near(busyHollow.GhostMinion, grow(8, 6)) and near(busyHollow.LittleGhost, grow(4, 6)) and busyHollow.PumpkinSlime == 10
+			and busyHollow.Slime == 12, "a busy hollow grows only the ghosts", variant[1] .. " " .. show(busyHollow))
 	end
 end)
 
@@ -722,7 +809,7 @@ runGroup("monster-pool", function()
 		end
 		check(n == sum, "Start spawn total = the season's pool", n .. " vs " .. sum)
 		-- one player per field: reevaluate keeps the pool as it is
-		f.Zone = { SlimeMeadow = 1, GoblinWoods = 1, SkeletonRuins = 1, PumpkinPatch = 1 }
+		f.Zone = { SlimeMeadow = 1, GoblinWoods = 1, SkeletonRuins = 1, PumpkinPatch = 1, HauntedHollow = 1 }
 		f.P.reevaluate()
 		local all, capped = 0, 0
 		for kind, c in f:Alive() do
@@ -732,7 +819,7 @@ runGroup("monster-pool", function()
 		check(all == sum and f.P.totalNonPersonal() == capped and capped == sum - seasonalSum(C, want) and #f.Despawned == 0,
 			"one player per field: nothing more spawns (the cap count leaves the Halloween kinds out)", show({ all, capped, f.P.totalNonPersonal() }))
 		-- busy fields: reevaluate fills up to cappedTargets, never above, seasonal kinds only when on
-		f.Zone = { SlimeMeadow = 4, GoblinWoods = 3, SkeletonRuins = 2, PumpkinPatch = 3 }
+		f.Zone = { SlimeMeadow = 4, GoblinWoods = 3, SkeletonRuins = 2, PumpkinPatch = 3, HauntedHollow = 2 }
 		for _ = 1, 6 do f.P.reevaluate() end
 		local targets = f.P.cappedTargets(f.Zone)
 		local alive = f:Alive()
@@ -744,7 +831,8 @@ runGroup("monster-pool", function()
 		check(tsum <= f.P.GLOBAL_CAP, "targets of the capped kinds fit under GLOBAL_CAP", tsum)
 		check(targets.PumpkinKing == 0 and (alive.PumpkinKing or 0) == 0, "reevaluate never spawns the king")
 		if not season then
-			check((alive.PumpkinSlime or 0) + (alive.BatGoblin or 0) + (alive.LittleGhost or 0) == 0, "season off: no seasonal kind ever spawns", show(alive))
+			check((alive.PumpkinSlime or 0) + (alive.BatGoblin or 0) + (alive.LittleGhost or 0) + (alive.GhostMinion or 0) == 0,
+				"season off: no seasonal kind ever spawns", show(alive))
 		end
 		local wanted = C.MonsterTargets(f.Zone)
 		for kind, t in targets do
@@ -785,20 +873,25 @@ runGroup("monster-pool", function()
 	check(golden("PumpkinKing", { Golden = false }) == false and golden("PumpkinKing", { Golden = true }) == true, "an explicit Golden option wins")
 end)
 
--- the GlobalCap split keeps every field's capped total the same with the season on; the Halloween kinds come on top
--- in the patch with their own full targets, outside the cap (Config.MonsterOutsideCap); A23-30
+-- the GlobalCap split keeps every field's capped total the same with the season on (the bat goblins share the goblins'
+-- part); the pumpkin slimes and the ghosts come on top in their own fields with their own full targets, outside the cap
+-- (Config.MonsterOutsideCap); A23-45
 runGroup("monster-cap-season", function()
 	local on = newConfig(function(c) c.Halloween.Enabled = true end)
 	local off = newConfig(function(c) c.Halloween.Enabled = false end)
-	check(on.MonsterOutsideCap("LittleGhost") and on.MonsterOutsideCap("PumpkinKing") and on.MonsterOutsideCap("PumpkinSlime")
-		and on.MonsterOutsideCap("BatGoblin") and not on.MonsterOutsideCap("Slime") and not on.MonsterOutsideCap("Skeleton"),
-		"outside the cap: every Halloween kind (pumpkin slime, ghost, bat goblin, event king), no base kind")
+	check(on.MonsterOutsideCap("LittleGhost") and on.MonsterOutsideCap("GhostMinion") and on.MonsterOutsideCap("PumpkinKing")
+		and on.MonsterOutsideCap("GhostKing") and on.MonsterOutsideCap("PumpkinSlime") and not on.MonsterOutsideCap("BatGoblin")
+		and not on.MonsterOutsideCap("Slime") and not on.MonsterOutsideCap("Skeleton"),
+		"outside the cap: the add-on Halloween kinds and the event kings; the bat goblin (a taker) and the base kinds inside")
 	local groupsOk = true
-	for kind in on.MonsterTypes do if on.MonsterCapGroup(kind) ~= kind then groupsOk = false end end
-	check(groupsOk, "cap groups: every kind is its own group (no kind takes base slots)")
+	for kind in on.MonsterTypes do
+		local want = kind == "BatGoblin" and "Goblin" or kind
+		if on.MonsterCapGroup(kind) ~= want then groupsOk = false end
+	end
+	check(groupsOk, "cap groups: every kind is its own group, the bat goblin shares the goblin's")
 	local pOn, pOff = poolWorld(on), poolWorld(off)
 	local function zoneTotals(cfg, targets)
-		local z = { SlimeMeadow = 0, GoblinWoods = 0, SkeletonRuins = 0, PumpkinPatch = 0 }
+		local z = { SlimeMeadow = 0, GoblinWoods = 0, SkeletonRuins = 0, PumpkinPatch = 0, HauntedHollow = 0 }
 		for kind, n in targets do
 			local def = cfg.MonsterTypes[kind]
 			if def and not cfg.MonsterOutsideCap(kind) then z[def.Zone] = (z[def.Zone] or 0) + n end
@@ -810,7 +903,8 @@ runGroup("monster-cap-season", function()
 		for woods = 0, 8 do
 			for ruins = 0, 8 do
 				local patch = (meadow + 2 * woods + ruins) % 9
-				local zc = { SlimeMeadow = meadow, GoblinWoods = woods, SkeletonRuins = ruins, PumpkinPatch = patch }
+				local hollow = (meadow + woods) % 7
+				local zc = { SlimeMeadow = meadow, GoblinWoods = woods, SkeletonRuins = ruins, PumpkinPatch = patch, HauntedHollow = hollow }
 				local tOn, tOff = pOn.P.cappedTargets(zc), pOff.P.cappedTargets(zc)
 				local zOn, zOff = zoneTotals(on, tOn), zoneTotals(off, tOff)
 				local wantedOff = 0
@@ -818,24 +912,29 @@ runGroup("monster-cap-season", function()
 				cases += 1
 				if wantedOff > pOff.P.GLOBAL_CAP then bound += 1 end
 				check(zOn.SlimeMeadow == zOff.SlimeMeadow and zOn.GoblinWoods == zOff.GoblinWoods and zOn.SkeletonRuins == zOff.SkeletonRuins
-					and zOn.PumpkinPatch == 0, "every field's capped total is the same with the season on and off", show({ zc, zOn, zOff }))
+					and zOn.PumpkinPatch == 0 and zOn.HauntedHollow == 0, "every field's capped total is the same with the season on and off",
+					show({ zc, zOn, zOff }))
 				local want = on.MonsterTargets(zc)
 				local own = true
 				for _, kind in PATCH_KINDS do
 					local c = on.MonsterTypes[kind].Count
 					if tOn[kind] ~= want[kind] or want[kind] < c or want[kind] > c * on.MonsterDensity.MaxZoneMult or (tOff[kind] or 0) ~= 0 then own = false end
 				end
-				check(own, "each Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off",
-					show({ zc, tOn.PumpkinSlime, tOn.LittleGhost, tOn.BatGoblin }))
+				check(own, "each add-on Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off",
+					show({ zc, tOn.PumpkinSlime, tOn.LittleGhost, tOn.GhostMinion }))
 				local same = true
-				for _, kind in BASE do if tOn[kind] ~= tOff[kind] then same = false end end
-				check(same, "every base kind's capped target is the same with the season on and off", show({ zc, tOn.Slime, tOff.Slime, tOn.Goblin, tOff.Goblin }))
+				for _, kind in BASE do
+					local taken = kind == "Goblin" and (tOn.BatGoblin or 0) or 0
+					if tOn[kind] + taken ~= tOff[kind] then same = false end
+				end
+				check(same and (tOff.BatGoblin or 0) == 0, "every base kind's capped target (with its taker) is the same with the season on and off",
+					show({ zc, tOn.Slime, tOff.Slime, tOn.Goblin, tOn.BatGoblin, tOff.Goblin }))
 			end
 		end
 	end
 	check(bound >= 200, "the comparison covers many busy servers where the cap binds", bound .. " of " .. cases)
-	-- the review's case: 16 players (7 meadow / 6 woods / 3 ruins) + 4 in the patch
-	local zc = { SlimeMeadow = 7, GoblinWoods = 6, SkeletonRuins = 3, PumpkinPatch = 4 }
+	-- the review's case: 16 players (7 meadow / 6 woods / 3 ruins) + 4 in the patch + 3 in the hollow
+	local zc = { SlimeMeadow = 7, GoblinWoods = 6, SkeletonRuins = 3, PumpkinPatch = 4, HauntedHollow = 3 }
 	local zOn, zOff = zoneTotals(on, pOn.P.cappedTargets(zc)), zoneTotals(off, pOff.P.cappedTargets(zc))
 	check(zOn.SlimeMeadow == zOff.SlimeMeadow and zOn.GoblinWoods == zOff.GoblinWoods and zOn.SkeletonRuins == zOff.SkeletonRuins
 		and zOff.SlimeMeadow + zOff.GoblinWoods + zOff.SkeletonRuins == 72,
@@ -852,10 +951,10 @@ runGroup("monster-cap-season", function()
 	end
 	local want = on.MonsterTargets(zc)
 	check(regular == 72 and f.P.totalNonPersonal() == 72, "full server: the regular pool is exactly at the cap", show({ regular, f.P.totalNonPersonal() }))
-	check((alive.PumpkinSlime or 0) == want.PumpkinSlime and (alive.LittleGhost or 0) == want.LittleGhost and (alive.BatGoblin or 0) == want.BatGoblin
-		and want.PumpkinSlime == 12 and want.LittleGhost == 8 and want.BatGoblin == 8,
-		"full server: the Halloween kinds still fill their own targets (12 / 8 / 8 with 4 in the patch)", show(alive))
-	f.Records[8888] = { Id = 8888, Kind = "BatGoblin", Alive = true }
+	check((alive.PumpkinSlime or 0) == want.PumpkinSlime and (alive.LittleGhost or 0) == want.LittleGhost and (alive.GhostMinion or 0) == want.GhostMinion
+		and want.PumpkinSlime == 16 and want.LittleGhost == 8 and want.GhostMinion == 12,
+		"full server: the add-on Halloween kinds still fill their own targets (16 / 12 / 8 with 4 in the patch, 3 in the hollow)", show(alive))
+	f.Records[8888] = { Id = 8888, Kind = "GhostMinion", Alive = true }
 	f.Pending.LittleGhost = 2
 	f.Pending.PumpkinSlime = 1
 	check(f.P.totalNonPersonal() == 72, "alive / pending Halloween kinds are not counted toward the cap", f.P.totalNonPersonal())
@@ -871,8 +970,8 @@ runGroup("monster-cap-season", function()
 	end
 	f.P.reevaluate()
 	alive = f:Alive()
-	check(killed.PumpkinSlime == 2 and killed.LittleGhost == 2 and killed.BatGoblin == 2 and (alive.PumpkinSlime or 0) == 12
-		and (alive.LittleGhost or 0) == 8 and (alive.BatGoblin or 0) == 8 and f.P.totalNonPersonal() == 72,
+	check(killed.PumpkinSlime == 2 and killed.LittleGhost == 2 and killed.GhostMinion == 2 and (alive.PumpkinSlime or 0) == 16
+		and (alive.LittleGhost or 0) == 8 and (alive.GhostMinion or 0) == 12 and f.P.totalNonPersonal() == 72,
 		"full cap: dead Halloween monsters respawn to their targets without waiting for room under the cap", show({ alive, f.P.totalNonPersonal() }))
 end)
 
@@ -883,13 +982,13 @@ runGroup("season-end-pool", function()
 	local C = newConfig(nil, clock)
 	local f = poolWorld(C)
 	f.P.startSpawn()
-	f.Zone = { SlimeMeadow = 1, GoblinWoods = 1, SkeletonRuins = 1, PumpkinPatch = 1 }
+	f.Zone = { SlimeMeadow = 1, GoblinWoods = 1, SkeletonRuins = 1, PumpkinPatch = 1, HauntedHollow = 1 }
 	f.Records[9001] = { Id = 9001, Kind = "PumpkinKing", Alive = true, Event = true }
 	f.Records[9002] = { Id = 9002, Kind = "PumpkinSlime", Alive = true, Owner = { Name = "Owner" } }
 	local before = f:Alive()
 	f.P.reevaluate()
-	check(#f.Despawned == 0 and (f:Alive().PumpkinSlime or 0) == 6 and (f:Alive().LittleGhost or 0) == 4 and (f:Alive().BatGoblin or 0) == 4,
-		"one second before EndsAt: the Halloween monsters stay", show({ #f.Despawned, f:Alive() }))
+	check(#f.Despawned == 0 and (f:Alive().PumpkinSlime or 0) == 10 and (f:Alive().LittleGhost or 0) == 4 and (f:Alive().GhostMinion or 0) == 8
+		and (f:Alive().BatGoblin or 0) == 3, "one second before EndsAt: the Halloween monsters stay", show({ #f.Despawned, f:Alive() }))
 	local spawnedBefore = deepCopy(f.Spawned)
 	clock.Now = ENDS_AT
 	f.P.reevaluate()
@@ -899,24 +998,29 @@ runGroup("season-end-pool", function()
 		kinds[d.Rec.Kind] = (kinds[d.Rec.Kind] or 0) + 1
 		if d.Fade ~= true or d.Leaving ~= true then leaving = false end
 	end
-	check(gone == 14 and kinds.PumpkinSlime == 6 and kinds.LittleGhost == 4 and kinds.BatGoblin == 4,
-		"at EndsAt reevaluate removes every alive regular Halloween monster (6 + 4 + 4)", show(kinds))
+	check(gone == 25 and kinds.PumpkinSlime == 10 and kinds.GhostMinion == 8 and kinds.LittleGhost == 4 and kinds.BatGoblin == 3,
+		"at EndsAt reevaluate removes every alive regular Halloween monster (10 + 8 + 4 + 3)", show(kinds))
 	check(leaving, "they go home with the leaving fade (despawn(rec, true, true): no death splat, no rewards)", show(f.Despawned[1] and
 		{ f.Despawned[1].Fade, f.Despawned[1].Leaving }))
 	check(f.Records[9001] and f.Records[9001].Alive and f.Records[9002] and f.Records[9002].Alive,
 		"the event king (HalloweenService closes it) and a personal monster are not swept")
 	local after = f:Alive()
 	local baseSame = true
-	for _, kind in BASE do if (after[kind] or 0) ~= (before[kind] or 0) then baseSame = false end end
-	check(baseSame, "base kinds are untouched by the sweep", show({ before, after }))
+	for _, kind in BASE do
+		-- the goblins get their 3 slots back from the bat goblins (the woods total stays the same)
+		local want = kind == "Goblin" and C.MonsterTypes.Goblin.Count or (before[kind] or 0)
+		if (after[kind] or 0) ~= want then baseSame = false end
+	end
+	check(baseSame, "base kinds are untouched by the sweep (the goblins refill the bat goblins' 3 slots)", show({ before, after }))
 	local respawned = 0
 	for _, kind in PATCH_KINDS do respawned += (f.Spawned[kind] or 0) - (spawnedBefore[kind] or 0) end
-	check(respawned == 0 and (after.PumpkinSlime or 0) + (after.LittleGhost or 0) + (after.BatGoblin or 0) == 0,
+	respawned += (f.Spawned.BatGoblin or 0) - (spawnedBefore.BatGoblin or 0)
+	check(respawned == 0 and (after.PumpkinSlime or 0) + (after.LittleGhost or 0) + (after.GhostMinion or 0) + (after.BatGoblin or 0) == 0,
 		"no Halloween monster spawns again after the end", show({ respawned, after }))
 	clock.Now = ENDS_AT + 1
 	f.P.reevaluate()
 	local t = f.P.cappedTargets(f.Zone)
-	check(#f.Despawned == 14 and t.PumpkinSlime == 0 and t.LittleGhost == 0 and t.BatGoblin == 0,
+	check(#f.Despawned == 25 and t.PumpkinSlime == 0 and t.LittleGhost == 0 and t.GhostMinion == 0 and t.BatGoblin == 0,
 		"one second after EndsAt: nothing left to sweep, the Halloween targets are 0", show({ #f.Despawned, t.PumpkinSlime }))
 end)
 
@@ -1024,19 +1128,31 @@ runGroup("loot", function()
 		for k, v in extra do want[k] = v end
 		return want
 	end
-	-- A23-30: the ghost and the bat goblin are Lv1-field kinds now (the same rows: candy + twice the slime's scroll /
-	-- transfer rows, potions 1.5%; no goblin tooth / tier-4 row). A23-27: the king's scroll rows and its weapon row with
-	-- BelowLevel (3 candies below the weapon's MinLevel; LootService's draw is certified by the loot suite)
-	local PATCH_ROWS = { ["Item:Candy"] = { P = 0.45, N = 1 }, ["Item:Enh70"] = { P = 0.006, N = 1 }, ["Item:Enh30"] = { P = 0.0016, N = 1 },
-		["Item:Enh10"] = { P = 0.0004, N = 1 }, ["Item:Move70"] = { P = 0.002, N = 1 }, ["Item:Move30"] = { P = 0.0006, N = 1 },
-		["Item:Move10"] = { P = 0.0002, N = 1 }, ["Potion:HP"] = { P = 0.015, N = 1 }, ["Potion:MP"] = { P = 0.015, N = 1 } }
+	-- A23-45: the bat goblin is a woods kind again (candy + the goblin's rows: half its tooth chance, scrolls, potions, the
+	-- tier-4 row); the little ghost = candy + the goblin's scroll / potion rows; the minion a weaker version; the ghost king
+	-- = the pumpkin king's table. A23-27: the kings' weapon rows with BelowLevel (3 candies below the weapon's MinLevel)
+	local WOODS_ROWS = { ["Item:Enh70"] = { P = 0.015, N = 1 }, ["Item:Enh30"] = { P = 0.004, N = 1 }, ["Item:Enh10"] = { P = 0.001, N = 1 },
+		["Item:Move70"] = { P = 0.005, N = 1 }, ["Item:Move30"] = { P = 0.0013, N = 1 }, ["Item:Move10"] = { P = 0.0003, N = 1 },
+		["Potion:HP"] = { P = 0.02, N = 1 }, ["Potion:MP"] = { P = 0.02, N = 1 } }
+	local function withRows(base, extra)
+		local out = {}
+		for k, v in base do out[k] = v end
+		for k, v in extra do out[k] = v end
+		return out
+	end
+	local KING_ROWS = { ["Item:Candy"] = { P = 1, N = 8 }, ["Item:Enh70"] = { P = 0.25, N = 1 }, ["Item:Enh30"] = { P = 0.08, N = 1 },
+		["Item:Enh10"] = { P = 0.02, N = 1 }, ["Item:Move70"] = { P = 0.08, N = 1 }, ["Potion:HP"] = { P = 0.5, N = 1 },
+		["Potion:MP"] = { P = 0.5, N = 1 }, ["Weapon:4"] = { P = 0.05, N = 1 } }
 	local SPEC_ROWS = {
 		PumpkinSlime = copyOf("Slime", { ["Item:Candy"] = { P = 0.35, N = 1 }, ["Item:Jelly"] = { P = 0.1, N = 1 } }),
-		LittleGhost = PATCH_ROWS,
-		BatGoblin = PATCH_ROWS,
-		PumpkinKing = { ["Item:Candy"] = { P = 1, N = 8 }, ["Item:Enh70"] = { P = 0.25, N = 1 }, ["Item:Enh30"] = { P = 0.08, N = 1 },
-			["Item:Enh10"] = { P = 0.02, N = 1 }, ["Item:Move70"] = { P = 0.08, N = 1 }, ["Potion:HP"] = { P = 0.5, N = 1 },
-			["Potion:MP"] = { P = 0.5, N = 1 }, ["Weapon:4"] = { P = 0.05, N = 1 } },
+		BatGoblin = withRows(WOODS_ROWS, { ["Item:Candy"] = { P = 0.45, N = 1 }, ["Item:GoblinTooth"] = { P = 0.2, N = 1 },
+			["Weapon:4"] = { P = 0.001, N = 1 } }),
+		LittleGhost = withRows(WOODS_ROWS, { ["Item:Candy"] = { P = 0.45, N = 1 } }),
+		GhostMinion = { ["Item:Candy"] = { P = 0.3, N = 1 }, ["Item:Enh70"] = { P = 0.008, N = 1 }, ["Item:Enh30"] = { P = 0.002, N = 1 },
+			["Item:Enh10"] = { P = 0.0005, N = 1 }, ["Item:Move70"] = { P = 0.0025, N = 1 }, ["Item:Move30"] = { P = 0.0007, N = 1 },
+			["Item:Move10"] = { P = 0.0002, N = 1 }, ["Potion:HP"] = { P = 0.012, N = 1 }, ["Potion:MP"] = { P = 0.012, N = 1 } },
+		PumpkinKing = KING_ROWS,
+		GhostKing = KING_ROWS,
 	}
 	local kingWeapon = nil
 	for _, row in T.PumpkinKing or {} do if row.Weapon then kingWeapon = row end end
@@ -1044,11 +1160,16 @@ runGroup("loot", function()
 	check(kingWeapon and kingWeapon.Weapon == 4 and kingWeapon.P == 0.05 and type(below) == "table" and below.Item == "Candy" and below.N == 3
 		and below.P == nil and below.Weapon == nil, "the king's weapon row = { Weapon = 4, P = 0.05, BelowLevel = { Item = \"Candy\", N = 3 } }",
 		show(kingWeapon))
+	local ghostWeapon = nil
+	for _, row in T.GhostKing or {} do if row.Weapon then ghostWeapon = row end end
+	local gb = ghostWeapon and ghostWeapon.BelowLevel
+	check(ghostWeapon and ghostWeapon.Weapon == 4 and ghostWeapon.P == 0.05 and type(gb) == "table" and gb.Item == "Candy" and gb.N == 3,
+		"the ghost king's weapon row is the pumpkin king's (BelowLevel 3 candies)", show(ghostWeapon))
 	local others = 0
 	for kind, rows in T do
-		for _, row in rows do if row.BelowLevel ~= nil and kind ~= "PumpkinKing" then others += 1 end end
+		for _, row in rows do if row.BelowLevel ~= nil and kind ~= "PumpkinKing" and kind ~= "GhostKing" then others += 1 end end
 	end
-	check(others == 0, "only the king's weapon row has a BelowLevel", others)
+	check(others == 0, "only the kings' weapon rows have a BelowLevel", others)
 	for kind, want in SPEC_ROWS do
 		local have = rowMap(T[kind])
 		check(T[kind] ~= nil and #T[kind] == count(have), "drop table has no duplicate rows", kind)
@@ -1109,7 +1230,7 @@ runGroup("loot", function()
 	end
 	-- seeded rates (the real rollRows with the seeded stream): candy and the base material near their P
 	local N = 20000
-	for kind, rows in { PumpkinSlime = { "Candy", "Jelly" }, LittleGhost = { "Candy" }, BatGoblin = { "Candy" } } do
+	for kind, rows in { PumpkinSlime = { "Candy", "Jelly" }, LittleGhost = { "Candy" }, GhostMinion = { "Candy" }, BatGoblin = { "Candy", "GoblinTooth" } } do
 		f.Script, f.Const = {}, nil
 		local tally = f.Loot.DebugSimulate(kind, N)
 		local pm = rowMap(T[kind])
@@ -1125,8 +1246,9 @@ runGroup("loot", function()
 	local maskBefore = f.Data.WeaponOwnedMask
 	f.Registry.MonsterService.MonsterKilled:Fire(f.Player, { Kind = "BatGoblin", Golden = false, Position = vec(700, 0, 0) })
 	f.Const = nil
-	check(f.Data.Items.Candy == 1 and f.Data.Items.Enh70 == 1 and f.Data.Items.GoblinTooth == nil and f.Data.WeaponOwnedMask == maskBefore,
-		"a bat goblin kill through MonsterKilled grants candy and its scroll rows (0 roll), no goblin tooth or weapon (A23-30)",
+	check(f.Data.Items.Candy == 1 and f.Data.Items.Enh70 == 1 and f.Data.Items.GoblinTooth == 1
+		and bit32.btest(f.Data.WeaponOwnedMask or 0, bit32.lshift(1, 3)) and maskBefore ~= f.Data.WeaponOwnedMask,
+		"a bat goblin kill through MonsterKilled grants candy, a goblin tooth, its scroll rows and the tier-4 row on a 0 roll (A23-45)",
 		show({ f.Data.Items, f.Data.WeaponOwnedMask }))
 	f.Data.Items = {}
 	f.Data.WeaponOwnedMask = 1
@@ -1309,13 +1431,12 @@ runGroup("quests-kill-weight", function()
 	local s, sq = killQuestWorld(1, "BigSlime", true)
 	check(near(delta(s, sq, "PumpkinSlime"), 0), "strict king-slime daily: a pumpkin slime (a slime) counts 0", sq.Progress)
 	check(near(delta(s, sq, "PumpkinKing"), 1), "strict king-slime daily: the Pumpkin King counts 1")
-	check(near(delta(s, sq, "LittleGhost"), 0) and near(delta(s, sq, "BatGoblin"), 0),
-		"strict king-slime daily: the Lv1-field ghost / bat goblin (XP below the king slime's) count 0", sq.Progress)
+	check(near(delta(s, sq, "LittleGhost"), 1) and near(delta(s, sq, "BatGoblin"), 1),
+		"strict king-slime daily: the woods-strength ghost / bat goblin (XP above the king slime's) count one (never more)", sq.Progress)
 	-- Lv10 goblin daily: weights in goblin units
 	local g, gq = killQuestWorld(10, "Goblin")
-	check(near(delta(g, gq, "BatGoblin"), MT.BatGoblin.XP / MT.Goblin.XP) and MT.BatGoblin.XP < MT.Goblin.XP,
-		"goblin daily: a bat goblin counts as itself now (BatGoblin.XP / Goblin.XP, no QuestAs since A23-30)",
-		string.format("%.4f vs %.4f", gq.Progress, MT.BatGoblin.XP / MT.Goblin.XP))
+	check(near(delta(g, gq, "BatGoblin"), 1) and MT.BatGoblin.QuestAs == "Goblin",
+		"goblin daily: a bat goblin counts as a goblin again (QuestAs, A23-45)", string.format("%.4f", gq.Progress))
 	check(near(delta(g, gq, "PumpkinSlime"), MT.Slime.XP / MT.Goblin.XP), "goblin daily: a pumpkin slime counts as a slime (Slime.XP / Goblin.XP)",
 		string.format("%.4f vs %.4f", gq.Progress, MT.Slime.XP / MT.Goblin.XP))
 	check(near(delta(g, gq, "LittleGhost"), MT.LittleGhost.XP / MT.Goblin.XP),
@@ -1499,7 +1620,7 @@ runGroup("story", function()
 	f:Kill("Goblin")
 	f:Kill("LittleGhost")
 	f:Kill("GoblinBrute")
-	check(gob.P == g0 + 1, "a Goblin objective counts goblins only (not bat goblins / ghosts / brutes)", show({ g0, gob.P }))
+	check(gob.P == g0 + 2, "a Goblin objective counts goblins and bat goblins (QuestAs, A23-45), not ghosts / brutes", show({ g0, gob.P }))
 	check(ghost.P == h0 + 1, "a LittleGhost objective counts only ghosts", show({ h0, ghost.P }))
 	local p1 = pondT.P
 	f:Kill("PumpkinSlime", { Position = pond + vec(10, 0, 0) })
@@ -1519,6 +1640,8 @@ local function hwWorld(opts)
 		FindFirstChild = function(_, n) if n == "Map" then return f.Map end return nil end }
 	local config = execute("Config", CONFIG_SOURCE, configEnv(nil, { workspace = ws }))
 	if opts.Season == false then config.Halloween.Enabled = false end
+	-- A23-45: the single-king groups below certify one boss's schedule; 'ghost-king-schedule' runs both (Bosses = "all")
+	if opts.Bosses ~= "all" then config.Halloween.Bosses = { { Kind = "PumpkinKing", Key = "PumpkinKing" } } end
 	f.Config = config
 	local rs = sharedStorage()
 	local players = INST.new("Players")
@@ -1829,6 +1952,58 @@ end)
 -- (_dmg + min(amount, HP before the hit): the overkill part of the last hit does not count); killRecord pays only
 -- contributors inside the kind's window with >= RewardMinHits hits AND >= RewardMinDamageFrac x MaxHP damage (the king:
 -- 3 hits, 45 of 9000). Kinds without those fields pay every contributor (one hit is enough).
+-- A23-45: both minibosses with the real Config.Halloween.Bosses: the ghost king is due 10 minutes after the pumpkin king,
+-- appears in the HauntedHollow at one of its spots, publishes its own GameState keys and lines, leaves on its own
+-- clock, and the Studio debug spawn picks the boss by kind
+runGroup("ghost-king-schedule", function()
+	-- Net.CreateAll seeds the ghost king's GameState keys (a world whose service runs only the pumpkin king keeps them)
+	local d = hwWorld()
+	check(d:GS("GhostKingActive") == false and d:GS("GhostKingNextAt") == 0 and d:GS("GhostKingEndsAt") == 0,
+		"GameState defaults carry the ghost king keys (not active, 0, 0)", show({ d:GS("GhostKingActive"), d:GS("GhostKingNextAt") }))
+	local f = hwWorld({ Bosses = "all" })
+	local HW = f.Config.Halloween
+	local t0 = f.StartAt
+	check(f:GS("PumpkinKingNextAt") == t0 + 360 and f:GS("GhostKingNextAt") == t0 + 960,
+		"server start: the pumpkin king is due at 6:00, the ghost king at 16:00 (10 minutes later)",
+		show({ f:GS("PumpkinKingNextAt"), f:GS("GhostKingNextAt"), t0 }))
+	check(f:GS("GhostKingActive") == false and f:GS("GhostKingEndsAt") == 0, "server start: no ghost king active")
+	local function ghosts()
+		local out = {}
+		for _, sp in f.Spawned do if sp.Kind == "GhostKing" then table.insert(out, sp) end end
+		return out
+	end
+	f:Advance(360)
+	check(#f:Kings() == 1 and #ghosts() == 0, "at 6:00 only the pumpkin king appears", show({ #f:Kings(), #ghosts() }))
+	f:Advance(599.5)
+	check(#ghosts() == 0, "no ghost king before 16:00")
+	f:Advance(0.5)
+	local g = ghosts()[1]
+	check(g ~= nil and f.Now == t0 + 960, "the ghost king appears at 16:00", #ghosts())
+	if g then
+		local p = g.Opts.Position
+		local near = false
+		for _, spot in (HW.Bosses[2].SpawnSpots or {}) do
+			if p and (vec(p.X, 0, p.Z) - vec(spot.X, 0, spot.Z)).Magnitude <= HW.SpawnRadius + 1e-6 then near = true end
+		end
+		check(near and p and f.Config.ZoneAt(p).Id == HOLLOW and g.Rec.ZoneId == HOLLOW and g.Opts.Event == true and g.Rec.Golden == false,
+			"it stands on HauntedHollow ground at one of its spots, an event monster, never golden", show(p))
+	end
+	check(f:GS("GhostKingActive") == true and f:GS("GhostKingEndsAt") == t0 + 960 + 300 and f:GS("GhostKingNextAt") == t0 + 960 + 1200,
+		"GameState GhostKing*: active, leaves 5:00 later, next one 20:00 after this one",
+		show({ f:GS("GhostKingActive"), f:GS("GhostKingEndsAt"), f:GS("GhostKingNextAt") }))
+	local keys = f:Keys()
+	check(string.find(keys, "GhostKingAppear", 1, true) ~= nil, "the ghost king has its own server-wide appear line", keys)
+	check(f.HS.IsKingActive("GhostKing") == true and f.HS.IsKingActive() == true and f.HS.IsKingActive("PumpkinKing") == false,
+		"IsKingActive(kind) tells the bosses apart (the pumpkin king left at 11:00)")
+	f:Advance(300)
+	check(f:GS("GhostKingActive") == false and string.find(f:Keys(), "GhostKingLeave", 1, true) ~= nil,
+		"undefeated, it leaves after its 5:00 with its own line", f:Keys())
+	-- the debug spawn picks the boss by kind
+	local r = f.HS.DebugSpawn("GhostKing")
+	check(r == "spawned" and #ghosts() == 2, "DebugSpawn(\"GhostKing\") brings the ghost king now", show({ r, #ghosts() }))
+	check(f.HS.DebugSpawn("Dragon") ~= "spawned", "DebugSpawn of an unknown kind refuses")
+end)
+
 runGroup("king-rewards", function()
 	local f = hwWorld()
 	f:Advance(360)
@@ -2083,8 +2258,8 @@ runGroup("season-end-config", function()
 			check(counts[kind] == want and (case[2] or targets[kind] == 0), "EffectiveMonsterCounts / MonsterTargets give Halloween kinds 0 after the end",
 				tag .. " " .. kind .. " " .. tostring(counts[kind]) .. "/" .. tostring(targets[kind]))
 		end
-		check(counts.Slime == 12 and counts.Goblin == 10 and targets.Slime == CONFIG.MonsterTargets({ SlimeMeadow = 3 }).Slime,
-			"base counts / targets do not change at the end", tag)
+		check(counts.Slime == 12 and counts.Goblin == (case[2] and 7 or 10) and targets.Slime == CONFIG.MonsterTargets({ SlimeMeadow = 3 }).Slime,
+			"base counts / targets: the slimes never change, the goblins get the bat goblins' 3 slots back at the end", tag)
 	end
 	-- the os.time fallback outside a running place (no workspace / GetServerTimeNow throws)
 	for _, ws in { false, { GetServerTimeNow = function() error("not running") end } } do
@@ -2279,8 +2454,8 @@ runGroup("king-safety", function()
 	for _, kind in config.MonsterTypeOrder do
 		if config.MonsterTypes[kind].Boss then table.insert(bosses, kind) end
 	end
-	check(#bosses == 1 and bosses[1] == KING, "the king is the only Boss kind (the safety rule touches no other monster)",
-		table.concat(bosses, ","))
+	check(#bosses == 2 and bosses[1] == KING and bosses[2] == "GhostKing",
+		"the two kings are the only Boss kinds (the safety rule touches no other monster)", table.concat(bosses, ","))
 	local spot = HW.SpawnSpots[1]
 	local kpos = vec(spot.X, 0, spot.Z)
 	local ppos = vec(spot.X + 2, 0, spot.Z)
@@ -2352,8 +2527,10 @@ runGroup("king-safety", function()
 	end
 	local mpos, mppos = vec(330, 0, 10), vec(332, 0, 10)
 	check(config.ZoneAt(mpos).Id == "SlimeMeadow", "setup: a meadow spot for the meadow kinds")
-	for _, case in { { "Slime", mpos, mppos }, { "BigSlime", mpos, mppos }, { "PumpkinSlime", kpos, ppos }, { "LittleGhost", kpos, ppos },
-		{ "BatGoblin", kpos, ppos } } do
+	local hpos, hppos, wpos, wppos = vec(220, 0, 240), vec(222, 0, 240), vec(700, 0, 0), vec(702, 0, 0)
+	check(config.ZoneAt(hpos).Id == "HauntedHollow" and config.ZoneAt(wpos).Id == "GoblinWoods", "setup: a hollow spot and a woods spot")
+	for _, case in { { "Slime", mpos, mppos }, { "BigSlime", mpos, mppos }, { "PumpkinSlime", kpos, ppos }, { "LittleGhost", hpos, hppos },
+		{ "GhostMinion", hpos, hppos }, { "BatGoblin", wpos, wppos } } do
 		local kind, at, pat = case[1], case[2], case[3]
 		local def = config.MonsterTypes[kind]
 		local baby = newPlayer(pat, babyAttrs)
@@ -2987,11 +3164,15 @@ runGroup("main-debug", function()
 	local invoke = f.Bindables[1] and f.Bindables[1].OnInvoke
 	if invoke then
 		local r = invoke("P1", "PumpkinKing", 12345)
-		check(r == "spawned" and f.DebugCalls == 1 and f.DebugArgs.n == 0, "DebugCommand 'PumpkinKing' calls HalloweenService.DebugSpawn() (value ignored) and returns its result",
+		check(r == "spawned" and f.DebugCalls == 1 and f.DebugArgs.n == 1 and f.DebugArgs[1] == "PumpkinKing",
+			"DebugCommand 'PumpkinKing' calls HalloweenService.DebugSpawn(\"PumpkinKing\") (value ignored) and returns its result",
 			show({ r, f.DebugCalls, f.DebugArgs and f.DebugArgs.n }))
-		check(invoke("Nobody", "PumpkinKing", 1) == "no such ready player" and f.DebugCalls == 1, "unknown player: refused, nothing spawned")
+		local rg = invoke("P1", "GhostKing", 1)
+		check(rg == "spawned" and f.DebugCalls == 2 and f.DebugArgs[1] == "GhostKing", "DebugCommand 'GhostKing' calls DebugSpawn(\"GhostKing\")",
+			show({ rg, f.DebugCalls, f.DebugArgs and f.DebugArgs[1] }))
+		check(invoke("Nobody", "PumpkinKing", 1) == "no such ready player" and f.DebugCalls == 2, "unknown player: refused, nothing spawned")
 		invoke("P1", "Goose")
-		check(f.GooseCalls == 1 and f.DebugCalls == 1, "other keys are unchanged (Goose does not spawn the king)")
+		check(f.GooseCalls == 1 and f.DebugCalls == 2, "other keys are unchanged (Goose does not spawn a king)")
 	end
 	local live = mainWorld(false)
 	check(#live.Bindables == 0, "outside Studio there is no DebugCommand at all", #live.Bindables)
@@ -3063,14 +3244,14 @@ runGroup("client-wiring", function()
 	local activeAt = loopAt and string.find(items, "Config.MonsterActive(kind)", loopAt, true)
 	check(loopAt ~= nil and activeAt ~= nil and activeAt - loopAt < 400,
 		"Panels '몬스터가 주는 것' loops over MonsterTypeOrder and skips kinds whose season is off (Config.MonsterActive)")
-	-- the same filter on the real Config: in season all ten kinds can show, out of season the six year-round ones
+	-- the same filter on the real Config: in season all twelve kinds can show, out of season the six year-round ones
 	local cOff = newConfig(function(c) c.Halloween.Enabled = false end)
 	local on, off = 0, 0
 	for _, kind in CONFIG.MonsterTypeOrder do
 		if CONFIG.Loot.Tables[kind] and CONFIG.MonsterActive(kind) then on += 1 end
 		if cOff.Loot.Tables[kind] and cOff.MonsterActive(kind) then off += 1 end
 	end
-	check(on == 10 and off == 6, "drop list kinds: 10 in season, 6 out of season", on .. "/" .. off)
+	check(on == 12 and off == 6, "drop list kinds: 12 in season, 6 out of season", on .. "/" .. off)
 	-- MonsterService pieces that are not run here
 	local mon = MONSTER_SOURCE
 	check(string.find(mon, "local kind, noRespawn = rec.Kind, rec.Owner ~= nil or rec.Event == true", 1, true) ~= nil

@@ -5,8 +5,8 @@
   "staticFailures": [],
   "failure": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "312c36eb8a6cac8cb7b4114776f705b9e6f7723147502523d43d087b870e497c",
-    "src/ReplicatedStorage/Shared/Net.luau": "286f998785063a11ad5899da5a8721bdf19d16647afa6027b3016508f860d4e2",
+    "src/ReplicatedStorage/Shared/Config.luau": "1e2769031801dea97dce29130a312418ff776377d9b0d045a4fde83ed0d343c0",
+    "src/ReplicatedStorage/Shared/Net.luau": "a9063fb3175f722682c1def371bb55bf60da5f9da440b23254ea0f2d198debd9",
     "src/ServerScriptService/DataService.luau": "d360640bf7f1262d2bdf17d6eea7dd104cae44f4b29989c4263b94819b9316ba",
     "src/ServerScriptService/QuestService.luau": "c6e4cd98c46c23fc0c542b4a7743148f4c5d8ef31c8ef42826cfaede1dffff43"
   },

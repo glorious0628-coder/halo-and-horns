@@ -2,7 +2,8 @@
 
   py tools/apply_crossroads_kit.py     # (STUDIO_ID=<id> when two windows of the place are open)
 
-1. inserts every K_* model of art/models/worldkit/manifest.json that ServerStorage.KitStage lacks (the user's own
+1. inserts every K_* (crossroads) and GF_* (HauntedHollow) model of art/models/worldkit/manifest.json that
+   ServerStorage.KitStage lacks (the user's own
    Model assets, Studio MCP insert_asset);
 2. runs tools/worldkit/crossroads_kit_main.luau (idempotent: rebuilds Map.Decor.CrossroadsKit, keeps the contracts).
 Also run by tools/apply_studio_state.py, so reopening the cloud place restores it.
@@ -44,7 +45,10 @@ def run(c):
     if "Current Studio Mode: Edit" not in state:
         sys.exit("Studio must be in Edit mode: " + state[:120])
     with open(MANIFEST, encoding="utf-8") as f:
-        kit = json.load(f)["kit"]
+        manifest = json.load(f)
+    kit = dict(manifest["kit"])
+    # A23-45: the HauntedHollow props too (MapBuilder clones GF_* from ServerStorage.KitStage at runtime)
+    kit.update((manifest.get("ghost_forest") or {}).get("kit") or {})
     have = json.loads(text_of(c.call("execute_luau", {"code": HAVE, "datamodel_type": "Edit"})) or "{}")
     if isinstance(have, list):
         have = {}

@@ -1002,7 +1002,8 @@ end
 -- Zones are XZ rectangles; first match in ZoneOrder wins; everything else (incl. sea, bridges, the pass) is Outskirts.
 -- A23-30: PumpkinPatch (Season = "Halloween") is its own land south of the meadow; with its season off ZoneAt skips it
 -- (that ground reads as Outskirts) and nothing spawns there.
-Config.ZoneOrder = { "Crossroads", "HaloTown", "HornsTown", "SlimeMeadow", "PumpkinPatch", "GoblinWoods", "SkeletonRuins" }
+Config.ZoneOrder = { "Crossroads", "HaloTown", "HornsTown", "SlimeMeadow", "PumpkinPatch", "HauntedHollow", "GoblinWoods",
+	"SkeletonRuins" }
 Config.Zones = {
 	Crossroads = { Id = "Crossroads", Name = "교차로 마을", Center = Vector3.new(0, 0, 0), Size = Vector3.new(160, 0, 160),
 		MinLevel = 1, PvP = false, Town = true, Faction = nil,
@@ -1022,6 +1023,12 @@ Config.Zones = {
 		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "Halloween",
 		-- Mud = the pumpkin-soil texture slot (Config.UIArt Tex_PumpkinSoil; Ground is the ruins soil)
 		FloorColor = Color3.fromRGB(150, 118, 72), FloorMaterial = Enum.Material.Mud, Spawn = Vector3.new(360, 0, 190) },
+	-- A23-45 (user 2026-10-06 "유령은 유령끼리"): the ghost family's own seasonal field west of the PumpkinPatch (land
+	-- x 160..280, z 185..295 joined to it; MapBuilder fills it), entered only through the pumpkin field's west gate.
+	-- Goblin-woods strength (Lv 8-14 recommended, no level gate), no PvP. Floor: Ground until its own tile comes.
+	HauntedHollow = { Id = "HauntedHollow", Name = "유령 숲", Center = Vector3.new(220, 0, 240), Size = Vector3.new(104, 0, 90),
+		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "Halloween",
+		FloorColor = Color3.fromRGB(118, 106, 150), FloorMaterial = Enum.Material.Ground, Spawn = Vector3.new(262, 0, 240) },
 	GoblinWoods = { Id = "GoblinWoods", Name = "고블린 숲", Center = Vector3.new(720, 0, 0), Size = Vector3.new(300, 0, 300),
 		MinLevel = 10, PvP = true, Town = false, Faction = nil,
 		FloorColor = Color3.fromRGB(60, 125, 55), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(590, 0, 0) },
@@ -1085,6 +1092,7 @@ Config.Map = {
 		{ Name = "IslandHalo", MinX = -110, MaxX = 110, MinZ = -500, MaxZ = -300 },
 		{ Name = "IslandHorns", MinX = -110, MaxX = 110, MinZ = 300, MaxZ = 500 },
 		{ Name = "LandPumpkinPatch", MinX = 280, MaxX = 440, MinZ = 175, MaxZ = 295, Season = "Halloween" }, -- A23-30, joined to LandMeadow; WorldMap draws it only in season
+		{ Name = "LandHauntedHollow", MinX = 160, MaxX = 280, MinZ = 185, MaxZ = 295, Season = "Halloween" }, -- A23-45, joined to the patch's west edge
 	},
 	-- bridge decks (top at Y = 0); the built models are workspace.Map.Decor["Bridge_" .. Name]
 	Bridges = {
@@ -1171,8 +1179,8 @@ Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDi
 
 -- seasonal kinds sit right after the base kind of their zone (drop table / UI order); they spawn only while their
 -- season is on (Config.MonsterActive / Config.EffectiveMonsterCounts)
-Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "PumpkinKing", "Goblin", "BatGoblin", "LittleGhost", "GoblinBrute",
-	"Skeleton", "SkeletonKnight" }
+Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "PumpkinKing", "Goblin", "BatGoblin", "GoblinBrute",
+	"GhostMinion", "LittleGhost", "GhostKing", "Skeleton", "SkeletonKnight" }
 -- Name = full name (nametag, lore); Short = short name for quest / HUD lines (optional: use `def.Short or def.Name`)
 -- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
 -- QuestAs = the kind quests count it as (Config.QuestKind); Float = studs the client hovers it above the floor (no
@@ -1184,15 +1192,21 @@ Config.MonsterTypes = {
 	GoblinBrute = { Name = "고블린 우두머리", Short = "고블린 우두머리", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
 	Skeleton = { Name = "옛 왕국 해골 병사", Short = "해골 병사", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
 	SkeletonKnight = { Name = "왕관을 지키던 해골 기사", Short = "해골 기사", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
-	-- Halloween (Config.Halloween; provisional numbers)
-	-- A23-30: all in the PumpkinPatch (no Takes: the meadow / woods keep their counts in the season); a Lv1-walkable
-	-- field, so the ghost / bat goblin sit between a slime and a king slime (they were Lv10 woods numbers)
-	PumpkinSlime = { Name = "호박 슬라임", Short = "호박 슬라임", Zone = "PumpkinPatch", Count = 6, QuestAs = "Slime",
+	-- Halloween (Config.Halloween; provisional numbers). A23-45 (user 2026-10-06 "고블린은 고블린끼리, 호박은 호박, 유령은
+	-- 유령끼리"): one family per field. PumpkinPatch = pumpkin slimes + the pumpkin king; the bat goblins take 3 goblin
+	-- slots in the GoblinWoods (the first plan, woods numbers, counted as goblins); the HauntedHollow = the ghost family
+	-- (minions in packs of 3-4, little ghosts, the ghost king), goblin-woods strength.
+	PumpkinSlime = { Name = "호박 슬라임", Short = "호박 슬라임", Zone = "PumpkinPatch", Count = 10, QuestAs = "Slime",
 		Season = "Halloween", HP = 14, Damage = 2, XP = 6, Gold = 4, Speed = 10, Shape = "Slime", Scale = 1.1, Color = Color3.fromRGB(255, 150, 40) },
-	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = "PumpkinPatch", Count = 4, Season = "Halloween", HP = 30, Damage = 3,
-		XP = 11, Gold = 6, Speed = 10, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
-	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = "PumpkinPatch", Count = 4,
-		Season = "Halloween", HP = 45, Damage = 4, XP = 15, Gold = 8, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(120, 80, 150) },
+	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = "GoblinWoods", Count = 3, Takes = { Goblin = 3 }, QuestAs = "Goblin",
+		Season = "Halloween", HP = 95, Damage = 6, XP = 30, Gold = 17, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(120, 80, 150) },
+	-- Pack = spawned next to a living one of its kind whose pack has fewer than Max (within Radius), else a new pack.
+	-- ModelFrom = the custom model used while its own 3D model is not imported yet (scaled by Scale).
+	GhostMinion = { Name = "똘마니 유령", Short = "똘마니 유령", Zone = "HauntedHollow", Count = 8, Season = "Halloween",
+		Pack = { Max = 4, Radius = 7 }, ModelFrom = "LittleGhost",
+		HP = 40, Damage = 3, XP = 13, Gold = 7, Speed = 12, Shape = "Humanoid", Scale = 0.7, Color = Color3.fromRGB(190, 220, 255), Float = 1.2 },
+	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = "HauntedHollow", Count = 4, Season = "Halloween", HP = 70, Damage = 5,
+		XP = 24, Gold = 14, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
 	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
 	-- player with a tier 2-3 weapon, about 70 s for three. Per player DPS (Config.WeaponDamage x class Damage; swing =
 	-- 0.5 x D x 1.1 crit avg per SwingInterval; skill = 6 x D every 3 s while MP lasts: 100 MP + 4/s regen, 20 per
@@ -1205,6 +1219,11 @@ Config.MonsterTypes = {
 		-- Lv XPCapBelowLevel the king's XP is capped to one level (Config.XPToNext of the current level)
 		RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8,
 		HP = 9000, Damage = 8, XP = 300, Gold = 150, Speed = 7, Shape = "Slime", Scale = 2.5, Color = Color3.fromRGB(255, 130, 30) },
+	-- A23-45: the ghost family's miniboss, the pumpkin king's rules and numbers (A23-27 safety / reward gate / XP cap,
+	-- 5 min stay, nameless lines), 10 minutes after it in the schedule (Config.Halloween.Bosses), HauntedHollow
+	GhostKing = { Name = "유령 왕", Short = "유령 왕", Zone = "HauntedHollow", Count = 0, Boss = true, Season = "Halloween",
+		ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "LittleGhost",
+		HP = 9000, Damage = 8, XP = 300, Gold = 150, Speed = 7, Shape = "Humanoid", Scale = 2.4, Color = Color3.fromRGB(200, 190, 255), Float = 2.2 },
 }
 
 -- the kind quests / tutorial / story objectives count a kill as (a pumpkin slime counts as a slime)
@@ -1350,6 +1369,15 @@ Config.Halloween = {
 	-- A23-30: the king appears in the PumpkinPatch (x 280..440, z 175..295; entrance from the meadow at the north
 	-- edge), in its far half (one spot picked at random each time)
 	SpawnSpots = { Vector3.new(330, 0, 255), Vector3.new(390, 0, 255) },
+	-- A23-45: the minibosses HalloweenService runs. Each entry may override FirstDelay / SpawnSpots (and Interval /
+	-- Lifetime); Interval, Lifetime, RetryDelay, SpawnRadius and the A23-27 safety are shared. The ghost king comes 10
+	-- minutes after the pumpkin king (FirstDelay 360 + 600, both every Interval), in the HauntedHollow.
+	-- Key = the GameState prefix (<Key>NextAt / <Key>Active / <Key>EndsAt) and the Config.Announce event prefix.
+	Bosses = {
+		{ Kind = "PumpkinKing", Key = "PumpkinKing" },
+		{ Kind = "GhostKing", Key = "GhostKing", FirstDelay = 960,
+			SpawnSpots = { Vector3.new(205, 0, 255), Vector3.new(235, 0, 230) } },
+	},
 	-- A23-27: rookies are safe from the king whatever their faction: it never targets or hits a player below
 	-- SafeBelowLevel OR with less than SafePlaySeconds played (the PvP Rookie shield is NOT used here). They can still
 	-- hit it and share the candy (if they also meet the king's RewardMinHits / RewardMinDamageFrac).
@@ -1361,6 +1389,8 @@ Config.Halloween = {
 	Text = {
 		HudNext = "호박 대왕까지 %s", HudNextEn = "Pumpkin King in %s",
 		HudActive = "호박 대왕 출현! 남은 시간 %s", HudActiveEn = "Pumpkin King is here! %s left",
+		GhostHudNext = "유령 왕까지 %s", GhostHudNextEn = "Ghost King in %s",
+		GhostHudActive = "유령 왕 출현! 남은 시간 %s", GhostHudActiveEn = "Ghost King is here! %s left",
 		-- the one road sign on the meadow's south shore (MapBuilder; hidden when the season is off). It does not name
 		-- the season, so it needs no "comes back every year" line (P10)
 		PatchSign = "↓ 호박밭 · 호박 몬스터 사냥터", PatchSignEn = "↓ Pumpkin Patch · pumpkin monsters",
@@ -2163,17 +2193,24 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.001 }, { Item = "Move30", P = 0.0003 }, { Item = "Move10", P = 0.0001 },
 			{ Potion = "HP", P = 0.01 }, { Potion = "MP", P = 0.01 },
 		},
-		LittleGhost = { -- A23-30: PumpkinPatch (Lv1 field): the same rows as the bat goblin
-			{ Item = "Candy", P = 0.45 },
-			{ Item = "Enh70", P = 0.006 }, { Item = "Enh30", P = 0.0016 }, { Item = "Enh10", P = 0.0004 },
-			{ Item = "Move70", P = 0.002 }, { Item = "Move30", P = 0.0006 }, { Item = "Move10", P = 0.0002 },
-			{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
+		BatGoblin = { -- A23-45: a GoblinWoods kind again: candy + the goblin's rows (tooth, scrolls, potions, T4)
+			{ Item = "Candy", P = 0.45 }, { Item = "GoblinTooth", P = 0.2 },
+			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+			{ Weapon = 4, P = 0.001 },
 		},
-		BatGoblin = { -- A23-30: a PumpkinPatch (Lv1 field) kind now: candy + king-slime-level scroll rows, no tooth / T4
+		GhostMinion = { -- A23-45 HauntedHollow (goblin-woods strength): a small, weak pack ghost
+			{ Item = "Candy", P = 0.3 },
+			{ Item = "Enh70", P = 0.008 }, { Item = "Enh30", P = 0.002 }, { Item = "Enh10", P = 0.0005 },
+			{ Item = "Move70", P = 0.0025 }, { Item = "Move30", P = 0.0007 }, { Item = "Move10", P = 0.0002 },
+			{ Potion = "HP", P = 0.012 }, { Potion = "MP", P = 0.012 },
+		},
+		LittleGhost = { -- A23-45 HauntedHollow: candy + the goblin's scroll / potion rows
 			{ Item = "Candy", P = 0.45 },
-			{ Item = "Enh70", P = 0.006 }, { Item = "Enh30", P = 0.0016 }, { Item = "Enh10", P = 0.0004 },
-			{ Item = "Move70", P = 0.002 }, { Item = "Move30", P = 0.0006 }, { Item = "Move10", P = 0.0002 },
-			{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
+			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
 		},
 		PumpkinKing = { -- every eligible contributor rolls these once (MonsterKilled per contributor; A23-27 rows)
 			{ Item = "Candy", P = 1, N = 8 },
@@ -2181,6 +2218,13 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.08 },
 			{ Potion = "HP", P = 0.5 }, { Potion = "MP", P = 0.5 },
 			-- rolled only at Level >= that weapon's MinLevel (A23-27); below it the row gives BelowLevel instead
+			{ Weapon = 4, P = 0.05, BelowLevel = { Item = "Candy", N = 3 } },
+		},
+		GhostKing = { -- A23-45: the pumpkin king's table ("같은 사탕", same size)
+			{ Item = "Candy", P = 1, N = 8 },
+			{ Item = "Enh70", P = 0.25 }, { Item = "Enh30", P = 0.08 }, { Item = "Enh10", P = 0.02 },
+			{ Item = "Move70", P = 0.08 },
+			{ Potion = "HP", P = 0.5 }, { Potion = "MP", P = 0.5 },
 			{ Weapon = 4, P = 0.05, BelowLevel = { Item = "Candy", N = 3 } },
 		},
 	},
@@ -2244,6 +2288,12 @@ Config.Announce = {
 		PumpkinKingDefeatEn = "The Pumpkin King spilled a pile of candy!",
 		PumpkinKingLeave = "호박 대왕이 사탕 자루를 들고 돌아갔어요. 다음에 또 와요!",
 		PumpkinKingLeaveEn = "The Pumpkin King went home with its candy sack. See you next time!",
+		GhostKingAppear = "유령 왕이 유령 숲에 나타났어요! 함께 잡아요!", -- A23-45
+		GhostKingAppearEn = "The Ghost King appeared in the Haunted Hollow! Let's beat it together!",
+		GhostKingDefeat = "유령 왕이 사탕을 우수수 떨어뜨렸어요!",
+		GhostKingDefeatEn = "The Ghost King dropped a shower of candy!",
+		GhostKingLeave = "유령 왕이 스르르 사라졌어요. 다음에 또 만나요!",
+		GhostKingLeaveEn = "The Ghost King faded away. See you next time!",
 		NameHidden = "이제 전체 알림·랭킹에 내 이름 대신 진영 이름이 나와요.",
 		NameShown = "이제 전체 알림·랭킹에 내 이름이 나와요.",
 		MenuShow = "알림·랭킹에 내 이름: 보여요",
@@ -2268,6 +2318,9 @@ Config.Announce = {
 		PumpkinKingAppear = { Color = Color3.fromRGB(255, 150, 40), Toast = true, Icon = "IconMonPumpkinKing" },
 		PumpkinKingDefeat = { Color = Color3.fromRGB(255, 150, 40), Toast = true, Icon = "IconMonPumpkinKing" },
 		PumpkinKingLeave = { Color = Color3.fromRGB(255, 190, 120), Icon = "IconMonPumpkinKing" }, -- Icon: toast / banner art (Announce)
+		GhostKingAppear = { Color = Color3.fromRGB(170, 160, 255), Toast = true, Icon = "IconMonGhostKing" },
+		GhostKingDefeat = { Color = Color3.fromRGB(170, 160, 255), Toast = true, Icon = "IconMonGhostKing" },
+		GhostKingLeave = { Color = Color3.fromRGB(200, 195, 255), Icon = "IconMonGhostKing" },
 	},
 }
 

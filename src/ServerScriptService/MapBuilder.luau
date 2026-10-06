@@ -860,6 +860,7 @@ local PATCH = {
 	-- world_kit 2026-10-06 (Edit raycasts): the ridge slope reaches z ~199, so the north fence stands at z 202 (not in
 	-- the hill at z 175) and the pumpkins grow on the leafy furrows (z 211, 235, 259, 283) on the flat field
 	FenceNorthZ = 202, PumpkinFromZ = 211,
+	WestGateZ = 245, -- A23-45: the gap in the west fence that leads into the HauntedHollow (x < 280)
 	-- in front of the pass mouth, west of the dirt path (the old (368, 136) stood inside the pass wall); A23-36: no text
 	SignPos = Vector3.new(352, 0, 118),
 }
@@ -955,9 +956,12 @@ function PATCH.decor(ctx, l, decor)
 		local n = math.max(1, math.floor((b - a).Magnitude / PATCH.PostStep + 0.5))
 		for k = 0, n - 1 do
 			local p0, p1 = a:Lerp(b, k / n), a:Lerp(b, (k + 1) / n)
-			local gate = i == 1 and math.abs((p0.X + p1.X) / 2 - PATCH.PathX) < PATCH.Gate
-			-- no post in the middle of the gate gap (it stood on the dirt path)
-			if not (i == 1 and math.abs(p0.X - PATCH.PathX) < PATCH.Gate - 1) then post(p0.X, p0.Z) end
+			local gate = (i == 1 and math.abs((p0.X + p1.X) / 2 - PATCH.PathX) < PATCH.Gate)
+				or (i == 4 and math.abs((p0.Z + p1.Z) / 2 - PATCH.WestGateZ) < PATCH.Gate)
+			-- no post in the middle of a gate gap (the north one stood on the dirt path)
+			local midGate = (i == 1 and math.abs(p0.X - PATCH.PathX) < PATCH.Gate - 1)
+				or (i == 4 and math.abs(p0.Z - PATCH.WestGateZ) < PATCH.Gate - 1)
+			if not midGate then post(p0.X, p0.Z) end
 			if not gate then rail(p0, p1) end
 		end
 	end
@@ -1004,6 +1008,129 @@ function PATCH.ensure(ctx, folders)
 	PATCH.sign(ctx, folders.Landmarks)
 end
 
+------------------------------------------------------------------ A23-45 HauntedHollow (the ghost family's field)
+-- Terrain land joined to the PumpkinPatch's west edge (Config.Map.Lands "LandHauntedHollow", filled only while that
+-- spot is still sea) and Map.Decor.HauntedHollow: the free generated GF_* props of image session 1 (art/models/worldkit/
+-- manifest.json ghost_forest, inserted into ServerStorage.KitStage by tools/apply_crossroads_kit.py) or plain-part
+-- stand-ins without them. Blue lantern lights within the map light budget, no fog (A23-30 / A23-45 mood: ZoneLook).
+local HOLLOW = {
+	Land = "LandHauntedHollow",
+	Soil = Enum.Material.Ground, -- its own tile (Tex_HauntedFloor) takes a free material slot later (image dev)
+	LanternLight = Color3.fromRGB(150, 200, 255),
+	-- { kit, x, z, size along fit, fit ("h" | "w"), yaw, solid }
+	Props = {
+		{ "GF_Arch", 273, 245, 18, "w", -90, false }, -- the entrance from the pumpkin field's west gate (front -> +X)
+		{ "GF_Tree", 175, 200, 17, "h", 20, true }, { "GF_Tree", 172, 245, 16, "h", 140, true },
+		{ "GF_Tree", 182, 284, 18, "h", 250, true }, { "GF_Tree", 225, 291, 15, "h", 80, true },
+		{ "GF_Tree", 262, 288, 16, "h", 310, true }, { "GF_Tree", 258, 199, 17, "h", 200, true },
+		{ "GF_Tree", 212, 197, 15, "h", 0, true },
+		{ "GF_Willow", 198, 266, 14, "h", 30, true }, { "GF_Willow", 244, 212, 14, "h", 160, true },
+		{ "GF_Lantern", 232, 247, 9, "h", 0, true, true }, { "GF_Lantern", 192, 226, 9, "h", 90, true, true },
+		{ "GF_Lantern", 254, 268, 9, "h", 200, true, true },
+		{ "GF_Mushrooms", 210, 238, 2.5, "h", 0, false }, { "GF_Mushrooms", 180, 214, 2.5, "h", 70, false },
+		{ "GF_Mushrooms", 250, 254, 2.5, "h", 140, false }, { "GF_Mushrooms", 224, 276, 2.5, "h", 210, false },
+		{ "GF_Rock", 190, 252, 2.5, "h", 0, true }, { "GF_Rock", 266, 226, 2.5, "h", 60, true },
+		{ "GF_Rock", 216, 214, 2.5, "h", 120, true },
+	},
+}
+
+function HOLLOW.rect()
+	for _, l in (type(Config.Map.Lands) == "table" and Config.Map.Lands or {}) do
+		if type(l) == "table" and l.Name == HOLLOW.Land then return l end
+	end
+	return nil
+end
+
+function HOLLOW.fillLand(l)
+	local T = workspace.Terrain
+	local w, d = l.MaxX - l.MinX, l.MaxZ - l.MinZ
+	local cx, cz = (l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2
+	-- same layering as PATCH.fillLand (FillBlock tops land 2 cells above the asked top)
+	T:FillBlock(CFrame.new(cx, -12, cz), Vector3.new(w + 16, 8, d + 16), Enum.Material.Sand)
+	T:FillBlock(CFrame.new(cx, -8, cz), Vector3.new(w, 12, d), HOLLOW.Soil)
+end
+
+-- a GF_* kit model clone sized / turned / grounded at (x, z), or nil when the kit model is missing
+function HOLLOW.kitProp(name, x, z, size, fit, yaw)
+	local stage = ServerStorage:FindFirstChild("KitStage")
+	local src = stage and stage:FindFirstChild(name)
+	if not (src and src:IsA("Model")) then return nil end
+	local m = src:Clone()
+	for _, d in m:GetDescendants() do
+		if d:IsA("LuaSourceContainer") then d:Destroy() end -- A23-33: kit models never carry scripts
+	end
+	local _, sz = m:GetBoundingBox()
+	local dim = fit == "w" and sz.X or sz.Y
+	if dim > 0 then pcall(m.ScaleTo, m, m:GetScale() * (size / dim)) end
+	m:PivotTo(CFrame.new(m:GetPivot().Position) * CFrame.Angles(0, math.rad(yaw or 0), 0))
+	local cf, bs = m:GetBoundingBox()
+	m:PivotTo(m:GetPivot() + (Vector3.new(x, bs.Y / 2, z) - cf.Position))
+	return m
+end
+
+-- plain-part stand-in (no kit model): a dark trunk + lavender ball for trees, a post + blue glass for lanterns, ...
+function HOLLOW.standIn(ctx, name, x, z, size, parent)
+	local m = model(name)
+	if name == "GF_Tree" or name == "GF_Willow" then
+		part(ctx, { Name = "Trunk", Size = Vector3.new(2, size * 0.55, 2), Position = Vector3.new(x, size * 0.275, z),
+			Color = RGB(70, 50, 90), Material = Enum.Material.Wood }, m)
+		prop(ctx, { Name = "Leaves", Shape = Enum.PartType.Ball, Size = Vector3.new(size * 0.6, size * 0.6, size * 0.6),
+			Position = Vector3.new(x, size * 0.7, z), Color = RGB(160, 140, 220) }, m)
+	elseif name == "GF_Lantern" then
+		part(ctx, { Name = "Post", Size = Vector3.new(0.8, size, 0.8), Position = Vector3.new(x, size / 2, z),
+			Color = RGB(80, 60, 70), Material = Enum.Material.Wood }, m)
+		prop(ctx, { Name = "Glass", Size = Vector3.new(1.6, 1.8, 1.6), Position = Vector3.new(x, size + 0.6, z),
+			Color = RGB(150, 200, 255), Material = NEON }, m)
+	elseif name == "GF_Arch" then
+		for _, dz in { -8, 8 } do
+			part(ctx, { Name = "Pillar", Size = Vector3.new(2, 14, 2), Position = Vector3.new(x, 7, z + dz),
+				Color = RGB(70, 50, 90), Material = Enum.Material.Wood }, m)
+		end
+	else -- mushrooms / rocks: one small ball
+		prop(ctx, { Name = "Blob", Shape = Enum.PartType.Ball, Size = Vector3.new(size, size, size),
+			Position = Vector3.new(x, size * 0.4, z), Color = name == "GF_Rock" and RGB(110, 105, 125) or RGB(120, 190, 255) }, m)
+	end
+	m.Parent = parent
+	return m
+end
+
+function HOLLOW.decor(ctx, decor)
+	if decor:FindFirstChild("HauntedHollow") then return end
+	local root = model("HauntedHollow")
+	for _, e in HOLLOW.Props do
+		local name, x, z, size, fit, yaw, solid, lit = e[1], e[2], e[3], e[4], e[5], e[6], e[7], e[8]
+		local m = HOLLOW.kitProp(name, x, z, size, fit, yaw)
+		if m then
+			m.Parent = root
+			for _, d in m:GetDescendants() do
+				if d:IsA("BasePart") then
+					d.Anchored = true
+					if not solid then d.CanCollide = false end
+				end
+			end
+		else
+			m = HOLLOW.standIn(ctx, name, x, z, size, root)
+		end
+		if lit then
+			local holder = part(ctx, { Name = "LanternLight", Size = Vector3.new(0.4, 0.4, 0.4),
+				Position = Vector3.new(x, size * 0.95, z), Transparency = 1, CanCollide = false }, m)
+			light(ctx, holder, HOLLOW.LanternLight, 16, 1.4)
+		end
+	end
+	root.Parent = decor
+	ctx.pieces += 1
+end
+
+function HOLLOW.ensure(ctx, folders)
+	local l = HOLLOW.rect()
+	if not l then return end
+	if PATCH.landMissing((l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2) then
+		local ok, err = pcall(HOLLOW.fillLand, l)
+		if ok then ctx.pieces += 1 else Util.Warn(TAG, "HauntedHollow land: " .. tostring(err)) end
+	end
+	HOLLOW.decor(ctx, folders.Decor)
+end
+
 function MapBuilder.Build()
 	local ctx = newCtx()
 	local map = workspace:FindFirstChild("Map")
@@ -1032,6 +1159,8 @@ function MapBuilder.Build()
 	ensurePotionMerchant(ctx, folders.NPCs)
 	local okPatch, errPatch = pcall(PATCH.ensure, ctx, folders) -- A23-30
 	if not okPatch then Util.Warn(TAG, "PumpkinPatch: " .. tostring(errPatch)) end
+	local okHollow, errHollow = pcall(HOLLOW.ensure, ctx, folders) -- A23-45
+	if not okHollow then Util.Warn(TAG, "HauntedHollow: " .. tostring(errHollow)) end
 	-- A23-36: shop / landmark name labels (altar, goose nest, market, anvil) stay, seen only up close
 	for _, d in folders.Landmarks:GetDescendants() do
 		if d:IsA("BillboardGui") and d.MaxDistance > SHOP_SIGN_MAX_DISTANCE and d:FindFirstChildWhichIsA("TextLabel", true) then

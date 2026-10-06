@@ -728,18 +728,33 @@ runGroup("config", function()
 		check(table.find(L.Order, id) ~= nil, "every item id is in Loot.Order", id)
 	end
 	check(#L.Order == count(L.Items), "Loot.Order lists every item exactly once", #L.Order)
-	-- A23-30 (2026-10-06): the pumpkin-patch kinds (Lv1 field) = candy + king-slime-level scroll rows + potions 0.015, no
-	-- goblin tooth and no weapon row; the little ghost has the same rows as the bat goblin
-	local FIELD = {
-		{ Item = "Candy", P = 0.45 },
-		{ Item = "Enh70", P = 0.006 }, { Item = "Enh30", P = 0.0016 }, { Item = "Enh10", P = 0.0004 },
-		{ Item = "Move70", P = 0.002 }, { Item = "Move30", P = 0.0006 }, { Item = "Move10", P = 0.0002 },
-		{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
+	-- A23-45 (2026-10-06): the bat goblin is a woods kind again (candy + the goblin's rows with half its tooth chance and
+	-- the tier-4 row); the little ghost = candy + the goblin's scroll / potion rows; the minion a weaker version
+	local BAT = {
+		{ Item = "Candy", P = 0.45 }, { Item = "GoblinTooth", P = 0.2 },
+		{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+		{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+		{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+		{ Weapon = 4, P = 0.001 },
 	}
-	check(deepEqual(L.Tables.BatGoblin, FIELD),
-		"A23-30 BatGoblin rows = Candy 0.45 + Enh 0.006/0.0016/0.0004 + Move 0.002/0.0006/0.0002 + HP/MP 0.015 (no tooth, no weapon)",
+	local GHOST = {
+		{ Item = "Candy", P = 0.45 },
+		{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+		{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+		{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+	}
+	local MINION = {
+		{ Item = "Candy", P = 0.3 },
+		{ Item = "Enh70", P = 0.008 }, { Item = "Enh30", P = 0.002 }, { Item = "Enh10", P = 0.0005 },
+		{ Item = "Move70", P = 0.0025 }, { Item = "Move30", P = 0.0007 }, { Item = "Move10", P = 0.0002 },
+		{ Potion = "HP", P = 0.012 }, { Potion = "MP", P = 0.012 },
+	}
+	check(deepEqual(L.Tables.BatGoblin, BAT),
+		"A23-45 BatGoblin rows = Candy 0.45 + GoblinTooth 0.2 + the goblin's scroll / transfer / potion rows + Weapon 4 0.001",
 		show(L.Tables.BatGoblin))
-	check(deepEqual(L.Tables.LittleGhost, FIELD), "A23-30 LittleGhost rows = the bat goblin's rows", show(L.Tables.LittleGhost))
+	check(deepEqual(L.Tables.LittleGhost, GHOST), "A23-45 LittleGhost rows = candy + the goblin's scroll / potion rows", show(L.Tables.LittleGhost))
+	check(deepEqual(L.Tables.GhostMinion, MINION), "A23-45 GhostMinion rows = candy 0.3 + about half the little ghost's rows",
+		show(L.Tables.GhostMinion))
 	-- A23-27 (2026-10-06): the Pumpkin King's rows (replaces the old scroll rows 0.5 / 0.15 / 0.04 / 0.15)
 	local KING = {
 		{ Item = "Candy", P = 1, N = 8 },

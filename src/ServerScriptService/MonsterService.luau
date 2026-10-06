@@ -323,6 +323,11 @@ local function getCustomTemplate(id)
 	if not folder then return nil end
 	local t = folder:FindFirstChild(id)
 	if t and (t:IsA("Model") or t:IsA("BasePart")) then return t end
+	-- A23-45: a new kind without its own imported model yet borrows its family's (def.ModelFrom, scaled by def.Scale)
+	local def = Config.MonsterTypes[id]
+	local from = type(def) == "table" and def.ModelFrom or nil
+	t = type(from) == "string" and from ~= id and folder:FindFirstChild(from) or nil
+	if t and (t:IsA("Model") or t:IsA("BasePart")) then return t end
 	return nil
 end
 
@@ -513,7 +518,7 @@ end
 ------------------------------------------------------------------ spawn point (A7-1, grounded on Terrain per A10/A11)
 -- Returns a point ON the ground (Y = ground height) inside def.Zone, or nil when every try landed on water / a ridge
 -- (the density pass retries a few seconds later).
-local function pickSpawnPoint(def)
+local function pickSpawnPoint(def, kind)
 	local zone = Config.Zones[def.Zone]
 	if not zone then return nil end
 	local inset = MC.SpawnInset
@@ -523,6 +528,39 @@ local function pickSpawnPoint(def)
 		if not noHit then anyHit = true end
 		if g and Config.ZoneAt(g).Id == def.Zone then return g end
 		return nil
+	end
+	-- A23-45 pack kinds (def.Pack = { Max, Radius }, the ghost minions in 3-4s): next to a living one of the kind whose
+	-- pack (members within Radius x 1.5) is not full yet, else a free spot below = a new pack
+	local pack = type(def.Pack) == "table" and kind ~= nil and def.Pack or nil
+	if pack then
+		local maxN, rad = math.max(2, tonumber(pack.Max) or 4), math.max(3, tonumber(pack.Radius) or 7)
+		local members = {}
+		for _, rec in records do
+			if rec.Alive and rec.Owner == nil and rec.Kind == kind and rec.Root and rec.Root.Parent then
+				table.insert(members, rec.Root.Position)
+			end
+		end
+		for i = #members, 2, -1 do
+			local j = Util.Random:NextInteger(1, i)
+			members[i], members[j] = members[j], members[i]
+		end
+		for _, c in members do
+			local n = 0
+			for _, o in members do
+				if Util.FlatDistance(c, o) <= rad * 1.5 then n += 1 end
+			end
+			if n < maxN then
+				for _ = 1, 6 do
+					local a = Util.Random:NextNumber(0, math.pi * 2)
+					local d = Util.Random:NextNumber(3, rad)
+					local pt = Vector3.new(c.X + math.cos(a) * d, 0, c.Z + math.sin(a) * d)
+					if insideZone(zone, pt, inset) then
+						local g = try(pt)
+						if g then return g end
+					end
+				end
+			end
+		end
 	end
 	if SPREAD_ENABLED then
 		local bestPos, bestCount = nil, nil
@@ -875,7 +913,7 @@ local function spawnMonster(kind, opts)
 	-- point is ON the ground (its Y = ground height); never assume a flat Part floor (A10/A11 Terrain world)
 	local point = opts.Position
 	if typeof(point) ~= "Vector3" then
-		point = pickSpawnPoint(def)
+		point = pickSpawnPoint(def, kind)
 		if not point then return nil end
 	end
 	local rig = buildRig(kind, def, golden, point, opts.FaceTo)

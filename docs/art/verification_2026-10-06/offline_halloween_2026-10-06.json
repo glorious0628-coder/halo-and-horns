@@ -1,40 +1,46 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 6922,
+  "checks": 7170,
   "failedChecks": 0,
-  "namedChecks": 498,
+  "namedChecks": 537,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "config-kinds",
       "check": "Config.MonsterTypes has the Halloween kind",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "config-kinds",
       "check": "every Halloween kind carries Season = \"Halloween\"",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "config-kinds",
       "check": "number / text field = design value",
-      "pass": 51,
+      "pass": 81,
       "fail": 0
     },
     {
       "group": "config-kinds",
       "check": "colour = design RGB",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "config-kinds",
       "check": "no extra QuestAs / Takes / Float / Boss beyond the design",
-      "pass": 13,
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "table field = design value",
+      "pass": 1,
       "fail": 0
     },
     {
@@ -52,7 +58,7 @@
     {
       "group": "config-kinds",
       "check": "MonsterTypeOrder lists a kind once",
-      "pass": 10,
+      "pass": 12,
       "fail": 0
     },
     {
@@ -64,12 +70,12 @@
     {
       "group": "config-kinds",
       "check": "every kind is in MonsterTypeOrder",
-      "pass": 10,
+      "pass": 12,
       "fail": 0
     },
     {
       "group": "config-kinds",
-      "check": "seasonal kinds keep their list slots (pumpkin slime / king after the slime, bat goblin / ghost after the goblin)",
+      "check": "seasonal kinds keep their list slots (pumpkins after the slime, bat goblin after the goblin, the ghost family between the woods and the ruins)",
       "pass": 1,
       "fail": 0
     },
@@ -183,37 +189,103 @@
     },
     {
       "group": "config-patch",
-      "check": "every Halloween kind lives in the PumpkinPatch",
-      "pass": 4,
+      "check": "every Halloween kind lives in its family's field (A23-45)",
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "config-patch",
-      "check": "no Halloween kind takes base slots (no Takes)",
-      "pass": 4,
+      "check": "only the bat goblin takes base slots (3 goblins)",
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "config-patch",
-      "check": "meadow and woods (and the ruins) have 0 Halloween kinds",
-      "pass": 3,
+      "check": "the meadow and the ruins have 0 Halloween kinds",
+      "pass": 2,
       "fail": 0
     },
     {
       "group": "config-patch",
-      "check": "PumpkinPatch has only Halloween kinds (all four)",
+      "check": "the woods: goblins + the bat goblin only",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config-patch",
-      "check": "ZoneAt: a point inside the patch is PumpkinPatch while the season is on",
-      "pass": 4,
+      "check": "PumpkinPatch: only the pumpkin family (slime + king)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "HauntedHollow: only the ghost family (minion + little ghost + king)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "Config.Zones.HauntedHollow: Center (220, 0, 240), Size (104, 0, 90)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "HauntedHollow: no level gate, no PvP, not a town, Season = \"Halloween\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "HauntedHollow spawn point lies inside it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "HauntedHollow is in Config.ZoneOrder exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "Config.Map.Lands has LandHauntedHollow { x 160..280, z 185..295, Season }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "LandHauntedHollow is joined to the patch's west edge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "the hollow's zone lies on its land",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "the hollow and the patch rectangles do not overlap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "ZoneAt: a point inside the hollow is HauntedHollow in season",
+      "pass": 3,
       "fail": 0
     },
     {
       "group": "config-patch",
       "check": "ZoneAt: the same point is Outskirts with Enabled = false",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "config-patch",
+      "check": "ZoneAt: a point inside the patch is PumpkinPatch while the season is on",
       "pass": 4,
       "fail": 0
     },
@@ -261,8 +333,26 @@
     },
     {
       "group": "config-halloween",
+      "check": "Config.Halloween.Bosses = { PumpkinKing, GhostKing }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "the ghost king comes 10 minutes after the pumpkin king, same Interval / Lifetime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "every ghost king spot (+ SpawnRadius) lies in the HauntedHollow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
       "check": "HUD line has exactly one %s (m:ss)",
-      "pass": 2,
+      "pass": 4,
       "fail": 0
     },
     {
@@ -274,6 +364,18 @@
     {
       "group": "config-halloween",
       "check": "HUD line has a plain English twin (HudActiveEn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "HUD line has a plain English twin (GhostHudNextEn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "HUD line has a plain English twin (GhostHudActiveEn)",
       "pass": 1,
       "fail": 0
     },
@@ -292,37 +394,37 @@
     {
       "group": "config-halloween",
       "check": "server line text = the design line",
-      "pass": 2,
+      "pass": 5,
       "fail": 0
     },
     {
       "group": "config-halloween",
       "check": "server line has a plain English twin",
-      "pass": 2,
+      "pass": 5,
       "fail": 0
     },
     {
       "group": "config-halloween",
       "check": "Config.Announce.Events lists the line with its colour",
-      "pass": 2,
+      "pass": 5,
       "fail": 0
     },
     {
       "group": "config-halloween",
       "check": "event lines take no arguments (no name slot)",
-      "pass": 2,
+      "pass": 5,
       "fail": 0
     },
     {
       "group": "config-halloween",
-      "check": "appear and defeat lines also toast",
+      "check": "appear and defeat lines also toast (both kings)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config-halloween",
       "check": "no limited-time pressure wording",
-      "pass": 12,
+      "pass": 22,
       "fail": 0
     },
     {
@@ -346,7 +448,7 @@
     {
       "group": "config-halloween",
       "check": "monster names carry no limited-time wording",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
@@ -364,19 +466,19 @@
     {
       "group": "counts",
       "check": "season on: regular pool count per kind",
-      "pass": 10,
+      "pass": 12,
       "fail": 0
     },
     {
       "group": "counts",
       "check": "season off: regular pool count per kind (no seasonal kind)",
-      "pass": 10,
+      "pass": 12,
       "fail": 0
     },
     {
       "group": "counts",
       "check": "EffectiveMonsterCounts() follows Config.Halloween (on, before EndsAt)",
-      "pass": 10,
+      "pass": 12,
       "fail": 0
     },
     {
@@ -399,38 +501,50 @@
     },
     {
       "group": "counts",
-      "check": "PumpkinPatch: 6 + 4 + 4 in season, empty out of season",
+      "check": "PumpkinPatch: 10 pumpkin slimes in season, empty out of season",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "counts",
-      "check": "every regular Halloween kind sits outside the GlobalCap (Config.MonsterOutsideCap)",
+      "check": "HauntedHollow: 8 minions + 4 little ghosts in season, empty out of season",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "every add-on Halloween kind sits outside the GlobalCap (Config.MonsterOutsideCap)",
       "pass": 3,
       "fail": 0
     },
     {
       "group": "counts",
-      "check": "a Halloween kind is its own cap group (it shares no base kind's part)",
+      "check": "an add-on Halloween kind is its own cap group (it shares no base kind's part)",
       "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "the bat goblin takes goblin slots: inside the cap, in the goblin's cap group",
+      "pass": 1,
       "fail": 0
     },
     {
       "group": "counts",
       "check": "Enabled = false: EffectiveMonsterCounts() = the year-round pool",
-      "pass": 10,
+      "pass": 12,
       "fail": 0
     },
     {
       "group": "counts",
       "check": "MonsterActive(seasonal kind) follows Enabled",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "counts",
       "check": "MonsterActive override forces the season",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
@@ -460,7 +574,7 @@
     {
       "group": "counts",
       "check": "Config.QuestKind(kind) = QuestAs or kind",
-      "pass": 8,
+      "pass": 10,
       "fail": 0
     },
     {
@@ -525,19 +639,19 @@
     },
     {
       "group": "counts-density",
-      "check": "every base kind keeps min(Count + Extra x (n - 1), Count x MaxZoneMult) in and out of season",
+      "check": "every base kind keeps min(Count + Extra x (n - 1), Count x MaxZoneMult) in and out of season (with its taker)",
       "pass": 144,
       "fail": 0
     },
     {
       "group": "counts-density",
-      "check": "a Halloween kind grows on its own target with the patch's players (0 off season)",
+      "check": "an add-on Halloween kind grows on its own target with its field's players (0 off season)",
       "pass": 72,
       "fail": 0
     },
     {
       "group": "counts-density",
-      "check": "the king never joins the regular pool",
+      "check": "the kings never join the regular pool",
       "pass": 24,
       "fail": 0
     },
@@ -549,7 +663,13 @@
     },
     {
       "group": "counts-density",
-      "check": "a busy patch grows only the patch kinds",
+      "check": "a busy patch grows only the pumpkin slimes",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "a busy hollow grows only the ghosts",
       "pass": 3,
       "fail": 0
     },
@@ -574,7 +694,7 @@
     {
       "group": "monster-pool",
       "check": "MonsterService.Start spawns EffectiveMonsterCounts per kind",
-      "pass": 20,
+      "pass": 24,
       "fail": 0
     },
     {
@@ -592,7 +712,7 @@
     {
       "group": "monster-pool",
       "check": "reevaluate fills every kind to its capped target",
-      "pass": 20,
+      "pass": 24,
       "fail": 0
     },
     {
@@ -610,7 +730,7 @@
     {
       "group": "monster-pool",
       "check": "room under the cap: capped targets = Config.MonsterTargets",
-      "pass": 20,
+      "pass": 24,
       "fail": 0
     },
     {
@@ -681,13 +801,13 @@
     },
     {
       "group": "monster-cap-season",
-      "check": "outside the cap: every Halloween kind (pumpkin slime, ghost, bat goblin, event king), no base kind",
+      "check": "outside the cap: the add-on Halloween kinds and the event kings; the bat goblin (a taker) and the base kinds inside",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "monster-cap-season",
-      "check": "cap groups: every kind is its own group (no kind takes base slots)",
+      "check": "cap groups: every kind is its own group, the bat goblin shares the goblin's",
       "pass": 1,
       "fail": 0
     },
@@ -699,13 +819,13 @@
     },
     {
       "group": "monster-cap-season",
-      "check": "each Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off",
+      "check": "each add-on Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off",
       "pass": 1053,
       "fail": 0
     },
     {
       "group": "monster-cap-season",
-      "check": "every base kind's capped target is the same with the season on and off",
+      "check": "every base kind's capped target (with its taker) is the same with the season on and off",
       "pass": 1053,
       "fail": 0
     },
@@ -729,7 +849,7 @@
     },
     {
       "group": "monster-cap-season",
-      "check": "full server: the Halloween kinds still fill their own targets (12 / 8 / 8 with 4 in the patch)",
+      "check": "full server: the add-on Halloween kinds still fill their own targets (16 / 12 / 8 with 4 in the patch, 3 in the hollow)",
       "pass": 1,
       "fail": 0
     },
@@ -765,7 +885,7 @@
     },
     {
       "group": "season-end-pool",
-      "check": "at EndsAt reevaluate removes every alive regular Halloween monster (6 + 4 + 4)",
+      "check": "at EndsAt reevaluate removes every alive regular Halloween monster (10 + 8 + 4 + 3)",
       "pass": 1,
       "fail": 0
     },
@@ -783,7 +903,7 @@
     },
     {
       "group": "season-end-pool",
-      "check": "base kinds are untouched by the sweep",
+      "check": "base kinds are untouched by the sweep (the goblins refill the bat goblins' 3 slots)",
       "pass": 1,
       "fail": 0
     },
@@ -831,26 +951,32 @@
     },
     {
       "group": "loot",
-      "check": "only the king's weapon row has a BelowLevel",
+      "check": "the ghost king's weapon row is the pumpkin king's (BelowLevel 3 candies)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "only the kings' weapon rows have a BelowLevel",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "loot",
       "check": "drop table has no duplicate rows",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "loot",
       "check": "drop table has exactly the design rows",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "loot",
       "check": "drop row chance / count = design",
-      "pass": 36,
+      "pass": 55,
       "fail": 0
     },
     {
@@ -862,25 +988,25 @@
     {
       "group": "loot",
       "check": "one draw per row (+ the jackpot draw for jackpot kinds)",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "loot",
       "check": "a 0 roll drops every row with its count",
-      "pass": 36,
+      "pass": 55,
       "fail": 0
     },
     {
       "group": "loot",
       "check": "jackpot legendary only from pumpkin slimes among the Halloween kinds",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
       "group": "loot",
       "check": "row chance threshold = P",
-      "pass": 71,
+      "pass": 108,
       "fail": 0
     },
     {
@@ -892,7 +1018,7 @@
     {
       "group": "loot",
       "check": "seeded rate of Candy matches its P (20000 rolls)",
-      "pass": 3,
+      "pass": 4,
       "fail": 0
     },
     {
@@ -903,7 +1029,13 @@
     },
     {
       "group": "loot",
-      "check": "a bat goblin kill through MonsterKilled grants candy and its scroll rows (0 roll), no goblin tooth or weapon (A23-30)",
+      "check": "seeded rate of GoblinTooth matches its P (20000 rolls)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "a bat goblin kill through MonsterKilled grants candy, a goblin tooth, its scroll rows and the tier-4 row on a 0 roll (A23-45)",
       "pass": 1,
       "fail": 0
     },
@@ -993,13 +1125,13 @@
     },
     {
       "group": "quests-kill-weight",
-      "check": "strict king-slime daily: the Lv1-field ghost / bat goblin (XP below the king slime's) count 0",
+      "check": "strict king-slime daily: the woods-strength ghost / bat goblin (XP above the king slime's) count one (never more)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "quests-kill-weight",
-      "check": "goblin daily: a bat goblin counts as itself now (BatGoblin.XP / Goblin.XP, no QuestAs since A23-30)",
+      "check": "goblin daily: a bat goblin counts as a goblin again (QuestAs, A23-45)",
       "pass": 1,
       "fail": 0
     },
@@ -1167,7 +1299,7 @@
     },
     {
       "group": "story",
-      "check": "a Goblin objective counts goblins only (not bat goblins / ghosts / brutes)",
+      "check": "a Goblin objective counts goblins and bat goblins (QuestAs, A23-45), not ghosts / brutes",
       "pass": 1,
       "fail": 0
     },
@@ -1401,6 +1533,96 @@
     },
     {
       "group": "king-schedule",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "GameState defaults carry the ghost king keys (not active, 0, 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "server start: the pumpkin king is due at 6:00, the ghost king at 16:00 (10 minutes later)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "server start: no ghost king active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "at 6:00 only the pumpkin king appears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "no ghost king before 16:00",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "the ghost king appears at 16:00",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "it stands on HauntedHollow ground at one of its spots, an event monster, never golden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "GameState GhostKing*: active, leaves 5:00 later, next one 20:00 after this one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "the ghost king has its own server-wide appear line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "IsKingActive(kind) tells the bosses apart (the pumpkin king left at 11:00)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "undefeated, it leaves after its 5:00 with its own line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "DebugSpawn(\"GhostKing\") brings the ghost king now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "DebugSpawn of an unknown kind refuses",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ghost-king-schedule",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -1702,7 +1924,7 @@
     {
       "group": "season-off",
       "check": "season off: no seasonal kind in the pool",
-      "pass": 4,
+      "pass": 6,
       "fail": 0
     },
     {
@@ -1798,18 +2020,18 @@
     {
       "group": "season-end-config",
       "check": "MonsterActive(Halloween kind) follows the clock",
-      "pass": 16,
+      "pass": 24,
       "fail": 0
     },
     {
       "group": "season-end-config",
       "check": "EffectiveMonsterCounts / MonsterTargets give Halloween kinds 0 after the end",
-      "pass": 16,
+      "pass": 24,
       "fail": 0
     },
     {
       "group": "season-end-config",
-      "check": "base counts / targets do not change at the end",
+      "check": "base counts / targets: the slimes never change, the goblins get the bat goblins' 3 slots back at the end",
       "pass": 4,
       "fail": 0
     },
@@ -2043,7 +2265,7 @@
     },
     {
       "group": "king-safety",
-      "check": "the king is the only Boss kind (the safety rule touches no other monster)",
+      "check": "the two kings are the only Boss kinds (the safety rule touches no other monster)",
       "pass": 1,
       "fail": 0
     },
@@ -2194,7 +2416,7 @@
     {
       "group": "king-safety",
       "check": "a normal (non-boss) monster still targets a Lv1 / 0 s player",
-      "pass": 9,
+      "pass": 10,
       "fail": 0
     },
     {
@@ -2205,8 +2427,14 @@
     },
     {
       "group": "king-safety",
+      "check": "setup: a hollow spot and a woods spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-safety",
       "check": "a meadow / patch monster's hit still lands on a Lv1 / 0 s player",
-      "pass": 5,
+      "pass": 6,
       "fail": 0
     },
     {
@@ -2787,7 +3015,13 @@
     },
     {
       "group": "main-debug",
-      "check": "DebugCommand 'PumpkinKing' calls HalloweenService.DebugSpawn() (value ignored) and returns its result",
+      "check": "DebugCommand 'PumpkinKing' calls HalloweenService.DebugSpawn(\"PumpkinKing\") (value ignored) and returns its result",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "DebugCommand 'GhostKing' calls DebugSpawn(\"GhostKing\")",
       "pass": 1,
       "fail": 0
     },
@@ -2799,7 +3033,7 @@
     },
     {
       "group": "main-debug",
-      "check": "other keys are unchanged (Goose does not spawn the king)",
+      "check": "other keys are unchanged (Goose does not spawn a king)",
       "pass": 1,
       "fail": 0
     },
@@ -2949,7 +3183,7 @@
     },
     {
       "group": "client-wiring",
-      "check": "drop list kinds: 10 in season, 6 out of season",
+      "check": "drop list kinds: 12 in season, 6 out of season",
       "pass": 1,
       "fail": 0
     },
@@ -3007,7 +3241,7 @@
     },
     {
       "Group": "loot",
-      "Text": "Jackpot-carrying regular slots: 18 in season vs 12 out of season (A23-30 moved the pumpkin slimes out of the slime slots; Config.Loot.Jackpot comment still says they take slime slots)"
+      "Text": "Jackpot-carrying regular slots: 22 in season vs 12 out of season (A23-30 moved the pumpkin slimes out of the slime slots; Config.Loot.Jackpot comment still says they take slime slots)"
     },
     {
       "Group": "clips",
@@ -3024,9 +3258,9 @@
     "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
   ],
   "mutations": {
-    "total": 82,
-    "applied": 82,
-    "caught": 82,
+    "total": 87,
+    "applied": 87,
+    "caught": 87,
     "results": [
       {
         "mutation": "a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)",
@@ -3036,44 +3270,75 @@
         "crashed": false,
         "newFailingChecks": [
           "config-kinds :: number / text field = design value",
-          "config-patch :: PumpkinPatch has only Halloween kinds (all four)",
-          "config-patch :: every Halloween kind lives in the PumpkinPatch",
-          "config-patch :: meadow and woods (and the ruins) have 0 Halloween kinds",
-          "counts :: PumpkinPatch: 6 + 4 + 4 in season, empty out of season",
+          "config-patch :: PumpkinPatch: only the pumpkin family (slime + king)",
+          "config-patch :: every Halloween kind lives in its family's field (A23-45)",
+          "config-patch :: the meadow and the ruins have 0 Halloween kinds",
+          "counts :: PumpkinPatch: 10 pumpkin slimes in season, empty out of season",
           "counts :: meadow / woods / ruins counts are exactly the same with the season on and off"
         ],
-        "newFailingCount": 18
+        "newFailingCount": 20
       },
       {
-        "mutation": "bat goblin takes goblin slots again (woods density changes)",
+        "mutation": "bat goblin stops taking goblin slots (woods density changes)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config-kinds :: no extra QuestAs / Takes / Float / Boss beyond the design",
-          "config-patch :: no Halloween kind takes base slots (no Takes)",
-          "counts :: a Halloween kind is its own cap group (it shares no base kind's part)",
-          "counts :: every regular Halloween kind sits outside the GlobalCap (Config.MonsterOutsideCap)",
+          "config-kinds :: table field = design value",
+          "config-patch :: only the bat goblin takes base slots (3 goblins)",
           "counts :: meadow / woods / ruins counts are exactly the same with the season on and off",
-          "counts :: meadow 16, woods 14 (year-round numbers)"
+          "counts :: meadow 16, woods 14 (year-round numbers)",
+          "counts :: season on: regular pool count per kind",
+          "counts :: the bat goblin takes goblin slots: inside the cap, in the goblin's cap group"
         ],
-        "newFailingCount": 27
+        "newFailingCount": 17
       },
       {
-        "mutation": "bat goblin counts as a goblin again (QuestAs)",
+        "mutation": "bat goblin counts as itself (QuestAs dropped)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config-kinds :: no extra QuestAs / Takes / Float / Boss beyond the design",
+          "config-kinds :: number / text field = design value",
           "counts :: Config.QuestKind(kind) = QuestAs or kind",
-          "quests-kill-weight :: goblin daily: a bat goblin counts as itself now (BatGoblin.XP / Goblin.XP, no QuestAs since A23-30)",
-          "quests-kill-weight :: strict king-slime daily: the Lv1-field ghost / bat goblin (XP below the king slime's) count 0",
-          "story :: a Goblin objective counts goblins only (not bat goblins / ghosts / brutes)"
+          "quests-kill-weight :: goblin daily: a bat goblin counts as a goblin again (QuestAs, A23-45)",
+          "story :: a Goblin objective counts goblins and bat goblins (QuestAs, A23-45), not ghosts / brutes"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "ghosts back in the pumpkin patch (LittleGhost Zone)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config-kinds :: number / text field = design value",
+          "config-patch :: HauntedHollow: only the ghost family (minion + little ghost + king)",
+          "config-patch :: PumpkinPatch: only the pumpkin family (slime + king)",
+          "config-patch :: every Halloween kind lives in its family's field (A23-45)",
+          "counts :: HauntedHollow: 8 minions + 4 little ghosts in season, empty out of season",
+          "counts :: PumpkinPatch: 10 pumpkin slimes in season, empty out of season"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "ghost king due with the pumpkin king (FirstDelay 360)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config-halloween :: the ghost king comes 10 minutes after the pumpkin king, same Interval / Lifetime",
+          "ghost-king-schedule :: GameState GhostKing*: active, leaves 5:00 later, next one 20:00 after this one",
+          "ghost-king-schedule :: IsKingActive(kind) tells the bosses apart (the pumpkin king left at 11:00)",
+          "ghost-king-schedule :: at 6:00 only the pumpkin king appears",
+          "ghost-king-schedule :: no ghost king before 16:00",
+          "ghost-king-schedule :: server start: the pumpkin king is due at 6:00, the ghost king at 16:00 (10 minutes later)"
+        ],
+        "newFailingCount": 6
       },
       {
         "mutation": "PumpkinPatch land detached from the meadow (MinZ 180)",
@@ -3110,13 +3375,13 @@
         "crashed": false,
         "newFailingChecks": [
           "counts :: Enabled = false: EffectiveMonsterCounts() = the year-round pool",
-          "counts :: PumpkinPatch: 6 + 4 + 4 in season, empty out of season",
+          "counts :: HauntedHollow: 8 minions + 4 little ghosts in season, empty out of season",
+          "counts :: PumpkinPatch: 10 pumpkin slimes in season, empty out of season",
+          "counts :: meadow / woods / ruins counts are exactly the same with the season on and off",
           "counts :: season off: regular pool count per kind (no seasonal kind)",
-          "counts-density :: a Halloween kind grows on its own target with the patch's players (0 off season)",
-          "counts-takes-generic :: a taker spawns its Count and takes as many base slots",
-          "counts-takes-generic :: taker + base targets = the season-off base target (the zone total is unchanged)"
+          "counts-density :: an add-on Halloween kind grows on its own target with its field's players (0 off season)"
         ],
-        "newFailingCount": 18
+        "newFailingCount": 26
       },
       {
         "mutation": "patch kinds counted inside the GlobalCap",
@@ -3125,11 +3390,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "counts :: every regular Halloween kind sits outside the GlobalCap (Config.MonsterOutsideCap)",
+          "counts :: every add-on Halloween kind sits outside the GlobalCap (Config.MonsterOutsideCap)",
           "monster-cap-season :: a full server: meadow / woods / ruins keep their capped totals with the season on (cap 72 reached)",
           "monster-cap-season :: alive / pending Halloween kinds are not counted toward the cap",
-          "monster-cap-season :: each Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off",
-          "monster-cap-season :: every base kind's capped target is the same with the season on and off",
+          "monster-cap-season :: each add-on Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off",
+          "monster-cap-season :: every base kind's capped target (with its taker) is the same with the season on and off",
           "monster-cap-season :: every field's capped total is the same with the season on and off"
         ],
         "newFailingCount": 11
@@ -3141,9 +3406,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "counts-takes-generic :: taker + base targets = the season-off base target (the zone total is unchanged)"
+          "counts-density :: a busy meadow grows only the meadow",
+          "counts-density :: a busy patch grows only the pumpkin slimes",
+          "counts-density :: every base kind keeps min(Count + Extra x (n - 1), Count x MaxZoneMult) in and out of season (with its taker)",
+          "counts-density :: meadow / woods / ruins targets identical with the season on / off",
+          "counts-takes-generic :: taker + base targets = the season-off base target (the zone total is unchanged)",
+          "monster-cap-season :: a full server: meadow / woods / ruins keep their capped totals with the season on (cap 72 reached)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 9
       },
       {
         "mutation": "generic Takes: takers get their own cap share",
@@ -3152,9 +3422,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "counts-takes-generic :: a taker shares its base kind's cap group and stays inside the cap"
+          "counts :: the bat goblin takes goblin slots: inside the cap, in the goblin's cap group",
+          "counts-takes-generic :: a taker shares its base kind's cap group and stays inside the cap",
+          "monster-cap-season :: cap groups: every kind is its own group, the bat goblin shares the goblin's",
+          "monster-cap-season :: every base kind's capped target (with its taker) is the same with the season on and off",
+          "monster-cap-season :: every field's capped total is the same with the season on and off"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 5
       },
       {
         "mutation": "QuestKind ignores QuestAs",
@@ -3170,7 +3444,7 @@
           "story :: S0 trial 'BasicKill Slime': a pumpkin slime killed with basic attacks counts",
           "story :: S0 trial a reaches 3 with pumpkin slimes and slimes"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 10
       },
       {
         "mutation": "season flag ignored (Enabled)",
@@ -3179,14 +3453,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "client-wiring :: drop list kinds: 10 in season, 6 out of season",
+          "client-wiring :: drop list kinds: 12 in season, 6 out of season",
           "config-patch :: ZoneAt: the same point is Outskirts with Enabled = false",
           "counts :: Enabled = false: EffectiveMonsterCounts() = the year-round pool",
           "counts :: MonsterActive(seasonal kind) follows Enabled",
           "counts :: SeasonOn: nil = always, Halloween = Enabled (before EndsAt), unknown season = off",
-          "monster-cap-season :: each Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off"
+          "monster-cap-season :: each add-on Halloween kind gets its own full target on top (Count .. Count x MaxZoneMult), none with the season off"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 20
       },
       {
         "mutation": "season never ends (EndsAt check dropped in Config.SeasonOn)",
@@ -3200,9 +3474,9 @@
           "season-end-config :: EffectiveMonsterCounts / MonsterTargets give Halloween kinds 0 after the end",
           "season-end-config :: MonsterActive(Halloween kind) follows the clock",
           "season-end-config :: ZoneAt: the patch exists only before EndsAt (Outskirts after)",
-          "season-end-king :: 1 s after EndsAt a due king does NOT appear"
+          "season-end-config :: base counts / targets: the slimes never change, the goblins get the bat goblins' 3 slots back at the end"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 21
       },
       {
         "mutation": "season still on at EndsAt (<=)",
@@ -3215,10 +3489,10 @@
           "season-end-config :: EffectiveMonsterCounts / MonsterTargets give Halloween kinds 0 after the end",
           "season-end-config :: MonsterActive(Halloween kind) follows the clock",
           "season-end-config :: ZoneAt: the patch exists only before EndsAt (Outskirts after)",
-          "season-end-king :: GameState after the end: not active, no countdown (PumpkinKingNextAt 0)",
-          "season-end-king :: a king still here when the season ends goes home at once (RemoveEvent(rec, true, true): leave fade)"
+          "season-end-config :: base counts / targets: the slimes never change, the goblins get the bat goblins' 3 slots back at the end",
+          "season-end-king :: GameState after the end: not active, no countdown (PumpkinKingNextAt 0)"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 14
       },
       {
         "mutation": "SeasonNow ignores the server clock",
@@ -3232,9 +3506,9 @@
           "season-end-config :: EffectiveMonsterCounts / MonsterTargets give Halloween kinds 0 after the end",
           "season-end-config :: MonsterActive(Halloween kind) follows the clock",
           "season-end-config :: ZoneAt: the patch exists only before EndsAt (Outskirts after)",
-          "season-end-king :: 1 s after EndsAt a due king does NOT appear"
+          "season-end-config :: base counts / targets: the slimes never change, the goblins get the bat goblins' 3 slots back at the end"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 21
       },
       {
         "mutation": "season end moved a day (EndsAt)",
@@ -3292,7 +3566,7 @@
         "newFailingCount": 3
       },
       {
-        "mutation": "off-season debug king sent home at once (K.Debug never set)",
+        "mutation": "off-season debug king sent home at once (b.Debug never set)",
         "file": "src/ServerScriptService/HalloweenService.luau",
         "applied": true,
         "caught": true,
@@ -3320,7 +3594,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "season-end-pool :: at EndsAt reevaluate removes every alive regular Halloween monster (6 + 4 + 4)",
+          "season-end-pool :: at EndsAt reevaluate removes every alive regular Halloween monster (10 + 8 + 4 + 3)",
           "season-end-pool :: no Halloween monster spawns again after the end",
           "season-end-pool :: one second after EndsAt: nothing left to sweep, the Halloween targets are 0"
         ],
@@ -3345,7 +3619,7 @@
         "crashed": false,
         "newFailingChecks": [
           "monster-pool :: the king's presence changes no regular spawn",
-          "season-end-pool :: at EndsAt reevaluate removes every alive regular Halloween monster (6 + 4 + 4)",
+          "season-end-pool :: at EndsAt reevaluate removes every alive regular Halloween monster (10 + 8 + 4 + 3)",
           "season-end-pool :: one second after EndsAt: nothing left to sweep, the Halloween targets are 0",
           "season-end-pool :: the event king (HalloweenService closes it) and a personal monster are not swept"
         ],
@@ -3381,6 +3655,17 @@
       },
       {
         "mutation": "king scroll row back to 0.5 (Enh70)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: drop row chance / count = design"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ghost king candy cut to 2 (its table = the pumpkin king's)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
@@ -3495,9 +3780,10 @@
           "story :: S0 trial a reaches 3 with pumpkin slimes and slimes",
           "story :: S0 trial: a pumpkin slime hit by the skill does not count (basic attacks only)",
           "story :: S0 trial: woods kinds never count as slimes",
-          "story :: a 'slime near the pond' objective counts a pumpkin slime near the pond only"
+          "story :: a 'slime near the pond' objective counts a pumpkin slime near the pond only",
+          "story :: a Goblin objective counts goblins and bat goblins (QuestAs, A23-45), not ghosts / brutes"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "first king without the 6-minute delay",
@@ -3506,14 +3792,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hud-live :: live: after the defeat the countdown to the next one (20:00 after it appeared)",
-          "hud-live :: live: right after server start '호박 대왕까지 6:00'",
-          "hud-live :: live: when it appears '남은 시간 5:00'",
-          "king-retry-lost-debug :: no ground: no king, no line, retry in 10 s",
-          "king-retry-lost-debug :: the retry spawns it 10 s later",
-          "king-rewards :: 44 damage is not enough, 45 (0.5% of 9000) is (with 3 hits)"
+          "ghost-king-schedule :: DebugSpawn(\"GhostKing\") brings the ghost king now",
+          "ghost-king-schedule :: GameState GhostKing*: active, leaves 5:00 later, next one 20:00 after this one",
+          "ghost-king-schedule :: IsKingActive(kind) tells the bosses apart (the pumpkin king left at 11:00)",
+          "ghost-king-schedule :: at 6:00 only the pumpkin king appears",
+          "ghost-king-schedule :: no ghost king before 16:00",
+          "ghost-king-schedule :: server start: the pumpkin king is due at 6:00, the ghost king at 16:00 (10 minutes later)"
         ],
-        "newFailingCount": 38
+        "newFailingCount": 45
       },
       {
         "mutation": "next king 10 min after an appearance",
@@ -3522,14 +3808,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ghost-king-schedule :: GameState GhostKing*: active, leaves 5:00 later, next one 20:00 after this one",
+          "ghost-king-schedule :: IsKingActive(kind) tells the bosses apart (the pumpkin king left at 11:00)",
           "hud-live :: live: after the defeat the countdown to the next one (20:00 after it appeared)",
           "king-retry-lost-debug :: the retry spawns it 10 s later",
           "king-schedule :: GameState back to the countdown",
-          "king-schedule :: a defeated king gets the candy line once",
-          "king-schedule :: a defeated king is not removed a second time",
-          "king-schedule :: after a defeat the countdown keeps the 20-minute rhythm"
+          "king-schedule :: a defeated king gets the candy line once"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 12
       },
       {
         "mutation": "king never leaves after its lifetime",
@@ -3538,14 +3824,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ghost-king-schedule :: DebugSpawn(\"GhostKing\") brings the ghost king now",
+          "ghost-king-schedule :: IsKingActive(kind) tells the bosses apart (the pumpkin king left at 11:00)",
+          "ghost-king-schedule :: undefeated, it leaves after its 5:00 with its own line",
           "king-retry-lost-debug :: DebugSpawn after an unclosed kill spawns a fresh king",
           "king-retry-lost-debug :: the debug king leaves after its 5:00",
-          "king-schedule :: GameState back to the countdown",
-          "king-schedule :: a defeated king gets the candy line once",
-          "king-schedule :: a defeated king is not removed a second time",
-          "king-schedule :: after 5:00 the king is removed through MonsterService.RemoveEvent (fade, no kill)"
+          "king-schedule :: GameState back to the countdown"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 15
       },
       {
         "mutation": "a lost king is reported as defeated",
@@ -3558,6 +3844,22 @@
           "king-retry-lost-debug :: the debug king leaves after its 5:00"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "only the first boss runs (Bosses list ignored)",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-king-schedule :: DebugSpawn(\"GhostKing\") brings the ghost king now",
+          "ghost-king-schedule :: GameState GhostKing*: active, leaves 5:00 later, next one 20:00 after this one",
+          "ghost-king-schedule :: IsKingActive(kind) tells the bosses apart (the pumpkin king left at 11:00)",
+          "ghost-king-schedule :: server start: the pumpkin king is due at 6:00, the ghost king at 16:00 (10 minutes later)",
+          "ghost-king-schedule :: the ghost king appears at 16:00",
+          "ghost-king-schedule :: the ghost king has its own server-wide appear line"
+        ],
+        "newFailingCount": 7
       },
       {
         "mutation": "leaving king stays in the world",
@@ -3642,11 +3944,23 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "main-debug :: DebugCommand 'PumpkinKing' calls HalloweenService.DebugSpawn() (value ignored) and returns its result",
-          "main-debug :: other keys are unchanged (Goose does not spawn the king)",
+          "main-debug :: DebugCommand 'GhostKing' calls DebugSpawn(\"GhostKing\")",
+          "main-debug :: DebugCommand 'PumpkinKing' calls HalloweenService.DebugSpawn(\"PumpkinKing\") (value ignored) and returns its result",
+          "main-debug :: other keys are unchanged (Goose does not spawn a king)",
           "main-debug :: unknown player: refused, nothing spawned"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "GameState defaults miss the ghost king attributes",
+        "file": "src/ReplicatedStorage/Shared/Net.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-king-schedule :: GameState defaults carry the ghost king keys (not active, 0, 0)"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "GameState defaults miss the king attributes",
@@ -4144,21 +4458,21 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "9e8c3c6fe38e84bd077297dbf99d7732f4f6265d9be0d73c3dec2d369629ca5d",
-    "src/ReplicatedStorage/Shared/Net.luau": "286f998785063a11ad5899da5a8721bdf19d16647afa6027b3016508f860d4e2",
+    "src/ReplicatedStorage/Shared/Config.luau": "1e2769031801dea97dce29130a312418ff776377d9b0d045a4fde83ed0d343c0",
+    "src/ReplicatedStorage/Shared/Net.luau": "a9063fb3175f722682c1def371bb55bf60da5f9da440b23254ea0f2d198debd9",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "d360640bf7f1262d2bdf17d6eea7dd104cae44f4b29989c4263b94819b9316ba",
     "src/ServerScriptService/QuestService.luau": "c6e4cd98c46c23fc0c542b4a7743148f4c5d8ef31c8ef42826cfaede1dffff43",
     "src/ServerScriptService/StoryQuestService.luau": "34ca99a517022184b1b1ddaf2bb9b62cf664fe5b51f02bf33b4dfaa5c20f9205",
     "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/HalloweenService.luau": "7df9e344c69293ebdbe032574f8ec7256f0de7a3a77784f409dbd1b989398791",
-    "src/ServerScriptService/Main.server.luau": "f5f2c62c9bf42c9b492a94fdeaf3b1ab20ceb9d9bb7e6be882040785f1dce577",
-    "src/ServerScriptService/MonsterService.luau": "d3256d7a20729129c038a79ed189add11d45e5b17ee58a528a0fd92453868371",
+    "src/ServerScriptService/HalloweenService.luau": "c8a34e1b807e6c82ecc93a708868505e183039f9c4b6ab4c80804a8d1f9714ea",
+    "src/ServerScriptService/Main.server.luau": "7162a611113e4d53f875fb2939868cd6661078d40e3e2b140bca00c397715310",
+    "src/ServerScriptService/MonsterService.luau": "f59b4e5f72e36187cceb11cae95ddf7244774f31c62d060bdb26e26be5b3e4b8",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "d3e8c1a9228901e7d919b867cfe9b45f26d448e6d0675037363f9074acfd362e",
-    "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "91f82f020799cb42ae6f38ee4eff4fe143a2d49ea8004520a5c116b1631f448e",
+    "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "2e44117f0775e53619378a454cba4c69d21faacc3e8b179258dea8dfb2f4fa08",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "feb23359468a9033729cecdf3f336ddb7034c768f52cc04e753264c3b7e997aa",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "530daee88a5f7279196bca3d906e9f57e0d7dcd26dbfbe8e778df5ef11d809c1",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "e2621ed6c49bf3632c34cfcd2e42b78edf48ae5c2bde3966ec2a90297ea560c0",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "b5b0cdeb7889a80ff1213bbf62878b634bb8f55b6a30de83c456d1194bed333b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "049d7448a5c3fbf5a7fe8bf4c8689b084fe3012d30ce13cd9866ba67b1a6e904",
@@ -4170,7 +4484,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "0a24b8945b00821b47049f90f65ca597f86361ac5828bb1b65f8d7dcd3da2166",
+  "fixtureSHA256": "c4154dc0000375fe77d1ec55ac4f2a2bc6417e4a6f1e67a582b0c8d3b4c8756a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

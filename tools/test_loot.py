@@ -177,22 +177,25 @@ MUTATIONS = [
      "\tinfo = table.clone(info) -- the caller's info stays untouched\n", ""),
     # A23-27 / A23-30 drop tables (2026-10-06)
     ("king T4 row without BelowLevel", "CONFIG_SOURCE",
-     "{ Weapon = 4, P = 0.05, BelowLevel = { Item = \"Candy\", N = 3 } }", "{ Weapon = 4, P = 0.05 }"),
+     "BelowLevel instead\n\t\t\t{ Weapon = 4, P = 0.05, BelowLevel = { Item = \"Candy\", N = 3 } }",
+     "BelowLevel instead\n\t\t\t{ Weapon = 4, P = 0.05 }"),
     ("king BelowLevel pays 2 candies", "CONFIG_SOURCE",
-     "BelowLevel = { Item = \"Candy\", N = 3 }", "BelowLevel = { Item = \"Candy\", N = 2 }"),
+     "BelowLevel instead\n\t\t\t{ Weapon = 4, P = 0.05, BelowLevel = { Item = \"Candy\", N = 3 } }",
+     "BelowLevel instead\n\t\t\t{ Weapon = 4, P = 0.05, BelowLevel = { Item = \"Candy\", N = 2 } }"),
     ("king scroll rows back to 0.5 / 0.15 / 0.04 / 0.15 (old)", "CONFIG_SOURCE",
-     "{ Item = \"Enh70\", P = 0.25 }, { Item = \"Enh30\", P = 0.08 }, { Item = \"Enh10\", P = 0.02 },\n\t\t\t{ Item = \"Move70\", P = 0.08 },",
-     "{ Item = \"Enh70\", P = 0.5 }, { Item = \"Enh30\", P = 0.15 }, { Item = \"Enh10\", P = 0.04 },\n\t\t\t{ Item = \"Move70\", P = 0.15 },"),
-    ("bat goblin keeps the goblin tooth row", "CONFIG_SOURCE",
-     "no tooth / T4\n\t\t\t{ Item = \"Candy\", P = 0.45 },",
-     "no tooth / T4\n\t\t\t{ Item = \"Candy\", P = 0.45 }, { Item = \"GoblinTooth\", P = 0.4 },"),
+     "A23-27 rows)\n\t\t\t{ Item = \"Candy\", P = 1, N = 8 },\n\t\t\t{ Item = \"Enh70\", P = 0.25 }, { Item = \"Enh30\", P = 0.08 }, { Item = \"Enh10\", P = 0.02 },\n\t\t\t{ Item = \"Move70\", P = 0.08 },",
+     "A23-27 rows)\n\t\t\t{ Item = \"Candy\", P = 1, N = 8 },\n\t\t\t{ Item = \"Enh70\", P = 0.5 }, { Item = \"Enh30\", P = 0.15 }, { Item = \"Enh10\", P = 0.04 },\n\t\t\t{ Item = \"Move70\", P = 0.15 },"),
+    ("bat goblin loses its goblin tooth row (A23-45 woods rows)", "CONFIG_SOURCE",
+     "{ Item = \"Candy\", P = 0.45 }, { Item = \"GoblinTooth\", P = 0.2 },", "{ Item = \"Candy\", P = 0.45 },"),
     ("little ghost potions back to 0.01", "CONFIG_SOURCE",
-     "the same rows as the bat goblin\n\t\t\t{ Item = \"Candy\", P = 0.45 },\n\t\t\t{ Item = \"Enh70\", P = 0.006 }, { Item = \"Enh30\", P = 0.0016 }, "
-     "{ Item = \"Enh10\", P = 0.0004 },\n\t\t\t{ Item = \"Move70\", P = 0.002 }, { Item = \"Move30\", P = 0.0006 }, { Item = \"Move10\", P = 0.0002 },\n"
-     "\t\t\t{ Potion = \"HP\", P = 0.015 }, { Potion = \"MP\", P = 0.015 },",
-     "the same rows as the bat goblin\n\t\t\t{ Item = \"Candy\", P = 0.45 },\n\t\t\t{ Item = \"Enh70\", P = 0.006 }, { Item = \"Enh30\", P = 0.0016 }, "
-     "{ Item = \"Enh10\", P = 0.0004 },\n\t\t\t{ Item = \"Move70\", P = 0.002 }, { Item = \"Move30\", P = 0.0006 }, { Item = \"Move10\", P = 0.0002 },\n"
+     "goblin's scroll / potion rows\n\t\t\t{ Item = \"Candy\", P = 0.45 },\n\t\t\t{ Item = \"Enh70\", P = 0.015 }, { Item = \"Enh30\", P = 0.004 }, "
+     "{ Item = \"Enh10\", P = 0.001 },\n\t\t\t{ Item = \"Move70\", P = 0.005 }, { Item = \"Move30\", P = 0.0013 }, { Item = \"Move10\", P = 0.0003 },\n"
+     "\t\t\t{ Potion = \"HP\", P = 0.02 }, { Potion = \"MP\", P = 0.02 },",
+     "goblin's scroll / potion rows\n\t\t\t{ Item = \"Candy\", P = 0.45 },\n\t\t\t{ Item = \"Enh70\", P = 0.015 }, { Item = \"Enh30\", P = 0.004 }, "
+     "{ Item = \"Enh10\", P = 0.001 },\n\t\t\t{ Item = \"Move70\", P = 0.005 }, { Item = \"Move30\", P = 0.0013 }, { Item = \"Move10\", P = 0.0003 },\n"
      "\t\t\t{ Potion = \"HP\", P = 0.01 }, { Potion = \"MP\", P = 0.01 },"),
+    ("ghost minion candy back to the little ghost's 0.45", "CONFIG_SOURCE",
+     "a small, weak pack ghost\n\t\t\t{ Item = \"Candy\", P = 0.3 },", "a small, weak pack ghost\n\t\t\t{ Item = \"Candy\", P = 0.45 },"),
     # A23-28 ShopService (extracted onUpgradeWeapon)
     ("shop owned re-equip below MinLevel says WeaponNeedLevel", "SHOP_SOURCE",
      "notifyBad(player, alreadyOwned and \"EquipNeedLevel\" or \"WeaponNeedLevel\", minLevel)",

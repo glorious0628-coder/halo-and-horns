@@ -130,8 +130,8 @@ if game:GetService("RunService"):IsStudio() then
 			S.QuestService.DebugSimulateAbsence(player, value)
 		elseif key == "Goose" then
 			S.GooseService.DebugStart()
-		elseif key == "PumpkinKing" then -- Studio test aid: the Halloween miniboss appears now (value ignored)
-			return S.HalloweenService.DebugSpawn()
+		elseif key == "PumpkinKing" or key == "GhostKing" then -- Studio test aid: that Halloween miniboss appears now
+			return S.HalloweenService.DebugSpawn(key)
 		elseif key == "Faction" then
 			S.FactionService.SetFaction(player, value, "Choose")
 			S.PlayerService.RefreshCharacter(player, true)
