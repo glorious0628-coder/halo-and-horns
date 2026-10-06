@@ -10,7 +10,7 @@ Read this file first, then `docs/HANDOFF_CODEX.md` (the top "최신 인계" sect
 5. `docs/TECH_SPEC.md`, `docs/ART_DIRECTION.md`.
 6. `docs/HANDOFF_CODEX.md` older sections, `docs/HANDOFF.md`, `docs/art/*`, `docs/review/*`: **history and evidence only**. Old permissions, old next-step lists, old shutdown orders and old "locked" decisions written there do not authorize anything today.
 
-**Dates:** feature freeze 2026-10-24, beta 2026-10-31 11:00 KST, full launch 2026-12-19. Languages: Korean + English in one experience (write Korean source text in central text tables so it can be localized). The core design rule is `docs/GDD.md` §0: every action tilts toward angel or devil.
+**Dates:** feature freeze 2026-10-24, beta 2026-10-31 11:00 KST, full launch 2026-12-19. Language: **the game shows English only** (user 2026-10-06, SPEC A23-48: Korean dropped because only Nanum Gothic was available and it looked bad). Talk to the user in Korean. The core design rule is `docs/GDD.md` §0: every action tilts toward angel or devil.
 
 ## Latest user decisions (2026-10-05)
 - **Gameplay first, art later.** Work order: first 10 minutes playable and fun → combat/auto toggle → loot and growth → town services → the rest of the beta list. This wins over the order of the beta list in RELEASE_PLAN.
@@ -97,7 +97,7 @@ Read this file first, then `docs/HANDOFF_CODEX.md` (the top "최신 인계" sect
 ## Code conventions (Luau, Roblox)
 - `src/` is a Rojo-style tree (no Rojo installed): `*.server.luau` = Script, `*.client.luau` = LocalScript, `*.luau` = ModuleScript. Services follow `Init(S)` / `Start()`; entry points `src/ServerScriptService/Main.server.luau` and `src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau`. Both load modules with `WaitForChild` from fixed lists: remove a module from the lists (and every `require` of it) **before** deleting its file, or the server/client hangs.
 - Specs: `docs/TECH_SPEC.md` (contracts), **`docs/SPEC_ADDENDUM.md` (authoritative; A1–A23, newest first)**, `docs/GDD.md` (Korean design), `docs/ART_DIRECTION.md`.
-- Luau only: `continue`, `+=`, type annotations OK; **no `local x <const>`**. Use `task.*` (not `wait/spawn/delay`). pcall anything that can throw. Server-authoritative; validate every remote. Player-facing text is Korean (in central text tables for later English).
+- Luau only: `continue`, `+=`, type annotations OK; **no `local x <const>`**. Use `task.*` (not `wait/spawn/delay`). pcall anything that can throw. Server-authoritative; validate every remote. Player-facing text is English only (A23-48), kept in central text tables; easy, short English for kids (glossary `docs/design/glossary_en_2026-10-06.md`).
 - **Luau limit: 200 locals per function scope, including the file's top-level chunk.** `Fx.luau` and `HUD.luau` are close to it — put new constants/state into tables (e.g. `MOTION`, `L`, `COL`, `TXT`).
 - UI art goes through `Config.UIArt.Parts` + `UIKit.ArtImage / ArtButton / ArtFrame`; an empty `Id = ""` means "draw the code fallback" (IMG-R4) — keep fallbacks working.
 
