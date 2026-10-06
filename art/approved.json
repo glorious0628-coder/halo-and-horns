@@ -4059,5 +4059,41 @@
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
   "preview": "art/review/s2/menu_icons7_sheet.png",
   "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 휴가(모래섬 야자수 + 웃는 해). 2장 중 1."
+ },
+ "IconMedalGold": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconMedalGold.txt",
+  "original": "art/out/s2/IconMedalGold_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconMedalGold.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy + 32px",
+  "preview": "art/review/s2/medals_sheet.png",
+  "note": "랭킹 1위 금 메달(BB11 랭킹 창 줄 앞, 검수 요청). 세 장이 같은 모양(별 메달 + 파란 리본), 금속 색만 다름 — 1차 3장 세트 채택. 4위부터는 숫자 TextLabel."
+ },
+ "IconMedalSilver": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconMedalSilver.txt",
+  "original": "art/out/s2/IconMedalSilver_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconMedalSilver.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy + 32px",
+  "preview": "art/review/s2/medals_sheet.png",
+  "note": "랭킹 2위 은 메달(BB11 랭킹 창 줄 앞, 검수 요청). 세 장이 같은 모양(별 메달 + 파란 리본), 금속 색만 다름 — 1차 3장 세트 채택. 4위부터는 숫자 TextLabel."
+ },
+ "IconMedalBronze": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconMedalBronze.txt",
+  "original": "art/out/s2/IconMedalBronze_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconMedalBronze.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy + 32px",
+  "preview": "art/review/s2/medals_sheet.png",
+  "note": "랭킹 3위 동 메달(BB11 랭킹 창 줄 앞, 검수 요청). 세 장이 같은 모양(별 메달 + 파란 리본), 금속 색만 다름 — 1차 3장 세트 채택. 4위부터는 숫자 TextLabel."
  }
 }
