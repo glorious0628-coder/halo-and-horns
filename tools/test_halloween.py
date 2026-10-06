@@ -225,6 +225,28 @@ MUTATIONS = [
      "if info.Player:GetAttribute(\"Rookie\") == true or lv < (tonumber(H.SafeBelowLevel) or 0) or"),
     ("landAttack checks its target without the Player", "MONSTER_SOURCE",
      "local info = { Player = target, Pos = tpos,", "local info = { Pos = tpos,"),
+    # monsters face their target (user 2026-10-06): smooth turn, +-30 deg hit cone, recheck, keep rules
+    ("monsters snap to the target (no per-frame turn cap)", "MONSTER_SOURCE",
+     "cur + math.clamp(diff, -stepMax, stepMax)", "cur + diff"),
+    ("monsters turn the long way round", "MONSTER_SOURCE",
+     "(math.atan2(-dir.X, -dir.Z) - cur + math.pi) % (2 * math.pi) - math.pi", "(math.atan2(-dir.X, -dir.Z) - cur)"),
+    ("the hit lands while the target is behind (cone check dropped)", "MONSTER_SOURCE",
+     "if FACE.Cos(root, tpos) < FACE.HitCos then", "if false then"),
+    ("hit cone widened to +-60 deg", "MONSTER_SOURCE",
+     "HitCos = math.cos(math.rad(30)),", "HitCos = math.cos(math.rad(60)),"),
+    ("a slow turn always misses (no recheck)", "MONSTER_SOURCE",
+     "if waited >= FACE.MaxExtra then return cancel() end", "do return cancel() end"),
+    ("a turn that never comes waits forever (MaxExtra ignored)", "MONSTER_SOURCE",
+     "if waited >= FACE.MaxExtra then return cancel() end", "if false then return cancel() end"),
+    ("facing never ends after the last renewal", "MONSTER_SOURCE",
+     "and (now < f.Until or rec._windup ~= nil)", "and true"),
+    ("facing drops during the wind-up", "MONSTER_SOURCE",
+     "and (now < f.Until or rec._windup ~= nil)", "and now < f.Until"),
+    ("an anchored (dying) monster still turns", "MONSTER_SOURCE",
+     "root ~= nil and root.Parent ~= nil and not root.Anchored", "root ~= nil and root.Parent ~= nil"),
+    ("the wind-up stops renewing the facing (attack)", "MONSTER_SOURCE",
+     "FACE.Active[rec] = { Target = info.Player, Until = os.clock() + FACE.Keep }", ""),
+    ("turn speed halved (300 deg/s)", "MONSTER_SOURCE", "TurnRate = math.rad(600),", "TurnRate = math.rad(300),"),
     # Fx WOBBLE: float, grounded slimes, blob shadows, dust (71c10bd / f965cd0)
     ("ghost walks on the floor (Float ignored)", "FX_SOURCE",
      "Float = (float and float > 0 and def.Shape ~= \"Slime\") and float or nil,", "Float = nil,"),
@@ -342,15 +364,18 @@ def make_harness(sources: dict[str, str]) -> str:
         + "\n".join(pop_consts) + "\n"
         + function_block(mon, "local function deathPop(") + "\n"
         + "return deathPop\n")
-    # targeting (review 2026-10-06: a boss leaves rookies alone): the real targetable, faceTarget, landAttack,
-    # findInfo and isPlayerInTown with their constants
+    # targeting (review 2026-10-06: a boss leaves rookies alone): the real targetable, FACE (user 2026-10-06: monsters
+    # turn toward their target, hit only within +-30 deg), landAttack, findInfo and isPlayerInTown with their constants
     target_consts = []
-    for pattern in (r"^local OUT_Y = .*$", r"^local ATTACK_SEQ_ATTR = .*$", r"^local FACE_TARGET_DOT = .*$",
-                    r"^local HIT_REACT = .*$"):
+    for pattern in (r"^local OUT_Y = .*$", r"^local ATTACK_SEQ_ATTR = .*$", r"^local HIT_REACT = .*$"):
         m = re.search(pattern, mon, re.M)
         if not m:
             raise ValueError(f"MonsterService constant {pattern!r} missing; update the test extractor.")
         target_consts.append(m.group(0))
+    face = re.search(r"^local FACE = \{.*?Active = \{\} \}$", mon, re.M | re.S)
+    if not face:
+        raise ValueError("MonsterService FACE table missing; update the test extractor.")
+    target_consts.append(face.group(0))
     bindings["MONSTER_TARGET_SOURCE"] = (
         "local Config, Util, MC, H = ...\n"
         "local records, warnThrottled, S = H.records, H.warnThrottled, H.S\n"
@@ -359,7 +384,7 @@ def make_harness(sources: dict[str, str]) -> str:
         + function_block(mon, "local function isPlayerInTown(") + "\n"
         + function_block(mon, "local function findInfo(") + "\n"
         + between(mon, "local function targetable(rec, info)", "-- in reach: stand still")
-        + "return { targetable = targetable, landAttack = landAttack, findInfo = findInfo, OUT_Y = OUT_Y }\n")
+        + "return { targetable = targetable, landAttack = landAttack, findInfo = findInfo, OUT_Y = OUT_Y, FACE = FACE }\n")
     bindings["MONSTER_GOLDEN_SOURCE"] = (
         "local Config, Util, MC = ...\nreturn function(kind, opts)\n\tlocal def = Config.MonsterTypes[kind]\n"
         "\tif not def then return nil end\n\topts = opts or {}\n\tlocal owner = opts.Owner\n"

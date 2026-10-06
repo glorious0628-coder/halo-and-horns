@@ -1,0 +1,23 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Level=1 PlaytimeSeconds=0
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=1 PlaytimeSeconds=5
+fired AcceptTutorial
+prep ok/ok Level=30 play=5000
+Goblin: right after standing beside it angle=0.0 lunges=1 target=? | 1.4 s later angle=0.0 lunges=1 target=?
+saved docs\art\verification_2026-10-06\monster_facing\Goblin_faces_me.png
+saved docs\art\verification_2026-10-06\monster_facing\Goblin_circling_faces_me.png
+Goblin circling 30 deg every 0.3 s: angle=0.0 lunges=3 target=? / angle=0.0 lunges=3 target=? / angle=0.4 lunges=3 target=? / angle=0.0 lunges=4 target=? / angle=0.5 lunges=5 target=? / angle=0.5 lunges=5 target=? / angle=0.3 lunges=5 target=? / angle=0.0 lunges=6 target=?
+Skeleton: right after standing beside it angle=0.0 lunges=0 target=? | 1.4 s later angle=0.0 lunges=1 target=?
+saved docs\art\verification_2026-10-06\monster_facing\Skeleton_faces_me.png
+saved docs\art\verification_2026-10-06\monster_facing\Skeleton_circling_faces_me.png
+Skeleton circling 30 deg every 0.3 s: angle=0.1 lunges=3 target=? / angle=0.0 lunges=3 target=? / angle=0.0 lunges=3 target=? / angle=0.0 lunges=3 target=? / angle=0.3 lunges=5 target=? / angle=0.0 lunges=5 target=? / angle=0.0 lunges=5 target=? / angle=0.4 lunges=5 target=?
+GhostMinion: right after standing beside it angle=0.1 lunges=1 target=? | 1.4 s later angle=0.1 lunges=2 target=?
+saved docs\art\verification_2026-10-06\monster_facing\GhostMinion_faces_me.png
+PumpkinKing: right after standing beside it angle=0.1 lunges=1 target=? | 1.4 s later angle=0.1 lunges=1 target=?
+saved docs\art\verification_2026-10-06\monster_facing\PumpkinKing_faces_me.png
+perf: monsters=65 HeartbeatTimeMs median=0.12 max=0.29 | FACE math for 30 facing monsters = 0.009 ms per frame
+console: 
+play stopped (my own test Play)
+fresh off

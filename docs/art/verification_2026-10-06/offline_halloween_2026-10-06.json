@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7170,
+  "checks": 7193,
   "failedChecks": 0,
-  "namedChecks": 537,
+  "namedChecks": 560,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -2468,6 +2468,144 @@
       "fail": 0
     },
     {
+      "group": "monster-facing",
+      "check": "setup: slime and players inside the meadow, outside towns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.6 s extra wait, 0.05 s recheck, 0.6 s keep",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "one 0.05 s frame turns 30 deg toward the target (600 deg/s): never a snap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "three frames reach the target direction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "no overshoot once facing; turning never moves the root",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "turns the short way round (170 -> -170 deg is 20 deg: one frame)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "FACE.Cos: ahead 1, beside 0, behind -1, on top of it 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "target behind at the impact: no damage, no lunge; the wind-up stays, keeps turning and rechecks in 0.05 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "FACE.Step turned the monster to the target behind it (180 deg within 0.3 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "facing now: the recheck lands exactly one hit and plays the lunge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "target in front: the hit lands at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "the hit cone is +-30 deg: 29 deg off hits, 31 deg off waits for the turn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "never turned in time: about 12 rechecks (0.6 s), then the swing misses (no damage, wind-up cleared)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "Step turns a facing monster 30 deg per 0.05 s frame toward its target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "Keep s after the last renewal and no wind-up: the facing ends, no more turning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "a pending wind-up keeps the facing past Keep (it turns during the wind-up)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "a dead target ends the facing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "a dead monster ends the facing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "an anchored (dying) root ends the facing and is never rotated",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "a target circling at walking speed never leaves the +-30 deg hit cone (the body follows it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "attack() renews the facing in reach, FACE.Step runs every Heartbeat, no instant CFrame.lookAt snap remains",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "hud",
       "check": "no GameState attributes: the pill stays hidden",
       "pass": 1,
@@ -3258,9 +3396,9 @@
     "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
   ],
   "mutations": {
-    "total": 87,
-    "applied": 87,
-    "caught": 87,
+    "total": 98,
+    "applied": 98,
+    "caught": 98,
     "results": [
       {
         "mutation": "a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)",
@@ -4194,6 +4332,142 @@
         "newFailingCount": 6
       },
       {
+        "mutation": "monsters snap to the target (no per-frame turn cap)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: Keep s after the last renewal and no wind-up: the facing ends, no more turning",
+          "monster-facing :: Step turns a facing monster 30 deg per 0.05 s frame toward its target",
+          "monster-facing :: a pending wind-up keeps the facing past Keep (it turns during the wind-up)",
+          "monster-facing :: one 0.05 s frame turns 30 deg toward the target (600 deg/s): never a snap"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "monsters turn the long way round",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: a target circling at walking speed never leaves the +-30 deg hit cone (the body follows it)",
+          "monster-facing :: turns the short way round (170 -> -170 deg is 20 deg: one frame)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the hit lands while the target is behind (cone check dropped)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: FACE.Step turned the monster to the target behind it (180 deg within 0.3 s)",
+          "monster-facing :: group ran to the end without a Lua error",
+          "monster-facing :: target behind at the impact: no damage, no lunge; the wind-up stays, keeps turning and rechecks in 0.05 s"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "hit cone widened to +-60 deg",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.6 s extra wait, 0.05 s recheck, 0.6 s keep",
+          "monster-facing :: the hit cone is +-30 deg: 29 deg off hits, 31 deg off waits for the turn"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a slow turn always misses (no recheck)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: FACE.Step turned the monster to the target behind it (180 deg within 0.3 s)",
+          "monster-facing :: group ran to the end without a Lua error",
+          "monster-facing :: target behind at the impact: no damage, no lunge; the wind-up stays, keeps turning and rechecks in 0.05 s"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a turn that never comes waits forever (MaxExtra ignored)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: never turned in time: about 12 rechecks (0.6 s), then the swing misses (no damage, wind-up cleared)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "facing never ends after the last renewal",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: Keep s after the last renewal and no wind-up: the facing ends, no more turning",
+          "monster-facing :: a pending wind-up keeps the facing past Keep (it turns during the wind-up)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "facing drops during the wind-up",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: a pending wind-up keeps the facing past Keep (it turns during the wind-up)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an anchored (dying) monster still turns",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: an anchored (dying) root ends the facing and is never rotated"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the wind-up stops renewing the facing (attack)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: attack() renews the facing in reach, FACE.Step runs every Heartbeat, no instant CFrame.lookAt snap remains"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "turn speed halved (300 deg/s)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.6 s extra wait, 0.05 s recheck, 0.6 s keep",
+          "monster-facing :: FACE.Step turned the monster to the target behind it (180 deg within 0.3 s)",
+          "monster-facing :: Keep s after the last renewal and no wind-up: the facing ends, no more turning",
+          "monster-facing :: Step turns a facing monster 30 deg per 0.05 s frame toward its target",
+          "monster-facing :: a pending wind-up keeps the facing past Keep (it turns during the wind-up)",
+          "monster-facing :: facing now: the recheck lands exactly one hit and plays the lunge"
+        ],
+        "newFailingCount": 12
+      },
+      {
         "mutation": "ghost walks on the floor (Float ignored)",
         "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
         "applied": true,
@@ -4458,7 +4732,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "92ef28de499fadb9a20f106727ac528bb1619b6ea10487115c794ffe0eec138e",
+    "src/ReplicatedStorage/Shared/Config.luau": "e3431e1fbc3811bd1b99a63cc38ffeebec742bfc60f8455673a69a543a8fa207",
     "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "ecb89ed97364e80337e4d194f01c5b11e7ac31515fee767457b72f55318e0e6a",
@@ -4468,7 +4742,7 @@
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/HalloweenService.luau": "c8a34e1b807e6c82ecc93a708868505e183039f9c4b6ab4c80804a8d1f9714ea",
     "src/ServerScriptService/Main.server.luau": "88c7fda3210f3a09323cc9e2ceb0a36085e74b2656b015a83136cc7e11df764d",
-    "src/ServerScriptService/MonsterService.luau": "f59b4e5f72e36187cceb11cae95ddf7244774f31c62d060bdb26e26be5b3e4b8",
+    "src/ServerScriptService/MonsterService.luau": "5f67be607d5af3d91b5d1a2229c06c8db0dc75ef79da1c5f9a7afd46bbbaff00",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "14779e64d8a7a8c6e1a64d380fca83e86905bd9f66cc935cb7e87220ee2bcea5",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "673cc57a53d6819ef5b42519d9188cce81f85a5f03282cbd495ad485cba6ff44",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "9576975393e879b67c5a5cb4d5889ea9800e1faaf336f00d2b5dbd4352899ba6",
@@ -4484,7 +4758,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "660c7dc4284d70693462a4d3c86ae812405b96338950bc177afc799efcd0a16e",
+  "fixtureSHA256": "fe7ebb4077a138112e83bf79a28c15471386971c89fa34e2d9ac8196191d8a9a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

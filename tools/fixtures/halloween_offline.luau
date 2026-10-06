@@ -113,6 +113,7 @@ vmt.__index = function(v, key)
 		local n = math.sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z)
 		return vec(v.X / n, v.Y / n, v.Z / n)
 	end
+	if key == "Dot" then return function(a, b) return a.X * b.X + a.Y * b.Y + a.Z * b.Z end end
 	return nil
 end
 
@@ -2390,7 +2391,7 @@ end)
 -- A23-27: a Boss kind (the Pumpkin King) never targets or hits a player with Level < Config.Halloween.SafeBelowLevel (5)
 -- OR PlaytimeSeconds < Config.Halloween.SafePlaySeconds (600), whatever the faction; the PvP 'Rookie' attribute is NOT
 -- used (a Lv12 / 3000 s player flagged Rookie is a normal target). Every other kind attacks new players as usual. Real
--- MonsterService targetable / faceTarget / landAttack / isPlayerInTown (MONSTER_TARGET_SOURCE); CombatService.DamagePlayer
+-- MonsterService targetable / FACE / landAttack / isPlayerInTown (MONSTER_TARGET_SOURCE); CombatService.DamagePlayer
 -- is a recorder.
 runGroup("king-safety", function()
 	local f = hwWorld({ Clients = {} })
@@ -2414,8 +2415,8 @@ runGroup("king-safety", function()
 		local def = config.MonsterTypes[kind]
 		local model = INST.new("Model", kind)
 		model.Parent = folder
-		-- already facing the target (faceTarget leaves it), not anchored
-		local root = { Parent = model, Anchored = false, Position = pos, CFrame = { LookVector = { Dot = function() return 1 end } } }
+		-- already facing the players (they stand at +X: inside FACE's +-30 deg hit cone), not anchored
+		local root = { Parent = model, Anchored = false, Position = pos, CFrame = { LookVector = vec(1, 0, 0) } }
 		local rec = { Id = W.serial, Kind = kind, Def = def, Alive = true, ZoneId = def.Zone, Home = pos, Model = model, Root = root }
 		H.records[rec.Id] = rec
 		return rec
@@ -2555,6 +2556,223 @@ runGroup("king-safety", function()
 	check(string.find(mon, "elseif not targetable(rec, tinfo) then", 1, true) ~= nil
 		and string.find(mon, "\t\tfor _, info in plist do\n\t\t\tif targetable(rec, info) then", 1, true) ~= nil,
 		"aiStep drops a current target and picks a new one only through targetable()")
+end)
+
+------------------------------------------------------------------ 8b. monsters face their target (user 2026-10-06)
+-- "몬스터들이 유저를 바라보면서 때리면 좋겠어": real MonsterService FACE (Dir / Cos / Turn / Step) and landAttack. A monster in
+-- reach turns at FACE.TurnRate toward its target every frame (never a snap, the short way round, no overshoot) and keeps
+-- following a target that walks around it; the wound-up hit lands only when the target is within +-30 deg of the look
+-- direction, rechecking every FACE.Recheck s for at most FACE.MaxExtra s, then the swing misses.
+runGroup("monster-facing", function()
+	local f = hwWorld({ Clients = {} })
+	local config, MC = f.Config, f.Config.Monsters
+	-- yaw-only CFrame double: CFrame.new(p) * CFrame.Angles(0, y, 0) -> Position p, LookVector (-sin y, 0, -cos y)
+	local cfm = {}
+	local function cf(p, yaw)
+		return setmetatable({ Position = p, Yaw = yaw, LookVector = vec(-math.sin(yaw), 0, -math.cos(yaw)) }, cfm)
+	end
+	cfm.__mul = function(a, b)
+		assert(b.Position.Magnitude == 0, "FACE only rotates in place")
+		return cf(a.Position, a.Yaw + b.Yaw)
+	end
+	local CF = {
+		new = function(p) return cf(p, 0) end,
+		Angles = function(x, y, z)
+			assert(x == 0 and z == 0, "FACE turns around Y only")
+			return cf(vec(0, 0, 0), y)
+		end,
+		lookAt = function() error("FACE never snaps with CFrame.lookAt") end,
+	}
+	local W = { hits = {}, roots = {}, delays = {}, clock = 100 }
+	local util = setmetatable({
+		IsAlive = function(p) return W.roots[p] ~= nil end,
+		GetRoot = function(p) return W.roots[p] end,
+	}, { __index = f.Util })
+	local H = { records = {}, S = { CombatService = { DamagePlayer = function(p, damage)
+		table.insert(W.hits, { Player = p, Damage = damage })
+	end } } }
+	function H.warnThrottled(key, msg) table.insert(groupWarnings, "MonsterService " .. tostring(key) .. ": " .. tostring(msg)) end
+	local T = execute("MonsterService.face", MONSTER_TARGET_SOURCE, nativeEnv({ CFrame = CF,
+		os = { clock = function() return W.clock end },
+		task = { delay = function(sec, fn) table.insert(W.delays, { Sec = sec, Fn = fn }) end } }), config, util, MC, H)
+	local FACE = T.FACE
+	local def = config.MonsterTypes.Slime
+	local zone = config.Zones[def.Zone]
+	local mpos = vec(zone.Center.X, 0, zone.Center.Z)
+	check(config.ZoneAt(mpos).Id == def.Zone and config.ZoneAt(mpos + vec(4, 0, 4)).Id == def.Zone and zone.Town ~= true,
+		"setup: slime and players inside the meadow, outside towns", def.Zone)
+	local folder = INST.new("Folder", "Monsters")
+	local serial, pcount = 0, 0
+	local function newRec(yaw)
+		serial += 1
+		local model = INST.new("Model", "Slime")
+		model.Parent = folder
+		local root = { Parent = model, Anchored = false, Position = mpos, CFrame = cf(mpos, yaw) }
+		local rec = { Id = serial, Kind = "Slime", Def = def, Alive = true, ZoneId = def.Zone, Home = mpos, Model = model, Root = root }
+		H.records[rec.Id] = rec
+		return rec
+	end
+	local function newPlayer(offset)
+		pcount += 1
+		local p = INST.new("Player", "Facer" .. pcount)
+		p.UserId = 9100 + pcount
+		p.Parent = f.PlayersService
+		p:SetAttribute("Level", 10)
+		p:SetAttribute("PlaytimeSeconds", 5000)
+		W.roots[p] = { Position = mpos + offset }
+		return p
+	end
+	local function deg(r) return r * 180 / math.pi end
+	local function yawOf(rec)
+		local lv = rec.Root.CFrame.LookVector
+		return math.atan2(-lv.X, -lv.Z)
+	end
+	local function lookAtYaw(y) return mpos + vec(-math.sin(y), 0, -math.cos(y)) * 3 end
+
+	check(near(FACE.TurnRate, math.rad(600)) and near(FACE.HitCos, math.cos(math.rad(30))) and FACE.MaxExtra == 0.6
+		and FACE.Recheck == 0.05 and FACE.Keep == 0.6,
+		"FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.6 s extra wait, 0.05 s recheck, 0.6 s keep",
+		show({ deg(FACE.TurnRate), FACE.HitCos, FACE.MaxExtra, FACE.Recheck, FACE.Keep }))
+
+	-- Turn: capped per frame, the short way round, no overshoot, the root stays where it stands
+	local r = newRec(0)
+	local east = mpos + vec(3, 0, 0) -- yaw -90 deg
+	FACE.Turn(r.Root, east, 0.05)
+	check(near(deg(yawOf(r)), -30, 1e-6), "one 0.05 s frame turns 30 deg toward the target (600 deg/s): never a snap", deg(yawOf(r)))
+	FACE.Turn(r.Root, east, 0.05)
+	FACE.Turn(r.Root, east, 0.05)
+	check(near(deg(yawOf(r)), -90, 1e-6), "three frames reach the target direction", deg(yawOf(r)))
+	FACE.Turn(r.Root, east, 0.05)
+	check(near(deg(yawOf(r)), -90, 1e-6) and (r.Root.CFrame.Position - mpos).Magnitude < 1e-9,
+		"no overshoot once facing; turning never moves the root", deg(yawOf(r)))
+	local s = newRec(math.rad(170))
+	FACE.Turn(s.Root, lookAtYaw(math.rad(-170)), 0.05)
+	check(FACE.Cos(s.Root, lookAtYaw(math.rad(-170))) > math.cos(math.rad(0.5)),
+		"turns the short way round (170 -> -170 deg is 20 deg: one frame)", deg(yawOf(s)))
+	local c = newRec(0)
+	check(near(FACE.Cos(c.Root, lookAtYaw(0)), 1, 1e-9) and near(FACE.Cos(c.Root, lookAtYaw(math.rad(90))), 0, 1e-9)
+		and near(FACE.Cos(c.Root, lookAtYaw(math.pi)), -1, 1e-9) and FACE.Cos(c.Root, mpos) == 1,
+		"FACE.Cos: ahead 1, beside 0, behind -1, on top of it 1")
+
+	-- the hit waits for the face: a target behind gets no damage until the body has turned to it
+	table.clear(FACE.Active)
+	local a = newRec(0)
+	local pBehind = newPlayer(vec(0, 0, 3)) -- +Z = behind a monster looking along -Z
+	local tok = {}
+	a._windup = tok
+	local seq0 = a.Model:GetAttribute("AttackSeq")
+	W.delays = {}
+	T.landAttack(a, tok, pBehind, 0)
+	check(#W.hits == 0 and a.Model:GetAttribute("AttackSeq") == seq0 and a._windup == tok and #W.delays == 1
+		and near(W.delays[1].Sec, FACE.Recheck) and FACE.Active[a] ~= nil and FACE.Active[a].Target == pBehind,
+		"target behind at the impact: no damage, no lunge; the wind-up stays, keeps turning and rechecks in 0.05 s",
+		show({ #W.hits, #W.delays }))
+	for _ = 1, 6 do FACE.Step(0.05) end
+	check(FACE.Cos(a.Root, W.roots[pBehind].Position) >= FACE.HitCos,
+		"FACE.Step turned the monster to the target behind it (180 deg within 0.3 s)", deg(yawOf(a)))
+	local d = table.remove(W.delays, 1)
+	d.Fn()
+	check(#W.hits == 1 and W.hits[1].Player == pBehind and W.hits[1].Damage == def.Damage
+		and a.Model:GetAttribute("AttackSeq") ~= seq0 and a._windup == nil,
+		"facing now: the recheck lands exactly one hit and plays the lunge", show({ #W.hits }))
+	-- a target already in front is hit at once (no recheck)
+	local b = newRec(0)
+	local pFront = newPlayer(vec(0, 0, -3))
+	local tokB = {}
+	b._windup = tokB
+	W.delays = {}
+	T.landAttack(b, tokB, pFront, 0)
+	check(#W.hits == 2 and W.hits[2].Player == pFront and #W.delays == 0 and b._windup == nil,
+		"target in front: the hit lands at once", show({ #W.hits, #W.delays }))
+	-- 29 deg off still hits, 31 deg off waits
+	local e29 = newRec(0)
+	local p29 = newPlayer(vec(-math.sin(math.rad(29)), 0, -math.cos(math.rad(29))) * 3)
+	local tok29 = {}
+	e29._windup = tok29
+	W.delays = {}
+	T.landAttack(e29, tok29, p29, 0)
+	local e31 = newRec(0)
+	local p31 = newPlayer(vec(-math.sin(math.rad(31)), 0, -math.cos(math.rad(31))) * 3)
+	local tok31 = {}
+	e31._windup = tok31
+	T.landAttack(e31, tok31, p31, 0)
+	check(#W.hits == 3 and W.hits[3].Player == p29 and e31._windup == tok31 and #W.delays == 1,
+		"the hit cone is +-30 deg: 29 deg off hits, 31 deg off waits for the turn", show({ #W.hits, #W.delays }))
+	-- a monster that never turns in time misses after 0.6 s of rechecks
+	table.clear(FACE.Active)
+	local m = newRec(0)
+	local p2 = newPlayer(vec(0, 0, 3))
+	local tok2 = {}
+	m._windup = tok2
+	W.delays = {}
+	local hits0 = #W.hits
+	T.landAttack(m, tok2, p2, 0)
+	local rechecks = 0
+	while #W.delays > 0 and rechecks < 50 do
+		local dd = table.remove(W.delays, 1)
+		rechecks += 1
+		dd.Fn()
+	end
+	check(#W.hits == hits0 and m._windup == nil and rechecks >= 12 and rechecks <= 13,
+		"never turned in time: about 12 rechecks (0.6 s), then the swing misses (no damage, wind-up cleared)",
+		show({ rechecks, m._windup ~= nil }))
+
+	-- Step: the facing ends Keep s after attack()'s last renewal unless a wind-up is pending; gone target / monster ends it
+	table.clear(FACE.Active)
+	local k = newRec(0)
+	local p3 = newPlayer(vec(3, 0, 0))
+	FACE.Active[k] = { Target = p3, Until = W.clock + FACE.Keep }
+	FACE.Step(0.05)
+	check(near(deg(yawOf(k)), -30, 1e-6), "Step turns a facing monster 30 deg per 0.05 s frame toward its target", deg(yawOf(k)))
+	W.clock += FACE.Keep + 0.01
+	FACE.Step(0.05)
+	check(FACE.Active[k] == nil and near(deg(yawOf(k)), -30, 1e-6),
+		"Keep s after the last renewal and no wind-up: the facing ends, no more turning", deg(yawOf(k)))
+	k._windup = {}
+	FACE.Active[k] = { Target = p3, Until = W.clock - 1 }
+	FACE.Step(0.05)
+	check(FACE.Active[k] ~= nil and near(deg(yawOf(k)), -60, 1e-6), "a pending wind-up keeps the facing past Keep (it turns during the wind-up)",
+		deg(yawOf(k)))
+	k._windup = nil
+	local saved = W.roots[p3]
+	W.roots[p3] = nil
+	FACE.Active[k] = { Target = p3, Until = W.clock + 1 }
+	FACE.Step(0.05)
+	check(FACE.Active[k] == nil, "a dead target ends the facing")
+	W.roots[p3] = saved
+	k.Alive = false
+	FACE.Active[k] = { Target = p3, Until = W.clock + 1 }
+	FACE.Step(0.05)
+	check(FACE.Active[k] == nil, "a dead monster ends the facing")
+	k.Alive = true
+	k.Root.Anchored = true
+	local before = yawOf(k)
+	FACE.Active[k] = { Target = p3, Until = W.clock + 1 }
+	FACE.Step(0.05)
+	check(FACE.Active[k] == nil and yawOf(k) == before, "an anchored (dying) root ends the facing and is never rotated")
+	k.Root.Anchored = false
+
+	-- a target walking around the monster (16 studs/s on a 4-stud circle, ~229 deg/s) stays in front the whole time
+	table.clear(FACE.Active)
+	local o = newRec(0)
+	local p4 = newPlayer(vec(0, 0, -4))
+	local worst = 0
+	for i = 1, 60 do
+		local ang = math.rad(229) * i / 60
+		W.roots[p4] = { Position = mpos + vec(-math.sin(ang), 0, -math.cos(ang)) * 4 }
+		FACE.Active[o] = { Target = p4, Until = W.clock + 1 }
+		FACE.Step(1 / 60)
+		worst = math.max(worst, deg(math.acos(math.clamp(FACE.Cos(o.Root, W.roots[p4].Position), -1, 1))))
+	end
+	check(worst < 30, "a target circling at walking speed never leaves the +-30 deg hit cone (the body follows it)", worst)
+	table.clear(FACE.Active)
+
+	-- the AI path: attack() renews the facing every tick in reach; the wind-up no longer snaps the body
+	local mon = MONSTER_SOURCE
+	check(string.find(mon, "FACE.Active[rec] = { Target = info.Player, Until = os.clock() + FACE.Keep }", 1, true) ~= nil
+		and string.find(mon, "RunService.Heartbeat:Connect(function(dt)\n\t\tlocal ok, err = pcall(FACE.Step, dt)", 1, true) ~= nil
+		and string.find(mon, "CFrame.lookAt(pos, pos + dir)", 1, true) == nil,
+		"attack() renews the facing in reach, FACE.Step runs every Heartbeat, no instant CFrame.lookAt snap remains")
 end)
 
 ------------------------------------------------------------------ 9. EventHUD Pumpkin King pill (real KING block + helpers)

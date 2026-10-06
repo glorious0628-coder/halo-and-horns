@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
+local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
@@ -87,7 +88,13 @@ local VISUAL_ROOT_NAME = "VisualRoot"
 local VISUAL_JOINT_NAME = "VisualJoint"
 local VISUAL_ROOT_SIZE = 0.2
 local ATTACK_SEQ_ATTR = "AttackSeq" -- +1 when a monster attack lands on a player (clients play the attack lunge)
-local FACE_TARGET_DOT = 0.85 -- attacking: turn to the target when it is more than ~30 deg off the look direction
+-- user 2026-10-06 "몬스터들이 유저를 바라보면서 때리면 좋겠어": a monster in reach turns its body toward its target every
+-- frame at TurnRate (smooth, never a snap) and keeps following a target that walks around it, from the wind-up to the
+-- hit; the hit lands only once the target is within HitCos (+-30 deg) of the look direction, waiting up to MaxExtra s
+-- longer (rechecked every Recheck s), else the swing misses. Keep = s a facing lasts after the last attack() call (the
+-- AI runs every MC.AIInterval). Active[rec] = { Target = Player, Until = os.clock() deadline }.
+local FACE = { TurnRate = math.rad(600), HitCos = math.cos(math.rad(30)), MaxExtra = 0.6, Recheck = 0.05, Keep = 0.6,
+	Active = {} }
 -- A15 hit feel (server half): attack telegraph, pain reactions, swing shove. Tunables live in Config.HitReact (shared
 -- with the client Fx); the fallbacks keep the service working without it. Model attribute contract for clients:
 -- "WindupAt" changed -> wind-up pose (the hit follows REACT.WINDUP s later unless cancelled), "AttackSeq" +1 -> lunge
@@ -1422,45 +1429,101 @@ local function targetable(rec, info)
 	return not info.Town and info.Zone == rec.ZoneId and info.Pos.Y >= OUT_Y
 end
 
--- turns the root (whole assembly) toward the target on the floor plane when it is far off the look direction
-local function faceTarget(rec, targetPos)
-	local root = rec.Root
-	if root.Anchored then return end
+-- FACE: the flat unit direction from the root to targetPos (nil when on top of it)
+function FACE.Dir(root, targetPos)
 	local pos = root.Position
 	local flat = Vector3.new(targetPos.X - pos.X, 0, targetPos.Z - pos.Z)
-	if flat.Magnitude < 0.1 then return end
-	local dir = flat.Unit
-	if root.CFrame.LookVector:Dot(dir) >= FACE_TARGET_DOT then return end
-	root.CFrame = CFrame.lookAt(pos, pos + dir)
+	if flat.Magnitude < 0.1 then return nil end
+	return flat.Unit
+end
+
+-- FACE: cos of the angle between the flat look direction and the target (1 = straight ahead, also when on top of it)
+function FACE.Cos(root, targetPos)
+	local dir = FACE.Dir(root, targetPos)
+	local lv = root.CFrame.LookVector
+	local look = Vector3.new(lv.X, 0, lv.Z)
+	if not dir or look.Magnitude < 0.01 then return 1 end
+	return look.Unit:Dot(dir)
+end
+
+-- FACE: one frame of turning (at most TurnRate * dt) around the root's own position, upright
+function FACE.Turn(root, targetPos, dt)
+	local dir = FACE.Dir(root, targetPos)
+	if not dir then return end
+	local lv = root.CFrame.LookVector
+	local cur = math.atan2(-lv.X, -lv.Z) -- CFrame.Angles(0, yaw, 0).LookVector = (-sin yaw, 0, -cos yaw)
+	local diff = (math.atan2(-dir.X, -dir.Z) - cur + math.pi) % (2 * math.pi) - math.pi
+	if math.abs(diff) < 0.01 then return end
+	local stepMax = FACE.TurnRate * dt
+	root.CFrame = CFrame.new(root.Position) * CFrame.Angles(0, cur + math.clamp(diff, -stepMax, stepMax), 0)
+end
+
+-- FACE: every frame, each facing monster turns toward its target's current position; a facing ends when attack() has
+-- not renewed it for Keep s (and no wind-up is pending), or the monster / target is gone
+function FACE.Step(dt)
+	if next(FACE.Active) == nil then return end
+	local now = os.clock()
+	for rec, f in FACE.Active do
+		local root = rec.Root
+		local live = rec.Alive and records[rec.Id] == rec and root ~= nil and root.Parent ~= nil and not root.Anchored
+			and (now < f.Until or rec._windup ~= nil)
+		local target = f.Target
+		local troot = live and typeof(target) == "Instance" and target.Parent ~= nil and Util.IsAlive(target)
+			and Util.GetRoot(target) or nil
+		if not troot then
+			FACE.Active[rec] = nil
+		else
+			local ok, err = pcall(FACE.Turn, root, troot.Position, math.min(dt, 0.1))
+			if not ok then
+				FACE.Active[rec] = nil
+				warnThrottled("face", err)
+			end
+		end
+	end
 end
 
 -- A15: the wound-up hit lands only if this wind-up is still the current one, the monster is alive and in the world
 -- and the target is alive, still a valid target (owner / zone / town / water rules) and within AttackRange + leeway.
--- Bumps AttackSeq at the impact (clients play the lunge), then deals the damage.
-local function landAttack(rec, token, target)
+-- FACE: and only once the target is within +-30 deg of the look direction (rechecked while the body turns, up to
+-- FACE.MaxExtra s more; then the swing misses). Bumps AttackSeq at the impact (clients play the lunge along the look
+-- direction), then deals the damage. waited = s already spent past the wind-up.
+local function landAttack(rec, token, target, waited)
 	if rec._windup ~= token then return end
-	rec._windup = nil
-	if not rec.Alive or records[rec.Id] ~= rec then return end
+	waited = tonumber(waited) or 0
+	local function cancel()
+		if rec._windup == token then rec._windup = nil end
+	end
+	if not rec.Alive or records[rec.Id] ~= rec then return cancel() end
 	local model, root = rec.Model, rec.Root
-	if not model or not model.Parent or not root or not root.Parent or root.Anchored then return end
+	if not model or not model.Parent or not root or not root.Parent or root.Anchored then return cancel() end
 	if typeof(target) ~= "Instance" or not target:IsA("Player") or target.Parent == nil or not Util.IsAlive(target) then
-		return
+		return cancel()
 	end
 	local troot = Util.GetRoot(target)
-	if not troot then return end
+	if not troot then return cancel() end
 	local tpos = troot.Position
-	if Util.FlatDistance(root.Position, tpos) > MC.AttackRange + REACT.WINDUP_LEEWAY then return end
+	if Util.FlatDistance(root.Position, tpos) > MC.AttackRange + REACT.WINDUP_LEEWAY then return cancel() end
 	if rec.Owner then
-		if target ~= rec.Owner or tpos.Y < OUT_Y or isPlayerInTown(target, tpos) then return end
+		if target ~= rec.Owner or tpos.Y < OUT_Y or isPlayerInTown(target, tpos) then return cancel() end
 	else
-		if rec._returning then return end
+		if rec._returning then return cancel() end
 		local info = { Player = target, Pos = tpos, Town = isPlayerInTown(target, tpos), Zone = Config.ZoneAt(tpos).Id }
-		if not targetable(rec, info) then return end
+		if not targetable(rec, info) then return cancel() end
+	end
+	if FACE.Cos(root, tpos) < FACE.HitCos then
+		if waited >= FACE.MaxExtra then return cancel() end -- turned too slowly: the swing misses
+		FACE.Active[rec] = { Target = target, Until = os.clock() + FACE.Keep } -- keep turning toward this target
+		task.delay(FACE.Recheck, function()
+			local ok, err = pcall(landAttack, rec, token, target, waited + FACE.Recheck)
+			if not ok then
+				cancel()
+				warnThrottled("attack", err)
+			end
+		end)
+		return
 	end
 
-	-- the client lunge goes along the look direction: face where the target is now
-	local okFace, errFace = pcall(faceTarget, rec, tpos)
-	if not okFace then warnThrottled("face", errFace) end
+	rec._windup = nil
 	local seq = model:GetAttribute(ATTACK_SEQ_ATTR)
 	model:SetAttribute(ATTACK_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
 	if S and S.CombatService then
@@ -1468,16 +1531,15 @@ local function landAttack(rec, token, target)
 	end
 end
 
--- in reach: stand still and start a wind-up when the cooldown allows (the cooldown counts from the wind-up start; one
--- wind-up at a time, so a monster never hits twice for one attack)
+-- in reach: stand still, keep facing the target (FACE, every frame) and start a wind-up when the cooldown allows (the
+-- cooldown counts from the wind-up start; one wind-up at a time, so a monster never hits twice for one attack). The
+-- body turns during the wind-up; the hit waits until the target is in front (landAttack).
 local function attack(rec, info, now)
 	rec._goal = nil
 	rec.Humanoid:MoveTo(rec.Root.Position)
+	FACE.Active[rec] = { Target = info.Player, Until = os.clock() + FACE.Keep }
 	if rec._windup ~= nil or now < rec._nextAttackAt then return end
 	rec._nextAttackAt = now + MC.AttackCooldown
-	-- the wind-up pose leans along the look direction, so face the target first
-	local okFace, errFace = pcall(faceTarget, rec, info.Pos)
-	if not okFace then warnThrottled("face", errFace) end
 	local model = rec.Model
 	if model then
 		model:SetAttribute(WINDUP_AT_ATTR, workspace:GetServerTimeNow())
@@ -1486,9 +1548,11 @@ local function attack(rec, info, now)
 	rec._windup = token
 	local target = info.Player
 	task.delay(REACT.WINDUP, function()
-		local ok, err = pcall(landAttack, rec, token, target)
-		if rec._windup == token then rec._windup = nil end -- landAttack threw before clearing it
-		if not ok then warnThrottled("attack", err) end
+		local ok, err = pcall(landAttack, rec, token, target, 0)
+		if not ok then
+			if rec._windup == token then rec._windup = nil end -- landAttack threw before clearing it
+			warnThrottled("attack", err)
+		end
 	end)
 end
 
@@ -1838,6 +1902,11 @@ function MonsterService.Start()
 			local ok, err = pcall(aiTick)
 			if not ok then warnThrottled("aiLoop", err) end
 		end
+	end)
+	-- FACE: monsters in reach turn toward their target every frame (only the facing ones are touched)
+	RunService.Heartbeat:Connect(function(dt)
+		local ok, err = pcall(FACE.Step, dt)
+		if not ok then warnThrottled("faceLoop", err) end
 	end)
 
 	task.spawn(function()
