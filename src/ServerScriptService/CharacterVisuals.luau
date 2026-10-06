@@ -14,11 +14,11 @@ local TAG = "CharacterVisuals"
 local V = Config.Visuals
 
 local NEUTRAL_ID = "Neutral"
--- CR-L44: "⚙" renders as a tofu box; a missing / empty / unsafe emblem falls back to "장"
-local NEUTRAL_EMBLEM = (Config.Factions.Neutral and Config.Factions.Neutral.Emblem) or "장"
+-- CR-L44: "⚙" renders as a tofu box; a missing / empty / unsafe emblem falls back to "A"
+local NEUTRAL_EMBLEM = (Config.Factions.Neutral and Config.Factions.Neutral.Emblem) or "A"
 if type(NEUTRAL_EMBLEM) ~= "string" or NEUTRAL_EMBLEM == ""
 	or (type(Util.GlyphSafe) == "function" and not Util.GlyphSafe(NEUTRAL_EMBLEM)) then
-	NEUTRAL_EMBLEM = "장"
+	NEUTRAL_EMBLEM = "A"
 end
 local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11
 
@@ -290,25 +290,25 @@ local function updateNametag(player, bb)
 		line2 ..= " · " .. pioneer.Name
 	end
 	if rebirths > 0 then
-		line2 ..= "  환생 " .. rebirths
+		line2 ..= "  Rebirth " .. rebirths
 	end
 	local outlaw = player:GetAttribute("Outlaw") == true -- A23-23: shown even with the name hidden (BB37 is chat only)
 	if player:GetAttribute("Rookie") == true and f ~= NEUTRAL_ID then
-		line2 ..= "  새싹 보호"
+		line2 ..= "  Sprout Shield"
 	elseif attrNum(player, "GraduateGraceUntil", 0) > Util.Now() and f ~= NEUTRAL_ID then
-		line2 ..= "  졸업 유예" -- A23-18 (the attribute goes back to 0 when the grace ends -> rebuilt)
+		line2 ..= "  Sprout Grace" -- A23-18 (the attribute goes back to 0 when the grace ends -> rebuilt)
 	end
 
 	local bits = {}
 	local bully = math.floor(attrNum(player, "BullyStacks", 0))
 	if bully > 0 then
-		table.insert(bits, bully > 1 and ("깡패 ×" .. bully) or "깡패")
+		table.insert(bits, bully > 1 and ("Bully ×" .. bully) or "Bully")
 	end
 	local bounty = attrNum(player, "Bounty", 0)
 	if bounty > 0 then
 		local stars = math.clamp(math.floor(attrNum(player, "WantedStars", 0)), 0, Config.PvP.MaxStars)
 		local starText = string.rep("★", stars)
-		local b = "현상금 " .. Util.FormatNumber(bounty)
+		local b = "Bounty " .. Util.FormatNumber(bounty)
 		table.insert(bits, starText ~= "" and (starText .. " " .. b) or b)
 	end
 	local line3 = table.concat(bits, "  ")
@@ -720,7 +720,7 @@ local function buildGrudgeGhost(player, character)
 	end
 
 	local victim = attrStr(player, "SackVictimName", "")
-	if victim == "" then victim = "누군가" end
+	if victim == "" then victim = "Someone" end
 	local bb = Instance.new("BillboardGui")
 	bb.Name = "GhostLabel"
 	bb.Size = UDim2.fromOffset(200, 28)
@@ -734,7 +734,7 @@ local function buildGrudgeGhost(player, character)
 	label.TextScaled = true
 	label.TextColor3 = GHOST_TEXT
 	label.TextStrokeTransparency = 0.3
-	label.Text = victim .. "의 원한"
+	label.Text = victim .. "'s grudge"
 	local c = Instance.new("UITextSizeConstraint")
 	c.MaxTextSize = 18
 	c.MinTextSize = MIN_TEXT_SIZE

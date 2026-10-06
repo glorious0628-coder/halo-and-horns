@@ -85,9 +85,18 @@ local function isLock(lock)
 	return type(lock) == "table" and type(lock.JobId) == "string"
 end
 
--- a lock held by ANOTHER server that is still considered alive
+-- the session lock this server writes. Studio = a Studio test session wrote it (its JobId is "" as well)
+local function newLock()
+	return { JobId = game.JobId, Time = os.time(), Studio = RunService:IsStudio() or nil }
+end
+
+-- a lock held by ANOTHER server that is still considered alive. A23-48 batch (검수 2026-10-06): a lock left by a Studio
+-- test session (JobId "" or Studio = true) never holds a live server back: a stopped Studio Play often skips its final
+-- unlocked save, and a tester joining the live game right after must not wait for it (the SessionToken check in
+-- writeRecord still stops every later save of that Studio session)
 local function isLiveForeignLock(lock)
 	if not isLock(lock) or lock.JobId == game.JobId then return false end
+	if (lock.JobId == "" or lock.Studio == true) and not RunService:IsStudio() then return false end
 	local t = tonumber(lock.Time)
 	if not t then return false end
 	return os.time() - t < Config.Data.LockTimeout
@@ -231,7 +240,7 @@ local function writeRecord(userId, data, release, label, sessionToken)
 	if release then
 		copy.SessionLock = nil
 	else
-		copy.SessionLock = { JobId = game.JobId, Time = os.time() }
+		copy.SessionLock = newLock()
 	end
 	copy.SessionToken = sessionToken
 
@@ -368,7 +377,7 @@ local function loadLocked(player)
 			locked = false
 			capturedFresh = not hasStoredData(old)
 			local d = (type(old) == "table") and old or {}
-			d.SessionLock = { JobId = game.JobId, Time = os.time() }
+			d.SessionLock = newLock()
 			d.SessionToken = sessionToken
 			captured = d
 			return d
@@ -387,6 +396,15 @@ local function loadLocked(player)
 			Util.Warn(TAG, ("data of %s is locked by another server; retrying"):format(player.Name))
 		end
 		if not final then
+			-- A23-48 batch: the player waits for a retry (a live lock of another server or a DataStore error): say it
+			-- once and mark it for the loading screen (attribute SaveLoading; DataService.Load clears it)
+			if player:GetAttribute("SaveLoading") ~= true then
+				player:SetAttribute("SaveLoading", true)
+				local okNote, errNote = pcall(function() -- Net only on this rare path (DataService needs no remotes otherwise)
+					require(ReplicatedStorage.Shared.Net).Notify(player, Config.Text.SaveLoading, "info")
+				end)
+				if not okNote then Util.Warn(TAG, "SaveLoading notice failed: " .. tostring(errNote)) end
+			end
 			task.wait(Config.Data.LoadRetryDelay)
 		end
 	end
@@ -477,6 +495,7 @@ function DataService.Load(player)
 	-- the slot is always released, even if the body throws (a leaked slot would block every later load / save)
 	local okBody, result = pcall(loadLocked, player)
 	releaseSlot(userId, token)
+	if player:GetAttribute("SaveLoading") ~= nil then player:SetAttribute("SaveLoading", nil) end -- the wait is over
 	if not okBody then
 		Util.Warn(TAG, "load error for " .. player.Name .. ": " .. tostring(result))
 		return nil

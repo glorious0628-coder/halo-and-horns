@@ -92,8 +92,8 @@ MUTATIONS = [
     ("bat goblin counts as itself (QuestAs dropped)", "CONFIG_SOURCE",
      "Takes = { Goblin = 3 }, QuestAs = \"Goblin\",", "Takes = { Goblin = 3 },"),
     ("ghosts back in the pumpkin patch (LittleGhost Zone)", "CONFIG_SOURCE",
-     "LittleGhost = { Name = \"꼬마 유령\", Short = \"꼬마 유령\", Zone = \"HauntedHollow\",",
-     "LittleGhost = { Name = \"꼬마 유령\", Short = \"꼬마 유령\", Zone = \"PumpkinPatch\","),
+     "LittleGhost = { Name = \"Little Ghost\", Short = \"Little Ghost\", Zone = \"HauntedHollow\",",
+     "LittleGhost = { Name = \"Little Ghost\", Short = \"Little Ghost\", Zone = \"PumpkinPatch\","),
     ("ghost king due with the pumpkin king (FirstDelay 360)", "CONFIG_SOURCE",
      "{ Kind = \"GhostKing\", Key = \"GhostKing\", FirstDelay = 960,", "{ Kind = \"GhostKing\", Key = \"GhostKing\", FirstDelay = 360,"),
     ("PumpkinPatch land detached from the meadow (MinZ 180)", "CONFIG_SOURCE",
@@ -155,7 +155,7 @@ MUTATIONS = [
     ("king safe only below Lv4 (SafeBelowLevel)", "CONFIG_SOURCE", "SafeBelowLevel = 5,", "SafeBelowLevel = 4,"),
     ("king safety playtime 60 s (SafePlaySeconds)", "CONFIG_SOURCE", "SafePlaySeconds = 600,", "SafePlaySeconds = 60,"),
     ("patch sign names the season", "CONFIG_SOURCE",
-     "PatchSign = \"↓ 호박밭 · 호박 몬스터 사냥터\"", "PatchSign = \"↓ 핼러윈 호박밭 · 호박 몬스터 사냥터\""),
+     "PatchSign = \"↓ Pumpkin Patch · pumpkin monsters\"", "PatchSign = \"↓ Halloween Pumpkin Patch · pumpkin monsters\""),
     # quests / story count Config.QuestKind
     ("killWeight counts a seasonal kind by its own XP", "QUEST_SOURCE", "\tkind = Config.QuestKind(kind)\n", ""),
     ("first mission ignores QuestKind", "QUEST_SOURCE",
@@ -184,8 +184,8 @@ MUTATIONS = [
      "\tif leaving then model:SetAttribute(\"Leaving\", true) end", "\tif false then end"),
     ("Broadcast also sends non-event keys", "ANNOUNCE_SOURCE",
      "if type(A.Events) ~= \"table\" or A.Events[key] == nil then return end", ""),
-    ("English twin ignored on the client", "ANNOUNCE_CLIENT_SOURCE",
-     "local en = A.English() and text[msg.Key .. \"En\"]", "local en = false"),
+    # (A23-48: "English twin ignored on the client" dropped: the main and En event lines are the same English now, so
+    # the client's twin pick is no longer observable)
     ("PumpkinKing debug key routed nowhere", "MAIN_SOURCE", "return S.HalloweenService.DebugSpawn(key)", "return \"ok\""),
     ("GameState defaults miss the ghost king attributes", "NET_SOURCE",
      "GhostKingNextAt = 0, GhostKingActive = false, GhostKingEndsAt = 0,", "GhostKingNextAt = 0,"),

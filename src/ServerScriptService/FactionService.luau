@@ -17,8 +17,8 @@ local ALTAR_PROMPT_RATE = 0.5 -- private rate limit for the altar ProximityPromp
 local WARN_THROTTLE = 10
 -- TODO(config): no Config.Text key for a switch that costs nothing (leaving Neutral, addendum A6);
 -- Config.Text.SwitchDonePlain is used instead once it exists.
-local TEXT_SWITCH_DONE_PLAIN = "%s(으)로 진영을 바꿨어요!"
-local SCORE_NAME = { Halo = "명예", Horns = "악명" } -- score lost by a FREE switch away from that faction
+local TEXT_SWITCH_DONE_PLAIN = "You joined the %s!"
+local SCORE_NAME = { Halo = "Honor", Horns = "Infamy" } -- score lost by a FREE switch away from that faction
 local SCORE_KEY = { Halo = "Honor", Horns = "Infamy" } -- CR-L11: the stat behind SCORE_NAME
 local UNDERDOG_IDLE_SECONDS = 120 -- CR-L7: no input / combat for this long = not counted for the underdog bonus
 
@@ -28,7 +28,7 @@ FactionService.FactionChanged = Util.Signal.new() -- (player, newFaction, oldFac
 
 local S = nil
 local teams = {} -- [factionId] = Team ("None" = players who have not picked yet)
-local NONE_TEAM_NAME = "진영 고르는 중"
+local NONE_TEAM_NAME = "Choosing a side"
 local leaving = {} -- [Player] = true while the player is leaving (excluded from counts)
 local lastWarnAt = {}
 

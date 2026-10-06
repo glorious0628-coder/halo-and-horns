@@ -33,7 +33,7 @@ runGroup("config", function()
 		end
 	end
 	check(#missing == 0, "every Config.Death line has an En pair", table.concat(missing, ","))
-	check(D0.Tips.Other == "갇혔을 땐 메뉴 → 이동", "the 'Other' tip from BB14")
+	check(D0.Tips.Other == "Stuck? Menu → Travel", "the 'Other' tip from BB14 (English, A23-48)")
 end)
 
 ------------------------------------------------------------------ 2. monsters, kaiju, falls, other

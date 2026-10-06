@@ -19,19 +19,19 @@ end
 ------------------------------------------------------------------ 1. Config: names, weapons, the attack profile
 runGroup("config", function()
 	local C = C0
-	check(C.ClassName("Archer", "Neutral") == "펫 조련사" and C.ClassName("Archer", "Halo") == "레인저"
-		and C.ClassName("Archer", "Horns") == "그림자 사냥꾼", "the artisan Archer is the 펫 조련사 (Halo / Horns keep theirs)",
+	check(C.ClassName("Archer", "Neutral") == "Pet Tamer" and C.ClassName("Archer", "Halo") == "Ranger"
+		and C.ClassName("Archer", "Horns") == "Shadow Hunter", "the artisan Archer is the Pet Tamer (Halo / Horns keep theirs)",
 		C.ClassName("Archer", "Neutral"))
 	check(C.IsTamer("Archer", "Neutral") and not C.IsTamer("Archer", "Halo") and not C.IsTamer("Archer", "None")
 		and not C.IsTamer("Warrior", "Neutral") and not C.IsTamer("Mage", "Neutral") and not C.IsTamer(nil, nil),
 		"IsTamer = the Neutral Archer only")
-	local want = { "나뭇가지 지휘봉", "나무 지휘봉", "철 지휘봉", "숲도둑 황금 지휘봉", "옛 왕국 수정 지휘봉", "수호령 지휘봉",
-		"왕관 조각 지휘봉", "젤리 왕관 지휘봉" }
+	local want = { "Twig Baton", "Wooden Baton", "Iron Baton", "Goblin Thief's Golden Baton", "Old Kingdom Crystal Baton",
+		"Guardian Spirit Baton", "Crown Shard Baton", "Jelly Crown Baton" }
 	for tier, name in want do
 		check(C.WeaponName(tier, "Archer", "Neutral") == name, "tamer weapon " .. tier .. " = " .. name, C.WeaponName(tier, "Archer", "Neutral"))
 	end
-	check(C.WeaponName(1, "Archer", "Halo") == "새총 활" and C.WeaponName(0, "Archer", "Neutral") == C.Text.BareHands,
-		"Halo Archer keeps the bows; bare hands stay '맨손'")
+	check(C.WeaponName(1, "Archer", "Halo") == "Slingshot Bow" and C.WeaponName(0, "Archer", "Neutral") == C.Text.BareHands,
+		"Halo Archer keeps the bows; bare hands stay 'Bare hands'")
 	check(#C.WeaponNames.Tamer == C.MaxWeaponTier and #C.WeaponNamesEn.Tamer == C.MaxWeaponTier, "baton names KO + EN for every tier")
 	for tier = 1, 6 do
 		check(C.WeaponArtKey(tier, "Archer", "Neutral") == "Weapon_Tamer_T" .. tier, "baton icon key T" .. tier)
@@ -53,7 +53,7 @@ runGroup("config", function()
 	check(C.AttackProfile("Archer", 0, "Halo").Style == "Punch" and C.AttackProfile("Archer", 1, "Halo") == r,
 		"a Halo archer: punch bare-handed, the class row armed")
 	local card = C.ClassCard("Archer", "Neutral")
-	check(card == C.Tamer.Card and has(card.Desc, "펫") and C.ClassCard("Archer", "Halo").Desc == r.Desc,
+	check(card == C.Tamer.Card and has(card.Desc, "pet") and C.ClassCard("Archer", "Halo").Desc == r.Desc,
 		"class card: the tamer's lines, the archer's for Halo")
 	local function pair(t, key)
 		local _, na = string.gsub(t[key] or "", "%%[sd]", "")
@@ -283,6 +283,25 @@ runGroup("sanitize", function()
 	local q, f = w:Join(401, { Saved = saved })
 	check(f.Pets.List.P1.Sp == "Dragon" and f.Pets.List.P2 and f.Pets.List.P2.Sp == "BabySlime" and f.Pets.Equipped[1] == "P2"
 		and q:GetAttribute("EquippedPet") == "BabySlime", "the baby slime gets P2 (P1 kept)", show(f.Pets))
+end)
+
+------------------------------------------------------------------ 6b. the pet models the clients draw (PET-3)
+runGroup("models", function()
+	local w = bareWorld()
+	local rs = w.Services.ReplicatedStorage
+	local folder = rs:FindFirstChild("PetModels")
+	local slime = folder and folder:FindFirstChild("BabySlime")
+	check(slime ~= nil and slime.ClassName == "Model" and slime:FindFirstChild("Body") ~= nil,
+		"PetService.Start copies CustomModels.PetBabySlime to ReplicatedStorage.PetModels.BabySlime")
+	local scripts = 0
+	for _, d in (slime and slime:GetDescendants()) or {} do
+		if d.ClassName == "Script" or d.ClassName == "LocalScript" or d.ClassName == "ModuleScript" then scripts += 1 end
+	end
+	check(scripts == 0, "no script is copied with the model", scripts)
+	check(w.ServerStorage:FindFirstChild("CustomModels"):FindFirstChild("PetBabySlime") ~= nil, "the source stays in ServerStorage")
+	check(w.Pet.PublishModels() == 0 and #folder:GetChildren() == 1, "a second publish adds nothing (no duplicates)")
+	w.ServerStorage:FindFirstChild("CustomModels").Parent = nil
+	check(w.Pet.PublishModels() == 0, "no CustomModels: nothing, no error")
 end)
 
 ------------------------------------------------------------------ 6. the weapon model: a baton, never a bow

@@ -153,7 +153,7 @@
     },
     {
       "group": "config",
-      "check": "B7 ItemFull (materials) says they sell at the blacksmith",
+      "check": "B7 ItemFull (materials) says they sell at the Forge",
       "pass": 1,
       "fail": 0
     },
@@ -5087,19 +5087,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e3431e1fbc3811bd1b99a63cc38ffeebec742bfc60f8455673a69a543a8fa207",
+    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
     "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "ecb89ed97364e80337e4d194f01c5b11e7ac31515fee767457b72f55318e0e6a",
-    "src/ServerScriptService/PlayerService.luau": "fecf717e2b82cc08a57508b323a42be37298addd6dbc8eeeb722ba35d5ea50b7",
-    "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
+    "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
+    "src/ServerScriptService/ProgressionService.luau": "6475444ebec7822d9993c1a0c5c3d117f47ff80548dd6b94c6b76e02789bf468",
     "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
     "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed"
   },
-  "fixtureSHA256": "ffa7533dda91bb680176d1f75f8a84e440238dcbbca219fc592eaf71c4124c04",
+  "fixtureSHA256": "887f489d4023f79079bf4d28edd0485ab29f7719da750a4868ffd7308df70894",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

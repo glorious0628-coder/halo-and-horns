@@ -16,14 +16,14 @@
   "liveValidation": "pending: merchant/UI, real datastore/reconnect and engine play",
   "contract": "A23-6 MerchantEnabled=true, prices 25/25, merchant = MapBuilder default R15 NPC from HumanoidDescription (no costume rig), E key + HoldDuration 0 prompt; costume modules, SetCostume remote/rate limit and CostumeEnabled removed",
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "92ef28de499fadb9a20f106727ac528bb1619b6ea10487115c794ffe0eec138e",
+    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
     "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
-    "src/ServerScriptService/DataService.luau": "ecb89ed97364e80337e4d194f01c5b11e7ac31515fee767457b72f55318e0e6a",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
     "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
-    "src/ServerScriptService/VitalsService.luau": "9a5d62e6644ada52a0abcacc1e3f9fdcccd3630f97616f036207b115536fa699",
-    "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
-    "src/ServerScriptService/PlayerService.luau": "fecf717e2b82cc08a57508b323a42be37298addd6dbc8eeeb722ba35d5ea50b7",
-    "src/ServerScriptService/MapBuilder.luau": "dc80a2b04768182aaadc8c60d710c68cfe02f395383647443680c65c478d0127"
+    "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",
+    "src/ServerScriptService/ProgressionService.luau": "6475444ebec7822d9993c1a0c5c3d117f47ff80548dd6b94c6b76e02789bf468",
+    "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
+    "src/ServerScriptService/MapBuilder.luau": "5d36f737102e2f0ca0be3c8c389a0e76ce877857b081b781ddc9b23622f02c27"
   },
-  "fixtureSHA256": "86b1895a88cdbbc084bf2b02a5c827f61e891ec3826ca3d50d7529b8dff29dc2"
+  "fixtureSHA256": "1f954146f9fff721325ce17b11125f8c52e4bbd0352709883c986cb17be924e0"
 }

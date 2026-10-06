@@ -1,0 +1,465 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 40,
+  "failedChecks": 0,
+  "namedChecks": 40,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Speed.Cap = 1.35 (x the base)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "baby slime: +7% at pet Lv1 -> +10% at pet Lv10 (design §2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "bonus grows in a straight line (Lv4 = +8%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "levels clamp to 1..MaxLv (0, 99, NaN, nil)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no / unknown pet: no bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed(Warrior, nil Lv0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed(Mage, nil Lv0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed(Archer, nil Lv0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed(Archer, BabySlime Lv1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed(Archer, BabySlime Lv10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed(Warrior, BabySlime Lv10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed(Archer, BabySlime Lv10, kaiju)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed(Nope, nil Lv0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "capped at Cap x the base",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "today's fastest = archer + Lv10 pet (24.2), under the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "the tamer with a Lv10 baby slime: 24.2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "no pet, warrior: the base",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "reads the pet level attribute (Lv1: 23.54)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "an Active kaiju: no pet bonus (the kaiju rule)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "the siren is not the kaiju yet: the pet bonus stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "no KaijuService in the registry: pet bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "a failing GetState: pet bonus, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "RefreshSpeed sets WalkSpeed only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "a dead humanoid is left alone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "no character: nothing happens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "applyStats: WalkSpeed = ComputeWalkSpeed (and HP as before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet-publish-refresh",
+      "check": "granting + equipping the pet refreshes the speed (after the attributes are set)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet-publish-refresh",
+      "check": "re-equipping refreshes the speed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet-publish-refresh",
+      "check": "a join without a pet still publishes + refreshes (EquippedPet '')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet-publish-refresh",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet-publish-refresh",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "move-check",
+      "check": "every class x pet level x kaiju at its computed speed passes checkMove (dt 0.05..3 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "move-check",
+      "check": "walking at the cap (27) is never flagged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "move-check",
+      "check": "the check is live: moving 3x the fastest speed for 1 s is flagged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "move-check",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "move-check",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 2,
+  "staticFailures": [],
+  "mutations": {
+    "total": 15,
+    "applied": 15,
+    "caught": 15,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "no cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: capped at Cap x the base"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "cap 1.5",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.Speed.Cap = 1.35 (x the base)",
+          "config :: capped at Cap x the base"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Lv1 bonus 8%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed(Archer, BabySlime Lv1)",
+          "config :: baby slime: +7% at pet Lv1 -> +10% at pet Lv10 (design §2)",
+          "config :: bonus grows in a straight line (Lv4 = +8%)",
+          "player-speed :: RefreshSpeed sets WalkSpeed only",
+          "player-speed :: a failing GetState: pet bonus, no error",
+          "player-speed :: no KaijuService in the registry: pet bonus"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "pet level not clamped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: levels clamp to 1..MaxLv (0, 99, NaN, nil)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the pet bonus is never added",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed(Archer, BabySlime Lv1)",
+          "config :: WalkSpeed(Archer, BabySlime Lv10)",
+          "config :: WalkSpeed(Warrior, BabySlime Lv10)",
+          "config :: today's fastest = archer + Lv10 pet (24.2), under the cap",
+          "player-speed :: RefreshSpeed sets WalkSpeed only",
+          "player-speed :: a failing GetState: pet bonus, no error"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "a kaiju keeps the pet bonus",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed(Archer, BabySlime Lv10, kaiju)",
+          "player-speed :: an Active kaiju: no pet bonus (the kaiju rule)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "class speed ignored",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed(Archer, BabySlime Lv1)",
+          "config :: WalkSpeed(Archer, BabySlime Lv10)",
+          "config :: WalkSpeed(Archer, BabySlime Lv10, kaiju)",
+          "config :: WalkSpeed(Archer, nil Lv0)",
+          "config :: capped at Cap x the base",
+          "config :: today's fastest = archer + Lv10 pet (24.2), under the cap"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "ComputeWalkSpeed reads no pet",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player-speed :: RefreshSpeed sets WalkSpeed only",
+          "player-speed :: a failing GetState: pet bonus, no error",
+          "player-speed :: no KaijuService in the registry: pet bonus",
+          "player-speed :: reads the pet level attribute (Lv1: 23.54)",
+          "player-speed :: the siren is not the kaiju yet: the pet bonus stays",
+          "player-speed :: the tamer with a Lv10 baby slime: 24.2"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "kaiju state not read",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player-speed :: an Active kaiju: no pet bonus (the kaiju rule)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the siren counts as the kaiju",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player-speed :: the siren is not the kaiju yet: the pet bonus stays"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RefreshSpeed also resets HP",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player-speed :: RefreshSpeed sets WalkSpeed only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RefreshSpeed on a dead humanoid",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player-speed :: a dead humanoid is left alone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "applyStats keeps a speed of its own",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player-speed :: applyStats: WalkSpeed = ComputeWalkSpeed (and HP as before)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "publish never refreshes the speed",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet-publish-refresh :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "MoveMult 0.9 (checkMove too strict)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "move-check :: walking at the cap (27) is never flagged"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
+    "src/ServerScriptService/ZoneService.luau": "e1b533e51193af35ee96c63145b7af18950ddbe728f15064dca9629c7de3bf73",
+    "src/ServerScriptService/PetService.luau": "a9c800ce76799e177d0b3af6d5a62d73c0ca702376213ce7186aebdd2b4104ca"
+  },
+  "fixtureSHA256": "bcd18de3819c7afe2406a7fb176b916b234b60c9112c5823d456ba1a2e1e1232",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "PET-1: Config.WalkSpeed(class, petSpecies, petLv, kaiju) = Config.Player.WalkSpeed x class WalkSpeedMult x (1 + Config.PetSpeedBonus(species, lv)), no skill buff (A23-49), at most Config.Speed.Cap (1.35) x the base. Baby slime +7% at pet Lv1 -> +10% at Lv10 (straight line, levels clamped 1..Config.Pets.MaxLv). An Active kaiju gets no pet bonus. PlayerService.ComputeWalkSpeed reads the class (classDef), EquippedPet / PetLv and KaijuService.GetState (pcall); applyStats (spawn / RefreshCharacter) and RefreshSpeed (WalkSpeed only, live humanoid) are the only player WalkSpeed writes; PetService publish calls RefreshSpeed. ZoneService.checkMove never flags any class x pet level x kaiju at its speed (dt 0.05-3 s) or the cap.",
+  "limitations": "No zone / combat / grudge-sack speed rule exists today, so those states trigger no recompute (a later rule adds its trigger next to its input). Real character physics and network jitter are not modelled."
+}

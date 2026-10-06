@@ -36,9 +36,9 @@ local TUT_XP = TUT_CFG.QuestRewardXP or 0
 local TUT_TEXT = string.format(TUT_CFG.QuestText, TUT_TARGET)
 local TUT_ZONE = TUT_CFG.GuideZone
 local TUT_MESSAGES = TUT_CFG.Text or {}
-local TUT_START_TEXT = TUT_MESSAGES.QuestStart or "첫 임무: %s! (보상 %s골드)" -- (TUT_TEXT, gold)
-local TUT_READY_TEXT = TUT_MESSAGES.QuestReady or "첫 임무 완료! [받기]를 눌러요."
-local TUT_CLAIMED_TEXT = TUT_MESSAGES.Claimed or "첫 임무 보상 +%s골드! 다음 목표를 확인해요."
+local TUT_START_TEXT = TUT_MESSAGES.QuestStart or "First mission: %s! (Reward: %s gold)" -- (TUT_TEXT, gold)
+local TUT_READY_TEXT = TUT_MESSAGES.QuestReady or "First mission done! Press [Claim]."
+local TUT_CLAIMED_TEXT = TUT_MESSAGES.Claimed or "First mission reward +%s gold! Check your next goal."
 local RESUME_DELAY_ON_SPAWN = 1
 local RESUME_DELAY_ON_CLASS = 0.5
 
@@ -498,14 +498,14 @@ local function nextGoalText(data)
 	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or num(data.WeaponTier, 1) >= IRON_TIER
 	if iron and not hasIron then
 		if level < iron.MinLevel then
-			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level)
+			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level), "IronLevel"
 		end
 		local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
-		return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold))
+		return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold)), "IronGold"
 	end
 	local zone = Config.Zones[NEXT_ZONE]
 	if zone and level < zone.MinLevel then
-		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level)
+		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level), "Zone"
 	end
 	return nil
 end
@@ -518,9 +518,9 @@ local function tutorialEntry(player, data)
 		CanClaim = false, ShowProgress = false,
 	}
 	if step == STEP_WELCOME then
-		entry.Text = TUT_MESSAGES.Welcome or "첫 임무 · 여기를 눌러 안내자 만나기"
+		entry.Text = TUT_MESSAGES.Welcome or "First quest · Tap here to meet the Guide"
 	elseif step == STEP_GUIDE then
-		entry.Text = TUT_MESSAGES.Travel or "말랑 초원으로 가요 · 메뉴 > 이동 > 말랑 초원"
+		entry.Text = TUT_MESSAGES.Travel or "Go to the Squishy Meadow · Menu > Travel > Squishy Meadow"
 	elseif step == STEP_QUEST then
 		entry.Progress, entry.Target = getTutorialKills(data), TUT_TARGET
 		entry.Text = if entry.Progress >= TUT_TARGET then TUT_READY_TEXT else TUT_TEXT
@@ -529,12 +529,15 @@ local function tutorialEntry(player, data)
 	elseif step == TUT_DONE and data.ClassChosen == true and getFaction(player) ~= "None" then
 		if data.BlacksmithVisited ~= true then
 			entry.Text = (hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith)
-				or "무기 살펴보기 · 교차로 마을 대장간"
+				or "Check the weapons · Crossroads Forge"
 		else
-			local text = nextGoalText(data)
+			local text, kind = nextGoalText(data)
 			if not text then return nil end
 			entry.Text = text
 			entry.NextGoal = true
+			-- A23-48: which next goal this is ("IronLevel" | "IronGold" | "Zone"), so clients never search the (now
+			-- English) text for a word
+			entry.GoalKind = kind
 		end
 	else
 		return nil
@@ -570,7 +573,7 @@ local function publish(player)
 	-- the guide chain just ran out (iron weapon owned and Lv10 reached): say so once, then the row disappears
 	local hasGoal = tutorial ~= nil and (tutorial.NextGoal == true or tutorial.Story ~= nil)
 	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE then
-		Net.Notify(player, TUT_MESSAGES.GuideDone or "안내는 여기까지! 이제 사냥하며 강해져요.", "good")
+		Net.Notify(player, TUT_MESSAGES.GuideDone or "That's all from me! Now hunt and get stronger.", "good")
 	end
 	hadNextGoal[player] = hasGoal or nil
 	if type(data.Quests) == "table" then

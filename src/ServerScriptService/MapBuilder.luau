@@ -607,7 +607,7 @@ local function buildAltar(ctx, parent)
 			}, altar)
 		end
 	end
-	billboard(altar, "AltarSign", "운명의 제단", 8, RGB(230, 210, 255))
+	billboard(altar, "AltarSign", "Altar of Fate", 8, RGB(230, 210, 255))
 	return altar
 end
 
@@ -624,8 +624,8 @@ local function ensureAltarPrompt(altar)
 		prompt.Name = "AltarPrompt"
 		built = 1
 	end
-	prompt.ActionText = "진영 바꾸기"
-	prompt.ObjectText = "운명의 제단"
+	prompt.ActionText = "Switch side"
+	prompt.ObjectText = "Altar of Fate"
 	prompt.HoldDuration = 0.5
 	prompt.MaxActivationDistance = 12
 	prompt.RequiresLineOfSight = false
@@ -681,7 +681,7 @@ local function ensureBoardGui(board)
 		text.BackgroundTransparency = 0
 		text.TextColor3 = WHITE
 		text.Font = Enum.Font.GothamBold
-		text.Text = "현상수배 게시판"
+		text.Text = "Wanted Board"
 		local padding = Instance.new("UIPadding")
 		padding.PaddingLeft = UDim.new(0, 10)
 		padding.PaddingRight = UDim.new(0, 10)
@@ -711,7 +711,7 @@ local function buildGoosePerch(ctx, parent)
 			Position = Vector3.new(gp.X + math.cos(a) * 10, 3, gp.Z + math.sin(a) * 10), Color = RGB(212, 175, 55),
 		}, perch)
 	end
-	billboard(perch, "PerchSign", "황금 거위 둥지", 5, RGB(255, 225, 120))
+	billboard(perch, "PerchSign", "Golden Goose Nest", 5, RGB(255, 225, 120))
 	return perch
 end
 
@@ -765,7 +765,7 @@ local function ensureMerchantPrompt(merchant, tune)
 	local prompt = root:FindFirstChild(tune.PotionMerchantPrompt)
 	if prompt and not prompt:IsA("ProximityPrompt") then retire(prompt, "_Old"); prompt = nil end
 	if not prompt then prompt = Instance.new("ProximityPrompt"); prompt.Name = tune.PotionMerchantPrompt end
-	prompt.ActionText, prompt.ObjectText = "물약 구매", "물약 상인"
+	prompt.ActionText, prompt.ObjectText = "Buy potions", "Potion Seller"
 	prompt.KeyboardKeyCode = Enum.KeyCode.E -- standard interact key; the skill is Q only
 	prompt.HoldDuration, prompt.MaxActivationDistance = 0, tune.PotionMerchantDistance -- a shop opens on a tap
 	prompt.RequiresLineOfSight, prompt.Enabled = false, true

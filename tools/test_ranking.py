@@ -47,7 +47,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         + "\nreturn PlayerService\n")
     visuals = sources["VISUALS_SOURCE"]
     out["NAMETAG_SOURCE"] = (
-        "local Config, Util = ...\nlocal NEUTRAL_ID = \"Neutral\"\nlocal NEUTRAL_EMBLEM = \"장\"\n"
+        "local Config, Util = ...\nlocal NEUTRAL_ID = \"Neutral\"\nlocal NEUTRAL_EMBLEM = \"A\"\n"
         + "".join(function_block(visuals, f"local function {name}(") for name in
                   ("attrNum", "attrStr", "getFaction", "getClass", "factionColor", "esc", "nametagOffset", "updateNametag"))
         + "\nreturn updateNametag\n")
@@ -245,8 +245,8 @@ MUTATIONS = [
     ("SanitizeRank: a PvP 'reward' kept", C, "R.Boards[rr.Board] and R.Boards[rr.Board].Reward and rr.Board", "R.Boards[rr.Board] and rr.Board"),
     ("RewardMult 1.20", C, "RewardMult = 1.10,", "RewardMult = 1.20,"),
     ("Artisan WeekCap 600", C, "WeekCap = { Honor = 150, Infamy = 150, Artisan = 60 },", "WeekCap = { Honor = 150, Infamy = 150, Artisan = 600 },"),
-    ("Artisan title wording '장인 명성'", C, 'TitleNames = { Honor = "명예", Infamy = "악명", Artisan = "장인" },',
-     'TitleNames = { Honor = "명예", Infamy = "악명", Artisan = "장인 명성" },'),
+    ("Artisan title wording 'Artisan Fame'", C, 'TitleNames = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan" },',
+     'TitleNames = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan Fame" },'),
     ("SanitizeRank: Drop kept for any board", C, "if R.Boards[board].Faction and (wk == week or wk == week - 1) then out.Drop[board] = wk end",
      "if wk == week or wk == week - 1 then out.Drop[board] = wk end"),
     ("SanitizeRank: last week's removals dropped", C, "(wk == week or wk == week - 1)", "(wk == week)"),

@@ -1,0 +1,690 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 74,
+  "failedChecks": 0,
+  "namedChecks": 74,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "load retries: 5 tries, 6 s apart",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.Text.SaveLoading = 'Loading your save…'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a lock older than 120 s is dead (unchanged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "the saved data loads after the waits (Level 7)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "5 tries (UpdateAsync) in all",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "4 waits of 6 s between the tries (no wait after the last)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "about 24 s until the lock is taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "the record now carries this server's lock and a new token",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "a live server's lock has no Studio flag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "SaveLoading = true while the player waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "'Loading your save…' told once (at the first wait, not again)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "SaveLoading set once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "SaveLoading cleared when the load ends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "one notice in all",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock: wait 6 s x 4, the 5th try takes it",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock released during the wait",
+      "check": "loads the released record",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock released during the wait",
+      "check": "3 tries, 2 waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock released during the wait",
+      "check": "one notice, the mark cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock released during the wait",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "live lock released during the wait",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "no lock: loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "no lock: one try, no wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "no lock: no 'Loading your save…'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "a lock older than LockTimeout: loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "a lock older than LockTimeout: one try, no wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "a lock older than LockTimeout: no 'Loading your save…'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "this server's own lock: loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "this server's own lock: one try, no wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "this server's own lock: no 'Loading your save…'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no lock / old lock / own lock: no wait",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "a Studio lock (JobId empty): loads at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "a Studio lock (JobId empty): one try, no wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "a Studio lock (JobId empty): no loading mark",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "a Studio lock (JobId empty): the live server owns it now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "a lock marked Studio = true: loads at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "a lock marked Studio = true: one try, no wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "a lock marked Studio = true: no loading mark",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "a lock marked Studio = true: the live server owns it now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Studio locks never hold a live server",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "Studio with API access and no StudioFreshSave: the real store",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "Studio loads the save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "the Studio session's lock is marked Studio = true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "a Studio save keeps the mark",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "the live server takes the Studio lock at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "the stopped Studio session's later save is refused (SessionToken)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "Studio waits for a live server's lock (6 s x 4, takes it at the 5th try)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a Studio session writes Studio = true and still waits for a live lock",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DataStore errors: retry with the same notice",
+      "check": "loads at the 3rd try",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DataStore errors: retry with the same notice",
+      "check": "two 6 s waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DataStore errors: retry with the same notice",
+      "check": "one 'Loading your save…', cleared after",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DataStore errors: retry with the same notice",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "DataStore errors: retry with the same notice",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the player leaves during the wait",
+      "check": "Load gives nothing for a player who left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the player leaves during the wait",
+      "check": "no more tries after leaving",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the player leaves during the wait",
+      "check": "the other server's lock stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the player leaves during the wait",
+      "check": "the mark is cleared anyway",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the player leaves during the wait",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the player leaves during the wait",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "a live server stays on the real store",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "the attribute is not even read outside Studio",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "the real save loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "Studio + StudioFreshSave = true: memory mode",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "a brand-new save (Level 1, first-time tutorial)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "the stored save is never read or written",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "saves stay in memory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "Studio + StudioFreshSave = false: the real store",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "StudioFreshSave is never on outside Studio",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 15,
+    "applied": 15,
+    "caught": 15,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "retry delay back to 3 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DataStore errors: retry with the same notice :: two 6 s waits",
+          "a Studio session writes Studio = true and still waits for a live lock :: Studio waits for a live server's lock (6 s x 4, takes it at the 5th try)",
+          "config :: load retries: 5 tries, 6 s apart",
+          "live lock released during the wait :: 3 tries, 2 waits",
+          "live lock: wait 6 s x 4, the 5th try takes it :: 4 waits of 6 s between the tries (no wait after the last)",
+          "live lock: wait 6 s x 4, the 5th try takes it :: about 24 s until the lock is taken"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the waiting text is missing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DataStore errors: retry with the same notice :: one 'Loading your save…', cleared after",
+          "config :: Config.Text.SaveLoading = 'Loading your save…'",
+          "live lock released during the wait :: one notice, the mark cleared",
+          "live lock: wait 6 s x 4, the 5th try takes it :: 'Loading your save…' told once (at the first wait, not again)",
+          "live lock: wait 6 s x 4, the 5th try takes it :: one notice in all"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no notice while waiting",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DataStore errors: retry with the same notice :: one 'Loading your save…', cleared after",
+          "live lock released during the wait :: one notice, the mark cleared",
+          "live lock: wait 6 s x 4, the 5th try takes it :: 'Loading your save…' told once (at the first wait, not again)",
+          "live lock: wait 6 s x 4, the 5th try takes it :: one notice in all"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the mark is never set",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DataStore errors: retry with the same notice :: one 'Loading your save…', cleared after",
+          "live lock released during the wait :: one notice, the mark cleared",
+          "live lock: wait 6 s x 4, the 5th try takes it :: 'Loading your save…' told once (at the first wait, not again)",
+          "live lock: wait 6 s x 4, the 5th try takes it :: SaveLoading = true while the player waits",
+          "live lock: wait 6 s x 4, the 5th try takes it :: SaveLoading set once",
+          "live lock: wait 6 s x 4, the 5th try takes it :: one notice in all"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the notice repeats every try",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DataStore errors: retry with the same notice :: one 'Loading your save…', cleared after",
+          "live lock released during the wait :: one notice, the mark cleared",
+          "live lock: wait 6 s x 4, the 5th try takes it :: 'Loading your save…' told once (at the first wait, not again)",
+          "live lock: wait 6 s x 4, the 5th try takes it :: SaveLoading set once",
+          "live lock: wait 6 s x 4, the 5th try takes it :: one notice in all"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the mark is never cleared",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DataStore errors: retry with the same notice :: one 'Loading your save…', cleared after",
+          "live lock released during the wait :: one notice, the mark cleared",
+          "live lock: wait 6 s x 4, the 5th try takes it :: SaveLoading cleared when the load ends",
+          "the player leaves during the wait :: the mark is cleared anyway"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Studio locks block live servers",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Studio locks never hold a live server :: a Studio lock (JobId empty): no loading mark",
+          "Studio locks never hold a live server :: a Studio lock (JobId empty): one try, no wait",
+          "Studio locks never hold a live server :: a lock marked Studio = true: no loading mark",
+          "Studio locks never hold a live server :: a lock marked Studio = true: one try, no wait",
+          "a Studio session writes Studio = true and still waits for a live lock :: the live server takes the Studio lock at once"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the Studio mark is ignored",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Studio locks never hold a live server :: a lock marked Studio = true: no loading mark",
+          "Studio locks never hold a live server :: a lock marked Studio = true: one try, no wait"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the lock forgets the Studio mark",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a Studio session writes Studio = true and still waits for a live lock :: a Studio save keeps the mark",
+          "a Studio session writes Studio = true and still waits for a live lock :: the Studio session's lock is marked Studio = true"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no wait between the tries",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "DataStore errors: retry with the same notice :: two 6 s waits",
+          "a Studio session writes Studio = true and still waits for a live lock :: Studio waits for a live server's lock (6 s x 4, takes it at the 5th try)",
+          "live lock released during the wait :: 3 tries, 2 waits",
+          "live lock: wait 6 s x 4, the 5th try takes it :: 4 waits of 6 s between the tries (no wait after the last)",
+          "live lock: wait 6 s x 4, the 5th try takes it :: about 24 s until the lock is taken"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the last try never takes the lock",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a Studio session writes Studio = true and still waits for a live lock :: Studio waits for a live server's lock (6 s x 4, takes it at the 5th try)",
+          "live lock: wait 6 s x 4, the 5th try takes it :: 4 waits of 6 s between the tries (no wait after the last)",
+          "live lock: wait 6 s x 4, the 5th try takes it :: about 24 s until the lock is taken",
+          "live lock: wait 6 s x 4, the 5th try takes it :: the record now carries this server's lock and a new token",
+          "live lock: wait 6 s x 4, the 5th try takes it :: the saved data loads after the waits (Level 7)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "old locks still block",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no lock / old lock / own lock: no wait :: a lock older than LockTimeout: no 'Loading your save…'",
+          "no lock / old lock / own lock: no wait :: a lock older than LockTimeout: one try, no wait"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "StudioFreshSave read on a live server",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "StudioFreshSave is never on outside Studio :: a live server stays on the real store",
+          "StudioFreshSave is never on outside Studio :: the attribute is not even read outside Studio",
+          "StudioFreshSave is never on outside Studio :: the real save loads"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "StudioFreshSave ignored in Studio",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "StudioFreshSave is never on outside Studio :: Studio + StudioFreshSave = true: memory mode",
+          "StudioFreshSave is never on outside Studio :: a brand-new save (Level 1, first-time tutorial)",
+          "StudioFreshSave is never on outside Studio :: saves stay in memory",
+          "StudioFreshSave is never on outside Studio :: the stored save is never read or written"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the player leaving is not noticed",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the player leaves during the wait :: group ran to the end without a Lua error",
+          "the player leaves during the wait :: no more tries after leaving"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1"
+  },
+  "fixtureSHA256": "a8d76aeb799088131ef16518c3c0f4f3af45d1110811484a90284a73f7983289",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "DataService loads retry every Config.Data.LoadRetryDelay = 6 s, LoadRetries = 5 tries; the 5th takes a live lock (~24 s). The first retry wait sets the player attribute SaveLoading = true and sends one Notify Config.Text.SaveLoading ('Loading your save…', kind info); DataService.Load clears the attribute (nil) on every outcome. Locks carry Studio = true when written by Studio; a lock with JobId '' or Studio = true is never live for a non-Studio server (no wait), while Studio still waits for live locks. StudioFreshSave (ServerStorage attribute) is read only when RunService:IsStudio(): a live server never reads it and never enters memory mode because of it.",
+  "limitations": "DataStore double (no real latency, throttling or UpdateAsync conflicts beyond the scripted ones); Studio's real JobId and the live Studio Play / publish flow are not exercised here."
+}

@@ -15,15 +15,15 @@ local S = nil
 local store = nil
 local states = {}
 local MESSAGES = {
-	Active = "닉네임을 저장했어요.", Available = "닉네임을 정할 수 있어요.",
-	Invalid = "닉네임은 2~20글자로 입력해 주세요. 숨은 문자·줄바꿈·#·<·>·&는 사용할 수 없어요.",
-	Filtered = "이 닉네임은 사용할 수 없어요. 다른 이름을 입력해 주세요.",
-	Taken = "이미 사용 중인 닉네임이에요.", Busy = "닉네임을 확인하고 있어요.",
-	Unknown = "저장 결과를 확인하지 못했어요. 기존 닉네임을 유지했어요. 다시 누르면 먼저 확인해요.",
-	Unavailable = "닉네임 저장소에 연결할 수 없어요. 기존 닉네임을 유지했어요.",
-	FilterUnavailable = "닉네임 필터에 연결할 수 없어요. 잠시 뒤 다시 시도해 주세요.",
-	Recovered = "이전 저장 결과를 확인했어요. 변경하려면 다시 눌러 주세요.",
-	Cooldown = "잠시 뒤 닉네임을 다시 변경해 주세요.", Loading = "닉네임을 불러오고 있어요.",
+	Active = "Nickname saved.", Available = "You can set a nickname.",
+	Invalid = "Nicknames need 2-20 characters. Hidden characters, line breaks, #, <, > and & are not allowed.",
+	Filtered = "This nickname can't be used. Please try another one.",
+	Taken = "That nickname is already taken.", Busy = "Checking the nickname...",
+	Unknown = "We couldn't confirm the save, so your old nickname stays. Tap again to check first.",
+	Unavailable = "Can't reach the nickname storage, so your old nickname stays.",
+	FilterUnavailable = "Can't reach the nickname filter. Please try again soon.",
+	Recovered = "We found your last save result. Tap again to change it.",
+	Cooldown = "Please wait a bit before changing your nickname again.", Loading = "Loading your nickname...",
 }
 
 -- A bounded supplemental policy, not a language model or a replacement for Roblox filtering.

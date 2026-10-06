@@ -9,22 +9,22 @@
     ],
     "writers": {
       "AutoCombatEnabled": [
-        "src/ServerScriptService/CombatService.luau:1222",
-        "src/ServerScriptService/CombatService.luau:1234",
-        "src/ServerScriptService/CombatService.luau:1363"
+        "src/ServerScriptService/CombatService.luau:1251",
+        "src/ServerScriptService/CombatService.luau:1263",
+        "src/ServerScriptService/CombatService.luau:1392"
       ],
       "AutoCombatUnlocked": [
-        "src/ServerScriptService/CombatService.luau:1369"
+        "src/ServerScriptService/CombatService.luau:1398"
       ]
     }
   },
   "failure": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e2769031801dea97dce29130a312418ff776377d9b0d045a4fde83ed0d343c0",
-    "src/ServerScriptService/CombatService.luau": "55e50d8d24e25039b9a9142f1f9ab206ab07503aa1e1a9398191fdc32b9c0a1f",
-    "src/ServerScriptService/VitalsService.luau": "9a5d62e6644ada52a0abcacc1e3f9fdcccd3630f97616f036207b115536fa699",
+    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/KaijuService.luau": "fa3018fff557ac6bd89d601f8e469e6a84e994fde5eb1836fa2ae555495a3b9c"
+    "src/ServerScriptService/KaijuService.luau": "c5d1398e170af68cc369b464ce07e7895f38b3da98ab0abda2a2eaed61bf2d3d"
   },
   "fixtureSHA256": "aab666418329d2b3d017c8a57b50795f98f21c4f3e59aa4d71baf6ff998321c1",
   "sourcesChangedDuringRun": [],

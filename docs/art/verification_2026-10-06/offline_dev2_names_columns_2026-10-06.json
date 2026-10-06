@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 110,
+  "checks": 111,
   "failedChecks": 0,
-  "namedChecks": 107,
+  "namedChecks": 108,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -15,7 +15,13 @@
     },
     {
       "group": "public-name",
-      "check": "shown + honorific: nickname .. Text.Honorific (\"님\")",
+      "check": "the shipped Text.Honorific is \"\" (English lines add nothing after a name)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "shown + honorific: nickname .. Text.Honorific",
       "pass": 1,
       "fail": 0
     },
@@ -27,31 +33,31 @@
     },
     {
       "group": "public-name",
-      "check": "hidden Halo: \"빛의 기사단 한 명\" (contract text)",
+      "check": "hidden Halo: \"A member of the Knights of Light\" (contract text)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "public-name",
-      "check": "hidden + honorific: no \"님\" after \"한 명\"",
+      "check": "hidden + honorific: nothing added after the hidden name",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "public-name",
-      "check": "hidden Horns: \"뿔 군단 한 명\"",
+      "check": "hidden Horns: \"A member of the Horn Legion\"",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "public-name",
-      "check": "hidden Neutral: \"장인 길드 한 명\"",
+      "check": "hidden Neutral: \"A member of the Artisan Guild\"",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "public-name",
-      "check": "hidden without a faction: Text.Someone (\"누군가\")",
+      "check": "hidden without a faction: Text.Someone (\"Someone\")",
       "pass": 1,
       "fail": 0
     },
@@ -87,13 +93,13 @@
     },
     {
       "group": "public-name",
-      "check": "setting label '알림·랭킹에 내 이름 숨기기'",
+      "check": "setting label 'Hide my name in announcements and rankings'",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "public-name",
-      "check": "setting notes: nametags/Tab cannot be hidden; global rankings show '<진영> 한 명' when hidden",
+      "check": "setting notes: nametags/Tab cannot be hidden; global rankings show 'A member of the <side>' when hidden",
       "pass": 1,
       "fail": 0
     },
@@ -117,19 +123,19 @@
     },
     {
       "group": "announce-lines",
-      "check": "MostWanted uses the particle-free \"%s이\" form",
+      "check": "MostWanted reads with the name as the subject (English)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "MostWanted has no \"님이\" / \"이(가)\" left",
+      "check": "MostWanted has no Korean honorific / particle left",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "MostWanted: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "check": "MostWanted: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
       "pass": 1,
       "fail": 0
     },
@@ -141,19 +147,19 @@
     },
     {
       "group": "announce-lines",
-      "check": "BountyAnnounce uses the particle-free \"%s이\" form",
+      "check": "BountyAnnounce reads with the name as the subject (English)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "BountyAnnounce has no \"님이\" / \"이(가)\" left",
+      "check": "BountyAnnounce has no Korean honorific / particle left",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "BountyAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "check": "BountyAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
       "pass": 1,
       "fail": 0
     },
@@ -165,19 +171,19 @@
     },
     {
       "group": "announce-lines",
-      "check": "GrudgeAvengedAll uses the particle-free \"%s이\" form",
+      "check": "GrudgeAvengedAll reads with the name as the subject (English)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "GrudgeAvengedAll has no \"님이\" / \"이(가)\" left",
+      "check": "GrudgeAvengedAll has no Korean honorific / particle left",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "GrudgeAvengedAll: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "check": "GrudgeAvengedAll: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
       "pass": 1,
       "fail": 0
     },
@@ -189,19 +195,19 @@
     },
     {
       "group": "announce-lines",
-      "check": "RebirthAnnounce uses the particle-free \"%s이\" form",
+      "check": "RebirthAnnounce reads with the name as the subject (English)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "RebirthAnnounce has no \"님이\" / \"이(가)\" left",
+      "check": "RebirthAnnounce has no Korean honorific / particle left",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "RebirthAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "check": "RebirthAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
       "pass": 1,
       "fail": 0
     },
@@ -213,19 +219,19 @@
     },
     {
       "group": "announce-lines",
-      "check": "RareAnnounce uses the particle-free \"%s이\" form",
+      "check": "RareAnnounce reads with the name as the subject (English)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "RareAnnounce has no \"님이\" / \"이(가)\" left",
+      "check": "RareAnnounce has no Korean honorific / particle left",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "announce-lines",
-      "check": "RareAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "check": "RareAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
       "pass": 1,
       "fail": 0
     },
@@ -381,13 +387,13 @@
     },
     {
       "group": "pvp-lines",
-      "check": "Most Wanted line names a hidden villain \"뿔 군단 한 명이\"",
+      "check": "Most Wanted line names a hidden villain 'A member of the Horn Legion'",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "pvp-lines",
-      "check": "Most Wanted line names a shown villain \"OO님이\"",
+      "check": "Most Wanted line names a shown villain by nickname",
       "pass": 1,
       "fail": 0
     },
@@ -405,7 +411,7 @@
     },
     {
       "group": "pvp-lines",
-      "check": "town board's wanted line shows a hidden player as \"<진영> 한 명\"",
+      "check": "town board's wanted line shows a hidden player as 'A member of the <side>'",
       "pass": 1,
       "fail": 0
     },
@@ -489,7 +495,7 @@
     },
     {
       "group": "leaderstats",
-      "check": "columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)",
+      "check": "columns in order Power, Level, Rebirths, Fame (creation order = list order)",
       "pass": 1,
       "fail": 0
     },
@@ -666,11 +672,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "announce-lines :: BountyAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: BountyAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
           "announce-lines :: BountyAnnounce: no leaked name, no doubled honorific",
-          "announce-lines :: GrudgeAvengedAll: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: GrudgeAvengedAll: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
           "announce-lines :: GrudgeAvengedAll: no leaked name, no doubled honorific",
-          "announce-lines :: MostWanted: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: MostWanted: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
           "announce-lines :: MostWanted: no leaked name, no doubled honorific"
         ],
         "newFailingCount": 26
@@ -682,23 +688,23 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "announce-lines :: BountyAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "announce-lines :: GrudgeAvengedAll: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "announce-lines :: MostWanted: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "announce-lines :: RareAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "announce-lines :: RebirthAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "public-name :: hidden + honorific: no \"님\" after \"한 명\""
+          "announce-lines :: BountyAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "announce-lines :: GrudgeAvengedAll: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "announce-lines :: MostWanted: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "announce-lines :: RareAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "announce-lines :: RebirthAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "public-name :: hidden + honorific: nothing added after the hidden name"
         ],
         "newFailingCount": 18
       },
       {
-        "mutation": "None faction shows \"무소속 한 명\"",
+        "mutation": "None faction shows 'A member of the No Side'",
         "file": "src/ServerScriptService/AnnounceService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "public-name :: hidden without a faction: Text.Someone (\"누군가\")"
+          "public-name :: hidden without a faction: Text.Someone (\"Someone\")"
         ],
         "newFailingCount": 1
       },
@@ -725,12 +731,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "announce-lines :: BountyAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "announce-lines :: GrudgeAvengedAll: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "announce-lines :: MostWanted: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "announce-lines :: RareAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "announce-lines :: RebirthAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
-          "public-name :: shown + honorific: nickname .. Text.Honorific (\"님\")"
+          "announce-lines :: BountyAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "announce-lines :: GrudgeAvengedAll: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "announce-lines :: MostWanted: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "announce-lines :: RareAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "announce-lines :: RebirthAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "public-name :: shown + honorific: nickname .. Text.Honorific"
         ],
         "newFailingCount": 12
       },
@@ -789,8 +795,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pvp-lines :: Most Wanted line names a hidden villain \"뿔 군단 한 명이\"",
-          "pvp-lines :: Most Wanted line names a shown villain \"OO님이\""
+          "pvp-lines :: Most Wanted line names a hidden villain 'A member of the Horn Legion'",
+          "pvp-lines :: Most Wanted line names a shown villain by nickname"
         ],
         "newFailingCount": 2
       },
@@ -802,7 +808,7 @@
         "crashed": false,
         "newFailingChecks": [
           "pvp-lines :: town board never shows a hidden nickname",
-          "pvp-lines :: town board's wanted line shows a hidden player as \"<진영> 한 명\""
+          "pvp-lines :: town board's wanted line shows a hidden player as 'A member of the <side>'"
         ],
         "newFailingCount": 2
       },
@@ -824,9 +830,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pvp-lines :: Most Wanted line names a hidden villain \"뿔 군단 한 명이\"",
+          "pvp-lines :: Most Wanted line names a hidden villain 'A member of the Horn Legion'",
           "pvp-lines :: town board never shows a hidden nickname",
-          "pvp-lines :: town board's wanted line shows a hidden player as \"<진영> 한 명\"",
+          "pvp-lines :: town board's wanted line shows a hidden player as 'A member of the <side>'",
           "service-helpers :: PvPService: publicName = AnnounceService.PublicName (hidden)"
         ],
         "newFailingCount": 4
@@ -855,39 +861,40 @@
         "newFailingCount": 2
       },
       {
-        "mutation": "RebirthAnnounce back to \"%s님이\"",
+        "mutation": "RebirthAnnounce adds its own honorific (doubled)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "announce-lines :: RebirthAnnounce has no \"님이\" / \"이(가)\" left",
-          "announce-lines :: RebirthAnnounce uses the particle-free \"%s이\" form",
-          "announce-lines :: RebirthAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: RebirthAnnounce reads with the name as the subject (English)",
+          "announce-lines :: RebirthAnnounce: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
           "announce-lines :: RebirthAnnounce: no leaked name, no doubled honorific"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "MostWanted drops the name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "announce-lines :: MostWanted reads with the name as the subject (English)",
+          "announce-lines :: MostWanted: 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden",
+          "pvp-lines :: Most Wanted line names a hidden villain 'A member of the Horn Legion'",
+          "pvp-lines :: Most Wanted line names a shown villain by nickname"
         ],
         "newFailingCount": 4
       },
       {
-        "mutation": "MostWanted back to \"%s이(가)\"",
+        "mutation": "HiddenName without 'A member of the'",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "announce-lines :: MostWanted has no \"님이\" / \"이(가)\" left",
-          "announce-lines :: MostWanted uses the particle-free \"%s이\" form"
-        ],
-        "newFailingCount": 2
-      },
-      {
-        "mutation": "HiddenName without \"한 명\"",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "public-name :: hidden Halo: \"빛의 기사단 한 명\" (contract text)"
+          "public-name :: hidden Halo: \"A member of the Knights of Light\" (contract text)"
         ],
         "newFailingCount": 1
       },
@@ -946,7 +953,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "leaderstats :: columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)",
+          "leaderstats :: columns in order Power, Level, Rebirths, Fame (creation order = list order)",
           "leaderstats :: no service warnings (pcall-swallowed handler errors)",
           "leaderstats-config :: no service warnings (pcall-swallowed handler errors)",
           "leaderstats-config :: unknown / repeated column ids are skipped with a warning"
@@ -996,7 +1003,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "leaderstats :: columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)",
+          "leaderstats :: columns in order Power, Level, Rebirths, Fame (creation order = list order)",
           "leaderstats :: no gold column (A23-21)"
         ],
         "newFailingCount": 2
@@ -1008,7 +1015,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "leaderstats :: columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)"
+          "leaderstats :: columns in order Power, Level, Rebirths, Fame (creation order = list order)"
         ],
         "newFailingCount": 1
       }
@@ -1018,17 +1025,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b936e676d8db751af1d64d522ab2b4839e5589862584e2e9d753078b71b1b486",
+    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
-    "src/ServerScriptService/PlayerService.luau": "fecf717e2b82cc08a57508b323a42be37298addd6dbc8eeeb722ba35d5ea50b7",
+    "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
     "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
-    "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
-    "src/ServerScriptService/GooseService.luau": "395f0289ab0e71a80d46917a18f8866a9f89fcd1e2f140be534fe47ae461614d",
-    "src/ServerScriptService/KaijuService.luau": "fa3018fff557ac6bd89d601f8e469e6a84e994fde5eb1836fa2ae555495a3b9c"
+    "src/ServerScriptService/ProgressionService.luau": "6475444ebec7822d9993c1a0c5c3d117f47ff80548dd6b94c6b76e02789bf468",
+    "src/ServerScriptService/GooseService.luau": "eb39998538042239d5966f71c08869788465bee782e6b26f6d2a50847bf8dc99",
+    "src/ServerScriptService/KaijuService.luau": "c5d1398e170af68cc369b464ce07e7895f38b3da98ab0abda2a2eaed61bf2d3d"
   },
-  "fixtureSHA256": "733f6e7410eda80fd44a669102d6b31add6903ebdddd2cd49aeaffc9321f7d89",
+  "fixtureSHA256": "ea7b371e711784b69305fb54b1545aa80dc4b41d5c8474c26f4fb456cda079d4",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

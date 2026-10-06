@@ -30,7 +30,7 @@ C, CO, PE, V = "CONFIG_SOURCE", "COMBAT_SOURCE", "PET_SOURCE", "VISUALS_SOURCE"
 
 MUTATIONS = [
     # --- Config: names, the tamer test, weapons, the attack profile, the class card
-    ("the artisan Archer is still the hunter", C, 'Neutral = "펫 조련사", None = "궁수" },', 'Neutral = "사냥꾼", None = "궁수" },'),
+    ("the artisan Archer is still the hunter", C, 'Neutral = "Pet Tamer", None = "Archer" },', 'Neutral = "Hunter", None = "Archer" },'),
     ("IsTamer ignores the faction", C, "return T ~= nil and classId == T.Class and factionId == T.Faction",
      "return T ~= nil and classId == T.Class"),
     ("IsTamer never true", C, "return T ~= nil and classId == T.Class and factionId == T.Faction", "return false"),
@@ -85,6 +85,10 @@ MUTATIONS = [
     # --- CharacterVisuals
     ("the tamer still holds a bow", V, 'local kind = (Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon',
      "local kind = classDef.Weapon"),
+    # --- PetService.PublishModels (PET-3 models for the clients)
+    ("the pet models are never published", PE, "\tlocal ok, err = pcall(PetService.PublishModels)\n", "\tlocal ok, err = true, nil\n"),
+    ("scripts are copied with the model", PE, "\t\t\t\t\tif SCRIPT_CLASSES[d.ClassName] then d:Destroy() end\n", ""),
+    ("a model is copied again every publish", PE, "if src and not folder:FindFirstChild(species) then", "if src then"),
 ]
 
 

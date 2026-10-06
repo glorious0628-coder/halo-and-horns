@@ -1,0 +1,578 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 55,
+  "failedChecks": 0,
+  "namedChecks": 55,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "Config strings are English",
+      "check": "the walk reached the player strings (1943 strings)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Config strings are English",
+      "check": "no Hangul in any Config string outside the listed exceptions",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Config strings are English",
+      "check": "the exceptions still exist (exact paths)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Config strings are English",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Config strings are English",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "X / XEn twins hold the same English",
+      "check": "twins found (159)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "X / XEn twins hold the same English",
+      "check": "every twin pair is the same text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "X / XEn twins hold the same English",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "X / XEn twins hold the same English",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "factions: Knights of Light / Horn Legion / Artisan Guild",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "team names = faction names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "artisan classes: Blacksmith / Alchemist / Pet Tamer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "Ranger / Shadow Hunter / Warrior / Mage / Archer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "zone Crossroads = Crossroads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "zone GoblinWoods = Goblin Woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "zone SkeletonRuins = Skeleton Ruins",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "zone PumpkinPatch = Pumpkin Patch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "zone SlimeMeadow = Squishy Meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "zone HornsTown = Horns Den",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "zone HaloTown = Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "travel Crossroads = the zone name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "travel SlimeMeadow = the zone name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "travel GoblinWoods = the zone name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "travel SkeletonRuins = the zone name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster PumpkinSlime = Pumpkin Slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster SkeletonKnight = Skeleton Knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster BigSlime = King Slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster Skeleton = Skeleton",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster GoblinBrute = Goblin Brute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster PumpkinKing = Pumpkin King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster BatGoblin = Bat Goblin",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster LittleGhost = Little Ghost",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster Slime = Slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "monster Goblin = Goblin",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item Move70 = Transfer Scroll 70%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item Jelly = Jelly",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item SlimeCore = Slime Core",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item GoblinTooth = Goblin Tooth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item BruteHorn = Brute Horn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item Bone = Old Bone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item Candy = Candy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item KnightCrest = Rusty Knight Crest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "item Enh70 = Enhance Scroll 70%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "the character window is 'Hero'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "Power / Baby Slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "Honor / Infamy / Artisan Fame",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "the game is 'Halo & Horns'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "no honorific after names in English lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "a hidden name reads 'A member of the Horn Legion'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "glossary names",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "server scripts send English",
+      "check": "every server script was scanned (31 files)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "server scripts send English",
+      "check": "no Hangul in server code outside the nickname word lists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "server scripts send English",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "server scripts send English",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 3,
+  "staticFailures": [],
+  "mutations": {
+    "total": 16,
+    "applied": 16,
+    "caught": 16,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "a Korean message comes back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Config strings are English :: no Hangul in any Config string outside the listed exceptions"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the Korean honorific comes back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Config strings are English :: no Hangul in any Config string outside the listed exceptions",
+          "X / XEn twins hold the same English :: every twin pair is the same text",
+          "glossary names :: no honorific after names in English lines"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a Korean weapon name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Config strings are English :: no Hangul in any Config string outside the listed exceptions"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Korean line built by string.format",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Config strings are English :: no Hangul in any Config string outside the listed exceptions",
+          "X / XEn twins hold the same English :: every twin pair is the same text"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a Korean weekly title (built at load)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Config strings are English :: no Hangul in any Config string outside the listed exceptions",
+          "X / XEn twins hold the same English :: every twin pair is the same text"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a Korean premise line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Config strings are English :: no Hangul in any Config string outside the listed exceptions"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Korean travel name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Config strings are English :: no Hangul in any Config string outside the listed exceptions",
+          "glossary names :: travel SlimeMeadow = the zone name"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "twins drift apart",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "X / XEn twins hold the same English :: every twin pair is the same text"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a faction off the glossary",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "glossary names :: factions: Knights of Light / Horn Legion / Artisan Guild",
+          "glossary names :: team names = faction names"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the character window is not 'Hero'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "glossary names :: the character window is 'Hero'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an artisan class off the glossary",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "glossary names :: artisan classes: Blacksmith / Alchemist / Pet Tamer"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Korean potion notice",
+        "file": "src/ServerScriptService/VitalsService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "server scripts send English :: no Hangul in server code outside the nickname word lists"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Korean nametag word",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "server scripts send English :: no Hangul in server code outside the nickname word lists"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Korean nickname message",
+        "file": "src/ServerScriptService/NicknameService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "server scripts send English :: no Hangul in server code outside the nickname word lists"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Korean world sign",
+        "file": "src/ServerScriptService/MapBuilder.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "server scripts send English :: no Hangul in server code outside the nickname word lists"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Korean team name",
+        "file": "src/ServerScriptService/FactionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "server scripts send English :: no Hangul in server code outside the nickname word lists"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/CharacterVisuals.luau": "bf34c6cae54d9e56ca82dcb5d6906de0fa9e089f352dfa4d540a010d742c50b1",
+    "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005",
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
+    "src/ServerScriptService/FactionService.luau": "19c5d11556f2840f40000cb30576bfe8ed05088c1502ef7067c1f6b8a78d2604",
+    "src/ServerScriptService/GooseService.luau": "eb39998538042239d5966f71c08869788465bee782e6b26f6d2a50847bf8dc99",
+    "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
+    "src/ServerScriptService/HalloweenService.luau": "c8a34e1b807e6c82ecc93a708868505e183039f9c4b6ab4c80804a8d1f9714ea",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/KaijuService.luau": "c5d1398e170af68cc369b464ce07e7895f38b3da98ab0abda2a2eaed61bf2d3d",
+    "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
+    "src/ServerScriptService/Main.server.luau": "88c7fda3210f3a09323cc9e2ceb0a36085e74b2656b015a83136cc7e11df764d",
+    "src/ServerScriptService/MapBuilder.luau": "5d36f737102e2f0ca0be3c8c389a0e76ce877857b081b781ddc9b23622f02c27",
+    "src/ServerScriptService/MonetizationService.luau": "db8f01abe47c1162686deb8aa3acf26858399cb4be898fc6511defa5997943a9",
+    "src/ServerScriptService/MonsterService.luau": "ed984c4f7ab3d62aa8f404da203ed1e655c609690ab59d59f5e32a799f66c8ad",
+    "src/ServerScriptService/NicknameService.luau": "bca3dc61198f467488a4bcc1f4ead32504642a566dc3c4870df933c1cf7de939",
+    "src/ServerScriptService/PetService.luau": "a9c800ce76799e177d0b3af6d5a62d73c0ca702376213ce7186aebdd2b4104ca",
+    "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
+    "src/ServerScriptService/ProgressionService.luau": "6475444ebec7822d9993c1a0c5c3d117f47ff80548dd6b94c6b76e02789bf468",
+    "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
+    "src/ServerScriptService/QuestService.luau": "6e6cf3e0aeb4c1bd442da0fa624899f1979c949594443539840d393edd00fc69",
+    "src/ServerScriptService/RankingService.luau": "50ce840d503ecd8faa70a3692f8428ef823b5b537e3d591d5b765175f52decdc",
+    "src/ServerScriptService/SettingsService.luau": "fb99b60c6422f4bb60ccaa904086a50a85dca490a7edd87939440922fd7b1102",
+    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/StoryQuestService.luau": "19f046c3251bb799230db775a0345b4324fe77301daff3fc89506eb3f7402c68",
+    "src/ServerScriptService/TelemetryService.luau": "a1fbb097d7df9b66580cc365f1689babbadb094b213249346c88a65f139b77e4",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
+    "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",
+    "src/ServerScriptService/WarService.luau": "37f33421b2a33a8c3dae205fd404d331cba3c77f76e653486cd68057bff592a9",
+    "src/ServerScriptService/ZoneService.luau": "e1b533e51193af35ee96c63145b7af18950ddbe728f15064dca9629c7de3bf73"
+  },
+  "fixtureSHA256": "3904d10d5c77b2cf413b0aa29978d677b17599e332f69a42d09e9ba87249fa34",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-48: every Config string the game can show (incl. strings built with string.format at load) is English; exceptions = Config.UIArt (image-dev's block, baked FactionE cards off) and the 'ko' language option's own name. X / XEn twins hold the same text (Keybinds Auto Label / Button excepted: 게임성 개발 1). Glossary names for factions, artisan classes, zones, monsters, items, Hero, Power, Baby Slime, the ranking boards and the game. Every server script's code (comments aside) is free of Hangul except the nickname policy word lists.",
+  "limitations": "Client modules (StarterPlayerScripts) are not scanned (게임성 개발 1 / 이미지 개발). A string with '--' inside is scanned only up to it. Wording quality is reviewed by people, not by this test."
+}

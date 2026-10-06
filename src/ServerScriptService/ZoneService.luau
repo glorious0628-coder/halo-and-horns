@@ -32,8 +32,8 @@ local GATE_NOTIFY_INTERVAL = 3 -- NeedLevel / enemy-town toast at most once per 
 local WARN_INTERVAL = 10
 local MAX_DEST_LENGTH = 64
 local RESCUE_Y = -20 -- addendum A10: below this (anywhere) -> home spawn
-local ENEMY_TOWN_FALLBACK = "상대 진영 마을에는 들어갈 수 없어요!" -- used only if Config.Text.EnemyTown is missing
-local KAIJU_TOWN_FALLBACK = "괴수는 마을에 들어갈 수 없어요!" -- TODO(config): Config.Text.KaijuNoTown (used if present)
+local ENEMY_TOWN_FALLBACK = "You can't enter the other side's town!" -- used only if Config.Text.EnemyTown is missing
+local KAIJU_TOWN_FALLBACK = "A Kaiju can't enter towns!" -- TODO(config): Config.Text.KaijuNoTown (used if present)
 
 local S = nil
 local zoneIds = {} -- [Player] = cached zone id

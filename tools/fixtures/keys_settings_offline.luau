@@ -286,7 +286,7 @@ local SETTINGS_DEFS = {
 }
 local SFX_GRID = {}
 for i = 0, 10 do SFX_GRID[i / 10] = true end
-local COLLISION_KO = "새 동작 [%s]의 기본 키 %s가 이미 쓰여서 비워 뒀어요. 설정에서 정해 주세요"
+local COLLISION_TEXT = "The new action [%s] has no key: its default key %s is already in use. Pick one in Settings."
 
 local function defaultOf(config, id) return config.Keybinds.ById[id] and config.Keybinds.ById[id].Key end
 local function liveAll(config, except)
@@ -648,11 +648,11 @@ runGroup("config-contract", function()
 		check(type(ST.Text[k]) == "string" and ST.Text[k] ~= "" and type(ST.Text[k .. "En"]) == "string" and ST.Text[k .. "En"] ~= "",
 			"every setting has Korean + English text", k)
 	end
-	check(ST.Text.KeyCollision == COLLISION_KO, "the collision toast text is the BB2 sentence", ST.Text.KeyCollision)
+	check(ST.Text.KeyCollision == COLLISION_TEXT, "the collision toast text is the BB2 sentence (English)", ST.Text.KeyCollision)
 	check(type(ST.Text.KeyCollisionEn) == "string" and select(2, string.gsub(ST.Text.KeyCollisionEn, "%%s", "")) == 2,
 		"the English collision toast takes the same two values", ST.Text.KeyCollisionEn)
 	check(ST.MaxBlobKeys == 16, "Config.Settings.MaxBlobKeys = 16", ST.MaxBlobKeys)
-	check(KB.None == "없음" and KB.NoneEn == "None", "unbound label 없음 / None")
+	check(KB.None == "None" and KB.NoneEn == "None", "unbound label None (English)")
 	-- default map
 	local map, collisions = CONFIG.KeyMap({}, nil)
 	for _, want in CONTRACT_ACTIONS do
@@ -772,32 +772,32 @@ runGroup("keylabel-fillkeys", function()
 	local cases = { { "One", "1" }, { "Zero", "0" }, { "Nine", "9" }, { "LeftControl", "Ctrl" }, { "LeftAlt", "Alt" }, { "CapsLock", "Caps" },
 		{ "KeypadOne", "Num1" }, { "KeypadZero", "Num0" }, { "KeypadNine", "Num9" }, { "Keypad1", "Num1" }, { "Keypad7", "Num7" },
 		{ "Minus", "-" }, { "Equals", "=" }, { "BackSlash", "\\" }, { "Quote", "'" }, { "Semicolon", ";" }, { "LeftBracket", "[" },
-		{ "F", "F" }, { "F5", "F5" }, { "Q", "Q" }, { "", "없음" } }
+		{ "F", "F" }, { "F5", "F5" }, { "Q", "Q" }, { "", "None" } }
 	for _, c in cases do
-		check(C.KeyLabel(c[1]) == c[2], "Config.KeyLabel cases ('One'->'1', 'LeftControl'->'Ctrl', 'Keypad1'->'Num1', ''->'없음')",
+		check(C.KeyLabel(c[1]) == c[2], "Config.KeyLabel cases ('One'->'1', 'LeftControl'->'Ctrl', 'Keypad1'->'Num1', ''->'None')",
 			c[1] .. " -> " .. tostring(C.KeyLabel(c[1])))
 	end
-	check(C.KeyLabel(nil) == "없음" and C.KeyLabel(5) == "없음", "KeyLabel(nil / non-string) = 없음")
+	check(C.KeyLabel(nil) == "None" and C.KeyLabel(5) == "None", "KeyLabel(nil / non-string) = None")
 	check(C.KeyLabel("", true) == "None" and C.KeyLabel("One", true) == "1", "KeyLabel English: '' -> None")
 	-- server-side token fill (StoryQuestService uses Config.FillKeys(text, Config.KeyMap(keys, nil)))
 	local unlocked = C.StoryQuests.Text.Unlocked
-	check(string.find(unlocked, "{Auto}", 1, true) ~= nil and string.find(unlocked, "R키", 1, true) == nil,
+	check(string.find(unlocked, "{Auto}", 1, true) ~= nil and string.find(unlocked, "with R ", 1, true) == nil,
 		"the auto-combat unlock text carries the {Auto} token, no fixed R", unlocked)
-	check(string.find(C.FillKeys(unlocked, C.KeyMap({}, nil)), "R키", 1, true) ~= nil, "{Auto} -> R by default")
-	check(string.find(C.FillKeys(unlocked, C.KeyMap({ Auto = "V" }, nil)), "V키", 1, true) ~= nil, "{Auto} -> the player's key (V)")
+	check(string.find(C.FillKeys(unlocked, C.KeyMap({}, nil)), "with R (", 1, true) ~= nil, "{Auto} -> R by default")
+	check(string.find(C.FillKeys(unlocked, C.KeyMap({ Auto = "V" }, nil)), "with V (", 1, true) ~= nil, "{Auto} -> the player's key (V)")
 	local stepText = nil
 	for _, q in C.StoryQuests.Defs or {} do
 		for _, st in q.Steps or {} do
 			if type(st.Text) == "string" and string.find(st.Text, "{Auto}", 1, true) then stepText = st.Text end
 		end
 	end
-	check(stepText ~= nil and C.FillKeys(stepText, C.KeyMap({}, nil)) == "자동 전투 켜기 (R)",
-		"the auto-combat quest step reads '자동 전투 켜기 (R)' by default", tostring(stepText))
-	check(C.Text.GhostButton == "유령으로 붙잡기 ({GhostHold})" and C.FillKeys(C.Text.GhostButton, C.KeyMap({}, nil)) == "유령으로 붙잡기 (T)",
-		"GhostButton = '유령으로 붙잡기 ({GhostHold})' -> T", C.Text.GhostButton)
+	check(stepText ~= nil and C.FillKeys(stepText, C.KeyMap({}, nil)) == "Turn on Auto Battle (R)",
+		"the auto-combat quest step reads 'Turn on Auto Battle (R)' by default", tostring(stepText))
+	check(C.Text.GhostButton == "Ghost grab ({GhostHold})" and C.FillKeys(C.Text.GhostButton, C.KeyMap({}, nil)) == "Ghost grab (T)",
+		"GhostButton = 'Ghost grab ({GhostHold})' -> T", C.Text.GhostButton)
 	check(C.FillKeys("{Foo} {Auto}", C.KeyMap({}, nil)) == "{Foo} R", "unknown {tokens} stay")
-	check(C.FillKeys("{Auto}", C.KeyMap({ Auto = "" }, nil)) == "없음" and C.FillKeys("{Auto}", C.KeyMap({ Auto = "" }, nil), true) == "None",
-		"an unbound action fills as 없음 / None")
+	check(C.FillKeys("{Auto}", C.KeyMap({ Auto = "" }, nil)) == "None" and C.FillKeys("{Auto}", C.KeyMap({ Auto = "" }, nil), true) == "None",
+		"an unbound action fills as None")
 end)
 
 ------------------------------------------------------------------ 4. SanitizeSettings
@@ -1089,14 +1089,14 @@ runGroup("keybinds-core", function()
 		and K.ActionFor({ UserInputType = ENUM.UserInputType.Keyboard, KeyCode = "F" }) == nil, "mouse / nil / malformed input -> nil")
 	check(K.PadFor("Attack") == ENUM.KeyCode.ButtonR2 and K.PadFor("Menu") == ENUM.KeyCode.ButtonY and K.PadFor("Upgrade") == nil
 		and K.PadFor("Nope") == nil, "PadFor = the fixed pad button (nil when none)")
-	check(K.Label("Auto") == "R" and K.Label("PotionHP") == "1" and K.Label("Bag") == "없음" and K.Label("Nope") == "",
-		"Label: key labels on keyboards ('1' for One, 없음 when unbound)", show({ K.Label("Auto"), K.Label("PotionHP"), K.Label("Bag") }))
+	check(K.Label("Auto") == "R" and K.Label("PotionHP") == "1" and K.Label("Bag") == "None" and K.Label("Nope") == "",
+		"Label: key labels on keyboards ('1' for One, None when unbound)", show({ K.Label("Auto"), K.Label("PotionHP"), K.Label("Bag") }))
 	-- touch-only device (A23-21): button names instead of keys
 	w.UIS.TouchEnabled, w.UIS.KeyboardEnabled = true, false
 	for _, a in w.Config.Keybinds.Actions do
 		check(K.Label(a.Id) == a.Button, "touch-only: Label = the button name", a.Id .. " " .. tostring(K.Label(a.Id)))
 	end
-	check(K.Fill(w.Config.Text.GhostButton, true) == "유령으로 붙잡기", "touch-only: the '(T)' key part is hidden", K.Fill(w.Config.Text.GhostButton, true))
+	check(K.Fill(w.Config.Text.GhostButton, true) == "Ghost grab", "touch-only: the '(T)' key part is hidden", K.Fill(w.Config.Text.GhostButton, true))
 	w.UIS.KeyboardEnabled = true -- touch laptop with a keyboard: keys again
 	check(K.Label("Auto") == "R", "touch screen + keyboard: key labels")
 	w.UIS.TouchEnabled = false
@@ -1108,9 +1108,9 @@ runGroup("keybinds-core", function()
 	w.UIS.TouchEnabled, w.UIS.KeyboardEnabled = false, true
 	w.ST.Set("Lang", "Auto")
 	-- text tokens
-	check(K.Fill(w.Config.Text.GhostButton, true) == "유령으로 붙잡기 (T)" and K.Fill("{Auto}키") == "R키" and K.Fill("{Foo}") == "{Foo}",
+	check(K.Fill(w.Config.Text.GhostButton, true) == "Ghost grab (T)" and K.Fill("{Auto}키") == "R키" and K.Fill("{Foo}") == "{Foo}",
 		"Fill: '{GhostHold}' -> T, '{Auto}' -> R, unknown tokens stay")
-	check(K.StripKeys(w.Config.Text.GhostButton) == "유령으로 붙잡기", "StripKeys drops the '(T)' group")
+	check(K.StripKeys(w.Config.Text.GhostButton) == "Ghost grab", "StripKeys drops the '(T)' group")
 	check(#K.Collisions() == 0 and K.IsCapturing() == false, "no collisions by default; not capturing")
 	check(K.IsLive("Attack") and not K.IsLive("Bag") and not K.IsLive("SkillZ"), "IsLive: Flag on and (windows) registered")
 	check(K.WindowFor("Bag") == "Bag" and K.WindowFor("Journal") == "Journal" and K.WindowFor("Attack") == nil and K.WindowFor("Menu") == nil,
@@ -1141,8 +1141,8 @@ runGroup("keybinds-setlocal", function()
 	ok, reason = K.SetLocal("Map", "X")
 	check(ok == true and reason == nil and K.KeyName("Map") == "X" and K.ActionFor(key("X")) == "Map" and K.ActionFor(key("M")) == nil,
 		"a free key: set, the old key does nothing", show({ ok, reason, K.KeyName("Map") }))
-	check(K.Clear("Upgrade") == true and K.KeyName("Upgrade") == "" and K.ActionFor(key("U")) == nil and K.Label("Upgrade") == "없음"
-		and K.Get("Upgrade") == nil, "Clear: no key (없음), U does nothing")
+	check(K.Clear("Upgrade") == true and K.KeyName("Upgrade") == "" and K.ActionFor(key("U")) == nil and K.Label("Upgrade") == "None"
+		and K.Get("Upgrade") == nil, "Clear: no key (None), U does nothing")
 	check(#K.Collisions() == 0 and w.ST.Get("Keys").Upgrade == "", "a cleared action is saved as '' and never reported")
 	ok, reason, other = K.SetLocal("Upgrade", "R")
 	check(ok == true and reason == "Swap" and other == "Auto" and K.KeyName("Auto") == "" and K.KeyName("Upgrade") == "R",
@@ -1239,14 +1239,14 @@ runGroup("keybinds-collisions", function()
 	w:Echo(0, { Keys = { Attack = "J" } })
 	check(K.KeyName("Attack") == "J" and K.KeyName("Journal") == "" and deepEq(K.Collisions(), { "Journal" }),
 		"BB2: saved Attack = J keeps J; Journal = 없음 and is reported", show({ K.KeyName("Attack"), K.KeyName("Journal"), K.Collisions() }))
-	local want = string.format(w.Config.Settings.Text.KeyCollision, "퀘스트 일지", "J")
-	check(#w.Toasts == 1 and w.Toasts[1].Text == want, "one toast: '새 동작 [퀘스트 일지]의 기본 키 J가 …'", show(w.Toasts))
+	local want = string.format(w.Config.Settings.Text.KeyCollision, "Quest journal", "J")
+	check(#w.Toasts == 1 and w.Toasts[1].Text == want, "one toast: 'The new action [Quest journal] has no key: …'", show(w.Toasts))
 	w:Echo(0, { Keys = { Attack = "J" } })
 	K.Refresh()
 	K.Apply({ Attack = "J" })
 	check(#w.Toasts == 1, "the toast shows once per action per session", #w.Toasts)
 	K.Apply({ Attack = "J", Menu = "M" })
-	check(K.KeyName("Map") == "" and #w.Toasts == 2 and string.find(w.Toasts[2].Text, "[지도]", 1, true) ~= nil,
+	check(K.KeyName("Map") == "" and #w.Toasts == 2 and string.find(w.Toasts[2].Text, "[Map]", 1, true) ~= nil,
 		"another action's collision gets its own toast", show(w.Toasts))
 	local c = K.Collisions()
 	table.insert(c, "Junk")
@@ -1623,7 +1623,7 @@ runGroup("key-hints-one-rule", function()
 			"Keybinds.Label: key labels exactly where keys are shown, button names on every device without a keyboard",
 			d.Name .. " " .. show({ K.Label("Auto"), K.Label("PotionHP") }))
 		local ghost, auto = K.Fill(w.Config.Text.GhostButton, true), K.Fill("{Auto}키")
-		check(ghost == (keys and "유령으로 붙잡기 (T)" or "유령으로 붙잡기") and auto == (keys and "R키" or autoBtn .. "키"),
+		check(ghost == (keys and "Ghost grab (T)" or "Ghost grab") and auto == (keys and "R키" or autoBtn .. "키"),
 			"Keybinds.Fill: the '(T)' key part and '{Auto}' follow ShowsKeys", d.Name .. " " .. show({ ghost, auto }))
 		local cw = clientWorld({ Device = d, Windows = ALL_WINDOWS })
 		cw:Echo(0, { Keys = { Attack = "J" } })
