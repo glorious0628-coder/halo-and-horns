@@ -1,19 +1,22 @@
--- ZoneLook.luau : A23-30 one mood per hunting ground, on the client. The war sky (WarService: Neutral / Dawn / Eclipse,
--- GameState "WarBlessing") picks the base light (A23-29 'B': bright toy world, docs/design/world_blend_2026-10-06.md);
--- the zone I stand in (player attribute "ZoneId") tints it: meadow = bright midday, goblin woods = green shade,
--- skeleton ruins = blue moonlight, pumpkin field = orange-purple dusk, faction towns = faction colour. Monsters always
--- keep sky light on them (EnvironmentDiffuseScale 1), so even the dark places show them clearly.
+-- ZoneLook.luau : A23-30 one mood per hunting ground, on the client. The war sky (WarService applies Config.Sky
+-- Neutral / Dawn / Eclipse from GameState "WarBlessing") is the base light; the zone I stand in (player attribute "ZoneId")
+-- tints it: meadow = bright midday, goblin woods = green shade, skeleton ruins = blue moonlight, pumpkin field =
+-- orange-purple dusk, faction towns = faction colour. Monsters always keep sky light on them (the server's
+-- EnvironmentDiffuseScale is never touched), so even the dark places show them clearly.
+-- Base light (3rd review 2026-10-06): nothing is hard-coded here. The base is what the server writes to Lighting
+-- (= Config.Sky[sky], WarService's exposure fallback included); before Start it is Config.Sky[sky] itself. Lighting =
+-- base x the zone's factors, written LIVE: every server write (also each frame of its 3 s sky tween at a round end)
+-- becomes the new base and is multiplied at once, so a round change never shows the raw sky for seconds. A zone change
+-- eases the FACTORS (T.Tween s on Heartbeat), never a TweenService tween on Lighting, so the two can never fight.
 -- Local only: the client writes its own Lighting values (they never replicate) plus one client-made ColorCorrection
--- "ZoneTint" (WarService keeps its global "WarTint"). Changes ease over T.Tween s. The server's sky tween (round end)
--- writes the same Lighting properties: ZoneLook waits for it to settle (T.Settle s without server writes) and eases
--- back to its own target. ClockTime, fog, bloom, sun rays and the sky box stay the server's (the war sky's meaning).
--- No Atmosphere (A9-3 still bans it: it hides the FogColor war sky).
+-- "ZoneTint" (WarService keeps its global "WarTint"). ClockTime, fog, bloom, sun rays and the sky box stay the
+-- server's (the war sky's meaning). No Atmosphere (A9-3 still bans it: it hides the FogColor war sky).
 -- API: ZoneLook.Init(C), ZoneLook.Start(), ZoneLook.Preview(zoneId | nil) (tests: force a zone look, nil = follow me),
---      ZoneLook.Current() -> zone id, sky name. In Studio the LocalPlayer attribute "ZoneLookPreview" (set locally by
---      tools/zone_look_view.py) drives Preview, since a test runner's require() gets its own module copy.
+--      ZoneLook.Current() -> zone id, sky name, ZoneLook.TargetFor(zoneId, base[, sky]) -> Lighting goal, ZoneTint goal.
+--      In Studio the LocalPlayer attribute "ZoneLookPreview" (set locally by tools/zone_look_view.py) drives Preview,
+--      since a test runner's require() gets its own module copy.
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
-local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -26,17 +29,9 @@ local LocalPlayer = Players.LocalPlayer
 
 -- NightBright: under the Eclipse sky a zone may not dim the light below this factor (dark zones at night hid the
 -- dark-armoured skeleton knights in the 2026-10-06 UiSandbox shots)
-local T = { Tween = 1.5, Settle = 0.6, Retry = 0.25, NightBright = 0.95 }
+local T = { Tween = 1.5, NightBright = 0.95 }
 
 local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
-
--- base light per war sky (A23-29 B; Eclipse = the night proposal: blood-red mood, monsters still readable)
-local SKY = {
-	Neutral = { Brightness = 2.0, Ambient = rgb(110, 108, 106), Outdoor = rgb(128, 126, 124), Exposure = -0.2 },
-	Dawn = { Brightness = 2.1, Ambient = rgb(128, 112, 92), Outdoor = rgb(150, 130, 104), Exposure = -0.15 },
-	Eclipse = { Brightness = 1.4, Ambient = rgb(100, 62, 78), Outdoor = rgb(115, 76, 92), Exposure = 0.45 },
-}
-local BASE = { Diffuse = 1.0, Specular = 0.6, Softness = 0.5 }
 
 -- per zone: Ambient / OutdoorAmbient channel factors, sun Brightness factor, exposure added, ZoneTint colour /
 -- saturation / contrast / brightness, optional specular (wet moonlit stone). Unknown zones use Default.
@@ -57,14 +52,16 @@ local ZONE = {
 		CC = 0 },
 }
 ZONE.Default = ZONE.SlimeMeadow
-ZoneLook.Sky, ZoneLook.Zone = SKY, ZONE -- read by tests / the design table
+ZoneLook.Zone = ZONE -- read by tests / the design table
 
-local MANAGED = { "Brightness", "Ambient", "OutdoorAmbient", "EnvironmentDiffuseScale", "EnvironmentSpecularScale",
-	"ExposureCompensation", "ShadowSoftness" }
+-- the Lighting properties ZoneLook multiplies (the server writes all of them: Config.Sky per war sky, LIGHTING_FIXED)
+local MANAGED = { "Brightness", "Ambient", "OutdoorAmbient", "ExposureCompensation", "EnvironmentSpecularScale" }
 
 local S = {
-	Started = false, Zone = nil, Sky = "Neutral", Preview = nil, Target = nil,
-	Tweens = {}, TweenUntil = 0, LastServerWrite = 0, Pending = false, Tint = nil,
+	Started = false, Zone = nil, Sky = "Neutral", Preview = nil,
+	Base = {}, -- [property] = the server's latest value (never one of ZoneLook's own writes)
+	F = nil, From = nil, Goal = nil, T0 = 0, Dur = 1.5, Easing = false, -- current / start / goal factors, the ease clock
+	Writing = false, Tint = nil, Conn = nil,
 }
 
 ----------------------------------------------------------------- helpers
@@ -80,6 +77,8 @@ local function scale(c, f)
 	return Color3.new(math.clamp(c.R * f[1], 0, 1), math.clamp(c.G * f[2], 0, 1), math.clamp(c.B * f[3], 0, 1))
 end
 
+local function lerp(a, b, t) return a + (b - a) * t end
+
 local function tint()
 	if S.Tint and S.Tint.Parent == Lighting then return S.Tint end
 	local cc = Instance.new("ColorCorrectionEffect")
@@ -89,81 +88,109 @@ local function tint()
 	return cc
 end
 
--- { Lighting goal, ZoneTint goal } for the current sky + zone
-function ZoneLook.TargetFor(zoneId, sky)
-	local base = SKY[sky] or SKY.Neutral
+-- the base before a server value is read: Config.Sky[sky] (WarService's source); the live Lighting value for what the
+-- preset does not carry (exposure on Dawn / Eclipse: WarService's fallback, specular: its LIGHTING_FIXED)
+local function configBase(sky)
+	local p = type(Config.Sky) == "table" and Config.Sky[sky] or nil
+	local base = {}
+	for _, name in MANAGED do base[name] = Lighting[name] end
+	if type(p) == "table" then
+		if type(p.Brightness) == "number" then base.Brightness = p.Brightness end
+		if typeof(p.Ambient) == "Color3" then base.Ambient = p.Ambient end
+		if typeof(p.OutdoorAmbient) == "Color3" then base.OutdoorAmbient = p.OutdoorAmbient end
+		if type(p.ExposureCompensation) == "number" then base.ExposureCompensation = p.ExposureCompensation end
+	end
+	return base
+end
+
+-- the zone's factors for the sky (the Eclipse night floor keeps the light up); Spec nil = the server's specular
+local function factorsFor(zoneId, sky)
 	local z = ZONE[zoneId] or ZONE.Default
-	local bright = sky == "Eclipse" and math.max(z.Bright, T.NightBright) or z.Bright
 	return {
-		Brightness = base.Brightness * bright,
-		Ambient = scale(base.Ambient, z.Amb),
-		OutdoorAmbient = scale(base.Outdoor, z.Amb),
-		EnvironmentDiffuseScale = BASE.Diffuse,
-		EnvironmentSpecularScale = z.Specular or BASE.Specular,
-		ExposureCompensation = base.Exposure + z.Exp,
-		ShadowSoftness = BASE.Softness,
-	}, { TintColor = z.Tint, Saturation = z.Sat, Contrast = z.Con, Brightness = z.CC }
+		Amb = { z.Amb[1], z.Amb[2], z.Amb[3] },
+		Bright = sky == "Eclipse" and math.max(z.Bright, T.NightBright) or z.Bright,
+		Exp = z.Exp,
+		Spec = z.Specular,
+		Tint = z.Tint, Sat = z.Sat, Con = z.Con, CC = z.CC,
+	}
 end
 
-local function cancelTweens()
-	for _, t in S.Tweens do t:Cancel() end
-	table.clear(S.Tweens)
+-- Lighting goal + ZoneTint goal for factors over a base ({ property = server value })
+local function compose(f, base)
+	return {
+		Brightness = base.Brightness * f.Bright,
+		Ambient = scale(base.Ambient, f.Amb),
+		OutdoorAmbient = scale(base.OutdoorAmbient, f.Amb),
+		ExposureCompensation = base.ExposureCompensation + f.Exp,
+		EnvironmentSpecularScale = f.Spec or base.EnvironmentSpecularScale,
+	}, { TintColor = f.Tint, Saturation = f.Sat, Contrast = f.Con, Brightness = f.CC }
 end
 
--- eases Lighting + ZoneTint to the target (seconds = 0: set at once)
-local function apply(seconds)
-	local zoneId = S.Preview or S.Zone
-	S.Sky = skyName()
-	local light, cc = ZoneLook.TargetFor(zoneId, S.Sky)
-	S.Target = light
-	cancelTweens()
-	local tintFx = tint()
-	if seconds <= 0 then
+-- { Lighting goal, ZoneTint goal } for a zone over a base; sky only picks the night floor
+function ZoneLook.TargetFor(zoneId, base, sky)
+	return compose(factorsFor(zoneId, sky), base)
+end
+
+-- factors part of the way from a to b (Spec: the server's value stands for a missing one)
+local function mix(a, b, t)
+	local specA = a.Spec or S.Base.EnvironmentSpecularScale or 0.6
+	local specB = b.Spec or S.Base.EnvironmentSpecularScale or 0.6
+	return {
+		Amb = { lerp(a.Amb[1], b.Amb[1], t), lerp(a.Amb[2], b.Amb[2], t), lerp(a.Amb[3], b.Amb[3], t) },
+		Bright = lerp(a.Bright, b.Bright, t),
+		Exp = lerp(a.Exp, b.Exp, t),
+		Spec = (a.Spec == nil and b.Spec == nil) and nil or lerp(specA, specB, t),
+		Tint = a.Tint:Lerp(b.Tint, t), Sat = lerp(a.Sat, b.Sat, t), Con = lerp(a.Con, b.Con, t), CC = lerp(a.CC, b.CC, t),
+	}
+end
+
+-- writes base x current factors: every managed property (name = nil) or one; ZoneTint with the full write
+local function write(name)
+	if not S.F then return end
+	local light, cc = compose(S.F, S.Base)
+	S.Writing = true
+	if name then
+		local v = light[name]
+		if v ~= nil then pcall(function() Lighting[name] = v end) end
+	else
 		for k, v in light do pcall(function() Lighting[k] = v end) end
-		for k, v in cc do pcall(function() tintFx[k] = v end) end
-		S.TweenUntil = os.clock() + 0.1
+	end
+	S.Writing = false
+	if not name then
+		local fx = tint()
+		for k, v in cc do pcall(function() fx[k] = v end) end
+	end
+end
+
+-- start easing the factors to the current zone / sky (seconds <= 0: jump)
+local function retarget(seconds)
+	S.Sky = skyName()
+	local goal = factorsFor(S.Preview or S.Zone, S.Sky)
+	if not S.F or seconds <= 0 then
+		S.F, S.Easing = goal, false
+		write(nil)
 		return
 	end
-	local info = TweenInfo.new(seconds, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-	for _, pair in { { Lighting, light }, { tintFx, cc } } do
-		local ok, tw = pcall(TweenService.Create, TweenService, pair[1], info, pair[2])
-		if ok then
-			table.insert(S.Tweens, tw)
-			tw:Play()
-		else
-			for k, v in pair[2] do pcall(function() pair[1][k] = v end) end
-		end
+	S.From, S.Goal, S.T0, S.Dur, S.Easing = S.F, goal, os.clock(), math.max(0.05, seconds), true
+end
+
+local function onHeartbeat()
+	if not S.Easing then return end
+	local t = math.clamp((os.clock() - S.T0) / S.Dur, 0, 1)
+	local eased = 0.5 - math.cos(t * math.pi) / 2 -- sine in-out
+	S.F = mix(S.From, S.Goal, eased)
+	if t >= 1 then
+		S.F, S.Easing = S.Goal, false
 	end
-	S.TweenUntil = os.clock() + seconds + 0.1
+	write(nil)
 end
 
-local function differs(name)
-	local want = S.Target and S.Target[name]
-	if want == nil then return false end
-	local have = Lighting[name]
-	if typeof(want) == "Color3" then
-		return math.abs(have.R - want.R) + math.abs(have.G - want.G) + math.abs(have.B - want.B) > 0.01
-	end
-	return math.abs(have - want) > 0.01
-end
-
--- one pending re-apply: waits until the server's writes stopped for T.Settle s, then eases to the zone target
-local function schedule()
-	if S.Pending then return end
-	S.Pending = true
-	task.spawn(function()
-		while os.clock() - S.LastServerWrite < T.Settle do task.wait(T.Retry) end
-		S.Pending = false
-		local ok, err = pcall(apply, T.Tween)
-		if not ok then Util.Warn("ZoneLook", tostring(err)) end
-	end)
-end
-
--- a server write (sky tween at round end) landed on a property ZoneLook manages
-local function onServerWrite(name)
-	if os.clock() < S.TweenUntil or not differs(name) then return end
-	S.LastServerWrite = math.max(S.LastServerWrite, os.clock())
-	schedule()
+-- a write ZoneLook did not make (the server: a sky change, its 3 s tween, LIGHTING_FIXED) is the new base, multiplied
+-- at once (never a frame of the raw sky)
+local function onWrite(name)
+	if S.Writing then return end
+	S.Base[name] = Lighting[name]
+	write(name)
 end
 
 local function onZone()
@@ -171,16 +198,13 @@ local function onZone()
 	z = type(z) == "string" and z or nil
 	if z == S.Zone then return end
 	S.Zone = z
-	if not S.Preview then
-		local ok, err = pcall(apply, T.Tween)
-		if not ok then Util.Warn("ZoneLook", tostring(err)) end
-	end
+	if not S.Preview then retarget(T.Tween) end
 end
 
 ----------------------------------------------------------------- public
 function ZoneLook.Preview(zoneId)
 	S.Preview = (type(zoneId) == "string" and zoneId ~= "") and zoneId or nil
-	local ok, err = pcall(apply, T.Tween)
+	local ok, err = pcall(retarget, T.Tween)
 	if not ok then Util.Warn("ZoneLook", tostring(err)) end
 end
 
@@ -194,25 +218,41 @@ function ZoneLook.Start()
 	if S.Started then return end
 	S.Started = true
 	S.Zone = LocalPlayer:GetAttribute("ZoneId")
-	pcall(apply, 0)
+	-- the server's values are already here (Lighting replicates before client scripts run); Config.Sky fills the gaps
+	S.Base = configBase(skyName())
+	for _, name in MANAGED do
+		local v = Lighting[name]
+		if v ~= nil then S.Base[name] = v end
+	end
+	pcall(retarget, 0)
 	LocalPlayer:GetAttributeChangedSignal("ZoneId"):Connect(onZone)
 	for _, name in MANAGED do
-		Lighting:GetPropertyChangedSignal(name):Connect(function() onServerWrite(name) end)
+		Lighting:GetPropertyChangedSignal(name):Connect(function()
+			local ok, err = pcall(onWrite, name)
+			if not ok then Util.Warn("ZoneLook", tostring(err)) end
+		end)
 	end
+	S.Conn = RunService.Heartbeat:Connect(function()
+		local ok, err = pcall(onHeartbeat)
+		if not ok then
+			S.Easing = false
+			Util.Warn("ZoneLook", tostring(err))
+		end
+	end)
 	if RunService:IsStudio() then
 		LocalPlayer:GetAttributeChangedSignal("ZoneLookPreview"):Connect(function()
 			ZoneLook.Preview(LocalPlayer:GetAttribute("ZoneLookPreview"))
 		end)
 	end
-	-- the war sky changes at a round end; the server's own tween follows (onServerWrite) but the base changes now
+	-- the war sky changes at a round end: the night floor (Eclipse) may change the factors; the base follows the
+	-- server's own writes (onWrite)
 	task.spawn(function()
 		local gs = ReplicatedStorage:WaitForChild("GameState", 30)
 		if not gs then return end
 		gs:GetAttributeChangedSignal("WarBlessing"):Connect(function()
-			S.LastServerWrite = os.clock() + (tonumber(Config.Sky and Config.Sky.TweenTime) or 3)
-			schedule()
+			local ok, err = pcall(retarget, tonumber(Config.Sky and Config.Sky.TweenTime) or T.Tween)
+			if not ok then Util.Warn("ZoneLook", tostring(err)) end
 		end)
-		pcall(apply, T.Tween)
 	end)
 	print("[ZoneLook] started")
 end
