@@ -4269,5 +4269,157 @@
    "bytes": 1782664,
    "at": "2026-10-06 19:16:13"
   }
+ ],
+ "Kit_M_Fence": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c5902593-74d9-4c3e-b902-3abac497e472",
+   "image": "art\\out\\hq\\HQ_Meadow_Fence.png",
+   "recipe": "prop",
+   "seed": 63844
+  },
+  {
+   "task_id": "c5902593-74d9-4c3e-b902-3abac497e472",
+   "image": "art\\out\\hq\\HQ_Meadow_Fence.png",
+   "recipe": "prop",
+   "seed": 63844,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_Fence_raw.glb",
+   "bytes": 1841672,
+   "at": "2026-10-06 20:01:54"
+  }
+ ],
+ "Kit_M_Bridge": [
+  {
+   "event": "generation_submitted",
+   "task_id": "6307bf91-bd18-4ad4-9b24-bd5ac74a7721",
+   "image": "art\\out\\hq\\HQ_Meadow_Bridge.png",
+   "recipe": "prop",
+   "seed": 23089
+  },
+  {
+   "task_id": "6307bf91-bd18-4ad4-9b24-bd5ac74a7721",
+   "image": "art\\out\\hq\\HQ_Meadow_Bridge.png",
+   "recipe": "prop",
+   "seed": 23089,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_Bridge_raw.glb",
+   "bytes": 2284936,
+   "at": "2026-10-06 20:03:11"
+  }
+ ],
+ "Kit_M_LogBench": [
+  {
+   "event": "generation_submitted",
+   "task_id": "bf58a9f3-6168-4acc-8a85-9f92fb104670",
+   "image": "art\\out\\hq\\HQ_Meadow_LogBench.png",
+   "recipe": "prop",
+   "seed": 59075
+  },
+  {
+   "task_id": "bf58a9f3-6168-4acc-8a85-9f92fb104670",
+   "image": "art\\out\\hq\\HQ_Meadow_LogBench.png",
+   "recipe": "prop",
+   "seed": 59075,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_LogBench_raw.glb",
+   "bytes": 2084244,
+   "at": "2026-10-06 20:02:30"
+  }
+ ],
+ "Kit_M_Stump": [
+  {
+   "event": "generation_submitted",
+   "task_id": "fb298281-0a6d-477d-9c42-7563c976eb4c",
+   "image": "art\\out\\hq\\HQ_Meadow_Stump.png",
+   "recipe": "prop",
+   "seed": 36968
+  },
+  {
+   "task_id": "fb298281-0a6d-477d-9c42-7563c976eb4c",
+   "image": "art\\out\\hq\\HQ_Meadow_Stump.png",
+   "recipe": "prop",
+   "seed": 36968,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_Stump_raw.glb",
+   "bytes": 1757100,
+   "at": "2026-10-06 20:05:27"
+  }
+ ],
+ "Kit_M_SignPost": [
+  {
+   "event": "generation_submitted",
+   "task_id": "f9482ebb-c51b-4647-a316-077ab02a57c4",
+   "image": "art\\out\\hq\\HQ_Meadow_SignPost.png",
+   "recipe": "prop",
+   "seed": 69281
+  },
+  {
+   "task_id": "f9482ebb-c51b-4647-a316-077ab02a57c4",
+   "image": "art\\out\\hq\\HQ_Meadow_SignPost.png",
+   "recipe": "prop",
+   "seed": 69281,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_SignPost_raw.glb",
+   "bytes": 2210300,
+   "at": "2026-10-06 20:05:30"
+  }
+ ],
+ "Kit_M_PuddleRim": [
+  {
+   "event": "generation_submitted",
+   "task_id": "5e88ac3d-ec43-4973-84bc-ee822dab0282",
+   "image": "art\\out\\hq\\HQ_Meadow_PuddleRim.png",
+   "recipe": "prop",
+   "seed": 71967
+  },
+  {
+   "task_id": "5e88ac3d-ec43-4973-84bc-ee822dab0282",
+   "image": "art\\out\\hq\\HQ_Meadow_PuddleRim.png",
+   "recipe": "prop",
+   "seed": 71967,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_PuddleRim_raw.glb",
+   "bytes": 2198128,
+   "at": "2026-10-06 20:06:09"
+  }
+ ],
+ "Kit_M_JellyRock": [
+  {
+   "event": "generation_submitted",
+   "task_id": "8beccd8f-ed7f-4dcb-8864-0fa0476c597a",
+   "image": "art\\out\\hq\\HQ_Meadow_JellyRock.png",
+   "recipe": "prop",
+   "seed": 44231
+  },
+  {
+   "task_id": "8beccd8f-ed7f-4dcb-8864-0fa0476c597a",
+   "image": "art\\out\\hq\\HQ_Meadow_JellyRock.png",
+   "recipe": "prop",
+   "seed": 44231,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_JellyRock_raw.glb",
+   "bytes": 1540444,
+   "at": "2026-10-06 20:07:32"
+  }
+ ],
+ "Kit_M_Pinwheel": [
+  {
+   "event": "generation_submitted",
+   "task_id": "ee6b9523-acb0-4120-b61b-f89ed60f5909",
+   "image": "art\\out\\hq\\HQ_Meadow_Pinwheel.png",
+   "recipe": "prop",
+   "seed": 23024
+  },
+  {
+   "task_id": "ee6b9523-acb0-4120-b61b-f89ed60f5909",
+   "image": "art\\out\\hq\\HQ_Meadow_Pinwheel.png",
+   "recipe": "prop",
+   "seed": 23024,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_Pinwheel_raw.glb",
+   "bytes": 1775348,
+   "at": "2026-10-06 20:07:06"
+  }
  ]
 }

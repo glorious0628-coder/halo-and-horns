@@ -1,0 +1,87 @@
+"""
+Put many GLBs into one GLB so the Studio 3D Importer runs once (WorldKit, 2026-10-06; shorter screen control).
+
+  blender --background --factory-startup --python tools/worldkit_combine.py -- <spec.json> <out.glb>
+
+spec.json: [{"name": "Town_Halo_Gate", "file": "art/models/tripo/Town_Halo_Gate_raw.glb", "kind": "tripo", "scale": 30.0}, ...]
+- tripo: Tripo GLB (front = +X in Blender, size about 1): turned so the front faces +Y in Blender (= -Z in glTF, the
+  Roblox LookVector after import) and scaled by `scale` (batch3a_manifest.json, studs).
+- acc: tools/acc_compare.py --export GLB (studs, front = -Y in Blender): turned 180 deg so the front faces +Y too.
+- Each item becomes one mesh object named <name> (parts joined), base centre on the ground, laid out in rows.
+- Textures bigger than 1024 are scaled down to 1024 (Roblox keeps 1024 at most, smaller upload).
+The Studio importer keeps 1 glTF unit = 1 stud (checked on the earlier Tripo imports in WorldKit).
+"""
+import json
+import math
+import os
+import sys
+
+import bpy
+from mathutils import Matrix, Vector
+
+argv = sys.argv[sys.argv.index("--") + 1:]
+SPEC, OUT = argv[0], os.path.abspath(argv[1])
+items = json.load(open(SPEC, encoding="utf-8"))
+
+bpy.ops.wm.read_factory_settings(use_empty=True)
+scene = bpy.context.scene
+done = []
+row_x = {"tripo": 0.0, "acc": 0.0}
+row_y = {"tripo": 0.0, "acc": -60.0}
+
+for it in items:
+    before = set(bpy.data.objects)
+    bpy.ops.import_scene.gltf(filepath=os.path.abspath(it["file"]))
+    new = [o for o in bpy.data.objects if o not in before]
+    meshes = [o for o in new if o.type == "MESH"]
+    # bake every mesh into world space, drop the empties
+    for o in meshes:
+        mw = o.matrix_world.copy()
+        o.parent = None
+        o.matrix_world = mw
+    for o in new:
+        if o.type != "MESH":
+            bpy.data.objects.remove(o, do_unlink=True)
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in meshes:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = meshes[0]
+    if len(meshes) > 1:
+        bpy.ops.object.join()
+    obj = bpy.context.view_layer.objects.active
+    turn = math.radians(90) if it["kind"] == "tripo" else math.radians(180)
+    s = float(it.get("scale", 1.0))
+    obj.matrix_world = Matrix.Rotation(turn, 4, "Z") @ Matrix.Diagonal((s, s, s, 1.0)) @ obj.matrix_world
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    pts = [obj.matrix_world @ Vector(c) for c in obj.bound_box]
+    lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
+    hi = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
+    size = hi - lo
+    k = it["kind"]
+    gap = 12.0 if k == "tripo" else 4.0
+    x = row_x[k] + size.x / 2
+    row_x[k] += size.x + gap
+    obj.data.transform(Matrix.Translation(Vector((x - (lo.x + hi.x) / 2, row_y[k] - (lo.y + hi.y) / 2, -lo.z))))
+    obj.name = it["name"]
+    obj.data.name = it["name"]
+    for i, m in enumerate(obj.data.materials):
+        if m:
+            m.name = f"{it['name']}_mat{i}"
+    tris = sum(len(p.vertices) - 2 for p in obj.data.polygons)
+    done.append({"name": it["name"], "tris": tris, "size_studs": [round(size.x, 2), round(size.y, 2), round(size.z, 2)],
+                 "materials": len(obj.data.materials)})
+    print("[worldkit_combine]", json.dumps(done[-1]), flush=True)
+
+for img in bpy.data.images:
+    if img.size[0] > 1024 or img.size[1] > 1024:
+        w, h = img.size
+        f = 1024 / max(w, h)
+        img.scale(max(1, round(w * f)), max(1, round(h * f)))
+    if img.packed_file is None and img.has_data:
+        img.pack()
+
+bpy.ops.object.select_all(action="SELECT")
+bpy.ops.export_scene.gltf(filepath=OUT, export_format="GLB", use_selection=True, export_image_format="AUTO",
+                          export_animations=False, export_skins=False)
+json.dump(done, open(os.path.splitext(OUT)[0] + "_list.json", "w", encoding="utf-8"), indent=1)
+print("[worldkit_combine] wrote", OUT, len(done), "items", flush=True)
