@@ -2742,5 +2742,915 @@
    "bytes": 3086428,
    "at": "2026-10-06 14:46:32"
   }
+ ],
+ "Bakery_tripoH31": [
+  {
+   "event": "generation_submitted",
+   "task_id": "ce61ff71-6406-4d10-a922-c8cc0d5d1841",
+   "image": "art\\out\\town\\Town_Halo_Bakery_1.png",
+   "body": {
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 24601,
+    "texture_seed": 24602,
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false
+   },
+   "purpose": "tool comparison A23-47"
+  },
+  {
+   "task_id": "ce61ff71-6406-4d10-a922-c8cc0d5d1841",
+   "credits": 40.0,
+   "seconds": 226,
+   "file": "build\\3dtest\\tripo\\Bakery_tripoH31.glb",
+   "bytes": 3056040,
+   "at": "2026-10-06 15:45:02"
+  },
+  {
+   "task_id": "ce61ff71-6406-4d10-a922-c8cc0d5d1841",
+   "copy": "art\\models\\tripo\\town\\Town_Halo_Bakery_raw.glb",
+   "bytes": 3056040,
+   "note": "H3.1 tool-comparison result kept as the Halo bakery model (copied from build/3dtest/tripo, no new credits)"
+  }
+ ],
+ "Bakery_tripoP1": [
+  {
+   "event": "generation_submitted",
+   "task_id": "ca56e7cd-1a9e-4f67-807e-574aed5f4fc1",
+   "image": "art\\out\\town\\Town_Halo_Bakery_1.png",
+   "body": {
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 24601,
+    "texture_seed": 24602,
+    "model": "P1-20260311"
+   },
+   "purpose": "tool comparison A23-47"
+  },
+  {
+   "task_id": "ca56e7cd-1a9e-4f67-807e-574aed5f4fc1",
+   "credits": 60.0,
+   "seconds": 132,
+   "file": "build\\3dtest\\tripo\\Bakery_tripoP1.glb",
+   "bytes": 3655564,
+   "at": "2026-10-06 15:43:27"
+  }
+ ],
+ "Town_Halo_Smithy": [
+  {
+   "event": "generation_submitted",
+   "task_id": "6e769a86-0962-452d-908d-858b6ab43483",
+   "image": "art\\out\\town\\Town_Halo_Smithy_2.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 31007,
+    "texture_seed": 31008
+   },
+   "purpose": "town kit A23-47"
+  },
+  {
+   "task_id": "6e769a86-0962-452d-908d-858b6ab43483",
+   "credits": 40.0,
+   "image": "art\\out\\town\\Town_Halo_Smithy_2.png",
+   "file": "art\\models\\tripo\\town\\Town_Halo_Smithy_raw.glb",
+   "bytes": 2949700,
+   "at": "2026-10-06 16:00:44",
+   "note": "completion recorded later from a free task query (status success, credits_consumed 40); run before the user's batch OK (A23-47 note), file moved to art/models/tripo/town/"
+  }
+ ],
+ "Town_Halo_JuiceBar": [
+  {
+   "event": "generation_submitted",
+   "task_id": "08539f2a-9d2d-4360-9b7e-5109f9a3671f",
+   "image": "art\\out\\town\\Town_Halo_JuiceBar_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 31014,
+    "texture_seed": 31015
+   },
+   "purpose": "town kit A23-47"
+  },
+  {
+   "task_id": "08539f2a-9d2d-4360-9b7e-5109f9a3671f",
+   "credits": 40.0,
+   "image": "art\\out\\town\\Town_Halo_JuiceBar_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Halo_JuiceBar_raw.glb",
+   "bytes": 3023588,
+   "at": "2026-10-06 16:00:28",
+   "note": "completion recorded later from a free task query (status success, credits_consumed 40); run before the user's batch OK (A23-47 note), file moved to art/models/tripo/town/"
+  }
+ ],
+ "Town_Halo_Potion": [
+  {
+   "event": "generation_submitted",
+   "task_id": "11b9954e-97f3-4d30-9355-dff0144e8e3f",
+   "image": "art\\out\\town\\Town_Halo_Potion_2.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 31000,
+    "texture_seed": 31001
+   },
+   "purpose": "town kit A23-47"
+  },
+  {
+   "task_id": "11b9954e-97f3-4d30-9355-dff0144e8e3f",
+   "credits": 40.0,
+   "image": "art\\out\\town\\Town_Halo_Potion_2.png",
+   "file": "art\\models\\tripo\\town\\Town_Halo_Potion_raw.glb",
+   "bytes": 3265716,
+   "at": "2026-10-06 16:00:19",
+   "note": "completion recorded later from a free task query (status success, credits_consumed 40); run before the user's batch OK (A23-47 note), file moved to art/models/tripo/town/"
+  }
+ ],
+ "Town_Halo_HouseA": [
+  {
+   "event": "generation_submitted",
+   "task_id": "1d08ed83-241a-41ac-be14-08909b30315a",
+   "image": "art\\out\\town\\Town_Halo_HouseA_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 41000,
+    "texture_seed": 41001
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "1d08ed83-241a-41ac-be14-08909b30315a",
+   "credits": 40.0,
+   "seconds": 162,
+   "image": "art\\out\\town\\Town_Halo_HouseA_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Halo_HouseA_raw.glb",
+   "bytes": 2613656,
+   "at": "2026-10-06 16:55:28"
+  }
+ ],
+ "Town_Halo_Castle": [
+  {
+   "event": "generation_submitted",
+   "task_id": "be69fc87-4ef6-47e3-bb05-a239e8343abf",
+   "image": "art\\out\\town\\Town_Halo_Castle_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 15000,
+    "model_seed": 41022,
+    "texture_seed": 41023
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "be69fc87-4ef6-47e3-bb05-a239e8343abf",
+   "credits": 40.0,
+   "seconds": 163,
+   "image": "art\\out\\town\\Town_Halo_Castle_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Halo_Castle_raw.glb",
+   "bytes": 3251024,
+   "at": "2026-10-06 16:55:29"
+  }
+ ],
+ "Town_Halo_HouseB": [
+  {
+   "event": "generation_submitted",
+   "task_id": "22136492-c207-4279-8cac-a93a65a5a88e",
+   "image": "art\\out\\town\\Town_Halo_HouseB_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 41011,
+    "texture_seed": 41012
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "22136492-c207-4279-8cac-a93a65a5a88e",
+   "credits": 40.0,
+   "seconds": 146,
+   "image": "art\\out\\town\\Town_Halo_HouseB_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Halo_HouseB_raw.glb",
+   "bytes": 2815332,
+   "at": "2026-10-06 16:55:11"
+  }
+ ],
+ "Town_Horns_Bakery": [
+  {
+   "event": "generation_submitted",
+   "task_id": "2c9670af-0efc-46c7-b8c3-88ca1722f4d0",
+   "image": "art\\out\\town\\Town_Horns_Bakery_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 41033,
+    "texture_seed": 41034
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "2c9670af-0efc-46c7-b8c3-88ca1722f4d0",
+   "credits": 40.0,
+   "seconds": 164,
+   "image": "art\\out\\town\\Town_Horns_Bakery_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Horns_Bakery_raw.glb",
+   "bytes": 3300064,
+   "at": "2026-10-06 16:57:58"
+  }
+ ],
+ "Town_Horns_Potion": [
+  {
+   "event": "generation_submitted",
+   "task_id": "5f47e853-b23c-4242-af17-63fe3054f210",
+   "image": "art\\out\\town\\Town_Horns_Potion_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 41044,
+    "texture_seed": 41045
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "5f47e853-b23c-4242-af17-63fe3054f210",
+   "credits": 40.0,
+   "seconds": 141,
+   "image": "art\\out\\town\\Town_Horns_Potion_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Horns_Potion_raw.glb",
+   "bytes": 3408320,
+   "at": "2026-10-06 16:57:51"
+  }
+ ],
+ "Town_Horns_Smithy": [
+  {
+   "event": "generation_submitted",
+   "task_id": "1405db6b-f2be-4ef6-bfce-faa0914bec28",
+   "image": "art\\out\\town\\Town_Horns_Smithy_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 41055,
+    "texture_seed": 41056
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "1405db6b-f2be-4ef6-bfce-faa0914bec28",
+   "credits": 40.0,
+   "seconds": 155,
+   "image": "art\\out\\town\\Town_Horns_Smithy_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Horns_Smithy_raw.glb",
+   "bytes": 2979760,
+   "at": "2026-10-06 16:58:06"
+  }
+ ],
+ "Town_Horns_JuiceBar": [
+  {
+   "event": "generation_submitted",
+   "task_id": "99ac6215-b5eb-4c60-bed2-68eb01d63493",
+   "image": "art\\out\\town\\Town_Horns_JuiceBar_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 41066,
+    "texture_seed": 41067
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "99ac6215-b5eb-4c60-bed2-68eb01d63493",
+   "credits": 40.0,
+   "seconds": 172,
+   "image": "art\\out\\town\\Town_Horns_JuiceBar_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Horns_JuiceBar_raw.glb",
+   "bytes": 2965572,
+   "at": "2026-10-06 17:00:47"
+  }
+ ],
+ "Town_Horns_HouseA": [
+  {
+   "event": "generation_submitted",
+   "task_id": "58f52698-fcc7-4e14-a3f1-93bdd7eecdbd",
+   "image": "art\\out\\town\\Town_Horns_HouseA_2.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 41077,
+    "texture_seed": 41078
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "58f52698-fcc7-4e14-a3f1-93bdd7eecdbd",
+   "credits": 40.0,
+   "seconds": 157,
+   "image": "art\\out\\town\\Town_Horns_HouseA_2.png",
+   "file": "art\\models\\tripo\\town\\Town_Horns_HouseA_raw.glb",
+   "bytes": 3392144,
+   "at": "2026-10-06 17:00:38"
+  }
+ ],
+ "Town_Horns_HouseB": [
+  {
+   "event": "generation_submitted",
+   "task_id": "355b647d-4a93-4ec0-b52b-9f039265acdf",
+   "image": "art\\out\\town\\Town_Horns_HouseB_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 10000,
+    "model_seed": 41088,
+    "texture_seed": 41089
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "355b647d-4a93-4ec0-b52b-9f039265acdf",
+   "credits": 40.0,
+   "seconds": 147,
+   "image": "art\\out\\town\\Town_Horns_HouseB_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Horns_HouseB_raw.glb",
+   "bytes": 2905720,
+   "at": "2026-10-06 17:00:36"
+  }
+ ],
+ "Town_Horns_Castle": [
+  {
+   "event": "generation_submitted",
+   "task_id": "d38c74f4-d34e-4fc9-8949-0982bd962d06",
+   "image": "art\\out\\town\\Town_Horns_Castle_1.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 15000,
+    "model_seed": 41099,
+    "texture_seed": 41100
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "d38c74f4-d34e-4fc9-8949-0982bd962d06",
+   "credits": 40.0,
+   "seconds": 149,
+   "image": "art\\out\\town\\Town_Horns_Castle_1.png",
+   "file": "art\\models\\tripo\\town\\Town_Horns_Castle_raw.glb",
+   "bytes": 3141732,
+   "at": "2026-10-06 17:03:06"
+  }
+ ],
+ "Kit_X_Anvil": [
+  {
+   "event": "generation_submitted",
+   "task_id": "eb06e142-ab8d-4298-ae2b-9f9765551597",
+   "image": "art\\out\\kit\\crossroads\\X_Anvil_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41110,
+    "texture_seed": 41111
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "eb06e142-ab8d-4298-ae2b-9f9765551597",
+   "credits": 40.0,
+   "seconds": 135,
+   "image": "art\\out\\kit\\crossroads\\X_Anvil_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Anvil_raw.glb",
+   "bytes": 2268776,
+   "at": "2026-10-06 17:02:55"
+  }
+ ],
+ "Kit_X_BannerHalo": [
+  {
+   "event": "generation_submitted",
+   "task_id": "be2b8e28-f203-4b8c-871c-6b306ca0da7b",
+   "image": "art\\out\\kit\\crossroads\\X_BannerHalo_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41121,
+    "texture_seed": 41122
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "be2b8e28-f203-4b8c-871c-6b306ca0da7b",
+   "credits": 40.0,
+   "seconds": 60,
+   "image": "art\\out\\kit\\crossroads\\X_BannerHalo_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_BannerHalo_raw.glb",
+   "bytes": 2179024,
+   "at": "2026-10-06 17:01:48"
+  }
+ ],
+ "Kit_X_BannerHorns": [
+  {
+   "event": "generation_submitted",
+   "task_id": "0b5c89f7-bc86-40a0-aef4-d6da9be57693",
+   "image": "art\\out\\kit\\crossroads\\X_BannerHorns_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41132,
+    "texture_seed": 41133
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "0b5c89f7-bc86-40a0-aef4-d6da9be57693",
+   "credits": 40.0,
+   "seconds": 60,
+   "image": "art\\out\\kit\\crossroads\\X_BannerHorns_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_BannerHorns_raw.glb",
+   "bytes": 2134472,
+   "at": "2026-10-06 17:02:50"
+  }
+ ],
+ "Kit_X_Barrel": [
+  {
+   "event": "generation_submitted",
+   "task_id": "d8126955-5307-4f9b-b811-e270cf6da47e",
+   "image": "art\\out\\kit\\crossroads\\X_Barrel_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41143,
+    "texture_seed": 41144
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "d8126955-5307-4f9b-b811-e270cf6da47e",
+   "credits": 40.0,
+   "seconds": 176,
+   "image": "art\\out\\kit\\crossroads\\X_Barrel_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Barrel_raw.glb",
+   "bytes": 2322548,
+   "at": "2026-10-06 17:05:48"
+  }
+ ],
+ "Kit_X_Bench": [
+  {
+   "event": "generation_submitted",
+   "task_id": "1fbf4b13-73d1-4f94-859b-7a17e252246f",
+   "image": "art\\out\\kit\\crossroads\\X_Bench_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41154,
+    "texture_seed": 41155
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "1fbf4b13-73d1-4f94-859b-7a17e252246f",
+   "credits": 40.0,
+   "seconds": 120,
+   "image": "art\\out\\kit\\crossroads\\X_Bench_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Bench_raw.glb",
+   "bytes": 2469052,
+   "at": "2026-10-06 17:04:58"
+  }
+ ],
+ "Kit_X_Brazier": [
+  {
+   "event": "generation_submitted",
+   "task_id": "761931df-ade2-4952-8227-b5a3e663d977",
+   "image": "art\\out\\kit\\crossroads\\X_Brazier_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41165,
+    "texture_seed": 41166
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "761931df-ade2-4952-8227-b5a3e663d977",
+   "credits": 40.0,
+   "seconds": 172,
+   "image": "art\\out\\kit\\crossroads\\X_Brazier_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Brazier_raw.glb",
+   "bytes": 1895544,
+   "at": "2026-10-06 17:06:00"
+  }
+ ],
+ "Kit_X_Bush": [
+  {
+   "event": "generation_submitted",
+   "task_id": "bcbd31e3-5427-4189-886e-09349f11f24e",
+   "image": "art\\out\\kit\\crossroads\\X_Bush_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41176,
+    "texture_seed": 41177
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "bcbd31e3-5427-4189-886e-09349f11f24e",
+   "credits": 40.0,
+   "seconds": 159,
+   "image": "art\\out\\kit\\crossroads\\X_Bush_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Bush_raw.glb",
+   "bytes": 1861480,
+   "at": "2026-10-06 17:07:39"
+  }
+ ],
+ "Kit_X_Crate": [
+  {
+   "event": "generation_submitted",
+   "task_id": "56c9699d-d402-4d61-9925-51528fdbccac",
+   "image": "art\\out\\kit\\crossroads\\X_Crate_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41187,
+    "texture_seed": 41188
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "56c9699d-d402-4d61-9925-51528fdbccac",
+   "credits": 40.0,
+   "seconds": 164,
+   "image": "art\\out\\kit\\crossroads\\X_Crate_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Crate_raw.glb",
+   "bytes": 2336800,
+   "at": "2026-10-06 17:08:34"
+  }
+ ],
+ "Kit_X_Curb": [
+  {
+   "event": "generation_submitted",
+   "task_id": "a3c37e1a-d34a-4f38-aca0-8f27a5a91a35",
+   "image": "art\\out\\kit\\crossroads\\X_Curb_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41198,
+    "texture_seed": 41199
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "a3c37e1a-d34a-4f38-aca0-8f27a5a91a35",
+   "credits": 40.0,
+   "seconds": 88,
+   "image": "art\\out\\kit\\crossroads\\X_Curb_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Curb_raw.glb",
+   "bytes": 2431528,
+   "at": "2026-10-06 17:07:30"
+  }
+ ],
+ "Kit_X_Fence": [
+  {
+   "event": "generation_submitted",
+   "task_id": "802e8f24-e8c2-44ff-8be7-2c1432b6f7cc",
+   "image": "art\\out\\kit\\crossroads\\X_Fence_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41209,
+    "texture_seed": 41210
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "802e8f24-e8c2-44ff-8be7-2c1432b6f7cc",
+   "credits": 40.0,
+   "seconds": 63,
+   "image": "art\\out\\kit\\crossroads\\X_Fence_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Fence_raw.glb",
+   "bytes": 1986712,
+   "at": "2026-10-06 17:08:35"
+  }
+ ],
+ "Kit_X_FlowerPot": [
+  {
+   "event": "generation_submitted",
+   "task_id": "26d4a157-aebe-4cbf-898e-e3b036cd9112",
+   "image": "art\\out\\kit\\crossroads\\X_FlowerPot_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41220,
+    "texture_seed": 41221
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "26d4a157-aebe-4cbf-898e-e3b036cd9112",
+   "credits": 40.0,
+   "seconds": 165,
+   "image": "art\\out\\kit\\crossroads\\X_FlowerPot_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_FlowerPot_raw.glb",
+   "bytes": 2140132,
+   "at": "2026-10-06 17:10:25"
+  }
+ ],
+ "Kit_X_Forge": [
+  {
+   "event": "generation_submitted",
+   "task_id": "5040b3cd-d798-4d38-ac49-df7a77b5c1a4",
+   "image": "art\\out\\kit\\crossroads\\X_Forge_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41231,
+    "texture_seed": 41232
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "5040b3cd-d798-4d38-ac49-df7a77b5c1a4",
+   "credits": 40.0,
+   "seconds": 145,
+   "image": "art\\out\\kit\\crossroads\\X_Forge_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Forge_raw.glb",
+   "bytes": 2376700,
+   "at": "2026-10-06 17:11:01"
+  }
+ ],
+ "Kit_X_FruitCart": [
+  {
+   "event": "generation_submitted",
+   "task_id": "d094cad2-e4b5-4081-837c-436b478fc6b5",
+   "image": "art\\out\\kit\\crossroads\\X_FruitCart_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41242,
+    "texture_seed": 41243
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "d094cad2-e4b5-4081-837c-436b478fc6b5",
+   "credits": 40.0,
+   "seconds": 153,
+   "image": "art\\out\\kit\\crossroads\\X_FruitCart_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_FruitCart_raw.glb",
+   "bytes": 2496060,
+   "at": "2026-10-06 17:11:10"
+  }
+ ],
+ "Kit_X_Lamp": [
+  {
+   "event": "generation_submitted",
+   "task_id": "1c9aad13-b134-4b32-8c15-2ad0b275a25a",
+   "image": "art\\out\\kit\\crossroads\\X_Lamp_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41253,
+    "texture_seed": 41254
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "1c9aad13-b134-4b32-8c15-2ad0b275a25a",
+   "credits": 40.0,
+   "seconds": 76,
+   "image": "art\\out\\kit\\crossroads\\X_Lamp_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_Lamp_raw.glb",
+   "bytes": 2395680,
+   "at": "2026-10-06 17:11:43"
+  }
+ ],
+ "Kit_X_PotionCart": [
+  {
+   "event": "generation_submitted",
+   "task_id": "ad43c55e-89d8-4de6-8c78-72fccfd8cfb2",
+   "image": "art\\out\\kit\\crossroads\\X_PotionCart_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41264,
+    "texture_seed": 41265
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "ad43c55e-89d8-4de6-8c78-72fccfd8cfb2",
+   "credits": 40.0,
+   "seconds": 139,
+   "image": "art\\out\\kit\\crossroads\\X_PotionCart_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_PotionCart_raw.glb",
+   "bytes": 2507472,
+   "at": "2026-10-06 17:13:23"
+  }
+ ],
+ "Kit_X_StallRed": [
+  {
+   "event": "generation_submitted",
+   "task_id": "32eafbd4-2536-44d5-aadb-06a0951586a0",
+   "image": "art\\out\\kit\\crossroads\\X_StallRed_src.png",
+   "body": {
+    "model": "v3.1-20260211",
+    "texture_version": "v3.5-20260815",
+    "delight": false,
+    "texture": true,
+    "pbr": false,
+    "texture_quality": "detailed",
+    "texture_alignment": "original_image",
+    "face_limit": 3000,
+    "model_seed": 41275,
+    "texture_seed": 41276
+   },
+   "purpose": "A23-47 batch2 user-approved 1040"
+  },
+  {
+   "task_id": "32eafbd4-2536-44d5-aadb-06a0951586a0",
+   "credits": 40.0,
+   "seconds": 143,
+   "image": "art\\out\\kit\\crossroads\\X_StallRed_src.png",
+   "file": "art\\models\\tripo\\kit_crossroads\\Kit_X_StallRed_raw.glb",
+   "bytes": 2391264,
+   "at": "2026-10-06 17:13:35"
+  }
+ ],
+ "_balance_log": [
+  {
+   "at": "2026-10-06 17:50",
+   "balance": 2455.0,
+   "frozen": 0.0,
+   "by": "image gen 1 (free balance query)",
+   "note": "3,715 after ghosts - bakery tool test 100 - Halo shops 120 - batch2 1040 = 2,455"
+  }
  ]
 }
