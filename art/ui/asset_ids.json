@@ -226,5 +226,9 @@
   "IconWings": "rbxassetid://78896204690689",
   "IconNoBuff": "rbxassetid://140138539286912",
   "IconShieldBlue": "rbxassetid://97867243551313",
-  "IconDemon": "rbxassetid://101305375688321"
+  "IconDemon": "rbxassetid://101305375688321",
+  "Tex_Grass_FF": "rbxassetid://104463174886181 sandbox-test 2026-10-06 (UiSandbox world-blend E only; not in Config / main place until the user picks)",
+  "Tex_LeafyGrass_FF": "rbxassetid://92129043469297 sandbox-test 2026-10-06 (UiSandbox world-blend E only; not in Config / main place until the user picks)",
+  "Tex_DirtPath_FF": "rbxassetid://85612652410118 sandbox-test 2026-10-06 (UiSandbox world-blend E only; not in Config / main place until the user picks)",
+  "Tex_Cobblestone_FF": "rbxassetid://72599078474763 sandbox-test 2026-10-06 (UiSandbox world-blend E only; not in Config / main place until the user picks)"
 }
