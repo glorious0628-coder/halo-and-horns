@@ -2917,5 +2917,25 @@
   "original": "art/out/s2/GlyphCheck_a_src.png (Adobe MCP presigned download)",
   "file": "art/ui/GlyphCheck.png",
   "note": "묶음 13. 글리프 확인(체크): 흰·크림 면 + 남색 외곽선. 버튼(BtnSquare·BtnRound) 위에 60~75%로 얹음. 32px에서도 읽힘."
+ },
+ "MinimapRing": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_MinimapRing.txt",
+  "original": "art/out/s2/MinimapRing_b_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MinimapRing.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.98 --hole-tol 8 (center hole cleared), then shifted (0,+2) so the hole centroid is (256,256); checked green/light/navy, 150px",
+  "preview": "art/review/s2/minimap_ring_sheet.png",
+  "inner": {
+   "center": [
+    256,
+    256
+   ],
+   "hole_diameter": 386,
+   "map_diameter_suggest": 392
+  },
+  "note": "A23-40 B안 둥근 미니맵 틀(이미지 개발 요청). 남색 광택 고리 + 안·밖 금테 + 위쪽 금 단추. 가운데 구멍 완전 투명, 지름 약 386px(이미지의 75%) — 지도 원은 지름 392 정도로 금테 밑에 살짝 들어가게. a/b 중 b(광택·바깥 외곽선 더 진함)."
  }
 }
