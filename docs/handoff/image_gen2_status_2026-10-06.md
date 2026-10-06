@@ -70,3 +70,8 @@
 - 시트 스크립트(scratchpad): `skill_sheet.py <out> <title> Key...`(BtnSkill 금·빨강·청록 테, 160/96/72 + 밝은/어두운), `map_arrow_sheet.py <out> cand...`(MinimapRing 위 32/28/24px, 회전은 expand로).
 - 요령: `asset_search`에 `sortBy: createDate`를 주면 query와 상관없이 최신만 나옴 → 관련도 검색(문구 첫머리) + createDate로 짝짓기. `art/approved.json`은 **indent=1**, ensure_ascii=False, LF + 끝 줄바꿈(다시 쓰기 전 왕복 비교).
 - 다음: A23-47 소품 2D는 검수 지시 뒤(이미지 생성 1의 마을 초안 기준).
+- (저녁 2) **c98dfec** A23-54 계급 뿔·후광·톱니 시안 26(두 각도 3:2, 시트 `art/review/s2/a2354_rank_horns_halo_sheet.jpg`, 스크립트 scratchpad `acc_sheet.py`) → 사용자 OK: 뿔 A줄·후광 B줄·장인 A줄 → **e0fcde9** `art/out/acc/<이름>.png`(앞)·`_34.png`(3/4)·`_src.png`, approved.json `ACC_*` 13 → 이미지 생성 1에 3D용으로 넘김(3D는 검수 지시).
+- **6a66894 / 95ef02a** 말랑 초원 작은 소품 16종(`art/out/kit/meadow/`, 시트 `kit_meadow16_sheet.png`) — 검수 통과. 고침: JellyRock = 파스텔 무광 돌(라임 금지, 슬라임과 구별), SignPost 젤리 눈 없앰(소품에 얼굴 넣지 않기). 라벤더 그늘은 배경 회색과 비슷 → `cut_kit.py ... 14`.
+- 마을 NPC 초상(A23-46): 스모키 A 사용자 확정. 브라이트·티니는 스모키 그림체로 다시 → **cff91af** v2 시트(`a2346_town_npc_faces_v2.png`, `a2346_town_npc_portraits_v2.png`) 검수 대기. 규칙(사용자): 셋 표정이 달라야 함, 얼굴에 그을음·코 자리 점 금지(볼 홍조·작은 주근깨만), 브라이트 = 10살 견습 꼬마(+손목 금·보라 땋은 끈, 이야기 단서), 티니 = 입 다문 미소+모자 위 고글.
+- **Firefly 참조 이미지 요령:** 생성 결과 카드의 편집 메뉴 `sp-menu-item[aria-label="참조 이미지로 사용"]`(갤러리는 최근 것만 렌더됨) 또는 **파일 올리기**: `asset_get_presigned_urls` 주소를 페이지에서 `fetch` → `File` → 빈 `firefly-upload-new`의 `input[type=file]`에 DataTransfer로 넣고 `change`. 그림체만 한 장 걸면 표정까지 따라 함 → **그림체 참조 + 캐릭터 참조 두 장** + 표정을 글로. 다 쓰면 Remove로 **반드시 0/6으로 비우기**(다음 생성에 섞임). 참조 생성은 가끔 '문제가 발생했습니다'로 실패 → 잠시 뒤 다시.
+- A23-57: 장인(중립) 전용 그림(CLS_Artisan*, 장인 배지)은 빛·뿔 뒤로 미룸. 티니(교차로 NPC)는 그대로 진행.
