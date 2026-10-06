@@ -1,0 +1,22 @@
+{
+ "note": "Tripo tasks still running on the server when the session stopped for a PC restart (2026-10-06 ~19:00 KST). Fetch with: py tools/tripo_api.py task <task_id> <name>  (then add a completion record with credits_consumed).",
+ "in_flight": {
+  "X_Fountain": "bf8583e1-a9c6-4f26-98bd-cba495d1a22b",
+  "X_GuildHall": "ba5f985d-559c-4901-9b0f-57e0564b3506",
+  "Town_Halo_Tree": "162382cf-7faf-4d9e-9a57-bee01011416f",
+  "Acc_HornsR5": "0a4cb419-f48a-468c-a85f-dfa4481423ef",
+  "Acc_HaloR5": "92c6dddc-602b-4d66-9c01-4636e92472af"
+ },
+ "not_submitted_3a": [
+  "Town_Horns_Tree",
+  "X_TreeA",
+  "Town_Halo_Wall",
+  "Town_Horns_Wall",
+  "W_BridgeWood",
+  "X_PadBase"
+ ],
+ "balance_at_stop": {
+  "balance": 1645.0,
+  "frozen": 150.0
+ }
+}

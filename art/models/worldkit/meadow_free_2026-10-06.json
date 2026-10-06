@@ -1,0 +1,52 @@
+{
+ "note": "Roblox generate_mesh (free) results for meadow small props (user: free first for these 8, A23-47). Published asset ids can be re-inserted into build/WorldKit.rbxlx with insert_asset. Accessory tests failed (head balls / wrong colours) and are listed for the record only.",
+ "studio": "build/WorldKit.rbxlx (not saved; reinsert by id)",
+ "meadow": {
+  "Fence": {
+   "assetId": "83907577156395",
+   "size_studs": [
+    3.9,
+    2.1,
+    1.0
+   ]
+  },
+  "Bridge": {
+   "assetId": "128602618120866",
+   "size_studs": [
+    5.4,
+    3.0,
+    5.5
+   ]
+  },
+  "LogBench": {
+   "assetId": "90295747697398",
+   "size_studs": [
+    4.9,
+    1.8,
+    2.0
+   ]
+  },
+  "Stump": {
+   "assetId": "81291378974795"
+  },
+  "SignPost": {
+   "assetId": "86012270971187"
+  },
+  "PuddleRim": {
+   "assetId": "118438949522173"
+  },
+  "JellyRock": {
+   "assetId": "84174603687320"
+  },
+  "Pinwheel": {
+   "assetId": "98441970643478"
+  }
+ },
+ "accessory_tests_failed": {
+  "HornsR2_a": "98362190196776",
+  "HaloR2_a": "90767041073306",
+  "HaloR4_a": "124837649908054",
+  "HornsR2_b": "128487249509305",
+  "HaloR2_b": "111866239187822"
+ }
+}

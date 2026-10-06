@@ -2291,6 +2291,24 @@
    "credits": 10.0,
    "file": "art\\models\\tripo\\MonsterGoblin_Fall.glb",
    "bytes": 2562700
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "06226aca-b81f-495b-b555-06d98649901d",
+   "clip": "LookAround",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblin_LookAround.glb",
+   "bytes": 2707600
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "766d5b0b-7d9e-4743-9680-dc4df0215b78",
+   "clip": "Run",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblin_Run.glb",
+   "bytes": 2542056
   }
  ],
  "MonsterGoblinBrute_src": [
@@ -2366,6 +2384,24 @@
    "credits": 10.0,
    "file": "art\\models\\tripo\\MonsterGoblinBrute_Fall.glb",
    "bytes": 2463872
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "2501e4e8-3331-4b5d-8c29-2f08dd014e1b",
+   "clip": "Run",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblinBrute_Run.glb",
+   "bytes": 2442948
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "09768a94-016e-4d22-9212-7141f73d4f71",
+   "clip": "LookAround",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterGoblinBrute_LookAround.glb",
+   "bytes": 2608772
   }
  ],
  "MonsterSkeleton_src": [
@@ -2441,6 +2477,24 @@
    "credits": 10.0,
    "file": "art\\models\\tripo\\MonsterSkeleton_Fall.glb",
    "bytes": 1286392
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "5143f1f9-aa62-4d05-a733-a7afb6faee2f",
+   "clip": "Run",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeleton_Run.glb",
+   "bytes": 1265620
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "b7e77b1a-05f2-4108-9bcf-598825b7b6ff",
+   "clip": "LookAround",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeleton_LookAround.glb",
+   "bytes": 1431428
   }
  ],
  "MonsterSkeletonKnight_src": [
@@ -2516,6 +2570,24 @@
    "credits": 10.0,
    "file": "art\\models\\tripo\\MonsterSkeletonKnight_Fall.glb",
    "bytes": 2608880
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "6dd6314f-77f2-463d-8a73-9f27f286849a",
+   "clip": "Run",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeletonKnight_Run.glb",
+   "bytes": 2587256
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "aa4f38de-6cf9-4157-bceb-96a168f94532",
+   "clip": "LookAround",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterSkeletonKnight_LookAround.glb",
+   "bytes": 2753212
   }
  ],
  "PetBabySlime": [
@@ -2688,6 +2760,24 @@
    "credits": 10.0,
    "file": "art\\models\\tripo\\MonsterBatGoblin_Fall.glb",
    "bytes": 3121932
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "56f99cd0-f2db-4010-9551-d807aad1dbc8",
+   "clip": "Run",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterBatGoblin_Run.glb",
+   "bytes": 3100760
+  },
+  {
+   "operation": "retarget",
+   "event": "retarget_completed",
+   "task_id": "80d58750-817e-4672-b824-e11a0bea8934",
+   "clip": "LookAround",
+   "credits": 10.0,
+   "file": "art\\models\\tripo\\MonsterBatGoblin_LookAround.glb",
+   "bytes": 3266976
   }
  ],
  "MonsterBatGoblin_src": [
@@ -3651,6 +3741,298 @@
    "frozen": 0.0,
    "by": "image gen 1 (free balance query)",
    "note": "3,715 after ghosts - bakery tool test 100 - Halo shops 120 - batch2 1040 = 2,455"
+  }
+ ],
+ "Kit_M_BushB": [
+  {
+   "event": "generation_submitted",
+   "task_id": "352c321e-b6e2-4257-a53b-5f0b8e9ff94a",
+   "image": "art\\out\\kit\\meadow\\BushB_src.png",
+   "recipe": "prop",
+   "seed": 68968
+  },
+  {
+   "task_id": "352c321e-b6e2-4257-a53b-5f0b8e9ff94a",
+   "image": "art\\out\\kit\\meadow\\BushB_src.png",
+   "recipe": "prop",
+   "seed": 68968,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_BushB_raw.glb",
+   "bytes": 1864088,
+   "at": "2026-10-06 18:38:02"
+  }
+ ],
+ "Kit_M_FlowersA": [
+  {
+   "event": "generation_submitted",
+   "task_id": "4ea7007d-3d25-4a33-a869-317bf08743b0",
+   "image": "art\\out\\kit\\meadow\\FlowersA_src.png",
+   "recipe": "prop",
+   "seed": 77684
+  },
+  {
+   "task_id": "4ea7007d-3d25-4a33-a869-317bf08743b0",
+   "image": "art\\out\\kit\\meadow\\FlowersA_src.png",
+   "recipe": "prop",
+   "seed": 77684,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_FlowersA_raw.glb",
+   "bytes": 1900556,
+   "at": "2026-10-06 18:39:04"
+  }
+ ],
+ "Kit_M_BushA": [
+  {
+   "event": "generation_submitted",
+   "task_id": "dd39d6fe-4040-4d71-a063-6e01698a54d4",
+   "image": "art\\out\\kit\\meadow\\BushA_src.png",
+   "recipe": "prop",
+   "seed": 59698
+  },
+  {
+   "task_id": "dd39d6fe-4040-4d71-a063-6e01698a54d4",
+   "image": "art\\out\\kit\\meadow\\BushA_src.png",
+   "recipe": "prop",
+   "seed": 59698,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_BushA_raw.glb",
+   "bytes": 1801384,
+   "at": "2026-10-06 18:38:36"
+  }
+ ],
+ "Kit_M_FlowersB": [
+  {
+   "event": "generation_submitted",
+   "task_id": "6b56c3a7-e3e7-4db6-a09c-39649ee74ea9",
+   "image": "art\\out\\kit\\meadow\\FlowersB_src.png",
+   "recipe": "prop",
+   "seed": 26462
+  },
+  {
+   "task_id": "6b56c3a7-e3e7-4db6-a09c-39649ee74ea9",
+   "image": "art\\out\\kit\\meadow\\FlowersB_src.png",
+   "recipe": "prop",
+   "seed": 26462,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_FlowersB_raw.glb",
+   "bytes": 1899380,
+   "at": "2026-10-06 18:40:30"
+  }
+ ],
+ "Kit_M_Mushrooms": [
+  {
+   "event": "generation_submitted",
+   "task_id": "b7e6ea81-ecd1-4191-a86e-7de05fa94692",
+   "image": "art\\out\\kit\\meadow\\Mushrooms_src.png",
+   "recipe": "prop",
+   "seed": 54577
+  },
+  {
+   "task_id": "b7e6ea81-ecd1-4191-a86e-7de05fa94692",
+   "image": "art\\out\\kit\\meadow\\Mushrooms_src.png",
+   "recipe": "prop",
+   "seed": 54577,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_Mushrooms_raw.glb",
+   "bytes": 1715248,
+   "at": "2026-10-06 18:41:24"
+  }
+ ],
+ "Kit_M_CrystalPile": [
+  {
+   "event": "generation_submitted",
+   "task_id": "9f799131-493d-4fc2-92fc-153e8a64c9a3",
+   "image": "art\\out\\kit\\meadow\\CrystalPile_src.png",
+   "recipe": "prop",
+   "seed": 27146
+  },
+  {
+   "task_id": "9f799131-493d-4fc2-92fc-153e8a64c9a3",
+   "image": "art\\out\\kit\\meadow\\CrystalPile_src.png",
+   "recipe": "prop",
+   "seed": 27146,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_CrystalPile_raw.glb",
+   "bytes": 2068196,
+   "at": "2026-10-06 18:42:13"
+  }
+ ],
+ "Kit_M_FlowerCart": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c5f75146-99b5-40ec-93d0-985ac2ce550b",
+   "image": "art\\out\\kit\\meadow\\FlowerCart_src.png",
+   "recipe": "prop",
+   "seed": 66062
+  },
+  {
+   "task_id": "c5f75146-99b5-40ec-93d0-985ac2ce550b",
+   "image": "art\\out\\kit\\meadow\\FlowerCart_src.png",
+   "recipe": "prop",
+   "seed": 66062,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_FlowerCart_raw.glb",
+   "bytes": 2457772,
+   "at": "2026-10-06 18:43:52"
+  }
+ ],
+ "Kit_M_PicnicBasket": [
+  {
+   "event": "generation_submitted",
+   "task_id": "5a059e06-4e10-415d-95c4-0ee219b61e53",
+   "image": "art\\out\\kit\\meadow\\PicnicBasket_src.png",
+   "recipe": "prop",
+   "seed": 70797
+  },
+  {
+   "task_id": "5a059e06-4e10-415d-95c4-0ee219b61e53",
+   "image": "art\\out\\kit\\meadow\\PicnicBasket_src.png",
+   "recipe": "prop",
+   "seed": 70797,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_M_PicnicBasket_raw.glb",
+   "bytes": 2150644,
+   "at": "2026-10-06 18:44:31"
+  }
+ ],
+ "Town_Halo_Spawn": [
+  {
+   "event": "generation_submitted",
+   "task_id": "f265c5d5-e1f9-44e7-b2a7-0c6094bf440c",
+   "image": "art\\out\\town3\\Town_Halo_Spawn_src.png",
+   "recipe": "building",
+   "seed": 52294
+  },
+  {
+   "task_id": "f265c5d5-e1f9-44e7-b2a7-0c6094bf440c",
+   "image": "art\\out\\town3\\Town_Halo_Spawn_src.png",
+   "recipe": "building",
+   "seed": 52294,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Town_Halo_Spawn_raw.glb",
+   "bytes": 2804624,
+   "at": "2026-10-06 18:47:33"
+  }
+ ],
+ "Town_Horns_Spawn": [
+  {
+   "event": "generation_submitted",
+   "task_id": "bf5bc49c-d52f-407c-b8be-8e18523fb10b",
+   "image": "art\\out\\town3\\Town_Horns_Spawn_src.png",
+   "recipe": "building",
+   "seed": 26265
+  },
+  {
+   "task_id": "bf5bc49c-d52f-407c-b8be-8e18523fb10b",
+   "image": "art\\out\\town3\\Town_Horns_Spawn_src.png",
+   "recipe": "building",
+   "seed": 26265,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Town_Horns_Spawn_raw.glb",
+   "bytes": 2767036,
+   "at": "2026-10-06 18:47:25"
+  }
+ ],
+ "X_SpawnPlaza": [
+  {
+   "event": "generation_submitted",
+   "task_id": "67ee1038-5c94-4a3f-b7b5-b97163721af5",
+   "image": "art\\out\\town3\\X_SpawnPlaza_src.png",
+   "recipe": "building",
+   "seed": 68158
+  },
+  {
+   "task_id": "67ee1038-5c94-4a3f-b7b5-b97163721af5",
+   "image": "art\\out\\town3\\X_SpawnPlaza_src.png",
+   "recipe": "building",
+   "seed": 68158,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\X_SpawnPlaza_raw.glb",
+   "bytes": 3265384,
+   "at": "2026-10-06 18:47:27"
+  }
+ ],
+ "Town_Halo_Gate": [
+  {
+   "event": "generation_submitted",
+   "task_id": "5c8738f4-98bc-4044-a2aa-c47e5128fda4",
+   "image": "art\\out\\town3\\Town_Halo_Gate_src.png",
+   "recipe": "building",
+   "seed": 83298
+  },
+  {
+   "task_id": "5c8738f4-98bc-4044-a2aa-c47e5128fda4",
+   "image": "art\\out\\town3\\Town_Halo_Gate_src.png",
+   "recipe": "building",
+   "seed": 83298,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Town_Halo_Gate_raw.glb",
+   "bytes": 2864840,
+   "at": "2026-10-06 18:49:16"
+  }
+ ],
+ "Town_Horns_Gate": [
+  {
+   "event": "generation_submitted",
+   "task_id": "fc01e406-6e92-4f5b-9a56-3617d6ce96ff",
+   "image": "art\\out\\town3\\Town_Horns_Gate_src.png",
+   "recipe": "building",
+   "seed": 74422
+  },
+  {
+   "task_id": "fc01e406-6e92-4f5b-9a56-3617d6ce96ff",
+   "image": "art\\out\\town3\\Town_Horns_Gate_src.png",
+   "recipe": "building",
+   "seed": 74422,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Town_Horns_Gate_raw.glb",
+   "bytes": 2994104,
+   "at": "2026-10-06 18:49:20"
+  }
+ ],
+ "X_Fountain": [
+  {
+   "event": "generation_submitted",
+   "task_id": "bf8583e1-a9c6-4f26-98bd-cba495d1a22b",
+   "image": "art\\out\\town3\\X_Fountain_src.png",
+   "recipe": "building",
+   "seed": 65848
+  }
+ ],
+ "X_GuildHall": [
+  {
+   "event": "generation_submitted",
+   "task_id": "ba5f985d-559c-4901-9b0f-57e0564b3506",
+   "image": "art\\out\\town3\\X_GuildHall_src.png",
+   "recipe": "building",
+   "seed": 33365
+  }
+ ],
+ "Town_Halo_Tree": [
+  {
+   "event": "generation_submitted",
+   "task_id": "162382cf-7faf-4d9e-9a57-bee01011416f",
+   "image": "art\\out\\town3\\Town_Halo_Tree_src.png",
+   "recipe": "prop_std",
+   "seed": 67034
+  }
+ ],
+ "Acc_HaloR5": [
+  {
+   "event": "generation_submitted",
+   "task_id": "92c6dddc-602b-4d66-9c01-4636e92472af",
+   "image": "art\\out\\acc\\HaloR5_34.png",
+   "recipe": "acc",
+   "seed": 58096
+  }
+ ],
+ "Acc_HornsR5": [
+  {
+   "event": "generation_submitted",
+   "task_id": "0a4cb419-f48a-468c-a85f-dfa4481423ef",
+   "image": "art\\out\\acc\\HornsR5_34.png",
+   "recipe": "acc",
+   "seed": 47049
   }
  ]
 }
