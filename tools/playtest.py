@@ -36,6 +36,11 @@ def main():
             print("정지함")
             return
         if "Current Studio Mode: Edit" not in state:
+            # 2026-10-06: never stop a Play we did not start (it may be the user's own play); --stop-play after
+            # telling the user, or --stop when the Play is our own test
+            if "--stop-play" not in sys.argv:
+                print("이미 플레이 중이라 시작하지 않았어요 (사용자 플레이일 수 있음). 멈춰도 되면 먼저 알리고 --stop-play")
+                sys.exit(2)
             c.call("start_stop_play", {"is_start": False})
             time.sleep(2)
         before = text_of(c.call("get_console_output", {}))

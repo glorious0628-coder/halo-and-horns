@@ -1,8 +1,8 @@
 """
 src/ 폴더의 스크립트를 열려 있는 Roblox Studio 창에 그대로 밀어 넣는다 (Studio MCP 사용).
 
-  py tools/sync_to_studio.py                    -> 동기화 (플레이 중이면 정지 후)
-  py tools/sync_to_studio.py --skip-if-playing  -> 플레이 중이면 아무것도 안 함 (자동 동기화용)
+  py tools/sync_to_studio.py               -> 동기화 (플레이 중이면 아무것도 안 하고 끝냄: 사용자 플레이일 수 있음)
+  py tools/sync_to_studio.py --stop-play   -> 플레이 중이면 정지 후 동기화 (사용자에게 먼저 알린 뒤에만)
 
 - 대상 창: 이름에 STUDIO_NAME(기본 "GoodEvil")이 들어간 스튜디오
 - 내용이 바뀐 스크립트만 지우고 다시 만든다 (스크립트 생성은 MCP multi_edit 도구로만 가능)
@@ -142,9 +142,11 @@ def main():
         c.start()
         state = text_of(c.call("get_studio_state", {}))
         if "Current Studio Mode: Edit" not in state:
-            if "--skip-if-playing" in sys.argv:
-                print("플레이 중이라 동기화를 건너뜀")
-                return
+            # 2026-10-06: a sync once stopped the user's own Play. Never stop Play unless asked explicitly (announce
+            # it to the user first, then pass --stop-play).
+            if "--stop-play" not in sys.argv:
+                print("플레이 중이라 동기화하지 않았어요 (사용자 플레이일 수 있음). 멈춰도 되면 먼저 알리고 --stop-play")
+                sys.exit(2)
             c.call("start_stop_play", {"is_start": False})
 
         res = c.call("execute_luau", {"code": READ_LUA % lua_roots(), "datamodel_type": "Edit"})
