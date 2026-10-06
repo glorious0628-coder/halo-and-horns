@@ -1,3 +1,5 @@
+> **새 계정(2026-10-06 오후 이후)은 이 파일 대신 `docs/handoff/next_account_2026-10-06.md` 6번의 시작 프롬프트를 쓴다**(세션 6개, 울트라코드·생각 깊이 나눔).
+
 # 새 계정 세션 5개 시작 프롬프트 (2026-10-06)
 
 모두 이 폴더(`C:\Users\glori\Documents\Roblox\Game`)에서 연다. 같은 이름의 다른 게임(fashion 폴더) 세션이 있을 수 있으니 서로 메시지는 받은 메시지의 from 주소나 ListAgents ref로 보낸다. 커밋은 항상 `git commit -m "…" -- <경로>`.
