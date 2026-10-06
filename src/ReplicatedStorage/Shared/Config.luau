@@ -1203,10 +1203,11 @@ Config.MonsterTypes = {
 	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = "GoblinWoods", Count = 3, Takes = { Goblin = 3 }, QuestAs = "Goblin",
 		Season = "Halloween", HP = 95, Damage = 6, XP = 30, Gold = 17, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(120, 80, 150) },
 	-- Pack = spawned next to a living one of its kind whose pack has fewer than Max (within Radius), else a new pack.
-	-- ModelFrom = the custom model used while its own 3D model is not imported yet (scaled by Scale).
+	-- ModelFrom = the custom model used while its own 3D model is not imported yet (scaled by Scale). Heights (Humanoid
+	-- shape = 5 x Scale): minion 3, little ghost 5, ghost king 9 (the pumpkin king is 7.5); own models since 2026-10-06.
 	GhostMinion = { Name = "똘마니 유령", Short = "똘마니 유령", Zone = "HauntedHollow", Count = 8, Season = "Halloween",
 		Pack = { Max = 4, Radius = 7 }, ModelFrom = "LittleGhost",
-		HP = 40, Damage = 3, XP = 13, Gold = 7, Speed = 12, Shape = "Humanoid", Scale = 0.7, Color = Color3.fromRGB(190, 220, 255), Float = 1.2 },
+		HP = 40, Damage = 3, XP = 13, Gold = 7, Speed = 12, Shape = "Humanoid", Scale = 0.6, Color = Color3.fromRGB(190, 220, 255), Float = 1.2 },
 	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = "HauntedHollow", Count = 4, Season = "Halloween", HP = 70, Damage = 5,
 		XP = 24, Gold = 14, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
 	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
@@ -1225,7 +1226,7 @@ Config.MonsterTypes = {
 	-- 5 min stay, nameless lines), 10 minutes after it in the schedule (Config.Halloween.Bosses), HauntedHollow
 	GhostKing = { Name = "유령 왕", Short = "유령 왕", Zone = "HauntedHollow", Count = 0, Boss = true, Season = "Halloween",
 		ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "LittleGhost",
-		HP = 9000, Damage = 8, XP = 300, Gold = 150, Speed = 7, Shape = "Humanoid", Scale = 2.4, Color = Color3.fromRGB(200, 190, 255), Float = 2.2 },
+		HP = 9000, Damage = 8, XP = 300, Gold = 150, Speed = 7, Shape = "Humanoid", Scale = 1.8, Color = Color3.fromRGB(200, 190, 255), Float = 2.2 },
 }
 
 -- the kind quests / tutorial / story objectives count a kill as (a pumpkin slime counts as a slime)
@@ -1858,7 +1859,7 @@ Config.Keybinds = {
 		{ Id = "Attack", Group = "Combat", Key = "F", Pad = "ButtonR2", Label = "공격", LabelEn = "Attack", Button = "공격 버튼", ButtonEn = "Attack button" },
 		{ Id = "SkillQ", Group = "Combat", Key = "Q", Pad = "ButtonL2", Label = "스킬", LabelEn = "Skill", Button = "스킬 버튼", ButtonEn = "Skill button" },
 		{ Id = "SkillZ", Group = "Combat", Key = "Z", Pad = "ButtonL1", Label = "스킬 2", LabelEn = "Skill 2", Button = "스킬 2 버튼", ButtonEn = "Skill 2 button", Flag = "Skills.ZEnabled" },
-		{ Id = "Auto", Group = "Combat", Key = "R", Pad = "ButtonR1", Label = "자동 전투", LabelEn = "Auto combat", Button = "자동 버튼", ButtonEn = "Auto button" },
+		{ Id = "Auto", Group = "Combat", Key = "R", Pad = "ButtonR1", Label = "자동 전투", LabelEn = "Auto Battle", Button = "자동 버튼", ButtonEn = "Auto Battle button" },
 		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "유령 붙잡기", LabelEn = "Ghost hold", Button = "유령 버튼", ButtonEn = "Ghost button" },
 		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP 물약", LabelEn = "HP potion", Button = "HP 물약 버튼", ButtonEn = "HP potion button" },
 		{ Id = "PotionMP", Group = "Potion", Key = "Two", Pad = "DPadDown", Label = "MP 물약", LabelEn = "MP potion", Button = "MP 물약 버튼", ButtonEn = "MP potion button" },
@@ -2063,6 +2064,41 @@ Config.Settings = {
 		NotAllowed = "그 키는 쓸 수 없어요", NotAllowedEn = "That key can't be used",
 		Swapped = "%s · %s 키를 서로 바꿨어요", SwappedEn = "Swapped the keys %s and %s", -- (key label, key label)
 	},
+}
+
+-- A23-48 (user 2026-10-06 evening): the game shows English only (UIKit.Lang decides for the modules with KO / EN twins);
+-- new window texts are written in English only
+Config.BuildLabel = "beta-prep 2026.10.06" -- shown in the settings footer (bump with a release)
+
+-- BB3 settings window (user 2026-10-06: class change, rebirth, opening, name hiding and vacation are settings rows;
+-- A23-48: no language row). SettingsUI.luau builds it; Sfx / Shake / KeyBadges labels come from Config.Settings.Text*En.
+Config.Settings.Window = {
+	Title = "Settings",
+	TabMain = "Settings", TabKeys = "Keys",
+	Open = "Open", Watch = "Watch", Change = "Change",
+	Class = "Change Class",
+	Rebirth = "Rebirth", RebirthReady = "Rebirth (ready!)",
+	Intro = "Replay Opening", IntroUnsafe = "You can replay the opening inside a town.",
+	Vacation = "Vacation Bonus",
+	Nickname = "Nickname", -- until the Character window (BB8) holds it
+	NameHide = "Hide my name", -- + Config.Announce.Text.SettingNotesEn under it
+	Keys = "Key Settings",
+	On = "On", Off = "Off",
+	SfxValue = "%d%%",
+	Footer = "%s · place v%d · server %s · %d/%d players", -- (BuildLabel, PlaceVersion, JobId:sub(1, 8), n, max)
+	Studio = "studio",
+	SaveOff = "Saving is off on this server.",
+	-- [Keys] tab
+	KeysHint = "Pick an action, then press its new key. Esc cancels.",
+	Press = "Press a key (5 s)",
+	Clear = "Clear", None = "None",
+	Reset = "Default Keys", ResetTitle = "Default keys", ResetBody = "Put every key back the way it was at the start?",
+	ResetOk = "Reset",
+	NoKeyboard = "No keyboard here. Use the buttons on the screen.",
+	PadTitle = "Gamepad buttons (fixed)",
+	Groups = { Combat = "Combat", Potion = "Potions", Window = "Windows", Other = "Other" },
+	Pad = { ButtonR2 = "R2", ButtonL2 = "L2", ButtonR1 = "R1", ButtonL1 = "L1", ButtonX = "X", ButtonY = "Y", ButtonA = "A",
+		ButtonB = "B", DPadUp = "D-pad Up", DPadDown = "D-pad Down", DPadLeft = "D-pad Left", DPadRight = "D-pad Right" },
 }
 
 -- BB2 (pure, server + client): unknown keys dropped; numbers finite, clamped and snapped to Step; bools boolean; enums in

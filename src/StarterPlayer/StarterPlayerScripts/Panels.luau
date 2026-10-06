@@ -244,6 +244,10 @@ local WSHOP = { Distance = 12, PromptName = "HHC_BlacksmithPrompt",
 local WELCOME = { PendingOpen = false }
 local ITEMS -- A23-12 item list state + helpers (assigned below the blacksmith helpers; the menu reads ITEMS.Hint)
 local RENDER = { Reset = false } -- B14: a queued rebuild resets the scroll (user / structure) unless only data changed
+-- BB13 windows other client modules register (Panels.Register): Opts[id] = { Build, Title, FixedBody, Rebuild,
+-- Cleanup }; Built = the registered window whose Build ran last (its Cleanup runs before the next build and on close);
+-- AttrFns = its kit.OnAttr callbacks; Arg = the arg of the last Panels.Open; Fixed = the plain body of FixedBody windows
+local REG = { Opts = {}, Built = nil, AttrFns = {}, Arg = nil, Fixed = nil }
 
 local disabledButtons = setmetatable({}, { __mode = "k" })
 local baseColors = setmetatable({}, { __mode = "k" })
@@ -839,6 +843,10 @@ local function layoutChrome(s)
 	local contentTop = 10 + th + 10
 	content.Position = UDim2.fromOffset(14, contentTop)
 	content.Size = UDim2.new(1, -28, 1, -(contentTop + 12))
+	if REG.Fixed then
+		REG.Fixed.Position = content.Position
+		REG.Fixed.Size = content.Size
+	end
 end
 
 local function layoutRoot()
@@ -899,7 +907,7 @@ local function ensureRoot()
 	closeButton.Position = UDim2.new(1, -12, 0, 10)
 
 	backButton = makeButton(window, T.Back, PALETTE.Button, UDim2.fromOffset(112, 44), function()
-		Panels.Open("Menu")
+		Panels.Open(type(openedFromMenu) == "string" and openedFromMenu or "Menu") -- BB13: the window it came from
 	end)
 	backButton.AnchorPoint = Vector2.new(1, 0)
 	backButton.Position = UDim2.new(1, -74, 0, 10)
@@ -930,6 +938,17 @@ local function ensureRoot()
 	pad.Parent = content
 	content.Parent = window
 
+	-- BB13 FixedBody: a plain frame in the content's place (no scroll, no list), so a registered window's tabs stay put
+	REG.Fixed = Instance.new("Frame")
+	REG.Fixed.Name = "FixedBody"
+	REG.Fixed.BackgroundTransparency = 1
+	REG.Fixed.BorderSizePixel = 0
+	REG.Fixed.ClipsDescendants = true
+	REG.Fixed.Position = content.Position
+	REG.Fixed.Size = content.Size
+	REG.Fixed.Visible = false
+	REG.Fixed.Parent = window
+
 	root.Parent = gui
 	layoutRoot()
 	return true
@@ -940,11 +959,35 @@ local function clearContent()
 	for _, ch in content:GetChildren() do
 		if ch:IsA("GuiObject") then ch:Destroy() end
 	end
+	if REG.Fixed then
+		for _, ch in REG.Fixed:GetChildren() do ch:Destroy() end
+	end
 end
 
-local function openSub(id)
-	pendingFromMenu = true
-	Panels.Open(id)
+-- BB13: the registered window that was built last says goodbye (its Cleanup, e.g. a running key capture) before the
+-- content goes away or another window is built; its kit.OnAttr callbacks end with it
+function REG.CleanupBuilt()
+	local id = REG.Built
+	REG.Built = nil
+	table.clear(REG.AttrFns)
+	local o = id and REG.Opts[id]
+	if o and type(o.Cleanup) == "function" then
+		local ok, err = pcall(o.Cleanup)
+		if not ok then Util.Warn(TAG, "cleanup of " .. tostring(id) .. ": " .. tostring(err)) end
+	end
+end
+
+-- BB13: registered windows rebuild only on the attributes they list (opts.Rebuild); the built-in ones on REBUILD_ATTRS
+function REG.WantsRebuild(id, name)
+	local o = REG.Opts[id]
+	if not o then return REBUILD_ATTRS[name] == true end
+	return type(o.Rebuild) == "table" and o.Rebuild[name] == true
+end
+
+-- a window opened from another one (the menu, BB13 the settings window) gets a back button to it
+local function openSub(id, arg)
+	pendingFromMenu = currentId or "Menu"
+	Panels.Open(id, arg)
 end
 
 ------------------------------------------------------------------ panel builders: build(parent) -> update()?
@@ -2862,9 +2905,22 @@ end
 
 ------------------------------------------------------------------ render / open / close
 -- keep = true: a data refresh of the same panel (B14) keeps the scroll position and skips the input guard
+-- BB13: a window's title (a registered window's opts.Title may be a function, e.g. Korean / English)
+function REG.Title(id)
+	local o = REG.Opts[id]
+	local t = o and o.Title
+	if type(t) == "function" then
+		local ok, v = pcall(t)
+		t = ok and v or nil
+	end
+	if type(t) == "string" then return t end
+	return T.Titles[id] or ""
+end
+
 local function render(keep)
 	if not currentId or not ensureRoot() then return end
-	local keptY = (keep == true and content) and content.CanvasPosition.Y or 0
+	local fixed = REG.Opts[currentId] ~= nil and REG.Opts[currentId].FixedBody == true
+	local keptY = (keep == true and content and not fixed) and content.CanvasPosition.Y or 0
 	if currentId == "Nickname" then
 		window.Visible = false
 	else
@@ -2872,17 +2928,23 @@ local function render(keep)
 		window.Visible = true
 	end
 	layoutRoot()
+	REG.CleanupBuilt()
 	clearContent()
+	content.Visible = not fixed
+	REG.Fixed.Visible = fixed
 	orderCounter = 0
 	currentUpdate = nil
-	titleLabel.Text = T.Titles[currentId] or ""
-	backButton.Visible = openedFromMenu and currentId ~= "Menu"
+	titleLabel.Text = REG.Title(currentId)
+	local backTo = type(openedFromMenu) == "string" and openedFromMenu ~= currentId and openedFromMenu or nil
+	backButton.Visible = backTo ~= nil
+	if backTo then backButton.Text = "← " .. REG.Title(backTo) end
 	if currentId == "Story" then titleLabel.Text = STORY.Title() end
-	local ok, result = pcall(BUILDERS[currentId], content)
+	local ok, result = pcall(BUILDERS[currentId], fixed and REG.Fixed or content)
 	if not ok then
 		Util.Warn(TAG, "failed to build " .. tostring(currentId) .. ": " .. tostring(result))
 		return
 	end
+	if REG.Opts[currentId] then REG.Built = currentId end
 	if type(result) == "function" then
 		currentUpdate = result
 		local ok2, err = pcall(result)
@@ -2890,6 +2952,7 @@ local function render(keep)
 	end
 	if currentId == "Nickname" then layoutRoot() end
 	if keep == true then
+		if fixed then return end -- a fixed body keeps its own tab / scroll state
 		-- the rebuilt list has about the same height: stay where the player was (re-applied once the new canvas
 		-- size is known, clamped to it)
 		local id, frame = currentId, content
@@ -2938,6 +3001,41 @@ function Panels.CurrentId()
 	return currentId
 end
 
+-- BB13: what a registered window's Build(parent, kit, arg) gets to work with (the same buttons, texts and rules as the
+-- built-in windows). kit.Open opens another window with a back button to this one; kit.OnAttr(fn) calls fn(name) on
+-- every player attribute change while this window is open (cleared with it)
+function REG.Kit()
+	return {
+		Button = makeButton, Text = addText, Row = addRow, Column = addColumn, Toast = toast, Fire = fire, Confirm = confirm,
+		Palette = PALETTE, Theme = theme, Font = BODY_FONT, NextOrder = nextOrder, SetEnabled = setEnabled, Paint = paintButton,
+		Attr = attr, Num = num, GameAttr = gameAttr, IsDead = isDead,
+		Rebuild = function(keep) queueRebuild(keep) end,
+		Close = function() Panels.Close(true) end,
+		Open = function(id, arg) openSub(id, arg) end,
+		OnAttr = function(fn)
+			if type(fn) == "function" then table.insert(REG.AttrFns, fn) end
+		end,
+	}
+end
+
+-- BB13: another client module adds its window. opts = { Build = fn(parent, kit, arg) -> update?, Title = string |
+-- fn() -> string, FixedBody = bool (a plain frame instead of the scrolling list), Rebuild = { [attr] = true } | false,
+-- Cleanup = fn() }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
+-- Keybinds.Start, the HUD [메뉴] squares show once their window is registered
+function Panels.Register(id, opts)
+	if type(id) ~= "string" or type(opts) ~= "table" or type(opts.Build) ~= "function" then
+		Util.Warn(TAG, "Register needs an id and opts.Build: " .. tostring(id))
+		return false
+	end
+	REG.Opts[id] = opts
+	BUILDERS[id] = function(parent)
+		return opts.Build(parent, REG.Kit(), REG.Arg)
+	end
+	local kb = C and C.Keybinds
+	if type(kb) == "table" and type(kb.Refresh) == "function" then pcall(kb.Refresh) end
+	return true
+end
+
 function Panels.Open(id, arg)
 	local fromMenu = pendingFromMenu
 	pendingFromMenu = false
@@ -2976,6 +3074,7 @@ function Panels.Open(id, arg)
 	end
 	if id == "Items" then ITEMS.Seen = true end -- B14: the menu glow stops once the list was seen
 	openedFromMenu = fromMenu
+	REG.Arg = arg -- BB13: a registered window's Build gets it (e.g. Settings { Tab = "Keys" })
 	currentId = id
 	-- The nickname result is displayed in its own panel; transient game tips stay behind it.
 	root.ZIndex = id == "Nickname" and 96 or ZINDEX
@@ -2996,6 +3095,8 @@ function Panels.Close(manual)
 	selectedTarget = nil
 	if root then root.Visible = false end
 	NICK.Destroy()
+	REG.CleanupBuilt()
+	REG.Arg = nil
 	clearContent()
 	if farewell then toast(farewell, "info", 4) end
 end
@@ -3106,12 +3207,18 @@ function Panels.Start()
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(hookCamera)
 
 	player.AttributeChanged:Connect(function(name)
+		if currentId and REG.Built == currentId then -- BB13 kit.OnAttr: the registered window refreshes itself
+			for _, fn in table.clone(REG.AttrFns) do
+				local ok, err = pcall(fn, name)
+				if not ok then warnThrottled("OnAttr error in " .. tostring(currentId) .. ": " .. tostring(err)) end
+			end
+		end
 		if currentId == "Welcome" and name == "TutorialStep" and currentUpdate then
 			local ok, err = pcall(currentUpdate)
 			if not ok then warnThrottled("welcome update error: " .. tostring(err)) end
 		elseif currentId == "Menu" and name == "TutorialStep" then
 			queueRebuild()
-		elseif currentId and REBUILD_ATTRS[name] then
+		elseif currentId and REG.WantsRebuild(currentId, name) then
 			queueRebuild()
 		elseif currentId == "Items" and ITEMS.Attrs[name] then
 			ITEMS.CheckPending() -- an equip answer is the WeaponTier change itself
@@ -3119,6 +3226,17 @@ function Panels.Start()
 		elseif currentId == "Nickname" and (name == "Nickname" or name == "NicknameVerified" or name == "NicknameStatus") then
 			NICK.Update()
 		end
+	end)
+
+	-- BB13: Esc opens Roblox's own menu (GuiService.MenuOpened) and closes the open game window, like the world map; the
+	-- pad's B closes it too
+	pcall(function()
+		GuiService.MenuOpened:Connect(function()
+			if currentId then Panels.Close(true) end
+		end)
+	end)
+	UserInputService.InputBegan:Connect(function(input)
+		if input.KeyCode == Enum.KeyCode.ButtonB and currentId then Panels.Close(true) end
 	end)
 
 	task.spawn(function()

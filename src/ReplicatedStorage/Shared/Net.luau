@@ -54,6 +54,8 @@ Net.GameStateDefaults = {
 	GhostKingNextAt = 0, GhostKingActive = false, GhostKingEndsAt = 0, -- A23-45: the HauntedHollow miniboss
 	-- RankingService (BB10): the current ranking week (Config.WeekIndex) and when it ends (Monday 00:00 KST, os.time)
 	RankWeekId = 0, RankWeekEndsAt = 0,
+	-- SettingsService (BB3 footer): false while this server runs without a DataStore (DataService memory mode)
+	SaveOK = true,
 }
 
 -- server only; call once, first thing in Main.server.luau

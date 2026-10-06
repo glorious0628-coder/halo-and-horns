@@ -40,6 +40,8 @@ STATIC = {  # no bones: the client WOBBLE layer moves them (slimes hop / squash,
     "111244961270470": "PumpkinSlime",
     "77132701345894": "LittleGhost",
     "71855842778142": "PumpkinKing",
+    "84018800442559": "GhostMinion",  # A23-45 MonsterGhostMinion_raw.glb (Studio import 2026-10-06, Upload to Roblox)
+    "111999674841692": "GhostKing",  # A23-45 MonsterGhostKing_raw.glb (same import)
 }
 BIG_SLIME_TEXTURE = "rbxassetid://139511730966494"
 # GLBs whose front is not the importer's front: PrimaryPart.PivotOffset yaw in degrees. Applied to EVERY model in
@@ -48,7 +50,7 @@ BIG_SLIME_TEXTURE = "rbxassetid://139511730966494"
 # the BatGoblin rig face +90 (BatGoblin was 180 = facing sideways; Slime/BigSlime/LittleGhost had no fix = face on the
 # side). Goblin, GoblinBrute, SkeletonKnight face front with 0. PetBabySlime is not in the game yet: check it with PET-3.
 FRONT_FIX = {"Skeleton": 90, "PumpkinSlime": 90, "PumpkinKing": 90, "BatGoblin": 90,
-             "Slime": 90, "BigSlime": 90, "LittleGhost": 90}
+             "Slime": 90, "BigSlime": 90, "LittleGhost": 90, "GhostMinion": 90, "GhostKing": 90}
 MODELS = {**RIGGED, **STATIC}
 
 PREP = '''local SS=game:GetService("ServerStorage")

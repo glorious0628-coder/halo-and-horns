@@ -1,5 +1,7 @@
 # 게임성 개발(1) 인계 — 2026-10-06 멈춤 시점
 
+- **최신(2026-10-06 저녁):** 유령 3D(왕 111999674841692·똘마니 84018800442559) CustomModels 연결·정면 확인(devlog 16, 검수 통과), 크기 똘마니 3·왕 9(Config Scale 0.6/1.8). 이름표는 같은 종류 5칸 안이면 하나(MonsterLabels). **BB13** Panels.Register(kit·Cleanup·FixedBody·Rebuild 거르기·RENDER Arg·뒤로 = 온 창·Esc/패드 B 닫기) + **BB3** SettingsUI.luau(설정 창 영어: 직업·환생·오프닝·이름 숨기기·휴가·닉네임(BB8 전까지)·키 설정 탭·효과음·흔들림·키 표시·버전 줄·저장 꺼짐) + Fx 효과음 배수·흔들림 끄기 + SettingsService가 GameState SaveOK. 메인 Studio에 a0e8098·052c7b4와 함께 동기화, 자기 Play로 Settings·Keys 탭 확인(docs/art/verification_2026-10-06/bb13/). **남은 것:** Config.Help(BB15 도움말·새 소식, 규칙 조사 중) → 등록 확인 → 오프라인 keys_settings 재검사 → 커밋. 그다음 A23-34 맨손 병합(검수 OK 오면, 클라이언트 §6 + HUD doUpgrade 서버 경유), A23-48 내 창 글자 영어.
+
 - **최신(새 계정, 한도로 멈춤):** 개발 2 병합 끝 = main **dfefaaa**(푸시, eac036f·ff38ce4·e078bf5, 충돌 5곳 해결, 병합 트리 오프라인 16종 변형 포함 통과). 이미지 개발 미완성 HUD v2는 worktree `Game-imgdev`로 옮겨져 작업 폴더 src는 HEAD와 같음. 임시 worktree `Game-wtc`는 병합용(지워도 됨).
 - **Studio:** 메인 Studio(창 이름 '악마 키우기 (placeId: 81671223175574)') 열림·Edit 모드. dfefaaa src 동기화(74개 씀·6개 지움) + `apply_studio_state.py`(몬스터 모델 10종 다시 넣음) 끝. **플레이 확인·Save As·place 커밋은 아직.**
 - **다음:** 플레이로 랭킹·게시판 서버 확인(오류 0) → Save As build/GoodEvil.rbxlx → place/ 커밋 → b9ada3b 땅·조명·나무 메인 적용 → 호박밭 배치 4개 → BB13(A23-38 + A23-40 B안: 아이콘 줄 끝 [메뉴]에서 위로 펼침) → BB3 → BB6 → BB7. 개발 2 BB14는 rebase 끝 = **65e2ba6**(dev2, 푸시됨; 500f60d는 옛 해시라 쓰지 않음) → 병합 뒤 몬스터·플레이어·낙하 쓰러짐에 본인만 Net.Fx 'KO' 확인. A23-39 펫 조련사 클라이언트는 PET-3와 10/17~18(검수에 알림).

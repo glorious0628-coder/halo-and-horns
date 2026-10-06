@@ -3914,11 +3914,29 @@ end
 local soundCache = {}
 local soundLast = {}
 
+-- BB3 settings, read when used (C.Settings): Sound Effects 0..1 multiplies SOUND_VOLUME; Screen Shake off (or Roblox's
+-- Reduced Motion) = no camera shake
+function MOTION.Pref(key, default)
+	local st = C and C.Settings
+	if type(st) ~= "table" or type(st.Get) ~= "function" then return default end
+	local ok, v = pcall(st.Get, key)
+	if ok and v ~= nil then return v end
+	return default
+end
+
+function MOTION.ShakeAllowed()
+	if MOTION.Pref("Shake", true) == false then return false end
+	local ok, reduced = pcall(function() return game:GetService("GuiService").ReducedMotionEnabled end)
+	return not (ok and reduced == true)
+end
+
 function Fx.PlaySound(name)
 	if type(name) ~= "string" then return end
 	local sounds = Config.Sounds
 	local id = type(sounds) == "table" and sounds[name] or nil
 	if type(id) ~= "string" or id == "" then return end
+	local mult = tonumber(MOTION.Pref("Sfx", 1)) or 1
+	if mult <= 0 then return end
 	local now = os.clock()
 	local last = soundLast[name]
 	if last and now - last < SOUND_MIN_GAP then return end
@@ -3929,10 +3947,10 @@ function Fx.PlaySound(name)
 			s = Instance.new("Sound")
 			s.Name = "Fx_" .. name
 			s.SoundId = id
-			s.Volume = SOUND_VOLUME[name] or 0.5
 			s.Parent = SoundService
 			soundCache[name] = s
 		end
+		s.Volume = (SOUND_VOLUME[name] or 0.5) * math.clamp(mult, 0, 1)
 		SoundService:PlayLocalSound(s)
 	end)
 end
@@ -3947,6 +3965,7 @@ function Fx.ShowNumber(worldPos, text, color, scale, opts)
 end
 
 function Fx.Shake(magnitude, duration)
+	if not MOTION.ShakeAllowed() then return end
 	magnitude = math.min(asNum(magnitude, 0), MAX_SHAKE)
 	duration = math.min(asNum(duration, 0), MAX_SHAKE)
 	if magnitude <= 0 or duration <= 0 then return end

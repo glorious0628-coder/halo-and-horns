@@ -84,6 +84,16 @@ function SettingsService.Start()
 		local ok, err = pcall(function() send(player, 0, SettingsService.Get(player)) end)
 		if not ok then Util.Warn(TAG, "ready: " .. tostring(err)) end
 	end)
+
+	-- BB3 settings footer: GameState SaveOK = false while DataService runs in memory mode (no saving on this server);
+	-- the DataStore probe finishes after start and can fall back later, so it is checked again every 30 s (a delay
+	-- chain, no waiting thread)
+	local function publishSaveOK()
+		local okMode, memory = pcall(function() return S.DataService.IsMemoryMode() end)
+		if okMode then pcall(function() Net.GameState():SetAttribute("SaveOK", memory ~= true) end) end
+		task.delay(30, publishSaveOK)
+	end
+	publishSaveOK()
 	print("[SettingsService] started")
 end
 

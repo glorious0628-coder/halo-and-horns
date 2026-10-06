@@ -1874,7 +1874,7 @@
       "Text": "BB1 lists Allowed 'Keypad0-Keypad9'; Roblox names them KeypadZero..KeypadNine, so those names are stored (KeyUsable('Keypad1') = false, KeyLabel('Keypad1') = Num1)."
     }
   ],
-  "staticChecks": 27,
+  "staticChecks": 28,
   "staticFailures": [],
   "mutations": {
     "total": 42,
@@ -2524,20 +2524,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c832b908853afdc60c6a8c8d4998190a06cfaeb837e6dce1db4ec2cee22a4551",
+    "src/ReplicatedStorage/Shared/Config.luau": "8c73218f10fc7c4a96dcb188ad0644912f18f1ad388614d0365a2278b1dcfcd3",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ReplicatedStorage/Shared/Net.luau": "a9063fb3175f722682c1def371bb55bf60da5f9da440b23254ea0f2d198debd9",
+    "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
     "src/ServerScriptService/DataService.luau": "d360640bf7f1262d2bdf17d6eea7dd104cae44f4b29989c4263b94819b9316ba",
-    "src/ServerScriptService/SettingsService.luau": "aa11a9cb12e31fc89b54a63a34284a6349311a22af1b1c15b1c4dd28ae0c92b7",
-    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "7acadc48447c9d7b7cf49effa25ef3f50941d3d358f3c9a132ee8ab2c7cc8dae",
+    "src/ServerScriptService/SettingsService.luau": "fb99b60c6422f4bb60ccaa904086a50a85dca490a7edd87939440922fd7b1102",
+    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "780b23fcf830fb004f52ccdb68e98a2229c8379464c52d4f31ef0bb93dc428f1",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "ec69a9e998bf7a29dad0381366ebfa2e789b1100f4d88190dd12cb05e1399533",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "6bfa7738e20efad1436d4413cac02b719e902fb50d1ff68d2c69e030135f184e",
     "src/ServerScriptService/Main.server.luau": "7162a611113e4d53f875fb2939868cd6661078d40e3e2b140bca00c397715310",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "e6cae7605d17d3f50e883b6fd4e6031aaec339783196c5def81b3f119e49078b",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "3746635050b469426e15d014730dd95208d40a12b08e52dadb0a99ec109a44fc",
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "816bb47c0c9c3da3050315706defe9cbaa9f43800ddf9d9ec8d88546eecd254c",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
-    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "5b5dccc40f5f328d8c452599352059f993a8fd99b7fbd7c0614d60f9d7006a45",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "e2621ed6c49bf3632c34cfcd2e42b78edf48ae5c2bde3966ec2a90297ea560c0",
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "241e393ed799ec8f74b55ca3dd63cbe79eaf5b0a8764621aa2edea9842bc18ba",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "d97499246ca246a5bdb42b857e08ace230965698670501c094a98a2fcd9ce38c",
     "src/ServerScriptService/StoryQuestService.luau": "34ca99a517022184b1b1ddaf2bb9b62cf664fe5b51f02bf33b4dfaa5c20f9205",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "11bb79a00b39b05d23bb021bca6861fec2346d19b166e6c027ce3769ac0ef03b"
   },

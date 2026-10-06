@@ -260,9 +260,9 @@ def static_checks(over: dict[str, str] | None = None) -> tuple[int, list[str]]:
 
     # BB1 acceptance: 'Enum.KeyCode.' only in Keybinds, Intro (Return / KeypadEnter / ButtonA), WorldMap (ButtonB / Escape)
     # and PlayerListUI (Tab: Config.Keybinds Reserved = Roblox's own player-list key; A23-26 replaces Roblox's list with
-    # ours on the same, non-rebindable key)
+    # ours on the same, non-rebindable key); Panels (ButtonB: BB13 "the pad's B closes every Panels window", like WorldMap)
     allowed_codes = {"Intro.luau": {"Return", "KeypadEnter", "ButtonA"}, "WorldMap.luau": {"ButtonB", "Escape"},
-                     "PlayerListUI.luau": {"Tab"}}
+                     "PlayerListUI.luau": {"Tab"}, "Panels.luau": {"ButtonB"}}
     for path in sorted((ROOT / "src/StarterPlayer").rglob("*.luau")):
         codes = set(re.findall(r"Enum\.KeyCode\.(\w+)", by_path.get(path.resolve()) or read(path)))
         if not codes or path.name == "Keybinds.luau":
