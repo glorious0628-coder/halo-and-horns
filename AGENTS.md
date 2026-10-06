@@ -15,7 +15,7 @@ Read this file first, then `docs/HANDOFF_CODEX.md` (the top "최신 인계" sect
 ## Latest user decisions (2026-10-05)
 - **Gameplay first, art later.** Work order: first 10 minutes playable and fun → combat/auto toggle → loot and growth → town services → the rest of the beta list. This wins over the order of the beta list in RELEASE_PLAN.
 - **Combat = manual + auto-combat toggle** (supersedes the "no auto attack" part of A22; contract in `docs/SPEC_ADDENDUM.md` A23 and `docs/GDD.md` §0-2):
-  - Manual: one attack per button/key press or short click; holding or dragging never repeats; left-drag rotates the camera. Skill uses MP and cooldown (basic skill MP20 / 3 s).
+  - Manual: one attack per button/key press or short click; holding or dragging never repeats. Camera: right-drag rotates (Roblox default); left-drag does NOT rotate (user 2026-10-06, SPEC A23-51). Skill uses MP and cooldown (basic skill MP20 / 3 s).
   - Auto combat starts **OFF**. It is unlocked by the **optional quest "내 싸움을 배우는 왕관 조각"**, available right after faction selection (no level gate). After unlocking, the player toggles it ON/OFF; the choice is saved.
   - In auto mode the character attacks **and uses skills** by itself when MP/cooldown allow. Auto attacks and auto skills hit **monsters only**; players are hit only by manual input.
   - Charge gauge, PERFECT, auto-release and stack requirements stay removed.
