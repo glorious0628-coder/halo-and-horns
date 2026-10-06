@@ -2145,10 +2145,23 @@ Config.Announce = {
 		PumpkinKingDefeatEn = "The Pumpkin King spilled a pile of candy!",
 		PumpkinKingLeave = "호박 대왕이 사탕 자루를 들고 돌아갔어요. 다음에 또 와요!",
 		PumpkinKingLeaveEn = "The Pumpkin King went home with its candy sack. See you next time!",
-		NameHidden = "이제 전체 알림에 내 이름 대신 진영 이름이 나와요.",
-		NameShown = "이제 전체 알림에 내 이름이 나와요.",
-		MenuShow = "알림에 내 이름: 보여요",
-		MenuHide = "알림에 내 이름: 숨겨요",
+		NameHidden = "이제 전체 알림·랭킹에 내 이름 대신 진영 이름이 나와요.",
+		NameShown = "이제 전체 알림·랭킹에 내 이름이 나와요.",
+		MenuShow = "알림·랭킹에 내 이름: 보여요",
+		MenuHide = "알림·랭킹에 내 이름: 숨겨요",
+		-- BB37 AnnounceService.PublicName (server-wide NotifyAll lines, town board, ranking rows) and the settings row
+		HiddenName = "%s 한 명", HiddenNameEn = "A member of %s", -- (faction name)
+		Someone = "누군가", SomeoneEn = "Someone", -- hidden name without a faction
+		Honorific = "님", HonorificEn = "", -- appended to a shown name when the line reads "%s이 …"
+		SettingLabel = "알림·랭킹에 내 이름 숨기기", SettingLabelEn = "Hide my name in announcements and rankings",
+		SettingNotes = {
+			"같은 서버의 머리 위 이름표와 Tab 목록은 숨길 수 없어요",
+			"전체 랭킹에는 로블록스 이름과 얼굴이 나와요. 숨기면 \"<진영> 한 명\"으로 보여요",
+		},
+		SettingNotesEn = {
+			"Nametags and the Tab list in your server always show your name",
+			"Global rankings show your Roblox name and face. Hidden, they show \"A member of <faction>\"",
+		},
 	},
 	-- AnnounceService.Broadcast event lines: no finder, never grouped; the client shows Text[Key] (Text[Key .. "En"]
 	-- in English) in the chat in Color, and Toast = also a toast (skipped while a picker / the opening is open)
@@ -2628,9 +2641,9 @@ Config.Text = {
 	BoldStrong = "센 상대를 이겼어요! 명예·악명·전쟁 점수 ×2",
 	BoldWeak = "약한 상대라 명예·악명·전쟁 점수가 절반이에요.",
 	BountyGain = "현상금 %s골드 획득! 명예 +%d",
-	BountyAnnounce = "[빛의 기사단] %s님이 현상금 %s골드를 받았어요!",
+	BountyAnnounce = "[빛의 기사단] %s이 현상금 %s골드를 받았어요!", -- BB37: AnnounceService.PublicName(p, true)
 	BullyBountyGain = "깡패 현상금 %s골드 획득!",
-	MostWanted = "%s이(가) 최고 현상수배범이 되었어요! 현상금 %s골드",
+	MostWanted = "%s이 최고 현상수배범이 되었어요! 현상금 %s골드", -- BB37: PublicName(p, true)
 	BullyKO = "깡패 처치! 보상 없음, 덩치·공격력 -15%% (깡패 %d단계)",
 	BullyVictim = "깡패에게 당했어요. 잃은 건 없어요!",
 	BullyDecay = "깡패 단계가 줄었어요 (%d단계)",
@@ -2652,7 +2665,7 @@ Config.Text = {
 	GhostButton = "유령으로 붙잡기 ({GhostHold})", -- BB1 key token: the key part shows only on keyboards
 	GhostWait = "다시 붙잡기 %d초",
 	AvengerBonus = "복수 대행 보너스 +%s골드!",
-	GrudgeAvengedAll = "%s님이 %s의 원한 자루를 되찾았어요!",
+	GrudgeAvengedAll = "%s이 %s의 원한 자루를 되찾았어요!", -- BB37: PublicName(killer, true), PublicName(thief, true)
 	-- travel / blocks
 	TravelBlockedStars = "현상수배 별이 3개 이상이면 걸어서 도망쳐야 해요!",
 	TravelBlockedCombat = "전투 중에는 할 수 없어요.",
@@ -2686,7 +2699,7 @@ Config.Text = {
 	-- rebirth
 	RebirthNeed = "환생하려면 레벨 %d이(가) 필요해요.",
 	RebirthDone = "환생 완료! 레벨만 처음부터, 골드·무기·아이템은 그대로예요. 골드·경험치 영구 +%d%%", -- A23-14
-	RebirthAnnounce = "%s님이 %d번째 환생을 했어요!",
+	RebirthAnnounce = "%s이 %d번째 환생을 했어요!", -- BB37: PublicName(p, true)
 	-- quests
 	QuestDone = "추가 퀘스트 완료! +%s골드",
 	DailyReady = "일일 퀘스트 완료! [받기]를 눌러요.",
@@ -2701,7 +2714,7 @@ Config.Text = {
 	GooseReward = "황금 거위 보상! +%s골드 +%s 경험치",
 	GooseCheer = "응원별 +1 (%d/5) — 5개 모이면 다음 황금 보상은 희귀!",
 	RareToast = "희귀 보상! ×5",
-	RareAnnounce = "%s님이 황금 거위 희귀 보상을 받았어요!",
+	RareAnnounce = "%s이 황금 거위 희귀 보상을 받았어요!", -- BB37: PublicName(p, true)
 	-- kaiju
 	KaijuQueued = "다른 괴수가 있어요. 그 괴수가 끝나면 변신해요!",
 	KaijuReward = "괴수 토벌 보상 +%s골드!",
@@ -2738,6 +2751,19 @@ Config.HitReact = {
 		Swing = { Warrior = 0.06, Archer = 0.17, Mage = 0.25 },
 		Release = { Warrior = 0.17, Mage = 0.28, Archer = 0.33 },
 	},
+}
+
+----------------------------------------------------------------- 게임성 개발 2 (server-only session) block
+-- New top-level tables of the server session live here, in one block at the end of the file (file-owner rule
+-- docs/design/dev2_session_handoff_2026-10-06.md).
+
+-- BB12 Tab player list (A23-21: power, level, rebirths, fame; gold hidden so the list is no plunder picker).
+-- Column ids (PlayerService COLUMN): Power = the CombatPower attribute (BB4, same number as the HUD), Level, Rebirths,
+-- Fame = Halo Honor / Horns Infamy / Neutral this week's 장인 명성 (WeekArtisan, A23-24) / None 0, Gold = bank + carried.
+-- Creation order = column order; Roblox sorts the list by the first column. Changing the list is this one line.
+Config.Leaderstats = {
+	Columns = { "Power", "Level", "Rebirths", "Fame" },
+	Names = { Power = "전투력", Level = "레벨", Rebirths = "환생", Fame = "명성", Gold = "골드" },
 }
 
 return Config

@@ -67,6 +67,16 @@ GooseService.GooseFinished = Util.Signal.new() -- (result: "Halo" | "Horns" | "T
 local S = nil
 local gameState = nil
 
+-- BB37: every server-wide line names players through AnnounceService.PublicName (hidden -> "<faction> 한 명")
+local function publicName(p, honorific)
+	local A = S.AnnounceService
+	if A and A.PublicName then
+		local ok, name = pcall(A.PublicName, p, honorific)
+		if ok and type(name) == "string" then return name end
+	end
+	return Util.PlayerDisplayName(p) .. (honorific and Config.Announce.Text.Honorific or "")
+end
+
 -- event state
 local active = false
 local endsAt = 0
@@ -571,7 +581,7 @@ local function rewardPlayer(p, result, f, share)
 
 	if rare then
 		Net.Fx(p, "Rare", { Gold = gold, XP = xp })
-		Net.NotifyAll(string.format(Config.Text.RareAnnounce, Util.PlayerDisplayName(p)), "info")
+		Net.NotifyAll(string.format(Config.Text.RareAnnounce, publicName(p, true)), "info")
 	end
 
 	if not won then -- loss or tie: +1 cheer star

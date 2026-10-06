@@ -43,7 +43,9 @@ local collisionGroupOk = false
 local CHILD_TIMEOUT = 5 -- seconds to wait for Humanoid / HumanoidRootPart / parenting
 local CLOSE_TIMEOUT = 25 -- BindToClose budget
 local FINALIZE_WAIT = 30 -- a second FinalizeLeave call waits this long for the first one
-local LEADERSTAT_KEYS = { "Level", "BankGold", "CarriedGold", "Rebirths", "Honor", "Infamy", "Faction" }
+-- attributes any Tab list column reads (BB12 COLUMN below); a change of one refreshes the row
+local LEADERSTAT_KEYS = { "CombatPower", "Level", "WeaponTier", "WeaponEnhance", "BankGold", "CarriedGold", "Rebirths",
+	"Honor", "Infamy", "WeekArtisan", "Faction" }
 
 local MAX_SLOPE_ANGLE = 46 -- A11-R2: Terrain ridges (>= 50 deg) cannot be walked over
 local CAMERA_MAX_ZOOM = 40 -- A12: players never see the whole world (kaiju may raise it while transformed)
@@ -275,35 +277,52 @@ local function toInt(v)
 	return math.floor(v)
 end
 
+-- BB12: the value of one Tab list column (Config.Leaderstats.Columns ids), read from the mirrored attributes
+local COLUMN = {
+	-- BB4 power (JusticeService sets CombatPower on PlayerReady; before that the same formula from the attributes)
+	Power = function(p)
+		local v = p:GetAttribute("CombatPower")
+		if v == nil then
+			v = Config.CombatPower(math.max(1, toInt(p:GetAttribute("Level"))),
+				math.clamp(toInt(p:GetAttribute("WeaponTier")), 1, Config.MaxWeaponTier), toInt(p:GetAttribute("WeaponEnhance")))
+		end
+		return toInt(v)
+	end,
+	Level = function(p) return toInt(p:GetAttribute("Level")) end,
+	Rebirths = function(p) return toInt(p:GetAttribute("Rebirths")) end,
+	-- Halo: Honor, Horns: Infamy, Neutral: this week's 장인 명성 (A23-24, RankingService's WeekArtisan), None: 0
+	Fame = function(p)
+		local f = p:GetAttribute("Faction")
+		local key = (f == "Halo" and "Honor") or (f == "Horns" and "Infamy") or (f == "Neutral" and "WeekArtisan") or nil
+		return key and toInt(p:GetAttribute(key)) or 0
+	end,
+	-- bank + carried (A23-21: not listed, it picked plunder targets; kept so a one-line Config change brings it back)
+	Gold = function(p) return toInt(p:GetAttribute("BankGold")) + toInt(p:GetAttribute("CarriedGold")) end,
+}
+
 local function buildLeaderstats(player)
 	local old = player:FindFirstChild("leaderstats")
 	if old then old:Destroy() end
 
 	local folder = Instance.new("Folder")
 	folder.Name = "leaderstats"
-	local function intValue(name)
-		local v = Instance.new("IntValue")
-		v.Name = name
-		v.Parent = folder
-		return v
+	-- creation order = column order in the player list (Roblox sorts the list by the first column)
+	local L = Config.Leaderstats
+	local columns = {}
+	for _, id in L.Columns do
+		if COLUMN[id] and not columns[id] then
+			local v = Instance.new("IntValue")
+			v.Name = L.Names[id] or id
+			v.Parent = folder
+			columns[id] = v
+		else
+			Util.Warn(TAG, "leaderstats: unknown or repeated column " .. tostring(id))
+		end
 	end
-	-- creation order = column order in the player list
-	local levelV = intValue("레벨")
-	local goldV = intValue("골드")
-	local rebirthV = intValue("환생")
-	local fameV = intValue("명성")
 
 	local function update()
-		levelV.Value = toInt(player:GetAttribute("Level"))
-		goldV.Value = toInt(player:GetAttribute("BankGold")) + toInt(player:GetAttribute("CarriedGold"))
-		rebirthV.Value = toInt(player:GetAttribute("Rebirths"))
-		local f = player:GetAttribute("Faction")
-		if f == "Halo" then
-			fameV.Value = toInt(player:GetAttribute("Honor"))
-		elseif f == "Horns" then
-			fameV.Value = toInt(player:GetAttribute("Infamy"))
-		else
-			fameV.Value = 0 -- None / Neutral (phase 2 adds 장인 명성)
+		for id, v in columns do
+			v.Value = COLUMN[id](player)
 		end
 	end
 	update()

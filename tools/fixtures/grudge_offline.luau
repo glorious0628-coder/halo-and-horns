@@ -600,7 +600,10 @@ runGroup("sack-avenged", function()
 	check(fx ~= nil and fx.Kind == "Plunder" and fx.Data.Amount == 120 and fx.Data.From.X == 50 and fx.Data.To.X == 10,
 		"Plunder Fx flies from the thief to the victim", show(fx))
 	check(f:BankOf(H, "Bounty") == 100 and f:Told(H, f:Text("AvengerBonus", "100"), "reward") == 1, "the Halo killer gets the avenger bonus 100 (Bounty)")
-	check(#f.All == 1 and f.All[1].Text == f:Text("GrudgeAvengedAll", "Knight", "Thief"), "server-wide avenged line", show(f.All))
+	-- BB37: the line names both players through AnnounceService.PublicName(p, true) (no AnnounceService here: the
+	-- fallback = nickname + Config.Announce.Text.Honorific)
+	local hon = f.Config.Announce.Text.Honorific
+	check(#f.All == 1 and f.All[1].Text == f:Text("GrudgeAvengedAll", "Knight" .. hon, "Thief" .. hon), "server-wide avenged line", show(f.All))
 	check(f:Told(T, f:Text("SackLost"), "bad") == 1, "the thief is told SackLost")
 	check((f.Resolved[1] or {}).Outcome == "Avenged" and (f.Resolved[1] or {}).Total == 155, "SackResolved Avenged 155", show(f.Resolved))
 	check(V1.Data.PairCD["refund:0"] == f:Time() and V2.Data.PairCD["refund:0"] == f:Time() and H.Data.PairCD["avenge:0"] == f:Time(),
