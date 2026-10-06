@@ -923,6 +923,16 @@ The Server scope and nametags are unchanged: players in the same server see each
 > - Weekly settle (Monday 00:00 KST, first server loop that sees the new WeekIndex): read the previous week's top 3 of each board (Global scope; fall back to this server when the read fails, retry next loop). Honor/Infamy top 3 -> data.RankReward = { WeekId, Board, Rank } (A23-22 reward for that week). PvP top 3 -> data.Outlaw = { WeekId } (A23-23 penalty for that week). Apply on join and live; store results in a MemoryStore/DataStore key 'HH_RankSettle_'..WeekId so every server applies the same list once.
 > - Outlaw effects (only while Outlaw.WeekId == current WeekIndex): same as the A23-22 bully penalty (auto off + reason, XP x0.5, drops x0.5 incl. jackpot, power unchanged), nametag line 2 red '무법자' shown even with HideAnnounceName, bounty x2 (max x2 total with BountyMult), HUD chip Config.Ranking.Text.OutlawChip. If BullyStacks >= 1 at the same time, apply the penalty once.
 > - Data: data.Rank gains PvP=0 (week field). Store names 'HH_Rank_'..Season..'_'..Board..'_W'..WeekId for the 3 boards.
+> - **2026-10-06 보상·벌칙 계산 확정 (검수 세션, A23-22/23/24 구현용):**
+>   - 기간: 주간 정산(월요일 00:00 KST 뒤 첫 루프)부터 다음 월요일 00:00 KST까지 한 주. data.RankReward = { WeekId = 정산한 주의 다음 주, Board, Rank }, data.Outlaw = { WeekId }. 효과는 WeekId == 현재 WeekIndex일 때만 켠다. 접속 중이면 정산 즉시 켜고, 주가 바뀌면 끈다.
+>   - 순위 칭호: TitleDefs에 'RankHonor1..3', 'RankInfamy1..3', 'RankArtisan1..3'(능력치 없음, 이름 예 "이번 주 명예 1위"). 정산 때 Grant, 주가 끝나면 Titles에서 제거(TitleSel이 그것이면 "")한다. 기간 칭호라 BB16 영구 칭호와 섞지 않는다.
+>   - 보상 적용 조건: 현재 Faction == 판 진영(Honor=Halo, Infamy=Horns, Artisan=Neutral). 진영을 바꾸면 그 주 보상은 꺼진다.
+>   - 경험치: xp = base × (기존 배율들) × (보상 1.10 또는 1) × (벌칙 0.5 또는 1). 벌칙 = BullyStacks >= 1 또는 Outlaw 이번 주. 둘 다여도 0.5 한 번.
+>   - 드랍 줄 확률: p = base × (오늘의 운·황금 등 기존 배율) × (보상 1.10 또는 1) × (벌칙 0.5 또는 1), 마지막에 [0, 1]로 자른다.
+>   - 대박 확률: j = Chance × (황금 ×3 등 기존 배율) × (벌칙 0.5 또는 1). **보상 +10%는 대박에 곱하지 않는다.** 지금 LootService의 rowMult(DropMult)가 대박에도 곱해지므로, 보상 배수는 줄 확률에만 쓰는 별도 배수(info.RowBonus)로 둔다.
+>   - 보상과 벌칙이 같이 걸리면(예: 명예 1위이면서 PvP 1위) 둘 다 곱한다: 줄 확률 ×1.10×0.5 = ×0.55, 경험치 ×0.55.
+>   - 첫 왕 슬라임 70% 주문서 1장 보장은 어떤 배수와도 상관없이 그대로다.
+>   - 현상금 ×2(무법자)는 Config.Bully.BountyMult와 겹쳐도 최대 ×2.
 > - **2026-10-06 추가 (SPEC A23-24):** 4th board Artisan (Week, Faction Neutral). Order = {'Honor','Infamy','Artisan','PvP'}, WeekCap.Artisan = 60. Credit: LootService giveItem tags Enh scrolls dropped by RollKill while Faction=='Neutral' and the player was active within 60 s (data.Rank.HandScroll[id] += n, week field); useEnhance consumes one tag of the same id after takeItem and, on success with a tag, credits after - before (clipped at MaxEnhance) via pcall(RankingService.Credit, player, 'Artisan', n). Transfer scrolls never credit. Weekly settle sends Artisan top 3 to data.RankReward like Honor/Infamy; reward applies only while Faction == 'Neutral'. Acceptance: a tagged Enh30 success at +2 credits 3; an untagged (AFK or Halo-era) scroll credits 0; a failure credits 0.
 > - Acceptance adds: a KO on a weaker player raises the killer's PvP score and not Honor/Infamy weekly score; a fair KO raises Honor/Infamy and not PvP; a friend KO raises neither; DebugCommand 'RankSettle' runs the weekly settle now and marks top 3 (Studio season only).
 
