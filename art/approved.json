@@ -2672,16 +2672,17 @@
   "note": "묶음 12. 전쟁 미터 위 왕관 표시(현재 기운 위치). Crown 키 대체. 32px에서도 읽힘."
  },
  "CLS_ArtisanTamer_M": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_ArtisanTamer_M.txt",
   "original": "art/out/s2/CLS_ArtisanTamer_M_a_src.png (1024x1536, Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_ArtisanTamer_M.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_ArtisanTamer_M.png",
   "size": "414x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --long 768 --tol 28 --soft 6 --holes --keep-largest (gear-emblem hole cleared), faint specks <200px dropped; checked light/navy/magenta/green, 4x pet/gear/boots; 2026-10-06 재정리: tools/img2/clean_haze.py로 발밑 그림자·팔/다리 사이 회색 잔여·작은 점 제거(다시 올려야 함)",
   "preview": "art/review/s2/b10_tamer_sheet.png",
-  "note": "A23-39 장인 길드 3번째 직업 펫 조련사(남). 장인 궁수(거절) 자리 → Config CharNeutralArcherM 자리(내부 직업 id Archer 그대로). 청록 재킷·모자·장갑·바지·부츠, 짧은 지휘봉, 옆에 아기 슬라임 펫(IconPetBabySlime과 같은 모습). 옷차림 검사 통과(얼굴·손만). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장만 생성(a), 바로 채택."
+  "note": "A23-39 장인 길드 3번째 직업 펫 조련사(남). 장인 궁수(거절) 자리 → Config CharNeutralArcherM 자리(내부 직업 id Archer 그대로). 청록 재킷·모자·장갑·바지·부츠, 짧은 지휘봉, 옆에 아기 슬라임 펫(IconPetBabySlime과 같은 모습). 옷차림 검사 통과(얼굴·손만). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장만 생성(a), 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "NameTag": {
   "status": "approved",
@@ -3371,159 +3372,172 @@
   "note": "묶음 17. 이벤트 아이콘 행운 클로버(오늘의 운 칩). 옛 IconClover 대체. 이미지 생성 2가 고름(1장 생성, 바로 채택). 글자 없음."
  },
  "CLS_HaloWarrior_F": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_HaloWarrior_F.txt",
   "original": "art/out/s2/CLS_HaloWarrior_F_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_HaloWarrior_F.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_HaloWarrior_F.png",
   "size": "514x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 빛 전사(여): 금발 포니테일, 흰·하늘 갑옷 겉옷. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 빛 전사(여): 금발 포니테일, 흰·하늘 갑옷 겉옷. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "CLS_HaloMage_M": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_HaloMage_M.txt",
   "original": "art/out/s2/CLS_HaloMage_M_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_HaloMage_M.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_HaloMage_M.png",
   "size": "540x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 빛 마법사(남): 짧은 금발, 흰 긴 로브. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 빛 마법사(남): 짧은 금발, 흰 긴 로브. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "CLS_HaloArcher_F": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_HaloArcher_F.txt",
   "original": "art/out/s2/CLS_HaloArcher_F_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_HaloArcher_F.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_HaloArcher_F.png",
   "size": "412x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 빛 궁수(여): 모래색 땋은 머리, 흰 웃옷·하늘 망토. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 빛 궁수(여): 모래색 땋은 머리, 흰 웃옷·하늘 망토. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "CLS_HornsWarrior_M": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_HornsWarrior_M.txt",
   "original": "art/out/s2/CLS_HornsWarrior_M_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_HornsWarrior_M.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_HornsWarrior_M.png",
   "size": "545x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 뿔 전사(남): 짧은 붉은 머리, 숯색 패딩. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 뿔 전사(남): 짧은 붉은 머리, 숯색 패딩. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "CLS_HornsMage_F": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_HornsMage_F.txt",
   "original": "art/out/s2/CLS_HornsMage_F_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_HornsMage_F.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_HornsMage_F.png",
   "size": "502x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 뿔 마법사(여): 긴 검은 머리, 빨강·숯색 후드 로브. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 뿔 마법사(여): 긴 검은 머리, 빨강·숯색 후드 로브. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "CLS_HornsArcher_M": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_HornsArcher_M.txt",
   "original": "art/out/s2/CLS_HornsArcher_M_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_HornsArcher_M.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_HornsArcher_M.png",
   "size": "449x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 뿔 궁수(남): 숯색 후드·빨간 목도리. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 뿔 궁수(남): 숯색 후드·빨간 목도리. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "CLS_ArtisanWarrior_F": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_ArtisanWarrior_F.txt",
   "original": "art/out/s2/CLS_ArtisanWarrior_F_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_ArtisanWarrior_F.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_ArtisanWarrior_F.png",
   "size": "498x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px); leg gap + floor shadow cleared by hand-checked mask",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 장인 전사(여): 갈색 포니테일·고글, 청록 앞치마. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 장인 전사(여): 갈색 포니테일·고글, 청록 앞치마. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "CLS_ArtisanMage_M": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_ArtisanMage_M.txt",
   "original": "art/out/s2/CLS_ArtisanMage_M_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_ArtisanMage_M.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_ArtisanMage_M.png",
   "size": "464x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 장인 마법사(남): 짧은 검은 머리·고글, 청록 긴 코트. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 장인 마법사(남): 짧은 검은 머리·고글, 청록 긴 코트. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "CLS_ArtisanTamer_F": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/CLS_ArtisanTamer_F.txt",
   "original": "art/out/s2/CLS_ArtisanTamer_F_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/CLS_ArtisanTamer_F.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/CLS_ArtisanTamer_F.png",
   "size": "431x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "묶음 19 반대 성별 직업 그림. 펫 조련사(여, A23-39): 땋은 머리·청록 모자, 지휘봉 + 아기 슬라임. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "묶음 19 반대 성별 직업 그림. 펫 조련사(여, A23-39): 땋은 머리·청록 모자, 지휘봉 + 아기 슬라임. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "FB_PotionMerchant": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/FB_PotionMerchant.txt",
   "original": "art/out/s2/FB_PotionMerchant_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/FB_PotionMerchant.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/FB_PotionMerchant.png",
   "size": "449x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "상점 NPC 최종 모습(handoff 9번). 물약 상인 전신(곱슬 주황 머리·안경, 초록 긴 코트, 물약 배낭). 3D/NPC 외형 기준. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "상점 NPC 최종 모습(handoff 9번). 물약 상인 전신(곱슬 주황 머리·안경, 초록 긴 코트, 물약 배낭). 3D/NPC 외형 기준. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택. 쓰임: 상점 초상·대화창용(지금 임시 NPC HumanoidDescription은 그대로, 3D 모습은 게임성 개발 1과 정함).",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "PTR_PotionMerchant": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/PTR_PotionMerchant.txt",
   "original": "art/out/s2/PTR_PotionMerchant_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/PTR_PotionMerchant.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/PTR_PotionMerchant.png",
   "size": "486x512 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "상점 NPC 최종 모습(handoff 9번). 물약 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "상점 NPC 최종 모습(handoff 9번). 물약 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "FB_MerchantC": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
   "prompt": "art/prompts/FB_MerchantC.txt",
   "original": "art/out/s2/FB_MerchantC_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/FB_MerchantC.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/FB_MerchantC.png",
   "size": "494x768 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "상점 NPC 최종 모습(handoff 9번). 장비 상인(지친 베테랑 대장장이) 전신(콧수염·주황 두건, 가죽 앞치마, 망치·코코아 머그). 3D/NPC 외형 기준. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "상점 NPC 최종 모습(handoff 9번). 장비 상인(지친 베테랑 대장장이) 전신(콧수염·주황 두건, 가죽 앞치마, 망치·코코아 머그). 3D/NPC 외형 기준. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택. 쓰임: 상점 초상·대화창용(지금 임시 NPC HumanoidDescription은 그대로, 3D 모습은 게임성 개발 1과 정함).",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  },
  "PTR_MerchantC": {
-  "status": "pending-user",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/PTR_MerchantC.txt",
   "original": "art/out/s2/PTR_MerchantC_a_src.png (Adobe MCP presigned download)",
-  "file": "art/review/s2/human/PTR_MerchantC.png (업로드 금지 — 사용자 확인 전)",
+  "file": "art/ui/PTR_MerchantC.png",
   "size": "487x512 RGBA",
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes --keep-largest, then tools/img2/clean_haze.py (floor shadow / gray blotches away from the body, specks <200px)",
   "preview": "art/review/s2/b19_people_sheet.png",
-  "note": "상점 NPC 최종 모습(handoff 9번). 장비 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택."
+  "note": "상점 NPC 최종 모습(handoff 9번). 장비 상인 대화 초상(512). 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장 생성, 바로 채택.",
+  "user_ok": "사용자 OK 2026-10-06 (검수가 받음, 업로드 허락)"
  }
 }
