@@ -1774,7 +1774,9 @@ Config.Keybinds = {
 		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "유령 붙잡기", LabelEn = "Ghost hold", Button = "유령 버튼", ButtonEn = "Ghost button" },
 		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP 물약", LabelEn = "HP potion", Button = "HP 물약 버튼", ButtonEn = "HP potion button" },
 		{ Id = "PotionMP", Group = "Potion", Key = "Two", Pad = "DPadDown", Label = "MP 물약", LabelEn = "MP potion", Button = "MP 물약 버튼", ButtonEn = "MP potion button" },
-		{ Id = "Interact", Group = "Other", Key = "E", Pad = "ButtonX", Label = "상호작용", LabelEn = "Interact", Button = "상호작용 버튼", ButtonEn = "Interact button" },
+		-- KeySet "Prompt" + NoClear: the default ProximityPrompt UI must be able to draw the key (review of 27246d1)
+		{ Id = "Interact", Group = "Other", Key = "E", Pad = "ButtonX", Label = "상호작용", LabelEn = "Interact", Button = "상호작용 버튼", ButtonEn = "Interact button",
+			KeySet = "Prompt", NoClear = true },
 		{ Id = "Upgrade", Group = "Other", Key = "U", Pad = "", Label = "다음 무기", LabelEn = "Next weapon", Button = "다음 무기 카드", ButtonEn = "Next weapon card" },
 		{ Id = "Bag", Group = "Window", Key = "G", Pad = "", Label = "가방", LabelEn = "Bag", Button = "가방 버튼", ButtonEn = "Bag button", Window = "Bag" },
 		{ Id = "Character", Group = "Window", Key = "C", Pad = "", Label = "내 캐릭터", LabelEn = "Character", Button = "메뉴 → 내 캐릭터", ButtonEn = "Menu → Character", Window = "Character" },
@@ -1819,6 +1821,27 @@ do
 		if not KB.ReservedSet[n] then KB.AllowedSet[n] = true end
 	end
 	for _, a in KB.Actions do KB.ById[a.Id] = a end
+	-- keys the default ProximityPrompt UI draws: letters, digits, F1-F8, Ctrl, Alt (no keypad / symbols / Caps)
+	KB.PromptSet = {}
+	for c = string.byte("A"), string.byte("Z") do KB.PromptSet[string.char(c)] = true end
+	for _, n in { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "LeftControl", "LeftAlt" } do
+		KB.PromptSet[n] = true
+	end
+	for i = 1, 8 do KB.PromptSet["F" .. i] = true end
+	for n in KB.PromptSet do
+		if not KB.AllowedSet[n] then KB.PromptSet[n] = nil end
+	end
+end
+
+-- may this action hold this key? (KeySet "Prompt" limits Interact; NoClear forbids "")
+function Config.KeyAllowedFor(actionId, name)
+	local KB = Config.Keybinds
+	local def = KB.ById[actionId]
+	if type(def) ~= "table" or type(name) ~= "string" then return false end
+	if name == "" then return def.NoClear ~= true end
+	if not Config.KeyUsable(name) then return false end
+	if def.KeySet == "Prompt" then return KB.PromptSet[name] == true end
+	return true
 end
 
 -- true when the action's Flag ("Table.Field" under Config) is on; actions without a Flag always are
@@ -1870,7 +1893,7 @@ function Config.KeyMap(sparse, liveSet)
 	end
 	local function explicit(def)
 		local v = keys[def.Id]
-		return type(v) == "string" and (v == "" or Config.KeyUsable(v))
+		return type(v) == "string" and Config.KeyAllowedFor(def.Id, v)
 	end
 	for _, def in KB.Actions do
 		map[def.Id] = ""
@@ -1888,6 +1911,20 @@ function Config.KeyMap(sparse, liveSet)
 			else
 				map[def.Id], taken[def.Key] = def.Key, def.Id
 			end
+		end
+	end
+	-- a NoClear action (Interact) always ends with a key: if its key went to another action, it takes its default
+	-- back and that other action loses it (it is reported like a collision)
+	for _, def in KB.Actions do
+		if def.NoClear and live(def) and map[def.Id] == "" and def.Key ~= "" then
+			local holder = taken[def.Key]
+			if holder and holder ~= def.Id then
+				map[holder] = ""
+				table.insert(collisions, holder)
+				local i = table.find(collisions, def.Id)
+				if i then table.remove(collisions, i) end
+			end
+			map[def.Id], taken[def.Key] = def.Key, def.Id
 		end
 	end
 	return map, collisions
@@ -1974,9 +2011,9 @@ function Config.SanitizeSettings(t)
 	local used = {}
 	for _, a in Config.Keybinds.Actions do
 		local v = keys[a.Id]
-		if type(v) == "string" and (v == "" or Config.KeyUsable(v)) and v ~= a.Key then
+		if type(v) == "string" and Config.KeyAllowedFor(a.Id, v) and v ~= a.Key then
 			if v ~= "" and Config.KeyFlagOn(a) then
-				if used[v] then v = "" else used[v] = true end
+				if used[v] then v = if a.NoClear then nil else "" else used[v] = true end
 			end
 			out.Keys[a.Id] = v
 		end
@@ -2543,7 +2580,9 @@ Config.UIArt.FactionE = {
 Config.CustomModels = {
 	FolderName = "CustomModels",
 	GooseId = "GoldenGoose",
-	GoldenFillTransparency = 0.5, -- golden variant: gold Highlight instead of recoloring parts
+	-- golden variant: gold Highlight instead of recoloring parts. 0.5 looked like see-through jelly on the textured cube
+	-- (user 2026-10-06 "투명해 보여"): a stronger fill reads as gold
+	GoldenFillTransparency = 0.25,
 }
 
 -- A23-5 (2026-10-05): every chibi 3D class costume is out of the game (CostumeService and its folders were removed
@@ -2668,6 +2707,9 @@ Config.Text = {
 	BullyNoAuto = "깡패 벌칙 중에는 자동 전투를 쓸 수 없어요. 단계가 다 빠지면 다시 돼요.", -- A23-22
 	BullyAutoOff = "무단 PvP 벌칙: 자동 전투가 꺼졌어요. 경험치·드랍도 절반이에요.", -- A23-22 (auto was ON)
 	BullyPenaltyEnd = "깡패 벌칙이 끝났어요! 자동 전투를 다시 켤 수 있어요. 경험치·드랍도 원래대로예요.", -- A23-22
+	BullyPenaltyEndEn = "Your bully penalty is over! You can turn auto combat on again. XP and drops are back to normal.",
+	BullyPenaltyEndNoAuto = "깡패 벌칙이 끝났어요! 경험치·드랍이 원래대로예요.", -- auto combat not unlocked yet
+	BullyPenaltyEndNoAutoEn = "Your bully penalty is over! XP and drops are back to normal.",
 	Revenge = "%s에게 복수하세요! 90초 동안 공격력 +25%%",
 	RevengeDone = "복수 성공!",
 	-- grudge sack

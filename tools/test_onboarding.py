@@ -90,8 +90,14 @@ def main() -> int:
                      "bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
                      "B4 Data Version 3: fresh/v2/v1 records load and save as Version 3 with no field changes (v2 legendary, "
                      "enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
-                     "finite-value save serialization guard and migration idempotence"],
-        "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here.",
+                     "finite-value save serialization guard and migration idempotence",
+                     "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly "
+                     "Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the "
+                     "Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; "
+                     "never outside step 2; the paid state saves and a late claim/rejoin pays nothing more"],
+        "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. "
+                       "F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); "
+                       "'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again).",
     }
     target = ROOT / "docs/art/verification_2026-10-06/offline_onboarding_2026-10-06.json"
     target.parent.mkdir(parents=True, exist_ok=True)

@@ -61,10 +61,16 @@ MUTATIONS = [
     ("enum settings accept any string", "CONFIG_SOURCE",
      'if type(v) ~= "string" or not table.find(def.Options, v) then v = d end', 'if type(v) ~= "string" then v = d end'),
     ("saved keys keep entries equal to the default", "CONFIG_SOURCE",
-     'if type(v) == "string" and (v == "" or Config.KeyUsable(v)) and v ~= a.Key then',
-     'if type(v) == "string" and (v == "" or Config.KeyUsable(v)) then'),
+     'if type(v) == "string" and Config.KeyAllowedFor(a.Id, v) and v ~= a.Key then',
+     'if type(v) == "string" and Config.KeyAllowedFor(a.Id, v) then'),
     ("two actions may save the same key", "CONFIG_SOURCE",
-     'if used[v] then v = "" else used[v] = true end', "used[v] = true"),
+     'if used[v] then v = if a.NoClear then nil else "" else used[v] = true end', "used[v] = true"),
+    ("Interact may be saved on any usable key", "CONFIG_SOURCE",
+     'if def.KeySet == "Prompt" then return KB.PromptSet[name] == true end', ""),
+    ("Interact may be cleared", "CONFIG_SOURCE",
+     'if name == "" then return def.NoClear ~= true end', 'if name == "" then return true end'),
+    ("KeyMap leaves Interact empty", "CONFIG_SOURCE",
+     "if def.NoClear and live(def) and map[def.Id] == \"\" and def.Key ~= \"\" then", "if false then"),
     ("unknown top-level settings are kept", "CONFIG_SOURCE",
      "local out = { V = ST.Version, Keys = {} }", "local out = table.clone(src); out.V = ST.Version; out.Keys = {}"),
     ("old saves are not sanitized on load", "DATA_SOURCE",
@@ -304,7 +310,8 @@ def main() -> int:
     ok = (compiled.returncode == 0 and main_run["returncode"] == 0 and marker is not None and not static_failures
           and not changed and all(m.get("applied") and m.get("caught") for m in mutations))
     report = {
-        "status": "passed" if ok else "failed",
+        "status": ("passed-no-mutations" if args.no_mutations else "passed") if ok else "failed",
+        "mutationsSkipped": args.no_mutations,
         "checks": result.get("Checks", 0) if result else 0,
         "failedChecks": result.get("Failed", 0) if result else 0,
         "namedChecks": len(named),
@@ -362,6 +369,8 @@ def main() -> int:
               + ("" if m.get("applied") else f" ({m.get('note')})"))
     if mutations:
         print(f"MUTATIONS caught={caught}/{applied} (of {len(MUTATIONS)})")
+    if args.no_mutations:
+        print("MUTATIONS SKIPPED")
     for f in report["findings"]:
         print(f"FINDING [{f.get('Group')}] {f.get('Text')}")
     print(f"Named checks: {len(named) - len(failing)} passed, {len(failing)} failing; "

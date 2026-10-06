@@ -416,7 +416,7 @@ def main() -> int:
     other_static = [m for m in static_failures if not (m.startswith("luau-analyze") and patched_any)]
     harness_ok = compiled.returncode == 0 and not other_static and not changed and mutations_ok
     if harness_ok and real_ok and not static_failures:
-        status = "passed"
+        status = "passed-no-mutations" if args.no_mutations else "passed"
     elif harness_ok and patched_ok:
         status = "failed (src bugs only)"
     else:
@@ -424,6 +424,7 @@ def main() -> int:
     src_bugs = [{"bug": p["bug"], "report": p["report"]} for p in patches if p["applied"]]
     report = {
         "status": status,
+        "mutationsSkipped": args.no_mutations,
         "srcBugs": src_bugs,
         "patches": patches,
         "real": real,
@@ -492,6 +493,8 @@ def main() -> int:
               + ("" if m.get("applied") else f" ({m.get('note')})"))
     if mutations:
         print(f"MUTATIONS caught={caught}/{applied} (of {len(MUTATIONS)}, baseline {report['mutations']['baseline']})")
+    if args.no_mutations:
+        print("MUTATIONS SKIPPED")
     print(f"REAL named checks: {real['namedChecks'] - real['namedChecksFailing']} passed, {real['namedChecksFailing']} failing; "
           f"assertions {real['checks'] - real['failedChecks']}/{real['checks']}")
     if patched:
@@ -499,7 +502,7 @@ def main() -> int:
               f"{patched['namedChecksFailing']} failing; assertions {patched['checks'] - patched['failedChecks']}/{patched['checks']}")
     print(f"Status: {status}")
     print(f"Report: {OUT.relative_to(ROOT).as_posix()}")
-    return 0 if status == "passed" else 1
+    return 0 if status in ("passed", "passed-no-mutations") else 1
 
 
 if __name__ == "__main__":

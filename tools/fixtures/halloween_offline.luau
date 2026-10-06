@@ -2,8 +2,8 @@
 -- tools/test_halloween.py injects the CURRENT repository sources before this file: whole modules (CONFIG_SOURCE,
 -- NET_SOURCE, UTIL_SOURCE, DATA_SOURCE, QUEST_SOURCE, STORY_SOURCE, LOOT_SOURCE, ANNOUNCE_SOURCE, HALLOWEEN_SOURCE,
 -- MAIN_SOURCE, MONSTER_SOURCE, ANNOUNCE_CLIENT_SOURCE), chunks cut from bigger files (MONSTER_EVENTS_SOURCE,
--- MONSTER_POOL_SOURCE, MONSTER_GOLDEN_SOURCE, MONSTER_POP_SOURCE, KING_HUD_SOURCE, WOBBLE_SOURCE, PANELS_ITEMS_SOURCE)
--- and CLIPS (the
+-- MONSTER_POOL_SOURCE, MONSTER_GOLDEN_SOURCE, MONSTER_POP_SOURCE, MONSTER_TARGET_SOURCE, KING_HUD_SOURCE, WOBBLE_SOURCE,
+-- PANELS_ITEMS_SOURCE) and CLIPS (the
 -- BatGoblin_* / Goblin_* MonsterAnims modules). Only engine / service boundaries are doubles: no Studio, no network,
 -- no DataStore. Every check is named and collected (a failure never aborts the run); the result is one JSON line.
 
@@ -1798,6 +1798,158 @@ runGroup("announce", function()
 	check(rare ~= nil, "a RareWeapon line still shows (finder lines unchanged)")
 end)
 
+-- review 2026-10-06: a Boss kind (the Pumpkin King) never targets or hits a rookie (Rookie == true, or Level below
+-- Config.Halloween.SafeBelowLevel); every other kind attacks rookies as usual. Real MonsterService targetable /
+-- faceTarget / landAttack / isPlayerInTown (MONSTER_TARGET_SOURCE); CombatService.DamagePlayer is a recorder.
+runGroup("king-spares-rookies", function()
+	local f = hwWorld({ Clients = {} })
+	local config, MC = f.Config, f.Config.Monsters
+	local HW = config.Halloween
+	local KING = HW.King
+	local W = { hits = {}, roots = {}, serial = 0, players = 0 }
+	local util = setmetatable({
+		IsAlive = function(p) return W.roots[p] ~= nil end,
+		GetRoot = function(p) return W.roots[p] end,
+	}, { __index = f.Util })
+	local H = { records = {}, S = { CombatService = { DamagePlayer = function(p, damage, src)
+		table.insert(W.hits, { Player = p, Damage = damage, Src = src })
+	end } } }
+	function H.warnThrottled(key, msg) table.insert(groupWarnings, "MonsterService " .. tostring(key) .. ": " .. tostring(msg)) end
+	local T = execute("MonsterService.target", MONSTER_TARGET_SOURCE,
+		nativeEnv({ CFrame = { lookAt = function(_, at) return { LookAt = at } end } }), config, util, MC, H)
+	local folder = INST.new("Folder", "Monsters")
+	local function newRec(kind, pos)
+		W.serial += 1
+		local def = config.MonsterTypes[kind]
+		local model = INST.new("Model", kind)
+		model.Parent = folder
+		-- already facing the target (faceTarget leaves it), not anchored
+		local root = { Parent = model, Anchored = false, Position = pos, CFrame = { LookVector = { Dot = function() return 1 end } } }
+		local rec = { Id = W.serial, Kind = kind, Def = def, Alive = true, ZoneId = def.Zone, Home = pos, Model = model, Root = root }
+		H.records[rec.Id] = rec
+		return rec
+	end
+	local function newPlayer(level, rookie, pos)
+		W.players += 1
+		local p = INST.new("Player", "P" .. W.players)
+		p.UserId = 7000 + W.players
+		p.Parent = f.PlayersService
+		if level ~= nil then p:SetAttribute("Level", level) end
+		if rookie ~= nil then p:SetAttribute("Rookie", rookie) end
+		W.roots[p] = { Position = pos }
+		return p
+	end
+	local function infoOf(p, zone)
+		local pos = W.roots[p].Position
+		return { Player = p, Pos = pos, Town = false, Zone = zone or config.ZoneAt(pos).Id }
+	end
+	-- one wound-up hit (attack() -> REACT.WINDUP later -> landAttack): returns hits dealt, AttackSeq bumped
+	local function swing(rec, p)
+		local token = {}
+		rec._windup = token
+		local before, seq = #W.hits, rec.Model:GetAttribute("AttackSeq")
+		T.landAttack(rec, token, p)
+		local hit = W.hits[#W.hits]
+		return #W.hits - before, rec.Model:GetAttribute("AttackSeq") ~= seq, hit
+	end
+
+	local kdef = config.MonsterTypes[KING]
+	check(HW.SafeBelowLevel == 5, "Config.Halloween.SafeBelowLevel is 5", HW.SafeBelowLevel)
+	check(kdef ~= nil and kdef.Boss == true, "the Pumpkin King kind is a Boss", KING)
+	local bosses = {}
+	for _, kind in config.MonsterTypeOrder do
+		if config.MonsterTypes[kind].Boss then table.insert(bosses, kind) end
+	end
+	check(#bosses == 1 and bosses[1] == KING, "the king is the only Boss kind (the rookie rule touches no other monster)",
+		table.concat(bosses, ","))
+	local spot = HW.SpawnSpots[1]
+	local kpos = vec(spot.X, 0, spot.Z)
+	local ppos = vec(spot.X + 2, 0, spot.Z)
+	local zone = config.ZoneAt(ppos)
+	check(config.ZoneAt(kpos).Id == kdef.Zone and zone.Id == kdef.Zone and zone.Town ~= true
+		and f.Util.FlatDistance(kpos, ppos) <= MC.AttackRange, "setup: king and player stand in the meadow, in reach, outside towns",
+		show({ config.ZoneAt(kpos).Id, zone.Id }))
+	local king = newRec(KING, kpos)
+
+	-- the Rookie shield: never targeted / hit at any level
+	for _, level in { 1, 4, 5, 12, 40 } do
+		local p = newPlayer(level, true, ppos)
+		check(T.targetable(king, infoOf(p)) == false, "the king does not target a Rookie player (any level)", level)
+		local n, bumped = swing(king, p)
+		check(n == 0 and not bumped, "the king's wound-up hit never lands on a Rookie player (no damage, no lunge)",
+			show({ level, n, bumped }))
+	end
+	-- below SafeBelowLevel without the shield (Rookie false or not set yet): Lv 1-4 are left alone
+	for _, level in { 1, 2, 3, 4 } do
+		for _, rookie in { false, "unset" } do
+			local p = newPlayer(level, if rookie == "unset" then nil else rookie, ppos)
+			check(T.targetable(king, infoOf(p)) == false, "the king does not target a Lv1-4 player (no Rookie shield)",
+				show({ level, rookie }))
+			local n, bumped = swing(king, p)
+			check(n == 0 and not bumped, "the king's hit never lands on a Lv1-4 player", show({ level, rookie, n }))
+		end
+	end
+	local noLevel = newPlayer(nil, false, ppos)
+	check(T.targetable(king, infoOf(noLevel)) == false and select(1, swing(king, noLevel)) == 0,
+		"a player whose Level is not set yet counts as Lv1 (spared)")
+	-- Lv5+ without the shield: a normal target, hit for the king's Damage
+	for _, level in { 5, 6, 10, 40 } do
+		for _, rookie in { false, "unset" } do
+			local p = newPlayer(level, if rookie == "unset" then nil else rookie, ppos)
+			check(T.targetable(king, infoOf(p)) == true, "the king targets a Lv5+ non-rookie player", show({ level, rookie }))
+			local n, bumped, hit = swing(king, p)
+			check(n == 1 and bumped and hit and hit.Player == p and hit.Damage == kdef.Damage,
+				"the king's hit lands on a Lv5+ non-rookie player (once, its own Damage, lunge played)",
+				show({ level, rookie, n, bumped, hit and hit.Damage }))
+		end
+	end
+	-- the usual rules still apply to a Lv5+ target: town, another zone, water
+	local adult = newPlayer(10, false, ppos)
+	local info = infoOf(adult)
+	info.Town = true
+	check(T.targetable(king, info) == false, "the king still ignores a Lv5+ player standing in a town")
+	info = infoOf(adult, "GoblinWoods")
+	check(T.targetable(king, info) == false, "the king still ignores a Lv5+ player in another zone")
+	info = infoOf(adult)
+	info.Pos = vec(ppos.X, T.OUT_Y - 1, ppos.Z)
+	check(T.targetable(king, info) == false, "the king still ignores a Lv5+ player in the water")
+
+	-- every other kind still targets and hits rookies as usual (in its own zone)
+	local baby = newPlayer(1, true, ppos)
+	for _, kind in config.MonsterTypeOrder do
+		local def = config.MonsterTypes[kind]
+		if not def.Boss then
+			local rec = newRec(kind, vec(0, 0, 0))
+			local ok = T.targetable(rec, { Player = baby, Pos = vec(0, 0, 0), Town = false, Zone = def.Zone })
+			check(ok == true, "a normal (non-boss) monster still targets a Lv1 Rookie player", kind)
+		end
+	end
+	for _, kind in { "Slime", "PumpkinSlime", "BigSlime" } do
+		local def = config.MonsterTypes[kind]
+		if check(def ~= nil and def.Zone == kdef.Zone, "meadow kind present for the hit check", kind) then
+			local n, bumped, hit = swing(newRec(kind, kpos), baby)
+			check(n == 1 and bumped and hit and hit.Damage == def.Damage, "a meadow monster's hit still lands on a Lv1 Rookie player",
+				show({ kind, n, bumped }))
+		end
+	end
+	-- a rookie can still hit the king and is remembered as a contributor (shares the candy)
+	check(f.HS.DebugSpawn() == "spawned", "debug king spawned for the rookie hit check")
+	local live = f:King()
+	local hitter = f:AddPlayer("Sprout")
+	hitter:SetAttribute("Rookie", true)
+	hitter:SetAttribute("Level", 2)
+	local hp = live and live.HP
+	if live then f.MS.DamageMonster(live, 10, hitter) end
+	check(live ~= nil and live.HP == hp - 10 and live._contributors[hitter] ~= nil,
+		"a rookie can still hit the king and counts as a contributor", show({ hp, live and live.HP }))
+
+	-- the AI uses the same rule for keeping and picking a target (aiStep), and landAttack checks it again at impact
+	local mon = MONSTER_SOURCE
+	check(string.find(mon, "elseif not targetable(rec, tinfo) then", 1, true) ~= nil
+		and string.find(mon, "\t\tfor _, info in plist do\n\t\t\tif targetable(rec, info) then", 1, true) ~= nil,
+		"aiStep drops a current target and picks a new one only through targetable()")
+end)
+
 ------------------------------------------------------------------ 9. EventHUD Pumpkin King pill (real KING block + helpers)
 local function hudWorld(config, rs, isTouch)
 	local H = { C = {}, ui = {}, RS = rs, IsTouch = isTouch == true, Relayouts = 0, ChipsBottom = nil }
@@ -2008,11 +2160,13 @@ runGroup("fx-float", function()
 	check(near(up, 1.5), "it hovers 1.5 studs up from the start (also out of camera range)", up)
 	local ps = f.W.track(pslime)
 	check(ps and ps.Float == nil and ps.Slime == true, "pumpkin slime: slime hop / squash, no float")
-	check(near(pslime.Mesh.Size.X, 3.1) and near(pslime.Mesh.Size.Z, 3.1) and near(pslime.Mesh.Size.Y, 2.1),
-		"round-slime fix: depth = width for slime meshes (Y x 1.05)", show(pslime.Mesh.Size))
+	-- review 2026-10-06 (user: "슬라임이 이상해 보여"): the old depth = width stretch is gone; slime meshes keep their
+	-- designed shape
+	check(near(pslime.Mesh.Size.X, 3.1) and near(pslime.Mesh.Size.Z, 2.1) and near(pslime.Mesh.Size.Y, 2),
+		"slime meshes keep their designed shape (no depth = width stretch)", show(pslime.Mesh.Size))
 	local ks = f.W.track(king)
-	check(ks and ks.Float == nil and ks.Slime == true and near(king.Mesh.Size.X, 5) and near(king.Mesh.Size.Z, 5),
-		"Pumpkin King: slime path, depth widened to its width (its 0.95 depth ratio changes by 5%)", show(king.Mesh.Size))
+	check(ks and ks.Float == nil and ks.Slime == true and near(king.Mesh.Size.X, 5) and near(king.Mesh.Size.Y, 4)
+		and near(king.Mesh.Size.Z, 4.75), "Pumpkin King: slime path, mesh keeps its designed shape", show(king.Mesh.Size))
 	local fs = f.W.track(fslime)
 	check(fs and fs.Float == nil, "a Float value on a slime shape is ignored (slimes unchanged)")
 	f.W.track(goblin)

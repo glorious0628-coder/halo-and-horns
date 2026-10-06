@@ -319,9 +319,16 @@ local function referenceKeyMap(config, sparse, live)
 		if live ~= nil then return live[def.Id] == true end
 		return def.Id ~= "SkillZ" or config.Skills.ZEnabled == true
 	end
+	-- review of 27246d1: Interact (NoClear, prompt keys only) may not be saved empty or on a keypad / symbol key
+	local PROMPT = {}
+	for c = string.byte("A"), string.byte("Z") do PROMPT[string.char(c)] = true end
+	for _, n in { "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "LeftControl", "LeftAlt",
+		"F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8" } do PROMPT[n] = true end
 	local function explicit(def)
 		local v = keys[def.Id]
-		return type(v) == "string" and (v == "" or (#v <= 24 and EXPECTED_USABLE[v] == true))
+		if type(v) ~= "string" then return false end
+		if def.Id == "Interact" then return v ~= "" and #v <= 24 and EXPECTED_USABLE[v] == true and PROMPT[v] == true end
+		return v == "" or (#v <= 24 and EXPECTED_USABLE[v] == true)
 	end
 	local map, taken, collisions = {}, {}, {}
 	for _, def in config.Keybinds.Actions do map[def.Id] = "" end
@@ -340,6 +347,19 @@ local function referenceKeyMap(config, sparse, live)
 				taken[def.Key] = true
 			end
 		end
+	end
+	-- Interact always ends with a key: it takes E back from whoever got it (that one is reported instead)
+	local ia = config.Keybinds.ById.Interact
+	if ia and isLive(ia) and map.Interact == "" then
+		for id, k in map do
+			if k == ia.Key and id ~= "Interact" then
+				map[id] = ""
+				table.insert(collisions, id)
+			end
+		end
+		local i = table.find(collisions, "Interact")
+		if i then table.remove(collisions, i) end
+		map.Interact = ia.Key
 	end
 	return map, collisions
 end
@@ -699,7 +719,8 @@ runGroup("keymap-rules", function()
 	local all = {}
 	for _, a in C.Keybinds.Actions do all[a.Id] = "X" end
 	map = C.KeyMap(all, live)
-	check(map.Attack == "X" and boundCount(map) == 1, "every action saved on one key: the first live action keeps it (never all blank)",
+	check(map.Attack == "X" and map.Interact == "E" and boundCount(map) == 2,
+		"every action saved on one key: the first live action keeps it, Interact keeps E (never all blank)",
 		show(map))
 	map = C.KeyMap({ Attack = "Q" }, live)
 	check(boundCount(map) == 15 and map.SkillQ == "", "one changed key costs at most the one colliding default", boundCount(map))
@@ -1295,8 +1316,15 @@ runGroup("keybinds-prompts-dispatch", function()
 	w.PPS.PromptShown:Fire(shown)
 	check(early.KeyboardKeyCode == ENUM.KeyCode.Y and late.KeyboardKeyCode == ENUM.KeyCode.Y and shown.KeyboardKeyCode == ENUM.KeyCode.Y,
 		"a changed Interact key re-applies to every prompt (existing, added, shown)")
-	K.Clear("Interact")
-	check(early.KeyboardKeyCode == ENUM.KeyCode.Unknown, "unbound Interact: prompts have no key (still clickable)")
+	-- review of 27246d1: Interact can never be emptied (NoClear) and only takes keys the prompt UI draws
+	local cleared, why = K.Clear("Interact")
+	check(cleared == false and why == "NoClear" and early.KeyboardKeyCode == ENUM.KeyCode.Y,
+		"Interact cannot be cleared: prompts keep their key", show({ cleared, why }))
+	for _, bad in { "CapsLock", "KeypadOne", "Minus" } do
+		local okSet, reason = K.SetLocal("Interact", bad)
+		check(okSet == false and reason == "NotAllowed" and early.KeyboardKeyCode == ENUM.KeyCode.Y,
+			"Interact refuses keys the prompt UI cannot draw (" .. bad .. ")", show({ okSet, reason }))
+	end
 	local began, ended = {}, {}
 	K.Began:Connect(function(i, gp) table.insert(began, { i, gp }) end)
 	K.Ended:Connect(function(i, gp) table.insert(ended, { i, gp }) end)

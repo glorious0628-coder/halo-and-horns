@@ -1,14 +1,14 @@
 {
   "status": "passed",
-  "checks": 618,
+  "checks": 667,
   "contractFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
+    "src/ReplicatedStorage/Shared/Config.luau": "a07e2114f44c59fd81fa908b4405305a6aea7c3eac80cc7a444145458ea58066",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
-    "src/ServerScriptService/QuestService.luau": "778ded5ecce5e1c5726b2f95e87d1c69e0970f274a7b81eaf4e5655d9bdd0d25",
+    "src/ServerScriptService/QuestService.luau": "c6e4cd98c46c23fc0c542b4a7743148f4c5d8ef31c8ef42826cfaede1dffff43",
     "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4"
   },
-  "fixtureSHA256": "8b4c7296bdcfc38d8698e8ddaef29fda0f99f97fe1acdbab0cc5d2eef8aaceb4",
+  "fixtureSHA256": "e604a8beff3c09d113b122a3459a16c94eaad20fdf29166a238c56c57fa26b48",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "networkCalls": 0,
@@ -59,7 +59,8 @@
     "invalid/nonfinite mask, tier and visit repair",
     "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
     "B4 Data Version 3: fresh/v2/v1 records load and save as Version 3 with no field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
-    "finite-value save serialization guard and migration idempotence"
+    "finite-value save serialization guard and migration idempotence",
+    "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more"
   ],
-  "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here."
+  "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); 'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again)."
 }

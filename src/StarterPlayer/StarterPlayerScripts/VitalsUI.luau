@@ -127,7 +127,10 @@ function VitalsUI.BuildPotions(parent, width, height, touch)
 		C.HUD.FitText(title, 12)
 		C.HUD.FitText(status, 11)
 		local key = nil
-		if UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled then
+		local kbm = C and C.Keybinds
+		local showsKeys = UserInputService.KeyboardEnabled
+		if type(kbm) == "table" and type(kbm.ShowsKeys) == "function" then showsKeys = kbm.ShowsKeys() end
+		if showsKeys then -- review of 27246d1: the same rule as Keybinds / HUD
 			-- BB1: the badge shows the potion's current key (VitalsUI.RefreshKeys) and widens for "Ctrl" / "Num1"
 			key = UIKit.InkText({ Name = "Key", Parent = button, Text = "", TextSize = 11,
 				Position = UDim2.fromOffset(2, 0), Size = UDim2.fromOffset(15, 15), AutomaticSize = Enum.AutomaticSize.X })

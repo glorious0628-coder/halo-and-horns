@@ -203,7 +203,8 @@ def main() -> int:
     ok = (compiled.returncode == 0 and main_run["returncode"] == 0 and marker is not None and not static_failures
           and not changed and all(m.get("applied") and m.get("caught") for m in mutations))
     report = {
-        "status": "passed" if ok else "failed",
+        "status": ("passed-no-mutations" if args.no_mutations else "passed") if ok else "failed",
+        "mutationsSkipped": args.no_mutations,
         "checks": result.get("Checks", 0) if result else 0,
         "failedChecks": result.get("Failed", 0) if result else 0,
         "namedChecks": len(named),
@@ -251,6 +252,8 @@ def main() -> int:
               + ("" if m.get("applied") else f" ({m.get('note')})"))
     if mutations:
         print(f"MUTATIONS caught={caught}/{applied} (of {len(MUTATIONS)})")
+    if args.no_mutations:
+        print("MUTATIONS SKIPPED")
     print(f"Named checks: {len(named) - len(failing)} passed, {len(failing)} failing; "
           f"assertions {report['checks'] - report['failedChecks']}/{report['checks']}")
     print(f"Report: {OUT.relative_to(ROOT).as_posix()}")

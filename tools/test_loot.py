@@ -77,6 +77,11 @@ MUTATIONS = [
      "info.Golden == true and LOOT.GoldenMult or 1", "info.Golden and LOOT.GoldenMult or 1"),
     ("jackpot for every monster kind", "LOOT_SOURCE",
      "jackpot.Monsters[info.Kind] and", "true and"),
+    # A23-22 bully drop penalty (review item 3): rows AND the jackpot x DropMult while BullyStacks >= 1
+    ("bully penalty not applied to the jackpot", "LOOT_SOURCE",
+     "num(jackpot.Chance) * rowMult", "num(jackpot.Chance) * mult"),
+    ("bully penalty DropMult never set in RollKill", "LOOT_SOURCE",
+     "\t\tinfo.DropMult = num(pen.DropMult, 1)\n", ""),
     ("two rolls per kill signal", "LOOT_SOURCE",
      "local ok, err = pcall(LootService.RollKill, player, info)",
      "pcall(LootService.RollKill, player, info); local ok, err = pcall(LootService.RollKill, player, info)"),
@@ -401,7 +406,8 @@ def main() -> int:
     ok = (compiled.returncode == 0 and main_run["returncode"] == 0 and marker is not None and not static_failures
           and not changed and all(m.get("applied") for m in mutations))
     report = {
-        "status": "passed" if ok else "failed",
+        "status": ("passed-no-mutations" if args.no_mutations else "passed") if ok else "failed",
+        "mutationsSkipped": args.no_mutations,
         "checks": result.get("Checks", 0) if result else 0,
         "failedChecks": result.get("Failed", 0) if result else 0,
         "namedChecks": len(named),
@@ -464,6 +470,8 @@ def main() -> int:
               + ("" if m.get("applied") else f" ({m.get('note')})"))
     if mutations:
         print(f"MUTATIONS caught={caught}/{applied} (of {len(MUTATIONS)})")
+    if args.no_mutations:
+        print("MUTATIONS SKIPPED")
     print(f"Named checks: {len(named) - len(failing)} passed, {len(failing)} failing; "
           f"assertions {report['checks'] - report['failedChecks']}/{report['checks']}")
     print(f"Report: {OUT.relative_to(ROOT).as_posix()}")

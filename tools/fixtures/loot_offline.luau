@@ -1127,6 +1127,140 @@ runGroup("rollkill", function()
 	check(deepEqual(snap, { keep.Data.Items, keep.Data.WeaponEnhance }), "death / leave handlers never touch Items or enhancement")
 end)
 
+------------------------------------------------------------------ 2a. A23-22 bully drop penalty (review item 3)
+-- While the player's BullyStacks attribute is >= 1, RollKill rolls a clone of the kill info with DropMult =
+-- Config.Bully.Penalty.DropMult: every drop row AND the slime jackpot use P (Chance) x GoldenMult x 0.5, capped at 1.
+-- The first king-slime scroll is a one-time grant before any roll, so it stays guaranteed and whole. BullyStacks 0 (the
+-- last stack decayed) is the normal table again; the penalty is flat (x0.5 at any level), never x0.5 per stack.
+runGroup("bully", function()
+	local HALF = 0.5 -- A23-22: 드랍률 x0.5 (대박 확률도 절반)
+	local t = fixture()
+	local L, C = t.L, t.Config
+	local pen = C.Bully and C.Bully.Penalty
+	check(type(pen) == "table" and pen.DropMult == HALF, "A23-22 Config.Bully.Penalty.DropMult is 0.5", show(pen))
+	local jackpotBit = bit32.lshift(1, L.Jackpot.Tier - 1)
+	t.Data.LootFlags.FirstScroll = true
+	local function setStacks(n) t.Player:SetAttribute("BullyStacks", n) end
+	-- one scripted roll: row `index` draws `draw`, every other row misses; the jackpot draw is `jackpotDraw` (else a miss).
+	-- Items / potions / owned weapons reset first so caps and duplicates never hide a drop.
+	local function roll(kind, golden, index, draw, jackpotDraw)
+		local script = {}
+		for j in L.Tables[kind] do script[j] = (j == index) and draw or 0.999999 end
+		if L.Jackpot.Monsters[kind] then table.insert(script, jackpotDraw or 0.999999) end
+		t.Script, t.Draws = script, 0
+		t.Data.Items, t.Data.HPPotionCount, t.Data.MPPotionCount, t.Data.WeaponOwnedMask = {}, 0, 0, 1
+		local g = t:Roll(kind, golden)
+		local left = #t.Script
+		t.Script = {}
+		return g, left
+	end
+	local function gotRow(g, row)
+		return (row.Item and t:Gained(g, "Item", row.Item)) or (row.Potion and t:Gained(g, "Potion", row.Potion))
+			or (row.Weapon and t:Gained(g, "Weapon", row.Weapon)) or 0
+	end
+	local function jackpotPaid() return bit32.btest(t.Data.WeaponOwnedMask, jackpotBit) end
+
+	-- rows: drop iff draw < min(1, P x GoldenMult? x factor); with the penalty the old (full) threshold no longer drops
+	local function rowThresholds(label, factor)
+		local penalized = factor ~= 1
+		for kind, rows in L.Tables do
+			local drawsWant = #rows + (L.Jackpot.Monsters[kind] and 1 or 0)
+			for i, row in rows do
+				for _, golden in { false, true } do
+					local mult = golden and L.GoldenMult or 1
+					local p = math.min(1, row.P * (mult * factor))
+					local where = kind .. "#" .. i .. (golden and " golden" or "")
+					local name = label .. ": a " .. (golden and "golden " or "") .. "row drops iff draw < P"
+						.. (golden and " x GoldenMult" or "") .. (penalized and " x 0.5" or "") .. " (capped at 1)"
+					if p < 1 then
+						local g, left = roll(kind, golden, i, p - 1e-9)
+						check(gotRow(g, row) > 0, name, where .. " draw just below " .. p .. " dropped nothing")
+						check(left == 0 and t.Draws == drawsWant, label .. ": one draw per row (+ jackpot) per kill",
+							where .. " draws " .. t.Draws .. " want " .. drawsWant .. " unused " .. left)
+						g = roll(kind, golden, i, p)
+						check(gotRow(g, row) == 0, name, where .. " draw " .. p .. " still dropped")
+						if penalized then
+							local full = math.min(1, row.P * mult)
+							g = roll(kind, golden, i, full - 1e-9)
+							check(gotRow(g, row) == 0, label .. ": the unpenalized chance P" .. (golden and " x GoldenMult" or "")
+								.. " no longer drops", where .. " draw " .. (full - 1e-9) .. " dropped (penalty ignored)")
+						end
+					else
+						local g = roll(kind, golden, i, 0.999999)
+						check(gotRow(g, row) > 0, name, where .. " capped chance 1 did not drop")
+					end
+				end
+			end
+		end
+	end
+	-- jackpot: pays iff draw < Chance x GoldenMult? x factor (Slime and PumpkinSlime)
+	local function jackpotThresholds(label, factor)
+		local penalized = factor ~= 1
+		for kind in L.Jackpot.Monsters do
+			for _, golden in { false, true } do
+				local mult = golden and L.GoldenMult or 1
+				local pj = math.min(1, L.Jackpot.Chance * (mult * factor))
+				local name = label .. ": " .. (golden and "a golden " or "the ") .. "jackpot pays iff draw < Chance"
+					.. (golden and " x GoldenMult" or "") .. (penalized and " x 0.5" or "")
+				for _, case in { { pj - 1e-12, true }, { pj, false } } do
+					roll(kind, golden, nil, nil, case[1])
+					check(jackpotPaid() == case[2], name, kind .. (golden and " golden" or "") .. " draw " .. case[1]
+						.. " paid " .. tostring(jackpotPaid()))
+				end
+				if penalized then
+					local full = L.Jackpot.Chance * mult
+					roll(kind, golden, nil, nil, full - 1e-12)
+					check(not jackpotPaid(), label .. ": the unpenalized jackpot chance" .. (golden and " x GoldenMult" or "")
+						.. " no longer pays", kind .. " draw " .. (full - 1e-12) .. " paid (jackpot not halved)")
+				end
+			end
+		end
+	end
+
+	-- BullyStacks 1: rows and the jackpot at half chance
+	setStacks(1)
+	rowThresholds("BullyStacks 1", HALF)
+	jackpotThresholds("BullyStacks 1", HALF)
+	-- the caller's info (MonsterService's MonsterKilled table) is never written: RollKill rolls a clone
+	local info = { Kind = "Slime", Golden = false }
+	t.ScriptConst = 0.999999
+	t.Loot.RollKill(t.Player, info)
+	t.ScriptConst = nil
+	check(info.DropMult == nil and count(info) == 2, "BullyStacks 1: the caller's kill info is never given DropMult (cloned)", show(info))
+	-- flat penalty while BullyStacks >= 1 (A23-22), not x0.5 per stack
+	setStacks(3)
+	local jelly = rowIndex(L, "Slime", "Item", "Jelly")
+	local jellyRow = L.Tables.Slime[jelly]
+	local pJelly = jellyRow.P * HALF
+	local g = roll("Slime", false, jelly, pJelly - 1e-9)
+	local below = gotRow(g, jellyRow) > 0
+	g = roll("Slime", false, jelly, pJelly)
+	check(below and gotRow(g, jellyRow) == 0, "BullyStacks 3: still exactly x0.5 for rows (the drop penalty does not stack)",
+		"Slime Jelly below " .. tostring(below) .. " at " .. pJelly .. " dropped " .. gotRow(g, jellyRow))
+	roll("Slime", false, nil, nil, L.Jackpot.Chance * HALF - 1e-12)
+	local paid = jackpotPaid()
+	roll("Slime", false, nil, nil, L.Jackpot.Chance * HALF)
+	check(paid and not jackpotPaid(), "BullyStacks 3: still exactly x0.5 for the jackpot (the drop penalty does not stack)", tostring(paid))
+
+	-- BullyStacks 0 (the same player after the last stack decayed): the normal chances, nothing halved
+	setStacks(0)
+	rowThresholds("BullyStacks 0", 1)
+	jackpotThresholds("BullyStacks 0", 1)
+
+	-- the first king-slime scroll is granted before the rolls: a bully still gets exactly one (no draw, nothing halved)
+	local fs = fixture()
+	fs.Player:SetAttribute("BullyStacks", 1)
+	fs.ScriptConst, fs.Draws = 0.999999, 0
+	fs:Kill("BigSlime")
+	check(fs:Count("Enh70") == 1 and fs.Data.LootFlags.FirstScroll == true and fs:Noticed(L.Text.FirstScroll) == 1,
+		"BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag + guide)",
+		show({ fs:Count("Enh70"), fs.Data.LootFlags.FirstScroll, fs:Noticed(L.Text.FirstScroll) }))
+	check(fs.Draws == #L.Tables.BigSlime, "BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)", fs.Draws)
+	fs:Kill("BigSlime")
+	check(fs:Count("Enh70") == 1 and fs:Noticed(L.Text.FirstScroll) == 1, "BullyStacks 1: the guarantee is still paid only once",
+		fs:Count("Enh70"))
+end)
+
 ------------------------------------------------------------------ 2b. debug LootRoll = count only (review B12)
 runGroup("lootroll", function()
 	local f = fixture()

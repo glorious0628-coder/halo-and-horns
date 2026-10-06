@@ -1,8 +1,9 @@
 {
   "status": "passed",
-  "checks": 6901,
+  "mutationsSkipped": false,
+  "checks": 6971,
   "failedChecks": 0,
-  "namedChecks": 343,
+  "namedChecks": 365,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1543,6 +1544,138 @@
       "fail": 0
     },
     {
+      "group": "king-spares-rookies",
+      "check": "Config.Halloween.SafeBelowLevel is 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the Pumpkin King kind is a Boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king is the only Boss kind (the rookie rule touches no other monster)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "setup: king and player stand in the meadow, in reach, outside towns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king does not target a Rookie player (any level)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king's wound-up hit never lands on a Rookie player (no damage, no lunge)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king does not target a Lv1-4 player (no Rookie shield)",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king's hit never lands on a Lv1-4 player",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "a player whose Level is not set yet counts as Lv1 (spared)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king targets a Lv5+ non-rookie player",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king's hit lands on a Lv5+ non-rookie player (once, its own Damage, lunge played)",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king still ignores a Lv5+ player standing in a town",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king still ignores a Lv5+ player in another zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "the king still ignores a Lv5+ player in the water",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "a normal (non-boss) monster still targets a Lv1 Rookie player",
+      "pass": 9,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "meadow kind present for the hit check",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "a meadow monster's hit still lands on a Lv1 Rookie player",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "debug king spawned for the rookie hit check",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "a rookie can still hit the king and counts as a contributor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "aiStep drops a current target and picks a new one only through targetable()",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-spares-rookies",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "hud",
       "check": "no GameState attributes: the pill stays hidden",
       "pass": 1,
@@ -1736,13 +1869,13 @@
     },
     {
       "group": "fx-float",
-      "check": "round-slime fix: depth = width for slime meshes (Y x 1.05)",
+      "check": "slime meshes keep their designed shape (no depth = width stretch)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "fx-float",
-      "check": "Pumpkin King: slime path, depth widened to its width (its 0.95 depth ratio changes by 5%)",
+      "check": "Pumpkin King: slime path, mesh keeps its designed shape",
       "pass": 1,
       "fail": 0
     },
@@ -2089,9 +2222,9 @@
     "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
   ],
   "mutations": {
-    "total": 36,
-    "applied": 36,
-    "caught": 36,
+    "total": 39,
+    "applied": 39,
+    "caught": 39,
     "results": [
       {
         "mutation": "pumpkin slimes take 2 slime slots (meadow density changes)",
@@ -2586,6 +2719,43 @@
           "client-wiring :: Net.GameStateDefaults has PumpkinKingNextAt 0 / PumpkinKingActive false / PumpkinKingEndsAt 0"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "every monster spares rookies (Boss check dropped)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-spares-rookies :: a meadow monster's hit still lands on a Lv1 Rookie player",
+          "king-spares-rookies :: a normal (non-boss) monster still targets a Lv1 Rookie player"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "king also spares Lv5 (<= SafeBelowLevel)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-spares-rookies :: the king targets a Lv5+ non-rookie player",
+          "king-spares-rookies :: the king's hit lands on a Lv5+ non-rookie player (once, its own Damage, lunge played)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "landAttack checks its target without the Player",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-spares-rookies :: a player whose Level is not set yet counts as Lv1 (spared)",
+          "king-spares-rookies :: the king's hit never lands on a Lv1-4 player",
+          "king-spares-rookies :: the king's wound-up hit never lands on a Rookie player (no damage, no lunge)"
+        ],
+        "newFailingCount": 3
       }
     ]
   },
@@ -2593,21 +2763,21 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
+    "src/ReplicatedStorage/Shared/Config.luau": "a07e2114f44c59fd81fa908b4405305a6aea7c3eac80cc7a444145458ea58066",
     "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
-    "src/ServerScriptService/QuestService.luau": "778ded5ecce5e1c5726b2f95e87d1c69e0970f274a7b81eaf4e5655d9bdd0d25",
+    "src/ServerScriptService/QuestService.luau": "c6e4cd98c46c23fc0c542b4a7743148f4c5d8ef31c8ef42826cfaede1dffff43",
     "src/ServerScriptService/StoryQuestService.luau": "34ca99a517022184b1b1ddaf2bb9b62cf664fe5b51f02bf33b4dfaa5c20f9205",
     "src/ServerScriptService/LootService.luau": "a78cc5c5d98dcad3dd546e43097b59519e299ad4cf12dc629bfd8623190332fe",
     "src/ServerScriptService/AnnounceService.luau": "71f4aa234ea6746721674268287575504148eb7e0dbf69230d03ef6cf7fce985",
     "src/ServerScriptService/HalloweenService.luau": "d5fc73ea5237024567641e2f2d67313c6fe3cda237637d3cf87ac5b8f283dfad",
     "src/ServerScriptService/Main.server.luau": "2000ea96ef95f4ba3fbbf1da3e9d6197e4f671b36a97cb3b6b647d10bfcd2351",
     "src/ServerScriptService/MonsterService.luau": "4573e45a9946386e1eb9a42d50e43c5b20b2adb94ddc93f8166a86f22f284482",
-    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "5ea6b727334eab4da17882fab3f345220eea4a2905e90dc8f0c5644f8e43f361",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "d3e8c1a9228901e7d919b867cfe9b45f26d448e6d0675037363f9074acfd362e",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "efc26700738259a413e97b7b851510f7b3353e3a3656ce243598e092377ae93a",
-    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "6297486a0bbc13644d42aa384600d77513d169a3a3e9f1d8a1562b5a8524dc45",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "39edbd8a1e1861f8930b486c2daef31e50f8784437f2f10719dc0497ce3413ce",
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "179a81c26b509aef973de21c7b369a0f7b867236422f5b5d9b4db01149d05b0d",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "23768d76ab3f4ef9f35a8e39606d6af1aa3d3c6758b749d04368b95139f5e23f",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "b5b0cdeb7889a80ff1213bbf62878b634bb8f55b6a30de83c456d1194bed333b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "049d7448a5c3fbf5a7fe8bf4c8689b084fe3012d30ce13cd9866ba67b1a6e904",
@@ -2619,10 +2789,10 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "be2481c7c926ea2ff651ae5a785f00e1088a6a5c7ecd102fe866e3530d301b83",
+  "fixtureSHA256": "3462930d4c95322ca5b0f4b16601edbceb7f9ec123c14b5d251895f419f39cb4",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "Halloween season (lead design 2026-10-06, numbers provisional): Config.Halloween.Enabled gates every seasonal kind, the slot takeover, the Pumpkin King schedule and its HUD line. PumpkinSlime (meadow, 3 of the 12 slime slots, counts as Slime), LittleGhost (woods, +3, Float 1.5, counts as itself), BatGoblin (woods, 3 of the goblin slots, counts as Goblin, rigged: Tripo clips 32/36/31/16/46 frames at 15 fps), PumpkinKing (Count 0, Boss, never golden, never respawns): first 6 min after server start, then every 20 min from the previous appearance, near the meadow center, leaves after 5 min with a friendly line; appear / defeat / leave lines go to every client without a name (AnnounceService.Broadcast, Korean + English twin); rewards only through MonsterService's kill path, one MonsterKilled per contributor (ContributorWindow 120 s for the king); GameState PumpkinKingNextAt / Active / EndsAt; Candy material (sell 5) and the four drop tables; the slime jackpot also on pumpkin slimes; quests / tutorial / story objectives count Config.QuestKind; Studio-only DebugCommand 'PumpkinKing'.",
+  "contract": "Halloween season (lead design 2026-10-06, numbers provisional): Config.Halloween.Enabled gates every seasonal kind, the slot takeover, the Pumpkin King schedule and its HUD line. PumpkinSlime (meadow, 3 of the 12 slime slots, counts as Slime), LittleGhost (woods, +3, Float 1.5, counts as itself), BatGoblin (woods, 3 of the goblin slots, counts as Goblin, rigged: Tripo clips 32/36/31/16/46 frames at 15 fps), PumpkinKing (Count 0, Boss, never golden, never respawns): first 6 min after server start, then every 20 min from the previous appearance, near the meadow center, leaves after 5 min with a friendly line; appear / defeat / leave lines go to every client without a name (AnnounceService.Broadcast, Korean + English twin); rewards only through MonsterService's kill path, one MonsterKilled per contributor (ContributorWindow 120 s for the king); GameState PumpkinKingNextAt / Active / EndsAt; Candy material (sell 5) and the four drop tables; the slime jackpot also on pumpkin slimes; quests / tutorial / story objectives count Config.QuestKind; Studio-only DebugCommand 'PumpkinKing'. Review 2026-10-06: a Boss kind (the king) never targets or hits a player with Rookie == true or Level < Config.Halloween.SafeBelowLevel (5); other kinds attack rookies as usual.",
   "limitations": "Offline doubles: Roblox Instances, a seeded / scripted Random, DataStore table, flat-ground stand-in for MonsterService.groundPoint, MonsterService.spawnMonster replaced by a record maker that uses the real golden roll, CFrame algebra limited to Z rolls. Studio models, real Weld rendering, MonsterMotion playback, phone layouts and multiplayer timing are not certified here."
 }

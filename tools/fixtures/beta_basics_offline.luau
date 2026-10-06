@@ -535,17 +535,28 @@ runGroup("power-text", function()
 	local okChEn, chEn = pcall(string.format, T.ChangeEn, "283", "387")
 	check(okCh and has(ch, "283") and has(ch, "387") and okChEn and has(chEn, "283") and has(chEn, "387"),
 		"Change / ChangeEn format (old, new)", show({ ch, chEn }))
+	-- PvPNote / PvPNoteEn are finished sentences, built in Config right after Config.PvP: the caller shows them as they
+	-- are (no string.format), so no '%' may be left and the real PowerRatioMax / PowerRatioMin numbers must be inside
 	local hi, lo = tostring(C.PvP.PowerRatioMax), tostring(C.PvP.PowerRatioMin)
-	local okNote, note = pcall(string.format, T.PvPNote, hi, lo)
-	check(okNote and has(note, "1.5") and has(note, "0.8") and string.find(note, "1.5", 1, true) < string.find(note, "0.8", 1, true),
-		"PvPNote formats (PowerRatioMax, PowerRatioMin): 최대 1.5배, 최소 0.8배", tostring(note))
-	-- the English line must take the same arguments with Luau string.format (no positional %1$s support in Luau)
-	local okNoteEn, noteEn = pcall(string.format, T.PvPNoteEn, hi, lo)
-	check(okNoteEn and has(noteEn, "1.5") and has(noteEn, "0.8"),
-		"PvPNoteEn formats with Luau string.format and the same (max, min) arguments as PvPNote", tostring(noteEn))
-	if not okNoteEn then
-		finding("SRC BUG: Config.Power.Text.PvPNoteEn uses positional specifiers (%2$s / %1$s); Luau string.format "
-			.. "rejects them (" .. tostring(noteEn) .. "), so any string.format(PvPNoteEn, ...) call errors. No src caller yet.")
+	for _, k in { "PvPNote", "PvPNoteEn" } do
+		local note = T[k]
+		check(type(note) == "string" and not string.find(note, "%", 1, true),
+			k .. " is a finished line: a string with no '%' at all (no template left for the caller)", show(note))
+		check(has(note, hi) and has(note, lo),
+			k .. " contains the real Config.PvP.PowerRatioMax and PowerRatioMin numbers", show({ note, hi, lo }))
+	end
+	check(has(T.PvPNote, "최대 " .. hi .. "배") and has(T.PvPNote, "최소 " .. lo .. "배"),
+		"PvPNote reads 최대 <PowerRatioMax>배, 최소 <PowerRatioMin>배", show({ T.PvPNote, hi, lo }))
+	-- built from Config.PvP, not typed in: other numbers -> other lines (numbers replaced whatever they are now)
+	local pvpSrc, p1 = string.gsub(CONFIG_SOURCE, "PowerRatioMin = [%d%.]+,", "PowerRatioMin = 0.65,")
+	local p2
+	pvpSrc, p2 = string.gsub(pvpSrc, "PowerRatioMax = [%d%.]+,", "PowerRatioMax = 1.35,")
+	check(p1 == 1 and p2 == 1, "Config.PvP PowerRatioMin / PowerRatioMax lines found once each (fixture probe)", show({ p1, p2 }))
+	local altText = execute("Config", pvpSrc, nativeEnv()).Power.Text
+	for _, k in { "PvPNote", "PvPNoteEn" } do
+		local note = altText[k]
+		check(has(note, "1.35") and has(note, "0.65") and not has(note, "%"),
+			k .. " follows Config.PvP.PowerRatioMax / PowerRatioMin (finished line, no '%')", show(note))
 	end
 	-- Bully.Text
 	local B = C.Bully.Text
@@ -856,7 +867,7 @@ runGroup("display-title", function()
 	check(DT("None", 0, 0, 0, 0, "", "") == C.Titles.None, "no faction: 모험가")
 end)
 
------------------------------------------------------------------- C3. BetaPioneer grant / auto-select / keep ""
+------------------------------------------------------------------ C3. BetaPioneer grant / no auto-select / old auto-select reset
 runGroup("title-pioneer", function()
 	local uid = 9201
 	local w = newWorld({ Time = UNTIL - 1 })
@@ -900,7 +911,7 @@ runGroup("title-pioneer", function()
 		check(next(dx.Titles) == nil and px:GetAttribute("TitlesOwned") == "" and dx.TitleSel == "",
 			"fresh player " .. case[2] .. ": no title", show({ dx.Titles, px:GetAttribute("TitlesOwned"), dx.TitleSel }))
 	end
-	-- legacy A23-18 boolean: granted even after PioneerUntil (and auto-selected from "")
+	-- legacy A23-18 boolean: granted even after PioneerUntil (TitleSel stays "": no auto-select)
 	local wl = newWorld({ Time = UNTIL + 86400 })
 	wl.Rows[wl:Key(9220)] = row({ BetaPioneer = true })
 	local pl, dl = wl:Join(9220)

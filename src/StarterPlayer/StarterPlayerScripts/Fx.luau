@@ -1104,12 +1104,8 @@ function WOBBLE.track(model)
 		BornAt = (os.clock() - WOBBLE.StartedAt > 3) and os.clock() or -math.huge }
 	WOBBLE.State[model] = st
 	if st.Float then joint.C1 = WOBBLE.lift(st.Float) end -- hover from the start, also out of range
-	if st.Slime and st.Base then
-		-- user 2026-10-06: the slime mesh is flat from the side (3.1 wide x 2.1 deep): show it round (depth = width)
-		local w = math.max(st.Base.X, st.Base.Z)
-		st.Base = Vector3.new(w, st.Base.Y * 1.05, w)
-		mesh.Size = st.Base
-	end
+	-- (the old "depth = width" stretch for the flat round slime mesh is gone: the cube / pumpkin meshes keep their
+	-- designed shape; review 2026-10-06 after the user's "슬라임이 이상해 보여")
 	model:GetAttributeChangedSignal(MOTION.HURT_SEQ_ATTR):Connect(function()
 		st.HitAt = os.clock() -- jelly wobble (slimes) / a quick flinch bob (others)
 	end)

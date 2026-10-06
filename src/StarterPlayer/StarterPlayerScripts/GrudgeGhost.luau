@@ -27,8 +27,10 @@ local function active()
 	return (tonumber(me:GetAttribute("GrudgeThiefId")) or 0) > 0 and alive()
 end
 
-local function keyboard()
-	return UserInputService.KeyboardEnabled and not UserInputService.TouchEnabled
+local function keyboard() -- review of 27246d1: the same key-display rule as Keybinds / HUD
+	local kb = C and C.Keybinds
+	if type(kb) == "table" and type(kb.ShowsKeys) == "function" then return kb.ShowsKeys() end
+	return UserInputService.KeyboardEnabled
 end
 
 function G.Press()

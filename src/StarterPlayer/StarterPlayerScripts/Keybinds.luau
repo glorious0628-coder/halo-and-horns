@@ -51,6 +51,11 @@ local function touchOnly()
 	return UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
 end
 
+-- the one rule for key badges / key hints (HUD, VitalsUI, GrudgeGhost, texts): a keyboard is there (touch laptops too)
+function Keybinds.ShowsKeys()
+	return UserInputService.KeyboardEnabled == true
+end
+
 local function english()
 	local st = C and C.Settings
 	if type(st) ~= "table" or type(st.Get) ~= "function" then return false end
@@ -124,7 +129,8 @@ end
 local function applyPrompt(prompt)
 	if typeof(prompt) ~= "Instance" or not prompt:IsA("ProximityPrompt") then return end
 	K.Prompts[prompt] = true
-	local code = Keybinds.Get("Interact") or Enum.KeyCode.Unknown -- unbound: the prompt is still clickable / tappable
+	-- Interact can never be empty (NoClear) and only holds keys the prompt UI draws; E is the safety fallback
+	local code = Keybinds.Get("Interact") or Enum.KeyCode.E
 	if prompt.KeyboardKeyCode ~= code then prompt.KeyboardKeyCode = code end
 end
 
@@ -265,10 +271,12 @@ function Keybinds.SetLocal(action, key)
 	if typeof(key) == "EnumItem" then key = key.Name end
 	if type(key) ~= "string" then return false, "NotAllowed" end
 	if Config.KeyReserved(key) then return false, "Reserved" end
-	if not Config.KeyUsable(key) then return false, "NotAllowed" end
+	if not Config.KeyAllowedFor(action, key) then return false, "NotAllowed" end
 	local old = Keybinds.KeyName(action)
 	if old == key then return true end
 	local holder = K.ByKey[key]
+	-- a swap may not hand the other action a key it cannot hold (Interact: prompt keys only, never empty)
+	if holder and holder ~= action and not Config.KeyAllowedFor(holder, old) then return false, "NotAllowed" end
 	local sparse = table.clone(K.Sparse)
 	sparse[action] = key
 	if holder and holder ~= action then sparse[holder] = old end
@@ -286,6 +294,7 @@ end
 -- the action keeps no key ("없음"); its old key does nothing
 function Keybinds.Clear(action)
 	if not KB.ById[action] or not K.Live[action] then return false end
+	if not Config.KeyAllowedFor(action, "") then return false, "NoClear" end -- Interact always keeps a key
 	local sparse = table.clone(K.Sparse)
 	sparse[action] = ""
 	commit(sparse)
@@ -330,7 +339,7 @@ local function onCapture(cap, input)
 	elseif Config.KeyReserved(name) then
 		toast(text("Reserved"), "bad", 3)
 		Keybinds.EndCapture("Reserved", name)
-	elseif not Config.KeyUsable(name) then
+	elseif not Config.KeyAllowedFor(cap.Action, name) then
 		toast(text("NotAllowed"), "bad", 3)
 		Keybinds.EndCapture("NotAllowed", name)
 	else

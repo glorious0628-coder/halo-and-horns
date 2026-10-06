@@ -56,8 +56,9 @@ local configEnv = { Enum = enum, Color3 = { new = tuple, fromRGB = tuple }, Bric
 local serial = 0
 local function fixture(saved, opts)
 	serial += 1
-	local f = { Zone = "HaloTown", Alive = true, Ready = true, RateAllowed = true, Loops = {}, Delayed = {},
-		Notices = {}, Rows = {}, Remote = {}, Sends = 0, Spawned = {}, Panels = {} }
+	-- Clock: os.clock() as QuestService sees it (F10-4 safety-net timer); the other services keep the real clock
+	local f = { Zone = "HaloTown", Alive = true, Ready = true, RateAllowed = true, Loops = {}, LoopOrder = {}, Delayed = {},
+		Notices = {}, NoticeLog = {}, Rows = {}, Remote = {}, Sends = 0, Spawned = {}, Panels = {}, Clock = 1000 }
 	local config = execute(CONFIG_SOURCE, configEnv)
 	f.Config = config
 	local players = {}
@@ -79,7 +80,12 @@ local function fixture(saved, opts)
 	end
 	local function resume(co)
 		local ok, delay = coroutine.resume(co); assert(ok, delay)
-		if coroutine.status(co) ~= "dead" then f.Loops[co] = delay else f.Loops[co] = nil end
+		if coroutine.status(co) ~= "dead" then
+			if f.Loops[co] == nil and not table.find(f.LoopOrder, co) then table.insert(f.LoopOrder, co) end
+			f.Loops[co] = delay
+		else
+			f.Loops[co] = nil
+		end
 	end
 	local taskMock = { spawn = function(fn, ...)
 		local args = table.pack(...); local co = coroutine.create(function() fn(table.unpack(args, 1, args.n)) end); resume(co)
@@ -97,7 +103,10 @@ local function fixture(saved, opts)
 			else error("unexpected server publication " .. name) end
 		end } end
 		return f.Remote[name]
-	end, Notify = function(_, message) table.insert(f.Notices, message) end }
+	end, Notify = function(p, message, kind, secs)
+		table.insert(f.Notices, message)
+		table.insert(f.NoticeLog, { Player = p, Text = message, Kind = kind, Secs = secs })
+	end }
 	local token = 0
 	local services = { Players = players, ReplicatedStorage = { Shared = { Config = "Config", Util = "Util", Net = "Net" } },
 		DataStoreService = { GetDataStore = function() return store end }, RunService = { IsStudio = function() return true end },
@@ -138,14 +147,23 @@ local function fixture(saved, opts)
 		ClassService = { ClassChanged = signal() }, ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end },
 		CombatService = { Released = signal() }, GooseService = { GooseFinished = signal() },
 		PvPService = { PlayerKO = signal(), IsRookie = function() return true end }, KaijuService = { KaijuEnded = signal() } }
-	local quest = execute(QUEST_SOURCE, env); quest.Init(registry); quest.Start()
+	local questEnv = table.clone(env)
+	questEnv.os = setmetatable({ clock = function() return f.Clock end }, { __index = os })
+	local quest = execute(QUEST_SOURCE, questEnv); quest.Init(registry); quest.Start()
 	ps.PlayerReady:Fire(f.Player, f.Data)
 	f.Services, f.DataService = registry, dataService
+	-- loops run in the order they were started (QuestService: publish, then tutorial), so every run is the same
 	function f:Tick()
-		local list = {}; for co, delay in self.Loops do if delay <= 1 then table.insert(list, co) end end
+		local list = {}
+		for _, co in self.LoopOrder do
+			local delay = self.Loops[co]
+			if delay ~= nil and delay <= 1 then table.insert(list, co) end
+		end
 		for _, co in list do resume(co) end
 	end
 	function f:Publish() self:Tick(); self:Tick() end
+	-- F10-4: move QuestService's clock on one second per loop tick (the 1 s tutorial loop runs once per Tick)
+	function f:Advance(seconds) for _ = 1, seconds do self.Clock += 1; self:Tick() end end
 	function f:Kill(kind, personal, zone)
 		monster.MonsterKilled:Fire(self.Player, { Kind = kind or "Slime", Personal = personal == true, ZoneId = zone or "SlimeMeadow", Golden = false })
 		self:Publish()
@@ -591,6 +609,122 @@ do
 		check(h.Refused == true, "Version " .. version .. " record was loaded by a Version 3 server")
 		check(row.Version == version and row.WeaponTier == 9 and row.WeaponOwnedMask == 511 and row.SessionLock == nil
 			and row.SessionToken == nil, "Version " .. version .. " record was rewritten or locked")
+	end
+end
+-- F10-4 safety net (2026-10-06): while TutorialStep == 2 and TutorialKills >= 5, QuestService starts a timer
+-- (os.clock = f.Clock, from the first time this server sees it, also right after a rejoin); after
+-- Config.Tutorial.AutoClaimSeconds it pays QuestRewardGold once with Text.AutoClaimed. A manual [받기] first clears
+-- it, kills < 5 reset it, leaving clears it. The tutorial loop is the fixture's coroutine double (one tick per second).
+do
+	local cfg = execute(CONFIG_SOURCE, configEnv)
+	local T = cfg.Tutorial
+	check(T.AutoClaimSeconds == 60, "F10-4 Config.Tutorial.AutoClaimSeconds is 60")
+	check(type(T.Text.AutoClaimed) == "string" and string.find(T.Text.AutoClaimed, "%s", 1, true) ~= nil
+		and T.Text.AutoClaimed ~= T.Text.Claimed, "F10-4 Text.AutoClaimed is its own line with the gold amount")
+	check(type(T.Text.AutoClaimedEn) == "string" and string.find(T.Text.AutoClaimedEn, "%s", 1, true) ~= nil,
+		"F10-4 Text.AutoClaimed has its English twin")
+end
+do
+	local function lines(f)
+		local gold = tostring(f.Config.Tutorial.QuestRewardGold)
+		return string.format(f.Config.Tutorial.Text.AutoClaimed, gold), string.format(f.Config.Tutorial.Text.Claimed, gold)
+	end
+	local function count(f, text)
+		local n = 0
+		for _, message in f.Notices do if message == text then n += 1 end end
+		return n
+	end
+	local function state(f)
+		local auto, manual = lines(f)
+		return " [step " .. tostring(f.Data.TutorialStep) .. ", kills " .. tostring(f.Data.TutorialKills) .. ", bank "
+			.. tostring(f.Data.BankGold) .. ", auto lines " .. count(f, auto) .. ", claimed lines " .. count(f, manual) .. "]"
+	end
+	local function unpaid(f) return f.Data.TutorialStep == 2 and f.Data.BankGold == 0 end
+	local function paidOnce(f, auto)
+		local autoText, manualText = lines(f)
+		return f.Data.TutorialStep == 99 and f.Data.BankGold == f.Config.Tutorial.QuestRewardGold
+			and count(f, autoText) == (if auto then 1 else 0) and count(f, manualText) == (if auto then 0 else 1)
+	end
+
+	-- 1. 4/5 never starts it; at 5/5 it pays exactly AutoClaimSeconds later, once, with Text.AutoClaimed
+	local f = fixture(saved(2, 0))
+	local AUTO = f.Config.Tutorial.AutoClaimSeconds
+	for _ = 1, 4 do f:Kill() end
+	f:Advance(AUTO * 3)
+	check(unpaid(f) and f.Data.TutorialKills == 4, "F10-4 4/5 kills are never auto-claimed (180 s)" .. state(f))
+	f:Kill() -- 5/5: the timer starts on the next tutorial tick (same clock)
+	f:Advance(AUTO - 1)
+	check(unpaid(f) and f.Data.TutorialKills == 5, "F10-4 no auto-claim before AutoClaimSeconds (59 s after 5/5)" .. state(f))
+	check(f.LastList[1].CanClaim == true, "F10-4 the [받기] row stays claimable while the safety net waits")
+	f:Advance(1)
+	check(paidOnce(f, true), "F10-4 at AutoClaimSeconds the safety net pays QuestRewardGold once with Text.AutoClaimed" .. state(f))
+	local autoText = lines(f)
+	local entry = nil
+	for _, e in f.NoticeLog do if e.Text == autoText then entry = e end end
+	check(entry ~= nil and entry.Player == f.Player and entry.Kind == "reward", "F10-4 the auto-claim line is a reward notice to that player")
+	f:Advance(AUTO * 3); f:Claim()
+	check(paidOnce(f, true), "F10-4 the auto-claim pays once (later ticks and a late [받기] pay nothing)" .. state(f))
+	check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "대장간") ~= nil,
+		"F10-4 after the auto-claim the pinned row moves on to the blacksmith like a manual claim")
+	local record = f:SaveAndRejoin()
+	check(record.TutorialStep == 99 and record.BankGold == f.Config.Tutorial.QuestRewardGold,
+		"F10-4 the auto-claimed step and gold are saved")
+	f:Advance(AUTO * 2); f:Claim()
+	check(paidOnce(f, true), "F10-4 a rejoin after the auto-claim pays nothing more" .. state(f))
+
+	-- 2. a manual claim first: the normal Claimed line, and the safety net never pays afterwards
+	f = fixture(saved(2, 4)); f:Kill()
+	f:Advance(30); f:Claim()
+	check(paidOnce(f, false), "F10-4 a [받기] before the timer pays the normal Claimed line" .. state(f))
+	f:Advance(AUTO * 3)
+	check(paidOnce(f, false), "F10-4 after a manual claim the safety net never pays" .. state(f))
+	-- white-box: the claim also clears the timer (a later 5/5 at step 2 counts from 0, not from the first 5/5)
+	f.Services.PlayerService.SetStat(f.Player, "TutorialStep", 2)
+	f.Services.PlayerService.SetStat(f.Player, "BankGold", 0)
+	f:Publish() -- the next tutorial tick (same clock) starts the timer
+	f:Advance(AUTO - 1)
+	check(f.Data.TutorialStep == 2 and f.Data.BankGold == 0, "F10-4 a manual claim clears the timer" .. state(f))
+	f:Advance(1)
+	check(f.Data.TutorialStep == 99 and f.Data.BankGold == f.Config.Tutorial.QuestRewardGold,
+		"F10-4 a fresh timer after a manual claim still runs" .. state(f))
+
+	-- 3. kills < 5 reset the timer
+	f = fixture(saved(2, 5)) -- 5/5 on load: the timer starts at PlayerReady
+	f:Advance(50)
+	f.Services.PlayerService.SetStat(f.Player, "TutorialKills", 4); f:Advance(1)
+	check(unpaid(f), "F10-4 kills < 5 stop the safety net" .. state(f))
+	f.Services.PlayerService.SetStat(f.Player, "TutorialKills", 5); f:Advance(1) -- the timer starts again here
+	f:Advance(AUTO - 1)
+	check(unpaid(f), "F10-4 kills < 5 reset the timer (no auto-claim 59 s after 5/5 again, 111 s after the first)" .. state(f))
+	f:Advance(1)
+	check(paidOnce(f, true), "F10-4 after a reset the safety net pays AutoClaimSeconds after 5/5 again" .. state(f))
+
+	-- 4. leaving clears the timer (white-box: the same Player object seen again by the tutorial loop starts from 0)
+	f = fixture(saved(2, 5))
+	f:Advance(50)
+	f.Services.PlayerService.PlayerLeaving:Fire(f.Player); f:Advance(1) -- the loop sees the player again: new timer
+	f:Advance(AUTO - 1)
+	check(unpaid(f), "F10-4 PlayerLeaving clears the timer (no auto-claim 59 s after it, 110 s after 5/5)" .. state(f))
+	f:Advance(1)
+	check(paidOnce(f, true), "F10-4 a player seen again after PlayerLeaving gets a fresh timer" .. state(f))
+
+	-- 5. a rejoin starts the timer again (an unclaimed 5/5 is saved; leaving pays nothing)
+	f = fixture(saved(2, 4)); f:Kill()
+	f:Advance(50)
+	f:Rejoin()
+	check(unpaid(f) and f.Data.TutorialKills == 5, "F10-4 leaving with an unclaimed 5/5 pays nothing and keeps 5/5" .. state(f))
+	f:Advance(AUTO - 1)
+	check(unpaid(f), "F10-4 after a rejoin the timer starts again (no auto-claim 59 s after the rejoin)" .. state(f))
+	f:Advance(1)
+	check(paidOnce(f, true), "F10-4 after a rejoin the safety net pays AutoClaimSeconds after the rejoin" .. state(f))
+
+	-- 6. only step 2 is ever auto-claimed (pending, travel and finished missions with 5 saved kills)
+	for _, step in { 0, 1, 99 } do
+		local g = fixture(saved(step, 5))
+		local bank = g.Data.BankGold
+		g:Advance(AUTO * 3)
+		check(g.Data.TutorialStep == step and g.Data.BankGold == bank and count(g, (lines(g))) == 0,
+			"F10-4 the safety net never pays outside step 2 (step " .. step .. ")" .. state(g))
 	end
 end
 if #failures > 0 then

@@ -1,8 +1,9 @@
 {
   "status": "passed",
-  "checks": 9151,
+  "mutationsSkipped": false,
+  "checks": 9112,
   "failedChecks": 0,
-  "namedChecks": 279,
+  "namedChecks": 282,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -296,7 +297,7 @@
     },
     {
       "group": "keymap-rules",
-      "check": "every action saved on one key: the first live action keeps it (never all blank)",
+      "check": "every action saved on one key: the first live action keeps it, Interact keeps E (never all blank)",
       "pass": 1,
       "fail": 0
     },
@@ -567,19 +568,19 @@
     {
       "group": "sanitize",
       "check": "saved keys: known action ids, '' or a usable key, never the default",
-      "pass": 929,
+      "pass": 912,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
-      "pass": 929,
+      "pass": 912,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "no two Flag-on actions save the same key",
-      "pass": 698,
+      "pass": 690,
       "fail": 0
     },
     {
@@ -1340,7 +1341,25 @@
     },
     {
       "group": "keybinds-prompts-dispatch",
-      "check": "unbound Interact: prompts have no key (still clickable)",
+      "check": "Interact cannot be cleared: prompts keep their key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "Interact refuses keys the prompt UI cannot draw (CapsLock)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "Interact refuses keys the prompt UI cannot draw (KeypadOne)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-prompts-dispatch",
+      "check": "Interact refuses keys the prompt UI cannot draw (Minus)",
       "pass": 1,
       "fail": 0
     },
@@ -1690,9 +1709,9 @@
   "staticChecks": 21,
   "staticFailures": [],
   "mutations": {
-    "total": 30,
-    "applied": 30,
-    "caught": 30,
+    "total": 33,
+    "applied": 33,
+    "caught": 33,
     "results": [
       {
         "mutation": "KeyMap: an explicit key already taken is kept",
@@ -1702,7 +1721,7 @@
         "crashed": false,
         "newFailingChecks": [
           "keymap-rules :: KeyMap = the BB2 collision rule (fuzz, 400 saves x live sets)",
-          "keymap-rules :: every action saved on one key: the first live action keeps it (never all blank)",
+          "keymap-rules :: every action saved on one key: the first live action keeps it, Interact keeps E (never all blank)",
           "keymap-rules :: explicit entries first in Actions order: the later explicit holder of a taken key gets '' (not reported)",
           "keymap-rules :: no two actions ever share a key (fuzz)"
         ],
@@ -1825,6 +1844,46 @@
           "service-remote :: the echo carries the cleaned value and the blob's Seq"
         ],
         "newFailingCount": 5
+      },
+      {
+        "mutation": "Interact may be saved on any usable key",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (CapsLock)",
+          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (KeypadOne)",
+          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (Minus)",
+          "keymap-rules :: KeyMap = the BB2 collision rule (fuzz, 400 saves x live sets)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Interact may be cleared",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "keybinds-prompts-dispatch :: Interact cannot be cleared: prompts keep their key",
+          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (CapsLock)",
+          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (KeypadOne)",
+          "keybinds-prompts-dispatch :: Interact refuses keys the prompt UI cannot draw (Minus)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "KeyMap leaves Interact empty",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "keymap-rules :: KeyMap = the BB2 collision rule (fuzz, 400 saves x live sets)",
+          "keymap-rules :: every action saved on one key: the first live action keeps it, Interact keeps E (never all blank)"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "unknown top-level settings are kept",
@@ -2122,15 +2181,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
+    "src/ReplicatedStorage/Shared/Config.luau": "a07e2114f44c59fd81fa908b4405305a6aea7c3eac80cc7a444145458ea58066",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
     "src/ServerScriptService/SettingsService.luau": "aa11a9cb12e31fc89b54a63a34284a6349311a22af1b1c15b1c4dd28ae0c92b7",
-    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "b89f4a3f9f570c636ef7f7c16876be5a9a91838b861e8940fe49c639e77ca39a",
+    "src/StarterPlayer/StarterPlayerScripts/Keybinds.luau": "ed1bdd80a262754b59a4aa110fbe3980fcb6598da309686122118532e069aede",
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9"
   },
-  "fixtureSHA256": "092eccc1d9508e61c74ba762c5da294cb8e5ea5e1d8688aa858e385ab1b3d9ee",
+  "fixtureSHA256": "3f64ac6b6304c5bdb3d596e7f5bf9b7bab075eea24a87d128a2fa448d1531e0b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

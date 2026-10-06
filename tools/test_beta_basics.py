@@ -64,6 +64,14 @@ MUTATIONS = [
      '"LuckEvents", "TitleSel",', '"LuckEvents",'),
     ("DisplayTitle puts selected above session", "CONFIG_SOURCE",
      DISPLAY_SESSION + DISPLAY_SELECTED, DISPLAY_SELECTED + DISPLAY_SESSION),
+    # Config: PvPNote is a finished line. The wrapper returns its first argument, so PvPNote becomes the bare
+    # "...최대 %s배, 최소 %s배..." template again (the numbers are dropped), whatever the wording is.
+    ("PvPNote back to a \"%s\" template", "CONFIG_SOURCE",
+     "Config.Power.Text.PvPNote = string.format(",
+     "Config.Power.Text.PvPNote = (function(template) return template end)("),
+    ("PvPNote numbers typed in, not from Config.PvP", "CONFIG_SOURCE",
+     "\ttostring(Config.PvP.PowerRatioMax), tostring(Config.PvP.PowerRatioMin))\nConfig.Power.Text.PvPNoteEn",
+     '\t"1.5", "0.8")\nConfig.Power.Text.PvPNoteEn'),
     # JusticeService: GetCombatPower + the CombatPower attribute
     ("GetCombatPower includes the rebirth bonus", "JUSTICE_SOURCE",
      "return Config.CombatPower(level, tier, enhance)",
@@ -226,6 +234,16 @@ def static_checks() -> tuple[int, list[str]]:
     call = re.search(r"Config\.DisplayTitle\((.*?)\n\t\)", visuals, re.S)
     check(call is not None and 'attrStr(player, "TitleSel"' in call.group(1),
           "CharacterVisuals nametag passes the TitleSel attribute to Config.DisplayTitle")
+    # review of 381f6a1: the pioneer is a mark on the nametag's second line (unless it is the selected line-1 title)
+    check(re.search(r'TitlesOwned\s*=\s*\{\s*"Nametag"\s*\}', visuals) is not None,
+          "CharacterVisuals REBUILD map: TitlesOwned -> Nametag (the pioneer mark follows a new grant)")
+    mark = re.search(r'\n(\t+)local pioneer = Config\.TitleDefs and Config\.TitleDefs\.BetaPioneer\n(.*?)\n\1end\n',
+                     visuals, re.S)
+    body = mark.group(2) if mark else ""
+    check(mark is not None and 'attrStr(player, "TitleSel", "") ~= "BetaPioneer"' in body
+          and 'attrStr(player, "TitlesOwned", "")' in body and '"BetaPioneer"' in body
+          and re.search(r"line2\s*\.\.=\s*[^\n]*pioneer\.Name", body) is not None,
+          "CharacterVisuals nametag line 2 adds the BetaPioneer mark when owned (TitlesOwned) and not selected")
     hud = read(STATIC_ONLY["HUD"])
     at = hud.find("Config.DisplayTitle(")
     check(at >= 0 and 'attr("TitleSel"' in hud[at:at + 300],
@@ -315,7 +333,8 @@ def main() -> int:
     ok = (compiled.returncode == 0 and main_run["returncode"] == 0 and marker is not None and not static_failures
           and not changed and all(m.get("applied") and m.get("caught") for m in mutations))
     report = {
-        "status": "passed" if ok else "failed",
+        "status": ("passed-no-mutations" if args.no_mutations else "passed") if ok else "failed",
+        "mutationsSkipped": args.no_mutations,
         "checks": result.get("Checks", 0) if result else 0,
         "failedChecks": result.get("Failed", 0) if result else 0,
         "namedChecks": len(named),
@@ -338,7 +357,9 @@ def main() -> int:
                     "tier, 1, +N) x DisplayScale 10 + 0.5) with samples 283 (Lv1 T1) / 387 (Lv1 T2) / 758 (Lv5 T3) / 1,052 "
                     "(Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 25,488 (Lv100, highest-damage "
                     "weapon, +10; cached; tier-index cap would be 7,027); rises with level and +N, ordered by weapon Damage; "
-                    "Config.Power.Text (Label/Up/Change/Formula/PvPNote + En) and Config.Bully.Text (Title + 3 lines KO/EN "
+                    "Config.Power.Text (Label/Up/Change/Formula + En; PvPNote / PvPNoteEn are finished lines built right "
+                    "after Config.PvP: strings with no '%', carrying the real PowerRatioMax / PowerRatioMin and following "
+                    "them) and Config.Bully.Text (Title + 3 lines KO/EN "
                     "built from WeakPowerRatio 50% / FreshSpawnSeconds 15 / RepeatKOs 3 in RepeatWindow 10 min); "
                     "JusticeService.GetCombatPower = Config.CombatPower from the Level / WeaponTier / WeaponEnhance attributes "
                     "(no rebirth bonus), GetPower unchanged; the CombatPower attribute is set on PlayerReady, follows "
@@ -347,8 +368,11 @@ def main() -> int:
                     "at ratio >= 1.2, x0.5 below 0.8, bully weak test victim < 50% of killer, all on the displayed integer. "
                     "BB16: Data Titles {} / TitleSel \"\" (TitleSel mirrored), Config.TitleDefs / TitleOrder / Beta "
                     "(GrantPioneer, PioneerUntil 2026-12-19 11:00 KST); BetaPioneer granted on PlayerReady before "
-                    "PioneerUntil (legacy data.BetaPioneer always), first grant with TitleSel \"\" auto-selects it via "
-                    "PlayerService.SetStat, a later \"\" choice survives rejoin, GrantPioneer=false stops new grants; "
+                    "PioneerUntil (legacy data.BetaPioneer always); the first grant keeps TitleSel \"\" (no auto-select: "
+                    "the faction rank stays the title, no TitleSel SetStat); an old auto-selected TitleSel \"BetaPioneer\" "
+                    "without TitleSelAt goes back to \"\" once at ready (SetTitle records TitleSelAt, so an explicit "
+                    "pick is kept); the pioneer shows as a mark on the nametag's second line (CharacterVisuals, static "
+                    "check); a \"\" choice survives rejoin, GrantPioneer=false stops new grants; "
                     "GrayLegend when FallMarks and RedeemMarks >= Rebirth.GrayLegendMin (at ready and on change); "
                     "TitlesOwned = owned TitleOrder ids joined by \",\"; unowned/unknown TitleSel -> \"\" at ready; SetTitle "
                     "remote: exactly one string <= 32 chars, \"\" or owned, ready, RateLimits.SetTitle 0.5 s, else ignored; "
@@ -378,6 +402,8 @@ def main() -> int:
               + ("" if m.get("applied") else f" ({m.get('note')})"))
     if mutations:
         print(f"MUTATIONS caught={caught}/{applied} (of {len(MUTATIONS)})")
+    if args.no_mutations:
+        print("MUTATIONS SKIPPED")
     for f in report["findings"]:
         print(f"FINDING [{f.get('Group')}] {f.get('Text')}")
     print(f"Named checks: {len(named) - len(failing)} passed, {len(failing)} failing; "

@@ -1,8 +1,9 @@
 {
   "status": "passed",
-  "checks": 1171,
+  "mutationsSkipped": false,
+  "checks": 2545,
   "failedChecks": 0,
-  "namedChecks": 423,
+  "namedChecks": 448,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -926,6 +927,156 @@
     },
     {
       "group": "rollkill",
+      "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "A23-22 Config.Bully.Penalty.DropMult is 0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: a row drops iff draw < P x 0.5 (capped at 1)",
+      "pass": 196,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: one draw per row (+ jackpot) per kill",
+      "pass": 195,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the unpenalized chance P no longer drops",
+      "pass": 98,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
+      "pass": 195,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the unpenalized chance P x GoldenMult no longer drops",
+      "pass": 97,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the jackpot pays iff draw < Chance x 0.5",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the unpenalized jackpot chance no longer pays",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: a golden jackpot pays iff draw < Chance x GoldenMult x 0.5",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the unpenalized jackpot chance x GoldenMult no longer pays",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the caller's kill info is never given DropMult (cloned)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 3: still exactly x0.5 for rows (the drop penalty does not stack)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 3: still exactly x0.5 for the jackpot (the drop penalty does not stack)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 0: a row drops iff draw < P (capped at 1)",
+      "pass": 195,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 0: one draw per row (+ jackpot) per kill",
+      "pass": 183,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 0: a golden row drops iff draw < P x GoldenMult (capped at 1)",
+      "pass": 184,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 0: the jackpot pays iff draw < Chance",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 0: a golden jackpot pays iff draw < Chance x GoldenMult",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag + guide)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "BullyStacks 1: the guarantee is still paid only once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "no LootService / ProgressionService runtime errors (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
+      "check": "no remote fired to all clients / no unexpected client publication",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bully",
       "check": "every Inventory push is FireClient(player, payload) with no extra arguments",
       "pass": 1,
       "fail": 0
@@ -2856,9 +3007,9 @@
   "staticChecks": 8,
   "staticFailures": [],
   "mutations": {
-    "total": 71,
-    "applied": 71,
-    "caught": 71,
+    "total": 73,
+    "applied": 73,
+    "caught": 73,
     "results": [
       {
         "mutation": "enhance failure may go below +0",
@@ -2961,14 +3112,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "bully :: BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag + guide)",
+          "bully :: BullyStacks 1: the guarantee is still paid only once",
           "rollkill :: B8 the kept guarantee pays on the next king slime once there is room",
           "rollkill :: LootFlags and the scroll survive reload",
           "rollkill :: LootFlags.FirstScroll is in the saved record",
-          "rollkill :: first BigSlime kill guarantees exactly one Enh70",
-          "rollkill :: later Loot Fx never carries First",
-          "rollkill :: no second guarantee after reload"
+          "rollkill :: first BigSlime kill guarantees exactly one Enh70"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "golden multiplier ignored",
@@ -2977,13 +3128,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "bully :: BullyStacks 0: a golden jackpot pays iff draw < Chance x GoldenMult",
+          "bully :: BullyStacks 0: a golden row drops iff draw < P x GoldenMult (capped at 1)",
+          "bully :: BullyStacks 1: a golden jackpot pays iff draw < Chance x GoldenMult x 0.5",
+          "bully :: BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
           "lootroll :: golden == true uses GoldenMult (0.3 x 3 > 0.5)",
-          "rollkill :: GoldenMult applies only for Golden == true",
-          "rollkill :: drop rate within 5 sigma of Config.Loot.Tables P x 3 (capped at 1)",
-          "rollkill :: jackpot threshold exact (golden x3)",
-          "rollkill :: row drops iff draw < P x GoldenMult"
+          "rollkill :: GoldenMult applies only for Golden == true"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 9
       },
       {
         "mutation": "golden multiplier for any truthy Golden",
@@ -3003,11 +3155,45 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "bully :: BullyStacks 0: one draw per row (+ jackpot) per kill",
+          "bully :: BullyStacks 1: one draw per row (+ jackpot) per kill",
+          "bully :: BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)",
           "rollkill :: no jackpot roll for non-slime kinds",
           "rollkill :: one RollKill = one draw per row (+ jackpot draw)",
           "rollkill :: unknown Kind gives nothing and draws nothing"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "bully penalty not applied to the jackpot",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1: a golden jackpot pays iff draw < Chance x GoldenMult x 0.5",
+          "bully :: BullyStacks 1: the jackpot pays iff draw < Chance x 0.5",
+          "bully :: BullyStacks 1: the unpenalized jackpot chance no longer pays",
+          "bully :: BullyStacks 1: the unpenalized jackpot chance x GoldenMult no longer pays",
+          "bully :: BullyStacks 3: still exactly x0.5 for the jackpot (the drop penalty does not stack)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "bully penalty DropMult never set in RollKill",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bully :: BullyStacks 1: a golden jackpot pays iff draw < Chance x GoldenMult x 0.5",
+          "bully :: BullyStacks 1: a golden row drops iff draw < P x GoldenMult x 0.5 (capped at 1)",
+          "bully :: BullyStacks 1: a row drops iff draw < P x 0.5 (capped at 1)",
+          "bully :: BullyStacks 1: the jackpot pays iff draw < Chance x 0.5",
+          "bully :: BullyStacks 1: the unpenalized chance P no longer drops",
+          "bully :: BullyStacks 1: the unpenalized chance P x GoldenMult no longer drops"
+        ],
+        "newFailingCount": 10
       },
       {
         "mutation": "two rolls per kill signal",
@@ -3016,11 +3202,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "bully :: BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)",
           "rollkill :: auto / skill / personal kills roll like any kill",
           "rollkill :: one MonsterKilled signal = exactly one roll",
           "rollkill :: two contributors = two independent rolls"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "item cap ignored on drops",
@@ -3842,18 +4029,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
+    "src/ReplicatedStorage/Shared/Config.luau": "a07e2114f44c59fd81fa908b4405305a6aea7c3eac80cc7a444145458ea58066",
     "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
     "src/ServerScriptService/PlayerService.luau": "81d5cf25b41a5578b4d20b798e48cab81e42fa62584df71600df876ea3b80fd5",
     "src/ServerScriptService/ProgressionService.luau": "a8d824c0df00deee171e7a0f45404b7f11a9197c7580585ea116191bdb72e38a",
-    "src/ServerScriptService/CombatService.luau": "7c6e02a75a4f9fddf06693027a0d9f696595bafb1e1a82c1da21d3bbff451e92",
+    "src/ServerScriptService/CombatService.luau": "dab2f0b0365811e9a4fcdfdc775f327499954ad480aaa7368c4eca8fda162a8d",
     "src/ServerScriptService/LootService.luau": "a78cc5c5d98dcad3dd546e43097b59519e299ad4cf12dc629bfd8623190332fe",
     "src/ServerScriptService/JusticeService.luau": "c82185555c4263dd843d25e56c28d2aa9dd11d23f123a0f5c89fff7f6c47719c",
     "src/ServerScriptService/PvPService.luau": "f1267b1d3840c163c95b558eac4b98a659c16136f994e0b501497117ba36d248"
   },
-  "fixtureSHA256": "f8c68f8daae12d3c43e5f3e1a69dbec980c9d4c296d86d9ae3081acbb921d137",
+  "fixtureSHA256": "53d0f8812741f5fa20b86f74aa51b3aec4a916081226bddfefb256c8dbeadf27",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

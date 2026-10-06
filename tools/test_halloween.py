@@ -2,7 +2,8 @@
 
 Runs the CURRENT Config, Net, Util, DataService, QuestService, StoryQuestService, LootService, AnnounceService,
 HalloweenService, Main.server.luau and the client Announce module, plus chunks cut from MonsterService (event spawn /
-kill / contributor payout / regular pool + GlobalCap split / golden roll / death pop and leave fade), EventHUD (the
+kill / contributor payout / regular pool + GlobalCap split / golden roll / death pop and leave fade / targetable +
+landAttack: the king spares rookies), EventHUD (the
 Pumpkin King pill and its placement beside HUD's columns), Fx (WOBBLE float, leaving king without the splat) and
 Panels (drop list loop), and the BatGoblin / Goblin MonsterAnims clip modules. Everything is injected into
 tools/fixtures/halloween_offline.luau and run with the installed official Luau CLI (build/luau_cli_0_741). No Studio,
@@ -149,6 +150,13 @@ MUTATIONS = [
     ("bat goblin slash loops", "CLIP_BatGoblin_Slash", "Loop = false", "Loop = true"),
     ("GameState defaults miss the king attributes", "NET_SOURCE",
      "PumpkinKingNextAt = 0, PumpkinKingActive = false, PumpkinKingEndsAt = 0,", "PumpkinKingNextAt = 0,"),
+    # review 2026-10-06: a boss (the Pumpkin King) never targets / hits a rookie (MonsterService targetable / landAttack)
+    ("every monster spares rookies (Boss check dropped)", "MONSTER_SOURCE",
+     "if def and def.Boss and typeof(info.Player) == \"Instance\" then", "if def and typeof(info.Player) == \"Instance\" then"),
+    ("king also spares Lv5 (<= SafeBelowLevel)", "MONSTER_SOURCE",
+     "or lv < safe then return false end", "or lv <= safe then return false end"),
+    ("landAttack checks its target without the Player", "MONSTER_SOURCE",
+     "local info = { Player = target, Pos = tpos,", "local info = { Pos = tpos,"),
 ]
 
 
@@ -227,6 +235,24 @@ def make_harness(sources: dict[str, str]) -> str:
         + "\n".join(pop_consts) + "\n"
         + function_block(mon, "local function deathPop(") + "\n"
         + "return deathPop\n")
+    # targeting (review 2026-10-06: a boss leaves rookies alone): the real targetable, faceTarget, landAttack,
+    # findInfo and isPlayerInTown with their constants
+    target_consts = []
+    for pattern in (r"^local OUT_Y = .*$", r"^local ATTACK_SEQ_ATTR = .*$", r"^local FACE_TARGET_DOT = .*$",
+                    r"^local HIT_REACT = .*$"):
+        m = re.search(pattern, mon, re.M)
+        if not m:
+            raise ValueError(f"MonsterService constant {pattern!r} missing; update the test extractor.")
+        target_consts.append(m.group(0))
+    bindings["MONSTER_TARGET_SOURCE"] = (
+        "local Config, Util, MC, H = ...\n"
+        "local records, warnThrottled, S = H.records, H.warnThrottled, H.S\n"
+        + "\n".join(target_consts) + "\n"
+        + between(mon, "local REACT = {", "\n}\n") + "\n}\n"
+        + function_block(mon, "local function isPlayerInTown(") + "\n"
+        + function_block(mon, "local function findInfo(") + "\n"
+        + between(mon, "local function targetable(rec, info)", "-- in reach: stand still")
+        + "return { targetable = targetable, landAttack = landAttack, findInfo = findInfo, OUT_Y = OUT_Y }\n")
     bindings["MONSTER_GOLDEN_SOURCE"] = (
         "local Config, Util, MC = ...\nreturn function(kind, opts)\n\tlocal def = Config.MonsterTypes[kind]\n"
         "\tif not def then return nil end\n\topts = opts or {}\n\tlocal owner = opts.Owner\n"
@@ -436,7 +462,8 @@ def main() -> int:
     ok = (compiled.returncode == 0 and main_run["returncode"] == 0 and marker is not None and not static_failures
           and not changed and all(m.get("applied") and m.get("caught") for m in mutations))
     report = {
-        "status": "passed" if ok else "failed",
+        "status": ("passed-no-mutations" if args.no_mutations else "passed") if ok else "failed",
+        "mutationsSkipped": args.no_mutations,
         "checks": result.get("Checks", 0) if result else 0,
         "failedChecks": result.get("Failed", 0) if result else 0,
         "namedChecks": len(named),
@@ -466,7 +493,9 @@ def main() -> int:
                     "English twin); rewards only through MonsterService's kill path, one MonsterKilled per contributor "
                     "(ContributorWindow 120 s for the king); GameState PumpkinKingNextAt / Active / EndsAt; Candy material "
                     "(sell 5) and the four drop tables; the slime jackpot also on pumpkin slimes; quests / tutorial / story "
-                    "objectives count Config.QuestKind; Studio-only DebugCommand 'PumpkinKing'.",
+                    "objectives count Config.QuestKind; Studio-only DebugCommand 'PumpkinKing'. Review 2026-10-06: a Boss "
+                    "kind (the king) never targets or hits a player with Rookie == true or Level < "
+                    "Config.Halloween.SafeBelowLevel (5); other kinds attack rookies as usual.",
         "limitations": "Offline doubles: Roblox Instances, a seeded / scripted Random, DataStore table, flat-ground stand-in "
                        "for MonsterService.groundPoint, MonsterService.spawnMonster replaced by a record maker that uses the "
                        "real golden roll, CFrame algebra limited to Z rolls. Studio models, real Weld rendering, MonsterMotion "
@@ -490,6 +519,8 @@ def main() -> int:
               + ("" if m.get("applied") else f" ({m.get('note')})"))
     if mutations:
         print(f"MUTATIONS caught={caught}/{applied} (of {len(MUTATIONS)})")
+    if args.no_mutations:
+        print("MUTATIONS SKIPPED")
     print(f"Named checks: {len(named) - len(failing)} passed, {len(failing)} failing; "
           f"assertions {report['checks'] - report['failedChecks']}/{report['checks']}")
     print(f"Report: {OUT.relative_to(ROOT).as_posix()}")

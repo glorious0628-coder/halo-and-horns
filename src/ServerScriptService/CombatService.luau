@@ -1152,7 +1152,8 @@ local function onPlayerReady(player, _data)
 			S.PlayerService.SetStat(player, "AutoCombatEnabled", false)
 			Net.Notify(player, Config.Text.BullyAutoOff, "bad")
 		elseif wasBully and not now and (tonumber(player:GetAttribute("BullyStacks")) or 0) <= 0 then
-			Net.Notify(player, Config.Text.BullyPenaltyEnd, "good")
+			local unlocked = player:GetAttribute("AutoCombatUnlocked") == true
+			Net.Notify(player, unlocked and Config.Text.BullyPenaltyEnd or Config.Text.BullyPenaltyEndNoAuto, "good")
 		end
 		wasBully = now
 	end)

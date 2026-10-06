@@ -3494,6 +3494,12 @@ function HUD.Init(registry)
 	if type(UIKit) ~= "table" or not UIKit.Gui then
 		error("UIKit is not initialized")
 	end
+	-- review of 27246d1: the key-badge rule comes from Keybinds (keyboard present, touch laptops included)
+	local kb = C and C.Keybinds
+	if type(kb) == "table" and type(kb.ShowsKeys) == "function" then
+		local ok, shows = pcall(kb.ShowsKeys)
+		if ok then L.KeyDevice, L.ShowKeys = shows == true, shows == true end
+	end
 	Theme = UIKit.Theme
 
 	ui.root = UIKit.Create("Frame", {

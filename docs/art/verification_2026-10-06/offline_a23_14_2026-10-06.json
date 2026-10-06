@@ -1,5 +1,6 @@
 {
   "status": "passed",
+  "mutationsSkipped": false,
   "checks": 2257,
   "failedChecks": 0,
   "namedChecks": 146,
@@ -1159,10 +1160,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
+    "src/ReplicatedStorage/Shared/Config.luau": "a07e2114f44c59fd81fa908b4405305a6aea7c3eac80cc7a444145458ea58066",
     "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
-    "src/ServerScriptService/QuestService.luau": "778ded5ecce5e1c5726b2f95e87d1c69e0970f274a7b81eaf4e5655d9bdd0d25",
+    "src/ServerScriptService/QuestService.luau": "c6e4cd98c46c23fc0c542b4a7743148f4c5d8ef31c8ef42826cfaede1dffff43",
     "src/ServerScriptService/GooseService.luau": "fe0b2aa830cbe885b49ad823bdfdd73d3a28a38c40c7504ac404fcd04cf6f892",
     "src/ServerScriptService/ClassService.luau": "0727ca8ffef339ad9d452963154118eb7091bc59956688a7295f27355bb79263"
   },
