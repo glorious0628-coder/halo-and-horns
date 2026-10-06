@@ -39,10 +39,11 @@ local T = {
 	HeadingUp = true,
 	TurnEase = 8, -- 1/s: the map eases toward the character's facing every frame (smooth, no jump on a quick turn)
 	TurnMin = 0.3, -- degrees: smaller turns are not written (no CanvasGroup re-render while standing still)
-	MeSize = IS_TOUCH and 36 or 34, -- du: my arrow (~27 px at the 0.75 / 0.8 UIScale; the art sheet asks 24-32 px)
+	MeSize = IS_TOUCH and 20 or 22, -- du: my arrow (user 2026-10-06 "너무 커": ~15-18 px; still bigger than a monster dot)
 	MeArt = "MapPlayerArrow", -- white art with a navy rim: ImageColor3 = my faction colour, up = forward
 	NorthR = 0.435, -- 'N' marker: distance from the centre / side (on the ring's navy band)
 	NorthD = 0.13, -- 'N' marker disc / side
+	NorthPx = 17, -- ...but never under this many real px
 	StrongDot = 8, -- big monsters (Scale >= StrongScale): a bigger dot with a dark rim
 	StrongScale = 1.4,
 	BossIcon = IS_TOUCH and 18 or 20, -- event bosses (MonsterTypes Boss): their IconMon<Kind> head
@@ -599,7 +600,12 @@ local function relayout()
 	ui.canvas.Size = UDim2.fromOffset(W.Wd * S.pps, W.Ht * S.pps)
 	S.ox, S.chevX = nil, nil -- the next move tick writes the canvas / chevron again
 	if ui.north then
-		local d = math.max(12, math.floor(side * T.NorthD + 0.5))
+		-- at least NorthPx real px: the 'N' (text floor 12 px) has to fit (UiSandbox 2026-10-06: an 11 px disc on phones
+		-- showed no letter)
+		local gui = UIKit and UIKit.Gui
+		local sc = gui and gui:FindFirstChildOfClass("UIScale")
+		local s = (sc and sc.Scale > 0) and sc.Scale or 1
+		local d = math.max(math.ceil(T.NorthPx / s), math.floor(side * T.NorthD + 0.5))
 		ui.north.Size = UDim2.fromOffset(d, d)
 		S.northR = side * T.NorthR
 		S.heading = nil -- the next move tick turns the map and places the N again

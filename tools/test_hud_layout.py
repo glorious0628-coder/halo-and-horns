@@ -136,6 +136,11 @@ MUTATIONS = [
     ("desktop attack rect drifted", 'attack = { "BR", { 1146, 592, 118, 118 }', 'attack = { "BR", { 1146, 598, 118, 118 }'),
     ("desktop tiles rect drifted", 'tiles = { "BC", { 420, 640, 440, 52 }', 'tiles = { "BC", { 420, 646, 440, 52 }'),
     ("phone skill Q rect drifted", "{ 455, 252, 72, 72 }", "{ 455, 262, 72, 72 }"),
+    # A23-49: the X skill button
+    ("phone X skill rect drifted", "{ 580, 164, 72, 72 }", "{ 580, 150, 72, 72 }"),
+    ("desktop X skill rect drifted", "{ 1186, 499, 77, 77 }", "{ 1196, 499, 77, 77 }"),
+    ("round buttons may sit on the phone tile row",
+     "if r.X < tiles.X + tiles.W and r.X + r.W > tiles.X and r.Y < rowBottom then r.Y = rowBottom end", ""),
     ("phone quest rect drifted", "{ 98, 62, 150, 45 }", "{ 98, 62, 170, 45 }"),
     ("everything may leave the screen", "r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))", "r.Y = r.Y"),
     ("potions never widen", "if minX < pot.X then pot.X, pot.W = minX, potRight - minX end", ""),
@@ -286,10 +291,10 @@ GROUP_COLOUR = {
     "xp_bar": (90, 190, 240), "minimap": (90, 170, 110), "war_meter": (200, 160, 240),
     "chips": (170, 170, 190), "event": (250, 160, 60), "notify": (230, 230, 230), "tiles": (240, 170, 90),
     "quest": (250, 220, 150), "combo": (255, 255, 255),
-    "potions": (230, 90, 120), "ghost": (160, 160, 255), "q": (110, 190, 255), "z": (110, 190, 255),
+    "potions": (230, 90, 120), "ghost": (160, 160, 255), "q": (110, 190, 255), "z": (110, 190, 255), "x": (110, 190, 255),
     "auto": (255, 215, 0), "attack": (230, 80, 50), "menu": (255, 140, 200), "fold": (255, 140, 200),
 }
-ROUND = {"portrait", "ghost", "q", "z", "auto", "attack", "minimap"}
+ROUND = {"portrait", "ghost", "q", "z", "x", "auto", "attack", "minimap"}
 
 
 def draw(result: dict) -> bool:

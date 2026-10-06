@@ -3,33 +3,33 @@
   "sheet": "art/review/minimap_turn_2026-10-06.jpg",
   "checks": [
     {
-      "device": "pc",
+      "device": "phone",
       "facing": "north",
-      "mapTurnError": 0.3,
+      "mapTurnError": 0.2,
       "arrowRotation": 0,
       "arrowArt": true,
       "pass": true
     },
     {
-      "device": "pc",
+      "device": "phone",
       "facing": "east",
-      "mapTurnError": 0.3,
+      "mapTurnError": 0.1,
       "arrowRotation": 0,
       "arrowArt": true,
       "pass": true
     },
     {
-      "device": "pc",
+      "device": "phone",
       "facing": "south",
-      "mapTurnError": 0.3,
+      "mapTurnError": 0.1,
       "arrowRotation": 0,
       "arrowArt": true,
       "pass": true
     },
     {
-      "device": "pc",
+      "device": "phone",
       "facing": "west",
-      "mapTurnError": 0.3,
+      "mapTurnError": 0.1,
       "arrowRotation": 0,
       "arrowArt": true,
       "pass": true
@@ -37,15 +37,15 @@
   ],
   "rows": [
     {
-      "device": "pc",
+      "device": "phone",
       "facing": "north",
       "yaw": 0,
-      "file": "build/minimap_turn_view/pc_north.png",
+      "file": "build/minimap_turn_view/phone_north.png",
       "probe": {
         "Me": {
           "Rotation": 0,
           "Class": "ImageLabel",
-          "W": 27.200000762939453,
+          "W": 15,
           "Tint": [
             0.9882352948188782,
             0.7764706015586853,
@@ -54,32 +54,32 @@
         },
         "Yaw": 0,
         "North": [
-          89.60000801086426,
-          75.19999885559082
+          90.5,
+          66
         ],
-        "Rot": 0.2849949300289154,
+        "Rot": 0.1846000850200653,
         "Screen": [
-          1280,
-          720
+          749,
+          361
         ],
         "Box": [
-          14.400001525878906,
-          65.5999984741211,
-          150.40000915527344,
-          150.40000915527344
+          53.75,
+          61.5,
+          73.5,
+          73.5
         ]
       }
     },
     {
-      "device": "pc",
+      "device": "phone",
       "facing": "east",
       "yaw": 90,
-      "file": "build/minimap_turn_view/pc_east.png",
+      "file": "build/minimap_turn_view/phone_east.png",
       "probe": {
         "Me": {
           "Rotation": 0,
           "Class": "ImageLabel",
-          "W": 27.200000762939453,
+          "W": 15,
           "Tint": [
             0.9882352948188782,
             0.7764706015586853,
@@ -88,32 +88,32 @@
         },
         "Yaw": 90,
         "North": [
-          24.000001907348633,
-          139.9999942779541
+          58.25,
+          97.5
         ],
-        "Rot": -89.70045471191406,
+        "Rot": -89.87898254394531,
         "Screen": [
-          1280,
-          720
+          749,
+          361
         ],
         "Box": [
-          14.400001525878906,
-          65.5999984741211,
-          150.40000915527344,
-          150.40000915527344
+          53.75,
+          61.5,
+          73.5,
+          73.5
         ]
       }
     },
     {
-      "device": "pc",
+      "device": "phone",
       "facing": "south",
       "yaw": 180,
-      "file": "build/minimap_turn_view/pc_south.png",
+      "file": "build/minimap_turn_view/phone_south.png",
       "probe": {
         "Me": {
           "Rotation": 0,
           "Class": "ImageLabel",
-          "W": 27.200000762939453,
+          "W": 15,
           "Tint": [
             0.9882352948188782,
             0.7764706015586853,
@@ -122,55 +122,56 @@
         },
         "Yaw": -180,
         "North": [
-          88.80000495910645,
-          205.60000038146973
+          89.75,
+          129.75
         ],
-        "Rot": -179.7271728515625,
+        "Rot": -179.8824005126953,
         "Screen": [
-          1280,
-          720
+          749,
+          361
         ],
         "Box": [
-          14.400001525878906,
-          65.5999984741211,
-          150.40000915527344,
-          150.40000915527344
+          53.75,
+          61.5,
+          73.5,
+          73.5
         ]
       }
     },
     {
-      "device": "pc",
+      "device": "phone",
       "facing": "west",
       "yaw": 270,
-      "file": "build/minimap_turn_view/pc_west.png",
+      "file": "build/minimap_turn_view/phone_west.png",
       "probe": {
         "Me": {
           "Rotation": 0,
           "Class": "ImageLabel",
-          "W": 27.200000762939453,
+          "W": 15,
           "Tint": [
             0.9882352948188782,
             0.7764706015586853,
             0.20392157137393951
           ]
         },
-        "Yaw": -90.00000683018835,
+        "Yaw": -90,
         "North": [
-          154.39998817443848,
-          140.7999973297119
+          122,
+          98.25
         ],
-        "Rot": 90.28633117675781,
+        "Rot": 90.12034606933594,
         "Screen": [
-          1280,
-          720
+          749,
+          361
         ],
         "Box": [
-          14.400001525878906,
-          65.5999984741211,
-          150.40000915527344,
-          150.40000915527344
+          53.75,
+          61.5,
+          73.5,
+          73.5
         ]
       }
     }
-  ]
+  ],
+  "pcNote": "PC 1280x720 with the 22 du arrow: N / E / S / W all passed in the run just before this phone rerun (map error 0-0.3 deg, arrow 0 deg; sheet sent to review). This file holds the phone rerun after the N disc fix (>= 17 px) and the 20 du phone arrow."
 }

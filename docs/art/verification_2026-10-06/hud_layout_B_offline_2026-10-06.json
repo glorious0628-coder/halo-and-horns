@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7743,
+  "checks": 8438,
   "failedChecks": 0,
-  "namedChecks": 7195,
+  "namedChecks": 7854,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
@@ -59,8 +59,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 10,
-        "Pair": "potions/ghost"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -85,8 +85,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 8,
-        "Pair": "tiles/potions"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -111,8 +111,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 10,
-        "Pair": "potions/ghost"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -137,8 +137,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 10,
-        "Pair": "potions/ghost"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -163,8 +163,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 8,
-        "Pair": "tiles/potions"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -189,8 +189,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 10,
-        "Pair": "potions/ghost"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -215,8 +215,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 8,
-        "Pair": "tiles/potions"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -241,8 +241,8 @@
         "Pair": "portrait/hp_bar"
       },
       "minPressableGap": {
-        "Gap": 8,
-        "Pair": "tiles/potions"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -267,8 +267,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 10,
-        "Pair": "potions/ghost"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -293,8 +293,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 10,
-        "Pair": "potions/ghost"
+        "Gap": 6.9105,
+        "Pair": "potions/q"
       }
     },
     {
@@ -375,8 +375,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 5.83,
-        "Pair": "portrait/tiles"
+        "Gap": 4,
+        "Pair": "tiles/x"
       }
     },
     {
@@ -468,8 +468,8 @@
         "Pair": "chips/event"
       },
       "minPressableGap": {
-        "Gap": 5.0556,
-        "Pair": "portrait/tiles"
+        "Gap": 4,
+        "Pair": "tiles/x"
       }
     },
     {
@@ -574,9 +574,9 @@
     "DesktopScaleMax": 1.0
   },
   "mutations": {
-    "total": 46,
-    "applied": 46,
-    "caught": 46,
+    "total": 49,
+    "applied": 49,
+    "caught": 49,
     "results": [
       {
         "mutation": "touch targets may shrink to 30",
@@ -757,14 +757,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "phone_568x320 :: cluster lower right ghost",
           "phone_568x320 :: cluster lower right potions",
           "phone_568x320 :: column clear of chips/hp_bar",
           "phone_568x320 :: column clear of chips/portrait",
           "phone_568x320 :: column clear of chips/power_line",
-          "phone_568x320 :: column clear of event/hp_bar",
-          "phone_568x320 :: column clear of event/portrait"
+          "phone_568x320 :: column clear of event/hp_bar"
         ],
-        "newFailingCount": 65
+        "newFailingCount": 73
       },
       {
         "mutation": "centre column touches its neighbours",
@@ -779,7 +779,7 @@
           "pc_1280x720_unibar_wide :: in the top bar war_meter",
           "pc_800x600 :: face group centred or stepped aside"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 21
       },
       {
         "mutation": "PC face group never steps aside",
@@ -794,7 +794,7 @@
           "pc_1024x768 :: no overlap xp_bar/ghost",
           "pc_1024x768 :: press gap tiles/potions"
         ],
-        "newFailingCount": 27
+        "newFailingCount": 26
       },
       {
         "mutation": "PC face group ignores the left margin",
@@ -897,6 +897,38 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "phone X skill rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_749x361 :: matches sheet x"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "desktop X skill rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720 :: matches sheet x"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "round buttons may sit on the phone tile row",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap tiles/x",
+          "phone_568x320 :: press gap tiles/x",
+          "phone_749x361_notch :: press gap tiles/x"
+        ],
+        "newFailingCount": 3
+      },
+      {
         "mutation": "phone quest rect drifted",
         "applied": true,
         "caught": true,
@@ -917,9 +949,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pc_1280x240_short :: below top bar auto",
           "pc_1280x240_short :: below top bar combo"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "potions never widen",
@@ -1138,7 +1171,7 @@
           "pc_1024x768 :: fold clear of war_meter",
           "pc_1024x768 :: fold first line in the top bar"
         ],
-        "newFailingCount": 71
+        "newFailingCount": 72
       },
       {
         "mutation": "fold one square too many",
@@ -1153,7 +1186,7 @@
           "pc_1280x1024 :: fold clear of war_meter",
           "pc_1280x720 :: fold clear of war_meter"
         ],
-        "newFailingCount": 33
+        "newFailingCount": 34
       },
       {
         "mutation": "fold lines go up",
@@ -1176,14 +1209,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "phone_568x320 :: fold stick zone free",
           "phone_592x360_navbar :: fold stick zone free",
           "phone_667x375 :: fold stick zone free",
           "phone_749x361 :: fold stick zone free",
           "phone_749x361_notch :: fold stick zone free",
           "phone_844x390 :: fold stick zone free"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 5
       },
       {
         "mutation": "phone tile row stops short",
@@ -1232,8 +1264,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1452.25,
-        "Y": 643.75
+        "X": 1459.75,
+        "Y": 550
       },
       "chips": {
         "H": 27.5,
@@ -1338,8 +1370,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1263.5,
-        "Y": 735
+        "X": 1251,
+        "Y": 745
       },
       "quest": {
         "H": 65,
@@ -1362,6 +1394,12 @@
         "X": 588,
         "Y": 19.5
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1418.5,
+        "Y": 623.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -1371,8 +1409,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1337.25,
-        "Y": 631.25
+        "X": 1311,
+        "Y": 647.5
       }
     },
     "pc_1024x768": {
@@ -1385,8 +1423,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1116.25,
-        "Y": 643.75
+        "X": 1123.75,
+        "Y": 550
       },
       "chips": {
         "H": 27.5,
@@ -1491,8 +1529,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 927.5,
-        "Y": 735
+        "X": 915,
+        "Y": 745
       },
       "quest": {
         "H": 65,
@@ -1515,6 +1553,12 @@
         "X": 420,
         "Y": 15.2344
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1082.5,
+        "Y": 623.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -1524,8 +1568,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1001.25,
-        "Y": 631.25
+        "X": 975,
+        "Y": 647.5
       }
     },
     "pc_1280x1024": {
@@ -1538,8 +1582,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1196.25,
-        "Y": 767.75
+        "X": 1203.75,
+        "Y": 674
       },
       "chips": {
         "H": 27.5,
@@ -1644,8 +1688,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1007.5,
-        "Y": 859
+        "X": 995,
+        "Y": 869
       },
       "quest": {
         "H": 65,
@@ -1668,6 +1712,12 @@
         "X": 460,
         "Y": 13
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1162.5,
+        "Y": 747.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -1677,8 +1727,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1081.25,
-        "Y": 755.25
+        "X": 1055,
+        "Y": 771.5
       }
     },
     "pc_1280x240_short": {
@@ -1691,8 +1741,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 2049.5833,
-        "Y": 143.75
+        "X": 2057.0833,
+        "Y": 96.6667
       },
       "chips": {
         "H": 27.5,
@@ -1787,8 +1837,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1860.8333,
-        "Y": 235
+        "X": 1848.3333,
+        "Y": 245
       },
       "quest": {
         "H": 65,
@@ -1811,6 +1861,12 @@
         "X": 886.6667,
         "Y": 21.6667
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 2015.8333,
+        "Y": 123.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -1820,8 +1876,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1934.5833,
-        "Y": 131.25
+        "X": 1908.3333,
+        "Y": 147.5
       }
     },
     "pc_1280x720": {
@@ -1834,8 +1890,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1516.25,
-        "Y": 643.75
+        "X": 1523.75,
+        "Y": 550
       },
       "chips": {
         "H": 27.5,
@@ -1940,8 +1996,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1327.5,
-        "Y": 735
+        "X": 1315,
+        "Y": 745
       },
       "quest": {
         "H": 65,
@@ -1964,6 +2020,12 @@
         "X": 620,
         "Y": 16.25
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1482.5,
+        "Y": 623.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -1973,8 +2035,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1401.25,
-        "Y": 631.25
+        "X": 1375,
+        "Y": 647.5
       }
     },
     "pc_1280x720_inset36": {
@@ -1987,8 +2049,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1516.25,
-        "Y": 643.75
+        "X": 1523.75,
+        "Y": 550
       },
       "chips": {
         "H": 27.5,
@@ -2093,8 +2155,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1327.5,
-        "Y": 735
+        "X": 1315,
+        "Y": 745
       },
       "quest": {
         "H": 65,
@@ -2117,6 +2179,12 @@
         "X": 620,
         "Y": 2.5
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1482.5,
+        "Y": 623.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -2126,8 +2194,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1401.25,
-        "Y": 631.25
+        "X": 1375,
+        "Y": 647.5
       }
     },
     "pc_1280x720_unibar_wide": {
@@ -2140,8 +2208,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1516.25,
-        "Y": 643.75
+        "X": 1523.75,
+        "Y": 550
       },
       "chips": {
         "H": 27.5,
@@ -2246,8 +2314,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1327.5,
-        "Y": 735
+        "X": 1315,
+        "Y": 745
       },
       "quest": {
         "H": 65,
@@ -2270,6 +2338,12 @@
         "X": 708,
         "Y": 16.25
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1482.5,
+        "Y": 623.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -2279,8 +2353,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1401.25,
-        "Y": 631.25
+        "X": 1375,
+        "Y": 647.5
       }
     },
     "pc_1366x768": {
@@ -2293,8 +2367,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1517.0312,
-        "Y": 643.75
+        "X": 1524.5312,
+        "Y": 550
       },
       "chips": {
         "H": 27.5,
@@ -2399,8 +2473,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1328.2812,
-        "Y": 735
+        "X": 1315.7812,
+        "Y": 745
       },
       "quest": {
         "H": 65,
@@ -2423,6 +2497,12 @@
         "X": 620.3906,
         "Y": 15.2344
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1483.2812,
+        "Y": 623.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -2432,8 +2512,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1402.0312,
-        "Y": 631.25
+        "X": 1375.7812,
+        "Y": 647.5
       }
     },
     "pc_1920x1080": {
@@ -2446,8 +2526,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1836.25,
-        "Y": 823.75
+        "X": 1843.75,
+        "Y": 730
       },
       "chips": {
         "H": 27.5,
@@ -2552,8 +2632,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1647.5,
-        "Y": 915
+        "X": 1635,
+        "Y": 925
       },
       "quest": {
         "H": 65,
@@ -2576,6 +2656,12 @@
         "X": 780,
         "Y": 13
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1802.5,
+        "Y": 803.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -2585,8 +2671,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1721.25,
-        "Y": 811.25
+        "X": 1695,
+        "Y": 827.5
       }
     },
     "pc_800x600": {
@@ -2599,8 +2685,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 1116.25,
-        "Y": 643.75
+        "X": 1123.75,
+        "Y": 550
       },
       "chips": {
         "H": 27.5,
@@ -2705,8 +2791,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 927.5,
-        "Y": 735
+        "X": 915,
+        "Y": 745
       },
       "quest": {
         "H": 65,
@@ -2729,6 +2815,12 @@
         "X": 420,
         "Y": 19.5
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1082.5,
+        "Y": 623.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 550,
@@ -2738,8 +2830,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 1001.25,
-        "Y": 631.25
+        "X": 975,
+        "Y": 647.5
       }
     },
     "pc_800x720_narrow": {
@@ -2752,8 +2844,8 @@
       "auto": {
         "H": 63.75,
         "W": 63.75,
-        "X": 916.25,
-        "Y": 643.75
+        "X": 923.75,
+        "Y": 550
       },
       "chips": {
         "H": 27.5,
@@ -2858,8 +2950,8 @@
       "q": {
         "H": 96.25,
         "W": 96.25,
-        "X": 727.5,
-        "Y": 735
+        "X": 715,
+        "Y": 745
       },
       "quest": {
         "H": 65,
@@ -2882,6 +2974,12 @@
         "X": 320,
         "Y": 16.25
       },
+      "x": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 882.5,
+        "Y": 623.75
+      },
       "xp_bar": {
         "H": 10,
         "W": 478.4337,
@@ -2891,8 +2989,8 @@
       "z": {
         "H": 96.25,
         "W": 96.25,
-        "X": 801.25,
-        "Y": 631.25
+        "X": 775,
+        "Y": 647.5
       }
     },
     "phone_568x320": {
@@ -2942,8 +3040,8 @@
             "Y": 80.3667
           },
           {
-            "Cols": 5,
-            "X": 366.1664,
+            "Cols": 4,
+            "X": 429.1998,
             "Y": 143.4001
           }
         ],
@@ -2956,8 +3054,8 @@
       "ghost": {
         "H": 60,
         "W": 60,
-        "X": 564.7717,
-        "Y": 215.4935
+        "X": 358.502,
+        "Y": 203.36
       },
       "hp_bar": {
         "H": 13.1446,
@@ -3035,6 +3133,12 @@
         "X": 258.7592,
         "Y": 20
       },
+      "x": {
+        "H": 72.8011,
+        "W": 72.8011,
+        "X": 555.8433,
+        "Y": 210.4335
+      },
       "xp_bar": {
         "H": 6.0668,
         "W": 177.6146,
@@ -3109,8 +3213,8 @@
       "ghost": {
         "H": 60.0694,
         "W": 60.0694,
-        "X": 595.2203,
-        "Y": 266.2074
+        "X": 380.235,
+        "Y": 253.5612
       },
       "hp_bar": {
         "H": 13.7,
@@ -3188,6 +3292,12 @@
         "X": 269.3547,
         "Y": 20
       },
+      "x": {
+        "H": 75.8772,
+        "W": 75.8772,
+        "X": 584.6818,
+        "Y": 247.2381
+      },
       "xp_bar": {
         "H": 6.3231,
         "W": 187.6547,
@@ -3262,8 +3372,8 @@
       "ghost": {
         "H": 67.6796,
         "W": 67.6796,
-        "X": 686.6756,
-        "Y": 274.3249
+        "X": 444.4539,
+        "Y": 260.0765
       },
       "hp_bar": {
         "H": 15.4357,
@@ -3341,6 +3451,12 @@
         "X": 302.4655,
         "Y": 20
       },
+      "x": {
+        "H": 85.49,
+        "W": 85.49,
+        "X": 674.802,
+        "Y": 252.9524
+      },
       "xp_bar": {
         "H": 7.1242,
         "W": 219.0298,
@@ -3415,8 +3531,8 @@
       "ghost": {
         "H": 76,
         "W": 76,
-        "X": 786.6667,
-        "Y": 242.6667
+        "X": 514.6667,
+        "Y": 226.6667
       },
       "hp_bar": {
         "H": 17.3333,
@@ -3494,6 +3610,12 @@
         "X": 338.6667,
         "Y": 20
       },
+      "x": {
+        "H": 96,
+        "W": 96,
+        "X": 773.3333,
+        "Y": 218.6667
+      },
       "xp_bar": {
         "H": 8,
         "W": 253.3333,
@@ -3568,8 +3690,8 @@
       "ghost": {
         "H": 66.4619,
         "W": 66.4619,
-        "X": 672.0427,
-        "Y": 229.5594
+        "X": 434.1789,
+        "Y": 215.5674
       },
       "hp_bar": {
         "H": 15.158,
@@ -3647,6 +3769,12 @@
         "X": 297.1678,
         "Y": 20
       },
+      "x": {
+        "H": 83.9519,
+        "W": 83.9519,
+        "X": 660.3827,
+        "Y": 211.8273
+      },
       "xp_bar": {
         "H": 6.996,
         "W": 214.0098,
@@ -3721,8 +3849,8 @@
       "ghost": {
         "H": 76,
         "W": 76,
-        "X": 913.3333,
-        "Y": 281.3333
+        "X": 641.3333,
+        "Y": 265.3333
       },
       "hp_bar": {
         "H": 17.3333,
@@ -3800,6 +3928,12 @@
         "X": 402.6667,
         "Y": 20
       },
+      "x": {
+        "H": 96,
+        "W": 96,
+        "X": 900,
+        "Y": 257.3333
+      },
       "xp_bar": {
         "H": 8,
         "W": 253.3333,
@@ -3874,8 +4008,8 @@
       "ghost": {
         "H": 73.0574,
         "W": 73.0574,
-        "X": 718.5956,
-        "Y": 409.0529
+        "X": 457.127,
+        "Y": 393.6724
       },
       "hp_bar": {
         "H": 16.6622,
@@ -3953,6 +4087,12 @@
         "X": 326.1949,
         "Y": 14.0625
       },
+      "x": {
+        "H": 92.283,
+        "W": 92.283,
+        "X": 705.7785,
+        "Y": 385.9821
+      },
       "xp_bar": {
         "H": 7.6903,
         "W": 241.2016,
@@ -4027,8 +4167,8 @@
       "ghost": {
         "H": 76,
         "W": 76,
-        "X": 801.4959,
-        "Y": 416.9431
+        "X": 529.4959,
+        "Y": 400.9431
       },
       "hp_bar": {
         "H": 17.3333,
@@ -4106,6 +4246,12 @@
         "X": 358.0488,
         "Y": 13.1707
       },
+      "x": {
+        "H": 96,
+        "W": 96,
+        "X": 788.1626,
+        "Y": 392.9431
+      },
       "xp_bar": {
         "H": 8,
         "W": 253.3333,
@@ -4121,10 +4267,10 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "de1dc91396e91e7a73a6a7ab1266ca2f2d73b7a5cacb4d4973b0595f55f5ab22",
-    "tools/fixtures/hud_layout_offline.luau": "426efaefc295e3a848ccd6d097ede9ee04778e696368177481a048c3b24fe179",
-    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "9cfcf1858c1e1b1bb68ece92fc05361835f63fb5936e2e69b2d69b885889ccc9",
-    "src/ReplicatedStorage/Shared/Config.luau": "813f53c53125e8d6c580c2751944b0f377205872f0e73a59f205e95c3a0a7828"
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "bb2fcb2f44cbb240457bc680e1bf03e7adbed2ae8b9ddbd34635cfc0003e6557",
+    "tools/fixtures/hud_layout_offline.luau": "a22bdd5c19d5512d0e06044bc4e4fda42aa080932176fe0bc06eaff01e0e211c",
+    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "fa25d1321f3ed198cc32091ab09052338d91bf035c78dc7ddd140f377e8d2969",
+    "src/ReplicatedStorage/Shared/Config.luau": "8f2959b27d59e253d9b6e03577dd4611a9c6482e6bcb31692141cdfcdc626e7b"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

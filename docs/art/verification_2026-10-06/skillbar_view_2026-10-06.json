@@ -1,0 +1,403 @@
+{
+  "tool": "tools/skillbar_view.py",
+  "sheet": "art/review/skillbar_2026-10-06.jpg",
+  "rows": [
+    {
+      "device": "pc",
+      "mode": "start",
+      "file": "build/skillbar_view/pc_start.png",
+      "probe": {
+        "States": {
+          "Q": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          },
+          "X": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": true
+          },
+          "Z": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": true
+          }
+        },
+        "Screen": [
+          1280,
+          720
+        ],
+        "Buttons": {
+          "skillX": [
+            1185.5999755859375,
+            498.3999938964844,
+            76.80000305175781,
+            76.80000305175781
+          ],
+          "Attack": [
+            1146,
+            591.6000366210938,
+            117.5999984741211,
+            117.5999984741211
+          ],
+          "skillQ": [
+            1052,
+            596,
+            76.80000305175781,
+            76.80000305175781
+          ],
+          "skillZ": [
+            1100,
+            517.5999755859375,
+            76.80000305175781,
+            76.80000305175781
+          ]
+        }
+      },
+      "gaps": {
+        "Attack/skillQ": 18.3,
+        "Attack/skillX": 18.0,
+        "Attack/skillZ": 18.2,
+        "skillQ/skillX": 88.7,
+        "skillQ/skillZ": 15.1,
+        "skillX/skillZ": 10.9
+      },
+      "minGap": 10.9
+    },
+    {
+      "device": "pc",
+      "mode": "busy",
+      "file": "build/skillbar_view/pc_busy.png",
+      "probe": {
+        "States": {
+          "Q": {
+            "MPRed": false,
+            "Seconds": "2",
+            "Visible": true,
+            "Lock": false
+          },
+          "X": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          },
+          "Z": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          }
+        },
+        "Screen": [
+          1280,
+          720
+        ],
+        "Buttons": {
+          "skillX": [
+            1185.5999755859375,
+            498.3999938964844,
+            76.80000305175781,
+            76.80000305175781
+          ],
+          "Attack": [
+            1146,
+            591.6000366210938,
+            117.5999984741211,
+            117.5999984741211
+          ],
+          "skillQ": [
+            1052,
+            596,
+            76.80000305175781,
+            76.80000305175781
+          ],
+          "skillZ": [
+            1100,
+            517.5999755859375,
+            76.80000305175781,
+            76.80000305175781
+          ]
+        }
+      },
+      "gaps": {
+        "Attack/skillQ": 18.3,
+        "Attack/skillX": 18.0,
+        "Attack/skillZ": 18.2,
+        "skillQ/skillX": 88.7,
+        "skillQ/skillZ": 15.1,
+        "skillX/skillZ": 10.9
+      },
+      "minGap": 10.9
+    },
+    {
+      "device": "phone",
+      "mode": "start",
+      "file": "build/skillbar_view/phone_start.png",
+      "probe": {
+        "States": {
+          "Q": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          },
+          "X": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": true
+          },
+          "Z": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": true
+          }
+        },
+        "Screen": [
+          749,
+          361
+        ],
+        "Buttons": {
+          "skillX": [
+            542.375,
+            158.625,
+            62.25,
+            62.25
+          ],
+          "Attack": [
+            502.25,
+            228,
+            97.5,
+            97.5
+          ],
+          "skillQ": [
+            432.875,
+            238.125,
+            62.25,
+            62.25
+          ],
+          "skillZ": [
+            469.625,
+            170.625,
+            62.25,
+            62.25
+          ]
+        }
+      },
+      "gaps": {
+        "Attack/skillQ": 7.4,
+        "Attack/skillX": 10.0,
+        "Attack/skillZ": 10.4,
+        "skillQ/skillX": 73.1,
+        "skillQ/skillZ": 14.6,
+        "skillX/skillZ": 11.5
+      },
+      "minGap": 7.4
+    },
+    {
+      "device": "phone",
+      "mode": "busy",
+      "file": "build/skillbar_view/phone_busy.png",
+      "probe": {
+        "States": {
+          "Q": {
+            "MPRed": false,
+            "Seconds": "2",
+            "Visible": true,
+            "Lock": false
+          },
+          "X": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          },
+          "Z": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          }
+        },
+        "Screen": [
+          749,
+          361
+        ],
+        "Buttons": {
+          "skillX": [
+            542.375,
+            158.625,
+            62.25,
+            62.25
+          ],
+          "Attack": [
+            502.25,
+            228,
+            97.5,
+            97.5
+          ],
+          "skillQ": [
+            432.875,
+            238.125,
+            62.25,
+            62.25
+          ],
+          "skillZ": [
+            469.625,
+            170.625,
+            62.25,
+            62.25
+          ]
+        }
+      },
+      "gaps": {
+        "Attack/skillQ": 7.4,
+        "Attack/skillX": 10.0,
+        "Attack/skillZ": 10.4,
+        "skillQ/skillX": 73.1,
+        "skillQ/skillZ": 14.6,
+        "skillX/skillZ": 11.5
+      },
+      "minGap": 7.4
+    },
+    {
+      "device": "844",
+      "mode": "start",
+      "file": "build/skillbar_view/844_start.png",
+      "probe": {
+        "States": {
+          "Q": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          },
+          "X": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": true
+          },
+          "Z": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": true
+          }
+        },
+        "Screen": [
+          844,
+          390
+        ],
+        "Buttons": {
+          "skillX": [
+            627.5,
+            171.75,
+            72,
+            72
+          ],
+          "Attack": [
+            582.125,
+            248.625,
+            111.75,
+            111.75
+          ],
+          "skillQ": [
+            503,
+            259.5,
+            72,
+            72
+          ],
+          "skillZ": [
+            545,
+            187.5,
+            72,
+            72
+          ]
+        }
+      },
+      "gaps": {
+        "Attack/skillQ": 7.5,
+        "Attack/skillX": 8.2,
+        "Attack/skillZ": 7.2,
+        "skillQ/skillX": 80.3,
+        "skillQ/skillZ": 11.4,
+        "skillX/skillZ": 12.0
+      },
+      "minGap": 7.2
+    },
+    {
+      "device": "844",
+      "mode": "busy",
+      "file": "build/skillbar_view/844_busy.png",
+      "probe": {
+        "States": {
+          "Q": {
+            "MPRed": false,
+            "Seconds": "2",
+            "Visible": true,
+            "Lock": false
+          },
+          "X": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          },
+          "Z": {
+            "MPRed": false,
+            "Seconds": "",
+            "Visible": true,
+            "Lock": false
+          }
+        },
+        "Screen": [
+          844,
+          390
+        ],
+        "Buttons": {
+          "skillX": [
+            627.5,
+            171.75,
+            72,
+            72
+          ],
+          "Attack": [
+            582.125,
+            248.625,
+            111.75,
+            111.75
+          ],
+          "skillQ": [
+            503,
+            259.5,
+            72,
+            72
+          ],
+          "skillZ": [
+            545,
+            187.5,
+            72,
+            72
+          ]
+        }
+      },
+      "gaps": {
+        "Attack/skillQ": 7.5,
+        "Attack/skillX": 8.2,
+        "Attack/skillZ": 7.2,
+        "skillQ/skillX": 80.3,
+        "skillQ/skillZ": 11.4,
+        "skillX/skillZ": 12.0
+      },
+      "minGap": 7.2
+    }
+  ],
+  "note": "gaps = circle-to-circle px between the visible round buttons (screen px); 'busy' = Lv10, Q cooling 2.4 s, Z ready, X short of MP (local attributes only); pc / 844 rows from the 19:3x three-screen run, phone rows from the rerun after the seam / level fixes"
+}

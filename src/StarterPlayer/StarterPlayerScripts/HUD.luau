@@ -94,7 +94,7 @@ local L = {
 		{ Id = "Settings", Icon = "IconSettings", Window = "Settings", Alt = "Menu" },
 	},
 	FoldTime = 0.2, -- s: the squares slide out of [메뉴] to the left (A23-38: 0.15-0.25 s), FoldStep apart
-	FoldStep = 0.02,
+	FoldStep = 0.03, -- 검수 2026-10-06: one square after another, 0.03 s apart
 	FoldBack = 0.15, -- s: folding back in
 	FoldPad = 10, -- du above / below the squares inside the clipping frame (key badges, the glow)
 	TileIcon = 0.6, -- icon side / tile side (the name sits under it inside the tile)
@@ -541,13 +541,9 @@ local function makeGlow(parent, radius)
 	return frame:FindFirstChild("GlowStroke")
 end
 
+-- the shared press feel (UIKit.ButtonFeel / FeelPress, 검수 2026-10-06): keys and holds press the same way as a finger
 local function pressScale(btn, down)
-	local sc = btn and btn:FindFirstChild("PressScale")
-	if sc then
-		TweenService:Create(sc, TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Scale = down and 0.92 or 1,
-		}):Play()
-	end
+	if btn and type(UIKit.FeelPress) == "function" then UIKit.FeelPress(btn, down) end
 end
 
 local function isPressInput(input)
@@ -1671,6 +1667,8 @@ local function roundButton(name, size, part, fallbackColor)
 		BackgroundTransparency = 1,
 		Parent = ui.buttons,
 	}, { UIKit.Create("UIScale", { Name = "PressScale" }) })
+	-- combat buttons: the shared feel, quick (<= 0.08 s, no spring that delays the next press)
+	if type(UIKit.ButtonFeel) == "function" then UIKit.ButtonFeel(btn, { Fast = true }) end
 	local art = UIKit.ArtFrame(part, {
 		Name = "Art",
 		Size = UDim2.fromScale(1, 1),
@@ -1924,9 +1922,17 @@ function L.SetFold(open)
 	ui.foldOpen = open
 	ui.foldToken = (ui.foldToken or 0) + 1
 	local token = ui.foldToken
+	-- 'Screen shake' off / Roblox reduced motion: the squares appear and go at once (no slide)
+	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
 	if open then
 		ui.fold.Visible = true
-		L.PlaceFold(true)
+		L.PlaceFold(not reduced)
+	elseif reduced then
+		ui.fold.Visible = false
+		for _, f in ui.foldTiles do
+			if f.Tween then f.Tween:Cancel() end
+			f.Button.Visible = false
+		end
 	else
 		for i, f in ui.foldShown or {} do
 			if f.Tween then f.Tween:Cancel() end
@@ -3764,8 +3770,15 @@ local function onInputBegan(input, gameProcessed)
 	if not action or L.WindowKey(action) or not inputAllowed() then return end
 	if action == "Attack" then
 		startHold(L.HoldSource(input))
-	elseif action == "SkillQ" then -- E stays the Roblox interact key (blacksmith / altar / merchant prompts)
-		doRelease()
+	elseif action == "SkillQ" or action == "SkillZ" or action == "SkillX" then
+		-- E stays the Roblox interact key (blacksmith / altar / merchant prompts). A23-49: SkillBar owns Q · Z · X
+		local bar = C and C.SkillBar
+		local slot = string.sub(action, -1)
+		if type(bar) == "table" and type(bar.Owns) == "function" and bar.Owns(slot) then
+			bar.Use(slot)
+		elseif action == "SkillQ" then
+			doRelease()
+		end
 	elseif action == "Upgrade" then
 		doUpgrade()
 	elseif action == "Auto" then
@@ -4023,7 +4036,7 @@ applyLayout = function()
 		LeftX = ch.X,
 		RightX = ch.X + ch.W,
 	}
-	for _, name in { "EventHUD", "MiniMap" } do
+	for _, name in { "EventHUD", "MiniMap", "SkillBar" } do
 		local m = C and C[name]
 		if type(m) == "table" and type(m.Relayout) == "function" then pcall(m.Relayout) end
 	end
@@ -4100,6 +4113,22 @@ function HUD.GuideTarget()
 	local p = g and g.Part
 	if p and p.Parent then return p.Position, g.Tag end
 	return nil
+end
+
+-- A23-49: SkillBar's Q goes through the same path as HUD's own Q (throttle, cooldown, MP toast, face the target)
+function HUD.Release()
+	doRelease()
+end
+
+-- the HUD takes input now (no picker / opening / dead state): SkillBar's buttons follow it
+function HUD.InputAllowed()
+	return inputAllowed()
+end
+
+-- SkillBar has drawn Q · Z · X (it starts after HUD in ClientMain ORDER): HUD's own Q stays built (its refreshers keep
+-- working) but hidden, so there is one Q button
+function HUD.SkillBarReady()
+	if ui.release then ui.release.Visible = false end
 end
 
 -- A23-36: where the 'now do' quest row happens (QuestTarget.ForEntry) or nil; QuestMarker draws it

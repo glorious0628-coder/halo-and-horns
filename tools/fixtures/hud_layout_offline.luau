@@ -117,8 +117,8 @@ ROUND.minimap = nil -- measured as its square box (the round view sits inside it
 -- interactive = something a finger / mouse presses (the minimap, chips, event, notify, combo, bars are passive displays;
 -- the minimap is drawn with Active = false)
 local INTERACTIVE = { portrait = true, quest = true, tiles = true, menu = true, potions = true,
-	ghost = true, q = true, z = true, auto = true, attack = true }
-local TAPS = { "portrait", "ghost", "q", "z", "auto", "attack", "menu" }
+	ghost = true, q = true, z = true, x = true, auto = true, attack = true }
+local TAPS = { "portrait", "ghost", "q", "z", "x", "auto", "attack", "menu" }
 local MIN_TAP = 60 -- logical units (>= 45 real px at the phone's 0.75 UIScale)
 local MIN_PRESS_GAP = 2 -- logical units between any two pressable items (touching buttons are a regression)
 local POTION_GAP_PX = 6 -- real px between the HP and MP potion cells on both reference sheets
@@ -126,11 +126,11 @@ local TILE_GAP_PX = 3 -- real px on the reference screens: least gap between two
 local FACE = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
 local LEFT_BAND = { "minimap", "quest" }
 local CENTER = { "war_meter", "chips", "event", "notify" }
-local CLUSTER = { "potions", "ghost", "q", "z", "auto", "attack" }
+local CLUSTER = { "potions", "ghost", "q", "z", "x", "auto", "attack" }
 local REF_SCALE = { Desktop = 0.8, Touch = 0.75 }
 -- A23-40 정정: the [메뉴] fold-out (out.fold) never covers these while open (it may cover the chips / next event /
 -- notify rows and, on phones, the tile row it replaces); ROW_TILES = the icon row's windows (phones fold the overflow)
-local FOLD_PROTECT = { "minimap", "quest", "war_meter", "potions", "ghost", "q", "z", "auto", "attack" }
+local FOLD_PROTECT = { "minimap", "quest", "war_meter", "potions", "ghost", "q", "z", "x", "auto", "attack" }
 local FOLD_PROTECT_PC = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" } -- phones fold up over these
 local MENU_TILES = 4 -- 새 소식 · 이동 · 도움말 · 설정
 -- A23-40 보강: these sit IN the Roblox top bar row (centred on its middle, inside its free part), not below it

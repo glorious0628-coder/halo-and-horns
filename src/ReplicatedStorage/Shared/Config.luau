@@ -2733,6 +2733,11 @@ Config.UIArt = {
 		-- A23-51 my arrow on the live minimap (a133773): white + light grey shading, thick navy rim; ImageColor3 = my faction
 		-- colour keeps the rim; up = forward; 24-32 px at the map's centre
 		MapPlayerArrow = { Id = "rbxassetid://113931548210892", Size = Vector2.new(512, 512) },
+		-- A23-53 the big map window's background (57049d4, world map v2 A2_2): 1024x683, no lettering. It lines up with the
+		-- v2 world layout only (Config.Map v2 numbers, 게임성 개발 1): px = X0 + (x + OffX) * K, py = (z + OffZ) * K (studs ->
+		-- image px; 이미지 생성 1's 1536 transform x 2/3)
+		WorldMapV2 = { Id = "rbxassetid://113059360504657", Size = Vector2.new(1024, 683),
+			Map = { X0 = 30.815, K = 0.47407, OffX = 230, OffZ = 720 } },
 		-- A23-40 정정 fold-out / window icons (7fb375a): 이동 is a [메뉴] square; 직업 바꾸기 · 환생 · 오프닝 · 알림(이름 공개) · 휴가
 		-- go on 설정 rows and 닉네임 on 내 캐릭터 (BB13). BB11 ranking medals (3c9166a): in front of rows 1-3 (~85% of the row
 		-- height); rank 4+ is a number TextLabel

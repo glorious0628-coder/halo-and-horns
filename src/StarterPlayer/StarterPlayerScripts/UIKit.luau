@@ -439,35 +439,212 @@ local function corner(radius)
 	return UIKit.Create("UICorner", { CornerRadius = radius or UDim.new(0, 12) })
 end
 
-local function pressTween(scaleObj, down)
-	if not scaleObj or not scaleObj.Parent then return end
-	TweenService:Create(scaleObj, TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Scale = down and 0.92 or 1,
-	}):Play()
+----------------------------------------------------------------- motion: one button feel + window in / out
+-- 검수 2026-10-06 (video lessons 9752093, docs/design/video_lessons_8pJGBz-J75w_2026-10-06.md): every button presses
+-- the same way and every window opens the same way.
+--   UIKit.ButtonFeel(button, opts): the child UIScale "PressScale" (made when missing; the button's own Size is never
+--     touched) goes to Hover (mouse over, not on touch-only devices), Press while held, and springs back on release
+--     (Back easing). opts.Fast = combat buttons: every step <= 0.08 s, no spring overshoot that delays the next press.
+--   UIKit.FeelPress(button, down): the same press from code (keys, pad buttons, holds).
+--   UIKit.ReducedMotion(): the 'Screen shake' setting off (Settings Shake = false) or Roblox's reduced motion: buttons
+--     only dip to PressReduced and back at once (no grow, no spring), windows only fade (FadeOnly, no slide).
+--   UIKit.WindowIn(frame) / UIKit.WindowOut(frame, onDone): fade + a short slide up (In / Out seconds); the fade walks
+--     the window's descendants (their own transparency is the shown value, kept in MOTION.Bases); no CanvasGroup
+--     (its text goes blurry). Panels / windows call these (게임성 개발 1 wires them).
+local MOTION = {
+	Hover = 1.08, Press = 0.94, PressReduced = 0.97,
+	Down = 0.07, Up = 0.2, FastDown = 0.04, FastUp = 0.08, HoverTime = 0.12,
+	In = 0.22, Out = 0.16, FadeOnly = 0.12, Slide = 12, -- seconds; Slide = px (logical) the window rises while it fades in
+	States = setmetatable({}, { __mode = "k" }), -- [button] = { Hover, Down, Fast }
+	Bases = setmetatable({}, { __mode = "k" }), -- [window] = { Token, Pos, List = { { inst, prop, base } } }
+}
+
+function UIKit.ReducedMotion()
+	local settings = C and C.Settings
+	if type(settings) == "table" and type(settings.Get) == "function" then
+		local ok, shake = pcall(settings.Get, "Shake")
+		if ok and shake == false then return true end
+	end
+	local ok, reduced = pcall(function()
+		return GuiService.ReducedMotionEnabled
+	end)
+	return ok and reduced == true
 end
 
--- press-shrink on the child UIScale "PressScale" + Click sound; onClick(button) runs on Activated unless the button
--- has Active == false or attribute Disabled == true (shared by UIKit.Button and UIKit.ArtButton)
-local function wirePress(btn, onClick)
-	local pressScale = btn:FindFirstChild("PressScale")
+local function feelScale(btn)
+	local sc = btn:FindFirstChild("PressScale")
+	if not sc then
+		sc = Instance.new("UIScale")
+		sc.Name = "PressScale"
+		sc.Parent = btn
+	end
+	return sc
+end
 
+-- moves the button's PressScale to where its state says (pressed > hovered > rest)
+local function feelApply(btn)
+	local st = MOTION.States[btn]
+	if not st or not btn.Parent then return end
+	local sc = feelScale(btn)
+	if UIKit.ReducedMotion() then
+		sc.Scale = st.Down and MOTION.PressReduced or 1
+		return
+	end
+	local goal = st.Down and MOTION.Press or (st.Hover and MOTION.Hover or 1)
+	local time, style = MOTION.HoverTime, Enum.EasingStyle.Quad
+	if st.Down then
+		time = st.Fast and MOTION.FastDown or MOTION.Down
+	elseif st.WasDown then
+		-- the release springs back (Back overshoot); combat buttons stay quick
+		time, style = st.Fast and MOTION.FastUp or MOTION.Up, st.Fast and Enum.EasingStyle.Quad or Enum.EasingStyle.Back
+	end
+	st.WasDown = st.Down
+	if st.Tween then st.Tween:Cancel() end
+	st.Tween = TweenService:Create(sc, TweenInfo.new(time, style, Enum.EasingDirection.Out), { Scale = goal })
+	st.Tween:Play()
+end
+
+function UIKit.FeelPress(btn, down)
+	if typeof(btn) ~= "Instance" then return end
+	local st = MOTION.States[btn]
+	if not st then
+		st = { Hover = false, Down = false, Fast = false }
+		MOTION.States[btn] = st
+	end
+	down = down == true
+	if st.Down == down then return end
+	st.Down = down
+	feelApply(btn)
+end
+
+function UIKit.ButtonFeel(btn, opts)
+	if typeof(btn) ~= "Instance" or not btn:IsA("GuiObject") then return btn end
+	opts = type(opts) == "table" and opts or {}
+	local st = MOTION.States[btn]
+	if st then
+		st.Fast = opts.Fast == true or st.Fast
+		return btn -- wired once
+	end
+	st = { Hover = false, Down = false, Fast = opts.Fast == true }
+	MOTION.States[btn] = st
+	feelScale(btn)
+	local function usable()
+		return btn.Active ~= false and btn:GetAttribute("Disabled") ~= true
+	end
 	btn.InputBegan:Connect(function(input)
 		local t = input.UserInputType
-		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then
-			if btn.Active and btn:GetAttribute("Disabled") ~= true then
-				pressTween(pressScale, true)
-			end
+		if (t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch) and usable() then
+			UIKit.FeelPress(btn, true)
 		end
 	end)
 	btn.InputEnded:Connect(function(input)
 		local t = input.UserInputType
-		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then
-			pressTween(pressScale, false)
-		end
+		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then UIKit.FeelPress(btn, false) end
+	end)
+	-- hover grows only where a mouse points (touch-only devices fire MouseEnter on a tap)
+	btn.MouseEnter:Connect(function()
+		if not UserInputService.MouseEnabled or not usable() then return end
+		st.Hover = true
+		feelApply(btn)
 	end)
 	btn.MouseLeave:Connect(function()
-		pressTween(pressScale, false)
+		st.Hover = false
+		if st.Down then
+			UIKit.FeelPress(btn, false)
+		else
+			feelApply(btn)
+		end
 	end)
+	return btn
+end
+
+-- fadeable properties under (and of) a window, with their shown values
+local function windowFades(frame)
+	local list = {}
+	local function add(inst)
+		if inst:IsA("ImageLabel") or inst:IsA("ImageButton") then
+			table.insert(list, { inst, "ImageTransparency", inst.ImageTransparency })
+		end
+		if inst:IsA("TextLabel") or inst:IsA("TextButton") or inst:IsA("TextBox") then
+			table.insert(list, { inst, "TextTransparency", inst.TextTransparency })
+		end
+		if inst:IsA("UIStroke") then table.insert(list, { inst, "Transparency", inst.Transparency }) end
+		if inst:IsA("GuiObject") and inst.BackgroundTransparency < 1 then
+			table.insert(list, { inst, "BackgroundTransparency", inst.BackgroundTransparency })
+		end
+	end
+	add(frame)
+	for _, d in frame:GetDescendants() do add(d) end
+	return list
+end
+
+local function windowTween(w, alpha, time, slideFrom, slideTo, onDone)
+	w.Token += 1
+	local token = w.Token
+	local info = TweenInfo.new(time, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	for _, e in w.List do
+		local inst, prop, base = e[1], e[2], e[3]
+		if inst.Parent then
+			TweenService:Create(inst, info, { [prop] = 1 - (1 - base) * alpha }):Play()
+		end
+	end
+	if slideTo then
+		if slideFrom then w.Frame.Position = slideFrom end
+		TweenService:Create(w.Frame, info, { Position = slideTo }):Play()
+	end
+	task.delay(time, function()
+		if w.Token ~= token then return end -- a newer in / out took over
+		if onDone then onDone() end
+	end)
+end
+
+function UIKit.WindowIn(frame)
+	if typeof(frame) ~= "Instance" or not frame:IsA("GuiObject") then return end
+	local w = MOTION.Bases[frame]
+	if not w or not w.Busy then
+		-- the window as built is the shown state
+		w = { Frame = frame, Token = w and w.Token or 0, Pos = frame.Position, List = windowFades(frame) }
+		MOTION.Bases[frame] = w
+	end
+	w.Busy = true
+	frame.Visible = true
+	for _, e in w.List do e[1][e[2]] = 1 end
+	local reduced = UIKit.ReducedMotion()
+	windowTween(w, 1, reduced and MOTION.FadeOnly or MOTION.In, (not reduced) and (w.Pos + UDim2.fromOffset(0, MOTION.Slide)) or nil,
+		(not reduced) and w.Pos or nil, function()
+			w.Busy = false
+		end)
+end
+
+function UIKit.WindowOut(frame, onDone)
+	if typeof(frame) ~= "Instance" or not frame:IsA("GuiObject") then
+		if onDone then onDone() end
+		return
+	end
+	local w = MOTION.Bases[frame]
+	if not w or not w.Busy then
+		w = { Frame = frame, Token = w and w.Token or 0, Pos = frame.Position, List = windowFades(frame) }
+		MOTION.Bases[frame] = w
+	end
+	w.Busy = true
+	local reduced = UIKit.ReducedMotion()
+	windowTween(w, 0, reduced and MOTION.FadeOnly or MOTION.Out, nil,
+		(not reduced) and (w.Pos + UDim2.fromOffset(0, MOTION.Slide / 2)) or nil, function()
+			frame.Visible = false
+			-- back to the shown values for the next open
+			for _, e in w.List do
+				if e[1].Parent then e[1][e[2]] = e[3] end
+			end
+			frame.Position = w.Pos
+			w.Busy = false
+			if onDone then onDone() end
+		end)
+end
+
+-- the shared press feel (UIKit.ButtonFeel) + Click sound; onClick(button) runs on Activated unless the button has
+-- Active == false or attribute Disabled == true (shared by UIKit.Button and UIKit.ArtButton)
+local function wirePress(btn, onClick)
+	UIKit.ButtonFeel(btn)
 	btn.Activated:Connect(function()
 		if not btn.Active or btn:GetAttribute("Disabled") == true then return end
 		playClick()

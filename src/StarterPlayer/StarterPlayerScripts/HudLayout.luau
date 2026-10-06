@@ -47,10 +47,13 @@ local ITEMS = {
 	menu = { "TB", { 1224, 12, 44, 44 }, { 692, 12, 45, 45 } },
 	combo = { "BC", { 580, 463, 120, 24 }, { 305, 236, 144, 20 } },
 	potions = { "BR", { 926, 646, 122, 58 }, { 337, 298, 112, 54 } },
-	ghost = { "BR", { 987, 577, 61, 61 }, { 590, 182, 57, 57 } },
-	q = { "BR", { 1062, 588, 77, 77 }, { 455, 252, 72, 72 } },
-	z = { "BR", { 1121, 505, 77, 77 }, { 497, 180, 72, 72 } },
-	auto = { "BR", { 1213, 515, 51, 51 }, { 665, 215, 48, 48 } },
+	-- A23-49 three skills Q · Z · X (docs/design/skill_kit_beta_2026-10-06.md §6-1): the X button joins the cluster; Q / Z /
+	-- auto move on PCs and the grudge ghost on phones so the four round buttons keep clear of each other
+	ghost = { "BR", { 987, 577, 61, 61 }, { 386, 170, 57, 57 } },
+	q = { "BR", { 1052, 596, 77, 77 }, { 455, 252, 72, 72 } },
+	z = { "BR", { 1100, 518, 77, 77 }, { 497, 180, 72, 72 } },
+	x = { "BR", { 1186, 499, 77, 77 }, { 580, 164, 72, 72 } },
+	auto = { "BR", { 1219, 440, 51, 51 }, { 665, 215, 48, 48 } },
 	attack = { "BR", { 1146, 592, 118, 118 }, { 534, 241, 112, 112 } },
 }
 HudLayout.Items = ITEMS
@@ -71,14 +74,14 @@ local GAP = 8
 -- tiles to MIN_TAP squares (fewer fit the row), the quest lines downwards, the round combat buttons around their centre,
 -- the potions upwards and then to the left (both cells: the potions rect holds HP and MP side by side, POTION_GAP apart)
 local MIN_TAP = 60
-local ROUND_TAPS = { "ghost", "q", "z", "auto", "attack" }
+local ROUND_TAPS = { "ghost", "q", "z", "x", "auto", "attack" }
 local POTION_GAP = 6 -- real px between the HP and MP buttons on both reference sheets (out.potions.Gap, in du)
 HudLayout.PotionGap = POTION_GAP
 local TILE_GAP = 3 -- real px: the least gap between two tiles of the icon row (out.tiles.Gap, in du)
 local STICK = { X = 0.4, Y = 1 / 3 } -- touch thumbstick zone: x < 0.4 W and y > H / 3
 -- desktop: the bottom-centre group (face, power line, bars, XP, tiles) and the corner cluster it must stay clear of
 local BC_GROUP = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
-local CLUSTER = { "potions", "ghost", "q", "z", "auto", "attack" }
+local CLUSTER = { "potions", "ghost", "q", "z", "x", "auto", "attack" }
 -- touch: the plate beside the portrait (moves right when the portrait grows back to MIN_TAP)
 local PLATE = { "power_line", "hp_bar", "mp_bar", "xp_bar" }
 -- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
@@ -229,6 +232,16 @@ function HudLayout.Compute(env)
 	menu.W, menu.H = mSize, mSize
 	menu.X = bar.X1 - TOPBAR.Edge / s - mSize
 	menu.Y = barMid - mSize / 2
+
+	-- touch: a round button that reaches up into the plate's tile row steps down under it (short / narrow phones: the plate
+	-- hangs from the top, the cluster from the jump button, so the X skill can meet the row; A23-49)
+	if touch then
+		local rowBottom = tiles.Y + tiles.H + GAP / 2
+		for _, id in ROUND_TAPS do
+			local r = out[id]
+			if r.X < tiles.X + tiles.W and r.X + r.W > tiles.X and r.Y < rowBottom then r.Y = rowBottom end
+		end
+	end
 
 	-- desktop: the bottom-centre group moves left (keeping its shape) when the corner cluster reaches it, but never past
 	-- the left margin; if that is still not enough it is squeezed from its left edge (narrow 4:3 / 5:4 windows)
