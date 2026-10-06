@@ -1107,7 +1107,7 @@
   "size": "768x768 RGBA",
   "cutout": "tools/cutout_flat.py --holes --hole-tol 12 --tol 64 --soft 20 (후광 구멍) + 발밑 그림자 제거; 768px",
   "preview": "art/review/styleboard_b1_preview.png",
-  "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 빛 전사(남) 블록 아바타 B2 = 사람 마스터. 검수가 옷차림 확인(어깨·몸통·배·다리 덮임). Hard rule 1: 사용자가 직접 본 뒤에만 업로드·approved로 바꿈."
+  "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 빛 전사(남) 블록 아바타 B2 = 사람 마스터. 검수가 옷차림 확인(어깨·몸통·배·다리 덮임). Hard rule 1: 사용자가 직접 본 뒤에만 업로드·approved로 바꿈. 문구의 'R15 proportions, like a classic online game avatar'(플랫폼 용어)를 'jointed blocky toy-figure proportions'로 고침(검수, 2026-10-06) — 그림은 그대로."
  },
  "Tex_Grass_FF": {
   "status": "approved",
@@ -1282,36 +1282,36 @@
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Sky_Sun.txt",
-  "original": "art/out/Sky_Sun_src.png (1024)",
+  "original": "art/out/Sky_Sun_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Sky_Sun.png",
   "size": "512x512 RGB, pure black background (additive)",
-  "cutout": "none — black kept for additive sky; pixels with max channel < 8 forced to 0 so no square shows",
-  "preview": "art/review/sky3_goldguard_sheet.png",
-  "note": "하늘 그림: 평소 해, Sky.SunTextureId — Neutral(ClockTime 16.8). 2안 중 1(둥근 장난감 햇살). 하늘 6면 상자 대신 해·달 그림(visual_direction 2-5). Studio에서 SunAngularSize 14 / MoonAngularSize 18로 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "cutout": "none — black kept for additive sky; resized 512, RGB x0.85 so the bloom does not blow it to white, pixels with max channel < 8 forced to 0",
+  "preview": "art/review/sky3_round_sheet.png",
+  "note": "다시 그림(2026-10-06): 첫 판은 빛살이 Roblox 해 렌더(더해지기+밝기 과다)에서 흰 데이지 꽃잎처럼 보임(이미지 개발 UiSandbox 시트) → 빛살 없는 둥근 원판으로. 2안 중 1(3번 원판, 가장자리 부드러움). UiSandbox 하늘에서 다시 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김."
  },
  "Sky_SunDawn": {
   "status": "picked",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Sky_SunDawn.txt",
-  "original": "art/out/Sky_SunDawn_src.png (1024)",
+  "original": "art/out/Sky_SunDawn_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Sky_SunDawn.png",
   "size": "512x512 RGB, pure black background (additive)",
-  "cutout": "none — black kept for additive sky; pixels with max channel < 8 forced to 0 so no square shows",
-  "preview": "art/review/sky3_goldguard_sheet.png",
-  "note": "하늘 그림: 금빛 새벽 해(빛 승리), Sky.SunTextureId while Dawn. 2안 중 1(후광 고리 + 부드러운 햇살; 2안은 뾰족). 하늘 6면 상자 대신 해·달 그림(visual_direction 2-5). Studio에서 SunAngularSize 14 / MoonAngularSize 18로 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "cutout": "none — black kept for additive sky; resized 512, RGB x0.85 so the bloom does not blow it to white, pixels with max channel < 8 forced to 0",
+  "preview": "art/review/sky3_round_sheet.png",
+  "note": "다시 그림(2026-10-06): 첫 판은 빛살이 Roblox 해 렌더(더해지기+밝기 과다)에서 흰 데이지 꽃잎처럼 보임(이미지 개발 UiSandbox 시트) → 빛살 없는 둥근 원판으로. 2안 중 2(4번, 깔끔한 금빛 고리). UiSandbox 하늘에서 다시 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김."
  },
  "Sky_MoonEclipse": {
   "status": "picked",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Sky_MoonEclipse.txt",
-  "original": "art/out/Sky_MoonEclipse_src.png (1024)",
+  "original": "art/out/Sky_MoonEclipse_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Sky_MoonEclipse.png",
   "size": "512x512 RGB, pure black background (additive)",
-  "cutout": "none — black kept for additive sky; pixels with max channel < 8 forced to 0 so no square shows",
-  "preview": "art/review/sky3_goldguard_sheet.png",
-  "note": "하늘 그림: 진홍 월식 달(뿔 승리), Sky.MoonTextureId while Eclipse. 2안 중 2(뿔 모양 빛이 더 둥글고 순함). 하늘 6면 상자 대신 해·달 그림(visual_direction 2-5). Studio에서 SunAngularSize 14 / MoonAngularSize 18로 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "cutout": "none — black kept for additive sky; resized 512, RGB x0.85 so the bloom does not blow it to white, pixels with max channel < 8 forced to 0",
+  "preview": "art/review/sky3_round_sheet.png",
+  "note": "다시 그림(2026-10-06): 첫 판은 빛살이 Roblox 해 렌더(더해지기+밝기 과다)에서 흰 데이지 꽃잎처럼 보임(이미지 개발 UiSandbox 시트) → 빛살 없는 둥근 원판으로. 2안 중 2(4번, 불꽃 같은 자락 없는 매끈한 고리). UiSandbox 하늘에서 다시 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김."
  },
  "IconGoldGuard": {
   "status": "approved",
