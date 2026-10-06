@@ -1056,8 +1056,14 @@ end
 
 -- living-motion layer (2026-10-06 playtest: "슬라임인데 너무 딱딱해 보여"): local VisualJoint.C1 only, so the lunge /
 -- recoil tweens on C0 still play on top. Slimes hop with stretch in the air and a squash on landing (and breathe
--- when still); other monsters waddle while walking. Only monsters near the camera move; nothing is sent anywhere.
-local WOBBLE = { State = {}, Range = 140, StartedAt = os.clock() }
+-- when still); other monsters waddle while walking; a def.Float monster (no legs, e.g. the little ghost) hovers Float
+-- studs up with a slow +-FloatBob bob and never rolls. Only monsters near the camera move; nothing is sent anywhere.
+local WOBBLE = { State = {}, Range = 140, StartedAt = os.clock(), FloatBob = 0.25, FloatSpeed = 0.8 }
+
+-- C1 that lifts the visual `up` studs (Part1 = Part0 * C0 * C1:Inverse())
+function WOBBLE.lift(up)
+	return CFrame.new(0, -up, 0)
+end
 
 function WOBBLE.track(model)
 	local joint, root = visualJoint(model), monsterRoot(model)
@@ -1070,11 +1076,16 @@ function WOBBLE.track(model)
 		end
 	end
 	local h = monsterSize(model)
+	local kind = model:GetAttribute("MonsterKind")
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	local float = type(def) == "table" and tonumber(def.Float) or nil
 	local st = { Joint = joint, Root = root, Mesh = mesh, Base = mesh and mesh.Size, Slime = isSlimeModel(model),
+		Float = (float and float > 0 and def.Shape ~= "Slime") and float or nil,
 		H = h, Phase = math.random() * 6.283, Active = false, HitAt = -math.huge,
 		-- monsters that appear while I watch pop in (not the ones already standing there when I join)
 		BornAt = (os.clock() - WOBBLE.StartedAt > 3) and os.clock() or -math.huge }
 	WOBBLE.State[model] = st
+	if st.Float then joint.C1 = WOBBLE.lift(st.Float) end -- hover from the start, also out of range
 	if st.Slime and st.Base then
 		-- user 2026-10-06: the slime mesh is flat from the side (3.1 wide x 2.1 deep): show it round (depth = width)
 		local w = math.max(st.Base.X, st.Base.Z)
@@ -1093,7 +1104,7 @@ end
 function WOBBLE.rest(st)
 	if not st.Active then return end
 	st.Active = false
-	st.Joint.C1 = CFrame.identity
+	st.Joint.C1 = st.Float and WOBBLE.lift(st.Float) or CFrame.identity -- a floater keeps hovering (also while dying)
 	if st.Mesh and st.Base then st.Mesh.Size = st.Base end
 end
 
@@ -1111,8 +1122,10 @@ function WOBBLE.step(dt)
 			st = nil
 		end
 		if st and st.Joint.Parent and st.Root.Parent then
-			if st.Root.Anchored and st.Slime and st.Active and st.Mesh and st.Base and not st.Splat then
-				-- dying slime: splat flat while the server's death pop shrinks and fades it
+			if st.Root.Anchored and st.Slime and st.Active and st.Mesh and st.Base and not st.Splat
+				and model:GetAttribute("Leaving") ~= true then
+				-- dying slime: splat flat while the server's death pop shrinks and fades it (an event monster that goes
+				-- home undefeated is "Leaving": it rests and floats away instead)
 				st.Splat = true
 				TweenService:Create(st.Mesh, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 					{ Size = Vector3.new(st.Base.X * 1.45, st.Base.Y * 0.35, st.Base.Z * 1.45) }):Play()
@@ -1146,6 +1159,13 @@ function WOBBLE.step(dt)
 						half = st.Base.Y * 0.5
 					end
 					st.Joint.C1 = CFrame.new(0, -(hop + (sy - 1) * half), 0) -- bottom stays on the floor
+				elseif st.Float then
+					-- no legs: a slow hover bob whether it moves or not, no waddle / roll; a hit dips it a little
+					st.Phase += dt * math.pi * WOBBLE.FloatSpeed
+					local up = st.Float + math.sin(st.Phase) * WOBBLE.FloatBob
+					local since = os.clock() - st.HitAt
+					if since < 0.35 then up -= 0.3 * math.exp(-since * 9) * math.abs(math.sin(since * 30)) end
+					st.Joint.C1 = WOBBLE.lift(up)
 				else
 					st.Phase += dt * math.pi * (moving and 3.2 or 1.0)
 					local s = math.sin(st.Phase)

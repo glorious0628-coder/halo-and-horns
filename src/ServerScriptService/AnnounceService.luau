@@ -4,6 +4,7 @@
 -- Names are the game nickname (Util.PlayerDisplayName, filtered); a player can hide it (data.HideAnnounceName ->
 -- "빛의 기사단 한 명이…"). RareWeapon lines within WindowSeconds of one player are grouped (same or lower grade than
 -- the opening line) into one "…좋은 것을 N개 더" line; jackpots, the first +10 and higher grades always show by name.
+-- Broadcast(key) sends a server event line with no finder (Config.Announce.Events, e.g. the Pumpkin King) to everyone.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -100,6 +101,24 @@ function AnnounceService.Announce(player, key, args, grade)
 	w.Token += 1
 	w.SentAt, w.OpenRank = now, rank
 	send(player, key, args, grade)
+end
+
+-- server-wide event line with no finder (Config.Announce.Events[key], e.g. the Pumpkin King): every client gets
+-- { Key, Args, Event = true } and shows it at once in its own language. Never grouped and never carries a name.
+-- args: optional plain values (numbers / strings / booleans).
+function AnnounceService.Broadcast(key, args)
+	if type(A) ~= "table" or type(A.Text) ~= "table" or type(A.Text[key]) ~= "string" then return end
+	if type(A.Events) ~= "table" or A.Events[key] == nil then return end
+	local payload = {}
+	if type(args) == "table" then
+		for k, v in args do
+			local t = type(v)
+			if type(k) == "string" and (t == "string" or t == "number" or t == "boolean") then payload[k] = v end
+		end
+	end
+	pcall(function()
+		Net.Get("Announce"):FireAllClients({ Key = key, Args = payload, Event = true })
+	end)
 end
 
 local function onSetName(player, hide, ...)

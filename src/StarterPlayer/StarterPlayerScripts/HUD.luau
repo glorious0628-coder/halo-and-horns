@@ -5,8 +5,10 @@
 -- Client only: reads attributes / GameState / the Fx and Quests remotes, writes only client->server intents.
 -- Published layout (logical MainGui units, updated by every layout pass; nil until the first one):
 --   HUD.TopCenterX / HUD.TopCenterW : centre x and width of the war meter column (CR-L36, EventHUD's strip follows it)
---   HUD.Layout = { W, H, Scale, ClusterTop, ClusterLeft, TopCenterX, TopCenterW } : ClusterTop / ClusterLeft = top /
---   left edge of the bottom-right button cluster (CR-L37, EventHUD keeps its personal line above it)
+--   HUD.Layout = { W, H, Scale, ClusterTop, ClusterLeft, TopCenterX, TopCenterW, LeftX, RightX } : ClusterTop /
+--   ClusterLeft = top / left edge of the bottom-right button cluster (CR-L37, EventHUD keeps its personal line above
+--   it); LeftX / RightX = the free top band between the player card + quests column (its right edge + 8) and the right
+--   edge (desktop: left of the luck panel), where EventHUD puts its pills beside the strip
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
@@ -98,7 +100,8 @@ local COL = {
 }
 
 -- quest Id -> icon part (slime for monster kills, scroll otherwise)
-local QUEST_ICON = { tutorial = "IconSlime", Kill = "IconSlime", Golden = "IconSlime", Goose = "IconGoose" }
+-- kill rows use their monster head (IconMon<Unit>) when it exists; these are the fallbacks per row type
+local QUEST_ICON = { tutorial = "IconMonSlime", Kill = "IconScroll", Golden = "IconScroll", Goose = "IconGoose" }
 
 local GUIDE_SECONDS = NEXT.GuideSeconds or 90
 local GUIDE_ZONES = NEXT.GuideZones or { "GoblinWoods", "SkeletonRuins" }
@@ -2217,6 +2220,7 @@ local function parseQuests()
 				TutorialStep = finite(e.TutorialStep, -1),
 				NextGoal = e.NextGoal == true,
 				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
+				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
 			table.insert(isPinned and pinned or normal, entry)
@@ -2662,7 +2666,9 @@ refreshQuests = function()
 			r.Badge.BackgroundColor3 = COL.Grey
 		end
 		if r.Icon then
-			r.Icon.Image = UIKit.ArtId(QUEST_ICON[e.Id] or "IconScroll") or r.Icon.Image
+			-- a kill quest shows its monster's head (IconMon<Kind>) when that art exists, else the row type's icon
+			local head = e.Unit and UIKit.ArtId("IconMon" .. e.Unit)
+			r.Icon.Image = head or UIKit.ArtId(QUEST_ICON[e.Id] or "IconScroll") or UIKit.ArtId("IconSlime") or r.Icon.Image
 		end
 		r.Text.Text = (i == callIndex) and call.Label or e.Text
 		r.Text.TextWrapped = not e.ShowProgress
@@ -3436,6 +3442,8 @@ applyLayout = function()
 		ClusterLeft = math.floor(clusterLeft),
 		TopCenterX = cx,
 		TopCenterW = warW,
+		LeftX = leftX,
+		RightX = rightX,
 	}
 end
 

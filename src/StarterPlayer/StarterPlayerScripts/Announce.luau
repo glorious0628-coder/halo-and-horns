@@ -1,6 +1,8 @@
 -- Announce.luau : A23-15 server-wide chat lines for good drops (AnnounceService -> remote "Announce").
 -- Formats Config.Announce.Text[Key] on this client (so it can be localized later) and shows it as a TextChatService
 -- system message in RBXGeneral, colored by the weapon grade. Weapon names follow the finder's class and faction.
+-- Event lines (AnnounceService.Broadcast, Config.Announce.Events: e.g. the Pumpkin King) are plain Text[Key] lines
+-- (Text[Key .. "En"] when the language setting is English) in the event's Color, optionally also a toast.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TextChatService = game:GetService("TextChatService")
 local StarterGui = game:GetService("StarterGui")
@@ -21,6 +23,14 @@ local function escape(s)
 	return (tostring(s):gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"))
 end
 
+-- the Settings language is English (Config.Settings Lang "en")
+function A.English()
+	local st = C and C.Settings
+	if type(st) ~= "table" or type(st.Get) ~= "function" then return false end
+	local ok, lang = pcall(st.Get, "Lang")
+	return ok and lang == "en"
+end
+
 function A.Subject(args, text)
 	if args.Hidden == true or type(args.Who) ~= "string" or args.Who == "" then
 		local f = Config.Factions[args.Faction]
@@ -35,6 +45,11 @@ function A.Format(msg)
 	local tmpl = text[msg.Key]
 	local args = type(msg.Args) == "table" and msg.Args or {}
 	if type(tmpl) ~= "string" then return nil end
+	local events = Config.Announce.Events
+	if type(events) == "table" and events[msg.Key] ~= nil then
+		local en = A.English() and text[msg.Key .. "En"]
+		return escape(type(en) == "string" and en or tmpl) -- a plain line: no finder, no name
+	end
 	local who = A.Subject(args, text)
 	local tier = tonumber(args.Weapon)
 	local weapon = tier and Config.WeaponName(math.floor(tier), args.Class, args.Faction) or ""
@@ -54,6 +69,21 @@ function A.Show(msg)
 	local ok, line = pcall(A.Format, msg)
 	if not ok or type(line) ~= "string" then return end
 	local g = Config.WeaponGrades[msg.Grade] or Config.WeaponGrades.Rare
+	local ev = type(msg) == "table" and type(Config.Announce.Events) == "table" and Config.Announce.Events[msg.Key] or nil
+	if type(ev) == "table" then
+		-- event line: its own colour; the toast is skipped (not held) while the opening / a picker / the first
+		-- mission holds banners: by then the news is old, the chat line stays
+		g = { Rank = 0, Color = typeof(ev.Color) == "Color3" and ev.Color or g.Color }
+		local ui = C and C.UIKit
+		if ev.Toast == true and type(ui) == "table" and type(ui.Toast) == "function" then
+			local hold = false
+			if type(ui.ShouldHoldBanners) == "function" then
+				local okH, h = pcall(ui.ShouldHoldBanners)
+				hold = okH and h == true
+			end
+			if not hold then pcall(ui.Toast, (line:gsub("&lt;", "<"):gsub("&gt;", ">"):gsub("&amp;", "&")), "reward", 5) end
+		end
+	end
 	-- big news is also visible without opening the chat: a banner for Legendary, a toast for Epic. Not for the
 	-- finder (they already got their own toast) and never over the opening / pickers / first mission: then a
 	-- Legendary banner / Epic toast waits in UIKit.HeldBanners (max 2, like Notify) until FlushBanners.

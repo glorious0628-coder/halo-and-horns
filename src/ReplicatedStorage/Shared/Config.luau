@@ -1128,15 +1128,22 @@ Config.Monsters = {
 -- addendum A3-M2 / A5-C1: per monster type, target count =
 --   min(def.Count + ExtraPerPlayer * max(0, playersInZone - 1), def.Count * MaxZoneMult), total alive <= GlobalCap.
 -- Re-evaluated every ReevalInterval s. Lowering the target never despawns living monsters (it only skips respawns).
--- Personal (tutorial) monsters are excluded from these counts.
-Config.MonsterDensity = { ExtraPerPlayer = 2, MaxZoneMult = 2, GlobalCap = 72, ReevalInterval = 5 }
+-- Personal (tutorial) monsters are excluded from these counts, and so are event monsters (the Pumpkin King) and add-on
+-- seasonal kinds (Config.MonsterOutsideCap: the little ghosts, at most Count x MaxZoneMult = 6 on top while on).
+Config.MonsterDensity ={ ExtraPerPlayer = 2, MaxZoneMult = 2, GlobalCap = 72, ReevalInterval = 5 }
 
 -- addendum A7-1: on each (re)spawn of a non-personal monster, prefer a point 18-28 studs from the most "starved"
 -- player in def.Zone (fewest monsters within 30 studs) when that player has fewer than StarvedThreshold nearby.
 Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDist = 28, Tries = 6 }
 
-Config.MonsterTypeOrder = { "Slime", "BigSlime", "Goblin", "GoblinBrute", "Skeleton", "SkeletonKnight" }
+-- seasonal kinds sit right after the base kind of their zone (drop table / UI order); they spawn only while their
+-- season is on (Config.MonsterActive / Config.EffectiveMonsterCounts)
+Config.MonsterTypeOrder = { "Slime", "PumpkinSlime", "BigSlime", "PumpkinKing", "Goblin", "BatGoblin", "LittleGhost", "GoblinBrute",
+	"Skeleton", "SkeletonKnight" }
 -- Name = full name (nametag, lore); Short = short name for quest / HUD lines (optional: use `def.Short or def.Name`)
+-- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
+-- QuestAs = the kind quests count it as (Config.QuestKind); Float = studs the client hovers it above the floor (no
+-- legs: slow bob, no waddle); Boss = event monster (never golden, never respawns, ContributorWindow override).
 Config.MonsterTypes = {
 	Slime = { Name = "조각먹은 슬라임", Short = "슬라임", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
 	BigSlime = { Name = "왕 슬라임", Short = "왕 슬라임", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
@@ -1144,10 +1151,169 @@ Config.MonsterTypes = {
 	GoblinBrute = { Name = "고블린 우두머리", Short = "고블린 우두머리", Zone = "GoblinWoods", Count = 4, HP = 260, Damage = 12, XP = 70, Gold = 40, Speed = 10, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(80, 120, 50) },
 	Skeleton = { Name = "옛 왕국 해골 병사", Short = "해골 병사", Zone = "SkeletonRuins", Count = 8, HP = 450, Damage = 14, XP = 65, Gold = 65, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(235, 235, 220) },
 	SkeletonKnight = { Name = "왕관을 지키던 해골 기사", Short = "해골 기사", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
+	-- Halloween (Config.Halloween; provisional numbers)
+	PumpkinSlime = { Name = "호박 슬라임", Short = "호박 슬라임", Zone = "SlimeMeadow", Count = 3, Takes = { Slime = 3 }, QuestAs = "Slime",
+		Season = "Halloween", HP = 14, Damage = 2, XP = 6, Gold = 4, Speed = 10, Shape = "Slime", Scale = 1.1, Color = Color3.fromRGB(255, 150, 40) },
+	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = "GoblinWoods", Count = 3, Season = "Halloween", HP = 70, Damage = 5,
+		XP = 24, Gold = 14, Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(220, 215, 255), Float = 1.5 },
+	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = "GoblinWoods", Count = 3, Takes = { Goblin = 3 }, QuestAs = "Goblin",
+		Season = "Halloween", HP = 95, Damage = 6, XP = 30, Gold = 17, Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = Color3.fromRGB(120, 80, 150) },
+	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
+	-- player with a tier 2-3 weapon, about 70 s for three. Per player DPS (Config.WeaponDamage x class Damage; swing =
+	-- 0.5 x D x 1.1 crit avg per SwingInterval; skill = 6 x D every 3 s while MP lasts: 100 MP + 4/s regen, 20 per
+	-- cast, mage swings 2 MP), averaged over Lv 8/10/12 x tier 2/3 x the three classes: 50.8 DPS over 240 s (tier 2
+	-- ~29, tier 3 ~73), 58.2 DPS over an 80 s fight (the full MP pool counts more). With 75% uptime (walking,
+	-- dodging, aim cone): 1 player 50.8 x 0.75 x 240 = 9141 -> 9000 HP; 3 players 9000 / (3 x 58.2 x 0.75) = 69 s.
+	PumpkinKing = { Name = "호박 대왕", Short = "호박 대왕", Zone = "SlimeMeadow", Count = 0, Boss = true, Season = "Halloween",
+		ContributorWindow = 120, -- a 1-2 min fight: everyone who hit it in the last 2 minutes shares the kill
+		HP = 9000, Damage = 8, XP = 300, Gold = 150, Speed = 7, Shape = "Slime", Scale = 2.5, Color = Color3.fromRGB(255, 130, 30) },
+}
+
+-- the kind quests / tutorial / story objectives count a kill as (a pumpkin slime counts as a slime)
+function Config.QuestKind(kind)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	if type(def) == "table" and type(def.QuestAs) == "string" and Config.MonsterTypes[def.QuestAs] ~= nil then
+		return def.QuestAs
+	end
+	return kind
+end
+
+-- true while a season id (MonsterTypes[*].Season) is on; nil = no season (always on). override = true / false forces
+-- every season on / off (tests, previews)
+function Config.SeasonOn(season, override)
+	if season == nil then return true end
+	if override ~= nil then return override == true end
+	local s = type(season) == "string" and Config[season] or nil
+	return type(s) == "table" and s.Enabled == true
+end
+
+-- the kind exists and its season (if any) is on: spawns, drop table rows and HUD lines use this
+function Config.MonsterActive(kind, override)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	return type(def) == "table" and Config.SeasonOn(def.Season, override)
+end
+
+-- true for a seasonal kind that adds its Count on top of its zone instead of taking base slots (no Takes, e.g. the
+-- little ghost): MonsterService spawns it to its own Config.MonsterTargets target outside MonsterDensity.GlobalCap, so
+-- with the season on the other zones keep the density they have with it off, also when the cap is full
+function Config.MonsterOutsideCap(kind)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	return type(def) == "table" and def.Season ~= nil and type(def.Takes) ~= "table"
+end
+
+-- the kind whose GlobalCap share a kind uses (MonsterService): a seasonal kind that takes slots of one base kind shares
+-- that kind's share (pumpkin slimes + slimes get exactly the capped slime count of the season off); else the kind itself
+function Config.MonsterCapGroup(kind)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	if type(def) == "table" and type(def.Takes) == "table" then
+		local only = nil
+		for base in def.Takes do
+			if only ~= nil then return kind end -- takes from several kinds: its own share
+			only = base
+		end
+		if type(only) == "string" and Config.MonsterTypes[only] ~= nil then return only end
+	end
+	return kind
+end
+
+-- { [kind] = base count } of the regular pool for every kind in MonsterTypeOrder: an active seasonal kind spawns its
+-- Count and takes its Takes slots from the base kinds (the zone's total stays the same); inactive kinds = 0.
+-- seasonOn: nil = each season's own Enabled flag, true / false = force every season on / off.
+function Config.EffectiveMonsterCounts(seasonOn)
+	local out = {}
+	for _, kind in Config.MonsterTypeOrder do
+		local def = Config.MonsterTypes[kind]
+		if type(def) == "table" then
+			out[kind] = Config.MonsterActive(kind, seasonOn) and math.max(0, math.floor(tonumber(def.Count) or 0)) or 0
+		end
+	end
+	for _, kind in Config.MonsterTypeOrder do
+		local def = Config.MonsterTypes[kind]
+		if type(def) == "table" and type(def.Takes) == "table" and Config.MonsterActive(kind, seasonOn) then
+			for base, n in def.Takes do
+				if out[base] ~= nil then out[base] = math.max(0, out[base] - math.max(0, math.floor(tonumber(n) or 0))) end
+			end
+		end
+	end
+	return out
+end
+
+-- { [kind] = target count } before the GlobalCap split (MonsterService): Config.MonsterDensity per kind,
+--   min(count + ExtraPerPlayer * max(0, playersInZone - 1), count * MaxZoneMult) with count = EffectiveMonsterCounts.
+-- A seasonal kind that took slots of a base kind shares that kind's growth instead of adding its own, so a zone's
+-- total target is the same with the season on as off for every player count (also after the GlobalCap split:
+-- Config.MonsterCapGroup); an add-on seasonal kind (Config.MonsterOutsideCap) comes on top, outside the cap.
+-- zonePlayers = { [zoneId] = n }.
+function Config.MonsterTargets(zonePlayers, seasonOn)
+	local dens = Config.MonsterDensity or {}
+	local per, mult = tonumber(dens.ExtraPerPlayer) or 2, tonumber(dens.MaxZoneMult) or 2
+	local counts = Config.EffectiveMonsterCounts(seasonOn)
+	local function grow(count, zone)
+		if count <= 0 then return 0 end
+		local n = type(zonePlayers) == "table" and tonumber(zonePlayers[zone]) or 0
+		return math.min(count + per * math.max(0, (n or 0) - 1), count * mult)
+	end
+	local out, shared = {}, {} -- shared[base] = target the base kind would have alone (split below)
+	for _, kind in Config.MonsterTypeOrder do
+		local def = Config.MonsterTypes[kind]
+		if type(def) == "table" and out[kind] == nil then out[kind] = grow(counts[kind] or 0, def.Zone) end
+	end
+	for _, kind in Config.MonsterTypeOrder do
+		local def = Config.MonsterTypes[kind]
+		if type(def) == "table" and type(def.Takes) == "table" and (counts[kind] or 0) > 0 then
+			local taken, part = 0, 0
+			for base, n in def.Takes do
+				local bdef = Config.MonsterTypes[base]
+				local full = type(bdef) == "table" and math.max(0, math.floor(tonumber(bdef.Count) or 0)) or 0
+				local t = math.min(full, math.max(0, math.floor(tonumber(n) or 0)))
+				if t > 0 and Config.MonsterActive(base, seasonOn) then
+					if shared[base] == nil then
+						shared[base] = grow(full, bdef.Zone)
+						out[base] = shared[base]
+					end
+					local p = math.floor(shared[base] * t / full) -- this kind's slice of the base kind's target
+					out[base] = math.max(0, out[base] - p)
+					part += p
+					taken += t
+				end
+			end
+			out[kind] = part + grow(math.max(0, counts[kind] - taken), def.Zone)
+		end
+	end
+	return out
+end
+
+-- Halloween season (2026-10 decision; numbers provisional). Enabled = false: no Halloween kind spawns (their slots go
+-- back to the base kinds), no Pumpkin King schedule and no HUD line; everything else is unchanged.
+-- HalloweenService runs the Pumpkin King: first FirstDelay s after server start, then every Interval s (counted from
+-- the previous appearance) at one of SpawnSpots (meadow corners away from the entrance where the first mission is
+-- hunted and from the road, review 2026-10-06); it stays Lifetime s, then leaves when not defeated. GameState:
+-- PumpkinKingNextAt (server time of the next appearance, 0 = off), PumpkinKingActive, PumpkinKingEndsAt.
+Config.Halloween = {
+	Enabled = true,
+	King = "PumpkinKing", -- the miniboss kind (Config.MonsterTypes)
+	FirstDelay = 360,
+	Interval = 1200,
+	Lifetime = 300,
+	RetryDelay = 10, -- no walkable spot found this time: try again this many seconds later
+	SpawnRadius = 12, -- studs around the chosen spot (walkable ground inside the zone, never in solid decor)
+	-- the meadow is x 200..460, z -130..130; players enter at x 220 (first mission) and the road runs along z 0:
+	-- the king appears in a far corner (one picked at random each time)
+	SpawnSpots = { Vector3.new(395, 0, 90), Vector3.new(395, 0, -90) },
+	-- rookies are safe from the king (first 10 minutes): it never targets or hits a player with the Rookie shield or
+	-- below this level. They can still hit it and share the candy.
+	SafeBelowLevel = 5,
+	Tick = 0.5,
+	-- EventHUD line (Next / Active take m:ss); kid-safe, no time pressure. A line that names the season says it comes
+	-- back every year.
+	Text = {
+		HudNext = "호박 대왕까지 %s", HudNextEn = "Pumpkin King in %s",
+		HudActive = "호박 대왕 출현! 남은 시간 %s", HudActiveEn = "Pumpkin King is here! %s left",
+	},
 }
 
 -- the "unit" monster used for quest targets / rewards and Config.HuntValue
-Config.ZoneMainMonster = { SlimeMeadow = "Slime", GoblinWoods = "Goblin", SkeletonRuins = "Skeleton" }
+Config.ZoneMainMonster ={ SlimeMeadow = "Slime", GoblinWoods = "Goblin", SkeletonRuins = "Skeleton" }
 
 function Config.QuestZoneForLevel(level)
 	if level >= Config.Zones.SkeletonRuins.MinLevel then return "SkeletonRuins" end
@@ -1832,6 +1998,7 @@ Config.Loot = {
 		BruteHorn = { Kind = "Material", Name = "우두머리 뿔", Sell = 18, Color = Color3.fromRGB(200, 150, 100) }, -- review ui-brutehorn-contrast: readable on the row
 		Bone = { Kind = "Material", Name = "낡은 뼛조각", Sell = 14, Color = Color3.fromRGB(225, 225, 210) },
 		KnightCrest = { Kind = "Material", Name = "녹슨 기사 문장", Sell = 40, Color = Color3.fromRGB(150, 150, 170) },
+		Candy = { Kind = "Material", Name = "핼러윈 사탕", Sell = 5, Color = Color3.fromRGB(255, 140, 60), Icon = "IconCandy" }, -- Halloween kinds
 		Enh70 = { Kind = "Enhance", Name = "강화 주문서 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255) },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -1843,7 +2010,7 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "SlimeCore", "GoblinTooth", "BruteHorn", "Bone", "KnightCrest" },
+		"Jelly", "SlimeCore", "GoblinTooth", "BruteHorn", "Bone", "KnightCrest", "Candy" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -1891,9 +2058,37 @@ Config.Loot = {
 			{ Potion = "HP", P = 0.05 }, { Potion = "MP", P = 0.05 },
 			{ Weapon = 5, P = 0.003 }, { Weapon = 6, P = 0.0005 },
 		},
+		-- Halloween kinds (Config.Halloween): candy + the scroll / transfer / potion rows of the base kind of their zone
+		PumpkinSlime = {
+			{ Item = "Candy", P = 0.35 }, { Item = "Jelly", P = 0.1 },
+			{ Item = "Enh70", P = 0.003 }, { Item = "Enh30", P = 0.0008 }, { Item = "Enh10", P = 0.0002 },
+			{ Item = "Move70", P = 0.001 }, { Item = "Move30", P = 0.0003 }, { Item = "Move10", P = 0.0001 },
+			{ Potion = "HP", P = 0.01 }, { Potion = "MP", P = 0.01 },
+		},
+		LittleGhost = {
+			{ Item = "Candy", P = 0.45 },
+			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+		},
+		BatGoblin = {
+			{ Item = "Candy", P = 0.3 }, { Item = "GoblinTooth", P = 0.3 },
+			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+			{ Weapon = 4, P = 0.001 },
+		},
+		PumpkinKing = { -- every contributor rolls these once (MonsterKilled per contributor)
+			{ Item = "Candy", P = 1, N = 8 },
+			{ Item = "Enh70", P = 0.5 }, { Item = "Enh30", P = 0.15 }, { Item = "Enh10", P = 0.04 },
+			{ Item = "Move70", P = 0.15 },
+			{ Potion = "HP", P = 0.5 }, { Potion = "MP", P = 0.5 },
+			{ Weapon = 4, P = 0.05 },
+		},
 	},
-	-- "레벨1 몬스터" jackpot (user 2026-10-05): any player level, auto kills included, golden x GoldenMult.
-	Jackpot = { Monsters = { Slime = true }, Chance = 1 / 20000, Tier = 8 },
+	-- "레벨1 몬스터" jackpot (user 2026-10-05): any player level, auto kills included, golden x GoldenMult. Pumpkin
+	-- slimes take level-1 slime slots in the season, so they carry the same jackpot (it never gets rarer then).
+	Jackpot = { Monsters = { Slime = true, PumpkinSlime = true }, Chance = 1 / 20000, Tier = 8 },
 	-- the first king slime a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
 	-- NoticeSeconds; that kill's Loot Fx carries First = true so the client skips its own "where to use it" toast)
 	FirstScroll = { Monster = "BigSlime", Item = "Enh70", NoticeSeconds = 6 },
@@ -1943,10 +2138,24 @@ Config.Announce = {
 		Jackpot = "★ 대박! %s 슬라임에게서 전설 무기 [%s]을(를) 얻었어요! ★", -- subject, weapon
 		FirstMax = "%s [%s]을(를) 처음으로 +10까지 강화했어요!", -- subject, weapon
 		More = "%s 좋은 것을 %d개 더 얻었어요!", -- subject, count (grouped)
+		-- server-wide event lines (Events below; plain text, no names)
+		PumpkinKingAppear = "호박 대왕이 말랑 초원에 나타났어요! 함께 잡아요!",
+		PumpkinKingAppearEn = "The Pumpkin King appeared in the meadow! Let's beat it together!",
+		PumpkinKingDefeat = "호박 대왕이 사탕을 와르르 쏟았다!",
+		PumpkinKingDefeatEn = "The Pumpkin King spilled a pile of candy!",
+		PumpkinKingLeave = "호박 대왕이 사탕 자루를 들고 돌아갔어요. 다음에 또 와요!",
+		PumpkinKingLeaveEn = "The Pumpkin King went home with its candy sack. See you next time!",
 		NameHidden = "이제 전체 알림에 내 이름 대신 진영 이름이 나와요.",
 		NameShown = "이제 전체 알림에 내 이름이 나와요.",
 		MenuShow = "알림에 내 이름: 보여요",
 		MenuHide = "알림에 내 이름: 숨겨요",
+	},
+	-- AnnounceService.Broadcast event lines: no finder, never grouped; the client shows Text[Key] (Text[Key .. "En"]
+	-- in English) in the chat in Color, and Toast = also a toast (skipped while a picker / the opening is open)
+	Events = {
+		PumpkinKingAppear = { Color = Color3.fromRGB(255, 150, 40), Toast = true },
+		PumpkinKingDefeat = { Color = Color3.fromRGB(255, 150, 40), Toast = true },
+		PumpkinKingLeave = { Color = Color3.fromRGB(255, 190, 120) },
 	},
 }
 
@@ -2031,6 +2240,20 @@ Config.UIArt = {
 		IconClover = { Id = "rbxassetid://132542570098556", Size = Vector2.new(246, 256) },
 		IconScroll = { Id = "rbxassetid://103880967919087", Size = Vector2.new(256, 192) },
 		IconSlime = { Id = "rbxassetid://112355880587310", Size = Vector2.new(256, 245) },
+		-- GPT image 2.5 (Firefly) monster heads / items, user-approved 2026-10-05 (art/approved.json), 512x512
+		IconMonSlime = { Id = "rbxassetid://89523202269656", Size = Vector2.new(512, 512) }, -- cube jelly slime
+		IconMonPumpkinSlime = { Id = "rbxassetid://138137363654055", Size = Vector2.new(512, 512) },
+		IconMonLittleGhost = { Id = "rbxassetid://91616805843424", Size = Vector2.new(512, 512) },
+		IconMonBatGoblin = { Id = "rbxassetid://83904275165898", Size = Vector2.new(512, 512) },
+		IconMonPumpkinKing = { Id = "rbxassetid://96292404288645", Size = Vector2.new(512, 512) },
+		IconCandy = { Id = "rbxassetid://98209525611627", Size = Vector2.new(512, 512) },
+		IconPetBabySlime = { Id = "rbxassetid://95348587877182", Size = Vector2.new(512, 512) }, -- pets (later)
+		-- window buttons (BB13 menu; IconCharacterF = the girl version for CharacterGender "F", coming)
+		IconBag = { Id = "rbxassetid://110554679799730", Size = Vector2.new(512, 512) },
+		IconCharacter = { Id = "rbxassetid://85845386405558", Size = Vector2.new(512, 512) },
+		IconSkills = { Id = "rbxassetid://113811090785765", Size = Vector2.new(512, 512) },
+		IconRanking = { Id = "rbxassetid://119501472065745", Size = Vector2.new(512, 512) },
+		IconHelp = { Id = "rbxassetid://102236302870647", Size = Vector2.new(512, 512) },
 		-- User-approved E sprites; shared legacy keys remain unchanged.
 		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
 		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },

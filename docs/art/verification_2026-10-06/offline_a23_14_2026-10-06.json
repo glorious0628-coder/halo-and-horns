@@ -893,18 +893,276 @@
   "staticFailures": [],
   "mutations": {
     "total": 19,
-    "applied": 0,
-    "caught": 0,
-    "results": []
+    "applied": 19,
+    "caught": 19,
+    "results": [
+      {
+        "mutation": "newbie daily pays the 5-minute reward",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-generate :: DailyLevel and the newbie set survive a save",
+          "dailies-generate :: newbie daily reward = HuntValue(level, 2) (72 / 120)",
+          "dailies-progress :: each claimed newbie daily pays 72 gold + 120 XP",
+          "dailies-progress :: the full rookie day pays 360 gold + 600 XP",
+          "dailies-progress :: the third claim also pays the newbie chest (144 + 240)",
+          "dailies-reroll-band :: Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "newbie band includes Lv10",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-day-change :: the new day is generated in the current (Lv10) band",
+          "dailies-generate :: Lv10 dailies keep the old reward (DailyQuestReward) and are never strict",
+          "dailies-generate :: Lv10 kill daily = 50-60 goblins (old sizes)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "strict king-slime row counts slimes as fractions",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-progress :: a king slime counts exactly 1",
+          "dailies-progress :: a stronger monster counts 1 too",
+          "dailies-progress :: an unknown monster never counts for a strict row",
+          "dailies-progress :: strict 왕 슬라임 row: a slime counts 0 (no fractions)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "newbie chest pays the Lv10+ chest",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-day-change :: midnight auto-pay: stored 72/120 x 3 + the chest of the OLD (Lv1) band",
+          "dailies-progress :: the full rookie day pays 360 gold + 600 XP",
+          "dailies-progress :: the third claim also pays the newbie chest (144 + 240)",
+          "dailies-reroll-band :: Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "chest ignores the generation band",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-day-change :: midnight auto-pay: stored 72/120 x 3 + the chest of the OLD (Lv1) band",
+          "dailies-reroll-band :: Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "newbie rows allow a repeated goal",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-generate :: Lv1-9: three different dailies (kill / skill / gold)",
+          "dailies-progress :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "vacation uses the Lv10+ day value",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-config :: 3 missed days (max) = 1260 XP < 1381 (no Lv10 from vacation alone)",
+          "dailies-config :: a missed Lv1-9 day (70% of 10 minutes) pays less than a played day (360 + 600)",
+          "dailies-config :: a missed Lv1-9 day pays exactly the documented 252 gold (70% of 360; float floor must not lose 1 gold)",
+          "dailies-day-change :: 2 missed rookie days = VacationReward(1, 2) in the newbie band (840 XP)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "co-op success pays 100%",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: Horns co-op success: 70%, no war points",
+          "goose-coop :: co-op success pays 70% of the winner reward",
+          "goose-coop :: personal co-op reward toast",
+          "goose-coop-rules :: exactly 3 manual hits are paid",
+          "goose-modes :: rival left: 70%, no war points"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "co-op gives war points",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: Horns co-op success: 70%, no war points",
+          "goose-coop :: co-op never gives war points",
+          "goose-modes :: rival left: 70%, no war points"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "co-op target ignores the headcount",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop-rules :: 2 Halo players -> target 40",
+          "goose-coop-rules :: 3 Halo players -> target 60 (Neutral not counted)",
+          "goose-coop-rules :: a teammate joining later does not change the target"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "auto-only players are paid",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop-rules :: fewer than 3 manual hits (2 manual + autos, auto only): no reward, no quest credit",
+          "goose-coop-rules :: they are told why (NeedManual)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "rival pulls during co-op",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-modes :: a rival who arrives during co-op pulls 0",
+          "goose-modes :: the rival is told once ('다음 거위부터 줄다리기')"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no co-op when only one faction is present",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: 'gauge full' announced exactly once",
+          "goose-coop :: GooseFinished('Halo', { H1 = 20 }, { Mode Coop, Success })",
+          "goose-coop :: Horns co-op success: 70%, no war points",
+          "goose-coop :: co-op result line announced",
+          "goose-coop :: co-op start line announced (Halo: 함께 구조)",
+          "goose-coop :: co-op success gives no cheer star"
+        ],
+        "newFailingCount": 22
+      },
+      {
+        "mutation": "rival-left tug is a forced tie again",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-modes :: rival left: 70%, no war points",
+          "goose-modes :: rival left: judged by the co-op rule against the remaining headcount",
+          "goose-modes :: rival left: the result line says why"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "GooseFinished skipped for co-op",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop :: GooseFinished('Halo', { H1 = 20 }, { Mode Coop, Success })",
+          "goose-coop :: group ran to the end without a Lua error",
+          "goose-coop-rules :: group ran to the end without a Lua error",
+          "goose-modes :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "free change below Lv5 resets the level",
+        "file": "src/ServerScriptService/ClassService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-change :: ClassChangedFreeKeep notice (Lv5 전이라 레벨 유지)",
+          "class-change :: NaN level counts as Lv1 -> keep",
+          "class-change :: below Lv5 a free change keeps level and XP",
+          "class-change :: below Lv5 no ticket is ever spent (even when asked)",
+          "class-change :: keep-level change keeps the HP fraction (no free full heal)",
+          "class-change :: no saved level: the Level attribute (3) decides -> keep"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "ticket spent below Lv5",
+        "file": "src/ServerScriptService/ClassService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-change :: below Lv5 no ticket is ever spent (even when asked)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "keep-level change fully heals",
+        "file": "src/ServerScriptService/ClassService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-change :: keep-level change keeps the HP fraction (no free full heal)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "keep threshold off by one",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-change :: ClassChangedTicket notice",
+          "class-change :: Config.ClassChangeKeepsLevel(level)",
+          "class-change :: from Lv5 a free change goes back to Lv1 / XP 0 (old rule)",
+          "class-change :: from Lv5 a ticket change keeps the level and spends one ticket",
+          "class-change :: level-losing change: full refresh and ClassChangedFree notice",
+          "class-change :: no ticket: refused, nothing changes"
+        ],
+        "newFailingCount": 6
+      }
+    ]
   },
   "compileOk": true,
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "046ab477bb155b8f0eeadf679939653a40bb32ea87354088e869adb1868daea1",
-    "src/ReplicatedStorage/Shared/Net.luau": "ad53b3e640f50045ed03839f33f9eb3cf8152d2fb05d662e55c4ab621c5ff95c",
+    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
+    "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
-    "src/ServerScriptService/QuestService.luau": "e93c3cf11e45941acda4289b9f3f49fee20cda4e7e2fe3284b0c85af098f9566",
+    "src/ServerScriptService/QuestService.luau": "778ded5ecce5e1c5726b2f95e87d1c69e0970f274a7b81eaf4e5655d9bdd0d25",
     "src/ServerScriptService/GooseService.luau": "fe0b2aa830cbe885b49ad823bdfdd73d3a28a38c40c7504ac404fcd04cf6f892",
     "src/ServerScriptService/ClassService.luau": "0727ca8ffef339ad9d452963154118eb7091bc59956688a7295f27355bb79263"
   },

@@ -45,6 +45,8 @@ Net.GameStateDefaults = {
 	GooseMode = "Versus", GooseCoopSide = "None", GooseCoopTarget = 0, GooseCoopPeople = 0,
 	-- KaijuService
 	KaijuPhase = "None", KaijuUserId = 0, KaijuName = "", KaijuEndsAt = 0,
+	-- HalloweenService (Config.Halloween): server time (Util.Now) of the next Pumpkin King, 0 = season off / none
+	PumpkinKingNextAt = 0, PumpkinKingActive = false, PumpkinKingEndsAt = 0,
 }
 
 -- server only; call once, first thing in Main.server.luau

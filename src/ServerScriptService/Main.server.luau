@@ -11,13 +11,15 @@ local INIT_ORDER = {
 	"ClassService", "VitalsService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
 	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "StoryQuestService",
 	"AnnounceService", "SettingsService", "LootService", "TelemetryService", "TitleService", "CharacterVisuals",
+	"HalloweenService",
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
 local START_ORDER = {
 	"MapBuilder", "ZoneService", "FactionService", "ClassService", "VitalsService", "JusticeService", "ProgressionService",
 	"CombatService", "MonsterService", "PvPService", "GrudgeService", "WarService", "KaijuService", "GooseService",
-	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "LootService", "TelemetryService", "TitleService", "MonetizationService", "CharacterVisuals", "DataService",
+	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "HalloweenService", "LootService", "TelemetryService",
+	"TitleService", "MonetizationService", "CharacterVisuals", "DataService",
 	"NicknameService", "SettingsService", "PlayerService",
 }
 
@@ -51,7 +53,7 @@ end
 -- Studio-only debug hook for the test checklist (Command Bar, server side):
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Level", 20)
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Gold", 5000)   -- adds carried gold
---   keys: Gold, Stars, Bully, Tickets, Absent, Goose, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
+--   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
 if game:GetService("RunService"):IsStudio() then
 	local debugFn = Instance.new("BindableFunction")
 	debugFn.Name = "DebugCommand"
@@ -113,6 +115,8 @@ if game:GetService("RunService"):IsStudio() then
 			S.QuestService.DebugSimulateAbsence(player, value)
 		elseif key == "Goose" then
 			S.GooseService.DebugStart()
+		elseif key == "PumpkinKing" then -- Studio test aid: the Halloween miniboss appears now (value ignored)
+			return S.HalloweenService.DebugSpawn()
 		elseif key == "Faction" then
 			S.FactionService.SetFaction(player, value, "Choose")
 			S.PlayerService.RefreshCharacter(player, true)

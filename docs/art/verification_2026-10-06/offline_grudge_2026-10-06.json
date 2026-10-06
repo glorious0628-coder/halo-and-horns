@@ -1436,16 +1436,949 @@
   "mutations": {
     "baseline": "real",
     "total": 68,
-    "applied": 0,
-    "caught": 0,
-    "results": []
+    "applied": 68,
+    "caught": 68,
+    "results": [
+      {
+        "mutation": "avenge always pays 100%",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-send :: a present victim is paid directly (120%) and gets no mail",
+          "sack-avenged :: 600 s: the victim's 120% is back; the avenger bonus waits again",
+          "sack-avenged :: Avenged: present same-life victims get 120% (floored) to the bank",
+          "sack-avenged :: GrudgeRefund names the avenger and the amount",
+          "sack-avenged :: Plunder Fx flies from the thief to the victim"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "avenge refund bonus ignores the per-victim cooldown",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-avenged :: 100 s later: the victim gets 100% (refund bonus used), no avenger bonus",
+          "sack-avenged :: 301 s: the avenger bonus is back (300 s), the victim's 120% still waits (600 s)",
+          "sack-avenged :: a different thief within 600 s: still 100% (the bonus is per victim, whatever the thief)",
+          "sack-avenged :: cooldowns live in the saves: victims refund:0, avenger avenge:0"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "avenger bonus every time",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-avenged :: 100 s later: the victim gets 100% (refund bonus used), no avenger bonus",
+          "sack-avenged :: 600 s: the victim's 120% is back; the avenger bonus waits again",
+          "sack-avenged :: cooldowns live in the saves: victims refund:0, avenger avenge:0"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Neutral killer avenges",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-returned :: KO without a present Halo killer -> Returned 100%",
+          "sack-returned :: no avenger bonus without a Halo killer",
+          "sack-returned :: no server-wide avenged line; the thief is told SackLost"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "countdown ticks outside PvP zones",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-countdown-paid :: 0.25 s left: still not paid (SackSeconds = ceil)",
+          "sack-countdown-paid :: 1 s left: not paid yet",
+          "sack-countdown-paid :: a 5 s server hitch counts at most 1 s (MAX_TICK_STEP)",
+          "sack-countdown-paid :: a dead carrier is never ticked or paid (the death pipeline resolves)",
+          "sack-countdown-paid :: inside a PvP zone it ticks (4 x 0.25 s = 1 s)",
+          "sack-countdown-paid :: no character (not alive): no tick"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "dead carrier keeps ticking",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-countdown-paid :: 0.25 s left: still not paid (SackSeconds = ceil)",
+          "sack-countdown-paid :: 1 s left: not paid yet",
+          "sack-countdown-paid :: a dead carrier is never ticked or paid (the death pipeline resolves)",
+          "sack-countdown-paid :: no character (not alive): no tick"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "server hitch not clamped",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-countdown-paid :: 0.25 s left: still not paid (SackSeconds = ceil)",
+          "sack-countdown-paid :: 1 s left: not paid yet",
+          "sack-countdown-paid :: a 5 s server hitch counts at most 1 s (MAX_TICK_STEP)",
+          "sack-countdown-paid :: a dead carrier is never ticked or paid (the death pipeline resolves)",
+          "sack-countdown-paid :: no character (not alive): no tick"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "new steal keeps the running countdown",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: a new steal restarts at 45 + held seconds (holds are kept, never shortened)",
+          "ghost-hold :: still carrying 0.25 s before the end",
+          "sack-add :: every new steal restarts the countdown at 45 s (no hold seconds yet)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "new steal drops the held seconds",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: a new steal restarts at 45 + held seconds (holds are kept, never shortened)",
+          "ghost-hold :: still carrying 0.25 s before the end",
+          "ghost-hold-refusals :: a new steal into the same sack keeps the used hold seconds (cap per sack, countdown 45 + held)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Returned refunds across a rebirth",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-returned :: Returned: a present victim who rebirthed since gets no pay and no mail (CR-M6)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Returned pays 120%",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "close-sack :: the victim is refunded and the sack is gone",
+          "ghost-target :: the rejoined victim is paid directly (no mail)",
+          "mail-send :: a failing mail send never blocks the sack: it resolves and present victims are paid",
+          "sack-add :: GrudgeReturned notice with the amount",
+          "sack-add :: Returned: each victim gets the accumulated share 100% to the bank (source Refund)",
+          "sack-avenged :: only the share stolen in the current life is refunded"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "rebirth does not reset the older share",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-avenged :: only the share stolen in the current life is refunded"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "CanSteal ignores the resteal window",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-add :: re-steal still blocked at 179 s",
+          "sack-add :: the same thief cannot steal from the same victim again; other victims can be robbed"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "leaving thief is paid",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-send :: thief leaves: absent victims get a Returned letter",
+          "sack-returned :: SackResolved Returned 120",
+          "sack-returned :: the victim gets GrudgeReturned",
+          "sack-returned :: thief leaves: Returned 100% to the victim, the thief is never paid"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Paid adds no infamy",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-countdown-paid :: Paid: the sack's infamy is added once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no mail on Returned",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: a failed send stays pending (MailPending 1)",
+          "mail-retry :: a write whose reply was lost is retried",
+          "mail-retry :: after 6.9 s: 3 tries, still pending",
+          "mail-retry :: each failed try is warned with its number (1/4, 2/4)",
+          "mail-retry :: no 5th try; 4 warnings (1/4..4/4)",
+          "mail-retry :: no further tries after the success"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "no mail on Avenged",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-roundtrip :: one GrudgeMail notice with 400",
+          "mail-roundtrip :: server A wrote one letter per resolved sack (accumulated share, R = 1, own Ids)",
+          "mail-roundtrip :: server B pays 300 x 120% + 40 x 100% at join",
+          "mail-roundtrip :: the shared mailbox has no letters left afterwards, only the two tombstones (no double pay)",
+          "mail-send :: Avenged + absent victim: one letter { A = 100, R = 2 (rebirths when stolen), K = Avenged, T = os.time() } at M_<userId>",
+          "mail-send :: the letter Id = <thief UserId>:<os.time at sack start>:<kind>"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "present victims get mail too",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-send :: a present victim from another life gets no pay and no mail (CR-M6)",
+          "mail-send :: a present victim is paid directly (120%) and gets no mail",
+          "sack-avenged :: CR-M6: a victim who rebirthed since gets nothing (no pay, no mail, refund cooldown untouched)",
+          "sack-avenged :: present victims get no mail"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "other-life present victims get mail",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack-returned :: Returned: a present victim who rebirthed since gets no pay and no mail (CR-M6)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "mailbox keeps more than MailMax",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: the write-back keeps at most MailMax letters",
+          "mail-send :: MailMax 20: letters are appended and the oldest are dropped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "mailbox drops the newest letter",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: write-back puts the taken (older) letters in front: a full box drops the oldest, never the newest letter",
+          "mail-send :: MailMax 20: letters are appended and the oldest are dropped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "letter kind lost",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: the same thief's next sack (20 s later) is a new letter, not a duplicate",
+          "mail-roundtrip :: server A wrote one letter per resolved sack (accumulated share, R = 1, own Ids)",
+          "mail-send :: Returned + absent victim: K = Returned, Id ends in :Returned",
+          "mail-send :: thief leaves: absent victims get a Returned letter"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "letter rebirths lost",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-roundtrip :: one GrudgeMail notice with 400",
+          "mail-roundtrip :: server A wrote one letter per resolved sack (accumulated share, R = 1, own Ids)",
+          "mail-roundtrip :: server B pays 300 x 120% + 40 x 100% at join",
+          "mail-send :: Avenged + absent victim: one letter { A = 100, R = 2 (rebirths when stolen), K = Avenged, T = os.time() } at M_<userId>"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "letter without its Id",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: the retry sees the letter Id and does not append it twice",
+          "mail-retry :: third try (2 s after the second) writes the letter once",
+          "mail-roundtrip :: server A wrote one letter per resolved sack (accumulated share, R = 1, own Ids)",
+          "mail-roundtrip :: the shared mailbox has no letters left afterwards, only the two tombstones (no double pay)",
+          "mail-roundtrip :: the taken letter's tombstone keeps its Id",
+          "mail-send :: Returned + absent victim: K = Returned, Id ends in :Returned"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "mail key without the M_ prefix (send)",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: a failed send stays pending (MailPending 1)",
+          "mail-retry :: a write whose reply was lost is retried",
+          "mail-retry :: after 6.9 s: 3 tries, still pending",
+          "mail-retry :: no 5th try; 4 warnings (1/4..4/4)",
+          "mail-retry :: no further tries after the success",
+          "mail-retry :: no retry before 1 s"
+        ],
+        "newFailingCount": 24
+      },
+      {
+        "mutation": "retried send appends the same letter again",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: the retry sees the letter Id and does not append it twice"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "mail send never retried",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: after 6.9 s: 3 tries, still pending",
+          "mail-retry :: each failed try is warned with its number (1/4, 2/4)",
+          "mail-retry :: no 5th try; 4 warnings (1/4..4/4)",
+          "mail-retry :: no further tries after the success",
+          "mail-retry :: no third try before 2 more seconds",
+          "mail-retry :: no unexpected service warnings (pcall-swallowed errors)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "mail retry without the back-off wait",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: after 6.9 s: 3 tries, still pending",
+          "mail-retry :: no retry before 1 s",
+          "mail-retry :: no third try before 2 more seconds",
+          "mail-retry :: second try 1 s later (fails again)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "MailPending never goes down",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: MailPending back to 0 after the write",
+          "mail-retry :: the 4th try at 7 s is the last; MailPending 0",
+          "mail-retry :: the retry sees the letter Id and does not append it twice",
+          "mail-send :: DataStore down: 4 caught tries, each warned, then MailPending back to 0",
+          "mail-send :: GetDataStore failing: the sack resolves without a crash, nothing is written or left pending",
+          "mail-send :: GrudgeService.MailPending() is 0 once the letter is written"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "MailPending not counted",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-retry :: MailPending back to 0 after the write",
+          "mail-retry :: a failed send stays pending (MailPending 1)",
+          "mail-retry :: a write whose reply was lost is retried",
+          "mail-retry :: after 6.9 s: 3 tries, still pending",
+          "mail-retry :: second try 1 s later (fails again)",
+          "mail-retry :: the 4th try at 7 s is the last; MailPending 0"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "mailbox not cleared at join",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: a failed write-back is warned and retried: the letter is back in the box (never paid twice)",
+          "mail-receive :: a second join pays nothing (letters were taken)",
+          "mail-receive :: leaving during the read: nothing paid, the letters are written back",
+          "mail-receive :: other-life letters are taken (cleared) and never paid",
+          "mail-receive :: the mailbox was already cleared ({}) when the gold was paid",
+          "mail-receive :: the next join pays the written-back letters (120 + 30)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "empty mailbox written at join",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-target :: the rejoined victim is paid directly (no mail)",
+          "mail-receive :: no mailbox: the reader writes nothing (UpdateAsync returns nil)",
+          "mail-retry :: a failed send stays pending (MailPending 1)",
+          "mail-send :: DataStore down: 4 caught tries, each warned, then MailPending back to 0",
+          "mail-send :: a present victim from another life gets no pay and no mail (CR-M6)",
+          "mail-send :: a present victim is paid directly (120%) and gets no mail"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "mailbox read without canPay",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: no save data (cannot be paid): the mailbox is not touched"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "victim who left is still paid",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: ... and the refund bonus is not consumed",
+          "mail-receive :: a failed write-back is warned and retried: the letter is back in the box (never paid twice)",
+          "mail-receive :: leaving during the read: nothing paid, the letters are written back",
+          "mail-receive :: the next join pays the written-back letters (120 + 30)",
+          "mail-receive :: the write-back keeps at most MailMax letters",
+          "mail-receive :: write-back puts the taken (older) letters in front: a full box drops the oldest, never the newest letter"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "taken letters not written back",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: a failed write-back is warned and retried: the letter is back in the box (never paid twice)",
+          "mail-receive :: leaving during the read: nothing paid, the letters are written back",
+          "mail-receive :: the next join pays the written-back letters (120 + 30)",
+          "mail-receive :: the write-back keeps at most MailMax letters",
+          "mail-receive :: write-back puts the taken (older) letters in front: a full box drops the oldest, never the newest letter"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "write-back not capped",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: the write-back keeps at most MailMax letters"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "write-back puts new letters first",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: write-back puts the taken (older) letters in front: a full box drops the oldest, never the newest letter"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "write-back failure not warned",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: a failed write-back is warned and retried: the letter is back in the box (never paid twice)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "store failure not warned",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-send :: GetDataStore failing is warned (and retried later)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "taken letter leaves no tombstone",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-roundtrip :: the shared mailbox has no letters left afterwards, only the two tombstones (no double pay)",
+          "mail-roundtrip :: the taken letter's tombstone keeps its Id"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "mail ignores sameLife",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: exactly one GrudgeMail notice with the total",
+          "mail-receive :: mail at join: other-life letters are skipped; the bonus goes to the first same-life Avenged letter",
+          "mail-receive :: nothing to pay -> no gold and no notice",
+          "mail-receive :: nothing to pay -> the refund bonus is not consumed",
+          "mail-receive :: skipped (negative / other-life) and Returned letters never use the refund bonus"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "mail bonus ignores the refund cooldown",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: a mailed 120% commits the victim's refund:0 cooldown",
+          "mail-receive :: exactly one GrudgeMail notice with the total",
+          "mail-receive :: fallback pairReady respects the refund cooldown",
+          "mail-receive :: fallback pairReady: 120% for the first Avenged letter only",
+          "mail-receive :: mail at join: refund bonus on cooldown (10 s ago) pays 100%"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "every mailed Avenged letter gets 120%",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: a mailed 120% commits the victim's refund:0 cooldown",
+          "mail-receive :: exactly one GrudgeMail notice with the total",
+          "mail-receive :: fallback pairReady respects the refund cooldown",
+          "mail-receive :: fallback pairReady: 120% for the first Avenged letter only",
+          "mail-receive :: mail at join: only the first Avenged letter gets 120%",
+          "mail-receive :: mail at join: refund bonus on cooldown (10 s ago) pays 100%"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Returned letters can get the bonus",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: exactly one GrudgeMail notice with the total",
+          "mail-receive :: mail at join: Returned letters never get the bonus; the first Avenged one does",
+          "mail-receive :: mail at join: malformed letters are skipped (numbers as strings still count)",
+          "mail-receive :: skipped (negative / other-life) and Returned letters never use the refund bonus",
+          "mail-retry :: the same thief's next sack (20 s later) is a new letter, not a duplicate"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "mail paid with a wrong source",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: mail at join: Returned letters never get the bonus; the first Avenged one does",
+          "mail-receive :: mail at join: malformed letters are skipped (numbers as strings still count)",
+          "mail-receive :: mail at join: one Avenged letter with the refund bonus ready pays 120%",
+          "mail-receive :: mail at join: only the first Avenged letter gets 120%",
+          "mail-receive :: mail at join: other-life letters are skipped; the bonus goes to the first same-life Avenged letter",
+          "mail-receive :: mail at join: refund bonus on cooldown (10 s ago) pays 100%"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "mail notice per letter",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mail-receive :: exactly one GrudgeMail notice with the total",
+          "mail-roundtrip :: one GrudgeMail notice with 400"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ghost hold accepts arguments",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold-refusals :: GhostHold with any argument (even one nil) is refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ghost hold by a dead victim",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: a dead victim cannot hold",
+          "ghost-hold-refusals :: a player who was not robbed cannot hold",
+          "ghost-hold-refusals :: a stale GrudgeThiefId without a share in that sack cannot hold",
+          "ghost-hold-refusals :: a victim of another thief holds only that thief's sack",
+          "ghost-hold-refusals :: a victim who rebirthed since cannot hold (sameLife)",
+          "ghost-hold-refusals :: a victim without a character cannot hold"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "ghost hold without the rate limit",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: 2.75 s after the first press the next one counts",
+          "ghost-hold :: a second press 2.5 s later is refused (RateLimit GhostHold 2.7)",
+          "ghost-hold :: the victim gets GhostHoldMax at the cap"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "ghost hold rate limit = the 3 s client cooldown",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: 2.75 s after the first press the next one counts",
+          "ghost-hold :: an older press's timer does not switch off a newer glow",
+          "ghost-hold :: at the cap the thief is not told and does not glow again",
+          "ghost-hold :: five presses = +10 s (45 -> 55 s for this sack)",
+          "ghost-hold :: the glow stays on until HoldGlowSeconds + 0.1 after the last press",
+          "ghost-hold :: the victim gets GhostHoldMax at the cap"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "ghost hold without readiness check",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold-refusals :: a player who was not robbed cannot hold",
+          "ghost-hold-refusals :: a stale GrudgeThiefId without a share in that sack cannot hold",
+          "ghost-hold-refusals :: a victim of another thief holds only that thief's sack",
+          "ghost-hold-refusals :: a victim who is not ready cannot hold",
+          "ghost-hold-refusals :: a victim who rebirthed since cannot hold (sameLife)",
+          "ghost-hold-refusals :: a victim without a character cannot hold"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "ghost hold without the +10 s cap",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: 10 s later: 40 s left",
+          "ghost-hold :: a new steal restarts at 45 + held seconds (holds are kept, never shortened)",
+          "ghost-hold :: at the +10 s cap nothing changes",
+          "ghost-hold :: at the cap the thief is not told and does not glow again",
+          "ghost-hold :: paid after the full 55 s",
+          "ghost-hold :: the victim gets GhostHoldMax at the cap"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "ghost hold ignores the room left",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold-refusals :: a new steal into the same sack keeps the used hold seconds (cap per sack, countdown 45 + held)",
+          "ghost-hold-refusals :: the last press adds only the room left (+1 s up to max 9)",
+          "ghost-hold-refusals :: then GhostHoldMax"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "ghost hold across a rebirth",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold-refusals :: ... and the other-life button is fixed to 0",
+          "ghost-hold-refusals :: a victim who rebirthed since cannot hold (sameLife)",
+          "ghost-hold-refusals :: after the thief leaves the hold does nothing"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "ghost hold for anyone pointing at the thief",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold-refusals :: ... and the stale button is fixed (pointVictim -> 0)",
+          "ghost-hold-refusals :: a stale GrudgeThiefId without a share in that sack cannot hold",
+          "ghost-hold-refusals :: a victim of another thief holds only that thief's sack",
+          "ghost-hold-refusals :: a victim who rebirthed since cannot hold (sameLife)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "stale hold does not fix the button",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold-refusals :: ... and the other-life button is fixed to 0",
+          "ghost-hold-refusals :: ... and the stale button is fixed (pointVictim -> 0)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ghost hold not published",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: 2.75 s after the first press the next one counts",
+          "ghost-hold :: a second press 2.5 s later is refused (RateLimit GhostHold 2.7)",
+          "ghost-hold :: at the +10 s cap nothing changes",
+          "ghost-hold :: five presses = +10 s (45 -> 55 s for this sack)",
+          "ghost-hold :: the respawned victim holds: +2 s on the thief's countdown (SackSeconds published)",
+          "ghost-hold-refusals :: a new sack starts with Held 0 and can be held again"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "ghost glow never switched off",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: then it switches off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "older glow timer switches off a newer glow",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: an older press's timer does not switch off a newer glow",
+          "ghost-hold :: the glow stays on until HoldGlowSeconds + 0.1 after the last press"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ghost hold notices nobody",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: GhostHoldOk to the victim (+2, max 10)",
+          "ghost-hold :: a second press 2.5 s later is refused (RateLimit GhostHold 2.7)",
+          "ghost-hold-refusals :: after the thief leaves the hold does nothing",
+          "ghost-hold-refusals :: the last press adds only the room left (+1 s up to max 9)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "AddToSack does not set the hold target",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold :: 2.75 s after the first press the next one counts",
+          "ghost-hold :: GhostHeld to the thief",
+          "ghost-hold :: GhostHoldOk to the victim (+2, max 10)",
+          "ghost-hold :: a second press 2.5 s later is refused (RateLimit GhostHold 2.7)",
+          "ghost-hold :: at the cap the thief is not told and does not glow again",
+          "ghost-hold :: five presses = +10 s (45 -> 55 s for this sack)"
+        ],
+        "newFailingCount": 26
+      },
+      {
+        "mutation": "closeSack hides the button instead of moving it",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-target :: ... and the victim can hold that sack",
+          "ghost-target :: closing ANOTHER thief's sack keeps my target",
+          "ghost-target :: still holding the newer thief",
+          "ghost-target :: two thieves: closing one sack moves the button to the other open sack"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "closeSack leaves the button",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "close-sack :: closeSack clears the victim's hold button",
+          "ghost-target :: ... and the button hides when it closes too",
+          "ghost-target :: ... and the victim can hold that sack",
+          "ghost-target :: an open sack whose thief already left is not a hold target",
+          "ghost-target :: and the hold button goes away",
+          "ghost-target :: closing it does not fall back to the other-life sack"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "pointVictim counts thieves who left",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-target :: an open sack whose thief already left is not a hold target"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pointVictim ignores sameLife",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-hold-refusals :: ... and the other-life button is fixed to 0",
+          "ghost-target :: Rebirthed: the button of an other-life share hides at once",
+          "ghost-target :: a rejoin in another life gets no button for the old share",
+          "ghost-target :: closing it does not fall back to the other-life sack"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "rebirth does not move the button",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-target :: Rebirthed: the button of an other-life share hides at once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "rejoin does not restore the hold target",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-target :: a rejoin while the thief still carries my share restores GrudgeThiefId",
+          "ghost-target :: the rejoined victim can hold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "closeSack keeps the glow",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ghost-target :: closing the sack switches the glow off at once"
+        ],
+        "newFailingCount": 1
+      }
+    ]
   },
   "compileOk": true,
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "046ab477bb155b8f0eeadf679939653a40bb32ea87354088e869adb1868daea1",
-    "src/ReplicatedStorage/Shared/Net.luau": "ad53b3e640f50045ed03839f33f9eb3cf8152d2fb05d662e55c4ab621c5ff95c",
+    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
+    "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/GrudgeService.luau": "1b5c58a25d370c1b9a1623c06817e0b13b7c776533584519b187031d84b565b9",
     "src/ServerScriptService/PlayerService.luau": "81d5cf25b41a5578b4d20b798e48cab81e42fa62584df71600df876ea3b80fd5"

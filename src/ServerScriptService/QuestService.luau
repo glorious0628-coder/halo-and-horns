@@ -42,7 +42,8 @@ local TUT_CLAIMED_TEXT = TUT_MESSAGES.Claimed or "첫 임무 보상 +%s골드! �
 local RESUME_DELAY_ON_SPAWN = 1
 local RESUME_DELAY_ON_CLASS = 0.5
 
--- kills that count for the tutorial quest: monsters living in Slime Meadow
+-- kills that count for the tutorial quest: monsters living in Slime Meadow (looked up with Config.QuestKind(kind), so a
+-- seasonal kind counts as the kind it stands in for)
 local TUTORIAL_KINDS = {}
 for id, def in Config.MonsterTypes do
 	if type(def) == "table" and def.Zone == TUT_ZONE then
@@ -434,7 +435,7 @@ local function tutorialKill(player, info)
 	local data = getData(player)
 	if not data then return end
 	local cur = getTutorialKills(data)
-	if cur >= TUT_TARGET or not TUTORIAL_KINDS[info.Kind] or info.Personal == true
+	if cur >= TUT_TARGET or not TUTORIAL_KINDS[Config.QuestKind(info.Kind)] or info.Personal == true
 		or info.ZoneId ~= TUT_ZONE then return end
 	cur += 1
 	S.PlayerService.SetStat(player, "TutorialKills", cur)
@@ -559,6 +560,7 @@ local function publish(player)
 					Target = num(q.Target),
 					RewardGold = rg,
 					RewardXP = rx,
+					Unit = type(q.Unit) == "string" and q.Unit or nil, -- Kill/Golden: the monster (row icon)
 					Slot = i, -- N1: clients address quests by Slot, never by array index
 				})
 			end
@@ -631,7 +633,9 @@ end
 -- Kill/Golden progress of one kill of monster `kind`, in units of the quest's monster (q.Unit, fixed at generation):
 -- a weaker monster counts def.XP / unit.XP (never more than 1), so quests whose rewards were sized for the player's
 -- level zone cannot be farmed on safe low-zone slimes (also not after a free class change or a rebirth).
+-- Seasonal kinds count as Config.QuestKind(kind) (a pumpkin slime is a slime, a bat goblin a goblin).
 local function killWeight(q, kind, level)
+	kind = Config.QuestKind(kind)
 	local unitId = q.Unit
 	if type(unitId) ~= "string" or Config.MonsterTypes[unitId] == nil then
 		unitId = Config.ZoneMainMonster[Config.QuestZoneForLevel(level)] -- quests saved before Unit existed
@@ -909,7 +913,7 @@ local function onMonsterKilled(player, info)
 	if step == STEP_QUEST then
 		tutorialKill(player, info)
 	elseif step == STEP_GUIDE and info.Personal ~= true and info.ZoneId == TUT_ZONE
-		and TUTORIAL_KINDS[info.Kind] then
+		and TUTORIAL_KINDS[Config.QuestKind(info.Kind)] then
 		-- The kill signal may precede ZoneChanged by one tick.
 		setStep(player, STEP_QUEST)
 		tutorialKill(player, info)

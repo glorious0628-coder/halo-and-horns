@@ -2050,7 +2050,7 @@ function ITEMS.MaterialValue(items)
 end
 
 -- one list row: label on the left, an optional button on the right (B14: button = ITEMS.TapH, row = button + 14)
-function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClick, sub)
+function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClick, sub, icon)
 	local tapH = ITEMS.TapH(44)
 	local row = Instance.new("Frame")
 	row.Name = "ItemRow"
@@ -2061,12 +2061,36 @@ function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClic
 	corner(row, 10)
 	row.Parent = parent
 	local hasButton = buttonText ~= nil
-	local w = UDim2.new(1, hasButton and -170 or -28, sub and 0.58 or 1, 0)
-	placeLabel(row, text, 18, color or theme.Text, UDim2.fromOffset(14, 0), w)
+	-- optional item art (Config.UIArt key) on a light tile; the text moves right of it
+	local iconId = type(icon) == "string" and UIKit.ArtId(icon) or nil
+	local left = 14
+	if iconId then
+		local side = tapH
+		local tile = Instance.new("Frame")
+		tile.Name = "IconTile"
+		tile.BackgroundColor3 = Color3.fromRGB(246, 238, 220) -- cream: keeps the icons' navy rim visible
+		tile.BorderSizePixel = 0
+		tile.AnchorPoint = Vector2.new(0, 0.5)
+		tile.Position = UDim2.new(0, 8, 0.5, 0)
+		tile.Size = UDim2.fromOffset(side, side)
+		corner(tile, 8)
+		tile.Parent = row
+		local img = Instance.new("ImageLabel")
+		img.Name = "Icon"
+		img.BackgroundTransparency = 1
+		img.Image = iconId
+		img.ScaleType = Enum.ScaleType.Fit
+		img.Position = UDim2.fromScale(0.08, 0.08)
+		img.Size = UDim2.fromScale(0.84, 0.84)
+		img.Parent = tile
+		left = 8 + side + 10
+	end
+	local w = UDim2.new(1, (hasButton and -170 or -28) - (left - 14), sub and 0.58 or 1, 0)
+	placeLabel(row, text, 18, color or theme.Text, UDim2.fromOffset(left, 0), w)
 	if sub then
 		-- second line: grade · where it comes from (design §1 B1/B4)
-		placeLabel(row, sub, 14, theme.SubText, UDim2.new(0, 14, 0.52, 0),
-			UDim2.new(1, hasButton and -170 or -28, 0.42, 0))
+		placeLabel(row, sub, 14, theme.SubText, UDim2.new(0, left, 0.52, 0),
+			UDim2.new(1, (hasButton and -170 or -28) - (left - 14), 0.42, 0))
 	end
 	local b = nil
 	if hasButton then
@@ -2333,7 +2357,7 @@ BUILDERS.Items = function(parent)
 		local n = ITEMS.Count(items, id)
 		if d and d.Kind == "Material" and n > 0 then
 			anyMat = true
-			local row = ITEMS.Row(parent, string.format(L.MaterialLine, d.Name, n, d.Sell), d.Color)
+			local row = ITEMS.Row(parent, string.format(L.MaterialLine, d.Name, n, d.Sell), d.Color, nil, nil, nil, nil, nil, d.Icon)
 			row.Name = "Material_" .. id
 		end
 	end
@@ -2342,9 +2366,9 @@ BUILDERS.Items = function(parent)
 	-- P7: what each monster I have defeated can drop (text only; the picture book comes after launch)
 	addText(parent, L.Drops, { Color = theme.Gold, Font = theme.Font, Size = 20 })
 	local anyDrop = false
-	for _, kind in { "Slime", "BigSlime", "Goblin", "GoblinBrute", "Skeleton", "SkeletonKnight" } do
+	for _, kind in Config.MonsterTypeOrder do -- seasonal kinds only while their season is on (Config.MonsterActive)
 		local rows = loot.Tables[kind]
-		if rows and ITEMS.Data.Seen and ITEMS.Data.Seen[kind] then
+		if rows and ITEMS.Data.Seen and ITEMS.Data.Seen[kind] and Config.MonsterActive(kind) then
 			anyDrop = true
 			local parts = {}
 			for _, row in rows do

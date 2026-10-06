@@ -687,7 +687,9 @@ runGroup("config", function()
 		check(table.find(L.Order, id) ~= nil, "every item id is in Loot.Order", id)
 	end
 	check(#L.Order == count(L.Items), "Loot.Order lists every item exactly once", #L.Order)
-	check(count(L.Jackpot.Monsters) == 1 and L.Jackpot.Monsters.Slime == true, "jackpot monsters = { Slime } only", show(L.Jackpot.Monsters))
+	-- Halloween: pumpkin slimes take level-1 slime slots in the season, so they carry the same jackpot
+	check(count(L.Jackpot.Monsters) == 2 and L.Jackpot.Monsters.Slime == true and L.Jackpot.Monsters.PumpkinSlime == true,
+		"jackpot monsters = { Slime, PumpkinSlime } only", show(L.Jackpot.Monsters))
 	check(L.Jackpot.Chance == 1 / 20000 and L.Jackpot.Tier == 8, "jackpot 1/20000 for tier 8", show(L.Jackpot))
 	-- A23-15 announcements: Rare (rank 3) and better weapon drops, the jackpot (Legend) and the first +10
 	local A = C.Announce
@@ -1084,9 +1086,9 @@ runGroup("rollkill", function()
 	full:Kill("BigSlime")
 	check(full:Noticed(L.Text.FirstScroll) == 1, "B8 the guarantee is still paid only once", full:Noticed(L.Text.FirstScroll))
 
-	-- jackpot exists only for Slime kinds
+	-- jackpot exists only for Slime kinds (the level-1 slime and its seasonal stand-in, the pumpkin slime)
 	for kind in L.Tables do
-		if kind ~= "Slime" then
+		if kind ~= "Slime" and kind ~= "PumpkinSlime" then
 			local j = fixture()
 			j.Data.LootFlags.FirstScroll = true
 			j.ScriptConst, j.Draws = 0, 0
@@ -1098,6 +1100,9 @@ runGroup("rollkill", function()
 	local js = fixture()
 	js:Force("Slime", nil, true, false, { Auto = true, Personal = true })
 	check(bit32.btest(js.Data.WeaponOwnedMask, bit32.lshift(1, L.Jackpot.Tier - 1)), "slime jackpot also pays for auto / personal kills")
+	local jp = fixture()
+	jp:Force("PumpkinSlime", nil, true, false, { Auto = true })
+	check(bit32.btest(jp.Data.WeaponOwnedMask, bit32.lshift(1, L.Jackpot.Tier - 1)), "pumpkin slime carries the slime jackpot")
 
 	-- jackpot thresholds 1/20000 and 3/20000
 	for _, case in { { false, L.Jackpot.Chance - 1e-12, true }, { false, L.Jackpot.Chance + 1e-12, false },

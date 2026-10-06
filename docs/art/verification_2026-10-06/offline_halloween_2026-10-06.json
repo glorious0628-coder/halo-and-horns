@@ -1,0 +1,2628 @@
+{
+  "status": "passed",
+  "checks": 6901,
+  "failedChecks": 0,
+  "namedChecks": 343,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config-kinds",
+      "check": "Config.MonsterTypes has the Halloween kind",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "every Halloween kind carries Season = \"Halloween\"",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "Takes = the design slot takeover",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "number / text field = design value",
+      "pass": 47,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "colour = design RGB",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "no extra QuestAs / Takes / Float / Boss beyond the design",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "base kinds stay year-round",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "the king shares its kill with everyone who fought it (ContributorWindow >= 60 s for a 1-4 minute fight)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "MonsterTypeOrder lists a kind once",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "MonsterTypeOrder lists every MonsterTypes kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "every kind is in MonsterTypeOrder",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "seasonal kinds come after the base kind of their zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "base kinds keep their order",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "ZoneMainMonster units are year-round kinds",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "newbie quest rows never name a seasonal kind",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "story objectives never name a seasonal kind",
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-kinds",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-king-hp",
+      "check": "three Lv 8-12 players with tier 2-3 weapons need 60-90 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-king-hp",
+      "check": "one such player needs about 4 minutes (200-290 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-king-hp",
+      "check": "one player can still finish it inside its 5-minute stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-king-hp",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-king-hp",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "Config.Halloween { Enabled = true, King = PumpkinKing }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "first king at 6 min, every 20 min, stays 5 min",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "HUD line has exactly one %s (m:ss)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "HUD line has a plain English twin (HudNextEn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "HUD line has a plain English twin (HudActiveEn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "HudNext reads '호박 대왕까지 m:ss'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "HudActive reads '호박 대왕 출현! 남은 시간 m:ss'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "server line text = the design line",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "server line has a plain English twin",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "Config.Announce.Events lists the line with its colour",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "event lines take no arguments (no name slot)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "appear and defeat lines also toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "no limited-time pressure wording",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "monster names carry no limited-time wording",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config-halloween",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "season on: regular pool count per kind",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "season off: regular pool count per kind (no seasonal kind, base slots back)",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "EffectiveMonsterCounts() follows Config.Halloween.Enabled (on)",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "one count per MonsterTypeOrder kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "meadow total stays 16 with the season on and off (pumpkin slimes replace 3 slimes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "woods: bat goblins replace goblins, the 3 ghosts come on top",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "ruins unchanged by the season",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "jackpot / goblin slot totals are the same in and out of season",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "Enabled = false: EffectiveMonsterCounts() = the year-round pool",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "MonsterActive(seasonal kind) follows Enabled",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "MonsterActive override forces the season",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "base kinds are always active",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "unknown kinds are never active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "SeasonOn: nil = always, Halloween = Enabled, unknown season = off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "Config.QuestKind(kind) = QuestAs or kind",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "QuestKind passes odd values through",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "QuestAs naming a missing kind falls back to the kind itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "meadow target total identical with the season on / off",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "slime + pumpkin slime targets = the slime density formula",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "goblin + bat goblin targets = the goblin density formula",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "ghosts grow on their own (3 .. 3 x MaxZoneMult)",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "woods target = year-round + the ghosts",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "seasonal share grows with the zone (never below its base 3, never the majority)",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "the king never joins the regular pool; season off = no seasonal targets",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "untouched kinds keep min(Count + Extra x (n - 1), Count x MaxZoneMult)",
+      "pass": 96,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "season off: slimes / goblins back to the full formula",
+      "pass": 24,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "only the busy zone grows",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "counts-density",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "GLOBAL_CAP = Config.MonsterDensity.GlobalCap",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "MonsterService.Start spawns EffectiveMonsterCounts per kind",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "Start spawn total = the season's pool",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "one player per zone: nothing more spawns (the cap count leaves the ghosts out)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "reevaluate fills every kind to its capped target",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "targets of the capped kinds fit under GLOBAL_CAP",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "reevaluate never spawns the king",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "room under the cap: capped targets = Config.MonsterTargets",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "an alive event king is not counted toward GLOBAL_CAP",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "the king's presence changes no regular spawn",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "GlobalCap 50: the pool never grows past the cap",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "season off: no seasonal kind ever spawns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "no GlobalCap: 1.7 x the season's capped pool",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "no GlobalCap: the fallback cap is the same with the season on and off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "spawnMonster: the Boss king is never golden (even on a 0 roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "other kinds still roll the golden chance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "an explicit Golden option wins",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-pool",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "outside the cap: only the add-on seasonal kinds (ghost, event king)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "cap groups: a taker shares its base kind's part, every other kind its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "every zone's capped total (ghosts aside) is the same with the season on and off",
+      "pass": 1053,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "the ghosts get their own full target on top (3..6), none with the season off",
+      "pass": 1053,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "slimes + pumpkin slimes = the season-off slime target, a quarter of them pumpkins",
+      "pass": 1053,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "goblins + bat goblins = the season-off goblin target; other kinds unchanged",
+      "pass": 1053,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "the comparison covers many busy servers where the cap binds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "16 players: meadow and ruins keep their capped totals with the season on (cap 72 reached)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "full server: the regular pool is exactly at the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "full server: the ghosts still fill their own target (6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "alive / pending ghosts are not counted toward the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "full cap: dead ghosts respawn to their target without waiting for room under the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-cap-season",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Config.Loot.Items.Candy = material, 핼러윈 사탕, sells for 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Candy is listed after the base materials in Loot.Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "drop table has no duplicate rows",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "drop table has exactly the design rows",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "drop row chance / count = design",
+      "pass": 38,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "the slime jackpot (1/20000, tier 8) also covers pumpkin slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "one draw per row (+ the jackpot draw for jackpot kinds)",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "a 0 roll drops every row with its count",
+      "pass": 38,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "jackpot legendary only from pumpkin slimes among the Halloween kinds",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "row chance threshold = P",
+      "pass": 75,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "pumpkin slime jackpot threshold = the slime's 1/20000",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "seeded rate of Candy matches its P (20000 rolls)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "seeded rate of Jelly matches its P (20000 rolls)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "seeded rate of GoblinTooth matches its P (20000 rolls)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "a bat goblin kill through MonsterKilled grants candy, a goblin tooth and (on a 0 roll) the tier-4 weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "a king kill gives 8 candies to the contributor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "the Loot Fx lists 8 candies (nothing else on a bad roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "inventory push shows the candies and the king's drop list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "away from the anvil nothing is sold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "SellMaterials at the anvil sells the candies (8 x 5 gold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "jackpot-carrying meadow slots: 12 in and out of season",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "slime daily: a pumpkin slime counts as one slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "slime daily: a slime counts one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "slime daily: stronger Halloween kinds count one (never more)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "strict king-slime daily: a pumpkin slime (a slime) counts 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "strict king-slime daily: the Pumpkin King counts 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "goblin daily: a bat goblin counts exactly as a goblin",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "goblin daily: a pumpkin slime counts as a slime (Slime.XP / Goblin.XP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "goblin daily: a little ghost counts as itself (LittleGhost.XP / Goblin.XP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "goblin daily: the king counts one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-kill-weight",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-tutorial",
+      "check": "first mission: a pumpkin slime in the meadow counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-tutorial",
+      "check": "first mission: the meadow king counts too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-tutorial",
+      "check": "personal kills and woods kinds never count (a bat goblin is a goblin, not a meadow kind)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-tutorial",
+      "check": "guide step world starts on step 1 (outside the meadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-tutorial",
+      "check": "guide step: a pumpkin slime kill in the meadow starts the mission and counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-tutorial",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-tutorial",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-generation",
+      "check": "generated Kill / Golden quests never target a seasonal kind",
+      "pass": 810,
+      "fail": 0
+    },
+    {
+      "group": "quests-generation",
+      "check": "quest texts never name a Halloween monster",
+      "pass": 810,
+      "fail": 0
+    },
+    {
+      "group": "quests-generation",
+      "check": "generation covered every zone's unit monster",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-generation",
+      "check": "quests were generated",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-generation",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quests-generation",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "S0 starts after the class pick (step 1: a king slime in the meadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "S0 step 1: pumpkin slime / Pumpkin King are not king slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "S0 step 1 done by a king slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "S0 trial 'BasicKill Slime': a pumpkin slime killed with basic attacks counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "S0 trial: a pumpkin slime hit by the skill does not count (basic attacks only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "S0 trial: woods kinds never count as slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "S0 trial a reaches 3 with pumpkin slimes and slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "a Goblin objective counts bat goblins and goblins (not ghosts / brutes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "a LittleGhost objective counts only ghosts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "a 'slime near the pond' objective counts a pumpkin slime near the pond only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "injected test objectives stay tracked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "story",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "server start: the first king is due 6:00 later (GameState PumpkinKingNextAt, server time)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "server start: nothing active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "no king and no line before 6:00",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "the Pumpkin King appears at 6:00",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "spawned through MonsterService.SpawnEvent: an event monster, never golden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "it stands on meadow ground at a far corner spot (away from the entrance and the road)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "GameState: active, leaves 5:00 after appearing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "the next king is due 20:00 after this appearance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "one server-wide appear line (FireAllClients), nothing per player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "event payload = { Key, Args = {}, Event = true }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "the appear payload carries no player name or id",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "every client shows the appear line once (Korean / English twin), in the event colour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "appear toast on free clients; skipped (not held) while banners are held",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "the English client toasts the English line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "still here at 4:59.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "after 5:00 the king is removed through MonsterService.RemoveEvent (fade, no kill)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "the leaving king goes home (leave fade, not the death squash)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "the leave line goes out once (no defeat line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "every client shows the leave line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "the leave line has no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "leaving pays nobody and schedules no respawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "GameState back to the countdown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "no second king before 20:00",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "second king at 20:00, the next at 40:00",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "the killing hit ends the king (HP 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "a defeated king gets the candy line once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "every client shows the defeat line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "a defeated king is not removed a second time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "after a defeat the countdown keeps the 20-minute rhythm",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "third king at 40:00",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "HalloweenService never pays anything itself; event kings never respawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "no event payload carries a name",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-schedule",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "the king's ContributorWindow is 120 s (finding)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "a hit lowers the king's HP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "a player outside the meadow neither hurts nor joins it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "the killing blow defeats the king",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "a defeated king plays the normal death pop (not the leave fade)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "MonsterKilled fires once per contributor of the last 120 s (one roll each, no duplicates)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "each contributor's kill info = the king's XP 300 / Gold 150, never golden",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "a defeated event king never respawns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "the defeat line adds no second payout",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "regular monsters keep Config.Monsters.ContributorWindow (15 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "a regular kill still schedules its respawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-rewards",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "a kill: the parts shrink to 0.2 and fade, with the particle burst",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "a kill: anchored on the spot, name bar off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "leaving: the model is marked Leaving before the root anchors (clients skip the death splat)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "leaving: every part keeps its size and only fades (no burst)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "leaving: it floats up while it fades",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "leaving: a slower fade than a kill, destroyed after it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "leaving: name bar off, it stops walking",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "no ground: no king, no line, retry in 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "SpawnEvent fell back to a normal zone spawn point first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "DebugSpawn with no ground says so and spawns nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "the retry spawns it 10 s later",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "a lost king gets the leave line (no candy line, no second removal)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "DebugSpawn: the king appears now, the schedule is unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "DebugSpawn while one is here: 'already here'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "IsKingActive while it is alive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "a scheduled slot while a king is here is skipped (+20:00)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "the debug king leaves after its 5:00",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "DebugSpawn after an unclosed kill spawns a fresh king",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "the defeated one gets its candy line before the next appears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "bare test place (no Terrain hit): the king still appears in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-retry-lost-debug",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "season-off",
+      "check": "season off: no countdown in GameState",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "season-off",
+      "check": "season off: no king and no line in two hours",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "season-off",
+      "check": "season off: no seasonal kind in the pool",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "season-off",
+      "check": "season off: DebugSpawn still brings one (Studio aid)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "season-off",
+      "check": "season off: debug king active, no countdown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "season-off",
+      "check": "season off: after the debug king nothing is scheduled",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "season-off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "season-off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "Broadcast(key) = one FireAllClients",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "all three clients show it (English client in English)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "event lines are never sent per player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "Broadcast ignores keys that are not event lines (Jackpot / RareWeapon / unknown)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "Broadcast keeps only plain argument values",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "client Format: an event line is the plain text, no finder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "client Format: English setting -> the En twin",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "a RareWeapon line opens a window (one send per player)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "a second RareWeapon in the window is grouped (pending)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "an event line in the middle goes out at once and leaves the group alone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "the grouped 'More' line still follows (one per player)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "a RareWeapon line still shows (finder lines unchanged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "no GameState attributes: the pill stays hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "countdown line '호박 대왕까지 m:ss'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "m:ss counts down",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "while it is here: '호박 대왕 출현! 남은 시간 m:ss'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "English setting: English twin while it is here",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "English setting: English countdown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "NextAt 0 and nothing active: hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "season off: the pill never shows (even for a Studio debug king)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "room left of the strip: full-width pill on the left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "less room: the pill shrinks to the room",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "phone: no room left of the strip -> right of it, clear of the player card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "phone + kaiju pill: the king pill sits after the kaiju pill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "no room beside the strip: centred under HUD's status chips, the personal line relayouts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "staying under the chips does not relayout again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "pill hidden: the personal line moves back up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "chips frame missing: the fallback chip row is skipped too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "HUD's button cluster up at the strip row: the pill goes under the chips",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "desktop 16:9: left of the strip, clear of the player card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "desktop 4:3: right of the strip, inside HUD's RightX (luck panel)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "phone, quests hidden: the left room between the card and the strip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-king-placement",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-live",
+      "check": "live: right after server start '호박 대왕까지 6:00'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-live",
+      "check": "live: when it appears '남은 시간 5:00'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-live",
+      "check": "live: after the defeat the countdown to the next one (20:00 after it appeared)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-live",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hud-live",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the little ghost is tracked as a floater (Float 1.5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "it hovers 1.5 studs up from the start (also out of camera range)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "pumpkin slime: slime hop / squash, no float",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "round-slime fix: depth = width for slime meshes (Y x 1.05)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "Pumpkin King: slime path, depth widened to its width (its 0.95 depth ratio changes by 5%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "a Float value on a slime shape is ignored (slimes unchanged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the ghost bobs within 1.5 +- 0.25 (a hit dips it at most 0.3 more)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the ghost really bobs (slow sine)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the ghost never touches the floor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the ghost never rolls or tilts (no waddle)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "a walking goblin still waddles (roll), low bob",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the rigged bat goblin gets no procedural wobble (MonsterMotion moves its bones)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "the pumpkin slime hops (no roll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "out of camera range it rests hovering at 1.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "dying (anchored root): it stays hovering, it does not drop to the floor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "a killed slime still splats flat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "a leaving king: no splat, back to its rest size and pose while it floats away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fx-float",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "HalloweenService is required and Init(registry) is called",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "HalloweenService starts after MonsterService and AnnounceService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "HalloweenService starts once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "Studio: the DebugCommand BindableFunction exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "DebugCommand 'PumpkinKing' calls HalloweenService.DebugSpawn() (value ignored) and returns its result",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "unknown player: refused, nothing spawned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "other keys are unchanged (Goose does not spawn the king)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "outside Studio there is no DebugCommand at all",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "outside Studio the service still starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main-debug",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "BatGoblin_Idle and Goblin_Idle load as tables",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "15 fps",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "frame count = the Goblin clip's (32)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "loop flag = the Goblin clip's (Idle / Walk loop)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "the same bone names as the Goblin clip (Tripo biped)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "every track has one key per frame (r: 4, p: 3 numbers)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "rotations are unit quaternions, positions finite",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "the BatGoblin clip is its own motion (not a copy of the Goblin data)",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "BatGoblin_Slash and Goblin_Slash load as tables",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "frame count = the Goblin clip's (31)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "BatGoblin_Hurt and Goblin_Hurt load as tables",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "frame count = the Goblin clip's (16)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "BatGoblin_Fall and Goblin_Fall load as tables",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "frame count = the Goblin clip's (46)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "BatGoblin_Walk and Goblin_Walk load as tables",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "frame count = the Goblin clip's (36)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "BatGoblin is a walking humanoid kind (MonsterMotion finds 'BatGoblin_<Clip>')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clips",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "Panels '몬스터가 주는 것' loops over MonsterTypeOrder and skips kinds whose season is off (Config.MonsterActive)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "drop list kinds: 10 in season, 6 out of season",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "a lost event king is not respawned by the AI (aiStep model-lost branch)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "the name bar is raised by Float for hovering kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "spawnMonster marks SpawnEvent records (Event = true)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "MonsterKilled is fired in one place only (the per-contributor loop)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "Net.GameStateDefaults has PumpkinKingNextAt 0 / PumpkinKingActive false / PumpkinKingEndsAt 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "client-wiring",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [
+    {
+      "Group": "config-king-hp",
+      "Text": "Pumpkin King HP 9000: model DPS 50.8 (240 s) / 58.2 (80 s) per Lv 8-12 tier 2-3 player; one player about 236 s, three players about 66 s (75% uptime)"
+    },
+    {
+      "Group": "config-halloween",
+      "Text": "Item name '핼러윈 사탕' names the season without 'comes back every year' (a name, not a sentence; the every-year rule was applied to lines only)"
+    },
+    {
+      "Group": "clips",
+      "Text": "BatGoblin_Idle loop seam (max |q0 - qlast| x+w): 0.042 (Goblin 0.044)"
+    },
+    {
+      "Group": "clips",
+      "Text": "BatGoblin_Walk loop seam (max |q0 - qlast| x+w): 0.047 (Goblin 0.025)"
+    }
+  ],
+  "staticChecks": 46,
+  "staticFailures": [],
+  "staticNotes": [
+    "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
+  ],
+  "mutations": {
+    "total": 36,
+    "applied": 36,
+    "caught": 36,
+    "results": [
+      {
+        "mutation": "pumpkin slimes take 2 slime slots (meadow density changes)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config-kinds :: Takes = the design slot takeover",
+          "counts :: jackpot / goblin slot totals are the same in and out of season",
+          "counts :: meadow total stays 16 with the season on and off (pumpkin slimes replace 3 slimes)",
+          "counts :: season on: regular pool count per kind",
+          "counts-density :: meadow target total identical with the season on / off",
+          "counts-density :: only the busy zone grows"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "seasonal kinds counted with the season off",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counts :: Enabled = false: EffectiveMonsterCounts() = the year-round pool",
+          "counts :: meadow total stays 16 with the season on and off (pumpkin slimes replace 3 slimes)",
+          "counts :: season off: regular pool count per kind (no seasonal kind, base slots back)",
+          "counts :: woods: bat goblins replace goblins, the 3 ghosts come on top",
+          "counts-density :: season off: slimes / goblins back to the full formula",
+          "counts-density :: the king never joins the regular pool; season off = no seasonal targets"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "seasonal slice not taken from the base kind's growth",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counts-density :: goblin + bat goblin targets = the goblin density formula",
+          "counts-density :: meadow target total identical with the season on / off",
+          "counts-density :: only the busy zone grows",
+          "counts-density :: slime + pumpkin slime targets = the slime density formula",
+          "counts-density :: woods target = year-round + the ghosts",
+          "monster-cap-season :: 16 players: meadow and ruins keep their capped totals with the season on (cap 72 reached)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "QuestKind ignores QuestAs",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "counts :: Config.QuestKind(kind) = QuestAs or kind",
+          "quests-kill-weight :: goblin daily: a pumpkin slime counts as a slime (Slime.XP / Goblin.XP)",
+          "story :: S0 trial 'BasicKill Slime': a pumpkin slime killed with basic attacks counts",
+          "story :: S0 trial a reaches 3 with pumpkin slimes and slimes",
+          "story :: S0 trial: a pumpkin slime hit by the skill does not count (basic attacks only)",
+          "story :: S0 trial: woods kinds never count as slimes"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "season flag ignored (always on)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "client-wiring :: drop list kinds: 10 in season, 6 out of season",
+          "counts :: Enabled = false: EffectiveMonsterCounts() = the year-round pool",
+          "counts :: MonsterActive(seasonal kind) follows Enabled",
+          "counts :: SeasonOn: nil = always, Halloween = Enabled, unknown season = off",
+          "monster-cap-season :: goblins + bat goblins = the season-off goblin target; other kinds unchanged",
+          "monster-cap-season :: slimes + pumpkin slimes = the season-off slime target, a quarter of them pumpkins"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "pumpkin slime loses the slime jackpot",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: jackpot-carrying meadow slots: 12 in and out of season",
+          "loot :: the slime jackpot (1/20000, tier 8) also covers pumpkin slimes"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Pumpkin King HP tripled",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config-king-hp :: one player can still finish it inside its 5-minute stay",
+          "config-king-hp :: one such player needs about 4 minutes (200-290 s)",
+          "config-king-hp :: three Lv 8-12 players with tier 2-3 weapons need 60-90 s"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "killWeight counts a seasonal kind by its own XP",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quests-kill-weight :: goblin daily: a pumpkin slime counts as a slime (Slime.XP / Goblin.XP)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "story kill objectives ignore QuestKind",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "story :: S0 trial 'BasicKill Slime': a pumpkin slime killed with basic attacks counts",
+          "story :: S0 trial a reaches 3 with pumpkin slimes and slimes",
+          "story :: S0 trial: a pumpkin slime hit by the skill does not count (basic attacks only)",
+          "story :: S0 trial: woods kinds never count as slimes",
+          "story :: a 'slime near the pond' objective counts a pumpkin slime near the pond only",
+          "story :: a Goblin objective counts bat goblins and goblins (not ghosts / brutes)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "first king without the 6-minute delay",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hud-live :: live: after the defeat the countdown to the next one (20:00 after it appeared)",
+          "hud-live :: live: right after server start '호박 대왕까지 6:00'",
+          "hud-live :: live: when it appears '남은 시간 5:00'",
+          "king-retry-lost-debug :: no ground: no king, no line, retry in 10 s",
+          "king-retry-lost-debug :: the retry spawns it 10 s later",
+          "king-rewards :: MonsterKilled fires once per contributor of the last 120 s (one roll each, no duplicates)"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "next king 10 min after an appearance",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hud-live :: live: after the defeat the countdown to the next one (20:00 after it appeared)",
+          "king-retry-lost-debug :: the retry spawns it 10 s later",
+          "king-schedule :: GameState back to the countdown",
+          "king-schedule :: a defeated king gets the candy line once",
+          "king-schedule :: a defeated king is not removed a second time",
+          "king-schedule :: after a defeat the countdown keeps the 20-minute rhythm"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "king never leaves after its lifetime",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-retry-lost-debug :: DebugSpawn after an unclosed kill spawns a fresh king",
+          "king-retry-lost-debug :: the debug king leaves after its 5:00",
+          "king-schedule :: GameState back to the countdown",
+          "king-schedule :: a defeated king gets the candy line once",
+          "king-schedule :: a defeated king is not removed a second time",
+          "king-schedule :: after 5:00 the king is removed through MonsterService.RemoveEvent (fade, no kill)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "a lost king is reported as defeated",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-retry-lost-debug :: a lost king gets the leave line (no candy line, no second removal)",
+          "king-retry-lost-debug :: the debug king leaves after its 5:00"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "HalloweenService ignores Config.Halloween.Enabled",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "season-off :: season off: DebugSpawn still brings one (Studio aid)",
+          "season-off :: season off: after the debug king nothing is scheduled",
+          "season-off :: season off: debug king active, no countdown",
+          "season-off :: season off: no countdown in GameState",
+          "season-off :: season off: no king and no line in two hours"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "leaving king stays in the world",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-schedule :: a defeated king is not removed a second time",
+          "king-schedule :: after 5:00 the king is removed through MonsterService.RemoveEvent (fade, no kill)",
+          "king-schedule :: the leaving king goes home (leave fade, not the death squash)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "leaving king squashes like a kill",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-schedule :: the leaving king goes home (leave fade, not the death squash)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "leave fade shrinks the king",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-leave-visual :: leaving: every part keeps its size and only fades (no burst)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Leaving set after the anchor",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-leave-visual :: leaving: the model is marked Leaving before the root anchors (clients skip the death splat)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "leaving slime still splats",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fx-float :: a leaving king: no splat, back to its rest size and pose while it floats away"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ghosts counted inside the GlobalCap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-cap-season :: 16 players: meadow and ruins keep their capped totals with the season on (cap 72 reached)",
+          "monster-cap-season :: alive / pending ghosts are not counted toward the cap",
+          "monster-cap-season :: every zone's capped total (ghosts aside) is the same with the season on and off",
+          "monster-cap-season :: full cap: dead ghosts respawn to their target without waiting for room under the cap",
+          "monster-cap-season :: full server: the ghosts still fill their own target (6)",
+          "monster-cap-season :: goblins + bat goblins = the season-off goblin target; other kinds unchanged"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "takers get their own cap share",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-cap-season :: cap groups: a taker shares its base kind's part, every other kind its own",
+          "monster-cap-season :: every zone's capped total (ghosts aside) is the same with the season on and off",
+          "monster-cap-season :: goblins + bat goblins = the season-off goblin target; other kinds unchanged",
+          "monster-cap-season :: slimes + pumpkin slimes = the season-off slime target, a quarter of them pumpkins"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "ghosts wait for room under the cap",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-cap-season :: full cap: dead ghosts respawn to their target without waiting for room under the cap"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pill measured from the screen edge (ignores HUD's left column)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hud-king-placement :: HUD's button cluster up at the strip row: the pill goes under the chips",
+          "hud-king-placement :: chips frame missing: the fallback chip row is skipped too",
+          "hud-king-placement :: desktop 4:3: right of the strip, inside HUD's RightX (luck panel)",
+          "hud-king-placement :: no room beside the strip: centred under HUD's status chips, the personal line relayouts",
+          "hud-king-placement :: phone + kaiju pill: the king pill sits after the kaiju pill",
+          "hud-king-placement :: phone, quests hidden: the left room between the card and the strip"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "right slot ignores the kaiju pill",
+        "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hud-king-placement :: chips frame missing: the fallback chip row is skipped too",
+          "hud-king-placement :: no room beside the strip: centred under HUD's status chips, the personal line relayouts",
+          "hud-king-placement :: phone + kaiju pill: the king pill sits after the kaiju pill",
+          "hud-king-placement :: pill hidden: the personal line moves back up",
+          "hud-king-placement :: staying under the chips does not relayout again"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "right slot ignores HUD's button cluster",
+        "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hud-king-placement :: HUD's button cluster up at the strip row: the pill goes under the chips"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pill under the chips leaves the personal line in place",
+        "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hud-king-placement :: HUD's button cluster up at the strip row: the pill goes under the chips",
+          "hud-king-placement :: chips frame missing: the fallback chip row is skipped too",
+          "hud-king-placement :: no room beside the strip: centred under HUD's status chips, the personal line relayouts",
+          "hud-king-placement :: pill hidden: the personal line moves back up",
+          "hud-king-placement :: staying under the chips does not relayout again"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Broadcast also sends non-event keys",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "announce :: Broadcast ignores keys that are not event lines (Jackpot / RareWeapon / unknown)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "English twin ignored on the client",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Announce.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "announce :: all three clients show it (English client in English)",
+          "announce :: client Format: English setting -> the En twin",
+          "king-schedule :: every client shows the appear line once (Korean / English twin), in the event colour",
+          "king-schedule :: every client shows the defeat line",
+          "king-schedule :: every client shows the leave line",
+          "king-schedule :: the English client toasts the English line"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "PumpkinKing debug key routed nowhere",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "main-debug :: DebugCommand 'PumpkinKing' calls HalloweenService.DebugSpawn() (value ignored) and returns its result",
+          "main-debug :: other keys are unchanged (Goose does not spawn the king)",
+          "main-debug :: unknown player: refused, nothing spawned"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "king pays only the last 15 s of hitters",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-rewards :: MonsterKilled fires once per contributor of the last 120 s (one roll each, no duplicates)",
+          "king-rewards :: the defeat line adds no second payout"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "defeated king respawns",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-rewards :: a defeated event king never respawns",
+          "king-rewards :: a regular kill still schedules its respawn",
+          "king-schedule :: HalloweenService never pays anything itself; event kings never respawn"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "event king and ghosts counted toward the global cap",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-cap-season :: alive / pending ghosts are not counted toward the cap",
+          "monster-cap-season :: full cap: dead ghosts respawn to their target without waiting for room under the cap",
+          "monster-cap-season :: full server: the regular pool is exactly at the cap",
+          "monster-pool :: GlobalCap 50: the pool never grows past the cap",
+          "monster-pool :: an alive event king is not counted toward GLOBAL_CAP",
+          "monster-pool :: one player per zone: nothing more spawns (the cap count leaves the ghosts out)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "ghost walks on the floor (Float ignored)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/Fx.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fx-float :: dying (anchored root): it stays hovering, it does not drop to the floor",
+          "fx-float :: it hovers 1.5 studs up from the start (also out of camera range)",
+          "fx-float :: out of camera range it rests hovering at 1.5",
+          "fx-float :: the ghost bobs within 1.5 +- 0.25 (a hit dips it at most 0.3 more)",
+          "fx-float :: the ghost never rolls or tilts (no waddle)",
+          "fx-float :: the ghost never touches the floor"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "HUD shows the countdown while the king is here",
+        "file": "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hud :: English setting: English twin while it is here",
+          "hud :: while it is here: '호박 대왕 출현! 남은 시간 m:ss'",
+          "hud-live :: live: when it appears '남은 시간 5:00'"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "bat goblin slash loops",
+        "file": "src/ReplicatedStorage/MonsterAnims/BatGoblin_Slash.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "clips :: loop flag = the Goblin clip's (Idle / Walk loop)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GameState defaults miss the king attributes",
+        "file": "src/ReplicatedStorage/Shared/Net.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "client-wiring :: Net.GameStateDefaults has PumpkinKingNextAt 0 / PumpkinKingActive false / PumpkinKingEndsAt 0"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
+    "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
+    "src/ServerScriptService/QuestService.luau": "778ded5ecce5e1c5726b2f95e87d1c69e0970f274a7b81eaf4e5655d9bdd0d25",
+    "src/ServerScriptService/StoryQuestService.luau": "34ca99a517022184b1b1ddaf2bb9b62cf664fe5b51f02bf33b4dfaa5c20f9205",
+    "src/ServerScriptService/LootService.luau": "a78cc5c5d98dcad3dd546e43097b59519e299ad4cf12dc629bfd8623190332fe",
+    "src/ServerScriptService/AnnounceService.luau": "71f4aa234ea6746721674268287575504148eb7e0dbf69230d03ef6cf7fce985",
+    "src/ServerScriptService/HalloweenService.luau": "d5fc73ea5237024567641e2f2d67313c6fe3cda237637d3cf87ac5b8f283dfad",
+    "src/ServerScriptService/Main.server.luau": "2000ea96ef95f4ba3fbbf1da3e9d6197e4f671b36a97cb3b6b647d10bfcd2351",
+    "src/ServerScriptService/MonsterService.luau": "4573e45a9946386e1eb9a42d50e43c5b20b2adb94ddc93f8166a86f22f284482",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "5ea6b727334eab4da17882fab3f345220eea4a2905e90dc8f0c5644f8e43f361",
+    "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "efc26700738259a413e97b7b851510f7b3353e3a3656ce243598e092377ae93a",
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "6297486a0bbc13644d42aa384600d77513d169a3a3e9f1d8a1562b5a8524dc45",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "39edbd8a1e1861f8930b486c2daef31e50f8784437f2f10719dc0497ce3413ce",
+    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "b5b0cdeb7889a80ff1213bbf62878b634bb8f55b6a30de83c456d1194bed333b",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
+    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "049d7448a5c3fbf5a7fe8bf4c8689b084fe3012d30ce13cd9866ba67b1a6e904",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Walk.luau": "f817254d6fac4599e0bf848cc3d7d54da4cbc3bcab28232f74ad4eff8741577d",
+    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Slash.luau": "175ada63df639055bf91fae8178970a2d39010dd7d4a5c81b27a8c53cc148971",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Slash.luau": "35ecf9e418cd983a7992ebf429680f42fe86fca7564bf447e588fca5182cc5d2",
+    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Hurt.luau": "b7fb789be4dc4dedb68cff9cbd12fd85949c62ce03357816634745ebd9c52ad9",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Hurt.luau": "4fb4e24e98f90d4dc2ba3c2a4a53940bf7bcd54f7cb53a7f993634ad85afcc45",
+    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
+  },
+  "fixtureSHA256": "be2481c7c926ea2ff651ae5a785f00e1088a6a5c7ecd102fe866e3530d301b83",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Halloween season (lead design 2026-10-06, numbers provisional): Config.Halloween.Enabled gates every seasonal kind, the slot takeover, the Pumpkin King schedule and its HUD line. PumpkinSlime (meadow, 3 of the 12 slime slots, counts as Slime), LittleGhost (woods, +3, Float 1.5, counts as itself), BatGoblin (woods, 3 of the goblin slots, counts as Goblin, rigged: Tripo clips 32/36/31/16/46 frames at 15 fps), PumpkinKing (Count 0, Boss, never golden, never respawns): first 6 min after server start, then every 20 min from the previous appearance, near the meadow center, leaves after 5 min with a friendly line; appear / defeat / leave lines go to every client without a name (AnnounceService.Broadcast, Korean + English twin); rewards only through MonsterService's kill path, one MonsterKilled per contributor (ContributorWindow 120 s for the king); GameState PumpkinKingNextAt / Active / EndsAt; Candy material (sell 5) and the four drop tables; the slime jackpot also on pumpkin slimes; quests / tutorial / story objectives count Config.QuestKind; Studio-only DebugCommand 'PumpkinKing'.",
+  "limitations": "Offline doubles: Roblox Instances, a seeded / scripted Random, DataStore table, flat-ground stand-in for MonsterService.groundPoint, MonsterService.spawnMonster replaced by a record maker that uses the real golden roll, CFrame algebra limited to Z rolls. Studio models, real Weld rendering, MonsterMotion playback, phone layouts and multiplayer timing are not certified here."
+}

@@ -70,6 +70,9 @@ local L = {
 	ThumbW = 0.4, ThumbH = 0.45, -- U3: touch thumbstick zone = left 40% x bottom 45%
 	ChipsY = 106, ChipsH = 32, -- HUD's status chip row (fallback while its frame is not found)
 	MarkerLabelUp = 26, -- on-screen marker: its label's centre sits this far above the glyph's
+	-- Halloween Pumpkin King pill: left of the strip (the kaiju pill sits on the right); narrower room left of the strip
+	-- shrinks it down to KingMinW, below that it goes under the strip
+	KingW = 210, KingMinW = 130, KingGap = 8,
 }
 
 ----------------------------------------------------------------- colors / text
@@ -143,6 +146,9 @@ local hudRef = { WarMeter = { Conns = {} }, StatusChips = { Conns = {} } }
 local layout -- forward declaration (assigned below)
 -- CR-L43: top inset (real px) and raw GetGuiInset top-left cached by layout() for the per-frame arrow placement
 local arrowGeo = { Inset = TOP_FALLBACK - TOP_PAD, TopLeft = nil }
+-- Halloween Pumpkin King pill (functions below KING.update); Below = it sits in the row under HUD's status chips
+-- (narrow screens), so layout() moves the touch personal line one row lower
+local KING = { Below = false }
 
 ----------------------------------------------------------------- helpers
 local lastWarnAt = -math.huge
@@ -610,6 +616,25 @@ local function build()
 		ZIndex = 4,
 	}, 15, ui.KaijuChip)
 
+	-- Halloween Pumpkin King countdown / time left (Config.Halloween; KING.update places and fills it): parchment pill
+	-- with orange-brown ink, same look as the goose / kaiju pills
+	ui.KingChip = Art.frame("Pill", {
+		Name = "PumpkinKingChip",
+		AnchorPoint = Vector2.new(1, 0),
+		Position = UDim2.new(0, -L.KingGap, 0, 0),
+		Size = UDim2.fromOffset(L.KingW, L.PillH),
+		Visible = false,
+		ZIndex = 3,
+	}, { CornerRadius = UDim.new(0.5, 0), StrokeColor = AC.RevengeInk }, ui.Strip)
+	ui.KingChipText = Art.text("ink", {
+		Name = "Text",
+		Position = UDim2.fromOffset(12, 4),
+		Size = UDim2.new(1, -24, 1, -8),
+		Color = AC.RevengeInk,
+		ZIndex = 4,
+	}, 15, ui.KingChip)
+	if not Art.On then ui.KingChipText.TextColor3 = REVENGE_ORANGE end
+
 	-- kaiju siren banner (full width at 18% screen height): red band with gold trim
 	ui.Siren = make("Frame", {
 		Name = "KaijuSiren",
@@ -867,6 +892,7 @@ layout = function()
 		local cb = hudBottom("StatusChips", s)
 		if not cb then cb = math.max(L.ChipsY + inset / s, stripBottom + L.StripGap) + L.ChipsH end
 		personalY = math.floor(math.max(cb, stripBottom) + L.StripGap + 0.5)
+		if KING.Below then personalY += L.PillH + L.StripGap end -- the Pumpkin King pill row (KING.place)
 		-- a tall touch cluster (square row + next-weapon card) can reach up to that line: narrow it to end left of it
 		if reachesCluster and clusterLeft and personalY + PERSONAL_H > clusterTop - 8 then
 			personalW = math.max(200, math.min(personalW, 2 * (clusterLeft - 8 - W / 2)))
@@ -884,7 +910,8 @@ layout = function()
 	if not sized then personalY = -1 end
 	local minText = MIN_TEXT_SIZE
 	if IS_TOUCH then minText = math.max(MIN_TEXT_SIZE, math.ceil(MIN_TEXT_SIZE / s - 0.01)) end
-	local key = table.concat({ stripY, tostring(stripX), stripW, luckY, personalY, personalW, minText }, ":")
+	local key = table.concat({ stripY, tostring(stripX), stripW, luckY, personalY, personalW, minText,
+		tostring(KING.Below) }, ":")
 	if key == lastLayoutKey then return end
 	lastLayoutKey = key
 	ui.Strip.Position = stripX and UDim2.new(0, stripX, 0, stripY) or UDim2.new(0.5, 0, 0, stripY)
@@ -978,6 +1005,93 @@ local function updateGoose(now)
 		else
 			setVisible(ui.GooseChip, false)
 		end
+	end
+end
+
+-- Halloween Pumpkin King line (GameState PumpkinKing*, texts Config.Halloween.Text with English twins); only while
+-- the season is on. Before it appears: "호박 대왕까지 m:ss"; while it is here: "호박 대왕 출현! 남은 시간 m:ss".
+
+function KING.english()
+	local st = C and C.Settings
+	if type(st) ~= "table" or type(st.Get) ~= "function" then return false end
+	local ok, lang = pcall(st.Get, "Lang")
+	return ok and lang == "en"
+end
+
+-- the pill's slot (logical px, never on HUD's player card / quest column, its bottom-right cluster or the kaiju pill):
+-- 1. left of the strip, between HUD.Layout.LeftX (right edge of the card + quest column) and the strip, shrinking
+--    down to L.KingMinW; 2. right of the strip (after the kaiju pill while it shows) up to HUD.Layout.RightX (desktop:
+--    left of the luck panel) when that stays clear of the cluster; 3. else centred in a row under HUD's status chips,
+--    and the touch personal line moves one row lower (KING.Below)
+function KING.place(chip)
+	local strip = ui.Strip
+	local root = strip and strip.Parent
+	if not root or not root:IsA("GuiBase2d") then return end
+	local s = currentScale()
+	local hl = C and type(C.HUD) == "table" and type(C.HUD.Layout) == "table" and C.HUD.Layout or {}
+	local gap = L.KingGap
+	local W = num(hl.W) > 0 and hl.W or root.AbsoluteSize.X / s
+	local x0 = (strip.AbsolutePosition.X - root.AbsolutePosition.X) / s
+	local x1 = x0 + strip.AbsoluteSize.X / s
+	local y0 = (strip.AbsolutePosition.Y - root.AbsolutePosition.Y) / s
+	local below = false
+	local room = x0 - gap - math.max(gap, num(hl.LeftX))
+	if room >= L.KingMinW then
+		chip.AnchorPoint = Vector2.new(1, 0)
+		chip.Position = UDim2.new(0, -gap, 0, 0)
+		chip.Size = UDim2.fromOffset(math.floor(math.min(room, L.KingW)), L.PillH)
+	else
+		local kaiju = (ui.KaijuChip and ui.KaijuChip.Visible) and (KAIJU_CHIP_W + gap) or 0
+		local left = x1 + gap + kaiju
+		room = (num(hl.RightX) > 0 and hl.RightX or W - gap) - left
+		local w = math.floor(math.min(room, L.KingW))
+		local clusterTop = num(hl.ClusterTop)
+		local blocked = clusterTop > 0 and y0 + L.PillH > clusterTop - gap and left + w > num(hl.ClusterLeft) - gap
+		if room >= L.KingMinW and not blocked then
+			chip.AnchorPoint = Vector2.new(0, 0)
+			chip.Position = UDim2.new(1, gap + kaiju, 0, 0)
+			chip.Size = UDim2.fromOffset(w, L.PillH)
+		else
+			below = true
+			local cb = hudBottom("StatusChips", s)
+			if not cb then cb = y0 + strip.Size.Y.Offset + L.StripGap + L.ChipsH end
+			chip.AnchorPoint = Vector2.new(0.5, 0)
+			chip.Position = UDim2.new(0.5, 0, 0, math.floor(cb + L.StripGap - y0 + 0.5))
+			chip.Size = UDim2.fromOffset(math.floor(math.min(L.KingW, W - 24)), L.PillH)
+		end
+	end
+	KING.setBelow(below)
+end
+
+-- the touch personal line follows the pill row (layout() reads KING.Below)
+function KING.setBelow(below)
+	if KING.Below == below then return end
+	KING.Below = below
+	relayout()
+end
+
+function KING.update(now)
+	local chip = ui.KingChip
+	if not chip then return end
+	local H = Config.Halloween
+	local text = type(H) == "table" and H.Enabled == true and type(H.Text) == "table" and H.Text or nil
+	local line = nil
+	if text then
+		local en = KING.english()
+		if gsAttr("PumpkinKingActive", false) == true then
+			line = safeFormat((en and text.HudActiveEn) or text.HudActive,
+				Util.FormatTime(num(gsAttr("PumpkinKingEndsAt", 0)) - now))
+		else
+			local nextAt = num(gsAttr("PumpkinKingNextAt", 0))
+			if nextAt > 0 then line = safeFormat((en and text.HudNextEn) or text.HudNext, Util.FormatTime(nextAt - now)) end
+		end
+	end
+	setVisible(chip, line ~= nil and line ~= "")
+	if line and line ~= "" then
+		setText(ui.KingChipText, line)
+		KING.place(chip)
+	else
+		KING.setBelow(false)
 	end
 end
 
@@ -1185,6 +1299,7 @@ local function update()
 	local now = Util.Now()
 	updateGoose(now)
 	updateKaiju(now)
+	KING.update(now) -- after the kaiju pill: the king pill sits after it while both show
 	updatePersonal(now)
 	updateLuck()
 	gatherTargets(now)

@@ -36,6 +36,8 @@ STATIC = {  # no bones: the client WOBBLE layer moves them (slimes hop / squash,
     "71855842778142": "PumpkinKing",
 }
 BIG_SLIME_TEXTURE = "rbxassetid://139511730966494"
+# GLBs whose front is not the importer's front: PrimaryPart.PivotOffset yaw in degrees (checked in Play 2026-10-06)
+FRONT_FIX = {"Skeleton": 90, "PumpkinSlime": 90, "PumpkinKing": 90, "BatGoblin": 180}
 MODELS = {**RIGGED, **STATIC}
 
 PREP = '''local SS=game:GetService("ServerStorage")
@@ -60,6 +62,7 @@ local CM=SS:FindFirstChild("CustomModels")
 local AR=SS:FindFirstChild("MonsterModelArchive") or Instance.new("Folder")
 AR.Name="MonsterModelArchive" AR.Parent=SS
 local IC=SS:FindFirstChild("ImportCheck")
+local FRONT=game:GetService("HttpService"):JSONDecode(%s)
 local out={}
 for id,kind in game:GetService("HttpService"):JSONDecode(%s) do
 	local h=IC and IC:FindFirstChild("S_"..id)
@@ -79,9 +82,10 @@ for id,kind in game:GetService("HttpService"):JSONDecode(%s) do
 		if not scene.PrimaryPart and mp then scene.PrimaryPart=mp end
 		scene:SetAttribute("AssetId",id)
 		if bones>0 then scene:SetAttribute("Rigged","Tripo spec 2026-10-06 (MonsterMotion clips "..kind.."_*)") end
-		if kind=="Skeleton" and scene.PrimaryPart then
-			scene.PrimaryPart.PivotOffset=CFrame.Angles(0,math.rad(90),0)
-			scene:SetAttribute("FrontFix","PrimaryPart.PivotOffset +90 Y (GLB faces +X, others +Z)")
+		local front=FRONT[kind]
+		if front and scene.PrimaryPart then
+			scene.PrimaryPart.PivotOffset=CFrame.Angles(0,math.rad(front),0)
+			scene:SetAttribute("FrontFix","PrimaryPart.PivotOffset "..front.." Y (the GLB front differs)")
 		end
 		scene.Name=kind
 		scene.Parent=CM
@@ -135,7 +139,7 @@ def main():
             print("insert", asset_id, MODELS[asset_id], "error" if r.get("isError") else "ok")
         todo = {k: v for k, v in MODELS.items() if k in need}
         tex = json.dumps(BIG_SLIME_TEXTURE)
-        swap = SWAP % (json.dumps(json.dumps(todo)), tex, tex)
+        swap = SWAP % (json.dumps(json.dumps(FRONT_FIX)), json.dumps(json.dumps(todo)), tex, tex)
         print(text_of(c.call("execute_luau", {"code": swap, "datamodel_type": "Edit"})))
     finally:
         c.close()

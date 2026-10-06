@@ -157,7 +157,7 @@ local function eventAmount(player, obj, ev)
 		if info.Personal == true then return 0 end
 		if t == "WarPoints" then return math.max(0, num(info.WarPoints)) end
 		if t ~= "Kill" and t ~= "BasicKill" and t ~= "SafeKill" and t ~= "AutoKill" then return 0 end
-		if obj.Kind and info.Kind ~= obj.Kind then return 0 end
+		if obj.Kind and Config.QuestKind(info.Kind) ~= obj.Kind then return 0 end -- a pumpkin slime counts as a slime
 		if obj.Zone and info.ZoneId ~= obj.Zone then return 0 end
 		if obj.Golden and info.Golden ~= true then return 0 end
 		if obj.Near then

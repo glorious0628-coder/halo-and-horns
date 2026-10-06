@@ -1309,15 +1309,368 @@
   "staticFailures": [],
   "mutations": {
     "total": 28,
-    "applied": 0,
-    "caught": 0,
-    "results": []
+    "applied": 28,
+    "caught": 28,
+    "results": [
+      {
+        "mutation": "CombatPower drops DisplayScale",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "justice-attribute :: after the join frame: Lv10 iron +3 = 1,052 (WeaponEnhance from the save)",
+          "justice-attribute :: equip tier 1 +0 -> tier 3 +3: exactly one CombatPower write",
+          "justice-getcombatpower :: GetCombatPower reads Level / WeaponTier / WeaponEnhance = Config.CombatPower",
+          "justice-getcombatpower :: missing attributes = Lv1 tier 1 +0 = 283",
+          "justice-getcombatpower :: no rebirth bonus in the combat power",
+          "power-samples :: CombatPower = floor(PowerOf(level, tier, 1, +N) x 10 + 0.5), an integer"
+        ],
+        "newFailingCount": 21
+      },
+      {
+        "mutation": "MaxCombatPower uses MaxWeaponTier only",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power-samples :: MaxCombatPower() = 25,488",
+          "power-samples :: maximum = Lv100 + the highest-DAMAGE weapon at +10",
+          "power-samples :: no level / weapon / +N goes above MaxCombatPower",
+          "power-samples :: the tier-index cap (MaxWeaponTier = jelly legendary) would give 7,027"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "MaxCombatPower not cached",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power-samples :: a second call returns the cached value (no recompute)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "TitleSel not mirrored",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-config :: TitleSel is mirrored (attribute for nametag / HUD)",
+          "title-pioneer :: SetTitle(\"\") = automatic",
+          "title-pioneer :: a player who chose \"\" keeps \"\" on the next join",
+          "title-pioneer :: an explicitly picked BetaPioneer (TitleSelAt) is kept",
+          "title-pioneer :: first grant keeps TitleSel \"\" (rank stays the title)",
+          "title-pioneer :: new pioneer grant keeps a selected GrayLegend"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "DisplayTitle puts selected above session",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "display-title :: session title beats a selected title"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GetCombatPower includes the rebirth bonus",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "justice-attribute :: a change that keeps the number (+10 -> +12 clamps) writes nothing",
+          "justice-attribute :: each player keeps their own number",
+          "justice-attribute :: rejoin: CombatPower from the saved Level / WeaponTier / +N",
+          "justice-getcombatpower :: no rebirth bonus in the combat power",
+          "pvp-power :: BoldMult (server) = x2 / x1 / x0.5 from the displayed CombatPower numbers (rebirth ignored)",
+          "pvp-power :: bully weak test (server) = displayed victim < 50% of displayed killer"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "CombatPower refresh not deferred",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "justice-attribute :: equip tier 1 +0 -> tier 3 +3: exactly one CombatPower write",
+          "justice-attribute :: equip tier 3 +3 -> tier 1 +0: exactly one CombatPower write",
+          "justice-attribute :: equip: no CombatPower write before the frame ends (task.defer)",
+          "justice-attribute :: level-up + equip in one frame: one write",
+          "justice-attribute :: no CombatPower write after PlayerLeaving (pending refresh dropped)",
+          "justice-attribute :: two players changed in one frame: one write each"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "watchers not dropped on PlayerLeaving",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "justice-attribute :: PlayerLeaving disconnects the Level / WeaponEnhance watchers",
+          "justice-attribute :: no CombatPower write after PlayerLeaving (pending refresh dropped)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "CombatPower not set on PlayerReady",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "justice-attribute :: CombatPower attribute is set on PlayerReady (before the frame ends)",
+          "justice-attribute :: the PlayerReady value is a Config.CombatPower"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WeaponEnhance not watched",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "justice-attribute :: a change that keeps the number (+10 -> +12 clamps) writes nothing",
+          "justice-attribute :: after the join frame: Lv10 iron +3 = 1,052 (WeaponEnhance from the save)",
+          "justice-attribute :: enhance scroll (WeaponEnhance only): one write",
+          "justice-attribute :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "PvP fallback compares the unrounded PowerOf",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-power :: a failing JusticeService.GetCombatPower falls back to Config.CombatPower",
+          "pvp-power :: a non-number from JusticeService falls back",
+          "pvp-power :: fallback = Config.CombatPower(data Level, data WeaponTier, WeaponEnhance attribute)",
+          "pvp-power :: fallback clamps level >= 1 and the tier",
+          "pvp-power :: fallback without data reads the attributes"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "BoldMult x2 needs more than 120%",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-power :: BoldMult (server) = x2 / x1 / x0.5 from the displayed CombatPower numbers (rebirth ignored)",
+          "pvp-power :: BoldMult victim 120% -> x2"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "BoldMult x0.5 at exactly 80%",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-power :: BoldMult (server) = x2 / x1 / x0.5 from the displayed CombatPower numbers (rebirth ignored)",
+          "pvp-power :: BoldMult victim exactly 80% -> x1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bully weak test at exactly 50%",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-power :: bully weak test (server) = displayed victim < 50% of displayed killer",
+          "pvp-power :: bully: victim exactly 50% is NOT weak"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pioneer granted at exactly PioneerUntil",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-pioneer :: fresh player exactly at PioneerUntil: no title"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GrantPioneer flag ignored",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-pioneer :: GrantPioneer = false: TitlesOwned \"\"",
+          "title-pioneer :: GrantPioneer = false: no new grant before PioneerUntil"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "legacy BetaPioneer boolean ignored",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-pioneer :: GrantPioneer = false: the legacy boolean still migrates (it is an owned title)",
+          "title-pioneer :: legacy data.BetaPioneer == true migrates even after PioneerUntil"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "first grant auto-selects the pioneer title again",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-pioneer :: no TitleSel SetStat on the first grant"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "old auto-select never migrated back",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-pioneer :: old auto-selected BetaPioneer (no TitleSelAt) goes back to automatic once; still owned"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "migration also resets explicit picks",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-pioneer :: GrantPioneer = false: an owned pioneer title (and its selection) stays",
+          "title-pioneer :: an explicitly picked BetaPioneer (TitleSelAt) is kept",
+          "title-ready-fallback :: ready: owned BetaPioneer kept -> BetaPioneer"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SetTitle does not record the explicit pick",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-pioneer :: SetTitle(BetaPioneer) is an explicit pick (TitleSelAt)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SetTitle accepts known but unowned ids",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-set-remote :: ignored: known but unowned id (GrayLegend for the other player)",
+          "title-set-remote :: other player unchanged by the refused call"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "SetTitle ignores the argument count",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-set-remote :: ignored: two arguments",
+          "title-set-remote :: ignored: two arguments (second nil)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "SetTitle length limit off by one",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-set-remote :: ignored: owned id of 33 chars (too long)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SetTitle ignores RateLimits.SetTitle",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-set-remote :: ignored: a second call 0.25 s later (inside RateLimits.SetTitle)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "unowned TitleSel kept at ready",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-ready-fallback :: ready: known but unowned GrayLegend -> \"\""
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GrayLegend not re-checked when FallMarks changes",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-gray-legend :: FallMarks reaching 3 later grants it at once",
+          "title-gray-legend :: GrayLegend stays when the marks drop"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "TitlesOwned not filtered / ordered by TitleOrder",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "title-gray-legend :: TitlesOwned = owned ids in Config.TitleOrder, joined by \",\"",
+          "title-gray-legend :: pioneer + gray legend in TitleOrder order",
+          "title-ready-fallback :: TitlesOwned lists only Config.TitleDefs ids"
+        ],
+        "newFailingCount": 3
+      }
+    ]
   },
   "compileOk": true,
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "046ab477bb155b8f0eeadf679939653a40bb32ea87354088e869adb1868daea1",
+    "src/ReplicatedStorage/Shared/Config.luau": "aabf6e8c0c3332ff672822881e91b0caa598c682def1baa73cb1c8d25179b07b",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
     "src/ServerScriptService/JusticeService.luau": "c82185555c4263dd843d25e56c28d2aa9dd11d23f123a0f5c89fff7f6c47719c",

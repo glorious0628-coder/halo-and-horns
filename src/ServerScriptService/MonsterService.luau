@@ -22,10 +22,9 @@ MonsterService.MonsterKilled = Util.Signal.new()
 local TAG = "MonsterService"
 local MC = Config.Monsters
 
--- A3-M2 / A5-C1 density (fallbacks keep the service working if a Config key is missing)
+-- A3-M2 / A5-C1 density (fallbacks keep the service working if a Config key is missing). The per-kind targets
+-- (ExtraPerPlayer / MaxZoneMult, seasonal counts) come from Config.MonsterTargets.
 local DENSITY = Config.MonsterDensity or {}
-local EXTRA_PER_PLAYER = DENSITY.ExtraPerPlayer or 2
-local MAX_ZONE_MULT = DENSITY.MaxZoneMult or 2
 local REEVAL_INTERVAL = DENSITY.ReevalInterval or 5
 local MAX_SPAWNS_PER_KIND_PER_PASS = 8 -- smooths bursts when many players enter a zone at once
 
@@ -79,6 +78,9 @@ local BAR_MAX_DISTANCE = 80
 local DEATH_FADE = 0.3
 local DEATH_DESTROY = 0.4
 local DEATH_PARTICLES = 15
+-- an event monster that leaves undefeated (RemoveEvent(rec, true, true), the Pumpkin King going home): model attribute
+-- "Leaving" (clients skip the dying-slime splat), keeps its size, floats up Rise studs and fades over Fade s, no burst
+local LEAVE = { Fade = 1.2, Rise = 3 }
 local BOB_PERIOD = 0.55
 local BOB_FRACTION = 0.06 -- custom visual bob height as a fraction of the body height
 -- every visible part is welded to VisualRoot, which hangs off the root by the Weld VisualJoint (C0 = C1 = identity).
@@ -135,9 +137,8 @@ do
 		GLOBAL_CAP = DENSITY.GlobalCap
 	else
 		local sum = 0
-		for _, kind in Config.MonsterTypeOrder do
-			local def = Config.MonsterTypes[kind]
-			if def then sum += def.Count end
+		for kind, n in Config.EffectiveMonsterCounts() do
+			if not Config.MonsterOutsideCap(kind) then sum += n end -- add-on seasonal kinds sit outside the cap
 		end
 		GLOBAL_CAP = math.floor(sum * 1.7 + 0.5)
 	end
@@ -336,12 +337,16 @@ local function aliveCountOf(kind)
 	return n
 end
 
+-- alive + pending regular monsters counted toward GLOBAL_CAP: event monsters (miniboss) and add-on seasonal kinds
+-- (Config.MonsterOutsideCap, the little ghosts) are extra, so the season never thins the other zones
 local function totalNonPersonal()
 	local n = 0
 	for _, rec in records do
-		if rec.Alive and rec.Owner == nil then n += 1 end
+		if rec.Alive and rec.Owner == nil and not rec.Event and not Config.MonsterOutsideCap(rec.Kind) then n += 1 end
 	end
-	for _, c in pending do n += c end
+	for kind, c in pending do
+		if not Config.MonsterOutsideCap(kind) then n += c end
+	end
 	return n
 end
 
@@ -357,29 +362,75 @@ local function playersPerZone()
 	return counts
 end
 
+-- per kind: min(count + ExtraPerPlayer * (playersInZone - 1), count * MaxZoneMult) with the seasonal counts
+-- (Config.MonsterTargets / Config.EffectiveMonsterCounts: an inactive seasonal kind = 0, a kind that took slots of a
+-- base kind shares its growth, so a zone's total stays the same with the season on; cappedTargets keeps that true
+-- under the GlobalCap)
 local function targetCount(kind, zoneCounts)
-	local def = Config.MonsterTypes[kind]
-	if not def then return 0 end
-	local n = (zoneCounts or playersPerZone())[def.Zone] or 0
-	return math.min(def.Count + EXTRA_PER_PLAYER * math.max(0, n - 1), def.Count * MAX_ZONE_MULT)
+	if not Config.MonsterTypes[kind] then return 0 end
+	return Config.MonsterTargets(zoneCounts or playersPerZone())[kind] or 0
+end
+
+-- largest-remainder split of `total` over `keys` (in order) by `weight` (> 0 only); ties go to the earlier key
+local function shareOut(keys, weight, total)
+	local out, sum, fracs, used = {}, 0, {}, 0
+	for _, k in keys do
+		out[k] = 0
+		sum += math.max(0, weight[k] or 0)
+	end
+	if sum <= 0 or total <= 0 then return out end
+	for _, k in keys do
+		local w = weight[k] or 0
+		if w > 0 then
+			local share = w * total / sum
+			out[k] = math.floor(share)
+			used += out[k]
+			table.insert(fracs, { K = k, F = share - out[k], I = #fracs + 1 })
+		end
+	end
+	table.sort(fracs, function(a, b)
+		if a.F ~= b.F then return a.F > b.F end
+		return a.I < b.I
+	end)
+	for _, fr in fracs do
+		if used >= total then break end
+		out[fr.K] += 1
+		used += 1
+	end
+	return out
 end
 
 -- CR-L13: { [kind] = target } where the extras above each base Count share the GLOBAL_CAP room (GLOBAL_CAP - base
 -- sum) in proportion to what each kind asks for (largest remainder), instead of MonsterTypeOrder filling the cap
--- first (busy meadow -> the ruins stayed at their base density).
+-- first (busy meadow -> the ruins stayed at their base density). Seasonal kinds: one that took slots of a base kind
+-- shares that kind's part of the room (Config.MonsterCapGroup), so every zone gets exactly its season-off capped
+-- total; an add-on kind (Config.MonsterOutsideCap) keeps its own target outside the cap and takes no room.
 local function cappedTargets(zoneCounts)
 	zoneCounts = zoneCounts or playersPerZone()
 	local targets, extras = {}, {}
+	local groups, groupOf, groupExtra = {}, {}, {} -- cap groups in MonsterTypeOrder (first member's position)
 	local baseSum, extraSum = 0, 0
+	local wanted, counts = Config.MonsterTargets(zoneCounts), Config.EffectiveMonsterCounts()
 	for _, kind in Config.MonsterTypeOrder do
 		local def = Config.MonsterTypes[kind]
 		if def and targets[kind] == nil then
-			local t = targetCount(kind, zoneCounts)
-			local base = math.min(def.Count, t)
-			targets[kind] = base
-			extras[kind] = math.max(0, t - base)
-			baseSum += base
-			extraSum += extras[kind]
+			local t = wanted[kind] or 0
+			if Config.MonsterOutsideCap(kind) then
+				targets[kind] = t
+			else
+				local base = math.min(counts[kind] or 0, t)
+				local g = Config.MonsterCapGroup(kind)
+				targets[kind] = base
+				extras[kind] = math.max(0, t - base)
+				baseSum += base
+				extraSum += extras[kind]
+				if groupExtra[g] == nil then
+					groupExtra[g] = 0
+					table.insert(groups, g)
+				end
+				groupOf[kind] = g
+				groupExtra[g] += extras[kind]
+			end
 		end
 	end
 	if extraSum <= 0 then return targets end
@@ -390,26 +441,16 @@ local function cappedTargets(zoneCounts)
 		end
 		return targets
 	end
-	local used, fracs = 0, {}
-	for _, kind in Config.MonsterTypeOrder do
-		local e = extras[kind]
-		if e and e > 0 then
-			extras[kind] = 0 -- a kind listed twice is shared out once
-			local share = e * room / extraSum
-			local whole = math.floor(share)
-			targets[kind] += whole
-			used += whole
-			table.insert(fracs, { Kind = kind, F = share - whole, I = #fracs + 1 })
+	-- the groups share the room, then each group's part goes to its kinds the same way
+	local groupRoom = shareOut(groups, groupExtra, room)
+	for _, g in groups do
+		local members = {}
+		for _, kind in Config.MonsterTypeOrder do
+			if groupOf[kind] == g and not table.find(members, kind) then table.insert(members, kind) end
 		end
-	end
-	table.sort(fracs, function(a, b)
-		if a.F ~= b.F then return a.F > b.F end
-		return a.I < b.I
-	end)
-	for _, fr in fracs do
-		if used >= room then break end
-		targets[fr.Kind] += 1
-		used += 1
+		for kind, n in shareOut(members, extras, math.min(groupRoom[g] or 0, groupExtra[g])) do
+			targets[kind] += n
+		end
 	end
 	return targets
 end
@@ -793,7 +834,8 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 	hum.Parent = model
 
 	local label = golden and ("황금 " .. def.Name) or def.Name
-	local fill = makeBar(root, label, golden, topAboveRoot + 1.6)
+	-- def.Float: the client hovers the visual this many studs up (Fx WOBBLE), so the name bar goes up with it
+	local fill = makeBar(root, label, golden, topAboveRoot + 1.6 + math.max(0, tonumber(def.Float) or 0))
 
 	model:SetAttribute("MonsterKind", kind)
 	model:SetAttribute("Golden", golden)
@@ -826,6 +868,8 @@ local function spawnMonster(kind, opts)
 	local golden
 	if owner ~= nil or opts.Golden ~= nil then
 		golden = opts.Golden == true
+	elseif def.Boss == true then
+		golden = false -- a miniboss is never a golden variant
 	else
 		golden = Util.Random:NextNumber() < MC.GoldenChance
 	end
@@ -897,6 +941,7 @@ local function spawnMonster(kind, opts)
 		Home = point,
 		Alive = true,
 		Owner = owner,
+		Event = opts.Event == true or nil, -- spawned by SpawnEvent: outside the regular pool, never respawns
 		-- private
 		_fill = rig.Fill,
 		_bob = bob,
@@ -948,14 +993,15 @@ local function emitDeathParticles(pos, color, scale)
 	Debris:AddItem(fx, 1.5)
 end
 
--- shrink/fade 0.3 s, particle burst, destroy after 0.4 s
-local function deathPop(rec, withParticles)
+-- shrink/fade 0.3 s, particle burst, destroy after 0.4 s. leaving = it goes home instead (LEAVE): no shrink, no splat
+local function deathPop(rec, withParticles, leaving)
 	local model, root, hum = rec.Model, rec.Root, rec.Humanoid
 	if rec._bob then
 		pcall(function() rec._bob:Cancel() end)
 		rec._bob = nil
 	end
 	if not model then return end
+	if leaving then model:SetAttribute("Leaving", true) end -- set before the anchor below (clients test it on anchor)
 	if hum and hum.Parent then
 		hum.WalkSpeed = 0
 	end
@@ -966,18 +1012,23 @@ local function deathPop(rec, withParticles)
 		if withParticles then
 			emitDeathParticles(root.Position, rec.Golden and MC.GoldenColor or rec.Def.Color, rec._scale or 1)
 		end
+		if leaving then
+			TweenService:Create(root, TweenInfo.new(LEAVE.Fade, Enum.EasingStyle.Sine, Enum.EasingDirection.In),
+				{ CFrame = root.CFrame + Vector3.new(0, LEAVE.Rise, 0) }):Play()
+		end
 	end
-	local info = TweenInfo.new(DEATH_FADE, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+	local info = TweenInfo.new(leaving and LEAVE.Fade or DEATH_FADE, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
 	for _, d in model:GetDescendants() do
 		if d:IsA("BasePart") then
 			if d ~= root and d.Name ~= VISUAL_ROOT_NAME then -- the invisible joint anchor keeps its size
-				TweenService:Create(d, info, { Size = d.Size * 0.2, Transparency = 1 }):Play()
+				local goal = leaving and { Transparency = 1 } or { Size = d.Size * 0.2, Transparency = 1 }
+				TweenService:Create(d, info, goal):Play()
 			end
 		elseif d:IsA("ParticleEmitter") or d:IsA("Light") or d:IsA("Highlight") then
 			d.Enabled = false
 		end
 	end
-	task.delay(DEATH_DESTROY, function()
+	task.delay(leaving and LEAVE.Fade + 0.1 or DEATH_DESTROY, function()
 		if model then model:Destroy() end
 	end)
 end
@@ -994,14 +1045,14 @@ end
 
 local scheduleRespawn -- forward
 
--- removes a record without rewards (timeout, owner left, model lost)
-local function despawn(rec, fade)
+-- removes a record without rewards (timeout, owner left, model lost); leaving = fade out as going home (LEAVE)
+local function despawn(rec, fade, leaving)
 	if not rec.Alive then return end
 	rec.Alive = false
 	records[rec.Id] = nil
 	removePersonalRef(rec)
 	if fade then
-		deathPop(rec, false)
+		deathPop(rec, false, leaving == true)
 	elseif rec.Model then
 		rec.Model:Destroy()
 	end
@@ -1013,7 +1064,7 @@ scheduleRespawn = function(kind)
 		pending[kind] = math.max(0, (pending[kind] or 0) - 1)
 		local ok, err = pcall(function()
 			local target = cappedTargets()[kind] or targetCount(kind) -- CR-L13
-			if aliveCountOf(kind) < target and totalNonPersonal() < GLOBAL_CAP then
+			if aliveCountOf(kind) < target and (Config.MonsterOutsideCap(kind) or totalNonPersonal() < GLOBAL_CAP) then
 				spawnMonster(kind)
 			end
 		end)
@@ -1050,8 +1101,9 @@ local function killRecord(rec)
 	-- once: WarShare = WarPoints / (contributors of that faction) (WarService.AddPoints(player, n, poolN))
 	local now = os.clock()
 	local eligible, perFaction = {}, {}
+	local window = tonumber(def.ContributorWindow) or MC.ContributorWindow -- a miniboss fight is longer
 	for p, t in rec._contributors do
-		if p.Parent and now - t <= MC.ContributorWindow then
+		if p.Parent and now - t <= window then
 			local okF, f = pcall(factionOf, p)
 			if not okF or type(f) ~= "string" then f = "None" end
 			table.insert(eligible, { Player = p, Faction = f })
@@ -1069,7 +1121,7 @@ local function killRecord(rec)
 	deathPop(rec, true)
 	if isPersonal then
 		removePersonalRef(rec)
-	else
+	elseif not rec.Event then
 		scheduleRespawn(rec.Kind)
 	end
 end
@@ -1195,6 +1247,49 @@ function MonsterService.Shove(record, fromPosition, studs, player)
 	return true
 end
 
+------------------------------------------------------------------ event monsters (HalloweenService miniboss)
+-- Spawns `kind` outside the regular pool: not in the density counts, never respawns, never golden unless opts.Golden.
+-- opts.Near (Vector3) + opts.Radius: a walkable ground point in def.Zone within Radius of Near (never water, a ridge
+-- or solid decor); falls back to a normal spawn point of the zone. Returns the record, or nil when no ground was found
+-- this time (the caller retries). Otherwise it is a normal zone monster (AI, damage, rewards per contributor).
+function MonsterService.SpawnEvent(kind, opts)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	if type(def) ~= "table" then return nil end
+	if type(opts) ~= "table" then opts = {} end
+	local pos = nil
+	local near = opts.Near
+	if typeof(near) == "Vector3" then
+		local radius = math.max(0, tonumber(opts.Radius) or 30)
+		for i = 1, SPAWN_TRIES * 2 do
+			local a = Util.Random:NextNumber(0, math.pi * 2)
+			local d = (i == 1) and 0 or Util.Random:NextNumber(0, radius)
+			local x, z = near.X + math.cos(a) * d, near.Z + math.sin(a) * d
+			local g, noHit = groundPoint(x, z)
+			if noHit then g = Vector3.new(x, 0, z) end -- bare test place: legacy flat ground
+			if g and Config.ZoneAt(g).Id == def.Zone then
+				pos = g
+				break
+			end
+		end
+	end
+	if not pos then pos = pickSpawnPoint(def) end
+	if not pos then return nil end
+	local ok, rec = pcall(spawnMonster, kind, { Position = pos, Golden = opts.Golden == true, Event = true })
+	if not ok then
+		warnThrottled("event_" .. kind, rec)
+		return nil
+	end
+	return rec
+end
+
+-- removes a living event monster without rewards (fades out unless fade == false; leaving = true: it goes home,
+-- floating up and fading without the death shrink / splat, so nobody reads it as a kill); true when it was removed
+function MonsterService.RemoveEvent(rec, fade, leaving)
+	if type(rec) ~= "table" or rec.Event ~= true or not rec.Alive then return false end
+	despawn(rec, fade ~= false, leaving == true)
+	return true
+end
+
 ------------------------------------------------------------------ personal monsters (A4 / A5-C2..C4)
 function MonsterService.SpawnPersonal(player, monsterId, opts)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent == nil then return nil end
@@ -1288,6 +1383,13 @@ end
 -- A10-V3-2 (a) + A3-M4: a player this (non-personal) monster may chase: in the monster's own zone, not in a town,
 -- not in the water
 local function targetable(rec, info)
+	-- review 2026-10-06: a boss (the Pumpkin King) leaves rookies alone (Rookie shield or below SafeBelowLevel)
+	local def = Config.MonsterTypes[rec.Kind]
+	if def and def.Boss and typeof(info.Player) == "Instance" then
+		local lv = tonumber(info.Player:GetAttribute("Level")) or 1
+		local safe = tonumber(Config.Halloween and Config.Halloween.SafeBelowLevel) or 0
+		if info.Player:GetAttribute("Rookie") == true or lv < safe then return false end
+	end
 	-- user 2026-10-05: monsters always attack as usual (no window / rest state may become a safe spot to exploit)
 	return not info.Town and info.Zone == rec.ZoneId and info.Pos.Y >= OUT_Y
 end
@@ -1324,7 +1426,7 @@ local function landAttack(rec, token, target)
 		if target ~= rec.Owner or tpos.Y < OUT_Y or isPlayerInTown(target, tpos) then return end
 	else
 		if rec._returning then return end
-		local info = { Pos = tpos, Town = isPlayerInTown(target, tpos), Zone = Config.ZoneAt(tpos).Id }
+		local info = { Player = target, Pos = tpos, Town = isPlayerInTown(target, tpos), Zone = Config.ZoneAt(tpos).Id }
 		if not targetable(rec, info) then return end
 	end
 
@@ -1484,9 +1586,9 @@ local function aiStep(rec, plist, now)
 	local root, hum = rec.Root, rec.Humanoid
 	if not root or not root.Parent or not hum or not hum.Parent or not rec.Model or not rec.Model.Parent then
 		-- model lost (destroyed externally / fell out of the world)
-		local kind, wasPersonal = rec.Kind, rec.Owner ~= nil
+		local kind, noRespawn = rec.Kind, rec.Owner ~= nil or rec.Event == true
 		despawn(rec, false)
-		if not wasPersonal then scheduleRespawn(kind) end
+		if not noRespawn then scheduleRespawn(kind) end
 		return
 	end
 	local pos = root.Position
@@ -1638,15 +1740,15 @@ local function reevaluate()
 	local targets = cappedTargets(zoneCounts) -- CR-L13
 	local total = totalNonPersonal()
 	for _, kind in Config.MonsterTypeOrder do
-		if total >= GLOBAL_CAP then break end
+		local outside = Config.MonsterOutsideCap(kind) -- add-on seasonal kind: its own target, outside the cap
 		local target = targets[kind] or targetCount(kind, zoneCounts)
 		local have = aliveCountOf(kind) + (pending[kind] or 0)
 		local spawned = 0
-		while have < target and total < GLOBAL_CAP and spawned < MAX_SPAWNS_PER_KIND_PER_PASS do
+		while have < target and (outside or total < GLOBAL_CAP) and spawned < MAX_SPAWNS_PER_KIND_PER_PASS do
 			local rec = spawnMonster(kind)
 			if not rec then break end
 			have += 1
-			total += 1
+			if not outside then total += 1 end
 			spawned += 1
 		end
 	end
@@ -1674,14 +1776,18 @@ function MonsterService.Start()
 	end
 
 	local total = 0
+	local counts = Config.EffectiveMonsterCounts() -- seasonal kinds only while their season is on
+	local capped = 0 -- add-on seasonal kinds (Config.MonsterOutsideCap) do not count toward GLOBAL_CAP
 	for _, kind in Config.MonsterTypeOrder do
 		local def = Config.MonsterTypes[kind]
 		if def then
-			for _ = 1, def.Count do
-				if total >= GLOBAL_CAP then break end
+			local outside = Config.MonsterOutsideCap(kind)
+			for _ = 1, counts[kind] or 0 do
+				if not outside and capped >= GLOBAL_CAP then break end
 				local ok, rec = pcall(spawnMonster, kind)
 				if ok and rec then
 					total += 1
+					if not outside then capped += 1 end
 				elseif not ok then
 					warnThrottled("spawn_" .. kind, rec)
 				end
