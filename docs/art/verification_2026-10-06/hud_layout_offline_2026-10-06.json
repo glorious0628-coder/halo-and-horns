@@ -1,0 +1,2977 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 6156,
+  "failedChecks": 0,
+  "namedChecks": 6156,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "screens": [
+    {
+      "name": "pc_1280x720",
+      "touch": false,
+      "reference": true,
+      "supported": true,
+      "mainGuiPx": [
+        1280,
+        720
+      ],
+      "uiScale": 0.8,
+      "logical": [
+        1600.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_1024x768",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        1024,
+        768
+      ],
+      "uiScale": 0.8533,
+      "logical": [
+        1200.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_1366x768",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        1366,
+        768
+      ],
+      "uiScale": 0.8533,
+      "logical": [
+        1600.78,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_1920x1080",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        1920,
+        1080
+      ],
+      "uiScale": 1.0,
+      "logical": [
+        1920.0,
+        1080.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_1280x1024",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        1280,
+        1024
+      ],
+      "uiScale": 1.0,
+      "logical": [
+        1280.0,
+        1024.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_1024x600",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        1024,
+        600
+      ],
+      "uiScale": 0.6667,
+      "logical": [
+        1536.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_800x600",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        800,
+        600
+      ],
+      "uiScale": 0.6667,
+      "logical": [
+        1200.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_800x720_narrow",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        800,
+        720
+      ],
+      "uiScale": 0.8,
+      "logical": [
+        1000.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_1280x720_inset36",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        1280,
+        720
+      ],
+      "uiScale": 0.8,
+      "logical": [
+        1600.0,
+        900.0
+      ],
+      "insetPx": 36,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 3.75,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "pc_1280x240_short",
+      "touch": false,
+      "reference": false,
+      "supported": false,
+      "mainGuiPx": [
+        1280,
+        240
+      ],
+      "uiScale": 0.6,
+      "logical": [
+        2133.33,
+        400.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": null
+    },
+    {
+      "name": "phone_749x361",
+      "touch": true,
+      "reference": true,
+      "supported": true,
+      "mainGuiPx": [
+        749,
+        361
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        998.67,
+        481.33
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 872.0,
+        "Y": 361.3333333333333,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.6667,
+        "Pair": "portrait/xp_bar"
+      }
+    },
+    {
+      "name": "phone_749x361_notch",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        655,
+        340
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        873.33,
+        453.33
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 746.6666666666666,
+        "Y": 333.3333333333333,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.332,
+        "Pair": "portrait/xp_bar"
+      }
+    },
+    {
+      "name": "phone_844x390",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        844,
+        390
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        1125.33,
+        520.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 998.6666666666666,
+        "Y": 400.0,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.6667,
+        "Pair": "portrait/xp_bar"
+      }
+    },
+    {
+      "name": "phone_667x375",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        667,
+        375
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        889.33,
+        500.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 762.6666666666666,
+        "Y": 380.0,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.3747,
+        "Pair": "portrait/xp_bar"
+      }
+    },
+    {
+      "name": "phone_568x320",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        568,
+        320
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        757.33,
+        426.67
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 630.6666666666666,
+        "Y": 306.6666666666667,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.0223,
+        "Pair": "portrait/xp_bar"
+      }
+    },
+    {
+      "name": "tablet_1024x768",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        1024,
+        768
+      ],
+      "uiScale": 1.0667,
+      "logical": [
+        960.0,
+        720.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 800.625,
+        "Y": 523.125,
+        "W": 112.5,
+        "H": 112.5
+      },
+      "minGap": {
+        "Gap": 2.5634,
+        "Pair": "hp_bar/mp_bar"
+      }
+    },
+    {
+      "name": "tablet_1180x820",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "mainGuiPx": [
+        1180,
+        820
+      ],
+      "uiScale": 1.1389,
+      "logical": [
+        1036.1,
+        720.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 886.829268292683,
+        "Y": 535.609756097561,
+        "W": 105.3658536585366,
+        "H": 105.3658536585366
+      },
+      "minGap": {
+        "Gap": 2.6667,
+        "Pair": "mp_bar/power_line"
+      }
+    }
+  ],
+  "uiScaleConfig": {
+    "ScaleMin": 0.75,
+    "ScaleMax": 1.25,
+    "DesktopScaleMult": 0.8,
+    "DesktopScaleMin": 0.6,
+    "DesktopScaleMax": 1.0
+  },
+  "mutations": {
+    "total": 20,
+    "applied": 20,
+    "caught": 20,
+    "results": [
+      {
+        "mutation": "touch targets may shrink to 30",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size auto",
+          "phone_568x320 :: tap size bag",
+          "phone_568x320 :: tap size ghost",
+          "phone_568x320 :: tap size map",
+          "phone_568x320 :: tap size menu",
+          "phone_568x320 :: tap size pet"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "round touch buttons never grow back",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size auto",
+          "phone_568x320 :: tap size ghost",
+          "phone_667x375 :: tap size auto",
+          "phone_749x361_notch :: tap size auto"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "potions never grow back",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size potions"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "grown portrait covers the bars",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap portrait/hp_bar",
+          "phone_568x320 :: no overlap portrait/mp_bar",
+          "phone_568x320 :: no overlap portrait/power_line"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "rail spacing ignores the tap size",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap bag/map",
+          "phone_568x320 :: no overlap map/menu",
+          "phone_568x320 :: no overlap pet/bag",
+          "phone_749x361 :: matches sheet bag",
+          "phone_749x361 :: matches sheet map",
+          "phone_749x361 :: matches sheet pet"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "top-right items anchored to the left edge",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: no overlap map/menu",
+          "pc_1024x768 :: no overlap bag/map",
+          "pc_1024x768 :: no overlap bag/menu",
+          "pc_1024x768 :: no overlap map/menu",
+          "pc_1024x768 :: no overlap pet/bag",
+          "pc_1024x768 :: no overlap pet/map"
+        ],
+        "newFailingCount": 45
+      },
+      {
+        "mutation": "top-left items ignore the real top bar",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: top rows hug the top bar",
+          "pc_800x600 :: top rows hug the top bar",
+          "phone_568x320 :: no overlap hp_bar/mp_bar",
+          "phone_568x320 :: no overlap portrait/minimap",
+          "phone_568x320 :: no overlap portrait/xp_bar",
+          "phone_568x320 :: top rows hug the top bar"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "narrow phone safe area not shrunk",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: cluster lower right potions",
+          "phone_568x320 :: column clear of right chips/pet",
+          "phone_568x320 :: column clear of right chips/quest",
+          "phone_568x320 :: column clear of right notify/quest",
+          "phone_568x320 :: column clear of right war_meter/pet",
+          "phone_568x320 :: no overlap chips/pet"
+        ],
+        "newFailingCount": 17
+      },
+      {
+        "mutation": "centre column never narrows",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_800x720_narrow :: column clear of right chips/pet",
+          "pc_800x720_narrow :: column clear of right chips/quest",
+          "pc_800x720_narrow :: column clear of right notify/quest",
+          "pc_800x720_narrow :: column clear of right war_meter/pet",
+          "pc_800x720_narrow :: no overlap chips/pet",
+          "pc_800x720_narrow :: no overlap chips/quest"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "centre column touches its neighbours",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_800x720_narrow :: column clear of left luck/power_line",
+          "pc_800x720_narrow :: column clear of left luck/xp_bar",
+          "pc_800x720_narrow :: column clear of left notify/xp_bar",
+          "pc_800x720_narrow :: column clear of left war_meter/hp_bar",
+          "pc_800x720_narrow :: column clear of left war_meter/mp_bar",
+          "pc_800x720_narrow :: column clear of left war_meter/power_line"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "centre column ignores its room",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_800x720_narrow :: column clear of right chips/quest",
+          "pc_800x720_narrow :: column clear of right notify/quest",
+          "phone_568x320 :: column clear of right chips/pet",
+          "phone_568x320 :: column clear of right war_meter/pet",
+          "phone_568x320 :: no overlap chips/pet",
+          "phone_568x320 :: no overlap war_meter/pet"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "touch cluster ignores the jump button",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: attack left of jump",
+          "phone_568x320 :: jump free attack",
+          "phone_568x320 :: jump free auto",
+          "phone_667x375 :: attack left of jump",
+          "phone_667x375 :: jump free attack",
+          "phone_667x375 :: jump free auto"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "cluster measured from the jump centre only",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: attack left of jump",
+          "phone_568x320 :: jump free attack",
+          "tablet_1024x768 :: attack left of jump",
+          "tablet_1024x768 :: jump free attack"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "auto not kept above the jump button",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: jump free auto",
+          "tablet_1024x768 :: jump free auto"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "touch combo stays bottom-centre",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap combo/q",
+          "tablet_1024x768 :: no overlap combo/potions",
+          "tablet_1024x768 :: no overlap combo/q",
+          "tablet_1180x820 :: no overlap combo/potions"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "luck pill drawn over the chips",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: luck left of chips",
+          "pc_1024x600 :: no overlap chips/luck",
+          "pc_1024x768 :: luck left of chips",
+          "pc_1024x768 :: no overlap chips/luck",
+          "pc_1280x1024 :: luck left of chips",
+          "pc_1280x1024 :: no overlap chips/luck"
+        ],
+        "newFailingCount": 32
+      },
+      {
+        "mutation": "desktop attack rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720 :: matches sheet attack"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "phone skill Q rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_749x361 :: matches sheet q"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "phone quest rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_667x375 :: column clear of right chips/quest",
+          "phone_667x375 :: column clear of right notify/quest",
+          "phone_667x375 :: no overlap chips/quest",
+          "phone_667x375 :: no overlap notify/quest",
+          "phone_749x361 :: column clear of right chips/quest",
+          "phone_749x361 :: column clear of right notify/quest"
+        ],
+        "newFailingCount": 17
+      },
+      {
+        "mutation": "everything may leave the screen",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x240_short :: below top bar combo",
+          "pc_1280x240_short :: on screen minimap"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "drawing": "docs/art/verification_2026-10-06/hud_layout_offline_2026-10-06.png",
+  "rects": {
+    "pc_1024x600": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1366,
+        "Y": 730
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1452.25,
+        "Y": 650
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1332.25,
+        "Y": 97
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 723.6,
+        "Y": 159.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 693,
+        "Y": 578.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1169.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 99.5
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 588,
+        "Y": 159.5
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1401,
+        "Y": 97
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1469.75,
+        "Y": 97
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 199.5
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 125.75
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 588,
+        "Y": 190.75
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1263.5,
+        "Y": 97
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 97
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1093.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 148.25
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1263.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 1161,
+        "Y": 170.75
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 588,
+        "Y": 97
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 182
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1337.25,
+        "Y": 637.5
+      }
+    },
+    "pc_1024x768": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1030,
+        "Y": 730
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1116.25,
+        "Y": 650
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 996.25,
+        "Y": 77.9688
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 555.6,
+        "Y": 140.4688
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 525,
+        "Y": 578.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 833.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 80.4688
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 420,
+        "Y": 140.4688
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1065,
+        "Y": 77.9688
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1133.75,
+        "Y": 77.9688
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 180.4688
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 106.7188
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 420,
+        "Y": 171.7188
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 927.5,
+        "Y": 77.9688
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 77.9688
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 757.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 129.2188
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 927.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 825,
+        "Y": 151.7188
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 420,
+        "Y": 77.9688
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 162.9688
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1001.25,
+        "Y": 637.5
+      }
+    },
+    "pc_1280x1024": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1110,
+        "Y": 854
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1196.25,
+        "Y": 774
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1076.25,
+        "Y": 68
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 595.6,
+        "Y": 130.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 565,
+        "Y": 702.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 913.75,
+        "Y": 845.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 70.5
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 460,
+        "Y": 130.5
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1145,
+        "Y": 68
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1213.75,
+        "Y": 68
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 170.5
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 96.75
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 460,
+        "Y": 161.75
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1007.5,
+        "Y": 68
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 68
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 837.5,
+        "Y": 931.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 119.25
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1007.5,
+        "Y": 859
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 905,
+        "Y": 141.75
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 460,
+        "Y": 68
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 153
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1081.25,
+        "Y": 761.5
+      }
+    },
+    "pc_1280x240_short": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1963.3333,
+        "Y": 230
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 2049.5833,
+        "Y": 150
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1929.5833,
+        "Y": 106.6667
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 1022.2667,
+        "Y": 169.1667
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 991.6667,
+        "Y": 96.6667
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1767.0833,
+        "Y": 221.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 109.1667
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 886.6667,
+        "Y": 169.1667
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1998.3333,
+        "Y": 106.6667
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 2067.0833,
+        "Y": 106.6667
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 175
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 135.4167
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 886.6667,
+        "Y": 200.4167
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1860.8333,
+        "Y": 106.6667
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 106.6667
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1690.8333,
+        "Y": 307.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 157.9167
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1860.8333,
+        "Y": 235
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 1758.3333,
+        "Y": 180.4167
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 886.6667,
+        "Y": 106.6667
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 191.6667
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1934.5833,
+        "Y": 137.5
+      }
+    },
+    "pc_1280x720": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1430,
+        "Y": 730
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1516.25,
+        "Y": 650
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1396.25,
+        "Y": 82.5
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 755.6,
+        "Y": 145
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 725,
+        "Y": 578.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1233.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 85
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 620,
+        "Y": 145
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1465,
+        "Y": 82.5
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1533.75,
+        "Y": 82.5
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 185
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 111.25
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 620,
+        "Y": 176.25
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1327.5,
+        "Y": 82.5
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 82.5
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1157.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 133.75
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1327.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 1225,
+        "Y": 156.25
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 620,
+        "Y": 82.5
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 167.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1401.25,
+        "Y": 637.5
+      }
+    },
+    "pc_1280x720_inset36": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1430,
+        "Y": 730
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1516.25,
+        "Y": 650
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1396.25,
+        "Y": 55
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 755.6,
+        "Y": 117.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 725,
+        "Y": 578.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1233.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 57.5
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 620,
+        "Y": 117.5
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1465,
+        "Y": 55
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1533.75,
+        "Y": 55
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 157.5
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 83.75
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 620,
+        "Y": 148.75
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1327.5,
+        "Y": 55
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 55
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1157.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 106.25
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1327.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 1225,
+        "Y": 128.75
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 620,
+        "Y": 55
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 140
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1401.25,
+        "Y": 637.5
+      }
+    },
+    "pc_1366x768": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1430.7812,
+        "Y": 730
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1517.0312,
+        "Y": 650
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1397.0312,
+        "Y": 77.9688
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 755.9906,
+        "Y": 140.4688
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 725.3906,
+        "Y": 578.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1234.5312,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 80.4688
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 620.3906,
+        "Y": 140.4688
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1465.7812,
+        "Y": 77.9688
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1534.5312,
+        "Y": 77.9688
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 180.4688
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 106.7188
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 620.3906,
+        "Y": 171.7188
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1328.2812,
+        "Y": 77.9688
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 77.9688
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1158.2812,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 129.2188
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1328.2812,
+        "Y": 735
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 1225.7812,
+        "Y": 151.7188
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 620.3906,
+        "Y": 77.9688
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 162.9688
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1402.0312,
+        "Y": 637.5
+      }
+    },
+    "pc_1920x1080": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1750,
+        "Y": 910
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1836.25,
+        "Y": 830
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1716.25,
+        "Y": 68
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 915.6,
+        "Y": 130.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 885,
+        "Y": 758.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1553.75,
+        "Y": 901.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 70.5
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 780,
+        "Y": 130.5
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1785,
+        "Y": 68
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1853.75,
+        "Y": 68
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 170.5
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 96.75
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 780,
+        "Y": 161.75
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1647.5,
+        "Y": 68
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 68
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1477.5,
+        "Y": 987.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 119.25
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1647.5,
+        "Y": 915
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 1545,
+        "Y": 141.75
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 780,
+        "Y": 68
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 153
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1721.25,
+        "Y": 817.5
+      }
+    },
+    "pc_800x600": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 1030,
+        "Y": 730
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1116.25,
+        "Y": 650
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 996.25,
+        "Y": 97
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 224.4,
+        "X": 555.6,
+        "Y": 159.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 525,
+        "Y": 578.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 833.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 99.5
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 129.6,
+        "X": 420,
+        "Y": 159.5
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1065,
+        "Y": 97
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1133.75,
+        "Y": 97
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 199.5
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 125.75
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 360,
+        "X": 420,
+        "Y": 190.75
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 927.5,
+        "Y": 97
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 97
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 757.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 148.25
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 927.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 825,
+        "Y": 170.75
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 360,
+        "X": 420,
+        "Y": 97
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 182
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1001.25,
+        "Y": 637.5
+      }
+    },
+    "pc_800x720_narrow": {
+      "attack": {
+        "H": 150,
+        "W": 150,
+        "X": 830,
+        "Y": 730
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 916.25,
+        "Y": 650
+      },
+      "bag": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 796.25,
+        "Y": 82.5
+      },
+      "chips": {
+        "H": 26.25,
+        "W": 120.5,
+        "X": 496.5,
+        "Y": 145
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 425,
+        "Y": 578.75
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 633.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 22.5,
+        "W": 262.5,
+        "X": 100,
+        "Y": 85
+      },
+      "luck": {
+        "H": 26.25,
+        "W": 120,
+        "X": 370.5,
+        "Y": 145
+      },
+      "map": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 865,
+        "Y": 82.5
+      },
+      "menu": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 933.75,
+        "Y": 82.5
+      },
+      "minimap": {
+        "H": 225,
+        "W": 225,
+        "X": 12.5,
+        "Y": 185
+      },
+      "mp_bar": {
+        "H": 18.75,
+        "W": 262.5,
+        "X": 100,
+        "Y": 111.25
+      },
+      "notify": {
+        "H": 146.25,
+        "W": 246.5,
+        "X": 370.5,
+        "Y": 176.25
+      },
+      "pet": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 727.5,
+        "Y": 82.5
+      },
+      "portrait": {
+        "H": 80,
+        "W": 80,
+        "X": 12.5,
+        "Y": 82.5
+      },
+      "potions": {
+        "H": 72.5,
+        "W": 152.5,
+        "X": 557.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 262.5,
+        "X": 100,
+        "Y": 133.75
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 727.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 117.5,
+        "W": 362.5,
+        "X": 625,
+        "Y": 156.25
+      },
+      "war_meter": {
+        "H": 57.5,
+        "W": 246.5,
+        "X": 370.5,
+        "Y": 82.5
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 350,
+        "X": 12.5,
+        "Y": 167.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 801.25,
+        "Y": 637.5
+      }
+    },
+    "phone_568x320": {
+      "attack": {
+        "H": 113.2461,
+        "W": 113.2461,
+        "X": 509.3316,
+        "Y": 287.6101
+      },
+      "auto": {
+        "H": 60,
+        "W": 60,
+        "X": 647.3333,
+        "Y": 244.3106
+      },
+      "bag": {
+        "H": 60,
+        "W": 60,
+        "X": 561.2443,
+        "Y": 81.3778
+      },
+      "chips": {
+        "H": 18.2003,
+        "W": 142.9079,
+        "X": 346.3364,
+        "Y": 123.8451
+      },
+      "combo": {
+        "H": 20.2225,
+        "W": 145.6021,
+        "X": 277.7837,
+        "Y": 271.2773
+      },
+      "ghost": {
+        "H": 60,
+        "W": 60,
+        "X": 564.7717,
+        "Y": 215.4935
+      },
+      "hp_bar": {
+        "H": 14.1558,
+        "W": 140.2029,
+        "X": 72.1335,
+        "Y": 82.389
+      },
+      "luck": {
+        "H": 18.2003,
+        "W": 120,
+        "X": 220.3364,
+        "Y": 123.8451
+      },
+      "map": {
+        "H": 60,
+        "W": 60,
+        "X": 625.2443,
+        "Y": 81.3778
+      },
+      "menu": {
+        "H": 60,
+        "W": 60,
+        "X": 689.2443,
+        "Y": 81.3778
+      },
+      "minimap": {
+        "H": 97.0681,
+        "W": 97.0681,
+        "X": 8.089,
+        "Y": 153.5113
+      },
+      "mp_bar": {
+        "H": 12.1335,
+        "W": 140.2029,
+        "X": 72.1335,
+        "Y": 98.567
+      },
+      "notify": {
+        "H": 39.4339,
+        "W": 268.9079,
+        "X": 220.3364,
+        "Y": 146.0899
+      },
+      "pet": {
+        "H": 60,
+        "W": 60,
+        "X": 497.2443,
+        "Y": 81.3778
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 8.089,
+        "Y": 81.3778
+      },
+      "potions": {
+        "H": 60,
+        "W": 113.2461,
+        "X": 310.1397,
+        "Y": 339.8451
+      },
+      "power_line": {
+        "H": 13.1446,
+        "W": 140.2029,
+        "X": 72.1335,
+        "Y": 112.7227
+      },
+      "q": {
+        "H": 72.8011,
+        "W": 72.8011,
+        "X": 429.4526,
+        "Y": 298.7325
+      },
+      "quest": {
+        "H": 36.4005,
+        "W": 227.5033,
+        "X": 521.741,
+        "Y": 147.4446
+      },
+      "war_meter": {
+        "H": 38.4228,
+        "W": 242.6702,
+        "X": 233.4553,
+        "Y": 81.3778
+      },
+      "xp_bar": {
+        "H": 6.0668,
+        "W": 204.2474,
+        "X": 8.089,
+        "Y": 143.4001
+      },
+      "z": {
+        "H": 72.8011,
+        "W": 72.8011,
+        "X": 471.9199,
+        "Y": 214.6542
+      }
+    },
+    "phone_667x375": {
+      "attack": {
+        "H": 132.9844,
+        "W": 132.9844,
+        "X": 620.1834,
+        "Y": 349.4882
+      },
+      "auto": {
+        "H": 60,
+        "W": 60,
+        "X": 779.3333,
+        "Y": 312.0045
+      },
+      "bag": {
+        "H": 60,
+        "W": 60,
+        "X": 691.5995,
+        "Y": 82.0828
+      },
+      "chips": {
+        "H": 21.3725,
+        "W": 191.0254,
+        "X": 412.154,
+        "Y": 131.9519
+      },
+      "combo": {
+        "H": 23.7472,
+        "W": 170.98,
+        "X": 348.2777,
+        "Y": 338.4424
+      },
+      "ghost": {
+        "H": 67.6796,
+        "W": 67.6796,
+        "X": 686.6756,
+        "Y": 274.3249
+      },
+      "hp_bar": {
+        "H": 16.6231,
+        "W": 175.0975,
+        "X": 74.2483,
+        "Y": 83.2701
+      },
+      "luck": {
+        "H": 21.3725,
+        "W": 120,
+        "X": 286.154,
+        "Y": 131.9519
+      },
+      "map": {
+        "H": 60,
+        "W": 60,
+        "X": 755.717,
+        "Y": 82.0828
+      },
+      "menu": {
+        "H": 60,
+        "W": 60,
+        "X": 819.8344,
+        "Y": 82.0828
+      },
+      "minimap": {
+        "H": 113.9866,
+        "W": 113.9866,
+        "X": 9.4989,
+        "Y": 156.3311
+      },
+      "mp_bar": {
+        "H": 14.2483,
+        "W": 175.0975,
+        "X": 74.2483,
+        "Y": 102.2679
+      },
+      "notify": {
+        "H": 46.3071,
+        "W": 317.0254,
+        "X": 286.154,
+        "Y": 158.0739
+      },
+      "pet": {
+        "H": 60,
+        "W": 60,
+        "X": 627.482,
+        "Y": 82.0828
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 9.4989,
+        "Y": 82.0828
+      },
+      "potions": {
+        "H": 64.1175,
+        "W": 132.9844,
+        "X": 386.2733,
+        "Y": 417.1678
+      },
+      "power_line": {
+        "H": 15.4357,
+        "W": 175.0975,
+        "X": 74.2483,
+        "Y": 118.891
+      },
+      "q": {
+        "H": 85.49,
+        "W": 85.49,
+        "X": 526.3818,
+        "Y": 362.5492
+      },
+      "quest": {
+        "H": 42.745,
+        "W": 267.1562,
+        "X": 612.6782,
+        "Y": 149.2069
+      },
+      "war_meter": {
+        "H": 45.1197,
+        "W": 284.9666,
+        "X": 302.1834,
+        "Y": 82.0828
+      },
+      "xp_bar": {
+        "H": 7.1242,
+        "W": 239.8469,
+        "X": 9.4989,
+        "Y": 144.4575
+      },
+      "z": {
+        "H": 85.49,
+        "W": 85.49,
+        "X": 576.251,
+        "Y": 271.9502
+      }
+    },
+    "phone_749x361": {
+      "attack": {
+        "H": 149.3333,
+        "W": 149.3333,
+        "X": 712,
+        "Y": 321.3333
+      },
+      "auto": {
+        "H": 64,
+        "W": 64,
+        "X": 886.6667,
+        "Y": 286.6667
+      },
+      "bag": {
+        "H": 64,
+        "W": 64,
+        "X": 780,
+        "Y": 82.6667
+      },
+      "chips": {
+        "H": 24,
+        "W": 221.84,
+        "X": 455.4933,
+        "Y": 138.6667
+      },
+      "combo": {
+        "H": 26.6667,
+        "W": 192,
+        "X": 406.6667,
+        "Y": 314.6667
+      },
+      "ghost": {
+        "H": 76,
+        "W": 76,
+        "X": 786.6667,
+        "Y": 242.6667
+      },
+      "hp_bar": {
+        "H": 18.6667,
+        "W": 200,
+        "X": 80,
+        "Y": 84
+      },
+      "luck": {
+        "H": 24,
+        "W": 128.16,
+        "X": 321.3333,
+        "Y": 138.6667
+      },
+      "map": {
+        "H": 64,
+        "W": 64,
+        "X": 852,
+        "Y": 82.6667
+      },
+      "menu": {
+        "H": 64,
+        "W": 64,
+        "X": 924,
+        "Y": 82.6667
+      },
+      "minimap": {
+        "H": 128,
+        "W": 128,
+        "X": 10.6667,
+        "Y": 162.6667
+      },
+      "mp_bar": {
+        "H": 16,
+        "W": 200,
+        "X": 80,
+        "Y": 105.3333
+      },
+      "notify": {
+        "H": 52,
+        "W": 356,
+        "X": 321.3333,
+        "Y": 168
+      },
+      "pet": {
+        "H": 64,
+        "W": 64,
+        "X": 708,
+        "Y": 82.6667
+      },
+      "portrait": {
+        "H": 64,
+        "W": 64,
+        "X": 10.6667,
+        "Y": 82.6667
+      },
+      "potions": {
+        "H": 72,
+        "W": 149.3333,
+        "X": 449.3333,
+        "Y": 397.3333
+      },
+      "power_line": {
+        "H": 17.3333,
+        "W": 200,
+        "X": 80,
+        "Y": 124
+      },
+      "q": {
+        "H": 96,
+        "W": 96,
+        "X": 606.6667,
+        "Y": 336
+      },
+      "quest": {
+        "H": 48,
+        "W": 300,
+        "X": 688,
+        "Y": 154.6667
+      },
+      "war_meter": {
+        "H": 50.6667,
+        "W": 320,
+        "X": 339.3333,
+        "Y": 82.6667
+      },
+      "xp_bar": {
+        "H": 8,
+        "W": 269.3333,
+        "X": 10.6667,
+        "Y": 149.3333
+      },
+      "z": {
+        "H": 96,
+        "W": 96,
+        "X": 662.6667,
+        "Y": 240
+      }
+    },
+    "phone_749x361_notch": {
+      "attack": {
+        "H": 130.5919,
+        "W": 130.5919,
+        "X": 606.7468,
+        "Y": 304.2101
+      },
+      "auto": {
+        "H": 60,
+        "W": 60,
+        "X": 763.3333,
+        "Y": 266.0214
+      },
+      "bag": {
+        "H": 60,
+        "W": 60,
+        "X": 676.0053,
+        "Y": 81.9973
+      },
+      "chips": {
+        "H": 20.988,
+        "W": 185.3218,
+        "X": 407.0058,
+        "Y": 130.9693
+      },
+      "combo": {
+        "H": 23.32,
+        "W": 167.9039,
+        "X": 339.733,
+        "Y": 292.5234
+      },
+      "ghost": {
+        "H": 66.4619,
+        "W": 66.4619,
+        "X": 672.0427,
+        "Y": 229.5594
+      },
+      "hp_bar": {
+        "H": 16.324,
+        "W": 170.8678,
+        "X": 73.992,
+        "Y": 83.1633
+      },
+      "luck": {
+        "H": 20.988,
+        "W": 120,
+        "X": 281.0058,
+        "Y": 130.9693
+      },
+      "map": {
+        "H": 60,
+        "W": 60,
+        "X": 740.0053,
+        "Y": 81.9973
+      },
+      "menu": {
+        "H": 60,
+        "W": 60,
+        "X": 804.0053,
+        "Y": 81.9973
+      },
+      "minimap": {
+        "H": 111.9359,
+        "W": 111.9359,
+        "X": 9.328,
+        "Y": 155.9893
+      },
+      "mp_bar": {
+        "H": 13.992,
+        "W": 170.8678,
+        "X": 73.992,
+        "Y": 101.8193
+      },
+      "notify": {
+        "H": 45.474,
+        "W": 311.3218,
+        "X": 281.0058,
+        "Y": 156.6213
+      },
+      "pet": {
+        "H": 60,
+        "W": 60,
+        "X": 612.0053,
+        "Y": 81.9973
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 9.328,
+        "Y": 81.9973
+      },
+      "potions": {
+        "H": 62.964,
+        "W": 130.5919,
+        "X": 377.0449,
+        "Y": 370.672
+      },
+      "power_line": {
+        "H": 15.158,
+        "W": 170.8678,
+        "X": 73.992,
+        "Y": 118.1433
+      },
+      "q": {
+        "H": 83.9519,
+        "W": 83.9519,
+        "X": 514.6328,
+        "Y": 317.036
+      },
+      "quest": {
+        "H": 41.976,
+        "W": 262.3498,
+        "X": 601.6555,
+        "Y": 148.9933
+      },
+      "war_meter": {
+        "H": 44.308,
+        "W": 279.8398,
+        "X": 296.7468,
+        "Y": 81.9973
+      },
+      "xp_bar": {
+        "H": 6.996,
+        "W": 235.5318,
+        "X": 9.328,
+        "Y": 144.3293
+      },
+      "z": {
+        "H": 83.9519,
+        "W": 83.9519,
+        "X": 563.6048,
+        "Y": 227.2274
+      }
+    },
+    "phone_844x390": {
+      "attack": {
+        "H": 149.3333,
+        "W": 149.3333,
+        "X": 838.6667,
+        "Y": 360
+      },
+      "auto": {
+        "H": 64,
+        "W": 64,
+        "X": 1013.3333,
+        "Y": 325.3333
+      },
+      "bag": {
+        "H": 64,
+        "W": 64,
+        "X": 906.6667,
+        "Y": 82.6667
+      },
+      "chips": {
+        "H": 24,
+        "W": 221.84,
+        "X": 518.8267,
+        "Y": 138.6667
+      },
+      "combo": {
+        "H": 26.6667,
+        "W": 192,
+        "X": 533.3333,
+        "Y": 353.3333
+      },
+      "ghost": {
+        "H": 76,
+        "W": 76,
+        "X": 913.3333,
+        "Y": 281.3333
+      },
+      "hp_bar": {
+        "H": 18.6667,
+        "W": 200,
+        "X": 80,
+        "Y": 84
+      },
+      "luck": {
+        "H": 24,
+        "W": 128.16,
+        "X": 384.6667,
+        "Y": 138.6667
+      },
+      "map": {
+        "H": 64,
+        "W": 64,
+        "X": 978.6667,
+        "Y": 82.6667
+      },
+      "menu": {
+        "H": 64,
+        "W": 64,
+        "X": 1050.6667,
+        "Y": 82.6667
+      },
+      "minimap": {
+        "H": 128,
+        "W": 128,
+        "X": 10.6667,
+        "Y": 162.6667
+      },
+      "mp_bar": {
+        "H": 16,
+        "W": 200,
+        "X": 80,
+        "Y": 105.3333
+      },
+      "notify": {
+        "H": 52,
+        "W": 356,
+        "X": 384.6667,
+        "Y": 168
+      },
+      "pet": {
+        "H": 64,
+        "W": 64,
+        "X": 834.6667,
+        "Y": 82.6667
+      },
+      "portrait": {
+        "H": 64,
+        "W": 64,
+        "X": 10.6667,
+        "Y": 82.6667
+      },
+      "potions": {
+        "H": 72,
+        "W": 149.3333,
+        "X": 576,
+        "Y": 436
+      },
+      "power_line": {
+        "H": 17.3333,
+        "W": 200,
+        "X": 80,
+        "Y": 124
+      },
+      "q": {
+        "H": 96,
+        "W": 96,
+        "X": 733.3333,
+        "Y": 374.6667
+      },
+      "quest": {
+        "H": 48,
+        "W": 300,
+        "X": 814.6667,
+        "Y": 154.6667
+      },
+      "war_meter": {
+        "H": 50.6667,
+        "W": 320,
+        "X": 402.6667,
+        "Y": 82.6667
+      },
+      "xp_bar": {
+        "H": 8,
+        "W": 269.3333,
+        "X": 10.6667,
+        "Y": 149.3333
+      },
+      "z": {
+        "H": 96,
+        "W": 96,
+        "X": 789.3333,
+        "Y": 278.6667
+      }
+    },
+    "tablet_1024x768": {
+      "attack": {
+        "H": 143.5514,
+        "W": 143.5514,
+        "X": 646.8199,
+        "Y": 496.0639
+      },
+      "auto": {
+        "H": 61.522,
+        "W": 61.522,
+        "X": 826.114,
+        "Y": 451.3493
+      },
+      "bag": {
+        "H": 61.522,
+        "W": 61.522,
+        "X": 749.7997,
+        "Y": 59.5018
+      },
+      "chips": {
+        "H": 23.0708,
+        "W": 213.0184,
+        "X": 438.0897,
+        "Y": 113.3336
+      },
+      "combo": {
+        "H": 25.6342,
+        "W": 184.5661,
+        "X": 353.3086,
+        "Y": 478.2652
+      },
+      "ghost": {
+        "H": 73.0574,
+        "W": 73.0574,
+        "X": 718.5956,
+        "Y": 409.0529
+      },
+      "hp_bar": {
+        "H": 17.9439,
+        "W": 192.2563,
+        "X": 76.9025,
+        "Y": 60.7835
+      },
+      "luck": {
+        "H": 23.0708,
+        "W": 123.1979,
+        "X": 308.8919,
+        "Y": 113.3336
+      },
+      "map": {
+        "H": 61.522,
+        "W": 61.522,
+        "X": 819.012,
+        "Y": 59.5018
+      },
+      "menu": {
+        "H": 61.522,
+        "W": 61.522,
+        "X": 888.2243,
+        "Y": 59.5018
+      },
+      "minimap": {
+        "H": 123.0441,
+        "W": 123.0441,
+        "X": 10.2537,
+        "Y": 136.4044
+      },
+      "mp_bar": {
+        "H": 15.3805,
+        "W": 192.2563,
+        "X": 76.9025,
+        "Y": 81.2909
+      },
+      "notify": {
+        "H": 49.9866,
+        "W": 342.2163,
+        "X": 308.8919,
+        "Y": 141.5312
+      },
+      "pet": {
+        "H": 61.522,
+        "W": 61.522,
+        "X": 680.5874,
+        "Y": 59.5018
+      },
+      "portrait": {
+        "H": 61.522,
+        "W": 61.522,
+        "X": 10.2537,
+        "Y": 59.5018
+      },
+      "potions": {
+        "H": 69.2123,
+        "W": 143.5514,
+        "X": 394.3233,
+        "Y": 569.1213
+      },
+      "power_line": {
+        "H": 16.6622,
+        "W": 192.2563,
+        "X": 76.9025,
+        "Y": 99.2348
+      },
+      "q": {
+        "H": 92.283,
+        "W": 92.283,
+        "X": 545.5649,
+        "Y": 510.1627
+      },
+      "quest": {
+        "H": 46.1415,
+        "W": 288.3845,
+        "X": 661.3618,
+        "Y": 128.7141
+      },
+      "war_meter": {
+        "H": 48.7049,
+        "W": 307.6101,
+        "X": 326.1949,
+        "Y": 59.5018
+      },
+      "xp_bar": {
+        "H": 7.6903,
+        "W": 258.9052,
+        "X": 10.2537,
+        "Y": 123.5873
+      },
+      "z": {
+        "H": 92.283,
+        "W": 92.283,
+        "X": 599.3967,
+        "Y": 406.4895
+      }
+    },
+    "tablet_1180x820": {
+      "attack": {
+        "H": 149.3333,
+        "W": 149.3333,
+        "X": 726.8293,
+        "Y": 501.626
+      },
+      "auto": {
+        "H": 64,
+        "W": 64,
+        "X": 907.5122,
+        "Y": 460.9431
+      },
+      "bag": {
+        "H": 64,
+        "W": 64,
+        "X": 817.4309,
+        "Y": 56.2602
+      },
+      "chips": {
+        "H": 24,
+        "W": 221.84,
+        "X": 474.2088,
+        "Y": 112.2602
+      },
+      "combo": {
+        "H": 26.6667,
+        "W": 192,
+        "X": 421.4959,
+        "Y": 488.9431
+      },
+      "ghost": {
+        "H": 76,
+        "W": 76,
+        "X": 801.4959,
+        "Y": 416.9431
+      },
+      "hp_bar": {
+        "H": 18.6667,
+        "W": 200,
+        "X": 80,
+        "Y": 57.5935
+      },
+      "luck": {
+        "H": 24,
+        "W": 128.16,
+        "X": 340.0488,
+        "Y": 112.2602
+      },
+      "map": {
+        "H": 64,
+        "W": 64,
+        "X": 889.4309,
+        "Y": 56.2602
+      },
+      "menu": {
+        "H": 64,
+        "W": 64,
+        "X": 961.4309,
+        "Y": 56.2602
+      },
+      "minimap": {
+        "H": 128,
+        "W": 128,
+        "X": 10.6667,
+        "Y": 136.2602
+      },
+      "mp_bar": {
+        "H": 16,
+        "W": 200,
+        "X": 80,
+        "Y": 78.9268
+      },
+      "notify": {
+        "H": 52,
+        "W": 356,
+        "X": 340.0488,
+        "Y": 141.5935
+      },
+      "pet": {
+        "H": 64,
+        "W": 64,
+        "X": 745.4309,
+        "Y": 56.2602
+      },
+      "portrait": {
+        "H": 64,
+        "W": 64,
+        "X": 10.6667,
+        "Y": 56.2602
+      },
+      "potions": {
+        "H": 72,
+        "W": 149.3333,
+        "X": 464.1626,
+        "Y": 577.626
+      },
+      "power_line": {
+        "H": 17.3333,
+        "W": 200,
+        "X": 80,
+        "Y": 97.5935
+      },
+      "q": {
+        "H": 96,
+        "W": 96,
+        "X": 621.4959,
+        "Y": 516.2927
+      },
+      "quest": {
+        "H": 48,
+        "W": 300,
+        "X": 725.4309,
+        "Y": 128.2602
+      },
+      "war_meter": {
+        "H": 50.6667,
+        "W": 320,
+        "X": 358.0488,
+        "Y": 56.2602
+      },
+      "xp_bar": {
+        "H": 8,
+        "W": 269.3333,
+        "X": 10.6667,
+        "Y": 122.9268
+      },
+      "z": {
+        "H": 96,
+        "W": 96,
+        "X": 677.4959,
+        "Y": 414.2764
+      }
+    }
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "1d042fb0ac0660dc7709c179e75de65cdc0b039b1480764f9e24ce54379723f4",
+    "tools/fixtures/hud_layout_offline.luau": "265015b4ecdb59ef2e742cacd3cbf1420e78920fd06791237d11bcc22f17a410",
+    "docs/design/hud_layout_v2_2026-10-06.json": "cc551d35dd4c4c79663eff6f767aae96ae7c2fb5a984267f1f90dcb02724154b",
+    "src/ReplicatedStorage/Shared/Config.luau": "b506964f0c88d353da9081c730be05decfeb2e614062a138b6159d632ca39ecb"
+  },
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "SPEC A23-26 HUD v2 via HudLayout.Compute(env) -> { [id] = {X,Y,W,H} } in MainGui logical units: items keep their approved distance to their edge (TL / TC / TR / BC; BR to the PC corner or the live touch jump button), top rows follow the real top-bar inset, narrow phone safe areas shrink the whole layout, touch targets >= 60du (the rail re-spaces so grown buttons never touch), one centre column (meter, luck + chips row, notify) between the left and right blocks with >= 240du for the meter, everything on screen below the top bar; the reference screens match the approved sheet within 1 px.",
+  "limitations": "Pure-function check only: no Roblox engine, so text fit, art, real GuiInset / safe insets, the real TouchGui (assumed to share MainGui's safe area), chat window size and the PlayerList are estimates. Studio captures at 1280x720 / 749x361 / 844x390 are separate evidence."
+}
