@@ -1726,5 +1726,293 @@
   "cutout": "none — opaque cloth Decal; resized 1024x1536 -> 683x1024, no crop",
   "preview": "art/review/banners4_sheet.png",
   "note": "교차로 승리 깃발(visual_direction 2-5 전쟁 결과: 이긴 진영 깃발을 10분 동안 교차로에): 장인 길드. 2안 중 1(톱니 + 청록 보석, 리벳 테). 깃발 파트(HaloFlag 0.2x8x4 등)는 1:2라 2:3 그림이 세로로 늘어나니 파트 폭을 8x5.3처럼 2:3으로 맞추거나 그대로 써도 됨. 이미지 개발·게임성 개발이 Decal로 붙여 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "PanelDark": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_PanelDark.txt",
+  "original": "art/out/s2/PanelDark_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/PanelDark.png",
+  "size": "512x229 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 어두운 HUD 판(남색 + 얇은 금줄 + 모서리 사파이어). Parts.PanelCard 대체. 2안 중 a(더 차분).",
+  "slice": [
+   52,
+   52,
+   460,
+   177
+  ]
+ },
+ "PanelHeader": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_PanelHeader.txt",
+  "original": "art/out/s2/PanelHeader_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/PanelHeader.png",
+  "size": "512x121 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 창 머리띠(왼쪽 빈 금테 동그라미 + 남색 몸통). Parts.RibbonHeader 대체. 세로로 늘리지 말 것(FitHeight) — 동그라미가 찌그러짐. 동그라미 안에 진영 문장/아이콘.",
+  "slice": [
+   130,
+   40,
+   460,
+   81
+  ]
+ },
+ "TitleRibbon": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_TitleRibbon.txt",
+  "original": "art/out/s2/TitleRibbon_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/TitleRibbon.png",
+  "size": "512x135 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 큰 제목 리본(크림 + 금테 + 접힌 꼬리). Parts.TitleRibbon. 가로로만 늘림(FitHeight).",
+  "slice": [
+   75,
+   40,
+   437,
+   95
+  ]
+ },
+ "BtnSecondary": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_BtnSecondary.txt",
+  "original": "art/out/s2/BtnSecondary_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BtnSecondary.png",
+  "size": "512x160 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 파랑 보조 버튼(취소·뒤로). BtnPrimary와 같은 캡슐 모양. 가로 9조각.",
+  "slice": [
+   80,
+   50,
+   432,
+   110
+  ]
+ },
+ "BtnConfirm": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_BtnConfirm.txt",
+  "original": "art/out/s2/BtnConfirm_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BtnConfirm.png",
+  "size": "512x156 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 초록 받기 버튼(보상 받기·완료). 가로 9조각.",
+  "slice": [
+   78,
+   50,
+   434,
+   106
+  ]
+ },
+ "BtnSquare": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_BtnSquare.txt",
+  "original": "art/out/s2/BtnSquare_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BtnSquare.png",
+  "size": "510x512 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 네모 아이콘 버튼 바탕(남색 + 금테 + 아래 턱). Parts.BtnSquare 대체. 위에 글리프/아이콘을 얹음.",
+  "slice": [
+   100,
+   100,
+   410,
+   412
+  ]
+ },
+ "BtnRound": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_BtnRound.txt",
+  "original": "art/out/s2/BtnRound_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BtnRound.png",
+  "size": "512x495 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 동그라미 작은 버튼 바탕(닫기·뒤로·정보). 늘리지 말고 정사각 그대로, GlyphClose를 60% 크기로 얹음."
+ },
+ "ListRow": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_ListRow.txt",
+  "original": "art/out/s2/ListRow_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/ListRow.png",
+  "size": "512x128 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 목록 줄(크림 + 얇은 금테 + 모서리 금 잎). 상점·대장간·아이템 줄. 9조각.",
+  "slice": [
+   50,
+   45,
+   462,
+   83
+  ]
+ },
+ "Chip": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_Chip.txt",
+  "original": "art/out/s2/Chip_b_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/Chip.png",
+  "size": "512x189 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 흰 캡슐 칩(얇은 남색 테) — ImageColor3로 칠함(안전 초록·PvP 주황·새싹 하늘·가격 금). 새 키(기존 Pill은 남김). 2안 중 b(테가 또렷).",
+  "slice": [
+   95,
+   60,
+   417,
+   129
+  ]
+ },
+ "DialogBox": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_DialogBox.txt",
+  "original": "art/out/s2/DialogBox_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/DialogBox.png",
+  "size": "512x189 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 대화창(크림 + 두꺼운 남색 테 + 금줄 + 모서리 사파이어). 9조각.",
+  "slice": [
+   50,
+   50,
+   462,
+   139
+  ]
+ },
+ "GlyphClose": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphClose.txt",
+  "original": "art/out/s2/GlyphClose_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphClose.png",
+  "size": "512x507 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 흰 닫기 X 글리프(두 획 같은 굵기). BtnRound 위에."
+ },
+ "StatusPlate": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_StatusPlate.txt",
+  "original": "art/out/s2/StatusPlate_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/StatusPlate.png",
+  "size": "512x153 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. HUD 상태판(왼쪽 빈 동그라미 + 남색 몸통). 세로로 늘리지 말 것(FitHeight) — 동그라미 찌그러짐. 동그라미에 얼굴 링/레벨 배지.",
+  "slice": [
+   140,
+   50,
+   460,
+   103
+  ]
+ },
+ "BarTrack": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_BarTrack.txt",
+  "original": "art/out/s2/BarTrack_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BarTrack.png",
+  "size": "512x86 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 바 빈 틀(남색 홈 + 금테). Parts.BarTrack 대체. 가로 9조각.",
+  "slice": [
+   45,
+   25,
+   467,
+   61
+  ]
+ },
+ "BarFill": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_BarFill.txt",
+  "original": "art/out/s2/BarFill_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BarFill.png",
+  "size": "512x76 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 흰 바 채움(외곽선 없음) — HP 초록(30% 아래 빨강)·MP #3B5BDB·XP 하늘로 칠함. BarTrack 안쪽에 얹음. 가로 9조각.",
+  "slice": [
+   38,
+   20,
+   474,
+   56
+  ]
+ },
+ "IconSafe": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconSafe.txt",
+  "original": "art/out/s2/IconSafe_c_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconSafe.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (tools/cutout_flat cutout/square/edge_fix, 512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 안전 지역 아이콘(초록 방패 + 흰 체크). Parts.IconSafe 대체. 1차 a/b는 바깥 반짝이 조각이 붙어 버리고 문구 고친 c/d 중 c."
+ },
+ "IconHammer": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconHammer.txt",
+  "original": "art/out/s2/IconHammer_c_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconHammer.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (tools/cutout_flat cutout/square/edge_fix, 512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 장인 '제작 특화' 특성 아이콘(황동 망치 + 청록 보석). Parts.IconHammer. c/d 중 c."
+ },
+ "IconBoot": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconBoot.txt",
+  "original": "art/out/s2/IconBoot_c_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconBoot.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (tools/cutout_flat cutout/square/edge_fix, 512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 이동 속도 아이콘(날개 장화 + 하늘색 바람 줄). 직업 선택 '속도'·펫 속도 공용. Parts.IconBoot. c/d 중 c."
+ },
+ "IconAttack": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconAttack.txt",
+  "original": "art/out/s2/IconAttack_c_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconAttack.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (tools/cutout_flat cutout/square/edge_fix, 512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b45_common_ui_sheet.png",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 공격력 아이콘(짧은 강철 검 + 주황 날 빛). 직업 선택 '공격' 줄. Parts.IconAttack 대체. c/d 중 c."
  }
 }
