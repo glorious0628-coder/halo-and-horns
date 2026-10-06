@@ -155,6 +155,24 @@ def main():
                 moved_p = True
             rs.extend(dq)
             ps.extend(dp)
+        if loop and frames > 2:
+            # close the loop (review 8e89d2b): blend a correction in over the clip so the last frame equals the
+            # first; this also removes the linear drift of the hips (in-place clips still creep forward)
+            n = frames - 1
+            q0, qn = tuple(rs[0:4]), tuple(rs[4 * n:4 * n + 4])
+            corr = qmul(q0, qinv(qn))
+            if corr[3] < 0:
+                corr = tuple(-x for x in corr)
+            p0, pn = ps[0:3], ps[3 * n:3 * n + 3]
+            drift = [b - a for a, b in zip(p0, pn)]
+            for f in range(frames):
+                w = f / n
+                c = slerp((0.0, 0.0, 0.0, 1.0), corr, w)
+                q = qmul(c, tuple(rs[4 * f:4 * f + 4]))
+                if q[3] < 0:
+                    q = tuple(-x for x in q)
+                rs[4 * f:4 * f + 4] = q
+                ps[3 * f:3 * f + 3] = [v - d * w for v, d in zip(ps[3 * f:3 * f + 3], drift)]
         if moved_r or moved_p:
             entry = {"r": rs}
             if moved_p:
