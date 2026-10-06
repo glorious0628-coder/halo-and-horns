@@ -3939,5 +3939,29 @@
   "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked 24/64px",
   "preview": "art/review/s2/settings_chips_maps_sheet.png",
   "note": "지도 표시: 호박밭(주황 원 + 웃는 호박). 마을 4 = 남색 원, 사냥터 = 분위기 색 원. 앞선 6개(9a8b47a)와 같은 흰 테 원 틀."
+ },
+ "Thumb_A_FactionClash": {
+  "date": "2026-10-06",
+  "size": "1920x1080 RGB (불투명, 글자 없음)",
+  "cutout": "none — Firefly 3:2 1536x1024 높음 품질 → Adobe image_generative_expand 좌우 142px(1820x1024) → 1920x1080 LANCZOS. 네 인물·왕관이 90% 안전 영역 안",
+  "preview": "art/review/thumb_final_sheet.jpg (100% 크롭 포함)",
+  "status": "pending-review",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High(5크레딧), 3:2, 참조 시트 art/review/thumb_refsheet_A3→A5(A_v4_2 + 승인 직업 그림 CLS_* 4)",
+  "prompt": "art/prompts/Thumb_A_v4.txt (최종 문구는 '모두 화면 안쪽' 추가, 기록은 status 문서)",
+  "original": "art/out/thumb/Thumb_A_HQ_src.png, art/out/thumb/Thumb_A_HQ_expand.png",
+  "file": "art/ui/Thumb_A_FactionClash.png",
+  "note": "체험 썸네일 1(빛 vs 뿔 광장 + 네모 젤리 슬라임). 사람 그림 — 검수 100% 확인 → 사용자 확인 뒤 approved. 업로드는 공개 때 사용자가 체험 설정에서(LAUNCH-OPS), 10/28까지 준비."
+ },
+ "Thumb_C_Halloween": {
+  "date": "2026-10-06",
+  "size": "1920x1080 RGB (불투명, 글자 없음)",
+  "cutout": "none — Firefly 3:2 1536x1024 높음 품질 → Adobe image_generative_expand 좌우 142px(1820x1024) → 1920x1080 LANCZOS. 네 인물·왕관이 90% 안전 영역 안",
+  "preview": "art/review/thumb_final_sheet.jpg (100% 크롭 포함)",
+  "status": "pending-review",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High(5크레딧), 3:2, 참조 시트 art/review/thumb_refsheet_C3→C5(C_v4_3 + CLS_* 4)",
+  "prompt": "art/prompts/Thumb_C_v4.txt",
+  "original": "art/out/thumb/Thumb_C_HQ_src.png, art/out/thumb/Thumb_C_HQ_expand.png",
+  "file": "art/ui/Thumb_C_Halloween.png",
+  "note": "체험 썸네일 2(핼러윈, 가운데 호박 가족만 — A23-45). 사람 그림 — 검수 100% 확인 → 사용자 확인 뒤 approved. 핼러윈 끝(11/9)에 내림."
  }
 }
