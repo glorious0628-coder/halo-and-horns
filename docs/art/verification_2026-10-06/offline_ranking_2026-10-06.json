@@ -5232,7 +5232,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "312c36eb8a6cac8cb7b4114776f705b9e6f7723147502523d43d087b870e497c",
+    "src/ReplicatedStorage/Shared/Config.luau": "b47d08f47a1f32c0e1d6afd0f845878405b7de1a1900acde807407c5ac5b8a61",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/RankingService.luau": "50ce840d503ecd8faa70a3692f8428ef823b5b537e3d591d5b765175f52decdc",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
@@ -5240,13 +5240,13 @@
     "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3",
-    "src/ServerScriptService/CombatService.luau": "58bdfb4f6544bbd889df5f5616ef8ee25f8ca99b5e168b5e0e7e3220ab97cc44",
+    "src/ServerScriptService/CombatService.luau": "55e50d8d24e25039b9a9142f1f9ab206ab07503aa1e1a9398191fdc32b9c0a1f",
     "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
     "src/ServerScriptService/PlayerService.luau": "2ce4b689d4c44fa077774759ac33ef7a4efc853cb39e00d81aa810f4c71f4ac5",
     "src/ServerScriptService/CharacterVisuals.luau": "40a335a59c6e11e730b59daf9761c476d42187e0ea47421721733a6a83954f47",
-    "src/ServerScriptService/KaijuService.luau": "16c8c973613c6943c5877f2c8543c7e1ca98c889e6ed78760e0727fb047e5e0e"
+    "src/ServerScriptService/KaijuService.luau": "fa3018fff557ac6bd89d601f8e469e6a84e994fde5eb1836fa2ae555495a3b9c"
   },
-  "fixtureSHA256": "e8cd941b8666cce656d038115a5a5e7c524b8bc7a1f0b2f3fecfc06416003e2e",
+  "fixtureSHA256": "3b853319edfff57ce40d47dd24f0ae05227dc3c138ab186dd43b8b035cb91620",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

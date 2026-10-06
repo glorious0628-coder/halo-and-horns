@@ -1,0 +1,429 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 32,
+  "failedChecks": 0,
+  "namedChecks": 32,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Death: a hit within 3 s is the cause; 30 below the floor = a fall",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every Config.Death line has an En pair",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the 'Other' tip from BB14",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "a slime KO: By Monster, the monster's name, nothing lost, RespawnIn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "one KO payload per death",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "the payload goes to the victim only (never all clients)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "a monster hit 3.5 s before: By Other (a reset)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "goblin chief's name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "the next death without a new hit is not the old monster again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "an unknown kind: By Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "a kaiju stomp: By Kaiju, the kaiju's public name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "40 below the floor: By Fall",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "20 below the floor (a hole, not the void): By Other",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "the body already gone (destroyed by the void): By Fall",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "in free fall: By Fall",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "a monster hit within 3 s wins over the height (By order)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "causes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "a PvP KO: By Player, PublicName, the killer's faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "Lost = the plundered gold (the real pouch difference)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "a Wanted Horns' KO: Lost = what the bounty KO took",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "a clean Horns KO'd: nothing lost",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "a hidden killer is '<진영> 한 명' on the KO screen too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "the thief carries a sack",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "KO'd with a grudge sack: Sack = true (and it is gone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "a hit with an attacker is a PvP KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "a player's hit never records a monster source (killer gone: By Other)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "a recent monster hit never hides the PvP killer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "players",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 5,
+  "staticFailures": [],
+  "mutations": {
+    "total": 16,
+    "applied": 16,
+    "caught": 16,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the source kind is never recorded",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: a kaiju stomp: By Kaiju, the kaiju's public name",
+          "causes :: a monster hit within 3 s wins over the height (By order)",
+          "causes :: a slime KO: By Monster, the monster's name, nothing lost, RespawnIn",
+          "causes :: goblin chief's name"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a player's hit records a monster source",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players :: a player's hit never records a monster source (killer gone: By Other)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any old hit is the cause",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: a monster hit 3.5 s before: By Other (a reset)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the source outlives the death",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: the next death without a new hit is not the old monster again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "monster before player",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players :: a recent monster hit never hides the PvP killer"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an unknown kind counts as a monster",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: group ran to the end without a Lua error",
+          "causes :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no fall below the floor",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: 40 below the floor: By Fall"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "free fall ignored",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: in free fall: By Fall"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the void is not a fall",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: group ran to the end without a Lua error",
+          "causes :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Lost measured after the wrong step",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players :: Lost = the plundered gold (the real pouch difference)",
+          "players :: a Wanted Horns' KO: Lost = what the bounty KO took"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Sack always false",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players :: KO'd with a grudge sack: Sack = true (and it is gone)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the payload goes to everyone",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: a slime KO: By Monster, the monster's name, nothing lost, RespawnIn",
+          "causes :: group ran to the end without a Lua error",
+          "causes :: one KO payload per death",
+          "causes :: the payload goes to the victim only (never all clients)",
+          "players :: a PvP KO: By Player, PublicName, the killer's faction",
+          "players :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the killer's raw name",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "players :: a hidden killer is '<진영> 한 명' on the KO screen too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kaiju KO named as a monster",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: a kaiju stomp: By Kaiju, the kaiju's public name"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no KO payload",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: a slime KO: By Monster, the monster's name, nothing lost, RespawnIn",
+          "causes :: group ran to the end without a Lua error",
+          "causes :: one KO payload per death",
+          "players :: a PvP KO: By Player, PublicName, the killer's faction",
+          "players :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "RespawnIn missing",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "causes :: a slime KO: By Monster, the monster's name, nothing lost, RespawnIn"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "b47d08f47a1f32c0e1d6afd0f845878405b7de1a1900acde807407c5ac5b8a61",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/RankingService.luau": "50ce840d503ecd8faa70a3692f8428ef823b5b537e3d591d5b765175f52decdc",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/PvPService.luau": "6a74d3116f9ff4ca38505c81f37944f10e80d58a54bf4bcb426c04c05a177ecb",
+    "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
+    "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3",
+    "src/ServerScriptService/CombatService.luau": "55e50d8d24e25039b9a9142f1f9ab206ab07503aa1e1a9398191fdc32b9c0a1f",
+    "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
+    "src/ServerScriptService/PlayerService.luau": "2ce4b689d4c44fa077774759ac33ef7a4efc853cb39e00d81aa810f4c71f4ac5",
+    "src/ServerScriptService/CharacterVisuals.luau": "40a335a59c6e11e730b59daf9761c476d42187e0ea47421721733a6a83954f47",
+    "src/ServerScriptService/KaijuService.luau": "fa3018fff557ac6bd89d601f8e469e6a84e994fde5eb1836fa2ae555495a3b9c"
+  },
+  "fixtureSHA256": "27a7c6154d19f8c4ac771f8ac3611b0ddfdbb2c536887d1c38e85c35143235eb",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "BB14 server: CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind) records { Kind, T } per victim when no attacker (MonsterService passes the monster kind, the kaiju stomp \"Kaiju\"). After the death pipeline the victim alone gets Net.Fx 'KO' { By, Name, Faction, Lost, Sack, RespawnIn }: By = Player (a PvP killer; Name = PublicName, Faction) > Kaiju (a stomp within 3 s; the kaiju's PublicName) > Monster (a hit within Config.Death.SourceSeconds; Config.MonsterTypes name) > Fall (free fall, the body gone, or 30 below its zone's floor at the moment it fell) > Other. Lost = the pouch difference over steps 1-2 (plunder, the bounty KO share), Sack = a grudge sack was carried. The source is forgotten after each death.",
+  "limitations": "Offline doubles as in tools/test_ranking.py (dev2_world.luau). The client DeathScreen (overlay, tips, closing on respawn) is the 게임성 개발 session's; real falls / resets in Studio are checked after the merge."
+}

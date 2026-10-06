@@ -63,15 +63,17 @@ class Suite:
                  bindings: Callable[[dict[str, str]], dict[str, str]],
                  mutations: list[tuple[str, str, str, str]],
                  static: Callable[[], tuple[int, list[str]]],
-                 contract: str, limitations: str):
+                 contract: str, limitations: str, world: Path | None = None):
         self.mark, self.fixture, self.out, self.files = mark, fixture, out, files
+        self.world = world  # optional shared world file between the kit and the suite fixture
         self.bindings, self.mutations, self.static = bindings, mutations, static
         self.contract, self.limitations = contract, limitations
 
     def harness(self, sources: dict[str, str]) -> str:
         bound = self.bindings(sources)
         head = "\n".join(f"local {key} = {literal(value)}" for key, value in bound.items())
-        return (head + f"\nlocal SUITE_MARK = {literal(self.mark)}\n" + read(KIT) + "\n" + read(self.fixture))
+        world = (read(self.world) + "\n") if self.world else ""
+        return (head + f"\nlocal SUITE_MARK = {literal(self.mark)}\n" + read(KIT) + "\n" + world + read(self.fixture))
 
     def run_one(self, binary: Path, text: str, directory: Path, name: str) -> dict:
         path = directory / name
@@ -103,8 +105,9 @@ class Suite:
             return 1
         raw = {key: path.read_bytes() for key, path in self.files.items()}
         sources = {key: value.decode("utf-8-sig").replace("\r\n", "\n") for key, value in raw.items()}
-        fixture_raw = self.fixture.read_bytes() + KIT.read_bytes()
-        compiled = subprocess.run([str(compiler), *(str(p) for p in self.files.values()), str(KIT), str(self.fixture)],
+        fixture_raw = self.fixture.read_bytes() + KIT.read_bytes() + (self.world.read_bytes() if self.world else b"")
+        extra = [str(self.world)] if self.world else []
+        compiled = subprocess.run([str(compiler), *(str(p) for p in self.files.values()), str(KIT), *extra, str(self.fixture)],
                                   cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
                                   encoding="utf-8", errors="replace", timeout=180)
         static_count, static_failures = self.static()
@@ -143,7 +146,7 @@ class Suite:
                     mutations.extend(pool.map(work, enumerate(jobs)))
 
         changed = [p.relative_to(ROOT).as_posix() for key, p in self.files.items() if p.read_bytes() != raw[key]]
-        if self.fixture.read_bytes() + KIT.read_bytes() != fixture_raw:
+        if self.fixture.read_bytes() + KIT.read_bytes() + (self.world.read_bytes() if self.world else b"") != fixture_raw:
             changed.append(self.fixture.relative_to(ROOT).as_posix())
         marker = re.search(self.mark + r"_OFFLINE_OK checks=(\d+) Studio/API calls=0", main_run["stdout"])
         named = result.get("Named", []) if result else []

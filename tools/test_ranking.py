@@ -393,6 +393,7 @@ def static() -> tuple[int, list[str]]:
 SUITE = Suite(
     mark="RANKING",
     fixture=ROOT / "tools/fixtures/ranking_offline.luau",
+    world=ROOT / "tools/fixtures/dev2_world.luau",
     out=ROOT / "docs/art/verification_2026-10-06/offline_ranking_2026-10-06.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="BB10 / A23-22 / A23-23 / A23-24 + D1-D6: four weekly boards (Honor Halo, Infamy Horns, Artisan Neutral, PvP "

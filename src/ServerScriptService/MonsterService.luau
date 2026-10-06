@@ -1426,7 +1426,7 @@ local function landAttack(rec, token, target)
 	local seq = model:GetAttribute(ATTACK_SEQ_ATTR)
 	model:SetAttribute(ATTACK_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1)
 	if S and S.CombatService then
-		S.CombatService.DamagePlayer(target, rec.Def.Damage, nil)
+		S.CombatService.DamagePlayer(target, rec.Def.Damage, nil, false, rec.Kind) -- BB14: the KO screen names the monster
 	end
 end
 

@@ -465,7 +465,8 @@ local function stomp(p)
 					contested = true -- a Halo player stood in stomp range: the kaiju faced real opposition
 					-- CR-M13: outside PvP zones the stomp is environmental damage (no combat tag, no PvP KO credit)
 					local atk = (call("ZoneService", "IsPvPZone", v) == true) and p or nil
-					call("CombatService", "DamagePlayer", v, Util.RoundDamage(hum.MaxHealth * Config.Kaiju.StompPct), atk)
+					call("CombatService", "DamagePlayer", v, Util.RoundDamage(hum.MaxHealth * Config.Kaiju.StompPct), atk, false,
+						"Kaiju") -- BB14: the KO screen says "괴수 …" when no player is credited
 				end
 			end
 		end

@@ -73,6 +73,7 @@ local lastManualAt = {} -- [Player] = os.clock() of the last manual attack / ski
 local pendingManual = {} -- [Player] = true while one queued manual swing waits for the cooldown
 local lastDamagedAt = {} -- [Player] = os.clock() of the last damage of any kind
 local lastPvPAttacker = {} -- [Player] = { Player = Player, T = os.clock() }
+local lastSource = {} -- BB14: [Player] = { Kind = monster kind | "Kaiju", T = os.clock() } of the last non-player hit
 local lastPvPTime = {} -- [Player] = os.clock() of the last PvP damage dealt or received
 local painAt = {} -- [Player] = os.clock() of the last "Pain" Fx (A15)
 local lastLoopWarn = {} -- [loopName] = os.clock()
@@ -468,7 +469,7 @@ end
 
 -- attacker nil = monster (or any non-player source); crit (optional) = the hit was a critical hit (Pain "Big").
 -- Returns the HP actually removed (CR-M10: no overkill, 0 when nothing was applied).
-function CombatService.DamagePlayer(victim, amount, attacker, crit)
+function CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind)
 	if not isPlayer(victim) or victim.Parent == nil then
 		return 0
 	end
@@ -494,6 +495,8 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit)
 	amount = Util.RoundDamage(amount)
 	local now = os.clock()
 	lastDamagedAt[victim] = now
+	-- BB14: who knocked me out when no player did (MonsterService passes the monster kind, KaijuService "Kaiju")
+	if attacker == nil and type(sourceKind) == "string" then lastSource[victim] = { Kind = sourceKind, T = now } end
 	if attacker then
 		-- bookkeeping BEFORE the damage so a lethal hit is always credited by the death pipeline
 		lastPvPAttacker[victim] = { Player = attacker, T = now }
@@ -1087,7 +1090,38 @@ local function pipelineCall(label, fn, ...)
 	end
 end
 
-local function runDeathPipeline(victim, diedAt)
+-- BB14: the cause, the gold this KO took and the sack, to the victim only (Net.Fx "KO"; Config.Death)
+local function sendKO(victim, killer, ctx, carriedBefore, died)
+	local D = Config.Death
+	local by, name, killerFaction = "Other", "", ""
+	local src = lastSource[victim]
+	local recent = src ~= nil and ctx.At - src.T <= D.SourceSeconds
+	local A = S.AnnounceService
+	local function publicName(p)
+		if A and A.PublicName then
+			local ok, n = pcall(A.PublicName, p)
+			if ok and type(n) == "string" then return n end
+		end
+		return Util.PlayerDisplayName(p)
+	end
+	if killer then
+		by, name, killerFaction = "Player", publicName(killer), faction(killer)
+	elseif recent and src.Kind == "Kaiju" then
+		local K = S.KaijuService
+		local okK, k = pcall(function() return K and K.GetActive and K.GetActive() end)
+		by, name = "Kaiju", (okK and typeof(k) == "Instance") and publicName(k) or ""
+	elseif recent and Config.MonsterTypes[src.Kind] then
+		by, name = "Monster", Config.MonsterTypes[src.Kind].Name
+	elseif died.Freefall or died.Pos == nil
+		or died.Pos.Y < (Config.ZoneAt(died.Pos).Center.Y or 0) - D.FallBelowFloor then
+		by = "Fall" -- falling, the body already gone (the void) or far below its zone's floor
+	end
+	local lost = math.max(0, math.floor(carriedBefore - numAttr(victim, "CarriedGold", 0)))
+	Net.Fx(victim, "KO", { By = by, Name = name, Faction = killerFaction, Lost = lost, Sack = ctx.HadSack == true,
+		RespawnIn = Config.Player.RespawnTime })
+end
+
+local function runDeathPipeline(victim, diedAt, died)
 	if victim.Parent == nil then
 		-- the victim already left: leave flows (GrudgeService / ProgressionService) handle it
 		lastPvPAttacker[victim] = nil
@@ -1123,6 +1157,8 @@ local function runDeathPipeline(victim, diedAt)
 	-- At = the KO's own time: the fresh-spawn, bait, revenge and self-defense checks never see the wait above
 	local koCtx = { HadSack = okSack and hadSack == true, At = diedAt }
 
+	local carriedBefore = numAttr(victim, "CarriedGold", 0) -- BB14: Lost = what steps 1-2 took
+
 	-- 1. resolve a grudge sack first (no-op without one)
 	pipelineCall("GrudgeService.OnCarrierDown", S.GrudgeService.OnCarrierDown, victim, killer)
 
@@ -1136,9 +1172,13 @@ local function runDeathPipeline(victim, diedAt)
 		pipelineCall("PvPService.HandleNonPvPDeath", S.PvPService.HandleNonPvPDeath, victim)
 	end
 
+	-- BB14: the KO screen's facts (owner only)
+	pipelineCall("CombatService.sendKO", sendKO, victim, killer, koCtx, carriedBefore, died or {})
+
 	-- 3. clear legacy attributes and forget the attacker
 	resetLegacyCharge(victim)
 	lastPvPAttacker[victim] = nil
+	lastSource[victim] = nil
 end
 
 local function onCharacterDied(player, _character)
@@ -1147,10 +1187,15 @@ local function onCharacterDied(player, _character)
 	end
 	pendingManual[player] = nil
 	local diedAt = os.clock() -- BB10: the KO's time, before the friend check may wait (and the victim respawn)
+	-- BB14: where the body was when it fell (Pos nil = already gone, the void) and whether it was in free fall
+	local root = Util.GetRoot(player)
+	local hum = Util.GetHumanoid(player)
+	local okState, hstate = pcall(function() return hum and hum:GetState() end)
+	local died = { Pos = root and root.Position or nil, Freefall = okState and hstate == Enum.HumanoidStateType.Freefall }
 	-- deferred so the lethal hit's PlayerDamaged handlers (kaiju damage share, bait log) always run first,
 	-- whatever the Workspace.SignalBehavior is
 	task.defer(function()
-		local ok, err = pcall(runDeathPipeline, player, diedAt)
+		local ok, err = pcall(runDeathPipeline, player, diedAt, died)
 		if not ok then
 			Util.Warn(TAG, "death pipeline error: " .. tostring(err))
 		end
@@ -1209,6 +1254,7 @@ local function onPlayerLeaving(player, _data)
 		pendingManual[player] = nil
 		lastDamagedAt[player] = nil
 		lastPvPAttacker[player] = nil
+		lastSource[player] = nil
 		lastPvPTime[player] = nil
 		painAt[player] = nil
 		guard.releaseAt[player] = nil

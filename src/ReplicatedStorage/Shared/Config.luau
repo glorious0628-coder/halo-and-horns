@@ -3120,6 +3120,36 @@ function Config.SanitizeRank(d, now)
 	if type(d.DebugTainted) ~= "boolean" then d.DebugTainted = false end
 end
 
+-- BB14 KO screen: CombatService sends the owner-only Net.Fx(victim, "KO", { By, Name, Faction, Lost, Sack, RespawnIn })
+-- after the death pipeline. By = "Player" (a PvP KO; Name = PublicName, Faction = the killer's) | "Kaiju" (a kaiju stomp
+-- outside PvP zones; Name = the kaiju's PublicName) | "Monster" (Name = Config.MonsterTypes[kind].Name) | "Fall" | "Other"
+-- (a reset, the void without a fall, anything else). Lost = carried gold actually lost by this KO, Sack = a grudge sack
+-- was carried (and is gone). Texts / tips for the client DeathScreen (BB14): KO/EN, the tip picked by the situation.
+Config.Death = {
+	SourceSeconds = 3, -- a monster / kaiju hit this recent is the cause
+	FallBelowFloor = 30, -- the body this far below its zone's floor (or in free fall) = a fall
+	Text = {
+		Player = "%s에게 쓰러졌어요", PlayerEn = "Knocked out by %s",
+		Kaiju = "괴수 %s에게 쓰러졌어요", KaijuEn = "Knocked out by the kaiju %s",
+		Monster = "%s에게 쓰러졌어요", MonsterEn = "Knocked out by %s",
+		Fall = "떨어졌어요", FallEn = "You fell",
+		Other = "쓰러졌어요", OtherEn = "You were knocked out",
+		LostNone = "잃은 것 없음", LostNoneEn = "Nothing lost",
+		Lost = "주머니 골드 %s 잃음", LostEn = "Lost %s pouch gold",
+		Sack = "원한 자루를 놓쳤어요", SackEn = "You lost the grudge sack",
+		Respawn = "%d초 뒤 부활", RespawnEn = "Back in %d s",
+	},
+	-- one tip per situation (%s = the potion key name, or '물약 버튼' on touch)
+	Tips = {
+		Monster = "HP가 낮으면 %s 물약!", MonsterEn = "Low HP? Drink a potion with %s!",
+		Plundered = "기사단이 45초 안에 잡으면 120% 돌려받아요", PlunderedEn = "If a knight catches the thief within 45 s you get 120% back",
+		Player = "비슷하거나 센 상대와 싸우면 명예·악명이 쌓여요", PlayerEn = "Fair fights build honor and infamy",
+		Fall = "떨어지면 마을에서 다시 시작해요", FallEn = "A fall sends you back to town",
+		Other = "갇혔을 땐 메뉴 → 이동", OtherEn = "Stuck? Menu -> Travel",
+		PotionTouch = "물약 버튼", PotionTouchEn = "the potion button",
+	},
+}
+
 -- A23-32 bag sort '얻은 순' (the most recent first): data.ItemSeq[key] / data.WeaponSeq[tier] = a number from the ONE
 -- counter data.ItemSeqNext (bigger = gained more recently; 0 / missing = before this existed, an old save). Keys: the
 -- Config.Loot item ids and the potion keys of Config.ItemSeqPotions. Numbers only, unknown keys dropped: a small save.
