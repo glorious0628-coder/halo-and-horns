@@ -1678,5 +1678,53 @@
     0.077
    ]
   }
+ },
+ "Banner_Halo": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/Banner_Halo.txt",
+  "original": "art/out/Banner_Halo_src.png (1024x1536, Adobe MCP presigned download)",
+  "file": "art/ui/Banner_Halo.png",
+  "size": "683x1024 RGB (불투명 2:3, 누끼 없음)",
+  "cutout": "none — opaque cloth Decal; resized 1024x1536 -> 683x1024, no crop",
+  "preview": "art/review/banners4_sheet.png",
+  "note": "교차로 승리 깃발(visual_direction 2-5 전쟁 결과: 이긴 진영 깃발을 10분 동안 교차로에): 빛. 3안 중 3 — 1·2안은 후광 위아래에 긴 가시가 있어 십자 모양으로 읽힐 수 있어 문구를 '매끈한 후광 고리 + 작은 날개, 둥근 모양만'으로 고침. 깃발 파트(HaloFlag 0.2x8x4 등)는 1:2라 2:3 그림이 세로로 늘어나니 파트 폭을 8x5.3처럼 2:3으로 맞추거나 그대로 써도 됨. 이미지 개발·게임성 개발이 Decal로 붙여 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Banner_Horns": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/Banner_Horns.txt",
+  "original": "art/out/Banner_Horns_src.png (1024x1536, Adobe MCP presigned download)",
+  "file": "art/ui/Banner_Horns.png",
+  "size": "683x1024 RGB (불투명 2:3, 누끼 없음)",
+  "cutout": "none — opaque cloth Decal; resized 1024x1536 -> 683x1024, no crop",
+  "preview": "art/review/banners4_sheet.png",
+  "note": "교차로 승리 깃발(visual_direction 2-5 전쟁 결과: 이긴 진영 깃발을 10분 동안 교차로에): 뿔. 4안 중 3 — 1·2안 뿔끝이 뾰족해 '끝이 둥근 뿔'(gumdrop) 문구로 고침, 4안은 뿔로 덜 읽힘. 깃발 파트(HaloFlag 0.2x8x4 등)는 1:2라 2:3 그림이 세로로 늘어나니 파트 폭을 8x5.3처럼 2:3으로 맞추거나 그대로 써도 됨. 이미지 개발·게임성 개발이 Decal로 붙여 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Banner_Crossroads": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/Banner_Crossroads.txt",
+  "original": "art/out/Banner_Crossroads_src.png (1024x1536, Adobe MCP presigned download)",
+  "file": "art/ui/Banner_Crossroads.png",
+  "size": "683x1024 RGB (불투명 2:3, 누끼 없음)",
+  "cutout": "none — opaque cloth Decal; resized 1024x1536 -> 683x1024, no crop",
+  "preview": "art/review/banners4_sheet.png",
+  "note": "교차로 승리 깃발(visual_direction 2-5 전쟁 결과: 이긴 진영 깃발을 10분 동안 교차로에): 왕관(교차로 평소·무승부). 2안 중 1(금/진홍 반쪽 왕관이 크고 또렷). 깃발 파트(HaloFlag 0.2x8x4 등)는 1:2라 2:3 그림이 세로로 늘어나니 파트 폭을 8x5.3처럼 2:3으로 맞추거나 그대로 써도 됨. 이미지 개발·게임성 개발이 Decal로 붙여 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Banner_Artisan": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/Banner_Artisan.txt",
+  "original": "art/out/Banner_Artisan_src.png (1024x1536, Adobe MCP presigned download)",
+  "file": "art/ui/Banner_Artisan.png",
+  "size": "683x1024 RGB (불투명 2:3, 누끼 없음)",
+  "cutout": "none — opaque cloth Decal; resized 1024x1536 -> 683x1024, no crop",
+  "preview": "art/review/banners4_sheet.png",
+  "note": "교차로 승리 깃발(visual_direction 2-5 전쟁 결과: 이긴 진영 깃발을 10분 동안 교차로에): 장인 길드. 2안 중 1(톱니 + 청록 보석, 리벳 테). 깃발 파트(HaloFlag 0.2x8x4 등)는 1:2라 2:3 그림이 세로로 늘어나니 파트 폭을 8x5.3처럼 2:3으로 맞추거나 그대로 써도 됨. 이미지 개발·게임성 개발이 Decal로 붙여 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
  }
 }
