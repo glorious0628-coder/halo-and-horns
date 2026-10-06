@@ -62,3 +62,11 @@
 - 다음: 검수 답(화로 테두리가 톱니보다 凸 모양 — 바꿀지) → 마을판(빛: 금 후광·날개 손잡이 / 뿔: 휜 뿔 손잡이·주황 틈빛) 소품은 마을 시안이 정해지면. 3D는 사용자 '예' 받은 묶음만(검수가 합계 물음).
 - **6b351e0 빛·뿔 마을 작은 소품 34종**(마을마다 17: 통·상자·화분·벤치·가로등·노점·빵/과일 수레·울타리·덤불·빈 간판·연석·깃발·화로·무기 걸이·물약 상자·의자) — `art/out/kit/{halo_town,horns_town}/<Town>_<Name>.png`, 시트 `art/review/s2/kit_{halo,horns}_town17_sheet.png`, 일지 20 → 검수에 보냄. 문구 `scratchpad/mk_kit_town.py`.
 - 누끼 요령 추가: 흰 물건 `--tol 18`. 회색 돌·쇠가 많은 물건은 "회색 주머니 지우기"를 끄고(`--no-pockets`), 원본 모서리에서 잰 배경색과 똑같고(±9) 평평한(표준편차<3) 400px 넘는 덩어리만 지운다(뿔 상자 쇠 모서리·화분 테두리가 갉혔던 일). 둥근 테두리 윗면이 배경색이면 `--holes`를 빼고 다시 딴다.
+
+## 저녁 (2026-10-06, 새 세션, 크레딧 0)
+- 내 탭 = 내장 브라우저 **"tab-2"**(seed = 이미지 생성 1, 절대 건드리지 않기). `preview_start(url)`는 seed를 다시 쓸 수 있어 **`tabs_create` + `navigate`로 새 탭**을 연다. JS 대기열 `__s2_run(q)`(항목 `{tag, a:'정사각형 (1:1)', t}`), `__s2_log`, `__s2_busy()`, 모델·비율·품질은 `sp-picker` value로 확인(`openai:firefly:colligo:gpt-image-2.5-prism`, `medium`).
+- **a133773** 스킬 아이콘 11장 + 지도 화살표(검수 OK → 이미지 개발 전달): SKL-5a Warrior_Z d·X a, Mage_Z a·X c, Archer_Z a·X a, Tamer_Q a·Z a·X b / SKL-5b Blacksmith_X a·Alchemist_X a / A23-51 `UIP_MapPlayerArrow` b(흰색+연회색, 남색 외곽선, 위 = 앞). 시트 `art/review/s2/skl5a_skill_icons_sheet.png`·`skl5b_skill_icons_ab.png`·`a2351_map_player_arrow_sheet.png`.
+  - Warrior_Z 첫 안은 Warrior_Q와 닮아 "금빛 호로 베기 + 앞으로 뻗는 땅 금"으로, Mage_X 첫 안은 왕관처럼 보여 "풀밭 위 점 원 + 빛 기둥"으로 다시 뽑음. Tamer_X a는 72px에서 갈색 하트처럼 보여 b.
+- 시트 스크립트(scratchpad): `skill_sheet.py <out> <title> Key...`(BtnSkill 금·빨강·청록 테, 160/96/72 + 밝은/어두운), `map_arrow_sheet.py <out> cand...`(MinimapRing 위 32/28/24px, 회전은 expand로).
+- 요령: `asset_search`에 `sortBy: createDate`를 주면 query와 상관없이 최신만 나옴 → 관련도 검색(문구 첫머리) + createDate로 짝짓기. `art/approved.json`은 **indent=1**, ensure_ascii=False, LF + 끝 줄바꿈(다시 쓰기 전 왕복 비교).
+- 다음: A23-47 소품 2D는 검수 지시 뒤(이미지 생성 1의 마을 초안 기준).
