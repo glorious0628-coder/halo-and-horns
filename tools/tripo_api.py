@@ -48,8 +48,13 @@ RECIPES = {
     "monster": {"face_limit": 12000, "texture_quality": "standard", "texture_alignment": "original_image"},
     # bosses from a single front image; use multiview by hand for best results (9.4)
     "boss": {"face_limit": 20000, "texture_quality": "detailed", "geometry_quality": "detailed", "texture_alignment": "original_image"},
+    # A23-47 world kit (same settings as batch 2, 2026-10-06): props <= 3k tris, buildings <= 10k, HD texture
+    "prop": {"face_limit": 3000, "texture_quality": "detailed", "texture_alignment": "original_image"},
+    "building": {"face_limit": 10000, "texture_quality": "detailed", "texture_alignment": "original_image"},
+    # standard texture (30 credits) for small or simple pieces
+    "prop_std": {"face_limit": 3000, "texture_quality": "standard", "texture_alignment": "original_image"},
 }
-COST = {"character": 40, "monster": 30, "boss": 60}
+COST = {"character": 40, "monster": 30, "boss": 60, "prop": 40, "building": 40, "prop_std": 30}
 RIG_COST = 25
 HUMANOID_RIG = {"model": "v1.0-20240301", "rig_type": "biped", "spec": "mixamo", "out_format": "glb"}
 
