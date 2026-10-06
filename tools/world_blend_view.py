@@ -5,7 +5,8 @@ D(C + 잔디 무늬 빼고 색만) / E(B + 이미지 생성의 새 땅 타일 4�
 
   py tools/world_blend_view.py [--out build/world_blend]
 결과: <out>/<spot>_<A|B|C|D|E>.jpeg, <out>/night_<A|new>.jpeg, <out>/values.json(설정값·원래 값·카메라)
-STUDIO_NAME 기본값 UiSandbox(메인 게임 장소 81671223175574에서는 아무것도 안 바꾼다). 끝나면 Play를 멈추고 기기 흉내를 끈다.
+STUDIO_NAME은 UiSandbox로 고정(dv.ensure_sandbox가 먼저 확인, 메인 게임 장소 81671223175574에서는 아무것도 안 바꾼다).
+끝나면(오류가 나도) Play를 멈추고 기기 흉내를 끈다.
 """
 
 import base64
@@ -15,8 +16,7 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-os.environ.setdefault("STUDIO_NAME", "UiSandbox")
-from studio_mcp import Client  # noqa: E402
+os.environ["STUDIO_NAME"] = "UiSandbox"  # practice Studio only: forced before studio_mcp is imported (via device_view)
 import device_view as dv  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -73,10 +73,11 @@ NEW_TILES = {
     "TerrainColors": {"Grass": [235, 235, 235], "LeafyGrass": [235, 235, 235], "Cobblestone": [235, 235, 235]},
 }
 SETUPS["C"] = dict(SETUPS["B"], Ground=GROUND)
-SETUPS["E"] = dict(SETUPS["B"], Ground=NEW_TILES)
-SETUPS["night_new"]["Ground"] = NEW_TILES
 SETUPS["D"] = dict(SETUPS["B"], Ground=FLAT)
-SETUPS["night_new"]["Ground"] = FLAT  # replaced by NEW_TILES below
+SETUPS["E"] = dict(SETUPS["B"], Ground=NEW_TILES)
+# the night proposal is shot on the E ground. (The 2026-10-06 11:16 run assigned NEW_TILES and then FLAT here, so its
+# night_new.jpeg shows the D ground: build/world_blend/values.json. See docs/design/world_blend_2026-10-06.md.)
+SETUPS["night_new"]["Ground"] = NEW_TILES
 
 LUA_HELPERS = r'''
 assert(game.PlaceId ~= 81671223175574, "never the main game place") -- Play datamodels are named "Game": the window pick is by STUDIO_NAME
@@ -269,6 +270,59 @@ def apply(c, setup):
         dv.luau(c, APPLY % payload, dm)
 
 
+def run(c, out, record):
+    dv.stop_play(c)
+    print(dv.luau(c, dv.SET_DEVICE % dv.DEVICES["pc"], "Edit"))
+    c.call("start_stop_play", {"is_start": True})
+    for _ in range(60):
+        time.sleep(0.5)
+        if "Client" in dv.state(c):
+            break
+    time.sleep(6)
+    print(dv.luau(c, dv.PICK % "Halo", "Server"))
+    time.sleep(5)
+    print(dv.luau(c, SETUP_SERVER, "Server"))
+    record["A"] = json.loads(dv.luau(c, RECORD, "Server"))
+    setups = dict(SETUPS, A=record["A"])
+    # warm-up: freshly uploaded tiles render white until they load once
+    apply(c, setups["E"])
+    time.sleep(8)
+    apply(c, setups["A"])
+    time.sleep(3)
+    for spot in SPOTS:
+        group = dv.luau(c, FIND_GROUP % spot, "Server").strip()
+        print(spot, "group:", group)
+        if group == "none" or "," not in group:
+            continue
+        x, y, z, n, total = group.split(",")
+        apply(c, setups["A"])
+        time.sleep(1)
+        eye = dv.luau(c, CAMERA % (float(x), float(y), float(z)), "Client")
+        record["spots"][spot] = {"target": [float(x), float(y), float(z)], "eye": eye, "group": int(n),
+                                 "zoneMonsters": int(total)}
+        for name in ("A", "B", "C", "D", "E"):
+            # back to A first: a setup only writes its own keys, so without this E kept C/D's GE_Slate tile and colour
+            if name != "A":
+                apply(c, setups["A"])
+            apply(c, setups[name])
+            time.sleep(1.8)
+            path = os.path.join(out, f"{spot}_{name}.jpeg")
+            print(path, capture(c, path, f"blend_{spot}_{name}"))
+    # night: the meadow group again under today's Eclipse and the proposal
+    spot = record["spots"].get("SlimeMeadow")
+    if spot:
+        apply(c, setups["A"])
+        dv.luau(c, CAMERA % tuple(spot["target"]), "Client")
+        for name in ("night_A", "night_new"):
+            apply(c, setups["A"])  # reset ground before each night setup
+            apply(c, setups[name])
+            time.sleep(1.8)
+            path = os.path.join(out, f"{name}.jpeg")
+            print(path, capture(c, path, f"blend_{name}"))
+    with open(os.path.join(out, "values.json"), "w", encoding="utf-8") as f:
+        json.dump(record, f, ensure_ascii=False, indent=1)
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     args = sys.argv[1:]
@@ -276,61 +330,9 @@ def main():
     if "--out" in args:
         out = args[args.index("--out") + 1]
     os.makedirs(out, exist_ok=True)
-    c = Client()
     record = {"spots": {}, "setups": SETUPS}
-    try:
-        c.start()
-        dv.stop_play(c)
-        print(dv.luau(c, dv.SET_DEVICE % dv.DEVICES["pc"], "Edit"))
-        c.call("start_stop_play", {"is_start": True})
-        for _ in range(60):
-            time.sleep(0.5)
-            if "Client" in dv.state(c):
-                break
-        time.sleep(6)
-        print(dv.luau(c, dv.PICK % "Halo", "Server"))
-        time.sleep(5)
-        print(dv.luau(c, SETUP_SERVER, "Server"))
-        record["A"] = json.loads(dv.luau(c, RECORD, "Server"))
-        setups = dict(SETUPS, A=record["A"])
-        # warm-up: freshly uploaded tiles render white until they load once
-        apply(c, setups["E"])
-        time.sleep(8)
-        apply(c, setups["A"])
-        time.sleep(3)
-        for spot in SPOTS:
-            group = dv.luau(c, FIND_GROUP % spot, "Server").strip()
-            print(spot, "group:", group)
-            if group == "none" or "," not in group:
-                continue
-            x, y, z, n, total = group.split(",")
-            apply(c, setups["A"])
-            time.sleep(1)
-            eye = dv.luau(c, CAMERA % (float(x), float(y), float(z)), "Client")
-            record["spots"][spot] = {"target": [float(x), float(y), float(z)], "eye": eye, "group": int(n),
-                                     "zoneMonsters": int(total)}
-            for name in ("A", "B", "C", "D", "E"):
-                apply(c, setups[name])
-                time.sleep(1.8)
-                path = os.path.join(out, f"{spot}_{name}.jpeg")
-                print(path, capture(c, path, f"blend_{spot}_{name}"))
-        # night: the meadow group again under today's Eclipse and the proposal
-        spot = record["spots"].get("SlimeMeadow")
-        if spot:
-            apply(c, setups["A"])
-            dv.luau(c, CAMERA % tuple(spot["target"]), "Client")
-            for name in ("night_A", "night_new"):
-                apply(c, setups["A"])  # reset ground before each night setup
-                apply(c, setups[name])
-                time.sleep(1.8)
-                path = os.path.join(out, f"{name}.jpeg")
-                print(path, capture(c, path, f"blend_{name}"))
-        with open(os.path.join(out, "values.json"), "w", encoding="utf-8") as f:
-            json.dump(record, f, ensure_ascii=False, indent=1)
-        dv.stop_play(c)
-        print(dv.luau(c, dv.RESTORE, "Edit"))
-    finally:
-        c.close()
+    with dv.sandbox() as c:  # sandbox check first; Play stop + device reset at the end, also after an error
+        run(c, out, record)
 
 
 if __name__ == "__main__":

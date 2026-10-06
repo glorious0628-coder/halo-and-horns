@@ -5,7 +5,8 @@
 코드·장소 파일은 바꾸지 않는다(Play 중 서버의 밤 하늘 값만 잠깐 바꾼다). HUD는 숨긴다.
 
   py tools/zone_look_view.py [--out build/zone_look]
-결과: <out>/<이름>.jpeg, <out>/values.json. STUDIO_NAME 기본값 UiSandbox. 끝나면 Play를 멈추고 기기 흉내를 끈다.
+결과: <out>/<이름>.jpeg, <out>/values.json. STUDIO_NAME은 UiSandbox로 고정(dv.ensure_sandbox가 먼저 확인).
+끝나면(오류가 나도) Play를 멈추고 기기 흉내를 끈다.
 """
 
 import json
@@ -14,8 +15,7 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-os.environ.setdefault("STUDIO_NAME", "UiSandbox")
-from studio_mcp import Client  # noqa: E402
+os.environ["STUDIO_NAME"] = "UiSandbox"  # practice Studio only: forced before studio_mcp is imported (via device_view)
 import device_view as dv  # noqa: E402
 import world_blend_view as wb  # noqa: E402
 
@@ -186,6 +186,81 @@ def shoot(c, out, name, record):
     print(name, ok, state)
 
 
+def run(c, out, record):
+    dv.stop_play(c)
+    print(dv.luau(c, dv.SET_DEVICE % dv.DEVICES["pc"], "Edit"))
+    c.call("start_stop_play", {"is_start": True})
+    for _ in range(60):
+        time.sleep(0.5)
+        if "Client" in dv.state(c):
+            break
+    time.sleep(6)
+    print(dv.luau(c, dv.PICK % "Halo", "Server"))
+    time.sleep(5)
+    for name, zone, target, preview in SHOTS:
+        if target is None:
+            group = dv.luau(c, wb.FIND_GROUP % zone, "Server").strip()
+            if "," not in group:
+                print(name, "no monsters")
+                continue
+            target = tuple(float(v) for v in group.split(",")[:3])
+        eye = eye_of(dv.luau(c, wb.CAMERA % target, "Client"))
+        print(name, "in", dv.luau(c, PLACE % (zone, *eye, *target, zone), "Server").strip())
+        dv.luau(c, PREVIEW % (json.dumps(preview) if preview else "nil"), "Client")
+        wait_zone(c, zone)
+        time.sleep(2.2)  # ZoneLook eases for 1.5 s
+        shoot(c, out, name, record)
+    # trees: GoblinWoods leaves one step brighter (MapBuilder colour proposal), same camera as the woods shot
+    spot = dv.luau(c, TREE_SPOT, "Server").strip()
+    if "," in spot:
+        target = tuple(float(v) for v in spot.split(","))
+        eye = eye_of(dv.luau(c, wb.CAMERA % target, "Client"))
+        dv.luau(c, PLACE % ("GoblinWoods", *eye, *target, "GoblinWoods"), "Server")
+        wait_zone(c, "GoblinWoods")
+        time.sleep(2.2)
+        shoot(c, out, "woods_trees_now", record)
+        print(dv.luau(c, TREES_BRIGHT, "Server").strip())
+        time.sleep(1.5)
+        shoot(c, out, "woods_trees_bright", record)
+    # the new sun in the sky (Neutral): camera at the meadow looking at the sun
+    print(dv.luau(c, SKY_SUN, "Server").strip())
+    dv.luau(c, LOOK_SUN, "Client")
+    time.sleep(2)
+    shoot(c, out, "sky_sun", record)
+    # border: the meadow pass into the goblin woods, one camera; mid-change and settled
+    dv.luau(c, PREVIEW % "nil", "Client")
+    group = dv.luau(c, wb.FIND_GROUP % "GoblinWoods", "Server").strip()
+    target = tuple(float(v) for v in group.split(",")[:3]) if "," in group else (600, 3, 0)
+    eye = eye_of(dv.luau(c, wb.CAMERA % target, "Client"))
+    dv.luau(c, PLACE % ("SlimeMeadow", *eye, *target, "SlimeMeadow"), "Server")
+    dv.luau(c, r'''local hrp = game.Players:GetPlayers()[1].Character.HumanoidRootPart
+hrp.Anchored = true
+hrp.CFrame = CFrame.new(470, 8, 0) return "meadow side"''', "Server")
+    wait_zone(c, "SlimeMeadow")
+    time.sleep(2.2)
+    shoot(c, out, "border_0_meadow", record)
+    dv.luau(c, PLACE % ("GoblinWoods", *eye, *target, "GoblinWoods"), "Server")
+    wait_zone(c, "GoblinWoods")
+    time.sleep(0.7)  # about half of the 1.5 s ease
+    shoot(c, out, "border_1_changing", record)
+    time.sleep(2.5)
+    shoot(c, out, "border_2_woods", record)
+    # night (Eclipse) in the meadow and the ruins
+    print(dv.luau(c, NIGHT, "Server"))
+    for name, zone in (("night_meadow", "SlimeMeadow"), ("night_ruins", "SkeletonRuins")):
+        group = dv.luau(c, wb.FIND_GROUP % zone, "Server").strip()
+        if "," not in group:
+            continue
+        target = tuple(float(v) for v in group.split(",")[:3])
+        eye = eye_of(dv.luau(c, wb.CAMERA % target, "Client"))
+        dv.luau(c, PLACE % (zone, *eye, *target, zone), "Server")
+        wait_zone(c, zone)
+        time.sleep(4)  # the server's night writes settle, then ZoneLook eases back
+        shoot(c, out, name, record)
+    with open(os.path.join(out, "values.json"), "w", encoding="utf-8") as f:
+        json.dump(record, f, ensure_ascii=False, indent=1)
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     args = sys.argv[1:]
@@ -193,86 +268,9 @@ def main():
     if "--out" in args:
         out = args[args.index("--out") + 1]
     os.makedirs(out, exist_ok=True)
-    c = Client()
     record = {}
-    try:
-        c.start()
-        dv.stop_play(c)
-        print(dv.luau(c, dv.SET_DEVICE % dv.DEVICES["pc"], "Edit"))
-        c.call("start_stop_play", {"is_start": True})
-        for _ in range(60):
-            time.sleep(0.5)
-            if "Client" in dv.state(c):
-                break
-        time.sleep(6)
-        print(dv.luau(c, dv.PICK % "Halo", "Server"))
-        time.sleep(5)
-        for name, zone, target, preview in SHOTS:
-            if target is None:
-                group = dv.luau(c, wb.FIND_GROUP % zone, "Server").strip()
-                if "," not in group:
-                    print(name, "no monsters")
-                    continue
-                target = tuple(float(v) for v in group.split(",")[:3])
-            eye = eye_of(dv.luau(c, wb.CAMERA % target, "Client"))
-            print(name, "in", dv.luau(c, PLACE % (zone, *eye, *target, zone), "Server").strip())
-            dv.luau(c, PREVIEW % (json.dumps(preview) if preview else "nil"), "Client")
-            wait_zone(c, zone)
-            time.sleep(2.2)  # ZoneLook eases for 1.5 s
-            shoot(c, out, name, record)
-        # trees: GoblinWoods leaves one step brighter (MapBuilder colour proposal), same camera as the woods shot
-        spot = dv.luau(c, TREE_SPOT, "Server").strip()
-        if "," in spot:
-            target = tuple(float(v) for v in spot.split(","))
-            eye = eye_of(dv.luau(c, wb.CAMERA % target, "Client"))
-            dv.luau(c, PLACE % ("GoblinWoods", *eye, *target, "GoblinWoods"), "Server")
-            wait_zone(c, "GoblinWoods")
-            time.sleep(2.2)
-            shoot(c, out, "woods_trees_now", record)
-            print(dv.luau(c, TREES_BRIGHT, "Server").strip())
-            time.sleep(1.5)
-            shoot(c, out, "woods_trees_bright", record)
-        # the new sun in the sky (Neutral): camera at the meadow looking at the sun
-        print(dv.luau(c, SKY_SUN, "Server").strip())
-        dv.luau(c, LOOK_SUN, "Client")
-        time.sleep(2)
-        shoot(c, out, "sky_sun", record)
-        # border: the meadow pass into the goblin woods, one camera; mid-change and settled
-        dv.luau(c, PREVIEW % "nil", "Client")
-        group = dv.luau(c, wb.FIND_GROUP % "GoblinWoods", "Server").strip()
-        target = tuple(float(v) for v in group.split(",")[:3]) if "," in group else (600, 3, 0)
-        eye = eye_of(dv.luau(c, wb.CAMERA % target, "Client"))
-        dv.luau(c, PLACE % ("SlimeMeadow", *eye, *target, "SlimeMeadow"), "Server")
-        dv.luau(c, r'''local hrp = game.Players:GetPlayers()[1].Character.HumanoidRootPart
-hrp.Anchored = true
-hrp.CFrame = CFrame.new(470, 8, 0) return "meadow side"''', "Server")
-        wait_zone(c, "SlimeMeadow")
-        time.sleep(2.2)
-        shoot(c, out, "border_0_meadow", record)
-        dv.luau(c, PLACE % ("GoblinWoods", *eye, *target, "GoblinWoods"), "Server")
-        wait_zone(c, "GoblinWoods")
-        time.sleep(0.7)  # about half of the 1.5 s ease
-        shoot(c, out, "border_1_changing", record)
-        time.sleep(2.5)
-        shoot(c, out, "border_2_woods", record)
-        # night (Eclipse) in the meadow and the ruins
-        print(dv.luau(c, NIGHT, "Server"))
-        for name, zone in (("night_meadow", "SlimeMeadow"), ("night_ruins", "SkeletonRuins")):
-            group = dv.luau(c, wb.FIND_GROUP % zone, "Server").strip()
-            if "," not in group:
-                continue
-            target = tuple(float(v) for v in group.split(",")[:3])
-            eye = eye_of(dv.luau(c, wb.CAMERA % target, "Client"))
-            dv.luau(c, PLACE % (zone, *eye, *target, zone), "Server")
-            wait_zone(c, zone)
-            time.sleep(4)  # the server's night writes settle, then ZoneLook eases back
-            shoot(c, out, name, record)
-        with open(os.path.join(out, "values.json"), "w", encoding="utf-8") as f:
-            json.dump(record, f, ensure_ascii=False, indent=1)
-        dv.stop_play(c)
-        print(dv.luau(c, dv.RESTORE, "Edit"))
-    finally:
-        c.close()
+    with dv.sandbox() as c:  # sandbox check first; Play stop + device reset at the end, also after an error
+        run(c, out, record)
 
 
 if __name__ == "__main__":

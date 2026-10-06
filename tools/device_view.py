@@ -9,19 +9,26 @@
   py tools/device_view.py restore       -> 기기 흉내 끄기(default)
 
 결과: <out>/<name>.jpeg (화면), <out>/<name>.json (MainGui 아래 보이는 판들의 실제 px 사각형, UIScale, inset).
-연습 Studio 전용이다: game.Name에 'UiSandbox'가 없으면 아무것도 바꾸지 않는다. STUDIO_NAME 기본값도 UiSandbox.
+연습 Studio 전용이다: STUDIO_NAME은 UiSandbox로 고정하고, 무엇이든 바꾸기 전에 ensure_sandbox가 지금 데이터모델을 확인한다
+(Edit: game.Name에 'UiSandbox', Play: Server의 PlaceId가 메인 게임 81671223175574가 아님). 오류가 나도 Play 멈춤·기기 흉내 끄기를 한다.
 """
 
+import contextlib
 import json
 import os
 import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-os.environ.setdefault("STUDIO_NAME", "UiSandbox")
+os.environ["STUDIO_NAME"] = "UiSandbox"  # practice Studio only: forced (not a default) before studio_mcp is imported
 from studio_mcp import Client  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SANDBOX_NAME = "UiSandbox"
+MAIN_PLACE_ID = 81671223175574  # the published game place: these tools never change anything there
+EDIT_MARK = "Current Studio Mode: Edit"
+# execute_luau failures come back as text starting with the Assistant plugin's stack (isError is not always set)
+LUAU_ERROR_PREFIX = "sabuiltin_Assistant.rbxm"
 DEVICES = {
     "pc": ("hd_720", 1280, 720),
     "phone": ("samsung_galaxy_s22_ultra", 749, 361),
@@ -104,25 +111,105 @@ return HttpService:JSONEncode(res)
 '''
 
 
+# where the tool is: read-only, no % formatting (the main place id is put in with str.replace)
+WHERE = r'''
+return game:GetService("HttpService"):JSONEncode({ Name = game.Name, PlaceId = tostring(game.PlaceId),
+    Main = game.PlaceId == __MAIN_PLACE_ID__ })
+'''
+
+
+class LuauError(RuntimeError):
+    """execute_luau failed (a Lua error or assert). .text keeps the raw tool text."""
+
+    def __init__(self, text, dm):
+        super().__init__(f"execute_luau failed in {dm}: {text.strip()[:500]}")
+        self.text = text
+
+
 def text_of(res):
     return "".join(p.get("text", "") for p in res.get("content", []))
 
 
-def luau(c, code, dm):
-    return text_of(c.call("execute_luau", {"code": code, "datamodel_type": dm}))
+def luau(c, code, dm, check=True):
+    """Run code in datamodel dm and return its text. Raises LuauError when the tool reports an error
+    (isError or the Assistant error text); check=False returns the text as it is, error or not."""
+    res = c.call("execute_luau", {"code": code, "datamodel_type": dm})
+    text = text_of(res)
+    if check and (res.get("isError") or text.lstrip().startswith(LUAU_ERROR_PREFIX)):
+        raise LuauError(text, dm)
+    return text
 
 
 def state(c):
     return text_of(c.call("get_studio_state", {}))
 
 
+def ensure_sandbox(c):
+    """Raise unless the Studio this client talks to is the practice place. Call before ANY state change
+    (stop_play, SET_DEVICE, start_stop_play). Edit: game.Name has 'UiSandbox' and PlaceId is not the main place;
+    Play: the Server datamodel's PlaceId is not the main place. Returns a short description."""
+    if os.environ.get("STUDIO_NAME") != SANDBOX_NAME:
+        raise RuntimeError(f"refused: STUDIO_NAME is {os.environ.get('STUDIO_NAME')!r}, not {SANDBOX_NAME!r}")
+    st = state(c)
+    dm = "Edit" if EDIT_MARK in st else "Server"
+    raw = luau(c, WHERE.replace("__MAIN_PLACE_ID__", str(MAIN_PLACE_ID)), dm).strip()
+    try:
+        info = json.loads(raw)
+    except json.JSONDecodeError:
+        raise RuntimeError(f"refused: unreadable sandbox check from {dm}: {raw[:200]}") from None
+    name, place = str(info.get("Name")), str(info.get("PlaceId"))
+    if info.get("Main") is not False or place == str(MAIN_PLACE_ID):
+        raise RuntimeError(f"refused: the {dm} datamodel is the main game place ({place}); nothing was changed")
+    if dm == "Edit" and SANDBOX_NAME not in name:
+        raise RuntimeError(f"refused: the Studio place is {name!r}, not {SANDBOX_NAME}; nothing was changed")
+    return f"{dm} {name} PlaceId {place}"
+
+
 def stop_play(c):
-    if "Current Studio Mode: Edit" not in state(c):
-        c.call("start_stop_play", {"is_start": False})
-        for _ in range(30):
-            time.sleep(0.5)
-            if "Current Studio Mode: Edit" in state(c):
-                return
+    if EDIT_MARK in state(c):
+        return
+    c.call("start_stop_play", {"is_start": False})
+    for _ in range(30):
+        time.sleep(0.5)
+        if EDIT_MARK in state(c):
+            return
+    raise RuntimeError("Play did not stop within 15 s")
+
+
+def restore(c):
+    """Stop Play and switch device emulation off. Never raises (it runs in finally blocks, after errors too)."""
+    ok = True
+    try:
+        stop_play(c)
+    except Exception as e:  # noqa: BLE001 - report and still try the device reset
+        print("restore: stop Play failed:", e)
+        ok = False
+    try:
+        print("restore:", luau(c, RESTORE, "Edit").strip())
+    except Exception as e:  # noqa: BLE001
+        print("restore: device emulation reset failed:", e)
+        ok = False
+    return ok
+
+
+@contextlib.contextmanager
+def sandbox(keep=False):
+    """A started Client on the practice Studio. Checks the sandbox before the caller changes anything, and on the way
+    out (also after an exception) stops Play and switches device emulation off; keep=True leaves Play running, but
+    only after a clean run. Nothing is restored when the sandbox check itself refuses."""
+    c = Client()
+    try:
+        c.start()
+        print("sandbox:", ensure_sandbox(c))
+        done = False
+        try:
+            yield c
+            done = True
+        finally:
+            if not (keep and done):
+                restore(c)
+    finally:
+        c.close()
 
 
 def view(c, name, faction, out, keep):
@@ -165,20 +252,11 @@ def main():
     if not names:
         sys.exit(__doc__)
     os.makedirs(out, exist_ok=True)
-    c = Client()
-    try:
-        c.start()
+    # sandbox() restores at the end (also after an error); 'restore' alone just does that
+    with sandbox(keep=keep and "restore" not in names) as c:
         for name in names:
-            if name == "restore":
-                stop_play(c)
-                print("restore:", luau(c, RESTORE, "Edit"))
-            else:
+            if name != "restore":
                 view(c, name, faction, out, keep)
-        if not keep and "restore" not in names:
-            stop_play(c)
-            print("restore:", luau(c, RESTORE, "Edit"))
-    finally:
-        c.close()
 
 
 if __name__ == "__main__":

@@ -45,6 +45,10 @@
   - 맵 없는 새 MaterialVariant를 만들어 씌웠다(옛 변형을 복제하면 옛 TexturePack이 남는다: apply_surface_materials.lua 주석).
   - 막 올린 그림은 처음 한 번 하얗게 보이다가 불러온 뒤 바뀐다(도구가 미리 한 번 불러온다).
 
+### 시트 바로잡기 (검수 2-5·2-6, 2026-10-06)
+- 시트의 '밤 제안(E 땅)' 사진(`build/world_blend/night_new.jpeg`)은 실제로 **D 땅**(잔디·숲 바닥이 무늬 없는 색만)으로 찍혔다. 도구가 밤 제안의 땅을 E로 넣은 뒤 D(FLAT)로 다시 덮어썼다(`build/world_blend/values.json`의 night_new.Ground에 그대로 남아 있음). 지금 도구는 E 땅 하나만 넣는다. 밤 모습은 나중 시트 `art/review/zone_look_2026-10-06_sheet.png`(밤 초원·밤 폐허, 최종 땅 그림 + ZoneLook)가 대신한다.
+- 해골 폐허 줄의 E 칸에는 C·D의 판석(Slate) 값(GE_Slate 타일 28, 지형 색 104,138,124)이 남아 있다. 도구가 A~E를 차례로 바꾸면서 그 사이에 A로 되돌리지 않았고, E는 Slate를 건드리지 않기 때문이다(위 표의 'Slate 그대로(A)'와 다름). 지금 도구는 설정마다 먼저 A로 되돌린다. 실제 E 모습은 ZoneLook 시트를 본다.
+
 ## 고른 뒤 할 일
 - 조명: 게임성 개발이 WarService LIGHTING_FIXED·SKY_EXTRAS와 Config.Sky(Neutral·Dawn·Eclipse)에 표 값을 넣는다. Dawn은 B와 같은 원칙(EnvironmentDiffuse 1.0·Specular 0.6·밝은 중립 Ambient)으로 맞춘다.
 - 땅 E를 고르면: 이미지 개발이 Config Tex_ 키 4개를 새 ID로 바꾸고 `tools/apply_surface_materials.lua`로 MaterialVariant를 새로 만들고(지형 색 235), terrain_view로 확인한 뒤 옛 Tex_ 파일·기록을 지운다. 나머지 11장(Slate·Basalt 등)은 다음 묶음.
