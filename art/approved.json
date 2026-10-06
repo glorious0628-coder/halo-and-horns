@@ -1348,5 +1348,335 @@
   "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 240 --prefer-dark 20; 3x3 tiled check",
   "preview": "art/review/tree_materials_sheet.png",
   "note": "나무 재질(검수 요청, 사용자 '배경이랑 몹이 안 어울림'): GE_TreeBark (BaseMaterial Wood, 덮어쓰기 없음 — 나무 Trunk 파트에만). 3안 중 2(곧은 세로 결). 초원·숲·호박밭 나무 색은 파트 Color로(시트에 곱한 모습). 곱하면 평균 밝기가 약 0.75배라 잎 Color를 조금 밝게. UiSandbox 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "FactionCardHalo": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_FactionCardHalo.txt",
+  "original": "art/out/s2/FactionCardHalo_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionCardHalo.png",
+  "size": "622x1024 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). 빛 진영 카드(후광+날개 문장, 하늘색 이름 리본, 크림 설명 줄 2 + 특성 판 + 금 버튼). 2안 중 a(날개가 크고 후광 구멍 투명). FactionE.Parts.Halo(옛 FreshTyped) 대체.",
+  "layout": {
+   "Aspect": 0.607,
+   "Size": [
+    622,
+    1024
+   ],
+   "Title": [
+    0.217,
+    0.156,
+    0.566,
+    0.115
+   ],
+   "Desc": [
+    0.154,
+    0.313,
+    0.692,
+    0.049
+   ],
+   "Motto": [
+    0.154,
+    0.392,
+    0.692,
+    0.049
+   ],
+   "Perks": [
+    0.157,
+    0.491,
+    0.686,
+    0.381
+   ],
+   "Button": [
+    0.243,
+    0.886,
+    0.492,
+    0.083
+   ]
+  }
+ },
+ "FactionCardHorns": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_FactionCardHorns.txt",
+  "original": "art/out/s2/FactionCardHorns_b_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionCardHorns.png",
+  "size": "657x1024 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). 뿔 진영 카드(귀여운 뿔 투구 문장 B안, 진홍 리본, 크림 판, 진홍 버튼). 2안 중 b(투구가 장난꾸러기 얼굴). FactionE.Parts.Horns 대체.",
+  "layout": {
+   "Aspect": 0.642,
+   "Size": [
+    657,
+    1024
+   ],
+   "Title": [
+    0.236,
+    0.161,
+    0.519,
+    0.097
+   ],
+   "Desc": [
+    0.184,
+    0.313,
+    0.632,
+    0.062
+   ],
+   "Motto": [
+    0.184,
+    0.408,
+    0.632,
+    0.062
+   ],
+   "Perks": [
+    0.184,
+    0.518,
+    0.63,
+    0.314
+   ],
+   "Button": [
+    0.27,
+    0.886,
+    0.458,
+    0.05
+   ]
+  }
+ },
+ "FactionCardArtisan": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_FactionCardArtisan.txt",
+  "original": "art/out/s2/FactionCardArtisan_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionCardArtisan.png",
+  "size": "586x1024 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). 장인 진영 카드(톱니+망치 문장, 청록 리본, 나무 장식, 청록 버튼). 2안 중 a(청록이 또렷). FactionE.Parts.Neutral 대체.",
+  "layout": {
+   "Aspect": 0.572,
+   "Size": [
+    586,
+    1024
+   ],
+   "Title": [
+    0.247,
+    0.203,
+    0.503,
+    0.068
+   ],
+   "Desc": [
+    0.148,
+    0.332,
+    0.703,
+    0.049
+   ],
+   "Motto": [
+    0.148,
+    0.416,
+    0.703,
+    0.047
+   ],
+   "Perks": [
+    0.148,
+    0.511,
+    0.703,
+    0.328
+   ],
+   "Button": [
+    0.239,
+    0.88,
+    0.523,
+    0.058
+   ]
+  }
+ },
+ "FactionTitle": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_FactionTitle.txt",
+  "original": "art/out/s2/FactionTitle_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionTitle.png",
+  "size": "1024x389 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). '어느 편에 설래요?' 제목 리본(금 간 왕관 + 왼쪽 후광·오른쪽 뿔 꼬리). 2안 중 a(왕관 금이 이야기와 맞음). 늘리지 말고 비율 그대로. 글자 자리 대략 x0.28~0.72, y0.42~0.70.",
+  "textRect": [
+   0.28,
+   0.42,
+   0.44,
+   0.28
+  ]
+ },
+ "FactionPremise": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_FactionPremise.txt",
+  "original": "art/out/s2/FactionPremise_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionPremise.png",
+  "size": "1024x434 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). 이야기 3줄 판(남색 + 금테 + 모서리 금 보석). 2안 중 a. 9조각: 모서리 보석·안쪽 광택 포함 120px 고정, SliceCenter = Rect(120,120,904,314). 흰 글자.",
+  "slice": [
+   120,
+   120,
+   904,
+   314
+  ]
+ },
+ "FactionFooter": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_FactionFooter.txt",
+  "original": "art/out/s2/FactionFooter_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionFooter.png",
+  "size": "1024x142 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). 하단 안내 줄(남색 캡슐 + 양끝 사파이어). 2안 중 a. 가로로만 늘림: SliceCenter = Rect(100,0,924,142)(양끝 보석 100px 고정). 흰 글자.",
+  "slice": [
+   100,
+   0,
+   924,
+   142
+  ]
+ },
+ "ClassCardHalo": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_ClassCardHalo.txt",
+  "original": "art/out/s2/ClassCardHalo_c_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/ClassCardHalo.png",
+  "size": "569x1024 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). 빛 직업 카드 틀(3:4 아치 창 40% + 하늘색 이름 리본 + 크림 설명·능력치 판 + 금 버튼). 1차는 아래 판이 작아 버리고 2차 2안 중 c. Parts.ClassCardHalo 대체(CardLayout 새로).",
+  "layout": {
+   "Aspect": 0.556,
+   "Size": [
+    569,
+    1024
+   ],
+   "Portrait": [
+    0.177,
+    0.138,
+    0.646,
+    0.313
+   ],
+   "Name": [
+    0.26,
+    0.463,
+    0.485,
+    0.083
+   ],
+   "Body": [
+    0.196,
+    0.593,
+    0.609,
+    0.256
+   ],
+   "Button": [
+    0.205,
+    0.904,
+    0.591,
+    0.064
+   ]
+  }
+ },
+ "ClassCardHorns": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_ClassCardHorns.txt",
+  "original": "art/out/s2/ClassCardHorns_c_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/ClassCardHorns.png",
+  "size": "529x1024 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). 뿔 직업 카드 틀(자두숯색 틀 + 진홍·불씨 주황, 작은 둥근 뿔, 연보라 아치 창). 2차 2안 중 c. Parts.ClassCardHorns 대체.",
+  "layout": {
+   "Aspect": 0.517,
+   "Size": [
+    529,
+    1024
+   ],
+   "Portrait": [
+    0.169,
+    0.117,
+    0.661,
+    0.349
+   ],
+   "Name": [
+    0.242,
+    0.484,
+    0.518,
+    0.076
+   ],
+   "Body": [
+    0.142,
+    0.607,
+    0.715,
+    0.258
+   ],
+   "Button": [
+    0.235,
+    0.898,
+    0.531,
+    0.063
+   ]
+  }
+ },
+ "ClassCardArtisan": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_ClassCardArtisan.txt",
+  "original": "art/out/s2/ClassCardArtisan_c_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/ClassCardArtisan.png",
+  "size": "581x1024 RGBA",
+  "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 1024, 1-px specks dropped); checked light/navy/magenta/green + 4x zoom",
+  "preview": "art/review/s2/b2_faction_sheet.png",
+  "note": "묶음 2 진영 화면. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없는 빈 판 — 글자·특성 아이콘은 게임이 얹음(BakedText=false). 장인 직업 카드 틀(청록·황동·나무, 작은 톱니, 연청록 아치 창). 2차 2안 중 c. Config 키는 Parts.ClassCardNeutral/CardLayout.ClassCardNeutral 자리.",
+  "layout": {
+   "Aspect": 0.567,
+   "Size": [
+    581,
+    1024
+   ],
+   "Portrait": [
+    0.179,
+    0.123,
+    0.643,
+    0.331
+   ],
+   "Name": [
+    0.239,
+    0.465,
+    0.508,
+    0.079
+   ],
+   "Body": [
+    0.196,
+    0.584,
+    0.609,
+    0.276
+   ],
+   "Button": [
+    0.278,
+    0.888,
+    0.439,
+    0.077
+   ]
+  }
  }
 }
