@@ -245,6 +245,7 @@ local function complete(player, data, id)
 	end
 	notify(player, def.Finish or msg, "reward")
 	if def.Finish then notify(player, msg, "reward") end
+	if def.Clue then notify(player, def.Clue, "info") end -- story_depth §2-1: a clue toast after the closing lines
 	-- A23-34: the blacksmith's free first weapon (M1_1 GiveWeapon = tier; paid once, LootService.GrantFirstWeapon), its
 	-- own "전투력 X → Y" line after the story lines
 	if def.GiveWeapon and S.LootService and type(S.LootService.GrantFirstWeapon) == "function" then
@@ -351,9 +352,18 @@ local function refresh(player)
 	if not data then return end
 	local st = story(data)
 	local changed = false
-	-- an old save that is already Lv10+ skips chapters 1-2 (no past rewards or choice points are paid)
+	-- an old save (no story yet) that is already Lv10+ skips the chapters below its level, never later ones
+	-- (story_depth E0, quest_chain rule): Lv10-24 = chapters 1-2, Lv25+ = chapters 1-3 (SQ.SkipChapters); no past
+	-- rewards or choice points are paid, the next chapter starts
 	if st.Main.Id == "" and next(st.Done) == nil and not st.First.Migrated and num(data.Level, 1) >= 10 then
-		for _, id in SQ.Main do st.Done[id] = true end
+		local upTo = 0
+		for _, row in SQ.SkipChapters or {} do
+			if num(data.Level, 1) >= row.Level then upTo = math.max(upTo, row.UpTo) end
+		end
+		for _, id in SQ.Main do
+			local def = DEFS[id]
+			if def and num(def.Chapter) <= upTo then st.Done[id] = true end
+		end
 		changed = true
 	end
 	st.First.Migrated = true
@@ -542,6 +552,32 @@ function StoryQuestService.Claim(player, id)
 end
 
 ------------------------------------------------------------------ StoryAction (Talk / Choose / Open)
+-- A23-58 (user 2026-10-06, every good / evil pick): my side's own score only. Halo: Good = Honor +pts, Evil = Honor
+-- -pts; Horns: Evil = Infamy +pts, Good = Infamy -pts; never below 0, the other side's score never moves. A rank the
+-- lower score loses (Config.GetTitle) gets one line. PvP fame (GrantFame) and the weekly boards are not touched.
+local function pickScore(player, f, option, pts)
+	if pts <= 0 then return end
+	local stat = f == "Halo" and "Honor" or "Infamy"
+	if (f == "Halo") == (option == "Good") then
+		S.PlayerService.AddStat(player, stat, pts)
+		notify(player, string.format(option == "Good" and TXT.Good or TXT.Evil, pts), "good")
+		return
+	end
+	local data = getData(player)
+	local have = math.max(0, math.floor(num(data and data[stat])))
+	local take = math.min(have, pts)
+	if take <= 0 then return end
+	S.PlayerService.SetStat(player, stat, have - take)
+	notify(player, string.format(f == "Halo" and TXT.OffSideHalo or TXT.OffSideHorns, take), "info")
+	local function rank(score)
+		local _, r = Config.GetTitle(f, f == "Halo" and score or 0, f == "Horns" and score or 0)
+		return r
+	end
+	if rank(have - take) < rank(have) then
+		notify(player, f == "Halo" and TXT.RankDownHalo or TXT.RankDownHorns, "info")
+	end
+end
+
 -- E6: the picked side's own reward (side "Good" | "Evil"; a Neutral A takes Good's, B takes Evil's): an item or potions
 -- through LootService.GrantItem (its caps and full notices) and gold to the bank, then one line saying what came
 local function payChoice(player, obj, side)
@@ -594,11 +630,7 @@ local function onStoryAction(player, id, action, option, ...)
 			if option ~= "Good" and option ~= "Evil" then return end
 			local pick = obj[option]
 			st.Pick[id] = pick.Pick or option -- saved before the points
-			local stat = option == "Good" and "Honor" or "Infamy"
-			S.PlayerService.AddStat(player, stat, pick.Points or 0)
-			notify(player, string.format(option == "Good" and TXT.Good or TXT.Evil, pick.Points or 0), "good")
-			if f == "Halo" and option == "Evil" then notify(player, TXT.OddHalo, "info") end
-			if f == "Horns" and option == "Good" then notify(player, TXT.OddHorns, "info") end
+			pickScore(player, f, option, math.floor(num(pick.Points)))
 			payChoice(player, obj, option)
 		else
 			if option ~= "A" and option ~= "B" then return end

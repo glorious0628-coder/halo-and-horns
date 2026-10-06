@@ -17,7 +17,10 @@ local function townWorld(o)
 	reg.ZoneService.ZoneChanged = Signal.new()
 	reg.ZoneService.GetZoneId = function(p) return (w.ZoneOf and w.ZoneOf[p]) or "SlimeMeadow" end
 	reg.GooseService.GooseFinished = Signal.new()
-	w.XP, w.ZoneOf, w.Npcs, w.Opened = {}, {}, {}, {}
+	w.XP, w.ZoneOf, w.Npcs, w.Opened, w.RankCalls = {}, {}, {}, {}, {}
+	reg.RankingService = setmetatable({}, { __index = function(_, key)
+		return function(...) table.insert(w.RankCalls, { Key = key, N = select("#", ...) }) end
+	end })
 	-- the shared workspace double: StoryQuestService.visible (the goose sub S1) looks for a GameState folder there
 	local ws = w:Env().workspace
 	ws.FindFirstChild = function() return nil end
@@ -99,10 +102,11 @@ runGroup("config", function()
 	local subs = {}
 	for _, id in SQ.Subs do subs[id] = true end
 	check(subs.H1 and subs.R1 and subs.N3, "H1 / R1 / N3 are in StoryQuests.Subs", show(SQ.Subs))
-	local want = { H1 = { Halo = true }, R1 = { Horns = true }, N3 = { Halo = true, Horns = true, Neutral = true } }
+	local want = { H1 = { Halo = true }, R1 = { Horns = true }, N3 = "everyone" }
 	for id, factions in want do
 		local def = SQ.Defs[id]
-		check(def and def.Kind == "Sub" and sameReward(def.Factions, factions), id .. ": a sub for " .. show(factions), show(def and def.Factions))
+		local who = factions == "everyone" and def and def.Factions == nil or (def and sameReward(def.Factions, factions))
+		check(def and def.Kind == "Sub" and who, id .. ": a sub for " .. show(factions), show(def and def.Factions))
 		check(def and def.Requires and def.Requires.Done and def.Requires.Done[1] == "M2_3" and #def.Requires.Done == 1,
 			id .. ": opens after M2_3 (검수: the three at the same time)", show(def and def.Requires))
 		check(def and def.Reward and def.Reward.GoldN == 120 and def.Reward.XPBar == 0.5 and def.Reward.Gold == nil,
@@ -231,6 +235,12 @@ runGroup("h1-good", function()
 		if t == string.format(w.Config.Loot.Text.Got, w.Config.Loot.Items.Enh70.Name) then hasScroll = true end
 	end
 	check(hasFinish and hasScroll, "lines: '+Enhance Scroll 70%' and the closing question", show(lines))
+	local clueAt, finishAt = nil, nil
+	for i, t in lines do
+		if t == SQ0.Defs.H1.Clue then clueAt = i end
+		if t == SQ0.Defs.H1.Finish then finishAt = i end
+	end
+	check(clueAt ~= nil and finishAt ~= nil and clueAt > finishAt, "the wristband clue comes after the closing lines", show(lines))
 	local before = { d.BankGold, d.Items.Enh70 }
 	w:Act(p, "H1", "Choose", "Evil")
 	check(d.BankGold == before[1] and d.Items.Enh70 == before[2], "a second pick after the end pays nothing")
@@ -295,6 +305,138 @@ runGroup("n3", function()
 	w:Act(q, "N3", "Choose", "B")
 	check(e.Story.Pick.N3 == "B" and (e.Honor or 0) == honor and (e.Infamy or 0) == 0 and (e.HPPotionCount or 0) == 3
 		and e.BankGold == bank + 60 + 120, "Neutral B: recorded, no score, Evil's reward", show({ e.Story.Pick.N3, e.HPPotionCount, e.BankGold - bank }))
+end)
+
+------------------------------------------------------------------ 5b. A23-58: an off-side pick lowers my own score
+-- (a player standing at the last step of a quest, its NPC not placed: the pick only)
+local function atPick(w, userId, faction, quest, stats)
+	local p, d = joinAfterM23(w, userId, faction)
+	for k, v in stats or {} do
+		d[k] = v
+		p:SetAttribute(k, v)
+	end
+	local tr = w:Track(d, quest)
+	tr.St = #SQ0.Defs[quest].Steps
+	return p, d, tr
+end
+
+runGroup("a23-58", function()
+	local w = townWorld({ Npcs = false })
+	local T = w.Config.StoryQuests.Text
+	local function lines(p, from) return w:NoticesFor(p, from) end
+	local function has(list, text)
+		for _, t in list do if t == text then return true end end
+		return false
+	end
+	-- Halo, angel pick: honor up, infamy never moves
+	local p1, d1 = atPick(w, 801, "Halo", "H1", { Honor = 5, Infamy = 3 })
+	w:Act(p1, "H1", "Choose", "Good")
+	check(d1.Honor == 6 and d1.Infamy == 3, "Halo + angel pick: Honor +1, Infamy untouched", show({ d1.Honor, d1.Infamy }))
+	-- Halo, devil pick: my honor down (never the other side's infamy up), items and gold as before
+	local n2 = #w.Notices
+	local p2, d2 = atPick(w, 802, "Halo", "H1", { Honor = 5, Infamy = 0 })
+	local hp, bank = d2.HPPotionCount or 0, d2.BankGold or 0
+	w:Act(p2, "H1", "Choose", "Evil")
+	check(d2.Honor == 4 and (d2.Infamy or 0) == 0, "Halo + devil pick: Honor -1, Infamy stays 0", show({ d2.Honor, d2.Infamy }))
+	check((d2.HPPotionCount or 0) == hp + 3 and d2.BankGold == bank + 60 + 120, "the B reward is paid as usual",
+		show({ d2.HPPotionCount - hp, d2.BankGold - bank }))
+	local l2 = lines(p2, n2)
+	check(has(l2, string.format(T.OffSideHalo, 1)) and not has(l2, T.RankDownHalo), "'Not very angel-like! Honor -1', no rank line (5 -> 4)",
+		show(l2))
+	-- at 0 nothing to take: no line, never below 0
+	local n3 = #w.Notices
+	local p3, d3 = atPick(w, 803, "Halo", "H1", { Honor = 0 })
+	w:Act(p3, "H1", "Choose", "Evil")
+	check((d3.Honor or 0) == 0 and not has(lines(p3, n3), string.format(T.OffSideHalo, 1)), "Honor 0 stays 0 (no line)",
+		show({ d3.Honor, lines(p3, n3) }))
+	-- 10 -> 9: the Knight rank drops to Squire: one line
+	local n4 = #w.Notices
+	local p4, d4 = atPick(w, 804, "Halo", "H1", { Honor = 10 })
+	local _, before = w.Config.GetTitle("Halo", 10, 0)
+	w:Act(p4, "H1", "Choose", "Evil")
+	local _, after = w.Config.GetTitle("Halo", d4.Honor, 0)
+	check(d4.Honor == 9 and after < before and has(lines(p4, n4), T.RankDownHalo), "Honor 10 -> 9: the rank drops, one line",
+		show({ d4.Honor, before, after, lines(p4, n4) }))
+	-- Horns: devil pick up, angel pick down (honor never moves)
+	local p5, d5 = atPick(w, 805, "Horns", "R1", { Infamy = 3, Honor = 2 })
+	w:Act(p5, "R1", "Choose", "Evil")
+	check(d5.Infamy == 4 and d5.Honor == 2, "Horns + devil pick: Infamy +1, Honor untouched", show({ d5.Infamy, d5.Honor }))
+	local n6 = #w.Notices
+	local p6, d6 = atPick(w, 806, "Horns", "R1", { Infamy = 10, Honor = 0 })
+	w:Act(p6, "R1", "Choose", "Good")
+	local l6 = lines(p6, n6)
+	check(d6.Infamy == 9 and (d6.Honor or 0) == 0, "Horns + angel pick: Infamy -1, Honor stays 0", show({ d6.Infamy, d6.Honor }))
+	check(has(l6, string.format(T.OffSideHorns, 1)) and has(l6, T.RankDownHorns), "'Too nice for a devil! Infamy -1' + the rank line (10 -> 9)",
+		show(l6))
+	-- N3 for both sides follows the same rule; a Neutral save only records
+	local p7, d7 = atPick(w, 807, "Horns", "N3", { Infamy = 4 })
+	w:Act(p7, "N3", "Choose", "Good")
+	check(d7.Infamy == 3 and d7.Story.Pick.N3 == "Good", "N3, Horns angel pick: Infamy -1", show({ d7.Infamy, d7.Story.Pick.N3 }))
+	local p8, d8 = atPick(w, 808, "Neutral", "N3", { Honor = 5, Infamy = 5 })
+	w:Act(p8, "N3", "Choose", "A")
+	check(d8.Honor == 5 and d8.Infamy == 5 and d8.Story.Pick.N3 == "A", "a Neutral save: recorded only", show({ d8.Honor, d8.Infamy }))
+	check(#w.RankCalls == 0, "no pick reaches the weekly boards (A23-23 D1)", show(w.RankCalls))
+end)
+
+------------------------------------------------------------------ 5c. story_depth §2-1 clue lines (beta)
+runGroup("clues", function()
+	local C, SQ = C0, SQ0
+	check(SQ.Speakers.Kids == "Bright & Smokey" and SQ.Landmarks.KidsBench and SQ.Landmarks.KidsBench.X == 18
+		and SQ.Landmarks.KidsBench.Z == 18, "Speakers.Kids + Landmarks.KidsBench (18, 0, 18)", show(SQ.Landmarks.KidsBench))
+	check(#C.Story.OpeningRumor == 3 and string.find(C.Story.OpeningRumor[1], "They say", 1, true) == 1
+		and #C.Story.Premise == 3 and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 rumor lines, 3 premise lines, the ask",
+		show({ C.Story.OpeningRumor, C.Story.OpeningAsk }))
+	for _, line in C.Story.Premise do
+		check(not string.find(line, "two kids", 1, true) and not string.find(line, "Bright", 1, true), "the opening never tells the truth",
+			line)
+	end
+	check(string.find(SQ.Defs.M1_2.Finish, "braided band", 1, true) ~= nil, "M1_2: the braided band", SQ.Defs.M1_2.Finish)
+	check(string.find(SQ.Defs.M2_3.Finish or "", "Two kids", 1, true) ~= nil, "M2_3: two kids run off", SQ.Defs.M2_3.Finish)
+	check(string.find(SQ.Defs.H1.Clue or "", "wristband", 1, true) ~= nil and string.find(SQ.Defs.R1.Clue or "", "wristband", 1, true) ~= nil,
+		"H1 / R1: the wristband toasts", show({ SQ.Defs.H1.Clue, SQ.Defs.R1.Clue }))
+	local function anyLine(def, word)
+		for _, step in def.Steps do
+			for _, list in step.Lines or {} do
+				for _, l in list do if string.find(l, word, 1, true) then return true end end
+			end
+		end
+		return false
+	end
+	check(anyLine(SQ.Defs.H1, "Page 12") and anyLine(SQ.Defs.H1, "Happy birthday, S.") and anyLine(SQ.Defs.R1, "signed 'B.'")
+		and anyLine(SQ.Defs.R1, "gold spyglass") and anyLine(SQ.Defs.N3, "two kids"), "H1 / R1 / N3 carry their clues")
+	check(anyLine(SQ.Defs.M1_4, "What will you do with the next one?") and anyLine(SQ.Defs.M2_7, "why would a goblin need dust?"),
+		"chapter-end questions (M1_4, M2_7)")
+end)
+
+------------------------------------------------------------------ 5d. story_depth E0: old saves skip only the chapters below them
+runGroup("e0-old-saves", function()
+	local w = townWorld({ Npcs = false })
+	local SQ = w.Config.StoryQuests
+	-- chapter 3 / 4 mains as they will come (test-only defs on this world's Config)
+	SQ.Defs.M3_T = { Kind = "Main", Chapter = 3, Title = "Test Chapter 3", Steps = { { Text = "Lv%d", Obj = { Type = "Level", Level = 99 } } } }
+	SQ.Defs.M4_T = { Kind = "Main", Chapter = 4, Title = "Test Chapter 4", Steps = { { Text = "Lv%d", Obj = { Type = "Level", Level = 99 } } } }
+	table.insert(SQ.Main, "M3_T")
+	table.insert(SQ.Main, "M4_T")
+	check(SQ.SkipChapters and #SQ.SkipChapters == 2, "Config.StoryQuests.SkipChapters (Lv10 -> 2, Lv25 -> 3)", show(SQ.SkipChapters))
+	local function oldSave(userId, level, migrated)
+		local data = { Story = migrated and { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } or nil }
+		local p, d = w:Join(userId, { Faction = "Halo", Level = level, Data = data })
+		w.Story.Refresh(p)
+		return p, d
+	end
+	local _, a = oldSave(901, 12)
+	check(a.Story.Done.M2_7 and a.Story.Done.M1_1 and not a.Story.Done.M3_T and a.Story.Main.Id == "M3_T",
+		"an old Lv12 save: chapters 1-2 done, chapter 3 starts", show({ a.Story.Main.Id, a.Story.Done.M3_T }))
+	local _, b = oldSave(902, 30)
+	check(b.Story.Done.M3_T and not b.Story.Done.M4_T and b.Story.Main.Id == "M4_T", "an old Lv30 save: chapters 1-3 done, chapter 4 starts",
+		show({ b.Story.Main.Id, b.Story.Done.M4_T }))
+	local _, c = oldSave(903, 5)
+	check(not c.Story.Done.M1_1 and c.Story.Main.Id == "M1_1", "a Lv5 save starts at the beginning", show(c.Story.Main.Id))
+	local _, e = oldSave(904, 12, true)
+	check(next(e.Story.Done) == nil and e.Story.Main.Id == "M1_1", "a save that already went through the migration is not skipped again",
+		show(e.Story.Main.Id))
+	local gold = { a.BankGold or 0, b.BankGold or 0 }
+	check(gold[1] == 0 and gold[2] == 0 and (a.Honor or 0) == 0 and #w.XP == 0, "skipped chapters pay nothing", show({ gold, a.Honor, #w.XP }))
 end)
 
 ------------------------------------------------------------------ 6. LootService.GrantItem (E6)

@@ -197,6 +197,7 @@ MUTATIONS = [
     ("M1_1 completion never pays the weapon", ST, "if def.GiveWeapon and S.LootService", "if false and S.LootService"),
     ("weapon line before the story lines", ST,
      "\tnotify(player, def.Finish or msg, \"reward\")\n\tif def.Finish then notify(player, msg, \"reward\") end\n"
+     "\tif def.Clue then notify(player, def.Clue, \"info\") end -- story_depth §2-1: a clue toast after the closing lines\n"
      "\t-- A23-34: the blacksmith's free first weapon",
      "\tlocal finishLine = def.Finish or msg\n\t-- A23-34: the blacksmith's free first weapon"),
     # --- JusticeService / PvPService / CharacterVisuals

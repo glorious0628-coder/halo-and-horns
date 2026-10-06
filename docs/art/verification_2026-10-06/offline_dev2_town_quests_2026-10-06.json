@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 95,
+  "checks": 130,
   "failedChecks": 0,
-  "namedChecks": 95,
+  "namedChecks": 128,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -57,7 +57,7 @@
     },
     {
       "group": "config",
-      "check": "N3: a sub for {Halo=true,Horns=true,Neutral=true}",
+      "check": "N3: a sub for everyone",
       "pass": 1,
       "fail": 0
     },
@@ -333,6 +333,12 @@
     },
     {
       "group": "h1-good",
+      "check": "the wristband clue comes after the closing lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
       "check": "a second pick after the end pays nothing",
       "pass": 1,
       "fail": 0
@@ -464,6 +470,198 @@
       "fail": 0
     },
     {
+      "group": "a23-58",
+      "check": "Halo + angel pick: Honor +1, Infamy untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "Halo + devil pick: Honor -1, Infamy stays 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "the B reward is paid as usual",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "'Not very angel-like! Honor -1', no rank line (5 -> 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "Honor 0 stays 0 (no line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "Honor 10 -> 9: the rank drops, one line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "Horns + devil pick: Infamy +1, Honor untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "Horns + angel pick: Infamy -1, Honor stays 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "'Too nice for a devil! Infamy -1' + the rank line (10 -> 9)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "N3, Horns angel pick: Infamy -1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "a Neutral save: recorded only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "no pick reaches the weekly boards (A23-23 D1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a23-58",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "Speakers.Kids + Landmarks.KidsBench (18, 0, 18)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "opening: 3 rumor lines, 3 premise lines, the ask",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "the opening never tells the truth",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "M1_2: the braided band",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "M2_3: two kids run off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "H1 / R1: the wristband toasts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "H1 / R1 / N3 carry their clues",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "chapter-end questions (M1_4, M2_7)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "clues",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e0-old-saves",
+      "check": "Config.StoryQuests.SkipChapters (Lv10 -> 2, Lv25 -> 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e0-old-saves",
+      "check": "an old Lv12 save: chapters 1-2 done, chapter 3 starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e0-old-saves",
+      "check": "an old Lv30 save: chapters 1-3 done, chapter 4 starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e0-old-saves",
+      "check": "a Lv5 save starts at the beginning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e0-old-saves",
+      "check": "a save that already went through the migration is not skipped again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e0-old-saves",
+      "check": "skipped chapters pay nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e0-old-saves",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e0-old-saves",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "grant-item",
       "check": "2 scrolls",
       "pass": 1,
@@ -582,9 +780,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 21,
-    "applied": 21,
-    "caught": 21,
+    "total": 30,
+    "applied": 30,
+    "caught": 30,
     "skipped": false,
     "results": [
       {
@@ -621,13 +819,129 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: N3: a sub for {Halo=true,Horns=true,Neutral=true}",
+          "a23-58 :: group ran to the end without a Lua error",
+          "config :: N3: a sub for everyone",
           "n3 :: group ran to the end without a Lua error",
           "offered :: a Halo player after M2_3: H1 + N3",
           "offered :: a Horns player after M2_3: R1 + N3",
           "offered :: a Neutral save (switch off): N3, not N1 / N2"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "an off-side pick adds instead of taking",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-58 :: Halo + devil pick: Honor -1, Infamy stays 0",
+          "a23-58 :: Honor 10 -> 9: the rank drops, one line",
+          "a23-58 :: Horns + angel pick: Infamy -1, Honor stays 0",
+          "a23-58 :: N3, Horns angel pick: Infamy -1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no floor at 0",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-58 :: Honor 0 stays 0 (no line)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the old rule: a pick feeds the other side's score",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-58 :: 'Not very angel-like! Honor -1', no rank line (5 -> 4)",
+          "a23-58 :: 'Too nice for a devil! Infamy -1' + the rank line (10 -> 9)",
+          "a23-58 :: Halo + devil pick: Honor -1, Infamy stays 0",
+          "a23-58 :: Honor 10 -> 9: the rank drops, one line",
+          "a23-58 :: Horns + angel pick: Infamy -1, Honor stays 0",
+          "a23-58 :: N3, Horns angel pick: Infamy -1"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "an off-side pick still pays score",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-58 :: 'Not very angel-like! Honor -1', no rank line (5 -> 4)",
+          "a23-58 :: 'Too nice for a devil! Infamy -1' + the rank line (10 -> 9)",
+          "a23-58 :: Halo + devil pick: Honor -1, Infamy stays 0",
+          "a23-58 :: Honor 0 stays 0 (no line)",
+          "a23-58 :: Honor 10 -> 9: the rank drops, one line",
+          "a23-58 :: Horns + angel pick: Infamy -1, Honor stays 0"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "no rank-down line",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-58 :: 'Too nice for a devil! Infamy -1' + the rank line (10 -> 9)",
+          "a23-58 :: Honor 10 -> 9: the rank drops, one line"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a rank line without a drop",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-58 :: 'Not very angel-like! Honor -1', no rank line (5 -> 4)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "E0: an old save skips every chapter (the old bug)",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "e0-old-saves :: an old Lv12 save: chapters 1-2 done, chapter 3 starts",
+          "e0-old-saves :: an old Lv30 save: chapters 1-3 done, chapter 4 starts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "E0: Lv25+ skips only chapters 1-2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "e0-old-saves :: Config.StoryQuests.SkipChapters (Lv10 -> 2, Lv25 -> 3)",
+          "e0-old-saves :: an old Lv30 save: chapters 1-3 done, chapter 4 starts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no clue toast",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "h1-good :: the wristband clue comes after the closing lines"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "the Halo bridge spot moves away",
@@ -691,7 +1005,7 @@
           "h1-good :: choosing far from Bright: refused",
           "h1-good :: lines: '+Enhance Scroll 70%' and the closing question"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "no NPC placed = no talk",
@@ -727,12 +1041,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-58 :: the B reward is paid as usual",
           "h1-good :: A: one 70% scroll (no potions)",
           "h1-good :: lines: '+Enhance Scroll 70%' and the closing question",
           "n3 :: a Halo player picks A: the scroll",
           "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "a Neutral A pays Evil's reward",
@@ -763,11 +1078,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-58 :: the B reward is paid as usual",
           "h1-good :: the quest: +120 gold, +half a Lv6 bar of XP",
           "n3 :: Neutral B: recorded, no score, Evil's reward",
           "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "the guild's own quests offered while off",
@@ -787,12 +1103,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a23-58 :: the B reward is paid as usual",
           "grant-item :: 3 HP potions (the attribute too)",
           "grant-item :: potions stop at the cap",
           "n3 :: Neutral B: recorded, no score, Evil's reward",
           "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "GrantItem: no upper count limit",
@@ -864,11 +1181,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1fa0b3b8c7924d63dfb96c637b139c33d07505d81f74eb66873ec2323a52d032",
+    "src/ReplicatedStorage/Shared/Config.luau": "253bffa6eb20d013b337bb06356ceb3c996625b596b1e97c4dfebfe6eec0a709",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
-    "src/ServerScriptService/StoryQuestService.luau": "ee9bed3ba48c15e46ea772e16c175438902a759b1caec51245678012f0d4028c",
+    "src/ServerScriptService/StoryQuestService.luau": "26683c1636ca57519094a776350881b5b30f1b51f1dde31799962191664307fc",
     "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
     "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
@@ -877,7 +1194,7 @@
     "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
     "src/ServerScriptService/ProgressionService.luau": "074be3338e3845a95ebd1d0943d7c3ab68ed03f9529e11286e62e7140ab8fee3"
   },
-  "fixtureSHA256": "a71aee26eb99e6871fbb986566d5575d62c69e10a11c59875ae14b36a86e5826",
+  "fixtureSHA256": "0e095351933ba21c3eaf9764cdef55f5a68f4d693178231e15e0b0e2b0deb8c2",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

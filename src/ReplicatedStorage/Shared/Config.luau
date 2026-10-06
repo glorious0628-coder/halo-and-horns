@@ -1580,11 +1580,13 @@ Config.StoryQuests = {
 	MaxSubs = 2, -- sub rows sent with the quest list (after the main row)
 	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Blacksmith", Guild = "Guild Guide",
-		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny" }, -- A23-46 town NPCs
+		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey" }, -- A23-46 town NPCs, A23-55 kids
 	NpcTag = "StoryNpc",
 	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },
 	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7" },
+	-- story_depth E0: an old save that reaches the story at Level >= Level skips the main chapters <= UpTo (once)
+	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3 } },
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
 	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3" },
@@ -1599,10 +1601,16 @@ Config.StoryQuests = {
 		Evil = "The shard leans toward the dark (Infamy +%d)",
 		Recorded = "Your choice is saved.",
 		-- shown under the two choice buttons on the last page (what a pick does, before picking)
-		ChoiceHint = "Your pick → Left: Honor +%d (angel side) · Right: Infamy +%d (devil side)",
+		-- A23-58: picking against your own side lowers your own score (ChoiceHint keeps its two-number call; the
+		-- faction lines are what a client should show)
+		ChoiceHint = "Left: the angel side. Right: the devil side. Picking against your side lowers your score!",
+		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d (not very angel-like)", -- (Good.Points, Evil.Points)
+		ChoiceHintHorns = "Left: Infamy -%d (too nice) · Right: Infamy +%d", -- (Good.Points, Evil.Points)
 		ChoiceHintNeutral = "The Artisan Guild just saves your pick, with no good or evil points.",
-		OddHalo = "Guide: Hmm… that's your choice too.",
-		OddHorns = "Guide: Went the nice way, huh? Your call!",
+		OffSideHalo = "Not very angel-like! Honor -%d", -- A23-58 (points actually taken)
+		OffSideHorns = "Too nice for a devil! Infamy -%d",
+		RankDownHalo = "Your rank went down. Do good deeds to get it back!",
+		RankDownHorns = "Your rank went down. Do devilish deeds to get it back!",
 		GooseFirstHalo = "Your first Golden Goose rescue! (Honor +%d)",
 		GooseFirstHorns = "Your first Golden Goose poach! (Infamy +%d)",
 		Next = "Next",
@@ -1642,7 +1650,7 @@ Config.StoryQuests = {
 			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust",
 			Start = "King Slimes full of shard dust roam the meadow.",
 			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
-			Finish = "The dust came pouring out!", Reward = { Gold = 1 },
+			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		M1_3 = {
 			Kind = "Main", Chapter = 1, Title = "Boom, All at Once!",
@@ -1655,9 +1663,14 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
 				{ Text = "Report to the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
-					Halo = { "Did you see the statues on the Heroes' Road? They are the knights who guarded the shards." },
-					Horns = { "See the lava cracks? Our horn power boils up from there!" },
-					Neutral = { "Nice dust. The guild doesn't grab, it shapes." },
+					Halo = { "Did you see the statues on the Heroes' Road? They are the knights who guarded the shards.",
+						"They say a Horn broke the Crown. Pure greed!\nBroken things get fixed. Right?",
+						"More shards are out there.\nWhat will you do with the next one?" },
+					Horns = { "See the lava cracks? Our horn power boils up from there!",
+						"They say a Halo broke it. So greedy. Typical!\nShiny! Finders keepers!",
+						"More shards are out there.\nWhat will you do with the next one?" },
+					Neutral = { "Nice dust. The guild doesn't grab, it shapes.",
+						"More shards are out there.\nWhat will you do with the next one?" },
 				} },
 			},
 			Reward = { Gold = 2, XP = 2 },
@@ -1685,7 +1698,7 @@ Config.StoryQuests = {
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "Talk to the Fountain Shard", Panel = true,
 					Lines = { All = {
-						"I'm a crown shard stuck in this fountain. I fell here when the crown in the sky broke.",
+						"I'm a crown shard stuck in this fountain. I fell here when the crown in the sky broke.\nHalos and Horns tell the same story. Word for word. They just swap who did it.",
 						"The sparkly dust you got from the pond slimes? That's crown dust.",
 						"Give the dust to the fountain and the world leans to the light. Keep it and it leans to the dark. What will you do?",
 					} },
@@ -1693,6 +1706,7 @@ Config.StoryQuests = {
 						Neutral = { A = "Shape it and give it back", B = "Leave it with the guild" } } },
 			},
 			Reward = { Gold = 1 },
+			Finish = "Two kids by the fountain. They see you and run… opposite ways.", -- story_depth §2-1 (no speaker)
 		},
 		M2_4 = {
 			Kind = "Main", Chapter = 2, Title = "Supply Road Fund",
@@ -1722,8 +1736,15 @@ Config.StoryQuests = {
 				{ Text = "Hear the Guide's warning", Panel = true, Obj = { Type = "Talk" }, Lines = {
 					All = { "A crown shard calls from beyond the woods. Watch out for thieves!",
 						"In the woods, others can steal the gold you carry. Put it in the town vault first!",
-						"Until Lv15 and 1 hour of play, the Sprout Shield keeps you safe." },
-					Neutral = { "A crown shard calls from beyond the woods. Watch out for thieves!", "The Artisan Guild can't be attacked in the woods either." },
+						"Until Lv15 and 1 hour of play, the Sprout Shield keeps you safe.",
+						"The goblins took the dust.\nBut why would a goblin need dust?" },
+					Horns = { "A crown shard calls from beyond the woods. Watch out for thieves!",
+						"In the woods, others can steal the gold you carry. Put it in the town vault first!",
+						"Until Lv15 and 1 hour of play, the Sprout Shield keeps you safe.",
+						"Goblins grab for a boss. We grab for US. Big difference! …Right?",
+						"The goblins took the dust.\nBut why would a goblin need dust?" },
+					Neutral = { "A crown shard calls from beyond the woods. Watch out for thieves!", "The Artisan Guild can't be attacked in the woods either.",
+						"The goblins took the dust.\nBut why would a goblin need dust?" },
 				} },
 				{ Text = "Go to the Goblin Woods", Guide = "GoblinWoods", Obj = { Type = "Enter", Zone = "GoblinWoods" } },
 			},
@@ -1787,9 +1808,9 @@ Config.StoryQuests = {
 			Start = "Bright the town guard needs help. Find him in Halo Citadel!",
 			Steps = {
 				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "The Horns are up to something! I need Form H-1.",
-						"To get Form H-1, I need Form H-0. …Can you just help?",
-						"They sneak past the woods with big sacks. Go take a look!" } } },
+					Lines = { All = { "The Horns are up to something! I need Form H-1.\nTo get Form H-1, I need Form H-0. …Can you just help?",
+						"They say a Horn broke the Crown. Everyone says so.\n…Who said so first?",
+						"Page 12 of my rulebook is missing. Don't look at me!\nThe Horns sneak past the woods with big sacks. Go take a look!" } } },
 				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
 				{ Text = "King Slimes near the woods %d/%d", Guide = "SlimeMeadow",
@@ -1798,6 +1819,7 @@ Config.StoryQuests = {
 				{ Text = "Tell Bright what you found", Guide = "HaloTown", Npc = "Bright", Panel = true,
 					Lines = { All = { "Sticky… sweet… is this jelly?",
 						"Their secret sacks… are full of birthday jelly? For Smokey?",
+						"One jar says: 'Happy birthday, S. From the bench.'\nBright: Not my writing! I mean… whose writing?",
 						"So what do we tell everyone?" } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Tell everyone the truth", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -1805,6 +1827,7 @@ Config.StoryQuests = {
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Bright: So who started the rumor? …Does anyone remember?",
+			Clue = "Bright's wristband: gold and purple. Where have you seen one?",
 		},
 		R1 = {
 			Kind = "Sub", Title = "The Halos Are Up to Something", Speaker = "Smokey", Factions = { Horns = true },
@@ -1812,9 +1835,9 @@ Config.StoryQuests = {
 			Start = "Psst! Smokey in Horns Den has a secret job for you.",
 			Steps = {
 				{ Text = "Talk to Smokey in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Psst! The Halos whisper at the fountain. A secret plan!",
-						"Plan A: we spy. Plan B: same as Plan A, but sneakier!",
-						"Go listen at the Crossroads fountain. Look natural!" } } },
+					Lines = { All = { "Psst! A Halo broke the Crown! My uncle's friend's cousin saw it!",
+						"This gold spyglass? Found it. Gold is fine. For spying.\nPlan A: we spy. Plan B: same as Plan A, but sneakier!",
+						"The Halos whisper at the fountain. A secret plan!\nGo listen there. Look natural!" } } },
 				{ Text = "Listen at the fountain %d/%d s", Guide = "Fountain",
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 16, Zone = "Crossroads", Stay = 15 } },
 				{ Text = "Slimes in the meadow %d/%d", Guide = "SlimeMeadow",
@@ -1823,6 +1846,7 @@ Config.StoryQuests = {
 				{ Text = "Tell Smokey what you heard", Guide = "HornsTown", Npc = "Smokey", Panel = true,
 					Lines = { All = { "The slimes were full of sparkle dust. For a show?",
 						"Their big secret… is a fireworks show? For everyone?",
+						"One purple firework? In a Halo show?\nThe plan is signed 'B.' …Never heard of a B.",
 						"So what do we tell everyone?" } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Tell everyone the truth", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -1830,14 +1854,15 @@ Config.StoryQuests = {
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Smokey: So who started the rumor? …Does anyone remember?",
+			Clue = "Smokey's wristband: gold and purple. Where have you seen one?",
 		},
 		N3 = {
-			Kind = "Sub", Title = "Both Sides Are Suspicious", Speaker = "Tiny", Factions = { Halo = true, Horns = true, Neutral = true },
+			Kind = "Sub", Title = "Both Sides Are Suspicious", Speaker = "Tiny", -- everyone (A23-57: no Factions)
 			Requires = { Done = { "M2_3" } },
 			Start = "Tiny from the guild is taking notes. Find Tiny at the Crossroads!",
 			Steps = {
 				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Noted: the Knights look suspicious. Noted: the Horns look suspicious.",
+					Lines = { All = { "Halos blame Horns. Horns blame Halos.\nNoted: nobody saw it.",
 						"Can you watch both bridges for me? Quietly." } } },
 				{ Text = "Watch the Halo bridge", Guide = "HaloBridge", Obj = { Type = "Near", Spot = "HaloBridge", Radius = 14 } },
 				{ Text = "Watch the Horns bridge", Guide = "HornsBridge", Obj = { Type = "Near", Spot = "HornsBridge", Radius = 14 } },
@@ -1845,6 +1870,7 @@ Config.StoryQuests = {
 					Obj = { Type = "EarnGold", Source = "Monster", Count = 30 } },
 				{ Text = "Show Tiny your notes", Guide = "Crossroads", Npc = "Tiny", Panel = true,
 					Lines = { All = { "Both sides buy spy glasses. To spy on each other. From us.",
+						"Suspicious: two kids. Bench behind the fountain. Every evening.\nTheir halo and horns are tiny. Smaller than anyone's.",
 						"Noted. …Is selling to both sides a side too?" } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Send both sides a peace letter", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -1864,6 +1890,8 @@ Config.StoryQuests = {
 Config.StoryQuests.Landmarks.WoodsGate = Vector3.new(474, 0, 0)
 Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -161)
 Config.StoryQuests.Landmarks.HornsBridge = Vector3.new(0, 0, 161)
+-- story_depth §2-1: the Crossroads bench behind the fountain where two kids meet every evening (map v2 moves it)
+Config.StoryQuests.Landmarks.KidsBench = Vector3.new(18, 0, 18)
 
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {
@@ -3217,18 +3245,24 @@ Config.CustomModels = {
 ----------------------------------------------------------------- story (world flavor text only)
 Config.Story = {
 	-- plain lines (no format specifiers)
-	-- A23-55 (user 2026-10-06): the story everyone tells — greed broke the Crown, nobody knows who, each side blames the
-	-- other. "They say": the last chapter shows it was a rumor (ff8340b twist), so the opening never states it as fact.
-	-- GDD §1-1; the opening subtitles and the faction picker's premise panel show these three lines.
+	-- A23-55 / story_depth §0-1 (final ending 1a2475e): the story everyone tells — someone greedy broke the Crown, each
+	-- side blames the other. It is a rumor (two kids broke it together, shown only in the last chapter), so every
+	-- line says "They say". Premise = the faction picker's premise panel (3 lines, GDD §1-1).
 	Premise = {
-		"They say someone wanted the Crown of Balance all to themselves.",
-		"\"If I can't have it, no one can!\" CRACK.",
+		"They say someone broke the Crown of Balance.",
+		"Some who picked up its shards grew a halo. Others grew horns.",
 		"Now each side says the other did it.",
+	},
+	-- the opening (A23-44 remake) shows OpeningRumor 1-3, then Premise 2-3, then OpeningAsk (story_depth §2-1)
+	OpeningRumor = {
+		"They say the Crown kept the world in balance.",
+		"They say someone wanted it all to themselves.",
+		"\"If I can't have it, no one can!\" CRACK.",
 	},
 	-- The server opens Config.Tutorial.Welcome after the first class choice. Do not overlap it with old toasts.
 	Intro = {},
-	-- A23-9 opening (subtitles = Premise lines; plain text)
-	OpeningAsk = "Which side will you take?",
+	-- A23-9 opening (subtitles: see OpeningRumor above; plain text). The last chapter asks the same with "today".
+	OpeningAsk = "Which side will you choose?",
 	OpeningSkip = "Skip",
 	OpeningReplay = "Watch the opening again",
 	OpeningReplayUnsafe = "You can rewatch the opening inside a town.",
