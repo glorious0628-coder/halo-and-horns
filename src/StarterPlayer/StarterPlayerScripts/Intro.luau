@@ -19,11 +19,16 @@ local player = Players.LocalPlayer
 local Intro = {}
 local C, UIKit = nil, nil
 
-local STORY = Config.Story or {}
-local PREMISE = STORY.Premise or {}
+-- A23-48 (user 2026-10-06): the game shows English only. The opening's own lines live here (Config.Story keeps the
+-- old Korean premise for the story texts); short, easy English
 local TXT = {
-	Ask = STORY.OpeningAsk or "어느 편에 설래?",
-	Skip = STORY.OpeningSkip or "건너뛰기",
+	Lines = {
+		"The Crown of Balance broke.",
+		"Some who touched the shards grew halos. Others grew horns.",
+		"Whoever gathers more shards will remake the world.",
+	},
+	Ask = "Which side will you join?",
+	Skip = "Skip",
 	SkipKey = " (Enter)", -- only where keys are shown (Intro.SkipText, review B5: Keybinds.ShowsKeys)
 }
 -- map anchors (A23-9): crown in the Crossroads sky, shard over the fountain, the two faction towns
@@ -219,7 +224,7 @@ local function run(token)
 	if not shot(token, look(Vector3.new(0, 7, -40), Vector3.new(0, 30, 0)),
 		look(Vector3.new(0, 6, -32), crownPos()), 5.5) then return end
 	if not wait(token, 0.4) then return end
-	say(PREMISE[1])
+	say(TXT.Lines[1])
 	if not wait(token, 5.4) then return end
 	-- 2. down into the shard's light column over the fountain (6-11 s)
 	fxPart({ Shape = Enum.PartType.Cylinder, Size = Vector3.new(90, 3, 3), Color = SPOT.Gold, Transparency = 0.45,
@@ -228,7 +233,7 @@ local function run(token)
 	burst(SPOT.Shard, SPOT.Gold, 50)
 	if not wait(token, 4.8) then return end
 	-- 3. shards fly to the castle of light and the horn den (11-17 s): close cuts only
-	say(PREMISE[2])
+	say(TXT.Lines[2])
 	local gold = shard(SPOT.Gold, SPOT.Halo + Vector3.new(0, 55, 70))
 	if not shot(token, look(SPOT.Halo + Vector3.new(18, 14, 95), SPOT.Halo), look(SPOT.Halo + Vector3.new(6, 10, 70), SPOT.Halo), 3) then return end
 	flyTo(gold, SPOT.Halo + Vector3.new(0, 2, 4), 2.2)
@@ -249,7 +254,7 @@ local function run(token)
 	front = front.Magnitude > 0.1 and front.Unit or Vector3.new(0, 0, 1)
 	local me = base.Position
 	local landAt = me + front * 5 + Vector3.new(0, -1.5, 0)
-	say(PREMISE[3])
+	say(TXT.Lines[3])
 	local mine = shard(SPOT.White, landAt + Vector3.new(0, 45, 0))
 	if not shot(token, look(me + front * 14 + Vector3.new(0, 5, 0), me + Vector3.new(0, 1, 0)),
 		look(me + front * 10 + Vector3.new(3, 2.5, 0), me + Vector3.new(0, 1.5, 0)), 5) then return end
@@ -320,7 +325,7 @@ function Intro.Play(replay)
 	return true
 end
 
--- "건너뛰기 ▶ (Enter)" where keys are shown (Keybinds.ShowsKeys), else "건너뛰기 ▶"
+-- "Skip ▶ (Enter)" where keys are shown (Keybinds.ShowsKeys), else "Skip ▶"
 function Intro.SkipText()
 	local kb = C and C.Keybinds
 	local shows = UserInputService.KeyboardEnabled == true

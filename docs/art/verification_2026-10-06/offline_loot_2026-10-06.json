@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 2978,
+  "checks": 2980,
   "failedChecks": 0,
-  "namedChecks": 545,
+  "namedChecks": 547,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -2661,7 +2661,19 @@
     },
     {
       "group": "levelrule",
-      "check": "Config.BestUsableWeapon: tier 1 counts as owned even with mask 0",
+      "check": "Config.BestUsableWeapon: nothing owned -> 0 (bare hands, A23-34)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: only T3 owned at Lv1 -> 0 (bare hands; tier 1 is never assumed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "levelrule",
+      "check": "Config.BestUsableWeapon: only T2 owned (bought before the M1_1 gift) -> T2",
       "pass": 1,
       "fail": 0
     },
@@ -3979,7 +3991,7 @@
           "equip :: equip notice",
           "equip :: no level refusal once the level is reached"
         ],
-        "newFailingCount": 41
+        "newFailingCount": 43
       },
       {
         "mutation": "BestUsableWeapon compares tier numbers instead of Damage",
@@ -4007,7 +4019,7 @@
           "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
           "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 24
       },
       {
         "mutation": "BestUsableWeapon ignores ownership",
@@ -4023,7 +4035,7 @@
           "levelrule :: A23-28 free class change (LevelReset) Lv35 -> Lv1: tier 6 swapped to tier 2 + one notice",
           "levelrule :: A23-28 level-ups never change WeaponTier (no auto-equip)"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 22
       },
       {
         "mutation": "FitWeaponToLevel ignores quiet",
@@ -5075,22 +5087,22 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e219d47ee756ec5f5a3a1ffde56ef8e2e9a1992597719dec53830f871919b212",
+    "src/ReplicatedStorage/Shared/Config.luau": "f6a2957ea9936fe4f7e9a255aff199f908d6406412ff7faba2381eca953ce7ab",
     "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "d360640bf7f1262d2bdf17d6eea7dd104cae44f4b29989c4263b94819b9316ba",
-    "src/ServerScriptService/PlayerService.luau": "2ce4b689d4c44fa077774759ac33ef7a4efc853cb39e00d81aa810f4c71f4ac5",
+    "src/ServerScriptService/DataService.luau": "8da635577f3b6957f402db621c3ca684d825e9febbe2fa7e85a47d6a6eb37f0c",
+    "src/ServerScriptService/PlayerService.luau": "fecf717e2b82cc08a57508b323a42be37298addd6dbc8eeeb722ba35d5ea50b7",
     "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
-    "src/ServerScriptService/CombatService.luau": "55e50d8d24e25039b9a9142f1f9ab206ab07503aa1e1a9398191fdc32b9c0a1f",
-    "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3",
-    "src/ServerScriptService/JusticeService.luau": "c82185555c4263dd843d25e56c28d2aa9dd11d23f123a0f5c89fff7f6c47719c",
-    "src/ServerScriptService/PvPService.luau": "6a74d3116f9ff4ca38505c81f37944f10e80d58a54bf4bcb426c04c05a177ecb",
-    "src/ServerScriptService/ShopService.luau": "05f186c207f216491798d1a87d4b56be3c42790ab07e2e07614749a795dbf30c"
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
+    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed"
   },
-  "fixtureSHA256": "7d985bc68cd8ec5680149e7338eef950327613fa0311a56ae42295b53b0b807d",
+  "fixtureSHA256": "ffa7533dda91bb680176d1f75f8a84e440238dcbbca219fc592eaf71c4124c04",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-11 / A23-12 / A23-14 + review B1-B13 (2026-10-05): one own server roll per kill contributor; items auto-granted, never lost; enhance scrolls 70% +1 / 30% +3 / 10% +5, failure 50% -1 (never below +0) else kept, max +10, refused at +10; transfer scrolls 70/30/10% ADD the source +N onto the target up to +10 and leave the rest on the source (lossless), refused when the target is +10 or the source +0, failure changes nothing but uses the scroll; scrolls refused in PvP combat (kept); equip needs a living character and no PvP combat. A23-28 (2026-10-06): equipping an OWNED weapon also needs Level >= MinLevel (Config.WeaponUsable; refusal Config.Text.EquipNeedLevel, ShopService the same for an owned re-equip, WeaponNeedLevel for a purchase; the legendary T8 has MinLevel 1); Config.BestUsableWeapon = the owned (tier 1 always) usable tier with the highest Damage; LootService.FitWeaponToLevel (Rebirthed / LevelReset / PlayerReady) swaps an unusable equipped weapon to it with one WeaponAutoSwap notice (none when quiet), ownership and per-tier +N untouched, nothing when the equipped tier is usable; a LeveledUp crossing the MinLevel of an owned stronger weapon sends WeaponUsableNow once and never auto-equips. A23-27: a weapon row with BelowLevel (the king's T4) is not drawn below that weapon's MinLevel (RollKill sets the killer's saved Level on a clone of the info) and pays BelowLevel (3 Candy) instead; DebugSimulate (no Level) rolls it. A23-30 bat goblin / little ghost rows and the king's rows pinned. Drop tables: scroll chances rise with the zone (reviewer B2 table, transfer ~1/3), potions halved; legendary damage 76 = 2 x tier 3; PowerOf includes enhancement (Justice/PvP read the WeaponEnhance attribute); owner-only Inventory remote { Items = known ids, Enhance = 8 tiers } replaces ItemsJson/EnhanceJson; unknown saved ids kept but hidden; full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (6 s guide, Fx First); LootRoll debug is count-only; rebirth resets only Level/XP (gold, weapons, enhancement, items kept); first BigSlime = one Enh70 once; Slime jackpot tier 8 at 1/20000 (x3 golden); duplicate weapons -> gold; materials sold only at the anvil, removed before payment. A23-15: a new non-jackpot weapon drop of grade rank >= Config.Announce.MinWeaponGrade (3 = Rare) -> AnnounceService.Announce(player, \"RareWeapon\", { Weapon, Monster }, grade id), Common/Fine never; a new jackpot legendary -> exactly one \"Jackpot\" { Weapon } (grade Legend), ownership saved first, a duplicate jackpot = gold only, no Net.NotifyAll; the first weapon to reach +10 per player (enhance or transfer scroll) sets LootFlags.FirstMax then announces \"FirstMax\" { Weapon } once (saved, survives reload); a missing or failing AnnounceService never blocks the grant.",
+  "contract": "A23-11 / A23-12 / A23-14 + review B1-B13 (2026-10-05): one own server roll per kill contributor; items auto-granted, never lost; enhance scrolls 70% +1 / 30% +3 / 10% +5, failure 50% -1 (never below +0) else kept, max +10, refused at +10; transfer scrolls 70/30/10% ADD the source +N onto the target up to +10 and leave the rest on the source (lossless), refused when the target is +10 or the source +0, failure changes nothing but uses the scroll; scrolls refused in PvP combat (kept); equip needs a living character and no PvP combat. A23-28 (2026-10-06): equipping an OWNED weapon also needs Level >= MinLevel (Config.WeaponUsable; refusal Config.Text.EquipNeedLevel, ShopService the same for an owned re-equip, WeaponNeedLevel for a purchase; the legendary T8 has MinLevel 1); Config.BestUsableWeapon = the owned usable tier (0 = bare hands, A23-34) with the highest Damage; LootService.FitWeaponToLevel (Rebirthed / LevelReset / PlayerReady) swaps an unusable equipped weapon to it with one WeaponAutoSwap notice (none when quiet), ownership and per-tier +N untouched, nothing when the equipped tier is usable; a LeveledUp crossing the MinLevel of an owned stronger weapon sends WeaponUsableNow once and never auto-equips. A23-27: a weapon row with BelowLevel (the king's T4) is not drawn below that weapon's MinLevel (RollKill sets the killer's saved Level on a clone of the info) and pays BelowLevel (3 Candy) instead; DebugSimulate (no Level) rolls it. A23-30 bat goblin / little ghost rows and the king's rows pinned. Drop tables: scroll chances rise with the zone (reviewer B2 table, transfer ~1/3), potions halved; legendary damage 76 = 2 x tier 3; PowerOf includes enhancement (Justice/PvP read the WeaponEnhance attribute); owner-only Inventory remote { Items = known ids, Enhance = 8 tiers } replaces ItemsJson/EnhanceJson; unknown saved ids kept but hidden; full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (6 s guide, Fx First); LootRoll debug is count-only; rebirth resets only Level/XP (gold, weapons, enhancement, items kept); first BigSlime = one Enh70 once; Slime jackpot tier 8 at 1/20000 (x3 golden); duplicate weapons -> gold; materials sold only at the anvil, removed before payment. A23-15: a new non-jackpot weapon drop of grade rank >= Config.Announce.MinWeaponGrade (3 = Rare) -> AnnounceService.Announce(player, \"RareWeapon\", { Weapon, Monster }, grade id), Common/Fine never; a new jackpot legendary -> exactly one \"Jackpot\" { Weapon } (grade Legend), ownership saved first, a duplicate jackpot = gold only, no Net.NotifyAll; the first weapon to reach +10 per player (enhance or transfer scroll) sets LootFlags.FirstMax then announces \"FirstMax\" { Weapon } once (saved, survives reload); a missing or failing AnnounceService never blocks the grant.",
   "limitations": "Offline service doubles (DataStore = JSON round trip, rate limit clock, ShopService.CanBuyWeapon and CombatService.IsInCombat stubbed for LootService, AnnounceService a recording stub (its 10 s grouping, name hiding and client chat text are not exercised), a stand-in character for Util.IsAlive, task.defer flushed by the fixture, Inventory remote captured). Justice/PvP power helpers and ShopService's onUpgradeWeapon (with finite / notifyBad; anvil distance stubbed) are extracted functions, not the whole services. ProgressionService.LeveledUp / Rebirthed / LevelReset are the real signals (AddXP, TryRebirth, ResetLevel). Client item panel lock display, Fx, real MonsterService kills, the ClassService free class change flow around ResetLevel, multiplayer and Studio play are not certified here."
 }

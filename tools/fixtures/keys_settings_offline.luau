@@ -1667,11 +1667,11 @@ runGroup("key-hints-one-rule", function()
 		local intro, introErr = nil, txtErr
 		if txt then intro, introErr = snippet("IntroSkipText", { C = w.C, TXT = txt, UserInputService = w.UIS }) end
 		local skip = intro and intro.SkipText()
-		check(skip == "건너뛰기 ▶" .. (keys and " (Enter)" or ""), "Intro.SkipText: '(Enter)' exactly where keys are shown",
+		check(skip == "Skip ▶" .. (keys and " (Enter)" or ""), "Intro.SkipText: '(Enter)' exactly where keys are shown",
 			d.Name .. " " .. tostring(skip or introErr))
 		local introEarly = txt and snippet("IntroSkipText", { C = {}, TXT = txt, UserInputService = w.UIS })
 		local skipEarly = introEarly and introEarly.SkipText()
-		check(skipEarly == "건너뛰기 ▶" .. (d.Keyboard and " (Enter)" or ""),
+		check(skipEarly == "Skip ▶" .. (d.Keyboard and " (Enter)" or ""),
 			"Intro.SkipText before Keybinds is up: '(Enter)' only with a keyboard", d.Name .. " " .. tostring(skipEarly))
 	end
 end)

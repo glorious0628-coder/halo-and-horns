@@ -292,15 +292,22 @@ function DataService.Start()
 			store = result
 		end
 		if RunService:IsStudio() then
+			-- Studio test aid (game dev 1, 2026-10-06): ServerStorage attribute StudioFreshSave = true -> in-memory data, i.e. a
+			-- brand-new save that is never written, for first-session checks without touching the tester's real save
+			local okFresh, freshTest = pcall(function()
+				return game:GetService("ServerStorage"):GetAttribute("StudioFreshSave") == true
+			end)
+			freshTest = okFresh and freshTest == true
 			local usable = false
-			if store then
+			if store and not freshTest then
 				usable = pcall(function()
 					store:GetAsync("__probe")
 				end)
 			end
 			if not usable then
 				memoryMode = true
-				warn("[DataService] DataStore unavailable (enable Studio Access to API Services). Using in-memory data; nothing will be saved.")
+				warn(freshTest and "[DataService] StudioFreshSave is on: fresh in-memory data; nothing will be saved."
+					or "[DataService] DataStore unavailable (enable Studio Access to API Services). Using in-memory data; nothing will be saved.")
 			end
 		elseif not store then
 			Util.Warn(TAG, "GetDataStore failed: " .. tostring(result))

@@ -2175,6 +2175,75 @@ Config.Settings.Window = {
 		ButtonB = "B", DPadUp = "D-pad Up", DPadDown = "D-pad Down", DPadLeft = "D-pad Left", DPadRight = "D-pad Right" },
 }
 
+-- BB15 help window + the news window (SettingsUI.luau; A23-48 English only). "Controls" is built from my live keys
+-- (TouchLines on touch-only devices). Rules checked against Config and the services on 2026-10-06; the bully numbers
+-- come from Config.Bully. At most 4 lines a topic (phones); the lines are shown as they are (never string.format them).
+Config.Help = {
+	Title = "Help", NewsTitle = "News",
+	GuideAgain = "Meet the Guide Again", BackToHelp = "< Help", TalkToGuide = "Talk to the Guide",
+	CameraLine = "Drag with the left mouse button to turn the camera.",
+	TouchLines = {
+		"Tap the buttons on the screen to attack, use skills and drink potions.",
+		"Drag with one finger to turn the camera.",
+	},
+	Topics = {
+		{ Id = "Controls", Title = "Controls", Lines = {} },
+		{ Id = "Combat", Title = "Combat & Auto Battle", Lines = {
+			"One press = one attack. Holding it down won't repeat it.",
+			"Skills cost 20 MP. You can use one again after 3 seconds.",
+			"Finish the Crown Shard side quest to unlock Auto Battle. It only hits monsters.",
+			"No input for 20 minutes? Roblox will disconnect you.",
+		} },
+		{ Id = "Honor", Title = "Honor & Infamy", Lines = {
+			"Knights earn Honor and the Horn Legion earns Infamy, from fair fights and story choices.",
+			"Artisan Guild: each success with a scroll you hunted yourself earns Artisan Fame.",
+			"A free side switch at the Altar resets your old side's points to 0.",
+			"Each week's top 3 get a title and +10% XP and drops the next week.",
+		} },
+		{ Id = "Sprout", Title = "Sprout Shield & Bullies", Lines = {
+			"Sprout Shield: no PvP until you reach Lv 15 and play for 1 hour.",
+			string.format("KO someone under %d%% of your power, or who respawned less than %d s ago: Bully!",
+				math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5), Config.Bully.FreshSpawnSeconds),
+			string.format("KO the same player %d times in %d minutes: Bully too!", Config.Bully.RepeatKOs,
+				math.floor(Config.Bully.RepeatWindow / 60)),
+			"Bullies get no Auto Battle, and half XP and drops.",
+		} },
+		{ Id = "Wanted", Title = "Wanted Stars & Grudge Sacks", Lines = {
+			"When the Horn Legion KOs a Knight, they get a Wanted star (max 5).",
+			"Knights who KO a Wanted player win the Bounty gold.",
+			"Stolen gold goes in the thief's Grudge Sack. After 45 s in PvP, it's theirs.",
+			"If a Knight catches the thief within 45 s, you get 120% back.",
+		} },
+		{ Id = "Events", Title = "Golden Goose, Kaiju & Rebirth", Lines = {
+			"Golden Goose: every 10 minutes in the Crossroads. Knights rescue it, the Horn Legion poaches it!",
+			"Kaiju: a 5-star villain turns huge for 120 s. Knights can hit it anywhere!",
+			"Rebirth from Lv 50: only your level resets. Gold, weapons and items stay.",
+			"Each Rebirth: +25% gold and XP forever (+40% on the smaller side).",
+		} },
+		{ Id = "Scrolls", Title = "Scrolls", Lines = {
+			"Enhance Scroll: 70% gives +1, 30% gives +3, 10% gives +5.",
+			"On a fail it stays or drops one step (50/50), never below +0.",
+			"Weapons never break! Max +10, and each +1 adds 10% attack.",
+			"Transfer Scroll: moves your + to another weapon. A fail changes nothing.",
+		} },
+		{ Id = "Chat", Title = "Team Chat", Lines = {
+			"Type /t in the chat to talk only to your own side.",
+		} },
+	},
+	-- the news window (and the last help topic): update weekly
+	News = {
+		{ Title = "Beta", Lines = {
+			"Your beta save carries over to the full launch on December 19.",
+			"Everyone who joins before the launch gets the Beta Pioneer title.",
+		} },
+		{ Title = "New this week", Lines = {
+			"Halloween: the Pumpkin Patch and the new Haunted Hollow with ghosts and the Ghost King.",
+			"New players start bare-handed. The Blacksmith gives you your first weapon after the first mission.",
+			"New Settings window: change your keys, sound effects and screen shake.",
+		} },
+	},
+}
+
 -- BB2 (pure, server + client): unknown keys dropped; numbers finite, clamped and snapped to Step; bools boolean; enums in
 -- Options; anything else -> the default. Keys: sparse action id -> "" or a usable key name (Config.KeyUsable), entries
 -- equal to the default dropped, and an explicit key already used by an earlier action (Actions order, actions whose
