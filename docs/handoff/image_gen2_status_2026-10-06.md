@@ -23,7 +23,7 @@
   - 묶음 12 일부 a안: UIP_ListRowSelected_a, UIP_Toast_a, UIP_BannerGold_a, UIP_NameTag_a, UIP_WarMeterFrame_a(마지막 것은 생성 중에 멈춤).
 - 문구 파일은 모두 `art/prompts/`에 있음(묶음 12·13 20개 + IconSettings·IconNews·UIP_MenuTile 포함, 아직 커밋 안 함 — 다음 세션이 그림과 같이 커밋).
 
-## 다음 할 일 (순서)
+## 다음 할 일 (처음 계획 — 모두 끝남, 기록만. 지금 할 일은 맨 아래 '밤 2')
 1. **사용자 확인:** b10 시트(직업 그림 9 + 초상 3)를 사용자가 보면 → approved로 바꾸고 `art/review/s2/human/*.png`를 `art/ui/`로 옮겨 커밋 → 이미지 개발에 전달(키: CLS_*, PTR_Guide*; Config CharHalo... 자리).
 2. A23-38: IconSettings·IconNews·UIP_MenuTile 내려받기 → 고르기 → 6칸 가로 줄 시안(PC 64·폰 48, 승인 메뉴 아이콘 5장 8875c87과 같이) → 커밋 → 이미지 개발.
 3. 묶음 12·13(20장) 생성 이어서: 아직 시작 안 한 것 = WarCrownPip, QuestRow, AutoRingOn, NpcMarkerBubble, RewardRays(검정 바탕, 밝기→투명), TabOn, TabOff, InputField, QuestTab, BannerAlert, GlyphQuest·Auto·Back·Lock·Check + 전부 b안.
@@ -88,3 +88,10 @@
 - **여자아이 브라이트**: 4안(GD·GS·GW·GP) 비교 → GW 탈락(윗니 줄). 사용자 "2번(GS) 좋은데 머리 조금 더 길게" → GS 참조로 머리만 바꾼 **L1 긴 옆 땋은 머리 / L2 긴 생머리 / L3 땋은 머리+보라 리본**(b57facd, 시트 `a2359_bright_girl_long_hair_{faces,frames}.png`) → 검수 대기, 추천 L1.
 - **진영 고르기 새 그림(A23-57)** 후보 10(70bc0e5, 시트 `a2357_faction_select_sheet.jpg`, 스크립트 scratchpad `faction_sheet.py` — 직업 카드 창에 CLS_* 그림을 창 모양대로 넣음): 진영 카드 A(문장)/B(캐릭터), 직업 카드 틀 A/B, 제목 띠 A(크림)/B(남색). 추천 진영 A·직업 틀 A·제목 B. 검수 대기 → OK 뒤 art/ui + approved.json(글자 칸 layout 분수 재기: `tools/img2/measure_card.py`) → 이미지 개발.
 - High 규칙(SPEC A23-47 보강): Tripo로 갈 확정 2D만 High(약 5크레딧/장). 이미 넘긴 계급·초원은 Tripo 묶음 정해진 것만 그때 High로 다시(검수 ②안).
+
+## 밤 2 (2026-10-06, 크레딧 0) — 지금 할 일
+- 끝: 5b65511 진영 고르기 고침 시트 v2 → **c7c13d4 사용자 OK**(진영 카드 빛 A·뿔 C, 직업 카드 틀 빛 A·뿔 E, 제목 띠 A + 직업 창 그림 `CLS_*_Card` 12장, 글자 칸 `layout`은 approved.json). 묶음 12·13·15·16·17·19는 전에 이미 끝남(a601f39·38ea615·0a5603a·af64891).
+- **중지(사용자 "내일 하자", 검수 전달 — 밤 2):** E11 게시판 그림은 **아직 0장 생성**(브라우저 창이 숨김이라 시작 못 함, 크레딧 0). 내일 남은 순서: ① Firefly 10장(중간, 문구 아래) ② 내려받기 `art/out/s2/<Key>_src.png` ③ 누끼 `tools/img2/cut_keep.py` → `<Key>_cut.png` ④ 시트 = scratchpad `e11_sheet.py`(초안·미검증, 없으면 다시 작성: 부품 A/B 밝은·어두운 바탕 + 게임 크기 + 1280×720 게시판 예시 + QuestRow 위 'Job' 꼬리표) → `art/review/s2/e11_job_board_sheet.jpg` ⑤ 검수 → OK 뒤 art/ui + approved.json(`layout`) → 이미지 개발. 배치안(카드 4장 가로 + 아래 [Kind]/[Sneaky] + 위 제목·Kind/Sneaky 수)은 검수 OK.
+- **E11 사냥터 게시판 그림(글자 없음)** — 문구 `art/prompts/UIP_JobBoard_{A,B}`(게시판 창 3:2: A 나무 판+위 남색 이름판 / B 남색·금 9조각용), `UIP_JobCard_{A,B}`(의뢰 카드 2:3: 핀 / 밀랍 도장), `UIP_BtnKind_{A,B}`(하늘·금, A는 작은 날개), `UIP_BtnSneaky_{A,B}`(보라·금, A는 작은 뿔), `UIP_JobTag_{A,B}`('Job' 꼬리표). 꼬리 문장은 승인 HUD(PanelMain·BtnSecondary)와 같음. 배치 예시: 카드 4장 가로 한 줄 + 카드 아래 [Kind]/[Sneaky] 위아래 + 위 제목·"Kind 12 · Sneaky 3" 줄(quest_volume §4). 시트 → 검수 → OK 뒤 art/ui + approved.json(`layout`) → 이미지 개발.
+- 뒤로 미룸: A23-57 장인 쪽(펫 조련사 b, GlyphGear/Paw, 장인 계급 그림, CLS_Artisan*). High 다시 그리기는 Tripo 묶음이 정해진 물건만(검수 ②안).
+- 브라우저: 재시작 뒤 `preview_start`가 "seed"를 다시 써서 → `tabs_create`로 **"tab-1"**을 열고 seed는 닫음. 이 세션이 어느 창에도 안 열려 있으면 창이 숨김 → `requestAnimationFrame`이 안 돌아 Firefly가 빈 화면(JS로 우회 안 됨) → 검수에게 "세션 열고 Ctrl+Shift+B" 부탁. 다 쓰면 탭 닫아 원래대로.
