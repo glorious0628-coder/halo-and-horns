@@ -2230,7 +2230,8 @@ runGroup("levelrule", function()
 	check(not C.WeaponUsable(0, 50) and not C.WeaponUsable(9, 50) and not C.WeaponUsable("3", 50) and not C.WeaponUsable(nil, 50),
 		"WeaponUsable of an unknown tier is false")
 	check(C.WeaponUsable(2, nil) and not C.WeaponUsable(3, nil), "WeaponUsable with no level reads Lv1")
-	-- Config.BestUsableWeapon(mask, level): the owned (tier 1 always) usable tier with the highest Damage
+	-- Config.BestUsableWeapon(mask, level): the owned usable tier with the highest Damage; A23-34: 0 = bare hands when no
+	-- owned weapon is usable (tier 1 is owned only after the M1_1 gift)
 	for _, case in {
 		{ tierMask(1, 3, 6), 1, 1, "T1+T3+T6 at Lv1 -> T1 (T3 needs Lv5, T6 Lv30)" },
 		{ tierMask(1, 3, 6), 5, 3, "T1+T3+T6 at Lv5 -> T3" },
@@ -2241,7 +2242,9 @@ runGroup("levelrule", function()
 		{ tierMask(1, 3, 4, 8), 11, 8, "T4 not usable at Lv11 -> T8" },
 		{ tierMask(1, 3, 4, 8), 12, 4, "an owned usable T4 (88) beats T8 (76): by Damage, not tier number" },
 		{ tierMask(1, 2), 1, 2, "T1+T2 at Lv1 -> T2" },
-		{ 0, 50, 1, "tier 1 counts as owned even with mask 0" },
+		{ 0, 50, 0, "nothing owned -> 0 (bare hands, A23-34)" },
+		{ tierMask(3), 1, 0, "only T3 owned at Lv1 -> 0 (bare hands; tier 1 is never assumed)" },
+		{ tierMask(2), 1, 2, "only T2 owned (bought before the M1_1 gift) -> T2" },
 		{ tierMask(1, 2, 3, 4, 5, 6, 7, 8), 100, 7, "everything owned at Lv100 -> T7 (1000)" },
 	} do
 		local got = C.BestUsableWeapon(case[1], case[2])

@@ -464,6 +464,9 @@ end
 function claimTutorial(player, auto)
 	if getStep(player) ~= STEP_QUEST then return end
 	if getTutorialKills(getData(player)) < TUT_TARGET then return end
+	-- A23-34: M1_1 (show the jelly to the smith, get the first weapon) needs a smithy visit made after this claim, as
+	-- the Claimed line says: an anvil visit before the first mission does not hand the weapon over in the meadow
+	S.PlayerService.SetStat(player, "BlacksmithVisited", false)
 	setStep(player, TUT_DONE) -- first, so it can never be paid twice
 	TUT_READY_AT[player] = nil
 	S.ProgressionService.AddBankGold(player, TUT_GOLD, "Quest")

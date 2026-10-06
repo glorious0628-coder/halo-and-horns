@@ -75,8 +75,10 @@ Config.Data = {
 		XP = 0,
 		BankGold = 0,
 		CarriedGold = 0,
-		WeaponTier = 1, -- v1 name: SwordTier (migrated by DataService)
-		WeaponOwnedMask = 1, -- tier N uses bit N-1; the free starting weapon is always owned
+		-- A23-34: a new player starts bare-handed (tier 0, nothing owned); the M1_1 blacksmith gives tier 1. Records
+		-- saved before A23-34 keep their weapons (they always own tier 1). v1 name: SwordTier (migrated by DataService)
+		WeaponTier = 0,
+		WeaponOwnedMask = 0, -- tier N uses bit N-1; 0 = no weapon owned
 		BlacksmithVisited = false,
 		Faction = "None",
 		Class = "Warrior",
@@ -224,7 +226,7 @@ Config.WeaponGrades = {
 }
 -- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith)
 Config.WeaponInfo = {
-	{ Grade = "Common", Source = "처음부터 가진 무기" },
+	{ Grade = "Common", Source = "첫 임무 뒤 대장장이가 주는 첫 무기", SourceEn = "Your first weapon, a gift from the blacksmith" }, -- A23-34
 	{ Grade = "Common", Source = "대장간에서 사요" },
 	{ Grade = "Fine", Source = "대장간에서 사요 (Lv5부터)" },
 	{ Grade = "Rare", Source = "고블린·고블린 우두머리가 드물게" },
@@ -253,12 +255,12 @@ function Config.WeaponUsable(tier, level)
 end
 
 -- the best owned tier (bit t-1 of ownedMask) usable at `level` (by Damage, so the legendary T8 counts as the 76-damage
--- weapon it is); tier 1 is always owned and usable
+-- weapon it is); 0 = bare hands when no owned weapon is usable (A23-34: tier 1 is owned only after the M1_1 gift)
 function Config.BestUsableWeapon(ownedMask, level)
-	local best, bestDamage = 1, -1
-	local mask = math.floor(tonumber(ownedMask) or 1)
+	local best, bestDamage = 0, -1
+	local mask = math.floor(tonumber(ownedMask) or 0)
 	for tier, def in Config.Weapons do
-		if type(def) == "table" and (tier == 1 or bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0)
+		if type(def) == "table" and bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0
 			and Config.WeaponUsable(tier, level) and (tonumber(def.Damage) or 0) > bestDamage then
 			best, bestDamage = tier, tonumber(def.Damage) or 0
 		end
@@ -272,6 +274,7 @@ function Config.WeaponStars(tier)
 end
 
 function Config.WeaponName(tier, classId, factionId)
+	if tier == 0 then return Config.Text.BareHands end -- A23-34: no weapon equipped
 	local names = Config.WeaponNames[classId] or Config.WeaponNames.Warrior
 	local n = names[tier]
 	if type(n) == "table" then return n[factionId] or n.None end
@@ -279,8 +282,10 @@ function Config.WeaponName(tier, classId, factionId)
 end
 
 -- Existing GPT inventory icons; tier 7 uses the chosen faction, with the neutral icon as the unset fallback.
+-- A23-34: tier 0 (bare hands) has no icon -> nil (UIKit.ArtId(nil) keeps the slot's code fallback)
 function Config.WeaponArtKey(tier, classId, factionId)
 	if type(tier) ~= "number" or tier ~= tier or math.abs(tier) == math.huge then tier = 1 end
+	if tier < 1 then return nil end
 	tier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier)
 	if classId ~= "Warrior" and classId ~= "Mage" and classId ~= "Archer" then classId = "Warrior" end
 	-- A23-39: the Artisan guild's Archer is the pet tamer (same class id): tiers 1-6 show its staffs (Weapon_Tamer_T*)
@@ -307,17 +312,20 @@ function Config.EnhanceMult(enhance)
 	return 1 + loot.EnhancePerLevel * math.clamp(math.floor(enhance), 0, loot.MaxEnhance)
 end
 
--- normal per-target damage of the weapon at this level and enhancement (before class, bonuses and multipliers)
+-- normal per-target damage of the weapon at this level and enhancement (before class, bonuses and multipliers).
+-- A23-34: a tier with no Config.Weapons row (0 = bare hands) is the punch, Config.Combat.Unarmed.Damage (no +N).
 function Config.WeaponDamage(tier, level, enhance)
-	local w = Config.Weapons[tier] or Config.Weapons[1]
-	return w.Damage * (1 + Config.Combat.LevelDamagePerLevel * (level - 1)) * Config.EnhanceMult(enhance)
+	local w = type(tier) == "number" and Config.Weapons[tier] or nil
+	local byLevel = 1 + Config.Combat.LevelDamagePerLevel * (level - 1)
+	if not w then return Config.Combat.Unarmed.Damage * byLevel end
+	return w.Damage * byLevel * Config.EnhanceMult(enhance)
 end
 
 -- basic attacks to defeat a monster with the server's swing formula (no crit / perks / faction bonuses):
 -- what actually changes when the blacksmith sells a weapon (the shop never shows raw weapon Damage)
 function Config.SwingHitsToKill(tier, level, classId, monsterId, factionId, enhance)
 	local m = Config.MonsterTypes and Config.MonsterTypes[monsterId]
-	local c = Config.Classes[classId] or Config.Classes.Warrior
+	local c = Config.AttackProfile(classId, tier, factionId) -- A23-34: a punch has no class multiplier
 	if type(m) ~= "table" or type(m.HP) ~= "number" then return nil end
 	local f = factionId and Config.Factions[factionId]
 	local bonus = (type(f) == "table" and type(f.DamageBonus) == "number") and f.DamageBonus or 0 -- Horns +15%
@@ -428,7 +436,30 @@ Config.Combat = {
 	AutoIdleMoveStuds = 1.5, -- moving this far within a second counts as activity (server-side check)
 	ManualPriority = 1.0, -- legacy fixed window (pre CR-M17); kept only so old references never read nil
 	AutoPvPHintCooldown = 60, -- addendum A3-M3: "under attack" hint at most once per this many seconds
+	-- A23-34 (user 2026-10-06): new players start bare-handed. Every class throws the same short punch until the first
+	-- weapon (M1_1 blacksmith gift): Damage at Lv1 before the 50% swing rule (= 2 per punch, a slime takes about 5),
+	-- no class multiplier, no MP, one nearest target within Range in front (AimCone). Range 7 > monster AttackRange 5.5.
+	Unarmed = { Damage = 4, Range = 7, Interval = 0.8, AimCone = 75 },
 }
+
+-- A23-34: the basic attack's shape for a class holding `tier`. With a weapon it is the class row itself (Pattern, Range,
+-- SwingInterval, AimCone, Targets, Splash, Damage, Ranged, PvPMult); with no weapon row (0 = bare hands) every class
+-- throws the same punch: Style "Punch", Unarmed = true, one nearest target (Pattern "Multi", Targets 1), Damage
+-- (class multiplier) 1, not ranged, no Mage MP. Server: CombatService.Swing / auto combat; clients read the same table
+-- for facing and swing timing. Skill Q never uses it (it stays the class skill). factionId: kept for A23-39.
+local BARE_PROFILES = {}
+function Config.AttackProfile(classId, tier, factionId)
+	local c = Config.Classes[classId] or Config.Classes.Warrior
+	if type(tier) == "number" and Config.Weapons[tier] then return c end
+	local p = BARE_PROFILES[c.Id]
+	if not p then
+		local u = Config.Combat.Unarmed
+		p = { Id = c.Id, Style = "Punch", Unarmed = true, Pattern = "Multi", Targets = 1, Splash = 0, Range = u.Range,
+			SwingInterval = u.Interval, AimCone = u.AimCone, Damage = 1, Ranged = false, PvPMult = 1 }
+		BARE_PROFILES[c.Id] = p
+	end
+	return p
+end
 
 ----------------------------------------------------------------- charge & release ("자동은 장전, 손은 발사")
 -- Design intent: pure idle (auto swings + auto release) ~= 1.25x baseline DPS; auto swings + PERFECT release ~= 2.5x.
@@ -642,8 +673,13 @@ Config.Power = {
 	},
 }
 
+-- A23-34 (user 2026-10-06 "처음에는 전투력이 0"): bare hands count from 0 — the Lv1 punch is taken off, so Lv1 with no
+-- weapon (and no pet) shows 0 and every level still adds a little. With a weapon the number is the BB4 value as before,
+-- so armed players keep their numbers and every armed comparison (bully rule, boldness, Tab list) its balance.
 function Config.CombatPower(level, tier, enhance)
-	return math.floor(Config.PowerOf(level, tier, 1, enhance) * Config.Power.DisplayScale + 0.5)
+	local raw = Config.PowerOf(level, tier, 1, enhance)
+	if not (type(tier) == "number" and Config.Weapons[tier]) then raw -= Config.PowerOf(1, 0, 1, 0) end
+	return math.max(0, math.floor(raw * Config.Power.DisplayScale + 0.5))
 end
 
 -- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N); cached
@@ -1466,11 +1502,13 @@ Config.Tutorial = {
 		Travel = "보급로 되찾기 · 메뉴 > 이동 > 말랑 초원",
 		QuestStart = "첫 임무: %s! (보상 %s골드)",
 		QuestReady = "보급로 임무 완료! [받기]를 눌러요.",
-		Claimed = "보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 장비를 살펴봐요.",
-		ClaimedEn = "Thanks for guarding the supply road! +%s gold · Check the gear at the Crossroads smithy.",
-		AutoClaimed = "첫 임무 보상 +%s골드를 금고에 넣었어요! 교차로 대장간에서 장비를 살펴봐요.",
-		AutoClaimedEn = "Your first mission reward, +%s gold, is in your bank! Check the gear at the Crossroads smithy.",
-		VisitBlacksmith = "무기 살펴보기 · 교차로 마을 대장간",
+		-- A23-34: the first weapon waits at the Crossroads blacksmith (M1_1 gift)
+		Claimed = "보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 첫 무기를 받아요.",
+		ClaimedEn = "Thanks for guarding the supply road! +%s gold · Get your first weapon at the Crossroads smithy.",
+		AutoClaimed = "첫 임무 보상 +%s골드를 금고에 넣었어요! 교차로 대장간에서 첫 무기를 받아요.",
+		AutoClaimedEn = "Your first mission reward, +%s gold, is in your bank! Get your first weapon at the Crossroads smithy.",
+		VisitBlacksmith = "첫 무기 받기 · 교차로 마을 대장간",
+		VisitBlacksmithEn = "Get your first weapon · Crossroads smithy",
 		-- A23-3: next goal after the blacksmith visit (computed from existing state only; no new reward)
 		NextIronLevel = "다음 목표 · Lv%d 되면 철 무기 (지금 Lv%d)",
 		NextIronGold = "다음 목표 · 철 무기 %s골드 (보유 %s)",
@@ -1539,9 +1577,10 @@ Config.StoryQuests = {
 			},
 			Unlock = "AutoCombat",
 		},
+		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
 		M1_1 = {
-			Kind = "Main", Chapter = 1, Title = "반짝이는 젤리", Speaker = "Smith",
-			Steps = { { Text = "대장장이에게 젤리 보이기", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
+			Kind = "Main", Chapter = 1, Title = "반짝이는 젤리", Speaker = "Smith", GiveWeapon = 1,
+			Steps = { { Text = "대장장이에게 젤리 보이고 첫 무기 받기", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
 			Finish = "대장장이: 왕관 조각 가루네! 제일 많이 먹은 건 왕 슬라임이지.",
 		},
 		M1_2 = {
@@ -2289,7 +2328,22 @@ Config.Loot = {
 		RareWeapon = "%s 무기! %s 획득!", -- grade name (희귀 / 영웅 / 전설), weapon
 		DuplicateWeapon = "이미 가진 %s → %s골드로 바뀌었어요.",
 		JackpotSelf = "전설 무기 [%s]! 메뉴 → 아이템에서 장착해요.",
+		-- A23-34: the same jackpot found bare-handed is equipped at once
+		JackpotEquip = "전설 무기 [%s] 장착! 전투력 %s → %s",
+		JackpotEquipEn = "Legendary weapon [%s] equipped! Power %s → %s",
 		FirstScroll = "주문서를 얻었어요! 메뉴 → 아이템에서 무기를 강화해 봐요. (실패해도 무기는 안전해요)",
+		-- A23-34: the same one-time hint while still bare-handed (no weapon to enhance yet)
+		FirstScrollBare = "주문서를 얻었어요! 첫 무기는 대장장이가 줘요. 그다음 메뉴 → 아이템에서 강화해 봐요.",
+		FirstScrollBareEn = "You got a scroll! The blacksmith gives you your first weapon. Then enhance it in Menu → Items.",
+		-- A23-34: the M1_1 gift (LootService.GrantFirstWeapon). Bare-handed: equipped at once with the power change;
+		-- a player who already bought a weapon gets it in the bag (no equip, no power change).
+		FirstWeapon = "첫 무기 [%s]를 받았어요! 전투력 %s → %s",
+		FirstWeaponEn = "You got your first weapon, [%s]! Power %s → %s",
+		FirstWeaponBag = "대장장이가 [%s]도 챙겨 줬어요. 메뉴 → 아이템에서 볼 수 있어요.",
+		FirstWeaponBagEn = "The blacksmith also gave you [%s]. Find it in Menu → Items.",
+		-- A23-34: a weapon found while bare-handed is equipped at once (power change)
+		BareEquip = "[%s] 장착! 전투력 %s → %s",
+		BareEquipEn = "[%s] equipped! Power %s → %s",
 		EnhanceOk = "강화 성공! %s +%d → +%d (공격 %d%% → %d%%)",
 		EnhanceFailDown = "강화 실패… %s +%d → +%d (무기는 안전해요)",
 		EnhanceFailKeep = "강화 실패… 그래도 %s +%d 그대로예요!",
@@ -3007,6 +3061,10 @@ Config.Text = {
 	EquipNeedLevel = "이 무기는 레벨 %d부터 쓸 수 있어요.", EquipNeedLevelEn = "You can use this weapon from Lv %d.",
 	WeaponAutoSwap = "Lv %d부터 쓸 수 있는 무기예요 → %s 무기로 바꿨어요.",
 	WeaponAutoSwapEn = "That weapon needs Lv %d → switched to %s.",
+	-- A23-34: bare hands (weapon tier 0)
+	BareHands = "맨손", BareHandsEn = "Bare hands",
+	WeaponFromQuest = "첫 무기는 첫 임무(슬라임 5마리)를 끝내면 대장장이가 줘요.",
+	WeaponFromQuestEn = "The blacksmith gives you your first weapon after your first mission (5 slimes).",
 	WeaponUsableNow = "이제 %s 무기를 쓸 수 있어요! 대장간이나 메뉴 → 아이템에서 장착해요.",
 	WeaponUsableNowEn = "You can now use %s! Equip it at the blacksmith or in Menu → Items.",
 	NeedFaction = "먼저 진영을 골라야 해요.",

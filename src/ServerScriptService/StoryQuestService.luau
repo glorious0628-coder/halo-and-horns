@@ -214,6 +214,12 @@ local function complete(player, data, id)
 	end
 	notify(player, def.Finish or msg, "reward")
 	if def.Finish then notify(player, msg, "reward") end
+	-- A23-34: the blacksmith's free first weapon (M1_1 GiveWeapon = tier; paid once, LootService.GrantFirstWeapon), its
+	-- own "전투력 X → Y" line after the story lines
+	if def.GiveWeapon and S.LootService and type(S.LootService.GrantFirstWeapon) == "function" then
+		local ok, err = pcall(S.LootService.GrantFirstWeapon, player, def.GiveWeapon)
+		if not ok then Util.Warn(TAG, "GrantFirstWeapon: " .. tostring(err)) end
+	end
 	dirty(player)
 end
 
@@ -366,6 +372,12 @@ local function refresh(player)
 	-- and monsters keep attacking as usual; the old ChoicePending flag is cleared for saves/servers that set it
 	if player:GetAttribute("ChoicePending") == true then player:SetAttribute("ChoicePending", false) end
 	if changed then dirty(player) end
+end
+
+-- A23-34: ShopService runs this when the anvil opens, so an active M1_1 finishes (and hands over its weapon) before
+-- the weapon shop shows
+function StoryQuestService.Refresh(player)
+	refresh(player)
 end
 
 ------------------------------------------------------------------ quest list rows (QuestService.publish)

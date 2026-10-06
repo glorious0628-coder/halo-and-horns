@@ -402,7 +402,9 @@ local UNTIL = C.Beta.PioneerUntil
 ------------------------------------------------------------------ A1. CombatPower samples / MaxCombatPower
 runGroup("power-samples", function()
 	local samples = {
-		{ 1, 1, 0, 283, "Lv1 starting weapon" },
+		{ 1, 0, 0, 0, "Lv1 bare hands (A23-34: a new player starts at 0)" },
+		{ 2, 0, 0, 12, "Lv2 bare hands (levels still add a little)" },
+		{ 1, 1, 0, 283, "Lv1 tier 1 (the M1_1 blacksmith gift)" },
 		{ 1, 2, 0, 387, "Lv1 wood weapon (tier 2, bought with the first 150 gold)" },
 		{ 5, 3, 0, 758, "Lv5 iron weapon" },
 		{ 10, 3, 3, 1052, "Lv10 iron weapon +3" },
@@ -620,7 +622,7 @@ runGroup("justice-getcombatpower", function()
 		"no rebirth bonus in the combat power", J.GetCombatPower(reborn))
 	check(J.GetPower(reborn) > J.GetPower(plain) and math.abs(J.GetPower(reborn) - C.PowerOf(10, 3, 1.75, 3)) < 1e-9,
 		"GetPower (faction power) stays as it was: rebirth bonus included", show({ J.GetPower(reborn), J.GetPower(plain) }))
-	check(J.GetCombatPower(attrPlayer({})) == 283, "missing attributes = Lv1 tier 1 +0 = 283", J.GetCombatPower(attrPlayer({})))
+	check(J.GetCombatPower(attrPlayer({})) == 0, "missing attributes = Lv1 bare hands = 0 (A23-34)", J.GetCombatPower(attrPlayer({})))
 	check(J.GetCombatPower(attrPlayer({ Level = 0, WeaponTier = 99, WeaponEnhance = 99 }))
 		== C.CombatPower(1, C.MaxWeaponTier, C.Loot.MaxEnhance), "level floor 1, tier clamped to MaxWeaponTier, +N clamped to +10")
 	check(J.GetCombatPower(nil) == 0, "nil player -> 0")

@@ -540,6 +540,8 @@ end
 
 local function buildWeapon(player, character)
 	clearChild(character, "WeaponModel")
+	-- A23-34: bare hands (tier 0) = nothing in the hands (the halo / horns stay)
+	if Config.Weapons[math.floor(attrNum(player, "WeaponTier", 0))] == nil then return end
 	local classId = getClass(player)
 	local classDef = Config.Classes[classId] or Config.Classes.Warrior
 	local left = classDef.Weapon == "Bow"

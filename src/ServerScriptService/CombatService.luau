@@ -58,6 +58,7 @@ local TUNE = {
 			Warrior = { Contact = 0.23 },
 			Mage = { Launch = 0.24, Flight = 0.2, Contact = 0.44 },
 			Archer = { Launch = 0.22, Flight = 0.15, Contact = 0.37 },
+			Punch = { Contact = 0.15 }, -- A23-34 bare hands (every class): a short jab, no projectile
 		},
 		Release = {
 			Warrior = { Contact = 0.24 },
@@ -134,6 +135,11 @@ local function cls(player)
 	return c
 end
 
+-- A23-34: the basic attack's shape (Config.AttackProfile): the class row itself with a weapon, the punch when bare-handed
+local function attackShape(player, c)
+	return Config.AttackProfile((c or cls(player)).Id, numAttr(player, "WeaponTier", 0), faction(player))
+end
+
 -- stars(p) = S.PvPService.GetStars(p)
 local function stars(player)
 	local n = S.PvPService.GetStars(player)
@@ -164,15 +170,17 @@ local function goosePositionFor(player)
 	return pos
 end
 
-local function weaponPosition(character, classId, fallback)
-	local weapon = character:FindFirstChild("WeaponModel")
+-- bare = an A23-34 punch: no weapon to aim from, the right hand for every class
+local function weaponPosition(character, classId, fallback, bare)
+	local weapon = not bare and character:FindFirstChild("WeaponModel")
 	local muzzle = weapon and weapon:GetAttribute("Class") == classId
 		and weapon:FindFirstChild("AttackMuzzle", true)
 	if muzzle and muzzle:IsA("Attachment") and muzzle.Parent and muzzle.Parent:IsA("BasePart") then
 		return muzzle.WorldPosition
 	end
-	local hand = classId == "Archer" and Util.FindPart(character, "LeftHand", "Left Arm")
-		or (classId ~= "Archer" and Util.FindPart(character, "RightHand", "Right Arm"))
+	local left = classId == "Archer" and not bare
+	local hand = left and Util.FindPart(character, "LeftHand", "Left Arm")
+		or (not left and Util.FindPart(character, "RightHand", "Right Arm"))
 	if hand then
 		return hand.Position
 	end
@@ -373,8 +381,9 @@ function CombatService.GetDamageBonus(attacker, victim)
 end
 
 -- multiplicative factor: Size Justice S x bully factor (JusticeService) x ranged-vs-player factor
-function CombatService.GetDamageMult(attacker, victim)
-	local c = cls(attacker)
+-- shape = the basic attack's Config.AttackProfile (A23-34: a punch is never ranged); nil = the class (skill Q)
+function CombatService.GetDamageMult(attacker, victim, shape)
+	local c = shape or cls(attacker)
 	local mult = S.JusticeService.GetDamageMult(attacker)
 	if type(mult) ~= "number" or mult ~= mult then
 		mult = 1
@@ -385,15 +394,16 @@ function CombatService.GetDamageMult(attacker, victim)
 	return mult
 end
 
--- NORMAL per-target monster hit (unrounded), before the 50% immediate rule
-function CombatService.ComputeMonsterHit(attacker, allowCrit)
-	local c = cls(attacker)
+-- NORMAL per-target monster hit (unrounded), before the 50% immediate rule. shape = the swing's Config.AttackProfile
+-- (A23-34: a punch has class multiplier 1); nil = the class row (skill Q keeps the class multiplier, bare-handed too)
+function CombatService.ComputeMonsterHit(attacker, allowCrit, shape)
+	local c = shape or cls(attacker)
 	local level = numAttr(attacker, "Level", 1)
-	local tier = numAttr(attacker, "WeaponTier", 1)
+	local tier = numAttr(attacker, "WeaponTier", 0)
 	local dmg = Config.WeaponDamage(tier, level, numAttr(attacker, "WeaponEnhance", 0))
 		* (c.Damage or 1)
 		* (1 + CombatService.GetDamageBonus(attacker, nil))
-		* CombatService.GetDamageMult(attacker, nil)
+		* CombatService.GetDamageMult(attacker, nil, shape)
 	local crit = allowCrit == true and Util.Random:NextNumber() < Config.Combat.CritChance
 	if crit then
 		dmg *= Config.Combat.CritMult
@@ -401,13 +411,14 @@ function CombatService.ComputeMonsterHit(attacker, allowCrit)
 	return dmg, crit
 end
 
--- NORMAL per-target PvP hit (unrounded): based on the victim's BASE MaxHealth (no Size Justice, no kaiju)
-function CombatService.ComputePvPHit(attacker, victim)
-	local c = cls(attacker)
+-- NORMAL per-target PvP hit (unrounded): based on the victim's BASE MaxHealth (no Size Justice, no kaiju).
+-- shape: as ComputeMonsterHit (A23-34: a punch has class multiplier 1 and no ranged factor)
+function CombatService.ComputePvPHit(attacker, victim, shape)
+	local c = shape or cls(attacker)
 	local aLevel = numAttr(attacker, "Level", 1)
-	local aTier = numAttr(attacker, "WeaponTier", 1)
+	local aTier = numAttr(attacker, "WeaponTier", 0)
 	local vLevel = numAttr(victim, "Level", 1)
-	local vTier = numAttr(victim, "WeaponTier", 1)
+	local vTier = numAttr(victim, "WeaponTier", 0)
 	local vClass = S.ClassService.GetClass(victim)
 	local base = Config.MaxHealth(vLevel, faction(victim), vClass) * Config.PvP.HitPctOfMaxHP
 	-- A23-12: enhancement and the legendary tier only move this ratio; the PvP clamp below still caps it
@@ -421,7 +432,7 @@ function CombatService.ComputePvPHit(attacker, victim)
 		* ratio
 		* (c.Damage or 1)
 		* (1 + CombatService.GetDamageBonus(attacker, victim))
-		* CombatService.GetDamageMult(attacker, victim)
+		* CombatService.GetDamageMult(attacker, victim, shape)
 end
 
 ------------------------------------------------------------------ heal / damage (public)
@@ -609,10 +620,11 @@ local function shoveMonster(rec, fromPos, studs, player)
 	end
 end
 
--- Cosmetic shove follows the same contact frame that the Fx packet announces.
-local function shoveLater(attack, classId, rec, fromPos, studs, player)
+-- Cosmetic shove follows the same contact frame that the Fx packet announces. style = the swing's Fx Style
+-- (A23-34 "Punch"): only its contact time; the class check below still uses classId.
+local function shoveLater(attack, classId, rec, fromPos, studs, player, style)
 	local byClass = REACT.SHOVE_DELAY[attack]
-	local motion = TUNE.MOTION[attack] and TUNE.MOTION[attack][classId]
+	local motion = TUNE.MOTION[attack] and TUNE.MOTION[attack][style or classId]
 	local d = motion and motion.Contact or (type(byClass) == "table" and tonumber(byClass[classId]) or 0)
 	if d > 0 then
 		local character = Util.GetCharacter(player)
@@ -727,17 +739,21 @@ function CombatService.Swing(player, isManual)
 		return
 	end
 	local c = cls(player)
-	if c.Id == "Mage" and not S.VitalsService.TrySpendMana(player, Config.Vitals.MageSwingCost, not isManual) then
+	-- A23-34: w = this swing's shape (the class row with a weapon; the same short punch for every class bare-handed:
+	-- one nearest target within 7, its own interval, no class multiplier, no Mage MP)
+	local w = attackShape(player, c)
+	if c.Id == "Mage" and not w.Unarmed
+		and not S.VitalsService.TrySpendMana(player, Config.Vitals.MageSwingCost, not isManual) then
 		return
 	end
-	nextSwingAt[player] = now + (c.SwingInterval or 1)
+	nextSwingAt[player] = now + (w.SwingInterval or 1)
 
 	local pos = root.Position
 	local fac = faction(player)
 	local perks = perksOf(player)
 	local goosePos = goosePositionFor(player)
 	local gooseReach = Config.Goose.HitRadius
-	local range = c.Range or 10
+	local range = w.Range or 10
 
 	-- 2. select targets by class pattern
 	local monsters = {} -- { { Rec, Pos, Dist } }
@@ -747,20 +763,20 @@ function CombatService.Swing(player, isManual)
 	local radius = range
 	local targets = {}
 
-	if c.Pattern == "Splash" then
-		radius = c.Splash or 0
+	if w.Pattern == "Splash" then
+		radius = w.Splash or 0
 		local pickPos, pickDist, pickIsGoose = nil, math.huge, false
-		local nearMon = aimed(monstersNear(player, pos, range), root, c.AimCone)
+		local nearMon = aimed(monstersNear(player, pos, range), root, w.AimCone)
 		if nearMon[1] then
 			pickPos, pickDist = nearMon[1].Pos, nearMon[1].Dist
 		end
 		if isManual then
-			local nearPl = aimed(playersNear(player, pos, range), root, c.AimCone)
+			local nearPl = aimed(playersNear(player, pos, range), root, w.AimCone)
 			if nearPl[1] and nearPl[1].Dist < pickDist then
 				pickPos, pickDist = nearPl[1].Pos, nearPl[1].Dist
 			end
 		end
-		if goosePos and inAim(root, goosePos, c.AimCone) then
+		if goosePos and inAim(root, goosePos, w.AimCone) then
 			local d = Util.FlatDistance(goosePos, pos)
 			if d <= range + gooseReach and d < pickDist then
 				pickPos, pickDist, pickIsGoose = goosePos, d, true
@@ -778,19 +794,19 @@ function CombatService.Swing(player, isManual)
 			center = forwardPoint(root, math.min(range, WHIFF_REACH)) -- whiff: the orb flies forward
 		end
 		targets = { center }
-	elseif c.Pattern == "Multi" then
+	elseif w.Pattern == "Multi" then
 		radius = 0
-		local maxTargets = c.Targets or 0
+		local maxTargets = w.Targets or 0
 		local candidates = {}
-		for _, m in aimed(monstersNear(player, pos, range), root, c.AimCone) do
+		for _, m in aimed(monstersNear(player, pos, range), root, w.AimCone) do
 			table.insert(candidates, { Kind = "M", Entry = m, Pos = m.Pos, Dist = m.Dist })
 		end
 		if isManual then
-			for _, v in aimed(playersNear(player, pos, range), root, c.AimCone) do
+			for _, v in aimed(playersNear(player, pos, range), root, w.AimCone) do
 				table.insert(candidates, { Kind = "P", Entry = v, Pos = v.Pos, Dist = v.Dist })
 			end
 		end
-		if goosePos and inAim(root, goosePos, c.AimCone) then
+		if goosePos and inAim(root, goosePos, w.AimCone) then
 			local d = Util.FlatDistance(goosePos, pos)
 			if d <= range + gooseReach then
 				table.insert(candidates, { Kind = "G", Pos = goosePos, Dist = d })
@@ -814,12 +830,12 @@ function CombatService.Swing(player, isManual)
 			targets = { forwardPoint(root, math.min(range, WHIFF_REACH)) } -- whiff: the arrow flies forward
 		end
 	else -- "Around" (default): everything within Range of self, in front of me (AimCone)
-		monsters = aimed(monstersNear(player, pos, range), root, c.AimCone)
+		monsters = aimed(monstersNear(player, pos, range), root, w.AimCone)
 		if isManual then
-			victims = aimed(playersNear(player, pos, range), root, c.AimCone)
+			victims = aimed(playersNear(player, pos, range), root, w.AimCone)
 		end
 		hitGoose = goosePos ~= nil and Util.FlatDistance(goosePos, pos) <= range + gooseReach
-			and inAim(root, goosePos, c.AimCone)
+			and inAim(root, goosePos, w.AimCone)
 	end
 
 	local hits = {}
@@ -827,7 +843,7 @@ function CombatService.Swing(player, isManual)
 
 	-- 3. monsters: 50% of the normal hit right away (crit rolled per target)
 	if #monsters > 0 then
-		local base = CombatService.ComputeMonsterHit(player, false)
+		local base = CombatService.ComputeMonsterHit(player, false, w)
 		for _, m in monsters do
 			local rec = m.Rec
 			if rec.Alive then
@@ -837,7 +853,7 @@ function CombatService.Swing(player, isManual)
 				local killed, applied = damageMonster(rec, dealt, player, crit)
 				if killed or applied > 0 then -- 0 = refused by MonsterService (owner / zone rules): not a hit
 					if not killed then
-						shoveLater("Swing", c.Id, rec, pos, crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING, player) -- A15
+						shoveLater("Swing", c.Id, rec, pos, crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING, player, w.Style) -- A15
 					end
 					table.insert(hits, { P = m.Pos, A = dealt, C = crit, K = "M" }) -- the number shows the hit as dealt
 					totalDealt += applied -- CR-M10: lifesteal counts real damage only
@@ -851,7 +867,7 @@ function CombatService.Swing(player, isManual)
 	for _, v in victims do
 		local vp = v.Player
 		if vp.Parent and Util.IsAlive(vp) then
-			local dealt = Util.RoundDamage(CombatService.ComputePvPHit(player, vp)
+			local dealt = Util.RoundDamage(CombatService.ComputePvPHit(player, vp, w)
 				* ((Config.BasicSkill and Config.BasicSkill.SwingImmediate) or 0.5))
 			totalDealt += CombatService.DamagePlayer(vp, dealt, player) or 0 -- CR-M10
 			table.insert(hits, { P = v.Pos, A = dealt, C = false, K = "P", V = vp.UserId }) -- CR-M23: V = victim
@@ -891,15 +907,19 @@ function CombatService.Swing(player, isManual)
 
 		-- 9. visuals for the attacker + everyone near (manual whiffs too, with empty Hits). CR-L49: the extent covers
 		-- the hand (Splash center up to Range away) and Multi targets (radius 0, up to Range away)
+		-- A23-34: Style = "Punch" for a bare-handed swing (clients draw a jab from the right hand, no projectile / arc);
+		-- nil = the class weapon attack. Class stays the real class id.
+		local motion = TUNE.MOTION.Swing[w.Style or c.Id]
 		fxNear(player, "Swing", center, math.max(radius, range), {
 			UserId = player.UserId,
 			Character = character,
 			Class = c.Id,
+			Style = w.Style,
 			Faction = fac,
-			From = weaponPosition(character, c.Id, pos),
-			ContactDelay = TUNE.MOTION.Swing[c.Id] and TUNE.MOTION.Swing[c.Id].Contact,
-			LaunchDelay = TUNE.MOTION.Swing[c.Id] and TUNE.MOTION.Swing[c.Id].Launch,
-			FlightTime = TUNE.MOTION.Swing[c.Id] and TUNE.MOTION.Swing[c.Id].Flight,
+			From = weaponPosition(character, c.Id, pos, w.Unarmed),
+			ContactDelay = motion and motion.Contact,
+			LaunchDelay = motion and motion.Launch,
+			FlightTime = motion and motion.Flight,
 			Pos = center,
 			Radius = radius,
 			Targets = targets,
@@ -1387,12 +1407,13 @@ local function autoTick(p)
 	local root = Util.GetRoot(p)
 	if not root then return end
 	local c = cls(p)
-	-- my own presses win: auto waits one class swing interval + ManualYieldPad after a manual attack / skill
+	local w = attackShape(p, c) -- A23-34: the swing's reach / interval (a bare-handed punch: 7 studs, 0.8 s)
+	-- my own presses win: auto waits one swing interval + ManualYieldPad after a manual attack / skill
 	local lm = lastManualAt[p]
-	if lm and os.clock() - lm < (c.SwingInterval or 1) + (Config.Combat.ManualYieldPad or 0.3) then return end
+	if lm and os.clock() - lm < (w.SwingInterval or 1) + (Config.Combat.ManualYieldPad or 0.3) then return end
 	local pos = root.Position
-	local range = c.Range or 10
-	if os.clock() >= (nextSwingAt[p] or 0) and #aimed(monstersNear(p, pos, range), root, c.AimCone) > 0 then
+	local range = c.Range or 10 -- the class range: the skill Q reach below (Q is the class skill, bare-handed too)
+	if os.clock() >= (nextSwingAt[p] or 0) and #aimed(monstersNear(p, pos, w.Range or 10), root, w.AimCone) > 0 then
 		CombatService.Swing(p, false)
 	end
 	local skill = Config.BasicSkill or {}

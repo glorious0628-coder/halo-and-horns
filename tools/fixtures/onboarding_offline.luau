@@ -253,6 +253,16 @@ for _, count in { 4, 5 } do
 		check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "대장간") ~= nil, "blacksmith followup missing")
 	end
 end
+-- A23-34: an anvil visit before the claim does not count for M1_1 (the first weapon waits for a visit with the jelly)
+do
+	local initial = saved(2, 5); initial.BlacksmithVisited = true
+	local f = fixture(initial)
+	check(f.Data.BlacksmithVisited == true, "fixture: the anvil was visited before the first mission was claimed")
+	f:Claim()
+	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == false,
+		"the claim clears an earlier anvil visit (M1_1 waits for a smithy visit after the first mission)")
+	check(string.find(f.LastList[1].Text, "대장간") ~= nil, "after the claim the pinned row points to the smithy again")
+end
 for _, test in { { -4, 0 }, { 2.8, 2 }, { 99, 5 }, { "4", 0 }, { 0/0, 0 }, { math.huge, 0 }, { -math.huge, 0 } } do
 	local f = fixture(saved(2, test[1])); check(f.Data.TutorialKills == test[2], "invalid saved kills not normalized")
 end
@@ -482,12 +492,14 @@ do
 end
 do
 	local f = fixture()
-	check(f.Data.WeaponOwnedMask == 1 and f.Data.WeaponTier == 1 and f.Data.BlacksmithVisited == false,
-		"new player does not start with exactly the free weapon and no visit")
+	-- A23-34 (user 2026-10-06): a new player starts bare-handed (tier 0, nothing owned); M1_1 gives tier 1
+	check(f.Data.WeaponOwnedMask == 0 and f.Data.WeaponTier == 0 and f.Data.BlacksmithVisited == false,
+		"new player does not start bare-handed (no weapon owned) and no visit")
 	check(table.find(f.Config.Data.Mirrored, "WeaponOwnedMask") ~= nil
 		and table.find(f.Config.Data.Mirrored, "BlacksmithVisited") ~= nil, "new shop state is not mirrored")
 	local record = f:SaveAndRejoin()
-	check(record.WeaponOwnedMask == 1 and f.Data.WeaponOwnedMask == 1, "new ownership changed after save/reload")
+	check(record.WeaponOwnedMask == 0 and record.WeaponTier == 0 and f.Data.WeaponOwnedMask == 0 and f.Data.WeaponTier == 0,
+		"the bare-handed start changed after save/reload (no weapon may be forced on at load)")
 end
 -- Post-transaction states come from the separately tested ShopService contract. These
 -- checks exercise actual DataService save/release/load; they do not run another trade.
@@ -521,8 +533,9 @@ do
 	check(bit32.band(f.Data.WeaponOwnedMask, 6) == 0, "legacy migration granted unproven wood/iron ownership")
 end
 -- B4 (A23-12, Data Version 3): Config.MaxWeaponTier = 8 (tier 8 = the slime legendary, mask bit 7). A valid mask is an
--- integer in 1..255; anything else (non-number, NaN, +-inf, fraction, < 1, or any bit above tier 8) is corruption and
--- becomes the starting weapon plus the equipped tier's bit. Equipped tier 3 below -> corrupted rows give 1|4 = 5.
+-- integer in 0..255; anything else (non-number, NaN, +-inf, fraction, < 0, or any bit above tier 8) is corruption.
+-- These rows are Version 2 (saved() = from before A23-34): migrate keeps their always-owned tier 1 (A23-4), so corrupted
+-- rows give tier 1 plus the equipped tier's bit. Equipped tier 3 below -> corrupted rows give 1|4 = 5.
 do
 	local cfg = execute(CONFIG_SOURCE, configEnv)
 	check(cfg.MaxWeaponTier == 8 and #cfg.Weapons == 8, "fixture expects 8 weapon tiers (Config.MaxWeaponTier)")
@@ -552,7 +565,8 @@ for _, row in {
 	{ Value = 0/0, Tier = 1, Mask = 1 }, { Value = math.huge, Tier = 1, Mask = 1 },
 	{ Value = -math.huge, Tier = 1, Mask = 1 }, { Value = -2, Tier = 1, Mask = 1 },
 	{ Value = "4", Tier = 1, Mask = 1 }, { Value = false, Tier = 1, Mask = 1 },
-	-- B4: out-of-range or fractional tiers become the free weapon (never clamped: tier 9/99 must not become the legendary)
+	-- B4: out-of-range or fractional tiers of a Version 2 save become its tier 1 (never clamped: tier 9/99 must not become
+	-- the legendary); A23-34: a Version 2 save's tier 0 is tier 1 too (pre-A23-34 saves always had a weapon)
 	{ Value = 3.8, Tier = 1, Mask = 1 }, { Value = 99, Tier = 1, Mask = 1 }, { Value = 9, Tier = 1, Mask = 1 },
 	{ Value = 0, Tier = 1, Mask = 1 }, { Value = 8.5, Tier = 1, Mask = 1 },
 	-- valid tiers keep their ownership bit (tier 8 = the legendary, bit 7)

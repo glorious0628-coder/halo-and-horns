@@ -285,7 +285,7 @@ local COLUMN = {
 		local v = p:GetAttribute("CombatPower")
 		if v == nil then
 			v = Config.CombatPower(math.max(1, toInt(p:GetAttribute("Level"))),
-				math.clamp(toInt(p:GetAttribute("WeaponTier")), 1, Config.MaxWeaponTier), toInt(p:GetAttribute("WeaponEnhance")))
+				math.clamp(toInt(p:GetAttribute("WeaponTier")), 0, Config.MaxWeaponTier), toInt(p:GetAttribute("WeaponEnhance")))
 		end
 		return toInt(v)
 	end,

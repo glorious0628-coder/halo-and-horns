@@ -110,7 +110,7 @@ if game:GetService("RunService"):IsStudio() then
 			S.AnnounceService.Announce(player, k, { Weapon = tier, Monster = m ~= "" and m or nil }, info and info.Grade or "Rare")
 			return "sent " .. tostring(k)
 		elseif key == "LootReset" then -- Studio test aid: clear items / scroll +N / loot flags (value = weapon mask to keep)
-			return S.LootService.DebugReset(player, tonumber(value) or 1)
+			return S.LootService.DebugReset(player, tonumber(value) or 0) -- A23-34: 0 = bare-handed start
 		elseif key == "LootRoll" then -- Studio test aid (review B12): "Slime:200" or "Slime:200:golden" = COUNT-ONLY rolls
 			-- with the real drop tables; nothing is granted, saved or announced (returns a JSON tally)
 			local kind, n, golden = string.match(tostring(value), "^(%w+):?(%d*):?(%a*)$")

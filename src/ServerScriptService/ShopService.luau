@@ -39,7 +39,8 @@ local function onUpgradeWeapon(player, selectedTier)
 
 	local maxTier = Config.MaxWeaponTier
 	local tier = data.WeaponTier
-	if not finite(tier) or tier ~= math.floor(tier) or tier < 1 or tier > maxTier then return end
+	-- A23-34: 0 = bare hands (a new player buys the optional wood weapon before or after the free M1_1 tier 1)
+	if not finite(tier) or tier ~= math.floor(tier) or tier < 0 or tier > maxTier then return end
 	local shop = Config.WeaponShop
 	local saleLimit = type(shop) == "table" and shop.MaxSoldTier or nil
 	-- An absent/malformed sale list must never silently expose rare tiers for gold.
@@ -55,11 +56,15 @@ local function onUpgradeWeapon(player, selectedTier)
 	if type(selectedDef) ~= "table" then return end
 	local ownedMask = data.WeaponOwnedMask
 	local validMask = bit32.lshift(1, maxTier) - 1
-	if not finite(ownedMask) or ownedMask ~= math.floor(ownedMask) or ownedMask < 1
-		or ownedMask > validMask or bit32.band(ownedMask, 1) == 0 then return end
+	-- A23-34: no bit is required any more (0 = nothing owned; tier 1 is owned only after the M1_1 gift)
+	if not finite(ownedMask) or ownedMask ~= math.floor(ownedMask) or ownedMask < 0
+		or ownedMask > validMask then return end
 	local selectedBit = bit32.lshift(1, selectedTier - 1)
 	local alreadyOwned = bit32.band(ownedMask, selectedBit) ~= 0
-	if selectedTier == 1 and not alreadyOwned then return end -- starting gear is equip-only, never a purchase
+	if selectedTier == 1 and not alreadyOwned then -- tier 1 is never sold: the M1_1 blacksmith gives it (A23-34)
+		Net.Notify(player, Config.Text.WeaponFromQuest, "info")
+		return
+	end
 
 	-- A23-28: MinLevel gates the purchase AND the equip, an owned weapon too (after a rebirth / Lv5+ free class change
 	-- it is equippable again once the level is back; same rule as LootService.onEquipWeapon, Config.WeaponUsable)
@@ -124,10 +129,10 @@ local function onSellWeapon(player, selectedTier)
 	if not finite(saleLimit) or saleLimit ~= math.floor(saleLimit) or saleLimit < 1 or saleLimit > maxTier then return end
 	if selectedTier > saleLimit then return end
 	local tier, ownedMask = data.WeaponTier, data.WeaponOwnedMask
-	if not finite(tier) or tier ~= math.floor(tier) or tier < 1 or tier > maxTier then return end
+	if not finite(tier) or tier ~= math.floor(tier) or tier < 0 or tier > maxTier then return end -- A23-34: 0 = bare hands
 	local validMask = bit32.lshift(1, maxTier) - 1
-	if not finite(ownedMask) or ownedMask ~= math.floor(ownedMask) or ownedMask < 1
-		or ownedMask > validMask or bit32.band(ownedMask, 1) == 0 then return end
+	if not finite(ownedMask) or ownedMask ~= math.floor(ownedMask) or ownedMask < 0
+		or ownedMask > validMask then return end
 	local selectedBit = bit32.lshift(1, selectedTier - 1)
 	if bit32.band(ownedMask, selectedBit) == 0 then return end
 	local definition = Config.Weapons[selectedTier]
@@ -135,8 +140,11 @@ local function onSellWeapon(player, selectedTier)
 	if not finite(price) or price <= 0 or price ~= math.floor(price) then return end
 	local proceeds = math.floor(price * 0.1)
 	-- Remove ownership before emitting any gold signal: a repeated or reentrant sale cannot pay twice.
-	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.band(ownedMask, bit32.bnot(selectedBit)))
-	if tier == selectedTier then S.PlayerService.SetStat(player, "WeaponTier", 1) end
+	local leftMask = bit32.band(ownedMask, bit32.bnot(selectedBit))
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", leftMask)
+	-- A23-34: selling the equipped weapon equips the best weapon still owned and usable (0 = bare hands), never an
+	-- unowned tier 1
+	if tier == selectedTier then S.PlayerService.SetStat(player, "WeaponTier", Config.BestUsableWeapon(leftMask, data.Level)) end
 	S.ProgressionService.AddCarriedGold(player, proceeds, "Sale")
 	S.PlayerService.SetStat(player, "BlacksmithVisited", true)
 	S.PlayerService.MarkActive(player)
@@ -209,6 +217,9 @@ local function onBlacksmithPrompt(prompt, player)
 	if expected ~= prompt then return end -- cloned/renamed prompts cannot open the weapon shop
 	if not Util.RateLimit(player, "BlacksmithPrompt", BLACKSMITH.PromptRate) then return end
 	S.PlayerService.SetStat(player, "BlacksmithVisited", true)
+	-- A23-34: an active M1_1 finishes right here, so its free first weapon is in hand before the shop opens
+	local story = S.StoryQuestService
+	if type(story) == "table" and type(story.Refresh) == "function" then pcall(story.Refresh, player) end
 	Net.Get("OpenPanel"):FireClient(player, "WeaponShop")
 end
 
