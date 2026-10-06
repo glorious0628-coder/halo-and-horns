@@ -40,7 +40,9 @@
 ## 이미지 개발 첫 일 (순서)
 1. 연습 Studio 준비(위 방법). 메인 Studio는 건드리지 않는다.
 2. **그림 넣기 인수:** 게임성 개발이 지금 작업 트리에 넣고 있는 `UIArt` 키 7개(IconMon* 5 + IconCandy + IconPetBabySlime)와 퀘스트 줄 아이콘은 게임성 개발이 핼러윈 커밋과 함께 끝낸다. 그 뒤로 오는 그림은 전부 이미지 개발이 넣는다.
-   - 메뉴 버튼 5장(IconBag, IconCharacter, IconSkills, IconRanking, IconHelp, 사용자 승인 완료)과 다음에 올 IconCharacterF: 업로드 → `Config.UIArt.Parts` 키. 메뉴 화면(BB13)은 게임성 개발이 만들므로 키 이름만 맞춰 둔다. 'CharacterGender'가 "F"면 IconCharacterF를 쓴다.
+   - 메뉴 버튼 5장(IconBag 110554679799730, IconCharacter 85845386405558, IconSkills 113811090785765, IconRanking 119501472065745, IconHelp 102236302870647)은 게임성 개발이 **이미 올렸고**, 핼러윈 커밋에서 `Config.UIArt.Parts`에 Id만 넣는다. 다시 올리지 않는다.
+   - IconCharacterF부터는 이미지 개발이 올린다. 'CharacterGender'가 "F"면 IconCharacterF, 아니면 IconCharacter를 쓰고, 속성이 바뀌면 다시 그린다. 메뉴 화면(BB13)은 게임성 개발이 만든다.
+   - 호박 대왕 EventHUD 알림이 상태판과 겹치는 것은 게임성 개발이 핼러윈 커밋에서 고친다.
    - 드랍 알림과 호박 대왕 공지 아이콘(IconMon*)을 붙인다(핼러윈 범위).
    - 이어서 이미지 세션이 보내는 몬스터 머리 5 · 재료 6 · 주문서 1 · 랭킹 탭 3.
 3. **HUD 배치 바꾸기:** 검수 세션이 회색 상자 배치(PC 1280×720 + 폰 749×361)를 사용자에게 승인받아 보내면, 그 배치대로 `HUD.luau` 배치를 바꾼다. 그림이 아직 없으면 지금 부품 그대로 자리만 옮긴다. 검수에서 나온 폰 전투력 줄 겹침(+N 팝업이 금고 줄을 덮음, 물약·퀘스트가 조이스틱 자리로 내려감)도 이때 같이 정리한다.
