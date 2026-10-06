@@ -45,9 +45,9 @@ if TRIPO:
     root.rotation_euler = (0, 0, math.radians(-90))  # Tripo front +x -> -y
     bpy.context.view_layer.update()
     lo, hi = bbox()
-    target_w = 1.34 if KIND == "halo" else 1.5
-    if KIND == "halo":
-        target_w = 2.97 if "R5" in LABEL else 1.34
+    # pair / ring+wing widths of the Blender set, so every rank sits at the same scale on the head
+    WIDTH = {"HornsR3": 1.42, "HornsR4": 1.40, "HornsR5": 1.50, "HaloR3": 2.10, "HaloR4": 2.35, "HaloR5": 2.97}
+    target_w = next((w for k, w in WIDTH.items() if k in LABEL), 1.34 if KIND == "halo" else 1.5)
     s = target_w / max(hi.x - lo.x, 1e-6)
     root.scale = (s, s, s)
     bpy.context.view_layer.update()
@@ -99,6 +99,16 @@ c = (lo + hi) / 2
 d = max(size.x, size.y, size.z) * 2.2 + 0.4
 shoot("front", 0, 10, c, d, 512)
 shoot("34", -25, 16, c, d, 512)
+
+if "--export" in argv:
+    # normalised accessory for the game: front = +Z in glTF (-Y here), origin at the base centre, studs
+    bpy.ops.object.select_all(action="DESELECT")
+    for o in meshes:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = meshes[0]
+    bpy.ops.export_scene.gltf(filepath=os.path.abspath(argv[argv.index("--export") + 1]), export_format="GLB",
+                              use_selection=True, export_image_format="JPEG", export_jpeg_quality=92)
+    print("[acc_compare] exported", flush=True)
 
 # block head: rounded cube 1.2 studs, accessory on top (halo floats 0.3 above)
 bpy.ops.mesh.primitive_cube_add(size=1.2, location=(0, 0, -0.6))

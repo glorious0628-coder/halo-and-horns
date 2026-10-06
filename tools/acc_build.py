@@ -27,7 +27,7 @@ os.makedirs(OUT, exist_ok=True)
 
 PALETTE = {  # cell index -> sRGB colour
     "silver": (0.85, 0.87, 0.90), "gold": (1.0, 0.78, 0.22), "gold_d": (0.86, 0.58, 0.12), "white": (0.97, 0.97, 0.96),
-    "red": (0.88, 0.12, 0.14), "red_d": (0.55, 0.06, 0.08), "crimson": (0.62, 0.10, 0.14), "crimson_d": (0.36, 0.05, 0.07),
+    "red": (0.88, 0.12, 0.14), "red_d": (0.55, 0.06, 0.08), "red_g1": (0.64, 0.08, 0.10), "red_g2": (0.74, 0.10, 0.12), "red_g3": (0.82, 0.11, 0.13), "crimson": (0.62, 0.10, 0.14), "crimson_d": (0.36, 0.05, 0.07),
     "gem": (1.0, 0.45, 0.08), "diamond": (0.92, 0.97, 1.0), "feather_s": (0.86, 0.88, 0.92),
 }
 CELLS = list(PALETTE)
@@ -215,11 +215,17 @@ def tube(path, r0, r1, seg=12, key_of_t=None):
     tl = bm.faces.layers.int.new("t")  # create the layer before any face (adding it later invalidates faces)
     rings = []
     n = len(path)
+    u_prev = None
     for i, p in enumerate(path):
         t = i / (n - 1)
         tang = (path[min(i + 1, n - 1)] - path[max(i - 1, 0)]).normalized()
-        a = Vector((0, 0, 1)) if abs(tang.z) < 0.9 else Vector((1, 0, 0))
-        u = tang.cross(a).normalized()
+        # parallel-transport frame: carry the previous ring's axis along so rings never twist (no cracks)
+        if u_prev is None:
+            a = Vector((0, 0, 1)) if abs(tang.z) < 0.9 else Vector((1, 0, 0))
+            u = tang.cross(a).normalized()
+        else:
+            u = (u_prev - tang * u_prev.dot(tang)).normalized()
+        u_prev = u
         v = tang.cross(u).normalized()
         rr = r1 + (r0 - r1) * (1 - t ** 1.15)  # fat base thinning steadily to a soft tip
         ring = [bm.verts.new(p + (u * math.cos(2 * math.pi * j / seg) + v * math.sin(2 * math.pi * j / seg)) * rr) for j in range(seg)]
@@ -276,6 +282,10 @@ def horns(B, height, r0, out_bend, back_bend, spacing, colors, stripes=0, bands=
             t = f[layer] / 1000.0
             if stripes:
                 return colors[0] if int(t * stripes * 2) % 2 == 0 else colors[1]
+            if colors[0] == "red" and colors[1] == "red_gradient":
+                return ("red_d", "red_g1", "red_g2", "red_g3", "red")[min(4, int(t * 5.0))]
+            if colors[1] is None:
+                return colors[0]
             return colors[1] if t < 0.35 else colors[0]
         B.add_colored(bm, key)
         for tb in bands:
@@ -320,9 +330,9 @@ def build(name):
             for bm in wing(side, Vector((side * 0.74, 0.06, 0.06)), 0.8, 0.9, feathers=5):
                 B.add(bm, "white")
     elif name == "HornsR1":
-        horns(B, 0.30, 0.15, 0.10, 0.02, 0.62, ("red", "red_d"))
+        horns(B, 0.30, 0.15, 0.10, 0.02, 0.62, ("red", None))
     elif name == "HornsR2":
-        horns(B, 0.46, 0.15, 0.24, 0.04, 0.62, ("red", "red_d"))
+        horns(B, 0.46, 0.15, 0.24, 0.04, 0.62, ("red", "red_gradient"))
     elif name == "HornsR3":
         horns(B, 0.58, 0.18, 0.34, 0.05, 0.64, ("red", "red_d"), stripes=3)
     elif name == "HornsR4":
