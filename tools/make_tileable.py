@@ -2,7 +2,8 @@
 
 Usage:
   py tools/make_tileable.py <src.png> <out.png> [--overlap 160] [--size 1024] [--check art/review/<name>_3x3.png]
-                           [--prefer-dark 6]   (cobbles/planks: cut along the dark gaps)
+                           [--prefer-dark 20]  (cobbles/planks: cut along dark gaps; -20 = bright gaps, lava)
+                           [--grid x|y|xy]     (paving grids / plank rows: crop whole cells, no blending)
 
 How it works (image-quilting style, no AI):
   1. Horizontal wrap: the right strip (width = overlap) is laid over the left strip. Per row a
@@ -60,10 +61,12 @@ def wrap_x(img, b, feather=4, dark=0.0, cyclic=False):
     A = img[:, w - b:]          # continues from the tile's right end
     B = img[:, :b]              # continues into the tile's middle
     err = ((A - B) ** 2).sum(axis=2)
-    if dark > 0:
-        # structured tiles (cobbles, planks): prefer cutting along dark gaps in both strips
+    if dark != 0:
+        # structured tiles (cobbles, planks): prefer cutting along dark gaps in both strips;
+        # a negative weight prefers bright gaps instead (glowing lava cracks)
         lum = (A @ [0.3, 0.59, 0.11] + B @ [0.3, 0.59, 0.11]) / 2
         err = err + dark * lum ** 2
+        err -= err.min()
     err = ndimage.uniform_filter(err, 5)
     # keep the cut away from the band edges so both sides blend in
     pad = max(4, b // 8)
@@ -74,6 +77,36 @@ def wrap_x(img, b, feather=4, dark=0.0, cyclic=False):
     t = np.clip((xs - cut[:, None] + feather) / (2 * feather), 0.0, 1.0)[..., None]  # 0 -> A, 1 -> B
     band = A * (1 - t) + B * t
     return np.concatenate([band, img[:, b:w - b]], axis=1)
+
+
+def grid_crop(img, axis):
+    """Regular patterns (paving grid, plank rows): crop from one gap line to another so the tile
+    holds a whole number of cells along `axis` (0 = rows/y, 1 = columns/x) and wraps exactly."""
+    lum = img @ [0.3, 0.59, 0.11]
+    prof = lum.mean(axis=1 - axis)                       # one value per row (axis 0) or column (axis 1)
+    prof = ndimage.gaussian_filter1d(prof, 2)
+    n = len(prof)
+    x = prof - prof.mean()
+    ac = np.correlate(x, x, "full")[n - 1:]
+    ac = ac / ac[0]
+    lo = n // 16
+    seg = ac[lo:n // 2]
+    # fundamental period = first clear autocorrelation peak (not a multiple of it)
+    peaks = [i for i in range(1, len(seg) - 1) if seg[i] >= seg[i - 1] and seg[i] >= seg[i + 1]]
+    strong = [i for i in peaks if seg[i] >= 0.5 * seg.max()]
+    period = lo + (strong[0] if strong else int(np.argmax(seg)))
+    # gap lines = darkest point inside each period window
+    start = int(np.argmin(prof[:period]))
+    lines = [start]
+    while lines[-1] + period + period // 4 < n:
+        c = lines[-1] + period
+        w0, w1 = c - period // 4, min(n, c + period // 4 + 1)
+        lines.append(w0 + int(np.argmin(prof[w0:w1])))
+    a, b = lines[0], lines[-1]
+    sl = [slice(None)] * 2
+    sl[axis] = slice(a, b)
+    print(f"  grid axis {'yx'[axis]}: period {period}px, {len(lines) - 1} cells, crop {a}-{b}")
+    return img[tuple(sl)]
 
 
 def seam_error(img):
@@ -100,15 +133,23 @@ def main():
     ap.add_argument("--overlap", type=int, default=160)
     ap.add_argument("--size", type=int, default=1024)
     ap.add_argument("--check")
+    ap.add_argument("--grid", choices=["x", "y", "xy"], help="regular pattern: crop whole cells along these axes")
     ap.add_argument("--prefer-dark", type=float, default=0.0,
-                    help="weight that pulls the cut into dark gaps (cobblestone/planks: try 3-10)")
+                    help="weight that pulls the cut into dark gaps (cobbles/planks: 20); negative = bright gaps (lava: -20)")
     args = ap.parse_args()
 
     src = Image.open(args.src).convert("RGB")
     img = np.asarray(src).astype(np.float32)
     before = seam_error(img)
-    img = wrap_x(img, args.overlap, dark=args.prefer_dark)
-    img = wrap_x(img.transpose(1, 0, 2), args.overlap, dark=args.prefer_dark, cyclic=True).transpose(1, 0, 2)
+    g = args.grid or ""
+    if "y" in g:
+        img = grid_crop(img, 0)
+    if "x" in g:
+        img = grid_crop(img, 1)
+    if "x" not in g:   # horizontal wrap; must stay cyclic when the vertical wrap came from a grid crop
+        img = wrap_x(img, args.overlap, dark=args.prefer_dark, cyclic="y" in g)
+    if "y" not in g:
+        img = wrap_x(img.transpose(1, 0, 2), args.overlap, dark=args.prefer_dark, cyclic=True).transpose(1, 0, 2)
     out = Image.fromarray(np.clip(img, 0, 255).round().astype(np.uint8), "RGB")
     out = out.resize((args.size, args.size), Image.LANCZOS)
     out.save(args.out)

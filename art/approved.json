@@ -1110,7 +1110,7 @@
   "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 빛 전사(남) 블록 아바타 B2 = 사람 마스터. 검수가 옷차림 확인(어깨·몸통·배·다리 덮임). Hard rule 1: 사용자가 직접 본 뒤에만 업로드·approved로 바꿈."
  },
  "Tex_Grass_FF": {
-  "status": "picked",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Tex_Grass.txt",
@@ -1119,10 +1119,10 @@
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
   "cutout": "none — seamless tile: py tools/make_tileable.py (overlap 160); 3x3 tiled check, wrap step = inside step",
   "preview": "art/review/tex_tiles4_sheet.png",
-  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 슬라임 초원. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 3(가장 차분한 세이지 초록 — 라임 슬라임이 위에서 돋보임). 옛 art/ui/Tex_Grass.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_Grass) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김."
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 슬라임 초원. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 3(가장 차분한 세이지 초록 — 라임 슬라임이 위에서 돋보임). 옛 art/ui/Tex_Grass.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_Grass) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김. → 사용자가 비교 사진 E(밝은 조명 + 새 땅 4장)로 확정(A23-30, 2026-10-06)."
  },
  "Tex_LeafyGrass_FF": {
-  "status": "picked",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Tex_LeafyGrass.txt",
@@ -1131,10 +1131,10 @@
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
   "cutout": "none — seamless tile: py tools/make_tileable.py (overlap 160); 3x3 tiled check, wrap step = inside step",
   "preview": "art/review/tex_tiles4_sheet.png",
-  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 고블린 숲 바닥. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 첫 3안은 잎이 잘아 잡무늬라 문구를 '큰 덩어리'로 고쳐 다시 3안 → 6번(시트의 숲 바닥 3번). 옛 art/ui/Tex_LeafyGrass.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_LeafyGrass) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김."
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 고블린 숲 바닥. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 첫 3안은 잎이 잘아 잡무늬라 문구를 '큰 덩어리'로 고쳐 다시 3안 → 6번(시트의 숲 바닥 3번). 옛 art/ui/Tex_LeafyGrass.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_LeafyGrass) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김. → 사용자가 비교 사진 E(밝은 조명 + 새 땅 4장)로 확정(A23-30, 2026-10-06)."
  },
  "Tex_DirtPath_FF": {
-  "status": "picked",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Tex_DirtPath.txt",
@@ -1143,10 +1143,10 @@
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
   "cutout": "none — seamless tile: py tools/make_tileable.py (overlap 160); 3x3 tiled check, wrap step = inside step",
   "preview": "art/review/tex_tiles4_sheet.png",
-  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 길. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 3(무늬 반복이 가장 덜 보임). 옛 art/ui/Tex_DirtPath.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_DirtPath) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김."
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 길. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 3(무늬 반복이 가장 덜 보임). 옛 art/ui/Tex_DirtPath.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_DirtPath) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김. → 사용자가 비교 사진 E(밝은 조명 + 새 땅 4장)로 확정(A23-30, 2026-10-06)."
  },
  "Tex_Cobblestone_FF": {
-  "status": "picked",
+  "status": "approved",
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Tex_Cobblestone.txt",
@@ -1155,6 +1155,174 @@
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
   "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20 (돌 사이 어두운 틈을 따라 잇기); 3x3 tiled check, wrap step = inside step",
   "preview": "art/review/tex_tiles4_sheet.png",
-  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 해골 폐허 바닥. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 1(돌 크기 고르고 이음새가 틈을 따라 안 보임). 옛 art/ui/Tex_Cobblestone.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_Cobblestone) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김."
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 해골 폐허 바닥. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 1(돌 크기 고르고 이음새가 틈을 따라 안 보임). 옛 art/ui/Tex_Cobblestone.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_Cobblestone) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김. → 사용자가 비교 사진 E(밝은 조명 + 새 땅 4장)로 확정(A23-30, 2026-10-06)."
+ },
+ "Tex_RuinsFlagstone_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_RuinsFlagstone.txt",
+  "original": "art/out/Tex_RuinsFlagstone_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_RuinsFlagstone_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20; 3x3 tiled check",
+  "preview": "art/review/tex_world_A_hunting.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Slate 칸 = 해골 폐허 판석·폐허 언덕 아래·길 파트(RoadPass/RoadRuins/RoadSouth)·다리 받침. 3안 중 1(큰 판석+이끼, 차분). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_PumpkinSoil_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_PumpkinSoil.txt",
+  "original": "art/out/Tex_PumpkinSoil_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_PumpkinSoil_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 160; 3x3 tiled check",
+  "preview": "art/review/tex_world_A_hunting.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Mud 칸(새 칸, 지금 0칸) = 호박밭. 3안 중 1(덩굴잎만 — 2·3안은 흙에 작은 호박이 그려져 호박 몬스터와 헷갈림). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_Ground_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_Ground.txt",
+  "original": "art/out/Tex_Ground_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_Ground_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 160; 3x3 tiled check",
+  "preview": "art/review/tex_world_A_hunting.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Ground 칸 = 해골 폐허 흙 바닥(가장 넓음)·바깥 들판 흙·Ground 길 파트. 4안 중 2(가장 차분한 라벤더 갈색). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_Limestone_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_Limestone.txt",
+  "original": "art/out/Tex_Limestone_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_Limestone_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20; 3x3 tiled check",
+  "preview": "art/review/tex_world_B_towns.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Limestone 칸 = 빛의 성채 바닥 + 해골 폐허 언덕 윗면. 3안 중 2(가장 밝은 상아색 판석). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_Basalt_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_Basalt.txt",
+  "original": "art/out/Tex_Basalt_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_Basalt_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20; 3x3 tiled check",
+  "preview": "art/review/tex_world_B_towns.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Basalt 칸 = 뿔 소굴 바닥·뿔 언덕·뿔 문 기둥·다리 파트. 3안 중 1(큰 자두숯색 판석 + 얇은 불씨 테). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_CrackedLava_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_CrackedLava.txt",
+  "original": "art/out/Tex_CrackedLava_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_CrackedLava_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark -20 (밝은 틈 따라 잇기); 3x3 tiled check",
+  "preview": "art/review/tex_world_B_towns.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): CrackedLava 칸 = 뿔 언덕 윗면·틈·경계 파트. 3안 중 2(빛나는 틈이 적어 덜 무섭고 채도 낮음). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_Rock_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_Rock.txt",
+  "original": "art/out/Tex_Rock_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_Rock_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20; 3x3 tiled check",
+  "preview": "art/review/tex_world_B_towns.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Rock 칸 = 모든 절벽. 3안 중 2(차분한 갈색 바위). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_Sand_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_Sand.txt",
+  "original": "art/out/Tex_Sand_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_Sand_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 160; 3x3 tiled check",
+  "preview": "art/review/tex_world_B_towns.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Sand 칸 = 바닷가. 3안 중 2(분홍 점이 적은 차분한 물결). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_Marble_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_Marble.txt",
+  "original": "art/out/Tex_Marble_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_Marble_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 160; 3x3 tiled check",
+  "preview": "art/review/tex_world_B_towns.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Marble 칸 = 파트만(분수·다리·건물·벤치). 3안 중 3(결이 덜 빽빽). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Tex_WoodPlanks_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_WoodPlanks.txt",
+  "original": "art/out/Tex_WoodPlanks_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_WoodPlanks_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --grid y --overlap 320 (널빤지 줄에서 줄까지); 3x3 tiled check",
+  "preview": "art/review/tex_world_B_towns.png",
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): WoodPlanks 칸 = 파트만(다리·벤치). 2안 중 1(따뜻한 꿀색, 못 자국 없이 깔끔). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Sky_Sun": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Sky_Sun.txt",
+  "original": "art/out/Sky_Sun_src.png (1024)",
+  "file": "art/ui/Sky_Sun.png",
+  "size": "512x512 RGB, pure black background (additive)",
+  "cutout": "none — black kept for additive sky; pixels with max channel < 8 forced to 0 so no square shows",
+  "preview": "art/review/sky3_goldguard_sheet.png",
+  "note": "하늘 그림: 평소 해, Sky.SunTextureId — Neutral(ClockTime 16.8). 2안 중 1(둥근 장난감 햇살). 하늘 6면 상자 대신 해·달 그림(visual_direction 2-5). Studio에서 SunAngularSize 14 / MoonAngularSize 18로 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Sky_SunDawn": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Sky_SunDawn.txt",
+  "original": "art/out/Sky_SunDawn_src.png (1024)",
+  "file": "art/ui/Sky_SunDawn.png",
+  "size": "512x512 RGB, pure black background (additive)",
+  "cutout": "none — black kept for additive sky; pixels with max channel < 8 forced to 0 so no square shows",
+  "preview": "art/review/sky3_goldguard_sheet.png",
+  "note": "하늘 그림: 금빛 새벽 해(빛 승리), Sky.SunTextureId while Dawn. 2안 중 1(후광 고리 + 부드러운 햇살; 2안은 뾰족). 하늘 6면 상자 대신 해·달 그림(visual_direction 2-5). Studio에서 SunAngularSize 14 / MoonAngularSize 18로 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "Sky_MoonEclipse": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Sky_MoonEclipse.txt",
+  "original": "art/out/Sky_MoonEclipse_src.png (1024)",
+  "file": "art/ui/Sky_MoonEclipse.png",
+  "size": "512x512 RGB, pure black background (additive)",
+  "cutout": "none — black kept for additive sky; pixels with max channel < 8 forced to 0 so no square shows",
+  "preview": "art/review/sky3_goldguard_sheet.png",
+  "note": "하늘 그림: 진홍 월식 달(뿔 승리), Sky.MoonTextureId while Eclipse. 2안 중 2(뿔 모양 빛이 더 둥글고 순함). 하늘 6면 상자 대신 해·달 그림(visual_direction 2-5). Studio에서 SunAngularSize 14 / MoonAngularSize 18로 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+ },
+ "IconGoldGuard": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconGoldGuard.txt",
+  "original": "art/out/IconGoldGuard_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconGoldGuard.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py --holes + edge clean-up; checked light/navy/magenta + 40px",
+  "preview": "art/review/sky3_goldguard_sheet.png",
+  "note": "묶음 3 진영 특성 아이콘 빠진 1장(검수 지적: 뿔 특성 줄에 금화 더미가 두 번) — 금화 더미 + 진홍·금 방패. NoLoot(자물쇠 주머니)와 구분. 2안 중 2(40px에서 방패가 더 잘 읽힘). 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
  }
 }
