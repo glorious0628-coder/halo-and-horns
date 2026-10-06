@@ -4705,5 +4705,18 @@
   "preview": "art/review/s2/a2346_town_npc_portraits_sheet.png",
   "note": "스모키(뿔 소굴 망보는 꼬마, 퀘스트 NPC A23-46). 윙크+한쪽 입꼬리, 뿔 달린 빨간 두건, 목에 건 망원경. 마을 NPC 초상 그림체 기준. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: '스모키 A 확정')"
+ },
+ "PTR_TownBright": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1 (Firefly reference image = PTR_TownBright_GS; GS itself from references PTR_TownBright_I + PTR_TownSmokey_A)",
+  "prompt": "art/prompts/PTR_TownBright_GS_L1.txt",
+  "original": "art/out/s2/PTR_TownBright_GS_L1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/PTR_TownBright.png",
+  "size": "509x512 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --tol 16 --soft 5 --holes --keep-largest + clean_haze (silver helmet kept); checked 4x light/navy/magenta + PortraitFrame 300/170",
+  "preview": "art/review/s2/a2359_bright_girl_long_hair_frames.png",
+  "note": "브라이트(빛 마을 경비 견습, 10살 여자아이, A23-59; 퀘스트 NPC A23-46). 스모키 A 그림체, 은빛 투구+하늘색 깃·후광·해 무늬 하늘색 겉옷·손 흔들기·금보라 땋은 손목 끈(이야기 단서)·볼 주근깨·두 눈 크게, 작게 벌린 웃음(윗니만 살짝), 긴 옆 땋은 머리. 화장 없음. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: 'L1 긴 땋은 머리 확정')"
  }
 }
