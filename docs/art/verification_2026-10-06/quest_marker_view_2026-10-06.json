@@ -1,0 +1,1075 @@
+{
+  "tool": "tools/quest_marker_view.py",
+  "devices": [
+    "pc",
+    "phone"
+  ],
+  "sheet": "art/review/quest_marker_2026-10-06.jpg",
+  "minIconPx": 48,
+  "rows": [
+    {
+      "device": "pc",
+      "shot": "Crossroads_ahead",
+      "file": "build/quest_marker_view/pc_Crossroads_ahead.png",
+      "marker": {
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "Text": "20m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "Crossroads",
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          688,
+          274.3999938964844,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          197,
+          200,
+          200
+        ],
+        "background": [
+          122,
+          140,
+          94
+        ],
+        "fillVsBackground": 2.18,
+        "rimVsBackground": 3.91,
+        "best": 3.91
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "Crossroads_edge",
+      "file": "build/quest_marker_view/pc_Crossroads_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.98066711425781
+        ],
+        "Text": "21m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "Crossroads",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "edge",
+        "Icon": [
+          14.400001525878906,
+          485.6000061035156,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          200,
+          201,
+          204
+        ],
+        "background": [
+          212,
+          210,
+          182
+        ],
+        "fillVsBackground": 1.08,
+        "rimVsBackground": 9.38,
+        "best": 9.38
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "SlimeMeadow_ahead",
+      "file": "build/quest_marker_view/pc_SlimeMeadow_ahead.png",
+      "marker": {
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "Text": "20m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "SlimeMeadow",
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          688,
+          274.3999938964844,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          196,
+          200,
+          200
+        ],
+        "background": [
+          56,
+          112,
+          34
+        ],
+        "fillVsBackground": 3.51,
+        "rimVsBackground": 2.41,
+        "best": 3.51
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "SlimeMeadow_edge",
+      "file": "build/quest_marker_view/pc_SlimeMeadow_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.9991455078125
+        ],
+        "Text": "21m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "SlimeMeadow",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "edge",
+        "Icon": [
+          14.400001525878906,
+          485.6000061035156,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          203,
+          186,
+          185
+        ],
+        "background": [
+          92,
+          150,
+          50
+        ],
+        "fillVsBackground": 1.92,
+        "rimVsBackground": 4.0,
+        "best": 4.0
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "SlimeMeadow_claim",
+      "file": "build/quest_marker_view/pc_SlimeMeadow_claim.png",
+      "marker": {
+        "Tint": [
+          1,
+          0.8705882430076599,
+          0.4313725531101227
+        ],
+        "Text": "20m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "SlimeMeadow",
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          688,
+          274.3999938964844,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          195,
+          173,
+          88
+        ],
+        "background": [
+          56,
+          112,
+          34
+        ],
+        "fillVsBackground": 2.69,
+        "rimVsBackground": 2.4,
+        "best": 2.69
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "PumpkinPatch_ahead",
+      "file": "build/quest_marker_view/pc_PumpkinPatch_ahead.png",
+      "marker": {
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "Text": "20m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "PumpkinPatch",
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          688,
+          274.3999938964844,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          197,
+          200,
+          203
+        ],
+        "background": [
+          131,
+          154,
+          150
+        ],
+        "fillVsBackground": 1.78,
+        "rimVsBackground": 4.8,
+        "best": 4.8
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "PumpkinPatch_edge",
+      "file": "build/quest_marker_view/pc_PumpkinPatch_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.9991455078125
+        ],
+        "Text": "21m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "PumpkinPatch",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "edge",
+        "Icon": [
+          14.400001525878906,
+          485.6000061035156,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          199,
+          200,
+          202
+        ],
+        "background": [
+          109,
+          89,
+          70
+        ],
+        "fillVsBackground": 3.96,
+        "rimVsBackground": 2.16,
+        "best": 3.96
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "HauntedHollow_ahead",
+      "file": "build/quest_marker_view/pc_HauntedHollow_ahead.png",
+      "marker": {
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "Text": "20m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 18.899999618530273,
+        "Zone": "HauntedHollow",
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          688,
+          274.3999938964844,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          197,
+          198,
+          203
+        ],
+        "background": [
+          68,
+          64,
+          109
+        ],
+        "fillVsBackground": 5.58,
+        "rimVsBackground": 1.51,
+        "best": 5.58
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "HauntedHollow_edge",
+      "file": "build/quest_marker_view/pc_HauntedHollow_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.9991455078125
+        ],
+        "Text": "21m",
+        "Screen": [
+          1280,
+          720
+        ],
+        "GuiOrigin": [
+          0,
+          -58
+        ],
+        "Clock": 18.899999618530273,
+        "Zone": "HauntedHollow",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.800000011920929,
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Kind": "edge",
+        "Icon": [
+          14.400001525878906,
+          485.6000061035156,
+          48,
+          48
+        ],
+        "TextPx": 15
+      },
+      "contrast": {
+        "fill": [
+          198,
+          199,
+          203
+        ],
+        "background": [
+          72,
+          74,
+          96
+        ],
+        "fillVsBackground": 5.13,
+        "rimVsBackground": 1.66,
+        "best": 5.13
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "pc",
+      "shot": "real_step1",
+      "file": "build/quest_marker_view/pc_real_step1.png",
+      "marker": {
+        "Viewport": [
+          1280,
+          720
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "Crossroads",
+        "UIScale": 0.800000011920929
+      },
+      "contrast": null
+    },
+    {
+      "device": "phone",
+      "shot": "Crossroads_ahead",
+      "file": "build/quest_marker_view/phone_Crossroads_ahead.png",
+      "marker": {
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "Text": "20m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "Crossroads",
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          386,
+          125.25,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          199,
+          201,
+          202
+        ],
+        "background": [
+          112,
+          125,
+          83
+        ],
+        "fillVsBackground": 2.65,
+        "rimVsBackground": 3.26,
+        "best": 3.26
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "Crossroads_edge",
+      "file": "build/quest_marker_view/phone_Crossroads_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.98067474365234
+        ],
+        "Text": "21m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "Crossroads",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "edge",
+        "Icon": [
+          274.25,
+          174.75,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          200,
+          200,
+          203
+        ],
+        "background": [
+          148,
+          130,
+          99
+        ],
+        "fillVsBackground": 2.25,
+        "rimVsBackground": 3.84,
+        "best": 3.84
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "SlimeMeadow_ahead",
+      "file": "build/quest_marker_view/phone_SlimeMeadow_ahead.png",
+      "marker": {
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "Text": "20m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "SlimeMeadow",
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          386,
+          125.25,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          197,
+          199,
+          202
+        ],
+        "background": [
+          127,
+          137,
+          92
+        ],
+        "fillVsBackground": 2.21,
+        "rimVsBackground": 3.85,
+        "best": 3.85
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "SlimeMeadow_edge",
+      "file": "build/quest_marker_view/phone_SlimeMeadow_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.9991455078125
+        ],
+        "Text": "21m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "SlimeMeadow",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "edge",
+        "Icon": [
+          274.25,
+          174.75,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          198,
+          201,
+          202
+        ],
+        "background": [
+          100,
+          158,
+          68
+        ],
+        "fillVsBackground": 1.94,
+        "rimVsBackground": 4.46,
+        "best": 4.46
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "SlimeMeadow_claim",
+      "file": "build/quest_marker_view/phone_SlimeMeadow_claim.png",
+      "marker": {
+        "Tint": [
+          1,
+          0.8705882430076599,
+          0.4313725531101227
+        ],
+        "Text": "20m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "SlimeMeadow",
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          386,
+          125.25,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          196,
+          174,
+          87
+        ],
+        "background": [
+          122,
+          145,
+          100
+        ],
+        "fillVsBackground": 1.56,
+        "rimVsBackground": 4.17,
+        "best": 4.17
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "PumpkinPatch_ahead",
+      "file": "build/quest_marker_view/phone_PumpkinPatch_ahead.png",
+      "marker": {
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "Text": "20m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "PumpkinPatch",
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          386,
+          125.25,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          198,
+          200,
+          204
+        ],
+        "background": [
+          131,
+          131,
+          114
+        ],
+        "fillVsBackground": 2.31,
+        "rimVsBackground": 3.73,
+        "best": 3.73
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "PumpkinPatch_edge",
+      "file": "build/quest_marker_view/phone_PumpkinPatch_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.9991455078125
+        ],
+        "Text": "21m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "PumpkinPatch",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "edge",
+        "Icon": [
+          274.25,
+          174.75,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          199,
+          200,
+          203
+        ],
+        "background": [
+          90,
+          98,
+          64
+        ],
+        "fillVsBackground": 3.86,
+        "rimVsBackground": 2.23,
+        "best": 3.86
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "HauntedHollow_ahead",
+      "file": "build/quest_marker_view/phone_HauntedHollow_ahead.png",
+      "marker": {
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "Text": "20m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 18.899999618530273,
+        "Zone": "HauntedHollow",
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          386,
+          125.25,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          197,
+          199,
+          203
+        ],
+        "background": [
+          91,
+          86,
+          105
+        ],
+        "fillVsBackground": 4.18,
+        "rimVsBackground": 2.03,
+        "best": 4.18
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "HauntedHollow_edge",
+      "file": "build/quest_marker_view/phone_HauntedHollow_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.9991455078125
+        ],
+        "Text": "21m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 18.899999618530273,
+        "Zone": "HauntedHollow",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "edge",
+        "Icon": [
+          274.25,
+          174.75,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "contrast": {
+        "fill": [
+          198,
+          200,
+          204
+        ],
+        "background": [
+          110,
+          109,
+          148
+        ],
+        "fillVsBackground": 2.94,
+        "rimVsBackground": 2.92,
+        "best": 2.94
+      },
+      "iconPx": [
+        48,
+        48
+      ]
+    },
+    {
+      "device": "phone",
+      "shot": "real_step1",
+      "file": "build/quest_marker_view/phone_real_step1.png",
+      "marker": {
+        "Viewport": [
+          655,
+          340
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "Crossroads",
+        "UIScale": 0.75
+      },
+      "contrast": null
+    }
+  ],
+  "note": "iconPx = the marker icon's AbsoluteSize (viewport px); contrast = WCAG ratio of the icon fill or its navy rim against the ring just outside the icon (best of the two), target >= 3 (rubric 4)",
+  "claimColourNote": "captured with MarkerClaim 255,222,110; the committed colour is 255,228,128 (a little lighter, computed 3.9:1 on dark meadow grass)",
+  "edgeNote": "the edge captures show the arrow half outside on the left (48 du margin); fixed after the capture: the icon centre keeps its whole footprint (HalfX / HalfY) from every edge",
+  "realPathNote": "real_step1 (no preview): the sandbox player could not accept the first mission through the remotes from the command context (step stayed 0), so the HUD -> QuestTarget path is checked offline only (tools/test_quest_target.py)"
+}

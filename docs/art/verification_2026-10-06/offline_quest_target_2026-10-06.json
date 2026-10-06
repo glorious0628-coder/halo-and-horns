@@ -1,0 +1,115 @@
+{
+  "status": "passed",
+  "checks": 34,
+  "namedChecks": 34,
+  "failing": [],
+  "mutations": {
+    "total": 9,
+    "caught": 9,
+    "results": [
+      {
+        "mutation": "claim ignores CanClaim",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: done but CanClaim false -> no Claim"
+        ]
+      },
+      {
+        "mutation": "English gold goal not seen",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: English gold goal -> the forge trip"
+        ]
+      },
+      {
+        "mutation": "blacksmith label back in Korean",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: blacksmith label is English"
+        ]
+      },
+      {
+        "mutation": "hollow not routed through the patch",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hollow route :: Crossroads -> meadow pad",
+          "hollow route :: inside the hollow (position) -> nil",
+          "hollow route :: meadow -> the pumpkin patch sign",
+          "hollow route :: meadow land (Outskirts id) -> the sign",
+          "hollow route :: passage -> the patch field",
+          "hollow route :: patch -> the west fence gap"
+        ]
+      },
+      {
+        "mutation": "hollow gate moved off the fence gap",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hollow route :: patch -> the west fence gap",
+          "hollow route :: patch land (Outskirts id) -> the gap",
+          "hollow route :: story guide -> the gap"
+        ]
+      },
+      {
+        "mutation": "patch land not counted as the patch",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hollow route :: patch land (Outskirts id) -> the gap"
+        ]
+      },
+      {
+        "mutation": "inside the hollow still points somewhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hollow route :: inside the hollow (id) -> nil",
+          "hollow route :: inside the hollow (position) -> nil"
+        ]
+      },
+      {
+        "mutation": "patch sign skipped in the meadow",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hollow route :: meadow -> the pumpkin patch sign",
+          "hollow route :: meadow land (Outskirts id) -> the sign",
+          "hollow route :: pumpkin patch from the meadow -> the sign"
+        ]
+      },
+      {
+        "mutation": "faction-town bridge ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "plain zones :: meadow from the Halo town -> the bridge"
+        ]
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "e3431e1fbc3811bd1b99a63cc38ffeebec742bfc60f8455673a69a543a8fa207",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "a7583ebf3ec53f513f0fbab414019603cb64d12a357dbd5a7986c002edd488f7",
+    "tools/fixtures/quest_target_offline.luau": "4c7158d6b31fef10bc989e5929f499de82d7ec8f61fcf338e24c464a4bc1d820"
+  },
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "limitations": "Doubles instead of the engine: the map tree holds only the parts QuestTarget looks up; the real MapBuilder positions (patch sign, fence gap) are checked in Studio separately."
+}

@@ -2953,6 +2953,10 @@ Config.UIArt = {
 		-- bars
 		XPBlue = Color3.fromRGB(30, 170, 255),
 		QuestBlue = Color3.fromRGB(56, 144, 253),
+		-- A23-36 quest marker tint (white IconQuestMarker art, navy rim): in progress white, waiting for [Claim] light gold.
+		-- Sky blue was tried first: 2.2:1 on the meadow's dark grass (UiSandbox 2026-10-06), under the rubric's 3:1
+		MarkerGo = Color3.fromRGB(255, 255, 255),
+		MarkerClaim = Color3.fromRGB(255, 228, 128),
 		UpgradeGold = Color3.fromRGB(245, 196, 64),
 		WarHalo = Color3.fromRGB(252, 198, 52),
 		WarHorns = Color3.fromRGB(243, 38, 44),
