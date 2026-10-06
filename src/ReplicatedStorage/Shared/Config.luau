@@ -1992,21 +1992,21 @@ Config.Loot = {
 	-- with Chance), Transfer (with Chance ADDS all of one weapon's +N onto another owned weapon up to MaxEnhance, the
 	-- rest stays on the source; failure keeps both — no enhancement is ever lost)
 	Items = {
-		Jelly = { Kind = "Material", Name = "슬라임 젤리", Sell = 2, Color = Color3.fromRGB(110, 210, 110) },
-		SlimeCore = { Kind = "Material", Name = "왕 슬라임 핵", Sell = 8, Color = Color3.fromRGB(80, 160, 235) },
-		GoblinTooth = { Kind = "Material", Name = "고블린 이빨", Sell = 6, Color = Color3.fromRGB(235, 225, 190) },
-		BruteHorn = { Kind = "Material", Name = "우두머리 뿔", Sell = 18, Color = Color3.fromRGB(200, 150, 100) }, -- review ui-brutehorn-contrast: readable on the row
-		Bone = { Kind = "Material", Name = "낡은 뼛조각", Sell = 14, Color = Color3.fromRGB(225, 225, 210) },
-		KnightCrest = { Kind = "Material", Name = "녹슨 기사 문장", Sell = 40, Color = Color3.fromRGB(150, 150, 170) },
+		Jelly = { Kind = "Material", Name = "슬라임 젤리", Sell = 2, Color = Color3.fromRGB(110, 210, 110), Icon = "IconJelly" },
+		SlimeCore = { Kind = "Material", Name = "왕 슬라임 핵", Sell = 8, Color = Color3.fromRGB(80, 160, 235), Icon = "IconSlimeCore" },
+		GoblinTooth = { Kind = "Material", Name = "고블린 이빨", Sell = 6, Color = Color3.fromRGB(235, 225, 190), Icon = "IconGoblinTooth" },
+		BruteHorn = { Kind = "Material", Name = "우두머리 뿔", Sell = 18, Color = Color3.fromRGB(200, 150, 100), Icon = "IconBruteHorn" }, -- review ui-brutehorn-contrast: readable on the row
+		Bone = { Kind = "Material", Name = "낡은 뼛조각", Sell = 14, Color = Color3.fromRGB(225, 225, 210), Icon = "IconBone" },
+		KnightCrest = { Kind = "Material", Name = "녹슨 기사 문장", Sell = 40, Color = Color3.fromRGB(150, 150, 170), Icon = "IconKnightCrest" },
 		Candy = { Kind = "Material", Name = "핼러윈 사탕", Sell = 5, Color = Color3.fromRGB(255, 140, 60), Icon = "IconCandy" }, -- Halloween kinds
-		Enh70 = { Kind = "Enhance", Name = "강화 주문서 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255) },
+		Enh70 = { Kind = "Enhance", Name = "강화 주문서 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
-		Enh30 = { Kind = "Enhance", Name = "강화 주문서 30%", Chance = 0.3, Plus = 3, Color = Color3.fromRGB(190, 130, 255) },
-		Enh10 = { Kind = "Enhance", Name = "강화 주문서 10%", Chance = 0.1, Plus = 5, Color = Color3.fromRGB(255, 190, 60) },
-		Move70 = { Kind = "Transfer", Name = "강화 옮기기 주문서 70%", Chance = 0.7, Color = Color3.fromRGB(120, 230, 200) },
-		Move30 = { Kind = "Transfer", Name = "강화 옮기기 주문서 30%", Chance = 0.3, Color = Color3.fromRGB(210, 150, 255) },
-		Move10 = { Kind = "Transfer", Name = "강화 옮기기 주문서 10%", Chance = 0.1, Color = Color3.fromRGB(255, 210, 90) },
+		Enh30 = { Kind = "Enhance", Name = "강화 주문서 30%", Chance = 0.3, Plus = 3, Color = Color3.fromRGB(190, 130, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
+		Enh10 = { Kind = "Enhance", Name = "강화 주문서 10%", Chance = 0.1, Plus = 5, Color = Color3.fromRGB(255, 190, 60), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
+		Move70 = { Kind = "Transfer", Name = "강화 옮기기 주문서 70%", Chance = 0.7, Color = Color3.fromRGB(120, 230, 200), Icon = "IconScrollMove", IconBand = "IconScrollMoveBand" },
+		Move30 = { Kind = "Transfer", Name = "강화 옮기기 주문서 30%", Chance = 0.3, Color = Color3.fromRGB(210, 150, 255), Icon = "IconScrollMove", IconBand = "IconScrollMoveBand" },
+		Move10 = { Kind = "Transfer", Name = "강화 옮기기 주문서 10%", Chance = 0.1, Color = Color3.fromRGB(255, 210, 90), Icon = "IconScrollMove", IconBand = "IconScrollMoveBand" },
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
@@ -2248,7 +2248,7 @@ Config.UIArt = {
 		IconMonPumpkinKing = { Id = "rbxassetid://96292404288645", Size = Vector2.new(512, 512) },
 		IconCandy = { Id = "rbxassetid://98209525611627", Size = Vector2.new(512, 512) },
 		IconPetBabySlime = { Id = "rbxassetid://95348587877182", Size = Vector2.new(512, 512) }, -- pets (later)
-		-- window buttons (BB13 menu; IconCharacterF = the girl version for CharacterGender "F", coming)
+		-- window buttons (BB13 menu; UIKit.CharacterIconKey picks IconCharacterF for CharacterGender "F")
 		IconBag = { Id = "rbxassetid://110554679799730", Size = Vector2.new(512, 512) },
 		IconCharacter = { Id = "rbxassetid://85845386405558", Size = Vector2.new(512, 512) },
 		IconSkills = { Id = "rbxassetid://113811090785765", Size = Vector2.new(512, 512) },
@@ -2257,9 +2257,34 @@ Config.UIArt = {
 		-- User-approved E sprites; shared legacy keys remain unchanged.
 		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
 		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },
+		IconCharacterF = { Id = "rbxassetid://106504549276560", Size = Vector2.new(512, 512) },
 		FactionCardNeutralE = { Id = "rbxassetid://78748710982730", Size = Vector2.new(380, 636) },
 		FactionTitleRibbonE = { Id = "rbxassetid://77703498329138", Size = Vector2.new(549, 108) },
 		FactionPremisePanelE = { Id = "rbxassetid://101379550181314", Size = Vector2.new(1024, 130) },
+		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
+		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
+		IconMonBigSlime = { Id = "rbxassetid://137346108147632", Size = Vector2.new(512, 512) },
+		IconMonGoblin = { Id = "rbxassetid://84081351311140", Size = Vector2.new(512, 512) },
+		IconMonGoblinBrute = { Id = "rbxassetid://121297622077113", Size = Vector2.new(512, 512) },
+		IconMonSkeleton = { Id = "rbxassetid://140176829708782", Size = Vector2.new(512, 512) },
+		IconMonSkeletonKnight = { Id = "rbxassetid://81833958125033", Size = Vector2.new(512, 512) },
+		-- materials (Config.Loot.Items[*].Icon)
+		IconJelly = { Id = "rbxassetid://120712914963442", Size = Vector2.new(512, 512) },
+		IconSlimeCore = { Id = "rbxassetid://135486964395284", Size = Vector2.new(512, 512) },
+		IconGoblinTooth = { Id = "rbxassetid://100497489565353", Size = Vector2.new(512, 512) },
+		IconBruteHorn = { Id = "rbxassetid://98889017812315", Size = Vector2.new(512, 512) },
+		IconBone = { Id = "rbxassetid://100958295836955", Size = Vector2.new(512, 512) },
+		IconKnightCrest = { Id = "rbxassetid://110078802549970", Size = Vector2.new(512, 512) },
+		-- scrolls: body + Band tint mask on the same canvas (UIKit.ItemIcon tints Band with the item's Color)
+		IconScrollEnh = { Id = "rbxassetid://101934277204994", Size = Vector2.new(512, 512) },
+		IconScrollEnhBand = { Id = "rbxassetid://95290541806447", Size = Vector2.new(512, 512) },
+		IconScrollMove = { Id = "rbxassetid://104385440203016", Size = Vector2.new(512, 512) },
+		IconScrollMoveBand = { Id = "rbxassetid://71896284079944", Size = Vector2.new(512, 512) },
+		-- ranking window tabs (BB10 / BB11, A23-23 / A23-24)
+		IconRankHonor = { Id = "rbxassetid://82203370340706", Size = Vector2.new(512, 512) },
+		IconRankInfamy = { Id = "rbxassetid://129377069179379", Size = Vector2.new(512, 512) },
+		IconRankArtisan = { Id = "rbxassetid://96372902638765", Size = Vector2.new(512, 512) },
+		IconRankPvP = { Id = "rbxassetid://121095026137586", Size = Vector2.new(512, 512) },
 		FactionPremiseFreshTyped = { Id = "rbxassetid://105024415024705", Size = Vector2.new(1024, 174) },
 		FactionCardHaloFreshTyped = { Id = "rbxassetid://76818879022385", Size = Vector2.new(570, 954) },
 		FactionCardHornsFreshTyped = { Id = "rbxassetid://137806621328187", Size = Vector2.new(570, 954) },

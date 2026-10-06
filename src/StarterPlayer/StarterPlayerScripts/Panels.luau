@@ -2061,10 +2061,16 @@ function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClic
 	corner(row, 10)
 	row.Parent = parent
 	local hasButton = buttonText ~= nil
-	-- optional item art (Config.UIArt key) on a light tile; the text moves right of it
-	local iconId = type(icon) == "string" and UIKit.ArtId(icon) or nil
+	-- optional item art on a light tile; the text moves right of it. `icon` = a Config.Loot.Items id (its Icon, plus the
+	-- scroll Band tinted in the item's colour) or a plain Config.UIArt key (UIKit.ItemIcon)
+	local img = type(icon) == "string" and UIKit.ItemIcon(icon, {
+		Name = "Icon",
+		Position = UDim2.fromScale(0.08, 0.08),
+		Size = UDim2.fromScale(0.84, 0.84),
+		ScaleType = Enum.ScaleType.Fit,
+	}) or nil
 	local left = 14
-	if iconId then
+	if img then
 		local side = tapH
 		local tile = Instance.new("Frame")
 		tile.Name = "IconTile"
@@ -2075,13 +2081,6 @@ function ITEMS.Row(parent, text, color, buttonText, buttonColor, enabled, onClic
 		tile.Size = UDim2.fromOffset(side, side)
 		corner(tile, 8)
 		tile.Parent = row
-		local img = Instance.new("ImageLabel")
-		img.Name = "Icon"
-		img.BackgroundTransparency = 1
-		img.Image = iconId
-		img.ScaleType = Enum.ScaleType.Fit
-		img.Position = UDim2.fromScale(0.08, 0.08)
-		img.Size = UDim2.fromScale(0.84, 0.84)
 		img.Parent = tile
 		left = 8 + side + 10
 	end
@@ -2343,7 +2342,7 @@ BUILDERS.Items = function(parent)
 			local row = ITEMS.Row(parent, text, d.Color, chosen and L.Cancel or L.Use,
 				chosen and PALETTE.Button or PALETTE.Buy, true, function()
 					if chosen then setMode(nil) else setMode({ Item = id }) end
-				end)
+				end, nil, id)
 			row.Name = "Scroll_" .. id
 		end
 	end
@@ -2357,7 +2356,7 @@ BUILDERS.Items = function(parent)
 		local n = ITEMS.Count(items, id)
 		if d and d.Kind == "Material" and n > 0 then
 			anyMat = true
-			local row = ITEMS.Row(parent, string.format(L.MaterialLine, d.Name, n, d.Sell), d.Color, nil, nil, nil, nil, nil, d.Icon)
+			local row = ITEMS.Row(parent, string.format(L.MaterialLine, d.Name, n, d.Sell), d.Color, nil, nil, nil, nil, nil, id)
 			row.Name = "Material_" .. id
 		end
 	end
