@@ -48,3 +48,8 @@
 - 브라우저: 내 탭 "tab-1"(seed는 이미지 생성 1). JS __s2_Q/__s2_run/__s2_log 대기열(첫 생성 뒤엔 execCommand insertText + ' '/delete로 버튼이 켜짐). 다운로드는 __s2_log 클릭 시각 ↔ asset createDate(약 +20초)로 짝지음.
 - 도구: tools/img2/clean_haze.py(사람 그림 발밑 그림자·회색 얼룩, 작은 점) — 사람 그림 누끼 뒤 항상.
 - 남은 것: 옷·방어구·액세서리는 정식 이후(A23-21). 정식용 후보(BadgeDot·Toggle·GlyphGear/Paw·PetPaw·PetStat·재료 4·Map_* 지도 아이콘·랭크 배지)는 검수 지시 뒤에.
+
+## 오후 3 (2026-10-06, 크레딧 0)
+- 커밋: 2975f24 사람 그림 14장 사용자 OK → art/ui · 95e33ae 유령 가족 시안 8 · 2440d24 유령 아이콘 2(고름 A1·A2) + 묶음 18 작은 것 5(LogoPlate·EventBannerHalloween·MapParchment·ShardBase·IconAltar) · 9a8b47a 지도 표시 6 + BadgeDot·IconPetPaw·GradeSlotBack. 펫 속도 = IconBoot 공용(검수).
+- 규칙(검수 전달): 사용자 확인·고르기는 검수에게(시트 + 추천). 데스크톱 화면 조작은 바로 직전에 검수에게 "이미지 생성 2 — 무엇 — 몇 초"(OK 필요 없음). 내 브라우저 탭 작업은 알릴 필요 없음.
+- 진행 중: ① ToggleTrack·ToggleKnob·GlyphGear(BB3 설정 창, 언어 줄은 글자 EN/한) ② MapZoneHauntedHollow + 대왕 칩 아이콘(IconChipGhostKing·IconChipPumpkinKing) ③ 지도 표시 나머지 8(교차로·마을 3·사냥터 4). 시트 스크립트 scratchpad settings_sheet.py → art/review/s2/settings_chips_maps_sheet.png.
