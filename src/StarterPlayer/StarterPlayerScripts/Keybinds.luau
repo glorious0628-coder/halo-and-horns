@@ -58,7 +58,13 @@ local function touchOnly()
 	return not Keybinds.ShowsKeys()
 end
 
+-- A23-43: UIKit.Lang decides (saved setting, else the Roblox language; English by default)
 local function english()
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Lang) == "function" then
+		local ok, lang = pcall(kit.Lang)
+		if ok then return lang == "en" end
+	end
 	local st = C and C.Settings
 	if type(st) ~= "table" or type(st.Get) ~= "function" then return false end
 	local ok, lang = pcall(st.Get, "Lang")

@@ -2543,6 +2543,40 @@ Config.UIArt = {
 		IconMedalGold = { Id = "rbxassetid://100897193417032", Size = Vector2.new(512, 512) },
 		IconMedalSilver = { Id = "rbxassetid://86859981439769", Size = Vector2.new(512, 512) },
 		IconMedalBronze = { Id = "rbxassetid://129231723184529", Size = Vector2.new(512, 512) },
+		-- rank title badges (9be09d8 / 1f059dc / 552fd95, 검수 OK): beside a name tag title / on a profile at 24-40 px, in the
+		-- order of the Halo / Horns title tables (R1 lowest)
+		BadgeHaloR1 = { Id = "rbxassetid://127364191131841", Size = Vector2.new(512, 512) },
+		BadgeHaloR2 = { Id = "rbxassetid://137484666307607", Size = Vector2.new(512, 512) },
+		BadgeHaloR3 = { Id = "rbxassetid://129437049523618", Size = Vector2.new(512, 512) },
+		BadgeHaloR4 = { Id = "rbxassetid://124991404420192", Size = Vector2.new(512, 512) },
+		BadgeHaloR5 = { Id = "rbxassetid://94247608535976", Size = Vector2.new(512, 512) },
+		BadgeHornsR1 = { Id = "rbxassetid://99890678318399", Size = Vector2.new(512, 512) },
+		BadgeHornsR2 = { Id = "rbxassetid://136024745343474", Size = Vector2.new(512, 512) },
+		BadgeHornsR3 = { Id = "rbxassetid://89904764899716", Size = Vector2.new(512, 512) },
+		BadgeHornsR4 = { Id = "rbxassetid://133292927494210", Size = Vector2.new(512, 512) },
+		BadgeHornsR5 = { Id = "rbxassetid://140229377846074", Size = Vector2.new(512, 512) },
+		BadgeArtisan = { Id = "rbxassetid://112093801966686", Size = Vector2.new(512, 512) }, -- the Artisan guild title
+		BadgeGrayLegend = { Id = "rbxassetid://127823734946281", Size = Vector2.new(512, 512) }, -- the grey legend (turncoat) title
+		-- world map markers (white-rimmed discs like MapBlacksmith; 648f8f9 + 1f059dc): towns = navy discs, zones = mood colours
+		MapCrossroads = { Id = "rbxassetid://78524981424841", Size = Vector2.new(512, 512) },
+		MapHaloTown = { Id = "rbxassetid://96148211490451", Size = Vector2.new(512, 512) },
+		MapHornsTown = { Id = "rbxassetid://118698770642566", Size = Vector2.new(512, 512) },
+		MapArtisanGuild = { Id = "rbxassetid://88247282089612", Size = Vector2.new(512, 512) },
+		MapZoneMeadow = { Id = "rbxassetid://90468366478665", Size = Vector2.new(512, 512) },
+		MapZoneGoblinWoods = { Id = "rbxassetid://87656535919420", Size = Vector2.new(512, 512) },
+		MapZoneSkeletonRuins = { Id = "rbxassetid://140159489622516", Size = Vector2.new(512, 512) },
+		MapZonePumpkinField = { Id = "rbxassetid://137146546854171", Size = Vector2.new(512, 512) },
+		MapZoneHauntedHollow = { Id = "rbxassetid://126361608809712", Size = Vector2.new(512, 512) },
+		MapKaiju = { Id = "rbxassetid://105547922444119", Size = Vector2.new(512, 512) },
+		MapGrudgeSack = { Id = "rbxassetid://93012481707250", Size = Vector2.new(512, 512) },
+		MapPvP = { Id = "rbxassetid://118074682518530", Size = Vector2.new(512, 512) },
+		IconChipPumpkinKing = { Id = "rbxassetid://137587017958008", Size = Vector2.new(512, 512) }, -- event chip heads (left of '호박 대왕까지 m:ss' / the ghost king's chip)
+		IconChipGhostKing = { Id = "rbxassetid://139986664903918", Size = Vector2.new(512, 512) },
+		ToggleTrack = { Id = "rbxassetid://101018450994489", Size = Vector2.new(512, 183) }, -- BB3 settings switch track (ON colour = ImageColor3); ToggleKnob rides on it (~1.15x its height)
+		ToggleKnob = { Id = "rbxassetid://115651000790819", Size = Vector2.new(512, 512) },
+		GlyphGear = { Id = "rbxassetid://103647965370087", Size = Vector2.new(512, 512) }, -- settings gear glyph (window title / buttons)
+		PortraitFrame = { Id = "rbxassetid://87342192348849", Size = Vector2.new(512, 498) }, -- dialogue NPC portrait frame: the portrait sits on Window (0.107, 0.116, 0.783, 0.759)
+		PetCard = { Id = "rbxassetid://140401787896538", Size = Vector2.new(462, 768) }, -- pet window / book card: picture Window (0.126, 0.121, 0.747, 0.444), Name (0.10, 0.60, 0.80, 0.075), Body (0.08, 0.70, 0.84, 0.18)
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
 		IconMonBigSlime = { Id = "rbxassetid://137346108147632", Size = Vector2.new(512, 512) },

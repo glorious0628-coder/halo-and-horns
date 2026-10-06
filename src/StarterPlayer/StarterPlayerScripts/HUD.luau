@@ -98,11 +98,13 @@ local L = {
 	FoldBack = 0.15, -- s: folding back in
 	FoldPad = 10, -- du above / below the squares inside the clipping frame (key badges, the glow)
 	TileIcon = 0.6, -- icon side / tile side (the name sits under it inside the tile)
+	BandAlpha = 0.6, -- the soft band's transparency where it is darkest (review 2026-10-06: 0.6-0.7)
 	TileTint = 0.15, -- MenuTile ImageTransparency over the world (sheet a2338)
 }
 
 -- code-drawn fallback colours (IMG-R4) and ImageColor3 multipliers for the art parts
 local COL = {
+	BandInk = Color3.fromRGB(10, 14, 30), -- the soft dark band behind plate-less text (L.SoftBand)
 	Dark = Color3.fromRGB(30, 25, 10),
 	Grey = Color3.fromRGB(150, 150, 160),
 	White = Color3.new(1, 1, 1),
@@ -139,8 +141,9 @@ local TXT = {
 	Wanted = "현상 %s", -- danger chip (Horns): the wanted stars
 	WantedBounty = " · %s",
 	WarTime = "왕관 결정까지 %s",
-	Siege = "몬스터 포위전: 1인당 %d점",
+	Siege = "포위전 1인당 %d점",
 	MyWar = "내 점수 %s",
+	WarSep = " · ",
 	Blessing = "%s 왕관 축복 +%d%%",
 	Safe = "안전 지대",
 	PvP = "PvP 지역",
@@ -870,26 +873,29 @@ function L.LayoutPlate(R)
 end
 
 ----------------------------------------------------------------- building: war meter (top center)
--- round timer / siege / my-points pill (Pill art, ink text, sized to its text)
-local function infoPill(name, order, parent, color)
-	local pill = UIKit.ArtFrame("Pill", {
-		Name = name,
-		LayoutOrder = order,
-		AutomaticSize = Enum.AutomaticSize.X,
-		Size = UDim2.fromOffset(0, 20),
+
+-- a soft dark band behind plate-less text over the world (review 2026-10-06: the quest lines / the war line got lost over
+-- bright ground and sky): BandInk at L.BandAlpha where darkest, fading out. side = "Right" (text starts at the left,
+-- the band fades to the right like the reference game's quest text) or "Center" (fades both ways). ZIndex under the text
+function L.SoftBand(parent, side)
+	local a = L.BandAlpha
+	local seq = side == "Center"
+			and NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.2, a),
+				NumberSequenceKeypoint.new(0.8, a), NumberSequenceKeypoint.new(1, 1) })
+		or NumberSequence.new({ NumberSequenceKeypoint.new(0, a), NumberSequenceKeypoint.new(0.55, a + 0.05),
+			NumberSequenceKeypoint.new(1, 1) })
+	return UIKit.Create("Frame", {
+		Name = "Band",
+		BackgroundColor3 = COL.BandInk,
+		BorderSizePixel = 0,
+		Position = UDim2.fromOffset(side == "Center" and -24 or -8, -2),
+		Size = UDim2.new(1, side == "Center" and 48 or 64, 1, 4),
+		ZIndex = 1,
 		Parent = parent,
-	}, { CornerRadius = UDim.new(0.5, 0) }, {
-		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12) }),
+	}, {
+		corner(UDim.new(0, 8)),
+		UIKit.Create("UIGradient", { Transparency = seq }),
 	})
-	local props = {
-		Name = "Text",
-		AutomaticSize = Enum.AutomaticSize.X,
-		Size = UDim2.new(0, 0, 1, 0),
-		TextSize = 14,
-		Parent = pill,
-	}
-	if color then props.Color = color end
-	return pill, artLabel(true, props)
 end
 
 -- gold 빛 fill from the left and crimson 뿔 fill from the right inside the BarTrack capsule, the faction badges (bundle 6)
@@ -1003,35 +1009,64 @@ local function buildWar(root)
 	end
 	ui.warBar = bar
 
+	-- review 2026-10-06 (devlog 12: the three pills' ~10 px text could not be read on phones): ONE outlined line under the
+	-- bar over a soft dark band, "왕관 결정까지 9:40 · 내 점수 0" (siege: "포위전 1인당 150점 · 9:40 · 내 점수 0";
+	-- Neutral / None earn no points: no 내 점수). L.WarLine writes it
 	local row = UIKit.Create("Frame", {
 		Name = "Info",
 		Position = UDim2.fromOffset(0, barY + barH + 3),
 		Size = UDim2.new(1, 0, 0, 20),
 		BackgroundTransparency = 1,
 		Parent = w,
-	}, {
-		UIKit.Create("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 6),
-		}),
 	})
-	ui.warTimePill, ui.warTime = infoPill("Time", 1, row, nil)
-	ui.warSiege, ui.warSiegeText = infoPill("Siege", 2, row, ac("BadInk", Theme.Revenge))
-	ui.warSiege.Visible = false
-	ui.warPoints, ui.warPointsText = infoPill("MyPoints", 3, row, nil)
+	ui.warBand = L.SoftBand(row, "Center")
+	ui.warLine = UIKit.StyledLabel({
+		Name = "Text",
+		Size = UDim2.fromScale(1, 1),
+		TextScaled = true,
+		RichText = true,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		ZIndex = 2,
+		Parent = row,
+	}, "NameTag")
 	ui.warInfo = row
 end
 
--- the bar keeps 22du, the info pills take the rest of the meter's height (Rects.war_meter: 57.5du PC, 50.7du phone)
+-- the bar keeps 22du, the info line takes the rest of the meter's height (Rects.war_meter: 52.5du PC, 50.7du phone):
+-- 19.5du = 15.6 px on the PC, 17.7du = 13.3 px on the reference phone (NameTag floor 12 px)
 function L.LayoutWar(h)
-	local info = math.clamp(h - 8 - 22 - 3, 14, 20)
+	L.WarH = h
+	local info = math.clamp(h - 8 - 22 - 3, 14, 22)
 	ui.warInfo.Position = UDim2.fromOffset(0, 8 + 22 + 3)
 	ui.warInfo.Size = UDim2.new(1, 0, 0, info)
-	for _, pill in { ui.warTimePill, ui.warSiege, ui.warPoints } do
-		if pill then pill.Size = UDim2.fromOffset(0, info) end
+	-- the band hugs the text: as wide as the line plus a margin that fades out
+	local tb = ui.warLine.TextBounds.X
+	if ui.warBand and tb > 0 then
+		local bw = math.min(ui.warInfo.AbsoluteSize.X > 0 and (tb / math.max(0.01, ui.warLine.AbsoluteSize.X)) or 1, 1)
+		ui.warBand.Size = UDim2.new(bw, 48, 1, 4)
+		ui.warBand.Position = UDim2.new((1 - bw) / 2, -24, 0, -2)
+	end
+end
+
+-- the war meter's info line from its parts (time always, siege while WarMode = Siege, my points for Halo / Horns)
+function L.WarLine(parts)
+	if not ui.warLine then return end
+	local list = {}
+	if parts.Siege then
+		-- orange (Theme.Revenge), not ink red: the line sits over the world (UiSandbox 2026-10-06: red on the dark gate
+		-- could not be read)
+		table.insert(list, string.format('<font color="#%s">%s</font>', Theme.Revenge:ToHex(), parts.Siege))
+		table.insert(list, parts.Clock)
+	else
+		table.insert(list, parts.Time)
+	end
+	if parts.Points then table.insert(list, parts.Points) end
+	local text = table.concat(list, TXT.WarSep)
+	if ui.warLine.Text ~= text then
+		ui.warLine.Text = text
+		task.defer(function()
+			if L.WarH then L.LayoutWar(L.WarH) end -- the band follows the new text width
+		end)
 	end
 end
 
@@ -1359,8 +1394,9 @@ function L.BuildQuestLines(root)
 	-- phones: the 12 px name-tag floor (the block is 150 px wide); PC: body text
 	local style = IS_TOUCH and "NameTag" or "Body"
 	for i = 1, 2 do
-		-- one row = [icon][text (fills the rest, cut with …)][3/5 | 받기][▼ on line 1, PC]: a horizontal list with a
-		-- flexible text cell, so a line without numbers gives the text the whole width
+		-- one row = [icon][text][3/5 | 받기][▼ on line 1, PC]: a horizontal list; the text keeps its own width (shrinks and
+		-- cuts with … only when the row is full), so the numbers / 받기 / ▼ sit right after it, never at the far edge
+		-- (review 2026-10-06 devlog 15: '101/800' floated apart at the block's right end)
 		local row = UIKit.Create(IS_TOUCH and "Frame" or "TextButton", {
 			Name = "Line" .. i,
 			BackgroundTransparency = 1,
@@ -1398,7 +1434,8 @@ function L.BuildQuestLines(root)
 			ZIndex = 4,
 			Parent = row,
 		}, style)
-		UIKit.Create("UIFlexItem", { FlexMode = Enum.UIFlexMode.Fill, Parent = text })
+		text.AutomaticSize = Enum.AutomaticSize.X
+		UIKit.Create("UIFlexItem", { FlexMode = Enum.UIFlexMode.Shrink, Parent = text })
 		local nums = UIKit.StyledLabel({
 			Name = "Nums",
 			LayoutOrder = 3,
@@ -1424,19 +1461,33 @@ function L.BuildQuestLines(root)
 			ZIndex = 5,
 			Parent = claim,
 		}, "Number")
-		ui.qline[i] = { Row = row, Icon = icon, Text = text, Nums = nums, Claim = claim, ClaimText = claimText, Entry = nil }
+		-- the soft band sits beside the row in the block (a band inside the row would be a list item), under its text
+		local band = L.SoftBand(block, "Right")
+		band.Name = "Band" .. i
+		band.Size = UDim2.new(1, 64, 0.5, 2)
+		band.Position = UDim2.new(0, -8, (i - 1) * 0.5, -1)
+		band.Visible = false
+		ui.qline[i] = { Row = row, Icon = icon, Text = text, Nums = nums, Claim = claim, ClaimText = claimText, Entry = nil,
+			Band = band }
 	end
-	-- PC: ▼ / ▲ at the end of line 1 folds the full list (the parchment rows) out under the lines
+	-- PC: a small ▼ / ▲ button right after line 1 folds the full list (the parchment rows) out under the lines
 	if not IS_TOUCH then
-		ui.questFold = UIKit.StyledLabel({
+		local fold = UIKit.Create("TextButton", {
 			Name = "Fold",
 			LayoutOrder = 5,
 			Size = UDim2.new(0, 0, 1, 0),
 			AutomaticSize = Enum.AutomaticSize.X,
+			BackgroundTransparency = 1,
+			AutoButtonColor = false,
 			Text = TXT.QuestOpenList,
-			ZIndex = 4,
+			ZIndex = 5,
 			Parent = ui.qline[1].Row,
-		}, "Number")
+		}, { UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }) })
+		if type(UIKit.StyleText) == "function" then UIKit.StyleText(fold, "Number") end
+		fold.Activated:Connect(function()
+			if toggleQuests then toggleQuests() end
+		end)
+		ui.questFold = fold
 	end
 end
 
@@ -1464,6 +1515,7 @@ end
 function L.SetQuestLine(l, e, label, nums)
 	l.Entry = e
 	l.Row.Visible = label ~= nil
+	if l.Band then l.Band.Visible = label ~= nil end
 	if not label then return end
 	l.Text.Text = label
 	local claimable = e ~= nil and e.Progress >= e.Target and e.CanClaim
@@ -1918,14 +1970,7 @@ local function buildButtons(root)
 	-- 스킬 Q: Firefly blue disc (BtnSpecial); only MP and cooldown decide readiness
 	local rel, relArt = roundButton("Release", L.Release, "BtnSpecial", COL.ReleaseFill)
 	ui.release, ui.releaseArt = rel, relArt
-	ui.releaseIcon = UIKit.ArtImage("IconSpecial", {
-		Name = "Icon",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.42),
-		Size = UDim2.fromScale(0.56, 0.34),
-		ZIndex = 3,
-		Parent = rel,
-	})
+	L.RefreshSkillIcon() -- my class's Q skill icon (bundle 14), IconSpecial until a class is chosen
 	ui.skillLabel = artLabel(false, {
 		Name = "Sub",
 		AnchorPoint = Vector2.new(0.5, 0.5),
@@ -2017,6 +2062,30 @@ function L.RefreshAttackGlyph()
 		Size = UDim2.fromScale(0.5, 0.5),
 		ZIndex = 3,
 		Parent = ui.attack,
+	})
+end
+
+-- the Q button's icon: my class's skill art (bundle 14 Skill_<Class>_Q, a square icon) or the winged IconSpecial before a
+-- class is chosen / for a class without its own art (the Artisan pet tamer's 펫 돌진 waits for its icon, A23-39)
+function L.RefreshSkillIcon()
+	local rel = ui.release
+	if not rel then return end
+	local class = attr("ClassChosen", false) == true and getClass() or nil
+	local key = (class and not (class == "Archer" and getFaction() == "Neutral")) and ("Skill_" .. class .. "_Q") or nil
+	if not (key and UIKit.ArtId(key)) then key = "IconSpecial" end
+	if ui.releaseIconKey == key and ui.releaseIcon and ui.releaseIcon.Parent then return end
+	ui.releaseIconKey = key
+	local visible = not ui.releaseIcon or ui.releaseIcon.Visible
+	if ui.releaseIcon then ui.releaseIcon:Destroy() end
+	local square = key ~= "IconSpecial"
+	ui.releaseIcon = UIKit.ArtImage(key, {
+		Name = "Icon",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, square and 0.4 or 0.42),
+		Size = square and UDim2.fromScale(0.5, 0.5) or UDim2.fromScale(0.56, 0.34),
+		Visible = visible,
+		ZIndex = 3,
+		Parent = rel,
 	})
 end
 
@@ -2373,13 +2442,13 @@ local function fmtScore(v)
 	return string.format("%g", math.floor(v * 10 + 0.5) / 10)
 end
 
+L.WarParts = { Time = "", Clock = "", Siege = nil, Points = nil }
 local function refreshWarTime()
 	local endsAt = tonumber(UIKit.GameAttr("WarRoundEndsAt", 0)) or 0
-	if endsAt <= 0 then
-		ui.warTime.Text = string.format(TXT.WarTime, "-:--")
-	else
-		ui.warTime.Text = string.format(TXT.WarTime, Util.FormatTime(endsAt - Util.Now()))
-	end
+	local clock = endsAt <= 0 and "-:--" or Util.FormatTime(endsAt - Util.Now())
+	L.WarParts.Clock = clock
+	L.WarParts.Time = string.format(TXT.WarTime, clock)
+	L.WarLine(L.WarParts)
 end
 
 local function refreshWar()
@@ -2396,15 +2465,11 @@ local function refreshWar()
 	ui.hornsNum.Text = fmtScore(r) .. " " .. tostring(Config.Factions.Horns.Emblem)
 
 	local mode = UIKit.GameAttr("WarMode", "Idle")
-	ui.warSiege.Visible = mode == "Siege"
-	ui.warSiegeText.Text = string.format(TXT.Siege, Config.War.SiegeTarget or 150)
+	L.WarParts.Siege = mode == "Siege" and string.format(TXT.Siege, Config.War.SiegeTarget or 150) or nil
 
 	local f = getFaction()
 	local fighting = f == "Halo" or f == "Horns" -- A6: Neutral / None earn no war points
-	ui.warPoints.Visible = fighting
-	if fighting then
-		ui.warPointsText.Text = string.format(TXT.MyWar, fmtNum(num("WarPoints", 0)))
-	end
+	L.WarParts.Points = fighting and string.format(TXT.MyWar, fmtNum(num("WarPoints", 0))) or nil
 	refreshWarTime()
 	refreshChips()
 end
@@ -4064,6 +4129,7 @@ function HUD.Start()
 	end)
 	UIKit.OnAttr({ "Mana", "SkillReadyAt" }, refreshSkill)
 	UIKit.OnAttr({ "Class", "ClassChosen" }, L.RefreshAttackGlyph)
+	UIKit.OnAttr({ "Class", "ClassChosen", "Faction" }, L.RefreshSkillIcon)
 	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays" }, refreshMenuGlow)
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests

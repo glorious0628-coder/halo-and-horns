@@ -1,0 +1,67 @@
+{
+  "status": "passed",
+  "checks": 60,
+  "failed": 0,
+  "mutations": [
+    {
+      "mutation": "hollow has no dusk",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "half way into the hollow: clock half way",
+        "half way into the hollow: fog half way",
+        "hollow at dawn -> dusk clock",
+        "hollow at dawn fog nearer"
+      ]
+    },
+    {
+      "mutation": "dusk clock ignores the weight",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "half way into the hollow: clock half way",
+        "hollow at dawn -> dusk clock",
+        "hollow day -> dusk clock 18.9"
+      ]
+    },
+    {
+      "mutation": "night base also turned to dusk",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "hollow at night keeps the night clock"
+      ]
+    },
+    {
+      "mutation": "fog never nearer",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "half way into the hollow: fog half way",
+        "hollow at dawn fog nearer",
+        "hollow fog nearer (<= 340)"
+      ]
+    },
+    {
+      "mutation": "hollow as bright as the meadow",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "hollow sun dimmed to 0.7-0.9"
+      ]
+    },
+    {
+      "mutation": "dusk weight lost when easing",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "half way into the hollow: clock half way",
+        "half way into the hollow: fog half way"
+      ]
+    }
+  ],
+  "sourceSHA256": "cab9c1e738f88fb7eb5c473da97e3e223fa275f066683a33833e7941a25bcac6",
+  "runtimeError": null,
+  "studioCalls": 0,
+  "apiCalls": 0
+}

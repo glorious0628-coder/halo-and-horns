@@ -9,10 +9,15 @@
 -- becomes the new base and is multiplied at once, so a round change never shows the raw sky for seconds. A zone change
 -- eases the FACTORS (T.Tween s on Heartbeat), never a TweenService tween on Lighting, so the two can never fight.
 -- Local only: the client writes its own Lighting values (they never replicate) plus one client-made ColorCorrection
--- "ZoneTint" (WarService keeps its global "WarTint"). ClockTime, fog, bloom, sun rays and the sky box stay the
--- server's (the war sky's meaning). No Atmosphere (A9-3 still bans it: it hides the FogColor war sky).
+-- "ZoneTint" (WarService keeps its global "WarTint"). Bloom, sun rays and the sky box stay the server's. ClockTime, the
+-- classic fog and the terrain clouds stay the server's too (the war sky's meaning) EXCEPT in a zone with a Dusk entry
+-- (the haunted hollow, review 2026-10-06 "유령 숲이 낮처럼 밝아요"): there they are blended toward its dusk (ClockTime
+-- on the shorter way round the clock, a daytime base only; a purple-navy fog that greys out the far hills; dark
+-- clouds) by the same eased weight, and leaving blends them back. Never an Atmosphere (A9-3 / A23-30 keep banning it:
+-- it hides the FogColor war sky).
 -- API: ZoneLook.Init(C), ZoneLook.Start(), ZoneLook.Preview(zoneId | nil) (tests: force a zone look, nil = follow me),
---      ZoneLook.Current() -> zone id, sky name, ZoneLook.TargetFor(zoneId, base[, sky]) -> Lighting goal, ZoneTint goal.
+--      ZoneLook.Current() -> zone id, sky name, ZoneLook.TargetFor(zoneId, base[, sky]) -> Lighting goal, ZoneTint goal,
+--      ZoneLook.Blend(fromZone, toZone, t, base[, sky]) -> the same mid-way through a zone change.
 --      In Studio the LocalPlayer attribute "ZoneLookPreview" (set locally by tools/zone_look_view.py) drives Preview,
 --      since a test runner's require() gets its own module copy.
 local Players = game:GetService("Players")
@@ -45,10 +50,12 @@ local ZONE = {
 	-- orange low sun through the tint, purple shadows through the ambient
 	PumpkinPatch = { Amb = { 1.15, 0.85, 1.25 }, Bright = 0.85, Exp = 0.08, Tint = rgb(255, 205, 170), Sat = 0.2,
 		Con = 0.08, CC = 0 },
-	-- A23-45 유령 숲 (이미지 생성 1, 959a9af sheet art/review/haunted_hollow_sheet.jpg): blue-violet moonlight, no fog,
-	-- exposure up so the ghosts stay readable
-	HauntedHollow = { Amb = { 0.92, 0.95, 1.3 }, Bright = 0.7, Exp = 0.15, Tint = rgb(214, 206, 255), Sat = 0.05,
-		Con = 0.08, CC = 0.02 },
+	-- A23-45 유령 숲 (이미지 생성 1 959a9af + review 2026-10-06 devlog 15 "still daylight"): dusk over the hollow only:
+	-- a low sun (ClockTime 18.9), the sun at ~0.45 (2.0 -> 0.9), blue ambient so ghosts and paths stay readable,
+	-- a purple-navy classic fog from 60 to 340 studs (the green hills beyond fade; the 104 x 90 hollow stays clear)
+	HauntedHollow = { Amb = { 0.95, 1, 1.45 }, Bright = 0.45, Exp = 0.2, Tint = rgb(214, 206, 255), Sat = 0.05,
+		Con = 0.08, CC = 0.02,
+		Dusk = { Clock = 18.9, Fog = rgb(66, 58, 108), FogStart = 60, FogEnd = 340, Clouds = rgb(118, 100, 168) } },
 	-- pale limestone town: dimmer sun so the white tiles do not burn out
 	HaloTown = { Amb = { 1.06, 1.04, 0.95 }, Bright = 0.88, Exp = -0.12, Tint = rgb(255, 246, 228), Sat = 0.06, Con = 0.05,
 		CC = 0 },
@@ -59,13 +66,16 @@ ZONE.Default = ZONE.SlimeMeadow
 ZoneLook.Zone = ZONE -- read by tests / the design table
 
 -- the Lighting properties ZoneLook multiplies (the server writes all of them: Config.Sky per war sky, LIGHTING_FIXED)
-local MANAGED = { "Brightness", "Ambient", "OutdoorAmbient", "ExposureCompensation", "EnvironmentSpecularScale" }
+-- and those a Dusk zone blends (ClockTime: WarService's forward tween; the fog: Config.Sky)
+local MANAGED = { "Brightness", "Ambient", "OutdoorAmbient", "ExposureCompensation", "EnvironmentSpecularScale",
+	"ClockTime", "FogColor", "FogStart", "FogEnd" }
 
 local S = {
 	Started = false, Zone = nil, Sky = "Neutral", Preview = nil,
 	Base = {}, -- [property] = the server's latest value (never one of ZoneLook's own writes)
 	F = nil, From = nil, Goal = nil, T0 = 0, Dur = 1.5, Easing = false, -- current / start / goal factors, the ease clock
 	Writing = false, Tint = nil, Conn = nil,
+	Clouds = nil, CloudBase = nil, -- workspace.Terrain's Clouds (WarService colours them per sky) and its server colour
 }
 
 ----------------------------------------------------------------- helpers
@@ -103,6 +113,10 @@ local function configBase(sky)
 		if typeof(p.Ambient) == "Color3" then base.Ambient = p.Ambient end
 		if typeof(p.OutdoorAmbient) == "Color3" then base.OutdoorAmbient = p.OutdoorAmbient end
 		if type(p.ExposureCompensation) == "number" then base.ExposureCompensation = p.ExposureCompensation end
+		if type(p.ClockTime) == "number" then base.ClockTime = p.ClockTime end
+		if typeof(p.FogColor) == "Color3" then base.FogColor = p.FogColor end
+		if type(p.FogStart) == "number" then base.FogStart = p.FogStart end
+		if type(p.FogEnd) == "number" then base.FogEnd = p.FogEnd end
 	end
 	return base
 end
@@ -116,17 +130,43 @@ local function factorsFor(zoneId, sky)
 		Exp = z.Exp,
 		Spec = z.Specular,
 		Tint = z.Tint, Sat = z.Sat, Con = z.Con, CC = z.CC,
+		W = z.Dusk and 1 or 0, Dusk = z.Dusk, -- dusk weight (eased like the factors) and its targets
+	}
+end
+
+-- hours from a to b the shorter way round the clock (-12 .. 12)
+local function clockDelta(a, b)
+	return ((b - a + 12) % 24) - 12
+end
+
+-- the dusk part of a goal over a base: ClockTime / fog toward the zone's dusk by weight w (a night base keeps its clock)
+local function duskOver(base, w, d)
+	if not d or w <= 0 then
+		return { ClockTime = base.ClockTime, FogColor = base.FogColor, FogStart = base.FogStart, FogEnd = base.FogEnd }
+	end
+	local clock = base.ClockTime
+	if type(clock) == "number" and clock >= 6 and clock < d.Clock then
+		clock = (clock + clockDelta(clock, d.Clock) * w) % 24
+	end
+	return {
+		ClockTime = clock,
+		FogColor = typeof(base.FogColor) == "Color3" and base.FogColor:Lerp(d.Fog, w) or base.FogColor,
+		FogStart = type(base.FogStart) == "number" and lerp(base.FogStart, math.min(base.FogStart, d.FogStart), w)
+			or base.FogStart,
+		FogEnd = type(base.FogEnd) == "number" and lerp(base.FogEnd, math.min(base.FogEnd, d.FogEnd), w) or base.FogEnd,
 	}
 end
 
 -- Lighting goal + ZoneTint goal for factors over a base ({ property = server value })
 local function compose(f, base)
+	local dusk = duskOver(base, f.W or 0, f.Dusk)
 	return {
 		Brightness = base.Brightness * f.Bright,
 		Ambient = scale(base.Ambient, f.Amb),
 		OutdoorAmbient = scale(base.OutdoorAmbient, f.Amb),
 		ExposureCompensation = base.ExposureCompensation + f.Exp,
 		EnvironmentSpecularScale = f.Spec or base.EnvironmentSpecularScale,
+		ClockTime = dusk.ClockTime, FogColor = dusk.FogColor, FogStart = dusk.FogStart, FogEnd = dusk.FogEnd,
 	}, { TintColor = f.Tint, Saturation = f.Sat, Contrast = f.Con, Brightness = f.CC }
 end
 
@@ -145,7 +185,14 @@ local function mix(a, b, t)
 		Exp = lerp(a.Exp, b.Exp, t),
 		Spec = (a.Spec == nil and b.Spec == nil) and nil or lerp(specA, specB, t),
 		Tint = a.Tint:Lerp(b.Tint, t), Sat = lerp(a.Sat, b.Sat, t), Con = lerp(a.Con, b.Con, t), CC = lerp(a.CC, b.CC, t),
+		W = lerp(a.W or 0, b.W or 0, t), Dusk = b.Dusk or a.Dusk, -- whichever side has dusk targets (only W changes)
 	}
+end
+
+-- the goal part of the way (t 0..1) from one zone's look to another's over a base: what a zone change shows mid-ease
+-- (tests / previews; the live ease runs the same mix on Heartbeat)
+function ZoneLook.Blend(fromZone, toZone, t, base, sky)
+	return compose(mix(factorsFor(fromZone, sky), factorsFor(toZone, sky), math.clamp(t, 0, 1)), base)
 end
 
 -- writes base x current factors: every managed property (name = nil) or one; ZoneTint with the full write
@@ -163,6 +210,14 @@ local function write(name)
 	if not name then
 		local fx = tint()
 		for k, v in cc do pcall(function() fx[k] = v end) end
+	end
+	local clouds = S.Clouds
+	if clouds and clouds.Parent and typeof(S.CloudBase) == "Color3" and (name == nil or name == "Clouds") then
+		local d, w = S.F.Dusk, S.F.W or 0
+		local goal = (d and d.Clouds and w > 0) and S.CloudBase:Lerp(d.Clouds, w) or S.CloudBase
+		S.Writing = true
+		pcall(function() clouds.Color = goal end)
+		S.Writing = false
 	end
 end
 
@@ -227,6 +282,17 @@ function ZoneLook.Start()
 	for _, name in MANAGED do
 		local v = Lighting[name]
 		if v ~= nil then S.Base[name] = v end
+	end
+	-- the terrain clouds (when the place has them): WarService tweens their colour per sky -> the base, like Lighting
+	local clouds = workspace.Terrain:FindFirstChildOfClass("Clouds")
+	if clouds then
+		S.Clouds, S.CloudBase = clouds, clouds.Color
+		clouds:GetPropertyChangedSignal("Color"):Connect(function()
+			if S.Writing then return end
+			S.CloudBase = clouds.Color
+			local ok, err = pcall(write, "Clouds")
+			if not ok then Util.Warn("ZoneLook", tostring(err)) end
+		end)
 	end
 	pcall(retarget, 0)
 	LocalPlayer:GetAttributeChangedSignal("ZoneId"):Connect(onZone)
