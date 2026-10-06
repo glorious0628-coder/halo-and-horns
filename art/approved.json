@@ -3963,5 +3963,17 @@
   "original": "art/out/thumb/Thumb_C_HQ_src.png, art/out/thumb/Thumb_C_HQ_expand.png",
   "file": "art/ui/Thumb_C_Halloween.png",
   "note": "체험 썸네일 2(핼러윈, 가운데 호박 가족만 — A23-45). 사람 그림 — 검수 100% 확인 통과, 사용자 확정 2026-10-06('넘 좋아'). 핼러윈 끝(11/9)에 내림."
+ },
+ "Tex_HauntedFloor_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_HauntedFloor.txt (안 4는 차분한 문구 TF2 — art/prompts/Tex_HauntedFloor.txt 아래쪽 기록 참조)",
+  "original": "art/out/Tex_HauntedFloor_FF_src.png (1024, Adobe MCP presigned download; 후보 art/out/tex/Tex_HauntedFloor_1~5.png)",
+  "file": "art/ui/Tex_HauntedFloor_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --search --gap-weight 1; 3x3 + 2x2 100% checked art/review/tex/Tex_HauntedFloor_FF_3x3*.png",
+  "preview": "art/review/tex_haunted_floor_sheet.jpg",
+  "note": "A23-45 유령 숲 바닥. 5안 중 4(푸른 보라·자두색 큰 덩어리, 잔무늬 적음 — '큰 덩어리·차분' 기준). 지형 재질 칸은 이미지 개발이 정함(빈 칸 예: Asphalt/Sandstone). 고르기는 이미지 세션에 맡김(2026-10-06)."
  }
 }
