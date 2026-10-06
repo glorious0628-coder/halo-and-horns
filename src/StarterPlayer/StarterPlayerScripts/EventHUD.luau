@@ -634,6 +634,7 @@ local function build()
 		ZIndex = 4,
 	}, 15, ui.KingChip)
 	if not Art.On then ui.KingChipText.TextColor3 = REVENGE_ORANGE end
+	ui.KingChipText.TextWrapped = false -- one line: KING.place keeps the pill as wide as the line needs
 
 	-- kaiju siren banner (full width at 18% screen height): red band with gold trim
 	ui.Siren = make("Frame", {
@@ -1023,6 +1024,16 @@ end
 --    down to L.KingMinW; 2. right of the strip (after the kaiju pill while it shows) up to HUD.Layout.RightX (desktop:
 --    left of the luck panel) when that stays clear of the cluster; 3. else centred in a row under HUD's status chips,
 --    and the touch personal line moves one row lower (KING.Below)
+-- width (logical px) the current line needs at a readable size: the pill never gets narrower (review of 1614575: at
+-- KingMinW the scaled text broke into two lines on phones / in English). Hangul / CJK ~1 em, the rest ~0.56 em.
+function KING.need(text)
+	local em, w = 14, 0
+	for _, cp in utf8.codes(tostring(text or "")) do
+		w += (cp >= 0x2E80 and em or em * 0.56)
+	end
+	return math.ceil(w + 26)
+end
+
 function KING.place(chip)
 	local strip = ui.Strip
 	local root = strip and strip.Parent
@@ -1030,24 +1041,26 @@ function KING.place(chip)
 	local s = currentScale()
 	local hl = C and type(C.HUD) == "table" and type(C.HUD.Layout) == "table" and C.HUD.Layout or {}
 	local gap = L.KingGap
+	local need = KING.need(ui.KingChipText and ui.KingChipText.Text)
+	local minW, maxW = math.max(L.KingMinW, need), math.max(L.KingW, need)
 	local W = num(hl.W) > 0 and hl.W or root.AbsoluteSize.X / s
 	local x0 = (strip.AbsolutePosition.X - root.AbsolutePosition.X) / s
 	local x1 = x0 + strip.AbsoluteSize.X / s
 	local y0 = (strip.AbsolutePosition.Y - root.AbsolutePosition.Y) / s
 	local below = false
 	local room = x0 - gap - math.max(gap, num(hl.LeftX))
-	if room >= L.KingMinW then
+	if room >= minW then
 		chip.AnchorPoint = Vector2.new(1, 0)
 		chip.Position = UDim2.new(0, -gap, 0, 0)
-		chip.Size = UDim2.fromOffset(math.floor(math.min(room, L.KingW)), L.PillH)
+		chip.Size = UDim2.fromOffset(math.floor(math.min(room, maxW)), L.PillH)
 	else
 		local kaiju = (ui.KaijuChip and ui.KaijuChip.Visible) and (KAIJU_CHIP_W + gap) or 0
 		local left = x1 + gap + kaiju
 		room = (num(hl.RightX) > 0 and hl.RightX or W - gap) - left
-		local w = math.floor(math.min(room, L.KingW))
+		local w = math.floor(math.min(room, maxW))
 		local clusterTop = num(hl.ClusterTop)
 		local blocked = clusterTop > 0 and y0 + L.PillH > clusterTop - gap and left + w > num(hl.ClusterLeft) - gap
-		if room >= L.KingMinW and not blocked then
+		if room >= minW and not blocked then
 			chip.AnchorPoint = Vector2.new(0, 0)
 			chip.Position = UDim2.new(1, gap + kaiju, 0, 0)
 			chip.Size = UDim2.fromOffset(w, L.PillH)
@@ -1057,7 +1070,7 @@ function KING.place(chip)
 			if not cb then cb = y0 + strip.Size.Y.Offset + L.StripGap + L.ChipsH end
 			chip.AnchorPoint = Vector2.new(0.5, 0)
 			chip.Position = UDim2.new(0.5, 0, 0, math.floor(cb + L.StripGap - y0 + 0.5))
-			chip.Size = UDim2.fromOffset(math.floor(math.min(L.KingW, W - 24)), L.PillH)
+			chip.Size = UDim2.fromOffset(math.floor(math.min(maxW, W - 24)), L.PillH)
 		end
 	end
 	KING.setBelow(below)
