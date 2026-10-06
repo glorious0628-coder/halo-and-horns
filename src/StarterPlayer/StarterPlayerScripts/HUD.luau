@@ -356,6 +356,18 @@ end
 -- SetCore throws until the chat CoreScript has registered it, so retry for a while. TextChatService places
 -- its own window through ChatWindowConfiguration (VerticalAlignment = Bottom in the place file).
 local LEGACY_CHAT_POS = UDim2.new(0, 0, 0.6, 0)
+-- TextChatService: close the chat window once at start (SetCore throws until the chat CoreScript registered it)
+function L.CloseChatOnce()
+	local okVersion, isTcs = pcall(function()
+		return TextChatService.ChatVersion == Enum.ChatVersion.TextChatService
+	end)
+	if not okVersion or not isTcs then return end
+	for _ = 1, 20 do
+		if pcall(StarterGui.SetCore, StarterGui, "ChatActive", false) then return end
+		task.wait(0.5)
+	end
+end
+
 local function placeLegacyChat()
 	if IS_TOUCH then return end
 	local okVersion, isLegacy = pcall(function()
@@ -3579,19 +3591,11 @@ function HUD.Start()
 	UIKit.OnAttr({ "Level" }, function() L.Pow.LevelAt = os.clock() end) -- BB5: no "+N" next to a level-up banner
 	UIKit.OnAttr({ "CombatPower", "DataLoaded", "ClassChosen" }, L.PowerChanged)
 	UIKit.OnAttr({ "AutoCombatUnlocked", "AutoCombatEnabled", "ClassChosen" }, L.RefreshAuto)
-	-- user 2026-10-06 "채팅창이 가운데 있어서 거슬려, 왼쪽에" (A23-26): desktop TextChatService chat goes bottom-left
-	-- (the v2 layout keeps that corner free; it was bottom-middle after a short window's chat covered the old left
-	-- quest rows). Touch keeps Roblox's top-left (alignment is the only placement this API has), kept short so an
-	-- opened chat stays clear of most of the thumbstick zone.
-	pcall(function()
-		local cw = TextChatService:FindFirstChildOfClass("ChatWindowConfiguration")
-		if cw then
-			cw.HorizontalAlignment = Enum.HorizontalAlignment.Left
-			cw.VerticalAlignment = IS_TOUCH and Enum.VerticalAlignment.Top or Enum.VerticalAlignment.Bottom
-			cw.WidthScale = math.min(cw.WidthScale, IS_TOUCH and 0.85 or 0.8)
-			cw.HeightScale = math.min(cw.HeightScale, IS_TOUCH and 0.5 or 0.6)
-		end
-	end)
+	-- user 2026-10-06 (A23-26 update): TextChatService chat keeps Roblox's own place and size (top-left, opened with the
+	-- top-bar chat bubble or '/'); this code no longer moves ChatWindowConfiguration. It starts closed on desktop too,
+	-- so it never covers the top-left status plate until the player opens it, and the plate never has to move out of
+	-- its way (review rubric 5: nothing gets pushed by motion). Touch already starts closed.
+	if not IS_TOUCH then task.spawn(L.CloseChatOnce) end
 	-- auto combat + ranged class: while I stand still, keep facing the nearest monster so the server's aim cone fits
 	task.spawn(function()
 		while true do
