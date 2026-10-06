@@ -184,6 +184,12 @@ local function stateTrue(player, key)
 	if key == "BlacksmithVisited" then return player:GetAttribute("BlacksmithVisited") == true end
 	if key == "AutoOn" then return player:GetAttribute("AutoCombatEnabled") == true end
 	if key == "OwnIron" then return ownsIron(player) end
+	if key == "Graduated" then -- E7 (quest_volume): no Sprout Shield any more (PvPService.IsRookie)
+		local pvp = S.PvPService
+		if type(pvp) ~= "table" or type(pvp.IsRookie) ~= "function" then return false end
+		local ok, rookie = pcall(pvp.IsRookie, player)
+		return ok and rookie == false
+	end
 	return false
 end
 
@@ -223,6 +229,20 @@ local function eventAmount(player, obj, ev)
 end
 
 ------------------------------------------------------------------ rewards / finishing
+-- E6 / Reward.Item: an item or potions through LootService.GrantItem (its caps and full notices); the "+Name" part of the
+-- reward line, or nil when nothing was given
+local function grantItem(player, id, n)
+	local loot = S.LootService
+	if type(id) ~= "string" or type(loot) ~= "table" or type(loot.GrantItem) ~= "function" then return nil end
+	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)))
+	if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
+	local given = ok and math.floor(num(res)) or 0
+	if given <= 0 then return nil end
+	local item = Config.Loot.Items[id]
+	local name = (item and item.Name) or Config.Loot.Text.Potion[id] or id
+	return given > 1 and string.format(Config.Loot.Text.GotN, name, given) or string.format(Config.Loot.Text.Got, name)
+end
+
 local function payReward(player, def)
 	local r = def.Reward
 	if type(r) ~= "table" then return nil end
@@ -255,6 +275,11 @@ local function complete(player, data, id)
 	end
 	notify(player, def.Finish or msg, "reward")
 	if def.Finish then notify(player, msg, "reward") end
+	-- Reward.Item (e.g. Pip1's scroll): one more line under the reward line
+	if type(def.Reward) == "table" and def.Reward.Item then
+		local line = grantItem(player, def.Reward.Item, def.Reward.N)
+		if line then notify(player, line, "reward") end
+	end
 	if def.Clue then notify(player, def.Clue, "info") end -- story_depth §2-1: a clue toast after the closing lines
 	-- E3: a stat-free title (Reward.Title, or Reward.TitleBy by the side of this quest's own pick), once
 	local r = type(def.Reward) == "table" and def.Reward or nil
@@ -334,6 +359,7 @@ local function feed(player, ev)
 						cur = math.min(sub.Count, cur + add)
 						tr.T[sub.Key] = cur
 						changed = true
+						if cur >= sub.Count and sub.Say then notify(player, sub.Say, "info") end -- one line per part done
 					end
 				end
 				if cur < sub.Count then doneAll = false end

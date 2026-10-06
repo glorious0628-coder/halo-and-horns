@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 191,
+  "checks": 267,
   "failedChecks": 0,
-  "namedChecks": 188,
+  "namedChecks": 264,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -621,13 +621,13 @@
     },
     {
       "group": "e0-old-saves",
-      "check": "an old Lv12 save: chapters 1-2 done, chapter 3 starts",
+      "check": "an old Lv12 save: chapters 1-2 done, chapter 3 starts (M3_1)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "e0-old-saves",
-      "check": "an old Lv30 save: chapters 1-3 done, chapter 4 starts",
+      "check": "an old Lv30 save: chapters 1-3 done (M3_1..M3_8), chapter 4 starts",
       "pass": 1,
       "fail": 0
     },
@@ -897,6 +897,18 @@
     },
     {
       "group": "e2-lines-by",
+      "check": "M3_4 step 2: LinesBy has a Default and a real From",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e2-lines-by",
+      "check": "M3_4 step 3: LinesBy has a Default and a real From",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "e2-lines-by",
       "check": "Halo {M2_3=Good}: Var Good on the row",
       "pass": 1,
       "fail": 0
@@ -1134,15 +1146,459 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_1 follows in StoryQuests.Main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_1: a chapter 3 main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_1: G1 (Gold 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_2 follows in StoryQuests.Main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_2: a chapter 3 main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_2: G1 (Gold 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_3 follows in StoryQuests.Main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_3: a chapter 3 main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_3: G1 (Gold 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_4 follows in StoryQuests.Main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_4: a chapter 3 main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_4: a chapter end ([Claim], Gold 2 + XP 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_4 step 2: a Lines fallback for clients without LinesBy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_4 step 3: a Lines fallback for clients without LinesBy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_5 follows in StoryQuests.Main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_5: a chapter 3 main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_5: G1 (Gold 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_6 follows in StoryQuests.Main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_6: a chapter 3 main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_6: G1 (Gold 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_7 follows in StoryQuests.Main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_7: a chapter 3 main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_7: G1 (Gold 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_8 follows in StoryQuests.Main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_8: a chapter 3 main",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_8: a chapter end ([Claim], Gold 2 + XP 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "GoblinCamp1 is in the Goblin Woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "GoblinCamp2 is in the Goblin Woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "GoblinCamp3 is in the Goblin Woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_2: three camps, one line each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "M3_4: +3 either way; Evil (Dibs) pays 192 gold now; page 1 remembers M2_3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "Pip1: after a Good / A pick of M3_4, Lv15, one 70% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "Speakers Dibs / Grabbo (names only in the beta)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-data",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "after chapter 2 at Lv10: M3_1 starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "goblins outside the woods do not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "5 goblins in the woods: M3_1 done ('IOU 1 dust')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_2 starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "camp 1: its line once (a second goblin there adds nothing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "a goblin 80 studs from camp 2 does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "all three camps: M3_2 done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_3: the Brute's line, then the crayon clue",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_4 starts: go home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "at home: the pick card opens with Var Good (gave the shard back in M2_3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "Leave some for their lamps: Honor +3, no gold now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "the Guide's reaction: Var Good",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_4 waits for [Claim] (chapter part end)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "claimed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_5 waits for graduation",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "graduated: the Guide's talk opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_5 done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "Pip1 not before Lv15",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_6: Lv18 first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "Lv18: the Brute hunt starts, Pip1 is offered (Lv15+ and Good)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_6 done, M3_7 next",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "2 at once or an auto skill do not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "two skills hitting 3+: M3_7 done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "Lv25 + the ruins: the tombs talk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "M3_8 claimed: chapter 3 is over (no chapter 4 in the beta)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "Pip1: one 70% scroll and its line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-halo-good",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "a Horns player at M3_4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "page 1 remembers keeping the shard (Var Evil)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "Into our vault: Infamy +3 and Dibs's 192 gold at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "the reaction page: Var Evil (Dibs: Ka-ching!)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "the Horns reaction ends with Dibs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "an Evil pick never meets Pip (Lv16)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "an artisan at home: the M3_4 card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "an artisan A: recorded only, no Dibs gold, no score",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "…and Pip1 comes at Lv15+ (A = the Good side)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ch3-horns-evil",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 51,
-    "applied": 51,
-    "caught": 51,
+    "total": 61,
+    "applied": 61,
+    "caught": 61,
     "skipped": false,
     "results": [
       {
@@ -1275,8 +1731,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "e0-old-saves :: an old Lv12 save: chapters 1-2 done, chapter 3 starts",
-          "e0-old-saves :: an old Lv30 save: chapters 1-3 done, chapter 4 starts"
+          "e0-old-saves :: an old Lv12 save: chapters 1-2 done, chapter 3 starts (M3_1)",
+          "e0-old-saves :: an old Lv30 save: chapters 1-3 done (M3_1..M3_8), chapter 4 starts"
         ],
         "newFailingCount": 2
       },
@@ -1288,7 +1744,7 @@
         "crashed": false,
         "newFailingChecks": [
           "e0-old-saves :: Config.StoryQuests.SkipChapters (Lv10 -> 2, Lv25 -> 3)",
-          "e0-old-saves :: an old Lv30 save: chapters 1-3 done, chapter 4 starts"
+          "e0-old-saves :: an old Lv30 save: chapters 1-3 done (M3_1..M3_8), chapter 4 starts"
         ],
         "newFailingCount": 2
       },
@@ -1299,9 +1755,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ch3-halo-good :: M3_3: the Brute's line, then the crayon clue",
           "h1-good :: the wristband clue comes after the closing lines"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "the Halo bridge spot moves away",
@@ -1402,12 +1859,13 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-58 :: the B reward is paid as usual",
+          "ch3-horns-evil :: Into our vault: Infamy +3 and Dibs's 192 gold at once",
           "h1-good :: A: one 70% scroll (no potions)",
           "h1-good :: lines: '+Enhance Scroll 70%' and the closing question",
           "n3 :: a Halo player picks A: the scroll",
           "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "a Neutral A pays Evil's reward",
@@ -1416,9 +1874,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ch3-horns-evil :: an artisan A: recorded only, no Dibs gold, no score",
           "n3 :: Neutral B: recorded, no score, Evil's reward"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "XPBar ignored",
@@ -1593,14 +2052,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ch3-horns-evil :: an Evil pick never meets Pip (Lv16)",
           "e1-pick-gate :: Is = Purify: only that exact pick",
           "e1-pick-gate :: Pick M2_3 = Evil: the Evil-side sub only",
           "e1-pick-gate :: Pick M2_3 = Good: the Good-side sub only",
           "e1-pick-gate :: an artisan's A counts as the Good side",
-          "e1-pick-gate :: an artisan's B counts as the Evil side",
-          "e1-pick-gate :: no pick yet (an old save): neither"
+          "e1-pick-gate :: an artisan's B counts as the Evil side"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "E1: no side grouping (A is not Good)",
@@ -1609,10 +2068,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ch3-horns-evil :: …and Pip1 comes at Lv15+ (A = the Good side)",
           "e1-pick-gate :: an artisan's A counts as the Good side",
           "e1-pick-gate :: an artisan's B counts as the Evil side"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "E2: the window gets no Var",
@@ -1621,14 +2081,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ch3-halo-good :: at home: the pick card opens with Var Good (gave the shard back in M2_3)",
+          "ch3-halo-good :: the Guide's reaction: Var Good",
+          "ch3-horns-evil :: page 1 remembers keeping the shard (Var Evil)",
+          "ch3-horns-evil :: the reaction page: Var Evil (Dibs: Ka-ching!)",
           "e2-lines-by :: Halo {M2_3=Good}: the window opens with Var Good",
-          "e2-lines-by :: Halo {}: the window opens with Var Default",
-          "e2-lines-by :: Horns {M2_3=Evil}: the window opens with Var Evil",
-          "e2-lines-by :: Neutral {M2_3=A}: the window opens with Var A",
-          "e2-lines-by :: Neutral {M2_3=B}: the window opens with Var Evil",
-          "e5-hidden :: LinesBy its own pick: Var Evil"
+          "e2-lines-by :: Halo {}: the window opens with Var Default"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 10
       },
       {
         "mutation": "E2: the row gets no Var",
@@ -1801,6 +2261,132 @@
           "e5-hidden :: …and no row before it is found"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "Trials parts say nothing",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-halo-good :: all three camps: M3_2 done",
+          "ch3-halo-good :: camp 1: its line once (a second goblin there adds nothing)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "E7: everyone counts as graduated",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-halo-good :: M3_5 waits for graduation"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "E7: nobody graduates",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-halo-good :: Lv18: the Brute hunt starts, Pip1 is offered (Lv15+ and Good)",
+          "ch3-halo-good :: Lv25 + the ruins: the tombs talk",
+          "ch3-halo-good :: M3_5 done",
+          "ch3-halo-good :: M3_6 done, M3_7 next",
+          "ch3-halo-good :: M3_6: Lv18 first",
+          "ch3-halo-good :: M3_8 claimed: chapter 3 is over (no chapter 4 in the beta)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "Reward.Item never given",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-halo-good :: Pip1: one 70% scroll and its line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M3_4: Dibs pays nothing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-data :: M3_4: +3 either way; Evil (Dibs) pays 192 gold now; page 1 remembers M2_3",
+          "ch3-horns-evil :: Into our vault: Infamy +3 and Dibs's 192 gold at once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Pip1 for the Evil side",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-data :: Pip1: after a Good / A pick of M3_4, Lv15, one 70% scroll",
+          "ch3-halo-good :: Lv18: the Brute hunt starts, Pip1 is offered (Lv15+ and Good)",
+          "ch3-halo-good :: Pip1: one 70% scroll and its line",
+          "ch3-horns-evil :: an Evil pick never meets Pip (Lv16)",
+          "ch3-horns-evil :: …and Pip1 comes at Lv15+ (A = the Good side)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "camp 2 counts from far away",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-halo-good :: a goblin 80 studs from camp 2 does not count"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M3_2 left out of the chain",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-data :: M3_2 follows in StoryQuests.Main",
+          "ch3-data :: M3_3 follows in StoryQuests.Main",
+          "ch3-data :: M3_4 follows in StoryQuests.Main",
+          "ch3-data :: M3_5 follows in StoryQuests.Main",
+          "ch3-data :: M3_6 follows in StoryQuests.Main",
+          "ch3-data :: M3_7 follows in StoryQuests.Main"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "no Lines fallback on the reaction page",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-data :: M3_4 step 3: a Lines fallback for clients without LinesBy"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "camp 1 outside the woods",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ch3-data :: GoblinCamp1 is in the Goblin Woods"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -1808,11 +2394,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "4c348b8ffeefce18fbb5fb3dd76a35aeeee4d708856a3a293be4b51eaa1e30a8",
+    "src/ReplicatedStorage/Shared/Config.luau": "cce5ee022cf0d2d7127ff44dc529b8be04f2df950c20bb1c8fabd04d23e94f72",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
-    "src/ServerScriptService/StoryQuestService.luau": "d09f707fced5c14ad9d256766657d3c91102988d047e7c2cf0b0290c4fd96a25",
+    "src/ServerScriptService/StoryQuestService.luau": "88266a94a136f571fbf624be2514baeb3396523eeeb802cfb1ce3406dcdb2889",
     "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
     "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
@@ -1821,7 +2407,7 @@
     "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
     "src/ServerScriptService/ProgressionService.luau": "074be3338e3845a95ebd1d0943d7c3ab68ed03f9529e11286e62e7140ab8fee3"
   },
-  "fixtureSHA256": "cb933b6bd0d7aeedd66f49dc2ff653deeb72fad0920cbf2c3cbaff640580a6c1",
+  "fixtureSHA256": "6807d23fde8cd3a32156224f9df14790a41e8b6359e0b2c1b3f28ca2e5baff78",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

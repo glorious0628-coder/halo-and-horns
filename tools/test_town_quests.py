@@ -125,6 +125,24 @@ MUTATIONS = [
     ("E5: a hidden sub listed before it is found", ST, " and (not def.Hidden or found) then", " then"),
     ("E5: found from the start", ST, "local found = tr ~= nil and (tr.Claim or num(tr.St, 1) > 1)",
      "local found = tr ~= nil and (tr.Claim or num(tr.St, 1) >= 1)"),
+    # chapter 3 (A23-56 main advance + story_depth beta): Trials Say, E7, Reward.Item, the data
+    ("Trials parts say nothing", ST,
+     '\t\t\t\t\t\tif cur >= sub.Count and sub.Say then notify(player, sub.Say, "info") end -- one line per part done\n', ""),
+    ("E7: everyone counts as graduated", ST, "\t\treturn ok and rookie == false\n", "\t\treturn true\n"),
+    ("E7: nobody graduates", ST, "\t\treturn ok and rookie == false\n", "\t\treturn false\n"),
+    ("Reward.Item never given", ST, "\tif type(def.Reward) == \"table\" and def.Reward.Item then\n",
+     "\tif false then\n"),
+    ("M3_4: Dibs pays nothing", C, 'Label = "Into our vault. They took it first!", Points = 3, Reward = { Gold = 192 } },',
+     'Label = "Into our vault. They took it first!", Points = 3 },'),
+    ("Pip1 for the Evil side", C, 'Requires = { Done = { "M3_4" }, Pick = { Id = "M3_4", Is = "Good" }, Level = 15 },',
+     'Requires = { Done = { "M3_4" }, Pick = { Id = "M3_4", Is = "Evil" }, Level = 15 },'),
+    ("camp 2 counts from far away", C, 'Near = "GoblinCamp2", Radius = 40,', 'Near = "GoblinCamp2", Radius = 100,'),
+    ("M3_2 left out of the chain", C, '"M3_1", "M3_2", "M3_3", "M3_4",', '"M3_1", "M3_3", "M3_4",'),
+    ("no Lines fallback on the reaction page", C,
+     '{ Text = "Hear the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "The shard found a home." } },',
+     '{ Text = "Hear the Guide", Panel = true, Obj = { Type = "Talk" },'),
+    ("camp 1 outside the woods", C, "Landmarks.GoblinCamp1 = Vector3.new(660, 0, -60)",
+     "Landmarks.GoblinCamp1 = Vector3.new(400, 0, -60)"),
 ]
 
 

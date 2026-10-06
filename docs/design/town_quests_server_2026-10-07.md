@@ -1,6 +1,6 @@
 # A23-46 마을 사람 퀘스트 H1·R1·N3 + A23-57 장인 스위치 + A23-58 선택 점수 + 결말 단서·E0 — 서버 계약 (게임성 개발 2, 2026-10-07)
 
-설계: `docs/design/town_npc_quests_2026-10-06.md` + `docs/design/story_depth_2026-10-06.md` §3·§5-⑥(검수 결정: 셋 다 M2_3 뒤, H1 3단계는 초원 왕 슬라임, 반전판 대사). 게임 글은 영어(A23-48). 오프라인 검사: `py tools/test_town_quests.py`(191검사, 변이 51/51), 맨손·조련사 검사와 같은 가짜 세계(`tools/fixtures/dev2_combat_world.luau`).
+설계: `docs/design/town_npc_quests_2026-10-06.md` + `docs/design/story_depth_2026-10-06.md` §3·§5-⑥(검수 결정: 셋 다 M2_3 뒤, H1 3단계는 초원 왕 슬라임, 반전판 대사). 게임 글은 영어(A23-48). 오프라인 검사: `py tools/test_town_quests.py`(267검사, 변이 61/61), 맨손·조련사 검사와 같은 가짜 세계(`tools/fixtures/dev2_combat_world.luau`).
 
 ## 1. 퀘스트 (Config.StoryQuests.Defs, Subs 끝에 H1·R1·N3)
 | id | 누구 | NPC | 단계 | 마지막 고르기 |
@@ -58,3 +58,17 @@
 - **E5 `Hidden = true`(서브):** 열려도 Start 토스트 없음, **찾기 전에는 줄 없음**(찾음 = 1단계를 지남 또는 받기 대기). 한 단계짜리 숨은 서브(EG04 Near Stay 30)는 줄 없이 끝난다. 선택 `Points = 0`이면 점수 줄 대신 `LeanGood` "Your shard leaned to the light." / `LeanEvil` "Your shard leaned to the dark.".
 - 검사: test_town_quests 그룹 e1-pick-gate·e2-lines-by·e2-changed-mind·e3-titles·e5-hidden(시험용 퀘스트를 그 세계 Config에만 넣음), 191검사·변이 51/51.
 - **아직 데이터 없음:** M3_1·M3_3·M3_4·Pip1·Dibs 메아리, EG01~EG06·EG14, 두 겹 대사(가)는 영어 대사 확정 뒤 다음 묶음(story_depth 6-2 일정 10/17~18).
+
+## 9. 3장 「Grab Club」 메인 전체 (A23-56 메인 앞당김 + story_depth 베타, 2026-10-07)
+- `StoryQuests.Main` 끝에 **M3_1~M3_8**(Chapter 3). 보상: G1 = `{ Gold = 1 }`, 장 끝 M3_4·M3_8 = `{ Gold = 2, XP = 2 }` + [받기]. 레벨 문: M3_5 졸업(E7), M3_6 Lv18, M3_7 Lv21, M3_8 Lv25(그 전에는 "(now LvN)" 줄).
+  - M3_1 Thief Footprints: 숲 고블린 5 → "A note: 'IOU 1 dust. Will pay back. Maybe.'"
+  - M3_2 Three Camps: Trials 야영지 3곳(`Landmarks.GoblinCamp1~3` = preview_map (660,-60)·(750,50)·(820,-40), 반경 40) 고블린 각 1, 곳마다 한 줄(**Trials 칸 `Say`**, 새 엔진 조각).
+  - M3_3 The Brute's Sack: 고블린 우두머리 1(같이 잡아도 인정) → Brute 줄 + 크레용 단서(`Clue`).
+  - M3_4 Whose Shard? (선택 ③ +3): 우리 마을 → 선택 카드(1쪽 `LinesBy From=M2_3`, 2~3쪽 Pip) → 안내자 반응(`LinesBy From=M3_4`: 빛 Good "A little light for them. Not bad." / 뿔 Evil "Ha! Finders keepers!" + Dibs / 반대쪽·장인 줄은 검수 OK) → [받기]. **Evil·B = Dibs 192골드 바로**(숲형 B 골드), Good·A = 나중에 Pip1. LinesBy 칸마다 옛 클라이언트용 `Lines`(= Default)도 있음.
+  - M3_5 Sprout Graduation: **E7 `State Graduated`**(`PvPService.IsRookie` false, pcall) → 안내자 셋의 진짜 이유 + "And you? Why are you here?".
+  - M3_6 Brute Hunt(우두머리 2), M3_7 Campfire Dust(수동 스킬 3마리 이상 ×2, 자동 스킬 안 셈), M3_8 Call of the Tombs(해골 유적 들어가기 → "Is it still Tuesday?" + 장 끝 질문 → [받기]). 4장이 없어서 M3_8 뒤 메인 줄은 비어 있음.
+- **Pip1 Pip's Lamp**(서브, 메아리): `Requires = { Done M3_4, Pick M3_4 = Good(A 포함), Level 15 }`, WoodsGate 14칸 → Pip 대화 → **`Reward.Item = "Enh70"`**(새: 퀘스트 끝 보상 아이템, LootService.GrantItem + "+Enhance Scroll 70%" 줄).
+- Speakers `Pip`·`Dibs`·`Grabbo`(베타는 이름만).
+- E0: 이야기 없는 옛 Lv25+ 세이브는 3장까지 끝 처리 → 메인 줄 없음(4장 생기면 4장부터).
+- **개발 1에게:** 마커 Guide 키 `GoblinWoods`·`SkeletonRuins`·`WoodsGate`·`OwnTown`(이미 있는 것), 야영지 좌표는 지도 v2 때 확인해서 `Config.StoryQuests.Landmarks.GoblinCamp1~3`만 고치면 됨(검사가 숲 안인지 봄). Panels LinesBy(8절)가 들어가면 M3_4 1쪽·반응 쪽이 고른 값대로 바뀜.
+- 검사: test_town_quests ch3-data·ch3-halo-good(M3_1→M3_8 + Pip1 끝까지)·ch3-horns-evil(Dibs 192, Pip 없음, 장인 A → Pip) — 267검사·변이 61/61.

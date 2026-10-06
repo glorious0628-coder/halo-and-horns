@@ -1571,7 +1571,9 @@ Config.Tutorial = {
 -- mission (TutorialStep 99); Subs are accepted automatically and listed under the main row (S0 right after the
 -- class pick). Step Obj types (StoryQuestService): Kill{Kind,Zone,Golden,Near,Radius,Count} BasicKill SafeKill{MinHP}
 -- AutoKill SkillHit{Min,Count} WarPoints{Count} EarnGold{Source,Count} Enter{Zone|"OwnTown"|"AnyTown"} Level{Level}
--- State{Key} Goose WarChest Talk Choice{Good,Evil,Neutral} Trials{List} Near{Spot,Radius,Zone,Stay}. Rewards: Gold / XP
+-- State{Key: BlacksmithVisited | AutoOn | OwnIron | Graduated (E7: no Sprout Shield)} Goose WarChest Talk
+-- Choice{Good,Evil,Neutral} Trials{List; a list entry may carry Say = a line when it is done} Near{Spot,Radius,Zone,Stay}.
+-- Reward.Item = a Loot item id (+ N) is given through LootService.GrantItem when the quest ends. Rewards: Gold / XP
 -- = minutes of Config.HuntValue (1 = one minute of hunting), GoldN = exact gold, XPBar = a share of the current level's
 -- XP bar; Claim = true -> the player presses [Claim] (chapter ends).
 -- A23-46 / story_depth E4 + E6 (게임성 개발 2, 2026-10-07): Near.Stay = seconds to stay inside in one go (leaving
@@ -1592,16 +1594,18 @@ Config.StoryQuests = {
 	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
 	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Blacksmith", Guild = "Guild Guide",
-		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey" }, -- A23-46 town NPCs, A23-55 kids
+		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey", -- A23-46 town NPCs, A23-55 kids
+		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo" }, -- story_depth §4 goblins (beta: names only, no models)
 	NpcTag = "StoryNpc",
 	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },
-	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7" },
+	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
+		"M3_1", "M3_2", "M3_3", "M3_4", "M3_5", "M3_6", "M3_7", "M3_8" },
 	-- story_depth E0: an old save that reaches the story at Level >= Level skips the main chapters <= UpTo (once)
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3 } },
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3" },
+	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1" },
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -1767,6 +1771,116 @@ Config.StoryQuests = {
 			},
 			Reward = { Gold = 2, XP = 2 },
 		},
+		-- 3장 "Grab Club" (story_depth §2 3장 + §5 ③④, quest_chain 3장; A23-56: the whole chapter in the beta). Rewards:
+		-- G1 = { Gold = 1 }, the chapter ends M3_4 / M3_8 = { Gold = 2, XP = 2 } with [Claim]. Echoes of M3_4: Good / A ->
+		-- the sub Pip1 at Lv15 (one 70% scroll), Evil / B -> Dibs pays the same worth in gold at once (HuntValue 1 minute
+		-- of Lv10-24 = 192, quest_volume §2-4).
+		M3_1 = {
+			Kind = "Main", Chapter = 3, Title = "Thief Footprints",
+			Start = "The dust thieves were goblins! Go stop them.",
+			Steps = { { Text = "Goblins %d/%d", Guide = "GoblinWoods",
+				Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 5 } } },
+			Finish = "A note: 'IOU 1 dust. Will pay back. Maybe.'", Reward = { Gold = 1 },
+		},
+		M3_2 = {
+			Kind = "Main", Chapter = 3, Title = "Three Camps",
+			Start = "They hid dust sacks in three goblin camps.",
+			Steps = { { Text = "Goblin camps %d/3", Guide = "GoblinWoods", Obj = { Type = "Trials", List = {
+				{ Key = "a", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp1", Radius = 40, Count = 1,
+					Say = "Jars of dust… glowing like night-lights?" },
+				{ Key = "b", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp2", Radius = 40, Count = 1,
+					Say = "A goblin drawing: a tiny goblin, a big dark." },
+				{ Key = "c", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp3", Radius = 40, Count = 1,
+					Say = "Meeting #47. Topic: Grab more. Result: Meet again." },
+			} } } },
+			Reward = { Gold = 1 },
+		},
+		M3_3 = {
+			Kind = "Main", Chapter = 3, Title = "The Brute's Sack",
+			Start = "The Goblin Brute has the sack. Beat it with friends. Everyone counts!",
+			Steps = { { Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Count = 1 } } },
+			Finish = "Brute: Not stealing! I'm a… surprise collector.",
+			Clue = "In the sack: a crayon drawing. Two kids holding something round.\nThe sun? A cookie?\n"
+				.. "Brute: Found it by the fountain. The night of the big CRACK!",
+			Reward = { Gold = 1 },
+		},
+		M3_4 = {
+			Kind = "Main", Chapter = 3, Title = "Whose Shard?", Claim = true,
+			Start = "A crown shard shines in the sack! Take it home.",
+			Steps = {
+				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
+				{ Text = "Whose shard is it?", Panel = true,
+					-- Lines = the Default for a client without LinesBy (E2)
+					Lines = { All = { "Another shard. Another choice.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+					LinesBy = { From = "M2_3",
+						Good = { All = { "Last time you gave the shard back. The fountain still sparkles.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+						Evil = { All = { "Last time you kept the shard. Still shiny in your pocket!", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+						Default = { All = { "Another shard. Another choice.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Leave some for their lamps", Points = 3 },
+						Evil = { Label = "Into our vault. They took it first!", Points = 3, Reward = { Gold = 192 } },
+						Neutral = { A = "Make them a real lamp", B = "Sell the dust back to them" } } },
+				{ Text = "Hear the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "The shard found a home." } },
+					LinesBy = { From = "M3_4",
+						Good = { Halo = { "A little light for them. Not bad." },
+							All = { "You left them some? Soft! …The little ones look happy, though." } },
+						Evil = { Horns = { "Ha! Finders keepers!", "Dibs: Ka-ching! Same as always? Same as always!" },
+							All = { "Into the vault? …It does shine nicely.", "Dibs: Ka-ching! Same as always? Same as always!" } },
+						A = { All = { "A real lamp! The little goblins will love it." } },
+						B = { All = { "Sold it back? Business is business.", "Dibs: Ka-ching! Same as always? Same as always!" } },
+						Default = { All = { "The shard found a home." } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+		},
+		M3_5 = {
+			Kind = "Main", Chapter = 3, Title = "Sprout Graduation",
+			Steps = {
+				{ Text = "Sprout Shield ends · Lv15 + 1 hour of play", Obj = { Type = "State", Key = "Graduated" } },
+				{ Text = "Talk with the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
+					Halo = { "No more Sprout Shield. Now you can catch Wanted villains!",
+						"When the crown broke, I was lost. A stranger gave me their lamp.\nI never knew their name. So now I give mine.",
+						"And you? Why are you here?" },
+					Horns = { "No more Sprout Shield. Now you can raid the knights. Hold the sack for 45 seconds!",
+						"When the shards fell, we were too far. We got nothing.\nSo now we never wait. We take first!",
+						"And you? Why are you here?" },
+					Neutral = { "The Guild is still safe, shield or not.",
+						"Both sides break things. We fix them. For both.\n…Is fixing for both sides a side too?",
+						"And you? Why are you here?" },
+				} },
+			},
+			Reward = { Gold = 1 },
+		},
+		M3_6 = {
+			Kind = "Main", Chapter = 3, Title = "Brute Hunt",
+			Steps = {
+				{ Text = "Lv18 · Brute Hunt (now Lv%d)", Obj = { Type = "Level", Level = 18 } },
+				{ Text = "Goblin Brutes %d/%d", Guide = "GoblinWoods", Start = "The Brutes carry the sacks to the mountain path!",
+					Obj = { Type = "Kill", Kind = "GoblinBrute", Count = 2 } },
+			},
+			Reward = { Gold = 1 },
+		},
+		M3_7 = {
+			Kind = "Main", Chapter = 3, Title = "Campfire Dust",
+			Steps = {
+				{ Text = "Lv21 · Campfire Dust (now Lv%d)", Obj = { Type = "Level", Level = 21 } },
+				{ Text = "Hit 3 at once with a skill %d/%d", Guide = "GoblinWoods", Start = "They grab in a line. Break the line!",
+					Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
+			},
+			Reward = { Gold = 1 },
+		},
+		M3_8 = {
+			Kind = "Main", Chapter = 3, Title = "Call of the Tombs", Claim = true,
+			Steps = {
+				{ Text = "Lv25 · Skeleton Ruins (now Lv%d)", Obj = { Type = "Level", Level = 25 } },
+				{ Text = "Go to the Skeleton Ruins", Guide = "SkeletonRuins", Obj = { Type = "Enter", Zone = "SkeletonRuins" } },
+				{ Text = "Listen to the tombs", Panel = true, Obj = { Type = "Talk" }, Lines = {
+					All = { "A big shard sleeps in the old kingdom's tombs.",
+						"From the tombs, a sleepy voice: 'Is it still Tuesday?'",
+						"The goblins took for light. Then they forgot why.\nWhat do YOU want the shard for?" },
+				} },
+			},
+			Reward = { Gold = 2, XP = 2 },
+		},
 		S1 = {
 			Kind = "Sub", Title = "The Golden Goose With a Shard", Factions = { Halo = true, Horns = true },
 			Requires = { Tutorial = true }, Show = "GooseSoon",
@@ -1897,6 +2011,18 @@ Config.StoryQuests = {
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Tiny: Noted. Suspicious: everyone. …So who started it?",
 		},
+		-- story_depth §3 echo of M3_4 Good / A (beta): Pip waits at the woods' edge with a lamp at Lv15
+		Pip1 = {
+			Kind = "Sub", Title = "Pip's Lamp", Speaker = "Pip",
+			Requires = { Done = { "M3_4" }, Pick = { Id = "M3_4", Is = "Good" }, Level = 15 },
+			Start = "Someone small is waving at the woods' edge…",
+			Steps = {
+				{ Text = "Go to the woods' edge", Guide = "WoodsGate", Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14 } },
+				{ Text = "Talk to Pip", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Pip: Look! My own lamp! It glows purple. I never knew purple!" } } },
+			},
+			Reward = { Item = "Enh70", N = 1 },
+		},
 	},
 }
 
@@ -1909,6 +2035,10 @@ Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -161)
 Config.StoryQuests.Landmarks.HornsBridge = Vector3.new(0, 0, 161)
 -- story_depth §2-1: the Crossroads bench behind the fountain where two kids meet every evening (map v2 moves it)
 Config.StoryQuests.Landmarks.KidsBench = Vector3.new(18, 0, 18)
+-- quest_chain M3-2: the three goblin camps (tools/preview_map.lua GoblinCamp models; game dev 1 re-checks them for map v2)
+Config.StoryQuests.Landmarks.GoblinCamp1 = Vector3.new(660, 0, -60)
+Config.StoryQuests.Landmarks.GoblinCamp2 = Vector3.new(750, 0, 50)
+Config.StoryQuests.Landmarks.GoblinCamp3 = Vector3.new(820, 0, -40)
 
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {

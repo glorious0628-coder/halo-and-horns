@@ -412,10 +412,8 @@ end)
 runGroup("e0-old-saves", function()
 	local w = townWorld({ Npcs = false })
 	local SQ = w.Config.StoryQuests
-	-- chapter 3 / 4 mains as they will come (test-only defs on this world's Config)
-	SQ.Defs.M3_T = { Kind = "Main", Chapter = 3, Title = "Test Chapter 3", Steps = { { Text = "Lv%d", Obj = { Type = "Level", Level = 99 } } } }
+	-- the real chapter 3 + a chapter 4 main as it will come (a test-only def on this world's Config)
 	SQ.Defs.M4_T = { Kind = "Main", Chapter = 4, Title = "Test Chapter 4", Steps = { { Text = "Lv%d", Obj = { Type = "Level", Level = 99 } } } }
-	table.insert(SQ.Main, "M3_T")
 	table.insert(SQ.Main, "M4_T")
 	check(SQ.SkipChapters and #SQ.SkipChapters == 2, "Config.StoryQuests.SkipChapters (Lv10 -> 2, Lv25 -> 3)", show(SQ.SkipChapters))
 	local function oldSave(userId, level, migrated)
@@ -425,11 +423,11 @@ runGroup("e0-old-saves", function()
 		return p, d
 	end
 	local _, a = oldSave(901, 12)
-	check(a.Story.Done.M2_7 and a.Story.Done.M1_1 and not a.Story.Done.M3_T and a.Story.Main.Id == "M3_T",
-		"an old Lv12 save: chapters 1-2 done, chapter 3 starts", show({ a.Story.Main.Id, a.Story.Done.M3_T }))
+	check(a.Story.Done.M2_7 and a.Story.Done.M1_1 and not a.Story.Done.M3_1 and a.Story.Main.Id == "M3_1",
+		"an old Lv12 save: chapters 1-2 done, chapter 3 starts (M3_1)", show({ a.Story.Main.Id, a.Story.Done.M3_1 }))
 	local _, b = oldSave(902, 30)
-	check(b.Story.Done.M3_T and not b.Story.Done.M4_T and b.Story.Main.Id == "M4_T", "an old Lv30 save: chapters 1-3 done, chapter 4 starts",
-		show({ b.Story.Main.Id, b.Story.Done.M4_T }))
+	check(b.Story.Done.M3_1 and b.Story.Done.M3_8 and not b.Story.Done.M4_T and b.Story.Main.Id == "M4_T",
+		"an old Lv30 save: chapters 1-3 done (M3_1..M3_8), chapter 4 starts", show({ b.Story.Main.Id, b.Story.Done.M4_T }))
 	local _, c = oldSave(903, 5)
 	check(not c.Story.Done.M1_1 and c.Story.Main.Id == "M1_1", "a Lv5 save starts at the beginning", show(c.Story.Main.Id))
 	local _, e = oldSave(904, 12, true)
@@ -771,6 +769,221 @@ runGroup("e5-hidden", function()
 	w:Tick(p, 3)
 	check(d.Story.Done.TX_Sky and said(w, p, n1, "Sky found"), "the one-step egg ends after its seconds (never listed)",
 		show(w:Track(d, "TX_Sky")))
+end)
+
+------------------------------------------------------------------ 13. chapter 3 "Grab Club" (A23-56 main advance + story_depth beta)
+local CH3 = { "M3_1", "M3_2", "M3_3", "M3_4", "M3_5", "M3_6", "M3_7", "M3_8" }
+
+runGroup("ch3-data", function()
+	local SQ = SQ0
+	local at = table.find(SQ.Main, "M2_7")
+	for i, id in CH3 do
+		local def = SQ.Defs[id]
+		check(at ~= nil and SQ.Main[at + i] == id, id .. " follows in StoryQuests.Main", show(SQ.Main[at and at + i or 0]))
+		check(def and def.Kind == "Main" and def.Chapter == 3, id .. ": a chapter 3 main", show(def and def.Chapter))
+		local ends = id == "M3_4" or id == "M3_8"
+		local r = def and def.Reward
+		check(r and ((ends and def.Claim == true and r.Gold == 2 and r.XP == 2) or (not ends and not def.Claim and r.Gold == 1 and r.XP == nil)),
+			id .. (ends and ": a chapter end ([Claim], Gold 2 + XP 2)" or ": G1 (Gold 1)"), show(r))
+		for s, step in def and def.Steps or {} do
+			if step.LinesBy then
+				check(type(step.Lines) == "table", id .. " step " .. s .. ": a Lines fallback for clients without LinesBy",
+					show(step.Lines))
+			end
+		end
+	end
+	-- the camps sit inside the woods; each has its line (Trials Say)
+	for i = 1, 3 do
+		local spot = SQ.Landmarks["GoblinCamp" .. i]
+		check(spot ~= nil and C0.ZoneAt(spot).Id == "GoblinWoods", "GoblinCamp" .. i .. " is in the Goblin Woods",
+			show(spot and C0.ZoneAt(spot).Id))
+	end
+	local camps = SQ.Defs.M3_2.Steps[1].Obj.List
+	check(#camps == 3 and camps[1].Say and camps[2].Say and camps[3].Say and camps[1].Near == "GoblinCamp1",
+		"M3_2: three camps, one line each", show(camps))
+	local pick = SQ.Defs.M3_4.Steps[2]
+	check(pick.Obj.Type == "Choice" and pick.Obj.Good.Points == 3 and pick.Obj.Evil.Points == 3
+		and pick.Obj.Evil.Reward and pick.Obj.Evil.Reward.Gold == 192 and pick.Obj.Good.Reward == nil and pick.LinesBy.From == "M2_3",
+		"M3_4: +3 either way; Evil (Dibs) pays 192 gold now; page 1 remembers M2_3", show(pick.Obj))
+	local pip = SQ.Defs.Pip1
+	check(table.find(SQ.Subs, "Pip1") ~= nil and pip.Requires.Pick.Id == "M3_4" and pip.Requires.Pick.Is == "Good"
+		and pip.Requires.Level == 15 and pip.Reward.Item == "Enh70" and pip.Speaker == "Pip" and SQ.Speakers.Pip ~= nil,
+		"Pip1: after a Good / A pick of M3_4, Lv15, one 70% scroll", show(pip and pip.Requires))
+	check(SQ.Speakers.Dibs ~= nil and SQ.Speakers.Grabbo ~= nil, "Speakers Dibs / Grabbo (names only in the beta)")
+end)
+
+-- a Halo / Horns / Neutral player who finished chapter 2 (Done M1_1..M2_7), at `level`, with saved picks
+local function joinCh3(w, userId, faction, level, picks)
+	local done = {}
+	for _, id in w.Config.StoryQuests.Main do
+		if string.sub(id, 1, 2) ~= "M3" then done[id] = true end
+	end
+	local p, d = w:Join(userId, { Faction = faction, Level = level, Data = { Story = { Main = { Id = "" }, Subs = {},
+		Done = done, Pick = picks or {}, First = { Migrated = true } } } })
+	w.Story.Refresh(p)
+	w:Flush()
+	return p, d
+end
+local function killAt(w, p, kind, zone, pos, n)
+	for _ = 1, n or 1 do
+		w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = kind, ZoneId = zone, Golden = false, Personal = false,
+			Position = pos or vec(720, 0, 0), WarPoints = 0 })
+	end
+	w:Flush()
+end
+local function setLevel(w, p, d, level)
+	d.Level = level
+	p:SetAttribute("Level", level)
+	w.Story.Refresh(p)
+	w:Flush()
+end
+
+runGroup("ch3-halo-good", function()
+	local w = townWorld({ Npcs = false })
+	local panels = panelsOf(w)
+	local rookie = {}
+	w.Registry.PvPService.IsRookie = function(p) return rookie[p] ~= false end
+	local p, d = joinCh3(w, 1001, "Halo", 10, { M2_3 = "Good" })
+	local function main() return d.Story.Main end
+	check(main().Id == "M3_1", "after chapter 2 at Lv10: M3_1 starts", show(main()))
+	killAt(w, p, "Goblin", "SlimeMeadow", nil, 5)
+	check(main().Id == "M3_1" and main().P == 0, "goblins outside the woods do not count", show(main()))
+	local n0 = #w.Notices
+	killAt(w, p, "Goblin", "GoblinWoods", nil, 5)
+	check(d.Story.Done.M3_1 and said(w, p, n0, SQ0.Defs.M3_1.Finish), "5 goblins in the woods: M3_1 done ('IOU 1 dust')",
+		show(w:NoticesFor(p, n0)))
+	w.Story.Refresh(p)
+	check(main().Id == "M3_2", "M3_2 starts", show(main()))
+	-- one goblin near each camp; each camp says its line once
+	local L = SQ0.Landmarks
+	local n1 = #w.Notices
+	killAt(w, p, "Goblin", "GoblinWoods", L.GoblinCamp1 + vec(10, 0, 5))
+	killAt(w, p, "Goblin", "GoblinWoods", L.GoblinCamp1 + vec(-8, 0, 0))
+	local campLines = 0
+	for _, t in w:NoticesFor(p, n1) do
+		if t == SQ0.Defs.M3_2.Steps[1].Obj.List[1].Say then campLines += 1 end
+	end
+	check(campLines == 1 and main().T.a == 1 and main().T.b == nil, "camp 1: its line once (a second goblin there adds nothing)",
+		show({ campLines, main().T }))
+	killAt(w, p, "Goblin", "GoblinWoods", L.GoblinCamp2 + vec(80, 0, 0))
+	check(main().T.b == nil, "a goblin 80 studs from camp 2 does not count", show(main().T))
+	killAt(w, p, "Goblin", "GoblinWoods", L.GoblinCamp2)
+	killAt(w, p, "Goblin", "GoblinWoods", L.GoblinCamp3 + vec(0, 0, 30))
+	check(d.Story.Done.M3_2 and said(w, p, n1, SQ0.Defs.M3_2.Steps[1].Obj.List[3].Say), "all three camps: M3_2 done",
+		show(d.Story.Done.M3_2))
+	w.Story.Refresh(p)
+	local n2 = #w.Notices
+	killAt(w, p, "GoblinBrute", "GoblinWoods")
+	check(d.Story.Done.M3_3 and said(w, p, n2, SQ0.Defs.M3_3.Finish) and said(w, p, n2, SQ0.Defs.M3_3.Clue),
+		"M3_3: the Brute's line, then the crayon clue", show(w:NoticesFor(p, n2)))
+	-- M3_4: home -> the pick card remembers M2_3 -> +3 honor -> the Guide's reaction -> [Claim]
+	w.Story.Refresh(p)
+	check(main().Id == "M3_4" and main().St == 1, "M3_4 starts: go home", show(main()))
+	w.ZoneOf[p] = "HaloTown"
+	w.Story.Refresh(p)
+	w:Flush()
+	local card = panels[#panels]
+	check(main().St == 2 and card and card.Arg.Id == "M3_4" and card.Arg.St == 2 and card.Arg.Var == "Good",
+		"at home: the pick card opens with Var Good (gave the shard back in M2_3)", show(card and card.Arg))
+	local honor, bank = d.Honor or 0, d.BankGold or 0
+	w:Act(p, "M3_4", "Choose", "Good")
+	check((d.Honor or 0) == honor + 3 and (d.BankGold or 0) == bank and d.Story.Pick.M3_4 == "Good",
+		"Leave some for their lamps: Honor +3, no gold now", show({ d.Honor, d.BankGold }))
+	local react = panels[#panels]
+	check(main().St == 3 and react.Arg.St == 3 and react.Arg.Var == "Good", "the Guide's reaction: Var Good", show(react.Arg))
+	w:Act(p, "M3_4", "Talk")
+	check(main().Claim == true, "M3_4 waits for [Claim] (chapter part end)", show(main()))
+	w.Story.Claim(p, "M3_4")
+	check(d.Story.Done.M3_4, "claimed")
+	-- M3_5: the Sprout Shield must be over (E7)
+	w.Story.Refresh(p)
+	check(main().Id == "M3_5" and main().St == 1, "M3_5 waits for graduation", show(main()))
+	rookie[p] = false
+	w.Story.Refresh(p)
+	w:Flush()
+	check(main().St == 2 and panels[#panels].Arg.Id == "M3_5", "graduated: the Guide's talk opens", show(main()))
+	w:Act(p, "M3_5", "Talk")
+	check(d.Story.Done.M3_5, "M3_5 done")
+	-- Pip1 waits for Lv15
+	w.Story.Refresh(p)
+	check(w:Track(d, "Pip1") == nil, "Pip1 not before Lv15", show(d.Story.Subs.Pip1))
+	check(main().Id == "M3_6" and main().St == 1, "M3_6: Lv18 first", show(main()))
+	setLevel(w, p, d, 18)
+	check(main().St == 2 and w:Track(d, "Pip1") ~= nil, "Lv18: the Brute hunt starts, Pip1 is offered (Lv15+ and Good)",
+		show({ main(), d.Story.Subs.Pip1 }))
+	killAt(w, p, "GoblinBrute", "GoblinWoods", nil, 2)
+	w.Story.Refresh(p)
+	check(d.Story.Done.M3_6 and main().Id == "M3_7", "M3_6 done, M3_7 next", show(main()))
+	setLevel(w, p, d, 21)
+	local released = w.Registry.CombatService.Released
+	released:Fire(p, { Auto = false, MonstersHit = 2 })
+	released:Fire(p, { Auto = true, MonstersHit = 4 })
+	check(main().P == 0, "2 at once or an auto skill do not count", show(main()))
+	released:Fire(p, { Auto = false, MonstersHit = 3 })
+	released:Fire(p, { Auto = false, MonstersHit = 5 })
+	w:Flush()
+	w.Story.Refresh(p)
+	check(d.Story.Done.M3_7 and main().Id == "M3_8", "two skills hitting 3+: M3_7 done", show(main()))
+	setLevel(w, p, d, 25)
+	w.ZoneOf[p] = "SkeletonRuins"
+	w.Story.Refresh(p)
+	w:Flush()
+	check(main().St == 3 and panels[#panels].Arg.Id == "M3_8", "Lv25 + the ruins: the tombs talk", show(main()))
+	w:Act(p, "M3_8", "Talk")
+	w.Story.Claim(p, "M3_8")
+	w.Story.Refresh(p)
+	check(d.Story.Done.M3_8 and main().Id == "", "M3_8 claimed: chapter 3 is over (no chapter 4 in the beta)", show(main()))
+	-- Pip's lamp (the Good echo): the woods' edge -> talk -> one 70% scroll
+	local gate = SQ0.Landmarks.WoodsGate
+	w:MoveTo(p, vec(gate.X + 2, 0, gate.Z))
+	w.Story.Refresh(p)
+	w:Flush()
+	local enh, n3 = d.Items and d.Items.Enh70 or 0, #w.Notices
+	w:Act(p, "Pip1", "Talk")
+	check(d.Story.Done.Pip1 and (d.Items.Enh70 or 0) == enh + 1
+		and said(w, p, n3, string.format(w.Config.Loot.Text.Got, w.Config.Loot.Items.Enh70.Name)),
+		"Pip1: one 70% scroll and its line", show({ d.Items.Enh70, w:NoticesFor(p, n3) }))
+end)
+
+runGroup("ch3-horns-evil", function()
+	local w = townWorld({ Npcs = false })
+	local panels = panelsOf(w)
+	local p, d = joinCh3(w, 1101, "Horns", 16, { M2_3 = "Evil" })
+	d.Story.Done.M3_1, d.Story.Done.M3_2, d.Story.Done.M3_3 = true, true, true
+	d.Story.Main = { Id = "" }
+	w.Story.Refresh(p)
+	check(d.Story.Main.Id == "M3_4", "a Horns player at M3_4", show(d.Story.Main))
+	w.ZoneOf[p] = "HornsTown"
+	w.Story.Refresh(p)
+	w:Flush()
+	check(panels[#panels].Arg.Var == "Evil", "page 1 remembers keeping the shard (Var Evil)", show(panels[#panels].Arg))
+	local infamy, bank, n0 = d.Infamy or 0, d.BankGold or 0, #w.Notices
+	w:Act(p, "M3_4", "Choose", "Evil")
+	check((d.Infamy or 0) == infamy + 3 and (d.BankGold or 0) == bank + 192 and said(w, p, n0, string.format(SQ0.Text.ChoiceGold, "192")),
+		"Into our vault: Infamy +3 and Dibs's 192 gold at once", show({ d.Infamy, (d.BankGold or 0) - bank, w:NoticesFor(p, n0) }))
+	check(panels[#panels].Arg.Var == "Evil", "the reaction page: Var Evil (Dibs: Ka-ching!)", show(panels[#panels].Arg))
+	local react = SQ0.Defs.M3_4.Steps[3].LinesBy.Evil.Horns
+	check(react and react[#react] == "Dibs: Ka-ching! Same as always? Same as always!", "the Horns reaction ends with Dibs", show(react))
+	w:Act(p, "M3_4", "Talk")
+	w.Story.Claim(p, "M3_4")
+	w.Story.Refresh(p)
+	check(d.Story.Done.M3_4 and w:Track(d, "Pip1") == nil, "an Evil pick never meets Pip (Lv16)", show(d.Story.Subs.Pip1))
+	-- an artisan's A counts as the Good side: Pip comes; B pays Dibs's gold
+	local q, e = joinCh3(w, 1102, "Neutral", 16, {})
+	e.Story.Done.M3_1, e.Story.Done.M3_2, e.Story.Done.M3_3 = true, true, true
+	e.Story.Main = { Id = "" }
+	w.Story.Refresh(q)
+	w.ZoneOf[q] = w.Config.HomeZoneId("Neutral")
+	w.Story.Refresh(q)
+	check(e.Story.Main.Id == "M3_4" and e.Story.Main.St == 2, "an artisan at home: the M3_4 card", show(e.Story.Main))
+	local bankA, infamyA, honorA = e.BankGold or 0, e.Infamy or 0, e.Honor or 0
+	w:Act(q, "M3_4", "Choose", "A")
+	check(e.Story.Pick.M3_4 == "A" and (e.BankGold or 0) == bankA and (e.Infamy or 0) == infamyA and (e.Honor or 0) == honorA,
+		"an artisan A: recorded only, no Dibs gold, no score", show({ e.Story.Pick.M3_4, e.BankGold }))
+	w:Act(q, "M3_4", "Talk")
+	w.Story.Claim(q, "M3_4")
+	w.Story.Refresh(q)
+	check(e.Story.Done.M3_4 and w:Track(e, "Pip1") ~= nil, "…and Pip1 comes at Lv15+ (A = the Good side)", show(e.Story.Subs.Pip1))
 end)
 
 finish()

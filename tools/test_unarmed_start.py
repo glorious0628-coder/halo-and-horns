@@ -197,9 +197,8 @@ MUTATIONS = [
     ("M1_1 completion never pays the weapon", ST, "if def.GiveWeapon and S.LootService", "if false and S.LootService"),
     ("weapon line before the story lines", ST,
      "\tnotify(player, def.Finish or msg, \"reward\")\n\tif def.Finish then notify(player, msg, \"reward\") end\n"
-     "\tif def.Clue then notify(player, def.Clue, \"info\") end -- story_depth §2-1: a clue toast after the closing lines\n"
-     "\t-- E3: a stat-free title",
-     "\tlocal finishLine = def.Finish or msg\n\t-- E3: a stat-free title"),
+     "\t-- Reward.Item (e.g. Pip1's scroll)",
+     "\tlocal finishLine = def.Finish or msg\n\t-- Reward.Item (e.g. Pip1's scroll)"),
     # --- JusticeService / PvPService / CharacterVisuals
     ("power attribute clamps bare hands to tier 1", J,
      "or 0), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands", "or 1), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands"),
