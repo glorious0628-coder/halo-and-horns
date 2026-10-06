@@ -1,0 +1,176 @@
+{
+  "tool": "tools/minimap_turn_view.py",
+  "sheet": "art/review/minimap_turn_2026-10-06.jpg",
+  "checks": [
+    {
+      "device": "pc",
+      "facing": "north",
+      "mapTurnError": 0.3,
+      "arrowRotation": 0,
+      "arrowArt": true,
+      "pass": true
+    },
+    {
+      "device": "pc",
+      "facing": "east",
+      "mapTurnError": 0.3,
+      "arrowRotation": 0,
+      "arrowArt": true,
+      "pass": true
+    },
+    {
+      "device": "pc",
+      "facing": "south",
+      "mapTurnError": 0.3,
+      "arrowRotation": 0,
+      "arrowArt": true,
+      "pass": true
+    },
+    {
+      "device": "pc",
+      "facing": "west",
+      "mapTurnError": 0.3,
+      "arrowRotation": 0,
+      "arrowArt": true,
+      "pass": true
+    }
+  ],
+  "rows": [
+    {
+      "device": "pc",
+      "facing": "north",
+      "yaw": 0,
+      "file": "build/minimap_turn_view/pc_north.png",
+      "probe": {
+        "Me": {
+          "Rotation": 0,
+          "Class": "ImageLabel",
+          "W": 27.200000762939453,
+          "Tint": [
+            0.9882352948188782,
+            0.7764706015586853,
+            0.20392157137393951
+          ]
+        },
+        "Yaw": 0,
+        "North": [
+          89.60000801086426,
+          75.19999885559082
+        ],
+        "Rot": 0.2849949300289154,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Box": [
+          14.400001525878906,
+          65.5999984741211,
+          150.40000915527344,
+          150.40000915527344
+        ]
+      }
+    },
+    {
+      "device": "pc",
+      "facing": "east",
+      "yaw": 90,
+      "file": "build/minimap_turn_view/pc_east.png",
+      "probe": {
+        "Me": {
+          "Rotation": 0,
+          "Class": "ImageLabel",
+          "W": 27.200000762939453,
+          "Tint": [
+            0.9882352948188782,
+            0.7764706015586853,
+            0.20392157137393951
+          ]
+        },
+        "Yaw": 90,
+        "North": [
+          24.000001907348633,
+          139.9999942779541
+        ],
+        "Rot": -89.70045471191406,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Box": [
+          14.400001525878906,
+          65.5999984741211,
+          150.40000915527344,
+          150.40000915527344
+        ]
+      }
+    },
+    {
+      "device": "pc",
+      "facing": "south",
+      "yaw": 180,
+      "file": "build/minimap_turn_view/pc_south.png",
+      "probe": {
+        "Me": {
+          "Rotation": 0,
+          "Class": "ImageLabel",
+          "W": 27.200000762939453,
+          "Tint": [
+            0.9882352948188782,
+            0.7764706015586853,
+            0.20392157137393951
+          ]
+        },
+        "Yaw": -180,
+        "North": [
+          88.80000495910645,
+          205.60000038146973
+        ],
+        "Rot": -179.7271728515625,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Box": [
+          14.400001525878906,
+          65.5999984741211,
+          150.40000915527344,
+          150.40000915527344
+        ]
+      }
+    },
+    {
+      "device": "pc",
+      "facing": "west",
+      "yaw": 270,
+      "file": "build/minimap_turn_view/pc_west.png",
+      "probe": {
+        "Me": {
+          "Rotation": 0,
+          "Class": "ImageLabel",
+          "W": 27.200000762939453,
+          "Tint": [
+            0.9882352948188782,
+            0.7764706015586853,
+            0.20392157137393951
+          ]
+        },
+        "Yaw": -90.00000683018835,
+        "North": [
+          154.39998817443848,
+          140.7999973297119
+        ],
+        "Rot": 90.28633117675781,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Box": [
+          14.400001525878906,
+          65.5999984741211,
+          150.40000915527344,
+          150.40000915527344
+        ]
+      }
+    }
+  ]
+}

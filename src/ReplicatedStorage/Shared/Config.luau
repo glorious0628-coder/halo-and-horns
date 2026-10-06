@@ -2717,6 +2717,22 @@ Config.UIArt = {
 		Skill_Warrior_Q = { Id = "rbxassetid://113383058913403", Size = Vector2.new(512, 512) }, -- bundle 14 skill Q icons (in the round BtnSkill ~74%)
 		Skill_Mage_Q = { Id = "rbxassetid://125518430228988", Size = Vector2.new(512, 512) },
 		Skill_Archer_Q = { Id = "rbxassetid://107372298235964", Size = Vector2.new(512, 512) },
+		-- A23-49 skill kit icons (a133773, SKL-5a / 5b): Skill_<Kit>_<Slot>, one icon for both factions (the BtnSkill rim
+		-- colour tells them apart); Blacksmith Q / Z = Warrior's, Alchemist Q / Z = Mage's in the beta (skill_kit §7)
+		Skill_Warrior_Z = { Id = "rbxassetid://110543257179920", Size = Vector2.new(512, 512) },
+		Skill_Warrior_X = { Id = "rbxassetid://137447181619302", Size = Vector2.new(512, 512) },
+		Skill_Mage_Z = { Id = "rbxassetid://115260232234150", Size = Vector2.new(512, 512) },
+		Skill_Mage_X = { Id = "rbxassetid://132993828889391", Size = Vector2.new(512, 512) },
+		Skill_Archer_Z = { Id = "rbxassetid://128895673530336", Size = Vector2.new(512, 512) },
+		Skill_Archer_X = { Id = "rbxassetid://113854418875147", Size = Vector2.new(512, 512) },
+		Skill_Tamer_Q = { Id = "rbxassetid://120034309999138", Size = Vector2.new(512, 512) },
+		Skill_Tamer_Z = { Id = "rbxassetid://74796187578422", Size = Vector2.new(512, 512) },
+		Skill_Tamer_X = { Id = "rbxassetid://81030071007443", Size = Vector2.new(512, 512) },
+		Skill_Blacksmith_X = { Id = "rbxassetid://74870682122468", Size = Vector2.new(512, 512) },
+		Skill_Alchemist_X = { Id = "rbxassetid://130441529340108", Size = Vector2.new(512, 512) },
+		-- A23-51 my arrow on the live minimap (a133773): white + light grey shading, thick navy rim; ImageColor3 = my faction
+		-- colour keeps the rim; up = forward; 24-32 px at the map's centre
+		MapPlayerArrow = { Id = "rbxassetid://113931548210892", Size = Vector2.new(512, 512) },
 		-- A23-40 정정 fold-out / window icons (7fb375a): 이동 is a [메뉴] square; 직업 바꾸기 · 환생 · 오프닝 · 알림(이름 공개) · 휴가
 		-- go on 설정 rows and 닉네임 on 내 캐릭터 (BB13). BB11 ranking medals (3c9166a): in front of rows 1-3 (~85% of the row
 		-- height); rank 4+ is a number TextLabel

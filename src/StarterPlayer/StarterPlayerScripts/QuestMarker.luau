@@ -24,6 +24,8 @@
 -- Icon: Config.UIArt parts "IconQuestMarker" (white diamond, tinted by code) and "IconQuestMarkerArrow" (points up,
 -- Rotation turns it) through UIKit.ArtImage when they exist, else the code fallbacks (a tinted Frame turned 45 degrees
 -- with a navy rim and a white dot, a "▲" text; IMG-R4). The distance is UIKit's "Number" text style.
+-- A thin dark halo (the same art, dark, half see-through, T.HaloPx larger) sits under the icon and the arrow so they keep
+-- >= 3:1 next to bright lamps and on light grass (검수 2026-10-06).
 -- Presentation only: every instance is Active = false and nothing is a button, so no input is ever sunk.
 --
 -- Public API: QuestMarker.Init(C), QuestMarker.Start(), QuestMarker.Refresh(), QuestMarker.IsShown()
@@ -56,6 +58,8 @@ local T = {
 	ArrowPx = 24,
 	TextPx = 15, -- rubric: text over the 3D world >= 14 px
 	TextWPx = 64, -- "123m" never clips
+	HaloPx = 3, -- the dark halo is this much larger than the art (about 1.5 px on each side)
+	HaloAlpha = 0.45, -- its transparency
 	Margin = 48, -- kept from every screen edge (du)
 	TopBar = 60, -- Roblox top bar: the indicator stays below it
 	Pad = 6, -- kept between the indicator and a HUD block
@@ -78,6 +82,7 @@ function T.Fit(s)
 	T.Arrow = math.ceil(T.ArrowPx / s)
 	T.Text = math.ceil(T.TextPx / s)
 	T.TextW = math.ceil(T.TextWPx / s)
+	T.Halo = T.HaloPx / s
 	T.HalfX = math.max(T.Icon / 2 + T.Arrow + 2, T.TextW / 2) + T.Pad
 	T.HalfY = T.Icon / 2 + math.max(T.Arrow, T.Text + 4) + T.Pad
 	T.MinRing = T.Icon + T.Arrow + 8
@@ -99,6 +104,7 @@ local COL = {
 	Claim = Color3.fromRGB(255, 228, 128), -- done, waiting for [Claim]: light gold (ArtColors.MarkerClaim)
 	Rim = Color3.fromRGB(26, 40, 79), -- ArtColors.Navy: dark navy outline over 3D
 	Dot = Color3.new(1, 1, 1),
+	Halo = Color3.fromRGB(8, 12, 28), -- the dark halo under the art (never tinted)
 }
 local TXT = {
 	Distance = "%dm",
@@ -122,7 +128,7 @@ local S = {
 	targetAcc = 0,
 	lastWarnAt = -math.huge,
 }
-local ui = {} -- gui, scale, holder, iconBox, icon, arrow, text
+local ui = {} -- gui, scale, holder, iconBox, icon, iconHalo, arrow, arrowHalo, text
 local fades = {} -- { { inst, prop, base } }
 local tinted = {} -- { { inst, colour property } } recoloured by setTint
 
@@ -203,6 +209,17 @@ local function tint(inst, prop)
 	return inst
 end
 
+-- the dark halo under an art image: the same image, dark, half see-through, one layer lower (sized by the caller)
+local function halo(art)
+	local h = art:Clone()
+	h.Name = art.Name .. "Halo"
+	h.ImageColor3 = COL.Halo
+	h.ImageTransparency = T.HaloAlpha
+	h.ZIndex = art.ZIndex - 1
+	h.Parent = art.Parent
+	return h
+end
+
 -- the marker icon filling `box`: the IconQuestMarker art tinted by state, else the code diamond (IMG-R4)
 local function makeIcon(box)
 	local art = UIKit.ArtImage(T.ArtKey, {
@@ -213,7 +230,13 @@ local function makeIcon(box)
 		Active = false,
 		Parent = box,
 	})
-	if art then return tint(art, "ImageColor3") end
+	if art then
+		ui.iconHalo = halo(art)
+		ui.iconHalo.AnchorPoint = Vector2.new(0.5, 0.5)
+		ui.iconHalo.Position = UDim2.fromScale(0.5, 0.5)
+		ui.iconHalo.Size = UDim2.new(1, T.Halo, 1, T.Halo)
+		return tint(art, "ImageColor3")
+	end
 	local diamond = UIKit.Create("Frame", {
 		Name = "Diamond",
 		AnchorPoint = Vector2.new(0.5, 0.5),
@@ -257,7 +280,11 @@ local function makeArrow(parent)
 		Parent = parent,
 	}
 	local art = UIKit.ArtImage(T.ArrowKey, props)
-	if art then return tint(art, "ImageColor3") end
+	if art then
+		ui.arrowHalo = halo(art)
+		ui.arrowHalo.Size = UDim2.fromOffset(T.Arrow + T.Halo, T.Arrow + T.Halo)
+		return tint(art, "ImageColor3")
+	end
 	props.ImageColor3 = nil
 	props.Text = TXT.Arrow
 	props.TextSize = T.Arrow
@@ -455,7 +482,9 @@ local function fitScale(s)
 	T.Fit(s)
 	ui.scale.Scale = s
 	ui.iconBox.Size = UDim2.fromOffset(T.Icon, T.Icon)
+	if ui.iconHalo then ui.iconHalo.Size = UDim2.new(1, T.Halo, 1, T.Halo) end
 	ui.arrow.Size = UDim2.fromOffset(T.Arrow, T.Arrow)
+	if ui.arrowHalo then ui.arrowHalo.Size = UDim2.fromOffset(T.Arrow + T.Halo, T.Arrow + T.Halo) end
 	if ui.arrow:IsA("TextLabel") then ui.arrow.TextSize = T.Arrow end
 	ui.text.Size = UDim2.fromOffset(T.TextW, T.Text + 2)
 	ui.text.TextSize = T.Text
@@ -547,9 +576,11 @@ local function placeEdge(cam, origin, s, W, H, lifted)
 	local rot = math.deg(math.atan2(dx, -dy)) -- the arrow points up at Rotation 0; GUI rotation is clockwise
 	if not S.rot or math.abs(rot - S.rot) >= T.MinTurn then
 		S.rot = rot
-		ui.arrow.Rotation = rot
 		local r = T.Icon / 2 + T.Arrow / 2 + 1
-		ui.arrow.Position = UDim2.new(0.5, dx * r, 0.5, dy * r)
+		for _, a in { ui.arrow, ui.arrowHalo } do
+			a.Rotation = rot
+			a.Position = UDim2.new(0.5, dx * r, 0.5, dy * r)
+		end
 	end
 	labelAbove(dy > 0.6) -- the arrow points down: the distance goes above the icon
 end
@@ -585,6 +616,7 @@ local function moveStep()
 	if onScreen ~= S.onScreen then
 		S.onScreen = onScreen
 		ui.arrow.Visible = not onScreen
+		if ui.arrowHalo then ui.arrowHalo.Visible = not onScreen end
 		S.posX, S.rot, S.labelUp = nil, nil, nil -- the next placement writes everything
 	end
 	if onScreen then

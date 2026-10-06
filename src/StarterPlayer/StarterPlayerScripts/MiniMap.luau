@@ -1,7 +1,8 @@
 -- MiniMap.luau : the live minimap in the HUD's top-left slot (SPEC_ADDENDUM A23-26 "실시간 지도").
--- Only my surroundings are shown (the whole world stays in WorldMap, A12): the map turns with the camera (where I look
--- is up) and my arrow points where my CHARACTER faces (its yaw minus the camera's, every frame, eased). Marks: me, other
--- players (faction colour dots), the quest target (★ inside the view, a ▲ chevron on the edge outside it), the potion
+-- Only my surroundings are shown (the whole world stays in WorldMap, A12). A23-51 (user 2026-10-06 "지도도 사용자가 가는
+-- 방향으로 회전해야 돼"): the map turns so the way my CHARACTER faces is up (eased every frame, never a jump), my arrow
+-- (MapPlayerArrow art in my faction colour) always points up in the middle, the 'N' rides the ring toward north. Marks:
+-- me, other players (faction colour dots), the quest target (★ inside the view, a ▲ chevron on the edge outside it), the potion
 -- merchant and the blacksmith anvil, and nearby monsters (small dots). Presentation only: no buttons and every instance
 -- is Active = false, so on phones the box (inside the thumbstick zone) never sinks a touch.
 -- Drawing: Config lands / zones / roads / bridges as axis-aligned Frames on one big canvas (Scale positions, like
@@ -34,10 +35,12 @@ local T = {
 	Margin = 1.05, -- players / monsters inside the view box + 5% get a dot (the view clips the rest)
 	MoveDt = 1 / 15, -- canvas, map turn, quest marker (user 2026-10-06: <= 15 Hz)
 	ScanDt = 1 / 5, -- visibility, players, monsters, quest target
-	-- user 2026-10-06: the map turns with the camera (where I look is up), the 'N' rides the ring; my arrow shows where my
-	-- character faces on that turned map (user 2026-10-06 later: "시선에 따라서 꼭짓점이 변화해야지")
+	-- A23-51: the map turns with my character's facing (up = where it faces), the 'N' rides the ring; my arrow stays up
 	HeadingUp = true,
-	ArrowEase = 18, -- 1/s: my arrow eases toward the character's facing every frame (no 15 Hz steps)
+	TurnEase = 8, -- 1/s: the map eases toward the character's facing every frame (smooth, no jump on a quick turn)
+	TurnMin = 0.3, -- degrees: smaller turns are not written (no CanvasGroup re-render while standing still)
+	MeSize = IS_TOUCH and 36 or 34, -- du: my arrow (~27 px at the 0.75 / 0.8 UIScale; the art sheet asks 24-32 px)
+	MeArt = "MapPlayerArrow", -- white art with a navy rim: ImageColor3 = my faction colour, up = forward
 	NorthR = 0.435, -- 'N' marker: distance from the centre / side (on the ring's navy band)
 	NorthD = 0.13, -- 'N' marker disc / side
 	StrongDot = 8, -- big monsters (Scale >= StrongScale): a bigger dot with a dark rim
@@ -91,6 +94,10 @@ local COL = {
 	Monster = Color3.fromRGB(255, 80, 80),
 	Golden = Color3.fromRGB(255, 200, 30),
 	Quest = Color3.fromRGB(255, 210, 60),
+	-- my arrow by faction (A23-51: 빛 금 · 뿔 빨강 · 장인 청록; nobody yet: white)
+	MeHalo = Color3.fromRGB(252, 198, 52),
+	MeHorns = Color3.fromRGB(243, 38, 44),
+	MeNeutral = Color3.fromRGB(40, 200, 190),
 	Potion = Color3.fromRGB(80, 220, 120), -- dot only when the potion icon art is missing
 	Smith = Color3.fromRGB(40, 200, 190), -- dot only when the sword icon art is missing (장인 길드 teal)
 }
@@ -509,8 +516,14 @@ local function build()
 		Name = "QuestEdge", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.Star, T.Star),
 		ImageColor3 = COL.Quest, ZIndex = 2, Active = false, Visible = false, Parent = ui.view,
 	}) or textMark("QuestEdge", TXT.Edge, T.Star, COL.Quest, 2, ui.view)
-	ui.me = textMark("Me", TXT.Me, T.Arrow, theme.Text, 3, ui.view)
+	-- A23-51: my arrow art in the middle, always up (the map turns under it); the "▲" text when the art is missing
+	ui.me = UIKit.ArtImage(T.MeArt, {
+		Name = "Me", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromOffset(T.MeSize, T.MeSize), ZIndex = 3, Active = false, Parent = ui.view,
+	}) or textMark("Me", TXT.Me, T.Arrow, theme.Text, 3, ui.view)
 	ui.me.Visible = true
+	S.meArt = ui.me:IsA("ImageLabel")
+	MiniMap.PaintMe()
 	S.upright = { ui.potion, ui.smith, ui.star }
 	-- 'N': a small navy disc with a white N riding the ring toward north (above the rim art)
 	if T.HeadingUp then
@@ -792,20 +805,12 @@ local function placeQuest(x, z)
 	setVisible(ui.chev, true)
 end
 
--- degrees clockwise from north of where the camera looks (nil while it looks straight down / up)
-local function cameraHeading()
-	local cam = workspace.CurrentCamera
-	local look = cam and cam.CFrame.LookVector
-	if not look or look.X * look.X + look.Z * look.Z < 1e-4 then return nil end
-	return math.deg(math.atan2(look.X, -look.Z))
-end
-
 local function angleDiff(a, b)
 	return (a - b + 180) % 360 - 180
 end
 
--- turns the map so the camera's heading is up (Rot = -heading around my spot), keeps icons upright and the 'N' on the
--- ring toward north: north (0, -1) turned by -heading is (-sin h, -cos h) in GUI space (y down)
+-- turns the map so the heading h (degrees clockwise from north) is up (Rot = -h around my spot), keeps icons upright and
+-- the 'N' on the ring toward north: north (0, -1) turned by -heading is (-sin h, -cos h) in GUI space (y down)
 local function turnMap(h)
 	S.heading = h
 	ui.rot.Rotation = -h
@@ -830,27 +835,22 @@ local function moveStep()
 		S.ox, S.oy = ox, oy
 		ui.canvas.Position = UDim2.fromOffset(ox, oy)
 	end
-	if T.HeadingUp then
-		-- the map turns under the camera's heading; my arrow follows the character every frame (arrowStep)
-		local h = cameraHeading() or S.heading or 0
-		if not S.heading or math.abs(angleDiff(h, S.heading)) >= T.MinTurn then turnMap(h) end
-	end
 	placeQuest(pos.X, pos.Z)
 end
 
--- every frame: my arrow points where my CHARACTER faces (HumanoidRootPart LookVector). "▲" points to map up at
--- Rotation 0 and GUI rotation is clockwise, so on the turned map (camera heading up) it turns by the character's yaw
--- minus the map's heading (walking forward = up, facing the camera = down), on a north-up map by the yaw itself; eased
--- (T.ArrowEase) so a quick turn never jumps
-local function arrowStep(dt)
+-- every frame (A23-51): the map turns so my CHARACTER's facing (HumanoidRootPart LookVector, degrees clockwise from
+-- north) is up, eased (T.TurnEase) so a quick turn never jumps; my arrow stays at Rotation 0 (up)
+local function turnStep(dt)
 	local _, look = myPose()
-	if not look or look.X * look.X + look.Z * look.Z < 1e-6 then return end
+	if not T.HeadingUp or not look or look.X * look.X + look.Z * look.Z < 1e-6 then return end
 	local yaw = math.deg(math.atan2(look.X, -look.Z))
-	local goal = T.HeadingUp and angleDiff(yaw, S.heading or cameraHeading() or 0) or yaw
-	local cur = ui.me.Rotation
-	local step = angleDiff(goal, cur)
-	if math.abs(step) < 0.2 then return end
-	ui.me.Rotation = angleDiff(cur + step * math.min(1, dt * T.ArrowEase), 0)
+	if not S.heading then
+		turnMap(yaw)
+		return
+	end
+	local step = angleDiff(yaw, S.heading)
+	if math.abs(step) < T.TurnMin then return end
+	turnMap(angleDiff(S.heading + step * math.min(1, dt * T.TurnEase), 0))
 end
 
 -- 1 Hz: box, potion merchant, anvil
@@ -920,7 +920,7 @@ local function onHeartbeat(dt)
 		acc.Move = math.min(acc.Move - T.MoveDt, T.MoveDt)
 		guard(moveStep, "move")
 	end
-	guard(function() arrowStep(dt) end, "arrow")
+	guard(function() turnStep(dt) end, "turn")
 end
 
 local function bindCamera()
@@ -950,10 +950,21 @@ function MiniMap.Start()
 		return
 	end
 	RunService.Heartbeat:Connect(onHeartbeat)
+	LocalPlayer:GetAttributeChangedSignal("Faction"):Connect(function()
+		guard(MiniMap.PaintMe, "paint me")
+	end)
 	workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(bindCamera)
 	bindCamera()
 	MiniMap.Relayout()
 	print("[MiniMap] started")
+end
+
+-- my arrow in my faction's colour (the art is white with a navy rim; the text fallback stays white)
+function MiniMap.PaintMe()
+	if not ui.me or not S.meArt then return end
+	local f = LocalPlayer:GetAttribute("Faction")
+	ui.me.ImageColor3 = (f == "Halo" and COL.MeHalo) or (f == "Horns" and COL.MeHorns) or (f == "Neutral" and COL.MeNeutral)
+		or WHITE
 end
 
 -- re-reads C.HUD.Layout.Rects.minimap (HUD calls this right after each layout pass); no rect = hidden

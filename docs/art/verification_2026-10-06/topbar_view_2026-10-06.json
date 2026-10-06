@@ -1,0 +1,464 @@
+{
+  "tool": "tools/topbar_view.py",
+  "devices": [
+    "pc",
+    "phone",
+    "844"
+  ],
+  "sheet": "art/review/topbar_2026-10-06.jpg",
+  "summary": [
+    {
+      "device": "phone",
+      "robloxButton": {
+        "H": 44,
+        "Mid": 34.0,
+        "Count": 12
+      },
+      "topbarInset": [
+        164,
+        0,
+        655,
+        58
+      ],
+      "guiInset": [
+        0,
+        58
+      ],
+      "Menu": {
+        "X": 644.8,
+        "Y": 11.2,
+        "W": 45,
+        "H": 45,
+        "Mid": 33.75,
+        "MidDelta": -0.25,
+        "HDelta": 1
+      },
+      "War": {
+        "X": 269.8,
+        "Y": 14.2,
+        "W": 180,
+        "H": 37.5,
+        "Mid": 33.0,
+        "MidDelta": -1.0,
+        "HDelta": -6.5
+      },
+      "Chips": {
+        "X": 269.8,
+        "Y": 60.8,
+        "W": 180,
+        "H": 14.2,
+        "Mid": 67.88
+      },
+      "markerContrast": {
+        "fill": [
+          197,
+          178,
+          102
+        ],
+        "background": [
+          88,
+          114,
+          60
+        ],
+        "fillVsBackground": 2.55,
+        "rimVsBackground": 2.66,
+        "best": 2.66,
+        "fillVsRim": 6.78
+      }
+    },
+    {
+      "device": "pc",
+      "robloxButton": {
+        "H": 44,
+        "Mid": 34.0,
+        "Count": 12
+      },
+      "Menu": {
+        "X": 1224,
+        "Y": 12,
+        "W": 43.2,
+        "H": 43.2,
+        "Mid": 33.6,
+        "MidDelta": -0.4,
+        "HDelta": -0.8
+      },
+      "War": {
+        "X": 495.2,
+        "Y": 12.8,
+        "W": 288,
+        "H": 41.6,
+        "Mid": 33.6,
+        "MidDelta": -0.4,
+        "HDelta": -2.4
+      },
+      "markerContrast": {
+        "fillVsBackground": 2.83,
+        "rimVsBackground": 2.38,
+        "fillVsRim": 6.72,
+        "note": "meadow, claim gold"
+      },
+      "source": "18:4x three-screen run (console summary)"
+    },
+    {
+      "device": "844",
+      "robloxButton": {
+        "H": 44,
+        "Mid": 34.0,
+        "Count": 12
+      },
+      "Menu": {
+        "X": 740,
+        "Y": 11.2,
+        "W": 45,
+        "H": 45,
+        "Mid": 33.75,
+        "MidDelta": -0.25,
+        "HDelta": 1
+      },
+      "War": {
+        "X": 302,
+        "Y": 14.2,
+        "W": 240,
+        "H": 37.5,
+        "Mid": 33.0,
+        "MidDelta": -1.0,
+        "HDelta": -6.5
+      },
+      "markerContrast": {
+        "fillVsBackground": 2.68,
+        "rimVsBackground": 2.54,
+        "fillVsRim": 6.8,
+        "note": "meadow, claim gold"
+      },
+      "source": "18:4x three-screen run (console summary)"
+    }
+  ],
+  "rows": [
+    {
+      "device": "pc",
+      "shot": "closed",
+      "file": "build/topbar_view/pc_closed.png"
+    },
+    {
+      "device": "pc",
+      "shot": "open",
+      "file": "build/topbar_view/pc_open.png"
+    },
+    {
+      "device": "pc",
+      "shot": "hollow_edge",
+      "file": "build/topbar_view/pc_hollow_edge.png"
+    },
+    {
+      "device": "phone",
+      "shot": "closed",
+      "file": "build/topbar_view/phone_closed.png",
+      "probe": {
+        "War": {
+          "Y": 14.25,
+          "X": 269.75,
+          "W": 180,
+          "H": 37.5
+        },
+        "Chips": {
+          "Y": 60.75,
+          "X": 269.75,
+          "W": 180,
+          "H": 14.25
+        },
+        "Screen": [
+          749,
+          361
+        ],
+        "RobloxButtons": [
+          {
+            "Y": 10,
+            "Path": "CoreGui.TopBarApp.TopBarApp.MenuIconHolder.TriggerPoint",
+            "H": 48,
+            "Class": "Frame",
+            "W": 44,
+            "X": 63
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.MenuIconHolder.TriggerPoint.IconHitArea",
+            "H": 44,
+            "Class": "ImageButton",
+            "W": 44,
+            "X": 63
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.MenuIconHolder.TriggerPoint.IconHitArea.StateOverlayRound",
+            "H": 44,
+            "Class": "Frame",
+            "W": 44,
+            "X": 63
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2",
+            "H": 44,
+            "Class": "Frame",
+            "W": 96,
+            "X": 115
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar",
+            "H": 44,
+            "Class": "Frame",
+            "W": 96,
+            "X": 115
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.2",
+            "H": 44,
+            "Class": "Frame",
+            "W": 96,
+            "X": 115
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3",
+            "H": 44,
+            "Class": "Frame",
+            "W": 96,
+            "X": 115
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.chat",
+            "H": 44,
+            "Class": "Frame",
+            "W": 44,
+            "X": 163
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.chat.IntegrationIconFrame",
+            "H": 44,
+            "Class": "Frame",
+            "W": 44,
+            "X": 163
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.chat.5",
+            "H": 44,
+            "Class": "Frame",
+            "W": 44,
+            "X": 163
+          },
+          {
+            "Y": 16,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.chat.IconHitArea_chat",
+            "H": 36,
+            "Class": "ImageButton",
+            "W": 36,
+            "X": 167
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.nine_dot",
+            "H": 44,
+            "Class": "Frame",
+            "W": 44,
+            "X": 119
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.nine_dot.IntegrationIconFrame",
+            "H": 44,
+            "Class": "Frame",
+            "W": 44,
+            "X": 119
+          },
+          {
+            "Y": 16,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.nine_dot.IntegrationIconFrame.IntegrationIcon",
+            "H": 36,
+            "Class": "Frame",
+            "W": 36,
+            "X": 123
+          },
+          {
+            "Y": 12,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.nine_dot.5",
+            "H": 44,
+            "Class": "Frame",
+            "W": 44,
+            "X": 119
+          },
+          {
+            "Y": 16,
+            "Path": "CoreGui.TopBarApp.TopBarApp.UnibarLeftFrame.UnibarMenu.2.Unibar.3.nine_dot.IconHitArea_nine_dot",
+            "H": 36,
+            "Class": "ImageButton",
+            "W": 36,
+            "X": 123
+          },
+          {
+            "Y": 10,
+            "Path": "CoreGui.TopBarApp.TopBarApp.TopBarFrame.LeftFrame",
+            "H": 48,
+            "Class": "Frame",
+            "W": 311.5,
+            "X": 63
+          }
+        ],
+        "Menu": {
+          "Y": 11.25,
+          "X": 644.75,
+          "W": 45,
+          "H": 45
+        },
+        "UIScale": 0.75,
+        "MainGui": {
+          "Y": 0,
+          "X": 47,
+          "W": 655,
+          "H": 340
+        },
+        "GuiInset": [
+          0,
+          58
+        ],
+        "TopbarInset": [
+          164,
+          0,
+          655,
+          58
+        ]
+      },
+      "marker": {
+        "Tint": [
+          1,
+          0.8941176533699036,
+          0.501960813999176
+        ],
+        "Text": "20m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 14.199999809265137,
+        "Zone": "SlimeMeadow",
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "onscreen",
+        "Icon": [
+          386,
+          125.25,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "markerContrast": {
+        "fill": [
+          197,
+          178,
+          102
+        ],
+        "background": [
+          88,
+          114,
+          60
+        ],
+        "fillVsBackground": 2.55,
+        "rimVsBackground": 2.66,
+        "best": 2.66,
+        "fillVsRim": 6.78
+      }
+    },
+    {
+      "device": "phone",
+      "shot": "open",
+      "file": "build/topbar_view/phone_open.png",
+      "fold": "fold visible=false squares=0 | war line '<font color=\"#ff9628\">Siege: 150 each</font> · 9:35' fits=false bounds=134/180"
+    },
+    {
+      "device": "phone",
+      "shot": "hollow_edge",
+      "file": "build/topbar_view/phone_hollow_edge.png",
+      "marker": {
+        "Arrow": [
+          24,
+          24,
+          -103.9991455078125
+        ],
+        "Text": "21m",
+        "Screen": [
+          749,
+          361
+        ],
+        "GuiOrigin": [
+          -47,
+          -58
+        ],
+        "Clock": 18.899999618530273,
+        "Zone": "HauntedHollow",
+        "Tint": [
+          1,
+          1,
+          1
+        ],
+        "UIScale": 0.75,
+        "Viewport": [
+          655,
+          340
+        ],
+        "Kind": "edge",
+        "Icon": [
+          274.25,
+          174.75,
+          48,
+          48
+        ],
+        "TextPx": 16
+      },
+      "markerContrast": {
+        "fill": [
+          198,
+          200,
+          204
+        ],
+        "background": [
+          113,
+          108,
+          140
+        ],
+        "fillVsBackground": 2.94,
+        "rimVsBackground": 2.91,
+        "best": 2.94,
+        "fillVsRim": 8.55
+      }
+    },
+    {
+      "device": "844",
+      "shot": "closed",
+      "file": "build/topbar_view/844_closed.png"
+    },
+    {
+      "device": "844",
+      "shot": "open",
+      "file": "build/topbar_view/844_open.png"
+    },
+    {
+      "device": "844",
+      "shot": "hollow_edge",
+      "file": "build/topbar_view/844_hollow_edge.png"
+    }
+  ],
+  "note": "screen px from the very top-left; robloxButton = the most common height among Roblox's own top bar buttons (CoreGui) and their mean middle; MidDelta / HDelta = ours minus Roblox's",
+  "foldNote": "the [Menu] click through Studio MCP user_mouse_input did not open the fold in UiSandbox (fold visible=false); the fold geometry is covered offline (tools/test_hud_layout.py)"
+}

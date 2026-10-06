@@ -1032,6 +1032,7 @@ local function buildWar(root)
 		Parent = row,
 	}, "NameTag")
 	ui.warInfo = row
+	L.WatchWarLine()
 end
 
 -- the bar keeps 22du, the info line takes the rest of the meter's height (Rects.war_meter: 52.5du PC, 50.7du phone):
@@ -1050,7 +1051,9 @@ function L.LayoutWar(h)
 	end
 end
 
--- the war meter's info line from its parts (time always, siege while WarMode = Siege, my points for Halo / Horns)
+-- the war meter's info line from its parts (time always, siege while WarMode = Siege, my points for Halo / Horns).
+-- A23-40 보강: in the top bar the meter is narrower on small phones; when the whole line does not fit at the text
+-- floor, 'My pts' is left out (L.WarShort, set by the line's TextFits; a wider meter tries the whole line again)
 function L.WarLine(parts)
 	if not ui.warLine then return end
 	local list = {}
@@ -1062,14 +1065,47 @@ function L.WarLine(parts)
 	else
 		table.insert(list, parts.Time)
 	end
-	if parts.Points then table.insert(list, parts.Points) end
-	local text = table.concat(list, TXT.WarSep)
+	local short = table.concat(list, TXT.WarSep)
+	L.WarTexts = { parts.Points and (short .. TXT.WarSep .. parts.Points) or short, short }
+	L.ApplyWarLine()
+end
+
+function L.ApplyWarLine()
+	local texts = L.WarTexts
+	if not texts or not ui.warLine then return end
+	local text = L.WarShort and texts[2] or texts[1]
 	if ui.warLine.Text ~= text then
 		ui.warLine.Text = text
 		task.defer(function()
 			if L.WarH then L.LayoutWar(L.WarH) end -- the band follows the new text width
 		end)
 	end
+end
+
+-- the line overflows its box at the style's text floor (TextBounds wider than the label, or TextFits false): drop
+-- 'My pts' until the meter grows again (UiSandbox 2026-10-06: the 180 px phone meter cut the line after "My")
+function L.CheckWarLine()
+	local line = ui.warLine
+	if not line or L.WarShort then return end
+	local over = (not line.TextFits) or line.TextBounds.X > line.AbsoluteSize.X + 0.5
+	local texts = L.WarTexts
+	if over and texts and texts[2] ~= texts[1] then
+		L.WarShort = true
+		L.WarShortAt = ui.warInfo.AbsoluteSize.X
+		L.ApplyWarLine()
+	end
+end
+
+function L.WatchWarLine()
+	for _, prop in { "TextFits", "TextBounds", "AbsoluteSize" } do
+		ui.warLine:GetPropertyChangedSignal(prop):Connect(L.CheckWarLine)
+	end
+	ui.warInfo:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		if L.WarShort and ui.warInfo.AbsoluteSize.X > (L.WarShortAt or 0) + 1 then
+			L.WarShort = false
+			L.ApplyWarLine()
+		end
+	end)
 end
 
 ----------------------------------------------------------------- building: status chips
@@ -1762,7 +1798,7 @@ local function tileButton(def, onClick)
 	return btn, label, img
 end
 
--- A23-40 정정: [메뉴] (its own square, top-right on PCs, the tile row's right end on phones) and its fold-out: a clipping
+-- A23-40 정정 + 보강: [메뉴] (its own square in the Roblox top bar's right end, HudLayout TB) and its fold-out: a clipping
 -- frame left of [메뉴] with one square per fold entry (the L.Fold squares + a copy of every row tile for the phone row's
 -- overflow). L.LayoutMenu places them from Rects.menu / Rects.fold, L.SetFold slides them out / back in
 function L.BuildMenu(names)
@@ -3809,6 +3845,20 @@ local function hookJumpButton(jb)
 	requestLayout()
 end
 
+-- A23-40 보강: the free part of the Roblox top bar (GuiService.TopbarInset: screen px from the top-left, right of
+-- Roblox's own buttons) in MainGui logical units, for HudLayout's top bar row ([메뉴] + the war meter); nil when Roblox
+-- reports none (HudLayout then assumes Roblox's usual buttons)
+function L.TopbarRect(gui, s)
+	local ok, tb = pcall(function()
+		return GuiService.TopbarInset
+	end)
+	if not ok or typeof(tb) ~= "Rect" or tb.Width <= 0 or tb.Height <= 0 then return nil end
+	-- AbsolutePosition is measured below the top bar (GetGuiInset); TopbarInset from the screen's very top
+	local origin = gui.AbsolutePosition
+	local ox, oy = origin.X, origin.Y + insetY()
+	return { X0 = (tb.Min.X - ox) / s, Y0 = (tb.Min.Y - oy) / s, X1 = (tb.Max.X - ox) / s, Y1 = (tb.Max.Y - oy) / s }
+end
+
 -- places a centred (AnchorPoint 0.5) button on its rect
 function L.Place(btn, r)
 	if not btn or not r then return end
@@ -3879,7 +3929,7 @@ applyLayout = function()
 		jump = { X = rel.X / s, Y = rel.Y / s, W = jb.AbsoluteSize.X / s, H = jb.AbsoluteSize.Y / s }
 	end
 	local R = L.HL.Compute({ W = W, H = H, Scale = s, Inset = insetY(), Touch = IS_TOUCH, Jump = jump,
-		Hidden = { auto = not (ui.auto and ui.auto.Visible) } })
+		Topbar = L.TopbarRect(gui, s), Hidden = { auto = not (ui.auto and ui.auto.Visible) } })
 	L.Rects = R
 	L.LayoutPlate(R)
 	for label in ui.textFits or {} do
@@ -4203,6 +4253,10 @@ function HUD.Start()
 
 	-- layout follows viewport / UIScale / top-bar changes
 	UIKit.Gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(requestLayout)
+	-- A23-40 보강: Roblox's top bar buttons grow / shrink (its menu opened, chat on / off): the bar row follows
+	pcall(function()
+		GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(requestLayout)
+	end)
 	local scale = UIKit.Gui:FindFirstChildOfClass("UIScale")
 	if scale then
 		scale:GetPropertyChangedSignal("Scale"):Connect(requestLayout)

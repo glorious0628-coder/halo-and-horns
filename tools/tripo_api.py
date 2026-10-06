@@ -279,7 +279,9 @@ def run_rig(task_id, name, dry=False):
 # 2026-10-06 monster motion: idle / walk / attack / hit / fall, one clip per call, played in place.
 # Tripo presets only retarget onto a Tripo-spec rig (a Mixamo-spec rig returned 1004 for every preset).
 MONSTER_ANIMS = {"Idle": "preset:idle", "Walk": "preset:walk", "Slash": "preset:slash", "Hurt": "preset:hurt",
-                 "Fall": "preset:fall"}
+                 "Fall": "preset:fall",
+                 # 2026-10-06 motion survey (docs/design/monster_motion_survey_2026-10-06.md): chase + idle variety
+                 "Run": "preset:run", "LookAround": "preset:biped:look_around"}
 RETARGET_COST_EACH = 10
 MONSTER_RIG = {"model": "v1.0-20240301", "rig_type": "biped", "spec": "tripo", "out_format": "glb"}
 
