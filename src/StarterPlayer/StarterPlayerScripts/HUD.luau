@@ -2390,7 +2390,7 @@ local function makeQuestRow(index)
 		Parent = row,
 	})
 	r.Tap.Activated:Connect(function()
-		if r.Entry and (r.Entry.Pinned or r.Entry.Story) and L.PinnedTap then L.PinnedTap(r.Entry) end
+		if r.Entry and (r.Entry.Pinned or r.Entry.Story) and L.PinnedTap then L.PinnedTap(r.Entry, r) end
 	end)
 	local iconS = L.QuestRowH - 20
 	r.Icon = UIKit.ArtImage("IconScroll", {
@@ -3123,8 +3123,22 @@ end
 
 -- tapping the pinned guide row: step 0 guide dialogue, step 1/2 travel to the meadow, blacksmith step and the
 -- iron-weapon goal -> the existing doUpgrade path, level goals -> the existing beam to the hunting ground.
-function L.PinnedTap(e)
+-- r = the quest row that was tapped (nil from the touch header)
+function L.PinnedTap(e, r)
 	if throttled("pinnedTap", 0.5) then return end
+	-- F10-4 (review 2026-10-06): a finished first mission (5/5) claims on a tap of its line, the same path as [받기]
+	-- (ClaimQuest, ClaimAt, 1.5 s lock); the travel window and the meadow beam are only for a mission with kills left
+	local questStep = (type(TUT.Steps) == "table" and TUT.Steps.Quest) or 2
+	if not e.Story and e.Pinned and e.TutorialStep == questStep and e.CanClaim and e.Progress >= e.Target then
+		local row = r
+		if not row then
+			for _, qr in questRows do
+				if qr.Entry == e then row = qr break end
+			end
+		end
+		if row then onClaim(row) end
+		return
+	end
 	if IS_TOUCH and questState.OverlayOpen and toggleQuests then toggleQuests(false) end
 	local step, zone = e.TutorialStep, attr("ZoneId", "")
 	local panels = C and C.Panels

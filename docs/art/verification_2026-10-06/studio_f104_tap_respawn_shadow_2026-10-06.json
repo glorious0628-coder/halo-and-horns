@@ -1,0 +1,21 @@
+{
+  "f104": {
+    "finding": "review 2026-10-06 #2: with the first mission at 5/5 ('보급로 임무 완료! [받기]를 눌러요.'), clicking / tapping the row TEXT ran L.PinnedTap's step 1/2 branch -> travel window + meadow beam (phone: the overlay closed first) instead of claiming. Before c6d31ec it never paid (run2 460 s+); the 60 s auto-claim only hid it.",
+    "fix": "HUD.luau L.PinnedTap(e, r): pinned, not story, TutorialStep == Config.Tutorial.Steps.Quest, CanClaim, Progress >= Target -> onClaim(row) (same path as [받기]: ClaimQuest 'tutorial', questState.ClaimAt, 1.5 s lock). Travel window / beam only while kills are left. r.Tap passes its row.",
+    "setup": "main Studio, own test Play, Darugi_S2 = Horns / Mage (run2's case) in HornsTown. State made the legit way: DebugCommand TutorialStep 1 + TutorialKills 5, step into the meadow (QuestService moves to step 2 and publishes the 5/5 row), back to the HornsTown spawn. Clicks with Studio MCP user_mouse_input on the real GUI instance.",
+    "results": [
+      {"device": "PC 1280-ish (default)", "action": "click Quests.Rows.Quest1.Tap (row text)", "TutorialStep": "2 -> 99", "BankGold": "7019 -> 7169 (+150)", "travelWindow": false, "guideBeam": false, "after": "main story's first dialogue opened (normal next step)"},
+      {"device": "phone 749x361 (StudioDeviceSimulatorService, touch)", "action": "tap header (overlay opens) then QuestOverlay.Rows.Quest1.Tap (row text)", "TutorialStep": "2 -> 99", "BankGold": "7169 -> 7319 (+150)", "travelWindow": false, "guideBeam": false},
+      {"device": "phone 749x361", "action": "tap QuestOverlay.Rows.Quest1.Claim (the 받기 pill)", "TutorialStep": "2 -> 99", "BankGold": "7319 -> 7469 (+150)"}
+    ],
+    "photos": ["f104_pc_click_after_2026-10-06.jpg", "f104_phone_tap_2026-10-06.jpg (before / overlay open / after the tap)"],
+    "note": "the 60 s auto-claim stays as the safety net (it paid once during setup: proof it still works). The phone header line itself ('5/5 ... [받기]를 눌러요') still opens the list first (2 taps); one-tap claim from the header is a possible follow-up, not done."
+  },
+  "respawned_slime_shadow": {
+    "finding": "review 2026-10-06 #1: shadowFor measured the visual's extents on the first frame; a slime that pops in (tracked > 3 s after join) is tiny then -> 1.2 minimum shadow hidden under the body.",
+    "fix": "Fx WOBBLE.shadowFor: slimes use their rest size st.Base (max X/Z) x 1.15; while popping in the shadow scale follows the body (pop factor, clamp 0.05..1); someone else's hidden personal monster gets no shadow / landing dust (review #6).",
+    "check": "own test Play, PC: removed the 4 slimes nearest to the player in the meadow, 13 s later the respawned ones (NEW = not present at the mark): Slime body 2.64 / 2.75 / 2.73 -> shadow 3.09 / 3.11 / 3.09 (x1.13-1.17), PumpkinSlime 3.53 -> 4.06 (x1.15). Same ratio as slimes that were there from the start (x1.10-1.18). Before the fix these would be 1.20.",
+    "photo": "ground_respawned_slime_shadow_2026-10-06.jpg (a respawned slime with its shadow and a landing puff)"
+  },
+  "studio_state_after": "Play stopped, device emulation back to default, Edit mode."
+}

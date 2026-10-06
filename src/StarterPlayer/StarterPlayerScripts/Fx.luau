@@ -1087,9 +1087,16 @@ local WOBBLE = { State = {}, Range = 140, StartedAt = os.clock(), FloatBob = 0.2
 function WOBBLE.shadowFor(model, st)
 	local sh = WOBBLE.Shadows[model]
 	if sh then return sh end
-	local cv = model:FindFirstChild("CustomVisual")
-	local okSize, size = pcall(function() return (cv or model):GetExtentsSize() end)
-	local w = okSize and math.max(size.X, size.Z) or 3
+	-- a slime is measured at its REST size (st.Base): one that pops in near me is tiny on its first frames (review
+	-- 2026-10-06: respawned slimes got the 1.2 minimum and their shadow hid under the body)
+	local w
+	if st and st.Slime and st.Base then
+		w = math.max(st.Base.X, st.Base.Z)
+	else
+		local cv = model:FindFirstChild("CustomVisual")
+		local okSize, size = pcall(function() return (cv or model):GetExtentsSize() end)
+		w = okSize and math.max(size.X, size.Z) or 3
+	end
 	-- a slime body covers the ground under it: its shadow is a little wider so the dark rim shows around it
 	local d = math.clamp(w * ((st and st.Slime) and 1.15 or 0.9), 1.2, 16)
 	local faint = st ~= nil and st.Float ~= nil
@@ -1116,7 +1123,7 @@ function WOBBLE.dropShadow(model)
 	for _, part in sh.Parts do part:Destroy() end
 end
 
--- under the root on the ground; scale < 1 while a slime is in the air (smaller and lighter)
+-- under the root on the ground; scale < 1 while a slime is in the air or still popping in (smaller and lighter)
 function WOBBLE.placeShadow(model, root, st, scale)
 	local sh = WOBBLE.shadowFor(model, st)
 	local pos = root.Position
@@ -1125,7 +1132,7 @@ function WOBBLE.placeShadow(model, root, st, scale)
 		sh.Y = groundY(pos)
 		sh.NextRay = now + WOBBLE.ShadowRays
 	end
-	scale = math.clamp(scale or 1, 0.4, 1)
+	scale = math.clamp(scale or 1, 0.05, 1)
 	local rescale = math.abs(scale - sh.Scale) > 0.02
 	if rescale then sh.Scale = scale end
 	for i, part in sh.Parts do
@@ -1195,9 +1202,11 @@ function WOBBLE.step(dt)
 	for _, model in folder:GetChildren() do
 		local st = WOBBLE.State[model]
 		if not st and model:IsA("Model") then st = WOBBLE.track(model) end
-		-- blob shadow: every live monster near the camera (rigged ones too); a dying / leaving one drops it
+		-- blob shadow: every live monster near the camera (rigged ones too); a dying / leaving one drops it, and so does
+		-- someone else's hidden personal monster (CR-L15: no body, so no shadow / dust either)
 		local sroot = model:IsA("Model") and monsterRoot(model) or nil
-		if sroot and not sroot.Anchored and (sroot.Position - camPos).Magnitude <= WOBBLE.Range then
+		local foreign = sroot ~= nil and Feel.isForeign(model)
+		if sroot and not sroot.Anchored and not foreign and (sroot.Position - camPos).Magnitude <= WOBBLE.Range then
 			if not (st and st.Slime) then WOBBLE.placeShadow(model, sroot, st, 1) end
 		else
 			WOBBLE.dropShadow(model)
@@ -1231,7 +1240,7 @@ function WOBBLE.step(dt)
 					if moving then
 						hop = math.max(0, s) * hopMax -- in the air on the upper half of the wave (low: grounded feel)
 						sy = 1 + math.max(0, s) * 0.12 - math.max(0, -s) * 0.24 -- stretch up, squash on landing
-						if lastS > 0 and s <= 0 and (st.Root.Position - camPos).Magnitude <= WOBBLE.DustRange then
+						if lastS > 0 and s <= 0 and not foreign and (st.Root.Position - camPos).Magnitude <= WOBBLE.DustRange then
 							-- landing: a small puff of dust at the feet (3-5 specks, 0.3 s)
 							local fp = st.Root.Position
 							pcall(burst, Vector3.new(fp.X, groundY(fp) + 0.15, fp.Z), Color3.fromRGB(196, 184, 150),
@@ -1244,10 +1253,12 @@ function WOBBLE.step(dt)
 					if since < 0.8 then sy += -0.28 * math.exp(-since * 5) * math.cos(since * 26) end
 					local sx = 1 / math.sqrt(math.max(0.5, sy)) -- keeps the jelly's volume
 					local born = os.clock() - st.BornAt -- pop-in: grow with a little overshoot
+					local pop = 1
 					if born < 0.4 then
 						local k = born / 0.4
 						local g = math.max(0.05, 1 + 0.25 * math.sin(k * math.pi) - (1 - k) * (1 - k))
 						sx, sy = sx * g, sy * g
+						pop = math.min(1, g) -- the shadow grows with the body
 					end
 					local half = 0
 					if st.Mesh and st.Base then
@@ -1256,7 +1267,9 @@ function WOBBLE.step(dt)
 					end
 					-- bottom stays on the floor, Sink studs into it (no visible gap under the jelly)
 					st.Joint.C1 = CFrame.new(0, -(hop + (sy - 1) * half) + WOBBLE.Sink, 0)
-					WOBBLE.placeShadow(model, st.Root, st, hopMax > 0 and 1 - 0.35 * (hop / hopMax) or 1)
+					if not foreign then
+						WOBBLE.placeShadow(model, st.Root, st, pop * (hopMax > 0 and 1 - 0.35 * (hop / hopMax) or 1))
+					end
 				elseif st.Float then
 					-- no legs: a slow hover bob whether it moves or not, no waddle / roll; a hit dips it a little
 					st.Phase += dt * math.pi * WOBBLE.FloatSpeed
