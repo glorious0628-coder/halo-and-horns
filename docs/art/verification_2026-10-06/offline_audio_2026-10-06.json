@@ -1,0 +1,307 @@
+{
+  "status": "passed",
+  "checks": 147,
+  "namedChecks": 109,
+  "failing": [],
+  "mutations": {
+    "total": 29,
+    "caught": 29,
+    "results": [
+      {
+        "mutation": "auto sounds at full volume",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: auto plays at AutoMul"
+        ]
+      },
+      {
+        "mutation": "others at full volume",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: other players' sounds at OthersMul"
+        ]
+      },
+      {
+        "mutation": "others heard from anywhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "swing :: another player's swing 60 studs away is silent",
+          "swing :: another player's swing without a place is silent"
+        ]
+      },
+      {
+        "mutation": "bow twangs at the draw",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "swing :: Archer: SwingArcher when the arrow leaves"
+        ]
+      },
+      {
+        "mutation": "Neutral pitch ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "swing :: Neutral Alchemist: 0.9x",
+          "swing :: Neutral Blacksmith: 0.85x"
+        ]
+      },
+      {
+        "mutation": "slimes hit heavy",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: a little ghost hit = HitSoft",
+          "hits :: a slime hit = HitSoft at ContactDelay",
+          "hits :: goose + slime: squish and honk",
+          "hits :: two slimes = one HitSoft",
+          "runtime :: then the slime squishes",
+          "skills :: skill hits land at ContactDelay"
+        ]
+      },
+      {
+        "mutation": "three monsters stay soft",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: three monsters in one swing = one HitHeavy"
+        ]
+      },
+      {
+        "mutation": "the goose never honks",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: a golden goose hit honks (no hit thud)",
+          "hits :: goose + slime: squish and honk"
+        ]
+      },
+      {
+        "mutation": "hits play at the swing start",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: a slime hit = HitSoft at ContactDelay",
+          "hits :: contact time clamped to 1 s",
+          "runtime :: the swing plays now, the hit waits for the contact",
+          "skills :: skill hits land at ContactDelay"
+        ]
+      },
+      {
+        "mutation": "combo coin never rises",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: kill 3 = 0.8 x 2^(4/12)",
+          "rewards :: kill 30 stays at 1.60",
+          "rewards :: kill 8 = 1.60 (the top)",
+          "runtime :: two kills in a row: the second coin a step higher"
+        ]
+      },
+      {
+        "mutation": "no combo milestone",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: kill 10 = ComboMilestone"
+        ]
+      },
+      {
+        "mutation": "everyone's level up plays here",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: another player's level up is silent"
+        ]
+      },
+      {
+        "mutation": "every hurt is big",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rewards :: a small hit is quiet"
+        ]
+      },
+      {
+        "mutation": "faction layer on every skill",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skills :: a Q skill has no faction layer"
+        ]
+      },
+      {
+        "mutation": "events without an id play",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: an event with an id plays",
+          "runtime :: an event without an id never plays",
+          "runtime :: volume = the table's Volume"
+        ]
+      },
+      {
+        "mutation": "Fx coin not muted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: our files mute Fx's swing / skill / coin"
+        ]
+      },
+      {
+        "mutation": "Sound effects setting ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: Sound effects 0 = silent",
+          "runtime :: Sound effects 0.5 halves the volume"
+        ]
+      },
+      {
+        "mutation": "no cooldown",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: the same event inside its cooldown is skipped"
+        ]
+      },
+      {
+        "mutation": "no copies cap",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a 4th HitSoft while 3 still play is skipped (Max 3)"
+        ]
+      },
+      {
+        "mutation": "no 8-at-once cap",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: never more than 8 sounds at once"
+        ]
+      },
+      {
+        "mutation": "no ducking",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a big moment ducks the combat sounds to 0.5"
+        ]
+      },
+      {
+        "mutation": "join-time auto values sound",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: auto changing before the data is loaded is quiet",
+          "runtime :: the saved auto value arriving after the join is quiet"
+        ]
+      },
+      {
+        "mutation": "a faction change counts as RankDown",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: points reset by a faction change are quiet",
+          "runtime :: potion counts arriving with the save are quiet"
+        ]
+      },
+      {
+        "mutation": "buying potions chimes",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: buying potions is quiet",
+          "runtime :: potion counts arriving with the save are quiet"
+        ]
+      },
+      {
+        "mutation": "kings already there at the join sound",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet"
+        ]
+      },
+      {
+        "mutation": "the first quest list chimes",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: the first quest list is quiet",
+          "runtime :: the same list again is quiet"
+        ]
+      },
+      {
+        "mutation": "a window staying open repeats",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a window staying open is quiet"
+        ]
+      },
+      {
+        "mutation": "combo never resets",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: after the combo time the coin starts low again"
+        ]
+      },
+      {
+        "mutation": "'No' is not Deny",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: 'No' (SkillBar) plays Deny"
+        ]
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "fdc387cd25e615b1299154bf0cdb5f7b4fa6a72c6ef91eb0a918f47c2a360b4a",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "2cf902976f0012fe5dd0b9249ba54eac409cbbebeb6886c7c5a8c7ea1f863dab",
+    "tools/fixtures/audio_offline.luau": "e7b5d44a77cc016bdce63c1f799bc87050719fb3f9e391be4d4d4635fa9230f1"
+  },
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "limitations": "Doubles instead of the engine: real playback, loading and loudness are checked in Studio and by ear; the combo / QuietStart timings use os.clock busy waits and a hand-run task.delay queue."
+}

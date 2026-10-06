@@ -2534,6 +2534,83 @@ Config.Sounds = { -- optional built-in files; client must pcall and ignore failu
 	Click = "rbxasset://sounds/button.wav",
 }
 
+-- quality ① (docs/design/quality_ideas_2026-10-06.md §1) with 검수's sound table (docs/design/lines_pack_2026-10-06.md §6):
+-- Audio.luau's sound effects. Files: art/sfx/<file>.ogg (tools/sfx_game.py final: Kenney CC0 + our synth; sources in
+-- art/sfx/sources.json and docs/devlog/sfx_licenses.md), each levelled the same (loudest 100 ms RMS -18 dBFS, peak -3 dBFS),
+-- so Volume alone sets the mix: combat 0.28-0.40 < UI 0.42-0.60 < big moments 0.65-0.75 < level up 0.85.
+-- Files[file] = asset id; "" = silent until uploaded (nothing changes before the uploads).
+-- Sounds[event] = { File (or Files = variants, one picked at random), Volume (Sound.Volume, x the Sound effects setting),
+--   Speed = { min, max } (random per play), Max (copies at once), Gap (cooldown s), Auto (auto combat plays it at AutoMul),
+--   Combat (ducked under the big moments; other players' at OthersMul) }
+Config.Audio = {
+	AutoMul = 0.5, -- auto-combat sounds: volume x0.5, speed unchanged
+	OthersMul = 0.35, -- other players' swings / hits: x0.35 ...
+	OthersRange = 40, -- ... and only within this many studs; UI sounds are mine only
+	MaxPlaying = 8, -- all sounds at once
+	-- these moments lower the combat sounds to Mul for Seconds
+	Duck = { Mul = 0.5, Seconds = 1.2, By = { LevelUp = true, PumpkinKing = true, GhostKing = true, ScrollSuccess = true } },
+	-- combo coin speed = Base x 2^(step / 12), steps of a major scale, held at Top from the 8th kill (phones: no shrill end)
+	Combo = { Base = 0.8, Top = 1.6, Steps = { 0, 2, 4, 5, 7, 9, 11, 12 } },
+	HitHeavyAt = 3, -- a swing that hits this many monsters plays the heavy hit
+	HurtBigFrac = 0.15, -- a hit taking at least this share of my max HP (or leaving me under 30 %) = HurtBig
+	Files = {
+		SwingWarrior = "", SwingMage = "", SwingArcher = "", SwingTamer = "",
+		HitSoft1 = "", HitSoft2 = "", HitHeavy1 = "", HitHeavy2 = "",
+		KillPop = "", ComboCoin = "", ComboMilestone = "", LevelUp = "",
+		WindowOpen = "", WindowClose = "", Deny = "", AutoOn = "", AutoOff = "",
+		Purify = "", Devour = "", KingBell = "", GooseHonk = "",
+		QuestDone = "", GoldPickup = "", ScrollSuccess = "", ScrollFail = "", Tap = "",
+		SkillHalo = "", SkillHorns = "", Potion = "", QuestNew = "", RankDown = "", TalkBlip = "",
+	},
+	Sounds = {
+		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
+		SwingMage = { File = "SwingMage", Volume = 0.28, Speed = { 1.00, 1.10 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
+		SwingArcher = { File = "SwingArcher", Volume = 0.28, Speed = { 0.85, 0.95 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
+		SwingTamer = { File = "SwingTamer", Volume = 0.28, Speed = { 0.95, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
+		HitSoft = { Files = { "HitSoft1", "HitSoft2" }, Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		HitHeavy = { Files = { "HitHeavy1", "HitHeavy2" }, Volume = 0.38, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		ComboCoin = { File = "ComboCoin", Volume = 0.30, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
+		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
+		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
+		WindowOpen = { File = "WindowOpen", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.15 },
+		WindowClose = { File = "WindowClose", Volume = 0.42, Speed = { 1, 1 }, Max = 1, Gap = 0.15 },
+		Deny = { File = "Deny", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.5 },
+		-- two files (rising / falling blips) instead of one file at 1.1 / 0.9: on and off are told apart by ear
+		AutoOn = { File = "AutoOn", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
+		AutoOff = { File = "AutoOff", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.3 },
+		Purify = { File = "Purify", Volume = 0.55, Speed = { 1.00, 1.05 }, Max = 1, Gap = 1.0 },
+		Devour = { File = "Devour", Volume = 0.55, Speed = { 1.00, 1.05 }, Max = 1, Gap = 1.0 }, -- same size as Purify, a pleasant gulp
+		-- one file for both kings; never under 0.85x (lower turns scary)
+		PumpkinKing = { File = "KingBell", Volume = 0.70, Speed = { 0.90, 0.95 }, Max = 1, Gap = 60 },
+		GhostKing = { File = "KingBell", Volume = 0.70, Speed = { 1.00, 1.05 }, Max = 1, Gap = 60 },
+		GooseHonk = { File = "GooseHonk", Volume = 0.55, Speed = { 0.95, 1.10 }, Max = 1, Gap = 3.0 },
+		QuestDone = { File = "QuestDone", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
+		GoldPickup = { File = "GoldPickup", Volume = 0.45, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.08 },
+		ScrollSuccess = { File = "ScrollSuccess", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 0.5 },
+		ScrollFail = { File = "ScrollFail", Volume = 0.45, Speed = { 0.90, 0.90 }, Max = 1, Gap = 0.5 },
+		Tap = { File = "Tap", Volume = 0.42, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.05 },
+		-- the skill cast plays my class's swing file at 0.85x (the file comes from the class, not from here)
+		SkillCast = { Volume = 0.40, Speed = { 0.85, 0.85 }, Max = 2, Gap = 0.1, Auto = true, Combat = true },
+		SkillHalo = { File = "SkillHalo", Volume = 0.36, Speed = { 1, 1 }, Max = 1, Gap = 0.3, Auto = true, Combat = true },
+		SkillHorns = { File = "SkillHorns", Volume = 0.36, Speed = { 1, 1 }, Max = 1, Gap = 0.3, Auto = true, Combat = true },
+		HurtBig = { File = "HitHeavy2", Volume = 0.36, Speed = { 0.95, 1.05 }, Max = 1, Gap = 0.6 },
+		Potion = { File = "Potion", Volume = 0.42, Speed = { 1.00, 1.05 }, Max = 1, Gap = 0.3 },
+		QuestNew = { File = "QuestNew", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 1.0 },
+		RankDown = { File = "RankDown", Volume = 0.35, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
+		TalkBlip = { File = "TalkBlip", Volume = 0.25, Speed = { 1, 1 }, Max = 3, Gap = 0.045 }, -- quality ② typewriter
+	},
+	-- swing file per weapon style / class (Neutral Blacksmith / Alchemist: Speed x NeutralSpeed)
+	Swing = { Warrior = "SwingWarrior", Mage = "SwingMage", Archer = "SwingArcher", Punch = "SwingWarrior", PetHeadbutt = "SwingTamer" },
+	PunchSpeed = 1.3, -- bare hands: a short swish (volume x0.6)
+	NeutralSpeed = { Warrior = 0.85, Mage = 0.9 },
+	-- hit sound per monster kind: soft = slimes, ghosts, pumpkins; everything else, players and crits = heavy
+	SoftKinds = { Slime = true, BigSlime = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
+	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
+	-- Speaker ids Shard / Smith / Guild / Fountain)
+	Talk = { Default = 1, Shard = 1.45, Halo = 1.1, Horns = 0.78, Smith = 0.86, Guild = 0.95, Fountain = 1.2 },
+}
+
 Config.Combo = { ResetSeconds = 4, Milestones = { { 10, "Nice! x10" }, { 25, "Great! x25" }, { 50, "Wild! x50" }, { 100, "Legend! x100" } } }
 
 -- addendum A3-H4 / H5 / M1: client layout rules (UI uses IgnoreGuiInset = true)
@@ -2784,6 +2861,11 @@ Config.UIArt = {
 		ToggleKnob = { Id = "rbxassetid://115651000790819", Size = Vector2.new(512, 512) },
 		GlyphGear = { Id = "rbxassetid://103647965370087", Size = Vector2.new(512, 512) }, -- settings gear glyph (window title / buttons)
 		PortraitFrame = { Id = "rbxassetid://87342192348849", Size = Vector2.new(512, 498) }, -- dialogue NPC portrait frame: the portrait sits on Window (0.107, 0.116, 0.783, 0.759)
+		-- A23-46 / A23-59 town quest NPC portraits (이미지 생성 2, user OK 2026-10-06: 91cc2c9 · 309c692), transparent, no
+		-- lettering: UIKit.Portrait draws one on PortraitFrame's window (bottom-aligned, centred, rounded corners)
+		PTR_TownBright = { Id = "rbxassetid://136976488823430", Size = Vector2.new(509, 512) }, -- Halo town guard trainee
+		PTR_TownSmokey = { Id = "rbxassetid://116672418091847", Size = Vector2.new(400, 512) }, -- Horns den lookout
+		PTR_TownTiny = { Id = "rbxassetid://82956358780804", Size = Vector2.new(445, 512) }, -- Crossroads artisan trainee
 		PetCard = { Id = "rbxassetid://140401787896538", Size = Vector2.new(462, 768) }, -- pet window / book card: picture Window (0.126, 0.121, 0.747, 0.444), Name (0.10, 0.60, 0.80, 0.075), Body (0.08, 0.70, 0.84, 0.18)
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)

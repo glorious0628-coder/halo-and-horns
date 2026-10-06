@@ -23,3 +23,45 @@
 | whoosh(휙) | 컷 전환 | 직접 합성(`synth_sfx("whoosh")`, 잡음 필터) | 우리가 만듦 · 저작권 걱정 없음 |
 
 크기: 내레이션보다 약 -18~-11 dB(`SFX_GAIN`), 전체는 -14 LUFS / -1.5 dBTP로 맞춘다. 크레딧은 의무가 아니지만 설명란에 "Sound effects: Kenney (kenney.nl, CC0)" 한 줄을 넣는다.
+
+## 게임 효과음 (이미지 개발, 품질 ①, 2026-10-06 · 검수 효과음 표 lines_pack_2026-10-06 §6)
+
+게임 소리 32개는 위의 Kenney 두 팩(CC0)과 우리가 직접 합성한 소리만 쓴다. Roblox 라이브러리 소리는 없어서 개발 일지 영상에도 그대로 쓸 수 있다.
+- 파일: `art/sfx/<이름>.ogg` (48 kHz 모노, 가장 큰 100 ms가 RMS -18 dBFS, 최고점 -3 dBFS 아래, 전투 소리는 150 Hz 아래를 덜어 냄). 만든 도구: `tools/sfx_game.py final`.
+- 소리마다 원본 파일·속도·섞은 방법: `art/sfx/sources.json`. 후보 64개 모양 비교: `art/review/sfx_candidates_2026-10-06.jpg`.
+- 유명 게임·만화 소리를 흉내 내지 않았다(동전은 종소리 한 음, 레벨 업은 도-미-솔-도 아르페지오, 거위는 직접 합성).
+
+| # (§6) | 이름 | 쓰는 곳 | 원본 | 라이선스 |
+|---|---|---|---|---|
+| 1 | SwingWarrior | 전사 휘두르기(맨손 1.3배) | 직접 합성(짧은 바람 0.18초) | 우리 것 |
+| 2 | SwingMage | 마법사 쏘기 | 직접 합성(올라가는 마법음 + 반짝) | 우리 것 |
+| 3 | SwingArcher | 궁수 쏘기 | 직접 합성(활줄 퉁 + 화살 바람) | 우리 것 |
+| — | SwingTamer | 펫 조련사 휘파람(표에 없음, 펫 공격용) | 직접 합성 | 우리 것 |
+| 4 | HitSoft1 · HitSoft2 | 맞힘 약(슬라임·유령·호박) | 직접 합성(물컹 두 가지) | 우리 것 |
+| 5 | HitHeavy1 · HitHeavy2 | 맞힘 강(고블린·우두머리·치명타), #27 내가 세게 맞음도 같이 씀 | Kenney Impact `impactGeneric_light_002`+`impactPunch_medium_000` / `impactPunch_medium_001`+`impactGeneric_light_000` (주먹은 150 Hz 하이패스 + 포화) | CC0 |
+| 6 | KillPop | 처치 '뽕' | Kenney Interface `drop_002` | CC0 |
+| 7 | ComboCoin | 연속 처치 동전(한 음씩 올라감) | 직접 합성(종 한 음) | 우리 것 |
+| 8 | ComboMilestone | 콤보 기념 x10·25·50·100 | Kenney Interface `confirmation_003` | CC0 |
+| 9 | LevelUp | 레벨 업 팡파르 | 직접 합성(도-미-솔-도 종 + 반짝) | 우리 것 |
+| 10 | WindowOpen | 창 열기 | Kenney Interface `maximize_009` | CC0 |
+| 11 | WindowClose | 창 닫기 | Kenney Interface `minimize_009` | CC0 |
+| 12 | Deny | 안 돼요 | 직접 합성('어-어' 두 음) | 우리 것 |
+| 13 | AutoOn | 자동 켜기 | 직접 합성(삑삑 올라감) | 우리 것 |
+| 14 | AutoOff | 자동 끄기 | 직접 합성(삑삑 내려감) | 우리 것 |
+| 15 | Purify | 정화 '찰랑' | 직접 합성(반짝이는 종소리) | 우리 것 |
+| 16 | Devour | 삼킴 '꿀꺽' | Kenney Interface `bong_001`(0.9배) + `drop_004`(0.75배) 섞음 | CC0 |
+| 17 · 17b | KingBell | 호박 대왕(0.9~0.95배)·유령 왕(1.0~1.05배) 등장, 같은 파일 | Kenney Impact `impactBell_heavy_000` + Interface `maximize_006` 섞음 | CC0 |
+| 18 | GooseHonk | 거위 '꽥' | 직접 합성(꽥꽥 0.15초×2) | 우리 것 |
+| 19 | QuestDone | 퀘스트 완료 | Kenney Interface `confirmation_001` | CC0 |
+| 20 | GoldPickup | 처치 밖 골드(보상·금고) | Kenney Interface `tick_004` | CC0 |
+| 21 | ScrollSuccess | 주문서 성공 | Kenney Interface `confirmation_004` + `glass_004` 섞음 | CC0 |
+| 22 | ScrollFail | 주문서 실패('아쉬워') | Kenney Interface `back_002` | CC0 |
+| 23 | Tap | 버튼 누름 | Kenney Interface `select_002` | CC0 |
+| 25 | SkillHalo | X 스킬 빛 층 | Kenney Interface `glass_005` | CC0 |
+| 26 | SkillHorns | X 스킬 뿔 층 | Kenney Interface `bong_001`(1.5배 포화 + 3배) 섞음 | CC0 |
+| 28 | Potion | 물약 마시기 | Kenney Interface `glass_003` | CC0 |
+| 29 | QuestNew | 새 퀘스트 받기 | Kenney Interface `select_003` | CC0 |
+| 30 | RankDown | 내 편 점수 내려감(작게) | Kenney Interface `back_004` | CC0 |
+| — | TalkBlip | 대화 글자 '삑'(품질 ②, 표에 없음) | 직접 합성 | 우리 것 |
+
+#14·#17b·#24·#27은 다른 줄의 파일을 다시 써서 따로 올리지 않는다(#24 스킬 시전 = 내 직업 휘두르기 0.85배).

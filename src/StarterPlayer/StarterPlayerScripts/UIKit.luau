@@ -1066,6 +1066,62 @@ function UIKit.ArtAspect(name)
 	return 1
 end
 
+-- A23-46 / A23-59 dialogue portraits (검수 2026-10-06): the PortraitFrame art (gold frame, its window an opaque sky
+-- blue) with a character portrait (Config.UIArt.Parts "PTR_*") on that window - bottom-aligned, centred, clipped to the
+-- window's rounded corners (a CanvasGroup with UICorner), as on art/review/s2/a2359_bright_girl_long_hair_frames.png.
+-- Code fallbacks (IMG-R4): no frame art -> a navy plate with a gold rim and a sky window; no portrait art -> the
+-- speaker's initial in the window. props: Name, Size, Position, AnchorPoint, ZIndex, Parent, Initial. Returns the
+-- holder (it keeps the frame art's 512 : 498 shape; give it a Size, the width wins).
+UIKit.PortraitWindow = { X = 0.107, Y = 0.116, W = 0.783, H = 0.759, Corner = 0.14 }
+function UIKit.Portrait(key, props)
+	props = type(props) == "table" and props or {}
+	local z = tonumber(props.ZIndex) or 1
+	local win = UIKit.PortraitWindow
+	local holder = UIKit.Create("Frame", {
+		Name = props.Name or "Portrait",
+		Size = props.Size or UDim2.fromOffset(120, 117),
+		Position = props.Position or UDim2.new(),
+		AnchorPoint = props.AnchorPoint or Vector2.zero,
+		BackgroundTransparency = 1,
+		ZIndex = z,
+	}, { UIKit.Create("UIAspectRatioConstraint", { AspectRatio = 512 / 498 }) })
+	local frame = UIKit.ArtImage("PortraitFrame", { Name = "Frame", Size = UDim2.fromScale(1, 1), ZIndex = z, Parent = holder })
+	if not frame then
+		frame = UIKit.Create("Frame", {
+			Name = "Frame", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(26, 40, 79), ZIndex = z,
+			Parent = holder,
+		}, {
+			UIKit.Create("UICorner", { CornerRadius = UDim.new(0.16, 0) }),
+			UIKit.Create("UIStroke", { Color = UIKit.Theme.Gold, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		})
+		UIKit.Create("Frame", {
+			Name = "Sky", Position = UDim2.fromScale(win.X, win.Y), Size = UDim2.fromScale(win.W, win.H),
+			BackgroundColor3 = Color3.fromRGB(150, 205, 250), ZIndex = z, Parent = frame,
+		}, { UIKit.Create("UICorner", { CornerRadius = UDim.new(win.Corner, 0) }) })
+	end
+	-- the window clips the picture to its rounded corners; the frame's own sky shows behind a transparent portrait
+	local window = UIKit.Create("CanvasGroup", {
+		Name = "Window", Position = UDim2.fromScale(win.X, win.Y), Size = UDim2.fromScale(win.W, win.H),
+		BackgroundTransparency = 1, ZIndex = z + 1, Parent = holder,
+	}, { UIKit.Create("UICorner", { CornerRadius = UDim.new(win.Corner, 0) }) })
+	local pic = type(key) == "string" and UIKit.ArtImage(key, {
+		Name = "Picture", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1),
+		Size = UDim2.fromScale(1, 1), ZIndex = z + 1, Parent = window,
+	}) or nil
+	if pic then
+		-- fit inside the window, keeping the picture's shape; anchored at the bottom centre
+		UIKit.Create("UIAspectRatioConstraint", { AspectRatio = UIKit.ArtAspect(key), Parent = pic })
+	else
+		local initial = props.Initial or (type(key) == "string" and string.match(key, "([A-Z])[a-z]*$")) or "?"
+		UIKit.LightText({
+			Name = "Picture", Text = initial, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromScale(0.6, 0.6), TextScaled = true, ZIndex = z + 1, Parent = window,
+		})
+	end
+	if props.Parent then holder.Parent = props.Parent end
+	return holder
+end
+
 -- content area of a part (Inner rect: portrait hole, button face, badge centre, bar interior) as scale UDim2s
 -- (position, size) relative to the part's box; exact when the box has the part's aspect (ArtAspect).
 -- Works even when the id is missing (fallback layouts line up). nil when the part has no Inner.

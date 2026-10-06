@@ -1,0 +1,424 @@
+{
+ "AutoOff": {
+  "file": "art/sfx/AutoOff.ogg",
+  "candidate": "AutoOff_a",
+  "note": "two falling blips",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.195,
+  "phoneDropDb": 0.1,
+  "bytes": 5466,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "AutoOn": {
+  "file": "art/sfx/AutoOn.ogg",
+  "candidate": "AutoOn_a",
+  "note": "two rising blips",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.195,
+  "phoneDropDb": 0.1,
+  "bytes": 5624,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "ComboCoin": {
+  "file": "art/sfx/ComboCoin.ogg",
+  "candidate": "Coin_a",
+  "note": "one bright ting (combo raises it a semitone per kill)",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.5,
+  "phoneDropDb": 0.1,
+  "bytes": 7363,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "ComboMilestone": {
+  "file": "art/sfx/ComboMilestone.ogg",
+  "candidate": "Reward_b",
+  "note": "Kenney bright rising chime",
+  "sources": [
+   "Kenney Interface Sounds · confirmation_003.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.322,
+  "phoneDropDb": 0.0,
+  "bytes": 6763,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "Deny": {
+  "file": "art/sfx/Deny.ogg",
+  "candidate": "No_a",
+  "note": "'uh-uh' two falling notes",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.29,
+  "phoneDropDb": 3.8,
+  "bytes": 7230,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "Devour": {
+  "file": "art/sfx/Devour.ogg",
+  "candidate": "Devour_c",
+  "note": "bong 0.9x + drop 0.75x, a pleasant gulp (§6 #16)",
+  "sources": [
+   "Kenney Interface Sounds · bong_001.ogg (CC0) · speed 0.9",
+   "Kenney Interface Sounds · drop_004.ogg (CC0) · speed 0.75"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.235,
+  "phoneDropDb": 5.5,
+  "bytes": 6064,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "GoldPickup": {
+  "file": "art/sfx/GoldPickup.ogg",
+  "candidate": "GoldPickup_a",
+  "note": "Kenney tick (§6 #20, the devlog coin)",
+  "sources": [
+   "Kenney Interface Sounds · tick_004.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.055,
+  "phoneDropDb": 0.1,
+  "bytes": 5356,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "GooseHonk": {
+  "file": "art/sfx/GooseHonk.ogg",
+  "candidate": "GooseHonk_c",
+  "note": "two nasal honks 0.15 s, 620 / 680 Hz falling (§6 #18)",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.36,
+  "phoneDropDb": 0.6,
+  "bytes": 8486,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "HitHeavy1": {
+  "file": "art/sfx/HitHeavy1.ogg",
+  "candidate": "HitThud_c",
+  "note": "light tok + soft punch",
+  "sources": [
+   "Kenney Impact Sounds 1.0 · impactGeneric_light_002.ogg (CC0)",
+   "Kenney Impact Sounds 1.0 · impactPunch_medium_000.ogg (CC0) · saturated"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.293,
+  "phoneDropDb": 6.5,
+  "bytes": 7373,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "HitHeavy2": {
+  "file": "art/sfx/HitHeavy2.ogg",
+  "candidate": "HitThud_a",
+  "note": "punch + wooden tok on top (goblins, players)",
+  "sources": [
+   "Kenney Impact Sounds 1.0 · impactPunch_medium_001.ogg (CC0) · saturated",
+   "Kenney Impact Sounds 1.0 · impactGeneric_light_000.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.276,
+  "phoneDropDb": 8.2,
+  "bytes": 7402,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "HitSoft1": {
+  "file": "art/sfx/HitSoft1.ogg",
+  "candidate": "HitSquish_a",
+  "note": "wet blob (slimes)",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.16,
+  "phoneDropDb": 3.8,
+  "bytes": 6002,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "HitSoft2": {
+  "file": "art/sfx/HitSoft2.ogg",
+  "candidate": "HitSoft_b",
+  "note": "wet blob, second take (§6 #4 variant)",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.16,
+  "phoneDropDb": 3.5,
+  "bytes": 6010,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "KillPop": {
+  "file": "art/sfx/KillPop.ogg",
+  "candidate": "KillPop_b",
+  "note": "Kenney bloop",
+  "sources": [
+   "Kenney Interface Sounds · drop_002.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.103,
+  "phoneDropDb": 0.7,
+  "bytes": 4921,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "KingBell": {
+  "file": "art/sfx/KingBell.ogg",
+  "candidate": "KingBell_a",
+  "note": "playful big bell + a little pop at the end (§6 #17 / 17b)",
+  "sources": [
+   "Kenney Impact Sounds 1.0 · impactBell_heavy_000.ogg (CC0)",
+   "Kenney Interface Sounds · maximize_006.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 1.527,
+  "phoneDropDb": 3.9,
+  "bytes": 16626,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "LevelUp": {
+  "file": "art/sfx/LevelUp.ogg",
+  "candidate": "LevelUp_a",
+  "note": "bell arpeggio C-E-G-C + sparkles",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.975,
+  "phoneDropDb": 0.2,
+  "bytes": 14258,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "Potion": {
+  "file": "art/sfx/Potion.ogg",
+  "candidate": "Potion_a",
+  "note": "glass clink (§6 #28)",
+  "sources": [
+   "Kenney Interface Sounds · glass_003.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.121,
+  "phoneDropDb": 0.1,
+  "bytes": 6207,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "Purify": {
+  "file": "art/sfx/Purify.ogg",
+  "candidate": "Purify_a",
+  "note": "shimmering E-major chime",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 1.135,
+  "phoneDropDb": 0.0,
+  "bytes": 15205,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "QuestDone": {
+  "file": "art/sfx/QuestDone.ogg",
+  "candidate": "Reward_a",
+  "note": "Kenney three rising notes (quest reward)",
+  "sources": [
+   "Kenney Interface Sounds · confirmation_001.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.29,
+  "phoneDropDb": 5.0,
+  "bytes": 5838,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "QuestNew": {
+  "file": "art/sfx/QuestNew.ogg",
+  "candidate": "QuestNew_a",
+  "note": "rising select chime (§6 #29)",
+  "sources": [
+   "Kenney Interface Sounds · select_003.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.22,
+  "phoneDropDb": 0.0,
+  "bytes": 6840,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "RankDown": {
+  "file": "art/sfx/RankDown.ogg",
+  "candidate": "RankDown_a",
+  "note": "small soft pop (§6 #30)",
+  "sources": [
+   "Kenney Interface Sounds · back_004.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.084,
+  "phoneDropDb": 4.4,
+  "bytes": 5679,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "ScrollFail": {
+  "file": "art/sfx/ScrollFail.ogg",
+  "candidate": "ScrollFail_a",
+  "note": "small 'aw' (§6 #22)",
+  "sources": [
+   "Kenney Interface Sounds · back_002.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.081,
+  "phoneDropDb": 4.9,
+  "bytes": 5837,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "ScrollSuccess": {
+  "file": "art/sfx/ScrollSuccess.ogg",
+  "candidate": "ScrollSuccess_a",
+  "note": "rising confirmation + glass sparkle (§6 #21)",
+  "sources": [
+   "Kenney Interface Sounds · confirmation_004.ogg (CC0)",
+   "Kenney Interface Sounds · glass_004.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.75,
+  "phoneDropDb": 0.2,
+  "bytes": 9088,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "SkillHalo": {
+  "file": "art/sfx/SkillHalo.ogg",
+  "candidate": "SkillHalo_a",
+  "note": "glass ping, the Halo layer of X (§6 #25)",
+  "sources": [
+   "Kenney Interface Sounds · glass_005.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.078,
+  "phoneDropDb": 0.0,
+  "bytes": 4700,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "SkillHorns": {
+  "file": "art/sfx/SkillHorns.ogg",
+  "candidate": "SkillHorns_b",
+  "note": "bong with a body phones can play (saturated + an octave up)",
+  "sources": [
+   "Kenney Interface Sounds · bong_001.ogg (CC0) · speed 1.5 · saturated",
+   "Kenney Interface Sounds · bong_001.ogg (CC0) · speed 3.0"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.08,
+  "phoneDropDb": 8.2,
+  "bytes": 4858,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "SwingArcher": {
+  "file": "art/sfx/SwingArcher.ogg",
+  "candidate": "SwingBow_a",
+  "note": "string twang + arrow swish (Archer)",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.3,
+  "phoneDropDb": 0.3,
+  "bytes": 7608,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "SwingMage": {
+  "file": "art/sfx/SwingMage.ogg",
+  "candidate": "SwingMagic_c",
+  "note": "short bright rise",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.27,
+  "phoneDropDb": 0.2,
+  "bytes": 7388,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "SwingTamer": {
+  "file": "art/sfx/SwingTamer.ogg",
+  "candidate": "SwingWhistle_a",
+  "note": "one rising whistle (Tamer pet attack)",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.22,
+  "phoneDropDb": 0.0,
+  "bytes": 6791,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "SwingWarrior": {
+  "file": "art/sfx/SwingWarrior.ogg",
+  "candidate": "SwingWarrior_a",
+  "note": "short airy whoosh 0.18 s, 500-3000 Hz (§6 #1)",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.175,
+  "phoneDropDb": 0.0,
+  "bytes": 6103,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "TalkBlip": {
+  "file": "art/sfx/TalkBlip.ogg",
+  "candidate": "TalkBlip_a",
+  "note": "soft triangle blip (speakers change its pitch)",
+  "sources": [
+   "synth · tools/sfx_game.py (ours)"
+  ],
+  "license": "our own synthesis (no third-party material)",
+  "sec": 0.05,
+  "phoneDropDb": 2.4,
+  "bytes": 4741,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "Tap": {
+  "file": "art/sfx/Tap.ogg",
+  "candidate": "Tap_a",
+  "note": "soft low blip (§6 #23)",
+  "sources": [
+   "Kenney Interface Sounds · select_002.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.04,
+  "phoneDropDb": 0.9,
+  "bytes": 4624,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "WindowClose": {
+  "file": "art/sfx/WindowClose.ogg",
+  "candidate": "WindowClose_a",
+  "note": "soft falling blip",
+  "sources": [
+   "Kenney Interface Sounds · minimize_009.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.206,
+  "phoneDropDb": 0.1,
+  "bytes": 5232,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ },
+ "WindowOpen": {
+  "file": "art/sfx/WindowOpen.ogg",
+  "candidate": "WindowOpen_a",
+  "note": "soft rising blip 1.1-1.5 kHz",
+  "sources": [
+   "Kenney Interface Sounds · maximize_009.ogg (CC0)"
+  ],
+  "license": "CC0 1.0 (Kenney.nl packs, License.txt in the zip)",
+  "sec": 0.218,
+  "phoneDropDb": 0.1,
+  "bytes": 5273,
+  "made": "tools/sfx_game.py build (48 kHz mono, -14 dBFS loudest 100 ms, peak <= -1 dBFS)"
+ }
+}

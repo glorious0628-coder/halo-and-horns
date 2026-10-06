@@ -1,0 +1,247 @@
+<title>선악 키우기 효과음 후보</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;600&display=swap">
+<style>
+/* layout: one listening column; each sound is a row (name + when | candidate pads), grouped by where it plays */
+:root {
+  --bg: #f4f5fb;          /* paper with a faint navy bias */
+  --panel: #ffffff;
+  --ink: #18203f;         /* the game's navy rim */
+  --muted: #5b6386;
+  --line: #d9dcec;
+  --gold: #b97a06;        /* Halo gold, darkened for text on light */
+  --gold-soft: #fff2cf;
+  --horn: #b3263a;        /* Horns red, for the pick ring */
+  --pad: #eef0f9;
+  --pad-on: #18203f;
+  --pad-on-ink: #ffffff;
+  --display: "Jua", "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10142b; --panel: #181d3a; --ink: #eef0fb; --muted: #a7add0; --line: #2c3361;
+    --gold: #f4c04e; --gold-soft: #3a3214; --horn: #ff6b7d; --pad: #222953; --pad-on: #f4c04e; --pad-on-ink: #10142b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10142b; --panel: #181d3a; --ink: #eef0fb; --muted: #a7add0; --line: #2c3361;
+  --gold: #f4c04e; --gold-soft: #3a3214; --horn: #ff6b7d; --pad: #222953; --pad-on: #f4c04e; --pad-on-ink: #10142b;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 22px; }
+header { display: grid; gap: 8px; }
+h1 { font-family: var(--display); font-weight: 400; font-size: 34px; line-height: 1.15; margin: 0; text-wrap: balance; }
+.lead { margin: 0; color: var(--muted); max-width: 62ch; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.btn { border: 1.5px solid var(--ink); background: var(--panel); border-radius: 999px; padding: 7px 16px; font-weight: 600; }
+.btn:hover { background: var(--pad); }
+.btn.primary { background: var(--pad-on); color: var(--pad-on-ink); border-color: var(--pad-on); }
+button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; gap: 6px; align-items: center; }
+.dot { width: 12px; height: 12px; border-radius: 4px; border: 2px solid var(--horn); background: var(--gold-soft); }
+.dot.k { border-color: var(--line); background: var(--pad); }
+section { display: grid; gap: 8px; }
+h2 { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 8px 0 0; letter-spacing: 0.02em; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 18px; align-items: center;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+.who { min-width: 0; display: grid; gap: 2px; }
+.who b { font-size: 17px; }
+.who b small { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 6px; font-family: ui-monospace, Consolas, monospace; }
+.who p { margin: 0; color: var(--muted); font-size: 13.5px; }
+.pads { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.padbtn { display: grid; gap: 1px; justify-items: start; text-align: left; min-width: 112px; max-width: 190px;
+  background: var(--pad); border: 2px solid transparent; border-radius: 12px; padding: 6px 11px; }
+.padbtn .v { font-family: var(--display); font-size: 17px; line-height: 1.1; display: flex; gap: 6px; align-items: baseline; }
+.padbtn .v i { font-style: normal; font-family: var(--body); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.padbtn .n { font-size: 12.5px; color: var(--muted); }
+.padbtn.pick { border-color: var(--horn); background: var(--gold-soft); }
+.padbtn.pick .v::after { content: "고름"; font-family: var(--body); font-size: 11px; font-weight: 600; color: var(--horn); }
+.padbtn.playing { background: var(--pad-on); color: var(--pad-on-ink); }
+.padbtn.playing .n, .padbtn.playing .v i { color: var(--pad-on-ink); }
+.demos { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+.demo { border: 1px dashed var(--muted); background: transparent; border-radius: 999px; padding: 4px 12px; font-size: 13px; }
+.demo:hover { background: var(--pad); }
+footer { color: var(--muted); font-size: 12.5px; display: grid; gap: 4px; }
+@media (max-width: 620px) {
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .pads { justify-content: flex-start; }
+  .padbtn { min-width: 0; flex: 1 1 130px; }
+  h1 { font-size: 28px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .padbtn { transition: background 120ms ease, color 120ms ease; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>선악 키우기 효과음 후보</h1>
+    <p class="lead">게임에 넣을 소리 23개예요. 빨간 테두리(고름)가 지금 고른 소리이고, 옆은 다른 후보예요. 게임 안 소리 크기 그대로 나와요. 폰 스피커로도 한 번 들어 보세요.</p>
+    <div class="bar">
+      <button class="btn primary" id="playAll" type="button">고른 소리 모두 듣기</button>
+      <button class="btn" id="stopAll" type="button">멈추기</button>
+    </div>
+    <div class="legend">
+      <span><i class="dot"></i>고른 소리</span>
+      <span><i class="dot k"></i>다른 후보</span>
+      <span>a·b·c 옆 숫자 = 길이(초)</span>
+    </div>
+  </header>
+  <main id="board"></main>
+  <footer>
+    <span>소리 원본: Kenney Impact·Interface Sounds(CC0)와 직접 합성한 소리만 썼어요. Roblox 라이브러리 소리는 없어요.</span>
+    <span>파일: art/sfx/&lt;이름&gt;.ogg · 출처 장부: art/sfx/sources.json · 만든 도구: tools/sfx_game.py</span>
+  </footer>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const board = document.getElementById("board");
+let ctx = null;
+const buffers = new Map();
+const live = new Set();
+
+function audioCtx() {
+  if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (ctx.state === "suspended") ctx.resume();
+  return ctx;
+}
+function decode(key, b64) {
+  if (buffers.has(key)) return buffers.get(key);
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  const p = new Promise((resolve, reject) => audioCtx().decodeAudioData(bytes.buffer, resolve, reject));
+  buffers.set(key, p);
+  return p;
+}
+// one candidate at the game's volume (Config.Audio Volume, 0.5 = unity) and speed
+async function play(name, cand, opt = {}) {
+  const c = audioCtx();
+  const buf = await decode(name + "_" + cand.v, cand.b64);
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  src.playbackRate.value = opt.rate || 1;
+  const g = c.createGain();
+  g.gain.value = (DATA.sounds[name].vol / 0.5) * (opt.gain || 1);
+  src.connect(g).connect(c.destination);
+  const at = c.currentTime + (opt.delay || 0);
+  src.start(at);
+  live.add(src);
+  src.onended = () => live.delete(src);
+  if (opt.el) {
+    setTimeout(() => opt.el.classList.add("playing"), (opt.delay || 0) * 1000);
+    setTimeout(() => opt.el.classList.remove("playing"), ((opt.delay || 0) + buf.duration / (opt.rate || 1)) * 1000 + 60);
+  }
+  return buf.duration / (opt.rate || 1);
+}
+function stopAll() {
+  for (const s of live) { try { s.stop(); } catch (e) {} }
+  live.clear();
+  document.querySelectorAll(".playing").forEach(el => el.classList.remove("playing"));
+}
+function pickOf(name) {
+  const s = DATA.sounds[name];
+  return s.cands.find(c => c.v === s.pick) || s.cands[0];
+}
+const padEls = {};
+
+// game-side variations worth hearing: combo coin, talking voices, auto at half volume, the ghost king...
+const DEMOS = {
+  Coin: [["연속 처치 8번", name => DATA.steps.concat([12]).forEach((st, i) => play(name, pickOf(name), { rate: Math.pow(2, st / 12), delay: i * 0.32, el: padEls[name] }))]],
+  TalkBlip: [
+    ["조각이 말할 때", name => { for (let i = 0; i < 14; i++) play(name, pickOf(name), { rate: DATA.talk.Shard * (1 + (Math.random() - 0.5) * 0.08), delay: i * 0.055 }); }],
+    ["뿔 안내자가 말할 때", name => { for (let i = 0; i < 12; i++) play(name, pickOf(name), { rate: DATA.talk.Horns * (1 + (Math.random() - 0.5) * 0.08), delay: i * 0.075 }); }],
+  ],
+  SwingBlade: [
+    ["자동 전투(0.5배 크기)", name => { for (let i = 0; i < 3; i++) play(name, pickOf(name), { gain: 0.5, delay: i * 0.6 }); }],
+    ["맨손(1.3배)", name => play(name, pickOf(name), { rate: 1.3, gain: 0.6 })],
+    ["대장장이(0.85배)", name => play(name, pickOf(name), { rate: 0.85 })],
+  ],
+  SwingMagic: [["연금술사(0.9배)", name => play(name, pickOf(name), { rate: 0.9 })]],
+  HitThud: [["내가 맞을 때(0.8배)", name => play(name, pickOf(name), { rate: 0.8, gain: 0.6 })]],
+  HitSquish: [["작은 유령(1.25배)", name => play(name, pickOf(name), { rate: 1.25 })]],
+  KingArrive: [["유령 왕(1.15배)", name => play(name, pickOf(name), { rate: 1.15 })]],
+};
+
+function render() {
+  for (const group of DATA.groups) {
+    const sec = document.createElement("section");
+    const h = document.createElement("h2");
+    h.textContent = group;
+    sec.appendChild(h);
+    for (const [name, s] of Object.entries(DATA.sounds)) {
+      if (s.group !== group) continue;
+      const row = document.createElement("div");
+      row.className = "row";
+      const who = document.createElement("div");
+      who.className = "who";
+      const b = document.createElement("b");
+      b.textContent = s.label;
+      const sm = document.createElement("small");
+      sm.textContent = name;
+      b.appendChild(sm);
+      const p = document.createElement("p");
+      p.textContent = s.when;
+      who.append(b, p);
+      const pads = document.createElement("div");
+      pads.className = "pads";
+      for (const c of s.cands) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.id = "pad-" + name + "-" + c.v;
+        btn.className = "padbtn" + (c.v === s.pick ? " pick" : "");
+        btn.setAttribute("aria-label", s.label + " 후보 " + c.v + ": " + c.note);
+        const v = document.createElement("span");
+        v.className = "v";
+        v.textContent = c.v;
+        const len = document.createElement("i");
+        len.textContent = c.sec.toFixed(2) + "s";
+        v.appendChild(len);
+        const n = document.createElement("span");
+        n.className = "n";
+        n.textContent = c.note;
+        btn.append(v, n);
+        btn.addEventListener("click", () => play(name, c, { el: btn }));
+        if (c.v === s.pick) padEls[name] = btn;
+        pads.appendChild(btn);
+      }
+      row.append(who, pads);
+      if (DEMOS[name]) {
+        const demos = document.createElement("div");
+        demos.className = "demos";
+        for (const [text, fn] of DEMOS[name]) {
+          const d = document.createElement("button");
+          d.type = "button";
+          d.className = "demo";
+          d.textContent = "▶ " + text;
+          d.addEventListener("click", () => fn(name));
+          demos.appendChild(d);
+        }
+        row.appendChild(demos);
+      }
+      sec.appendChild(row);
+    }
+    board.appendChild(sec);
+  }
+}
+
+async function playAll() {
+  stopAll();
+  let t = 0;
+  for (const name of Object.keys(DATA.sounds)) {
+    const c = pickOf(name);
+    play(name, c, { delay: t, el: padEls[name] });
+    t += Math.min(c.sec, 1.2) + 0.55;
+  }
+}
+document.getElementById("playAll").addEventListener("click", playAll);
+document.getElementById("stopAll").addEventListener("click", stopAll);
+render();
+</script>
