@@ -787,8 +787,9 @@ def build_short(short, voice, out_root, do_tts=True):
     band.alpha_composite(grad)
     if style == "neon":  # no dark band: only the white context line near the top (reference style)
         band = Image.new("RGBA", (W, BAND_H + 40), (0, 0, 0, 0))
-        tl = topline_img(fill(short["topline"]))
-        band.alpha_composite(tl, ((W - tl.width) // 2, 150))
+        if short.get("topline"):  # optional (user 2026-10-06: not needed)
+            tl = topline_img(fill(short["topline"]))
+            band.alpha_composite(tl, ((W - tl.width) // 2, 150))
     else:
         b0, b1 = short["band"]
         paste_center(band, text_img([(b0, GOLD)], fit_size(b0, 980, 96)), W // 2, 142)

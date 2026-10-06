@@ -463,8 +463,7 @@
      "#shorts"
     ]
    },
-   "style": "neon",
-   "topline": "I can't code or draw, so 7 AI teammates help me make a Roblox game."
+   "style": "neon"
   },
   {
    "id": "short02_picture_to_3d",
@@ -914,8 +913,7 @@
      "#shorts"
     ]
    },
-   "style": "neon",
-   "topline": "This Roblox monster started as a drawing."
+   "style": "neon"
   },
   {
    "id": "short03_pumpkin_king",
@@ -1261,13 +1259,11 @@
      "#shorts"
     ]
    },
-   "style": "neon",
-   "topline": "Meet the Halloween boss of my Roblox game."
+   "style": "neon"
   },
   {
    "id": "short04_monster_reveal",
    "style": "neon",
-   "topline": "This is what my Roblox monsters look like in real life.",
    "cap_y": 1560,
    "lines": [
     {
