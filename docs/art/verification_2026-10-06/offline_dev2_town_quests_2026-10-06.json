@@ -1,0 +1,886 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 95,
+  "failedChecks": 0,
+  "namedChecks": 95,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "H1 / R1 / N3 are in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "R1: a sub for {Horns=true}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "R1: opens after M2_3 (검수: the three at the same time)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "R1: 120 gold + half a level bar of XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "R1: ends with a pick at its NPC",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "R1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "R1: starts by talking to the same NPC (a speaker name)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "R1: the last line is a question (story_depth §1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "N3: a sub for {Halo=true,Horns=true,Neutral=true}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "N3: opens after M2_3 (검수: the three at the same time)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "N3: 120 gold + half a level bar of XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "N3: ends with a pick at its NPC",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "N3: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "N3: starts by talking to the same NPC (a speaker name)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "N3: the last line is a question (story_depth §1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H1: a sub for {Halo=true}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H1: opens after M2_3 (검수: the three at the same time)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H1: 120 gold + half a level bar of XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H1: ends with a pick at its NPC",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H1: starts by talking to the same NPC (a speaker name)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H1: the last line is a question (story_depth §1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "N3 keeps A / B labels for a Neutral save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "H1: Near WoodsGate Stay 10 -> King Slime 2 (meadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "R1: Near Fountain Stay 15 -> Slime 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WoodsGate is outside the PvP woods and every level gate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "each spot stays within 20 studs of its bridge end (Config.Map.Bridges)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "NPC contract: tag StoryNpc + attribute NpcId, 16 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "a Halo player after M2_3: H1 + N3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "a Horns player after M2_3: R1 + N3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "before M2_3: none of them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "a Neutral save (switch off): N3, not N1 / N2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "switch on: N1 / N2 come back (data kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "the H1 row: 'Talk to Bright' with Story.Npc = Bright",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "Talk 100 studs from Bright: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "Open from far away: no window",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "Open next to Bright: the talk window",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "Talk next to Bright: step 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "the count is time, not refreshes (6 ticks, 4 extra refreshes: 5 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "the row counts the seconds (%d/%d s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "stepping away resets the count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "9 s is not enough",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "10 s in one go: step 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "2 king slimes: step 4 waits at Bright (no pop-up)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "choosing far from Bright: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "A: Pick 'Good', honor +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "A: one 70% scroll (no potions)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "the quest: +120 gold, +half a Lv6 bar of XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "H1 done (once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "lines: '+Enhance Scroll 70%' and the closing question",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "a second pick after the end pays nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "h1-good",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "Smokey not placed yet (only Bright is): the talk works anywhere",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "the fountain spot counts only in the Crossroads zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "14 s at the fountain is not enough",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "15 s: step 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "5 slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "6 slimes: step 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "B: Pick 'Evil', infamy +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "B: 3 HP potions + 60 gold (then the quest's 120)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "R1 done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "r1-evil",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "n3",
+      "check": "the Halo bridge: a plain Near (arrive = done)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "n3",
+      "check": "the Horns bridge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "n3",
+      "check": "30 hunting gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "n3",
+      "check": "a Halo player picks A: the scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "n3",
+      "check": "a Neutral save cannot send Good / Evil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "n3",
+      "check": "Neutral B: recorded, no score, Evil's reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "n3",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "n3",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant-item",
+      "check": "2 scrolls",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant-item",
+      "check": "3 HP potions (the attribute too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant-item",
+      "check": "bad id / count: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant-item",
+      "check": "potions stop at the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant-item",
+      "check": "no data: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant-item",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant-item",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "Config.Features.NeutralFaction = false (beta)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "Pickable: Halo / Horns only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "switch on: Neutral pickable again (data kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "the faction picker: Neutral is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "…with one log line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "Halo is still taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "the altar: a Neutral target stops before anything else",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "a Horns target goes on to the altar checks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "rebirth into the guild: refused quietly + logged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "rebirth into Halo goes on to its normal checks (here: the level)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "neutral-switch",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 21,
+    "applied": 21,
+    "caught": 21,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "H1 opens after M1_1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: H1: opens after M2_3 (검수: the three at the same time)",
+          "offered :: before M2_3: none of them"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "H1 spies 1 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: H1: Near WoodsGate Stay 10 -> King Slime 2 (meadow)",
+          "h1-good :: 9 s is not enough",
+          "h1-good :: stepping away resets the count",
+          "h1-good :: the count is time, not refreshes (6 ticks, 4 extra refreshes: 5 s)",
+          "h1-good :: the row counts the seconds (%d/%d s)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "N3 only for the guild",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: N3: a sub for {Halo=true,Horns=true,Neutral=true}",
+          "n3 :: group ran to the end without a Lua error",
+          "offered :: a Halo player after M2_3: H1 + N3",
+          "offered :: a Horns player after M2_3: R1 + N3",
+          "offered :: a Neutral save (switch off): N3, not N1 / N2"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the Halo bridge spot moves away",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: each spot stays within 20 studs of its bridge end (Config.Map.Bridges)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "B pays no gold",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: R1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "leaving the spot keeps the count",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "h1-good :: 9 s is not enough"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a stay counts by ticks, not time",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "h1-good :: 9 s is not enough",
+          "h1-good :: stepping away resets the count",
+          "h1-good :: the count is time, not refreshes (6 ticks, 4 extra refreshes: 5 s)",
+          "h1-good :: the row counts the seconds (%d/%d s)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "quest NPCs reachable from anywhere",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "h1-good :: A: Pick 'Good', honor +1",
+          "h1-good :: A: one 70% scroll (no potions)",
+          "h1-good :: Open next to Bright: the talk window",
+          "h1-good :: Talk 100 studs from Bright: refused",
+          "h1-good :: choosing far from Bright: refused",
+          "h1-good :: lines: '+Enhance Scroll 70%' and the closing question"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "no NPC placed = no talk",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "r1-evil :: 14 s at the fountain is not enough",
+          "r1-evil :: 15 s: step 3",
+          "r1-evil :: 5 slimes",
+          "r1-evil :: 6 slimes: step 4",
+          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)",
+          "r1-evil :: B: Pick 'Evil', infamy +1"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "NPC steps pop up by themselves",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "h1-good :: 2 king slimes: step 4 waits at Bright (no pop-up)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the pick pays nothing of its own",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "h1-good :: A: one 70% scroll (no potions)",
+          "h1-good :: lines: '+Enhance Scroll 70%' and the closing question",
+          "n3 :: a Halo player picks A: the scroll",
+          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a Neutral A pays Evil's reward",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "n3 :: Neutral B: recorded, no score, Evil's reward"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "XPBar ignored",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "h1-good :: the quest: +120 gold, +half a Lv6 bar of XP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GoldN ignored",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "h1-good :: the quest: +120 gold, +half a Lv6 bar of XP",
+          "n3 :: Neutral B: recorded, no score, Evil's reward",
+          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the guild's own quests offered while off",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: a Neutral save (switch off): N3, not N1 / N2"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GrantItem: potions never given",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grant-item :: 3 HP potions (the attribute too)",
+          "grant-item :: potions stop at the cap",
+          "n3 :: Neutral B: recorded, no score, Evil's reward",
+          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "GrantItem: no upper count limit",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grant-item :: bad id / count: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Neutral pickable while off",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "neutral-switch :: Halo is still taken",
+          "neutral-switch :: Pickable: Halo / Horns only",
+          "neutral-switch :: a Horns target goes on to the altar checks",
+          "neutral-switch :: rebirth into the guild: refused quietly + logged",
+          "neutral-switch :: the altar: a Neutral target stops before anything else",
+          "neutral-switch :: the faction picker: Neutral is ignored"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the picker ignores the switch",
+        "file": "src/ServerScriptService/FactionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "neutral-switch :: Halo is still taken",
+          "neutral-switch :: a Horns target goes on to the altar checks",
+          "neutral-switch :: the altar: a Neutral target stops before anything else",
+          "neutral-switch :: the faction picker: Neutral is ignored",
+          "neutral-switch :: …with one log line"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a refused Neutral pick is not logged",
+        "file": "src/ServerScriptService/FactionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "neutral-switch :: …with one log line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "rebirth into the guild allowed",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "neutral-switch :: rebirth into the guild: refused quietly + logged"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "1fa0b3b8c7924d63dfb96c637b139c33d07505d81f74eb66873ec2323a52d032",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
+    "src/ServerScriptService/StoryQuestService.luau": "ee9bed3ba48c15e46ea772e16c175438902a759b1caec51245678012f0d4028c",
+    "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
+    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/CharacterVisuals.luau": "bf34c6cae54d9e56ca82dcb5d6906de0fa9e089f352dfa4d540a010d742c50b1",
+    "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
+    "src/ServerScriptService/ProgressionService.luau": "074be3338e3845a95ebd1d0943d7c3ab68ed03f9529e11286e62e7140ab8fee3"
+  },
+  "fixtureSHA256": "a71aee26eb99e6871fbb986566d5575d62c69e10a11c59875ae14b36a86e5826",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-46: subs H1 (Halo, Bright), R1 (Horns, Smokey), N3 (everyone, Tiny) open after M2_3, once each: talk to the NPC -> H1 stay 10 s at WoodsGate (outside PvP) -> 2 king slimes / R1 stay 15 s at the fountain (Crossroads zone) -> 6 slimes / N3 both bridge ends -> 30 hunting gold -> the pick at the NPC (A = one Enh70, B = 3 HP potions + 60 gold, 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half a level bar of XP, a closing question. E4 Near.Stay counts seconds in one go (leaving resets, the row shows %d/%d s). E6 pick rewards go through LootService.GrantItem (items / potions, caps, 1..99). Npc steps need the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it exists, never pop up by themselves, and rows carry Story.Npc. A23-57: Config.Features.NeutralFaction = false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs N1 / N2 are not offered; Neutral saves keep N3.",
+  "limitations": "NPC models, '!' markers, the talk window and the quest marker routes are game dev 1's (contract: tag StoryNpc, attribute NpcId, row Story.Npc / Guide). Real walking, physics and the 1 s loop timing are modelled by moving the root and calling Refresh each second."
+}

@@ -7,6 +7,16 @@ Config.Game = {
 	MaxPlayers = 20, -- documentation only; set in Studio Game Settings
 }
 
+-- feature switches. A23-57 (user 2026-10-06): NeutralFaction = the artisan guild as a faction a player can newly pick;
+-- off for the beta (the artisan update brings it back). Off: no new Neutral pick at the faction picker, the altar or a
+-- rebirth (Config.Pickable), its own sub quests are not offered; saves that are Neutral already stay as they are.
+-- Code and data stay; game dev 1's faction picker reads the switch for its cards.
+Config.Features = { NeutralFaction = false }
+
+function Config.FeatureOn(name)
+	return type(Config.Features) == "table" and Config.Features[name] == true
+end
+
 ----------------------------------------------------------------- player / data
 Config.Player = {
 	WalkSpeed = 20,
@@ -616,6 +626,13 @@ Config.Factions = {
 		Pitch = "",
 	},
 }
+
+-- a faction a player may newly pick (faction picker, altar switch, rebirth): Halo / Horns; the artisan guild only while
+-- Config.Features.NeutralFaction is on (A23-57). A save that is Neutral already keeps it.
+function Config.Pickable(factionId)
+	if factionId == "Neutral" and not Config.FeatureOn("NeutralFaction") then return false end
+	return (factionId == "Halo" or factionId == "Horns" or factionId == "Neutral") and Config.Factions[factionId] ~= nil
+end
 
 -- level-only base health (no faction, class, Size Justice or kaiju)
 function Config.BaseHealth(level)
@@ -1551,17 +1568,26 @@ Config.Tutorial = {
 -- mission (TutorialStep 99); Subs are accepted automatically and listed under the main row (S0 right after the
 -- class pick). Step Obj types (StoryQuestService): Kill{Kind,Zone,Golden,Near,Radius,Count} BasicKill SafeKill{MinHP}
 -- AutoKill SkillHit{Min,Count} WarPoints{Count} EarnGold{Source,Count} Enter{Zone|"OwnTown"|"AnyTown"} Level{Level}
--- State{Key} Goose WarChest Talk Choice{Good,Evil,Neutral} Trials{List}. Rewards: Gold / XP = minutes of
--- Config.HuntValue (1 = one minute of hunting), Claim = true -> the player presses [받기] (chapter ends).
+-- State{Key} Goose WarChest Talk Choice{Good,Evil,Neutral} Trials{List} Near{Spot,Radius,Zone,Stay}. Rewards: Gold / XP
+-- = minutes of Config.HuntValue (1 = one minute of hunting), GoldN = exact gold, XPBar = a share of the current level's
+-- XP bar; Claim = true -> the player presses [Claim] (chapter ends).
+-- A23-46 / story_depth E4 + E6 (게임성 개발 2, 2026-10-07): Near.Stay = seconds to stay inside in one go (leaving
+-- resets; the row shows "%d/%d s"); Choice.Good / .Evil.Reward = { Item = Loot item id | Potion = "HP" | "MP", N,
+-- Gold } paid on that pick (a Neutral A takes Good's, B takes Evil's); a step with Npc = id is talked through that town
+-- NPC: game dev 1 tags its model CollectionService "StoryNpc" (NpcTag) with the attribute NpcId = id, and Talk / Choose
+-- / Open then need the player within NpcRange of it (before the NPC exists in the world, anywhere).
 Config.StoryQuests = {
 	MaxSubs = 2, -- sub rows sent with the quest list (after the main row)
 	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
-	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Blacksmith", Guild = "Guild Guide" },
+	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Blacksmith", Guild = "Guild Guide",
+		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny" }, -- A23-46 town NPCs
+	NpcTag = "StoryNpc",
+	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },
 	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7" },
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2" },
+	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3" },
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -1583,6 +1609,7 @@ Config.StoryQuests = {
 		Ok = "Got it",
 		Later = "Later",
 		Title = "%s · %s",
+		ChoiceGold = "+%s gold", -- E6: a pick's own reward line ("+Enhance Scroll 70%" / "+HP Potion ×3 · +60 gold")
 	},
 	Defs = {
 		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a king slime
@@ -1749,8 +1776,94 @@ Config.StoryQuests = {
 			},
 			Reward = { Gold = 1 },
 		},
+		-- A23-46 town people "they're up to something" (docs/design/town_npc_quests_2026-10-06.md + story_depth §3 / §5-⑥,
+		-- 검수 decisions): open after M2_3 for the town's own side, once each. The rumor turns out to be harmless (the
+		-- twist); the last pick is A (angel, Good) or B (devil, Evil) with the same size of reward in a different kind
+		-- (A: one 70% scroll, B: 3 HP potions + 60 gold) on top of 120 gold + half a level bar of XP. No weekly ranking
+		-- points (A23-23 D1). The last line asks a question (story_depth §1).
+		H1 = {
+			Kind = "Sub", Title = "The Horns Are Up to Something", Speaker = "Bright", Factions = { Halo = true },
+			Requires = { Done = { "M2_3" } },
+			Start = "Bright the town guard needs help. Find him in Halo Citadel!",
+			Steps = {
+				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "The Horns are up to something! I need Form H-1.",
+						"To get Form H-1, I need Form H-0. …Can you just help?",
+						"They sneak past the woods with big sacks. Go take a look!" } } },
+				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
+					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
+				{ Text = "King Slimes near the woods %d/%d", Guide = "SlimeMeadow",
+					Start = "A sack fell open… and King Slimes gobbled what was inside!",
+					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } },
+				{ Text = "Tell Bright what you found", Guide = "HaloTown", Npc = "Bright", Panel = true,
+					Lines = { All = { "Sticky… sweet… is this jelly?",
+						"Their secret sacks… are full of birthday jelly? For Smokey?",
+						"So what do we tell everyone?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Tell everyone the truth", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Bright: So who started the rumor? …Does anyone remember?",
+		},
+		R1 = {
+			Kind = "Sub", Title = "The Halos Are Up to Something", Speaker = "Smokey", Factions = { Horns = true },
+			Requires = { Done = { "M2_3" } },
+			Start = "Psst! Smokey in Horns Den has a secret job for you.",
+			Steps = {
+				{ Text = "Talk to Smokey in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Psst! The Halos whisper at the fountain. A secret plan!",
+						"Plan A: we spy. Plan B: same as Plan A, but sneakier!",
+						"Go listen at the Crossroads fountain. Look natural!" } } },
+				{ Text = "Listen at the fountain %d/%d s", Guide = "Fountain",
+					Obj = { Type = "Near", Spot = "Fountain", Radius = 16, Zone = "Crossroads", Stay = 15 } },
+				{ Text = "Slimes in the meadow %d/%d", Guide = "SlimeMeadow",
+					Start = "You heard: \"Slimes… sparkles… BOOM at sunset!\" Check the meadow!",
+					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
+				{ Text = "Tell Smokey what you heard", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+					Lines = { All = { "The slimes were full of sparkle dust. For a show?",
+						"Their big secret… is a fireworks show? For everyone?",
+						"So what do we tell everyone?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Tell everyone the truth", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Smokey: So who started the rumor? …Does anyone remember?",
+		},
+		N3 = {
+			Kind = "Sub", Title = "Both Sides Are Suspicious", Speaker = "Tiny", Factions = { Halo = true, Horns = true, Neutral = true },
+			Requires = { Done = { "M2_3" } },
+			Start = "Tiny from the guild is taking notes. Find Tiny at the Crossroads!",
+			Steps = {
+				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Noted: the Knights look suspicious. Noted: the Horns look suspicious.",
+						"Can you watch both bridges for me? Quietly." } } },
+				{ Text = "Watch the Halo bridge", Guide = "HaloBridge", Obj = { Type = "Near", Spot = "HaloBridge", Radius = 14 } },
+				{ Text = "Watch the Horns bridge", Guide = "HornsBridge", Obj = { Type = "Near", Spot = "HornsBridge", Radius = 14 } },
+				{ Text = "Hunting gold for the guild %d/%d", Guide = "SlimeMeadow",
+					Obj = { Type = "EarnGold", Source = "Monster", Count = 30 } },
+				{ Text = "Show Tiny your notes", Guide = "Crossroads", Npc = "Tiny", Panel = true,
+					Lines = { All = { "Both sides buy spy glasses. To spy on each other. From us.",
+						"Noted. …Is selling to both sides a side too?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Send both sides a peace letter", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Sell more spy glasses to both!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } },
+						Neutral = { A = "Send both sides a peace letter", B = "Sell more spy glasses to both!" } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Tiny: Noted. Suspicious: everyone. …So who started it?",
+		},
 	},
 }
+
+-- A23-46 town sub-quest spots at the bridge ends of Config.Map.Bridges: the meadow end of the Goblin bridge (488, 0, 0)
+-- 14 studs back, outside the PvP woods (H1 spies there), and the Crossroads ends of the Halo / Horns bridges (0, 0, -173)
+-- / (0, 0, 173) 12 studs onto the land (N3 watches them). They move with the bridges: tools/test_town_quests.py fails
+-- when a bridge end moves away from its spot.
+Config.StoryQuests.Landmarks.WoodsGate = Vector3.new(474, 0, 0)
+Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -161)
+Config.StoryQuests.Landmarks.HornsBridge = Vector3.new(0, 0, 161)
 
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {

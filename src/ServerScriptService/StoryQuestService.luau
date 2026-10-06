@@ -26,6 +26,9 @@ local TUT_DONE = Config.Tutorial.Steps.Done -- 99
 local MAIN_INDEX = {}
 for i, id in SQ.Main do MAIN_INDEX[id] = i end
 local TICK = 1
+-- E4 Near.Stay: [Player] = { [questId .. ":" .. step] = os.clock() when the player came inside } (never saved: a rejoin
+-- or leaving the spot starts the count again)
+local stays = {}
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -137,6 +140,31 @@ local function currentZone(player)
 	return ok and z or player:GetAttribute("ZoneId")
 end
 
+-- A23-46: a step with Npc is talked through that town NPC (game dev 1 tags its model SQ.NpcTag with the attribute
+-- NpcId). True when the player stands within SQ.NpcRange of it, or when no such NPC exists in the world yet.
+local function npcNear(player, npcId)
+	if type(npcId) ~= "string" then return true end
+	local okTag, tagged = pcall(function()
+		return game:GetService("CollectionService"):GetTagged(SQ.NpcTag or "StoryNpc")
+	end)
+	if not okTag or type(tagged) ~= "table" then return true end
+	local root = Util.GetRoot(player)
+	local found = false
+	for _, inst in tagged do
+		if inst:GetAttribute("NpcId") == npcId then
+			found = true
+			local okPos, pos = pcall(function()
+				if inst:IsA("Model") then return inst:GetPivot().Position end
+				return inst.Position
+			end)
+			if okPos and root and typeof(pos) == "Vector3" and Util.FlatDistance(root.Position, pos) <= (SQ.NpcRange or 16) then
+				return true
+			end
+		end
+	end
+	return not found
+end
+
 local function ownsIron(player)
 	local mask = math.floor(num(player:GetAttribute("WeaponOwnedMask"), 1))
 	return bit32.btest(mask, bit32.lshift(1, 2)) or num(player:GetAttribute("WeaponTier"), 1) >= 3
@@ -192,6 +220,9 @@ local function payReward(player, def)
 	local g, x = 0, 0
 	if num(r.Gold) > 0 then g = select(1, Config.HuntValue(level, r.Gold)) end
 	if num(r.XP) > 0 then x = select(2, Config.HuntValue(level, r.XP)) end
+	-- A23-46: exact gold and a share of the current level's XP bar (the town people's quests)
+	if num(r.GoldN) > 0 then g += math.floor(num(r.GoldN)) end
+	if num(r.XPBar) > 0 then x += math.floor(Config.XPToNext(level) * num(r.XPBar)) end
 	if g > 0 then S.ProgressionService.AddBankGold(player, g, "Quest") end
 	if x > 0 then S.ProgressionService.AddXP(player, x) end
 	if g > 0 and x > 0 then return string.format(TXT.RewardXP, def.Title, Util.FormatNumber(g), Util.FormatNumber(x)) end
@@ -223,10 +254,12 @@ local function complete(player, data, id)
 	dirty(player)
 end
 
-local function openStep(player, id, track)
+-- manual = the player asked (StoryAction "Open"); a step talked through a town NPC (Npc) never pops up by itself
+local function openStep(player, id, track, manual)
 	local def = DEFS[id]
 	local step = def and stepOf(player, def, track.St)
 	if not step or not step.Panel then return end
+	if step.Npc and manual ~= true then return end
 	pcall(function()
 		Net.Get("OpenPanel"):FireClient(player, "Story", { Id = id, St = track.St })
 	end)
@@ -236,6 +269,7 @@ end
 local function advance(player, data, id, track)
 	local def = DEFS[id]
 	track.P, track.T = 0, {}
+	if stays[player] then stays[player][id .. ":" .. tostring(track.St)] = nil end
 	if track.St < #def.Steps then
 		track.St += 1
 		local nextStep = stepOf(player, def, track.St)
@@ -298,6 +332,9 @@ local function requirementsMet(player, data, def)
 	local req = def.Requires or {}
 	local st = story(data)
 	if def.Factions and not def.Factions[faction(player)] then return false end
+	-- A23-57: the artisan guild's own quests wait for its switch (a save that is Neutral already keeps what it has)
+	if def.Factions and def.Factions.Neutral and not def.Factions.Halo and not def.Factions.Horns
+		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
 	if req.Tutorial and num(data.TutorialStep) == 0 then return false end
 	if req.Level and num(data.Level, 1) < req.Level then return false end
@@ -362,8 +399,34 @@ local function refresh(player)
 				-- standing next to a landmark (e.g. the Crossroads fountain), checked by the 1 s loop
 				local spot = SQ.Landmarks[obj.Spot]
 				local root = Util.GetRoot(player)
-				done = spot ~= nil and root ~= nil and (obj.Zone == nil or zoneMatches(player, obj.Zone, currentZone(player)))
+				local inside = spot ~= nil and root ~= nil and (obj.Zone == nil or zoneMatches(player, obj.Zone, currentZone(player)))
 					and Util.FlatDistance(root.Position, spot) <= (obj.Radius or 20)
+				if num(obj.Stay) > 0 then
+					-- E4: stay inside for obj.Stay seconds in one go (leaving starts again); P = whole seconds for the row
+					local key = t.Id .. ":" .. tostring(tr.St)
+					local mine = stays[player]
+					if inside then
+						if not mine then
+							mine = {}
+							stays[player] = mine
+						end
+						mine[key] = mine[key] or os.clock()
+						local held = math.min(obj.Stay, math.floor(os.clock() - mine[key]))
+						if held ~= num(tr.P) then
+							tr.P = held
+							changed = true
+						end
+						done = held >= obj.Stay
+					else
+						if mine then mine[key] = nil end
+						if num(tr.P) ~= 0 then
+							tr.P = 0
+							changed = true
+						end
+					end
+				else
+					done = inside
+				end
 			end
 			if done then advance(player, data, t.Id, tr) end
 		end
@@ -398,6 +461,10 @@ local function rowFor(player, data, id, track)
 		progress, target = done, #obj.List
 	elseif obj.Type == "Level" then
 		text = string.format(step.Text, math.floor(num(data.Level, 1)))
+	elseif obj.Type == "Near" and num(obj.Stay) > 0 then
+		progress, target = math.floor(num(track.P)), math.floor(obj.Stay) -- E4: "%d/%d s"
+		local okF, f = pcall(string.format, step.Text, progress, target)
+		text = okF and f or step.Text
 	elseif obj.Key == "OwnIron" then
 		text = string.format(step.Text, Util.FormatNumber(math.floor(num(data.CarriedGold) + num(data.BankGold))))
 	elseif obj.Count then
@@ -410,7 +477,9 @@ local function rowFor(player, data, id, track)
 		Text = text, Progress = progress, Target = target, -- raw '{Auto}' tokens (client fills them)
 		RewardGold = 0, RewardXP = 0,
 		CanClaim = track.Claim == true, ShowProgress = target > 1 and not track.Claim,
-		Story = { Id = id, St = track.St, Panel = step and step.Panel == true or nil, Guide = step and step.Guide or nil },
+		-- Npc (A23-46): the town NPC this step is talked through (game dev 1: '!' over it, the row guides there)
+		Story = { Id = id, St = track.St, Panel = step and step.Panel == true or nil, Guide = step and step.Guide or nil,
+			Npc = (not track.Claim) and step and step.Npc or nil },
 	}
 end
 
@@ -473,6 +542,33 @@ function StoryQuestService.Claim(player, id)
 end
 
 ------------------------------------------------------------------ StoryAction (Talk / Choose / Open)
+-- E6: the picked side's own reward (side "Good" | "Evil"; a Neutral A takes Good's, B takes Evil's): an item or potions
+-- through LootService.GrantItem (its caps and full notices) and gold to the bank, then one line saying what came
+local function payChoice(player, obj, side)
+	local r = type(obj[side]) == "table" and obj[side].Reward or nil
+	if type(r) ~= "table" then return end
+	local parts = {}
+	local id = r.Item or r.Potion
+	local loot = S.LootService
+	if type(id) == "string" and type(loot) == "table" and type(loot.GrantItem) == "function" then
+		local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(r.N, 1)))
+		if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
+		local given = ok and math.floor(num(res)) or 0
+		if given > 0 then
+			local item = Config.Loot.Items[id]
+			local name = (item and item.Name) or Config.Loot.Text.Potion[id] or id
+			table.insert(parts, given > 1 and string.format(Config.Loot.Text.GotN, name, given)
+				or string.format(Config.Loot.Text.Got, name))
+		end
+	end
+	local gold = math.floor(num(r.Gold))
+	if gold > 0 then
+		S.ProgressionService.AddBankGold(player, gold, "Quest")
+		table.insert(parts, string.format(TXT.ChoiceGold, Util.FormatNumber(gold)))
+	end
+	if #parts > 0 then notify(player, table.concat(parts, " · "), "reward") end
+end
+
 local function onStoryAction(player, id, action, option, ...)
 	if select("#", ...) ~= 0 then return end
 	if type(id) ~= "string" or type(action) ~= "string" or (option ~= nil and type(option) ~= "string") then return end
@@ -486,9 +582,10 @@ local function onStoryAction(player, id, action, option, ...)
 	if not tr or tr.Claim then return end
 	local step = stepOf(player, def, tr.St)
 	if not step or not step.Panel then return end
+	if step.Npc and not npcNear(player, step.Npc) then return end -- A23-46: talked through the NPC, standing next to it
 	local obj = step.Obj
 	if action == "Open" then
-		openStep(player, id, tr)
+		openStep(player, id, tr, true)
 	elseif action == "Talk" and obj.Type == "Talk" then
 		advance(player, data, id, tr)
 	elseif action == "Choose" and obj.Type == "Choice" then
@@ -502,10 +599,12 @@ local function onStoryAction(player, id, action, option, ...)
 			notify(player, string.format(option == "Good" and TXT.Good or TXT.Evil, pick.Points or 0), "good")
 			if f == "Halo" and option == "Evil" then notify(player, TXT.OddHalo, "info") end
 			if f == "Horns" and option == "Good" then notify(player, TXT.OddHorns, "info") end
+			payChoice(player, obj, option)
 		else
 			if option ~= "A" and option ~= "B" then return end
 			st.Pick[id] = option -- Neutral: recorded only (no good/evil score, A6)
 			notify(player, TXT.Recorded, "info")
+			payChoice(player, obj, option == "A" and "Good" or "Evil")
 		end
 		advance(player, data, id, tr)
 	end
@@ -578,6 +677,9 @@ function StoryQuestService.Start()
 			for _, p in S.PlayerService.GetReadyPlayers() do
 				local ok, err = pcall(refresh, p)
 				if not ok then Util.Warn(TAG, "refresh: " .. tostring(err)) end
+			end
+			for p in stays do
+				if p.Parent == nil then stays[p] = nil end -- E4 counts of players who left
 			end
 		end
 	end)

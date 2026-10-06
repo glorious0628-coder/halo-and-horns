@@ -43,9 +43,17 @@ local function warnThrottled(key, msg)
 	Util.Warn(TAG, tostring(msg))
 end
 
--- a faction a player may pick / switch to (needs its Config entry)
+-- a faction a player may newly pick / switch to (Config.Pickable: Halo / Horns; the artisan guild only while
+-- Config.Features.NeutralFaction is on, A23-57)
 local function isPlayable(factionId)
-	return (factionId == "Halo" or factionId == "Horns" or factionId == "Neutral") and Config.Factions[factionId] ~= nil
+	return Config.Pickable(factionId)
+end
+
+-- A23-57: a request for the switched-off artisan guild is refused like any invalid one, with a log line
+local function logNeutralRefused(player, factionId)
+	if factionId == "Neutral" and not Config.FeatureOn("NeutralFaction") then
+		warnThrottled("neutral", ("%s asked for the artisan guild, off for the beta (A23-57)"):format(player.Name))
+	end
 end
 
 local function isCounted(player)
@@ -273,7 +281,10 @@ end
 ------------------------------------------------------------------ remotes
 local function onChooseFaction(player, factionId)
 	if not S.PlayerService.IsReady(player) then return end
-	if type(factionId) ~= "string" or not isPlayable(factionId) then return end
+	if type(factionId) ~= "string" or not isPlayable(factionId) then
+		logNeutralRefused(player, factionId)
+		return
+	end
 	if not Util.RateLimit(player, "ChooseFaction", Config.RateLimits.ChooseFaction) then return end
 	if FactionService.GetFaction(player) ~= "None" then return end -- silent: first choice only
 
@@ -298,7 +309,10 @@ local function onSwitchFaction(player, a, b)
 	if not S.PlayerService.IsReady(player) then return end
 	local useTicket, target = parseSwitchArgs(a, b)
 	if type(useTicket) ~= "boolean" then return end
-	if target ~= nil and not isPlayable(target) then return end
+	if target ~= nil and not isPlayable(target) then
+		logNeutralRefused(player, target)
+		return
+	end
 	if not Util.RateLimit(player, "SwitchFaction", Config.RateLimits.SwitchFaction) then return end
 
 	local old = FactionService.GetFaction(player)
