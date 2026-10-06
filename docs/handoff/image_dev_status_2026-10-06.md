@@ -1,19 +1,30 @@
-# 이미지 개발 인계 상태 (2026-10-06, 사용량 한도로 멈춤)
+# 이미지 개발 인계 상태 (2026-10-06 오후, 계정 옮기느라 멈춤 — 검수 지시)
 
-- **끝난 것(push 완료):**
-  - 새 그림 업로드·적용: a62c6e8(20장), aebf974(PvP 탭), 938c230(진영 특성 10장).
-  - 알림 그림: bff00df(드랍 알림·호박 대왕 공지 그림, UIKit.Toast/Announce icon 인자).
-  - UIKit.ItemIcon(띠 색)·CharacterIcon 함수, 호박 대왕 알약 폭(f0e011a).
-  - ART-DEL1 정리 7dd8103(빈 키 그림 78장·로그 삭제, 9개 남김: docs/art/art_cleanup2_2026-10-06.json), asset_ids 키 UIP_ 정리 9759dd3.
-- **HUD v2(A23-26):** 1단계 시작 단계. `src/StarterPlayer/StarterPlayerScripts/HudLayout.luau`(커밋 안 됨, 문법 OK, 아직 어디서도 require 안 함)에 v2 사각형 → 논리 단위 계산, 폰 안전 영역 비율 축소, 누르는 칸 최소 60du, 가운데 열 맞춤이 들어 있어요.
-  - luau.exe 오프라인 검사(1280×720, 1024×768, 749×361 안전 655×340, 844×390)에서 겹침 0이에요. 검사 스크립트는 scratch에만 있어요.
-  - HUD.luau는 아직 안 고쳤어요.
-  - 다음 순서: ClientMain ORDER에 HudLayout 추가 → HUD applyLayout가 Rects를 쓰게 → 왼쪽 위 얼굴·HP·MP·전투력·경험치 → 오른쪽 위 줄·퀘스트 판 → 전투 묶음 → EventHUD Strip/Personal/Luck·GrudgeGhost G.Place(게임성 개발 허락받음).
-- **커밋 안 한 파일:** HudLayout.luau(위 설명), tools/terrain_view.py(Play 화면에서 지형 재질별 캡처. LeafyGrass·Basalt·Cobblestone 자리 좌표가 마을로 잘못 잡혀 고쳐야 함).
-- **연습 Studio:** build/UiSandbox.rbxlx가 열려 있고 최소화했어요(Edit 모드, 기기 흉내 default로 복원).
-  - 도구는 `STUDIO_NAME=UiSandbox`와 `tools/device_view.py pc|phone|844`를 써요.
-  - 창이 최소화되면 3D가 하얗게 찍혀요. 사용자 허락이 있어 ShowWindow로 잠깐 열 수 있어요.
-- **받았지만 안 올린 그림:** 없어요.
-  - 옛 UIP_IconPouch 파일(ui·out)은 메인 Studio 동기화를 확인한 뒤 지워요.
-  - 9개(FactionE 6, FactionTitle_FreshTyped, IconLock ui·out)는 묶음 2·13 뒤에 지워요.
-- **다음 할 일:** HUD v2 1~5(10/10 목표), 6 미니맵·7 전투 묶음(10/12 목표). 지형 15장은 그림이 오면 Config Tex_ Id를 바꾸고 apply_surface_materials.lua를 돌린 뒤 terrain_view로 확인해요.
+## 끝난 것 (push 완료)
+- 오전: a62c6e8(그림 20장), aebf974(PvP 탭), 938c230(진영 특성 10장), bff00df(드랍·호박 대왕 알림 그림), f0e011a, 7dd8103(ART-DEL1 정리), 9759dd3.
+- 65b2ccb 화면 배치 v2 계산 모듈(HudLayout) + 오프라인 검사.
+- b9ada3b 사냥터마다 한 분위기(ZoneLook) · 새 땅 그림 13종 · 나무 그림 적용 준비(apply_surface_materials.lua). 메인 적용은 게임성 개발 1 차례.
+- 0e7f14e → 34ac656 채팅창: Roblox 기본 자리·크기, PC도 닫힌 채 시작.
+
+## 커밋 안 한 파일 (작업 폴더에만 있음 — 그대로 이어 쓰면 됨)
+- **HUD v2 연결(UiSandbox에만 붙임, 사용자 배치 선택 대기라 커밋 보류):** `HUD.luau`(v2 전체 다시 짬: 왼쪽 위 얼굴·배지·HP/MP·전투력 줄, 오른쪽 위 버튼 줄·퀘스트 판, 전투 묶음, 칩 순서, 전쟁 막대 진영 배지, HUD.Layout/IsVisible/GuideTarget/QuestTarget), `VitalsUI.luau`(둥근 물약 버튼, PlaceBars/PlacePotions), `GrudgeGhost.luau`(Rects.ghost). v2 이전 HUD 백업은 세션 scratch에만 있었음 → 되돌릴 땐 `git checkout HEAD -- <파일>`. PC 캡처 build/hudv2/pc.jpeg(문제: 왼쪽 위 전투력 줄이 HP 막대와 겹쳐 보임 — 확인 필요).
+- **HudLayout 보강:** `HudLayout.luau`(물약 간격 POTION_GAP 6, 퀘스트 최소 48du, PouchLine), `tools/test_hud_layout.py`, `tools/fixtures/hud_layout_offline.luau`, 증거 `docs/art/verification_2026-10-06/hud_layout_offline_2026-10-06.{json,png}`(37경우, 변형 25/25 통과).
+- **새 모듈(아직 커밋 안 함):** `MiniMap.luau`, `PlayerListUI.luau`(우리 Tab 목록), ClientMain ORDER 끝에 "MiniMap","PlayerListUI" 추가. `tools/test_keys_settings.py`에 PlayerListUI Tab 허용 추가 — 변형 검사 다시 돌려야 함. 게임성 개발 1 말: 지금 작업 폴더에선 beta_basics 'HUD stats title passes the TitleSel attribute'와 keys 정적 검사가 내 HUD v2·Tab 때문에 실패 → 커밋 때 두 검사 맞출 것.
+- **Config.luau:** 내 Config.UIArt 덩어리 4개(새 그림 키·Id: PanelCard→PanelDark, RibbonHeader→PanelHeader, BarTrack, BtnAttack 주황, BtnSkill, LevelBadge*, BtnPotion, 글리프·등급 칸·아이콘 묶음 7~9, 이음 고친 Tex_ 6장, Colors.Orange/Confirm). 다른 세션 줄이 섞이면 임시 인덱스로 내 덩어리만 커밋. `art/ui/asset_ids.json`도 같이.
+- **멈춘 위성 작업(workflow 중간 중지):** `UIKit.luau`(글자 스타일 StyleText/StyledLabel, PlaceNotify), `EventHUD.luau`(v2 알림 열, LuckShort, Relayout), 새 `QuestTarget.luau`·`QuestMarker.luau` — 만들다 멈춰서 **검사 안 됨**. 이어 쓰기 전 diff 보고 test_halloween 문자열 검사 다시 돌릴 것. QuestTarget/QuestMarker는 아직 ORDER에 없음.
+- **도구 안전 고침:** `tools/device_view.py`(ensure_sandbox·sandbox()·LuauError), `world_blend_view.py`, `zone_look_view.py`, `font_samples_view.py`, `docs/design/world_blend_2026-10-06.md` — 2차 검수 ①~⑤ 고침, 커밋만 남음.
+- **글꼴 비교 견본(새):** `tools/font_compare_view.py`, 결과 `art/review/font_compare_2026-10-06.png` + 쪽별 `art/review/font_compare_2026-10-06/`(fonts·numbers·strokeA·strokeB 찍음, 아직 안 봄). 후보 쪽(`--pages cand`, PC + 폰 749×361 ×2)은 아직 안 찍음.
+- tools/terrain_view.py: LeafyGrass·Basalt·Cobblestone 자리 좌표 고칠 것.
+
+## 연습 Studio
+- build/UiSandbox.rbxlx는 저장 안 하고 닫음(검수 지시). 다시 열면 HUD v2 등은 `STUDIO_NAME=UiSandbox py tools/sync_to_studio.py`류로 다시 넣어야 함. 모든 Studio 도구에 `STUDIO_NAME=UiSandbox`.
+
+## 다음 할 일 (순서)
+1. 사용자 HUD 배치 선택(정리한 v2 vs 사진식) 기다림 → 고른 안에 맞춰 HUD v2 연결 마무리 → beta_basics·keys 검사 맞추고 커밋 → 해시를 게임성 개발 1에.
+2. Nanum vs Noto 견본: 찍은 4쪽 보고 후보 2~3개 고르기 → `py tools/font_compare_view.py --pages cand` → 검수에. 글꼴은 사용자가 고르기 전엔 바꾸지 않음.
+3. QuestMarker(48px 이상, 진행=하늘색/흰색, 받기=금색, ZoneLook 구역 4곳에서 보이는지) + QuestTarget(HUD 안내 대상과 같은 결과, 호박밭 길: 표지판 (368,0,136) → 통로 x351–369 z126–194 → 밭 가운데 (360,235)).
+4. 미니맵 둥근 모양 옵션, 우리 Tab 목록 마무리.
+5. 2차 검수 ①~⑤ 커밋(위 도구 고침).
+6. **받았지만 안 올린 그림:** 묶음 14 Q 스킬 3장 `art/ui/Skill_{Warrior,Mage,Archer}_Q.png`(ae9a7ea, 시트 사용자에게 보여 줌, 가장자리 확인 끝) → 업로드 → Config 키 → HUD 스킬 버튼 아이콘을 직업별로(IconSpecial 대신, 둥근 BtnSkill 안 ~74%). 묶음 2 진영 화면 9장(5d16034), TitleRibbon(크림) 적용. 묶음 10·11a(97456b9)는 사용자 확인 전 업로드 금지.
+7. 게임성 개발 1에 전할 것: Config.Weapons T8 색 청록 → 슬라임 초록 110,210,110(이미지 생성 2 요청).
+8. 메인 적용 뒤 옛 파일 지우기: UIP_PortraitRing/LevelBadge/BtnAttack/BtnSpecial/ShieldHalo/ShieldHorns/IconPotionHP, 옛 Tex_*. ART-DEL2: 옛 FreshTyped 카드 + art/fonts/jua/ (git rm).
