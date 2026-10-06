@@ -35,3 +35,8 @@
 - 생성은 대기열(JS)로: 진행 원·`pending`이 사라진 뒤 생성 버튼, 비율은 `sp-menu-item[aria-label="정사각형 (1:1)"]` 클릭, 문구는 `execCommand('insertText')`.
 - 내려받기: `asset_search`(GenAIAsset)에 **문구 첫머리를 그대로 query로**(짧은 일반어는 일부만 나옴) → `asset_get_presigned_urls` → `curl -sL` → `art/out/s2/`.
 - 누끼: 외곽선 있는 UI·아이콘은 기본 tol 48, **외곽선 없는 사람 그림은 `--tol 28 --soft 6`**(옷 그늘이 회색 배경과 섞여 뚫림). 떠 있는 반짝이는 문구에서 'glow and sparkles'를 빼고 'crisp hard edge … one single solid object' 문구로. 도구 설명은 `tools/img2/README.md`.
+
+## 새 계정 진행 (2026-10-06 오후, 한도로 다시 멈춤 — 1시 40분 이후 재시작)
+- 끝: 471686b 메뉴 칸 판·IconSettings·IconNews / 50bf8ea 직업 8 + 초상 3 사용자 OK → art/ui(장인 궁수 거절, A23-39 펫 조련사로) / 이번 커밋 = 묶음 12 일부 5(ListRowSelected·Toast·BannerGold·WarMeterFrame·WarCrownPip, 시트 art/review/s2/b12_part1_sheet.png) — 이미지 개발에 아직 안 알림.
+- 생성 중이던 것: 펫 조련사 a(CLS_ArtisanTamer_M, 2:3, 문구 art/prompts/CLS_ArtisanTamer_M.txt) — asset_search "An artisan guild pet tamer boy"로 받아 누끼 → 장인 직업 카드 시트로 사용자 확인. 내 탭은 이제 "tab-4"(JS __s2_all/__s2_setPrompt/__s2_gen, 모델 Sunburst·중간 확인됨).
+- 다음: 펫 조련사 b → 묶음 12·13 남은 15장(NameTag·QuestRow·AutoRingOn·NpcMarkerBubble·RewardRays·TabOn/Off·InputField·QuestTab·BannerAlert·Glyph 5) + ListRowSelected b(더 진한 금빛) → 15·16 무기(지휘봉 포함) → 17 → 19. 크레딧 0.

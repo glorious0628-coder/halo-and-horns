@@ -2584,5 +2584,91 @@
    408
   ],
   "note": "A23-38 메뉴 칸 판(남색 정사각 + 얇은 금테 + 남색 외곽선, 가운데 평평). 9조각 slice = 모서리 둥근 부분 밖. 게임에서 ImageTransparency 약 0.15로 살짝 비치게(시트 기준). 위에 메뉴 아이콘 74%, 아래 이름은 TextLabel. 이미지 생성 2가 고름(a/b 중 a). Parts.MenuTile."
+ },
+ "ListRowSelected": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "preview": "art/review/s2/b12_part1_sheet.png",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest (aspect kept); checked light/navy/magenta/green",
+  "prompt": "art/prompts/UIP_ListRowSelected.txt",
+  "original": "art/out/s2/ListRowSelected_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/ListRowSelected.png",
+  "size": "512x130 RGBA",
+  "note": "묶음 12. 선택된 목록 줄(크림 + 밝은 금테). ListRow와 같은 9조각. 일반 줄과 차이가 약해서 b안(더 진한 금빛 면)을 다음에 비교 예정. 이미지 생성 2가 고름.",
+  "slice": [
+   56,
+   44,
+   456,
+   86
+  ]
+ },
+ "Toast": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "preview": "art/review/s2/b12_part1_sheet.png",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest (aspect kept); checked light/navy/magenta/green",
+  "prompt": "art/prompts/UIP_Toast.txt",
+  "original": "art/out/s2/Toast_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/Toast.png",
+  "size": "512x102 RGBA",
+  "note": "묶음 12. 알림 줄(남색 캡슐 + 왼쪽 금테 원 자리). 아이콘 자리 중심 (49,51) 반지름 약 37. 9조각 slice는 왼쪽 원을 지킴. 글자는 TextLabel.",
+  "slice": [
+   100,
+   50,
+   460,
+   52
+  ]
+ },
+ "BannerGold": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "preview": "art/review/s2/b12_part1_sheet.png",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest (aspect kept); checked light/navy/magenta/green",
+  "prompt": "art/prompts/UIP_BannerGold.txt",
+  "original": "art/out/s2/BannerGold_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BannerGold.png",
+  "size": "512x178 RGBA",
+  "note": "묶음 12. 축하 배너(금 리본 + 흰 날개). 9조각 없이 비율 그대로(Fit). 글자 칸 분수 (0.254,0.225,0.492,0.365). 레벨 업·보상 알림.",
+  "layout": {
+   "Text": [
+    0.254,
+    0.225,
+    0.492,
+    0.365
+   ]
+  }
+ },
+ "WarMeterFrame": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "preview": "art/review/s2/b12_part1_sheet.png",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest (aspect kept); checked light/navy/magenta/green",
+  "prompt": "art/prompts/UIP_WarMeterFrame.txt",
+  "original": "art/out/s2/WarMeterFrame_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/WarMeterFrame.png",
+  "size": "512x74 RGBA",
+  "note": "묶음 12. 전쟁 미터 틀(왼쪽 헤일로·오른쪽 뿔 캡, 가운데 마름모). 비율 그대로. 채움 막대는 코드로 안쪽 사각형 (66,22)-(442,54) 위에(ZIndex 위) 빛 금색/뿔 빨강.",
+  "inner": [
+   66,
+   22,
+   442,
+   54
+  ]
+ },
+ "WarCrownPip": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "preview": "art/review/s2/b12_part1_sheet.png",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green, 32px",
+  "prompt": "art/prompts/UIP_WarCrownPip.txt",
+  "original": "art/out/s2/WarCrownPip_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/WarCrownPip.png",
+  "size": "512x512 RGBA",
+  "note": "묶음 12. 전쟁 미터 위 왕관 표시(현재 기운 위치). Crown 키 대체. 32px에서도 읽힘."
  }
 }
