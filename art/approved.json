@@ -4679,5 +4679,31 @@
   "use": "A23-54 계급 액세서리 2D 시안 → 3D는 이미지 생성 1(무료 생성 먼저, 안 되면 Tripo — 검수 지시)",
   "note": "A줄. 사용자 OK 2026-10-06(검수 전달): 뿔 A줄, 후광 B줄, 장인 A줄. 액세서리만(옷 없음), 무섭지 않게 둥근 끝, 글자 없음.",
   "user_ok": "사용자 OK 2026-10-06 (검수가 a2354 시트로 받음)"
+ },
+ "PTR_TownTiny": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/PTR_TownTiny_F.txt",
+  "original": "art/out/s2/PTR_TownTiny_F_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/PTR_TownTiny.png",
+  "size": "445x512 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest (+clean_haze; Tiny: --tol 16 --soft 5 + gray-fringe clean) ; checked 4x light/navy/magenta + PortraitFrame 300/170",
+  "preview": "art/review/s2/a2346_town_npc_portraits_v2.png",
+  "note": "티니(교차로 장인 견습, 퀘스트 NPC A23-46). 입 다문 차분한 미소, 볼 홍조, 얼굴 그을음 없음(앞치마에만), 모자 위 고글. 참조 두 장(스모키 A 그림체 + 티니 A 캐릭터)으로 다시 그림. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '티니는 F')"
+ },
+ "PTR_TownSmokey": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/PTR_TownSmokey_A.txt",
+  "original": "art/out/s2/PTR_TownSmokey_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/PTR_TownSmokey.png",
+  "size": "400x512 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest (+clean_haze; Tiny: --tol 16 --soft 5 + gray-fringe clean) ; checked 4x light/navy/magenta + PortraitFrame 300/170",
+  "preview": "art/review/s2/a2346_town_npc_portraits_sheet.png",
+  "note": "스모키(뿔 소굴 망보는 꼬마, 퀘스트 NPC A23-46). 윙크+한쪽 입꼬리, 뿔 달린 빨간 두건, 목에 건 망원경. 마을 NPC 초상 그림체 기준. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '스모키 A 확정')"
  }
 }

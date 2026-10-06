@@ -75,3 +75,9 @@
 - 마을 NPC 초상(A23-46): 스모키 A 사용자 확정. 브라이트·티니는 스모키 그림체로 다시 → **cff91af** v2 시트(`a2346_town_npc_faces_v2.png`, `a2346_town_npc_portraits_v2.png`) 검수 대기. 규칙(사용자): 셋 표정이 달라야 함, 얼굴에 그을음·코 자리 점 금지(볼 홍조·작은 주근깨만), 브라이트 = 10살 견습 꼬마(+손목 금·보라 땋은 끈, 이야기 단서), 티니 = 입 다문 미소+모자 위 고글.
 - **Firefly 참조 이미지 요령:** 생성 결과 카드의 편집 메뉴 `sp-menu-item[aria-label="참조 이미지로 사용"]`(갤러리는 최근 것만 렌더됨) 또는 **파일 올리기**: `asset_get_presigned_urls` 주소를 페이지에서 `fetch` → `File` → 빈 `firefly-upload-new`의 `input[type=file]`에 DataTransfer로 넣고 `change`. 그림체만 한 장 걸면 표정까지 따라 함 → **그림체 참조 + 캐릭터 참조 두 장** + 표정을 글로. 다 쓰면 Remove로 **반드시 0/6으로 비우기**(다음 생성에 섞임). 참조 생성은 가끔 '문제가 발생했습니다'로 실패 → 잠시 뒤 다시.
 - A23-57: 장인(중립) 전용 그림(CLS_Artisan*, 장인 배지)은 빛·뿔 뒤로 미룸. 티니(교차로 NPC)는 그대로 진행.
+- (저녁 3, 사용자 컴퓨터 재시작 전 정리) **티니 F·스모키 A 확정** → `art/ui/PTR_TownTiny.png`, `art/ui/PTR_TownSmokey.png`, approved.json `PTR_TownTiny`/`PTR_TownSmokey`(이 커밋). 이미지 개발에는 **브라이트까지 정해지면 셋을 한 번에** 넘긴다(업로드 ≤10).
+- **브라이트 = 여자아이(A23-59, 2ddc1ed)**: 그림체 = 스모키 A, 옷·자세 = 브라이트 I(은빛 투구+하늘색 깃·후광·해 무늬 겉옷·손 흔들기·금보라 손목 끈·볼 주근깨·두 눈 크게), 금발 앞머리 + 옆 땋은 머리/짧은 포니테일, 화장 없음·10살 꼬마. 입은 위아래 이가 줄지어 보이는 웃음 금지 — D자 신난 입 / 작게 벌린 웃음 / 입 다문 활짝 미소, 스모키(한쪽 씩)·티니 F(잔잔한 미소)와 다르게.
+  - 생성·저장 끝(커밋 안 함, 로컬): `art/out/s2/PTR_TownBright_{GD,GS,GW,GP}_src.png`(GD 땋은 머리+D자 입, GS 작게 벌린 웃음, GW 입 다문 활짝 미소, GP 포니테일+D자), 문구 `art/prompts/PTR_TownBright_G*.txt`(참조 2장: 브라이트 I + 스모키 A).
+  - **다음:** 4장을 스모키 A·티니 F 얼굴과 100% 나란히 비교(`scratchpad face_sheet.py` 방식: 위 전체, 아래 얼굴 원본 크기) → 통과한 것만 검수 → 사용자 → 고른 것 누끼(투구 은빛이라 `cut_keep --tol 16 --soft 5`, 회색 테두리 정리는 은빛 깎임 주의) → `art/ui/PTR_TownBright.png` + approved.json → 세 장(브라이트·스모키·티니) 이미지 개발에 전달.
+  - 남자 브라이트 입 고치기(`PTR_TownBright_I_M1~M4`)는 A23-59로 취소(Firefly에 생성만 됨, 안 받음). 입만 붙이는 스크립트 scratchpad `mouth_swap.py`(ECC 정렬 + 입 타원 마스크)는 필요하면 재사용.
+  - Firefly 탭의 참조 칸은 재시작하면 비어 있음 — 다시 쓸 땐 위 '참조 이미지 요령'대로 올리고, 다 쓰면 0/6.
