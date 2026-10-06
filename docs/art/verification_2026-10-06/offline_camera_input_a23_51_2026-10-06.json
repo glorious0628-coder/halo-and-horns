@@ -3,9 +3,9 @@
   "checks": 31,
   "failed": 0,
   "mutations": {
-    "total": 10,
-    "applied": 10,
-    "caught": 10,
+    "total": 12,
+    "applied": 12,
+    "caught": 12,
     "results": [
       {
         "mutation": "attack on the release instead of the press",
@@ -66,10 +66,39 @@
         "applied": true,
         "caught": true,
         "failure": "C:/Users/glori/Documents/Roblox/Game-wtc/build/camera_input_offline_mut.luau:108: a scripted camera keeps its own subject"
+      },
+      {
+        "mutation": "a world click skips FaceTarget (fires Swing at once)",
+        "file": "HUD.luau",
+        "applied": true,
+        "caught": true,
+        "failure": "static"
+      },
+      {
+        "mutation": "SwingFaced never turns first",
+        "file": "HUD.luau",
+        "applied": true,
+        "caught": true,
+        "failure": "static"
       }
     ]
   },
   "sourceSHA256": "7edf64d4fa142b0835385bd003f093e38b9c5cdcd5abee1d3b0cb3773ca63878",
+  "hudSHA256": "2487b4652803b93f4dd298f615bf206c2244921df27b4be6a67ed05ebc41c925",
+  "hudStatic": [
+    {
+      "check": "L.SwingFaced faces the nearest monster, then swings 0.08 s later",
+      "ok": true
+    },
+    {
+      "check": "the F key / attack button (startHold) swing through L.SwingFaced",
+      "ok": true
+    },
+    {
+      "check": "a world click (PrimaryClick) swings through L.SwingFaced too",
+      "ok": true
+    }
+  ],
   "fixtureSHA256": "a7defac93a77cf17782b740ec5cab3b86f27044ea05459e1f923bfd0db890576",
   "studioCalls": 0,
   "physicalInputTested": false,

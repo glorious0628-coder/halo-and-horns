@@ -14,6 +14,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "src/StarterPlayer/StarterPlayerScripts/CameraFollow.luau"
+HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
 FIXTURE = ROOT / "tools/fixtures/camera_input_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-06/offline_camera_input_a23_51_2026-10-06.json"
@@ -39,6 +40,31 @@ MUTATIONS = [
     ("the humanoid never becomes the subject", "camera.CameraSubject = humanoid", "camera.CameraSubject = camera.CameraSubject"),
     ("a scripted camera loses its subject",
      "\tif not camera or camera.CameraType ~= Enum.CameraType.Custom then return end\n", "\tif not camera then return end\n"),
+]
+
+
+# review 2026-10-06 (medium): the world click (PrimaryClick) must take the same face-the-nearest-monster path as the F key
+# and the attack button (L.SwingFaced: L.FaceTarget("Swing") then the Swing 0.08 s later), or it whiffs at monsters
+# beside / behind me (server AimCone). Static checks on HUD.luau + one mutation.
+def hud_checks(hud: str):
+    hud = hud.replace("\r\n", "\n")
+    m_fn = re.search(r"\nfunction L\.SwingFaced\(\)\n(.*?)\nend\n", hud, re.S)
+    m_hold = re.search(r"\nlocal function startHold\(source\)\n(.*?)\nend\n", hud, re.S)
+    return [
+        ("L.SwingFaced faces the nearest monster, then swings 0.08 s later",
+         m_fn is not None and 'if L.FaceTarget("Swing") then' in m_fn.group(1)
+         and 'task.delay(0.08, function() fire("Swing") end)' in m_fn.group(1)),
+        ("the F key / attack button (startHold) swing through L.SwingFaced",
+         m_hold is not None and "L.SwingFaced()" in m_hold.group(1) and 'fire("Swing")' not in m_hold.group(1)),
+        ("a world click (PrimaryClick) swings through L.SwingFaced too",
+         "C.CameraFollow.PrimaryClick:Connect(function()\n\t\tif inputAllowed() then L.SwingFaced() end" in hud),
+    ]
+
+
+HUD_MUTATIONS = [
+    ("a world click skips FaceTarget (fires Swing at once)", "if inputAllowed() then L.SwingFaced() end",
+     'if inputAllowed() then fire("Swing") end'),
+    ("SwingFaced never turns first", 'if L.FaceTarget("Swing") then\n\t\ttask.delay(0.08', 'if false then\n\t\ttask.delay(0.08'),
 ]
 
 
@@ -73,12 +99,23 @@ def main():
             caught = not m_ok
         rows.append({"mutation": name, "applied": applied, "caught": caught, "failure": why})
         print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
+    hud = HUD.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    static = hud_checks(hud)
+    for name, good in static:
+        print(("STATIC ok   " if good else "STATIC FAIL ") + name)
+    for name, old, new in HUD_MUTATIONS:
+        applied = hud.count(old) == 1
+        caught = applied and not all(g for _, g in hud_checks(hud.replace(old, new)))
+        rows.append({"mutation": name, "file": "HUD.luau", "applied": applied, "caught": caught, "failure": "static"})
+        print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
     all_caught = all(r["applied"] and r["caught"] for r in rows)
-    passed = compile_run.returncode == 0 and ok and all_caught
+    passed = compile_run.returncode == 0 and ok and all_caught and all(g for _, g in static)
     report = {"status": "passed" if passed else "failed", "checks": checks, "failed": 0 if ok else 1,
               "mutations": {"total": len(rows), "applied": sum(r["applied"] for r in rows),
                             "caught": sum(r["caught"] for r in rows), "results": rows},
               "sourceSHA256": hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
+              "hudSHA256": hashlib.sha256(HUD.read_bytes()).hexdigest(),
+              "hudStatic": [{"check": n, "ok": g} for n, g in static],
               "fixtureSHA256": hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),
               "studioCalls": 0, "physicalInputTested": False,
               "contract": "A23-51 (user 2026-10-06): the camera turns with the RIGHT mouse drag only, owned by Roblox's "

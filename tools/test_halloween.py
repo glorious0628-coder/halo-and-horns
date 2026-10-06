@@ -247,6 +247,8 @@ MUTATIONS = [
     ("the wind-up stops renewing the facing (attack)", "MONSTER_SOURCE",
      "FACE.Active[rec] = { Target = info.Player, Until = os.clock() + FACE.Keep }", ""),
     ("turn speed halved (300 deg/s)", "MONSTER_SOURCE", "TurnRate = math.rad(600),", "TurnRate = math.rad(300),"),
+    ("a late hit outlasts the clients' wind-up pose (MaxExtra 0.6 > TELE_GRACE)", "MONSTER_SOURCE",
+     "MaxExtra = 0.3,", "MaxExtra = 0.6,"),
     # monster naturalness (user 2026-10-06 "너무 경직된 느낌", survey 4-1): pace / ease-in / alert / look-around / body hold
     ("wander walks at the chase speed", "MONSTER_SOURCE", "WanderPace = 0.5,", "WanderPace = 1,"),
     ("no ease-in from standing", "MONSTER_SOURCE", "RampStart = 0.45,", "RampStart = 1,"),
@@ -438,6 +440,11 @@ def make_harness(sources: dict[str, str]) -> str:
         + between(hud, "-- Halloween Pumpkin King line", "-- maxChars: cut longer names")
         + "return KING, L\n")
     fx = sources["FX_SOURCE"]
+    # review 2026-10-06: MonsterService FACE.MaxExtra must stay <= the clients' wind-up pose grace (Fx MOTION.TELE_GRACE)
+    grace = re.search(r"\bTELE_GRACE = ([\d.]+)", fx)
+    if not grace:
+        raise ValueError("Fx MOTION.TELE_GRACE missing; update the test extractor.")
+    bindings["FX_TELE_GRACE"] = grace.group(1)
     bindings["WOBBLE_SOURCE"] = (
         "local Config, H = ...\nlocal C = H.C\nlocal MOTION = H.MOTION\nlocal TweenService = H.TweenService\n"
         "local visualJoint, monsterRoot, monsterSize = H.visualJoint, H.monsterRoot, H.monsterSize\n"

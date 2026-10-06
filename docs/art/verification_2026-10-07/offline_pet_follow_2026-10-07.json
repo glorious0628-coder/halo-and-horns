@@ -1,0 +1,50 @@
+{
+  "status": "passed",
+  "checks": 8,
+  "failedChecks": [],
+  "mutations": {
+    "total": 4,
+    "applied": 4,
+    "caught": 4,
+    "results": [
+      {
+        "mutation": "the pet jumps back in one frame (old)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL it runs back over P.Back (no one-frame jump of ~14 studs) :: table: 0x000002abba099130"
+        ]
+      },
+      {
+        "mutation": "the pet reaches the target at once",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL it reaches the target at about the contact time (0.3 s), not at once :: 0.016666666666666666"
+        ]
+      },
+      {
+        "mutation": "the pet follows on the left",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL it settles behind-right of its owner (2.6 right, 2.4 back) :: table: 0x0000018ec719f130",
+          "CHECK_FAIL and ends back behind-right of its owner :: table: 0x0000018ec71a3c50"
+        ]
+      },
+      {
+        "mutation": "Attack ignores a missing pet",
+        "applied": true,
+        "caught": true,
+        "failures": []
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/PetFollow.luau": "3be6d439d7d4f122e314ed3c680730722cf7ca11b401c26b0816d76528b3484d"
+  },
+  "fixtureSHA256": "b3e63fe76a770f00365959a03133778de726d313a1ac2f09982b839887f814dc",
+  "studioCalls": 0,
+  "contract": "Offline test of the real PetFollow (PET-3, review 2026-10-06), plus mutations: the pet follows behind-right of its\nowner, a headbutt reaches the target at about the contact time, and the pet runs back over P.Back seconds (it used to\njump back in one frame); Attack / Dash / Has answers.",
+  "limitations": "Ground rays, real model scaling and the look in Studio need a Studio check."
+}

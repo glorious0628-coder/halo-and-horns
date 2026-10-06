@@ -164,6 +164,11 @@ local function step(dt)
 				local from = st.Pos or goal
 				goal = from:Lerp(target, k * k)
 				face = target
+			else
+				-- review 2026-10-06: run back to my side over P.Back (it used to jump there in one frame)
+				a.BackFrom = a.BackFrom or st.Pos or goal
+				local k = math.clamp((t - a.Each * #a.Targets) / P.Back, 0, 1)
+				goal = a.BackFrom:Lerp(goal, 1 - (1 - k) * (1 - k))
 			end
 		end
 		local pos = st.Pos or goal

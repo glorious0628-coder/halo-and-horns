@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7223,
+  "checks": 7224,
   "failedChecks": 0,
-  "namedChecks": 586,
+  "namedChecks": 587,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -2487,7 +2487,13 @@
     },
     {
       "group": "monster-facing",
-      "check": "FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.6 s extra wait, 0.05 s recheck, 0.6 s keep",
+      "check": "FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.3 s extra wait, 0.05 s recheck, 0.6 s keep",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-facing",
+      "check": "FACE.MaxExtra <= Fx TELE_GRACE (the wind-up pose still holds at a late hit)",
       "pass": 1,
       "fail": 0
     },
@@ -2553,7 +2559,7 @@
     },
     {
       "group": "monster-facing",
-      "check": "never turned in time: about 12 rechecks (0.6 s), then the swing misses (no damage, wind-up cleared)",
+      "check": "never turned in time: about 6 rechecks (0.3 s), then the swing misses (no damage, wind-up cleared)",
       "pass": 1,
       "fail": 0
     },
@@ -3535,11 +3541,11 @@
     },
     {
       "Group": "clips",
-      "Text": "BatGoblin_Idle loop seam (max |q0 - qlast| x+w): 0.042 (Goblin 0.044)"
+      "Text": "BatGoblin_Idle loop seam (max |q0 - qlast| x+w): 0.000 (Goblin 0.044)"
     },
     {
       "Group": "clips",
-      "Text": "BatGoblin_Walk loop seam (max |q0 - qlast| x+w): 0.047 (Goblin 0.025)"
+      "Text": "BatGoblin_Walk loop seam (max |q0 - qlast| x+w): 0.000 (Goblin 0.000)"
     }
   ],
   "staticChecks": 46,
@@ -3548,9 +3554,9 @@
     "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
   ],
   "mutations": {
-    "total": 109,
-    "applied": 109,
-    "caught": 109,
+    "total": 110,
+    "applied": 110,
+    "caught": 110,
     "results": [
       {
         "mutation": "a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)",
@@ -4515,7 +4521,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "monster-facing :: FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.6 s extra wait, 0.05 s recheck, 0.6 s keep",
+          "monster-facing :: FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.3 s extra wait, 0.05 s recheck, 0.6 s keep",
           "monster-facing :: the hit cone is +-30 deg: 29 deg off hits, 31 deg off waits for the turn"
         ],
         "newFailingCount": 2
@@ -4540,7 +4546,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "monster-facing :: never turned in time: about 12 rechecks (0.6 s), then the swing misses (no damage, wind-up cleared)"
+          "monster-facing :: never turned in time: about 6 rechecks (0.3 s), then the swing misses (no damage, wind-up cleared)"
         ],
         "newFailingCount": 1
       },
@@ -4597,7 +4603,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "monster-facing :: FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.6 s extra wait, 0.05 s recheck, 0.6 s keep",
+          "monster-facing :: FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.3 s extra wait, 0.05 s recheck, 0.6 s keep",
           "monster-facing :: FACE.Step turned the monster to the target behind it (180 deg within 0.3 s)",
           "monster-facing :: Keep s after the last renewal and no wind-up: the facing ends, no more turning",
           "monster-facing :: Step turns a facing monster 30 deg per 0.05 s frame toward its target",
@@ -4605,6 +4611,19 @@
           "monster-facing :: facing now: the recheck lands exactly one hit and plays the lunge"
         ],
         "newFailingCount": 12
+      },
+      {
+        "mutation": "a late hit outlasts the clients' wind-up pose (MaxExtra 0.6 > TELE_GRACE)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-facing :: FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.3 s extra wait, 0.05 s recheck, 0.6 s keep",
+          "monster-facing :: FACE.MaxExtra <= Fx TELE_GRACE (the wind-up pose still holds at a late hit)",
+          "monster-facing :: never turned in time: about 6 rechecks (0.3 s), then the swing misses (no damage, wind-up cleared)"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "wander walks at the chase speed",
@@ -5013,7 +5032,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "8f2959b27d59e253d9b6e03577dd4611a9c6482e6bcb31692141cdfcdc626e7b",
+    "src/ReplicatedStorage/Shared/Config.luau": "fdc387cd25e615b1299154bf0cdb5f7b4fa6a72c6ef91eb0a918f47c2a360b4a",
     "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
@@ -5023,15 +5042,15 @@
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/HalloweenService.luau": "c8a34e1b807e6c82ecc93a708868505e183039f9c4b6ab4c80804a8d1f9714ea",
     "src/ServerScriptService/Main.server.luau": "88c7fda3210f3a09323cc9e2ceb0a36085e74b2656b015a83136cc7e11df764d",
-    "src/ServerScriptService/MonsterService.luau": "921da3ab3ce34c7e1cc355050a8120b8344717245ba2032dee8fca317f318dcd",
+    "src/ServerScriptService/MonsterService.luau": "25dabf44b74a2728058e17978a408218f96a57f65db196dfb369aab793c6d1ce",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "14779e64d8a7a8c6e1a64d380fca83e86905bd9f66cc935cb7e87220ee2bcea5",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "673cc57a53d6819ef5b42519d9188cce81f85a5f03282cbd495ad485cba6ff44",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "7e77c81f358fa78a179e57b91d145bcf18e1036d349acafa7e5eaa23bfcdff87",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "b6b7c63d2f1759529759bb7851c858ea180e08e6398e2e6bb0196280d6ac68e1",
-    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "b5b0cdeb7889a80ff1213bbf62878b634bb8f55b6a30de83c456d1194bed333b",
+    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "ebb591b02b33a6572c21514edc779b5aa824005e5035a6cb1a0bb7e55f1e028b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
-    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "049d7448a5c3fbf5a7fe8bf4c8689b084fe3012d30ce13cd9866ba67b1a6e904",
-    "src/ReplicatedStorage/MonsterAnims/Goblin_Walk.luau": "f817254d6fac4599e0bf848cc3d7d54da4cbc3bcab28232f74ad4eff8741577d",
+    "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "a2c2b18fcaf4a0f1024c57da5dd4b28a47c16ae57ddf61a9815114641c73baaa",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Walk.luau": "ed3a6d0e425b1ebba0c9aea730b9b84d6135a4b2058ed3c7b2c9a0a0cad4264e",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Slash.luau": "175ada63df639055bf91fae8178970a2d39010dd7d4a5c81b27a8c53cc148971",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Slash.luau": "35ecf9e418cd983a7992ebf429680f42fe86fca7564bf447e588fca5182cc5d2",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Hurt.luau": "b7fb789be4dc4dedb68cff9cbd12fd85949c62ce03357816634745ebd9c52ad9",
@@ -5039,7 +5058,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "80ce121c183dcb78ef5c6caeff1bd6c84423667836d29123a3821b1ca5b7c5fc",
+  "fixtureSHA256": "8ec0052eac5b55e0b5b77f2b31412f0c60162c592c32ee4c9544753ecb11c6dc",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

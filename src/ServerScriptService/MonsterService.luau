@@ -93,9 +93,11 @@ local ATTACK_SEQ_ATTR = "AttackSeq" -- +1 when a monster attack lands on a playe
 -- user 2026-10-06 "몬스터들이 유저를 바라보면서 때리면 좋겠어": a monster in reach turns its body toward its target every
 -- frame at TurnRate (smooth, never a snap) and keeps following a target that walks around it, from the wind-up to the
 -- hit; the hit lands only once the target is within HitCos (+-30 deg) of the look direction, waiting up to MaxExtra s
--- longer (rechecked every Recheck s), else the swing misses. Keep = s a facing lasts after the last attack() call (the
--- AI runs every MC.AIInterval). Active[rec] = { Target = Player, Until = os.clock() deadline }.
-local FACE = { TurnRate = math.rad(600), HitCos = math.cos(math.rad(30)), MaxExtra = 0.6, Recheck = 0.05, Keep = 0.6,
+-- longer (rechecked every Recheck s), else the swing misses. MaxExtra stays below the clients' wind-up pose grace
+-- (Fx MOTION.TELE_GRACE 0.35, review 2026-10-06) so a late hit never lands after the pose has relaxed. Keep = s a
+-- facing lasts after the last attack() call (the AI runs every MC.AIInterval). Active[rec] = { Target = Player,
+-- Until = os.clock() deadline }.
+local FACE = { TurnRate = math.rad(600), HitCos = math.cos(math.rad(30)), MaxExtra = 0.3, Recheck = 0.05, Keep = 0.6,
 	Active = {} }
 -- monster naturalness (user 2026-10-06 "몬스터들이 너무 경직된 느낌", survey 4-1): a wander walks at WanderPace of the
 -- chase speed; every walk eases in from standing (RampStart + RampStep per AI tick up to full) and a wander slows to

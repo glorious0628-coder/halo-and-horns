@@ -3438,13 +3438,7 @@ local function startHold(source)
 	holdToken += 1
 	local token = holdToken
 	pressScale(ui.attack, true)
-	-- ranged classes (and bare hands) turn to the nearest monster first; the server only hits what I face (AimCone)
-	if L.FaceTarget("Swing") then
-		task.delay(0.08, function() fire("Swing") end) -- let the new facing replicate before the swing
-	else
-		fire("Swing")
-	end
-
+	L.SwingFaced()
 end
 
 local function stopHold(source)
@@ -3539,6 +3533,17 @@ function L.FaceTarget(which)
 	if not best or bestDist < 1 then return false end
 	root.CFrame = CFrame.lookAt(root.Position, Vector3.new(best.Position.X, root.Position.Y, best.Position.Z))
 	return true
+end
+
+-- one Swing for one press (F key, attack button or a world click, A23-51; review 2026-10-06: the click skipped this):
+-- the nearest monster outside my aim cone turns me first (the server only hits what I face, AimCone), then the swing
+-- follows a moment later so the new facing has replicated
+function L.SwingFaced()
+	if L.FaceTarget("Swing") then
+		task.delay(0.08, function() fire("Swing") end)
+	else
+		fire("Swing")
+	end
 end
 
 -- story rows: a talk / choice step reopens its dialogue; otherwise travel + the guide beam to where it happens
@@ -4306,7 +4311,7 @@ function HUD.Start()
 	-- A23-51: a left press on the world attacks once (holding or dragging never repeats); the camera turns with the
 	-- right mouse drag only (Roblox's default camera).
 	C.CameraFollow.PrimaryClick:Connect(function()
-		if inputAllowed() then fire("Swing") end
+		if inputAllowed() then L.SwingFaced() end
 	end)
 
 	task.spawn(function()

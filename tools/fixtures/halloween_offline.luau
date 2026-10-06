@@ -2640,10 +2640,14 @@ runGroup("monster-facing", function()
 	end
 	local function lookAtYaw(y) return mpos + vec(-math.sin(y), 0, -math.cos(y)) * 3 end
 
-	check(near(FACE.TurnRate, math.rad(600)) and near(FACE.HitCos, math.cos(math.rad(30))) and FACE.MaxExtra == 0.6
+	check(near(FACE.TurnRate, math.rad(600)) and near(FACE.HitCos, math.cos(math.rad(30))) and FACE.MaxExtra == 0.3
 		and FACE.Recheck == 0.05 and FACE.Keep == 0.6,
-		"FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.6 s extra wait, 0.05 s recheck, 0.6 s keep",
+		"FACE tuning: 600 deg/s turn, +-30 deg hit cone, 0.3 s extra wait, 0.05 s recheck, 0.6 s keep",
 		show({ deg(FACE.TurnRate), FACE.HitCos, FACE.MaxExtra, FACE.Recheck, FACE.Keep }))
+	-- review 2026-10-06: a late hit never lands after the clients' wind-up pose has relaxed (Fx MOTION.TELE_GRACE)
+	local grace = tonumber(FX_TELE_GRACE)
+	check(grace ~= nil and FACE.MaxExtra <= grace, "FACE.MaxExtra <= Fx TELE_GRACE (the wind-up pose still holds at a late hit)",
+		show({ FACE.MaxExtra, grace }))
 
 	-- Turn: capped per frame, the short way round, no overshoot, the root stays where it stands
 	local r = newRec(0)
@@ -2724,8 +2728,8 @@ runGroup("monster-facing", function()
 		rechecks += 1
 		dd.Fn()
 	end
-	check(#W.hits == hits0 and m._windup == nil and rechecks >= 12 and rechecks <= 13,
-		"never turned in time: about 12 rechecks (0.6 s), then the swing misses (no damage, wind-up cleared)",
+	check(#W.hits == hits0 and m._windup == nil and rechecks >= 6 and rechecks <= 7,
+		"never turned in time: about 6 rechecks (0.3 s), then the swing misses (no damage, wind-up cleared)",
 		show({ rechecks, m._windup ~= nil }))
 
 	-- Step: the facing ends Keep s after attack()'s last renewal unless a wind-up is pending; gone target / monster ends it
