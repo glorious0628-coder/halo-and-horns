@@ -4718,5 +4718,302 @@
   "preview": "art/review/s2/a2359_bright_girl_long_hair_frames.png",
   "note": "브라이트(빛 마을 경비 견습, 10살 여자아이, A23-59; 퀘스트 NPC A23-46). 스모키 A 그림체, 은빛 투구+하늘색 깃·후광·해 무늬 하늘색 겉옷·손 흔들기·금보라 땋은 손목 끈(이야기 단서)·볼 주근깨·두 눈 크게, 작게 벌린 웃음(윗니만 살짝), 긴 옆 땋은 머리. 화장 없음. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통 덮임). 대화창 초상(PortraitFrame 창 위).",
   "user_ok": "사용자 OK 2026-10-06 (검수 전달: 'L1 긴 땋은 머리 확정')"
+ },
+ "FactionPickHalo": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_FactionCardHalo_A.txt",
+  "original": "art/out/s2/UIP_FactionCardHalo_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionPickHalo.png",
+  "size": "624x1024 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
+  "layout": {
+   "Name": [
+    0.2,
+    0.425,
+    0.6,
+    0.076
+   ],
+   "Panel": [
+    0.146,
+    0.551,
+    0.707,
+    0.266
+   ],
+   "Button": [
+    0.224,
+    0.859,
+    0.548,
+    0.061
+   ]
+  },
+  "preview": "art/review/s2/a2357_faction_select_v2.jpg",
+  "note": "A23-57 진영 고르기 새 카드(빛). 글자 없음 — Name 리본(흰 글자)·Panel 크림 판(짙은 글자)·Button 금 버튼. 뿔 카드와 같은 실루엣·같은 칸. 글자는 게임 TextLabel(영어).",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "FactionPickHorns": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_FactionCardHorns_C.txt",
+  "original": "art/out/s2/UIP_FactionCardHorns_C_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionPickHorns.png",
+  "size": "624x1024 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
+  "layout": {
+   "Name": [
+    0.2,
+    0.425,
+    0.6,
+    0.076
+   ],
+   "Panel": [
+    0.146,
+    0.551,
+    0.707,
+    0.266
+   ],
+   "Button": [
+    0.224,
+    0.859,
+    0.548,
+    0.061
+   ]
+  },
+  "preview": "art/review/s2/a2357_faction_select_v2.jpg",
+  "note": "A23-57 진영 고르기 새 카드(뿔). 빛 카드를 Firefly 참조로 색·장식만 바꿈(실루엣 일치도 0.998), 같은 624x1024 캔버스·같은 칸. Panel은 짙은 숯색 판 → 밝은 글자. 글자는 게임 TextLabel(영어).",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "ClassPickHalo": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_ClassCardHalo_A.txt",
+  "original": "art/out/s2/UIP_ClassCardHalo_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/ClassPickHalo.png",
+  "size": "555x1024 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
+  "layout": {
+   "Portrait": [
+    0.224,
+    0.15,
+    0.552,
+    0.358
+   ],
+   "Name": [
+    0.2,
+    0.509,
+    0.6,
+    0.066
+   ],
+   "Body": [
+    0.15,
+    0.646,
+    0.699,
+    0.181
+   ],
+   "Button": [
+    0.225,
+    0.859,
+    0.551,
+    0.072
+   ]
+  },
+  "preview": "art/review/s2/a2357_faction_select_v2.jpg",
+  "note": "A23-57 직업 카드 틀(빛). Portrait 창에 CLS_Halo*_Card.png를 그대로 얹음(창 모양으로 잘려 있음). 뿔 틀과 같은 555x1024 캔버스·같은 칸. 글자는 게임 TextLabel(영어).",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "ClassPickHorns": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_ClassCardHorns_E.txt",
+  "original": "art/out/s2/UIP_ClassCardHorns_E_src.png (edit of UIP_ClassCardHorns_C_src.png) (Adobe MCP presigned download)",
+  "file": "art/ui/ClassPickHorns.png",
+  "size": "555x1024 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
+  "layout": {
+   "Portrait": [
+    0.224,
+    0.15,
+    0.552,
+    0.358
+   ],
+   "Name": [
+    0.2,
+    0.509,
+    0.6,
+    0.066
+   ],
+   "Body": [
+    0.15,
+    0.646,
+    0.699,
+    0.181
+   ],
+   "Button": [
+    0.225,
+    0.859,
+    0.551,
+    0.072
+   ]
+  },
+  "preview": "art/review/s2/a2357_faction_select_v2.jpg",
+  "note": "A23-57 직업 카드 틀(뿔). 빛 틀을 참조로 다시 그리고 남은 후광 고리를 지운 판, 빛 틀과 같은 캔버스·같은 칸. Body는 짙은 숯색 판 → 밝은 글자. 글자는 게임 TextLabel(영어).",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "FactionPickTitle": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2",
+  "prompt": "art/prompts/UIP_FactionPickTitle_A.txt",
+  "original": "art/out/s2/UIP_FactionPickTitle_A_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/FactionPickTitle.png",
+  "size": "1024x373 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 1024 --tol 28 --soft 6 --holes --keep-largest + clean_haze; checked 4x on navy/magenta/white",
+  "layout": {
+   "Text": [
+    0.149,
+    0.429,
+    0.704,
+    0.338
+   ]
+  },
+  "preview": "art/review/s2/a2357_faction_select_v2.jpg",
+  "note": "A23-57 진영 고르기 제목 띠 A(크림 리본, 왕관·날개·뿔). Text 칸에 짙은 영어 글자. 글자는 게임 TextLabel(영어).",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HaloWarrior_M_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HaloWarrior_M.png",
+  "file": "art/ui/CLS_HaloWarrior_M_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HaloWarrior_F_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HaloWarrior_F.png",
+  "file": "art/ui/CLS_HaloWarrior_F_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HaloMage_M_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HaloMage_M.png",
+  "file": "art/ui/CLS_HaloMage_M_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HaloMage_F_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HaloMage_F.png",
+  "file": "art/ui/CLS_HaloMage_F_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HaloArcher_M_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HaloArcher_M.png",
+  "file": "art/ui/CLS_HaloArcher_M_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HaloArcher_F_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HaloArcher_F.png",
+  "file": "art/ui/CLS_HaloArcher_F_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHalo 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HornsWarrior_M_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HornsWarrior_M.png",
+  "file": "art/ui/CLS_HornsWarrior_M_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HornsWarrior_F_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HornsWarrior_F.png",
+  "file": "art/ui/CLS_HornsWarrior_F_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HornsMage_M_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HornsMage_M.png",
+  "file": "art/ui/CLS_HornsMage_M_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HornsMage_F_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HornsMage_F.png",
+  "file": "art/ui/CLS_HornsMage_F_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HornsArcher_M_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HornsArcher_M.png",
+  "file": "art/ui/CLS_HornsArcher_M_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
+ },
+ "CLS_HornsArcher_F_Card": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "derived (no new generation) from approved art/ui/CLS_HornsArcher_F.png",
+  "file": "art/ui/CLS_HornsArcher_F_Card.png",
+  "size": "460x550 RGBA",
+  "how": "placed so the eye line sits at 20% and the feet at 92% of the canvas (eyes centred), clipped to the ClassPick window shape (eroded 2px); canvas = ClassPick Portrait rect (0.224,0.15,0.552,0.358) of the 555x1024 card at 1.5x",
+  "preview": "art/review/s2/a2357_class_cards_equal.png",
+  "note": "직업 카드 창 그림 — 12장 모두 같은 키·머리 위치·발 위치(사용자 요청). ClassPickHorns 틀의 Portrait 칸에 그대로 얹는다.",
+  "user_ok": "사용자 OK 2026-10-06 (검수 전달: '좋아, 빛 A + 뿔 C', 직업 카드 틀 A, 제목 띠 A)"
  }
 }
