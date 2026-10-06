@@ -164,7 +164,16 @@ RefreshEffects: Outlaw 속성 = data.Outlaw.WeekId == cur
 - 게임성 개발: Config.Text 다섯 줄(BB37 "%s이"), Config.Announce.Text 3줄 추가, LootService RollKill·rollRows·Enhanced 인자(SellItem 쪽은 안 건드림), StoryQuestService 2줄, GooseService·KaijuService·ProgressionService 각 1~2줄, TitleService(Revoke·기간 칭호), CharacterVisuals 이름표 1곳.
 - 내 파일(10/07부터): PvPService, PlayerService, DataService, CombatService, JusticeService, Main 목록, 새 RankingService.
 
-## 12. 정한 것 (검수 확인 부탁)
+## 12-A. 검수 결정 2026-10-06 (아래 12의 제안을 대체)
+- **D1 뺀다.** 주간 명예·악명 판은 공정한 PvP 점수만 센다. 이야기 선택·거위 첫 참여 같은 한 번뿐인 점수는 명예·악명 수치에만 들어가고 판에는 안 간다(GrantFame ctx.Kind = 'Story' / 'Goose'는 Credit하지 않음). 판의 뜻: "이번 주 공정한 대결로 얻은 명예/악명".
+- **D2 그대로.** 괴수 처치, 원한 자루 든 도둑, 정당방위(상대가 먼저 때림)는 PvP 판에서 뺀다. 정당방위 판정 창은 Config 값(`Config.Ranking.DefenseWindowSeconds`, 기본 10초: 상대의 첫 타 뒤 10초 안에 쓰러뜨림).
+- **D3 그대로.** 무법자는 깡패 1단계처럼 계산한다(Config.Bounty의 units 최소 1, ×BountyMult). 최대 ×2.
+- **D4 끝을 둔다.** 월요일 0시+10분, 키에 시즌. 전체 읽기 실패 시 서버별 판으로 대신하지 않고 다시 시도. **2시간 동안 계속 실패하면 그 주 정산은 건너뛰고(보상·무법자 없음) 로그를 남긴다**(`Config.Ranking.SettleGiveUpSeconds = 7200`). STUDIO 시즌은 이 서버 판으로 정산한다.
+- **D5 바닥:** 무법자는 그 주 무단 KO **3점 이상**일 때만(`Config.Ranking.OutlawMinScore = 3`). 1~3위라도 3점 미만이면 무법자가 아니다. 사용자에게는 검수가 알린다.
+- **D6 그대로.** 맞는 것·자동 전투 타격은 내 활동이 아니다. `MarkActive(victim, "Hit")`를 따로 두고 자리 비움 판정은 `GetLastOwnActive`(걷기는 내 활동, A23-20).
+- 파일: TitleService·CharacterVisuals·GooseService·KaijuService·ProgressionService는 개발2가 고쳐도 된다. Config.Text·LootService·StoryQuestService는 고치기 전에 게임성 개발에게 줄 단위로 알리고 작게. Enhanced 신호 6번째 인자는 듣는 쪽(TelemetryService·Fx 등) 전부 확인한 뒤.
+
+## 12. 정한 것 (제안, 12-A가 대체)
 - D1 이야기 선택·거위 첫 참여 점수(한 번뿐, 반복 불가)도 주간 판에 넣는다. A23-23의 "공정 점수만"을 'PvP 점수는 공정 검사 통과분만'으로 읽었다. 빼라면 ctx.Kind로 바로 끈다.
 - D2 PvP 판 면제에 BB10 목록 외 3가지를 더했다: 괴수가 된 킬러, 원한 자루를 든 도둑, 미끼 방어(victim이 먼저 때림).
 - D3 무법자 현상금: 무법자를 깡패 1단계처럼 현상금 단위 1로 센다. 안 그러면 빛 진영 무법자는 별이 없어 현상금이 0이라 ×2가 의미 없다.
