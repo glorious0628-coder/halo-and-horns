@@ -4106,6 +4106,16 @@
    "image": "art\\out\\town3\\Town_Horns_Tree_src.png",
    "recipe": "prop_std",
    "seed": 82654
+  },
+  {
+   "task_id": "f7d24064-17bd-4313-88d5-535f9d089b39",
+   "image": "art\\out\\town3\\Town_Horns_Tree_src.png",
+   "recipe": "prop_std",
+   "seed": 82654,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\Town_Horns_Tree_raw.glb",
+   "bytes": 902364,
+   "at": "2026-10-06 19:08:55"
   }
  ],
  "X_TreeA": [
@@ -4115,6 +4125,16 @@
    "image": "art\\out\\town3\\X_TreeA_src.png",
    "recipe": "prop_std",
    "seed": 24367
+  },
+  {
+   "task_id": "c09cfc8d-1bff-428f-866e-8d52bf8094d7",
+   "image": "art\\out\\town3\\X_TreeA_src.png",
+   "recipe": "prop_std",
+   "seed": 24367,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\X_TreeA_raw.glb",
+   "bytes": 862068,
+   "at": "2026-10-06 19:08:56"
   }
  ],
  "Town_Horns_Wall": [
@@ -4124,6 +4144,130 @@
    "image": "art\\out\\town3\\Town_Horns_Wall_src.png",
    "recipe": "prop_std",
    "seed": 78228
+  },
+  {
+   "task_id": "7f6c5dc9-71f6-465d-b003-16444ccbc106",
+   "image": "art\\out\\town3\\Town_Horns_Wall_src.png",
+   "recipe": "prop_std",
+   "seed": 78228,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\Town_Horns_Wall_raw.glb",
+   "bytes": 886744,
+   "at": "2026-10-06 19:09:41"
+  }
+ ],
+ "W_BridgeWood": [
+  {
+   "event": "generation_submitted",
+   "task_id": "b032274f-52e5-490a-8dad-c327a70d19ef",
+   "image": "art\\out\\town3\\W_BridgeWood_src.png",
+   "recipe": "prop_std",
+   "seed": 86198
+  },
+  {
+   "task_id": "b032274f-52e5-490a-8dad-c327a70d19ef",
+   "image": "art\\out\\town3\\W_BridgeWood_src.png",
+   "recipe": "prop_std",
+   "seed": 86198,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\W_BridgeWood_raw.glb",
+   "bytes": 959720,
+   "at": "2026-10-06 19:10:18"
+  }
+ ],
+ "X_PadBase": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c004060d-1547-440b-8165-9b86d41429d3",
+   "image": "art\\out\\town3\\X_PadBase_src.png",
+   "recipe": "prop_std",
+   "seed": 88444
+  },
+  {
+   "task_id": "c004060d-1547-440b-8165-9b86d41429d3",
+   "image": "art\\out\\town3\\X_PadBase_src.png",
+   "recipe": "prop_std",
+   "seed": 88444,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\X_PadBase_raw.glb",
+   "bytes": 913096,
+   "at": "2026-10-06 19:10:18"
+  }
+ ],
+ "Acc_HornsR3": [
+  {
+   "event": "generation_submitted",
+   "task_id": "f7c2893a-1785-43aa-8235-697ab8d942d4",
+   "image": "art\\out\\acc\\HornsR3_34.png",
+   "recipe": "acc",
+   "seed": 59804
+  },
+  {
+   "task_id": "f7c2893a-1785-43aa-8235-697ab8d942d4",
+   "image": "art\\out\\acc\\HornsR3_34.png",
+   "recipe": "acc",
+   "seed": 59804,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Acc_HornsR3_raw.glb",
+   "bytes": 1558588,
+   "at": "2026-10-06 19:14:46"
+  }
+ ],
+ "Acc_HaloR3": [
+  {
+   "event": "generation_submitted",
+   "task_id": "a2ab1eeb-fe00-416a-8f17-2c73b9b3084e",
+   "image": "art\\out\\acc\\HaloR3_34.png",
+   "recipe": "acc",
+   "seed": 41925
+  },
+  {
+   "task_id": "a2ab1eeb-fe00-416a-8f17-2c73b9b3084e",
+   "image": "art\\out\\acc\\HaloR3_34.png",
+   "recipe": "acc",
+   "seed": 41925,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Acc_HaloR3_raw.glb",
+   "bytes": 1657520,
+   "at": "2026-10-06 19:14:16"
+  }
+ ],
+ "Acc_HornsR4": [
+  {
+   "event": "generation_submitted",
+   "task_id": "d88a4788-c738-49d3-8f20-51bac29aa50c",
+   "image": "art\\out\\acc\\HornsR4_34.png",
+   "recipe": "acc",
+   "seed": 20767
+  },
+  {
+   "task_id": "d88a4788-c738-49d3-8f20-51bac29aa50c",
+   "image": "art\\out\\acc\\HornsR4_34.png",
+   "recipe": "acc",
+   "seed": 20767,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Acc_HornsR4_raw.glb",
+   "bytes": 1788456,
+   "at": "2026-10-06 19:14:39"
+  }
+ ],
+ "Acc_HaloR4": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c2b9431d-d60a-47cc-ba52-551c73f123e0",
+   "image": "art\\out\\acc\\HaloR4_34.png",
+   "recipe": "acc",
+   "seed": 44950
+  },
+  {
+   "task_id": "c2b9431d-d60a-47cc-ba52-551c73f123e0",
+   "image": "art\\out\\acc\\HaloR4_34.png",
+   "recipe": "acc",
+   "seed": 44950,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Acc_HaloR4_raw.glb",
+   "bytes": 1782664,
+   "at": "2026-10-06 19:16:13"
   }
  ]
 }
