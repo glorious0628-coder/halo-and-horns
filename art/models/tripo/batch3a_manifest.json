@@ -1,0 +1,187 @@
+{
+ "note": "A23-47 batch 3a (user OK 2026-10-06). Tripo GLBs: front faces +X of the GLB (Blender/glTF +x), up = +Y in glTF. scale = target / native size on the given axis; size_studs = native * scale (x = front depth, y = width, z = height in Blender terms).",
+ "items": {
+  "Town_Halo_Spawn": {
+   "name_ko": "빛 스폰 단",
+   "file": "art/models/tripo/Town_Halo_Spawn_raw.glb",
+   "target": "지름 16",
+   "scale": 16.064,
+   "size_studs_xyz": [
+    16.06,
+    16.0,
+    11.21
+   ],
+   "tris": 9493,
+   "note": ""
+  },
+  "Town_Horns_Spawn": {
+   "name_ko": "뿔 스폰 단",
+   "file": "art/models/tripo/Town_Horns_Spawn_raw.glb",
+   "target": "지름 16",
+   "scale": 16.0,
+   "size_studs_xyz": [
+    15.4,
+    16.0,
+    7.7
+   ],
+   "tris": 9608,
+   "note": ""
+  },
+  "X_SpawnPlaza": {
+   "name_ko": "교차로 스폰 단",
+   "file": "art/models/tripo/X_SpawnPlaza_raw.glb",
+   "target": "지름 16",
+   "scale": 16.0,
+   "size_studs_xyz": [
+    15.44,
+    16.0,
+    8.23
+   ],
+   "tris": 9727,
+   "note": ""
+  },
+  "Town_Halo_Gate": {
+   "name_ko": "빛 큰 문",
+   "file": "art/models/tripo/Town_Halo_Gate_raw.glb",
+   "target": "폭 30",
+   "scale": 30.0,
+   "size_studs_xyz": [
+    11.16,
+    30.0,
+    27.04
+   ],
+   "tris": 9765,
+   "note": "통로가 앞뒤로 뚫림"
+  },
+  "Town_Horns_Gate": {
+   "name_ko": "뿔 큰 문",
+   "file": "art/models/tripo/Town_Horns_Gate_raw.glb",
+   "target": "폭 30",
+   "scale": 30.0,
+   "size_studs_xyz": [
+    12.11,
+    30.0,
+    26.68
+   ],
+   "tris": 9776,
+   "note": "통로가 앞뒤로 뚫림"
+  },
+  "X_Fountain": {
+   "name_ko": "교차로 분수",
+   "file": "art/models/tripo/X_Fountain_raw.glb",
+   "target": "지름 21",
+   "scale": 21.0,
+   "size_studs_xyz": [
+    20.9,
+    21.0,
+    17.7
+   ],
+   "tris": 9647,
+   "note": "맨 위 크리스털 = 왕관 조각 자리, 빛기둥은 코드"
+  },
+  "X_GuildHall": {
+   "name_ko": "장인 길드 집",
+   "file": "art/models/tripo/X_GuildHall_raw.glb",
+   "target": "폭 24",
+   "scale": 24.0,
+   "size_studs_xyz": [
+    23.91,
+    24.0,
+    22.48
+   ],
+   "tris": 9025,
+   "note": "뒷면 민무늬 → 뒤를 벽·다른 건물 쪽으로"
+  },
+  "Town_Halo_Tree": {
+   "name_ko": "빛 가로수",
+   "file": "art/models/tripo/Town_Halo_Tree_raw.glb",
+   "target": "높이 14",
+   "scale": 14.0,
+   "size_studs_xyz": [
+    9.59,
+    11.81,
+    14.0
+   ],
+   "tris": 2916,
+   "note": ""
+  },
+  "Town_Horns_Tree": {
+   "name_ko": "뿔 가로수",
+   "file": "art/models/tripo/Town_Horns_Tree_raw.glb",
+   "target": "높이 14",
+   "scale": 14.0,
+   "size_studs_xyz": [
+    9.09,
+    12.35,
+    14.0
+   ],
+   "tris": 2915,
+   "note": ""
+  },
+  "X_TreeA": {
+   "name_ko": "교차로 나무 A",
+   "file": "art/models/tripo/X_TreeA_raw.glb",
+   "target": "높이 14",
+   "scale": 14.0,
+   "size_studs_xyz": [
+    8.51,
+    11.2,
+    14.0
+   ],
+   "tris": 2934,
+   "note": ""
+  },
+  "Town_Halo_Wall": {
+   "name_ko": "빛 성벽 마디",
+   "file": "art/models/tripo/Town_Halo_Wall_raw.glb",
+   "target": "폭 18",
+   "scale": 18.0,
+   "size_studs_xyz": [
+    5.35,
+    18.0,
+    9.89
+   ],
+   "tris": 2714,
+   "note": "옆으로 이어 붙이는 마디"
+  },
+  "Town_Horns_Wall": {
+   "name_ko": "뿔 성벽 마디",
+   "file": "art/models/tripo/Town_Horns_Wall_raw.glb",
+   "target": "폭 18",
+   "scale": 18.0,
+   "size_studs_xyz": [
+    3.62,
+    18.0,
+    10.3
+   ],
+   "tris": 2812,
+   "note": "옆으로 이어 붙이는 마디"
+  },
+  "W_BridgeWood": {
+   "name_ko": "나무 큰 다리 마디",
+   "file": "art/models/tripo/W_BridgeWood_raw.glb",
+   "target": "폭 22",
+   "scale": 33.644,
+   "size_studs_xyz": [
+    22.0,
+    33.64,
+    13.01
+   ],
+   "tris": 2683,
+   "note": "길이 방향 = GLB y, 이어 붙이기"
+  },
+  "X_PadBase": {
+   "name_ko": "이동 발판 받침",
+   "file": "art/models/tripo/X_PadBase_raw.glb",
+   "target": "지름 12",
+   "scale": 12.089,
+   "size_studs_xyz": [
+    12.09,
+    12.0,
+    5.19
+   ],
+   "tris": 2871,
+   "note": ""
+  }
+ }
+}
