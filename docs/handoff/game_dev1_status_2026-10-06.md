@@ -2,7 +2,7 @@
 
 - **최신(새 계정, 한도로 멈춤):** 개발 2 병합 끝 = main **dfefaaa**(푸시, eac036f·ff38ce4·e078bf5, 충돌 5곳 해결, 병합 트리 오프라인 16종 변형 포함 통과). 이미지 개발 미완성 HUD v2는 worktree `Game-imgdev`로 옮겨져 작업 폴더 src는 HEAD와 같음. 임시 worktree `Game-wtc`는 병합용(지워도 됨).
 - **Studio:** 메인 Studio(창 이름 '악마 키우기 (placeId: 81671223175574)') 열림·Edit 모드. dfefaaa src 동기화(74개 씀·6개 지움) + `apply_studio_state.py`(몬스터 모델 10종 다시 넣음) 끝. **플레이 확인·Save As·place 커밋은 아직.**
-- **다음:** 플레이로 랭킹·게시판 서버 확인(오류 0) → Save As build/GoodEvil.rbxlx → place/ 커밋 → b9ada3b 땅·조명·나무 메인 적용 → 호박밭 배치 4개 → BB13(A23-38 + A23-40 B안: 아이콘 줄 끝 [메뉴]에서 위로 펼침) → BB3 → BB6 → BB7. 개발 2 BB14(500f60d)는 rebase 해시 오면 병합. A23-39 펫 조련사 클라이언트는 PET-3와 10/17~18(검수에 알림).
+- **다음:** 플레이로 랭킹·게시판 서버 확인(오류 0) → Save As build/GoodEvil.rbxlx → place/ 커밋 → b9ada3b 땅·조명·나무 메인 적용 → 호박밭 배치 4개 → BB13(A23-38 + A23-40 B안: 아이콘 줄 끝 [메뉴]에서 위로 펼침) → BB3 → BB6 → BB7. 개발 2 BB14는 rebase 끝 = **65e2ba6**(dev2, 푸시됨; 500f60d는 옛 해시라 쓰지 않음) → 병합 뒤 몬스터·플레이어·낙하 쓰러짐에 본인만 Net.Fx 'KO' 확인. A23-39 펫 조련사 클라이언트는 PET-3와 10/17~18(검수에 알림).
 
 (아래는 이전 기록)
 
