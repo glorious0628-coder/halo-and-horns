@@ -68,6 +68,10 @@ local TOPBAR = { Left = 164, Button = 44, Bottom = 2, Edge = 12, Tap = 45 }
 HudLayout.Topbar = TOPBAR
 local FOLD_MIN = 4 -- the [메뉴] squares that must fit beside it on the bar (새 소식 · 이동 · 도움말 · 설정)
 local MIN_CENTER = 240 -- logical units: narrowest centre column (the war meter stays >= 240du)
+-- real px: a desktop window shorter than this lays out on the phone sheet (top-right plate and tiles, quest lines beside
+-- the minimap). On the desktop sheet the bottom-centre group steps left into the quest lines there (main Studio 655x340
+-- and 573x354, 검수 2026-10-06). Touch rules (finger sizes, the thumbstick zone, the jump button) stay touch-only.
+local SMALL_PC = 500
 local GAP = 8
 -- touch targets never shrink below 60 logical units (~45 real px at the phone's 0.75 UIScale). A scaled down button
 -- grows back: the portrait from its top-left corner (the bars beside it give way, the tile row under it moves down), the
@@ -112,9 +116,19 @@ HudLayout.AnchorOf = anchorOf
 -- returns { [id] = { X, Y, W, H } } in logical units (MainGui space, before UIScale). potions also carries Gap (du between
 -- its HP and MP cells: cell width = (W - Gap) / 2); tiles carries Size (square tile side), Gap (least gap) and Count (how
 -- many tiles fit the row: the HUD shows that many, the rest go into the [메뉴] tile)
+-- true when a desktop window is too short for the desktop sheet (SMALL_PC)
+function HudLayout.SmallDesktop(env)
+	if type(env) ~= "table" or env.Touch == true then return false end
+	local s = (type(env.Scale) == "number" and env.Scale > 0) and env.Scale or 1
+	return type(env.H) == "number" and env.H * s < SMALL_PC
+end
+
 function HudLayout.Compute(env)
 	local touch = env.Touch == true
-	local ref = touch and REF.Touch or REF.Desktop
+	-- sheet = which approved sheet the rects come from (the phone one on touch and on short desktop windows);
+	-- touch = the finger rules
+	local sheet = touch or HudLayout.SmallDesktop(env)
+	local ref = sheet and REF.Touch or REF.Desktop
 	local k = 1 / ref.Scale -- reference px -> logical units
 	local s = (type(env.Scale) == "number" and env.Scale > 0) and env.Scale or 1
 	local W, H = env.W, env.H
@@ -136,15 +150,15 @@ function HudLayout.Compute(env)
 	local barMid = bar.Y1 - TOPBAR.Bottom / s - btn / 2
 	-- touch: a safe area narrower / shorter than the reference phone (notch insets: 749x361 -> 655x340) scales the
 	-- whole layout down by the same factor, so the stick zone and the gaps stay free
-	if touch then
+	if sheet then
 		k *= math.min(1, W / (ref.W / ref.Scale), H / (ref.H / ref.Scale))
 	end
 	local rj = touch and ref.Jump or nil -- the approved sheet's jump button (real px)
 	local out = {}
 	for id, def in ITEMS do
-		local r = touch and def[3] or def[2]
+		local r = sheet and def[3] or def[2]
 		local x, y, w, h = r[1], r[2], r[3] * k, r[4] * k
-		local anchor = anchorOf(id, touch)
+		local anchor = anchorOf(id, sheet)
 		if anchor == "BC" and jump then anchor = "BR" end -- touch: the combo line rides with the cluster (never under Q)
 		local X, Y
 		if anchor == "TL" then
@@ -233,9 +247,9 @@ function HudLayout.Compute(env)
 	menu.X = bar.X1 - TOPBAR.Edge / s - mSize
 	menu.Y = barMid - mSize / 2
 
-	-- touch: a round button that reaches up into the plate's tile row steps down under it (short / narrow phones: the plate
-	-- hangs from the top, the cluster from the jump button, so the X skill can meet the row; A23-49)
-	if touch then
+	-- phone sheet: a round button that reaches up into the plate's tile row steps down under it (short / narrow phones: the
+	-- plate hangs from the top, the cluster from the jump button, so the X skill can meet the row; A23-49)
+	if sheet then
 		local rowBottom = tiles.Y + tiles.H + GAP / 2
 		for _, id in ROUND_TAPS do
 			local r = out[id]
@@ -245,7 +259,7 @@ function HudLayout.Compute(env)
 
 	-- desktop: the bottom-centre group moves left (keeping its shape) when the corner cluster reaches it, but never past
 	-- the left margin; if that is still not enough it is squeezed from its left edge (narrow 4:3 / 5:4 windows)
-	if not touch then
+	if not sheet then
 		local minX, maxX, minY, maxY = math.huge, -math.huge, math.huge, -math.huge
 		for _, id in BC_GROUP do
 			local r = out[id]
@@ -280,11 +294,11 @@ function HudLayout.Compute(env)
 	-- In the top bar row the left neighbour is Roblox's own buttons and the right one [메뉴] with room for FOLD_MIN fold
 	-- squares beside it (the war meter never takes the fold's first line)
 	local leftEdge, rightEdge = 0, W
-	local fGapRow = touch and tileGap or FOLD_GAP * k
+	local fGapRow = sheet and tileGap or FOLD_GAP * k
 	for _, id in CENTER do
 		local c = out[id]
 		for oid, o in out do
-			local anchor = anchorOf(oid, touch)
+			local anchor = anchorOf(oid, sheet)
 			if not hidden[oid] and anchor ~= "TC" and anchor ~= "BC" and oid ~= "combo" and oid ~= "war_meter"
 				and o.Y < c.Y + c.H and o.Y + o.H > c.Y then
 				if o.X + o.W / 2 < W / 2 then
@@ -314,7 +328,7 @@ function HudLayout.Compute(env)
 	-- everything stays on screen and below the top bar (big tablets / very short windows); the top bar items stay in it
 	for id, r in out do
 		r.X = math.clamp(r.X, 0, math.max(0, W - r.W))
-		if anchorOf(id, touch) == "TB" then
+		if anchorOf(id, sheet) == "TB" then
 			r.Y = math.clamp(r.Y, bar.Y0, math.max(bar.Y0, bar.Y1 - r.H))
 		else
 			r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))
@@ -325,12 +339,12 @@ function HudLayout.Compute(env)
 	-- nearest item it may not cover (an item level with it that reaches under [메뉴] leaves no room: the line closes). X / Y / W / H = the box
 	-- around all lines, Cols = the first line's squares, Rows = #Lines
 	local m = out.menu
-	local fGap = touch and tileGap or FOLD_GAP * k -- phones: the tile row's gap (the first line lies on that row)
+	local fGap = sheet and tileGap or FOLD_GAP * k -- phone sheet: the tile row's gap (the first line lies on that row)
 	local fSize = m.H
 	local right = m.X - fGap
 	local blockers = {}
 	for oid, o in out do
-		if not hidden[oid] and not FOLD_OVER[oid] and not (touch and FOLD_OVER_TOUCH[oid]) then table.insert(blockers, o) end
+		if not hidden[oid] and not FOLD_OVER[oid] and not (sheet and FOLD_OVER_TOUCH[oid]) then table.insert(blockers, o) end
 	end
 	table.insert(blockers, rect(0, bar.Y0, bar.X0, bar.Y1 - bar.Y0)) -- Roblox's own top bar buttons
 	if touch then

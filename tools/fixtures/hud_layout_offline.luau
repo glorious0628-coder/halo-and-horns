@@ -159,6 +159,8 @@ for _, case in CASES do
 	local W, H, s = env.W, env.H, env.Scale
 	local top = env.Inset / s
 	local touch = env.Touch == true
+	-- the approved sheet the rects follow: the phone one on touch and on short desktop windows (HudLayout SMALL_PC)
+	local sheet = case.Sheet == true
 	-- the Roblox top bar's free part (GuiService.TopbarInset) as HUD.luau passes it
 	local bar = env.Topbar or { X0 = 164 / s, Y0 = 0, X1 = W, Y1 = top }
 	local buttonPx = math.min(ROBLOX_BUTTON_PX, env.Inset - 4)
@@ -169,7 +171,7 @@ for _, case in CASES do
 		rects[id] = { X = r.X, Y = r.Y, W = r.W, H = r.H, Gap = r.Gap, Size = r.Size, Count = r.Count, Cols = r.Cols,
 			Rows = r.Rows, Lines = r.Lines }
 	end
-	results[g] = { Px = { case.PxW, case.PxH }, Scale = s, Touch = touch, W = W, H = H, Top = top, Rects = rects,
+	results[g] = { Px = { case.PxW, case.PxH }, Scale = s, Touch = touch, Sheet = sheet, W = W, H = H, Top = top, Rects = rects,
 		Jump = env.Jump, Pouch = false, Bar = bar }
 
 	-- 1. every approved item exists, is finite and sits on screen below the top bar
@@ -295,6 +297,8 @@ for _, case in CASES do
 				check(g, "attack near jump", env.Jump.X - (out.attack.X + out.attack.W) <= 40,
 					fmt(out.attack) .. " jump " .. fmt(env.Jump))
 			end
+		end
+		if sheet then
 			-- phone plate: face, bars and the tile row sit in the top-right block, flush with the right edge (8 px)
 			for _, id in FACE do
 				check(g, "phone plate top-right " .. id, out[id].X + out[id].W >= 0.6 * W and out[id].Y + out[id].H <= 0.5 * H,
@@ -352,12 +356,12 @@ for _, case in CASES do
 		check(g, "chips right under the bar", (out.chips.Y - top) * s >= 2 - 0.01 and (out.chips.Y - top) * s <= 8 + 0.01,
 			("chips %.1f top %.1f (%.1f px)"):format(out.chips.Y, top, (out.chips.Y - top) * s))
 		for _, id in CLUSTER do
-			check(g, "cluster lower right " .. id, out[id].X + out[id].W / 2 >= (touch and 0.45 or 0.5) * W
+			check(g, "cluster lower right " .. id, out[id].X + out[id].W / 2 >= (sheet and 0.45 or 0.5) * W
 				and out[id].Y + out[id].H / 2 >= 0.4 * H,
 				fmt(out[id]))
 		end
-		-- the quest lines hang under the minimap on PC, beside it on phones (outside the thumbstick zone)
-		if touch then
+		-- the quest lines hang under the minimap on PC, beside it on the phone sheet (outside the thumbstick zone)
+		if sheet then
 			check(g, "quest beside the minimap", out.quest.X >= out.minimap.X + out.minimap.W - 0.01
 				and out.quest.Y <= out.minimap.Y + 1, fmt(out.quest) .. " " .. fmt(out.minimap))
 		else
@@ -377,10 +381,10 @@ for _, case in CASES do
 		end
 		local refW = 0
 		for _, it in V2.Items do
-			if it.Id == "war_meter" then refW = (touch and it.Phone.w or it.Pc.w) / (touch and REF_SCALE.Touch or REF_SCALE.Desktop) end
+			if it.Id == "war_meter" then refW = (sheet and it.Phone.w or it.Pc.w) / (sheet and REF_SCALE.Touch or REF_SCALE.Desktop) end
 		end
 		check(g, "war meter width", out.war_meter.W >= math.min(240, refW) - 0.5, fmt(out.war_meter))
-		local sides = touch and { "minimap", "quest", "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
+		local sides = sheet and { "minimap", "quest", "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
 			or { "minimap", "quest" }
 		for _, cid in CENTER do
 			local c = out[cid]
@@ -424,7 +428,7 @@ for _, case in CASES do
 					check(g, "fold lines go down", math.abs(ln.Y - want) <= 0.01, fmt(rr) .. (" want y %.2f"):format(want))
 				end
 				local protect = table.clone(FOLD_PROTECT)
-				if not touch then
+				if not sheet then
 					for _, id in FOLD_PROTECT_PC do table.insert(protect, id) end
 				end
 				for _, id in protect do
@@ -449,7 +453,7 @@ for _, case in CASES do
 			else
 				check(g, lineName, false, ("cols %d total %d"):format(f.Cols, total))
 			end
-			local overflow = touch and math.max(0, ROW_TILES - (tileOk and t.Count or 0)) or 0
+			local overflow = sheet and math.max(0, ROW_TILES - (tileOk and t.Count or 0)) or 0
 			check(g, "fold holds the row overflow", total >= MENU_TILES + overflow,
 				("total %d need %d"):format(total, MENU_TILES + overflow))
 		end

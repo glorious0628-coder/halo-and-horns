@@ -200,7 +200,11 @@ local NOTIFY = {
 	BannerLines = 3, -- more than this ends in "..." (TextTruncate)
 	BannerPadY = 6,
 	ToastLines = 4,
+	ToastPx = 12, -- real px: the toast text is never smaller (small desktop windows run the HUD at UIScale 0.6)
 	WrapLineH = 1.1, -- line height / TextSize for the maxLines cap (Builder Sans / Fredoka measure 1.0)
+	-- the measured height gets this much room per line: at small real sizes (10-12 px) the engine's rounded line
+	-- height is taller than the measurement and the last line was dropped for "..." (UiSandbox 655x340, 2026-10-06)
+	WrapSlack = 0.15,
 	TrimQueued = false,
 }
 
@@ -2035,8 +2039,11 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
 			params:Destroy()
 			if token ~= state.Token or not ok or not label.Parent then return end
-			local h = math.ceil(bounds.Y)
-			if maxLines then h = math.min(h, math.ceil(label.TextSize * NOTIFY.WrapLineH * maxLines)) end
+			local lines = math.max(1, math.floor(bounds.Y / math.max(1, label.TextSize) + 0.5))
+			local h = math.ceil(bounds.Y + lines * label.TextSize * NOTIFY.WrapSlack)
+			if maxLines then
+				h = math.min(h, math.ceil(label.TextSize * (NOTIFY.WrapLineH + NOTIFY.WrapSlack) * maxLines))
+			end
 			if minH then h = math.max(h, minH) end
 			local size = label.Size
 			if size.Y.Scale ~= 0 or size.Y.Offset ~= h then label.Size = UDim2.new(size.X.Scale, size.X.Offset, 0, h) end
@@ -2162,7 +2169,7 @@ function UIKit.Toast(text, kind, duration, icon)
 		Size = UDim2.new(1, -left, 0, img and TOAST_ICON or 22),
 		TextWrapped = true,
 		TextTruncate = Enum.TextTruncate.AtEnd,
-		TextSize = 18,
+		TextSize = math.max(18, math.ceil(NOTIFY.ToastPx / currentScale() - 0.001)),
 		Text = text,
 		TextColor3 = (kind == "good" or kind == "bad" or kind == "reward") and color or T.Text,
 		TextTransparency = 1,

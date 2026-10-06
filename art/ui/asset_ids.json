@@ -493,5 +493,22 @@
   "WorldMapV2": "rbxassetid://113059360504657",
   "PTR_TownBright": "rbxassetid://136976488823430",
   "PTR_TownSmokey": "rbxassetid://116672418091847",
-  "PTR_TownTiny": "rbxassetid://82956358780804"
+  "PTR_TownTiny": "rbxassetid://82956358780804",
+  "CLS_HaloArcher_M_Card": "rbxassetid://115817198015355",
+  "FactionPickTitle": "rbxassetid://79129691623347",
+  "CLS_HaloMage_F_Card": "rbxassetid://123314243302195",
+  "FactionPickHorns": "rbxassetid://72414557308193",
+  "ClassPickHalo": "rbxassetid://85173061508076",
+  "CLS_HaloMage_M_Card": "rbxassetid://126336881237120",
+  "CLS_HaloWarrior_M_Card": "rbxassetid://83476661743336",
+  "CLS_HaloWarrior_F_Card": "rbxassetid://88805775159569",
+  "ClassPickHorns": "rbxassetid://103562830131699",
+  "FactionPickHalo": "rbxassetid://88246897757091",
+  "CLS_HornsWarrior_M_Card": "rbxassetid://91103879889186",
+  "CLS_HornsArcher_F_Card": "rbxassetid://100853653295965",
+  "CLS_HornsMage_M_Card": "rbxassetid://87840664026840",
+  "CLS_HornsWarrior_F_Card": "rbxassetid://94079237131593",
+  "CLS_HaloArcher_F_Card": "rbxassetid://126666354590986",
+  "CLS_HornsMage_F_Card": "rbxassetid://136362714347322",
+  "CLS_HornsArcher_M_Card": "rbxassetid://81732631379103"
 }

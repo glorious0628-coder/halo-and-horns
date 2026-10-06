@@ -330,10 +330,30 @@ local function buildButton(slot)
 		Size = UDim2.fromScale(0.7, 0.42), TextScaled = true, ZIndex = 6, Visible = false, Parent = face,
 	}, "Number")
 
-	-- locked: lock glyph (+ "Lv N" on PCs)
+	-- locked: lock glyph (+ "Lv N"); without the GlyphLock art a code lock (white body + shackle ring, IMG-R4, review
+	-- 8e89d2b ②: an empty id left a bare disc)
 	b.Lock = UIKit.ArtImage("GlyphLock", {
 		Name = "Lock", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.4),
 		Size = UDim2.fromScale(0.34, 0.34), ZIndex = 7, Visible = false, Active = false, Parent = holder,
+	}) or UIKit.Create("Frame", {
+		Name = "Lock", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.4),
+		Size = UDim2.fromScale(0.34, 0.34), BackgroundTransparency = 1, ZIndex = 7, Visible = false, Active = false,
+		Parent = holder,
+	}, {
+		UIKit.Create("Frame", {
+			Name = "Shackle", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.02),
+			Size = UDim2.fromScale(0.56, 0.62), BackgroundTransparency = 1, ZIndex = 7, Active = false,
+		}, {
+			UIKit.Create("UICorner", { CornerRadius = UDim.new(0.5, 0) }),
+			UIKit.Create("UIStroke", { Color = COL.White, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		}),
+		UIKit.Create("Frame", {
+			Name = "Body", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1),
+			Size = UDim2.fromScale(0.86, 0.6), BackgroundColor3 = COL.White, ZIndex = 8, Active = false,
+		}, {
+			UIKit.Create("UICorner", { CornerRadius = UDim.new(0.18, 0) }),
+			UIKit.Create("UIStroke", { Color = COL.Navy, Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		}),
 	})
 	b.LockText = smallLabel({
 		Name = "Level", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.68),
@@ -389,6 +409,11 @@ local function setIcon(b)
 	b.Icon = UIKit.ArtImage(key, {
 		Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(T.FaceX, T.FaceY),
 		Size = UDim2.fromScale(T.Icon, T.Icon), ZIndex = 3, Active = false, Parent = b.Holder,
+	}) or UIKit.LightText({
+		-- review 8e89d2b ② (IMG-R4): no icon art -> the slot's letter in the same place, never a bare disc
+		Name = "Icon", Text = b.Slot, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(T.FaceX, T.FaceY),
+		Size = UDim2.fromScale(T.Icon * 0.8, T.Icon * 0.8), TextScaled = true, ZIndex = 3, Active = false,
+		Parent = b.Holder,
 	})
 end
 
@@ -417,8 +442,11 @@ local function paintButton(b)
 	if b.Holder.Visible ~= visible then b.Holder.Visible = visible end
 	if not visible then return end
 	setIcon(b)
+	local tint = (st.Locked and COL.Locked) or (st.MPShort and COL.Dim) or COL.White
 	if b.Icon and b.Icon:IsA("ImageLabel") then
-		b.Icon.ImageColor3 = (st.Locked and COL.Locked) or (st.MPShort and COL.Dim) or COL.White
+		b.Icon.ImageColor3 = tint
+	elseif b.Icon and b.Icon:IsA("TextLabel") then
+		b.Icon.TextColor3 = tint
 	end
 	if st.Locked then setSweep(b, 1) end -- the face stays shaded while locked (the 10 Hz tick leaves it alone)
 	-- MP short: the whole button dims (A23-60: no MP number on it)

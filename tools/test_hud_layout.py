@@ -54,6 +54,7 @@ OUT = ROOT / "docs/art/verification_2026-10-06/hud_layout_B_offline_2026-10-06.j
 PNG = OUT.with_suffix(".png")
 
 INSET = 58  # Roblox top bar (real px) on both reference screens of the approved sheet
+SMALL_PC_PX = 500  # HudLayout.luau SMALL_PC: a desktop window shorter than this uses the phone sheet
 ROBLOX_LEFT = 164  # where Roblox's own top bar buttons end (GuiService.TopbarInset.Min.X, UiSandbox PC + phone 2026-10-06)
 
 # (name, touch, screen px w, h, reference screen, supported, top inset px, MainGui safe area px or None[, Roblox
@@ -70,6 +71,11 @@ SCREENS = [
     ("pc_1280x720_inset36", False, 1280, 720, False, True, 36, None),
     # Roblox's own menu opened wide in the top bar (chat + menu + more): the war meter keeps clear of it
     ("pc_1280x720_unibar_wide", False, 1280, 720, False, True, INSET, None, 560),
+    # short desktop windows (< 500 px tall) lay out on the phone sheet (HudLayout SMALL_PC; main Studio 655x340 /
+    # 573x354 had the quest lines run into the face group on the desktop sheet, 검수 2026-10-06)
+    ("pc_655x340_small", False, 655, 340, False, True, INSET, None),
+    ("pc_573x354_small", False, 573, 354, False, True, INSET, None),
+    ("pc_700x450_small", False, 700, 450, False, True, INSET, None),
     # a very short window: overlaps are accepted there, but everything must stay on screen below the top bar
     ("pc_1280x240_short", False, 1280, 240, False, False, INSET, None),
     ("phone_749x361", True, 749, 361, True, True, INSET, None),
@@ -98,15 +104,22 @@ EXCEPTIONS = [
      "bar; the other 2 wrap to the line right under it (A23-40 보강)."),
     ("phone_592x360_navbar", "fold holds the menu tiles in one line",
      "592 px wide (Android nav bar): the bar holds 3 fold squares beside [메뉴]; the 4th wraps under the bar."),
+    ("pc_573x354_small", "fold holds the menu tiles in one line",
+     "573 px wide desktop window on the phone sheet: Roblox's buttons + the war meter + [메뉴] leave room for 3 fold "
+     "squares in the bar; the 4th wraps under it (A23-40 보강, like the narrow phones)."),
     ("phone_749x361_notch", "fold holds the menu tiles in one line",
      "655 px safe area (notch): 164 px Roblox buttons + war meter + [메뉴] + 4 squares need ~670 px; 3 squares fit "
      "in the bar, the 4th wraps under it."),
 ]
 
-# (name, exact text, replacement) in HudLayout.luau: each must match exactly once. The centre column's narrowing / room
+# (name, exact text, replacement) in HudLayout.luau: each must match exactly once. The final on-screen clamp (r.Y) has no
+# mutation since SMALL_PC: windows short enough to push items off the desktop sheet now use the phone sheet, which the
+# safe-area factor always fits (the clamp stays as a guard; "every item on screen" still runs on every screen). The centre column's narrowing / room
 # clamp is defensive in layout B (no supported screen squeezes the column: the left, centre and right blocks all scale
 # with the same k), so it has no mutation here; the column checks still run on every screen.
 MUTATIONS = [
+    ("short desktop windows keep the desktop sheet", "local sheet = touch or HudLayout.SmallDesktop(env)",
+     "local sheet = touch"),
     ("touch targets may shrink to 30", "local MIN_TAP = 60", "local MIN_TAP = 30"),
     ("round touch buttons never grow back", "			if r.W < MIN_TAP then", "			if false then"),
     ("potions never grow back", "if pot.H < MIN_TAP then pot.Y, pot.H = pot.Y + pot.H - MIN_TAP, MIN_TAP end", ""),
@@ -142,7 +155,6 @@ MUTATIONS = [
     ("round buttons may sit on the phone tile row",
      "if r.X < tiles.X + tiles.W and r.X + r.W > tiles.X and r.Y < rowBottom then r.Y = rowBottom end", ""),
     ("phone quest rect drifted", "{ 98, 62, 150, 45 }", "{ 98, 62, 170, 45 }"),
-    ("everything may leave the screen", "r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))", "r.Y = r.Y"),
     ("potions never widen", "if minX < pot.X then pot.X, pot.W = minX, potRight - minX end", ""),
     ("potions grow into the stick zone",
      "if pot.Y + pot.H > H * STICK.Y then minX = math.max(minX, W * STICK.X) end", ""),
@@ -174,7 +186,7 @@ MUTATIONS = [
     ("fold lines go up", "local y, step = m.Y, fSize + fGap", "local y, step = m.Y, -(fSize + fGap)"),
     ("fold covers the thumbstick zone", "table.insert(blockers, rect(0, H * STICK.Y, W * STICK.X, H - H * STICK.Y))", ""),
     ("phone tile row stops short", "{ 502, 112, 239, 45 }", "{ 502, 112, 191, 45 }"),
-    ("fold squares touch", "local fGap = touch and tileGap or FOLD_GAP * k", "local fGap = 0"),
+    ("fold squares touch", "local fGap = sheet and tileGap or FOLD_GAP * k", "local fGap = 0"),
 ]
 
 
@@ -217,7 +229,8 @@ def cases(ui: dict) -> list[dict]:
         if touch:
             j = jump_rect(gw, gh)
             env["Jump"] = {k: v / s for k, v in j.items()}
-        out.append({"Name": name, "Base": name, "Pouch": False, "Touch": touch,
+        sheet = touch or ph < SMALL_PC_PX  # HudLayout SMALL_PC: short desktop windows use the phone sheet
+        out.append({"Name": name, "Base": name, "Pouch": False, "Touch": touch, "Sheet": sheet,
                     "Ref": ref, "Supported": supported, "PxW": gw, "PxH": gh, "Env": env})
     return out
 

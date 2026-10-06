@@ -3258,6 +3258,27 @@ Config.UIArt = {
 		ClassCardNeutral = { Id = "rbxassetid://112912477016552", Size = Vector2.new(581, 1024) }, -- ClassCardArtisan
 		-- bundle 2 title ribbon (crown + halo + horn, text in TextRect), premise panel and footer capsule (navy: white text)
 		FactionTitle = { Id = "rbxassetid://126167902049009", Size = Vector2.new(1024, 389), TextRect = { 0.22, 0.38, 0.56, 0.34 } }, -- the scroll band between its folds
+		-- A23-57 picker redraw (이미지 생성 2, user OK 2026-10-06, c7c13d4): wordless art, the game's English text on top
+		-- (CardLayout FactionPick* / ClassPick* regions). Ids "" until the upload: the pickers keep the bundle 2 cards
+		-- (CardHalo / ClassCardHalo ...) meanwhile (IMG-R4). The 12 class pictures are already cut to the card's window
+		-- (eyes at 20 %, feet at 92 %): drawn exactly on ClassPick*'s Portrait region, by the player's chosen gender.
+		FactionPickTitle = { Id = "rbxassetid://79129691623347", Size = Vector2.new(1024, 373), TextRect = { 0.149, 0.429, 0.704, 0.338 } },
+		FactionPickHalo = { Id = "rbxassetid://88246897757091", Size = Vector2.new(624, 1024) },
+		FactionPickHorns = { Id = "rbxassetid://72414557308193", Size = Vector2.new(624, 1024) },
+		ClassPickHalo = { Id = "rbxassetid://85173061508076", Size = Vector2.new(555, 1024) },
+		ClassPickHorns = { Id = "rbxassetid://103562830131699", Size = Vector2.new(555, 1024) },
+		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://83476661743336", Size = Vector2.new(460, 550) },
+		CLS_HaloWarrior_F_Card = { Id = "rbxassetid://88805775159569", Size = Vector2.new(460, 550) },
+		CLS_HaloMage_M_Card = { Id = "rbxassetid://126336881237120", Size = Vector2.new(460, 550) },
+		CLS_HaloMage_F_Card = { Id = "rbxassetid://123314243302195", Size = Vector2.new(460, 550) },
+		CLS_HaloArcher_M_Card = { Id = "rbxassetid://115817198015355", Size = Vector2.new(460, 550) },
+		CLS_HaloArcher_F_Card = { Id = "rbxassetid://126666354590986", Size = Vector2.new(460, 550) },
+		CLS_HornsWarrior_M_Card = { Id = "rbxassetid://91103879889186", Size = Vector2.new(460, 550) },
+		CLS_HornsWarrior_F_Card = { Id = "rbxassetid://94079237131593", Size = Vector2.new(460, 550) },
+		CLS_HornsMage_M_Card = { Id = "rbxassetid://87840664026840", Size = Vector2.new(460, 550) },
+		CLS_HornsMage_F_Card = { Id = "rbxassetid://136362714347322", Size = Vector2.new(460, 550) },
+		CLS_HornsArcher_M_Card = { Id = "rbxassetid://81732631379103", Size = Vector2.new(460, 550) },
+		CLS_HornsArcher_F_Card = { Id = "rbxassetid://100853653295965", Size = Vector2.new(460, 550) },
 		FactionPremise = { Id = "rbxassetid://75757875574311", Size = Vector2.new(1024, 434), Slice = Rect.new(120, 120, 904, 314), SliceScale = 0.22, Tone = "Navy" },
 		FactionFooter = { Id = "rbxassetid://97044636639921", Size = Vector2.new(1024, 142), Slice = Rect.new(100, 0, 924, 142), FitHeight = true, Tone = "Navy" },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
@@ -3427,6 +3448,16 @@ Config.UIArt = {
 -- strip), Motto (motto ribbon), Perks (perk panel), Button (glossy button). Class cards: Portrait (alcove for the
 -- character), Name (name ribbon), Body (description + stat bars), Button.
 Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
+	-- A23-57 redraw: the faction cards' Name ribbon (Title), Panel (Perks) and Button - no Desc / Motto strips; the class
+	-- card frames' Portrait window (the CLS_* picture fills it), Name, Body and Button
+	FactionPickHalo = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },
+		Button = { 0.224, 0.859, 0.548, 0.061 } },
+	FactionPickHorns = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },
+		Button = { 0.224, 0.859, 0.548, 0.061 } },
+	ClassPickHalo = { Aspect = 0.542, Portrait = { 0.224, 0.15, 0.552, 0.358 }, Name = { 0.2, 0.509, 0.6, 0.066 },
+		Body = { 0.15, 0.646, 0.699, 0.181 }, Button = { 0.225, 0.859, 0.551, 0.072 } },
+	ClassPickHorns = { Aspect = 0.542, Portrait = { 0.224, 0.15, 0.552, 0.358 }, Name = { 0.2, 0.509, 0.6, 0.066 },
+		Body = { 0.15, 0.646, 0.699, 0.181 }, Button = { 0.225, 0.859, 0.551, 0.072 } },
 	CardHalo = { Aspect = 0.607, Title = { 0.217, 0.156, 0.566, 0.115 }, Desc = { 0.154, 0.313, 0.692, 0.049 },
 		Motto = { 0.154, 0.392, 0.692, 0.049 }, Perks = { 0.157, 0.491, 0.686, 0.381 }, Button = { 0.243, 0.886, 0.492, 0.083 } },
 	CardHorns = { Aspect = 0.642, Title = { 0.236, 0.161, 0.519, 0.097 }, Desc = { 0.184, 0.313, 0.632, 0.062 },
