@@ -206,4 +206,20 @@ do
 		table.insert(log, "horns bridge rails " .. count .. " braziers " .. #lamps)
 	end
 end
+---------------- 다듬기: 텅 빈 마을 길에 등불(빛 마을)·화로(뿔 마을) 추가 — 진짜 빛(PointLight)은 넣지 않음 ----------------
+do
+	local ex = Instance.new("Folder"); ex.Name = "TownExtras"; ex.Parent = out
+	local n = 0
+	for z = -330, -390, -20 do -- 영웅상(z -340·-360·-380) 사이
+		for _, sx in ipairs({ -10.5, 10.5 }) do
+			place("H_Lamp", sx, z, 0, { "h", 8 }, 0, ex); n += 1
+		end
+	end
+	for z = 335, 395, 20 do
+		for _, sx in ipairs({ -10.5, 10.5 }) do
+			place("K_Brazier", sx, z, 0, { "h", 3.6 }, 0, ex); n += 1
+		end
+	end
+	table.insert(log, "town road extras " .. n)
+end
 return table.concat(log, "\n")
