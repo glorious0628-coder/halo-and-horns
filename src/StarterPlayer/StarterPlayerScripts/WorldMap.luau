@@ -998,7 +998,17 @@ local function drawWorld()
 		ZIndex = 2,
 		Parent = me,
 	}, { corner(0.5, 0), stroke(WHITE, 2, 0) })
-	meGlyph = label({
+	-- A23-51: the same arrow art as the live minimap (white + navy rim, tinted with my faction colour); "▲" without it
+	local k = kit()
+	local art = k and type(k.ArtImage) == "function" and k.ArtImage("MapPlayerArrow", {
+		Name = "Arrow",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromOffset(24, 24),
+		ZIndex = 3,
+		Parent = me,
+	}) or nil
+	meGlyph = art or label({
 		Name = "Arrow",
 		Text = GLYPH.Me,
 		TextColor3 = WHITE,
@@ -1654,7 +1664,11 @@ local function updateArrow(faction)
 		meGlyph.Rotation = math.deg(math.atan2(look.X, -look.Z))
 	end
 	local col = factionColor(faction)
-	if meGlyph.TextColor3 ~= col then meGlyph.TextColor3 = col end
+	if meGlyph:IsA("ImageLabel") then
+		if meGlyph.ImageColor3 ~= col then meGlyph.ImageColor3 = col end
+	elseif meGlyph.TextColor3 ~= col then
+		meGlyph.TextColor3 = col
+	end
 	if mePulse.BackgroundColor3 ~= col then mePulse.BackgroundColor3 = col end
 	if legendMe and legendMe.TextColor3 ~= col then legendMe.TextColor3 = col end
 	setVisible(me, uvVisible(u, v))

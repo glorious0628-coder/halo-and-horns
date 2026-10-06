@@ -8,9 +8,12 @@ DesktopScaleMin / DesktopScaleMax, reference height 720) and the touch jump butt
 screens whose short side <= 500, else 120 px). The approved rects come from docs/design/hud_layout_B_imgdev_2026-10-06.json
 (PC = 검수's docs/design/hud_layout_B_2026-10-06.json, phone = 이미지 개발 by the A23-40 rules).
 
-Checks (named, collected): every item on screen below the top bar; [메뉴] in the PC top-right corner / at the end of the
-phone tile row and its fold-out room (out.fold) clear of the war meter, minimap, quest lines, face / bars and combat
-buttons with the four menu tiles (+ the phone row's overflow) in one row (A23-40 정정); no two items overlap (circles as circles) on every
+Checks (named, collected): every item on screen below the top bar, except [메뉴] and the war meter, which sit IN the
+Roblox top bar row (A23-40 보강, user 2026-10-06): centred on the bar's middle like Roblox's buttons, inside its free part
+(GuiService.TopbarInset = env.Topbar; screens with Roblox's menu opened wide included), no taller than a Roblox button,
+[메뉴] a Roblox-button square 12 px from the free right end; the chips / next event / notify right under the bar; the
+[메뉴] fold-out room (out.fold) along the bar first, then down, clear of Roblox's buttons, the war meter, minimap, quest
+lines, face / bars and combat buttons with the four menu tiles (+ the phone row's overflow) in one row (A23-40 정정); no two items overlap (circles as circles) on every
 supported screen and pressable items keep >= 2 logical units apart; touch targets >= 60 logical units (portrait, round
 combat buttons, the quest lines block, every icon tile, both potion cells: cell = (W - Gap) / 2); nothing pressable on the
 jump button or in the thumbstick zone (x < 0.4W, y > H/3); blocks stay at their edges (minimap + quest top-left, PC face /
@@ -51,8 +54,10 @@ OUT = ROOT / "docs/art/verification_2026-10-06/hud_layout_B_offline_2026-10-06.j
 PNG = OUT.with_suffix(".png")
 
 INSET = 58  # Roblox top bar (real px) on both reference screens of the approved sheet
+ROBLOX_LEFT = 164  # where Roblox's own top bar buttons end (GuiService.TopbarInset.Min.X, UiSandbox PC + phone 2026-10-06)
 
-# (name, touch, screen px w, h, reference screen, supported, top inset px, MainGui safe area px or None)
+# (name, touch, screen px w, h, reference screen, supported, top inset px, MainGui safe area px or None[, Roblox
+# buttons' right end px when not ROBLOX_LEFT])
 SCREENS = [
     ("pc_1280x720", False, 1280, 720, True, True, INSET, None),
     ("pc_1024x768", False, 1024, 768, False, True, INSET, None),
@@ -63,6 +68,8 @@ SCREENS = [
     ("pc_800x600", False, 800, 600, False, True, INSET, None),
     ("pc_800x720_narrow", False, 800, 720, False, True, INSET, None),
     ("pc_1280x720_inset36", False, 1280, 720, False, True, 36, None),
+    # Roblox's own menu opened wide in the top bar (chat + menu + more): the war meter keeps clear of it
+    ("pc_1280x720_unibar_wide", False, 1280, 720, False, True, INSET, None, 560),
     # a very short window: overlaps are accepted there, but everything must stay on screen below the top bar
     ("pc_1280x240_short", False, 1280, 240, False, False, INSET, None),
     ("phone_749x361", True, 749, 361, True, True, INSET, None),
@@ -83,10 +90,17 @@ EXCEPTIONS = [
      "rect is 113du wide. Growing to the left (right edge kept: Q sits 6du to its right) stops at the thumbstick zone "
      "edge x = 0.4W = 302.9du, which leaves 120.5du: two cells of 57.2du with the approved 6 px gap (60.2du only with "
      "no gap at all). The cells stay below 60du (~43 real px) here; spec decision needed."),
-    ("phone_568x320", "tiles at least 3 on phones",
-     "4-inch phone (568x320 px): the layout scales to k = 1.011 du/px and every square grows back to 60du, so the "
-     "top-right row (from the face's left edge to [메뉴]) holds 2 tiles + [메뉴]; the other row windows fold out of "
-     "[메뉴] (A23-40 정정)."),
+    # A23-40 보강: [메뉴] and the war meter share the Roblox top bar with Roblox's own buttons (164 px). Where the bar
+    # cannot hold Roblox's buttons + the war meter (>= 240du) + [메뉴] + 4 thumb-size fold squares, the fold-out's
+    # first line beside [메뉴] holds fewer and the rest wrap to the next line right under the bar
+    ("phone_568x320", "fold holds the menu tiles in one line",
+     "568 px wide phone: 164 px of Roblox buttons + the 240du war meter + [메뉴] leave room for 2 fold squares in the "
+     "bar; the other 2 wrap to the line right under it (A23-40 보강)."),
+    ("phone_592x360_navbar", "fold holds the menu tiles in one line",
+     "592 px wide (Android nav bar): the bar holds 3 fold squares beside [메뉴]; the 4th wraps under the bar."),
+    ("phone_749x361_notch", "fold holds the menu tiles in one line",
+     "655 px safe area (notch): 164 px Roblox buttons + war meter + [메뉴] + 4 squares need ~670 px; 3 squares fit "
+     "in the bar, the 4th wraps under it."),
 ]
 
 # (name, exact text, replacement) in HudLayout.luau: each must match exactly once. The centre column's narrowing / room
@@ -100,7 +114,8 @@ MUTATIONS = [
     ("grown portrait covers the tile row", "out.tiles.Y += g", ""),
     ("touch tiles may shrink below a thumb", "local size = touch and math.max(tiles.H, MIN_TAP) or tiles.H",
      "local size = tiles.H"),
-    ("tile count ignores the gap", "+ 1e-6))\n\t-- [메뉴]: a square", "+ 1e-6)) + 1\n\t-- [메뉴]: a square"),
+    ("tile count ignores the gap", "+ 1e-6))\n\t-- [메뉴]: a Roblox-button-sized square",
+     "+ 1e-6)) + 1\n\t-- [메뉴]: a Roblox-button-sized square"),
     ("tiles touch", "local TILE_GAP = 3", "local TILE_GAP = 0"),
     ("touch quest lines may shrink below a thumb", "if out.quest.H < MIN_TAP then out.quest.H = MIN_TAP end", ""),
     ("top-right items anchored to the left edge",
@@ -128,18 +143,32 @@ MUTATIONS = [
      "if pot.Y + pot.H > H * STICK.Y then minX = math.max(minX, W * STICK.X) end", ""),
     ("potion gap drifted", "local POTION_GAP = 6", "local POTION_GAP = 2"),
     # A23-40 정정: [메뉴] top-right + its fold-out room
-    ("menu anchored to the left", 'menu = { "TR", { 1218, 66, 52, 52 }', 'menu = { "TL", { 1218, 66, 52, 52 }'),
-    ("desktop menu rect drifted", "{ 1218, 66, 52, 52 }", "{ 1210, 66, 52, 52 }"),
-    ("touch menu may shrink below a thumb", "local mSize = touch and math.max(menu.H, MIN_TAP) or menu.H",
-     "local mSize = menu.H"),
+    ("menu not at the bar's right end", "menu.X = bar.X1 - TOPBAR.Edge / s - mSize", "menu.X = bar.X1 - 40 / s - mSize"),
+    ("menu under the bar", "menu.Y = barMid - mSize / 2", "menu.Y = bar.Y1 + 4 / s"),
+    ("touch menu may shrink below a thumb", "local mSize = touch and math.max(btn, TOPBAR.Tap / s) or btn", "local mSize = btn"),
+    ("menu bigger than a Roblox button", "local btn = math.min(TOPBAR.Button, math.max(1, barPx - 4)) / s",
+     "local btn = 52 / s"),
+    # A23-40 보강: the war meter in the Roblox top bar row
+    ("war meter not in the top bar", 'war_meter = { "TB",', 'war_meter = { "TC",'),
+    ("top bar items follow the UIScale", "h = math.min(r[4], TOPBAR.Button, math.max(1, barPx - 4)) / s", "h = r[4] * k"),
+    ("war meter not centred on the bar", "X, Y = W / 2 + (x - ref.W / 2) * k, barMid - h / 2",
+     "X, Y = W / 2 + (x - ref.W / 2) * k, bar.Y0"),
+    ("bar row on the bar's middle, not Roblox's buttons'", "local barMid = bar.Y1 - TOPBAR.Bottom / s - btn / 2",
+     "local barMid = (bar.Y0 + bar.Y1) / 2"),
+    ("Roblox's buttons not kept clear",
+     "if c.Y < bar.Y1 and c.Y + c.H > bar.Y0 then leftEdge = math.max(leftEdge, bar.X0 + GAP) end", ""),
+    ("no fold room left beside [메뉴]", "rightEdge = math.min(rightEdge, o.X - FOLD_MIN * (o.W + fGapRow) - GAP)",
+     "rightEdge = math.min(rightEdge, o.X - GAP)"),
+    ("info rows not under the bar", 'chips = { "TC", { 516, 62, 248, 22 }', 'chips = { "TC", { 516, 112, 248, 22 }'),
+    # (the fold's Roblox-buttons blocker is defensive: the war meter always sits between them and [메뉴] in the bar, so no
+    # supported screen reaches it; "fold first line in the top bar" still checks that the line stays right of them)
     ("fold may cover the war meter", "local FOLD_OVER = { tiles = true,", "local FOLD_OVER = { war_meter = true, tiles = true,"),
     ("fold lines ignore every item", "if o.Y < y0 + fSize and o.Y + o.H > y0 and o.X < m.X - 0.01 then", "if false then"),
     ("fold one square too many", "return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6))",
      "return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6)) + 1"),
-    ("phone fold lines go down", "local y, step = m.Y, (touch and -1 or 1) * (fSize + fGap)",
-     "local y, step = m.Y, fSize + fGap"),
+    ("fold lines go up", "local y, step = m.Y, fSize + fGap", "local y, step = m.Y, -(fSize + fGap)"),
     ("fold covers the thumbstick zone", "table.insert(blockers, rect(0, H * STICK.Y, W * STICK.X, H - H * STICK.Y))", ""),
-    ("grown phone menu covers the row", "tiles.W = math.max(size, menu.X - tileGap - tiles.X)", ""),
+    ("phone tile row stops short", "{ 502, 112, 239, 45 }", "{ 502, 112, 191, 45 }"),
     ("fold squares touch", "local fGap = touch and tileGap or FOLD_GAP * k", "local fGap = 0"),
 ]
 
@@ -173,10 +202,13 @@ def jump_rect(w: float, h: float) -> dict:
 def cases(ui: dict) -> list[dict]:
     """Every screen once (layout B has no pouch line: the pouch rides the power line or hides)."""
     out = []
-    for name, touch, pw, ph, ref, supported, inset, safe in SCREENS:
+    for name, touch, pw, ph, ref, supported, inset, safe, *more in SCREENS:
         s = ui_scale(touch, ph, ui)
         gw, gh = safe or (pw, ph)
-        env = {"W": gw / s, "H": gh / s, "Scale": s, "Inset": inset, "Touch": touch}
+        left = more[0] if more else ROBLOX_LEFT
+        env = {"W": gw / s, "H": gh / s, "Scale": s, "Inset": inset, "Touch": touch,
+               # GuiService.TopbarInset in MainGui logical units: Roblox's buttons end at `left`, the bar is `inset` tall
+               "Topbar": {"X0": left / s, "Y0": 0, "X1": gw / s, "Y1": inset / s}}
         if touch:
             j = jump_rect(gw, gh)
             env["Jump"] = {k: v / s for k, v in j.items()}
@@ -289,6 +321,9 @@ def draw(result: dict) -> bool:
             oy = y0 + 18
             d.rectangle([x0, oy, x0 + pw * k, oy + ph * k], fill=(54, 70, 62), outline=(120, 120, 120))
             d.rectangle([x0, oy, x0 + pw * k, oy + case["Top"] * s * k], fill=(70, 70, 76))
+            bar = case.get("Bar")
+            if bar:  # Roblox's own buttons (left of the bar's free part)
+                d.rectangle([x0, oy + bar["Y0"] * s * k, x0 + bar["X0"] * s * k, oy + bar["Y1"] * s * k], fill=(40, 40, 44))
             if case.get("Touch"):
                 d.rectangle([x0, oy + ph / 3 * k, x0 + 0.4 * pw * k, oy + ph * k], outline=(110, 110, 110))
             jump = case.get("Jump")

@@ -215,7 +215,9 @@ def measure_contrast(img, m):
     rim = (26, 40, 79)  # the art's navy outline
     return {"fill": [round(v) for v in fill], "background": [round(v) for v in bg],
             "fillVsBackground": round(contrast(fill, bg), 2), "rimVsBackground": round(contrast(rim, bg), 2),
-            "best": round(max(contrast(fill, bg), contrast(rim, bg)), 2)}
+            "best": round(max(contrast(fill, bg), contrast(rim, bg)), 2),
+            # inside the icon: the fill against its own navy rim + dark halo (the shape reads on any background)
+            "fillVsRim": round(contrast(fill, rim), 2)}
 
 
 def shoot(c, dev, label, out, rows):

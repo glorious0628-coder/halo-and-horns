@@ -10,7 +10,13 @@
 --          bottom-centre face + 'Lv · 전투력' + HP | MP + XP + icon tile row, bottom-right combat cluster, top-right the
 --          [메뉴] tile (A23-40 정정: its tiles fold out to the left; the Tab list opens under it).
 --   phone: the bottom centre belongs to the thumbstick and the combat buttons, so the face / bars / tile row sit top-right
---          (the quest lines beside the minimap, the centre column between them); [메뉴] ends the tile row on the right.
+--          (the quest lines beside the minimap, the centre column between them).
+--   A23-40 보강 (user 2026-10-06 "메뉴 위치랑 가운데 바가 로블록스 기본 메뉴랑 위치가 같으면 좋겠어"): on both, [메뉴] and the war
+--          meter sit IN the Roblox top bar row (env.Topbar = GuiService.TopbarInset, the free part of the bar right of
+--          Roblox's own buttons), on the same middle line as Roblox's buttons; [메뉴] is as big as a Roblox button
+--          (TOPBAR.Button real px, >= MIN_TAP on touch) and TOPBAR.Edge px from the bar's free right end; both keep their
+--          real px size on every UIScale. The chips, the next-event line and notify start right under the bar, and the
+--          [메뉴] fold-out runs left along the bar first, then down.
 local HudLayout = {}
 
 -- reference screens of the approved sheets (real px)
@@ -24,19 +30,21 @@ local REF = {
 local ITEMS = {
 	minimap = { "TL", { 14, 66, 150, 150 }, { 8, 62, 84, 84 } },
 	quest = { "TL", { 14, 226, 300, 52 }, { 98, 62, 150, 45 } },
-	war_meter = { "TC", { 496, 66, 288, 42 }, { 255, 62, 240, 38 } },
-	chips = { "TC", { 516, 112, 248, 22 }, { 255, 103, 240, 17 } },
-	event = { "TC", { 546, 138, 188, 22 }, { 300, 122, 150, 16 } },
-	notify = { "TC", { 496, 166, 288, 46 }, { 255, 141, 240, 34 } },
+	-- TB = in the Roblox top bar: x like TC, centred on the bar's middle, its height in REAL px (Roblox's buttons do not
+	-- follow our UIScale); the sheet's y = on the middle line of Roblox's buttons (34 px)
+	war_meter = { "TB", { 496, 13, 288, 42 }, { 255, 15, 240, 38 } },
+	chips = { "TC", { 516, 62, 248, 22 }, { 255, 62, 240, 17 } },
+	event = { "TC", { 546, 88, 188, 22 }, { 300, 81, 150, 16 } },
+	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
 	portrait = { "BC", { 362, 586, 50, 50 }, { 502, 62, 45, 45 }, "TR" },
 	power_line = { "BC", { 420, 578, 440, 16 }, { 551, 62, 190, 14 }, "TR" },
 	hp_bar = { "BC", { 420, 598, 216, 20 }, { 551, 78, 93, 13 }, "TR" },
 	mp_bar = { "BC", { 644, 598, 216, 20 }, { 648, 78, 93, 13 }, "TR" },
 	xp_bar = { "BC", { 420, 622, 440, 8 }, { 551, 95, 190, 6 }, "TR" },
-	tiles = { "BC", { 420, 640, 440, 52 }, { 502, 112, 191, 45 }, "TR" },
-	-- A23-40 정정 (user 2026-10-06 "메뉴는 오른쪽 위에, 누르면 옆으로 좌르륵"): PC top-right corner 10 px from the edge
-	-- under the top bar; phone the right end of the tile row (the plate holds the corner). out.fold = its fold-out room
-	menu = { "TR", { 1218, 66, 52, 52 }, { 696, 112, 45, 45 } },
+	tiles = { "BC", { 420, 640, 440, 52 }, { 502, 112, 239, 45 }, "TR" },
+	-- A23-40 정정 + 보강: [메뉴] in the top bar's right end (TB anchor; size and position come from TOPBAR, the rects are
+	-- the 1280x720 / 749x361 results). out.fold = its fold-out room
+	menu = { "TB", { 1224, 12, 44, 44 }, { 692, 12, 45, 45 } },
 	combo = { "BC", { 580, 463, 120, 24 }, { 305, 236, 144, 20 } },
 	potions = { "BR", { 926, 646, 122, 58 }, { 337, 298, 112, 54 } },
 	ghost = { "BR", { 987, 577, 61, 61 }, { 590, 182, 57, 57 } },
@@ -49,6 +57,13 @@ HudLayout.Items = ITEMS
 HudLayout.Ref = REF
 
 local CENTER = { "war_meter", "chips", "event", "notify" }
+-- the Roblox top bar row (real px, UiSandbox PC + phones 2026-10-06): Left = where Roblox's own buttons end when Roblox
+-- reports no TopbarInset (164), Button = their height in a 58 px bar (smaller bars: Inset - 4), Bottom = their gap to the
+-- bar's bottom (44 px buttons at y 12..56: middle 34 px), Edge = the gap we keep from the bar's free right end, Tap = the
+-- touch floor of [메뉴] (= MIN_TAP at the phone's 0.75 UIScale)
+local TOPBAR = { Left = 164, Button = 44, Bottom = 2, Edge = 12, Tap = 45 }
+HudLayout.Topbar = TOPBAR
+local FOLD_MIN = 4 -- the [메뉴] squares that must fit beside it on the bar (새 소식 · 이동 · 도움말 · 설정)
 local MIN_CENTER = 240 -- logical units: narrowest centre column (the war meter stays >= 240du)
 local GAP = 8
 -- touch targets never shrink below 60 logical units (~45 real px at the phone's 0.75 UIScale). A scaled down button
@@ -66,11 +81,11 @@ local BC_GROUP = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tile
 local CLUSTER = { "potions", "ghost", "q", "z", "auto", "attack" }
 -- touch: the plate beside the portrait (moves right when the portrait grows back to MIN_TAP)
 local PLATE = { "power_line", "hp_bar", "mp_bar", "xp_bar" }
--- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own;
--- more lines go down on PCs and UP on phones (A23-38: phones fold out upward only, never onto the combat buttons). While
--- open it may run over the centre column's info rows (chips / next event / notify), on phones also over the tile row it
--- replaces and the face / bars above it, but never over the war meter, the minimap, the quest lines, a combat button,
--- the jump button or the thumbstick zone
+-- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
+-- top bar, never over Roblox's buttons); more lines go down (A23-38's "위쪽에서만": [메뉴] is the topmost thing now).
+-- While open it may run over the centre column's info rows (chips / next event / notify), on phones also over the tile
+-- row and the face / bars, but never over the war meter, the minimap, the quest lines, a combat button, the jump button
+-- or the thumbstick zone
 local FOLD_OVER = { tiles = true, menu = true, chips = true, event = true, notify = true, combo = true }
 local FOLD_OVER_TOUCH = { portrait = true, power_line = true, hp_bar = true, mp_bar = true, xp_bar = true }
 local FOLD_ROWS = 3
@@ -88,7 +103,9 @@ end
 HudLayout.AnchorOf = anchorOf
 
 -- env = { W, H = MainGui size in logical units, Scale = UIScale, Inset = top bar inset (real px), Touch = bool,
---         Jump = { X, Y, W, H } of the touch jump button in logical units or nil, Hidden = { [id] = true } }
+--         Jump = { X, Y, W, H } of the touch jump button in logical units or nil, Hidden = { [id] = true },
+--         Topbar = { X0, Y0, X1, Y1 } = the free part of the Roblox top bar (GuiService.TopbarInset) in logical units
+--         (MainGui space) or nil (then TOPBAR.Left .. W, 0 .. Inset) }
 -- returns { [id] = { X, Y, W, H } } in logical units (MainGui space, before UIScale). potions also carries Gap (du between
 -- its HP and MP cells: cell width = (W - Gap) / 2); tiles carries Size (square tile side), Gap (least gap) and Count (how
 -- many tiles fit the row: the HUD shows that many, the rest go into the [메뉴] tile)
@@ -101,6 +118,19 @@ function HudLayout.Compute(env)
 	local top = (tonumber(env.Inset) or ref.Inset) / s -- logical y of the top bar's bottom edge
 	local jump = touch and env.Jump or nil
 	local hidden = env.Hidden or {}
+	-- the Roblox top bar row (logical units): its free part and the button size there (real px -> du, no UIScale)
+	local tb = type(env.Topbar) == "table" and env.Topbar or nil
+	local bar = {
+		X0 = tb and tonumber(tb.X0) or TOPBAR.Left / s,
+		Y0 = tb and tonumber(tb.Y0) or 0,
+		X1 = tb and tonumber(tb.X1) or W,
+		Y1 = tb and tonumber(tb.Y1) or top,
+	}
+	if not (bar.X1 > bar.X0 and bar.Y1 > bar.Y0) then bar = { X0 = TOPBAR.Left / s, Y0 = 0, X1 = W, Y1 = top } end
+	local barPx = (bar.Y1 - bar.Y0) * s
+	local btn = math.min(TOPBAR.Button, math.max(1, barPx - 4)) / s
+	-- the middle of Roblox's own buttons (they sit TOPBAR.Bottom px above the bar's bottom): ours share it
+	local barMid = bar.Y1 - TOPBAR.Bottom / s - btn / 2
 	-- touch: a safe area narrower / shorter than the reference phone (notch insets: 749x361 -> 655x340) scales the
 	-- whole layout down by the same factor, so the stick zone and the gaps stay free
 	if touch then
@@ -120,6 +150,10 @@ function HudLayout.Compute(env)
 			X, Y = W - (ref.W - x) * k, top + (y - ref.Inset) * k
 		elseif anchor == "TC" then
 			X, Y = W / 2 + (x - ref.W / 2) * k, top + (y - ref.Inset) * k
+		elseif anchor == "TB" then
+			-- in the Roblox top bar: centred on its middle, as tall as on the sheet in real px (never taller than a button)
+			h = math.min(r[4], TOPBAR.Button, math.max(1, barPx - 4)) / s
+			X, Y = W / 2 + (x - ref.W / 2) * k, barMid - h / 2
 		elseif anchor == "BC" then
 			X, Y = W / 2 + (x - ref.W / 2) * k, H - (ref.H - y) * k
 		elseif jump and rj then
@@ -155,7 +189,6 @@ function HudLayout.Compute(env)
 				r.X, r.W = r.X + g, math.max(1, r.W - g)
 			end
 			out.tiles.Y += g
-			out.menu.Y += g
 		end
 		-- quest lines: one MIN_TAP target (two text lines), grown downward
 		if out.quest.H < MIN_TAP then out.quest.H = MIN_TAP end
@@ -188,16 +221,14 @@ function HudLayout.Compute(env)
 	tiles.Size = size
 	tiles.Gap = tileGap
 	tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
-	-- [메뉴]: a square (>= MIN_TAP on touch) that keeps its right edge; on phones it ends the tile row (same line, the
-	-- row stops one gap before it, so a grown [메뉴] takes a square from the row, never covers it)
+	-- [메뉴]: a Roblox-button-sized square in the top bar, TOPBAR.Edge px from its free right end, centred on the bar's
+	-- middle like Roblox's own buttons (A23-40 보강); on touch never under TOPBAR.Tap real px (= MIN_TAP at the phone's
+	-- 0.75 UIScale; on tablets MIN_TAP du would no longer fit the 58 px bar)
 	local menu = out.menu
-	local mSize = touch and math.max(menu.H, MIN_TAP) or menu.H
-	menu.X, menu.W, menu.H = menu.X + menu.W - mSize, mSize, mSize
-	if touch then
-		menu.Y = tiles.Y
-		tiles.W = math.max(size, menu.X - tileGap - tiles.X)
-		tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
-	end
+	local mSize = touch and math.max(btn, TOPBAR.Tap / s) or btn
+	menu.W, menu.H = mSize, mSize
+	menu.X = bar.X1 - TOPBAR.Edge / s - mSize
+	menu.Y = barMid - mSize / 2
 
 	-- desktop: the bottom-centre group moves left (keeping its shape) when the corner cluster reaches it, but never past
 	-- the left margin; if that is still not enough it is squeezed from its left edge (narrow 4:3 / 5:4 windows)
@@ -233,20 +264,26 @@ function HudLayout.Compute(env)
 	-- centre column (war meter, chips, next event, notify): the rows share one room (the tightest gap between the left
 	-- and right items level with any of them) and one centre x, so the column stays straight and never runs under a
 	-- neighbour on narrow phones / small windows
+	-- In the top bar row the left neighbour is Roblox's own buttons and the right one [메뉴] with room for FOLD_MIN fold
+	-- squares beside it (the war meter never takes the fold's first line)
 	local leftEdge, rightEdge = 0, W
+	local fGapRow = touch and tileGap or FOLD_GAP * k
 	for _, id in CENTER do
 		local c = out[id]
 		for oid, o in out do
 			local anchor = anchorOf(oid, touch)
-			if not hidden[oid] and anchor ~= "TC" and anchor ~= "BC" and oid ~= "combo"
+			if not hidden[oid] and anchor ~= "TC" and anchor ~= "BC" and oid ~= "combo" and oid ~= "war_meter"
 				and o.Y < c.Y + c.H and o.Y + o.H > c.Y then
 				if o.X + o.W / 2 < W / 2 then
 					leftEdge = math.max(leftEdge, o.X + o.W + GAP)
+				elseif oid == "menu" then
+					rightEdge = math.min(rightEdge, o.X - FOLD_MIN * (o.W + fGapRow) - GAP)
 				else
 					rightEdge = math.min(rightEdge, o.X - GAP)
 				end
 			end
 		end
+		if c.Y < bar.Y1 and c.Y + c.H > bar.Y0 then leftEdge = math.max(leftEdge, bar.X0 + GAP) end
 	end
 	local room, widest = rightEdge - leftEdge, 0
 	for _, id in CENTER do
@@ -261,10 +298,14 @@ function HudLayout.Compute(env)
 		r.X = cx - r.W / 2
 	end
 
-	-- everything stays on screen and below the top bar (big tablets / very short windows)
-	for _, r in out do
+	-- everything stays on screen and below the top bar (big tablets / very short windows); the top bar items stay in it
+	for id, r in out do
 		r.X = math.clamp(r.X, 0, math.max(0, W - r.W))
-		r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))
+		if anchorOf(id, touch) == "TB" then
+			r.Y = math.clamp(r.Y, bar.Y0, math.max(bar.Y0, bar.Y1 - r.H))
+		else
+			r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))
+		end
 	end
 
 	-- [메뉴] fold-out room: Lines = { { X, Y, Cols } } right-aligned one gap left of [메뉴]; each line reaches left to the
@@ -278,6 +319,7 @@ function HudLayout.Compute(env)
 	for oid, o in out do
 		if not hidden[oid] and not FOLD_OVER[oid] and not (touch and FOLD_OVER_TOUCH[oid]) then table.insert(blockers, o) end
 	end
+	table.insert(blockers, rect(0, bar.Y0, bar.X0, bar.Y1 - bar.Y0)) -- Roblox's own top bar buttons
 	if touch then
 		table.insert(blockers, rect(0, H * STICK.Y, W * STICK.X, H - H * STICK.Y))
 		if jump then table.insert(blockers, jump) end
@@ -291,16 +333,17 @@ function HudLayout.Compute(env)
 		end
 		return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6))
 	end
+	-- the first line on [메뉴]'s own (top bar) line, the next ones from just under the bar down
 	local lines = {}
-	local y, step = m.Y, (touch and -1 or 1) * (fSize + fGap)
+	local y, step = m.Y, fSize + fGap
 	local x0, y0, y1 = right, math.huge, -math.huge
-	while #lines < FOLD_ROWS and y >= top - 0.01 and y + fSize <= H + 0.01 do
+	while #lines < FOLD_ROWS and y >= math.min(top, bar.Y0) - 0.01 and y + fSize <= H + 0.01 do
 		local cols = colsAt(y)
 		if cols < 1 then break end
 		local lx = right - cols * (fSize + fGap) + fGap
 		table.insert(lines, { X = lx, Y = y, Cols = cols })
 		x0, y0, y1 = math.min(x0, lx), math.min(y0, y), math.max(y1, y + fSize)
-		y += step
+		y = math.max(y + step, top + fGap)
 	end
 	if #lines == 0 then -- no room at all (a tiny window): one square over [메뉴]'s left neighbour
 		lines[1] = { X = right - fSize, Y = m.Y, Cols = 1 }
