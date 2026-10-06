@@ -31,7 +31,7 @@ local STATE = {
 }
 
 LootService.ItemsGranted = Util.Signal.new() -- (player, { { Id = itemId, N = n } ... })
-LootService.Enhanced = Util.Signal.new() -- (player, tier, before, after, success)
+LootService.Enhanced = Util.Signal.new() -- (player, tier, before, after, success, itemId) (itemId: BB10 장인 명성)
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -144,7 +144,17 @@ local function inventoryPayload(data)
 			if kind and v == true and LOOT.Tables[kind] then seen[kind] = true end
 		end
 	end
-	return { Items = items, Enhance = enh, Seen = seen }
+	-- A23-32 bag '얻은 순': the order numbers (bigger = more recent; 0 = before this existed)
+	local itemSeq, weaponSeq = {}, {}
+	if type(data.ItemSeq) == "table" then
+		for k, v in data.ItemSeq do
+			if type(k) == "string" and (LOOT.Items[k] or Config.ItemSeqPotions[k]) and type(v) == "number" then itemSeq[k] = v end
+		end
+	end
+	for tier = 1, Config.MaxWeaponTier do
+		weaponSeq[tier] = type(data.WeaponSeq) == "table" and math.max(0, math.floor(num(data.WeaponSeq[tier]))) or 0
+	end
+	return { Items = items, Enhance = enh, Seen = seen, ItemSeq = itemSeq, WeaponSeq = weaponSeq }
 end
 
 local function pushInventory(player)
@@ -186,6 +196,7 @@ local function addItem(player, data, id, n)
 	end
 	if given <= 0 then return 0 end
 	data.Items[id] = have + given
+	Config.NoteGained(data, id) -- A23-32 '얻은 순'
 	return given
 end
 
@@ -200,16 +211,19 @@ end
 -- one kill's drop rows (and the slime jackpot) with the server RNG; onHit(row, isJackpot) for every success.
 -- info = { Kind = monster kind, Golden = true?, Level = killer's level? } (RollKill passes the MonsterKilled info,
 -- DebugSimulate a stand-in without Level). Draw order is fixed: one draw per row in table order, then one for the
--- jackpot when this kind has one. A23-27: a weapon row with BelowLevel is not rolled below that weapon's MinLevel; it
--- pays its BelowLevel item instead (the king's T4 row: 3 candies).
+-- jackpot when this kind has one. info.DropMult = the A23-22/23 penalty (rows AND the jackpot), info.RowBonus = the
+-- A23-22 weekly top-3 reward (rows only, never the jackpot); a row's chance is cut at 1 after every multiplier.
+-- A23-27: a weapon row with BelowLevel is not rolled below that weapon's MinLevel; it pays its BelowLevel item instead
+-- (the king's T4 row: 3 candies).
 local function rollRows(info, onHit)
 	local mult = info.Golden == true and LOOT.GoldenMult or 1
 	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows and the jackpot; not the first scroll)
+	local rowBonus = num(info.RowBonus, 1)
 	for _, row in LOOT.Tables[info.Kind] or {} do
 		if row.Weapon and type(row.BelowLevel) == "table" and info.Level ~= nil
 			and not Config.WeaponUsable(row.Weapon, info.Level) then
 			onHit(row.BelowLevel, false)
-		elseif rng:NextNumber() < math.min(1, num(row.P) * rowMult) then
+		elseif rng:NextNumber() < math.min(1, num(row.P) * rowMult * rowBonus) then
 			onHit(row, false)
 		end
 	end
@@ -309,9 +323,15 @@ function LootService.RollKill(player, info)
 
 	info = table.clone(info) -- the caller's info stays untouched
 	info.Level = math.floor(num(data.Level, 1)) -- A23-27 weapon rows with BelowLevel
+	-- A23-22 / A23-23: drop rows x0.5 while a bully or this week's outlaw (once, both at once never x0.25); A23-22 / 24
+	-- weekly top 3: rows x RewardMult while RankingService shows the reward (RankReward attribute: only in that faction)
 	local pen = Config.Bully.Penalty
-	if type(pen) == "table" and num(player:GetAttribute("BullyStacks")) >= 1 then
-		info.DropMult = num(pen.DropMult, 1) -- A23-22: drop rows x0.5 while a bully
+	local penal = type(pen) == "table" and (num(player:GetAttribute("BullyStacks")) >= 1 or player:GetAttribute("Outlaw") == true)
+	local reward = player:GetAttribute("RankReward")
+	local bonus = type(reward) == "string" and reward ~= "" and Config.Ranking ~= nil
+	if penal then info.DropMult = num(pen.DropMult, 1) end
+	if bonus then
+		info.RowBonus = num(Config.Ranking.RewardMult, 1)
 	end
 	rollRows(info, function(row, isJackpot)
 		if row.Item then
@@ -367,7 +387,7 @@ local function useEnhance(player, data, id, def, tier)
 		notify(player, string.format(TXT.EnhanceFailKeep, name, before), "info")
 	end
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = tier, Before = before, After = after, Success = success })
-	LootService.Enhanced:Fire(player, tier, before, after, success)
+	LootService.Enhanced:Fire(player, tier, before, after, success, id)
 end
 
 local function useTransfer(player, data, id, def, fromTier, toTier)
@@ -544,6 +564,37 @@ function LootService.Start()
 		player:GetAttributeChangedSignal("WeaponTier"):Connect(function()
 			local d = getData(player)
 			if d then player:SetAttribute("WeaponEnhance", enhanceOf(d, math.floor(num(d.WeaponTier, 1)))) end
+		end)
+		-- A23-32 '얻은 순': potions and weapons reach the save from many services (shop, quests, story, drops); a rise of
+		-- the mirrored stat is the one place every path passes, so it is noted here
+		local seen = {}
+		local function watch(attr, onChange)
+			seen[attr] = math.floor(num(player:GetAttribute(attr)))
+			player:GetAttributeChangedSignal(attr):Connect(function()
+				local v = math.floor(num(player:GetAttribute(attr)))
+				local was = seen[attr]
+				seen[attr] = v
+				local d = getData(player)
+				if d and onChange(d, v, was) then publish(player, d) end
+			end)
+		end
+		for key, attr in Config.ItemSeqPotions do
+			watch(attr, function(d, v, was)
+				if v <= was then return false end
+				Config.NoteGained(d, key)
+				return true
+			end)
+		end
+		watch("WeaponOwnedMask", function(d, v, was)
+			local any = false
+			for tier = 1, Config.MaxWeaponTier do
+				local bit = bit32.lshift(1, tier - 1)
+				if bit32.btest(v, bit) and not bit32.btest(was, bit) then
+					Config.NoteGained(d, nil, tier)
+					any = true
+				end
+			end
+			return any
 		end)
 	end)
 	-- safety net (same as the quest list): resend the inventory once per real spawn; the client keeps the last payload

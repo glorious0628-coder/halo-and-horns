@@ -69,12 +69,9 @@ MUTATIONS = [
     ("Most Wanted back to the raw name", "PVP_SOURCE",
      'fmt("MostWanted", publicName(p, true),', 'fmt("MostWanted", Util.PlayerDisplayName(p),'),
     ("board wanted rows back to the raw name", "PVP_SOURCE",
-     "table.insert(wanted, { Name = publicName(p), Bounty", "table.insert(wanted, { Name = Util.PlayerDisplayName(p), Bounty"),
-    ("board honor rows back to the raw name", "PVP_SOURCE",
-     "table.insert(heroes, { Name = publicName(p), Honor = honor })",
-     "table.insert(heroes, { Name = Util.PlayerDisplayName(p), Honor = honor })"),
-    ("board rows with honorific", "PVP_SOURCE",
-     "table.insert(heroes, { Name = publicName(p), Honor = honor })", "table.insert(heroes, { Name = publicName(p, true), Honor = honor })"),
+     "table.insert(wanted, { P = p, Name = publicName(p), Bounty", "table.insert(wanted, { P = p, Name = Util.PlayerDisplayName(p), Bounty"),
+    ("board wanted rows with honorific", "PVP_SOURCE",
+     "table.insert(wanted, { P = p, Name = publicName(p), Bounty", "table.insert(wanted, { P = p, Name = publicName(p, true), Bounty"),
     ("PvP helper skips PublicName", "PVP_SOURCE",
      "\tif A and A.PublicName then\n\t\tlocal ok, name = pcall(A.PublicName, p, honorific)",
      "\tif false then\n\t\tlocal ok, name = pcall(A.PublicName, p, honorific)"),
@@ -126,9 +123,10 @@ def static() -> tuple[int, list[str]]:
                 raw_names.append(f"{path.name}: {line.strip()}")
     check(not raw_names, f"BB37 acceptance: no NotifyAll line uses Util.PlayerDisplayName: {raw_names}")
     sites = {
-        "PvPService.luau": [r'fmt\("MostWanted", publicName\(p, true\)', r'fmt\("BountyAnnounce", publicName\(killer, true\)',
-                            r'fmt\("BountyAnnounce", publicName\(a, true\)', r"wanted, \{ Name = publicName\(p\)",
-                            r"heroes, \{ Name = publicName\(p\)"],
+        "PvPService.luau": [r'fmt\("MostWanted", publicName\(p, true\)', r"NotifyAll\(bountyLine\(killer, bounty\)\)",
+                            r"NotifyAll\(bountyLine\(a, bounty\)\)",
+                            r'"BountyAnnounceHidden" or "BountyAnnounce", publicName\(p, true\)',
+                            r"wanted, \{ P = p, Name = publicName\(p\)"],
         "GrudgeService.luau": [r'fmt\("GrudgeAvengedAll", publicName\(killer, true\), publicName\(thief, true\)\)'],
         "ProgressionService.luau": [r"Config\.Text\.RebirthAnnounce, publicName\(player, true\)"],
         "GooseService.luau": [r"Config\.Text\.RareAnnounce, publicName\(p, true\)"],
@@ -160,7 +158,7 @@ SUITE = Suite(
     contract="BB37: AnnounceService.PublicName(player, honorific) = Util.PlayerDisplayName (+ Config.Announce.Text.Honorific "
              "\"님\" when honorific) or, when data.HideAnnounceName (attribute before the data loads), HiddenName \"<faction> 한 명\" "
              "(Someone \"누군가\" without a faction), never with an honorific; every server-wide line goes through it: "
-             "PvPService MostWanted / 2x BountyAnnounce / town board (wanted + Halo honor rows), GrudgeService GrudgeAvengedAll, "
+             "PvPService MostWanted / 2x BountyAnnounce / town board (the wanted line; the weekly rows come from RankingService.ServerTop), GrudgeService GrudgeAvengedAll, "
              "ProgressionService RebirthAnnounce, GooseService RareAnnounce, KaijuService kaiju name; the five Config.Text lines "
              "use \"%s이\" so \"OO님이\" / \"뿔 군단 한 명이\" both read right; the SetAnnounceName handler calls "
              "RankingService.MarkHideChanged (pcall, optional); setting label '알림·랭킹에 내 이름 숨기기' + 2 notes (KO/EN). "

@@ -42,7 +42,12 @@ local function runGroup(name, fn)
 	local warnings = {}
 	for _, w in groupWorlds do
 		for _, text in w.Warnings do
-			if not (w.AllowWarn and string.find(text, w.AllowWarn, 1, true)) then table.insert(warnings, text) end
+			-- w.AllowWarn: one expected substring, or a list of them
+			local allowed = false
+			for _, part in (type(w.AllowWarn) == "table" and w.AllowWarn or { w.AllowWarn }) do
+				if string.find(text, part, 1, true) then allowed = true end
+			end
+			if not allowed then table.insert(warnings, text) end
 		end
 	end
 	check(#warnings == 0, "no service warnings (pcall-swallowed handler errors)", warnings[1])
@@ -284,6 +289,10 @@ instMeta.Methods = {
 		for _, c in o._children do if c.Name == name then return c end end
 		return nil
 	end,
+	FindFirstChildOfClass = function(o, className)
+		for _, c in o._children do if c.ClassName == className then return c end end
+		return nil
+	end,
 	GetChildren = function(o) return table.clone(o._children) end,
 	Destroy = function(o) o.Parent = nil; o.Destroyed = true end,
 	GetAttribute = function(o, k) return o.Attrs[k] end,
@@ -302,13 +311,15 @@ instMeta.Methods = {
 
 ------------------------------------------------------------------ world
 -- opts: Time (os.time), Clock (os.clock), Studio (RunService:IsStudio, default true), PrivateServerId, EditConfig(config),
--- Budget = { [request type] = n } (default 100), Friends = { ["a:b"] = true }, FriendError = { ["a:b"] = true }
+-- Budget = { [request type] = n } (default 100), Friends = { ["a:b"] = true }, FriendError = { ["a:b"] = true },
+-- Stores = a DataStore table shared with another world (= another server of the same game)
 local W = { Serial = 0, Guid = 0 }
 local function newWorld(opts)
 	opts = opts or {}
 	W.Serial += 1
 	local w = { Clock = opts.Clock or 1000, Time = opts.Time or 1790000000, Deferred = {}, Spawned = {}, Delayed = {},
-		Warnings = {}, PlayerList = {}, Ready = {}, Notices = {}, All = {}, Fx = {}, Fired = {}, Stores = {}, DSCalls = {},
+		Warnings = {}, PlayerList = {}, Ready = {}, Notices = {}, All = {}, Fx = {}, Fired = {}, Stores = opts.Stores or {},
+		DSCalls = {},
 		Budget = opts.Budget or {}, Fail = {}, Friends = opts.Friends or {}, FriendError = opts.FriendError or {},
 		FriendCalls = 0, UserInfoCalls = 0, Script = nil }
 	table.insert(groupWorlds, w)
@@ -354,7 +365,13 @@ local function newWorld(opts)
 		local api = {}
 		local function log(op, key, value) table.insert(w.DSCalls, { Op = op, Store = name, Key = key, Value = value }) end
 		function api.GetAsync(_, key) failing(name, "Get"); log("Get", key); return deepCopy(s.Rows[key]) end
-		function api.SetAsync(_, key, value) failing(name, "Set"); log("Set", key, value); s.Rows[key] = deepCopy(value) end
+		-- w.OnSet(storeName, key, value): runs while the write is "in flight" (what another thread may do during the yield)
+		function api.SetAsync(_, key, value)
+			failing(name, "Set")
+			log("Set", key, value)
+			if w.OnSet then w.OnSet(name, key, value) end
+			s.Rows[key] = deepCopy(value)
+		end
 		function api.RemoveAsync(_, key)
 			failing(name, "Remove")
 			log("Remove", key)
@@ -362,8 +379,10 @@ local function newWorld(opts)
 			s.Rows[key] = nil
 			return deepCopy(old)
 		end
+		-- w.BeforeUpdate(storeName, key): runs before the transform reads the row (another server wrote first)
 		function api.UpdateAsync(_, key, fn)
 			failing(name, "Update")
+			if w.BeforeUpdate then w.BeforeUpdate(name, key) end
 			local nextValue = fn(deepCopy(s.Rows[key]))
 			log("Update", key, nextValue)
 			if nextValue ~= nil then s.Rows[key] = deepCopy(nextValue) end
@@ -512,6 +531,16 @@ local function newWorld(opts)
 				ran += 1
 				job[1](table.unpack(job, 2, job.n))
 			end
+		end
+		return ran
+	end
+	-- run queued task.spawn jobs (and the ones they queue) once each, in order; returns how many ran
+	function w:RunSpawned()
+		local ran = 0
+		while #self.Spawned > 0 do
+			local job = table.remove(self.Spawned, 1)
+			ran += 1
+			job[1](table.unpack(job, 2, job.n))
 		end
 		return ran
 	end

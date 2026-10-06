@@ -57,6 +57,7 @@ local WATCH = {
 	TitleSel = { "Nametag" }, -- BB16 selected title (e.g. A23-18 "베타 개척자")
 	TitlesOwned = { "Nametag" }, -- BB16: the pioneer mark on the second line
 	BullyStacks = { "Nametag" },
+	Outlaw = { "Nametag" }, -- A23-23 this week's outlaw (RankingService)
 	SessionTitle = { "Nametag" },
 	Nickname = { "Nametag" },
 	NicknameVerified = { "Nametag" },
@@ -291,6 +292,7 @@ local function updateNametag(player, bb)
 	if rebirths > 0 then
 		line2 ..= "  환생 " .. rebirths
 	end
+	local outlaw = player:GetAttribute("Outlaw") == true -- A23-23: shown even with the name hidden (BB37 is chat only)
 	if player:GetAttribute("Rookie") == true and f ~= NEUTRAL_ID then
 		line2 ..= "  새싹 보호"
 	elseif attrNum(player, "GraduateGraceUntil", 0) > Util.Now() and f ~= NEUTRAL_ID then
@@ -319,7 +321,8 @@ local function updateNametag(player, bb)
 		l1.TextColor3 = factionColor(f)
 	end
 	if l2 then
-		l2.Text = esc(line2)
+		-- A23-23: a red "무법자" at the end of line 2 (RichText is on; the tag is fixed text, never player input)
+		l2.Text = esc(line2) .. (outlaw and (' <font color="#FF4A4A">' .. Config.Ranking.Text.OutlawTag .. "</font>") or "")
 	end
 	if l3 then
 		l3.Text = esc(line3)

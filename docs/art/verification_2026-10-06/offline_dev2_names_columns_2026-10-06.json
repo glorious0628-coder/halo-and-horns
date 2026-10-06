@@ -393,7 +393,7 @@
     },
     {
       "group": "pvp-lines",
-      "check": "town board shows shown players by nickname",
+      "check": "town board's wanted line shows a shown player by nickname",
       "pass": 1,
       "fail": 0
     },
@@ -405,7 +405,7 @@
     },
     {
       "group": "pvp-lines",
-      "check": "town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)",
+      "check": "town board's wanted line shows a hidden player as \"<진영> 한 명\"",
       "pass": 1,
       "fail": 0
     },
@@ -654,9 +654,9 @@
   "staticChecks": 19,
   "staticFailures": [],
   "mutations": {
-    "total": 29,
-    "applied": 29,
-    "caught": 29,
+    "total": 28,
+    "applied": 28,
+    "caught": 28,
     "skipped": false,
     "results": [
       {
@@ -802,24 +802,12 @@
         "crashed": false,
         "newFailingChecks": [
           "pvp-lines :: town board never shows a hidden nickname",
-          "pvp-lines :: town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)"
+          "pvp-lines :: town board's wanted line shows a hidden player as \"<진영> 한 명\""
         ],
         "newFailingCount": 2
       },
       {
-        "mutation": "board honor rows back to the raw name",
-        "file": "src/ServerScriptService/PvPService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "pvp-lines :: town board never shows a hidden nickname",
-          "pvp-lines :: town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)"
-        ],
-        "newFailingCount": 2
-      },
-      {
-        "mutation": "board rows with honorific",
+        "mutation": "board wanted rows with honorific",
         "file": "src/ServerScriptService/PvPService.luau",
         "applied": true,
         "caught": true,
@@ -838,7 +826,7 @@
         "newFailingChecks": [
           "pvp-lines :: Most Wanted line names a hidden villain \"뿔 군단 한 명이\"",
           "pvp-lines :: town board never shows a hidden nickname",
-          "pvp-lines :: town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)",
+          "pvp-lines :: town board's wanted line shows a hidden player as \"<진영> 한 명\"",
           "service-helpers :: PvPService: publicName = AnnounceService.PublicName (hidden)"
         ],
         "newFailingCount": 4
@@ -1030,20 +1018,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "67c35cafd892798ddedd0fc93d39cb4d1a5f7b8304fe5821d1f5d891a5a09aa6",
+    "src/ReplicatedStorage/Shared/Config.luau": "312c36eb8a6cac8cb7b4114776f705b9e6f7723147502523d43d087b870e497c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/AnnounceService.luau": "f6b7f9061ea3ef8e155a636e7a456e33dea0ed73a87940b52db9be06596d43a9",
-    "src/ServerScriptService/PvPService.luau": "29c7097a818c0a685c083793bf4bd9dc9f2633c10e7b438d72d1967d7365dd16",
-    "src/ServerScriptService/PlayerService.luau": "ed4a8257dba02cd192261879411c812f783e1e0bb7fd77016e08d6f42cb2aa20",
-    "src/ServerScriptService/GrudgeService.luau": "e38e4ebcc58db3cd67d0910248bd9fa9997a354f9a26d803c78101a810b681b0",
-    "src/ServerScriptService/ProgressionService.luau": "71016aa2fec283813ad7173051ce8f17b6b9d2c892bfd601afed26209f5f3e70",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/PvPService.luau": "6a74d3116f9ff4ca38505c81f37944f10e80d58a54bf4bcb426c04c05a177ecb",
+    "src/ServerScriptService/PlayerService.luau": "2ce4b689d4c44fa077774759ac33ef7a4efc853cb39e00d81aa810f4c71f4ac5",
+    "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
+    "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
     "src/ServerScriptService/GooseService.luau": "395f0289ab0e71a80d46917a18f8866a9f89fcd1e2f140be534fe47ae461614d",
-    "src/ServerScriptService/KaijuService.luau": "9bb8a1a1c7da5a323b8c64588f223e0a51c2b44dc708c3e4d1963368090a98d9"
+    "src/ServerScriptService/KaijuService.luau": "16c8c973613c6943c5877f2c8543c7e1ca98c889e6ed78760e0727fb047e5e0e"
   },
-  "fixtureSHA256": "0d47f7d0192b1f42776d1c61814feffd18d63368b084a5233f65482704a4c54b",
+  "fixtureSHA256": "733f6e7410eda80fd44a669102d6b31add6903ebdddd2cd49aeaffc9321f7d89",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "BB37: AnnounceService.PublicName(player, honorific) = Util.PlayerDisplayName (+ Config.Announce.Text.Honorific \"님\" when honorific) or, when data.HideAnnounceName (attribute before the data loads), HiddenName \"<faction> 한 명\" (Someone \"누군가\" without a faction), never with an honorific; every server-wide line goes through it: PvPService MostWanted / 2x BountyAnnounce / town board (wanted + Halo honor rows), GrudgeService GrudgeAvengedAll, ProgressionService RebirthAnnounce, GooseService RareAnnounce, KaijuService kaiju name; the five Config.Text lines use \"%s이\" so \"OO님이\" / \"뿔 군단 한 명이\" both read right; the SetAnnounceName handler calls RankingService.MarkHideChanged (pcall, optional); setting label '알림·랭킹에 내 이름 숨기기' + 2 notes (KO/EN). BB12: Config.Leaderstats.Columns {Power, Level, Rebirths, Fame} (gold hidden, A23-21), creation order = column order, Power = the CombatPower attribute (formula fallback before JusticeService sets it), Fame = Halo Honor / Horns Infamy / Neutral WeekArtisan (A23-24) / None 0, LEADERSTAT_KEYS watches every attribute a column reads, unknown / repeated ids skipped with a warning; changing the columns is one Config line.",
+  "contract": "BB37: AnnounceService.PublicName(player, honorific) = Util.PlayerDisplayName (+ Config.Announce.Text.Honorific \"님\" when honorific) or, when data.HideAnnounceName (attribute before the data loads), HiddenName \"<faction> 한 명\" (Someone \"누군가\" without a faction), never with an honorific; every server-wide line goes through it: PvPService MostWanted / 2x BountyAnnounce / town board (the wanted line; the weekly rows come from RankingService.ServerTop), GrudgeService GrudgeAvengedAll, ProgressionService RebirthAnnounce, GooseService RareAnnounce, KaijuService kaiju name; the five Config.Text lines use \"%s이\" so \"OO님이\" / \"뿔 군단 한 명이\" both read right; the SetAnnounceName handler calls RankingService.MarkHideChanged (pcall, optional); setting label '알림·랭킹에 내 이름 숨기기' + 2 notes (KO/EN). BB12: Config.Leaderstats.Columns {Power, Level, Rebirths, Fame} (gold hidden, A23-21), creation order = column order, Power = the CombatPower attribute (formula fallback before JusticeService sets it), Fame = Halo Honor / Horns Infamy / Neutral WeekArtisan (A23-24) / None 0, LEADERSTAT_KEYS watches every attribute a column reads, unknown / repeated ids skipped with a warning; changing the columns is one Config line.",
   "limitations": "Offline doubles: Players / Instances / attributes, PlayerService (data rows, SetStat mirror), ClassService, FactionService / JusticeService / CombatService / ZoneService / KaijuService / MapBuilder stand-ins for the whole PvPService. GrudgeService / ProgressionService / GooseService / KaijuService lines are checked statically plus their extracted publicName helper. The Roblox player list UI, chat rendering and 2-client checks are not certified here (the 게임성 개발 session plays them after the merge)."
 }

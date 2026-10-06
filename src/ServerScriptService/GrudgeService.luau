@@ -24,7 +24,7 @@ GrudgeService.SackResolved = Util.Signal.new() -- (thief, outcome: "Paid" | "Ave
 local S = nil
 
 -- [thief: Player] = { Entries = { [victimUserId] = { Amount, Name, Rebirths } }, Total, Remaining, Infamy,
--- LastVictimName }. Entry.Rebirths = the victim's Rebirths when stolen (CR-M6: no refund across a rebirth).
+-- RankInfamy (BB10: the fair weekly-board part of Infamy, credited only when the sack is Paid), LastVictimName }. Entry.Rebirths = the victim's Rebirths when stolen (CR-M6: no refund across a rebirth).
 local sacks = {}
 -- CR-M4 / CR-L6: anti-collusion cooldowns live in the saved PairCD (follows the player across servers):
 -- victim data "steal:<thiefUserId>" (RestealWindow), "refund:0" (extra 20%, per victim);
@@ -329,7 +329,8 @@ end
 local function pay(thief, sack)
 	S.ProgressionService.AddCarriedGold(thief, sack.Total, "Plunder")
 	if sack.Infamy > 0 then
-		S.PlayerService.AddStat(thief, "Infamy", sack.Infamy)
+		-- BB10: the stat gets every point; the weekly board only the fair part (sack.RankInfamy, never sack.Infamy)
+		S.PlayerService.GrantFame(thief, "Infamy", sack.Infamy, { RankPoints = sack.RankInfamy or 0 })
 	end
 	notify(thief, fmt("SackPaid", Util.FormatNumber(sack.Total)), "reward")
 	closeSack(thief, sack, "Paid", true)
@@ -413,20 +414,22 @@ function GrudgeService.CanSteal(thief, victim)
 	return pairReady(victim, thief.UserId, "steal", Config.Grudge.RestealWindow, false)
 end
 
--- amount was already taken from the victim's carried gold (PvPService.HandleKO)
-function GrudgeService.AddToSack(thief, victim, amount, infamy)
+-- amount was already taken from the victim's carried gold (PvPService.HandleKO). rankPts (BB10) = the part of infamy
+-- that passed the fair-points check (RankingService.JudgeKO); it reaches the weekly board only if the sack is Paid.
+function GrudgeService.AddToSack(thief, victim, amount, infamy, rankPts)
 	if not thief or not victim then
 		return
 	end
 	amount = math.floor(tonumber(amount) or 0)
 	infamy = math.max(0, math.floor(tonumber(infamy) or 0))
+	rankPts = math.clamp(math.floor(tonumber(rankPts) or 0), 0, infamy)
 	if amount <= 0 then
 		return
 	end
 
 	local sack = sacks[thief]
 	if not sack then
-		sack = { Entries = {}, Total = 0, Remaining = 0, Infamy = 0, LastVictimName = "", Held = 0,
+		sack = { Entries = {}, Total = 0, Remaining = 0, Infamy = 0, RankInfamy = 0, LastVictimName = "", Held = 0,
 			Id = tostring(thief.UserId) .. ":" .. tostring(os.time()) } -- grudge mail letter ids
 		sacks[thief] = sack
 	end
@@ -449,6 +452,7 @@ function GrudgeService.AddToSack(thief, victim, amount, infamy)
 	sack.Remaining = math.max(sack.Remaining, Config.Grudge.SackSeconds + sack.Held)
 	victim:SetAttribute("GrudgeThiefId", thief.UserId) -- A23-18: the victim's [유령으로 붙잡기] button targets this sack
 	sack.Infamy += infamy
+	sack.RankInfamy = (sack.RankInfamy or 0) + rankPts
 	sack.LastVictimName = Util.PlayerDisplayName(victim)
 	pairReady(victim, thief.UserId, "steal", 0) -- CR-M4: record the steal in the victim's save (RestealWindow)
 	publish(thief, sack)

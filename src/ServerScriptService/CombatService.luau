@@ -507,7 +507,8 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit)
 	local applied = math.max(0, before - hum.Health)
 	-- P1 (2026-10-05): only a PLAYER hit is the victim's activity; an AFK player hit by a slime stays idle
 	-- (regular luck, size scale and faction headcount use IdleSeconds)
-	if attacker then S.PlayerService.MarkActive(victim) end
+	-- BB10 D6: kind "Hit" = not the victim's own action (the fair-points idle check reads GetLastOwnActive)
+	if attacker then S.PlayerService.MarkActive(victim, "Hit") end
 	local okPain, errPain = pcall(sendPain, victim, hum, rootPos, applied, crit)
 	if not okPain then
 		loopWarn("Pain", errPain)
@@ -625,10 +626,12 @@ end
 -- Unlocked by the optional quest "내 싸움을 배우는 왕관 조각", starts OFF, toggled and saved by the player.
 -- The server loop calls the same Swing / Release paths with the auto flag: same interval, MP, cooldown, range and
 -- "one cast = one hit" rules; the auto branches never select players (monsters / goose only, no PvP).
--- A23-22: a bully (BullyStacks >= 1) cannot use auto combat until every stack decayed
+-- A23-22: a bully (BullyStacks >= 1) cannot use auto combat until every stack decayed; A23-23: neither can this week's
+-- outlaw (the Outlaw attribute, RankingService). Both at once is still the one penalty.
 local function bullyNoAuto(player)
 	local pen = Config.Bully.Penalty
-	return type(pen) == "table" and pen.NoAuto == true and (tonumber(player:GetAttribute("BullyStacks")) or 0) >= 1
+	return type(pen) == "table" and pen.NoAuto == true
+		and ((tonumber(player:GetAttribute("BullyStacks")) or 0) >= 1 or player:GetAttribute("Outlaw") == true)
 end
 
 local function autoReady(player)
@@ -1084,7 +1087,7 @@ local function pipelineCall(label, fn, ...)
 	end
 end
 
-local function runDeathPipeline(victim)
+local function runDeathPipeline(victim, diedAt)
 	if victim.Parent == nil then
 		-- the victim already left: leave flows (GrudgeService / ProgressionService) handle it
 		lastPvPAttacker[victim] = nil
@@ -1100,6 +1103,26 @@ local function runDeathPipeline(victim)
 		end
 	end
 
+	-- BB10: the weekly ranking's friend check may wait for Roblox (IsFriendsWith). It runs HERE, before anything below
+	-- changes state, so PvPService.HandleKO never yields; then both players must still be here.
+	local ranking = S.RankingService
+	local okActive, activeState = pcall(kstate, victim)
+	local kaijuDeath = okActive and activeState == "Active" -- HandleKaijuDeath never asks the ranking
+	if killer and ranking and ranking.ResolveFriends and not kaijuDeath and game.PrivateServerId == "" then
+		local okFriends, errFriends = pcall(ranking.ResolveFriends, killer, victim)
+		if not okFriends then loopWarn("ResolveFriends", errFriends) end
+		if victim.Parent == nil then
+			lastPvPAttacker[victim] = nil
+			return -- left while waiting: the leave flows handle it
+		end
+		if killer.Parent == nil then killer = nil end
+	end
+
+	-- BB10 D2: a thief KO'd while carrying a grudge sack is never an unfair KO (seen before step 1 closes the sack)
+	local okSack, hadSack = pcall(S.GrudgeService.HasSack, victim)
+	-- At = the KO's own time: the fresh-spawn, bait, revenge and self-defense checks never see the wait above
+	local koCtx = { HadSack = okSack and hadSack == true, At = diedAt }
+
 	-- 1. resolve a grudge sack first (no-op without one)
 	pipelineCall("GrudgeService.OnCarrierDown", S.GrudgeService.OnCarrierDown, victim, killer)
 
@@ -1108,7 +1131,7 @@ local function runDeathPipeline(victim)
 	if okState and state == "Active" then
 		pipelineCall("KaijuService.HandleKaijuDeath", S.KaijuService.HandleKaijuDeath, victim, killer)
 	elseif killer then
-		pipelineCall("PvPService.HandleKO", S.PvPService.HandleKO, victim, killer)
+		pipelineCall("PvPService.HandleKO", S.PvPService.HandleKO, victim, killer, koCtx)
 	else
 		pipelineCall("PvPService.HandleNonPvPDeath", S.PvPService.HandleNonPvPDeath, victim)
 	end
@@ -1123,10 +1146,11 @@ local function onCharacterDied(player, _character)
 		return
 	end
 	pendingManual[player] = nil
+	local diedAt = os.clock() -- BB10: the KO's time, before the friend check may wait (and the victim respawn)
 	-- deferred so the lethal hit's PlayerDamaged handlers (kaiju damage share, bait log) always run first,
 	-- whatever the Workspace.SignalBehavior is
 	task.defer(function()
-		local ok, err = pcall(runDeathPipeline, player)
+		local ok, err = pcall(runDeathPipeline, player, diedAt)
 		if not ok then
 			Util.Warn(TAG, "death pipeline error: " .. tostring(err))
 		end
@@ -1144,19 +1168,23 @@ local function onPlayerReady(player, _data)
 	player:SetAttribute("AutoAttack", false)
 	player:SetAttribute("InCombatUntil", 0)
 	resetLegacyCharge(player)
-	-- A23-22: becoming a bully switches auto combat OFF (with the reason); the end of the penalty is announced
+	-- A23-22: becoming a bully switches auto combat OFF (with the reason); the end of the penalty is announced.
+	-- A23-23: an outlaw week does the same (reason OutlawAutoOff); its end is announced by RankingService (OutlawEnd)
 	local wasBully = bullyNoAuto(player)
-	player:GetAttributeChangedSignal("BullyStacks"):Connect(function()
+	local function penaltyChanged(fromOutlaw)
 		local now = bullyNoAuto(player)
 		if now and not wasBully and player:GetAttribute("AutoCombatEnabled") == true and S.PlayerService.IsReady(player) then
 			S.PlayerService.SetStat(player, "AutoCombatEnabled", false)
-			Net.Notify(player, Config.Text.BullyAutoOff, "bad")
-		elseif wasBully and not now and (tonumber(player:GetAttribute("BullyStacks")) or 0) <= 0 then
+			local outlawOnly = (tonumber(player:GetAttribute("BullyStacks")) or 0) < 1
+			Net.Notify(player, outlawOnly and Config.Ranking.Text.OutlawAutoOff or Config.Text.BullyAutoOff, "bad")
+		elseif wasBully and not now and not fromOutlaw and (tonumber(player:GetAttribute("BullyStacks")) or 0) <= 0 then
 			local unlocked = player:GetAttribute("AutoCombatUnlocked") == true
 			Net.Notify(player, unlocked and Config.Text.BullyPenaltyEnd or Config.Text.BullyPenaltyEndNoAuto, "good")
 		end
 		wasBully = now
-	end)
+	end
+	player:GetAttributeChangedSignal("BullyStacks"):Connect(function() penaltyChanged(false) end)
+	player:GetAttributeChangedSignal("Outlaw"):Connect(function() penaltyChanged(true) end)
 	if wasBully and player:GetAttribute("AutoCombatEnabled") == true then
 		S.PlayerService.SetStat(player, "AutoCombatEnabled", false) -- rejoined with saved stacks
 	end
@@ -1282,7 +1310,8 @@ local function onSetAutoAttackRemote(player, enabled, ...)
 		return
 	end
 	if enabled and bullyNoAuto(player) then
-		Net.Notify(player, Config.Text.BullyNoAuto, "bad")
+		local outlawOnly = (tonumber(player:GetAttribute("BullyStacks")) or 0) < 1
+		Net.Notify(player, outlawOnly and Config.Ranking.Text.OutlawNoAuto or Config.Text.BullyNoAuto, "bad")
 		return
 	end
 	S.PlayerService.SetStat(player, "AutoCombatEnabled", enabled)

@@ -82,7 +82,8 @@ Config.Leaderstats = { Columns = { "Power", "Level", "Rebirths", "Fame" }, Names
 - 친구(pcall `killer:IsFriendsWith`, 실패는 친구로, 쌍별 세션 캐시) → 어느 판에도 안 감.
 - 면제(Revenge·VictimWanted·VictimBully·VictimOutlaw·VictimKaiju·KillerKaiju·VictimHadSack·Defense) → PvP 판에 안 감. 공정 검사는 그대로(현상수배범을 공정하게 잡으면 명예 판에 감).
 - 공정 검사(BB10): Bold ≥ 1 / victim 직접 활동 60초 안 / 친구 아님 / victim 계정 7일·플레이 3시간 이상(STUDIO 시즌 생략) / 이번 주 같은 상대 3번 미만 / victim 오늘 YieldN < 5 / Fresh·Repeated 아님. 모두 통과 = Fair.
-- 공정 아님 + 면제 아님 + 이유가 '공정성'(Weak·Idle·Newbie·Repeat·Fresh) → Unfair → `Credit(killer,'PvP',1)`. YieldCap만 걸린 것은 어느 판에도 안 감.
+- 공정 아님 + 면제 아님 + 이유가 '공정성'(Weak·Idle·Newbie·Repeat·Fresh·Repeated) → Unfair → `Credit(killer,'PvP',1)`. YieldCap만 걸린 것은 어느 판에도 안 감.
+- (검수 결정 2026-10-06) Repeated = 같은 상대 10분 안 3번째(A23-22 깡패 반복 KO)도 PvP 판 1점, 명예·악명 공정 점수는 0. 한 KO가 여러 이유(막 부활+반복 등)에 걸려도 1점. 면제(복수·현상수배·괴수·깡패 잡기)와 친구가 먼저다.
 - 명예·악명 수치·골드·별·자루는 지금 그대로. 바뀌는 것은 판 점수뿐.
 - **직접 활동 시계:** 지금 CombatService.luau:510이 플레이어에게 맞은 victim을 MarkActive한다. 그래서 자리 비운 사람도 맞는 순간 '활동'이 된다. `MarkActive(victim, "Hit")`로 바꾸고 PlayerService에 `GetLastOwnActive`(Hit 제외)를 둔다. 자동 전투는 이미 MarkActive를 안 한다.
 
@@ -180,3 +181,16 @@ RefreshEffects: Outlaw 속성 = data.Outlaw.WeekId == cur
 - D4 정산은 월요일 0시 + 10분 뒤(지난 주 값이 다 써질 시간), 정산 문서 키에 시즌을 넣는다. 전체 읽기가 실패하면 '이 서버 판으로 대신'하지 않고 다시 시도한다(서버마다 다른 무법자가 생기는 것 방지). 계약 문구와 다른 점이라 확인 부탁.
 - D5 무법자 최소 점수는 계약대로 1점. 베타 초반 사람이 적을 때 KO 1번으로 무법자가 될 수 있다. 최소 3점 같은 바닥을 둘지 사용자 질문이 필요하면 알려 달라.
 - D6 victim '직접 활동'은 남에게 맞은 것을 빼고 센다(지금은 맞는 순간 활동으로 잡혀 자리 비움 판정이 안 됨).
+
+## 13. 구현 메모 (개발2, 2026-10-06 — 검수 검토 10건 + 자체 검토 반영, 오프라인 검사 tools/test_ranking.py)
+- **동점(검수 결정 1):** 순위는 디코드한 점수로만 매긴다(저장값 아랫자리의 숨김 비트·진영 코드는 순위에 안 쓴다). 경쟁 순위 1,2,2,4. 정산은 판마다 TopN(50)줄을 읽어 순위 3 이내 전원(3위 동점 모두)에게 보상·무법자(바닥 3점 유지). 정산 문서에 `Ranks` 배열을 함께 저장. 표시(전체·이 서버·내 줄)도 같은 순위 번호, 동점 안 순서는 UserId(중립). 50줄이 모두 3위 동점이면 로그.
+- **정당방위(검수 결정 2, D2):** 짝(UserId lo:hi)마다 교전 기록 `{ By, T, Last }`. 20초(창 ×2) 동안 타격이 없으면 새 교전. Defense = 이번 교전을 victim이 시작했고 KO가 첫 타 뒤 10초 안. dmgLog(미끼 규칙)는 main처럼 BaitWindow만 보관.
+- **반복 KO(검수 결정):** '10분 안 3번째'(깡패 반복 KO)도 PvP 판 1점, 명예·악명 0. 막 부활과 겹쳐도 1점.
+- **비공개 서버:** PvPCreditOK가 맨 먼저 'Private'를 돌려 어느 판도·공정 카운터도 안 움직인다(자루 경로 포함). 장인 표도 안 붙인다(검수 4).
+- **킬러가 주간 상한:** 공정 점수가 들어갈 수 없으면 'WeekCap'으로 거절해 피해자의 하루 5번·주 3번 카운터를 쓰지 않는다.
+- **친구 확인은 HandleKO 밖에서:** CombatService 사망 처리가 HandleKO 전에 `RankingService.ResolveFriends`(진행 중인 백그라운드 호출을 최대 3초 기다림)를 부르고, 두 사람이 아직 있는지 다시 본다. HandleKO 안의 JudgeKO는 캐시만 본다(NoYield). 캐시에 없는 짝 = 친구(점수 없음).
+- **D4 하나로:** 판 읽기가 2시간 실패하면 `{ Skipped = true }`를 정산 문서에 first-writer-wins로 저장 → 모든 서버가 같은 결정(다른 서버가 먼저 저장한 진짜 문서가 있으면 그것을 적용). 정산 저장소 자체에 못 닿으면 아무것도 적용하지 않고 60초마다 다시. STUDIO는 실패 시 이 서버 판(지난주 스냅샷)으로.
+- **시즌 표시:** `Rank.Season`, `RankReward.Season`, `Outlaw.Season`. Studio 테스트(STUDIO)의 점수·보상·무법자는 라이브(PRE/B1)에서 꺼지고 반대도 같다(작업 Studio가 라이브 저장을 쓰기 때문, DebugSettle 포함). 검수가 '시즌 표시 없음'을 버렸지만, 이 경로(Studio 정산이 진짜 저장에 이번 주 보상을 찍음)는 자체 검토에서 확인돼 넣었다.
+- **쓰기 안전:** 서버별 쓰기 캐시는 세션마다 비움(검수 3). 진영 바꿈 제거는 `Rank.Drop`에 저장해 다음 서버가 마저 지움(RemoveAsync가 캐시가 비면 건너뛰던 버그도 고침). 쓰는 도중 생긴 변경(점수·숨기기)은 세대 번호로 다음 루프에 다시 씀. 떠날 때 쓰기는 진행 중인 루프 쓰기를 기다리고 3번까지 시도, BindToClose가 기다림(`RankingService.PendingWrites`).
+- **알림:** 무법자 끝 = 깡패 단계가 남았으면 없음(깡패 끝 알림이 나중에), 자동 전투 미해금이면 NoAuto 문구(검수 5). 진영을 바꾼 1~3위 = '칭호는 받았고 +10%는 <진영>에 있을 때만'(검수 6). Me.Note 'Hidden'(검수 7). 칭호 '이번 주 명예/악명/장인 N위'(검수 8).
+- **BB37 남은 것(검수 10):** 괴수 이름은 숨기기 바뀔 때 GameState KaijuName을 다시 쓰고 시작·끝 공지는 그때 이름. 숨긴 기사단원 현상금 공지는 머리말 없는 `Config.Text.BountyAnnounceHidden`(KO/EN).

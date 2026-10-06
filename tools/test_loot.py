@@ -84,7 +84,7 @@ MUTATIONS = [
     ("bully penalty not applied to the jackpot", "LOOT_SOURCE",
      "num(jackpot.Chance) * rowMult", "num(jackpot.Chance) * mult"),
     ("bully penalty DropMult never set in RollKill", "LOOT_SOURCE",
-     "info.DropMult = num(pen.DropMult, 1)", "local _ = pen.DropMult"),
+     "\tif penal then info.DropMult = num(pen.DropMult, 1) end\n", ""),
     ("two rolls per kill signal", "LOOT_SOURCE",
      "local ok, err = pcall(LootService.RollKill, player, info)",
      "pcall(LootService.RollKill, player, info); local ok, err = pcall(LootService.RollKill, player, info)"),

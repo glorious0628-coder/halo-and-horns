@@ -1,0 +1,489 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 40,
+  "failedChecks": 0,
+  "namedChecks": 40,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "save-fields",
+      "check": "defaults: ItemSeq {}, WeaponSeq {}, ItemSeqNext 0 (an old save starts at 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "potion keys follow the potion stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "an old save: no numbers, a weapon array of MaxWeaponTier zeros",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "unknown keys / junk numbers dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "weapon numbers: one per tier, junk -> 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "ItemSeqNext is never below a number already used (no repeats)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "the fields JSON-encode (string keys / a dense array)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "JSON round trip keeps the numbers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "NoteGained: the next number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "NoteGained with a tier: the weapon number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "NoteGained on a bare save repairs it first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save-fields",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "Jelly -> Enh70 -> Jelly: Jelly is the most recent (3), the scroll 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "the owner's Inventory payload carries ItemSeq",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "…and WeaponSeq (one number per tier)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "a later drop is more recent",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "nothing given (full stack): no number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "DebugGive (addItem) is a gain too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "a potion drop: PotionHP is the most recent",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "a weapon drop: WeaponSeq[4] is the most recent",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "the payload follows the potion / weapon numbers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "buying MP potions (any service raising MPPotionCount) is a gain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "using a potion is not a gain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "a weapon bought (a new ownership bit) is a gain for that tier",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "selling a weapon is not a gain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "two new weapons at once: both noted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "every noted gain is pushed to the owner",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "the values a save loads with are not gains",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "joined",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rejoin",
+      "check": "after a rejoin the payload has the same numbers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rejoin",
+      "check": "the counter continues (Jelly most recent again)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rejoin",
+      "check": "an old save: items without a number (0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rejoin",
+      "check": "an old save's first gain is 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rejoin",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rejoin",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 15,
+    "applied": 15,
+    "caught": 15,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the counter never moves",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: Jelly -> Enh70 -> Jelly: Jelly is the most recent (3), the scroll 2",
+          "drops :: a later drop is more recent",
+          "drops :: a potion drop: PotionHP is the most recent",
+          "drops :: a weapon drop: WeaponSeq[4] is the most recent",
+          "drops :: the owner's Inventory payload carries ItemSeq",
+          "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "a weapon gain written as an item key",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: a weapon drop: WeaponSeq[4] is the most recent",
+          "drops :: no service warnings (pcall-swallowed handler errors)",
+          "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier",
+          "other-paths :: every noted gain is pushed to the owner",
+          "other-paths :: no service warnings (pcall-swallowed handler errors)",
+          "other-paths :: selling a weapon is not a gain"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "unknown keys kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save-fields :: ItemSeqNext is never below a number already used (no repeats)",
+          "save-fields :: JSON round trip keeps the numbers",
+          "save-fields :: NoteGained with a tier: the weapon number",
+          "save-fields :: NoteGained: the next number",
+          "save-fields :: unknown keys / junk numbers dropped"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the counter may repeat a used number",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save-fields :: ItemSeqNext is never below a number already used (no repeats)",
+          "save-fields :: JSON round trip keeps the numbers",
+          "save-fields :: NoteGained with a tier: the weapon number",
+          "save-fields :: NoteGained: the next number"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no weapon array for an old save",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: group ran to the end without a Lua error",
+          "other-paths :: group ran to the end without a Lua error",
+          "rejoin :: group ran to the end without a Lua error",
+          "save-fields :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "addItem notes nothing",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: DebugGive (addItem) is a gain too",
+          "drops :: Jelly -> Enh70 -> Jelly: Jelly is the most recent (3), the scroll 2",
+          "drops :: a later drop is more recent",
+          "drops :: the owner's Inventory payload carries ItemSeq",
+          "rejoin :: after a rejoin the payload has the same numbers",
+          "rejoin :: an old save's first gain is 1"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "addItem notes before the full-stack check",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: DebugGive (addItem) is a gain too",
+          "drops :: nothing given (full stack): no number"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "payload without ItemSeq",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: group ran to the end without a Lua error",
+          "other-paths :: group ran to the end without a Lua error",
+          "rejoin :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "payload without WeaponSeq",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: group ran to the end without a Lua error",
+          "other-paths :: group ran to the end without a Lua error",
+          "rejoin :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "potions never noted",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: a potion drop: PotionHP is the most recent",
+          "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier",
+          "other-paths :: buying MP potions (any service raising MPPotionCount) is a gain",
+          "other-paths :: every noted gain is pushed to the owner",
+          "other-paths :: selling a weapon is not a gain",
+          "other-paths :: two new weapons at once: both noted"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "using a potion counts as a gain",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier",
+          "other-paths :: every noted gain is pushed to the owner",
+          "other-paths :: selling a weapon is not a gain",
+          "other-paths :: two new weapons at once: both noted",
+          "other-paths :: using a potion is not a gain"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "weapons never noted",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: a weapon drop: WeaponSeq[4] is the most recent",
+          "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier",
+          "other-paths :: every noted gain is pushed to the owner",
+          "other-paths :: selling a weapon is not a gain",
+          "other-paths :: two new weapons at once: both noted"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "selling a weapon counts as a gain",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "other-paths :: every noted gain is pushed to the owner",
+          "other-paths :: selling a weapon is not a gain",
+          "other-paths :: two new weapons at once: both noted"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the loaded stats count as gains",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier",
+          "other-paths :: every noted gain is pushed to the owner",
+          "other-paths :: selling a weapon is not a gain",
+          "other-paths :: two new weapons at once: both noted"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a noted gain is never pushed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "other-paths :: every noted gain is pushed to the owner"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "312c36eb8a6cac8cb7b4114776f705b9e6f7723147502523d43d087b870e497c",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3"
+  },
+  "fixtureSHA256": "c94752c0dae12ab2aa1f87023346d1bb66c79a8d3d38a5ceb98da29252334144",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-32 '얻은 순': data.ItemSeq[item id | PotionHP | PotionMP] and data.WeaponSeq[tier] hold the number of the last gain from the one counter data.ItemSeqNext (bigger = more recent, 0 = an old save / never). Gains: LootService.addItem (drops, the first-scroll grant, DebugGive), and a rise of the mirrored HPPotionCount / MPPotionCount or a new WeaponOwnedMask bit from any service (shop, quests, story, drops); using / selling and the values a save loads with are not gains. Config.SanitizeItemSeq (DataService.fillDefaults) keeps only known keys and positive integers, a dense weapon array, and a counter never below a used number. The owner's Inventory payload carries ItemSeq and WeaponSeq; a rejoin keeps them.",
+  "limitations": "Offline doubles: Players / attributes (changed signals fire on a real change, synchronously), a PlayerService double (data rows, SetStat mirror), DataService's load is stood in by the defaults fill + Config.SanitizeItemSeq (the fillDefaults call is checked statically). The bag window's sort (BB7, client) is the 게임성 개발 session's and is not certified here."
+}

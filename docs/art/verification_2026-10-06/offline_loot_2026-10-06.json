@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 2624,
+  "checks": 2626,
   "failedChecks": 0,
   "namedChecks": 544,
   "namedChecksFailing": 0,
@@ -495,13 +495,13 @@
     },
     {
       "group": "sanitize",
-      "check": "Inventory payload has only Items, Enhance and Seen",
-      "pass": 3,
+      "check": "Inventory payload has only Items, Enhance, Seen (+ A23-32 ItemSeq, WeaponSeq)",
+      "pass": 5,
       "fail": 0
     },
     {
       "group": "sanitize",
-      "check": "Inventory payload shape { Items, Enhance, Seen }",
+      "check": "Inventory payload shape { Items, Enhance, Seen, ItemSeq, WeaponSeq }",
       "pass": 1,
       "fail": 0
     },
@@ -4494,7 +4494,7 @@
           "lootroll :: no remote fired to all clients / no unexpected client publication",
           "sanitize :: Inventory payload Enhance is the 8-tier array",
           "sanitize :: Inventory payload Items = known ids only (unknown ids hidden)",
-          "sanitize :: Inventory payload shape { Items, Enhance, Seen }",
+          "sanitize :: Inventory payload shape { Items, Enhance, Seen, ItemSeq, WeaponSeq }",
           "sanitize :: Inventory republished after sanitize"
         ],
         "newFailingCount": 20
@@ -5058,19 +5058,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "67c35cafd892798ddedd0fc93d39cb4d1a5f7b8304fe5821d1f5d891a5a09aa6",
-    "src/ReplicatedStorage/Shared/Net.luau": "6af4c7db917701bca4c31fbd6a46a380c02ee1aa1d8107f3d2a7276de30937b4",
+    "src/ReplicatedStorage/Shared/Config.luau": "312c36eb8a6cac8cb7b4114776f705b9e6f7723147502523d43d087b870e497c",
+    "src/ReplicatedStorage/Shared/Net.luau": "286f998785063a11ad5899da5a8721bdf19d16647afa6027b3016508f860d4e2",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "2a2728ba099cd35ab99e96caf6db5c9e1bfd3bbff1b50f835942327cadcd89ac",
-    "src/ServerScriptService/PlayerService.luau": "ed4a8257dba02cd192261879411c812f783e1e0bb7fd77016e08d6f42cb2aa20",
-    "src/ServerScriptService/ProgressionService.luau": "71016aa2fec283813ad7173051ce8f17b6b9d2c892bfd601afed26209f5f3e70",
-    "src/ServerScriptService/CombatService.luau": "dab2f0b0365811e9a4fcdfdc775f327499954ad480aaa7368c4eca8fda162a8d",
-    "src/ServerScriptService/LootService.luau": "1051611e3aaa79f58e779c6338ce542c08de282a33fb7cd929673fc9dafd54c2",
+    "src/ServerScriptService/DataService.luau": "d360640bf7f1262d2bdf17d6eea7dd104cae44f4b29989c4263b94819b9316ba",
+    "src/ServerScriptService/PlayerService.luau": "2ce4b689d4c44fa077774759ac33ef7a4efc853cb39e00d81aa810f4c71f4ac5",
+    "src/ServerScriptService/ProgressionService.luau": "fcb3352cc751535b813b14cb567850302e249adb7e829cf8ffdac1076f08e3a3",
+    "src/ServerScriptService/CombatService.luau": "58bdfb4f6544bbd889df5f5616ef8ee25f8ca99b5e168b5e0e7e3220ab97cc44",
+    "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3",
     "src/ServerScriptService/JusticeService.luau": "c82185555c4263dd843d25e56c28d2aa9dd11d23f123a0f5c89fff7f6c47719c",
-    "src/ServerScriptService/PvPService.luau": "29c7097a818c0a685c083793bf4bd9dc9f2633c10e7b438d72d1967d7365dd16",
+    "src/ServerScriptService/PvPService.luau": "6a74d3116f9ff4ca38505c81f37944f10e80d58a54bf4bcb426c04c05a177ecb",
     "src/ServerScriptService/ShopService.luau": "05f186c207f216491798d1a87d4b56be3c42790ab07e2e07614749a795dbf30c"
   },
-  "fixtureSHA256": "0bafd2d46ad1a650db4c74307e69f53c4c862a815f4f2aad85dd6257cba1b09b",
+  "fixtureSHA256": "3a86c6164117b9a231743b416ffee3314bc4f31c77c50c8b150a4cbe67ca31a4",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

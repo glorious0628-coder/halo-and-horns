@@ -196,10 +196,10 @@ runGroup("pvp-lines", function()
 	-- board: refreshed by Start's first update and by the loop; run the loop body's board step through Start again
 	w.PvP.Start()
 	local board = w.Label.Text
-	check(has(board, "보이는악당") and has(board, "보이는영웅"), "town board shows shown players by nickname", board)
+	-- (the weekly board rows come from RankingService.ServerTop: checked in tools/test_ranking.py "board")
+	check(has(board, "보이는악당"), "town board's wanted line shows a shown player by nickname", board)
 	check(not has(board, "숨은악당") and not has(board, "숨은영웅"), "town board never shows a hidden nickname", board)
-	check(has(board, string.format(T.HiddenName, HORNS)) and has(board, string.format(T.HiddenName, HALO)),
-		"town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)", board)
+	check(has(board, string.format(T.HiddenName, HORNS)), "town board's wanted line shows a hidden player as \"<진영> 한 명\"", board)
 	check(not has(board, T.Honorific .. " "), "board rows carry no honorific", board)
 end)
 

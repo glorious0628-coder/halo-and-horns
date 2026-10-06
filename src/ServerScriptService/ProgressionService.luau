@@ -146,9 +146,14 @@ function M.GetXPMult(player)
 		+ (hasBlessing(player) and Config.War.BlessingXP or 0)
 		+ num(data.RebirthBonus)
 		+ num(data.RedeemMarks) * Config.Rebirth.RedeemXPPer
-	-- A23-22 unruly-PvP penalty: XP x0.5 while the player is a bully
+	-- A23-22 unruly-PvP penalty: XP x0.5 while the player is a bully or (A23-23) this week's outlaw; both = x0.5 once
 	local pen = Config.Bully.Penalty
-	if type(pen) == "table" and num(player:GetAttribute("BullyStacks")) >= 1 then mult *= num(pen.XPMult) end
+	if type(pen) == "table" and (num(player:GetAttribute("BullyStacks")) >= 1 or player:GetAttribute("Outlaw") == true) then
+		mult *= num(pen.XPMult)
+	end
+	-- A23-22 / A23-24 weekly top 3: x RewardMult while RankingService shows the reward (only in that board's faction)
+	local reward = player:GetAttribute("RankReward")
+	if type(reward) == "string" and reward ~= "" and Config.Ranking then mult *= num(Config.Ranking.RewardMult) end
 	return math.max(0, mult)
 end
 
