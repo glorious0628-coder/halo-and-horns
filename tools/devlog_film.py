@@ -15,7 +15,7 @@
 - 창이 최소화돼 있으면 활성화하지 않고 맨 뒤에 펼친다(사용자 화면을 가리지 않음). 다 찍으면 `minimize`로 다시 접는다.
 - 마우스·키보드는 건드리지 않는다. 캐릭터는 우리 테스트 Play 안에서 Studio MCP로만 움직인다. 끝나면 Play를 멈춘다.
 - 원본은 build/devlog/raw/(git 밖).
-- 창을 펼치거나 녹화하기 전에 검수에게 "촬영 편집 — 무엇 — 몇 초"를 보내고 진행, 끝나면 "끝"(2026-10-06, 사용자). 알린 뒤에만 FILM_OK=1.
+- 창을 펼치거나 녹화하기 전에 검수에게 "촬영 편집 — 무엇 — 몇 초"를 보내고 검수의 "전달함, 시작" 답을 받은 뒤에만 한다, 끝나면 "끝"(2026-10-06 사용자 규칙). 그 답 뒤에만 FILM_OK=1.
 """
 
 import base64
@@ -168,7 +168,7 @@ def film_hwnd():
     if u.IsIconic(h):
         # 2026-10-06 rule: restoring the window or recording needs 검수's OK first ("촬영 편집 — 무엇 — 몇 초")
         if os.environ.get("FILM_OK") != "1":
-            raise RuntimeError("FilmSet 창이 최소화돼 있어요. 검수에게 \"촬영 편집 — 무엇 — 몇 초\"를 보낸 뒤 FILM_OK=1 로 다시 실행하세요.")
+            raise RuntimeError("FilmSet 창이 최소화돼 있어요. 검수에게 \"촬영 편집 — 무엇 — 몇 초\"를 보내고 \"전달함, 시작\" 답을 받은 뒤 FILM_OK=1 로 다시 실행하세요.")
         u.ShowWindow(h, 4)  # SW_SHOWNOACTIVATE
         u.SetWindowPos(h, 1, 0, 0, 0, 0, 0x0013)  # HWND_BOTTOM, NOSIZE | NOMOVE | NOACTIVATE
         time.sleep(1.0)
@@ -245,7 +245,7 @@ def grab_viewport(out_png):
 
 def start_rec(name, seconds):
     if os.environ.get("FILM_OK") != "1":
-        raise RuntimeError("녹화 직전에 검수에게 \"촬영 편집 — 무엇 — 몇 초\"를 보내고 FILM_OK=1 로 실행하세요(끝나면 \"끝\").")
+        raise RuntimeError("녹화 전에 검수에게 \"촬영 편집 — 무엇 — 몇 초\"를 보내고 \"전달함, 시작\" 답을 받은 뒤 FILM_OK=1 로 실행하세요(끝나면 \"끝\").")
     seconds = min(float(seconds), MAX_SECONDS)
     x, y, w, h = crop_now()
     out = os.path.join(RAW, name + ".mp4")
