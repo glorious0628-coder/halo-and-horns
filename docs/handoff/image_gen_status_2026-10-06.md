@@ -34,3 +34,7 @@
 ## 새 계정 이어서 (2026-10-06 오후, 사용 한도로 다시 중지)
 - 교차로 키트 1차: Creator Store 19개 넣고 위험 인스턴스 지움(0 확인) → 각지고 사실적이라 탈락, **Roblox generate_mesh(무료) 결과가 콘셉트와 맞음** → 분수·벤치·가판대 3색·모루 채택, 등불B·물약 수레·대장간 집·화덕·왕관 조각·발판 받침·제단·게시판·화로 확인 대기, 거위 둥지 생성 실패(다시). 애셋 ID 전부 `art/models/worldkit/manifest.json`, 사진 `art/review/worldkit/`.
 - WorldKit Studio는 **저장 안 하고 닫음**(애셋 ID로 다시 넣으면 됨). 다음: KitStage에 ID로 다시 넣기 → 크기 맞추기 → 교차로 제자리 배치 → '지금 vs 키트' 같은 각도 사진 → 검수. 남은 생성: 거위 둥지·깃대 2·톱니·거래소 간판·광장 테두리·바위·연석·하늘 왕관.
+
+## 다시 시작 (2026-10-06 14시)
+- 교차로 키트 완료(미리보기): 21종 전부 Roblox 무료 생성 도구, 같은 각도 전·후 `art/review/worldkit/crossroads_before_after.jpg`, 번호·크기·자리·계약 `art/models/worldkit/manifest.json`, 미리보기 스크립트 `tools/worldkit/`. 메인 배치는 게임성 개발 1. (처음 커밋 4749770의 '지금' 사진은 창 최소화로 하얗게 찍혀 있었음 → 이번에 다시 찍어 바꿈)
+- 게임 아이콘 시안 3안×2 `art/review/gameicon_sheet_v1.jpg`(원본 `art/out/icon/`, 미추적) — 사람 그림이라 사용자 확인 대기. 다음: 썸네일 2~3안, 빛·뿔 마을 키트.

@@ -1,29 +1,40 @@
 {
-  "note": "세계 소품 키트 기록 (이미지 생성 1, A23-33). 교차로 1차 2026-10-06. Studio 장소는 저장 안 함(사용 한도로 중지) — 아래 애셋 ID로 다시 넣는다. 생성(generated)은 사용자 새 계정 소유로 게시된 메시 모델.",
+  "note": "세계 소품 키트 기록 (이미지 생성 1, A23-33 + A23-41 보강: 무료(Creator Store 무료·Roblox Studio 무료 생성) → Tripo → 유료). 교차로 2026-10-06. 모든 키트 모델은 Roblox Studio generate_mesh(무료) 결과를 사용자 새 계정에 게시한 메시 모델(패키지)이다. insert_asset(assetId, Model)로 넣고 K_* 이름을 붙인다. 앞면은 Roblox 앞(-Z)으로 확인함(art/review/worldkit/front_check_*.jpg).",
   "zone": "crossroads",
-  "picked": {
-    "Fountain":   {"src": "generated", "assetId": "76556272343060",  "prompt": "round cartoon three tier stone fountain, cream white stone, thick soft rounded rims", "maxTris": 5000, "genSize": "10.3x10.0x10.3", "target": "Ø24, scale ~2.3"},
-    "Bench":      {"src": "generated", "assetId": "134680201973665", "prompt": "chubby rounded cartoon toy park bench, honey wood, curly dark iron legs", "maxTris": 800, "genSize": "5.6x4.0x2.9", "target": "6.5 wide"},
-    "Stall_Red":  {"src": "generated", "assetId": "129560971369618", "prompt": "cute cartoon market stall, scalloped red and cream awning, fruit crates", "maxTris": 2000, "genSize": "9.4x9.0x5.4", "target": "11 wide"},
-    "Stall_Blue": {"src": "generated", "assetId": "130455047391717", "prompt": "same, blue and cream awning, bread baskets", "maxTris": 2000},
-    "Stall_Green":{"src": "generated", "assetId": "132658338267168", "prompt": "same, green and cream awning, apples and vegetables", "maxTris": 2000},
-    "Anvil":      {"src": "generated", "assetId": "82446744618801",  "prompt": "cute chunky cartoon anvil on a round tree stump", "maxTris": 1000, "genSize": "2.3x2.0x3.0", "target": "~4.5 long; must stay Anchored BasePart named Anvil under ArtisanGuild"}
+  "preview_scripts": "tools/worldkit/crossroads_kit_place.luau + crossroads_kit_place2.luau (WorldKit 미리보기: 옛 소품 숨김 → 키트 제자리)",
+  "evidence": "art/review/worldkit/crossroads_before_after.jpg (같은 각도 4장: spawn·market·guild·high)",
+  "kit": {
+    "K_Fountain":     {"assetId": "76556272343060",  "tris": 4934, "place": "(0,0,0)", "fit": "width 21 -> 21.0x20.4x21.0", "yaw": 0, "contract": "Landmarks.Fountain(Model+PrimaryPart) 유지: 키트 메시를 그 모델 안에 넣고 PrimaryPart는 투명 받침으로"},
+    "K_CrownShard":   {"assetId": "138150055823518", "tris": 1498, "place": "(0,21,0) 분수 위", "fit": "width 7", "yaw": 0, "contract": "Landmarks.CrownShard 유지(빛기둥 Beam·PointLight 그대로, 네온 블록만 숨김). 천천히 회전 권장"},
+    "K_Bench":        {"assetId": "134680201973665", "tris": 800,  "place": "(±18,0,±18) x4", "fit": "width 6.5", "yaw": "광장 가운데를 봄 = atan2(x,z)"},
+    "K_Lamp":         {"assetId": "83198252324794",  "tris": 890,  "place": "반지름 32의 8곳(기존 Lamp 자리)", "fit": "height 11", "yaw": "대칭이라 상관없음", "contract": "PointLight 4개는 유리 높이(약 y 9.5)에"},
+    "K_StallRed":     {"assetId": "129560971369618", "tris": 1966, "place": "(-12.2,-52.8), (-46.7,-20.3)", "fit": "width 10", "yaw": "광장을 봄"},
+    "K_StallBlue":    {"assetId": "130455047391717", "tris": 1918, "place": "(-22.4,-42.7)", "fit": "width 10", "yaw": "광장을 봄"},
+    "K_StallGreen":   {"assetId": "132658338267168", "tris": 1994, "place": "(-36.6,-34.5)", "fit": "width 10", "yaw": "광장을 봄"},
+    "K_Potion":       {"assetId": "83996745517766",  "tris": 1936, "place": "(12,-40) 물약 상인(12,-34) 바로 뒤", "fit": "height 7.5", "yaw": "광장을 봄", "contract": "프롬프트는 NPC 쪽 그대로"},
+    "K_Guild2":       {"assetId": "136224445139337", "tris": 5876, "place": "(44,0,60)", "fit": "width 24 -> 24.0x16.2x22.3", "yaw": 0, "contract": "ArtisanGuild(Model) 이름 유지, 옛 Hall·Beam·Roof·Door·Gear 파트 대신"},
+    "K_Gear":         {"assetId": "132536329142416", "tris": 996,  "place": "(44, y 9.6~14.2, 48.6) 길드 앞 박공", "fit": "width 4.6", "yaw": 0, "contract": "천천히 회전(ART_DIRECTION 10°/s)"},
+    "K_Anvil":        {"assetId": "82446744618801",  "tris": 1000, "place": "(39,0,45)", "fit": "depth 4.5", "yaw": 0, "contract": "ArtisanGuild 바로 아래 Anchored BasePart 이름 Anvil 필수(상점 거리·길 안내·지도). 키트 메시를 Anvil MeshPart로 쓰거나 투명 Anvil 파트 위에 겹침"},
+    "K_Forge":        {"assetId": "86664671339999",  "tris": 1490, "place": "(49,0,45)", "fit": "height 6", "yaw": 0},
+    "K_Altar":        {"assetId": "121777078323302", "tris": 2990, "place": "(0,0,45)", "fit": "width 9", "yaw": 0, "contract": "Altar(BasePart)+AltarPrompt 유지 → 옛 Altar 파트를 투명하게 두고 키트를 겹침"},
+    "K_Brazier":      {"assetId": "136257412466235", "tris": 800,  "place": "(±15,0,60)", "fit": "height 4", "yaw": 0},
+    "K_PadBase":      {"assetId": "110136633746885", "tris": 1422, "place": "Config 발판 자리 (52,-24),(52,24),(68,24)", "fit": "width 12 -> 12x3.1x10.5", "yaw": 0, "contract": "Pad_<Dest>(Part, TravelTo, CanTouch) 유지: 네온 판은 Transparency 1(터치는 그대로), 둘레 RingSeg는 y≈2.0으로 받침 위에"},
+    "K_Nest":         {"assetId": "101705985682378", "tris": 1998, "place": "(-30,0,30)", "fit": "width 12", "yaw": 0, "contract": "GoosePerch 모델 이름·자리 유지(옛 파트 투명)"},
+    "K_PoleHalo":     {"assetId": "127080708298829", "tris": 682,  "place": "(±12,0,-60)", "fit": "height 14", "yaw": 0, "cloth": "BannerCloth 5.3x8x0.2 Fabric, 가로대 아래·광장 쪽(+Z 0.6). 지금은 색(120,175,245) — Banner_Halo(2:3) 업로드 뒤 Decal"},
+    "K_PoleHorns":    {"assetId": "139687601212418", "tris": 696,  "place": "(±12,0,60)", "fit": "height 14", "yaw": 180, "cloth": "색(150,28,40) — Banner_Horns(2:3) 업로드 뒤 Decal"},
+    "K_MarketArch":   {"assetId": "109900161242056", "tris": 1190, "place": "(-27,0,-27) 장터 입구", "fit": "width 12", "yaw": "광장을 봄", "contract": "MarketSign(지도 위치) 유지, 떠 있는 글자는 A23-36에 따라 없앰(키트 매단 판은 글자 없음)"},
+    "K_NoticeBoard2": {"assetId": "133123107676921", "tris": 1394, "place": "(-57.5,0,0)", "fit": "width 16", "yaw": -90, "contract": "MostWantedBoard(+X 면 SurfaceGui)는 그대로 쓰되 미리보기에서 0.4x9.6x11.8, 중심 (-55.0,8.4,0)으로 줄여 키트 판 가운데를 덮음(키트 판 가운데에 생성 얼룩이 있어 덮어야 함). 옛 기둥 2개는 투명"},
+    "K_Curb":         {"assetId": "71401040660667",  "tris": 398,  "place": "반지름 28.5 고리, 길 입구(|x|<10 또는 |z|<10) 비움 → 16개", "fit": "width 6.2", "yaw": "phi(접선)", "contract": "높이 1.2 — 걸려 넘어지지 않게 CanCollide false 권장"}
   },
-  "to_review": {
-    "Lamp_A":     {"src": "generated", "assetId": "140411928663734", "note": "green pagoda roof lantern — too Asian; probably drop"},
-    "Lamp_B":     {"src": "generated", "assetId": "83198252324794",  "note": "wood post + crossbar + hanging iron lantern (concept match), 9.3 tall; check"},
-    "Potion":     {"src": "generated", "assetId": "83996745517766",  "note": "potion cart, purple canopy"},
-    "Guild":      {"src": "generated", "assetId": "93235013033313",  "note": "blacksmith house 13x20x13 — check proportions (target ~26x20x20)"},
-    "Forge":      {"src": "generated", "assetId": "86664671339999"},
-    "CrownShard": {"src": "generated", "assetId": "138150055823518"},
-    "PadBase":    {"src": "generated", "assetId": "110136633746885", "note": "stone disc only; glow ring stays a Neon part colored by code"},
-    "Altar":      {"src": "generated", "assetId": "121777078323302"},
-    "NoticeBoard":{"src": "generated", "assetId": "77491899980114",  "note": "MostWantedBoard part + SurfaceGui stay separate"},
-    "Brazier":    {"src": "generated", "assetId": "136257412466235"},
-    "GooseNest":  {"src": "generated", "assetId": null, "note": "generation Failed — retry"}
+  "dropped": {
+    "K_Guild (93235013033313)": "좁고 높은 2층 집(15.6x24) → 넓은 K_Guild2로 바꿈",
+    "K_Lamp_A (140411928663734)": "초록 기와 등불(동양풍) — 콘셉트와 다름",
+    "K_NoticeBoard (77491899980114)": "작고 모양이 안 나옴 → K_NoticeBoard2",
+    "GooseNest 1차": "생성 실패 → K_Nest로 다시"
   },
+  "budget": "교차로 키트 삼각형 합 약 5.5만(반복 포함: 분수 4.9k, 벤치 4x0.8k, 등불 8x0.9k, 가판대 4x2k, 테두리 16x0.4k 등), 파트 수는 옛 소품 약 145 → 메시 약 50개로 줄어듦",
   "creator_store_tried": {
-    "rule": "ServerStorage.KitStage에만 넣고 Script·LocalScript·ModuleScript·Remote·Bindable·Prompt·ClickDetector·Sound·Humanoid를 지움(남은 위험 인스턴스 0 확인). 결과: 대부분 각지고 사실적이라 장난감 콘셉트와 안 맞음 → 생성 도구 결과 채택.",
+    "rule": "ServerStorage.KitStage에만 넣고 Script·LocalScript·ModuleScript·Remote·Bindable·Prompt·ClickDetector·Sound·Humanoid를 지움(남은 위험 인스턴스 0 확인). 결과: 대부분 각지고 사실적이라 장난감 콘셉트와 안 맞음 → 무료 생성 도구 결과 채택.",
     "items": [
       {"id": "7070126910",      "name": "Fountain(cartoon)", "creator": "An0nsoul_Sniperr", "removed": ["Script:Look"], "parts": 21, "verdict": "2nd choice fountain (plain white marble)"},
       {"id": "133107976105207", "name": "Cartoon Fountain Water Splash", "creator": "XzOrbit5TBoltYzX1404", "removed": ["Script:LightConfig", "ModuleScript x2"], "parts": 5, "verdict": "no"},
@@ -46,6 +57,5 @@
       {"id": "13732732668",     "name": "Anvil", "creator": "nacrobloxgamer", "removed": [], "parts": 1, "verdict": "no"}
     ]
   },
-  "evidence": "art/review/worldkit/ (crossroads_before_*.jpg = 지금 모습, cand_*.jpg = 후보 비교)",
-  "todo": "삼각형 수 확인, 크기 맞추기(target), 이름 계약(world_kit 문서 끝), WorldKit 교차로에 배치 → 같은 각도 '지금 vs 키트' 사진 → rbxm 내보내기"
+  "todo": "하늘 왕관(CrownOfBalance) 메시, 큰 바위·능선 덧대기, 연석(금·빨강 캡), 스폰 표시 — 다음 묶음. 메인 배치·계약 처리는 게임성 개발 1."
 }
