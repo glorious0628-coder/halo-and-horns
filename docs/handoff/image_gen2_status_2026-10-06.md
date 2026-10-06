@@ -40,3 +40,11 @@
 - 끝: 471686b 메뉴 칸 판·IconSettings·IconNews / 50bf8ea 직업 8 + 초상 3 사용자 OK → art/ui(장인 궁수 거절, A23-39 펫 조련사로) / 이번 커밋 = 묶음 12 일부 5(ListRowSelected·Toast·BannerGold·WarMeterFrame·WarCrownPip, 시트 art/review/s2/b12_part1_sheet.png) — 이미지 개발에 아직 안 알림.
 - 생성 중이던 것: 펫 조련사 a(CLS_ArtisanTamer_M, 2:3, 문구 art/prompts/CLS_ArtisanTamer_M.txt) — asset_search "An artisan guild pet tamer boy"로 받아 누끼 → 장인 직업 카드 시트로 사용자 확인. 내 탭은 이제 "tab-4"(JS __s2_all/__s2_setPrompt/__s2_gen, 모델 Sunburst·중간 확인됨).
 - 다음: 펫 조련사 b → 묶음 12·13 남은 15장(NameTag·QuestRow·AutoRingOn·NpcMarkerBubble·RewardRays·TabOn/Off·InputField·QuestTab·BannerAlert·Glyph 5) + ListRowSelected b(더 진한 금빛) → 15·16 무기(지휘봉 포함) → 17 → 19. 크레딧 0.
+
+## 재시작 뒤 (2026-10-06 오후 2, 크레딧 0)
+- 커밋: 7f56285 펫 조련사(남, pending-user) · a601f39 묶음 12·13 16장 · 83eaffb 둥근 미니맵 틀 · 38ea615 무기 23장(T1~T6 + 조련 지휘봉) + 느낌표 · 0a5603a 묶음 17(배지·스티커·거위·클로버) · af64891 묶음 19 반대 성별 9 + 상점 NPC 2(pending-user) + 승인 사람 그림 11장 발밑 그림자 정리(재업로드 요청) · 81ec677 TitleRibbon slice [118,40,394,95]. 모두 이미지 개발에 전달.
+- 사용자 확인 대기: 펫 조련사 남(b10_tamer_sheet) + b19_people_sheet(9 + NPC 2). OK 오면 approved → art/review/s2/human/*.png를 art/ui로 → 이미지 개발.
+- 진행 중: A23-45 유령 가족 시안(CON_GhostMinion_A/B, CON_GhostKing_A/B, 각 2장) → 시트·사용자 고르기 → IconMonGhostMinion/King → 시안 경로를 이미지 생성 1에게. 그다음 묶음 18 작은 것(LogoPlate·EventBannerHalloween·MapParchment·Shard_Base·IconAltar, 대기열에 있음).
+- 브라우저: 내 탭 "tab-1"(seed는 이미지 생성 1). JS __s2_Q/__s2_run/__s2_log 대기열(첫 생성 뒤엔 execCommand insertText + ' '/delete로 버튼이 켜짐). 다운로드는 __s2_log 클릭 시각 ↔ asset createDate(약 +20초)로 짝지음.
+- 도구: tools/img2/clean_haze.py(사람 그림 발밑 그림자·회색 얼룩, 작은 점) — 사람 그림 누끼 뒤 항상.
+- 남은 것: 옷·방어구·액세서리는 정식 이후(A23-21). 정식용 후보(BadgeDot·Toggle·GlyphGear/Paw·PetPaw·PetStat·재료 4·Map_* 지도 아이콘·랭크 배지)는 검수 지시 뒤에.
