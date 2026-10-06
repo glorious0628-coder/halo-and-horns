@@ -4239,5 +4239,57 @@
   "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
   "preview": "art/review/s2/rank_badges_sheet.png",
   "note": "칭호 배지 회색 전설(은빛 원 + 금/빨강 반반 고리 + 작은 뿔). 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음."
+ },
+ "PortraitFrame": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_PortraitFrame.txt",
+  "original": "art/out/s2/PortraitFrame_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/PortraitFrame.png",
+  "size": "512x498 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked light/navy",
+  "preview": "art/review/s2/portrait_petcard_sheet.png",
+  "layout": {
+   "Window": [
+    0.107,
+    0.116,
+    0.783,
+    0.759
+   ]
+  },
+  "note": "대화창 왼쪽 NPC 초상화 틀(금테 + 모서리 사파이어, 창 안 하늘색 — 초상은 창 사각형 위에 둥근 모서리로 얹음). 검수 순서 ④. 2장 중 1."
+ },
+ "PetCard": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/UIP_PetCard.txt",
+  "original": "art/out/s2/PetCard_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/PetCard.png",
+  "size": "462x768 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 768 --holes --keep-largest; checked navy",
+  "preview": "art/review/s2/portrait_petcard_sheet.png",
+  "layout": {
+   "Window": [
+    0.126,
+    0.121,
+    0.747,
+    0.444
+   ],
+   "Name": [
+    0.1,
+    0.6,
+    0.8,
+    0.075
+   ],
+   "Body": [
+    0.08,
+    0.7,
+    0.84,
+    0.18
+   ]
+  },
+  "note": "펫 창·도감 카드 틀(크림 + 금테, 위 민트 둥근 창 + 이름 판 + 아래 능력 칸). 펫 그림은 창 위에, 이름·능력은 TextLabel. 검수 순서 ④. 2장 중 1."
  }
 }
