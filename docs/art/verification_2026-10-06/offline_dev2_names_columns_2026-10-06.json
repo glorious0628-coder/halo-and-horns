@@ -1,0 +1,1048 @@
+{
+  "status": "passed",
+  "checks": 110,
+  "failedChecks": 0,
+  "namedChecks": 107,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "public-name",
+      "check": "shown: the verified game nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "shown + honorific: nickname .. Text.Honorific (\"님\")",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "no verified nickname: the Roblox DisplayName (Util.PlayerDisplayName)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "hidden Halo: \"빛의 기사단 한 명\" (contract text)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "hidden + honorific: no \"님\" after \"한 명\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "hidden Horns: \"뿔 군단 한 명\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "hidden Neutral: \"장인 길드 한 명\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "hidden without a faction: Text.Someone (\"누군가\")",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "a hidden name never contains the nickname or the Roblox name",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "data.HideAnnounceName = false wins over a stale attribute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "no data yet: the mirrored HideAnnounceName attribute hides",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "not a Player: \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "Config.Announce.Text keeps KO/EN pairs for the new lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "setting label '알림·랭킹에 내 이름 숨기기'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "setting notes: nametags/Tab cannot be hidden; global rankings show '<진영> 한 명' when hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "Announce payload: hidden player -> Who \"\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "public-name",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "MostWanted uses the particle-free \"%s이\" form",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "MostWanted has no \"님이\" / \"이(가)\" left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "MostWanted: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "MostWanted: no leaked name, no doubled honorific",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "BountyAnnounce uses the particle-free \"%s이\" form",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "BountyAnnounce has no \"님이\" / \"이(가)\" left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "BountyAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "BountyAnnounce: no leaked name, no doubled honorific",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "GrudgeAvengedAll uses the particle-free \"%s이\" form",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "GrudgeAvengedAll has no \"님이\" / \"이(가)\" left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "GrudgeAvengedAll: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "GrudgeAvengedAll: no leaked name, no doubled honorific",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "RebirthAnnounce uses the particle-free \"%s이\" form",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "RebirthAnnounce has no \"님이\" / \"이(가)\" left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "RebirthAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "RebirthAnnounce: no leaked name, no doubled honorific",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "RareAnnounce uses the particle-free \"%s이\" form",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "RareAnnounce has no \"님이\" / \"이(가)\" left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "RareAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "RareAnnounce: no leaked name, no doubled honorific",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "announce-lines",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "PvPService: publicName = AnnounceService.PublicName (hidden)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "PvPService: publicName passes the honorific flag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "PvPService: a failing PublicName falls back (no error reaches the line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "PvPService: no AnnounceService in the registry falls back to the nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "GrudgeService: publicName = AnnounceService.PublicName (hidden)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "GrudgeService: publicName passes the honorific flag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "GrudgeService: a failing PublicName falls back (no error reaches the line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "GrudgeService: no AnnounceService in the registry falls back to the nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "ProgressionService: publicName = AnnounceService.PublicName (hidden)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "ProgressionService: publicName passes the honorific flag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "ProgressionService: a failing PublicName falls back (no error reaches the line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "ProgressionService: no AnnounceService in the registry falls back to the nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "GooseService: publicName = AnnounceService.PublicName (hidden)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "GooseService: publicName passes the honorific flag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "GooseService: a failing PublicName falls back (no error reaches the line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "GooseService: no AnnounceService in the registry falls back to the nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "KaijuService: publicName = AnnounceService.PublicName (hidden)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "KaijuService: publicName passes the honorific flag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "KaijuService: a failing PublicName falls back (no error reaches the line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "KaijuService: no AnnounceService in the registry falls back to the nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "service-helpers",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-lines",
+      "check": "Most Wanted line names a hidden villain \"뿔 군단 한 명이\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-lines",
+      "check": "Most Wanted line names a shown villain \"OO님이\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-lines",
+      "check": "town board shows shown players by nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-lines",
+      "check": "town board never shows a hidden nickname",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-lines",
+      "check": "town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-lines",
+      "check": "board rows carry no honorific",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-lines",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pvp-lines",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "the remote saves + mirrors the choice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "RankingService.MarkHideChanged(player) runs once per accepted change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "PublicName follows at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "a call inside RateLimits.SetAnnounceName is ignored (no second MarkHideChanged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "showing again also marks the rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "wrong type / extra argument: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "without RankingService the choice is still saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "a failing MarkHideChanged is swallowed after the save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set-name",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "no gold column (A23-21)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "before JusticeService sets CombatPower: the same formula",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "power = the CombatPower attribute (the HUD number)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "level / rebirths / Halo fame = Honor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "a rebirth updates power / level / rebirths at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "Horns fame = Infamy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "fame follows Infamy changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "Neutral fame = this week's 장인 명성 (0 before any)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "Neutral fame follows WeekArtisan (A23-24)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "None fame = 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "gold changes never show anywhere in the list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "LEADERSTAT_KEYS watches CombatPower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "LEADERSTAT_KEYS watches Level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "LEADERSTAT_KEYS watches Rebirths",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "LEADERSTAT_KEYS watches Honor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "LEADERSTAT_KEYS watches Infamy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "LEADERSTAT_KEYS watches WeekArtisan",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "LEADERSTAT_KEYS watches Faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "one connection per watched attribute (dropped with the player's conns)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "a rebuild leaves exactly one leaderstats folder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats-config",
+      "check": "one Config line changes the columns (gold = bank + carried when listed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats-config",
+      "check": "unknown / repeated column ids are skipped with a warning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats-config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaderstats-config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 19,
+  "staticFailures": [],
+  "mutations": {
+    "total": 29,
+    "applied": 29,
+    "caught": 29,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "PublicName ignores the hidden choice",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "announce-lines :: BountyAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: BountyAnnounce: no leaked name, no doubled honorific",
+          "announce-lines :: GrudgeAvengedAll: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: GrudgeAvengedAll: no leaked name, no doubled honorific",
+          "announce-lines :: MostWanted: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: MostWanted: no leaked name, no doubled honorific"
+        ],
+        "newFailingCount": 26
+      },
+      {
+        "mutation": "hidden name ignores the faction",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "announce-lines :: BountyAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: GrudgeAvengedAll: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: MostWanted: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: RareAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: RebirthAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "public-name :: hidden + honorific: no \"님\" after \"한 명\""
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "None faction shows \"무소속 한 명\"",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "public-name :: hidden without a faction: Text.Someone (\"누군가\")"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "honorific always added",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "public-name :: data.HideAnnounceName = false wins over a stale attribute",
+          "public-name :: no verified nickname: the Roblox DisplayName (Util.PlayerDisplayName)",
+          "public-name :: shown: the verified game nickname",
+          "pvp-lines :: board rows carry no honorific",
+          "service-helpers :: GooseService: publicName passes the honorific flag",
+          "service-helpers :: GrudgeService: publicName passes the honorific flag"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "honorific never added",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "announce-lines :: BountyAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: GrudgeAvengedAll: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: MostWanted: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: RareAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: RebirthAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "public-name :: shown + honorific: nickname .. Text.Honorific (\"님\")"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "attribute fallback ignored before data",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "public-name :: no data yet: the mirrored HideAnnounceName attribute hides"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "data choice ignored (attribute only)",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "public-name :: data.HideAnnounceName = false wins over a stale attribute"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SetAnnounceName never marks the ranking rows",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set-name :: RankingService.MarkHideChanged(player) runs once per accepted change",
+          "set-name :: a call inside RateLimits.SetAnnounceName is ignored (no second MarkHideChanged)",
+          "set-name :: a failing MarkHideChanged is swallowed after the save",
+          "set-name :: showing again also marks the rows",
+          "set-name :: wrong type / extra argument: ignored"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "MarkHideChanged error not caught",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set-name :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Most Wanted back to the raw name",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-lines :: Most Wanted line names a hidden villain \"뿔 군단 한 명이\"",
+          "pvp-lines :: Most Wanted line names a shown villain \"OO님이\""
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "board wanted rows back to the raw name",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-lines :: town board never shows a hidden nickname",
+          "pvp-lines :: town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "board honor rows back to the raw name",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-lines :: town board never shows a hidden nickname",
+          "pvp-lines :: town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "board rows with honorific",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-lines :: board rows carry no honorific"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvP helper skips PublicName",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pvp-lines :: Most Wanted line names a hidden villain \"뿔 군단 한 명이\"",
+          "pvp-lines :: town board never shows a hidden nickname",
+          "pvp-lines :: town board shows hidden players as \"<진영> 한 명\" (wanted list + Halo honor list)",
+          "service-helpers :: PvPService: publicName = AnnounceService.PublicName (hidden)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Kaiju helper drops the honorific flag",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "service-helpers :: KaijuService: publicName passes the honorific flag"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Goose helper has no fallback",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "service-helpers :: GooseService: a failing PublicName falls back (no error reaches the line)",
+          "service-helpers :: GooseService: no AnnounceService in the registry falls back to the nickname"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "RebirthAnnounce back to \"%s님이\"",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "announce-lines :: RebirthAnnounce has no \"님이\" / \"이(가)\" left",
+          "announce-lines :: RebirthAnnounce uses the particle-free \"%s이\" form",
+          "announce-lines :: RebirthAnnounce: \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden",
+          "announce-lines :: RebirthAnnounce: no leaked name, no doubled honorific"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "MostWanted back to \"%s이(가)\"",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "announce-lines :: MostWanted has no \"님이\" / \"이(가)\" left",
+          "announce-lines :: MostWanted uses the particle-free \"%s이\" form"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "HiddenName without \"한 명\"",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "public-name :: hidden Halo: \"빛의 기사단 한 명\" (contract text)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "power column reads the level",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: a rebirth updates power / level / rebirths at once",
+          "leaderstats :: before JusticeService sets CombatPower: the same formula",
+          "leaderstats :: gold changes never show anywhere in the list",
+          "leaderstats :: power = the CombatPower attribute (the HUD number)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "power column without the formula fallback",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: before JusticeService sets CombatPower: the same formula"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Neutral fame stays 0",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: Neutral fame follows WeekArtisan (A23-24)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Horns fame reads Honor",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: Horns fame = Infamy",
+          "leaderstats :: fame follows Infamy changes"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "columns built in table order of a map",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)",
+          "leaderstats :: no service warnings (pcall-swallowed handler errors)",
+          "leaderstats-config :: no service warnings (pcall-swallowed handler errors)",
+          "leaderstats-config :: unknown / repeated column ids are skipped with a warning"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "repeated column ids accepted",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats-config :: unknown / repeated column ids are skipped with a warning"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "CombatPower not watched",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: LEADERSTAT_KEYS watches CombatPower",
+          "leaderstats :: a rebirth updates power / level / rebirths at once",
+          "leaderstats :: power = the CombatPower attribute (the HUD number)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "WeekArtisan not watched",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: LEADERSTAT_KEYS watches WeekArtisan",
+          "leaderstats :: Neutral fame follows WeekArtisan (A23-24)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gold column back in the list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)",
+          "leaderstats :: no gold column (A23-21)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "level column first",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leaderstats :: columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "bf8bed6daf3e042bcff5d3666bfa7e881755ffb27693962f2b23eff56bd79fdc",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/AnnounceService.luau": "f6b7f9061ea3ef8e155a636e7a456e33dea0ed73a87940b52db9be06596d43a9",
+    "src/ServerScriptService/PvPService.luau": "29c7097a818c0a685c083793bf4bd9dc9f2633c10e7b438d72d1967d7365dd16",
+    "src/ServerScriptService/PlayerService.luau": "ed4a8257dba02cd192261879411c812f783e1e0bb7fd77016e08d6f42cb2aa20",
+    "src/ServerScriptService/GrudgeService.luau": "e38e4ebcc58db3cd67d0910248bd9fa9997a354f9a26d803c78101a810b681b0",
+    "src/ServerScriptService/ProgressionService.luau": "075c9e8f43da6b4cff8b1ca3f7b5a654b37c3928ee9e60e244f6fc1ec4115f1a",
+    "src/ServerScriptService/GooseService.luau": "395f0289ab0e71a80d46917a18f8866a9f89fcd1e2f140be534fe47ae461614d",
+    "src/ServerScriptService/KaijuService.luau": "9bb8a1a1c7da5a323b8c64588f223e0a51c2b44dc708c3e4d1963368090a98d9"
+  },
+  "fixtureSHA256": "c0af565de119dddf0a2808df171d8bccc806be6165be161fa7c68cef461eadc2",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "BB37: AnnounceService.PublicName(player, honorific) = Util.PlayerDisplayName (+ Config.Announce.Text.Honorific \"님\" when honorific) or, when data.HideAnnounceName (attribute before the data loads), HiddenName \"<faction> 한 명\" (Someone \"누군가\" without a faction), never with an honorific; every server-wide line goes through it: PvPService MostWanted / 2x BountyAnnounce / town board (wanted + Halo honor rows), GrudgeService GrudgeAvengedAll, ProgressionService RebirthAnnounce, GooseService RareAnnounce, KaijuService kaiju name; the five Config.Text lines use \"%s이\" so \"OO님이\" / \"뿔 군단 한 명이\" both read right; the SetAnnounceName handler calls RankingService.MarkHideChanged (pcall, optional); setting label '알림·랭킹에 내 이름 숨기기' + 2 notes (KO/EN). BB12: Config.Leaderstats.Columns {Power, Level, Rebirths, Fame} (gold hidden, A23-21), creation order = column order, Power = the CombatPower attribute (formula fallback before JusticeService sets it), Fame = Halo Honor / Horns Infamy / Neutral WeekArtisan (A23-24) / None 0, LEADERSTAT_KEYS watches every attribute a column reads, unknown / repeated ids skipped with a warning; changing the columns is one Config line.",
+  "limitations": "Offline doubles: Players / Instances / attributes, PlayerService (data rows, SetStat mirror), ClassService, FactionService / JusticeService / CombatService / ZoneService / KaijuService / MapBuilder stand-ins for the whole PvPService. GrudgeService / ProgressionService / GooseService / KaijuService lines are checked statically plus their extracted publicName helper. The Roblox player list UI, chat rendering and 2-client checks are not certified here (the 게임성 개발 session plays them after the merge)."
+}

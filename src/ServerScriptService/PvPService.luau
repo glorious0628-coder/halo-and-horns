@@ -68,6 +68,16 @@ local function warnLoop(err)
 	end
 end
 
+-- BB37: every server-wide line names players through AnnounceService.PublicName (hidden -> "<faction> 한 명")
+local function publicName(p, honorific)
+	local A = S.AnnounceService
+	if A and A.PublicName then
+		local ok, name = pcall(A.PublicName, p, honorific)
+		if ok and type(name) == "string" then return name end
+	end
+	return Util.PlayerDisplayName(p) .. (honorific and Config.Announce.Text.Honorific or "")
+end
+
 local function fmt(key, ...)
 	return string.format(Config.Text[key], ...)
 end
@@ -287,7 +297,7 @@ end
 
 local function announceIfMostWanted(p, before, after)
 	if before < Config.PvP.AnnounceStars and after >= Config.PvP.AnnounceStars then
-		Net.NotifyAll(fmt("MostWanted", Util.PlayerDisplayName(p), Util.FormatNumber(computeBounty(p))))
+		Net.NotifyAll(fmt("MostWanted", publicName(p, true), Util.FormatNumber(computeBounty(p))))
 	end
 end
 
@@ -659,7 +669,7 @@ function PvPService.HandleKO(victim, killer)
 				notify(killer, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
 			end
 			if starsBefore >= P.GlowStars and bounty > 0 then
-				Net.NotifyAll(fmt("BountyAnnounce", Util.PlayerDisplayName(killer), Util.FormatNumber(bounty)))
+				Net.NotifyAll(fmt("BountyAnnounce", publicName(killer, true), Util.FormatNumber(bounty)))
 			end
 			info = {
 				Kind = "Bounty", Bully = false, VictimStars = starsBefore,
@@ -686,12 +696,12 @@ local function updateBoard()
 	for _, p in S.PlayerService.GetReadyPlayers() do
 		local bounty = tonumber(p:GetAttribute("Bounty")) or 0
 		if bounty > 0 then
-			table.insert(wanted, { Name = Util.PlayerDisplayName(p), Bounty = bounty, Stars = stars[p] or 0, Bully = bullyStacksOf(p) })
+			table.insert(wanted, { Name = publicName(p), Bounty = bounty, Stars = stars[p] or 0, Bully = bullyStacksOf(p) })
 		end
 		if faction(p) == "Halo" then
 			local honor = num(p, "Honor", 0)
 			if honor > 0 then
-				table.insert(heroes, { Name = Util.PlayerDisplayName(p), Honor = honor })
+				table.insert(heroes, { Name = publicName(p), Honor = honor })
 			end
 		end
 	end
@@ -856,7 +866,7 @@ local function payLeaveBounty(player)
 	if honor > 0 then S.PlayerService.AddStat(a, "Honor", honor) end
 	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
 	if s >= Config.PvP.GlowStars and bounty > 0 then
-		Net.NotifyAll(fmt("BountyAnnounce", Util.PlayerDisplayName(a), Util.FormatNumber(bounty)))
+		Net.NotifyAll(fmt("BountyAnnounce", publicName(a, true), Util.FormatNumber(bounty)))
 	end
 	return true
 end

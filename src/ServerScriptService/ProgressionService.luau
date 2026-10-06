@@ -20,6 +20,16 @@ M.LevelReset = Util.Signal.new() -- (player) CR-M6: free class change dropped th
 
 local S = nil
 
+-- BB37: every server-wide line names players through AnnounceService.PublicName (hidden -> "<faction> 한 명")
+local function publicName(p, honorific)
+	local A = S.AnnounceService
+	if A and A.PublicName then
+		local ok, name = pcall(A.PublicName, p, honorific)
+		if ok and type(name) == "string" then return name end
+	end
+	return Util.PlayerDisplayName(p) .. (honorific and Config.Announce.Text.Honorific or "")
+end
+
 local BANK_TICK = 1 -- seconds between town-bank / auto-bank checks
 local WARN_THROTTLE = 10
 
@@ -411,7 +421,7 @@ function M.TryRebirth(player, factionId)
 	elseif mark == "Redeem" then
 		Net.Notify(player, string.format(Config.Story.Redeem), "announce")
 	end
-	Net.NotifyAll(string.format(Config.Text.RebirthAnnounce, Util.PlayerDisplayName(player), newRebirths))
+	Net.NotifyAll(string.format(Config.Text.RebirthAnnounce, publicName(player, true), newRebirths))
 	M.Rebirthed:Fire(player, newRebirths, { From = old, To = factionId, Bonus = bonus, Mark = mark })
 	return true, nil
 end

@@ -40,6 +40,16 @@ KaijuService.KaijuEnded = Util.Signal.new() -- (player, outcome: "Defeated" | "S
 local S = nil
 local gameState = nil
 
+-- BB37: every server-wide line names players through AnnounceService.PublicName (hidden -> "<faction> 한 명")
+local function publicName(p, honorific)
+	local A = S.AnnounceService
+	if A and A.PublicName then
+		local ok, name = pcall(A.PublicName, p, honorific)
+		if ok and type(name) == "string" then return name end
+	end
+	return Util.PlayerDisplayName(p) .. (honorific and Config.Announce.Text.Honorific or "")
+end
+
 local states = {} -- [Player] = "Queued" | "Siren" | "Active" (absent = "None")
 local queue = {} -- FIFO of Players in state "Queued"
 local current = nil -- the Siren/Active player
@@ -369,7 +379,7 @@ local function beginSiren()
 		if states[p] == "Queued" and isEligible(p) then
 			current = p
 			phase = "Siren"
-			kaijuName = Util.PlayerDisplayName(p)
+			kaijuName = publicName(p) -- BB37: GameState KaijuName + the kaiju chat lines
 			phaseEndsAt = Util.Now() + Config.Kaiju.SirenSeconds
 			dmg = {}
 			healers = {}

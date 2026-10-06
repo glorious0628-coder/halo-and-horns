@@ -45,6 +45,16 @@ local function warnLoop(err)
 	end
 end
 
+-- BB37: every server-wide line names players through AnnounceService.PublicName (hidden -> "<faction> 한 명")
+local function publicName(p, honorific)
+	local A = S.AnnounceService
+	if A and A.PublicName then
+		local ok, name = pcall(A.PublicName, p, honorific)
+		if ok and type(name) == "string" then return name end
+	end
+	return Util.PlayerDisplayName(p) .. (honorific and Config.Announce.Text.Honorific or "")
+end
+
 local function fmt(key, ...)
 	return string.format(Config.Text[key], ...)
 end
@@ -372,7 +382,7 @@ local function avenge(thief, sack, killer)
 		notify(killer, fmt("AvengerBonus", Util.FormatNumber(G.AvengerBonus)), "reward")
 	end
 
-	Net.NotifyAll(fmt("GrudgeAvengedAll", Util.PlayerDisplayName(killer), Util.PlayerDisplayName(thief)), "info")
+	Net.NotifyAll(fmt("GrudgeAvengedAll", publicName(killer, true), publicName(thief, true)), "info")
 end
 
 local function returnSack(thief, tellThief)

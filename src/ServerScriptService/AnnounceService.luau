@@ -5,6 +5,7 @@
 -- "빛의 기사단 한 명이…"). RareWeapon lines within WindowSeconds of one player are grouped (same or lower grade than
 -- the opening line) into one "…좋은 것을 N개 더" line; jackpots, the first +10 and higher grades always show by name.
 -- Broadcast(key) sends a server event line with no finder (Config.Announce.Events, e.g. the Pumpkin King) to everyone.
+-- PublicName(player, honorific) (BB37) is the name every other server-wide line uses (NotifyAll, board, rankings).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -24,9 +25,30 @@ local function getData(player)
 	return ok and type(data) == "table" and data or nil
 end
 
-local function who(player)
+-- P5 / BB37: the saved choice first, the mirrored attribute while the data is not loaded
+local function isHidden(player)
 	local data = getData(player)
-	local hidden = data ~= nil and data.HideAnnounceName == true
+	if data ~= nil then return data.HideAnnounceName == true end
+	return player:GetAttribute("HideAnnounceName") == true
+end
+
+-- BB37: the ONE name for every line that reaches the whole server (NotifyAll lines, the town board, ranking rows).
+-- Shown: the game nickname (Util.PlayerDisplayName), + Text.Honorific ("님") when honorific is true. Hidden
+-- (data.HideAnnounceName): "<faction> 한 명" (Text.HiddenName) with or without honorific, so "%s이" reads right both
+-- ways ("OO님이" / "빛의 기사단 한 명이"). Same-server nametags and the Tab list are not covered (players see each other).
+function AnnounceService.PublicName(player, honorific)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then return "" end
+	local T = A.Text
+	if isHidden(player) then
+		local id = player:GetAttribute("Faction")
+		local f = id ~= "None" and Config.Factions[id] or nil -- no faction yet: "누군가"
+		return f and string.format(T.HiddenName, f.Name) or T.Someone
+	end
+	return Util.PlayerDisplayName(player) .. (honorific == true and T.Honorific or "")
+end
+
+local function who(player)
+	local hidden = isHidden(player)
 	local faction = player:GetAttribute("Faction")
 	return {
 		Who = hidden and "" or Util.PlayerDisplayName(player),
@@ -126,6 +148,11 @@ local function onSetName(player, hide, ...)
 	if not S.PlayerService.IsReady(player) or not Util.RateLimit(player, "SetAnnounceName", Config.RateLimits.SetAnnounceName or 0.5) then return end
 	S.PlayerService.SetStat(player, "HideAnnounceName", hide)
 	pcall(Net.Notify, player, hide and A.Text.NameHidden or A.Text.NameShown, "info")
+	-- BB10: ranking rows follow the choice at once (every board row is rewritten with the hidden flag)
+	local ranking = S.RankingService
+	if type(ranking) == "table" and type(ranking.MarkHideChanged) == "function" then
+		pcall(ranking.MarkHideChanged, player)
+	end
 end
 
 function AnnounceService.Init(registry)
