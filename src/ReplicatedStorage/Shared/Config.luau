@@ -3083,10 +3083,12 @@ Config.CustomModels = {
 ----------------------------------------------------------------- story (world flavor text only)
 Config.Story = {
 	-- plain lines (no format specifiers)
+	-- A23-55 (user 2026-10-06): greed broke the Crown; nobody knows who, and each side blames the other (GDD §1-1;
+	-- the opening subtitles and the faction picker's premise panel show these three lines)
 	Premise = {
-		"The Crown of Balance that kept the world safe has broken.",
-		"Some who picked up its shards grew a halo. Others grew horns.",
-		"The side that gathers more shards will remake the world.",
+		"Someone wanted the Crown of Balance all to themselves.",
+		"\"If I can't have it, no one can!\" CRACK.",
+		"Now each side says the other did it.",
 	},
 	-- The server opens Config.Tutorial.Welcome after the first class choice. Do not overlap it with old toasts.
 	Intro = {},
