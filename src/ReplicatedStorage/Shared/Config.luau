@@ -2232,6 +2232,76 @@ Config.StoryQuests.Landmarks.KidsBench = Vector3.new(18, 0, 18)
 Config.StoryQuests.Landmarks.GoblinCamp1 = Vector3.new(660, 0, -60)
 Config.StoryQuests.Landmarks.GoblinCamp2 = Vector3.new(750, 0, 50)
 Config.StoryQuests.Landmarks.GoblinCamp3 = Vector3.new(820, 0, -40)
+-- quest_volume §3-5: the fields' arrival points follow their zones' Spawn (map v2 moves them along), and the two job
+-- boards (E11): the meadow board beside the meadow arrival, the woods board at the meadow end of the woods bridge
+-- (WoodsGate, outside the PvP woods). Game dev 1 places the boards there (the server checks the distance to these).
+Config.StoryQuests.Landmarks.MeadowArrival = Config.Zones.SlimeMeadow.Spawn
+Config.StoryQuests.Landmarks.WoodsArrival = Config.Zones.GoblinWoods.Spawn
+-- (a literal: some offline Vector3 doubles have no arithmetic; test_board checks it stays 10 studs from the arrival)
+Config.StoryQuests.Landmarks.MeadowBoard = Vector3.new(220, 0, 10)
+Config.StoryQuests.Landmarks.WoodsBoard = Config.StoryQuests.Landmarks.WoodsGate
+
+-- E11 (quest_volume §3-3 / §4, 검수 OK 2026-10-07): the hunting-field job boards (BoardService). Enabled = false until
+-- game dev 1's board window ships; on, extra quests stop (a claimed daily slot stays empty) and the boards take that
+-- role. A card is taken as [Kind] or [Sneaky]: only the side is counted (data.Story.N), no honor / infamy / ranking.
+-- Reward = HuntValue(the board's Level, 1) (meadow 36 gold + 60 XP, woods 192 + 336), x AfterMult after FullPerDay jobs
+-- a KST day; the BonusAt-th job of a day also gives one BonusItem. Jobs: Obj like a story step ("$Key" = the board's
+-- value), Count per board, Goal = the quest-list line ({Unit} / {Big} / {Camp} names, then %d/%d), Kind / Sneaky = the
+-- card's two buttons (a table = per board). Weight default 3; NeedAuto = only after Auto Battle is unlocked. A board's
+-- SafeIds: at least one such card is always on it (the woods: done outside the PvP zone).
+Config.Board = {
+	Enabled = false,
+	Cards = 4,
+	Hold = 3,
+	Range = 14, -- studs from the board spot for BoardAction
+	RerollCooldown = 60, -- one card swap per this many seconds (like the dailies)
+	FullPerDay = 10,
+	AfterMult = 0.5,
+	BonusAt = 5,
+	BonusItem = "Enh30",
+	HintAfter = "M1_4", -- the "Job Board" guide row shows after this story quest until the first job is taken
+	HintBoard = "Meadow",
+	Boards = {
+		Meadow = { Zone = "SlimeMeadow", Spot = "MeadowBoard", Level = 1, Unit = "Slime", Big = "BigSlime",
+			Arrival = "MeadowArrival", Camp = "SlimePond", CampName = "pond", Gate = "MeadowArrival" },
+		Woods = { Zone = "GoblinWoods", Spot = "WoodsBoard", Level = 10, Unit = "Goblin", Big = "GoblinBrute",
+			Arrival = "WoodsArrival", Camp = "GoblinCamp1", CampName = "camp", Gate = "WoodsGate",
+			SafeIds = { J6 = true, J10 = true } },
+	},
+	Jobs = {
+		{ Id = "J1", Obj = { Type = "Kill", Kind = "$Unit", Near = "$Arrival", Radius = 40 }, Count = { Meadow = 5, Woods = 4 },
+			Goal = "Clear the path · {Unit} %d/%d",
+			Kind = "Clear the path so new kids can walk.", Sneaky = "Clear the path. Now it's YOUR road!" },
+		{ Id = "J2", Obj = { Type = "Kill", Kind = "$Unit", Near = "$Camp", Radius = 40 }, Count = { Meadow = 4, Woods = 3 },
+			Goal = "By the {Camp} · {Unit} %d/%d",
+			Kind = { Meadow = "The pond is too crowded. Give the frogs room.", Woods = "The camp is too crowded. Give the little ones room." },
+			Sneaky = { Meadow = "Best spot in the meadow. Claim it!", Woods = "Best spot in the woods. Claim it!" } },
+		{ Id = "J3", Obj = { Type = "Kill", Kind = "$Big" }, Count = { Meadow = 2, Woods = 1 }, Goal = "{Big} %d/%d",
+			Kind = "A big one scares travelers. Stop it!", Sneaky = "Bonk the big one. Show who's boss!" },
+		{ Id = "J4", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, Goal = "Hit 3 at once with a skill %d/%d",
+			Kind = "A swarm blocks a cart. Clear it at once!", Sneaky = "Hit three at once. Make everyone look!" },
+		{ Id = "J5", Obj = { Type = "BasicKill", Kind = "$Unit" }, Count = { Meadow = 6, Woods = 4 }, Goal = "Basic hits only · {Unit} %d/%d",
+			Kind = "Basic hits only. Don't scare the birds.", Sneaky = "No skills needed. Too easy!" },
+		{ Id = "J6", Obj = { Type = "EarnGold", Source = "Monster" }, Count = { Meadow = 40, Woods = 150 }, Goal = "Hunting gold %d/%d",
+			Kind = "Collect gold for the town road fund.", Sneaky = "Fill your pouch. Bigger pouch, bigger grin!" },
+		{ Id = "J7", Obj = { Type = "AutoKill" }, Count = { Meadow = 8, Woods = 6 }, NeedAuto = true, Goal = "Auto Battle defeats %d/%d",
+			Kind = "Let your shard guard the road.", Sneaky = "Let your shard do the boring part." },
+		{ Id = "J8", Obj = { Type = "Kill", Golden = true }, Count = 1, Weight = 1, Goal = "A golden monster %d/%d",
+			Kind = "A golden one is lost. Bring it home!", Sneaky = "A golden one! Finders keepers!" },
+		{ Id = "J9", Obj = { Type = "SafeKill", Kind = "$Big", MinHP = 0.5 }, Count = 1, Goal = "{Big} above half HP %d/%d",
+			Kind = "Show the sprouts how to fight safely.", Sneaky = "Win without a scratch. Show off!" },
+		{ Id = "J10", Obj = { Type = "Near", Spot = "$Gate", Radius = 14 }, Count = 15, Goal = "Stand guard at the gate %d/%d s",
+			Kind = "Stand guard at the gate.", Sneaky = "Stand at the gate and look scary." },
+	},
+	Text = {
+		Done = "Job done! +%s gold · +%s XP",
+		LeanKind = "Your shard leaned to the light.",
+		LeanSneaky = "Your shard leaned to the dark.",
+		Bonus = "5th job today! +%s",
+		Full = "You carry 3 jobs. Finish one first!",
+		Hint = "Job Board · tap for directions",
+	},
+}
 
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {
@@ -2433,7 +2503,7 @@ end
 ----------------------------------------------------------------- remotes / misc
 -- minimum seconds between two accepted calls of the same remote from the same player (Util.RateLimit)
 Config.RateLimits = {
-	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
+	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, BoardAction = 0.3, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
 	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown

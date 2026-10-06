@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3335,
+  "checks": 3348,
   "failedChecks": 0,
-  "namedChecks": 170,
+  "namedChecks": 183,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -572,6 +572,84 @@
       "fail": 0
     },
     {
+      "group": "board-switch",
+      "check": "Config.Board.Enabled is false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "off: a claimed daily slot becomes an extra quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "off: the extra is listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: a claimed daily slot stays empty (no extra quest)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: the empty slot is not listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: the boards' Job rows are listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: an empty slot is never rerolled into an extra",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: a finished old extra pays and leaves its slot empty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: a rebirth keeps the empty slots empty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: the next day brings three fresh dailies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "switched off again: an empty slot gets an extra at load",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "goose-coop",
       "check": "Config.Goose co-op numbers 20 / 0.7 / 3 manual hits",
       "pass": 1,
@@ -1037,9 +1115,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 26,
-    "applied": 26,
-    "caught": 26,
+    "total": 33,
+    "applied": 33,
+    "caught": 33,
     "results": [
       {
         "mutation": "newbie daily pays the 5-minute reward",
@@ -1398,6 +1476,90 @@
           "dailies-woods :: strict brute row: goblins count 0"
         ],
         "newFailingCount": 3
+      },
+      {
+        "mutation": "the board switch always on",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: off: a claimed daily slot becomes an extra quest",
+          "board-switch :: off: the extra is listed",
+          "board-switch :: switched off again: an empty slot gets an extra at load",
+          "dailies-generate :: both kill variants occur (king slime 3 more often than 12-15 slimes)",
+          "dailies-progress :: a claimed daily slot becomes an extra quest",
+          "dailies-progress :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "board on: a claimed daily still becomes an extra",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: a claimed daily slot stays empty (no extra quest)",
+          "board-switch :: on: an empty slot is never rerolled into an extra",
+          "board-switch :: on: the empty slot is not listed"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "board on: the empty slot is listed",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: the empty slot is not listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board on: an empty slot can be rerolled",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: an empty slot is never rerolled into an extra"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board on: the job rows are not listed",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: the boards' Job rows are listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board on: a finished extra refills its slot",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: a finished old extra pays and leaves its slot empty"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board on: a rebirth refills empty slots",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: a rebirth keeps the empty slots empty"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -1405,14 +1567,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c2b1185f81adf0a9ed1ab1cd9766b10a6bb5e5d47b2cdd8939054bf394c9596f",
-    "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
+    "src/ReplicatedStorage/Shared/Config.luau": "a65e36e5ff32b21c33138873718edeb397fa6f532fdbe7326b708f271b3dfb5d",
+    "src/ReplicatedStorage/Shared/Net.luau": "0715c7aed87e0391dafc8dc9bd7945089cfe78585f4fcf385c64e92a2badb2f1",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
-    "src/ServerScriptService/QuestService.luau": "3f8f1668b83238a3c7136f10193c5ef95aa5b99e43e7dbcc5026eaf720e2645e",
+    "src/ServerScriptService/QuestService.luau": "3f2a12c29b00bebb39813412068b72db1110a1608d047d45eee04d980d06d7d3",
     "src/ServerScriptService/GooseService.luau": "eb39998538042239d5966f71c08869788465bee782e6b26f6d2a50847bf8dc99",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005"
   },
-  "fixtureSHA256": "d8c918d3218031fec226910572d1699de93a06cccca71d80cc862aae8ac96017",
+  "fixtureSHA256": "9ba4c2718a5edb0c7698ac0a28a919c6a63e10a0eff2e942d95c7e2981b36dcd",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

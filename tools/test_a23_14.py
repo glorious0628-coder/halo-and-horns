@@ -101,6 +101,21 @@ MUTATIONS = [
      'Monster = "GoblinBrute", Targets = { 2 } },'),
     # (no "vacation share ignores the woods band" mutation: a woods daily is 3 of 15 minutes and a template daily 5 of
     # 25, the same 1/5 share, so the old day's f cannot differ; the paid amount follows Config.DailyDayMinutes, above)
+    # E11 the job-board switch (QuestService's side)
+    ("the board switch always on", "QUEST_SOURCE",
+     "\treturn type(Config.Board) == \"table\" and Config.Board.Enabled == true\n", "\treturn true\n"),
+    ("board on: a claimed daily still becomes an extra", "QUEST_SOURCE",
+     "\tdata.Quests[slot] = boardOn() and { Kind = \"Empty\" } or newQuest(", "\tdata.Quests[slot] = newQuest("),
+    ("board on: the empty slot is listed", "QUEST_SOURCE",
+     "\t\t\tif type(q) == \"table\" and not isEmptySlot(q) then\n", "\t\t\tif type(q) == \"table\" then\n"),
+    ("board on: an empty slot can be rerolled", "QUEST_SOURCE",
+     "\tif boardOn() and not isValidQuest(q) then return end -- E11: an empty slot is never rerolled into an extra\n", ""),
+    ("board on: the job rows are not listed", "QUEST_SOURCE",
+     "\tif boardOn() and board and type(board.JobRows) == \"function\" then", "\tif false then"),
+    ("board on: a finished extra refills its slot", "QUEST_SOURCE",
+     "\t\tdata.Quests[index] = boardOn() and { Kind = \"Empty\" } or newQuest(", "\t\tdata.Quests[index] = newQuest("),
+    ("board on: a rebirth refills empty slots", "QUEST_SOURCE",
+     "\t\t\tquests[i] = boardOn() and { Kind = \"Empty\" } or newQuest(", "\t\t\tquests[i] = newQuest("),
 ]
 
 

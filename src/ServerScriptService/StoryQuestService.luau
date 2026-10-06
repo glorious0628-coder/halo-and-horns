@@ -228,6 +228,11 @@ local function eventAmount(player, obj, ev)
 	return 0
 end
 
+-- E11: BoardService judges its jobs (Kill / BasicKill / SafeKill / AutoKill / SkillHit / EarnGold ...) by these rules
+function StoryQuestService.EventAmount(player, obj, ev)
+	return eventAmount(player, obj, ev)
+end
+
 ------------------------------------------------------------------ rewards / finishing
 -- E6 / Reward.Item: an item or potions through LootService.GrantItem (its caps and full notices); the "+Name" part of the
 -- reward line, or nil when nothing was given

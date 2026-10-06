@@ -222,6 +222,16 @@ local function pickWeighted(list)
 end
 
 ------------------------------------------------------------------ quest generation
+-- E11: with the job boards on (Config.Board.Enabled) a slot that would get an extra quest stays empty ({ Kind = "Empty" }:
+-- not listed, never rerolled, refilled by the next day's dailies); the boards take that role. Off: extras as before.
+local function boardOn()
+	return type(Config.Board) == "table" and Config.Board.Enabled == true
+end
+
+local function isEmptySlot(q)
+	return type(q) == "table" and q.Kind == "Empty"
+end
+
 -- others = quests in the OTHER slots (used for the PvP limit and the "different template" preference)
 local function newQuest(player, kind, others)
 	local data = S.PlayerService.GetData(player)
@@ -355,7 +365,7 @@ local function ensureSlots(player, data)
 			for j = 1, slots do
 				if j ~= i and fixed[j] then table.insert(others, fixed[j]) end
 			end
-			fixed[i] = newQuest(player, "Extra", others)
+			fixed[i] = boardOn() and { Kind = "Empty" } or newQuest(player, "Extra", others) -- E11
 		end
 	end
 	data.Quests = fixed
@@ -588,6 +598,14 @@ local function publish(player)
 			for _, row in subs do table.insert(list, row) end
 		end
 	end
+	-- E11: the jobs carried from the boards (Kind "Job"; they pay when done, no [Claim])
+	local board = S.BoardService
+	if boardOn() and board and type(board.JobRows) == "function" then
+		local okJobs, jobs = pcall(board.JobRows, player, data)
+		if okJobs and type(jobs) == "table" then
+			for _, row in jobs do table.insert(list, row) end
+		end
+	end
 	-- the guide chain just ran out (iron weapon owned and Lv10 reached): say so once, then the row disappears
 	local hasGoal = tutorial ~= nil and (tutorial.NextGoal == true or tutorial.Story ~= nil)
 	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE then
@@ -598,7 +616,7 @@ local function publish(player)
 		-- CR-M6: dailies show what a claim pays now (stored reward capped to the current level; stored value kept)
 		local capG, capX = Config.DailyQuestReward(getLevel(data))
 		for i, q in ipairs(data.Quests) do
-			if type(q) == "table" then
+			if type(q) == "table" and not isEmptySlot(q) then
 				local rg, rx = num(q.RewardGold), num(q.RewardXP)
 				if q.Kind == "Daily" then
 					rg, rx = capTo(math.floor(rg), math.floor(rx), capG, capX)
@@ -670,8 +688,8 @@ local function completeQuest(player, data, index, q)
 	-- A23-3: before the first mission is accepted the dailies are folded on screen, so no "done" toasts either
 	local quiet = getStep(player) == STEP_WELCOME
 	if q.Kind == "Extra" then
-		-- replace first so the finished quest can never be paid twice
-		data.Quests[index] = newQuest(player, "Extra", othersExcept(data.Quests, index))
+		-- replace first so the finished quest can never be paid twice (E11 boards on: the slot stays empty)
+		data.Quests[index] = boardOn() and { Kind = "Empty" } or newQuest(player, "Extra", othersExcept(data.Quests, index))
 		payReward(player, math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP)))
 		if not quiet then
 			Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(q.RewardGold)), "reward")
@@ -837,7 +855,7 @@ local function onClaimQuest(player, slot)
 	local q = data.Quests[slot]
 	if not isValidQuest(q) or q.Kind ~= "Daily" or not isComplete(q) then return end -- silent
 
-	data.Quests[slot] = newQuest(player, "Extra", othersExcept(data.Quests, slot))
+	data.Quests[slot] = boardOn() and { Kind = "Empty" } or newQuest(player, "Extra", othersExcept(data.Quests, slot)) -- E11
 	dirty[player] = true
 
 	local g, x = math.floor(num(q.RewardGold)), math.floor(num(q.RewardXP))
@@ -866,6 +884,7 @@ local function onRerollQuest(player, slot)
 	if now < (rerollReadyAt[player] or 0) then return end
 
 	local q = data.Quests[slot]
+	if boardOn() and not isValidQuest(q) then return end -- E11: an empty slot is never rerolled into an extra
 	local kind = "Extra"
 	if isValidQuest(q) then
 		if isComplete(q) then return end
@@ -1055,7 +1074,7 @@ local function onRebirthed(player)
 	for i = 1, Config.Quests.Slots do
 		local q = quests[i]
 		if not isValidQuest(q) or q.Kind == "Extra" then
-			quests[i] = newQuest(player, "Extra", othersExcept(quests, i))
+			quests[i] = boardOn() and { Kind = "Empty" } or newQuest(player, "Extra", othersExcept(quests, i)) -- E11
 		end
 	end
 	dirty[player] = true

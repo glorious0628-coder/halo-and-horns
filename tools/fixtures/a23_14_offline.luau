@@ -686,6 +686,69 @@ runGroup("dailies-woods", function()
 		part.Data.VacationDays)
 end)
 
+------------------------------------------------------------------ A5. E11 the job-board switch (QuestService's side)
+local function listed(f)
+	f.PS.PlayerReady:Fire(f.Player, f.Data) -- publishes (same day: the quests stay)
+	return f.LastList or {}
+end
+local function slotOf(list, slot)
+	for _, row in list do if row.Slot == slot then return row end end
+	return nil
+end
+
+runGroup("board-switch", function()
+	-- off (the beta default until game dev 1's board window ships): a claimed daily slot becomes an extra, as before
+	local off = woodsKSG(12, 300)
+	check(off.Config.Board.Enabled == false, "Config.Board.Enabled is false", off.Config.Board.Enabled)
+	local ki = off:Slot("Kill")
+	off:Finish("Kill")
+	off:Claim(ki)
+	check(off.Data.Quests[ki].Kind == "Extra", "off: a claimed daily slot becomes an extra quest", show(off.Data.Quests[ki]))
+	check(slotOf(listed(off), ki) ~= nil, "off: the extra is listed", show(off.LastList))
+	-- on: the slot stays empty (not listed, never rerolled), the boards' Job rows are listed instead
+	local f = woodsKSG(12, 400)
+	f.Config.Board.Enabled = true
+	f.Registry.BoardService = { JobRows = function()
+		return { { Id = "job:1", Kind = "Job", Text = "King Slime 0/2", Progress = 0, Target = 2, CanClaim = false } }
+	end }
+	local si = f:Slot("Kill")
+	f:Finish("Kill")
+	f:Claim(si)
+	check(f.Data.Quests[si].Kind == "Empty", "on: a claimed daily slot stays empty (no extra quest)", show(f.Data.Quests[si]))
+	local list = listed(f)
+	check(slotOf(list, si) == nil, "on: the empty slot is not listed", show(list))
+	local jobRow = false
+	for _, row in list do if row.Kind == "Job" and row.Id == "job:1" then jobRow = true end end
+	check(jobRow, "on: the boards' Job rows are listed", show(list))
+	f.Now += 100
+	f:Reroll(si)
+	check(f.Data.Quests[si].Kind == "Empty", "on: an empty slot is never rerolled into an extra", show(f.Data.Quests[si]))
+	-- an extra made before the switch: when it is done, its slot stays empty too
+	local gi = f:Slot("Gold")
+	f.Data.Quests[gi] = { Id = "Gold", Kind = "Extra", Target = 5, Progress = 0, RewardGold = 10, RewardXP = 10, Text = "x",
+		Unit = "Goblin" }
+	f:Paid()
+	f:Gold(5, "Monster")
+	local pg = f:Paid()
+	check(f.Data.Quests[gi].Kind == "Empty" and pg == 10, "on: a finished old extra pays and leaves its slot empty",
+		show({ f.Data.Quests[gi], pg }))
+	-- a rebirth / free class change keeps empty slots empty
+	f.Registry.ProgressionService.Rebirthed:Fire(f.Player)
+	check(f.Data.Quests[si].Kind == "Empty" and f.Data.Quests[gi].Kind == "Empty", "on: a rebirth keeps the empty slots empty",
+		show(f.Data.Quests))
+	-- the next KST day: three fresh dailies again
+	f.PS.SetStat(f.Player, "DailyDay", today() - 1)
+	f.PS.PlayerReady:Fire(f.Player, f.Data)
+	local fresh = 0
+	for _, q in f.Data.Quests do if q.Kind == "Daily" then fresh += 1 end end
+	check(fresh == 3, "on: the next day brings three fresh dailies", show(f.Data.Quests))
+	-- turned off again later: an empty slot becomes an extra at the next load
+	f.Config.Board.Enabled = false
+	f.Data.Quests[1] = { Kind = "Empty" }
+	f.PS.PlayerReady:Fire(f.Player, f.Data)
+	check(f.Data.Quests[1].Kind == "Extra", "switched off again: an empty slot gets an extra at load", show(f.Data.Quests[1]))
+end)
+
 ------------------------------------------------------------------ B. golden goose co-op
 local function gooseWorld(roster)
 	local f = { Now = 5000, Clock = 100, Notices = {}, All = {}, Fx = {}, Gold = {}, XP = {}, War = {}, Finished = {}, Players = {},
