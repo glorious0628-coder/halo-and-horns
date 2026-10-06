@@ -4221,7 +4221,8 @@ function HUD.Start()
 		end)
 	end
 
-	-- A world click attacks only after release; a left drag belongs to camera rotation.
+	-- A23-51: a left press on the world attacks once (holding or dragging never repeats); the camera turns with the
+	-- right mouse drag only (Roblox's default camera).
 	C.CameraFollow.PrimaryClick:Connect(function()
 		if inputAllowed() then fire("Swing") end
 	end)

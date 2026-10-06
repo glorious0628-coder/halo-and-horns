@@ -2181,7 +2181,7 @@ Config.Settings.Window = {
 Config.Help = {
 	Title = "Help", NewsTitle = "News",
 	GuideAgain = "Meet the Guide Again", BackToHelp = "< Help", TalkToGuide = "Talk to the Guide",
-	CameraLine = "Drag with the left mouse button to turn the camera.",
+	CameraLine = "Hold the right mouse button and drag to turn the camera.", -- A23-51: right drag only
 	TouchLines = {
 		"Tap the buttons on the screen to attack, use skills and drink potions.",
 		"Drag with one finger to turn the camera.",

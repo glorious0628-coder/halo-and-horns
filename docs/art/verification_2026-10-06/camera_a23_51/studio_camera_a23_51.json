@@ -1,0 +1,24 @@
+{
+  "what": "A23-51 (user report 2026-10-06 + decision dc4bede): right mouse drag did not turn the camera on PC; camera = right drag only, left drag never turns it, left click = one attack. Own test Play in the main Studio (place 81671223175574, studio 4943af85), real save, no gameplay changes.",
+  "cause": "Studio's device emulator was left on a phone profile (772x360, FitToWindow) in the main Studio: in Play UserInputService.TouchEnabled = true, PreferredInput = Touch and a TouchGui; the mouse is turned into Touch input. A simulated right press produced no input events at all, a left drag arrived as Touch and turned the camera (heading -2.1 -> -89.6). Not a game-code bug: no GUI sinks MouseButton2 (117-point GetGuiObjectsAtPosition grid: only the HUD buttons, quest lines and potions), no ContextActionService binding of mouse buttons, no Modal button visible, StarterPlayer camera settings default (UserChoice, mouse lock option on).",
+  "fix": [
+    "StudioDeviceSimulatorService:SetDeviceAsync(\"default\") in the main Studio (Edit) -> Play: TouchEnabled false, no TouchGui, viewport 991x487.",
+    "tools/sync_to_studio.py: after every sync, the main game place's device emulator is switched back to PC (prints the old device when it was not default).",
+    "CameraFollow.luau: the left-drag rotation is removed (no render step, no Camera.CFrame write); PrimaryClick fires on a left press on the world, once (holding or dragging never repeats). Right drag stays with Roblox's default camera.",
+    "Config.Help.CameraLine: 'Hold the right mouse button and drag to turn the camera.'"
+  ],
+  "checks_before_code_change_pc_mode": {
+    "right_press": "InputBegan MouseButton2 gameProcessed=false; UserInputService.MouseBehavior -> LockCurrentPosition while held (the default camera's right-drag orbit engaged), Default after release",
+    "left_drag_old_code": "heading -28.2 -> -54.0 (old left-drag rotation), no Swing",
+    "left_click_old_code": "1 Swing (server counter on the Swing remote)"
+  },
+  "checks_after_sync_new_code": {
+    "left_drag_200px": "heading -11.6 -> -11.6 (camera not turned)",
+    "swings": "2 = the left drag's press (1) + one short click (1): one attack per press, never repeated while dragging",
+    "right_press": "gameProcessed=false, MouseBehavior LockCurrentPosition then Default (orbit engaged)",
+    "help_window": "Controls: 'Hold the right mouse button and drag to turn the camera.' (photo help_controls_pc.png)"
+  },
+  "limitation": "Studio MCP's virtual mouse moves give Delta (0,0) while the cursor is locked, so the right-drag rotation angle itself cannot be measured with virtual input; a real mouse drives it (Roblox default camera code, unchanged). The user should try a real right drag once.",
+  "offline": "tools/test_camera_input.py -> offline_camera_input_a23_51_2026-10-06.json: 31 checks, mutations 10/10 caught",
+  "studio_state_after": "Play stopped (my own test Play), Edit, device emulator default (PC), StudioFreshSave off."
+}

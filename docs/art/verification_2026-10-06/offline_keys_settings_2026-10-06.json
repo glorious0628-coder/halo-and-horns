@@ -2524,7 +2524,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "92ef28de499fadb9a20f106727ac528bb1619b6ea10487115c794ffe0eec138e",
+    "src/ReplicatedStorage/Shared/Config.luau": "f5753e15532d024124d14e9c0f79a99882cfc81e642d1f0671645bf8e83b6f4c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
     "src/ServerScriptService/DataService.luau": "ecb89ed97364e80337e4d194f01c5b11e7ac31515fee767457b72f55318e0e6a",
@@ -2533,7 +2533,7 @@
     "src/StarterPlayer/StarterPlayerScripts/Settings.luau": "11e2c402251792c85fce86e28bf223a1bf95fa0608af386b76794bd18d4d36c9",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5c9c32c63c08a9dc8f8d9a85983cba3df6c9e83e955eea63475dbada8aa6814c",
     "src/ServerScriptService/Main.server.luau": "88c7fda3210f3a09323cc9e2ceb0a36085e74b2656b015a83136cc7e11df764d",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "19549b2883f1b503be06fa7eb65c97a8fa687f2000300e0675a46c0ac2b7d7af",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "5962920e5de16fea96d57e3534d4776c7cc3be38af9f465265a1e32c3c38c036",
     "src/StarterPlayer/StarterPlayerScripts/VitalsUI.luau": "cd8018ed1598f29167c419c8e88132acc9cc5f478a794e75cda29065fddc8058",
     "src/StarterPlayer/StarterPlayerScripts/GrudgeGhost.luau": "113ff265cffd8a68c0d59606ef242ff8cb22d6efc8320f23f3e0b035961868e2",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7a258951d9558fdaf8db3d778cd6c5dde9ad85038c39302fea86e19609488c61",

@@ -121,6 +121,17 @@ end
 return "deleted " .. n
 """
 
+# the main game place always plays as a PC (device emulator off); other Studios are left alone
+DEVICE_LUA = """
+if game.PlaceId ~= 81671223175574 and not string.find(game.Name, "GoodEvil", 1, true) then return "메인 장소가 아니라 그대로" end
+local svc = game:GetService("StudioDeviceSimulatorService")
+local okGet, dev = pcall(function() return svc:GetDeviceAsync() end)
+local before = okGet and tostring(dev) or "default"
+if before == "default" then return "PC(default) 그대로" end
+local ok, err = pcall(function() svc:SetDeviceAsync("default") end)
+return ok and ("'" .. before .. "' -> PC(default)로 돌림") or ("끄기 실패: " .. tostring(err))
+"""
+
 
 def lua_list(values):
     return "{" + ", ".join(json.dumps(v, ensure_ascii=False) for v in values) + "}"
@@ -186,6 +197,10 @@ def main():
                 sys.exit(f"{p} 생성 실패: " + text_of(res))
         removed = [p for p in to_delete if p not in to_write]
         print(f"동기화 완료: 새로 쓴 스크립트 {len(to_write)}개, 지운 스크립트 {len(removed)}개, 그대로 {len(want) - len(to_write)}개")
+        # A23-51 (2026-10-06): a phone device left on in Studio's device emulator turns the mouse into touch input in
+        # Play (right-drag camera dead). The main game Studio always plays as a PC; phone checks switch it on and off.
+        res = c.call("execute_luau", {"code": DEVICE_LUA, "datamodel_type": "Edit"})
+        print("기기 흉내: " + text_of(res))
     finally:
         c.close()
 
