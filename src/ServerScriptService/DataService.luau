@@ -199,6 +199,8 @@ local function fillDefaults(d, playerName)
 	-- BB10 weekly ranking fields (additive): repaired, and an older week's points start over (written at the last leave).
 	-- (Guarded: some offline suites load a cut-down Config without the ranking block.)
 	if Config.SanitizeRank then Config.SanitizeRank(d, os.time()) end
+	-- A23-32 bag '얻은 순' numbers (additive; an old save starts with 0 everywhere)
+	if Config.SanitizeItemSeq then Config.SanitizeItemSeq(d) end
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.

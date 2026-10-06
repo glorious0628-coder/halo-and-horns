@@ -143,7 +143,17 @@ local function inventoryPayload(data)
 			if kind and v == true and LOOT.Tables[kind] then seen[kind] = true end
 		end
 	end
-	return { Items = items, Enhance = enh, Seen = seen }
+	-- A23-32 bag '얻은 순': the order numbers (bigger = more recent; 0 = before this existed)
+	local itemSeq, weaponSeq = {}, {}
+	if type(data.ItemSeq) == "table" then
+		for k, v in data.ItemSeq do
+			if type(k) == "string" and (LOOT.Items[k] or Config.ItemSeqPotions[k]) and type(v) == "number" then itemSeq[k] = v end
+		end
+	end
+	for tier = 1, Config.MaxWeaponTier do
+		weaponSeq[tier] = type(data.WeaponSeq) == "table" and math.max(0, math.floor(num(data.WeaponSeq[tier]))) or 0
+	end
+	return { Items = items, Enhance = enh, Seen = seen, ItemSeq = itemSeq, WeaponSeq = weaponSeq }
 end
 
 local function pushInventory(player)
@@ -185,6 +195,7 @@ local function addItem(player, data, id, n)
 	end
 	if given <= 0 then return 0 end
 	data.Items[id] = have + given
+	Config.NoteGained(data, id) -- A23-32 '얻은 순'
 	return given
 end
 
@@ -497,6 +508,37 @@ function LootService.Start()
 		player:GetAttributeChangedSignal("WeaponTier"):Connect(function()
 			local d = getData(player)
 			if d then player:SetAttribute("WeaponEnhance", enhanceOf(d, math.floor(num(d.WeaponTier, 1)))) end
+		end)
+		-- A23-32 '얻은 순': potions and weapons reach the save from many services (shop, quests, story, drops); a rise of
+		-- the mirrored stat is the one place every path passes, so it is noted here
+		local seen = {}
+		local function watch(attr, onChange)
+			seen[attr] = math.floor(num(player:GetAttribute(attr)))
+			player:GetAttributeChangedSignal(attr):Connect(function()
+				local v = math.floor(num(player:GetAttribute(attr)))
+				local was = seen[attr]
+				seen[attr] = v
+				local d = getData(player)
+				if d and onChange(d, v, was) then publish(player, d) end
+			end)
+		end
+		for key, attr in Config.ItemSeqPotions do
+			watch(attr, function(d, v, was)
+				if v <= was then return false end
+				Config.NoteGained(d, key)
+				return true
+			end)
+		end
+		watch("WeaponOwnedMask", function(d, v, was)
+			local any = false
+			for tier = 1, Config.MaxWeaponTier do
+				local bit = bit32.lshift(1, tier - 1)
+				if bit32.btest(v, bit) and not bit32.btest(was, bit) then
+					Config.NoteGained(d, nil, tier)
+					any = true
+				end
+			end
+			return any
 		end)
 	end)
 	-- safety net (same as the quest list): resend the inventory once per real spawn; the client keeps the last payload

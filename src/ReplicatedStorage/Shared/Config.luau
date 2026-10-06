@@ -3045,4 +3045,57 @@ function Config.SanitizeRank(d, now)
 	if type(d.DebugTainted) ~= "boolean" then d.DebugTainted = false end
 end
 
+-- A23-32 bag sort '얻은 순' (the most recent first): data.ItemSeq[key] / data.WeaponSeq[tier] = a number from the ONE
+-- counter data.ItemSeqNext (bigger = gained more recently; 0 / missing = before this existed, an old save). Keys: the
+-- Config.Loot item ids and the potion keys of Config.ItemSeqPotions. Numbers only, unknown keys dropped: a small save.
+-- LootService notes every gain (items in addItem; potions and weapons from their mirrored attributes, whatever service
+-- gave them) and sends ItemSeq / WeaponSeq in the owner's "Inventory" payload.
+Config.ItemSeqPotions = { PotionHP = "HPPotionCount", PotionMP = "MPPotionCount" } -- key -> the save field it follows
+Config.Data.Defaults.ItemSeq = {}
+Config.Data.Defaults.WeaponSeq = {}
+Config.Data.Defaults.ItemSeqNext = 0
+
+-- DataService.fillDefaults: repair the fields of a loaded save in place
+function Config.SanitizeItemSeq(d)
+	local function int(v)
+		v = tonumber(v)
+		if v == nil or v ~= v or v == math.huge or v == -math.huge then return 0 end
+		return math.max(0, math.floor(v))
+	end
+	local top = 0
+	local items = {}
+	if type(d.ItemSeq) == "table" then
+		for k, v in d.ItemSeq do
+			if type(k) == "string" and (Config.Loot.Items[k] ~= nil or Config.ItemSeqPotions[k] ~= nil) then
+				local n = int(v)
+				if n > 0 then
+					items[k] = n
+					top = math.max(top, n)
+				end
+			end
+		end
+	end
+	local weapons = {}
+	local old = type(d.WeaponSeq) == "table" and d.WeaponSeq or {}
+	for tier = 1, Config.MaxWeaponTier do
+		weapons[tier] = int(old[tier])
+		top = math.max(top, weapons[tier])
+	end
+	d.ItemSeq, d.WeaponSeq = items, weapons
+	d.ItemSeqNext = math.max(int(d.ItemSeqNext), top) -- never hands out a number already used
+end
+
+-- one gain: `key` (an item id / potion key) or weapon `tier` becomes the most recent; returns its number
+function Config.NoteGained(d, key, tier)
+	if type(d.ItemSeq) ~= "table" or type(d.WeaponSeq) ~= "table" then Config.SanitizeItemSeq(d) end
+	local n = math.max(0, math.floor(tonumber(d.ItemSeqNext) or 0)) + 1
+	d.ItemSeqNext = n
+	if tier ~= nil then
+		d.WeaponSeq[tier] = n
+	else
+		d.ItemSeq[key] = n
+	end
+	return n
+end
+
 return Config
