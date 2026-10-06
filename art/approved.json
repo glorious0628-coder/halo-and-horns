@@ -772,5 +772,17 @@
   "cutout": "tools/cutout_flat.py --holes (flat gray flood-fill); checked light/navy/magenta, 48px",
   "preview": "art/review/icons_rank3_preview.png",
   "note": "랭킹 탭 — PvP 판(벌칙 판, 약자·새내기 쓰러뜨린 횟수): X자 칼 + 빨간 경고 링. 사용자 승인 2026-10-06."
+ },
+ "IconRankArtisan": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconRankArtisan.txt",
+  "original": "art/out/IconRankArtisan_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconRankArtisan.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py --holes + edge clean-up; checked light/navy/magenta, 48px",
+  "preview": "art/review/icons_rank4_preview.png",
+  "note": "랭킹 탭 — 장인 명성(A23-24, 주간 강화 성공): 청록·황동 톱니 + 망치. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06), 시트로 보여 줌."
  }
 }
