@@ -1,4 +1,4 @@
-# 개발 일지 롱폼 1편 대본 v2 (촬영 편집, 2026-10-06) — 검수 확인 전
+# 개발 일지 롱폼 1편 대본 v2 (촬영 편집, 2026-10-06) — 검수 OK(2026-10-06, 답 3개 + 3D 도구 결정 반영)
 
 > 순서(검수·사용자 2026-10-06): 쇼츠 먼저(`shorts01_plan.json`), 이 롱폼은 **게임 화면이 영어만(A23-48) 메인에 들어간 뒤** 찍는다. v1(검수 OK)의 사실·용어는 그대로 두고, 그 뒤 사용자 결정(자기소개 훅, A23-39·40·45·46·47·48)과 쇼츠에서 잘 된 장면(팀 카드, 몬스터 얼굴 공개)을 넣었다.
 
@@ -76,21 +76,22 @@
 | 5-3 | Want to see what my monsters look like in real life? | 제 몬스터들의 실제 모습, 볼래요? | |
 | 5-4 | Slime! ... Pumpkin Slime! ... Pumpkin King! ... Bat Goblin! ... Little Ghost! | 슬라임! … 호박 슬라임! … 호박 대왕! … 박쥐 고블린! … 꼬마 유령! | 1ccddb7→bfcba1b |
 | 5-5 | Six new 3D models in one evening, plus a Baby Slime pet, coming soon! | 하룻저녁에 새 3D 모델 여섯, 그리고 곧 나올 아기 슬라임 펫! | 펫 = 아직 |
-| 5-6 | One problem: the eyes. The AI paints them a little blurry, so the boss fixes them by hand. | 문제 하나: 눈. AI가 눈을 살짝 흐리게 칠해서, 대장이 손으로 고쳐요. | A23-47 |
+| 5-6 | One problem: the eyes. The AI paints them a little blurry, so the boss fixes them by hand. Before... after! | 문제 하나: 눈. AI가 눈을 살짝 흐리게 칠해서, 대장이 손으로 고쳐요. 전… 후! | A23-47, 🖼 devlog/2026-10-06/17_review_eyefix_pumpkin.png(왼쪽 원본·오른쪽 고친 눈) |
 
 ## 6. 감독의 결정들 (3:30–4:35)
-화면: 🖼 화면 배치 A/B → ✏️ B에 동그라미 → 🖼 펫 조련사 그림(devlog/04) → 🖼 유령 가족 아이콘·3D → 🖼 마을 시안 → 🎥 영어 화면
+화면: 🖼 화면 배치 A/B → ✏️ B에 동그라미 → 🖼 펫 조련사 그림(devlog/04) → 🖼 유령 가족 아이콘·3D → 🖼 눈 확대 비교 → 🖼 마을 시안('concept art') → 🎥 영어 화면
 각 결정마다 ✏️ "DIRECTOR'S CALL" 도장 + 사용자 한마디(영어 자막, 짧게)
 
 | # | English | 한국어 뜻 | [사실] |
 |---|---|---|---|
 | 6-1 | Being the director means making the calls. Here are some of mine. | 감독이니까 결정을 내려요. 제 결정 몇 개를 볼까요. | |
 | 6-2 | Call one: where the buttons go. My team drew layout A and layout B in gray boxes. I picked B, because it looks like a game I showed them. | 결정 1: 버튼 자리. 팀이 회색 상자로 A와 B를 그렸어요. 저는 B. 제가 보여 준 게임 같아서요. | A23-40 |
-| 6-3 | Call two: "Didn't I say no Artisan Archer?" So the Artisan Guild gets a Pet Tamer instead, with a baby slime that fights for you. | 결정 2: "장인 궁수 없애자고 했잖아!" 그래서 장인 길드엔 대신 펫 조련사, 아기 슬라임이 대신 싸워요. | A23-39 (만드는 중 → "is coming") |
+| 6-3 | Call two: "Wait, didn't I say NO Artisan Archer?!" So the Artisan Guild is getting a Pet Tamer instead, with a baby slime that fights for you. | 결정 2: "잠깐, 장인 궁수 없애자고 했잖아?!" 그래서 장인 길드엔 펫 조련사가 와요, 아기 슬라임이 대신 싸워요. | A23-39 (만드는 중). 화면엔 펫 조련사 그림만(거절 그림 안 보임) |
 | 6-4 | Call three: no mixing families! Goblins with goblins, pumpkins with pumpkins, ghosts with ghosts. | 결정 3: 가족 섞지 마! 고블린은 고블린끼리, 호박은 호박끼리, 유령은 유령끼리. | A23-45 |
-| 6-5 | So the ghosts are getting their own spooky Haunted Hollow, with a Ghost King boss. | 그래서 유령들은 자기만의 으스스한 유령 숲과 유령 왕을 갖게 돼요. | A23-45 (만드는 중) |
-| 6-6 | Call four: "This town is too small!" So we're making the towns bigger and full of stuff, with villagers who give you quests. | 결정 4: "마을이 너무 작아!" 그래서 마을을 크고 꽉 차게, 퀘스트 주는 마을 사람도. | A23-46·47 (만드는 중) |
-| 6-7 | And call five: the game is in English only. Easy English, so kids everywhere can play. | 결정 5: 게임 글자는 영어만. 쉬운 영어로, 어디 사는 아이든 할 수 있게. | A23-48 |
+| 6-5 | So the ghosts are getting their own spooky Haunted Hollow, with a Ghost King boss. | 그래서 유령들은 자기만의 으스스한 유령 숲과 유령 왕을 갖게 돼요. | A23-45 (만드는 중; 촬영 때 없으면 시안 + 작은 'concept art') |
+| 6-5b | Call four: which 3D tool? I zoomed in on the monster eyes myself and compared two tools. My pick: Tripo, and the boss fixes the eyes. | 결정 4: 3D 도구는? 제가 직접 몬스터 눈을 확대해 두 도구를 비교했어요. 제 선택: Tripo, 눈은 대장이 고쳐요. | A23-47 "그냥 TRIPO로 작업하고 너가 수정하는 쪽으로 하자" |
+| 6-6 | Call five: "This town is too small!" So we're making the towns bigger and full of stuff, with villagers who give you quests. | 결정 5: "마을이 너무 작아!" 그래서 마을을 크고 꽉 차게, 퀘스트 주는 마을 사람도. | A23-46·47 (만드는 중; 없으면 시안 + 'concept art') |
+| 6-7 | And call six: the game is in English only. Easy English, so kids everywhere can play. | 결정 6: 게임 글자는 영어만. 쉬운 영어로, 어디 사는 아이든 할 수 있게. | A23-48 |
 
 ## 7. 호박 대왕 (4:35–5:25)
 화면: 🎥 실제 호박밭(호박 가족만) → 🧊 대왕 회전 → 🎥 대왕 정면 → 🎥 싸움·쓰러짐·사탕 → ✏️ 칩 "every 20 min · 5 minutes · new players safe"
@@ -119,7 +120,8 @@
 1. 진영 고르기 화면(영어) 5초 · 2. 교차로·분수 회전 · 3. 초원 사냥(HUD 영어) · 4. 큰 슬라임 + 왕관 조각 퀘스트 화면(정화/삼킴 선택 창) · 5. 호박밭 실제·대왕 정면·싸움(가족만) · 6. 영어 HUD B안 전체 5초 · 7. (만들어지면) 유령 숲·유령 왕, 큰 마을 — 없으면 시안 그림으로.
 쇼츠에서 그대로 쓰는 것: 0번 훅, 팀 카드, 몬스터 얼굴 공개.
 
-## 검수에게 물을 것
-1. 6-3 "Didn't I say no Artisan Archer?" — 거절된 그림(장인 궁수)은 화면에 안 보이고, 펫 조련사 그림만 보여 줘요. 괜찮은지.
-2. 6-5·6-6 만드는 중인 것(유령 숲·유령 왕·큰 마을)은 "getting / we're making"으로만 말해요. 촬영 때까지 들어오면 게임 장면, 아니면 시안 그림.
-3. 5-6 "the boss fixes the eyes by hand"(A23-47 눈 손보기 = 검수) 넣어도 되는지.
+## 검수 답(2026-10-06) → 반영함
+1. 6-3 장인 궁수 이야기 OK — 거절 그림은 안 보이고 펫 조련사 그림만, 사용자 말은 웃기게 한 줄.
+2. 만드는 중 표현 "is coming / we're making" 그대로, 촬영 때 없으면 시안 그림 + 작은 'concept art' 표시.
+3. 5-6 눈 손보기 넣기 — 전·후 사진 `docs/devlog/2026-10-06/17_review_eyefix_pumpkin.png`.
+4. 추가: 6-5b 3D 도구 결정(사용자가 직접 눈 확대 비교 → "Tripo로 하고 대장이 고친다"). 결정은 이제 6개.
