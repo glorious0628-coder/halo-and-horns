@@ -128,7 +128,7 @@ local function applyStats(player, humanoid, fullHeal)
 	else
 		humanoid.Health = math.clamp(ratio * maxHP, 1, maxHP)
 	end
-	humanoid.WalkSpeed = Config.Player.WalkSpeed * (classDef(player).WalkSpeedMult or 1)
+	humanoid.WalkSpeed = PlayerService.ComputeWalkSpeed(player)
 end
 
 local function spawnCFrame(zoneId)
@@ -869,6 +869,25 @@ function PlayerService.RefreshCharacter(player, fullHeal)
 	local humanoid = Util.GetHumanoid(player)
 	if not humanoid then return end
 	applyStats(player, humanoid, fullHeal == true)
+end
+
+-- PET-1: the ONE walk speed (Config.WalkSpeed) from the class (classDef), the equipped pet (EquippedPet / PetLv attributes,
+-- PetService) and the kaiju state (KaijuService.GetState "Active" = no pet bonus). applyStats and RefreshSpeed are the
+-- only writers of a player's WalkSpeed (KaijuService / ClassService / JusticeService refresh through RefreshCharacter).
+function PlayerService.ComputeWalkSpeed(player)
+	local kaiju = false
+	local ks = S.KaijuService
+	if type(ks) == "table" and type(ks.GetState) == "function" then
+		local ok, st = pcall(ks.GetState, player)
+		kaiju = ok and st == "Active"
+	end
+	return Config.WalkSpeed(classDef(player).Id, player:GetAttribute("EquippedPet"), player:GetAttribute("PetLv"), kaiju)
+end
+
+-- PET-1: WalkSpeed only (a pet equipped or levelled up); a dead or missing character is left alone
+function PlayerService.RefreshSpeed(player)
+	local humanoid = Util.GetHumanoid(player)
+	if humanoid and humanoid.Health > 0 then humanoid.WalkSpeed = PlayerService.ComputeWalkSpeed(player) end
 end
 
 -- idempotent: PlayerLeaving + final save once; always clears per-player state

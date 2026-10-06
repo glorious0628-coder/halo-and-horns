@@ -71,7 +71,16 @@ function PetService.Sanitize(data)
 	return data.Pets
 end
 
--- the attributes every client reads (EquippedPet / PetLv / PetForm)
+-- PET-1: the walk speed follows the equipped pet (PlayerService.RefreshSpeed reads the attributes below)
+local function refreshSpeed(player)
+	local ps = S and S.PlayerService
+	if type(ps) == "table" and type(ps.RefreshSpeed) == "function" then
+		local ok, err = pcall(ps.RefreshSpeed, player)
+		if not ok then Util.Warn(TAG, "RefreshSpeed: " .. tostring(err)) end
+	end
+end
+
+-- the attributes every client reads (EquippedPet / PetLv / PetForm), then the walk speed
 local function publish(player, data)
 	local pets = data.Pets
 	local uid = type(pets) == "table" and type(pets.Equipped) == "table" and pets.Equipped[1] or nil
@@ -79,6 +88,7 @@ local function publish(player, data)
 	player:SetAttribute("EquippedPet", p and p.Sp or "")
 	player:SetAttribute("PetLv", p and p.Lv or 0)
 	player:SetAttribute("PetForm", "")
+	refreshSpeed(player)
 end
 
 local function findSpecies(pets, species)

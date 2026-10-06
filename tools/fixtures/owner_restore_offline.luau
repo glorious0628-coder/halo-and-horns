@@ -176,6 +176,8 @@ local function fixture(options)
 	-- The restored class formula is a fixture constant; production formulas are outside this lifecycle test.
 	config.MaxHealth=function() return options.MaxHealth or 100 end
 	config.Classes={Warrior={WalkSpeedMult=1}}
+	-- PET-1: PlayerService.ComputeWalkSpeed -> Config.WalkSpeed (class x pet, tools/test_pet_speed.py); here the plain class speed
+	config.WalkSpeed=function(classId) return config.Player.WalkSpeed*((config.Classes[classId] or config.Classes.Warrior).WalkSpeedMult or 1) end
 	config.HomeZoneId=function() return "HaloHome" end
 	config.AntiCheat={SpawnGrace=2}
 	local data={Level=1,Faction="Halo",Class="Warrior",HPPotionCount=3,MPPotionCount=3}

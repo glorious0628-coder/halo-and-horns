@@ -3672,4 +3672,39 @@ function Config.ClassCard(classId, factionId)
 	return { Desc = c.Desc, PickLine = c.PickLine, Stats = c.Stats }
 end
 
+----------------------------------------------------------------- PET-1 walk speed (게임성 개발 2, 2026-10-07)
+-- The ONE player walk speed (design skills_weapons_pets_2026-10-05 §0-1, SPEC A23-15, A23-49): Config.Player.WalkSpeed x
+-- the class WalkSpeedMult x (1 + the equipped pet's bonus), no skill buff (A23-49), at most Speed.Cap x the base. The pet
+-- bonus is on everywhere, PvP too (A23-15); an Active kaiju gets none (the kaiju rule). PlayerService.ComputeWalkSpeed
+-- feeds it and is the only source of a player's WalkSpeed. No zone / combat / grudge-sack speed rule exists, so those
+-- states need no recompute; a later rule adds its input here and its trigger next to it.
+Config.Speed = { Cap = 1.35 }
+-- pets by species: Speed = { bonus at pet Lv1, bonus at MaxLv }, a straight line between (design §2: +7% -> +10%)
+Config.Pets = {
+	MaxLv = 10,
+	Species = {
+		BabySlime = { Speed = { 0.07, 0.10 } },
+	},
+}
+
+-- the walk speed bonus of a pet (0 for none / an unknown species); levels clamp to 1..MaxLv
+function Config.PetSpeedBonus(species, lv)
+	local P = Config.Pets
+	local def = type(species) == "string" and P.Species[species] or nil
+	if type(def) ~= "table" or type(def.Speed) ~= "table" then return 0 end
+	if type(lv) ~= "number" or lv ~= lv then lv = 1 end
+	lv = math.clamp(math.floor(lv), 1, P.MaxLv)
+	local a, b = def.Speed[1], def.Speed[2]
+	return a + (b - a) * (lv - 1) / math.max(1, P.MaxLv - 1)
+end
+
+-- studs per second for a class with a pet (species, level; nil = none); kaiju = an Active kaiju (no pet bonus)
+function Config.WalkSpeed(classId, petSpecies, petLv, kaiju)
+	local c = Config.Classes[classId] or Config.Classes.Warrior
+	local base = Config.Player.WalkSpeed
+	local pet = kaiju == true and 0 or Config.PetSpeedBonus(petSpecies, petLv)
+	local raw = base * (c.WalkSpeedMult or 1) * (1 + pet)
+	return math.min(raw, base * Config.Speed.Cap)
+end
+
 return Config
