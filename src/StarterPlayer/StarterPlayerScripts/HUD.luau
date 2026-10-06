@@ -1287,6 +1287,12 @@ local function buildQuests(root)
 			L.PinnedTap(questState.CallEntry)
 			return
 		end
+		-- review 2026-10-06: the line reads "5/5 ... [받기]를 눌러요": one tap claims (no list first)
+		local se = questState.ShownEntry
+		if IS_TOUCH and se and L.PinnedTap and L.ClaimableMission(se) then
+			L.PinnedTap(se)
+			return
+		end
 		toggleQuests()
 	end, { CornerRadius = UDim.new(0, 10) })
 	local is = hh - 8
@@ -2198,8 +2204,8 @@ function L.QuestText(text)
 	if type(text) ~= "string" or not string.find(text, "{", 1, true) then return text end
 	local kb = C and C.Keybinds
 	if type(kb) == "table" and type(kb.Fill) == "function" then
-		-- keyOnly except on touch-only devices: there Keybinds.Label gives the button name
-		local ok, out = pcall(kb.Fill, text, not (IS_TOUCH and not UserInputService.KeyboardEnabled))
+		-- keyOnly where keys are shown (Keybinds.ShowsKeys, review B5); without a keyboard Keybinds.Label gives the button
+		local ok, out = pcall(kb.Fill, text, type(kb.ShowsKeys) == "function" and kb.ShowsKeys() == true)
 		if ok and type(out) == "string" then return out end
 	end
 	return Config.FillKeys(text, (Config.KeyMap(nil, nil)))
@@ -2623,6 +2629,7 @@ refreshQuests = function()
 		-- U5: one line (what to do now); tapping it opens the overlay with the rows
 		local line = head
 		local se = entries[shown]
+		questState.ShownEntry = se
 		local mission = se and se.Pinned and se.TutorialStep >= 0 and se.TutorialStep < 99
 		if callIndex then
 			line = call.Label -- B15: one tap on the header opens it (the header handler)
@@ -3133,6 +3140,13 @@ function L.RefreshAuto()
 	if ui.autoGlow then ui.autoGlow.Transparency = on and 0 or 1 end
 end
 
+-- the first mission is done (5/5) and waits for [받기]
+function L.ClaimableMission(e)
+	local questStep = (type(TUT.Steps) == "table" and TUT.Steps.Quest) or 2
+	return type(e) == "table" and not e.Story and e.Pinned == true and e.TutorialStep == questStep and e.CanClaim == true
+		and e.Progress >= e.Target
+end
+
 -- tapping the pinned guide row: step 0 guide dialogue, step 1/2 travel to the meadow, blacksmith step and the
 -- iron-weapon goal -> the existing doUpgrade path, level goals -> the existing beam to the hunting ground.
 -- r = the quest row that was tapped (nil from the touch header)
@@ -3140,8 +3154,7 @@ function L.PinnedTap(e, r)
 	if throttled("pinnedTap", 0.5) then return end
 	-- F10-4 (review 2026-10-06): a finished first mission (5/5) claims on a tap of its line, the same path as [받기]
 	-- (ClaimQuest, ClaimAt, 1.5 s lock); the travel window and the meadow beam are only for a mission with kills left
-	local questStep = (type(TUT.Steps) == "table" and TUT.Steps.Quest) or 2
-	if not e.Story and e.Pinned and e.TutorialStep == questStep and e.CanClaim and e.Progress >= e.Target then
+	if L.ClaimableMission(e) then
 		local row = r
 		if not row then
 			for _, qr in questRows do
