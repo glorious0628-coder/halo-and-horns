@@ -2531,5 +2531,47 @@
   "cutout": "tools/img2/cut_keep.py --tol 28 --soft 6 --holes (outline-free people: tighter tolerance so shaded clothes are not keyed out), specks <60px dropped; checked magenta/navy/light",
   "preview": "art/review/s2/b10_class_guide_sheet.png",
   "note": "묶음 11a. 이미지 생성 2가 고름. 길드 안내자 초상. 옷차림 검사 통과(얼굴·손만, 목·어깨·몸통·배·다리 덮임, 여자도 같은 네모 몸통). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드."
+ },
+ "IconSettings": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "preview": "art/review/s2/a2338_menu_sheet.png",
+  "prompt": "art/prompts/IconSettings.txt",
+  "original": "art/out/s2/IconSettings_a_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconSettings.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes (cutout_flat flood-fill + edge_fix, 512 at 86%); checked light/navy/magenta, 4x edges, 48px",
+  "note": "A23-38 메뉴 칸 '설정' 아이콘(은청 톱니 + 금 축 + 사파이어). 승인 메뉴 아이콘 5장(8875c87)과 같은 스타일. 이미지 생성 2가 고름(A23-25, a/b 중 a, 사용자 거부 가능). 글자 없음. Parts.IconSettings."
+ },
+ "IconNews": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "preview": "art/review/s2/a2338_menu_sheet.png",
+  "prompt": "art/prompts/IconNews.txt",
+  "original": "art/out/s2/IconNews_a_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconNews.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes (cutout_flat flood-fill + edge_fix, 512 at 86%); checked light/navy/magenta, 4x edges, 48px",
+  "note": "A23-38 메뉴 칸 '새 소식' 아이콘(말린 크림 두루마리 + 빨간 리본 + 금별). 도움말(IconHelp, 펼친 두루마리+?)과 리본·별로 구별. 이미지 생성 2가 고름(a/b 중 a). 글자 없음. Parts.IconNews."
+ },
+ "MenuTile": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "preview": "art/review/s2/a2338_menu_sheet.png",
+  "prompt": "art/prompts/UIP_MenuTile.txt",
+  "original": "art/out/s2/MenuTile_a_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/MenuTile.png",
+  "size": "512x504 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; checked light/navy/magenta/green, 4x corners",
+  "slice": [
+   96,
+   96,
+   416,
+   408
+  ],
+  "note": "A23-38 메뉴 칸 판(남색 정사각 + 얇은 금테 + 남색 외곽선, 가운데 평평). 9조각 slice = 모서리 둥근 부분 밖. 게임에서 ImageTransparency 약 0.15로 살짝 비치게(시트 기준). 위에 메뉴 아이콘 74%, 아래 이름은 TextLabel. 이미지 생성 2가 고름(a/b 중 a). Parts.MenuTile."
  }
 }
