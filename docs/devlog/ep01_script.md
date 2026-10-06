@@ -1,140 +1,125 @@
-# 개발 일지 1편 대본 (촬영 편집, 2026-10-06) — 검수 OK(2026-10-06, 고칠 줄 반영) · 0번 장면 = 사용자 자기소개 훅(검수 전달 2026-10-06)
+# 개발 일지 롱폼 1편 대본 v2 (촬영 편집, 2026-10-06) — 검수 확인 전
 
-> 순서(검수·사용자 2026-10-06): **쇼츠 먼저**(`shorts01_plan.json`), 이 긴 판은 채널 인증 뒤에.
+> 순서(검수·사용자 2026-10-06): 쇼츠 먼저(`shorts01_plan.json`), 이 롱폼은 **게임 화면이 영어만(A23-48) 메인에 들어간 뒤** 찍는다. v1(검수 OK)의 사실·용어는 그대로 두고, 그 뒤 사용자 결정(자기소개 훅, A23-39·40·45·46·47·48)과 쇼츠에서 잘 된 장면(팀 카드, 몬스터 얼굴 공개)을 넣었다.
 
-- **제목(안):** I Made a Roblox Halloween Game with 7 AI Teammates #1
-- **길이 목표:** 약 5분 30초(영어 내레이션 약 700단어, MeloTTS EN-US). 장면마다 2~4초 컷, 정지 그림은 천천히 확대·이동.
-- **말투:** 만든 사람(사용자) 1인칭 "I", 팀은 "my AI teammates". 짧은 문장, 아이도 알아듣는 쉬운 영어. 영어 자막은 화면에 굵은 외곽선으로, 한국어 자막은 따로 `.srt`.
-- **영어 이름:** `docs/design/glossary_en_2026-10-06.md`(검수 용어 표)를 따른다: Halo & Horns, Knights of Light, Horn Legion, Artisan Guild, Wanted, Crown Shard, Purify / Devour, Auto Battle, Slime, Pumpkin Slime, Little Ghost, Bat Goblin, Baby Slime, Pumpkin King, Pumpkin Patch.
-- **남은 날 수 `{DAYS}`:** 빌드하는 날 기준으로 2026-10-31 11:00 KST까지 남은 날을 자동으로 넣는다(`tools/devlog_build.py`, 영어 낱말로 읽음).
-- **도구 이름:** Claude·Adobe Firefly·Tripo는 사실대로 말한다. 로고는 크게 쓰지 않고, 설명란에 "Not sponsored.".
-- **사실 확인:** 대사 속 기능은 지금 코드·문서에 있는 것만 넣었다(왕관 조각 정화/삼킴 = StoryQuestService, 수배 별 = CharacterVisuals, 호박 대왕 20분마다·5분·Lv5 미만 보호·11/9 끝 = Config.Halloween, Tripo 6종 하룻저녁 = 1ccddb7→bfcba1b, B안 = A23-40). 없는 기능은 "다음 편"으로만 말한다.
-- **빼는 것:** 계정 이름·이메일·ID, 옛 계정 정지 이야기, 거절된 그림(장인 궁수), 오프닝 연출(다시 만들 예정), 다른 게임 이름, 돈·크레딧 숫자.
-- **화면 칸 표시:** 🎥 = FilmSet Studio 녹화(Play 중 게임 장면), 🖼 = 이미 있는 그림·캡처, 🧊 = Tripo GLB를 Blender로 돌려 찍은 회전 영상, ✏️ = 편집에서 만드는 글자·도표.
+- **제목(안):** I Can't Code or Draw, So I'm Making a Roblox Game with 7 AI Teammates (Devlog #1)
+- **길이 목표:** 약 6분(영어 내레이션 약 820단어, MeloTTS EN-US 1.1배). 컷 1~3초, 정지 그림은 늘 확대·이동. 중요한 순간에만 쇼츠식 큰 네온 단어.
+- **말투:** 감독 = 사용자 1인칭 "I", 팀 = "my AI teammates / we". 짧고 쉬운 영어, 웃기게, 진짜처럼. 한국어 뜻은 줄마다(사용자 확인용 .srt).
+- **영어 이름:** `docs/design/glossary_en_2026-10-06.md`. 게임 이름은 영어 **Halo & Horns**만.
+- **{DAYS}:** 빌드하는 날(KST)부터 2026-10-31 11:00까지 남은 날, 자동.
+- **도구 이름:** Claude·Adobe Firefly·Tripo는 사실대로, 로고는 크게 쓰지 않음, 설명란 "Not sponsored." + "Sound effects: Kenney (kenney.nl, CC0)".
+- **사실 규칙:** 지금 게임에 있는 것은 현재형, 만드는 중인 것은 "we're building / coming soon"으로만. 아래 [사실] 칸에 근거.
+- **빼는 것:** 계정 이름·이메일·ID, 옛 계정 정지 이야기, 돈·크레딧 숫자, 다른 게임 이름, 사람 얼굴(사용자 아바타는 OK, 이름은 안 보이게), 오프닝 연출(10/15~17 다시 만든 뒤 2편 이후).
+- **화면 칸:** 🎥 FilmSet 녹화(영어 화면) · 🖼 승인 그림·캡처 · 🧊 Tripo GLB 회전(Blender) · ✏️ 편집 글자·도표 · ⭐ 쇼츠 장면 재사용.
 
 ---
 
-## 0. 첫 장면 (0:00–0:25) — 감독(사용자) 자기소개 훅 (검수 전달, 사용자 2026-10-06)
-사용자 원문: "나는 코드의 '코' 자도 모름, 디자인의 '디' 자도 모름! 하지만 게임을 너무 좋아함! 게임을 너무 많이 하면서 돈을 너무 소비하니까 현타가 와서 '내가 만들자'가 된 거!" — 돈 숫자·계정·이름·얼굴은 넣지 않는다.
-화면: ✏️ 코드 글자 위에 빨간 X → ✏️ 낙서 그림 위에 빨간 X → 🎥 초원 사냥 + 하트 → ✏️ 동전 비 → ✏️ AI 팀 일곱 칸 → 🧊 호박 대왕 → ✏️ 큰 글자 "{DAYS} DAYS"
+## 0. 훅 — 감독 자기소개 (0:00–0:25)
+화면: ⭐ 코드 + 빨간 X → ⭐ 낙서 + 빨간 X → 🎥 초원 사냥 + 하트 → ⭐ 동전 비 → 🎥 호박 대왕 정면 → ✏️ "{DAYS} DAYS"
 
-| # | English (narration = on-screen subtitle) | 한국어 뜻 |
+| # | English | 한국어 뜻 |
 |---|---|---|
 | 0-1 | I can't code. I can't draw. | 저는 코딩도 못 하고, 그림도 못 그려요. |
 | 0-2 | But I LOVE games! | 하지만 게임을 너무 좋아해요! |
 | 0-3 | I spent way too much money on games... | 게임에 돈을 너무 많이 썼어요… |
 | 0-4 | So I decided to make my own, with seven AI teammates. | 그래서 직접 만들기로 했어요, AI 팀원 일곱 명과 함께. |
-| 0-5 | This is the Pumpkin King. In {DAYS} days, he has to be ready to fight real players. | 이건 호박 대왕이에요. {DAYS}일 뒤엔 진짜 플레이어랑 싸울 준비가 돼 있어야 해요. |
-| 0-6 | Let's see if we can make it in time. | 시간 안에 해낼 수 있는지 봐요. |
+| 0-5 | This is the Pumpkin King. In {DAYS} days, he has to be ready for real players. | 이건 호박 대왕이에요. {DAYS}일 뒤엔 진짜 플레이어를 맞을 준비가 돼야 해요. |
+| 0-6 | Let's see if we make it. | 해낼 수 있는지 봐요. |
 
-## 1. 제목 (0:20–0:24)
-화면: ✏️ "HALO & HORNS · DEVLOG #1" (내레이션 없음, 짧은 휙 전환)
+## 1. 제목 (0:25–0:28)
+✏️ "HALO & HORNS · DEVLOG #1" (휙, 내레이션 없음)
 
-## 2. 게임 소개 (0:24–1:15)
-화면: 🖼 빛·뿔 직업 카드 → 🎥 교차로·분수 → 🎥 진영 고르는 화면 → 🖼 수배 별 이름표 → 🎥 큰 슬라임
-
-| # | English | 한국어 뜻 |
-|---|---|---|
-| 2-1 | Our game is called Halo and Horns. | 우리 게임 이름은 헤일로 & 혼즈(선악 키우기)예요. |
-| 2-2 | It has one big rule: everything you do pushes you toward angel... or devil. | 큰 규칙 하나: 모든 행동이 천사… 아니면 악마 쪽으로 기울어요. |
-| 2-3 | When you join, you pick a side. | 들어오면 편을 골라요. |
-| 2-4 | The Knights of Light get a halo. | 빛의 기사단은 머리 위에 후광이 생겨요. |
-| 2-5 | The Horn Legion gets horns. | 뿔 군단은 뿔이 돋아요. |
-| 2-6 | Don't want to fight other players? Join the Artisan Guild. No player fights at all. | 다른 플레이어랑 싸우기 싫어요? 장인 길드로 가요. 플레이어끼리 싸움이 아예 없어요. |
-| 2-7 | Rob other players as the Horn Legion, and you get Wanted stars. Then the Knights come to catch you! | 뿔 군단으로 다른 플레이어를 털면 수배 별이 붙고, 기사단이 잡으러 와요! |
-| 2-8 | Even the auto-battle button is a choice. | 자동 전투 버튼마저 선택이에요. |
-| 2-9 | A big slime swallowed a piece of a magic crown. | 큰 슬라임이 마법 왕관 조각을 삼켰어요. |
-| 2-10 | Get it back, and the shard watches how you fight. | 되찾으면 조각이 내가 싸우는 법을 지켜봐요. |
-| 2-11 | Then you decide: purify it... or eat it! | 그리고 정해요: 정화할까… 삼킬까! |
-| 2-12 | Angel or devil. Either way, you unlock Auto Battle. | 천사든 악마든, 어느 쪽이든 자동 전투가 열려요. |
-
-## 3. Firefly 그림 (1:15–2:15)
-화면: 🖼 직업 그림·안내자 초상 시트(장인 궁수 칸은 잘라냄) → 🖼 메뉴 칸·HUD 부품·아이콘 → 🖼 `devlog/05` 안내자 창 전·후 → 🖼 땅 타일 3×3
+## 2. 팀 소개 (0:28–0:55)
+화면: ⭐ 팀 카드 일곱 장 0.3초씩 → 카드마다 그 세션 작업 장면 1초(검수 = 체크 시트, 개발 = Studio 코드, 그림 = Firefly 시트, 이미지 개발 = HUD, 촬영 = 이 영상 타임라인)
 
 | # | English | 한국어 뜻 |
 |---|---|---|
-| 3-1 | Next problem: art. I can't draw. | 다음 문제: 그림. 저는 그림을 못 그려요. |
-| 3-2 | So two of my teammates make pictures with Adobe Firefly. | 그래서 팀원 둘이 Adobe Firefly로 그림을 만들어요. |
-| 3-3 | One draws the big world: grass, sky and stone roads. | 한 명은 큰 세계를 그려요: 풀밭, 하늘, 돌길. |
-| 3-4 | The other draws the small stuff: icons, buttons and characters. | 다른 한 명은 작은 것들: 아이콘, 버튼, 캐릭터. |
-| 3-5 | Every character wears full, kid-friendly clothes. We check every picture before it goes in the game. | 모든 캐릭터는 단정한 옷을 입어요. 게임에 넣기 전에 그림을 하나하나 확인해요. |
-| 3-6 | Look at the guide. Before: no face. After: a real character! | 안내자를 봐요. 전: 얼굴 없음. 후: 진짜 캐릭터! |
-| 3-7 | Here's a trick: we draw the panels with no words on them. | 비법 하나: 판에는 글자를 안 그려요. |
-| 3-8 | The game writes the words itself, so it works in English and Korean. | 글자는 게임이 직접 써요. 그래서 영어와 한국어 둘 다 돼요. |
-| 3-9 | And ground tiles must repeat with no lines. We test them by putting nine side by side. | 땅 그림은 이어 붙여도 선이 없어야 해요. 아홉 장을 나란히 놓아 시험해요. |
+| 2-1 | My team is seven Claude AI sessions. Each one has one job. | 제 팀은 클로드 AI 세션 일곱이에요. 각자 할 일이 하나씩. |
+| 2-2 | A boss, two builders, two artists, an art dev, and a film crew! | 대장 하나, 만드는 사람 둘, 그리는 사람 둘, 그림 넣는 사람 하나, 그리고 촬영 담당! |
+| 2-3 | The boss checks everything before I see it. | 대장은 제가 보기 전에 모든 걸 확인해요. |
+| 2-4 | And me? I'm the director. I play, I pick, and I say yes or no. | 그럼 저는? 감독이에요. 플레이하고, 고르고, 좋다 싫다를 말해요. |
+| 2-5 | When I find a bug, I tell the boss, and the boss sends it to the right teammate. | 버그를 찾으면 대장에게 말하고, 대장이 맞는 팀원에게 보내요. |
 
-## 4. Tripo 3D 몬스터 (2:15–3:05)
-화면: 🖼 네모 슬라임 그림 → 🧊 네모 슬라임 회전(나란히) → 🧊 호박 슬라임·박쥐 고블린·꼬마 유령·아기 슬라임 펫 회전 → 🎥 게임 속 네모 슬라임
+## 3. 게임 소개 (0:55–1:45)
+화면: 🖼 빛·뿔 직업 그림 → 🎥 교차로·분수 → 🎥 진영 고르기(영어) → 🖼 수배 별 아이콘 → 🎥 큰 슬라임 → ✏️ PURIFY / DEVOUR 네온
 
-| # | English | 한국어 뜻 |
-|---|---|---|
-| 4-1 | Pictures are flat. But monsters need to walk around. | 그림은 납작해요. 그런데 몬스터는 걸어 다녀야 하죠. |
-| 4-2 | So we turn a picture into a 3D model with a tool called Tripo. | 그래서 Tripo라는 도구로 그림을 3D 모델로 바꿔요. |
-| 4-3 | Here's our new Slime. Picture... and 3D! | 새 슬라임이에요. 그림… 그리고 3D! |
-| 4-4 | Then the Pumpkin Slime, the Bat Goblin, the Little Ghost... | 그다음 호박 슬라임, 박쥐 고블린, 꼬마 유령… |
-| 4-5 | ...and a Baby Slime pet, coming soon! | …그리고 곧 나올 아기 슬라임 펫! |
-| 4-6 | Six new 3D models in one evening! | 하룻저녁에 새 3D 모델 여섯! |
-| 4-7 | The Bat Goblin even came with moves: walk, slash, hurt and fall. | 박쥐 고블린은 동작까지 있어요: 걷기, 베기, 맞기, 쓰러지기. |
+| # | English | 한국어 뜻 | [사실] |
+|---|---|---|---|
+| 3-1 | Our game is called Halo and Horns. | 우리 게임 이름은 Halo & Horns예요. | 용어 표 |
+| 3-2 | One big rule: everything you do pushes you toward angel... or devil. | 큰 규칙 하나: 모든 행동이 천사… 아니면 악마 쪽으로 기울어요. | GDD §0 |
+| 3-3 | When you join, you pick a side. The Knights of Light get a halo. The Horn Legion gets horns. | 들어오면 편을 골라요. 빛의 기사단은 후광, 뿔 군단은 뿔. | FactionService |
+| 3-4 | Don't want to fight other players? Join the Artisan Guild. No player fights at all. | 플레이어끼리 싸우기 싫어요? 장인 길드로 가요. 싸움이 아예 없어요. | GDD §5-8 |
+| 3-5 | Rob other players as the Horn Legion, and you get Wanted stars. Then the Knights come to catch you! | 뿔 군단으로 털면 수배 별이 붙고, 기사단이 잡으러 와요! | CharacterVisuals·검수 고침 |
+| 3-6 | Even the Auto Battle button is a choice. A big slime swallowed a piece of a magic crown. | 자동 전투 버튼마저 선택이에요. 큰 슬라임이 마법 왕관 조각을 삼켰어요. | StoryQuestService |
+| 3-7 | Get it back, and the shard watches how you fight. Then you decide: purify it... or devour it! | 되찾으면 조각이 내 싸움을 지켜봐요. 그리고 정해요: 정화할까… 삼킬까! | A23-2 |
+| 3-8 | Angel or devil. Either way, you unlock Auto Battle. | 천사든 악마든, 자동 전투가 열려요. | A23-2 |
 
-## 5. 화면 배치 A/B (3:05–3:45)
-화면: 🖼 `hud_compare_AB` (한국어 글자 위에 ✏️ 영어 이름표 "A" "B"를 덮음) → ✏️ B에 동그라미
+## 4. 그림: Firefly (1:45–2:35)
+화면: 🖼 직업 그림·안내자 초상 시트 → 🖼 아이콘·버튼 → 🖼 안내자 창 전·후(devlog/05) → 🖼 땅 타일 3×3 → 🖼 2D 시안 → 물건 하나씩 2D
 
-| # | English | 한국어 뜻 |
-|---|---|---|
-| 5-1 | Then we had to decide where every button goes. | 그다음엔 버튼마다 어디에 둘지 정해야 했어요. |
-| 5-2 | My teammate drew two gray-box layouts: A and B. | 팀원이 회색 상자로 배치 두 개를 그렸어요: A와 B. |
-| 5-3 | A puts the health bars at the top left. B puts them at the bottom, with a round map in the corner. | A는 체력 바가 왼쪽 위. B는 아래쪽, 그리고 구석에 둥근 지도. |
-| 5-4 | I picked B, because it looks like a game I showed my team. | 저는 B를 골랐어요. 제가 팀에게 보여 준 게임 같거든요. |
-| 5-5 | Gray boxes first, pretty pictures later. That way we never waste art on the wrong spot. | 회색 상자 먼저, 예쁜 그림은 나중에. 그래야 엉뚱한 자리에 그림을 낭비하지 않아요. |
+| # | English | 한국어 뜻 | [사실] |
+|---|---|---|---|
+| 4-1 | Next problem: art. I can't draw, remember? | 다음 문제: 그림. 저 그림 못 그리잖아요? | |
+| 4-2 | So two teammates make pictures with Adobe Firefly. One draws the big world. The other draws icons, buttons and characters. | 그래서 팀원 둘이 Adobe Firefly로 그려요. 하나는 큰 세계, 하나는 아이콘·버튼·캐릭터. | A23-31 |
+| 4-3 | Every character wears full, kid-friendly clothes, and the boss checks every picture up close. | 모든 캐릭터는 단정한 옷, 대장이 그림마다 크게 확대해 봐요. | Hard rule 1 |
+| 4-4 | Look at the guide. Before: no face. After: a real character! | 안내자를 봐요. 전: 얼굴 없음. 후: 진짜 캐릭터! | devlog/05 |
+| 4-5 | Our trick: no words in the pictures. The game writes the words itself. | 비법: 그림엔 글자를 안 넣어요. 글자는 게임이 직접 써요. | A23-35 |
+| 4-6 | Now every new place starts as one big picture... then every object in it gets its own drawing. | 이제 새 장소는 큰 그림 한 장에서 시작하고… 그 안의 물건마다 따로 그림을 그려요. | A23-47 |
 
-## 6. 호박 대왕 (3:45–4:40)
-화면: 🖼 호박밭 콘셉트 그림 → 🧊 호박 대왕 회전 → 🎥 호박밭(게임) → ✏️ "every 20 min · 5 min to win · new players safe"
+## 5. 그림 → 3D: 몬스터 얼굴 공개 (2:35–3:30)
+화면: ⭐ Monster Face Reveal 흐름(게임 3D + 큰 이름 → 원래 그림 "AI DRAWING") — 슬라임 → 호박 슬라임 → 호박 대왕 → 박쥐 고블린 → 꼬마 유령(가족별 컷) → 🧊 회전 → ✏️ 6종 격자(한 줄에 한 가족)
 
-| # | English | 한국어 뜻 |
-|---|---|---|
-| 6-1 | And now... the star of Halloween. | 그리고 이제… 핼러윈의 주인공. |
-| 6-2 | The Pumpkin King! | 호박 대왕! |
-| 6-3 | He lives in the Pumpkin Patch, and he shows up every twenty minutes. | 호박밭에 살고, 20분마다 나타나요. |
-| 6-4 | You have five minutes to beat him. | 5분 안에 물리쳐야 해요. |
-| 6-5 | Hit him enough, and you get Halloween candy. | 충분히 때리면 핼러윈 사탕을 받아요. |
-| 6-6 | And a kind rule: brand-new players are safe from him. | 그리고 착한 규칙: 새로 온 플레이어는 호박 대왕에게서 안전해요. |
-| 6-7 | The Halloween fun lasts into early November. | 핼러윈 이벤트는 11월 초까지 해요. |
+| # | English | 한국어 뜻 | [사실] |
+|---|---|---|---|
+| 5-1 | But monsters can't be flat. They need to walk around. | 그런데 몬스터는 납작하면 안 돼요. 걸어 다녀야 하니까요. | |
+| 5-2 | So a tool called Tripo turns each drawing into a 3D model. | 그래서 Tripo라는 도구가 그림을 3D 모델로 바꿔요. | A23-47 |
+| 5-3 | Want to see what my monsters look like in real life? | 제 몬스터들의 실제 모습, 볼래요? | |
+| 5-4 | Slime! ... Pumpkin Slime! ... Pumpkin King! ... Bat Goblin! ... Little Ghost! | 슬라임! … 호박 슬라임! … 호박 대왕! … 박쥐 고블린! … 꼬마 유령! | 1ccddb7→bfcba1b |
+| 5-5 | Six new 3D models in one evening, plus a Baby Slime pet, coming soon! | 하룻저녁에 새 3D 모델 여섯, 그리고 곧 나올 아기 슬라임 펫! | 펫 = 아직 |
+| 5-6 | One problem: the eyes. The AI paints them a little blurry, so the boss fixes them by hand. | 문제 하나: 눈. AI가 눈을 살짝 흐리게 칠해서, 대장이 손으로 고쳐요. | A23-47 |
 
-## 7. AI 팀 일곱 (4:40–5:35)
-화면: ✏️ 일곱 칸 도표(칸마다 영어 이름 + 아이콘, 한 칸씩 켜짐) → 마지막에 가운데 "DIRECTOR: me"
+## 6. 감독의 결정들 (3:30–4:35)
+화면: 🖼 화면 배치 A/B → ✏️ B에 동그라미 → 🖼 펫 조련사 그림(devlog/04) → 🖼 유령 가족 아이콘·3D → 🖼 마을 시안 → 🎥 영어 화면
+각 결정마다 ✏️ "DIRECTOR'S CALL" 도장 + 사용자 한마디(영어 자막, 짧게)
 
-| # | English | 한국어 뜻 |
-|---|---|---|
-| 7-1 | So, who's on the team? | 그래서, 팀엔 누가 있을까요? |
-| 7-2 | Seven Claude AI sessions. Each one has one job. | 클로드 AI 세션 일곱. 각자 할 일이 하나씩 있어요. |
-| 7-3 | The Reviewer is the boss. It checks everyone's work and keeps the plan. | 검수는 대장이에요. 모두의 일을 확인하고 계획을 지켜요. |
-| 7-4 | Game Dev One builds the game in Roblox Studio. | 게임성 개발 1은 로블록스 스튜디오에서 게임을 만들어요. |
-| 7-5 | Game Dev Two writes the server code, the part you can't see. | 게임성 개발 2는 눈에 안 보이는 서버 코드를 써요. |
-| 7-6 | The World Artist paints the big world and builds 3D props. | 이미지 생성 1은 큰 세계를 그리고 3D 소품을 만들어요. |
-| 7-7 | The Small Artist makes icons, buttons and characters. | 이미지 생성 2는 아이콘, 버튼, 캐릭터를 만들어요. |
-| 7-8 | The Art Dev puts the pictures into the game and moves the buttons around. | 이미지 개발은 그림을 게임에 넣고 버튼 자리를 잡아요. |
-| 7-9 | And the Film Crew... made this video! | 그리고 촬영 편집은… 이 영상을 만들었어요! |
-| 7-10 | And me? I'm the director. I play, I pick the pictures, and I say yes or no. | 그럼 저는? 감독이에요. 플레이하고, 그림을 고르고, 좋다 싫다를 말해요. |
-| 7-11 | When I find a bug, I tell the Reviewer, and the Reviewer sends it to the right teammate. | 제가 버그를 찾으면 검수에게 말하고, 검수가 맞는 팀원에게 보내요. |
+| # | English | 한국어 뜻 | [사실] |
+|---|---|---|---|
+| 6-1 | Being the director means making the calls. Here are some of mine. | 감독이니까 결정을 내려요. 제 결정 몇 개를 볼까요. | |
+| 6-2 | Call one: where the buttons go. My team drew layout A and layout B in gray boxes. I picked B, because it looks like a game I showed them. | 결정 1: 버튼 자리. 팀이 회색 상자로 A와 B를 그렸어요. 저는 B. 제가 보여 준 게임 같아서요. | A23-40 |
+| 6-3 | Call two: "Didn't I say no Artisan Archer?" So the Artisan Guild gets a Pet Tamer instead, with a baby slime that fights for you. | 결정 2: "장인 궁수 없애자고 했잖아!" 그래서 장인 길드엔 대신 펫 조련사, 아기 슬라임이 대신 싸워요. | A23-39 (만드는 중 → "is coming") |
+| 6-4 | Call three: no mixing families! Goblins with goblins, pumpkins with pumpkins, ghosts with ghosts. | 결정 3: 가족 섞지 마! 고블린은 고블린끼리, 호박은 호박끼리, 유령은 유령끼리. | A23-45 |
+| 6-5 | So the ghosts are getting their own spooky Haunted Hollow, with a Ghost King boss. | 그래서 유령들은 자기만의 으스스한 유령 숲과 유령 왕을 갖게 돼요. | A23-45 (만드는 중) |
+| 6-6 | Call four: "This town is too small!" So we're making the towns bigger and full of stuff, with villagers who give you quests. | 결정 4: "마을이 너무 작아!" 그래서 마을을 크고 꽉 차게, 퀘스트 주는 마을 사람도. | A23-46·47 (만드는 중) |
+| 6-7 | And call five: the game is in English only. Easy English, so kids everywhere can play. | 결정 5: 게임 글자는 영어만. 쉬운 영어로, 어디 사는 아이든 할 수 있게. | A23-48 |
 
-## 8. 끝 (5:35–6:00)
-화면: 🎥 초원에서 슬라임 사냥 → ✏️ 끝 화면 "BETA · OCT 31 · HALLOWEEN" + "Devlog #2 soon"
+## 7. 호박 대왕 (4:35–5:25)
+화면: 🎥 실제 호박밭(호박 가족만) → 🧊 대왕 회전 → 🎥 대왕 정면 → 🎥 싸움·쓰러짐·사탕 → ✏️ 칩 "every 20 min · 5 minutes · new players safe"
+
+| # | English | 한국어 뜻 | [사실] |
+|---|---|---|---|
+| 7-1 | And now, the star of Halloween. The Pumpkin King! | 그리고 이제, 핼러윈의 주인공. 호박 대왕! | |
+| 7-2 | Every twenty minutes, he shows up in the Pumpkin Patch. | 20분마다 호박밭에 나타나요. | Config.Halloween |
+| 7-3 | You have five minutes to beat him. Team up, and everyone who helps gets candy! | 5분 안에 물리쳐야 해요. 힘을 모으면 도운 사람 모두 사탕! | A23-27 |
+| 7-4 | And a kind rule: brand-new players are safe from him. | 착한 규칙: 새로 온 플레이어는 호박 대왕에게서 안전해요. | Lv5 미만 또는 첫 10분 |
+| 7-5 | The Halloween fun lasts into early November. | 핼러윈 이벤트는 11월 초까지. | EndsAt 11/9 00:00 KST |
+
+## 8. 끝 (5:25–6:00)
+화면: 🎥 초원 사냥 → ✏️ "BETA · OCT 31" 끝 화면(호박 가족만) → 첫 장면(코드 + X)으로 이어지는 마지막 컷
 
 | # | English | 한국어 뜻 |
 |---|---|---|
 | 8-1 | {DAYS} days left. | {DAYS}일 남았어요. |
-| 8-2 | Next time, we play the first ten minutes like a real new player, and fix everything that feels boring. | 다음 편엔 진짜 새 플레이어처럼 처음 10분을 플레이해 보고, 지루한 건 다 고쳐요. |
+| 8-2 | Next time: I play the first ten minutes like a brand-new player, and we fix everything that feels boring. | 다음 편: 진짜 새 플레이어처럼 첫 10분을 플레이하고, 지루한 건 다 고쳐요. |
 | 8-3 | And we find out if the Pumpkin King is too strong. | 그리고 호박 대왕이 너무 센지 알아봐요. |
-| 8-4 | The beta opens on Halloween, October thirty-first. | 베타는 핼러윈, 10월 31일에 열려요. |
-| 8-5 | Subscribe so you can play it with us. See you next time! | 같이 플레이하려면 구독해 주세요. 다음에 봐요! |
+| 8-4 | The beta opens on Halloween, October thirty-first. Subscribe so you can play it with us! | 베타는 핼러윈, 10월 31일. 같이 하려면 구독해 주세요! |
 
 ---
 
-## 검수 답(2026-10-06) → 반영함
-1. 제목 "I Made…", 내레이션은 "I"(감독 = 사용자) + "my AI teammates / we".
-2. 영어 이름은 용어 표대로. "square slime" → "Slime".
-3. Claude·Adobe Firefly·Tripo 이름은 사실대로, 로고 크게 쓰지 않기, 설명란 "Not sponsored.".
-4. 6-6 → "brand-new players are safe from him." (실제: Lv5 미만 또는 첫 10분)
-5. 남은 날 수는 빌드 날짜로 자동 계산(10/31 11:00 KST).
-6. 2-7 고침: 수배 별은 뿔 군단이 털거나 쓰러뜨릴 때, 깡패는 약한 상대 괴롭힘 벌칙(다른 규칙).
-- 촬영 편집이 4~8장 사실 다시 확인하며 고친 줄: 4-6 "몬스터 여섯" → "3D 모델 여섯"(아기 슬라임은 펫), 5-4 "좋아하는 게임들" → "팀에게 보여 준 게임"(A23-40), 6-7 "11월 9일까지" → "11월 초까지"(끝은 11/9 00:00 KST = 미국은 11/8), 7-11 버그 신고는 사용자 → 검수 → 팀원, 4-5 펫은 아직 게임에 없어서 "coming soon"(따라다니는 장면은 찍지 않고 모델만 제자리 회전).
+## 촬영 목록 (영어 화면이 메인에 들어간 뒤, FilmSet, 검수 "전달함, 시작" 뒤)
+1. 진영 고르기 화면(영어) 5초 · 2. 교차로·분수 회전 · 3. 초원 사냥(HUD 영어) · 4. 큰 슬라임 + 왕관 조각 퀘스트 화면(정화/삼킴 선택 창) · 5. 호박밭 실제·대왕 정면·싸움(가족만) · 6. 영어 HUD B안 전체 5초 · 7. (만들어지면) 유령 숲·유령 왕, 큰 마을 — 없으면 시안 그림으로.
+쇼츠에서 그대로 쓰는 것: 0번 훅, 팀 카드, 몬스터 얼굴 공개.
+
+## 검수에게 물을 것
+1. 6-3 "Didn't I say no Artisan Archer?" — 거절된 그림(장인 궁수)은 화면에 안 보이고, 펫 조련사 그림만 보여 줘요. 괜찮은지.
+2. 6-5·6-6 만드는 중인 것(유령 숲·유령 왕·큰 마을)은 "getting / we're making"으로만 말해요. 촬영 때까지 들어오면 게임 장면, 아니면 시안 그림.
+3. 5-6 "the boss fixes the eyes by hand"(A23-47 눈 손보기 = 검수) 넣어도 되는지.
