@@ -3975,5 +3975,89 @@
   "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --search --gap-weight 1; 3x3 + 2x2 100% checked art/review/tex/Tex_HauntedFloor_FF_3x3*.png",
   "preview": "art/review/tex_haunted_floor_sheet.jpg",
   "note": "A23-45 유령 숲 바닥. 5안 중 4(푸른 보라·자두색 큰 덩어리, 잔무늬 적음 — '큰 덩어리·차분' 기준). 지형 재질 칸은 이미지 개발이 정함(빈 칸 예: Asphalt/Sandstone). 고르기는 이미지 세션에 맡김(2026-10-06)."
+ },
+ "IconClassChange": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconClassChange_A.txt",
+  "original": "art/out/s2/IconClassChange_A1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconClassChange.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/menu_icons7_sheet.png",
+  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 직업 바꾸기(칼·지팡이·활 묶음 + 빨간 리본 + 도는 금 화살표). A/B 2장씩 중 A1(B = 옷걸이+웃옷)."
+ },
+ "IconRebirth": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconRebirth_B.txt",
+  "original": "art/out/s2/IconRebirth_B1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconRebirth.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/menu_icons7_sheet.png",
+  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 환생(파란 둥근 화살표 + 금별, 고리 안 투명). A(금 화살표+새싹) 대신 B — 새싹은 IconSprout(새싹 보호)와 헷갈려서."
+ },
+ "IconNickname": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconNickname.txt",
+  "original": "art/out/s2/IconNickname_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconNickname.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/menu_icons7_sheet.png",
+  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 닉네임(빈 크림 이름표 + 연필). 2장 중 1."
+ },
+ "IconOpening": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconOpening.txt",
+  "original": "art/out/s2/IconOpening_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconOpening.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/menu_icons7_sheet.png",
+  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 오프닝 다시 보기(왕관 조각 + 파란 재생 단추). 2장 중 1."
+ },
+ "IconTravel": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconTravel.txt",
+  "original": "art/out/s2/IconTravel_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconTravel.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/menu_icons7_sheet.png",
+  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 이동(빛나는 소용돌이 발판, 위로 옅은 빛줄기). 2장 중 1."
+ },
+ "IconAnnounce": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconAnnounce.txt",
+  "original": "art/out/s2/IconAnnounce_2_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconAnnounce.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/menu_icons7_sheet.png",
+  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 알림·랭킹 이름 공개(빨강·금 확성기). 1차 생성 실패, 2차 채택."
+ },
+ "IconVacation": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconVacation.txt",
+  "original": "art/out/s2/IconVacation_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconVacation.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/menu_icons7_sheet.png",
+  "note": "A23-40 정정 메뉴 칸 아이콘(검수·이미지 개발 요청, 칸 74%로 씀). 기존 메뉴 아이콘 스타일. 글자 없음. 휴가(모래섬 야자수 + 웃는 해). 2장 중 1."
  }
 }
