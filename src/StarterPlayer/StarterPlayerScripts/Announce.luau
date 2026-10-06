@@ -2,7 +2,9 @@
 -- Formats Config.Announce.Text[Key] on this client (so it can be localized later) and shows it as a TextChatService
 -- system message in RBXGeneral, colored by the weapon grade. Weapon names follow the finder's class and faction.
 -- Event lines (AnnounceService.Broadcast, Config.Announce.Events: e.g. the Pumpkin King) are plain Text[Key] lines
--- (Text[Key .. "En"] when the language setting is English) in the event's Color, optionally also a toast.
+-- (Text[Key .. "En"] when the language setting is English) in the event's Color, optionally also a toast. A king's
+-- appear line may carry Args.Banter (lines_pack 12, the day's king vs king line, built by the server): one more chat
+-- line in the same colour, never a toast.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TextChatService = game:GetService("TextChatService")
 local StarterGui = game:GetService("StarterGui")
@@ -121,20 +123,29 @@ function A.Show(msg)
 			pcall(ui.Toast, line, "reward", 4, icon)
 		end
 	end
-	-- the place still runs the legacy chat (TextChatService.ChatVersion = LegacyChatService): use its system-message
-	-- core call there, and the TextChatService RBXGeneral channel once the place moves to the new chat
+	A.Chat(line, g.Color)
+	-- lines_pack 12: the kings' banter of the day, right under the appear line, same colour, chat only
+	if type(ev) == "table" and type(args.Banter) == "string" and args.Banter ~= "" then
+		A.Chat(escape(args.Banter), g.Color)
+	end
+end
+
+-- one chat line (rich-text escaped) in a colour. The place still runs the legacy chat (TextChatService.ChatVersion =
+-- LegacyChatService): use its system-message core call there, and the TextChatService RBXGeneral channel once the
+-- place moves to the new chat
+function A.Chat(line, color)
 	local legacy = false
 	pcall(function() legacy = TextChatService.ChatVersion == Enum.ChatVersion.LegacyChatService end)
 	if legacy then
 		local plain = line:gsub("&lt;", "<"):gsub("&gt;", ">"):gsub("&amp;", "&")
 		for _ = 1, 10 do -- the legacy chat registers ChatMakeSystemMessage a moment after join
 			if pcall(StarterGui.SetCore, StarterGui, "ChatMakeSystemMessage",
-				{ Text = plain, Color = g.Color, Font = Enum.Font.GothamBold, TextSize = 18 }) then return end
+				{ Text = plain, Color = color, Font = Enum.Font.GothamBold, TextSize = 18 }) then return end
 			task.wait(0.5)
 		end
 		return
 	end
-	local rich = string.format('<font color="%s"><b>%s</b></font>', hex(g.Color), line)
+	local rich = string.format('<font color="%s"><b>%s</b></font>', hex(color), line)
 	local channel = A.Channel
 	if not channel then
 		local channels = TextChatService:FindFirstChild("TextChannels")

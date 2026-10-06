@@ -1401,7 +1401,7 @@
     },
     {
       "group": "king-schedule",
-      "check": "every client shows the appear line once (Korean / English twin), in the event colour",
+      "check": "every client shows the appear line once (English twin) in the event colour, then the day's banter (lines_pack 12)",
       "pass": 1,
       "fail": 0
     },
@@ -5043,10 +5043,10 @@
     "src/ServerScriptService/HalloweenService.luau": "d288c4fa858b3d3f868e071b2253b1cc7f960afdc06dcabe257b73eed0e7783e",
     "src/ServerScriptService/Main.server.luau": "88c7fda3210f3a09323cc9e2ceb0a36085e74b2656b015a83136cc7e11df764d",
     "src/ServerScriptService/MonsterService.luau": "25dabf44b74a2728058e17978a408218f96a57f65db196dfb369aab793c6d1ce",
-    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "14779e64d8a7a8c6e1a64d380fca83e86905bd9f66cc935cb7e87220ee2bcea5",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "74a2fb80d6414c355b485a60e7e01185266c2b69063615c16b6d8ae5016d4137",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "673cc57a53d6819ef5b42519d9188cce81f85a5f03282cbd495ad485cba6ff44",
     "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "7e77c81f358fa78a179e57b91d145bcf18e1036d349acafa7e5eaa23bfcdff87",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "b6b7c63d2f1759529759bb7851c858ea180e08e6398e2e6bb0196280d6ac68e1",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "fae67f7c9535ad277d6d918a4366135ff8c5bc580cbe849e11c0604c4533c7bb",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "ebb591b02b33a6572c21514edc779b5aa824005e5035a6cb1a0bb7e55f1e028b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Walk.luau": "a2c2b18fcaf4a0f1024c57da5dd4b28a47c16ae57ddf61a9815114641c73baaa",
@@ -5058,7 +5058,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "a838e1d5fa952542b92013298a140b3b7048e1932ff1b518fdd9247213130541",
+  "fixtureSHA256": "049ac84a67cb4db2caa99dcc41071fc5070bc340ced55d7f6608f3d0fcf86f10",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

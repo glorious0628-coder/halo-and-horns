@@ -1,0 +1,233 @@
+{
+  "status": "passed",
+  "checks": 76,
+  "namedChecks": 30,
+  "failing": [],
+  "static": [
+    {
+      "check": "the Forge window shows Config.Text.ForgeGreeting on top (before the location line)",
+      "ok": true
+    },
+    {
+      "check": "the Potion window shows Config.Text.PotionGreeting on top (before the gold line)",
+      "ok": true
+    },
+    {
+      "check": "a story page waiting for a calm moment keeps the server's Var",
+      "ok": true
+    },
+    {
+      "check": "the Story window takes its lines from STORY.Lines(step, f, arg.Var) and its hint from STORY.Hint(obj, f)",
+      "ok": true
+    },
+    {
+      "check": "ClientMain ORDER ends with Audio, every module once, every module file exists",
+      "ok": true
+    },
+    {
+      "check": "Config has the two shop greetings (dev2 lines_pack 11)",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 17,
+    "applied": 17,
+    "caught": 17,
+    "results": [
+      {
+        "mutation": "the banter is never shown",
+        "file": "announce",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "banter chat line :: an appear line with Banter = two chat lines",
+          "banter chat line :: both lines in the event's own colour",
+          "banter chat line :: legacy chat: two system messages, the banter unescaped, same Color",
+          "banter chat line :: line 1 is the event line, line 2 the banter (escaped for rich text)"
+        ]
+      },
+      {
+        "mutation": "the banter is not escaped for rich text",
+        "file": "announce",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "banter chat line :: line 1 is the event line, line 2 the banter (escaped for rich text)"
+        ]
+      },
+      {
+        "mutation": "the banter in the drop colour",
+        "file": "announce",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "banter chat line :: both lines in the event's own colour",
+          "banter chat line :: legacy chat: two system messages, the banter unescaped, same Color"
+        ]
+      },
+      {
+        "mutation": "the banter also toasts",
+        "file": "announce",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "banter chat line :: the banter never toasts (the event's own toast stays as it was)"
+        ]
+      },
+      {
+        "mutation": "drop lines show a banter too",
+        "file": "announce",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "banter chat line :: a weapon drop line ignores Banter"
+        ]
+      },
+      {
+        "mutation": "an empty banter is shown",
+        "file": "announce",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "banter chat line :: an empty Banter is ignored"
+        ]
+      },
+      {
+        "mutation": "Var ignored (always Default)",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "story lines by Var :: Var Good -> the Good lines",
+          "story lines by Var :: a faction row wins over All (Evil: Halo row for Halo, All for Horns)",
+          "story lines by Var :: an exact pick value has its own lines (Var Purify)"
+        ]
+      },
+      {
+        "mutation": "no Default fallback",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "story lines by Var :: a Var without its own lines -> Default",
+          "story lines by Var :: no Var (old server) -> Default (= the step's Lines for old clients)"
+        ]
+      },
+      {
+        "mutation": "the faction row ignored",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "story lines by Var :: a faction row wins over All (Evil: Halo row for Halo, All for Horns)",
+          "story lines by Var :: a step without LinesBy keeps its Lines (Var ignored)"
+        ]
+      },
+      {
+        "mutation": "the hint ignores the faction line",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "choice hint :: Halo: Honor +Good on the left, Honor -Evil on the right (A23-58)",
+          "choice hint :: Horns: Infamy -Good on the left, Infamy +Evil on the right (A23-58)"
+        ]
+      },
+      {
+        "mutation": "0-point picks show +0 / -0",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "choice hint :: two 0-point picks (E5): the lean line, no +0 / -0"
+        ]
+      },
+      {
+        "mutation": "the guild sees score numbers",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "choice hint :: no faction yet / an unknown faction id: the no-points line, never an error"
+        ]
+      },
+      {
+        "mutation": "a waiting page drops Var",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a story page waiting for a calm moment keeps the server's Var"
+        ]
+      },
+      {
+        "mutation": "the Story window ignores Var",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Story window takes its lines from STORY.Lines(step, f, arg.Var) and its hint from STORY.Hint(obj, f)"
+        ]
+      },
+      {
+        "mutation": "no Forge greeting",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Forge window shows Config.Text.ForgeGreeting on top (before the location line)"
+        ]
+      },
+      {
+        "mutation": "no Potion greeting",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Potion window shows Config.Text.PotionGreeting on top (before the gold line)"
+        ]
+      },
+      {
+        "mutation": "ClientMain never loads Audio",
+        "file": "client_main",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ClientMain ORDER ends with Audio, every module once, every module file exists"
+        ]
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
+    "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "74a2fb80d6414c355b485a60e7e01185266c2b69063615c16b6d8ae5016d4137",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "fae67f7c9535ad277d6d918a4366135ff8c5bc580cbe849e11c0604c4533c7bb",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "acfed529a7be7f8bdf96fe0988d61d33d6f135b02e146c623d72bdc41686c57c",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "2cf902976f0012fe5dd0b9249ba54eac409cbbebeb6886c7c5a8c7ea1f863dab",
+    "tools/fixtures/story_client_offline.luau": "52eda9e8c6396bebc0feab833853b34915b41f334d7cda37c726eced16b66bee"
+  },
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "contract": "town_quests_server_2026-10-07 section 8 (E2 LinesBy -> Var, A23-58 choice hints, E5 0-point picks) and lines_pack_server_2026-10-07 sections 1-2 (Args.Banter chat line, shop greetings); ClientMain loads Audio (6509895).",
+  "limitations": "The Story / shop windows themselves (layout, fonts, phone sizes) and the real chat need a Studio Play check; the Panels checks run the cut-out STORY functions and read the builders."
+}

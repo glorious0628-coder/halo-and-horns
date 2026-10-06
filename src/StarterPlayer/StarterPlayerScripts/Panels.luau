@@ -2496,6 +2496,9 @@ BUILDERS.WeaponShop = function(parent)
 		session = { Class = currentClass(), Faction = myFaction() }
 		WSHOP.Session = session
 	end
+	-- lines_pack 11: Otto's calm hello on top (no hurry / sale words next to the buy buttons)
+	local hello = Config.Text and Config.Text.ForgeGreeting
+	if type(hello) == "string" and hello ~= "" then addText(parent, hello, { Name = "ShopGreeting", Size = 18 }) end
 	addText(parent, T.WeaponLocation, { Name = "BlacksmithLocation", Color = theme.SubText })
 	local accessLabel = addText(parent, "", { Name = "BlacksmithAccess", Color = theme.Bad })
 	local details = addColumn(parent, 1, 0, 10)
@@ -2651,6 +2654,7 @@ local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, Calm
 		RowOther = "Someone wants to talk — tap to see",
 		ToastShard = "A shard is talking to you! Tap the quest row to see.",
 		ToastOther = "A story is waiting! Tap the quest row to see.",
+		HintLean = "No points here. Your shard just leans to the light or the dark.", -- E5: both picks 0 points
 	},
 }
 
@@ -2676,7 +2680,7 @@ function STORY.Busy()
 end
 
 function STORY.Queue(arg)
-	STORY.Pending = { Id = arg.Id, St = arg.St }
+	STORY.Pending = { Id = arg.Id, St = arg.St, Var = arg.Var }
 	local key = arg.Id .. "|" .. tostring(arg.St)
 	if STORY.Toasted ~= key and not pickerOpen() then
 		STORY.Toasted = key
@@ -2702,6 +2706,24 @@ function STORY.Title()
 	return string.format(sq.Text.Title, speaker, def.Title)
 end
 
+-- E2 (town_quests_server 8): the server's Var picks a step's lines by an earlier choice (LinesBy[Var], else Default);
+-- a step without LinesBy keeps its Lines. f = my faction (Lines[f], else Lines.All)
+function STORY.Lines(step, f, var)
+	local src = (type(step.LinesBy) == "table" and (step.LinesBy[var] or step.LinesBy.Default)) or step.Lines
+	return (type(src) == "table" and (src[f] or src.All)) or {}
+end
+
+-- the line under the two choice buttons (what a pick does, before picking). A23-58: a pick against my side lowers my
+-- own score (Halo: Honor +Good / -Evil, Horns: Infamy -Good / +Evil); E5: two 0-point picks only lean the shard
+function STORY.Hint(obj, f)
+	local TXT = Config.StoryQuests.Text
+	if f ~= "Halo" and f ~= "Horns" then return TXT.ChoiceHintNeutral end
+	local good, evil = (obj.Good and obj.Good.Points) or 0, (obj.Evil and obj.Evil.Points) or 0
+	if good <= 0 and evil <= 0 then return STORY.Text.HintLean end
+	local own = TXT["ChoiceHint" .. f]
+	return string.format(type(own) == "string" and own or TXT.ChoiceHint, good, evil)
+end
+
 BUILDERS.Story = function(parent)
 	local def, arg = STORY.Def()
 	local step = def and def.Steps[arg.St]
@@ -2712,7 +2734,7 @@ BUILDERS.Story = function(parent)
 	local f = myFaction()
 	local over = step[f]
 	local obj = (type(over) == "table" and over.Obj) or step.Obj
-	local lines = (step.Lines and (step.Lines[f] or step.Lines.All)) or {}
+	local lines = STORY.Lines(step, f, arg.Var)
 	local TXT = Config.StoryQuests.Text
 	local page = 1
 	local line = addText(parent, "", { Name = "StoryLine", Size = 22, Align = Enum.TextXAlignment.Center })
@@ -2721,9 +2743,7 @@ BUILDERS.Story = function(parent)
 	-- what a pick does, shown with the choice buttons on the last page (user 2026-10-05: the flow must explain itself)
 	local hint = nil
 	if obj.Type == "Choice" then
-		local neutralPick = f ~= "Halo" and f ~= "Horns"
-		hint = addText(parent, neutralPick and TXT.ChoiceHintNeutral
-			or string.format(TXT.ChoiceHint, (obj.Good and obj.Good.Points) or 0, (obj.Evil and obj.Evil.Points) or 0),
+		hint = addText(parent, STORY.Hint(obj, f),
 			{ Name = "StoryChoiceHint", Size = 16, Color = theme.Gold, Align = Enum.TextXAlignment.Center })
 	end
 	local buttons = {}
@@ -2799,6 +2819,9 @@ BUILDERS.PotionShop = function(parent)
 		addText(parent, "The potion shop is coming soon.", { Align = Enum.TextXAlignment.Center })
 		return nil
 	end
+	-- lines_pack 11: Fizzby's hello on top
+	local hello = Config.Text and Config.Text.PotionGreeting
+	if type(hello) == "string" and hello ~= "" then addText(parent, hello, { Name = "ShopGreeting", Size = 18 }) end
 	local gold = addText(parent, "", { Name = "PotionGold", Size = 18 })
 	local rows, pending = {}, nil
 	local update

@@ -1826,16 +1826,25 @@ local function chatText(line)
 end
 local function hexOf(c) return string.format("#%02X%02X%02X", c.X, c.Y, c.Z) end
 
--- every client shows key's line once more than before: Korean, or English for the English client; colour = the event's
-local function clientsShowed(f, key, before)
+-- every client shows key's line once more than before: Korean, or English for the English client; colour = the event's.
+-- banter (lines_pack 12: a king's appear Args.Banter): right after it that line too, escaped, in the same colour
+local function clientsShowed(f, key, before, banter)
 	local A = f.Config.Announce
 	local ok, detail = true, ""
+	local extra = (type(banter) == "string" and banter ~= "") and 1 or 0
 	for i, c in f.Clients do
 		local want = (c.Lang == "en") and A.Text[key .. "En"] or A.Text[key]
-		local line = c.Lines[(before and before[i] or 0) + 1]
+		local b = before and before[i] or 0
+		local line = c.Lines[b + 1]
 		local text, color = chatText(line)
-		if #c.Lines ~= (before and before[i] or 0) + 1 or text ~= want or color ~= hexOf(A.Events[key].Color) then
-			ok, detail = false, c.Name .. " " .. tostring(line) .. " want " .. tostring(want)
+		if #c.Lines ~= b + 1 + extra or text ~= want or color ~= hexOf(A.Events[key].Color) then
+			ok, detail = false, c.Name .. " " .. tostring(line) .. " want " .. tostring(want) .. " (+" .. extra .. " banter)"
+		elseif extra == 1 then
+			local btext, bcolor = chatText(c.Lines[b + 2])
+			local esc = banter:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;")
+			if btext ~= esc or bcolor ~= color then
+				ok, detail = false, c.Name .. " banter " .. tostring(c.Lines[b + 2]) .. " want " .. esc
+			end
 		end
 	end
 	return ok, detail
@@ -1908,8 +1917,8 @@ runGroup("king-schedule", function()
 	check(type(msg) == "table" and msg.Event == true and onlyBanter and msg.Grade == nil,
 		"event payload = { Key, Args = { Banter = the king's line }, Event = true }", show(msg))
 	check(nameless(f, msg), "the appear payload carries no player name or id", select(2, nameless(f, msg)))
-	local ok, detail = clientsShowed(f, "PumpkinKingAppear", { 0, 0, 0 })
-	check(ok, "every client shows the appear line once (Korean / English twin), in the event colour", detail)
+	local ok, detail = clientsShowed(f, "PumpkinKingAppear", { 0, 0, 0 }, type(msg) == "table" and type(msg.Args) == "table" and msg.Args.Banter or nil)
+	check(ok, "every client shows the appear line once (English twin) in the event colour, then the day's banter (lines_pack 12)", detail)
 	check(#f.Clients[1].Toasts == 1 and #f.Clients[2].Toasts == 1 and #f.Clients[3].Toasts == 0,
 		"appear toast on free clients; skipped (not held) while banners are held", show({ #f.Clients[1].Toasts, #f.Clients[2].Toasts, #f.Clients[3].Toasts }))
 	check(f.Clients[2].Toasts[1] and f.Clients[2].Toasts[1].Text == f.Config.Announce.Text.PumpkinKingAppearEn, "the English client toasts the English line",
