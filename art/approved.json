@@ -1061,18 +1061,6 @@
   "preview": "art/review/styleboard_b1_preview.png",
   "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 버튼 2. 금색 주요 버튼(캡슐). 가로로 늘리는 9조각: 양 끝 반원이라 좌우 고정폭은 약 83(높이의 절반), 측정값 Rect(131,45,381,105)은 세로 그라데이션 때문에 넓게 잡힘."
  },
- "SlotRare": {
-  "status": "approved",
-  "date": "2026-10-06",
-  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
-  "prompt": "art/prompts/SB_UIP_SlotRare_Cream.txt",
-  "original": "art/out/SlotRare_src.png (1024) (Adobe MCP presigned download)",
-  "file": "art/ui/SlotRare.png",
-  "size": "488x512 RGBA",
-  "cutout": "scratch frame9: cutout_flat, aspect kept, longest side 508 + 2px pad, edge clean-up; SliceCenter measured with prep_ui.border",
-  "preview": "art/review/styleboard_b1_preview.png",
-  "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 희귀 칸, 안쪽 크림(48px 비교에서 아이콘이 가장 또렷). 위 가운데 보석 때문에 늘리지 말고 정사각 그대로 씀. 형제 칸 5종(묶음 7)은 이 칸을 구조 참조로."
- },
  "Weapon_Warrior_T3": {
   "status": "approved",
   "date": "2026-10-06",
@@ -2014,5 +2002,246 @@
   "cutout": "scratch cut_icon.py (tools/cutout_flat cutout/square/edge_fix, 512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
   "preview": "art/review/s2/b45_common_ui_sheet.png",
   "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 공격력 아이콘(짧은 강철 검 + 주황 날 빛). 직업 선택 '공격' 줄. Parts.IconAttack 대체. c/d 중 c."
+ },
+ "SlotRare_CreamMaster": {
+  "status": "replaced",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium",
+  "prompt": "art/prompts/SB_UIP_SlotRare_Cream.txt",
+  "original": "art/out/SlotRare_src.png (1024) (Adobe MCP presigned download)",
+  "file": "art/ui/SlotRare.png @ 68cd2eb (git history)",
+  "size": "488x512 RGBA",
+  "cutout": "scratch frame9: cutout_flat, aspect kept, longest side 508 + 2px pad, edge clean-up; SliceCenter measured with prep_ui.border",
+  "preview": "art/review/styleboard_b1_preview.png",
+  "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 희귀 칸, 안쪽 크림(48px 비교에서 아이콘이 가장 또렷). 위 가운데 보석 때문에 늘리지 말고 정사각 그대로 씀. 형제 칸 5종(묶음 7)은 이 칸을 구조 참조로.",
+  "replaced_by": "SlotRare (A23-32 dark slot, 묶음 7, 이미지 생성 2)"
+ },
+ "SlotCommon": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_SlotCommon.txt",
+  "original": "art/out/s2/SlotCommon_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/SlotCommon.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_slot.py (tools/cutout_flat cutout/edge_fix; square body normalised to Rect(36,40,476,480) on a 512 canvas so all 6 grades overlap exactly, ornament above); checked dark/cream + 48/64px with icons",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. A23-32 가방 칸: 어두운 남색 안쪽 + 얇은 등급색 테, 아이콘은 안쪽 Rect(76,80,436,436)(512 기준)에 꽉 채움, 개수(오른쪽 아래)·+N(왼쪽 위)은 게임 글자. 6장 모두 본체 같은 자리라 겹쳐 바꿔 끼우면 됨. 일반: 은빛 테, 민무늬.",
+  "inner": [
+   76,
+   80,
+   436,
+   436
+  ],
+  "body": [
+   36,
+   40,
+   476,
+   480
+  ]
+ },
+ "SlotUncommon": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_SlotUncommon.txt",
+  "original": "art/out/s2/SlotUncommon_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/SlotUncommon.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_slot.py (tools/cutout_flat cutout/edge_fix; square body normalised to Rect(36,40,476,480) on a 512 canvas so all 6 grades overlap exactly, ornament above); checked dark/cream + 48/64px with icons",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. A23-32 가방 칸: 어두운 남색 안쪽 + 얇은 등급색 테, 아이콘은 안쪽 Rect(76,80,436,436)(512 기준)에 꽉 채움, 개수(오른쪽 아래)·+N(왼쪽 위)은 게임 글자. 6장 모두 본체 같은 자리라 겹쳐 바꿔 끼우면 됨. 고급: 초록 테 + 위 잎 2개.",
+  "inner": [
+   76,
+   80,
+   436,
+   436
+  ],
+  "body": [
+   36,
+   40,
+   476,
+   480
+  ]
+ },
+ "SlotRare": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_SlotRare.txt",
+  "original": "art/out/s2/SlotRare_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/SlotRare.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_slot.py (tools/cutout_flat cutout/edge_fix; square body normalised to Rect(36,40,476,480) on a 512 canvas so all 6 grades overlap exactly, ornament above); checked dark/cream + 48/64px with icons",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. A23-32 가방 칸: 어두운 남색 안쪽 + 얇은 등급색 테, 아이콘은 안쪽 Rect(76,80,436,436)(512 기준)에 꽉 채움, 개수(오른쪽 아래)·+N(왼쪽 위)은 게임 글자. 6장 모두 본체 같은 자리라 겹쳐 바꿔 끼우면 됨. 희귀: 사파이어 테 + 위 보석. 묶음 1 크림 SlotRare(같은 키, rbxassetid 72588462774126)를 대체(A23-32) — 옛 기록은 SlotRare_CreamMaster.",
+  "inner": [
+   76,
+   80,
+   436,
+   436
+  ],
+  "body": [
+   36,
+   40,
+   476,
+   480
+  ]
+ },
+ "SlotEpic": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_SlotEpic.txt",
+  "original": "art/out/s2/SlotEpic_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/SlotEpic.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_slot.py (tools/cutout_flat cutout/edge_fix; square body normalised to Rect(36,40,476,480) on a 512 canvas so all 6 grades overlap exactly, ornament above); checked dark/cream + 48/64px with icons",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. A23-32 가방 칸: 어두운 남색 안쪽 + 얇은 등급색 테, 아이콘은 안쪽 Rect(76,80,436,436)(512 기준)에 꽉 채움, 개수(오른쪽 아래)·+N(왼쪽 위)은 게임 글자. 6장 모두 본체 같은 자리라 겹쳐 바꿔 끼우면 됨. 영웅: 자수정 테 + 위 보석 + 모서리 금별 4.",
+  "inner": [
+   76,
+   80,
+   436,
+   436
+  ],
+  "body": [
+   36,
+   40,
+   476,
+   480
+  ]
+ },
+ "SlotLegendary": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_SlotLegendary.txt",
+  "original": "art/out/s2/SlotLegendary_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/SlotLegendary.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_slot.py (tools/cutout_flat cutout/edge_fix; square body normalised to Rect(36,40,476,480) on a 512 canvas so all 6 grades overlap exactly, ornament above); checked dark/cream + 48/64px with icons",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. A23-32 가방 칸: 어두운 남색 안쪽 + 얇은 등급색 테, 아이콘은 안쪽 Rect(76,80,436,436)(512 기준)에 꽉 채움, 개수(오른쪽 아래)·+N(왼쪽 위)은 게임 글자. 6장 모두 본체 같은 자리라 겹쳐 바꿔 끼우면 됨. 전설: 주황금 테 + 위 왕관 + 반짝. 움직이는 반짝임은 전설만(UIGradient).",
+  "inner": [
+   76,
+   80,
+   436,
+   436
+  ],
+  "body": [
+   36,
+   40,
+   476,
+   480
+  ]
+ },
+ "SlotEmpty": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_SlotEmpty.txt",
+  "original": "art/out/s2/SlotEmpty_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/SlotEmpty.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_slot.py (tools/cutout_flat cutout/edge_fix; square body normalised to Rect(36,40,476,480) on a 512 canvas so all 6 grades overlap exactly, ornament above); checked dark/cream + 48/64px with icons",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. A23-32 가방 칸: 어두운 남색 안쪽 + 얇은 등급색 테, 아이콘은 안쪽 Rect(76,80,436,436)(512 기준)에 꽉 채움, 개수(오른쪽 아래)·+N(왼쪽 위)은 게임 글자. 6장 모두 본체 같은 자리라 겹쳐 바꿔 끼우면 됨. 빈 칸: 아주 옅은 청회색 테.",
+  "inner": [
+   76,
+   80,
+   436,
+   436
+  ],
+  "body": [
+   36,
+   40,
+   476,
+   480
+  ]
+ },
+ "GlyphBow": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphBow.txt",
+  "original": "art/out/s2/GlyphBow_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphBow.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 흰 활 글리프(궁수 공격 버튼 위)."
+ },
+ "GlyphBag": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphBag.txt",
+  "original": "art/out/s2/GlyphBag_b_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphBag.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 흰 가방 글리프(오른쪽 위 [가방] 버튼). 2안 중 b(끈이 연한 금색)."
+ },
+ "GlyphMap": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphMap.txt",
+  "original": "art/out/s2/GlyphMap_b_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphMap.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 흰 지도 글리프([전체 지도] 버튼)."
+ },
+ "GlyphMenu": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphMenu.txt",
+  "original": "art/out/s2/GlyphMenu_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphMenu.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 흰 메뉴(2×2 칸) 글리프([메뉴] 버튼)."
+ },
+ "GlyphShrink": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphShrink.txt",
+  "original": "art/out/s2/GlyphShrink_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphShrink.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 작게(안쪽 화살표 4) — 가방 8열→4열 버튼(A23-32)."
+ },
+ "GlyphExpand": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphExpand.txt",
+  "original": "art/out/s2/GlyphExpand_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphExpand.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 넓게(바깥 화살표 4) — 가방 4열→8열 버튼(A23-32)."
+ },
+ "GlyphSort": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GlyphSort.txt",
+  "original": "art/out/s2/GlyphSort_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GlyphSort.png",
+  "size": "512x512 RGBA",
+  "cutout": "scratch cut_icon.py (512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
+  "preview": "art/review/s2/b7_slots_glyphs_sheet.png",
+  "note": "묶음 7. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 정렬(줄 3 + 아래 화살표) — 가방 정렬 4가지 버튼(A23-32)."
  }
 }
