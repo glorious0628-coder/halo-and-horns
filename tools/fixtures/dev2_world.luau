@@ -19,7 +19,7 @@ local function RR(wk, board, rank, season) return { WeekId = wk, Season = season
 ------------------------------------------------------------------ the server world
 -- opts: Time, Clock, Studio (default false = the PRE season), Memory (DataService memory mode), PrivateServerId,
 -- Stores (shared = another server), Budget, Friends, FriendError, EditConfig, Progression (load the real
--- ProgressionService for GetXPMult)
+-- ProgressionService for GetXPMult), PvPLoop (step PvPService's 1 s loop by hand: w:PvPTick)
 local function rankWorld(opts)
 	opts = opts or {}
 	local w = newWorld({ Time = opts.Time or MID62, Clock = opts.Clock or 5000, Studio = opts.Studio == true,
@@ -124,7 +124,13 @@ local function rankWorld(opts)
 		return m
 	end
 	load("CombatService", COMBAT_SOURCE)
-	load("PvPService", PVP_SOURCE)
+	local penv
+	if opts.PvPLoop then
+		-- PvPService's 1 s loop (protection expiry, star decay, graduation) is stepped by hand (w:PvPTick)
+		penv = w:Env()
+		penv.task = setmetatable({ wait = function(t) return coroutine.yield(t) end }, { __index = penv.task })
+	end
+	load("PvPService", PVP_SOURCE, penv)
 	-- GrudgeService's 0.25 s loop is stepped by hand (w:GrudgeTick): its task.wait yields the loop coroutine
 	local genv = w:Env()
 	genv.task = setmetatable({ wait = function(t) return coroutine.yield(t) end }, { __index = genv.task })
@@ -146,7 +152,14 @@ local function rankWorld(opts)
 		reg[name].Init(reg)
 		if name == "GrudgeService" and opts.Kaiju then reg.KaijuService.Init(reg) end
 	end
-	for _, name in { "CombatService", "PvPService" } do reg[name].Start() end
+	reg.CombatService.Start()
+	local p0 = #w.Spawned
+	reg.PvPService.Start()
+	local pvpLoop = nil
+	if opts.PvPLoop then
+		assert(#w.Spawned == p0 + 1, "PvPService.Start spawns one loop")
+		pvpLoop = coroutine.create(w.Spawned[#w.Spawned][1])
+	end
 	local before = #w.Spawned
 	reg.GrudgeService.Start()
 	assert(#w.Spawned == before + 1, "GrudgeService.Start spawns one loop")
@@ -162,6 +175,13 @@ local function rankWorld(opts)
 	w.Spawned = {} -- the services' own forever-loops never run here; the tests step the Tick functions directly
 	assert(coroutine.resume(grudgeLoop))
 	if kaijuLoop then assert(coroutine.resume(kaijuLoop)) end
+	if pvpLoop then assert(coroutine.resume(pvpLoop)) end
+	-- advance `seconds` (default 1) and run PvPService's loop once (opts.PvPLoop)
+	function w:PvPTick(seconds)
+		self:Advance(seconds or 1)
+		local ok, err = coroutine.resume(assert(pvpLoop, "rankWorld { PvPLoop = true }"))
+		assert(ok, err)
+	end
 	-- advance `seconds` and run the kaiju loop once
 	function w:KaijuTick(seconds)
 		self:Advance(seconds or 0.25)

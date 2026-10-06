@@ -13,6 +13,8 @@ local TAG = "PvPService"
 local LOOP_INTERVAL = 1
 local PRUNE_INTERVAL = 60 -- seconds between prunes of the bait damage log
 local LOOP_WARN_INTERVAL = 10
+-- ⑤ (quality_ideas §1, 검수): the spawn shield shows no bubble; the protected body wears this outline instead
+local PROTECT_GLOW = "ProtectGlow"
 
 -- review-fix tuning knobs (grouped to keep the chunk's local count low)
 local GUARD = {
@@ -350,16 +352,34 @@ local function addStar(killer)
 	announceIfMostWanted(killer, before, after)
 end
 
+-- the shield and its outline always go together
 local function destroyForceFields(p)
 	local character = p.Character
 	if not character then
 		return
 	end
 	for _, child in character:GetChildren() do
-		if child:IsA("ForceField") then
+		if child:IsA("ForceField") or (child:IsA("Highlight") and child.Name == PROTECT_GLOW) then
 			child:Destroy()
 		end
 	end
+end
+
+-- ⑤ a soft outline in the faction color (no fill, hidden behind walls) while protected. Protect adds it; the 1 s loop
+-- puts it back on a rebuilt body (an appearance swap moves the ForceField, not this)
+local function addProtectGlow(p)
+	local character = p.Character
+	local f = Config.Factions[faction(p)]
+	if not character or not character.Parent or character:FindFirstChild(PROTECT_GLOW) or not (f and f.Color) then
+		return
+	end
+	local h = Instance.new("Highlight")
+	h.Name = PROTECT_GLOW
+	h.FillTransparency = 1
+	h.OutlineColor = f.Color
+	h.OutlineTransparency = Config.PvP.ProtectGlow.OutlineTransparency
+	h.DepthMode = Enum.HighlightDepthMode.Occluded
+	h.Parent = character
 end
 
 local function clearRevenge(p)
@@ -469,11 +489,12 @@ function PvPService.Protect(player, seconds)
 	local character = player.Character
 	if character and character.Parent and not character:FindFirstChildOfClass("ForceField") then
 		local ff = Instance.new("ForceField")
-		ff.Visible = true
+		ff.Visible = false -- ⑤ no bubble (Humanoid:TakeDamage still respects it); the outline shows the shield
 		ff.Parent = character
 	end
 	protectedUntil[player] = math.max(protectedUntil[player] or 0, os.clock() + seconds)
 	setAttr(player, "Protected", true)
+	addProtectGlow(player)
 end
 
 function PvPService.BreakProtection(player)
@@ -820,12 +841,14 @@ end
 
 ------------------------------------------------------------------ loops
 local function tickPlayer(p, now)
-	-- protection expiry
+	-- protection expiry (while protected: the outline back on a rebuilt body)
 	local pu = protectedUntil[p]
 	if pu and pu > 0 and now >= pu then
 		protectedUntil[p] = 0
 		destroyForceFields(p)
 		setAttr(p, "Protected", false)
+	elseif pu and pu > 0 then
+		addProtectGlow(p)
 	end
 
 	-- star decay: one star per StarDecaySeconds, paused while queued / siren / active kaiju

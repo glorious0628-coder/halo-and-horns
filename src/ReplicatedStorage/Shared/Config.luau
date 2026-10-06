@@ -799,6 +799,9 @@ Config.PvP = {
 	BoldStrongMult = 2,
 	BoldWeakMult = 0.5,
 	SpawnProtection = 10, -- seconds; broken early when the protected player damages a player
+	-- ⑤ (quality_ideas §1, 검수 2026-10-07): no shield bubble; while protected the body wears a soft outline in its
+	-- faction color (Config.Factions[f].Color: Halo gold, Horns red), PvPService Highlight "ProtectGlow"
+	ProtectGlow = { OutlineTransparency = 0.35 },
 	HitPctOfMaxHP = 0.10, -- normal per-target PvP hit = victim BASE MaxHealth * 0.10 * powerRatio * ... (§4.9)
 	PowerRatioMin = 0.8,
 	PowerRatioMax = 1.5,

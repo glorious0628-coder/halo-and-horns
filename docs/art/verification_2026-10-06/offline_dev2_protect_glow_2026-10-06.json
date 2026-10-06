@@ -1,0 +1,432 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 39,
+  "failedChecks": 0,
+  "namedChecks": 39,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.PvP.ProtectGlow.OutlineTransparency: a soft outline (between 0 and 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the faction colors exist (Halo gold, Horns red)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "spawn protection stays 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: nothing before the spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: the ForceField is there but invisible (no bubble)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: a Highlight named ProtectGlow on the body",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: outline only (no fill)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: the outline is the faction color",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: soft (Config transparency)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: hidden behind walls (Occluded)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: Protected (the 'Revive Shield' chip) stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Halo: no second shield or outline",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: nothing before the spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: the ForceField is there but invisible (no bubble)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: a Highlight named ProtectGlow on the body",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: outline only (no fill)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: the outline is the faction color",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: soft (Config transparency)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: hidden behind walls (Occluded)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: Protected (the 'Revive Shield' chip) stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Horns: no second shield or outline",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "9 s: still protected, still glowing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "10 s: the shield and the outline are gone together",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "later ticks never bring it back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "a hit breaks the shield: the outline goes too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "the next tick does not bring it back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "a body that was never protected never glows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebuilt-body",
+      "check": "right after the swap: the moved shield, no outline yet, no new shield",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebuilt-body",
+      "check": "the next second: the outline is back on the new body (the shield still invisible)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebuilt-body",
+      "check": "9 s after the spawn: still glowing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebuilt-body",
+      "check": "10 s after the spawn: gone (the swap did not add time)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebuilt-body",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rebuilt-body",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 34,
+  "staticFailures": [],
+  "mutations": {
+    "total": 12,
+    "applied": 12,
+    "caught": 12,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the bubble shows again",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebuilt-body :: the next second: the outline is back on the new body (the shield still invisible)",
+          "spawn :: Halo: the ForceField is there but invisible (no bubble)",
+          "spawn :: Horns: the ForceField is there but invisible (no bubble)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no outline on a spawn",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: Halo: a Highlight named ProtectGlow on the body",
+          "spawn :: Halo: hidden behind walls (Occluded)",
+          "spawn :: Halo: no second shield or outline",
+          "spawn :: Halo: outline only (no fill)",
+          "spawn :: Halo: soft (Config transparency)",
+          "spawn :: Halo: the outline is the faction color"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "the outline stays after the shield",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: 10 s: the shield and the outline are gone together",
+          "ends :: a hit breaks the shield: the outline goes too",
+          "ends :: later ticks never bring it back",
+          "ends :: the next tick does not bring it back",
+          "rebuilt-body :: 10 s after the spawn: gone (the swap did not add time)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a filled glow",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: Halo: outline only (no fill)",
+          "spawn :: Horns: outline only (no fill)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "seen through walls",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: Halo: hidden behind walls (Occluded)",
+          "spawn :: Horns: hidden behind walls (Occluded)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "one color for both sides",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebuilt-body :: the next second: the outline is back on the new body (the shield still invisible)",
+          "spawn :: Horns: the outline is the faction color"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a hard outline",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: Halo: soft (Config transparency)",
+          "spawn :: Horns: soft (Config transparency)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a second outline on a second Protect",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: Halo: no second shield or outline",
+          "spawn :: Horns: no second shield or outline"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a rebuilt body stays bare",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rebuilt-body :: 9 s after the spawn: still glowing",
+          "rebuilt-body :: the next second: the outline is back on the new body (the shield still invisible)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the loop dresses unprotected bodies",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: a body that was never protected never glows",
+          "ends :: later ticks never bring it back",
+          "ends :: the next tick does not bring it back"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the shield stays after a hit",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: a hit breaks the shield: the outline goes too",
+          "ends :: the next tick does not bring it back"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a solid outline in Config",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.PvP.ProtectGlow.OutlineTransparency: a soft outline (between 0 and 1)"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "0e36f290f7d1a49b3f3d5e969d3945a9567a02ad9b29cf29613b6c0e52af0ddd",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/RankingService.luau": "50ce840d503ecd8faa70a3692f8428ef823b5b537e3d591d5b765175f52decdc",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
+    "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
+    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/ServerScriptService/ProgressionService.luau": "074be3338e3845a95ebd1d0943d7c3ab68ed03f9529e11286e62e7140ab8fee3",
+    "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
+    "src/ServerScriptService/CharacterVisuals.luau": "bf34c6cae54d9e56ca82dcb5d6906de0fa9e089f352dfa4d540a010d742c50b1",
+    "src/ServerScriptService/KaijuService.luau": "c5d1398e170af68cc369b464ce07e7895f38b3da98ab0abda2a2eaed61bf2d3d"
+  },
+  "fixtureSHA256": "5e69ecc8ae452ea24bb2cd3a324ea1d6b66a13ff1e135c4492adeefe1f79057f",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "⑤ (quality_ideas §1, 검수 2026-10-07): PvPService.Protect (spawn, 10 s) keeps the ForceField (Humanoid:TakeDamage still respects it) but Visible = false, and puts a Highlight \"ProtectGlow\" on the body: no fill (FillTransparency 1), OutlineColor = Config.Factions[faction].Color (Halo gold, Horns red), OutlineTransparency = Config.PvP.ProtectGlow.OutlineTransparency (0.35), DepthMode Occluded. One shield, one outline. The outline goes with the shield (BreakProtection after the protected player's hit, the expiry in the 1 s loop); while protected the loop puts it back on a rebuilt body (an appearance swap moves the ForceField, not the outline), and a cosmetic spawn never renews the time. The Protected attribute (the 'Revive Shield' chip) is unchanged.",
+  "limitations": "The real look (outline width, how it reads on avatars at a distance, phone) needs a Studio check by game dev 1. Roblox draws at most 31 Highlights at once per client; spawn shields last 10 s, so only a few exist at a time. A body that also wears the 3-star WantedGlow shows both Highlights."
+}
