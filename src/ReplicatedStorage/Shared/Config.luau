@@ -1027,10 +1027,10 @@ Config.Zones = {
 		FloorColor = Color3.fromRGB(150, 118, 72), FloorMaterial = Enum.Material.Mud, Spawn = Vector3.new(360, 0, 190) },
 	-- A23-45 (user 2026-10-06 "유령은 유령끼리"): the ghost family's own seasonal field west of the PumpkinPatch (land
 	-- x 160..280, z 185..295 joined to it; MapBuilder fills it), entered only through the pumpkin field's west gate.
-	-- Goblin-woods strength (Lv 8-14 recommended, no level gate), no PvP. Floor: Ground until its own tile comes.
+	-- Goblin-woods strength (Lv 8-14 recommended, no level gate), no PvP. Floor: Asphalt = the Tex_HauntedFloor slot.
 	HauntedHollow = { Id = "HauntedHollow", Name = "유령 숲", Center = Vector3.new(220, 0, 240), Size = Vector3.new(104, 0, 90),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "Halloween",
-		FloorColor = Color3.fromRGB(118, 106, 150), FloorMaterial = Enum.Material.Ground, Spawn = Vector3.new(262, 0, 240) },
+		FloorColor = Color3.fromRGB(118, 106, 150), FloorMaterial = Enum.Material.Asphalt, Spawn = Vector3.new(262, 0, 240) },
 	GoblinWoods = { Id = "GoblinWoods", Name = "고블린 숲", Center = Vector3.new(720, 0, 0), Size = Vector3.new(300, 0, 300),
 		MinLevel = 10, PvP = true, Town = false, Faction = nil,
 		FloorColor = Color3.fromRGB(60, 125, 55), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(590, 0, 0) },
@@ -1460,7 +1460,8 @@ Config.Tutorial = {
 	},
 	Text = {
 		FirstFight = "직업을 고른 뒤 안내자에게 첫 임무를 받아요.",
-		Welcome = "첫 임무 · 메뉴에서 안내자 만나기",
+		-- A23-40: the guide is met by tapping this quest line (the menu moved to the top-right fold)
+		Welcome = "첫 임무 · 여기를 눌러 안내자 만나기", WelcomeEn = "First quest · Tap here to meet the Guide",
 		Travel = "보급로 되찾기 · 메뉴 > 이동 > 말랑 초원",
 		QuestStart = "첫 임무: %s! (보상 %s골드)",
 		QuestReady = "보급로 임무 완료! [받기]를 눌러요.",

@@ -47,6 +47,9 @@ local definitions = {
 	-- A23-30 pumpkin field soil: Mud was an empty slot (no other terrain or part uses it)
 	{ Key = "Tex_PumpkinSoil", Name = "GE_PumpkinSoil", Material = Enum.Material.Mud, Override = true, Fresh = true,
 		StudsPerTile = 14, TerrainColor = PAINTED },
+	-- A23-45 HauntedHollow floor: Asphalt was an empty slot (MapBuilder fills the hollow's land with it)
+	{ Key = "Tex_HauntedFloor", Name = "GE_HauntedFloor", Material = Enum.Material.Asphalt, Override = true, Fresh = true,
+		StudsPerTile = 14, TerrainColor = PAINTED },
 	-- trees: named variants on the Map.Decor Tree parts only (no base override: Wood / SmoothPlastic are on ~300 other
 	-- parts); the neutral tiles take the part Color as the leaf / bark colour
 	{ Key = "Tex_TreeLeaves", Name = "GE_TreeLeaves", Material = Enum.Material.SmoothPlastic, Fresh = true, StudsPerTile = 9,

@@ -505,7 +505,7 @@ local function tutorialEntry(player, data)
 		CanClaim = false, ShowProgress = false,
 	}
 	if step == STEP_WELCOME then
-		entry.Text = TUT_MESSAGES.Welcome or "첫 임무: 메뉴 > 안내자 대화에서 임무를 받아요."
+		entry.Text = TUT_MESSAGES.Welcome or "첫 임무 · 여기를 눌러 안내자 만나기"
 	elseif step == STEP_GUIDE then
 		entry.Text = TUT_MESSAGES.Travel or "말랑 초원으로 가요 · 메뉴 > 이동 > 말랑 초원"
 	elseif step == STEP_QUEST then

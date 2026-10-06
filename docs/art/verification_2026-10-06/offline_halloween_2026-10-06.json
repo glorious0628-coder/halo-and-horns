@@ -4458,11 +4458,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1e2769031801dea97dce29130a312418ff776377d9b0d045a4fde83ed0d343c0",
+    "src/ReplicatedStorage/Shared/Config.luau": "c832b908853afdc60c6a8c8d4998190a06cfaeb837e6dce1db4ec2cee22a4551",
     "src/ReplicatedStorage/Shared/Net.luau": "a9063fb3175f722682c1def371bb55bf60da5f9da440b23254ea0f2d198debd9",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "d360640bf7f1262d2bdf17d6eea7dd104cae44f4b29989c4263b94819b9316ba",
-    "src/ServerScriptService/QuestService.luau": "c6e4cd98c46c23fc0c542b4a7743148f4c5d8ef31c8ef42826cfaede1dffff43",
+    "src/ServerScriptService/QuestService.luau": "ed641f12ddf3a0321fd72ba6aa596b05352274a076d39e0e929042347c288cc8",
     "src/ServerScriptService/StoryQuestService.luau": "34ca99a517022184b1b1ddaf2bb9b62cf664fe5b51f02bf33b4dfaa5c20f9205",
     "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",

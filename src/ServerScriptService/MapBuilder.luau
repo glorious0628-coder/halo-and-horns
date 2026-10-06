@@ -1015,7 +1015,7 @@ end
 -- stand-ins without them. Blue lantern lights within the map light budget, no fog (A23-30 / A23-45 mood: ZoneLook).
 local HOLLOW = {
 	Land = "LandHauntedHollow",
-	Soil = Enum.Material.Ground, -- its own tile (Tex_HauntedFloor) takes a free material slot later (image dev)
+	Soil = Enum.Material.Asphalt, -- the Tex_HauntedFloor slot (GE_HauntedFloor, tools/apply_surface_materials.lua)
 	LanternLight = Color3.fromRGB(150, 200, 255),
 	-- { kit, x, z, size along fit, fit ("h" | "w"), yaw, solid }
 	Props = {
