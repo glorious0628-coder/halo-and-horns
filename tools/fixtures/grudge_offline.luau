@@ -255,6 +255,10 @@ local function grudgeWorld(opts)
 	function ps.IsReady(p) return p.Ready == true and p.Parent ~= nil end
 	function ps.GetData(p) return p.Data end
 	function ps.AddStat(p, key, n) table.insert(f.Stats, { Player = p, Key = key, Amount = n }) end
+	-- BB10: Honor / Infamy go through PlayerService.GrantFame (the stat part is AddStat; the ranking ctx is logged)
+	function ps.GrantFame(p, key, n, ctx)
+		table.insert(f.Stats, { Player = p, Key = key, Amount = n, Ctx = ctx })
+	end
 	function ps.MarkActive(p) f.Active[p] = (f.Active[p] or 0) + 1 end
 	if not opts.InlinePairReady then
 		local real = execute("PlayerService.PairReady", PAIR_READY_SOURCE, env(),

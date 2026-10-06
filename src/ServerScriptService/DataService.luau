@@ -196,6 +196,9 @@ local function fillDefaults(d, playerName)
 	d.TutorialKills = math.clamp(math.floor(kills), 0, target)
 	-- BB2: additive settings blob (Version stays 3): unknown / broken fields fall back to the defaults, keys are checked
 	d.Settings = Config.SanitizeSettings(d.Settings)
+	-- BB10 weekly ranking fields (additive): repaired, and an older week's points start over (written at the last leave).
+	-- (Guarded: some offline suites load a cut-down Config without the ranking block.)
+	if Config.SanitizeRank then Config.SanitizeRank(d, os.time()) end
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.

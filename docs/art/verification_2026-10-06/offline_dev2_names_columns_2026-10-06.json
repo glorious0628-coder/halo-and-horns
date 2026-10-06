@@ -1,5 +1,6 @@
 {
   "status": "passed",
+  "mutationsSkipped": false,
   "checks": 110,
   "failedChecks": 0,
   "namedChecks": 107,
@@ -650,7 +651,7 @@
     }
   ],
   "findings": [],
-  "staticChecks": 19,
+  "staticChecks": 20,
   "staticFailures": [],
   "mutations": {
     "total": 29,
@@ -1029,17 +1030,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d8a65a625ecc956022e5b74ef3c821faa645ba4164e541a4201635de571bc89c",
+    "src/ReplicatedStorage/Shared/Config.luau": "e4a723afda1686d40b36f3f32abf9213e48ffdba3c0a21555efcfb1810b6286f",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/AnnounceService.luau": "f6b7f9061ea3ef8e155a636e7a456e33dea0ed73a87940b52db9be06596d43a9",
-    "src/ServerScriptService/PvPService.luau": "29c7097a818c0a685c083793bf4bd9dc9f2633c10e7b438d72d1967d7365dd16",
-    "src/ServerScriptService/PlayerService.luau": "ed4a8257dba02cd192261879411c812f783e1e0bb7fd77016e08d6f42cb2aa20",
-    "src/ServerScriptService/GrudgeService.luau": "e38e4ebcc58db3cd67d0910248bd9fa9997a354f9a26d803c78101a810b681b0",
-    "src/ServerScriptService/ProgressionService.luau": "075c9e8f43da6b4cff8b1ca3f7b5a654b37c3928ee9e60e244f6fc1ec4115f1a",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/PvPService.luau": "5a29946e6b7f1c39dfc7388d9a4c89e55ecc17fe1e76406192fc27792b960f33",
+    "src/ServerScriptService/PlayerService.luau": "2ce4b689d4c44fa077774759ac33ef7a4efc853cb39e00d81aa810f4c71f4ac5",
+    "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
+    "src/ServerScriptService/ProgressionService.luau": "e33ec6250c5985b7b64cffc407d7d4322a569481471c118a03b1bbe1fd400f3a",
     "src/ServerScriptService/GooseService.luau": "395f0289ab0e71a80d46917a18f8866a9f89fcd1e2f140be534fe47ae461614d",
-    "src/ServerScriptService/KaijuService.luau": "9bb8a1a1c7da5a323b8c64588f223e0a51c2b44dc708c3e4d1963368090a98d9"
+    "src/ServerScriptService/KaijuService.luau": "16c8c973613c6943c5877f2c8543c7e1ca98c889e6ed78760e0727fb047e5e0e"
   },
-  "fixtureSHA256": "0d47f7d0192b1f42776d1c61814feffd18d63368b084a5233f65482704a4c54b",
+  "fixtureSHA256": "74b4a84c664b72bc7b44d0cf368d9faf2d12d2f845180476d9b221c00a090648",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

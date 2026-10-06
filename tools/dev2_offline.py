@@ -4,7 +4,8 @@ Each tools/test_<suite>.py of the server session describes its sources, the bind
 static checks; this module builds the harness (bindings as long-string locals + tools/fixtures/dev2_kit.luau + the
 suite fixture), runs it with the installed official Luau CLI (build/luau_cli_0_741), runs every mutation on in-memory
 copies of the sources (never src/) and writes one JSON report. No Studio, network, DataStore or Roblox API calls.
-A report written with --no-mutations is marked "mutations skipped" and must not be committed (handoff rule).
+A report written with --no-mutations has status "passed-no-mutations" (never "passed") and mutationsSkipped = true at the
+top level, like the main session's runners; it must not be committed (handoff rule).
 """
 from __future__ import annotations
 
@@ -152,7 +153,8 @@ class Suite:
         ok = (compiled.returncode == 0 and main_run["returncode"] == 0 and marker is not None and not static_failures
               and not changed and all(m.get("applied") and m.get("caught") for m in mutations))
         report = {
-            "status": ("passed" if ok else "failed") + (" (mutations skipped: do not commit)" if args.no_mutations else ""),
+            "status": ("passed-no-mutations" if args.no_mutations else "passed") if ok else "failed",
+            "mutationsSkipped": bool(args.no_mutations),
             "checks": result.get("Checks", 0) if result else 0,
             "failedChecks": result.get("Failed", 0) if result else 0,
             "namedChecks": len(named),
@@ -195,6 +197,8 @@ class Suite:
                   + ("" if m.get("applied") else f" ({m.get('note')})"))
         if mutations:
             print(f"MUTATIONS caught={caught}/{applied} (of {len(self.mutations)})")
+        if args.no_mutations:
+            print("MUTATIONS SKIPPED (status passed-no-mutations: do not commit this report)")
         for f in report["findings"]:
             print(f"FINDING [{f.get('Group')}] {f.get('Text')}")
         print(f"Named checks: {len(named) - len(failing)} passed, {len(failing)} failing; "

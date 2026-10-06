@@ -2720,6 +2720,9 @@ Config.Text = {
 	BoldWeak = "약한 상대라 명예·악명·전쟁 점수가 절반이에요.",
 	BountyGain = "현상금 %s골드 획득! 명예 +%d",
 	BountyAnnounce = "[빛의 기사단] %s이 현상금 %s골드를 받았어요!", -- BB37: AnnounceService.PublicName(p, true)
+	-- BB37 (검수): a hidden knight is already "빛의 기사단 한 명", so no "[빛의 기사단]" prefix (the faction twice)
+	BountyAnnounceHidden = "%s이 현상금 %s골드를 받았어요!",
+	BountyAnnounceHiddenEn = "%s got a %s gold bounty!",
 	BullyBountyGain = "깡패 현상금 %s골드 획득!",
 	MostWanted = "%s이 최고 현상수배범이 되었어요! 현상금 %s골드", -- BB37: PublicName(p, true)
 	BullyKO = "깡패 처치! 보상 없음, 덩치·공격력 -15%% (깡패 %d단계)",
@@ -2846,5 +2849,200 @@ Config.Leaderstats = {
 	Columns = { "Power", "Level", "Rebirths", "Fame" },
 	Names = { Power = "전투력", Level = "레벨", Rebirths = "환생", Fame = "명성", Gold = "골드" },
 }
+
+-- BB10 / A23-22 / A23-23 / A23-24 weekly rankings (RankingService). Plan + 검수 decisions D1-D6:
+-- docs/design/ranking_service_plan_2026-10-06.md. Boards are weekly (Monday 00:00 KST): Honor (Halo), Infamy (Horns),
+-- Artisan (Neutral, 장인 명성) and PvP (every faction, the "unfair KO" board). Honor / Infamy count ONLY fair PvP points
+-- (D1: one-time story / goose points stay in the stats, never on a board). The week's top 3 of Honor / Infamy /
+-- Artisan get a stat-free title + XP and drop rows +10% for the next week (only while in that faction); PvP top 3 with
+-- at least OutlawMinScore become outlaws for the next week (bully penalty, red nametag tag, bounty like a bully).
+-- Week index: flips at Monday 00:00 KST (2026-10-05 00:00 KST = week 2962).
+function Config.WeekIndex(unixTime)
+	return math.floor((unixTime + Config.Daily.TimezoneOffset + 3 * 86400) / 604800)
+end
+
+-- os.time of the Monday 00:00 KST that starts `week`
+function Config.WeekStart(week)
+	return week * 604800 - 3 * 86400 - Config.Daily.TimezoneOffset
+end
+
+Config.Ranking = {
+	Season = "PRE", -- LAUNCH-OPS: "B1" on beta day (and "PRE" stays in SeasonHistory). Studio / memory mode = "STUDIO"
+	SeasonHistory = { "PRE" },
+	Order = { "Honor", "Infamy", "Artisan", "PvP" },
+	Boards = {
+		Honor = { Faction = "Halo", Stat = "Honor", Reward = true },
+		Infamy = { Faction = "Horns", Stat = "Infamy", Reward = true },
+		Artisan = { Faction = "Neutral", Reward = true },
+		PvP = { Outlaw = true },
+	},
+	WeekCap = { Honor = 150, Infamy = 150, Artisan = 60 }, -- provisional, tune from beta logs (PvP: no cap)
+	TopN = 50,
+	RefreshSeconds = 180, -- each board's global read; boards are staggered by ReadStagger
+	ReadStagger = 45,
+	WriteEverySeconds = 120, -- a dirty player's rows are written at most this often (faction change / leave / hide: at once)
+	LoopSeconds = 10,
+	MinBudget = 5, -- SetIncrementSortedAsync budget kept free for others
+	MinReadBudget = 2, -- GetSortedAsync budget
+	-- global boards: accounts younger than this / with less play are shown only on the server board
+	MinAccountDays = 3,
+	MinPlaySeconds = 1800,
+	-- fair PvP points (PvPCreditOK): victim acted (own input / walking) within this, account age, playtime, per pair
+	VictimActiveSeconds = 60,
+	PvPMinVictimAccountDays = 7,
+	PvPMinVictimPlaytime = 10800,
+	MaxCreditPerVictimPerWeek = 3,
+	MaxYieldPerVictimPerDay = 5,
+	MaxVictimKeys = 100,
+	DefenseWindowSeconds = 10, -- D2: the victim struck first and the KO landed within this after that first hit = self-defense
+	FriendWaitSeconds = 1, -- the death pipeline waits at most this (< respawn time) for the IsFriendsWith call the first hit started
+	LeaveWaitSeconds = 5, -- a leave write waits at most this for the loop's write of the same player to finish
+	LeaveWriteTries = 3, -- the last write of a leaving player is tried this often (1 s apart) before it is given up
+	-- A23-24 장인 명성: Enh scrolls dropped by my own kills while in the guild and active within HandActiveSeconds
+	HandActiveSeconds = 60,
+	HandScrollIds = { "Enh70", "Enh30", "Enh10" },
+	RewardTop = 3,
+	RewardMult = 1.10, -- XP and drop rows (never the jackpot)
+	OutlawMinScore = 3, -- D5: fewer unfair KOs than this never make an outlaw, whatever the rank
+	SettleDelaySeconds = 600, -- D4: settle 10 min after Monday 00:00 KST (last week's rows are written by then)
+	SettleRetrySeconds = 60,
+	-- D4: after 2 h of failed board reads that week is skipped (no reward, no outlaw) and logged; the skip is stored in the
+	-- settle document first-writer-wins, so every server agrees (a document another server stored first still wins)
+	SettleGiveUpSeconds = 7200,
+	ExcludeUserIds = {},
+	NameCacheSeconds = 3600,
+	StudioNames = "Player%d",
+	StorePrefix = "HH_Rank_", -- ordered store HH_Rank_<season>_<board>_W<week>, key U_<userId>
+	SettleStorePrefix = "HH_RankSettle_", -- DataStore HH_RankSettle_<season>, key W<week> (D4: the season is in the name)
+	FactionCode = { None = 0, Halo = 1, Horns = 2, Neutral = 3 },
+	Text = {
+		BoardNames = { Honor = "명예", Infamy = "악명", Artisan = "장인 명성", PvP = "무단 PvP" },
+		BoardNamesEn = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan fame", PvP = "Unfair PvP" },
+		-- the timed titles: "이번 주 명예 1위" / "이번 주 악명 1위" / "이번 주 장인 1위" (A23-22 / A23-24 wording)
+		TitleNames = { Honor = "명예", Infamy = "악명", Artisan = "장인" },
+		TitleNamesEn = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan" },
+		Empty = "아직 기록이 없어요", EmptyEn = "No records yet",
+		Unknown = "플레이어", UnknownEn = "Player",
+		Test = "테스트", TestEn = "Test",
+		PvPTabNote = "약한 상대·자리 비운 사람·새내기를 쓰러뜨리면 올라가요. 3점 이상인 1~3위는 다음 주 무법자가 돼요.",
+		PvPTabNoteEn = "Goes up when you KO weaker, idle or new players. Top 3 with 3+ points are outlaws next week.",
+		RewardTabNote = "1~3위는 다음 주 경험치·드랍 +10%", RewardTabNoteEn = "Top 3: XP and drops +10% next week",
+		Ineligible = "새 계정은 3일·플레이 30분이 지나야 전체 랭킹에 올라가요",
+		IneligibleEn = "New accounts join the global ranking after 3 days and 30 minutes of play",
+		Private = "비공개 서버에서는 랭킹 점수가 쌓이지 않아요", PrivateEn = "Private servers do not earn ranking points",
+		OutlawTag = "무법자", OutlawTagEn = "Outlaw",
+		OutlawChip = "무법자: 자동 전투 불가 · 경험치·드랍 절반 (월요일까지)",
+		OutlawChipEn = "Outlaw: no auto combat · half XP and drops (until Monday)",
+		RewardChip = "이번 주 %s %d위: 경험치·드랍 +10%% (월요일까지)", -- (board name, rank)
+		RewardChipEn = "This week's %s #%d: XP and drops +10%% (until Monday)",
+		OutlawStart = "지난주 무단 PvP %d위라서 이번 주는 무법자예요. 자동 전투 불가 · 경험치·드랍 절반 · 현상금 2배 (월요일까지)",
+		OutlawStartEn = "Last week's unfair PvP #%d: you are an outlaw this week. No auto combat, half XP and drops, double bounty (until Monday)",
+		OutlawEnd = "무법자 기간이 끝났어요! 자동 전투를 다시 켤 수 있어요.",
+		OutlawEndEn = "Your outlaw week is over! Auto combat is back.",
+		OutlawEndNoAuto = "무법자 기간이 끝났어요! 경험치·드랍이 원래대로예요.", -- auto combat not unlocked yet
+		OutlawEndNoAutoEn = "Your outlaw week is over! XP and drops are back to normal.",
+		-- (still a bully at the end of the outlaw week: no line here; CombatService says BullyPenaltyEnd when the stacks go)
+		OutlawNoAuto = "무법자 기간에는 자동 전투를 쓸 수 없어요 (월요일까지).",
+		OutlawNoAutoEn = "Outlaws cannot use auto combat (until Monday).",
+		OutlawAutoOff = "무법자: 자동 전투가 꺼졌어요. 경험치·드랍도 절반이에요 (월요일까지).",
+		OutlawAutoOffEn = "Outlaw: auto combat is off and XP / drops are halved (until Monday).",
+		RewardStart = "지난주 %s %d위! 이번 주 경험치·드랍 +10%%와 칭호를 받았어요 (월요일까지).", -- (board name, rank)
+		RewardStartEn = "Last week's %s #%d! XP and drops +10%% and a title this week (until Monday).",
+		-- a top-3 player who switched faction since: the title is given, the bonus waits for that faction
+		RewardStartOff = "지난주 %s %d위! 칭호를 받았어요. 경험치·드랍 +10%%는 %s에 있을 때만 켜져요 (월요일까지).", -- (board, rank, faction)
+		RewardStartOffEn = "Last week's %s #%d! You got the title. XP and drops +10%% only while in %s (until Monday).",
+		ArtisanGain = "+%d 장인 명성", ArtisanGainEn = "+%d artisan fame",
+	},
+}
+Config.RateLimits.RequestRankings = 1
+
+-- A23-22 / A23-24 weekly titles (stat-free, Timed: granted at the settle, removed when the week ends; never permanent)
+do
+	local R = Config.Ranking
+	for _, board in { "Honor", "Infamy", "Artisan" } do
+		for rank = 1, R.RewardTop do
+			local id = "Rank" .. board .. rank
+			Config.TitleDefs[id] = {
+				Name = string.format("이번 주 %s %d위", R.Text.TitleNames[board], rank),
+				NameEn = string.format("This week's %s #%d", R.Text.TitleNamesEn[board], rank),
+				Color = Config.Factions[R.Boards[board].Faction].Color,
+				Timed = true,
+			}
+			table.insert(Config.TitleOrder, id)
+		end
+	end
+end
+
+-- BB10 save fields (added here, not in Config.Data above: one block per session). Version stays 3 (additive).
+--   Rank: this week's board points + the fairness counters (week fields reset when WeekId is not the current week);
+--     Victims ['U'..userId] = fair points I got from that player this week (1..99, at most MaxVictimKeys keys),
+--     HandScroll [Enh70|Enh30|Enh10] = 장인 tags still unused this week, YieldDay / YieldN = fair points I gave today.
+--     Drop [board] = week id: a faction change zeroed that board and its row of that week is still to be removed (kept in
+--     the save until the RemoveAsync lands, on any server; this week's and last week's entries survive the Monday flip). Season = the ranking season these points belong to: points,
+--     rewards and outlaw weeks of another season (a Studio test on the live place's saves) never carry over.
+--   RankReward: the A23-22/24 top-3 reward that is on during week WeekId. Outlaw: the A23-23 outlaw week.
+--   DebugTainted: a DebugCommand touched this save (never written to PRE / B1 boards).
+Config.Data.Defaults.Rank = { WeekId = 0, Season = "", Honor = 0, Infamy = 0, Artisan = 0, PvP = 0, Victims = {},
+	HandScroll = {}, Drop = {}, YieldDay = 0, YieldN = 0, HideSynced = false }
+Config.Data.Defaults.RankReward = { WeekId = 0, Season = "", Board = "", Rank = 0 }
+Config.Data.Defaults.Outlaw = { WeekId = 0, Season = "" }
+Config.Data.Defaults.DebugTainted = false
+
+-- DataService.fillDefaults: repair the BB10 fields of a loaded save in place (now = os.time). Week fields of an older
+-- week start over (their last values were written to that week's boards when the player left); YieldN resets daily.
+function Config.SanitizeRank(d, now)
+	local R = Config.Ranking
+	local function int(v, lo, hi)
+		v = tonumber(v)
+		if v == nil or v ~= v or v == math.huge or v == -math.huge then return lo end
+		return math.clamp(math.floor(v), lo, hi)
+	end
+	local function season(v) -- a short season id ("PRE", "B1", "STUDIO"), else ""
+		return (type(v) == "string" and #v <= 16 and string.match(v, "^%w+$")) and v or ""
+	end
+	local rank = type(d.Rank) == "table" and d.Rank or {}
+	local week = Config.WeekIndex(now)
+	local out = { WeekId = week, Season = season(rank.Season), Honor = 0, Infamy = 0, Artisan = 0, PvP = 0, Victims = {},
+		HandScroll = {}, Drop = {}, YieldDay = Config.DayIndex(now), YieldN = 0, HideSynced = rank.HideSynced == true }
+	if int(rank.WeekId, 0, 1e9) == week then
+		for _, board in R.Order do
+			out[board] = int(rank[board], 0, R.WeekCap[board] or 1e9)
+		end
+		local n = 0
+		if type(rank.Victims) == "table" then
+			for k, v in rank.Victims do
+				if n >= R.MaxVictimKeys then break end
+				if type(k) == "string" and string.match(k, "^U%-?%d+$") then
+					local c = int(v, 0, 99)
+					if c >= 1 then
+						out.Victims[k] = c
+						n += 1
+					end
+				end
+			end
+		end
+		if type(rank.HandScroll) == "table" then
+			for _, id in R.HandScrollIds do
+				local c = int(rank.HandScroll[id], 0, Config.Loot.ItemCap)
+				if c > 0 then out.HandScroll[id] = c end
+			end
+		end
+	end
+	if type(rank.Drop) == "table" then -- removals of this week and last week (the settle reads last week's rows)
+		for _, board in R.Order do
+			local wk = int(rank.Drop[board], 0, 1e9)
+			if R.Boards[board].Faction and (wk == week or wk == week - 1) then out.Drop[board] = wk end
+		end
+	end
+	if int(rank.YieldDay, 0, 1e9) == out.YieldDay then out.YieldN = int(rank.YieldN, 0, 99) end
+	d.Rank = out
+	local rr = type(d.RankReward) == "table" and d.RankReward or {}
+	local board = type(rr.Board) == "string" and R.Boards[rr.Board] and R.Boards[rr.Board].Reward and rr.Board or ""
+	d.RankReward = { WeekId = board ~= "" and int(rr.WeekId, 0, 1e9) or 0, Season = board ~= "" and season(rr.Season) or "",
+		Board = board, Rank = board ~= "" and int(rr.Rank, 0, R.RewardTop) or 0 }
+	local ol = type(d.Outlaw) == "table" and d.Outlaw or {}
+	d.Outlaw = { WeekId = int(ol.WeekId, 0, 1e9), Season = season(ol.Season) }
+	if type(d.DebugTainted) ~= "boolean" then d.DebugTainted = false end
+end
 
 return Config

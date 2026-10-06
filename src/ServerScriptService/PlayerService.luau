@@ -29,6 +29,7 @@ local leftFired = {}
 local removed = setmetatable({}, { __mode = "k" }) -- [Player] = true once PlayerRemoving fired
 local conns = {} -- [Player] = { RBXScriptConnection }
 local lastActive = {} -- [Player] = os.clock() of the last input/combat
+local lastOwn = {} -- [Player] = os.clock() of the last OWN action (MarkActive without kind "Hit"; BB10 D6)
 local mirrored = {} -- [key] = true for every key of Config.Data.Mirrored
 local characterLoading = {} -- [Player] = true while a normal spawn is being installed
 local respawnQueued = {} -- [Player] = one additional requested respawn while the current load yields
@@ -547,7 +548,12 @@ local function onClose()
 		local ok, n = pcall(function() return g and g.MailPending and g.MailPending() or 0 end)
 		return ok and tonumber(n) or 0
 	end
-	while (pending > 0 or next(finalizing) ~= nil or next(joining) ~= nil or mailPending() > 0)
+	local function rankingPending() -- BB10: the last ranking rows of the leavers (after the saves, same timeout)
+		local r = S.RankingService
+		local ok, n = pcall(function() return r and r.PendingWrites and r.PendingWrites() or 0 end)
+		return ok and tonumber(n) or 0
+	end
+	while (pending > 0 or next(finalizing) ~= nil or next(joining) ~= nil or mailPending() > 0 or rankingPending() > 0)
 		and os.clock() - t0 < CLOSE_TIMEOUT do
 		task.wait(0.1)
 	end
@@ -692,6 +698,21 @@ function PlayerService.AddStat(player, key, delta)
 	local newValue = (tonumber(data[key]) or 0) + (tonumber(delta) or 0)
 	PlayerService.SetStat(player, key, newValue)
 	return newValue
+end
+
+-- BB10: the ONE way Honor / Infamy go up for PvP. AddStat (the stat itself never depends on the ranking) and then the
+-- weekly board credit: ctx = { PvP = true, Fair = verdict.Fair, Victim = victim } (PvPService.HandleKO /
+-- payLeaveBounty) or { RankPoints = n } (a paid grudge sack: only its RankInfamy). Anything else (one-time story /
+-- goose points, D1) adds the stat only. Returns the new stat value.
+function PlayerService.GrantFame(player, stat, n, ctx)
+	if stat ~= "Honor" and stat ~= "Infamy" then return 0 end
+	local value = PlayerService.AddStat(player, stat, n)
+	local ranking = S.RankingService
+	if type(ranking) == "table" and type(ranking.CreditFame) == "function" then
+		local ok, err = pcall(ranking.CreditFame, player, stat, n, ctx)
+		if not ok then loopWarn("GrantFame", err) end
+	end
+	return value
 end
 
 function PlayerService.Respawn(player)
@@ -882,6 +903,7 @@ function PlayerService.FinalizeLeave(player)
 	leftFired[player] = nil
 	Util.ClearPlayer(player)
 	lastActive[player] = nil
+	lastOwn[player] = nil
 	characterLoading[player] = nil
 	respawnQueued[player] = nil
 	nativeRestore[player] = nil
@@ -894,15 +916,24 @@ function PlayerService.FinalizeLeave(player)
 	end
 end
 
-function PlayerService.MarkActive(player)
+-- kind = "Hit" for a hit taken from another player (P1: it keeps the idle timers awake) — that is not the player's
+-- own action, so it never moves GetLastOwnActive (BB10 D6: the "victim was idle" check of the fair-points rule)
+function PlayerService.MarkActive(player, kind)
 	if ready[player] then
 		lastActive[player] = os.clock()
+		if kind ~= "Hit" then lastOwn[player] = os.clock() end
 	end
 end
 
 -- CR-M20: os.clock() of the player's last input/combat (MarkActive); 0 = none yet on this server
 function PlayerService.GetLastActive(player)
 	return (player ~= nil and lastActive[player]) or 0
+end
+
+-- BB10 D6: os.clock() of the player's last OWN action (input, walking, manual attacks; not hits taken, not auto combat);
+-- 0 = none yet on this server
+function PlayerService.GetLastOwnActive(player)
+	return (player ~= nil and lastOwn[player]) or 0
 end
 
 -- CR-M2: true once BindToClose started (the server is shutting down; leaves are not the players' choice)

@@ -406,6 +406,7 @@ local function activate(p)
 	lastRecalc = os.clock()
 	lastStomp = os.clock()
 	setState(p, "Active") -- before Justice/Player refresh: they read GetState / GetHealthMult
+	kaijuName = publicName(p) -- BB37: the name as it is now (hidden / shown since the siren)
 	publish("Active", p.UserId, kaijuName, phaseEndsAt)
 	call("JusticeService", "RefreshScale", p) -- x3 visual (capped by Config.Justice.MaxVisualScale)
 	call("PlayerService", "RefreshCharacter", p, true) -- full heal at the transformation
@@ -416,7 +417,7 @@ local function activate(p)
 end
 
 local function survive(p)
-	local name = kaijuName
+	local name = publicName(p) -- BB37: the name as it is now (a hide toggle during the event)
 	local participants = participantList()
 	local opposed = contested or #participants > 0
 	local ok, err = pcall(function()
@@ -601,6 +602,13 @@ function KaijuService.Init(registry)
 		states[player] = nil
 		player:SetAttribute("KaijuState", "None")
 		player:SetAttribute("SessionTitle", "")
+		-- BB37 (검수): hiding / showing the name during the siren or the kaiju re-publishes GameState KaijuName at once
+		player:GetAttributeChangedSignal("HideAnnounceName"):Connect(function()
+			if player == current and phase ~= "None" then
+				kaijuName = publicName(player)
+				publish(phase, player.UserId, kaijuName, phaseEndsAt)
+			end
+		end)
 	end)
 
 	-- CR-M11: must run before ProgressionService's PlayerLeaving handler, which banks the leaver's pouch
@@ -704,7 +712,7 @@ function KaijuService.HandleKaijuDeath(victim, killer, leaving)
 		return
 	end
 	leaving = leaving == true
-	local name = kaijuName
+	local name = publicName(victim) -- BB37: the name as it is now (a hide toggle during the event)
 	local participants = participantList()
 	local paid = 0 -- CR-L19: gold actually paid out (the announcement shows this, not the theoretical pool)
 

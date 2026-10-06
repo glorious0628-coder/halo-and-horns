@@ -30,7 +30,7 @@ local STATE = {
 }
 
 LootService.ItemsGranted = Util.Signal.new() -- (player, { { Id = itemId, N = n } ... })
-LootService.Enhanced = Util.Signal.new() -- (player, tier, before, after, success)
+LootService.Enhanced = Util.Signal.new() -- (player, tier, before, after, success, itemId) (itemId: BB10 장인 명성)
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -199,11 +199,14 @@ end
 -- one kill's drop rows (and the slime jackpot) with the server RNG; onHit(row, isJackpot) for every success.
 -- info = { Kind = monster kind, Golden = true? } (RollKill passes the MonsterKilled info, DebugSimulate a stand-in).
 -- Draw order is fixed: one draw per row in table order, then one for the jackpot when this kind has one.
+-- info.DropMult = the A23-22/23 penalty (rows AND the jackpot), info.RowBonus = the A23-22 weekly top-3 reward (rows
+-- only, never the jackpot); a row's chance is cut at 1 after every multiplier.
 local function rollRows(info, onHit)
 	local mult = info.Golden == true and LOOT.GoldenMult or 1
 	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows and the jackpot; not the first scroll)
+	local rowBonus = num(info.RowBonus, 1)
 	for _, row in LOOT.Tables[info.Kind] or {} do
-		if rng:NextNumber() < math.min(1, num(row.P) * rowMult) then onHit(row, false) end
+		if rng:NextNumber() < math.min(1, num(row.P) * rowMult * rowBonus) then onHit(row, false) end
 	end
 	local jackpot = LOOT.Jackpot
 	-- A23-22 (review): the bully penalty halves the jackpot too (DropMult); the golden bonus applies as before
@@ -299,10 +302,16 @@ function LootService.RollKill(player, info)
 		end
 	end
 
+	-- A23-22 / A23-23: drop rows x0.5 while a bully or this week's outlaw (once, both at once never x0.25); A23-22 / 24
+	-- weekly top 3: rows x RewardMult while RankingService shows the reward (RankReward attribute: only in that faction)
 	local pen = Config.Bully.Penalty
-	if type(pen) == "table" and num(player:GetAttribute("BullyStacks")) >= 1 then
-		info = table.clone(info) -- A23-22: drop rows x0.5 while a bully (the caller's info stays untouched)
-		info.DropMult = num(pen.DropMult, 1)
+	local penal = type(pen) == "table" and (num(player:GetAttribute("BullyStacks")) >= 1 or player:GetAttribute("Outlaw") == true)
+	local reward = player:GetAttribute("RankReward")
+	local bonus = type(reward) == "string" and reward ~= "" and Config.Ranking ~= nil
+	if penal or bonus then
+		info = table.clone(info) -- the caller's info stays untouched
+		if penal then info.DropMult = num(pen.DropMult, 1) end
+		if bonus then info.RowBonus = num(Config.Ranking.RewardMult, 1) end
 	end
 	rollRows(info, function(row, isJackpot)
 		if row.Item then
@@ -358,7 +367,7 @@ local function useEnhance(player, data, id, def, tier)
 		notify(player, string.format(TXT.EnhanceFailKeep, name, before), "info")
 	end
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = tier, Before = before, After = after, Success = success })
-	LootService.Enhanced:Fire(player, tier, before, after, success)
+	LootService.Enhanced:Fire(player, tier, before, after, success, id)
 end
 
 local function useTransfer(player, data, id, def, fromTier, toTier)

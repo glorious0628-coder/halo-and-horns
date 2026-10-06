@@ -19,6 +19,8 @@ local GUARD = {
 	DmgLogMax = 64, -- CR-M15: hits kept per attacker/victim pair (oldest dropped first)
 	RecentHitSeconds = 3, -- CR-L4: a non-PvP death without damage this recent (reset / fall) keeps the stars
 	KoLogKeep = math.max(1, Config.Bully.RepeatKOs - 1), -- CR-M4: KO times kept per killer/victim pair ({ t1, t2 })
+	-- BB10 D2: a pair with no hit for this long starts a new fight (whose first hit decides self-defense)
+	EngageGap = 2 * Config.Ranking.DefenseWindowSeconds,
 }
 
 -- Most Wanted board lines (TECH_SPEC §4.13 board text)
@@ -44,6 +46,9 @@ local wasRookie = {} -- [Player] = last rookie state seen by tickPlayer (graduat
 local spawnedAt = {} -- [Player] = os.clock() of the last CharacterSpawned
 -- CR-M15: [attacker][victim] = { { T = os.clock(), A = damage }, ... } within Config.Bully.BaitWindow (bait check)
 local dmgLog = {}
+-- BB10 D2: ["<lo>:<hi>" UserIds] = { By = the player who struck first, T = os.clock() of that hit, Last = of the latest
+-- hit either way, A / B = the two players } (a new fight starts after GUARD.EngageGap without a hit)
+local engage = {}
 local revenge = {} -- [Player] = { Target = Player, Until = os.clock() }
 
 -- CR-M4: pair state (minted KO reward, repeat-KO log, claimed bully bounty) lives in the saved PairCD of the player
@@ -194,8 +199,11 @@ end
 
 -- bully stacks that still carry a bounty: 0 while this bully's bounty was already claimed (BULLY_BOUNTY_COOLDOWN,
 -- the victim's PairCD "bully:0"). The stacks themselves (size / damage penalty, "깡패" tag) stay with JusticeService.
+-- A23-23 D3: this week's outlaw counts as (at least) one bully stack for the bounty (Config.Bounty: units >= 1 and
+-- x BountyMult once, so bully + outlaw is still at most x2), with the same claim cooldown.
 local function bountyBullyStacks(p)
 	local n = bullyStacksOf(p)
+	if p:GetAttribute("Outlaw") == true then n = math.max(n, 1) end
 	if n <= 0 or not pairReady(p, 0, "bully", BULLY_BOUNTY_COOLDOWN, false) then
 		return 0
 	end
@@ -273,6 +281,43 @@ local function recentDamage(attacker, victim, now)
 		end
 	end
 	return sum
+end
+
+local function engageKey(a, b)
+	return tostring(math.min(a.UserId, b.UserId)) .. ":" .. tostring(math.max(a.UserId, b.UserId))
+end
+
+-- BB10 D2 self-defense (never an unfair KO): the current fight between the two began with the victim's hit and the KO
+-- landed within Config.Ranking.DefenseWindowSeconds of that first hit
+local function victimStruckFirst(victim, killer, now)
+	local e = engage[engageKey(victim, killer)]
+	return e ~= nil and now - e.Last <= GUARD.EngageGap and e.By == victim
+		and now - e.T <= Config.Ranking.DefenseWindowSeconds
+end
+
+-- BB37 (검수): the bounty line; a hidden knight is "빛의 기사단 한 명" already, so the hidden line has no faction prefix
+local function bountyLine(p, bounty)
+	local A = S.AnnounceService
+	local okHidden, hidden = false, false
+	if A and A.IsHidden then okHidden, hidden = pcall(A.IsHidden, p) end
+	if not okHidden then hidden = p:GetAttribute("HideAnnounceName") == true end
+	return fmt(hidden == true and "BountyAnnounceHidden" or "BountyAnnounce", publicName(p, true), Util.FormatNumber(bounty))
+end
+
+-- BB10: the ranking verdict of one PvP KO ({ Fair, Unfair?, Exempt?, Reason? }; { Fair = false } without RankingService)
+local function judgeKO(killer, victim, facts)
+	local R = S.RankingService
+	if R and R.JudgeKO then
+		local ok, v = pcall(R.JudgeKO, killer, victim, facts)
+		if ok and type(v) == "table" then return v end
+		if not ok then Util.Warn(TAG, "JudgeKO: " .. tostring(v)) end
+	end
+	return { Fair = false }
+end
+
+-- BB10: Honor / Infamy from PvP go through PlayerService.GrantFame (the stat + the fair weekly board points)
+local function grantFame(p, stat, n, verdict, victim)
+	S.PlayerService.GrantFame(p, stat, n, { PvP = true, Fair = verdict.Fair == true, Victim = victim })
 end
 
 local function computeBounty(p)
@@ -510,8 +555,9 @@ function PvPService.HandleNonPvPDeath(victim)
 	PvPService.ResetStars(victim)
 end
 
--- called ONLY by CombatService's death pipeline (after GrudgeService.OnCarrierDown)
-function PvPService.HandleKO(victim, killer)
+-- called ONLY by CombatService's death pipeline (after GrudgeService.OnCarrierDown). ctx = { HadSack = the victim
+-- carried a grudge sack when it fell (seen before step 1 of the pipeline closed it) }
+function PvPService.HandleKO(victim, killer, ctx)
 	if not victim then
 		return
 	end
@@ -530,7 +576,8 @@ function PvPService.HandleKO(victim, killer)
 	local B = Config.Bully
 	local Justice = S.JusticeService
 	local Progression = S.ProgressionService
-	local now = os.clock()
+	-- the KO's own time (the death pipeline may wait for the friend answer; a respawn after it is not "fresh")
+	local now = (type(ctx) == "table" and tonumber(ctx.At)) or os.clock()
 
 	-- 1. snapshot + KO log (CR-M4: the log is kept in the killer's save)
 	local starsBefore = stars[victim] or 0
@@ -548,10 +595,12 @@ function PvPService.HandleKO(victim, killer)
 	if weak and baited then
 		weak = false -- anti-bait: the victim attacked the killer first
 	end
-	if weak and B.WantedIgnoresWeakRule and (starsBefore > 0 or bullyBefore > 0) then
+	local victimOutlaw = victim:GetAttribute("Outlaw") == true -- A23-23: an outlaw is hunted like a bully
+	if weak and B.WantedIgnoresWeakRule and (starsBefore > 0 or bullyBefore > 0 or victimOutlaw) then
 		weak = false
 	end
-	local fresh = spawnedAt[victim] ~= nil and now - spawnedAt[victim] < B.FreshSpawnSeconds
+	local spawned = spawnedAt[victim]
+	local fresh = spawned ~= nil and spawned <= now and now - spawned < B.FreshSpawnSeconds
 	local bully = weak or fresh or repeated
 	-- CR-M14: a fresh / repeat KO of a victim who baited the killer is self-defense (no bully stack, no rewards),
 	-- and a kaiju never becomes a bully (that would double its kaiju pool)
@@ -559,6 +608,21 @@ function PvPService.HandleKO(victim, killer)
 	if defense or kstate(killer) ~= "None" then
 		bully = false
 	end
+
+	-- BB10 / A23-23: the weekly ranking verdict, decided before the revenge marks below change. A fair KO (PvPCreditOK)
+	-- lets the Honor / Infamy below reach the weekly board; an unfair one (weak / idle / new / 4th of the week / fresh)
+	-- that no exemption covers adds 1 to the killer's PvP board inside JudgeKO. Never yields: the death pipeline already
+	-- asked IsFriendsWith (RankingService.ResolveFriends), so JudgeKO reads the friend cache only (NoYield).
+	local bold = PvPService.BoldMult(killer, victim) -- A23-18: honor / infamy / war points only
+	local killerMark = revenge[killer]
+	local verdict = judgeKO(killer, victim, {
+		Bold = bold, Fresh = fresh, Repeated = repeated,
+		Defense = defense or victimStruckFirst(victim, killer, now),
+		Revenge = killerMark ~= nil and killerMark.Target == victim and now < killerMark.Until,
+		VictimWanted = starsBefore > 0, VictimBully = bullyBefore > 0, VictimOutlaw = victimOutlaw,
+		VictimKaiju = kstate(victim) ~= "None", KillerKaiju = kstate(killer) == "Active", -- D2: a killer who IS a kaiju
+		VictimHadSack = type(ctx) == "table" and ctx.HadSack == true, NoYield = true,
+	})
 
 	-- 3. revenge (always)
 	revenge[victim] = { Target = killer, Until = now + Config.Revenge.Duration }
@@ -588,7 +652,6 @@ function PvPService.HandleKO(victim, killer)
 	else
 		-- 5. pair cooldown for minted rewards (CR-M4: kept in the killer's save as "ko:<victimUserId>")
 		local pairOk = pairReady(killer, victim.UserId, "ko", P.PairRewardCooldown)
-		local bold = PvPService.BoldMult(killer, victim) -- A23-18: honor / infamy / war points only
 		if pairOk and bold > 1 then notify(killer, fmt("BoldStrong"), "reward")
 		elseif pairOk and bold < 1 then notify(killer, fmt("BoldWeak"), "info") end
 		local vLevel = num(victim, "Level", 1)
@@ -609,7 +672,13 @@ function PvPService.HandleKO(victim, killer)
 					stolen = math.floor(tonumber(Progression.TakeCarriedGold(victim, stolen)) or 0)
 				end
 				if stolen > 0 then
-					S.GrudgeService.AddToSack(killer, victim, stolen, pairOk and PvPService.ScalePoints(1, bold) or 0) -- A23-18 boldness
+					-- A23-18 boldness; BB10: the sack also carries the fair weekly points (paid only if the thief keeps it)
+					local inf = pairOk and PvPService.ScalePoints(1, bold) or 0
+					local rankPts = verdict.Fair == true and inf or 0
+					S.GrudgeService.AddToSack(killer, victim, stolen, inf, rankPts)
+					if rankPts > 0 and S.RankingService and S.RankingService.CommitFair then
+						pcall(S.RankingService.CommitFair, killer, victim)
+					end
 					local from, to = rootPos(victim), rootPos(killer)
 					if from and to then
 						Net.Fx(nil, "Plunder", { From = from, To = to, Amount = stolen })
@@ -620,7 +689,7 @@ function PvPService.HandleKO(victim, killer)
 			end
 			if stolen == 0 and pairOk then
 				local inf = PvPService.ScalePoints(1, bold) -- A23-18 boldness
-				if inf > 0 then S.PlayerService.AddStat(killer, "Infamy", inf) end -- no sack to carry it
+				if inf > 0 then grantFame(killer, "Infamy", inf, verdict, victim) end -- no sack to carry it
 			end
 			local bullyBounty = 0
 			if bountyBully > 0 and pairOk then
@@ -640,7 +709,7 @@ function PvPService.HandleKO(victim, killer)
 			if pairOk then
 				local honor = PvPService.ScalePoints(P.HonorPerKOMin, bold) -- A23-18 boldness
 				if honor > 0 then
-					S.PlayerService.AddStat(killer, "Honor", honor)
+					grantFame(killer, "Honor", honor, verdict, victim)
 					notify(killer, fmt("HonorGain", honor), "reward")
 				end
 			end
@@ -656,7 +725,7 @@ function PvPService.HandleKO(victim, killer)
 			end
 			local honor = pairOk and PvPService.ScalePoints(math.max(1, starsBefore), bold) or 0 -- A23-18 boldness
 			if honor > 0 then
-				S.PlayerService.AddStat(killer, "Honor", honor)
+				grantFame(killer, "Honor", honor, verdict, victim)
 			end
 			if starsBefore > 0 then
 				local carried = num(victim, "CarriedGold", 0)
@@ -669,7 +738,7 @@ function PvPService.HandleKO(victim, killer)
 				notify(killer, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
 			end
 			if starsBefore >= P.GlowStars and bounty > 0 then
-				Net.NotifyAll(fmt("BountyAnnounce", publicName(killer, true), Util.FormatNumber(bounty)))
+				Net.NotifyAll(bountyLine(killer, bounty))
 			end
 			info = {
 				Kind = "Bounty", Bully = false, VictimStars = starsBefore,
@@ -790,8 +859,11 @@ local function tickPlayer(p, now)
 	end
 end
 
--- CR-M15: drop bait-log hits older than BaitWindow (pair state itself is in the saves, CR-M4)
+-- CR-M15: drop bait-log hits older than BaitWindow (pair state itself is in the saves, CR-M4); BB10: finished fights
 local function pruneDmgLog(now)
+	for key, e in engage do
+		if now - e.Last > GUARD.EngageGap then engage[key] = nil end
+	end
 	local cutoff = now - Config.Bully.BaitWindow
 	for attacker, byVictim in dmgLog do
 		for victim, hits in byVictim do
@@ -856,17 +928,27 @@ local function payLeaveBounty(player)
 	end
 	local bully = bountyBullyStacks(player) -- 0 when this bully's bounty was already claimed
 	local bounty = Config.Bounty(num(player, "Level", 1), s, bully)
-	local honor = PvPService.ScalePoints(math.max(1, s), PvPService.BoldMult(a, player)) -- A23-18 boldness (same as a KO)
+	local bold = PvPService.BoldMult(a, player)
+	local honor = PvPService.ScalePoints(math.max(1, s), bold) -- A23-18 boldness (same as a KO)
+	-- BB10: judged like a KO with the leaver as the victim (their data is still loaded here); Wanted = never unfair
+	local lastMark = revenge[a]
+	local verdict = judgeKO(a, player, {
+		Bold = bold, Fresh = false, Repeated = false, Defense = victimStruckFirst(player, a, os.clock()),
+		Revenge = lastMark ~= nil and lastMark.Target == player and os.clock() < lastMark.Until,
+		VictimWanted = true, VictimBully = bully > 0, VictimOutlaw = player:GetAttribute("Outlaw") == true,
+		VictimKaiju = kstate(player) ~= "None", KillerKaiju = kstate(a) == "Active", VictimHadSack = false,
+		NoYield = true, -- a PlayerLeaving handler: no web call (friends cache only)
+	})
 	if bounty > 0 then
 		if bully > 0 then
 			claimBullyBounty(player)
 		end
 		S.ProgressionService.AddBankGold(a, bounty, "Bounty")
 	end
-	if honor > 0 then S.PlayerService.AddStat(a, "Honor", honor) end
+	if honor > 0 then grantFame(a, "Honor", honor, verdict, player) end
 	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward")
 	if s >= Config.PvP.GlowStars and bounty > 0 then
-		Net.NotifyAll(fmt("BountyAnnounce", publicName(a, true), Util.FormatNumber(bounty)))
+		Net.NotifyAll(bountyLine(a, bounty))
 	end
 	return true
 end
@@ -911,6 +993,9 @@ local function cleanupPlayer(player)
 	for _, byVictim in dmgLog do
 		byVictim[player] = nil
 	end
+	for key, e in engage do
+		if e.A == player or e.B == player then engage[key] = nil end
+	end
 end
 
 local function onPlayerLeaving(player, data)
@@ -950,6 +1035,15 @@ end
 local function onPlayerDamaged(victim, amount, attacker)
 	if victim == nil or attacker == nil then
 		return
+	end
+	-- BB10 D2: who struck first in this fight (any hit, even one a shield blocked)
+	local nowFight = os.clock()
+	local key = engageKey(attacker, victim)
+	local e = engage[key]
+	if e == nil or nowFight - e.Last > GUARD.EngageGap then
+		engage[key] = { By = attacker, T = nowFight, Last = nowFight, A = attacker, B = victim }
+	else
+		e.Last = nowFight
 	end
 	amount = tonumber(amount) or 0
 	if amount ~= amount or amount <= 0 then

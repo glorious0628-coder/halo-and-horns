@@ -90,8 +90,9 @@ MUTATIONS = [
      "return pairReady(victim, thief.UserId, \"steal\", Config.Grudge.RestealWindow, false)", "return true"),
     ("leaving thief is paid",
      "if sacks[player] then\n\t\treturnSack(player, false)", "if sacks[player] then\n\t\tpay(player, sacks[player])"),
-    ("Paid adds no infamy",
-     "S.PlayerService.AddStat(thief, \"Infamy\", sack.Infamy)", "local _ = sack.Infamy"),
+    ("Paid adds no infamy",  # BB10: the stat goes through PlayerService.GrantFame (+ the sack's fair RankInfamy)
+     "S.PlayerService.GrantFame(thief, \"Infamy\", sack.Infamy, { RankPoints = sack.RankInfamy or 0 })",
+     "local _ = sack.Infamy"),
     ("no mail on Returned",
      "MAIL.Send(userId, entry, \"Returned\", sack.Id .. \":Returned\")", "local _ = entry"),
     ("no mail on Avenged",

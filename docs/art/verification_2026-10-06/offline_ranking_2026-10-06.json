@@ -1,0 +1,5098 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 474,
+  "failedChecks": 0,
+  "namedChecks": 466,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "WeekIndex: Monday 2026-10-05 00:00 KST = 2962, Sunday 23:59:59 KST = 2961",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WeekIndex flips again at the next Monday 00:00 KST",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WeekStart(week) = that Monday 00:00 KST",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WeekStart(WeekIndex(t)) <= t < WeekStart(+1)",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "four boards in A23-24 order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "board factions: Honor Halo, Infamy Horns, Artisan Neutral, PvP every faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "reward boards Honor/Infamy/Artisan, the outlaw board PvP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WeekCap Honor 150, Infamy 150, Artisan 60, PvP none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "D5: OutlawMinScore = 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "D4: settle 10 min after Monday 00:00, retry 60 s, give up after 2 h",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "D2: self-defense window 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BB10 fair-point numbers (60 s, 7 days, 3 h, 3/week, 5/day)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BB10 store numbers (3 days / 30 min, top 50, read 180 s, write 120 s, budgets 5 / 2, loop 10 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "top 3, reward x1.10, hand tags 60 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "season PRE until beta day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "store prefixes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "faction codes 0 / 1 / 2 / 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankHonor1 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankHonor1 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankHonor2 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankHonor2 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankHonor3 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankHonor3 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankInfamy1 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankInfamy1 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankInfamy2 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankInfamy2 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankInfamy3 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankInfamy3 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankArtisan1 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankArtisan1 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankArtisan2 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankArtisan2 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankArtisan3 (\"이번 주 … N위\", KO/EN, in TitleOrder)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "timed title RankArtisan3 carries no stats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the PvP board has no reward titles",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "title wording: '이번 주 명예 1위' / '이번 주 장인 N위' (A23-22 / A23-24)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "HUD chip text from A23-23",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "empty-board text and the nametag tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every Config.Ranking.Text line has an En pair (central text table)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "RateLimits.RequestRankings = 1 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save defaults: Rank / RankReward / Outlaw / DebugTainted (Version stays 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "an old save without Rank gets this week's empty fields",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "RankReward / Outlaw / DebugTainted / Season / Drop defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Drop: faction boards only, this week's and last week's removals (older ones are past their settle)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "seasons kept as short ids, junk -> ''",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "a removal from last week survives the Monday flip (the week's own fields start over)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "same week: points kept, clamped to 0..WeekCap, floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Victims: at most MaxVictimKeys (100) keys",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Victims: keys 'U<id>' (negative Studio ids too), counts 1..99",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "Victims: zero counts and malformed keys dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "HandScroll: only Enh70/30/10, 1..ItemCap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "YieldN clamped to 99 on the same day; HideSynced kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "the sanitized save JSON-encodes (Victims has only string keys)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "JSON round trip keeps Victims / points / tags",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "an older week: points, Victims and HandScroll start over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "another day: YieldN starts over; HideSynced kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "YieldN is per day, not per week (kept across the Monday flip of the same day)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "broken Rank / a PvP 'reward' / Outlaw number / DebugTainted repaired",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "NaN / inf points -> 0, reward rank clamped to RewardTop, ids floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "fair Halo KO of a clean Horns: Honor stat +1 (rule unchanged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "fair KO: weekly Honor +1 (WeekHonor attribute too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "fair KO: the PvP board stays 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "CommitFair: the killer's Victims['U202'] = 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "CommitFair: the victim's YieldN = 1 today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "a fair KO refuses nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "a strong victim (bold x2): Honor +2 and weekly +2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "fair Horns KO without a sack: Infamy +1 and weekly Infamy +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "Horns: no Honor / PvP points; fair counters moved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "the first PvP hit only queues the friend check (no web call inside the hit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "the queued background job asks IsFriendsWith once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "death pipeline: a fair KO reaches the weekly Honor board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "the KO reuses the cached friend answer (no second web call)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "no friend answer yet: the death pipeline makes no web call of its own; the pair counts as friends (stat only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "the pipeline's friend wait is shorter than the respawn time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "the death pipeline waits while the hit's friend check is still running",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "…then judges the KO with that answer (fair KO counted)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "a respawn during the pipeline's wait never makes the KO a fresh-spawn bully KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-fair",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "weak victim: the Honor stat still rolls x0.5 (draw 0.1 -> 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "weak victim: weekly Honor 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "weak victim (Bold < 1): PvP board +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "the refusal reason Weak is counted (A23-18 abuse log)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "an unfair KO moves no fair counter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "70% power is not a bully KO (bully rule unchanged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "weak victim, draw 0.9: no Honor point, PvP board still +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "a bully KO (40% power): one bully stack, PvP board +1 (once), no Honor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "Horns KO of a weak Halo: Infamy stat +1, weekly Infamy 0, PvP +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-weak",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "friend KO: the Honor stat is unchanged (only the boards skip it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "friend KO: neither the weekly Honor nor the PvP board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "friend KO: no fair counters, reason Friend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "a weak friend KO is not the PvP board either",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "IsFriendsWith error: counted as friends (no points)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "after an error the pair is asked again (now not friends: fair)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "a successful answer is cached for the session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "HandleKO without the pipeline's ResolveFriends: no IsFriendsWith call inside it, unknown pair = friends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "ResolveFriends never asks Roblox itself (it only waits for the hit's background call)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "the background check asks once per pair (in flight / cached)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "ResolveFriends never asks in the STUDIO season",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-friend",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "4 KOs: the Honor stat +4 (unchanged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "same victim: 3 fair points a week",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "the 4th KO goes to the PvP board (Repeat)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "the victim yielded 3 fair points today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "D6: a hit taken moves GetLastActive (idle timers) but never GetLastOwnActive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "idle victim (no own action for 61 s): PvP board, no weekly Honor, Honor stat unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "exactly 60 s since the own action is still active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "an own action (MarkActive without 'Hit') makes the victim active again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "victim account 6 days: PvP board (Newbie)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "victim playtime 10799 s: PvP board (Newbie)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "exactly 7 days and 3 h: fair",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "a KO 5 s after the victim respawned: bully stack + PvP board (Fresh)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "the 3rd KO inside RepeatWindow (검수: the bully rule is 무단 PvP): PvP +1, no weekly Honor; the first two were fair",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "fresh + repeated on one KO: PvP +1 once (one KO, one point)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-unfair",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "control: a weak victim with no exemption -> PvP +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "the knight holds a revenge mark on 202",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "revenge KO on a weaker player: never the PvP board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a Wanted victim (stars): never the PvP board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a bully victim: never the PvP board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "RefreshEffects sets Outlaw for this week's outlaw",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "an outlaw victim: never the PvP board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "hunting an outlaw at 40% power is never a bully KO (outlaws are hunted like bullies)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a kaiju victim (queued / siren): never the PvP board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a killer who is the kaiju (Active): never the PvP board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a killer only queued for the kaiju is not one yet: a weak KO is unfair (D2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "202 carries a grudge sack",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "the death pipeline closed the sack (avenged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a thief KO'd while carrying a sack: never the PvP board (HadSack seen before the sack closed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "control: the death pipeline without a sack -> PvP +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "self-defense (the victim hit first, within 10 s of the KO): never the PvP board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "the KO landed more than DefenseWindowSeconds after the victim's first hit: not self-defense",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "D2: the window counts from the victim's FIRST hit (hits at 0 and 8 s, KO at 15 s: not self-defense)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "the killer struck first (the victim only hit back): not self-defense",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a 26 s fight the killer started: not self-defense (the opening hit is not forgotten)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "the victim started it but the KO came 18 s later: not self-defense (D2: 10 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "the victim started it, KO 8 s later: self-defense",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "21 s without a hit starts a new fight: the killer started this one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a new fight the victim started 3 s before the KO: self-defense",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "a fair KO of a Wanted Horns: weekly Honor +2 (the bounty KO)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-exempt",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-yieldcap",
+      "check": "victim already gave 5 fair points today: neither board (YieldCap is not unfair)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-yieldcap",
+      "check": "YieldCap: no counter moves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-yieldcap",
+      "check": "yesterday's 5 do not count today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-yieldcap",
+      "check": "MaxYieldPerVictimPerDay: 5 killers score, the 6th does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-yieldcap",
+      "check": "killer at WeekCap: stat only, no PvP point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-yieldcap",
+      "check": "killer at WeekCap: the victim's daily yield is not used up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-yieldcap",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-yieldcap",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-studio",
+      "check": "Studio: season STUDIO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-studio",
+      "check": "STUDIO season: no friend / account-age / playtime checks (Studio clients are new, negative ids)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-studio",
+      "check": "STUDIO season: a weak victim is still unfair",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-studio",
+      "check": "DataStore memory mode outside Studio is STUDIO too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-studio",
+      "check": "a live server is Config.Ranking.Season (PRE)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-studio",
+      "check": "the season follows Config (B1 on beta day)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-studio",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ko-studio",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "the plunder made a grudge sack",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "nothing is credited before the sack is paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "the fair point is committed at the KO (CommitFair once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "after 45 s in a PvP zone the sack is paid (Infamy stat +1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "Paid: the weekly board gets the sack's fair RankInfamy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "the payout does not count the victim a second time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "Avenged: no Infamy, no weekly points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "Returned (thief left): no Infamy, no weekly points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "a weak victim's plunder is unfair: PvP +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "paid sack of an unfair KO: Infamy stat +1, weekly 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "one sack with a fair and an unfair KO: Infamy +2, weekly Infamy +1, PvP +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "AddToSack(…, infamy 1, rankPts 5): only 1 fair point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sack",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "payLeaveBounty: judged like a KO with the leaver as the victim (fair -> weekly Honor)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "the leaver's data was still loaded: both fair counters moved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "the leave itself never calls IsFriendsWith",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "the leaver's last ranking write is pending (BindToClose waits for it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "…and done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "PlayerLeaving: no web call (cache only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "an unknown pair while leaving counts as friends: stat only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "a weak Wanted leaver is never unfair (Wanted exemption)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave-bounty",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "D1: story / goose fame stays in the stat, never on a board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "a PvP grant that was not fair: stat only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "a fair PvP grant: weekly Honor +n",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "a Halo player's Infamy never reaches the Horns board (Faction)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "GrantFame takes Honor / Infamy only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "Credit: n <= 0, unknown board, not a Player -> false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "Credit adds to this week's board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "a credit past WeekCap is cut at the cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "at the cap: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "the WeekCap warning is throttled (30 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "the PvP board has no cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "Artisan WeekCap 60",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "a Neutral player is never on the Honor board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "private server: no 장인 명성 either (Credit refuses)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "private server: fair KO, stat only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "private server: an unfair KO is not counted either",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "private server plunder: the fair counters never move (they would block fair points on public servers)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "CreditFame error: the stat still goes up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "without RankingService: the stat only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "credit-guards",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "one scripted Goblin kill (one draw per row)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a scroll my own kill dropped while in the guild gets a tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "Enh30 success: +2 -> +5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a tagged Enh30 success at +2 scores 3 (A23-24 acceptance)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "the player sees '+3 장인 명성'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "the tag was used",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a failed tagged scroll: 0 points, the tag is used",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a drop while away (61 s) gets no tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "an untagged success scores 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a Halo player's drop gets no tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a scroll from the Halo days scores 0 in the guild",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a private-server drop gets no tag (it would score later on a public server)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "Enh10 at +9: capped at +10, scores 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a fail-drop (+4 -> +3) scores 0, never negative",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "a transfer scroll moves +4 and scores 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "5 tags but 1 scroll: scores once, no tag left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "3 scrolls, 2 tagged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "3 successes, 2 tags: 2 points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "the guaranteed first king-slime Enh70 gets a tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "tag in week 2962",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "the week flip clears the tags",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "last week's scroll scores 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "the Artisan row: 3 points, Neutral code 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "leaving the guild: this week's 장인 points and tags are gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "leaving the guild removes the Artisan row at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "back in the guild: the old tag is gone too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "artisan",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "value = score*100 + hidden*10 + faction code (Halo 1), key U_<userId>",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "a live PRE server writes PRE stores only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "a dirty player is written at most every WriteEverySeconds (120 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "120 s after the last write the new value lands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "an unchanged value is never written again (this server's Written cache)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "SetIncrementSortedAsync budget 4 < MinBudget 5: skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "budget back: the write lands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "a Halo player's PvP row: faction code 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "a failing SetAsync writes nothing (warned)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "the failed write is retried (Horns code 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "accounts < 3 days / play < 30 min are never written to the global board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "a DebugTainted save never reaches a PRE board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "ExcludeUserIds are never written",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "STUDIO season: HH_Rank_STUDIO_* (Studio ids, new accounts, tainted saves)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "STUDIO season never touches PRE / B1 stores",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "faction change: the old faction's weekly points are gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "faction change: RemoveAsync on the old board, PvP row rewritten with the Horns code at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "back in Halo the same week: the new row is written (the removal is not cached as 'written')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "PlayerLeaving: the last points are written at once (no 120 s wait)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "no refusals in the write tests",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "online across Monday 00:00 KST: last week's final points land in last week's stores",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "the week fields start over (points, Victims, WeekHonor attribute)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "zero points are never written to the new week",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "GameState RankWeekId / RankWeekEndsAt follow the week",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "new points go to the new week's store only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "a removal pending at the Monday flip still removes LAST week's row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "a credit after the flip starts the new week",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "…and last week's 3 still land in last week's store",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "week-flip",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "server A wrote the hidden row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "server B shows the name again (row rewritten)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "back on A, hiding again really rewrites the row (A's cache from the first session is dropped at join)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "a failed RemoveAsync stays in Rank.Drop (saved, with its week)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "the next server removes the old faction's row from the saved Drop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "back in Halo with points before the removal: overwritten, Drop cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "the write carried the 2 points it started with",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "the point credited during the write is written at the next turn (still dirty)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "a hide toggle during the write: that write was shown, HideSynced not yet set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "…and the next loop step writes the hidden row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "STUDIO-season points are dropped on a PRE server",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "…and never written to a PRE board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "Studio on a live save: the session counts from 0 in a shadow; the save keeps its PRE week",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "Studio points go to the STUDIO board only; the saved PRE points stay 7",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "Studio never removes a live title (its live reward is just off for the session)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "a Studio DebugSettle acts for the session only (the saved results stay the live ones)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "back on a live server: the PRE week, the reward and the title are all there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "the settle gives a removed week title back (no repeat notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "a join with this week's points writes them at the first loop step",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "writes-sessions",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "the setting is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "hide: every row is rewritten with the hidden flag at the next loop step (120 s gap ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "all rows written -> Rank.HideSynced = true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "no budget: still hidden rows, HideSynced not yet false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "retried at the next loop step (10 s): shown again, HideSynced = false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "PlayerReady: HideSynced ~= HideAnnounceName -> rewritten at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "ineligible: nothing written, HideSynced still follows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hide",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "Encode / Decode round trip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "ReadBoard reads this week's store",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "GetSortedAsync(false, TopN = 50)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "names: one batched GetUserInfosByUserIdsAsync call",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "the Rankings answer: board, scope, week and when it ends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "junk keys and zero scores are dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "row 1: Roblox DisplayName, value, faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "a hidden row: UserId 0 and '<진영> 한 명'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "a Studio id (<= 0): StudioNames 'Player%d'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "a player in this server is re-masked from the live HideAnnounceName attribute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "a player in this server also shows the game nickname as Sub",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "no hidden nickname leaks",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "Me: my rank in the cached rows and my live value",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "Me.Note 'Hidden': my rows show '<진영> 한 명' to others",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "10 requests never read the DataStore (server cache only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "wrong argument count / board / scope: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "RateLimits.RequestRankings: a second request inside 1 s is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "a player who is not ready gets nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "a second read inside NameCacheSeconds asks no names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "a failed name lookup shows '플레이어'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "GetSortedAsync budget 1 < MinReadBudget 2: no read",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "a failing read returns false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "…and the last good cache is still served",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "Server scope: Halo players only, by value then UserId, hidden -> UserId 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "Server scope: PublicName, DebugTainted rows tagged Test",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "Server scope: Me.Rank",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "the PvP board lists every faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "an unread board is empty (the client shows '아직 기록이 없어요')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "Me.Note 'Ineligible' on the global board for a new account",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "Me.Note 'Private' on a private server",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "reads staggered by 45 s, each board every 180 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "after Monday 00:00 the old week's cache is not shown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reads",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "Honor 9 / 7 / 7 / 5 / 5: ranks 1, 2, 2 (the two 5s are 4th: no reward)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "everyone tied with 3rd gets 3rd (Infamy 8 / 6 / 4 / 4 / 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "PvP 5 / 3 / 3 / 3 / 2: the three 3s are all 2nd (floor 3 kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "a shown and a hidden player tied on 7: both rank 2 with the title",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "tied 4th: no reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "tied 3rd gets the reward; a Halo and a Horns tied on 3 unfair KOs are both outlaws",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "global rows: ranks 1, 2, 2, 4; inside the tie UserId order (the hidden 103 after 102)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "Me.Rank = the shared rank",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "server rows: 4 / 4 / 2 -> ranks 1, 1, 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "a tie that fills the whole read page is logged (rows past it are not read)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ties",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "599 s after Monday 00:00 KST: no settle yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "600 s after Monday: one settle document (key W<week>, season in the store name)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "reward lists: top 3 of Honor / Infamy / Artisan",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "D5: PvP top 3 with at least 3 points (2 points is never an outlaw)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "Honor #1: RankReward for THIS week (2963) + attributes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "Honor #1: the timed title '이번 주 명예 1위'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "Honor #1 is told once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "PvP #1 with 5 points: outlaw this week",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "the outlaw is told once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "PvP #3 with 2 points: no outlaw (D5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "Honor #4: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "server B never rebuilds: it reads the stored document",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "server B: Honor #2 gets rank 2 + its title",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "server B: PvP #2 (a Halo) is an outlaw too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "a top 3 who switched faction: the title, and the line '보상은 빛의 기사단에 있을 때만' instead of '+10% 받았어요'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "a settled week is applied once (no repeat notices)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "joining after the settle: the Artisan #1 reward at PlayerReady",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "a rejoin with the saved result: still on, not announced again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "an outlaw's rejoin: still an outlaw, not announced again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "UpdateAsync keeps the first writer's document; this server applies that one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "a failed board read: no document, nothing applied (no per-server lists)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "no retry before SettleRetrySeconds (60 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "retried after 60 s: settled from the global boards",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "D4: after SettleGiveUpSeconds (2 h) of failed reads the week is skipped (no reward, no outlaw)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "the skip comes after 2 h of retries, not before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "the skip itself is stored (first writer wins)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "the skipped week is logged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "a skipped week is never tried again on this server",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "another server later applies the stored skip too (no per-server results)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "a real document another server stored first is applied, never skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "settle store unreachable: no results and no local skip",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "store back after 2.5 h: the give-up is stored (no week is settled late from fresh reads)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "STUDIO settles into HH_RankSettle_STUDIO only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "join in the result week: Outlaw + RankReward attributes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "an old week's timed title is revoked at join; this week's and permanent titles stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "another faction: the reward attribute is off, the saved result kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "the outlaw week follows the player into any faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "back in Halo the same week: on again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "the next Monday: Outlaw / RankReward off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "the end of the outlaw week is announced once (auto combat never unlocked: the NoAuto line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "the week's title is removed (the selected title falls back to automatic); BetaPioneer stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "no second end notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "auto combat unlocked: 'auto combat is back'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "still a bully at the end of the outlaw week: no 'auto combat is back' (the bully end comes later)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "a STUDIO result on a PRE server: off, its title removed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "a PRE result in Studio: off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "a result of another week is off (only WeekId == this week)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "DebugSettle refuses outside the STUDIO season",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "DebugSettle lists this week's server top 3 (OutlawMinScore kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "DebugSettle applies the results at once (this week)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "settle-effects",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "a hidden knight's bounty line: '빛의 기사단 한 명이 …' without the '[빛의 기사단]' prefix",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "a shown knight's bounty line keeps the prefix",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "BountyAnnounceHidden KO/EN without a prefix",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "the siren publishes the shown name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "hiding during the siren re-publishes KaijuName at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "the kaiju is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "the start line uses the hidden name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "showing it again during the event re-publishes too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "the end line uses the name as it is at the end (hidden)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bb37-lines",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "base XP multiplier",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "weekly top 3 (in that faction): XP x1.10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "reward + outlaw: x1.10 x0.5 = x0.55",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "reward + outlaw + bully: still x0.55 (the penalty once, never x0.25)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "outlaw + bully: x0.5 once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "bully only: x0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "nothing: the base multiplier again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "outlaw only (no bully stack): x0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "an Infamy reward while in Halo: no bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-xp",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "fixture assumption: Goblin row 1 = GoblinTooth 0.4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "no effect: the row drops iff draw < 0.4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "no effect: the jackpot pays iff draw < Chance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "top-3 reward: rows x1.10 (0.4 -> 0.44)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "top-3 reward: the jackpot is never x1.10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "reward x golden x3: a row chance above 1 is cut at 1 (always drops)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "outlaw: rows x0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "outlaw: the jackpot x0.5 too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "reward + outlaw: rows x0.55",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "reward + outlaw: jackpot x0.5 (no x1.10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "outlaw + bully: rows x0.5 once (never x0.25)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "outlaw + bully: jackpot x0.5 once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "the outlaw joined",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "an outlaw still gets the first king-slime Enh70",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-loot",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-bounty",
+      "check": "D3: a Halo outlaw counts as one bully stack: bounty x2 (600)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-bounty",
+      "check": "a Horns outlaw with no stars: bounty x2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-bounty",
+      "check": "outlaw + bully 3: x2 once (max x2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-bounty",
+      "check": "the bully / outlaw bounty is claimed once per cooldown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-bounty",
+      "check": "control: a clean Horns has no bounty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-bounty",
+      "check": "the Bounty attribute of an outlaw (nametag / board)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-bounty",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-bounty",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "auto combat ON before the settle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "becoming an outlaw switches auto combat OFF",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "…with the outlaw reason",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "an outlaw cannot switch it back on (OutlawNoAuto)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "outlaw + bully: the bully reason",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "the last bully stack decays while still an outlaw: no 'penalty over' yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "the outlaw week ends: OutlawEnd only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "after the outlaw week auto combat can be switched on again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "joining as an outlaw with auto combat saved ON: OFF",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nametag",
+      "check": "an outlaw's nametag line 2 ends with a red '무법자'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nametag",
+      "check": "the tag is shown even with the name hidden (BB37 hides chat lines only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nametag",
+      "check": "not an outlaw: no tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nametag",
+      "check": "only the fixed tag is markup (player text stays escaped)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nametag",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nametag",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 22,
+  "staticFailures": [],
+  "mutations": {
+    "total": 179,
+    "applied": 179,
+    "caught": 179,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Bold < 1 never refused",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: 21 s without a hit starts a new fight: the killer started this one",
+          "ko-exempt :: D2: the window counts from the victim's FIRST hit (hits at 0 and 8 s, KO at 15 s: not self-defense)",
+          "ko-exempt :: a 26 s fight the killer started: not self-defense (the opening hit is not forgotten)",
+          "ko-exempt :: a killer only queued for the kaiju is not one yet: a weak KO is unfair (D2)",
+          "ko-exempt :: control: a weak victim with no exemption -> PvP +1",
+          "ko-exempt :: control: the death pipeline without a sack -> PvP +1"
+        ],
+        "newFailingCount": 21
+      },
+      {
+        "mutation": "fresh spawn not checked",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: a KO 5 s after the victim respawned: bully stack + PvP board (Fresh)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "repeat KOs not checked",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: the 3rd KO inside RepeatWindow (검수: the bully rule is 무단 PvP): PvP +1, no weekly Honor; the first two were fair"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "idle window ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: idle victim (no own action for 61 s): PvP board, no weekly Honor, Honor stat unchanged"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "idle check reads GetLastActive (hits count)",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: idle victim (no own action for 61 s): PvP board, no weekly Honor, Honor stat unchanged"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "victim account age ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: victim account 6 days: PvP board (Newbie)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "victim playtime ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: victim playtime 10799 s: PvP board (Newbie)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "newbie check also in STUDIO",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-studio :: STUDIO season: no friend / account-age / playtime checks (Studio clients are new, negative ids)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "per-victim week cap off by one",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: same victim: 3 fair points a week",
+          "ko-unfair :: the 4th KO goes to the PvP board (Repeat)",
+          "ko-unfair :: the victim yielded 3 fair points today"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "victim daily yield cap ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-yieldcap :: MaxYieldPerVictimPerDay: 5 killers score, the 6th does not",
+          "ko-yieldcap :: YieldCap: no counter moves",
+          "ko-yieldcap :: victim already gave 5 fair points today: neither board (YieldCap is not unfair)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "friend check skipped",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: no friend answer yet: the death pipeline makes no web call of its own; the pair counts as friends (stat only)",
+          "ko-friend :: HandleKO without the pipeline's ResolveFriends: no IsFriendsWith call inside it, unknown pair = friends",
+          "ko-friend :: IsFriendsWith error: counted as friends (no points)",
+          "ko-friend :: a successful answer is cached for the session",
+          "ko-friend :: a weak friend KO is not the PvP board either",
+          "ko-friend :: after an error the pair is asked again (now not friends: fair)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "IsFriendsWith error cached",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-friend :: a successful answer is cached for the session",
+          "ko-friend :: after an error the pair is asked again (now not friends: fair)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PlayerLeaving asks the web (NoYield ignored)",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: no friend answer yet: the death pipeline makes no web call of its own; the pair counts as friends (stat only)",
+          "ko-friend :: HandleKO without the pipeline's ResolveFriends: no IsFriendsWith call inside it, unknown pair = friends",
+          "ko-friend :: IsFriendsWith error: counted as friends (no points)",
+          "ko-friend :: a successful answer is cached for the session",
+          "ko-friend :: after an error the pair is asked again (now not friends: fair)",
+          "leave-bounty :: PlayerLeaving: no web call (cache only)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "revenge not exempt",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: revenge KO on a weaker player: never the PvP board"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Wanted victim not exempt",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a Wanted victim (stars): never the PvP board",
+          "leave-bounty :: a weak Wanted leaver is never unfair (Wanted exemption)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bully victim not exempt",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a bully victim: never the PvP board"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "outlaw victim not exempt",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: an outlaw victim: never the PvP board",
+          "ko-exempt :: hunting an outlaw at 40% power is never a bully KO (outlaws are hunted like bullies)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kaiju victim not exempt",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a kaiju victim (queued / siren): never the PvP board"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kaiju killer not exempt",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a killer who is the kaiju (Active): never the PvP board"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "sack thief not exempt",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a thief KO'd while carrying a sack: never the PvP board (HadSack seen before the sack closed)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "self-defense not exempt",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a new fight the victim started 3 s before the KO: self-defense",
+          "ko-exempt :: self-defense (the victim hit first, within 10 s of the KO): never the PvP board",
+          "ko-exempt :: the victim started it, KO 8 s later: self-defense"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "YieldCap counted as unfair",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-yieldcap :: victim already gave 5 fair points today: neither board (YieldCap is not unfair)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "3 KOs in 10 min not on the PvP board",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: the 3rd KO inside RepeatWindow (검수: the bully rule is 무단 PvP): PvP +1, no weekly Honor; the first two were fair"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "overlapping reasons count twice",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: fresh + repeated on one KO: PvP +1 once (one KO, one point)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "private servers still judged fair",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: private server plunder: the fair counters never move (they would block fair points on public servers)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a killer at WeekCap still uses fair counters",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-yieldcap :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "unfair KO worth 2",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: 21 s without a hit starts a new fight: the killer started this one",
+          "ko-exempt :: D2: the window counts from the victim's FIRST hit (hits at 0 and 8 s, KO at 15 s: not self-defense)",
+          "ko-exempt :: a 26 s fight the killer started: not self-defense (the opening hit is not forgotten)",
+          "ko-exempt :: a killer only queued for the kaiju is not one yet: a weak KO is unfair (D2)",
+          "ko-exempt :: control: a weak victim with no exemption -> PvP +1",
+          "ko-exempt :: control: the death pipeline without a sack -> PvP +1"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "exempt KOs still unfair",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a Wanted victim (stars): never the PvP board",
+          "ko-exempt :: a bully victim: never the PvP board",
+          "ko-exempt :: a kaiju victim (queued / siren): never the PvP board",
+          "ko-exempt :: a killer who is the kaiju (Active): never the PvP board",
+          "ko-exempt :: a new fight the victim started 3 s before the KO: self-defense",
+          "ko-exempt :: a thief KO'd while carrying a sack: never the PvP board (HadSack seen before the sack closed)"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "D1 story / goose fame reaches the board",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: Credit adds to this week's board",
+          "credit-guards :: D1: story / goose fame stays in the stat, never on a board",
+          "credit-guards :: a PvP grant that was not fair: stat only",
+          "credit-guards :: a credit past WeekCap is cut at the cap",
+          "credit-guards :: a fair PvP grant: weekly Honor +n",
+          "credit-guards :: at the cap: refused"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "unfair PvP fame credited",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: Credit adds to this week's board",
+          "credit-guards :: a PvP grant that was not fair: stat only",
+          "credit-guards :: a credit past WeekCap is cut at the cap",
+          "credit-guards :: a fair PvP grant: weekly Honor +n",
+          "credit-guards :: at the cap: refused",
+          "ko-fair :: no friend answer yet: the death pipeline makes no web call of its own; the pair counts as friends (stat only)"
+        ],
+        "newFailingCount": 25
+      },
+      {
+        "mutation": "CommitFair never called",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: CommitFair: the killer's Victims['U202'] = 1",
+          "ko-fair :: CommitFair: the victim's YieldN = 1 today",
+          "ko-fair :: Horns: no Honor / PvP points; fair counters moved",
+          "ko-unfair :: same victim: 3 fair points a week",
+          "ko-unfair :: the 4th KO goes to the PvP board (Repeat)",
+          "ko-unfair :: the victim yielded 3 fair points today"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "paid sack credits n instead of RankPoints",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack :: one sack with a fair and an unfair KO: Infamy +2, weekly Infamy +1, PvP +1",
+          "sack :: paid sack of an unfair KO: Infamy stat +1, weekly 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "private servers count",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: private server: no 장인 명성 either (Credit refuses)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board faction not checked",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: a Halo player's Infamy never reaches the Horns board (Faction)",
+          "credit-guards :: a Neutral player is never on the Honor board"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a credit is not cut at WeekCap",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: Artisan WeekCap 60",
+          "credit-guards :: a credit past WeekCap is cut at the cap",
+          "credit-guards :: at the cap: refused"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "WeekCap ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: at the cap: refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "victim yield not counted",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: CommitFair: the victim's YieldN = 1 today",
+          "ko-unfair :: the victim yielded 3 fair points today",
+          "ko-yieldcap :: MaxYieldPerVictimPerDay: 5 killers score, the 6th does not",
+          "ko-yieldcap :: yesterday's 5 do not count today",
+          "leave-bounty :: the leaver's data was still loaded: both fair counters moved",
+          "sack :: the fair point is committed at the KO (CommitFair once)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "per-victim count not kept",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: CommitFair: the killer's Victims['U202'] = 1",
+          "ko-fair :: Horns: no Honor / PvP points; fair counters moved",
+          "ko-unfair :: same victim: 3 fair points a week",
+          "ko-unfair :: the 4th KO goes to the PvP board (Repeat)",
+          "ko-unfair :: the victim yielded 3 fair points today",
+          "leave-bounty :: the leaver's data was still loaded: both fair counters moved"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "tags for any faction",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: a Halo player's drop gets no tag",
+          "artisan :: a scroll from the Halo days scores 0 in the guild"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "tags while away",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: a drop while away (61 s) gets no tag",
+          "artisan :: an untagged success scores 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "untagged scrolls score",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: 3 successes, 2 tags: 2 points",
+          "artisan :: a scroll from the Halo days scores 0 in the guild",
+          "artisan :: an untagged success scores 0",
+          "artisan :: back in the guild: the old tag is gone too",
+          "artisan :: last week's scroll scores 0"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a tag is never used up",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: 3 successes, 2 tags: 2 points",
+          "artisan :: 5 tags but 1 scroll: scores once, no tag left",
+          "artisan :: a failed tagged scroll: 0 points, the tag is used",
+          "artisan :: the tag was used"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "tags outlive their scrolls",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: 5 tags but 1 scroll: scores once, no tag left"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no '+N 장인 명성' notice",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: the player sees '+3 장인 명성'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hidden flag not encoded",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hide :: PlayerReady: HideSynced ~= HideAnnounceName -> rewritten at once",
+          "hide :: hide: every row is rewritten with the hidden flag at the next loop step (120 s gap ignored)",
+          "hide :: no budget: still hidden rows, HideSynced not yet false",
+          "reads :: Encode / Decode round trip",
+          "reads :: a hidden row: UserId 0 and '<진영> 한 명'",
+          "writes-sessions :: back on A, hiding again really rewrites the row (A's cache from the first session is dropped at join)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "faction code not encoded",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: the Artisan row: 3 points, Neutral code 3",
+          "hide :: PlayerReady: HideSynced ~= HideAnnounceName -> rewritten at once",
+          "hide :: hide: every row is rewritten with the hidden flag at the next loop step (120 s gap ignored)",
+          "hide :: no budget: still hidden rows, HideSynced not yet false",
+          "hide :: retried at the next loop step (10 s): shown again, HideSynced = false",
+          "reads :: Encode / Decode round trip"
+        ],
+        "newFailingCount": 34
+      },
+      {
+        "mutation": "eligibility ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hide :: ineligible: nothing written, HideSynced still follows",
+          "reads :: Me.Note 'Ineligible' on the global board for a new account",
+          "writes :: accounts < 3 days / play < 30 min are never written to the global board"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "tainted saves reach PRE",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes :: a DebugTainted save never reaches a PRE board"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Studio is not the STUDIO season",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-studio :: STUDIO season: no friend / account-age / playtime checks (Studio clients are new, negative ids)",
+          "ko-studio :: Studio: season STUDIO",
+          "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO",
+          "settle :: STUDIO settles into HH_RankSettle_STUDIO only",
+          "settle-effects :: DebugSettle applies the results at once (this week)",
+          "settle-effects :: DebugSettle lists this week's server top 3 (OutlawMinScore kept)"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "memory mode is not STUDIO",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-studio :: DataStore memory mode outside Studio is STUDIO too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "write gap ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes :: a dirty player is written at most every WriteEverySeconds (120 s)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "write budget ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hide :: no budget: still hidden rows, HideSynced not yet false",
+          "writes :: SetIncrementSortedAsync budget 4 < MinBudget 5: skipped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "unchanged values rewritten",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes :: an unchanged value is never written again (this server's Written cache)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "removal cached as nil (the and/or trap)",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: the next server removes the old faction's row from the saved Drop"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "faction change keeps the old row",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: leaving the guild removes the Artisan row at once",
+          "week-flip :: a removal pending at the Monday flip still removes LAST week's row",
+          "writes :: faction change: RemoveAsync on the old board, PvP row rewritten with the Horns code at once",
+          "writes-sessions :: a failed RemoveAsync stays in Rank.Drop (saved, with its week)",
+          "writes-sessions :: the next server removes the old faction's row from the saved Drop"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a pending removal targets this week's row",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "week-flip :: a removal pending at the Monday flip still removes LAST week's row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Studio counts in the live save",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: Studio on a live save: the session counts from 0 in a shadow; the save keeps its PRE week",
+          "writes-sessions :: Studio points go to the STUDIO board only; the saved PRE points stay 7",
+          "writes-sessions :: a Studio DebugSettle acts for the session only (the saved results stay the live ones)",
+          "writes-sessions :: back on a live server: the PRE week, the reward and the title are all there"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Studio results written to the live save",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: a Studio DebugSettle acts for the session only (the saved results stay the live ones)",
+          "writes-sessions :: back on a live server: the PRE week, the reward and the title are all there"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Studio removes live titles",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: Studio never removes a live title (its live reward is just off for the session)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a removed week title never given back",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: Honor #1: the timed title '이번 주 명예 1위'",
+          "settle :: a top 3 who switched faction: the title, and the line '보상은 빛의 기사단에 있을 때만' instead of '+10% 받았어요'",
+          "settle :: joining after the settle: the Artisan #1 reward at PlayerReady",
+          "settle :: server B: Honor #2 gets rank 2 + its title",
+          "ties :: a shown and a hidden player tied on 7: both rank 2 with the title",
+          "writes-sessions :: the settle gives a removed week title back (no repeat notice)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the KO judged at the pipeline's (late) time",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: a respawn during the pipeline's wait never makes the KO a fresh-spawn bully KO"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a respawn after the KO counts as fresh",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: a respawn during the pipeline's wait never makes the KO a fresh-spawn bully KO"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the KO time not passed",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: a respawn during the pipeline's wait never makes the KO a fresh-spawn bully KO"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Drop cleared without the removal",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: leaving the guild removes the Artisan row at once",
+          "week-flip :: a removal pending at the Monday flip still removes LAST week's row",
+          "writes :: faction change: RemoveAsync on the old board, PvP row rewritten with the Horns code at once",
+          "writes-sessions :: a failed RemoveAsync stays in Rank.Drop (saved, with its week)",
+          "writes-sessions :: the next server removes the old faction's row from the saved Drop"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a board back in use is removed anyway",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: back in Halo with points before the removal: overwritten, Drop cleared"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the earlier session's cache trusted",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: back on A, hiding again really rewrites the row (A's cache from the first session is dropped at join)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a join never redoes a lost write",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: a join with this week's points writes them at the first loop step"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a credit during the write is lost",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: the point credited during the write is written at the next turn (still dirty)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "another season's points kept",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO",
+          "week-flip :: new points go to the new week's store only",
+          "week-flip :: online across Monday 00:00 KST: last week's final points land in last week's stores",
+          "week-flip :: …and last week's 3 still land in last week's store",
+          "writes-sessions :: STUDIO-season points are dropped on a PRE server",
+          "writes-sessions :: …and never written to a PRE board"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the season is never stamped",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: 3 scrolls, 2 tagged",
+          "artisan :: 3 successes, 2 tags: 2 points",
+          "artisan :: 5 tags but 1 scroll: scores once, no tag left",
+          "artisan :: Enh10 at +9: capped at +10, scores 1",
+          "artisan :: a failed tagged scroll: 0 points, the tag is used",
+          "artisan :: a tagged Enh30 success at +2 scores 3 (A23-24 acceptance)"
+        ],
+        "newFailingCount": 72
+      },
+      {
+        "mutation": "faction change keeps the old points",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: back in the guild: the old tag is gone too",
+          "artisan :: leaving the guild: this week's 장인 points and tags are gone",
+          "writes :: back in Halo the same week: the new row is written (the removal is not cached as 'written')",
+          "writes :: faction change: the old faction's weekly points are gone",
+          "writes-sessions :: back in Halo with points before the removal: overwritten, Drop cleared"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "leaving the guild keeps the tags",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: back in the guild: the old tag is gone too",
+          "artisan :: leaving the guild: this week's 장인 points and tags are gone"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no write when leaving",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes :: PlayerLeaving: the last points are written at once (no 120 s wait)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "leave writes not counted for BindToClose",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave-bounty :: the leaver's last ranking write is pending (BindToClose waits for it)",
+          "leave-bounty :: …and done"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "leave writes never uncounted",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave-bounty :: …and done"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "week flip loses last week's points",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "week-flip :: new points go to the new week's store only",
+          "week-flip :: online across Monday 00:00 KST: last week's final points land in last week's stores",
+          "week-flip :: …and last week's 3 still land in last week's store"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "hide change waits for the write gap",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hide :: all rows written -> Rank.HideSynced = true",
+          "hide :: hide: every row is rewritten with the hidden flag at the next loop step (120 s gap ignored)",
+          "hide :: no budget: still hidden rows, HideSynced not yet false",
+          "writes-sessions :: …and the next loop step writes the hidden row"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "HideSynced never set after the writes",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hide :: PlayerReady: HideSynced ~= HideAnnounceName -> rewritten at once",
+          "hide :: all rows written -> Rank.HideSynced = true",
+          "hide :: ineligible: nothing written, HideSynced still follows",
+          "hide :: no budget: still hidden rows, HideSynced not yet false",
+          "writes-sessions :: …and the next loop step writes the hidden row"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a hide toggle during the write is lost",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "writes-sessions :: …and the next loop step writes the hidden row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "join never resyncs the hidden flag",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hide :: PlayerReady: HideSynced ~= HideAnnounceName -> rewritten at once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hidden rows keep the UserId",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: a hidden row: UserId 0 and '<진영> 한 명'",
+          "reads :: a player in this server is re-masked from the live HideAnnounceName attribute",
+          "ties :: global rows: ranks 1, 2, 2, 4; inside the tie UserId order (the hidden 103 after 102)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "live players not re-masked",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: a player in this server is re-masked from the live HideAnnounceName attribute"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "names not cached",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: a player in this server also shows the game nickname as Sub",
+          "reads :: a second read inside NameCacheSeconds asks no names",
+          "reads :: row 1: Roblox DisplayName, value, faction"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "read budget ignored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: GetSortedAsync budget 1 < MinReadBudget 2: no read"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "reads not staggered",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: reads staggered by 45 s, each board every 180 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RequestRankings argument count not checked",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: wrong argument count / board / scope: ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RequestRankings not rate limited",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: RateLimits.RequestRankings: a second request inside 1 s is ignored",
+          "reads :: a player who is not ready gets nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "last week's cache served",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: after Monday 00:00 the old week's cache is not shown"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "server scope ignores the board faction",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: Server scope: Halo players only, by value then UserId, hidden -> UserId 0",
+          "reads :: Server scope: Me.Rank",
+          "reads :: Server scope: PublicName, DebugTainted rows tagged Test"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "settle without the 10 min delay",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: 599 s after Monday 00:00 KST: no settle yet"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "D5 outlaw floor removed",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: D5: PvP top 3 with at least 3 points (2 points is never an outlaw)",
+          "settle :: PvP #3 with 2 points: no outlaw (D5)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ranks 1, 2, 3 instead of 1, 2, 2",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ties :: Honor 9 / 7 / 7 / 5 / 5: ranks 1, 2, 2 (the two 5s are 4th: no reward)",
+          "ties :: Me.Rank = the shared rank",
+          "ties :: PvP 5 / 3 / 3 / 3 / 2: the three 3s are all 2nd (floor 3 kept)",
+          "ties :: a shown and a hidden player tied on 7: both rank 2 with the title",
+          "ties :: everyone tied with 3rd gets 3rd (Infamy 8 / 6 / 4 / 4 / 4)",
+          "ties :: global rows: ranks 1, 2, 2, 4; inside the tie UserId order (the hidden 103 after 102)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "settle reads only RewardTop rows",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ties :: PvP 5 / 3 / 3 / 3 / 2: the three 3s are all 2nd (floor 3 kept)",
+          "ties :: a tie that fills the whole read page is logged (rows past it are not read)",
+          "ties :: everyone tied with 3rd gets 3rd (Infamy 8 / 6 / 4 / 4 / 4)",
+          "ties :: tied 3rd gets the reward; a Halo and a Horns tied on 3 unfair KOs are both outlaws"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "settle rank = list position",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ties :: a shown and a hidden player tied on 7: both rank 2 with the title",
+          "ties :: tied 3rd gets the reward; a Halo and a Horns tied on 3 unfair KOs are both outlaws"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "global rows keep the stored order",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ties :: global rows: ranks 1, 2, 2, 4; inside the tie UserId order (the hidden 103 after 102)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "server rows rank = position",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ties :: server rows: 4 / 4 / 2 -> ranks 1, 1, 3"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Me.Rank = position",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ties :: Me.Rank = the shared rank"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a tie past the page is not logged",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ties :: a tie that fills the whole read page is logged (rows past it are not read)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "private-server scrolls tagged",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: a private-server drop gets no tag (it would score later on a public server)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a switched top 3 told '+10%'",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: a top 3 who switched faction: the title, and the line '보상은 빛의 기사단에 있을 때만' instead of '+10% 받았어요'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "last writer wins",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: UpdateAsync keeps the first writer's document; this server applies that one"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a failed read settles from this server",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: D4: after SettleGiveUpSeconds (2 h) of failed reads the week is skipped (no reward, no outlaw)",
+          "settle :: a failed board read: no document, nothing applied (no per-server lists)",
+          "settle :: a real document another server stored first is applied, never skipped",
+          "settle :: another server later applies the stored skip too (no per-server results)",
+          "settle :: retried after 60 s: settled from the global boards",
+          "settle :: settle store unreachable: no results and no local skip"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "D4 never gives up",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: D4: after SettleGiveUpSeconds (2 h) of failed reads the week is skipped (no reward, no outlaw)",
+          "settle :: a skipped week is never tried again on this server",
+          "settle :: another server later applies the stored skip too (no per-server results)",
+          "settle :: store back after 2.5 h: the give-up is stored (no week is settled late from fresh reads)",
+          "settle :: the skip comes after 2 h of retries, not before",
+          "settle :: the skip itself is stored (first writer wins)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "D4 gives up at the first failure",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: a real document another server stored first is applied, never skipped",
+          "settle :: no service warnings (pcall-swallowed handler errors)",
+          "settle :: retried after 60 s: settled from the global boards",
+          "settle :: the skip comes after 2 h of retries, not before"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "STUDIO fallback uses this week's points",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DebugSettle uses last week's points",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: DebugSettle applies the results at once (this week)",
+          "settle-effects :: DebugSettle lists this week's server top 3 (OutlawMinScore kept)",
+          "writes-sessions :: a Studio DebugSettle acts for the session only (the saved results stay the live ones)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "settle retried at once",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: no retry before SettleRetrySeconds (60 s)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "results act in the settled week",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: Honor #1 is told once",
+          "settle :: Honor #1: RankReward for THIS week (2963) + attributes",
+          "settle :: Honor #1: the timed title '이번 주 명예 1위'",
+          "settle :: PvP #1 with 5 points: outlaw this week",
+          "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO",
+          "settle :: a real document another server stored first is applied, never skipped"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "outlaw re-applied (notice repeats)",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: an outlaw's rejoin: still an outlaw, not announced again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "reward re-applied (notice repeats)",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: a rejoin with the saved result: still on, not announced again",
+          "writes-sessions :: the settle gives a removed week title back (no repeat notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "outlaw without the season stamp",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: PvP #1 with 5 points: outlaw this week",
+          "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO",
+          "settle :: an outlaw's rejoin: still an outlaw, not announced again",
+          "settle :: server B: PvP #2 (a Halo) is an outlaw too",
+          "settle-effects :: DebugSettle applies the results at once (this week)",
+          "ties :: tied 3rd gets the reward; a Halo and a Horns tied on 3 unfair KOs are both outlaws"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "no rank title",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle :: Honor #1: the timed title '이번 주 명예 1위'",
+          "settle :: a top 3 who switched faction: the title, and the line '보상은 빛의 기사단에 있을 때만' instead of '+10% 받았어요'",
+          "settle :: joining after the settle: the Artisan #1 reward at PlayerReady",
+          "settle :: server B: Honor #2 gets rank 2 + its title",
+          "ties :: a shown and a hidden player tied on 7: both rank 2 with the title",
+          "writes-sessions :: the settle gives a removed week title back (no repeat notice)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "reward in any faction",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-xp :: an Infamy reward while in Halo: no bonus",
+          "settle :: a top 3 who switched faction: the title, and the line '보상은 빛의 기사단에 있을 때만' instead of '+10% 받았어요'",
+          "settle-effects :: another faction: the reward attribute is off, the saved result kept"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "outlaw in any later week",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: a result of another week is off (only WeekId == this week)",
+          "settle-effects :: auto combat unlocked: 'auto combat is back'",
+          "settle-effects :: no second end notice",
+          "settle-effects :: the end of the outlaw week is announced once (auto combat never unlocked: the NoAuto line)",
+          "settle-effects :: the next Monday: Outlaw / RankReward off"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "outlaw of another season acts",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: a PRE result in Studio: off",
+          "settle-effects :: a STUDIO result on a PRE server: off, its title removed"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "reward of another season acts",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: a PRE result in Studio: off",
+          "settle-effects :: a STUDIO result on a PRE server: off, its title removed"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "week titles never revoked",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: a STUDIO result on a PRE server: off, its title removed",
+          "settle-effects :: an old week's timed title is revoked at join; this week's and permanent titles stay",
+          "settle-effects :: the week's title is removed (the selected title falls back to automatic); BetaPioneer stays"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "outlaw end not announced",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-auto :: the outlaw week ends: OutlawEnd only",
+          "settle-effects :: auto combat unlocked: 'auto combat is back'",
+          "settle-effects :: no second end notice",
+          "settle-effects :: the end of the outlaw week is announced once (auto combat never unlocked: the NoAuto line)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "'auto combat is back' while still a bully",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: still a bully at the end of the outlaw week: no 'auto combat is back' (the bully end comes later)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "'auto combat is back' without auto unlocked",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: no second end notice",
+          "settle-effects :: the end of the outlaw week is announced once (auto combat never unlocked: the NoAuto line)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Me.Note never Hidden",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reads :: Me.Note 'Hidden': my rows show '<진영> 한 명' to others"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DebugSettle outside STUDIO",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: DebugSettle refuses outside the STUDIO season"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GameState week not mirrored",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "week-flip :: GameState RankWeekId / RankWeekEndsAt follow the week"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "WeekIndex without the KST offset",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: last week's scroll scores 0",
+          "artisan :: the week flip clears the tags",
+          "config :: WeekIndex flips again at the next Monday 00:00 KST",
+          "config :: WeekIndex: Monday 2026-10-05 00:00 KST = 2962, Sunday 23:59:59 KST = 2961",
+          "config :: WeekStart(WeekIndex(t)) <= t < WeekStart(+1)",
+          "reads :: after Monday 00:00 the old week's cache is not shown"
+        ],
+        "newFailingCount": 45
+      },
+      {
+        "mutation": "OutlawMinScore 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: D5: OutlawMinScore = 3",
+          "settle :: D5: PvP top 3 with at least 3 points (2 points is never an outlaw)",
+          "settle :: PvP #3 with 2 points: no outlaw (D5)",
+          "settle-effects :: DebugSettle applies the results at once (this week)",
+          "settle-effects :: DebugSettle lists this week's server top 3 (OutlawMinScore kept)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "SanitizeRank keeps an older week",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: last week's scroll scores 0",
+          "artisan :: the week flip clears the tags",
+          "sanitize :: an older week: points, Victims and HandScroll start over",
+          "week-flip :: a credit after the flip starts the new week",
+          "week-flip :: new points go to the new week's store only",
+          "week-flip :: the week fields start over (points, Victims, WeekHonor attribute)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "SanitizeRank: Victims unbounded",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Victims: at most MaxVictimKeys (100) keys"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SanitizeRank: any Victims key",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Victims: keys 'U<id>' (negative Studio ids too), counts 1..99",
+          "sanitize :: Victims: zero counts and malformed keys dropped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "SanitizeRank: YieldN never resets",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: another day: YieldN starts over; HideSynced kept"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SanitizeRank: a PvP 'reward' kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: broken Rank / a PvP 'reward' / Outlaw number / DebugTainted repaired"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RewardMult 1.20",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: top 3, reward x1.10, hand tags 60 s",
+          "effects-loot :: reward + outlaw: rows x0.55",
+          "effects-loot :: top-3 reward: rows x1.10 (0.4 -> 0.44)",
+          "effects-xp :: reward + outlaw + bully: still x0.55 (the penalty once, never x0.25)",
+          "effects-xp :: reward + outlaw: x1.10 x0.5 = x0.55",
+          "effects-xp :: weekly top 3 (in that faction): XP x1.10"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Artisan WeekCap 600",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WeekCap Honor 150, Infamy 150, Artisan 60, PvP none",
+          "credit-guards :: Artisan WeekCap 60"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Artisan title wording '장인 명성'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: title wording: '이번 주 명예 1위' / '이번 주 장인 N위' (A23-22 / A23-24)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SanitizeRank: Drop kept for any board",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Drop: faction boards only, this week's and last week's removals (older ones are past their settle)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SanitizeRank: last week's removals dropped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: Drop: faction boards only, this week's and last week's removals (older ones are past their settle)",
+          "sanitize :: a removal from last week survives the Monday flip (the week's own fields start over)",
+          "week-flip :: a removal pending at the Monday flip still removes LAST week's row"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SanitizeRank: seasons dropped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hide :: PlayerReady: HideSynced ~= HideAnnounceName -> rewritten at once",
+          "sanitize :: Drop: faction boards only, this week's and last week's removals (older ones are past their settle)",
+          "sanitize :: a removal from last week survives the Monday flip (the week's own fields start over)",
+          "writes-sessions :: Studio on a live save: the session counts from 0 in a shadow; the save keeps its PRE week",
+          "writes-sessions :: Studio points go to the STUDIO board only; the saved PRE points stay 7",
+          "writes-sessions :: a Studio DebugSettle acts for the session only (the saved results stay the live ones)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "fame always fair",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: no friend answer yet: the death pipeline makes no web call of its own; the pair counts as friends (stat only)",
+          "ko-friend :: HandleKO without the pipeline's ResolveFriends: no IsFriendsWith call inside it, unknown pair = friends",
+          "ko-friend :: IsFriendsWith error: counted as friends (no points)",
+          "ko-friend :: a successful answer is cached for the session",
+          "ko-friend :: after an error the pair is asked again (now not friends: fair)",
+          "ko-friend :: friend KO: neither the weekly Honor nor the PvP board"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "revenge mark not passed",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: revenge KO on a weaker player: never the PvP board"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "victim-struck-first not passed",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a new fight the victim started 3 s before the KO: self-defense",
+          "ko-exempt :: self-defense (the victim hit first, within 10 s of the KO): never the PvP board",
+          "ko-exempt :: the victim started it, KO 8 s later: self-defense"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "HadSack not passed",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a thief KO'd while carrying a sack: never the PvP board (HadSack seen before the sack closed)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "outlaw victim not passed",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: an outlaw victim: never the PvP board",
+          "ko-exempt :: hunting an outlaw at 40% power is never a bully KO (outlaws are hunted like bullies)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "defense window ignored",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: D2: the window counts from the victim's FIRST hit (hits at 0 and 8 s, KO at 15 s: not self-defense)",
+          "ko-exempt :: the KO landed more than DefenseWindowSeconds after the victim's first hit: not self-defense",
+          "ko-exempt :: the victim started it but the KO came 18 s later: not self-defense (D2: 10 s)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "defense ignores who started the fight",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: 21 s without a hit starts a new fight: the killer started this one",
+          "ko-exempt :: control: the death pipeline without a sack -> PvP +1",
+          "ko-exempt :: the killer struck first (the victim only hit back): not self-defense",
+          "ko-unfair :: idle victim (no own action for 61 s): PvP board, no weekly Honor, Honor stat unchanged"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a fight never ends",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a new fight the victim started 3 s before the KO: self-defense"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every hit starts a new fight",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: 21 s without a hit starts a new fight: the killer started this one",
+          "ko-exempt :: a 26 s fight the killer started: not self-defense (the opening hit is not forgotten)",
+          "ko-exempt :: a new fight the victim started 3 s before the KO: self-defense",
+          "ko-exempt :: self-defense (the victim hit first, within 10 s of the KO): never the PvP board",
+          "ko-exempt :: the killer struck first (the victim only hit back): not self-defense"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "hidden bounty line not used",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bb37-lines :: a hidden knight's bounty line: '빛의 기사단 한 명이 …' without the '[빛의 기사단]' prefix"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "IsHidden always false",
+        "file": "src/ServerScriptService/AnnounceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bb37-lines :: a hidden knight's bounty line: '빛의 기사단 한 명이 …' without the '[빛의 기사단]' prefix"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kaiju name not re-published on a hide toggle",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bb37-lines :: hiding during the siren re-publishes KaijuName at once",
+          "bb37-lines :: showing it again during the event re-publishes too"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "HandleKO may ask the web",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: no friend answer yet: the death pipeline makes no web call of its own; the pair counts as friends (stat only)",
+          "ko-friend :: HandleKO without the pipeline's ResolveFriends: no IsFriendsWith call inside it, unknown pair = friends",
+          "ko-friend :: IsFriendsWith error: counted as friends (no points)",
+          "ko-friend :: a successful answer is cached for the session",
+          "ko-friend :: after an error the pair is asked again (now not friends: fair)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a queued kaiju counts as a kaiju killer",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a killer only queued for the kaiju is not one yet: a weak KO is unfair (D2)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "unfair plunder carries fair points",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: private server plunder: the fair counters never move (they would block fair points on public servers)",
+          "sack :: one sack with a fair and an unfair KO: Infamy +2, weekly Infamy +1, PvP +1",
+          "sack :: paid sack of an unfair KO: Infamy stat +1, weekly 0"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "plunder fair point not committed",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack :: the fair point is committed at the KO (CommitFair once)",
+          "sack :: the payout does not count the victim a second time"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "outlaw has no bounty",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-bounty :: D3: a Halo outlaw counts as one bully stack: bounty x2 (600)",
+          "effects-bounty :: a Horns outlaw with no stars: bounty x2",
+          "effects-bounty :: the Bounty attribute of an outlaw (nametag / board)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "outlaw bounty stacks on bully stacks",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-bounty :: outlaw + bully 3: x2 once (max x2)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "leave bounty asks the web",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave-bounty :: PlayerLeaving: no web call (cache only)",
+          "leave-bounty :: an unknown pair while leaving counts as friends: stat only"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "leave bounty ignores the verdict",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave-bounty :: payLeaveBounty: judged like a KO with the leaver as the victim (fair -> weekly Honor)",
+          "leave-bounty :: the leaver's data was still loaded: both fair counters moved"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hunting a weak outlaw is a bully KO",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: hunting an outlaw at 40% power is never a bully KO (outlaws are hunted like bullies)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "paid sack credits all its infamy",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack :: one sack with a fair and an unfair KO: Infamy +2, weekly Infamy +1, PvP +1",
+          "sack :: paid sack of an unfair KO: Infamy stat +1, weekly 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "rankPts not clamped",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack :: AddToSack(…, infamy 1, rankPts 5): only 1 fair point"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "sack RankInfamy overwritten",
+        "file": "src/ServerScriptService/GrudgeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sack :: one sack with a fair and an unfair KO: Infamy +2, weekly Infamy +1, PvP +1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "reward on the jackpot",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-loot :: reward + outlaw: jackpot x0.5 (no x1.10)",
+          "effects-loot :: top-3 reward: the jackpot is never x1.10"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "reward not on rows",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-loot :: reward + outlaw: rows x0.55",
+          "effects-loot :: top-3 reward: rows x1.10 (0.4 -> 0.44)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "outlaw keeps full drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-loot :: outlaw: rows x0.5",
+          "effects-loot :: outlaw: the jackpot x0.5 too",
+          "effects-loot :: reward + outlaw: jackpot x0.5 (no x1.10)",
+          "effects-loot :: reward + outlaw: rows x0.55"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Enhanced without the item id",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "artisan :: 3 successes, 2 tags: 2 points",
+          "artisan :: 5 tags but 1 scroll: scores once, no tag left",
+          "artisan :: Enh10 at +9: capped at +10, scores 1",
+          "artisan :: a failed tagged scroll: 0 points, the tag is used",
+          "artisan :: a tagged Enh30 success at +2 scores 3 (A23-24 acceptance)",
+          "artisan :: the Artisan row: 3 points, Neutral code 3"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "no XP reward",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-xp :: reward + outlaw + bully: still x0.55 (the penalty once, never x0.25)",
+          "effects-xp :: reward + outlaw: x1.10 x0.5 = x0.55",
+          "effects-xp :: weekly top 3 (in that faction): XP x1.10"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "outlaw keeps full XP",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-xp :: outlaw only (no bully stack): x0.5",
+          "effects-xp :: reward + outlaw: x1.10 x0.5 = x0.55"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "XP penalty twice (x0.25)",
+        "file": "src/ServerScriptService/ProgressionService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-xp :: outlaw + bully: x0.5 once",
+          "effects-xp :: outlaw only (no bully stack): x0.5",
+          "effects-xp :: reward + outlaw + bully: still x0.55 (the penalty once, never x0.25)",
+          "effects-xp :: reward + outlaw: x1.10 x0.5 = x0.55"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "an outlaw may use auto combat",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-auto :: an outlaw cannot switch it back on (OutlawNoAuto)",
+          "effects-auto :: becoming an outlaw switches auto combat OFF",
+          "effects-auto :: joining as an outlaw with auto combat saved ON: OFF",
+          "effects-auto :: the last bully stack decays while still an outlaw: no 'penalty over' yet",
+          "effects-auto :: the outlaw week ends: OutlawEnd only",
+          "effects-auto :: …with the outlaw reason"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Outlaw attribute not watched",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-auto :: an outlaw cannot switch it back on (OutlawNoAuto)",
+          "effects-auto :: becoming an outlaw switches auto combat OFF",
+          "effects-auto :: joining as an outlaw with auto combat saved ON: OFF",
+          "effects-auto :: …with the outlaw reason"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a hit taken is the victim's own action",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: D6: a hit taken moves GetLastActive (idle timers) but never GetLastOwnActive",
+          "ko-unfair :: idle victim (no own action for 61 s): PvP board, no weekly Honor, Honor stat unchanged"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the pipeline never resolves the friend answer",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-fair :: the death pipeline waits while the hit's friend check is still running",
+          "ko-fair :: …then judges the KO with that answer (fair KO counted)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "HadSack read after the sack closed",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-exempt :: a thief KO'd while carrying a sack: never the PvP board (HadSack seen before the sack closed)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "outlaw gets the bully text",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-auto :: an outlaw cannot switch it back on (OutlawNoAuto)",
+          "effects-auto :: outlaw + bully: the bully reason"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bully 'penalty over' at the outlaw end",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-auto :: the outlaw week ends: OutlawEnd only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GrantFame skips the ranking",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "credit-guards :: Credit adds to this week's board",
+          "credit-guards :: a Halo player's Infamy never reaches the Horns board (Faction)",
+          "credit-guards :: a fair PvP grant: weekly Honor +n",
+          "ko-exempt :: a fair KO of a Wanted Horns: weekly Honor +2 (the bounty KO)",
+          "ko-fair :: CommitFair: the killer's Victims['U202'] = 1",
+          "ko-fair :: CommitFair: the victim's YieldN = 1 today"
+        ],
+        "newFailingCount": 31
+      },
+      {
+        "mutation": "hits move GetLastOwnActive",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ko-unfair :: D6: a hit taken moves GetLastActive (idle timers) but never GetLastOwnActive",
+          "ko-unfair :: idle victim (no own action for 61 s): PvP board, no weekly Honor, Honor stat unchanged"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Revoke keeps the selected title",
+        "file": "src/ServerScriptService/TitleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "settle-effects :: the week's title is removed (the selected title falls back to automatic); BetaPioneer stays"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no outlaw tag",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "nametag :: an outlaw's nametag line 2 ends with a red '무법자'",
+          "nametag :: only the fixed tag is markup (player text stays escaped)",
+          "nametag :: the tag is shown even with the name hidden (BB37 hides chat lines only)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "tag hidden with the name",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "nametag :: the tag is shown even with the name hidden (BB37 hides chat lines only)"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "e4a723afda1686d40b36f3f32abf9213e48ffdba3c0a21555efcfb1810b6286f",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/RankingService.luau": "ad11588c33afca34e9b5c6106eee57a99a3fcf07ad8d299423946919ebfdcff9",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/PvPService.luau": "5a29946e6b7f1c39dfc7388d9a4c89e55ecc17fe1e76406192fc27792b960f33",
+    "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
+    "src/ServerScriptService/LootService.luau": "0dd1f784ee3940d8a35a50cf401cfab9d83309ca65256d5d3d7c47357ce5f477",
+    "src/ServerScriptService/CombatService.luau": "58bdfb4f6544bbd889df5f5616ef8ee25f8ca99b5e168b5e0e7e3220ab97cc44",
+    "src/ServerScriptService/ProgressionService.luau": "e33ec6250c5985b7b64cffc407d7d4322a569481471c118a03b1bbe1fd400f3a",
+    "src/ServerScriptService/PlayerService.luau": "2ce4b689d4c44fa077774759ac33ef7a4efc853cb39e00d81aa810f4c71f4ac5",
+    "src/ServerScriptService/CharacterVisuals.luau": "40a335a59c6e11e730b59daf9761c476d42187e0ea47421721733a6a83954f47",
+    "src/ServerScriptService/KaijuService.luau": "16c8c973613c6943c5877f2c8543c7e1ca98c889e6ed78760e0727fb047e5e0e"
+  },
+  "fixtureSHA256": "7ed5039afc309594b10289b31f16bd90d1d636a16536e839437024fb1b327292",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "BB10 / A23-22 / A23-23 / A23-24 + D1-D6: four weekly boards (Honor Halo, Infamy Horns, Artisan Neutral, PvP every faction) from Monday 00:00 KST (WeekIndex 2962 = 10/05). Honor / Infamy count only fair PvP points (PvPCreditOK: Bold >= 1, victim's own action within 60 s (hits taken do not count, D6), not friends (an IsFriendsWith error counts as friends; never asked inside PlayerLeaving), victim >= 7 days / 3 h (skipped in the STUDIO season), < 3 per victim per week, victim < 5 a day, not fresh / repeated). An unfair KO (weak, idle, new, 4th, fresh, repeated) adds 1 to the PvP board unless exempt (revenge, Wanted, bully, outlaw, kaiju victim or killer, sack thief seen before the sack closes, self-defense within 10 s); YieldCap alone counts nowhere; friends count nowhere. Story / goose fame never reaches a board (D1). Grudge sacks credit only their fair RankInfamy when Paid. 장인 명성: tags on Enh scrolls my own kills dropped while Neutral and active, one tag per use, success = after - before, fails / transfers / untagged / last week 0; cleared on leaving the guild. Ordered stores HH_Rank_<season>_<board>_W<week>, key U_<id>, value score*100 + hidden*10 + code; STUDIO season in Studio / memory mode; eligibility, DebugTainted, ExcludeUserIds, budgets, 120 s gap, faction-change removal, leave write, week-flip snapshot, hide must-write + HideSynced; reads every 180 s staggered 45 s, names batched + cached, hidden rows '<진영> 한 명' / UserId 0, live re-mask, the RequestRankings remote answers from the cache only. One settle 10 min after Monday (first writer wins in HH_RankSettle_<season> W<week>), retry 60 s, give up after 2 h (D4), PvP top 3 with >= 3 points become outlaws (D5), Honor / Infamy / Artisan top 3 get RankReward + a timed title for that week only and only in that faction. Effects: XP and drop rows x1.10 (never the jackpot), outlaw = bully penalty once (x0.5, never x0.25, jackpot too, first scroll kept), no auto combat (OutlawAutoOff / OutlawNoAuto / OutlawEnd), bounty like one bully stack (max x2), red nametag tag even when hidden.",
+  "limitations": "Offline doubles: Players / Instances / attributes / characters, PlayerService (data rows, SetStat mirror; GrantFame and the activity clocks are the real extracted functions), FactionService, JusticeService (power = the Power attribute, bully stacks = the attribute), ZoneService, KaijuService, MapBuilder, MonsterService signal, ProgressionService gold, DataStoreService (ordered + standard, budgets, failures, a second server sharing the stores), UserService, IsFriendsWith, task (the services' forever-loops are stepped through their public Tick functions; GrudgeService's loop is resumed by hand). Real Roblox OrderedDataStore limits / latency, two real servers, the HUD chips and the ranking window (BB11, client) are not certified here: the 게임성 개발 session plays them after the merge; real-server checks with two 7-day accounts come after 10/10 (BB10 acceptance)."
+}

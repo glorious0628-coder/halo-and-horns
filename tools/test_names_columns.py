@@ -126,9 +126,10 @@ def static() -> tuple[int, list[str]]:
                 raw_names.append(f"{path.name}: {line.strip()}")
     check(not raw_names, f"BB37 acceptance: no NotifyAll line uses Util.PlayerDisplayName: {raw_names}")
     sites = {
-        "PvPService.luau": [r'fmt\("MostWanted", publicName\(p, true\)', r'fmt\("BountyAnnounce", publicName\(killer, true\)',
-                            r'fmt\("BountyAnnounce", publicName\(a, true\)', r"wanted, \{ Name = publicName\(p\)",
-                            r"heroes, \{ Name = publicName\(p\)"],
+        "PvPService.luau": [r'fmt\("MostWanted", publicName\(p, true\)', r"NotifyAll\(bountyLine\(killer, bounty\)\)",
+                            r"NotifyAll\(bountyLine\(a, bounty\)\)",
+                            r'"BountyAnnounceHidden" or "BountyAnnounce", publicName\(p, true\)',
+                            r"wanted, \{ Name = publicName\(p\)", r"heroes, \{ Name = publicName\(p\)"],
         "GrudgeService.luau": [r'fmt\("GrudgeAvengedAll", publicName\(killer, true\), publicName\(thief, true\)\)'],
         "ProgressionService.luau": [r"Config\.Text\.RebirthAnnounce, publicName\(player, true\)"],
         "GooseService.luau": [r"Config\.Text\.RareAnnounce, publicName\(p, true\)"],

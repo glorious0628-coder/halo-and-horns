@@ -39,6 +39,17 @@ function TitleService.Grant(player, id)
 	return true
 end
 
+-- BB10 timed titles (Config.TitleDefs[id].Timed: the weekly "이번 주 명예 1위" titles): RankingService removes them
+-- when their week ends; a removed selected title falls back to automatic (""). Returns true when it was owned.
+function TitleService.Revoke(player, id)
+	local data = S.PlayerService.GetData(player)
+	if type(data) ~= "table" or type(data.Titles) ~= "table" or data.Titles[id] == nil then return false end
+	data.Titles[id] = nil
+	if data.TitleSel == id then S.PlayerService.SetStat(player, "TitleSel", "") end
+	publish(player, data)
+	return true
+end
+
 function TitleService.Owns(player, id)
 	local data = S.PlayerService.GetData(player)
 	return type(data) == "table" and type(data.Titles) == "table" and data.Titles[id] ~= nil

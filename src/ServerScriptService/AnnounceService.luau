@@ -47,6 +47,11 @@ function AnnounceService.PublicName(player, honorific)
 	return Util.PlayerDisplayName(player) .. (honorific == true and T.Honorific or "")
 end
 
+-- BB37: true when this player's server-wide lines use "<faction> 한 명" (the bounty line picks its hidden variant)
+function AnnounceService.IsHidden(player)
+	return typeof(player) == "Instance" and player:IsA("Player") and isHidden(player)
+end
+
 local function who(player)
 	local hidden = isHidden(player)
 	local faction = player:GetAttribute("Faction")

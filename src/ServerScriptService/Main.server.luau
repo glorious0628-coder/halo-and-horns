@@ -10,8 +10,8 @@ local INIT_ORDER = {
 	"DataService", "PlayerService", "NicknameService", "MonetizationService", "MapBuilder", "ZoneService", "FactionService",
 	"ClassService", "VitalsService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
 	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "StoryQuestService",
-	"AnnounceService", "SettingsService", "LootService", "TelemetryService", "TitleService", "CharacterVisuals",
-	"HalloweenService",
+	"AnnounceService", "SettingsService", "RankingService", "LootService", "TelemetryService", "TitleService",
+	"CharacterVisuals", "HalloweenService",
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -20,7 +20,7 @@ local START_ORDER = {
 	"CombatService", "MonsterService", "PvPService", "GrudgeService", "WarService", "KaijuService", "GooseService",
 	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "HalloweenService", "LootService", "TelemetryService",
 	"TitleService", "MonetizationService", "CharacterVisuals", "DataService",
-	"NicknameService", "SettingsService", "PlayerService",
+	"NicknameService", "SettingsService", "RankingService", "PlayerService",
 }
 
 local S = {}
@@ -54,13 +54,28 @@ end
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Level", 20)
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Gold", 5000)   -- adds carried gold
 --   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
+--   BB10: RankSettle (settle this week's server board now; STUDIO season), RankWrite (write my rows now), PairCD (clear
+--   my pair cooldowns + this week's fair-point counters). Every command marks the save DebugTainted (never on PRE / B1).
 if game:GetService("RunService"):IsStudio() then
 	local debugFn = Instance.new("BindableFunction")
 	debugFn.Name = "DebugCommand"
 	debugFn.OnInvoke = function(playerName, key, value)
 		local player = game:GetService("Players"):FindFirstChild(playerName)
 		if not player or not S.PlayerService.IsReady(player) then return "no such ready player" end
-		if key == "Nickname" then
+		local okData, tainted = pcall(function() return S.PlayerService.GetData(player) end)
+		tainted = okData and type(tainted) == "table" and tainted or nil
+		if tainted then tainted.DebugTainted = true end -- BB10: a debugged save never reaches PRE / B1 boards
+		if key == "RankSettle" then
+			return S.RankingService.DebugSettle()
+		elseif key == "RankWrite" then
+			return S.RankingService.DebugWrite(player)
+		elseif key == "PairCD" then
+			if tainted then
+				tainted.PairCD = {}
+				if type(tainted.Rank) == "table" then tainted.Rank.Victims, tainted.Rank.YieldN = {}, 0 end
+			end
+			return "ok"
+		elseif key == "Nickname" then
 			S.NicknameService.SetNickname(player, value) -- actual live registry, including filtering/global reservation
 			return player:GetAttribute("NicknameStatus")
 		elseif key == "Mana" then
