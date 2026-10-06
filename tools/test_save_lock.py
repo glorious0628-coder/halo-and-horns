@@ -46,6 +46,9 @@ MUTATIONS = [
      'return game:GetService("ServerStorage"):GetAttribute("StudioFreshSave") == true', "return false"),
     ("the player leaving is not noticed", D, "\t\tif player.Parent == nil then\n\t\t\treturn nil\n\t\tend\n\t\tlocal final",
      "\t\tlocal final"),
+    # review 2026-10-06 evening: the SessionToken alone must stop a stopped session once the record has no lock
+    ("token guard removed", D, 'if type(old) ~= "table" or old.SessionToken ~= sessionToken then',
+     'if type(old) ~= "table" then'),
 ]
 
 

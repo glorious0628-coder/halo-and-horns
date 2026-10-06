@@ -234,6 +234,39 @@ runGroup("a Studio session writes Studio = true and still waits for a live lock"
 		"Studio waits for a live server's lock (6 s x 4, takes it at the 5th try)", show({ updates(w2, key2), w2.Waits }))
 end)
 
+-- review 2026-10-06 evening: the record has NO lock any more (the live session left with its final release), so only the
+-- SessionToken stands between a stopped Studio session and the live data
+runGroup("a stopped Studio session never writes over a live session that already left (SessionToken)", function()
+	local stores = {}
+	local function studioAndLive(userId, jobId)
+		local w = newServer({ Studio = true, JobId = "", Stores = stores })
+		table.insert(w.AllowWarn, "final save failed")
+		local key = keyOf(w, userId)
+		rows(w)[key] = savedRecord(11, nil)
+		local p = w:NewPlayer(userId)
+		local data = w:Drive(nil, w.DS.Load, p)
+		local live = newServer({ Studio = false, JobId = jobId, Stores = stores, Time = NOW + 3 })
+		local q = live:NewPlayer(userId)
+		local liveData = live:Drive(nil, live.DS.Load, q)
+		liveData.Level = 21
+		live:Drive(nil, live.DS.Release, q)
+		return w, key, p, data
+	end
+	local w, key, p, data = studioAndLive(403, "live-6b")
+	check(type(data) == "table" and rows(w)[key].SessionLock == nil and rows(w)[key].Level == 21,
+		"the live session took over, played and left: no lock, its data saved", show({ rows(w)[key].SessionLock, rows(w)[key].Level }))
+	data.Level = 99
+	check(w.DS.Save(p, false) == false and rows(w)[key].Level == 21 and rows(w)[key].SessionLock == nil,
+		"the stopped Studio session's save is refused (no lock left: the SessionToken) and the live data stays",
+		show({ rows(w)[key].Level, rows(w)[key].SessionLock }))
+	-- the same with the final release as the Studio session's first write after the takeover
+	local w2, key2, p2, data2 = studioAndLive(404, "live-6c")
+	data2.Level = 98
+	w2:Drive(nil, w2.DS.Release, p2)
+	check(rows(w2)[key2].Level == 21 and rows(w2)[key2].SessionLock == nil and w2.DS.Get(p2) == nil,
+		"its release is refused too: the record stays the live session's data", show({ rows(w2)[key2].Level, rows(w2)[key2].SessionLock }))
+end)
+
 runGroup("DataStore errors: retry with the same notice", function()
 	local w = newServer({ Studio = false, JobId = "live-6" })
 	local key = keyOf(w, 501)

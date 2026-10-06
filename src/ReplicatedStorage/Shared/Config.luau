@@ -7,6 +7,16 @@ Config.Game = {
 	MaxPlayers = 20, -- documentation only; set in Studio Game Settings
 }
 
+-- feature switches. A23-57 (user 2026-10-06): NeutralFaction = the artisan guild as a faction a player can newly pick;
+-- off for the beta (the artisan update brings it back). Off: no new Neutral pick at the faction picker, the altar or a
+-- rebirth (Config.Pickable), its own sub quests are not offered; saves that are Neutral already stay as they are.
+-- Code and data stay; game dev 1's faction picker reads the switch for its cards.
+Config.Features = { NeutralFaction = false }
+
+function Config.FeatureOn(name)
+	return type(Config.Features) == "table" and Config.Features[name] == true
+end
+
 ----------------------------------------------------------------- player / data
 Config.Player = {
 	WalkSpeed = 20,
@@ -29,6 +39,7 @@ Config.Vitals = {
 	PotionPrices = { HP = 25, MP = 25 }, -- gold per bottle (user 2026-10-06)
 	PotionInventoryCap = 99,
 	PotionMerchantName = "PotionMerchant", -- server-owned workspace.Map.NPCs model; missing NPC rejects buying
+	PotionMerchantLabel = "Fizzby", -- ⑪ the prompt's ObjectText (ActionText stays "Buy potions"); the model name stays
 	PotionMerchantDistance = 12,
 	MerchantEnabled = true, -- A23-6: shop screen works; price 25 confirmed by the user 2026-10-06
 	-- A23-6: temporary default Roblox-style NPC (HumanoidDescription, no new art) until the Firefly redraw
@@ -617,6 +628,13 @@ Config.Factions = {
 	},
 }
 
+-- a faction a player may newly pick (faction picker, altar switch, rebirth): Halo / Horns; the artisan guild only while
+-- Config.Features.NeutralFaction is on (A23-57). A save that is Neutral already keeps it.
+function Config.Pickable(factionId)
+	if factionId == "Neutral" and not Config.FeatureOn("NeutralFaction") then return false end
+	return (factionId == "Halo" or factionId == "Horns" or factionId == "Neutral") and Config.Factions[factionId] ~= nil
+end
+
 -- level-only base health (no faction, class, Size Justice or kaiju)
 function Config.BaseHealth(level)
 	return Config.Player.BaseMaxHealth + Config.Player.MaxHealthPerLevel * (level - 1)
@@ -782,6 +800,9 @@ Config.PvP = {
 	BoldStrongMult = 2,
 	BoldWeakMult = 0.5,
 	SpawnProtection = 10, -- seconds; broken early when the protected player damages a player
+	-- ⑤ (quality_ideas §1, 검수 2026-10-07): no shield bubble; while protected the body wears a soft outline in its
+	-- faction color (Config.Factions[f].Color: Halo gold, Horns red), PvPService Highlight "ProtectGlow"
+	ProtectGlow = { OutlineTransparency = 0.35 },
 	HitPctOfMaxHP = 0.10, -- normal per-target PvP hit = victim BASE MaxHealth * 0.10 * powerRatio * ... (§4.9)
 	PowerRatioMin = 0.8,
 	PowerRatioMax = 1.5,
@@ -1455,6 +1476,37 @@ Config.Halloween = {
 		-- the season, so it needs no "comes back every year" line (P10)
 		PatchSign = "↓ Pumpkin Patch · pumpkin monsters", PatchSignEn = "↓ Pumpkin Patch · pumpkin monsters",
 	},
+	-- ⑫ (review 2026-10-06): one line after each king's Appear announcement, by KST day (Day 1 = 2026-10-31)
+	-- day = math.floor((Config.SeasonNow() - DayOneStart) / 86400) + 1, clamped 1..#Days
+	-- Day 9 GhostKing: string.format(line, count) FIRST (count = both kings' defeats on this server, memory only;
+	-- 0 -> GhostKingZero), THEN string.format(Format, Config.MonsterTypes[kind].Short, line). Chat only, no toast.
+	-- HalloweenService sends the finished line as Args.Banter of the <Key>Appear broadcast (lines_pack §4); game dev 1's
+	-- Announce shows it as the next chat line in that event's Color.
+	Banter = {
+		DayOneStart = 1793372400, -- 2026-10-31 00:00 KST
+		Format = "%s: \"%s\"",
+		Days = { -- keys = Config.Halloween.Bosses[i].Key
+			{ PumpkinKing = "Happy Halloween! Just so you know, the best king here is me.",
+				GhostKing = "Best king? My ribbon says it's me. I made the ribbon." },
+			{ PumpkinKing = "My candy pile is taller than the trees in the Haunted Hollow!",
+				GhostKing = "Cute pile. Mine has a second pile sitting on top." },
+			{ PumpkinKing = "I can bounce from here to the Crossroads in one hop!",
+				GhostKing = "I floated there and back twice. You were still bouncing." },
+			{ PumpkinKing = "My best candy is gone! Clue: glowy crumbs. Hmm, Ghost King?",
+				GhostKing = "Not me! And why is there orange jelly on MY candy?" },
+			{ PumpkinKing = "New crown! Bigger than yours. With extra sprinkles!",
+				GhostKing = "Mine has a bell on top. It rings when I'm right. Ding!" },
+			{ PumpkinKing = "Biggest crown, pile, AND bounce! …So why is it so quiet?",
+				GhostKing = "Quiet here too. Nobody plays tag with a king." },
+			{ PumpkinKing = "Both sides teamed up on me. They looked like they had fun!",
+				GhostKing = "Same here. Teaming up looks fun. …Hey, Pumpkin. Want to try it?" },
+			{ PumpkinKing = "Okay, Ghost King. One crown, two kings? It's sticky, but it's big.",
+				GhostKing = "Deal. You hold the left side. I hold the shiny side." },
+			{ PumpkinKing = "Truce! One big candy party. Ghost King, you bring the music!",
+				GhostKing = "Truce! Kings beaten on this server: %d. Fine, you're all invited!" }, -- the only %d (⑭ exception)
+		},
+		GhostKingZero = "Truce! No kings beaten here yet. Party anyway. Come on in!",
+	},
 }
 
 -- the "unit" monster used for quest targets / rewards and Config.HuntValue
@@ -1490,26 +1542,31 @@ Config.Tutorial = {
 	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
 	AutoClaimSeconds = 60,
 	WelcomeRate = 0.5,
+	-- ⑪ (lines_pack §1): Name = the guide's own name (speaker / nametag line 1), Title = the role (nametag line 2; quest,
+	-- help and system lines keep the role). The catchphrase is its own first line, once a dialogue.
 	Welcome = { -- existing approved faction/class portrait; no world NPC is spawned by this dialogue
 		Halo = {
-			Name = "Guide of Light",
+			Name = "Hallie", Title = "Guide of Light",
 			Lines = {
+				"Hallie here! Now you know my name. Welcome to the Knights!",
 				"Thank you for joining the Knights of Light. Big oaths can wait. Right now, we need your help.",
 				"Since the Crown of Balance broke, slimes drawn to its shards have blocked the supply road in the Squishy Meadow.",
 				"Please defeat 5 slimes and free the road. Every hero who protects friends starts by opening a path for someone.",
 			},
 		},
 		Horns = {
-			Name = "Horn Legion Guide",
+			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
+				"Finders keepers! HA! You're with us now. I'm Magpie.",
 				"Welcome, rookie! Thanks for joining us. Before we take over the world… let's save the Legion's lunch.",
 				"Slimes drawn to the broken crown shards took the supply road in the Squishy Meadow. No food or gear can get through!",
 				"Beat 5 slimes and win the road back. A real leader isn't just strong. A real leader gets friends moving.",
 			},
 		},
 		Neutral = {
-			Name = "Guild Guide",
+			Name = "Kit", Title = "Guild Guide",
 			Lines = {
+				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 				"Thank you for joining the Artisan Guild. Wars aren't won with swords alone. Someone has to fix those swords too.",
 				"Slimes drawn to the crown shards have blocked the supply road in the Squishy Meadow.",
 				"Please defeat 5 slimes and free the road. It's your first step to helping everyone get their gear.",
@@ -1551,17 +1608,41 @@ Config.Tutorial = {
 -- mission (TutorialStep 99); Subs are accepted automatically and listed under the main row (S0 right after the
 -- class pick). Step Obj types (StoryQuestService): Kill{Kind,Zone,Golden,Near,Radius,Count} BasicKill SafeKill{MinHP}
 -- AutoKill SkillHit{Min,Count} WarPoints{Count} EarnGold{Source,Count} Enter{Zone|"OwnTown"|"AnyTown"} Level{Level}
--- State{Key} Goose WarChest Talk Choice{Good,Evil,Neutral} Trials{List}. Rewards: Gold / XP = minutes of
--- Config.HuntValue (1 = one minute of hunting), Claim = true -> the player presses [받기] (chapter ends).
+-- State{Key: BlacksmithVisited | AutoOn | OwnIron | Graduated (E7: no Sprout Shield)} Goose WarChest Talk
+-- Choice{Good,Evil,Neutral} Trials{List; a list entry may carry Say = a line when it is done} Near{Spot,Radius,Zone,Stay}.
+-- Reward.Item = a Loot item id (+ N) is given through LootService.GrantItem when the quest ends. Rewards: Gold / XP
+-- = minutes of Config.HuntValue (1 = one minute of hunting), GoldN = exact gold, XPBar = a share of the current level's
+-- XP bar; Claim = true -> the player presses [Claim] (chapter ends).
+-- A23-46 / story_depth E4 + E6 (게임성 개발 2, 2026-10-07): Near.Stay = seconds to stay inside in one go (leaving
+-- resets; the row shows "%d/%d s"); Choice.Good / .Evil.Reward = { Item = Loot item id | Potion = "HP" | "MP", N,
+-- Gold } paid on that pick (a Neutral A takes Good's, B takes Evil's); a step with Npc = id is talked through that town
+-- NPC: game dev 1 tags its model CollectionService "StoryNpc" (NpcTag) with the attribute NpcId = id, and Talk / Choose
+-- / Open then need the player within NpcRange of it (before the NPC exists in the world, anywhere).
+-- story_depth E1 / E2 / E3 / E5 (게임성 개발 2, 2026-10-07). A pick's side: Good / Purify / A = "Good", Evil / Devour / B
+-- = "Evil". E1 Requires.Pick = { Id, Is }: Is "Good" / "Evil" = that side of the saved pick of Id, else the exact pick.
+-- E2 step.LinesBy = { From = id, Good, Evil, A, B, Default } (each entry shaped like Lines: All / Halo / Horns / Neutral):
+-- the server sends Var = the exact pick of From when listed, else its side, else "Default" (OpenPanel "Story" payload
+-- and row.Story.Var); every LinesBy needs a Default (old saves have no picks). A real pick (its Choice carries points)
+-- on the other side from the last real pick adds one line (ChangedGood / ChangedEvil). E3 Reward.Title = a
+-- Config.TitleDefs id, or Reward.TitleBy = { Good = id, Evil = id } by the side of this quest's own pick (TitleService,
+-- no stats). E5 Hidden = true (a sub): no Start toast and no row until it is found (past its first step or waiting for
+-- [Claim]); a Choice with Points = 0 leans the shard (LeanGood / LeanEvil) instead of a score line.
 Config.StoryQuests = {
-	MaxSubs = 2, -- sub rows sent with the quest list (after the main row)
+	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
 	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
-	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Blacksmith", Guild = "Guild Guide" },
+	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
+		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey", -- A23-46 town NPCs, A23-55 kids
+		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo" }, -- story_depth §4 goblins (beta: names only, no models)
+	NpcTag = "StoryNpc",
+	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },
-	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7" },
+	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
+		"M3_1", "M3_2", "M3_3", "M3_4", "M3_5", "M3_6", "M3_7", "M3_8" },
+	-- story_depth E0: an old save that reaches the story at Level >= Level skips the main chapters <= UpTo (once)
+	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3 } },
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2" },
+	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1" },
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -1573,16 +1654,28 @@ Config.StoryQuests = {
 		Evil = "The shard leans toward the dark (Infamy +%d)",
 		Recorded = "Your choice is saved.",
 		-- shown under the two choice buttons on the last page (what a pick does, before picking)
-		ChoiceHint = "Your pick → Left: Honor +%d (angel side) · Right: Infamy +%d (devil side)",
+		-- A23-58: picking against your own side lowers your own score (ChoiceHint keeps its two-number call; the
+		-- faction lines are what a client should show)
+		ChoiceHint = "Left: the angel side. Right: the devil side. Picking against your side lowers your score!",
+		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d (not very angel-like)", -- (Good.Points, Evil.Points)
+		ChoiceHintHorns = "Left: Infamy -%d (too nice) · Right: Infamy +%d", -- (Good.Points, Evil.Points)
 		ChoiceHintNeutral = "The Artisan Guild just saves your pick, with no good or evil points.",
-		OddHalo = "Guide: Hmm… that's your choice too.",
-		OddHorns = "Guide: Went the nice way, huh? Your call!",
+		OffSideHalo = "Hallie: Hmm… not very angel-like! Honor -%d", -- A23-58 (points actually taken), ⑪ the guide says it
+		OffSideHorns = "Magpie: Too nice for a devil! Your call. Infamy -%d",
+		RankDownHalo = "Your rank went down. Do good deeds to get it back!",
+		RankDownHorns = "Your rank went down. Do devilish deeds to get it back!",
 		GooseFirstHalo = "Your first Golden Goose rescue! (Honor +%d)",
 		GooseFirstHorns = "Your first Golden Goose poach! (Infamy +%d)",
 		Next = "Next",
 		Ok = "Got it",
 		Later = "Later",
 		Title = "%s · %s",
+		ChoiceGold = "+%s gold", -- E6: a pick's own reward line ("+Enhance Scroll 70%" / "+HP Potion ×3 · +60 gold")
+		LeanGood = "Your shard leaned to the light.", -- E5: a 0-point pick (no score)
+		LeanEvil = "Your shard leaned to the dark.",
+		ChangedGood = "You kept it last time. Now you give. People change. Shards too.", -- E2 (story_depth §7)
+		ChangedEvil = "You gave it last time. Now you keep. Shards change too.",
+		NewTitle = "New title: %s!", -- E3 (a stat-free title)
 	},
 	Defs = {
 		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a king slime
@@ -1609,13 +1702,13 @@ Config.StoryQuests = {
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
-			Finish = "Blacksmith: That's crown shard dust! The King Slimes ate the most of it.",
+			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's crown shard dust! The King Slimes ate the most of it.",
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust",
 			Start = "King Slimes full of shard dust roam the meadow.",
 			Steps = { { Text = "King Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
-			Finish = "The dust came pouring out!", Reward = { Gold = 1 },
+			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		M1_3 = {
 			Kind = "Main", Chapter = 1, Title = "Boom, All at Once!",
@@ -1628,9 +1721,14 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
 				{ Text = "Report to the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
-					Halo = { "Did you see the statues on the Heroes' Road? They are the knights who guarded the shards." },
-					Horns = { "See the lava cracks? Our horn power boils up from there!" },
-					Neutral = { "Nice dust. The guild doesn't grab, it shapes." },
+					Halo = { "Hallie here! Now you know my name.", "Did you see the statues on the Heroes' Road? They are the knights who guarded the shards.",
+						"They say a Horn broke the Crown. Pure greed!\nBroken things get fixed. Right?",
+						"More shards are out there.\nWhat will you do with the next one?" },
+					Horns = { "Finders keepers! HA!", "See the lava cracks? Our horn power boils up from there!",
+						"They say a Halo broke it. So greedy. Typical!\nShiny! Finders keepers!",
+						"More shards are out there.\nWhat will you do with the next one?" },
+					Neutral = { "Fix first. Talk later.", "Nice dust. The guild doesn't grab, it shapes.",
+						"More shards are out there.\nWhat will you do with the next one?" },
 				} },
 			},
 			Reward = { Gold = 2, XP = 2 },
@@ -1658,7 +1756,7 @@ Config.StoryQuests = {
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "Talk to the Fountain Shard", Panel = true,
 					Lines = { All = {
-						"I'm a crown shard stuck in this fountain. I fell here when the crown in the sky broke.",
+						"I'm a crown shard stuck in this fountain. I fell here when the crown in the sky broke.\nHalos and Horns tell the same story. Word for word. They just swap who did it.",
 						"The sparkly dust you got from the pond slimes? That's crown dust.",
 						"Give the dust to the fountain and the world leans to the light. Keep it and it leans to the dark. What will you do?",
 					} },
@@ -1666,6 +1764,7 @@ Config.StoryQuests = {
 						Neutral = { A = "Shape it and give it back", B = "Leave it with the guild" } } },
 			},
 			Reward = { Gold = 1 },
+			Finish = "Two kids by the fountain. They see you and run… opposite ways.", -- story_depth §2-1 (no speaker)
 		},
 		M2_4 = {
 			Kind = "Main", Chapter = 2, Title = "Supply Road Fund",
@@ -1695,10 +1794,127 @@ Config.StoryQuests = {
 				{ Text = "Hear the Guide's warning", Panel = true, Obj = { Type = "Talk" }, Lines = {
 					All = { "A crown shard calls from beyond the woods. Watch out for thieves!",
 						"In the woods, others can steal the gold you carry. Put it in the town vault first!",
-						"Until Lv15 and 1 hour of play, the Sprout Shield keeps you safe." },
-					Neutral = { "A crown shard calls from beyond the woods. Watch out for thieves!", "The Artisan Guild can't be attacked in the woods either." },
+						"Until Lv15 and 1 hour of play, the Sprout Shield keeps you safe.",
+						"The goblins took the dust.\nBut why would a goblin need dust?" },
+					Horns = { "A crown shard calls from beyond the woods. Watch out for thieves!",
+						"In the woods, others can steal the gold you carry. Put it in the town vault first!",
+						"Until Lv15 and 1 hour of play, the Sprout Shield keeps you safe.",
+						"Goblins grab for a boss. We grab for US. Big difference! …Right?",
+						"The goblins took the dust.\nBut why would a goblin need dust?" },
+					Neutral = { "A crown shard calls from beyond the woods. Watch out for thieves!", "The Artisan Guild can't be attacked in the woods either.",
+						"The goblins took the dust.\nBut why would a goblin need dust?" },
 				} },
 				{ Text = "Go to the Goblin Woods", Guide = "GoblinWoods", Obj = { Type = "Enter", Zone = "GoblinWoods" } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+		},
+		-- 3장 "Grab Club" (story_depth §2 3장 + §5 ③④, quest_chain 3장; A23-56: the whole chapter in the beta). Rewards:
+		-- G1 = { Gold = 1 }, the chapter ends M3_4 / M3_8 = { Gold = 2, XP = 2 } with [Claim]. Echoes of M3_4: Good / A ->
+		-- the sub Pip1 at Lv15 (one 70% scroll), Evil / B -> Dibs pays the same worth in gold at once (HuntValue 1 minute
+		-- of Lv10-24 = 192, quest_volume §2-4).
+		M3_1 = {
+			Kind = "Main", Chapter = 3, Title = "Thief Footprints",
+			Start = "The dust thieves were goblins! Go stop them.",
+			Steps = { { Text = "Goblins %d/%d", Guide = "GoblinWoods",
+				Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 5 } } },
+			Finish = "A note: 'IOU 1 dust. Will pay back. Maybe.'", Reward = { Gold = 1 },
+		},
+		M3_2 = {
+			Kind = "Main", Chapter = 3, Title = "Three Camps",
+			Start = "They hid dust sacks in three goblin camps.",
+			Steps = { { Text = "Goblin camps %d/3", Guide = "GoblinWoods", Obj = { Type = "Trials", List = {
+				{ Key = "a", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp1", Radius = 40, Count = 1,
+					Say = "Jars of dust… glowing like night-lights?" },
+				{ Key = "b", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp2", Radius = 40, Count = 1,
+					Say = "A goblin drawing: a tiny goblin, a big dark." },
+				{ Key = "c", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp3", Radius = 40, Count = 1,
+					Say = "Meeting #47. Topic: Grab more. Result: Meet again." },
+			} } } },
+			Reward = { Gold = 1 },
+		},
+		M3_3 = {
+			Kind = "Main", Chapter = 3, Title = "The Brute's Sack",
+			Start = "The Goblin Brute has the sack. Beat it with friends. Everyone counts!",
+			Steps = { { Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Count = 1 } } },
+			Finish = "Brute: Not stealing! I'm a… surprise collector.",
+			Clue = "In the sack: a crayon drawing. Two kids holding something round.\nThe sun? A cookie?\n"
+				.. "Brute: Found it by the fountain. The night of the big CRACK!",
+			Reward = { Gold = 1 },
+		},
+		M3_4 = {
+			Kind = "Main", Chapter = 3, Title = "Whose Shard?", Claim = true,
+			Start = "A crown shard shines in the sack! Take it home.",
+			Steps = {
+				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
+				{ Text = "Whose shard is it?", Panel = true,
+					-- Lines = the Default for a client without LinesBy (E2)
+					Lines = { All = { "Another shard. Another choice.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+					LinesBy = { From = "M2_3",
+						Good = { All = { "Last time you gave the shard back. The fountain still sparkles.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+						Evil = { All = { "Last time you kept the shard. Still shiny in your pocket!", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+						Default = { All = { "Another shard. Another choice.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Leave some for their lamps", Points = 3 },
+						Evil = { Label = "Into our vault. They took it first!", Points = 3, Reward = { Gold = 192 } },
+						Neutral = { A = "Make them a real lamp", B = "Sell the dust back to them" } } },
+				{ Text = "Hear the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "The shard found a home." } },
+					LinesBy = { From = "M3_4",
+						Good = { Halo = { "A little light for them. Not bad." },
+							All = { "You left them some? Soft! …The little ones look happy, though." } },
+						Evil = { Horns = { "Ha! Finders keepers!", "Dibs: Ka-ching! Same as always? Same as always!" },
+							All = { "Into the vault? …It does shine nicely.", "Dibs: Ka-ching! Same as always? Same as always!" } },
+						A = { All = { "A real lamp! The little goblins will love it." } },
+						B = { All = { "Sold it back? Business is business.", "Dibs: Ka-ching! Same as always? Same as always!" } },
+						Default = { All = { "The shard found a home." } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+		},
+		M3_5 = {
+			Kind = "Main", Chapter = 3, Title = "Sprout Graduation",
+			Steps = {
+				{ Text = "Sprout Shield ends · Lv15 + 1 hour of play", Obj = { Type = "State", Key = "Graduated" } },
+				{ Text = "Talk with the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
+					Halo = { "No more Sprout Shield. Now you can catch Wanted villains!",
+						"When the crown broke, I was lost. A stranger gave me their lamp.\nI never knew their name. So now I give mine.",
+						"And you? Why are you here?" },
+					Horns = { "No more Sprout Shield. Now you can raid the knights. Hold the sack for 45 seconds!",
+						"When the shards fell, we were too far. We got nothing.\nSo now we never wait. We take first!",
+						"And you? Why are you here?" },
+					Neutral = { "The Guild is still safe, shield or not.",
+						"Both sides break things. We fix them. For both.\n…Is fixing for both sides a side too?",
+						"And you? Why are you here?" },
+				} },
+			},
+			Reward = { Gold = 1 },
+		},
+		M3_6 = {
+			Kind = "Main", Chapter = 3, Title = "Brute Hunt",
+			Steps = {
+				{ Text = "Lv18 · Brute Hunt (now Lv%d)", Obj = { Type = "Level", Level = 18 } },
+				{ Text = "Goblin Brutes %d/%d", Guide = "GoblinWoods", Start = "The Brutes carry the sacks to the mountain path!",
+					Obj = { Type = "Kill", Kind = "GoblinBrute", Count = 2 } },
+			},
+			Reward = { Gold = 1 },
+		},
+		M3_7 = {
+			Kind = "Main", Chapter = 3, Title = "Campfire Dust",
+			Steps = {
+				{ Text = "Lv21 · Campfire Dust (now Lv%d)", Obj = { Type = "Level", Level = 21 } },
+				{ Text = "Hit 3 at once with a skill %d/%d", Guide = "GoblinWoods", Start = "They grab in a line. Break the line!",
+					Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
+			},
+			Reward = { Gold = 1 },
+		},
+		M3_8 = {
+			Kind = "Main", Chapter = 3, Title = "Call of the Tombs", Claim = true,
+			Steps = {
+				{ Text = "Lv25 · Skeleton Ruins (now Lv%d)", Obj = { Type = "Level", Level = 25 } },
+				{ Text = "Go to the Skeleton Ruins", Guide = "SkeletonRuins", Obj = { Type = "Enter", Zone = "SkeletonRuins" } },
+				{ Text = "Listen to the tombs", Panel = true, Obj = { Type = "Talk" }, Lines = {
+					All = { "A big shard sleeps in the old kingdom's tombs.",
+						"From the tombs, a sleepy voice: 'Is it still Tuesday?'",
+						"The goblins took for light. Then they forgot why.\nWhat do YOU want the shard for?" },
+				} },
 			},
 			Reward = { Gold = 2, XP = 2 },
 		},
@@ -1733,13 +1949,13 @@ Config.StoryQuests = {
 		},
 		N1 = {
 			Kind = "Sub", Title = "The Artisan's Touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" } },
-			Start = "Guild Guide: Shape with care. Two at once!",
+			Start = "Kit: Shape with care. Two at once!",
 			Steps = { { Text = "Hit 2 with one skill %d/%d", Obj = { Type = "SkillHit", Min = 2, Count = 3 } } },
 			Reward = { Gold = 1 },
 		},
 		N2 = {
 			Kind = "Sub", Title = "Guild Supply Book", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M2_1" } },
-			Start = "Guild Guide: Both sides need our gear. Collect supply gold.",
+			Start = "Kit: Both sides need our gear. Collect supply gold.",
 			Steps = {
 				{ Text = "Supply book %d/2", Obj = { Type = "Trials", List = {
 					{ Key = "a", Type = "Kill", Kind = "BigSlime", Count = 3 },
@@ -1749,8 +1965,117 @@ Config.StoryQuests = {
 			},
 			Reward = { Gold = 1 },
 		},
+		-- A23-46 town people "they're up to something" (docs/design/town_npc_quests_2026-10-06.md + story_depth §3 / §5-⑥,
+		-- 검수 decisions): open after M2_3 for the town's own side, once each. The rumor turns out to be harmless (the
+		-- twist); the last pick is A (angel, Good) or B (devil, Evil) with the same size of reward in a different kind
+		-- (A: one 70% scroll, B: 3 HP potions + 60 gold) on top of 120 gold + half a level bar of XP. No weekly ranking
+		-- points (A23-23 D1). The last line asks a question (story_depth §1).
+		H1 = {
+			Kind = "Sub", Title = "The Horns Are Up to Something", Speaker = "Bright", Factions = { Halo = true },
+			Requires = { Done = { "M2_3" } },
+			Start = "Bright, the young guard, needs help. Find her in Halo Citadel!",
+			Steps = {
+				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "The Horns are up to something! I need Form H-1.\nTo get Form H-1, I need Form H-0. …Can you just help?",
+						"They say a Horn broke the Crown. Everyone says so.\n…Who said so first?",
+						"Page 12 of my rulebook is missing. Don't look at me!\nThe Horns sneak past the woods with big sacks. Go take a look!" } } },
+				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
+					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
+				{ Text = "King Slimes near the woods %d/%d", Guide = "SlimeMeadow",
+					Start = "A sack fell open… and King Slimes gobbled what was inside!",
+					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } },
+				{ Text = "Tell Bright what you found", Guide = "HaloTown", Npc = "Bright", Panel = true,
+					Lines = { All = { "Sticky… sweet… is this jelly?",
+						"Their secret sacks… are full of birthday jelly? For Smokey?",
+						"One jar says: 'Happy birthday, S. From the bench.'\nBright: Not my writing! I mean… whose writing?",
+						"So what do we tell everyone?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Tell everyone the truth", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Bright: So who started the rumor? …Does anyone remember?",
+			Clue = "Bright's wristband: gold and purple. Where have you seen one?",
+		},
+		R1 = {
+			Kind = "Sub", Title = "The Halos Are Up to Something", Speaker = "Smokey", Factions = { Horns = true },
+			Requires = { Done = { "M2_3" } },
+			Start = "Psst! Smokey in Horns Den has a secret job for you.",
+			Steps = {
+				{ Text = "Talk to Smokey in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Psst! A Halo broke the Crown! My uncle's friend's cousin saw it!",
+						"This gold spyglass? Found it. Gold is fine. For spying.\nPlan A: we spy. Plan B: same as Plan A, but sneakier!",
+						"The Halos whisper at the fountain. A secret plan!\nGo listen there. Look natural!" } } },
+				{ Text = "Listen at the fountain %d/%d s", Guide = "Fountain",
+					Obj = { Type = "Near", Spot = "Fountain", Radius = 16, Zone = "Crossroads", Stay = 15 } },
+				{ Text = "Slimes in the meadow %d/%d", Guide = "SlimeMeadow",
+					Start = "You heard: \"Slimes… sparkles… BOOM at sunset!\" Check the meadow!",
+					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
+				{ Text = "Tell Smokey what you heard", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+					Lines = { All = { "The slimes were full of sparkle dust. For a show?",
+						"Their big secret… is a fireworks show? For everyone?",
+						"One purple firework? In a Halo show?\nThe plan is signed 'B.' …Never heard of a B.",
+						"So what do we tell everyone?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Tell everyone the truth", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Smokey: So who started the rumor? …Does anyone remember?",
+			Clue = "Smokey's wristband: gold and purple. Where have you seen one?",
+		},
+		N3 = {
+			Kind = "Sub", Title = "Both Sides Are Suspicious", Speaker = "Tiny", -- everyone (A23-57: no Factions)
+			Requires = { Done = { "M2_3" } },
+			Start = "Tiny from the guild is taking notes. Find Tiny at the Crossroads!",
+			Steps = {
+				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Halos blame Horns. Horns blame Halos.\nNoted: nobody saw it.",
+						"Can you watch both bridges for me? Quietly." } } },
+				{ Text = "Watch the Halo bridge", Guide = "HaloBridge", Obj = { Type = "Near", Spot = "HaloBridge", Radius = 14 } },
+				{ Text = "Watch the Horns bridge", Guide = "HornsBridge", Obj = { Type = "Near", Spot = "HornsBridge", Radius = 14 } },
+				{ Text = "Hunting gold for the guild %d/%d", Guide = "SlimeMeadow",
+					Obj = { Type = "EarnGold", Source = "Monster", Count = 30 } },
+				{ Text = "Show Tiny your notes", Guide = "Crossroads", Npc = "Tiny", Panel = true,
+					Lines = { All = { "Both sides buy spy glasses. To spy on each other. From us.",
+						"Suspicious: two kids. Bench behind the fountain. Every evening.\nTheir halo and horns are tiny. Smaller than anyone's.",
+						"Noted. …Is selling to both sides a side too?" } },
+					Obj = { Type = "Choice",
+						Good = { Label = "Send both sides a peace letter", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Sell more spy glasses to both!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } },
+						Neutral = { A = "Send both sides a peace letter", B = "Sell more spy glasses to both!" } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Tiny: Noted. Suspicious: everyone. …So who started it?",
+		},
+		-- story_depth §3 echo of M3_4 Good / A (beta): Pip waits at the woods' edge with a lamp at Lv15
+		Pip1 = {
+			Kind = "Sub", Title = "Pip's Lamp", Speaker = "Pip",
+			Requires = { Done = { "M3_4" }, Pick = { Id = "M3_4", Is = "Good" }, Level = 15 },
+			Start = "Someone small is waving at the woods' edge…",
+			Steps = {
+				{ Text = "Go to the woods' edge", Guide = "WoodsGate", Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14 } },
+				{ Text = "Talk to Pip", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Pip: Look! My own lamp! It glows purple. I never knew purple!" } } },
+			},
+			Reward = { Item = "Enh70", N = 1 },
+		},
 	},
 }
+
+-- A23-46 town sub-quest spots at the bridge ends of Config.Map.Bridges: the meadow end of the Goblin bridge (488, 0, 0)
+-- 14 studs back, outside the PvP woods (H1 spies there), and the Crossroads ends of the Halo / Horns bridges (0, 0, -173)
+-- / (0, 0, 173) 12 studs onto the land (N3 watches them). They move with the bridges: tools/test_town_quests.py fails
+-- when a bridge end moves away from its spot.
+Config.StoryQuests.Landmarks.WoodsGate = Vector3.new(474, 0, 0)
+Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -161)
+Config.StoryQuests.Landmarks.HornsBridge = Vector3.new(0, 0, 161)
+-- story_depth §2-1: the Crossroads bench behind the fountain where two kids meet every evening (map v2 moves it)
+Config.StoryQuests.Landmarks.KidsBench = Vector3.new(18, 0, 18)
+-- quest_chain M3-2: the three goblin camps (tools/preview_map.lua GoblinCamp models; game dev 1 re-checks them for map v2)
+Config.StoryQuests.Landmarks.GoblinCamp1 = Vector3.new(660, 0, -60)
+Config.StoryQuests.Landmarks.GoblinCamp2 = Vector3.new(750, 0, 50)
+Config.StoryQuests.Landmarks.GoblinCamp3 = Vector3.new(820, 0, -40)
 
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {
@@ -1892,6 +2217,24 @@ Config.Visuals = {
 	ShakeNearRelease = 0.25, -- other players' releases within ShakeNearDistance
 	ShakeNearDistance = 40,
 	HugeNumberScale = 2.5, -- release total damage number scale
+}
+
+-- 계급 장식 3D (이미지 생성 1 45b6220, user OK "좋아, 넣어"): the rank's own halo / horns model replaces the drawn mark
+-- once it is in Studio. ServerStorage[Folder] holds MeshParts (or Models with one mesh) named as below, imported at their
+-- real size (studs, built for a 1.2-stud head, origin = the bottom center; files art/models/acc/*.glb). Horns sink
+-- HornsDepth into the head top, halos float HaloGap above it (both x head height / HeadRef); Yaw turns the model to the
+-- head's front (glTF +Z front -> 180; game dev 1 checks once in Studio). A missing model keeps the drawn mark.
+Config.Visuals.MarkModels = {
+	Folder = "MarkModels",
+	Halo = { "Acc_HaloR1", "Acc_HaloR2", "Acc_HaloR3", "Acc_HaloR4", "Acc_HaloR5" },
+	Horns = { "Acc_HornsR1", "Acc_HornsR2", "Acc_HornsR3", "Acc_HornsR4", "Acc_HornsR5" },
+	HeadRef = 1.2,
+	HaloGap = 0.3,
+	HornsDepth = 0.06,
+	Yaw = 180,
+	HaloLight = { Range = 8, Brightness = 1.2 }, -- the old halo disc's light
+	-- R5: a soft gold glow / embers as an effect (이미지 생성 1: "금빛 번짐·불씨는 효과로")
+	Glow = { Rank = 5, Rate = 5, Size = 0.25, Halo = Color3.fromRGB(255, 225, 130), Horns = Color3.fromRGB(255, 140, 60) },
 }
 
 function Config.SackTier(gold, level)
@@ -3186,18 +3529,24 @@ Config.CustomModels = {
 ----------------------------------------------------------------- story (world flavor text only)
 Config.Story = {
 	-- plain lines (no format specifiers)
-	-- A23-55 (user 2026-10-06): the story everyone tells — greed broke the Crown, nobody knows who, each side blames the
-	-- other. "They say": the last chapter shows it was a rumor (ff8340b twist), so the opening never states it as fact.
-	-- GDD §1-1; the opening subtitles and the faction picker's premise panel show these three lines.
+	-- A23-55 / story_depth §0-1 (final ending 1a2475e): the story everyone tells — someone greedy broke the Crown, each
+	-- side blames the other. It is a rumor (two kids broke it together, shown only in the last chapter), so every
+	-- line says "They say". Premise = the faction picker's premise panel (3 lines, GDD §1-1).
 	Premise = {
-		"They say someone wanted the Crown of Balance all to themselves.",
-		"\"If I can't have it, no one can!\" CRACK.",
+		"They say someone broke the Crown of Balance.",
+		"Some who picked up its shards grew a halo. Others grew horns.",
 		"Now each side says the other did it.",
+	},
+	-- the opening (A23-44 remake) shows OpeningRumor 1-3, then Premise 2-3, then OpeningAsk (story_depth §2-1)
+	OpeningRumor = {
+		"They say the Crown kept the world in balance.",
+		"They say someone wanted it all to themselves.",
+		"\"If I can't have it, no one can!\" CRACK.",
 	},
 	-- The server opens Config.Tutorial.Welcome after the first class choice. Do not overlap it with old toasts.
 	Intro = {},
-	-- A23-9 opening (subtitles = Premise lines; plain text)
-	OpeningAsk = "Which side will you take?",
+	-- A23-9 opening (subtitles: see OpeningRumor above; plain text). The last chapter asks the same with "today".
+	OpeningAsk = "Which side will you choose?",
 	OpeningSkip = "Skip",
 	OpeningReplay = "Watch the opening again",
 	OpeningReplayUnsafe = "You can rewatch the opening inside a town.",
@@ -3291,6 +3640,10 @@ Config.Text = {
 	BlacksmithPromptAction = "See weapons",
 	BlacksmithPromptObject = "Forge",
 	PotionShopFar = "Get close to the Potion Seller to buy.",
+	-- ⑪ (lines_pack §1-3): the shop windows' greeting line (game dev 1: the top of WeaponShop / PotionShop); calm, no
+	-- "hurry / sale" words next to a buy button
+	ForgeGreeting = "Otto: Clang, clang… done. Cocoa time.",
+	PotionGreeting = "Fizzby: Glug, glug, feel better!",
 	PotionStockFull = "You can hold up to %d of each potion.", -- (PotionInventoryCap)
 	PotionBought = "Bought %s potion ×%d!", -- (kind, amount)
 	-- PvP

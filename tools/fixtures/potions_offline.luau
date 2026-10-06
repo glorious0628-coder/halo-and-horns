@@ -385,7 +385,7 @@ do
 	check(prompt and prompt.Enabled and prompt.KeyboardKeyCode=="E" and prompt.HoldDuration==0,"merchant prompt is not E key / HoldDuration 0")
 	check(prompt.MaxActivationDistance==12 and prompt.RequiresLineOfSight==false and prompt:GetAttribute("Conversation")==true,
 		"verified merchant conversation/range contract missing")
-	check(prompt.ActionText=="Buy potions" and prompt.ObjectText=="Potion Seller","merchant prompt wording changed")
+	check(prompt.ActionText=="Buy potions" and prompt.ObjectText=="Fizzby","merchant prompt wording changed (⑪: the seller's name Fizzby)")
 	local pivot=npc:GetPivot().Position
 	check(pivot.X==12 and pivot.Z==-34 and math.abs(pivot.Y-2.6)<1e-9,"merchant not standing on the ground beside the Crossroads spawn")
 	local humanoid=npc:FindFirstChildOfClass("Humanoid")

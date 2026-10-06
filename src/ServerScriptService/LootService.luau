@@ -333,6 +333,24 @@ local function grantPotion(player, data, kind, gained)
 	table.insert(gained, { Potion = kind, Name = TXT.Potion[kind] or kind, N = 1 })
 end
 
+-- E6 (story_depth 6-1) / A23-46: a quest reward of `n` (1..99) of one Config.Loot.Items id or potion kind ("HP" /
+-- "MP"), through the same caps and full notices as drops. Returns how many were given (0 for a bad id / n or no data).
+function LootService.GrantItem(player, id, n)
+	local data = getData(player)
+	n = math.floor(num(n))
+	if not data or type(id) ~= "string" or n < 1 or n > 99 then return 0 end
+	ensureTables(data)
+	if Config.PotionStockKey(id) then
+		local gained = {}
+		for _ = 1, n do grantPotion(player, data, id, gained) end
+		return #gained
+	end
+	if not LOOT.Items[id] then return 0 end
+	local given = addItem(player, data, id, n)
+	if given > 0 then publish(player, data) end
+	return given
+end
+
 -- one roll for one contributor of one kill
 function LootService.RollKill(player, info)
 	local data = getData(player)

@@ -49,6 +49,13 @@ MUTATIONS = [
     ("a Korean nickname message", "S_NICKNAMESERVICE", 'Active = "Nickname saved.",', 'Active = "닉네임을 저장했어요.",'),
     ("a Korean world sign", "S_MAPBUILDER", 'text.Text = "Wanted Board"', 'text.Text = "현상수배 게시판"'),
     ("a Korean team name", "S_FACTIONSERVICE", 'local NONE_TEAM_NAME = "Choosing a side"', 'local NONE_TEAM_NAME = "진영 고르는 중"'),
+    # ⑪ the five names (lines_pack §1)
+    ("the Halo guide loses her name", C, 'Name = "Hallie", Title = "Guide of Light",', 'Name = "Guide of Light",'),
+    ("no catchphrase line", C, '\t\t\t\t"Finders keepers! HA! You\'re with us now. I\'m Magpie.",\n', ""),
+    ("the blacksmith speaker is the role again", C, 'Smith = "Otto", Guild = "Kit"', 'Smith = "Blacksmith", Guild = "Kit"'),
+    ("the off-side line without the guide", C, 'OffSideHalo = "Hallie: Hmm… not very angel-like! Honor -%d"',
+     'OffSideHalo = "Not very angel-like! Honor -%d"'),
+    ("the potion prompt ignores the label", "S_MAPBUILDER", 'tune.PotionMerchantLabel or "Potion Seller"', '"Potion Seller"'),
 ]
 
 

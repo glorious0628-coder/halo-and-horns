@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 74,
+  "checks": 79,
   "failedChecks": 0,
-  "namedChecks": 74,
+  "namedChecks": 79,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -326,6 +326,36 @@
       "fail": 0
     },
     {
+      "group": "a stopped Studio session never writes over a live session that already left (SessionToken)",
+      "check": "the live session took over, played and left: no lock, its data saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a stopped Studio session never writes over a live session that already left (SessionToken)",
+      "check": "the stopped Studio session's save is refused (no lock left: the SessionToken) and the live data stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a stopped Studio session never writes over a live session that already left (SessionToken)",
+      "check": "its release is refused too: the record stays the live session's data",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a stopped Studio session never writes over a live session that already left (SessionToken)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a stopped Studio session never writes over a live session that already left (SessionToken)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "DataStore errors: retry with the same notice",
       "check": "loads at the 3rd try",
       "pass": 1,
@@ -456,9 +486,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 15,
-    "applied": 15,
-    "caught": 15,
+    "total": 16,
+    "applied": 16,
+    "caught": 16,
     "skipped": false,
     "results": [
       {
@@ -670,6 +700,18 @@
           "the player leaves during the wait :: no more tries after leaving"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "token guard removed",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a stopped Studio session never writes over a live session that already left (SessionToken) :: its release is refused too: the record stays the live session's data",
+          "a stopped Studio session never writes over a live session that already left (SessionToken) :: the stopped Studio session's save is refused (no lock left: the SessionToken) and the live data stays"
+        ],
+        "newFailingCount": 2
       }
     ]
   },
@@ -677,11 +719,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
+    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1"
   },
-  "fixtureSHA256": "a8d76aeb799088131ef16518c3c0f4f3af45d1110811484a90284a73f7983289",
+  "fixtureSHA256": "f14f2363038aad4ede18f28abbf8a42ea5c3ce45c6742912c0187440c1bc69ac",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

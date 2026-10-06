@@ -123,6 +123,47 @@ runGroup("glossary names", function()
 		"a hidden name reads 'A member of the Horn Legion'", string.format(C.Announce.Text.HiddenName, F.Horns.Name))
 end)
 
+-- ⑪ (lines_pack §1): the five people you always meet have names; quest / help / system lines keep the role
+runGroup("the five names", function()
+	local W, SQ = C.Tutorial.Welcome, C.StoryQuests
+	local want = {
+		Halo = { "Hallie", "Guide of Light", "Hallie here! Now you know my name. Welcome to the Knights!", "Hallie here! Now you know my name." },
+		Horns = { "Magpie", "Horn Legion Guide", "Finders keepers! HA! You're with us now. I'm Magpie.", "Finders keepers! HA!" },
+		Neutral = { "Kit", "Guild Guide", "Fix first. Talk later. I'm Kit. Welcome to the Guild!", "Fix first. Talk later." },
+	}
+	local m14 = SQ.Defs.M1_4.Steps[2].Lines
+	for f, v in want do
+		check(W[f].Name == v[1] and W[f].Title == v[2], f .. " guide: " .. v[1] .. " (" .. v[2] .. ")", show({ W[f].Name, W[f].Title }))
+		check(W[f].Lines[1] == v[3] and #W[f].Lines == 4, f .. ": the catchphrase is the welcome's own first line", show(W[f].Lines[1]))
+		check(m14[f][1] == v[4], f .. ": the catchphrase opens the M1_4 report", show(m14[f][1]))
+		for _, line in W[f].Lines do
+			check(not string.find(line, "Noted", 1, true) and not string.find(line, "Captain", 1, true),
+				f .. ": no 'Noted' (Tiny's) or 'Captain'", line)
+		end
+	end
+	check(SQ.Speakers.Smith == "Otto" and SQ.Speakers.Guild == "Kit" and SQ.Speakers.Potion == "Fizzby",
+		"speakers: Otto / Kit / Fizzby", show({ SQ.Speakers.Smith, SQ.Speakers.Guild, SQ.Speakers.Potion }))
+	check(string.find(SQ.Defs.M1_1.Finish, "Otto: Clang, clang… done. Cocoa time.\n", 1, true) == 1, "M1_1: Otto's catchphrase line first",
+		SQ.Defs.M1_1.Finish)
+	check(string.sub(SQ.Defs.N1.Start, 1, 5) == "Kit: " and string.sub(SQ.Defs.N2.Start, 1, 5) == "Kit: ", "N1 / N2: Kit speaks",
+		show({ SQ.Defs.N1.Start, SQ.Defs.N2.Start }))
+	local T = SQ.Text
+	check(string.format(T.OffSideHalo, 2) == "Hallie: Hmm… not very angel-like! Honor -2"
+		and string.format(T.OffSideHorns, 2) == "Magpie: Too nice for a devil! Your call. Infamy -2",
+		"the off-side line is said by the guide (one toast, ASCII minus)", show({ T.OffSideHalo, T.OffSideHorns }))
+	check(C.Vitals.PotionMerchantLabel == "Fizzby" and C.Vitals.PotionMerchantName == "PotionMerchant",
+		"the potion seller's prompt says Fizzby (the model name stays)", show({ C.Vitals.PotionMerchantLabel, C.Vitals.PotionMerchantName }))
+	check(C.Text.ForgeGreeting == "Otto: Clang, clang… done. Cocoa time." and C.Text.PotionGreeting == "Fizzby: Glug, glug, feel better!",
+		"the shop greetings", show({ C.Text.ForgeGreeting, C.Text.PotionGreeting }))
+	-- the role stays in system lines (a kid finds the place by its role)
+	check(string.find(C.Text.WeaponFromQuest, "The Blacksmith", 1, true) ~= nil and C.Text.BlacksmithPromptObject == "Forge"
+		and string.find(C.Text.PotionShopFar, "Potion Seller", 1, true) ~= nil
+		and string.find(C.Loot.Text.FirstWeaponBag, "The Blacksmith", 1, true) ~= nil,
+		"system lines keep 'The Blacksmith' / 'Forge' / 'Potion Seller'", show({ C.Text.WeaponFromQuest, C.Text.PotionShopFar }))
+	check(string.find(SERVER_TEXT, "prompt.ObjectText = \"Buy potions\", tune.PotionMerchantLabel", 1, true) ~= nil,
+		"MapBuilder's potion prompt reads Config.Vitals.PotionMerchantLabel")
+end)
+
 runGroup("server scripts send English", function()
 	local files, current, bad, lines = 0, nil, {}, 0
 	local inPolicy = false

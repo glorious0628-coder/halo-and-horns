@@ -3,6 +3,7 @@
 -- kaiju fire. Every piece is rebuilt on CharacterSpawned and when its watched attributes change.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
@@ -380,6 +381,45 @@ local function buildNeutralGear(head, sc)
 	return parts
 end
 
+-- 계급 장식 3D: the rank's imported halo / horns (Config.Visuals.MarkModels; a MeshPart, or the first mesh of a Model),
+-- nil until it is in Studio
+local function markTemplate(f, rank)
+	local M = V.MarkModels
+	local names = type(M) == "table" and M[f] or nil
+	if type(names) ~= "table" or #names == 0 then return nil end
+	local folder = ServerStorage:FindFirstChild(M.Folder or "MarkModels")
+	local t = folder and folder:FindFirstChild(names[math.clamp(rank, 1, #names)])
+	if t and t:IsA("Model") then t = t:FindFirstChildWhichIsA("BasePart", true) end
+	return (t and t:IsA("BasePart")) and t or nil
+end
+
+-- the clone on the head: x head height / HeadRef, its bottom HaloGap above (halo) / HornsDepth into (horns) the head top,
+-- turned by Yaw; halos keep the old disc's light, the top rank sparkles
+local function buildMarkModel(f, rank, head, template)
+	local M = V.MarkModels
+	local k = math.max(0.25, head.Size.Y / (M.HeadRef or 1.2))
+	local part = template:Clone()
+	part.Name = f == "Halo" and "HaloModel" or "HornsModel"
+	part.Size = template.Size * k
+	part.Anchored = false
+	part.Massless = true
+	part.CanCollide = false
+	part.CanQuery = false
+	part.CanTouch = false
+	part.CastShadow = false
+	local lift = f == "Halo" and (M.HaloGap or 0.3) * k or -(M.HornsDepth or 0.06) * k
+	part.CFrame = head.CFrame * CFrame.new(0, head.Size.Y / 2 + lift + part.Size.Y / 2, 0)
+		* CFrame.Angles(0, math.rad(M.Yaw or 0), 0)
+	if f == "Halo" and type(M.HaloLight) == "table" then
+		addLight(part, Config.Factions.Halo.Color, (M.HaloLight.Range or 8) * k, M.HaloLight.Brightness or 1.2)
+	end
+	local glow = M.Glow
+	if type(glow) == "table" and rank >= (glow.Rank or 5) then
+		sparkle(part, glow[f] or Config.Factions[f].Color, glow.Rate or 5, (glow.Size or 0.25) * k)
+	end
+	return { part }
+end
+
 local function buildFactionMark(player, character)
 	clearChild(character, "FactionMark")
 	local f = getFaction(player)
@@ -392,7 +432,13 @@ local function buildFactionMark(player, character)
 		return
 	end
 	local _, rank = Config.GetTitle(f, attrNum(player, "Honor", 0), attrNum(player, "Infamy", 0))
-	local scale = 1 + V.MarkScalePerRank * (math.max(1, rank or 1) - 1)
+	rank = math.max(1, rank or 1)
+	local template = markTemplate(f, rank)
+	if template then
+		mount(newPiece("FactionMark"), buildMarkModel(f, rank, head, template), character, head)
+		return
+	end
+	local scale = 1 + V.MarkScalePerRank * (rank - 1)
 
 	local model = newPiece("FactionMark")
 	local parts = {}

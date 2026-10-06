@@ -765,7 +765,7 @@ local function ensureMerchantPrompt(merchant, tune)
 	local prompt = root:FindFirstChild(tune.PotionMerchantPrompt)
 	if prompt and not prompt:IsA("ProximityPrompt") then retire(prompt, "_Old"); prompt = nil end
 	if not prompt then prompt = Instance.new("ProximityPrompt"); prompt.Name = tune.PotionMerchantPrompt end
-	prompt.ActionText, prompt.ObjectText = "Buy potions", "Potion Seller"
+	prompt.ActionText, prompt.ObjectText = "Buy potions", tune.PotionMerchantLabel or "Potion Seller" -- ⑪ Fizzby
 	prompt.KeyboardKeyCode = Enum.KeyCode.E -- standard interact key; the skill is Q only
 	prompt.HoldDuration, prompt.MaxActivationDistance = 0, tune.PotionMerchantDistance -- a shop opens on a tap
 	prompt.RequiresLineOfSight, prompt.Enabled = false, true

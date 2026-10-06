@@ -26,6 +26,11 @@ local TUT_DONE = Config.Tutorial.Steps.Done -- 99
 local MAIN_INDEX = {}
 for i, id in SQ.Main do MAIN_INDEX[id] = i end
 local TICK = 1
+-- E4 Near.Stay: [Player] = { [questId .. ":" .. step] = os.clock() when the player came inside } (never saved: a rejoin
+-- or leaving the spot starts the count again)
+local stays = {}
+-- story_depth E1 / E2 / E3: a pick's side (Good / Purify / A on one side, Evil / Devour / B on the other)
+local SIDE = { Good = "Good", Purify = "Good", A = "Good", Evil = "Evil", Devour = "Evil", B = "Evil" }
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -100,6 +105,7 @@ local function sanitize(data)
 	for id in st.Done do
 		if not DEFS[id] then st.Done[id] = nil end
 	end
+	if st.LastSide ~= "Good" and st.LastSide ~= "Evil" then st.LastSide = nil end -- E2: the side of the last real pick
 end
 
 ------------------------------------------------------------------ step helpers
@@ -116,9 +122,16 @@ local function stepOf(player, def, index)
 	return step
 end
 
-local function linesFor(player, step)
-	local lines = step.Lines or {}
-	return lines[faction(player)] or lines.All or {}
+-- E2: the LinesBy entry this player sees (game dev 1's Story window reads it as Var): the exact pick of LinesBy.From
+-- when listed, else its side, else Default (an old save has no picks: every LinesBy has a Default). nil = plain Lines.
+local function varFor(data, step)
+	local by = step and step.LinesBy
+	if type(by) ~= "table" or type(data) ~= "table" then return nil end
+	local pick = story(data).Pick[by.From]
+	if pick ~= nil and by[pick] ~= nil then return pick end
+	local side = SIDE[pick]
+	if side ~= nil and by[side] ~= nil then return side end
+	return "Default"
 end
 
 local function homeZone(player)
@@ -137,6 +150,31 @@ local function currentZone(player)
 	return ok and z or player:GetAttribute("ZoneId")
 end
 
+-- A23-46: a step with Npc is talked through that town NPC (game dev 1 tags its model SQ.NpcTag with the attribute
+-- NpcId). True when the player stands within SQ.NpcRange of it, or when no such NPC exists in the world yet.
+local function npcNear(player, npcId)
+	if type(npcId) ~= "string" then return true end
+	local okTag, tagged = pcall(function()
+		return game:GetService("CollectionService"):GetTagged(SQ.NpcTag or "StoryNpc")
+	end)
+	if not okTag or type(tagged) ~= "table" then return true end
+	local root = Util.GetRoot(player)
+	local found = false
+	for _, inst in tagged do
+		if inst:GetAttribute("NpcId") == npcId then
+			found = true
+			local okPos, pos = pcall(function()
+				if inst:IsA("Model") then return inst:GetPivot().Position end
+				return inst.Position
+			end)
+			if okPos and root and typeof(pos) == "Vector3" and Util.FlatDistance(root.Position, pos) <= (SQ.NpcRange or 16) then
+				return true
+			end
+		end
+	end
+	return not found
+end
+
 local function ownsIron(player)
 	local mask = math.floor(num(player:GetAttribute("WeaponOwnedMask"), 1))
 	return bit32.btest(mask, bit32.lshift(1, 2)) or num(player:GetAttribute("WeaponTier"), 1) >= 3
@@ -146,6 +184,12 @@ local function stateTrue(player, key)
 	if key == "BlacksmithVisited" then return player:GetAttribute("BlacksmithVisited") == true end
 	if key == "AutoOn" then return player:GetAttribute("AutoCombatEnabled") == true end
 	if key == "OwnIron" then return ownsIron(player) end
+	if key == "Graduated" then -- E7 (quest_volume): no Sprout Shield any more (PvPService.IsRookie)
+		local pvp = S.PvPService
+		if type(pvp) ~= "table" or type(pvp.IsRookie) ~= "function" then return false end
+		local ok, rookie = pcall(pvp.IsRookie, player)
+		return ok and rookie == false
+	end
 	return false
 end
 
@@ -185,6 +229,20 @@ local function eventAmount(player, obj, ev)
 end
 
 ------------------------------------------------------------------ rewards / finishing
+-- E6 / Reward.Item: an item or potions through LootService.GrantItem (its caps and full notices); the "+Name" part of the
+-- reward line, or nil when nothing was given
+local function grantItem(player, id, n)
+	local loot = S.LootService
+	if type(id) ~= "string" or type(loot) ~= "table" or type(loot.GrantItem) ~= "function" then return nil end
+	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)))
+	if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
+	local given = ok and math.floor(num(res)) or 0
+	if given <= 0 then return nil end
+	local item = Config.Loot.Items[id]
+	local name = (item and item.Name) or Config.Loot.Text.Potion[id] or id
+	return given > 1 and string.format(Config.Loot.Text.GotN, name, given) or string.format(Config.Loot.Text.Got, name)
+end
+
 local function payReward(player, def)
 	local r = def.Reward
 	if type(r) ~= "table" then return nil end
@@ -192,6 +250,9 @@ local function payReward(player, def)
 	local g, x = 0, 0
 	if num(r.Gold) > 0 then g = select(1, Config.HuntValue(level, r.Gold)) end
 	if num(r.XP) > 0 then x = select(2, Config.HuntValue(level, r.XP)) end
+	-- A23-46: exact gold and a share of the current level's XP bar (the town people's quests)
+	if num(r.GoldN) > 0 then g += math.floor(num(r.GoldN)) end
+	if num(r.XPBar) > 0 then x += math.floor(Config.XPToNext(level) * num(r.XPBar)) end
 	if g > 0 then S.ProgressionService.AddBankGold(player, g, "Quest") end
 	if x > 0 then S.ProgressionService.AddXP(player, x) end
 	if g > 0 and x > 0 then return string.format(TXT.RewardXP, def.Title, Util.FormatNumber(g), Util.FormatNumber(x)) end
@@ -214,6 +275,21 @@ local function complete(player, data, id)
 	end
 	notify(player, def.Finish or msg, "reward")
 	if def.Finish then notify(player, msg, "reward") end
+	-- Reward.Item (e.g. Pip1's scroll): one more line under the reward line
+	if type(def.Reward) == "table" and def.Reward.Item then
+		local line = grantItem(player, def.Reward.Item, def.Reward.N)
+		if line then notify(player, line, "reward") end
+	end
+	if def.Clue then notify(player, def.Clue, "info") end -- story_depth §2-1: a clue toast after the closing lines
+	-- E3: a stat-free title (Reward.Title, or Reward.TitleBy by the side of this quest's own pick), once
+	local r = type(def.Reward) == "table" and def.Reward or nil
+	local titleId = r and (r.Title or (type(r.TitleBy) == "table" and r.TitleBy[SIDE[st.Pick[id]] or ""]) or nil)
+	local titles = S.TitleService
+	if type(titleId) == "string" and Config.TitleDefs[titleId] and type(titles) == "table" and type(titles.Grant) == "function" then
+		local ok, new = pcall(titles.Grant, player, titleId)
+		if not ok then Util.Warn(TAG, "TitleService.Grant: " .. tostring(new)) end
+		if ok and new == true then notify(player, string.format(TXT.NewTitle, Config.TitleDefs[titleId].Name), "reward") end
+	end
 	-- A23-34: the blacksmith's free first weapon (M1_1 GiveWeapon = tier; paid once, LootService.GrantFirstWeapon), its
 	-- own "전투력 X → Y" line after the story lines
 	if def.GiveWeapon and S.LootService and type(S.LootService.GrantFirstWeapon) == "function" then
@@ -223,12 +299,15 @@ local function complete(player, data, id)
 	dirty(player)
 end
 
-local function openStep(player, id, track)
+-- manual = the player asked (StoryAction "Open"); a step talked through a town NPC (Npc) never pops up by itself
+local function openStep(player, id, track, manual)
 	local def = DEFS[id]
 	local step = def and stepOf(player, def, track.St)
 	if not step or not step.Panel then return end
+	if step.Npc and manual ~= true then return end
+	local var = varFor(getData(player), step) -- E2
 	pcall(function()
-		Net.Get("OpenPanel"):FireClient(player, "Story", { Id = id, St = track.St })
+		Net.Get("OpenPanel"):FireClient(player, "Story", { Id = id, St = track.St, Var = var })
 	end)
 end
 
@@ -236,6 +315,7 @@ end
 local function advance(player, data, id, track)
 	local def = DEFS[id]
 	track.P, track.T = 0, {}
+	if stays[player] then stays[player][id .. ":" .. tostring(track.St)] = nil end
 	if track.St < #def.Steps then
 		track.St += 1
 		local nextStep = stepOf(player, def, track.St)
@@ -279,6 +359,7 @@ local function feed(player, ev)
 						cur = math.min(sub.Count, cur + add)
 						tr.T[sub.Key] = cur
 						changed = true
+						if cur >= sub.Count and sub.Say then notify(player, sub.Say, "info") end -- one line per part done
 					end
 				end
 				if cur < sub.Count then doneAll = false end
@@ -298,11 +379,20 @@ local function requirementsMet(player, data, def)
 	local req = def.Requires or {}
 	local st = story(data)
 	if def.Factions and not def.Factions[faction(player)] then return false end
+	-- A23-57: the artisan guild's own quests wait for its switch (a save that is Neutral already keeps what it has)
+	if def.Factions and def.Factions.Neutral and not def.Factions.Halo and not def.Factions.Horns
+		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
 	if req.Tutorial and num(data.TutorialStep) == 0 then return false end
 	if req.Level and num(data.Level, 1) < req.Level then return false end
 	for _, need in req.Done or {} do
 		if not st.Done[need] then return false end
+	end
+	-- E1: Requires.Pick = { Id, Is }: Is "Good" / "Evil" = that side of the saved pick (Purify / A count as Good), else the
+	-- exact pick
+	if type(req.Pick) == "table" then
+		local pick = st.Pick[req.Pick.Id]
+		if pick == nil or (pick ~= req.Pick.Is and SIDE[pick] ~= req.Pick.Is) then return false end
 	end
 	return data.ClassChosen == true
 end
@@ -314,9 +404,18 @@ local function refresh(player)
 	if not data then return end
 	local st = story(data)
 	local changed = false
-	-- an old save that is already Lv10+ skips chapters 1-2 (no past rewards or choice points are paid)
+	-- an old save (no story yet) that is already Lv10+ skips the chapters below its level, never later ones
+	-- (story_depth E0, quest_chain rule): Lv10-24 = chapters 1-2, Lv25+ = chapters 1-3 (SQ.SkipChapters); no past
+	-- rewards or choice points are paid, the next chapter starts
 	if st.Main.Id == "" and next(st.Done) == nil and not st.First.Migrated and num(data.Level, 1) >= 10 then
-		for _, id in SQ.Main do st.Done[id] = true end
+		local upTo = 0
+		for _, row in SQ.SkipChapters or {} do
+			if num(data.Level, 1) >= row.Level then upTo = math.max(upTo, row.UpTo) end
+		end
+		for _, id in SQ.Main do
+			local def = DEFS[id]
+			if def and num(def.Chapter) <= upTo then st.Done[id] = true end
+		end
 		changed = true
 	end
 	st.First.Migrated = true
@@ -337,7 +436,7 @@ local function refresh(player)
 		local def = DEFS[id]
 		if def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
 			st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
-			if def.Start then notify(player, def.Start, "info") end
+			if def.Start and not def.Hidden then notify(player, def.Start, "info") end -- E5: a hidden sub stays secret
 			changed = true
 		elseif st.Subs[id] and def.Factions and not def.Factions[faction(player)] then
 			st.Subs[id] = nil -- faction changed: the faction-only sub leaves (A6 / design 6-3)
@@ -362,8 +461,34 @@ local function refresh(player)
 				-- standing next to a landmark (e.g. the Crossroads fountain), checked by the 1 s loop
 				local spot = SQ.Landmarks[obj.Spot]
 				local root = Util.GetRoot(player)
-				done = spot ~= nil and root ~= nil and (obj.Zone == nil or zoneMatches(player, obj.Zone, currentZone(player)))
+				local inside = spot ~= nil and root ~= nil and (obj.Zone == nil or zoneMatches(player, obj.Zone, currentZone(player)))
 					and Util.FlatDistance(root.Position, spot) <= (obj.Radius or 20)
+				if num(obj.Stay) > 0 then
+					-- E4: stay inside for obj.Stay seconds in one go (leaving starts again); P = whole seconds for the row
+					local key = t.Id .. ":" .. tostring(tr.St)
+					local mine = stays[player]
+					if inside then
+						if not mine then
+							mine = {}
+							stays[player] = mine
+						end
+						mine[key] = mine[key] or os.clock()
+						local held = math.min(obj.Stay, math.floor(os.clock() - mine[key]))
+						if held ~= num(tr.P) then
+							tr.P = held
+							changed = true
+						end
+						done = held >= obj.Stay
+					else
+						if mine then mine[key] = nil end
+						if num(tr.P) ~= 0 then
+							tr.P = 0
+							changed = true
+						end
+					end
+				else
+					done = inside
+				end
 			end
 			if done then advance(player, data, t.Id, tr) end
 		end
@@ -398,6 +523,10 @@ local function rowFor(player, data, id, track)
 		progress, target = done, #obj.List
 	elseif obj.Type == "Level" then
 		text = string.format(step.Text, math.floor(num(data.Level, 1)))
+	elseif obj.Type == "Near" and num(obj.Stay) > 0 then
+		progress, target = math.floor(num(track.P)), math.floor(obj.Stay) -- E4: "%d/%d s"
+		local okF, f = pcall(string.format, step.Text, progress, target)
+		text = okF and f or step.Text
 	elseif obj.Key == "OwnIron" then
 		text = string.format(step.Text, Util.FormatNumber(math.floor(num(data.CarriedGold) + num(data.BankGold))))
 	elseif obj.Count then
@@ -410,7 +539,9 @@ local function rowFor(player, data, id, track)
 		Text = text, Progress = progress, Target = target, -- raw '{Auto}' tokens (client fills them)
 		RewardGold = 0, RewardXP = 0,
 		CanClaim = track.Claim == true, ShowProgress = target > 1 and not track.Claim,
-		Story = { Id = id, St = track.St, Panel = step and step.Panel == true or nil, Guide = step and step.Guide or nil },
+		-- Npc (A23-46): the town NPC this step is talked through (game dev 1: '!' over it, the row guides there)
+		Story = { Id = id, St = track.St, Panel = step and step.Panel == true or nil, Guide = step and step.Guide or nil,
+			Npc = (not track.Claim) and step and step.Npc or nil, Var = (not track.Claim) and varFor(data, step) or nil },
 	}
 end
 
@@ -434,28 +565,39 @@ local function visible(player, def)
 	return true
 end
 
--- sub rows, best first (claimable > situational > S0 > others), at most Config.StoryQuests.MaxSubs
+-- sub rows, best first, at most Config.StoryQuests.MaxSubs (quest_volume §2-6: 3; the HUD shows 2, the open list all):
+-- 0 = a claim or a waiting Talk / Choice card, 1 = situational (Show), 2 = started (past step 1 or with progress) or
+-- S0, 3 = the rest; within a rank the newer quest (later in StoryQuests.Subs) first. A started sub outranks untouched
+-- ones so a town quest in progress is never pushed off by older background subs, and the order index keeps the rows
+-- from swapping between refreshes (table.sort is not stable).
 function StoryQuestService.SubRows(player, data)
 	local st = story(data)
 	local rows = {}
-	for _, id in SQ.Subs do
+	for order, id in SQ.Subs do
 		local tr = st.Subs[id]
 		local def = DEFS[id]
-		if tr and def and (tr.Claim or visible(player, def)) then
+		-- E5: a hidden sub shows once it is found (past its first step, or waiting for [Claim])
+		local found = tr ~= nil and (tr.Claim or num(tr.St, 1) > 1)
+		if tr and def and (tr.Claim or visible(player, def)) and (not def.Hidden or found) then
 			-- before the first mission is accepted only S0 shows (A23-3: one goal at a time)
 			if num(data.TutorialStep) ~= 0 or id == "S0" then
 				local row = rowFor(player, data, id, tr)
 				local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
 				local waiting = step ~= nil and step.Panel == true -- a Talk / Choice card waits: never hidden by MaxSubs
-				row.Rank = ((tr.Claim or waiting) and 0) or (def.Show and 1) or (id == "S0" and 2) or 3
+				local started = num(tr.St, 1) > 1 or num(tr.P) > 0 or (type(tr.T) == "table" and next(tr.T) ~= nil)
+				row.Rank = ((tr.Claim or waiting) and 0) or (def.Show and 1) or ((started or id == "S0") and 2) or 3
+				row.Order = order
 				table.insert(rows, row)
 			end
 		end
 	end
-	table.sort(rows, function(a, b) return a.Rank < b.Rank end)
+	table.sort(rows, function(a, b)
+		if a.Rank ~= b.Rank then return a.Rank < b.Rank end
+		return a.Order > b.Order
+	end)
 	local out = {}
-	for i = 1, math.min(#rows, SQ.MaxSubs or 2) do
-		rows[i].Rank = nil
+	for i = 1, math.min(#rows, SQ.MaxSubs or 3) do
+		rows[i].Rank, rows[i].Order = nil, nil
 		table.insert(out, rows[i])
 	end
 	return out
@@ -473,6 +615,70 @@ function StoryQuestService.Claim(player, id)
 end
 
 ------------------------------------------------------------------ StoryAction (Talk / Choose / Open)
+-- A23-58 (user 2026-10-06, every good / evil pick): my side's own score only. Halo: Good = Honor +pts, Evil = Honor
+-- -pts; Horns: Evil = Infamy +pts, Good = Infamy -pts; never below 0, the other side's score never moves. A rank the
+-- lower score loses (Config.GetTitle) gets one line. PvP fame (GrantFame) and the weekly boards are not touched.
+local function pickScore(player, f, option, pts)
+	if pts <= 0 then return end
+	local stat = f == "Halo" and "Honor" or "Infamy"
+	if (f == "Halo") == (option == "Good") then
+		S.PlayerService.AddStat(player, stat, pts)
+		notify(player, string.format(option == "Good" and TXT.Good or TXT.Evil, pts), "good")
+		return
+	end
+	local data = getData(player)
+	local have = math.max(0, math.floor(num(data and data[stat])))
+	local take = math.min(have, pts)
+	if take <= 0 then return end
+	S.PlayerService.SetStat(player, stat, have - take)
+	notify(player, string.format(f == "Halo" and TXT.OffSideHalo or TXT.OffSideHorns, take), "info")
+	local function rank(score)
+		local _, r = Config.GetTitle(f, f == "Halo" and score or 0, f == "Horns" and score or 0)
+		return r
+	end
+	if rank(have - take) < rank(have) then
+		notify(player, f == "Halo" and TXT.RankDownHalo or TXT.RankDownHorns, "info")
+	end
+end
+
+-- E6: the picked side's own reward (side "Good" | "Evil"; a Neutral A takes Good's, B takes Evil's): an item or potions
+-- through LootService.GrantItem (its caps and full notices) and gold to the bank, then one line saying what came
+local function payChoice(player, obj, side)
+	local r = type(obj[side]) == "table" and obj[side].Reward or nil
+	if type(r) ~= "table" then return end
+	local parts = {}
+	local id = r.Item or r.Potion
+	local loot = S.LootService
+	if type(id) == "string" and type(loot) == "table" and type(loot.GrantItem) == "function" then
+		local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(r.N, 1)))
+		if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
+		local given = ok and math.floor(num(res)) or 0
+		if given > 0 then
+			local item = Config.Loot.Items[id]
+			local name = (item and item.Name) or Config.Loot.Text.Potion[id] or id
+			table.insert(parts, given > 1 and string.format(Config.Loot.Text.GotN, name, given)
+				or string.format(Config.Loot.Text.Got, name))
+		end
+	end
+	local gold = math.floor(num(r.Gold))
+	if gold > 0 then
+		S.ProgressionService.AddBankGold(player, gold, "Quest")
+		table.insert(parts, string.format(TXT.ChoiceGold, Util.FormatNumber(gold)))
+	end
+	if #parts > 0 then notify(player, table.concat(parts, " · "), "reward") end
+end
+
+-- E2 (story_depth §7): a real pick (its Choice carries points) on the other side from the last real pick gets one kind
+-- line; its side is saved either way (data.Story.LastSide). 0-point picks (easter eggs) never count.
+local function changedMind(player, st, obj, pick)
+	local side = SIDE[pick]
+	if side == nil or (num(obj.Good and obj.Good.Points) <= 0 and num(obj.Evil and obj.Evil.Points) <= 0) then return end
+	if st.LastSide ~= nil and st.LastSide ~= side then
+		notify(player, side == "Good" and TXT.ChangedGood or TXT.ChangedEvil, "info")
+	end
+	st.LastSide = side
+end
+
 local function onStoryAction(player, id, action, option, ...)
 	if select("#", ...) ~= 0 then return end
 	if type(id) ~= "string" or type(action) ~= "string" or (option ~= nil and type(option) ~= "string") then return end
@@ -486,9 +692,10 @@ local function onStoryAction(player, id, action, option, ...)
 	if not tr or tr.Claim then return end
 	local step = stepOf(player, def, tr.St)
 	if not step or not step.Panel then return end
+	if step.Npc and not npcNear(player, step.Npc) then return end -- A23-46: talked through the NPC, standing next to it
 	local obj = step.Obj
 	if action == "Open" then
-		openStep(player, id, tr)
+		openStep(player, id, tr, true)
 	elseif action == "Talk" and obj.Type == "Talk" then
 		advance(player, data, id, tr)
 	elseif action == "Choose" and obj.Type == "Choice" then
@@ -497,15 +704,20 @@ local function onStoryAction(player, id, action, option, ...)
 			if option ~= "Good" and option ~= "Evil" then return end
 			local pick = obj[option]
 			st.Pick[id] = pick.Pick or option -- saved before the points
-			local stat = option == "Good" and "Honor" or "Infamy"
-			S.PlayerService.AddStat(player, stat, pick.Points or 0)
-			notify(player, string.format(option == "Good" and TXT.Good or TXT.Evil, pick.Points or 0), "good")
-			if f == "Halo" and option == "Evil" then notify(player, TXT.OddHalo, "info") end
-			if f == "Horns" and option == "Good" then notify(player, TXT.OddHorns, "info") end
+			local pts = math.floor(num(pick.Points))
+			if pts > 0 then
+				pickScore(player, f, option, pts)
+			else
+				notify(player, option == "Good" and TXT.LeanGood or TXT.LeanEvil, "info") -- E5: no "+0", the shard leans
+			end
+			changedMind(player, st, obj, st.Pick[id])
+			payChoice(player, obj, option)
 		else
 			if option ~= "A" and option ~= "B" then return end
 			st.Pick[id] = option -- Neutral: recorded only (no good/evil score, A6)
 			notify(player, TXT.Recorded, "info")
+			changedMind(player, st, obj, option)
+			payChoice(player, obj, option == "A" and "Good" or "Evil")
 		end
 		advance(player, data, id, tr)
 	end
@@ -578,6 +790,9 @@ function StoryQuestService.Start()
 			for _, p in S.PlayerService.GetReadyPlayers() do
 				local ok, err = pcall(refresh, p)
 				if not ok then Util.Warn(TAG, "refresh: " .. tostring(err)) end
+			end
+			for p in stays do
+				if p.Parent == nil then stays[p] = nil end -- E4 counts of players who left
 			end
 		end
 	end)

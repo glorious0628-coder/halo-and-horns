@@ -1,15 +1,15 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 55,
+  "checks": 86,
   "failedChecks": 0,
-  "namedChecks": 55,
+  "namedChecks": 77,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "Config strings are English",
-      "check": "the walk reached the player strings (1943 strings)",
+      "check": "the walk reached the player strings (2363 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -314,6 +314,138 @@
       "fail": 0
     },
     {
+      "group": "the five names",
+      "check": "Halo guide: Hallie (Guide of Light)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Halo: the catchphrase is the welcome's own first line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Halo: the catchphrase opens the M1_4 report",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Halo: no 'Noted' (Tiny's) or 'Captain'",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Horns guide: Magpie (Horn Legion Guide)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Horns: the catchphrase is the welcome's own first line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Horns: the catchphrase opens the M1_4 report",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Horns: no 'Noted' (Tiny's) or 'Captain'",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Neutral guide: Kit (Guild Guide)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Neutral: the catchphrase is the welcome's own first line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Neutral: the catchphrase opens the M1_4 report",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "Neutral: no 'Noted' (Tiny's) or 'Captain'",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "speakers: Otto / Kit / Fizzby",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "M1_1: Otto's catchphrase line first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "N1 / N2: Kit speaks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "the off-side line is said by the guide (one toast, ASCII minus)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "the potion seller's prompt says Fizzby (the model name stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "the shop greetings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "system lines keep 'The Blacksmith' / 'Forge' / 'Potion Seller'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "MapBuilder's potion prompt reads Config.Vitals.PotionMerchantLabel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the five names",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "server scripts send English",
       "check": "every server script was scanned (31 files)",
       "pass": 1,
@@ -342,9 +474,9 @@
   "staticChecks": 3,
   "staticFailures": [],
   "mutations": {
-    "total": 16,
-    "applied": 16,
-    "caught": 16,
+    "total": 21,
+    "applied": 21,
+    "caught": 21,
     "skipped": false,
     "results": [
       {
@@ -528,6 +660,61 @@
           "server scripts send English :: no Hangul in server code outside the nickname word lists"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "the Halo guide loses her name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the five names :: Halo guide: Hallie (Guide of Light)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no catchphrase line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the five names :: Horns: the catchphrase is the welcome's own first line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the blacksmith speaker is the role again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the five names :: speakers: Otto / Kit / Fizzby"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the off-side line without the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the five names :: the off-side line is said by the guide (one toast, ASCII minus)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the potion prompt ignores the label",
+        "file": "src/ServerScriptService/MapBuilder.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the five names :: MapBuilder's potion prompt reads Config.Vitals.PotionMerchantLabel"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -535,41 +722,41 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "813f53c53125e8d6c580c2751944b0f377205872f0e73a59f205e95c3a0a7828",
+    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/CharacterVisuals.luau": "bf34c6cae54d9e56ca82dcb5d6906de0fa9e089f352dfa4d540a010d742c50b1",
+    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005",
     "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
-    "src/ServerScriptService/FactionService.luau": "19c5d11556f2840f40000cb30576bfe8ed05088c1502ef7067c1f6b8a78d2604",
+    "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
     "src/ServerScriptService/GooseService.luau": "eb39998538042239d5966f71c08869788465bee782e6b26f6d2a50847bf8dc99",
     "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
-    "src/ServerScriptService/HalloweenService.luau": "c8a34e1b807e6c82ecc93a708868505e183039f9c4b6ab4c80804a8d1f9714ea",
+    "src/ServerScriptService/HalloweenService.luau": "d288c4fa858b3d3f868e071b2253b1cc7f960afdc06dcabe257b73eed0e7783e",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/KaijuService.luau": "c5d1398e170af68cc369b464ce07e7895f38b3da98ab0abda2a2eaed61bf2d3d",
-    "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
+    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
     "src/ServerScriptService/Main.server.luau": "88c7fda3210f3a09323cc9e2ceb0a36085e74b2656b015a83136cc7e11df764d",
-    "src/ServerScriptService/MapBuilder.luau": "5d36f737102e2f0ca0be3c8c389a0e76ce877857b081b781ddc9b23622f02c27",
+    "src/ServerScriptService/MapBuilder.luau": "49e9d2789147f8b5b46b56087a2ebbd014a85d5b7b8349adec3edaea84bdc21a",
     "src/ServerScriptService/MonetizationService.luau": "db8f01abe47c1162686deb8aa3acf26858399cb4be898fc6511defa5997943a9",
-    "src/ServerScriptService/MonsterService.luau": "ed984c4f7ab3d62aa8f404da203ed1e655c609690ab59d59f5e32a799f66c8ad",
+    "src/ServerScriptService/MonsterService.luau": "25dabf44b74a2728058e17978a408218f96a57f65db196dfb369aab793c6d1ce",
     "src/ServerScriptService/NicknameService.luau": "bca3dc61198f467488a4bcc1f4ead32504642a566dc3c4870df933c1cf7de939",
     "src/ServerScriptService/PetService.luau": "a9c800ce76799e177d0b3af6d5a62d73c0ca702376213ce7186aebdd2b4104ca",
     "src/ServerScriptService/PlayerService.luau": "e4b515a00488609daad22b561a587bddd4275f59b0c90edf17957ef621d87ae7",
-    "src/ServerScriptService/ProgressionService.luau": "6475444ebec7822d9993c1a0c5c3d117f47ff80548dd6b94c6b76e02789bf468",
-    "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
+    "src/ServerScriptService/ProgressionService.luau": "074be3338e3845a95ebd1d0943d7c3ab68ed03f9529e11286e62e7140ab8fee3",
+    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
     "src/ServerScriptService/QuestService.luau": "6e6cf3e0aeb4c1bd442da0fa624899f1979c949594443539840d393edd00fc69",
     "src/ServerScriptService/RankingService.luau": "50ce840d503ecd8faa70a3692f8428ef823b5b537e3d591d5b765175f52decdc",
     "src/ServerScriptService/SettingsService.luau": "fb99b60c6422f4bb60ccaa904086a50a85dca490a7edd87939440922fd7b1102",
     "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
-    "src/ServerScriptService/StoryQuestService.luau": "19f046c3251bb799230db775a0345b4324fe77301daff3fc89506eb3f7402c68",
+    "src/ServerScriptService/StoryQuestService.luau": "88266a94a136f571fbf624be2514baeb3396523eeeb802cfb1ce3406dcdb2889",
     "src/ServerScriptService/TelemetryService.luau": "a1fbb097d7df9b66580cc365f1689babbadb094b213249346c88a65f139b77e4",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/VitalsService.luau": "15931545c81e267ac70835f8828bb59bf3efd233489557cd4af224bde36468ae",
     "src/ServerScriptService/WarService.luau": "37f33421b2a33a8c3dae205fd404d331cba3c77f76e653486cd68057bff592a9",
     "src/ServerScriptService/ZoneService.luau": "e1b533e51193af35ee96c63145b7af18950ddbe728f15064dca9629c7de3bf73"
   },
-  "fixtureSHA256": "3904d10d5c77b2cf413b0aa29978d677b17599e332f69a42d09e9ba87249fa34",
+  "fixtureSHA256": "96d5d7d66894c6bac85218957278e76e0a2b5720d4a40348921900d956c385f3",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
