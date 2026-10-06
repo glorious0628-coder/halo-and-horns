@@ -34,6 +34,9 @@ local WALL_BOTTOM = (Config.Map.WaterTop or 0) - 20
 local GATE_HALF_SPAN = 10 -- pillar centers 20 apart (17-stud passage)
 local EXTREME_MIN_LEVEL = 25 -- PvP zones from this level use the "extreme" danger color
 local SIGN_MAX_DISTANCE = 150
+-- A23-36 (user 2026-10-06): no big 3D place text; a pad keeps only a small label seen up close (like shop names)
+local PAD_SIGN = { Width = 190, Height = 32, MaxDistance = 40, OffsetY = 3 }
+local SHOP_SIGN_MAX_DISTANCE = 50 -- shop / landmark name labels (the sky crown image has no TextLabel and stays)
 local MAX_LIGHTS = 40 -- whole map
 local MAX_LIGHT_RANGE = 40
 local MAX_LIGHT_BRIGHTNESS = 2
@@ -49,7 +52,6 @@ local NEON = Enum.Material.Neon
 local WHITE = Color3.new(1, 1, 1)
 
 local DANGER = { Safe = RGB(80, 220, 120), PvP = RGB(255, 150, 40), Extreme = RGB(255, 60, 60) }
-local LORE_COLOR = RGB(235, 225, 195)
 local GATE_STYLE = { SlimeMeadow = "Meadow", GoblinWoods = "Goblin", SkeletonRuins = "Ruins", HaloTown = "Halo", HornsTown = "Horns" }
 
 local S = nil -- registry (stored by Init; Build/Rebuild never use it)
@@ -195,29 +197,6 @@ local function dangerColor(zone)
 	if not zone.PvP then return DANGER.Safe end
 	if zone.MinLevel >= EXTREME_MIN_LEVEL then return DANGER.Extreme end
 	return DANGER.PvP
-end
-
-local function hex(c)
-	return string.format("#%02X%02X%02X", math.floor(c.R * 255 + 0.5), math.floor(c.G * 255 + 0.5), math.floor(c.B * 255 + 0.5))
-end
-
-local function escapeRich(s)
-	return (string.gsub(tostring(s), "[<>&]", { ["<"] = "&lt;", [">"] = "&gt;", ["&"] = "&amp;" }))
-end
-
-local function gateLore(zoneId)
-	local lore = Config.Story and Config.Story.ZoneLore
-	return (lore and lore[zoneId]) or ""
-end
-
--- line 1 = zone.Name .. "  Lv " .. MinLevel .. "+  " .. ("PvP 지역" | "안전 지역") (safety word in the danger color),
--- line 2 = Config.Story.ZoneLore[zoneId]
-local function gateSignText(zoneId, zone)
-	local line1 = string.format('%s  Lv %d+  <font color="%s">%s</font>', escapeRich(zone.Name), zone.MinLevel,
-		hex(dangerColor(zone)), zone.PvP and "PvP 지역" or "안전 지역")
-	local lore = gateLore(zoneId)
-	if lore == "" then return line1 end
-	return line1 .. string.format('<br/><font color="%s">%s</font>', hex(LORE_COLOR), escapeRich(lore))
 end
 
 local function padLabel(zone)
@@ -411,41 +390,14 @@ local function ensureWalls(ctx, folder)
 end
 
 ------------------------------------------------------------------ gates
--- the two-line sign; a pre-baked billboard is adopted (renamed "GateSign", its style kept). Returns 1 if created.
-local function ensureGateSign(gate, zoneId, zone)
-	local built = 0
-	local sign = gate:FindFirstChild("GateSign", true)
-	if not (sign and sign:IsA("BillboardGui")) then
-		sign = gate:FindFirstChildWhichIsA("BillboardGui", true)
-		if sign then
-			sign.Name = "GateSign"
-			if sign.Size.Y.Offset < 56 then
-				sign.Size = UDim2.fromOffset(math.max(sign.Size.X.Offset, 300), 60)
-			end
-		else
-			local anchor = gate:FindFirstChild("Lintel", true)
-			if not (anchor and anchor:IsA("BasePart")) then
-				anchor = gate:IsA("BasePart") and gate or gate:FindFirstChildWhichIsA("BasePart", true)
-			end
-			if not anchor then return 0 end
-			sign = billboard(anchor, "GateSign", "", 6, WHITE, 320, SIGN_MAX_DISTANCE, 60)
-			built = 1
-		end
+-- A23-36 (user 2026-10-06): no big 3D place text on gates. Where I am = the HUD zone chip, where to go = the quest
+-- marker, the level gate = ZoneService's own notice. Every billboard on a gate (the pre-baked preview_map sign or an
+-- older "GateSign") is removed; the Lintel stays (HUD guide target). Returns 0 (nothing built).
+local function clearGateSigns(gate)
+	for _, d in gate:GetDescendants() do
+		if d:IsA("BillboardGui") then d:Destroy() end
 	end
-	local label = sign:FindFirstChildWhichIsA("TextLabel", true)
-	if not label then
-		label = Instance.new("TextLabel")
-		label.Name = "Text"
-		label.Size = UDim2.fromScale(1, 1)
-		label.BackgroundTransparency = 1
-		label.Font = Enum.Font.GothamBlack
-		label.Parent = sign
-	end
-	label.RichText = true
-	label.TextScaled = true
-	label.TextColor3 = WHITE
-	label.Text = gateSignText(zoneId, zone)
-	return built
+	return 0
 end
 
 local function buildGate(ctx, parent, entry, zone)
@@ -550,7 +502,7 @@ local function ensureGates(ctx, folder)
 				gate = buildGate(ctx, folder, entry, zone)
 				ctx.pieces += 1
 			end
-			ctx.pieces += ensureGateSign(gate, entry.Zone, zone)
+			ctx.pieces += clearGateSigns(gate)
 		end
 	end
 end
@@ -597,13 +549,18 @@ local function ensurePads(ctx, folder)
 		if zone then
 			local sign = pad:FindFirstChildWhichIsA("BillboardGui")
 			if not sign then
-				billboard(pad, "PadSign", padLabel(zone), 4, RGB(200, 240, 255))
+				sign = billboard(pad, "PadSign", padLabel(zone), PAD_SIGN.OffsetY, RGB(200, 240, 255), PAD_SIGN.Width,
+					PAD_SIGN.MaxDistance, PAD_SIGN.Height)
 				ctx.pieces += 1
 			else
 				-- CR-M22: the reused sign text follows Config (zone name / level)
 				local label = sign:FindFirstChildWhichIsA("TextLabel", true)
 				if label then label.Text = padLabel(zone) end
 			end
+			-- A23-36: a pre-baked (big, far) pad sign becomes the small near-only label
+			sign.Size = UDim2.fromOffset(PAD_SIGN.Width, PAD_SIGN.Height)
+			sign.MaxDistance = PAD_SIGN.MaxDistance
+			sign.StudsOffset = Vector3.new(0, PAD_SIGN.OffsetY, 0)
 		end
 	end
 end
@@ -898,7 +855,11 @@ local PATCH = {
 	-- the meadow's south shore is a rocky ridge (Y 30-40 at z 140-176): a pass is cut through it along the path
 	PassHalfW = 9, PassFromZ = 126, PassToZ = 194,
 	FurrowStep = 24, PostStep = 16, Gate = 10, -- a 4-stud furrow every 24 studs; fence post every 16; gate half-width
-	SignPos = Vector3.new(368, 0, 136), -- the meadow's south edge, beside the path
+	-- world_kit 2026-10-06 (Edit raycasts): the ridge slope reaches z ~199, so the north fence stands at z 202 (not in
+	-- the hill at z 175) and the pumpkins grow on the leafy furrows (z 211, 235, 259, 283) on the flat field
+	FenceNorthZ = 202, PumpkinFromZ = 211,
+	-- in front of the pass mouth, west of the dirt path (the old (368, 136) stood inside the pass wall); A23-36: no text
+	SignPos = Vector3.new(352, 0, 118),
 }
 
 function PATCH.rect()
@@ -958,7 +919,7 @@ function PATCH.decor(ctx, l, decor)
 	local m = model("PumpkinPatch")
 	local rng = Random.new(1031) -- the same field every build
 	-- pumpkins on the furrows: an orange ball, a stem and one leaf
-	for z = l.MinZ + PATCH.FurrowStep, l.MaxZ - 10, PATCH.FurrowStep do
+	for z = math.max(l.MinZ + PATCH.FurrowStep, PATCH.PumpkinFromZ), l.MaxZ - 10, PATCH.FurrowStep do
 		for x = l.MinX + 18, l.MaxX - 18, 26 do
 			local px, pz = x + rng:NextNumber(-6, 6), z + rng:NextNumber(-1.5, 1.5)
 			if math.abs(px - PATCH.PathX) > 8 then
@@ -984,7 +945,8 @@ function PATCH.decor(ctx, l, decor)
 			CFrame = CFrame.lookAt(mid + Vector3.new(0, 2.2, 0), b + Vector3.new(0, 2.2, 0)),
 			Color = PATCH.Wood, Material = Enum.Material.WoodPlanks }, m)
 	end
-	local corners = { Vector3.new(l.MinX, 0, l.MinZ), Vector3.new(l.MaxX, 0, l.MinZ), Vector3.new(l.MaxX, 0, l.MaxZ),
+	local north = math.max(l.MinZ, PATCH.FenceNorthZ)
+	local corners = { Vector3.new(l.MinX, 0, north), Vector3.new(l.MaxX, 0, north), Vector3.new(l.MaxX, 0, l.MaxZ),
 		Vector3.new(l.MinX, 0, l.MaxZ) }
 	for i = 1, 4 do
 		local a, b = corners[i], corners[i % 4 + 1]
@@ -992,7 +954,8 @@ function PATCH.decor(ctx, l, decor)
 		for k = 0, n - 1 do
 			local p0, p1 = a:Lerp(b, k / n), a:Lerp(b, (k + 1) / n)
 			local gate = i == 1 and math.abs((p0.X + p1.X) / 2 - PATCH.PathX) < PATCH.Gate
-			post(p0.X, p0.Z)
+			-- no post in the middle of the gate gap (it stood on the dirt path)
+			if not (i == 1 and math.abs(p0.X - PATCH.PathX) < PATCH.Gate - 1) then post(p0.X, p0.Z) end
 			if not gate then rail(p0, p1) end
 		end
 	end
@@ -1000,9 +963,9 @@ function PATCH.decor(ctx, l, decor)
 	ctx.pieces += 1
 end
 
--- the one road sign (a post and a board with the Config.Halloween.Text.PatchSign billboard)
+-- the road sign at the pass mouth: a post and a blank pumpkin-orange board (HalloweenService shows it only in season).
+-- A23-36: no billboard text on it any more (an older "SignGui" is removed); the quest marker points into the field.
 function PATCH.sign(ctx, landmarks)
-	local text = (Config.Halloween and Config.Halloween.Text and Config.Halloween.Text.PatchSign) or "호박밭"
 	local sign = landmarks:FindFirstChild("PumpkinPatchSign")
 	if not sign then
 		sign = model("PumpkinPatchSign")
@@ -1015,13 +978,12 @@ function PATCH.sign(ctx, landmarks)
 			Color = PATCH.Pumpkin, Material = Enum.Material.WoodPlanks, CanCollide = false }, sign)
 		board:SetAttribute("ShownTransparency", 0)
 		board:SetAttribute("ShownCollide", false)
-		billboard(board, "SignGui", text, 3.2, RGB(255, 225, 160), 300, SIGN_MAX_DISTANCE, 46)
 		sign.Parent = landmarks
 		ctx.pieces += 1
 	end
-	local gui = sign:FindFirstChild("SignGui", true)
-	local label = gui and gui:FindFirstChild("Text")
-	if label and label:IsA("TextLabel") then label.Text = text end
+	for _, d in sign:GetDescendants() do
+		if d:IsA("BillboardGui") then d:Destroy() end
+	end
 end
 
 -- also used by MapBuilder.EnsurePumpkinPatch (Studio command bar / checks)
@@ -1068,6 +1030,12 @@ function MapBuilder.Build()
 	ensurePotionMerchant(ctx, folders.NPCs)
 	local okPatch, errPatch = pcall(PATCH.ensure, ctx, folders) -- A23-30
 	if not okPatch then Util.Warn(TAG, "PumpkinPatch: " .. tostring(errPatch)) end
+	-- A23-36: shop / landmark name labels (altar, goose nest, market, anvil) stay, seen only up close
+	for _, d in folders.Landmarks:GetDescendants() do
+		if d:IsA("BillboardGui") and d.MaxDistance > SHOP_SIGN_MAX_DISTANCE and d:FindFirstChildWhichIsA("TextLabel", true) then
+			d.MaxDistance = SHOP_SIGN_MAX_DISTANCE
+		end
+	end
 
 	if fresh then
 		buildPreviewSpawn(ctx, folders.Landmarks)

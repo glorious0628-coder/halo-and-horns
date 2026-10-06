@@ -11,9 +11,14 @@ Studio session (File > Save to File only writes build/GoodEvil.rbxlx). This scri
      uploaded as BIG_SLIME_TEXTURE). FRONT_FIX yaws (PrimaryPart.PivotOffset) are applied to every model on every run.
      A replaced model is destroyed (since 2026-10-06; it used to move to ServerStorage.MonsterModelArchive, whose old
      entries' SurfaceAppearance TexturePacks belonged to the old account). Each placed model carries AssetId.
-  2. ServerStorage Costume* folders are deleted (A23-5 chibi costume removal).
+  2. ServerStorage Costume* folders are deleted (A23-5 chibi costume removal), and so is an old
+     ServerStorage.MonsterModelArchive (its old-account TexturePacks printed "Failed to fetch TexturePack" and asset
+     access warnings on every Play of the cloud place, 2026-10-06).
   3. The anvil sign reads "대장간 · 장인 길드" (tools/preview_map.lua).
+  4. The world look: tools/apply_surface_materials.lua (new ground / tree tiles) then tools/apply_world_look.lua (leaf
+     and road colours, the Neutral 'B' lighting, A23-36 big-sign removal, props off the pumpkin-field path).
 Safe to run repeatedly: a model that is already rigged is left alone. Studio must be in Edit mode.
+After a big apply, File > Save to File As build/GoodEvil.rbxlx at once (the cloud place keeps nothing of this).
 """
 import json
 import os
@@ -128,6 +133,8 @@ for _,m in CM:GetChildren() do
 end
 local removed=0
 for _,c in SS:GetChildren() do if string.sub(c.Name,1,7)=="Costume" then c:Destroy() removed+=1 end end
+local archive=SS:FindFirstChild("MonsterModelArchive")
+if archive then archive:Destroy() removed+=1 end
 local sign="no anvil"
 local lm=workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Landmarks")
 local anvil=lm and lm:FindFirstChild("ArtisanGuild") and lm.ArtisanGuild:FindFirstChild("Anvil")
@@ -158,6 +165,12 @@ def main():
         tex = json.dumps(BIG_SLIME_TEXTURE)
         swap = SWAP % (json.dumps(json.dumps(FRONT_FIX)), json.dumps(json.dumps(todo)), tex, tex)
         print(text_of(c.call("execute_luau", {"code": swap, "datamodel_type": "Edit"})))
+        # 4. the world look (A23-29/30 E): ground tiles (image dev's tool, run as is), then leaves / roads / lighting /
+        # A23-36 sign removal / pumpkin-path props (tools/apply_world_look.lua). Both are idempotent.
+        for lua in ("apply_surface_materials.lua", "apply_world_look.lua"):
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), lua), encoding="utf-8") as f:
+                res = c.call("execute_luau", {"code": f.read(), "datamodel_type": "Edit"})
+            print(lua + ":", ("ERROR " if res.get("isError") else "") + text_of(res)[:400])
     finally:
         c.close()
 

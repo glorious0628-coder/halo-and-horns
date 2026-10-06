@@ -1160,14 +1160,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "312c36eb8a6cac8cb7b4114776f705b9e6f7723147502523d43d087b870e497c",
+    "src/ReplicatedStorage/Shared/Config.luau": "9e8c3c6fe38e84bd077297dbf99d7732f4f6265d9be0d73c3dec2d369629ca5d",
     "src/ReplicatedStorage/Shared/Net.luau": "286f998785063a11ad5899da5a8721bdf19d16647afa6027b3016508f860d4e2",
     "src/ServerScriptService/DataService.luau": "d360640bf7f1262d2bdf17d6eea7dd104cae44f4b29989c4263b94819b9316ba",
     "src/ServerScriptService/QuestService.luau": "c6e4cd98c46c23fc0c542b4a7743148f4c5d8ef31c8ef42826cfaede1dffff43",
     "src/ServerScriptService/GooseService.luau": "395f0289ab0e71a80d46917a18f8866a9f89fcd1e2f140be534fe47ae461614d",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005"
   },
-  "fixtureSHA256": "7f3639f3b5466d0bbf8860a7cdf74f276a6321a9b789a7249fa155427e4a1dfc",
+  "fixtureSHA256": "7e5b821d794b820ee26280a059330d47656758ddb2e744613c1eed74e84a985d",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

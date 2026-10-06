@@ -828,17 +828,18 @@ Config.War = {
 	Tick = 1,
 }
 
--- Sky presets applied by WarService (Lighting + WarTint). Never add an Atmosphere or per-zone ColorCorrection (A9-3).
--- Neutral = A11 golden "Elden Ring" dusk (supersedes A9-4). Dawn/Eclipse keep their hues, darkened per A9-4
--- (Brightness x0.65, Ambient/OutdoorAmbient -40 per channel). Fog: FogStart 120 / FogEnd 650 for every gameplay preset
--- (A12, supersedes the 1600 of A11-R4) so distant regions vanish in haze; the sky crown stays visible as a silhouette.
--- Optional keys (WarService applies them only if present): FogStart, ExposureCompensation (Neutral only: A9-4 / A11),
--- BloomIntensity (Neutral only: A11).
+-- Sky presets applied by WarService (Lighting + WarTint). Never add an Atmosphere (A9-3; the per-zone mood is the
+-- client ZoneLook, A23-30). A23-29/30 user pick 'E' (docs/design/world_blend_2026-10-06.md): Neutral = the bright toy
+-- midday 'B' (ClockTime 14.2, fog 250-1100 pale blue); Dawn / Eclipse keep their hues and fog (120-650) with the
+-- ZoneLook base light (Brightness / Ambient / OutdoorAmbient = ZoneLook SKY table, so the 3 s war-sky tween and
+-- ZoneLook agree); Eclipse = the night proposal (blood-red mood, monsters still readable).
+-- Optional keys (WarService applies them only if present): FogStart, ExposureCompensation, BloomIntensity (otherwise
+-- WarService SKY_EXTRAS).
 Config.Sky = {
 	TweenTime = 3,
-	Neutral = { ClockTime = 16.8, Brightness = 1.8, Ambient = Color3.fromRGB(70, 60, 55), OutdoorAmbient = Color3.fromRGB(120, 105, 90), FogColor = Color3.fromRGB(190, 170, 140), FogStart = 120, FogEnd = 650, ExposureCompensation = -0.1, BloomIntensity = 0.4, Tint = Color3.fromRGB(255, 255, 255) },
-	Dawn = { ClockTime = 7.2, Brightness = 1.95, Ambient = Color3.fromRGB(110, 90, 40), OutdoorAmbient = Color3.fromRGB(165, 135, 65), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 240, 200) },
-	Eclipse = { ClockTime = 0.5, Brightness = 0.78, Ambient = Color3.fromRGB(75, 5, 5), OutdoorAmbient = Color3.fromRGB(85, 5, 5), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 185, 185) },
+	Neutral = { ClockTime = 14.2, Brightness = 2.0, Ambient = Color3.fromRGB(110, 108, 106), OutdoorAmbient = Color3.fromRGB(128, 126, 124), FogColor = Color3.fromRGB(205, 215, 230), FogStart = 250, FogEnd = 1100, ExposureCompensation = -0.2, BloomIntensity = 0.2, Tint = Color3.fromRGB(255, 255, 255) },
+	Dawn = { ClockTime = 7.2, Brightness = 2.1, Ambient = Color3.fromRGB(128, 112, 92), OutdoorAmbient = Color3.fromRGB(150, 130, 104), FogColor = Color3.fromRGB(255, 220, 150), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 240, 200) },
+	Eclipse = { ClockTime = 0.5, Brightness = 1.4, Ambient = Color3.fromRGB(100, 62, 78), OutdoorAmbient = Color3.fromRGB(115, 76, 92), FogColor = Color3.fromRGB(90, 10, 20), FogStart = 120, FogEnd = 650, Tint = Color3.fromRGB(255, 200, 200) },
 }
 
 -- addendum A9-2: client hit feel (Fx only). White flash of monsters within FlashRadius of my own Swing/Release hit

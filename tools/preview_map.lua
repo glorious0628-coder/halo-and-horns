@@ -60,6 +60,7 @@ local function clearAt(pos, r)
 	if flat.Magnitude < 30 then return false end -- 광장
 	if math.abs(pos.Z) < 12 and pos.X > 60 then return false end -- 동서 큰길
 	if math.abs(pos.X) < 12 and math.abs(pos.Z) < 520 then return false end -- 남북 큰길
+	if math.abs(pos.X - 360) < 10 and pos.Z > 0 and pos.Z < 200 then return false end -- 호박밭 흙길(MapBuilder PATCH)
 	return true
 end
 
@@ -400,9 +401,10 @@ local function road(name, x1, x2, z1, z2, color, material)
 	return prop({ Name = name, Size = Vector3.new(math.abs(x2 - x1), 0.2, math.abs(z2 - z1)), Position = Vector3.new((x1 + x2) / 2, 0.08, (z1 + z2) / 2),
 		Color = color, Material = material or Enum.Material.Ground }, roads)
 end
-road("RoadCross", 13, LAND.A[2], -8, 8, RGB(150, 125, 90))
-road("RoadMeadow", LAND.B[1], LAND.B[2], -8, 8, RGB(190, 165, 115))
-road("RoadWoods", LAND.C[1], PASS_X - 20, -8, 8, RGB(105, 82, 58))
+-- the Ground roads get the painted GE_DirtPath tile (apply_surface_materials.lua): near-white 235 so it is not darkened twice
+road("RoadCross", 13, LAND.A[2], -8, 8, RGB(235, 235, 235))
+road("RoadMeadow", LAND.B[1], LAND.B[2], -8, 8, RGB(235, 235, 235))
+road("RoadWoods", LAND.C[1], PASS_X - 20, -8, 8, RGB(235, 235, 235))
 road("RoadPass", PASS_X - 20, PASS_X + 20, -8, 8, RGB(110, 105, 100), Enum.Material.Slate)
 road("RoadRuins", PASS_X + 20, LAND.C[2], -8, 8, RGB(160, 150, 130), Enum.Material.Slate)
 road("RoadNorth", -8, 8, -175, -10, RGB(215, 205, 185), SP)
@@ -416,12 +418,7 @@ end
 road("RoadWest", -43, -13, -8, 8, RGB(160, 155, 145), SP)
 
 ------------------------------------------------------------------ 관문
-local function gateSign(lintel, zoneId)
-	local z = ZONES[zoneId]
-	local col, txt = dangerOf(zoneId)
-	local hex = string.format("#%02X%02X%02X", math.floor(col.R * 255 + 0.5), math.floor(col.G * 255 + 0.5), math.floor(col.B * 255 + 0.5))
-	billboard(lintel, string.format('%s  Lv %d+<br/><font color="%s">%s</font>', z.Name, z.MinLevel, hex, txt), 6, Color3.new(1, 1, 1), 300)
-end
+-- A23-36(사용자 2026-10-06): 관문 위 큰 글씨 간판은 만들지 않는다(지역 이름 = HUD 지역 칩, 길 = 퀘스트 마커)
 for _, g in GATES do
 	local gate = model("Gate_" .. g.Zone, folders.Gates)
 	local off = g.AlongX and Vector3.new(0, 0, 10) or Vector3.new(10, 0, 0)
@@ -471,7 +468,6 @@ for _, g in GATES do
 			prop({ Name = "Jaw", Size = Vector3.new(4, 2, 6), Position = top + Vector3.new(-3.5, -3.5, 0), Color = RGB(205, 200, 180) }, gate)
 		end
 	end
-	gateSign(lintel, g.Zone)
 end
 
 -- PvP 경계: 말뚝 13개 + 띠
@@ -498,7 +494,9 @@ for _, pad in PADS do
 		Color = RGB(80, 200, 255), Material = NEON, CanTouch = true }, folders.Pads)
 	p:SetAttribute("TravelTo", pad.Dest)
 	ring(pad.Position + Vector3.new(0, 0.55, 0), 6.2, 12, Vector3.new(0.6, 0.3, 3.4), col, p)
-	billboard(p, "→ " .. z.Name .. " (Lv " .. z.MinLevel .. "+)", 4, RGB(200, 240, 255))
+	-- A23-36: 가까이서만 보이는 작은 이름표 (MapBuilder PAD_SIGN과 같은 크기)
+	local bb = billboard(p, "→ " .. z.Name .. " (Lv " .. z.MinLevel .. "+)", 3, RGB(200, 240, 255), 190, 40)
+	bb.Size = UDim2.fromOffset(190, 32)
 end
 
 ------------------------------------------------------------------ 교차로 마을
@@ -528,7 +526,7 @@ beam.FaceCamera = true
 beam.Color = ColorSequence.new(RGB(255, 225, 130))
 beam.Transparency = NumberSequence.new(0.25, 0.6)
 beam.Parent = core
-billboard(core, "균형의 왕관 조각", 7, RGB(255, 230, 140), 260, 220)
+-- A23-36: 왕관 조각 위 큰 이름 글씨는 두지 않는다(빛기둥과 왕관 조각 모양으로 충분)
 for _, bx in { -1, 1 } do -- 벤치 4개, 분수를 바라봄
 	for _, bz in { -1, 1 } do
 		local pos = Vector3.new(18 * bx, 1, 18 * bz)
@@ -699,8 +697,7 @@ for i = 1, 8 do
 		prop({ Name = "Flower", Shape = Enum.PartType.Ball, Size = Vector3.new(1.6, 1.6, 1.6), Position = pos + Vector3.new(0, 0.5, 0), Color = RGB(255, 170, 210) }, folders.Decor)
 	end
 end
-local haloSign = prop({ Name = "HaloSign", Size = Vector3.new(1, 1, 1), Position = hc + Vector3.new(0, 22, 75), Transparency = 1 }, folders.Landmarks)
-billboard(haloSign, "빛의 성채", 0, RGB(255, 215, 90), 300, 220)
+-- A23-36: 마을 이름 큰 글씨(HaloSign)는 만들지 않는다 — 지금 어디인지는 HUD 지역 칩
 
 ------------------------------------------------------------------ 뿔 소굴
 local rc = ZONES.HornsTown.Center
@@ -741,8 +738,7 @@ for i = 1, 4 do
 			Color = RGB(255, 80, 30), Material = NEON }, folders.Decor)
 	end
 end
-local hornsSign = prop({ Name = "HornsSign", Size = Vector3.new(1, 1, 1), Position = rc + Vector3.new(0, 22, -75), Transparency = 1 }, folders.Landmarks)
-billboard(hornsSign, "뿔 소굴", 0, RGB(255, 100, 90), 300, 220)
+-- A23-36: 마을 이름 큰 글씨(HornsSign)는 만들지 않는다 — 지금 어디인지는 HUD 지역 칩
 
 ------------------------------------------------------------------ 사냥터
 local function tree(pos, scale, leaf1, leaf2, trunk)
@@ -762,9 +758,9 @@ local function scatter(zoneId, n, fn, r)
 	end
 end
 
--- 말랑 초원: 둥글고 낮고 통통
+-- 말랑 초원: 둥글고 낮고 통통 (잎 색은 GE_TreeLeaves 무채색 그림(평균 x0.76)을 곱한 뒤 예전 밝기가 되게 x1.35, G 255 상한)
 scatter("SlimeMeadow", 16, function(pos)
-	tree(pos, rng:NextNumber(0.8, 1.15), RGB(120, 210, 90), RGB(95, 185, 75), RGB(130, 90, 55))
+	tree(pos, rng:NextNumber(0.8, 1.15), RGB(146, 255, 109), RGB(128, 250, 101), RGB(130, 90, 55))
 end)
 scatter("SlimeMeadow", 12, function(pos)
 	prop({ Name = "Bush", Shape = Enum.PartType.Ball, Size = Vector3.new(4.5, 4.5, 4.5), Position = pos + Vector3.new(0, 1, 0), Color = RGB(95, 185, 75) }, folders.Decor)
@@ -776,7 +772,7 @@ end, 8)
 prop({ Name = "SlimePond", Size = Vector3.new(36, 0.4, 24), Position = Vector3.new(280, 0.1, -45), Color = RGB(90, 170, 230) }, folders.Decor)
 for k = 0, 7 do -- 버섯 고리
 	local a = k / 8 * math.pi * 2
-	local pos = Vector3.new(350, 0, 55) + Vector3.new(math.cos(a) * 10, 0, math.sin(a) * 10)
+	local pos = Vector3.new(338, 0, 55) + Vector3.new(math.cos(a) * 10, 0, math.sin(a) * 10) -- 호박밭 흙길(x 352~368) 밖
 	prop({ Name = "MushStem", Size = Vector3.new(0.8, 1.6, 0.8), Position = pos + Vector3.new(0, 0.8, 0), Color = RGB(255, 250, 240) }, folders.Decor)
 	prop({ Name = "MushCap", Shape = Enum.PartType.Ball, Size = Vector3.new(2.2, 2.2, 2.2), Position = pos + Vector3.new(0, 1.7, 0), Color = RGB(255, 110, 110) }, folders.Decor)
 end
@@ -784,7 +780,7 @@ part({ Name = "KingSlimeHill", Shape = Enum.PartType.Ball, Size = Vector3.new(50
 
 -- 고블린 숲: 크고 어둡고 거칠게
 scatter("GoblinWoods", 30, function(pos)
-	tree(pos, rng:NextNumber(1.3, 1.8), RGB(40, 90, 45), RGB(55, 110, 50), RGB(70, 50, 35))
+	tree(pos, rng:NextNumber(1.3, 1.8), RGB(54, 121, 61), RGB(74, 149, 68), RGB(70, 50, 35)) -- x1.35 (GE_TreeLeaves)
 end, 13)
 for _, cp2 in { Vector3.new(660, 0, -60), Vector3.new(750, 0, 50), Vector3.new(820, 0, -40) } do
 	local camp = model("GoblinCamp", folders.Decor)
@@ -844,27 +840,27 @@ map.Parent = workspace
 local Lighting = game:GetService("Lighting")
 local atm = Lighting:FindFirstChildOfClass("Atmosphere")
 if atm then atm:Destroy() end -- A9-3
--- A11: 엘든 링 풍 황금 노을 + 안개 (Atmosphere 는 쓰지 않는다: A9-3)
-Lighting.ClockTime = 16.8
-Lighting.Brightness = 1.8
-Lighting.Ambient = RGB(70, 60, 55)
-Lighting.OutdoorAmbient = RGB(120, 105, 90)
-Lighting.FogColor = RGB(190, 170, 140)
-Lighting.FogStart = 120
-Lighting.FogEnd = 650 -- A12: 멀리 있는 지역은 안개 속으로
-pcall(function() Lighting.EnvironmentDiffuseScale = 0.3 end)
-pcall(function() Lighting.EnvironmentSpecularScale = 0.3 end)
+-- A23-29/30 사용자 선택 E(밝은 장난감 한낮 B + 새 땅 그림): Config.Sky.Neutral·WarService와 같은 값 (Atmosphere 는 쓰지 않는다: A9-3)
+Lighting.ClockTime = 14.2
+Lighting.Brightness = 2.0
+Lighting.Ambient = RGB(110, 108, 106)
+Lighting.OutdoorAmbient = RGB(128, 126, 124)
+Lighting.FogColor = RGB(205, 215, 230)
+Lighting.FogStart = 250
+Lighting.FogEnd = 1100
+pcall(function() Lighting.EnvironmentDiffuseScale = 1.0 end)
+pcall(function() Lighting.EnvironmentSpecularScale = 0.6 end)
 pcall(function() Lighting.LightingStyle = Enum.LightingStyle.Soft end)
 pcall(function() Lighting.PrioritizeLightingQuality = true end)
 Lighting.GlobalShadows = true
-pcall(function() Lighting.ShadowSoftness = 0.2 end)
+pcall(function() Lighting.ShadowSoftness = 0.5 end)
 pcall(function() Lighting.GeographicLatitude = 35 end)
-pcall(function() Lighting.ExposureCompensation = -0.1 end)
+pcall(function() Lighting.ExposureCompensation = -0.2 end)
 local bloom = Lighting:FindFirstChildOfClass("BloomEffect") or Instance.new("BloomEffect")
-bloom.Intensity, bloom.Size, bloom.Threshold = 0.4, 24, 1.4
+bloom.Intensity, bloom.Size, bloom.Threshold = 0.2, 24, 2.2
 bloom.Parent = Lighting
 local rays = Lighting:FindFirstChildOfClass("SunRaysEffect") or Instance.new("SunRaysEffect")
-rays.Intensity, rays.Spread = 0.08, 0.4
+rays.Intensity, rays.Spread = 0.04, 0.4
 rays.Parent = Lighting
 local sky = Lighting:FindFirstChildOfClass("Sky") or Instance.new("Sky")
 pcall(function() sky.SunAngularSize = 14; sky.MoonAngularSize = 18; sky.StarCount = 3000 end)

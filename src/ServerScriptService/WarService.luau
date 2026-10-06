@@ -19,23 +19,24 @@ local WAR_FACTIONS = { Halo = true, Horns = true }
 local WARN_INTERVAL = 10
 
 -- docs/ART_DIRECTION.md 3.1: fixed lighting applied once in Start (this service owns Lighting; no Atmosphere, A9-3).
--- Values match the A11 Elden-Ring mood baked by tools/preview_map.lua (ShadowSoftness 0.2, Bloom 24/1.4, rays spread 0.4)
--- so the server start does not change the look the creator approved in Studio.
+-- A23-29/30 (user pick 'E' = 'B' bright toy light + the new ground tiles, docs/design/world_blend_2026-10-06.md):
+-- sky light reaches the monsters (EnvironmentDiffuse 1.0, Specular 0.6, ShadowSoftness 0.5), softer bloom and tint.
+-- tools/preview_map.lua bakes the same Neutral values so Edit and the server start look alike.
 local LIGHTING_FIXED = {
-	GlobalShadows = true, ShadowSoftness = 0.2, GeographicLatitude = 35,
-	EnvironmentDiffuseScale = 0.3, EnvironmentSpecularScale = 0.3,
+	GlobalShadows = true, ShadowSoftness = 0.5, GeographicLatitude = 35,
+	EnvironmentDiffuseScale = 1.0, EnvironmentSpecularScale = 0.6,
 }
-local TINT_FIXED = { Brightness = 0.02, Contrast = 0.1, Saturation = 0.2 } -- only TintColor is tweened
+local TINT_FIXED = { Brightness = 0, Contrast = 0.05, Saturation = 0.1 } -- only TintColor is tweened
 local SKY_FIXED = { SunAngularSize = 14, MoonAngularSize = 18, StarCount = 3000 }
-local BLOOM_FIXED = { Size = 24, Threshold = 1.4 }
+local BLOOM_FIXED = { Size = 24, Threshold = 2.2 }
 local SUNRAYS_FIXED = { Spread = 0.4 }
 -- ART_DIRECTION 3.2 per-sky values used only where Config.Sky[name] has no key of its own (Config.Sky stays the source
 -- for everything it carries: FogStart / ExposureCompensation / BloomIntensity are read from the preset first).
--- Neutral = A11 (exposure -0.1, bloom 0.4) + preview sun rays 0.08.
+-- Exposures = the client ZoneLook base light (SKY table there) so a war-sky change never flickers between the two.
 local SKY_EXTRAS = {
-	Neutral = { Exposure = -0.1, Bloom = 0.4, SunRays = 0.08, Clouds = Color3.fromRGB(255, 255, 255) },
-	Dawn = { Exposure = 0.15, Bloom = 0.6, SunRays = 0.12, Clouds = Color3.fromRGB(255, 225, 190) },
-	Eclipse = { Exposure = 0.35, Bloom = 0.7, SunRays = 0, Clouds = Color3.fromRGB(110, 40, 50) }, -- monsters stay visible at night
+	Neutral = { Exposure = -0.2, Bloom = 0.2, SunRays = 0.04, Clouds = Color3.fromRGB(255, 255, 255) },
+	Dawn = { Exposure = -0.15, Bloom = 0.6, SunRays = 0.12, Clouds = Color3.fromRGB(255, 225, 190) },
+	Eclipse = { Exposure = 0.45, Bloom = 0.5, SunRays = 0, Clouds = Color3.fromRGB(110, 40, 50) }, -- monsters stay visible at night
 }
 
 local S = nil
