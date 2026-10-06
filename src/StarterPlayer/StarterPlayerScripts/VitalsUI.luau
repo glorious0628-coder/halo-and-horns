@@ -1,4 +1,5 @@
--- Approved UI_HUD_Vitals_A: HP/MP under XP, two potion buttons, quest block below them.
+-- VitalsUI.luau : HP / MP bars beside the HUD portrait and the two potion buttons of the combat cluster (A23-26 HUD v2:
+-- HUD places them from HudLayout rects through PlaceBars / PlacePotions), potion keys 1 / 2 (BB1 Keybinds).
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -12,7 +13,7 @@ local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, 
 	Mana = true, MaxMana = true, HPPotionCount = true, MPPotionCount = true,
 	HPPotionReadyAt = true, MPPotionReadyAt = true, ClassChosen = true, DataLoaded = true, KaijuState = true,
 } }
-local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245) }
+local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245), Dim = Color3.fromRGB(150, 150, 160) }
 local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of each potion button
 
 local function canUse()
@@ -61,45 +62,38 @@ local function requestPotion(kind)
 	Net.Get("UsePotion"):FireServer(kind)
 end
 
-function VitalsUI.BuildStats(parent, x, width, touch)
+-- HP / MP bars (BarTrack art). Built at their v2 heights (the fill's rounded caps follow the build height); HUD places
+-- them with PlaceBars. The text reads '82/152' (no 'HP': it is not mistaken for the potion).
+function VitalsUI.BuildStats(parent, touch)
 	for i, kind in { "HP", "MP" } do
 		local frame, set, text = UIKit.ArtBar({ Name = kind .. "Bar", Parent = parent,
-			Position = UDim2.fromOffset(x, (touch and 36 or 66) + (i - 1) * (touch and 20 or 18)),
-			Size = UDim2.fromOffset(width, touch and 18 or 16), Color = COL[kind], TextSize = touch and 15 or 12 })
+			Size = UDim2.fromOffset(touch and 200 or 262, (touch and 18 or 22) - (i - 1) * 3), Color = COL[kind],
+			TextSize = touch and 15 or 12 })
 		text.TextWrapped = false
 		C.HUD.FitText(text, 11)
 		ui[kind] = { Frame = frame, Set = set, Text = text }
 	end
 end
 
-function VitalsUI.LayoutStats(y, height, gap)
-	for i, kind in { "HP", "MP" } do
+-- HUD v2: the bars on their HudLayout rects (logical units, HUD root space)
+function VitalsUI.PlaceBars(hp, mp)
+	for kind, r in { HP = hp, MP = mp } do
 		local bar = ui[kind]
-		if bar then
-			bar.Frame.Position = UDim2.fromOffset(bar.Frame.Position.X.Offset, y + (i - 1) * (height + gap))
-			bar.Frame.Size = UDim2.fromOffset(bar.Frame.Size.X.Offset, height)
+		if bar and r then
+			bar.Frame.Position = UDim2.fromOffset(r.X, r.Y)
+			bar.Frame.Size = UDim2.fromOffset(r.W, r.H)
 		end
 	end
-	VitalsUI.LayoutPotions()
 end
 
+-- potion text sizes follow the button size (count in the socket, status over the icon, key badge)
 function VitalsUI.LayoutPotions()
 	local scale = UIKit.Gui:FindFirstChildOfClass("UIScale")
 	local s = scale and math.max(0.1, scale.Scale) or 1
 	for _, potion in ui.Potions do
-		local h = potion.Height
-		local titleH = math.max(h * 0.4, math.ceil(12 / s))
-		local statusH = math.max(h * 0.35, math.ceil(12 / s))
-		local titleY = 6
-		local statusY = math.max(h * 0.49, titleY + titleH + 1)
-		if statusY + statusH > h - 4 then
-			titleY = math.max(3, math.floor((h - titleH - statusH - 2) / 2))
-			statusY = titleY + titleH + 1
-		end
-		potion.Title.Position = UDim2.fromOffset(potion.Left, titleY)
-		potion.Title.Size = UDim2.fromOffset(potion.Width - potion.Left - 5, titleH)
-		potion.Status.Position = UDim2.fromOffset(potion.Left, statusY)
-		potion.Status.Size = UDim2.fromOffset(potion.Width - potion.Left - 5, statusH)
+		local d = potion.Size or 72
+		potion.Count.Size = UDim2.fromOffset(math.max(d * 0.3, math.ceil(14 / s)), math.max(d * 0.24, math.ceil(12 / s)))
+		potion.Status.Size = UDim2.fromOffset(d * 0.86, math.max(d * 0.26, math.ceil(12 / s)))
 		if potion.Key then
 			local keyH = math.max(15, math.ceil(12 / s))
 			potion.Key.Size = UDim2.fromOffset(keyH, keyH)
@@ -107,42 +101,65 @@ function VitalsUI.LayoutPotions()
 	end
 end
 
-function VitalsUI.BuildPotions(parent, width, height, touch)
+-- two round potion buttons (Firefly BtnPotion: navy disc, count socket bottom-right) left of the skill button: the potion
+-- icon fills the face, the stock sits in the socket, a short status ('3초' / '가득' / '구매') shows over the icon only when
+-- the potion cannot be drunk, the key badge (keyboards) sits bottom-left. HUD places the row with PlacePotions.
+function VitalsUI.BuildPotions(parent, touch)
 	local row = UIKit.Create("Frame", { Name = "Potions", BackgroundTransparency = 1,
-		Size = UDim2.fromOffset(width, height), Parent = parent })
-	for i, kind in { "HP", "MP" } do
-		local w = (width - 6) / 2
-		local button = UIKit.ArtButton("PanelParchment", { Name = kind .. "Potion", Text = "", Parent = row,
-			Position = UDim2.fromOffset((i - 1) * (w + 6), 0), Size = UDim2.fromOffset(w, height) }, function() requestPotion(kind) end)
-		local iconSize = touch and 38 or 34
+		Size = UDim2.fromOffset(152, 72), Parent = parent })
+	for _, kind in { "HP", "MP" } do
+		local button = UIKit.ArtButton("BtnPotion", { Name = kind .. "Potion", Parent = row,
+			AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(72, 72) }, function() requestPotion(kind) end,
+			{ CornerRadius = UDim.new(0.5, 0) })
 		local icon = UIKit.ArtImage("IconPotion" .. kind, { Name = "Icon", Parent = button,
-			Position = UDim2.fromOffset(5, (height - iconSize) / 2), Size = UDim2.fromOffset(iconSize, iconSize) })
-		local left = icon and iconSize + 8 or 6
-		local title = UIKit.InkText({ Name = "Title", Parent = button, Text = kind .. "0개",
-			Position = UDim2.fromOffset(left, 6), Size = UDim2.fromOffset(w - left - 5, height * 0.4),
-			TextScaled = true, TextWrapped = false, MaxTextSize = touch and 16 or 14 })
-		local status = UIKit.InkText({ Name = "Status", Parent = button, Text = "구매",
-			Position = UDim2.fromOffset(left, height * 0.49), Size = UDim2.fromOffset(w - left - 5, height * 0.35),
-			TextScaled = true, TextWrapped = false, MaxTextSize = touch and 15 or 12 })
-		C.HUD.FitText(title, 12)
-		C.HUD.FitText(status, 11)
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.48, 0.47), Size = UDim2.fromScale(0.56, 0.56),
+			ZIndex = 3 })
+		local count = UIKit.LightText({ Name = "Count", Parent = button, Text = "0",
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.83, 0.8), Size = UDim2.fromOffset(22, 18),
+			TextScaled = true, Number = true, MaxTextSize = touch and 18 or 16, ZIndex = 5 })
+		local status = UIKit.LightText({ Name = "Status", Parent = button, Text = "",
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(60, 18),
+			TextScaled = true, Title = true, MaxTextSize = touch and 16 or 14, ZIndex = 6, Visible = false })
+		C.HUD.FitText(count, 13, true)
+		C.HUD.FitText(status, 12, true)
 		local key = nil
 		local kbm = C and C.Keybinds
 		local showsKeys = UserInputService.KeyboardEnabled
 		if type(kbm) == "table" and type(kbm.ShowsKeys) == "function" then showsKeys = kbm.ShowsKeys() end
 		if showsKeys then -- review of 27246d1: the same rule as Keybinds / HUD
 			-- BB1: the badge shows the potion's current key (VitalsUI.RefreshKeys) and widens for "Ctrl" / "Num1"
-			key = UIKit.InkText({ Name = "Key", Parent = button, Text = "", TextSize = 11,
-				Position = UDim2.fromOffset(2, 0), Size = UDim2.fromOffset(15, 15), AutomaticSize = Enum.AutomaticSize.X })
+			key = UIKit.LightText({ Name = "Key", Parent = button, Text = "", TextSize = 11, ZIndex = 6,
+				AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0.04, 1), Size = UDim2.fromOffset(15, 15),
+				AutomaticSize = Enum.AutomaticSize.X })
 			C.HUD.FitText(key, 11)
 		end
-		ui.Potions[kind] = { Button = button, Title = title, Status = status, Key = key, Action = ACTION[kind],
-			Height = height, Width = w, Left = left }
+		ui.Potions[kind] = { Button = button, Icon = icon, Count = count, Status = status, Key = key,
+			Action = ACTION[kind], Size = 72 }
 	end
+	ui.Row = row
 	VitalsUI.LayoutPotions()
 	VitalsUI.RefreshKeys()
 	if ui.Refresh then ui.Refresh() end
 	return row
+end
+
+-- HUD v2: the pair on Rects.potions (logical units): two square-sized cells split by rect.Gap, MP at the right edge
+function VitalsUI.PlacePotions(rect)
+	if not ui.Row or not rect then return end
+	local gap = tonumber(rect.Gap) or 7.5
+	local d = math.min(rect.H, (rect.W - gap) / 2)
+	ui.Row.Position = UDim2.fromOffset(rect.X, rect.Y)
+	ui.Row.Size = UDim2.fromOffset(rect.W, rect.H)
+	for i, kind in { "HP", "MP" } do
+		local potion = ui.Potions[kind]
+		if potion then
+			local cx = rect.W - d / 2 - (2 - i) * (d + gap)
+			potion.Button.Position = UDim2.fromOffset(cx, rect.H / 2)
+			potion.Button.Size = UDim2.fromOffset(d, d)
+			potion.Size = d
+		end
+	end
+	VitalsUI.LayoutPotions()
 end
 
 -- BB1: each potion badge shows its action's current key (Keybinds.Label); hidden while that action has no key or
@@ -179,18 +196,20 @@ local function refresh()
 		local bar = ui[kind]
 		if bar then
 			bar.Set(values[1] / math.max(1, values[2]))
-			bar.Text.Text = string.format("%s %d / %d", kind, math.ceil(values[1]), math.ceil(values[2]))
+			bar.Text.Text = string.format("%d/%d", math.ceil(values[1]), math.ceil(values[2]))
 		end
 		local potion = ui.Potions[kind]
 		if potion then
 			local count, status, available = potionState(kind)
-			potion.Title.Text = kind .. tostring(count) .. "개"
+			potion.Count.Text = tostring(count)
 			potion.Status.Text = status
+			potion.Status.Visible = not available
 			potion.Button.Active = available
 			potion.Button:SetAttribute("Disabled", not available)
 			if potion.Button:IsA("ImageButton") then
 				potion.Button.ImageColor3 = not available and Color3.fromRGB(178, 174, 166) or Color3.new(1, 1, 1)
 			end
+			if potion.Icon then potion.Icon.ImageColor3 = available and Color3.new(1, 1, 1) or COL.Dim end
 		end
 	end
 end

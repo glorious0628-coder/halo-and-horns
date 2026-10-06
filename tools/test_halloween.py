@@ -477,10 +477,12 @@ def static_checks() -> tuple[int, list[str], list[str]]:
           "EventHUD layout(): the touch personal line moves one row down while the king pill sits under the chips")
     hud_main = STATIC_ONLY["HUD"].read_text(encoding="utf-8").replace("\r\n", "\n")
     hl = re.search(r"\n\tHUD\.Layout = \{\n(.*?)\n\t\}\n", hud_main, re.S)
-    check(hl is not None and "LeftX = leftX," in hl.group(1) and "RightX = rightX," in hl.group(1),
+    check(hl is not None and re.search(r"LeftX = ", hl.group(1)) is not None
+          and re.search(r"RightX = ", hl.group(1)) is not None,
           "HUD.Layout publishes LeftX / RightX (the free top band beside the player card / luck panel)")
-    check("local leftX = 12 + leftBlockW + 8" in hud_main,
-          "HUD's LeftX is the right edge of the card + quest column (+ 8)")
+    # A23-40 layout B: EventHUD's notify column and next-event line read HUD.Layout.Rects (notify, event)
+    check(hl is not None and "Rects = R," in hl.group(1),
+          "HUD.Layout publishes the HudLayout rects (EventHUD reads Rects.notify / Rects.event)")
     client_main = STATIC_ONLY["CLIENT_MAIN"].read_text(encoding="utf-8")
     check("HalloweenService" not in client_main, "HalloweenService is server-only (not in the client module list)")
     panels = FILES["PANELS_SOURCE"].read_text(encoding="utf-8")

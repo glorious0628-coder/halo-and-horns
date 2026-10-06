@@ -326,5 +326,15 @@
   "CLS_HornsMage_M": "rbxassetid://88874835473142",
   "CLS_HornsArcher_F": "rbxassetid://75414336669920",
   "CLS_ArtisanWarrior_M": "rbxassetid://112070391814033",
-  "CLS_ArtisanMage_F": "rbxassetid://116514332783939"
+  "CLS_ArtisanMage_F": "rbxassetid://116514332783939",
+  "MinimapRing": "rbxassetid://134883699176479",
+  "WarMeterFrame": "rbxassetid://73887778381300",
+  "WarCrownPip": "rbxassetid://100273975086572",
+  "QuestRow": "rbxassetid://77896448940362",
+  "AutoRingOn": "rbxassetid://82348810388598",
+  "GlyphQuest": "rbxassetid://85735330851016",
+  "GlyphAuto": "rbxassetid://125607651991448",
+  "NameTag": "rbxassetid://101536515759381",
+  "ListRowSelected": "rbxassetid://117472551663985",
+  "Toast": "rbxassetid://92139413642355"
 }

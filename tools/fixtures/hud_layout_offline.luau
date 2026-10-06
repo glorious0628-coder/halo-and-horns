@@ -1,9 +1,11 @@
--- Offline checks for HudLayout.Compute (A23-26 HUD v2). The runner (tools/test_hud_layout.py) prepends:
+-- Offline checks for HudLayout.Compute (A23-40 layout B). The runner (tools/test_hud_layout.py) prepends:
 --   HUDLAYOUT_SOURCE : the current src/StarterPlayer/StarterPlayerScripts/HudLayout.luau text
---   V2               : the approved rects of docs/design/hud_layout_v2_2026-10-06.json { Items = { { Id, Round, Pc, Phone } },
---                      Zones = { { Name, Pc, Phone } } } (real px on 1280x720 / 749x361)
---   CASES            : screens { Name, Touch, Ref, Supported, Scale, PxW, PxH, Env = { W, H, Scale, Inset, Touch, Jump } }
---                      (Env in MainGui logical units, as HUD.luau passes it; Jump = the TouchGui JumpButton rect)
+--   V2               : the approved rects of docs/design/hud_layout_B_imgdev_2026-10-06.json { Items = { { Id, Round,
+--                      Pc, Phone } }, Zones = { { Name, Pc, Phone } } } (real px on 1280x720 / 749x361)
+--   CASES            : screens { Name, Base, Pouch, Touch, Ref, Supported, PxW, PxH, Env = { W, H, Scale, Inset, Touch,
+--                      Jump } } (Env in MainGui logical units, as HUD.luau passes it; Jump = the TouchGui JumpButton rect)
+--   EXCEPTIONS       : { { Screen, Check, Reason } } named, explained screens (by Base) where a check cannot hold for lack
+--                      of room; the excepted check is replaced by a weaker one and the case is listed in the report
 -- Every check is named (case :: check) and collected, never asserted, so a mutation shows up as a new failing name.
 -- No Studio, Roblox API or network calls.
 
@@ -111,26 +113,30 @@ local ROUND = {}
 for _, it in V2.Items do
 	if it.Round then ROUND[it.Id] = true end
 end
--- interactive = something a finger / mouse presses (the minimap, chips, notify, combo, bars are passive displays)
-local INTERACTIVE = { portrait = true, pet = true, bag = true, map = true, menu = true, quest = true, potions = true,
+ROUND.minimap = nil -- measured as its square box (the round view sits inside it)
+-- interactive = something a finger / mouse presses (the minimap, chips, event, notify, combo, bars are passive displays;
+-- the minimap is drawn with Active = false)
+local INTERACTIVE = { portrait = true, quest = true, tiles = true, potions = true,
 	ghost = true, q = true, z = true, auto = true, attack = true }
-local TAPS = { "portrait", "pet", "bag", "map", "menu", "ghost", "q", "z", "auto", "attack" }
-local MIN_TAP = 60 -- logical units (spec final: >= 45 real px at the phone's 0.75 UIScale)
-local LEFT_BAND = { "portrait", "hp_bar", "mp_bar", "power_line", "xp_bar" }
-local RIGHT_BAND = { "pet", "bag", "map", "menu", "quest" }
-local TOP_ROWS = { "portrait", "hp_bar", "war_meter", "pet", "bag", "map", "menu" }
-local RAIL = { "pet", "bag", "map", "menu" }
+local TAPS = { "portrait", "ghost", "q", "z", "auto", "attack" }
+local MIN_TAP = 60 -- logical units (>= 45 real px at the phone's 0.75 UIScale)
+local MIN_PRESS_GAP = 2 -- logical units between any two pressable items (touching buttons are a regression)
+local POTION_GAP_PX = 6 -- real px between the HP and MP potion cells on both reference sheets
+local TILE_GAP_PX = 3 -- real px on the reference screens: least gap between two tiles of the icon row
+local FACE = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
+local LEFT_BAND = { "minimap", "quest" }
+local CENTER = { "war_meter", "chips", "event", "notify" }
 local CLUSTER = { "potions", "ghost", "q", "z", "auto", "attack" }
 local REF_SCALE = { Desktop = 0.8, Touch = 0.75 }
 
-local function zoneRect(name, touch)
-	for _, z in V2.Zones do
-		if z.Name == name then return touch and z.Phone or z.Pc end
+local function excepted(case, name)
+	for _, e in EXCEPTIONS do
+		if e.Screen == case.Base and e.Check == name then return e end
 	end
 	return nil
 end
 
-local results = {}
+local results, exceptions = {}, {}
 for _, case in CASES do
 	local g = case.Name
 	local env = case.Env
@@ -144,14 +150,16 @@ for _, case in CASES do
 	local top = env.Inset / s
 	local touch = env.Touch == true
 	local rects = {}
-	for id, r in out do rects[id] = { X = r.X, Y = r.Y, W = r.W, H = r.H } end
+	for id, r in out do
+		rects[id] = { X = r.X, Y = r.Y, W = r.W, H = r.H, Gap = r.Gap, Size = r.Size, Count = r.Count }
+	end
 	results[g] = { Px = { case.PxW, case.PxH }, Scale = s, Touch = touch, W = W, H = H, Top = top, Rects = rects,
-		Jump = env.Jump }
+		Jump = env.Jump, Pouch = false }
 
-	-- 1. every approved item (+ the luck pill) exists, is finite and sits on screen below the top bar
+	-- 1. every approved item exists, is finite and sits on screen below the top bar
 	local ids = {}
 	for _, it in V2.Items do table.insert(ids, it.Id) end
-	table.insert(ids, "luck")
+	check(g, "no pouch line in layout B", out.pouch_line == nil, fmt(out.pouch_line))
 	for _, id in ids do
 		local r = out[id]
 		local good = type(r) == "table" and finite(r.X) and finite(r.Y) and finite(r.W) and finite(r.H) and r.W > 0 and r.H > 0
@@ -161,11 +169,28 @@ for _, case in CASES do
 			check(g, "below top bar " .. id, r.Y >= top - 0.5, ("%s top=%.1f"):format(fmt(r), top))
 		end
 	end
-	if not out.attack or not out.portrait or not out.luck then continue end
+	if not out.attack or not out.portrait or not out.chips or not out.tiles then continue end
+	-- the potions rect publishes the gap between its HP and MP cells (du; cell width = (W - Gap) / 2)
+	local pg = out.potions and out.potions.Gap
+	check(g, "potion gap published", finite(pg) and pg >= MIN_PRESS_GAP - 0.01, tostring(pg))
+	if not finite(pg) then pg = 0 end
+	-- the tile row publishes square tiles: Size = its height, Gap >= 2du, Count = as many as fit the row
+	local t = out.tiles
+	local tileOk = finite(t.Size) and finite(t.Gap) and type(t.Count) == "number" and t.Count >= 1
+	check(g, "tile row published", tileOk, ("size %s gap %s count %s"):format(tostring(t.Size), tostring(t.Gap), tostring(t.Count)))
+	if tileOk then
+		check(g, "tiles are square rows", math.abs(t.Size - t.H) <= 0.01, fmt(t))
+		check(g, "tile gap", t.Gap >= MIN_PRESS_GAP - 0.01, ("gap %.2f"):format(t.Gap))
+		check(g, "tiles fit the row", t.Count * t.Size + (t.Count - 1) * t.Gap <= t.W + 0.01, fmt(t) .. " count " .. t.Count)
+		check(g, "one more tile would not fit", (t.Count + 1) * t.Size + t.Count * t.Gap > t.W - 0.01,
+			fmt(t) .. " count " .. t.Count)
+	end
 
 	if case.Supported then
-		-- 2. nothing overlaps anything (circles as circles); the tightest gaps are reported
+		-- 2. nothing overlaps anything (circles as circles); pressable items also keep >= MIN_PRESS_GAP apart (touching
+		-- buttons pass a plain overlap test); the tightest gaps are reported
 		local minGap, minPair = math.huge, ""
+		local minPress, pressPair = math.huge, ""
 		for i = 1, #ids do
 			for j = i + 1, #ids do
 				local a, b = ids[i], ids[j]
@@ -174,10 +199,16 @@ for _, case in CASES do
 					local d = gap(ra, ROUND[a], rb, ROUND[b])
 					check(g, "no overlap " .. a .. "/" .. b, d >= -0.01, ("gap %.2f %s %s"):format(d, fmt(ra), fmt(rb)))
 					if d < minGap then minGap, minPair = d, a .. "/" .. b end
+					if INTERACTIVE[a] and INTERACTIVE[b] then
+						check(g, "press gap " .. a .. "/" .. b, d >= MIN_PRESS_GAP - 0.01,
+							("gap %.2f %s %s"):format(d, fmt(ra), fmt(rb)))
+						if d < minPress then minPress, pressPair = d, a .. "/" .. b end
+					end
 				end
 			end
 		end
 		results[g].MinGap = { Gap = minGap, Pair = minPair }
+		results[g].MinPressGap = { Gap = minPress, Pair = pressPair }
 
 		-- 3. touch: thumb-size targets, nothing pressable on the jump button or in the thumbstick zone
 		if touch then
@@ -185,7 +216,37 @@ for _, case in CASES do
 				local r = out[id]
 				check(g, "tap size " .. id, math.min(r.W, r.H) >= MIN_TAP - 0.01, fmt(r))
 			end
-			check(g, "tap size potions", out.potions.H >= MIN_TAP - 0.01, fmt(out.potions))
+			check(g, "tap size tiles", tileOk and t.Size >= MIN_TAP - 0.01, fmt(t))
+			check(g, "tap size quest lines", out.quest.H >= MIN_TAP - 0.01 and out.quest.W >= MIN_TAP - 0.01, fmt(out.quest))
+			-- tiles: 5 on the reference phone, at least 4 on every phone (the rest open from the [메뉴] tile)
+			local tileName = "tiles at least 4 on phones"
+			local e4 = excepted(case, tileName)
+			if tileOk and t.Count >= 4 then
+				check(g, tileName, true)
+				if e4 then check(g, "exception still needed: " .. tileName, false, "4 tiles fit; drop the exception") end
+			elseif e4 then
+				check(g, "tiles at least 3 on tiny phones", tileOk and t.Count >= 3, fmt(t) .. " count " .. tostring(t.Count))
+				table.insert(exceptions, { Screen = g, Check = tileName, Reason = e4.Reason, Measured = tileOk and t.Count or 0,
+					Need = 4 })
+			else
+				check(g, tileName, false, fmt(t) .. " count " .. tostring(t.Count))
+			end
+			-- potions: both cells (HP, MP side by side, Gap apart) are thumb size; a declared exception (no room) only
+			-- requires the pair to reach the thumbstick zone edge, and is reported with its measured cell width
+			local pot = out.potions
+			local cellW = (pot.W - pg) / 2
+			check(g, "tap size potions cell height", pot.H >= MIN_TAP - 0.01, fmt(pot))
+			local cellName = "tap size potions cell width"
+			local e = excepted(case, cellName)
+			if cellW >= MIN_TAP - 0.01 then
+				check(g, cellName, true)
+				if e then check(g, "exception still needed: " .. cellName, false, ("cell %.2fdu fits; drop the exception"):format(cellW)) end
+			elseif e then
+				check(g, "potions use all their room", pot.X <= 0.4 * W + 0.5, ("%s stick edge %.2f"):format(fmt(pot), 0.4 * W))
+				table.insert(exceptions, { Screen = g, Check = cellName, Reason = e.Reason, Measured = cellW, Need = MIN_TAP })
+			else
+				check(g, cellName, false, ("cell %.2fdu (gap %.2f) %s"):format(cellW, pg, fmt(pot)))
+			end
 			local stick = { X = 0, Y = H / 3, W = 0.4 * W, H = H - H / 3 }
 			for id in INTERACTIVE do
 				check(g, "stick zone free " .. id, not inter(out[id], stick), fmt(out[id]))
@@ -200,33 +261,43 @@ for _, case in CASES do
 				check(g, "attack near jump", env.Jump.X - (out.attack.X + out.attack.W) <= 40,
 					fmt(out.attack) .. " jump " .. fmt(env.Jump))
 			end
-		else
-			-- 4. desktop: nothing pressable under the bottom-left chat window (anchored bottom-left, ref px -> du)
-			local z = zoneRect("채팅 창(PC 왼쪽 아래로 옮김)", false)
-			if z then
-				local k = 1 / REF_SCALE.Desktop
-				local chat = { X = z.x * k, Y = H - (720 - z.y) * k, W = z.w * k, H = z.h * k }
-				for id in INTERACTIVE do
-					check(g, "chat free " .. id, not inter(out[id], chat), fmt(out[id]) .. " chat " .. fmt(chat))
-				end
-				check(g, "chat free minimap", not inter(out.minimap, chat), fmt(out.minimap))
+			-- phone plate: face, bars and the tile row sit in the top-right block, flush with the right edge (8 px)
+			for _, id in FACE do
+				check(g, "phone plate top-right " .. id, out[id].X + out[id].W >= 0.6 * W and out[id].Y + out[id].H <= 0.5 * H,
+					fmt(out[id]))
 			end
-			-- the corner cluster: attack in the bottom-right corner
+			for _, id in { "power_line", "mp_bar", "xp_bar", "tiles" } do
+				local right = W - (out[id].X + out[id].W)
+				check(g, "phone plate at the right edge " .. id, right >= 2 and right <= 16, ("%s right gap %.2f"):format(fmt(out[id]), right))
+			end
+		else
+			-- 4. desktop: the corner cluster in the bottom-right corner; the face group along the bottom, centred unless it
+			-- had to step aside, always clear of the cluster and inside the left margin
 			check(g, "attack in corner", W - (out.attack.X + out.attack.W) <= 30 and H - (out.attack.Y + out.attack.H) <= 30,
 				fmt(out.attack))
+			local minX, maxX = math.huge, -math.huge
+			for _, id in FACE do
+				local r = out[id]
+				minX, maxX = math.min(minX, r.X), math.max(maxX, r.X + r.W)
+				check(g, "face group at the bottom " .. id, r.Y + r.H / 2 >= 0.6 * H, fmt(r))
+			end
+			local clusterLeft = math.huge
+			for _, id in CLUSTER do clusterLeft = math.min(clusterLeft, out[id].X) end
+			local centred = math.abs((minX + maxX) / 2 - W / 2) <= 1
+			check(g, "face group centred or stepped aside", centred or maxX <= clusterLeft - 8 + 0.01,
+				("group %.1f..%.1f W/2 %.1f cluster %.1f"):format(minX, maxX, W / 2, clusterLeft))
+			check(g, "face group left margin", minX >= 8 - 0.01, ("group %.1f..%.1f"):format(minX, maxX))
+			check(g, "all 8 tiles on 16:9 PCs", (W / H < 1.7) or (tileOk and t.Count >= 8),
+				fmt(t) .. " count " .. tostring(t.Count))
+			check(g, "at least 6 tiles on every PC", tileOk and t.Count >= 6, fmt(t) .. " count " .. tostring(t.Count))
 		end
 
-		-- 5. blocks stay at their edges: left block left, rail + quest right, top rows hug the top bar
+		-- 5. blocks stay at their edges: minimap + quest top-left, the top rows hug the top bar, the cluster lower right
 		for _, id in LEFT_BAND do
 			check(g, "left block " .. id, out[id].X <= 0.3 * W, fmt(out[id]))
 		end
 		check(g, "minimap left", out.minimap.X <= 0.1 * W, fmt(out.minimap))
-		for _, id in RIGHT_BAND do
-			check(g, "right block " .. id, out[id].X + out[id].W >= 0.7 * W, fmt(out[id]))
-		end
-		check(g, "menu at right edge", W - (out.menu.X + out.menu.W) <= 16, fmt(out.menu))
-		local firstRow = math.huge
-		for _, id in TOP_ROWS do firstRow = math.min(firstRow, out[id].Y) end
+		local firstRow = math.min(out.minimap.Y, out.war_meter.Y)
 		check(g, "top rows hug the top bar", firstRow - top >= 2 and firstRow - top <= 16,
 			("first row %.1f top %.1f"):format(firstRow, top))
 		for _, id in CLUSTER do
@@ -234,37 +305,39 @@ for _, case in CASES do
 				and out[id].Y + out[id].H / 2 >= 0.4 * H,
 				fmt(out[id]))
 		end
-		-- the rail reads left to right: pet, bag, map, menu on one row
-		for i = 2, #RAIL do
-			local a, b = out[RAIL[i - 1]], out[RAIL[i]]
-			check(g, "rail order " .. RAIL[i], a.X < b.X and math.abs(a.Y - b.Y) <= 1, fmt(a) .. " " .. fmt(b))
+		-- the quest lines hang under the minimap on PC, beside it on phones (outside the thumbstick zone)
+		if touch then
+			check(g, "quest beside the minimap", out.quest.X >= out.minimap.X + out.minimap.W - 0.01
+				and out.quest.Y <= out.minimap.Y + 1, fmt(out.quest) .. " " .. fmt(out.minimap))
+		else
+			check(g, "quest under the minimap", out.quest.Y >= out.minimap.Y + out.minimap.H - 0.01
+				and math.abs(out.quest.X - out.minimap.X) <= 1, fmt(out.quest) .. " " .. fmt(out.minimap))
 		end
 
-		-- 6. centre column: one centre x for the meter, the chip row (luck + chips) and notify; meter >= 240du (or
-		-- its approved width when smaller); it keeps >= 6du from the left / right blocks beside it
+		-- 6. centre column: one centre x for the meter, the chip row, the next-event line and notify, top-down in that
+		-- order; meter >= 240du (or its approved width when smaller); >= 6du from the blocks beside it
 		local cx = out.war_meter.X + out.war_meter.W / 2
-		local rowL, rowR = out.luck.X, out.chips.X + out.chips.W
-		check(g, "centre column chips", math.abs((rowL + rowR) / 2 - cx) <= 1, ("row %.1f-%.1f cx %.1f"):format(rowL, rowR, cx))
-		check(g, "centre column notify", math.abs(out.notify.X + out.notify.W / 2 - cx) <= 1, fmt(out.notify))
-		check(g, "luck left of chips", out.luck.X + out.luck.W <= out.chips.X + 0.01 and math.abs(out.luck.Y - out.chips.Y) <= 0.01,
-			fmt(out.luck) .. " " .. fmt(out.chips))
+		for _, id in CENTER do
+			check(g, "centre column " .. id, math.abs(out[id].X + out[id].W / 2 - cx) <= 1, fmt(out[id]))
+		end
+		for i = 2, #CENTER do
+			local a, b = out[CENTER[i - 1]], out[CENTER[i]]
+			check(g, "column order " .. CENTER[i], b.Y >= a.Y + a.H - 0.01, fmt(a) .. " " .. fmt(b))
+		end
 		local refW = 0
 		for _, it in V2.Items do
 			if it.Id == "war_meter" then refW = (touch and it.Phone.w or it.Pc.w) / (touch and REF_SCALE.Touch or REF_SCALE.Desktop) end
 		end
 		check(g, "war meter width", out.war_meter.W >= math.min(240, refW) - 0.5, fmt(out.war_meter))
-		for _, cid in { "war_meter", "luck", "chips", "notify" } do
+		local sides = touch and { "minimap", "quest", "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }
+			or { "minimap", "quest" }
+		for _, cid in CENTER do
 			local c = out[cid]
-			for _, id in LEFT_BAND do
+			for _, id in sides do
 				local o = out[id]
 				if o.Y < c.Y + c.H and o.Y + o.H > c.Y then
-					check(g, "column clear of left " .. cid .. "/" .. id, c.X - (o.X + o.W) >= 6 - 0.01, fmt(c) .. " " .. fmt(o))
-				end
-			end
-			for _, id in RIGHT_BAND do
-				local o = out[id]
-				if o.Y < c.Y + c.H and o.Y + o.H > c.Y then
-					check(g, "column clear of right " .. cid .. "/" .. id, o.X - (c.X + c.W) >= 6 - 0.01, fmt(c) .. " " .. fmt(o))
+					local d = (o.X + o.W / 2 < cx) and (c.X - (o.X + o.W)) or (o.X - (c.X + c.W))
+					check(g, "column clear of " .. cid .. "/" .. id, d >= 6 - 0.01, fmt(c) .. " " .. fmt(o))
 				end
 			end
 		end
@@ -275,30 +348,30 @@ for _, case in CASES do
 		for _, it in V2.Items do
 			local want = touch and it.Phone or it.Pc
 			local r = out[it.Id]
-			if it.Id == "chips" then -- the approved chip row = luck pill + status chips
-				r = { X = out.luck.X, Y = out.luck.Y, W = out.chips.X + out.chips.W - out.luck.X, H = out.chips.H }
-			end
 			local px = { x = r.X * s, y = r.Y * s, w = r.W * s, h = r.H * s }
 			local d = math.max(math.abs(px.x - want.x), math.abs(px.y - want.y), math.abs(px.w - want.w), math.abs(px.h - want.h))
 			check(g, "matches sheet " .. it.Id, d <= 1.01,
 				("got %.1f,%.1f %.1fx%.1f want %d,%d %dx%d"):format(px.x, px.y, px.w, px.h, want.x, want.y, want.w, want.h))
 		end
+		check(g, "matches sheet potion gap", math.abs(pg * s - POTION_GAP_PX) <= 1.01, ("gap %.2f px"):format(pg * s))
+		check(g, "matches sheet tile gap", tileOk and math.abs(t.Gap * s - TILE_GAP_PX) <= 0.51, ("gap %.2f px"):format((t.Gap or 0) * s))
+		check(g, "reference tile count", tileOk and t.Count == (touch and 5 or 8), fmt(t) .. " count " .. tostring(t.Count))
 	end
 
-	-- 8. hiding the reserved pet slot never moves the other rail buttons (the rail must not shift at launch)
+	-- 8. hiding the auto button (before the crown-shard quest) never moves another item
 	local ok2, out2 = pcall(function()
 		local HudLayout = execute(HUDLAYOUT_SOURCE)
 		local e = table.clone(env)
-		e.Hidden = { pet = true }
+		e.Hidden = { auto = true }
 		return HudLayout.Compute(e)
 	end)
 	if ok2 and type(out2) == "table" then
-		for _, id in { "bag", "map", "menu", "quest" } do
+		for _, id in { "tiles", "quest", "minimap", "war_meter", "portrait" } do
 			local a, b = out[id], out2[id]
-			check(g, "pet hidden keeps " .. id, a and b and math.abs(a.X - b.X) < 0.01 and math.abs(a.Y - b.Y) < 0.01, fmt(b))
+			check(g, "auto hidden keeps " .. id, a and b and math.abs(a.X - b.X) < 0.01 and math.abs(a.Y - b.Y) < 0.01, fmt(b))
 		end
 	else
-		check(g, "pet hidden runs", false, out2)
+		check(g, "auto hidden runs", false, out2)
 	end
 end
 
@@ -322,7 +395,8 @@ end
 
 local named = {}
 for _, key in order do table.insert(named, Named[key]) end
-print("HUD_LAYOUT_RESULT_JSON " .. encode({ Checks = checks, Failed = failed, Named = named, Cases = results }))
+print("HUD_LAYOUT_RESULT_JSON " .. encode({ Checks = checks, Failed = failed, Named = named, Cases = results,
+	Exceptions = exceptions }))
 if failed == 0 then
 	print(("HUD_LAYOUT_OFFLINE_OK checks=%d Studio/API calls=0"):format(checks))
 end

@@ -83,18 +83,26 @@ function G.Ensure()
 	label.TextScaled = true
 	label.TextWrapped = true
 	label.Font = Enum.Font.GothamBold
-	label.TextColor3 = Color3.fromRGB(66, 40, 18) -- the HUD's ink colour on parchment squares
+	-- light text with a dark rim: the square art is the navy Firefly BtnSquare (bundle 4) since 2026-10-06
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.TextStrokeColor3 = Color3.fromRGB(27, 33, 64)
+	label.TextStrokeTransparency = 0.2
 	label.Parent = b
 	b.Visible = false
 	G.Button, G.Label = b, label
 	return b
 end
 
--- left of the bottom-right cluster (dock / square buttons), level with its top edge; follows every HUD re-layout
+-- A23-26 v2: on the HudLayout ghost rect (left of Q, above the MP potion); before v2: left of the bottom-right cluster
+-- (dock / square buttons), level with its top edge; follows every HUD re-layout
 function G.Place(b)
 	local hud = C and C.HUD
 	local layout = type(hud) == "table" and hud.Layout or nil
-	if type(layout) == "table" and tonumber(layout.ClusterLeft) and tonumber(layout.ClusterTop) then
+	local r = type(layout) == "table" and type(layout.Rects) == "table" and layout.Rects.ghost or nil
+	if r then
+		b.Size = UDim2.fromOffset(r.W, r.H)
+		b.Position = UDim2.fromOffset(r.X + r.W, r.Y + r.H) -- AnchorPoint (1, 1)
+	elseif type(layout) == "table" and tonumber(layout.ClusterLeft) and tonumber(layout.ClusterTop) then
 		b.Position = UDim2.fromOffset(layout.ClusterLeft - 10, layout.ClusterTop + b.Size.Y.Offset)
 	else
 		b.Position = UDim2.new(1, -16, 1, -250)

@@ -2319,34 +2319,75 @@ Config.UIArt = {
 	Parts = {
 		-- frames (9-slice)
 		PanelParchment = { Id = "rbxassetid://71017857503225", Size = Vector2.new(512, 327), Slice = Rect.new(22, 23, 490, 300), SliceScale = 0.5, Tone = "Parchment" },
-		PanelCard = { Id = "rbxassetid://98336983830443", Size = Vector2.new(512, 233), Slice = Rect.new(39, 40, 472, 193), SliceScale = 0.35, Tone = "Navy", Inner = Rect.new(27, 35, 484, 197) },
-		RibbonHeader = { Id = "rbxassetid://118684607039365", Size = Vector2.new(512, 124), Slice = Rect.new(42, 21, 470, 104), FitHeight = true, Tone = "Ribbon" },
+		PanelCard = { Id = "rbxassetid://91331609258606", Size = Vector2.new(512, 229), Slice = Rect.new(52, 52, 460, 177), SliceScale = 0.35, Tone = "Navy", Inner = Rect.new(22, 43, 490, 206) }, -- Firefly PanelDark (bundle 5)
+		RibbonHeader = { Id = "rbxassetid://71822647719938", Size = Vector2.new(512, 121), Slice = Rect.new(130, 40, 460, 81), FitHeight = true, Tone = "Navy", Inner = Rect.new(114, 33, 497, 100) }, -- Firefly PanelHeader: navy plate, left disc (icon); light text
 		Pill = { Id = "rbxassetid://116332974579615", Size = Vector2.new(512, 120), Slice = Rect.new(41, 23, 472, 98), FitHeight = true, Tone = "Parchment" },
-		BarTrack = { Id = "rbxassetid://84705987817804", Size = Vector2.new(512, 94), Slice = Rect.new(45, 20, 466, 73), FitHeight = true, Tone = "NavyDeep", Inner = Rect.new(20, 17, 492, 76) },
-		BtnSquare = { Id = "rbxassetid://118044680000027", Size = Vector2.new(512, 491), Slice = Rect.new(94, 34, 416, 392), SliceScale = 0.22, Tone = "Parchment" },
+		BarTrack = { Id = "rbxassetid://137159149395361", Size = Vector2.new(512, 86), Slice = Rect.new(45, 25, 467, 61), FitHeight = true, Tone = "NavyDeep", Inner = Rect.new(21, 21, 491, 63) }, -- Firefly redraw (bundle 5)
+		BtnSquare = { Id = "rbxassetid://91067965003210", Size = Vector2.new(510, 512), Slice = Rect.new(100, 100, 410, 412), SliceScale = 0.22, Tone = "Navy" }, -- Firefly navy square (bundle 4): light labels
 		-- round buttons / rings (Fit)
-		BtnAttack = { Id = "rbxassetid://98283109958452", Size = Vector2.new(509, 512), Round = true, Tone = "Red", Inner = Rect.new(53, 56, 456, 444) },
-		BtnSpecial = { Id = "rbxassetid://88592946691017", Size = Vector2.new(512, 504), Round = true, Tone = "Gold", Inner = Rect.new(55, 50, 458, 454) },
-		LevelBadge = { Id = "rbxassetid://88211694815402", Size = Vector2.new(512, 511), Round = true, Tone = "Navy", Inner = Rect.new(89, 93, 422, 405) },
-		PortraitRing = { Id = "rbxassetid://102492452438180", Size = Vector2.new(498, 512), Round = true, Tone = "Navy", Inner = Rect.new(70, 102, 427, 445) },
+		BtnAttack = { Id = "rbxassetid://77268479686299", Size = Vector2.new(512, 512), Round = true, Tone = "Orange", Inner = Rect.new(58, 50, 452, 427) }, -- Firefly orange attack disc (bundle 6)
+		BtnSpecial = { Id = "rbxassetid://78355405067281", Size = Vector2.new(512, 512), Round = true, Tone = "QuestBlue", Inner = Rect.new(61, 57, 450, 425) }, -- Firefly blue skill disc BtnSkill (bundle 6)
+		LevelBadge = { Id = "rbxassetid://97341840194719", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(75, 77, 436, 427) }, -- Firefly (bundle 6): no faction / white number
+		PortraitRing = { Id = "rbxassetid://81879569016992", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(85, 82, 427, 424) }, -- Firefly (bundle 6): transparent hole
+		-- bundle 6 (Firefly 2026-10-06, art/review/b6_hud_sheet.png): faction level badges, HUD discs, minimap frame, class glyphs
+		LevelBadgeHalo = { Id = "rbxassetid://140072275905868", Size = Vector2.new(512, 512), Round = true, Tone = "Parchment", Inner = Rect.new(122, 150, 386, 400) }, -- ivory centre: dark number
+		LevelBadgeHorns = { Id = "rbxassetid://131043118998343", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(92, 101, 420, 414) },
+		LevelBadgeArtisan = { Id = "rbxassetid://135233332138906", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(118, 112, 389, 365) },
+		BtnPotion = { Id = "rbxassetid://100849701844741", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(67, 72, 447, 436) }, -- count socket bottom-right
+		MinimapFrame = { Id = "rbxassetid://121102769530414", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(74, 76, 439, 428) }, -- A23-26 live minimap
+		GlyphSword = { Id = "rbxassetid://104681533093026", Size = Vector2.new(512, 512) }, -- attack button glyph: Warrior
+		GlyphStaff = { Id = "rbxassetid://123664178583457", Size = Vector2.new(512, 512) }, -- attack button glyph: Mage (bow: bundle 7)
+		-- bundle 4/5 + bundle 1 masters (Firefly 2026-10-06, art/review/s2/b45_common_ui_sheet.png): common window kit
+		PanelMain = { Id = "rbxassetid://96251321300093", Size = Vector2.new(512, 308), Slice = Rect.new(37, 37, 475, 270), SliceScale = 0.35, Tone = "Parchment" },
+		DialogBox = { Id = "rbxassetid://112964393409287", Size = Vector2.new(512, 189), Slice = Rect.new(50, 50, 462, 139), SliceScale = 0.35, Tone = "Parchment" },
+		ListRow = { Id = "rbxassetid://125160937753435", Size = Vector2.new(512, 128), Slice = Rect.new(50, 45, 462, 83), FitHeight = true, Tone = "Parchment" },
+		StatusPlate = { Id = "rbxassetid://111562222428548", Size = Vector2.new(512, 153), Slice = Rect.new(140, 50, 460, 103), FitHeight = true, Tone = "Navy", Inner = Rect.new(145, 41, 498, 129) },
+		Chip = { Id = "rbxassetid://98251464747498", Size = Vector2.new(512, 189), Slice = Rect.new(95, 60, 417, 129), FitHeight = true, Tone = "Parchment" }, -- white: tint with ImageColor3
+		BarFill = { Id = "rbxassetid://106350683674684", Size = Vector2.new(512, 76), Slice = Rect.new(38, 20, 474, 56), FitHeight = true }, -- white: HP green / MP #3B5BDB / XP sky
+		BtnPrimary = { Id = "rbxassetid://71722849741284", Size = Vector2.new(512, 165), Slice = Rect.new(83, 45, 429, 120), FitHeight = true, Tone = "Gold" }, -- gold capsule
+		BtnSecondary = { Id = "rbxassetid://81644397617472", Size = Vector2.new(512, 160), Slice = Rect.new(80, 50, 432, 110), FitHeight = true, Tone = "QuestBlue" }, -- blue capsule
+		BtnConfirm = { Id = "rbxassetid://105674867912092", Size = Vector2.new(512, 156), Slice = Rect.new(78, 50, 434, 106), FitHeight = true, Tone = "Confirm" }, -- green capsule
+		BtnRound = { Id = "rbxassetid://115852818963492", Size = Vector2.new(512, 495), Round = true, Tone = "Navy" }, -- do not stretch
+		GlyphClose = { Id = "rbxassetid://139183604533147", Size = Vector2.new(512, 507) }, -- on BtnRound at 60%
+		SlotRare = { Id = "rbxassetid://74934960438246", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(76, 80, 436, 436) }, -- A23-32 dark inside (bundle 7; replaces the cream master)
+		-- bundle 7 (Firefly 2026-10-06, art/review/s2/b7_slots_glyphs_sheet.png): grade slots share the body Rect(36,40,476,480),
+		-- the icon goes in Inner (count bottom-right, +N top-left: game text); Legendary sparkles with a UIGradient
+		SlotCommon = { Id = "rbxassetid://111292751531225", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(76, 80, 436, 436) },
+		SlotUncommon = { Id = "rbxassetid://89522895923707", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(76, 80, 436, 436) },
+		SlotEpic = { Id = "rbxassetid://101182830551153", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(76, 80, 436, 436) },
+		SlotLegendary = { Id = "rbxassetid://120984431833878", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(76, 80, 436, 436) },
+		SlotEmpty = { Id = "rbxassetid://76893994002938", Size = Vector2.new(512, 512), Tone = "Navy", Inner = Rect.new(76, 80, 436, 436) },
+		-- white glyphs: tint with ImageColor3; rail (BtnSquare ~70%), bag window head (BtnRound ~65%), archer attack
+		GlyphBow = { Id = "rbxassetid://112757908729756", Size = Vector2.new(512, 512) },
+		GlyphBag = { Id = "rbxassetid://93351533176297", Size = Vector2.new(512, 512) },
+		GlyphMap = { Id = "rbxassetid://119097076903144", Size = Vector2.new(512, 512) },
+		GlyphMenu = { Id = "rbxassetid://111602356012086", Size = Vector2.new(512, 512) },
+		GlyphShrink = { Id = "rbxassetid://76902251335169", Size = Vector2.new(512, 512) },
+		GlyphExpand = { Id = "rbxassetid://75596947594085", Size = Vector2.new(512, 512) },
+		GlyphSort = { Id = "rbxassetid://80959026636822", Size = Vector2.new(512, 512) },
+		-- bundle 8/9 (art/review/s2/b89_items_marker_sheet.png)
+		IconQuestMarker = { Id = "rbxassetid://86276211066214", Size = Vector2.new(512, 512) }, -- A23-36 white diamond: tint (in progress / claim)
+		IconQuestMarkerArrow = { Id = "rbxassetid://133907500836640", Size = Vector2.new(512, 512) }, -- points UP: Rotation turns it
+		Star = { Id = "rbxassetid://121090596161898", Size = Vector2.new(512, 512) }, -- white star: filled = gold 245,197,66, empty = 70,78,110
+		IconWantedStar = { Id = "rbxassetid://110523293522605", Size = Vector2.new(512, 512) }, -- Horns wanted star
 		-- emblems
 		ShieldHalo = { Id = "rbxassetid://137212311874878", Size = Vector2.new(490, 512) },
 		ShieldHorns = { Id = "rbxassetid://134547958841068", Size = Vector2.new(497, 512) },
 		Crown = { Id = "rbxassetid://87428837580998", Size = Vector2.new(256, 175) },
 		-- icons
-		IconCoin = { Id = "rbxassetid://109221625076322", Size = Vector2.new(254, 256) },
+		IconCoin = { Id = "rbxassetid://86252987066467", Size = Vector2.new(512, 512) }, -- Firefly (bundle 8)
 		IconPouch = { Id = "rbxassetid://130257832801072", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (carried gold / Halo auto-bank perk)
-		IconPotionHP = { Id = "rbxassetid://100061379621289", Size = Vector2.new(197, 256) },
-		IconPotionMP = { Id = "rbxassetid://133725941898063", Size = Vector2.new(194, 256) },
+		IconPotionHP = { Id = "rbxassetid://108192030084262", Size = Vector2.new(512, 512) }, -- Firefly master (bundle 1)
+		IconPotionMP = { Id = "rbxassetid://94345565073683", Size = Vector2.new(512, 512) }, -- Firefly (bundle 8)
 		IconSword = { Id = "rbxassetid://112025111517770", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
-		IconAttack = { Id = "rbxassetid://110857011116269", Size = Vector2.new(256, 253) }, -- silver sword (attack button)
+		IconAttack = { Id = "rbxassetid://74944938867654", Size = Vector2.new(512, 512) }, -- Firefly sword (bundle 5)
 		IconSpecial = { Id = "rbxassetid://96492143551436", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
 		IconLock = { Id = "rbxassetid://91132729692542", Size = Vector2.new(246, 256) },
 		IconMap = { Id = "rbxassetid://90459703873799", Size = Vector2.new(256, 202) },
 		IconGear = { Id = "rbxassetid://99179510720767", Size = Vector2.new(247, 256) },
 		IconGoose = { Id = "rbxassetid://105838105764489", Size = Vector2.new(218, 256) },
-		IconSafe = { Id = "rbxassetid://136639253247722", Size = Vector2.new(254, 256) }, -- green shield
-		IconSprout = { Id = "rbxassetid://76742471774514", Size = Vector2.new(256, 187) },
+		IconSafe = { Id = "rbxassetid://137095933008547", Size = Vector2.new(512, 512) }, -- Firefly green shield (bundle 5)
+		IconSprout = { Id = "rbxassetid://88235635858040", Size = Vector2.new(512, 512) }, -- Firefly (bundle 8)
 		IconStar = { Id = "rbxassetid://117033474251317", Size = Vector2.new(256, 243) },
 		IconStarEmpty = { Id = "rbxassetid://78608910520884", Size = Vector2.new(256, 255) },
 		IconClover = { Id = "rbxassetid://132542570098556", Size = Vector2.new(246, 256) },
@@ -2376,6 +2417,17 @@ Config.UIArt = {
 		PortraitGuideHalo = { Id = "rbxassetid://110194702566253", Size = Vector2.new(512, 512) },
 		PortraitGuideHorns = { Id = "rbxassetid://131286803604294", Size = Vector2.new(512, 512) },
 		PortraitGuideArtisan = { Id = "rbxassetid://123450056288234", Size = Vector2.new(512, 512) },
+		-- A23-40 layout B parts (Firefly 2026-10-06: 83eaffb minimap_ring_sheet, ccab705 / a601f39 b12 / b1213 sheets)
+		MinimapRing = { Id = "rbxassetid://134883699176479", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(63, 63, 449, 449) }, -- hole d386 at (256,256): the map circle d392 tucks under the inner rim
+		WarMeterFrame = { Id = "rbxassetid://73887778381300", Size = Vector2.new(512, 74), Tone = "Navy", Inner = Rect.new(66, 22, 442, 54) }, -- opaque navy inside: the fills draw above it
+		WarCrownPip = { Id = "rbxassetid://100273975086572", Size = Vector2.new(512, 512) }, -- the war split marker
+		QuestRow = { Id = "rbxassetid://77896448940362", Size = Vector2.new(512, 124), Slice = Rect.new(118, 56, 388, 68), FitHeight = true, Tone = "Navy" }, -- left disc (60,62) r45, number box (400,49)-(462,78)
+		AutoRingOn = { Id = "rbxassetid://82348810388598", Size = Vector2.new(512, 512) }, -- turns around the auto button while ON
+		GlyphQuest = { Id = "rbxassetid://85735330851016", Size = Vector2.new(512, 512) },
+		GlyphAuto = { Id = "rbxassetid://125607651991448", Size = Vector2.new(512, 512) },
+		NameTag = { Id = "rbxassetid://101536515759381", Size = Vector2.new(512, 153), Slice = Rect.new(80, 72, 432, 82), FitHeight = true, Tone = "Navy" },
+		ListRowSelected = { Id = "rbxassetid://117472551663985", Size = Vector2.new(512, 173), Slice = Rect.new(64, 52, 448, 121), FitHeight = true, Tone = "Gold" }, -- b: deep gold
+		Toast = { Id = "rbxassetid://92139413642355", Size = Vector2.new(512, 102), Slice = Rect.new(100, 50, 460, 52), FitHeight = true, Tone = "Navy" }, -- icon disc centre (49,51) r~37
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
 		IconMonBigSlime = { Id = "rbxassetid://137346108147632", Size = Vector2.new(512, 512) },
@@ -2456,9 +2508,9 @@ Config.UIArt = {
 		IconNoBuff = { Id = "rbxassetid://125613826056625", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06, re-cut 3f1716b (faction perk row)
 		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
-		IconHammer = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(236, 256) },
+		IconHammer = { Id = "rbxassetid://134187840367993", Size = Vector2.new(512, 512) }, -- Firefly (bundle 5): artisan perk 4
 		IconAltar = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(241, 256) },
-		IconBoot = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 232) },
+		IconBoot = { Id = "rbxassetid://121630849275556", Size = Vector2.new(512, 512) }, -- Firefly winged boot (bundle 5): class speed / pet speed
 		-- A15 hit/pain art; empty IDs retain the code fallback.
 		FxSlash = { Id = "rbxassetid://99494789057875", Size = Vector2.new(256, 251) },
 		FxHitSpark = { Id = "rbxassetid://76401646477744", Size = Vector2.new(254, 256) },
@@ -2497,28 +2549,31 @@ Config.UIArt = {
 		Weapon_Archer_T7_Halo = { Id = "rbxassetid://123944650415871", Size = Vector2.new(1024, 1024) },
 		Weapon_Archer_T7_Horns = { Id = "rbxassetid://129557918253283", Size = Vector2.new(1024, 1024) },
 		Weapon_Archer_T7_Neutral = { Id = "rbxassetid://134108221476202", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T8 = { Id = "rbxassetid://73318746668169", Size = Vector2.new(512, 512) }, -- jelly-crown legendary (bundle 9)
+		Weapon_Mage_T8 = { Id = "rbxassetid://109033955946235", Size = Vector2.new(512, 512) },
+		Weapon_Archer_T8 = { Id = "rbxassetid://118154781260735", Size = Vector2.new(512, 512) },
 		Tex_Grass = { Id = "rbxassetid://104463174886181", Size = Vector2.new(1024, 1024) }, -- A23-30 E: Firefly painted meadow (Tex_Grass_FF)
 		Tex_LeafyGrass = { Id = "rbxassetid://92129043469297", Size = Vector2.new(1024, 1024) }, -- A23-30 E: forest floor (Tex_LeafyGrass_FF)
 		Tex_HaloTiles = { Id = "rbxassetid://108329087203475", Size = Vector2.new(1024, 1024) },
 		Tex_Ground = { Id = "rbxassetid://140158008208812", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins dirt (Tex_Ground_FF)
 		Tex_DirtPath = { Id = "rbxassetid://85612652410118", Size = Vector2.new(1024, 1024) }, -- A23-30 E: road (Tex_DirtPath_FF)
 		Tex_CrownShardGround = { Id = "rbxassetid://114856730896342", Size = Vector2.new(1024, 1024) },
-		Tex_CrackedLava = { Id = "rbxassetid://78705181921892", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lava cracks (Tex_CrackedLava_FF)
-		Tex_Cobblestone = { Id = "rbxassetid://72599078474763", Size = Vector2.new(1024, 1024) }, -- A23-30 E: town cobbles (Tex_Cobblestone_FF)
+		Tex_CrackedLava = { Id = "rbxassetid://116294435572633", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lava cracks (Tex_CrackedLava_FF)
+		Tex_Cobblestone = { Id = "rbxassetid://106614155699357", Size = Vector2.new(1024, 1024) }, -- A23-30 E: town cobbles (Tex_Cobblestone_FF)
 		Tex_Basalt = { Id = "rbxassetid://106904976329450", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lair floor (Tex_Basalt_FF)
 		Tex_WoodPlanks = { Id = "rbxassetid://89937004688664", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: bridges / benches (parts) (Tex_WoodPlanks_FF)
 		Tex_Slate = { Id = "rbxassetid://71336203326371", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins flagstones (Tex_RuinsFlagstone_FF)
 		Tex_Sand = { Id = "rbxassetid://131974232864115", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: beaches (Tex_Sand_FF)
-		Tex_Rock = { Id = "rbxassetid://132087580653484", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: every cliff (Tex_Rock_FF)
+		Tex_Rock = { Id = "rbxassetid://104777096316045", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: every cliff (Tex_Rock_FF)
 		Tex_Marble = { Id = "rbxassetid://82709638100363", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: fountain / Halo parts (Tex_Marble_FF)
-		Tex_Limestone = { Id = "rbxassetid://134773230868386", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Halo town floor (Tex_Limestone_FF)
+		Tex_Limestone = { Id = "rbxassetid://75666187308111", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Halo town floor (Tex_Limestone_FF)
 		Tex_PumpkinSoil = { Id = "rbxassetid://126628778707353", Size = Vector2.new(1024, 1024) }, -- A23-30 pumpkin field soil (Mud slot)
 		Tex_TreeLeaves = { Id = "rbxassetid://139379724133324", Size = Vector2.new(1024, 1024) }, -- tree leaf balls (neutral: the part Color tints it)
 		Tex_TreeBark = { Id = "rbxassetid://75619597726241", Size = Vector2.new(1024, 1024) }, -- tree trunks (neutral: the part Color tints it)
 		-- sky sun / moon (black = transparent, additive): WarService Sky.SunTextureId / MoonTextureId per war sky
-		Sky_Sun = { Id = "rbxassetid://139407736948839", Size = Vector2.new(512, 512) }, -- Neutral sun
-		Sky_SunDawn = { Id = "rbxassetid://98907370930215", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun
-		Sky_MoonEclipse = { Id = "rbxassetid://71404208078545", Size = Vector2.new(512, 512) }, -- Eclipse (Horns crown) moon
+		Sky_Sun = { Id = "rbxassetid://104329382887122", Size = Vector2.new(512, 512) }, -- Neutral sun
+		Sky_SunDawn = { Id = "rbxassetid://134904669662412", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun
+		Sky_MoonEclipse = { Id = "rbxassetid://101354392666522", Size = Vector2.new(512, 512) }, -- Eclipse (Horns crown) moon
 		MapParchment = { Id = "rbxassetid://133911744102396", Size = Vector2.new(1536, 1024) },
 	},
 	-- Lettering images (TXT_*) were deleted 2026-10-06 (unused: UseTextImages=false). Text stays live TextLabels.
@@ -2544,7 +2599,9 @@ Config.UIArt = {
 		Navy = Color3.fromRGB(26, 40, 79),
 		NavyDeep = Color3.fromRGB(19, 31, 56), -- bar track interior
 		Gold = Color3.fromRGB(240, 190, 60), -- gold trim
-		Red = Color3.fromRGB(225, 40, 36), -- attack button face
+		Red = Color3.fromRGB(225, 40, 36), -- attack button face (pre-Firefly)
+		Orange = Color3.fromRGB(246, 130, 32), -- Firefly attack disc face (bundle 6)
+		Confirm = Color3.fromRGB(76, 175, 60), -- Firefly green capsule (BtnConfirm)
 		-- bars
 		XPBlue = Color3.fromRGB(30, 170, 255),
 		QuestBlue = Color3.fromRGB(56, 144, 253),

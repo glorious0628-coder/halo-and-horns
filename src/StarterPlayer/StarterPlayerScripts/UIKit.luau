@@ -100,6 +100,31 @@ local announceToken = 0
 
 local lastWarnAt = -math.huge
 
+-- A23-35 text styles (section "text styles" below). Declared here so applyScale can re-run the size floors.
+local STYLE = {
+	White = Color3.new(1, 1, 1),
+	Cream = Color3.fromRGB(255, 236, 190), -- #FFECBE, bottom of the dark-plate gradient
+	Navy = Color3.fromRGB(27, 33, 64), -- #1B2140: dark-plate rim and light-plate text
+	-- UIStroke thickness by rendered text px: <= 16 -> 1.5, <= 28 -> 2, larger -> 3
+	StrokeTiers = { { 16, 1.5 }, { 28, 2 }, { math.huge, 3 } }, -- 1.5: small text over the world needs more than 1 px
+	States = setmetatable({}, { __mode = "k" }), -- styled label -> state
+	RefreshAll = nil, -- assigned in the text styles section
+}
+
+-- HUD v2 notify column (UIKit.PlaceNotify). Rect == nil = the old TOAST_Y stack + 30% banner (before the first call).
+local NOTIFY = {
+	Rect = nil, -- copy of HUD.Layout.Rects.notify { X, Y, W, H } (logical MainGui units, incl. the top bar)
+	Y = nil, -- live top of the column = max(topY, Rect.Y)
+	ToastGap = 6, -- the toast UIListLayout padding
+	ToastEstimate = 36, -- height of a not-yet-laid-out toast (18 text + 7 + 7 padding, rounded up)
+	BannerH = 50,
+	BannerMinH = 28, -- a full column still gets a readable banner (same idea as "never below 1 toast")
+	BannerMaxW = 880,
+	BannerWidthMult = 1.25,
+	BannerIcon = ANNOUNCE_ICON,
+	TrimQueued = false,
+}
+
 ----------------------------------------------------------------- helpers
 local function warnThrottled(msg)
 	local now = os.clock()
@@ -257,14 +282,19 @@ local function applyScale()
 		uiScale.Scale = math.clamp(vy / REF_HEIGHT * DESKTOP_MULT, DESKTOP_MIN, DESKTOP_MAX)
 	end
 	if toastHolder then
-		toastHolder.Position = UDim2.new(0.5, 0, 0, TOAST_Y + insetY() / currentScale())
 		-- CR-L38: on phones the stack covered the upgrade / release buttons
 		local raw = cam and cam.ViewportSize or Vector2.zero
 		toastMax = (raw.Y >= 50 and raw.Y < TOAST_PHONE.Height) and TOAST_PHONE.Max or MAX_TOASTS
-		local w = TOAST_WIDTH
-		if raw.X >= 50 then w = math.min(TOAST_WIDTH, raw.X / currentScale() * TOAST_PHONE.WidthFrac) end
-		toastHolder.Size = UDim2.fromOffset(math.floor(w), 10)
+		-- HUD v2: once UIKit.PlaceNotify has run, the HUD's notify column owns the stack's position and width
+		if NOTIFY.Rect == nil then
+			toastHolder.Position = UDim2.new(0.5, 0, 0, TOAST_Y + insetY() / currentScale())
+			local w = TOAST_WIDTH
+			if raw.X >= 50 then w = math.min(TOAST_WIDTH, raw.X / currentScale() * TOAST_PHONE.WidthFrac) end
+			toastHolder.Size = UDim2.fromOffset(math.floor(w), 10)
+		end
 	end
+	-- A23-35: style size floors are real px, so they follow the UI scale
+	if STYLE.RefreshAll then STYLE.RefreshAll() end
 end
 
 local function bindCamera()
@@ -511,6 +541,7 @@ Art.Fonts = type(Art.Cfg.Fonts) == "table" and Art.Cfg.Fonts or {}
 Art.TextLabels = type(Art.Cfg.TextLabels) == "table" and Art.Cfg.TextLabels or {}
 Art.TextBindings = {}
 Art.TextFits = {}
+Art.StyleFloor = setmetatable({}, { __mode = "k" }) -- label -> UIKit.StyleText minimum TextSize (logical units)
 
 UIKit.ArtColors = Art.Colors -- Config.UIArt.Colors (Ink, Light, GoldText, Parchment, Navy, XPBlue, ...)
 UIKit.ArtFonts = Art.Fonts -- Config.UIArt.Fonts (Title, Body, Number)
@@ -1006,14 +1037,251 @@ function UIKit.FitText(label, minSize, maxSize)
 		end))
 	end
 	-- Picker layout minima include inverse UIScale for card geometry; do not reuse that as a raw font minimum.
-	fit.Min = math.max(1, math.min(math.floor(minSize), MIN_TEXT_SIZE))
-	fit.Max = math.max(fit.Min, math.floor(maxSize))
+	fit.BaseMin = math.max(1, math.min(math.floor(minSize), MIN_TEXT_SIZE))
+	fit.BaseMax = math.max(fit.BaseMin, math.floor(maxSize))
+	-- A23-35: a UIKit.StyleText floor wins over the picker minimum (unstyled labels: no floor, same as before)
+	local styleFloor = Art.StyleFloor[label]
+	fit.Min = math.max(fit.BaseMin, styleFloor or 0)
+	fit.Max = math.max(fit.BaseMax, fit.Min)
 	local constraint = label:FindFirstChildOfClass("UITextSizeConstraint")
+	if constraint and styleFloor and constraint.MaxTextSize < fit.Min then constraint.MaxTextSize = fit.Max end
 	if constraint then constraint.MinTextSize = fit.Min end
 	label.TextScaled = false
 	label.TextTruncate = Enum.TextTruncate.None
 	label.ClipsDescendants = true
 	fit.Request(true)
+	return label
+end
+
+----------------------------------------------------------------- text styles (A23-35)
+-- Self-check / contract (A23-35 + the same-day correction 143c50c: every letter stays a TextLabel, no image lettering):
+--  * UIKit.TextStyles holds the only 5 styles: Title, Button, Body, Number, NameTag. Weight = a face of the game
+--    font, Size = default logical TextSize (UIKit.StyledLabel only), MinPx = REAL pixel floor (UI rubric, item 2).
+--  * UIKit.StyleText(label, name, onLight) restyles a TextLabel / TextButton / TextBox in place and returns it.
+--    onLight ~= true (dark plate, bar, over the 3D world): white text + "StyleGradient" white -> cream #FFECBE
+--    (top -> bottom) + "StyleStroke" navy #1B2140 (Round, Contextual), 1.5 / 2 / 3 px for <= 16 / <= 28 / larger
+--    rendered text px. onLight == true (parchment, cream ribbon): navy #1B2140 text, gradient and stroke disabled.
+--    Both modes switch off the legacy TextStroke shadow; another Contextual UIStroke ("Outline") becomes the style rim
+--    (Roblox draws only one contextual rim, and a disabled older one would hide the style rim): one rim only.
+--  * Re-applying reuses StyleStroke / StyleGradient (never stacks children) and keeps one watcher per label.
+--  * The floor follows the screen UIScale: UITextSizeConstraint.MinTextSize = ceil(MinPx / scale) logical units; a
+--    fixed TextSize is raised to it (the caller's own size comes back when the floor drops); a UIKit.FitText label
+--    gets it as its picker minimum instead. Floor and stroke re-run on TextSize / AbsoluteSize / TextBounds /
+--    TextScaled / parent changes and on every UIScale change (applyScale).
+--  * Text and AutoLocalize are never touched, so Roblox auto-translation keeps working.
+--  * UIGradient also tints a visible background: style transparent labels. To fade a dark-style label, tween its
+--    StyleStroke.Transparency with TextTransparency.
+-- Family stays FONT.Id 12187370747: every family falls back to one Hangul face (font_samples_2026-10-06) and this Latin matches it best.
+UIKit.TextStyles = {
+	Title = { Weight = Enum.FontWeight.ExtraBold, Size = 28, MinPx = 16 }, -- window / ribbon titles, big notices
+	Button = { Weight = Enum.FontWeight.ExtraBold, Size = 20, MinPx = 16 }, -- rubric: button text >= 16 px
+	Body = { Weight = Enum.FontWeight.Regular, Size = 16, MinPx = 14 }, -- rubric: phone body >= 14 px
+	Number = { Weight = Enum.FontWeight.Bold, Size = 18, MinPx = 12 }, -- bars, prices, counters (tight slots)
+	NameTag = { Weight = Enum.FontWeight.Bold, Size = 14, MinPx = 12 }, -- rubric: name tags >= 12 px
+}
+
+-- screen-wide UIScale above a label: MainGui's (also while unparented), else its own LayerCollector's.
+-- Press / pop UIScales on buttons are ignored, so pressing never moves the floor.
+function STYLE.Scale(label)
+	local root = label:FindFirstAncestorWhichIsA("LayerCollector")
+	if root == nil or root == UIKit.Gui then return currentScale() end
+	local sc = root:FindFirstChildOfClass("UIScale")
+	return (sc and sc.Scale > 0) and sc.Scale or 1
+end
+
+-- rendered text height in real px (TextScaled: the measured text, capped by its MaxTextSize)
+function STYLE.TextPx(label, scale)
+	if not label.TextScaled then return label.TextSize * scale end
+	local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
+	local h = label.TextBounds.Y
+	if h <= 0 then h = label.AbsoluteSize.Y end
+	return math.min(h, (tc and tc.MaxTextSize or 100) * scale)
+end
+
+function STYLE.Thickness(px)
+	for _, tier in STYLE.StrokeTiers do
+		if px <= tier[1] then return tier[2] end
+	end
+	return 3
+end
+
+-- min / max on a UITextSizeConstraint in a legal order (min never above max)
+function STYLE.SetConstraint(st, tc, minSize, maxSize)
+	minSize = math.clamp(minSize, 1, 100)
+	maxSize = math.clamp(math.max(maxSize, minSize), 1, 100)
+	st.WrittenMax = maxSize
+	if minSize > tc.MaxTextSize then
+		tc.MaxTextSize = maxSize
+		tc.MinTextSize = minSize
+	else
+		if tc.MinTextSize ~= minSize then tc.MinTextSize = minSize end
+		if tc.MaxTextSize ~= maxSize then tc.MaxTextSize = maxSize end
+	end
+end
+
+-- the label's UITextSizeConstraint (created when missing); remembers the caller's MaxTextSize as BaseMax
+function STYLE.Constraint(label, st)
+	local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
+	if not tc then
+		tc = UIKit.Create("UITextSizeConstraint", { MinTextSize = MIN_TEXT_SIZE, Parent = label })
+	end
+	if st.Constraint ~= tc then
+		if st.MaxConn then st.MaxConn:Disconnect() end
+		st.Constraint, st.BaseMax, st.WrittenMax = tc, tc.MaxTextSize, nil
+		st.MaxConn = tc:GetPropertyChangedSignal("MaxTextSize"):Connect(function()
+			if tc.MaxTextSize == st.WrittenMax then st.WrittenMax = nil else st.BaseMax = tc.MaxTextSize end
+			st.Queue()
+		end)
+	end
+	return tc
+end
+
+-- size floor + stroke tier for the current scale / text size (runs deferred and pcall'd through st.Queue)
+function STYLE.Refresh(label)
+	local st = STYLE.States[label]
+	local def = st and UIKit.TextStyles[st.Style]
+	if not def or st.Dead then return end
+	local scale = STYLE.Scale(label)
+	-- ceil, not floor: floor(14 / 0.75) = 18 would render 13.5 px, under the rubric's 14
+	local floorSize = math.clamp(math.ceil(def.MinPx / scale - 0.001), 1, 100)
+	Art.StyleFloor[label] = floorSize
+	local tc = STYLE.Constraint(label, st)
+	local fit = Art.TextFits[label]
+	if fit and not fit.Dead and fit.BaseMin then
+		-- UIKit.FitText owns TextSize: raise its picker minimum instead of writing TextSize (no tug of war)
+		local newMin = math.max(fit.BaseMin, floorSize)
+		local newMax = math.max(fit.BaseMax, newMin)
+		if newMin ~= fit.Min or newMax ~= fit.Max or tc.MinTextSize ~= newMin then
+			fit.Min, fit.Max = newMin, newMax
+			STYLE.SetConstraint(st, tc, newMin, math.max(tc.MaxTextSize, newMin))
+			fit.Request(true)
+		end
+	else
+		STYLE.SetConstraint(st, tc, floorSize, math.max(st.BaseMax or 100, floorSize))
+		if not label.TextScaled then
+			local want = math.max(st.Base, floorSize)
+			if label.TextSize ~= want then
+				st.Written = want
+				label.TextSize = want
+			end
+		end
+	end
+	local stroke = label:FindFirstChild("StyleStroke")
+	if stroke and stroke:IsA("UIStroke") and stroke.Enabled then
+		local thickness = STYLE.Thickness(STYLE.TextPx(label, scale))
+		if stroke.Thickness ~= thickness then stroke.Thickness = thickness end
+	end
+end
+
+-- one watcher per styled label; ends with the label
+function STYLE.Track(label)
+	local st = { Style = nil, OnLight = false, Connections = {}, Queued = false, Dead = false, Base = label.TextSize }
+	STYLE.States[label] = st
+	st.Queue = function()
+		if st.Queued or st.Dead then return end
+		st.Queued = true
+		task.defer(function()
+			st.Queued = false
+			if st.Dead then return end
+			local ok, err = pcall(STYLE.Refresh, label)
+			if not ok then warnThrottled("text style refresh failed: " .. tostring(err)) end
+		end)
+	end
+	table.insert(st.Connections, label:GetPropertyChangedSignal("TextSize"):Connect(function()
+		-- our own floor write is not the caller's size; any other write is (it comes back when the floor drops)
+		if label.TextSize == st.Written then st.Written = nil else st.Base = label.TextSize end
+		st.Queue()
+	end))
+	for _, property in { "AbsoluteSize", "TextBounds", "TextScaled" } do
+		table.insert(st.Connections, label:GetPropertyChangedSignal(property):Connect(st.Queue))
+	end
+	table.insert(st.Connections, label.AncestryChanged:Connect(st.Queue))
+	table.insert(st.Connections, label.Destroying:Connect(function()
+		st.Dead = true
+		for _, connection in st.Connections do connection:Disconnect() end
+		if st.MaxConn then st.MaxConn:Disconnect() end
+		STYLE.States[label] = nil
+		Art.StyleFloor[label] = nil
+	end))
+	return st
+end
+
+STYLE.RefreshAll = function()
+	for _, st in STYLE.States do st.Queue() end
+end
+
+-- Applies one of UIKit.TextStyles to an existing text object (see the contract above). onLight = true on parchment /
+-- cream plates. Unknown style or non-text object: returned unchanged. Safe to call again with another style / mode.
+function UIKit.StyleText(label, styleName, onLight)
+	if typeof(label) ~= "Instance" or not TEXT_CLASSES[label.ClassName] then return label end
+	local def = UIKit.TextStyles[styleName]
+	if type(def) ~= "table" then
+		warnThrottled("unknown text style " .. tostring(styleName))
+		return label
+	end
+	local light = onLight == true
+	local st = STYLE.States[label] or STYLE.Track(label)
+	if st.Dead then return label end
+	st.Style, st.OnLight = styleName, light
+	UIKit.ApplyFont(label, def.Weight)
+	setProp(label, "TextColor3", light and STYLE.Navy or STYLE.White)
+	setProp(label, "TextStrokeTransparency", 1) -- never the white-with-shadow look, in either mode
+	local stroke, gradient = nil, nil
+	for _, child in label:GetChildren() do
+		if child:IsA("UIStroke") and child.Name == "StyleStroke" and stroke == nil then
+			stroke = child
+		elseif child:IsA("UIGradient") and child.Name == "StyleGradient" and gradient == nil then
+			gradient = child
+		end
+	end
+	for _, child in label:GetChildren() do
+		if child:IsA("UIStroke") and child ~= stroke and child.ApplyStrokeMode == Enum.ApplyStrokeMode.Contextual then
+			-- Roblox draws one contextual rim per text, and an older one (InkText / LightText "Outline") wins over the
+			-- style's even while disabled (UiSandbox 2026-10-06: no rim at all) -> it becomes the style's rim instead
+			if stroke == nil then
+				child.Name = "StyleStroke"
+				stroke = child
+			else
+				child:Destroy()
+			end
+		end
+	end
+	if light then
+		if stroke then stroke.Enabled = false end
+		if gradient then gradient.Enabled = false end
+	else
+		stroke = stroke or UIKit.Create("UIStroke", { Name = "StyleStroke", Parent = label })
+		stroke.Color = STYLE.Navy
+		stroke.Transparency = 0
+		stroke.LineJoinMode = Enum.LineJoinMode.Round
+		stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+		stroke.Thickness = STYLE.Thickness(STYLE.TextPx(label, STYLE.Scale(label)))
+		stroke.Enabled = true
+		gradient = gradient or UIKit.Create("UIGradient", { Name = "StyleGradient", Parent = label })
+		gradient.Rotation = 90 -- keypoint 0 at the top
+		gradient.Color = ColorSequence.new(STYLE.White, STYLE.Cream)
+		gradient.Enabled = true
+	end
+	label:SetAttribute("UIKitTextStyle", light and (styleName .. "/Light") or styleName) -- for layout / review probes
+	local ok, err = pcall(STYLE.Refresh, label)
+	if not ok then warnThrottled("text style failed: " .. tostring(err)) end
+	return label
+end
+
+-- New TextLabel through UIKit.Create, styled with UIKit.StyleText. props: any TextLabel property (+ Parent, set last);
+-- BackgroundTransparency defaults to 1 and TextSize to the style's Size. Text colour / font come from the style.
+function UIKit.StyledLabel(props, styleName, onLight)
+	props = type(props) == "table" and props or {}
+	local def = UIKit.TextStyles[styleName]
+	local p = { BackgroundTransparency = 1, Text = "" }
+	for key, value in props do
+		if key ~= "Parent" then p[key] = value end
+	end
+	if p.TextSize == nil then p.TextSize = type(def) == "table" and def.Size or 16 end
+	p.Text = tostring(p.Text)
+	local label = UIKit.Create("TextLabel", p)
+	UIKit.StyleText(label, styleName, onLight)
+	if props.Parent then label.Parent = props.Parent end
 	return label
 end
 
@@ -1419,6 +1687,45 @@ local function removeToast(t)
 	end)
 end
 
+-- HUD v2: how many toasts fit between NOTIFY.Y and the bottom of the notify column, counted from the newest (top)
+-- with their real heights; never below 1 and never above the old cap (toastMax). Old path: toastMax.
+function NOTIFY.ToastCap()
+	local rect = NOTIFY.Rect
+	if rect == nil then return toastMax end
+	local avail = rect.Y + rect.H - (NOTIFY.Y or rect.Y)
+	local scale = currentScale()
+	local used, count = 0, 0
+	for i = #toasts, 1, -1 do
+		local t = toasts[i]
+		local h = t.Frame.AbsoluteSize.Y / scale
+		if h <= 0 then h = t.Icon and TOAST_ICON + 14 or NOTIFY.ToastEstimate end -- not laid out yet
+		local add = h + (count > 0 and NOTIFY.ToastGap or 0)
+		if count > 0 and used + add > avail then break end
+		used += add
+		count += 1
+	end
+	return math.max(1, math.min(count, toastMax))
+end
+
+-- drops the oldest toasts beyond the cap (the newest always stays)
+function NOTIFY.TrimToasts()
+	local cap = NOTIFY.ToastCap()
+	while #toasts > cap do
+		removeToast(toasts[1])
+	end
+end
+
+-- re-trim once a toast's real height is known (wrapped text); no-op before the first UIKit.PlaceNotify
+function NOTIFY.QueueTrim()
+	if NOTIFY.TrimQueued or NOTIFY.Rect == nil then return end
+	NOTIFY.TrimQueued = true
+	task.defer(function()
+		NOTIFY.TrimQueued = false
+		local ok, err = pcall(NOTIFY.TrimToasts)
+		if not ok then warnThrottled("toast trim failed: " .. tostring(err)) end
+	end)
+end
+
 local function scheduleToast(t, duration)
 	t.Token += 1
 	local token = t.Token
@@ -1497,9 +1804,8 @@ function UIKit.Toast(text, kind, duration, icon)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
-	while #toasts > toastMax do -- CR-L38
-		removeToast(toasts[1])
-	end
+	NOTIFY.TrimToasts() -- CR-L38 cap; HUD v2: what fits in the notify column
+	frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(NOTIFY.QueueTrim)
 
 	local info = TweenInfo.new(0.15)
 	TweenService:Create(frame, info, { BackgroundTransparency = 0.12 }):Play()
@@ -1548,6 +1854,15 @@ local function armAnnounceTimer(duration)
 	end)
 end
 
+-- banner icon size + text box beside it (old path: ANNOUNCE_ICON; HUD v2: no taller than the shorter banner)
+function NOTIFY.LayoutAnnounceText(img)
+	local size = NOTIFY.Rect and NOTIFY.BannerIcon or ANNOUNCE_ICON
+	if img then img.Size = UDim2.fromOffset(size, size) end
+	local shift = img and size + 16 or 0
+	announceLabel.Position = UDim2.new(0.5, shift / 2, 0.5, 0)
+	announceLabel.Size = UDim2.new(1, -40 - shift, 1, -12)
+end
+
 -- icon (optional, UIKit.ItemIcon): item / monster art left of the banner text
 local function setAnnounceIcon(icon)
 	local old = announceFrame:FindFirstChild("Icon")
@@ -1561,9 +1876,7 @@ local function setAnnounceIcon(icon)
 		ZIndex = Z_ANNOUNCE + 1,
 		Parent = announceFrame,
 	}) or nil
-	local shift = img and ANNOUNCE_ICON + 16 or 0
-	announceLabel.Position = UDim2.new(0.5, shift / 2, 0.5, 0)
-	announceLabel.Size = UDim2.new(1, -40 - shift, 1, -12)
+	NOTIFY.LayoutAnnounceText(img)
 	return img
 end
 
@@ -1622,6 +1935,53 @@ function UIKit.Announce(text, duration, icon)
 		return
 	end
 	showAnnounce(text, duration, icon)
+end
+
+----------------------------------------------------------------- HUD v2 notify column (A23-26)
+-- Self-check / contract:
+--  * HUD v2 calls pcall(UIKit.PlaceNotify, Layout.Rects.notify, topY) after every layout pass. rect = { X, Y, W, H }
+--    in logical MainGui units incl. the top bar (copied: HUD rebuilds its tables); topY = live top of the free space
+--    under EventHUD's stack (nil -> rect.Y). Column top y = max(topY, rect.Y).
+--  * Toast stack: AnchorPoint (0.5, 0) at (rect.X + rect.W / 2, y), width rect.W; keeps only as many toasts as fit
+--    above rect.Y + rect.H (real heights, newest first; oldest dropped; never below 1, never above the old cap).
+--  * Announce banner: AnchorPoint (0.5, 0) at the same point, width min(rect.W * 1.25, 880), height 50 or the
+--    remaining column if shorter (floor NOTIFY.BannerMinH so it stays readable); its icon shrinks to fit.
+--  * After the first valid call applyScale no longer moves / resizes the toast stack (TOAST_Y is the old path only).
+--    Fade, duplicate merge, queueing and held banners are unchanged. Invalid rect: nothing changes, returns false.
+
+-- finite number or nil
+function NOTIFY.Num(v)
+	v = tonumber(v)
+	if v == nil or v ~= v or math.abs(v) == math.huge then return nil end
+	return v
+end
+
+function UIKit.PlaceNotify(rect, topY)
+	if type(rect) ~= "table" then return false end
+	local x, y, w, h = NOTIFY.Num(rect.X), NOTIFY.Num(rect.Y), NOTIFY.Num(rect.W), NOTIFY.Num(rect.H)
+	if not (x and y and w and h) or w <= 0 or h <= 0 then return false end
+	local top = math.max(NOTIFY.Num(topY) or y, y)
+	NOTIFY.Rect = { X = x, Y = y, W = w, H = h }
+	NOTIFY.Y = top
+	local cx = math.floor(x + w / 2 + 0.5)
+	local ty = math.floor(top + 0.5)
+	if toastHolder then
+		toastHolder.AnchorPoint = Vector2.new(0.5, 0)
+		toastHolder.Position = UDim2.fromOffset(cx, ty)
+		toastHolder.Size = UDim2.fromOffset(math.floor(w), 10)
+	end
+	if announceFrame then
+		local bannerH = math.max(math.min(NOTIFY.BannerH, y + h - top), NOTIFY.BannerMinH)
+		NOTIFY.BannerIcon = math.min(ANNOUNCE_ICON, math.floor(bannerH))
+		announceFrame.AnchorPoint = Vector2.new(0.5, 0)
+		announceFrame.Position = UDim2.fromOffset(cx, ty)
+		announceFrame.Size = UDim2.fromOffset(math.floor(math.min(w * NOTIFY.BannerWidthMult, NOTIFY.BannerMaxW)),
+			math.floor(bannerH))
+		local icon = announceFrame:FindFirstChild("Icon")
+		NOTIFY.LayoutAnnounceText(icon and icon:IsA("GuiObject") and icon or nil)
+	end
+	NOTIFY.TrimToasts()
+	return true
 end
 
 ----------------------------------------------------------------- confirm dialog
@@ -1865,11 +2225,11 @@ function UIKit.Init(registry)
 			FillDirection = Enum.FillDirection.Vertical,
 			HorizontalAlignment = Enum.HorizontalAlignment.Center,
 			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 6),
+			Padding = UDim.new(0, NOTIFY.ToastGap), -- 6, also used by UIKit.PlaceNotify's fit count
 		}),
 	})
 
-	-- announce banner (30% screen height)
+	-- announce banner (30% screen height until UIKit.PlaceNotify moves it into the HUD v2 notify column)
 	announceFrame = UIKit.Create("Frame", {
 		Name = "Announce",
 		AnchorPoint = Vector2.new(0.5, 0.5),

@@ -255,9 +255,11 @@ def static_checks() -> tuple[int, list[str]]:
           and re.search(r"line2\s*\.\.=\s*[^\n]*pioneer\.Name", body) is not None,
           "CharacterVisuals nametag line 2 adds the BetaPioneer mark when owned (TitlesOwned) and not selected")
     hud = read(STATIC_ONLY["HUD"])
+    # A23-40 layout B has no title line on the HUD (the nametag above and 내 캐릭터 carry it); a title the HUD draws
+    # again must still come from the TitleSel attribute
     at = hud.find("Config.DisplayTitle(")
-    check(at >= 0 and 'attr("TitleSel"' in hud[at:at + 300],
-          "HUD stats title passes the TitleSel attribute to Config.DisplayTitle")
+    check(at < 0 or 'attr("TitleSel"' in hud[at:at + 300],
+          "HUD title (if the HUD draws one) passes the TitleSel attribute to Config.DisplayTitle")
     check(re.search(r'UIKit\.OnAttr\(\{[^}]*"TitleSel"', hud) is not None, "HUD redraws the title when TitleSel changes")
     check('attr("CombatPower"' in hud and "Config.CombatPower(" in hud,
           "HUD reads the CombatPower attribute and falls back to Config.CombatPower before the first set")

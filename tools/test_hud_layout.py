@@ -1,23 +1,31 @@
-"""HUD layout v2 (SPEC A23-26) offline check: HudLayout.Compute on PC, phone and tablet screens.
+"""HUD layout B (SPEC A23-40; was v2 A23-26) offline check: HudLayout.Compute on PC, phone and tablet screens.
 
 Runs the CURRENT src/StarterPlayer/StarterPlayerScripts/HudLayout.luau, injected into tools/fixtures/hud_layout_offline.luau,
 with the installed official Luau CLI (build/luau_cli_0_741). No Studio, network or Roblox API calls.
 
 Screens: MainGui logical units are derived exactly like UIKit.applyScale (Config.UI ScaleMin / ScaleMax / DesktopScaleMult /
 DesktopScaleMin / DesktopScaleMax, reference height 720) and the touch jump button like Roblox's TouchJump (70 px on
-screens whose short side <= 500, else 120 px). The approved rects come from docs/design/hud_layout_v2_2026-10-06.json.
+screens whose short side <= 500, else 120 px). The approved rects come from docs/design/hud_layout_B_imgdev_2026-10-06.json
+(PC = 검수's docs/design/hud_layout_B_2026-10-06.json, phone = 이미지 개발 by the A23-40 rules).
 
 Checks (named, collected): every item on screen below the top bar; no two items overlap (circles as circles) on every
-supported screen; touch targets >= 60 logical units; nothing pressable on the jump button, in the thumbstick zone
-(x < 0.4W, y > H/3) or under the PC chat window; blocks stay at their edges; one centre column for the meter, the chip
-row and notify, clear of the left / right blocks; the two reference screens reproduce the approved sheet within 1 px;
-hiding the pet slot never moves the rail; HudLayout stays a pure module.
+supported screen and pressable items keep >= 2 logical units apart; touch targets >= 60 logical units (portrait, round
+combat buttons, the quest lines block, every icon tile, both potion cells: cell = (W - Gap) / 2); nothing pressable on the
+jump button or in the thumbstick zone (x < 0.4W, y > H/3); blocks stay at their edges (minimap + quest top-left, PC face /
+bars / tiles bottom-centre clear of the corner cluster, phone plate + tiles top-right); the tile row fits 8 tiles on the PC
+reference and >= 5 on phones; one centre column for the meter, the chip row, the next-event line and notify, clear of the
+left / right blocks; the two reference screens reproduce the sheet within 1 px (potion gap 6 px included); HudLayout stays
+a pure module.
+
+Exceptions: EXCEPTIONS names screens where one check cannot hold for lack of room, with the reason. The check is
+replaced by a weaker one (e.g. the potions must reach the thumbstick zone edge) and the screen is listed in the report's
+"exceptions" with the measured value; an exception that is no longer needed fails ("exception still needed").
 
 Mutations: in-memory copies of HudLayout with one rule broken each; each must make a check fail that passes on the
 real source. --no-mutations skips them and the status is then "passed-no-mutations" (never "passed").
 
 Usage: py tools/test_hud_layout.py [--no-mutations] [--luau path/to/luau.exe]
-Report: docs/art/verification_2026-10-06/hud_layout_offline_2026-10-06.json (+ .png drawing of every screen)
+Report: docs/art/verification_2026-10-06/hud_layout_B_offline_2026-10-06.json (+ .png drawing of every screen)
 """
 from __future__ import annotations
 
@@ -36,8 +44,8 @@ FIXTURE = ROOT / "tools/fixtures/hud_layout_offline.luau"
 LAYOUT_REL = "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau"
 LAYOUT = ROOT / LAYOUT_REL
 CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
-SHEET = ROOT / "docs/design/hud_layout_v2_2026-10-06.json"
-OUT = ROOT / "docs/art/verification_2026-10-06/hud_layout_offline_2026-10-06.json"
+SHEET = ROOT / "docs/design/hud_layout_B_imgdev_2026-10-06.json"
+OUT = ROOT / "docs/art/verification_2026-10-06/hud_layout_B_offline_2026-10-06.json"
 PNG = OUT.with_suffix(".png")
 
 INSET = 58  # Roblox top bar (real px) on both reference screens of the approved sheet
@@ -60,35 +68,63 @@ SCREENS = [
     ("phone_844x390", True, 844, 390, False, True, INSET, None),
     ("phone_667x375", True, 667, 375, False, True, INSET, None),
     ("phone_568x320", True, 568, 320, False, True, INSET, None),
+    # Android 640x360 with its 48 px navigation bar: the potion cells only reach 60du by growing to the left
+    ("phone_592x360_navbar", True, 592, 360, False, True, INSET, None),
     ("tablet_1024x768", True, 1024, 768, False, True, INSET, None),
     ("tablet_1180x820", True, 1180, 820, False, True, INSET, None),
 ]
 
-# (name, exact text, replacement) in HudLayout.luau: each must match exactly once
+# (screen, check, reason): a check that cannot hold on that screen for lack of room (named, explained, reported)
+EXCEPTIONS = [
+    ("phone_568x320", "tap size potions cell width",
+     "4-inch phone (iPhone SE 1st gen class, 568x320 px): the whole layout scales to k = 1.011 du/px, so the potions "
+     "rect is 113du wide. Growing to the left (right edge kept: Q sits 6du to its right) stops at the thumbstick zone "
+     "edge x = 0.4W = 302.9du, which leaves 120.5du: two cells of 57.2du with the approved 6 px gap (60.2du only with "
+     "no gap at all). The cells stay below 60du (~43 real px) here; spec decision needed."),
+    ("phone_568x320", "tiles at least 4 on phones",
+     "4-inch phone (568x320 px): the layout scales to k = 1.011 du/px, so the top-right tile row is 241.7du wide; "
+     "60du tiles with the 3 px gap fit 3 (4 would need 249du). The other windows open from the [메뉴] tile."),
+]
+
+# (name, exact text, replacement) in HudLayout.luau: each must match exactly once. The centre column's narrowing / room
+# clamp is defensive in layout B (no supported screen squeezes the column: the left, centre and right blocks all scale
+# with the same k), so it has no mutation here; the column checks still run on every screen.
 MUTATIONS = [
     ("touch targets may shrink to 30", "local MIN_TAP = 60", "local MIN_TAP = 30"),
     ("round touch buttons never grow back", "			if r.W < MIN_TAP then", "			if false then"),
     ("potions never grow back", "if pot.H < MIN_TAP then pot.Y, pot.H = pot.Y + pot.H - MIN_TAP, MIN_TAP end", ""),
-    ("grown portrait covers the bars", "r.X, r.W = r.X + g, math.max(1, r.W - g)", "r.X, r.W = r.X, r.W"),
-    ("rail spacing ignores the tap size", "local step = math.max(", "local step = math.min("),
+    ("grown portrait covers the plate", "r.X, r.W = r.X + g, math.max(1, r.W - g)", "r.X, r.W = r.X, r.W"),
+    ("grown portrait covers the tile row", "out.tiles.Y += g", ""),
+    ("touch tiles may shrink below a thumb", "local size = touch and math.max(tiles.H, MIN_TAP) or tiles.H",
+     "local size = tiles.H"),
+    ("tile count ignores the gap", "+ 1e-6))\n\n\t-- desktop: the bottom-centre group",
+     "+ 1e-6)) + 1\n\n\t-- desktop: the bottom-centre group"),
+    ("tiles touch", "local TILE_GAP = 3", "local TILE_GAP = 0"),
+    ("touch quest lines may shrink below a thumb", "if out.quest.H < MIN_TAP then out.quest.H = MIN_TAP end", ""),
     ("top-right items anchored to the left edge",
      "X, Y = W - (ref.W - x) * k, top + (y - ref.Inset) * k", "X, Y = x * k, top + (y - ref.Inset) * k"),
     ("top-left items ignore the real top bar",
      "X, Y = x * k, top + (y - ref.Inset) * k", "X, Y = x * k, y * k"),
+    ("phone plate anchored like the PC (bottom-centre)", '{ 502, 62, 45, 45 }, "TR" }', '{ 502, 62, 45, 45 } }'),
     ("narrow phone safe area not shrunk",
      "k *= math.min(1, W / (ref.W / ref.Scale), H / (ref.H / ref.Scale))", "k *= 1"),
-    ("centre column never narrows", "local w = math.max(math.min(r.W, room), math.min(MIN_CENTER, r.W))", "local w = r.W"),
     ("centre column touches its neighbours", "local GAP = 8", "local GAP = 0"),
-    ("centre column ignores its room", "local cx = math.clamp(W / 2,", "local cx = (W / 2) or math.clamp(W / 2,"),
+    ("PC face group never steps aside", "if maxX > limit then", "if false then"),
+    ("PC face group ignores the left margin", "local shift = math.min(maxX - limit, math.max(0, minX - GAP))",
+     "local shift = maxX - limit"),
     ("touch cluster ignores the jump button", "elseif jump and rj then", "elseif false then"),
     ("cluster measured from the jump centre only", "if x >= rj[1] then", "if true then"),
     ("auto not kept above the jump button", "if y + r[4] <= rj[2] then", "if false then"),
     ("touch combo stays bottom-centre", 'if anchor == "BC" and jump then anchor = "BR" end', ""),
-    ("luck pill drawn over the chips", "chips.X, chips.W = chips.X + lw + LUCK.Gap, chips.W - lw - LUCK.Gap", "local _ = lw"),
-    ("desktop attack rect drifted", 'attack = { "BR", { 1144, 584, 120, 120 }', 'attack = { "BR", { 1144, 590, 120, 120 }'),
+    ("desktop attack rect drifted", 'attack = { "BR", { 1146, 592, 118, 118 }', 'attack = { "BR", { 1146, 598, 118, 118 }'),
+    ("desktop tiles rect drifted", 'tiles = { "BC", { 420, 640, 440, 52 }', 'tiles = { "BC", { 420, 646, 440, 52 }'),
     ("phone skill Q rect drifted", "{ 455, 252, 72, 72 }", "{ 455, 262, 72, 72 }"),
-    ("phone quest rect drifted", "{ 516, 116, 225, 36 }", "{ 516, 116, 245, 36 }"),
+    ("phone quest rect drifted", "{ 98, 62, 150, 45 }", "{ 98, 62, 170, 45 }"),
     ("everything may leave the screen", "r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))", "r.Y = r.Y"),
+    ("potions never widen", "if minX < pot.X then pot.X, pot.W = minX, potRight - minX end", ""),
+    ("potions grow into the stick zone",
+     "if pot.Y + pot.H > H * STICK.Y then minX = math.max(minX, W * STICK.X) end", ""),
+    ("potion gap drifted", "local POTION_GAP = 6", "local POTION_GAP = 2"),
 ]
 
 
@@ -119,6 +155,7 @@ def jump_rect(w: float, h: float) -> dict:
 
 
 def cases(ui: dict) -> list[dict]:
+    """Every screen once (layout B has no pouch line: the pouch rides the power line or hides)."""
     out = []
     for name, touch, pw, ph, ref, supported, inset, safe in SCREENS:
         s = ui_scale(touch, ph, ui)
@@ -127,8 +164,13 @@ def cases(ui: dict) -> list[dict]:
         if touch:
             j = jump_rect(gw, gh)
             env["Jump"] = {k: v / s for k, v in j.items()}
-        out.append({"Name": name, "Touch": touch, "Ref": ref, "Supported": supported, "PxW": gw, "PxH": gh, "Env": env})
+        out.append({"Name": name, "Base": name, "Pouch": False, "Touch": touch,
+                    "Ref": ref, "Supported": supported, "PxW": gw, "PxH": gh, "Env": env})
     return out
+
+
+def exceptions_table() -> list[dict]:
+    return [{"Screen": screen, "Check": check, "Reason": reason} for screen, check, reason in EXCEPTIONS]
 
 
 def to_lua(value) -> str:
@@ -168,7 +210,8 @@ def sheet_table() -> dict:
 def make_harness(layout_source: str, sheet: dict, screens: list[dict]) -> str:
     head = (f"local HUDLAYOUT_SOURCE = {lua_long(layout_source)}\n"
             f"local V2 = {to_lua(sheet)}\n"
-            f"local CASES = {to_lua(screens)}\n")
+            f"local CASES = {to_lua(screens)}\n"
+            f"local EXCEPTIONS = {to_lua(exceptions_table())}\n")
     return head + FIXTURE.read_text(encoding="utf-8")
 
 
@@ -192,13 +235,13 @@ def failing_keys(result: dict | None) -> set[str]:
 
 GROUP_COLOUR = {
     "portrait": (240, 200, 80), "hp_bar": (220, 70, 70), "mp_bar": (70, 110, 230), "power_line": (240, 200, 80),
-    "xp_bar": (90, 190, 240), "minimap": (90, 170, 110), "war_meter": (200, 160, 240), "luck": (120, 200, 120),
-    "chips": (170, 170, 190), "notify": (230, 230, 230), "pet": (240, 170, 90), "bag": (240, 170, 90),
-    "map": (240, 170, 90), "menu": (240, 170, 90), "quest": (250, 220, 150), "combo": (255, 255, 255),
+    "xp_bar": (90, 190, 240), "minimap": (90, 170, 110), "war_meter": (200, 160, 240),
+    "chips": (170, 170, 190), "event": (250, 160, 60), "notify": (230, 230, 230), "tiles": (240, 170, 90),
+    "quest": (250, 220, 150), "combo": (255, 255, 255),
     "potions": (230, 90, 120), "ghost": (160, 160, 255), "q": (110, 190, 255), "z": (110, 190, 255),
     "auto": (255, 215, 0), "attack": (230, 80, 50),
 }
-ROUND = {"portrait", "ghost", "q", "z", "auto", "attack"}
+ROUND = {"portrait", "ghost", "q", "z", "auto", "attack", "minimap"}
 
 
 def draw(result: dict) -> bool:
@@ -242,6 +285,18 @@ def draw(result: dict) -> bool:
                 colour = GROUP_COLOUR.get(rid, (200, 200, 200))
                 if rid in ROUND:
                     d.ellipse(box, outline=colour, width=2)
+                elif rid == "tiles" and rr.get("Size"):
+                    # the tiles that fit (Count squares of Size, Gap apart) from the row's left edge
+                    t = rr["Size"] * s * k
+                    gp = rr.get("Gap", 0) * s * k
+                    for i in range(int(rr.get("Count", 0))):
+                        tx = box[0] + i * (t + gp)
+                        d.rectangle([tx, box[1], tx + t, box[1] + t], outline=colour, width=1)
+                elif rid == "potions" and rr.get("Gap"):
+                    # the two cells (HP, MP) side by side, Gap apart
+                    cell = (rr["W"] - rr["Gap"]) / 2 * s * k
+                    d.rectangle([box[0], box[1], box[0] + cell, box[3]], outline=colour, width=1)
+                    d.rectangle([box[2] - cell, box[1], box[2], box[3]], outline=colour, width=1)
                 else:
                     d.rectangle(box, outline=colour, width=1)
             x0 += cell_w + 12
@@ -311,6 +366,9 @@ def main() -> int:
         status = "failed"
     drawn = draw(result) if real_run["result"] else False
     min_gaps = {name: c.get("MinGap") for name, c in result.get("Cases", {}).items()}
+    press_gaps = {name: c.get("MinPressGap") for name, c in result.get("Cases", {}).items()}
+    exceptions = [{"screen": e["Screen"], "check": e["Check"], "reason": e["Reason"],
+                   "measuredDu": round(e["Measured"], 2), "neededDu": e["Need"]} for e in result.get("Exceptions", [])]
     report = {
         "status": status,
         "mutationsSkipped": args.no_mutations,
@@ -320,10 +378,12 @@ def main() -> int:
         "namedChecksFailing": len(failing),
         "failing": [{"group": n["Group"], "check": n["Name"], "failures": n["Fail"], "firstFailure": n.get("FirstFailure")}
                     for n in failing],
+        "exceptions": exceptions,
         "screens": [{"name": c["Name"], "touch": c["Touch"], "reference": c["Ref"], "supported": c["Supported"],
-                     "mainGuiPx": [c["PxW"], c["PxH"]], "uiScale": round(c["Env"]["Scale"], 4),
+                     "pouchLine": c["Pouch"], "mainGuiPx": [c["PxW"], c["PxH"]], "uiScale": round(c["Env"]["Scale"], 4),
                      "logical": [round(c["Env"]["W"], 2), round(c["Env"]["H"], 2)], "insetPx": c["Env"]["Inset"],
-                     "jumpLogical": c["Env"].get("Jump"), "minGap": min_gaps.get(c["Name"])} for c in screens],
+                     "jumpLogical": c["Env"].get("Jump"), "minGap": min_gaps.get(c["Name"]),
+                     "minPressableGap": press_gaps.get(c["Name"])} for c in screens],
         "uiScaleConfig": ui,
         "mutations": {"total": len(MUTATIONS), "applied": applied, "caught": caught, "results": mutations},
         "compileOk": compiled.returncode == 0,
@@ -337,8 +397,11 @@ def main() -> int:
         "contract": "SPEC A23-26 HUD v2 via HudLayout.Compute(env) -> { [id] = {X,Y,W,H} } in MainGui logical units: "
                     "items keep their approved distance to their edge (TL / TC / TR / BC; BR to the PC corner or the live "
                     "touch jump button), top rows follow the real top-bar inset, narrow phone safe areas shrink the whole "
-                    "layout, touch targets >= 60du (the rail re-spaces so grown buttons never touch), one centre column "
-                    "(meter, luck + chips row, notify) between the left and right blocks with >= 240du for the meter, "
+                    "layout, touch targets >= 60du (the rail re-spaces so grown buttons never touch; both potion cells, "
+                    "the potions rect growing up and then left up to the thumbstick zone, Gap published as out.potions.Gap), "
+                    "pressable items >= 2du apart, the touch quest board >= 48du tall, env.PouchLine adds pouch_line under "
+                    "the XP bar and moves only the minimap, one centre column "
+                    "(meter, chip row with zone / luck / status chips, notify) between the left and right blocks with >= 240du for the meter, "
                     "everything on screen below the top bar; the reference screens match the approved sheet within 1 px.",
         "limitations": "Pure-function check only: no Roblox engine, so text fit, art, real GuiInset / safe insets, the real "
                        "TouchGui (assumed to share MainGui's safe area), chat window size and the PlayerList are estimates. "
@@ -360,7 +423,11 @@ def main() -> int:
         print(real_run["stderr"], end="")
     for name, gap in min_gaps.items():
         if gap:
-            print(f"MIN_GAP {name}: {gap['Gap']:.2f}du ({gap['Pair']})")
+            press = press_gaps.get(name) or {}
+            print(f"MIN_GAP {name}: {gap['Gap']:.2f}du ({gap['Pair']}); pressable {press.get('Gap', 0):.2f}du "
+                  f"({press.get('Pair', '')})")
+    for e in exceptions:
+        print(f"EXCEPTION {e['screen']} :: {e['check']}: {e['measuredDu']}du < {e['neededDu']}du")
     for m in mutations:
         print(f"MUTATION {'caught ' if m.get('caught') else 'MISSED'} {m['mutation']}"
               + ("" if m.get("applied") else f" ({m.get('note')})"))

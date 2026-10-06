@@ -67,7 +67,9 @@ local L = {
 	LuckSlice = 0.3, LuckLine1Y = 9, LuckLine2Y = 29,
 	KaijuNameMax = IS_TOUCH and 6 or 8, -- kaiju chip: longer names are cut ("Player..")
 	TrimH = 3, -- siren gold trim
-	ThumbW = 0.4, ThumbH = 0.45, -- U3: touch thumbstick zone = left 40% x bottom 45%
+	-- U3 / HUD v2 spec: Roblox's real DynamicThumbstick area = left 40% x bottom two thirds (x < 0.4W, y > H/3);
+	-- ThumbH is the zone's height share measured from the bottom edge (outOfThumbZone)
+	ThumbW = 0.4, ThumbH = 2 / 3,
 	ChipsY = 106, ChipsH = 32, -- HUD's status chip row (fallback while its frame is not found)
 	MarkerLabelUp = 26, -- on-screen marker: its label's centre sits this far above the glyph's
 	-- Halloween Pumpkin King pill: left of the strip (the kaiju pill sits on the right); narrower room left of the strip
@@ -117,6 +119,7 @@ local TXT = {
 	KaijuSelf = "괴수 변신 중! %s 버티면 전설의 악당",
 	Revenge = "복수 대상: %s · %s",
 	Luck = "오늘의 운 · 희귀 %s%%", -- A23-18 (events taken part in today, KST day)
+	LuckShort = "희귀 %s%%", -- HUD v2 phone luck chip (EventHUD.LuckShort)
 	Cheer = "응원별 %s (%d/%d)",
 	CheerLabel = "응원별",
 	CheerCount = "%d/%d",
@@ -149,6 +152,10 @@ local arrowGeo = { Inset = TOP_FALLBACK - TOP_PAD, TopLeft = nil }
 -- Halloween Pumpkin King pill (functions below KING.update); Below = it sits in the row under HUD's status chips
 -- (narrow screens), so layout() moves the touch personal line one row lower
 local KING = { Below = false }
+-- HUD v2 (A23-26): while C.HUD.Layout.Rects.notify exists, the strip contents, the personal line and the siren stack in
+-- that notify column (functions in the "HUD v2 notify column" section). Active = the v2 placement is applied; Key =
+-- geometry cache key; Col = column numbers; Want = what the per-tick updates asked to show; Saved = build-time props
+local V2 = { Active = false, Key = nil, Col = nil, Want = {}, Saved = nil, Gap = 4, ChipsGap = 4 }
 
 ----------------------------------------------------------------- helpers
 local lastWarnAt = -math.huge
@@ -393,7 +400,8 @@ local function candyFill(fill)
 	}, fill)
 end
 
--- U3: on touch, slide an edge arrow / label (screen px, centre) out of the thumbstick zone
+-- U3: on touch, slide an edge arrow / label (screen px, centre) out of the thumbstick zone (x < ThumbW * W and
+-- y > (1 - ThumbH) * H, i.e. the left 40% below the top third)
 local function outOfThumbZone(x, y, vp, padX, padY)
 	if not IS_TOUCH then return x, y end
 	local zx = vp.X * L.ThumbW + padX
@@ -774,6 +782,7 @@ end
 
 local function relayout()
 	lastLayoutKey = nil
+	V2.Key = nil
 	local ok, err = pcall(layout)
 	if not ok then warnThrottled("layout failed: " .. tostring(err)) end
 end
@@ -858,6 +867,9 @@ end
 -- logical offset = slot Y + realInset / UIScale (so the real-pixel top is always >= inset + TopInsetPad).
 layout = function()
 	if not built then return end
+	-- HUD v2: the notify column (V2.layout); the code below is the legacy layout (no Rects published yet)
+	if V2.rects() then V2.layout() return end
+	if V2.Active then V2.leave() end
 	local root = ui.Strip and ui.Strip.Parent
 	if not root then return end
 	if not guiScale or guiScale.Parent == nil then
@@ -1202,14 +1214,15 @@ local function setStars(filled, need)
 	end
 end
 
--- luck numbers: line 1 text ("단골 12분 · 희귀 5.25%"), cheer stars, stars needed, filled stars
+-- luck numbers: line 1 text ("오늘의 운 · 희귀 5.25%"), cheer stars, stars needed, filled stars, the bare percent ("5.25")
 local function luckData()
 	local events = math.max(0, math.floor(num(myAttr("LuckEvents", 0))))
-	local line1 = string.format(TXT.Luck, Util.FormatPercent(Config.RareChance(events)))
+	local pct = Util.FormatPercent(Config.RareChance(events))
+	local line1 = string.format(TXT.Luck, pct)
 	local need = math.floor(num(Config.Goose and Config.Goose.CheerStarsForRare))
 	if need <= 0 then need = 5 end
 	local stars = math.max(0, math.floor(num(myAttr("CheerStars", 0))))
-	return line1, stars, need, math.min(stars, need)
+	return line1, stars, need, math.min(stars, need), pct
 end
 
 -- "응원별 ★★☆☆☆ (2/5)"
@@ -1295,6 +1308,198 @@ local function gatherTargets(now)
 	end
 end
 
+----------------------------------------------------------------- HUD v2 notify column (A23-26)
+-- The column is C.HUD.Layout.Rects.notify (logical MainGui units, the top bar already included). Top-down priority:
+-- personal line > kaiju siren > goose tug (+ its hint line) > kaiju pill > Pumpkin King pill (live, else its
+-- countdown) > goose countdown pill. Every row is centred on the column, min(natural width, column width) wide; a row
+-- that would pass the column's bottom is hidden (a later HUD step may fold those into chips). The per-tick updates
+-- still decide what wants to show (Visible); V2.tick reads that right after them and places / hides the rows in the
+-- same resumption, so an overflowing row never flashes. Without Rects the legacy layout() path runs unchanged.
+
+-- C.HUD.Layout.Rects (+ the layout table) while HUD v2 publishes a usable notify rect, else nil. Read lazily: HUD
+-- rebuilds the layout table on every pass.
+function V2.rects()
+	local hud = C and C.HUD
+	local hl = type(hud) == "table" and hud.Layout or nil
+	local rects = type(hl) == "table" and hl.Rects or nil
+	local n = type(rects) == "table" and rects.notify or nil
+	if type(n) == "table" and num(n.W) > 0 and num(n.H) > 0 then return rects, hl end
+	return nil
+end
+
+function V2.put(inst, anchor, pos, size)
+	if inst.AnchorPoint ~= anchor then inst.AnchorPoint = anchor end
+	if inst.Position ~= pos then inst.Position = pos end
+	if inst.Size ~= size then inst.Size = size end
+end
+
+-- switch to the column: remember the build-time / legacy spot of every moved element (V2.leave puts them back)
+function V2.enter()
+	if V2.Active then return end
+	local subH = IS_TOUCH and L.SubHTouch or SUB_H
+	-- W = natural width, H = height; Strip = child of the event strip (else of the gui root); Flex = as tall as the
+	-- room left, up to H (at least a pill); Tail = a line under the row, dropped first when the column is full
+	V2.Rows = {
+		{ Inst = ui.Personal, W = PERSONAL_W, H = PERSONAL_H },
+		{ Inst = ui.Siren, W = math.huge, H = SIREN_H, Flex = true },
+		{ Inst = ui.Tug, W = STRIP_W, H = BAR_H, Strip = true, Tail = ui.TugSub, TailH = subH },
+		{ Inst = ui.KaijuChip, W = KAIJU_CHIP_W, H = L.PillH, Strip = true },
+		{ Inst = ui.KingChip, W = L.KingW, H = L.PillH, Strip = true, King = true },
+		{ Inst = ui.GooseChip, W = GOOSE_CHIP_W, H = L.PillH, Strip = true },
+	}
+	V2.Saved = {}
+	for _, inst in { ui.Strip, ui.Personal, ui.Siren, ui.SirenText, ui.Tug, ui.TugSub, ui.KaijuChip, ui.KingChip,
+		ui.GooseChip } do
+		table.insert(V2.Saved, { inst, inst.AnchorPoint, inst.Position, inst.Size, inst.ZIndex })
+	end
+	V2.Active = true
+	KING.Below = false -- legacy only (the touch personal line row under HUD's chips)
+	ui.Strip.ZIndex = PERSONAL_Z -- CR-L37: the whole column draws above HUD's root frame (ZIndex 5)
+	ui.SirenText.Size = UDim2.new(1, -16, 1, -(2 * L.TrimH + 4)) -- the column band is narrower than the screen
+	setVisible(ui.Luck, false) -- HUD v2 draws a luck chip (EventHUD.LuckSummary / LuckShort)
+end
+
+-- back to the legacy layout (HUD stopped publishing Rects): restore the remembered spots
+function V2.leave()
+	if not V2.Active then return end
+	V2.Active = false
+	V2.Key, V2.Col = nil, nil
+	for _, saved in V2.Saved or {} do
+		local inst = saved[1]
+		inst.AnchorPoint = saved[2]
+		inst.Position = saved[3]
+		inst.Size = saved[4]
+		inst.ZIndex = saved[5]
+	end
+	V2.Saved = nil
+	table.clear(V2.Want)
+	lastLayoutKey = nil
+end
+
+-- geometry pass, cached on the notify rect numbers + HUD.Layout.ChipsBottom + the touch minimum text size
+function V2.layout()
+	local rects, hl = V2.rects()
+	if not rects then return end
+	local root = ui.Strip and ui.Strip.Parent
+	if not root then return end
+	if not guiScale or guiScale.Parent == nil then
+		guiScale = root:FindFirstChildOfClass("UIScale")
+	end
+	local inset, rawInset = insetY()
+	arrowGeo.Inset = inset -- CR-L43: the edge arrows keep below the top bar in v2 too
+	arrowGeo.TopLeft = rawInset
+	local s = currentScale()
+	local minText = MIN_TEXT_SIZE
+	if IS_TOUCH then minText = math.max(MIN_TEXT_SIZE, math.ceil(MIN_TEXT_SIZE / s - 0.01)) end
+	local n = rects.notify
+	local nx, ny, nw, nh = num(n.X), num(n.Y), num(n.W), num(n.H)
+	local chipsBottom = (type(hl.ChipsBottom) == "number" and hl.ChipsBottom == hl.ChipsBottom) and hl.ChipsBottom or ny
+	local key = table.concat({ nx, ny, nw, nh, chipsBottom, minText }, ":")
+	if V2.Active and key == V2.Key then return end
+	V2.enter()
+	V2.Key = key
+	-- logical units already (the rect includes the top bar): no inset / scale added again
+	V2.Col = {
+		CX = math.floor(nx + nw / 2 + 0.5),
+		W = math.floor(nw),
+		Top = math.floor(math.max(ny, chipsBottom + V2.ChipsGap) + 0.5),
+		Bottom = ny + nh,
+	}
+	applyMinText(minText)
+	V2.stack()
+end
+
+-- places the wanted rows top-down, hides what passes the column bottom, publishes the stack bottom ("BottomY")
+function V2.stack()
+	local col = V2.Col
+	if V2.Busy or not (V2.Active and col and V2.Rows) then return end
+	local want, gap = V2.Want, V2.Gap
+	local cx, top, bottom = col.CX, col.Top, col.Bottom
+	local anchor = Vector2.new(0.5, 0)
+	V2.put(ui.Strip, anchor, UDim2.new(0, cx, 0, top), UDim2.fromOffset(col.W, math.max(0, math.floor(bottom - top))))
+	-- A23-40 layout B: one 'next event' line (Rects.event, above this column): the Pumpkin King pill (live counts as
+	-- now) or the goose countdown, whichever comes first; the other one does not show. Without Rects.event both stack
+	-- in the column as before.
+	local rects = V2.rects()
+	local ev = type(rects) == "table" and rects.event or nil
+	local eventInst = nil
+	if type(ev) == "table" and num(ev.W) > 0 and num(ev.H) > 0 then
+		local king = want[ui.KingChip] == true and V2.KingIn or nil
+		local goose = want[ui.GooseChip] == true and V2.GooseIn or nil
+		if king and (not goose or king <= goose) then
+			eventInst = ui.KingChip
+		elseif goose then
+			eventInst = ui.GooseChip
+		end
+		local natural = eventInst == ui.KingChip and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text))
+			or GOOSE_CHIP_W
+		if eventInst then
+			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(ev.Y - top + 0.5)),
+				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(ev.H + 0.5)))
+		end
+		setVisible(ui.KingChip, eventInst == ui.KingChip)
+		setVisible(ui.GooseChip, eventInst == ui.GooseChip)
+	end
+	local y, last = top, nil
+	for _, row in V2.Rows do
+		local inst, tail = row.Inst, row.Tail
+		if ev and (inst == ui.KingChip or inst == ui.GooseChip) then continue end -- the event line owns them
+		local w = row.W
+		if row.King then w = math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text)) end
+		w = math.floor(math.min(w, col.W) + 0.5)
+		local h = row.H
+		if row.Flex then h = math.floor(math.min(row.H, bottom - y)) end
+		local fits = want[inst] == true and h >= (row.Flex and L.PillH or h) and y + h <= bottom + 0.5
+		local tailFits = fits and tail ~= nil and want[tail] == true and y + h + row.TailH <= bottom + 0.5
+		if fits then
+			if row.Strip then
+				V2.put(inst, anchor, UDim2.new(0.5, 0, 0, y - top), UDim2.fromOffset(w, h))
+				if tailFits then
+					V2.put(tail, anchor, UDim2.new(0.5, 0, 0, y - top + h), UDim2.fromOffset(w, row.TailH))
+				end
+			else
+				V2.put(inst, anchor, UDim2.new(0, cx, 0, y), UDim2.fromOffset(w, h))
+			end
+			last = y + h + (tailFits and row.TailH or 0)
+			y = last + gap
+		end
+		setVisible(inst, fits)
+		if tail then setVisible(tail, tailFits) end
+	end
+	local stackBottom = last or top
+	if ui.Strip:GetAttribute("BottomY") ~= stackBottom then ui.Strip:SetAttribute("BottomY", stackBottom) end
+end
+
+-- end of every update() tick: read what the updates asked to show, then the (cached) geometry pass and the stack
+function V2.tick()
+	V2.Busy = false
+	if not V2.rects() then
+		if V2.Active then
+			V2.leave()
+			relayout()
+		end
+		return
+	end
+	V2.WantList = V2.WantList or { ui.Personal, ui.Siren, ui.Tug, ui.TugSub, ui.KaijuChip, ui.KingChip, ui.GooseChip }
+	for _, inst in V2.WantList do
+		V2.Want[inst] = inst.Visible
+	end
+	-- seconds until each countdown (the live Pumpkin King counts as 0) for the layout-B event line
+	local now = Util.Now()
+	V2.KingIn = gsAttr("PumpkinKingActive", false) == true and 0 or math.max(0, num(gsAttr("PumpkinKingNextAt", 0)) - now)
+	V2.GooseIn = math.max(0, num(gsAttr("GooseNextAt", 0)) - now)
+	V2.layout() -- cheap key check: HUD's numbers / the UIScale changed (or HUD v2 just appeared)
+	V2.stack()
+end
+
+-- the column places the Pumpkin King pill in v2 (V2.stack); KING.place stays the legacy slot finder (left / right of
+-- the strip, else under the chips)
+V2.LegacyKingPlace = KING.place
+function KING.place(chip)
+	if V2.rects() then return end
+	return V2.LegacyKingPlace(chip)
+end
+
 local function update()
 	if not built then return end
 	if pickersOpen() then
@@ -1306,9 +1511,11 @@ local function update()
 		activeTargets = {}
 		return
 	end
+	V2.Busy = true -- no v2 stack pass mid-update (a relayout would hide rows before V2.tick reads the wants)
 	setVisible(ui.Arrows, true)
 	setVisible(ui.Strip, true)
-	setVisible(ui.Luck, not IS_TOUCH) -- U5: phones get the slim HUD (the menu shows EventHUD.LuckSummary)
+	-- U5: phones get the slim HUD (the menu shows EventHUD.LuckSummary); HUD v2 draws a luck chip instead everywhere
+	setVisible(ui.Luck, not IS_TOUCH and V2.rects() == nil)
 	local now = Util.Now()
 	updateGoose(now)
 	updateKaiju(now)
@@ -1316,6 +1523,7 @@ local function update()
 	updatePersonal(now)
 	updateLuck()
 	gatherTargets(now)
+	V2.tick() -- HUD v2: stack what the updates above asked to show (same resumption, so no one-frame flash)
 end
 
 ----------------------------------------------------------------- arrows (RenderStepped)
@@ -1441,7 +1649,8 @@ function EventHUD.Init(registry)
 end
 
 -- logical y (MainGui UIScale units) of the event strip's bottom, or nil before the first layout. HUD's status chips
--- go under it (also published as the EventStrip "BottomY" attribute).
+-- go under it (also published as the EventStrip "BottomY" attribute). HUD v2: the bottom of the notify column's
+-- shown rows (the column top while none shows); UIKit toasts start under it.
 function EventHUD.StripBottom()
 	local strip = ui.Strip
 	local y = strip and strip:GetAttribute("BottomY")
@@ -1456,6 +1665,16 @@ function EventHUD.LuckSummary()
 	if not ok then return nil, nil end
 	return line1, cheerText(stars, need, filled)
 end
+
+-- HUD v2 phone luck chip: the short form of LuckSummary's first line, "희귀 10.75%" (nil on error)
+function EventHUD.LuckShort()
+	local ok, _, _, _, _, pct = pcall(luckData)
+	if not ok or pct == nil then return nil end
+	return safeFormat(TXT.LuckShort, pct)
+end
+
+-- HUD calls this right after each layout pass (HUD v2: re-reads C.HUD.Layout.Rects.notify; legacy: the old layout)
+EventHUD.Relayout = relayout
 
 function EventHUD.Start()
 	local ok, err = pcall(build)
@@ -1492,6 +1711,7 @@ function EventHUD.Start()
 	task.spawn(function()
 		while true do
 			local okTick, errTick = pcall(update)
+			V2.Busy = false -- also when update() stopped before V2.tick
 			if not okTick then warnThrottled(tostring(errTick)) end
 			layoutTimer += TICK
 			if layoutTimer >= LAYOUT_EVERY then

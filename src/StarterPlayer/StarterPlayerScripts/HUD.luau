@@ -1,14 +1,19 @@
--- HUD.luau : player card, war meter, status chips, quest tracker (claim / reroll / pinned tutorial), next-weapon card,
--- 자동 / 지도 / 메뉴 squares and the attack / release buttons with the charge ring, keyboard / mouse / touch / gamepad
--- input, travel bar and the guide beam (TECH_SPEC §4.23 HUD; addendum A3-H4/H5/M1, A4 step 1, A5-C6/N1, A6 Neutral,
--- A7-3 next goal, A14 compact HUD drawn with the GPT art parts of Config.UIArt through UIKit.Art*).
--- Client only: reads attributes / GameState / the Fx and Quests remotes, writes only client->server intents.
--- Published layout (logical MainGui units, updated by every layout pass; nil until the first one):
---   HUD.TopCenterX / HUD.TopCenterW : centre x and width of the war meter column (CR-L36, EventHUD's strip follows it)
---   HUD.Layout = { W, H, Scale, ClusterTop, ClusterLeft, TopCenterX, TopCenterW, LeftX, RightX } : ClusterTop /
---   ClusterLeft = top / left edge of the bottom-right button cluster (CR-L37, EventHUD keeps its personal line above
---   it); LeftX / RightX = the free top band between the player card + quests column (its right edge + 8) and the right
---   edge (desktop: left of the luck panel), where EventHUD puts its pills beside the strip
+-- HUD.luau : A23-40 HUD layout B ("보여 준 게임처럼"). PC: top-left round live minimap (MiniMap.luau) with two quest
+-- lines under it (no plate: outlined text, progress / 받기; the full list folds out under them), top-centre war meter ->
+-- zone / luck / status chips (3 + '+N') -> next event line (EventHUD) -> notify column (EventHUD + UIKit toasts), bottom-
+-- centre round portrait (faction level badge) + 'Lv · 전투력 · 주머니' + HP | MP + thin XP + the icon tile row
+-- [캐릭터][가방][스킬][지도][랭킹][펫][설정][메뉴] (a tile shows once its window exists), bottom-right combat cluster
+-- (공격 · 스킬 Q · 자동 · 물약 1·2; the ghost hold is GrudgeGhost); the top-right stays empty (Tab list only). Phones
+-- move the plate and the tile row top-right (the bottom centre is the thumbstick's and the cluster's). Keyboard / mouse
+-- / touch / gamepad input and the guide beam (TECH_SPEC §4.23 HUD; addendum A3-H4/H5/M1, A4 step 1, A5-C6/N1, A6
+-- Neutral, A7-3, A14 art parts through UIKit.Art*). Every rect comes from HudLayout.Compute
+-- (docs/design/hud_layout_B_imgdev_2026-10-06.json). Client only: reads attributes / GameState / the Fx and Quests
+-- remotes, writes only client->server intents.
+-- Published layout (logical MainGui units, a NEW table on every layout pass; nil until the first one):
+--   HUD.Layout = { W, H, Scale, Rects = HudLayout rects (event = the next-event line, tiles = the icon row), ChipsBottom,
+--   ClusterTop, ClusterLeft, TopCenterX, TopCenterW, LeftX, RightX }. After each pass HUD calls EventHUD.Relayout,
+--   MiniMap.Relayout and UIKit.PlaceNotify (pcall'd; any of them may be missing). HUD.TopCenterX / TopCenterW = the war
+--   meter column.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
@@ -41,45 +46,46 @@ local TICK = 0.2
 local TOP_PAD = UI.TopInsetPad or 8 -- addendum H4
 local TOP_FALLBACK = UI.TopInsetFallback or 64
 local JUMP_WAIT = UI.JumpButtonWait or 5 -- addendum H5
-local ATTACK_FALLBACK = UI.AttackFallbackOffset or Vector2.new(-200, -170)
 
--- desktop (no touch) gets the compact A14-2 sizes; touch keeps thumb-sized targets (attack / release stay >= 44 real px
--- at UIScale 0.75) and the slim U5 layout. UI units (before MainGui's UIScale), grouped in one table because this chunk
--- is close to Luau's 200-locals limit.
+-- build sizes (UI units before MainGui's UIScale; applyLayout sizes every block from its HudLayout rect), grouped in one
+-- table because this chunk is close to Luau's 200-locals limit.
 local IS_TOUCH = UserInputService.TouchEnabled
 local L = {
 	KeyDevice = UserInputService.KeyboardEnabled and not IS_TOUCH, -- U1: key badges for keyboards only (never touch)
 	ShowKeys = UserInputService.KeyboardEnabled and not IS_TOUCH, -- BB1: KeyDevice and Settings.KeyBadges (L.RefreshKeys)
 	Attack = IS_TOUCH and 136 or 120,
 	Release = IS_TOUCH and 102 or 90,
-	Square = IS_TOUCH and 72 or 60, -- 자동 / 지도 / 메뉴 parchment squares
-	UpgradeH = IS_TOUCH and 78 or 72, -- next-weapon card (as wide as the square row)
-	BtnGap = IS_TOUCH and 12 or 10,
-	RowGap = IS_TOUCH and 10 or 8, -- between the squares and above the row
-	Edge = IS_TOUCH and 24 or 16,
-	StatsW = IS_TOUCH and 212 or 300, -- player card (BB5: 300 on desktop so "전투력 25,488" fits next to the class)
-	StatsH = IS_TOUCH and 110 or 132,
-	PotionH = IS_TOUCH and 64 or 50,
-	StarsH = IS_TOUCH and 22 or 20, -- extra wanted-stars row (Horns)
-	QuestW = IS_TOUCH and 260 or 270,
+	Square = IS_TOUCH and 72 or 60, -- rail squares / 자동
 	QuestRowH = IS_TOUCH and 58 or 50,
 	QuestGap = 4,
 	QuestHeaderH = IS_TOUCH and 32 or 28,
 	OverlayW = 340, -- touch quest overlay (CR-M25)
-	WarW = 380,
-	WarH = 56, -- bar row 34 + timer pills 20; EventHUD's strip follows the meter's real bottom
-	StripBelow = 47, -- EventHUD's strip under the meter (gap 6 + bar 24 + sub line 13 + 4)
-	ChipsY = 106, -- status chips slot, under EventHUD's strip
-	ChipH = IS_TOUCH and 26 or 24,
+	ChipH = IS_TOUCH and 24 or 26, -- v2 chip row (18 px phone / 21 px PC)
 	TouchText = 15, -- U5: 15 units = 11 real px at the 0.75 touch UIScale
-	StickZoneX = 0.4, -- U3: on touch no HUD in the left 40% x bottom 45% (thumbstick)
-	LuckY = 52, -- EventHUD's luck panel slot (y, height): fallback when its live "BottomY" is missing
-	LuckH = 58,
-	LuckW = 210, -- its width (desktop top-right), kept clear by the war meter (CR-L36)
-	WarMinW = 200, -- CR-L36: narrowest war meter on small screens
 	-- quest row metrics (badge / 교체 width, button and bar heights, text size)
 	Row = IS_TOUCH and { Badge = 40, BadgeH = 20, Reroll = 56, BtnH = 22, Reward = 72, BarH = 18, Text = 15 }
 		or { Badge = 30, BadgeH = 15, Reroll = 40, BtnH = 18, Reward = 58, BarH = 15, Text = 13 },
+	-- A23-26 v2 / A23-40 B
+	HL = nil, -- HudLayout (required in HUD.Init)
+	Rects = nil, -- the last pass's rects
+	PotionGap = 7.5, -- du between the HP and MP potion buttons (6 px at the PC UIScale 0.8)
+	Badge = { Halo = "LevelBadgeHalo", Horns = "LevelBadgeHorns", Neutral = "LevelBadgeArtisan" }, -- else LevelBadge
+	Glyph = { Warrior = "GlyphSword", Mage = "GlyphStaff", Archer = "GlyphBow" }, -- attack button (IconAttack fallback)
+	-- A23-40 icon tile row, left to right. Window = the Panels window the tile opens (the tile shows once it is
+	-- registered; Alt = an older window it opens until then), Map / Menu = the world map / the menu; Key = Keybinds
+	-- action for the key badge; Keep = shown first when the row has fewer slots than tiles (the rest wait for [메뉴])
+	Tiles = {
+		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
+		{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },
+		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
+		{ Id = "Map", Icon = "IconMap", Map = true, Key = "Map", Keep = 1 },
+		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 5 },
+		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 },
+		{ Id = "Settings", Icon = "IconSettings", Window = "Settings", Keep = 3 },
+		{ Id = "Menu", Icon = "GlyphMenu", Menu = true, Key = "Menu", Keep = 0 },
+	},
+	TileIcon = 0.6, -- icon side / tile side (the name sits under it inside the tile)
+	TileTint = 0.15, -- MenuTile ImageTransparency over the world (sheet a2338)
 }
 
 -- code-drawn fallback colours (IMG-R4) and ImageColor3 multipliers for the art parts
@@ -113,10 +119,12 @@ local TUT_QUEST_ID = TUT.QuestId or "tutorial"
 -- HUD display strings (the literals of TECH_SPEC §4.23 HUD; game messages come from Config.Text)
 local TXT = {
 	LevelTag = "Lv",
-	Money = '<font color="#%s">%s</font> %s', -- RichText: grey tag + gold number
-	BankTag = "금고",
+	PowerLine = "Lv %d · %s %s", -- 'Lv 10 · 전투력 424' (A23-26)
+	Pouch = "· %s %s", -- after the power line: '· 주머니 1.2K' (검수 2026-10-06: carried gold can be stolen)
+	PouchLine = "%s %s", -- its own line under the XP bar when the power line is too narrow
 	CarriedTag = "주머니",
-	Bounty = " 현상금 %s",
+	Wanted = "현상 %s", -- danger chip (Horns): the wanted stars
+	WantedBounty = " · %s",
 	WarTime = "왕관 결정까지 %s",
 	Siege = "몬스터 포위전: 1인당 %d점",
 	MyWar = "내 점수 %s",
@@ -156,14 +164,22 @@ local TXT = {
 	Perfect = "PERFECT!",
 	AutoOn = "자동 켬",
 	AutoOff = "자동 끔",
-	UpgradeNext = "다음: %s",
-	UpgradePrice = "%sG",
-	UpgradeMax = "기본 무기 준비 완료",
-	UpgradeNeedLevel = "Lv %d 필요",
-	UpgradeNeedFaction = "진영 선택 필요",
-	UpgradeReady = "대장간에서 구입 · 길 안내",
 	Map = "지도",
 	Menu = "메뉴",
+	Pet = "펫",
+	Bag = "가방",
+	Auto = "자동",
+	-- A23-40 icon tiles (names under the icons)
+	TileCharacter = "캐릭터",
+	TileSkills = "스킬",
+	TileRanking = "랭킹",
+	TileSettings = "설정",
+	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
+	QuestLineNums = "%s/%s",
+	QuestLineSummary = "오늘의 퀘스트 %d/%d",
+	QuestOpenList = "▼",
+	QuestCloseList = "▲",
+	MoreChips = "+%d",
 	TravelLeft = "%s %.1f초",
 	ZoneGuide = "%s!",
 	Monster = "몬스터",
@@ -316,40 +332,6 @@ local function insetY()
 	local y = (ok and typeof(topLeft) == "Vector2") and topLeft.Y or 0
 	if y <= 0 then y = TOP_FALLBACK - TOP_PAD end
 	return y
-end
-
--- bottom (real px) of the TextChatService chat window + input bar when shown over the top-left block, else nil.
--- Everything is pcall'd: older clients lack the configurations' AbsolutePosition / AbsoluteSize.
-local CHAT_CONFIGS = { "ChatWindowConfiguration", "ChatInputBarConfiguration" }
-local function chatWindowBottom(inset, s, screenH)
-	local active = true
-	pcall(function()
-		active = StarterGui:GetCore("ChatActive") ~= false
-	end)
-	if not active then return nil end
-	local okVersion, isTcs = pcall(function()
-		return TextChatService.ChatVersion == Enum.ChatVersion.TextChatService
-	end)
-	if not okVersion or not isTcs then return nil end
-	local top, bottom = nil, nil
-	for _, className in CHAT_CONFIGS do
-		local ok, t, b = pcall(function()
-			local cfg = TextChatService:FindFirstChildOfClass(className)
-			if not cfg or not cfg.Enabled then return nil, nil end
-			local pos, size = cfg.AbsolutePosition, cfg.AbsoluteSize
-			if size.X < 1 or size.Y < 1 then return nil, nil end
-			if pos.X > (12 + math.max(L.StatsW, L.QuestW)) * s then return nil, nil end -- not on the left side
-			return pos.Y, pos.Y + size.Y
-		end)
-		if ok and type(t) == "number" and type(b) == "number" then
-			if top == nil or t < top then top = t end
-			if bottom == nil or b > bottom then bottom = b end
-		end
-	end
-	if not bottom or not top then return nil end
-	if top < inset - 4 then bottom += inset end -- positions measured from below the top bar
-	if bottom > screenH * 0.55 then return nil end -- chat moved / very tall: keep the HUD where it is
-	return bottom
 end
 
 -- desktop: legacy chat sits top-left over the stats block; move its window to the bottom-left instead.
@@ -556,6 +538,7 @@ end
 
 ----------------------------------------------------------------- layout (forward-declared users)
 local applyLayout -- assigned below
+local refreshChips -- assigned with the chips (refreshStats calls it for the wanted chip)
 local refreshQuests -- assigned with the quest rows (the header toggle calls it)
 local toggleQuests -- assigned with the quest rows (header / overlay close button)
 
@@ -570,30 +553,6 @@ local function requestLayout()
 end
 
 ----------------------------------------------------------------- building: player card (top-left)
--- money line: coin / pouch icon + "금고 1,250" (grey tag, gold number through RichText)
-local function moneyLine(parent, name, icon, x, y, w)
-	local h = IS_TOUCH and 20 or 18
-	local img = UIKit.ArtImage(icon, {
-		Name = name .. "Icon",
-		Position = UDim2.fromOffset(x, y),
-		Size = UDim2.fromOffset(h, h),
-		Parent = parent,
-	})
-	local tx = img and (x + h + 3) or x
-	return L.FitText(artLabel(false, {
-		Name = name,
-		RichText = true,
-		Position = UDim2.fromOffset(tx, y),
-		Size = UDim2.fromOffset(x + w - tx, h),
-		TextScaled = true,
-		MaxTextSize = IS_TOUCH and 16 or 14,
-		Color = ac("GoldText", Theme.Gold),
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextTruncate = Enum.TextTruncate.AtEnd,
-		Parent = parent,
-	}), 12)
-end
-
 ------------------------------------------------------------------ BB5 "전투력" (Config.CombatPower, server attribute)
 -- Desktop: right half of the class row; touch: right half of the bank row. A rise floats a gold "+N" and counts the
 -- number up (not when the level changed in the same moment: the level-up banner already celebrates). Drops are silent.
@@ -609,7 +568,7 @@ function L.PowerValue()
 end
 
 function L.PowerText(n)
-	return Config.Power.Text.Label .. " " .. Util.FormatInt(n)
+	return string.format(TXT.PowerLine, math.floor(num("Level", 1)), Config.Power.Text.Label, Util.FormatInt(n))
 end
 
 function L.PowerOpen()
@@ -632,21 +591,62 @@ function L.PowerHit(target)
 	return hit
 end
 
-function L.PowerBuild(parent, x, y, w, h)
-	ui.power = L.FitText(artLabel(false, {
-		Name = "Power",
-		Position = UDim2.fromOffset(x, y),
-		Size = UDim2.fromOffset(w, h),
-		TextScaled = true,
-		MaxTextSize = IS_TOUCH and 16 or 13,
-		Number = true,
-		Color = ac("GoldText", Theme.Gold),
-		TextXAlignment = Enum.TextXAlignment.Right,
-		TextTruncate = Enum.TextTruncate.AtEnd,
-		Text = L.PowerText(L.PowerValue()),
+-- 'Lv 10 · 전투력 424 · 주머니 1.2K' (A23-26, 검수 2026-10-06 (a)): one row on Rects.power_line; both labels follow their
+-- text. Layout B has no line for the pouch under the XP bar (the tile row is there): when the pair does not fit the row
+-- the pouch hides (L.CheckPouch); 내 캐릭터 still shows it
+function L.PowerBuild(parent)
+	ui.powerRow = UIKit.Create("Frame", {
+		Name = "PowerLine",
+		BackgroundTransparency = 1,
+		Size = UDim2.fromOffset(260, 20),
+		ZIndex = 2,
 		Parent = parent,
-	}), 11, true)
-	L.PowerHit(ui.power)
+	}, {
+		UIKit.Create("UIListLayout", {
+			Name = "List",
+			FillDirection = Enum.FillDirection.Horizontal,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			Padding = UDim.new(0, 4),
+		}),
+	})
+	local function line(name, order, color, bold, par)
+		return L.FitText(artLabel(false, {
+			Name = name,
+			LayoutOrder = order,
+			AutomaticSize = Enum.AutomaticSize.X,
+			Size = UDim2.new(0, 0, 1, 0),
+			TextSize = 14,
+			Number = true,
+			Color = color,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			Parent = par,
+		}), 13, bold)
+	end
+	ui.power = line("Power", 1, ac("GoldText", Theme.Gold), true, ui.powerRow)
+	ui.power.Text = L.PowerText(L.PowerValue())
+	ui.pouch = line("Pouch", 2, ac("LightSub", Theme.SubText), false, ui.powerRow)
+	-- A23-35 / A23-40: no plate under the line (PC: over the ground) -> the dark text style's navy rim; gold stays gold
+	-- (the white -> cream gradient multiplies the colour)
+	if type(UIKit.StyleText) == "function" then
+		UIKit.StyleText(ui.power, "Number")
+		UIKit.StyleText(ui.pouch, "Number")
+		ui.power.TextColor3 = ac("GoldText", Theme.Gold)
+	end
+	L.PowerHit(ui.powerRow)
+	ui.power:GetPropertyChangedSignal("AbsoluteSize"):Connect(L.CheckPouch)
+	ui.pouch:GetPropertyChangedSignal("AbsoluteSize"):Connect(L.CheckPouch)
+end
+
+-- the pouch rides the power line while both fit its rect (2du spare against flicker), else it hides
+function L.CheckPouch()
+	local R = L.Rects
+	if not R or not ui.power or not ui.pouch or not ui.powerRow then return end
+	local s = currentScale()
+	local gap = ui.powerRow.List.Padding.Offset
+	local need = (ui.power.AbsoluteSize.X + ui.pouch.AbsoluteSize.X) / s + gap
+	local fits = need <= R.power_line.W - (ui.pouch.Visible and 0 or 2)
+	if ui.pouch.Visible ~= fits then ui.pouch.Visible = fits end
 end
 
 function L.PowerSet(n)
@@ -654,16 +654,18 @@ function L.PowerSet(n)
 	if ui.power then ui.power.Text = L.PowerText(n) end
 end
 
--- gold "+N" floating up from the number, and the number counting up to the new value. The popup lives on the
--- stats card (the label clips its children: UIKit.FitText), just above the number's right edge. delta = the real rise
--- (from is only where the count-up starts; it may be mid-way through an earlier count-up).
+-- gold "+N" floating up from the end of the power number, and the number counting up to the new value. The popup sits on
+-- the plate group just above the power label's right edge (never over the pouch: 검수 2026-10-06, BB5). delta = the real
+-- rise (from is only where the count-up starts; it may be mid-way through an earlier count-up).
 function L.PowerPopup(from, to, delta)
 	local label = ui.power
-	if not label or not label.Parent then L.PowerSet(to) return end
+	if not label or not label.Parent or not ui.stats then L.PowerSet(to) return end
 	L.Pow.Seq += 1
 	local seq = L.Pow.Seq
-	local x = label.Position.X.Offset + (label.TextXAlignment == Enum.TextXAlignment.Left and 90 or label.Size.X.Offset)
-	local y = label.Position.Y.Offset
+	local s = currentScale()
+	local origin = ui.stats.AbsolutePosition
+	local x = (label.AbsolutePosition.X + label.AbsoluteSize.X - origin.X) / s
+	local y = (label.AbsolutePosition.Y - origin.Y) / s
 	local pop = artLabel(false, {
 		Name = "PowerUp",
 		AnchorPoint = Vector2.new(1, 1),
@@ -675,8 +677,8 @@ function L.PowerPopup(from, to, delta)
 		Color = ac("GoldText", Theme.Gold),
 		TextXAlignment = Enum.TextXAlignment.Right,
 		Text = "+" .. Util.FormatInt(delta or (to - from)), -- next to the number, so the bare "+N"
-		ZIndex = (label.ZIndex or 1) + 3,
-		Parent = label.Parent,
+		ZIndex = 8,
+		Parent = ui.stats,
 	})
 	TweenService:Create(pop, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 		Position = UDim2.fromOffset(x, y - 22), TextTransparency = 1,
@@ -727,264 +729,130 @@ function L.PowerChanged()
 	task.delay(P.Merge, L.PowerSettle)
 end
 
--- PanelCard (gold rim, navy inside). Desktop: portrait ring + live-character 3D snapshot, level badge, title / class, XP
--- bar, 금고 / 주머니. Touch (U5): level badge + XP bar + 금고 only. Horns get a wanted-stars / bounty row on both.
+-- A23-26 v2 top-left plate, no card: the round portrait (my live 3D head in the PortraitRing hole, the account headshot
+-- while it loads) with the faction level badge on its lower-left, HP / MP bars beside it (VitalsUI), the power line under
+-- them and a thin XP bar under the whole block. ui.stats is a transparent full-screen group; every piece is placed from
+-- the HudLayout rects by L.LayoutPlate. Tapping the portrait or the power line opens 내 캐릭터 (L.PowerHit shows the
+-- hit area only once Panels has the window: no silent no-op).
 local function buildStats(root)
-	local W = L.StatsW
-	local f = UIKit.ArtFrame("PanelCard", {
+	local f = UIKit.Create("Frame", {
 		Name = "Stats",
-		Position = UDim2.fromOffset(12, 12 + TOP_FALLBACK),
-		Size = UDim2.fromOffset(W, L.StatsH),
+		BackgroundTransparency = 1,
+		Size = UDim2.fromScale(1, 1),
 		Parent = root,
 	})
 	ui.stats = f
-
-	-- level badge: navy disc with a gold ring
-	local bs = IS_TOUCH and 48 or 40
-	local badge = UIKit.ArtFrame("LevelBadge", {
-		Name = "LevelBadge",
-		Position = UDim2.fromOffset(IS_TOUCH and 8 or 80, IS_TOUCH and 10 or 5),
-		Size = UDim2.fromOffset(bs, bs),
-		ZIndex = 3,
-		Parent = f,
-	}, { StrokeThickness = 2 })
-	local facePos, faceSize = UIKit.ArtInner("LevelBadge")
-	local face = UIKit.Create("Frame", {
-		Name = "Face",
+	local holder = UIKit.Create("Frame", {
+		Name = "Portrait",
 		BackgroundTransparency = 1,
-		ClipsDescendants = true,
-		Position = facePos or UDim2.fromScale(0.17, 0.18),
-		Size = faceSize or UDim2.fromScale(0.65, 0.61),
-		Parent = badge,
+		Size = UDim2.fromOffset(80, 80),
+		ZIndex = 2,
+		Parent = f,
 	})
-	ui.levelFace = face
-	if IS_TOUCH then
-		-- the number alone: a separate "Lv" would fall under the touch text floor inside the badge
-		ui.level = artLabel(false, {
-			Name = "Level",
-			Size = UDim2.fromScale(1, 1),
-			TextScaled = true,
-			MaxTextSize = 26,
-			Number = true,
-			Color = ac("GoldText", Theme.Gold),
-			Text = "1",
-			Parent = face,
-		})
-	else
-		ui.levelTag = artLabel(false, {
-			Name = "Tag",
-			Position = UDim2.fromScale(0, 0.03),
-			Size = UDim2.fromScale(1, 0.39),
-			TextScaled = true,
-			MaxTextSize = 11,
-			Number = true,
-			Text = TXT.LevelTag,
-			Parent = face,
-		})
-		ui.level = artLabel(false, {
-			Name = "Level",
-			Position = UDim2.fromScale(0, 0.47),
-			Size = UDim2.fromScale(1, 0.5),
-			TextScaled = true,
-			MaxTextSize = 20,
-			Number = true,
-			Color = ac("GoldText", Theme.Gold),
-			Text = "1",
-			Parent = face,
+	local holePos, holeSize = UIKit.ArtInner("PortraitRing")
+	local head = UIKit.Create("ImageLabel", {
+		Name = "Headshot",
+		Image = UIKit.HeadshotImage(),
+		ScaleType = Enum.ScaleType.Crop,
+		BackgroundColor3 = ac("NavyDeep", Theme.Bg),
+		Position = holePos or UDim2.fromScale(0.17, 0.16),
+		Size = holeSize or UDim2.fromScale(0.67, 0.67),
+		ZIndex = 1,
+		Parent = holder,
+	}, { corner(UDim.new(0.5, 0)) })
+	ui.portraitHolder = holder
+	ui.portraitHeadshot = head
+	local ring = UIKit.ArtImage("PortraitRing", {
+		Name = "Ring",
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = 2,
+		Parent = holder,
+	})
+	if not ring then
+		-- IMG-R4: gold ring drawn in code
+		UIKit.Create("UIStroke", {
+			Color = ac("Gold", Theme.Gold),
+			Thickness = 3,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			Parent = head,
 		})
 	end
-	L.FitText(ui.levelTag, 11)
-	L.FitText(ui.level, IS_TOUCH and 16 or 14, true)
-
-	local x0 = IS_TOUCH and 62 or 80 -- left edge of the XP bar / money column
-	if not IS_TOUCH then
-		-- The current character is rendered in this same ring; the account thumbnail only covers loading gaps.
-		local holder = UIKit.Create("Frame", {
-			Name = "Portrait",
-			BackgroundTransparency = 1,
-			Position = UDim2.fromOffset(3, 5),
-			Size = UDim2.fromOffset(74, 76),
-			ZIndex = 2,
-			Parent = f,
-		})
-		local holePos, holeSize = UIKit.ArtInner("PortraitRing")
-		local head = UIKit.Create("ImageLabel", {
-			Name = "Headshot",
-			Image = UIKit.HeadshotImage(),
-			ScaleType = Enum.ScaleType.Crop,
-			BackgroundColor3 = ac("NavyDeep", Theme.Bg),
-			Position = holePos or UDim2.fromScale(0.14, 0.2),
-			Size = holeSize or UDim2.fromScale(0.72, 0.67),
-			ZIndex = 1,
-			Parent = holder,
-		}, { corner(UDim.new(0.5, 0)) })
-		ui.portraitHolder = holder
-		ui.portraitHeadshot = head
-		local ring = UIKit.ArtImage("PortraitRing", {
-			Name = "Ring",
-			Size = UDim2.fromScale(1, 1),
-			ZIndex = 2,
-			Parent = holder,
-		})
-		if not ring then
-			-- IMG-R4: gold ring drawn in code
-			UIKit.Create("UIStroke", {
-				Color = ac("Gold", Theme.Gold),
-				Thickness = 3,
-				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-				Parent = head,
-			})
-		end
-		ui.title = artLabel(false, {
-			Name = "Title",
-			Position = UDim2.fromOffset(126, 10),
-			Size = UDim2.fromOffset(W - 138, 18),
-			TextSize = 16,
-			Title = true,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextTruncate = Enum.TextTruncate.AtEnd,
-			Parent = f,
-		})
-		local classW = math.floor((W - 138) * 0.5) -- BB5: the class name shares its row with the power number
-		ui.class = artLabel(false, {
-			Name = "Class",
-			Position = UDim2.fromOffset(126, 29),
-			Size = UDim2.fromOffset(classW, 14),
-			TextSize = 12,
-			Color = ac("LightSub", Theme.SubText),
-			TextXAlignment = Enum.TextXAlignment.Left,
-			TextTruncate = Enum.TextTruncate.AtEnd,
-			Parent = f,
-		})
-		L.FitText(ui.title, 13, true)
-		L.FitText(ui.class, 12)
-		L.PowerBuild(f, 126 + classW + 4, 30, W - 138 - classW - 4, 14)
-		L.PowerHit(holder)
-	end
-
-	-- XP bar on the BarTrack art (bright blue fill)
-	local barW = W - x0 - (IS_TOUCH and 14 or 12)
+	ui.portraitHit = L.PowerHit(holder)
+	-- faction-shaped level badge over the ring's lower-left (L.RefreshBadge builds the art + the number)
+	ui.badgeHolder = UIKit.Create("Frame", {
+		Name = "LevelBadge",
+		BackgroundTransparency = 1,
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.fromScale(-0.1, 1.1),
+		Size = UDim2.fromScale(0.48, 0.48),
+		ZIndex = 4,
+		Parent = holder,
+	})
+	L.RefreshBadge()
+	C.VitalsUI.BuildStats(f, IS_TOUCH)
+	L.PowerBuild(f)
+	-- thin XP bar (8 px PC / 6 px phone: no text inside)
 	local xpFrame, setXP, xpText = UIKit.ArtBar({
 		Name = "XPBar",
-		Position = UDim2.fromOffset(x0, IS_TOUCH and 13 or 48),
-		Size = UDim2.fromOffset(barW, IS_TOUCH and 20 or 16),
+		Size = UDim2.fromOffset(300, IS_TOUCH and 8 or 10),
 		Color = ac("XPBlue", Theme.XP),
-		TextSize = IS_TOUCH and L.TouchText or 12,
 		Parent = f,
 	})
 	ui.setXP = setXP
 	ui.xpFrame = xpFrame
 	ui.xpText = xpText
-	L.FitText(ui.xpText, 11)
-
-	if IS_TOUCH then
-		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 78, barW)
-		L.PowerBuild(f, x0, 100, barW, 20) -- BB5 touch: its own row under 금고 (749x361: half rows cut both off)
-		ui.power.TextXAlignment = Enum.TextXAlignment.Left
-		L.PowerHit(badge)
-	else
-		local half = math.floor((barW - 6) / 2)
-		ui.bank = moneyLine(f, "Bank", "IconCoin", x0, 104, half)
-		ui.carried = moneyLine(f, "Carried", "IconPouch", x0 + half + 6, 104, barW - half - 6)
-	end
-	C.VitalsUI.BuildStats(f, x0, barW, IS_TOUCH)
-	ui.potions = C.VitalsUI.BuildPotions(root, W, L.PotionH, IS_TOUCH)
-
-	-- Horns: wanted stars (IconStar / IconStarEmpty; ★☆ text without the art) + bounty, under the card's rows
-	local sh = L.StarsH - 4
-	ui.stars = UIKit.Create("Frame", {
-		Name = "Stars",
-		BackgroundTransparency = 1,
-		Position = UDim2.fromOffset(IS_TOUCH and 12 or 14, L.StatsH - 12),
-		Size = UDim2.fromOffset(W - 28, sh),
-		Visible = false,
-		Parent = f,
-	}, {
-		UIKit.Create("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 2),
-		}),
-	})
-	ui.starImgs = {}
-	local starId, emptyId = UIKit.ArtId("IconStar"), UIKit.ArtId("IconStarEmpty")
-	if starId and emptyId then
-		ui.starIds = { starId, emptyId }
-		for i = 1, math.max(1, math.floor(tonumber(Config.PvP.MaxStars) or 5)) do
-			ui.starImgs[i] = UIKit.Create("ImageLabel", {
-				Name = "Star" .. i,
-				LayoutOrder = i,
-				BackgroundTransparency = 1,
-				ScaleType = Enum.ScaleType.Fit,
-				Image = emptyId,
-				Size = UDim2.fromOffset(sh, sh),
-				Parent = ui.stars,
-			})
-		end
-	end
-	ui.bounty = artLabel(false, {
-		Name = "Bounty",
-		LayoutOrder = 100,
-		AutomaticSize = Enum.AutomaticSize.X,
-		Size = UDim2.new(0, 0, 1, 0),
-		TextSize = 13,
-		Color = Theme.Bad,
-		Parent = ui.stars,
-	})
-	L.FitText(ui.bounty, 12)
+	xpText.Visible = false
+	ui.potions = C.VitalsUI.BuildPotions(root, IS_TOUCH)
 end
 
-function L.LayoutStats(s)
-	local textH = math.ceil(12 / s)
-	local barH = math.max(IS_TOUCH and 20 or 16, textH)
-	local vitalH = math.max(IS_TOUCH and 18 or 16, textH)
-	local xpY = IS_TOUCH and 13 or 48
-	if ui.title then
-		local titleH = math.max(18, math.ceil(14 / s))
-		local classH = math.max(14, textH)
-		local classY = math.max(29, 10 + titleH + 2)
-		ui.title.Size = UDim2.fromOffset(L.StatsW - 138, titleH)
-		local classW = math.floor((L.StatsW - 138) * 0.5) -- BB5: the right half is the power number
-		ui.class.Position = UDim2.fromOffset(126, classY)
-		ui.class.Size = UDim2.fromOffset(classW, classH)
-		if ui.power then
-			ui.power.Position = UDim2.fromOffset(126 + classW + 4, classY)
-			ui.power.Size = UDim2.fromOffset(L.StatsW - 138 - classW - 4, classH)
-		end
-		xpY = math.max(xpY, classY + classH + 4)
-	end
-	if ui.levelTag then
-		-- A tiny badge can hold one readable line. Its original touch fallback already shows just the number.
-		local faceH = ui.levelFace.Size.Y.Scale * ui.levelFace.Parent.Size.Y.Offset * s
-		local split = faceH >= 29.5
-		ui.levelTag.Visible = split
-		ui.level.Position = split and UDim2.fromScale(0, 0.47) or UDim2.fromScale(0, 0)
-		ui.level.Size = split and UDim2.fromScale(1, 0.5) or UDim2.fromScale(1, 1)
-	end
-	ui.xpFrame.Position = UDim2.fromOffset(IS_TOUCH and 62 or 80, xpY)
-	ui.xpFrame.Size = UDim2.fromOffset(ui.xpFrame.Size.X.Offset, barH)
-	local hpY = xpY + barH + (IS_TOUCH and 3 or 2)
-	C.VitalsUI.LayoutStats(hpY, vitalH, 2)
-	local moneyY = hpY + vitalH * 2 + 6
-	local moneyH = math.max(IS_TOUCH and 20 or 18, textH)
-	for _, label in { ui.bank, ui.carried } do
-		label.Position = UDim2.fromOffset(label.Position.X.Offset, moneyY)
-		label.Size = UDim2.fromOffset(label.Size.X.Offset, moneyH)
-	end
-	for _, name in { "BankIcon", "CarriedIcon" } do
-		local icon = ui.stats:FindFirstChild(name)
-		if icon then icon.Position = UDim2.fromOffset(icon.Position.X.Offset, moneyY) end
-	end
-	local bottom = moneyY + moneyH
-	if IS_TOUCH and ui.power then -- BB5 touch: the power row sits under 금고
-		ui.power.Position = UDim2.fromOffset(ui.power.Position.X.Offset, bottom + 2)
-		ui.power.Size = UDim2.fromOffset(ui.power.Size.X.Offset, moneyH)
-		bottom += 2 + moneyH
-	end
-	ui.statsBaseH = math.max(L.StatsH, bottom + 10)
-	ui.stats.Size = UDim2.fromOffset(L.StatsW, ui.statsBaseH + (getFaction() == "Horns" and L.StarsH or 0))
-	ui.stars.Position = UDim2.fromOffset(IS_TOUCH and 12 or 14, ui.statsBaseH - 8)
+-- faction-shaped level badge (bundle 6): Halo ivory centre with a dark number, Horns / Artisan / none navy with light
+function L.RefreshBadge()
+	local key = L.Badge[getFaction()] or "LevelBadge"
+	if ui.badgeKey == key and ui.level and ui.level.Parent then return end
+	ui.badgeKey = key
+	ui.badgeHolder:ClearAllChildren()
+	UIKit.ArtFrame(key, {
+		Name = "Art",
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = 4,
+		Parent = ui.badgeHolder,
+	}, { StrokeThickness = 2 })
+	local facePos, faceSize = UIKit.ArtInner(key)
+	local face = UIKit.Create("Frame", {
+		Name = "Face",
+		BackgroundTransparency = 1,
+		Position = facePos or UDim2.fromScale(0.17, 0.18),
+		Size = faceSize or UDim2.fromScale(0.65, 0.62),
+		ZIndex = 5,
+		Parent = ui.badgeHolder,
+	})
+	local ink = key == "LevelBadgeHalo"
+	ui.level = L.FitText(artLabel(ink, {
+		Name = "Level",
+		Size = UDim2.fromScale(1, 1),
+		TextScaled = true,
+		MaxTextSize = 26,
+		Number = true,
+		Color = ink and ac("Ink", COL.Dark) or ac("Light", COL.White),
+		Text = tostring(math.floor(num("Level", 1))),
+		ZIndex = 6,
+		Parent = face,
+	}), 14, true)
+end
+
+-- places the plate from the HudLayout rects
+function L.LayoutPlate(R)
+	local p = R.portrait
+	ui.portraitHolder.Position = UDim2.fromOffset(p.X, p.Y)
+	ui.portraitHolder.Size = UDim2.fromOffset(p.W, p.H)
+	C.VitalsUI.PlaceBars(R.hp_bar, R.mp_bar)
+	local pl = R.power_line
+	ui.powerRow.Position = UDim2.fromOffset(pl.X, pl.Y)
+	ui.powerRow.Size = UDim2.fromOffset(pl.W, pl.H)
+	local xp = R.xp_bar
+	ui.xpFrame.Position = UDim2.fromOffset(xp.X, xp.Y)
+	ui.xpFrame.Size = UDim2.fromOffset(xp.W, xp.H)
+	L.CheckPouch()
 end
 
 ----------------------------------------------------------------- building: war meter (top center)
@@ -1010,21 +878,20 @@ local function infoPill(name, order, parent, color)
 	return pill, artLabel(true, props)
 end
 
--- gold 빛 fill from the left and crimson 뿔 fill from the right inside the BarTrack capsule, faction shields over both
--- ends, the crown riding the split, info pills under it. 56 units tall (EventHUD's strip sits under its real bottom).
+-- gold 빛 fill from the left and crimson 뿔 fill from the right inside the BarTrack capsule, the faction badges (bundle 6)
+-- over both ends, the crown riding the split, info pills under it. applyLayout sizes it from Rects.war_meter (L.LayoutWar).
 local function buildWar(root)
-	local W = L.WarW
+	local W = 360
 	local w = UIKit.Create("Frame", {
 		Name = "WarMeter",
-		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, 8 + TOP_FALLBACK),
-		Size = UDim2.fromOffset(W, L.WarH),
+		Position = UDim2.new(0.5, -W / 2, 0, 8 + TOP_FALLBACK),
+		Size = UDim2.fromOffset(W, 56),
 		BackgroundTransparency = 1,
 		Parent = root,
 	})
 	ui.war = w
-	local shieldW, barY, barH = 30, 10, 22
-	-- Bar / Info follow the meter's width: applyLayout narrows it on small screens (CR-L36)
+	local shieldW, barY, barH = 30, 8, 22
+	-- Bar / Info follow the meter's width; L.LayoutWar fits them to its height
 	local bar, barArt = UIKit.ArtFrame("BarTrack", {
 		Name = "Bar",
 		Position = UDim2.fromOffset(shieldW - 10, barY),
@@ -1110,20 +977,21 @@ local function buildWar(root)
 		Parent = bar,
 	})
 	-- faction shields over both ends of the bar
-	for _, s in { { "ShieldHalo", 0 }, { "ShieldHorns", 1 } } do
+	for _, s in { { "LevelBadgeHalo", 0, "ShieldHalo" }, { "LevelBadgeHorns", 1, "ShieldHorns" } } do
 		UIKit.ArtImage(s[1], {
-			Name = s[1],
-			AnchorPoint = Vector2.new(s[2], 0),
-			Position = UDim2.new(s[2], 0, 0, 3),
-			Size = UDim2.fromOffset(shieldW, shieldW + 1),
+			Name = s[3],
+			AnchorPoint = Vector2.new(s[2], 0.5),
+			Position = UDim2.new(s[2], 0, 0, barY + barH / 2),
+			Size = UDim2.fromOffset(shieldW + 4, shieldW + 4),
 			ZIndex = 3,
 			Parent = w,
 		})
 	end
+	ui.warBar = bar
 
 	local row = UIKit.Create("Frame", {
 		Name = "Info",
-		Position = UDim2.fromOffset(0, barY + barH + 4),
+		Position = UDim2.fromOffset(0, barY + barH + 3),
 		Size = UDim2.new(1, 0, 0, 20),
 		BackgroundTransparency = 1,
 		Parent = w,
@@ -1140,6 +1008,17 @@ local function buildWar(root)
 	ui.warSiege, ui.warSiegeText = infoPill("Siege", 2, row, ac("BadInk", Theme.Revenge))
 	ui.warSiege.Visible = false
 	ui.warPoints, ui.warPointsText = infoPill("MyPoints", 3, row, nil)
+	ui.warInfo = row
+end
+
+-- the bar keeps 22du, the info pills take the rest of the meter's height (Rects.war_meter: 57.5du PC, 50.7du phone)
+function L.LayoutWar(h)
+	local info = math.clamp(h - 8 - 22 - 3, 14, 20)
+	ui.warInfo.Position = UDim2.fromOffset(0, 8 + 22 + 3)
+	ui.warInfo.Size = UDim2.new(1, 0, 0, info)
+	for _, pill in { ui.warTimePill, ui.warSiege, ui.warPoints } do
+		if pill then pill.Size = UDim2.fromOffset(0, info) end
+	end
 end
 
 ----------------------------------------------------------------- building: status chips
@@ -1223,13 +1102,13 @@ local function setChip(chip, visible, text, color, bright, palette, withIcon)
 end
 
 local function buildChips(root)
-	-- applyLayout sets the width (CR-L36: the war meter column); a full row wraps and the frame grows downwards
+	-- applyLayout sets the width (CR-L36: the war meter column). A23-40: one row only (no wrapping); chips that do not
+	-- fit fold into the '+N' chip (L.CheckChipFit)
 	ui.chips = UIKit.Create("Frame", {
 		Name = "StatusChips",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, L.ChipsY + TOP_FALLBACK),
+		Position = UDim2.new(0.5, 0, 0, 106 + TOP_FALLBACK),
 		Size = UDim2.fromOffset(900, L.ChipH + 6),
-		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
 		Parent = root,
 	})
@@ -1241,29 +1120,51 @@ local function buildChips(root)
 		Padding = UDim.new(0, 6),
 		Parent = ui.chips,
 	})
-	pcall(function()
-		chipList.Wraps = true -- older clients lack it: the row just overflows sideways as before
-	end)
+	ui.chipList = chipList
+	chipList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() L.CheckChipFit() end)
+	ui.chips:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() L.CheckChipFit() end)
 	ui.chipPal = {
 		Safe = { ac("ChipSafe", Theme.Good), ac("ChipSafeRim", Theme.Good), ac("ChipSafeText", COL.Dark) },
 		Rookie = { ac("ChipRookie", Theme.XP), ac("ChipRookieRim", Theme.XP), ac("ChipRookieText", COL.Dark) },
 	}
-	local icons = { Blessing = "Crown", Zone = "IconSafe", Rookie = "IconSprout" }
+	-- A23-26 order: zone -> luck -> danger (bully, wanted, combat) -> rookie / protected -> blessing, size, kaiju queue.
+	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
+	local icons = { Blessing = "Crown", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "IconStar" }
 	ui.chip = {}
-	for i, key in { "Blessing", "Zone", "Rookie", "Protected", "Combat", "Size", "Bully", "Kaiju" } do
+	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Rookie", "Protected", "Blessing", "Size", "Kaiju" }
+	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
+	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
+	end
+	ui.chipMore = makeChip("More", #L.ChipOrder + 1, nil)
+	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
+end
+
+-- A23-40: the row is too wide for its rect -> one chip fewer (the '+N' chip takes it); refreshChips starts again from
+-- L.MaxChips whenever the set of chips that want to show changes
+function L.CheckChipFit()
+	if not ui.chips or not ui.chipList then return end
+	local content, room = ui.chipList.AbsoluteContentSize.X, ui.chips.AbsoluteSize.X
+	if room > 0 and content > room + 1 and L.ChipFit > 1 then
+		L.ChipFit -= 1
+		task.defer(function()
+			local ok, err = pcall(refreshChips)
+			if not ok then warnThrottled("chip fit failed: " .. tostring(err)) end
+		end)
 	end
 end
 
 ----------------------------------------------------------------- building: quests
--- ribbon header (star + "오늘의 퀘스트 (1/3)" + 받기 N + chevron) over parchment rows. Desktop: the header toggles the
--- list (collapsed = header + one row, A14-2). Touch (U5 / CR-M25): one line only; the rows with 받기 / 교체 live in an
--- overlay opened from the header, placed right of the thumbstick zone.
+-- navy header plate (RibbonHeader = Firefly PanelHeader: star in its left disc, "오늘의 퀘스트 (1/3) · 받기 N", chevron)
+-- over parchment rows, on Rects.quest (A23-26: top-right under the rail). Desktop: the header toggles the list
+-- (collapsed = header + the 'now do' row + one more, 검수 2026-10-06 (b): the next-goal row always shows). Touch (U5 /
+-- CR-M25): two lines in the header (line 1 = the 'now do' row, line 2 = story call / 받기 N / today's count); the rows
+-- with 받기 / 교체 live in an overlay opened from the header.
 local function buildQuests(root)
 	ui.quests = UIKit.Create("Frame", {
 		Name = "Quests",
 		Position = UDim2.fromOffset(12, 200 + TOP_FALLBACK),
-		Size = UDim2.fromOffset(L.QuestW, 0),
+		Size = UDim2.fromOffset(300, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
 		Visible = false,
@@ -1279,7 +1180,7 @@ local function buildQuests(root)
 	ui.questHeader = UIKit.ArtButton("RibbonHeader", {
 		Name = "Header",
 		LayoutOrder = 0,
-		Size = UDim2.fromOffset(L.QuestW, hh),
+		Size = UDim2.fromOffset(300, hh),
 		Parent = ui.quests,
 	}, function()
 		-- B15: on touch the header line reads "…말을 걸어요 — 눌러서 보기" while a story waits: one tap opens it
@@ -1295,42 +1196,57 @@ local function buildQuests(root)
 		end
 		toggleQuests()
 	end, { CornerRadius = UDim.new(0, 10) })
-	local is = hh - 8
-	local star = UIKit.ArtImage("IconStar", {
+	-- the star sits in the plate's left disc; L.LayoutQuestHeader follows the header height
+	ui.questHeaderIcon = UIKit.ArtImage("IconStar", {
 		Name = "Icon",
-		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 8, 0.5, 0),
-		Size = UDim2.fromOffset(is, is),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(0, hh * 0.47, 0.5, 0),
+		Size = UDim2.fromOffset(hh * 0.6, hh * 0.6),
+		ZIndex = 2,
 		Parent = ui.questHeader,
 	})
-	local tx = star and (is + 13) or 10
-	ui.questHeaderText = artLabel(true, {
+	ui.questHeaderText = artLabel(false, {
 		Name = "Text",
-		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, tx, 0.5, 0),
-		Size = UDim2.new(1, -tx - 26, 1, -8),
+		Position = UDim2.fromOffset(hh + 4, 4),
+		Size = UDim2.new(1, -hh - 30, 1, -8),
 		TextScaled = true,
 		MaxTextSize = 14,
 		Title = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
+		ZIndex = 2,
 		Parent = ui.questHeader,
 	})
-	ui.questChevron = artLabel(true, {
+	ui.questChevron = artLabel(false, {
 		Name = "Chevron",
 		AnchorPoint = Vector2.new(1, 0.5),
 		Position = UDim2.new(1, -8, 0.5, 0),
-		Size = UDim2.fromOffset(16, is),
+		Size = UDim2.fromOffset(16, hh - 8),
 		TextScaled = true,
 		MaxTextSize = 14,
 		Text = TXT.QuestExpand,
+		ZIndex = 2,
 		Parent = ui.questHeader,
 	})
 	L.FitText(ui.questHeaderText, 13, true)
 	L.FitText(ui.questChevron, 11)
+	if IS_TOUCH then
+		-- line 2 (A23-26 phone quest line): story call / 받기 N / today's count
+		ui.questHeaderSub = L.FitText(artLabel(false, {
+			Name = "Sub",
+			Size = UDim2.new(1, -hh - 30, 0.5, -2),
+			TextScaled = true,
+			MaxTextSize = 14,
+			Color = ac("LightSub", Theme.SubText),
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextTruncate = Enum.TextTruncate.AtEnd,
+			ZIndex = 2,
+			Parent = ui.questHeader,
+		}), 12)
+	end
 
 	local listParent = ui.quests
-	ui.questRowW = L.QuestW
+	ui.questRowW = 300 -- applyLayout: Rects.quest width (desktop)
 	if IS_TOUCH then
 		local pad = 10
 		ui.questRowW = L.OverlayW - 2 * pad
@@ -1400,6 +1316,213 @@ local function buildQuests(root)
 			Padding = UDim.new(0, L.QuestGap),
 		}),
 	})
+end
+
+----------------------------------------------------------------- building: quest lines (A23-40: no plate)
+-- Two outlined text lines on Rects.quest (PC: under the minimap; phones: beside it, outside the thumbstick zone):
+-- [icon] what to do ... 3/5 | [받기]. Line 1 = the 'now do' row (pinned guide / next goal / waiting story / first
+-- claimable / first daily), line 2 = the next one (else today's count). PC: each line is its own button (a claimable line
+-- claims, the pinned / story line runs its action, any other line folds the full list out under the lines, ▼/▲).
+-- Phones: the block is one thumb-size button (line 1 claimable -> claim, a waiting story -> open it, else the list
+-- overlay). Text: UIKit.StyleText dark mode (white -> cream, navy rim) so it reads over the world.
+function L.BuildQuestLines(root)
+	local block = UIKit.Create("TextButton", {
+		Name = "QuestLines",
+		Text = "",
+		AutoButtonColor = false,
+		BackgroundTransparency = 1,
+		Size = UDim2.fromOffset(300, 60),
+		Active = IS_TOUCH, -- PC: the lines are the buttons
+		Visible = false,
+		ZIndex = 3,
+		Parent = root,
+	})
+	block.Activated:Connect(function()
+		if IS_TOUCH then L.QuestBlockTap() end
+	end)
+	ui.questLines = block
+	ui.qline = {}
+	-- phones: the 12 px name-tag floor (the block is 150 px wide); PC: body text
+	local style = IS_TOUCH and "NameTag" or "Body"
+	for i = 1, 2 do
+		-- one row = [icon][text (fills the rest, cut with …)][3/5 | 받기][▼ on line 1, PC]: a horizontal list with a
+		-- flexible text cell, so a line without numbers gives the text the whole width
+		local row = UIKit.Create(IS_TOUCH and "Frame" or "TextButton", {
+			Name = "Line" .. i,
+			BackgroundTransparency = 1,
+			Size = UDim2.new(1, 0, 0.5, 0),
+			Position = UDim2.fromScale(0, (i - 1) * 0.5),
+			ZIndex = 3,
+			Parent = block,
+		}, {
+			UIKit.Create("UIListLayout", {
+				FillDirection = Enum.FillDirection.Horizontal,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				Padding = UDim.new(0, 4),
+			}),
+		})
+		if not IS_TOUCH then
+			row.Text = ""
+			row.AutoButtonColor = false
+			row.Activated:Connect(function() L.QuestLineTap(i) end)
+		end
+		local icon = UIKit.ArtImage("IconScroll", {
+			Name = "Icon",
+			LayoutOrder = 1,
+			Size = UDim2.fromOffset(24, 24),
+			ZIndex = 4,
+			Parent = row,
+		})
+		local text = UIKit.StyledLabel({
+			Name = "Text",
+			LayoutOrder = 2,
+			Size = UDim2.new(0, 0, 1, 0),
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextTruncate = Enum.TextTruncate.AtEnd,
+			TextWrapped = false,
+			ZIndex = 4,
+			Parent = row,
+		}, style)
+		UIKit.Create("UIFlexItem", { FlexMode = Enum.UIFlexMode.Fill, Parent = text })
+		local nums = UIKit.StyledLabel({
+			Name = "Nums",
+			LayoutOrder = 3,
+			Size = UDim2.new(0, 0, 1, 0),
+			AutomaticSize = Enum.AutomaticSize.X,
+			TextXAlignment = Enum.TextXAlignment.Right,
+			ZIndex = 4,
+			Parent = row,
+		}, "Number")
+		-- 받기: the green candy pill (same art as the list rows' 받기), text on it
+		local claim = UIKit.ArtFrame("Pill", {
+			Name = "Claim",
+			LayoutOrder = 4,
+			ImageColor3 = COL.HotTint,
+			Visible = false,
+			ZIndex = 4,
+			Parent = row,
+		}, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
+		local claimText = UIKit.StyledLabel({
+			Name = "Text",
+			Size = UDim2.fromScale(1, 1),
+			Text = TXT.Claim,
+			ZIndex = 5,
+			Parent = claim,
+		}, "Number")
+		ui.qline[i] = { Row = row, Icon = icon, Text = text, Nums = nums, Claim = claim, ClaimText = claimText, Entry = nil }
+	end
+	-- PC: ▼ / ▲ at the end of line 1 folds the full list (the parchment rows) out under the lines
+	if not IS_TOUCH then
+		ui.questFold = UIKit.StyledLabel({
+			Name = "Fold",
+			LayoutOrder = 5,
+			Size = UDim2.new(0, 0, 1, 0),
+			AutomaticSize = Enum.AutomaticSize.X,
+			Text = TXT.QuestOpenList,
+			ZIndex = 4,
+			Parent = ui.qline[1].Row,
+		}, "Number")
+	end
+end
+
+-- line metrics follow the rect (logical units): icon about the line height, text size from it (the style floors keep
+-- it readable), the 받기 pill a little shorter than the line
+function L.LayoutQuestLines(q)
+	local block = ui.questLines
+	if not block then return end
+	block.Position = UDim2.fromOffset(q.X, q.Y)
+	block.Size = UDim2.fromOffset(q.W, q.H)
+	local lh = q.H / 2
+	local iconS = math.floor(lh * 0.9)
+	local textSize = math.max(12, math.floor(lh * 0.6))
+	for _, l in ui.qline do
+		if l.Icon then l.Icon.Size = UDim2.fromOffset(iconS, iconS) end
+		l.Text.TextSize = textSize
+		l.Nums.TextSize = textSize
+		l.Claim.Size = UDim2.fromOffset(math.floor(lh * 2.3), math.floor(lh * 0.86))
+		l.ClaimText.TextSize = math.max(12, math.floor(lh * 0.5))
+	end
+	if ui.questFold then ui.questFold.TextSize = math.max(12, math.floor(lh * 0.55)) end
+end
+
+-- one line: icon (monster head / row type), text, progress or 받기 (CR-M27 / CR-L31 numbers)
+function L.SetQuestLine(l, e, label, nums)
+	l.Entry = e
+	l.Row.Visible = label ~= nil
+	if not label then return end
+	l.Text.Text = label
+	local claimable = e ~= nil and e.Progress >= e.Target and e.CanClaim
+		and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") -- the list rows' 받기 rule (refreshQuests)
+	l.Claim.Visible = claimable
+	l.Nums.Visible = not claimable and nums ~= nil
+	l.Nums.Text = nums or ""
+	if l.Icon then
+		local head = e and e.Unit and UIKit.ArtId("IconMon" .. e.Unit)
+		local key = e and (QUEST_ICON[e.Id] or "IconScroll") or "IconStar"
+		l.Icon.Image = head or UIKit.ArtId(key) or UIKit.ArtId("IconScroll") or l.Icon.Image
+	end
+end
+
+-- PC line press: claim / pinned or story action / fold the list
+function L.QuestLineTap(i)
+	local l = ui.qline and ui.qline[i]
+	local e = l and l.Entry
+	if not e then
+		toggleQuests()
+		return
+	end
+	local row = nil
+	for _, r in questRows do
+		if r.Entry == e then row = r break end
+	end
+	if e.Progress >= e.Target and e.CanClaim and row and row.Claim.Visible then
+		L.OnClaim(row) -- assigned with onClaim below
+	elseif (e.Pinned or e.Story) and L.PinnedTap then
+		L.PinnedTap(e, row)
+	else
+		toggleQuests()
+	end
+end
+
+-- phone block press: line 1 claimable -> claim; a waiting story or the pinned row -> its action; else the list overlay
+function L.QuestBlockTap()
+	if questState.CallEntry and L.PinnedTap then
+		L.PinnedTap(questState.CallEntry)
+		return
+	end
+	local l = ui.qline and ui.qline[1]
+	local e = l and l.Entry
+	if e and e.Progress >= e.Target and e.CanClaim then
+		for _, r in questRows do
+			if r.Entry == e and r.Claim.Visible then
+				L.OnClaim(r)
+				return
+			end
+		end
+	end
+	toggleQuests()
+end
+
+-- header plate pieces follow its height (the disc is about as wide as the plate is tall)
+function L.LayoutQuestHeader(w, h)
+	ui.questHeader.Size = UDim2.fromOffset(w, h)
+	local disc = math.min(h, 40)
+	if ui.questHeaderIcon then
+		ui.questHeaderIcon.Position = UDim2.new(0, disc * 0.5, 0.5, 0)
+		ui.questHeaderIcon.Size = UDim2.fromOffset(disc * 0.62, disc * 0.62)
+	end
+	local tx = disc + 4
+	if ui.questHeaderSub then
+		ui.questHeaderText.Position = UDim2.fromOffset(tx, 3)
+		ui.questHeaderText.Size = UDim2.new(1, -tx - 26, 0.5, -3)
+		ui.questHeaderSub.Position = UDim2.new(0, tx, 0.5, 0)
+		ui.questHeaderSub.Size = UDim2.new(1, -tx - 26, 0.5, -3)
+	else
+		ui.questHeaderText.Position = UDim2.fromOffset(tx, 4)
+		ui.questHeaderText.Size = UDim2.new(1, -tx - 26, 1, -8)
+	end
+	ui.questChevron.Size = UDim2.fromOffset(16, math.max(12, h - 8))
 end
 
 ----------------------------------------------------------------- building: travel bar
@@ -1526,35 +1649,46 @@ local function keyHint(parent, action, position, anchor)
 	label.Visible = L.ShowKeys and L.KeyBound(action)
 end
 
-local doUpgrade, openMenu, openMap -- forward (defined with the input code)
+local doUpgrade, openMenu, openMap, inputAllowed -- forward (defined with the input code)
 
--- parchment square (BtnSquare art): icon over a short ink label, key badge on the corner (action = Keybinds id)
-local function squareButton(name, icon, text, action, onClick)
-	local btn = UIKit.ArtButton("BtnSquare", {
-		Name = name,
+-- A23-38 / A23-40 icon tile (MenuTile = Firefly 471686b: navy tile, thin gold trim, a little see-through over the world):
+-- the icon on top, its short name under it inside the tile, the key badge in the top-right corner (keyboards only).
+-- applyLayout sizes it (square, Rects.tiles.Size).
+local function tileButton(def, onClick)
+	local btn = UIKit.ArtButton("MenuTile", {
+		Name = "Tile" .. def.Id,
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Size = UDim2.fromOffset(L.Square, L.Square),
+		Size = UDim2.fromOffset(64, 64),
+		ImageTransparency = L.TileTint,
+		Visible = false,
 		Parent = ui.buttons,
-	}, onClick, { CornerRadius = UDim.new(0, 12) })
-	local img = UIKit.ArtImage(icon, {
+	}, onClick, { CornerRadius = UDim.new(0, 10), BackgroundTransparency = 0.25 })
+	local iconProps = {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.fromScale(0.5, 0.1),
-		Size = UDim2.fromScale(0.5, 0.42),
+		Position = UDim2.fromScale(0.5, 0.07),
+		Size = UDim2.fromScale(L.TileIcon, L.TileIcon),
+		ZIndex = 3,
 		Parent = btn,
-	})
-	local label = artLabel(true, {
+	}
+	-- 내 캐릭터 follows CharacterGender (IconCharacterF) through UIKit.CharacterIcon
+	local img = (def.Id == "Character" and type(UIKit.CharacterIcon) == "function") and UIKit.CharacterIcon(iconProps)
+		or UIKit.ArtImage(def.Icon, iconProps)
+	local label = artLabel(false, {
 		Name = "Label",
-		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.fromScale(0.5, img and 0.53 or 0.28),
-		Size = UDim2.new(1, -8, img and 0.25 or 0.4, 0),
+		AnchorPoint = Vector2.new(0.5, 1),
+		Position = UDim2.new(0.5, 0, 1, -2),
+		Size = UDim2.new(1, -4, 0.3, 0),
 		TextScaled = true,
 		MaxTextSize = 14,
-		Text = text,
+		Title = true,
+		Text = def.Text or "",
+		ZIndex = 4,
 		Parent = btn,
 	})
-	keyHint(btn, action, UDim2.new(1, 3, 1, 3), Vector2.new(1, 1))
-	L.FitText(label, 12)
+	L.FitText(label, 12, true)
+	if type(UIKit.StyleText) == "function" then UIKit.StyleText(label, "NameTag") end -- A23-38: white name, navy rim
+	if def.Key then keyHint(btn, def.Key, UDim2.new(1, -2, 0, 2), Vector2.new(1, 0)) end
 	return btn, label, img
 end
 
@@ -1566,21 +1700,14 @@ local function buildButtons(root)
 		Parent = root,
 	})
 
-	-- 공격 (press = one swing, hold = repeat): red disc, silver sword, "공격"
+	-- 공격 (one press = one swing): Firefly orange disc + my class glyph (L.RefreshAttackGlyph) + "공격"
 	ui.attack = roundButton("Attack", L.Attack, "BtnAttack", COL.AttackFill)
-	local sword = UIKit.ArtImage("IconAttack", {
-		Name = "Icon",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.4),
-		Size = UDim2.fromScale(0.46, 0.46),
-		ZIndex = 3,
-		Parent = ui.attack,
-	})
+	L.RefreshAttackGlyph()
 	artLabel(false, {
 		Name = "Label",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, sword and 0.74 or 0.5),
-		Size = UDim2.fromScale(0.7, 0.22),
+		Position = UDim2.fromScale(0.5, 0.76),
+		Size = UDim2.fromScale(0.62, 0.2),
 		TextScaled = true,
 		MaxTextSize = math.floor(L.Attack * 0.2),
 		Title = true,
@@ -1591,13 +1718,13 @@ local function buildButtons(root)
 	L.FitText(ui.attack:FindFirstChild("Label"), 16, true)
 	keyHint(ui.attack, "Attack", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
-	-- Keep the approved skill button artwork; only MP and cooldown determine readiness.
+	-- 스킬 Q: Firefly blue disc (BtnSpecial); only MP and cooldown decide readiness
 	local rel, relArt = roundButton("Release", L.Release, "BtnSpecial", COL.ReleaseFill)
 	ui.release, ui.releaseArt = rel, relArt
 	ui.releaseIcon = UIKit.ArtImage("IconSpecial", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.45),
+		Position = UDim2.fromScale(0.5, 0.42),
 		Size = UDim2.fromScale(0.56, 0.34),
 		ZIndex = 3,
 		Parent = rel,
@@ -1631,95 +1758,68 @@ local function buildButtons(root)
 	L.FitText(ui.skillTimer, 16)
 	keyHint(rel, "SkillQ", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
-	-- 자동 / 지도 / 메뉴 (U1: the menu key is B by default; Esc belongs to Roblox and M opens the map; BB1 Keybinds)
-	ui.map = squareButton("Map", "IconMap", TXT.Map, "Map", function()
-		openMap()
-	end)
-	ui.menu, ui.menuLabel = squareButton("Menu", "IconGear", TXT.Menu, "Menu", function()
-		openMenu()
-	end)
-	ui.menuGlow = makeGlow(ui.menu, UDim.new(0, 12))
-	-- A23-1 auto combat ON/OFF: hidden until the crown-shard quest unlocks it (no "unlocks at ..." teaser)
-	ui.auto, ui.autoLabel = squareButton("Auto", "Crown", TXT.AutoOff, "Auto", function()
-		L.ToggleAuto()
-	end)
-	ui.autoGlow = makeGlow(ui.auto, UDim.new(0, 12))
-	local autoKey = ui.auto:FindFirstChild("KeyHint")
-	if autoKey then -- the longer "자동 끔" label needs the bottom-right corner
-		autoKey.AnchorPoint, autoKey.Position = Vector2.new(1, 0), UDim2.new(1, 3, 0, -3)
+	-- A23-40 icon tile row (U1: the menu key is B by default; Esc belongs to Roblox and M opens the map). A window tile
+	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
+	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
+		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu }
+	ui.tiles = {}
+	for i, def in L.Tiles do
+		def.Text = names[def.Id]
+		local btn, label = tileButton(def, function()
+			L.TileTap(def)
+		end)
+		ui.tiles[i] = { Def = def, Button = btn, Label = label }
+		if def.Menu then ui.menu, ui.menuLabel = btn, label end
 	end
-	ui.auto.Visible = false
-
-	-- next-weapon card: sword + "다음: 나무 검" + coin price, progress bar / A7-3 "N마리 더!" line
-	local upW, upH = 3 * L.Square + 2 * L.RowGap, L.UpgradeH
-	ui.upgrade = UIKit.ArtButton("PanelParchment", {
-		Name = "Upgrade",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Size = UDim2.fromOffset(upW, upH),
-		Visible = not IS_TOUCH,
-		Parent = ui.buttons,
-	}, function()
-		doUpgrade()
-	end, { CornerRadius = UDim.new(0, 12) })
-	ui.upgradeGlow = makeGlow(ui.upgrade, UDim.new(0, 12))
-	local iconS = upH - 34
-	local wood = UIKit.ArtImage("IconSword", {
+	ui.menuGlow = makeGlow(ui.menu, UDim.new(0, 10))
+	-- A23-1 auto combat ON/OFF (round, Firefly BtnRound): hidden until the crown-shard quest unlocks it (no "unlocks at
+	-- ..." teaser); ON = gold ring, OFF = dimmed disc
+	ui.auto, ui.autoArt = roundButton("Auto", L.Square, "BtnRound", COL.ReleaseFill)
+	UIKit.ArtImage("Crown", {
 		Name = "Icon",
-		Position = UDim2.fromOffset(9, 7),
-		Size = UDim2.fromOffset(iconS, iconS),
-		Parent = ui.upgrade,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.4),
+		Size = UDim2.fromScale(0.5, 0.34),
+		ZIndex = 3,
+		Parent = ui.auto,
 	})
-	ui.upgradeIcon = wood
-	ui.upgradeIconKey = wood and "IconSword" or nil
-	local tx = wood and (iconS + 15) or 10
-	ui.upgradeTitle = artLabel(true, {
-		Name = "Title",
-		Position = UDim2.fromOffset(tx, 8),
-		Size = UDim2.new(1, -tx - 10, 0, 18),
+	ui.autoLabel = L.FitText(artLabel(false, {
+		Name = "Label",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.74),
+		Size = UDim2.fromScale(0.8, 0.26),
 		TextScaled = true,
-		MaxTextSize = 15,
+		MaxTextSize = 14,
 		Title = true,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		TextTruncate = Enum.TextTruncate.AtEnd,
-		Parent = ui.upgrade,
+		Text = TXT.Auto,
+		ZIndex = 4,
+		Parent = ui.auto,
+	}), 12, true)
+	ui.autoGlow = makeGlow(ui.auto, UDim.new(0.5, 0))
+	keyHint(ui.auto, "Auto", UDim2.fromScale(0.85, 0.85), Vector2.new(0.5, 0.5))
+	ui.auto.Activated:Connect(function()
+		if inputAllowed() then L.ToggleAuto() end
+	end)
+	ui.auto.Visible = false
+end
+
+-- the attack button's glyph follows my class (bundle 6: sword / staff; bow arrives with bundle 7, IconAttack until then)
+function L.RefreshAttackGlyph()
+	if not ui.attack then return end
+	local key = L.Glyph[getClass()]
+	if not (key and UIKit.ArtId(key)) then key = "IconAttack" end
+	if ui.attackGlyphKey == key then return end
+	ui.attackGlyphKey = key
+	local old = ui.attack:FindFirstChild("Icon")
+	if old then old:Destroy() end
+	UIKit.ArtImage(key, {
+		Name = "Icon",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.42),
+		Size = UDim2.fromScale(0.5, 0.5),
+		ZIndex = 3,
+		Parent = ui.attack,
 	})
-	ui.upgradeCoin = UIKit.ArtImage("IconCoin", {
-		Name = "Coin",
-		Position = UDim2.fromOffset(tx, 28),
-		Size = UDim2.fromOffset(16, 16),
-		Parent = ui.upgrade,
-	})
-	local px = ui.upgradeCoin and (tx + 20) or tx
-	ui.upgradePrice = artLabel(true, {
-		Name = "Price",
-		Position = UDim2.fromOffset(px, 27),
-		Size = UDim2.new(1, -px - 10, 0, 18),
-		TextScaled = true,
-		MaxTextSize = 15,
-		Number = true,
-		Color = ac("GoldInk", Theme.Gold),
-		Outline = ac("TextOutline", COL.Dark),
-		OutlineTransparency = 0,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		Parent = ui.upgrade,
-	})
-	local _, setUpgrade, upgradeText = UIKit.ArtBar({
-		Name = "Progress",
-		Position = UDim2.fromOffset(8, upH - 26),
-		Size = UDim2.new(1, -16, 0, 18),
-		Color = ac("UpgradeGold", Theme.Gold),
-		Parent = ui.upgrade,
-	})
-	upgradeText.TextScaled = true
-	local tc = upgradeText:FindFirstChildOfClass("UITextSizeConstraint")
-	if tc then tc.MaxTextSize = 13 end
-	touchFloor(upgradeText)
-	ui.setUpgrade = setUpgrade
-	ui.upgradeText = upgradeText
-	L.FitText(ui.upgradeTitle, 13, true)
-	L.FitText(ui.upgradePrice, 12)
-	L.FitText(ui.upgradeText, 11)
-	keyHint(ui.upgrade, "Upgrade", UDim2.new(1, -4, 0, 4), Vector2.new(1, 0))
 end
 
 ----------------------------------------------------------------- refresh: stats
@@ -1957,22 +2057,9 @@ function L.PortraitRemoving(character)
 end
 
 local function refreshStats()
-	local f = getFaction()
 	local level = math.floor(num("Level", 1))
-	ui.level.Text = tostring(level)
-
-	if ui.title then
-		local title = Config.DisplayTitle(f, num("Honor", 0), num("Infamy", 0), num("FallMarks", 0),
-			num("RedeemMarks", 0), attr("SessionTitle", ""), attr("TitleSel", ""))
-		local prefix = ""
-		if f == "Neutral" then
-			local emblem = factionDef(f).Emblem
-			if type(emblem) == "string" and emblem ~= "" and glyphSafe(emblem) then prefix = emblem .. " " end
-		end
-		ui.title.Text = prefix .. tostring(title or "")
-		ui.title.TextColor3 = factionColor(f)
-		ui.class.Text = Config.ClassName(getClass(), f)
-	end
+	L.RefreshBadge()
+	if ui.level then ui.level.Text = tostring(level) end
 
 	local xp = math.max(0, num("XP", 0))
 	if level >= Config.Levels.MaxLevel then
@@ -1984,40 +2071,42 @@ local function refreshStats()
 		ui.xpText.Text = fmtNum(xp) .. " / " .. fmtNum(need)
 	end
 
-	local tagHex = ac("LightSub", Theme.SubText):ToHex()
-	ui.bank.Text = string.format(TXT.Money, tagHex, TXT.BankTag, fmtNum(num("BankGold", 0)))
-	if ui.carried then
-		ui.carried.Text = string.format(TXT.Money, tagHex, TXT.CarriedTag, fmtNum(num("CarriedGold", 0)))
-	end
-
-	local horns = f == "Horns"
-	ui.stars.Visible = horns
-	if horns then
-		local maxStars = Config.PvP.MaxStars or 5
-		local stars = math.clamp(math.floor(num("WantedStars", 0)), 0, maxStars)
-		local bounty = string.format(TXT.Bounty, fmtNum(num("Bounty", 0)))
-		if ui.starIds then
-			for i, img in ui.starImgs do
-				img.Visible = i <= maxStars
-				img.Image = (i <= stars) and ui.starIds[1] or ui.starIds[2]
-			end
-			ui.bounty.Text = bounty
-		else
-			ui.bounty.Text = string.rep("★", stars) .. string.rep("☆", maxStars - stars) .. " " .. bounty
-		end
-	end
-	local h = (ui.statsBaseH or L.StatsH) + (horns and L.StarsH or 0)
-	if ui.stats.Size.Y.Offset ~= h then
-		ui.stats.Size = UDim2.fromOffset(L.StatsW, h)
-		requestLayout()
-	end
+	-- the power line carries the level; the pouch (carried gold, it can be stolen) turns sack-orange while > 0
+	L.PowerSet(L.Pow.Shown or L.PowerValue())
+	local carried = math.max(0, num("CarriedGold", 0))
+	ui.pouch.Text = string.format(TXT.Pouch, TXT.CarriedTag, fmtNum(carried))
+	ui.pouch.TextColor3 = carried > 0 and (Theme.Sack or ac("GoldText", Theme.Gold)) or ac("LightSub", Theme.SubText)
+	L.CheckPouch()
+	if ui.chip then refreshChips() end -- the wanted chip follows stars / bounty
 end
 
 ----------------------------------------------------------------- refresh: status chips
-local function refreshChips()
+-- EventHUD's luck line (A23-26 luck chip); phones get the short one ('희귀 10.75%')
+function L.LuckText()
+	local ev = C and C.EventHUD
+	if type(ev) ~= "table" then return nil end
+	local fn = ev.LuckShort -- A23-40: the short form everywhere ('희귀 10.75%' next to the clover)
+	if type(fn) ~= "function" then fn = ev.LuckSummary end
+	if type(fn) ~= "function" then return nil end
+	local ok, line = pcall(fn)
+	if not ok or type(line) ~= "string" or line == "" then return nil end
+	if IS_TOUCH and fn == ev.LuckSummary then line = string.gsub(line, "^.-·%s*", "") end
+	return line
+end
+
+refreshChips = function()
 	local f = getFaction()
 	local now = Util.Now()
 	local pal = ui.chipPal
+
+	local luck = L.LuckText()
+	setChip(ui.chip.Luck, luck ~= nil, luck, Theme.Good, false, nil, true)
+	-- Horns wanted stars + bounty: a danger chip (the old card row)
+	local stars = f == "Horns" and math.floor(num("WantedStars", 0)) or 0
+	local bounty = f == "Horns" and math.max(0, num("Bounty", 0)) or 0
+	local wanted = string.format(TXT.Wanted, string.rep("★", math.clamp(stars, 0, 5)))
+	if bounty > 0 then wanted ..= string.format(TXT.WantedBounty, fmtNum(bounty)) end
+	setChip(ui.chip.Wanted, stars > 0 or bounty > 0, wanted, Theme.Bad, false, nil, stars > 0)
 
 	local blessing = UIKit.GameAttr("WarBlessing", "None")
 	local bdef = (blessing == "Halo" or blessing == "Horns") and Config.Factions[blessing] or nil
@@ -2054,6 +2143,30 @@ local function refreshChips()
 	local bullyLeft = math.max(1, math.ceil((num("BullyEndsAt", 0) - now) / 60)) -- A23-22 penalty minutes
 	setChip(ui.chip.Bully, bully > 0, string.format(TXT.BullyPenalty, bullyLeft), Theme.Bad)
 	setChip(ui.chip.Kaiju, attr("KaijuState", "None") == "Queued", TXT.KaijuQueued, Theme.Bad)
+
+	-- A23-40: at most L.MaxChips chips in their order (fewer when they do not fit the row, L.CheckChipFit); the rest fold
+	-- into one '+N' chip (no stacked rows)
+	local wantKey = ""
+	for _, key in L.ChipOrder do
+		local chip = ui.chip[key]
+		if chip and chip.Frame.Visible then wantKey ..= key .. "," end
+	end
+	if wantKey ~= L.ChipWantKey then
+		L.ChipWantKey = wantKey
+		L.ChipFit = L.MaxChips
+	end
+	local shownChips, folded = 0, 0
+	for _, key in L.ChipOrder do
+		local chip = ui.chip[key]
+		if chip and chip.Frame.Visible then
+			shownChips += 1
+			if shownChips > L.ChipFit then
+				chip.Frame.Visible = false
+				folded += 1
+			end
+		end
+	end
+	setChip(ui.chipMore, folded > 0, string.format(TXT.MoreChips, folded), Theme.SubText)
 end
 
 ----------------------------------------------------------------- refresh: war meter
@@ -2111,43 +2224,6 @@ local function refreshSkill()
 		ui.releaseArt.ImageColor3 = ready and COL.White or COL.DimTint
 	elseif ui.releaseArt then
 		ui.releaseArt.BackgroundTransparency = ready and 0.05 or 0.35
-	end
-end
-
-local function refreshUpgrade()
-	local iconKey = "IconSword"
-	if type(Config.WeaponArtKey) == "function" then
-		local weaponKey = Config.WeaponArtKey(math.floor(num("WeaponTier", 1)), getClass(), getFaction())
-		if UIKit.ArtId(weaponKey) then iconKey = weaponKey end
-	end
-	if not UIKit.ArtId(iconKey) then iconKey = nil end
-	if ui.upgradeIconKey ~= iconKey then
-		if ui.upgradeIcon then ui.upgradeIcon:Destroy() end
-		local iconS = L.UpgradeH - 34
-		ui.upgradeIcon = iconKey and UIKit.ArtImage(iconKey, {
-			Name = "Icon",
-			Position = UDim2.fromOffset(9, 7),
-			Size = UDim2.fromOffset(iconS, iconS),
-			Parent = ui.upgrade,
-		}) or nil
-		ui.upgradeIconKey = iconKey
-		local tx = ui.upgradeIcon and (iconS + 15) or 10
-		ui.upgradeTitle.Position = UDim2.fromOffset(tx, 8)
-		ui.upgradeTitle.Size = UDim2.new(1, -tx - 10, 0, 18)
-		if ui.upgradeCoin then ui.upgradeCoin.Position = UDim2.fromOffset(tx, 28) end
-		local px = ui.upgradeCoin and (tx + 20) or tx
-		ui.upgradePrice.Position = UDim2.fromOffset(px, 27)
-		ui.upgradePrice.Size = UDim2.new(1, -px - 10, 0, 18)
-	end
-	ui.upgradeTitle.Text = "대장간" -- one name everywhere: HUD card, panel title, world sign ("대장간 · 장인 길드")
-	ui.upgradePrice.Text = "무기 선택 · 구매 · 판매"
-	ui.upgradeText.Text = "교차로 마을"
-	ui.setUpgrade(1, ac("UpgradeGold", Theme.Gold))
-	if ui.upgradeCoin then ui.upgradeCoin.Visible = false end
-	-- The shop is a choice, not a prescribed next-tier purchase.
-	if not ui.upgrade.Visible then
-		ui.upgrade.Visible = true
-		requestLayout()
 	end
 end
 
@@ -2323,6 +2399,8 @@ local function onClaim(r)
 		end
 	end)
 end
+
+L.OnClaim = onClaim -- the quest lines (built above) claim through the list rows
 
 local function onReroll(r)
 	local e = r.Entry
@@ -2593,7 +2671,10 @@ refreshQuests = function()
 	end
 	questState.CallEntry = callIndex and entries[callIndex] or nil
 	local blockWasVisible = ui.quests.Visible
-	ui.quests.Visible = #entries > 0
+	-- A23-40: the two quest lines always show; the parchment list (header + rows) folds out under them on PC only
+	-- (phones open the overlay from the lines)
+	ui.quests.Visible = #entries > 0 and not IS_TOUCH and questExpanded
+	if ui.questLines then ui.questLines.Visible = #entries > 0 end
 	if #entries == 0 and ui.questOverlay then
 		questState.OverlayOpen = false
 		ui.questOverlay.Visible = false
@@ -2612,11 +2693,15 @@ refreshQuests = function()
 			firstDaily = i
 		end
 	end
-	local shown = nil
-	if callIndex then
-		shown = callIndex -- B15: the collapsed list shows the story that is waiting
-	elseif entries[1] and entries[1].Pinned then
+	-- 'now do' row: the pinned guide / next-goal row when there is one (검수 2026-10-06 (b): it always shows, phones too),
+	-- else the waiting story, the first claimable, the first unfinished daily. Desktop shows one more row under it.
+	local shown, second = nil, nil
+	if entries[1] and entries[1].Pinned then
 		shown = 1
+		second = callIndex or firstClaim or firstDaily
+		if second == 1 then second = nil end
+	elseif callIndex then
+		shown = callIndex -- B15: the collapsed list shows the story that is waiting
 	else
 		shown = firstClaim or firstDaily or 1
 	end
@@ -2626,20 +2711,28 @@ refreshQuests = function()
 	if claimable > 0 then head ..= string.format(TXT.QuestClaimable, claimable) end
 	local hot = claimable > 0
 	if IS_TOUCH then
-		-- U5: one line (what to do now); tapping it opens the overlay with the rows
-		local line = head
+		-- U5 + A23-26: line 1 = what to do now (the pinned / next-goal row first), line 2 = the waiting story (one tap
+		-- opens it: the header handler), else 받기 N, else today's count; tapping opens the overlay with the rows
 		local se = entries[shown]
 		questState.ShownEntry = se
-		local mission = se and se.Pinned and se.TutorialStep >= 0 and se.TutorialStep < 99
-		if callIndex then
-			line = call.Label -- B15: one tap on the header opens it (the header handler)
-		elseif hot and not mission and not (se and se.Pinned and se.CanClaim and se.Progress >= se.Target) then
-			line = string.format(TXT.QuestTouchClaim, claimable)
-		elseif se then
+		local line = head
+		if se then
 			local p, t = questNums(se) -- CR-M27 / CR-L31
 			line = se.ShowProgress and string.format(TXT.QuestTouchLine, p, t, se.Text) or se.Text
 		end
+		local sub = head
+		if callIndex and entries[shown] ~= entries[callIndex] then
+			sub = call.Label
+		elseif callIndex then
+			line = call.Label
+		elseif hot and not (se and se.Pinned and se.CanClaim and se.Progress >= se.Target) then
+			sub = string.format(TXT.QuestTouchClaim, claimable)
+		end
 		ui.questHeaderText.Text = line
+		if ui.questHeaderSub then
+			ui.questHeaderSub.Text = sub
+			ui.questHeaderSub.TextColor3 = (sub ~= head) and ac("GoldText", Theme.Gold) or ac("LightSub", Theme.SubText)
+		end
 		ui.questChevron.Text = questState.OverlayOpen and TXT.QuestCollapse or TXT.QuestExpand
 		if ui.questOverlayTitle then ui.questOverlayTitle.Text = head end
 	else
@@ -2647,7 +2740,33 @@ refreshQuests = function()
 		ui.questChevron.Visible = #entries > 1
 		ui.questChevron.Text = questExpanded and TXT.QuestCollapse or TXT.QuestExpand
 	end
-	paint(ui.questHeader, hot and COL.HotTint or COL.White, hot and Theme.Good or ac("Ribbon", Theme.Gold))
+	paint(ui.questHeader, hot and COL.HotTint or COL.White, hot and Theme.Good or ac("Navy", Theme.Bg))
+
+	-- A23-40 quest lines: line 1 = the 'now do' row, line 2 = the next one (the waiting story, a claimable, a daily),
+	-- else today's count with 받기 N
+	if ui.qline then
+		if not second and entries[shown] then
+			local alt = callIndex or firstClaim or firstDaily
+			if alt and alt ~= shown then second = alt end
+		end
+		local function lineFor(i)
+			local e = i and entries[i]
+			if not e then return nil, nil, nil end
+			local label = (i == callIndex and call) and call.Label or e.Text
+			local nums = nil
+			if e.ShowProgress then
+				local p, t = questNums(e) -- CR-M27 / CR-L31
+				nums = string.format(TXT.QuestLineNums, p, t)
+			end
+			return e, label, nums
+		end
+		local e1, l1, n1 = lineFor(shown)
+		L.SetQuestLine(ui.qline[1], e1, l1 or head, n1)
+		local e2, l2, n2 = lineFor(second)
+		L.SetQuestLine(ui.qline[2], e2, l2 or head, n2)
+		if ui.questFold then ui.questFold.Text = questExpanded and TXT.QuestCloseList or TXT.QuestOpenList end
+		questState.ShownEntry = e1
+	end
 
 	local visibleBefore = 0
 	for _, r in questRows do
@@ -2669,7 +2788,7 @@ refreshQuests = function()
 		end
 		r.Entry = e
 		r.Tap.Visible = e.Pinned or e.Story ~= nil
-		r.Frame.Visible = IS_TOUCH or questExpanded or i == shown -- touch: every row, inside the overlay
+		r.Frame.Visible = IS_TOUCH or questExpanded -- touch: every row, in the overlay; PC: the folded-out list
 		if r.Frame.Visible then visibleNow += 1 end
 		if e.Story then
 			r.Badge.Text = e.Kind == "Main" and TXT.BadgeMain or TXT.BadgeSub
@@ -2723,7 +2842,18 @@ refreshQuests = function()
 		r.Frame.Visible = false
 	end
 	local callRow = callIndex and questRows[callIndex]
-	L.SetStoryPulse(callIndex and (IS_TOUCH and ui.questHeader or (callRow and callRow.Frame)) or nil)
+	-- A23-40: the pulse sits on the quest line that shows the waiting story (phones: the whole block), else on its list row
+	local callTarget = nil
+	if callIndex then
+		callTarget = IS_TOUCH and ui.questLines or nil
+		for _, l in ui.qline or {} do
+			if not IS_TOUCH and l.Entry == entries[callIndex] and l.Row.Visible then callTarget = l.Row end
+		end
+		if not callTarget then callTarget = callRow and callRow.Frame or nil end
+	end
+	L.SetStoryPulse(callTarget)
+	questState.Rows = entries -- HUD.QuestTarget (QuestMarker) reads the 'now do' row
+	questState.Shown = shown
 	refreshRerollTimers()
 	-- CR-L36: the block's visibility also moves the war meter column's left edge
 	if visibleBefore ~= visibleNow or blockWasVisible ~= ui.quests.Visible then
@@ -2960,7 +3090,7 @@ local function onLevelChanged()
 end
 
 ----------------------------------------------------------------- input
-local function inputAllowed()
+inputAllowed = function()
 	if not ui.root or not ui.root.Visible then return false end
 	if C and C.Panels and C.Panels.IsOpen() then return false end
 	if C and C.WorldMap and C.WorldMap.IsOpen() then return false end
@@ -3138,6 +3268,7 @@ function L.RefreshAuto()
 	ui.auto.Visible = unlocked
 	if ui.autoLabel then ui.autoLabel.Text = on and TXT.AutoOn or TXT.AutoOff end
 	if ui.autoGlow then ui.autoGlow.Transparency = on and 0 or 1 end
+	paint(ui.autoArt, on and COL.White or COL.DimTint, on and COL.ReleaseFill or COL.Grey)
 end
 
 -- the first mission is done (5/5) and waits for [받기]
@@ -3216,6 +3347,43 @@ openMap = function()
 		local ok, err = pcall(wm.Toggle)
 		if not ok then warnThrottled("WorldMap.Toggle failed: " .. tostring(err)) end
 	end
+end
+
+-- A23-40 tiles: the window a tile opens right now (its own once registered, else its Alt), or nil (the tile hides)
+function L.TileWindow(def)
+	local panels = C and C.Panels
+	local has = type(panels) == "table" and type(panels.Has) == "function" and panels.Has or nil
+	if not has then return nil end
+	if def.Window and has(def.Window) == true then return def.Window end
+	if def.Alt and has(def.Alt) == true then return def.Alt end
+	return nil
+end
+
+-- a tile press: [메뉴] = the menu key (closes any window, else opens the menu), 지도 = the world map toggle, window tiles
+-- open their window (the same tile closes it; another window switches)
+function L.TileTap(def)
+	if def.Menu then
+		L.WindowKey("Menu")
+		return
+	end
+	if def.Map then
+		local wm = C and C.WorldMap
+		local mapOpen = type(wm) == "table" and type(wm.IsOpen) == "function" and wm.IsOpen()
+		if mapOpen or inputAllowed() then openMap() end
+		return
+	end
+	local panels = C and C.Panels
+	local target = L.TileWindow(def)
+	if not target or type(panels) ~= "table" then return end
+	local open = type(panels.IsOpen) == "function" and panels.IsOpen()
+	if not (open or inputAllowed()) or throttled("tile", 0.25) then return end
+	local ok, err
+	if type(panels.CurrentId) == "function" and panels.CurrentId() == target then
+		ok, err = pcall(panels.Close, true)
+	else
+		ok, err = pcall(panels.Open, target)
+	end
+	if not ok then warnThrottled("tile window failed: " .. tostring(err)) end
 end
 
 -- BB1: hold source of a key / pad button press ("key:F", "pad:ButtonR2"); the release of that same key ends the hold
@@ -3339,151 +3507,188 @@ local function hookJumpButton(jb)
 	requestLayout()
 end
 
+-- places a centred (AnchorPoint 0.5) button on its rect
+function L.Place(btn, r)
+	if not btn or not r then return end
+	btn.Size = UDim2.fromOffset(r.W, r.H)
+	btn.Position = UDim2.fromOffset(r.X + r.W / 2, r.Y + r.H / 2)
+end
+
+-- A23-40 icon tiles: which tiles show (a window tile once its window exists; 지도 and [메뉴] always), trimmed to the
+-- row's Count by Keep (the rest wait for the [메뉴] fold-out, A23-38 / BB13). Returns true when the shown set changed.
+function L.PickTiles()
+	if not ui.tiles then return false end
+	local want = {}
+	for _, t in ui.tiles do
+		local def = t.Def
+		if def.Map or def.Menu or L.TileWindow(def) then table.insert(want, t) end
+	end
+	local count = (L.Rects and L.Rects.tiles and L.Rects.tiles.Count) or #want
+	if #want > count then
+		local sorted = table.clone(want)
+		table.sort(sorted, function(a, b) return a.Def.Keep < b.Def.Keep end)
+		local keep = {}
+		for i = 1, count do keep[sorted[i]] = true end
+		local kept = {}
+		for _, t in want do
+			if keep[t] then table.insert(kept, t) end
+		end
+		want = kept
+	end
+	local key = ""
+	for _, t in want do key ..= t.Def.Id .. "," end
+	if key == ui.tileKey then return false end
+	ui.tileKey = key
+	ui.shownTiles = want
+	local shown = {}
+	for _, t in want do shown[t] = true end
+	for _, t in ui.tiles do t.Button.Visible = shown[t] == true end
+	return true
+end
+
+-- the shown tiles on Rects.tiles: squares of Size, Gap apart; PC centred on the row (the screen centre), phones flush
+-- right (under the plate)
+function L.LayoutTiles(tr)
+	local shown = ui.shownTiles or {}
+	local n = #shown
+	if n == 0 then return end
+	local size, gap = tr.Size or tr.H, tr.Gap or 4
+	local total = n * size + (n - 1) * gap
+	local x0 = IS_TOUCH and (tr.X + tr.W - total) or (tr.X + (tr.W - total) / 2)
+	for i, t in shown do
+		t.Button.Size = UDim2.fromOffset(size, size)
+		t.Button.Position = UDim2.fromOffset(x0 + (i - 1) * (size + gap) + size / 2, tr.Y + size / 2)
+	end
+end
+
+-- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
 applyLayout = function()
 	local gui = UIKit and UIKit.Gui
-	if not gui or not ui.root then return end
+	if not gui or not ui.root or not L.HL then return end
 	local s = currentScale()
 	local abs = gui.AbsoluteSize
 	if abs.X < 10 or abs.Y < 10 then return end
 	local W, H = abs.X / s, abs.Y / s
-	L.LayoutStats(s)
-	ui.questHeader.Size = UDim2.fromOffset(L.QuestW, math.max(L.QuestHeaderH, math.ceil(20 / s)))
-	for _, row in questRows do L.LayoutQuestRow(row, s) end
+	local jump = nil
+	local jb = jumpButton
+	if jb and jb.Parent and jb.Visible and jb.AbsoluteSize.X > 0 then
+		local rel = jb.AbsolutePosition - gui.AbsolutePosition
+		jump = { X = rel.X / s, Y = rel.Y / s, W = jb.AbsoluteSize.X / s, H = jb.AbsoluteSize.Y / s }
+	end
+	local R = L.HL.Compute({ W = W, H = H, Scale = s, Inset = insetY(), Touch = IS_TOUCH, Jump = jump,
+		Hidden = { auto = not (ui.auto and ui.auto.Visible) } })
+	L.Rects = R
+	L.LayoutPlate(R)
 	for label in ui.textFits or {} do
 		if label.Name == "KeyHint" then
 			local keyH = math.max(18, math.ceil(12 / s))
 			label.Size = UDim2.fromOffset(keyH, keyH)
 		end
 	end
-	local inset = insetY()
-	local shift = inset / s -- slot-table y values are measured from below the top bar
-	local minTop = (inset + TOP_PAD) / s -- H4 / U4: never above inset + 8 real px
 
-	-- top-anchored blocks
-	local statsY = math.max(12 + shift, minTop)
-	-- desktop: the Roblox chat window sits top-left too, so start the card below it
-	local chatBottom = (not IS_TOUCH) and chatWindowBottom(inset, s, abs.Y) or nil
-	if chatBottom then statsY = math.max(statsY, chatBottom / s + 8) end
-	ui.stats.Position = UDim2.fromOffset(12, statsY)
-	local warY = math.max(8 + shift, minTop)
-	-- CR-L36: the war meter column (EventHUD's strip and the chips follow it) fits between the player card and the
-	-- desktop luck panel: narrow screens shrink it to >= WarMinW and slide its centre off the card. The quest block
-	-- under the card counts too (touch: header 260 wide vs card 212, level with the strip / chips rows)
-	local leftBlockW = ui.stats.Size.X.Offset
-	if ui.quests and ui.quests.Visible then leftBlockW = math.max(leftBlockW, ui.quests.Size.X.Offset) end
-	local leftX = 12 + leftBlockW + 8
-	local rightX = W - 12
-	if not IS_TOUCH then
-		local luck = gui:FindFirstChild("LuckCorner")
-		local luckW = (luck and luck:IsA("GuiObject") and luck.Size.X.Offset > 0) and luck.Size.X.Offset or L.LuckW
-		rightX -= luckW + 8
-	end
-	local warW = math.floor(math.clamp(rightX - leftX, L.WarMinW, L.WarW))
-	local cx = math.clamp(W / 2, leftX + warW / 2, math.max(leftX + warW / 2, rightX - warW / 2))
-	cx = math.floor(cx + 0.5)
-	-- set before the frames move, so EventHUD's relayout (on the meter's size / position signals) reads the new values
-	HUD.TopCenterX, HUD.TopCenterW = cx, warW
-	if ui.war.Size.X.Offset ~= warW then ui.war.Size = UDim2.fromOffset(warW, L.WarH) end
-	ui.war.Position = UDim2.new(0, cx, 0, warY)
-	-- chips under EventHUD's strip, which itself follows the war meter's bottom; centred on the same column, as wide
-	-- as fits symmetrically between the card and the right edge (wrapping to a second row only when that is full)
-	local chipsW = math.floor(math.max(warW, 2 * math.min(cx - leftX, rightX - cx)))
-	if ui.chips.Size.X.Offset ~= chipsW then ui.chips.Size = UDim2.fromOffset(chipsW, L.ChipH + 6) end
-	ui.chips.Position = UDim2.new(0, cx, 0, math.max(L.ChipsY + shift, minTop, warY + L.WarH + L.StripBelow))
+	-- icon tile row (PC bottom-centre under the bars, phones top-right under the plate)
+	L.PickTiles()
+	L.LayoutTiles(R.tiles)
 
-	-- quests right under the card (collapsed by default, so the list stays short)
-	local statsBottom = statsY + ui.stats.Size.Y.Offset
-	ui.potions.Position = UDim2.fromOffset(12, statsBottom + 4)
-	ui.quests.Position = UDim2.fromOffset(12, statsBottom + L.PotionH + 10)
-
-	-- touch quest overlay (CR-M25): top band, right of the thumbstick zone's x range (U3)
-	if ui.questOverlay then
-		local ow = L.OverlayW
-		local ox = math.max(W * L.StickZoneX + 8, (W - ow) / 2)
-		ox = math.max(12, math.min(ox, W - 12 - ow))
-		ui.questOverlay.Position = UDim2.fromOffset(ox, minTop)
-	end
-
-	-- big buttons: attack up-left of the touch jump button (H5 / U2); no jump button on a mouse device: 발사 in the
-	-- bottom-right corner with 공격 to its left (mockup order)
-	local AR, RR = L.Attack / 2, L.Release / 2
-	local SQ, GAP, RG = L.Square, L.BtnGap, L.RowGap
-	local ax, ay
-	local cornerRelease = false
-	local jb = jumpButton
-	if jb and jb.Parent and jb.AbsoluteSize.X > 0 then
-		local rel = jb.AbsolutePosition - gui.AbsolutePosition
-		ax = rel.X / s - GAP - AR
-		ay = rel.Y / s + (jb.AbsoluteSize.Y / s) * 0.2
-	elseif UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
-		ax, ay = W + ATTACK_FALLBACK.X, H + ATTACK_FALLBACK.Y
-	else
-		cornerRelease = true
-		ax, ay = W - L.Edge - 2 * RR - GAP - AR, H - L.Edge - AR
-	end
-	-- top of the square row + next-weapon card column: desktop puts it right under EventHUD's luck panel (mockup);
-	-- touch (luck panel hidden) stacks it above the attack button, so it only needs room below the top inset
-	local colTop = minTop
-	if not IS_TOUCH then
-		local luck = gui:FindFirstChild("LuckCorner")
-		local luckBottom = luck and luck:GetAttribute("BottomY")
-		if type(luckBottom) ~= "number" or luckBottom ~= luckBottom then
-			luckBottom = math.max(L.LuckY, minTop) + L.LuckH
+	-- quest lines (no plate) + the fold-out list under them (PC) / the overlay beside them (phones)
+	local q = R.quest
+	L.LayoutQuestLines(q)
+	ui.quests.Position = UDim2.fromOffset(q.X, q.Y + q.H + 4)
+	ui.quests.Size = UDim2.fromOffset(q.W, 0)
+	if IS_TOUCH then
+		L.LayoutQuestHeader(q.W, q.H)
+		-- the rows' overlay opens under the quest lines, kept on screen (CR-M25)
+		if ui.questOverlay then
+			ui.questOverlay.Position = UDim2.fromOffset(math.clamp(q.X, 8, math.max(8, W - L.OverlayW - 8)), q.Y + q.H + 4)
 		end
-		colTop = luckBottom + RG
-	end
-	-- keep the attack button below that column
-	local column = SQ + RG + L.UpgradeH + GAP
-	local axMax = cornerRelease and (W - AR - GAP - 2 * RR - 8) or (W - AR - 8)
-	local axMin = cornerRelease and (AR + 8) or (AR + 2 * RR + GAP + 8)
-	local ayMax = H - AR - 8
-	ax = math.clamp(ax, math.min(axMax, axMin), axMax)
-	ay = math.clamp(ay, math.min(ayMax, colTop + column + AR + 8), ayMax)
-	ui.attack.Position = UDim2.fromOffset(ax, ay)
-	local rx, ry
-	if cornerRelease then
-		-- bottoms level with 공격's
-		rx, ry = ax + AR + GAP + RR, math.min(ay + AR - RR, H - RR - 8)
 	else
-		rx, ry = ax - AR - GAP - RR, math.min(ay + AR * 0.25, H - RR - 8)
+		ui.questRowW = q.W
+		ui.questList.Size = UDim2.fromOffset(q.W, 0)
+		L.LayoutQuestHeader(q.W, math.max(L.QuestHeaderH, math.ceil(20 / s)))
 	end
-	ui.release.Position = UDim2.fromOffset(rx, ry)
+	for _, row in questRows do L.LayoutQuestRow(row, s) end
 
-	-- 자동 / 지도 / 메뉴 right-aligned with the next-weapon card above them (mockup order). Desktop: a top-right column
-	-- under the luck panel; touch: above the attack button
-	local right = W - 12
-	local rowW = 3 * SQ + 2 * RG
-	local rowY
-	if IS_TOUCH then
-		rowY = ay - AR - GAP - SQ / 2
-	else
-		rowY = colTop + L.UpgradeH + RG + SQ / 2
+	-- top-centre column: war meter -> chips (zone / luck / status) -> notify (EventHUD's stack, then UIKit toasts)
+	local wm = R.war_meter
+	ui.war.Position = UDim2.fromOffset(wm.X, wm.Y)
+	ui.war.Size = UDim2.fromOffset(wm.W, wm.H)
+	L.LayoutWar(wm.H)
+	HUD.TopCenterX, HUD.TopCenterW = math.floor(wm.X + wm.W / 2 + 0.5), wm.W
+	local ch = R.chips
+	ui.chips.Position = UDim2.fromOffset(ch.X + ch.W / 2, ch.Y)
+	ui.chips.Size = UDim2.fromOffset(ch.W, ch.H)
+	for _, chip in ui.chip do
+		chip.Frame.Size = UDim2.fromOffset(0, ch.H)
+		if chip.Icon then chip.Icon.Size = UDim2.fromOffset(ch.H - 2, ch.H - 2) end
 	end
-	ui.menu.Position = UDim2.fromOffset(right - SQ / 2, rowY)
-	ui.map.Position = UDim2.fromOffset(right - SQ * 1.5 - RG, rowY)
-	if ui.auto then ui.auto.Position = UDim2.fromOffset(right - SQ * 2.5 - RG * 2, rowY) end
-	ui.upgrade.Position = UDim2.fromOffset(right - rowW / 2, rowY - SQ / 2 - RG - L.UpgradeH / 2)
+	if ui.chipMore then ui.chipMore.Frame.Size = UDim2.fromOffset(0, ch.H) end
+	local chipsBottom = ch.Y + math.max(ch.H, ui.chips.AbsoluteSize.Y / s)
+	local nt = R.notify
+	-- travel (3 s channel) rides the top of the notify column
+	ui.travel.AnchorPoint = Vector2.new(0.5, 0)
+	ui.travel.Position = UDim2.fromOffset(nt.X + nt.W / 2, math.max(nt.Y, chipsBottom + 4))
+	ui.travel.Size = UDim2.fromOffset(math.min(340, nt.W), 58)
 
-	-- CR-L37: top / left edge of the bottom-right button cluster (공격 + 발사; on touch also the square row and, while
-	-- it shows, the next-weapon card above it). EventHUD keeps its personal line above ClusterTop.
-	local clusterTop = math.min(ay - AR, ry - RR)
-	local clusterLeft = math.min(ax - AR, rx - RR)
-	if IS_TOUCH then
-		clusterTop = math.min(clusterTop, rowY - SQ / 2)
-		clusterLeft = math.min(clusterLeft, right - rowW)
-		if ui.upgrade.Visible then clusterTop = math.min(clusterTop, rowY - SQ / 2 - RG - L.UpgradeH) end
+	-- bottom-right combat cluster (공격 · Q · 자동 · 물약; the ghost hold is GrudgeGhost on Rects.ghost)
+	L.Place(ui.attack, R.attack)
+	L.Place(ui.release, R.q)
+	L.Place(ui.auto, R.auto)
+	C.VitalsUI.PlacePotions(R.potions)
+	-- combo line + milestone (Fx builds them in MainGui; it never moves them after build)
+	local combo = gui:FindFirstChild("FxCombo")
+	if combo and combo:IsA("GuiObject") then
+		combo.Position = UDim2.fromOffset(R.combo.X + R.combo.W / 2, R.combo.Y + R.combo.H / 2)
+		combo.Size = UDim2.fromOffset(R.combo.W, R.combo.H)
+	end
+	local milestone = gui:FindFirstChild("FxComboMilestone")
+	if milestone and milestone:IsA("GuiObject") then
+		milestone.Position = UDim2.fromOffset(R.combo.X + R.combo.W / 2, R.combo.Y - 9 - 32)
+		milestone.Size = UDim2.fromOffset(math.min(nt.W, 420), 64)
+	end
+
+	-- CR-L37: top / left edge of the cluster (EventHUD's legacy personal line keeps above ClusterTop)
+	local clusterTop, clusterLeft = math.huge, math.huge
+	for _, id in { "attack", "q", "potions", "auto" } do
+		local r = R[id]
+		if r and (id ~= "auto" or ui.auto.Visible) then
+			clusterTop = math.min(clusterTop, r.Y)
+			clusterLeft = math.min(clusterLeft, r.X)
+		end
 	end
 	HUD.Layout = {
 		W = W,
 		H = H,
 		Scale = s,
+		Rects = R,
+		ChipsBottom = chipsBottom,
 		ClusterTop = math.floor(clusterTop),
 		ClusterLeft = math.floor(clusterLeft),
-		TopCenterX = cx,
-		TopCenterW = warW,
-		LeftX = leftX,
-		RightX = rightX,
+		TopCenterX = HUD.TopCenterX,
+		TopCenterW = HUD.TopCenterW,
+		LeftX = ch.X,
+		RightX = ch.X + ch.W,
 	}
+	for _, name in { "EventHUD", "MiniMap" } do
+		local m = C and C[name]
+		if type(m) == "table" and type(m.Relayout) == "function" then pcall(m.Relayout) end
+	end
+	if type(UIKit.PlaceNotify) == "function" then
+		local ev = C and C.EventHUD
+		local top = (type(ev) == "table" and type(ev.StripBottom) == "function") and ev.StripBottom() or nil
+		pcall(UIKit.PlaceNotify, nt, type(top) == "number" and math.max(top + 4, chipsBottom + 4) or chipsBottom + 4)
+	end
+end
+
+-- 가방 shows once Panels has 'Bag' (BB7) and the portrait / power taps once it has 'Character' (BB8): no silent no-op
+function L.RefreshWindows()
+	local panels = C and C.Panels
+	local has = type(panels) == "table" and type(panels.Has) == "function" and panels.Has or nil
+	local character = has and has("Character") == true or false
+	for _, hit in { ui.portraitHit, ui.powerRow and ui.powerRow:FindFirstChild("OpenCharacter") } do
+		if hit then hit.Visible = character end
+	end
+	-- A23-40: a window registered later (BB7 bag, BB8 character, BB13 …) brings its tile in
+	if L.PickTiles() then requestLayout() end
 end
 
 ----------------------------------------------------------------- visibility + timer loop
@@ -3517,6 +3722,7 @@ local function tick()
 	if (call and (call.Id .. "|" .. tostring(call.St)) or "") ~= questState.StoryKey then refreshQuests() end
 	if tickCount % 5 == 0 then
 		refreshMenuGlow() -- B14: the item hint (a scroll, item list not opened yet) has no attribute of its own
+		L.RefreshWindows()
 		if UserInputService.TouchEnabled then
 			local jb = findJumpButton()
 			if jb ~= jumpButton then hookJumpButton(jb) end
@@ -3524,6 +3730,30 @@ local function tick()
 		applyLayout()
 		refreshGuides()
 	end
+end
+
+-- the HUD root shows (data loaded, no picker open): MiniMap / QuestMarker follow it
+function HUD.IsVisible()
+	return ui.root ~= nil and ui.root.Visible == true
+end
+
+-- the guide beam's current target (position, tag) or nil (MiniMap's quest star)
+function HUD.GuideTarget()
+	local g = guide
+	local p = g and g.Part
+	if p and p.Parent then return p.Position, g.Tag end
+	return nil
+end
+
+-- A23-36: where the 'now do' quest row happens (QuestTarget.ForEntry) or nil; QuestMarker draws it
+function HUD.QuestTarget()
+	local qt = C and C.QuestTarget
+	local rows = questState.Rows
+	if type(qt) ~= "table" or type(qt.ForEntry) ~= "function" or type(rows) ~= "table" then return nil end
+	local e = rows[questState.Shown or 1]
+	if not e then return nil end
+	local ok, target = pcall(qt.ForEntry, e, attr("ZoneId", ""), getFaction())
+	return ok and target or nil
 end
 
 ----------------------------------------------------------------- lifecycle
@@ -3540,6 +3770,7 @@ function HUD.Init(registry)
 		if ok then L.KeyDevice, L.ShowKeys = shows == true, shows == true end
 	end
 	Theme = UIKit.Theme
+	L.HL = require(script.Parent:WaitForChild("HudLayout")) -- A23-26 v2 rects (pure module, not in ClientMain ORDER)
 
 	ui.root = UIKit.Create("Frame", {
 		Name = "HUD",
@@ -3579,6 +3810,7 @@ function HUD.Init(registry)
 	buildWar(ui.root)
 	buildChips(ui.root)
 	buildQuests(ui.root)
+	L.BuildQuestLines(ui.root)
 	buildTravel(ui.root)
 	buildButtons(ui.root)
 end
@@ -3620,7 +3852,7 @@ function HUD.Start()
 		end
 	end)
 	UIKit.OnAttr({ "Mana", "SkillReadyAt" }, refreshSkill)
-	UIKit.OnAttr({ "WeaponTier", "Level", "Class", "Faction", "BankGold", "CarriedGold", "ZoneId" }, refreshUpgrade)
+	UIKit.OnAttr({ "Class", "ClassChosen" }, L.RefreshAttackGlyph)
 	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays" }, refreshMenuGlow)
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests

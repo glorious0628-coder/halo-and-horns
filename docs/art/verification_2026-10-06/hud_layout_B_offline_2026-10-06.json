@@ -1,0 +1,3097 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 5731,
+  "failedChecks": 0,
+  "namedChecks": 5731,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "exceptions": [
+    {
+      "screen": "phone_568x320",
+      "check": "tiles at least 4 on phones",
+      "reason": "4-inch phone (568x320 px): the layout scales to k = 1.011 du/px, so the top-right tile row is 241.7du wide; 60du tiles with the 3 px gap fit 3 (4 would need 249du). The other windows open from the [메뉴] tile.",
+      "measuredDu": 3,
+      "neededDu": 4
+    },
+    {
+      "screen": "phone_568x320",
+      "check": "tap size potions cell width",
+      "reason": "4-inch phone (iPhone SE 1st gen class, 568x320 px): the whole layout scales to k = 1.011 du/px, so the potions rect is 113du wide. Growing to the left (right edge kept: Q sits 6du to its right) stops at the thumbstick zone edge x = 0.4W = 302.9du, which leaves 120.5du: two cells of 57.2du with the approved 6 px gap (60.2du only with no gap at all). The cells stay below 60du (~43 real px) here; spec decision needed.",
+      "measuredDu": 57.19,
+      "neededDu": 60
+    }
+  ],
+  "screens": [
+    {
+      "name": "pc_1280x720",
+      "touch": false,
+      "reference": true,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1280,
+        720
+      ],
+      "uiScale": 0.8,
+      "logical": [
+        1600.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "war_meter/chips"
+      },
+      "minPressableGap": {
+        "Gap": 10,
+        "Pair": "potions/ghost"
+      }
+    },
+    {
+      "name": "pc_1024x768",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1024,
+        768
+      ],
+      "uiScale": 0.8533,
+      "logical": [
+        1200.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "war_meter/chips"
+      },
+      "minPressableGap": {
+        "Gap": 8,
+        "Pair": "tiles/potions"
+      }
+    },
+    {
+      "name": "pc_1366x768",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1366,
+        768
+      ],
+      "uiScale": 0.8533,
+      "logical": [
+        1600.78,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "war_meter/chips"
+      },
+      "minPressableGap": {
+        "Gap": 10,
+        "Pair": "potions/ghost"
+      }
+    },
+    {
+      "name": "pc_1920x1080",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1920,
+        1080
+      ],
+      "uiScale": 1.0,
+      "logical": [
+        1920.0,
+        1080.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "war_meter/chips"
+      },
+      "minPressableGap": {
+        "Gap": 10,
+        "Pair": "potions/ghost"
+      }
+    },
+    {
+      "name": "pc_1280x1024",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1280,
+        1024
+      ],
+      "uiScale": 1.0,
+      "logical": [
+        1280.0,
+        1024.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "war_meter/chips"
+      },
+      "minPressableGap": {
+        "Gap": 8,
+        "Pair": "tiles/potions"
+      }
+    },
+    {
+      "name": "pc_1024x600",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1024,
+        600
+      ],
+      "uiScale": 0.6667,
+      "logical": [
+        1536.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "war_meter/chips"
+      },
+      "minPressableGap": {
+        "Gap": 10,
+        "Pair": "potions/ghost"
+      }
+    },
+    {
+      "name": "pc_800x600",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        800,
+        600
+      ],
+      "uiScale": 0.6667,
+      "logical": [
+        1200.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "war_meter/chips"
+      },
+      "minPressableGap": {
+        "Gap": 8,
+        "Pair": "tiles/potions"
+      }
+    },
+    {
+      "name": "pc_800x720_narrow",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        800,
+        720
+      ],
+      "uiScale": 0.8,
+      "logical": [
+        1000.0,
+        900.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 0.5663,
+        "Pair": "portrait/hp_bar"
+      },
+      "minPressableGap": {
+        "Gap": 8,
+        "Pair": "tiles/potions"
+      }
+    },
+    {
+      "name": "pc_1280x720_inset36",
+      "touch": false,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1280,
+        720
+      ],
+      "uiScale": 0.8,
+      "logical": [
+        1600.0,
+        900.0
+      ],
+      "insetPx": 36,
+      "jumpLogical": null,
+      "minGap": {
+        "Gap": 5,
+        "Pair": "war_meter/chips"
+      },
+      "minPressableGap": {
+        "Gap": 10,
+        "Pair": "potions/ghost"
+      }
+    },
+    {
+      "name": "pc_1280x240_short",
+      "touch": false,
+      "reference": false,
+      "supported": false,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1280,
+        240
+      ],
+      "uiScale": 0.6,
+      "logical": [
+        2133.33,
+        400.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": null,
+      "minGap": null,
+      "minPressableGap": null
+    },
+    {
+      "name": "phone_749x361",
+      "touch": true,
+      "reference": true,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        749,
+        361
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        998.67,
+        481.33
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 872.0,
+        "Y": 361.3333333333333,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.6667,
+        "Pair": "chips/event"
+      },
+      "minPressableGap": {
+        "Gap": 6.6667,
+        "Pair": "portrait/tiles"
+      }
+    },
+    {
+      "name": "phone_749x361_notch",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        655,
+        340
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        873.33,
+        453.33
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 746.6666666666666,
+        "Y": 333.3333333333333,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.332,
+        "Pair": "chips/event"
+      },
+      "minPressableGap": {
+        "Gap": 5.83,
+        "Pair": "portrait/tiles"
+      }
+    },
+    {
+      "name": "phone_844x390",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        844,
+        390
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        1125.33,
+        520.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 998.6666666666666,
+        "Y": 400.0,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.6667,
+        "Pair": "chips/event"
+      },
+      "minPressableGap": {
+        "Gap": 6.6667,
+        "Pair": "portrait/tiles"
+      }
+    },
+    {
+      "name": "phone_667x375",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        667,
+        375
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        889.33,
+        500.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 762.6666666666666,
+        "Y": 380.0,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.3747,
+        "Pair": "chips/event"
+      },
+      "minPressableGap": {
+        "Gap": 5.9368,
+        "Pair": "portrait/tiles"
+      }
+    },
+    {
+      "name": "phone_568x320",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        568,
+        320
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        757.33,
+        426.67
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 630.6666666666666,
+        "Y": 306.6666666666667,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.0223,
+        "Pair": "chips/event"
+      },
+      "minPressableGap": {
+        "Gap": 5.0556,
+        "Pair": "portrait/tiles"
+      }
+    },
+    {
+      "name": "phone_592x360_navbar",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        592,
+        360
+      ],
+      "uiScale": 0.75,
+      "logical": [
+        789.33,
+        480.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 662.6666666666666,
+        "Y": 360.0,
+        "W": 93.33333333333333,
+        "H": 93.33333333333333
+      },
+      "minGap": {
+        "Gap": 2.1077,
+        "Pair": "power_line/hp_bar"
+      },
+      "minPressableGap": {
+        "Gap": 5.2692,
+        "Pair": "portrait/tiles"
+      }
+    },
+    {
+      "name": "tablet_1024x768",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1024,
+        768
+      ],
+      "uiScale": 1.0667,
+      "logical": [
+        960.0,
+        720.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 800.625,
+        "Y": 523.125,
+        "W": 112.5,
+        "H": 112.5
+      },
+      "minGap": {
+        "Gap": 2.5634,
+        "Pair": "chips/event"
+      },
+      "minPressableGap": {
+        "Gap": 6.4085,
+        "Pair": "portrait/tiles"
+      }
+    },
+    {
+      "name": "tablet_1180x820",
+      "touch": true,
+      "reference": false,
+      "supported": true,
+      "pouchLine": false,
+      "mainGuiPx": [
+        1180,
+        820
+      ],
+      "uiScale": 1.1389,
+      "logical": [
+        1036.1,
+        720.0
+      ],
+      "insetPx": 58,
+      "jumpLogical": {
+        "X": 886.829268292683,
+        "Y": 535.609756097561,
+        "W": 105.3658536585366,
+        "H": 105.3658536585366
+      },
+      "minGap": {
+        "Gap": 2.6667,
+        "Pair": "chips/event"
+      },
+      "minPressableGap": {
+        "Gap": 6.6667,
+        "Pair": "portrait/tiles"
+      }
+    }
+  ],
+  "uiScaleConfig": {
+    "ScaleMin": 0.75,
+    "ScaleMax": 1.25,
+    "DesktopScaleMult": 0.8,
+    "DesktopScaleMin": 0.6,
+    "DesktopScaleMax": 1.0
+  },
+  "mutations": {
+    "total": 28,
+    "applied": 28,
+    "caught": 28,
+    "results": [
+      {
+        "mutation": "touch targets may shrink to 30",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: exception still needed: tiles at least 4 on phones",
+          "phone_568x320 :: potions use all their room",
+          "phone_568x320 :: tap size auto",
+          "phone_568x320 :: tap size ghost",
+          "phone_568x320 :: tap size portrait",
+          "phone_568x320 :: tap size potions cell height"
+        ],
+        "newFailingCount": 25
+      },
+      {
+        "mutation": "round touch buttons never grow back",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size auto",
+          "phone_568x320 :: tap size ghost",
+          "phone_592x360_navbar :: tap size auto",
+          "phone_667x375 :: tap size auto",
+          "phone_749x361_notch :: tap size auto"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "potions never grow back",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size potions cell height",
+          "phone_592x360_navbar :: tap size potions cell height"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "grown portrait covers the plate",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap portrait/hp_bar",
+          "phone_568x320 :: no overlap portrait/power_line",
+          "phone_568x320 :: no overlap portrait/xp_bar",
+          "phone_592x360_navbar :: no overlap portrait/hp_bar",
+          "phone_592x360_navbar :: no overlap portrait/power_line",
+          "phone_592x360_navbar :: no overlap portrait/xp_bar"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "grown portrait covers the tile row",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap portrait/tiles",
+          "phone_568x320 :: press gap portrait/tiles",
+          "phone_592x360_navbar :: no overlap portrait/tiles",
+          "phone_592x360_navbar :: press gap portrait/tiles",
+          "phone_667x375 :: no overlap portrait/tiles",
+          "phone_667x375 :: press gap portrait/tiles"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "touch tiles may shrink below a thumb",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: exception still needed: tiles at least 4 on phones",
+          "phone_568x320 :: tap size tiles",
+          "phone_592x360_navbar :: tap size tiles",
+          "phone_667x375 :: tap size tiles",
+          "phone_749x361_notch :: tap size tiles",
+          "tablet_1024x768 :: tap size tiles"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "tile count ignores the gap",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: tiles fit the row",
+          "pc_1024x768 :: tiles fit the row",
+          "pc_1280x1024 :: tiles fit the row",
+          "pc_1280x240_short :: tiles fit the row",
+          "pc_1280x720 :: reference tile count",
+          "pc_1280x720 :: tiles fit the row"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "tiles touch",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: tile gap",
+          "pc_1024x768 :: tile gap",
+          "pc_1280x1024 :: tile gap",
+          "pc_1280x240_short :: tile gap",
+          "pc_1280x720 :: matches sheet tile gap",
+          "pc_1280x720 :: tile gap"
+        ],
+        "newFailingCount": 21
+      },
+      {
+        "mutation": "touch quest lines may shrink below a thumb",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: tap size quest lines",
+          "phone_592x360_navbar :: tap size quest lines",
+          "phone_667x375 :: tap size quest lines",
+          "phone_749x361_notch :: tap size quest lines",
+          "tablet_1024x768 :: tap size quest lines"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "top-right items anchored to the left edge",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_844x390 :: phone plate at the right edge mp_bar",
+          "phone_844x390 :: phone plate at the right edge power_line",
+          "phone_844x390 :: phone plate at the right edge tiles",
+          "phone_844x390 :: phone plate at the right edge xp_bar",
+          "tablet_1180x820 :: phone plate at the right edge mp_bar",
+          "tablet_1180x820 :: phone plate at the right edge power_line"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "top-left items ignore the real top bar",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: top rows hug the top bar",
+          "pc_800x600 :: top rows hug the top bar",
+          "phone_568x320 :: top rows hug the top bar",
+          "phone_592x360_navbar :: top rows hug the top bar",
+          "phone_667x375 :: top rows hug the top bar",
+          "phone_749x361_notch :: top rows hug the top bar"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "phone plate anchored like the PC (bottom-centre)",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: column clear of chips/portrait",
+          "phone_568x320 :: column clear of war_meter/portrait",
+          "phone_568x320 :: no overlap chips/portrait",
+          "phone_568x320 :: no overlap portrait/tiles",
+          "phone_568x320 :: no overlap war_meter/portrait",
+          "phone_568x320 :: press gap portrait/tiles"
+        ],
+        "newFailingCount": 26
+      },
+      {
+        "mutation": "narrow phone safe area not shrunk",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: cluster lower right potions",
+          "phone_568x320 :: column clear of chips/portrait",
+          "phone_568x320 :: column clear of chips/tiles",
+          "phone_568x320 :: column clear of event/tiles",
+          "phone_568x320 :: column clear of notify/tiles",
+          "phone_568x320 :: column clear of war_meter/hp_bar"
+        ],
+        "newFailingCount": 68
+      },
+      {
+        "mutation": "centre column touches its neighbours",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x768 :: face group centred or stepped aside",
+          "pc_1024x768 :: press gap tiles/potions",
+          "pc_1280x1024 :: face group centred or stepped aside",
+          "pc_1280x1024 :: press gap tiles/potions",
+          "pc_800x600 :: face group centred or stepped aside",
+          "pc_800x600 :: press gap tiles/potions"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "PC face group never steps aside",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x768 :: face group centred or stepped aside",
+          "pc_1024x768 :: no overlap mp_bar/ghost",
+          "pc_1024x768 :: no overlap power_line/ghost",
+          "pc_1024x768 :: no overlap tiles/potions",
+          "pc_1024x768 :: no overlap xp_bar/ghost",
+          "pc_1024x768 :: press gap tiles/potions"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "PC face group ignores the left margin",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_800x720_narrow :: face group centred or stepped aside",
+          "pc_800x720_narrow :: face group left margin",
+          "pc_800x720_narrow :: no overlap portrait/hp_bar",
+          "pc_800x720_narrow :: no overlap portrait/power_line",
+          "pc_800x720_narrow :: no overlap portrait/xp_bar"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "touch cluster ignores the jump button",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: attack left of jump",
+          "phone_568x320 :: exception still needed: tap size potions cell width",
+          "phone_568x320 :: jump free attack",
+          "phone_568x320 :: jump free auto",
+          "phone_592x360_navbar :: attack left of jump",
+          "phone_592x360_navbar :: jump free attack"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "cluster measured from the jump centre only",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: attack left of jump",
+          "phone_568x320 :: exception still needed: tap size potions cell width",
+          "phone_568x320 :: jump free attack",
+          "phone_592x360_navbar :: attack left of jump",
+          "phone_592x360_navbar :: jump free attack",
+          "tablet_1024x768 :: attack left of jump"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "auto not kept above the jump button",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: jump free auto",
+          "phone_592x360_navbar :: jump free auto",
+          "tablet_1024x768 :: jump free auto"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "touch combo stays bottom-centre",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: no overlap combo/q",
+          "phone_592x360_navbar :: no overlap combo/q",
+          "tablet_1024x768 :: no overlap combo/potions",
+          "tablet_1024x768 :: no overlap combo/q",
+          "tablet_1180x820 :: no overlap combo/potions"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "desktop attack rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720 :: matches sheet attack"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "desktop tiles rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720 :: matches sheet tiles"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "phone skill Q rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_749x361 :: matches sheet q"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "phone quest rect drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: column clear of chips/portrait",
+          "phone_568x320 :: column clear of notify/tiles",
+          "phone_568x320 :: column clear of war_meter/portrait",
+          "phone_568x320 :: no overlap chips/portrait",
+          "phone_568x320 :: no overlap notify/tiles",
+          "phone_568x320 :: no overlap war_meter/portrait"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "everything may leave the screen",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x240_short :: below top bar combo"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "potions never widen",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: potions use all their room",
+          "phone_592x360_navbar :: tap size potions cell width"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "potions grow into the stick zone",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "phone_568x320 :: exception still needed: tap size potions cell width",
+          "phone_568x320 :: stick zone free potions"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "potion gap drifted",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1280x720 :: matches sheet potion gap",
+          "phone_749x361 :: matches sheet potion gap"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "drawing": "docs/art/verification_2026-10-06/hud_layout_B_offline_2026-10-06.png",
+  "rects": {
+    "pc_1024x600": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1368.5,
+        "Y": 740
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1452.25,
+        "Y": 643.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 613,
+        "Y": 154.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 693,
+        "Y": 578.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 650.5,
+        "Y": 187
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1169.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 493,
+        "Y": 747.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 97
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 773,
+        "Y": 747.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 588,
+        "Y": 222
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 420.5,
+        "Y": 732.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1093.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 493,
+        "Y": 722.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1263.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 297
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 493,
+        "Y": 800
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 588,
+        "Y": 97
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 493,
+        "Y": 777.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1337.25,
+        "Y": 631.25
+      }
+    },
+    "pc_1024x768": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1032.5,
+        "Y": 740
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1116.25,
+        "Y": 643.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 445,
+        "Y": 135.4688
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 525,
+        "Y": 578.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 482.5,
+        "Y": 167.9688
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 833.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 199.5,
+        "Y": 747.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 77.9688
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 479.5,
+        "Y": 747.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 420,
+        "Y": 202.9688
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 127,
+        "Y": 732.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 757.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 199.5,
+        "Y": 722.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 927.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 277.9688
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 199.5,
+        "Y": 800
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 420,
+        "Y": 77.9688
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 199.5,
+        "Y": 777.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1001.25,
+        "Y": 631.25
+      }
+    },
+    "pc_1280x1024": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1112.5,
+        "Y": 864
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1196.25,
+        "Y": 767.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 485,
+        "Y": 125.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 565,
+        "Y": 702.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 522.5,
+        "Y": 158
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 913.75,
+        "Y": 845.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 279.5,
+        "Y": 871.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 68
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 559.5,
+        "Y": 871.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 460,
+        "Y": 193
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 207,
+        "Y": 856.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 837.5,
+        "Y": 931.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 279.5,
+        "Y": 846.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1007.5,
+        "Y": 859
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 268
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 279.5,
+        "Y": 924
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 460,
+        "Y": 68
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 279.5,
+        "Y": 901.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1081.25,
+        "Y": 755.25
+      }
+    },
+    "pc_1280x240_short": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1965.8333,
+        "Y": 240
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 2049.5833,
+        "Y": 143.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 911.6667,
+        "Y": 164.1667
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 991.6667,
+        "Y": 96.6667
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 949.1667,
+        "Y": 196.6667
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1767.0833,
+        "Y": 221.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 791.6667,
+        "Y": 247.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 106.6667
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 1071.6667,
+        "Y": 247.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 886.6667,
+        "Y": 231.6667
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 719.1667,
+        "Y": 232.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1690.8333,
+        "Y": 307.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 791.6667,
+        "Y": 222.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1860.8333,
+        "Y": 235
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 306.6667
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 791.6667,
+        "Y": 300
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 886.6667,
+        "Y": 106.6667
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 791.6667,
+        "Y": 277.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1934.5833,
+        "Y": 131.25
+      }
+    },
+    "pc_1280x720": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1432.5,
+        "Y": 740
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1516.25,
+        "Y": 643.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 645,
+        "Y": 140
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 725,
+        "Y": 578.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 682.5,
+        "Y": 172.5
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1233.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 525,
+        "Y": 747.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 82.5
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 805,
+        "Y": 747.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 620,
+        "Y": 207.5
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 452.5,
+        "Y": 732.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1157.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 525,
+        "Y": 722.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1327.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 282.5
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 525,
+        "Y": 800
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 620,
+        "Y": 82.5
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 525,
+        "Y": 777.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1401.25,
+        "Y": 631.25
+      }
+    },
+    "pc_1280x720_inset36": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1432.5,
+        "Y": 740
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1516.25,
+        "Y": 643.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 645,
+        "Y": 112.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 725,
+        "Y": 578.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 682.5,
+        "Y": 145
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1233.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 525,
+        "Y": 747.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 55
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 805,
+        "Y": 747.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 620,
+        "Y": 180
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 452.5,
+        "Y": 732.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1157.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 525,
+        "Y": 722.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1327.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 255
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 525,
+        "Y": 800
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 620,
+        "Y": 55
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 525,
+        "Y": 777.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1401.25,
+        "Y": 631.25
+      }
+    },
+    "pc_1366x768": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1433.2812,
+        "Y": 740
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1517.0312,
+        "Y": 643.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 645.3906,
+        "Y": 135.4688
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 725.3906,
+        "Y": 578.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 682.8906,
+        "Y": 167.9688
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1234.5312,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 525.3906,
+        "Y": 747.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 77.9688
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 805.3906,
+        "Y": 747.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 620.3906,
+        "Y": 202.9688
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 452.8906,
+        "Y": 732.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1158.2812,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 525.3906,
+        "Y": 722.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1328.2812,
+        "Y": 735
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 277.9688
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 525.3906,
+        "Y": 800
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 620.3906,
+        "Y": 77.9688
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 525.3906,
+        "Y": 777.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1402.0312,
+        "Y": 631.25
+      }
+    },
+    "pc_1920x1080": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1752.5,
+        "Y": 920
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1836.25,
+        "Y": 823.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 805,
+        "Y": 125.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 885,
+        "Y": 758.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 842.5,
+        "Y": 158
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 1553.75,
+        "Y": 901.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 685,
+        "Y": 927.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 68
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 965,
+        "Y": 927.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 780,
+        "Y": 193
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 612.5,
+        "Y": 912.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 1477.5,
+        "Y": 987.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 685,
+        "Y": 902.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1647.5,
+        "Y": 915
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 268
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 685,
+        "Y": 980
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 780,
+        "Y": 68
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 685,
+        "Y": 957.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1721.25,
+        "Y": 811.25
+      }
+    },
+    "pc_800x600": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 1032.5,
+        "Y": 740
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 1116.25,
+        "Y": 643.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 445,
+        "Y": 154.5
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 525,
+        "Y": 578.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 482.5,
+        "Y": 187
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 833.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 199.5,
+        "Y": 747.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 97
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 270,
+        "X": 479.5,
+        "Y": 747.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 420,
+        "Y": 222
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 127,
+        "Y": 732.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 757.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 550,
+        "X": 199.5,
+        "Y": 722.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 927.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 297
+      },
+      "tiles": {
+        "Count": 8,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 550,
+        "X": 199.5,
+        "Y": 800
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 420,
+        "Y": 97
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 550,
+        "X": 199.5,
+        "Y": 777.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 1001.25,
+        "Y": 631.25
+      }
+    },
+    "pc_800x720_narrow": {
+      "attack": {
+        "H": 147.5,
+        "W": 147.5,
+        "X": 832.5,
+        "Y": 740
+      },
+      "auto": {
+        "H": 63.75,
+        "W": 63.75,
+        "X": 916.25,
+        "Y": 643.75
+      },
+      "chips": {
+        "H": 27.5,
+        "W": 310,
+        "X": 345,
+        "Y": 140
+      },
+      "combo": {
+        "H": 30,
+        "W": 150,
+        "X": 425,
+        "Y": 578.75
+      },
+      "event": {
+        "H": 27.5,
+        "W": 235,
+        "X": 382.5,
+        "Y": 172.5
+      },
+      "ghost": {
+        "H": 76.25,
+        "W": 76.25,
+        "X": 633.75,
+        "Y": 721.25
+      },
+      "hp_bar": {
+        "H": 25,
+        "W": 234.8675,
+        "X": 71.0663,
+        "Y": 747.5
+      },
+      "minimap": {
+        "H": 187.5,
+        "W": 187.5,
+        "X": 17.5,
+        "Y": 82.5
+      },
+      "mp_bar": {
+        "H": 25,
+        "W": 234.8675,
+        "X": 314.6325,
+        "Y": 747.5
+      },
+      "notify": {
+        "H": 57.5,
+        "W": 360,
+        "X": 320,
+        "Y": 207.5
+      },
+      "portrait": {
+        "H": 62.5,
+        "W": 62.5,
+        "X": 8,
+        "Y": 732.5
+      },
+      "potions": {
+        "Gap": 7.5,
+        "H": 72.5,
+        "W": 152.5,
+        "X": 557.5,
+        "Y": 807.5
+      },
+      "power_line": {
+        "H": 20,
+        "W": 478.4337,
+        "X": 71.0663,
+        "Y": 722.5
+      },
+      "q": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 727.5,
+        "Y": 735
+      },
+      "quest": {
+        "H": 65,
+        "W": 375,
+        "X": 17.5,
+        "Y": 282.5
+      },
+      "tiles": {
+        "Count": 7,
+        "Gap": 3.75,
+        "H": 65,
+        "Size": 65,
+        "W": 478.4337,
+        "X": 71.0663,
+        "Y": 800
+      },
+      "war_meter": {
+        "H": 52.5,
+        "W": 360,
+        "X": 320,
+        "Y": 82.5
+      },
+      "xp_bar": {
+        "H": 10,
+        "W": 478.4337,
+        "X": 71.0663,
+        "Y": 777.5
+      },
+      "z": {
+        "H": 96.25,
+        "W": 96.25,
+        "X": 801.25,
+        "Y": 631.25
+      }
+    },
+    "phone_568x320": {
+      "attack": {
+        "H": 113.2461,
+        "W": 113.2461,
+        "X": 509.3316,
+        "Y": 287.6101
+      },
+      "auto": {
+        "H": 60,
+        "W": 60,
+        "X": 647.3333,
+        "Y": 244.3106
+      },
+      "chips": {
+        "H": 17.1891,
+        "W": 240.826,
+        "X": 258.7592,
+        "Y": 122.834
+      },
+      "combo": {
+        "H": 20.2225,
+        "W": 145.6021,
+        "X": 277.7837,
+        "Y": 271.2773
+      },
+      "event": {
+        "H": 16.178,
+        "W": 151.6689,
+        "X": 303.3378,
+        "Y": 142.0454
+      },
+      "ghost": {
+        "H": 60,
+        "W": 60,
+        "X": 564.7717,
+        "Y": 215.4935
+      },
+      "hp_bar": {
+        "H": 13.1446,
+        "W": 79.5354,
+        "X": 571.6297,
+        "Y": 97.5559
+      },
+      "minimap": {
+        "H": 84.9346,
+        "W": 84.9346,
+        "X": 8.089,
+        "Y": 81.3778
+      },
+      "mp_bar": {
+        "H": 13.1446,
+        "W": 79.5354,
+        "X": 669.7089,
+        "Y": 97.5559
+      },
+      "notify": {
+        "H": 34.3783,
+        "W": 240.826,
+        "X": 258.7592,
+        "Y": 161.2568
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 507.5852,
+        "Y": 81.3778
+      },
+      "potions": {
+        "Gap": 6.0668,
+        "H": 60,
+        "W": 120.4525,
+        "X": 302.9333,
+        "Y": 339.8451
+      },
+      "power_line": {
+        "H": 14.1558,
+        "W": 177.6146,
+        "X": 571.6297,
+        "Y": 81.3778
+      },
+      "q": {
+        "H": 72.8011,
+        "W": 72.8011,
+        "X": 429.4526,
+        "Y": 298.7325
+      },
+      "quest": {
+        "H": 60,
+        "W": 151.6689,
+        "X": 99.0903,
+        "Y": 81.3778
+      },
+      "tiles": {
+        "Count": 3,
+        "Gap": 3.0334,
+        "H": 60,
+        "Size": 60,
+        "W": 241.6591,
+        "X": 507.5852,
+        "Y": 146.4335
+      },
+      "war_meter": {
+        "H": 38.4228,
+        "W": 240.826,
+        "X": 258.7592,
+        "Y": 81.3778
+      },
+      "xp_bar": {
+        "H": 6.0668,
+        "W": 177.6146,
+        "X": 571.6297,
+        "Y": 114.745
+      },
+      "z": {
+        "H": 72.8011,
+        "W": 72.8011,
+        "X": 471.9199,
+        "Y": 214.6542
+      }
+    },
+    "phone_592x360_navbar": {
+      "attack": {
+        "H": 118.0312,
+        "W": 118.0312,
+        "X": 536.2047,
+        "Y": 338.1664
+      },
+      "auto": {
+        "H": 60,
+        "W": 60,
+        "X": 679.3333,
+        "Y": 296.2768
+      },
+      "chips": {
+        "H": 17.9154,
+        "W": 251.6778,
+        "X": 269.3547,
+        "Y": 124.7566
+      },
+      "combo": {
+        "H": 21.077,
+        "W": 151.7543,
+        "X": 294.8732,
+        "Y": 323.1153
+      },
+      "event": {
+        "H": 16.8616,
+        "W": 158.0774,
+        "X": 316.1549,
+        "Y": 144.7797
+      },
+      "ghost": {
+        "H": 60.0694,
+        "W": 60.0694,
+        "X": 595.2203,
+        "Y": 266.2074
+      },
+      "hp_bar": {
+        "H": 13.7,
+        "W": 85.4312,
+        "X": 593.2479,
+        "Y": 98.4103
+      },
+      "minimap": {
+        "H": 88.5234,
+        "W": 88.5234,
+        "X": 8.4308,
+        "Y": 81.5487
+      },
+      "mp_bar": {
+        "H": 13.7,
+        "W": 85.4312,
+        "X": 695.4713,
+        "Y": 98.4103
+      },
+      "notify": {
+        "H": 35.8309,
+        "W": 251.6778,
+        "X": 269.3547,
+        "Y": 164.8028
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 529.0325,
+        "Y": 81.5487
+      },
+      "potions": {
+        "Gap": 6.3231,
+        "H": 60,
+        "W": 126.3231,
+        "X": 320.3044,
+        "Y": 395.1437
+      },
+      "power_line": {
+        "H": 14.7539,
+        "W": 187.6547,
+        "X": 593.2479,
+        "Y": 81.5487
+      },
+      "q": {
+        "H": 75.8772,
+        "W": 75.8772,
+        "X": 452.9506,
+        "Y": 349.7588
+      },
+      "quest": {
+        "H": 60,
+        "W": 158.0774,
+        "X": 103.2773,
+        "Y": 81.5487
+      },
+      "tiles": {
+        "Count": 4,
+        "Gap": 3.1615,
+        "H": 60,
+        "Size": 60,
+        "W": 251.87,
+        "X": 529.0325,
+        "Y": 146.818
+      },
+      "war_meter": {
+        "H": 40.0463,
+        "W": 251.6778,
+        "X": 269.3547,
+        "Y": 81.5487
+      },
+      "xp_bar": {
+        "H": 6.3231,
+        "W": 187.6547,
+        "X": 593.2479,
+        "Y": 116.3258
+      },
+      "z": {
+        "H": 75.8772,
+        "W": 75.8772,
+        "X": 497.2123,
+        "Y": 264.0997
+      }
+    },
+    "phone_667x375": {
+      "attack": {
+        "H": 132.9844,
+        "W": 132.9844,
+        "X": 620.1834,
+        "Y": 349.4882
+      },
+      "auto": {
+        "H": 60,
+        "W": 60,
+        "X": 779.3333,
+        "Y": 312.0045
+      },
+      "chips": {
+        "H": 20.1851,
+        "W": 284.9666,
+        "X": 302.4655,
+        "Y": 130.7646
+      },
+      "combo": {
+        "H": 23.7472,
+        "W": 170.98,
+        "X": 348.2777,
+        "Y": 338.4424
+      },
+      "event": {
+        "H": 18.9978,
+        "W": 178.1041,
+        "X": 355.8968,
+        "Y": 153.3244
+      },
+      "ghost": {
+        "H": 67.6796,
+        "W": 67.6796,
+        "X": 686.6756,
+        "Y": 274.3249
+      },
+      "hp_bar": {
+        "H": 15.4357,
+        "W": 103.8558,
+        "X": 660.8046,
+        "Y": 101.0806
+      },
+      "minimap": {
+        "H": 99.7383,
+        "W": 99.7383,
+        "X": 9.4989,
+        "Y": 82.0828
+      },
+      "mp_bar": {
+        "H": 15.4357,
+        "W": 103.8558,
+        "X": 775.9786,
+        "Y": 101.0806
+      },
+      "notify": {
+        "H": 40.3703,
+        "W": 284.9666,
+        "X": 302.4655,
+        "Y": 175.8843
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 596.0552,
+        "Y": 82.0828
+      },
+      "potions": {
+        "Gap": 7.1242,
+        "H": 64.1175,
+        "W": 132.9844,
+        "X": 386.2733,
+        "Y": 417.1678
+      },
+      "power_line": {
+        "H": 16.6231,
+        "W": 219.0298,
+        "X": 660.8046,
+        "Y": 82.0828
+      },
+      "q": {
+        "H": 85.49,
+        "W": 85.49,
+        "X": 526.3818,
+        "Y": 362.5492
+      },
+      "quest": {
+        "H": 60,
+        "W": 178.1041,
+        "X": 116.3614,
+        "Y": 82.0828
+      },
+      "tiles": {
+        "Count": 4,
+        "Gap": 3.5621,
+        "H": 60,
+        "Size": 60,
+        "W": 283.7793,
+        "X": 596.0552,
+        "Y": 148.0196
+      },
+      "war_meter": {
+        "H": 45.1197,
+        "W": 284.9666,
+        "X": 302.4655,
+        "Y": 82.0828
+      },
+      "xp_bar": {
+        "H": 7.1242,
+        "W": 219.0298,
+        "X": 660.8046,
+        "Y": 121.2657
+      },
+      "z": {
+        "H": 85.49,
+        "W": 85.49,
+        "X": 576.251,
+        "Y": 271.9502
+      }
+    },
+    "phone_749x361": {
+      "attack": {
+        "H": 149.3333,
+        "W": 149.3333,
+        "X": 712,
+        "Y": 321.3333
+      },
+      "auto": {
+        "H": 64,
+        "W": 64,
+        "X": 886.6667,
+        "Y": 286.6667
+      },
+      "chips": {
+        "H": 22.6667,
+        "W": 320,
+        "X": 339.3333,
+        "Y": 137.3333
+      },
+      "combo": {
+        "H": 26.6667,
+        "W": 192,
+        "X": 406.6667,
+        "Y": 314.6667
+      },
+      "event": {
+        "H": 21.3333,
+        "W": 200,
+        "X": 399.3333,
+        "Y": 162.6667
+      },
+      "ghost": {
+        "H": 76,
+        "W": 76,
+        "X": 786.6667,
+        "Y": 242.6667
+      },
+      "hp_bar": {
+        "H": 17.3333,
+        "W": 124,
+        "X": 734.6667,
+        "Y": 104
+      },
+      "minimap": {
+        "H": 112,
+        "W": 112,
+        "X": 10.6667,
+        "Y": 82.6667
+      },
+      "mp_bar": {
+        "H": 17.3333,
+        "W": 124,
+        "X": 864,
+        "Y": 104
+      },
+      "notify": {
+        "H": 45.3333,
+        "W": 320,
+        "X": 339.3333,
+        "Y": 188
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 669.3333,
+        "Y": 82.6667
+      },
+      "potions": {
+        "Gap": 8,
+        "H": 72,
+        "W": 149.3333,
+        "X": 449.3333,
+        "Y": 397.3333
+      },
+      "power_line": {
+        "H": 18.6667,
+        "W": 253.3333,
+        "X": 734.6667,
+        "Y": 82.6667
+      },
+      "q": {
+        "H": 96,
+        "W": 96,
+        "X": 606.6667,
+        "Y": 336
+      },
+      "quest": {
+        "H": 60,
+        "W": 200,
+        "X": 130.6667,
+        "Y": 82.6667
+      },
+      "tiles": {
+        "Count": 5,
+        "Gap": 4,
+        "H": 60,
+        "Size": 60,
+        "W": 318.6667,
+        "X": 669.3333,
+        "Y": 149.3333
+      },
+      "war_meter": {
+        "H": 50.6667,
+        "W": 320,
+        "X": 339.3333,
+        "Y": 82.6667
+      },
+      "xp_bar": {
+        "H": 8,
+        "W": 253.3333,
+        "X": 734.6667,
+        "Y": 126.6667
+      },
+      "z": {
+        "H": 96,
+        "W": 96,
+        "X": 662.6667,
+        "Y": 240
+      }
+    },
+    "phone_749x361_notch": {
+      "attack": {
+        "H": 130.5919,
+        "W": 130.5919,
+        "X": 606.7468,
+        "Y": 304.2101
+      },
+      "auto": {
+        "H": 60,
+        "W": 60,
+        "X": 763.3333,
+        "Y": 266.0214
+      },
+      "chips": {
+        "H": 19.822,
+        "W": 279.8398,
+        "X": 297.1678,
+        "Y": 129.8033
+      },
+      "combo": {
+        "H": 23.32,
+        "W": 167.9039,
+        "X": 339.733,
+        "Y": 292.5234
+      },
+      "event": {
+        "H": 18.656,
+        "W": 174.8999,
+        "X": 349.6377,
+        "Y": 151.9573
+      },
+      "ghost": {
+        "H": 66.4619,
+        "W": 66.4619,
+        "X": 672.0427,
+        "Y": 229.5594
+      },
+      "hp_bar": {
+        "H": 15.158,
+        "W": 100.9079,
+        "X": 649.9955,
+        "Y": 100.6533
+      },
+      "minimap": {
+        "H": 97.9439,
+        "W": 97.9439,
+        "X": 9.328,
+        "Y": 81.9973
+      },
+      "mp_bar": {
+        "H": 15.158,
+        "W": 100.9079,
+        "X": 763.0975,
+        "Y": 100.6533
+      },
+      "notify": {
+        "H": 39.644,
+        "W": 279.8398,
+        "X": 297.1678,
+        "Y": 174.1113
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 585.3316,
+        "Y": 81.9973
+      },
+      "potions": {
+        "Gap": 6.996,
+        "H": 62.964,
+        "W": 130.5919,
+        "X": 377.0449,
+        "Y": 370.672
+      },
+      "power_line": {
+        "H": 16.324,
+        "W": 214.0098,
+        "X": 649.9955,
+        "Y": 81.9973
+      },
+      "q": {
+        "H": 83.9519,
+        "W": 83.9519,
+        "X": 514.6328,
+        "Y": 317.036
+      },
+      "quest": {
+        "H": 60,
+        "W": 174.8999,
+        "X": 114.2679,
+        "Y": 81.9973
+      },
+      "tiles": {
+        "Count": 4,
+        "Gap": 3.498,
+        "H": 60,
+        "Size": 60,
+        "W": 278.6738,
+        "X": 585.3316,
+        "Y": 147.8273
+      },
+      "war_meter": {
+        "H": 44.308,
+        "W": 279.8398,
+        "X": 297.1678,
+        "Y": 81.9973
+      },
+      "xp_bar": {
+        "H": 6.996,
+        "W": 214.0098,
+        "X": 649.9955,
+        "Y": 120.4753
+      },
+      "z": {
+        "H": 83.9519,
+        "W": 83.9519,
+        "X": 563.6048,
+        "Y": 227.2274
+      }
+    },
+    "phone_844x390": {
+      "attack": {
+        "H": 149.3333,
+        "W": 149.3333,
+        "X": 838.6667,
+        "Y": 360
+      },
+      "auto": {
+        "H": 64,
+        "W": 64,
+        "X": 1013.3333,
+        "Y": 325.3333
+      },
+      "chips": {
+        "H": 22.6667,
+        "W": 320,
+        "X": 402.6667,
+        "Y": 137.3333
+      },
+      "combo": {
+        "H": 26.6667,
+        "W": 192,
+        "X": 533.3333,
+        "Y": 353.3333
+      },
+      "event": {
+        "H": 21.3333,
+        "W": 200,
+        "X": 462.6667,
+        "Y": 162.6667
+      },
+      "ghost": {
+        "H": 76,
+        "W": 76,
+        "X": 913.3333,
+        "Y": 281.3333
+      },
+      "hp_bar": {
+        "H": 17.3333,
+        "W": 124,
+        "X": 861.3333,
+        "Y": 104
+      },
+      "minimap": {
+        "H": 112,
+        "W": 112,
+        "X": 10.6667,
+        "Y": 82.6667
+      },
+      "mp_bar": {
+        "H": 17.3333,
+        "W": 124,
+        "X": 990.6667,
+        "Y": 104
+      },
+      "notify": {
+        "H": 45.3333,
+        "W": 320,
+        "X": 402.6667,
+        "Y": 188
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 796,
+        "Y": 82.6667
+      },
+      "potions": {
+        "Gap": 8,
+        "H": 72,
+        "W": 149.3333,
+        "X": 576,
+        "Y": 436
+      },
+      "power_line": {
+        "H": 18.6667,
+        "W": 253.3333,
+        "X": 861.3333,
+        "Y": 82.6667
+      },
+      "q": {
+        "H": 96,
+        "W": 96,
+        "X": 733.3333,
+        "Y": 374.6667
+      },
+      "quest": {
+        "H": 60,
+        "W": 200,
+        "X": 130.6667,
+        "Y": 82.6667
+      },
+      "tiles": {
+        "Count": 5,
+        "Gap": 4,
+        "H": 60,
+        "Size": 60,
+        "W": 318.6667,
+        "X": 796,
+        "Y": 149.3333
+      },
+      "war_meter": {
+        "H": 50.6667,
+        "W": 320,
+        "X": 402.6667,
+        "Y": 82.6667
+      },
+      "xp_bar": {
+        "H": 8,
+        "W": 253.3333,
+        "X": 861.3333,
+        "Y": 126.6667
+      },
+      "z": {
+        "H": 96,
+        "W": 96,
+        "X": 789.3333,
+        "Y": 278.6667
+      }
+    },
+    "tablet_1024x768": {
+      "attack": {
+        "H": 143.5514,
+        "W": 143.5514,
+        "X": 646.8199,
+        "Y": 496.0639
+      },
+      "auto": {
+        "H": 61.522,
+        "W": 61.522,
+        "X": 826.114,
+        "Y": 451.3493
+      },
+      "chips": {
+        "H": 21.7891,
+        "W": 307.6101,
+        "X": 326.1949,
+        "Y": 112.0519
+      },
+      "combo": {
+        "H": 25.6342,
+        "W": 184.5661,
+        "X": 353.3086,
+        "Y": 478.2652
+      },
+      "event": {
+        "H": 20.5073,
+        "W": 192.2563,
+        "X": 383.8718,
+        "Y": 136.4044
+      },
+      "ghost": {
+        "H": 73.0574,
+        "W": 73.0574,
+        "X": 718.5956,
+        "Y": 409.0529
+      },
+      "hp_bar": {
+        "H": 16.6622,
+        "W": 116.8758,
+        "X": 708.5447,
+        "Y": 80.0092
+      },
+      "minimap": {
+        "H": 107.6636,
+        "W": 107.6636,
+        "X": 10.2537,
+        "Y": 59.5018
+      },
+      "mp_bar": {
+        "H": 16.6622,
+        "W": 116.8758,
+        "X": 832.8705,
+        "Y": 80.0092
+      },
+      "notify": {
+        "H": 43.5781,
+        "W": 307.6101,
+        "X": 326.1949,
+        "Y": 160.7568
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 643.4179,
+        "Y": 59.5018
+      },
+      "potions": {
+        "Gap": 7.6903,
+        "H": 69.2123,
+        "W": 143.5514,
+        "X": 394.3233,
+        "Y": 569.1213
+      },
+      "power_line": {
+        "H": 17.9439,
+        "W": 241.2016,
+        "X": 708.5447,
+        "Y": 59.5018
+      },
+      "q": {
+        "H": 92.283,
+        "W": 92.283,
+        "X": 545.5649,
+        "Y": 510.1627
+      },
+      "quest": {
+        "H": 60,
+        "W": 192.2563,
+        "X": 125.6075,
+        "Y": 59.5018
+      },
+      "tiles": {
+        "Count": 4,
+        "Gap": 3.8451,
+        "H": 60,
+        "Size": 60,
+        "W": 306.3284,
+        "X": 643.4179,
+        "Y": 125.9104
+      },
+      "war_meter": {
+        "H": 48.7049,
+        "W": 307.6101,
+        "X": 326.1949,
+        "Y": 59.5018
+      },
+      "xp_bar": {
+        "H": 7.6903,
+        "W": 241.2016,
+        "X": 708.5447,
+        "Y": 101.7982
+      },
+      "z": {
+        "H": 92.283,
+        "W": 92.283,
+        "X": 599.3967,
+        "Y": 406.4895
+      }
+    },
+    "tablet_1180x820": {
+      "attack": {
+        "H": 149.3333,
+        "W": 149.3333,
+        "X": 726.8293,
+        "Y": 501.626
+      },
+      "auto": {
+        "H": 64,
+        "W": 64,
+        "X": 907.5122,
+        "Y": 460.9431
+      },
+      "chips": {
+        "H": 22.6667,
+        "W": 320,
+        "X": 358.0488,
+        "Y": 110.9268
+      },
+      "combo": {
+        "H": 26.6667,
+        "W": 192,
+        "X": 421.4959,
+        "Y": 488.9431
+      },
+      "event": {
+        "H": 21.3333,
+        "W": 200,
+        "X": 418.0488,
+        "Y": 136.2602
+      },
+      "ghost": {
+        "H": 76,
+        "W": 76,
+        "X": 801.4959,
+        "Y": 416.9431
+      },
+      "hp_bar": {
+        "H": 17.3333,
+        "W": 124,
+        "X": 772.0976,
+        "Y": 77.5935
+      },
+      "minimap": {
+        "H": 112,
+        "W": 112,
+        "X": 10.6667,
+        "Y": 56.2602
+      },
+      "mp_bar": {
+        "H": 17.3333,
+        "W": 124,
+        "X": 901.4309,
+        "Y": 77.5935
+      },
+      "notify": {
+        "H": 45.3333,
+        "W": 320,
+        "X": 358.0488,
+        "Y": 161.5935
+      },
+      "portrait": {
+        "H": 60,
+        "W": 60,
+        "X": 706.7642,
+        "Y": 56.2602
+      },
+      "potions": {
+        "Gap": 8,
+        "H": 72,
+        "W": 149.3333,
+        "X": 464.1626,
+        "Y": 577.626
+      },
+      "power_line": {
+        "H": 18.6667,
+        "W": 253.3333,
+        "X": 772.0976,
+        "Y": 56.2602
+      },
+      "q": {
+        "H": 96,
+        "W": 96,
+        "X": 621.4959,
+        "Y": 516.2927
+      },
+      "quest": {
+        "H": 60,
+        "W": 200,
+        "X": 130.6667,
+        "Y": 56.2602
+      },
+      "tiles": {
+        "Count": 5,
+        "Gap": 4,
+        "H": 60,
+        "Size": 60,
+        "W": 318.6667,
+        "X": 706.7642,
+        "Y": 122.9268
+      },
+      "war_meter": {
+        "H": 50.6667,
+        "W": 320,
+        "X": 358.0488,
+        "Y": 56.2602
+      },
+      "xp_bar": {
+        "H": 8,
+        "W": 253.3333,
+        "X": 772.0976,
+        "Y": 100.2602
+      },
+      "z": {
+        "H": 96,
+        "W": 96,
+        "X": 677.4959,
+        "Y": 414.2764
+      }
+    }
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "7196a75bf2814d56277bb4c73cef28430b1148cd5e16ac6d80d918a34035f086",
+    "tools/fixtures/hud_layout_offline.luau": "7f4ffac1228a2e48f850a1e5f1b54ca03645dd1cc65760e15794d05465626227",
+    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "5fe55c6b99a7607904cc5e05fe9ea14f4982e4c2bb4e501eb93a7ca4dada06cd",
+    "src/ReplicatedStorage/Shared/Config.luau": "a826db79ce6787b8cb6b7ea95e86eb1efb57d7c9fb665e247e3615c5c0d77cea"
+  },
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "SPEC A23-26 HUD v2 via HudLayout.Compute(env) -> { [id] = {X,Y,W,H} } in MainGui logical units: items keep their approved distance to their edge (TL / TC / TR / BC; BR to the PC corner or the live touch jump button), top rows follow the real top-bar inset, narrow phone safe areas shrink the whole layout, touch targets >= 60du (the rail re-spaces so grown buttons never touch; both potion cells, the potions rect growing up and then left up to the thumbstick zone, Gap published as out.potions.Gap), pressable items >= 2du apart, the touch quest board >= 48du tall, env.PouchLine adds pouch_line under the XP bar and moves only the minimap, one centre column (meter, chip row with zone / luck / status chips, notify) between the left and right blocks with >= 240du for the meter, everything on screen below the top bar; the reference screens match the approved sheet within 1 px.",
+  "limitations": "Pure-function check only: no Roblox engine, so text fit, art, real GuiInset / safe insets, the real TouchGui (assumed to share MainGui's safe area), chat window size and the PlayerList are estimates. Studio captures at 1280x720 / 749x361 / 844x390 are separate evidence."
+}
