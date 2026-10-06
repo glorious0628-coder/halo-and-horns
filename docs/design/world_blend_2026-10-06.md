@@ -49,3 +49,66 @@
 - 조명: 게임성 개발이 WarService LIGHTING_FIXED·SKY_EXTRAS와 Config.Sky(Neutral·Dawn·Eclipse)에 표 값을 넣는다. Dawn은 B와 같은 원칙(EnvironmentDiffuse 1.0·Specular 0.6·밝은 중립 Ambient)으로 맞춘다.
 - 땅 E를 고르면: 이미지 개발이 Config Tex_ 키 4개를 새 ID로 바꾸고 `tools/apply_surface_materials.lua`로 MaterialVariant를 새로 만들고(지형 색 235), terrain_view로 확인한 뒤 옛 Tex_ 파일·기록을 지운다. 나머지 11장(Slate·Basalt 등)은 다음 묶음.
 - 땅 D를 고르면: 잔디·숲 바닥만 색 전용 재질로 바꾸고 나머지는 새 그림을 기다린다.
+
+## 사냥터별 바닥 재질 (A23-30, 2026-10-06 UiSandbox 실측)
+
+재질 하나 = 그림 하나(MaterialService 덮어쓰기는 재질마다 1개, 지형과 같은 재질의 파트에도 똑같이 씌워진다). 측정: 각 지역 사각형을 6스터드 격자로 위에서 쏴서 지형 윗면 재질을 셌다(`mat_survey`, Edit 모드).
+
+| 재질 | 지금 쓰는 곳 (지형 칸 수 / 파트) | 지금 그림 | 새 그림(계획) |
+|---|---|---|---|
+| Grass | 말랑 초원 바닥 1849/1849, 초원 언덕, 바깥 들판 언덕 | GE_Grass (Tex_Grass) | **Tex_Grass_FF (E 확정)** |
+| LeafyGrass | 고블린 숲 바닥 2116/2500, 숲 언덕 윗면 | GE_LeafyGrass | **Tex_LeafyGrass_FF (E 확정)** |
+| Cobblestone | 교차로 마을 바닥 613/676 | GE_Cobblestone | **Tex_Cobblestone_FF (E 확정)** |
+| Ground | 해골 폐허 흙 바닥 1720/2809, 바깥 들판 흙, 길 파트(재질 Ground) | GE_Ground | 폐허 흙(새) |
+| (변형) GE_DirtPath | 길 파트 3개(Map.Decor.Roads, MaterialVariant 지정) | Tex_DirtPath | **Tex_DirtPath_FF (E 확정)** |
+| Slate | 해골 폐허 판석 1043/2809, 폐허 언덕 아래, **길 파트 RoadPass·RoadRuins·RoadSouth(뿔 쪽)·다리 받침·MapBuilder 판석 파트** | GE_Slate | Tex_RuinsFlagstone(새) — 겹침 주의 ① |
+| Limestone | 빛의 성채 바닥 675/676, **폐허 언덕 윗면**, 빛 언덕 | GE_Limestone | 빛 마을 바닥(새) — 겹침 주의 ② |
+| Basalt | 뿔 소굴 바닥 668/676, 뿔 언덕, 뿔 문 기둥·다리 파트 | GE_Basalt | 뿔 바닥(새) |
+| CrackedLava | 뿔 언덕 윗면·틈, 극한 경계 파트 | GE_CrackedLava | 용암 틈(새) |
+| Rock | 모든 절벽(초원 언덕 윗면, 숲 언덕 아래, 교차로 가장자리 60) | GE_Rock | 절벽 바위(새) |
+| Sand | 바닷가 | GE_Sand | 모래(새) |
+| Water | 바다 | (Roblox 물) | 그림 없음 |
+| Marble | 파트만: 분수·빛 다리·빛 건물 | GE_Marble | 대리석(새) |
+| WoodPlanks | 파트만: 다리·벤치·판자 | GE_WoodPlanks | 나무 판(새) |
+| **Mud (빈 칸)** | 아무 데도 안 씀 | — | **호박밭 흙 Tex_PumpkinSoil(새)** |
+| 그 밖의 빈 칸 | Salt, Sandstone, Asphalt, Pavement, Concrete, Brick, Snow, Glacier, Ice | — | 앞으로 새 사냥터용 |
+
+- 안 쓰는 변형 2개: GE_HaloTiles(Limestone 기반, 덮어쓰기·파트 사용 없음), GE_CrownShardGround(Ground 기반, 사용 없음). 새 그림 적용 때 정리.
+- 겹침 주의 ① Slate: 폐허 판석 그림을 씌우면 뿔 소굴로 가는 길(RoadSouth·RoadSouthIsland)과 다리 받침도 폐허 판석이 된다. 길 파트는 Ground+GE_DirtPath로 바꾸는 것을 추천(MapBuilder·preview_map, 게임성 개발).
+- 겹침 주의 ② Limestone: 빛 마을 바닥 그림이 해골 폐허 언덕 윗면에도 나온다. 폐허 언덕 윗면은 Slate나 Rock으로 바꾸는 것을 추천(preview_map ridge, 지형 다시 만들 때).
+- 호박밭 바닥은 Mud(지금 0칸)를 쓰면 다른 곳과 안 겹친다. 호박밭 위치·지형은 게임성 개발이 정한다(A23-30).
+
+## 사냥터별 분위기 ZoneLook (A23-30, 이미지 개발 2026-10-06)
+
+`src/StarterPlayer/StarterPlayerScripts/ZoneLook.luau` (클라이언트). 전쟁 하늘(GameState WarBlessing: 없음 = Neutral, 빛 = Dawn, 뿔 = Eclipse)이 기본 빛을 정하고, 내가 선 지역(플레이어 속성 ZoneId)이 색을 덧칠한다. 내 화면에서만 1.5초 동안 부드럽게 바뀐다. 서버 조명이 하늘을 바꾸면(라운드 끝 3초) 쓰기가 멈춘 뒤 다시 지역 값으로 돌아간다. ClockTime·안개·Bloom·SunRays·하늘 상자·WarTint는 서버 것 그대로. 지역 색은 클라이언트가 만든 ColorCorrection "ZoneTint" 하나. Atmosphere 없음.
+
+기본 빛(모든 지역 공통: EnvironmentDiffuseScale 1.0 · EnvironmentSpecularScale 0.6 · ShadowSoftness 0.5)
+
+| 하늘 | Brightness | Ambient | OutdoorAmbient | Exposure |
+|---|---|---|---|---|
+| Neutral | 2.0 | 110,108,106 | 128,126,124 | -0.2 |
+| Dawn | 2.1 | 128,112,92 | 150,130,104 | -0.15 |
+| Eclipse | 1.4 | 100,62,78 | 115,76,92 | +0.45 |
+
+지역 덧칠(Ambient·OutdoorAmbient 채널 배수 R,G,B · 해 밝기 배수 · Exposure 더함 · ZoneTint 색/채도/대비/밝기)
+
+| 지역 | Ambient 배수 | 밝기 | Exposure | ZoneTint | 채도 | 대비 | 비고 |
+|---|---|---|---|---|---|---|---|
+| 말랑 초원(기본·바깥 들판) | 1, 1, 1 | ×1 | 0 | 255,255,255 | 0.1 | 0.05 | E 그대로 밝은 한낮 |
+| 교차로 마을 | 1.03, 1, 0.97 | ×1 | 0 | 255,252,246 | 0.08 | 0.05 | 초원과 비슷 |
+| 고블린 숲 | 0.9, 1.08, 0.88 | ×0.78 | +0.1 | 228,246,220 | 0.12 | 0.08 | 초록 그늘, 몬스터는 하늘빛으로 밝게 |
+| 해골 폐허 | 0.8, 0.95, 1.3 | ×0.65 | +0.15 | 198,212,255 | -0.12 | 0.1 | 푸른 달빛, Specular 0.8 |
+| 호박밭(PumpkinPatch) | 1.15, 0.85, 1.25 | ×0.85 | +0.08 | 255,205,170 | 0.2 | 0.08 | 주황 해(틴트)·보라 그늘(Ambient) |
+| 빛의 성채 | 1.06, 1.04, 0.95 | ×0.88 | -0.12 | 255,246,228 | 0.06 | 0.05 | 흰 석회암이 날아가지 않게 |
+| 뿔 소굴 | 1.12, 0.86, 0.9 | ×0.88 | +0.08 | 255,218,214 | 0.1 | 0.08 | 붉은 진영 색 |
+
+- 밤(Eclipse)에는 지역이 해 밝기를 ×0.95 아래로 깎지 않는다(어두운 갑옷 해골 기사가 안 보이던 문제).
+- 서버 쪽(게임성 개발): WarService LIGHTING_FIXED·Config.Sky도 위 기본 빛(B)으로 맞추면 하늘이 바뀌는 3초 동안의 깜빡임이 없어진다. ZoneLook이 없어도(예: 오래된 클라이언트) 같은 기본 빛이 된다.
+- 시트: `art/review/zone_look_2026-10-06_sheet.png`, 다시 찍기 `py tools/zone_look_view.py`(UiSandbox Play, 캐릭터를 각 지역 안에 세움, 레벨·진영 문은 시험 속성으로 통과).
+
+## 새 땅·나무 적용 (2026-10-06)
+- 땅 13종(E 4장 + 10장: 폐허 판석·호박밭 흙·폐허 흙·석회암·현무암·용암·바위·모래·대리석·나무판)을 `tools/apply_surface_materials.lua`가 새 재질로 만든다(옛 재질 복제 안 함, ColorMap만, 지형 색 235). StudsPerTile: 잔디·숲 바닥·길·폐허 흙·바위·모래 16, 돌바닥·판석·석회암·현무암·용암·호박밭 흙 14, 대리석·나무판 10.
+- 나무 46그루: 잎(Leaves·Leaves2, SmoothPlastic) = 이름 붙인 변형 GE_TreeLeaves(타일 9), 줄기(Trunk, Wood) = GE_TreeBark(타일 8). 덮어쓰기 없음(Wood·SmoothPlastic을 쓰는 다른 파트 약 300개에 안 번짐). 무채색 그림이라 파트 Color가 잎·껍질 색이 된다.
+- **나무 색 제안(MapBuilder·preview_map, 게임성 개발 1):** 숲 잎 Color를 ×1.35 밝게(지금 40,90,45 → 54,121,61; 시트 '숲 나무 한 단계 밝게'). 새 잎 그림이 평균 0.76배 어두워서 지금 색 그대로면 숲 나무가 거의 검게 보인다. 초원 나무도 같은 비율 추천.
+- **하늘 해(Sky_Sun):** Roblox 해 렌더에서 흰 꽃(데이지) 모양으로 보인다(시트 '새 해 그림'). 색이 사라지고 빛살이 꽃잎처럼 보여 기본 해보다 낫지 않다. 제안: 해는 빛살 없는 둥근 원판 한 장으로 다시 그리기(이미지 생성 1), Dawn 해·Eclipse 달은 하늘 바뀔 때 WarService가 Sky.SunTextureId/MoonTextureId로 바꾼다(게임성 개발).
+- 길·다리 파트(Slate·Ground·WoodPlanks·Marble)도 파트 Color가 그림에 곱해진다. 어둡게 보이는 파트는 Color를 235 쪽으로(MapBuilder, 게임성 개발).

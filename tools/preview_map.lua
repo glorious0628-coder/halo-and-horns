@@ -166,13 +166,18 @@ Terrain.WaterReflectance = 0.5
 Terrain.WaterWaveSize = 0.12
 Terrain.WaterWaveSpeed = 8
 pcall(function()
-	Terrain:SetMaterialColor(Enum.Material.Grass, RGB(106, 150, 72))
-	Terrain:SetMaterialColor(Enum.Material.LeafyGrass, RGB(70, 110, 55))
-	Terrain:SetMaterialColor(Enum.Material.Rock, RGB(110, 105, 100))
-	Terrain:SetMaterialColor(Enum.Material.Cobblestone, RGB(170, 160, 140))
-	Terrain:SetMaterialColor(Enum.Material.Limestone, RGB(225, 220, 200))
-	Terrain:SetMaterialColor(Enum.Material.Basalt, RGB(48, 38, 40))
-	Terrain:SetMaterialColor(Enum.Material.Ground, RGB(120, 100, 75))
+	-- A23-29/30: every ground is a painted Firefly tile that carries its own colour, so the materials stay near white
+	-- (the old dark tints darkened them twice); tools/apply_surface_materials.lua sets the same PAINTED colour
+	Terrain:SetMaterialColor(Enum.Material.Grass, RGB(235, 235, 235))
+	Terrain:SetMaterialColor(Enum.Material.LeafyGrass, RGB(235, 235, 235))
+	Terrain:SetMaterialColor(Enum.Material.Rock, RGB(235, 235, 235))
+	Terrain:SetMaterialColor(Enum.Material.Cobblestone, RGB(235, 235, 235))
+	Terrain:SetMaterialColor(Enum.Material.Limestone, RGB(235, 235, 235))
+	Terrain:SetMaterialColor(Enum.Material.Basalt, RGB(235, 235, 235))
+	Terrain:SetMaterialColor(Enum.Material.Ground, RGB(235, 235, 235))
+	for _, m in { Enum.Material.Slate, Enum.Material.CrackedLava, Enum.Material.Sand, Enum.Material.Mud } do
+		Terrain:SetMaterialColor(m, RGB(235, 235, 235))
+	end
 end)
 local WATER_TOP = -1.2
 local bw, bd = BOUNDS.MaxX - BOUNDS.MinX, BOUNDS.MaxZ - BOUNDS.MinZ

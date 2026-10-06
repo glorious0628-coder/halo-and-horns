@@ -12,29 +12,55 @@ local fresh = source:Clone()
 local okConfig, Config = pcall(require, fresh)
 fresh:Destroy()
 if not okConfig or type(Config) ~= "table" then error("Config를 읽지 못했습니다.") end
+-- Fresh = the variant is rebuilt as a new instance holding only this ColorMap (A23-30 E tiles, Firefly 2026-10-06):
+-- the painted tile carries its own colour, so its terrain material colour goes to TerrainColor (near white; the old
+-- dark tints would darken it twice) and StudsPerTile is the size checked in docs/design/world_blend_2026-10-06.md.
+local PAINTED = Color3.fromRGB(235, 235, 235)
 local definitions = {
-	{ Key = "Tex_Grass", Name = "GE_Grass", Material = Enum.Material.Grass, Override = true },
-	{ Key = "Tex_LeafyGrass", Name = "GE_LeafyGrass", Material = Enum.Material.LeafyGrass, Override = true },
+	{ Key = "Tex_Grass", Name = "GE_Grass", Material = Enum.Material.Grass, Override = true, Fresh = true,
+		StudsPerTile = 16, TerrainColor = PAINTED },
+	{ Key = "Tex_LeafyGrass", Name = "GE_LeafyGrass", Material = Enum.Material.LeafyGrass, Override = true, Fresh = true,
+		StudsPerTile = 16, TerrainColor = PAINTED },
 	{ Key = "Tex_HaloTiles", Name = "GE_HaloTiles", Material = Enum.Material.Limestone },
-	{ Key = "Tex_Ground", Name = "GE_Ground", Material = Enum.Material.Ground, Override = true },
-	{ Key = "Tex_DirtPath", Name = "GE_DirtPath", Material = Enum.Material.Ground },
+	{ Key = "Tex_Ground", Name = "GE_Ground", Material = Enum.Material.Ground, Override = true, Fresh = true,
+		StudsPerTile = 16, TerrainColor = PAINTED },
+	{ Key = "Tex_DirtPath", Name = "GE_DirtPath", Material = Enum.Material.Ground, Fresh = true, StudsPerTile = 16 },
 	{ Key = "Tex_CrownShardGround", Name = "GE_CrownShardGround", Material = Enum.Material.Ground },
-	{ Key = "Tex_CrackedLava", Name = "GE_CrackedLava", Material = Enum.Material.CrackedLava, Override = true },
-	{ Key = "Tex_Cobblestone", Name = "GE_Cobblestone", Material = Enum.Material.Cobblestone, Override = true },
-	{ Key = "Tex_Basalt", Name = "GE_Basalt", Material = Enum.Material.Basalt, Override = true },
-	{ Key = "Tex_WoodPlanks", Name = "GE_WoodPlanks", Material = Enum.Material.WoodPlanks, Override = true },
-	{ Key = "Tex_Slate", Name = "GE_Slate", Material = Enum.Material.Slate, Override = true },
-	{ Key = "Tex_Sand", Name = "GE_Sand", Material = Enum.Material.Sand, Override = true },
-	{ Key = "Tex_Rock", Name = "GE_Rock", Material = Enum.Material.Rock, Override = true },
-	{ Key = "Tex_Marble", Name = "GE_Marble", Material = Enum.Material.Marble, Override = true },
-	{ Key = "Tex_Limestone", Name = "GE_Limestone", Material = Enum.Material.Limestone, Override = true },
+	{ Key = "Tex_CrackedLava", Name = "GE_CrackedLava", Material = Enum.Material.CrackedLava, Override = true, Fresh = true,
+		StudsPerTile = 14, TerrainColor = PAINTED },
+	{ Key = "Tex_Cobblestone", Name = "GE_Cobblestone", Material = Enum.Material.Cobblestone, Override = true, Fresh = true,
+		StudsPerTile = 14, TerrainColor = PAINTED },
+	{ Key = "Tex_Basalt", Name = "GE_Basalt", Material = Enum.Material.Basalt, Override = true, Fresh = true,
+		StudsPerTile = 14, TerrainColor = PAINTED },
+	{ Key = "Tex_WoodPlanks", Name = "GE_WoodPlanks", Material = Enum.Material.WoodPlanks, Override = true, Fresh = true,
+		StudsPerTile = 10 },
+	{ Key = "Tex_Slate", Name = "GE_Slate", Material = Enum.Material.Slate, Override = true, Fresh = true,
+		StudsPerTile = 14, TerrainColor = PAINTED },
+	{ Key = "Tex_Sand", Name = "GE_Sand", Material = Enum.Material.Sand, Override = true, Fresh = true,
+		StudsPerTile = 16, TerrainColor = PAINTED },
+	{ Key = "Tex_Rock", Name = "GE_Rock", Material = Enum.Material.Rock, Override = true, Fresh = true,
+		StudsPerTile = 16, TerrainColor = PAINTED },
+	{ Key = "Tex_Marble", Name = "GE_Marble", Material = Enum.Material.Marble, Override = true, Fresh = true,
+		StudsPerTile = 10 },
+	{ Key = "Tex_Limestone", Name = "GE_Limestone", Material = Enum.Material.Limestone, Override = true, Fresh = true,
+		StudsPerTile = 14, TerrainColor = PAINTED },
+	-- A23-30 pumpkin field soil: Mud was an empty slot (no other terrain or part uses it)
+	{ Key = "Tex_PumpkinSoil", Name = "GE_PumpkinSoil", Material = Enum.Material.Mud, Override = true, Fresh = true,
+		StudsPerTile = 14, TerrainColor = PAINTED },
+	-- trees: named variants on the Map.Decor Tree parts only (no base override: Wood / SmoothPlastic are on ~300 other
+	-- parts); the neutral tiles take the part Color as the leaf / bark colour
+	{ Key = "Tex_TreeLeaves", Name = "GE_TreeLeaves", Material = Enum.Material.SmoothPlastic, Fresh = true, StudsPerTile = 9,
+		Parts = { Model = "Tree", Names = { Leaves = true, Leaves2 = true } } },
+	{ Key = "Tex_TreeBark", Name = "GE_TreeBark", Material = Enum.Material.Wood, Fresh = true, StudsPerTile = 8,
+		Parts = { Model = "Tree", Names = { Trunk = true } } },
 }
--- Only a newly constructed color-only grass variant carries this marker. Never clone the old variant:
--- a clone can retain its inaccessible compiled TexturePack even after the visible maps are cleared.
-local freshGrassMarker = "GE_ColorOnlyFresh"
+-- A Fresh row's variant carries the Id it was built for. Never clone the old variant: a clone can retain its
+-- inaccessible compiled TexturePack even after the visible maps are cleared. ("GE_ColorOnlyFresh" was the 2026-10-03
+-- grass-only marker; a variant whose freshMarker is not its Id is rebuilt.)
+local freshMarker = "GE_FreshColorMap"
 local preservedProperties = { "Name", "BaseMaterial", "AlphaMode", "StudsPerTile", "MaterialPattern", "CustomPhysicalProperties" }
 local mapProperties = { "ColorMap", "NormalMap", "MetalnessMap", "RoughnessMap" }
-local before = { Variants = {}, Overrides = {}, Roads = {}, RoadInstances = {} }
+local before = { Variants = {}, Overrides = {}, Roads = {}, RoadInstances = {}, TerrainColors = {} }
 local roadStates = {}
 local function backupValue(value)
 	local kind = typeof(value)
@@ -108,6 +134,10 @@ for _, row in definitions do
 		before.Variants[row.Name] = saved
 	else before.Variants[row.Name] = false end
 	if row.Override then before.Overrides[row.Material.Name] = MaterialService:GetBaseMaterialOverride(row.Material) end
+	if row.TerrainColor then
+		row.PriorColor = workspace.Terrain:GetMaterialColor(row.Material)
+		before.TerrainColors[row.Material.Name] = backupValue(row.PriorColor)
+	end
 end
 if roads then
 	for _, part in roads:GetDescendants() do
@@ -118,11 +148,28 @@ if roads then
 		end
 	end
 end
-local backupName = "GE_SurfaceBackup_20261003"
+-- rows with Parts: the named variant goes on those parts of every <Model> under Map.Decor (base material must match)
+local partStates = {}
+local decor = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Decor")
+for _, row in definitions do
+	if row.Parts and decor then
+		for _, model in decor:GetDescendants() do
+			if model:IsA("Model") and model.Name == row.Parts.Model then
+				for _, part in model:GetChildren() do
+					if part:IsA("BasePart") and row.Parts.Names[part.Name] and part.Material == row.Material then
+						table.insert(partStates, { Part = part, MaterialVariant = part.MaterialVariant, Name = row.Name })
+					end
+				end
+			end
+		end
+	end
+end
+before.NamedParts = #partStates
+local backupName = "GE_SurfaceBackup_20261006"
 if MaterialService:GetAttribute(backupName) == nil then
 	MaterialService:SetAttribute(backupName, HttpService:JSONEncode(before))
 end
-local result = { Updated = {}, Overrides = {}, Roads = 0, GrassReplaced = false,
+local result = { Updated = {}, Overrides = {}, Roads = 0, NamedParts = 0, Rebuilt = {}, TerrainColors = {},
 	RegisteredOnly = { "GE_HaloTiles", "GE_CrownShardGround" } }
 local encodedResult
 local ok, err = pcall(function()
@@ -130,36 +177,35 @@ local ok, err = pcall(function()
 	local tileSize = grass and grass.StudsPerTile
 	for _, row in definitions do
 		local variant = row.Original
-		local replaceGrass = row.Name == "GE_Grass" and variant and variant:GetAttribute(freshGrassMarker) == nil
-		if not variant or replaceGrass then
+		local rebuild = row.Fresh == true and variant ~= nil and variant:GetAttribute(freshMarker) ~= row.Id
+		if not variant or rebuild then
 			variant = Instance.new("MaterialVariant")
 			row.Applied = variant -- Track it before any property write can throw.
 			variant.Name = row.Name
 			variant.BaseMaterial = row.Material
-			if replaceGrass then
+			if rebuild then
 				for _, property in preservedProperties do variant[property] = row.Prior.Properties[property] end
 				for name, value in row.Prior.Attributes do variant:SetAttribute(name, value) end
+				variant:SetAttribute("GE_ColorOnlyFresh", nil)
 			else
 				-- Reuse the place's existing grass tile scale; otherwise keep Roblox's default.
 				if type(tileSize) == "number" and tileSize > 0 and tileSize < math.huge then variant.StudsPerTile = tileSize end
 			end
 			variant.ColorMap = row.Id -- Never assign any old map to the fresh instance, even temporarily.
-			if row.Name == "GE_Grass" then
-				variant.NormalMap = ""; variant.MetalnessMap = ""; variant.RoughnessMap = ""
-				variant:SetAttribute(freshGrassMarker, true)
-			end
-			if replaceGrass then row.Original.Parent = nil end -- Keep it intact and rollback-capable off the service.
+			if rebuild then row.Original.Parent = nil end -- Keep it intact and rollback-capable off the service.
 			variant.Parent = MaterialService
-			if replaceGrass then result.GrassReplaced = true end
+			if rebuild then table.insert(result.Rebuilt, row.Name) end
 		else
 			row.Applied = variant
 		end
 		variant.ColorMap = row.Id
-		-- The approved replacement is a color texture; retain no inaccessible maps from the old account.
-		if row.Name == "GE_Grass" then
+		-- A Fresh tile is a color texture only; retain no inaccessible maps from the old account.
+		if row.Fresh then
 			variant.NormalMap = ""
 			variant.MetalnessMap = ""
 			variant.RoughnessMap = ""
+			variant:SetAttribute(freshMarker, row.Id)
+			if row.StudsPerTile then variant.StudsPerTile = row.StudsPerTile end
 		end
 		table.insert(result.Updated, row.Name)
 		if row.Override then
@@ -171,14 +217,29 @@ local ok, err = pcall(function()
 		state.Part.MaterialVariant = "GE_DirtPath"
 		result.Roads += 1
 	end
+	for _, state in partStates do
+		state.Part.MaterialVariant = state.Name
+		result.NamedParts += 1
+	end
+	for _, row in definitions do
+		if row.TerrainColor then
+			workspace.Terrain:SetMaterialColor(row.Material, row.TerrainColor)
+			result.TerrainColors[row.Material.Name] = row.TerrainColor:ToHex()
+		end
+	end
 	for _, row in definitions do
 		local variant = row.Applied
 		assert(variant.Parent == MaterialService and variant.Name == row.Name and variant.BaseMaterial == row.Material,
 			"재질 등록 검증 실패: " .. row.Name)
 		assert(variant.ColorMap == row.Id, "새 ColorMap 검증 실패: " .. row.Name)
-		if row.Name == "GE_Grass" then
+		if row.Fresh then
 			assert(variant.NormalMap == "" and variant.MetalnessMap == "" and variant.RoughnessMap == "",
-				"잔디 PBR 비우기 검증 실패")
+				"PBR 비우기 검증 실패: " .. row.Name)
+			assert(variant:GetAttribute(freshMarker) == row.Id, "새 재질 표시 검증 실패: " .. row.Name)
+			assert(not row.StudsPerTile or variant.StudsPerTile == row.StudsPerTile, "타일 크기 검증 실패: " .. row.Name)
+		end
+		if row.TerrainColor then
+			assert(workspace.Terrain:GetMaterialColor(row.Material) == row.TerrainColor, "지형 색 검증 실패: " .. row.Name)
 		end
 		if row.Override then
 			assert(MaterialService:GetBaseMaterialOverride(row.Material) == row.Name, "기본 재질 override 검증 실패: " .. row.Name)
@@ -214,6 +275,16 @@ if not ok then
 	end
 	for _, state in roadStates do
 		restore("Road." .. state.Part.Name, function() state.Part.MaterialVariant = state.MaterialVariant end)
+	end
+	for _, state in partStates do
+		restore("Part." .. state.Part.Name, function() state.Part.MaterialVariant = state.MaterialVariant end)
+	end
+	for _, row in definitions do
+		if row.PriorColor then
+			restore(row.Material.Name .. ".TerrainColor", function()
+				workspace.Terrain:SetMaterialColor(row.Material, row.PriorColor)
+			end)
+		end
 	end
 	local detail = #failures > 0 and ("; 복원 오류: " .. table.concat(failures, " | ")) or "; 기존 인스턴스 복원 완료"
 	error("재질 연결 실패: " .. tostring(err) .. detail)

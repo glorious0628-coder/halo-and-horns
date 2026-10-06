@@ -2382,10 +2382,11 @@ Config.UIArt = {
 		IconHeart = { Id = "rbxassetid://92865909915468", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconWings = { Id = "rbxassetid://78896204690689", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconGoldPile = { Id = "rbxassetid://140588051269822", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconGoldGuard = { Id = "rbxassetid://137696635031445", Size = Vector2.new(512, 512) }, -- Firefly 2026-10-06: Horns perk 3 (keep plundered gold)
 		IconBloodSword = { Id = "rbxassetid://80973759611362", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconGauge = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 70) },
 		IconDemon = { Id = "rbxassetid://101305375688321", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
-		IconNoBuff = { Id = "rbxassetid://140138539286912", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconNoBuff = { Id = "rbxassetid://125613826056625", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06, re-cut 3f1716b (faction perk row)
 		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconHammer = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(236, 256) },
@@ -2429,21 +2430,28 @@ Config.UIArt = {
 		Weapon_Archer_T7_Halo = { Id = "rbxassetid://123944650415871", Size = Vector2.new(1024, 1024) },
 		Weapon_Archer_T7_Horns = { Id = "rbxassetid://129557918253283", Size = Vector2.new(1024, 1024) },
 		Weapon_Archer_T7_Neutral = { Id = "rbxassetid://134108221476202", Size = Vector2.new(1024, 1024) },
-		Tex_Grass = { Id = "rbxassetid://78282434254609", Size = Vector2.new(1024, 1024) },
-		Tex_LeafyGrass = { Id = "rbxassetid://97617252360457", Size = Vector2.new(1024, 1024) },
+		Tex_Grass = { Id = "rbxassetid://104463174886181", Size = Vector2.new(1024, 1024) }, -- A23-30 E: Firefly painted meadow (Tex_Grass_FF)
+		Tex_LeafyGrass = { Id = "rbxassetid://92129043469297", Size = Vector2.new(1024, 1024) }, -- A23-30 E: forest floor (Tex_LeafyGrass_FF)
 		Tex_HaloTiles = { Id = "rbxassetid://108329087203475", Size = Vector2.new(1024, 1024) },
-		Tex_Ground = { Id = "rbxassetid://91532028025941", Size = Vector2.new(1024, 1024) },
-		Tex_DirtPath = { Id = "rbxassetid://98968179009156", Size = Vector2.new(1024, 1024) },
+		Tex_Ground = { Id = "rbxassetid://140158008208812", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins dirt (Tex_Ground_FF)
+		Tex_DirtPath = { Id = "rbxassetid://85612652410118", Size = Vector2.new(1024, 1024) }, -- A23-30 E: road (Tex_DirtPath_FF)
 		Tex_CrownShardGround = { Id = "rbxassetid://114856730896342", Size = Vector2.new(1024, 1024) },
-		Tex_CrackedLava = { Id = "rbxassetid://91957054731134", Size = Vector2.new(1024, 1024) },
-		Tex_Cobblestone = { Id = "rbxassetid://115522078544414", Size = Vector2.new(1024, 1024) },
-		Tex_Basalt = { Id = "rbxassetid://103343555671461", Size = Vector2.new(1024, 1024) },
-		Tex_WoodPlanks = { Id = "rbxassetid://109420001270116", Size = Vector2.new(1024, 1024) },
-		Tex_Slate = { Id = "rbxassetid://121489633827695", Size = Vector2.new(1024, 1024) },
-		Tex_Sand = { Id = "rbxassetid://95940507315556", Size = Vector2.new(1024, 1024) },
-		Tex_Rock = { Id = "rbxassetid://106576322424276", Size = Vector2.new(1024, 1024) },
-		Tex_Marble = { Id = "rbxassetid://116081327339487", Size = Vector2.new(1024, 1024) },
-		Tex_Limestone = { Id = "rbxassetid://113099053145664", Size = Vector2.new(1024, 1024) },
+		Tex_CrackedLava = { Id = "rbxassetid://78705181921892", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lava cracks (Tex_CrackedLava_FF)
+		Tex_Cobblestone = { Id = "rbxassetid://72599078474763", Size = Vector2.new(1024, 1024) }, -- A23-30 E: town cobbles (Tex_Cobblestone_FF)
+		Tex_Basalt = { Id = "rbxassetid://106904976329450", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lair floor (Tex_Basalt_FF)
+		Tex_WoodPlanks = { Id = "rbxassetid://89937004688664", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: bridges / benches (parts) (Tex_WoodPlanks_FF)
+		Tex_Slate = { Id = "rbxassetid://71336203326371", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins flagstones (Tex_RuinsFlagstone_FF)
+		Tex_Sand = { Id = "rbxassetid://131974232864115", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: beaches (Tex_Sand_FF)
+		Tex_Rock = { Id = "rbxassetid://132087580653484", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: every cliff (Tex_Rock_FF)
+		Tex_Marble = { Id = "rbxassetid://82709638100363", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: fountain / Halo parts (Tex_Marble_FF)
+		Tex_Limestone = { Id = "rbxassetid://134773230868386", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Halo town floor (Tex_Limestone_FF)
+		Tex_PumpkinSoil = { Id = "rbxassetid://126628778707353", Size = Vector2.new(1024, 1024) }, -- A23-30 pumpkin field soil (Mud slot)
+		Tex_TreeLeaves = { Id = "rbxassetid://139379724133324", Size = Vector2.new(1024, 1024) }, -- tree leaf balls (neutral: the part Color tints it)
+		Tex_TreeBark = { Id = "rbxassetid://75619597726241", Size = Vector2.new(1024, 1024) }, -- tree trunks (neutral: the part Color tints it)
+		-- sky sun / moon (black = transparent, additive): WarService Sky.SunTextureId / MoonTextureId per war sky
+		Sky_Sun = { Id = "rbxassetid://139407736948839", Size = Vector2.new(512, 512) }, -- Neutral sun
+		Sky_SunDawn = { Id = "rbxassetid://98907370930215", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun
+		Sky_MoonEclipse = { Id = "rbxassetid://71404208078545", Size = Vector2.new(512, 512) }, -- Eclipse (Horns crown) moon
 		MapParchment = { Id = "rbxassetid://133911744102396", Size = Vector2.new(1536, 1024) },
 	},
 	-- Lettering images (TXT_*) were deleted 2026-10-06 (unused: UseTextImages=false). Text stays live TextLabels.
@@ -2531,7 +2539,7 @@ Config.UIArt.FactionPerks = {
 	Horns = {
 		{ Icon = "IconGoldPile", Text = "골드 +25%" },
 		{ Icon = "IconBloodSword", Text = "공격력 +15%, 체력 흡수", Short = "공격력 +15%, 흡혈" },
-		{ Icon = "IconGoldPile", Text = "약탈한 골드 지켜내기" },
+		{ Icon = "IconGoldGuard", Text = "약탈한 골드 지켜내기" },
 		{ Icon = "IconDemon", Text = "별 5개면 괴수 변신!" },
 	},
 	Neutral = {
