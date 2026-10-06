@@ -580,7 +580,7 @@ function L.PowerValue()
 	local v = tonumber(attr("CombatPower", nil))
 	if v then return math.floor(v) end
 	local lv = math.floor(num("Level", 1))
-	local tier = math.clamp(math.floor(num("WeaponTier", 1)), 1, Config.MaxWeaponTier)
+	local tier = math.clamp(math.floor(num("WeaponTier", 0)), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands
 	return Config.CombatPower(lv, tier, num("WeaponEnhance", 0)) -- before the server's first set
 end
 
@@ -3393,8 +3393,8 @@ local function startHold(source)
 	holdToken += 1
 	local token = holdToken
 	pressScale(ui.attack, true)
-	-- ranged classes turn to the nearest monster first; the server only hits what I face (Config AimCone)
-	if L.FaceTarget() then
+	-- ranged classes (and bare hands) turn to the nearest monster first; the server only hits what I face (AimCone)
+	if L.FaceTarget("Swing") then
 		task.delay(0.08, function() fire("Swing") end) -- let the new facing replicate before the swing
 	else
 		fire("Swing")
@@ -3418,11 +3418,34 @@ local function doRelease()
 		if not throttled("skillMana", 1.5) then UIKit.Toast("MP가 부족해요.", "bad", 1.5) end
 		return
 	end
-	if L.FaceTarget() then
+	if L.FaceTarget("Release") then
 		task.delay(0.08, function() fire("Release") end)
 	else
 		fire("Release")
 	end
+end
+
+-- A23-34 (검수 2026-10-06): the forge window opens only through the server's anvil prompt, which records the visit
+-- (M1_1) and hands the first weapon over before the shop shows. Near the anvil the prompt is pressed for me; farther
+-- away the guide beam shows the way (no shop).
+L.Smith = { Prompt = "HHC_BlacksmithPrompt", Reach = 12,
+	Travel = "Go to the Crossroads and find the Forge anvil.", Guide = "Forge · use the anvil",
+	Walk = "Walk to the Forge anvil and press its button." }
+
+function L.PressAnvil()
+	local anvil = L.BlacksmithTarget()
+	local guild = anvil and anvil.Parent
+	local prompt = guild and guild:FindFirstChild(L.Smith.Prompt, true)
+	if not prompt or not prompt:IsA("ProximityPrompt") or not prompt.Enabled then return false end
+	local holder = prompt.Parent
+	local pos = holder and ((holder:IsA("BasePart") and holder.Position) or (holder:IsA("Attachment") and holder.WorldPosition))
+	local char = LocalPlayer.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	if not pos or not root then return false end
+	if (root.Position - pos).Magnitude > math.min(L.Smith.Reach, prompt.MaxActivationDistance) then return false end
+	local ok = pcall(function() prompt:InputHoldBegin() end)
+	task.delay(0.05, function() pcall(function() prompt:InputHoldEnd() end) end)
+	return ok
 end
 
 doUpgrade = function()
@@ -3431,17 +3454,21 @@ doUpgrade = function()
 	if type(panels) ~= "table" or type(panels.Open) ~= "function" then return end
 	if attr("ZoneId", "") ~= "Crossroads" then
 		panels.Open("Travel")
-		UIKit.Toast("교차로 마을로 이동한 뒤 대장간 모루를 찾아요.", "info", 4)
+		UIKit.Toast(L.Smith.Travel, "info", 4)
 		return
 	end
-	showGuide(L.BlacksmithTarget(), "대장간 · 모루와 상호작용", "smith:manual", 30)
-	panels.Open("WeaponShop")
+	if L.PressAnvil() then return end
+	showGuide(L.BlacksmithTarget(), L.Smith.Guide, "smith:manual", 30)
+	UIKit.Toast(L.Smith.Walk, "info", 4)
 end
 
 -- ranged classes (AimCone): face the nearest living monster in range unless one is already in front of me.
 -- Returns true when the character was turned. Shift lock keeps its own facing (the camera turns the body).
-function L.FaceTarget()
-	local def = Config.Classes[getClass()]
+-- A23-34: the basic attack ("Swing") uses Config.AttackProfile (bare hands = a 7-stud punch with a 75-degree cone for
+-- every class); skill Q ("Release") keeps the class row
+function L.FaceTarget(which)
+	local def = which == "Swing" and Config.AttackProfile(getClass(), math.floor(num("WeaponTier", 0)), getFaction())
+		or Config.Classes[getClass()]
 	if type(def) ~= "table" or type(def.AimCone) ~= "number" then return false end
 	if UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter then return false end
 	local char = LocalPlayer.Character

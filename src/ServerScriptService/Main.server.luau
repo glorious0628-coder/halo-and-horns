@@ -11,7 +11,7 @@ local INIT_ORDER = {
 	"ClassService", "VitalsService", "JusticeService", "ProgressionService", "CombatService", "MonsterService", "PvPService",
 	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "StoryQuestService",
 	"AnnounceService", "SettingsService", "RankingService", "LootService", "TelemetryService", "TitleService",
-	"CharacterVisuals", "HalloweenService",
+	"CharacterVisuals", "HalloweenService", "PetService",
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -20,7 +20,7 @@ local START_ORDER = {
 	"CombatService", "MonsterService", "PvPService", "GrudgeService", "WarService", "KaijuService", "GooseService",
 	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "HalloweenService", "LootService", "TelemetryService",
 	"TitleService", "MonetizationService", "CharacterVisuals", "DataService",
-	"NicknameService", "SettingsService", "RankingService", "PlayerService",
+	"NicknameService", "SettingsService", "RankingService", "PetService", "PlayerService",
 }
 
 local S = {}
@@ -110,7 +110,7 @@ if game:GetService("RunService"):IsStudio() then
 			S.AnnounceService.Announce(player, k, { Weapon = tier, Monster = m ~= "" and m or nil }, info and info.Grade or "Rare")
 			return "sent " .. tostring(k)
 		elseif key == "LootReset" then -- Studio test aid: clear items / scroll +N / loot flags (value = weapon mask to keep)
-			return S.LootService.DebugReset(player, tonumber(value) or 1)
+			return S.LootService.DebugReset(player, tonumber(value) or 0) -- A23-34: 0 = bare-handed start
 		elseif key == "LootRoll" then -- Studio test aid (review B12): "Slime:200" or "Slime:200:golden" = COUNT-ONLY rolls
 			-- with the real drop tables; nothing is granted, saved or announced (returns a JSON tally)
 			local kind, n, golden = string.match(tostring(value), "^(%w+):?(%d*):?(%a*)$")
@@ -136,8 +136,14 @@ if game:GetService("RunService"):IsStudio() then
 			S.FactionService.SetFaction(player, value, "Choose")
 			S.PlayerService.RefreshCharacter(player, true)
 		else
+			local oldClass = S.ClassService.GetClass(player)
 			S.PlayerService.SetStat(player, key, value)
 			if key == "Level" or key == "Class" then S.PlayerService.RefreshCharacter(player, true) end
+			-- act like ChooseClass / ChangeClass so the ClassChanged listeners run (A23-39: the tamer's pet + TamerNotice;
+			-- QA sets Faction, then Class, then ClassChosen)
+			if key == "Class" or key == "ClassChosen" then
+				S.ClassService.ClassChanged:Fire(player, S.ClassService.GetClass(player), oldClass)
+			end
 		end
 		return "ok"
 	end

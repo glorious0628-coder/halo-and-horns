@@ -163,11 +163,12 @@ local T = {
 	WeaponEquipped = "현재 장착 중",
 	WeaponOwned = "보유 중",
 	WeaponUnowned = "미보유",
-	WeaponStarter = "시작 무기 · 무료 재장착 · 판매 불가",
-	WeaponStarterNoSell = "시작 무기 판매 불가",
+	WeaponStarter = "First weapon · free to re-equip · can't be sold", -- A23-34 (A23-48 English)
+	WeaponStarterNoSell = "The first weapon can't be sold",
+	WeaponFromSmith = "From the Blacksmith", -- A23-34: tier 1 is a gift (M1_1), never bought
 	WeaponNoSell = "보유 무기만 판매 가능",
 	WeaponSaleNoteF = "판매가 %s골드 (구매가의 1/10)",
-	WeaponSaleEquipped = "장착 중인 무기를 팔면 시작 무기로 바뀌어요.",
+	WeaponSaleEquipped = "Sell the weapon in your hand and you switch to your best other weapon (or bare hands).",
 	WeaponSellTitle = "무기 판매",
 	WeaponSellConfirmF = "%s을(를) %s골드에 팔까요?\n보유 목록에서 사라져요.",
 	WeaponSellConfirm = "판매하기",
@@ -378,6 +379,9 @@ local function genericClassName(classId)
 end
 
 local function pickLine(classId)
+	-- A23-39: the Artisan Guild's archer is the pet tamer (Config.ClassCard gives its own card lines)
+	local card = type(Config.ClassCard) == "function" and Config.ClassCard(classId, myFaction()) or nil
+	if type(card) == "table" and type(card.PickLine) == "string" and card.PickLine ~= "" then return card.PickLine end
 	local c = Config.Classes[classId]
 	if c and type(c.PickLine) == "string" and c.PickLine ~= "" then return c.PickLine end
 	return PICK_LINES[classId] or ""
@@ -1805,11 +1809,12 @@ function WSHOP.Offer(selectedTier)
 	if not cap then return nil, T.WeaponInvalid end
 	if not WSHOP.Finite(selectedTier) or selectedTier ~= math.floor(selectedTier)
 		or selectedTier < 1 or selectedTier > cap then return nil, T.WeaponUnavailable end
-	local tier, level, ownedMask = attr("WeaponTier"), attr("Level"), attr("WeaponOwnedMask")
-	if not WSHOP.Finite(tier) or tier ~= math.floor(tier) or tier < 1 or tier > Config.MaxWeaponTier
+	-- A23-34: 0 = bare hands / nothing owned yet (tier 1 is owned only after the M1_1 gift)
+	local tier, level, ownedMask = attr("WeaponTier", 0), attr("Level"), attr("WeaponOwnedMask", 0)
+	if not WSHOP.Finite(tier) or tier ~= math.floor(tier) or tier < 0 or tier > Config.MaxWeaponTier
 		or not WSHOP.Finite(level) or level < 1 or not WSHOP.Finite(ownedMask)
-		or ownedMask ~= math.floor(ownedMask) or ownedMask < 1
-		or ownedMask > bit32.lshift(1, Config.MaxWeaponTier) - 1 or not WSHOP.Owns(ownedMask, 1) then
+		or ownedMask ~= math.floor(ownedMask) or ownedMask < 0
+		or ownedMask > bit32.lshift(1, Config.MaxWeaponTier) - 1 then
 		return nil, T.WeaponInvalid
 	end
 	local def = Config.Weapons[selectedTier]
@@ -1832,6 +1837,8 @@ function WSHOP.Offer(selectedTier)
 	}
 	local sellReason = selectedTier == 1 and T.WeaponStarterNoSell or (not info.Owned and T.WeaponNoSell or nil)
 	if info.Equipped then return info, T.WeaponEquipped, sellReason end
+	-- A23-34: tier 1 is never sold here; the blacksmith gives it after the first mission (ShopService says the same)
+	if selectedTier == 1 and not info.Owned then return info, fmtText("WeaponFromQuest"), sellReason end
 	if def.RequiresFaction and faction ~= "Halo" and faction ~= "Horns" and faction ~= "Neutral" then
 		return info, fmtText("NeedFaction"), sellReason
 	end
@@ -1917,6 +1924,7 @@ ITEMS = {
 		SellKeepEnhF = "강화 +%d 기록은 저장돼요 (다시 얻으면 그대로)",
 		Plus = " +%d",
 		Weapons = "내 무기", Scrolls = "주문서", Materials = "재료",
+		NoWeapons = "Bare hands for now. The Blacksmith gives you your first weapon after your first mission.", -- A23-34
 		Drops = "몬스터가 주는 것", DropsNone = "몬스터를 잡으면 무엇을 주는지 여기에 적혀요.", -- P7
 		DropLine = "%s: %s", DropPart = "%s %s", DropJackpot = "★전설 무기(대박) %s분의 1", DropPotion = "%s 물약",
 		DropWeapon = "%s 무기",
@@ -2225,8 +2233,7 @@ BUILDERS.Items = function(parent)
 	end
 	ITEMS.CheckPending()
 	local items, enh = ITEMS.Data.Items, ITEMS.Data.Enhance
-	local mask = math.floor(num("WeaponOwnedMask"))
-	if mask < 1 then mask = 1 end
+	local mask = math.max(0, math.floor(num("WeaponOwnedMask"))) -- A23-34: 0 = nothing owned yet (bare hands)
 	local equipped = math.floor(num("WeaponTier"))
 	local level = math.max(1, math.floor(num("Level")))
 	local function owns(tier)
@@ -2325,6 +2332,7 @@ BUILDERS.Items = function(parent)
 	for tier = Config.MaxWeaponTier, 1, -1 do
 		if owns(tier) then table.insert(order, tier) end
 	end
+	if #order == 0 then addText(parent, L.NoWeapons, { Size = 17, Color = theme.SubText }) end
 	-- strongest first (real damage at my level with each weapon's own +N); stars are only rarity
 	local power = {}
 	for _, t in order do power[t] = Config.WeaponDamage(t, level, ITEMS.Enh(enh, t)) end
@@ -2609,7 +2617,7 @@ BUILDERS.WeaponShop = function(parent)
 					or string.format(T.WeaponEffectF, now, with)) or ""
 				ui.Effect.Visible = ui.Effect.Text ~= ""
 				ui.Buy.Text = info.Equipped and T.WeaponEquipped or (info.Owned and T.WeaponEquip
-					or string.format(T.WeaponBuyF, exactNumber(info.Price)))
+					or (ui.Tier == 1 and T.WeaponFromSmith) or string.format(T.WeaponBuyF, exactNumber(info.Price)))
 				ui.Sell.Text = ui.Tier == 1 and T.WeaponStarterNoSell
 					or string.format(T.WeaponSellF, exactNumber(info.SellPrice))
 			else

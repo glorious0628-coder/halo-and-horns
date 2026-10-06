@@ -1,7 +1,7 @@
 # 게임성 개발 2 인계 상태 (2026-10-06 저녁, 계정 옮기기로 멈춤)
-> **최신(새 계정, 한도로 멈춤):** 세 커밋은 main dfefaaa로 병합 끝. dev2 = dfefaaa + **65e2ba6 BB14 쓰러짐 화면 서버 쪽**(KO 32/32·변이 16/16, 랭킹 486/486·186/186) → 게임성 개발 1에 병합 요청할 것. 아래 '커밋 안 한 파일' 절은 지난 일.
-> **A23-34 맨손 시작:** 범위 조사 워크플로를 멈춤(결과 없음) → main 기준으로 다시 조사부터. 메모: M1_1 완료(StoryQuestService complete)에 T1 무료 지급·장착, CombatPower 0일 때 PvP·Justice 비율 0 나누기 주의, DataService fillDefaults가 tier 0·비트 0을 1로 되돌리는 곳.
-> **그다음 A23-39 펫 조련사 서버**(검수 지시: 맨손이면 주먹 판정+펫 박치기 연출, T1 '조련 지휘봉'부터 궁수 사거리·피해; 연출 원격 계약은 10/15까지 개발 1 [7ab798]에게).
+> **최신(2026-10-06 밤):** A23-34 맨손 시작(4610671 + 증거 693c653) + 검수 3건 고침 + A23-39 펫 조련사(0b0133f) 끝, 병합 요청은 검수 경유. 계약: `docs/design/unarmed_start_server_2026-10-06.md`, `docs/design/pet_tamer_server_2026-10-06.md`(개발 1 연출 원격 계약 10/15). 검사: test_unarmed_start 224·72/72, test_tamer 93·36/36, 다른 묶음 전부 통과.
+> **다음 순서(검수, A23-48 반영):** 영어 전환(Config.luau 플레이어용 문구 전부 약 600줄을 영어로 바꾸기, '내 캐릭터 창' = Hero; **건드리지 않기(dev1 몫): Config.Settings.Window, Config.Help, BuildLabel, Keybinds Auto LabelEn**; 안내자 Welcome Lines는 영어로; 서버가 보내는 모든 문구를 영어로, 쉬운 영어·용어는 docs/design/glossary_en_2026-10-06.md, LocaleId·Settings.Lang 만들지 않음, 검사는 영어 기준) + DataService 잠금 재시도(6초×5, '저장 불러오는 중…', Studio 잠금 만료) → A23-46 마을 사람 서브 퀘스트(H1·R1·N3 10/15까지, 처음부터 영어, NPC id·대화 키 계약 개발 1에) → 랭킹 낮은 2건 → BB14 나머지 → 펫 PET-1·2·4·6.
+> **그 뒤(10/22 목표):** IDEA-TITLE → IDEA-HWWEEKEND(끝나면 시간당 보상 숫자를 검수에) → IDEA-HWSTAMP → IDEA-MARKGROW(밀리면 정식으로). 아래 절들은 지난 기록.
 일하는 곳: worktree C:/Users/glori/Documents/Roblox/Game-dev2 (dev2 브랜치, origin/dev2에 푸시됨). Studio 금지.
 
 ## 병합 대기 커밋 (dev2, main 5664842 위, 게임성 개발 1 [348428]에 병합 요청 보냄 — C 묶음 다음에 병합한다고 답함)

@@ -179,7 +179,7 @@ end
 -- Config.EnhanceMult clamps it to 0..Config.Loot.MaxEnhance and treats a missing value as +0)
 local function levelAndTier(player)
 	local level = math.max(1, tonumber(player:GetAttribute("Level")) or 1)
-	local tier = math.clamp(math.floor(tonumber(player:GetAttribute("WeaponTier")) or 1), 1, Config.MaxWeaponTier)
+	local tier = math.clamp(math.floor(tonumber(player:GetAttribute("WeaponTier")) or 0), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands
 	local enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0
 	return level, tier, enhance
 end

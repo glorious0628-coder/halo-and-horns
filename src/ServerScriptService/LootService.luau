@@ -27,6 +27,7 @@ local STATE = {
 	Pending = {}, -- [Player] = true while one deferred Inventory push is queued (a burst of changes sends once)
 	FullAt = {}, -- [Player] = { [itemId | "Potion:HP" | "Potion:MP"] = os.clock() of the last "가득 찼어요" notice }
 	Level = {}, -- [Player] = the level last seen (A23-28: one "you can use it now" notice per MinLevel crossing)
+	Watching = {}, -- [Player] = true once the PlayerReady attribute watchers (A23-32 '얻은 순') are connected
 	SavedIdMaxLen = 64, -- B10: unknown saved item ids are kept only when they are sane strings
 }
 
@@ -249,6 +250,22 @@ local function firstMax(player, data, tier, after)
 	announce(player, "FirstMax", { Weapon = tier }, tier)
 end
 
+local function formatNumber(n)
+	return Util.FormatNumber and Util.FormatNumber(n) or tostring(n)
+end
+
+-- A23-34: a bare-handed player (WeaponTier 0) equips a weapon the moment they get one (the M1_1 gift, a lucky drop)
+-- when the level allows it (A23-28). Returns the power before and after, or nil (already armed / level too low).
+-- No alive / PvP check: only ever from bare hands to a weapon, and only from the server.
+local function equipIfBare(player, data, tier)
+	local level = math.floor(num(data.Level, 1))
+	if math.floor(num(data.WeaponTier, 0)) ~= 0 or not Config.WeaponUsable(tier, level) then return nil end
+	S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals builds the model; WeaponEnhance follows
+	publish(player, data)
+	pcall(Net.Fx, player, "Upgrade", { Tier = tier })
+	return Config.CombatPower(level, 0, 0), Config.CombatPower(level, tier, enhanceOf(data, tier))
+end
+
 local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 	if not validTier(tier) then return end
 	if owns(data, tier) then
@@ -260,11 +277,15 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 		return
 	end
 	-- ownership is saved before any announcement, so a repeated signal cannot give it twice
-	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 1)), bit32.lshift(1, tier - 1)))
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1)))
 	local name = weaponName(player, tier)
 	table.insert(gained, { Weapon = tier, Name = name })
+	-- A23-34: found while still bare-handed (e.g. the slime jackpot before the first weapon) -> equipped at once, and
+	-- the line says so (never "equip it in the menu" for a weapon already in hand)
+	local before, after = equipIfBare(player, data, tier)
 	if isJackpot then
-		notify(player, string.format(TXT.JackpotSelf, name), "reward")
+		notify(player, before and string.format(TXT.JackpotEquip, name, formatNumber(before), formatNumber(after))
+			or string.format(TXT.JackpotSelf, name), "reward")
 		announce(player, "Jackpot", { Weapon = tier }, tier) -- everyone sees it in chat (A23-15)
 	else
 		notify(player, string.format(TXT.RareWeapon, Config.WeaponGrade(tier).Name, name), "reward")
@@ -272,7 +293,31 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 		if g.Rank >= ((Config.Announce and Config.Announce.MinWeaponGrade) or 3) then
 			announce(player, "RareWeapon", { Weapon = tier, Monster = kind }, tier)
 		end
+		if before then notify(player, string.format(TXT.BareEquip, name, formatNumber(before), formatNumber(after)), "reward") end
 	end
+end
+
+-- A23-34: the M1_1 blacksmith gift (StoryQuestService, Config.StoryQuests.Defs.M1_1.GiveWeapon) = the class basic
+-- weapon. Paid once: tier 1 is never sold, so owning it is the record (a save from before A23-34 owns it already and
+-- gets nothing, no notice). Bare-handed: equipped at once with "전투력 X → Y"; a player who bought a weapon first gets
+-- it in the bag. Returns the tier given, or nil.
+function LootService.GrantFirstWeapon(player, tier)
+	tier = tier or 1
+	local data = getData(player)
+	if not data or not validTier(tier) or owns(data, tier) then return nil end
+	ensureTables(data)
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1)))
+	-- A23-32 '얻은 순': paid at a join (StoryQuestService's PlayerReady runs before ours), the mask watcher is not there yet
+	if not STATE.Watching[player] then Config.NoteGained(data, nil, tier) end
+	local name = weaponName(player, tier)
+	local before, after = equipIfBare(player, data, tier)
+	if before then
+		notify(player, string.format(TXT.FirstWeapon, name, formatNumber(before), formatNumber(after)), "reward")
+	else
+		publish(player, data)
+		notify(player, string.format(TXT.FirstWeaponBag, name), "reward")
+	end
+	return tier
 end
 
 local function grantPotion(player, data, kind, gained)
@@ -317,7 +362,9 @@ function LootService.RollKill(player, info)
 			firstNow = true
 			-- the one-time guide (A23-12). The Loot Fx below carries First = true so the client skips its own
 			-- "where to use it" toast for this scroll (one toast, not two)
-			pcall(Net.Notify, player, TXT.FirstScroll, "reward", num(first.NoticeSeconds, 6))
+			-- A23-34: no weapon owned yet (the M1_1 gift comes later) -> the hint says where the first weapon comes from
+			local line = math.floor(num(data.WeaponOwnedMask, 0)) == 0 and TXT.FirstScrollBare or TXT.FirstScroll
+			pcall(Net.Notify, player, line, "reward", num(first.NoticeSeconds, 6))
 		end
 	end
 
@@ -502,6 +549,12 @@ function LootService.FitWeaponToLevel(player, quiet)
 	local tier = math.floor(num(data.WeaponTier, 1))
 	if not validTier(tier) or Config.WeaponUsable(tier, level) then return end
 	local best = Config.BestUsableWeapon(data.WeaponOwnedMask, level)
+	if best == 0 then
+		-- A23-34: a weapon owner never goes back to bare hands (owns only weapons above this level, e.g. bought T3 and
+		-- never got the M1_1 gift): the free class weapon, tier 1, is theirs now (a later M1_1 stays silent)
+		S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), 1))
+		best = 1
+	end
 	if best == tier then return end
 	S.PlayerService.SetStat(player, "WeaponTier", best) -- CharacterVisuals rebuilds; WeaponEnhance follows (Start)
 	if not quiet then
@@ -519,9 +572,9 @@ local function onLeveledUp(player, level)
 	local before = STATE.Level[player] or (level - 1)
 	STATE.Level[player] = level
 	if level <= before then return end
-	local equipped = Config.Weapons[math.floor(num(data.WeaponTier, 1))]
+	local equipped = Config.Weapons[math.floor(num(data.WeaponTier, 0))]
 	local bestDamage = equipped and num(equipped.Damage) or 0
-	local mask = math.floor(num(data.WeaponOwnedMask, 1))
+	local mask = math.floor(num(data.WeaponOwnedMask, 0))
 	local best = nil
 	for t, def in Config.Weapons do
 		local min = math.floor(num(def.MinLevel, 1))
@@ -585,6 +638,7 @@ function LootService.Start()
 				return true
 			end)
 		end
+		STATE.Watching[player] = true
 		watch("WeaponOwnedMask", function(d, v, was)
 			local any = false
 			for tier = 1, Config.MaxWeaponTier do
@@ -596,6 +650,13 @@ function LootService.Start()
 			end
 			return any
 		end)
+		-- A23-34 safety net: a finished M1_1 always means the first weapon was handed over (a grant cut off by an error
+		-- is paid at the next join; a save that owns it already stays silent)
+		local story = data.Story
+		if type(story) == "table" and type(story.Done) == "table" and story.Done.M1_1 == true then
+			local ok, err = pcall(LootService.GrantFirstWeapon, player)
+			if not ok then Util.Warn(TAG, "GrantFirstWeapon: " .. tostring(err)) end
+		end
 	end)
 	-- safety net (same as the quest list): resend the inventory once per real spawn; the client keeps the last payload
 	if S.PlayerService.CharacterSpawned then
@@ -625,6 +686,7 @@ function LootService.Start()
 		STATE.Pending[player] = nil
 		STATE.FullAt[player] = nil
 		STATE.Level[player] = nil
+		STATE.Watching[player] = nil
 	end)
 	print("[LootService] started")
 end
@@ -670,11 +732,13 @@ function LootService.DebugReset(player, mask)
 	if not data then return "no data" end
 	data.Items, data.WeaponEnhance, data.LootFlags = {}, {}, {}
 	sanitize(data)
-	mask = math.floor(num(mask, 1))
-	if mask < 1 or mask >= bit32.lshift(1, Config.MaxWeaponTier) then mask = 1 end
-	mask = bit32.bor(mask, 1)
+	-- A23-34: mask 0 = a new bare-handed player (nothing owned); an unowned equipped tier -> the best usable owned one
+	mask = math.floor(num(mask, 0))
+	if mask < 0 or mask >= bit32.lshift(1, Config.MaxWeaponTier) then mask = 0 end
 	S.PlayerService.SetStat(player, "WeaponOwnedMask", mask)
-	if not owns(data, math.floor(num(data.WeaponTier, 1))) then S.PlayerService.SetStat(player, "WeaponTier", 1) end
+	if not owns(data, math.floor(num(data.WeaponTier, 0))) then
+		S.PlayerService.SetStat(player, "WeaponTier", Config.BestUsableWeapon(mask, num(data.Level, 1)))
+	end
 	publish(player, data)
 	return "ok"
 end

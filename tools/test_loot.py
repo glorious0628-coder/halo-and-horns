@@ -49,10 +49,14 @@ STATIC_ONLY = {
 }
 COMPILED = ("CONFIG_SOURCE", "GOLD_SOURCE", "COMBAT_SOURCE", "LOOT_SOURCE", "JUSTICE_SOURCE", "PVP_SOURCE", "SHOP_SOURCE")
 
-SET_OWNED = ('S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 1)), '
+SET_OWNED = ('S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), '
              'bit32.lshift(1, tier - 1)))')
-JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained, { Weapon = tier, Name = name })\n\tif isJackpot then\n'
-                  '\t\tnotify(player, string.format(TXT.JackpotSelf, name), "reward")\n'
+JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained, { Weapon = tier, Name = name })\n'
+                  '\t-- A23-34: found while still bare-handed (e.g. the slime jackpot before the first weapon) -> equipped at once, and\n'
+                  '\t-- the line says so (never "equip it in the menu" for a weapon already in hand)\n'
+                  '\tlocal before, after = equipIfBare(player, data, tier)\n\tif isJackpot then\n'
+                  '\t\tnotify(player, before and string.format(TXT.JackpotEquip, name, formatNumber(before), formatNumber(after))\n'
+                  '\t\t\tor string.format(TXT.JackpotSelf, name), "reward")\n'
                   '\t\tannounce(player, "Jackpot", { Weapon = tier }, tier) -- everyone sees it in chat (A23-15)\n')
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
@@ -124,7 +128,7 @@ MUTATIONS = [
      "and Config.WeaponUsable(tier, level) and (tonumber(def.Damage) or 0) > bestDamage then",
      "and (tonumber(def.Damage) or 0) > bestDamage then"),
     ("BestUsableWeapon ignores ownership", "CONFIG_SOURCE",
-     "(tier == 1 or bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0)", "true"),
+     "if type(def) == \"table\" and bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0", "if type(def) == \"table\""),
     # A23-28 FitWeaponToLevel (rebirth / free class change / join)
     ("FitWeaponToLevel ignores quiet", "LOOT_SOURCE",
      "if not quiet then\n\t\tnotify(player, string.format(Config.Text.WeaponAutoSwap",
@@ -316,7 +320,7 @@ MUTATIONS = [
     ("EnhanceMult not clamped", "CONFIG_SOURCE",
      "math.clamp(math.floor(enhance), 0, loot.MaxEnhance)", "math.floor(enhance)"),
     ("PvP power ratio not clamped", "COMBAT_SOURCE",
-     "ratio = math.clamp(ratio, Config.PvP.PowerRatioMin, Config.PvP.PowerRatioMax)", "ratio = ratio"),
+     "ratio = math.clamp(ratio, floor, Config.PvP.PowerRatioMax)", "ratio = ratio"),
     ("monster hit ignores enhancement", "COMBAT_SOURCE",
      "local dmg = Config.WeaponDamage(tier, level, numAttr(attacker, \"WeaponEnhance\", 0))",
      "local dmg = Config.WeaponDamage(tier, level, 0)"),
@@ -541,7 +545,7 @@ def main() -> int:
                     "uses the scroll; scrolls refused in PvP combat (kept); equip needs a living character and no PvP combat. "
                     "A23-28 (2026-10-06): equipping an OWNED weapon also needs Level >= MinLevel (Config.WeaponUsable; refusal "
                     "Config.Text.EquipNeedLevel, ShopService the same for an owned re-equip, WeaponNeedLevel for a purchase; the "
-                    "legendary T8 has MinLevel 1); Config.BestUsableWeapon = the owned (tier 1 always) usable tier with the highest "
+                    "legendary T8 has MinLevel 1); Config.BestUsableWeapon = the owned usable tier (0 = bare hands, A23-34) with the highest "
                     "Damage; LootService.FitWeaponToLevel (Rebirthed / LevelReset / PlayerReady) swaps an unusable equipped weapon "
                     "to it with one WeaponAutoSwap notice (none when quiet), ownership and per-tier +N untouched, nothing when the "
                     "equipped tier is usable; a LeveledUp crossing the MinLevel of an owned stronger weapon sends WeaponUsableNow "

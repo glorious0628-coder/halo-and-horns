@@ -353,6 +353,11 @@ local function getStep(player)
 end
 
 -- A saved counter, not a session cache: 4/5 and unclaimed 5/5 survive a normal save/rejoin.
+-- A23-34: true when this save owns tier 1, the first weapon (saves from before A23-34 always do)
+local function hasFirstWeapon(data)
+	return type(data) == "table" and bit32.btest(math.floor(num(data.WeaponOwnedMask, 0)), 1)
+end
+
 local function getTutorialKills(data)
 	return math.clamp(math.floor(num(data and data.TutorialKills)), 0, TUT_TARGET)
 end
@@ -464,6 +469,11 @@ end
 function claimTutorial(player, auto)
 	if getStep(player) ~= STEP_QUEST then return end
 	if getTutorialKills(getData(player)) < TUT_TARGET then return end
+	-- A23-34: M1_1 (show the jelly to the smith, get the first weapon) needs a smithy visit made after this claim, as
+	-- the Claimed line says: an anvil visit before the first mission does not hand the weapon over in the meadow. A save
+	-- that already owns tier 1 (from before A23-34) gets the old lines and keeps its visit.
+	local hasFirst = hasFirstWeapon(getData(player))
+	if not hasFirst then S.PlayerService.SetStat(player, "BlacksmithVisited", false) end
 	setStep(player, TUT_DONE) -- first, so it can never be paid twice
 	TUT_READY_AT[player] = nil
 	S.ProgressionService.AddBankGold(player, TUT_GOLD, "Quest")
@@ -471,6 +481,9 @@ function claimTutorial(player, auto)
 		S.ProgressionService.AddXP(player, TUT_XP)
 	end
 	local text = auto and (TUT_MESSAGES.AutoClaimed or TUT_CLAIMED_TEXT) or TUT_CLAIMED_TEXT
+	if hasFirst then
+		text = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)
+	end
 	Net.Notify(player, string.format(text, Util.FormatNumber(TUT_GOLD)), "reward", auto and 6 or nil)
 end
 
@@ -515,7 +528,7 @@ local function tutorialEntry(player, data)
 		entry.CanClaim, entry.ShowProgress = true, true
 	elseif step == TUT_DONE and data.ClassChosen == true and getFaction(player) ~= "None" then
 		if data.BlacksmithVisited ~= true then
-			entry.Text = TUT_MESSAGES.VisitBlacksmith
+			entry.Text = (hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith)
 				or "무기 살펴보기 · 교차로 마을 대장간"
 		else
 			local text = nextGoalText(data)

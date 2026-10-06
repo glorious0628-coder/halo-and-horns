@@ -483,7 +483,8 @@ local function fixture(data,kind)
     local muzzle=child(main,node("Attachment","AttackMuzzle",{CFrame=CFrame.new(0,0,-.18)}))
     local stringPart=child(weapon,node("Part","String",{CFrame=CFrame.identity}))
     local nock=child(stringPart,node("Attachment","BowNock",{CFrame=CFrame.identity,Position=Vector3.zero}))
-    local p=node("Player","owner",{Character=char,UserId=1});p.Attributes.Class="Archer";p.Attributes.Faction="Halo"
+    -- WeaponTier 1: the player holds the starter bow (A23-34: no WeaponTier attribute = bare hands, no WeaponModel)
+    local p=node("Player","owner",{Character=char,UserId=1});p.Attributes.Class="Archer";p.Attributes.Faction="Halo";p.Attributes.WeaponTier=1
     Players.ById[1]=p
     local token={};Feel.Actors[p]={Token=token}
     local ctx={Player=p,Char=char,Class="Archer",Faction="Halo",Token=token}

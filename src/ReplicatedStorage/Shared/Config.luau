@@ -75,8 +75,10 @@ Config.Data = {
 		XP = 0,
 		BankGold = 0,
 		CarriedGold = 0,
-		WeaponTier = 1, -- v1 name: SwordTier (migrated by DataService)
-		WeaponOwnedMask = 1, -- tier N uses bit N-1; the free starting weapon is always owned
+		-- A23-34: a new player starts bare-handed (tier 0, nothing owned); the M1_1 blacksmith gives tier 1. Records
+		-- saved before A23-34 keep their weapons (they always own tier 1). v1 name: SwordTier (migrated by DataService)
+		WeaponTier = 0,
+		WeaponOwnedMask = 0, -- tier N uses bit N-1; 0 = no weapon owned
 		BlacksmithVisited = false,
 		Faction = "None",
 		Class = "Warrior",
@@ -141,6 +143,10 @@ Config.Data = {
 		SavedBullyAt = 0,
 		SavedStars = 0,
 		SavedStarsAt = 0,
+		-- A23-39 / PET-2 pets (PetService): List[uid] = { Sp, Lv, XP, Name, Lean, Bound }, Equipped = { uid }, Next = the
+		-- next uid number. TamerNotice = the one-time "the hunter became the pet tamer" notice (+ free class change) is done
+		Pets = { List = {}, Equipped = {}, Next = 1 },
+		TamerNotice = false,
 	},
 	-- keys mirrored 1:1 to Player attributes (same name) by PlayerService
 	Mirrored = {
@@ -214,6 +220,13 @@ Config.WeaponNamesEn = {
 		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow" },
 }
 
+-- A23-39: the pet tamer (artisan guild Archer, Config.IsTamer) holds taming batons instead of bows (same stats)
+Config.WeaponNames.Tamer = { "나뭇가지 지휘봉", "나무 지휘봉", "철 지휘봉", "숲도둑 황금 지휘봉", "옛 왕국 수정 지휘봉", "수호령 지휘봉",
+	{ Halo = "여명의 지휘봉", Horns = "파멸의 지휘봉", None = "왕관 조각 지휘봉" }, "젤리 왕관 지휘봉" }
+Config.WeaponNamesEn.Tamer = { "Twig Baton", "Wooden Baton", "Iron Baton", "Goblin Thief's Golden Baton",
+	"Old Kingdom Crystal Baton", "Guardian Spirit Baton", { Halo = "Dawn Baton", Horns = "Ruin Baton", None = "Crown Shard Baton" },
+	"Jelly Crown Baton" }
+
 -- Weapon grades (design §1 B1): stars are RARITY, not power. Colors = ART_DIRECTION 2.3 grade strokes.
 Config.WeaponGrades = {
 	Common = { Name = "일반", NameEn = "Common", Stars = 1, Color = Color3.fromRGB(200, 200, 200), Rank = 1 },
@@ -224,7 +237,7 @@ Config.WeaponGrades = {
 }
 -- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith)
 Config.WeaponInfo = {
-	{ Grade = "Common", Source = "처음부터 가진 무기" },
+	{ Grade = "Common", Source = "첫 임무 뒤 대장장이가 주는 첫 무기", SourceEn = "Your first weapon, a gift from the blacksmith" }, -- A23-34
 	{ Grade = "Common", Source = "대장간에서 사요" },
 	{ Grade = "Fine", Source = "대장간에서 사요 (Lv5부터)" },
 	{ Grade = "Rare", Source = "고블린·고블린 우두머리가 드물게" },
@@ -253,12 +266,12 @@ function Config.WeaponUsable(tier, level)
 end
 
 -- the best owned tier (bit t-1 of ownedMask) usable at `level` (by Damage, so the legendary T8 counts as the 76-damage
--- weapon it is); tier 1 is always owned and usable
+-- weapon it is); 0 = bare hands when no owned weapon is usable (A23-34: tier 1 is owned only after the M1_1 gift)
 function Config.BestUsableWeapon(ownedMask, level)
-	local best, bestDamage = 1, -1
-	local mask = math.floor(tonumber(ownedMask) or 1)
+	local best, bestDamage = 0, -1
+	local mask = math.floor(tonumber(ownedMask) or 0)
 	for tier, def in Config.Weapons do
-		if type(def) == "table" and (tier == 1 or bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0)
+		if type(def) == "table" and bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0
 			and Config.WeaponUsable(tier, level) and (tonumber(def.Damage) or 0) > bestDamage then
 			best, bestDamage = tier, tonumber(def.Damage) or 0
 		end
@@ -272,20 +285,24 @@ function Config.WeaponStars(tier)
 end
 
 function Config.WeaponName(tier, classId, factionId)
-	local names = Config.WeaponNames[classId] or Config.WeaponNames.Warrior
+	if tier == 0 then return Config.Text.BareHands end -- A23-34: no weapon equipped
+	local names = (Config.IsTamer(classId, factionId) and Config.WeaponNames.Tamer) -- A23-39: batons
+		or Config.WeaponNames[classId] or Config.WeaponNames.Warrior
 	local n = names[tier]
 	if type(n) == "table" then return n[factionId] or n.None end
 	return n or "?"
 end
 
 -- Existing GPT inventory icons; tier 7 uses the chosen faction, with the neutral icon as the unset fallback.
+-- A23-34: tier 0 (bare hands) has no icon -> nil (UIKit.ArtId(nil) keeps the slot's code fallback)
 function Config.WeaponArtKey(tier, classId, factionId)
 	if type(tier) ~= "number" or tier ~= tier or math.abs(tier) == math.huge then tier = 1 end
+	if tier < 1 then return nil end
 	tier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier)
 	if classId ~= "Warrior" and classId ~= "Mage" and classId ~= "Archer" then classId = "Warrior" end
-	-- A23-39: the Artisan guild's Archer is the pet tamer (same class id): tiers 1-6 show its staffs (Weapon_Tamer_T*)
-	local art = (classId == "Archer" and factionId == "Neutral" and tier <= 6) and "Tamer" or classId
-	local key = "Weapon_" .. art .. "_T" .. tostring(tier)
+	-- A23-39: the pet tamer's batons (icons T1-T6; T7 / T8 keep the Archer keys until they are drawn)
+	if tier <= 6 and Config.IsTamer(classId, factionId) then return "Weapon_Tamer_T" .. tostring(tier) end
+	local key = "Weapon_" .. classId .. "_T" .. tostring(tier)
 	if tier == 7 then
 		local faction = (factionId == "Halo" or factionId == "Horns") and factionId or "Neutral"
 		key ..= "_" .. faction
@@ -307,17 +324,20 @@ function Config.EnhanceMult(enhance)
 	return 1 + loot.EnhancePerLevel * math.clamp(math.floor(enhance), 0, loot.MaxEnhance)
 end
 
--- normal per-target damage of the weapon at this level and enhancement (before class, bonuses and multipliers)
+-- normal per-target damage of the weapon at this level and enhancement (before class, bonuses and multipliers).
+-- A23-34: a tier with no Config.Weapons row (0 = bare hands) is the punch, Config.Combat.Unarmed.Damage (no +N).
 function Config.WeaponDamage(tier, level, enhance)
-	local w = Config.Weapons[tier] or Config.Weapons[1]
-	return w.Damage * (1 + Config.Combat.LevelDamagePerLevel * (level - 1)) * Config.EnhanceMult(enhance)
+	local w = type(tier) == "number" and Config.Weapons[tier] or nil
+	local byLevel = 1 + Config.Combat.LevelDamagePerLevel * (level - 1)
+	if not w then return Config.Combat.Unarmed.Damage * byLevel end
+	return w.Damage * byLevel * Config.EnhanceMult(enhance)
 end
 
 -- basic attacks to defeat a monster with the server's swing formula (no crit / perks / faction bonuses):
 -- what actually changes when the blacksmith sells a weapon (the shop never shows raw weapon Damage)
 function Config.SwingHitsToKill(tier, level, classId, monsterId, factionId, enhance)
 	local m = Config.MonsterTypes and Config.MonsterTypes[monsterId]
-	local c = Config.Classes[classId] or Config.Classes.Warrior
+	local c = Config.AttackProfile(classId, tier, factionId) -- A23-34: a punch has no class multiplier
 	if type(m) ~= "table" or type(m.HP) ~= "number" then return nil end
 	local f = factionId and Config.Factions[factionId]
 	local bonus = (type(f) == "table" and type(f.DamageBonus) == "number") and f.DamageBonus or 0 -- Horns +15%
@@ -369,7 +389,8 @@ Config.Classes = {
 	},
 	Archer = {
 		Id = "Archer",
-		Names = { Halo = "레인저", Horns = "그림자 사냥꾼", Neutral = "사냥꾼", None = "궁수" },
+		-- A23-39: the artisan guild's Archer is the pet tamer (same Archer numbers; the baby slime fights, Config.Tamer)
+		Names = { Halo = "레인저", Horns = "그림자 사냥꾼", Neutral = "펫 조련사", None = "궁수" },
 		Desc = "빠르게 두 명씩 쏘고, 발이 빨라요.",
 		PickLine = "멀리서 하나씩 슝", -- addendum A7-4
 		Weapon = "Bow",
@@ -428,7 +449,45 @@ Config.Combat = {
 	AutoIdleMoveStuds = 1.5, -- moving this far within a second counts as activity (server-side check)
 	ManualPriority = 1.0, -- legacy fixed window (pre CR-M17); kept only so old references never read nil
 	AutoPvPHintCooldown = 60, -- addendum A3-M3: "under attack" hint at most once per this many seconds
+	-- A23-34 (user 2026-10-06): new players start bare-handed. Every class throws the same short punch until the first
+	-- weapon (M1_1 blacksmith gift): Damage at Lv1 before the 50% swing rule (= 2 per punch, a slime takes about 5),
+	-- no class multiplier, no MP, one nearest target within Range in front (AimCone). Range 7 > monster AttackRange 5.5.
+	-- PvPRatioMin (검수 2026-10-06): a bare-handed attacker's PvP weapon ratio floor (weapons: Config.PvP.PowerRatioMin
+	-- 0.8). With 0.4 a punch is weaker than every class's tier-1 basic attack against any opponent at the same level.
+	Unarmed = { Damage = 4, Range = 7, Interval = 0.8, AimCone = 75, PvPRatioMin = 0.4 },
 }
+
+-- A23-34: the basic attack's shape for a class holding `tier`. With a weapon it is the class row itself (Pattern, Range,
+-- SwingInterval, AimCone, Targets, Splash, Damage, Ranged, PvPMult); with no weapon row (0 = bare hands) every class
+-- throws the same punch: Style "Punch", Unarmed = true, one nearest target (Pattern "Multi", Targets 1), Damage
+-- (class multiplier) 1, not ranged, no Mage MP. Server: CombatService.Swing / auto combat; clients read the same table
+-- for facing and swing timing. Skill Q never uses it (it stays the class skill). factionId: kept for A23-39.
+-- A23-39: the pet tamer (Config.IsTamer) uses the same numbers (the Archer row armed, the punch bare-handed) with
+-- Style = Config.Tamer.SwingStyle ("PetHeadbutt": the baby slime runs to the target, headbutts it and comes back).
+local BARE_PROFILES, TAMER_PROFILES = {}, {}
+function Config.AttackProfile(classId, tier, factionId)
+	local c = Config.Classes[classId] or Config.Classes.Warrior
+	local armed = type(tier) == "number" and Config.Weapons[tier] ~= nil
+	local p = c
+	if not armed then
+		p = BARE_PROFILES[c.Id]
+		if not p then
+			local u = Config.Combat.Unarmed
+			p = { Id = c.Id, Style = "Punch", Unarmed = true, Pattern = "Multi", Targets = 1, Splash = 0, Range = u.Range,
+				SwingInterval = u.Interval, AimCone = u.AimCone, Damage = 1, Ranged = false, PvPMult = 1 }
+			BARE_PROFILES[c.Id] = p
+		end
+	end
+	if not Config.IsTamer(c.Id, factionId) then return p end
+	local key = armed and "Armed" or "Bare"
+	local tp = TAMER_PROFILES[key]
+	if not tp then
+		tp = table.clone(p)
+		tp.Style = Config.Tamer.SwingStyle
+		TAMER_PROFILES[key] = tp
+	end
+	return tp
+end
 
 ----------------------------------------------------------------- charge & release ("자동은 장전, 손은 발사")
 -- Design intent: pure idle (auto swings + auto release) ~= 1.25x baseline DPS; auto swings + PERFECT release ~= 2.5x.
@@ -642,8 +701,13 @@ Config.Power = {
 	},
 }
 
+-- A23-34 (user 2026-10-06 "처음에는 전투력이 0"): bare hands count from 0 — the Lv1 punch is taken off, so Lv1 with no
+-- weapon (and no pet) shows 0 and every level still adds a little. With a weapon the number is the BB4 value as before,
+-- so armed players keep their numbers and every armed comparison (bully rule, boldness, Tab list) its balance.
 function Config.CombatPower(level, tier, enhance)
-	return math.floor(Config.PowerOf(level, tier, 1, enhance) * Config.Power.DisplayScale + 0.5)
+	local raw = Config.PowerOf(level, tier, 1, enhance)
+	if not (type(tier) == "number" and Config.Weapons[tier]) then raw -= Config.PowerOf(1, 0, 1, 0) end
+	return math.max(0, math.floor(raw * Config.Power.DisplayScale + 0.5))
 end
 
 -- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N); cached
@@ -1466,11 +1530,20 @@ Config.Tutorial = {
 		Travel = "보급로 되찾기 · 메뉴 > 이동 > 말랑 초원",
 		QuestStart = "첫 임무: %s! (보상 %s골드)",
 		QuestReady = "보급로 임무 완료! [받기]를 눌러요.",
-		Claimed = "보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 장비를 살펴봐요.",
-		ClaimedEn = "Thanks for guarding the supply road! +%s gold · Check the gear at the Crossroads smithy.",
-		AutoClaimed = "첫 임무 보상 +%s골드를 금고에 넣었어요! 교차로 대장간에서 장비를 살펴봐요.",
-		AutoClaimedEn = "Your first mission reward, +%s gold, is in your bank! Check the gear at the Crossroads smithy.",
-		VisitBlacksmith = "무기 살펴보기 · 교차로 마을 대장간",
+		-- A23-34: the first weapon waits at the Crossroads blacksmith (M1_1 gift)
+		Claimed = "보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 첫 무기를 받아요.",
+		ClaimedEn = "Thanks for guarding the supply road! +%s gold · Get your first weapon at the Crossroads smithy.",
+		AutoClaimed = "첫 임무 보상 +%s골드를 금고에 넣었어요! 교차로 대장간에서 첫 무기를 받아요.",
+		AutoClaimedEn = "Your first mission reward, +%s gold, is in your bank! Get your first weapon at the Crossroads smithy.",
+		VisitBlacksmith = "첫 무기 받기 · 교차로 마을 대장간",
+		VisitBlacksmithEn = "Get your first weapon · Crossroads smithy",
+		-- the same lines for a save that already owns tier 1 (from before A23-34): no first-weapon promise
+		ClaimedArmed = "보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 장비를 살펴봐요.",
+		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold · Check the gear at the Crossroads smithy.",
+		AutoClaimedArmed = "첫 임무 보상 +%s골드를 금고에 넣었어요! 교차로 대장간에서 장비를 살펴봐요.",
+		AutoClaimedArmedEn = "Your first mission reward, +%s gold, is in your bank! Check the gear at the Crossroads smithy.",
+		VisitBlacksmithArmed = "무기 살펴보기 · 교차로 마을 대장간",
+		VisitBlacksmithArmedEn = "Check the weapons · Crossroads smithy",
 		-- A23-3: next goal after the blacksmith visit (computed from existing state only; no new reward)
 		NextIronLevel = "다음 목표 · Lv%d 되면 철 무기 (지금 Lv%d)",
 		NextIronGold = "다음 목표 · 철 무기 %s골드 (보유 %s)",
@@ -1539,8 +1612,9 @@ Config.StoryQuests = {
 			},
 			Unlock = "AutoCombat",
 		},
+		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
 		M1_1 = {
-			Kind = "Main", Chapter = 1, Title = "반짝이는 젤리", Speaker = "Smith",
+			Kind = "Main", Chapter = 1, Title = "반짝이는 젤리", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "대장장이에게 젤리 보이기", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
 			Finish = "대장장이: 왕관 조각 가루네! 제일 많이 먹은 건 왕 슬라임이지.",
 		},
@@ -2101,6 +2175,75 @@ Config.Settings.Window = {
 		ButtonB = "B", DPadUp = "D-pad Up", DPadDown = "D-pad Down", DPadLeft = "D-pad Left", DPadRight = "D-pad Right" },
 }
 
+-- BB15 help window + the news window (SettingsUI.luau; A23-48 English only). "Controls" is built from my live keys
+-- (TouchLines on touch-only devices). Rules checked against Config and the services on 2026-10-06; the bully numbers
+-- come from Config.Bully. At most 4 lines a topic (phones); the lines are shown as they are (never string.format them).
+Config.Help = {
+	Title = "Help", NewsTitle = "News",
+	GuideAgain = "Meet the Guide Again", BackToHelp = "< Help", TalkToGuide = "Talk to the Guide",
+	CameraLine = "Drag with the left mouse button to turn the camera.",
+	TouchLines = {
+		"Tap the buttons on the screen to attack, use skills and drink potions.",
+		"Drag with one finger to turn the camera.",
+	},
+	Topics = {
+		{ Id = "Controls", Title = "Controls", Lines = {} },
+		{ Id = "Combat", Title = "Combat & Auto Battle", Lines = {
+			"One press = one attack. Holding it down won't repeat it.",
+			"Skills cost 20 MP. You can use one again after 3 seconds.",
+			"Finish the Crown Shard side quest to unlock Auto Battle. It only hits monsters.",
+			"No input for 20 minutes? Roblox will disconnect you.",
+		} },
+		{ Id = "Honor", Title = "Honor & Infamy", Lines = {
+			"Knights earn Honor and the Horn Legion earns Infamy, from fair fights and story choices.",
+			"Artisan Guild: each success with a scroll you hunted yourself earns Artisan Fame.",
+			"A free side switch at the Altar resets your old side's points to 0.",
+			"Each week's top 3 get a title and +10% XP and drops the next week.",
+		} },
+		{ Id = "Sprout", Title = "Sprout Shield & Bullies", Lines = {
+			"Sprout Shield: no PvP until you reach Lv 15 and play for 1 hour.",
+			string.format("KO someone under %d%% of your power, or who respawned less than %d s ago: Bully!",
+				math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5), Config.Bully.FreshSpawnSeconds),
+			string.format("KO the same player %d times in %d minutes: Bully too!", Config.Bully.RepeatKOs,
+				math.floor(Config.Bully.RepeatWindow / 60)),
+			"Bullies get no Auto Battle, and half XP and drops.",
+		} },
+		{ Id = "Wanted", Title = "Wanted Stars & Grudge Sacks", Lines = {
+			"When the Horn Legion KOs a Knight, they get a Wanted star (max 5).",
+			"Knights who KO a Wanted player win the Bounty gold.",
+			"Stolen gold goes in the thief's Grudge Sack. After 45 s in PvP, it's theirs.",
+			"If a Knight catches the thief within 45 s, you get 120% back.",
+		} },
+		{ Id = "Events", Title = "Golden Goose, Kaiju & Rebirth", Lines = {
+			"Golden Goose: every 10 minutes in the Crossroads. Knights rescue it, the Horn Legion poaches it!",
+			"Kaiju: a 5-star villain turns huge for 120 s. Knights can hit it anywhere!",
+			"Rebirth from Lv 50: only your level resets. Gold, weapons and items stay.",
+			"Each Rebirth: +25% gold and XP forever (+40% on the smaller side).",
+		} },
+		{ Id = "Scrolls", Title = "Scrolls", Lines = {
+			"Enhance Scroll: 70% gives +1, 30% gives +3, 10% gives +5.",
+			"On a fail it stays or drops one step (50/50), never below +0.",
+			"Weapons never break! Max +10, and each +1 adds 10% attack.",
+			"Transfer Scroll: moves your + to another weapon. A fail changes nothing.",
+		} },
+		{ Id = "Chat", Title = "Team Chat", Lines = {
+			"Type /t in the chat to talk only to your own side.",
+		} },
+	},
+	-- the news window (and the last help topic): update weekly
+	News = {
+		{ Title = "Beta", Lines = {
+			"Your beta save carries over to the full launch on December 19.",
+			"Everyone who joins before the launch gets the Beta Pioneer title.",
+		} },
+		{ Title = "New this week", Lines = {
+			"Halloween: the Pumpkin Patch and the new Haunted Hollow with ghosts and the Ghost King.",
+			"New players start bare-handed. The Blacksmith gives you your first weapon after the first mission.",
+			"New Settings window: change your keys, sound effects and screen shake.",
+		} },
+	},
+}
+
 -- BB2 (pure, server + client): unknown keys dropped; numbers finite, clamped and snapped to Step; bools boolean; enums in
 -- Options; anything else -> the default. Keys: sparse action id -> "" or a usable key name (Config.KeyUsable), entries
 -- equal to the default dropped, and an explicit key already used by an earlier action (Actions order, actions whose
@@ -2289,7 +2432,22 @@ Config.Loot = {
 		RareWeapon = "%s 무기! %s 획득!", -- grade name (희귀 / 영웅 / 전설), weapon
 		DuplicateWeapon = "이미 가진 %s → %s골드로 바뀌었어요.",
 		JackpotSelf = "전설 무기 [%s]! 메뉴 → 아이템에서 장착해요.",
+		-- A23-34: the same jackpot found bare-handed is equipped at once
+		JackpotEquip = "전설 무기 [%s] 장착! 전투력 %s → %s",
+		JackpotEquipEn = "Legendary weapon [%s] equipped! Power %s → %s",
 		FirstScroll = "주문서를 얻었어요! 메뉴 → 아이템에서 무기를 강화해 봐요. (실패해도 무기는 안전해요)",
+		-- A23-34: the same one-time hint while still bare-handed (no weapon to enhance yet)
+		FirstScrollBare = "주문서를 얻었어요! 첫 무기는 대장장이가 줘요. 그다음 메뉴 → 아이템에서 강화해 봐요.",
+		FirstScrollBareEn = "You got a scroll! The blacksmith gives you your first weapon. Then enhance it in Menu → Items.",
+		-- A23-34: the M1_1 gift (LootService.GrantFirstWeapon). Bare-handed: equipped at once with the power change;
+		-- a player who already bought a weapon gets it in the bag (no equip, no power change).
+		FirstWeapon = "첫 무기 [%s]를 받았어요! 전투력 %s → %s",
+		FirstWeaponEn = "You got your first weapon, [%s]! Power %s → %s",
+		FirstWeaponBag = "대장장이가 [%s]도 챙겨 줬어요. 메뉴 → 아이템에서 볼 수 있어요.",
+		FirstWeaponBagEn = "The blacksmith also gave you [%s]. Find it in Menu → Items.",
+		-- A23-34: a weapon found while bare-handed is equipped at once (power change)
+		BareEquip = "[%s] 장착! 전투력 %s → %s",
+		BareEquipEn = "[%s] equipped! Power %s → %s",
 		EnhanceOk = "강화 성공! %s +%d → +%d (공격 %d%% → %d%%)",
 		EnhanceFailDown = "강화 실패… %s +%d → +%d (무기는 안전해요)",
 		EnhanceFailKeep = "강화 실패… 그래도 %s +%d 그대로예요!",
@@ -3007,6 +3165,10 @@ Config.Text = {
 	EquipNeedLevel = "이 무기는 레벨 %d부터 쓸 수 있어요.", EquipNeedLevelEn = "You can use this weapon from Lv %d.",
 	WeaponAutoSwap = "Lv %d부터 쓸 수 있는 무기예요 → %s 무기로 바꿨어요.",
 	WeaponAutoSwapEn = "That weapon needs Lv %d → switched to %s.",
+	-- A23-34: bare hands (weapon tier 0)
+	BareHands = "맨손", BareHandsEn = "Bare hands",
+	WeaponFromQuest = "첫 무기는 첫 임무(슬라임 5마리)를 끝내면 대장장이가 줘요.",
+	WeaponFromQuestEn = "The blacksmith gives you your first weapon after your first mission (5 slimes).",
 	WeaponUsableNow = "이제 %s 무기를 쓸 수 있어요! 대장간이나 메뉴 → 아이템에서 장착해요.",
 	WeaponUsableNowEn = "You can now use %s! Equip it at the blacksmith or in Menu → Items.",
 	NeedFaction = "먼저 진영을 골라야 해요.",
@@ -3455,6 +3617,51 @@ function Config.NoteGained(d, key, tier)
 		d.ItemSeq[key] = n
 	end
 	return n
+end
+
+----------------------------------------------------------------- A23-39 pet tamer (게임성 개발 2, 2026-10-06)
+-- The artisan guild's third class (internal class id Archer) is the pet tamer: the baby slime pet fights for it with
+-- the Archer numbers (range / interval / damage / Q table); only the names and the look change. Server: CombatService
+-- sends Style SwingStyle / SkillStyle in the Swing / Release Fx, PetService grants the pet and the one-time notice.
+Config.Tamer = {
+	Faction = "Neutral", Class = "Archer",
+	Pet = "BabySlime", -- the species granted (Config.Data.Defaults.Pets; PET-2 adds levels / XP later)
+	SwingStyle = "PetHeadbutt", -- basic attack Fx: the pet runs to the target, headbutts, comes back
+	SkillStyle = "PetDash", -- skill Q Fx: the pet dashes into the target area
+	Text = {
+		PetName = "아기 슬라임", PetNameEn = "Baby Slime",
+		PetGot = "아기 슬라임이 펫 친구가 됐어요! 이제 펫이 대신 싸워요.",
+		PetGotEn = "A baby slime became your pet! Now your pet fights for you.",
+		-- once, for a save that was the artisan hunter before A23-39 (with one free class change)
+		Became = "사냥꾼이 펫 조련사가 됐어요! 바꾸고 싶으면 직업 변경권 1장으로 무료로 바꿀 수 있어요.",
+		BecameEn = "The hunter is now the Pet Tamer! To pick another class, use the free class change ticket you got.",
+		-- below Config.ClassChange.FreeKeepLevelBelow a free change keeps the level anyway (no ticket button there)
+		BecameFree = "사냥꾼이 펫 조련사가 됐어요! 바꾸고 싶으면 무료로 직업을 바꿀 수 있어요.",
+		BecameFreeEn = "The hunter is now the Pet Tamer! You can change your class for free.",
+	},
+	-- the class card / picker lines for the tamer (Config.ClassCard)
+	Card = {
+		Desc = "아기 슬라임 펫이 대신 싸워요! 멀리 있는 적에게 펫이 박치기.",
+		DescEn = "Your baby slime pet fights for you! It headbutts enemies from afar.",
+		PickLine = "펫이 멀리서 하나씩 콩",
+		PickLineEn = "Your pet bonks foes one by one",
+		Stats = { "체력 ×1.0", "공격 ×0.55 (2배 빠름)", "펫이 30칸 2명 동시 · 이동 +10%" },
+		StatsEn = { "HP ×1.0", "Attack ×0.55 (2x fast)", "Pet hits 2 at 30 studs · Move +10%" },
+	},
+}
+
+-- true for the pet tamer: the artisan guild (Neutral) Archer
+function Config.IsTamer(classId, factionId)
+	local T = Config.Tamer
+	return T ~= nil and classId == T.Class and factionId == T.Faction
+end
+
+-- the class card lines a picker / character window shows: { Desc, DescEn, PickLine, PickLineEn, Stats, StatsEn } (the
+-- class row, or the tamer's card for the artisan Archer)
+function Config.ClassCard(classId, factionId)
+	if Config.IsTamer(classId, factionId) then return Config.Tamer.Card end
+	local c = Config.Classes[classId] or Config.Classes.Warrior
+	return { Desc = c.Desc, PickLine = c.PickLine, Stats = c.Stats }
 end
 
 return Config

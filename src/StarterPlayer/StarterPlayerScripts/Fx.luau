@@ -278,6 +278,14 @@ local MOTION = {
 			{ 0.29, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
+		-- A23-34 bare hands: guard up, a straight right jab with the torso turning into it, back to rest (~0.45 s)
+		PunchSwing = { Len = 0.45, Keys = {
+			{ 0, "Out", {} },
+			{ 0.08, "Out", { Waist = { 0, -16, 0 }, Neck = { 0, 10, 0 }, RightShoulder = { 70, 0, 12 }, RightElbow = { 100, 0, 0 }, LeftShoulder = { 60, 0, -12 }, LeftElbow = { 95, 0, 0 } } },
+			{ 0.15, "In", { Waist = { -4, 22, 0 }, Neck = { 2, -14, 0 }, RightShoulder = { 92, 0, -4 }, RightElbow = { 4, 0, 0 }, RightWrist = { -8, 0, 0 }, LeftShoulder = { 55, 0, -14 }, LeftElbow = { 100, 0, 0 } } },
+			{ 0.25, "Out", { Waist = { -2, 16, 0 }, Neck = { 1, -10, 0 }, RightShoulder = { 86, 0, -2 }, RightElbow = { 12, 0, 0 }, LeftShoulder = { 55, 0, -12 }, LeftElbow = { 95, 0, 0 } } },
+			{ 0.45, "InOut", {} },
+		} },
 		Hurt = { Len = 0.32, Keys = { -- snap back, arms jerk out, small rebound
 			{ 0, "Out", {} },
 			{ 0.05, "Out", { Waist = { 14, 0, 6 }, Neck = { 18, 0, 0 }, RightShoulder = { 18, 0, 22 }, LeftShoulder = { 18, 0, -22 }, RightElbow = { 35, 0, 0 }, LeftElbow = { 35, 0, 0 } } },
@@ -296,6 +304,13 @@ local MOTION = {
 		Warrior = { Swing = "WarriorSwing", Release = "WarriorRelease" },
 		Mage = { Swing = "MageSwing", Release = "MageRelease" },
 		Archer = { Swing = "ArcherSwing", Release = "ArcherRelease" },
+	},
+	-- a packet Style (A23-34 bare hands "Punch"; A23-39 pet tamer "PetHeadbutt" / "PetDash") plays its own clip and no
+	-- weapon pose; until the pet follows its tamer (PET-3) the headbutt shows the punch and the dash a commanding call
+	STYLE_CLIPS = {
+		Punch = { Swing = "PunchSwing" },
+		PetHeadbutt = { Swing = "PunchSwing" },
+		PetDash = { Release = "MageRelease" },
 	},
 }
 
@@ -1650,7 +1665,7 @@ end
 local function animateOwnAttack(data, which)
 	local classId = asStr(data.Class, "Warrior")
 	if which ~= "Release" and os.clock() < releaseAnimUntil then return end -- let the release move finish
-	local maxTime = Feel.attackTime(classId, which)
+	local maxTime = Feel.attackTime(classId, which, data.Style)
 	local okProc, played = pcall(Feel.playAttack, LocalPlayer and LocalPlayer.Character, classId, which, maxTime, data)
 	if not okProc then warnThrottled("procedural attack failed: " .. tostring(played)) end
 	if okProc and played then
@@ -2473,6 +2488,7 @@ end
 function Feel.weaponMotion(st, attack)
 	local ctx = st.AttackContext
 	if not attack or not attack.Clip or not Feel.validAttack(ctx) then Feel.clearWeaponMotion(st); return end
+	if ctx.Style then Feel.clearWeaponMotion(st); return end -- punch / pet moves: no bow string, no staff tip
 	local t = attack.T
 	local release = string.find(attack.Clip.Name, "Release", 1, true) ~= nil
 	local launch = attack.LaunchT or release and MOTION.RELEASE_LAUNCH[ctx.Class]
@@ -2667,9 +2683,10 @@ function Feel.stepChar(st, dt, now)
 		end
 	end
 	local attack = st.Layers.Attack
-	if attack and attack.Clip and st.AttackContext and st.AttackContext.Class == "Archer" then
+	local plain = st.AttackContext and not st.AttackContext.Style
+	if attack and attack.Clip and plain and st.AttackContext.Class == "Archer" then
 		Feel.archerPose(st, attack, bases, outputs)
-	elseif attack and attack.Clip and st.AttackContext and st.AttackContext.Class == "Mage" then
+	elseif attack and attack.Clip and plain and st.AttackContext.Class == "Mage" then
 		Feel.staffPose(st, attack, bases, outputs)
 	end
 	-- Every solved child uses this frame's predicted parent FK, independent of table iteration order.
@@ -2701,9 +2718,10 @@ function Feel.drop(st)
 end
 
 -- seconds a class move must finish in (Swing: SwingInterval x SWING_FIT, Release: RELEASE_ANIM_TIME)
-function Feel.attackTime(classId, which)
+function Feel.attackTime(classId, which, style)
 	local def = Config.Classes[classId] or Config.Classes.Warrior
-	local fit = math.max(0.1, tonumber(def.SwingInterval) or 1) * MOTION.SWING_FIT
+	local interval = style == "Punch" and Config.Combat.Unarmed.Interval or def.SwingInterval -- A23-34 punch 0.8 s
+	local fit = math.max(0.1, tonumber(interval) or 1) * MOTION.SWING_FIT
 	return which == "Release" and math.min(MOTION.RELEASE_ANIM_TIME, fit) or fit
 end
 
@@ -2713,10 +2731,12 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	if typeof(char) ~= "Instance" then return false end
 	local context = Feel.attackContext(data)
 	if not context or context.Char ~= char then return false end
-	local names = MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior
-	local name = names[which]
+	local style = type(data.Style) == "string" and MOTION.STYLE_CLIPS[data.Style] and data.Style or nil
+	local names = style and MOTION.STYLE_CLIPS[style] or MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior
+	local name = names[which] or (MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior)[which]
 	local clip = name and Feel.Clips[name]
 	if not clip then return false end
+	context.Style = style
 	local now = os.clock()
 	local st = Feel.Chars[char]
 	if which ~= "Release" and st and Feel.Active[st] and Feel.validAttack(st.AttackContext)
@@ -2724,7 +2744,7 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	local rate = math.clamp(clip.Len / math.max(0.05, maxTime), 1, MOTION.ANIM_MAX_SPEED)
 	local launch = math.clamp(asNum(data.LaunchDelay, which == "Release" and MOTION.RELEASE_LAUNCH[classId]
 		or (classId == "Archer" and MOTION.SHOT_DELAY or MOTION.CAST_DELAY)), 0, 1)
-	if classId == "Archer" then
+	if classId == "Archer" and not style then
 		-- Packet launch time is real seconds. Reserve recovery time even when the clip is sped up;
 		-- its launch key is remapped to that exact time rather than using rate-scaled clip seconds.
 		rate = math.min(rate, clip.Len / math.max(0.05, launch + MOTION.BOW.Settle + 0.015))
@@ -2734,11 +2754,11 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	current.AttackContext = context
 	Feel.clearWeaponMotion(current)
 	current.AttackSerial, current.BowReleased = {}, false
-	if classId == "Archer" then
+	if classId == "Archer" and not style then
 		current.Layers.Attack.LaunchT = launch * rate
 		current.AttackTarget = which == "Release" and asVec(data.Pos) and (data.Pos + Vector3.new(0, 30, 0))
 			or (type(data.Targets) == "table" and asVec(data.Targets[1])) or nil
-	elseif classId == "Mage" then
+	elseif classId == "Mage" and not style then
 		current.Layers.Attack.LaunchT = launch * rate
 		current.AttackTarget = which == "Release" and asVec(data.Pos) and data.Pos
 			or (type(data.Targets) == "table" and asVec(data.Targets[1])) or nil
@@ -2759,7 +2779,7 @@ function Feel.animateOther(data, which)
 	local root = char and char:FindFirstChild("HumanoidRootPart")
 	if not root or not root:IsA("BasePart") or not Feel.near(root.Position, MOTION.PROC_DIST) then return end
 	local classId = asStr(data.Class, "Warrior")
-	Feel.playAttack(char, classId, which, Feel.attackTime(classId, which), data)
+	Feel.playAttack(char, classId, which, Feel.attackTime(classId, which, data.Style), data)
 end
 
 -- my hits landed: my attack layer (or the stock track, R6) runs at HITSTOP_RATE for HITSTOP_TIME (HITSTOP_CRIT for a
@@ -3443,7 +3463,9 @@ handlers.Swing = function(data)
 	local targets = validTargets(data.Targets)
 	local hits = data.Hits
 	-- my manual hits: hit-stop / camera kick; auto-combat hits stay quiet (A23-1: no shake, no hit-stop)
-	local feel = data.Manual == true and { Stop = classId == "Warrior", Kick = true } or nil
+	local style = asStr(data.Style, "")
+	local punch = style == "Punch" or style == "PetHeadbutt" -- A23-34 / A23-39 (the pet itself comes with PET-3)
+	local feel = data.Manual == true and { Stop = classId == "Warrior" or punch, Kick = true } or nil
 	local launch = math.clamp(asNum(data.LaunchDelay, classId == "Mage" and MOTION.CAST_DELAY or MOTION.SHOT_DELAY), 0, 1)
 	local flight = math.clamp(asNum(data.FlightTime, classId == "Mage" and 0.2 or 0.15), 0, 1)
 
@@ -3453,7 +3475,13 @@ handlers.Swing = function(data)
 	local okExpect, errExpect = pcall(Feel.expectHits, hits, showAt)
 	if not okExpect then warnThrottled("hit sync failed: " .. tostring(errExpect)) end
 
-	if classId == "Mage" then
+	if punch then
+		Feel.after(ctx, showAt, function()
+			local target = targets[1] or pos
+			ring(target, 1.2, color, { Grow = 0.12, Fade = 0.2, Transparency = own and 0.45 or 0.65 })
+			showHits(hits, own, false, feel)
+		end)
+	elseif classId == "Mage" then
 		Feel.launchWeapon(ctx, launch, function()
 			local origin = Feel.muzzle(ctx, from)
 			local target = targets[1]
@@ -3519,7 +3547,9 @@ handlers.Release = function(data)
 	local color = factionColor(data.Faction)
 	local visible = nearCamera(pos)
 	local impactDelay = math.clamp(asNum(data.ContactDelay, MOTION.RELEASE_CONTACT[classId] or MOTION.SMASH_AT), 0, 1)
-	if classId == "Mage" then
+	if data.Style == "PetDash" then
+		-- A23-39: the pet dashes in (PET-3 animates the pet); until then only the impact below shows
+	elseif classId == "Mage" then
 		if visible then meteor(pos, radius, color, impactDelay, ctx) end
 	elseif classId == "Archer" then
 		local launch = math.clamp(asNum(data.LaunchDelay, MOTION.RELEASE_LAUNCH.Archer), 0, impactDelay)
