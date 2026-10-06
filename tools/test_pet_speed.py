@@ -93,8 +93,11 @@ def static() -> tuple[int, list[str]]:
     for path in sorted(SSS.glob("*.luau")):
         for line in read(path).splitlines():
             code = line.split("--", 1)[0]
+            # monsters' own Humanoids (MonsterService: hum = the new monster, rec.Humanoid = a living monster record) are
+            # not players
             if re.search(r"\.WalkSpeed\s*=[^=]", code) and "hum.WalkSpeed = def.Speed" not in code \
-                    and "hum.WalkSpeed = 0" not in code and "humanoid.WalkSpeed, humanoid.JumpPower" not in code:
+                    and "hum.WalkSpeed = 0" not in code and "humanoid.WalkSpeed, humanoid.JumpPower" not in code \
+                    and not (path.name == "MonsterService.luau" and "rec.Humanoid.WalkSpeed" in code):
                 writes.append(f"{path.name}: {line.strip()}")
     check(len(writes) == 2 and all("ComputeWalkSpeed(player)" in w for w in writes),
           "a player's WalkSpeed is written in exactly two places, both from ComputeWalkSpeed: " + " | ".join(writes))
