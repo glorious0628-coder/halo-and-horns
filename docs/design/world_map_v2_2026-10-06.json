@@ -1,0 +1,616 @@
+{
+ "units": "studs; +X east, -Z north; Terrain top Y = 0",
+ "zones": [
+  {
+   "id": "Crossroads",
+   "ko": "교차로 마을",
+   "en": "Crossroads",
+   "kind": "town",
+   "land": [
+    -150,
+    150,
+    -150,
+    150
+   ],
+   "lv": "1",
+   "pvp": false,
+   "spawn": [
+    0,
+    -30
+   ],
+   "landmark": "Sky Crown of Balance floating above + fountain crown-shard light beam",
+   "landmark_ko": "하늘에 뜬 부서진 균형의 왕관 + 분수 빛기둥(어디서든 보임)",
+   "color": [
+    227,
+    207,
+    165
+   ],
+   "size": [
+    300,
+    300
+   ]
+  },
+  {
+   "id": "HaloTown",
+   "ko": "빛의 성채",
+   "en": "Halo Citadel",
+   "kind": "town",
+   "land": [
+    -200,
+    200,
+    -700,
+    -330
+   ],
+   "lv": "1",
+   "pvp": false,
+   "spawn": [
+    0,
+    -420
+   ],
+   "landmark": "white castle with a floating golden halo ring (north end)",
+   "landmark_ko": "북쪽 끝 흰 성 + 떠 있는 금 후광 고리(교차로 북쪽 길에서 보임)",
+   "color": [
+    246,
+    240,
+    222
+   ],
+   "size": [
+    400,
+    370
+   ]
+  },
+  {
+   "id": "HornsTown",
+   "ko": "뿔 소굴",
+   "en": "Horns Den",
+   "kind": "town",
+   "land": [
+    -200,
+    200,
+    330,
+    700
+   ],
+   "lv": "1",
+   "pvp": false,
+   "spawn": [
+    0,
+    420
+   ],
+   "landmark": "obsidian fortress with curved horn towers and a glowing amber shard (south end)",
+   "landmark_ko": "남쪽 끝 흑요석 요새 + 뿔 탑 + 호박색 왕관 조각(교차로 남쪽 길에서 보임)",
+   "color": [
+    92,
+    54,
+    64
+   ],
+   "size": [
+    400,
+    370
+   ]
+  },
+  {
+   "id": "SlimeMeadow",
+   "ko": "말랑 초원",
+   "en": "Squishy Meadow",
+   "kind": "hunt",
+   "land": [
+    210,
+    650,
+    -240,
+    240
+   ],
+   "lv": "1+",
+   "pvp": false,
+   "spawn": [
+    230,
+    0
+   ],
+   "landmark": "King Slime Hill: round green hill with a crown-shaped rock + giant jelly slime statue",
+   "landmark_ko": "왕 슬라임 언덕(왕관 바위) + 거대 젤리 슬라임 석상",
+   "color": [
+    139,
+    203,
+    94
+   ],
+   "size": [
+    440,
+    480
+   ]
+  },
+  {
+   "id": "PumpkinPatch",
+   "ko": "호박밭",
+   "en": "Pumpkin Patch",
+   "kind": "hunt",
+   "season": "Halloween",
+   "land": [
+    420,
+    650,
+    240,
+    430
+   ],
+   "lv": "1+",
+   "pvp": false,
+   "spawn": [
+    535,
+    255
+   ],
+   "landmark": "giant pumpkin house with a round door (no face)",
+   "landmark_ko": "거대 호박 집(둥근 문, 얼굴 없음)",
+   "color": [
+    200,
+    128,
+    58
+   ],
+   "size": [
+    230,
+    190
+   ]
+  },
+  {
+   "id": "HauntedHollow",
+   "ko": "유령 숲",
+   "en": "Haunted Hollow",
+   "kind": "hunt",
+   "season": "Halloween",
+   "land": [
+    220,
+    420,
+    255,
+    430
+   ],
+   "lv": "8-14",
+   "pvp": false,
+   "spawn": [
+    400,
+    340
+   ],
+   "landmark": "big twisted purple willow with blue lanterns under a full moon",
+   "landmark_ko": "푸른 등불 달린 큰 보라 버드나무(보름달)",
+   "color": [
+    107,
+    90,
+    154
+   ],
+   "size": [
+    200,
+    175
+   ]
+  },
+  {
+   "id": "GoblinWoods",
+   "ko": "고블린 숲",
+   "en": "Goblin Woods",
+   "kind": "hunt",
+   "land": [
+    710,
+    1190,
+    -260,
+    260
+   ],
+   "lv": "10+",
+   "pvp": true,
+   "spawn": [
+    730,
+    0
+   ],
+   "landmark": "giant old tree with a goblin treehouse",
+   "landmark_ko": "고블린 나무집이 달린 거대 고목",
+   "color": [
+    62,
+    125,
+    58
+   ],
+   "size": [
+    480,
+    520
+   ]
+  },
+  {
+   "id": "SkeletonRuins",
+   "ko": "해골 유적",
+   "en": "Skeleton Ruins",
+   "kind": "hunt",
+   "land": [
+    1260,
+    1780,
+    -290,
+    290
+   ],
+   "lv": "25+",
+   "pvp": true,
+   "spawn": [
+    1280,
+    0
+   ],
+   "landmark": "broken castle tower with a big round stone mask and blue spirit flames",
+   "landmark_ko": "큰 둥근 돌 가면이 달린 부서진 성탑 + 푸른 영혼불",
+   "color": [
+    142,
+    138,
+    166
+   ],
+   "size": [
+    520,
+    580
+   ]
+  }
+ ],
+ "pass": {
+  "ko": "고갯길(돌 아치)",
+  "land": [
+   1190,
+   1260,
+   -70,
+   70
+  ],
+  "color": [
+   150,
+   130,
+   112
+  ]
+ },
+ "rivers": [
+  {
+   "ko": "교차로-초원 강",
+   "x": [
+    150,
+    210
+   ]
+  },
+  {
+   "ko": "초원-숲 강",
+   "x": [
+    650,
+    710
+   ]
+  }
+ ],
+ "bridges": [
+  {
+   "ko": "초원 다리",
+   "from": [
+    150,
+    0
+   ],
+   "to": [
+    210,
+    0
+   ],
+   "width": 22
+  },
+  {
+   "ko": "숲 다리",
+   "from": [
+    650,
+    0
+   ],
+   "to": [
+    710,
+    0
+   ],
+   "width": 22
+  },
+  {
+   "ko": "빛 다리",
+   "from": [
+    0,
+    -150
+   ],
+   "to": [
+    0,
+    -330
+   ],
+   "width": 22
+  },
+  {
+   "ko": "뿔 다리",
+   "from": [
+    0,
+    150
+   ],
+   "to": [
+    0,
+    330
+   ],
+   "width": 22
+  }
+ ],
+ "roads": [
+  {
+   "ko": "왕관 큰길(동서)",
+   "pts": [
+    [
+     -150,
+     0
+    ],
+    [
+     1760,
+     0
+    ]
+   ],
+   "w": 18
+  },
+  {
+   "ko": "북쪽 길(성채)",
+   "pts": [
+    [
+     0,
+     -150
+    ],
+    [
+     0,
+     -600
+    ]
+   ],
+   "w": 16
+  },
+  {
+   "ko": "남쪽 길(소굴)",
+   "pts": [
+    [
+     0,
+     150
+    ],
+    [
+     0,
+     600
+    ]
+   ],
+   "w": 16
+  },
+  {
+   "ko": "호박밭 길",
+   "pts": [
+    [
+     535,
+     0
+    ],
+    [
+     535,
+     330
+    ]
+   ],
+   "w": 12
+  },
+  {
+   "ko": "유령 숲 길(호박밭 서문)",
+   "pts": [
+    [
+     535,
+     340
+    ],
+    [
+     330,
+     340
+    ]
+   ],
+   "w": 10
+  },
+  {
+   "ko": "초원 둘레길",
+   "pts": [
+    [
+     260,
+     -170
+    ],
+    [
+     600,
+     -170
+    ]
+   ],
+   "w": 10
+  },
+  {
+   "ko": "숲 오솔길",
+   "pts": [
+    [
+     760,
+     -150
+    ],
+    [
+     1120,
+     -150
+    ]
+   ],
+   "w": 10
+  },
+  {
+   "ko": "유적 길",
+   "pts": [
+    [
+     1300,
+     150
+    ],
+    [
+     1700,
+     150
+    ]
+   ],
+   "w": 10
+  }
+ ],
+ "gates": [
+  {
+   "ko": "초원 관문(젤리 슬라임 석상)",
+   "at": [
+    210,
+    0
+   ]
+  },
+  {
+   "ko": "숲 관문(고블린 토템)",
+   "at": [
+    710,
+    0
+   ]
+  },
+  {
+   "ko": "유적 관문(돌 가면)",
+   "at": [
+    1260,
+    0
+   ]
+  },
+  {
+   "ko": "빛 관문(날개 아치)",
+   "at": [
+    0,
+    -330
+   ]
+  },
+  {
+   "ko": "뿔 관문(뿔 아치)",
+   "at": [
+    0,
+    330
+   ]
+  },
+  {
+   "ko": "호박밭 문",
+   "at": [
+    535,
+    240
+   ]
+  },
+  {
+   "ko": "유령 숲 문",
+   "at": [
+    420,
+    340
+   ]
+  }
+ ],
+ "landmarks": [
+  {
+   "ko": "하늘 왕관 + 분수",
+   "at": [
+    0,
+    0
+   ],
+   "r": 34,
+   "color": [
+    245,
+    197,
+    66
+   ]
+  },
+  {
+   "ko": "빛 성(후광 고리)",
+   "at": [
+    0,
+    -630
+   ],
+   "r": 48,
+   "color": [
+    255,
+    255,
+    255
+   ]
+  },
+  {
+   "ko": "뿔 요새",
+   "at": [
+    0,
+    630
+   ],
+   "r": 48,
+   "color": [
+    60,
+    24,
+    32
+   ]
+  },
+  {
+   "ko": "왕 슬라임 언덕",
+   "at": [
+    500,
+    -110
+   ],
+   "r": 52,
+   "color": [
+    102,
+    190,
+    70
+   ]
+  },
+  {
+   "ko": "젤리 트램펄린",
+   "at": [
+    330,
+    150
+   ],
+   "r": 26,
+   "color": [
+    120,
+    230,
+    200
+   ]
+  },
+  {
+   "ko": "거대 호박 집",
+   "at": [
+    585,
+    370
+   ],
+   "r": 30,
+   "color": [
+    240,
+    140,
+    40
+   ]
+  },
+  {
+   "ko": "유령 버드나무",
+   "at": [
+    300,
+    360
+   ],
+   "r": 32,
+   "color": [
+    140,
+    110,
+    220
+   ]
+  },
+  {
+   "ko": "고블린 나무집 고목",
+   "at": [
+    960,
+    -90
+   ],
+   "r": 58,
+   "color": [
+    40,
+    95,
+    40
+   ]
+  },
+  {
+   "ko": "고갯길 돌 아치",
+   "at": [
+    1225,
+    0
+   ],
+   "r": 22,
+   "color": [
+    170,
+    150,
+    130
+   ]
+  },
+  {
+   "ko": "돌 가면 성탑",
+   "at": [
+    1560,
+    -70
+   ],
+   "r": 60,
+   "color": [
+    120,
+    116,
+    150
+   ]
+  }
+ ]
+}
