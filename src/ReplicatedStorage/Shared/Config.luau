@@ -2366,6 +2366,15 @@ Config.UIArt = {
 		IconSkills = { Id = "rbxassetid://113811090785765", Size = Vector2.new(512, 512) },
 		IconRanking = { Id = "rbxassetid://119501472065745", Size = Vector2.new(512, 512) },
 		IconHelp = { Id = "rbxassetid://102236302870647", Size = Vector2.new(512, 512) },
+		-- A23-38/A23-40 menu row (Firefly 2026-10-06, 471686b, art/review/s2/a2338_menu_sheet.png): navy tile + thin gold
+		-- trim (ImageTransparency 0.15 over the world), icon ~74% centred, the name below in game text
+		MenuTile = { Id = "rbxassetid://137120062999958", Size = Vector2.new(512, 504), Slice = Rect.new(96, 96, 416, 408), SliceScale = 0.12, Tone = "Navy" },
+		IconSettings = { Id = "rbxassetid://140338353841950", Size = Vector2.new(512, 512) }, -- settings gear
+		IconNews = { Id = "rbxassetid://124574116225607", Size = Vector2.new(512, 512) }, -- news scroll (IconHelp stays help)
+		-- guide portraits (Firefly 2026-10-06, 50bf8ea, user OK): square bust, bottom cut straight (welcome dialog, rings)
+		PortraitGuideHalo = { Id = "rbxassetid://110194702566253", Size = Vector2.new(512, 512) },
+		PortraitGuideHorns = { Id = "rbxassetid://131286803604294", Size = Vector2.new(512, 512) },
+		PortraitGuideArtisan = { Id = "rbxassetid://123450056288234", Size = Vector2.new(512, 512) },
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
 		IconMonBigSlime = { Id = "rbxassetid://137346108147632", Size = Vector2.new(512, 512) },
@@ -2413,25 +2422,27 @@ Config.UIArt = {
 		ClassCardNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(618, 1024) },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
 		TitleRibbon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
-		-- class characters (transparent chibi): Char<Faction><Class><M|F>
-		CharHaloWarriorM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(420, 512) },
-		CharHaloWarriorF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(464, 512) },
-		CharHaloMageM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(460, 512) },
-		CharHaloMageF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(478, 512) },
-		CharHaloArcherM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(501, 512) },
-		CharHaloArcherF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(406, 512) },
-		CharHornsWarriorM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(446, 512) },
-		CharHornsWarriorF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(472, 512) },
-		CharHornsMageM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(474, 512) },
-		CharHornsMageF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(449, 512) },
-		CharHornsArcherM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(488, 512) },
-		CharHornsArcherF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(467, 512) },
-		CharNeutralWarriorM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(485, 512) },
-		CharNeutralWarriorF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(476, 512) },
-		CharNeutralMageM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(465, 512) },
-		CharNeutralMageF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(457, 512) },
-		CharNeutralArcherM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(416, 512) },
-		CharNeutralArcherF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(463, 512) },
+		-- class characters (Firefly blocky toy style, bundle 10, 50bf8ea, user OK): Char<Faction><Class><M|F>.
+		-- One gender per class for now: ClassPicker shows the other gender's picture until bundle 19. Neutral Archer
+		-- stays empty (A23-39: the Artisan third class becomes the pet tamer; its picture comes later).
+		CharHaloWarriorM = { Id = "rbxassetid://107223446177550", Size = Vector2.new(476, 663) },
+		CharHaloWarriorF = { Id = "", Size = Vector2.new(464, 512) },
+		CharHaloMageM = { Id = "", Size = Vector2.new(460, 512) },
+		CharHaloMageF = { Id = "rbxassetid://86506033601447", Size = Vector2.new(408, 768) },
+		CharHaloArcherM = { Id = "rbxassetid://129427231445677", Size = Vector2.new(421, 768) },
+		CharHaloArcherF = { Id = "", Size = Vector2.new(406, 512) },
+		CharHornsWarriorM = { Id = "", Size = Vector2.new(446, 512) },
+		CharHornsWarriorF = { Id = "rbxassetid://125807011729545", Size = Vector2.new(561, 768) },
+		CharHornsMageM = { Id = "rbxassetid://88874835473142", Size = Vector2.new(540, 768) },
+		CharHornsMageF = { Id = "", Size = Vector2.new(449, 512) },
+		CharHornsArcherM = { Id = "", Size = Vector2.new(488, 512) },
+		CharHornsArcherF = { Id = "rbxassetid://75414336669920", Size = Vector2.new(422, 768) },
+		CharNeutralWarriorM = { Id = "rbxassetid://112070391814033", Size = Vector2.new(401, 768) },
+		CharNeutralWarriorF = { Id = "", Size = Vector2.new(476, 512) },
+		CharNeutralMageM = { Id = "", Size = Vector2.new(465, 512) },
+		CharNeutralMageF = { Id = "rbxassetid://116514332783939", Size = Vector2.new(402, 768) },
+		CharNeutralArcherM = { Id = "", Size = Vector2.new(416, 512) },
+		CharNeutralArcherF = { Id = "", Size = Vector2.new(463, 512) },
 		-- perk / misc icons
 		IconExp = { Id = "rbxassetid://125679953240313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconHeart = { Id = "rbxassetid://92865909915468", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)

@@ -1180,7 +1180,9 @@ BUILDERS.Welcome = function(parent)
 	portraitRow.Name = "WelcomePortrait"
 	portraitRow.Visible = not short
 	if not short and UIKit and type(UIKit.ArtImage) == "function" then
-		local ok, portrait = pcall(UIKit.ArtImage, "Char" .. faction .. "WarriorM", {
+		-- the faction's guide (Config.UIArt PortraitGuide*: the Artisan guild guide for Neutral)
+		local guide = "PortraitGuide" .. (faction == "Neutral" and "Artisan" or faction)
+		local ok, portrait = pcall(UIKit.ArtImage, guide, {
 			Name = "Guide", Parent = portraitRow, Size = UDim2.fromOffset(170, 170), ScaleType = Enum.ScaleType.Fit,
 		})
 		if not ok then Util.Warn(TAG, "welcome portrait failed: " .. tostring(portrait)) end
