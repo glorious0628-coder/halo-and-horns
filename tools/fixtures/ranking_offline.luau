@@ -46,9 +46,9 @@ runGroup("config", function()
 		for rank = 1, 3 do
 			local id = "Rank" .. board .. rank
 			local def = C.TitleDefs[id]
-			check(def ~= nil and def.Timed == true and def.Name == string.format("이번 주 %s %d위", R0.Text.TitleNames[board], rank)
+			check(def ~= nil and def.Timed == true and def.Name == string.format("This week's %s #%d", R0.Text.TitleNames[board], rank)
 				and type(def.NameEn) == "string" and table.find(C.TitleOrder, id) ~= nil,
-				"timed title " .. id .. " (\"이번 주 … N위\", KO/EN, in TitleOrder)", def and def.Name)
+				"timed title " .. id .. " (\"This week's … #N\", Name / NameEn, in TitleOrder)", def and def.Name)
 			local extra = {}
 			for k in def or {} do
 				if k ~= "Name" and k ~= "NameEn" and k ~= "Color" and k ~= "Timed" then table.insert(extra, k) end
@@ -57,11 +57,11 @@ runGroup("config", function()
 		end
 	end
 	check(C.TitleDefs.RankPvP1 == nil, "the PvP board has no reward titles")
-	check(C.TitleDefs.RankHonor1.Name == "이번 주 명예 1위" and C.TitleDefs.RankInfamy3.Name == "이번 주 악명 3위"
-		and C.TitleDefs.RankArtisan2.Name == "이번 주 장인 2위", "title wording: '이번 주 명예 1위' / '이번 주 장인 N위' (A23-22 / A23-24)",
+	check(C.TitleDefs.RankHonor1.Name == "This week's Honor #1" and C.TitleDefs.RankInfamy3.Name == "This week's Infamy #3"
+		and C.TitleDefs.RankArtisan2.Name == "This week's Artisan #2", "title wording: 'This week's Honor #1' / 'This week's Artisan #N' (A23-22 / A23-24, A23-48)",
 		C.TitleDefs.RankArtisan2.Name)
-	check(R0.Text.OutlawChip == "무법자: 자동 전투 불가 · 경험치·드랍 절반 (월요일까지)", "HUD chip text from A23-23", R0.Text.OutlawChip)
-	check(R0.Text.Empty == "아직 기록이 없어요" and R0.Text.OutlawTag == "무법자", "empty-board text and the nametag tag")
+	check(R0.Text.OutlawChip == "Outlaw: no Auto Battle · half XP and drops (until Monday)", "HUD chip text from A23-23", R0.Text.OutlawChip)
+	check(R0.Text.Empty == "No records yet" and R0.Text.OutlawTag == "Outlaw", "empty-board text and the nametag tag")
 	local missing = {}
 	for key, value in R0.Text do
 		if type(value) == "string" and string.sub(key, -2) ~= "En" and type(R0.Text[key .. "En"]) ~= "string" then
@@ -1631,16 +1631,16 @@ runGroup("bb37-lines", function()
 		local from = #w.All
 		w:KO(v, k)
 		for i = #w.All, from + 1, -1 do
-			if has(w.All[i].Text, "골드를 받았어요") then return w.All[i].Text end
+			if has(w.All[i].Text, "gold bounty!") then return w.All[i].Text end
 		end
 		return nil
 	end
 	local hidden = bountyKO(true)
-	check(hidden ~= nil and has(hidden, string.format(C0.Announce.Text.HiddenName, C0.Factions.Halo.Name) .. "이")
+	check(hidden ~= nil and has(hidden, string.format(C0.Announce.Text.HiddenName, C0.Factions.Halo.Name) .. " got a")
 		and not has(hidden, "[" .. C0.Factions.Halo.Name .. "]") and not has(hidden, "P101"),
-		"a hidden knight's bounty line: '빛의 기사단 한 명이 …' without the '[빛의 기사단]' prefix", hidden)
+		"a hidden knight's bounty line: 'A member of the Knights of Light got …' without the '[Knights of Light]' prefix", hidden)
 	local shown = bountyKO(false)
-	check(shown ~= nil and has(shown, "[" .. C0.Factions.Halo.Name .. "]") and has(shown, "P101" .. C0.Announce.Text.Honorific .. "이"),
+	check(shown ~= nil and has(shown, "[" .. C0.Factions.Halo.Name .. "]") and has(shown, "P101" .. C0.Announce.Text.Honorific .. " got a"),
 		"a shown knight's bounty line keeps the prefix", shown)
 	check(type(T.BountyAnnounceHiddenEn) == "string" and not has(T.BountyAnnounceHidden, "["), "BountyAnnounceHidden KO/EN without a prefix")
 	-- the kaiju's public name follows a hide toggle during the event (GameState KaijuName + the end line)
@@ -1668,7 +1668,7 @@ runGroup("bb37-lines", function()
 	w.Remotes.SetAnnounceName.OnServerEvent:Fire(p, true)
 	w:KaijuTick(C0.Kaiju.Duration)
 	local survived = nil
-	for _, n in w.All do if has(n.Text, "살아남았어요") then survived = n.Text end end
+	for _, n in w.All do if has(n.Text, "survived to the end") then survived = n.Text end end
 	check(survived == string.format(C0.Story.KaijuSurvived, hiddenName), "the end line uses the name as it is at the end (hidden)", survived)
 	w.AllowWarn = { "missing", "zoom" }
 end)

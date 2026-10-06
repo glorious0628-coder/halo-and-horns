@@ -31,7 +31,7 @@ function VitalsService.TrySpendMana(player, amount, silent)
 		local now = workspace:GetServerTimeNow()
 		if not silent and now - st.NoticeAt >= 2 then
 			st.NoticeAt = now
-			Net.Notify(player, (TUNE.MerchantEnabled == true and "MP가 부족해요. MP 물약을 사용해요!") or "MP가 부족해요. 잠시 기다리면 차올라요.", "bad")
+			Net.Notify(player, (TUNE.MerchantEnabled == true and "Not enough MP. Drink an MP potion!") or "Not enough MP. Wait a moment and it refills.", "bad")
 		end
 		return false
 	end
@@ -46,7 +46,7 @@ local function usePotion(player, kind)
 	local st = states[player]
 	if not st then return end
 	if player:GetAttribute("KaijuState") == "Active" or player:GetAttribute("KaijuState") == "Siren" then
-		Net.Notify(player, "괴수 변신 중에는 물약을 사용할 수 없어요.", "bad")
+		Net.Notify(player, "You can't use potions as a Kaiju.", "bad")
 		return
 	end
 	local now = workspace:GetServerTimeNow()
@@ -57,14 +57,14 @@ local function usePotion(player, kind)
 	local count = type(data) == "table" and data[stockKey]
 	if type(count) ~= "number" or count ~= count or count < 1 or count > TUNE.PotionInventoryCap
 		or count ~= math.floor(count) then
-		Net.Notify(player, (TUNE.MerchantEnabled == true and "물약이 없어요. 물약 상인에게서 구매해 주세요.") or "물약이 없어요. 물약 상점은 준비 중이에요.", "bad")
+		Net.Notify(player, (TUNE.MerchantEnabled == true and "No potions left. Buy some from the Potion Seller.") or "No potions left. The potion shop isn't open yet.", "bad")
 		return
 	end
 	local humanoid = Util.GetHumanoid(player)
 	if not humanoid or humanoid.Health <= 0 then return end
 	if kind == "HP" then
 		if humanoid.Health >= humanoid.MaxHealth then
-			Net.Notify(player, "HP가 가득 찼어요.", "info")
+			Net.Notify(player, "HP is full.", "info")
 			return
 		end
 		local before = humanoid.Health
@@ -72,7 +72,7 @@ local function usePotion(player, kind)
 		if humanoid.Health <= before then return end -- a failed/no-op heal consumes neither stock nor the deadline
 	else
 		if st.Mana >= TUNE.MaxMana then
-			Net.Notify(player, "MP가 가득 찼어요.", "info")
+			Net.Notify(player, "MP is full.", "info")
 			return
 		end
 		local before = st.Mana
@@ -84,7 +84,7 @@ local function usePotion(player, kind)
 	st[key] = now + TUNE.PotionCooldown
 	publish(player, st)
 	S.PlayerService.MarkActive(player)
-	Net.Notify(player, kind .. " 물약을 사용했어요!", "good")
+	Net.Notify(player, "Used a " .. kind .. " potion!", "good")
 end
 
 -- Studio-only resource setup, invoked through Main's existing DebugCommand BindableFunction.

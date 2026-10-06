@@ -711,7 +711,7 @@ runGroup("config", function()
 	for _, key in { "UseCombat", "EquipDead", "EquipCombat", "ItemFull", "ItemFullUse" } do
 		check(type(L.Text[key]) == "string" and L.Text[key] ~= "", "Config.Loot.Text." .. key .. " is a Korean string", key)
 	end
-	check(string.find(L.Text.ItemFull, "대장간", 1, true) ~= nil, "B7 ItemFull (materials) says they sell at the blacksmith")
+	check(string.find(L.Text.ItemFull, "Forge", 1, true) ~= nil, "B7 ItemFull (materials) says they sell at the Forge")
 	-- review B3: legendary = exactly 2 x tier 3 (38), below tier 4
 	check(C.Weapons[8].Damage == 76 and C.Weapons[8].Damage == 2 * C.Weapons[3].Damage and C.Weapons[8].Damage < C.Weapons[4].Damage,
 		"B3 legendary damage 76 = 2 x tier 3, below tier 4", C.Weapons[8].Damage)

@@ -528,10 +528,10 @@ runGroup("power-text", function()
 	for _, k in { "Label", "LabelEn", "Up", "UpEn", "Change", "ChangeEn", "Formula", "FormulaEn", "PvPNote", "PvPNoteEn" } do
 		check(type(T[k]) == "string" and T[k] ~= "", "Config.Power.Text." .. k .. " is a non-empty string", show(T[k]))
 	end
-	check(T.Label == "전투력" and T.LabelEn == "Power", "Label 전투력 / Power", show({ T.Label, T.LabelEn }))
+	check(T.Label == "Power" and T.LabelEn == "Power", "Label / LabelEn = Power (A23-48 English)", show({ T.Label, T.LabelEn }))
 	local okUp, up = pcall(string.format, T.Up, "1,052")
 	local okUpEn, upEn = pcall(string.format, T.UpEn, "1,052")
-	check(okUp and up == "전투력 +1,052" and okUpEn and upEn == "Power +1,052", "Up / UpEn format one number",
+	check(okUp and up == "Power +1,052" and okUpEn and upEn == "Power +1,052", "Up / UpEn format one number",
 		show({ up, upEn }))
 	local okCh, ch = pcall(string.format, T.Change, "283", "387")
 	local okChEn, chEn = pcall(string.format, T.ChangeEn, "283", "387")
@@ -547,18 +547,17 @@ runGroup("power-text", function()
 		check(has(note, hi) and has(note, lo),
 			k .. " contains the real Config.PvP.PowerRatioMax and PowerRatioMin numbers", show({ note, hi, lo }))
 	end
-	check(has(T.PvPNote, "최대 " .. hi .. "배") and has(T.PvPNote, "최소 " .. lo .. "배"),
-		"PvPNote reads 최대 <PowerRatioMax>배, 최소 <PowerRatioMin>배", show({ T.PvPNote, hi, lo }))
+	check(has(T.PvPNote, "at most x" .. hi) and has(T.PvPNote, "at least x" .. lo),
+		"PvPNote reads at most x<PowerRatioMax>, at least x<PowerRatioMin>", show({ T.PvPNote, hi, lo }))
 	-- review 2026-10-06 (B6): the WHOLE finished sentences, not only containment, so a swapped max/min order (numbers or
-	-- the 최대/최소 · most/least words) fails. KO wording = docs/design/beta_basics_2026-10-05.md BB4 Config.Power line.
+	-- the most/least words) fails. A23-48: the game is English only, so PvPNote is the same English line as PvPNoteEn.
 	local NOTE = {
-		Ko = "무기 공격력 차이가 커도 PvP 피해는 최대 %s배, 최소 %s배예요",
 		En = "However strong the weapons, PvP damage is at most x%s and at least x%s",
 	}
-	local wantKo, wantEn = string.format(NOTE.Ko, hi, lo), string.format(NOTE.En, hi, lo)
-	check(T.PvPNote == wantKo,
-		"PvPNote is exactly the finished KO sentence '무기 공격력 차이가 커도 PvP 피해는 최대 <Max>배, 최소 <Min>배예요'",
-		show({ got = T.PvPNote, want = wantKo }))
+	local wantEn = string.format(NOTE.En, hi, lo)
+	check(T.PvPNote == wantEn,
+		"PvPNote is exactly the finished English sentence (A23-48: the same line as PvPNoteEn)",
+		show({ got = T.PvPNote, want = wantEn }))
 	check(T.PvPNoteEn == wantEn,
 		"PvPNoteEn is exactly the finished EN sentence 'However strong the weapons, PvP damage is at most x<Max> and at least x<Min>'",
 		show({ got = T.PvPNoteEn, want = wantEn }))
@@ -573,9 +572,9 @@ runGroup("power-text", function()
 		check(has(note, "1.35") and has(note, "0.65") and not has(note, "%"),
 			k .. " follows Config.PvP.PowerRatioMax / PowerRatioMin (finished line, no '%')", show(note))
 	end
-	check(altText.PvPNote == string.format(NOTE.Ko, "1.35", "0.65")
+	check(altText.PvPNote == string.format(NOTE.En, "1.35", "0.65")
 		and altText.PvPNoteEn == string.format(NOTE.En, "1.35", "0.65"),
-		"PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished KO / EN sentences (max first, min second)",
+		"PvPNote / PvPNoteEn with Max 1.35 / Min 0.65 are exactly the finished English sentences (max first, min second)",
 		show({ altText.PvPNote, altText.PvPNoteEn }))
 	-- Bully.Text
 	local B = C.Bully.Text
@@ -590,8 +589,8 @@ runGroup("power-text", function()
 		check(has(list[2], "15"), "line 2 (fresh respawn) says 15 s", list[2])
 		check(has(list[3], "3") and has(list[3], "10"), "line 3 (repeat KOs) says 3 times / 10 minutes", list[3])
 	end
-	check(has(B.Lines[1], "50%") and has(B.Lines[2], "15초") and has(B.Lines[3], "10분") and has(B.Lines[3], "3번"),
-		"Korean lines: 50% / 15초 / 10분 / 3번", show(B.Lines))
+	check(has(B.Lines[1], "50%") and has(B.Lines[2], "15 s") and has(B.Lines[3], "3 times") and has(B.Lines[3], "10 minutes"),
+		"English lines (A23-48): 50% / 15 s / 3 times / 10 minutes", show(B.Lines))
 	-- the lines are built from Config.Bully (string.format), not typed in: other numbers -> other lines
 	local src, n1, n2, n3, n4 = CONFIG_SOURCE, 0, 0, 0, 0
 	src, n1 = replaceOnce(src, "WeakPowerRatio = 0.5,", "WeakPowerRatio = 0.25,")
@@ -846,10 +845,10 @@ runGroup("title-config", function()
 			"TitleDefs entry has Name / NameEn / Color", id)
 		check(#id <= 32, "title ids fit the 32-char SetTitle limit", id)
 	end
-	check(C.TitleDefs.BetaPioneer and has(C.TitleDefs.BetaPioneer.Name, "베타 개척자") and has(C.TitleDefs.BetaPioneer.NameEn, "Beta Pioneer"),
-		"BetaPioneer = 베타 개척자 / Beta Pioneer", show(C.TitleDefs.BetaPioneer))
+	check(C.TitleDefs.BetaPioneer and has(C.TitleDefs.BetaPioneer.Name, "Beta Pioneer") and has(C.TitleDefs.BetaPioneer.NameEn, "Beta Pioneer"),
+		"BetaPioneer = Beta Pioneer (Name and NameEn, A23-48)", show(C.TitleDefs.BetaPioneer))
 	check(C.TitleDefs.GrayLegend and C.TitleDefs.GrayLegend.Name == C.Story.GrayLegendTitle,
-		"GrayLegend name = Config.Story.GrayLegendTitle (회색 전설)", show(C.TitleDefs.GrayLegend))
+		"GrayLegend name = Config.Story.GrayLegendTitle (Gray Legend)", show(C.TitleDefs.GrayLegend))
 	check(C.Beta.GrantPioneer == true, "Config.Beta.GrantPioneer = true")
 	check(C.Beta.PioneerUntil == 1797645600 and utcStamp(2026, 12, 19, 2) == C.Beta.PioneerUntil,
 		"PioneerUntil = 1797645600 = 2026-12-19 11:00 KST (02:00 UTC)", show({ C.Beta.PioneerUntil, utcStamp(2026, 12, 19, 2) }))
@@ -880,10 +879,10 @@ runGroup("display-title", function()
 		DT("Halo", 60, 0, 2, 3, "", "Dragon"))
 	check(DT("Halo", 60, 0, 2, 3, "", 5) == C.GetTitle("Halo", 60, 0), "non-string selected falls through")
 	check(DT("Horns", 0, 250, 0, 0, "", "GrayLegend") == C.TitleDefs.GrayLegend.Name, "selected GrayLegend shows without marks")
-	check(DT("Horns", 0, 60, 0, 0) == C.GetTitle("Horns", 0, 60) and DT("Horns", 0, 60, 0, 0) == "군벌",
-		"old 5-argument call = faction rank (군벌 at 60 infamy)", DT("Horns", 0, 60, 0, 0))
+	check(DT("Horns", 0, 60, 0, 0) == C.GetTitle("Horns", 0, 60) and DT("Horns", 0, 60, 0, 0) == "Warlord",
+		"old 5-argument call = faction rank (Warlord at 60 infamy)", DT("Horns", 0, 60, 0, 0))
 	check(DT("Halo", 0, 0, 3, 3, 7, nil) == gray, "non-string session title is ignored")
-	check(DT("None", 0, 0, 0, 0, "", "") == C.Titles.None, "no faction: 모험가")
+	check(DT("None", 0, 0, 0, 0, "", "") == C.Titles.None, "no faction: Adventurer")
 end)
 
 ------------------------------------------------------------------ C3. BetaPioneer grant / no auto-select / old auto-select reset

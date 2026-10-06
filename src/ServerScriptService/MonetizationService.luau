@@ -161,7 +161,7 @@ function MonetizationService.Start()
 			if p.Id == 0 then missing = true end
 		end
 		if missing then
-			print("[MonetizationService] Developer Product ids are 0: buy buttons show '상품 준비 중'. Create 2 Developer Products on create.roblox.com (your game > Monetization > Developer Products) and paste their ids into Config.Products.")
+			print("[MonetizationService] Developer Product ids are 0: buy buttons show 'This item isn't ready yet'. Create 2 Developer Products on create.roblox.com (your game > Monetization > Developer Products) and paste their ids into Config.Products.")
 		end
 	end
 

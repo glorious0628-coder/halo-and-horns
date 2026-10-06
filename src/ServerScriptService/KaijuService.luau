@@ -30,8 +30,8 @@ local GROUND_RAY_LENGTH = 120
 local KAIJU_CAMERA_ZOOM = 60 -- A12: "kaiju may use 60 while transformed, then restore"
 -- candidates for Config.Kaiju (G1): survive bonus cap in minutes of Config.HuntValue at the kaiju's level
 local SURVIVE_BONUS_MINUTES = 20
-local TXT_SURVIVE_CAPPED = "살아남았다! 주머니 골드 + 보너스(최대치) = %s골드가 금고로!"
-local TXT_SURVIVE_UNCONTESTED = "살아남았다! 아무도 막지 않아 보너스 없이 %s골드만 금고로."
+local TXT_SURVIVE_CAPPED = "You survived! Pouch gold + bonus (max) = %s gold to your vault!"
+local TXT_SURVIVE_UNCONTESTED = "You survived! Nobody fought you, so only %s gold goes to your vault (no bonus)."
 
 local KaijuService = {}
 KaijuService.KaijuStarted = Util.Signal.new() -- (player)
@@ -783,7 +783,7 @@ function KaijuService.HandleKaijuDeath(victim, killer, leaving)
 			Net.NotifyAll(string.format(Config.Story.KaijuDefeated, name, Util.FormatNumber(paid)))
 		else
 			-- CR-L19: nobody was paid -> no "보상 N골드" line
-			Net.NotifyAll(string.format(Config.Story.KaijuDefeatedNoReward or "괴수 %s이(가) 쓰러졌어요.", name))
+			Net.NotifyAll(string.format(Config.Story.KaijuDefeatedNoReward or "The Kaiju %s was defeated.", name))
 		end
 	end)
 	if not okSend then warnThrottled("send", "defeat broadcast failed: " .. tostring(sendErr)) end

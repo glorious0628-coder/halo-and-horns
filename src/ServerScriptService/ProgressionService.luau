@@ -384,7 +384,7 @@ function M.TryRebirth(player, factionId)
 	end
 	-- CR-L9: the guild has no bully stacks, so becoming Neutral would wipe them; wait until they decay
 	if factionId == "Neutral" and bullyStacks(player) > 0 then
-		return false, string.format(Config.Text.BlockedBully or "깡패 단계가 모두 풀린 뒤에 장인 길드로 갈 수 있어요.")
+		return false, string.format(Config.Text.BlockedBully or "You can join the Artisan Guild after all your bully levels are gone.")
 	end
 
 	local old = getFaction(player)

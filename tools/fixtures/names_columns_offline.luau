@@ -5,12 +5,19 @@
 -- PvPService, GrudgeService, ProgressionService, GooseService and KaijuService).
 
 local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+-- A23-48: the shipped English Honorific is "" (checked in public-name). Here a visible marker stands in for it, in this
+-- copy and in every world below, so the honorific flag plumbing (PublicName(p, true), the publicName helpers) stays
+-- observable to the checks and the mutations.
+local SHIPPED_HONORIFIC = C.Announce.Text.Honorific
+local MARK = "~h"
+C.Announce.Text.Honorific = MARK
 local T = C.Announce.Text
 local HALO, HORNS, NEUTRAL = C.Factions.Halo.Name, C.Factions.Horns.Name, C.Factions.Neutral.Name
 
 -- a server world with the real AnnounceService and a PlayerService double (data rows per player)
 local function announceWorld(opts)
 	opts = opts or {}
+	opts.EditConfig = opts.EditConfig or function(config) config.Announce.Text.Honorific = MARK end
 	local w = newWorld(opts)
 	local data = {}
 	w.Data = data
@@ -72,14 +79,15 @@ runGroup("public-name", function()
 	local hiddenNone = w:Player(5, "None", "숨은새내기", true)
 	local noNick = w:Player(6, "Horns", nil, false)
 	check(PN(shown) == "용감한기사", "shown: the verified game nickname", PN(shown))
-	check(PN(shown, true) == "용감한기사" .. T.Honorific, "shown + honorific: nickname .. Text.Honorific (\"님\")", PN(shown, true))
+	check(SHIPPED_HONORIFIC == "", "the shipped Text.Honorific is \"\" (English lines add nothing after a name)", SHIPPED_HONORIFIC)
+	check(PN(shown, true) == "용감한기사" .. T.Honorific, "shown + honorific: nickname .. Text.Honorific", PN(shown, true))
 	check(PN(noNick) == "P6", "no verified nickname: the Roblox DisplayName (Util.PlayerDisplayName)", PN(noNick))
-	check(PN(hiddenHalo) == string.format(T.HiddenName, HALO) and PN(hiddenHalo) == "빛의 기사단 한 명",
-		"hidden Halo: \"빛의 기사단 한 명\" (contract text)", PN(hiddenHalo))
-	check(PN(hiddenHalo, true) == string.format(T.HiddenName, HALO), "hidden + honorific: no \"님\" after \"한 명\"", PN(hiddenHalo, true))
-	check(PN(hiddenHorns) == string.format(T.HiddenName, HORNS), "hidden Horns: \"뿔 군단 한 명\"", PN(hiddenHorns))
-	check(PN(hiddenNeutral) == string.format(T.HiddenName, NEUTRAL), "hidden Neutral: \"장인 길드 한 명\"", PN(hiddenNeutral))
-	check(PN(hiddenNone) == T.Someone, "hidden without a faction: Text.Someone (\"누군가\")", PN(hiddenNone))
+	check(PN(hiddenHalo) == string.format(T.HiddenName, HALO) and PN(hiddenHalo) == "A member of the Knights of Light",
+		"hidden Halo: \"A member of the Knights of Light\" (contract text)", PN(hiddenHalo))
+	check(PN(hiddenHalo, true) == string.format(T.HiddenName, HALO), "hidden + honorific: nothing added after the hidden name", PN(hiddenHalo, true))
+	check(PN(hiddenHorns) == string.format(T.HiddenName, HORNS), "hidden Horns: \"A member of the Horn Legion\"", PN(hiddenHorns))
+	check(PN(hiddenNeutral) == string.format(T.HiddenName, NEUTRAL), "hidden Neutral: \"A member of the Artisan Guild\"", PN(hiddenNeutral))
+	check(PN(hiddenNone) == T.Someone, "hidden without a faction: Text.Someone (\"Someone\")", PN(hiddenNone))
 	for _, p in { hiddenHalo, hiddenHorns, hiddenNeutral, hiddenNone } do
 		check(not has(PN(p, true), p:GetAttribute("Nickname")) and not has(PN(p), p.DisplayName),
 			"a hidden name never contains the nickname or the Roblox name", PN(p))
@@ -94,9 +102,10 @@ runGroup("public-name", function()
 	check(PN(nil) == "" and PN({}) == "" and PN("P1") == "", "not a Player: \"\"")
 	check(type(T.HiddenNameEn) == "string" and type(T.SomeoneEn) == "string" and type(T.SettingLabelEn) == "string"
 		and #T.SettingNotes == 2 and #T.SettingNotesEn == 2, "Config.Announce.Text keeps KO/EN pairs for the new lines")
-	check(T.SettingLabel == "알림·랭킹에 내 이름 숨기기", "setting label '알림·랭킹에 내 이름 숨기기'", T.SettingLabel)
-	check(has(T.SettingNotes[1], "이름표") and has(T.SettingNotes[1], "Tab") and has(T.SettingNotes[2], "한 명"),
-		"setting notes: nametags/Tab cannot be hidden; global rankings show '<진영> 한 명' when hidden")
+	check(T.SettingLabel == "Hide my name in announcements and rankings", "setting label 'Hide my name in announcements and rankings'",
+		T.SettingLabel)
+	check(has(T.SettingNotes[1], "Nametags") and has(T.SettingNotes[1], "Tab") and has(T.SettingNotes[2], "A member of the"),
+		"setting notes: nametags/Tab cannot be hidden; global rankings show 'A member of the <side>' when hidden")
 	-- the chat announce payload (who) still hides the same players
 	w.Announce.Announce(hiddenHalo, "FirstMax", { Weapon = 3 }, "Rare")
 	local last = w.Fired[#w.Fired]
@@ -110,23 +119,24 @@ runGroup("announce-lines", function()
 	local shown = w:Player(1, "Halo", "용감한기사", false)
 	local hidden = w:Player(2, "Horns", "숨은뿔", true)
 	local lines = {
-		{ "MostWanted", "%s이 최고", { "1,200" } },
-		{ "BountyAnnounce", "%s이 현상금", { "300" } },
-		{ "GrudgeAvengedAll", "%s이 %s의", nil },
-		{ "RebirthAnnounce", "%s이 ", { 2 } },
-		{ "RareAnnounce", "%s이 황금", nil },
+		{ "MostWanted", "%s is now the Most Wanted", { "1,200" } },
+		{ "BountyAnnounce", "] %s got a", { "300" } },
+		{ "GrudgeAvengedAll", "%s took the grudge sack back from %s", nil },
+		{ "RebirthAnnounce", "%s was reborn", { 2 } },
+		{ "RareAnnounce", "%s got a rare", nil },
 	}
 	for _, l in lines do
 		local key, args = l[1], l[3] or {}
 		local fmt = C.Text[key]
-		check(type(fmt) == "string" and has(fmt, l[2]), key .. " uses the particle-free \"%s이\" form", fmt)
-		check(not has(fmt, "님이") and not has(fmt, "이(가)"), key .. " has no \"님이\" / \"이(가)\" left", fmt)
+		check(type(fmt) == "string" and has(fmt, l[2]), key .. " reads with the name as the subject (English)", fmt)
+		check(not has(fmt, "님") and not has(fmt, "이(가)"), key .. " has no Korean honorific / particle left", fmt)
 		local a = key == "GrudgeAvengedAll" and { PN(shown, true), PN(hidden, true) } or { PN(shown, true), table.unpack(args) }
 		local b = key == "GrudgeAvengedAll" and { PN(hidden, true), PN(shown, true) } or { PN(hidden, true), table.unpack(args) }
 		local ta, tb = string.format(fmt, table.unpack(a)), string.format(fmt, table.unpack(b))
-		check(has(ta, "용감한기사님이") and has(tb, string.format(T.HiddenName, HORNS) .. "이"),
-			key .. ": \"OO님이 …\" shown, \"뿔 군단 한 명이 …\" hidden", ta .. " / " .. tb)
-		check(not has(tb, "숨은뿔") and not has(ta .. tb, "님님") and not has(tb, "명님"), key .. ": no leaked name, no doubled honorific", tb)
+		check(has(ta, "용감한기사" .. T.Honorific .. " ") and has(tb, string.format(T.HiddenName, HORNS) .. " "),
+			key .. ": 'OO …' shown (with the honorific flag), 'A member of the Horn Legion …' hidden", ta .. " / " .. tb)
+		check(not has(tb, "숨은뿔") and not has(ta .. tb, T.Honorific .. T.Honorific) and not has(tb, HORNS .. T.Honorific),
+			key .. ": no leaked name, no doubled honorific", tb)
 	end
 end)
 
@@ -188,19 +198,19 @@ runGroup("pvp-lines", function()
 	local from = #w.All
 	w.PvP.DebugSetStars(hiddenVillain, C.PvP.AnnounceStars)
 	local line = (w.All[from + 1] or {}).Text
-	check(line ~= nil and has(line, string.format(T.HiddenName, HORNS) .. "이") and not has(line, "숨은악당"),
-		"Most Wanted line names a hidden villain \"뿔 군단 한 명이\"", line)
+	check(line ~= nil and has(line, string.format(T.HiddenName, HORNS) .. " is now") and not has(line, "숨은악당"),
+		"Most Wanted line names a hidden villain 'A member of the Horn Legion'", line)
 	w.PvP.DebugSetStars(shownVillain, C.PvP.AnnounceStars)
 	line = (w.All[from + 2] or {}).Text
-	check(line ~= nil and has(line, "보이는악당" .. T.Honorific .. "이"), "Most Wanted line names a shown villain \"OO님이\"", line)
+	check(line ~= nil and has(line, "보이는악당" .. T.Honorific .. " is now"), "Most Wanted line names a shown villain by nickname", line)
 	-- board: refreshed by Start's first update and by the loop; run the loop body's board step through Start again
 	w.PvP.Start()
 	local board = w.Label.Text
 	-- (the weekly board rows come from RankingService.ServerTop: checked in tools/test_ranking.py "board")
 	check(has(board, "보이는악당"), "town board's wanted line shows a shown player by nickname", board)
 	check(not has(board, "숨은악당") and not has(board, "숨은영웅"), "town board never shows a hidden nickname", board)
-	check(has(board, string.format(T.HiddenName, HORNS)), "town board's wanted line shows a hidden player as \"<진영> 한 명\"", board)
-	check(not has(board, T.Honorific .. " "), "board rows carry no honorific", board)
+	check(has(board, string.format(T.HiddenName, HORNS)), "town board's wanted line shows a hidden player as 'A member of the <side>'", board)
+	check(not has(board, T.Honorific), "board rows carry no honorific", board)
 end)
 
 ------------------------------------------------------------------ 5. SetAnnounceName -> RankingService.MarkHideChanged
@@ -257,8 +267,8 @@ runGroup("leaderstats", function()
 	local names = {}
 	for _, c in folder:GetChildren() do table.insert(names, c.Name) end
 	check(table.concat(names, ",") == table.concat({ N.Power, N.Level, N.Rebirths, N.Fame }, ","),
-		"columns in order 전투력, 레벨, 환생, 명성 (creation order = list order)", table.concat(names, ","))
-	check(folder:FindFirstChild(N.Gold) == nil and folder:FindFirstChild("골드") == nil, "no gold column (A23-21)")
+		"columns in order Power, Level, Rebirths, Fame (creation order = list order)", table.concat(names, ","))
+	check(folder:FindFirstChild(N.Gold) == nil and folder:FindFirstChild("Gold") == nil, "no gold column (A23-21)")
 	check(stat(p, N.Power) == C.CombatPower(12, 3, 2), "before JusticeService sets CombatPower: the same formula", stat(p, N.Power))
 	p:SetAttribute("CombatPower", 1234)
 	check(stat(p, N.Power) == 1234, "power = the CombatPower attribute (the HUD number)", stat(p, N.Power))

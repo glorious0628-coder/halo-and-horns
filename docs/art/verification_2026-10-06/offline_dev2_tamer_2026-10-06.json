@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "config",
-      "check": "the artisan Archer is the 펫 조련사 (Halo / Horns keep theirs)",
+      "check": "the artisan Archer is the Pet Tamer (Halo / Horns keep theirs)",
       "pass": 1,
       "fail": 0
     },
@@ -21,55 +21,55 @@
     },
     {
       "group": "config",
-      "check": "tamer weapon 1 = 나뭇가지 지휘봉",
+      "check": "tamer weapon 1 = Twig Baton",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "tamer weapon 2 = 나무 지휘봉",
+      "check": "tamer weapon 2 = Wooden Baton",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "tamer weapon 3 = 철 지휘봉",
+      "check": "tamer weapon 3 = Iron Baton",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "tamer weapon 4 = 숲도둑 황금 지휘봉",
+      "check": "tamer weapon 4 = Goblin Thief's Golden Baton",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "tamer weapon 5 = 옛 왕국 수정 지휘봉",
+      "check": "tamer weapon 5 = Old Kingdom Crystal Baton",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "tamer weapon 6 = 수호령 지휘봉",
+      "check": "tamer weapon 6 = Guardian Spirit Baton",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "tamer weapon 7 = 왕관 조각 지휘봉",
+      "check": "tamer weapon 7 = Crown Shard Baton",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "tamer weapon 8 = 젤리 왕관 지휘봉",
+      "check": "tamer weapon 8 = Jelly Crown Baton",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "Halo Archer keeps the bows; bare hands stay '맨손'",
+      "check": "Halo Archer keeps the bows; bare hands stay 'Bare hands'",
       "pass": 1,
       "fail": 0
     },
@@ -624,7 +624,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the artisan Archer is the 펫 조련사 (Halo / Horns keep theirs)"
+          "config :: the artisan Archer is the Pet Tamer (Halo / Horns keep theirs)"
         ],
         "newFailingCount": 1
       },
@@ -637,7 +637,7 @@
         "newFailingChecks": [
           "combat :: a Halo archer still shoots arrows",
           "combat :: a Halo archer's skill keeps its look",
-          "config :: Halo Archer keeps the bows; bare hands stay '맨손'",
+          "config :: Halo Archer keeps the bows; bare hands stay 'Bare hands'",
           "config :: IsTamer = the Neutral Archer only",
           "config :: T7 / T8 keep the Archer keys, Halo keeps bows, bare hands no icon",
           "config :: a Halo archer: punch bare-handed, the class row armed"
@@ -667,12 +667,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: tamer weapon 1 = 나뭇가지 지휘봉",
-          "config :: tamer weapon 2 = 나무 지휘봉",
-          "config :: tamer weapon 3 = 철 지휘봉",
-          "config :: tamer weapon 4 = 숲도둑 황금 지휘봉",
-          "config :: tamer weapon 5 = 옛 왕국 수정 지휘봉",
-          "config :: tamer weapon 6 = 수호령 지휘봉"
+          "config :: tamer weapon 1 = Twig Baton",
+          "config :: tamer weapon 2 = Wooden Baton",
+          "config :: tamer weapon 3 = Iron Baton",
+          "config :: tamer weapon 4 = Goblin Thief's Golden Baton",
+          "config :: tamer weapon 5 = Old Kingdom Crystal Baton",
+          "config :: tamer weapon 6 = Guardian Spirit Baton"
         ],
         "newFailingCount": 8
       },
@@ -1109,19 +1109,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "92ef28de499fadb9a20f106727ac528bb1619b6ea10487115c794ffe0eec138e",
+    "src/ReplicatedStorage/Shared/Config.luau": "218edf8800cf3689e2872698a991e4b98cc4d79801a1be5f399ab3a0cf1a760a",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
     "src/ServerScriptService/StoryQuestService.luau": "19f046c3251bb799230db775a0345b4324fe77301daff3fc89506eb3f7402c68",
     "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
     "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
-    "src/ServerScriptService/DataService.luau": "ecb89ed97364e80337e4d194f01c5b11e7ac31515fee767457b72f55318e0e6a",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
-    "src/ServerScriptService/CharacterVisuals.luau": "c757f55faf2773a81935f5d3e50390b7bf0fdc544ed56ad4e92e543034b72385",
+    "src/ServerScriptService/CharacterVisuals.luau": "bf34c6cae54d9e56ca82dcb5d6906de0fa9e089f352dfa4d540a010d742c50b1",
     "src/ServerScriptService/PetService.luau": "2390c8f1cca79a370fcb67d37214635ac1d2585bc5bd8f178b4f4b4bc79b8290"
   },
-  "fixtureSHA256": "d879fe90d4ca3fd20da1cebaeda11b43b78f99effe1a253c59eda013a75541bf",
+  "fixtureSHA256": "86c38e3c4abfc0ac3876275b1133f46931e73435d840d276537f03248a491a8b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

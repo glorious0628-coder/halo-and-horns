@@ -21,7 +21,7 @@ local Util = require(ReplicatedStorage.Shared.Util)
 local Net = require(ReplicatedStorage.Shared.Net)
 
 local TAG = "GooseService"
-local GOOSE_LABEL = "황금 거위" -- billboard text required verbatim by TECH_SPEC §4.16
+local GOOSE_LABEL = "Golden Goose" -- billboard text (TECH_SPEC §4.16; English since A23-48)
 local CUSTOM_FOLDER = (Config.CustomModels and Config.CustomModels.FolderName) or "CustomModels" -- A1
 local CUSTOM_ID = (Config.CustomModels and Config.CustomModels.GooseId) or "GoldenGoose" -- A1
 -- review fix (anti-AFK): rewards (and GooseFinished participation) need this many ACCEPTED manual counts this event;

@@ -30,7 +30,7 @@ C, CO, PE, V = "CONFIG_SOURCE", "COMBAT_SOURCE", "PET_SOURCE", "VISUALS_SOURCE"
 
 MUTATIONS = [
     # --- Config: names, the tamer test, weapons, the attack profile, the class card
-    ("the artisan Archer is still the hunter", C, 'Neutral = "펫 조련사", None = "궁수" },', 'Neutral = "사냥꾼", None = "궁수" },'),
+    ("the artisan Archer is still the hunter", C, 'Neutral = "Pet Tamer", None = "Archer" },', 'Neutral = "Hunter", None = "Archer" },'),
     ("IsTamer ignores the faction", C, "return T ~= nil and classId == T.Class and factionId == T.Faction",
      "return T ~= nil and classId == T.Class"),
     ("IsTamer never true", C, "return T ~= nil and classId == T.Class and factionId == T.Faction", "return false"),

@@ -311,18 +311,18 @@ end
 -- 3 goblin slots in the GoblinWoods (woods numbers, counted as goblins); the HauntedHollow = the ghost family (minions in
 -- packs, little ghosts at woods numbers, the ghost king with the pumpkin king's rules). A23-27: the kings' reward rule.
 local SPEC = {
-	PumpkinSlime = { Name = "호박 슬라임", Short = "호박 슬라임", Zone = PATCH, Count = 10, HP = 14, Damage = 2, XP = 6, Gold = 4,
+	PumpkinSlime = { Name = "Pumpkin Slime", Short = "Pumpkin Slime", Zone = PATCH, Count = 10, HP = 14, Damage = 2, XP = 6, Gold = 4,
 		Speed = 10, Shape = "Slime", Scale = 1.1, Color = { 255, 150, 40 }, QuestAs = "Slime" },
-	BatGoblin = { Name = "박쥐 고블린", Short = "박쥐 고블린", Zone = "GoblinWoods", Count = 3, HP = 95, Damage = 6, XP = 30, Gold = 17,
+	BatGoblin = { Name = "Bat Goblin", Short = "Bat Goblin", Zone = "GoblinWoods", Count = 3, HP = 95, Damage = 6, XP = 30, Gold = 17,
 		Speed = 12, Shape = "Humanoid", Scale = 1.0, Color = { 120, 80, 150 }, QuestAs = "Goblin", Takes = { Goblin = 3 } },
-	GhostMinion = { Name = "똘마니 유령", Short = "똘마니 유령", Zone = HOLLOW, Count = 8, HP = 40, Damage = 3, XP = 13, Gold = 7,
+	GhostMinion = { Name = "Ghost Minion", Short = "Ghost Minion", Zone = HOLLOW, Count = 8, HP = 40, Damage = 3, XP = 13, Gold = 7,
 		Speed = 12, Shape = "Humanoid", Scale = 0.6, Color = { 190, 220, 255 }, Float = 1.2 },
-	LittleGhost = { Name = "꼬마 유령", Short = "꼬마 유령", Zone = HOLLOW, Count = 4, HP = 70, Damage = 5, XP = 24, Gold = 14,
+	LittleGhost = { Name = "Little Ghost", Short = "Little Ghost", Zone = HOLLOW, Count = 4, HP = 70, Damage = 5, XP = 24, Gold = 14,
 		Speed = 11, Shape = "Humanoid", Scale = 1.0, Color = { 220, 215, 255 }, Float = 1.5 },
-	PumpkinKing = { Name = "호박 대왕", Short = "호박 대왕", Zone = PATCH, Count = 0, Boss = true, Shape = "Slime", Scale = 2.5,
+	PumpkinKing = { Name = "Pumpkin King", Short = "Pumpkin King", Zone = PATCH, Count = 0, Boss = true, Shape = "Slime", Scale = 2.5,
 		Color = { 255, 130, 30 }, Damage = 8, Speed = 7, XP = 300, Gold = 150, HP = 9000, ContributorWindow = 120,
 		RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8 },
-	GhostKing = { Name = "유령 왕", Short = "유령 왕", Zone = HOLLOW, Count = 0, Boss = true, Shape = "Humanoid", Scale = 1.8,
+	GhostKing = { Name = "Ghost King", Short = "Ghost King", Zone = HOLLOW, Count = 0, Boss = true, Shape = "Humanoid", Scale = 1.8,
 		Color = { 200, 190, 255 }, Damage = 8, Speed = 7, XP = 300, Gold = 150, HP = 9000, ContributorWindow = 120,
 		RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, Float = 2.2 },
 }
@@ -573,17 +573,20 @@ runGroup("config-halloween", function()
 	for _, key in { "HudNext", "HudActive", "GhostHudNext", "GhostHudActive" } do
 		local ko, en = T[key], T[key .. "En"]
 		check(type(ko) == "string" and select(2, string.gsub(ko, "%%s", "")) == 1, "HUD line has exactly one %s (m:ss)", key .. " " .. tostring(ko))
-		check(type(en) == "string" and en ~= ko and select(2, string.gsub(en, "%%s", "")) == 1 and not string.find(en, "[\128-\255]"),
-			"HUD line has a plain English twin (" .. key .. "En)", tostring(en))
+		check(type(en) == "string" and en == ko and select(2, string.gsub(en, "%%s", "")) == 1 and not string.find(en, "[\128-\255]"),
+			"HUD line and its twin are the same plain English (A23-48, " .. key .. "En)", tostring(en))
 	end
-	check(T.HudNext and string.find(T.HudNext, "호박 대왕까지", 1, true) == 1, "HudNext reads '호박 대왕까지 m:ss'", tostring(T.HudNext))
-	check(T.HudActive and string.find(T.HudActive, "호박 대왕 출현! 남은 시간", 1, true) == 1, "HudActive reads '호박 대왕 출현! 남은 시간 m:ss'",
+	check(T.HudNext and string.find(T.HudNext, "Pumpkin King in", 1, true) == 1, "HudNext reads 'Pumpkin King in m:ss'", tostring(T.HudNext))
+	check(T.HudActive and string.find(T.HudActive, "Pumpkin King is here!", 1, true) == 1, "HudActive reads 'Pumpkin King is here! m:ss left'",
 		tostring(T.HudActive))
 	local A = CONFIG.Announce
-	local want = { PumpkinKingAppear = "호박 대왕이 호박밭에 나타났어요! 함께 잡아요!", -- A23-30: the king appears in the PumpkinPatch PumpkinKingDefeat = "호박 대왕이 사탕을 와르르 쏟았다!",
-		PumpkinKingLeave = "호박 대왕이 사탕 자루를 들고 돌아갔어요. 다음에 또 와요!",
-		GhostKingAppear = "유령 왕이 유령 숲에 나타났어요! 함께 잡아요!", GhostKingDefeat = "유령 왕이 사탕을 우수수 떨어뜨렸어요!",
-		GhostKingLeave = "유령 왕이 스르르 사라졌어요. 다음에 또 만나요!" }
+	local want = { -- A23-48 English lines (A23-30: the king appears in the PumpkinPatch)
+		PumpkinKingAppear = "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+		PumpkinKingDefeat = "The Pumpkin King spilled a pile of candy!",
+		PumpkinKingLeave = "The Pumpkin King went home with its candy sack. See you next time!",
+		GhostKingAppear = "The Ghost King appeared in the Haunted Hollow! Let's beat it together!",
+		GhostKingDefeat = "The Ghost King dropped a shower of candy!",
+		GhostKingLeave = "The Ghost King faded away. See you next time!" }
 	for key, text in want do
 		check(A.Text[key] == text, "server line text = the design line", key .. " " .. tostring(A.Text[key]))
 		local en = A.Text[key .. "En"]
@@ -607,11 +610,11 @@ runGroup("config-halloween", function()
 	-- the PumpkinPatch road sign (MapBuilder; HalloweenService hides it after the season): a place name, not a season
 	-- line, so the P10 'comes back every year' rule does not apply to it
 	local sign, signEn = T.PatchSign, T.PatchSignEn
-	check(type(sign) == "string" and string.find(sign, "호박밭", 1, true) ~= nil, "Config.Halloween.Text.PatchSign names the 호박밭", tostring(sign))
+	check(type(sign) == "string" and string.find(sign, "Pumpkin Patch", 1, true) ~= nil, "Config.Halloween.Text.PatchSign names the Pumpkin Patch", tostring(sign))
 	local hangulEn = false
 	for _, cp in utf8.codes(tostring(signEn or "")) do if cp >= 0xAC00 and cp <= 0xD7A3 then hangulEn = true end end
-	check(type(signEn) == "string" and signEn ~= "" and signEn ~= sign and not hangulEn and string.find(signEn, "Pumpkin Patch", 1, true) ~= nil,
-		"PatchSignEn is its English twin (no Hangul, 'Pumpkin Patch')", tostring(signEn))
+	check(type(signEn) == "string" and signEn ~= "" and signEn == sign and not hangulEn and string.find(signEn, "Pumpkin Patch", 1, true) ~= nil,
+		"PatchSignEn is the same English line (no Hangul, 'Pumpkin Patch', A23-48)", tostring(signEn))
 	for _, text in { sign, signEn } do
 		local low = string.lower(tostring(text))
 		check(not string.find(low, "핼러윈", 1, true) and not string.find(low, "halloween", 1, true),
@@ -1110,8 +1113,8 @@ end
 runGroup("loot", function()
 	local L = CONFIG.Loot
 	local candy = L.Items.Candy
-	check(candy and candy.Kind == "Material" and candy.Name == "핼러윈 사탕" and candy.Sell == 5 and candy.Color
-		and candy.Color.X == 255 and candy.Color.Y == 140 and candy.Color.Z == 60, "Config.Loot.Items.Candy = material, 핼러윈 사탕, sells for 5",
+	check(candy and candy.Kind == "Material" and candy.Name == "Candy" and candy.Sell == 5 and candy.Color
+		and candy.Color.X == 255 and candy.Color.Y == 140 and candy.Color.Z == 60, "Config.Loot.Items.Candy = material, Candy, sells for 5",
 		show(candy))
 	local pos = table.find(L.Order, "Candy")
 	local lastBase = 0
@@ -2588,14 +2591,14 @@ runGroup("hud", function()
 	gs:SetAttribute("PumpkinKingNextAt", now + 360)
 	gs:SetAttribute("PumpkinKingActive", false)
 	h.KING.update(now)
-	check(h.Chip.Visible == true and h.Text.Text == string.format(T.HudNext, "6:00") and h.Text.Text == "호박 대왕까지 6:00",
-		"countdown line '호박 대왕까지 m:ss'", h.Text.Text)
+	check(h.Chip.Visible == true and h.Text.Text == string.format(T.HudNext, "6:00") and h.Text.Text == "Pumpkin King in 6:00",
+		"countdown line 'Pumpkin King in m:ss'", h.Text.Text)
 	h.KING.update(now + 298.6)
-	check(h.Text.Text == "호박 대왕까지 1:01", "m:ss counts down", h.Text.Text)
+	check(h.Text.Text == "Pumpkin King in 1:01", "m:ss counts down", h.Text.Text)
 	gs:SetAttribute("PumpkinKingActive", true)
 	gs:SetAttribute("PumpkinKingEndsAt", now + 600)
 	h.KING.update(now + 300.8)
-	check(h.Chip.Visible == true and h.Text.Text == "호박 대왕 출현! 남은 시간 4:59", "while it is here: '호박 대왕 출현! 남은 시간 m:ss'", h.Text.Text)
+	check(h.Chip.Visible == true and h.Text.Text == "Pumpkin King is here! 4:59 left", "while it is here: 'Pumpkin King is here! m:ss left'", h.Text.Text)
 	h.H.C.Settings = { Get = function(k) if k == "Lang" then return "en" end return nil end }
 	h.KING.update(now + 300.8)
 	check(h.Text.Text == string.format(T.HudActiveEn, "4:59"), "English setting: English twin while it is here", h.Text.Text)
@@ -2645,6 +2648,9 @@ end)
 -- line moves down: KING.Below -> relayout). Korean and English lines, UIScale 1 and 0.75.
 runGroup("hud-king-placement", function()
 	local config = newConfig()
+	-- A23-48: the shipped lines are English (HudNext == HudNextEn). The "ko" cases keep the old Hangul lines as the wider
+	-- text sample, so the width rules (KING.need, the slot sweep) stay covered for both widths.
+	config.Halloween.Text.HudNext, config.Halloween.Text.HudActive = "호박 대왕까지 %s", "호박 대왕 출현! 남은 시간 %s"
 	local rs = INST.new("ReplicatedStorage")
 	local gs = INST.new("Folder", "GameState")
 	gs.Parent = rs
@@ -2803,14 +2809,14 @@ runGroup("hud-live", function()
 	local w = hwWorld()
 	local hw = hudWorld(w.Config, w.RS)
 	hw.KING.update(w.Now)
-	check(hw.Chip.Visible and hw.Text.Text == "호박 대왕까지 6:00", "live: right after server start '호박 대왕까지 6:00'", hw.Text.Text)
+	check(hw.Chip.Visible and hw.Text.Text == "Pumpkin King in 6:00", "live: right after server start 'Pumpkin King in 6:00'", hw.Text.Text)
 	w:Advance(360)
 	hw.KING.update(w.Now)
-	check(hw.Text.Text == "호박 대왕 출현! 남은 시간 5:00", "live: when it appears '남은 시간 5:00'", hw.Text.Text)
+	check(hw.Text.Text == "Pumpkin King is here! 5:00 left", "live: when it appears '5:00 left'", hw.Text.Text)
 	w.MS.DamageMonster(w:King(), 1e9, w:AddPlayer("Z"))
 	w:Advance(130)
 	hw.KING.update(w.Now)
-	check(hw.Text.Text == "호박 대왕까지 17:50", "live: after the defeat the countdown to the next one (20:00 after it appeared)", hw.Text.Text)
+	check(hw.Text.Text == "Pumpkin King in 17:50", "live: after the defeat the countdown to the next one (20:00 after it appeared)", hw.Text.Text)
 end)
 
 ------------------------------------------------------------------ 10. Fx WOBBLE float (real isSlimeModel + WOBBLE)

@@ -869,7 +869,7 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 	hum.Health = 100
 	hum.Parent = model
 
-	local label = golden and ("황금 " .. def.Name) or def.Name
+	local label = golden and ("Golden " .. def.Name) or def.Name
 	-- def.Float: the client hovers the visual this many studs up (Fx WOBBLE), so the name bar goes up with it
 	local fill = makeBar(root, label, golden, topAboveRoot + 1.6 + math.max(0, tonumber(def.Float) or 0))
 

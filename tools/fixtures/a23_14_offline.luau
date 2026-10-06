@@ -376,7 +376,7 @@ runGroup("dailies-generate", function()
 					elseif q.Id == "Release" then
 						check(inList(newbieRows("Release")[1].Targets, q.Target) and q.Text == string.format(t.Text, q.Target),
 							"skill row: 3-5 monster hits, template text", show({ q.Target, q.Text }))
-						check(string.find(q.Text, "몬스터", 1, true) ~= nil, "skill row text says the skill must hit a monster", q.Text)
+						check(string.find(q.Text, "monster", 1, true) ~= nil, "skill row text says the skill must hit a monster", q.Text)
 					elseif q.Id == "Gold" then
 						check(inList(newbieRows("Gold")[1].Targets, q.Target) and q.Text == string.format(t.Text, tostring(q.Target)),
 							"gold row: 40-60 hunting gold, template text", show({ q.Target, q.Text }))

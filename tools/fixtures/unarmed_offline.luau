@@ -50,9 +50,9 @@ runGroup("config", function()
 	} do
 		check(C.BestUsableWeapon(case[1], case[2]) == case[3], "BestUsableWeapon: " .. case[4], C.BestUsableWeapon(case[1], case[2]))
 	end
-	check(C.WeaponName(0, "Mage", "Halo") == C.Text.BareHands and C.Text.BareHands == "맨손", "WeaponName(0) = 맨손",
+	check(C.WeaponName(0, "Mage", "Halo") == C.Text.BareHands and C.Text.BareHands == "Bare hands", "WeaponName(0) = Bare hands",
 		C.WeaponName(0, "Mage", "Halo"))
-	check(C.WeaponName(1, "Warrior", "Halo") == "나뭇가지", "WeaponName(1) unchanged")
+	check(C.WeaponName(1, "Warrior", "Halo") == "Twig", "WeaponName(1) unchanged")
 	check(C.WeaponArtKey(0, "Mage", "Halo") == nil and C.WeaponArtKey(1, "Mage", "Halo") == "Weapon_Mage_T1",
 		"WeaponArtKey: bare hands have no icon (nil), T1 keeps its key", tostring(C.WeaponArtKey(0, "Mage", "Halo")))
 	-- the punch profile
@@ -90,9 +90,9 @@ runGroup("config", function()
 	} do
 		check(same(pair[1][pair[2]], pair[1][pair[2] .. "En"]), "text " .. pair[2] .. " has KO + EN with the same placeholders")
 	end
-	check(not has(C.Tutorial.Text.Claimed, "장비를 살펴") and has(C.Tutorial.Text.Claimed, "첫 무기"),
+	check(not has(C.Tutorial.Text.Claimed, "Check the gear") and has(C.Tutorial.Text.Claimed, "first weapon"),
 		"first-mission line points to the free first weapon")
-	check(C.WeaponInfo[1].Source ~= "처음부터 가진 무기" and has(C.WeaponInfo[1].Source, "대장장이"),
+	check(C.WeaponInfo[1].Source ~= "처음부터 가진 무기" and has(C.WeaponInfo[1].Source, "Blacksmith"),
 		"tier 1 source = the blacksmith's gift", C.WeaponInfo[1].Source)
 end)
 
@@ -401,7 +401,7 @@ runGroup("gift", function()
 	w.Story.Refresh(p)
 	w:Flush()
 	local list = notices(w, p, n0)
-	local line = string.format(C0.Loot.Text.FirstWeapon, "나뭇가지", "12", "300")
+	local line = string.format(C0.Loot.Text.FirstWeapon, "Twig", "12", "300")
 	check(d.WeaponOwnedMask == 1 and d.WeaponTier == 1 and p:GetAttribute("WeaponTier") == 1 and d.Story.Done.M1_1 == true,
 		"(a) M1_1 done: tier 1 owned and equipped", show({ d.WeaponOwnedMask, d.WeaponTier }))
 	check(p:GetAttribute("WeaponOwnedMask") == 1, "(a) the ownership attribute follows (item list / telemetry read it)",
@@ -410,7 +410,7 @@ runGroup("gift", function()
 		show({ d.WeaponSeq and d.WeaponSeq[1], d.ItemSeqNext }))
 	local iFinish = indexOf(list, C0.StoryQuests.Defs.M1_1.Finish)
 	local iWeapon = indexOf(list, line)
-	check(iWeapon ~= nil, "(a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)", show(list))
+	check(iWeapon ~= nil, "(a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)", show(list))
 	check(iFinish ~= nil and iWeapon ~= nil and iFinish < iWeapon, "(a) the weapon line comes after the blacksmith's line")
 	check(#w:FxOf("Upgrade", fx0) == 1 and w:FxOf("Upgrade", fx0)[1].Data.Tier == 1, "(a) the equip Fx (Upgrade, Tier 1)")
 	check(w.Justice.GetCombatPower(p) == 300, "(a) power attribute source: Lv2 T1 = 300", w.Justice.GetCombatPower(p))
@@ -423,7 +423,7 @@ runGroup("gift", function()
 	w.PS.PlayerReady:Fire(p, d) -- the join safety net
 	w:Flush()
 	local again = notices(w, p, n1)
-	check(indexOf(again, line) == nil and indexOf(again, string.format(C0.Loot.Text.FirstWeaponBag, "나뭇가지")) == nil,
+	check(indexOf(again, line) == nil and indexOf(again, string.format(C0.Loot.Text.FirstWeaponBag, "Twig")) == nil,
 		"(a) no second weapon line (neither the equip line nor the bag line)", show(again))
 	check(d.WeaponOwnedMask == 3 and d.WeaponTier == 2 and d.ItemSeqNext == seqBefore, "(a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
 		show({ d.WeaponOwnedMask, d.WeaponTier, d.ItemSeqNext, seqBefore }))
@@ -442,9 +442,9 @@ runGroup("gift", function()
 	check(q:GetAttribute("WeaponOwnedMask") == 3 and e.WeaponSeq[1] > e.WeaponSeq[2],
 		"(b) the bag line points to a weapon the item list shows (attribute 3, T1 the newest gain)",
 		show({ q:GetAttribute("WeaponOwnedMask"), e.WeaponSeq[1], e.WeaponSeq[2] }))
-	check(indexOf(list2, string.format(C0.Loot.Text.FirstWeaponBag, "나뭇가지")) ~= nil, "(b) the bag line", show(list2))
+	check(indexOf(list2, string.format(C0.Loot.Text.FirstWeaponBag, "Twig")) ~= nil, "(b) the bag line", show(list2))
 	for _, t in list2 do
-		check(not has(t, "전투력"), "(b) no power line when the gift is not equipped", t)
+		check(not has(t, "Power "), "(b) no power line when the gift is not equipped", t)
 	end
 
 	-- (c) a save from before A23-34 (owns T1) finishing M1_1: nothing, no line
@@ -457,7 +457,7 @@ runGroup("gift", function()
 	local list3 = notices(w3, r, k0)
 	check(f.Story.Done.M1_1 == true and f.WeaponOwnedMask == 1 and f.WeaponTier == 1, "(c) legacy save: M1_1 done, nothing added")
 	for _, t in list3 do
-		check(not has(t, "첫 무기") and not has(t, "챙겨"), "(c) no gift line for a save that owns T1", t)
+		check(not has(t, "first weapon") and not has(t, "also gave you"), "(c) no gift line for a save that owns T1", t)
 	end
 
 	-- (d) the join safety net: M1_1 finished but the gift never arrived
@@ -476,8 +476,8 @@ runGroup("gift", function()
 	local j0 = #w5.Notices
 	w5.PS.SetStat(t5, "BlacksmithVisited", true)
 	w5.Story.Refresh(t5)
-	check(indexOf(notices(w5, t5, j0), string.format(C0.Loot.Text.FirstWeapon, "마른 지팡이", "0", "283")) ~= nil,
-		"(e) Lv1 Mage: '첫 무기 [마른 지팡이]를 받았어요! 전투력 0 → 283'", show(notices(w5, t5, j0)))
+	check(indexOf(notices(w5, t5, j0), string.format(C0.Loot.Text.FirstWeapon, "Dry Staff", "0", "283")) ~= nil,
+		"(e) Lv1 Mage: 'You got your first weapon, [Dry Staff]! Power 0 → 283'", show(notices(w5, t5, j0)))
 	check(h.WeaponTier == 1, "(e) equipped")
 	-- (f) paid by an earlier PlayerReady handler (StoryQuestService starts before LootService): still noted once
 	local w6 = bareWorld()
@@ -545,7 +545,7 @@ runGroup("drops", function()
 	w6.PS.SetStat(u, "BlacksmithVisited", true)
 	w6.Story.Refresh(u)
 	for _, x in notices(w6, u, i1) do
-		check(not has(x, "첫 무기") and not has(x, "챙겨"), "a later M1_1 adds no gift line", x)
+		check(not has(x, "first weapon") and not has(x, "also gave you"), "a later M1_1 adds no gift line", x)
 	end
 	check(g.WeaponOwnedMask == 5, "a later M1_1 adds nothing", g.WeaponOwnedMask)
 	-- the Studio reset aid: 0 = a new bare-handed player

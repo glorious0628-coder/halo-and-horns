@@ -197,7 +197,7 @@ do
 	local f = fixture(); f:Choose(); f:Publish()
 	check(f.LastList[1].Pinned and f.LastList[1].TutorialStep == 0, "class choice bypassed welcome acceptance")
 	check(#f.Panels == 1 and f.Panels[1] == "Welcome", "class choice did not open the guide")
-	check(string.find(f.LastList[1].Text, "안내자") ~= nil, "pending guide is not discoverable")
+	check(string.find(f.LastList[1].Text, "Guide") ~= nil, "pending guide is not discoverable")
 	f:Publish(); f.Services.PlayerService.CharacterSpawned:Fire(f.Player)
 	for _, fn in f.Delayed do fn() end; f:Publish()
 	check(#f.Panels == 1 and f.Data.TutorialStep == 0, "closed welcome auto-reopened/accepted")
@@ -250,7 +250,7 @@ for _, count in { 4, 5 } do
 		check(f.Data.BankGold == before + reward and f.Data.TutorialStep == 99, "completed reward missing")
 		f:Claim(); check(f.Data.BankGold == before + reward, "duplicate request paid twice")
 		f:Rejoin(); f:Claim(); check(f.Data.BankGold == before + reward, "claimed reward paid again after reconnect")
-		check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "대장간") ~= nil, "blacksmith followup missing")
+		check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "Forge") ~= nil, "blacksmith followup missing")
 	end
 end
 -- A23-34: an anvil visit before the claim does not count for M1_1 (the first weapon waits for a visit with the jelly)
@@ -359,7 +359,7 @@ do
 	local f = fixture(saved(99, 5)); f:Publish(); check(f.LastList[1].CanClaim == false, "post-reward hint is claimable")
 	f.Services.PlayerService.SetStat(f.Player, "WeaponTier", 2)
 	f.Services.PlayerService.SetStat(f.Player, "WeaponOwnedMask", 3); f:Publish()
-	check(string.find(f.LastList[1].Text, "대장간") ~= nil, "weapon tier incorrectly replaced the actual visit condition")
+	check(string.find(f.LastList[1].Text, "Forge") ~= nil, "weapon tier incorrectly replaced the actual visit condition")
 	f.Services.PlayerService.SetStat(f.Player, "WeaponTier", 1)
 	f.Services.PlayerService.SetStat(f.Player, "BlacksmithVisited", true); f:Publish()
 	-- A23-3: after the visit the pinned row stays as one next-goal line computed from existing state (no reward).
@@ -427,7 +427,7 @@ for _, kind in { "Daily", "Extra" } do
 	check(releaseTemplate ~= nil and releaseTemplate.MinStacks == nil, "new skill quest retains old charge requirement")
 	-- A23-1 wording: the template says the skill must hit a monster; migrated quests must use the same wording.
 	local expectedText = string.format(releaseTemplate.Text, 5)
-	check(string.find(releaseTemplate.Text, "몬스터", 1, true) ~= nil, "skill quest template does not require a monster hit")
+	check(string.find(releaseTemplate.Text, "monster", 1, true) ~= nil, "skill quest template does not require a monster hit")
 	check(q.Id == "Release" and q.Kind == kind and q.MinStacks == nil, kind .. " saved stack threshold survived")
 	check(q.Target == 5 and q.Progress == 1 and not string.find(q.Text, "충전", 1, true),
 		kind .. " migration changed target/progress or kept old charge wording")
@@ -699,7 +699,7 @@ do
 	check(entry ~= nil and entry.Player == f.Player and entry.Kind == "reward", "F10-4 the auto-claim line is a reward notice to that player")
 	f:Advance(AUTO * 3); f:Claim()
 	check(paidOnce(f, true), "F10-4 the auto-claim pays once (later ticks and a late [받기] pay nothing)" .. state(f))
-	check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "대장간") ~= nil,
+	check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "Forge") ~= nil,
 		"F10-4 after the auto-claim the pinned row moves on to the blacksmith like a manual claim")
 	local record = f:SaveAndRejoin()
 	check(record.TutorialStep == 99 and record.BankGold == f.Config.Tutorial.QuestRewardGold,
