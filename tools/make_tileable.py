@@ -13,6 +13,11 @@ Which mode (checked 2026-10-06 on 100% seam crops):
   - --reseat: round cobbles separated by clear mortar (Tex_Cobblestone). Fails on thin-gap slabs.
   - --grid: regular paving grids and plank rows.
   - --graphcut: tends to cut straight through stones; kept only for experiments.
+  - bark / vertical grain: --search --gap-weight 1 --feather-y 32 (wide blend on the top/bottom wrap so grain
+    lines fade into each other instead of stepping every tile).
+  - --gap-weight 1 (with --prefer-dark 0.3 --search): flagstones/basalt slabs - the cut avoids spots where one
+    strip has a gap and the other has stone (a gap ending mid-slab). "gap breaks" in the report = share of
+    cut rows that still end a gap; keep it near 0 and check the 2x2 seam crop at 100%.
 
 How it works (image-quilting style, no AI):
   1. Horizontal wrap: the right strip (width = overlap) is laid over the left strip. Per row a
@@ -116,7 +121,7 @@ def graphcut_take_a(A, B, dark=0.0, cyclic=False, scale=1000):
     return reach[:h * b].reshape(h, b)
 
 
-def wrap_x(img, b, feather=4, dark=0.0, cyclic=False, graphcut=False):
+def wrap_x(img, b, feather=4, dark=0.0, cyclic=False, graphcut=False, gap=0.0):
     """Returns (wrapped image, quality). Costs are normalised so the colour mismatch between the
     two strips always counts: cost = |A-B| (0..1) + dark * luminance (0..1)."""
     h, w, _ = img.shape
@@ -129,6 +134,16 @@ def wrap_x(img, b, feather=4, dark=0.0, cyclic=False, graphcut=False):
         # a negative weight prefers bright gaps instead (glowing lava cracks)
         lum = (A @ [0.3, 0.59, 0.11] + B @ [0.3, 0.59, 0.11]) / (2 * 255.0)
         cost = cost + (dark * lum if dark > 0 else -dark * (1.0 - lum))
+    # gap continuity (slabs/flagstones/basalt): where one strip has a dark gap and the other has stone,
+    # cutting there ends a gap mid-stone. gx marks those spots; --gap-weight steers the cut away and
+    # quality["gap_breaks"] reports the share of cut rows that still end a gap.
+    lum_all = img @ np.array([0.3, 0.59, 0.11], np.float32)
+    thr = otsu(lum_all.ravel())
+    gA = ndimage.binary_dilation((A @ [0.3, 0.59, 0.11]) < thr, iterations=2)
+    gB = ndimage.binary_dilation((B @ [0.3, 0.59, 0.11]) < thr, iterations=2)
+    gx = (gA ^ gB).astype(np.float32)
+    if gap > 0:
+        cost = cost + gap * gx
     if graphcut:
         # solve at half resolution (4x fewer nodes), then upsample the A/B choice and soften it a little
         a2 = np.asarray(Image.fromarray(A.clip(0, 255).astype(np.uint8)).resize((b // 2, h // 2), Image.BOX)).astype(np.float32)
@@ -162,20 +177,20 @@ def wrap_x(img, b, feather=4, dark=0.0, cyclic=False, graphcut=False):
     step = np.abs(A[rows, lo] - B[rows, hi]).mean(axis=1)
     on_cut = diff[rows, cut] * 255.0
     quality = {"bad_rows": float((on_cut > 40).mean()), "mean_cut_diff": float(on_cut.mean()),
-               "max_step": float(step.max())}
+               "max_step": float(step.max()), "gap_breaks": float(gx[rows, cut].mean())}
     return np.concatenate([band, img[:, b:w - b]], axis=1), quality
 
 
-def wrap_both(img, overlap, dark, g, graphcut=False):
+def wrap_both(img, overlap, dark, g, graphcut=False, gap=0.0, feather=4, feather_y=None):
     q = []
     if "x" not in g:   # horizontal wrap; must stay cyclic when the vertical wrap came from a grid crop
-        img, qx = wrap_x(img, overlap, dark=dark, cyclic="y" in g, graphcut=graphcut)
+        img, qx = wrap_x(img, overlap, feather=feather, dark=dark, cyclic="y" in g, graphcut=graphcut, gap=gap)
         q.append(qx)
     if "y" not in g:
-        t, qy = wrap_x(img.transpose(1, 0, 2), overlap, dark=dark, cyclic=True, graphcut=graphcut)
+        t, qy = wrap_x(img.transpose(1, 0, 2), overlap, feather=feather if feather_y is None else feather_y, dark=dark, cyclic=True, graphcut=graphcut, gap=gap)
         img = t.transpose(1, 0, 2)
         q.append(qy)
-    bad = max([x["bad_rows"] for x in q] or [0.0])
+    bad = max([x["bad_rows"] + x.get("gap_breaks", 0.0) for x in q] or [0.0])
     return img, q, bad
 
 
@@ -378,6 +393,11 @@ def main():
     ap.add_argument("--grid", choices=["x", "y", "xy"], help="regular pattern: crop whole cells along these axes")
     ap.add_argument("--prefer-dark", type=float, default=0.0,
                     help="0..1 weight that pulls the cut into dark gaps (cobbles/planks: 0.3); negative = bright gaps (lava: -0.3)")
+    ap.add_argument("--gap-weight", type=float, default=0.0,
+                    help="slabs/flagstones/basalt: 0.5-2 keeps the cut where both strips agree on gap vs stone, so a gap never ends at the seam")
+    ap.add_argument("--feather", type=int, default=4, help="half-width of the blend across the cut (px)")
+    ap.add_argument("--feather-y", type=int, default=None,
+                    help="blend half-width for the top/bottom wrap only (bark/plank grain: 24-40 hides grain steps)")
     ap.add_argument("--search", action="store_true", help="try overlaps 160/240/320/400 and keep the cleanest cut")
     ap.add_argument("--reseat", action="store_true",
                     help="blob textures (cobbles/flagstones/boulders/lava plates): re-seat whole stones over the seam cross")
@@ -410,9 +430,9 @@ def main():
     overlaps = [args.overlap] if not args.search else sorted({args.overlap, 160, 240, 320, 400})
     best = None
     for ov in overlaps:
-        res, q, bad = wrap_both(img, ov, args.prefer_dark, g, args.graphcut)
+        res, q, bad = wrap_both(img, ov, args.prefer_dark, g, args.graphcut, args.gap_weight, args.feather, args.feather_y)
         if args.search:
-            print(f"  overlap {ov}: bad rows {bad:.1%}")
+            print(f"  overlap {ov}: bad rows + gap breaks {bad:.1%}")
         if best is None or bad < best[2]:
             best = (res, q, bad, ov)
     res, q, bad, ov = best
@@ -421,12 +441,12 @@ def main():
     out = out.resize((args.size, args.size), Image.LANCZOS)
     out.save(args.out)
     after = seam_error(np.asarray(out))
-    qs = "; ".join(f"cut diff {x['mean_cut_diff']:.1f}, rows>40 {x['bad_rows']:.1%}" for x in q)
+    qs = "; ".join(f"cut diff {x['mean_cut_diff']:.1f}, rows>40 {x['bad_rows']:.1%}, gap breaks {x.get('gap_breaks', 0):.1%}" for x in q)
     print(f"{args.out}: {args.size}x{args.size}; overlap {ov}; wrap step before {before[0]:.1f} (inside {before[1]:.1f}) "
           f"-> after {after[0]:.1f} (inside {after[1]:.1f}); {qs or 'grid crop only'}")
     if bad > 0.03:
-        print(f"  WARNING: {bad:.1%} of cut rows cross mismatched colour (>40) - look at the seam crop; "
-              "irregular stones may need a different source or a hand fix")
+        print(f"  WARNING: {bad:.1%} of cut rows cross mismatched colour (>40) or end a gap mid-stone - look at "
+              "the seam crop; irregular stones may need --gap-weight, a different source or a hand fix")
     if args.check:
         check_3x3(out, args.check)
         check_seam(out, args.check.replace(".png", "_seam.png"), band_out)

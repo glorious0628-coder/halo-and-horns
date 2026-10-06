@@ -1154,9 +1154,9 @@
   "original": "art/out/Tex_RuinsFlagstone_FF_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_RuinsFlagstone_FF.png",
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --search (2026-10-06 다시: 정규화한 비용); 3x3 + 100% 2x2 seam crop checked (art/review/tex_seamfix_sheet.png)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --overlap 320 --gap-weight 1 (2026-10-06 3차: 판석 틈 이어짐, gap breaks 2.3%/1.0%); 2x2 100% checked art/review/tex_seamfix2_sheet.png",
   "preview": "art/review/tex_world_A_hunting.png",
-  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Slate 칸 = 해골 폐허 판석·폐허 언덕 아래·길 파트(RoadPass/RoadRuins/RoadSouth)·다리 받침. 3안 중 1(큰 판석+이끼, 차분). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png)."
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Slate 칸 = 해골 폐허 판석·폐허 언덕 아래·길 파트(RoadPass/RoadRuins/RoadSouth)·다리 받침. 3안 중 1(큰 판석+이끼, 차분). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png). 검수 3차(2026-10-06): 이음 띠 틈 끊김/세로 결 끊김 → 다시 만듦(지금 Roblox에 올라간 ID는 옛 판 — 이미지 개발이 다시 올려 교체)."
  },
  "Tex_PumpkinSoil_FF": {
   "status": "picked",
@@ -1202,9 +1202,9 @@
   "original": "art/out/Tex_Basalt_FF_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_Basalt_FF.png",
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --search (2026-10-06 다시); 3x3 + 100% 2x2 seam crop checked (art/review/tex_seamfix_sheet.png)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --overlap 400 --gap-weight 3 (2026-10-06 3차: 이음선에서 틈이 끊기지 않게); 2x2 100% checked art/review/tex_seamfix2_sheet.png",
   "preview": "art/review/tex_world_B_towns.png",
-  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Basalt 칸 = 뿔 소굴 바닥·뿔 언덕·뿔 문 기둥·다리 파트. 3안 중 1(큰 자두숯색 판석 + 얇은 불씨 테). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png)."
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Basalt 칸 = 뿔 소굴 바닥·뿔 언덕·뿔 문 기둥·다리 파트. 3안 중 1(큰 자두숯색 판석 + 얇은 불씨 테). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png). 검수 3차(2026-10-06): 이음 띠 틈 끊김/세로 결 끊김 → 다시 만듦(지금 Roblox에 올라간 ID는 옛 판 — 이미지 개발이 다시 올려 교체)."
  },
  "Tex_CrackedLava_FF": {
   "status": "picked",
@@ -1334,9 +1334,9 @@
   "original": "art/out/Tex_TreeBark_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_TreeBark.png",
   "size": "1024x1024 RGB (불투명, 밝은 무채색 — 파트 Color가 곱해져 색이 됨)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 240 --prefer-dark 20; 3x3 tiled check",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --search --gap-weight 1 --feather-y 24 (2026-10-06 3차: 옛 --prefer-dark 20 대신, 위아래 이음에서 세로 결이 끊기지 않게 넓게 섞음); 2x2 100% checked art/review/tex_seamfix2_sheet.png",
   "preview": "art/review/tree_materials_sheet.png",
-  "note": "나무 재질(검수 요청, 사용자 '배경이랑 몹이 안 어울림'): GE_TreeBark (BaseMaterial Wood, 덮어쓰기 없음 — 나무 Trunk 파트에만). 3안 중 2(곧은 세로 결). 초원·숲·호박밭 나무 색은 파트 Color로(시트에 곱한 모습). 곱하면 평균 밝기가 약 0.75배라 잎 Color를 조금 밝게. UiSandbox 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "note": "나무 재질(검수 요청, 사용자 '배경이랑 몹이 안 어울림'): GE_TreeBark (BaseMaterial Wood, 덮어쓰기 없음 — 나무 Trunk 파트에만). 3안 중 2(곧은 세로 결). 초원·숲·호박밭 나무 색은 파트 Color로(시트에 곱한 모습). 곱하면 평균 밝기가 약 0.75배라 잎 Color를 조금 밝게. UiSandbox 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 3차(2026-10-06): 이음 띠 틈 끊김/세로 결 끊김 → 다시 만듦(지금 Roblox에 올라간 ID는 옛 판 — 이미지 개발이 다시 올려 교체)."
  },
  "FactionCardHalo": {
   "status": "approved",
