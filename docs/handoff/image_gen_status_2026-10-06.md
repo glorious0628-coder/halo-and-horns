@@ -1,27 +1,32 @@
-# 이미지 생성 인계 상태 (2026-10-06 오후, 세계·굵직한 그림 세션)
+# 이미지 생성 인계 상태 (2026-10-06 12:40 KST, 사용자 지시로 중지 — 계정 이동)
 
-- **역할(A23-31):** 이 세션 = 세계·굵직한 그림(지형 타일, 하늘, 나무 재질, 깃발, 사냥터 분위기, 게임 아이콘·썸네일 11b, 출시 장식 18). 작은 그림(진영 화면 묶음 2, UI·아이템·무기·직업/NPC·옷)은 '이미지 생성 2'가 한다. `cutout_flat.py`·`band_mask.py`·`make_tileable.py`는 이 세션만 고친다. approved.json은 고치기 직전에 다시 읽고 내 키만 고친 뒤 바로 경로 지정 커밋.
-- **순서(사용자 2026-10-06):** 작은 디자인은 나중, 세계 구성 그림부터(A23-29). 사냥터마다 맞추기(A23-30).
-- 요령: `docs/design/image_session_handoff_2026-10-06.md`. Firefly는 내장 브라우저 tabId "seed", GPT Image 2.5 Sunburst·중간(크레딧 0 사용). JS 대기열: `window.__T`(문구), `__runQueue(keys, __T)`(진행 원 `sp-progress-circle`이 사라지고 새 blob 그림이 생겨야 다음 장), `__seenBlobs`(화면에 50장까지만 남아서 누적 집계). 생성 버튼을 이전 장이 끝나기 전에 누르면 조용히 버려진다.
-- 다운로드: `asset_search`(GenAIAsset, createDate desc) → 이름(문구 첫머리)으로 내 것만 → `asset_get_presigned_urls` → `curl -sL`. 같은 계정에 이미지 생성 2·다른 게임 생성물이 섞인다.
+- **역할(A23-31·A23-33):** 이 세션 = 세계·굵직한 그림 + **세계 디자인 이끎**(지형 타일, 하늘, 나무 재질, 깃발, 사냥터 콘셉트, 3D 소품 키트, 게임 아이콘·썸네일 11b, 출시 장식 18). 작은 그림은 '이미지 생성 2'. `cutout_flat.py`·`band_mask.py`·`make_tileable.py`는 이 세션만 고친다. approved.json은 고치기 직전에 다시 읽고 내 키만 고친 뒤 바로 경로 지정 커밋.
+- 요령: `docs/design/image_session_handoff_2026-10-06.md`. Firefly = 내장 브라우저 tabId "seed"(이미지 생성 2는 tab-1, 함수 이름 __s2_ 접두어). GPT Image 2.5 Sunburst·중간·쓰고 나면 1:1로 돌려 둠. JS 대기열 `window.__T`(문구)·`__runQueue(keys, __T)`(진행 원이 사라지고 새 blob이 생긴 뒤 다음 장) — **중지하면서 __runQueue를 막아 둠**: 다시 쓰려면 탭을 새로 고치고 함수를 다시 정의. 크레딧 사용 **0**(전부 중간).
+- 다운로드: `asset_search`(GenAIAsset, createDate desc, 문구 첫머리로 내 것만) → `asset_get_presigned_urls` → `curl -sL`.
 
-## 끝 (커밋)
-- 묶음 6 HUD 11장(83cf898) · 묶음 1 마스터(68cd2eb, 빛 전사 B2는 pending-user) · IconNoBuff 다시 자름(3f1716b) · IconGoldGuard(bb6caa8).
-- 땅 타일 첫 4장 Grass·LeafyGrass·DirtPath·Cobblestone `_FF`(c2e9800) → 사용자 E로 확정(A23-30).
-- 세계 바닥 10장(bb6caa8, 재질 표대로): Slate=Tex_RuinsFlagstone_FF, Mud=Tex_PumpkinSoil_FF, Ground, Limestone, Basalt, CrackedLava, Rock, Sand, Marble, WoodPlanks — 상태 picked(이미지 개발 UiSandbox 확인 뒤 확정). 시트 `art/review/tex_world_A_hunting.png`, `tex_world_B_towns.png`.
-- 하늘 Sky_Sun·Sky_SunDawn·Sky_MoonEclipse(512, 완전 검정 바탕, 더해지는 방식) — picked, 실제 하늘에서 확인 필요(작게 보면 해가 흰 꽃처럼 날아감).
-- `tools/make_tileable.py`: 최소 차이 경로 잇기(두 번째 경로 고리 닫힘), `--prefer-dark 20`(돌 틈), `-20`(밝은 용암 틈), `--grid x|y|xy`(격자·널빤지 줄에서 줄까지). 3×3 시트로 확인.
-- 쓰지 않은 후보: `art/out/tex/`(미추적) — 격자 할로 타일·쿨톤 점판암·왕관 조각 땅은 재질 칸이 없어 안 넘김.
+## 끝난 것 (커밋, 모두 push)
+- 묶음 6 HUD 11장 83cf898 · 묶음 1 마스터 68cd2eb(빛 전사 B2 = pending-user, 문구 R15 표현 고침 37fc90a) · IconNoBuff 다시 3f1716b · IconGoldGuard bb6caa8.
+- 땅 타일: 첫 4장 c2e9800(사용자 E 확정) · 재질 칸별 10장 bb6caa8 · 돌·판석 6장 이음 다시 efcdd0a(전·후 `art/review/tex_seamfix_sheet.png`). 이미지 개발이 UiSandbox에 적용(재업로드 요청 보냄).
+- 하늘 해·달 3장: 빛살 없는 원판 37fc90a(첫 판은 흰 데이지처럼 보여 다시). 나무 재질 2장 38a6148. 교차로 깃발 4장 f5ed062(2:3, 파트도 2:3로 — 검수가 게임성 개발에 전달).
+- `tools/make_tileable.py`(efcdd0a): 기본 경로 잇기 + `--prefer-dark 0.3`/`-0.3` + `--search` + `--grid` + `--reseat`(둥근 자갈) + 품질 경고 + 100% 이음 크롭. 모드 고르는 법은 도구 머리말.
+- **A23-33 1단계** 소품 목록 `docs/design/world_kit_2026-10-06.md`(+ .json) 3de8eb5 — 사냥터별 81종.
+- **A23-33 2단계** 사냥터 콘셉트 7장 시트 `art/review/world_concepts_sheet.png`, 고른 안 `art/review/concept/*.jpg` cf207b9(검수 OK, 사용자에게 보냄).
 
-- 나무 재질 Tex_TreeLeaves·Tex_TreeBark(38a6148, 밝은 무채색 — 파트 Color 곱하기, 이름 붙인 변형 GE_TreeLeaves/GE_TreeBark).
-- 교차로 승리 깃발 4장 Banner_*(f5ed062, 683x1024 2:3).
-- 하늘 해·달 다시(37fc90a): 빛살 없는 둥근 원판(빛살은 Roblox 해 렌더에서 흰 데이지처럼 보였음).
-- 돌·판석 바닥 6장 이음 다시(efcdd0a) + make_tileable 고침: 비용 정규화, --search, 품질 경고, 100% 이음 크롭, 둥근 자갈용 --reseat. 모드 고르는 법은 도구 머리말.
+## 받았지만 커밋 안 한 원본 (미추적, 지우지 말 것)
+- `art/out/tex/`(땅 타일 후보 원본 전부), `art/out/sky/`, `art/out/banner/`, `art/out/b6/`, `art/out/concept/`(콘셉트 원본 1536×1024 전부), `art/out/styleboard/`(묶음 1 원본).
+- `art/review/tex/`(타일 3×3·이음 크롭 검사본), `art/review/b6/`, `art/review/b1/`(검사본).
+- `build/WorldKit.rbxlx` = `build/GoodEvil.rbxlx` 복사본(저장 안 함 — 아래 후보는 다시 넣어야 함).
 
-## A23-33 세계 소품 키트 (이 세션이 이끎)
-1. 끝: 소품 목록 `docs/design/world_kit_2026-10-06.md`(+ .json) — 사냥터별 81종(3de8eb5).
-2. 끝: 사냥터 콘셉트 7장 `art/review/world_concepts_sheet.png`, 고른 안 `art/review/concept/*.jpg`(cf207b9). 사용자에게 보냄.
-3. 다음: `build/WorldKit.rbxlx`(복사해 둠, 아직 안 엶)에서 교차로부터 3D — Creator Store(search_asset/insert_asset) → Roblox 생성 → Tripo(크레딧 합계 검수에 먼저). 넣자마자 Script/LocalScript/ModuleScript/원격/프롬프트 삭제, `art/models/worldkit/manifest.json`에 애셋 ID·만든 사람·삼각형 수, 모델은 `art/models/worldkit/*.rbxm`. 모든 Studio 도구에 STUDIO_NAME=WorldKit(메인·UiSandbox 절대 안 건드림). 쓸 때만 열고 닫기.
-4. 게임 아이콘·썸네일(11b)은 10/20 무렵, 높음 품질이면 검수에 먼저.
-- 주의: 파트에 붙은 MaterialVariant는 파트 Color가 ColorMap에 곱해진다 — 길·다리 파트 색이 진하면 타일이 어두워짐(이미지 개발에 알림).
-- Firefly 비율은 쓰고 나면 1:1로 돌려 둔다(깃발 2:3, 콘셉트 3:2 썼음).
+## 다음 할 일 — A23-33 3단계: 교차로 키트
+1. `build/WorldKit.rbxlx`를 세 번째 Studio로 연다(PowerShell `Start-Process RobloxStudioBeta.exe "<path>"`, 모든 Studio 도구에 `STUDIO_NAME=WorldKit`; 메인·UiSandbox 절대 안 건드림). 쓸 때만 열고 닫는다.
+2. Creator Store 후보(무료, 썸네일로 고름) — 12:38에 넣어서 **스크립트 6개·소리 1개를 지웠고 남은 것 0개**까지 확인했지만, 저장 전에 중지라서 다시 넣어야 한다:
+   - 벤치: 10542067814 "Popsicle Stick Bench"(9022oak, 파트 43, 8.7×4.9×2.3, 스크립트 없음) / 16445144129 "Basic Bench"(soreilzy, 파트 13).
+   - 가판대: 4611303753 "FoodStall"(AlexAecid, 파트 46, 메시 10, 그림 5개 — 내용 확인 필요) / 73497372655026 "Lemonade stand"(cosmosVera39, **Script "QualityEnhancer"·LocalScript 들어 있었음 → 지움**, 그림 2개).
+   - 분수: 133107976105207 "Cartoon Fountain Water Splash"(Script LightConfig + ModuleScript 2 → 지움, 그림 10개) / 7070126910 "Fountain(cartoon)"(An0nsoul_Sniperr, Script "Look" → 지움, 메시 19, 그림 8개).
+   - 모루: 83520552281722 "cartoon anvil"(Kafier2312, Script + Sound → 지움, 파트 5) / 94656282871950 "Anvil"(Refregail, 파트 24).
+   - 가로등: 검색 결과가 모두 검은 쇠기둥이라 장난감 느낌 없음 → "cartoon lantern post"·"wooden lamp post" 등으로 다시 찾거나 Roblox 생성 도구로.
+   - 썸네일 시트를 만드는 방법: thumbnails.roblox.com/v1/assets?assetIds=...&size=420x420 → 한 장에 모아 보기.
+3. 넣는 즉시: `ServerStorage.KitStage`에 넣고 Script·LocalScript·ModuleScript·Remote·ProximityPrompt·ClickDetector·Sound를 지운 뒤 0개 확인 → 데칼·그림 내용 확인(글자·로고·이상한 그림) → `art/models/worldkit/manifest.json`에 애셋 ID·만든 사람·파트/삼각형 수·지운 것 기록.
+4. 고른 것을 장난감 색으로 다듬고(바닥 그림·콘셉트 색) 코드 이름 유지(Fountain·Anvil 등, `world_kit` 문서 '이름·기능 유지') → `art/models/worldkit/*.rbxm` 내보내기 → 같은 각도 '지금 vs 키트' 비교 사진 → 검수.
+5. 그다음 빛·뿔 마을 → 초원 → 호박밭 → 숲 → 폐허. Tripo는 마지막, 묶음마다 크레딧 합계를 검수에 먼저.
+- 게임 아이콘·썸네일(11b)은 10/20 무렵, 높음 품질이면 검수에 먼저.
