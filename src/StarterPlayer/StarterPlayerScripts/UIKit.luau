@@ -809,6 +809,32 @@ function UIKit.ArtImage(name, props)
 	return img
 end
 
+-- "내 캐릭터" icon part (BB13 menu, …): attribute CharacterGender "F" -> IconCharacterF, else IconCharacter.
+-- Falls back to IconCharacter while IconCharacterF has no id; nil when neither can be drawn (the caller falls back).
+function UIKit.CharacterIconKey(player)
+	local p = player or LocalPlayer
+	if p and p:GetAttribute("CharacterGender") == "F" and artPart("IconCharacterF") then
+		return "IconCharacterF"
+	end
+	return artPart("IconCharacter") and "IconCharacter" or nil
+end
+
+-- ArtImage of CharacterIconKey() for the local player that redraws when CharacterGender changes (props as
+-- ArtImage); nil when neither icon can be drawn. The attribute connection ends with the label.
+function UIKit.CharacterIcon(props)
+	local key = UIKit.CharacterIconKey()
+	local img = key and UIKit.ArtImage(key, props) or nil
+	if not img or not LocalPlayer then return img end
+	local conn = LocalPlayer:GetAttributeChangedSignal("CharacterGender"):Connect(function()
+		local def = artPart(UIKit.CharacterIconKey() or "")
+		if def then applyArt(img, def, props and props.ScaleType, props and props.SliceScale) end
+	end)
+	img.Destroying:Connect(function()
+		conn:Disconnect()
+	end)
+	return img
+end
+
 -- FontFace metrics include Hangul. Each yielding request owns its params; successful results are exact canvas
 -- units and cached. Conservative glyph estimates are used only if the font-bound measurement fails.
 function UIKit.MeasureText(text, size, fontOrFontFace, width)
