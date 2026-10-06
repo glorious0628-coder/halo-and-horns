@@ -94,6 +94,11 @@ MUTATIONS = [
      '\treturn (factionId == "Halo" or factionId == "Horns" or factionId == "Neutral") and Config.Factions[factionId] ~= nil\n'),
     ("a refused Neutral pick is not logged", F, "\t\tlogNeutralRefused(player, factionId)\n\t\treturn\n", "\t\treturn\n"),
     ("rebirth into the guild allowed", PR, "\tif not Config.Pickable(factionId) then", "\tif false then"),
+    # quest_volume §2-6: 3 sub rows, a town quest in progress never pushed off
+    ("MaxSubs back to 2", C, "\tMaxSubs = 3, -- sub rows", "\tMaxSubs = 2, -- sub rows"),
+    ("a started sub ranks like an untouched one", ST, '((started or id == "S0") and 2) or 3', '(id == "S0" and 2) or 3'),
+    ("older quests first within a rank", ST, "\t\treturn a.Order > b.Order\n", "\t\treturn a.Order < b.Order\n"),
+    ("the sort fields reach the client", ST, "\t\trows[i].Rank, rows[i].Order = nil, nil\n", ""),
 ]
 
 
@@ -133,7 +138,9 @@ SUITE = Suite(
              "the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it "
              "exists, never pop up by themselves, and rows carry Story.Npc. A23-57: Config.Features.NeutralFaction = "
              "false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs "
-             "N1 / N2 are not offered; Neutral saves keep N3.",
+             "N1 / N2 are not offered; Neutral saves keep N3. quest_volume §2-6: StoryQuests.MaxSubs = 3 sub rows "
+             "(claim / waiting card > situational > started or S0 > the rest, newer first in a rank, no Rank / Order "
+             "sent), so a town quest in progress stays on the list.",
     limitations="NPC models, '!' markers, the talk window and the quest marker routes are game dev 1's (contract: tag "
                 "StoryNpc, attribute NpcId, row Story.Npc / Guide). Real walking, physics and the 1 s loop timing are "
                 "modelled by moving the root and calling Refresh each second.",

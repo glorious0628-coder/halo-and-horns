@@ -513,11 +513,15 @@ local function visible(player, def)
 	return true
 end
 
--- sub rows, best first (claimable > situational > S0 > others), at most Config.StoryQuests.MaxSubs
+-- sub rows, best first, at most Config.StoryQuests.MaxSubs (quest_volume §2-6: 3; the HUD shows 2, the open list all):
+-- 0 = a claim or a waiting Talk / Choice card, 1 = situational (Show), 2 = started (past step 1 or with progress) or
+-- S0, 3 = the rest; within a rank the newer quest (later in StoryQuests.Subs) first. A started sub outranks untouched
+-- ones so a town quest in progress is never pushed off by older background subs, and the order index keeps the rows
+-- from swapping between refreshes (table.sort is not stable).
 function StoryQuestService.SubRows(player, data)
 	local st = story(data)
 	local rows = {}
-	for _, id in SQ.Subs do
+	for order, id in SQ.Subs do
 		local tr = st.Subs[id]
 		local def = DEFS[id]
 		if tr and def and (tr.Claim or visible(player, def)) then
@@ -526,15 +530,20 @@ function StoryQuestService.SubRows(player, data)
 				local row = rowFor(player, data, id, tr)
 				local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
 				local waiting = step ~= nil and step.Panel == true -- a Talk / Choice card waits: never hidden by MaxSubs
-				row.Rank = ((tr.Claim or waiting) and 0) or (def.Show and 1) or (id == "S0" and 2) or 3
+				local started = num(tr.St, 1) > 1 or num(tr.P) > 0 or (type(tr.T) == "table" and next(tr.T) ~= nil)
+				row.Rank = ((tr.Claim or waiting) and 0) or (def.Show and 1) or ((started or id == "S0") and 2) or 3
+				row.Order = order
 				table.insert(rows, row)
 			end
 		end
 	end
-	table.sort(rows, function(a, b) return a.Rank < b.Rank end)
+	table.sort(rows, function(a, b)
+		if a.Rank ~= b.Rank then return a.Rank < b.Rank end
+		return a.Order > b.Order
+	end)
 	local out = {}
-	for i = 1, math.min(#rows, SQ.MaxSubs or 2) do
-		rows[i].Rank = nil
+	for i = 1, math.min(#rows, SQ.MaxSubs or 3) do
+		rows[i].Rank, rows[i].Order = nil, nil
 		table.insert(out, rows[i])
 	end
 	return out

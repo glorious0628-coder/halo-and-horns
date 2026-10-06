@@ -196,7 +196,7 @@ runGroup("h1-good", function()
 	w:Tick(p, 6)
 	for _ = 1, 4 do w.Story.Refresh(p) end -- on-demand refreshes (a zone change, a level up) in the same second
 	check(tr.P == 5, "the count is time, not refreshes (6 ticks, 4 extra refreshes: 5 s)", tr.P)
-	w.Config.StoryQuests.MaxSubs = 9 -- every sub row (the list shows 2; this checks the row itself)
+	w.Config.StoryQuests.MaxSubs = 9 -- every sub row (this checks the row itself, not the list length)
 	local row = nil
 	for _, r in w.Story.SubRows(p, d) do if r.Story and r.Story.Id == "H1" then row = r end end
 	check(tr.St == 2 and tr.P >= 5 and row and row.Target == 10 and row.Progress == tr.P
@@ -502,6 +502,47 @@ runGroup("neutral-switch", function()
 		"rebirth into the guild: refused quietly + logged", show({ okN, whyN, warned[#warned] }))
 	check(okH == false and type(whyH) == "string" and string.find(whyH, "Lv", 1, true) ~= nil,
 		"rebirth into Halo goes on to its normal checks (here: the level)", show({ okH, whyH }))
+end)
+
+------------------------------------------------------------------ 11. MaxSubs 3: a town quest row is never pushed off
+-- quest_volume §2-6 (검수): 3 sub rows (the HUD shows 2, the open list all); a started sub outranks untouched ones,
+-- ties go to the newer quest, and the order never swaps between refreshes
+runGroup("max-subs", function()
+	check(SQ0.MaxSubs == 3, "MaxSubs = 3 (the HUD shows 2, the open list all)", SQ0.MaxSubs)
+	local w = townWorld()
+	w:Npc("Bright", vec(0, 0, -400))
+	local p, d = joinAfterM23(w, 701, "Halo", { Pos = vec(2, 0, -398) })
+	local subs = d.Story.Subs
+	check(subs.S0 and subs.S1 and subs.S2 and subs.S3 and subs.H1 and subs.N3,
+		"the busy Halo list after M2_3: S0 (never done), S1, S2, S3, H1, N3", show(subs))
+	local function ids()
+		local out = {}
+		for _, r in w.Story.SubRows(p, d) do table.insert(out, r.Story and r.Story.Id or "?") end
+		return out
+	end
+	local function has(list, id)
+		for _, v in list do if v == id then return true end end
+		return false
+	end
+	local first = ids()
+	check(#first == 3 and has(first, "H1") and has(first, "N3"), "both town quests wait at their NPC: on the list",
+		show(first))
+	-- talk to Bright: H1 is started (no card waits any more); then the goose comes (S1, situational)
+	w:Act(p, "H1", "Talk")
+	check(w:Track(d, "H1").St == 2, "H1 started (step 2)", w:Track(d, "H1").St)
+	w.GameState.Attrs.GooseActive = true
+	local busy = ids()
+	check(#busy == 3 and busy[1] == "N3" and busy[2] == "S1" and busy[3] == "H1",
+		"N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)", show(busy))
+	check(table.concat(ids(), ",") == table.concat(busy, ","), "the same order on every refresh (no swapping)", show(ids()))
+	w.GameState.Attrs.GooseActive = false
+	local calm = ids()
+	check(#calm == 3 and calm[1] == "N3" and calm[2] == "H1" and calm[3] == "S0", "the goose gone: N3, H1, then S0",
+		show(calm))
+	for _, r in w.Story.SubRows(p, d) do
+		check(r.Rank == nil and r.Order == nil, "the " .. tostring(r.Story and r.Story.Id) .. " row sends no Rank / Order",
+			show({ r.Rank, r.Order }))
+	end
 end)
 
 finish()

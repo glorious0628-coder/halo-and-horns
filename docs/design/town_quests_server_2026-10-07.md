@@ -1,6 +1,6 @@
 # A23-46 마을 사람 퀘스트 H1·R1·N3 + A23-57 장인 스위치 + A23-58 선택 점수 + 결말 단서·E0 — 서버 계약 (게임성 개발 2, 2026-10-07)
 
-설계: `docs/design/town_npc_quests_2026-10-06.md` + `docs/design/story_depth_2026-10-06.md` §3·§5-⑥(검수 결정: 셋 다 M2_3 뒤, H1 3단계는 초원 왕 슬라임, 반전판 대사). 게임 글은 영어(A23-48). 오프라인 검사: `py tools/test_town_quests.py`(130검사, 변이 30/30), 맨손·조련사 검사와 같은 가짜 세계(`tools/fixtures/dev2_combat_world.luau`).
+설계: `docs/design/town_npc_quests_2026-10-06.md` + `docs/design/story_depth_2026-10-06.md` §3·§5-⑥(검수 결정: 셋 다 M2_3 뒤, H1 3단계는 초원 왕 슬라임, 반전판 대사). 게임 글은 영어(A23-48). 오프라인 검사: `py tools/test_town_quests.py`(140검사, 변이 34/34), 맨손·조련사 검사와 같은 가짜 세계(`tools/fixtures/dev2_combat_world.luau`).
 
 ## 1. 퀘스트 (Config.StoryQuests.Defs, Subs 끝에 H1·R1·N3)
 | id | 누구 | NPC | 단계 | 마지막 고르기 |
@@ -24,7 +24,8 @@
 1. **NPC 모델**: id `Bright`(빛의 성채 경비) · `Smokey`(뿔 소굴 망보는 꼬마) · `Tiny`(교차로 장인 길드 견습생). 이름은 `Config.StoryQuests.Speakers[id]`. 모델에 **CollectionService 태그 `StoryNpc`**(`StoryQuests.NpcTag`) + **속성 `NpcId` = id**. 서버는 모델 피벗(파트면 Position)에서 **16칸**(`NpcRange`) 안일 때만 Talk/Choose/Open을 받는다. 그 id의 NPC가 세계에 없으면 어디서든 된다(배치 전에도 퀘스트가 막히지 않게).
 2. **대화**: NPC 프롬프트 → 그 NPC가 걸린 퀘스트 줄(`row.Story.Npc == id`)의 `StoryAction(questId, "Open")` → 서버가 `OpenPanel "Story" { Id, St }` → 지금 Story 창 그대로(단계 `Lines`·`def.Speaker`, Talk 단계는 확인 → `"Talk"`, 마지막은 Choice → `"Choose"` + `"Good"`/`"Evil"`, 장인 저장은 `"A"`/`"B"`). **Npc 단계는 저절로 뜨지 않는다**(앞 단계가 끝나도 창이 안 열림 — NPC에게 가야 함).
 3. **퀘스트 줄**: `row.Story.Npc` = 지금 말 걸 NPC(그 NPC 머리 위 '!'), `row.Story.Guide` = 그 마을 zone id(`HaloTown`·`HornsTown`·`Crossroads`). 새 Guide 키 `WoodsGate`·`HaloBridge`·`HornsBridge`(+기존 `Fountain`)는 `Config.StoryQuests.Landmarks` 좌표 — 마커 길 안내(QuestTarget)에 추가해 주세요. 머물기 줄은 `ShowProgress` + 초 단위 Progress/Target.
-4. 참고: 서브 줄이 `MaxSubs = 2`라 진행 중인 H1이 S2·S3 뒤에 가려질 수 있다 — A23-56 퀘스트 양 설계에서 검수가 정한다.
+4. **서브 줄 3개**(quest_volume §2 규칙 6, 검수): `StoryQuests.MaxSubs = 3` — HUD는 2줄 그대로, 펼친 목록에 3줄 다. 서버 순위: 받기·대화/선택 카드 대기 0 > 상황(Show, 거위) 1 > **시작한 서브**(2단계 이상·진행 수·Trials 칸 있음)와 S0 2 > 나머지 3, 같은 순위는 새 퀘스트(`Subs` 뒤쪽) 먼저 — 진행 중인 마을 퀘스트가 오래된 S2·S3에 밀려 사라지지 않고, 새로고침마다 줄 순서가 바뀌지 않는다(`table.sort`는 안정 정렬이 아님). 줄에 `Rank`·`Order`는 안 실린다.
+5. 브라이트는 여자아이(A23-59): H1 시작 줄 "Bright, the young guard, needs help. Find her in Halo Citadel!". 다른 서버 문구에는 Bright 대명사가 없다.
 
 ## 4. A23-58 자기 편답지 않은 선택은 내 점수 깎기 (모든 선악 선택)
 - `StoryQuestService.pickScore`: 빛 = 착한 쪽 명예 +점수 / 나쁜 쪽 **명예 −점수**, 뿔 = 나쁜 쪽 악명 +점수 / 착한 쪽 **악명 −점수**. 반대 편 점수(빛의 악명·뿔의 명예)는 선택으로 움직이지 않는다(옛 'OddHalo/OddHorns'와 '빛이 나쁜 쪽 → 악명 +' 규칙 대신).

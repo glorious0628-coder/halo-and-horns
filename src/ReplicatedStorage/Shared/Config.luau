@@ -1577,7 +1577,7 @@ Config.Tutorial = {
 -- NPC: game dev 1 tags its model CollectionService "StoryNpc" (NpcTag) with the attribute NpcId = id, and Talk / Choose
 -- / Open then need the player within NpcRange of it (before the NPC exists in the world, anywhere).
 Config.StoryQuests = {
-	MaxSubs = 2, -- sub rows sent with the quest list (after the main row)
+	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
 	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Blacksmith", Guild = "Guild Guide",
 		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey" }, -- A23-46 town NPCs, A23-55 kids
@@ -1805,7 +1805,7 @@ Config.StoryQuests = {
 		H1 = {
 			Kind = "Sub", Title = "The Horns Are Up to Something", Speaker = "Bright", Factions = { Halo = true },
 			Requires = { Done = { "M2_3" } },
-			Start = "Bright the town guard needs help. Find him in Halo Citadel!",
+			Start = "Bright, the young guard, needs help. Find her in Halo Citadel!",
 			Steps = {
 				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "The Horns are up to something! I need Form H-1.\nTo get Form H-1, I need Form H-0. …Can you just help?",

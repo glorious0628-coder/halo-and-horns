@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 130,
+  "checks": 142,
   "failedChecks": 0,
-  "namedChecks": 128,
+  "namedChecks": 140,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -774,15 +774,87 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "MaxSubs = 3 (the HUD shows 2, the open list all)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "the busy Halo list after M2_3: S0 (never done), S1, S2, S3, H1, N3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "both town quests wait at their NPC: on the list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "H1 started (step 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "the same order on every refresh (no swapping)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "the goose gone: N3, H1, then S0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "the N3 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "the H1 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "the S0 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max-subs",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 30,
-    "applied": 30,
-    "caught": 30,
+    "total": 34,
+    "applied": 34,
+    "caught": 34,
     "skipped": false,
     "results": [
       {
@@ -821,12 +893,12 @@
         "newFailingChecks": [
           "a23-58 :: group ran to the end without a Lua error",
           "config :: N3: a sub for everyone",
-          "n3 :: group ran to the end without a Lua error",
-          "offered :: a Halo player after M2_3: H1 + N3",
-          "offered :: a Horns player after M2_3: R1 + N3",
-          "offered :: a Neutral save (switch off): N3, not N1 / N2"
+          "max-subs :: N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
+          "max-subs :: both town quests wait at their NPC: on the list",
+          "max-subs :: the busy Halo list after M2_3: S0 (never done), S1, S2, S3, H1, N3",
+          "max-subs :: the goose gone: N3, H1, then S0"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 10
       },
       {
         "mutation": "an off-side pick adds instead of taking",
@@ -1174,6 +1246,57 @@
           "neutral-switch :: rebirth into the guild: refused quietly + logged"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "MaxSubs back to 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: MaxSubs = 3 (the HUD shows 2, the open list all)",
+          "max-subs :: N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
+          "max-subs :: both town quests wait at their NPC: on the list",
+          "max-subs :: the goose gone: N3, H1, then S0"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a started sub ranks like an untouched one",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
+          "max-subs :: the goose gone: N3, H1, then S0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "older quests first within a rank",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)",
+          "max-subs :: the goose gone: N3, H1, then S0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the sort fields reach the client",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max-subs :: the H1 row sends no Rank / Order",
+          "max-subs :: the N3 row sends no Rank / Order",
+          "max-subs :: the S0 row sends no Rank / Order"
+        ],
+        "newFailingCount": 3
       }
     ]
   },
@@ -1181,11 +1304,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "253bffa6eb20d013b337bb06356ceb3c996625b596b1e97c4dfebfe6eec0a709",
+    "src/ReplicatedStorage/Shared/Config.luau": "7a8ab2fa0677ff4e59ed701ba6f3cf54121d8a6366308c64753aabc5c2801056",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
-    "src/ServerScriptService/StoryQuestService.luau": "26683c1636ca57519094a776350881b5b30f1b51f1dde31799962191664307fc",
+    "src/ServerScriptService/StoryQuestService.luau": "d8368ad52bd60638a2883c404b157c45c2fba6190eb9793c590c6fb05edf646e",
     "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
     "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
@@ -1194,10 +1317,10 @@
     "src/ServerScriptService/FactionService.luau": "6e3b17d0f5b928af5fe6f691ecff203f067a42d26d75862cd2261e8914b34031",
     "src/ServerScriptService/ProgressionService.luau": "074be3338e3845a95ebd1d0943d7c3ab68ed03f9529e11286e62e7140ab8fee3"
   },
-  "fixtureSHA256": "0e095351933ba21c3eaf9764cdef55f5a68f4d693178231e15e0b0e2b0deb8c2",
+  "fixtureSHA256": "fb14f5e7a6f860d3821f5209f49f277b20745626db99e7fef130f10cb50afdf8",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-46: subs H1 (Halo, Bright), R1 (Horns, Smokey), N3 (everyone, Tiny) open after M2_3, once each: talk to the NPC -> H1 stay 10 s at WoodsGate (outside PvP) -> 2 king slimes / R1 stay 15 s at the fountain (Crossroads zone) -> 6 slimes / N3 both bridge ends -> 30 hunting gold -> the pick at the NPC (A = one Enh70, B = 3 HP potions + 60 gold, 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half a level bar of XP, a closing question. E4 Near.Stay counts seconds in one go (leaving resets, the row shows %d/%d s). E6 pick rewards go through LootService.GrantItem (items / potions, caps, 1..99). Npc steps need the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it exists, never pop up by themselves, and rows carry Story.Npc. A23-57: Config.Features.NeutralFaction = false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs N1 / N2 are not offered; Neutral saves keep N3.",
+  "contract": "A23-46: subs H1 (Halo, Bright), R1 (Horns, Smokey), N3 (everyone, Tiny) open after M2_3, once each: talk to the NPC -> H1 stay 10 s at WoodsGate (outside PvP) -> 2 king slimes / R1 stay 15 s at the fountain (Crossroads zone) -> 6 slimes / N3 both bridge ends -> 30 hunting gold -> the pick at the NPC (A = one Enh70, B = 3 HP potions + 60 gold, 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half a level bar of XP, a closing question. E4 Near.Stay counts seconds in one go (leaving resets, the row shows %d/%d s). E6 pick rewards go through LootService.GrantItem (items / potions, caps, 1..99). Npc steps need the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it exists, never pop up by themselves, and rows carry Story.Npc. A23-57: Config.Features.NeutralFaction = false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs N1 / N2 are not offered; Neutral saves keep N3. quest_volume §2-6: StoryQuests.MaxSubs = 3 sub rows (claim / waiting card > situational > started or S0 > the rest, newer first in a rank, no Rank / Order sent), so a town quest in progress stays on the list.",
   "limitations": "NPC models, '!' markers, the talk window and the quest marker routes are game dev 1's (contract: tag StoryNpc, attribute NpcId, row Story.Npc / Guide). Real walking, physics and the 1 s loop timing are modelled by moving the root and calling Refresh each second."
 }
