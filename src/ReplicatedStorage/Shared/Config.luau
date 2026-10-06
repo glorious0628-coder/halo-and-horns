@@ -39,6 +39,7 @@ Config.Vitals = {
 	PotionPrices = { HP = 25, MP = 25 }, -- gold per bottle (user 2026-10-06)
 	PotionInventoryCap = 99,
 	PotionMerchantName = "PotionMerchant", -- server-owned workspace.Map.NPCs model; missing NPC rejects buying
+	PotionMerchantLabel = "Fizzby", -- ⑪ the prompt's ObjectText (ActionText stays "Buy potions"); the model name stays
 	PotionMerchantDistance = 12,
 	MerchantEnabled = true, -- A23-6: shop screen works; price 25 confirmed by the user 2026-10-06
 	-- A23-6: temporary default Roblox-style NPC (HumanoidDescription, no new art) until the Firefly redraw
@@ -1475,6 +1476,37 @@ Config.Halloween = {
 		-- the season, so it needs no "comes back every year" line (P10)
 		PatchSign = "↓ Pumpkin Patch · pumpkin monsters", PatchSignEn = "↓ Pumpkin Patch · pumpkin monsters",
 	},
+	-- ⑫ (review 2026-10-06): one line after each king's Appear announcement, by KST day (Day 1 = 2026-10-31)
+	-- day = math.floor((Config.SeasonNow() - DayOneStart) / 86400) + 1, clamped 1..#Days
+	-- Day 9 GhostKing: string.format(line, count) FIRST (count = both kings' defeats on this server, memory only;
+	-- 0 -> GhostKingZero), THEN string.format(Format, Config.MonsterTypes[kind].Short, line). Chat only, no toast.
+	-- HalloweenService sends the finished line as Args.Banter of the <Key>Appear broadcast (lines_pack §4); game dev 1's
+	-- Announce shows it as the next chat line in that event's Color.
+	Banter = {
+		DayOneStart = 1793372400, -- 2026-10-31 00:00 KST
+		Format = "%s: \"%s\"",
+		Days = { -- keys = Config.Halloween.Bosses[i].Key
+			{ PumpkinKing = "Happy Halloween! Just so you know, the best king here is me.",
+				GhostKing = "Best king? My ribbon says it's me. I made the ribbon." },
+			{ PumpkinKing = "My candy pile is taller than the trees in the Haunted Hollow!",
+				GhostKing = "Cute pile. Mine has a second pile sitting on top." },
+			{ PumpkinKing = "I can bounce from here to the Crossroads in one hop!",
+				GhostKing = "I floated there and back twice. You were still bouncing." },
+			{ PumpkinKing = "My best candy is gone! Clue: glowy crumbs. Hmm, Ghost King?",
+				GhostKing = "Not me! And why is there orange jelly on MY candy?" },
+			{ PumpkinKing = "New crown! Bigger than yours. With extra sprinkles!",
+				GhostKing = "Mine has a bell on top. It rings when I'm right. Ding!" },
+			{ PumpkinKing = "Biggest crown, pile, AND bounce! …So why is it so quiet?",
+				GhostKing = "Quiet here too. Nobody plays tag with a king." },
+			{ PumpkinKing = "Both sides teamed up on me. They looked like they had fun!",
+				GhostKing = "Same here. Teaming up looks fun. …Hey, Pumpkin. Want to try it?" },
+			{ PumpkinKing = "Okay, Ghost King. One crown, two kings? It's sticky, but it's big.",
+				GhostKing = "Deal. You hold the left side. I hold the shiny side." },
+			{ PumpkinKing = "Truce! One big candy party. Ghost King, you bring the music!",
+				GhostKing = "Truce! Kings beaten on this server: %d. Fine, you're all invited!" }, -- the only %d (⑭ exception)
+		},
+		GhostKingZero = "Truce! No kings beaten here yet. Party anyway. Come on in!",
+	},
 }
 
 -- the "unit" monster used for quest targets / rewards and Config.HuntValue
@@ -1510,26 +1542,31 @@ Config.Tutorial = {
 	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
 	AutoClaimSeconds = 60,
 	WelcomeRate = 0.5,
+	-- ⑪ (lines_pack §1): Name = the guide's own name (speaker / nametag line 1), Title = the role (nametag line 2; quest,
+	-- help and system lines keep the role). The catchphrase is its own first line, once a dialogue.
 	Welcome = { -- existing approved faction/class portrait; no world NPC is spawned by this dialogue
 		Halo = {
-			Name = "Guide of Light",
+			Name = "Hallie", Title = "Guide of Light",
 			Lines = {
+				"Hallie here! Now you know my name. Welcome to the Knights!",
 				"Thank you for joining the Knights of Light. Big oaths can wait. Right now, we need your help.",
 				"Since the Crown of Balance broke, slimes drawn to its shards have blocked the supply road in the Squishy Meadow.",
 				"Please defeat 5 slimes and free the road. Every hero who protects friends starts by opening a path for someone.",
 			},
 		},
 		Horns = {
-			Name = "Horn Legion Guide",
+			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
+				"Finders keepers! HA! You're with us now. I'm Magpie.",
 				"Welcome, rookie! Thanks for joining us. Before we take over the world… let's save the Legion's lunch.",
 				"Slimes drawn to the broken crown shards took the supply road in the Squishy Meadow. No food or gear can get through!",
 				"Beat 5 slimes and win the road back. A real leader isn't just strong. A real leader gets friends moving.",
 			},
 		},
 		Neutral = {
-			Name = "Guild Guide",
+			Name = "Kit", Title = "Guild Guide",
 			Lines = {
+				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 				"Thank you for joining the Artisan Guild. Wars aren't won with swords alone. Someone has to fix those swords too.",
 				"Slimes drawn to the crown shards have blocked the supply road in the Squishy Meadow.",
 				"Please defeat 5 slimes and free the road. It's your first step to helping everyone get their gear.",
@@ -1593,7 +1630,7 @@ Config.Tutorial = {
 Config.StoryQuests = {
 	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
 	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
-	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Blacksmith", Guild = "Guild Guide",
+	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
 		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey", -- A23-46 town NPCs, A23-55 kids
 		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo" }, -- story_depth §4 goblins (beta: names only, no models)
 	NpcTag = "StoryNpc",
@@ -1623,8 +1660,8 @@ Config.StoryQuests = {
 		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d (not very angel-like)", -- (Good.Points, Evil.Points)
 		ChoiceHintHorns = "Left: Infamy -%d (too nice) · Right: Infamy +%d", -- (Good.Points, Evil.Points)
 		ChoiceHintNeutral = "The Artisan Guild just saves your pick, with no good or evil points.",
-		OffSideHalo = "Not very angel-like! Honor -%d", -- A23-58 (points actually taken)
-		OffSideHorns = "Too nice for a devil! Infamy -%d",
+		OffSideHalo = "Hallie: Hmm… not very angel-like! Honor -%d", -- A23-58 (points actually taken), ⑪ the guide says it
+		OffSideHorns = "Magpie: Too nice for a devil! Your call. Infamy -%d",
 		RankDownHalo = "Your rank went down. Do good deeds to get it back!",
 		RankDownHorns = "Your rank went down. Do devilish deeds to get it back!",
 		GooseFirstHalo = "Your first Golden Goose rescue! (Honor +%d)",
@@ -1665,7 +1702,7 @@ Config.StoryQuests = {
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", Speaker = "Smith", GiveWeapon = 1,
 			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
-			Finish = "Blacksmith: That's crown shard dust! The King Slimes ate the most of it.",
+			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's crown shard dust! The King Slimes ate the most of it.",
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The King Who Ate the Dust",
@@ -1684,13 +1721,13 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
 				{ Text = "Report to the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
-					Halo = { "Did you see the statues on the Heroes' Road? They are the knights who guarded the shards.",
+					Halo = { "Hallie here! Now you know my name.", "Did you see the statues on the Heroes' Road? They are the knights who guarded the shards.",
 						"They say a Horn broke the Crown. Pure greed!\nBroken things get fixed. Right?",
 						"More shards are out there.\nWhat will you do with the next one?" },
-					Horns = { "See the lava cracks? Our horn power boils up from there!",
+					Horns = { "Finders keepers! HA!", "See the lava cracks? Our horn power boils up from there!",
 						"They say a Halo broke it. So greedy. Typical!\nShiny! Finders keepers!",
 						"More shards are out there.\nWhat will you do with the next one?" },
-					Neutral = { "Nice dust. The guild doesn't grab, it shapes.",
+					Neutral = { "Fix first. Talk later.", "Nice dust. The guild doesn't grab, it shapes.",
 						"More shards are out there.\nWhat will you do with the next one?" },
 				} },
 			},
@@ -1912,13 +1949,13 @@ Config.StoryQuests = {
 		},
 		N1 = {
 			Kind = "Sub", Title = "The Artisan's Touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" } },
-			Start = "Guild Guide: Shape with care. Two at once!",
+			Start = "Kit: Shape with care. Two at once!",
 			Steps = { { Text = "Hit 2 with one skill %d/%d", Obj = { Type = "SkillHit", Min = 2, Count = 3 } } },
 			Reward = { Gold = 1 },
 		},
 		N2 = {
 			Kind = "Sub", Title = "Guild Supply Book", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M2_1" } },
-			Start = "Guild Guide: Both sides need our gear. Collect supply gold.",
+			Start = "Kit: Both sides need our gear. Collect supply gold.",
 			Steps = {
 				{ Text = "Supply book %d/2", Obj = { Type = "Trials", List = {
 					{ Key = "a", Type = "Kill", Kind = "BigSlime", Count = 3 },
@@ -3503,6 +3540,10 @@ Config.Text = {
 	BlacksmithPromptAction = "See weapons",
 	BlacksmithPromptObject = "Forge",
 	PotionShopFar = "Get close to the Potion Seller to buy.",
+	-- ⑪ (lines_pack §1-3): the shop windows' greeting line (game dev 1: the top of WeaponShop / PotionShop); calm, no
+	-- "hurry / sale" words next to a buy button
+	ForgeGreeting = "Otto: Clang, clang… done. Cocoa time.",
+	PotionGreeting = "Fizzby: Glug, glug, feel better!",
 	PotionStockFull = "You can hold up to %d of each potion.", -- (PotionInventoryCap)
 	PotionBought = "Bought %s potion ×%d!", -- (kind, amount)
 	-- PvP

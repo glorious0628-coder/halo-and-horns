@@ -25,7 +25,8 @@ local H = Config.Halloween or {}
 -- BOSSES[i] = { Kind, Key, FirstDelay, Interval, Lifetime, Spots, Rec (living MonsterService record or nil),
 --   NextAt / EndsAt (Util.Now() times), Debug }
 local BOSSES = {}
-local K = { WarnAt = {}, SignOn = nil }
+-- Defeats = kings beaten on this server since it started (memory only: the ⑫ Day 9 line)
+local K = { WarnAt = {}, SignOn = nil, Defeats = 0 }
 
 local function warnThrottled(key, msg)
 	local now = os.clock()
@@ -101,15 +102,32 @@ local function publish(b)
 	setGame(b.Key .. "NextAt", seasonOn() and b.NextAt or 0)
 end
 
--- one server-wide chat line (Config.Announce.Events key); never blocks the schedule
-local function announce(key)
+-- one server-wide chat line (Config.Announce.Events key, optional args); never blocks the schedule
+local function announce(key, args)
 	local svc = S and S.AnnounceService
 	if type(svc) ~= "table" or type(svc.Broadcast) ~= "function" then
 		warnThrottled("announce", "AnnounceService.Broadcast missing")
 		return
 	end
-	local ok, err = pcall(svc.Broadcast, key)
+	local ok, err = pcall(svc.Broadcast, key, args)
 	if not ok then warnThrottled("announce", "Broadcast " .. tostring(key) .. ": " .. tostring(err)) end
+end
+
+-- ⑫ (lines_pack §4): today's banter line of this king, by KST day (Config.Halloween.Banter; Day 1 = 2026-10-31,
+-- clamped to the listed days, so a test server before the season shows Day 1). The one "%d" line (Day 9) is filled
+-- with this server's beaten kings FIRST (none -> <Key>Zero), then the line goes into Format with the king's Short name.
+local function banterLine(b)
+	local B = H.Banter
+	if type(B) ~= "table" or type(B.Days) ~= "table" or #B.Days == 0 then return nil end
+	local day = math.clamp(math.floor((Config.SeasonNow() - num(B.DayOneStart)) / 86400) + 1, 1, #B.Days)
+	local line = type(B.Days[day]) == "table" and B.Days[day][b.Key] or nil
+	if type(line) ~= "string" or line == "" then return nil end
+	if string.find(line, "%d", 1, true) then
+		local zero = B[b.Key .. "Zero"]
+		line = (K.Defeats <= 0 and type(zero) == "string") and zero or string.format(line, K.Defeats)
+	end
+	local m = Config.MonsterTypes[b.Kind]
+	return string.format(type(B.Format) == "string" and B.Format or "%s: \"%s\"", (m and (m.Short or m.Name)) or b.Kind, line)
 end
 
 -- spawns the boss at one of its spots (or its zone's center); true when it appeared
@@ -131,7 +149,9 @@ local function appear(b, now)
 	b.Rec = rec
 	b.EndsAt = now + b.Lifetime
 	publish(b)
-	announce(b.Key .. "Appear")
+	local okLine, line = pcall(banterLine, b)
+	if not okLine then warnThrottled("banter", line) end
+	announce(b.Key .. "Appear", { Banter = okLine and line or nil }) -- ⑫: the next chat line (Announce, game dev 1)
 	return true
 end
 
@@ -149,6 +169,7 @@ local function finish(b, defeated)
 		end
 	end
 	publish(b)
+	if defeated then K.Defeats += 1 end -- ⑫ Day 9: "Kings beaten on this server: %d"
 	announce(b.Key .. (defeated and "Defeat" or "Leave"))
 end
 

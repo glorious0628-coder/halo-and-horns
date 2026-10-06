@@ -1900,8 +1900,13 @@ runGroup("king-schedule", function()
 	check(f:GS("PumpkinKingNextAt") == ta + 1200, "the next king is due 20:00 after this appearance", f:GS("PumpkinKingNextAt"))
 	check(f:Keys() == "PumpkinKingAppear" and f:Direct() == 0, "one server-wide appear line (FireAllClients), nothing per player", f:Keys())
 	local msg = f:Lines()[1]
-	check(type(msg) == "table" and msg.Event == true and type(msg.Args) == "table" and next(msg.Args) == nil and msg.Grade == nil,
-		"event payload = { Key, Args = {}, Event = true }", show(msg))
+	-- ⑫ (lines_pack §4): the only arg is the king's banter line of the day (Args.Banter, a plain string, no names)
+	local onlyBanter = type(msg) == "table" and type(msg.Args) == "table"
+	for k, v in onlyBanter and msg.Args or {} do
+		if k ~= "Banter" or type(v) ~= "string" then onlyBanter = false end
+	end
+	check(type(msg) == "table" and msg.Event == true and onlyBanter and msg.Grade == nil,
+		"event payload = { Key, Args = { Banter = the king's line }, Event = true }", show(msg))
 	check(nameless(f, msg), "the appear payload carries no player name or id", select(2, nameless(f, msg)))
 	local ok, detail = clientsShowed(f, "PumpkinKingAppear", { 0, 0, 0 })
 	check(ok, "every client shows the appear line once (Korean / English twin), in the event colour", detail)

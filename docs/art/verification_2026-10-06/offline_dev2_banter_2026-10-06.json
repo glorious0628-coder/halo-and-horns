@@ -1,0 +1,758 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 104,
+  "failedChecks": 0,
+  "namedChecks": 97,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "data",
+      "check": "Banter: 9 days from 2026-10-31 00:00 KST, Format 'Name: \"line\"'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 1 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 1 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 1 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 1 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 1 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 1 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 2 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 2 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 2 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 2 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 2 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 2 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 3 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 3 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 3 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 3 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 3 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 3 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 4 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 4 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 4 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 4 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 4 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 4 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 5 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 5 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 5 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 5 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 5 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 5 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 6 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 6 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 6 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 6 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 6 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 6 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 7 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 7 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 7 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 7 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 7 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 7 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 8 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 8 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 8 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 8 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 8 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 8 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 9 PumpkinKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 9 PumpkinKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 9 PumpkinKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 9 GhostKing: a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 9 GhostKing: no % except the Day 9 Ghost King's %d",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "day 9 GhostKing: one-glyph ellipsis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "exactly one %d in the whole block, and a zero line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "both Appear events still exist (the banter rides on them)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "data",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 1: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 1: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 1: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 2: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 2: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 2: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 3: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 3: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 3: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 4: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 4: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 4: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 5: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 5: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 5: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 6: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 6: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 6: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 7: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 7: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 7: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 8: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 8: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 8: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 9: both kings come",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 9: the Pumpkin King's line rides on its Appear broadcast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "day 9: the Ghost King's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "11/03 08:00 and 23:59 KST are both Day 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "before 10/31 (a test server): Day 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "after 11/08: Day 9",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one line per day",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day 9: this server's beaten kings",
+      "check": "no king beaten yet: the zero line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day 9: this server's beaten kings",
+      "check": "two kings beaten (one left home): 'Kings beaten on this server: 2'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day 9: this server's beaten kings",
+      "check": "the Defeat / Leave lines still go out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day 9: this server's beaten kings",
+      "check": "no raw %d ever reaches the chat",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "day 9: this server's beaten kings",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day 9: this server's beaten kings",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 2,
+  "staticFailures": [],
+  "mutations": {
+    "total": 10,
+    "applied": 10,
+    "caught": 10,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "%d never filled (shows raw)",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day 9: this server's beaten kings :: no king beaten yet: the zero line",
+          "day 9: this server's beaten kings :: no raw %d ever reaches the chat",
+          "day 9: this server's beaten kings :: two kings beaten (one left home): 'Kings beaten on this server: 2'",
+          "one line per day :: day 9: the Ghost King's line"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the zero line ignored",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day 9: this server's beaten kings :: no king beaten yet: the zero line",
+          "one line per day :: day 9: the Ghost King's line"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "beaten kings never counted",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day 9: this server's beaten kings :: two kings beaten (one left home): 'Kings beaten on this server: 2'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a king going home counts",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day 9: this server's beaten kings :: two kings beaten (one left home): 'Kings beaten on this server: 2'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no banter sent",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day 9: this server's beaten kings :: no king beaten yet: the zero line",
+          "day 9: this server's beaten kings :: two kings beaten (one left home): 'Kings beaten on this server: 2'",
+          "one line per day :: 11/03 08:00 and 23:59 KST are both Day 4",
+          "one line per day :: after 11/08: Day 9",
+          "one line per day :: before 10/31 (a test server): Day 1",
+          "one line per day :: day 1: the Ghost King's line"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "no clamp below Day 1",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one line per day :: before 10/31 (a test server): Day 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "one day late",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day 9: this server's beaten kings :: no king beaten yet: the zero line",
+          "day 9: this server's beaten kings :: two kings beaten (one left home): 'Kings beaten on this server: 2'",
+          "one line per day :: 11/03 08:00 and 23:59 KST are both Day 4",
+          "one line per day :: day 2: the Ghost King's line",
+          "one line per day :: day 2: the Pumpkin King's line rides on its Appear broadcast",
+          "one line per day :: day 3: the Ghost King's line"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "UTC days instead of KST",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "data :: Banter: 9 days from 2026-10-31 00:00 KST, Format 'Name: \"line\"'",
+          "one line per day :: 11/03 08:00 and 23:59 KST are both Day 4",
+          "one line per day :: day 2: the Ghost King's line",
+          "one line per day :: day 2: the Pumpkin King's line rides on its Appear broadcast",
+          "one line per day :: day 3: the Ghost King's line",
+          "one line per day :: day 3: the Pumpkin King's line rides on its Appear broadcast"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "no speaker name",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day 9: this server's beaten kings :: no king beaten yet: the zero line",
+          "day 9: this server's beaten kings :: two kings beaten (one left home): 'Kings beaten on this server: 2'",
+          "one line per day :: 11/03 08:00 and 23:59 KST are both Day 4",
+          "one line per day :: after 11/08: Day 9",
+          "one line per day :: before 10/31 (a test server): Day 1",
+          "one line per day :: day 1: the Ghost King's line"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "the Ghost King says the Pumpkin King's line",
+        "file": "src/ServerScriptService/HalloweenService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day 9: this server's beaten kings :: no king beaten yet: the zero line",
+          "day 9: this server's beaten kings :: two kings beaten (one left home): 'Kings beaten on this server: 2'",
+          "one line per day :: day 1: the Ghost King's line",
+          "one line per day :: day 2: the Ghost King's line",
+          "one line per day :: day 3: the Ghost King's line",
+          "one line per day :: day 4: the Ghost King's line"
+        ],
+        "newFailingCount": 11
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "364ef38b4dc0bbe10c33fe7261c90a778f6983f7a355e267bcfc6a3b9bc1ad68",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/HalloweenService.luau": "d288c4fa858b3d3f868e071b2253b1cc7f960afdc06dcabe257b73eed0e7783e"
+  },
+  "fixtureSHA256": "8c83a466b47283647a6a11ef8c9d0e22c8b3e763deb93978ed9fe984241aaa23",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "⑫ (lines_pack §4): HalloweenService sends today's line (Config.Halloween.Banter, KST day = floor((SeasonNow - DayOneStart) / 86400) + 1 clamped 1..9) as Args.Banter of the <Key>Appear broadcast, formatted 'Short: \"line\"'. The Day 9 Ghost King line is filled FIRST with this server's beaten kings (memory only; a king that goes home does not count; none -> GhostKingZero), then formatted. Game dev 1's Announce shows Args.Banter as the next chat line in the event's Color (no toast).",
+  "limitations": "The chat line itself is game dev 1's (Announce.luau: Args.Banter -> a second system message, same color, no toast). The schedule loop is not run; DebugSpawn uses the same appear / finish code."
+}
