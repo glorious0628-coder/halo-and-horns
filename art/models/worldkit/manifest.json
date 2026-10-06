@@ -4,27 +4,168 @@
   "preview_scripts": "tools/worldkit/crossroads_kit_place.luau + crossroads_kit_place2.luau (WorldKit 미리보기: 옛 소품 숨김 → 키트 제자리)",
   "evidence": "art/review/worldkit/crossroads_before_after.jpg (같은 각도 4장: spawn·market·guild·high)",
   "kit": {
-    "K_Fountain":     {"assetId": "76556272343060",  "tris": 4934, "place": "(0,0,0)", "fit": "width 21 -> 21.0x20.4x21.0", "yaw": 0, "contract": "Landmarks.Fountain(Model+PrimaryPart) 유지: 키트 메시를 그 모델 안에 넣고 PrimaryPart는 투명 받침으로"},
-    "K_CrownShard":   {"assetId": "138150055823518", "tris": 1498, "place": "(0,21,0) 분수 위", "fit": "width 7", "yaw": 0, "contract": "Landmarks.CrownShard 유지(빛기둥 Beam·PointLight 그대로, 네온 블록만 숨김). 천천히 회전 권장"},
-    "K_Bench":        {"assetId": "134680201973665", "tris": 800,  "place": "(±18,0,±18) x4", "fit": "width 6.5", "yaw": "광장 가운데를 봄 = atan2(x,z)"},
-    "K_Lamp":         {"assetId": "83198252324794",  "tris": 890,  "place": "반지름 32의 8곳(기존 Lamp 자리)", "fit": "height 11", "yaw": "대칭이라 상관없음", "contract": "PointLight 4개는 유리 높이(약 y 9.5)에"},
-    "K_StallRed":     {"assetId": "129560971369618", "tris": 1966, "place": "(-12.2,-52.8), (-46.7,-20.3)", "fit": "width 10", "yaw": "광장을 봄"},
-    "K_StallBlue":    {"assetId": "130455047391717", "tris": 1918, "place": "(-22.4,-42.7)", "fit": "width 10", "yaw": "광장을 봄"},
-    "K_StallGreen":   {"assetId": "132658338267168", "tris": 1994, "place": "(-36.6,-34.5)", "fit": "width 10", "yaw": "광장을 봄"},
-    "K_Potion":       {"assetId": "83996745517766",  "tris": 1936, "place": "(12,-40) 물약 상인(12,-34) 바로 뒤", "fit": "height 7.5", "yaw": "광장을 봄", "contract": "프롬프트는 NPC 쪽 그대로"},
-    "K_Guild2":       {"assetId": "136224445139337", "tris": 5876, "place": "(44,0,60)", "fit": "width 24 -> 24.0x16.2x22.3", "yaw": 0, "contract": "ArtisanGuild(Model) 이름 유지, 옛 Hall·Beam·Roof·Door·Gear 파트 대신"},
-    "K_Gear":         {"assetId": "132536329142416", "tris": 996,  "place": "(44, y 9.6~14.2, 48.6) 길드 앞 박공", "fit": "width 4.6", "yaw": 0, "contract": "천천히 회전(ART_DIRECTION 10°/s)"},
-    "K_Anvil":        {"assetId": "82446744618801",  "tris": 1000, "place": "(39,0,45)", "fit": "depth 4.5", "yaw": 0, "contract": "ArtisanGuild 바로 아래 Anchored BasePart 이름 Anvil 필수(상점 거리·길 안내·지도). 키트 메시를 Anvil MeshPart로 쓰거나 투명 Anvil 파트 위에 겹침"},
-    "K_Forge":        {"assetId": "86664671339999",  "tris": 1490, "place": "(49,0,45)", "fit": "height 6", "yaw": 0},
-    "K_Altar":        {"assetId": "121777078323302", "tris": 2990, "place": "(0,0,45)", "fit": "width 9", "yaw": 0, "contract": "Altar(BasePart)+AltarPrompt 유지 → 옛 Altar 파트를 투명하게 두고 키트를 겹침"},
-    "K_Brazier":      {"assetId": "136257412466235", "tris": 800,  "place": "(±15,0,60)", "fit": "height 4", "yaw": 0},
-    "K_PadBase":      {"assetId": "110136633746885", "tris": 1422, "place": "Config 발판 자리 (52,-24),(52,24),(68,24)", "fit": "width 12 -> 12x3.1x10.5", "yaw": 0, "contract": "Pad_<Dest>(Part, TravelTo, CanTouch) 유지: 네온 판은 Transparency 1(터치는 그대로), 둘레 RingSeg는 y≈2.0으로 받침 위에"},
-    "K_Nest":         {"assetId": "101705985682378", "tris": 1998, "place": "(-30,0,30)", "fit": "width 12", "yaw": 0, "contract": "GoosePerch 모델 이름·자리 유지(옛 파트 투명)"},
-    "K_PoleHalo":     {"assetId": "127080708298829", "tris": 682,  "place": "(±12,0,-60)", "fit": "height 14", "yaw": 0, "cloth": "BannerCloth 5.3x8x0.2 Fabric, 가로대 아래·광장 쪽(+Z 0.6). 지금은 색(120,175,245) — Banner_Halo(2:3) 업로드 뒤 Decal"},
-    "K_PoleHorns":    {"assetId": "139687601212418", "tris": 696,  "place": "(±12,0,60)", "fit": "height 14", "yaw": 180, "cloth": "색(150,28,40) — Banner_Horns(2:3) 업로드 뒤 Decal"},
-    "K_MarketArch":   {"assetId": "109900161242056", "tris": 1190, "place": "(-27,0,-27) 장터 입구", "fit": "width 12", "yaw": "광장을 봄", "contract": "MarketSign(지도 위치) 유지, 떠 있는 글자는 A23-36에 따라 없앰(키트 매단 판은 글자 없음)"},
-    "K_NoticeBoard2": {"assetId": "133123107676921", "tris": 1394, "place": "(-57.5,0,0)", "fit": "width 16", "yaw": -90, "contract": "MostWantedBoard(+X 면 SurfaceGui)는 그대로 쓰되 미리보기에서 0.4x9.6x11.8, 중심 (-55.0,8.4,0)으로 줄여 키트 판 가운데를 덮음(키트 판 가운데에 생성 얼룩이 있어 덮어야 함). 옛 기둥 2개는 투명"},
-    "K_Curb":         {"assetId": "71401040660667",  "tris": 398,  "place": "반지름 28.5 고리, 길 입구(|x|<10 또는 |z|<10) 비움 → 16개", "fit": "width 6.2", "yaw": "phi(접선)", "contract": "높이 1.2 — 걸려 넘어지지 않게 CanCollide false 권장"}
+    "K_Fountain": {
+      "assetId": "76556272343060",
+      "tris": 4934,
+      "place": "(0,0,0)",
+      "fit": "width 21 -> 21.0x20.4x21.0",
+      "yaw": 0,
+      "contract": "Landmarks.Fountain(Model+PrimaryPart) 유지: 키트 메시를 그 모델 안에 넣고 PrimaryPart는 투명 받침으로"
+    },
+    "K_CrownShard": {
+      "assetId": "138150055823518",
+      "tris": 1498,
+      "place": "(0,21,0) 분수 위",
+      "fit": "width 7",
+      "yaw": 0,
+      "contract": "Landmarks.CrownShard 유지(빛기둥 Beam·PointLight 그대로, 네온 블록만 숨김). 천천히 회전 권장"
+    },
+    "K_Bench": {
+      "assetId": "134680201973665",
+      "tris": 800,
+      "place": "(±18,0,±18) x4",
+      "fit": "width 6.5",
+      "yaw": "광장 가운데를 봄 = atan2(x,z)"
+    },
+    "K_Lamp": {
+      "assetId": "83198252324794",
+      "tris": 890,
+      "place": "반지름 32의 8곳(기존 Lamp 자리)",
+      "fit": "height 11",
+      "yaw": "대칭이라 상관없음",
+      "contract": "PointLight 4개는 유리 높이(약 y 9.5)에"
+    },
+    "K_StallRed": {
+      "assetId": "129560971369618",
+      "tris": 1966,
+      "place": "(-12.2,-52.8), (-46.7,-20.3)",
+      "fit": "width 10",
+      "yaw": "광장을 봄"
+    },
+    "K_StallBlue": {
+      "assetId": "130455047391717",
+      "tris": 1918,
+      "place": "(-22.4,-42.7)",
+      "fit": "width 10",
+      "yaw": "광장을 봄"
+    },
+    "K_StallGreen": {
+      "assetId": "132658338267168",
+      "tris": 1994,
+      "place": "(-36.6,-34.5)",
+      "fit": "width 10",
+      "yaw": "광장을 봄"
+    },
+    "K_Potion": {
+      "assetId": "83996745517766",
+      "tris": 1936,
+      "place": "(12,-40) 물약 상인(12,-34) 바로 뒤",
+      "fit": "height 7.5",
+      "yaw": "광장을 봄",
+      "contract": "프롬프트는 NPC 쪽 그대로"
+    },
+    "K_Guild2": {
+      "assetId": "136224445139337",
+      "tris": 5876,
+      "place": "(44,0,60)",
+      "fit": "width 24 -> 24.0x16.2x22.3",
+      "yaw": 0,
+      "contract": "ArtisanGuild(Model) 이름 유지, 옛 Hall·Beam·Roof·Door·Gear 파트 대신"
+    },
+    "K_Gear": {
+      "assetId": "132536329142416",
+      "tris": 996,
+      "place": "(44, y 9.6~14.2, 48.6) 길드 앞 박공",
+      "fit": "width 4.6",
+      "yaw": 0,
+      "contract": "천천히 회전(ART_DIRECTION 10°/s)"
+    },
+    "K_Anvil": {
+      "assetId": "82446744618801",
+      "tris": 1000,
+      "place": "(39,0,45)",
+      "fit": "depth 4.5",
+      "yaw": 0,
+      "contract": "ArtisanGuild 바로 아래 Anchored BasePart 이름 Anvil 필수(상점 거리·길 안내·지도). 키트 메시를 Anvil MeshPart로 쓰거나 투명 Anvil 파트 위에 겹침"
+    },
+    "K_Forge": {
+      "assetId": "86664671339999",
+      "tris": 1490,
+      "place": "(49,0,45)",
+      "fit": "height 6",
+      "yaw": 0
+    },
+    "K_Altar": {
+      "assetId": "121777078323302",
+      "tris": 2990,
+      "place": "(0,0,45)",
+      "fit": "width 9",
+      "yaw": 0,
+      "contract": "Altar(BasePart)+AltarPrompt 유지 → 옛 Altar 파트를 투명하게 두고 키트를 겹침"
+    },
+    "K_Brazier": {
+      "assetId": "136257412466235",
+      "tris": 800,
+      "place": "(±15,0,60)",
+      "fit": "height 4",
+      "yaw": 0
+    },
+    "K_PadBase": {
+      "assetId": "110136633746885",
+      "tris": 1422,
+      "place": "Config 발판 자리 (52,-24),(52,24),(68,24)",
+      "fit": "width 12 -> 12x3.1x10.5",
+      "yaw": 0,
+      "contract": "Pad_<Dest>(Part, TravelTo, CanTouch) 유지: 네온 판은 Transparency 1(터치는 그대로), 둘레 RingSeg는 y≈2.0으로 받침 위에"
+    },
+    "K_Nest": {
+      "assetId": "101705985682378",
+      "tris": 1998,
+      "place": "(-30,0,30)",
+      "fit": "width 12",
+      "yaw": 0,
+      "contract": "GoosePerch 모델 이름·자리 유지(옛 파트 투명)"
+    },
+    "K_PoleHalo": {
+      "assetId": "127080708298829",
+      "tris": 682,
+      "place": "(±12,0,-60)",
+      "fit": "height 14",
+      "yaw": 0,
+      "cloth": "BannerCloth 5.3x8x0.2 Fabric, 가로대 아래·광장 쪽(+Z 0.6). 지금은 색(120,175,245) — Banner_Halo(2:3) 업로드 뒤 Decal"
+    },
+    "K_PoleHorns": {
+      "assetId": "139687601212418",
+      "tris": 696,
+      "place": "(±12,0,60)",
+      "fit": "height 14",
+      "yaw": 180,
+      "cloth": "색(150,28,40) — Banner_Horns(2:3) 업로드 뒤 Decal"
+    },
+    "K_MarketArch": {
+      "assetId": "109900161242056",
+      "tris": 1190,
+      "place": "(-27,0,-27) 장터 입구",
+      "fit": "width 12",
+      "yaw": "광장을 봄",
+      "contract": "MarketSign(지도 위치) 유지, 떠 있는 글자는 A23-36에 따라 없앰(키트 매단 판은 글자 없음)"
+    },
+    "K_NoticeBoard2": {
+      "assetId": "133123107676921",
+      "tris": 1394,
+      "place": "(-57.5,0,0)",
+      "fit": "width 16",
+      "yaw": -90,
+      "contract": "MostWantedBoard(+X 면 SurfaceGui)는 그대로 쓰되 미리보기에서 0.4x9.6x11.8, 중심 (-55.0,8.4,0)으로 줄여 키트 판 가운데를 덮음(키트 판 가운데에 생성 얼룩이 있어 덮어야 함). 옛 기둥 2개는 투명"
+    },
+    "K_Curb": {
+      "assetId": "71401040660667",
+      "tris": 398,
+      "place": "반지름 28.5 고리, 길 입구(|x|<10 또는 |z|<10) 비움 → 16개",
+      "fit": "width 6.2",
+      "yaw": "phi(접선)",
+      "contract": "높이 1.2 — 걸려 넘어지지 않게 CanCollide false 권장"
+    }
   },
   "dropped": {
     "K_Guild (93235013033313)": "좁고 높은 2층 집(15.6x24) → 넓은 K_Guild2로 바꿈",
@@ -36,26 +177,301 @@
   "creator_store_tried": {
     "rule": "ServerStorage.KitStage에만 넣고 Script·LocalScript·ModuleScript·Remote·Bindable·Prompt·ClickDetector·Sound·Humanoid를 지움(남은 위험 인스턴스 0 확인). 결과: 대부분 각지고 사실적이라 장난감 콘셉트와 안 맞음 → 무료 생성 도구 결과 채택.",
     "items": [
-      {"id": "7070126910",      "name": "Fountain(cartoon)", "creator": "An0nsoul_Sniperr", "removed": ["Script:Look"], "parts": 21, "verdict": "2nd choice fountain (plain white marble)"},
-      {"id": "133107976105207", "name": "Cartoon Fountain Water Splash", "creator": "XzOrbit5TBoltYzX1404", "removed": ["Script:LightConfig", "ModuleScript x2"], "parts": 5, "verdict": "no"},
-      {"id": "124245763082130", "name": "Better Low Poly Fountain", "creator": "BlockOrbit7076", "removed": ["Script:Credits", "Script:CoreSkyboxSystem"], "parts": 31, "verdict": "no (dark grey)"},
-      {"id": "1493801744",      "name": "Cartoon Bench V1", "creator": "LowKayKevin", "removed": [], "parts": 25, "verdict": "no"},
-      {"id": "10542067814",     "name": "Popsicle Stick Bench", "creator": "9022oak", "removed": [], "parts": 43, "verdict": "no"},
-      {"id": "6160365655",      "name": "Wooden Park Bench", "creator": "Melismyx", "removed": [], "parts": 48, "verdict": "no"},
-      {"id": "16445144129",     "name": "Basic Bench", "creator": "soreilzy", "removed": [], "parts": 13, "verdict": "no"},
-      {"id": "88171328324610",  "name": "Stylized Lantern Post", "creator": "XArsinix", "removed": [], "parts": 6, "verdict": "no (small)"},
-      {"id": "18330601838",     "name": "Tall Lamp", "creator": "amit857", "removed": [], "parts": 40, "verdict": "2nd choice lamp"},
-      {"id": "210139817",       "name": "MedievalLampPost", "creator": "Boopbot", "removed": [], "parts": 26, "verdict": "no"},
-      {"id": "17451005959",     "name": "lamp", "creator": "metrox1223", "removed": [], "parts": 6, "verdict": "no (50 tall)"},
-      {"id": "86311252190175",  "name": "Market stall", "creator": "IAmASwedishMale", "removed": [], "parts": 1, "verdict": "tiny single mesh; not checked"},
-      {"id": "4611303753",      "name": "FoodStall", "creator": "AlexAecid", "removed": [], "parts": 46, "decals": ["4608397654 x5"], "verdict": "no"},
-      {"id": "388036950",       "name": "Market Stand", "creator": "WoodReviewer", "removed": [], "parts": 109, "verdict": "no"},
-      {"id": "8403588845",      "name": "Fruit Stand", "creator": "ruby_cantik115", "removed": [], "parts": 95, "verdict": "no"},
-      {"id": "107193693143362", "name": "Classic Potion-Maker's Shelf", "creator": "WarpedSockMonkey", "removed": ["Sound x6", "Script:Note from the Creator."], "parts": 19, "verdict": "no"},
-      {"id": "11946437830",     "name": "Anvil", "creator": "IllusivePhantasm", "removed": [], "parts": 4, "verdict": "no"},
-      {"id": "83520552281722",  "name": "cartoon anvil", "creator": "Kafier2312", "removed": ["Script:Script", "Sound:Cartoon Anvil Hit Sound Effect"], "parts": 5, "verdict": "no"},
-      {"id": "13732732668",     "name": "Anvil", "creator": "nacrobloxgamer", "removed": [], "parts": 1, "verdict": "no"}
+      {
+        "id": "7070126910",
+        "name": "Fountain(cartoon)",
+        "creator": "An0nsoul_Sniperr",
+        "removed": [
+          "Script:Look"
+        ],
+        "parts": 21,
+        "verdict": "2nd choice fountain (plain white marble)"
+      },
+      {
+        "id": "133107976105207",
+        "name": "Cartoon Fountain Water Splash",
+        "creator": "XzOrbit5TBoltYzX1404",
+        "removed": [
+          "Script:LightConfig",
+          "ModuleScript x2"
+        ],
+        "parts": 5,
+        "verdict": "no"
+      },
+      {
+        "id": "124245763082130",
+        "name": "Better Low Poly Fountain",
+        "creator": "BlockOrbit7076",
+        "removed": [
+          "Script:Credits",
+          "Script:CoreSkyboxSystem"
+        ],
+        "parts": 31,
+        "verdict": "no (dark grey)"
+      },
+      {
+        "id": "1493801744",
+        "name": "Cartoon Bench V1",
+        "creator": "LowKayKevin",
+        "removed": [],
+        "parts": 25,
+        "verdict": "no"
+      },
+      {
+        "id": "10542067814",
+        "name": "Popsicle Stick Bench",
+        "creator": "9022oak",
+        "removed": [],
+        "parts": 43,
+        "verdict": "no"
+      },
+      {
+        "id": "6160365655",
+        "name": "Wooden Park Bench",
+        "creator": "Melismyx",
+        "removed": [],
+        "parts": 48,
+        "verdict": "no"
+      },
+      {
+        "id": "16445144129",
+        "name": "Basic Bench",
+        "creator": "soreilzy",
+        "removed": [],
+        "parts": 13,
+        "verdict": "no"
+      },
+      {
+        "id": "88171328324610",
+        "name": "Stylized Lantern Post",
+        "creator": "XArsinix",
+        "removed": [],
+        "parts": 6,
+        "verdict": "no (small)"
+      },
+      {
+        "id": "18330601838",
+        "name": "Tall Lamp",
+        "creator": "amit857",
+        "removed": [],
+        "parts": 40,
+        "verdict": "2nd choice lamp"
+      },
+      {
+        "id": "210139817",
+        "name": "MedievalLampPost",
+        "creator": "Boopbot",
+        "removed": [],
+        "parts": 26,
+        "verdict": "no"
+      },
+      {
+        "id": "17451005959",
+        "name": "lamp",
+        "creator": "metrox1223",
+        "removed": [],
+        "parts": 6,
+        "verdict": "no (50 tall)"
+      },
+      {
+        "id": "86311252190175",
+        "name": "Market stall",
+        "creator": "IAmASwedishMale",
+        "removed": [],
+        "parts": 1,
+        "verdict": "tiny single mesh; not checked"
+      },
+      {
+        "id": "4611303753",
+        "name": "FoodStall",
+        "creator": "AlexAecid",
+        "removed": [],
+        "parts": 46,
+        "decals": [
+          "4608397654 x5"
+        ],
+        "verdict": "no"
+      },
+      {
+        "id": "388036950",
+        "name": "Market Stand",
+        "creator": "WoodReviewer",
+        "removed": [],
+        "parts": 109,
+        "verdict": "no"
+      },
+      {
+        "id": "8403588845",
+        "name": "Fruit Stand",
+        "creator": "ruby_cantik115",
+        "removed": [],
+        "parts": 95,
+        "verdict": "no"
+      },
+      {
+        "id": "107193693143362",
+        "name": "Classic Potion-Maker's Shelf",
+        "creator": "WarpedSockMonkey",
+        "removed": [
+          "Sound x6",
+          "Script:Note from the Creator."
+        ],
+        "parts": 19,
+        "verdict": "no"
+      },
+      {
+        "id": "11946437830",
+        "name": "Anvil",
+        "creator": "IllusivePhantasm",
+        "removed": [],
+        "parts": 4,
+        "verdict": "no"
+      },
+      {
+        "id": "83520552281722",
+        "name": "cartoon anvil",
+        "creator": "Kafier2312",
+        "removed": [
+          "Script:Script",
+          "Sound:Cartoon Anvil Hit Sound Effect"
+        ],
+        "parts": 5,
+        "verdict": "no"
+      },
+      {
+        "id": "13732732668",
+        "name": "Anvil",
+        "creator": "nacrobloxgamer",
+        "removed": [],
+        "parts": 1,
+        "verdict": "no"
+      }
     ]
   },
-  "todo": "하늘 왕관(CrownOfBalance) 메시, 큰 바위·능선 덧대기, 연석(금·빨강 캡), 스폰 표시 — 다음 묶음. 메인 배치·계약 처리는 게임성 개발 1."
+  "todo": "하늘 왕관(CrownOfBalance) 메시, 큰 바위·능선 덧대기, 연석(금·빨강 캡), 스폰 표시 — 다음 묶음. 메인 배치·계약 처리는 게임성 개발 1.",
+  "towns": {
+    "note": "빛 마을·뿔 마을 키트(2026-10-06, 전부 Roblox Studio 무료 generate_mesh). 미리보기 tools/worldkit/towns_kit_place.luau (__HTOWER__ = \"H_Tower2\"). 전·후 art/review/worldkit/towns_before_after.jpg. 영웅상(사람 모양)은 아직 옛것 — 사용자 확인 필요 그림이라 따로.",
+    "kit": {
+      "H_Gate": {
+        "assetId": "134753345077642",
+        "tris": 3886,
+        "place": "Gate_HaloTown (0,0,-320)",
+        "fit": "width 30",
+        "yaw": 180,
+        "contract": "Gate_HaloTown 파트(Lintel 등)는 투명하게 두고 키트를 겹침(GateSign·HUD 안내 대상 유지)"
+      },
+      "H_Tower2": {
+        "assetId": "119041506496000",
+        "tris": 2884,
+        "place": "HaloTower 4곳(±58,-458/-352)",
+        "fit": "height 34",
+        "yaw": "마을 가운데를 봄"
+      },
+      "H_Cathedral": {
+        "assetId": "110791560906694",
+        "tris": 8998,
+        "place": "(0,0,-458)",
+        "fit": "width 40",
+        "yaw": 180,
+        "contract": "Landmarks.Cathedral 옛 파트는 투명(첨탑 빛 1개 유지 권장)"
+      },
+      "H_Cloud": {
+        "assetId": "79817129229829",
+        "tris": 1000,
+        "place": "옛 Cloud 자리, 땅에서 2.5 띄움",
+        "fit": "width 11"
+      },
+      "H_Flowers": {
+        "assetId": "117233826320116",
+        "tris": 600,
+        "place": "옛 Flower 자리",
+        "fit": "width 3.2"
+      },
+      "H_BridgeRail": {
+        "assetId": "96849592806703",
+        "tris": 800,
+        "place": "Bridge_Halo 양쪽 x ±8.6, 12칸마다(한쪽 10개)",
+        "fit": "width 12",
+        "yaw": 90,
+        "contract": "Deck(걷는 판)·Support는 그대로, 옛 Rail·Post는 투명"
+      },
+      "H_BridgePost": {
+        "assetId": "106889056177476",
+        "tris": 596,
+        "place": "다리 양 끝 4곳",
+        "fit": "height 6"
+      },
+      "H_Lamp": {
+        "assetId": "105775522323598",
+        "tris": 600,
+        "place": "옛 다리 Lamp 10곳, x ±9.6",
+        "fit": "height 8",
+        "contract": "PointLight 1개 유지"
+      },
+      "H_HaloRing": {
+        "assetId": "133713122450486",
+        "tris": 500,
+        "note": "관문·탑에 이미 고리가 있어 이번 배치에선 안 씀(예비)"
+      },
+      "R_Gate": {
+        "assetId": "86935485866112",
+        "tris": 3908,
+        "place": "Gate_HornsTown (0,0,320)",
+        "fit": "width 30",
+        "yaw": 0,
+        "contract": "Gate_HornsTown 파트 투명, 키트 겹침"
+      },
+      "R_Watchtower": {
+        "assetId": "83521935294899",
+        "tris": 3970,
+        "place": "HornTower 3곳",
+        "fit": "height 28",
+        "yaw": "가운데를 봄"
+      },
+      "R_Spikes": {
+        "assetId": "113239479397458",
+        "tris": 800,
+        "place": "Spike 14곳(반지름 62 고리)",
+        "fit": "height 9"
+      },
+      "R_LavaChannel": {
+        "assetId": "75313674825689",
+        "tris": 600,
+        "place": "x ±48, z 338~462 5.9칸마다, 높이의 60% 땅에 묻음",
+        "fit": "depth 6",
+        "yaw": 0,
+        "contract": "옛 LavaChannel·ChannelRim 숨김(PointLight 2개는 새 자리 근처에 다시)"
+      },
+      "R_BridgeRail": {
+        "assetId": "133341394215897",
+        "tris": 796,
+        "place": "Bridge_Horns 양쪽, 12칸마다",
+        "fit": "width 12",
+        "yaw": 90
+      },
+      "K_Brazier": {
+        "assetId": "136257412466235",
+        "place": "뿔 다리 등불 10곳 = 교차로 뿔 화로와 같은 메시",
+        "fit": "height 3.6"
+      }
+    },
+    "dropped": {
+      "H_Tower (134040857810563)": "뚱뚱한 탑(10x14) — 날씬한 H_Tower2로",
+      "H_Tower3 (102628324630615)": "등대 같은 흰 탑, 금 돔이 약해 H_Tower2로"
+    }
+  },
+  "monsters": {
+    "ghost": {
+      "note": "A23-45 유령 가족. Tripo 100크레딧(똘마니 40 + 왕 60). 무료 비교 art/review/ghost3d_free_vs_concept.jpg, 결과 art/review/ghost3d_tripo_sheet.jpg. Studio 가져오기(3D 가져오기 창)는 게임성 개발 1.",
+      "MonsterGhostMinion": "art/models/tripo/MonsterGhostMinion_raw.glb",
+      "MonsterGhostKing": "art/models/tripo/MonsterGhostKing_raw.glb",
+      "free_tries": {
+        "G_GhostMinion_A": "104236237362511",
+        "G_GhostMinion_B": "85043441027538",
+        "G_GhostMinion_C": "70618675309749",
+        "G_GhostMinion_D": "86495261623550",
+        "G_GhostKing_A": "129024513273057 (+ generate_texture 다시 칠함, mesh 110917692430303 tex 137900193339394)"
+      }
+    }
+  }
 }
