@@ -807,7 +807,7 @@
   "size": "512x512 RGBA",
   "cutout": "tools/cutout_flat.py --holes + edge clean-up; checked light/navy/magenta, 40px",
   "preview": "art/review/icons_perks10_preview.png",
-  "note": "묶음 3 진영 특성 아이콘 — 체력 +20%·회복 (빛). Config.UIArt.Parts 키 그대로. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06), 시트로 보여 줌."
+  "note": "묶음 3 진영 특성 아이콘 — 체력 +20%·회복 (빛). 첫 판(잎·꼭지)은 48px에서 사과로 읽혀서(검수) 다시: 진한 빨간 하트 + 오른쪽 아래 초록 + 배지, 2안 중 A. 고르기는 사용자가 이미지 세션에 맡김."
  },
  "IconWings": {
   "status": "approved",
