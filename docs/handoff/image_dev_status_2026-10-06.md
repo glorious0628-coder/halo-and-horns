@@ -1,5 +1,7 @@
 # 이미지 개발 인계 상태 (2026-10-06 오후, 계정 옮기느라 멈춤 — 검수 지시)
 
+> **최신(새 계정, 한도로 멈춤 13시경):** ① 미완성 src는 worktree `Game-imgdev`(브랜치 imgdev, 백업 imgdev-wip-backup)에만 있음 — 작업 폴더 src는 HEAD, addc169(2차 검수 2-5~2-7 도구) 푸시. ② 업로드 14장 끝(기록만 커밋, Config 키는 아직): MenuTile·IconSettings·IconNews, CLS_* 8 → Char{Halo,Horns,Neutral}* 자리(ClassPicker가 다른 성별로 대체), PTR_Guide* 3 → 새 키 PortraitGuide*(Panels 환영창 Char..WarriorM 대신, 개발 1에 알리고). ③ 다음: Config 키 넣기 → UiSandbox(열려 있음, Edit) 확인 → 커밋 → A23-40 B안 배치(HudLayout B + 폰 위 가운데·오른쪽 위, 캡처 1280×720·749×361·844×390) → 게임 화면 위 글꼴 견본 2~3개. 아직 안 올린 것: Skill_*_Q 3, 묶음 2 진영 화면 9.
+
 ## 끝난 것 (push 완료)
 - 오전: a62c6e8(그림 20장), aebf974(PvP 탭), 938c230(진영 특성 10장), bff00df(드랍·호박 대왕 알림 그림), f0e011a, 7dd8103(ART-DEL1 정리), 9759dd3.
 - 65b2ccb 화면 배치 v2 계산 모듈(HudLayout) + 오프라인 검사.
