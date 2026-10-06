@@ -3997,6 +3997,15 @@
    "image": "art\\out\\town3\\X_Fountain_src.png",
    "recipe": "building",
    "seed": 65848
+  },
+  {
+   "task_id": "bf8583e1-a9c6-4f26-98bd-cba495d1a22b",
+   "credits": 40.0,
+   "image": "art\\out\\town3\\X_Fountain_src.png",
+   "file": "art\\models\\tripo\\X_Fountain_raw.glb",
+   "bytes": 2907820,
+   "at": "2026-10-06 18:50:04",
+   "note": "finished while the PC restarted; fetched later with 'tripo_api.py task' (credits_consumed from the task)"
   }
  ],
  "X_GuildHall": [
@@ -4006,6 +4015,15 @@
    "image": "art\\out\\town3\\X_GuildHall_src.png",
    "recipe": "building",
    "seed": 33365
+  },
+  {
+   "task_id": "ba5f985d-559c-4901-9b0f-57e0564b3506",
+   "credits": 40.0,
+   "image": "art\\out\\town3\\X_GuildHall_src.png",
+   "file": "art\\models\\tripo\\X_GuildHall_raw.glb",
+   "bytes": 3112036,
+   "at": "2026-10-06 18:53:14",
+   "note": "finished while the PC restarted; fetched later with 'tripo_api.py task' (credits_consumed from the task)"
   }
  ],
  "Town_Halo_Tree": [
@@ -4015,6 +4033,15 @@
    "image": "art\\out\\town3\\Town_Halo_Tree_src.png",
    "recipe": "prop_std",
    "seed": 67034
+  },
+  {
+   "task_id": "162382cf-7faf-4d9e-9a57-bee01011416f",
+   "credits": 30.0,
+   "image": "art\\out\\town3\\Town_Halo_Tree_src.png",
+   "file": "art\\models\\tripo\\Town_Halo_Tree_raw.glb",
+   "bytes": 710816,
+   "at": "2026-10-06 18:50:54",
+   "note": "finished while the PC restarted; fetched later with 'tripo_api.py task' (credits_consumed from the task)"
   }
  ],
  "Acc_HaloR5": [
@@ -4024,6 +4051,15 @@
    "image": "art\\out\\acc\\HaloR5_34.png",
    "recipe": "acc",
    "seed": 58096
+  },
+  {
+   "task_id": "92c6dddc-602b-4d66-9c01-4636e92472af",
+   "credits": 40.0,
+   "image": "art\\out\\acc\\HaloR5_34.png",
+   "file": "art\\models\\tripo\\Acc_HaloR5_raw.glb",
+   "bytes": 1874916,
+   "at": "2026-10-06 18:51:19",
+   "note": "finished while the PC restarted; fetched later with 'tripo_api.py task' (credits_consumed from the task)"
   }
  ],
  "Acc_HornsR5": [
@@ -4033,6 +4069,61 @@
    "image": "art\\out\\acc\\HornsR5_34.png",
    "recipe": "acc",
    "seed": 47049
+  },
+  {
+   "task_id": "0a4cb419-f48a-468c-a85f-dfa4481423ef",
+   "credits": 40.0,
+   "image": "art\\out\\acc\\HornsR5_34.png",
+   "file": "art\\models\\tripo\\Acc_HornsR5_raw.glb",
+   "bytes": 2020368,
+   "at": "2026-10-06 18:52:23",
+   "note": "finished while the PC restarted; fetched later with 'tripo_api.py task' (credits_consumed from the task)"
+  }
+ ],
+ "Town_Halo_Wall": [
+  {
+   "event": "generation_submitted",
+   "task_id": "36f1388b-275f-40a6-91b8-ceecf77efb2f",
+   "image": "art\\out\\town3\\Town_Halo_Wall_src.png",
+   "recipe": "prop_std",
+   "seed": 62176
+  },
+  {
+   "task_id": "36f1388b-275f-40a6-91b8-ceecf77efb2f",
+   "image": "art\\out\\town3\\Town_Halo_Wall_src.png",
+   "recipe": "prop_std",
+   "seed": 62176,
+   "credits": 30.0,
+   "file": "art\\models\\tripo\\Town_Halo_Wall_raw.glb",
+   "bytes": 751644,
+   "at": "2026-10-06 19:08:21"
+  }
+ ],
+ "Town_Horns_Tree": [
+  {
+   "event": "generation_submitted",
+   "task_id": "f7d24064-17bd-4313-88d5-535f9d089b39",
+   "image": "art\\out\\town3\\Town_Horns_Tree_src.png",
+   "recipe": "prop_std",
+   "seed": 82654
+  }
+ ],
+ "X_TreeA": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c09cfc8d-1bff-428f-866e-8d52bf8094d7",
+   "image": "art\\out\\town3\\X_TreeA_src.png",
+   "recipe": "prop_std",
+   "seed": 24367
+  }
+ ],
+ "Town_Horns_Wall": [
+  {
+   "event": "generation_submitted",
+   "task_id": "7f6c5dc9-71f6-465d-b003-16444ccbc106",
+   "image": "art\\out\\town3\\Town_Horns_Wall_src.png",
+   "recipe": "prop_std",
+   "seed": 78228
   }
  ]
 }
