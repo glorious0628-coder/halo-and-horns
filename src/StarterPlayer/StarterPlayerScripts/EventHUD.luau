@@ -103,29 +103,29 @@ local AC = {
 	KaijuTint = Color3.fromRGB(255, 196, 186), -- ImageColor3 on the kaiju pill
 }
 
--- private Korean strings (TECH_SPEC §4.23 EventHUD)
+-- private strings (TECH_SPEC §4.23 EventHUD; A23-48: English only, names from docs/design/glossary_en_2026-10-06.md)
 local TXT = {
-	GooseNext = "황금 거위까지 %s",
-	GooseTitle = "황금 거위 줄다리기! %s",
-	Rescue = "구조 %d",
-	Poach = "밀렵 %d",
-	MyCount = "내 기여 %d",
-	HintHalo = "거위를 때려 구조하세요!",
-	HintHorns = "거위를 때려 밀렵하세요!",
-	HintNeutral = "장인 길드는 줄다리기에 참여하지 않아요", -- addendum A6
-	KaijuChip = "괴수 %s %s",
-	SirenLeft = "%d초",
-	Sack = "원한 자루 %s · %d초 (PvP 지역에서만 줄어요)",
-	KaijuSelf = "괴수 변신 중! %s 버티면 전설의 악당",
-	Revenge = "복수 대상: %s · %s",
-	Luck = "오늘의 운 · 희귀 %s%%", -- A23-18 (events taken part in today, KST day)
-	LuckShort = "희귀 %s%%", -- HUD v2 phone luck chip (EventHUD.LuckShort)
-	Cheer = "응원별 %s (%d/%d)",
-	CheerLabel = "응원별",
+	GooseNext = "Golden Goose %s", -- the phone's next-event line is 150 px
+	GooseTitle = "Golden Goose Tug! %s",
+	Rescue = "Rescue %d",
+	Poach = "Poach %d",
+	MyCount = "My hits %d",
+	HintHalo = "Hit the goose to rescue it!",
+	HintHorns = "Hit the goose to poach it!",
+	HintNeutral = "The Artisan Guild sits out the tug", -- addendum A6
+	KaijuChip = "Kaiju %s %s",
+	SirenLeft = "%ds",
+	Sack = "Grudge Sack %s · %ds (shrinks only in PvP zones)",
+	KaijuSelf = "You are a Kaiju! Last %s to become a legend",
+	Revenge = "Revenge: %s · %s",
+	Luck = "Today's Luck · Rare %s%%", -- A23-18 (events taken part in today, KST day)
+	LuckShort = "Rare %s%%", -- HUD v2 phone luck chip (EventHUD.LuckShort)
+	Cheer = "Cheer Stars %s (%d/%d)",
+	CheerLabel = "Cheer Stars",
 	CheerCount = "%d/%d",
-	ArrowSack = "원한 자루 %s",
-	ArrowKaiju = "괴수",
-	ArrowRevenge = "복수",
+	ArrowSack = "Grudge Sack %s",
+	ArrowKaiju = "Kaiju",
+	ArrowRevenge = "Revenge",
 	UnknownName = "???",
 }
 

@@ -2809,13 +2809,18 @@ Config.UIArt = {
 		FactionTitleFreshTyped = { Id = "rbxassetid://111239293270560", Size = Vector2.new(1024, 210) },
 		FactionFooterFreshTyped = { Id = "rbxassetid://128423642459976", Size = Vector2.new(1024, 126) },
 		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
-		-- pick screens (mockups art/out/UI_Faction_B.png, UI_Class_A.png): text-free card backgrounds, regions in CardLayout
-		CardHalo = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(635, 1024) },
-		CardHorns = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(617, 1024) },
-		CardNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(612, 1024) },
-		ClassCardHalo = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(647, 1024) },
-		ClassCardHorns = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(608, 1024) },
-		ClassCardNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(618, 1024) },
+		-- pick screens: bundle 2 (5d16034, Firefly, wordless) text-free card backgrounds, regions in CardLayout; A23-48 the
+		-- game writes every word on them in English (the baked Korean FactionE cards are off)
+		CardHalo = { Id = "rbxassetid://116448859963324", Size = Vector2.new(622, 1024) },
+		CardHorns = { Id = "rbxassetid://116416538185922", Size = Vector2.new(657, 1024) },
+		CardNeutral = { Id = "rbxassetid://117830833611240", Size = Vector2.new(586, 1024) }, -- FactionCardArtisan
+		ClassCardHalo = { Id = "rbxassetid://83370147336230", Size = Vector2.new(569, 1024) },
+		ClassCardHorns = { Id = "rbxassetid://96506679569017", Size = Vector2.new(529, 1024) },
+		ClassCardNeutral = { Id = "rbxassetid://112912477016552", Size = Vector2.new(581, 1024) }, -- ClassCardArtisan
+		-- bundle 2 title ribbon (crown + halo + horn, text in TextRect), premise panel and footer capsule (navy: white text)
+		FactionTitle = { Id = "rbxassetid://126167902049009", Size = Vector2.new(1024, 389), TextRect = { 0.22, 0.38, 0.56, 0.34 } }, -- the scroll band between its folds
+		FactionPremise = { Id = "rbxassetid://75757875574311", Size = Vector2.new(1024, 434), Slice = Rect.new(120, 120, 904, 314), SliceScale = 0.22, Tone = "Navy" },
+		FactionFooter = { Id = "rbxassetid://97044636639921", Size = Vector2.new(1024, 142), Slice = Rect.new(100, 0, 924, 142), FitHeight = true, Tone = "Navy" },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
 		TitleRibbon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
 		-- class characters (Firefly blocky toy style, bundles 10 / 19, 50bf8ea + af64891 clean + 2975f24, user OK):
@@ -2978,19 +2983,19 @@ Config.UIArt = {
 -- inside a card box that keeps Aspect = image width / height). Faction cards: Title (name ribbon), Desc (description
 -- strip), Motto (motto ribbon), Perks (perk panel), Button (glossy button). Class cards: Portrait (alcove for the
 -- character), Name (name ribbon), Body (description + stat bars), Button.
-Config.UIArt.CardLayout = {
-	CardHalo = { Aspect = 0.620, Title = { 0.169, 0.297, 0.658, 0.088 }, Desc = { 0.153, 0.424, 0.698, 0.051 },
-		Motto = { 0.170, 0.498, 0.660, 0.053 }, Perks = { 0.079, 0.577, 0.847, 0.257 }, Button = { 0.224, 0.869, 0.553, 0.080 } },
-	CardHorns = { Aspect = 0.603, Title = { 0.165, 0.264, 0.665, 0.086 }, Desc = { 0.214, 0.366, 0.567, 0.062 },
-		Motto = { 0.146, 0.434, 0.710, 0.065 }, Perks = { 0.143, 0.509, 0.729, 0.277 }, Button = { 0.167, 0.807, 0.661, 0.100 } },
-	CardNeutral = { Aspect = 0.598, Title = { 0.208, 0.272, 0.587, 0.080 }, Desc = { 0.225, 0.369, 0.547, 0.056 },
-		Motto = { 0.163, 0.433, 0.675, 0.064 }, Perks = { 0.137, 0.518, 0.724, 0.296 }, Button = { 0.180, 0.837, 0.624, 0.101 } },
-	ClassCardHalo = { Aspect = 0.632, Portrait = { 0.121, 0.096, 0.762, 0.347 }, Name = { 0.170, 0.445, 0.666, 0.070 },
-		Body = { 0.073, 0.527, 0.858, 0.302 }, Button = { 0.202, 0.845, 0.592, 0.091 } },
-	ClassCardHorns = { Aspect = 0.594, Portrait = { 0.123, 0.088, 0.758, 0.302 }, Name = { 0.202, 0.396, 0.595, 0.071 },
-		Body = { 0.133, 0.479, 0.725, 0.319 }, Button = { 0.189, 0.840, 0.623, 0.075 } },
-	ClassCardNeutral = { Aspect = 0.604, Portrait = { 0.089, 0.107, 0.827, 0.294 }, Name = { 0.136, 0.410, 0.728, 0.077 },
-		Body = { 0.083, 0.497, 0.830, 0.323 }, Button = { 0.142, 0.848, 0.712, 0.088 } },
+Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
+	CardHalo = { Aspect = 0.607, Title = { 0.217, 0.156, 0.566, 0.115 }, Desc = { 0.154, 0.313, 0.692, 0.049 },
+		Motto = { 0.154, 0.392, 0.692, 0.049 }, Perks = { 0.157, 0.491, 0.686, 0.381 }, Button = { 0.243, 0.886, 0.492, 0.083 } },
+	CardHorns = { Aspect = 0.642, Title = { 0.236, 0.161, 0.519, 0.097 }, Desc = { 0.184, 0.313, 0.632, 0.062 },
+		Motto = { 0.184, 0.408, 0.632, 0.062 }, Perks = { 0.184, 0.518, 0.63, 0.314 }, Button = { 0.27, 0.886, 0.458, 0.05 } },
+	CardNeutral = { Aspect = 0.572, Title = { 0.247, 0.203, 0.503, 0.068 }, Desc = { 0.148, 0.332, 0.703, 0.049 },
+		Motto = { 0.148, 0.416, 0.703, 0.047 }, Perks = { 0.148, 0.511, 0.703, 0.328 }, Button = { 0.239, 0.88, 0.523, 0.058 } },
+	ClassCardHalo = { Aspect = 0.556, Portrait = { 0.177, 0.138, 0.646, 0.313 }, Name = { 0.26, 0.463, 0.485, 0.083 },
+		Body = { 0.196, 0.593, 0.609, 0.256 }, Button = { 0.205, 0.904, 0.591, 0.064 } },
+	ClassCardHorns = { Aspect = 0.517, Portrait = { 0.169, 0.117, 0.661, 0.349 }, Name = { 0.242, 0.484, 0.518, 0.076 },
+		Body = { 0.142, 0.607, 0.715, 0.258 }, Button = { 0.235, 0.898, 0.531, 0.063 } },
+	ClassCardNeutral = { Aspect = 0.567, Portrait = { 0.179, 0.123, 0.643, 0.331 }, Name = { 0.239, 0.465, 0.508, 0.079 },
+		Body = { 0.196, 0.584, 0.609, 0.276 }, Button = { 0.278, 0.888, 0.439, 0.077 } },
 }
 
 -- faction card perk rows (icon part + short plain text, mockup art/out/UI_Faction_B.png). Numbers must match
@@ -2998,29 +3003,31 @@ Config.UIArt.CardLayout = {
 -- Short (optional) = shorter line used when Text cannot fit its row at the min text size (landscape phones).
 Config.UIArt.FactionPerks = {
 	Halo = {
-		{ Icon = "IconExp", Text = "경험치 +30%" },
-		{ Icon = "IconHeart", Text = "체력 +20%, 계속 회복" },
-		{ Icon = "IconWings", Text = "스킬로 동료 치유" },
-		{ Icon = "IconPouch", Text = "주머니 골드 자동 저금" },
+		{ Icon = "IconExp", Text = "XP +30%" },
+		{ Icon = "IconHeart", Text = "HP +20%, keeps healing", Short = "HP +20%, regen" },
+		{ Icon = "IconWings", Text = "Skills heal allies" },
+		{ Icon = "IconPouch", Text = "Pouch gold auto-saved", Short = "Auto-save gold" },
 	},
 	Horns = {
-		{ Icon = "IconGoldPile", Text = "골드 +25%" },
-		{ Icon = "IconBloodSword", Text = "공격력 +15%, 체력 흡수", Short = "공격력 +15%, 흡혈" },
-		{ Icon = "IconGoldGuard", Text = "약탈한 골드 지켜내기" },
-		{ Icon = "IconDemon", Text = "별 5개면 괴수 변신!" },
+		{ Icon = "IconGoldPile", Text = "Gold +25%" },
+		{ Icon = "IconBloodSword", Text = "ATK +15%, Lifesteal", Short = "ATK +15%, steal HP" },
+		{ Icon = "IconGoldGuard", Text = "Keep your loot gold", Short = "Guard loot gold" },
+		{ Icon = "IconDemon", Text = "5 stars = Kaiju form!", Short = "5★ = Kaiju!" },
 	},
 	Neutral = {
-		{ Icon = "IconNoBuff", Text = "싸움 버프 없음" },
-		{ Icon = "IconShieldBlue", Text = "PvP 없음 (안전)" },
-		{ Icon = "IconNoLoot", Text = "약탈·현상수배 걱정 없음", Short = "약탈·수배 걱정 없음" },
-		{ Icon = "IconHammer", Text = "제작 특화 (곧 추가)" },
+		{ Icon = "IconNoBuff", Text = "No fight buffs" },
+		{ Icon = "IconShieldBlue", Text = "No PvP (safe)" },
+		{ Icon = "IconNoLoot", Text = "No loot or Wanted worries", Short = "No loot or Wanted" },
+		{ Icon = "IconHammer", Text = "Crafting (coming soon)", Short = "Crafting (soon)" },
 	},
 }
 
 -- E approval: 2026-10-04. Fixed Korean glyphs preserve the approved illustration.
 -- English/localized sprites are a separate release item; live fallbacks stay available.
 Config.UIArt.FactionE = {
-    Enabled = true,
+    -- A23-48 (English only): off. These cards carry baked Korean letters; the bundle 2 wordless cards (CardLayout)
+    -- show the game's English text instead
+    Enabled = false,
     Locale = "ko",
     BakedText = true,
     BakedPerkIcons = true,

@@ -19,23 +19,18 @@ local UIKit = {}
 
 UIKit.Gui = nil -- ScreenGui "MainGui", created in Init
 
--- A23-43 (user 2026-10-06 "영어 기본 + 한국어"; 검수 2026-10-06 picked candidate 1 of
--- art/review/font_en_candidates_2026-10-06.png): one font set per language, chosen here only. Head = titles, buttons and
--- numbers (TextStyles Title / Button / Number, ExtraBold text), Body = body text and name tags. English = Fredoka One
--- (head) + Builder Sans (body, Regular / Bold). Korean stays the current face (Creator Store 12187370747) for now: Nanum
--- Gothic (12187361718, A23-43) draws Hangul far wider at the same size, so phone quest lines / chips / the power line
--- were cut short in the UiSandbox check (docs/art/verification_2026-10-06/font_ko_nanum_vs_current_phone.jpg); the
--- switch is one line here (ko = { Id = 12187361718 }) once the Korean layout is retuned.
+-- A23-48 (user 2026-10-06 "게임은 영어만": every text on the game screen is English): one font set, chosen here only
+-- (검수 2026-10-06 picked candidate 1 of art/review/font_en_candidates_2026-10-06.png). Head = titles, buttons and
+-- numbers (TextStyles Title / Button / Number, ExtraBold text) = Fredoka One; Body = body text and name tags = Builder
+-- Sans (Regular / Bold). No language choice and no device-language switch (A23-48 replaces A23-43's English + Korean).
 -- Shared state keeps large HUD / Fx chunks below the local limit.
 local FONT = { UseTextImages = false, Faces = {}, States = setmetatable({}, { __mode = "k" }), MeasureCache = {}, CacheCount = 0,
-	Lang = "en", -- the language the faces are for (UIKit.Lang)
+	Lang = "en",
 	Sets = {
-		ko = { Head = { Id = 12187370747 }, Body = { Id = 12187370747 } },
 		en = { Head = { Family = "rbxasset://fonts/families/FredokaOne.json" },
 			Body = { Family = "rbxasset://fonts/families/BuilderSans.json" } },
 	},
 	Cache = {}, -- [lang .. role .. weight name] = Font
-	LangListeners = {},
 }
 -- the face for a role ("Head" / "Body") and weight in the current language (GothamBold when a font fails to load)
 function FONT.Face(role, weight)
@@ -70,11 +65,33 @@ function FONT.Refresh()
 		FONT.Faces[weight] = FONT.Face(weight == Enum.FontWeight.ExtraBold and "Head" or "Body", weight)
 	end
 end
-do -- the device language until Settings answers (UIKit.Lang); English is the default (A23-43)
-	local lp = game:GetService("Players").LocalPlayer
-	local loc = lp and lp.LocaleId or ""
-	FONT.Lang = (type(loc) == "string" and string.lower(string.sub(loc, 1, 2)) == "ko") and "ko" or "en"
-	FONT.Refresh()
+FONT.Refresh()
+-- faces load asynchronously: a label sized by AutomaticSize before its face arrived keeps the stand-in face's width
+-- (UiSandbox 2026-10-06: 'Daily Quests (0/3)' was cut to 'Daily Quests...'). Once every face is loaded
+-- (GetTextBoundsAsync waits for it) each styled label with AutomaticSize is measured again
+function FONT.Preload()
+	task.spawn(function()
+		for _, role in { "Head", "Body" } do
+			for _, weight in { Enum.FontWeight.Regular, Enum.FontWeight.Bold, Enum.FontWeight.ExtraBold } do
+				pcall(function()
+					local params = Instance.new("GetTextBoundsParams")
+					params.Text = "Halo & Horns 0123"
+					params.Font = FONT.Face(role, weight)
+					params.Size = 14
+					params.Width = 1000
+					TextService:GetTextBoundsAsync(params)
+					params:Destroy()
+				end)
+			end
+		end
+		for obj, state in FONT.States do
+			if not state.Dead and obj.Parent and obj.AutomaticSize ~= Enum.AutomaticSize.None then
+				local auto = obj.AutomaticSize
+				obj.AutomaticSize = Enum.AutomaticSize.None
+				obj.AutomaticSize = auto
+			end
+		end
+	end)
 end
 
 -- faction colours always come from Config (addendum A9-1: Neutral is teal, read from Config, never a hard-coded grey)
@@ -1129,7 +1146,7 @@ end
 --  * Text and AutoLocalize are never touched, so Roblox auto-translation keeps working.
 --  * UIGradient also tints a visible background: style transparent labels. To fade a dark-style label, tween its
 --    StyleStroke.Transparency with TextTransparency.
--- Families come from FONT.Sets by language (A23-43): Korean = the current face, English Fredoka One (Face = "Head") + Builder Sans.
+-- Families come from FONT.Sets (A23-48 English only): Fredoka One (Face = "Head") + Builder Sans (Face = "Body").
 UIKit.TextStyles = {
 	Title = { Weight = Enum.FontWeight.ExtraBold, Size = 28, MinPx = 16, Face = "Head" }, -- window / ribbon titles, big notices
 	Button = { Weight = Enum.FontWeight.ExtraBold, Size = 20, MinPx = 16, Face = "Head" }, -- rubric: button text >= 16 px
@@ -1200,8 +1217,11 @@ function STYLE.Refresh(label)
 	local def = st and UIKit.TextStyles[st.Style]
 	if not def or st.Dead then return end
 	local scale = STYLE.Scale(label)
+	-- a label may lower its floor with the attribute StyleMinPx (A23-48: English icon tile names such as 'Settings'
+	-- shrink inside the tile down to 10 px, 검수 2026-10-06)
+	local minPx = tonumber(label:GetAttribute("StyleMinPx")) or def.MinPx
 	-- ceil, not floor: floor(14 / 0.75) = 18 would render 13.5 px, under the rubric's 14
-	local floorSize = math.clamp(math.ceil(def.MinPx / scale - 0.001), 1, 100)
+	local floorSize = math.clamp(math.ceil(minPx / scale - 0.001), 1, 100)
 	Art.StyleFloor[label] = floorSize
 	local tc = STYLE.Constraint(label, st)
 	local fit = Art.TextFits[label]
@@ -2134,7 +2154,7 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 	})
 	UIKit.Button({
 		Name = "Cancel",
-		Text = "취소",
+		Text = "Cancel",
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.new(0.5, -8, 0, 2),
 		Size = UDim2.fromOffset(180, 52),
@@ -2144,7 +2164,7 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 	}, close)
 	UIKit.Button({
 		Name = "Confirm",
-		Text = tostring(confirmText or "확인"),
+		Text = tostring(confirmText or "OK"),
 		AnchorPoint = Vector2.new(0, 0),
 		Position = UDim2.new(0.5, 8, 0, 2),
 		Size = UDim2.fromOffset(180, 52),
@@ -2240,64 +2260,22 @@ function UIKit.OnGameAttr(names, fn)
 	return conns
 end
 
------------------------------------------------------------------ language (A23-43)
--- "en" | "ko": the saved setting ("ko" / "en") wins; "Auto" (default) follows the Roblox language (LocaleId "ko*" ->
--- Korean), anything else is English, the game's default language
+----------------------------------------------------------------- language (A23-48: English only)
+-- always "en" (kept for callers such as Keybinds' key labels)
 function UIKit.Lang()
-	-- Studio only: the LocalPlayer attribute "LangPreview" ("ko" / "en", set by a test runner) wins
-	if game:GetService("RunService"):IsStudio() then
-		local preview = LocalPlayer:GetAttribute("LangPreview")
-		if preview == "ko" or preview == "en" then return preview end
-	end
-	local st = C and C.Settings
-	if type(st) == "table" and type(st.Get) == "function" then
-		local ok, v = pcall(st.Get, "Lang")
-		if ok and (v == "ko" or v == "en") then return v end
-	end
-	local loc = LocalPlayer and LocalPlayer.LocaleId or ""
-	return (type(loc) == "string" and string.lower(string.sub(loc, 1, 2)) == "ko") and "ko" or "en"
+	return "en"
 end
 
--- a player text from a central table: t[key .. "En"] in English (when present), else t[key]; extra args format it
+-- a player text from a central table: t[key .. "En"] when a table still keeps both, else t[key]; extra args format it
 function UIKit.Tx(t, key, ...)
 	if type(t) ~= "table" then return "" end
-	local s = (FONT.Lang == "en" and t[key .. "En"]) or t[key]
+	local s = t[key .. "En"] or t[key]
 	if type(s) ~= "string" then s = s == nil and "" or tostring(s) end
 	if select("#", ...) > 0 then
 		local ok, out = pcall(string.format, s, ...)
 		return ok and out or s
 	end
 	return s
-end
-
--- fn(lang) after the language changed (fonts are already switched); returns { Disconnect = fn }
-function UIKit.OnLang(fn)
-	table.insert(FONT.LangListeners, fn)
-	return { Disconnect = function()
-		local i = table.find(FONT.LangListeners, fn)
-		if i then table.remove(FONT.LangListeners, i) end
-	end }
-end
-
--- re-reads the language; on a change: new faces for every text we styled (not the respected custom faces), the
--- theme face, every fitted label re-measured, then the listeners
-function UIKit.RefreshLang()
-	local lang = UIKit.Lang()
-	if lang == FONT.Lang then return false end
-	FONT.Lang = lang
-	FONT.Refresh()
-	UIKit.Theme.FontFace = FONT.Faces[Enum.FontWeight.Bold]
-	for obj, state in FONT.States do
-		if not state.Dead and state.Weight and obj.Parent then pcall(UIKit.ApplyFont, obj, state.Weight, state.Role) end
-	end
-	for _, fit in Art.TextFits do
-		if type(fit) == "table" and not fit.Dead and type(fit.Request) == "function" then pcall(fit.Request, true) end
-	end
-	for _, fn in table.clone(FONT.LangListeners) do
-		local ok, err = pcall(fn, lang)
-		if not ok then warnThrottled("OnLang listener failed: " .. tostring(err)) end
-	end
-	return true
 end
 
 ----------------------------------------------------------------- lifecycle
@@ -2425,17 +2403,8 @@ end
 function UIKit.Start()
 	-- re-read the inset once the top bar has settled (it can be 0 during the first frames)
 	task.delay(1, applyScale)
+	FONT.Preload()
 
-	-- A23-43: the saved language (Settings, BB2) or the Roblox language picks the texts' fonts
-	local settings = C and C.Settings
-	if type(settings) == "table" and type(settings.Changed) == "table" then
-		settings.Changed:Connect(function() UIKit.RefreshLang() end)
-	end
-	LocalPlayer:GetPropertyChangedSignal("LocaleId"):Connect(function() UIKit.RefreshLang() end)
-	if game:GetService("RunService"):IsStudio() then
-		LocalPlayer:GetAttributeChangedSignal("LangPreview"):Connect(function() UIKit.RefreshLang() end)
-	end
-	UIKit.RefreshLang()
 
 	UIKit.HeldBanners = {}
 	local me = game:GetService("Players").LocalPlayer

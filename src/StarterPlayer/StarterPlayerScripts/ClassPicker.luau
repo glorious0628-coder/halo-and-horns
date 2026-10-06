@@ -52,6 +52,7 @@ local Art = {
 local LAY = {
 	Gutter = 16, -- side gutter
 	HeadFrac = 0.1, HeadMin = 44, HeadMax = 86, -- header (shield + title ribbon) height = canvas height * HeadFrac
+	HeadFracArt = 0.17, HeadMaxArt = 150, -- bundle 2 FactionTitle: a taller ribbon (crown on top), so the row is taller
 	CardMaxH = 640,
 	CardMinH = 300, -- below this (or 20 x the min text size) the row scrolls sideways instead of shrinking further
 	Lift = 0.035, -- room around the cards for the hover lift (fraction of the card height)
@@ -68,49 +69,52 @@ local LAY = {
 
 -- per-faction look of the class card art: text style ("ink" = brown on parchment, "light" = white with a dark outline)
 -- and the colour of the unfilled stat segments
+-- bundle 2 class cards: white names on the coloured ribbons, ink on the cream bodies, white button words
 local CARD_STYLE = {
 	Halo = {
-		Name = "ink", Body = "ink", Button = "light", -- mockup: white button text with a dark outline on the gold button
+		Name = "light", Body = "ink", Button = "light",
 		Empty = Color3.fromRGB(214, 203, 184), EmptyRim = Color3.fromRGB(168, 144, 108),
 	},
 	Horns = {
-		Name = "light", Body = "light", Button = "light",
-		Empty = Color3.fromRGB(84, 72, 66), EmptyRim = Color3.fromRGB(36, 26, 24),
+		Name = "light", Body = "ink", Button = "light",
+		Empty = Color3.fromRGB(222, 200, 188), EmptyRim = Color3.fromRGB(160, 110, 96),
 	},
 	Neutral = {
 		Name = "light", Body = "ink", Button = "light",
 		Empty = Color3.fromRGB(214, 203, 184), EmptyRim = Color3.fromRGB(150, 126, 92),
 	},
 }
+-- bundle 2 title ribbon / footer capsule (navy: white text); the older parts when they are missing
+local PANEL = { Title = "FactionTitle", Footer = "FactionFooter" }
 
 -- stat rows on the card body (DisplayStats keys, 5 segments each); Alt = second icon part when the first is missing
 local STAT_ROWS = {
-	{ Key = "HP", Label = "체력", Icon = "IconHeart", Emoji = "❤", Fill = Color3.fromRGB(255, 196, 40) },
-	{ Key = "Atk", Label = "공격", Icon = "IconAttack", Alt = "IconSword", Emoji = "⚔", Fill = Color3.fromRGB(246, 118, 32) },
-	{ Key = "Spd", Label = "속도", Icon = "IconBoot", Emoji = "👟", Fill = Color3.fromRGB(52, 124, 236) },
+	{ Key = "HP", Label = "HP", Icon = "IconHeart", Emoji = "❤", Fill = Color3.fromRGB(255, 196, 40) },
+	{ Key = "Atk", Label = "ATK", Icon = "IconAttack", Alt = "IconSword", Emoji = "⚔", Fill = Color3.fromRGB(246, 118, 32) },
+	{ Key = "Spd", Label = "SPD", Icon = "IconBoot", Emoji = "👟", Fill = Color3.fromRGB(52, 124, 236) },
 }
 
 -- fallbacks (A6 / A7-4), used only if Config lacks the entries
-local NEUTRAL_CLASS_NAMES = { Warrior = "대장장이", Mage = "연금술사", Archer = "사냥꾼" }
+local NEUTRAL_CLASS_NAMES = { Warrior = "Blacksmith", Mage = "Alchemist", Archer = "Pet Tamer" } -- glossary (A23-39 tamer)
 local PICK_LINES = {
-	Warrior = "가까이 붙어서 주변을 한 번에 쾅",
-	Mage = "조금 떨어져서 넓게 펑",
-	Archer = "멀리서 하나씩 슝",
+	Warrior = "Get close and smash everyone around!",
+	Mage = "Stand back and blast a wide area!",
+	Archer = "Hit them one by one from far away!",
 }
 local CLASS_ICONS = { Warrior = "🗡️", Mage = "🔮", Archer = "🏹" }
 
 local T = {
-	Title = "직업을 골라요!",
-	Choose = "이 직업으로!",
-	Wait = "잠깐만요...",
-	Recommend = "처음이면 추천",
-	StartWeaponF = "시작 무기: %s",
-	Male = "남",
-	Female = "여",
+	Title = "Pick a class!", -- short: the bundle 2 ribbon's scroll is narrow (검수 2026-10-06: 'Choose…' was cut)
+	Choose = "Pick this class!",
+	Wait = "One moment...",
+	Recommend = "Best for beginners",
+	StartWeaponF = "First weapon: %s (from the Blacksmith)", -- A23-34 (검수 2026-10-06)
+	Male = "Boy",
+	Female = "Girl",
 	-- same rule as ClassService.onChangeClass / Panels "직업 변경" (A23-14): a free change below
 	-- Config.ClassChange.FreeKeepLevelBelow keeps the level, from there free = back to Lv 1; a ticket keeps the level.
 	-- Fallback only: Config.Text.ClassChangeRuleF (formatted with that level) replaces it below.
-	Footer = "직업은 나중에 메뉴 > 직업 변경에서 바꿀 수 있어요 (무료: Lv5 전에는 레벨 유지, 그 뒤엔 Lv1부터 / 변경권: 레벨 유지)",
+	Footer = "You can change class later in Menu > Settings (free: keep your level before Lv5, after that start at Lv1 / ticket: keep your level)",
 }
 do
 	local below = type(Config.ClassChange) == "table" and tonumber(Config.ClassChange.FreeKeepLevelBelow) or nil
@@ -679,7 +683,9 @@ local function buildHeader()
 
 	-- "직업을 골라요!" on the empty title ribbon (code ribbon without the art)
 	local ribbon = newImage(root, "TitleRibbon", 2)
-	local ribbonId = artId("TitleRibbon")
+	local ribbonKey = artId(PANEL.Title) and PANEL.Title or "TitleRibbon"
+	local ribbonId = artId(ribbonKey)
+	LAY.RibbonKey = ribbonKey
 	ribbon.Image = ribbonId or ""
 	if not ribbonId then
 		local plain = Instance.new("Frame")
@@ -699,7 +705,8 @@ local function buildHeader()
 	end
 	local title = artLabel(ribbon, "Title", 2, artFont("Title", Enum.Font.GothamBlack))
 	title.Text = T.Title
-	local tr = LAY.TitleText
+	local part = ART.Parts and ART.Parts[ribbonKey]
+	local tr = (type(part) == "table" and type(part.TextRect) == "table") and part.TextRect or LAY.TitleText
 	title.Position = UDim2.fromScale(tr[1], tr[2])
 	title.Size = UDim2.fromScale(tr[3], tr[4])
 	styleText(title, "ink", 2)
@@ -735,13 +742,14 @@ local function buildHeader()
 end
 
 local function buildNote()
-	local f = sliceFrame(root, "Note", "PanelParchment", 2)
+	local navy = artId(PANEL.Footer) ~= nil
+	local f = sliceFrame(root, "Note", navy and PANEL.Footer or "PanelParchment", 2)
 	local icon = newImage(f, "Icon", 1)
 	icon.Image = artId("IconScroll") or ""
 	local text = artLabel(f, "Text", 1)
 	text.TextScaled = false
 	text.Text = T.Footer
-	styleText(text, "ink")
+	styleText(text, navy and "light" or "ink")
 	note.Frame, note.Icon, note.Text = f, icon, text
 end
 
@@ -1130,14 +1138,15 @@ end
 ------------------------------------------------------------------ layout
 -- [shield][title ribbon][남|여] centred under the top bar; returns nothing
 local function layoutHeader(w, top, headH, minT, s)
-	local rs = partSize("TitleRibbon")
+	local rs = partSize(LAY.RibbonKey or "TitleRibbon")
 	local ribbonAspect = rs and rs.X / rs.Y or 4
 	local ss = partSize("Shield" .. (shownFaction or "Halo"))
 	local shieldAspect = ss and ss.X / ss.Y or 1
-	local shieldH = headH
+	local unit = math.min(headH, LAY.HeadMax) -- shield and pill keep their size when the bundle 2 ribbon is taller
+	local shieldH = unit
 	local shieldW = shieldH * shieldAspect
 	local overlap = shieldW * 0.35 -- the shield sits on the ribbon's left tail like the mockup
-	local pillH = math.max(minT + 10, math.floor(headH * 0.56))
+	local pillH = math.max(minT + 10, math.floor(unit * 0.56))
 	local pillW = math.floor(pillH * 2.4)
 	local gap = 10
 	local ribbonH = headH * 0.92
@@ -1349,7 +1358,9 @@ local function layout()
 	root.Position = UDim2.fromOffset(0, 0)
 	root.Size = UDim2.fromOffset(w, h)
 	local minT = minTextFor(s)
-	local headH = math.clamp(math.floor(h * LAY.HeadFrac), LAY.HeadMin, LAY.HeadMax)
+	local tall = LAY.RibbonKey == "FactionTitle" and h * s >= 560 -- short (phone) screens keep the room for the cards
+	local headH = math.clamp(math.floor(h * (tall and LAY.HeadFracArt or LAY.HeadFrac)), LAY.HeadMin,
+		tall and LAY.HeadMaxArt or LAY.HeadMax)
 	layoutHeader(w, top, headH, minT, s)
 	local noteTop = layoutNote(w, h, minT)
 	local cardsTop = top + headH + 6

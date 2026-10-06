@@ -129,48 +129,48 @@ local ZONE_TITLE = { -- ART_DIRECTION 2.2 "존 타이틀 글자색"
 	SkeletonRuins = Color3.fromRGB(180, 120, 255),
 }
 
------------------------------------------------------------------ Korean text
+----------------------------------------------------------------- text (A23-48: English only, glossary names)
 local TXT = {
-	Title = "세계 지도",
-	Here = "현재 위치: %s",
-	Unknown = "알 수 없음",
+	Title = "World Map",
+	Here = "You are in: %s",
+	Unknown = "Unknown",
 	ZoneSub = "Lv %d+ · %s",
-	Safe = "안전",
+	Safe = "Safe",
 	PvP = "PvP",
-	Extreme = "PvP 극한",
-	LegendSafe = "● 안전",
+	Extreme = "PvP Extreme",
+	LegendSafe = "● Safe",
 	LegendPvP = "● PvP",
-	LegendExtreme = "● 극한",
-	LegendMe = "▲ 나",
-	Locate = "내 위치",
+	LegendExtreme = "● Extreme",
+	LegendMe = "▲ Me",
+	Locate = "Find Me",
 	ZoomIn = "+",
 	ZoomOut = "−",
 	CloseX = "X",
-	HintMouse = "드래그: 이동 · 휠: 확대/축소 · {Map} / Esc: 닫기", -- {Map}: the current map key (WorldMap.HintText)
-	HintTouch = "드래그: 이동 · 두 손가락: 확대/축소",
-	Crown = "균형의 왕관",
-	Altar = "운명의 제단",
-	Market = "거래소",
-	Nest = "황금 거위 둥지",
-	Pads = "이동 발판",
-	Guild = "장인 길드",
-	Pass = "산길",
-	Goose = "황금 거위!",
-	Kaiju = "괴수 %s",
-	Sack = "원한 자루 %s",
+	HintMouse = "Drag: move · Wheel: zoom · {Map} / Esc: close", -- {Map}: the current map key (WorldMap.HintText)
+	HintTouch = "Drag: move · Two fingers: zoom",
+	Crown = "Crown of Balance",
+	Altar = "Altar of Fate",
+	Market = "Market",
+	Nest = "Golden Goose Nest",
+	Pads = "Travel Pads",
+	Guild = "Artisan Guild",
+	Pass = "Mountain Pass",
+	Goose = "Golden Goose!",
+	Kaiju = "Kaiju %s",
+	Sack = "Grudge Sack %s",
 }
 
 local GLYPH = {
 	Crown = "✦",
 	Halo = "◯", -- 후광
 	Horns = "▲", -- 뿔
-	Guild = "장", -- CR-L44: "⚙" rendered as a tofu box; replaced by Config.Factions.Neutral.Emblem below
+	Guild = "G", -- CR-L44: "⚙" rendered as a tofu box; replaced by Config.Factions.Neutral.Emblem below
 	Altar = "◆",
-	Market = "상", -- CR-L44 (was "⚖")
+	Market = "$", -- CR-L44 (was "⚖")
 	Nest = "◎",
 	Pad = "▣",
 	Goose = "✪",
-	Kaiju = "괴", -- CR-L44 (was "☠")
+	Kaiju = "K", -- CR-L44 (was "☠")
 	Sack = "◈",
 	Me = "▲",
 }

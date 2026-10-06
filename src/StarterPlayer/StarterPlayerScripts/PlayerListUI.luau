@@ -69,12 +69,12 @@ local T = {
 	RowCorner = 8,
 }
 
--- player-facing text (kept here for the later English pass)
+-- player-facing text (A23-48: English only)
 local TXT = {
-	Title = "플레이어 %d명",
-	NameHeader = "이름",
+	Title = "Players %d",
+	NameHeader = "Name",
 	Missing = "-",
-	Close = "닫기",
+	Close = "Close",
 }
 
 -- Columns = { { Id, Name, W } } from Config.Leaderstats; Rows = pooled row widgets (reused on every refresh)

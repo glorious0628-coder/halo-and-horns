@@ -41,18 +41,18 @@ local function potionState(kind)
 	local deadline = finiteNumber(player:GetAttribute(kind .. "PotionReadyAt"), 0)
 	local left = math.max(0, deadline - workspace:GetServerTimeNow())
 	-- Stock is shown in the title: even the narrow touch slot can show stock and the entire countdown.
-	if left > 0 then return count, tostring(math.ceil(left)) .. "초", false end
-	if player:GetAttribute("DataLoaded") ~= true or player:GetAttribute("ClassChosen") ~= true then return count, "대기", false end
-	if ui.Character ~= player.Character or not Util.IsAlive(player) then return count, "부활", false end
+	if left > 0 then return count, tostring(math.ceil(left)) .. "s", false end
+	if player:GetAttribute("DataLoaded") ~= true or player:GetAttribute("ClassChosen") ~= true then return count, "Wait", false end
+	if ui.Character ~= player.Character or not Util.IsAlive(player) then return count, "Revive", false end
 	local kaiju = player:GetAttribute("KaijuState")
-	if kaiju == "Active" or kaiju == "Siren" then return count, "괴수", false end
-	if count <= 0 then return 0, Config.Vitals.MerchantEnabled == true and "구매" or "준비 중", false end
-	if not canUse() then return count, "대기", false end
+	if kaiju == "Active" or kaiju == "Siren" then return count, "Kaiju", false end
+	if count <= 0 then return 0, Config.Vitals.MerchantEnabled == true and "Buy" or "Soon", false end
+	if not canUse() then return count, "Wait", false end
 	local humanoid = Util.GetHumanoid(player)
 	local amount = kind == "HP" and humanoid.Health or finiteNumber(player:GetAttribute("Mana"), 0)
 	local maximum = kind == "HP" and humanoid.MaxHealth or finiteNumber(player:GetAttribute("MaxMana"), Config.Vitals.MaxMana)
-	if amount >= maximum then return count, "가득", false end
-	return count, "사용", true
+	if amount >= maximum then return count, "Full", false end
+	return count, "Use", true
 end
 
 local function requestPotion(kind)

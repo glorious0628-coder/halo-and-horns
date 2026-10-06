@@ -128,80 +128,95 @@ local GUIDE_SECONDS = NEXT.GuideSeconds or 90
 local GUIDE_ZONES = NEXT.GuideZones or { "GoblinWoods", "SkeletonRuins" }
 local TUT_GUIDE_STEP = (type(TUT.Steps) == "table" and TUT.Steps.Guide) or 1
 local TUT_GUIDE_ZONE = TUT.GuideZone or "SlimeMeadow"
-local TUT_GUIDE_TEXT = TUT.GuideText or "여기로!"
+local TUT_GUIDE_TEXT = TUT.GuideText or "This way!"
 local TUT_QUEST_ID = TUT.QuestId or "tutorial"
 
 -- HUD display strings (the literals of TECH_SPEC §4.23 HUD; game messages come from Config.Text)
+-- A23-48 (user 2026-10-06: the game screen is English only): every HUD text, simple English, names from
+-- docs/design/glossary_en_2026-10-06.md
 local TXT = {
 	LevelTag = "Lv",
-	PowerLine = "Lv %d · %s %s", -- 'Lv 10 · 전투력 424' (A23-26)
-	Pouch = "· %s %s", -- after the power line: '· 주머니 1.2K' (검수 2026-10-06: carried gold can be stolen)
+	PowerLine = "Lv %d · %s %s", -- 'Lv 10 · Power 424' (A23-26)
+	Pouch = "· %s %s", -- after the power line: '· Pouch 1.2K' (검수 2026-10-06: carried gold can be stolen)
 	PouchLine = "%s %s", -- its own line under the XP bar when the power line is too narrow
-	CarriedTag = "주머니",
-	Wanted = "현상 %s", -- danger chip (Horns): the wanted stars
+	CarriedTag = "Pouch",
+	PowerWord = "Power", -- A23-48 (Config.Power.Text.Label stays the Korean source)
+	WarHalo = "Halo %s", -- the war bar's ends (were the Korean emblems)
+	WarHorns = "%s Horns",
+	Wanted = "Wanted %s", -- danger chip (Horns): the wanted stars
 	WantedBounty = " · %s",
-	WarTime = "왕관 결정까지 %s",
-	Siege = "포위전 1인당 %d점",
-	MyWar = "내 점수 %s",
+	WarTime = "Crown in %s", -- short: the phone meter is 240 px (UiSandbox 2026-10-06: 'My points' was cut)
+	Siege = "Siege: %d each",
+	MyWar = "My pts %s",
 	WarSep = " · ",
-	Blessing = "%s 왕관 축복 +%d%%",
-	Safe = "안전 지대",
-	PvP = "PvP 지역",
-	PvPNeutral = "PvP 지역 · 장인은 안전",
-	Rookie = "새싹 보호중",
-	RookieGrace = "새싹 졸업 · %d초 뒤 대결", -- A23-18 graduation grace (GraduateGraceUntil)
-	Protected = "부활 보호",
-	InCombat = "전투 중",
-	Size = "덩치 저울 ×%.2f",
-	Bully = "깡패 %d단계",
-	BullyPenalty = "깡패 벌칙: 자동 전투 불가 · 경험치·드랍 절반 (%d분)", -- A23-22
-	KaijuQueued = "괴수 대기 중",
-	QuestHeader = "오늘의 퀘스트 (%d/%d)",
-	QuestAllDone = "오늘 일일 완료! 추가 퀘스트 진행 중",
-	QuestClaimable = " · 받기 %d",
-	QuestTouchClaim = "퀘스트 받기 %d개!",
+	Blessing = "%s Crown Blessing +%d%%",
+	Safe = "Safe Zone",
+	PvP = "PvP Zone",
+	PvPNeutral = "PvP Zone · Artisans safe",
+	Rookie = "Sprout Shield",
+	RookieGrace = "Sprout Shield ends · PvP in %ds", -- A23-18 graduation grace (GraduateGraceUntil)
+	Protected = "Revive Shield",
+	InCombat = "In Combat",
+	Size = "Size ×%.2f",
+	Bully = "Bully Lv %d",
+	BullyPenalty = "Bully penalty: no Auto Battle · half XP & drops (%d min)", -- A23-22
+	KaijuQueued = "Kaiju waiting",
+	QuestHeader = IS_TOUCH and "Dailies %d/%d" or "Daily Quests %d/%d", -- phones: the 150 px block beside the map
+	QuestAllDone = "Dailies done! Bonus quests on",
+	QuestClaimable = " · Claim %d",
+	QuestTouchClaim = "Claim %d quests!",
 	QuestTouchLine = "%s/%s %s", -- progress first: truncation only cuts the quest text
 	QuestExpand = "▼",
 	QuestCollapse = "▲",
-	QuestClose = "닫기",
-	BadgeDaily = "일일",
-	BadgeExtra = "추가",
-	BadgePinned = "안내",
-	BadgeMain = "메인",
-	BadgeSub = "선택",
-	Claim = "받기",
-	Reroll = "교체", -- Gotham has no ↻ glyph (rendered as tofu)
-	RerollTitle = "퀘스트 바꾸기", -- CR-M25 confirm dialog
-	RerollBody = "진행도가 사라져요. 바꿀까요?",
-	RerollYes = "바꾸기",
-	Attack = "공격",
-	Release = "스킬",
+	QuestClose = "Close",
+	BadgeDaily = "Daily",
+	BadgeExtra = "Bonus",
+	BadgePinned = "Guide",
+	BadgeMain = "Main",
+	BadgeSub = "Side",
+	Claim = "Claim",
+	Reroll = "Swap", -- Gotham has no ↻ glyph (rendered as tofu)
+	RerollTitle = "Swap quest", -- CR-M25 confirm dialog
+	RerollBody = "Your progress will be lost. Swap it?",
+	RerollYes = "Swap",
+	Attack = "Attack",
+	Release = "Skill",
 	ReleaseCost = "MP%d",
 	Perfect = "PERFECT!",
-	AutoOn = "자동 켬",
-	AutoOff = "자동 끔",
-	Map = "지도",
-	Menu = "메뉴",
-	Pet = "펫",
-	Bag = "가방",
-	Auto = "자동",
-	-- A23-40 icon tiles (names under the icons)
-	TileCharacter = "캐릭터",
-	TileSkills = "스킬",
-	TileRanking = "랭킹",
-	TileSettings = "설정",
-	TileNews = "새 소식",
-	TileTravel = "이동",
-	TileHelp = "도움말",
+	AutoOn = "Auto ON",
+	AutoOff = "Auto OFF",
+	Map = "Map",
+	Menu = "Menu",
+	Pet = "Pet",
+	Bag = "Bag",
+	Auto = "Auto",
+	-- A23-40 icon tiles (names under the icons; long names shrink inside the tile, never below 10 px on phones)
+	TileCharacter = "Hero",
+	TileSkills = "Skills",
+	TileRanking = "Ranking",
+	TileSettings = "Settings",
+	TileNews = "News",
+	TileTravel = "Travel",
+	TileHelp = "Help",
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
-	QuestLineSummary = "오늘의 퀘스트 %d/%d",
+	QuestLineSummary = "Daily Quests %d/%d",
 	QuestOpenList = "▼",
 	QuestCloseList = "▲",
 	MoreChips = "+%d",
-	TravelLeft = "%s %.1f초",
-	ZoneGuide = "%s!",
-	Monster = "몬스터",
+	TravelLeft = "%s %.1fs",
+	ZoneGuide = "To %s!",
+	Monster = "Monster",
+	-- texts used once in the code below
+	GuideHere = "This way!",
+	Traveling = "Traveling...",
+	DailiesOpened = "Daily quests are open!",
+	SmithGuide = "Forge · use the anvil",
+	NoMana = "Not enough MP.",
+	GoSmith = "Go to the Crossroads and find the anvil at the Forge.",
+	Pond = "Pond",
+	Fountain = "Fountain",
+	HuntSlimes = "Hunt slimes and big slimes for XP.",
 }
 
 ----------------------------------------------------------------- state
@@ -379,22 +394,6 @@ local function placeLegacyChat()
 	end
 end
 
--- Korean directional particle: "고블린 숲" -> "고블린 숲으로", "마을" -> "마을로"
-local function withRo(word)
-	local last = nil
-	local ok = pcall(function()
-		for _, cp in utf8.codes(word) do
-			last = cp
-		end
-	end)
-	if ok and last and last >= 0xAC00 and last <= 0xD7A3 then
-		local jong = (last - 0xAC00) % 28
-		if jong == 0 or jong == 8 then return word .. "로" end
-		return word .. "으로"
-	end
-	return word .. "(으)로"
-end
-
 -- false when the text has a symbol Gotham / the Korean fallback font lacks (⚙ ⚔ ↻ render as tofu boxes);
 -- CR-L44: the shared Util.GlyphSafe (missing = unsafe, so the emblem is just left out)
 local function glyphSafe(text)
@@ -432,7 +431,8 @@ end
 
 -- Keep approved HUD art and the active UIKit font family. Caps are physical pixels, so a large GUI scale
 -- cannot turn small HUD captions into oversized letters. Table members avoid adding chunk locals (200 limit).
-function L.FitText(label, pixels, bold)
+-- minPixels: the smallest real px the fit may pick (default 11)
+function L.FitText(label, pixels, bold, minPixels)
 	if not label then return label end
 	ui.textFits = ui.textFits or setmetatable({}, { __mode = "k" })
 	local fit = ui.textFits[label]
@@ -442,7 +442,8 @@ function L.FitText(label, pixels, bold)
 		fit.Apply = function()
 			if not label.Parent then return end
 			local s = currentScale()
-			local minSize = math.max(1, math.min(11, math.floor(11 / s)))
+			local mp = fit.MinPixels or 11
+			local minSize = math.max(1, math.min(mp, math.floor(mp / s)))
 			local maxSize = math.max(minSize, math.floor(fit.Pixels / s))
 			if fit.Min == minSize and fit.Max == maxSize then return end
 			fit.Min, fit.Max = minSize, maxSize
@@ -464,6 +465,7 @@ function L.FitText(label, pixels, bold)
 		end))
 	end
 	fit.Pixels = pixels or 12
+	fit.MinPixels = minPixels
 	UIKit.ApplyFont(label, bold and Enum.FontWeight.Bold or Enum.FontWeight.Regular)
 	label.TextWrapped = false
 	label.TextStrokeTransparency = 1
@@ -585,7 +587,7 @@ function L.PowerValue()
 end
 
 function L.PowerText(n)
-	return string.format(TXT.PowerLine, math.floor(num("Level", 1)), Config.Power.Text.Label, Util.FormatInt(n))
+	return string.format(TXT.PowerLine, math.floor(num("Level", 1)), TXT.PowerWord, Util.FormatInt(n))
 end
 
 function L.PowerOpen()
@@ -1740,11 +1742,12 @@ local function tileButton(def, onClick)
 	-- 내 캐릭터 follows CharacterGender (IconCharacterF) through UIKit.CharacterIcon
 	local img = (def.Id == "Character" and type(UIKit.CharacterIcon) == "function") and UIKit.CharacterIcon(iconProps)
 		or UIKit.ArtImage(def.Icon, iconProps)
+	-- A23-48: English names ('Settings', 'Ranking') may reach a little past the tile's rim and shrink to 10 px (검수)
 	local label = artLabel(false, {
 		Name = "Label",
 		AnchorPoint = Vector2.new(0.5, 1),
 		Position = UDim2.new(0.5, 0, 1, -2),
-		Size = UDim2.new(1, -4, 0.3, 0),
+		Size = UDim2.new(1.16, 0, 0.3, 0),
 		TextScaled = true,
 		MaxTextSize = 14,
 		Title = true,
@@ -1752,7 +1755,8 @@ local function tileButton(def, onClick)
 		ZIndex = 4,
 		Parent = btn,
 	})
-	L.FitText(label, 12, true)
+	label:SetAttribute("StyleMinPx", 10)
+	L.FitText(label, 12, true, 10)
 	if type(UIKit.StyleText) == "function" then UIKit.StyleText(label, "NameTag") end -- A23-38: white name, navy rim
 	if def.Key then keyHint(btn, def.Key, UDim2.new(1, -2, 0, 2), Vector2.new(1, 0)) end
 	return btn, label, img
@@ -2461,8 +2465,8 @@ local function refreshWar()
 	ui.hornsFill.Visible = frac < 0.999
 	ui.warDivider.Position = UDim2.fromScale(frac, 0.5)
 	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(frac, 0.5) end
-	ui.haloNum.Text = tostring(Config.Factions.Halo.Emblem) .. " " .. fmtScore(h)
-	ui.hornsNum.Text = fmtScore(r) .. " " .. tostring(Config.Factions.Horns.Emblem)
+	ui.haloNum.Text = string.format(TXT.WarHalo, fmtScore(h))
+	ui.hornsNum.Text = string.format(TXT.WarHorns, fmtScore(r))
 
 	local mode = UIKit.GameAttr("WarMode", "Idle")
 	L.WarParts.Siege = mode == "Siege" and string.format(TXT.Siege, Config.War.SiegeTarget or 150) or nil
@@ -2544,7 +2548,7 @@ local function refreshTravel()
 	ui.travel.Visible = true
 	local total = math.max(0.1, Config.Travel.ChannelSeconds or 3)
 	ui.setTravel(1 - remaining / total)
-	ui.travelLabel.Text = string.format(TXT.TravelLeft, textOr("Traveling", "이동 중..."), remaining)
+	ui.travelLabel.Text = string.format(TXT.TravelLeft, textOr("Traveling", TXT.Traveling), remaining)
 end
 
 ----------------------------------------------------------------- quests
@@ -2598,7 +2602,7 @@ local function parseQuests()
 	-- A23-3: before the first mission is accepted (step 0) dailies keep progressing on the server but stay folded
 	local folded = pinned[1] ~= nil and pinned[1].TutorialStep == 0
 	if questState.Folded == true and not folded and pinned[1] ~= nil and pinned[1].TutorialStep > 0 and #normal > 0 then
-		UIKit.Toast((type(TUT.Text) == "table" and TUT.Text.DailiesOpened) or "일일 임무가 열렸어요!", "good", 4)
+		UIKit.Toast((type(TUT.Text) == "table" and TUT.Text.DailiesOpened) or TXT.DailiesOpened, "good", 4)
 	end
 	questState.Folded = folded
 	if folded then
@@ -3339,7 +3343,7 @@ local function refreshGuides()
 		if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "tutorial", nil) and guide then guide.From = zone end
 	elseif step == 99 and attr("BlacksmithVisited", false) ~= true and zone == "Crossroads"
 		and not (guide and guide.Tag == "blacksmith") then
-		showGuide(L.BlacksmithTarget(), "대장간 · 모루와 상호작용", "blacksmith", nil)
+		showGuide(L.BlacksmithTarget(), TXT.SmithGuide, "blacksmith", nil)
 	end
 end
 
@@ -3360,7 +3364,7 @@ local function onLevelChanged()
 	end
 	if targetZone then
 		local name = tostring(Config.Zones[targetZone].Name)
-		showGuide(findTravelTarget(targetZone), string.format(TXT.ZoneGuide, withRo(name)), "zone:" .. targetZone, GUIDE_SECONDS)
+		showGuide(findTravelTarget(targetZone), string.format(TXT.ZoneGuide, name), "zone:" .. targetZone, GUIDE_SECONDS)
 	end
 end
 
@@ -3415,7 +3419,7 @@ local function doRelease()
 	if throttled("release", 0.2) then return end
 	if num("SkillReadyAt", 0) > Util.Now() then return end
 	if num("Mana", 0) < Config.BasicSkill.ManaCost then
-		if not throttled("skillMana", 1.5) then UIKit.Toast("MP가 부족해요.", "bad", 1.5) end
+		if not throttled("skillMana", 1.5) then UIKit.Toast(TXT.NoMana, "bad", 1.5) end
 		return
 	end
 	if L.FaceTarget("Release") then
@@ -3529,7 +3533,7 @@ function L.StoryTap(st, zone, panels)
 		a.Name, a.Anchored, a.CanCollide, a.CanQuery, a.CanTouch, a.Transparency = "HUDStoryAnchor", true, false, false, false, 1
 		a.Size, a.Position, a.Parent = Vector3.new(1, 1, 1), STORY_SPOT.SlimePond, workspace
 		game:GetService("Debris"):AddItem(a, 35)
-		showGuide(a, "연못", "story", 30)
+		showGuide(a, TXT.Pond, "story", 30)
 	elseif g == "Fountain" then
 		-- the shard in the fountain; MapBuilder only builds Landmarks.Fountain, so fall back to that model and then to a
 		-- temporary anchor at Config.StoryQuests.Landmarks.Fountain (the beam must always point somewhere)
@@ -3553,7 +3557,7 @@ function L.StoryTap(st, zone, panels)
 			end
 		end
 		local name = Config.StoryQuests and Config.StoryQuests.Speakers and Config.StoryQuests.Speakers.Fountain
-		if part then showGuide(part, type(name) == "string" and name or "분수", "story", 30) end
+		if part then showGuide(part, type(name) == "string" and name or TXT.Fountain, "story", 30) end
 	end
 end
 
@@ -3614,12 +3618,12 @@ function L.PinnedTap(e, r)
 	elseif step == 99 then
 		local level = math.floor(num("Level", 1))
 		local iron = Config.Weapons[3]
-		if not e.NextGoal or (iron and level >= iron.MinLevel and string.find(e.Text, "골드", 1, true)) then
+		if not e.NextGoal or (iron and level >= iron.MinLevel and (string.find(e.Text, "골드", 1, true) or string.find(string.lower(e.Text), "gold", 1, true))) then
 			doUpgrade()
 		elseif zone ~= TUT_GUIDE_ZONE then
 			showGuide(findTravelTarget(TUT_GUIDE_ZONE), TUT_GUIDE_TEXT, "zone:" .. TUT_GUIDE_ZONE, 30)
 		else
-			UIKit.Toast("슬라임과 큰 슬라임을 사냥해 경험치를 모아요.", "info", 3)
+			UIKit.Toast(TXT.HuntSlimes, "info", 3)
 		end
 	end
 end

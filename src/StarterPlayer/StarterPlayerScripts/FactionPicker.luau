@@ -80,15 +80,18 @@ local LAY = {
 	NeedCardK = 26,
 	PremiseMaxW = 1600, PremiseFrac = 0.66,
 	TitleFrac = 0.10, TitleMin = 40, TitleMax = 140, -- compact ribbon on short viewports
+	TitleFracArt = 0.2, TitleMaxArt = 220, -- bundle 2 FactionTitle (crown + halo + horn over the scroll)
+	ButtonWord = 0.043, -- 'Join this side!' size / card height: half the bundle 2 buttons' ~8.5%
 	TextFrac = 0.021, TextMax = 16, -- physical caption target; preserve the three sentences above the cards
-	LoreShort = { Halo = "후광을 얻은 자들.", Horns = "뿔을 얻은 자들.", Neutral = "조각을 다듬는 자들." },
-	LoreTiny = { Horns = { "뿔을 얻었어요.", "뿔을얻었어요." }, Neutral = "조각장인들." },
-	MottoShort = { Halo = "지키고, 치유해, 되찾아라!", Horns = "털고, 버텨, 괴수가 돼라!", Neutral = "줍지 말고 다듬어 만들어라!" },
-	MottoTiny = { Halo = "지키고되찾아라!", Horns = "털고버텨괴수가돼라!", Neutral = "다듬고만들어라!" },
+	-- A23-48: English only (glossary names); Short / Tiny = the fallbacks for narrow cards
+	LoreShort = { Halo = "Those who took the Halo.", Horns = "Those who took the Horns.", Neutral = "Those who shape the shards." },
+	LoreTiny = { Horns = { "They took the Horns.", "Took the Horns." }, Neutral = "Shard crafters." },
+	MottoShort = { Halo = "Guard, heal, take it back!", Horns = "Steal, hold on, go Kaiju!", Neutral = "Don't grab it, craft it!" },
+	MottoTiny = { Halo = "Guard & heal!", Horns = "Steal & go Kaiju!", Neutral = "Craft it!" },
 	PerkTiny = {
-		Halo = { "경험치+30%", "체력+20%·회복", "동료치유", "골드자동지급" },
-		Horns = { "골드+25%", { "공격+15%·흡혈", "공격+15% 흡혈", "공격+15%흡혈" }, "약탈골드지키기", "별5개괴수변신" },
-		Neutral = { "싸움버프없음", "안전(PvP없음)", "약탈·수배없음", { "제작특화(준비중)", "제작특화준비중", "제작특화(준비)", "제작특화준비" } },
+		Halo = { "XP +30%", "HP +20% · Regen", "Heal allies", "Auto gold" },
+		Horns = { "Gold +25%", { "ATK +15% · Lifesteal", "ATK +15% Lifesteal", "ATK+15% Lifesteal" }, "Guard loot gold", "5★ = Kaiju" },
+		Neutral = { "No fight buffs", "Safe (no PvP)", "No loot or Wanted", { "Crafting (soon)", "Crafting soon", "Crafting", "Craft" } },
 	},
 	TitleText = { 0.17, 0.08, 0.66, 0.6 }, -- text box inside UIP_TitleRibbon (fractions of the ribbon)
 	TouchTarget = 44, -- real px of the invisible hit areas and the code-styled choose buttons (CR-L41)
@@ -110,27 +113,30 @@ local LAY = {
 }
 
 -- per-faction text style on the card art ("ink" = brown on parchment, "light" = white with a dark outline,
--- "gold" = gold with a dark outline like the "어느 편에 설래요?" title)
+-- "gold" = gold with a dark outline like the "Choose your side!" title)
+-- bundle 2 cards: white names on the coloured ribbons, ink on the cream strips and perk panels, white button words
 local CARD_STYLE = {
-	Halo = { Title = "ink", Motto = "light", Perks = "ink", Button = "light" },
-	Horns = { Title = "light", Motto = "light", Perks = "light", Button = "light" },
-	Neutral = { Title = "ink", Motto = "light", Perks = "ink", Button = "light" },
+	Halo = { Title = "light", Motto = "ink", Perks = "ink", Button = "light" },
+	Horns = { Title = "light", Motto = "ink", Perks = "ink", Button = "light" },
+	Neutral = { Title = "light", Motto = "ink", Perks = "ink", Button = "light" },
 }
+-- bundle 2 screen parts (navy premise / footer: white text); the older parchment parts when they are missing
+local PANEL = { Title = "FactionTitle", Premise = "FactionPremise", Footer = "FactionFooter" }
 
 -- Neutral fallbacks (A6 / A9-1 teal), used only if Config lacks the entries
 local NEUTRAL_FALLBACK = {
-	Id = "Neutral", Name = "장인 길드", Short = "장인", Emblem = "장",
+	Id = "Neutral", Name = "Artisan Guild", Short = "Artisan", Emblem = "A",
 	Color = Color3.fromRGB(40, 200, 190), Perks = {}, Pitch = "",
 }
-local NEUTRAL_LORE = "조각을 줍지 않고, 다듬기로 한 자들."
-local NEUTRAL_NOTE = "싸움 버프 없음 · PvP 없음 · 제작 특화(곧 추가)"
+local NEUTRAL_LORE = "Those who shape the shards instead of grabbing them."
+local NEUTRAL_NOTE = "No fight buffs · No PvP · Crafting (coming soon)"
 
 local T = {
-	Title = "어느 편에 설래요?",
-	Choose = "이 편으로!",
-	Wait = "잠깐만요...",
-	WeakerF = "약한 편 합류! 시작 골드 +%d · 덩치 저울로 더 커져요",
-	Footer = "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)",
+	Title = "Choose your side!",
+	Choose = "Join this side!",
+	Wait = "One moment...",
+	WeakerF = "Joining the smaller side! Start gold +%d · the Size Scale makes you bigger",
+	Footer = "You can switch later at the Altar of Fate in the Crossroads (free or with a ticket)",
 }
 
 local DEFAULT_THEME = {
@@ -204,7 +210,7 @@ local function shortLore(id)
 end
 
 -- emblem glyph of the code-styled card; symbols like "⚙" show as tofu on some devices (CR-L44: Util.GlyphSafe), so an
--- unsafe or empty emblem falls back to "장" (Neutral) or the first letter of the faction name
+-- unsafe or empty emblem falls back to "A" (Neutral, Artisan) or the first letter of the faction name
 local function emblemText(id, def)
 	local e = tostring(def.Emblem or "")
 	local safe = e ~= "" and e ~= "⚙"
@@ -213,7 +219,7 @@ local function emblemText(id, def)
 		safe = ok and res == true
 	end
 	if safe then return e end
-	if id == "Neutral" then return "장" end
+	if id == "Neutral" then return "A" end
 	local name = tostring(def.Short or def.Name or "")
 	return string.match(name, utf8.charpattern) or "?"
 end
@@ -1255,7 +1261,9 @@ end
 
 -- A full sentence can shrink until the real 11px floor. If it still cannot fit, try every approved compact
 -- equivalent too; returning an unchecked Short was the cause of clipped labels in the default 991px view.
-local function cardText(label, full, short, tiny, width, height, scale)
+-- atSize: the size the text must fit at (default MIN_TEXT): perk rows pass their common size, so a long line takes its
+-- shorter wording instead of a smaller font (검수 2026-10-06: every perk line the same size)
+local function cardText(label, full, short, tiny, width, height, scale, atSize)
 	local candidates = { full }
 	if type(short) == "string" and short ~= "" then table.insert(candidates, short) end
 	if type(tiny) == "table" then
@@ -1266,9 +1274,9 @@ local function cardText(label, full, short, tiny, width, height, scale)
 	for _, text in candidates do
 		local th, tw, exact
 		if UIKit and type(UIKit.MeasureRenderedText) == "function" then
-			th, tw, exact = UIKit.MeasureRenderedText(text, MIN_TEXT, label.FontFace, scale, 10000)
+			th, tw, exact = UIKit.MeasureRenderedText(text, atSize or MIN_TEXT, label.FontFace, scale, 10000)
 		else
-			th, tw = textBounds(text, math.max(MIN_TEXT, MIN_TEXT * scale), label.FontFace, 10000)
+			th, tw = textBounds(text, math.max(MIN_TEXT, (atSize or MIN_TEXT) * scale), label.FontFace, 10000)
 		end
 		-- Font-loading failure uses the shortest wording immediately; conservative estimates do not grant a fit.
 		if not exact then return candidates[#candidates] end
@@ -1292,9 +1300,29 @@ local function layoutPerks(c, W, H, minT, scale)
 	local gap = rowH * 0.25
 	local textW = math.max(10, pw - icon - gap)
 	local size = math.max(MIN_TEXT, math.floor(rowH * 0.68))
+	-- 검수 2026-10-06: every perk line of a card at ONE size: the largest at which each row fits with its shortest
+	-- wording (placeCards then gives the three cards the smallest of their sizes)
+	local compact = LAY.PerkTiny[c.Id]
 	for i, row in c.Perks do
-		local compact = LAY.PerkTiny[c.Id]
-		row.Text.Text = cardText(row.Text, row.Full, row.Short, compact and compact[i], textW * scale, rowH * scale, scale)
+		local shortest = row.Full
+		local tiny = compact and compact[i]
+		if type(tiny) == "table" then shortest = tiny[#tiny] or shortest
+		elseif type(tiny) == "string" and tiny ~= "" then shortest = tiny
+		elseif type(row.Short) == "string" and row.Short ~= "" then shortest = row.Short end
+		local tw = nil
+		if UIKit and type(UIKit.MeasureRenderedText) == "function" then
+			local _, w, exact = UIKit.MeasureRenderedText(shortest, size, row.Text.FontFace, scale, 10000)
+			if exact then tw = w end
+		end
+		if tw and tw > textW * scale - 1 then
+			size = math.max(MIN_TEXT, math.floor(size * (textW * scale - 1) / tw))
+		end
+	end
+	c.PerkSize = math.min(size, LAY.PerkShared or size)
+	size = c.PerkSize
+	for i, row in c.Perks do
+		row.Text.Text = cardText(row.Text, row.Full, row.Short, compact and compact[i], textW * scale, rowH * scale, scale,
+			size)
 		row.Text.TextWrapped = false
 		row.Text.TextXAlignment = Enum.TextXAlignment.Center
 	end
@@ -1309,7 +1337,7 @@ local function layoutPerks(c, W, H, minT, scale)
 		local ix = math.max(0, (textW - inkW) / 2)
 		row.Icon.Position = UDim2.fromOffset(ix, row.Layout.IconY)
 		row.Dot.Position = UDim2.fromOffset(ix, row.Layout.IconY)
-		setTextRange(row.Text, MIN_TEXT, size)
+		setTextRange(row.Text, size, size) -- the card's one size (never fitted per row)
 	end
 end
 
@@ -1347,9 +1375,13 @@ local function layoutArtCard(c, W, H, minT, s)
 	-- button: lock shade, label, and a hit area at least TouchTarget real px tall, kept inside the card
 	local kx, ky, kw, kh = region(lay.Button, W, H)
 	place(c.Shade, kx, ky, kw, kh)
-	place(c.Label, kx + kw * 0.1, ky + kh * 0.12, kw * 0.8, kh * 0.7)
-	setTextRange(c.Label, minT, kh * 0.55)
-	boldOutline(c.Label, kh * 0.55)
+	-- 검수 2026-10-06: the words are about half the drawn button's height (the bundle 2 buttons are ~8.5% of the card;
+	-- the measured regions are their inner glossy bands) and the same on the three cards
+	local wordMax = math.max(minT, H * LAY.ButtonWord)
+	local boxH = math.max(kh * 0.7, wordMax * 1.3)
+	place(c.Label, kx + kw * 0.05, ky + kh / 2 - boxH / 2, kw * 0.9, boxH)
+	setTextRange(c.Label, minT, wordMax)
+	boldOutline(c.Label, wordMax)
 	local hitH = math.min(math.max(kh * 1.2, LAY.TouchTarget / s), H * 0.2)
 	local hitW = math.min(W, kw * 1.08)
 	local hitY = math.min(ky + kh / 2 - hitH / 2, H - hitH)
@@ -1370,6 +1402,14 @@ local function placePremise(cx, y, maxW, size, scale, compact)
 	premiseFrame.Visible = true
 	local padX = math.ceil(size * 1.1)
 	local padY = compact and math.ceil(3 / scale) or math.ceil(size * 0.55)
+	local framePart = Art.Parts[PANEL.Premise]
+	if premiseFrame.Name == "Premise" and typeof(framePart) == "table" and typeof(framePart.Slice) == "Rect"
+		and artId(PANEL.Premise) then
+		-- bundle 2 navy panel: keep the lines off its gold frame (the slice border at the panel's SliceScale)
+		local edge = framePart.Slice.Min.Y * (tonumber(framePart.SliceScale) or 0.5)
+		padX = math.max(padX, math.ceil(edge * 1.1))
+		padY = math.max(padY, math.ceil(edge * 0.8))
+	end
 	local innerW = math.max(40, maxW - padX * 2)
 	local widest = 0
 	for _, l in premiseLabels do
@@ -1415,6 +1455,7 @@ local function placeFooter(cx, bottom, maxW, size, scale, compact)
 	local iconW = note.Icon.Visible and math.floor(size * 1.7) or 0
 	local gapW = iconW > 0 and 6 or 0
 	local padX = math.floor(size * 0.8)
+	if artId(PANEL.Footer) then padX = math.floor(size * 2.2) end -- bundle 2 capsule: words between its sapphire caps
 	local maxTextW = math.max(40, maxW - iconW - gapW - padX * 2)
 	local th, tw = textBounds(T.Footer, size, note.Text.FontFace, maxTextW * scale)
 	-- Preserve the selected footer's width; only remove the unused height on short viewports.
@@ -1517,9 +1558,26 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 			else
 				layoutOldCard(c, ch < 420, s)
 			end
+			c.LayoutArgs = { cw, ch }
 			cx += cw + LAY.Gap
 		end
 	end
+	-- the three cards' perk lines share the smallest card size: lay the bigger ones out again at it
+	local shared = nil
+	for _, id in FACTION_IDS do
+		local c = cards[id]
+		if c and c.Art and c.PerkSize then shared = math.min(shared or c.PerkSize, c.PerkSize) end
+	end
+	LAY.PerkShared = shared
+	if shared then
+		for _, id in FACTION_IDS do
+			local c = cards[id]
+			if c and c.Art and c.PerkSize and c.PerkSize > shared and c.LayoutArgs then
+				layoutPerks(c, c.LayoutArgs[1], c.LayoutArgs[2], minT, s)
+			end
+		end
+	end
+	LAY.PerkShared = nil
 end
 
 function E.buildPanels()
@@ -1709,11 +1767,13 @@ local function layoutNow()
 	-- Selected A composition: title / wide compact premise / centred cards / centred altar note.
 	local y = top
 	local usableH = math.max(80, bottom - top)
-	local titleH = math.clamp(math.floor(usableH * LAY.TitleFrac), LAY.TitleMin, LAY.TitleMax)
+	local tall = heading.Key == PANEL.Title and not compact -- short (phone) screens keep the room for the cards
+	local titleH = math.clamp(math.floor(usableH * (tall and LAY.TitleFracArt or LAY.TitleFrac)), LAY.TitleMin,
+		tall and LAY.TitleMaxArt or LAY.TitleMax)
 	y += placeTitle(w / 2, y, w - g * 2, titleH, minT) + 4
 	local premiseW = math.min(w - g * 2, LAY.PremiseMaxW, math.max(300, w * LAY.PremiseFrac))
 	y += placePremise(w / 2, y, premiseW, size, s, compact) + 8
-	local noteH = placeFooter(w / 2, bottom, w - g * 2, size, s, compact)
+	local noteH = placeFooter(w / 2, bottom - (artId(PANEL.Footer) and 6 or 0), w - g * 2, size, s, compact)
 	local areaH = bottom - noteH - 6 - y
 	placeCards(g, y, w - g * 2, math.max(areaH, 1), needH, minT, s)
 end
@@ -1745,8 +1805,9 @@ local function build()
 	root.ZIndex = ZINDEX
 	root.Visible = false
 
-	-- premise lines on a parchment strip; they fade in one by one (playPremise)
-	premiseFrame = sliceFrame(root, "Premise", "PanelParchment", 2)
+	-- premise lines on the navy premise panel (bundle 2; parchment before it); they fade in one by one (playPremise)
+	local navyPremise = artId(PANEL.Premise) ~= nil
+	premiseFrame = sliceFrame(root, "Premise", navyPremise and PANEL.Premise or "PanelParchment", 2)
 	premiseFrame.ClipsDescendants = true
 	premiseLabels = {}
 	local premise = Config.Story.Premise
@@ -1755,14 +1816,15 @@ local function build()
 			local l = artLabel(premiseFrame, "PremiseLine" .. i, 1)
 			l.TextScaled = false
 			l.Text = tostring(line)
-			l.TextColor3 = artColor("Ink", DARK_TEXT)
+			if navyPremise then styleText(l, "light", 1) else l.TextColor3 = artColor("Ink", DARK_TEXT) end
 			l.TextTransparency = 1
 			table.insert(premiseLabels, l)
 		end
 	end
 
 	-- "어느 편에 설래요?" on the GPT title ribbon; plain gold text when the ribbon art is missing
-	local ribbonId = artId("TitleRibbon")
+	local ribbonKey = artId(PANEL.Title) and PANEL.Title or "TitleRibbon"
+	local ribbonId = artId(ribbonKey)
 	local titleFrame
 	if ribbonId then
 		titleFrame = newImage(root, "Title", 2)
@@ -1781,18 +1843,20 @@ local function build()
 	titleText:SetAttribute("PickerFitPaddingX", 8)
 	titleText.TextWrapped = false
 	if ribbonId then
-		local b = LAY.TitleText
+		local part = Art.Parts[ribbonKey]
+		local b = (type(part) == "table" and type(part.TextRect) == "table") and part.TextRect or LAY.TitleText
 		titleText.Position = UDim2.fromScale(b[1], b[2])
 		titleText.Size = UDim2.fromScale(b[3], b[4])
-		styleText(titleText, "ink", 0)
+		styleText(titleText, "ink", ribbonKey == PANEL.Title and 1 or 0) -- dark words, a thin cream rim on the scroll
 	else
 		titleText.Size = UDim2.fromScale(1, 1)
 		titleText.TextColor3 = artColor("Ink", Color3.fromRGB(66, 40, 18))
 		titleText.Font = theme.Font
 		applyFont(titleText, Enum.Font.GothamBlack)
 	end
-	local rs = partSize("TitleRibbon")
+	local rs = partSize(ribbonKey)
 	heading.Frame, heading.Text, heading.Art = titleFrame, titleText, ribbonId ~= nil
+	heading.Key = ribbonId and ribbonKey or nil
 	heading.Aspect = rs and rs.X / rs.Y or 4
 
 	-- the three cards (a sideways ScrollingFrame only when they cannot fit, see placeCards)
@@ -1814,8 +1878,9 @@ local function build()
 	end
 	if anyArt then root.BackgroundTransparency = LAY.DimArt end
 
-	-- altar note at the bottom
-	local nf = sliceFrame(root, "Footer", "PanelParchment", 2)
+	-- altar note at the bottom (bundle 2 navy capsule: white text)
+	local navyFooter = artId(PANEL.Footer) ~= nil
+	local nf = sliceFrame(root, "Footer", navyFooter and PANEL.Footer or "PanelParchment", 2)
 	local icon = newImage(nf, "Icon", 1)
 	icon.Image = artId("IconAltar") or ""
 	icon.Visible = icon.Image ~= ""
@@ -1823,7 +1888,7 @@ local function build()
 	text.TextScaled = false
 	text.TextXAlignment = Enum.TextXAlignment.Center
 	text.Text = T.Footer
-	styleText(text, "ink")
+	styleText(text, navyFooter and "light" or "ink", navyFooter and 1 or nil)
 	note.Frame, note.Icon, note.Text = nf, icon, text
 
 	root.Parent = gui
@@ -1939,9 +2004,18 @@ local function playPremise()
 	local token = premiseToken
 	for i, l in premiseLabels do
 		l.TextTransparency = 1
+		-- the white lines' dark rim fades in with them (never a rim without its letters)
+		local st = l:FindFirstChild("Outline")
+		local rim = (st and st:IsA("UIStroke") and st.Thickness > 0) and st or nil
+		local rimTo = rim and (rim:GetAttribute("FadeTo") or rim.Transparency) or nil
+		if rim then
+			rim:SetAttribute("FadeTo", rimTo)
+			rim.Transparency = 1
+		end
 		task.delay((i - 1) * PREMISE_STEP, function()
 			if token ~= premiseToken or not l.Parent then return end
 			TweenService:Create(l, TweenInfo.new(PREMISE_FADE), { TextTransparency = 0 }):Play()
+			if rim then TweenService:Create(rim, TweenInfo.new(PREMISE_FADE), { Transparency = rimTo }):Play() end
 		end)
 	end
 end

@@ -468,5 +468,14 @@
   "MapCrossroads": "rbxassetid://78524981424841",
   "MapHaloTown": "rbxassetid://96148211490451",
   "MapArtisanGuild": "rbxassetid://88247282089612",
-  "MapZoneHauntedHollow": "rbxassetid://126361608809712"
+  "MapZoneHauntedHollow": "rbxassetid://126361608809712",
+  "FactionPremise": "rbxassetid://75757875574311",
+  "ClassCardHalo": "rbxassetid://83370147336230",
+  "FactionCardArtisan": "rbxassetid://117830833611240",
+  "ClassCardArtisan": "rbxassetid://112912477016552",
+  "FactionCardHalo": "rbxassetid://116448859963324",
+  "FactionFooter": "rbxassetid://97044636639921",
+  "FactionCardHorns": "rbxassetid://116416538185922",
+  "FactionTitle": "rbxassetid://126167902049009",
+  "ClassCardHorns": "rbxassetid://96506679569017"
 }
