@@ -1,0 +1,18 @@
+{
+  "reports": [
+    "user screenshot: '캐릭터는 붕 떠 있고 고블린은 왜 인사하고 있어' (goblin camp, wooden wedge)",
+    "user: '몬스터가 옆으로 갈 때도 정면을 봐서 게걸음 하는 것 같아. 좌우앞뒤 자유롭게 방향을 바꾸면 좋겠어'"
+  ],
+  "report1_cause": "my own test state left running in the main Studio Play (game-dev session, 2026-10-06 ~10:50): the foot-height check script parked the character ANCHORED 4 studs up, 30 studs from a frozen goblin (WalkSpeed 0), HP set to 1e6. It landed on Map.Decor.GoblinCamp.Tent (the wooden wedge): read-only check showed anchored=true, state Freefall, 0.18 studs above the tent. The 'bowing' goblin was a second goblin attacking that character from the tent slope (AttackSeq 155 = 155 attacks in a row): its Slash clip + lunge lean on a slope looked like a bow. Not a game bug.",
+  "report1_fix": "stopped Play (fresh state), no code change. Same spot after: character on the terrain beside the tent (feet on ground, gap 3.22 = HipHeight 2.22 + half root), goblins upright and attacking normally. Photo report_tent_float_before_after_2026-10-06.jpg. Process fix: my test scripts now always end with Play stopped (no leftover anchored / frozen / 1e6 HP state).",
+  "report2_cause": "the model front, already fixed in 71c10bd: Slime, BigSlime, LittleGhost had the face 90 deg to the side of the root's look (no PivotOffset) and BatGoblin -90 (PivotOffset -180). The root itself turns toward where it walks (Humanoid.AutoRotate = true for every kind), so these four walked 'sideways' to their face = crab walk. Applied: PivotOffset 90 for all four (apply_studio_state.py, idempotent).",
+  "report2_photos": "monster_sidewalk_before_after_2026-10-06.jpg: each monster walks across the screen (camera beside, perpendicular to the walk). Before = the old PivotOffsets put back for this shot only (then restored by apply_studio_state; re-run shows nothing to fix). Before: face toward the camera / back toward the camera while walking sideways. After: profile, face toward where it walks.",
+  "root_heading_vs_move": {
+    "how": "server, 12 s, every monster with flat speed > 3 and no player within 8 studs (not attacking): angle between root LookVector and velocity (flat)",
+    "result": {"Slime": "mean 15 max 151 (>45: 12%)", "BigSlime": "mean 9 max 140 (8%)", "PumpkinSlime": "mean 15 max 115 (13%)", "LittleGhost": "mean 21 max 103 (16%)", "Goblin": "mean 19 max 138 (15%)", "BatGoblin": "mean 14 max 105 (8%)", "GoblinBrute": "mean 15 max 135 (12%)", "Skeleton": "mean 14 max 119 (11%)", "SkeletonKnight": "mean 11 max 146 (7%)"},
+    "note": "the large samples are the first ~0.2 s of a turn (new MoveTo goal): turn timeline below. Same root numbers before and after 71c10bd; what changed is the face vs root: before +90 (Slime/BigSlime/LittleGhost) and -90 (BatGoblin), after 0."
+  },
+  "turn_timeline": "MoveTo 16 studs to the side (90 deg): Slime 79 -> 44 (0.08 s) -> 14 (0.22 s) -> 4 (0.35 s) -> 0 (0.62 s); Goblin 79 -> 45 (0.15 s) -> 8 (0.35 s) -> 0 (0.62 s); LittleGhost same as Slime. Smooth eased turn about 400-600 deg/s at the start, no snap.",
+  "attack_facing": "only while attacking: MonsterService.faceTarget turns toward the target at the wind-up / hit when it is far off the look direction (unchanged). Standing still keeps the last direction (AutoRotate).",
+  "left": "the user's own feel; attack-time faceTarget is still an instant turn (usually small because the chase already faces the target)."
+}
