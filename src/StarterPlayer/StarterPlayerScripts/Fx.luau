@@ -78,12 +78,12 @@ local MAX_SHAKE = 3
 local FONT_NUMBER = Enum.Font.GothamBlack
 local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11 -- addendum M1
 
--- A7-3 level-up announce (private Korean strings; client-only feature).
+-- A7-3 level-up announce (client-only feature; A23-48: English).
 -- Announce completed unlocks only; future unlock advertising was removed by user request.
-local TXT_UNLOCK_ZONE = "%s 입장"
-local TXT_UNLOCK_REBIRTH = "환생"
-local TXT_UNLOCKED_FALLBACK = "해금! %s"
-local TXT_BANK = "금고 +%s"
+local TXT_UNLOCK_ZONE = "Now open: %s"
+local TXT_UNLOCK_REBIRTH = "Rebirth"
+local TXT_UNLOCKED_FALLBACK = "Unlocked! %s"
+local TXT_BANK = "Vault +%s"
 
 -- B14 loot popups / toasts (2026-10-05 loot review). One table: Fx.luau is close to the 200-locals limit.
 -- Popups live Life s (damage numbers keep NUMBER_LIFE), are Wide x wider and stack by Step label heights in screen
@@ -92,7 +92,7 @@ local TXT_BANK = "금고 +%s"
 local LOOT_UI = {
 	Life = 1.8, Wide = 1.9, Scale = 0.9, WeaponScale = 1.2, Step = 1.05, MaxLines = 5,
 	ToastSeconds = 2.5, HintSeconds = 6, Hinted = false,
-	Text = { Hint = "%s · 메뉴 → 아이템에서 써요 (실패해도 무기는 안전해요)" },
+	Text = { Hint = "%s · use it from your Bag (your weapon is safe even on a fail)" },
 }
 
 -- attack motion tuning, one table (Fx.luau is close to Luau's 200-locals-per-function limit)
@@ -179,7 +179,7 @@ local MOTION = {
 	EMO_HURT = { "EmoOuch", "EmoStress", "EmoTears", "EmoAngry" },
 	EMO_BIG = { "EmoDizzy", "EmoDizzy", "EmoOuch" }, -- big hits: mostly dizzy, sometimes 아야!
 	EMO_FALLBACK = { -- code-drawn stickers while the art ids are empty (emoji via \u escapes)
-		EmoOuch = { Text = "아야!", Color = Color3.fromRGB(225, 40, 40), Bubble = true },
+		EmoOuch = { Text = "Ouch!", Color = Color3.fromRGB(225, 40, 40), Bubble = true },
 		EmoTears = { Text = "\u{1F4A7}\u{1F4A7}", Color = Color3.fromRGB(80, 170, 255) },
 		EmoDizzy = { Text = "\u{1F4AB}", Color = Color3.fromRGB(255, 215, 60) },
 		EmoAngry = { Text = "\u{1F4A2}", Color = Color3.fromRGB(235, 40, 40) },
@@ -310,6 +310,7 @@ local MOTION = {
 	STYLE_CLIPS = {
 		Punch = { Swing = "PunchSwing" },
 		PetHeadbutt = { Swing = "PunchSwing" },
+		PetCommand = { Swing = "MageSwing" }, -- PET-3: the headbutt while the pet is drawn (PetFollow): point at it
 		PetDash = { Release = "MageRelease" },
 	},
 }
@@ -2733,6 +2734,7 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	if not context or context.Char ~= char then return false end
 	local style = type(data.Style) == "string" and MOTION.STYLE_CLIPS[data.Style] and data.Style or nil
 	local names = style and MOTION.STYLE_CLIPS[style] or MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior
+	if style == "PetHeadbutt" and MOTION.PetDrawn(data) then names = MOTION.STYLE_CLIPS.PetCommand end
 	local name = names[which] or (MOTION.CLASS_CLIPS[classId] or MOTION.CLASS_CLIPS.Warrior)[which]
 	local clip = name and Feel.Clips[name]
 	if not clip then return false end
@@ -3476,6 +3478,8 @@ handlers.Swing = function(data)
 	if not okExpect then warnThrottled("hit sync failed: " .. tostring(errExpect)) end
 
 	if punch then
+		-- PET-3: the tamer's pet runs to the targets and bumps them at the contact time (no pet drawn: the punch)
+		if style == "PetHeadbutt" then MOTION.PetMove("Attack", data, #targets > 0 and targets or { pos }, showAt) end
 		Feel.after(ctx, showAt, function()
 			local target = targets[1] or pos
 			ring(target, 1.2, color, { Grow = 0.12, Fade = 0.2, Transparency = own and 0.45 or 0.65 })
@@ -3548,7 +3552,8 @@ handlers.Release = function(data)
 	local visible = nearCamera(pos)
 	local impactDelay = math.clamp(asNum(data.ContactDelay, MOTION.RELEASE_CONTACT[classId] or MOTION.SMASH_AT), 0, 1)
 	if data.Style == "PetDash" then
-		-- A23-39: the pet dashes in (PET-3 animates the pet); until then only the impact below shows
+		-- A23-39 / PET-3: the pet dashes to the impact point (no pet drawn: only the impact below shows)
+		if visible then MOTION.PetMove("Dash", data, pos, impactDelay) end
 	elseif classId == "Mage" then
 		if visible then meteor(pos, radius, color, impactDelay, ctx) end
 	elseif classId == "Archer" then
@@ -3822,7 +3827,7 @@ handlers.Bank = function(data)
 	local gold = Util.FormatNumber(amount)
 	local text
 	if data.Courier == true then
-		text = textOr("HaloCourier", "천사 배달부가 골드 %s을(를) 금고에 넣었어요.", gold)
+		text = textOr("HaloCourier", "An angel courier put %s gold in your Vault.", gold)
 	else
 		text = string.format(TXT_BANK, gold)
 	end
@@ -3952,6 +3957,23 @@ function MOTION.Pref(key, default)
 	local ok, v = pcall(st.Get, key)
 	if ok and v ~= nil then return v end
 	return default
+end
+
+-- PET-3: true when the packet's player has a pet drawn on this client (PetFollow); the pet then does the move
+function MOTION.PetDrawn(data)
+	local pf = C and C.PetFollow
+	local uid = type(data) == "table" and tonumber(data.UserId) or nil
+	return uid ~= nil and type(pf) == "table" and type(pf.Has) == "function" and pf.Has(math.floor(uid)) == true
+end
+
+function MOTION.PetMove(kind, data, targets, contact)
+	local pf = C and C.PetFollow
+	local uid = type(data) == "table" and tonumber(data.UserId) or nil
+	if not uid or type(pf) ~= "table" then return false end
+	local fn = kind == "Dash" and pf.Dash or pf.Attack
+	if type(fn) ~= "function" then return false end
+	local ok, res = pcall(fn, math.floor(uid), targets, contact)
+	return ok and res == true
 end
 
 function MOTION.ShakeAllowed()

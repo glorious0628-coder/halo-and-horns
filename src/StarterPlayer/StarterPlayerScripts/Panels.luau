@@ -44,154 +44,154 @@ local TOP_FALLBACK = type(UI_CFG.TopInsetFallback) == "number" and UI_CFG.TopIns
 
 -- Neutral faction fallbacks (SPEC_ADDENDUM A6 / A7-4 / A9-1 teal), used only if Config lacks the entries
 local NEUTRAL_FALLBACK = {
-	Id = "Neutral", Name = "장인 길드", Short = "장인", Emblem = "장", -- no ⚙ glyph in Gotham
+	Id = "Neutral", Name = "Artisan Guild", Short = "Artisan", Emblem = "A", -- no ⚙ glyph in Gotham
 	Color = Color3.fromRGB(40, 200, 190), Perks = {}, Pitch = "",
 }
-local NEUTRAL_LORE = "조각을 줍지 않고, 다듬기로 한 자들."
-local NEUTRAL_NOTE = "싸움 버프 없음 · PvP 없음 · 제작 특화(곧 추가)"
-local NEUTRAL_CLASS_NAMES = { Warrior = "대장장이", Mage = "연금술사", Archer = "사냥꾼" }
+local NEUTRAL_LORE = "Those who chose to shape the shards, not take them."
+local NEUTRAL_NOTE = "No fight buffs · No PvP · Crafting focus (coming soon)"
+local NEUTRAL_CLASS_NAMES = { Warrior = "Blacksmith", Mage = "Alchemist", Archer = "Hunter" }
 local PICK_LINES = {
-	Warrior = "가까이 붙어서 주변을 한 번에 쾅",
-	Mage = "조금 떨어져서 넓게 펑",
-	Archer = "멀리서 하나씩 슝",
+	Warrior = "Get close and smash everyone around you",
+	Mage = "Stand back and blast a wide area",
+	Archer = "Shoot them one by one from far away",
 }
 
 -- player-facing strings used only by these panels (Korean). Keys ending in F go through string.format.
 local T = {
 	Titles = {
-		Menu = "메뉴", Travel = "이동", Rebirth = "전향 환생", Altar = "운명의 제단",
-		Class = "직업 변경", Shop = "변경권 상점", Vacation = "휴가 보너스",
-		Nickname = "게임 닉네임", WeaponShop = "대장간", Welcome = "안내자 · 보급로 되찾기", PotionShop = "물약 상점",
-		Items = "아이템",
+		Menu = "Menu", Travel = "Travel", Rebirth = "Rebirth", Altar = "Altar of Fate",
+		Class = "Change Class", Shop = "Change Ticket Shop", Vacation = "Vacation Bonus",
+		Nickname = "Nickname", WeaponShop = "Forge", Welcome = "Guide · Take Back the Supply Road", PotionShop = "Potion Shop",
+		Items = "Items",
 	},
-	Back = "← 메뉴",
+	Back = "← Menu",
 	Close = "X",
 	-- menu
-	MenuTravel = "이동",
-	MenuRebirth = "환생",
-	MenuRebirthReady = "환생 (가능!)",
-	MenuClass = "직업 변경",
-	MenuShop = "변경권 상점",
-	MenuVacation = "휴가 보너스",
-	MenuNickname = "게임 닉네임",
-	MenuWelcome = "안내자 만나기",
-	MenuItems = "아이템",
-	MenuMap = "지도",
-	WelcomePrevious = "이전",
-	WelcomeNext = "다음",
-	WelcomeFirst = "처음부터",
-	WelcomeAccept = "함께할게요",
-	WelcomeLater = "나중에",
-	WelcomePending = "수락 확인 중",
-	WelcomeRetry = "수락을 확인하지 못했어요. 다시 눌러 주세요.",
-	WelcomeUnavailable = "직업을 고른 뒤 안내자에게 다시 말해 주세요.",
-	MenuAltarHint = "진영 변경은 교차로 마을의 운명의 제단에서!",
+	MenuTravel = "Travel",
+	MenuRebirth = "Rebirth",
+	MenuRebirthReady = "Rebirth (ready!)",
+	MenuClass = "Change Class",
+	MenuShop = "Ticket Shop",
+	MenuVacation = "Vacation Bonus",
+	MenuNickname = "Nickname",
+	MenuWelcome = "Meet the Guide",
+	MenuItems = "Items",
+	MenuMap = "Map",
+	WelcomePrevious = "Back",
+	WelcomeNext = "Next",
+	WelcomeFirst = "From the Start",
+	WelcomeAccept = "I'm In!",
+	WelcomeLater = "Later",
+	WelcomePending = "Checking...",
+	WelcomeRetry = "We couldn't confirm that. Please tap again.",
+	WelcomeUnavailable = "Pick a class first, then talk to the Guide again.",
+	MenuAltarHint = "Change sides at the Altar of Fate in the Crossroads!",
 	-- travel
-	TravelGo = "이동",
-	TravelNoGo = "못 가요",
-	TravelBusy = "이동 중",
-	TravelNeedLevelF = "Lv %d 필요",
+	TravelGo = "Go",
+	TravelNoGo = "Locked",
+	TravelBusy = "Traveling",
+	TravelNeedLevelF = "Needs Lv %d",
 	TravelInfoF = "Lv %d+ · %s",
-	TravelHere = " · 지금 여기",
+	TravelHere = " · You are here",
 	TravelRecommendF = "  <font color=\"#FFD23C\">★ %s</font>",
-	Recommended = "추천",
-	Safe = "안전",
+	Recommended = "Recommended",
+	Safe = "Safe",
 	PvP = "PvP",
 	-- rebirth
-	RebirthInfoF = "환생 %d회 · 필요 레벨 Lv %d (지금 Lv %d)",
-	RebirthCountsF = "지금 서버: 빛 %d명 : 뿔 %d명",
+	RebirthInfoF = "Rebirths: %d · Needs Lv %d (now Lv %d)",
+	RebirthCountsF = "This server: Knights %d : Legion %d",
 	RebirthBonusF = "+%d%%",
-	RebirthBonusUnderdogF = "+%d%%! (인원이 적은 편)",
-	RebirthCurrent = "(지금 진영)",
+	RebirthBonusUnderdogF = "+%d%%! (smaller side)",
+	RebirthCurrent = "(your side)",
 	-- A23-14 (user 2026-10-05): rebirth resets the level (and XP) only; gold, weapons, enhancement and items stay
-	RebirthResets = "초기화: 레벨만 처음부터 (경험치 포함)",
-	RebirthKeeps = "그대로: 골드·무기·강화·아이템, 직업, 명예·악명, 환생 보너스, 표식, 변경권",
-	RebirthConfirmTitle = "전향 환생",
-	RebirthConfirmBodyF = "%s(으)로 다시 태어날까요?\n레벨만 처음부터, 골드·무기·아이템은 그대로\n유지: 직업, 명예·악명, 환생 보너스, 표식, 변경권",
-	RebirthConfirmOk = "환생!",
+	RebirthResets = "Resets: only your level (XP too)",
+	RebirthKeeps = "Keeps: gold, weapons, enhancements, items, class, Honor/Infamy, rebirth bonus, marks, tickets",
+	RebirthConfirmTitle = "Rebirth",
+	RebirthConfirmBodyF = "Be reborn as %s?\nOnly your level starts over. Gold, weapons and items stay.\nKept: class, Honor/Infamy, rebirth bonus, marks, tickets",
+	RebirthConfirmOk = "Rebirth!",
 	-- altar
-	AltarCurrentF = "지금 진영: %s → 어느 편으로 갈까요?",
-	AltarRules = "조건: 현상수배 별 0개 · 원한 자루 없음 · 괴수 아님 · 전투 중 아님",
-	AltarCooldownRuleF = "진영 변경은 %d분에 한 번",
-	AltarCooldownF = "%s 후 가능",
-	AltarFar = "운명의 제단 가까이에서만 바꿀 수 있어요.",
-	AltarConfirmTitle = "진영 변경",
-	AltarConfirmFreeF = "%s(으)로 바꿀까요?\n무료: %s",
-	AltarConfirmTicketF = "변경권 1장을 써서 %s(으)로 바꿀까요?\n명예·악명 모두 그대로예요.",
-	Honor = "명예",
-	Infamy = "악명",
-	LossScoreF = "%s %s 초기화",
-	BetrayalSuffix = " (배신의 대가)",
+	AltarCurrentF = "Your side: %s → Which side will you join?",
+	AltarRules = "You need: 0 Wanted stars · no Grudge Sack · not a Kaiju · not in a fight",
+	AltarCooldownRuleF = "You can change sides once every %d min",
+	AltarCooldownF = "Ready in %s",
+	AltarFar = "You can only change sides near the Altar of Fate.",
+	AltarConfirmTitle = "Change Side",
+	AltarConfirmFreeF = "Switch to %s?\nFree: %s",
+	AltarConfirmTicketF = "Use 1 Change Ticket to switch to %s?\nYour Honor and Infamy both stay.",
+	Honor = "Honor",
+	Infamy = "Infamy",
+	LossScoreF = "%s %s resets",
+	BetrayalSuffix = " (price of betrayal)",
 	-- shared change options (A7-4)
-	Selected = "선택됨",
-	FreeButton = "무료로 바꾸기",
-	TicketButtonF = "티켓으로 바꾸기 (보유 %d장)",
-	TicketKeepAll = "전부 유지",
-	TicketBuyHint = "보유 0장 · 산 다음 한 번 더 눌러야 바뀌어요",
-	LossNone = "잃는 것 없음",
-	ConfirmChange = "바꾸기",
+	Selected = "Selected",
+	FreeButton = "Change for Free",
+	TicketButtonF = "Use a Ticket (you have %d)",
+	TicketKeepAll = "Keep everything",
+	TicketBuyHint = "You have 0 · after buying, tap again to change",
+	LossNone = "You lose nothing",
+	ConfirmChange = "Change",
 	-- class
-	ClassPickFirst = "먼저 직업을 골라 주세요.",
-	ClassHint = "바꿀 직업 카드를 눌러요.",
-	ClassCurrent = "현재",
-	ClassHeaderF = "%s(으)로 바꾸기",
+	ClassPickFirst = "Pick a class first.",
+	ClassHint = "Tap the class card you want.",
+	ClassCurrent = "Current",
+	ClassHeaderF = "Change to %s",
 	ClassLossLevelF = "Lv %d → Lv 1",
-	ClassLossXPF = "경험치 %d 초기화",
-	ClassKeeps = "골드·무기·아이템·환생 보너스는 그대로",
-	ClassFreeKeepF = "Lv%d 전에는 레벨 유지", -- A23-14 fallback for Config.Text.ClassFreeKeepLevelF
-	ClassConfirmTitle = "직업 변경",
-	ClassConfirmFreeF = "%s(으)로 바꿀까요?\n무료: %s",
-	ClassConfirmTicketF = "변경권 1장을 써서 %s(으)로 바꿀까요?\n레벨 그대로 유지돼요.",
+	ClassLossXPF = "%d XP resets",
+	ClassKeeps = "Gold, weapons, items and rebirth bonus stay",
+	ClassFreeKeepF = "Your level stays before Lv%d", -- A23-14 fallback for Config.Text.ClassFreeKeepLevelF
+	ClassConfirmTitle = "Change Class",
+	ClassConfirmFreeF = "Change to %s?\nFree: %s",
+	ClassConfirmTicketF = "Use 1 Change Ticket to change to %s?\nYour level stays.",
 	-- shop
-	ShopRowF = "%s — 보유 %d장",
-	ShopNote = "변경권은 능력치가 아니에요. 진행도를 지키는 선택권이에요. 무료로도 언제든 바꿀 수 있어요!",
-	ProductPending = "상품 준비 중",
-	ProductBuyF = "로벅스로 구매 (%s R$)",
-	WeaponLocation = "교차로 마을 → 장인 길드 모루 · 가까이에서 상호작용",
-	WeaponFar = "대장간 모루 가까이에서 무기를 살펴볼 수 있어요.",
-	WeaponLoading = "캐릭터 준비가 끝나면 다시 확인해 주세요.",
-	WeaponNote = "기본 무기를 골라 구입해요. 보유 무기는 무료로 다시 장착할 수 있어요.",
-	WeaponCurrentF = "현재 무기: %s",
-	WeaponPriceF = "가격 %s골드 · 필요 Lv %d · 현재 Lv %d",
-	WeaponEffectF = "슬라임 기본 공격 %d방 → %d방",
-	WeaponEffectNowF = "슬라임 기본 공격 %d방",
-	WeaponGoldF = "보유 %s골드 (금고 %s + 주머니 %s)",
-	WeaponShortF = "%s골드가 더 필요해요.",
-	WeaponBuyF = "구입 · %s골드",
-	WeaponSellF = "판매 · %s골드",
-	WeaponEquip = "무료 장착",
-	WeaponEquipped = "현재 장착 중",
-	WeaponOwned = "보유 중",
-	WeaponUnowned = "미보유",
+	ShopRowF = "%s — you have %d",
+	ShopNote = "Change Tickets are not stats. They keep your progress when you switch. You can always switch for free too!",
+	ProductPending = "Coming soon",
+	ProductBuyF = "Buy with Robux (%s R$)",
+	WeaponLocation = "Crossroads → Artisan Guild anvil · interact up close",
+	WeaponFar = "Come close to the Forge anvil to see the weapons.",
+	WeaponLoading = "Check again once your character is ready.",
+	WeaponNote = "Pick a basic weapon to buy. Weapons you own can be equipped again for free.",
+	WeaponCurrentF = "Current weapon: %s",
+	WeaponPriceF = "Price %s gold · Needs Lv %d · Now Lv %d",
+	WeaponEffectF = "Slime in %d basic hits → %d hits",
+	WeaponEffectNowF = "Slime in %d basic hits",
+	WeaponGoldF = "You have %s gold (Vault %s + Pouch %s)",
+	WeaponShortF = "You need %s more gold.",
+	WeaponBuyF = "Buy · %s gold",
+	WeaponSellF = "Sell · %s gold",
+	WeaponEquip = "Equip (free)",
+	WeaponEquipped = "Equipped",
+	WeaponOwned = "Owned",
+	WeaponUnowned = "Not owned",
 	WeaponStarter = "First weapon · free to re-equip · can't be sold", -- A23-34 (A23-48 English)
 	WeaponStarterNoSell = "The first weapon can't be sold",
 	WeaponFromSmith = "From the Blacksmith", -- A23-34: tier 1 is a gift (M1_1), never bought
-	WeaponNoSell = "보유 무기만 판매 가능",
-	WeaponSaleNoteF = "판매가 %s골드 (구매가의 1/10)",
+	WeaponNoSell = "You can only sell weapons you own",
+	WeaponSaleNoteF = "Sells for %s gold (1/10 of the price)",
 	WeaponSaleEquipped = "Sell the weapon in your hand and you switch to your best other weapon (or bare hands).",
-	WeaponSellTitle = "무기 판매",
-	WeaponSellConfirmF = "%s을(를) %s골드에 팔까요?\n보유 목록에서 사라져요.",
-	WeaponSellConfirm = "판매하기",
-	WeaponUnavailable = "대장간에서 판매하지 않는 무기예요.",
-	WeaponInvalid = "무기 정보를 확인할 수 없어요. 잠시 뒤 다시 열어 주세요.",
-	WeaponChanged = "보유하거나 장착한 무기가 바뀌었어요. 목록을 다시 확인해 주세요.",
-	WeaponSent = "거래 결과를 확인하고 있어요.",
-	WeaponSlow = "거래 결과를 받지 못했어요. 알림을 확인하고 다시 눌러 주세요.",
-	WeaponPending = "거래 확인 중",
-	WeaponByeBrowse = "마음에 드는 게 없나? 천천히 골라도 돼!",
-	WeaponByeBuy = "좋은 선택이야. 써 보고 또 들러!",
-	WeaponByeSell = "무기는 잘 받았어. 필요한 게 생기면 또 들러!",
-	WeaponByeEquip = "손에 잘 맞는 무기로 골랐구나. 조심히 다녀와!",
-	WeaponByePending = "거래 결과를 확인해 줘. 또 들러!",
+	WeaponSellTitle = "Sell Weapon",
+	WeaponSellConfirmF = "Sell %s for %s gold?\nIt leaves your weapon list.",
+	WeaponSellConfirm = "Sell",
+	WeaponUnavailable = "The Forge doesn't sell this weapon.",
+	WeaponInvalid = "We can't read the weapon info. Please open it again in a moment.",
+	WeaponChanged = "Your weapons changed. Please check the list again.",
+	WeaponSent = "Checking the trade...",
+	WeaponSlow = "No answer for the trade yet. Check the alerts and tap again.",
+	WeaponPending = "Checking...",
+	WeaponByeBrowse = "Nothing you like? Take your time!",
+	WeaponByeBuy = "Good choice. Try it out and come back!",
+	WeaponByeSell = "Got your weapon. Come back when you need something!",
+	WeaponByeEquip = "That one fits your hand. Stay safe out there!",
+	WeaponByePending = "Check how the trade went. Come back soon!",
 	-- vacation
-	VacationHeaderF = "휴가 보너스! %d일 동안 못 왔지만 괜찮아요.",
-	VacationRewardF = "+%s 골드 · +%s 경험치",
-	VacationNoteF = "쉬어도 하루치 보상의 %d%%를 챙겨 줘요. 직접 하면 100%%!",
-	VacationClaim = "받기",
-	VacationNone = "받을 휴가 보너스가 없어요.",
+	VacationHeaderF = "Vacation Bonus! You were away for %d days, and that's okay.",
+	VacationRewardF = "+%s gold · +%s XP",
+	VacationNoteF = "Even on breaks you get %d%% of a day's rewards. Playing gives 100%%!",
+	VacationClaim = "Claim",
+	VacationNone = "No vacation bonus to claim.",
 	-- fallbacks for Config.Text keys added in review R1
-	WaitRespawn = "다시 살아난 뒤에 할 수 있어요.", -- CR-L30
-	BlockedBully = "깡패 단계가 모두 풀린 뒤에 장인 길드로 갈 수 있어요.", -- CR-L9
+	WaitRespawn = "You can do this after you respawn.", -- CR-L30
+	BlockedBully = "You can join the Artisan Guild after all your Bully stacks are gone.", -- CR-L9
 }
 
 local DEFAULT_THEME = {
@@ -239,7 +239,7 @@ local lastWarnAt = -math.huge
 local cameraConn = nil
 local scaleConn = nil
 local NICK = { UI = nil, Draft = nil, Message = "", Pending = false, Request = 0,
-	Rule = "2~20글자 · 다른 사람과 중복 불가", Unavailable = "저장 연결을 확인해 주세요." }
+	Rule = "2-20 letters · must be unique", Unavailable = "Please check the save connection." }
 local WSHOP = { Distance = 12, PromptName = "HHC_BlacksmithPrompt",
 	PendingTimeout = 5, SlowNoteSeconds = 4 } -- s: an unanswered trade unlocks the row, then T.WeaponSlow shows
 local WELCOME = { PendingOpen = false }
@@ -1031,7 +1031,7 @@ function NICK.Layout(w, h, top, s)
 	local titleWidth = math.max(1, math.min(width * 0.66, width - 116))
 	local titleHeight = titleWidth / (256 / 63)
 	local bodyTop = math.max(68, titleHeight + 10)
-	local currentText = "현재 이름: " .. Util.PlayerDisplayName(player)
+	local currentText = "Current name: " .. Util.PlayerDisplayName(player)
 	local noteText = u.Note.Text
 	local currentHeight = math.max(24, select(1, UIKit.MeasureText(currentText, 14,
 		u.Current.FontFace, textWidth)) + 3)
@@ -1077,11 +1077,11 @@ end
 function NICK.Update()
 	local u = NICK.UI
 	if not u then return end
-	u.Current.Text = "현재 이름: " .. Util.PlayerDisplayName(player)
+	u.Current.Text = "Current name: " .. Util.PlayerDisplayName(player)
 	local busy = NICK.Pending or player:GetAttribute("NicknameStatus") == "Busy"
 	u.Save:SetAttribute("Disabled", busy)
 	u.Save.Active = not busy
-	u.SaveLabel.Text = busy and "저장 중..." or "저장"
+	u.SaveLabel.Text = busy and "Saving..." or "Save"
 	u.Input.TextEditable = not busy
 	local message = NICK.Message ~= "" and NICK.Message or NICK.Rule
 	if u.Note.Text ~= message then
@@ -1113,7 +1113,7 @@ function NICK.Submit()
 	local draft = NICK.Draft or ""
 	local ok, length = pcall(utf8.len, draft)
 	if not ok or not length or length < 2 or length > 20 then
-		NICK.Message = "2~20글자로 입력해 주세요."
+		NICK.Message = "Please enter 2-20 letters."
 		NICK.Update()
 		return
 	end
@@ -1127,12 +1127,12 @@ function NICK.Submit()
 	NICK.Request += 1
 	local request = NICK.Request
 	NICK.Pending = true
-	NICK.Message = "저장 중..."
+	NICK.Message = "Saving..."
 	NICK.Update()
 	local sent = pcall(function() Net.Get("SetNickname"):FireServer(draft) end)
 	if not sent then
 		NICK.Pending = false
-		NICK.Message = player:GetAttribute("NicknameStatus") == "Busy" and "저장 결과를 확인하고 있어요." or NICK.Unavailable
+		NICK.Message = player:GetAttribute("NicknameStatus") == "Busy" and "Checking the save..." or NICK.Unavailable
 		NICK.Update()
 		return
 	end
@@ -1140,7 +1140,7 @@ function NICK.Submit()
 		if NICK.Request ~= request or not NICK.Pending then return end
 		-- Busy remains server-owned. An absent listener must not leave the form locked forever.
 		NICK.Pending = false
-		NICK.Message = player:GetAttribute("NicknameStatus") == "Busy" and "저장 결과를 확인하고 있어요." or NICK.Unavailable
+		NICK.Message = player:GetAttribute("NicknameStatus") == "Busy" and "Checking the save..." or NICK.Unavailable
 		NICK.Update()
 	end)
 end
@@ -1168,18 +1168,18 @@ function NICK.Build()
 		ScrollBarImageColor3 = (Config.UIArt.Colors or {}).Ink or PALETTE.DarkText })
 	u.Body = UIKit.Create("Frame", { Name = "Body", Parent = u.Scroll, BackgroundTransparency = 1 })
 	u.Current = UIKit.InkText({ Name = "CurrentName", Parent = u.Body,
-		Text = "현재 이름: " .. Util.PlayerDisplayName(player), Outline = false })
+		Text = "Current name: " .. Util.PlayerDisplayName(player), Outline = false })
 	u.InputArt = UIKit.ArtFrame("PanelParchment", { Name = "InputFrame", Parent = u.Body })
 	u.Input = UIKit.Create("TextBox", { Name = "NicknameInput", Parent = u.InputArt,
 		BackgroundTransparency = 1, BorderSizePixel = 0, ClearTextOnFocus = false, MultiLine = false,
-		Text = NICK.Draft, PlaceholderText = "성기사별", RichText = false,
+		Text = NICK.Draft, PlaceholderText = "StarKnight", RichText = false,
 		TextColor3 = (Config.UIArt.Colors or {}).Ink or PALETTE.DarkText,
 		PlaceholderColor3 = (Config.UIArt.Colors or {}).InkSoft or PALETTE.DarkText,
 		TextXAlignment = Enum.TextXAlignment.Left })
 	u.Note = UIKit.InkText({ Name = "NicknameStatus", Parent = u.Body,
 		Text = NICK.Message ~= "" and NICK.Message or NICK.Rule, Outline = false })
 	u.Save, u.SaveLabel = UIKit.ArtButton("CardHalo", { Name = "SaveNickname", Parent = u.Body,
-		Text = "저장", TextStyle = "ink", AnchorPoint = Vector2.new(0.5, 0), ScaleType = Enum.ScaleType.Fit }, NICK.Submit,
+		Text = "Save", TextStyle = "ink", AnchorPoint = Vector2.new(0.5, 0), ScaleType = Enum.ScaleType.Fit }, NICK.Submit,
 		{ Color = (Config.UIArt.Colors or {}).Gold or theme.Gold, CornerRadius = UDim.new(0.5, 0) })
 	if u.Save:IsA("ImageButton") then
 		-- The existing text-free CardHalo bitmap's complete gold button, with its original aspect ratio.
@@ -1290,7 +1290,7 @@ BUILDERS.Menu = function(parent)
 		{ Text = T.MenuShop, Id = "Shop" },
 		{ Text = T.MenuMap, Id = "Map" },
 		{ Text = T.MenuNickname, Id = "Nickname" },
-		{ Text = (Config.Story and Config.Story.OpeningReplay) or "오프닝 다시 보기", Id = "Intro" },
+		{ Text = "Replay Opening", Id = "Intro" },
 		-- P5: hide / show my name in server-wide chat announcements (server-saved, HideAnnounceName attribute)
 		{ Text = attr("HideAnnounceName", false) == true and Config.Announce.Text.MenuHide or Config.Announce.Text.MenuShow,
 			Id = "AnnounceName" },
@@ -1334,7 +1334,7 @@ BUILDERS.Menu = function(parent)
 				-- A23-9: replay only inside a town (safe and calm), never mid-fight
 				local intro = C and C.Intro
 				if attr("ZoneTown", false) ~= true or isDead() then
-					toast((Config.Story and Config.Story.OpeningReplayUnsafe) or "안전한 곳에서 다시 볼 수 있어요.", "bad")
+					toast("You can replay the opening inside a town.", "bad")
 				elseif type(intro) == "table" and type(intro.Play) == "function" then
 					Panels.Close()
 					intro.Play(true)
@@ -1908,47 +1908,47 @@ ITEMS = {
 	Seen = false, -- the item list was opened this session (menu '아이템' glow until then)
 	T = {
 		-- B14 / B9 (2026-10-05 loot review)
-		Pending = "결과 확인 중…",
-		Slow = "결과를 받지 못했어요. 알림을 확인하고 다시 눌러 주세요.",
-		UseCombat = "전투 중에는 주문서를 쓸 수 없어요.", -- fallback for Config.Loot.Text.UseCombat
-		EquipPending = "확인 중…",
-		EquipCombat = "전투 중",
-		EquipLevelF = "Lv %d부터", -- A23-28: owned but below the weapon's MinLevel (the server refuses the equip)
-		EquipCombatLong = "전투 중에는 무기를 바꿀 수 없어요.", -- fallback for Config.Loot.Text.EquipCombat
-		FailDownF = "실패하면 %d%% 확률로 한 단계 내려가요. 무기는 절대 안 부서져요!", -- Config.Loot.FailDropChance
-		FailKeep = "실패해도 그대로예요. 무기는 절대 안 부서져요!",
-		OverflowF = "최대 +%d이라 +%d만 올라요", -- (MaxEnhance = 10 → "+10이라")
-		MoveOverflowF = "넘친 +%d은(는) 보내는 무기에 남아요 (강화는 하나도 안 사라져요)",
-		MoveSafe = "강화는 하나도 안 사라져요",
-		SellPending = "판매 확인 중…",
-		SellKeepEnhF = "강화 +%d 기록은 저장돼요 (다시 얻으면 그대로)",
+		Pending = "Checking the result…",
+		Slow = "No result yet. Check the alerts and tap again.",
+		UseCombat = "You can't use scrolls during a fight.", -- fallback for Config.Loot.Text.UseCombat
+		EquipPending = "Checking…",
+		EquipCombat = "In a fight",
+		EquipLevelF = "From Lv %d", -- A23-28: owned but below the weapon's MinLevel (the server refuses the equip)
+		EquipCombatLong = "You can't change weapons during a fight.", -- fallback for Config.Loot.Text.EquipCombat
+		FailDownF = "On a fail there's a %d%% chance it drops one step. Weapons never break!", -- Config.Loot.FailDropChance
+		FailKeep = "Nothing changes on a fail. Weapons never break!",
+		OverflowF = "Max is +%d, so it only goes up +%d", -- (MaxEnhance = 10 → "+10이라")
+		MoveOverflowF = "The extra +%d stays on the sending weapon (no enhancement is ever lost)",
+		MoveSafe = "No enhancement is ever lost",
+		SellPending = "Checking the sale…",
+		SellKeepEnhF = "Your +%d is saved (you get it back if you own it again)",
 		Plus = " +%d",
-		Weapons = "내 무기", Scrolls = "주문서", Materials = "재료",
+		Weapons = "My Weapons", Scrolls = "Scrolls", Materials = "Materials",
 		NoWeapons = "Bare hands for now. The Blacksmith gives you your first weapon after your first mission.", -- A23-34
-		Drops = "몬스터가 주는 것", DropsNone = "몬스터를 잡으면 무엇을 주는지 여기에 적혀요.", -- P7
-		DropLine = "%s: %s", DropPart = "%s %s", DropJackpot = "★전설 무기(대박) %s분의 1", DropPotion = "%s 물약",
-		DropWeapon = "%s 무기",
+		Drops = "What Monsters Drop", DropsNone = "Defeat monsters to see what they drop here.", -- P7
+		DropLine = "%s: %s", DropPart = "%s %s", DropJackpot = "★Legendary weapon (jackpot) 1 in %s", DropPotion = "%s potion",
+		DropWeapon = "%s weapon",
 		DropCount = "%s ×%d", -- a row that gives N > 1 at once (the king's 8 candies); symbols only, same in English
-		NoScrolls = "아직 없어요. 몬스터를 잡으면 가끔 떨어져요!",
-		NoMaterials = "아직 없어요. 몬스터를 잡으면 떨어져요!",
-		Equipped = "장착 중", Equip = "장착",
-		Use = "사용", Cancel = "취소",
+		NoScrolls = "None yet. Monsters drop them sometimes!",
+		NoMaterials = "None yet. Monsters drop them!",
+		Equipped = "Equipped", Equip = "Equip",
+		Use = "Use", Cancel = "Cancel",
 		Legend = "★ ",
-		Strongest = " · 가장 셈",
-		ScrollEnh = "%s ×%d · 성공하면 +%d",
-		ScrollMove = "%s ×%d · 다른 무기로 강화 전부 옮기기",
-		MaterialLine = "%s ×%d · 개당 %d골드",
-		MaterialHint = "재료는 대장간 모루에서 한 번에 팔 수 있어요.",
-		PickEnhance = "강화할 무기를 골라요.",
-		PickFrom = "강화를 보낼 무기를 골라요 (+1 이상).",
-		PickTo = "+%d을(를) 받을 무기를 골라요.",
-		Enhance = "강화", Max = "최대", From = "보내기", To = "받기",
-		ConfirmEnh = "%s +%d → 성공하면 +%d (공격 %d%%)\n성공률 %d%% · %s",
-		FailZero = "실패해도 +0 그대로예요. 무기는 절대 안 부서져요!",
+		Strongest = " · strongest",
+		ScrollEnh = "%s ×%d · +%d on success",
+		ScrollMove = "%s ×%d · move all of a weapon's + to another",
+		MaterialLine = "%s ×%d · %d gold each",
+		MaterialHint = "Sell your materials all at once at the Forge anvil.",
+		PickEnhance = "Pick the weapon to enhance.",
+		PickFrom = "Pick the weapon to send its + from (+1 or more).",
+		PickTo = "Pick the weapon to get +%d.",
+		Enhance = "Enhance", Max = "Max", From = "Send", To = "Receive",
+		ConfirmEnh = "%s +%d → +%d on success (attack %d%%)\nChance %d%% · %s",
+		FailZero = "Stays at +0 on a fail. Weapons never break!",
 		-- B9: no particle after the number ("+%d이" was wrong for +2/+4/+5/+9)
-		ConfirmMove = "%s +%d → %s +%d\n성공률 %d%% · 성공하면 받는 무기는 +%d 강화가 돼요 · 실패해도 그대로 남아요",
-		Go = "강화하기", GoMove = "옮기기",
-		SellMat = "재료 팔기 · %d개 → %s골드", SellNone = "팔 재료 없음",
+		ConfirmMove = "%s +%d → %s +%d\nChance %d%% · on success the receiving weapon becomes +%d · on a fail nothing changes",
+		Go = "Enhance", GoMove = "Move",
+		SellMat = "Sell materials · %d → %s gold", SellNone = "No materials to sell",
 	},
 }
 
@@ -2647,10 +2647,10 @@ end
 -- opens it even mid-fight. "Fight" = PvP combat tag, dead, or my own attack / hurt Fx within CalmSeconds.
 local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, CalmSeconds = 4, Toasted = nil,
 	Text = {
-		RowShard = "조각이 말을 걸어요 — 눌러서 보기",
-		RowOther = "할 이야기가 있어요 — 눌러서 보기",
-		ToastShard = "조각이 말을 걸어요! 퀘스트 줄을 눌러서 봐요.",
-		ToastOther = "할 이야기가 기다려요! 퀘스트 줄을 눌러서 봐요.",
+		RowShard = "A shard is talking to you — tap to see",
+		RowOther = "Someone wants to talk — tap to see",
+		ToastShard = "A shard is talking to you! Tap the quest row to see.",
+		ToastOther = "A story is waiting! Tap the quest row to see.",
 	},
 }
 
@@ -2697,7 +2697,7 @@ function STORY.Title()
 	local speaker = def.Speaker and sq.Speakers[def.Speaker]
 	if not speaker then
 		local w = Config.Tutorial.Welcome[myFaction()]
-		speaker = w and w.Name or "안내자"
+		speaker = w and w.Name or "Guide"
 	end
 	return string.format(sq.Text.Title, speaker, def.Title)
 end
@@ -2783,20 +2783,20 @@ end
 -- A23-6 / beta 3: potion shop at the temporary default NPC (Crossroads). Blacksmith-style screen: price, my gold,
 -- stock, 1 / 5 bottles, the server's answer (stock / gold attributes) and why a purchase failed (server toasts).
 local POTION = {
-	Gold = "보유 %s골드",
-	Stock = "보유 %d / %d병",
-	Name = { HP = "HP 물약 ({PotionHP} 키)", MP = "MP 물약 ({PotionMP} 키)" }, -- BB1: key part only on keyboards
-	Effect = { HP = "최대 HP의 %d%% 회복", MP = "최대 MP의 %d%% 회복" },
-	Buy = "%d병 · %s골드",
-	Pending = "구매 확인 중…",
-	Full = "가득 찼어요",
-	Short = "골드 부족",
+	Gold = "You have %s gold",
+	Stock = "You have %d / %d",
+	Name = { HP = "HP Potion ({PotionHP})", MP = "MP Potion ({PotionMP})" }, -- BB1: key part only on keyboards
+	Effect = { HP = "Heals %d%% of max HP", MP = "Restores %d%% of max MP" },
+	Buy = "%d · %s gold",
+	Pending = "Checking the purchase…",
+	Full = "Full",
+	Short = "Not enough gold",
 }
 
 BUILDERS.PotionShop = function(parent)
 	local tune = Config.Vitals or {}
 	if tune.MerchantEnabled ~= true then
-		addText(parent, "물약 상점은 준비 중이에요.", { Align = Enum.TextXAlignment.Center })
+		addText(parent, "The potion shop is coming soon.", { Align = Enum.TextXAlignment.Center })
 		return nil
 	end
 	local gold = addText(parent, "", { Name = "PotionGold", Size = 18 })

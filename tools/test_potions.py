@@ -103,9 +103,13 @@ def make_harness(sources: dict[str, str]) -> str:
     # BB2: DataService.fillDefaults runs Config.SanitizeSettings (pure; the keys + settings section after RateLimits)
     settings = between(config, "----------------------------------------------------------------- keys + settings (BB1 / BB2)",
                        "\nConfig.Loot = {")
+    # BB15: Config.Help (inside that section) formats the bully numbers at load time; Config.Bully is all literals
+    bully = re.search(r"^Config\.Bully\s*=\s*\{.*?\n\}", config, re.S | re.M)
+    if not bully:
+        raise ValueError("Config.Bully boundary changed; update the test extractor.")
     set_stat = between(sources["PLAYER_SOURCE"], "function PlayerService.SetStat(", "function PlayerService.AddStat(")
     bindings = {
-        "CONFIG_SOURCE": prefix + "\n" + rates.group() + "\n" + settings + "\n" + texts.group()
+        "CONFIG_SOURCE": prefix + "\n" + rates.group() + "\n" + bully.group() + "\n" + settings + "\n" + texts.group()
                          + f"\nConfig.MaxWeaponTier = {max_tier} -- extracted: number of Config.Weapons rows\nreturn Config",
         "NET_SOURCE": sources["NET_SOURCE"],
         "DATA_SOURCE": sources["DATA_SOURCE"],

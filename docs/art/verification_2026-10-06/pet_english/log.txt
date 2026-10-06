@@ -1,0 +1,29 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false EquippedPet= PetLv=0 WeaponTier=0 TutorialStep=0
+petmodels: copied (test only)
+fired
+fired
+tamer: DataLoaded=true Faction=Neutral Class=Archer ClassChosen=true EquippedPet=BabySlime PetLv=1 WeaponTier=0 TutorialStep=0
+fired
+pet: Pet_11753301316 h=1.8 at -1.5413800477981567, 0.8999999761581421, -33.36515808105469 | me 0.981078028678894, 3.2248411178588867, -30.883790969848633
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\pet_english\01_tamer_pet_follow.png
+tp
+slime 33
+attack: Attack
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\pet_english\02_pet_headbutt.png
+pet after: Pet_11753301316 h=1.8 at 305.33673095703125, 0.9315618872642517, -48.09186553955078 | me 303.1205139160156, 3.2404661178588867, -50.85018539428711
+03_settings sent
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\pet_english\03_settings.png
+04_help sent
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\pet_english\04_help.png
+05_news sent
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\pet_english\05_news.png
+06_class sent
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\pet_english\06_class.png
+07_travel sent
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\pet_english\07_travel.png
+08_items sent
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-06\pet_english\08_items.png
+console: 
+play stopped
+fresh off

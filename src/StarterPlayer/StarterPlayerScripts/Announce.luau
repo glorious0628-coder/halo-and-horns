@@ -23,8 +23,13 @@ local function escape(s)
 	return (tostring(s):gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"))
 end
 
--- the Settings language is English (Config.Settings Lang "en")
+-- English lines (A23-48: UIKit.Lang decides, the game shows English; the Settings value is the older fallback)
 function A.English()
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Lang) == "function" then
+		local okLang, lang = pcall(kit.Lang)
+		if okLang then return lang == "en" end
+	end
 	local st = C and C.Settings
 	if type(st) ~= "table" or type(st.Get) ~= "function" then return false end
 	local ok, lang = pcall(st.Get, "Lang")
@@ -34,7 +39,7 @@ end
 function A.Subject(args, text)
 	if args.Hidden == true or type(args.Who) ~= "string" or args.Who == "" then
 		local f = Config.Factions[args.Faction]
-		return string.format(text.Anon, f and f.Name or "누군가")
+		return string.format(text.Anon, f and f.Name or "Someone")
 	end
 	return string.format(text.Subject, escape(args.Who))
 end
@@ -56,7 +61,7 @@ function A.Format(msg)
 	if msg.Key == "RareWeapon" then
 		local m = Config.MonsterTypes[args.Monster]
 		local g = tier and Config.WeaponGrade(math.floor(tier))
-		return string.format(tmpl, who, m and (m.Short or m.Name) or "몬스터", g and g.Name or "", weapon)
+		return string.format(tmpl, who, m and (m.Short or m.Name) or "a monster", g and g.Name or "", weapon)
 	elseif msg.Key == "Jackpot" or msg.Key == "FirstMax" then
 		return string.format(tmpl, who, weapon)
 	elseif msg.Key == "More" then
