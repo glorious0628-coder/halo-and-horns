@@ -73,3 +73,31 @@
 - IconGoldGuard 1장 추가(뿔 특성 줄 금화 중복).
 
 전체 원문(시나리오·수정안·표): 검수 세션 scratchpad review1/result.json — 세션이 바뀌면 이 표와 각 세션 메시지가 기준이다.
+
+## 2차 검수 (같은 날 오후): 65b2ccb·83cf898·68cd2eb·3f1716b·c2e9800·abc02ac·71c10bd·eb79bf7·f965cd0·de6a274
+
+찾기 4 + 반박 39 = 43 에이전트. 확인 8건, 버림 5건.
+
+| # | 심각 | 묶음 | 내용 | 위치 | 담당 |
+|---|---|---|---|---|---|
+| 2-0 | 하 | hudlayout-65b2ccb | 작은 폰에서 물약 버튼 한 칸 폭이 60du보다 작은데 검사는 높이만 확인함 | `src/StarterPlayer/StarterPlayerScripts/HudLayout.luau:142-143 (검사: tools/fixtures/hud_layout_offline.luau:188)` | 이미지 개발 |
+| 2-1 | 하 | hudlayout-65b2ccb | 겹침 검사가 간격 0(맞닿음)을 통과시켜 버튼 간격 회귀를 잡지 못함(RAIL_GAP=0 변이가 살아남음) | `tools/fixtures/hud_layout_offline.luau:175` | 이미지 개발 |
+| 2-2 | 하 | art-b6-b1-tiles | 돌바닥 타일 Tex_Cobblestone_FF 안쪽에 이음 자국(잘린 돌, 빗살 줄무늬)이 보임. 사용자 승인 뒤 지금 업로드·교체 중 | `art/ui/Tex_Cobblestone_FF.png:1024px 좌표 (645-755, 340-362), (185-265, 100-185), (85-150, 240-320)` | 이미지 생성 |
+| 2-3 | 하 | art-b6-b1-tiles | make_tileable --prefer-dark 가중치가 색 맞춤 항을 덮어써서, 두 띠가 서로 다른 곳에서 잘림. 기록된 검사(가장자리 wrap step, 384px 3x3)로는 안쪽 이음을 잡을 수 없음 | `tools/make_tileable.py:c2e9800: 63-66, 79-92 / HEAD: 64-69, 112-126` | 이미지 생성 |
+| 2-4 | 하 | art-b6-b1-tiles | 사람 마스터 프롬프트에 상표성 용어 'R15'가 들어감 | `art/prompts/SB_CLS_HaloWarrior_M_Blocky.txt:1` | 이미지 생성 |
+| 2-5 | 중 | worldblend-de6a274 | '밤 제안' 사진이 E 땅이 아니라 D(무늬 없는 색만) 땅으로 찍혔는데, 시트에는 '밤 제안(E 땅)'이라고 적혀 있다 | `tools/world_blend_view.py:77-79 (sheet label: art/review/world_blend_2026-10-06_sheet.png night row)` | 이미지 개발 |
+| 2-6 | 하 | worldblend-de6a274 | E 칸은 'B + 새 땅 4장'이 아니다: 해골 폐허 E에 C/D의 Slate 색·타일 크기가 남아 있고, md는 Slate를 '그대로(A)'라고 적었다 | `tools/world_blend_view.py:312-314 (md: docs/design/world_blend_2026-10-06.md:39)` | 이미지 개발 |
+| 2-7 | 하 | worldblend-de6a274 | 메인 Studio 차단 장치가 위험한 단계 뒤에만 있고, Lua assert가 실패해도 Python이 멈추지 않는다 | `tools/world_blend_view.py:18, 282-294 (+ tools/device_view.py:111-112)` | 이미지 개발 |
+
+버림:
+- hudlayout-65b2ccb: Lv·전투력 줄 뒤에 '· 주머니 1.2K'를 붙일 폭이 없고, 둘째 줄로 내릴 자리도 없음(폰) (trace:refuted,contract:refuted,current:refuted)
+- hudlayout-65b2ccb: 화면 안으로 끌어오는 처리가 항목마다 따로라서, 점프 버튼이 MainGui 안전 영역 밖에 있으면 공격 버튼이 Z·유령 붙잡기와 겹침 (trace:refuted,contract:refuted,current:refuted)
+- art-b6-b1-tiles: IconNoBuff 다시 자르기(3f1716b)가 게임에 반영되지 않음: Config는 여전히 회색 조각이 있는 옛 업로드를 가리킴 (trace:refuted,contract:refuted,current:refuted)
+- worldblend-de6a274: md가 사진도 사용자 선택도 없는 Dawn 조명 변경을 게임성 개발에 지시한다(A23-29 위반) (trace:refuted,contract:refuted,current:refuted)
+- worldblend-de6a274: md의 '고른 뒤 할 일'이 커밋되지 않은 tools/terrain_view.py를 확인 단계로 쓴다 (trace:upheld,contract:refuted,current:refuted)
+
+확인 통과(요약):
+- **hudlayout-65b2ccb**: 65b2ccb 이후 커밋된 기록에서 HudLayout.luau, test_hud_layout.py, fixture, v2 시트가 바뀌지 않음(작업 트리 수정분은 다른 세션 작업 중이라 검수 대상 아님). HEAD에서; luau-compile 0.741 통과, luau-analyze 경고 0. 서비스·Instance·require를 쓰지 않음. 최상위 지역변수는 약 15개라 200 한도와 거리가 멂.; Init/Start는 빈 함수라 ClientMain ORDER에 넣어도 빼도 문제없음. ClientMain 목록에 있는데 파일이 없어 멈추는 위험 없음.; 기준 화면 두 개(1280x720·749x361)를 직접 Python으로 비교함: PC 21개 항목은 오차 0px, 폰은 전쟁 미터만 0.5px(W/2 가운데 맞춤) 차이, 나머지는 0px. 칩 줄은 운 알약+칩으로; 스크래치 미러(git archive HEAD)에서 test_hud_layout을 다시 돌림: 17개 화면, 6156/6156 통과, 변이 20/20. 변이는 모두 실제 검사 실패로 잡혔고 오류로 잡힌 것은 0. 보고; 확장 스윕 65개 화면(PC 800x600~3840x2160, 1280x540·1024x540 포함; 폰 568x320~1200x540; 노치 안전 영역 5개, 844x390→750x369 포함; 태블릿 2000x1; 추가 변이도 모두 잡힘: 왼쪽 위 거울 배치, PC 오른쪽 아래를 왼쪽으로, 터치 묶음 좌우 바꿈, MIN_TAP 0/59, env.Inset 무시, top을 배율로 안 나눔, 경험치·미니맵·퀘스트를 안 내림, 얼굴; status 규칙: --no-mutations이면 'passed-no-mutations'와 mutationsSkipped=true. 변이 패턴이 맞지 않으면 'failed'. 소스가 실행 중 바뀌면 'failed'.
+- **art-b6-b1-tiles**: 83cf898 투명 PNG 11장: 모두 512x512 RGBA다. 원본 1024 회색 바탕(≈117-137)에서 잘랐다. 밝은(#F2F2F2)·어두운(#1E1E1E) 바탕에서 1x·4x와 게임 크기(링 64/48,; 떨어진 조각: 11장 모두 alpha≥16 덩어리가 1개다. 나머지 덩어리는 alpha<16뿐이다(최대 MinimapFrame 27개·1036px, 안 보임).; 가장자리 3px 안에서 회색·밝은 반투명 테두리(alpha≥128)는 0px다. 예외는 LevelBadgeHorns 28px인데, 4x로 확대해 보니 남색 외곽선에 그려진 하이라이트 선(그림의 일부)이다.; PortraitRing·MinimapFrame 가운데 구멍: 6px 안쪽 core의 alpha 최대값이 0이다(87,410px / 121,722px). 안쪽 테두리는 남색·금색이고 회색 링이 없다. MinimapFr; 구멍과 면의 Rect가 approved.json 기록과 3px 안에서 맞는다: Ring x85-426 y81-423, Minimap x73-438 y75-428, BtnAttack·Skill·Potion·LevelB; MinimapFrame 테 두께: 좌우 67/68, 위아래 69/77(아래 입술 때문)이다. 180·96 정사각형으로만 쓰므로 9조각으로 늘어나는 일이 없고, 위쪽 가운데 소켓도 찌그러지지 않는다.; 글자·워터마크 없음. 뿔 배지는 끝이 둥근 젤리 뿔, 칼 글리프는 장난감 같은 만화 칼, 피 없음(아동 안전 OK).; 68cd2eb 묶음 1 마스터(PanelMain, BtnPrimary, SlotRare, IconPotionHP, Weapon_Warrior_T3 cut): 떨어진 조각·회색 테두리 0이다.
+- **gameplay-71c10bd-f965cd0**: (1) 서버 흔들림 제거(71c10bd) 확인: HEAD src 전체에서 rec._bob, BOB_PERIOD, BOB_FRACTION을 참조하는 곳이 더는 없다. HipHeight를 쓰는 곳은 MonsterServ; (2) FRONT_FIX 멱등성 확인: 반복문이 pp.PivotOffset을 CFrame.Angles(0,rad(FRONT[name] or 0),0)의 절댓값으로 쓰고, 먼저 FuzzyEq(1e-4)로 비교한다. 누; (2) 앞 방향 계산 추적: buildCustomVisual은 visual:PivotTo(CFrame.new(pos) * rootCF.Rotation)로 놓는다(MonsterService:664). GetPivot ; (2) faceTarget(root.CFrame = lookAt), pivotHome, 넉백은 root 기준이다. Fx 돌진·기울기(leanCF)와 waddle roll은 root 공간의 VisualJoint C0/; (2) GoldenGoose도 CustomModels에 있어 반복문 대상(목록에 없으면 0)이다. 커밋된 place에서 이미 항등이었으므로 바뀌는 것이 없다. dev2(b1ea7b4 기준)는 MonsterServic; (3) 그림자 부품은 makePart로 만든다. Anchored이고 CanCollide/CanQuery/CanTouch/CastShadow가 모두 false이며, 넘기는 props가 이 플래그를 덮어쓰지 않는다. 부; (3) 정리 경로 확인: 죽음과 Leaving(deathPop만 root를 Anchored로 만듦, grep 확인)은 같은 프레임에 dropShadow된다. 140스터드 밖, 다른 사람의 숨긴 몬스터(foreign); (3) 프레임당 비용: 범위 안 몬스터마다 원판 3개 CFrame 쓰기와 0.15초마다 레이 1번이다. 30마리면 프레임당 약 90번 쓰기, 레이는 초당 약 200번이다. 크기와 투명도는 2% 넘게 바뀔 때만 다시 
+- **worldblend-de6a274**: studio_mcp.Client.studio_id()는 STUDIO_NAME 부분 문자열만 찾고 다른 창으로 넘어가지 않는다. UiSandbox가 닫혀 있으면 약 15초 뒤 RuntimeError가 나고, 첫 동작(; world_blend_view.py와 device_view.py는 studio_mcp를 import하기 전에 STUDIO_NAME 기본값을 UiSandbox로 정한다. 사용자·시스템 환경변수 STUDIO_NAME은 ; build/UiSandbox.rbxlx 실행에서 PlaceId assert가 통과했다(values.json이 만들어짐). 메인 장소면 RECORD/APPLY에서 멈춘다.; Lighting/MaterialService/지형색 변경(APPLY/RECORD)은 Server/Client 데이터모델에서만 실행된다. execute_luau 정의상 해당 모드가 없으면 실행되지 않는다. Edit에는; 기본 출력은 build/world_blend(git 무시)이다. docs/art/verification_2026-10-04/gameplay_10min에는 쓰지 않는다.; Python 치환 뒤 Lua 조각(RECORD, APPLY(E), FIND_GROUP, CAMERA, SETUP_SERVER)을 luau-compile로 확인했고 오류가 없다.; md 조명 표의 A·B·밤 지금·밤 제안 숫자가 SETUPS, 실측 values.json의 A, de6a274의 Config.Sky.Neutral/Eclipse, WarService LIGHTING_FIXED/TIN; md 땅 표의 A·C·D 열과 E의 Grass/LeafyGrass/DirtPath/Cobblestone 값이 GROUND/FLAT/NEW_TILES와 맞는다(E의 Slate만 틀림, 위 지적).
