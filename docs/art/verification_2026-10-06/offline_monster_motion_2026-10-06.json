@@ -1,0 +1,159 @@
+{
+  "status": "passed",
+  "checks": 19,
+  "failedChecks": [],
+  "mutations": {
+    "total": 15,
+    "applied": 15,
+    "caught": 15,
+    "results": [
+      {
+        "mutation": "Slash never restarts while it plays (token ignored)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a second attack while Slash still plays restarts it from the wind-up point :: table: 0x000001d1ecfc9e00"
+        ]
+      },
+      {
+        "mutation": "the wind-up no longer starts the swing",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the wind-up starts Slash at HitTime - wind-up (its first part skipped) :: 0.5706666666666668",
+          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x000001229a0feb40",
+          "CHECK_FAIL the impact (AttackSeq) right after its wind-up does not restart the swing :: 0.876666666666667"
+        ]
+      },
+      {
+        "mutation": "the swing starts at its first frame (not aligned)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the wind-up starts Slash at HitTime - wind-up (its first part skipped) :: 0.016666666666666666",
+          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x00000297af5b5620",
+          "CHECK_FAIL a second attack while Slash still plays restarts it from the wind-up point :: table: 0x00000297af691960"
+        ]
+      },
+      {
+        "mutation": "every AttackSeq restarts the swing",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the impact (AttackSeq) right after its wind-up does not restart the swing :: 1.1833333333333333"
+        ]
+      },
+      {
+        "mutation": "HitTime takes the first frame",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Slash HitTime = the clip's fastest frame (from the clip data) :: 0.03333333333333333",
+          "CHECK_FAIL the wind-up starts Slash at HitTime - wind-up (its first part skipped) :: 0.016666666666666666",
+          "CHECK_FAIL at the impact (wind-up end) the clip is at its fastest frame :: table: 0x00000283062f95c0"
+        ]
+      },
+      {
+        "mutation": "Walk ignores the real speed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL walking at half its chase speed: the Walk clip runs at half speed (no sliding feet) :: table: 0x000001db20d1a500",
+          "CHECK_FAIL a very fast slide is capped at 1.5x :: 0.018000000000000016"
+        ]
+      },
+      {
+        "mutation": "the fall plays at normal speed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL dying: Fall at 1.8x from the point where the body hits the ground 0.5 s later :: table: 0x000001c05f3d70d0"
+        ]
+      },
+      {
+        "mutation": "the fall starts at its first frame",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL dying: Fall at 1.8x from the point where the body hits the ground 0.5 s later :: table: 0x00000183b7c25520"
+        ]
+      },
+      {
+        "mutation": "a leaving monster falls",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Leaving + anchored: Idle (it floats away), never the fall :: Fall"
+        ]
+      },
+      {
+        "mutation": "loops all start in step",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a standing goblin plays Idle from its own phase (0.25 of the loop) at its own speed (+8%) :: table: 0x00000234ade0a310",
+          "CHECK_FAIL a second goblin starts its loop elsewhere and runs 8% slower (a group never moves in step) :: table: 0x00000234ade1b3d0"
+        ]
+      },
+      {
+        "mutation": "every monster loops at the same speed",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a standing goblin plays Idle from its own phase (0.25 of the loop) at its own speed (+8%) :: table: 0x0000020b0b12e530",
+          "CHECK_FAIL a second goblin starts its loop elsewhere and runs 8% slower (a group never moves in step) :: table: 0x0000020b0b1335c0"
+        ]
+      },
+      {
+        "mutation": "a chase walks (Run never played)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a very fast slide is capped at 1.5x :: 0.027000000000000024",
+          "CHECK_FAIL chasing at its full speed: the Run clip at its own pace :: table: 0x000002ef95771f50"
+        ]
+      },
+      {
+        "mutation": "a standing monster never looks around",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x00000215d2c6e270"
+        ]
+      },
+      {
+        "mutation": "moving does not cut the LookAround",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL standing before its look time: Idle :: LookAround",
+          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x00000254f2fc28a0",
+          "CHECK_FAIL walking off cuts the LookAround :: Walk"
+        ]
+      },
+      {
+        "mutation": "LookAround right after the last one (no 6-12 s gap)",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL its look time: one LookAround from the start, the next one 6-12 s after it ends :: table: 0x000002785cb0fda0"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/MonsterMotion.luau": "cd3431be1b65f8987b5155d4dd5236c24c73ef4397956f0f9e4d89beae4028fe",
+    "src/ReplicatedStorage/Shared/Config.luau": "8f2959b27d59e253d9b6e03577dd4611a9c6482e6bcb31692141cdfcdc626e7b",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Walk.luau": "f817254d6fac4599e0bf848cc3d7d54da4cbc3bcab28232f74ad4eff8741577d",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Run.luau": "57d26784111435980a528c7ee9ef44fe1b4c501106366ed401d444b5eea1c2e5",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_LookAround.luau": "22f9f3de955e18ebe255dbaab2ae75e3bdcca23a275339ff1fdb9040754f19c0",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Slash.luau": "35ecf9e418cd983a7992ebf429680f42fe86fca7564bf447e588fca5182cc5d2",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Hurt.luau": "4fb4e24e98f90d4dc2ba3c2a4a53940bf7bcd54f7cb53a7f993634ad85afcc45",
+    "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
+  },
+  "fixtureSHA256": "3dd0473853d44cc13da57d87a88f75bc6e2e90a1592231dd1b06fd896be5addb",
+  "studioCalls": 0,
+  "contract": "Offline test of the production MonsterMotion (monster motion review 2026-10-06, survey 4-1), plus mutations.\n\nEvery attack restarts Slash; the wind-up (WindupAt) starts it at HitTime - wind-up so the clip's fastest frame meets the\nimpact; an AttackSeq without a seen wind-up shows the follow-through; Walk runs at real speed / chase Speed (0.45-1.5x)\nand a chase at 75%+ of that speed plays Run; a standing monster plays one LookAround every 6-12 s (moving cuts it);\nloops start at each monster's own phase and +-8% speed; dying plays Fall at 1.8x from the frame that hits the ground\n0.5 s after death; Leaving monsters float (Idle). Real Goblin clip modules; Config numbers read from Config.luau.",
+  "limitations": "Bone poses, real Bone.Transform playback, RenderStepped timing and the server's AttackSeq / WindupAt timing need a Studio check."
+}

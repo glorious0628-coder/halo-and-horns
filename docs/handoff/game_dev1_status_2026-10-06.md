@@ -1,5 +1,10 @@
 # 게임성 개발(1) 인계 — 2026-10-06 멈춤 시점
 
+- **최신(2026-10-06 밤, PC 재시작 뒤):** 오늘 저녁 커밋 5e15ab6(이전 세션 영어·PetFollow·물약 검사), b416527(카메라 오른쪽 드래그만 A23-51 + Studio 기기 흉내 원인), 4402a2c(몬스터 바라보며 때리기), 132ddf2·59c2585(개발 2 4f47f42 병합), 그리고 이번 place 커밋(몬스터 움직임 ①~④·자연스러움·Run/LookAround·빨간 테 ⑥ + place/GoodEvil.rbxlx 19:28:56). 메인 Studio = 진짜 장소(dfd22257 창), Edit. 재시작 뒤 열린 AutoRecovery 창은 사용자 답대로 저장 없이 닫힘(디스크 복구 파일은 그대로).
+  - **병합 대기:** 개발 2 0c96f32(= 2e6c514 H1·R1·N3 + A23-57/58 + 결말 단서 + E0 + 서브 줄 3개 + 보호막 → 진영 색 테두리). 이미지 개발 7cc9d60·1f9d291(SkillBar, A23-60)은 이미 main.
+  - **다음 순서:** dev2 병합 → SKL-1(Config.Skills Defs 21·Unlock·"Costs N MP"(A23-60)·SkillKit/SkillDef/SkillNumbers·Keybinds SkillX, 초안 scratchpad skl1_config.luau, keys_settings 검사 SkillX 반영) → 개발 2에 해시 → A23-57 진영 카드 2장 → 대장간 3D 간판 "Forge"(장인 길드 빼기) → 노란 빔 얇게 → 같은 종류 이름표 겹침 → 폰 [메뉴] 펼침 원인(폰에서 ui.foldGeom/HudLayout fold 자리 비어 보임) → 브라이트(여자아이 A23-59)·스모키 0.8 + KidsBench + NPC 태그 StoryNpc → BB24 → PERF-1 → BB41 → quest_volume 게시판(10/12 뒤) → A23-53 세계 v2.
+  - **사진에서 찾은 남은 문제:** 알림 영어 잘림·폰 HUD 겹침(이미지 개발에 넘김), 대장간 간판 한글, 빔, 이름표 겹침, [메뉴] 펼침.
+
 - **최신(2026-10-06 저녁):** 유령 3D(왕 111999674841692·똘마니 84018800442559) CustomModels 연결·정면 확인(devlog 16, 검수 통과), 크기 똘마니 3·왕 9(Config Scale 0.6/1.8). 이름표는 같은 종류 5칸 안이면 하나(MonsterLabels). **BB13** Panels.Register(kit·Cleanup·FixedBody·Rebuild 거르기·RENDER Arg·뒤로 = 온 창·Esc/패드 B 닫기) + **BB3** SettingsUI.luau(설정 창 영어: 직업·환생·오프닝·이름 숨기기·휴가·닉네임(BB8 전까지)·키 설정 탭·효과음·흔들림·키 표시·버전 줄·저장 꺼짐) + Fx 효과음 배수·흔들림 끄기 + SettingsService가 GameState SaveOK. 메인 Studio에 a0e8098·052c7b4와 함께 동기화, 자기 Play로 Settings·Keys 탭 확인(docs/art/verification_2026-10-06/bb13/). **남은 것:** Config.Help(BB15 도움말·새 소식, 규칙 조사 중) → 등록 확인 → 오프라인 keys_settings 재검사 → 커밋. 그다음 A23-34 맨손 병합(검수 OK 오면, 클라이언트 §6 + HUD doUpgrade 서버 경유), A23-48 내 창 글자 영어.
 
 - **최신(새 계정, 한도로 멈춤):** 개발 2 병합 끝 = main **dfefaaa**(푸시, eac036f·ff38ce4·e078bf5, 충돌 5곳 해결, 병합 트리 오프라인 16종 변형 포함 통과). 이미지 개발 미완성 HUD v2는 worktree `Game-imgdev`로 옮겨져 작업 폴더 src는 HEAD와 같음. 임시 worktree `Game-wtc`는 병합용(지워도 됨).

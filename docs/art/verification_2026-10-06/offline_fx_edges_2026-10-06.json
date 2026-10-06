@@ -1,0 +1,103 @@
+{
+  "status": "passed",
+  "checks": 18,
+  "failedChecks": [],
+  "static": [
+    {
+      "check": "Hurt passes the hit's size",
+      "ok": true
+    },
+    {
+      "check": "the throb runs every frame",
+      "ok": true
+    },
+    {
+      "check": "no other caller flashes at full strength",
+      "ok": true
+    }
+  ],
+  "mutations": {
+    "total": 8,
+    "applied": 8,
+    "caught": 8,
+    "results": [
+      {
+        "mutation": "every hit flashes fully",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a small hit: the edges start at 0.94 (almost invisible) and fade out :: 0.3",
+          "CHECK_FAIL a big hit: a clear flash (0.35), the old fade cancelled :: 0.3",
+          "CHECK_FAIL a medium hit: halfway (0.645) :: 0.3"
+        ]
+      },
+      {
+        "mutation": "the edges draw over open windows",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Panels open: no red edges over it :: nil",
+          "CHECK_FAIL WorldMap open: no red edges over it :: nil",
+          "CHECK_FAIL FactionPicker open: no red edges over it :: nil"
+        ]
+      },
+      {
+        "mutation": "shake off still flashes",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL shake off: a hit never flashes the edges :: nil",
+          "CHECK_FAIL Roblox reduced motion: no flash either :: nil"
+        ]
+      },
+      {
+        "mutation": "no low-HP throb",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 20% HP: the edges throb slowly between 0.55 and 0.85 over 1.1 s :: table: 0x000001ae69693080",
+          "CHECK_FAIL shake off at 20% HP: a steady faint edge (0.82), no throb :: 1"
+        ]
+      },
+      {
+        "mutation": "the throb overwrites a running flash",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a running hit flash is not overwritten by the throb :: nil"
+        ]
+      },
+      {
+        "mutation": "shake off throbs anyway",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL shake off at 20% HP: a steady faint edge (0.82), no throb :: 0.5538060974829749"
+        ]
+      },
+      {
+        "mutation": "the throb draws over the bag",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 20% HP with the bag open: no edges over it :: nil"
+        ]
+      },
+      {
+        "mutation": "a dead player's edges still throb",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL dead (0 HP): no throb :: nil"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "7e77c81f358fa78a179e57b91d145bcf18e1036d349acafa7e5eaa23bfcdff87"
+  },
+  "fixtureSHA256": "5ed49d20bfb8218252229ca5664a5a194e4a6d592471af53b3feb39fe77ef7ba",
+  "studioCalls": 0,
+  "contract": "Offline test of the real Fx red screen edges (quality ideas 2026-10-06 #6), plus mutations.\n\nA hit flashes the edges by its size (5% of MaxHealth or less = 0.94 transparency, 15% or more = 0.35), below 30% HP the\nedges throb slowly (0.55-0.85, 1.1 s), never over an open window (Panels / WorldMap / pickers / Intro), with shake off\n(setting or Roblox reduced motion) no flash or throb, only a steady faint 0.82 edge while HP is low; a running flash wins\nover the throb. Extracted: MOTION.EDGE, flashEdges, MOTION.EdgeCovered / EdgeStep / ShakeAllowed.",
+  "limitations": "The edge frames' look on PC / phone and the Hurt packet timing need a Studio check."
+}

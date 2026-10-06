@@ -247,6 +247,30 @@ MUTATIONS = [
     ("the wind-up stops renewing the facing (attack)", "MONSTER_SOURCE",
      "FACE.Active[rec] = { Target = info.Player, Until = os.clock() + FACE.Keep }", ""),
     ("turn speed halved (300 deg/s)", "MONSTER_SOURCE", "TurnRate = math.rad(600),", "TurnRate = math.rad(300),"),
+    # monster naturalness (user 2026-10-06 "너무 경직된 느낌", survey 4-1): pace / ease-in / alert / look-around / body hold
+    ("wander walks at the chase speed", "MONSTER_SOURCE", "WanderPace = 0.5,", "WanderPace = 1,"),
+    ("no ease-in from standing", "MONSTER_SOURCE", "RampStart = 0.45,", "RampStart = 1,"),
+    ("a wander never slows near its goal", "MONSTER_SOURCE",
+     "arrive = math.clamp(Util.FlatDistance(root.Position, goal) / NATURAL.ArriveSlow, 0.5, 1)", "arrive = 1"),
+    ("no alert pause before a chase", "MONSTER_SOURCE",
+     "rec._alertUntil = now + NATURAL.AlertHold", "rec._alertUntil = now"),
+    ("the alert repeats for the same player", "MONSTER_SOURCE",
+     "if seen == nil or now - seen > NATURAL.AlertAgain then", "if true then"),
+    ("the alert also stops a monster already in reach", "MONSTER_SOURCE",
+     "if rec._target ~= info.Player and dist > MC.AttackRange then", "if rec._target ~= info.Player then"),
+    ("the alert sends no AlertAt (no '!')", "MONSTER_SOURCE",
+     "if rec.Model then rec.Model:SetAttribute(\"AlertAt\", workspace:GetServerTimeNow()) end", ""),
+    ("a walking monster looks around", "MONSTER_SOURCE",
+     "if v.X * v.X + v.Z * v.Z >= 0.25 or FACE.Active[rec] ~= nil or now < (rec._lookAt or 0) then return false end",
+     "if FACE.Active[rec] ~= nil or now < (rec._lookAt or 0) then return false end"),
+    ("a look-around ignores its slow rate", "MONSTER_SOURCE",
+     "pcall(FACE.Turn, root, goal, math.min(dt, 0.1), f.Rate)", "pcall(FACE.Turn, root, goal, math.min(dt, 0.1))"),
+    ("a player near an idle monster gets no glance", "MONSTER_SOURCE",
+     "if Util.FlatDistance(pos, info.Pos) <= NATURAL.GlanceRange then", "if false then"),
+    ("a killed monster vanishes at once again (0.4 s)", "MONSTER_SOURCE",
+     "local DEATH_DESTROY = 1.15\n", "local DEATH_DESTROY = 0.4\n"),
+    ("the body shrinks at once (no hold before the fade)", "MONSTER_SOURCE",
+     "local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_FADE - 0.1)", "local hold = 0"),
     # Fx WOBBLE: float, grounded slimes, blob shadows, dust (71c10bd / f965cd0)
     ("ghost walks on the floor (Float ignored)", "FX_SOURCE",
      "Float = (float and float > 0 and def.Shape ~= \"Slime\") and float or nil,", "Float = nil,"),
@@ -376,6 +400,10 @@ def make_harness(sources: dict[str, str]) -> str:
     if not face:
         raise ValueError("MonsterService FACE table missing; update the test extractor.")
     target_consts.append(face.group(0))
+    natural = re.search(r"^local NATURAL = \{.*?GlanceRange = \d+ \}$", mon, re.M | re.S)
+    if not natural:
+        raise ValueError("MonsterService NATURAL table missing; update the test extractor.")
+    target_consts.append(natural.group(0))
     bindings["MONSTER_TARGET_SOURCE"] = (
         "local Config, Util, MC, H = ...\n"
         "local records, warnThrottled, S = H.records, H.warnThrottled, H.S\n"
@@ -384,7 +412,8 @@ def make_harness(sources: dict[str, str]) -> str:
         + function_block(mon, "local function isPlayerInTown(") + "\n"
         + function_block(mon, "local function findInfo(") + "\n"
         + between(mon, "local function targetable(rec, info)", "-- in reach: stand still")
-        + "return { targetable = targetable, landAttack = landAttack, findInfo = findInfo, OUT_Y = OUT_Y, FACE = FACE }\n")
+        + "return { targetable = targetable, landAttack = landAttack, findInfo = findInfo, OUT_Y = OUT_Y, FACE = FACE,"
+          " NATURAL = NATURAL }\n")
     bindings["MONSTER_GOLDEN_SOURCE"] = (
         "local Config, Util, MC = ...\nreturn function(kind, opts)\n\tlocal def = Config.MonsterTypes[kind]\n"
         "\tif not def then return nil end\n\topts = opts or {}\n\tlocal owner = opts.Owner\n"
@@ -505,8 +534,10 @@ def static_checks() -> tuple[int, list[str], list[str]]:
         check(crlf == 0 or lf == 0, f"{path.relative_to(ROOT).as_posix()} keeps one line-ending style (CRLF {crlf}, LF {lf})")
     # 4. client wiring that the extracted chunks do not show
     motion = STATIC_ONLY["MONSTER_MOTION"].read_text(encoding="utf-8")
-    check('local key = kind .. "_" .. name' in motion and 'Clips = { "Idle", "Walk", "Slash", "Hurt", "Fall" }' in motion,
-          "MonsterMotion loads ReplicatedStorage.MonsterAnims['<Kind>_<Clip>'] for the five clips (BatGoblin_* are found by kind id)")
+    check('local key = kind .. "_" .. name' in motion
+          and 'Clips = { "Idle", "Walk", "Run", "LookAround", "Slash", "Hurt", "Fall" }' in motion,
+          "MonsterMotion loads ReplicatedStorage.MonsterAnims['<Kind>_<Clip>'] for its clips, Run / LookAround included "
+          "(BatGoblin_* are found by kind id; tools/test_monster_motion.py runs the playback rules)")
     hud = FILES["EVENTHUD_SOURCE"].read_text(encoding="utf-8").replace("\r\n", "\n")
     upd = re.search(r"\nlocal function update\(\)\n(.*?)\nend\n", hud, re.S)
     check(upd is not None and "KING.update(now)" in upd.group(1), "EventHUD update() refreshes the Pumpkin King pill every tick")

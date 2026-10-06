@@ -1,0 +1,20 @@
+{
+  "what": "One own test Play in the main Studio (place 81671223175574, reopened after the PC restart; an AutoRecovery window had replaced it and was closed unsaved on the user's answer), StudioFreshSave (fresh in-memory save), Studio MCP only. Sources = main 33360a0 + the uncommitted monster-motion bundle (MonsterService NATURAL / death hold, MonsterMotion slash / Run / LookAround, Fx red edges / '!' sticker / hop jitter).",
+  "bare_hands_flow": "faction Halo / Warrior -> guide accepted -> 5 slimes punched in the meadow (TutorialKills 5, Lv 2, power 12) -> ClaimQuest (TutorialStep 99) -> anvil + forge key U -> WeaponTier 1 (Twig), power 300 (01-04 photos, log.txt). The forge window is closed by its X button before the next photos.",
+  "body_hold": "6 deaths watched on the server (root anchored -> model removed): Goblin 1.17 s, 5 slimes 1.16 s each (DEATH_DESTROY 1.15).",
+  "goblin": "wandering goblins' WalkSpeed sampled 1.7-6.0 (half of Speed 12, easing in, slowing near the goal); standing 22 studs from one: a new AlertAt within 0.1 s, then the chase at WalkSpeed 12, wind-up and attack (06 / 07 photos: it faces me while it swings).",
+  "fronts": "front_<Kind>.png + contact_fronts.jpg: all 12 kinds (Slime, BigSlime, PumpkinSlime, Goblin, BatGoblin, GoblinBrute, Skeleton, SkeletonKnight, LittleGhost, GhostMinion, PumpkinKing, GhostKing) turned to me standing at their side and show their face (model fronts right, FRONT_FIX included).",
+  "ghost_models_in_place": "ServerStorage.CustomModels: GhostMinion asset 84018800442559 (mesh 72049329484791), GhostKing asset 111999674841692 (mesh 81287818295767), LittleGhost 77132701345894 (mesh 127428571452599): the minion and the king use their own models.",
+  "tamer_pet": "faction Neutral + ChangeClass Archer -> EquippedPet BabySlime, ReplicatedStorage.PetModels.BabySlime (dev2 PetService.PublishModels) -> workspace.ClientPets.Pet_<userId> drawn by PetFollow (08 photo).",
+  "english": "visible GUI text with Korean: 0; teams: Knights of Light, Horn Legion, Artisan Guild, Choosing a side. Labels whose text does not fit (TextFits false): the 'Lv · Power' line, Pouch, quest numbers, fold arrow, 'Hit monsters with skills 5 times', ProximityPrompt 'See weapons'.",
+  "issues_found": [
+    "notices / chips cut in English: 'The Pumpkin King appeared in the', 'The Ghost King appeared in the Haunted', 'King Slimes full of shard dust roam the'",
+    "the forge's 3D sign still reads Korean '대장간 · 장인 길드' (A23-36 / A23-48)",
+    "the yellow guide beam is large everywhere (quality idea: only during the first mission or much thinner)",
+    "name tags of several monsters of one kind overlap ('Pumpkin SlimPumpkin Slime')",
+    "phone 749x361 / 667x375: the two quest lines overlap the 'Lv · Power' line and the HP / MP bars (HudLayout)",
+    "the [Menu] tile clicked through Studio MCP on the phone sizes: no fold squares appeared (not yet explained)"
+  ],
+  "console": "no error / failed / warn lines",
+  "studio_state_after": "Play stopped (my own test Play), StudioFreshSave removed, device emulator back to PC default, Edit."
+}

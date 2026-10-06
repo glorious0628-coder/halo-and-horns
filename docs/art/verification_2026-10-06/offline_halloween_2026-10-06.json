@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 7197,
+  "checks": 7223,
   "failedChecks": 0,
-  "namedChecks": 560,
+  "namedChecks": 586,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1809,6 +1809,18 @@
     },
     {
       "group": "king-leave-visual",
+      "check": "a kill: the body stays 0.75 s (the fall / splat shows), then shrinks and fades in 0.3 s, removed at 1.15 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
+      "check": "leaving: the fade starts at once (no hold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "king-leave-visual",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -2606,6 +2618,150 @@
       "fail": 0
     },
     {
+      "group": "monster-natural",
+      "check": "NATURAL tuning: wander 0.5x, ease-in 0.45 +0.3 a tick, slow within 4 studs, alert 0.3 s (15 s per player), looks every 3-7 s at 90 deg/s for 0.9 s, glance 20 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "standing -> a wander starts at 0.45 of its half pace",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "the next AI tick while moving: 0.75",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "then the full wander pace: half the chase speed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "2 studs from its goal: half of that (slowing down to stop)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "a chase while moving: the full chase speed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "a chase from standing eases in too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "spotting a new target 12 studs away: it stops, shows '!' (AlertAt = server time) and faces it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "still stopped 0.2 s later",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "after 0.3 s it goes (the chase starts)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "the same player found again within 15 s: no second stop, no '!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "after 15 s the same player gets a '!' again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "a new target already in reach: no stop, the attack starts at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "standing: it looks to a side (a slow 90 deg/s turn for 0.9 s), the next look in 3-7 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "the look-around point is 40-110 deg to a side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "no second look while one runs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "no new look before the next look time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "a player 15 studs away (one it may not chase): it glances at them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "a walking monster never starts a look-around",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "a look turns at 90 deg/s (9 deg in 0.1 s), not the attack's 600",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "the look ends after 0.9 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "the AI uses it: a walk cancels a look, wanders go at the half pace, a new target alerts first, standing monsters look around",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster-natural",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "hud",
       "check": "no GameState attributes: the pill stays hidden",
       "pass": 1,
@@ -3392,9 +3548,9 @@
     "Unchanged / static only: MonsterService.spawnMonster's model build, AI, name bar and Studio models; EventHUD pill art and phone layout; Fx hover on a real Weld; MonsterMotion bone playback."
   ],
   "mutations": {
-    "total": 97,
-    "applied": 97,
-    "caught": 97,
+    "total": 109,
+    "applied": 109,
+    "caught": 109,
     "results": [
       {
         "mutation": "a Halloween kind back in the meadow (PumpkinSlime Zone = SlimeMeadow)",
@@ -4322,9 +4478,10 @@
           "monster-facing :: Keep s after the last renewal and no wind-up: the facing ends, no more turning",
           "monster-facing :: Step turns a facing monster 30 deg per 0.05 s frame toward its target",
           "monster-facing :: a pending wind-up keeps the facing past Keep (it turns during the wind-up)",
-          "monster-facing :: one 0.05 s frame turns 30 deg toward the target (600 deg/s): never a snap"
+          "monster-facing :: one 0.05 s frame turns 30 deg toward the target (600 deg/s): never a snap",
+          "monster-natural :: a look turns at 90 deg/s (9 deg in 0.1 s), not the attack's 600"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "monsters turn the long way round",
@@ -4395,9 +4552,10 @@
         "crashed": false,
         "newFailingChecks": [
           "monster-facing :: Keep s after the last renewal and no wind-up: the facing ends, no more turning",
-          "monster-facing :: a pending wind-up keeps the facing past Keep (it turns during the wind-up)"
+          "monster-facing :: a pending wind-up keeps the facing past Keep (it turns during the wind-up)",
+          "monster-natural :: the look ends after 0.9 s"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "facing drops during the wind-up",
@@ -4447,6 +4605,148 @@
           "monster-facing :: facing now: the recheck lands exactly one hit and plays the lunge"
         ],
         "newFailingCount": 12
+      },
+      {
+        "mutation": "wander walks at the chase speed",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: 2 studs from its goal: half of that (slowing down to stop)",
+          "monster-natural :: NATURAL tuning: wander 0.5x, ease-in 0.45 +0.3 a tick, slow within 4 studs, alert 0.3 s (15 s per player), looks every 3-7 s at 90 deg/s for 0.9 s, glance 20 studs",
+          "monster-natural :: standing -> a wander starts at 0.45 of its half pace",
+          "monster-natural :: the next AI tick while moving: 0.75",
+          "monster-natural :: then the full wander pace: half the chase speed"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no ease-in from standing",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: NATURAL tuning: wander 0.5x, ease-in 0.45 +0.3 a tick, slow within 4 studs, alert 0.3 s (15 s per player), looks every 3-7 s at 90 deg/s for 0.9 s, glance 20 studs",
+          "monster-natural :: a chase from standing eases in too",
+          "monster-natural :: standing -> a wander starts at 0.45 of its half pace",
+          "monster-natural :: the next AI tick while moving: 0.75"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a wander never slows near its goal",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: 2 studs from its goal: half of that (slowing down to stop)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no alert pause before a chase",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: after 15 s the same player gets a '!' again",
+          "monster-natural :: spotting a new target 12 studs away: it stops, shows '!' (AlertAt = server time) and faces it",
+          "monster-natural :: still stopped 0.2 s later"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the alert repeats for the same player",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: the same player found again within 15 s: no second stop, no '!'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the alert also stops a monster already in reach",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: a new target already in reach: no stop, the attack starts at once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the alert sends no AlertAt (no '!')",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: after 15 s the same player gets a '!' again",
+          "monster-natural :: spotting a new target 12 studs away: it stops, shows '!' (AlertAt = server time) and faces it"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a walking monster looks around",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: a walking monster never starts a look-around"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a look-around ignores its slow rate",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: a look turns at 90 deg/s (9 deg in 0.1 s), not the attack's 600"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a player near an idle monster gets no glance",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster-natural :: a player 15 studs away (one it may not chase): it glances at them"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a killed monster vanishes at once again (0.4 s)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-leave-visual :: a kill: the body stays 0.75 s (the fall / splat shows), then shrinks and fades in 0.3 s, removed at 1.15 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the body shrinks at once (no hold before the fade)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "king-leave-visual :: a kill: the body stays 0.75 s (the fall / splat shows), then shrinks and fades in 0.3 s, removed at 1.15 s"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "ghost walks on the floor (Float ignored)",
@@ -4713,7 +5013,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "813f53c53125e8d6c580c2751944b0f377205872f0e73a59f205e95c3a0a7828",
+    "src/ReplicatedStorage/Shared/Config.luau": "8f2959b27d59e253d9b6e03577dd4611a9c6482e6bcb31692141cdfcdc626e7b",
     "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
@@ -4723,10 +5023,10 @@
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/HalloweenService.luau": "c8a34e1b807e6c82ecc93a708868505e183039f9c4b6ab4c80804a8d1f9714ea",
     "src/ServerScriptService/Main.server.luau": "88c7fda3210f3a09323cc9e2ceb0a36085e74b2656b015a83136cc7e11df764d",
-    "src/ServerScriptService/MonsterService.luau": "ed984c4f7ab3d62aa8f404da203ed1e655c609690ab59d59f5e32a799f66c8ad",
+    "src/ServerScriptService/MonsterService.luau": "921da3ab3ce34c7e1cc355050a8120b8344717245ba2032dee8fca317f318dcd",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "14779e64d8a7a8c6e1a64d380fca83e86905bd9f66cc935cb7e87220ee2bcea5",
     "src/StarterPlayer/StarterPlayerScripts/EventHUD.luau": "673cc57a53d6819ef5b42519d9188cce81f85a5f03282cbd495ad485cba6ff44",
-    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "9576975393e879b67c5a5cb4d5889ea9800e1faaf336f00d2b5dbd4352899ba6",
+    "src/StarterPlayer/StarterPlayerScripts/Fx.luau": "7e77c81f358fa78a179e57b91d145bcf18e1036d349acafa7e5eaa23bfcdff87",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "b6b7c63d2f1759529759bb7851c858ea180e08e6398e2e6bb0196280d6ac68e1",
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Idle.luau": "b5b0cdeb7889a80ff1213bbf62878b634bb8f55b6a30de83c456d1194bed333b",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Idle.luau": "d4ad998cc6881eeb2c3282d5f447b968bce41f3b67bb7fafa6191515b028e2b5",
@@ -4739,7 +5039,7 @@
     "src/ReplicatedStorage/MonsterAnims/BatGoblin_Fall.luau": "b9141653c0e5d2f4fb78351f50ef60696d2b2240cd7829b63107272c393865dd",
     "src/ReplicatedStorage/MonsterAnims/Goblin_Fall.luau": "31a34cae3de6b5f84f9b260352a7795e582b060ad8e68039a866d344691a4e3b"
   },
-  "fixtureSHA256": "b61d3b29c2e90ea3a4dff7702a43521f7e375f2f375c30216bb16cd062a15dd1",
+  "fixtureSHA256": "80ce121c183dcb78ef5c6caeff1bd6c84423667836d29123a3821b1ca5b7c5fc",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

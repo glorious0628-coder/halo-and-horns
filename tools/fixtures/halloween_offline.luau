@@ -2157,6 +2157,14 @@ runGroup("king-leave-visual", function()
 	check(lInfo and type(lInfo.Args[1]) == "number" and lInfo.Args[1] >= 0.8 and leave.Delays[1] and leave.Delays[1] >= lInfo.Args[1],
 		"leaving: a slower fade than a kill, destroyed after it", show({ lInfo and lInfo.Args[1], leave.Delays[1], kill.Delays[1] }))
 	check(leave.Bar.Enabled == false and leave.Hum.WalkSpeed == 0, "leaving: name bar off, it stops walking")
+	-- monster motion review 2026-10-06 (survey 4-1): a killed body stays long enough for the fall / splat to show
+	local kInfo, lInfo0 = nil, nil
+	for _, tw in kill.Tweens do if tw.Inst == kill.Mesh then kInfo = tw.Info end end
+	for _, tw in leave.Tweens do if tw.Inst == leave.Mesh then lInfo0 = tw.Info end end
+	check(kInfo and near(kInfo.Args[1], 0.3) and near(kInfo.Args[6] or 0, 0.75, 1e-9) and near(kill.Delays[1] or 0, 1.15, 1e-9),
+		"a kill: the body stays 0.75 s (the fall / splat shows), then shrinks and fades in 0.3 s, removed at 1.15 s",
+		show({ kInfo and kInfo.Args, kill.Delays[1] }))
+	check(lInfo0 and (lInfo0.Args[6] or 0) == 0, "leaving: the fade starts at once (no hold)", show(lInfo0 and lInfo0.Args))
 end)
 
 runGroup("king-retry-lost-debug", function()
@@ -2776,6 +2784,144 @@ runGroup("monster-facing", function()
 		and string.find(mon, "RunService.Heartbeat:Connect(function(dt)\n\t\tlocal ok, err = pcall(FACE.Step, dt)", 1, true) ~= nil
 		and string.find(mon, "CFrame.lookAt(pos, pos + dir)", 1, true) == nil,
 		"attack() renews the facing in reach, FACE.Step runs every Heartbeat, no instant CFrame.lookAt snap remains")
+end)
+
+------------------------------------------------------------------ 8c. monster naturalness (user 2026-10-06)
+-- "몬스터들이 너무 경직된 느낌, 더 자연스럽게" (survey 4-1): real MonsterService NATURAL (Pace / Alert / Idle) + FACE point
+-- looks. A wander walks at half the chase speed, every walk eases in from standing and a wander slows near its goal;
+-- a newly spotted target out of reach stops the monster 0.3 s with a '!' (AlertAt), not again for that player within
+-- 15 s; a standing monster looks around (40-110 deg, 90 deg/s, 0.9 s) every 3-7 s or glances at a player within 20.
+runGroup("monster-natural", function()
+	local f = hwWorld({ Clients = {} })
+	local config, MC = f.Config, f.Config.Monsters
+	local cfm = {}
+	local function cf(p, yaw)
+		return setmetatable({ Position = p, Yaw = yaw, LookVector = vec(-math.sin(yaw), 0, -math.cos(yaw)) }, cfm)
+	end
+	cfm.__mul = function(a, b) return cf(a.Position, a.Yaw + b.Yaw) end
+	local CF = { new = function(p) return cf(p, 0) end, Angles = function(_, y) return cf(vec(0, 0, 0), y) end }
+	local W = { roots = {}, clock = 500 }
+	local util = setmetatable({
+		IsAlive = function(p) return W.roots[p] ~= nil end,
+		GetRoot = function(p) return W.roots[p] end,
+	}, { __index = f.Util })
+	local H = { records = {}, S = {} }
+	function H.warnThrottled(key, msg) table.insert(groupWarnings, "MonsterService " .. tostring(key) .. ": " .. tostring(msg)) end
+	local T = execute("MonsterService.natural", MONSTER_TARGET_SOURCE, nativeEnv({ CFrame = CF,
+		os = { clock = function() return W.clock end },
+		workspace = { GetServerTimeNow = function() return W.clock + 1000 end },
+		task = { delay = function() end } }), config, util, MC, H)
+	local N, FACE = T.NATURAL, T.FACE
+	local def = config.MonsterTypes.Goblin
+	local mpos = vec(0, 3, 0)
+	local serial = 0
+	local function newRec()
+		serial += 1
+		local model = INST.new("Model", "Goblin")
+		local moves = {}
+		local hum = { WalkSpeed = def.Speed, MoveTo = function(_, p) table.insert(moves, p) end }
+		local root = { Parent = model, Anchored = false, Position = mpos, CFrame = cf(mpos, 0), AssemblyLinearVelocity = vec(0, 0, 0) }
+		local rec = { Id = serial, Kind = "Goblin", Def = def, Alive = true, Model = model, Root = root, Humanoid = hum, Moves = moves }
+		H.records[rec.Id] = rec
+		return rec
+	end
+	local function player(name, offset)
+		local p = INST.new("Player", name)
+		p.Parent = f.PlayersService
+		W.roots[p] = { Position = mpos + offset }
+		return p
+	end
+
+	check(N.WanderPace == 0.5 and N.RampStart == 0.45 and N.RampStep == 0.3 and N.ArriveSlow == 4 and N.AlertHold == 0.3
+		and N.AlertAgain == 15 and near(N.LookRate, math.rad(90)) and N.LookTime == 0.9 and N.GlanceRange == 20
+		and N.LookEvery[1] == 3 and N.LookEvery[2] == 7,
+		"NATURAL tuning: wander 0.5x, ease-in 0.45 +0.3 a tick, slow within 4 studs, alert 0.3 s (15 s per player), looks every 3-7 s at 90 deg/s for 0.9 s, glance 20 studs",
+		show(N))
+
+	-- Pace: eases in from standing; a wander slows near its goal; a chase keeps its full speed once moving
+	local r = newRec()
+	N.Pace(r, N.WanderPace)
+	check(near(r.Humanoid.WalkSpeed, def.Speed * 0.5 * 0.45), "standing -> a wander starts at 0.45 of its half pace", r.Humanoid.WalkSpeed)
+	r.Root.AssemblyLinearVelocity = vec(3, 0, 0)
+	N.Pace(r, N.WanderPace)
+	check(near(r.Humanoid.WalkSpeed, def.Speed * 0.5 * 0.75), "the next AI tick while moving: 0.75", r.Humanoid.WalkSpeed)
+	N.Pace(r, N.WanderPace)
+	N.Pace(r, N.WanderPace)
+	check(near(r.Humanoid.WalkSpeed, def.Speed * 0.5), "then the full wander pace: half the chase speed", r.Humanoid.WalkSpeed)
+	N.Pace(r, N.WanderPace, mpos + vec(2, 0, 0))
+	check(near(r.Humanoid.WalkSpeed, def.Speed * 0.5 * 0.5), "2 studs from its goal: half of that (slowing down to stop)", r.Humanoid.WalkSpeed)
+	N.Pace(r, 1)
+	check(near(r.Humanoid.WalkSpeed, def.Speed), "a chase while moving: the full chase speed", r.Humanoid.WalkSpeed)
+	r.Root.AssemblyLinearVelocity = vec(0, 0, 0)
+	N.Pace(r, 1)
+	check(near(r.Humanoid.WalkSpeed, def.Speed * 0.45), "a chase from standing eases in too", r.Humanoid.WalkSpeed)
+
+	-- Alert: a new target out of reach -> a short stop with a '!' facing it; not again soon for the same player
+	table.clear(FACE.Active)
+	local a = newRec()
+	local p1 = player("Spotted", vec(0, 0, -12))
+	local info = { Player = p1, Pos = W.roots[p1].Position }
+	local stop = N.Alert(a, info, 12, W.clock)
+	check(stop == true and a.Model:GetAttribute("AlertAt") == W.clock + 1000 and #a.Moves == 1 and a.Moves[1] == mpos
+		and FACE.Active[a] ~= nil and FACE.Active[a].Target == p1,
+		"spotting a new target 12 studs away: it stops, shows '!' (AlertAt = server time) and faces it", show({ stop, #a.Moves }))
+	a._target = p1
+	W.clock += 0.2
+	check(N.Alert(a, info, 12, W.clock) == true, "still stopped 0.2 s later")
+	W.clock += 0.15
+	check(N.Alert(a, info, 12, W.clock) == false, "after 0.3 s it goes (the chase starts)")
+	a._target = nil
+	a.Model:SetAttribute("AlertAt", nil)
+	W.clock += 5
+	check(N.Alert(a, info, 12, W.clock) == false and a.Model:GetAttribute("AlertAt") == nil,
+		"the same player found again within 15 s: no second stop, no '!'")
+	a._target = nil
+	W.clock += 11
+	check(N.Alert(a, info, 12, W.clock) == true and a.Model:GetAttribute("AlertAt") ~= nil, "after 15 s the same player gets a '!' again")
+	local b = newRec()
+	local p2 = player("Close", vec(0, 0, -3))
+	check(N.Alert(b, { Player = p2, Pos = W.roots[p2].Position }, 3, W.clock) == false and b.Model:GetAttribute("AlertAt") == nil,
+		"a new target already in reach: no stop, the attack starts at once")
+
+	-- Idle: a standing monster sometimes looks around, or glances at a player near it
+	table.clear(FACE.Active)
+	local c = newRec()
+	check(N.Idle(c, mpos, {}, W.clock) == true and FACE.Active[c] ~= nil and typeofDouble(FACE.Active[c].Point) == "Vector3"
+		and near(FACE.Active[c].Rate, math.rad(90)) and near(FACE.Active[c].Until, W.clock + 0.9)
+		and c._lookAt >= W.clock + 3 and c._lookAt <= W.clock + 7,
+		"standing: it looks to a side (a slow 90 deg/s turn for 0.9 s), the next look in 3-7 s", show(FACE.Active[c]))
+	local ang = math.deg(math.acos(math.clamp(FACE.Cos(c.Root, FACE.Active[c].Point), -1, 1)))
+	check(ang >= 39 and ang <= 111, "the look-around point is 40-110 deg to a side", ang)
+	check(N.Idle(c, mpos, {}, W.clock) == false, "no second look while one runs")
+	FACE.Active[c] = nil
+	check(N.Idle(c, mpos, {}, W.clock + 1) == false, "no new look before the next look time")
+	local p3 = player("Neighbour", vec(15, 0, 0))
+	c._lookAt = 0
+	check(N.Idle(c, mpos, { { Player = p3, Pos = W.roots[p3].Position } }, W.clock) == true
+		and FACE.Active[c].Point == W.roots[p3].Position, "a player 15 studs away (one it may not chase): it glances at them")
+	FACE.Active[c] = nil
+	c._lookAt = 0
+	c.Root.AssemblyLinearVelocity = vec(4, 0, 0)
+	check(N.Idle(c, mpos, {}, W.clock) == false and FACE.Active[c] == nil, "a walking monster never starts a look-around")
+	c.Root.AssemblyLinearVelocity = vec(0, 0, 0)
+	-- FACE.Step turns a look at its slow rate and ends it after LookTime
+	table.clear(FACE.Active)
+	local d = newRec()
+	FACE.Active[d] = { Point = mpos + vec(5, 0, 0), Rate = N.LookRate, Until = W.clock + N.LookTime }
+	FACE.Step(0.1)
+	local y = math.deg(math.atan2(-d.Root.CFrame.LookVector.X, -d.Root.CFrame.LookVector.Z))
+	check(near(y, -9, 1e-6), "a look turns at 90 deg/s (9 deg in 0.1 s), not the attack's 600", y)
+	W.clock += N.LookTime + 0.01
+	FACE.Step(0.1)
+	check(FACE.Active[d] == nil, "the look ends after 0.9 s")
+	table.clear(FACE.Active)
+	-- the AI path uses it (static: steer / aiStep are not extracted)
+	local mon = MONSTER_SOURCE
+	check(string.find(mon, "if f and f.Point then FACE.Active[rec] = nil end", 1, true) ~= nil
+		and string.find(mon, "steer(rec, dest, pos, now, NATURAL.WanderPace)", 1, true) ~= nil
+		and string.find(mon, "local alerting = NATURAL.Alert(rec, best, bestD, now)", 1, true) ~= nil
+		and string.find(mon, "NATURAL.Idle(rec, pos, plist, now)", 1, true) ~= nil,
+		"the AI uses it: a walk cancels a look, wanders go at the half pace, a new target alerts first, standing monsters look around")
 end)
 
 ------------------------------------------------------------------ 9. EventHUD Pumpkin King pill (real KING block + helpers)

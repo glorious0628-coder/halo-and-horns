@@ -176,10 +176,17 @@ local MOTION = {
 	PAIN_GAP_OWN = 0.8, -- ... for myself (the damage number + edge flash already mark every hit)
 	PAIN_KICK = 0.14, PAIN_KICK_TIME = 0.12, -- camera kick when I get hurt: big hits only ...
 	PAIN_KICK_FRAC = 0.1, -- ... or a Hurt of >= this fraction of my MaxHealth
+	-- red screen edges (quality ideas 2026-10-06 #6: they showed in every screenshot): a hit flashes them by its size
+	-- (Small share of my MaxHealth or less = almost invisible SmallT, Big or more = BigT), below LowHP the edges throb
+	-- slowly (PulseHi <-> PulseLo transparency, Period s); never over an open window (bag / map / pickers); with shake
+	-- off: no flash or throb, only a steady faint edge (CalmT) while my HP is low
+	EDGE = { Small = 0.05, Big = 0.15, SmallT = 0.94, BigT = 0.35, Fade = 0.45, LowHP = 0.3, PulseHi = 0.55, PulseLo = 0.85,
+		Period = 1.1, CalmT = 0.82, FlashUntil = 0 },
 	EMO_HURT = { "EmoOuch", "EmoStress", "EmoTears", "EmoAngry" },
 	EMO_BIG = { "EmoDizzy", "EmoDizzy", "EmoOuch" }, -- big hits: mostly dizzy, sometimes 아야!
 	EMO_FALLBACK = { -- code-drawn stickers while the art ids are empty (emoji via \u escapes)
 		EmoOuch = { Text = "Ouch!", Color = Color3.fromRGB(225, 40, 40), Bubble = true },
+		EmoAlert = { Text = "!", Color = Color3.fromRGB(255, 190, 30), Bubble = true }, -- a monster spots me (AlertAt)
 		EmoTears = { Text = "\u{1F4A7}\u{1F4A7}", Color = Color3.fromRGB(80, 170, 255) },
 		EmoDizzy = { Text = "\u{1F4AB}", Color = Color3.fromRGB(255, 215, 60) },
 		EmoAngry = { Text = "\u{1F4A2}", Color = Color3.fromRGB(235, 40, 40) },
@@ -1185,6 +1192,8 @@ function WOBBLE.track(model)
 	local st = { Joint = joint, Root = root, Mesh = mesh, Base = mesh and mesh.Size, Slime = isSlimeModel(model),
 		Float = (float and float > 0 and def.Shape ~= "Slime") and float or nil,
 		H = h, Phase = math.random() * 6.283, Active = false, HitAt = -math.huge,
+		-- monster naturalness (2026-10-06): each monster hops / bobs at its own pace (a group never moves in step)
+		Rate = 0.88 + math.random() * 0.24,
 		-- monsters that appear while I watch pop in (not the ones already standing there when I join)
 		BornAt = (os.clock() - WOBBLE.StartedAt > 3) and os.clock() or -math.huge }
 	WOBBLE.State[model] = st
@@ -1249,7 +1258,7 @@ function WOBBLE.step(dt)
 				local moving = v.X * v.X + v.Z * v.Z > 2.25
 				if st.Slime then
 					local lastS = math.sin(st.Phase)
-					st.Phase += dt * math.pi * (moving and 2.6 or 1.3)
+					st.Phase += dt * st.Rate * math.pi * (moving and 2.6 or 1.3)
 					local s = math.sin(st.Phase)
 					local hop, sy = 0, 1 + s * 0.05 -- breathing while still
 					local hopMax = math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)
@@ -1288,13 +1297,13 @@ function WOBBLE.step(dt)
 					end
 				elseif st.Float then
 					-- no legs: a slow hover bob whether it moves or not, no waddle / roll; a hit dips it a little
-					st.Phase += dt * math.pi * WOBBLE.FloatSpeed
+					st.Phase += dt * st.Rate * math.pi * WOBBLE.FloatSpeed
 					local up = st.Float + math.sin(st.Phase) * WOBBLE.FloatBob
 					local since = os.clock() - st.HitAt
 					if since < 0.35 then up -= 0.3 * math.exp(-since * 9) * math.abs(math.sin(since * 30)) end
 					st.Joint.C1 = WOBBLE.lift(up)
 				else
-					st.Phase += dt * math.pi * (moving and 3.2 or 1.0)
+					st.Phase += dt * st.Rate * math.pi * (moving and 3.2 or 1.0)
 					local s = math.sin(st.Phase)
 					local bob = moving and math.abs(s) * 0.22 or s * 0.03
 					local roll = moving and s * math.rad(6) or 0
@@ -1857,16 +1866,22 @@ local function buildScreenFx()
 	milestoneLabel.Parent = root
 end
 
-local function flashEdges(color)
+-- strength 0..1 = how big the hit was (MOTION.EDGE): a small hit leaves the edges almost invisible
+local function flashEdges(color, strength)
 	if #flashFrames == 0 then return end
+	local E = MOTION.EDGE
+	if MOTION.EdgeCovered() or not MOTION.ShakeAllowed() then return end
 	for _, t in flashTweens do
 		t:Cancel()
 	end
 	table.clear(flashTweens)
+	local k = math.clamp(tonumber(strength) or 1, 0, 1)
+	E.FlashUntil = os.clock() + E.Fade
+	E.Shown = nil -- the throb (EdgeStep) re-applies itself after this flash
 	for _, f in flashFrames do
 		f.BackgroundColor3 = color
-		f.BackgroundTransparency = 0.3
-		table.insert(flashTweens, tween(f, 0.45, { BackgroundTransparency = 1 }, Enum.EasingStyle.Quad, Enum.EasingDirection.In))
+		f.BackgroundTransparency = E.SmallT + (E.BigT - E.SmallT) * k
+		table.insert(flashTweens, tween(f, E.Fade, { BackgroundTransparency = 1 }, Enum.EasingStyle.Quad, Enum.EasingDirection.In))
 	end
 end
 
@@ -3347,9 +3362,25 @@ function Feel.playerPain(userId, big)
 	end
 end
 
+-- monster naturalness (2026-10-06): the server sets AlertAt when a monster first spots its target and holds it still
+-- for a moment -> a '!' bubble over it (the pain sticker waits for it)
+function Feel.onMonsterAlert(model)
+	local st = monsterMotion[model]
+	local root = monsterRoot(model)
+	local v = model:GetAttribute("AlertAt")
+	if not st or st.Hidden or not root or root.Anchored or type(v) ~= "number" or v <= 0 then return end
+	if not Feel.near(root.Position, MOTION.STICKER_DIST) then return end
+	local h, rh = monsterSize(model)
+	local size = math.clamp(h * MOTION.MONSTER_STICKER_K, MOTION.MONSTER_STICKER_MIN, MOTION.MONSTER_STICKER_MAX)
+	if Feel.sticker(root, "EmoAlert", size, Vector3.new(0, (h - rh) + size * MOTION.MONSTER_STICKER_Y, 0)) then
+		st.StickerUntil = os.clock() + MOTION.STICKER_LIFE
+	end
+end
+
 Feel.MonsterAttr[MOTION.ATTACK_SEQ_ATTR] = onMonsterAttack
 Feel.MonsterAttr[MOTION.WINDUP_ATTR] = Feel.onWindup
 Feel.MonsterAttr[MOTION.HURT_SEQ_ATTR] = Feel.onMonsterHurt
+Feel.MonsterAttr.AlertAt = Feel.onMonsterAlert
 
 ----------------------------------------------------------------- hit numbers
 -- A9-2: my own hits flash the hit monsters white; crits and my Release numbers pop; numbers merge;
@@ -3645,7 +3676,12 @@ handlers.Hurt = function(data)
 		local jitter = Vector3.new(rng:NextNumber(-0.6, 0.6), 0, rng:NextNumber(-0.6, 0.6))
 		showAmount(at + jitter, Util.RoundDamage(amount), { Key = "H", Prefix = "-", Color = COLOR_HURT, Scale = 1.1 })
 	end
-	flashEdges(COLOR_HURT)
+	do -- red edges by the hit's size (MOTION.EDGE): small hits barely show
+		local h = char and char:FindFirstChildOfClass("Humanoid")
+		local E = MOTION.EDGE
+		local frac = (h and h.MaxHealth > 0) and amount / h.MaxHealth or 1
+		flashEdges(COLOR_HURT, math.clamp((frac - E.Small) / math.max(E.Big - E.Small, 0.01), 0, 1))
+	end
 	-- A14-4: camera kick only for a hard hit (small hits keep the number + edge flash; auto farming stays calm)
 	local hum = char and char:FindFirstChildOfClass("Humanoid")
 	if hum and hum.MaxHealth > 0 and amount >= hum.MaxHealth * MOTION.PAIN_KICK_FRAC then
@@ -3976,6 +4012,43 @@ function MOTION.PetMove(kind, data, targets, contact)
 	return ok and res == true
 end
 
+-- true while a window covers the screen (bag / items, map, pickers, opening): the red edges never draw over it
+function MOTION.EdgeCovered()
+	for _, name in { "Panels", "WorldMap", "FactionPicker", "ClassPicker", "Intro" } do
+		local m = C and C[name]
+		if type(m) == "table" and type(m.IsOpen) == "function" then
+			local ok, open = pcall(m.IsOpen)
+			if ok and open == true then return true end
+		end
+	end
+	return false
+end
+
+-- every frame: below EDGE.LowHP the edges throb slowly (shake off: a steady faint edge); a running hit flash wins
+function MOTION.EdgeStep()
+	if #flashFrames == 0 then return end
+	local E = MOTION.EDGE
+	if os.clock() < E.FlashUntil then return end
+	local char = LocalPlayer and LocalPlayer.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	local low = hum ~= nil and hum.Health > 0 and hum.MaxHealth > 0 and hum.Health / hum.MaxHealth < E.LowHP
+	local t = 1
+	if low and not MOTION.EdgeCovered() then
+		if MOTION.ShakeAllowed() then
+			local w = 0.5 + 0.5 * math.sin(os.clock() * 2 * math.pi / E.Period)
+			t = E.PulseLo + (E.PulseHi - E.PulseLo) * w
+		else
+			t = E.CalmT
+		end
+	end
+	if E.Shown == t then return end
+	E.Shown = t
+	for _, f in flashFrames do
+		f.BackgroundColor3 = COLOR_HURT
+		f.BackgroundTransparency = t
+	end
+end
+
 function MOTION.ShakeAllowed()
 	if MOTION.Pref("Shake", true) == false then return false end
 	local ok, reduced = pcall(function() return game:GetService("GuiService").ReducedMotionEnabled end)
@@ -4045,6 +4118,8 @@ function Fx.Start()
 	RunService.RenderStepped:Connect(function(dt)
 		local okW, errW = pcall(WOBBLE.step, dt)
 		if not okW then warnThrottled("monster wobble failed: " .. tostring(errW)) end
+		local okE, errE = pcall(MOTION.EdgeStep)
+		if not okE then warnThrottled("edge throb failed: " .. tostring(errE)) end
 	end)
 	local ok, err = pcall(buildScreenFx)
 	if not ok then Util.Warn("Fx", "screen effects not built: " .. tostring(err)) end

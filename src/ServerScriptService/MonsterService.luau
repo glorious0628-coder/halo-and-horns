@@ -76,8 +76,10 @@ local SPAWN_TRIES = 8
 
 -- visuals
 local BAR_MAX_DISTANCE = 80
+-- monster motion review 2026-10-06 (survey 4-1): a killed monster's body stays DEATH_DESTROY - DEATH_FADE - 0.1 s
+-- (0.75: the rigged fall / slime splat shows), then shrinks and fades over DEATH_FADE; destroyed at DEATH_DESTROY
 local DEATH_FADE = 0.3
-local DEATH_DESTROY = 0.4
+local DEATH_DESTROY = 1.15
 local DEATH_PARTICLES = 15
 -- an event monster that leaves undefeated (RemoveEvent(rec, true, true), the Pumpkin King going home): model attribute
 -- "Leaving" (clients skip the dying-slime splat), keeps its size, floats up Rise studs and fades over Fade s, no burst
@@ -95,6 +97,14 @@ local ATTACK_SEQ_ATTR = "AttackSeq" -- +1 when a monster attack lands on a playe
 -- AI runs every MC.AIInterval). Active[rec] = { Target = Player, Until = os.clock() deadline }.
 local FACE = { TurnRate = math.rad(600), HitCos = math.cos(math.rad(30)), MaxExtra = 0.6, Recheck = 0.05, Keep = 0.6,
 	Active = {} }
+-- monster naturalness (user 2026-10-06 "몬스터들이 너무 경직된 느낌", survey 4-1): a wander walks at WanderPace of the
+-- chase speed; every walk eases in from standing (RampStart + RampStep per AI tick up to full) and a wander slows to
+-- half within ArriveSlow studs of its goal; a monster that spots a new target out of reach stops AlertHold s facing it
+-- with a '!' (model attribute AlertAt, server time) before it chases (not again for that player within AlertAgain s);
+-- a standing idle monster every LookEvery s either glances at a player within GlanceRange (one it may not chase) or
+-- looks 40-110 deg to a side, turning at LookRate for LookTime s (FACE point looks).
+local NATURAL = { WanderPace = 0.5, RampStart = 0.45, RampStep = 0.3, ArriveSlow = 4, AlertHold = 0.3, AlertAgain = 15,
+	LookEvery = { 3, 7 }, LookRate = math.rad(90), LookTime = 0.9, GlanceRange = 20 }
 -- A15 hit feel (server half): attack telegraph, pain reactions, swing shove. Tunables live in Config.HitReact (shared
 -- with the client Fx); the fallbacks keep the service working without it. Model attribute contract for clients:
 -- "WindupAt" changed -> wind-up pose (the hit follows REACT.WINDUP s later unless cancelled), "AttackSeq" +1 -> lunge
@@ -1044,7 +1054,9 @@ local function deathPop(rec, withParticles, leaving)
 				{ CFrame = root.CFrame + Vector3.new(0, LEAVE.Rise, 0) }):Play()
 		end
 	end
-	local info = TweenInfo.new(leaving and LEAVE.Fade or DEATH_FADE, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+	local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_FADE - 0.1) -- TweenInfo DelayTime: the body stays
+	local info = TweenInfo.new(leaving and LEAVE.Fade or DEATH_FADE, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false,
+		hold)
 	for _, d in model:GetDescendants() do
 		if d:IsA("BasePart") then
 			if d ~= root and d.Name ~= VISUAL_ROOT_NAME then -- the invisible joint anchor keeps its size
@@ -1447,19 +1459,20 @@ function FACE.Cos(root, targetPos)
 end
 
 -- FACE: one frame of turning (at most TurnRate * dt) around the root's own position, upright
-function FACE.Turn(root, targetPos, dt)
+function FACE.Turn(root, targetPos, dt, rate)
 	local dir = FACE.Dir(root, targetPos)
 	if not dir then return end
 	local lv = root.CFrame.LookVector
 	local cur = math.atan2(-lv.X, -lv.Z) -- CFrame.Angles(0, yaw, 0).LookVector = (-sin yaw, 0, -cos yaw)
 	local diff = (math.atan2(-dir.X, -dir.Z) - cur + math.pi) % (2 * math.pi) - math.pi
 	if math.abs(diff) < 0.01 then return end
-	local stepMax = FACE.TurnRate * dt
+	local stepMax = (rate or FACE.TurnRate) * dt
 	root.CFrame = CFrame.new(root.Position) * CFrame.Angles(0, cur + math.clamp(diff, -stepMax, stepMax), 0)
 end
 
--- FACE: every frame, each facing monster turns toward its target's current position; a facing ends when attack() has
--- not renewed it for Keep s (and no wind-up is pending), or the monster / target is gone
+-- FACE: every frame, each facing monster turns toward its target's current position (or a look's fixed Point at its
+-- Rate); a facing ends when attack() has not renewed it for Keep s (and no wind-up is pending), when a look's Until
+-- passes, or when the monster / target is gone
 function FACE.Step(dt)
 	if next(FACE.Active) == nil then return end
 	local now = os.clock()
@@ -1467,19 +1480,80 @@ function FACE.Step(dt)
 		local root = rec.Root
 		local live = rec.Alive and records[rec.Id] == rec and root ~= nil and root.Parent ~= nil and not root.Anchored
 			and (now < f.Until or rec._windup ~= nil)
-		local target = f.Target
-		local troot = live and typeof(target) == "Instance" and target.Parent ~= nil and Util.IsAlive(target)
-			and Util.GetRoot(target) or nil
-		if not troot then
+		local goal = nil
+		if live and typeof(f.Point) == "Vector3" then
+			goal = f.Point
+		elseif live then
+			local target = f.Target
+			local troot = typeof(target) == "Instance" and target.Parent ~= nil and Util.IsAlive(target)
+				and Util.GetRoot(target) or nil
+			goal = troot and troot.Position or nil
+		end
+		if not goal then
 			FACE.Active[rec] = nil
 		else
-			local ok, err = pcall(FACE.Turn, root, troot.Position, math.min(dt, 0.1))
+			local ok, err = pcall(FACE.Turn, root, goal, math.min(dt, 0.1), f.Rate)
 			if not ok then
 				FACE.Active[rec] = nil
 				warnThrottled("face", err)
 			end
 		end
 	end
+end
+
+-- NATURAL: WalkSpeed for a walk at `pace` of the chase speed, eased in from standing (RampStart + RampStep per AI
+-- tick); with `goal` it slows to half within ArriveSlow studs of it
+function NATURAL.Pace(rec, pace, goal)
+	local root = rec.Root
+	local v = root.AssemblyLinearVelocity
+	if v.X * v.X + v.Z * v.Z < 0.25 then rec._rampTicks = 0 else rec._rampTicks = (rec._rampTicks or 0) + 1 end
+	local ramp = math.min(1, NATURAL.RampStart + NATURAL.RampStep * rec._rampTicks)
+	local arrive = 1
+	if typeof(goal) == "Vector3" then
+		arrive = math.clamp(Util.FlatDistance(root.Position, goal) / NATURAL.ArriveSlow, 0.5, 1)
+	end
+	rec.Humanoid.WalkSpeed = (tonumber(rec.Def.Speed) or 12) * pace * ramp * arrive
+end
+
+-- NATURAL: true while a monster stops with a '!' for a target it just spotted out of reach (AlertAt), facing it
+function NATURAL.Alert(rec, info, dist, now)
+	if rec._target ~= info.Player and dist > MC.AttackRange then
+		rec._alerted = rec._alerted or setmetatable({}, { __mode = "k" })
+		local seen = rec._alerted[info.Player]
+		if seen == nil or now - seen > NATURAL.AlertAgain then
+			rec._alerted[info.Player] = now
+			rec._alertUntil = now + NATURAL.AlertHold
+			if rec.Model then rec.Model:SetAttribute("AlertAt", workspace:GetServerTimeNow()) end
+		end
+	end
+	if now >= (rec._alertUntil or 0) then return false end
+	rec._goal = nil
+	rec.Humanoid:MoveTo(rec.Root.Position)
+	FACE.Active[rec] = { Target = info.Player, Until = now + FACE.Keep }
+	return true
+end
+
+-- NATURAL: a standing idle monster sometimes looks around (a slow turn to a random side) or glances at a player within
+-- GlanceRange (one it may not chase: in a town, another zone, its no-aggro pause). True when a look started.
+function NATURAL.Idle(rec, pos, plist, now)
+	local v = rec.Root.AssemblyLinearVelocity
+	if v.X * v.X + v.Z * v.Z >= 0.25 or FACE.Active[rec] ~= nil or now < (rec._lookAt or 0) then return false end
+	rec._lookAt = now + Util.Random:NextNumber(NATURAL.LookEvery[1], NATURAL.LookEvery[2])
+	local point = nil
+	for _, info in plist do
+		if Util.FlatDistance(pos, info.Pos) <= NATURAL.GlanceRange then
+			point = info.Pos
+			break
+		end
+	end
+	if not point then
+		local lv = rec.Root.CFrame.LookVector
+		local side = Util.Random:NextNumber() < 0.5 and -1 or 1
+		local yaw = math.atan2(-lv.X, -lv.Z) + side * Util.Random:NextNumber(math.rad(40), math.rad(110))
+		point = pos + Vector3.new(-math.sin(yaw), 0, -math.cos(yaw)) * 5
+	end
+	FACE.Active[rec] = { Point = point, Rate = NATURAL.LookRate, Until = now + NATURAL.LookTime }
+	return true
 end
 
 -- A15: the wound-up hit lands only if this wind-up is still the current one, the monster is alive and in the world
@@ -1627,7 +1701,7 @@ local function startDetour(rec, zone, pos, goal, now)
 end
 
 -- every non-personal MoveTo goes through here; `dest` is already clamped into the zone (A10-V3-2 b)
-local function steer(rec, dest, pos, now)
+local function steer(rec, dest, pos, now, pace)
 	local d = rec._detour
 	if d then
 		if now < rec._detourUntil and Util.FlatDistance(pos, d) > ARRIVE_DIST then
@@ -1636,6 +1710,10 @@ local function steer(rec, dest, pos, now)
 			rec._detour = nil
 		end
 	end
+	local f = FACE.Active[rec]
+	if f and f.Point then FACE.Active[rec] = nil end -- NATURAL: a look-around never fights the walk
+	pace = pace or 1
+	NATURAL.Pace(rec, pace, pace < 1 and dest or nil) -- eases in; a wander also slows near its goal
 	rec._goal = dest
 	rec.Humanoid:MoveTo(dest)
 end
@@ -1708,6 +1786,7 @@ local function aiStep(rec, plist, now)
 			return
 		end
 		local homeDest = clampToZone(zone, rec.Home)
+		NATURAL.Pace(rec, 1)
 		rec._goal = homeDest
 		hum:MoveTo(homeDest)
 		return
@@ -1781,7 +1860,9 @@ local function aiStep(rec, plist, now)
 
 	if best then
 		if rec._target ~= best.Player then rec._chaseStuck = 0 end
+		local alerting = NATURAL.Alert(rec, best, bestD, now) -- a new target: stop with a '!' for a moment first
 		rec._target = best.Player
+		if alerting then return end
 		if bestD <= MC.AttackRange then
 			rec._chaseStuck = 0
 			attack(rec, best, now)
@@ -1797,8 +1878,12 @@ local function aiStep(rec, plist, now)
 		local dest = pickWanderPoint(rec, zone)
 		if dest then
 			rec._detour = nil
-			steer(rec, dest, pos, now)
+			steer(rec, dest, pos, now, NATURAL.WanderPace)
 		end
+	elseif rec._goal and Util.FlatDistance(pos, rec._goal) > ARRIVE_DIST then
+		NATURAL.Pace(rec, NATURAL.WanderPace, rec._goal) -- NATURAL: keeps easing in, slows near the goal
+	else
+		NATURAL.Idle(rec, pos, plist, now) -- NATURAL: standing between wanders: look around / glance
 	end
 end
 

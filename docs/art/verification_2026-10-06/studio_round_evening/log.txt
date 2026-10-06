@@ -1,0 +1,75 @@
+ghost models: LittleGhost asset=77132701345894 meshes=1 meshIds=rbxassetid://127428571452599 | GhostMinion asset=84018800442559 meshes=1 meshIds=rbxassetid://72049329484791 | GhostKing asset=111999674841692 meshes=1 meshIds=rbxassetid://81287818295767
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false TutorialStep=0 TutorialKills=0 WeaponTier=0 CombatPower=0 Level=1 ZoneId=Crossroads EquippedPet=
+death watch on
+== bare hands
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=0 TutorialKills=0 WeaponTier=0 CombatPower=0 Level=1 ZoneId=Crossroads EquippedPet=
+saved docs\art\verification_2026-10-06\studio_round_evening\01_bare_hands_power0.png
+fired AcceptTutorial
+ff
+tp 300,0.015625,-30
+saved docs\art\verification_2026-10-06\studio_round_evening\02_punch_slime_meadow_beam.png
+hunt: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=2 TutorialKills=5 WeaponTier=0 CombatPower=12 Level=2 ZoneId=SlimeMeadow EquippedPet=
+fired ClaimQuest
+claimed: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=0 CombatPower=12 Level=2 ZoneId=SlimeMeadow EquippedPet=
+saved docs\art\verification_2026-10-06\studio_round_evening\03_claimed.png
+at anvil
+forge key: Upgrade
+after forge: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 CombatPower=300 Level=2 ZoneId=Crossroads EquippedPet=
+saved docs\art\verification_2026-10-06\studio_round_evening\04_first_weapon.png
+closed window: LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.Button -> none
+== texts
+texts: korean(0): 
+not fitting(7): Power=Lv 2 · Power 300 | Pouch=· Pouch 0 | Nums=0/2 | Fold=▼ | Text=Hit monsters with skills 5 times | Nums=0/5 | ActionText=See weapons
+teams: Choosing a side, Artisan Guild, Knights of Light, Horn Legion
+saved docs\art\verification_2026-10-06\studio_round_evening\05_tab_list.png
+== motion
+ok
+ok
+ff
+tp 590,0.015625,0
+pace: goblin Speed=12 wandering WalkSpeeds: 6.0 6.0 2.7 6.0 4.5 5.1 4.9 5.1 2.7 2.7 4.9 4.5 3.8 6.0 3.8 2.7 6.0 3.8 4.5 6.0 6.0 6.0 6.0 6.0 6.0
+Goblin at 54
+before: AlertAt=nil WindupAt=nil AttackSeq=nil WalkSpeed=6.0 anchored=false
+new alert after 0.10 s: AlertAt=1791282154.62898 WindupAt=nil AttackSeq=nil WalkSpeed=6.0 anchored=false
+saved docs\art\verification_2026-10-06\studio_round_evening\06_goblin_alert.png
+after coming: AlertAt=1791282154.62898 WindupAt=1791282156.995681 AttackSeq=1 WalkSpeed=12.0 anchored=false
+saved docs\art\verification_2026-10-06\studio_round_evening\07_goblin_swing.png
+kill took 18.5 s; body removed 0.7338743209838867 s after the death was seen
+== fronts
+saved docs\art\verification_2026-10-06\studio_round_evening\front_Slime.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_BigSlime.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_PumpkinSlime.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_Goblin.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_BatGoblin.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_GoblinBrute.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_Skeleton.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_SkeletonKnight.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_LittleGhost.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_GhostMinion.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_PumpkinKing.png
+saved docs\art\verification_2026-10-06\studio_round_evening\front_GhostKing.png
+== pet
+ok
+fired ChangeClass
+state: DataLoaded=true Faction=Neutral Class=Archer ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 CombatPower=283 Level=1 ZoneId=HauntedHollow EquippedPet=BabySlime
+pet: PetModels=BabySlime ClientPets=Pet_11753301316 EquippedPet=BabySlime
+tp 0,0,-30
+saved docs\art\verification_2026-10-06\studio_round_evening\08_tamer_pet.png
+== phone
+device samsung_galaxy_s22_ultra ok=true nil vp=655, 340
+menu button: LocalPlayer.PlayerGui.MainGui.HUD.Buttons.TileMenu
+fold: fold buttons 1 vp 655, 340 : Fold@173,157
+saved docs\art\verification_2026-10-06\studio_round_evening\09_phone_menu_749x361.png
+device samsung_galaxy_s22_ultra ok=true nil vp=573, 354
+menu button: LocalPlayer.PlayerGui.MainGui.HUD.Buttons.TileMenu
+fold: fold buttons 1 vp 573, 354 : Fold@173,157
+saved docs\art\verification_2026-10-06\studio_round_evening\09_phone_menu_667x375.png
+device default ok=true nil vp=991, 487
+body hold: 6 deaths: Goblin 1.17s, Slime 1.16s, Slime 1.16s, Slime 1.16s, Slime 1.16s, Slime 1.16s
+console: 
+play stopped (my own test Play)
+fresh off
+device after: true default

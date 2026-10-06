@@ -1,0 +1,8 @@
+{
+  "ghost_models": "ghost models: LittleGhost asset=77132701345894 meshes=1 meshIds=rbxassetid://127428571452599 | GhostMinion asset=84018800442559 meshes=1 meshIds=rbxassetid://72049329484791 | GhostKing asset=111999674841692 meshes=1 meshIds=rbxassetid://81287818295767",
+  "bare_hands": "DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true TutorialStep=99 TutorialKills=5 WeaponTier=1 CombatPower=300 Level=2 ZoneId=Crossroads EquippedPet=",
+  "texts_first": "korean(0): \nnot fitting(7): Power=Lv 2 · Power 300 | Pouch=· Pouch 0 | Nums=0/2 | Fold=▼ | Text=Hit monsters with skills 5 times | Nums=0/5 | ActionText=See weapons\nteams: Choosing a side, Artisan Guild, Knights of Light, Horn Legion",
+  "body_hold_s": 0.7338743209838867,
+  "pet": "PetModels=BabySlime ClientPets=Pet_11753301316 EquippedPet=BabySlime",
+  "body_hold": "body hold: 6 deaths: Goblin 1.17s, Slime 1.16s, Slime 1.16s, Slime 1.16s, Slime 1.16s, Slime 1.16s"
+}
