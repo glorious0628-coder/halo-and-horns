@@ -3083,10 +3083,11 @@ Config.CustomModels = {
 ----------------------------------------------------------------- story (world flavor text only)
 Config.Story = {
 	-- plain lines (no format specifiers)
-	-- A23-55 (user 2026-10-06): greed broke the Crown; nobody knows who, and each side blames the other (GDD §1-1;
-	-- the opening subtitles and the faction picker's premise panel show these three lines)
+	-- A23-55 (user 2026-10-06): the story everyone tells — greed broke the Crown, nobody knows who, each side blames the
+	-- other. "They say": the last chapter shows it was a rumor (ff8340b twist), so the opening never states it as fact.
+	-- GDD §1-1; the opening subtitles and the faction picker's premise panel show these three lines.
 	Premise = {
-		"Someone wanted the Crown of Balance all to themselves.",
+		"They say someone wanted the Crown of Balance all to themselves.",
 		"\"If I can't have it, no one can!\" CRACK.",
 		"Now each side says the other did it.",
 	},
