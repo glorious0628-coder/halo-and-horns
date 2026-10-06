@@ -917,6 +917,14 @@ The Server scope and nametags are unchanged: players in the same server see each
 
 ### BB10. 랭킹 서비스 (이 서버·전체, 시즌·주간, 공정 점수) (beta-must, L)
 
+> **2026-10-06 변경 (SPEC A23-23, 사용자 결정):** 판은 3개다 — 주간 명예(Halo), 주간 악명(Horns), 주간 PvP(모든 진영, 무단 PvP 순위). Power·Growth·Hunt 판과 시즌 판, BestPower·BestGrowth·MaxGrowthPerHour 검사는 만들지 않는다.
+> - Boards: Honor (Week, Faction Halo), Infamy (Week, Faction Horns), PvP (Week, all factions). Order = {'Honor','Infamy','PvP'}. WeekCap = { Honor=150, Infamy=150, PvP=nil }.
+> - PvP board credit: at KO time, when the KO is a PvP KO that is NOT a friend pair and FAILS PvPCreditOK for a "fairness" reason (BoldMult < 1, victim inactive > 60 s, victim AccountAge < 7 or Playtime < 10800, pair count >= 3 this week, victim just respawned per Config.Bully), credit +1 to the killer's Rank.PvP. Do not credit revenge KOs (GrudgeService target), KOs on Wanted/kaiju targets, or KOs on players with BullyStacks >= 1 or Outlaw. Record the reason in Stats.Refused as now.
+> - Weekly settle (Monday 00:00 KST, first server loop that sees the new WeekIndex): read the previous week's top 3 of each board (Global scope; fall back to this server when the read fails, retry next loop). Honor/Infamy top 3 -> data.RankReward = { WeekId, Board, Rank } (A23-22 reward for that week). PvP top 3 -> data.Outlaw = { WeekId } (A23-23 penalty for that week). Apply on join and live; store results in a MemoryStore/DataStore key 'HH_RankSettle_'..WeekId so every server applies the same list once.
+> - Outlaw effects (only while Outlaw.WeekId == current WeekIndex): same as the A23-22 bully penalty (auto off + reason, XP x0.5, drops x0.5 incl. jackpot, power unchanged), nametag line 2 red '무법자' shown even with HideAnnounceName, bounty x2 (max x2 total with BountyMult), HUD chip Config.Ranking.Text.OutlawChip. If BullyStacks >= 1 at the same time, apply the penalty once.
+> - Data: data.Rank gains PvP=0 (week field). Store names 'HH_Rank_'..Season..'_'..Board..'_W'..WeekId for the 3 boards.
+> - Acceptance adds: a KO on a weaker player raises the killer's PvP score and not Honor/Infamy weekly score; a fair KO raises Honor/Infamy and not PvP; a friend KO raises neither; DebugCommand 'RankSettle' runs the weekly settle now and marks top 3 (Studio season only).
+
 **플레이어가 보는 것:** 랭킹 판은 다섯이다.
 - 이번 시즌 최고 전투력
 - 성장(환생·레벨)
@@ -1084,6 +1092,8 @@ Text: Config.Ranking.Text.
 - 실제 서버 확인(사용자 실기기 확인): 10/10 이후, 7일 넘은 계정 2개로 확인한다.
 
 ### BB11. 랭킹 창 + 마을 게시판 대칭 (beta-must, M)
+
+> **2026-10-06 변경 (SPEC A23-23):** 탭은 [명예][악명][PvP] 3개, 그 아래 [이 서버][전체]. PvP 탭 1~3위 줄에는 '무법자' 빨간 표시를 붙이고, 탭 위에 한 줄 안내 "약한 상대·자리 비운 사람·새내기를 쓰러뜨리면 올라가요. 1~3위는 다음 주 무법자가 돼요."를 둔다. 명예·악명 탭 위에는 "1~3위는 다음 주 경험치·드랍 +10%"를 둔다. 탭 아이콘은 IconRankHonor / IconRankInfamy / IconRankPvP(이미지 세션). 게시판은 기사단 명예 TOP3 · 뿔 군단 악명 TOP3 · 무법자 TOP3를 나란히 둔다. 합격 확인의 '탭 5개, 10개 조합'은 '탭 3개, 6개 조합'으로 읽는다.
 
 **플레이어가 보는 것:** 메뉴 → 랭킹(PC L키)으로 연다.
 
