@@ -1,5 +1,5 @@
 {
- "what": "A23-34 bare-handed start (게임성 개발 2): every offline suite run on dev2 e4610b5 (= main a4f863b + the A23-34 commit), with mutations",
+ "what": "A23-34 (+ 검수 3 fixes) and A23-39 pet tamer (게임성 개발 2): every offline suite run on dev2 0b0133f plus the uncommitted review fixes, with mutations",
  "suites": [
   {
    "suite": "test_a23_14.py",
@@ -57,8 +57,8 @@
    "suite": "test_hud_layout.py",
    "exit": 0,
    "summary": [
-    "MUTATIONS caught=28/28 (of 28)",
-    "Named checks: 5731 passed, 0 failing; assertions 5731/5731"
+    "MUTATIONS caught=38/38 (of 38)",
+    "Named checks: 6697 passed, 0 failing; assertions 7116/7116"
    ]
   },
   {
@@ -152,11 +152,19 @@
    ]
   },
   {
+   "suite": "test_tamer.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=36/36 (of 36)",
+    "Named checks: 93 passed, 0 failing; assertions 93/93"
+   ]
+  },
+  {
    "suite": "test_unarmed_start.py",
    "exit": 0,
    "summary": [
-    "MUTATIONS caught=69/69 (of 69)",
-    "Named checks: 213 passed, 0 failing; assertions 220/220"
+    "MUTATIONS caught=72/72 (of 72)",
+    "Named checks: 217 passed, 0 failing; assertions 224/224"
    ]
   },
   {
@@ -164,6 +172,13 @@
    "exit": 0,
    "summary": [
     "WEAPON_MOTION_CHECKS 253"
+   ]
+  },
+  {
+   "suite": "test_zone_look.py",
+   "exit": 0,
+   "summary": [
+    "Status: passed"
    ]
   },
   {
@@ -176,7 +191,7 @@
  ],
  "notes": [
   "test_costume_physics.py is retired (A23-5) and refuses to run; it fails the same way on main.",
-  "gameplay_blacksmith_check.py failed on main since A23-28 (stale 'owned tier re-equips free at Lv1'); fixed in this commit, now passing.",
-  "Only the 게임성 개발 2 reports (offline_dev2_*, offline_ranking) are committed; the other sessions' reports were left as they were (their owners re-run them after the merge)."
+  "gameplay_blacksmith_check.py was failing on main since A23-28 (stale expectation); fixed in the A23-34 commit, passing.",
+  "Only the 게임성 개발 2 reports (offline_dev2_*, offline_ranking) are committed; the other sessions re-run theirs after the merge."
  ]
 }

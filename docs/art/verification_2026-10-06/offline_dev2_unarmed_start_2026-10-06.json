@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 220,
+  "checks": 224,
   "failedChecks": 0,
-  "namedChecks": 213,
+  "namedChecks": 217,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -316,6 +316,24 @@
     {
       "group": "config",
       "check": "text AutoClaimed has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text ClaimedArmed has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text AutoClaimedArmed has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text VisitBlacksmithArmed has KO + EN with the same placeholders",
       "pass": 1,
       "fail": 0
     },
@@ -837,6 +855,12 @@
     },
     {
       "group": "hits",
+      "check": "PvP: bare hands per second < every class's tier 1 (Lv1/15/30 x opponent T0-T8), skill too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
       "check": "bare Archer Q at 20 studs: RoundDamage(4 x 0.55 x 6)",
       "pass": 1,
       "fail": 0
@@ -1053,13 +1077,13 @@
     },
     {
       "group": "gift",
-      "check": "(a) no second weapon line",
+      "check": "(a) no second weapon line (neither the equip line nor the bag line)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "gift",
-      "check": "(a) nothing changed by a repeat",
+      "check": "(a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
       "pass": 1,
       "fail": 0
     },
@@ -1287,12 +1311,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 9,
+  "staticChecks": 10,
   "staticFailures": [],
   "mutations": {
-    "total": 69,
-    "applied": 69,
-    "caught": 69,
+    "total": 72,
+    "applied": 72,
+    "caught": 72,
     "skipped": false,
     "results": [
       {
@@ -1341,7 +1365,7 @@
           "config :: SwingHitsToKill bare Archer/Halo = 5",
           "config :: SwingHitsToKill bare Archer/Horns = 5"
         ],
-        "newFailingCount": 35
+        "newFailingCount": 36
       },
       {
         "mutation": "bare hands take a scroll +N",
@@ -1563,11 +1587,11 @@
           "config :: M1_1 GiveWeapon = tier 1",
           "gift :: (a) GrantFirstWeapon again: nothing",
           "gift :: (a) M1_1 done: tier 1 owned and equipped",
-          "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)",
-          "gift :: (a) power attribute source: Lv2 T1 = 300",
-          "gift :: (a) the equip Fx (Upgrade, Tier 1)"
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
+          "gift :: (a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
+          "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)"
         ],
-        "newFailingCount": 17
+        "newFailingCount": 19
       },
       {
         "mutation": "load forces tier-1 ownership again",
@@ -2023,9 +2047,44 @@
         "newFailingChecks": [
           "drops :: a later M1_1 adds no gift line",
           "gift :: (a) GrantFirstWeapon again: nothing",
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
           "gift :: (c) no gift line for a save that owns T1"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the gift is paid again while another weapon is held",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (a) GrantFirstWeapon again: nothing",
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bare-handed PvP keeps the weapon floor",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: PvP: bare hands per second < every class's tier 1 (Lv1/15/30 x opponent T0-T8), skill too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bare PvP floor as high as the weapons'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: PvP: bare hands per second < every class's tier 1 (Lv1/15/30 x opponent T0-T8), skill too"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "bought-first player gets no bag line",
@@ -2157,12 +2216,12 @@
         "newFailingChecks": [
           "gift :: (a) GrantFirstWeapon again: nothing",
           "gift :: (a) M1_1 done: tier 1 owned and equipped",
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
+          "gift :: (a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
           "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)",
-          "gift :: (a) power attribute source: Lv2 T1 = 300",
-          "gift :: (a) the equip Fx (Upgrade, Tier 1)",
-          "gift :: (a) the gift is noted once in '얻은 순' (no double count)"
+          "gift :: (a) power attribute source: Lv2 T1 = 300"
         ],
-        "newFailingCount": 16
+        "newFailingCount": 18
       },
       {
         "mutation": "weapon line before the story lines",
@@ -2214,9 +2273,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "105310f83446f2e4912c915475f0243228d83dc62708519abb387504d897e7b9",
+    "src/ReplicatedStorage/Shared/Config.luau": "b936e676d8db751af1d64d522ab2b4839e5589862584e2e9d753078b71b1b486",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "6bf65832884f88553c0c0168aff8282a10cac5856f73c6256c2745488aff1e1f",
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
     "src/ServerScriptService/StoryQuestService.luau": "19f046c3251bb799230db775a0345b4324fe77301daff3fc89506eb3f7402c68",
     "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
@@ -2225,7 +2284,7 @@
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "c757f55faf2773a81935f5d3e50390b7bf0fdc544ed56ad4e92e543034b72385"
   },
-  "fixtureSHA256": "fb73c624b747ffc1c94f5e89afbba6d7a115b6720174f69b519c464be63c8bcd",
+  "fixtureSHA256": "c6df7cceab2ba8e72cb84812c41a1caae16b7e7d0afc1ec45db7791f1619ab98",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

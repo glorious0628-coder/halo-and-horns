@@ -255,13 +255,30 @@ for _, count in { 4, 5 } do
 end
 -- A23-34: an anvil visit before the claim does not count for M1_1 (the first weapon waits for a visit with the jelly)
 do
-	local initial = saved(2, 5); initial.BlacksmithVisited = true
+	local initial = saved(2, 5)
+	initial.Version, initial.WeaponTier, initial.WeaponOwnedMask, initial.BlacksmithVisited = 3, 0, 0, true -- bare-handed
 	local f = fixture(initial)
-	check(f.Data.BlacksmithVisited == true, "fixture: the anvil was visited before the first mission was claimed")
+	check(f.Data.BlacksmithVisited == true and f.Data.WeaponOwnedMask == 0, "fixture: bare-handed, anvil visited before the claim")
 	f:Claim()
+	local T = f.Config.Tutorial.Text
 	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == false,
-		"the claim clears an earlier anvil visit (M1_1 waits for a smithy visit after the first mission)")
-	check(string.find(f.LastList[1].Text, "대장간") ~= nil, "after the claim the pinned row points to the smithy again")
+		"bare-handed: the claim clears an earlier anvil visit (M1_1 waits for a smithy visit after the first mission)")
+	check(f.LastList[1].Text == T.VisitBlacksmith, "bare-handed: the pinned row promises the first weapon", f.LastList[1].Text)
+	local last = f.Notices[#f.Notices]
+	check(last == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)), "bare-handed: the Claimed line", last)
+end
+-- A23-34 (검수): a save that already owns tier 1 (from before A23-34) keeps its visit and gets no first-weapon promise
+do
+	local initial = saved(2, 5); initial.BlacksmithVisited = true -- Version 2: owns tier 1 after migrate
+	local f = fixture(initial)
+	f:Claim()
+	local T = f.Config.Tutorial.Text
+	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == true and bit32.btest(f.Data.WeaponOwnedMask, 1),
+		"a tier-1 owner keeps the anvil visit at the claim")
+	local last = f.Notices[#f.Notices]
+	check(last == string.format(T.ClaimedArmed, tostring(f.Config.Tutorial.QuestRewardGold)), "a tier-1 owner: the old Claimed line", last)
+	local g = fixture(saved(99, 5)) -- step 99, tier 1 owned, no visit yet: the row has no first-weapon promise
+	check(g.LastList[1].Text == T.VisitBlacksmithArmed, "a tier-1 owner's pinned row: 'check the weapons'", g.LastList[1].Text)
 end
 for _, test in { { -4, 0 }, { 2.8, 2 }, { 99, 5 }, { "4", 0 }, { 0/0, 0 }, { math.huge, 0 }, { -math.huge, 0 } } do
 	local f = fixture(saved(2, test[1])); check(f.Data.TutorialKills == test[2], "invalid saved kills not normalized")
@@ -641,7 +658,11 @@ end
 do
 	local function lines(f)
 		local gold = tostring(f.Config.Tutorial.QuestRewardGold)
-		return string.format(f.Config.Tutorial.Text.AutoClaimed, gold), string.format(f.Config.Tutorial.Text.Claimed, gold)
+		local T = f.Config.Tutorial.Text
+		-- A23-34 (검수): a save that owns tier 1 (these Version 2 rows do after migrate) gets the lines without the
+		-- first-weapon promise
+		local armed = bit32.btest(math.floor(tonumber(f.Data.WeaponOwnedMask) or 0), 1)
+		return string.format(armed and T.AutoClaimedArmed or T.AutoClaimed, gold), string.format(armed and T.ClaimedArmed or T.Claimed, gold)
 	end
 	local function count(f, text)
 		local n = 0

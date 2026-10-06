@@ -85,7 +85,8 @@ runGroup("config", function()
 		{ C.Text, "BareHands" }, { C.Text, "WeaponFromQuest" }, { C.Loot.Text, "JackpotEquip" },
 		{ C.Loot.Text, "FirstScrollBare" }, { C.Loot.Text, "FirstWeapon" }, { C.Loot.Text, "FirstWeaponBag" },
 		{ C.Loot.Text, "BareEquip" }, { C.Tutorial.Text, "VisitBlacksmith" }, { C.Tutorial.Text, "Claimed" },
-		{ C.Tutorial.Text, "AutoClaimed" },
+		{ C.Tutorial.Text, "AutoClaimed" }, { C.Tutorial.Text, "ClaimedArmed" }, { C.Tutorial.Text, "AutoClaimedArmed" },
+		{ C.Tutorial.Text, "VisitBlacksmithArmed" },
 	} do
 		check(same(pair[1][pair[2]], pair[1][pair[2] .. "En"]), "text " .. pair[2] .. " has KO + EN with the same placeholders")
 	end
@@ -251,6 +252,36 @@ runGroup("hits", function()
 	w:Flush()
 	local want = w.Util.RoundDamage(withShape * 0.5)
 	check(before - hum.Health == want, "a punch on a player = RoundDamage(punch PvP hit x 0.5)", show({ before - hum.Health, want }))
+	-- 검수 2026-10-06: in PvP a bare-handed attacker (punch, and the class skill) is weaker per second than every class's
+	-- tier-1 attack, against any opponent (tiers 0-8) at the same level: the weapon floor 0.8 never applies to bare hands
+	local wm = bareWorld()
+	local bad, rows = {}, 0
+	local function mk(id, cls, tier, fac)
+		local pl = wm:Join(id, { Class = cls, Faction = fac, Tier = tier, Mask = tier > 0 and bit32.lshift(1, tier - 1) or 0 })
+		return pl
+	end
+	local bareA = mk(901, "Warrior", 0, "Horns")
+	local t1 = { Warrior = mk(902, "Warrior", 1, "Horns"), Mage = mk(903, "Mage", 1, "Horns"), Archer = mk(904, "Archer", 1, "Horns") }
+	local bareQ = { Warrior = bareA, Mage = mk(905, "Mage", 0, "Horns"), Archer = mk(906, "Archer", 0, "Horns") }
+	local victim = mk(907, "Warrior", 1, "Halo")
+	for _, level in { 1, 15, 30 } do
+		for _, pl in { bareA, victim, t1.Warrior, t1.Mage, t1.Archer, bareQ.Mage, bareQ.Archer } do pl:SetAttribute("Level", level) end
+		for _, vt in { 0, 1, 2, 3, 4, 5, 6, 8 } do
+			victim:SetAttribute("WeaponTier", vt)
+			local bareDps = wm.Combat.ComputePvPHit(bareA, victim, C0.AttackProfile("Warrior", 0, "Horns")) * 0.5 / U.Interval
+			for _, id in C0.ClassOrder do
+				local c = C0.Classes[id]
+				local t1Dps = wm.Combat.ComputePvPHit(t1[id], victim, c) * 0.5 / c.SwingInterval
+				rows += 1
+				if not (bareDps < t1Dps) then table.insert(bad, string.format("Lv%d vs T%d %s: bare %.2f >= T1 %.2f", level, vt, id, bareDps, t1Dps)) end
+				-- the class skill bare-handed vs tier 1 (same class): never stronger either
+				local qBare, qT1 = wm.Combat.ComputePvPHit(bareQ[id], victim), wm.Combat.ComputePvPHit(t1[id], victim)
+				if not (qBare < qT1) then table.insert(bad, string.format("Lv%d vs T%d %s skill: bare %.2f >= T1 %.2f", level, vt, id, qBare, qT1)) end
+			end
+		end
+	end
+	check(rows == 72 and #bad == 0, "PvP: bare hands per second < every class's tier 1 (Lv1/15/30 x opponent T0-T8), skill too",
+		bad[1] or rows)
 	-- skill Q bare-handed: the class skill (class range and multiplier)
 	local w2 = bareWorld()
 	local q = w2:Join(203, { Class = "Archer" })
@@ -385,14 +416,17 @@ runGroup("gift", function()
 	check(w.Justice.GetCombatPower(p) == 300, "(a) power attribute source: Lv2 T1 = 300", w.Justice.GetCombatPower(p))
 	w:Buy(p, 2)
 	check(d.WeaponOwnedMask == 3 and d.WeaponTier == 2 and d.CarriedGold == 0, "(a) then the wood weapon: T1 + T2, T2 held")
-	-- paid once: a second grant / refresh / rejoin changes nothing
-	local n1 = #w.Notices
+	-- paid once: a second grant / refresh / rejoin changes nothing (T2 held now, so a repeat would say the bag line)
+	local n1, seqBefore = #w.Notices, d.ItemSeqNext
 	check(w.Loot.GrantFirstWeapon(p) == nil, "(a) GrantFirstWeapon again: nothing")
 	w.Story.Refresh(p)
 	w.PS.PlayerReady:Fire(p, d) -- the join safety net
 	w:Flush()
-	check(#notices(w, p, n1) == 0 or indexOf(notices(w, p, n1), line) == nil, "(a) no second weapon line")
-	check(d.WeaponOwnedMask == 3 and d.WeaponTier == 2, "(a) nothing changed by a repeat")
+	local again = notices(w, p, n1)
+	check(indexOf(again, line) == nil and indexOf(again, string.format(C0.Loot.Text.FirstWeaponBag, "나뭇가지")) == nil,
+		"(a) no second weapon line (neither the equip line nor the bag line)", show(again))
+	check(d.WeaponOwnedMask == 3 and d.WeaponTier == 2 and d.ItemSeqNext == seqBefore, "(a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
+		show({ d.WeaponOwnedMask, d.WeaponTier, d.ItemSeqNext, seqBefore }))
 
 	-- (b) the wood weapon first, then the free tier 1 (in the bag, no power line)
 	local w2 = bareWorld()

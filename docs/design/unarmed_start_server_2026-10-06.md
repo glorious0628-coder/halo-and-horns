@@ -1,6 +1,6 @@
 # A23-34 맨손 시작 — 서버 계약 (게임성 개발 2, 2026-10-06)
 
-사용자 결정 A23-34: 새 플레이어는 무기 없이(맨손), 전투력 0으로 시작한다. 첫 무기는 메인 M1_1(대장장이 방문)에서 무료로 받는다. 검수 추가: 맨손이어도 나무 무기(T2) 구매가 되고, 무료 T1과 순서가 꼬이지 않는다(둘 다 OK). 오프라인 검사: `py tools/test_unarmed_start.py` (220검사, 변이 69/69). 자체 검토(찾기 3 + 반박 12) 반영.
+사용자 결정 A23-34: 새 플레이어는 무기 없이(맨손), 전투력 0으로 시작한다. 첫 무기는 메인 M1_1(대장장이 방문)에서 무료로 받는다. 검수 추가: 맨손이어도 나무 무기(T2) 구매가 되고, 무료 T1과 순서가 꼬이지 않는다(둘 다 OK). 오프라인 검사: `py tools/test_unarmed_start.py` (224검사, 변이 72/72). 자체 검토(찾기 3 + 반박 12) + 검수 3건 반영.
 
 ## 1. 저장
 - `Config.Data.Defaults`: `WeaponTier = 0`, `WeaponOwnedMask = 0` (0 = 맨손, 가진 무기 없음). Version은 3 그대로.
@@ -14,6 +14,7 @@
 - `Config.CombatPower`: 맨손일 때만 Lv1 주먹 값을 빼서 0부터 센다(Lv1 0, Lv2 12, Lv3 23). 무기가 있으면 숫자가 전과 똑같다(Lv1 T1 283, Lv2 T1 300) → 깡패·대담함 비율(BB4)이 그대로. 0을 나누는 곳 없음(BoldMult는 내 전투력 0이면 ×1).
 - `Config.BestUsableWeapon`: 쓸 수 있는 무기가 없으면 0. `Config.WeaponName(0)` = `Config.Text.BareHands`("맨손"/"Bare hands"), `Config.WeaponArtKey(0)` = nil.
 - 스킬 Q는 맨손이어도 직업 스킬: 직업 사거리·직업 배수(전사 24, 마법사 31, 궁수 13 → 슬라임 한 방).
+- PvP(검수): 맨손 공격자의 무기 비율 바닥은 `Config.Combat.Unarmed.PvPRatioMin` 0.4(무기는 `Config.PvP.PowerRatioMin` 0.8). 같은 레벨이면 어떤 상대(맨손~T8)에게도 맨손 주먹의 초당 PvP 피해가 세 직업 T1 평타보다 작고, 맨손 Q도 같은 직업 T1 Q보다 작다(검사: Lv1·15·30 × 상대 T0~T8 × 세 직업 72칸).
 
 ## 3. `Config.AttackProfile(classId, tier, factionId)` (서버·클라이언트 공용)
 - 무기 있음 → `Config.Classes[classId]` 그 자체. 맨손 → 캐시된 표 `{ Id, Style = "Punch", Unarmed = true, Pattern = "Multi", Targets = 1, Splash = 0, Range = 7, SwingInterval = 0.8, AimCone = 75, Damage = 1, Ranged = false, PvPMult = 1 }`.
@@ -23,7 +24,7 @@
 - `Config.StoryQuests.Defs.M1_1.GiveWeapon = 1` → StoryQuestService `complete`가 이야기 줄 다음에 `LootService.GrantFirstWeapon(player, 1)`.
 - GrantFirstWeapon: T1을 이미 가지면 아무것도 안 함(옛 세이브·두 번째 호출). 아니면 T1 소유 → 맨손이면 바로 장착 + "첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300"(실제 이전 값) + Fx `Upgrade {Tier=1}`, 이미 무기를 들고 있으면(T2를 먼저 산 경우) 가방에만 + "대장장이가 [나뭇가지]도 챙겨 줬어요…".
 - 대장간 모루 E(onBlacksmithPrompt)는 `StoryQuestService.Refresh`를 먼저 불러, 상점 창이 열릴 때 무기가 이미 손에 있다.
-- 첫 임무 받기(QuestService.claimTutorial)는 `BlacksmithVisited`를 false로 되돌린다: 첫 임무 전에 모루를 눌렀어도 M1_1은 '젤리를 들고' 대장간에 다시 가야 끝난다(받기 알림 '교차로 대장간에서 첫 무기를 받아요'와 같게). 이 한 줄은 QuestService(게임성 개발 1 파일)라 병합 때 알림.
+- 첫 임무 받기(QuestService.claimTutorial)는 (T1이 없을 때만) `BlacksmithVisited`를 false로 되돌린다: 첫 임무 전에 모루를 눌렀어도 M1_1은 '젤리를 들고' 대장간에 다시 가야 끝난다(받기 알림 '교차로 대장간에서 첫 무기를 받아요'와 같게). 이 부분은 QuestService(게임성 개발 1 파일)라 병합 때 알림. T1을 이미 가진 세이브(A23-34 전)는 방문을 그대로 두고 '첫 무기' 약속 없는 문구(`ClaimedArmed`·`AutoClaimedArmed`·`VisitBlacksmithArmed`, KO/EN)를 받는다(검수). M1_1 단계 글은 원래대로 '대장장이에게 젤리 보이기'.
 - 접속 순간(StoryQuestService의 PlayerReady가 LootService보다 먼저) 받은 첫 무기도 '얻은 순'에 한 번만 적힌다(감시가 아직 없을 때만 직접 기록).
 - 접속 때 안전망: `Story.Done.M1_1`인데 T1이 없으면 그때 준다.
 - 맨손일 때 얻은 무기(대박 T8 등)는 레벨이 되면 바로 장착 + "[이름] 장착! 전투력 X → Y"(대박이면 한 줄 "전설 무기 [이름] 장착! 전투력 X → Y", '메뉴에서 장착해요' 줄은 안 보냄). 맨손 첫 왕 슬라임 주문서 안내는 FirstScrollBare("첫 무기는 대장장이가 줘요…").

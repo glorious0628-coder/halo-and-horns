@@ -1018,7 +1018,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "9eb1b53cbf12018aa4bbc43da1b986ec820794e526dc7aac1e921d1f53fce775",
+    "src/ReplicatedStorage/Shared/Config.luau": "b936e676d8db751af1d64d522ab2b4839e5589862584e2e9d753078b71b1b486",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
     "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",

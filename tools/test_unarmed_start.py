@@ -163,6 +163,13 @@ MUTATIONS = [
      "return Config.CombatPower(level, tier, 0), Config.CombatPower"),
     ("the gift is paid again to a legacy save", L,
      "if not data or not validTier(tier) or owns(data, tier) then return nil end", "if not data or not validTier(tier) then return nil end"),
+    ("the gift is paid again while another weapon is held", L,
+     "if not data or not validTier(tier) or owns(data, tier) then return nil end",
+     "if not data or not validTier(tier) or (owns(data, tier) and math.floor(num(data.WeaponTier, 0)) == tier) then return nil end"),
+    ("bare-handed PvP keeps the weapon floor", CO,
+     "local floor = Config.Weapons[aTier] and Config.PvP.PowerRatioMin or Config.Combat.Unarmed.PvPRatioMin",
+     "local floor = Config.PvP.PowerRatioMin"),
+    ("bare PvP floor as high as the weapons'", C, "AimCone = 75, PvPRatioMin = 0.4 }", "AimCone = 75, PvPRatioMin = 0.8 }"),
     ("bought-first player gets no bag line", L,
      "\t\tnotify(player, string.format(TXT.FirstWeaponBag, name), \"reward\")\n", ""),
     ("a drop is not equipped bare-handed", L,
@@ -233,8 +240,11 @@ def static() -> tuple[int, list[str]]:
     story = read(SSS / "StoryQuestService.luau")
     check("function StoryQuestService.Refresh(player)" in story, "StoryQuestService.Refresh is public (the anvil runs it)")
     quest = read(SSS / "QuestService.luau")
-    check('\tS.PlayerService.SetStat(player, "BlacksmithVisited", false)\n\tsetStep(player, TUT_DONE)' in quest,
-          "the first-mission claim clears an earlier anvil visit (M1_1 waits for a smithy visit; behavior: test_onboarding)")
+    check('\tif not hasFirst then S.PlayerService.SetStat(player, "BlacksmithVisited", false) end\n\tsetStep(player, TUT_DONE)' in quest,
+          "the first-mission claim clears an earlier anvil visit unless tier 1 is owned (behavior: test_onboarding)")
+    check("hasFirst then\n\t\ttext = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)" in quest
+          and "hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith" in quest,
+          "a save that owns tier 1 gets the lines without the first-weapon promise (behavior: test_onboarding)")
     return count, failures
 
 

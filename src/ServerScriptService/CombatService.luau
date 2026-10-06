@@ -429,7 +429,10 @@ function CombatService.ComputePvPHit(attacker, victim, shape)
 	if vWeapon > 0 then
 		ratio = Config.WeaponDamage(aTier, aLevel, numAttr(attacker, "WeaponEnhance", 0)) / vWeapon
 	end
-	ratio = math.clamp(ratio, Config.PvP.PowerRatioMin, Config.PvP.PowerRatioMax)
+	-- A23-34 (검수 2026-10-06): a bare-handed attacker never gets the weapon floor PowerRatioMin, so a punch (and a
+	-- bare-handed skill) stays weaker than any tier-1 weapon against every opponent (Config.Combat.Unarmed.PvPRatioMin)
+	local floor = Config.Weapons[aTier] and Config.PvP.PowerRatioMin or Config.Combat.Unarmed.PvPRatioMin
+	ratio = math.clamp(ratio, floor, Config.PvP.PowerRatioMax)
 	return base
 		* ratio
 		* (c.Damage or 1)

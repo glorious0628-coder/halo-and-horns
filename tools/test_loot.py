@@ -320,7 +320,7 @@ MUTATIONS = [
     ("EnhanceMult not clamped", "CONFIG_SOURCE",
      "math.clamp(math.floor(enhance), 0, loot.MaxEnhance)", "math.floor(enhance)"),
     ("PvP power ratio not clamped", "COMBAT_SOURCE",
-     "ratio = math.clamp(ratio, Config.PvP.PowerRatioMin, Config.PvP.PowerRatioMax)", "ratio = ratio"),
+     "ratio = math.clamp(ratio, floor, Config.PvP.PowerRatioMax)", "ratio = ratio"),
     ("monster hit ignores enhancement", "COMBAT_SOURCE",
      "local dmg = Config.WeaponDamage(tier, level, numAttr(attacker, \"WeaponEnhance\", 0))",
      "local dmg = Config.WeaponDamage(tier, level, 0)"),

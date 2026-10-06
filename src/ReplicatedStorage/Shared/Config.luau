@@ -452,7 +452,9 @@ Config.Combat = {
 	-- A23-34 (user 2026-10-06): new players start bare-handed. Every class throws the same short punch until the first
 	-- weapon (M1_1 blacksmith gift): Damage at Lv1 before the 50% swing rule (= 2 per punch, a slime takes about 5),
 	-- no class multiplier, no MP, one nearest target within Range in front (AimCone). Range 7 > monster AttackRange 5.5.
-	Unarmed = { Damage = 4, Range = 7, Interval = 0.8, AimCone = 75 },
+	-- PvPRatioMin (검수 2026-10-06): a bare-handed attacker's PvP weapon ratio floor (weapons: Config.PvP.PowerRatioMin
+	-- 0.8). With 0.4 a punch is weaker than every class's tier-1 basic attack against any opponent at the same level.
+	Unarmed = { Damage = 4, Range = 7, Interval = 0.8, AimCone = 75, PvPRatioMin = 0.4 },
 }
 
 -- A23-34: the basic attack's shape for a class holding `tier`. With a weapon it is the class row itself (Pattern, Range,
@@ -1535,6 +1537,13 @@ Config.Tutorial = {
 		AutoClaimedEn = "Your first mission reward, +%s gold, is in your bank! Get your first weapon at the Crossroads smithy.",
 		VisitBlacksmith = "첫 무기 받기 · 교차로 마을 대장간",
 		VisitBlacksmithEn = "Get your first weapon · Crossroads smithy",
+		-- the same lines for a save that already owns tier 1 (from before A23-34): no first-weapon promise
+		ClaimedArmed = "보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 장비를 살펴봐요.",
+		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold · Check the gear at the Crossroads smithy.",
+		AutoClaimedArmed = "첫 임무 보상 +%s골드를 금고에 넣었어요! 교차로 대장간에서 장비를 살펴봐요.",
+		AutoClaimedArmedEn = "Your first mission reward, +%s gold, is in your bank! Check the gear at the Crossroads smithy.",
+		VisitBlacksmithArmed = "무기 살펴보기 · 교차로 마을 대장간",
+		VisitBlacksmithArmedEn = "Check the weapons · Crossroads smithy",
 		-- A23-3: next goal after the blacksmith visit (computed from existing state only; no new reward)
 		NextIronLevel = "다음 목표 · Lv%d 되면 철 무기 (지금 Lv%d)",
 		NextIronGold = "다음 목표 · 철 무기 %s골드 (보유 %s)",
@@ -1606,7 +1615,7 @@ Config.StoryQuests = {
 		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "반짝이는 젤리", Speaker = "Smith", GiveWeapon = 1,
-			Steps = { { Text = "대장장이에게 젤리 보이고 첫 무기 받기", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
+			Steps = { { Text = "대장장이에게 젤리 보이기", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
 			Finish = "대장장이: 왕관 조각 가루네! 제일 많이 먹은 건 왕 슬라임이지.",
 		},
 		M1_2 = {
