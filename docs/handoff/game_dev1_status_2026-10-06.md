@@ -1,5 +1,18 @@
 # 게임성 개발(1) 인계 — 2026-10-06 멈춤 시점
 
+- **최신(2026-10-06 밤 2, 사용자 "내일 하자"로 멈춤):** 오늘 밤 main에 올린 것 = **b1b8fda**(검수 저녁 ①②③: 월드 클릭도 L.SwingFaced = FaceTarget → 0.08초 뒤 Swing, 몬스터 FACE.MaxExtra 0.3 ≤ Fx TELE_GRACE, 펫 돌아올 때 P.Back 동안 달려오기, BatGoblin Idle·Walk 변환기 최신판 재생성, 새 test_pet_follow) · **d59f2a2**(개발 2 2b3447b까지 병합: H1·R1·N3, E1·E2·E3·E5, 3장 Grab Club, 대왕 9일 Banter·다섯 이름, 보호막 테두리, 계급 장식 3D) · **2985a5c**(클라 몫: Announce Banter 같은 색 채팅 줄, 상점 맨 위 ForgeGreeting/PotionGreeting, Panels STORY.Lines(LinesBy[Var] → Default → Lines)·Var 보관·STORY.Hint(ChoiceHintHalo/Horns, 0점 'leans' 줄), ClientMain ORDER 끝 "Audio", 새 test_story_client 76·변이 17/17) · **291c9f0**(SKL-1: Config.Skills 21개·플래그 꺼짐·Unlock Q1/Z5/X8·SkillKit/SkillDef/SkillNumbers·Keybinds SkillX(X, ButtonR3), 새 test_skill_kit 93·변이 10/10). 각 묶음 깨끗한 트리(Game-wtc)에서 오프라인 검사 통과.
+  - **공용 Game 폴더:** 로컬 main이 origin/main과 갈라져 있음(검수 dbbb529 = 올린 2b24941). **내일 첫 일: `git pull --rebase`**(dbbb529은 저절로 빠짐) → 291c9f0 이상. 내 미완성 파일은 디스크에 없음(SKL-1 초안은 291c9f0으로 올라감).
+  - **메인 Studio:** Edit 모드(밤 확인). **오늘 커밋들은 아직 Studio에 동기화 안 함** — 내일 검수 "전달함, 시작" 받고 `py tools/sync_to_studio.py`.
+  - **내일 순서(검수):**
+    1. **A23-61(새 사용자 결정):** 기본 공격 판정 = 앞쪽 반원(AimCone 180°), 옆 몬스터도 맞음. 클릭도 FaceTarget(b1b8fda에 이미 있음) — 서버 AimCone 숫자·검사 확인.
+    2. **병합:** 개발 2 **f1f3b0c**(= d59f2a2 + 9d1e516 계급 문서 + d0a205b E12 숲 일일 + f1f3b0c E11 게시판 서버). **새 파일 src/ServerScriptService/BoardService.luau + Main INIT/START "BoardService"** — sync_to_studio.py가 새 Script를 Studio에 만드는지 꼭 확인(없으면 Main이 WaitForChild에서 멈춤). 내 몫 계약 docs/design/quest_volume_server_2026-10-07.md 2절(게시판 2곳 판+프롬프트 → BoardAction, 카드 창 Take/Reroll, 'Job' 줄, 켜는 날 Config.Board.Enabled = true).
+    3. **Studio 묶음 동기화 + 자기 Play 확인:** 클릭 FaceTarget·A23-61, 817f93d 알림 줄바꿈(대왕·퀘스트 시작 알림), 35d3b56 Run/Walk 고리, Audio(소리 id 비어 조용한지, 오류 0), 상점 인사·이야기 대사, 보호막 테두리.
+    4. **계급 장식 3D:** 이미지 생성 1 427baf8 — `py tools/build_kit_from_ids.py --only Acc_ --parent ServerStorage/MarkModels --out build/kit_marks_args.json` → `py tools/studio_mcp.py call execute_luau @build/kit_marks_args.json`(Edit 모드, MCP만). 애셋 id 표 art/models/worldkit/import40_assets_2026-10-06.json. 앞을 이미 −Z로 돌려 넣어서 **Config.Visuals.MarkModels.Yaw = 0**(개발 2 다음 커밋에 들어옴; 먼저 보려면 Config만 0으로). Play로 R1~R5 앞뒤·뿔 박힘·후광 뜸 확인.
+    5. Save As build/GoodEvil.rbxlx(저장 창 = 검수 OK 뒤, 끝나면 화면 원래대로) → place/ 커밋.
+    6. 대장간 3D 간판 "Forge"(장인 길드 빼기) → 노란 빔 얇게 → 같은 종류 이름표 겹침 → 폰 [메뉴] 펼침 원인(이미지 개발과).
+    7. 그다음: Bright·Smokey(여자아이 0.8)·Tiny NPC 모델 + 태그 StoryNpc·NpcId + KidsBench(18,0,18)·Sunny Sam 벤치(18,0,-18), 마커 Guide 키 WoodsGate·HaloBridge·HornsBridge·GoblinWoods·SkeletonRuins·OwnTown, BB24, PERF-1, BB41, A23-53 세계 v2.
+  - **넘긴 것:** A23-57 진영 카드 2장(가운데)은 이미지 개발이 맡음(검수 2026-10-06) — FactionPicker/ClassPicker 안 건드림.
+
 - **최신(2026-10-06 밤, PC 재시작 뒤):** 오늘 저녁 커밋 5e15ab6(이전 세션 영어·PetFollow·물약 검사), b416527(카메라 오른쪽 드래그만 A23-51 + Studio 기기 흉내 원인), 4402a2c(몬스터 바라보며 때리기), 132ddf2·59c2585(개발 2 4f47f42 병합), 그리고 이번 place 커밋(몬스터 움직임 ①~④·자연스러움·Run/LookAround·빨간 테 ⑥ + place/GoodEvil.rbxlx 19:28:56). 메인 Studio = 진짜 장소(dfd22257 창), Edit. 재시작 뒤 열린 AutoRecovery 창은 사용자 답대로 저장 없이 닫힘(디스크 복구 파일은 그대로).
   - **병합 대기:** 개발 2 0c96f32(= 2e6c514 H1·R1·N3 + A23-57/58 + 결말 단서 + E0 + 서브 줄 3개 + 보호막 → 진영 색 테두리). 이미지 개발 7cc9d60·1f9d291(SkillBar, A23-60)은 이미 main.
   - **다음 순서:** dev2 병합 → SKL-1(Config.Skills Defs 21·Unlock·"Costs N MP"(A23-60)·SkillKit/SkillDef/SkillNumbers·Keybinds SkillX, 초안 scratchpad skl1_config.luau, keys_settings 검사 SkillX 반영) → 개발 2에 해시 → A23-57 진영 카드 2장 → 대장간 3D 간판 "Forge"(장인 길드 빼기) → 노란 빔 얇게 → 같은 종류 이름표 겹침 → 폰 [메뉴] 펼침 원인(폰에서 ui.foldGeom/HudLayout fold 자리 비어 보임) → 브라이트(여자아이 A23-59)·스모키 0.8 + KidsBench + NPC 태그 StoryNpc → BB24 → PERF-1 → BB41 → quest_volume 게시판(10/12 뒤) → A23-53 세계 v2.
