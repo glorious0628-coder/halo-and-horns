@@ -1,10 +1,12 @@
-# 쇼츠 1차 3편 — 줄·제목·설명 초안 (촬영 편집, 2026-10-06)
+# 쇼츠 1차 4편 — 줄·제목·설명 초안 (촬영 편집, 2026-10-06)
 
 영상: `build/devlog/shorts01/<id>/final.mp4` (git 밖) · 만들기: `py tools/devlog_build.py shorts01` · 장면표: `shorts01_plan.json`.
-새로 쓴 이음 줄은 ★ (검수 확인용). {DAYS}는 빌드 날 기준 자동. 효과음 출처: `sfx_licenses.md`.
-게임 장면: FilmSet(커밋된 src, B안 HUD), 촬영용 Play에서만 호박밭 유령·박쥐 고블린 0마리(A23-45 가족끼리). 유령·박쥐 고블린은 Blender 회전(각자 무대).
+스타일(사용자 참고 쇼츠 youtube.com/shorts/fdzSfkCmHI4): 위에 흰 상자 한 줄 + 가운데 아주 큰 네온 단어(1~2단어) + 9:16 전체 화면.
+게임 장면: FilmSet 촬영 Play에서만 한글 글자를 숨기고 찍음(게임 코드는 그대로). 호박밭은 호박 가족만(A23-45). 새로 쓴 이음 줄은 ★. 효과음: `sfx_licenses.md`.
 
 ## short01_ai_team
+
+- 위 한 줄: I can't code or draw, so 7 AI teammates help me make a Roblox game.
 
 | # | English | 한국어 |
 |---|---|---|
@@ -26,6 +28,8 @@
 - **Hashtags:** #Roblox #RobloxStudio #gamedev #indiedev #Halloween #AI #devlog #shorts
 
 ## short02_picture_to_3d
+
+- 위 한 줄: This Roblox monster started as a drawing.
 
 | # | English | 한국어 |
 |---|---|---|
@@ -50,6 +54,8 @@
 
 ## short03_pumpkin_king
 
+- 위 한 줄: Meet the Halloween boss of my Roblox game.
+
 | # | English | 한국어 |
 |---|---|---|
 | C1 ★ | Meet the Pumpkin King! | 호박 대왕을 만나 봐요! |
@@ -68,3 +74,28 @@
 - **Description:** Every 20 minutes the Pumpkin King shows up in the Pumpkin Patch. You have 5 minutes to beat him — help take him down and you get Halloween candy. Brand-new players are safe from him. Halo & Horns beta opens on Halloween, October 31! Not sponsored. AI voice narration. Sound effects: Kenney (kenney.nl, CC0).
 - **설명:** 20분마다 호박밭에 나타나는 호박 대왕! 5분 안에 같이 물리치면 사탕. 새로 온 플레이어는 안전해요. 베타 10월 31일.
 - **Hashtags:** #Roblox #RobloxStudio #gamedev #Halloween #bossfight #devlog #shorts
+
+## short04_monster_reveal
+
+- 위 한 줄: This is what my Roblox monsters look like in real life.
+
+| # | English | 한국어 |
+|---|---|---|
+| R0 ★ | This is what my Roblox monsters look like in real life. | 제 로블록스 몬스터들의 실제 모습이에요. |
+| R1 | Slime! | 슬라임! |
+| R1r | (the drawing) | (원래 그림) |
+| R2 | Pumpkin Slime! | 호박 슬라임! |
+| R2r | (the drawing) | (원래 그림) |
+| R3 | Pumpkin King! | 호박 대왕! |
+| R3r | (the drawing) | (원래 그림) |
+| R4 | Bat Goblin! | 박쥐 고블린! |
+| R4r | (the drawing) | (원래 그림) |
+| R5 | Little Ghost! | 꼬마 유령! |
+| R5r | (the drawing) | (원래 그림) |
+| R6 ★ | Subscribe for part two! | 2편을 보려면 구독해 주세요! |
+
+- **Title:** 😲🚨 Roblox Monster Face Reveal!
+- **제목:** 로블록스 몬스터 얼굴 공개!
+- **Description:** What do my Roblox monsters look like in real life? Every monster in Halo & Horns started as an AI drawing (Adobe Firefly), then Tripo turned it into a 3D model. Halloween beta: October 31! Not sponsored. AI voice narration. Sound effects: Kenney (kenney.nl, CC0).
+- **설명:** 로블록스 몬스터들의 '실제 얼굴'은? 모두 AI 그림(Firefly)에서 시작해 Tripo로 3D가 됐어요. 베타 10월 31일!
+- **Hashtags:** #Roblox #RobloxStudio #gamedev #facereveal #Halloween #AIart #shorts

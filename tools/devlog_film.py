@@ -140,6 +140,51 @@ return 'dolly'
 """ % (*p0, *p1, *l0, *l1, dur)
         return self.lua(code, "Client")
 
+    def hide_korean(self):
+        """test-Play only, client side: make every text that contains Hangul invisible (HUD, name tags, popups, signs)
+        and hide the chat window, so English videos show no Korean (user 2026-10-06). The game code is not changed."""
+        code = r"""
+if _G.__filmHideKo then return 'already' end
+_G.__filmHideKo = true
+local function hasHangul(s)
+	local ok, res = pcall(function()
+		for _, c in utf8.codes(s) do
+			if (c >= 0xAC00 and c <= 0xD7A3) or (c >= 0x3130 and c <= 0x318F) or (c >= 0x1100 and c <= 0x11FF) then return true end
+		end
+		return false
+	end)
+	return ok and res
+end
+local function fix(o)
+	if o:IsA('TextLabel') or o:IsA('TextButton') or o:IsA('TextBox') then
+		if hasHangul(o.Text) then
+			o.TextTransparency = 1
+			o.TextStrokeTransparency = 1
+		end
+	end
+end
+local function watch(o)
+	if o:IsA('TextLabel') or o:IsA('TextButton') or o:IsA('TextBox') then
+		fix(o)
+		o:GetPropertyChangedSignal('Text'):Connect(function() fix(o) end)
+		o:GetPropertyChangedSignal('TextTransparency'):Connect(function() if hasHangul(o.Text) and o.TextTransparency < 1 then o.TextTransparency = 1 end end)
+	end
+end
+local roots = { game.Players.LocalPlayer:WaitForChild('PlayerGui'), workspace }
+for _, r in roots do
+	for _, d in r:GetDescendants() do watch(d) end
+	r.DescendantAdded:Connect(watch)
+end
+pcall(function()
+	local tcs = game:GetService('TextChatService')
+	tcs.ChatWindowConfiguration.Enabled = false
+	tcs.ChatInputBarConfiguration.Enabled = false
+end)
+pcall(function() game:GetService('StarterGui'):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false) end)
+return 'korean hidden'
+"""
+        return self.lua(code, "Client")
+
     def cam_reset(self):
         return self.lua("_G.__filmTok=(_G.__filmTok or 0)+1; workspace.CurrentCamera.CameraType=Enum.CameraType.Custom; return 'cam reset'", "Client")
 
