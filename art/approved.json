@@ -4471,5 +4471,18 @@
   "cutout": "tools/img2/cut_icon.py (512 at 90%); checked 4x on navy/magenta/white + on MinimapRing 180/130/96 at 32/28/24px, rotated",
   "preview": "art/review/s2/a2351_map_player_arrow_sheet.png",
   "note": "A23-51 실시간 지도 '내 위치' 화살표. 흰색+연회색 음영 → ImageColor3로 진영 색, 남색 외곽선 유지. 위쪽 = 앞(Rotation으로 돌림). 다른 플레이어 점과 다른 모양. 이미지 생성 2가 고름, 검수 확인. 글자 없음."
+ },
+ "UIP_WorldMapV2": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 3:2, reference = art/review/worldmap/layout_v2_sketch_nomarks.png (0 credits) + local retouch tools/worldmap_slimefix.py (pond slimes -> our cube jelly slime from art/out/CON_SlimeCube.png)",
+  "prompt": "art/prompts/WorldMap_v2_A.txt",
+  "original": "art/out/worldmap/WorldMap_v2_A2_2.png (1536x1024, Adobe MCP presigned download); retouched master art/out/worldmap/WorldMap_v2_A2_2_slimefix.png",
+  "file": "art/ui/UIP_WorldMapV2.png",
+  "size": "1024x683 RGB (opaque, no lettering; Roblox caps images at 1024). Full-size copy art/ui/UIP_WorldMapV2_1536.png",
+  "cutout": "none — opaque map background",
+  "preview": "art/review/worldmap/worldmap_v2_sheet.jpg; slime fix art/review/worldmap/slimefix_before_after.jpg",
+  "map_transform": "stud (x,z) -> pixel in the 1536x1024 master: px = 46.222 + (x + 230) * 0.71111, py = (z + 720) * 0.71111 (+X east = right, -Z north = up). For the 1024x683 file multiply by 2/3. Painted coastlines match the layout within a few px (land IoU 0.84).",
+  "note": "사용자 OK(검수 전달, A23-53): 큰 지도 창 바탕. 둥근 슬라임 2마리를 우리 네모 젤리 슬라임으로 바꿈(사용자 요청). 뿔 요새 가운데 탑 창(얼굴처럼 보임)은 3D 때 고침. 업로드·Config.UIArt 키는 이미지 개발."
  }
 }
