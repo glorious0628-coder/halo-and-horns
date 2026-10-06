@@ -69,6 +69,9 @@ local lastSent = {} -- [Player] = last JSON fired on the "Quests" remote (CR-L50
 local rerollReadyAt = {} -- [Player] = server time
 local lastLoopWarn = {} -- [loopName] = os.clock()
 local welcomeShown = {} -- [Player] = true after this session's first automatic guide dialogue
+-- F10-4: [Player] = os.clock() when this server first saw the first mission at 5/5 unclaimed (safety-net timer)
+local TUT_READY_AT = {}
+local claimTutorial -- defined with the claim code below; the tutorial loop (safety net) calls it
 
 ------------------------------------------------------------------ helpers
 local function num(v, default)
@@ -427,6 +430,18 @@ local function tryTutorial(player)
 		end
 		return
 	end
+	if step == STEP_QUEST then
+		-- F10-4 safety net: a finished first mission is never left unpaid (the [받기] row stays the normal way)
+		if getTutorialKills(data) >= TUT_TARGET then
+			TUT_READY_AT[player] = TUT_READY_AT[player] or os.clock()
+			if os.clock() - TUT_READY_AT[player] >= num(TUT_CFG.AutoClaimSeconds, 60) then
+				claimTutorial(player, true)
+			end
+		else
+			TUT_READY_AT[player] = nil
+		end
+		return
+	end
 	if step ~= STEP_WELCOME or welcomeShown[player] then return end
 	openWelcome(player)
 end
@@ -445,15 +460,18 @@ local function tutorialKill(player, info)
 	end
 end
 
-local function claimTutorial(player)
+-- auto = the F10-4 safety net paid it (Tutorial.AutoClaimSeconds after 5/5 without a claim)
+function claimTutorial(player, auto)
 	if getStep(player) ~= STEP_QUEST then return end
 	if getTutorialKills(getData(player)) < TUT_TARGET then return end
 	setStep(player, TUT_DONE) -- first, so it can never be paid twice
+	TUT_READY_AT[player] = nil
 	S.ProgressionService.AddBankGold(player, TUT_GOLD, "Quest")
 	if TUT_XP > 0 then
 		S.ProgressionService.AddXP(player, TUT_XP)
 	end
-	Net.Notify(player, string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(TUT_GOLD)), "reward")
+	local text = auto and (TUT_MESSAGES.AutoClaimed or TUT_CLAIMED_TEXT) or TUT_CLAIMED_TEXT
+	Net.Notify(player, string.format(text, Util.FormatNumber(TUT_GOLD)), "reward", auto and 6 or nil)
 end
 
 -- A23-3: one fixed next-goal line after the blacksmith visit, from existing state only (no new reward).
@@ -871,6 +889,7 @@ local function onPlayerLeaving(player)
 	lastSent[player] = nil
 	rerollReadyAt[player] = nil
 	welcomeShown[player] = nil
+	TUT_READY_AT[player] = nil
 	hadNextGoal[player] = nil
 end
 

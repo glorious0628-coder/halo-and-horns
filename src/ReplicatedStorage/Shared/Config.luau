@@ -1341,6 +1341,9 @@ Config.Tutorial = {
 	QuestText = "보급로 되찾기 · 슬라임 %d마리", -- string.format(QuestText, QuestKills)
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
+	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
+	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
+	AutoClaimSeconds = 60,
 	WelcomeRate = 0.5,
 	Welcome = { -- existing approved faction/class portrait; no world NPC is spawned by this dialogue
 		Halo = {
@@ -1375,6 +1378,9 @@ Config.Tutorial = {
 		QuestStart = "첫 임무: %s! (보상 %s골드)",
 		QuestReady = "보급로 임무 완료! [받기]를 눌러요.",
 		Claimed = "보급로를 지켜 줘서 고마워요! +%s골드 · 교차로 대장간에서 장비를 살펴봐요.",
+		ClaimedEn = "Thanks for guarding the supply road! +%s gold · Check the gear at the Crossroads smithy.",
+		AutoClaimed = "첫 임무 보상 +%s골드를 금고에 넣었어요! 교차로 대장간에서 장비를 살펴봐요.",
+		AutoClaimedEn = "Your first mission reward, +%s gold, is in your bank! Check the gear at the Crossroads smithy.",
 		VisitBlacksmith = "무기 살펴보기 · 교차로 마을 대장간",
 		-- A23-3: next goal after the blacksmith visit (computed from existing state only; no new reward)
 		NextIronLevel = "다음 목표 · Lv%d 되면 철 무기 (지금 Lv%d)",
