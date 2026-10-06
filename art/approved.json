@@ -2670,5 +2670,17 @@
   "file": "art/ui/WarCrownPip.png",
   "size": "512x512 RGBA",
   "note": "묶음 12. 전쟁 미터 위 왕관 표시(현재 기운 위치). Crown 키 대체. 32px에서도 읽힘."
+ },
+ "CLS_ArtisanTamer_M": {
+  "status": "pending-user",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 2:3",
+  "prompt": "art/prompts/CLS_ArtisanTamer_M.txt",
+  "original": "art/out/s2/CLS_ArtisanTamer_M_a_src.png (1024x1536, Adobe MCP presigned download)",
+  "file": "art/review/s2/human/CLS_ArtisanTamer_M.png (업로드 금지 — 사용자 확인 전)",
+  "size": "414x768 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 768 --tol 28 --soft 6 --holes --keep-largest (gear-emblem hole cleared), faint specks <200px dropped; checked light/navy/magenta/green, 4x pet/gear/boots",
+  "preview": "art/review/s2/b10_tamer_sheet.png",
+  "note": "A23-39 장인 길드 3번째 직업 펫 조련사(남). 장인 궁수(거절) 자리 → Config CharNeutralArcherM 자리(내부 직업 id Archer 그대로). 청록 재킷·모자·장갑·바지·부츠, 짧은 지휘봉, 옆에 아기 슬라임 펫(IconPetBabySlime과 같은 모습). 옷차림 검사 통과(얼굴·손만). Hard rule 1: 사용자가 시트를 본 뒤에만 approved로 바꾸고 art/ui로 옮겨 업로드. 1장만 생성(a), 바로 채택."
  }
 }
