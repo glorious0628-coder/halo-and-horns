@@ -2704,5 +2704,43 @@
    "file": "art\\models\\tripo\\MonsterBatGoblin_raw.glb",
    "credits": 0.0
   }
+ ],
+ "MonsterGhostMinion": [
+  {
+   "event": "generation_submitted",
+   "task_id": "23131691-0ef3-4eff-832b-0f00f9e9d00c",
+   "image": "art\\out\\s2\\CON_GhostMinion_A1_src.png",
+   "recipe": "character",
+   "seed": 13852
+  },
+  {
+   "task_id": "23131691-0ef3-4eff-832b-0f00f9e9d00c",
+   "image": "art\\out\\s2\\CON_GhostMinion_A1_src.png",
+   "recipe": "character",
+   "seed": 13852,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\MonsterGhostMinion_raw.glb",
+   "bytes": 1866188,
+   "at": "2026-10-06 14:45:46"
+  }
+ ],
+ "MonsterGhostKing": [
+  {
+   "event": "generation_submitted",
+   "task_id": "98842576-b46e-461f-8136-549ce80a2ac5",
+   "image": "art\\out\\s2\\CON_GhostKing_A2_src.png",
+   "recipe": "boss",
+   "seed": 48418
+  },
+  {
+   "task_id": "98842576-b46e-461f-8136-549ce80a2ac5",
+   "image": "art\\out\\s2\\CON_GhostKing_A2_src.png",
+   "recipe": "boss",
+   "seed": 48418,
+   "credits": 60.0,
+   "file": "art\\models\\tripo\\MonsterGhostKing_raw.glb",
+   "bytes": 3086428,
+   "at": "2026-10-06 14:46:32"
+  }
  ]
 }
