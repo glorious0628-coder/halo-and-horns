@@ -2279,7 +2279,7 @@ Config.UIArt = {
 		Crown = { Id = "rbxassetid://87428837580998", Size = Vector2.new(256, 175) },
 		-- icons
 		IconCoin = { Id = "rbxassetid://109221625076322", Size = Vector2.new(254, 256) },
-		IconPouch = { Id = "rbxassetid://123337208513871", Size = Vector2.new(256, 249) },
+		IconPouch = { Id = "rbxassetid://130257832801072", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (carried gold / Halo auto-bank perk)
 		IconPotionHP = { Id = "rbxassetid://100061379621289", Size = Vector2.new(197, 256) },
 		IconPotionMP = { Id = "rbxassetid://133725941898063", Size = Vector2.new(194, 256) },
 		IconSword = { Id = "rbxassetid://112025111517770", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
@@ -2378,16 +2378,16 @@ Config.UIArt = {
 		CharNeutralArcherM = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(416, 512) },
 		CharNeutralArcherF = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(463, 512) },
 		-- perk / misc icons
-		IconExp = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(229, 256) },
-		IconHeart = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 222) },
-		IconWings = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 166) },
-		IconGoldPile = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 166) },
-		IconBloodSword = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 239) },
+		IconExp = { Id = "rbxassetid://125679953240313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconHeart = { Id = "rbxassetid://92865909915468", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconWings = { Id = "rbxassetid://78896204690689", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconGoldPile = { Id = "rbxassetid://140588051269822", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconBloodSword = { Id = "rbxassetid://80973759611362", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconGauge = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 70) },
-		IconDemon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 231) },
-		IconNoBuff = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 243) },
-		IconShieldBlue = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(227, 256) },
-		IconNoLoot = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(243, 256) },
+		IconDemon = { Id = "rbxassetid://101305375688321", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconNoBuff = { Id = "rbxassetid://140138539286912", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconHammer = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(236, 256) },
 		IconAltar = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(241, 256) },
 		IconBoot = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 232) },
@@ -2526,7 +2526,7 @@ Config.UIArt.FactionPerks = {
 		{ Icon = "IconExp", Text = "경험치 +30%" },
 		{ Icon = "IconHeart", Text = "체력 +20%, 계속 회복" },
 		{ Icon = "IconWings", Text = "스킬로 동료 치유" },
-		{ Icon = "IconGoldPile", Text = "주머니 골드 자동 저금" },
+		{ Icon = "IconPouch", Text = "주머니 골드 자동 저금" },
 	},
 	Horns = {
 		{ Icon = "IconGoldPile", Text = "골드 +25%" },

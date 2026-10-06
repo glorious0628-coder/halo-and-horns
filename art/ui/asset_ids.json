@@ -47,7 +47,7 @@
   "UIP_IconMap": "rbxassetid://90459703873799",
   "UIP_IconNoBuff": "deleted 2026-10-06 (ART-DEL1; was rbxassetid://137931613383299)",
   "UIP_IconNoLoot": "deleted 2026-10-06 (ART-DEL1; was rbxassetid://128404798093606)",
-  "UIP_IconPouch": "rbxassetid://123337208513871",
+  "UIP_IconPouch": "replaced 2026-10-06 by IconPouch (Firefly) — rbxassetid://123337208513871",
   "UIP_IconSafe": "rbxassetid://136639253247722",
   "UIP_IconScroll": "rbxassetid://103880967919087",
   "UIP_IconShieldBlue": "deleted 2026-10-06 (ART-DEL1; was rbxassetid://89142524062230)",
@@ -216,5 +216,15 @@
   "IconScrollEnhBand_upload1": "replaced 2026-10-06 (was rbxassetid://100768109930647; re-cut / band mask redone, see commit 3b24812)",
   "IconScrollMoveBand_upload1": "replaced 2026-10-06 (was rbxassetid://86419509011694; re-cut / band mask redone, see commit 3b24812)",
   "IconKnightCrest_upload1": "replaced 2026-10-06 (was rbxassetid://90255122016925; re-cut / band mask redone, see commit 3b24812)",
-  "IconRankPvP_upload1": "replaced 2026-10-06 (was rbxassetid://121095026137586; redrawn in bd5f456)"
+  "IconRankPvP_upload1": "replaced 2026-10-06 (was rbxassetid://121095026137586; redrawn in bd5f456)",
+  "IconPouch": "rbxassetid://130257832801072",
+  "IconGoldPile": "rbxassetid://140588051269822",
+  "IconHeart": "rbxassetid://92865909915468",
+  "IconNoLoot": "rbxassetid://105527491154744",
+  "IconBloodSword": "rbxassetid://80973759611362",
+  "IconExp": "rbxassetid://125679953240313",
+  "IconWings": "rbxassetid://78896204690689",
+  "IconNoBuff": "rbxassetid://140138539286912",
+  "IconShieldBlue": "rbxassetid://97867243551313",
+  "IconDemon": "rbxassetid://101305375688321"
 }
