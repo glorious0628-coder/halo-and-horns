@@ -1,0 +1,1884 @@
+{
+ "date": "2026-10-06",
+ "by": "이미지 개발 (ART-DEL1, 검수 지시)",
+ "rule": "AGENTS 'Unused old images: delete now'. A file is listed only if it is (1) not the source of an image id used by Config.UIArt or MaterialService, (2) not a Firefly approval dated 2026-10-05 or later, (3) not a 3D model / Tripo record, (4) not already deleted per docs/art/art_cleanup_2026-10-06*.json. Active in-game images (keys with an id) stay until their Firefly replacement is in Studio.",
+ "method": "scripted inventory of art/ (art/models, art/fonts, art/prompts skipped) + three independent verifier passes (live references in src/tools, approvals and 3D records, missed files). No verifier found a listed file that must stay; additions merged here.",
+ "nothing_deleted_yet": true,
+ "delete_how": "tracked files: git rm -- <path> by explicit path (never -A); untracked logs/sidecars: plain delete; then mark their art/ui/asset_ids.json entries 'deleted 2026-10-06 (was …)'.",
+ "actions": {
+  "orphan_log": "delete now (untracked, gitignored: plain delete; image already gone)",
+  "other": "delete now unless the lead objects (stale test sidecars / rejected review sheet)",
+  "empty_id_key": "lead decides: Config Id is \"\" since 63b95d9 so the screen never shows them; Config.UIArt.CardLayout numbers were measured from the card PNGs",
+  "empty_id_key_log": "goes with its empty_id_key image",
+  "id_but_unreferenced": "lead decides: has an id but no live reader (IconLock; FactionTitleFreshTyped; FactionE *E fallback sprites behind FactionE.Parts)"
+ },
+ "counts": {
+  "empty_id_key": {
+   "files": 78,
+   "bytes": 75942556,
+   "tracked": 78
+  },
+  "empty_id_key_log": {
+   "files": 35,
+   "bytes": 1033671,
+   "tracked": 0
+  },
+  "id_but_unreferenced": {
+   "files": 9,
+   "bytes": 3450524,
+   "tracked": 9
+  },
+  "orphan_log": {
+   "files": 103,
+   "bytes": 2950772,
+   "tracked": 0
+  },
+  "other": {
+   "files": 5,
+   "bytes": 130619,
+   "tracked": 2
+  }
+ },
+ "files": [
+  {
+   "path": "art/out/UIP_CardHalo.png",
+   "bytes": 2343309,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CardHalo Id = \"\" (Config.luau:2303, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CardHalo -> rbxassetid://116168194185824 (old-account upload); Config.UIArt.CardLayout.CardHalo regions were measured from this card PNG; key referenced in src (4 literal; FactionPicker builds \"Card\"..id) but resolves to no image; generation log art/out/logs/UIP_CardHalo.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CardHorns.png",
+   "bytes": 2769387,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CardHorns Id = \"\" (Config.luau:2304, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CardHorns -> rbxassetid://104067051233656 (old-account upload); Config.UIArt.CardLayout.CardHorns regions were measured from this card PNG; key referenced in src (1 literal; FactionPicker builds \"Card\"..id) but resolves to no image; generation log art/out/logs/UIP_CardHorns.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CardNeutral.png",
+   "bytes": 2442978,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CardNeutral Id = \"\" (Config.luau:2305, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CardNeutral -> rbxassetid://138991972922636 (old-account upload); Config.UIArt.CardLayout.CardNeutral regions were measured from this card PNG; key referenced in src (1 literal; FactionPicker builds \"Card\"..id) but resolves to no image; generation log art/out/logs/UIP_CardNeutral.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHaloArcherF.png",
+   "bytes": 1632878,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloArcherF Id = \"\" (Config.luau:2317, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloArcherF -> rbxassetid://73817434891295 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHaloArcherF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHaloArcherM.png",
+   "bytes": 1422078,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloArcherM Id = \"\" (Config.luau:2316, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloArcherM -> rbxassetid://90265187612649 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHaloArcherM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHaloMageF.png",
+   "bytes": 1335503,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloMageF Id = \"\" (Config.luau:2315, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloMageF -> rbxassetid://113432552037923 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHaloMageM.png",
+   "bytes": 1452346,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloMageM Id = \"\" (Config.luau:2314, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloMageM -> rbxassetid://102544376554965 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHaloMageM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHaloWarriorF.png",
+   "bytes": 1593627,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloWarriorF Id = \"\" (Config.luau:2313, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloWarriorF -> rbxassetid://78286000819352 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHaloWarriorM.png",
+   "bytes": 1496337,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloWarriorM Id = \"\" (Config.luau:2312, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloWarriorM -> rbxassetid://134988581827453 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHaloWarriorM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHornsArcherF.png",
+   "bytes": 1669505,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsArcherF Id = \"\" (Config.luau:2323, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsArcherF -> rbxassetid://130533135861283 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsArcherF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHornsArcherM.png",
+   "bytes": 1164301,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsArcherM Id = \"\" (Config.luau:2322, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsArcherM -> rbxassetid://88045973583949 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsArcherM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHornsMageF.png",
+   "bytes": 1735425,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsMageF Id = \"\" (Config.luau:2321, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsMageF -> rbxassetid://118395974592567 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsMageF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHornsMageM.png",
+   "bytes": 1922907,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsMageM Id = \"\" (Config.luau:2320, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsMageM -> rbxassetid://72321159201625 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsMageM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHornsWarriorF.png",
+   "bytes": 1797396,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsWarriorF Id = \"\" (Config.luau:2319, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsWarriorF -> rbxassetid://91437880088798 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsWarriorF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharHornsWarriorM.png",
+   "bytes": 1343194,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsWarriorM Id = \"\" (Config.luau:2318, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsWarriorM -> rbxassetid://115730141032244 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsWarriorM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharNeutralArcherF.png",
+   "bytes": 1441669,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralArcherF Id = \"\" (Config.luau:2329, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralArcherF -> rbxassetid://101214489604794 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharNeutralArcherM.png",
+   "bytes": 1535891,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralArcherM Id = \"\" (Config.luau:2328, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralArcherM -> rbxassetid://118794739229907 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharNeutralArcherM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharNeutralMageF.png",
+   "bytes": 1806593,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralMageF Id = \"\" (Config.luau:2327, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralMageF -> rbxassetid://114214067792680 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharNeutralMageM.png",
+   "bytes": 1770920,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralMageM Id = \"\" (Config.luau:2326, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralMageM -> rbxassetid://103288933310374 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharNeutralMageM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharNeutralWarriorF.png",
+   "bytes": 1588977,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralWarriorF Id = \"\" (Config.luau:2325, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralWarriorF -> rbxassetid://123242512932772 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharNeutralWarriorF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_CharNeutralWarriorM.png",
+   "bytes": 1375297,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralWarriorM Id = \"\" (Config.luau:2324, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralWarriorM -> rbxassetid://117733913914622 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_ClassCardHalo.png",
+   "bytes": 2225167,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.ClassCardHalo Id = \"\" (Config.luau:2306, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_ClassCardHalo -> rbxassetid://125017026560821 (old-account upload); Config.UIArt.CardLayout.ClassCardHalo regions were measured from this card PNG; key referenced in src (1 literal; ClassPicker builds \"ClassCard\"..faction) but resolves to no image; generation log art/out/logs/UIP_ClassCardHalo.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_ClassCardHorns.png",
+   "bytes": 2240841,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.ClassCardHorns Id = \"\" (Config.luau:2307, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_ClassCardHorns -> rbxassetid://105501650454200 (old-account upload); Config.UIArt.CardLayout.ClassCardHorns regions were measured from this card PNG; key referenced in src (1 literal; ClassPicker builds \"ClassCard\"..faction) but resolves to no image; generation log art/out/logs/UIP_ClassCardHorns.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_ClassCardNeutral.png",
+   "bytes": 2027383,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.ClassCardNeutral Id = \"\" (Config.luau:2308, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_ClassCardNeutral -> rbxassetid://106618683671422 (old-account upload); Config.UIArt.CardLayout.ClassCardNeutral regions were measured from this card PNG; key referenced in src (1 literal; ClassPicker builds \"ClassCard\"..faction) but resolves to no image; generation log art/out/logs/UIP_ClassCardNeutral.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconAltar.png",
+   "bytes": 1823649,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconAltar Id = \"\" (Config.luau:2342, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconAltar -> rbxassetid://92739557390353 (old-account upload); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconAltar.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconBloodSword.png",
+   "bytes": 1482220,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconBloodSword Id = \"\" (Config.luau:2335, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconBloodSword -> rbxassetid://132217044566905 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconBloodSword.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconBoot.png",
+   "bytes": 1377335,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconBoot Id = \"\" (Config.luau:2343, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconBoot -> rbxassetid://75175931189814 (old-account upload); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconBoot.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconDemon.png",
+   "bytes": 1479185,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconDemon Id = \"\" (Config.luau:2337, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconDemon -> rbxassetid://127767718578535 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconDemon.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconExp.png",
+   "bytes": 1434181,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconExp Id = \"\" (Config.luau:2331, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconExp -> rbxassetid://126693522209557 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconExp.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconGauge.png",
+   "bytes": 604001,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconGauge Id = \"\" (Config.luau:2336, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconGauge -> rbxassetid://120312988080031 (old-account upload); generation log art/out/logs/UIP_IconGauge.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconGoldPile.png",
+   "bytes": 998185,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconGoldPile Id = \"\" (Config.luau:2334, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconGoldPile -> rbxassetid://84180626478301 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (3 literal) but resolves to no image; generation log art/out/logs/UIP_IconGoldPile.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconHammer.png",
+   "bytes": 1470310,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconHammer Id = \"\" (Config.luau:2341, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconHammer -> rbxassetid://80311803840434 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconHammer.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconHeart.png",
+   "bytes": 1325587,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconHeart Id = \"\" (Config.luau:2332, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconHeart -> rbxassetid://136034394484764 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (2 literal) but resolves to no image; generation log art/out/logs/UIP_IconHeart.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconNoBuff.png",
+   "bytes": 1736948,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconNoBuff Id = \"\" (Config.luau:2338, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconNoBuff -> rbxassetid://137931613383299 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconNoBuff.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconNoLoot.png",
+   "bytes": 1858897,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconNoLoot Id = \"\" (Config.luau:2340, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconNoLoot -> rbxassetid://128404798093606 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconNoLoot.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconShieldBlue.png",
+   "bytes": 1515429,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconShieldBlue Id = \"\" (Config.luau:2339, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconShieldBlue -> rbxassetid://89142524062230 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconShieldBlue.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconWings.png",
+   "bytes": 951178,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconWings Id = \"\" (Config.luau:2333, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconWings -> rbxassetid://126719552618804 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconWings.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_ShieldNeutral.png",
+   "bytes": 1454072,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.ShieldNeutral Id = \"\" (Config.luau:2309, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_ShieldNeutral -> rbxassetid://101381231096931 (old-account upload); key referenced in src (0 literal; ClassPicker builds \"Shield\"..faction) but resolves to no image; generation log art/out/logs/UIP_ShieldNeutral.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_TitleRibbon.png",
+   "bytes": 425968,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.TitleRibbon Id = \"\" (Config.luau:2310, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_TitleRibbon -> rbxassetid://73292535588441 (old-account upload); key referenced in src (9 literal) but resolves to no image; generation log art/out/logs/UIP_TitleRibbon.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CardHalo.png",
+   "bytes": 1034694,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CardHalo Id = \"\" (Config.luau:2303, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CardHalo -> rbxassetid://116168194185824 (old-account upload); Config.UIArt.CardLayout.CardHalo regions were measured from this card PNG; key referenced in src (4 literal; FactionPicker builds \"Card\"..id) but resolves to no image; generation log art/out/logs/UIP_CardHalo.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CardHorns.png",
+   "bytes": 1190043,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CardHorns Id = \"\" (Config.luau:2304, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CardHorns -> rbxassetid://104067051233656 (old-account upload); Config.UIArt.CardLayout.CardHorns regions were measured from this card PNG; key referenced in src (1 literal; FactionPicker builds \"Card\"..id) but resolves to no image; generation log art/out/logs/UIP_CardHorns.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CardNeutral.png",
+   "bytes": 1048315,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CardNeutral Id = \"\" (Config.luau:2305, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CardNeutral -> rbxassetid://138991972922636 (old-account upload); Config.UIArt.CardLayout.CardNeutral regions were measured from this card PNG; key referenced in src (1 literal; FactionPicker builds \"Card\"..id) but resolves to no image; generation log art/out/logs/UIP_CardNeutral.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHaloArcherF.png",
+   "bytes": 351607,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloArcherF Id = \"\" (Config.luau:2317, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloArcherF -> rbxassetid://73817434891295 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHaloArcherF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHaloArcherM.png",
+   "bytes": 354466,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloArcherM Id = \"\" (Config.luau:2316, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloArcherM -> rbxassetid://90265187612649 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHaloArcherM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHaloMageF.png",
+   "bytes": 355385,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloMageF Id = \"\" (Config.luau:2315, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloMageF -> rbxassetid://113432552037923 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHaloMageM.png",
+   "bytes": 345653,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloMageM Id = \"\" (Config.luau:2314, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloMageM -> rbxassetid://102544376554965 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHaloMageM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHaloWarriorF.png",
+   "bytes": 351018,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloWarriorF Id = \"\" (Config.luau:2313, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloWarriorF -> rbxassetid://78286000819352 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHaloWarriorM.png",
+   "bytes": 329247,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHaloWarriorM Id = \"\" (Config.luau:2312, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHaloWarriorM -> rbxassetid://134988581827453 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHaloWarriorM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHornsArcherF.png",
+   "bytes": 374345,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsArcherF Id = \"\" (Config.luau:2323, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsArcherF -> rbxassetid://130533135861283 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsArcherF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHornsArcherM.png",
+   "bytes": 322518,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsArcherM Id = \"\" (Config.luau:2322, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsArcherM -> rbxassetid://88045973583949 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsArcherM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHornsMageF.png",
+   "bytes": 385536,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsMageF Id = \"\" (Config.luau:2321, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsMageF -> rbxassetid://118395974592567 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsMageF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHornsMageM.png",
+   "bytes": 412623,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsMageM Id = \"\" (Config.luau:2320, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsMageM -> rbxassetid://72321159201625 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsMageM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHornsWarriorF.png",
+   "bytes": 395179,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsWarriorF Id = \"\" (Config.luau:2319, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsWarriorF -> rbxassetid://91437880088798 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsWarriorF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharHornsWarriorM.png",
+   "bytes": 338951,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharHornsWarriorM Id = \"\" (Config.luau:2318, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharHornsWarriorM -> rbxassetid://115730141032244 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharHornsWarriorM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharNeutralArcherF.png",
+   "bytes": 343463,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralArcherF Id = \"\" (Config.luau:2329, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralArcherF -> rbxassetid://101214489604794 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharNeutralArcherM.png",
+   "bytes": 326200,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralArcherM Id = \"\" (Config.luau:2328, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralArcherM -> rbxassetid://118794739229907 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharNeutralArcherM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharNeutralMageF.png",
+   "bytes": 387466,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralMageF Id = \"\" (Config.luau:2327, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralMageF -> rbxassetid://114214067792680 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharNeutralMageM.png",
+   "bytes": 387622,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralMageM Id = \"\" (Config.luau:2326, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralMageM -> rbxassetid://103288933310374 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharNeutralMageM.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharNeutralWarriorF.png",
+   "bytes": 355213,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralWarriorF Id = \"\" (Config.luau:2325, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralWarriorF -> rbxassetid://123242512932772 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image; generation log art/out/logs/UIP_CharNeutralWarriorF.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_CharNeutralWarriorM.png",
+   "bytes": 340791,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.CharNeutralWarriorM Id = \"\" (Config.luau:2324, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_CharNeutralWarriorM -> rbxassetid://117733913914622 (old-account upload); old chibi class portrait (A23-5: chibi removed; ClassPicker/Panels use the fallback); key referenced in src (0 literal; ClassPicker/Panels build \"Char\"..faction..class) but resolves to no image",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_ClassCardHalo.png",
+   "bytes": 960207,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.ClassCardHalo Id = \"\" (Config.luau:2306, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_ClassCardHalo -> rbxassetid://125017026560821 (old-account upload); Config.UIArt.CardLayout.ClassCardHalo regions were measured from this card PNG; key referenced in src (1 literal; ClassPicker builds \"ClassCard\"..faction) but resolves to no image; generation log art/out/logs/UIP_ClassCardHalo.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_ClassCardHorns.png",
+   "bytes": 918538,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.ClassCardHorns Id = \"\" (Config.luau:2307, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_ClassCardHorns -> rbxassetid://105501650454200 (old-account upload); Config.UIArt.CardLayout.ClassCardHorns regions were measured from this card PNG; key referenced in src (1 literal; ClassPicker builds \"ClassCard\"..faction) but resolves to no image; generation log art/out/logs/UIP_ClassCardHorns.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_ClassCardNeutral.png",
+   "bytes": 923463,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.ClassCardNeutral Id = \"\" (Config.luau:2308, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_ClassCardNeutral -> rbxassetid://106618683671422 (old-account upload); Config.UIArt.CardLayout.ClassCardNeutral regions were measured from this card PNG; key referenced in src (1 literal; ClassPicker builds \"ClassCard\"..faction) but resolves to no image; generation log art/out/logs/UIP_ClassCardNeutral.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconAltar.png",
+   "bytes": 113578,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconAltar Id = \"\" (Config.luau:2342, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconAltar -> rbxassetid://92739557390353 (old-account upload); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconAltar.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconBloodSword.png",
+   "bytes": 104776,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconBloodSword Id = \"\" (Config.luau:2335, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconBloodSword -> rbxassetid://132217044566905 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconBloodSword.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconBoot.png",
+   "bytes": 88445,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconBoot Id = \"\" (Config.luau:2343, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconBoot -> rbxassetid://75175931189814 (old-account upload); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconBoot.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconDemon.png",
+   "bytes": 112277,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconDemon Id = \"\" (Config.luau:2337, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconDemon -> rbxassetid://127767718578535 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconDemon.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconExp.png",
+   "bytes": 90640,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconExp Id = \"\" (Config.luau:2331, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconExp -> rbxassetid://126693522209557 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconExp.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconGauge.png",
+   "bytes": 36304,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconGauge Id = \"\" (Config.luau:2336, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconGauge -> rbxassetid://120312988080031 (old-account upload); generation log art/out/logs/UIP_IconGauge.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconGoldPile.png",
+   "bytes": 80166,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconGoldPile Id = \"\" (Config.luau:2334, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconGoldPile -> rbxassetid://84180626478301 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (3 literal) but resolves to no image; generation log art/out/logs/UIP_IconGoldPile.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconHammer.png",
+   "bytes": 93879,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconHammer Id = \"\" (Config.luau:2341, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconHammer -> rbxassetid://80311803840434 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconHammer.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconHeart.png",
+   "bytes": 85270,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconHeart Id = \"\" (Config.luau:2332, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconHeart -> rbxassetid://136034394484764 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (2 literal) but resolves to no image; generation log art/out/logs/UIP_IconHeart.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconNoBuff.png",
+   "bytes": 122045,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconNoBuff Id = \"\" (Config.luau:2338, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconNoBuff -> rbxassetid://137931613383299 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconNoBuff.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconNoLoot.png",
+   "bytes": 116640,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconNoLoot Id = \"\" (Config.luau:2340, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconNoLoot -> rbxassetid://128404798093606 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconNoLoot.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconShieldBlue.png",
+   "bytes": 89911,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconShieldBlue Id = \"\" (Config.luau:2339, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconShieldBlue -> rbxassetid://89142524062230 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconShieldBlue.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconWings.png",
+   "bytes": 71164,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.IconWings Id = \"\" (Config.luau:2333, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_IconWings -> rbxassetid://126719552618804 (old-account upload); named as an Icon in Config.UIArt.FactionPerks (fallback drawn); key referenced in src (1 literal) but resolves to no image; generation log art/out/logs/UIP_IconWings.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_ShieldNeutral.png",
+   "bytes": 105721,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.ShieldNeutral Id = \"\" (Config.luau:2309, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_ShieldNeutral -> rbxassetid://101381231096931 (old-account upload); key referenced in src (0 literal; ClassPicker builds \"Shield\"..faction) but resolves to no image; generation log art/out/logs/UIP_ShieldNeutral.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_TitleRibbon.png",
+   "bytes": 28143,
+   "category": "empty_id_key",
+   "reason": "Config.UIArt.Parts.TitleRibbon Id = \"\" (Config.luau:2310, emptied in 63b95d9; code fallback draws it); asset_ids.json still maps UIP_TitleRibbon -> rbxassetid://73292535588441 (old-account upload); key referenced in src (9 literal) but resolves to no image; generation log art/out/logs/UIP_TitleRibbon.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CardHalo.log",
+   "bytes": 27785,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log: generation log of art/out/UIP_CardHalo.png, an empty_id_key candidate in this list. It becomes an orphan_log as soon as that image is deleted. Delete or keep it together with the image.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CardHorns.log",
+   "bytes": 27402,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CardHorns.png. It becomes orphaned when that image is deleted.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CardNeutral.log",
+   "bytes": 27538,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CardNeutral.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHaloArcherF.log",
+   "bytes": 27574,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHaloArcherF.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHaloArcherM.log",
+   "bytes": 29496,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHaloArcherM.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHaloMageM.log",
+   "bytes": 31176,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHaloMageM.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHaloWarriorM.log",
+   "bytes": 28827,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHaloWarriorM.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsArcherF.log",
+   "bytes": 29830,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHornsArcherF.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsArcherM.log",
+   "bytes": 30359,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHornsArcherM.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsMageF.log",
+   "bytes": 29613,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHornsMageF.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsMageM.log",
+   "bytes": 30793,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHornsMageM.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsWarriorF.log",
+   "bytes": 31281,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHornsWarriorF.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsWarriorM.log",
+   "bytes": 29450,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharHornsWarriorM.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharNeutralArcherM.log",
+   "bytes": 28427,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharNeutralArcherM.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharNeutralMageM.log",
+   "bytes": 30831,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharNeutralMageM.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharNeutralWarriorF.log",
+   "bytes": 29000,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_CharNeutralWarriorF.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_ClassCardHalo.log",
+   "bytes": 32768,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_ClassCardHalo.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_ClassCardHorns.log",
+   "bytes": 27347,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_ClassCardHorns.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_ClassCardNeutral.log",
+   "bytes": 30366,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_ClassCardNeutral.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconAltar.log",
+   "bytes": 25764,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconAltar.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconBloodSword.log",
+   "bytes": 26007,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconBloodSword.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconBoot.log",
+   "bytes": 26663,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconBoot.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconDemon.log",
+   "bytes": 25228,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconDemon.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconExp.log",
+   "bytes": 79296,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconExp.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconGauge.log",
+   "bytes": 27338,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconGauge.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconGoldPile.log",
+   "bytes": 26587,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconGoldPile.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconHammer.log",
+   "bytes": 26491,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconHammer.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconHeart.log",
+   "bytes": 24591,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconHeart.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconLock.log",
+   "bytes": 26199,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the id_but_unreferenced candidate art/out/UIP_IconLock.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconNoBuff.log",
+   "bytes": 24769,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconNoBuff.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconNoLoot.log",
+   "bytes": 25596,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconNoLoot.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconShieldBlue.log",
+   "bytes": 25888,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconShieldBlue.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_IconWings.log",
+   "bytes": 30328,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_IconWings.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_ShieldNeutral.log",
+   "bytes": 25852,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_ShieldNeutral.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_TitleRibbon.log",
+   "bytes": 27211,
+   "category": "empty_id_key_log",
+   "tracked": false,
+   "reason": "Dependent log of the empty_id_key candidate art/out/UIP_TitleRibbon.png.",
+   "exists": true
+  },
+  {
+   "path": "art/out/UIP_IconLock.png",
+   "bytes": 1530549,
+   "category": "id_but_unreferenced",
+   "reason": "Config.UIArt.Parts.IconLock has Id rbxassetid://91132729692542 (Config.luau:2238) but no src reference (no literal, no dynamic key, not in FactionE.Parts); lead decides; generation log art/out/logs/UIP_IconLock.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_FactionCardHaloE.png",
+   "bytes": 385595,
+   "category": "id_but_unreferenced",
+   "tracked": true,
+   "reason": "Has an Id (FactionCardHaloE), but its only reference is the fallback table E.Keys (FactionPicker.luau:68-69). E.key() at :492-494 uses E.Keys[role] only when Config.UIArt.FactionE.Parts[role] is empty. FactionE.Parts sets all 6 roles (Halo/Horns/Neutral/Title/Premise/Footer) to the *FreshTyped keys, so this never shows. It is the 10-04 'E' sprite that FreshTyped replaced. No art/out original remains. Do not delete without the lead.",
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_FactionCardHornsE.png",
+   "bytes": 420243,
+   "category": "id_but_unreferenced",
+   "tracked": true,
+   "reason": "Same as UIP_FactionCardHaloE: the only reference is the dead fallback E.Keys.Horns (FactionPicker.luau:68, used at :494 only when FactionE.Parts.Horns is empty). FactionE.Parts.Horns = FactionCardHornsFreshTyped.",
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_FactionCardNeutralE.png",
+   "bytes": 413061,
+   "category": "id_but_unreferenced",
+   "tracked": true,
+   "reason": "Same as UIP_FactionCardHaloE: the only reference is the dead fallback E.Keys.Neutral. FactionE.Parts.Neutral = FactionCardNeutralFreshTyped.",
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_FactionFooterPanelE.png",
+   "bytes": 104826,
+   "category": "id_but_unreferenced",
+   "tracked": true,
+   "reason": "The only reference is the dead fallback E.Keys.Footer (FactionPicker.luau:69). FactionE.Parts.Footer = FactionFooterFreshTyped.",
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_FactionPremisePanelE.png",
+   "bytes": 201264,
+   "category": "id_but_unreferenced",
+   "tracked": true,
+   "reason": "The only reference is the dead fallback E.Keys.Premise (FactionPicker.luau:69). FactionE.Parts.Premise = FactionPremiseFreshTyped.",
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_FactionTitleRibbonE.png",
+   "bytes": 82004,
+   "category": "id_but_unreferenced",
+   "tracked": true,
+   "reason": "The only reference is the dead fallback E.Keys.Title (FactionPicker.luau:69). FactionE.Parts.Title = FactionTitleFreshTypedBalanced. No other src reference.",
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_FactionTitle_FreshTyped.png",
+   "bytes": 219565,
+   "category": "id_but_unreferenced",
+   "reason": "Config.UIArt.Parts.FactionTitleFreshTyped has Id rbxassetid://111239293270560 (Config.luau:2299) but no src reference (no literal, no dynamic key, not in FactionE.Parts); lead decides",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/ui/UIP_IconLock.png",
+   "bytes": 93417,
+   "category": "id_but_unreferenced",
+   "reason": "Config.UIArt.Parts.IconLock has Id rbxassetid://91132729692542 (Config.luau:2238) but no src reference (no literal, no dynamic key, not in FactionE.Parts); lead decides; generation log art/out/logs/UIP_IconLock.log would become orphan",
+   "tracked": true,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HaloArcherF.log",
+   "bytes": 30647,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HaloArcherF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HaloArcherM.log",
+   "bytes": 25847,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HaloArcherM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HaloMageF.log",
+   "bytes": 26493,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HaloMageF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HaloMageM.log",
+   "bytes": 55012,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HaloMageM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HaloWarriorF.log",
+   "bytes": 27245,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HaloWarriorF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HaloWarriorM.log",
+   "bytes": 25567,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HaloWarriorM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HornsArcherF.log",
+   "bytes": 28652,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HornsArcherF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HornsArcherM.log",
+   "bytes": 27677,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HornsArcherM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HornsMageF.log",
+   "bytes": 28950,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HornsMageF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HornsMageM.log",
+   "bytes": 29559,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HornsMageM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HornsWarriorF.log",
+   "bytes": 29600,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HornsWarriorF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_HornsWarriorM.log",
+   "bytes": 27941,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_HornsWarriorM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_NeutralArcherF.log",
+   "bytes": 31680,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_NeutralArcherF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_NeutralArcherM.log",
+   "bytes": 26332,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_NeutralArcherM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_NeutralMageF.log",
+   "bytes": 26647,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_NeutralMageF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_NeutralMageM.log",
+   "bytes": 25987,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_NeutralMageM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_NeutralWarriorF.log",
+   "bytes": 26219,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_NeutralWarriorF.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/APose_NeutralWarriorM.log",
+   "bytes": 24876,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/APose_NeutralWarriorM.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/BigSlime.log",
+   "bytes": 31379,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/BigSlime.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Emblem_Halo.log",
+   "bytes": 28021,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Emblem_Halo.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Emblem_Horns.log",
+   "bytes": 27371,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Emblem_Horns.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Emblem_Neutral.log",
+   "bytes": 30783,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Emblem_Neutral.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Goblin.log",
+   "bytes": 32256,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Goblin.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/GoblinBrute.log",
+   "bytes": 30209,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/GoblinBrute.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/GoldenGoose.log",
+   "bytes": 33393,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/GoldenGoose.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Icon_CheerStar.log",
+   "bytes": 28153,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Icon_CheerStar.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Icon_ClassTicket.log",
+   "bytes": 31191,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Icon_ClassTicket.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Icon_CrownShard.log",
+   "bytes": 28262,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Icon_CrownShard.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Icon_FactionTicket.log",
+   "bytes": 27009,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Icon_FactionTicket.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Icon_Gold.log",
+   "bytes": 28507,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Icon_Gold.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Icon_GrudgeSack.log",
+   "bytes": 26978,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Icon_GrudgeSack.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Icon_RewardChest.log",
+   "bytes": 28920,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Icon_RewardChest.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Icon_XP.log",
+   "bytes": 29347,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Icon_XP.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Skeleton.log",
+   "bytes": 30736,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Skeleton.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/SkeletonKing.log",
+   "bytes": 40818,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/SkeletonKing.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/SkeletonKnight.log",
+   "bytes": 27153,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/SkeletonKnight.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Slime.log",
+   "bytes": 29885,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Slime.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Alchemist.log",
+   "bytes": 27336,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Alchemist.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Attack.log",
+   "bytes": 27640,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Attack.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Berserker.log",
+   "bytes": 26751,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Berserker.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Blacksmith.log",
+   "bytes": 26098,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Blacksmith.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_CheerStars.log",
+   "bytes": 28080,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_CheerStars.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Claim.log",
+   "bytes": 28690,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Claim.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Crossroads.log",
+   "bytes": 26014,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Crossroads.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_DarkMage.log",
+   "bytes": 30369,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_DarkMage.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Female.log",
+   "bytes": 27056,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Female.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_GoblinWoods.log",
+   "bytes": 26637,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_GoblinWoods.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_GoldenGoose.log",
+   "bytes": 26962,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_GoldenGoose.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Halo.log",
+   "bytes": 26665,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Halo.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_HaloTown.log",
+   "bytes": 28246,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_HaloTown.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Horn.log",
+   "bytes": 26609,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Horn.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Horns.log",
+   "bytes": 25426,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Horns.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_HornsTown.log",
+   "bytes": 26553,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_HornsTown.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Hunter.log",
+   "bytes": 26197,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Hunter.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_LevelUp.log",
+   "bytes": 25903,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_LevelUp.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Light.log",
+   "bytes": 26565,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Light.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_LightMage.log",
+   "bytes": 26464,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_LightMage.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Male.log",
+   "bytes": 26515,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Male.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Map.log",
+   "bytes": 26885,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Map.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Meadow.log",
+   "bytes": 27571,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Meadow.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Menu.log",
+   "bytes": 28228,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Menu.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Neutral.log",
+   "bytes": 25585,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Neutral.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Next.log",
+   "bytes": 25951,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Next.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Paladin.log",
+   "bytes": 27188,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Paladin.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_PickClass.log",
+   "bytes": 26981,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_PickClass.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_PickFaction.log",
+   "bytes": 27123,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_PickFaction.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_PvPZone.log",
+   "bytes": 26051,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_PvPZone.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Quests.log",
+   "bytes": 25896,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Quests.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Ranger.log",
+   "bytes": 25577,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Ranger.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Regular.log",
+   "bytes": 27475,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Regular.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Release.log",
+   "bytes": 27396,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Release.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Reroll.log",
+   "bytes": 28104,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Reroll.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Rookie.log",
+   "bytes": 24503,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Rookie.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_Safe.log",
+   "bytes": 32354,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_Safe.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_SafeZone.log",
+   "bytes": 25037,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_SafeZone.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_ShadowHunter.log",
+   "bytes": 25532,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_ShadowHunter.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_SkeletonRuins.log",
+   "bytes": 26499,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_SkeletonRuins.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_ThisClass.log",
+   "bytes": 27054,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_ThisClass.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/TXT_ThisSide.log",
+   "bytes": 25173,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/TXT_ThisSide.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/Thumbnail_Crown.log",
+   "bytes": 29599,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/Thumbnail_Crown.png is gone (never in cleanup json)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHaloArcher.log",
+   "bytes": 27908,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharHaloArcher.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHaloMage.log",
+   "bytes": 26296,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharHaloMage.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHaloWarrior.log",
+   "bytes": 27313,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharHaloWarrior.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsArcher.log",
+   "bytes": 25856,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharHornsArcher.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsMage.log",
+   "bytes": 28034,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharHornsMage.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharHornsWarrior.log",
+   "bytes": 26684,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharHornsWarrior.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharNeutralArcher.log",
+   "bytes": 27903,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharNeutralArcher.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharNeutralMage.log",
+   "bytes": 28688,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharNeutralMage.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UIP_CharNeutralWarrior.log",
+   "bytes": 27887,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UIP_CharNeutralWarrior.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_Class_A.log",
+   "bytes": 56995,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_Class_A.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_Faction_A.log",
+   "bytes": 31999,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_Faction_A.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_Faction_B.log",
+   "bytes": 28486,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_Faction_B.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_HUD_A.log",
+   "bytes": 33831,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_HUD_A.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_HUD_B.log",
+   "bytes": 30488,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_HUD_B.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_HUD_C.log",
+   "bytes": 34476,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_HUD_C.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_HUD_CA1.log",
+   "bytes": 37910,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_HUD_CA1.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_HUD_CA2.log",
+   "bytes": 36568,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_HUD_CA2.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_HUD_Final.log",
+   "bytes": 27217,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_HUD_Final.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_Lettering_A.log",
+   "bytes": 25362,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_Lettering_A.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_Lettering_B.log",
+   "bytes": 23229,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_Lettering_B.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/out/logs/UI_Lettering_C.log",
+   "bytes": 26820,
+   "category": "orphan_log",
+   "reason": "old Codex/GPT generation log (gitignored); image art/out/UI_Lettering_C.png is gone (cleanup json: delete)",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/test/GameIcon.log",
+   "bytes": 29748,
+   "category": "orphan_log",
+   "tracked": false,
+   "reason": "Codex run log that wrote art/test/GameIcon.png, which was deleted 2026-10-06 (docs/art/art_cleanup_2026-10-06_txt.json: 'old Codex test output, not the experience-page source'). The active art/out/GameIcon.png has its own log at art/out/logs/GameIcon.log (made from art/prompts/GameIcon.txt). So this sidecar is clearly superseded and is the same case as the listed art/test/Tex_Grass.log.",
+   "exists": true
+  },
+  {
+   "path": "art/test/Tex_Grass.log",
+   "bytes": 27234,
+   "category": "orphan_log",
+   "reason": "art/test sidecar (generation log) of art/test/Tex_Grass.png, which was deleted 2026-10-06 (art_cleanup_2026-10-06_txt.json; listed under not_deleted_here). Active Tex_Grass is art/ui/Tex_Grass.png + art/out/Tex_Grass.png, not this test file",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/review/icons_character_mf_preview.png",
+   "bytes": 126941,
+   "category": "other",
+   "tracked": false,
+   "reason": "Stale review sheet (10-06 09:19) titled 'male (approved) / female (new)'. It shows only the female A candidate (eyelash eyes), which approved.json IconCharacterF records as discarded ('첫 A안(속눈썹 눈)은 버림'). approved.json does not reference it. The approval preview is icons_character_mf2_preview.png, which shows the same male icon and female A next to the chosen female B. This is a new Firefly batch, not old art, so it falls under rule (2)'s review-sheet clause only loosely: lead decides.",
+   "exists": true
+  },
+  {
+   "path": "art/test/GameIcon.codex.txt",
+   "bytes": 51,
+   "category": "other",
+   "tracked": false,
+   "reason": "Its whole content is the path of the deleted test image (...\\Game\\art\\test\\GameIcon.png). It does not describe the active art/out/GameIcon.png. Same case as the listed art/test/Tex_Grass.codex.txt.",
+   "exists": true
+  },
+  {
+   "path": "art/test/GameIcon.prompt.txt",
+   "bytes": 1779,
+   "category": "other",
+   "tracked": true,
+   "reason": "Prompt for the deleted art/test/GameIcon.png test. It differs from art/prompts/GameIcon.txt, the final prompt (mtime 18:58, same as art/out/GameIcon.png), which adds the 3D-render and no-sparkle wording. It is an outdated copy, the prompts folder keeps the real one, and art_cleanup_2026-10-06_txt.json not_deleted_here names it as a sidecar left behind.",
+   "exists": true
+  },
+  {
+   "path": "art/test/Tex_Grass.codex.txt",
+   "bytes": 52,
+   "category": "other",
+   "reason": "art/test sidecar (codex pointer text, not an image) of art/test/Tex_Grass.png, which was deleted 2026-10-06 (art_cleanup_2026-10-06_txt.json; listed under not_deleted_here). Active Tex_Grass is art/ui/Tex_Grass.png + art/out/Tex_Grass.png, not this test file",
+   "tracked": false,
+   "exists": true
+  },
+  {
+   "path": "art/test/Tex_Grass.prompt.txt",
+   "bytes": 1796,
+   "category": "other",
+   "tracked": true,
+   "reason": "Third sidecar of the deleted art/test/Tex_Grass.png test (the list already has Tex_Grass.log and Tex_Grass.codex.txt). It differs from art/prompts/Tex_Grass.txt, the prompt behind the active art/out/Tex_Grass.png, whose log is art/out/logs/Tex_Grass.log. It is an outdated copy.",
+   "exists": true
+  }
+ ]
+}
