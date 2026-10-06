@@ -8,7 +8,9 @@ DesktopScaleMin / DesktopScaleMax, reference height 720) and the touch jump butt
 screens whose short side <= 500, else 120 px). The approved rects come from docs/design/hud_layout_B_imgdev_2026-10-06.json
 (PC = 검수's docs/design/hud_layout_B_2026-10-06.json, phone = 이미지 개발 by the A23-40 rules).
 
-Checks (named, collected): every item on screen below the top bar; no two items overlap (circles as circles) on every
+Checks (named, collected): every item on screen below the top bar; [메뉴] in the PC top-right corner / at the end of the
+phone tile row and its fold-out room (out.fold) clear of the war meter, minimap, quest lines, face / bars and combat
+buttons with the four menu tiles (+ the phone row's overflow) in one row (A23-40 정정); no two items overlap (circles as circles) on every
 supported screen and pressable items keep >= 2 logical units apart; touch targets >= 60 logical units (portrait, round
 combat buttons, the quest lines block, every icon tile, both potion cells: cell = (W - Gap) / 2); nothing pressable on the
 jump button or in the thumbstick zone (x < 0.4W, y > H/3); blocks stay at their edges (minimap + quest top-left, PC face /
@@ -81,9 +83,10 @@ EXCEPTIONS = [
      "rect is 113du wide. Growing to the left (right edge kept: Q sits 6du to its right) stops at the thumbstick zone "
      "edge x = 0.4W = 302.9du, which leaves 120.5du: two cells of 57.2du with the approved 6 px gap (60.2du only with "
      "no gap at all). The cells stay below 60du (~43 real px) here; spec decision needed."),
-    ("phone_568x320", "tiles at least 4 on phones",
-     "4-inch phone (568x320 px): the layout scales to k = 1.011 du/px, so the top-right tile row is 241.7du wide; "
-     "60du tiles with the 3 px gap fit 3 (4 would need 249du). The other windows open from the [메뉴] tile."),
+    ("phone_568x320", "tiles at least 3 on phones",
+     "4-inch phone (568x320 px): the layout scales to k = 1.011 du/px and every square grows back to 60du, so the "
+     "top-right row (from the face's left edge to [메뉴]) holds 2 tiles + [메뉴]; the other row windows fold out of "
+     "[메뉴] (A23-40 정정)."),
 ]
 
 # (name, exact text, replacement) in HudLayout.luau: each must match exactly once. The centre column's narrowing / room
@@ -97,8 +100,7 @@ MUTATIONS = [
     ("grown portrait covers the tile row", "out.tiles.Y += g", ""),
     ("touch tiles may shrink below a thumb", "local size = touch and math.max(tiles.H, MIN_TAP) or tiles.H",
      "local size = tiles.H"),
-    ("tile count ignores the gap", "+ 1e-6))\n\n\t-- desktop: the bottom-centre group",
-     "+ 1e-6)) + 1\n\n\t-- desktop: the bottom-centre group"),
+    ("tile count ignores the gap", "+ 1e-6))\n\t-- [메뉴]: a square", "+ 1e-6)) + 1\n\t-- [메뉴]: a square"),
     ("tiles touch", "local TILE_GAP = 3", "local TILE_GAP = 0"),
     ("touch quest lines may shrink below a thumb", "if out.quest.H < MIN_TAP then out.quest.H = MIN_TAP end", ""),
     ("top-right items anchored to the left edge",
@@ -125,6 +127,20 @@ MUTATIONS = [
     ("potions grow into the stick zone",
      "if pot.Y + pot.H > H * STICK.Y then minX = math.max(minX, W * STICK.X) end", ""),
     ("potion gap drifted", "local POTION_GAP = 6", "local POTION_GAP = 2"),
+    # A23-40 정정: [메뉴] top-right + its fold-out room
+    ("menu anchored to the left", 'menu = { "TR", { 1218, 66, 52, 52 }', 'menu = { "TL", { 1218, 66, 52, 52 }'),
+    ("desktop menu rect drifted", "{ 1218, 66, 52, 52 }", "{ 1210, 66, 52, 52 }"),
+    ("touch menu may shrink below a thumb", "local mSize = touch and math.max(menu.H, MIN_TAP) or menu.H",
+     "local mSize = menu.H"),
+    ("fold may cover the war meter", "local FOLD_OVER = { tiles = true,", "local FOLD_OVER = { war_meter = true, tiles = true,"),
+    ("fold lines ignore every item", "if o.Y < y0 + fSize and o.Y + o.H > y0 and o.X < m.X - 0.01 then", "if false then"),
+    ("fold one square too many", "return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6))",
+     "return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6)) + 1"),
+    ("phone fold lines go down", "local y, step = m.Y, (touch and -1 or 1) * (fSize + fGap)",
+     "local y, step = m.Y, fSize + fGap"),
+    ("fold covers the thumbstick zone", "table.insert(blockers, rect(0, H * STICK.Y, W * STICK.X, H - H * STICK.Y))", ""),
+    ("grown phone menu covers the row", "tiles.W = math.max(size, menu.X - tileGap - tiles.X)", ""),
+    ("fold squares touch", "local fGap = touch and tileGap or FOLD_GAP * k", "local fGap = 0"),
 ]
 
 
@@ -239,7 +255,7 @@ GROUP_COLOUR = {
     "chips": (170, 170, 190), "event": (250, 160, 60), "notify": (230, 230, 230), "tiles": (240, 170, 90),
     "quest": (250, 220, 150), "combo": (255, 255, 255),
     "potions": (230, 90, 120), "ghost": (160, 160, 255), "q": (110, 190, 255), "z": (110, 190, 255),
-    "auto": (255, 215, 0), "attack": (230, 80, 50),
+    "auto": (255, 215, 0), "attack": (230, 80, 50), "menu": (255, 140, 200), "fold": (255, 140, 200),
 }
 ROUND = {"portrait", "ghost", "q", "z", "auto", "attack", "minimap"}
 
@@ -292,6 +308,15 @@ def draw(result: dict) -> bool:
                     for i in range(int(rr.get("Count", 0))):
                         tx = box[0] + i * (t + gp)
                         d.rectangle([tx, box[1], tx + t, box[1] + t], outline=colour, width=1)
+                elif rid == "fold" and rr.get("Size"):
+                    # the fold-out squares ([메뉴] tiles): every line right-aligned one gap left of [메뉴]
+                    t = rr["Size"] * s * k
+                    gp = rr.get("Gap", 0) * s * k
+                    for ln in rr.get("Lines") or []:
+                        for col in range(int(ln["Cols"])):
+                            tx = x0 + ln["X"] * s * k + col * (t + gp)
+                            ty = oy + ln["Y"] * s * k
+                            d.rectangle([tx, ty, tx + t, ty + t], outline=(150, 90, 130), width=1)
                 elif rid == "potions" and rr.get("Gap"):
                     # the two cells (HP, MP) side by side, Gap apart
                     cell = (rr["W"] - rr["Gap"]) / 2 * s * k

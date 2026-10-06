@@ -283,7 +283,9 @@ function Config.WeaponArtKey(tier, classId, factionId)
 	if type(tier) ~= "number" or tier ~= tier or math.abs(tier) == math.huge then tier = 1 end
 	tier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier)
 	if classId ~= "Warrior" and classId ~= "Mage" and classId ~= "Archer" then classId = "Warrior" end
-	local key = "Weapon_" .. classId .. "_T" .. tostring(tier)
+	-- A23-39: the Artisan guild's Archer is the pet tamer (same class id): tiers 1-6 show its staffs (Weapon_Tamer_T*)
+	local art = (classId == "Archer" and factionId == "Neutral" and tier <= 6) and "Tamer" or classId
+	local key = "Weapon_" .. art .. "_T" .. tostring(tier)
 	if tier == 7 then
 		local faction = (factionId == "Halo" or factionId == "Horns") and factionId or "Neutral"
 		key ..= "_" .. faction
@@ -2438,12 +2440,12 @@ Config.UIArt = {
 		IconLock = { Id = "rbxassetid://91132729692542", Size = Vector2.new(246, 256) },
 		IconMap = { Id = "rbxassetid://90459703873799", Size = Vector2.new(256, 202) },
 		IconGear = { Id = "rbxassetid://99179510720767", Size = Vector2.new(247, 256) },
-		IconGoose = { Id = "rbxassetid://105838105764489", Size = Vector2.new(218, 256) },
+		IconGoose = { Id = "rbxassetid://92080848582218", Size = Vector2.new(512, 512) },
 		IconSafe = { Id = "rbxassetid://137095933008547", Size = Vector2.new(512, 512) }, -- Firefly green shield (bundle 5)
 		IconSprout = { Id = "rbxassetid://88235635858040", Size = Vector2.new(512, 512) }, -- Firefly (bundle 8)
 		IconStar = { Id = "rbxassetid://117033474251317", Size = Vector2.new(256, 243) },
 		IconStarEmpty = { Id = "rbxassetid://78608910520884", Size = Vector2.new(256, 255) },
-		IconClover = { Id = "rbxassetid://132542570098556", Size = Vector2.new(246, 256) },
+		IconClover = { Id = "rbxassetid://131514392052133", Size = Vector2.new(512, 512) },
 		IconScroll = { Id = "rbxassetid://103880967919087", Size = Vector2.new(256, 192) },
 		IconSlime = { Id = "rbxassetid://112355880587310", Size = Vector2.new(256, 245) },
 		-- GPT image 2.5 (Firefly) monster heads / items, user-approved 2026-10-05 (art/approved.json), 512x512
@@ -2467,9 +2469,14 @@ Config.UIArt = {
 		IconSettings = { Id = "rbxassetid://140338353841950", Size = Vector2.new(512, 512) }, -- settings gear
 		IconNews = { Id = "rbxassetid://124574116225607", Size = Vector2.new(512, 512) }, -- news scroll (IconHelp stays help)
 		-- guide portraits (Firefly 2026-10-06, 50bf8ea, user OK): square bust, bottom cut straight (welcome dialog, rings)
-		PortraitGuideHalo = { Id = "rbxassetid://110194702566253", Size = Vector2.new(512, 512) },
-		PortraitGuideHorns = { Id = "rbxassetid://131286803604294", Size = Vector2.new(512, 512) },
-		PortraitGuideArtisan = { Id = "rbxassetid://123450056288234", Size = Vector2.new(512, 512) },
+		PortraitGuideHalo = { Id = "rbxassetid://86660279667138", Size = Vector2.new(512, 512) },
+		PortraitGuideHorns = { Id = "rbxassetid://81858266071600", Size = Vector2.new(512, 512) },
+		PortraitGuideArtisan = { Id = "rbxassetid://79157745259396", Size = Vector2.new(512, 512) },
+		-- shop NPCs (2975f24, user OK): portraits for a ring / dialogue, full body beside a shop window (the 3D NPCs stay)
+		PortraitPotionMerchant = { Id = "rbxassetid://73178531948067", Size = Vector2.new(486, 512) },
+		PortraitMerchantC = { Id = "rbxassetid://109852166851562", Size = Vector2.new(487, 512) },
+		FullPotionMerchant = { Id = "rbxassetid://119279738895658", Size = Vector2.new(449, 768) },
+		FullMerchantC = { Id = "rbxassetid://126082561922667", Size = Vector2.new(494, 768) },
 		-- A23-40 layout B parts (Firefly 2026-10-06: 83eaffb minimap_ring_sheet, ccab705 / a601f39 b12 / b1213 sheets)
 		MinimapRing = { Id = "rbxassetid://134883699176479", Size = Vector2.new(512, 512), Round = true, Tone = "Navy", Inner = Rect.new(63, 63, 449, 449) }, -- hole d386 at (256,256): the map circle d392 tucks under the inner rim
 		WarMeterFrame = { Id = "rbxassetid://73887778381300", Size = Vector2.new(512, 74), Tone = "Navy", Inner = Rect.new(66, 22, 442, 54) }, -- opaque navy inside: the fills draw above it
@@ -2481,6 +2488,60 @@ Config.UIArt = {
 		NameTag = { Id = "rbxassetid://101536515759381", Size = Vector2.new(512, 153), Slice = Rect.new(80, 72, 432, 82), FitHeight = true, Tone = "Navy" },
 		ListRowSelected = { Id = "rbxassetid://117472551663985", Size = Vector2.new(512, 173), Slice = Rect.new(64, 52, 448, 121), FitHeight = true, Tone = "Gold" }, -- b: deep gold
 		Toast = { Id = "rbxassetid://92139413642355", Size = Vector2.new(512, 102), Slice = Rect.new(100, 50, 460, 52), FitHeight = true, Tone = "Navy" }, -- icon disc centre (49,51) r~37
+		-- 2026-10-06 uploads (bundles 12/13 rest, 15/16 tamer staffs, 17, 18, map markers 9a8b47a, skill Q ae9a7ea; sheets in
+		-- art/review/s2/): new keys. EmoOuch (now a blank burst for an '아야!' TextLabel) and TitleRibbon (slice [118,40,394,95])
+		-- wait for their screens (Fx text overlay, faction / class screens)
+		Weapon_Tamer_T1 = { Id = "rbxassetid://71978061313848", Size = Vector2.new(512, 512) }, -- A23-39 pet tamer staff (Artisan Archer)
+		Weapon_Tamer_T2 = { Id = "rbxassetid://121246970163140", Size = Vector2.new(512, 512) },
+		Weapon_Tamer_T3 = { Id = "rbxassetid://127142057835154", Size = Vector2.new(512, 512) },
+		Weapon_Tamer_T4 = { Id = "rbxassetid://88649237611687", Size = Vector2.new(512, 512) },
+		Weapon_Tamer_T5 = { Id = "rbxassetid://100807011781382", Size = Vector2.new(512, 512) },
+		Weapon_Tamer_T6 = { Id = "rbxassetid://115255861303177", Size = Vector2.new(512, 512) },
+		GlyphExclaim = { Id = "rbxassetid://121061168473918", Size = Vector2.new(512, 512) }, -- white !, inside NpcMarkerBubble
+		BadgeLeanCare = { Id = "rbxassetid://77335188385721", Size = Vector2.new(512, 512) }, -- pet lean badges next to a name tag (24-32 px)
+		BadgeLeanTame = { Id = "rbxassetid://97846315594608", Size = Vector2.new(512, 512) },
+		BadgeLeanGuild = { Id = "rbxassetid://74850129740155", Size = Vector2.new(512, 512) },
+		IconMonGhostMinion = { Id = "rbxassetid://93544533194341", Size = Vector2.new(512, 512) }, -- A23-45 ghost family heads
+		IconMonGhostKing = { Id = "rbxassetid://77166897215168", Size = Vector2.new(512, 512) },
+		LogoPlate = { Id = "rbxassetid://72831856163795", Size = Vector2.new(1024, 731) }, -- title band empty: the name is a TextLabel at (0.15, 0.48, 0.70, 0.19)
+		EventBannerHalloween = { Id = "rbxassetid://120811187352890", Size = Vector2.new(1024, 316) }, -- text box (0.22, 0.17, 0.56, 0.34)
+		ShardBase = { Id = "rbxassetid://137006454032810", Size = Vector2.new(512, 512) }, -- crown shard (S0 quest, reward notices, map)
+		MapBlacksmith = { Id = "rbxassetid://94328996197556", Size = Vector2.new(512, 512) }, -- map markers: a white-rimmed disc with the icon, drawn as is
+		MapPotionShop = { Id = "rbxassetid://131897716268568", Size = Vector2.new(512, 512) },
+		MapAltar = { Id = "rbxassetid://75215424047711", Size = Vector2.new(512, 512) },
+		MapGooseNest = { Id = "rbxassetid://83187866833677", Size = Vector2.new(512, 512) },
+		MapHuntEntrance = { Id = "rbxassetid://120015572780851", Size = Vector2.new(512, 512) },
+		MapQuestTarget = { Id = "rbxassetid://112520423325135", Size = Vector2.new(512, 512) },
+		BadgeDot = { Id = "rbxassetid://107622736106569", Size = Vector2.new(512, 512) }, -- news dot (top-right of a button; the count is a TextLabel)
+		IconPetPaw = { Id = "rbxassetid://101099487202511", Size = Vector2.new(512, 512) }, -- 'my pet' row head icon
+		GradeSlotBack = { Id = "rbxassetid://120590954007382", Size = Vector2.new(512, 498) }, -- navy plate behind weapon / pet icons (no grade rim)
+		BannerGold = { Id = "rbxassetid://105577140932665", Size = Vector2.new(512, 178) }, -- Fit (no slice); text box (0.254, 0.225, 0.492, 0.365)
+		TabOn = { Id = "rbxassetid://102062478132150", Size = Vector2.new(512, 228), Slice = Rect.new(110, 100, 402, 200), FitHeight = true, Tone = "Gold" }, -- selected tab: navy text
+		TabOff = { Id = "rbxassetid://76306323831801", Size = Vector2.new(512, 202), Slice = Rect.new(100, 84, 412, 180), FitHeight = true, Tone = "Navy" }, -- idle tab: white text
+		InputField = { Id = "rbxassetid://108042300963591", Size = Vector2.new(512, 129), Slice = Rect.new(52, 40, 460, 89), FitHeight = true, Tone = "Parchment" }, -- text box: navy text
+		QuestTab = { Id = "rbxassetid://124642276890798", Size = Vector2.new(512, 138), Slice = Rect.new(70, 60, 430, 78), FitHeight = true, Tone = "Gold" }, -- the arrow box (x 440+) never stretches
+		BannerAlert = { Id = "rbxassetid://104830795997617", Size = Vector2.new(512, 133), Slice = Rect.new(84, 40, 428, 93), FitHeight = true, Tone = "Red" }, -- white text, dark red rim
+		NpcMarkerBubble = { Id = "rbxassetid://76402030324791", Size = Vector2.new(512, 512) }, -- gold pin over NPC heads; a glyph inside
+		RewardRays = { Id = "rbxassetid://140645623920982", Size = Vector2.new(512, 512) }, -- white rays: tint with ImageColor3, behind reward pops (dark backdrop only)
+		GlyphBack = { Id = "rbxassetid://84595951514011", Size = Vector2.new(512, 512) },
+		GlyphLock = { Id = "rbxassetid://140357879006452", Size = Vector2.new(512, 512) },
+		GlyphCheck = { Id = "rbxassetid://76746602947118", Size = Vector2.new(512, 512) },
+		Skill_Warrior_Q = { Id = "rbxassetid://113383058913403", Size = Vector2.new(512, 512) }, -- bundle 14 skill Q icons (in the round BtnSkill ~74%)
+		Skill_Mage_Q = { Id = "rbxassetid://125518430228988", Size = Vector2.new(512, 512) },
+		Skill_Archer_Q = { Id = "rbxassetid://107372298235964", Size = Vector2.new(512, 512) },
+		-- A23-40 정정 fold-out / window icons (7fb375a): 이동 is a [메뉴] square; 직업 바꾸기 · 환생 · 오프닝 · 알림(이름 공개) · 휴가
+		-- go on 설정 rows and 닉네임 on 내 캐릭터 (BB13). BB11 ranking medals (3c9166a): in front of rows 1-3 (~85% of the row
+		-- height); rank 4+ is a number TextLabel
+		IconTravel = { Id = "rbxassetid://122749396717224", Size = Vector2.new(512, 512) },
+		IconClassChange = { Id = "rbxassetid://84376751004017", Size = Vector2.new(512, 512) },
+		IconRebirth = { Id = "rbxassetid://96377940849921", Size = Vector2.new(512, 512) },
+		IconNickname = { Id = "rbxassetid://112860477776524", Size = Vector2.new(512, 512) },
+		IconOpening = { Id = "rbxassetid://74327546251541", Size = Vector2.new(512, 512) },
+		IconAnnounce = { Id = "rbxassetid://82534665069625", Size = Vector2.new(512, 512) },
+		IconVacation = { Id = "rbxassetid://94546800522289", Size = Vector2.new(512, 512) },
+		IconMedalGold = { Id = "rbxassetid://100897193417032", Size = Vector2.new(512, 512) },
+		IconMedalSilver = { Id = "rbxassetid://86859981439769", Size = Vector2.new(512, 512) },
+		IconMedalBronze = { Id = "rbxassetid://129231723184529", Size = Vector2.new(512, 512) },
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
 		IconMonBigSlime = { Id = "rbxassetid://137346108147632", Size = Vector2.new(512, 512) },
@@ -2528,27 +2589,26 @@ Config.UIArt = {
 		ClassCardNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(618, 1024) },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
 		TitleRibbon = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 63) }, -- empty title ribbon
-		-- class characters (Firefly blocky toy style, bundle 10, 50bf8ea, user OK): Char<Faction><Class><M|F>.
-		-- One gender per class for now: ClassPicker shows the other gender's picture until bundle 19. Neutral Archer
-		-- stays empty (A23-39: the Artisan third class becomes the pet tamer; its picture comes later).
-		CharHaloWarriorM = { Id = "rbxassetid://107223446177550", Size = Vector2.new(476, 663) },
-		CharHaloWarriorF = { Id = "", Size = Vector2.new(464, 512) },
-		CharHaloMageM = { Id = "", Size = Vector2.new(460, 512) },
-		CharHaloMageF = { Id = "rbxassetid://86506033601447", Size = Vector2.new(408, 768) },
-		CharHaloArcherM = { Id = "rbxassetid://129427231445677", Size = Vector2.new(421, 768) },
-		CharHaloArcherF = { Id = "", Size = Vector2.new(406, 512) },
-		CharHornsWarriorM = { Id = "", Size = Vector2.new(446, 512) },
-		CharHornsWarriorF = { Id = "rbxassetid://125807011729545", Size = Vector2.new(561, 768) },
-		CharHornsMageM = { Id = "rbxassetid://88874835473142", Size = Vector2.new(540, 768) },
-		CharHornsMageF = { Id = "", Size = Vector2.new(449, 512) },
-		CharHornsArcherM = { Id = "", Size = Vector2.new(488, 512) },
-		CharHornsArcherF = { Id = "rbxassetid://75414336669920", Size = Vector2.new(422, 768) },
-		CharNeutralWarriorM = { Id = "rbxassetid://112070391814033", Size = Vector2.new(401, 768) },
-		CharNeutralWarriorF = { Id = "", Size = Vector2.new(476, 512) },
-		CharNeutralMageM = { Id = "", Size = Vector2.new(465, 512) },
-		CharNeutralMageF = { Id = "rbxassetid://116514332783939", Size = Vector2.new(402, 768) },
-		CharNeutralArcherM = { Id = "", Size = Vector2.new(416, 512) },
-		CharNeutralArcherF = { Id = "", Size = Vector2.new(463, 512) },
+		-- class characters (Firefly blocky toy style, bundles 10 / 19, 50bf8ea + af64891 clean + 2975f24, user OK):
+		-- Char<Faction><Class><M|F>. The Artisan Archer slot is the pet tamer (A23-39: same class id, Artisan look).
+		CharHaloWarriorM = { Id = "rbxassetid://99834593537592", Size = Vector2.new(476, 663) },
+		CharHaloWarriorF = { Id = "rbxassetid://77794697082835", Size = Vector2.new(514, 768) },
+		CharHaloMageM = { Id = "rbxassetid://111869235299985", Size = Vector2.new(540, 768) },
+		CharHaloMageF = { Id = "rbxassetid://80196979774942", Size = Vector2.new(408, 768) },
+		CharHaloArcherM = { Id = "rbxassetid://84025350196989", Size = Vector2.new(421, 768) },
+		CharHaloArcherF = { Id = "rbxassetid://140703417172799", Size = Vector2.new(412, 768) },
+		CharHornsWarriorM = { Id = "rbxassetid://78913683328711", Size = Vector2.new(545, 768) },
+		CharHornsWarriorF = { Id = "rbxassetid://80398924855230", Size = Vector2.new(561, 768) },
+		CharHornsMageM = { Id = "rbxassetid://103776157579556", Size = Vector2.new(540, 768) },
+		CharHornsMageF = { Id = "rbxassetid://119210041139755", Size = Vector2.new(502, 768) },
+		CharHornsArcherM = { Id = "rbxassetid://86882952509293", Size = Vector2.new(449, 768) },
+		CharHornsArcherF = { Id = "rbxassetid://115512398752881", Size = Vector2.new(422, 768) },
+		CharNeutralWarriorM = { Id = "rbxassetid://136710646034221", Size = Vector2.new(401, 768) },
+		CharNeutralWarriorF = { Id = "rbxassetid://111502444868547", Size = Vector2.new(498, 768) },
+		CharNeutralMageM = { Id = "rbxassetid://83660332451200", Size = Vector2.new(464, 768) },
+		CharNeutralMageF = { Id = "rbxassetid://103974202488908", Size = Vector2.new(402, 768) },
+		CharNeutralArcherM = { Id = "rbxassetid://139781808666841", Size = Vector2.new(414, 768) },
+		CharNeutralArcherF = { Id = "rbxassetid://116024640272965", Size = Vector2.new(431, 768) },
 		-- perk / misc icons
 		IconExp = { Id = "rbxassetid://125679953240313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconHeart = { Id = "rbxassetid://92865909915468", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
@@ -2562,7 +2622,7 @@ Config.UIArt = {
 		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconHammer = { Id = "rbxassetid://134187840367993", Size = Vector2.new(512, 512) }, -- Firefly (bundle 5): artisan perk 4
-		IconAltar = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(241, 256) },
+		IconAltar = { Id = "rbxassetid://115731843863081", Size = Vector2.new(512, 512) },
 		IconBoot = { Id = "rbxassetid://121630849275556", Size = Vector2.new(512, 512) }, -- Firefly winged boot (bundle 5): class speed / pet speed
 		-- A15 hit/pain art; empty IDs retain the code fallback.
 		FxSlash = { Id = "rbxassetid://99494789057875", Size = Vector2.new(256, 251) },
@@ -2571,34 +2631,34 @@ Config.UIArt = {
 		FxMagicBurst = { Id = "rbxassetid://92519617657939", Size = Vector2.new(256, 256) },
 		FxDust = { Id = "rbxassetid://108076168454993", Size = Vector2.new(222, 256) },
 		EmoOuch = { Id = "rbxassetid://72032537654477", Size = Vector2.new(256, 175) },
-		EmoTears = { Id = "rbxassetid://70917213593538", Size = Vector2.new(256, 197) },
-		EmoDizzy = { Id = "rbxassetid://124025733418147", Size = Vector2.new(256, 232) },
-		EmoAngry = { Id = "rbxassetid://123879588166068", Size = Vector2.new(256, 232) },
-		EmoStress = { Id = "rbxassetid://135439617637591", Size = Vector2.new(256, 213) },
-		Weapon_Warrior_T1 = { Id = "rbxassetid://110253568224769", Size = Vector2.new(1024, 1024) },
-		Weapon_Warrior_T2 = { Id = "rbxassetid://134296432983209", Size = Vector2.new(1024, 1024) },
+		EmoTears = { Id = "rbxassetid://113193582610345", Size = Vector2.new(512, 512) },
+		EmoDizzy = { Id = "rbxassetid://117032268995160", Size = Vector2.new(512, 512) },
+		EmoAngry = { Id = "rbxassetid://91062043264397", Size = Vector2.new(512, 512) },
+		EmoStress = { Id = "rbxassetid://108308024766302", Size = Vector2.new(512, 512) },
+		Weapon_Warrior_T1 = { Id = "rbxassetid://128452607217223", Size = Vector2.new(512, 512) },
+		Weapon_Warrior_T2 = { Id = "rbxassetid://115882263046090", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T3 = { Id = "rbxassetid://118676171420516", Size = Vector2.new(1024, 1024) },
-		Weapon_Warrior_T4 = { Id = "rbxassetid://121628920172881", Size = Vector2.new(1024, 1024) },
-		Weapon_Warrior_T5 = { Id = "rbxassetid://78787056413343", Size = Vector2.new(1024, 1024) },
-		Weapon_Warrior_T6 = { Id = "rbxassetid://134912361470616", Size = Vector2.new(1024, 1024) },
+		Weapon_Warrior_T4 = { Id = "rbxassetid://104179222312415", Size = Vector2.new(512, 512) },
+		Weapon_Warrior_T5 = { Id = "rbxassetid://94672890742115", Size = Vector2.new(512, 512) },
+		Weapon_Warrior_T6 = { Id = "rbxassetid://90778236753102", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T7_Halo = { Id = "rbxassetid://81358930713578", Size = Vector2.new(1024, 1024) },
 		Weapon_Warrior_T7_Horns = { Id = "rbxassetid://109996418847092", Size = Vector2.new(1024, 1024) },
 		Weapon_Warrior_T7_Neutral = { Id = "rbxassetid://113768226721190", Size = Vector2.new(1024, 1024) },
-		Weapon_Mage_T1 = { Id = "rbxassetid://94017465082266", Size = Vector2.new(1024, 1024) },
-		Weapon_Mage_T2 = { Id = "rbxassetid://124480073241910", Size = Vector2.new(1024, 1024) },
-		Weapon_Mage_T3 = { Id = "rbxassetid://98652791112835", Size = Vector2.new(1024, 1024) },
-		Weapon_Mage_T4 = { Id = "rbxassetid://114114689990814", Size = Vector2.new(1024, 1024) },
-		Weapon_Mage_T5 = { Id = "rbxassetid://82923455323942", Size = Vector2.new(1024, 1024) },
-		Weapon_Mage_T6 = { Id = "rbxassetid://86455721876057", Size = Vector2.new(1024, 1024) },
+		Weapon_Mage_T1 = { Id = "rbxassetid://101211434272271", Size = Vector2.new(512, 512) },
+		Weapon_Mage_T2 = { Id = "rbxassetid://116724090045503", Size = Vector2.new(512, 512) },
+		Weapon_Mage_T3 = { Id = "rbxassetid://133774997043450", Size = Vector2.new(512, 512) },
+		Weapon_Mage_T4 = { Id = "rbxassetid://128100201964506", Size = Vector2.new(512, 512) },
+		Weapon_Mage_T5 = { Id = "rbxassetid://126284521382436", Size = Vector2.new(512, 512) },
+		Weapon_Mage_T6 = { Id = "rbxassetid://90089061818132", Size = Vector2.new(512, 512) },
 		Weapon_Mage_T7_Halo = { Id = "rbxassetid://83762763419599", Size = Vector2.new(1024, 1024) },
 		Weapon_Mage_T7_Horns = { Id = "rbxassetid://112320137471828", Size = Vector2.new(1024, 1024) },
 		Weapon_Mage_T7_Neutral = { Id = "rbxassetid://111298666053873", Size = Vector2.new(1024, 1024) },
-		Weapon_Archer_T1 = { Id = "rbxassetid://114530628874023", Size = Vector2.new(1024, 1024) },
-		Weapon_Archer_T2 = { Id = "rbxassetid://77934186009567", Size = Vector2.new(1024, 1024) },
-		Weapon_Archer_T3 = { Id = "rbxassetid://107992927949121", Size = Vector2.new(1024, 1024) },
-		Weapon_Archer_T4 = { Id = "rbxassetid://135806799928152", Size = Vector2.new(1024, 1024) },
-		Weapon_Archer_T5 = { Id = "rbxassetid://76246016710761", Size = Vector2.new(1024, 1024) },
-		Weapon_Archer_T6 = { Id = "rbxassetid://111067065096221", Size = Vector2.new(1024, 1024) },
+		Weapon_Archer_T1 = { Id = "rbxassetid://81095006038493", Size = Vector2.new(512, 512) },
+		Weapon_Archer_T2 = { Id = "rbxassetid://134554794160337", Size = Vector2.new(512, 512) },
+		Weapon_Archer_T3 = { Id = "rbxassetid://109990549438603", Size = Vector2.new(512, 512) },
+		Weapon_Archer_T4 = { Id = "rbxassetid://108956952874353", Size = Vector2.new(512, 512) },
+		Weapon_Archer_T5 = { Id = "rbxassetid://99169898262905", Size = Vector2.new(512, 512) },
+		Weapon_Archer_T6 = { Id = "rbxassetid://113396206645322", Size = Vector2.new(512, 512) },
 		Weapon_Archer_T7_Halo = { Id = "rbxassetid://123944650415871", Size = Vector2.new(1024, 1024) },
 		Weapon_Archer_T7_Horns = { Id = "rbxassetid://129557918253283", Size = Vector2.new(1024, 1024) },
 		Weapon_Archer_T7_Neutral = { Id = "rbxassetid://134108221476202", Size = Vector2.new(1024, 1024) },
@@ -2613,21 +2673,22 @@ Config.UIArt = {
 		Tex_CrownShardGround = { Id = "rbxassetid://114856730896342", Size = Vector2.new(1024, 1024) },
 		Tex_CrackedLava = { Id = "rbxassetid://116294435572633", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lava cracks (Tex_CrackedLava_FF)
 		Tex_Cobblestone = { Id = "rbxassetid://106614155699357", Size = Vector2.new(1024, 1024) }, -- A23-30 E: town cobbles (Tex_Cobblestone_FF)
-		Tex_Basalt = { Id = "rbxassetid://106904976329450", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lair floor (Tex_Basalt_FF)
+		Tex_Basalt = { Id = "rbxassetid://82958066906333", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Horns lair floor (Tex_Basalt_FF)
 		Tex_WoodPlanks = { Id = "rbxassetid://89937004688664", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: bridges / benches (parts) (Tex_WoodPlanks_FF)
-		Tex_Slate = { Id = "rbxassetid://71336203326371", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins flagstones (Tex_RuinsFlagstone_FF)
+		Tex_Slate = { Id = "rbxassetid://115115936747396", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: ruins flagstones (Tex_RuinsFlagstone_FF)
 		Tex_Sand = { Id = "rbxassetid://131974232864115", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: beaches (Tex_Sand_FF)
 		Tex_Rock = { Id = "rbxassetid://104777096316045", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: every cliff (Tex_Rock_FF)
 		Tex_Marble = { Id = "rbxassetid://82709638100363", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: fountain / Halo parts (Tex_Marble_FF)
 		Tex_Limestone = { Id = "rbxassetid://75666187308111", Size = Vector2.new(1024, 1024) }, -- A23-29/30 Firefly: Halo town floor (Tex_Limestone_FF)
 		Tex_PumpkinSoil = { Id = "rbxassetid://126628778707353", Size = Vector2.new(1024, 1024) }, -- A23-30 pumpkin field soil (Mud slot)
 		Tex_TreeLeaves = { Id = "rbxassetid://139379724133324", Size = Vector2.new(1024, 1024) }, -- tree leaf balls (neutral: the part Color tints it)
-		Tex_TreeBark = { Id = "rbxassetid://75619597726241", Size = Vector2.new(1024, 1024) }, -- tree trunks (neutral: the part Color tints it)
+		Tex_TreeBark = { Id = "rbxassetid://85265884740870", Size = Vector2.new(1024, 1024) }, -- tree trunks (neutral: the part Color tints it)
+		Tex_HauntedFloor = { Id = "rbxassetid://112704604810052", Size = Vector2.new(1024, 1024) }, -- A23-45 유령 숲 floor (Tex_HauntedFloor_FF): Asphalt slot GE_HauntedFloor
 		-- sky sun / moon (black = transparent, additive): WarService Sky.SunTextureId / MoonTextureId per war sky
 		Sky_Sun = { Id = "rbxassetid://104329382887122", Size = Vector2.new(512, 512) }, -- Neutral sun
 		Sky_SunDawn = { Id = "rbxassetid://134904669662412", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun
 		Sky_MoonEclipse = { Id = "rbxassetid://101354392666522", Size = Vector2.new(512, 512) }, -- Eclipse (Horns crown) moon
-		MapParchment = { Id = "rbxassetid://133911744102396", Size = Vector2.new(1536, 1024) },
+		MapParchment = { Id = "rbxassetid://73520674697747", Size = Vector2.new(1536, 1024) },
 	},
 	-- Lettering images (TXT_*) were deleted 2026-10-06 (unused: UseTextImages=false). Text stays live TextLabels.
 	TextLabels = {},

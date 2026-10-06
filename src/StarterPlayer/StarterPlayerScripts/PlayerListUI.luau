@@ -1,5 +1,6 @@
 -- PlayerListUI.luau : our own Tab player list (SPEC A23-26, A23-21 / BB12). Roblox's default list is switched off in
--- Start (T.DisableCoreList) and this overlay replaces it in the top-right corner (A23-40: the corner layout B keeps empty). Touch-only devices (no keyboard, so no Tab) keep
+-- Start (T.DisableCoreList) and this overlay replaces it in the top-right corner, right under [메뉴] (A23-40 정정:
+-- HUD.Layout.Rects.menu; right under the top bar until the HUD has laid out). Touch-only devices (no keyboard, so no Tab) keep
 -- Roblox's list until the phone menu row that calls Toggle() exists (T.PhoneMenuRow; BB12 "폰은 Roblox 상단 목록").
 -- Rows come from the server's leaderstats (PlayerService.buildLeaderstats: IntValues named Config.Leaderstats.Names[id]
 -- for the ids in Config.Leaderstats.Columns, read by those names, never hard-coded), a faction colour dot (Faction
@@ -38,7 +39,7 @@ local T = {
 	Z = 80, -- above the HUD (5), Panels (50) and WorldMap (60); below toasts (95) and UIKit.Confirm (100)
 	MaxW = 560,
 	SideMargin = 20, -- width = min(MaxW, W - 2 * SideMargin)
-	TopGap = 8, -- top = top-bar inset / scale + TopGap (A23-40: right under the top bar, top-right)
+	TopGap = 8, -- top = [메뉴]'s bottom + TopGap, right edge = [메뉴]'s (A23-40 정정); top-bar inset / scale + TopGap before
 	MaxHFrac = 0.65, -- height <= 65% of the screen
 	BottomMargin = 16,
 	Pad = 18, -- inside the PanelCard rim
@@ -434,13 +435,21 @@ local function layout()
 	end
 	local w = math.max(240, math.min(T.MaxW, W - T.SideMargin * 2))
 	local top = insetY() / s + T.TopGap
+	local right = T.SideMargin
+	local hud = C and C.HUD
+	local lay = type(hud) == "table" and type(hud.Layout) == "table" and hud.Layout or nil
+	local m = lay and type(lay.Rects) == "table" and lay.Rects.menu or nil
+	if type(m) == "table" and tonumber(m.Y) and tonumber(m.H) and tonumber(m.X) and tonumber(m.W) then
+		top = m.Y + m.H + T.TopGap
+		right = math.max(0, W - (m.X + m.W))
+	end
 	local chrome = T.Pad * 2 + T.TitleH + T.Gap + T.HeaderH + T.Gap
 	local rim = T.MineStroke * 2 -- list padding top + bottom (room for my row's rim)
 	local contentH = n * T.RowH + math.max(0, n - 1) * T.RowGap + rim
 	local maxH = math.max(chrome + T.RowH + rim, math.min(H * T.MaxHFrac, H - top - T.BottomMargin))
 	local h = math.min(maxH, chrome + math.max(contentH, T.RowH + rim))
 	root.Size = UDim2.fromOffset(math.floor(w), math.floor(h))
-	root.Position = UDim2.new(1, -T.SideMargin, 0, math.floor(top))
+	root.Position = UDim2.new(1, -math.floor(right), 0, math.floor(top))
 	-- room for the scroll bar only while the rows scroll (never less than the rim); the header follows so the
 	-- columns stay aligned
 	local inset = UDim.new(0, math.max(T.MineStroke, contentH > h - chrome + 0.5 and T.ScrollBar + 4 or 0))

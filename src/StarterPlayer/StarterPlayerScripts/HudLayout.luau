@@ -7,9 +7,10 @@
 -- the real top-bar inset, the phone combat cluster follows the real jump button, the centre column narrows between the
 -- left and right blocks, and on PCs the bottom-centre group moves left when the corner cluster would cover it.
 --   PC:    top-left round minimap + 2 quest lines under it, top-centre war meter -> chips -> next event -> notify,
---          bottom-centre face + 'Lv · 전투력' + HP | MP + XP + icon tile row, bottom-right combat cluster, top-right empty.
+--          bottom-centre face + 'Lv · 전투력' + HP | MP + XP + icon tile row, bottom-right combat cluster, top-right the
+--          [메뉴] tile (A23-40 정정: its tiles fold out to the left; the Tab list opens under it).
 --   phone: the bottom centre belongs to the thumbstick and the combat buttons, so the face / bars / tile row sit top-right
---          (the quest lines beside the minimap, the centre column between them).
+--          (the quest lines beside the minimap, the centre column between them); [메뉴] ends the tile row on the right.
 local HudLayout = {}
 
 -- reference screens of the approved sheets (real px)
@@ -32,7 +33,10 @@ local ITEMS = {
 	hp_bar = { "BC", { 420, 598, 216, 20 }, { 551, 78, 93, 13 }, "TR" },
 	mp_bar = { "BC", { 644, 598, 216, 20 }, { 648, 78, 93, 13 }, "TR" },
 	xp_bar = { "BC", { 420, 622, 440, 8 }, { 551, 95, 190, 6 }, "TR" },
-	tiles = { "BC", { 420, 640, 440, 52 }, { 502, 112, 239, 45 }, "TR" },
+	tiles = { "BC", { 420, 640, 440, 52 }, { 502, 112, 191, 45 }, "TR" },
+	-- A23-40 정정 (user 2026-10-06 "메뉴는 오른쪽 위에, 누르면 옆으로 좌르륵"): PC top-right corner 10 px from the edge
+	-- under the top bar; phone the right end of the tile row (the plate holds the corner). out.fold = its fold-out room
+	menu = { "TR", { 1218, 66, 52, 52 }, { 696, 112, 45, 45 } },
 	combo = { "BC", { 580, 463, 120, 24 }, { 305, 236, 144, 20 } },
 	potions = { "BR", { 926, 646, 122, 58 }, { 337, 298, 112, 54 } },
 	ghost = { "BR", { 987, 577, 61, 61 }, { 590, 182, 57, 57 } },
@@ -62,6 +66,15 @@ local BC_GROUP = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tile
 local CLUSTER = { "potions", "ghost", "q", "z", "auto", "attack" }
 -- touch: the plate beside the portrait (moves right when the portrait grows back to MIN_TAP)
 local PLATE = { "power_line", "hp_bar", "mp_bar", "xp_bar" }
+-- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own;
+-- more lines go down on PCs and UP on phones (A23-38: phones fold out upward only, never onto the combat buttons). While
+-- open it may run over the centre column's info rows (chips / next event / notify), on phones also over the tile row it
+-- replaces and the face / bars above it, but never over the war meter, the minimap, the quest lines, a combat button,
+-- the jump button or the thumbstick zone
+local FOLD_OVER = { tiles = true, menu = true, chips = true, event = true, notify = true, combo = true }
+local FOLD_OVER_TOUCH = { portrait = true, power_line = true, hp_bar = true, mp_bar = true, xp_bar = true }
+local FOLD_ROWS = 3
+local FOLD_GAP = 4 -- real px between two fold-out squares on PCs
 
 local function rect(x, y, w, h)
 	return { X = x, Y = y, W = w, H = h }
@@ -142,6 +155,7 @@ function HudLayout.Compute(env)
 				r.X, r.W = r.X + g, math.max(1, r.W - g)
 			end
 			out.tiles.Y += g
+			out.menu.Y += g
 		end
 		-- quest lines: one MIN_TAP target (two text lines), grown downward
 		if out.quest.H < MIN_TAP then out.quest.H = MIN_TAP end
@@ -174,6 +188,16 @@ function HudLayout.Compute(env)
 	tiles.Size = size
 	tiles.Gap = tileGap
 	tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
+	-- [메뉴]: a square (>= MIN_TAP on touch) that keeps its right edge; on phones it ends the tile row (same line, the
+	-- row stops one gap before it, so a grown [메뉴] takes a square from the row, never covers it)
+	local menu = out.menu
+	local mSize = touch and math.max(menu.H, MIN_TAP) or menu.H
+	menu.X, menu.W, menu.H = menu.X + menu.W - mSize, mSize, mSize
+	if touch then
+		menu.Y = tiles.Y
+		tiles.W = math.max(size, menu.X - tileGap - tiles.X)
+		tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
+	end
 
 	-- desktop: the bottom-centre group moves left (keeping its shape) when the corner cluster reaches it, but never past
 	-- the left margin; if that is still not enough it is squeezed from its left edge (narrow 4:3 / 5:4 windows)
@@ -242,6 +266,48 @@ function HudLayout.Compute(env)
 		r.X = math.clamp(r.X, 0, math.max(0, W - r.W))
 		r.Y = math.clamp(r.Y, top, math.max(top, H - r.H))
 	end
+
+	-- [메뉴] fold-out room: Lines = { { X, Y, Cols } } right-aligned one gap left of [메뉴]; each line reaches left to the
+	-- nearest item it may not cover (an item level with it that reaches under [메뉴] leaves no room: the line closes). X / Y / W / H = the box
+	-- around all lines, Cols = the first line's squares, Rows = #Lines
+	local m = out.menu
+	local fGap = touch and tileGap or FOLD_GAP * k -- phones: the tile row's gap (the first line lies on that row)
+	local fSize = m.H
+	local right = m.X - fGap
+	local blockers = {}
+	for oid, o in out do
+		if not hidden[oid] and not FOLD_OVER[oid] and not (touch and FOLD_OVER_TOUCH[oid]) then table.insert(blockers, o) end
+	end
+	if touch then
+		table.insert(blockers, rect(0, H * STICK.Y, W * STICK.X, H - H * STICK.Y))
+		if jump then table.insert(blockers, jump) end
+	end
+	local function colsAt(y0)
+		local left = 0
+		for _, o in blockers do
+			if o.Y < y0 + fSize and o.Y + o.H > y0 and o.X < m.X - 0.01 then
+				left = math.max(left, o.X + o.W + GAP)
+			end
+		end
+		return math.max(0, math.floor((right - left + fGap) / (fSize + fGap) + 1e-6))
+	end
+	local lines = {}
+	local y, step = m.Y, (touch and -1 or 1) * (fSize + fGap)
+	local x0, y0, y1 = right, math.huge, -math.huge
+	while #lines < FOLD_ROWS and y >= top - 0.01 and y + fSize <= H + 0.01 do
+		local cols = colsAt(y)
+		if cols < 1 then break end
+		local lx = right - cols * (fSize + fGap) + fGap
+		table.insert(lines, { X = lx, Y = y, Cols = cols })
+		x0, y0, y1 = math.min(x0, lx), math.min(y0, y), math.max(y1, y + fSize)
+		y += step
+	end
+	if #lines == 0 then -- no room at all (a tiny window): one square over [메뉴]'s left neighbour
+		lines[1] = { X = right - fSize, Y = m.Y, Cols = 1 }
+		x0, y0, y1 = right - fSize, m.Y, m.Y + fSize
+	end
+	out.fold = { X = x0, Y = y0, W = right - x0, H = y1 - y0, Size = fSize, Gap = fGap, Cols = lines[1].Cols,
+		Rows = #lines, Lines = lines }
 	return out
 end
 

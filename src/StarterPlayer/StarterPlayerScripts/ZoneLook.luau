@@ -45,6 +45,10 @@ local ZONE = {
 	-- orange low sun through the tint, purple shadows through the ambient
 	PumpkinPatch = { Amb = { 1.15, 0.85, 1.25 }, Bright = 0.85, Exp = 0.08, Tint = rgb(255, 205, 170), Sat = 0.2,
 		Con = 0.08, CC = 0 },
+	-- A23-45 유령 숲 (이미지 생성 1, 959a9af sheet art/review/haunted_hollow_sheet.jpg): blue-violet moonlight, no fog,
+	-- exposure up so the ghosts stay readable
+	HauntedHollow = { Amb = { 0.92, 0.95, 1.3 }, Bright = 0.7, Exp = 0.15, Tint = rgb(214, 206, 255), Sat = 0.05,
+		Con = 0.08, CC = 0.02 },
 	-- pale limestone town: dimmer sun so the white tiles do not burn out
 	HaloTown = { Amb = { 1.06, 1.04, 0.95 }, Bright = 0.88, Exp = -0.12, Tint = rgb(255, 246, 228), Sat = 0.06, Con = 0.05,
 		CC = 0 },

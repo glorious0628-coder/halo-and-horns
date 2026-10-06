@@ -71,9 +71,10 @@ local L = {
 	PotionGap = 7.5, -- du between the HP and MP potion buttons (6 px at the PC UIScale 0.8)
 	Badge = { Halo = "LevelBadgeHalo", Horns = "LevelBadgeHorns", Neutral = "LevelBadgeArtisan" }, -- else LevelBadge
 	Glyph = { Warrior = "GlyphSword", Mage = "GlyphStaff", Archer = "GlyphBow" }, -- attack button (IconAttack fallback)
-	-- A23-40 icon tile row, left to right. Window = the Panels window the tile opens (the tile shows once it is
-	-- registered; Alt = an older window it opens until then), Map / Menu = the world map / the menu; Key = Keybinds
-	-- action for the key badge; Keep = shown first when the row has fewer slots than tiles (the rest wait for [메뉴])
+	-- A23-40 icon tile row, left to right: the windows opened often (A23-40 정정: 캐릭터 · 가방 · 스킬 · 지도 · 랭킹 · 펫).
+	-- Window = the Panels window the tile opens (the tile shows once it is registered; Alt = an older window it opens
+	-- until then), Map = the world map; Key = Keybinds action for the key badge; Keep = shown first when the row has
+	-- fewer slots than tiles (phones: the rest fold out of [메뉴], in front of its own squares)
 	Tiles = {
 		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
 		{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },
@@ -81,9 +82,21 @@ local L = {
 		{ Id = "Map", Icon = "IconMap", Map = true, Key = "Map", Keep = 1 },
 		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 5 },
 		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 },
-		{ Id = "Settings", Icon = "IconSettings", Window = "Settings", Keep = 3 },
-		{ Id = "Menu", Icon = "GlyphMenu", Menu = true, Key = "Menu", Keep = 0 },
 	},
+	-- A23-40 정정 (user 2026-10-06 "메뉴는 오른쪽 위에, 누르면 옆으로 좌르륵"; 검수: 새 소식 · 이동 · 도움말 · 설정): the
+	-- squares [메뉴] folds out to its left, left to right. 직업 바꾸기 · 환생 · 오프닝 다시 보기 · 이름 숨기기 · 휴가 are
+	-- 설정 rows and 닉네임 a 내 캐릭터 row (BB13); until 설정 is registered its square opens the old 메뉴 window (Alt),
+	-- which still lists them. A square shows once its window is registered (no silent no-op)
+	Fold = {
+		{ Id = "News", Icon = "IconNews", Window = "News" },
+		{ Id = "Travel", Icon = "IconTravel", Window = "Travel" },
+		{ Id = "Help", Icon = "IconHelp", Window = "Help", Key = "Help" },
+		{ Id = "Settings", Icon = "IconSettings", Window = "Settings", Alt = "Menu" },
+	},
+	FoldTime = 0.2, -- s: the squares slide out of [메뉴] to the left (A23-38: 0.15-0.25 s), FoldStep apart
+	FoldStep = 0.02,
+	FoldBack = 0.15, -- s: folding back in
+	FoldPad = 10, -- du above / below the squares inside the clipping frame (key badges, the glow)
 	TileIcon = 0.6, -- icon side / tile side (the name sits under it inside the tile)
 	TileTint = 0.15, -- MenuTile ImageTransparency over the world (sheet a2338)
 }
@@ -174,6 +187,9 @@ local TXT = {
 	TileSkills = "스킬",
 	TileRanking = "랭킹",
 	TileSettings = "설정",
+	TileNews = "새 소식",
+	TileTravel = "이동",
+	TileHelp = "도움말",
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
 	QuestLineSummary = "오늘의 퀘스트 %d/%d",
@@ -198,8 +214,6 @@ local lastAction = {}
 local prevLevel = nil
 local levelBaselineReady = false
 
-local menuGlowOn = nil
-local menuGlowTween = nil
 
 local questRows = {}
 local questExpanded = false -- collapsed list shows the header + one row
@@ -1692,6 +1706,189 @@ local function tileButton(def, onClick)
 	return btn, label, img
 end
 
+-- A23-40 정정: [메뉴] (its own square, top-right on PCs, the tile row's right end on phones) and its fold-out: a clipping
+-- frame left of [메뉴] with one square per fold entry (the L.Fold squares + a copy of every row tile for the phone row's
+-- overflow). L.LayoutMenu places them from Rects.menu / Rects.fold, L.SetFold slides them out / back in
+function L.BuildMenu(names)
+	local btn, label = tileButton({ Id = "Menu", Icon = "GlyphMenu", Key = "Menu", Text = names.Menu }, function()
+		L.WindowKey("Menu")
+	end)
+	btn.Visible = true
+	btn.ZIndex = 3
+	ui.menu, ui.menuLabel = btn, label
+	ui.menuGlow = makeGlow(btn, UDim.new(0, 10))
+	ui.fold = UIKit.Create("Frame", {
+		Name = "MenuFold",
+		BackgroundTransparency = 1,
+		ClipsDescendants = true,
+		Visible = false,
+		ZIndex = 2,
+		Parent = ui.buttons,
+	})
+	ui.foldTiles = {}
+	local function add(def, row)
+		local copy = table.clone(def)
+		copy.Text = names[def.Id]
+		local b = tileButton(copy, function()
+			L.FoldTap(copy)
+		end)
+		b.Name = "Fold" .. def.Id
+		b.Parent = ui.fold
+		local entry = { Def = copy, Button = b, Row = row }
+		if def.Id == "Settings" then ui.settingsGlow = makeGlow(b, UDim.new(0, 10)) end
+		table.insert(ui.foldTiles, entry)
+	end
+	for _, def in L.Tiles do add(def, true) end
+	for _, def in L.Fold do add(def, false) end
+	-- the squares' art loads now, so the first fold-out slides in with its icons (not blank squares)
+	task.spawn(function()
+		pcall(function()
+			game:GetService("ContentProvider"):PreloadAsync({ ui.fold, btn })
+		end)
+	end)
+end
+
+-- the fold squares to show, nearest [메뉴] first: 설정, 도움말, 이동, 새 소식 (the registered ones), then on phones the
+-- row tiles that did not fit the row, so the fold reads 캐릭터 … 펫 새 소식 이동 도움말 설정 [메뉴] from the left
+function L.FoldEntries()
+	local inRow = {}
+	for _, t in ui.shownTiles or {} do inRow[t.Def.Id] = true end
+	local list = {}
+	for i = #(ui.foldTiles or {}), 1, -1 do
+		local f = ui.foldTiles[i]
+		local def = f.Def
+		if (def.Map or L.TileWindow(def) ~= nil) and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
+	end
+	return list
+end
+
+-- [메뉴] on its rect; the fold frame spans every fold line (left of [메뉴], FoldPad above and below)
+function L.LayoutMenu(R)
+	local m, f = R.menu, R.fold
+	if not ui.menu or not m or not f or type(f.Lines) ~= "table" then return end
+	L.Place(ui.menu, m)
+	local pad = L.FoldPad
+	local g = { X = f.X, Y = f.Y - pad, W = m.X - f.X, H = f.H + pad * 2, Size = f.Size, Gap = f.Gap, Lines = f.Lines,
+		Right = m.X - f.Gap }
+	ui.foldGeom = g
+	ui.fold.Position = UDim2.fromOffset(g.X, g.Y)
+	ui.fold.Size = UDim2.fromOffset(g.W, g.H)
+	if ui.foldOpen then L.PlaceFold(false) end
+end
+
+-- slot i of the shown squares (1 = next to [메뉴]; line by line, Rects.fold.Lines): its frame-relative centre and the
+-- start of its slide (just right of the frame = under [메뉴]'s left edge), or nil when the fold has no room for it
+function L.FoldSlot(i)
+	local g = ui.foldGeom
+	if not g then return nil end
+	local n = i
+	for _, ln in g.Lines do
+		if n <= ln.Cols then
+			local cy = ln.Y + g.Size / 2 - g.Y
+			return UDim2.fromOffset(g.Right - (n - 1) * (g.Size + g.Gap) - g.Size / 2 - g.X, cy),
+				UDim2.fromOffset(g.W + g.Size / 2, cy)
+		end
+		n -= ln.Cols
+	end
+	return nil
+end
+
+-- the shown squares on their slots: animate = slide out of [메뉴] one after another (A23-38 좌르륵), else jump there
+-- (a re-layout while open)
+function L.PlaceFold(animate)
+	local list = L.FoldEntries()
+	local shown = {}
+	for i, f in list do
+		local target, start = L.FoldSlot(i)
+		local b = f.Button
+		if f.Tween then
+			f.Tween:Cancel()
+			f.Tween = nil
+		end
+		if target then
+			shown[f] = true
+			b.Size = UDim2.fromOffset(ui.foldGeom.Size, ui.foldGeom.Size)
+			if animate then
+				b.Position = start
+				f.Tween = TweenService:Create(b, TweenInfo.new(L.FoldTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out,
+					0, false, (i - 1) * L.FoldStep), { Position = target })
+				f.Tween:Play()
+			else
+				b.Position = target
+			end
+		end
+		b.Visible = target ~= nil
+	end
+	for _, f in ui.foldTiles do
+		if not shown[f] then f.Button.Visible = false end
+	end
+	ui.foldShown = list
+end
+
+-- opens / folds back the [메뉴] squares. Phones: the fold lies on the tile row, which hides while it is open
+function L.SetFold(open)
+	open = open == true and ui.fold ~= nil and ui.foldGeom ~= nil
+	if open == (ui.foldOpen == true) then return end
+	ui.foldOpen = open
+	ui.foldToken = (ui.foldToken or 0) + 1
+	local token = ui.foldToken
+	if open then
+		ui.fold.Visible = true
+		L.PlaceFold(true)
+	else
+		for i, f in ui.foldShown or {} do
+			if f.Tween then f.Tween:Cancel() end
+			local _, start = L.FoldSlot(i)
+			if start and f.Button.Visible then
+				f.Tween = TweenService:Create(f.Button, TweenInfo.new(L.FoldBack, Enum.EasingStyle.Quad,
+					Enum.EasingDirection.In), { Position = start })
+				f.Tween:Play()
+			end
+		end
+		task.delay(L.FoldBack + 0.02, function()
+			if ui.foldToken ~= token then return end
+			ui.fold.Visible = false
+			for _, f in ui.foldTiles do f.Button.Visible = false end
+		end)
+	end
+	if IS_TOUCH then
+		ui.tileKey = nil -- L.PickTiles re-applies the row's visibility (hidden under an open fold)
+		L.PickTiles()
+	end
+end
+
+-- a fold square: fold back, then open its window like a row tile
+function L.FoldTap(def)
+	L.SetFold(false)
+	L.TileTap(def)
+end
+
+-- A23-38: a press outside [메뉴] and its squares folds them back (the press still does its own thing); Esc opens
+-- Roblox's menu (GuiService.MenuOpened, HUD.Start). The pad's B joins with the pad wiring (BB21: every key goes through
+-- Keybinds). InputObject.Position and AbsolutePosition share the gui-inset-relative screen space
+function L.FoldInput(input)
+	if not ui.foldOpen then return end
+	local t = input.UserInputType
+	if t ~= Enum.UserInputType.MouseButton1 and t ~= Enum.UserInputType.Touch then return end
+	local px, py = input.Position.X, input.Position.Y
+	local function inside(gui)
+		local a, z = gui.AbsolutePosition, gui.AbsoluteSize
+		return gui.Visible and px >= a.X and px <= a.X + z.X and py >= a.Y and py <= a.Y + z.Y
+	end
+	if inside(ui.menu) then return end
+	for _, f in ui.foldShown or {} do
+		if inside(f.Button) then return end
+	end
+	L.SetFold(false)
+end
+
+-- the fold folds back when a window opens (any way) or the HUD hides (a picker, the loading screen)
+function L.FoldWatch()
+	local panels = C and C.Panels
+	local open = type(panels) == "table" and type(panels.IsOpen) == "function" and panels.IsOpen()
+	if open or not (ui.root and ui.root.Visible) then L.SetFold(false) end
+end
+
 local function buildButtons(root)
 	ui.buttons = UIKit.Create("Frame", {
 		Name = "Buttons",
@@ -1761,7 +1958,8 @@ local function buildButtons(root)
 	-- A23-40 icon tile row (U1: the menu key is B by default; Esc belongs to Roblox and M opens the map). A window tile
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
 	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
-		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu }
+		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews,
+		Travel = TXT.TileTravel, Help = TXT.TileHelp }
 	ui.tiles = {}
 	for i, def in L.Tiles do
 		def.Text = names[def.Id]
@@ -1769,9 +1967,9 @@ local function buildButtons(root)
 			L.TileTap(def)
 		end)
 		ui.tiles[i] = { Def = def, Button = btn, Label = label }
-		if def.Menu then ui.menu, ui.menuLabel = btn, label end
+		if def.Id == "Bag" then ui.bagGlow = makeGlow(btn, UDim.new(0, 10)) end -- B14 scroll hint
 	end
-	ui.menuGlow = makeGlow(ui.menu, UDim.new(0, 10))
+	L.BuildMenu(names)
 	-- A23-1 auto combat ON/OFF (round, Firefly BtnRound): hidden until the crown-shard quest unlocks it (no "unlocks at
 	-- ..." teaser); ON = gold ring, OFF = dimmed disc
 	ui.auto, ui.autoArt = roundButton("Auto", L.Square, "BtnRound", COL.ReleaseFill)
@@ -2235,27 +2433,39 @@ function L.ItemsHint()
 	return ok and hint == true
 end
 
-local function refreshMenuGlow()
-	local glow = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
-		or L.ItemsHint()
-	if glow == menuGlowOn then return end
-	menuGlowOn = glow
-	if menuGlowTween then
-		menuGlowTween:Cancel()
-		menuGlowTween = nil
+-- a pulsing gold rim (makeGlow stroke) on / off; key = which one (L.Glows keeps its state and tween)
+L.Glows = {}
+function L.SetGlow(key, stroke, on)
+	local g = L.Glows[key]
+	if not g then
+		g = {}
+		L.Glows[key] = g
 	end
-	local stroke = ui.menuGlow
+	if g.On == on then return end
+	g.On = on
+	if g.Tween then
+		g.Tween:Cancel()
+		g.Tween = nil
+	end
 	if not stroke then return end
-	if glow then
+	if on then
 		stroke.Transparency = 0
 		stroke.Thickness = 3
-		menuGlowTween = TweenService:Create(stroke,
+		g.Tween = TweenService:Create(stroke,
 			TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 6 })
-		menuGlowTween:Play()
+		g.Tween:Play()
 	else
 		stroke.Transparency = 1
 		stroke.Thickness = 3
 	end
+end
+
+-- 환생 ready / 휴가 days are 설정 rows now (A23-40 정정): [메뉴] and its 설정 square glow; the scroll hint (B14) glows 가방
+local function refreshMenuGlow()
+	local settings = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
+	L.SetGlow("menu", ui.menuGlow, settings)
+	L.SetGlow("settings", ui.settingsGlow, settings)
+	L.SetGlow("bag", ui.bagGlow, L.ItemsHint())
 end
 
 ----------------------------------------------------------------- refresh: travel
@@ -3322,21 +3532,20 @@ function L.PinnedTap(e, r)
 	end
 end
 
+-- U1 menu key / the [메뉴] square (A23-40 정정): an open window closes first, else the [메뉴] squares fold out to the
+-- left (or back in)
 openMenu = function()
-	if throttled("menu", 0.25) then return end
+	if throttled("menu", 0.2) then return end
 	local panels = C and C.Panels
-	if type(panels) ~= "table" then return end
-	if type(panels.IsOpen) == "function" and type(panels.Close) == "function" then
+	if type(panels) == "table" and type(panels.IsOpen) == "function" and type(panels.Close) == "function" then
 		local ok, open = pcall(panels.IsOpen)
 		if ok and open then
+			L.SetFold(false)
 			pcall(panels.Close, true)
 			return
 		end
 	end
-	if type(panels.Open) == "function" then
-		local ok, err = pcall(panels.Open, "Menu")
-		if not ok then warnThrottled("Panels.Open failed: " .. tostring(err)) end
-	end
+	L.SetFold(not ui.foldOpen)
 end
 
 -- 지도 square (same toggle as WorldMap's M key)
@@ -3359,13 +3568,9 @@ function L.TileWindow(def)
 	return nil
 end
 
--- a tile press: [메뉴] = the menu key (closes any window, else opens the menu), 지도 = the world map toggle, window tiles
--- open their window (the same tile closes it; another window switches)
+-- a tile press: 지도 = the world map toggle, window tiles open their window (the same tile closes it; another window
+-- switches)
 function L.TileTap(def)
-	if def.Menu then
-		L.WindowKey("Menu")
-		return
-	end
 	if def.Map then
 		local wm = C and C.WorldMap
 		local mapOpen = type(wm) == "table" and type(wm.IsOpen) == "function" and wm.IsOpen()
@@ -3400,6 +3605,7 @@ function L.WindowKey(action)
 	local kb, panels = C and C.Keybinds, C and C.Panels
 	local target = kb and kb.WindowFor(action)
 	if action ~= "Menu" and not target then return false end
+	if action ~= "Menu" then L.SetFold(false) end
 	if type(panels) ~= "table" then return true end
 	local open = type(panels.IsOpen) == "function" and panels.IsOpen()
 	if action == "Menu" then
@@ -3514,14 +3720,14 @@ function L.Place(btn, r)
 	btn.Position = UDim2.fromOffset(r.X + r.W / 2, r.Y + r.H / 2)
 end
 
--- A23-40 icon tiles: which tiles show (a window tile once its window exists; 지도 and [메뉴] always), trimmed to the
--- row's Count by Keep (the rest wait for the [메뉴] fold-out, A23-38 / BB13). Returns true when the shown set changed.
+-- A23-40 icon tiles: which tiles show (a window tile once its window exists; 지도 always), trimmed to the row's Count by
+-- Keep (phones: the rest fold out of [메뉴], L.FoldEntries). Returns true when the shown set changed.
 function L.PickTiles()
 	if not ui.tiles then return false end
 	local want = {}
 	for _, t in ui.tiles do
 		local def = t.Def
-		if def.Map or def.Menu or L.TileWindow(def) then table.insert(want, t) end
+		if def.Map or L.TileWindow(def) then table.insert(want, t) end
 	end
 	local count = (L.Rects and L.Rects.tiles and L.Rects.tiles.Count) or #want
 	if #want > count then
@@ -3542,7 +3748,8 @@ function L.PickTiles()
 	ui.shownTiles = want
 	local shown = {}
 	for _, t in want do shown[t] = true end
-	for _, t in ui.tiles do t.Button.Visible = shown[t] == true end
+	local underFold = IS_TOUCH and ui.foldOpen == true
+	for _, t in ui.tiles do t.Button.Visible = shown[t] == true and not underFold end
 	return true
 end
 
@@ -3586,9 +3793,11 @@ applyLayout = function()
 		end
 	end
 
-	-- icon tile row (PC bottom-centre under the bars, phones top-right under the plate)
+	-- icon tile row (PC bottom-centre under the bars, phones top-right under the plate) and [메뉴] (PC top-right corner,
+	-- phones the row's right end) with its fold-out room
 	L.PickTiles()
 	L.LayoutTiles(R.tiles)
+	L.LayoutMenu(R)
 
 	-- quest lines (no plate) + the fold-out list under them (PC) / the overlay beside them (phones)
 	local q = R.quest
@@ -3711,7 +3920,9 @@ end
 
 local function tick()
 	tickCount += 1
-	if not refreshVisibility() then return end
+	local visible = refreshVisibility()
+	if ui.foldOpen then L.FoldWatch() end
+	if not visible then return end
 	refreshWarTime()
 	refreshChips()
 	refreshSkill()
@@ -3882,6 +4093,11 @@ function HUD.Start()
 	if type(C.Settings) == "table" and type(C.Settings.Changed) == "table" then C.Settings.Changed:Connect(L.RefreshKeys) end
 	L.RefreshKeys()
 	UserInputService.WindowFocusReleased:Connect(clearHolds)
+	-- A23-38: Esc opens Roblox's menu and folds the [메뉴] squares back; so does any press outside them (L.FoldInput)
+	GuiService.MenuOpened:Connect(function()
+		L.SetFold(false)
+	end)
+	UserInputService.InputBegan:Connect(L.FoldInput)
 
 	LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
 	LocalPlayer.CharacterAdded:Connect(L.RefreshPortrait)
