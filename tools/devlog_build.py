@@ -272,8 +272,33 @@ def board_stage(color_in="#4A5BC4", color_out="#10122A"):
     return c
 
 
-GRID6 = [("Slime", "MonsterSlimeCube"), ("Pumpkin Slime", "MonsterPumpkinSlime"), ("Bat Goblin", "MonsterBatGoblin"),
-         ("Little Ghost", "MonsterLittleGhost"), ("Pumpkin King", "MonsterPumpkinKing"), ("Baby Slime", "PetBabySlime")]
+TEAM_CARDS = [("🔍", "BOSS", "#F2C94C"), ("🔨", "BUILDER", "#6FCF97"), ("🖥️", "BUILDER", "#6FCF97"), ("🖌️", "ARTIST", "#56CCF2"),
+              ("✏️", "ARTIST", "#56CCF2"), ("🧩", "ART DEV", "#BB86FC"), ("🎥", "FILM CREW", "#FF8A65")]
+
+
+def team_cells():
+    """7 big cards: 3 + 3 + 1, emoji on top, one word under it"""
+    emo = ImageFont.truetype("C:/Windows/Fonts/seguiemj.ttf", 109)
+    cells = []
+    cw, ch = 316, 300
+    for i, (e, word, col) in enumerate(TEAM_CARDS):
+        row, colx = i // 3, i % 3
+        x = 34 + colx * (cw + 23) if i < 6 else (W - cw) // 2
+        y = BOX_Y + 50 + row * (ch + 22)
+        cell = rounded((cw, ch), 38, hexrgb("#24306E"), outline=hexrgb(col), width=8)
+        ic = Image.new("RGBA", (150, 150), (0, 0, 0, 0))
+        ImageDraw.Draw(ic).text((10, 8), e, font=emo, embedded_color=True)
+        ic = ic.crop(ic.getbbox() or (0, 0, 1, 1))
+        ic = contain(ic, 168, 168)
+        cell.alpha_composite(ic, ((cw - ic.width) // 2, 22))
+        lab = text_img([(word, hexrgb(col)[:3])], fit_size(word, cw - 30, 64))
+        cell.alpha_composite(lab, ((cw - lab.width) // 2, ch - lab.height - 6))
+        cells.append((cell, x + cw // 2, y + ch // 2))
+    return cells
+
+
+GRID6 = [("Slime", "MonsterSlimeCube"), ("Baby Slime", "PetBabySlime"), ("Pumpkin Slime", "MonsterPumpkinSlime"),
+         ("Pumpkin King", "MonsterPumpkinKing"), ("Bat Goblin", "MonsterBatGoblin"), ("Little Ghost", "MonsterLittleGhost")]  # one family per row
 
 
 def grid6_cells():
@@ -295,8 +320,8 @@ def board_end():
     c = radial(W, H, "#FF9A3C", "#3B0F4F", cy=0.42)
     king = contain(load_rgba("art/models/tripo/MonsterPumpkinKing_preview.png"), 680, 680)
     soft_shadow_paste(c, king, ((W - king.width) // 2 - 30, BOX_Y + 420))
-    slime = contain(load_rgba("art/models/tripo/MonsterSlimeCube_preview.png"), 270, 270)
-    soft_shadow_paste(c, slime, (700, BOX_Y + 820))
+    buddy = contain(load_rgba("art/models/tripo/MonsterPumpkinSlime_preview.png"), 270, 270)  # pumpkin family only (A23-45)
+    soft_shadow_paste(c, buddy, (700, BOX_Y + 820))
     paste_center(c, text_img([("HALO & HORNS", (255, 243, 214))], 120), W // 2, BOX_Y + 150)
     paste_center(c, text_img([("BETA  OCT 31", GOLD)], 116), W // 2, BOX_Y + 300)
     return c
@@ -380,8 +405,8 @@ def get_board(shot):
         im = board_code()
     elif b == "doodle":
         im = board_doodle()
-    elif b in ("grid6", "stage"):
-        im = board_stage("#5A3A9A", "#140A24") if b == "grid6" else board_stage()
+    elif b in ("grid6", "stage", "team_cards"):
+        im = board_stage("#5A3A9A", "#140A24") if b == "grid6" else board_stage("#2B3A8A", "#0A0D22") if b == "team_cards" else board_stage()
     elif "image" in shot:
         im = board_image(shot["image"], tuple(shot.get("focus_img", (0.5, 0.5))))
     else:
@@ -490,8 +515,40 @@ def build_caption_events(timeline):
     return ev
 
 
-# ------------------------------------------------------------------ sound effects (synthesised, no third-party audio)
+# ------------------------------------------------------------------ sound effects
+# Kenney.nl CC0 packs (Impact Sounds, Interface Sounds; docs/devlog/sfx_licenses.md) + our own synthesised whoosh / sub
+SFX_DIR = os.path.join(ROOT, "build", "devlog", "sfx")
+SFX_FILES = {
+    "boom": "impact/Audio/impactSoft_heavy_000.ogg",
+    "hit": "impact/Audio/impactPunch_heavy_002.ogg",
+    "pop": "interface/Audio/drop_002.ogg",
+    "card": "interface/Audio/drop_003.ogg",
+    "ding": "interface/Audio/confirmation_002.ogg",
+    "tick": "interface/Audio/tick_004.ogg",
+}
+_SFX = {}
+SFX_GAIN = {"whoosh": 0.3, "boom": 0.3, "hit": 0.26, "pop": 0.22, "card": 0.2, "ding": 0.2, "tick": 0.25}  # about -18..-11 dB under the voice
+
+
 def sfx(name):
+    if name in _SFX:
+        return _SFX[name]
+    f = SFX_FILES.get(name)
+    if f and os.path.exists(os.path.join(SFX_DIR, f)):
+        r = subprocess.run([FFMPEG, "-v", "error", "-i", os.path.join(SFX_DIR, f), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True)
+        x = np.frombuffer(r.stdout, dtype=np.float32).astype(np.float64)
+        x = x / max(1e-6, np.abs(x).max()) * 0.9
+        if name == "boom":  # add our sub-bass under the thud for the boss moments
+            sub = synth_sfx("boom") * 0.55
+            n = max(len(x), len(sub))
+            x = np.pad(x, (0, n - len(x))) + np.pad(sub, (0, n - len(sub)))
+        _SFX[name] = x
+    else:
+        _SFX[name] = synth_sfx(name if name not in ("hit", "card") else ("boom" if name == "hit" else "pop"))
+    return _SFX[name]
+
+
+def synth_sfx(name):
     rng = np.random.default_rng(7)
     if name == "whoosh":
         n = int(SR * 0.42)
@@ -612,7 +669,7 @@ def build_short(short, voice, out_root, do_tts=True):
     for sh in shots:
         for e in sh["shot"].get("sfx", []):
             name, at = (e, 0.0) if isinstance(e, str) else (e["name"], float(e.get("at", 0.0)))
-            snd = sfx(name) * float(sh["shot"].get("sfx_gain", 0.32))
+            snd = sfx(name) * float(sh["shot"].get("sfx_gain", SFX_GAIN.get(name, 0.25)))
             o = int((sh["f0"] / FPS + at) * SR)
             o = max(0, o)
             fx[o:o + len(snd)] += snd[:max(0, len(fx) - o)]
@@ -646,7 +703,7 @@ def build_short(short, voice, out_root, do_tts=True):
         n = max(1, f1 - f0)
         reader = VideoReader(s["video"], float(s.get("ss", 0)), float(s.get("speed", 1.0))) if "video" in s else None
         top = 72 if s.get("topbar") else 0
-        cells = grid6_cells() if s.get("board") == "grid6" else None
+        cells = grid6_cells() if s.get("board") == "grid6" else team_cells() if s.get("board") == "team_cards" else None
         tframes = None
         shot_prev = last
         if "turn" in s:
@@ -675,7 +732,7 @@ def build_short(short, voice, out_root, do_tts=True):
                     sc = float(s.get("scale", 1.0))
                     paste_center(fr, m, W // 2, int(s.get("y", BOX_Y + 560)), sc * pop_scale(i) if s.get("pop") else sc)
                 if cells:
-                    per = max(1, int(n * 0.75) // len(cells))
+                    per = int(s["every"] * FPS) if s.get("every") else max(1, int(n * 0.75) // len(cells))
                     for ci, (cell, cx, cy) in enumerate(cells):
                         k = 99 if s.get("static") else i - ci * per
                         if k >= 0:

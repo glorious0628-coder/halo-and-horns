@@ -26,6 +26,15 @@ bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=IN_GLB)
 scene = bpy.context.scene
 
+# 작은 도우미 메시(예: Tripo 동작 GLB에 딸려 온 Icosphere)는 숨긴다
+meshes = [o for o in scene.objects if o.type == "MESH"]
+biggest = max((len(o.data.vertices) for o in meshes), default=0)
+for o in meshes:
+    if biggest > 1000 and len(o.data.vertices) < biggest * 0.02:
+        o.hide_render = True
+        o.hide_set(True)
+        bpy.data.objects.remove(o, do_unlink=True)
+
 # 모든 가져온 물체를 빈 물체 하나에 붙여서 그 빈 물체를 돌린다
 roots = [o for o in scene.objects if o.parent is None]
 pivot = bpy.data.objects.new("Pivot", None)
