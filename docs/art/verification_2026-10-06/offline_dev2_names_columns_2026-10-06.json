@@ -1029,7 +1029,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "bf8bed6daf3e042bcff5d3666bfa7e881755ffb27693962f2b23eff56bd79fdc",
+    "src/ReplicatedStorage/Shared/Config.luau": "d8a65a625ecc956022e5b74ef3c821faa645ba4164e541a4201635de571bc89c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/AnnounceService.luau": "f6b7f9061ea3ef8e155a636e7a456e33dea0ed73a87940b52db9be06596d43a9",
     "src/ServerScriptService/PvPService.luau": "29c7097a818c0a685c083793bf4bd9dc9f2633c10e7b438d72d1967d7365dd16",
@@ -1039,7 +1039,7 @@
     "src/ServerScriptService/GooseService.luau": "395f0289ab0e71a80d46917a18f8866a9f89fcd1e2f140be534fe47ae461614d",
     "src/ServerScriptService/KaijuService.luau": "9bb8a1a1c7da5a323b8c64588f223e0a51c2b44dc708c3e4d1963368090a98d9"
   },
-  "fixtureSHA256": "c0af565de119dddf0a2808df171d8bccc806be6165be161fa7c68cef461eadc2",
+  "fixtureSHA256": "0d47f7d0192b1f42776d1c61814feffd18d63368b084a5233f65482704a4c54b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
