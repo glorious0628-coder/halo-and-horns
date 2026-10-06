@@ -3663,5 +3663,113 @@
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked light/navy/magenta/green + 32px",
   "note": "묶음 18 제단 아이콘(둥근 돌 받침, 윗면 금/빨강 반반 + 왕관 조각). 진영 화면 하단 안내(FactionPicker IconAltar, 지금 Id 비어 있음). 2장 중 1."
+ },
+ "MapBlacksmith": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapBlacksmith.txt",
+  "original": "art/out/s2/MapBlacksmith_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapBlacksmith.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked light/navy + 24/32px on minimap ring and parchment",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "지도 표시(검수 지시, 베타로 앞당김): 대장간(갈색 원 + 모루·망치). 흰 테 원 안 아이콘, 원 색으로 종류 구분. 실시간 지도 24px·전체 지도 32px. 2장 중 1."
+ },
+ "MapPotionShop": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapPotionShop.txt",
+  "original": "art/out/s2/MapPotionShop_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapPotionShop.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked light/navy + 24/32px on minimap ring and parchment",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "지도 표시(검수 지시, 베타로 앞당김): 물약 상점(청록 원 + 빨간 물약병). 흰 테 원 안 아이콘, 원 색으로 종류 구분. 실시간 지도 24px·전체 지도 32px. 2장 중 1."
+ },
+ "MapAltar": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapAltar.txt",
+  "original": "art/out/s2/MapAltar_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapAltar.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked light/navy + 24/32px on minimap ring and parchment",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "지도 표시(검수 지시, 베타로 앞당김): 제단(보라 원 + 금/빨강 반반 받침). 흰 테 원 안 아이콘, 원 색으로 종류 구분. 실시간 지도 24px·전체 지도 32px. 2장 중 1."
+ },
+ "MapGooseNest": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapGooseNest.txt",
+  "original": "art/out/s2/MapGooseNest_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapGooseNest.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked light/navy + 24/32px on minimap ring and parchment",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "지도 표시(검수 지시, 베타로 앞당김): 황금 거위 둥지(초록 원 + 둥지 속 거위). 흰 테 원 안 아이콘, 원 색으로 종류 구분. 실시간 지도 24px·전체 지도 32px. 2장 중 1."
+ },
+ "MapHuntEntrance": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapHuntEntrance.txt",
+  "original": "art/out/s2/MapHuntEntrance_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapHuntEntrance.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked light/navy + 24/32px on minimap ring and parchment",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "지도 표시(검수 지시, 베타로 앞당김): 사냥터 입구(하늘 원 + 빛나는 발판·위 화살표). 흰 테 원 안 아이콘, 원 색으로 종류 구분. 실시간 지도 24px·전체 지도 32px. 2장 중 1."
+ },
+ "MapQuestTarget": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/MapQuestTarget.txt",
+  "original": "art/out/s2/MapQuestTarget_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/MapQuestTarget.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes --fill 0.94; checked light/navy + 24/32px on minimap ring and parchment",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "지도 표시(검수 지시, 베타로 앞당김): 퀘스트 목표(금 원 + 흰 마름모, A23-36 마커와 같은 모양). 흰 테 원 안 아이콘, 원 색으로 종류 구분. 실시간 지도 24px·전체 지도 32px. 2장 중 1."
+ },
+ "BadgeDot": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_BadgeDot.txt",
+  "original": "art/out/s2/BadgeDot_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/BadgeDot.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy + 24px",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "새 소식 점(주황 금 원 + 흰 테 + 남색 외곽선, 빈칸). 버튼 오른쪽 위, 숫자는 TextLabel. 2장 중 1."
+ },
+ "IconPetPaw": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconPetPaw.txt",
+  "original": "art/out/s2/IconPetPaw_1_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/IconPetPaw.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py --holes; checked light/navy + 24px",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "펫 발자국(분홍 하트 패드 + 살구 발가락, 크림 바탕). '내 펫' 줄 머리. 2장 중 1. (펫 속도 아이콘은 IconBoot 공용 — 검수 확정)"
+ },
+ "GradeSlotBack": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/UIP_GradeSlotBack.txt",
+  "original": "art/out/s2/GradeSlotBack_2_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/GradeSlotBack.png",
+  "size": "512x498 RGBA",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest",
+  "preview": "art/review/s2/map_markers_sheet.png",
+  "note": "등급 칸 뒷판(남색 둥근 네모, 테 색 없음 — 등급 테는 따로). 무기·펫 아이콘 뒤 공용. 2장 중 2."
  }
 }
