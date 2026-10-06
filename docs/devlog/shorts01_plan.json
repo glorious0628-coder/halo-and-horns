@@ -1,0 +1,1431 @@
+{
+ "note": "쇼츠 1차 3편 — 바이럴 기준(검수·사용자 2026-10-06): 첫 1초 훅, 컷 0.4~1.2초, 정지 그림은 늘 움직임, 자막 1~3단어 가운데 크게, 효과음(직접 합성), 끝 장면 = 첫 장면(다시 보기) + 'Subscribe for part 2!'. 사실은 ep01_script.md(검수 OK) 기준, 새로 쓴 줄은 new=true. 영상 = py tools/devlog_build.py shorts01. {DAYS} = 빌드 날(KST)부터 2026-10-31 베타까지.",
+ "voice": {
+  "speaker": "EN-US",
+  "speed": 1.1
+ },
+ "shorts": [
+  {
+   "id": "short01_ai_team",
+   "band": [
+    "I CAN'T CODE OR DRAW",
+    "so 7 AI teammates help me make a Roblox game"
+   ],
+   "lines": [
+    {
+     "id": "A0a",
+     "from": "ep01 0-1 (user intro)",
+     "en": "I can't code.",
+     "ko": "저는 코딩도 못 하고,",
+     "hlr": [
+      "code."
+     ],
+     "gap": 0.08,
+     "shots": [
+      {
+       "board": "code",
+       "z": [
+        1.12,
+        1.0
+       ],
+       "in": "flash",
+       "xmark": true,
+       "xy": 820,
+       "sfx": [
+        "boom",
+        {
+         "name": "whoosh",
+         "at": 0.12
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "A0b",
+     "from": "ep01 0-1",
+     "en": "I can't draw.",
+     "ko": "그림도 못 그려요.",
+     "hlr": [
+      "draw."
+     ],
+     "gap": 0.1,
+     "shots": [
+      {
+       "board": "doodle",
+       "z": [
+        1.0,
+        1.1
+       ],
+       "in": "whip",
+       "xmark": true,
+       "xy": 760,
+       "sfx": [
+        "whoosh",
+        {
+         "name": "boom",
+         "at": 0.15
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "A0c",
+     "from": "ep01 0-2",
+     "en": "But I LOVE games!",
+     "ko": "하지만 게임을 너무 좋아해요!",
+     "hl": [
+      "LOVE"
+     ],
+     "shots": [
+      {
+       "video": "s04_meadow_auto",
+       "ss": 19.0,
+       "z": [
+        1.15,
+        1.35
+       ],
+       "in": "flash",
+       "sfx": [
+        "ding"
+       ],
+       "float": {
+        "icon": "art/ui/IconHeart.png",
+        "count": 14,
+        "down": false,
+        "speed": 1.1,
+        "spin": false,
+        "min": 90,
+        "max": 150
+       }
+      }
+     ]
+    },
+    {
+     "id": "A0d",
+     "from": "ep01 0-3",
+     "en": "I spent way too much money on games...",
+     "ko": "게임에 돈을 너무 많이 썼어요…",
+     "hlr": [
+      "too much money"
+     ],
+     "shots": [
+      {
+       "board": "stage",
+       "z": [
+        1.0,
+        1.08
+       ],
+       "in": "whip",
+       "rain": {
+        "icon": "art/ui/IconCoin.png",
+        "count": 26,
+        "speed": 1.0,
+        "min": 90,
+        "max": 170
+       },
+       "big": {
+        "text": "$ $ $",
+        "color": "#FFD650",
+        "y": 760,
+        "size": 230
+       },
+       "sfx": [
+        {
+         "name": "tick",
+         "at": 0.1
+        },
+        {
+         "name": "tick",
+         "at": 0.3
+        },
+        {
+         "name": "tick",
+         "at": 0.5
+        },
+        {
+         "name": "tick",
+         "at": 0.7
+        },
+        {
+         "name": "tick",
+         "at": 0.9
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "A0e",
+     "from": "ep01 0-4",
+     "en": "So I decided to make my own, with seven AI teammates!",
+     "ko": "그래서 직접 만들기로 했어요, AI 팀원 일곱 명과 함께!",
+     "hl": [
+      "make my own,",
+      "seven AI teammates!"
+     ],
+     "shots": [
+      {
+       "video": "s06_king_orbit3",
+       "ss": 1.2,
+       "topbar": true,
+       "z": [
+        1.35,
+        1.15
+       ],
+       "f": [
+        [
+         0.5,
+         0.6
+        ],
+        [
+         0.5,
+         0.58
+        ]
+       ],
+       "in": "flash",
+       "sfx": [
+        "boom"
+       ],
+       "w": 1.0
+      },
+      {
+       "board": "team",
+       "lit": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+       ],
+       "z": [
+        1.1,
+        1.0
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 1.1
+      }
+     ]
+    },
+    {
+     "id": "A3",
+     "from": "7-3",
+     "new": true,
+     "en": "One boss checks everything.",
+     "ko": "대장 하나가 다 확인하고,",
+     "hl": [
+      "boss"
+     ],
+     "shots": [
+      {
+       "board": "team",
+       "lit": [
+        0
+       ],
+       "z": [
+        1.0,
+        1.05
+       ],
+       "f": [
+        [
+         0.5,
+         0.3
+        ],
+        [
+         0.5,
+         0.3
+        ]
+       ],
+       "in": "punch",
+       "sfx": [
+        "pop"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "A4",
+     "from": "7-4,7-5",
+     "new": true,
+     "en": "Two write the code.",
+     "ko": "둘은 코드를 쓰고,",
+     "hl": [
+      "code"
+     ],
+     "shots": [
+      {
+       "board": "team",
+       "lit": [
+        1,
+        2
+       ],
+       "z": [
+        1.0,
+        1.05
+       ],
+       "f": [
+        [
+         0.5,
+         0.35
+        ],
+        [
+         0.5,
+         0.35
+        ]
+       ],
+       "in": "punch",
+       "sfx": [
+        "pop"
+       ],
+       "w": 1.0
+      },
+      {
+       "video": "s04_meadow_auto",
+       "ss": 19.5,
+       "z": [
+        1.1,
+        1.25
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 0.8
+      }
+     ]
+    },
+    {
+     "id": "A5",
+     "from": "7-6,7-7",
+     "new": true,
+     "en": "Two draw the art.",
+     "ko": "둘은 그림을 그리고,",
+     "hl": [
+      "art"
+     ],
+     "shots": [
+      {
+       "board": "team",
+       "lit": [
+        3,
+        4
+       ],
+       "z": [
+        1.0,
+        1.05
+       ],
+       "f": [
+        [
+         0.5,
+         0.45
+        ],
+        [
+         0.5,
+         0.45
+        ]
+       ],
+       "in": "punch",
+       "sfx": [
+        "pop"
+       ],
+       "w": 1.0
+      },
+      {
+       "board": "classes",
+       "z": [
+        1.0,
+        1.12
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 0.9
+      }
+     ]
+    },
+    {
+     "id": "A6",
+     "from": "7-8",
+     "new": true,
+     "en": "One puts it in the game.",
+     "ko": "하나는 그걸 게임에 넣어요.",
+     "hl": [
+      "in the game"
+     ],
+     "shots": [
+      {
+       "board": "team",
+       "lit": [
+        5
+       ],
+       "z": [
+        1.0,
+        1.05
+       ],
+       "f": [
+        [
+         0.5,
+         0.55
+        ],
+        [
+         0.5,
+         0.55
+        ]
+       ],
+       "in": "punch",
+       "sfx": [
+        "pop"
+       ],
+       "w": 1.0
+      },
+      {
+       "video": "s04_meadow_auto",
+       "ss": 12.0,
+       "z": [
+        1.0,
+        1.15
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 0.9
+      }
+     ]
+    },
+    {
+     "id": "A7",
+     "from": "7-9",
+     "en": "And one made this video!",
+     "ko": "그리고 하나는 이 영상을 만들었어요!",
+     "hl": [
+      "this video"
+     ],
+     "shots": [
+      {
+       "board": "team",
+       "lit": [
+        6
+       ],
+       "z": [
+        1.0,
+        1.08
+       ],
+       "f": [
+        [
+         0.5,
+         0.65
+        ],
+        [
+         0.5,
+         0.65
+        ]
+       ],
+       "in": "punch",
+       "sfx": [
+        "ding"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "A7b",
+     "from": "7-10",
+     "en": "And me? I'm the director. I play, I pick, and I say yes or no.",
+     "ko": "그럼 저는? 감독이에요. 플레이하고, 고르고, 좋다 싫다를 말해요.",
+     "hl": [
+      "director."
+     ],
+     "shots": [
+      {
+       "video": "s04_meadow_auto",
+       "ss": 2.5,
+       "z": [
+        1.2,
+        1.4
+       ],
+       "f": [
+        [
+         0.5,
+         0.6
+        ],
+        [
+         0.5,
+         0.62
+        ]
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "big": {
+        "text": "DIRECTOR: ME",
+        "color": "#FFD650",
+        "y": 470,
+        "size": 140
+       },
+       "w": 1.0
+      },
+      {
+       "video": "s04_meadow_auto",
+       "ss": 14.0,
+       "z": [
+        1.25,
+        1.4
+       ],
+       "f": [
+        [
+         0.5,
+         0.6
+        ],
+        [
+         0.5,
+         0.62
+        ]
+       ],
+       "in": "punch",
+       "sfx": [
+        "pop"
+       ],
+       "w": 1.0,
+       "big": {
+        "text": "DIRECTOR: ME",
+        "color": "#FFD650",
+        "y": 470,
+        "size": 140
+       }
+      }
+     ]
+    },
+    {
+     "id": "A7c",
+     "from": "2-2",
+     "new": true,
+     "en": "In our game, everything you do pushes you toward angel... or devil.",
+     "ko": "우리 게임에선 모든 행동이 천사… 아니면 악마 쪽으로 기울어요.",
+     "hl": [
+      "angel..."
+     ],
+     "hlr": [
+      "devil."
+     ],
+     "shots": [
+      {
+       "board": "angel_devil",
+       "z": [
+        1.3,
+        1.2
+       ],
+       "f": [
+        [
+         0.5,
+         0.25
+        ],
+        [
+         0.5,
+         0.25
+        ]
+       ],
+       "in": "flash",
+       "sfx": [
+        "ding"
+       ],
+       "w": 1.2
+      },
+      {
+       "board": "angel_devil",
+       "z": [
+        1.2,
+        1.3
+       ],
+       "f": [
+        [
+         0.5,
+         0.85
+        ],
+        [
+         0.5,
+         0.85
+        ]
+       ],
+       "in": "whip",
+       "sfx": [
+        "boom"
+       ],
+       "w": 1.0
+      }
+     ]
+    },
+    {
+     "id": "A8",
+     "from": "0-2",
+     "new": true,
+     "en": "The goal: a Halloween beta in {DAYS} days.",
+     "ko": "목표: {DAYS}일 뒤 핼러윈 베타.",
+     "hl": [
+      "Halloween"
+     ],
+     "hlr": [
+      "{DAYS} days."
+     ],
+     "shots": [
+      {
+       "video": "s06_king_fight",
+       "ss": 2.0,
+       "z": [
+        1.15,
+        1.35
+       ],
+       "shake": true,
+       "in": "flash",
+       "sfx": [
+        "boom"
+       ],
+       "big": {
+        "text": "{DAYS} DAYS",
+        "color": "#FF5454",
+        "y": 560,
+        "size": 190
+       }
+      }
+     ]
+    },
+    {
+     "id": "A9",
+     "new": true,
+     "en": "Subscribe for part two!",
+     "ko": "2편을 보려면 구독해 주세요!",
+     "hl": [
+      "part two!"
+     ],
+     "shots": [
+      {
+       "board": "code",
+       "z": [
+        1.0,
+        1.12
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ]
+      }
+     ]
+    }
+   ],
+   "tail": 0.3,
+   "meta": {
+    "title_en": "I can't code or draw, so 7 AIs help me make a Roblox game 🎃 #shorts",
+    "title_ko": "코딩도 그림도 못 하는 내가, AI 7명과 로블록스 게임 만들기",
+    "desc_en": "I can't code. I can't draw. But I love games — and I spent way too much money on them. So I'm making my own Roblox game, Halo & Horns, with seven AI (Claude) teammates: one boss checks everything, two write the code, two draw the art (Adobe Firefly), one puts it in the game, and one made this video. I'm the director. Halloween beta: October 31! Not sponsored. AI voice narration.",
+    "desc_ko": "코드의 '코' 자도, 디자인의 '디' 자도 모르지만 게임을 너무 좋아해서 직접 만들기로! AI 팀원 7명과 만드는 로블록스 게임 '선악 키우기', 베타 10월 31일.",
+    "tags": [
+     "#Roblox",
+     "#RobloxStudio",
+     "#gamedev",
+     "#indiedev",
+     "#Halloween",
+     "#AI",
+     "#devlog",
+     "#shorts"
+    ]
+   }
+  },
+  {
+   "id": "short02_picture_to_3d",
+   "band": [
+    "DRAWING TO 3D MONSTER",
+    "in my Roblox game"
+   ],
+   "lines": [
+    {
+     "id": "B1",
+     "new": true,
+     "en": "This slime... was a drawing!",
+     "ko": "이 슬라임… 원래 그림이었어요!",
+     "hl": [
+      "drawing!"
+     ],
+     "shots": [
+      {
+       "video": "s04_mob_Slime",
+       "ss": 2.6,
+       "topbar": true,
+       "z": [
+        1.45,
+        1.25
+       ],
+       "f": [
+        [
+         0.5,
+         0.62
+        ],
+        [
+         0.5,
+         0.6
+        ]
+       ],
+       "in": "flash",
+       "sfx": [
+        "pop"
+       ],
+       "w": 1.0
+      },
+      {
+       "board": "picture",
+       "img": "art/out/CON_SlimeCube.png",
+       "label": "DRAWING",
+       "z": [
+        1.15,
+        1.0
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 0.9
+      }
+     ]
+    },
+    {
+     "id": "B2",
+     "new": true,
+     "en": "We draw it with Adobe Firefly,",
+     "ko": "Adobe Firefly로 그리고,",
+     "hl": [
+      "Adobe Firefly,"
+     ],
+     "shots": [
+      {
+       "board": "picture",
+       "img": "art/out/CON_SlimeCube.png",
+       "label": "DRAWING",
+       "z": [
+        1.0,
+        1.14
+       ],
+       "f": [
+        [
+         0.5,
+         0.45
+        ],
+        [
+         0.5,
+         0.4
+        ]
+       ],
+       "in": "none"
+      }
+     ]
+    },
+    {
+     "id": "B3",
+     "from": "4-2",
+     "new": true,
+     "en": "Tripo makes it 3D,",
+     "ko": "Tripo가 3D로 만들고,",
+     "hl": [
+      "3D,"
+     ],
+     "shots": [
+      {
+       "board": "stage",
+       "turn": "SlimeCube",
+       "start": 82,
+       "step": 0.6,
+       "scale": 1.45,
+       "pop": true,
+       "z": [
+        1.0,
+        1.06
+       ],
+       "in": "flash",
+       "sfx": [
+        "pop"
+       ],
+       "big": {
+        "text": "3D!",
+        "color": "#FFD650",
+        "y": 400,
+        "size": 200
+       },
+       "y": 860
+      }
+     ]
+    },
+    {
+     "id": "B4",
+     "from": "4-3",
+     "new": true,
+     "en": "and boom, it's in my Roblox game!",
+     "ko": "그리고 펑, 제 로블록스 게임에 들어왔어요!",
+     "hl": [
+      "boom,"
+     ],
+     "shots": [
+      {
+       "video": "s04_mob_Slime",
+       "ss": 1.0,
+       "topbar": true,
+       "z": [
+        1.2,
+        1.35
+       ],
+       "in": "flash",
+       "sfx": [
+        "boom"
+       ],
+       "shake": true,
+       "w": 1.0
+      },
+      {
+       "video": "s04_meadow_auto",
+       "ss": 20.0,
+       "z": [
+        1.1,
+        1.2
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 0.8
+      }
+     ]
+    },
+    {
+     "id": "B4b",
+     "new": true,
+     "en": "Then we did it again... and again!",
+     "ko": "그리고 또… 또 했어요!",
+     "hl": [
+      "again!"
+     ],
+     "shots": [
+      {
+       "board": "picture",
+       "img": "art/out/CON_PumpkinSlime.png",
+       "label": "DRAWING",
+       "z": [
+        1.0,
+        1.08
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 1.0
+      },
+      {
+       "board": "picture",
+       "img": "art/out/CON_BatGoblin.png",
+       "label": "DRAWING",
+       "z": [
+        1.0,
+        1.08
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 1.0
+      }
+     ]
+    },
+    {
+     "id": "B5",
+     "from": "4-4",
+     "en": "Pumpkin Slime!",
+     "ko": "호박 슬라임!",
+     "hl": [
+      "Pumpkin Slime!"
+     ],
+     "shots": [
+      {
+       "video": "s04_mob_PumpkinSlime",
+       "ss": 2.2,
+       "topbar": true,
+       "z": [
+        1.3,
+        1.15
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "B6",
+     "from": "4-4",
+     "en": "Bat Goblin!",
+     "ko": "박쥐 고블린!",
+     "hl": [
+      "Bat Goblin!"
+     ],
+     "shots": [
+      {
+       "video": "s04_mob_BatGoblin",
+       "ss": 2.4,
+       "topbar": true,
+       "z": [
+        1.3,
+        1.15
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "B7",
+     "from": "4-4",
+     "en": "Little Ghost!",
+     "ko": "꼬마 유령!",
+     "hl": [
+      "Little Ghost!"
+     ],
+     "shots": [
+      {
+       "video": "s04_mob_LittleGhost",
+       "ss": 2.2,
+       "topbar": true,
+       "z": [
+        1.3,
+        1.15
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "B7b",
+     "new": true,
+     "en": "Plus the mighty Pumpkin King!",
+     "ko": "그리고 무시무시한 호박 대왕까지!",
+     "hl": [
+      "Pumpkin King!"
+     ],
+     "shots": [
+      {
+       "board": "stage",
+       "turn": "PumpkinKing",
+       "start": 74,
+       "step": 0.6,
+       "scale": 1.6,
+       "y": 860,
+       "pop": true,
+       "z": [
+        1.0,
+        1.05
+       ],
+       "in": "flash",
+       "sfx": [
+        "boom"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "B7c",
+     "from": "4-5",
+     "en": "And a Baby Slime pet, coming soon!",
+     "ko": "그리고 곧 나올 아기 슬라임 펫!",
+     "hl": [
+      "Baby Slime"
+     ],
+     "shots": [
+      {
+       "video": "s04_pet_baby_slime",
+       "ss": 1.5,
+       "topbar": true,
+       "z": [
+        1.3,
+        1.45
+       ],
+       "in": "whip",
+       "sfx": [
+        "pop"
+       ],
+       "big": {
+        "text": "COMING SOON",
+        "color": "#7CE07C",
+        "y": 450,
+        "size": 130
+       }
+      }
+     ]
+    },
+    {
+     "id": "B8",
+     "from": "4-6",
+     "en": "Six new 3D models in one evening!",
+     "ko": "하룻저녁에 새 3D 모델 여섯!",
+     "hl": [
+      "Six"
+     ],
+     "shots": [
+      {
+       "board": "grid6",
+       "z": [
+        1.0,
+        1.05
+       ],
+       "in": "punch",
+       "sfx": [
+        {
+         "name": "pop",
+         "at": 0.0
+        },
+        {
+         "name": "pop",
+         "at": 0.22
+        },
+        {
+         "name": "pop",
+         "at": 0.44
+        },
+        {
+         "name": "pop",
+         "at": 0.66
+        },
+        {
+         "name": "pop",
+         "at": 0.88
+        },
+        {
+         "name": "pop",
+         "at": 1.1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "B9",
+     "new": true,
+     "en": "Which one's your favorite? Subscribe for part two!",
+     "ko": "어떤 게 제일 좋아요? 2편을 보려면 구독해 주세요!",
+     "hl": [
+      "favorite?",
+      "part two!"
+     ],
+     "shots": [
+      {
+       "board": "grid6",
+       "z": [
+        1.05,
+        1.1
+       ],
+       "in": "none",
+       "w": 1.0,
+       "static": true
+      },
+      {
+       "video": "s04_mob_Slime",
+       "ss": 2.0,
+       "topbar": true,
+       "z": [
+        1.25,
+        1.45
+       ],
+       "f": [
+        [
+         0.5,
+         0.6
+        ],
+        [
+         0.5,
+         0.62
+        ]
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 1.0
+      }
+     ]
+    }
+   ],
+   "tail": 0.3,
+   "meta": {
+    "title_en": "This Roblox slime was a drawing! 🎃 #shorts",
+    "title_ko": "이 로블록스 슬라임, 원래 그림이었어요!",
+    "desc_en": "We draw a monster with Adobe Firefly, Tripo turns it into a 3D model, and it goes straight into our Roblox game, Halo & Horns. Six new 3D models in one evening: Slime, Pumpkin Slime, Bat Goblin, Little Ghost, Pumpkin King and a Baby Slime pet (coming soon). Beta on Halloween, October 31! Not sponsored. AI voice narration.",
+    "desc_ko": "Firefly 그림 → Tripo 3D → 로블록스 게임 속 몬스터. 하룻저녁에 새 3D 모델 여섯!",
+    "tags": [
+     "#Roblox",
+     "#RobloxStudio",
+     "#gamedev",
+     "#3Dmodeling",
+     "#Halloween",
+     "#AIart",
+     "#devlog",
+     "#shorts"
+    ]
+   }
+  },
+  {
+   "id": "short03_pumpkin_king",
+   "band": [
+    "THE PUMPKIN KING",
+    "Halloween boss in my Roblox game"
+   ],
+   "lines": [
+    {
+     "id": "C1",
+     "from": "6-2",
+     "new": true,
+     "en": "Meet the Pumpkin King!",
+     "ko": "호박 대왕을 만나 봐요!",
+     "hl": [
+      "Pumpkin King!"
+     ],
+     "gap": 0.12,
+     "shots": [
+      {
+       "video": "s06_king_orbit3",
+       "ss": 1.2,
+       "topbar": true,
+       "z": [
+        1.35,
+        1.15
+       ],
+       "f": [
+        [
+         0.5,
+         0.62
+        ],
+        [
+         0.5,
+         0.58
+        ]
+       ],
+       "in": "flash",
+       "sfx": [
+        "boom"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "C2",
+     "new": true,
+     "en": "The boss of our Roblox Halloween event.",
+     "ko": "우리 로블록스 핼러윈 이벤트의 보스예요.",
+     "hl": [
+      "Halloween"
+     ],
+     "shots": [
+      {
+       "board": "stage",
+       "turn": "PumpkinKing",
+       "start": 74,
+       "step": 0.6,
+       "scale": 1.75,
+       "pop": true,
+       "z": [
+        1.0,
+        1.06
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "C3",
+     "from": "6-3",
+     "en": "Every twenty minutes, he shows up in the Pumpkin Patch.",
+     "ko": "20분마다 호박밭에 나타나요.",
+     "hl": [
+      "twenty minutes,",
+      "Pumpkin Patch."
+     ],
+     "shots": [
+      {
+       "image": "art/review/concept/Concept_PumpkinPatch.jpg",
+       "z": [
+        1.0,
+        1.15
+       ],
+       "f": [
+        [
+         0.3,
+         0.5
+        ],
+        [
+         0.6,
+         0.5
+        ]
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 1.0,
+       "chip": {
+        "icon": "art/ui/IconMonPumpkinKing.png",
+        "text": "every 20 min"
+       }
+      },
+      {
+       "video": "s06_king_orbit",
+       "ss": 1.0,
+       "topbar": true,
+       "z": [
+        1.1,
+        1.3
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "w": 1.0
+      }
+     ]
+    },
+    {
+     "id": "C4",
+     "new": true,
+     "en": "And he hits hard!",
+     "ko": "그리고 세게 때려요!",
+     "hlr": [
+      "hits hard!"
+     ],
+     "gap": 0.12,
+     "shots": [
+      {
+       "video": "s06_king_fight",
+       "ss": 4.0,
+       "z": [
+        1.2,
+        1.35
+       ],
+       "shake": true,
+       "in": "flash",
+       "sfx": [
+        "boom"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "C5",
+     "from": "6-4",
+     "en": "You have five minutes to beat him!",
+     "ko": "5분 안에 물리쳐야 해요!",
+     "hlr": [
+      "five minutes"
+     ],
+     "shots": [
+      {
+       "video": "s06_king_fight",
+       "ss": 0.6,
+       "z": [
+        1.15,
+        1.3
+       ],
+       "in": "punch",
+       "sfx": [
+        "tick"
+       ],
+       "chip": {
+        "icon": "art/ui/IconAttack.png",
+        "text": "5 minutes"
+       }
+      }
+     ]
+    },
+    {
+     "id": "C6",
+     "from": "6-5",
+     "new": true,
+     "en": "Team up, and everyone who helps gets candy!",
+     "ko": "힘을 모아요, 도운 사람은 모두 사탕을 받아요!",
+     "hl": [
+      "Team up,",
+      "candy!"
+     ],
+     "shots": [
+      {
+       "video": "s06_king_fight",
+       "ss": 17.6,
+       "z": [
+        1.1,
+        1.3
+       ],
+       "in": "punch",
+       "sfx": [
+        {
+         "name": "ding",
+         "at": 0.4
+        }
+       ],
+       "chip": {
+        "icon": "art/ui/IconCandy.png",
+        "text": "candy!"
+       }
+      }
+     ]
+    },
+    {
+     "id": "C7",
+     "from": "6-6",
+     "new": true,
+     "en": "And brand-new players are safe from him.",
+     "ko": "그리고 새로 온 플레이어는 호박 대왕에게서 안전해요.",
+     "hl": [
+      "safe"
+     ],
+     "shots": [
+      {
+       "video": "s06_king_orbit3",
+       "ss": 3.5,
+       "topbar": true,
+       "z": [
+        1.1,
+        1.25
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "chip": {
+        "icon": "art/ui/IconSprout.png",
+        "text": "new players safe"
+       }
+      }
+     ]
+    },
+    {
+     "id": "C7b",
+     "from": "6-7",
+     "en": "The Halloween fun lasts into early November.",
+     "ko": "핼러윈 이벤트는 11월 초까지 해요.",
+     "hl": [
+      "early November."
+     ],
+     "shots": [
+      {
+       "video": "s06_king_orbit3",
+       "ss": 2.2,
+       "topbar": true,
+       "z": [
+        1.0,
+        1.15
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ],
+       "chip": {
+        "icon": "art/ui/IconCandy.png",
+        "text": "until early Nov"
+       },
+       "f": [
+        [
+         0.5,
+         0.55
+        ],
+        [
+         0.5,
+         0.55
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "id": "C8",
+     "new": true,
+     "en": "Halloween beta: October 31!",
+     "tts": "Halloween beta: October thirty-first!",
+     "ko": "핼러윈 베타: 10월 31일!",
+     "hl": [
+      "October 31!"
+     ],
+     "shots": [
+      {
+       "board": "end",
+       "z": [
+        1.08,
+        1.0
+       ],
+       "in": "flash",
+       "sfx": [
+        "ding"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "C9",
+     "new": true,
+     "en": "Subscribe for part two!",
+     "ko": "2편을 보려면 구독해 주세요!",
+     "hl": [
+      "part two!"
+     ],
+     "shots": [
+      {
+       "video": "s06_king_orbit3",
+       "ss": 1.0,
+       "topbar": true,
+       "z": [
+        1.15,
+        1.35
+       ],
+       "f": [
+        [
+         0.5,
+         0.58
+        ],
+        [
+         0.5,
+         0.62
+        ]
+       ],
+       "in": "whip",
+       "sfx": [
+        "whoosh"
+       ]
+      }
+     ]
+    }
+   ],
+   "tail": 0.3,
+   "meta": {
+    "title_en": "Meet the Pumpkin King: my Roblox Halloween boss 🎃 #shorts",
+    "title_ko": "로블록스 핼러윈 보스, 호박 대왕을 만나 봐요",
+    "desc_en": "Every 20 minutes the Pumpkin King shows up in the Pumpkin Patch. You have 5 minutes to beat him — help take him down and you get Halloween candy. Brand-new players are safe from him. Halo & Horns beta opens on Halloween, October 31! Not sponsored. AI voice narration.",
+    "desc_ko": "20분마다 호박밭에 나타나는 호박 대왕! 5분 안에 같이 물리치면 사탕. 새로 온 플레이어는 안전해요. 베타 10월 31일.",
+    "tags": [
+     "#Roblox",
+     "#RobloxStudio",
+     "#gamedev",
+     "#Halloween",
+     "#bossfight",
+     "#devlog",
+     "#shorts"
+    ]
+   }
+  }
+ ]
+}
