@@ -209,11 +209,12 @@
   "UIP_IconMonGoblinBrute": "rbxassetid://121297622077113",
   "UIP_IconMonGoblin": "rbxassetid://84081351311140",
   "UIP_IconRankInfamy": "rbxassetid://129377069179379",
-  "UIP_IconRankPvP": "rbxassetid://121095026137586",
+  "UIP_IconRankPvP": "rbxassetid://118972460416266",
   "UIP_IconRankHonor": "rbxassetid://82203370340706",
   "UIP_IconMonSkeletonKnight": "rbxassetid://81833958125033",
   "UIP_IconRankArtisan": "rbxassetid://96372902638765",
   "UIP_IconScrollEnhBand_upload1": "replaced 2026-10-06 (was rbxassetid://100768109930647; re-cut / band mask redone, see commit 3b24812)",
   "UIP_IconScrollMoveBand_upload1": "replaced 2026-10-06 (was rbxassetid://86419509011694; re-cut / band mask redone, see commit 3b24812)",
-  "UIP_IconKnightCrest_upload1": "replaced 2026-10-06 (was rbxassetid://90255122016925; re-cut / band mask redone, see commit 3b24812)"
+  "UIP_IconKnightCrest_upload1": "replaced 2026-10-06 (was rbxassetid://90255122016925; re-cut / band mask redone, see commit 3b24812)",
+  "UIP_IconRankPvP_upload1": "replaced 2026-10-06 (was rbxassetid://121095026137586; redrawn in bd5f456)"
 }

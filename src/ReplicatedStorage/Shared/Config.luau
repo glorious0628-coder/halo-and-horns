@@ -2284,7 +2284,7 @@ Config.UIArt = {
 		IconRankHonor = { Id = "rbxassetid://82203370340706", Size = Vector2.new(512, 512) },
 		IconRankInfamy = { Id = "rbxassetid://129377069179379", Size = Vector2.new(512, 512) },
 		IconRankArtisan = { Id = "rbxassetid://96372902638765", Size = Vector2.new(512, 512) },
-		IconRankPvP = { Id = "rbxassetid://121095026137586", Size = Vector2.new(512, 512) },
+		IconRankPvP = { Id = "rbxassetid://118972460416266", Size = Vector2.new(512, 512) }, -- redrawn 2026-10-06 (blades cross in an X)
 		-- User-approved E sprites; shared legacy keys remain unchanged.
 		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
 		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },
