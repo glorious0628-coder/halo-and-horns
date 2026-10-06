@@ -38,3 +38,6 @@
 ## 다시 시작 (2026-10-06 14시)
 - 교차로 키트 완료(미리보기): 21종 전부 Roblox 무료 생성 도구, 같은 각도 전·후 `art/review/worldkit/crossroads_before_after.jpg`, 번호·크기·자리·계약 `art/models/worldkit/manifest.json`, 미리보기 스크립트 `tools/worldkit/`. 메인 배치는 게임성 개발 1. (처음 커밋 4749770의 '지금' 사진은 창 최소화로 하얗게 찍혀 있었음 → 이번에 다시 찍어 바꿈)
 - 게임 아이콘 시안 3안×2 `art/review/gameicon_sheet_v1.jpg`(원본 `art/out/icon/`, 미추적) — 사람 그림이라 사용자 확인 대기. 다음: 썸네일 2~3안, 빛·뿔 마을 키트.
+- 아이콘 확정 899dd1e(A_SplitHero_1 + B_Crown_1, 512, 생성 확장으로 여백). 썸네일 시안 6장 ad78191·a8acc89(사용자 고르기 대기 → 고르면 1920x1080).
+- 일정(A23-44): 10/12~14 오프닝 콘티 Firefly 6장(중간) + 부서진 왕관·조각 3D 2개(무료 먼저, 없으면 Tripo 약 80크레딧까지 OK) → 10/15~17 FilmSet 촬영 → 10/18~20 게임성 개발 1 Intro.luau.
+- 생성 도구는 한 번에 3개씩(14개 동시 → 10개 실패). 빛·뿔 마을 키트 배치 스크립트 tools/worldkit/towns_kit_place.luau.
