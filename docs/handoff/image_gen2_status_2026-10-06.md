@@ -81,3 +81,10 @@
   - **다음:** 4장을 스모키 A·티니 F 얼굴과 100% 나란히 비교(`scratchpad face_sheet.py` 방식: 위 전체, 아래 얼굴 원본 크기) → 통과한 것만 검수 → 사용자 → 고른 것 누끼(투구 은빛이라 `cut_keep --tol 16 --soft 5`, 회색 테두리 정리는 은빛 깎임 주의) → `art/ui/PTR_TownBright.png` + approved.json → 세 장(브라이트·스모키·티니) 이미지 개발에 전달.
   - 남자 브라이트 입 고치기(`PTR_TownBright_I_M1~M4`)는 A23-59로 취소(Firefly에 생성만 됨, 안 받음). 입만 붙이는 스크립트 scratchpad `mouth_swap.py`(ECC 정렬 + 입 타원 마스크)는 필요하면 재사용.
   - Firefly 탭의 참조 칸은 재시작하면 비어 있음 — 다시 쓸 땐 위 '참조 이미지 요령'대로 올리고, 다 쓰면 0/6.
+
+## 재시작 뒤 (2026-10-06 밤, 크레딧 0)
+- 브라우저: 재시작 뒤 첫 탭 "seed" = 이미지 생성 1 몫(비워 둠), 내 탭 = **"tab-1"**. 내장 브라우저 창이 숨겨져 있으면 Firefly가 빈 화면 → 검수에게 사용자 Ctrl+Shift+B 부탁. 재시작하면 모델이 Gemini로 바뀌어 있을 수 있음 → `__s2_pick('openai:firefly:colligo:gpt-image-2.5-prism')`, `__s2_pick('medium')`, `__s2_setAspect('정사각형 (1:1)')`. 대기열 함수는 페이지를 새로 열 때마다 다시 정의.
+- 사용자가 내 채팅에 직접 말한 것은 검수에게 바로 전달(검수 지시).
+- **여자아이 브라이트**: 4안(GD·GS·GW·GP) 비교 → GW 탈락(윗니 줄). 사용자 "2번(GS) 좋은데 머리 조금 더 길게" → GS 참조로 머리만 바꾼 **L1 긴 옆 땋은 머리 / L2 긴 생머리 / L3 땋은 머리+보라 리본**(b57facd, 시트 `a2359_bright_girl_long_hair_{faces,frames}.png`) → 검수 대기, 추천 L1.
+- **진영 고르기 새 그림(A23-57)** 후보 10(70bc0e5, 시트 `a2357_faction_select_sheet.jpg`, 스크립트 scratchpad `faction_sheet.py` — 직업 카드 창에 CLS_* 그림을 창 모양대로 넣음): 진영 카드 A(문장)/B(캐릭터), 직업 카드 틀 A/B, 제목 띠 A(크림)/B(남색). 추천 진영 A·직업 틀 A·제목 B. 검수 대기 → OK 뒤 art/ui + approved.json(글자 칸 layout 분수 재기: `tools/img2/measure_card.py`) → 이미지 개발.
+- High 규칙(SPEC A23-47 보강): Tripo로 갈 확정 2D만 High(약 5크레딧/장). 이미 넘긴 계급·초원은 Tripo 묶음 정해진 것만 그때 High로 다시(검수 ②안).
