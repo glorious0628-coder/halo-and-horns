@@ -1141,9 +1141,9 @@
   "original": "art/out/Tex_Cobblestone_FF_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_Cobblestone_FF.png",
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20 (돌 사이 어두운 틈을 따라 잇기); 3x3 tiled check, wrap step = inside step",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --reseat --prefer-dark 0.3 (2026-10-06 다시: 원본을 반 칸 밀어 이음을 가운데 십자로 모으고, 십자에 잘린 돌 22개를 지운 뒤 같은 그림의 온전한 돌 35개를 옮겨 심음); 3x3 + 100% 2x2 seam crop checked (art/review/tex_seamfix_sheet.png)",
   "preview": "art/review/tex_tiles4_sheet.png",
-  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 해골 폐허 바닥. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 1(돌 크기 고르고 이음새가 틈을 따라 안 보임). 옛 art/ui/Tex_Cobblestone.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_Cobblestone) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김. → 사용자가 비교 사진 E(밝은 조명 + 새 땅 4장)로 확정(A23-30, 2026-10-06)."
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 해골 폐허 바닥. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 1(돌 크기 고르고 이음새가 틈을 따라 안 보임). 옛 art/ui/Tex_Cobblestone.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_Cobblestone) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김. → 사용자가 비교 사진 E(밝은 조명 + 새 땅 4장)로 확정(A23-30, 2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png)."
  },
  "Tex_RuinsFlagstone_FF": {
   "status": "picked",
@@ -1153,9 +1153,9 @@
   "original": "art/out/Tex_RuinsFlagstone_FF_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_RuinsFlagstone_FF.png",
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20; 3x3 tiled check",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --search (2026-10-06 다시: 정규화한 비용); 3x3 + 100% 2x2 seam crop checked (art/review/tex_seamfix_sheet.png)",
   "preview": "art/review/tex_world_A_hunting.png",
-  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Slate 칸 = 해골 폐허 판석·폐허 언덕 아래·길 파트(RoadPass/RoadRuins/RoadSouth)·다리 받침. 3안 중 1(큰 판석+이끼, 차분). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Slate 칸 = 해골 폐허 판석·폐허 언덕 아래·길 파트(RoadPass/RoadRuins/RoadSouth)·다리 받침. 3안 중 1(큰 판석+이끼, 차분). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png)."
  },
  "Tex_PumpkinSoil_FF": {
   "status": "picked",
@@ -1189,9 +1189,9 @@
   "original": "art/out/Tex_Limestone_FF_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_Limestone_FF.png",
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20; 3x3 tiled check",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --search (2026-10-06 다시); 3x3 + 100% 2x2 seam crop checked (art/review/tex_seamfix_sheet.png)",
   "preview": "art/review/tex_world_B_towns.png",
-  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Limestone 칸 = 빛의 성채 바닥 + 해골 폐허 언덕 윗면. 3안 중 2(가장 밝은 상아색 판석). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Limestone 칸 = 빛의 성채 바닥 + 해골 폐허 언덕 윗면. 3안 중 2(가장 밝은 상아색 판석). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png)."
  },
  "Tex_Basalt_FF": {
   "status": "picked",
@@ -1201,9 +1201,9 @@
   "original": "art/out/Tex_Basalt_FF_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_Basalt_FF.png",
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20; 3x3 tiled check",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --search (2026-10-06 다시); 3x3 + 100% 2x2 seam crop checked (art/review/tex_seamfix_sheet.png)",
   "preview": "art/review/tex_world_B_towns.png",
-  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Basalt 칸 = 뿔 소굴 바닥·뿔 언덕·뿔 문 기둥·다리 파트. 3안 중 1(큰 자두숯색 판석 + 얇은 불씨 테). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Basalt 칸 = 뿔 소굴 바닥·뿔 언덕·뿔 문 기둥·다리 파트. 3안 중 1(큰 자두숯색 판석 + 얇은 불씨 테). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png)."
  },
  "Tex_CrackedLava_FF": {
   "status": "picked",
@@ -1213,9 +1213,9 @@
   "original": "art/out/Tex_CrackedLava_FF_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_CrackedLava_FF.png",
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark -20 (밝은 틈 따라 잇기); 3x3 tiled check",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark -0.3 --search (2026-10-06 다시); 3x3 + 100% 2x2 seam crop checked (art/review/tex_seamfix_sheet.png)",
   "preview": "art/review/tex_world_B_towns.png",
-  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): CrackedLava 칸 = 뿔 언덕 윗면·틈·경계 파트. 3안 중 2(빛나는 틈이 적어 덜 무섭고 채도 낮음). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): CrackedLava 칸 = 뿔 언덕 윗면·틈·경계 파트. 3안 중 2(빛나는 틈이 적어 덜 무섭고 채도 낮음). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png)."
  },
  "Tex_Rock_FF": {
   "status": "picked",
@@ -1225,9 +1225,9 @@
   "original": "art/out/Tex_Rock_FF_src.png (1024, Adobe MCP presigned download)",
   "file": "art/ui/Tex_Rock_FF.png",
   "size": "1024x1024 RGB (불투명, 누끼 없음)",
-  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20; 3x3 tiled check",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --prefer-dark 0.3 --search (2026-10-06 다시); 3x3 + 100% 2x2 seam crop checked (art/review/tex_seamfix_sheet.png)",
   "preview": "art/review/tex_world_B_towns.png",
-  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Rock 칸 = 모든 절벽. 3안 중 2(차분한 갈색 바위). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06)."
+  "note": "재질 표(이미지 개발 UiSandbox 실측, 재질 하나 = 그림 하나): Rock 칸 = 모든 절벽. 3안 중 2(차분한 갈색 바위). 사냥터별로 맞추기(A23-30). 이미지 개발이 UiSandbox에서 몬스터와 찍어 사용자 확인 뒤 확정. 고르기는 사용자가 이미지 세션에 맡김(2026-10-06). 검수 2차(2026-10-06): 이음 띠 안에 잘린 돌·번진 자국 → 도구 고쳐 다시 만듦(전·후 art/review/tex_seamfix_sheet.png)."
  },
  "Tex_Sand_FF": {
   "status": "picked",
