@@ -838,19 +838,25 @@ end
 -- Item art (bag rows, drop notices, …). `id` is a Config.Loot.Items id (its Icon part, plus an optional IconBand part:
 -- a tint mask on the same canvas, drawn over the body in the item's Color) or a plain Config.UIArt part key.
 -- Returns the body ArtImage (the band is its child "Band", same box), or nil when the art is missing (caller falls back).
+-- The band follows the body's ImageTransparency and ImageColor3 (a dim / locked tint multiplies the item colour).
 function UIKit.ItemIcon(id, props)
 	local items = type(Config.Loot) == "table" and Config.Loot.Items or nil
 	local item = type(id) == "string" and type(items) == "table" and items[id] or nil
 	local key = type(item) == "table" and item.Icon or id
 	local img = type(key) == "string" and UIKit.ArtImage(key, props) or nil
 	if not img or type(item) ~= "table" or type(item.IconBand) ~= "string" then return img end
-	local band = UIKit.ArtImage(item.IconBand, {
-		Name = "Band",
-		Size = UDim2.fromScale(1, 1),
-		ImageColor3 = typeof(item.Color) == "Color3" and item.Color or Color3.new(1, 1, 1),
-		ZIndex = img.ZIndex,
-	})
-	if band then band.Parent = img end
+	local band = UIKit.ArtImage(item.IconBand, { Name = "Band", Size = UDim2.fromScale(1, 1), ZIndex = img.ZIndex })
+	if not band then return img end
+	local tint = typeof(item.Color) == "Color3" and item.Color or Color3.new(1, 1, 1)
+	local function follow()
+		local c = img.ImageColor3
+		band.ImageColor3 = Color3.new(tint.R * c.R, tint.G * c.G, tint.B * c.B)
+		band.ImageTransparency = img.ImageTransparency
+	end
+	follow()
+	img:GetPropertyChangedSignal("ImageColor3"):Connect(follow)
+	img:GetPropertyChangedSignal("ImageTransparency"):Connect(follow)
+	band.Parent = img
 	return img
 end
 
