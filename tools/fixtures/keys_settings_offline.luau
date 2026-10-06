@@ -224,16 +224,24 @@ local function loadUtil(game, clockEnv, ws)
 end
 
 local CONFIG = execute("Config", CONFIG_SOURCE, nativeEnv())
-local function freshConfig(zEnabled)
+local function freshConfig(zEnabled, xEnabled)
 	local c = execute("Config", CONFIG_SOURCE, nativeEnv())
 	if zEnabled then c.Skills.ZEnabled = true end
+	if xEnabled then c.Skills.XEnabled = true end
 	return c
+end
+-- SKL-1 (A23-49): the skill keys that exist only while their Config.Skills flag is on
+local SKILL_FLAGS = { SkillZ = "ZEnabled", SkillX = "XEnabled" }
+local function flagLive(config, id)
+	local f = SKILL_FLAGS[id]
+	return f == nil or config.Skills[f] == true
 end
 
 ------------------------------------------------------------------ contract tables (docs/design/beta_basics_2026-10-05.md)
 -- BB1 defaults: Id, Key, Pad (A23-21: the pad layout is fixed; "" = none in the contract table)
 local CONTRACT_ACTIONS = {
-	{ "Attack", "F", "ButtonR2" }, { "SkillQ", "Q", "ButtonL2" }, { "SkillZ", "Z", "ButtonL1" }, { "Auto", "R", "ButtonR1" },
+	{ "Attack", "F", "ButtonR2" }, { "SkillQ", "Q", "ButtonL2" }, { "SkillZ", "Z", "ButtonL1" }, { "SkillX", "X", "ButtonR3" },
+	{ "Auto", "R", "ButtonR1" },
 	{ "GhostHold", "T", "DPadRight" }, { "PotionHP", "One", "DPadUp" }, { "PotionMP", "Two", "DPadDown" },
 	{ "Interact", "E", "ButtonX" }, { "Upgrade", "U", "" }, { "Bag", "G", "" }, { "Character", "C", "" }, { "Skills", "K", "" },
 	{ "Ranking", "L", "" }, { "Help", "H", "" }, { "Journal", "J", "" }, { "Map", "M", "DPadLeft" }, { "Menu", "B", "ButtonY" },
@@ -268,7 +276,7 @@ do
 	for _, n in { "Minus", "Equals", "LeftBracket", "RightBracket", "Semicolon", "Quote", "BackSlash", "LeftControl", "LeftAlt",
 		"CapsLock", "Escape", "Slash", "Tab", "Backquote", "Return", "KeypadEnter", "Space", "LeftShift", "RightShift", "Comma",
 		"Period", "PageUp", "PageDown", "Up", "Down", "Left", "Right", "ButtonA", "ButtonB", "ButtonX", "ButtonY", "ButtonR1",
-		"ButtonR2", "ButtonL1", "ButtonL2", "DPadUp", "DPadDown", "DPadLeft", "DPadRight" } do
+		"ButtonR2", "ButtonL1", "ButtonL2", "ButtonR3", "ButtonL3", "DPadUp", "DPadDown", "DPadLeft", "DPadRight" } do
 		REAL_KEYCODES[n] = true
 	end
 end
@@ -292,7 +300,7 @@ local function defaultOf(config, id) return config.Keybinds.ById[id] and config.
 local function liveAll(config, except)
 	local s = {}
 	for _, a in config.Keybinds.Actions do
-		if (a.Id ~= "SkillZ" or config.Skills.ZEnabled == true) and not (except and except[a.Id]) then s[a.Id] = true end
+		if flagLive(config, a.Id) and not (except and except[a.Id]) then s[a.Id] = true end
 	end
 	return s
 end
@@ -317,7 +325,7 @@ local function referenceKeyMap(config, sparse, live)
 	local keys = type(sparse) == "table" and sparse or {}
 	local function isLive(def)
 		if live ~= nil then return live[def.Id] == true end
-		return def.Id ~= "SkillZ" or config.Skills.ZEnabled == true
+		return flagLive(config, def.Id)
 	end
 	-- review of 27246d1: Interact (NoClear, prompt keys only) may not be saved empty or on a keypad / symbol key
 	local PROMPT = {}
@@ -373,7 +381,7 @@ local function clientWorld(opts)
 	opts = opts or {}
 	local w = { Clock = opts.Clock or newClock(100), Toasts = {}, Sends = {}, Registered = {}, ChangedFires = 0 }
 	local clock = w.Clock
-	local config = freshConfig(opts.ZEnabled)
+	local config = freshConfig(opts.ZEnabled, opts.XEnabled)
 	w.Config = config
 	for _, id in opts.Windows or {} do w.Registered[id] = true end
 	local cenv = clock:Env()
@@ -587,7 +595,7 @@ end
 runGroup("config-contract", function()
 	local KB = CONFIG.Keybinds
 	check(type(KB) == "table" and type(KB.Actions) == "table", "Config.Keybinds.Actions exists")
-	check(#KB.Actions == #CONTRACT_ACTIONS, "17 actions (BB1 table)", #KB.Actions)
+	check(#KB.Actions == #CONTRACT_ACTIONS, "18 actions (BB1 table + SKL-1 SkillX)", #KB.Actions)
 	local validGroups = { Combat = true, Potion = true, Window = true, Other = true }
 	for i, want in CONTRACT_ACTIONS do
 		local a = KB.Actions[i] or {}
@@ -603,12 +611,13 @@ runGroup("config-contract", function()
 			"every action has Label + LabelEn", id)
 		check(type(a.Button) == "string" and a.Button ~= "" and type(a.ButtonEn) == "string" and a.ButtonEn ~= "",
 			"every action has a touch name (Button + ButtonEn, A23-21)", id)
-		check((id == "SkillZ") == (a.Flag ~= nil) and (id ~= "SkillZ" or a.Flag == "Skills.ZEnabled"),
-			"only SkillZ has a Flag (Config.Skills.ZEnabled)", id .. " " .. tostring(a.Flag))
+		check((SKILL_FLAGS[id] ~= nil) == (a.Flag ~= nil) and (SKILL_FLAGS[id] == nil or a.Flag == "Skills." .. SKILL_FLAGS[id]),
+			"only SkillZ / SkillX have a Flag (Config.Skills.ZEnabled / XEnabled)", id .. " " .. tostring(a.Flag))
 		check(REAL_KEYCODES[a.Key] == true and (want[3] == "" or REAL_KEYCODES[a.Pad] == true),
 			"default key and pad names are real Enum.KeyCode names", id)
 	end
-	check(CONFIG.Skills and CONFIG.Skills.ZEnabled == false, "Config.Skills.ZEnabled = false (BB9 turns it on)")
+	check(CONFIG.Skills and CONFIG.Skills.ZEnabled == false and CONFIG.Skills.XEnabled == false,
+		"Config.Skills.ZEnabled / XEnabled = false (on at the 10/20 skill decision, SKL-1)")
 	-- Reserved / Allowed
 	local reserved = {}
 	for _, n in KB.Reserved or {} do reserved[n] = true end
@@ -656,11 +665,11 @@ runGroup("config-contract", function()
 	-- default map
 	local map, collisions = CONFIG.KeyMap({}, nil)
 	for _, want in CONTRACT_ACTIONS do
-		local expected = want[1] == "SkillZ" and "" or want[2]
-		check(map[want[1]] == expected, "KeyMap({}) = the BB1 defaults (SkillZ has no key while its Flag is off)",
+		local expected = SKILL_FLAGS[want[1]] and "" or want[2]
+		check(map[want[1]] == expected, "KeyMap({}) = the BB1 defaults (SkillZ / SkillX have no key while their Flags are off)",
 			want[1] .. " " .. tostring(map[want[1]]))
 	end
-	check(#collisions == 0 and count(map) == 17, "KeyMap({}): 17 entries, no collisions", show({ count(map), collisions }))
+	check(#collisions == 0 and count(map) == #CONTRACT_ACTIONS, "KeyMap({}): one entry per action (18 with SKL-1 SkillX), no collisions", show({ count(map), collisions }))
 	local zmap = CONFIG.KeyMap({}, liveAll(freshConfig(true)))
 	local zc = freshConfig(true)
 	local zmap2 = zc.KeyMap({}, nil)
@@ -754,7 +763,7 @@ runGroup("keymap-rules", function()
 		check(okDup, "no two actions ever share a key (fuzz)", dup)
 		local liveCount, explicitBlank = 0, 0
 		for _, id in ids do
-			local isLive = (liveSet == nil and (id ~= "SkillZ")) or (liveSet ~= nil and liveSet[id] == true)
+			local isLive = (liveSet == nil and SKILL_FLAGS[id] == nil) or (liveSet ~= nil and liveSet[id] == true)
 			if isLive then
 				liveCount += 1
 				if sparse[id] == "" then explicitBlank += 1 end
@@ -908,7 +917,7 @@ runGroup("sanitize", function()
 			check(C.Keybinds.ById[id] ~= nil and type(v) == "string" and (v == "" or EXPECTED_USABLE[v] == true) and v ~= defaultOf(C, id),
 				"saved keys: known action ids, '' or a usable key, never the default", id .. "=" .. tostring(v))
 			check(blob.Keys[id] == v or v == "", "a saved key always comes from the blob (or is blanked by the one-key rule)", id)
-			if v ~= "" and id ~= "SkillZ" then
+			if v ~= "" and SKILL_FLAGS[id] == nil then
 				check(used[v] == nil, "no two Flag-on actions save the same key", v)
 				used[v] = id
 			end
@@ -1165,7 +1174,7 @@ runGroup("keybinds-setlocal", function()
 	K.Reset()
 	local allDefault = true
 	for _, want in CONTRACT_ACTIONS do
-		local expected = (want[1] == "SkillZ" or WINDOWS[want[1]]) and "" or want[2]
+		local expected = (SKILL_FLAGS[want[1]] or WINDOWS[want[1]]) and "" or want[2]
 		if K.KeyName(want[1]) ~= expected then allDefault = false end
 	end
 	check(allDefault and deepEq(w.ST.Get("Keys"), {}) and w.ChangedFires == fires + 1, "Reset: every key back to the default (Changed once)")
@@ -1221,6 +1230,9 @@ runGroup("keybinds-live", function()
 		show({ ok4, reason4, other4, w3.KB.KeyName("Map"), w3.ST.Get("Keys") }))
 	check(w3.ST.Get("Keys").Bag == nil, "and that stale entry goes back to its default", show(w3.ST.Get("Keys")))
 	-- Flag on: the Z skill is live (its pad button is not wired yet)
+	local xw = clientWorld({ XEnabled = true })
+	check(xw.KB.ActionFor(key("X")) == "SkillX" and xw.KB.Label("SkillX") == "X" and xw.KB.ActionFor(key("Z")) == nil,
+		"Config.Skills.XEnabled (SKL-1): X = SkillX, Z stays free while ZEnabled is off")
 	local z = clientWorld({ ZEnabled = true })
 	check(z.KB.ActionFor(key("Z")) == "SkillZ" and z.KB.ActionFor(pad("ButtonL1")) == nil and z.KB.Label("SkillZ") == "Z",
 		"Config.Skills.ZEnabled: Z = SkillZ")

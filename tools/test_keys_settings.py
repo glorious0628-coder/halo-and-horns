@@ -458,7 +458,7 @@ def main() -> int:
         "sourcesChangedDuringRun": changed,
         "studioCalls": 0, "apiCalls": 0,
         "contract": "docs/design/beta_basics_2026-10-05.md BB1 + BB2 (A23-21: PC keyboard keys only, fixed pad layout, "
-                    "button names on touch-only devices): 17 actions with the BB1 default keys / pad buttons, Reserved and "
+                    "button names on touch-only devices): 18 actions (BB1 + SKL-1 SkillX) with the default keys / pad buttons, Reserved and "
                     "Allowed key sets, KeyMap collision rule (explicit first in Actions order, a taken explicit key -> '', "
                     "a live default-only action whose default is taken -> '' and reported once per session, non-live "
                     "actions hold no key, never wipe all keys), KeyLabel, SanitizeSettings (unknown keys dropped, sparse "

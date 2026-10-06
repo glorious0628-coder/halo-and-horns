@@ -500,9 +500,165 @@ Config.BasicSkill = {
 	ManaCost = 20, Cooldown = 3, DamageMultiplier = 6, Radius = 9,
 	SwingImmediate = 0.5, PvPCapPct = 0.35, HaloHealPct = 0.10, HaloHealCapPct = 0.30,
 }
--- BB9 fills Order / Defs (skill names per class). ZEnabled = the A23-15 Z skill flag: the SkillZ key (Config.Keybinds)
--- exists only while it is true.
-Config.Skills = { ZEnabled = false }
+-- SKL-1 (A23-49, docs/design/skill_kit_beta_2026-10-06.md section 1 rules / 4 tables / 5 English / 8-1 shape): every
+-- class has three skills Q (Lv1) / Z (Lv5) / X (Lv8). Defs[kit][slot]; an X with Halo / Horns tables differs per
+-- faction (Config.SkillDef merges the faction table over the base). Kits: Warrior / Mage / Archer, and for the
+-- artisan guild Blacksmith / Alchemist / Tamer (Config.SkillKit). Q keeps Config.BasicSkill's numbers (MP 20, 3 s, x6,
+-- radius 9). Mult = x the monster hit D (ComputeMonsterHit); MP / CD (s); Shape: SelfCircle, TargetCircle (Range =
+-- aim range), Line (Len x Width ahead), Chain (Range, Jump studs, Hits max), Field (Radius, Duration, Tick, TickMult),
+-- Roar (Radius + Taunt), Hop (Hop studs back, Radius wind). Auto = when auto combat may use it (Never = true: never).
+-- Flags stay off until the 10/20 decision (Studio checks only): ZEnabled / XEnabled (the SkillZ / SkillX keys and
+-- SkillBar slots exist only while on), PvPZX (Z / X may hit players). MoveSkills / Fields / Taunt = the section 10
+-- fall-backs. No skill, slot or power is sold (A23-49).
+Config.Skills = {
+	ZEnabled = false, XEnabled = false, PvPZX = false,
+	MoveSkills = true, Fields = true, Taunt = true,
+	Order = { "Q", "Z", "X" }, Unlock = { Q = 1, Z = 5, X = 8 }, GlobalGap = 0.5, MPStealCap = 20,
+	Kits = { "Warrior", "Mage", "Archer", "Blacksmith", "Alchemist", "Tamer" },
+	Defs = {
+		Warrior = {
+			Q = { NameEn = "Shockwave", DescEn = "Slam the ground. Hit and push everything around you.",
+				Shape = "SelfCircle", Radius = 9, Mult = 6, MP = 20, CD = 3, Push = 2, Auto = { Min = 1, Radius = 9 } },
+			Z = { NameEn = "Earth Cleave", DescEn = "Crack the ground ahead and pull monsters to you.",
+				Shape = "Line", Len = 22, Width = 10, AimCone = 75, Mult = 7.5, MP = 25, CD = 6, Pull = 5,
+				Auto = { Min = 2, OrBig = true, NoPull = true } },
+			X = { Shape = "Roar", Radius = 12, Mult = 2, TauntRadius = 16, TauntSec = 4, SelfGuard = 0.4, GuardSec = 6,
+				MP = 30, CD = 15, Auto = { Min = 3, Radius = 16, LowHP = 0.5, LowHPRadius = 10 },
+				Halo = { NameEn = "Guardian Roar", DescEn = "Shout! Monsters chase you. You and your friends take less damage.",
+					AllyGuard = 0.2, AllyRadius = 16 },
+				Horns = { NameEn = "Rage Roar", DescEn = "Roar! Monsters chase you. Steal MP from every monster you hit.",
+					MPSteal = 5 } },
+		},
+		Mage = {
+			Q = { NameEn = "Meteor", DescEn = "Drop a meteor on the closest monster.",
+				Shape = "TargetCircle", Range = 35, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 35 } },
+			Z = { NameEn = "Chain Bolt", DescEn = "A spark that jumps from monster to monster.",
+				Shape = "Chain", Range = 35, Jump = 10, Hits = 4, Mult = 5, MP = 25, CD = 5, NeedTarget = true,
+				Auto = { Min = 1, Range = 35, BeforeQIfSpread = 2 } },
+			X = { Shape = "Field", Range = 35, Ahead = 10, Radius = 12, Duration = 5, Tick = 1, TickMult = 1.5, Slow = 0.5,
+				MP = 30, CD = 14, Auto = { Min = 2, Radius = 12 },
+				Halo = { NameEn = "Sun Circle", DescEn = "A sunny circle. Monsters slow down. Friends inside are guarded.",
+					AllyGuard = 0.2 },
+				Horns = { NameEn = "Hex Circle", DescEn = "A curse circle. Monsters slow down. Steal MP every second.",
+					MPStealTick = 2 } },
+		},
+		Archer = {
+			Q = { NameEn = "Arrow Rain", DescEn = "Arrows rain on the closest group.",
+				Shape = "TargetCircle", Range = 30, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 30 } },
+			Z = { NameEn = "Pierce Shot", DescEn = "One big arrow through a whole line.",
+				Shape = "Line", Range = 40, Len = 40, Width = 4, Mult = 9, MP = 25, CD = 5, Push = 3, Auto = { Min = 1 } },
+			X = { Shape = "Hop", Hop = 10, HopTime = 0.25, Radius = 7, Mult = 3, Push = 6, MP = 25, CD = 10,
+				Auto = { Never = true },
+				Halo = { NameEn = "Light Step", DescEn = "Hop back on the wind. Friends near you are guarded.",
+					AllyGuard = 0.2, AllyRadius = 12, GuardSec = 4 },
+				Horns = { NameEn = "Shadow Step", DescEn = "Hop back in a puff. Steal MP from monsters you blow away.",
+					MPSteal = 5 } },
+		},
+		-- the artisan guild (A6: no healing, life steal or faction extras; never hits or is hit by players): the same
+		-- numbers as the class kit, its own names and crafted looks (Craft = the prop the skill shows)
+		Blacksmith = {
+			Q = { NameEn = "Hammer Quake", DescEn = "Bonk the ground with your hammer.", Shape = "SelfCircle", Radius = 9,
+				Mult = 6, MP = 20, CD = 3, Push = 2, Auto = { Min = 1, Radius = 9 } },
+			Z = { NameEn = "Hook Chain", DescEn = "Throw a hook and reel monsters in.", Shape = "Line", Len = 22, Width = 10,
+				AimCone = 75, Mult = 7.5, MP = 25, CD = 6, Pull = 5, Auto = { Min = 2, OrBig = true, NoPull = true } },
+			X = { NameEn = "Anvil Guard", DescEn = "Drop an anvil. Monsters chase you. You take less damage.", Shape = "Roar",
+				Radius = 12, Mult = 2, TauntRadius = 16, TauntSec = 4, SelfGuard = 0.4, GuardSec = 6, MP = 30, CD = 15,
+				Craft = "Anvil", CraftSec = 6, Auto = { Min = 3, Radius = 16, LowHP = 0.5, LowHPRadius = 10 } },
+		},
+		Alchemist = {
+			Q = { NameEn = "Potion Bomb", DescEn = "Throw a fizzy potion at the closest monster.", Shape = "TargetCircle",
+				Range = 35, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 35 } },
+			Z = { NameEn = "Bubble Hop", DescEn = "A bubble that bounces from monster to monster.", Shape = "Chain", Range = 35,
+				Jump = 10, Hits = 4, Mult = 5, MP = 25, CD = 5, NeedTarget = true, Auto = { Min = 1, Range = 35, BeforeQIfSpread = 2 } },
+			X = { NameEn = "Jelly Brew", DescEn = "A bubbling pot. Monsters inside turn wobbly and slow.", Shape = "Field",
+				Range = 35, Ahead = 10, Radius = 12, Duration = 5, Tick = 1, TickMult = 1.5, Slow = 0.5, MP = 30, CD = 14,
+				Craft = "Cauldron", Auto = { Min = 2, Radius = 12 } },
+		},
+		Tamer = {
+			Q = { NameEn = "Pet Rush", DescEn = "Your slime jumps in and bonks the group.", Shape = "TargetCircle", Range = 30,
+				Radius = 9, Mult = 6, MP = 20, CD = 3, Style = "PetDash", Auto = { Min = 1, Range = 30 } },
+			Z = { NameEn = "Slime Roll", DescEn = "Your slime rolls through a whole line.", Shape = "Line", Range = 40, Len = 40,
+				Width = 4, Mult = 9, MP = 25, CD = 5, Push = 3, Auto = { Min = 1 } },
+			X = { NameEn = "Big Boing", DescEn = "Your slime grows big and bounces you back.", Shape = "Hop", Hop = 10,
+				HopTime = 0.25, Radius = 7, Mult = 3, Push = 6, MP = 25, CD = 10, Craft = "BigSlime", Auto = { Never = true } },
+		},
+	},
+	-- player-facing words (A23-48 English; A23-60: MP shows in the skill info / tooltips, never on the buttons)
+	Text = {
+		NewSkill = "New skill! %s (%s)", NewSkillTouch = "New skill! Tap the new button.", TryIt = "Try it",
+		NoMP = "Not enough MP", NoTarget = "No target", TooHeavy = "Too heavy to jump!", CantHop = "Can't hop here",
+		UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt", Guarded = "Guarded", MPGain = "+%d MP",
+		Cost = "Costs %d MP", Cooldown = "%s s cooldown", Ready = "Ready", NeedMP = "Need MP",
+		XHalo = "Halo: guards friends", XHorns = "Horns: steals MP", XArtisan = "Artisan: crafted look",
+		ShapeLine = "Line %d", ShapeCircle = "Area %d", ShapeChain = "Jumps %d", ShapeField = "Field %d s", ShapeHop = "Hop %d",
+	},
+}
+
+-- the skill kit of a class in a faction: Neutral -> Blacksmith / Alchemist / Tamer (Config.IsTamer), else the class id
+function Config.SkillKit(classId, factionId)
+	local class = Config.Classes[classId] and classId or "Warrior"
+	if factionId == "Neutral" then
+		if Config.IsTamer(class, factionId) then return "Tamer" end
+		if class == "Warrior" then return "Blacksmith" end
+		if class == "Mage" then return "Alchemist" end
+		return "Tamer"
+	end
+	return class
+end
+
+-- one skill of a class in a faction: a new table = the kit's slot def with the faction's table (Halo / Horns) merged
+-- over it (NameEn, DescEn and the faction extras); nil for an unknown slot. Callers may read it freely.
+do
+	local cache = {}
+	function Config.SkillDef(classId, factionId, slot)
+		local kit = Config.SkillKit(classId, factionId)
+		local key = kit .. "|" .. tostring(factionId) .. "|" .. tostring(slot)
+		local hit = cache[key]
+		if hit ~= nil then return hit or nil end
+		local defs = Config.Skills.Defs[kit]
+		local base = defs and defs[slot]
+		if type(base) ~= "table" then
+			cache[key] = false
+			return nil
+		end
+		local out = {}
+		for k, v in base do
+			if k ~= "Halo" and k ~= "Horns" then out[k] = v end
+		end
+		local fx = (factionId == "Halo" or factionId == "Horns") and base[factionId] or nil
+		if type(fx) == "table" then
+			for k, v in fx do out[k] = v end
+		elseif out.NameEn == nil then
+			-- a faction-split X seen without a side (None while picking): the Halo words
+			local halo = base.Halo
+			if type(halo) == "table" then out.NameEn, out.DescEn = halo.NameEn, halo.DescEn end
+		end
+		out.Kit, out.Slot = kit, slot
+		cache[key] = out
+		return out
+	end
+end
+
+-- the numbers line of a skill for its info / tooltip (A23-60: MP is shown here, not on the button):
+-- "Costs 25 MP · 6 s cooldown · Line 22"
+function Config.SkillNumbers(def)
+	if type(def) ~= "table" then return "" end
+	local T = Config.Skills.Text
+	local parts = { string.format(T.Cost, math.floor(tonumber(def.MP) or 0)) }
+	table.insert(parts, string.format(T.Cooldown, tostring(tonumber(def.CD) or 0)))
+	if def.Shape == "Line" then
+		table.insert(parts, string.format(T.ShapeLine, math.floor(tonumber(def.Len) or 0)))
+	elseif def.Shape == "Chain" then
+		table.insert(parts, string.format(T.ShapeChain, math.max(0, math.floor((tonumber(def.Hits) or 1) - 1))))
+	elseif def.Shape == "Field" then
+		table.insert(parts, string.format(T.ShapeField, math.floor(tonumber(def.Duration) or 0)))
+	elseif def.Shape == "Hop" then
+		table.insert(parts, string.format(T.ShapeHop, math.floor(tonumber(def.Hop) or 0)))
+	else
+		table.insert(parts, string.format(T.ShapeCircle, math.floor(tonumber(def.Radius) or 0)))
+	end
+	return table.concat(parts, " · ")
+end
 Config.Charge = {
 	SwingImmediate = 0.5, -- a swing that hits deals 50% of the normal per-target damage right away
 	MinRelease = 10, -- minimum (floored) stacks to release
@@ -2269,6 +2425,7 @@ Config.Keybinds = {
 		{ Id = "Attack", Group = "Combat", Key = "F", Pad = "ButtonR2", Label = "Attack", LabelEn = "Attack", Button = "Attack button", ButtonEn = "Attack button" },
 		{ Id = "SkillQ", Group = "Combat", Key = "Q", Pad = "ButtonL2", Label = "Skill", LabelEn = "Skill", Button = "Skill button", ButtonEn = "Skill button" },
 		{ Id = "SkillZ", Group = "Combat", Key = "Z", Pad = "ButtonL1", Label = "Skill 2", LabelEn = "Skill 2", Button = "Skill 2 button", ButtonEn = "Skill 2 button", Flag = "Skills.ZEnabled" },
+		{ Id = "SkillX", Group = "Combat", Key = "X", Pad = "ButtonR3", Label = "Skill 3", LabelEn = "Skill 3", Button = "Skill 3 button", ButtonEn = "Skill 3 button", Flag = "Skills.XEnabled" },
 		{ Id = "Auto", Group = "Combat", Key = "R", Pad = "ButtonR1", Label = "Auto Battle", LabelEn = "Auto Battle", Button = "Auto Battle button", ButtonEn = "Auto Battle button" },
 		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "Ghost hold", LabelEn = "Ghost hold", Button = "Ghost button", ButtonEn = "Ghost button" },
 		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP potion", LabelEn = "HP potion", Button = "HP potion button", ButtonEn = "HP potion button" },

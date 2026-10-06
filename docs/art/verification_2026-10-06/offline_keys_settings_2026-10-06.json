@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 9217,
+  "checks": 9325,
   "failedChecks": 0,
-  "namedChecks": 310,
+  "namedChecks": 311,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -15,73 +15,73 @@
     },
     {
       "group": "config-contract",
-      "check": "17 actions (BB1 table)",
+      "check": "18 actions (BB1 table + SKL-1 SkillX)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "Actions order = the BB1 defaults table",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "default PC key = BB1 table",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "fixed gamepad button = BB1 table (A23-21)",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "Group is Combat / Potion / Window / Other",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "the six window actions (Group Window, Window = Panels id) and only them",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "potion actions are the Potion group",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "every action has Label + LabelEn",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "every action has a touch name (Button + ButtonEn, A23-21)",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
-      "check": "only SkillZ has a Flag (Config.Skills.ZEnabled)",
-      "pass": 17,
+      "check": "only SkillZ / SkillX have a Flag (Config.Skills.ZEnabled / XEnabled)",
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
       "check": "default key and pad names are real Enum.KeyCode names",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
-      "check": "Config.Skills.ZEnabled = false (BB9 turns it on)",
+      "check": "Config.Skills.ZEnabled / XEnabled = false (on at the 10/20 skill decision, SKL-1)",
       "pass": 1,
       "fail": 0
     },
@@ -189,13 +189,13 @@
     },
     {
       "group": "config-contract",
-      "check": "KeyMap({}) = the BB1 defaults (SkillZ has no key while its Flag is off)",
-      "pass": 17,
+      "check": "KeyMap({}) = the BB1 defaults (SkillZ / SkillX have no key while their Flags are off)",
+      "pass": 18,
       "fail": 0
     },
     {
       "group": "config-contract",
-      "check": "KeyMap({}): 17 entries, no collisions",
+      "check": "KeyMap({}): one entry per action (18 with SKL-1 SkillX), no collisions",
       "pass": 1,
       "fail": 0
     },
@@ -322,7 +322,7 @@
     {
       "group": "keymap-rules",
       "check": "non-live actions hold no key (fuzz)",
-      "pass": 1089,
+      "pass": 1166,
       "fail": 0
     },
     {
@@ -549,8 +549,8 @@
     },
     {
       "group": "sanitize",
-      "check": "Sfx = the nearest step of the clamped value",
-      "pass": 46,
+      "check": "a non-finite / non-number Sfx -> 1",
+      "pass": 253,
       "fail": 0
     },
     {
@@ -568,19 +568,19 @@
     {
       "group": "sanitize",
       "check": "saved keys: known action ids, '' or a usable key, never the default",
-      "pass": 912,
+      "pass": 939,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "a saved key always comes from the blob (or is blanked by the one-key rule)",
-      "pass": 912,
+      "pass": 939,
       "fail": 0
     },
     {
       "group": "sanitize",
       "check": "no two Flag-on actions save the same key",
-      "pass": 690,
+      "pass": 654,
       "fail": 0
     },
     {
@@ -591,8 +591,8 @@
     },
     {
       "group": "sanitize",
-      "check": "a non-finite / non-number Sfx -> 1",
-      "pass": 254,
+      "check": "Sfx = the nearest step of the clamped value",
+      "pass": 47,
       "fail": 0
     },
     {
@@ -892,7 +892,7 @@
     {
       "group": "keybinds-core",
       "check": "touch-only: Label = the button name",
-      "pass": 17,
+      "pass": 18,
       "fail": 0
     },
     {
@@ -1162,6 +1162,12 @@
     {
       "group": "keybinds-live",
       "check": "and that stale entry goes back to its default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "keybinds-live",
+      "check": "Config.Skills.XEnabled (SKL-1): X = SkillX, Z stays free while ZEnabled is off",
       "pass": 1,
       "fail": 0
     },
@@ -1937,14 +1943,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config-contract :: KeyMap({}) = the BB1 defaults (SkillZ has no key while its Flag is off)",
+          "config-contract :: KeyMap({}) = the BB1 defaults (SkillZ / SkillX have no key while their Flags are off)",
+          "keybinds-capture :: a free key: Set, the binding is removed, prompts on again",
           "keybinds-core :: Get = nil for unbound / non-live / unknown actions",
           "keybinds-core :: IsLive: Flag on and (windows) registered",
           "keybinds-core :: keys of windows that do not exist yet, the flagged Z and free keys do nothing",
-          "keybinds-setlocal :: Reset: every key back to the default (Changed once)",
-          "keybinds-setlocal :: non-live / unknown actions cannot be cleared"
+          "keybinds-live :: Config.Skills.XEnabled (SKL-1): X = SkillX, Z stays free while ZEnabled is off"
         ],
-        "newFailingCount": 10,
+        "newFailingCount": 15,
         "newFailingStatic": []
       },
       {
@@ -2524,7 +2530,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "c36ca3a66515fed68c6239dd229322d505d3b05ab1b58a2189435dcfda6240cb",
+    "src/ReplicatedStorage/Shared/Config.luau": "378a1191fbbdd4dd19485bb8137a94029dcb18f1d00e7207e72eb13f48e88c58",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
@@ -2541,10 +2547,10 @@
     "src/ServerScriptService/StoryQuestService.luau": "88266a94a136f571fbf624be2514baeb3396523eeeb802cfb1ce3406dcdb2889",
     "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "502030f270f711f28fded7edede65bfab2b51bd47f2629eb7511363a86950fbe"
   },
-  "fixtureSHA256": "e24daeee3a7eaecc428edccb98802affb92cfc596d048101442df0e053f4f7c9",
+  "fixtureSHA256": "90c73591e04032bddc3d7b9e4608cdb4e2cc41db52a94c797862c6754773cd60",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "docs/design/beta_basics_2026-10-05.md BB1 + BB2 (A23-21: PC keyboard keys only, fixed pad layout, button names on touch-only devices): 17 actions with the BB1 default keys / pad buttons, Reserved and Allowed key sets, KeyMap collision rule (explicit first in Actions order, a taken explicit key -> '', a live default-only action whose default is taken -> '' and reported once per session, non-live actions hold no key, never wipe all keys), KeyLabel, SanitizeSettings (unknown keys dropped, sparse Keys, Sfx clamp + 0.1 step, finite numbers, bools, enums), DataService fills Settings without a Version bump, SettingsService (<= 1 argument, <= 16 top-level keys, Seq clamped 0..2^31, ready + 1 s rate limit, dropped calls answered with nothing, owner-only echo, push on PlayerReady), Keybinds (Get / ActionFor / Label / PadFor / SetLocal swap / Clear / Reset / Apply / Changed / Collisions / Capture / Dispatch / prompts) and the Settings client (pull at Start, one pending blob at max(now, lastSent + 1.05 s), Flush through the same slot, older echoes ignored, unsent changes kept, a blob the server drops without an answer re-sent through the same slot, at most 5 times in a row). Review fixes 2026-10-06: a non-live action's stale saved key never blanks a live action in SetLocal; potion badges, quest-row key tokens and the in-flight resend are checked (static / offline). Review B5 2026-10-06: the one key-hint rule is Keybinds.ShowsKeys() (= KeyboardEnabled == true): Keybinds touchOnly / Label / Fill / the collision toast, HUD L.QuestText, WorldMap.ShowsKeys and both map-hint sites, Intro TXT.SkipKey / Intro.SkipText run on six devices (desktop, touch laptop, keyboard tablet: keys; phone, mouse tablet without keyboard, gamepad: no keys) and test no TouchEnabled / MouseEnabled (static). Review of 27246d1: Interact always keeps a key the default ProximityPrompt draws (SetLocal swap guard: no swap hands Interact CapsLock / KeypadOne / Minus / none; capture refuses CapsLock / KeypadOne / empty for Interact with a NotAllowed toast and accepts G).",
+  "contract": "docs/design/beta_basics_2026-10-05.md BB1 + BB2 (A23-21: PC keyboard keys only, fixed pad layout, button names on touch-only devices): 18 actions (BB1 + SKL-1 SkillX) with the default keys / pad buttons, Reserved and Allowed key sets, KeyMap collision rule (explicit first in Actions order, a taken explicit key -> '', a live default-only action whose default is taken -> '' and reported once per session, non-live actions hold no key, never wipe all keys), KeyLabel, SanitizeSettings (unknown keys dropped, sparse Keys, Sfx clamp + 0.1 step, finite numbers, bools, enums), DataService fills Settings without a Version bump, SettingsService (<= 1 argument, <= 16 top-level keys, Seq clamped 0..2^31, ready + 1 s rate limit, dropped calls answered with nothing, owner-only echo, push on PlayerReady), Keybinds (Get / ActionFor / Label / PadFor / SetLocal swap / Clear / Reset / Apply / Changed / Collisions / Capture / Dispatch / prompts) and the Settings client (pull at Start, one pending blob at max(now, lastSent + 1.05 s), Flush through the same slot, older echoes ignored, unsent changes kept, a blob the server drops without an answer re-sent through the same slot, at most 5 times in a row). Review fixes 2026-10-06: a non-live action's stale saved key never blanks a live action in SetLocal; potion badges, quest-row key tokens and the in-flight resend are checked (static / offline). Review B5 2026-10-06: the one key-hint rule is Keybinds.ShowsKeys() (= KeyboardEnabled == true): Keybinds touchOnly / Label / Fill / the collision toast, HUD L.QuestText, WorldMap.ShowsKeys and both map-hint sites, Intro TXT.SkipKey / Intro.SkipText run on six devices (desktop, touch laptop, keyboard tablet: keys; phone, mouse tablet without keyboard, gamepad: no keys) and test no TouchEnabled / MouseEnabled (static). Review of 27246d1: Interact always keeps a key the default ProximityPrompt draws (SetLocal swap guard: no swap hands Interact CapsLock / KeypadOne / Minus / none; capture refuses CapsLock / KeypadOne / empty for Interact with a NotAllowed toast and accepts G).",
   "limitations": "Offline doubles: virtual clock for os.clock / task.delay, cached EnumItems, remotes with a fixed or scripted latency, DataStore table, Panels.Has from a registered-window set, UIKit.Toast recorder. HUD / VitalsUI / GrudgeGhost / WorldMap / Panels / StoryQuestService wiring is only checked statically, except the B5 key-hint code (HUD L.QuestText, WorldMap.ShowsKeys / HintText / the BindKey and Open hint blocks, Intro TXT / SkipText), which is cut from the current source text and run against the real Keybinds with a UserInputService double (KeyboardEnabled / TouchEnabled / MouseEnabled); the rest of those modules does not run. Not certified here: real key presses in Studio, which non-letter keys Roblox swallows, whether ProximityPrompt accepts a changed KeyboardKeyCode, real DataStore saves across rejoins, multiple clients."
 }
