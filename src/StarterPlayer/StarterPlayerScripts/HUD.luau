@@ -3579,19 +3579,19 @@ function HUD.Start()
 	UIKit.OnAttr({ "Level" }, function() L.Pow.LevelAt = os.clock() end) -- BB5: no "+N" next to a level-up banner
 	UIKit.OnAttr({ "CombatPower", "DataLoaded", "ClassChosen" }, L.PowerChanged)
 	UIKit.OnAttr({ "AutoCombatUnlocked", "AutoCombatEnabled", "ClassChosen" }, L.RefreshAuto)
-	-- 2026-10-06 playtest: on a short desktop window the bottom-left chat window + input bar sat on top of the quest
-	-- rows and swallowed the [받기] click (CoreGui wins). Desktop chat goes to the bottom middle, which the HUD leaves free.
-	if not IS_TOUCH then
-		pcall(function()
-			local cw = TextChatService:FindFirstChildOfClass("ChatWindowConfiguration")
-			if cw then
-				cw.HorizontalAlignment = Enum.HorizontalAlignment.Center
-				cw.VerticalAlignment = Enum.VerticalAlignment.Bottom
-				cw.WidthScale = math.min(cw.WidthScale, 0.7)
-				cw.HeightScale = math.min(cw.HeightScale, 0.7)
-			end
-		end)
-	end
+	-- user 2026-10-06 "채팅창이 가운데 있어서 거슬려, 왼쪽에" (A23-26): desktop TextChatService chat goes bottom-left
+	-- (the v2 layout keeps that corner free; it was bottom-middle after a short window's chat covered the old left
+	-- quest rows). Touch keeps Roblox's top-left (alignment is the only placement this API has), kept short so an
+	-- opened chat stays clear of most of the thumbstick zone.
+	pcall(function()
+		local cw = TextChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+		if cw then
+			cw.HorizontalAlignment = Enum.HorizontalAlignment.Left
+			cw.VerticalAlignment = IS_TOUCH and Enum.VerticalAlignment.Top or Enum.VerticalAlignment.Bottom
+			cw.WidthScale = math.min(cw.WidthScale, IS_TOUCH and 0.85 or 0.8)
+			cw.HeightScale = math.min(cw.HeightScale, IS_TOUCH and 0.5 or 0.6)
+		end
+	end)
 	-- auto combat + ranged class: while I stand still, keep facing the nearest monster so the server's aim cone fits
 	task.spawn(function()
 		while true do
