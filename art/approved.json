@@ -2363,5 +2363,41 @@
   "cutout": "scratch cut_icon.py (512 at 86%, detached pieces dropped); checked light/navy/magenta + 48px",
   "preview": "art/review/s2/b89_items_marker_sheet.png",
   "note": "이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 묶음 9 수배 별(진홍 별 + 장난꾸러기 검은 눈가리개). 현상수배 별 줄에 씀(빈 별은 어둡게 칠함). 새 키."
+ },
+ "Skill_Warrior_Q": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Skill_Warrior_Q.txt",
+  "original": "art/out/s2/Skill_Warrior_Q_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/Skill_Warrior_Q.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py (512 at 90%, detached pieces dropped); checked light/navy/magenta + on BtnSkill 72/96px",
+  "preview": "art/review/s2/b14_skillq_sheet.png",
+  "note": "묶음 14. 이미지 생성 2가 고름(A23-25). 글자 없음. 전사 Q: 땅에 꽂힌 검 + 금빛 충격파 고리. 둥근 BtnSkill 안 ~74%. 공용 IconSpecial(날개 별)을 대체."
+ },
+ "Skill_Mage_Q": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Skill_Mage_Q.txt",
+  "original": "art/out/s2/Skill_Mage_Q_a_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/Skill_Mage_Q.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py (512 at 90%, detached pieces dropped); checked light/navy/magenta + on BtnSkill 72/96px",
+  "preview": "art/review/s2/b14_skillq_sheet.png",
+  "note": "묶음 14. 이미지 생성 2가 고름(A23-25). 글자 없음. 마법사 Q: 보라·주황 불꼬리 메테오."
+ },
+ "Skill_Archer_Q": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Skill_Archer_Q.txt",
+  "original": "art/out/s2/Skill_Archer_Q_c_src.png (Adobe MCP presigned download)",
+  "file": "art/ui/Skill_Archer_Q.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/img2/cut_icon.py (512 at 90%, detached pieces dropped); checked light/navy/magenta + on BtnSkill 72/96px",
+  "preview": "art/review/s2/b14_skillq_sheet.png",
+  "note": "묶음 14. 이미지 생성 2가 고름(A23-25). 글자 없음. 궁수 Q: 깃털·화살촉이 있는 화살 3개 + 초록 빛줄기. 1차 a/b는 '내려받기' 화살표처럼 보여 문구를 고친 c/d 중 c."
  }
 }

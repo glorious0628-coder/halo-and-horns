@@ -8,20 +8,18 @@
 - 비율 라벨: '정사각형 (1:1)', '와이드 (3:2)', '긴 (2:3)'. 모델·품질은 탭을 새로 열 때마다 확인(Sunburst = value `gpt-image-2.5-prism`, 품질 `medium`).
 - 다운로드: `asset_search`(GenAIAsset, createDate desc) → 이름 첫머리 + 시간으로 내 것 찾기 → `asset_get_presigned_urls` → `curl -sL` → `art/out/s2/<Key>_<안>_src.png`.
 
-## 끝난 것
-- **묶음 2 진영 화면 9장** — 커밋 5d16034, 시트 `art/review/s2/b2_faction_sheet.png`, 검수 OK. 이미지 개발에 파일·키·글자 칸 분수(approved.json `layout`/`slice`/`textRect`) 보냄.
-  - FactionCardHalo/Horns/Artisan, FactionTitle, FactionPremise(9조각 Rect 120,120,904,314), FactionFooter(Rect 100,0,924,142), ClassCardHalo/Horns/Artisan(→ Config 키 ClassCardNeutral).
+## 끝난 것 (모두 검수 OK, 이미지 개발에 파일·키 전달)
+- 묶음 2 진영 화면 9장 — 5d16034, `art/review/s2/b2_faction_sheet.png` (글자 칸 분수 = approved.json `layout`).
+- 묶음 4·5 공통 창·HUD 14 + 아이콘 4 — 7a7d26e, `art/review/s2/b45_common_ui_sheet.png` (9조각 = `slice`).
+- 묶음 7 가방 등급 칸 6(어두운 안쪽, A23-32) + 글리프 7 — f03d940, `art/review/s2/b7_slots_glyphs_sheet.png`. SlotRare는 크림 마스터를 같은 키로 대체(옛 기록 `SlotRare_CreamMaster`).
+- 묶음 8·9 아이콘 8 + 퀘스트 마커 2(A23-36, IconQuestMarker/Arrow) — 7b4fe91, `art/review/s2/b89_items_marker_sheet.png`.
+- 이미 끝나 있어 다시 안 그린 것: 주문서(IconScrollEnh/Move + Band), 젤리, 사탕, 아기 슬라임, 특성 아이콘 묶음 3.
+- 취소: A23-35 그림 글자(사용자 정정 — 모든 글자는 TextLabel). make_title·글꼴 4개 지움.
 
-## 진행 중
-- 묶음 4·5: IconSafe·IconHammer·IconBoot·IconAttack + PanelDark·PanelHeader·TitleRibbon·BtnSecondary·BtnConfirm·BtnSquare·BtnRound·ListRow·Chip·DialogBox·GlyphClose·StatusPlate·BarTrack·BarFill (각 2안). 아이콘은 1차에 떠 있는 반짝이가 붙어 나와 'glow and sparkles' 줄을 뺀 문구로 2안 더 뽑는 중.
-- 묶음 7 (A23-32 사용자 결정 반영): 등급 칸 6장은 **어두운 남색 안쪽 + 얇은 등급색 테**(크림 칸 아님), 글리프 Bow·Bag·Map·Menu + Shrink·Expand·Sort.
-
-## 남은 순서
-1. 묶음 8·9: UIP_Star(흰색), Item_PotionMP, 주문서(흰 본체+띠 마스크), Weapon_{Warrior,Mage,Archer}_T8, Icon_Coin, Icon_Sprout, Icon_WantedStar
-2. 묶음 14 Q 스킬 아이콘 3
-3. 묶음 10 직업 그림 9 + 11a 안내자 초상 3 (사람 — 한 장씩 단정함 확인, 업로드 전 사용자에게)
-4. 묶음 12·13, 15·16(무기 T1~T6), 17(펫 배지·감정 스티커), 19
-5. 상점 NPC 최종 모습, 옷·방어구·액세서리, 몬스터 콘셉트
+## 진행 중 (tab-1 대기열 `__s2_Q3`)
+- 묶음 14 Q 스킬: 전사·마법사 고름(art/ui/Skill_Warrior_Q·Skill_Mage_Q, 커밋 전), 궁수는 '진짜 화살'로 다시 뽑는 중.
+- 묶음 10 직업 그림 8(빛 전사 마스터는 b1에 있음, 사용자 확인 대기) — 사람 그림: 한 장씩 단정함 확인 → 사용자에게 먼저.
+- 11a 안내자 초상 3, 묶음 12·13 추가 HUD·창 20.
 
 ## 작업 도구 (scratchpad, 공용 도구는 안 고침)
 - `cut_keep.py`(비율 유지 누끼, tools/cutout_flat의 cutout·edge_fix 사용), `cut_icon.py`(정사각 아이콘 + 떨어진 조각 제거 `--keep-r`), `measure_card.py`(카드 글자 칸 측정), `zoom4.py`(4배 확대 검사). 필요하면 이미지 생성 세션에 공용 도구로 넣어 달라고 부탁.
