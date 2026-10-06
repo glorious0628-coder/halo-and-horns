@@ -54,3 +54,9 @@
 - 규칙(검수 전달): 사용자 확인·고르기는 검수에게(시트 + 추천). 데스크톱 화면 조작은 바로 직전에 검수에게 "이미지 생성 2 — 무엇 — 몇 초"(OK 필요 없음). 내 브라우저 탭 작업은 알릴 필요 없음.
 - 진행 중: ① ToggleTrack·ToggleKnob·GlyphGear(BB3 설정 창, 언어 줄은 글자 EN/한) ② MapZoneHauntedHollow + 대왕 칩 아이콘(IconChipGhostKing·IconChipPumpkinKing) ③ 지도 표시 나머지 8(교차로·마을 3·사냥터 4). 시트 스크립트 scratchpad settings_sheet.py → art/review/s2/settings_chips_maps_sheet.png.
 - (오후 4) 648f8f9 설정 스위치·톱니·대왕 칩·지도 표시 15 세트 · 7fb375a 메뉴 칸 아이콘 7 · 3c9166a 랭킹 메달 3 · 9be09d8 칭호 배지 12 · 1124ced PortraitFrame·PetCard. 다음: A23-47 소품 2D(이미지 생성 1의 kit_<구역>.md 기다림, art/out/kit/<구역>/<이름>.png, 시트 먼저 검수) — 기다리는 동안 MapKaiju·MapGrudgeSack·MapPvP 생성 중.
+
+## 오후 5 (2026-10-06, 크레딧 0)
+- 커밋: 1f059dc·552fd95 배지 고침(검수 통과) + MapKaiju·GrudgeSack(분홍)·PvP(검정) · 7c3c95a 소품 틀 시험 3(검수: 틀 통과, "우리 표시" 넣기) · **f9d128c 교차로 작은 소품 16종**(톱니 황동·청록 크리스털 표시, `art/out/kit/crossroads/X_*.png` + `_src.png`, 시트 `art/review/s2/kit_crossroads16_sheet.png`, 일지 19) → 검수에게 시트 보냄.
+- 사용자 결정(검수 전달): **3D는 모두 Tripo**(눈은 검수가 손봄), **Meshy 결제·사용 안 함** — Meshy 다시 열지 않기. 시안 속 캐릭터·몬스터 눈은 단순하게(검은 타원 + 하이라이트 1~2). A23-48 게임 화면은 영어만 → 그림 속 글자는 계속 없음.
+- 소품 요령: 문구 = `scratchpad/mk_kit.py`의 KIT 꼬리말(3/4·회색 배경·그림자 없음·글자 없음). 누끼 `cut_keep --long 1024 --holes --keep-largest` → `clean_haze`. 회색 재질(모루·화덕 벽돌·연석·크림 그늘)은 `--tol 14~18 --soft 5`. 떠 있는 부품(깃발 후광)은 `--keep-largest` 빼고 `clean_haze --min-island 300`. 막힌 회색 틈(깃발 천과 막대 사이, 고리 속)은 채도<10·밝기 127±14 덩어리를 지움. 유리 속 회색빛은 유리 표현이라 둠.
+- 다음: 검수 답(화로 테두리가 톱니보다 凸 모양 — 바꿀지) → 마을판(빛: 금 후광·날개 손잡이 / 뿔: 휜 뿔 손잡이·주황 틈빛) 소품은 마을 시안이 정해지면. 3D는 사용자 '예' 받은 묶음만(검수가 합계 물음).
