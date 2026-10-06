@@ -31,7 +31,8 @@ SCX, SCY, SRX, SRY = (float(v) for v in opt("--screen").split(","))
 DEC = int(opt("--decimate", "0"))
 SS = int(opt("--ss", "6"))
 YAW = {"-y": 0, "+x": 90, "+y": 180, "-x": 270}[opt("--front", "+x")]
-VIEWS = {"front": (0, 8), "front34": (30, 12), "front34L": (-30, 12), "game": (20, 35)}
+VIEWS = {"front": (0, 8), "front34": (30, 12), "front34L": (-30, 12), "game": (20, 35), "back34": (210, 12),
+         "back": (180, 8), "back34L": (150, 12), "left": (-90, 8), "right": (90, 8)}
 VAZ, VEL = VIEWS[opt("--view", "front")]
 PAD = 2.2
 os.makedirs(OUT, exist_ok=True)

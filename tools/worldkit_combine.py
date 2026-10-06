@@ -4,6 +4,8 @@ Put many GLBs into one GLB so the Studio 3D Importer runs once (WorldKit, 2026-1
   blender --background --factory-startup --python tools/worldkit_combine.py -- <spec.json> <out.glb>
 
 spec.json: [{"name": "Town_Halo_Gate", "file": "art/models/tripo/Town_Halo_Gate_raw.glb", "kind": "tripo", "scale": 30.0}, ...]
+  optional per item: "fit": ["h" | "z" | "max", studs] instead of "scale" (widest ground side / height / largest side),
+  "row": "meadow" to lay it out in its own row.
 - tripo: Tripo GLB (front = +X in Blender, size about 1): turned so the front faces +Y in Blender (= -Z in glTF, the
   Roblox LookVector after import) and scaled by `scale` (batch3a_manifest.json, studs).
 - acc: tools/acc_compare.py --export GLB (studs, front = -Y in Blender): turned 180 deg so the front faces +Y too.
@@ -26,8 +28,8 @@ items = json.load(open(SPEC, encoding="utf-8"))
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
 done = []
-row_x = {"tripo": 0.0, "acc": 0.0}
-row_y = {"tripo": 0.0, "acc": -60.0}
+row_x = {"tripo": 0.0, "acc": 0.0, "meadow": 0.0}
+row_y = {"tripo": 0.0, "acc": -60.0, "meadow": -40.0}
 
 for it in items:
     before = set(bpy.data.objects)
@@ -50,15 +52,27 @@ for it in items:
         bpy.ops.object.join()
     obj = bpy.context.view_layer.objects.active
     turn = math.radians(90) if it["kind"] == "tripo" else math.radians(180)
-    s = float(it.get("scale", 1.0))
-    obj.matrix_world = Matrix.Rotation(turn, 4, "Z") @ Matrix.Diagonal((s, s, s, 1.0)) @ obj.matrix_world
+    obj.matrix_world = Matrix.Rotation(turn, 4, "Z") @ obj.matrix_world
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-    pts = [obj.matrix_world @ Vector(c) for c in obj.bound_box]
-    lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
-    hi = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
+
+    def box():
+        pts = [obj.matrix_world @ Vector(c) for c in obj.bound_box]
+        return (Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts))),
+                Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts))))
+
+    s = float(it.get("scale", 1.0))
+    if "fit" in it:
+        # "fit": ["h" | "z" | "max", studs] - widest ground side, height, or largest side becomes that size
+        lo, hi = box()
+        d = hi - lo
+        dim = {"h": max(d.x, d.y), "z": d.z, "max": max(d.x, d.y, d.z)}[it["fit"][0]]
+        s = float(it["fit"][1]) / max(dim, 1e-6)
+    obj.matrix_world = Matrix.Diagonal((s, s, s, 1.0)) @ obj.matrix_world
+    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    lo, hi = box()
     size = hi - lo
-    k = it["kind"]
-    gap = 12.0 if k == "tripo" else 4.0
+    k = it.get("row", it["kind"])
+    gap = {"tripo": 12.0, "meadow": 6.0}.get(k, 4.0)
     x = row_x[k] + size.x / 2
     row_x[k] += size.x + gap
     obj.data.transform(Matrix.Translation(Vector((x - (lo.x + hi.x) / 2, row_y[k] - (lo.y + hi.y) / 2, -lo.z))))
@@ -68,8 +82,8 @@ for it in items:
         if m:
             m.name = f"{it['name']}_mat{i}"
     tris = sum(len(p.vertices) - 2 for p in obj.data.polygons)
-    done.append({"name": it["name"], "tris": tris, "size_studs": [round(size.x, 2), round(size.y, 2), round(size.z, 2)],
-                 "materials": len(obj.data.materials)})
+    done.append({"name": it["name"], "tris": tris, "scale": round(s, 4),
+                 "size_studs": [round(size.x, 2), round(size.y, 2), round(size.z, 2)], "materials": len(obj.data.materials)})
     print("[worldkit_combine]", json.dumps(done[-1]), flush=True)
 
 for img in bpy.data.images:

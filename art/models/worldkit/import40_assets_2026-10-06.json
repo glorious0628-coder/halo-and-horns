@@ -1,0 +1,497 @@
+{
+ "made": "2026-10-06 이미지 생성 1 — WorldKit 3D 가져오기 1회(build/import40/WorldKit_Import40.glb, 40개), 업로드 계정 = 새 계정",
+ "convention": "모두 MeshPart 1개 + 텍스처 1장. 크기 = 스터드(이 숫자 그대로). 앞 = Roblox -Z(LookVector). 원점(피벗) = 밑면 가운데. 계급 장식(Acc_*)은 이미 앞 -Z로 돌려 넣어서 서버 Config.Visuals.MarkModels.Yaw = 0.",
+ "build": "py tools/build_kit_from_ids.py --only Acc_ --parent ServerStorage/MarkModels --out build/kit_marks_args.json → py tools/studio_mcp.py call execute_luau @build/kit_marks_args.json",
+ "worldkit": "build/WorldKit.rbxlx workspace.Kit3D_Import40 (40 Model, 피벗 밑면 가운데)",
+ "items": [
+  {
+   "name": "Acc_HaloR1",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://105104382701229",
+   "textureId": "rbxassetid://81330577883668",
+   "size_studs": [
+    1.34,
+    0.086,
+    1.34
+   ],
+   "source_glb": "art/models/acc/Acc_HaloR1.glb"
+  },
+  {
+   "name": "Acc_HaloR2",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://99040139669596",
+   "textureId": "rbxassetid://81330577883668",
+   "size_studs": [
+    1.37,
+    0.308,
+    1.388
+   ],
+   "source_glb": "art/models/acc/Acc_HaloR2.glb"
+  },
+  {
+   "name": "Acc_HaloR3",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://71149994214402",
+   "textureId": "rbxassetid://131749546091921",
+   "size_studs": [
+    2.1,
+    0.788,
+    1.479
+   ],
+   "source_glb": "art/models/acc/Acc_HaloR3.glb"
+  },
+  {
+   "name": "Acc_HaloR4",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://103576912015977",
+   "textureId": "rbxassetid://98267997462830",
+   "size_studs": [
+    2.35,
+    0.897,
+    1.395
+   ],
+   "source_glb": "art/models/acc/Acc_HaloR4.glb"
+  },
+  {
+   "name": "Acc_HaloR5",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://139491609501733",
+   "textureId": "rbxassetid://107878271789723",
+   "size_studs": [
+    2.97,
+    1.572,
+    1.482
+   ],
+   "source_glb": "art/models/acc/Acc_HaloR5.glb"
+  },
+  {
+   "name": "Acc_HornsR1",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://106084887979756",
+   "textureId": "rbxassetid://81330577883668",
+   "size_studs": [
+    0.977,
+    0.428,
+    0.299
+   ],
+   "source_glb": "art/models/acc/Acc_HornsR1.glb"
+  },
+  {
+   "name": "Acc_HornsR2",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://113668444915202",
+   "textureId": "rbxassetid://81330577883668",
+   "size_studs": [
+    1.195,
+    0.603,
+    0.3
+   ],
+   "source_glb": "art/models/acc/Acc_HornsR2.glb"
+  },
+  {
+   "name": "Acc_HornsR3",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://121565000753203",
+   "textureId": "rbxassetid://120434290283374",
+   "size_studs": [
+    1.42,
+    1.187,
+    0.632
+   ],
+   "source_glb": "art/models/acc/Acc_HornsR3.glb"
+  },
+  {
+   "name": "Acc_HornsR4",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://84743513454193",
+   "textureId": "rbxassetid://90749219875925",
+   "size_studs": [
+    1.4,
+    1.121,
+    0.512
+   ],
+   "source_glb": "art/models/acc/Acc_HornsR4.glb"
+  },
+  {
+   "name": "Acc_HornsR5",
+   "group": "rank_mark",
+   "meshId": "rbxassetid://115399318604457",
+   "textureId": "rbxassetid://124955504176021",
+   "size_studs": [
+    1.5,
+    1.416,
+    0.979
+   ],
+   "source_glb": "art/models/acc/Acc_HornsR5.glb"
+  },
+  {
+   "name": "Kit_M_Bridge",
+   "group": "meadow",
+   "meshId": "rbxassetid://139572118820642",
+   "textureId": "rbxassetid://88150140266465",
+   "size_studs": [
+    12,
+    5.112,
+    11.999
+   ],
+   "source_glb": "art/models/tripo/Kit_M_Bridge_raw.glb",
+   "note": "바닥이 정사각(12×12). kit_meadow.md는 폭 6 — 좁게 쓰려면 8×8로 균일 축소"
+  },
+  {
+   "name": "Kit_M_BushA",
+   "group": "meadow",
+   "meshId": "rbxassetid://106307848111648",
+   "textureId": "rbxassetid://79838662013537",
+   "size_studs": [
+    3.5,
+    3.028,
+    3.46
+   ],
+   "source_glb": "art/models/tripo/Kit_M_BushA_raw.glb"
+  },
+  {
+   "name": "Kit_M_BushB",
+   "group": "meadow",
+   "meshId": "rbxassetid://88153646213867",
+   "textureId": "rbxassetid://109252929624932",
+   "size_studs": [
+    3.5,
+    1.624,
+    3.127
+   ],
+   "source_glb": "art/models/tripo/Kit_M_BushB_raw.glb"
+  },
+  {
+   "name": "Kit_M_CrystalPile",
+   "group": "meadow",
+   "meshId": "rbxassetid://86308078328117",
+   "textureId": "rbxassetid://125534770059488",
+   "size_studs": [
+    2.5,
+    2.356,
+    2.498
+   ],
+   "source_glb": "art/models/tripo/Kit_M_CrystalPile_raw.glb"
+  },
+  {
+   "name": "Kit_M_Fence",
+   "group": "meadow",
+   "meshId": "rbxassetid://105546814712079",
+   "textureId": "rbxassetid://99194569804092",
+   "size_studs": [
+    6,
+    2.346,
+    0.939
+   ],
+   "source_glb": "art/models/tripo/Kit_M_Fence_raw.glb"
+  },
+  {
+   "name": "Kit_M_FlowerCart",
+   "group": "meadow",
+   "meshId": "rbxassetid://113895856616873",
+   "textureId": "rbxassetid://111109638681586",
+   "size_studs": [
+    5,
+    3.826,
+    4.355
+   ],
+   "source_glb": "art/models/tripo/Kit_M_FlowerCart_raw.glb"
+  },
+  {
+   "name": "Kit_M_FlowersA",
+   "group": "meadow",
+   "meshId": "rbxassetid://92243781258407",
+   "textureId": "rbxassetid://100182473783222",
+   "size_studs": [
+    1.929,
+    2,
+    1.828
+   ],
+   "source_glb": "art/models/tripo/Kit_M_FlowersA_raw.glb"
+  },
+  {
+   "name": "Kit_M_FlowersB",
+   "group": "meadow",
+   "meshId": "rbxassetid://97941848592289",
+   "textureId": "rbxassetid://123560007035785",
+   "size_studs": [
+    1.435,
+    2,
+    1.305
+   ],
+   "source_glb": "art/models/tripo/Kit_M_FlowersB_raw.glb"
+  },
+  {
+   "name": "Kit_M_JellyRock",
+   "group": "meadow",
+   "meshId": "rbxassetid://95456156173502",
+   "textureId": "rbxassetid://74728552222072",
+   "size_studs": [
+    4,
+    1.863,
+    3.61
+   ],
+   "source_glb": "art/models/tripo/Kit_M_JellyRock_raw.glb"
+  },
+  {
+   "name": "Kit_M_LogBench",
+   "group": "meadow",
+   "meshId": "rbxassetid://112862685818521",
+   "textureId": "rbxassetid://138917858401190",
+   "size_studs": [
+    6,
+    2.415,
+    2.157
+   ],
+   "source_glb": "art/models/tripo/Kit_M_LogBench_raw.glb"
+  },
+  {
+   "name": "Kit_M_Mushrooms",
+   "group": "meadow",
+   "meshId": "rbxassetid://103261493871232",
+   "textureId": "rbxassetid://127783072739336",
+   "size_studs": [
+    2.936,
+    3,
+    2.788
+   ],
+   "source_glb": "art/models/tripo/Kit_M_Mushrooms_raw.glb"
+  },
+  {
+   "name": "Kit_M_PicnicBasket",
+   "group": "meadow",
+   "meshId": "rbxassetid://86719944722296",
+   "textureId": "rbxassetid://83299168420680",
+   "size_studs": [
+    1.397,
+    1.5,
+    1.443
+   ],
+   "source_glb": "art/models/tripo/Kit_M_PicnicBasket_raw.glb"
+  },
+  {
+   "name": "Kit_M_Pinwheel",
+   "group": "meadow",
+   "meshId": "rbxassetid://88060481559698",
+   "textureId": "rbxassetid://93537863159632",
+   "size_studs": [
+    2.087,
+    3,
+    1.327
+   ],
+   "source_glb": "art/models/tripo/Kit_M_Pinwheel_raw.glb"
+  },
+  {
+   "name": "Kit_M_PuddleRim",
+   "group": "meadow",
+   "meshId": "rbxassetid://73609253496482",
+   "textureId": "rbxassetid://76585247279422",
+   "size_studs": [
+    6,
+    1.854,
+    5.99
+   ],
+   "source_glb": "art/models/tripo/Kit_M_PuddleRim_raw.glb"
+  },
+  {
+   "name": "Kit_M_SignPost",
+   "group": "meadow",
+   "meshId": "rbxassetid://79697505761320",
+   "textureId": "rbxassetid://95415258888849",
+   "size_studs": [
+    4.556,
+    6,
+    1.192
+   ],
+   "source_glb": "art/models/tripo/Kit_M_SignPost_fill.glb",
+   "note": "Tripo가 속 빈 틀로 만든 젤리 큐브를 채운 판(Kit_M_SignPost_fill.glb)"
+  },
+  {
+   "name": "Kit_M_Stump",
+   "group": "meadow",
+   "meshId": "rbxassetid://129098593877306",
+   "textureId": "rbxassetid://90134374690550",
+   "size_studs": [
+    2.5,
+    1.582,
+    2.469
+   ],
+   "source_glb": "art/models/tripo/Kit_M_Stump_raw.glb"
+  },
+  {
+   "name": "Town_Halo_Gate",
+   "group": "batch3a",
+   "meshId": "rbxassetid://130670908561947",
+   "textureId": "rbxassetid://140056399190129",
+   "size_studs": [
+    30,
+    27.037,
+    11.161
+   ],
+   "source_glb": "art/models/tripo/Town_Halo_Gate_raw.glb",
+   "note": "통로가 앞뒤(Z)로 뚫림 — 충돌은 PreciseConvexDecomposition"
+  },
+  {
+   "name": "Town_Halo_Spawn",
+   "group": "batch3a",
+   "meshId": "rbxassetid://140470780543237",
+   "textureId": "rbxassetid://77490594657862",
+   "size_studs": [
+    16,
+    11.206,
+    16.064
+   ],
+   "source_glb": "art/models/tripo/Town_Halo_Spawn_raw.glb"
+  },
+  {
+   "name": "Town_Halo_Tree",
+   "group": "batch3a",
+   "meshId": "rbxassetid://74593604556742",
+   "textureId": "rbxassetid://84749844457355",
+   "size_studs": [
+    11.811,
+    14,
+    9.595
+   ],
+   "source_glb": "art/models/tripo/Town_Halo_Tree_raw.glb"
+  },
+  {
+   "name": "Town_Halo_Wall",
+   "group": "batch3a",
+   "meshId": "rbxassetid://110962046093465",
+   "textureId": "rbxassetid://104077987799099",
+   "size_studs": [
+    18,
+    9.887,
+    5.354
+   ],
+   "source_glb": "art/models/tripo/Town_Halo_Wall_raw.glb",
+   "note": "마디 길이 18 = X(옆으로 이어 붙임)"
+  },
+  {
+   "name": "Town_Horns_Gate",
+   "group": "batch3a",
+   "meshId": "rbxassetid://89412131204970",
+   "textureId": "rbxassetid://81967954267598",
+   "size_studs": [
+    30,
+    26.684,
+    12.112
+   ],
+   "source_glb": "art/models/tripo/Town_Horns_Gate_raw.glb",
+   "note": "통로가 앞뒤(Z)로 뚫림 — 충돌은 PreciseConvexDecomposition"
+  },
+  {
+   "name": "Town_Horns_Spawn",
+   "group": "batch3a",
+   "meshId": "rbxassetid://92102181025436",
+   "textureId": "rbxassetid://124228457142875",
+   "size_studs": [
+    16,
+    7.705,
+    15.403
+   ],
+   "source_glb": "art/models/tripo/Town_Horns_Spawn_raw.glb"
+  },
+  {
+   "name": "Town_Horns_Tree",
+   "group": "batch3a",
+   "meshId": "rbxassetid://126631875577995",
+   "textureId": "rbxassetid://126041599098819",
+   "size_studs": [
+    12.349,
+    14,
+    9.087
+   ],
+   "source_glb": "art/models/tripo/Town_Horns_Tree_raw.glb"
+  },
+  {
+   "name": "Town_Horns_Wall",
+   "group": "batch3a",
+   "meshId": "rbxassetid://83921887923846",
+   "textureId": "rbxassetid://80520280655099",
+   "size_studs": [
+    18,
+    10.304,
+    3.617
+   ],
+   "source_glb": "art/models/tripo/Town_Horns_Wall_raw.glb",
+   "note": "마디 길이 18 = X(옆으로 이어 붙임)"
+  },
+  {
+   "name": "W_BridgeWood",
+   "group": "batch3a",
+   "meshId": "rbxassetid://106332250128014",
+   "textureId": "rbxassetid://136671378063455",
+   "size_studs": [
+    33.644,
+    13.013,
+    22.001
+   ],
+   "source_glb": "art/models/tripo/W_BridgeWood_raw.glb",
+   "note": "길이 33.6 = X(이어 붙이는 방향), 폭 22 = Z"
+  },
+  {
+   "name": "X_Fountain",
+   "group": "batch3a",
+   "meshId": "rbxassetid://73942540446684",
+   "textureId": "rbxassetid://98933630455219",
+   "size_studs": [
+    21,
+    17.701,
+    20.899
+   ],
+   "source_glb": "art/models/tripo/X_Fountain_raw.glb",
+   "note": "맨 위 크리스털 = 왕관 조각 자리, 빛기둥은 코드"
+  },
+  {
+   "name": "X_GuildHall",
+   "group": "batch3a",
+   "meshId": "rbxassetid://138481942116141",
+   "textureId": "rbxassetid://82264529957588",
+   "size_studs": [
+    24,
+    22.482,
+    23.912
+   ],
+   "source_glb": "art/models/tripo/X_GuildHall_raw.glb",
+   "note": "뒷면 민무늬 → 뒤를 벽·다른 건물 쪽으로"
+  },
+  {
+   "name": "X_PadBase",
+   "group": "batch3a",
+   "meshId": "rbxassetid://76623876473099",
+   "textureId": "rbxassetid://75972090020120",
+   "size_studs": [
+    12,
+    5.191,
+    12.089
+   ],
+   "source_glb": "art/models/tripo/X_PadBase_raw.glb"
+  },
+  {
+   "name": "X_SpawnPlaza",
+   "group": "batch3a",
+   "meshId": "rbxassetid://127606624492271",
+   "textureId": "rbxassetid://135478238767068",
+   "size_studs": [
+    16,
+    8.231,
+    15.44
+   ],
+   "source_glb": "art/models/tripo/X_SpawnPlaza_raw.glb"
+  },
+  {
+   "name": "X_TreeA",
+   "group": "batch3a",
+   "meshId": "rbxassetid://109261586232949",
+   "textureId": "rbxassetid://118159526635991",
+   "size_studs": [
+    11.197,
+    14,
+    8.513
+   ],
+   "source_glb": "art/models/tripo/X_TreeA_raw.glb"
+  }
+ ]
+}
