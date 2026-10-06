@@ -473,5 +473,44 @@
         "G_GhostKing_A": "129024513273057 (+ generate_texture 다시 칠함, mesh 110917692430303 tex 137900193339394)"
       }
     }
+  },
+  "ghost_forest": {
+    "note": "A23-45 유령 숲(Haunted Hollow) 소품 — Roblox Studio 무료 generate_mesh. 미리보기 tools/worldkit/ghost_forest_preview.luau(LOOK on/off). 시트 art/review/haunted_hollow_sheet.jpg. 콘셉트 기준 = Concept_HauntedHollow_2(호박 없음). 배치·스폰은 게임성 개발 1.",
+    "kit": {
+      "GF_Tree": {
+        "assetId": "77208112814877",
+        "tris": 2000,
+        "use": "큰 나무(통통한 보라 줄기 + 라벤더 잎 덩어리), 높이 15~18, 회전 섞기"
+      },
+      "GF_Willow": {
+        "assetId": "110430139947138",
+        "tris": 2000,
+        "use": "푸른 보라 버드나무, 높이 14"
+      },
+      "GF_Lantern": {
+        "assetId": "108323582216945",
+        "tris": 900,
+        "use": "구부정한 나무 기둥 + 푸른 유리 등불, 높이 9. PointLight(150,200,255) 범위 16 밝기 1.4는 2~3개만, 유리 파트를 Neon 하늘색으로 하면 더 빛나 보임"
+      },
+      "GF_Mushrooms": {
+        "assetId": "129965433460141",
+        "tris": 700,
+        "use": "푸른 빛 버섯 무리, 높이 2.5"
+      },
+      "GF_Arch": {
+        "assetId": "81141808643475",
+        "tris": 3000,
+        "use": "입구 아치(두 줄기가 휘어 만남 + 작은 푸른 등불 + 빈 둥근 판), 폭 약 20, 높이 16"
+      },
+      "GF_Rock": {
+        "assetId": "75847264531193",
+        "tris": 600,
+        "use": "이끼 낀 둥근 바위, 높이 2.5"
+      }
+    },
+    "zonelook_proposal": {
+      "HauntedHollow": "{ Amb = { 0.92, 0.95, 1.3 }, Bright = 0.7, Exp = 0.15, Tint = rgb(214, 206, 255), Sat = 0.05, Con = 0.08, CC = 0.02 } — 안개 없음, 몬스터가 보이게. 하늘(밤·달)은 Config.Sky 쪽 일이라 게임성 개발 1/이미지 개발이 정함"
+    },
+    "floor": "바닥 타일 Tex_HauntedFloor는 Firefly로 만들 예정(art/prompts/Tex_HauntedFloor.txt). 지형 재질 칸은 이미지 개발이 정함(비어 있는 칸 예: Asphalt/Sandstone)."
   }
 }
