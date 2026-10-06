@@ -835,6 +835,25 @@ function UIKit.CharacterIcon(props)
 	return img
 end
 
+-- Item art (bag rows, drop notices, …). `id` is a Config.Loot.Items id (its Icon part, plus an optional IconBand part:
+-- a tint mask on the same canvas, drawn over the body in the item's Color) or a plain Config.UIArt part key.
+-- Returns the body ArtImage (the band is its child "Band", same box), or nil when the art is missing (caller falls back).
+function UIKit.ItemIcon(id, props)
+	local items = type(Config.Loot) == "table" and Config.Loot.Items or nil
+	local item = type(id) == "string" and type(items) == "table" and items[id] or nil
+	local key = type(item) == "table" and item.Icon or id
+	local img = type(key) == "string" and UIKit.ArtImage(key, props) or nil
+	if not img or type(item) ~= "table" or type(item.IconBand) ~= "string" then return img end
+	local band = UIKit.ArtImage(item.IconBand, {
+		Name = "Band",
+		Size = UDim2.fromScale(1, 1),
+		ImageColor3 = typeof(item.Color) == "Color3" and item.Color or Color3.new(1, 1, 1),
+		ZIndex = img.ZIndex,
+	})
+	if band then band.Parent = img end
+	return img
+end
+
 -- FontFace metrics include Hangul. Each yielding request owns its params; successful results are exact canvas
 -- units and cached. Conservative glyph estimates are used only if the font-bound measurement fails.
 function UIKit.MeasureText(text, size, fontOrFontFace, width)
