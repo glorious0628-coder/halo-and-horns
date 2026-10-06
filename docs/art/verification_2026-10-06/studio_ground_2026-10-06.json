@@ -1,0 +1,31 @@
+{
+  "what": "User report 2026-10-06 '몬스터가 떠 있는 느낌이 어색' (open_fixes A). Same-spot before/after in the main Studio (place 81671223175574), own test Play, monsters frozen at fixed spots (WalkSpeed 0) and a fixed scripted camera.",
+  "before": "HEAD b1ea7b4 code: Fx.luau (no blob shadow, slime hop 0.32 x body, no sink), MonsterService.luau with the A1 server HipHeight bob, CustomModels front yaw as left by apply_studio_state (BatGoblin -180, Slime/BigSlime/LittleGhost 0).",
+  "after": "Fx.luau blob shadows + slime hop min(15% body, 0.6) + 0.1 sink + landing dust; MonsterService.luau without the HipHeight bob; apply_studio_state.py FRONT_FIX applied to every CustomModel every run (BatGoblin/Slime/BigSlime/LittleGhost 90).",
+  "root_cause_found": "MonsterService tweened Humanoid.HipHeight of every custom-visual monster up by BodyHeight*0.06 and back every 0.55 s forever (A1 'alive bob'): the whole body incl. feet left the floor and its new blob shadow. Clients already animate (MonsterMotion clips / Fx WOBBLE), so the bob is removed.",
+  "server_hipheight_range_2_4s": {
+    "before": {"GoblinBrute": "3.00..3.45 (0.45)", "SkeletonKnight": "3.00..3.45 (0.45)", "Goblin": "2.00..2.30 (0.30)", "Skeleton": "2.00..2.30 (0.30)", "BatGoblin": "2.00..2.30 (0.30)", "LittleGhost": "2.00..2.30 (0.30)", "BigSlime": "0.90..1.22 (0.32)", "PumpkinSlime": "0.55..0.75 (0.20)", "Slime": "0.50..0.68 (0.18)"},
+    "after": {"GoblinBrute": "3.00..3.00", "Goblin": "2.00..2.00", "Skeleton": "2.00..2.00", "BatGoblin": "2.00..2.00", "LittleGhost": "2.00..2.00", "BigSlime": "0.90..0.90", "Slime": "0.50..0.50"}
+  },
+  "lowest_foot_bone_above_ground_idle_3s": {
+    "note": "client, min over L/R Foot+ToeBase bones of (bone Y - ground ray under that bone); joints sit a little above the sole",
+    "before": {"GoblinBrute": "0.31..0.77", "Goblin": "0.09..0.40", "Skeleton": "0.00..0.39", "BatGoblin": "0.12..0.42"},
+    "after": {"GoblinBrute": "0.32..0.32", "Goblin": "0.10..0.10", "Skeleton": "0.01..0.17", "BatGoblin": "0.12..0.13"}
+  },
+  "lowest_foot_bone_walking": {
+    "before_goblin": "p50 0.32, min 0.10 (n=54)",
+    "after_goblin": "p50 0.12-0.14, max 0.19 (n=87-112, 3 runs)",
+    "after_skeleton": "p50 0.05, max 0.20 (n=48)",
+    "note": "walking p50 ~= idle planted height after the fix: feet touch the ground while walking (photo ground_walk_goblin_skeleton_after)"
+  },
+  "front_check": "camera on the root LookVector side, then 4 sides: Slime/BigSlime/LittleGhost had the face on the +90 side, BatGoblin (-180) on the -90 side; after 90 all four face front (photo monster_front_before_after). Goblin, GoblinBrute, SkeletonKnight, Skeleton, PumpkinSlime already faced front. PetBabySlime not in the game yet (check with PET-3). apply_studio_state re-run: 'front fixed' empty (idempotent).",
+  "slime": "hop now <= min(15% body, 0.6 studs) (Slime 0.45, BigSlime 0.6), shadow 1.15 x body width, 0.1 sink, landing dust 3-5 specks 0.3 s (softened: size 0.3, start transparency 0.55 after the first look).",
+  "photos": [
+    "ground_slimes_before_after_2026-10-06.jpg",
+    "monster_front_before_after_2026-10-06.jpg",
+    "ground_walk_goblin_skeleton_after_2026-10-06.jpg",
+    "ground_slime_hop_after_2026-10-06.jpg"
+  ],
+  "console": "no script errors; pre-existing warnings only (3 asset ids without access: 98424255594613, 77176738197239, 112449541192461; MonsterModelArchive TexturePack fetch).",
+  "not_checked": "the user's own feel in play; phone; 2 clients (visual only, client-side)."
+}

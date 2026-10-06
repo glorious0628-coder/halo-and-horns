@@ -81,8 +81,6 @@ local DEATH_PARTICLES = 15
 -- an event monster that leaves undefeated (RemoveEvent(rec, true, true), the Pumpkin King going home): model attribute
 -- "Leaving" (clients skip the dying-slime splat), keeps its size, floats up Rise studs and fades over Fade s, no burst
 local LEAVE = { Fade = 1.2, Rise = 3 }
-local BOB_PERIOD = 0.55
-local BOB_FRACTION = 0.06 -- custom visual bob height as a fraction of the body height
 -- every visible part is welded to VisualRoot, which hangs off the root by the Weld VisualJoint (C0 = C1 = identity).
 -- Clients tween VisualJoint.C0 locally (Fx.luau attack lunge / hit recoil); the server never writes C0 after spawn.
 local VISUAL_ROOT_NAME = "VisualRoot"
@@ -910,21 +908,8 @@ local function spawnMonster(kind, opts)
 		pcall(rig.Humanoid.SetStateEnabled, rig.Humanoid, st, false)
 	end
 
-	-- A1: simple "alive" bob for custom visuals (moves the whole rig a little via HipHeight)
-	local bob = nil
-	if rig.VisualParts then
-		local ok, tw = pcall(function()
-			return TweenService:Create(
-				rig.Humanoid,
-				TweenInfo.new(BOB_PERIOD, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-				{ HipHeight = rig.Hip + rig.BodyHeight * BOB_FRACTION }
-			)
-		end)
-		if ok and tw then
-			bob = tw
-			tw:Play()
-		end
-	end
+	-- no server "alive" bob (the A1 HipHeight tween lifted every custom monster 0.18-0.45 studs off the floor twice a
+	-- second: user 2026-10-06 "떠 있는 게 어색해"). Clients animate instead: MonsterMotion clips / Fx WOBBLE.
 
 	nextId += 1
 	local rec = {
@@ -944,7 +929,6 @@ local function spawnMonster(kind, opts)
 		Event = opts.Event == true or nil, -- spawned by SpawnEvent: outside the regular pool, never respawns
 		-- private
 		_fill = rig.Fill,
-		_bob = bob,
 		_scale = rig.Scale,
 		_rootOffset = rig.RootOffset,
 		_contributors = {},
@@ -996,10 +980,6 @@ end
 -- shrink/fade 0.3 s, particle burst, destroy after 0.4 s. leaving = it goes home instead (LEAVE): no shrink, no splat
 local function deathPop(rec, withParticles, leaving)
 	local model, root, hum = rec.Model, rec.Root, rec.Humanoid
-	if rec._bob then
-		pcall(function() rec._bob:Cancel() end)
-		rec._bob = nil
-	end
 	if not model then return end
 	if leaving then model:SetAttribute("Leaving", true) end -- set before the anchor below (clients test it on anchor)
 	if hum and hum.Parent then

@@ -36,8 +36,13 @@ STATIC = {  # no bones: the client WOBBLE layer moves them (slimes hop / squash,
     "71855842778142": "PumpkinKing",
 }
 BIG_SLIME_TEXTURE = "rbxassetid://139511730966494"
-# GLBs whose front is not the importer's front: PrimaryPart.PivotOffset yaw in degrees (checked in Play 2026-10-06)
-FRONT_FIX = {"Skeleton": 90, "PumpkinSlime": 90, "PumpkinKing": 90, "BatGoblin": 180}
+# GLBs whose front is not the importer's front: PrimaryPart.PivotOffset yaw in degrees. Applied to EVERY model in
+# ServerStorage.CustomModels on every run (unlisted = 0), so a re-run always ends in the same state (review C-6).
+# Checked in Play 2026-10-06 (camera on the root's LookVector side, then the 4 sides): the Sunburst/Tripo static GLBs and
+# the BatGoblin rig face +90 (BatGoblin was 180 = facing sideways; Slime/BigSlime/LittleGhost had no fix = face on the
+# side). Goblin, GoblinBrute, SkeletonKnight face front with 0. PetBabySlime is not in the game yet: check it with PET-3.
+FRONT_FIX = {"Skeleton": 90, "PumpkinSlime": 90, "PumpkinKing": 90, "BatGoblin": 90,
+             "Slime": 90, "BigSlime": 90, "LittleGhost": 90}
 MODELS = {**RIGGED, **STATIC}
 
 PREP = '''local SS=game:GetService("ServerStorage")
@@ -109,6 +114,24 @@ if slime and slime:GetAttribute("AssetId") and (not bigMesh or bigMesh.TextureID
 	big.Parent=CM
 	table.insert(out,"BigSlime=blue")
 end
+-- every model, every run (idempotent): front yaw from FRONT (unlisted = 0)
+local fronts={}
+for _,m in CM:GetChildren() do
+	local pp=m:IsA("Model") and m.PrimaryPart
+	if pp then
+		local front=FRONT[m.Name] or 0
+		local want=CFrame.Angles(0,math.rad(front),0)
+		if not pp.PivotOffset:FuzzyEq(want,1e-4) then
+			pp.PivotOffset=want
+			table.insert(fronts,m.Name.."="..front)
+		end
+		if front~=0 then
+			m:SetAttribute("FrontFix","PrimaryPart.PivotOffset "..front.." Y (the GLB front differs)")
+		else
+			m:SetAttribute("FrontFix",nil)
+		end
+	end
+end
 local removed=0
 for _,c in SS:GetChildren() do if string.sub(c.Name,1,7)=="Costume" then c:Destroy() removed+=1 end end
 local sign="no anvil"
@@ -117,7 +140,7 @@ local anvil=lm and lm:FindFirstChild("ArtisanGuild") and lm.ArtisanGuild:FindFir
 local bb=anvil and anvil:FindFirstChildWhichIsA("BillboardGui")
 local lbl=bb and bb:FindFirstChildWhichIsA("TextLabel")
 if lbl then lbl.Text="대장간 · 장인 길드" sign=lbl.Text end
-return "swapped "..table.concat(out,",").." | costume folders removed "..removed.." | sign "..sign'''
+return "swapped "..table.concat(out,",").." | front fixed "..table.concat(fronts,",").." | costume folders removed "..removed.." | sign "..sign'''
 
 
 def text_of(res):
