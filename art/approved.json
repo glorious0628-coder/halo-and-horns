@@ -4113,12 +4113,12 @@
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Badge_HaloR2.txt",
-  "original": "art/out/s2/Badge_HaloR2c_1_src.png (Adobe MCP presigned download)",
+  "original": "art/out/s2/Badge_HaloR2d_1_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BadgeHaloR2.png",
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
-  "preview": "art/review/s2/rank_badges_fix_sheet.png",
-  "note": "칭호 배지 빛 R2 기사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 1차가 둥근 판으로 나와 방패 모양으로 다시 생성(R2b). (검수 지적 반영: 금 방패 + 후광 + 양옆 작은 날개 싹으로 다시.)"
+  "preview": "art/review/s2/rank_badges_fix2_sheet.png",
+  "note": "칭호 배지 빛 R2 기사. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. 1차가 둥근 판으로 나와 방패 모양으로 다시 생성(R2b). (검수 지적 반영: 금 방패 + 후광 + 양옆 작은 날개 싹으로 다시.) (검수 2차: 날개는 R3부터 — 금 방패+후광+위 작은 금별 꼭지로 다시, R2d.)"
  },
  "BadgeHaloR3": {
   "status": "approved",
@@ -4161,12 +4161,12 @@
   "date": "2026-10-06",
   "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
   "prompt": "art/prompts/Badge_HornsR1.txt",
-  "original": "art/out/s2/Badge_HornsR1c_1_src.png (Adobe MCP presigned download)",
+  "original": "art/out/s2/Badge_HornsR1d_1_src.png (Adobe MCP presigned download)",
   "file": "art/ui/BadgeHornsR1.png",
   "size": "512x512 RGBA",
   "cutout": "tools/img2/cut_icon.py --holes; checked navy/light + 24/32/40px",
-  "preview": "art/review/s2/rank_badges_fix_sheet.png",
-  "note": "칭호 배지 뿔 R1 불량배. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. (검수 지적 반영: 밝은 보라 면 + 주황·빨강 테 — 남색 이름표 위에서 안 묻힘.)"
+  "preview": "art/review/s2/rank_badges_fix2_sheet.png",
+  "note": "칭호 배지 뿔 R1 불량배. 이름표 칭호 옆·프로필(24~40px). 검수 순서 ③. 해골·악마 얼굴·종교 표시 없음. 글자 없음. (검수 지적 반영: 밝은 보라 면 + 주황·빨강 테 — 남색 이름표 위에서 안 묻힘.) (검수 2차: 작은 뿔이 24px에서 사라짐 → 큰 밝은 빨간 뿔로 다시, R1d.)"
  },
  "BadgeHornsR2": {
   "status": "approved",
