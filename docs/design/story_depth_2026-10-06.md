@@ -22,6 +22,21 @@
 4. **어른을 위해 한 겹을 더 얹습니다.** 회의, 줄 서기, 약관, 좋아요, 출석 보상, 패치 노트, 로딩 팁, 리뷰를 비꼬는 두 겹 대사와 숨은 이스터에그 13개를 넣습니다. 보상은 대사와 칭호뿐이고 능력치나 점수는 없습니다. 정치·종교·나라·실존 인물·브랜드는 다루지 않습니다.
 5. **베타(10/24)에 넣을 것:** 장 끝 질문, 두 겹 대사, H1·R1·N3 반전, 3장 M3_1·M3_3·M3_4, 이스터에그 6개. 개발 2는 약 2.2일, 개발 1은 약 1일이 듭니다. **가장 먼저 옛 세이브 이전 버그(E0)를 고칩니다.**
 
+
+## 0-1. 세계의 비밀(최종, A23-55)
+- **소문 (오프닝부터, 늘 "They say…"로 시작):** 누군가 균형의 왕관을 혼자 다 가지려다 못 갖자 "If I can't have it, no one can!" 하고 깼다고 합니다. 빛은 "뿔이 그랬다", 뿔은 "빛이 그랬다"고 말합니다. 두 편의 소문은 토씨 하나 같고 범인만 바뀝니다. 데면데면하던 이웃 사이가 이 소문 때문에 확 나빠졌습니다.
+- **진실 (5장 끝 M5_6·M5_7에서만 밝힘):** 약 1년 전 저녁, 빛의 아이 **Bright**(빛의 성채 경비 견습)와 뿔의 아이 **Smokey**(뿔 소굴 망보는 꼬마)가 **둘이 함께** 깼습니다. 둘 다 10살쯤이고, 어른들이 서로 미워하는 동안 몰래 단짝이 됐습니다. 플레이어가 2장부터 만나는 바로 그 둘이라 새 인물은 없습니다.
+- **어떻게:** 왕관은 분수 가운데 받침에 놓여 있었습니다. 옛 왕의 규칙 "The Crown is for ONE"대로 한 사람, 한 편만 가질 수 있게 만들어진 왕관이었습니다. 그래서 두 아이가 셋을 세고 함께 들자 금이 갔습니다. **화합 자체가 왕관을 깬 것입니다.**
+  - 경비 교대 때라 어른들은 서로 노려보느라 왕관을 보는 사람이 없었습니다.
+  - 깨진 왕관은 교차로 하늘로 떠올랐습니다(지금 보이는 것). 조각은 사방으로 흩어졌고, 큰 조각은 옛 유적으로 날아가 잠들었습니다.
+- **왜 깼나 (욕심의 반대):** 모두 "왕관이 있어야 균형이 지켜진다"고 믿었습니다. 빛은 지키고 뿔은 노리며 늘 긴장하며 살았고, 어른들 입에는 왕관 얘기뿐이었습니다. 아이들은 본질을 봤습니다. 왕관 때문에 아무도 함께 놀지 못한다는 것입니다. 아이 말로는 "If no one owns it, no one has to fight."
+- **소문이 생긴 길:** 아이들이 외친 "No one owns it now!"가 CRACK 소리와 웃음에 섞여 "…no one… it!"으로 들렸고, 아침에는 "If I can't have it, no one can!"이 됐습니다. 욕심은 아이들이 아니라 **왕관을 서로 가지려던 모두**(빛·뿔·장인)에게 있었습니다. 마지막 장에서 세 안내자가 한 줄씩 스스로 인정합니다.
+- **표식:** 그날 밤 Bright는 주운 부스러기로 길 잃은 어른(지금의 빛 안내자)에게 등불을 밝혀 줘서 후광이 돋았습니다. Smokey는 "이 조각만은 아무도 싸우지 않게" 간직해서 뿔이 돋았습니다. 둘 다 조각을 힘에 쓰지 않아서 표식이 자라지 않습니다(누구보다 작음).
+- **옛 왕:** 왕관은 300년 전 옛 왕의 것이었습니다. "Nothing must change"는 옛 왕과 해골 유적(늘 화요일)에만 남깁니다.
+- **아이 안전:** 아이들은 벌받지 않고, 사과하거나 뒷수습하지도 않습니다("Nobody got in trouble."). 둘은 그냥 best friends이고 연애 표현은 없습니다. 위험한 행동도 없고, 아이들은 마을과 교차로에만 있습니다.
+- **마지막 질문:** "Which side will you choose today?" 오프닝 질문 "Which side will you choose?"에 today 한 단어만 더했습니다. 균형은 왕관이 아니라 우리가 날마다 고르는 것이라는 GDD §0을 말로 하지 않고 질문으로 남깁니다.
+- **어른용 한 겹:** 소문 전달 게임("Grown-ups always lose at Telephone."), "Nobody asks our names. Just 'Which side?'", 그리고 지키는 쪽도 노리는 쪽도 속으로는 "우리 것"이었다는 점.
+
 ---
 
 ## 1. 규칙
@@ -81,6 +96,7 @@
 - **마을 사람 서브(H/R/N)**는 town_npc_quests 규칙을 그대로 따릅니다. 보상 크기는 같고 종류만 다르며, 기울기는 기록하지만 주간 랭킹 점수는 주지 않습니다.
 - **이스터에그 선택**은 Pick만 기록하고 점수는 0입니다. 숨은 것을 찾은 사람만 점수를 더 받는 불공평을 막기 위해서입니다. 대신 기울기 토스트("Your shard leaned to the light." / "…to the dark.")는 띄워서 GDD §0(모든 선택이 기운다)을 지킵니다.
 - 칭호는 능력치가 없습니다(BB16). 선택형 이스터에그는 천사 쪽과 악마 쪽에 같은 수의 칭호를 둡니다.
+- **A23-58(사용자 2026-10-06 저녁):** 자기 편답지 않은 선택은 내 점수를 깎습니다 — 빛이 나쁜 쪽이면 명예 −, 뿔이 착한 쪽이면 악명 −(0 아래로 안 내려감). 반대 편 점수는 선택으로 오르지 않습니다. 모든 선택(메인·H/R/N·조각 꽃)에 같은 규칙입니다.
 
 ---
 
@@ -88,7 +104,7 @@
 
 ### 1장 「Sparkly Jelly」 · Lv1~5 · 말랑 초원 (있음, 줄만 더함)
 - **중심 질문:** 이 반짝이는 가루는 뭐지?
-- 빛: "Broken things should be fixed." / 뿔: "Shiny! Finders keepers!" / 장인: "Raw dust is ugly. Let's shape it."
+- 빛: "Broken things get fixed. Right?" / 뿔: "Shiny! Finders keepers!" / 장인: "Raw dust is ugly. Let's shape it."
 - **끝 선택:** S0 Purify / Devour (+2)
 - **장 끝 질문 (M1_4 마지막 쪽, 모든 진영):** "More shards are out there." / "What will you do with the next one?"
 
@@ -161,21 +177,129 @@
 - 빛: "Let go, and new things come." / 뿔: "Hold on, and you never lose." / 장인: "The crown was never anyone's."
 - **목표 (있는 타입만)**
   - M5_1 `Enter ThroneYard`
-  - M5_2 `Near` ×3: 설명서 쪽지 — "Step 1: Do not drop." / "Step 2: Wear it one day. Then pass it on." / "Step 3: If every day feels the same, take it off!"
+  - M5_2 `Near` ×3: 왕의 규칙 쪽지 — "Rule 1: Balance needs a Crown. —The King" / "Rule 2: The Crown is for ONE. —The King" / "Rule 3: Never let two hold it. NEVER. —The King"
   - M5_3 `SkillHit Min 3 ×2` (왕좌 마당): "They marched this loop 100,000 times. Break the line!"
   - M5_4 `Talk`: 잠꼬대 "Same… same… same…"
   - **M5_5 `Talk` → `Choice` (선택 ⑤)**
 - **끝 선택 M5_5:** 왕은 양쪽 모두에게 같은 거래를 내밉니다(`step[faction]`).
   - 뿔에게: "never lose again" / 빛에게: "nobody ever gets hurt again"
-  - Good **[No. Tomorrow should be new.]** / Evil **[Deal — if I wear the crown.]**
+  - Good **[No. Let tomorrow be new.]** / Evil **[Deal. Keep today forever!]**
   - 장인: A **[Pass the shards around]** / B **[Keep the crown in the Guild]**
 - **장 끝 질문:** "If you could keep today forever… would you?"
-- 왕관을 깬 진실은 8절 질문 1의 답에 따라 이 장에서 밝힙니다.
+- 왕관을 깬 진실은 §2-2 M5_6·M5_7에서 밝힙니다(두 아이 Bright·Smokey, §0-1).
 
 ### 환생 「Who Will You Be?」 · Lv50+ (정식에 대사만, 나머지 나중)
 - **중심 질문:** 다시 고르면 같은 걸 고를래?
 - S0의 왕관 조각이 돌아와 내 Pick을 기억합니다(7절). 마지막 줄: "Who will you be this time?"
 - **회색 전설:** "You walked both roads. Which one surprised you more?"
+
+
+## 2-1. 복선 지도
+
+| 장 | 레벨 | 어디 | 단서 줄 (EN) | 퀘스트 id | 단계 |
+|---|---|---|---|---|---|
+| 서장 | 첫 접속 | 오프닝 (하늘 왕관 → 분수) | 자막 순서: "They say the Crown kept the world in balance." → "They say someone wanted it all to themselves." → "'If I can't have it, no one can!' CRACK." → (기존 2·3줄) → "Now each side says the other did it." → "Which side will you choose?" | `Config.Story.Premise` 1줄 고침 + 새 키 `Config.Story.OpeningRumor` 3줄. 진영 카드 판은 3줄 그대로이고, Intro만 끼워 읽음 (A23-44 다시 만들기 때) | 베타 |
+| 1장 | Lv2~4 | 말랑 초원 | Finish 토스트: "Dust spills out! …And a braided band? Gold and purple." | M1_2 (기존) | 베타 |
+| 1장 | Lv4~5 | 우리 마을 안내자 (2쪽째) | 빛: "They say a Horn broke the Crown. Pure greed!" / "Broken things get fixed. Right?"<br>뿔: "They say a Halo broke it. So greedy. Typical!"<br>장인: "Both sides say 'they did it.' The Guild says: fix first." | M1_4 (기존, 3쪽 = 기존 1쪽 + 이 줄 + 장 끝 질문) | 베타 (장인 줄은 장인 업데이트) |
+| 2장 | Lv5~7 | 교차로 분수 | 1쪽에 줄 추가: "Halos and Horns tell the same story. Word for word." / "They just swap who did it."<br>Finish 토스트(NPC 없음): "Two kids by the fountain. They see you and run… opposite ways." | M2_3 (기존) | 베타 |
+| 2장 | 약 Lv6, 빛 | 빛의 성채 → 초원 가장자리 | Bright: "They say a Horn broke the Crown. Everyone says so." / "…Who said so first?" / "Page 12 of my rulebook is missing. Don't look at me!"<br>반전 뒤: "One jar says: 'Happy birthday, S. From the bench.'" / Bright: "Not my writing! I mean… whose writing?"<br>토스트: "Bright's wristband: gold and purple. Where have you seen one?" | H1 (기존) | 베타 |
+| 2장 | 약 Lv6, 뿔 | 뿔 소굴 → 분수 | Smokey: "A Halo broke the Crown! My uncle's friend's cousin saw it!" / "This gold spyglass? Found it. Gold is fine. For spying."<br>반전 뒤: "One purple firework? In a Halo show?" / "The plan is signed 'B.' …Never heard of a B."<br>토스트: "Smokey's wristband: gold and purple. Where have you seen one?" | R1 (기존) | 베타 |
+| 2장 | 약 Lv6, 모두 (A23-57) | 교차로 | Tiny: "Halos blame Horns. Horns blame Halos. Noted: nobody saw it." / "Suspicious: two kids. Bench behind the fountain. Every evening." / "Their halo and horns are tiny. Smaller than anyone's." | N3 (기존) | 베타 |
+| 2장 숨김 | Lv5+ (M2_3 뒤) | 거위 둥지 | "The Golden Goose has 0 followers. She has never been happier." / "Also, she saw who broke the Crown. Honk." | EG03 (기존, 줄 추가) | 베타 |
+| 2장 숨김 | Lv5+ (M2_3 뒤) | KidsBench (분수 뒤, 반경 6, 길에서 비킴) | "Under the bench: two small handprints in old paint." / "One gold. One purple. Side by side." | **EG14 (새)**: Hidden, `Near KidsBench 6` → `Talk`, 점수 0, 칭호 *Bench Detective* | 베타 선택 (밀리면 가장 먼저 자름) |
+| 3장 | Lv10~15 | 고블린 숲 | Finish 토스트: "In the sack: a crayon drawing. Two kids holding something round." / "The sun? A cookie?" / "Brute: Found it by the fountain. The night of the big CRACK!" | M3_3 (기존) | 베타 |
+| 3장 | Lv12+ | 숲 입구 야영지 (PvP 밖) | Grabbo: "Meeting #1 was the night of the CRACK." / "Topic: two kids ran by, laughing. Why?" / "No answer. Meeting #2: grab more." | GW1 (기존 계획) | 정식 |
+| 3장 | Lv15 | 우리 마을 안내자 (진짜 이유 ④에 덧붙임) | 빛: "When the Crown broke, I got lost." / "A stranger gave me their lamp. Such a small hand." / "I never learned their name. So now I give mine."<br>뿔: "That night, two kids ran past us. Laughing. Who laughs then?"<br>장인: "That night, two kids asked me: 'Can two hold one crown?'" / "I said no. They looked very happy. Odd." | M3_5 (기존 계획) | 정식 (장인 줄은 장인 업데이트) |
+| 4장 | Lv25+ | 교차로의 다른 벤치 (KidsBench 아님) | Sunny Sam: "Nice weather today!" → "…Okay. I have one more line." → "Nice weather that night, too. Two kids. Big laugh." | EG08 (기존 계획) | 정식 |
+| 4장 | Lv30~35 | 유적 입구 RuinsGate | Big Shard: "The Crown was made for ONE. One head. One side." / "Two small hands held it at once. I never felt so light." | M4_4 (기존 계획) | 정식 |
+| 5장 | Lv35~40 | 왕좌 마당 | 쪽지 3장: "Rule 1: Balance needs a Crown. —The King" / "Rule 2: The Crown is for ONE. —The King" / "Rule 3: Never let two hold it. NEVER. —The King" | M5_2 (옛 'pass it on' 쪽지를 대체) | 나중 |
+| 5장 | Lv40~45 | 왕좌 마당 | King, 잠꼬대: "Same… same… same…" / "Who broke my Crown? …Two giggles?" | M5_4 (기존 계획) | 나중 |
+| 숨김 | Lv35+ | 지역마다 | 일기 마지막 쪽: "Last day as a crown: two hands at once. Not one." / "I couldn't pick. Best day ever." | EG13 (기존 계획, 마지막 쪽 교체) | 나중 |
+
+**단서가 쌓이는 순서**
+- 소문 → 두 편이 같은 문장 → 두 아이가 반대쪽으로 달아남 → 끈, 12쪽, "S.", "B." → 작은 표식 → 크레용 그림 → 회의 #1 → 등불을 준 작은 손 → "ONE" 규칙과 두 손 → 왕의 규칙 순입니다.
+- 눈 밝은 아이는 4장쯤 스스로 맞힐 수 있습니다. 이름은 마지막 장에서 확인합니다.
+- 장인 플레이어는 N3와 모두가 보는 줄로 단서를 전부 볼 수 있습니다.
+
+**만들 때 규칙**
+- **말하는 사람:** 새 엔진 없이 줄 앞에 "Bright: "를 붙입니다. 한 쪽은 문자열 하나로 쓰고, 줄을 나눌 때는 `\n`을 씁니다.
+- **Speakers 추가 (+En):** `Bright`, `Smokey`, `Tiny`, `Kids` = "Bright & Smokey"
+- **Landmarks 추가:** `KidsBench`. 지금 교차로 벤치 (18, 0, 18)을 씁니다. 스폰에서 보면 분수 뒤이고 길에서 비켜 있습니다. EG08 Sunny Sam은 (18, 0, -18) 벤치를 씁니다. 둘 다 지도 v2 때 좌표를 다시 정합니다.
+- **LinesBy:** 모두 Default가 있어야 합니다. 앞 장 기억에 기대는 조건(From=M1_2 같은 것)은 쓰지 않습니다.
+- **Bright·Smokey 모습 (10/15 H1·R1 배치 전에 검수가 확정)**
+  - 10살쯤으로 `Model:ScaleTo` 약 0.8
+  - 표식은 가장 작은 R1
+  - 손목 끈은 임시 금·보라 링 Part입니다. 화면에서 안 보여도 되고, 단서는 글자로 전합니다.
+  - 새 그림은 없습니다.
+- **비용**
+  - 베타 단서: 개발 2 약 0.1일(영어 데이터 작업에 끼워 넣음) + EG14 0.05일, 개발 1 0.1일(KidsBench, 아이 크기)
+  - 정식 단서: 개발 2 약 0.1일
+
+(이 절의 '같이 고칠 줄'은 본문에 바로 반영함, 검수 2026-10-06.)
+
+## 2-2. 마지막 장 「The Kids Who Broke It」
+(깬 사람이 두 아이라서 제목을 복수형으로 썼습니다. 퀘스트는 둘입니다: **M5_6 「Two Hands」**(밝힘), **M5_7 「Which Side Today?」**(선택).)
+
+- **열림·레벨:** M5_5를 끝내면 열립니다. Lv45 권장(5장 Lv35~50 안)이고, 단계는 **나중**(왕좌 마당이 생길 때)입니다.
+- **장소:** 교차로 KidsBench입니다. Bright와 Smokey가 처음으로 나란히 앉아 있습니다(E9, 이 플레이어에게만 보임). 하늘의 깨진 왕관이 화면 위쪽에 보입니다. 기존 대화창을 쓰고, 새 그림과 모델은 없습니다.
+- **목표 (지금 있는 타입만)**
+  - M5_6: `Enter Crossroads` → `Near KidsBench Radius 8` → `Talk` 3쪽 (Speaker = Kids)
+  - M5_7: `Talk` 3쪽 + `Choice` (한 step) → `Talk` 2쪽 (`LinesBy From=M5_7`, Claim)
+  - Pick은 고르는 순간 저장되므로(StoryQuestService:499) 같은 퀘스트의 다음 step에서 읽을 수 있습니다.
+
+**M5_6 「Two Hands」 (3쪽)**
+1. "Two kids on one bench. Bright from Halo. Smokey from Horns." / "Smokey: Oh no. It's you. Plan B: act normal." / "Bright: …This IS us acting normal."
+2. "Bright: Grown-ups only ever talked about the Crown." / "Smokey: Guard it! Grab it! Every single day." / "Smokey: Nobody asks our names. Just 'Which side?'"
+3. "Bright: My rulebook, page 12: 'The Crown is for ONE.'" / "Smokey: So we held it together. One, two, three…" / "Bright & Smokey: CRACK!"
+
+**M5_7 「Which Side Today?」 (3쪽 + 선택)**
+1. "Smokey: We yelled, 'No one owns it now!'" / "Bright: By morning it was 'If I can't have it, no one can!'" / "Smokey: Grown-ups always lose at Telephone."
+2. 진영별 Lines: 세 안내자가 스스로 인정합니다.
+   - 빛: "Your guide runs up, out of breath." / "Guide of Light: We guarded it for everyone. …So nobody else could touch it." / "Guide of Light: …Huh."
+   - 뿔: "Your guide runs up, grinning." / "Horn Legion Guide: We wanted it all for US. So did they." / "Horn Legion Guide: Twins! HA!"
+   - 장인 (장인 업데이트 뒤): "Your guide runs up, clipboard first." / "Guild Guide: Noted: we planned to rent it out." / "Guild Guide: …Oops. Us too."
+3. "Bright: We never wanted a fight. We wanted everyone to play." / "Smokey: Nobody picked me for a team. Then a Light kid did." / "Bright: So… do we fix the Crown?"
+
+**선택 (두 쪽 모두 존중, 점수 같게)**
+- 빛·뿔: Good **[Leave it in pieces. It's nobody's now.]** / Evil **[Fix it. Our side keeps it. Just in case!]** — 점수 3. **A23-58:** 빛은 Good 명예 +3 / Evil 명예 −3, 뿔은 Evil 악명 +3 / Good 악명 −3(0 아래로 안 내려감).
+- 장인: A **[Make it into something for everyone]** / B **[Fix it, then rent it. To both sides!]** (기록만)
+- +3은 M3_4·M4_4와 같은 무게입니다. 5장 예산을 정할 때 바꾸더라도 양쪽은 같게 둡니다.
+- 자기 편답지 않은 쪽을 고르면 A23-58 알림 한 줄("Not very angel-like!" / "Too nice for a devil!")만 나옵니다. 아이들(Bright·Smokey)의 대사는 꾸중하지 않습니다.
+
+**선택 뒤 (LinesBy From=M5_7, 2쪽)**
+1. 고른 것에 따라
+   - Good: "Bright: Then every day can be a new day!" / "Smokey: Tomorrow: kites. The day after? Who knows!"
+   - Evil: "Smokey: Fix it? Then you need every shard. From everyone!" / "Bright: So… Crown Wars. Every ten minutes. Same as always." / "Smokey: Ha! Have fun. We'll be on the bench."
+   - A: "Bright: Something for everyone? Like… a bench for two sides!" / "Smokey: Plan C! I like Plan C."
+   - B: "Smokey: Rent it to both sides? Ha! Same as always." / "Bright: We'll be on the bench. Rent-free."
+   - Default: "Bright: Okay. We trust you." / "Smokey: Mostly."
+2. 모두 같음: "Bright: We made a third band. For the next friend. It's yours." / "Smokey: Oh, and nobody got in trouble. Not even us." / "**Bright & Smokey: Which side will you choose today?**"
+   - 이것이 마지막 질문입니다. 답 버튼은 없고 [OK]를 누르면 받기로 넘어갑니다.
+
+**보상:** 장 끝 보상(5장 예산) + 칭호 *Third Band*(E3)입니다. 어느 쪽을 골랐든 같은 칭호이고 능력치는 없습니다.
+
+**진영 반응 (아무도 아이를 꾸짖지 않음)**
+- **장면 안:** 위 2쪽에서 세 안내자가 한 줄씩 "우리도 그랬네"를 말합니다. 욕심은 모두에게 있었다는 것을 말 대신 보여 줍니다.
+- **끝낸 뒤 안내자 대화 한 줄 (메뉴 '안내자 만나기')**
+  - 빛: "We still guard things. Now we ask what for."
+  - 뿔: "Plan A: grab it. Plan K: there is no 'it'. HA!"
+  - 장인: "Noted. Tiny's chart says 'Suspicious: nobody.' First time ever."
+
+**끝난 뒤 세계 (능력치 0, 끝낸 플레이어에게만 보임, E9 StoryWorld)**
+1. **KidsBench:** Bright와 Smokey가 마을 자리 대신 벤치에 나란히 앉아 있습니다. 등받이에 SurfaceGui 글자로 "Two Hands Bench"를 답니다.
+2. **메아리 (§1-4 규칙)**
+   - **Good/A:** 다음 접속부터, 갈 때마다 다른 놀이를 합니다(6줄 돌림). 예: "Today: kite day!" / "We taught Old Slime a game!" / "A Horn kid joined. A Halo kid too. Four now!"
+   - **Evil/B:** 바로, 늘 같습니다. 벤치 옆 병에 "Crown Fund: 3 gold and a button. Same as always!"가 붙고, Smokey는 늘 "Crown Wars? It's just a game now. Best game!"라고 말합니다.
+3. **오프닝 다시 보기:** 마지막 자막 뒤에 "…At least, that's what they say." 한 줄이 붙습니다.
+4. **환생:** 조각 대사가 "Two kids broke me. You carried me. Who will you be this time?"로 바뀝니다.
+5. **하늘의 왕관:** 어느 쪽을 골랐든 깨진 채로 둡니다. 10분 왕관 쟁탈전, 점수, 거위, 랭킹은 그대로입니다.
+6. **나중 선택 (각각 따로 승인):** 세 번째 끈 액세서리(이미지 생성 2가 2D를 그리고 검수를 거쳐 사용자에게, 능력치 0), 시소(소품 키트에 생기면 벤치 옆).
+
+**만들기**
+- **나중 (5장 때)**
+  - 개발 2 약 0.3일: M5_6·M5_7 데이터, Speakers `Kids`, TitleDefs `ThirdBand`, M5_5 선택 고침
+  - 개발 1 약 0.5일: E9 벤치 장면, 오프닝 다시 보기 줄, 환생 줄
+- **선택안:** M4_5 뒤 Lv35 교차로 장면으로 정식에 당길 수 있습니다. 새 지역이 필요 없고 일수는 같습니다. 대신 M5_2·M5_4·EG13 단서가 결말 뒤로 밀리므로 기본은 '나중'으로 둡니다.
 
 ---
 
@@ -217,8 +341,8 @@
 
 | 이름 (EN) | 자리 · 처음 | 성격 · 말버릇 | 진짜 이유 (EN 한 줄) | 장마다 바뀌는 것 | 모습 |
 |---|---|---|---|---|---|
-| 브라이트 **Bright** | 빛의 성채, H1 | 규칙책을 든 성실한 경비. "By the book!" 서류 개그(빛의 자기 풍자) | "A knight fixed my kite once. Now I fix things." | 천사 쪽을 고를수록 서류를 하나씩 버리고 새 일을 맡습니다 | 블록 마을 사람 (A23-46) |
-| 스모키 **Smokey** | 뿔 소굴, R1 | 꿍꿍이 장인 꼬마. "Plan B: same as Plan A, but sneakier!" | "Nobody ever picked me for their team. So I pick me!" | 자루가 작은 자루 → 큰 자루 → 자루 안의 자루. Lv35에 "Ever get bored of Plan A?" (R4) | 블록 마을 사람 |
+| 브라이트 **Bright** | 빛의 성채 경비 견습(10살쯤), H1 | 규칙책을 든 성실한 경비. "By the book!" 서류 개그(빛의 자기 풍자) | "A knight fixed my kite once. Now I fix things." | 천사 쪽을 고를수록 서류를 하나씩 버리고 새 일을 맡습니다 | 블록 마을 사람 (A23-46) |
+| 스모키 **Smokey** | 뿔 소굴 망보는 꼬마(10살쯤), R1 | 꿍꿍이 장인 꼬마. "Plan B: same as Plan A, but sneakier!" | "Nobody ever picked me for their team." | 자루가 작은 자루 → 큰 자루 → 자루 안의 자루. Lv35에 "Ever get bored of Plan A?" (R4) | 블록 마을 사람 |
 | 티니 **Tiny** | 교차로, N3 | 클립보드를 든 견습생. "Noted." | "A hammer doesn't pick a side. …Is that a side?" | 표가 자랍니다: "Suspicious: everyone" → "…for different reasons" | 블록 마을 사람 |
 | 분수의 조각 **Fountain Shard** | 교차로 분수, M2_3 | 능청맞은 해설자 | — | Pick에 따라 메아리 대사가 달라집니다 | 있음 |
 | 왕관 조각 **Crown Shard** | S0·S4, 환생 | 플레이어 짝꿍 | — | 환생 때 내 선택을 기억합니다 | 있음 |
@@ -256,7 +380,7 @@
   - Pip (Lv15): "Look! My own lamp! It glows purple. I never knew purple!"
 
 **④ M3_5 안내자 셋의 진짜 이유**
-- 빛: "When the crown broke, I was lost. A stranger gave me her lamp." / "I never knew her name. So now I give mine."
+- 빛: "When the crown broke, I was lost. A stranger gave me their lamp." / "I never knew their name. So now I give mine."
 - 뿔: "When the shards fell, we were too far. We got nothing." / "So now we never wait. We take first!"
 - 장인: "Both sides break things. We fix them. For both." / "…Is fixing for both sides a side too?"
 - 공통 마지막: "And you? Why are you here?"
@@ -332,7 +456,7 @@
 | EG10 Take a Number | 유적 입구 창구. `Near 8 Stay 20` → `Talk` → `Choice` | "Please take a number. Now serving: 3. Your number: 9,999."<br>A [Tell them tomorrow can come]: "Not coming? …Then what do we do today?"<br>B [Sell a skip-the-line ticket]: "Oh no. There's another line behind this line."<br>/ 줄 서기·창구 | *Line Breaker* / *Ticket Seller* | 정식 |
 | EG11 Kingdom Patch Stones | M4_2 아치 3곳, 세 번째에서 `Choice` | "v1.0: Kingdom opens!" → "v1.2: The King says: no more changes. Ever." → "v1.2 (still) / v1.2 (still)"<br>A [Carve "v1.3: Something new!"] / B [Carve "(still)"]<br>/ 업데이트를 멈춘 회사 | *v1.3* / *(still)* | 정식 |
 | EG12 Suggestion Box | 왕좌 마당. `Near` → `Talk` | "Can we have a day off? — Guard #12, year 1" / "…year 300" / 왕의 쪽지 "All ideas: no. Today will be like yesterday." / 건의함 | *Idea Haver* | 나중 |
-| EG13 Crown Diary | 지역마다 숨은 일기 쪽 8장 | "Day 1 as a crown: said yes to the king. Day 900: said yes. So bored." / 매일 같은 출근 | *Diary Reader* | 나중 (8절 질문 1 뒤) |
+| EG13 Crown Diary | 지역마다 숨은 일기 쪽 8장 | "Day 1 as a crown: said yes to the king. Day 900: said yes. So bored." / 매일 같은 출근 | *Diary Reader* | 나중 — 마지막 쪽: "Last day as a crown: two hands at once. Not one." / "I couldn't pick. Best day ever." |
 
 - **보류:** 고블린 행운 자루(확률 뽑기 풍자). 나중에 뽑기를 팔 계획(GDD §10-1)과 부딪히므로 8절 질문 2의 답을 기다립니다.
 
@@ -436,7 +560,7 @@
 
 > **사용자 답(2026-10-06 저녁, SPEC A23-55):** 1번은 추천안 대신 **'욕심 때문에 깨졌다'** — "내가 못 가지면 아무도 못 가져!"(황금 거위 배를 가른 동화처럼). 누가 했는지 아무도 모르고, 빛·뿔이 서로 탓하며 사이가 나빠졌다. 진짜 범인은 '혼자 다 갖고 싶은 마음'이고 그건 누구에게나 있다는 것을 4~5장에서 질문으로 보여 준다. 아래 추천안(늘 화요일·거위 웃음)은 쓰지 않고, '늘 화요일' 해골 설정은 욕심 많은 옛 왕의 '아무것도 바꾸지 마라'로 남겨 쓸 수 있다(세션 판단).
 
-1. **"누가 왕관을 깼나" (quest_chain 결정 7-⑦)**
+1. **"누가 왕관을 깼나" (quest_chain 결정 7-⑦)** — **답함(A23-55, §0-1·§2-2): 빛의 아이 Bright와 뿔의 아이 Smokey가 함께 깼다.** 아래 추천안은 기록용.
    - **추천안:** 균형의 왕관은 하루씩 다음 사람에게 넘겨주는 왕관이었습니다.
      - 옛 왕은 잃는 게 무서워 "아무것도 변하지 마라"를 빌고, 300년 동안 왕관을 벗지 않았습니다. 그래서 매일이 같은 날(늘 화요일)이 되었습니다.
      - 10만 번째 날, 황금 거위가 행진 한가운데에 내려와 "꽥!" 했습니다. 모두가 웃었습니다. 300년 만에 처음 생긴 새 일이었고, 왕관은 그 웃음에 깨졌습니다.
@@ -450,3 +574,13 @@
    - 나중에 뽑기 아이템을 팔 계획이 있으니, **그때까지 보류하기를 추천합니다.**
    - 출석 보상 풍자(EG09)는 돈과 상관없어서 넣습니다.
    - 답이 없으면 보류로 둡니다.
+
+## 8-1. 사용자에게 물을 것(남은 것)
+없음.
+
+(아래는 검수가 정하고 사용자에게는 묻지 않습니다.)
+- Bright·Smokey를 10살·0.8배로 확정 (10/15 전)
+- M5_7 점수 +3을 양쪽 같게
+- 결말을 정식으로 당길지 (기본 '나중')
+
+돈이 드는 것은 없습니다. 세 번째 끈 액세서리와 시소는 만들 때 따로 승인을 받습니다.
