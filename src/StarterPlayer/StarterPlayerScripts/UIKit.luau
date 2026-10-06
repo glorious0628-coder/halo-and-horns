@@ -68,6 +68,8 @@ local TOP_FALLBACK = UI.TopInsetFallback or 64
 local TOAST_Y = 152 -- slot table: toast stack top-center from y 152 (shifted below the top bar inset)
 local TOAST_WIDTH = 460
 local MAX_TOASTS = 4
+local TOAST_ICON = 34 -- item / monster art left of a toast's text (UIKit.Toast icon)
+local ANNOUNCE_ICON = 64 -- the same left of the big banner's text (UIKit.Announce icon)
 -- CR-L38: short (phone) viewports keep fewer toasts; the stack never takes more than WidthFrac of the screen width
 local TOAST_PHONE = { Height = 500, Max = 2, WidthFrac = 0.45 }
 local DEFAULT_TOAST_SECONDS = 2.5
@@ -1410,6 +1412,7 @@ local function removeToast(t)
 		TweenService:Create(t.Frame, info, { BackgroundTransparency = 1 }):Play()
 		TweenService:Create(t.Label, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 		TweenService:Create(t.Stroke, info, { Transparency = 1 }):Play()
+		if t.Icon then TweenService:Create(t.Icon, info, { ImageTransparency = 1 }):Play() end
 	end
 	task.delay(0.22, function()
 		t.Frame:Destroy()
@@ -1427,9 +1430,9 @@ local function scheduleToast(t, duration)
 end
 
 -- kinds: info / good / bad / reward (anything else = info); max 4 stacked (2 on short phones, CR-L38), newest on
--- top; default 2.5 s.
+-- top; default 2.5 s. icon (optional) = a Config.Loot.Items id or a UIArt key (UIKit.ItemIcon), drawn left of the text.
 -- A toast whose text is already on screen is refreshed instead of stacked twice.
-function UIKit.Toast(text, kind, duration)
+function UIKit.Toast(text, kind, duration, icon)
 	if text == nil then return end
 	text = tostring(text)
 	if text == "" or not toastHolder then return end
@@ -1469,10 +1472,18 @@ function UIKit.Toast(text, kind, duration)
 		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		Parent = frame,
 	})
+	local img = type(icon) == "string" and UIKit.ItemIcon(icon, {
+		Name = "Icon",
+		Size = UDim2.fromOffset(TOAST_ICON, TOAST_ICON),
+		ImageTransparency = 1,
+		Parent = frame,
+	}) or nil
+	local left = img and TOAST_ICON + 8 or 0
 	local label = UIKit.Create("TextLabel", {
 		Name = "Text",
 		BackgroundTransparency = 1,
-		Size = UDim2.new(1, 0, 0, 0),
+		Position = UDim2.fromOffset(left, 0),
+		Size = UDim2.new(1, -left, 0, img and TOAST_ICON or 0), -- grows with the text, never below the icon
 		AutomaticSize = Enum.AutomaticSize.Y,
 		TextWrapped = true,
 		TextSize = 18,
@@ -1484,7 +1495,7 @@ function UIKit.Toast(text, kind, duration)
 	})
 	frame.Parent = toastHolder
 
-	local t = { Frame = frame, Label = label, Stroke = stroke, Text = text, Token = 0, Dead = false }
+	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
 	while #toasts > toastMax do -- CR-L38
 		removeToast(toasts[1])
@@ -1494,6 +1505,7 @@ function UIKit.Toast(text, kind, duration)
 	TweenService:Create(frame, info, { BackgroundTransparency = 0.12 }):Play()
 	TweenService:Create(label, info, { TextTransparency = 0, TextStrokeTransparency = 0.6 }):Play()
 	TweenService:Create(stroke, info, { Transparency = 0.1 }):Play()
+	if img then TweenService:Create(img, info, { ImageTransparency = 0 }):Play() end
 	scheduleToast(t, duration)
 end
 
@@ -1508,7 +1520,7 @@ local function showNextAnnounce()
 	if announceCurrent then return end
 	local nxt = table.remove(announceQueue, 1)
 	if nxt then
-		showAnnounce(nxt.Text, nxt.Duration)
+		showAnnounce(nxt.Text, nxt.Duration, nxt.Icon)
 	end
 end
 
@@ -1518,6 +1530,8 @@ local function hideAnnounce(token)
 	local info = TweenInfo.new(0.25)
 	TweenService:Create(announceFrame, info, { BackgroundTransparency = 1 }):Play()
 	TweenService:Create(announceLabel, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	local icon = announceFrame:FindFirstChild("Icon")
+	if icon then TweenService:Create(icon, info, { ImageTransparency = 1 }):Play() end
 	task.delay(0.28, function()
 		if announceToken ~= token then return end
 		announceFrame.Visible = false
@@ -1534,10 +1548,30 @@ local function armAnnounceTimer(duration)
 	end)
 end
 
-showAnnounce = function(text, duration)
+-- icon (optional, UIKit.ItemIcon): item / monster art left of the banner text
+local function setAnnounceIcon(icon)
+	local old = announceFrame:FindFirstChild("Icon")
+	if old then old:Destroy() end
+	local img = type(icon) == "string" and UIKit.ItemIcon(icon, {
+		Name = "Icon",
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(0, 28, 0.5, 0),
+		Size = UDim2.fromOffset(ANNOUNCE_ICON, ANNOUNCE_ICON),
+		ImageTransparency = 1,
+		ZIndex = Z_ANNOUNCE + 1,
+		Parent = announceFrame,
+	}) or nil
+	local shift = img and ANNOUNCE_ICON + 16 or 0
+	announceLabel.Position = UDim2.new(0.5, shift / 2, 0.5, 0)
+	announceLabel.Size = UDim2.new(1, -40 - shift, 1, -12)
+	return img
+end
+
+showAnnounce = function(text, duration, icon)
 	if not announceFrame then return end
 	announceCurrent = { Text = text, Token = 0 }
 	announceLabel.Text = text
+	local img = setAnnounceIcon(icon)
 	announceFrame.Visible = true
 	announceFrame.BackgroundTransparency = 1
 	announceLabel.TextTransparency = 1
@@ -1546,13 +1580,15 @@ showAnnounce = function(text, duration)
 	local info = TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
 	TweenService:Create(announceFrame, info, { BackgroundTransparency = 0.3 }):Play()
 	TweenService:Create(announceLabel, info, { TextTransparency = 0, TextStrokeTransparency = 0.2 }):Play()
+	if img then TweenService:Create(img, info, { ImageTransparency = 0 }):Play() end
 	TweenService:Create(announcePop, info, { Scale = 1 }):Play()
 	armAnnounceTimer(duration)
 end
 
 -- large banner at 30% screen height; default 3.5 s. Announcements queue (max 3 waiting); a text that extends the
 -- one on screen (or queued), e.g. "레벨 업! Lv 10" -> "레벨 업! Lv 10 · 해금! ...", replaces it instead of queueing.
-function UIKit.Announce(text, duration)
+-- icon (optional) = a Config.Loot.Items id or a UIArt key drawn left of the text (UIKit.ItemIcon).
+function UIKit.Announce(text, duration, icon)
 	if text == nil then return end
 	text = tostring(text)
 	if text == "" or not announceFrame then return end
@@ -1579,13 +1615,13 @@ function UIKit.Announce(text, duration)
 		end
 	end
 	if announceCurrent then
-		table.insert(announceQueue, { Text = text, Duration = duration })
+		table.insert(announceQueue, { Text = text, Duration = duration, Icon = icon })
 		while #announceQueue > MAX_ANNOUNCE_QUEUE do
 			table.remove(announceQueue, 1)
 		end
 		return
 	end
-	showAnnounce(text, duration)
+	showAnnounce(text, duration, icon)
 end
 
 ----------------------------------------------------------------- confirm dialog
@@ -1899,9 +1935,9 @@ function UIKit.FlushBanners()
 	task.delay(3, function()
 		for _, b in held do
 			if b[3] == "toast" then
-				UIKit.Toast(b[1], "reward", b[2]) -- held server-wide Epic toast (A23-15)
+				UIKit.Toast(b[1], "reward", b[2], b[4]) -- held server-wide Epic toast (A23-15); b[4] = optional icon
 			else
-				UIKit.Announce(b[1], b[2])
+				UIKit.Announce(b[1], b[2], b[4])
 			end
 			task.wait(3)
 		end

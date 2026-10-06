@@ -2159,9 +2159,9 @@ Config.Announce = {
 	-- AnnounceService.Broadcast event lines: no finder, never grouped; the client shows Text[Key] (Text[Key .. "En"]
 	-- in English) in the chat in Color, and Toast = also a toast (skipped while a picker / the opening is open)
 	Events = {
-		PumpkinKingAppear = { Color = Color3.fromRGB(255, 150, 40), Toast = true },
-		PumpkinKingDefeat = { Color = Color3.fromRGB(255, 150, 40), Toast = true },
-		PumpkinKingLeave = { Color = Color3.fromRGB(255, 190, 120) },
+		PumpkinKingAppear = { Color = Color3.fromRGB(255, 150, 40), Toast = true, Icon = "IconMonPumpkinKing" },
+		PumpkinKingDefeat = { Color = Color3.fromRGB(255, 150, 40), Toast = true, Icon = "IconMonPumpkinKing" },
+		PumpkinKingLeave = { Color = Color3.fromRGB(255, 190, 120), Icon = "IconMonPumpkinKing" }, -- Icon: toast / banner art (Announce)
 	},
 }
 
@@ -2257,16 +2257,10 @@ Config.UIArt = {
 		-- window buttons (BB13 menu; UIKit.CharacterIconKey picks IconCharacterF for CharacterGender "F")
 		IconBag = { Id = "rbxassetid://110554679799730", Size = Vector2.new(512, 512) },
 		IconCharacter = { Id = "rbxassetid://85845386405558", Size = Vector2.new(512, 512) },
+		IconCharacterF = { Id = "rbxassetid://106504549276560", Size = Vector2.new(512, 512) },
 		IconSkills = { Id = "rbxassetid://113811090785765", Size = Vector2.new(512, 512) },
 		IconRanking = { Id = "rbxassetid://119501472065745", Size = Vector2.new(512, 512) },
 		IconHelp = { Id = "rbxassetid://102236302870647", Size = Vector2.new(512, 512) },
-		-- User-approved E sprites; shared legacy keys remain unchanged.
-		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
-		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },
-		IconCharacterF = { Id = "rbxassetid://106504549276560", Size = Vector2.new(512, 512) },
-		FactionCardNeutralE = { Id = "rbxassetid://78748710982730", Size = Vector2.new(380, 636) },
-		FactionTitleRibbonE = { Id = "rbxassetid://77703498329138", Size = Vector2.new(549, 108) },
-		FactionPremisePanelE = { Id = "rbxassetid://101379550181314", Size = Vector2.new(1024, 130) },
 		-- Firefly GPT Image 2.5 batch 2026-10-06 (art/approved.json), 512x512, transparent
 		-- monster heads (quest kill rows IconMon<Unit>, drop notices)
 		IconMonBigSlime = { Id = "rbxassetid://137346108147632", Size = Vector2.new(512, 512) },
@@ -2291,6 +2285,12 @@ Config.UIArt = {
 		IconRankInfamy = { Id = "rbxassetid://129377069179379", Size = Vector2.new(512, 512) },
 		IconRankArtisan = { Id = "rbxassetid://96372902638765", Size = Vector2.new(512, 512) },
 		IconRankPvP = { Id = "rbxassetid://121095026137586", Size = Vector2.new(512, 512) },
+		-- User-approved E sprites; shared legacy keys remain unchanged.
+		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
+		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },
+		FactionCardNeutralE = { Id = "rbxassetid://78748710982730", Size = Vector2.new(380, 636) },
+		FactionTitleRibbonE = { Id = "rbxassetid://77703498329138", Size = Vector2.new(549, 108) },
+		FactionPremisePanelE = { Id = "rbxassetid://101379550181314", Size = Vector2.new(1024, 130) },
 		FactionPremiseFreshTyped = { Id = "rbxassetid://105024415024705", Size = Vector2.new(1024, 174) },
 		FactionCardHaloFreshTyped = { Id = "rbxassetid://76818879022385", Size = Vector2.new(570, 954) },
 		FactionCardHornsFreshTyped = { Id = "rbxassetid://137806621328187", Size = Vector2.new(570, 954) },

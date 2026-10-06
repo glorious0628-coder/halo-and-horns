@@ -865,6 +865,11 @@ local function restartNumberLife(e, sizeMode)
 	e.Label.TextTransparency = 0
 	e.Label.TextStrokeTransparency = 0.25
 	e.FadeTween = tween(e.Label, 0.35, { TextTransparency = 1, TextStrokeTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, life - 0.35)
+	local icon = e.Gui:FindFirstChild("Icon") -- loot line art fades with its text (the scroll Band follows the body)
+	if icon then
+		icon.ImageTransparency = 0
+		tween(icon, 0.35, { ImageTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, life - 0.35)
+	end
 	task.delay(life + 0.02, function()
 		if e.Token == token then
 			e.Gui.Enabled = false
@@ -874,7 +879,8 @@ local function restartNumberLife(e, sizeMode)
 end
 
 -- shows text on the oldest pooled number (round robin). merge = { Key, Amount, Prefix, Suffix, Crit } or nil.
--- look (B14 loot lines, optional) = { Life = s, Wide = width factor, Stack = labels up in screen space }
+-- look (B14 loot lines, optional) = { Life = s, Wide = width factor, Stack = labels up in screen space,
+-- Icon = item id / UIArt key drawn left of the text (UIKit.ItemIcon; the text then starts right of it) }
 local function spawnNumber(worldPos, text, color, scale, pop, merge, look)
 	ensurePool()
 	if #pool == 0 then return end
@@ -891,6 +897,18 @@ local function spawnNumber(worldPos, text, color, scale, pop, merge, look)
 	e.Part.CFrame = CFrame.new(worldPos)
 	e.Label.Text = tostring(text or "")
 	e.Label.TextColor3 = typeof(color) == "Color3" and color or WHITE
+	local oldIcon = e.Gui:FindFirstChild("Icon") -- pooled entry: clear the art of its previous use
+	if oldIcon then oldIcon:Destroy() end
+	local ui = look and type(look.Icon) == "string" and C and C.UIKit
+	local okI, img = false, nil
+	if ui and type(ui.ItemIcon) == "function" then
+		okI, img = pcall(ui.ItemIcon, look.Icon, { Name = "Icon", Size = UDim2.fromScale(1, 1),
+			SizeConstraint = Enum.SizeConstraint.RelativeYY, Parent = e.Gui })
+	end
+	local r = (okI and img) and NUMBER_H / (NUMBER_W * (e.Wide or 1)) * 1.08 or 0 -- icon width as a share of the label
+	e.Label.Position = UDim2.fromScale(r, 0)
+	e.Label.Size = UDim2.fromScale(1 - r, 1)
+	e.Label.TextXAlignment = r > 0 and Enum.TextXAlignment.Left or Enum.TextXAlignment.Center
 	e.Gui.Enabled = true
 	e.SpawnAt = os.clock()
 	e.SpawnPos = worldPos
@@ -3565,9 +3583,11 @@ handlers.Loot = function(data)
 			if not okT then text = "+" .. it.Name end
 			if weapon and Config.WeaponStars then text = Config.WeaponStars(tier) .. " " .. text end -- design §1 B2
 			if pos and nearCamera(pos) and line < LOOT_UI.MaxLines then
-				-- B14: 1.6-2 s, wider labels stacked in screen space (no overlap with the +G / +XP numbers below)
+				-- B14: 1.6-2 s, wider labels stacked in screen space (no overlap with the +G / +XP numbers below);
+				-- items / potions show their art left of the line (weapons keep the stars: their art is redrawn later)
+				local icon = (def and it.Item) or (type(it.Potion) == "string" and "IconPotion" .. it.Potion) or nil
 				pcall(spawnNumber, pos + Vector3.new(0, 4.6, 0), text, color, weapon and LOOT_UI.WeaponScale or LOOT_UI.Scale,
-					weapon, nil, { Life = LOOT_UI.Life, Wide = LOOT_UI.Wide, Stack = line * LOOT_UI.Step })
+					weapon, nil, { Life = LOOT_UI.Life, Wide = LOOT_UI.Wide, Stack = line * LOOT_UI.Step, Icon = icon })
 				line += 1
 			end
 			-- B14: scroll drops (the only items the player acts on) also get a short toast; the session's first one
@@ -3584,9 +3604,9 @@ handlers.Loot = function(data)
 				if not seen and not LOOT_UI.Hinted then
 					LOOT_UI.Hinted = true
 					local okH, hint = pcall(string.format, LOOT_UI.Text.Hint, text)
-					uiCall("Toast", okH and hint or text, "reward", LOOT_UI.HintSeconds)
+					uiCall("Toast", okH and hint or text, "reward", LOOT_UI.HintSeconds, it.Item)
 				else
-					uiCall("Toast", text, "reward", LOOT_UI.ToastSeconds)
+					uiCall("Toast", text, "reward", LOOT_UI.ToastSeconds, it.Item) -- scroll art + its colour band
 				end
 			end
 		end

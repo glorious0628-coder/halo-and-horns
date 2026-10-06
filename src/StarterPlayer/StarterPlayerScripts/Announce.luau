@@ -70,6 +70,11 @@ function A.Show(msg)
 	if not ok or type(line) ~= "string" then return end
 	local g = Config.WeaponGrades[msg.Grade] or Config.WeaponGrades.Rare
 	local ev = type(msg) == "table" and type(Config.Announce.Events) == "table" and Config.Announce.Events[msg.Key] or nil
+	-- art left of the toast / banner text (UIKit.ItemIcon; nil = text only): the event's Icon, or the monster's head
+	-- for a rare drop (IconMon<Monster>)
+	local args = type(msg.Args) == "table" and msg.Args or {}
+	local icon = (type(ev) == "table" and type(ev.Icon) == "string" and ev.Icon)
+		or (msg.Key == "RareWeapon" and type(args.Monster) == "string" and "IconMon" .. args.Monster) or nil
 	if type(ev) == "table" then
 		-- event line: its own colour; the toast is skipped (not held) while the opening / a picker / the first
 		-- mission holds banners: by then the news is old, the chat line stays
@@ -81,7 +86,7 @@ function A.Show(msg)
 				local okH, h = pcall(ui.ShouldHoldBanners)
 				hold = okH and h == true
 			end
-			if not hold then pcall(ui.Toast, (line:gsub("&lt;", "<"):gsub("&gt;", ">"):gsub("&amp;", "&")), "reward", 5) end
+			if not hold then pcall(ui.Toast, (line:gsub("&lt;", "<"):gsub("&gt;", ">"):gsub("&amp;", "&")), "reward", 5, icon) end
 		end
 	end
 	-- big news is also visible without opening the chat: a banner for Legendary, a toast for Epic. Not for the
@@ -97,18 +102,18 @@ function A.Show(msg)
 		if g.Rank >= 5 then
 			if hold then
 				if type(ui.HeldBanners) ~= "table" then ui.HeldBanners = {} end
-				table.insert(ui.HeldBanners, { line, 6 })
+				table.insert(ui.HeldBanners, { line, 6, nil, icon })
 				if #ui.HeldBanners > 2 then table.remove(ui.HeldBanners, 1) end
 			elseif type(ui.Announce) == "function" then
-				pcall(ui.Announce, line, 6)
+				pcall(ui.Announce, line, 6, icon)
 			end
 		elseif hold then
 			-- A23-15: deferred, not dropped: shown as a toast by UIKit.FlushBanners after the opening / first mission
 			if type(ui.HeldBanners) ~= "table" then ui.HeldBanners = {} end
-			table.insert(ui.HeldBanners, { line, 4, "toast" })
+			table.insert(ui.HeldBanners, { line, 4, "toast", icon })
 			if #ui.HeldBanners > 2 then table.remove(ui.HeldBanners, 1) end
 		elseif type(ui.Toast) == "function" then
-			pcall(ui.Toast, line, "reward", 4)
+			pcall(ui.Toast, line, "reward", 4, icon)
 		end
 	end
 	-- the place still runs the legacy chat (TextChatService.ChatVersion = LegacyChatService): use its system-message
