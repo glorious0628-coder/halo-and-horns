@@ -1108,5 +1108,53 @@
   "cutout": "tools/cutout_flat.py --holes --hole-tol 12 --tol 64 --soft 20 (후광 구멍) + 발밑 그림자 제거; 768px",
   "preview": "art/review/styleboard_b1_preview.png",
   "note": "묶음 1 스타일 보드 마스터(같은 종류 그림의 스타일 참조). 검수 OK(2026-10-06), 4안 중 이미지 세션 추천안. 빛 전사(남) 블록 아바타 B2 = 사람 마스터. 검수가 옷차림 확인(어깨·몸통·배·다리 덮임). Hard rule 1: 사용자가 직접 본 뒤에만 업로드·approved로 바꿈."
+ },
+ "Tex_Grass_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_Grass.txt",
+  "original": "art/out/Tex_Grass_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_Grass_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py (overlap 160); 3x3 tiled check, wrap step = inside step",
+  "preview": "art/review/tex_tiles4_sheet.png",
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 슬라임 초원. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 3(가장 차분한 세이지 초록 — 라임 슬라임이 위에서 돋보임). 옛 art/ui/Tex_Grass.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_Grass) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김."
+ },
+ "Tex_LeafyGrass_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_LeafyGrass.txt",
+  "original": "art/out/Tex_LeafyGrass_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_LeafyGrass_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py (overlap 160); 3x3 tiled check, wrap step = inside step",
+  "preview": "art/review/tex_tiles4_sheet.png",
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 고블린 숲 바닥. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 첫 3안은 잎이 잘아 잡무늬라 문구를 '큰 덩어리'로 고쳐 다시 3안 → 6번(시트의 숲 바닥 3번). 옛 art/ui/Tex_LeafyGrass.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_LeafyGrass) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김."
+ },
+ "Tex_DirtPath_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_DirtPath.txt",
+  "original": "art/out/Tex_DirtPath_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_DirtPath_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py (overlap 160); 3x3 tiled check, wrap step = inside step",
+  "preview": "art/review/tex_tiles4_sheet.png",
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 길. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 3(무늬 반복이 가장 덜 보임). 옛 art/ui/Tex_DirtPath.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_DirtPath) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김."
+ },
+ "Tex_Cobblestone_FF": {
+  "status": "picked",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/Tex_Cobblestone.txt",
+  "original": "art/out/Tex_Cobblestone_FF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/Tex_Cobblestone_FF.png",
+  "size": "1024x1024 RGB (불투명, 누끼 없음)",
+  "cutout": "none — seamless tile: py tools/make_tileable.py --overlap 320 --prefer-dark 20 (돌 사이 어두운 틈을 따라 잇기); 3x3 tiled check, wrap step = inside step",
+  "preview": "art/review/tex_tiles4_sheet.png",
+  "note": "땅 타일(묶음 20에서 앞당김, 사용자 신고 '배경이랑 몹들이 융화가 안 돼요'). 해골 폐허 바닥. 부드럽게 칠한 큰 덩어리·몬스터보다 한 단계 낮은 채도·그림자 없는 평면. 3안 중 1(돌 크기 고르고 이음새가 틈을 따라 안 보임). 옛 art/ui/Tex_Cobblestone.png는 게임에 쓰는 중이라 그대로 둠 — 이미지 개발이 UiSandbox에서 몬스터와 같이 찍어 확인한 뒤 MaterialVariant(Tex_Cobblestone) ID 교체, 그다음 옛 파일 삭제. 고르기는 사용자가 이미지 세션에 맡김."
  }
 }
