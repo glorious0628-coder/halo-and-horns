@@ -1762,11 +1762,11 @@
   "size": "512x135 RGBA",
   "cutout": "scratch cut_keep.py (tools/cutout_flat.cutout --holes + edge_fix, aspect kept, longest side 512); checked light/navy/magenta/green",
   "preview": "art/review/s2/b45_common_ui_sheet.png",
-  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 큰 제목 리본(크림 + 금테 + 접힌 꼬리). Parts.TitleRibbon. 가로로만 늘림(FitHeight).",
+  "note": "묶음 4·5 공통 창/HUD. 이미지 생성 2가 고름(A23-25, 사용자 거부 가능). 글자 없음. 큰 제목 리본(크림 + 금테 + 접힌 꼬리). Parts.TitleRibbon. 가로로만 늘림(FitHeight). (2026-10-06 3차 검수: slice [75,40,437,95] → [118,40,394,95] — 아래 접힌 꼬리(x 75~110, 402~437)가 늘어나는 가운데 칸에 들어가 찌그러졌음)",
   "slice": [
-   75,
+   118,
    40,
-   437,
+   394,
    95
   ]
  },
