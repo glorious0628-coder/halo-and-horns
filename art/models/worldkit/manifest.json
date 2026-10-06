@@ -1,0 +1,51 @@
+{
+  "note": "세계 소품 키트 기록 (이미지 생성 1, A23-33). 교차로 1차 2026-10-06. Studio 장소는 저장 안 함(사용 한도로 중지) — 아래 애셋 ID로 다시 넣는다. 생성(generated)은 사용자 새 계정 소유로 게시된 메시 모델.",
+  "zone": "crossroads",
+  "picked": {
+    "Fountain":   {"src": "generated", "assetId": "76556272343060",  "prompt": "round cartoon three tier stone fountain, cream white stone, thick soft rounded rims", "maxTris": 5000, "genSize": "10.3x10.0x10.3", "target": "Ø24, scale ~2.3"},
+    "Bench":      {"src": "generated", "assetId": "134680201973665", "prompt": "chubby rounded cartoon toy park bench, honey wood, curly dark iron legs", "maxTris": 800, "genSize": "5.6x4.0x2.9", "target": "6.5 wide"},
+    "Stall_Red":  {"src": "generated", "assetId": "129560971369618", "prompt": "cute cartoon market stall, scalloped red and cream awning, fruit crates", "maxTris": 2000, "genSize": "9.4x9.0x5.4", "target": "11 wide"},
+    "Stall_Blue": {"src": "generated", "assetId": "130455047391717", "prompt": "same, blue and cream awning, bread baskets", "maxTris": 2000},
+    "Stall_Green":{"src": "generated", "assetId": "132658338267168", "prompt": "same, green and cream awning, apples and vegetables", "maxTris": 2000},
+    "Anvil":      {"src": "generated", "assetId": "82446744618801",  "prompt": "cute chunky cartoon anvil on a round tree stump", "maxTris": 1000, "genSize": "2.3x2.0x3.0", "target": "~4.5 long; must stay Anchored BasePart named Anvil under ArtisanGuild"}
+  },
+  "to_review": {
+    "Lamp_A":     {"src": "generated", "assetId": "140411928663734", "note": "green pagoda roof lantern — too Asian; probably drop"},
+    "Lamp_B":     {"src": "generated", "assetId": "83198252324794",  "note": "wood post + crossbar + hanging iron lantern (concept match), 9.3 tall; check"},
+    "Potion":     {"src": "generated", "assetId": "83996745517766",  "note": "potion cart, purple canopy"},
+    "Guild":      {"src": "generated", "assetId": "93235013033313",  "note": "blacksmith house 13x20x13 — check proportions (target ~26x20x20)"},
+    "Forge":      {"src": "generated", "assetId": "86664671339999"},
+    "CrownShard": {"src": "generated", "assetId": "138150055823518"},
+    "PadBase":    {"src": "generated", "assetId": "110136633746885", "note": "stone disc only; glow ring stays a Neon part colored by code"},
+    "Altar":      {"src": "generated", "assetId": "121777078323302"},
+    "NoticeBoard":{"src": "generated", "assetId": "77491899980114",  "note": "MostWantedBoard part + SurfaceGui stay separate"},
+    "Brazier":    {"src": "generated", "assetId": "136257412466235"},
+    "GooseNest":  {"src": "generated", "assetId": null, "note": "generation Failed — retry"}
+  },
+  "creator_store_tried": {
+    "rule": "ServerStorage.KitStage에만 넣고 Script·LocalScript·ModuleScript·Remote·Bindable·Prompt·ClickDetector·Sound·Humanoid를 지움(남은 위험 인스턴스 0 확인). 결과: 대부분 각지고 사실적이라 장난감 콘셉트와 안 맞음 → 생성 도구 결과 채택.",
+    "items": [
+      {"id": "7070126910",      "name": "Fountain(cartoon)", "creator": "An0nsoul_Sniperr", "removed": ["Script:Look"], "parts": 21, "verdict": "2nd choice fountain (plain white marble)"},
+      {"id": "133107976105207", "name": "Cartoon Fountain Water Splash", "creator": "XzOrbit5TBoltYzX1404", "removed": ["Script:LightConfig", "ModuleScript x2"], "parts": 5, "verdict": "no"},
+      {"id": "124245763082130", "name": "Better Low Poly Fountain", "creator": "BlockOrbit7076", "removed": ["Script:Credits", "Script:CoreSkyboxSystem"], "parts": 31, "verdict": "no (dark grey)"},
+      {"id": "1493801744",      "name": "Cartoon Bench V1", "creator": "LowKayKevin", "removed": [], "parts": 25, "verdict": "no"},
+      {"id": "10542067814",     "name": "Popsicle Stick Bench", "creator": "9022oak", "removed": [], "parts": 43, "verdict": "no"},
+      {"id": "6160365655",      "name": "Wooden Park Bench", "creator": "Melismyx", "removed": [], "parts": 48, "verdict": "no"},
+      {"id": "16445144129",     "name": "Basic Bench", "creator": "soreilzy", "removed": [], "parts": 13, "verdict": "no"},
+      {"id": "88171328324610",  "name": "Stylized Lantern Post", "creator": "XArsinix", "removed": [], "parts": 6, "verdict": "no (small)"},
+      {"id": "18330601838",     "name": "Tall Lamp", "creator": "amit857", "removed": [], "parts": 40, "verdict": "2nd choice lamp"},
+      {"id": "210139817",       "name": "MedievalLampPost", "creator": "Boopbot", "removed": [], "parts": 26, "verdict": "no"},
+      {"id": "17451005959",     "name": "lamp", "creator": "metrox1223", "removed": [], "parts": 6, "verdict": "no (50 tall)"},
+      {"id": "86311252190175",  "name": "Market stall", "creator": "IAmASwedishMale", "removed": [], "parts": 1, "verdict": "tiny single mesh; not checked"},
+      {"id": "4611303753",      "name": "FoodStall", "creator": "AlexAecid", "removed": [], "parts": 46, "decals": ["4608397654 x5"], "verdict": "no"},
+      {"id": "388036950",       "name": "Market Stand", "creator": "WoodReviewer", "removed": [], "parts": 109, "verdict": "no"},
+      {"id": "8403588845",      "name": "Fruit Stand", "creator": "ruby_cantik115", "removed": [], "parts": 95, "verdict": "no"},
+      {"id": "107193693143362", "name": "Classic Potion-Maker's Shelf", "creator": "WarpedSockMonkey", "removed": ["Sound x6", "Script:Note from the Creator."], "parts": 19, "verdict": "no"},
+      {"id": "11946437830",     "name": "Anvil", "creator": "IllusivePhantasm", "removed": [], "parts": 4, "verdict": "no"},
+      {"id": "83520552281722",  "name": "cartoon anvil", "creator": "Kafier2312", "removed": ["Script:Script", "Sound:Cartoon Anvil Hit Sound Effect"], "parts": 5, "verdict": "no"},
+      {"id": "13732732668",     "name": "Anvil", "creator": "nacrobloxgamer", "removed": [], "parts": 1, "verdict": "no"}
+    ]
+  },
+  "evidence": "art/review/worldkit/ (crossroads_before_*.jpg = 지금 모습, cand_*.jpg = 후보 비교)",
+  "todo": "삼각형 수 확인, 크기 맞추기(target), 이름 계약(world_kit 문서 끝), WorldKit 교차로에 배치 → 같은 각도 '지금 vs 키트' 사진 → rbxm 내보내기"
+}
