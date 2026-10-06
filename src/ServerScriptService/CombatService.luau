@@ -59,11 +59,13 @@ local TUNE = {
 			Mage = { Launch = 0.24, Flight = 0.2, Contact = 0.44 },
 			Archer = { Launch = 0.22, Flight = 0.15, Contact = 0.37 },
 			Punch = { Contact = 0.15 }, -- A23-34 bare hands (every class): a short jab, no projectile
+			PetHeadbutt = { Contact = 0.3 }, -- A23-39 pet tamer: the pet reaches its target and bonks it
 		},
 		Release = {
 			Warrior = { Contact = 0.24 },
 			Mage = { Launch = 0.35, Contact = 0.35 },
 			Archer = { Launch = 0.18, Contact = 0.4 },
+			PetDash = { Contact = 0.35 }, -- A23-39 pet tamer: the pet dashes into the area
 		},
 	},
 }
@@ -957,6 +959,7 @@ function CombatService.Release(player, isAuto)
 	local c = cls(player)
 	local fac = faction(player)
 	local perks = perksOf(player)
+	local style = Config.IsTamer(c.Id, fac) and Config.Tamer.SkillStyle or nil -- A23-39 (look only)
 
 	-- 3. center + radius
 	local pos = root.Position
@@ -1000,7 +1003,7 @@ function CombatService.Release(player, isAuto)
 					if not killed then
 						-- A15: a blast pushes outward from its center; the monster at the center goes away from me
 						local from = Util.FlatDistance(m.Pos, center) > 0.5 and center or pos
-						shoveLater("Release", c.Id, m.Rec, from, REACT.SHOVE_RELEASE, player)
+						shoveLater("Release", c.Id, m.Rec, from, REACT.SHOVE_RELEASE, player, style)
 					end
 					table.insert(hits, { P = m.Pos, A = dealt, C = false, K = "M" })
 					total += applied
@@ -1069,14 +1072,17 @@ function CombatService.Release(player, isAuto)
 		S.PlayerService.MarkActive(player)
 	end
 
-	-- 9. visuals (CR-L49: the attacker + players near the blast) + signal
+	-- 9. visuals (CR-L49: the attacker + players near the blast) + signal. A23-39: Style = "PetDash" for the pet tamer
+	-- (the same Archer skill; the pet dashes in instead of the arrow rain), nil for every other class
+	local motion = TUNE.MOTION.Release[style or c.Id]
 	fxNear(player, "Release", center, radius, {
 		UserId = player.UserId,
 		Character = Util.GetCharacter(player),
 		Class = c.Id,
+		Style = style,
 		Faction = fac,
-		ContactDelay = TUNE.MOTION.Release[c.Id] and TUNE.MOTION.Release[c.Id].Contact,
-		LaunchDelay = TUNE.MOTION.Release[c.Id] and TUNE.MOTION.Release[c.Id].Launch,
+		ContactDelay = motion and motion.Contact,
+		LaunchDelay = motion and motion.Launch,
 		Pos = center,
 		Radius = radius,
 		Stacks = 0, -- legacy Fx compatibility only

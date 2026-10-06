@@ -1,0 +1,1054 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 93,
+  "failedChecks": 0,
+  "namedChecks": 93,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "the artisan Archer is the 펫 조련사 (Halo / Horns keep theirs)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "IsTamer = the Neutral Archer only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tamer weapon 1 = 나뭇가지 지휘봉",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tamer weapon 2 = 나무 지휘봉",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tamer weapon 3 = 철 지휘봉",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tamer weapon 4 = 숲도둑 황금 지휘봉",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tamer weapon 5 = 옛 왕국 수정 지휘봉",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tamer weapon 6 = 수호령 지휘봉",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tamer weapon 7 = 왕관 조각 지휘봉",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tamer weapon 8 = 젤리 왕관 지휘봉",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Halo Archer keeps the bows; bare hands stay '맨손'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "baton names KO + EN for every tier",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "baton icon key T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "baton icon key T2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "baton icon key T3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "baton icon key T4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "baton icon key T5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "baton icon key T6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T7 / T8 keep the Archer keys, Halo keeps bows, bare hands no icon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "armed tamer = the Archer numbers + Style PetHeadbutt (class row untouched)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the tamer profile is cached",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "bare tamer = the punch numbers + the pet look",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a Halo archer: punch bare-handed, the class row armed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "class card: the tamer's lines, the archer's for Halo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text PetName KO + EN",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text PetGot KO + EN",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text Became KO + EN",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text BecameFree KO + EN",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card Desc KO + EN",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card PickLine KO + EN",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card stats KO + EN lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save defaults: no pet, TamerNotice false, Version 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "tamer swing = Halo archer swing (two targets at 30, same damage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "tamer Fx Swing: Style PetHeadbutt, contact 0.3, no arrow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "a Halo archer still shoots arrows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "no shove before the pet arrives",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "the pet's headbutt shoves both targets at 0.3 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "tamer skill Q = Halo archer skill Q",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "tamer Fx Release: Style PetDash, contact 0.35, no arrow rain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "a Halo archer's skill keeps its look",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "no skill shove before the dash lands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "the dash shoves at 0.35 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "bare tamer: nothing within 7, pet look",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "bare tamer punches for 2 at 4 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "auto: the armed tamer's pet reaches 20 studs (Archer range)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "joined",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "combat",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "no pet before the pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "the pick gives one baby slime, equipped, Bound, Lv1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "attributes EquippedPet / PetLv / PetForm",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "the pet notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "a tamer picked now: the flag is set, no free-change ticket",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "no second pet / notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "a class change away keeps the pet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "coming back: still one pet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "an owned, unequipped baby slime is equipped again (no duplicate)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "a Halo archer has no pet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "joining the guild as an Archer: the pet, no ticket",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "no pet for a Halo Archer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "no pet for a Horns Archer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "no pet for a Neutral Warrior",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "no pet for a Neutral Mage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "not ready: no pet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "a pre-A23-39 save loads with TamerNotice false + empty Pets",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "the hunter-became-tamer notice, then the pet notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "one free class change ticket",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "flag saved, the pet given",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "the next join: no ticket, no notice, still one pet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "the next join: the pet attributes are published again (the pet follows every session)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "Lv3 old hunter: the 'free change' line, still one ticket",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "a save with no TamerNotice field at all: the ticket too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "a tamer picked after A23-39 never gets the old-save ticket",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "class not picked yet: no pet, no notice, no ticket",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "a guild warrior's save: no notice, no ticket",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "legacy",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "a broken Pets -> empty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "a pet's fields are repaired",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "an unknown species is kept (never lost), broken entries dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "only one known pet equipped; Next >= 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "the baby slime gets P2 (P1 kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sanitize",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "visuals",
+      "check": "the tamer holds a baton",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "visuals",
+      "check": "a Halo archer holds a bow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "visuals",
+      "check": "a bare-handed tamer holds nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "visuals",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "visuals",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 5,
+  "staticFailures": [],
+  "mutations": {
+    "total": 36,
+    "applied": 36,
+    "caught": 36,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the artisan Archer is still the hunter",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the artisan Archer is the 펫 조련사 (Halo / Horns keep theirs)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "IsTamer ignores the faction",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: a Halo archer still shoots arrows",
+          "combat :: a Halo archer's skill keeps its look",
+          "config :: Halo Archer keeps the bows; bare hands stay '맨손'",
+          "config :: IsTamer = the Neutral Archer only",
+          "config :: T7 / T8 keep the Archer keys, Halo keeps bows, bare hands no icon",
+          "config :: a Halo archer: punch bare-handed, the class row armed"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "IsTamer never true",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: bare tamer: nothing within 7, pet look",
+          "combat :: tamer Fx Release: Style PetDash, contact 0.35, no arrow rain",
+          "combat :: tamer Fx Swing: Style PetHeadbutt, contact 0.3, no arrow",
+          "combat :: the dash shoves at 0.35 s",
+          "combat :: the pet's headbutt shoves both targets at 0.3 s",
+          "config :: IsTamer = the Neutral Archer only"
+        ],
+        "newFailingCount": 41
+      },
+      {
+        "mutation": "tamer weapons keep the bow names",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: tamer weapon 1 = 나뭇가지 지휘봉",
+          "config :: tamer weapon 2 = 나무 지휘봉",
+          "config :: tamer weapon 3 = 철 지휘봉",
+          "config :: tamer weapon 4 = 숲도둑 황금 지휘봉",
+          "config :: tamer weapon 5 = 옛 왕국 수정 지휘봉",
+          "config :: tamer weapon 6 = 수호령 지휘봉"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "tamer weapons keep the bow icons",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: baton icon key T1",
+          "config :: baton icon key T2",
+          "config :: baton icon key T3",
+          "config :: baton icon key T4",
+          "config :: baton icon key T5",
+          "config :: baton icon key T6"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "tamer T7 / T8 get missing baton icons",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: T7 / T8 keep the Archer keys, Halo keeps bows, bare hands no icon"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "tamer swing without the pet look",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: bare tamer: nothing within 7, pet look",
+          "combat :: tamer Fx Swing: Style PetHeadbutt, contact 0.3, no arrow",
+          "combat :: the pet's headbutt shoves both targets at 0.3 s",
+          "config :: armed tamer = the Archer numbers + Style PetHeadbutt (class row untouched)",
+          "config :: bare tamer = the punch numbers + the pet look"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "armed and bare tamer share one profile",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: bare tamer = the punch numbers + the pet look"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "tamer profile skipped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: bare tamer: nothing within 7, pet look",
+          "combat :: tamer Fx Swing: Style PetHeadbutt, contact 0.3, no arrow",
+          "combat :: the pet's headbutt shoves both targets at 0.3 s",
+          "config :: armed tamer = the Archer numbers + Style PetHeadbutt (class row untouched)",
+          "config :: bare tamer = the punch numbers + the pet look"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "tamer card = the archer card",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: class card: the tamer's lines, the archer's for Halo"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "tamer skill without the pet look",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: tamer Fx Release: Style PetDash, contact 0.35, no arrow rain",
+          "combat :: the dash shoves at 0.35 s"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Release Fx without Style",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: tamer Fx Release: Style PetDash, contact 0.35, no arrow rain"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "tamer skill with the arrow-rain timing",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: tamer Fx Release: Style PetDash, contact 0.35, no arrow rain"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no pet headbutt contact time",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: no shove before the pet arrives",
+          "combat :: tamer Fx Swing: Style PetHeadbutt, contact 0.3, no arrow"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "tamer skill shove at the class time",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "combat :: the dash shoves at 0.35 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the pet is given twice",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: the next join: no ticket, no notice, still one pet",
+          "pet :: a class change away keeps the pet",
+          "pet :: an owned, unequipped baby slime is equipped again (no duplicate)",
+          "pet :: coming back: still one pet",
+          "pet :: no second pet / notice"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "an owned pet is never re-equipped",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet :: an owned, unequipped baby slime is equipped again (no duplicate)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a new pet is not equipped",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet :: attributes EquippedPet / PetLv / PetForm",
+          "pet :: the pick gives one baby slime, equipped, Bound, Lv1",
+          "sanitize :: the baby slime gets P2 (P1 kept)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the pet attributes are not published",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet :: attributes EquippedPet / PetLv / PetForm",
+          "sanitize :: the baby slime gets P2 (P1 kept)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no pet notice",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: the hunter-became-tamer notice, then the pet notice",
+          "pet :: the pet notice"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a non-tamer gets the pet",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: a guild warrior's save: no notice, no ticket",
+          "pet :: a Halo archer has no pet",
+          "pet :: joining the guild as an Archer: the pet, no ticket",
+          "pet :: no pet for a Halo Archer",
+          "pet :: no pet for a Horns Archer",
+          "pet :: no pet for a Neutral Mage"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the tamer before the class pick",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: class not picked yet: no pet, no notice, no ticket"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the legacy hunter gets no ticket",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: Lv3 old hunter: the 'free change' line, still one ticket",
+          "legacy :: a save with no TamerNotice field at all: the ticket too",
+          "legacy :: one free class change ticket"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the ticket at every join",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: a tamer picked after A23-39 never gets the old-save ticket",
+          "legacy :: the next join: no ticket, no notice, still one pet"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a new tamer still gets the old-save ticket",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: a tamer picked after A23-39 never gets the old-save ticket",
+          "pet :: a tamer picked now: the flag is set, no free-change ticket",
+          "pet :: joining the guild as an Archer: the pet, no ticket"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no 'the hunter became the tamer' notice",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: Lv3 old hunter: the 'free change' line, still one ticket",
+          "legacy :: the hunter-became-tamer notice, then the pet notice"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the ticket wording below Lv5",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: Lv3 old hunter: the 'free change' line, still one ticket"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no pet for the legacy tamer",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: flag saved, the pet given",
+          "legacy :: the hunter-became-tamer notice, then the pet notice",
+          "legacy :: the next join: no ticket, no notice, still one pet",
+          "legacy :: the next join: the pet attributes are published again (the pet follows every session)",
+          "sanitize :: the baby slime gets P2 (P1 kept)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "legacy check only for a missing flag",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: Lv3 old hunter: the 'free change' line, still one ticket",
+          "legacy :: flag saved, the pet given",
+          "legacy :: one free class change ticket",
+          "legacy :: the hunter-became-tamer notice, then the pet notice"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a returning tamer's pet is not published",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "legacy :: the next join: the pet attributes are published again (the pet follows every session)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet given while not ready",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet :: not ready: no pet"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an unknown species is equipped",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: only one known pet equipped; Next >= 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a uid is reused",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: the baby slime gets P2 (P1 kept)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "corrupted levels kept",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: a pet's fields are repaired"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "two pets equipped",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sanitize :: only one known pet equipped; Next >= 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the tamer still holds a bow",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "visuals :: the tamer holds a baton"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "105310f83446f2e4912c915475f0243228d83dc62708519abb387504d897e7b9",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "6bf65832884f88553c0c0168aff8282a10cac5856f73c6256c2745488aff1e1f",
+    "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
+    "src/ServerScriptService/StoryQuestService.luau": "19f046c3251bb799230db775a0345b4324fe77301daff3fc89506eb3f7402c68",
+    "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
+    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/DataService.luau": "8da635577f3b6957f402db621c3ca684d825e9febbe2fa7e85a47d6a6eb37f0c",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/CharacterVisuals.luau": "c757f55faf2773a81935f5d3e50390b7bf0fdc544ed56ad4e92e543034b72385",
+    "src/ServerScriptService/PetService.luau": "4268e7b0a2d0adafddb82040a629997986e29573effe29610e952a2a942fa7ea"
+  },
+  "fixtureSHA256": "e74fccadc71fb13a01a12e66b9a9a151d8f453327341af5dc25624b02bd3a28a",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-39 server: Config.IsTamer(class, faction) = Neutral + Archer. Config.Classes.Archer.Names.Neutral = '펫 조련사'; Config.WeaponName = Config.WeaponNames.Tamer (조련 지휘봉 줄) and WeaponArtKey 'Weapon_Tamer_T1..6' for the tamer (T7 / T8 keep the Archer keys); Config.AttackProfile(Archer, tier, Neutral) = the Archer row (armed) or the punch (bare) with Style 'PetHeadbutt'; Config.ClassCard = Config.Tamer.Card. CombatService: Swing Fx Style PetHeadbutt (contact 0.3, no launch / flight), Release Fx Style 'PetDash' (contact 0.35), damage = a Halo archer's. PetService: data.Pets { List[uid] = { Sp, Lv, XP, Name, Lean, Bound }, Equipped = { uid }, Next } sanitized at join; attributes EquippedPet / PetLv / PetForm; a tamer (class pick, class change, faction change or a join) gets the baby slime once, equipped, Bound, with Text.PetGot; a save that was the artisan hunter before (no TamerNotice) gets Text.Became + one free Class ticket once; a tamer made during a session sets TamerNotice without a ticket. CharacterVisuals: the tamer holds a baton.",
+  "limitations": "Offline doubles as tools/test_unarmed_start.py. The pet following its owner, the headbutt / dash animations, the class card and the bag pet row are the 게임성 개발 1 contract; real play after the merge."
+}

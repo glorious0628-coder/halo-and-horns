@@ -538,13 +538,33 @@ local function buildBow(grip, sc, w, color)
 	return parts, main
 end
 
+-- A23-39 pet tamer: a short taming baton in the right hand (code shape until the baton model is made)
+local function buildBaton(grip, sc, w, color, tier)
+	local shaftLen = 1.8
+	local shaft = accPart({
+		Name = "Shaft", Size = Vector3.new(0.22, shaftLen, 0.22) * sc,
+		Material = Enum.Material.Wood, Color = WOOD_COLOR,
+		CFrame = grip * CFrame.new(0, (shaftLen / 2 - 0.5) * sc, 0),
+	})
+	local d = 0.35 + 0.04 * tier
+	local tip = accPart({
+		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
+		Material = w.Material, Color = color,
+		CFrame = grip * CFrame.new(0, (shaftLen - 0.5 + d * 0.3) * sc, 0),
+	})
+	return { shaft, tip }, tip
+end
+
 local function buildWeapon(player, character)
 	clearChild(character, "WeaponModel")
 	-- A23-34: bare hands (tier 0) = nothing in the hands (the halo / horns stay)
 	if Config.Weapons[math.floor(attrNum(player, "WeaponTier", 0))] == nil then return end
 	local classId = getClass(player)
 	local classDef = Config.Classes[classId] or Config.Classes.Warrior
-	local left = classDef.Weapon == "Bow"
+	-- A23-39: the pet tamer (artisan Archer) holds a baton in the right hand, never a bow (guarded: some offline suites
+	-- load only the Config weapon rows)
+	local kind = (Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon
+	local left = kind == "Bow"
 	local hand = left and Util.FindPart(character, "LeftHand", "Left Arm")
 		or (not left and Util.FindPart(character, "RightHand", "Right Arm"))
 	if not hand then return end
@@ -556,10 +576,12 @@ local function buildWeapon(player, character)
 	local grip = gripCFrame(hand, left)
 
 	local parts, main
-	if classDef.Weapon == "Staff" then
+	if kind == "Staff" then
 		parts, main = buildStaff(grip, sc, w, color, tier)
-	elseif classDef.Weapon == "Bow" then
+	elseif kind == "Bow" then
 		parts, main = buildBow(grip, sc, w, color)
+	elseif kind == "Baton" then
+		parts, main = buildBaton(grip, sc, w, color, tier)
 	else
 		parts, main = buildSword(grip, sc, w, color)
 	end
@@ -583,9 +605,9 @@ local function buildWeapon(player, character)
 	if main then
 		local muzzle = Instance.new("Attachment")
 		muzzle.Name = "AttackMuzzle"
-		if classDef.Weapon == "Bow" then
+		if kind == "Bow" then
 			muzzle.Position = Vector3.new(0, 0, -0.18 * sc)
-		elseif classDef.Weapon == "Staff" then
+		elseif kind == "Staff" or kind == "Baton" then
 			muzzle.Position = Vector3.new(0, main.Size.Y * 0.5, 0)
 		else
 			muzzle.Position = Vector3.new(0, main.Size.Y * 0.5, 0)
@@ -594,7 +616,7 @@ local function buildWeapon(player, character)
 		-- Server-built attachment offsets survive both joint types and avoid reading a one-frame-old
 		-- hand/weapon pair while their Transform batch is still waiting for the physics step.
 		model:SetAttribute("HandMuzzle", hand.CFrame:ToObjectSpace(main.CFrame * muzzle.CFrame))
-		if classDef.Weapon == "Bow" then
+		if kind == "Bow" then
 			for _, part in parts do
 				local nock = part:FindFirstChild("BowNock")
 				if nock then model:SetAttribute("HandBowRest", hand.CFrame:ToObjectSpace(part.CFrame * nock.CFrame)) end

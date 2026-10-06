@@ -56,7 +56,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
     visuals = sources["VISUALS_SOURCE"]
     out["VISUALS_EXTRACT"] = (
         "local Config, Util, clearChild, getClass, charScale, gripCFrame, buildStaff, buildBow, buildSword, addLight, "
-        "sparkle, newPiece, getFaction, mount = ...\n"
+        "sparkle, newPiece, getFaction, mount, buildBaton = ...\n"
         + function_block(visuals, "local function attrNum(")
         + function_block(visuals, "local function buildWeapon(")
         + "\nreturn buildWeapon\n")
@@ -89,8 +89,8 @@ MUTATIONS = [
      "if type(def) == \"table\" and (tier == 1 or bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0)"),
     ("bare-hands name is '?'", C, "\tif tier == 0 then return Config.Text.BareHands end -- A23-34: no weapon equipped\n", ""),
     ("bare hands show the tier-1 icon", C, "\tif tier < 1 then return nil end\n", ""),
-    ("bare profile = the class row", C, "if type(tier) == \"number\" and Config.Weapons[tier] then return c end",
-     "if true then return c end"),
+    ("bare profile = the class row", C, "local armed = type(tier) == \"number\" and Config.Weapons[tier] ~= nil",
+     "local armed = true"),
     ("punch reach = the class range", C, "Splash = 0, Range = u.Range,", "Splash = 0, Range = c.Range,"),
     ("punch keeps the class multiplier", C, "AimCone = u.AimCone, Damage = 1,", "AimCone = u.AimCone, Damage = c.Damage,"),
     ("punch hits two targets", C, "Pattern = \"Multi\", Targets = 1,", "Pattern = \"Multi\", Targets = 2,"),
@@ -241,6 +241,7 @@ def static() -> tuple[int, list[str]]:
 SUITE = Suite(
     mark="UNARMED",
     fixture=ROOT / "tools/fixtures/unarmed_offline.luau",
+    world=ROOT / "tools/fixtures/dev2_combat_world.luau",
     out=ROOT / "docs/art/verification_2026-10-06/offline_dev2_unarmed_start_2026-10-06.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="A23-34 server: Config.Data.Defaults WeaponTier 0 / WeaponOwnedMask 0; v1 / v2 records get tier 1 + its bit "
