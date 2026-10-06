@@ -1,0 +1,81 @@
+{
+  "tool": "tools/notify_view.py (before) + a one-off phone 667x375 Play after the fix (same SHOW / PROBE)",
+  "cause": "TextLabel AutomaticSize Y measures wrapped text as one line (UiSandbox Edit test 2026-10-06: Builder Sans and the default font, parented first or later, toggled: every box too short, TextFits false); TextService.GetTextBoundsAsync at the label width gives the right height (8/8 TextFits true)",
+  "fix": "UIKit.WrapHeight(label, maxLines, minH, onSized): measured height, AutomaticSize off; banner: no TextScaled, text >= 16 real px, up to 3 lines, frame follows the text; toasts up to 4 lines; the toast stack starts under a shown banner",
+  "before": {
+    "phone667": {
+      "announce": {
+        "fits": false,
+        "boxPx": [
+          195,
+          16
+        ]
+      },
+      "toast": {
+        "fits": false,
+        "boxPx": [
+          159,
+          13
+        ]
+      }
+    },
+    "pc655": {
+      "announce": {
+        "fits": false,
+        "boxPx": [
+          246,
+          16
+        ]
+      },
+      "toast": {
+        "fits": false,
+        "boxPx": [
+          199,
+          11
+        ]
+      }
+    }
+  },
+  "after": {
+    "phone667": {
+      "announce": {
+        "fits": true,
+        "boxPx": [
+          195,
+          49.5
+        ],
+        "lines": 3,
+        "textSizeDu": 22
+      },
+      "toast": {
+        "fits": true,
+        "boxPx": [
+          159,
+          27
+        ],
+        "lines": 2
+      },
+      "bannerRectPx": [
+        220.25,
+        93,
+        225,
+        58.5
+      ],
+      "toastRectPx": [
+        242.75,
+        156,
+        180,
+        37.5
+      ],
+      "toastUnderBanner": true
+    }
+  },
+  "texts": {
+    "king": "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+    "start": "King Slimes full of shard dust roam the meadow."
+  },
+  "sheets": [
+    "art/review/notify_view_2026-10-06.jpg (before)",
+    "art/review/notify_wrap_fix_2026-10-06.jpg (after, phone 667x375)"
+  ]
+}

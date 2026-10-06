@@ -190,6 +190,17 @@ local NOTIFY = {
 	BannerMaxW = 880,
 	BannerWidthMult = 1.25,
 	BannerIcon = ANNOUNCE_ICON,
+	-- 검수 2026-10-06 (English cut: "The Pumpkin King appeared in the"): the banner text wraps and the banner grows
+	-- instead of shrinking the letters (TextScaled stopped at its floor and clipped the 2nd line on phones)
+	BannerShownH = nil, -- the column's banner height (PlaceNotify): the least height; longer texts grow it
+	BannerOldH = 84, -- the same before the first PlaceNotify (30% screen height path)
+	BannerPx = 16, -- real px: the banner text is never smaller
+	BannerTextMax = 28, -- logical units
+	BannerTextOld = 28,
+	BannerLines = 3, -- more than this ends in "..." (TextTruncate)
+	BannerPadY = 6,
+	ToastLines = 4,
+	WrapLineH = 1.1, -- line height / TextSize for the maxLines cap (Builder Sans / Fredoka measure 1.0)
 	TrimQueued = false,
 }
 
@@ -1944,10 +1955,56 @@ end
 
 -- HUD v2: how many toasts fit between NOTIFY.Y and the bottom of the notify column, counted from the newest (top)
 -- with their real heights; never below 1 and never above the old cap (toastMax). Old path: toastMax.
+-- 검수 2026-10-06 (English lines cut after one line in toasts / banners): AutomaticSize Y does not size wrapped text
+-- reliably (UiSandbox Edit test: a 2-line toast label got a 1-line box, TextFits false, with and without the game
+-- font). UIKit.WrapHeight measures the text with TextService at the label's real width and sets its height itself
+-- (AutomaticSize off), again whenever the text, size, face or width changes. maxLines (optional) caps the height (the
+-- label's TextTruncate shows "..."), minH (optional, logical units) keeps a least height, onSized(h) runs after a fit.
+function UIKit.WrapHeight(label, maxLines, minH, onSized)
+	if typeof(label) ~= "Instance" or not label:IsA("TextLabel") then return end
+	label.AutomaticSize = Enum.AutomaticSize.None
+	label.TextWrapped = true
+	local state = { Token = 0, W = -1 }
+	local function fit()
+		state.Token += 1
+		local token = state.Token
+		task.spawn(function()
+			local width = label.AbsoluteSize.X / currentScale()
+			if width <= 1 or not label.Parent then return end
+			local params = Instance.new("GetTextBoundsParams")
+			params.Text = label.Text
+			params.Font = label.FontFace
+			params.Size = label.TextSize
+			params.Width = width
+			local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
+			params:Destroy()
+			if token ~= state.Token or not ok or not label.Parent then return end
+			local h = math.ceil(bounds.Y)
+			if maxLines then h = math.min(h, math.ceil(label.TextSize * NOTIFY.WrapLineH * maxLines)) end
+			if minH then h = math.max(h, minH) end
+			local size = label.Size
+			if size.Y.Scale ~= 0 or size.Y.Offset ~= h then label.Size = UDim2.new(size.X.Scale, size.X.Offset, 0, h) end
+			if onSized then onSized(h) end
+		end)
+	end
+	for _, property in { "Text", "TextSize", "FontFace" } do
+		label:GetPropertyChangedSignal(property):Connect(fit)
+	end
+	label:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		local w = math.floor(label.AbsoluteSize.X + 0.5)
+		if w ~= state.W then
+			state.W = w
+			fit()
+		end
+	end)
+	fit()
+	return label
+end
+
 function NOTIFY.ToastCap()
 	local rect = NOTIFY.Rect
 	if rect == nil then return toastMax end
-	local avail = rect.Y + rect.H - (NOTIFY.Y or rect.Y)
+	local avail = rect.Y + rect.H - (NOTIFY.Y or rect.Y) - NOTIFY.BannerOffset()
 	local scale = currentScale()
 	local used, count = 0, 0
 	for i = #toasts, 1, -1 do
@@ -2045,9 +2102,10 @@ function UIKit.Toast(text, kind, duration, icon)
 		Name = "Text",
 		BackgroundTransparency = 1,
 		Position = UDim2.fromOffset(left, 0),
-		Size = UDim2.new(1, -left, 0, img and TOAST_ICON or 0), -- grows with the text, never below the icon
-		AutomaticSize = Enum.AutomaticSize.Y,
+		-- grows with the wrapped text (UIKit.WrapHeight, up to NOTIFY.ToastLines lines), never below the icon
+		Size = UDim2.new(1, -left, 0, img and TOAST_ICON or 22),
 		TextWrapped = true,
+		TextTruncate = Enum.TextTruncate.AtEnd,
 		TextSize = 18,
 		Text = text,
 		TextColor3 = (kind == "good" or kind == "bad" or kind == "reward") and color or T.Text,
@@ -2056,6 +2114,7 @@ function UIKit.Toast(text, kind, duration, icon)
 		Parent = frame,
 	})
 	frame.Parent = toastHolder
+	UIKit.WrapHeight(label, NOTIFY.ToastLines, img and TOAST_ICON or nil)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
 	table.insert(toasts, t)
@@ -2096,6 +2155,7 @@ local function hideAnnounce(token)
 	task.delay(0.28, function()
 		if announceToken ~= token then return end
 		announceFrame.Visible = false
+		NOTIFY.PlaceToasts()
 		showNextAnnounce()
 	end)
 end
@@ -2115,7 +2175,38 @@ function NOTIFY.LayoutAnnounceText(img)
 	if img then img.Size = UDim2.fromOffset(size, size) end
 	local shift = img and size + 16 or 0
 	announceLabel.Position = UDim2.new(0.5, shift / 2, 0.5, 0)
-	announceLabel.Size = UDim2.new(1, -40 - shift, 1, -12)
+	-- the height stays the measured one (UIKit.WrapHeight refits when the width changes)
+	announceLabel.Size = UDim2.new(1, -40 - shift, 0, announceLabel.Size.Y.Offset)
+	NOTIFY.FitAnnounce()
+end
+
+-- the banner frame follows its wrapped text: never lower than the column's banner (or the old 84), padding above and
+-- below the text, at most BannerLines lines (UIKit.WrapHeight caps the label; its TextTruncate shows "...")
+function NOTIFY.FitAnnounce()
+	if not announceFrame or not announceLabel then return end
+	local textH = announceLabel.Size.Y.Offset
+	local minH = (NOTIFY.Rect and NOTIFY.BannerShownH) or NOTIFY.BannerOldH
+	local h = math.max(minH, math.ceil(textH + NOTIFY.BannerPadY * 2))
+	local size = announceFrame.Size
+	if size.Y.Scale ~= 0 or size.Y.Offset ~= h then
+		announceFrame.Size = UDim2.new(size.X.Scale, size.X.Offset, 0, h)
+	end
+	NOTIFY.PlaceToasts()
+end
+
+-- HUD v2: the banner and the toasts share the column top; while the banner shows, the toasts start under it (a taller
+-- wrapped banner used to cover the newest toast)
+function NOTIFY.BannerOffset()
+	if not (NOTIFY.Rect and announceFrame and announceFrame.Visible and announceCurrent) then return 0 end
+	return announceFrame.Size.Y.Offset + NOTIFY.ToastGap
+end
+
+function NOTIFY.PlaceToasts()
+	if not (NOTIFY.Rect and toastHolder) then return end
+	local cx = math.floor(NOTIFY.Rect.X + NOTIFY.Rect.W / 2 + 0.5)
+	local ty = math.floor((NOTIFY.Y or NOTIFY.Rect.Y) + NOTIFY.BannerOffset() + 0.5)
+	toastHolder.Position = UDim2.fromOffset(cx, ty)
+	NOTIFY.QueueTrim()
 end
 
 -- icon (optional, UIKit.ItemIcon): item / monster art left of the banner text
@@ -2141,6 +2232,7 @@ showAnnounce = function(text, duration, icon)
 	announceLabel.Text = text
 	local img = setAnnounceIcon(icon)
 	announceFrame.Visible = true
+	NOTIFY.PlaceToasts()
 	announceFrame.BackgroundTransparency = 1
 	announceLabel.TextTransparency = 1
 	announceLabel.TextStrokeTransparency = 1
@@ -2222,16 +2314,21 @@ function UIKit.PlaceNotify(rect, topY)
 	local ty = math.floor(top + 0.5)
 	if toastHolder then
 		toastHolder.AnchorPoint = Vector2.new(0.5, 0)
-		toastHolder.Position = UDim2.fromOffset(cx, ty)
+		toastHolder.Position = UDim2.fromOffset(cx, ty + NOTIFY.BannerOffset())
 		toastHolder.Size = UDim2.fromOffset(math.floor(w), 10)
 	end
 	if announceFrame then
 		local bannerH = math.max(math.min(NOTIFY.BannerH, y + h - top), NOTIFY.BannerMinH)
 		NOTIFY.BannerIcon = math.min(ANNOUNCE_ICON, math.floor(bannerH))
+		NOTIFY.BannerShownH = math.floor(bannerH)
 		announceFrame.AnchorPoint = Vector2.new(0.5, 0)
 		announceFrame.Position = UDim2.fromOffset(cx, ty)
 		announceFrame.Size = UDim2.fromOffset(math.floor(math.min(w * NOTIFY.BannerWidthMult, NOTIFY.BannerMaxW)),
 			math.floor(bannerH))
+		-- text: about 44% of the banner, never under BannerPx real px, at most BannerTextMax
+		local floorDu = math.ceil(NOTIFY.BannerPx / currentScale() - 0.001)
+		local textSize = math.clamp(math.floor(bannerH * 0.44 + 0.5), floorDu, math.max(floorDu, NOTIFY.BannerTextMax))
+		announceLabel.TextSize = textSize -- UIKit.WrapHeight refits the lines
 		local icon = announceFrame:FindFirstChild("Icon")
 		NOTIFY.LayoutAnnounceText(icon and icon:IsA("GuiObject") and icon or nil)
 	end
@@ -2514,7 +2611,7 @@ function UIKit.Init(registry)
 		ZIndex = Z_ANNOUNCE,
 		Parent = gui,
 	}, {
-		UIKit.Create("UISizeConstraint", { MaxSize = Vector2.new(880, 84) }),
+		UIKit.Create("UISizeConstraint", { MaxSize = Vector2.new(880, 400) }), -- tall enough for BannerLines lines
 		UIKit.Create("UIGradient", {
 			Transparency = NumberSequence.new({
 				NumberSequenceKeypoint.new(0, 1),
@@ -2525,23 +2622,26 @@ function UIKit.Init(registry)
 		}),
 	})
 	announcePop = UIKit.Create("UIScale", { Name = "Pop", Parent = announceFrame })
+	-- the text wraps (never TextScaled: a long English line was clipped at its floor); UIKit.WrapHeight sizes it (up to
+	-- NOTIFY.BannerLines lines) and the frame follows it (NOTIFY.FitAnnounce), never below the column's banner height
 	announceLabel = UIKit.Create("TextLabel", {
 		Name = "Text",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.new(1, -40, 1, -12),
+		Size = UDim2.new(1, -40, 0, NOTIFY.BannerTextOld),
 		BackgroundTransparency = 1,
-		TextScaled = true,
+		TextScaled = false,
 		TextWrapped = true,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		TextSize = NOTIFY.BannerTextOld,
 		TextColor3 = T.Gold,
 		TextStrokeColor3 = Color3.new(0, 0, 0),
 		TextStrokeTransparency = 1,
 		TextTransparency = 1,
 		Text = "",
 		Parent = announceFrame,
-	}, {
-		UIKit.Create("UITextSizeConstraint", { MinTextSize = math.max(MIN_TEXT_SIZE, 14), MaxTextSize = 34 }),
 	})
+	UIKit.WrapHeight(announceLabel, NOTIFY.BannerLines, nil, NOTIFY.FitAnnounce)
 
 	gui.Parent = playerGui
 

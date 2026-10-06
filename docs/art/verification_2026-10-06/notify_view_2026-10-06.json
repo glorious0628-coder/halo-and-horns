@@ -1,0 +1,240 @@
+{
+  "tool": "tools/notify_view.py",
+  "sheet": "art/review/notify_view_2026-10-06.jpg",
+  "rows": [
+    {
+      "device": "phone667",
+      "probe": {
+        "Touch": true,
+        "Rects": {
+          "toast1": [
+            242.75,
+            93,
+            180,
+            23.5
+          ],
+          "Portrait": [
+            431,
+            60.75,
+            45,
+            45
+          ],
+          "QuestLines": [
+            121.25,
+            60.75,
+            114.75,
+            45
+          ],
+          "PowerLine": [
+            479,
+            60.75,
+            134.25,
+            10.5
+          ],
+          "announce": [
+            220.25,
+            93,
+            225,
+            25.5
+          ]
+        },
+        "Hud": {
+          "Potions": [
+            275.75,
+            288.75,
+            91.5,
+            45
+          ],
+          "Stats": [
+            47,
+            0,
+            573,
+            354
+          ],
+          "Buttons": [
+            47,
+            0,
+            573,
+            354
+          ],
+          "StatusChips": [
+            242,
+            60.75,
+            180,
+            12.75
+          ],
+          "WarMeter": [
+            242,
+            14.25,
+            180,
+            37.5
+          ],
+          "QuestLines": [
+            121.25,
+            60.75,
+            114.75,
+            45
+          ]
+        },
+        "Screen": [
+          667,
+          375
+        ],
+        "Texts": {
+          "announce": {
+            "Scaled": false,
+            "Bounds": [
+              189.5,
+              16
+            ],
+            "Size": 22,
+            "Text": "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+            "Fits": false,
+            "Box": [
+              195,
+              16
+            ]
+          },
+          "toast1": {
+            "Scaled": false,
+            "Bounds": [
+              147,
+              13
+            ],
+            "Size": 18,
+            "Text": "King Slimes full of shard dust roam the meadow.",
+            "Fits": false,
+            "Box": [
+              159,
+              13
+            ]
+          }
+        }
+      },
+      "questOverlaps": [],
+      "files": [
+        "build/notify_view/phone667_hud.png",
+        "build/notify_view/phone667_text.png"
+      ]
+    },
+    {
+      "device": "pc655",
+      "probe": {
+        "Touch": false,
+        "Rects": {
+          "toast1": [
+            190.20001220703125,
+            103.80000305175781,
+            216.00001525878906,
+            19.399999618530273
+          ],
+          "Portrait": [
+            10.80000114440918,
+            239.39999389648438,
+            37.20000076293945,
+            37.20000076293945
+          ],
+          "QuestLines": [
+            10.200004577636719,
+            183.60000610351562,
+            225.00001525878906,
+            39
+          ],
+          "PowerLine": [
+            54.600006103515625,
+            233.40000915527344,
+            330,
+            12
+          ],
+          "announce": [
+            163.20001220703125,
+            103.80000305175781,
+            270,
+            30.000001907348633
+          ]
+        },
+        "Hud": {
+          "Potions": [
+            389.4000244140625,
+            284.4000244140625,
+            91.20000457763672,
+            43.20000076293945
+          ],
+          "Stats": [
+            0,
+            0,
+            655,
+            340
+          ],
+          "Buttons": [
+            0,
+            0,
+            655,
+            340
+          ],
+          "StatusChips": [
+            204.60000610351562,
+            60.600006103515625,
+            186,
+            16.200000762939453
+          ],
+          "WarMeter": [
+            189.60000610351562,
+            12.60000228881836,
+            216.00001525878906,
+            41.400001525878906
+          ],
+          "QuestLines": [
+            10.200004577636719,
+            183.60000610351562,
+            225.00001525878906,
+            39
+          ]
+        },
+        "Screen": [
+          655,
+          340
+        ],
+        "Texts": {
+          "announce": {
+            "Scaled": false,
+            "Bounds": [
+              224.5,
+              16
+            ],
+            "Size": 27,
+            "Text": "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+            "Fits": false,
+            "Box": [
+              246.00001525878906,
+              16
+            ]
+          },
+          "toast1": {
+            "Scaled": false,
+            "Bounds": [
+              166.5,
+              11
+            ],
+            "Size": 18,
+            "Text": "King Slimes full of shard dust roam the meadow.",
+            "Fits": false,
+            "Box": [
+              199.20001220703125,
+              11
+            ]
+          }
+        }
+      },
+      "questOverlaps": [],
+      "files": [
+        "build/notify_view/pc655_hud.png",
+        "build/notify_view/pc655_text.png"
+      ]
+    }
+  ],
+  "texts": {
+    "king": "The Pumpkin King appeared in the Pumpkin Patch! Let's beat it together!",
+    "start": "King Slimes full of shard dust roam the meadow."
+  }
+}
