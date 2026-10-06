@@ -5,6 +5,8 @@ Keeps dark outlines that remote background removers sometimes eat.
 Usage:
   py tools/cutout_flat.py <src.png> <out.png> [--size 512] [--fill 0.86] [--tol 48] [--soft 10]
   py tools/cutout_flat.py <src.png> <out.png> --check art/review/<name>_check.png
+  py tools/cutout_flat.py <src.png> <out.png> --holes   (also clear enclosed background holes,
+      e.g. trophy handles, bag strap loops; prints each hole so you can confirm it)
 
 How it works:
   1. Background colour = median of the four 20px corner blocks.
@@ -23,7 +25,7 @@ from PIL import Image
 from scipy import ndimage
 
 
-def cutout(src, tol=48.0, soft=10.0):
+def cutout(src, tol=48.0, soft=10.0, holes=False, hole_min=150, hole_tol=14.0):
     img = np.asarray(Image.open(src).convert("RGB")).astype(np.float32)
     h, w, _ = img.shape
     b = 20
@@ -38,6 +40,18 @@ def cutout(src, tol=48.0, soft=10.0):
     edge = np.unique(np.concatenate([labels[0], labels[-1], labels[:, 0], labels[:, -1]]))
     edge = edge[edge != 0]
     region = np.isin(labels, edge)
+    if holes:
+        # Enclosed pockets of flat background (not touching the border): clear them when the
+        # pocket is big enough and its median colour is very close to the background.
+        for lab, sl in enumerate(ndimage.find_objects(labels), start=1):
+            if sl is None or lab in edge:
+                continue
+            m = labels[sl] == lab
+            area = int(m.sum())
+            med = float(np.median(d[sl][m]))
+            if area >= hole_min and med <= hole_tol:
+                region[sl] |= m
+                print(f"  hole cleared: {area}px at y{sl[0].start}-{sl[0].stop} x{sl[1].start}-{sl[1].stop} (median dist {med:.1f})")
 
     a = np.ones((h, w), np.float32)
     a[region] = np.clip((d[region] - soft) / (tol - soft), 0.0, 1.0)
@@ -89,9 +103,10 @@ def main():
     ap.add_argument("--tol", type=float, default=48.0)
     ap.add_argument("--soft", type=float, default=10.0)
     ap.add_argument("--check")
+    ap.add_argument("--holes", action="store_true")
     args = ap.parse_args()
 
-    im = square(cutout(args.src, args.tol, args.soft), args.size, args.fill)
+    im = square(cutout(args.src, args.tol, args.soft, args.holes), args.size, args.fill)
     im.save(args.out)
     if args.check:
         check_sheet(im, args.check)

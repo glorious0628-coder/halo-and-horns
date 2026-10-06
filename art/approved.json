@@ -488,5 +488,65 @@
   "cutout": "local border flood-fill on flat gray (keeps navy outline); checked light/navy/magenta, 400% zoom, 48px",
   "preview": "art/review/icons_monheads_preview.png",
   "note": "호박 대왕(보스) 머리 아이콘 — 퀘스트 줄·드랍 알림용. 사용자 승인 2026-10-06 (다 넣기)."
+ },
+ "IconBag": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconBag.txt",
+  "original": "art/out/IconBag_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconBag.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py --holes (flat gray flood-fill + enclosed holes); checked light/navy/magenta, 48px, cream 64px button",
+  "preview": "art/review/icons_menu5_preview.png",
+  "note": "BB13 메뉴 버튼 아이콘(가방). 사용자 승인 2026-10-06(\"너무 좋아\"). 키 이름 = Config.UIArt.Parts 키. 개발 세션이 업로드·Studio 적용."
+ },
+ "IconCharacter": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconCharacter.txt",
+  "original": "art/out/IconCharacter_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconCharacter.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py --holes (flat gray flood-fill + enclosed holes); checked light/navy/magenta, 48px, cream 64px button",
+  "preview": "art/review/icons_menu5_preview.png",
+  "note": "BB13 메뉴 버튼 아이콘(내 캐릭터(남)). 사용자 승인 2026-10-06(\"너무 좋아\"). 키 이름 = Config.UIArt.Parts 키. 개발 세션이 업로드·Studio 적용."
+ },
+ "IconSkills": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconSkills.txt",
+  "original": "art/out/IconSkills_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconSkills.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py --holes (flat gray flood-fill + enclosed holes); checked light/navy/magenta, 48px, cream 64px button",
+  "preview": "art/review/icons_menu5_preview.png",
+  "note": "BB13 메뉴 버튼 아이콘(스킬책). 사용자 승인 2026-10-06(\"너무 좋아\"). 키 이름 = Config.UIArt.Parts 키. 개발 세션이 업로드·Studio 적용."
+ },
+ "IconRanking": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconRanking.txt",
+  "original": "art/out/IconRanking_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconRanking.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py --holes (flat gray flood-fill + enclosed holes); checked light/navy/magenta, 48px, cream 64px button",
+  "preview": "art/review/icons_menu5_preview.png",
+  "note": "BB13 메뉴 버튼 아이콘(랭킹 트로피). 사용자 승인 2026-10-06(\"너무 좋아\"). 키 이름 = Config.UIArt.Parts 키. 개발 세션이 업로드·Studio 적용."
+ },
+ "IconHelp": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconHelp.txt",
+  "original": "art/out/IconHelp_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconHelp.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py --holes (flat gray flood-fill + enclosed holes); checked light/navy/magenta, 48px, cream 64px button",
+  "preview": "art/review/icons_menu5_preview.png",
+  "note": "BB13 메뉴 버튼 아이콘(도움말 두루마리). 사용자 승인 2026-10-06(\"너무 좋아\"). 키 이름 = Config.UIArt.Parts 키. 개발 세션이 업로드·Studio 적용."
  }
 }
