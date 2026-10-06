@@ -3,8 +3,9 @@
 새 "이미지" 세션이 그림을 맡을 때 먼저 읽는 문서. 규칙의 원본은 `AGENTS.md`(Art workflow·Hard rules)와 `docs/design/visual_direction_2026-10-05.md`(스타일·묶음 0–21), 프롬프트는 `docs/design/firefly_prompt_pack_2026-10-05.md`.
 
 ## 역할 나누기
-- **이미지 세션:** Firefly 생성 → 다운로드 → 누끼·검사 → 사용자에게 보여 주고 승인 → `art/approved.json` 기록 → 커밋(파일 경로를 하나씩) → 개발 세션에 파일·키 전달.
-- **개발 세션(로블록스 선악 키우기 개발):** 업로드(≤10장씩), `Config.UIArt.Parts`·MaterialService ID 교체, Studio 적용, 직접 플레이 확인, 옛 그림 삭제.
+- **이미지 세션:** Firefly 생성 → 다운로드 → 누끼·검사 → 사용자에게 보여 주고 승인 → `art/approved.json` 기록 → 커밋(파일 경로를 하나씩) → 이미지 개발 세션에 파일·키 전달(검수 참조).
+- **이미지 개발 세션(2026-10-06 새로):** 업로드(≤10장씩), `Config.UIArt.Parts`·MaterialService ID 교체, Studio 적용, 직접 플레이 확인, 옛 그림 삭제. 규칙은 `docs/design/image_dev_session_handoff_2026-10-06.md`. 이미지 개발 세션이 생기기 전까지는 게임성 개발('개발') 세션에 보낸다.
+- **게임성 개발 세션('개발'):** 기능·서버·테스트. 그림이 필요하면 이미지 세션에 직접 요청한다.
 - **검토 세션:** 문서·결정·검수·프롬프트 방향. Firefly 브라우저는 이미지 세션만 쓴다(같은 내장 브라우저 창을 두 세션이 동시에 쓰면 꼬인다).
 
 ## 사용자 규칙 (그림)
