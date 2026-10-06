@@ -1,0 +1,2 @@
+[reference: Firefly 참조 이미지 = UIP_ClassCardHorns_C; cut onto C's canvas so it matches UIP_ClassCardHalo_A]
+Edit the reference image: keep everything exactly the same - the same dark crimson and gold card frame, horn ornaments, ruby gems, empty dark-red window, crimson ribbon, dark panel and red button, the same size and position. Only remove the thin floating gold halo ring above the top crest, so nothing floats above the top point; that area becomes plain flat medium gray background. No halo anywhere. Every banner, panel and button stays completely blank. Wordless.
