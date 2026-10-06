@@ -31,8 +31,15 @@ local IS_TOUCH = UserInputService.TouchEnabled
 local T = {
 	Radius = IS_TOUCH and 80 or 110, -- studs from me to the view edge (px per stud = view width / (2 * Radius))
 	Margin = 1.05, -- players / monsters inside the view box + 5% get a dot (the view clips the rest)
-	MoveDt = 1 / 20, -- canvas, my arrow, quest marker
+	MoveDt = 1 / 15, -- canvas, map turn, quest marker (user 2026-10-06: <= 15 Hz)
 	ScanDt = 1 / 5, -- visibility, players, monsters, quest target
+	-- user 2026-10-06: the map turns with the camera (where I look is up); my arrow stays up, the 'N' rides the ring
+	HeadingUp = true,
+	NorthR = 0.435, -- 'N' marker: distance from the centre / side (on the ring's navy band)
+	NorthD = 0.13, -- 'N' marker disc / side
+	StrongDot = 8, -- big monsters (Scale >= StrongScale): a bigger dot with a dark rim
+	StrongScale = 1.4,
+	BossIcon = IS_TOUCH and 18 or 20, -- event bosses (MonsterTypes Boss): their IconMon<Kind> head
 	SlowDt = 1, -- merchant / anvil, relayout
 	MinMove = 0.25, -- du: smaller canvas / chevron moves are not written
 	MinTurn = 1, -- degrees: smaller arrow turns are not written
@@ -87,9 +94,10 @@ local COL = {
 
 ----------------------------------------------------------------- text (glyphs only; Util.GlyphSafe symbols)
 local TXT = {
-	Me = "▲", -- my arrow (points north at Rotation 0); always white, so it never looks like the gold quest chevron
-	Quest = "★", -- quest target inside the view
+	Me = "▲", -- my arrow (points up = where the camera looks); always white, so it never looks like the gold chevron
+	Quest = "★", -- quest target inside the view (fallback when the marker diamond art is missing)
 	Edge = "▲", -- quest target outside: chevron on the view edge, turned toward it
+	North = "N", -- the north marker on the ring
 }
 
 ----------------------------------------------------------------- state
@@ -117,7 +125,7 @@ local S = {
 	lastWarnAt = -math.huge,
 }
 local ui = {} -- root, view, canvas, rim, me, star, chev, potion, smith
-local pool = { players = {}, monsters = {} }
+local pool = { players = {}, monsters = {}, bosses = {} }
 local acc = { Move = 0, Scan = 0, Slow = 0 }
 
 ----------------------------------------------------------------- helpers
@@ -452,12 +460,22 @@ local function build()
 	}, {
 		UIKit.Create("UIGradient", { Color = ColorSequence.new(COL.SeaTop, COL.SeaBottom), Rotation = 90 }),
 	})
+	-- the map turns with the camera (T.HeadingUp): "Rot" covers the view, so its centre (= my spot) is the pivot; the
+	-- sea stays still under it, the CanvasGroup still clips everything round
+	ui.rot = UIKit.Create("Frame", {
+		Name = "Rot",
+		BackgroundTransparency = 1,
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = 1,
+		Active = false,
+		Parent = ui.view,
+	})
 	ui.canvas = UIKit.Create("Frame", {
 		Name = "Canvas",
 		BackgroundTransparency = 1,
 		ZIndex = 1,
 		Active = false,
-		Parent = ui.view,
+		Parent = ui.rot,
 	})
 	local okWorld, errWorld = pcall(drawWorld)
 	if not okWorld then Util.Warn(TAG, "world drawing failed: " .. tostring(errWorld)) end
@@ -475,13 +493,43 @@ local function build()
 		if not ui.rim then root.ImageTransparency = 0 end
 	end
 
-	-- marks: landmarks (6) < monsters (7) < players (8) < quest star (9) on the canvas; chevron and my arrow above it
+	-- marks: landmarks (6) < monsters (7) < players (8) < quest diamond (9) on the canvas; chevron and my arrow above it.
+	-- Icons on the turning canvas are kept upright (S.upright, counter-turned in moveStep)
 	ui.potion = npcMark("PotionMerchant", "IconPotionHP", COL.Potion)
 	ui.smith = npcMark("Blacksmith", "IconSword", COL.Smith)
-	ui.star = textMark("Quest", TXT.Quest, T.Star, COL.Quest, 9, ui.canvas)
-	ui.chev = textMark("QuestEdge", TXT.Edge, T.Star, COL.Quest, 2, ui.view)
+	-- A23-36: the quest target is the marker diamond (IconQuestMarker, tinted), the edge chevron its arrow art
+	ui.star = UIKit.ArtImage("IconQuestMarker", {
+		Name = "Quest", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.Star, T.Star),
+		ImageColor3 = COL.Quest, ZIndex = 9, Active = false, Visible = false, Parent = ui.canvas,
+	}) or textMark("Quest", TXT.Quest, T.Star, COL.Quest, 9, ui.canvas)
+	ui.chev = UIKit.ArtImage("IconQuestMarkerArrow", {
+		Name = "QuestEdge", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.Star, T.Star),
+		ImageColor3 = COL.Quest, ZIndex = 2, Active = false, Visible = false, Parent = ui.view,
+	}) or textMark("QuestEdge", TXT.Edge, T.Star, COL.Quest, 2, ui.view)
 	ui.me = textMark("Me", TXT.Me, T.Arrow, theme.Text, 3, ui.view)
 	ui.me.Visible = true
+	S.upright = { ui.potion, ui.smith, ui.star }
+	-- 'N': a small navy disc with a white N riding the ring toward north (above the rim art)
+	if T.HeadingUp then
+		ui.north = UIKit.Create("Frame", {
+			Name = "North",
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundColor3 = typeof(artCol.Navy) == "Color3" and artCol.Navy or theme.Bg,
+			Size = UDim2.fromOffset(16, 16),
+			ZIndex = 5,
+			Active = false,
+			Parent = root,
+		}, {
+			corner(0.5, 0),
+			stroke(typeof(artCol.Gold) == "Color3" and artCol.Gold or theme.Gold, 1.5, 0),
+		})
+		local n = UIKit.LightText({
+			Name = "N", Text = TXT.North, TextScaled = true, Size = UDim2.fromScale(0.9, 0.9),
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), ZIndex = 6, Active = false,
+			Parent = ui.north,
+		})
+		if type(UIKit.StyleText) == "function" then UIKit.StyleText(n, "NameTag") end
+	end
 
 	root.Parent = UIKit.Gui
 	S.built = true
@@ -534,6 +582,12 @@ local function relayout()
 	S.rangeX, S.rangeZ = S.halfX / S.pps * T.Margin, S.halfY / S.pps * T.Margin
 	ui.canvas.Size = UDim2.fromOffset(W.Wd * S.pps, W.Ht * S.pps)
 	S.ox, S.chevX = nil, nil -- the next move tick writes the canvas / chevron again
+	if ui.north then
+		local d = math.max(12, math.floor(side * T.NorthD + 0.5))
+		ui.north.Size = UDim2.fromOffset(d, d)
+		S.northR = side * T.NorthR
+		S.heading = nil -- the next move tick turns the map and places the N again
+	end
 end
 
 ----------------------------------------------------------------- live updates
@@ -632,8 +686,10 @@ local function scanMonsters(x, z)
 						local dx, dz = pos.X - x, pos.Z - z
 						if math.abs(dx) <= S.rangeX and math.abs(dz) <= S.rangeZ then
 							local def = types[m:GetAttribute("MonsterKind")]
+							local kind = m:GetAttribute("MonsterKind")
 							table.insert(list, { pos, dx * dx + dz * dz, m:GetAttribute("Golden") == true,
-								type(def) == "table" and def.Boss == true })
+								type(def) == "table" and def.Boss == true,
+								type(def) == "table" and (tonumber(def.Scale) or 1) >= T.StrongScale, kind })
 						end
 					end
 				end
@@ -642,19 +698,46 @@ local function scanMonsters(x, z)
 	end
 	if #list > T.MaxMonsters then table.sort(list, byDistance) end
 	local used = math.min(#list, T.MaxMonsters)
+	-- user 2026-10-06: normal monsters = small red dots, big ones (Scale >= StrongScale) = bigger dots with a dark rim,
+	-- event bosses (MonsterTypes Boss, e.g. the Pumpkin King) = their head icon (IconMon<Kind>, kept upright)
+	local usedDots, usedBoss = 0, 0
 	for i = 1, used do
 		local e = list[i]
-		local dot = pool.monsters[i]
-		if not dot then
-			dot = newDot("Monster" .. i, T.MonsterDot, COL.Monster, 7, false)
-			pool.monsters[i] = dot
+		local bossKey = e[4] and ("IconMon" .. tostring(e[6])) or nil
+		local bossId = bossKey and UIKit.ArtId(bossKey) or nil
+		if bossId then
+			usedBoss += 1
+			local icon = pool.bosses[usedBoss]
+			if not icon then
+				icon = UIKit.ArtImage(bossKey, {
+					Name = "Boss" .. usedBoss, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.BossIcon, T.BossIcon),
+					ZIndex = 8, Active = false, Visible = false, Parent = ui.canvas,
+				})
+				pool.bosses[usedBoss] = icon
+			end
+			if icon then
+				if icon.Image ~= bossId then icon.Image = bossId end
+				icon.Position = toScale(e[1])
+				icon.Rotation = S.heading or 0
+				if not icon.Visible then icon.Visible = true end
+			end
+		else
+			usedDots += 1
+			local dot = pool.monsters[usedDots]
+			if not dot then
+				dot = newDot("Monster" .. usedDots, T.MonsterDot, COL.Monster, 7, true)
+				pool.monsters[usedDots] = dot
+			end
+			local strong = e[4] or e[5]
+			placeDot(dot, e[1], e[3] and COL.Golden or COL.Monster, e[4] and T.BossDot or (strong and T.StrongDot or T.MonsterDot))
+			local rim = dot:FindFirstChildOfClass("UIStroke")
+			if rim and rim.Enabled ~= strong then rim.Enabled = strong end
 		end
-		placeDot(dot, e[1], e[3] and COL.Golden or COL.Monster, e[4] and T.BossDot or T.MonsterDot)
 	end
-	hideRest(pool.monsters, used)
+	hideRest(pool.monsters, usedDots)
+	hideRest(pool.bosses, usedBoss)
 end
 
--- 5 Hz: quest target (HUD.GuideTarget), other players, monsters
 local function scan()
 	local x, z = S.x, S.z
 	if not x then return end
@@ -680,6 +763,11 @@ local function placeQuest(x, z)
 		return
 	end
 	local vx, vy = (tp.X - x) * S.pps, (tp.Z - z) * S.pps
+	if T.HeadingUp and S.heading then
+		-- the map is turned by -heading (where the camera looks is up): turn the offset the same way for the chevron
+		local ang = math.rad(-S.heading)
+		vx, vy = vx * math.cos(ang) - vy * math.sin(ang), vx * math.sin(ang) + vy * math.cos(ang)
+	end
 	local m = T.Star / 2 + 1
 	-- the round view: inside the circle -> the star, else the chevron on the circle toward it
 	local r = math.max(1, math.min(S.halfX, S.halfY) - m)
@@ -701,7 +789,34 @@ local function placeQuest(x, z)
 	setVisible(ui.chev, true)
 end
 
--- 20 Hz: canvas under my position, my arrow, quest marker
+-- degrees clockwise from north of where the camera looks (nil while it looks straight down / up)
+local function cameraHeading()
+	local cam = workspace.CurrentCamera
+	local look = cam and cam.CFrame.LookVector
+	if not look or look.X * look.X + look.Z * look.Z < 1e-4 then return nil end
+	return math.deg(math.atan2(look.X, -look.Z))
+end
+
+local function angleDiff(a, b)
+	return (a - b + 180) % 360 - 180
+end
+
+-- turns the map so the camera's heading is up (Rot = -heading around my spot), keeps icons upright and the 'N' on the
+-- ring toward north: north (0, -1) turned by -heading is (-sin h, -cos h) in GUI space (y down)
+local function turnMap(h)
+	S.heading = h
+	ui.rot.Rotation = -h
+	for _, m in S.upright do
+		if m then m.Rotation = h end
+	end
+	for _, b in pool.bosses do b.Rotation = h end
+	if ui.north and S.northR and S.side then
+		local r = math.rad(h)
+		ui.north.Position = UDim2.fromOffset(S.side / 2 - math.sin(r) * S.northR, S.side / 2 - math.cos(r) * S.northR)
+	end
+end
+
+-- 15 Hz: canvas under my position, the map turn (or my arrow on a north-up map), quest marker
 local function moveStep()
 	local pos, look = myPose()
 	if not pos then return end
@@ -712,8 +827,13 @@ local function moveStep()
 		S.ox, S.oy = ox, oy
 		ui.canvas.Position = UDim2.fromOffset(ox, oy)
 	end
-	if look and (look.X * look.X + look.Z * look.Z) > 1e-6 then
-		-- "▲" points to -Z (map up) at Rotation 0; GUI rotation is clockwise (WorldMap updateArrow)
+	if T.HeadingUp then
+		-- my arrow stays up: it points where the camera looks, and the map turns under it
+		local h = cameraHeading() or S.heading or 0
+		if not S.heading or math.abs(angleDiff(h, S.heading)) >= T.MinTurn then turnMap(h) end
+		if ui.me.Rotation ~= 0 then ui.me.Rotation = 0 end
+	elseif look and (look.X * look.X + look.Z * look.Z) > 1e-6 then
+		-- north-up map: "▲" points to -Z (map up) at Rotation 0; GUI rotation is clockwise (WorldMap updateArrow)
 		local rot = math.deg(math.atan2(look.X, -look.Z))
 		if math.abs(rot - ui.me.Rotation) >= T.MinTurn then ui.me.Rotation = rot end
 	end
