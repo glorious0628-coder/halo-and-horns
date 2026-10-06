@@ -923,6 +923,7 @@ The Server scope and nametags are unchanged: players in the same server see each
 > - Weekly settle (Monday 00:00 KST, first server loop that sees the new WeekIndex): read the previous week's top 3 of each board (Global scope; fall back to this server when the read fails, retry next loop). Honor/Infamy top 3 -> data.RankReward = { WeekId, Board, Rank } (A23-22 reward for that week). PvP top 3 -> data.Outlaw = { WeekId } (A23-23 penalty for that week). Apply on join and live; store results in a MemoryStore/DataStore key 'HH_RankSettle_'..WeekId so every server applies the same list once.
 > - Outlaw effects (only while Outlaw.WeekId == current WeekIndex): same as the A23-22 bully penalty (auto off + reason, XP x0.5, drops x0.5 incl. jackpot, power unchanged), nametag line 2 red '무법자' shown even with HideAnnounceName, bounty x2 (max x2 total with BountyMult), HUD chip Config.Ranking.Text.OutlawChip. If BullyStacks >= 1 at the same time, apply the penalty once.
 > - Data: data.Rank gains PvP=0 (week field). Store names 'HH_Rank_'..Season..'_'..Board..'_W'..WeekId for the 3 boards.
+> - **2026-10-06 추가 (SPEC A23-24):** 4th board Artisan (Week, Faction Neutral). Order = {'Honor','Infamy','Artisan','PvP'}, WeekCap.Artisan = 60. Credit: LootService giveItem tags Enh scrolls dropped by RollKill while Faction=='Neutral' and the player was active within 60 s (data.Rank.HandScroll[id] += n, week field); useEnhance consumes one tag of the same id after takeItem and, on success with a tag, credits after - before (clipped at MaxEnhance) via pcall(RankingService.Credit, player, 'Artisan', n). Transfer scrolls never credit. Weekly settle sends Artisan top 3 to data.RankReward like Honor/Infamy; reward applies only while Faction == 'Neutral'. Acceptance: a tagged Enh30 success at +2 credits 3; an untagged (AFK or Halo-era) scroll credits 0; a failure credits 0.
 > - Acceptance adds: a KO on a weaker player raises the killer's PvP score and not Honor/Infamy weekly score; a fair KO raises Honor/Infamy and not PvP; a friend KO raises neither; DebugCommand 'RankSettle' runs the weekly settle now and marks top 3 (Studio season only).
 
 **플레이어가 보는 것:** 랭킹 판은 다섯이다.
@@ -1093,7 +1094,7 @@ Text: Config.Ranking.Text.
 
 ### BB11. 랭킹 창 + 마을 게시판 대칭 (beta-must, M)
 
-> **2026-10-06 변경 (SPEC A23-23):** 탭은 [명예][악명][PvP] 3개, 그 아래 [이 서버][전체]. PvP 탭 1~3위 줄에는 '무법자' 빨간 표시를 붙이고, 탭 위에 한 줄 안내 "약한 상대·자리 비운 사람·새내기를 쓰러뜨리면 올라가요. 1~3위는 다음 주 무법자가 돼요."를 둔다. 명예·악명 탭 위에는 "1~3위는 다음 주 경험치·드랍 +10%"를 둔다. 탭 아이콘은 IconRankHonor / IconRankInfamy / IconRankPvP(이미지 세션). 게시판은 기사단 명예 TOP3 · 뿔 군단 악명 TOP3 · 무법자 TOP3를 나란히 둔다. 합격 확인의 '탭 5개, 10개 조합'은 '탭 3개, 6개 조합'으로 읽는다.
+> **2026-10-06 변경 (SPEC A23-23):** 탭은 [명예][악명][장인][PvP] 4개(A23-24), 그 아래 [이 서버][전체]. PvP 탭 1~3위 줄에는 '무법자' 빨간 표시를 붙이고, 탭 위에 한 줄 안내 "약한 상대·자리 비운 사람·새내기를 쓰러뜨리면 올라가요. 1~3위는 다음 주 무법자가 돼요."를 둔다. 명예·악명 탭 위에는 "1~3위는 다음 주 경험치·드랍 +10%"를 둔다. 탭 아이콘은 IconRankHonor / IconRankInfamy / IconRankPvP(이미지 세션). 게시판은 기사단 명예 TOP3 · 뿔 군단 악명 TOP3 · 무법자 TOP3를 나란히 둔다. 합격 확인의 '탭 5개, 10개 조합'은 '탭 4개, 8개 조합'으로 읽는다. 장인 탭 아이콘은 IconRankArtisan(이미지 생성, 톱니+망치).
 
 **플레이어가 보는 것:** 메뉴 → 랭킹(PC L키)으로 연다.
 

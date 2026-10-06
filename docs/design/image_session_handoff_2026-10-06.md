@@ -7,6 +7,7 @@
 - **이미지 개발 세션(2026-10-06 새로):** 업로드(≤10장씩), `Config.UIArt.Parts`·MaterialService ID 교체, Studio 적용, 직접 플레이 확인, 옛 그림 삭제. 규칙은 `docs/design/image_dev_session_handoff_2026-10-06.md`. 이미지 개발 세션이 생기기 전까지는 게임성 개발('개발') 세션에 보낸다.
 - **게임성 개발 세션('개발'):** 기능·서버·테스트. 그림이 필요하면 이미지 세션에 직접 요청한다.
 - **검토 세션:** 문서·결정·검수·프롬프트 방향. Firefly 브라우저는 이미지 세션만 쓴다(같은 내장 브라우저 창을 두 세션이 동시에 쓰면 꼬인다).
+- 주의: 같은 이름('이미지 생성'·'이미지 개발'·'게임성 개발')의 **fashion 폴더(다른 게임) 세션**도 돈다. 받는 쪽은 `list_sessions`의 cwd(Game)나 받은 메시지의 from 주소로 고른다. 브라우저는 `preview_start(url)`로 연 내 탭의 tabId만 쓴다.
 
 ## 사용자 규칙 (그림)
 - 사용자에게는 **한국어로 짧게**. 설명 대신 그림을 보여 주고 "이걸 넣는다"고 말한다.
@@ -23,6 +24,10 @@
 - 모델 고르기: 모델 목록 → 파트너 탭 → GPT Image 2.5 Sunburst. **모델을 바꾸면 비율이 Auto로 돌아가니 1:1을 다시 고르고, 품질이 '중간'인지 확인**한다.
 - 프롬프트 칸은 shadow DOM 안의 TEXTAREA다. JS로 focus·select 한 뒤 입력하고, `space BackSpace`를 한 번 쳐야 생성 버튼이 켜진다. 한 장 약 20초.
 - 배경은 "plain flat medium gray background with a wide empty margin, soft even light, clean shadowless backdrop" 로 받는다(누끼가 쉽다).
+- **프롬프트는 1,024자까지.** 넘으면 생성 버튼을 눌러도 조용히 안 되고 빨간 알림만 잠깐 뜬다. 900자 안쪽으로 쓴다.
+- 내장 브라우저 창이 좁으면 모바일 화면이라 모델 메뉴가 안 열린다 → `resize_window` 1280×900으로 넓히면 왼쪽 설정판이 나온다(턴이 끝나면 풀리니 다시 설정). 생성 버튼은 대략 (751,532) (800×562 좌표).
+- 한 번에 한 장씩 생성된다. 프롬프트는 생성이 시작될 때 읽히므로, 생성 중에 칸을 바꾸면 다음 장이 새 문구로 나온다. 한 장 약 20~25초.
+- 같은 계정에 다른 게임(fashion 폴더) 생성물이 섞여 있다. `asset_search`에 `query`로 프롬프트 첫머리(예: "Game ranking tab icon")를 넣으면 우리 것만 추린다. 최근 원본은 1024px.
 - **다운로드는 브라우저 저장 창을 쓰지 않는다**(사용자가 헷갈려 함). Adobe MCP로 받는다:
   1. `adobe_mandatory_init`
   2. `asset_search` (entityScope GenAIAsset, sortBy createDate desc) → 방금 만든 것 찾기. 같은 계정에 다른 게임 생성물도 있으니 시간·프롬프트로 확인.
@@ -32,6 +37,9 @@
 - `py tools/cutout_flat.py art/out/<id>_src.png art/ui/<Key>.png --check art/review/<Key>_check.png`
   - 평평한 회색 배경 기준 테두리 flood-fill. 남색 외곽선을 지킨다(Adobe `image_remove_background`는 외곽선을 먹은 적이 있다).
   - 기본 512px, 피사체 86%. 체크 시트(밝은·남색·자홍 배경 + 48px)를 크게 보고 테두리 얼룩·구멍·떨어진 조각이 없는지 확인한 뒤 보여 준다.
+- `--holes`: 트로피 손잡이·끈 고리처럼 **닫힌 회색 구멍**까지 지운다(지운 구멍을 출력하니 확인). 기본 기준 `--hole-tol 5`, 그늘진 구멍은 10까지. **흰 배경(BG_WHITE) 그림에는 쓰지 않는다** — 흰 반짝임까지 뚫린다(해골 기사 사례).
+- 외곽선 밖에 빛 번짐이 생기면(뼈 첫 판) 다시 뽑는다: 문구에서 "glow and sparkles" 줄을 빼고 "outline with a crisp hard edge"를 넣는다.
+- 색만 바뀌는 형제(주문서 70/30/10 등)는 **무채색 띠로 한 장** 그리고 `py tools/band_mask.py art/ui/<Key>.png art/ui/<Key>Band.png --preview ... --tints "r,g,b;..."` 로 띠 마스크를 뽑는다. 같은 512 캔버스라 겹치면 맞고, 개발은 Band.ImageColor3로 칠한다.
 - 지형 타일은 누끼하지 않는다: 이음새 없는 정사각 타일, 3×3으로 이어 붙여 확인.
 
 ## 현재 상태 (2026-10-06)
