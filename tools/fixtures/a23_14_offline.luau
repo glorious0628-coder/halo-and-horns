@@ -139,7 +139,7 @@ end
 
 ------------------------------------------------------------------ A. quest world (real DataService + QuestService)
 local questSerial = 0
-local function questWorld(saved, seed)
+local function questWorld(saved, seed, opts)
 	questSerial += 1
 	local f = { Now = 1000, Rows = {}, Notices = {}, Pays = {}, Tickets = {}, Spawned = {}, Ready = true, Zone = "SlimeMeadow" }
 	local config = execute("Config", CONFIG_SOURCE, nativeEnv())
@@ -220,7 +220,8 @@ local function questWorld(saved, seed)
 	end
 	local registry = { PlayerService = ps, DataService = ds, ProgressionService = prog,
 		MonsterService = { MonsterKilled = signal() }, CombatService = { Released = signal() },
-		GooseService = { GooseFinished = signal() }, PvPService = { PlayerKO = signal(), IsRookie = function() return true end },
+		GooseService = { GooseFinished = signal() }, PvPService = { PlayerKO = signal(),
+			IsRookie = function() return not (opts and opts.Graduated) end },
 		KaijuService = { KaijuEnded = signal() },
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return ds.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() },
@@ -326,8 +327,10 @@ runGroup("dailies-config", function()
 	finding(string.format("Lv1 one-day daily XP: newbie %d vs the old Lv10+ formula %d (Lv10 needs %d); a Lv1 player who only "
 		.. "claims dailies reaches Lv%d after day 1 and needs %d days for Lv10.", dayXP, oldDay, need, level, math.ceil(need / dayXP)))
 	-- vacation follows the same band (Config.DailyDayMinutes): a missed rookie day pays less than a played one
-	check(CONFIG.DailyDayMinutes(1) == 10 and CONFIG.DailyDayMinutes(9) == 10 and CONFIG.DailyDayMinutes(10) == 25,
-		"DailyDayMinutes: Lv1-9 = 2 x 3 + 4 = 10, Lv10+ = 25", show({ CONFIG.DailyDayMinutes(1), CONFIG.DailyDayMinutes(10) }))
+	check(CONFIG.DailyDayMinutes(1) == 10 and CONFIG.DailyDayMinutes(9) == 10 and CONFIG.DailyDayMinutes(10) == 15
+		and CONFIG.DailyDayMinutes(24) == 15 and CONFIG.DailyDayMinutes(25) == 25,
+		"DailyDayMinutes: Lv1-9 = 2 x 3 + 4 = 10, Lv10-24 (E12 woods) = 3 x 3 + 6 = 15, Lv25+ = 25",
+		show({ CONFIG.DailyDayMinutes(1), CONFIG.DailyDayMinutes(10), CONFIG.DailyDayMinutes(24), CONFIG.DailyDayMinutes(25) }))
 	local vg, vx = CONFIG.VacationReward(1, 1)
 	check(vg < 360 and vx < 600 and vg >= 251 and vx == 420, "a missed Lv1-9 day (70% of 10 minutes) pays less than a played day (360 + 600)",
 		show({ vg, vx }))
@@ -336,9 +339,13 @@ runGroup("dailies-config", function()
 		show({ vg, vx }))
 	local _, v3 = CONFIG.VacationReward(1, 3)
 	check(v3 == 1260 and v3 < need, "3 missed days (max) = 1260 XP < 1381 (no Lv10 from vacation alone)", v3)
-	local tg, tx = CONFIG.HuntValue(10, 25)
-	local wg, wx = CONFIG.VacationReward(10, 1)
-	check(wg == math.floor(tg * 0.7) and wx == math.floor(tx * 0.7), "Lv10+ vacation unchanged (70% of 25 minutes)", show({ wg, wx }))
+	local tg, tx = CONFIG.HuntValue(25, 25)
+	local wg, wx = CONFIG.VacationReward(25, 1)
+	check(wg == math.floor(tg * 0.7) and wx == math.floor(tx * 0.7), "Lv25+ vacation unchanged (70% of 25 minutes)", show({ wg, wx }))
+	local sg, sx = CONFIG.HuntValue(10, 15)
+	local vg10, vx10 = CONFIG.VacationReward(10, 1)
+	check(vg10 == math.floor(sg * 0.7 + 1e-6) and vx10 == math.floor(sx * 0.7 + 1e-6), "Lv10-24 vacation = 70% of the woods day (15 minutes)",
+		show({ vg10, vx10 }))
 end)
 
 ------------------------------------------------------------------ A2. generation
@@ -389,15 +396,15 @@ runGroup("dailies-generate", function()
 	end
 	check(kingRows > slimeRows and slimeRows > 0, "both kill variants occur (king slime 3 more often than 12-15 slimes)",
 		show({ kingRows, slimeRows, runs }))
-	-- Lv10+: the normal dailies (unchanged)
+	-- Lv25+: the normal dailies (unchanged; Lv10-24 is the E12 woods band, group dailies-woods)
 	for seed = 1, 10 do
-		local f = questWorld(rookieRow(10, "Halo"), seed * 7)
-		local wantG, wantX = CONFIG.DailyQuestReward(10)
+		local f = questWorld(rookieRow(25, "Halo"), seed * 7)
+		local wantG, wantX = CONFIG.DailyQuestReward(25)
 		for _, q in f.Data.Quests do
 			check(q.Kind == "Daily" and q.RewardGold == wantG and q.RewardXP == wantX and q.Strict == nil,
-				"Lv10 dailies keep the old reward (DailyQuestReward) and are never strict", show(q))
+				"Lv25 dailies keep the old reward (DailyQuestReward) and are never strict", show(q))
 			if q.Id == "Kill" then
-				check(q.Unit == "Goblin" and inList(TEMPLATE.Kill.DailyUnits, q.Target), "Lv10 kill daily = 50-60 goblins (old sizes)", show(q))
+				check(q.Unit == "Skeleton" and inList(TEMPLATE.Kill.DailyUnits, q.Target), "Lv25 kill daily = 50-60 skeletons (old sizes)", show(q))
 			end
 		end
 	end
@@ -542,8 +549,141 @@ runGroup("dailies-day-change", function()
 	local ag, ax = a:Paid()
 	check(ag == 3 * 72 + 144 and ax == 3 * 120 + 240, "midnight auto-pay: stored 72/120 x 3 + the chest of the OLD (Lv1) band",
 		show({ ag, ax }))
-	check(a.Data.DailyLevel == 10 and a.Data.Quests[1].RewardGold == select(1, CONFIG.DailyQuestReward(10)),
-		"the new day is generated in the current (Lv10) band", show({ a.Data.DailyLevel, a.Data.Quests[1].RewardGold }))
+	check(a.Data.DailyLevel == 10 and a.Data.Quests[1].RewardGold == select(1, CONFIG.HuntValue(10, CONFIG.Quests.Woods.RewardMinutes)),
+		"the new day is generated in the current (Lv10, woods) band", show({ a.Data.DailyLevel, a.Data.Quests[1].RewardGold }))
+end)
+
+------------------------------------------------------------------ A4. E12 the Goblin Woods band (Lv10-24, quest_volume §3-4)
+local WD = CONFIG.Quests.Woods
+local function woodsRows(id)
+	local out = {}
+	for _, row in WD.Dailies do if row.Id == id then table.insert(out, row) end end
+	return out
+end
+-- a woods set of kill / skill / gold only (the goals f:Finish can drive), generated at `level`
+local function woodsKSG(level, from)
+	for seed = from or 1, (from or 1) + 600 do
+		local g = questWorld(rookieRow(level, "Halo"), seed)
+		local ok = true
+		for _, q in g.Data.Quests do
+			if q.Id ~= "Kill" and q.Id ~= "Release" and q.Id ~= "Gold" then ok = false end
+		end
+		if ok then return g end
+	end
+	error("no seed produced a kill / skill / gold woods set")
+end
+
+runGroup("dailies-woods", function()
+	check(type(WD) == "table" and WD.MinLevel == 10 and WD.MaxLevel == 24 and WD.RewardMinutes == 3 and WD.ChestMinutes == 6,
+		"Config.Quests.Woods: Lv10-24, 3-minute dailies, 6-minute chest",
+		show(WD and { WD.MinLevel, WD.MaxLevel, WD.RewardMinutes, WD.ChestMinutes }))
+	check(WD.MinLevel == NB.MaxLevel + 1 and WD.MaxLevel + 1 == CONFIG.Zones.SkeletonRuins.MinLevel,
+		"the woods band starts after the newbie band and ends where the Skeleton Ruins open")
+	for _, row in WD.Dailies do
+		check(TEMPLATE[row.Id] ~= nil and type(row.Targets) == "table" and #row.Targets > 0,
+			"every woods row reuses a template Id with exact Targets", row.Id)
+	end
+	-- generation: three different goals, the woods reward, targets from the rows, side / PvP rules kept
+	local seen = {}
+	for _, faction in { "Halo", "Horns", "Neutral" } do
+		for _, level in { 10, 17, 24 } do
+			for seed = 1, 12 do
+				local f = questWorld(rookieRow(level, faction), seed * 131 + level, { Graduated = level >= 15 })
+				local ids = {}
+				for _, q in f.Data.Quests do
+					ids[q.Id] = (ids[q.Id] or 0) + 1
+					seen[q.Id] = (seen[q.Id] or 0) + 1
+				end
+				check(#f.Data.Quests == 3 and count(ids) == 3, "Lv10-24: three different dailies", faction .. " Lv" .. level .. " " .. show(ids))
+				local wantG, wantX = CONFIG.HuntValue(level, WD.RewardMinutes)
+				for _, q in f.Data.Quests do
+					check(q.Kind == "Daily" and q.RewardGold == wantG and q.RewardXP == wantX, "a woods daily pays HuntValue(level, 3)",
+						show({ q.Id, q.RewardGold, wantG }))
+					local fromRow = false
+					for _, row in woodsRows(q.Id) do
+						if inList(row.Targets, q.Target) and (row.Monster == nil or row.Monster == q.Unit) then fromRow = true end
+					end
+					check(fromRow, "the target comes from a woods row", show({ q.Id, q.Target, q.Unit }))
+					if q.Id == "Kill" then
+						check((q.Unit == "Goblin" and q.Strict == nil) or (q.Unit == "GoblinBrute" and q.Strict == true and q.Target == 2),
+							"kill rows: 12-15 goblins, or 2 Goblin Brutes (strict)", show(q))
+					elseif q.Id == "Goose" then
+						check(faction ~= "Neutral", "no goose daily for the guild", faction)
+					elseif q.Id == "Hunt" then
+						check(faction == "Halo" and level >= 15, "Hunt: Halo, Lv15+ (no Sprout Shield) only", faction .. level)
+					elseif q.Id == "Plunder" then
+						check(faction == "Horns" and level >= 15, "Plunder: Horns, Lv15+ (no Sprout Shield) only", faction .. level)
+					end
+				end
+				check(f.Data.DailyLevel == level, "DailyLevel records the woods band", f.Data.DailyLevel)
+			end
+		end
+	end
+	check((seen.Kill or 0) > 0 and (seen.Release or 0) > 0 and (seen.Gold or 0) > 0 and (seen.Golden or 0) > 0,
+		"kill / skill / gold / golden all show up", show(seen))
+	for seed = 1, 20 do
+		local f = questWorld(rookieRow(17, "Horns"), seed * 17, { Graduated = false })
+		for _, q in f.Data.Quests do check(q.Id ~= "Plunder" and q.Id ~= "Hunt", "a Sprout-shielded Lv17: no PvP daily", q.Id) end
+	end
+	-- the strict brute row: goblins count 0, a brute 1
+	local b
+	for seed = 1, 600 do
+		local f = questWorld(rookieRow(12, "Halo"), seed)
+		local _, q = f:Slot("Kill")
+		if q and q.Unit == "GoblinBrute" then b = f; break end
+	end
+	check(b ~= nil, "a Goblin Brute daily shows up")
+	if b then
+		local _, q = b:Slot("Kill")
+		local p0 = q.Progress
+		for _ = 1, 4 do b:Kill("Goblin", { ZoneId = "GoblinWoods" }) end
+		check(q.Progress == p0, "strict brute row: goblins count 0", q.Progress)
+		b:Kill("GoblinBrute", { ZoneId = "GoblinWoods" })
+		check(q.Progress == p0 + 1, "a Goblin Brute counts 1", q.Progress)
+	end
+	-- a full woods day: 3 x HuntValue(10, 3) + the chest HuntValue(10, 6)
+	local f = woodsKSG(10)
+	for _, id in { "Kill", "Release", "Gold" } do f:Finish(id) end
+	local got = { 0, 0 }
+	for i = 1, 3 do
+		f.Now += 2
+		f:Claim(i)
+		local g, x = f:Paid()
+		got[1] += g
+		got[2] += x
+	end
+	local dg, dx = CONFIG.HuntValue(10, WD.RewardMinutes)
+	local cg, cx = CONFIG.HuntValue(10, WD.ChestMinutes)
+	check(got[1] == 3 * dg + cg and got[2] == 3 * dx + cx, "a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
+		show({ got, dg, cg }))
+	-- a Lv24 set whose last claim comes at Lv25: the woods chest, never the bigger Lv25 one
+	local h = woodsKSG(24, 50)
+	for _, id in { "Kill", "Release", "Gold" } do h:Finish(id) end
+	h:Claim(1); h.Now += 2; h:Claim(2); h.Now += 2
+	h:Paid()
+	h.PS.SetStat(h.Player, "Level", 25)
+	h.Registry.ProgressionService.LeveledUp:Fire(h.Player)
+	h:Claim(3)
+	local hg = h:Paid()
+	local storedG = select(1, CONFIG.HuntValue(24, WD.RewardMinutes))
+	check(hg == storedG + select(1, CONFIG.HuntValue(24, WD.ChestMinutes)), "a Lv24 set claimed at Lv25: the woods chest",
+		show({ hg, storedG }))
+	-- a reroll stays in the band
+	local r = woodsKSG(15, 90)
+	local ri, rq = r:Slot("Release")
+	r.Now += 100
+	r:Reroll(ri)
+	local nq = r.Data.Quests[ri]
+	check(nq ~= rq and nq.Kind == "Daily" and nq.RewardGold == select(1, CONFIG.HuntValue(15, WD.RewardMinutes)),
+		"a rerolled woods daily stays a woods daily", show(nq))
+	-- vacation in the woods band
+	local v = questWorld(rookieRow(12, "Halo", { DailyDay = today() - 2, DailyClaims = 0, DailyLevel = 12, Quests = {} }), 31)
+	local vg, vx = CONFIG.VacationReward(12, 2)
+	check(v.Data.VacationDays == 2 and v.Data.VacationGold == vg and v.Data.VacationXP == vx,
+		"2 missed woods days = VacationReward(12, 2) (15-minute days)", show({ v.Data.VacationDays, v.Data.VacationGold, vg }))
+	local part = questWorld(rookieRow(12, "Halo", { DailyDay = today() - 1, DailyClaims = 1, DailyLevel = 12, Quests = {} }), 32)
+	check(math.abs((part.Data.VacationDays or 0) - 0.8) < 1e-9, "one claim of three = 3 of 15 woods minutes -> 0.8 vacation day",
+		part.Data.VacationDays)
 end)
 
 ------------------------------------------------------------------ B. golden goose co-op

@@ -83,6 +83,24 @@ MUTATIONS = [
     ("keep threshold off by one", "CONFIG_SOURCE",
      "return math.floor(lv) < (tonumber(Config.ClassChange.FreeKeepLevelBelow) or 0)",
      "return math.floor(lv) <= (tonumber(Config.ClassChange.FreeKeepLevelBelow) or 0)"),
+    # E12 the Goblin Woods band (quest_volume §3-4)
+    ("Lv10-24 gets the template dailies again", "QUEST_SOURCE", "\t\treturn WOODS\n", "\t\treturn nil\n"),
+    ("the woods band reaches Lv25", "QUEST_SOURCE", "and level <= num(WOODS.MaxLevel, 0) then",
+     "and level <= num(WOODS.MaxLevel, 0) + 1 then"),
+    ("a woods daily pays the 5-minute reward", "QUEST_SOURCE",
+     "rewardGold, rewardXP = Config.HuntValue(level, num(band.RewardMinutes, Config.Daily.QuestMinutes)) -- E12",
+     "rewardGold, rewardXP = Config.DailyQuestReward(level) -- E12"),
+    ("the woods chest pays the Lv25 chest", "QUEST_SOURCE",
+     "\tif band then return Config.HuntValue(level, num(band.ChestMinutes, Config.Daily.ChestMinutes)) end\n", ""),
+    ("woods targets scaled like templates", "QUEST_SOURCE", "\tif t.Id == \"Gold\" and not band then",
+     "\tif t.Id == \"Gold\" and not newbie then"),
+    ("woods vacation uses the 25-minute day", "CONFIG_SOURCE",
+     "\t\treturn (tonumber(wd.RewardMinutes) or Config.Daily.QuestMinutes) * slots\n",
+     "\t\treturn Config.Daily.QuestMinutes * slots + Config.Daily.ChestMinutes + 0 * slots\n"),
+    ("the brute row is not strict", "CONFIG_SOURCE", 'Monster = "GoblinBrute", Strict = true, Targets = { 2 } },',
+     'Monster = "GoblinBrute", Targets = { 2 } },'),
+    # (no "vacation share ignores the woods band" mutation: a woods daily is 3 of 15 minutes and a template daily 5 of
+    # 25, the same 1/5 share, so the old day's f cannot differ; the paid amount follows Config.DailyDayMinutes, above)
 ]
 
 

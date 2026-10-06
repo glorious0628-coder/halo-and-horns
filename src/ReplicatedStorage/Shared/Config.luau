@@ -2288,6 +2288,27 @@ Config.Quests = {
 			{ Id = "Gold", Weight = 3, Targets = { 40, 50, 60 } }, -- 사냥으로 골드 40~60 벌기
 		},
 	},
+	-- E12 (quest_volume §3-4, A23-56): the Goblin Woods band Lv10-24 works like Newbie (rows reuse a template Id, exact
+	-- Targets, about 3 minutes each, the three goals differ). Each daily pays HuntValue(level, 3), the full-set chest
+	-- HuntValue(level, 6): one day = 15 minutes of hunting (the template dailies paid 25 for about 3x the work).
+	-- Hunt / Plunder keep the PvP rules (Lv15+, no Sprout Shield, at most one) and their sides; Goose is Halo / Horns
+	-- only. Lv25+ keeps Templates[].DailyUnits. Vacation follows the band (Config.DailyDayMinutes = 15).
+	Woods = {
+		MinLevel = 10,
+		MaxLevel = 24,
+		RewardMinutes = 3,
+		ChestMinutes = 6,
+		Dailies = {
+			{ Id = "Kill", Weight = 3, Monster = "Goblin", Targets = { 12, 13, 14, 15 } }, -- goblins 12~15
+			{ Id = "Kill", Weight = 2, Monster = "GoblinBrute", Strict = true, Targets = { 2 } }, -- Goblin Brutes 2
+			{ Id = "Release", Weight = 3, Targets = { 4, 5, 6 } }, -- skills that hit monsters 4~6
+			{ Id = "Gold", Weight = 3, Targets = { 150, 200, 250 } }, -- hunting gold
+			{ Id = "Golden", Weight = 1, Targets = { 1 } }, -- one golden monster
+			{ Id = "Goose", Weight = 1, Targets = { 1 } }, -- the Golden Goose tug (Halo / Horns)
+			{ Id = "Hunt", Weight = 1, Targets = { 1 } }, -- PvP, Halo
+			{ Id = "Plunder", Weight = 1, Targets = { 1 } }, -- PvP, Horns
+		},
+	},
 }
 
 Config.Daily = {
@@ -2314,14 +2335,22 @@ function Config.DailyChestReward(level) -- gold, xp
 end
 
 -- minutes of hunting one full day of dailies is worth (all dailies + the chest) in the daily band of `level`:
--- Lv1..Quests.Newbie.MaxLevel = Newbie.RewardMinutes x Slots + Newbie.ChestMinutes (10), else Daily's (25)
+-- Lv1..Quests.Newbie.MaxLevel = Newbie.RewardMinutes x Slots + Newbie.ChestMinutes (10), E12 Woods.MinLevel..MaxLevel
+-- = Woods' (3 x 3 + 6 = 15), else Daily's (25)
 function Config.DailyDayMinutes(level)
 	local nb = Config.Quests.Newbie
 	local slots = Config.Quests.Slots
+	local lv = tonumber(level) or 1
 	if type(nb) == "table" and type(nb.Dailies) == "table" and #nb.Dailies > 0
-		and (tonumber(level) or 1) <= (tonumber(nb.MaxLevel) or 0) then
+		and lv <= (tonumber(nb.MaxLevel) or 0) then
 		return (tonumber(nb.RewardMinutes) or Config.Daily.QuestMinutes) * slots
 			+ (tonumber(nb.ChestMinutes) or Config.Daily.ChestMinutes)
+	end
+	local wd = Config.Quests.Woods
+	if type(wd) == "table" and type(wd.Dailies) == "table" and #wd.Dailies > 0
+		and lv >= (tonumber(wd.MinLevel) or math.huge) and lv <= (tonumber(wd.MaxLevel) or 0) then
+		return (tonumber(wd.RewardMinutes) or Config.Daily.QuestMinutes) * slots
+			+ (tonumber(wd.ChestMinutes) or Config.Daily.ChestMinutes)
 	end
 	return Config.Daily.QuestMinutes * slots + Config.Daily.ChestMinutes
 end

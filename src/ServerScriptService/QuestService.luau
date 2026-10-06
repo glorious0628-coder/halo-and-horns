@@ -62,6 +62,8 @@ local SIDE_ONLY_IDS = { Hunt = true, Plunder = true, Goose = true, Bounty = true
 
 -- A23-14: short, different Lv1-9 dailies and their smaller rewards (nil table = old behaviour everywhere)
 local NEWBIE = Config.Quests.Newbie
+-- E12 (quest_volume §3-4): the Goblin Woods band Lv10-24 works the same way (Lv25+ keeps the template dailies)
+local WOODS = Config.Quests.Woods
 
 ------------------------------------------------------------------ state (session only)
 local dirty = {} -- [Player] = true -> quest list republished by the publish loop
@@ -161,11 +163,23 @@ local function isNewbieLevel(level)
 		and level <= num(NEWBIE.MaxLevel, 0)
 end
 
--- full-set chest at one level; Lv1-9 pays Newbie.ChestMinutes of hunting instead of Daily's
+-- E12: the daily band of a level: Newbie (Lv1..Newbie.MaxLevel), Woods (Woods.MinLevel..MaxLevel) or nil (templates)
+local function bandAt(level)
+	if isNewbieLevel(level) then return NEWBIE end
+	if type(WOODS) == "table" and type(WOODS.Dailies) == "table" and #WOODS.Dailies > 0
+		and level >= num(WOODS.MinLevel, math.huge) and level <= num(WOODS.MaxLevel, 0) then
+		return WOODS
+	end
+	return nil
+end
+
+-- full-set chest at one level; Lv1-9 pays Newbie.ChestMinutes of hunting instead of Daily's (Lv10-24: Woods')
 local function chestAt(level)
 	if isNewbieLevel(level) then
 		return Config.HuntValue(level, num(NEWBIE.ChestMinutes, Config.Daily.ChestMinutes))
 	end
+	local band = bandAt(level)
+	if band then return Config.HuntValue(level, num(band.ChestMinutes, Config.Daily.ChestMinutes)) end
 	return Config.DailyChestReward(level)
 end
 
@@ -213,8 +227,10 @@ local function newQuest(player, kind, others)
 	local data = S.PlayerService.GetData(player)
 	local level = getLevel(data)
 	local faction = getFaction(player)
-	-- A23-14: Lv1-9 dailies come from Config.Quests.Newbie.Dailies (rows reuse a template Id); everything else as before
+	-- A23-14: Lv1-9 dailies come from Config.Quests.Newbie.Dailies (rows reuse a template Id); E12: Lv10-24 from
+	-- Config.Quests.Woods.Dailies the same way (band = the rows' table); everything else as before
 	local newbie = kind == "Daily" and isNewbieLevel(level)
+	local band = (kind == "Daily" and bandAt(level)) or nil
 
 	local otherIds, otherPvP = {}, 0
 	for _, q in others or {} do
@@ -229,9 +245,9 @@ local function newQuest(player, kind, others)
 		and otherPvP < (Config.Quests.MaxPvPQuests or 1)
 		and not S.PvPService.IsRookie(player)
 
-	-- rows = templates, or A23-14 newbie rows ({ Id = template Id, Targets, Monster?, Strict? })
+	-- rows = templates, or A23-14 / E12 band rows ({ Id = template Id, Targets, Monster?, Strict? })
 	local candidates, preferred = {}, {}
-	for _, row in (if newbie then NEWBIE.Dailies else Config.Quests.Templates) do
+	for _, row in (if band then band.Dailies else Config.Quests.Templates) do
 		local rt = type(row) == "table" and TEMPLATE_BY_ID[row.Id]
 		if rt and templateFitsFaction(rt, faction) and (not rt.PvP or pvpAllowed) then
 			table.insert(candidates, row)
@@ -245,13 +261,13 @@ local function newQuest(player, kind, others)
 	if #pool > 0 then
 		row = pickWeighted(pool)
 	else
-		newbie = false -- nothing fits: the old Kill daily (sizes and reward) is the safe fallback
+		newbie, band = false, nil -- nothing fits: the old Kill daily (sizes and reward) is the safe fallback
 		row = TEMPLATE_BY_ID.Kill or Config.Quests.Templates[1]
 	end
 	local t = TEMPLATE_BY_ID[row.Id] or row
 
 	local unitsList
-	if newbie then
+	if band then
 		unitsList = row.Targets
 	else
 		unitsList = (kind == "Daily" and t.DailyUnits) or t.Units
@@ -263,12 +279,12 @@ local function newQuest(player, kind, others)
 	local main = Config.MonsterTypes[mainId]
 	-- the monster a Kill/Golden quest counts: the zone's unit monster, or the newbie row's Monster (e.g. BigSlime)
 	local unitId = mainId
-	if newbie and type(row.Monster) == "string" and type(Config.MonsterTypes[row.Monster]) == "table" then
+	if band and type(row.Monster) == "string" and type(Config.MonsterTypes[row.Monster]) == "table" then
 		unitId = row.Monster
 	end
 	local unitDef = Config.MonsterTypes[unitId]
-	local target = units -- newbie Targets are exact (a Gold row already says gold)
-	if t.Id == "Gold" and not newbie then
+	local target = units -- band Targets are exact (a Gold row already says gold)
+	if t.Id == "Gold" and not band then
 		target = units * main.Gold
 	end
 	target = math.max(1, math.floor(target))
@@ -277,6 +293,8 @@ local function newQuest(player, kind, others)
 	if kind == "Daily" then
 		if newbie then
 			rewardGold, rewardXP = Config.HuntValue(level, num(NEWBIE.RewardMinutes, Config.Daily.QuestMinutes))
+		elseif band then
+			rewardGold, rewardXP = Config.HuntValue(level, num(band.RewardMinutes, Config.Daily.QuestMinutes)) -- E12
 		else
 			rewardGold, rewardXP = Config.DailyQuestReward(level)
 		end
@@ -311,7 +329,7 @@ local function newQuest(player, kind, others)
 		Text = text,
 		MinStacks = t.MinStacks,
 		Unit = unitId, -- Kill/Golden progress is measured in kills of this monster (see killWeight)
-		Strict = (newbie and row.Strict == true) or nil, -- A23-14: only Unit (or stronger) kills count, 1 each
+		Strict = (band and row.Strict == true) or nil, -- A23-14 / E12: only Unit (or stronger) kills count, 1 each
 	}
 end
 
@@ -759,9 +777,9 @@ local function runDayCheck(player)
 	if dailyDay > 0 and today > dailyDay then
 		local D = Config.Daily
 		local band = oldGenLevel >= 1 and oldGenLevel or level
-		local newbieDay = isNewbieLevel(band)
-		local perQuest = newbieDay and num(NEWBIE.RewardMinutes, D.QuestMinutes) or D.QuestMinutes
-		local chestMin = newbieDay and num(NEWBIE.ChestMinutes, D.ChestMinutes) or D.ChestMinutes
+		local dayBand = bandAt(band) -- A23-14 Newbie / E12 Woods / nil = the template dailies
+		local perQuest = dayBand and num(dayBand.RewardMinutes, D.QuestMinutes) or D.QuestMinutes
+		local chestMin = dayBand and num(dayBand.ChestMinutes, D.ChestMinutes) or D.ChestMinutes
 		local fullDay = perQuest * slots + chestMin
 		local earned = claims * perQuest + ((claims >= slots) and chestMin or 0)
 		local f = if fullDay > 0 then math.clamp(earned / fullDay, 0, 1) else 1
