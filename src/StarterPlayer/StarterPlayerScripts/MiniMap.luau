@@ -1,5 +1,6 @@
 -- MiniMap.luau : the live minimap in the HUD's top-left slot (SPEC_ADDENDUM A23-26 "실시간 지도").
--- Only my surroundings are shown (the whole world stays in WorldMap, A12): north up, my arrow turns. Marks: me, other
+-- Only my surroundings are shown (the whole world stays in WorldMap, A12): the map turns with the camera (where I look
+-- is up) and my arrow points where my CHARACTER faces (its yaw minus the camera's, every frame, eased). Marks: me, other
 -- players (faction colour dots), the quest target (★ inside the view, a ▲ chevron on the edge outside it), the potion
 -- merchant and the blacksmith anvil, and nearby monsters (small dots). Presentation only: no buttons and every instance
 -- is Active = false, so on phones the box (inside the thumbstick zone) never sinks a touch.
@@ -33,8 +34,10 @@ local T = {
 	Margin = 1.05, -- players / monsters inside the view box + 5% get a dot (the view clips the rest)
 	MoveDt = 1 / 15, -- canvas, map turn, quest marker (user 2026-10-06: <= 15 Hz)
 	ScanDt = 1 / 5, -- visibility, players, monsters, quest target
-	-- user 2026-10-06: the map turns with the camera (where I look is up); my arrow stays up, the 'N' rides the ring
+	-- user 2026-10-06: the map turns with the camera (where I look is up), the 'N' rides the ring; my arrow shows where my
+	-- character faces on that turned map (user 2026-10-06 later: "시선에 따라서 꼭짓점이 변화해야지")
 	HeadingUp = true,
+	ArrowEase = 18, -- 1/s: my arrow eases toward the character's facing every frame (no 15 Hz steps)
 	NorthR = 0.435, -- 'N' marker: distance from the centre / side (on the ring's navy band)
 	NorthD = 0.13, -- 'N' marker disc / side
 	StrongDot = 8, -- big monsters (Scale >= StrongScale): a bigger dot with a dark rim
@@ -94,7 +97,7 @@ local COL = {
 
 ----------------------------------------------------------------- text (glyphs only; Util.GlyphSafe symbols)
 local TXT = {
-	Me = "▲", -- my arrow (points up = where the camera looks); always white, so it never looks like the gold chevron
+	Me = "▲", -- my arrow (points up at Rotation 0 = map up); always white, so it never looks like the gold chevron
 	Quest = "★", -- quest target inside the view (fallback when the marker diamond art is missing)
 	Edge = "▲", -- quest target outside: chevron on the view edge, turned toward it
 	North = "N", -- the north marker on the ring
@@ -828,16 +831,26 @@ local function moveStep()
 		ui.canvas.Position = UDim2.fromOffset(ox, oy)
 	end
 	if T.HeadingUp then
-		-- my arrow stays up: it points where the camera looks, and the map turns under it
+		-- the map turns under the camera's heading; my arrow follows the character every frame (arrowStep)
 		local h = cameraHeading() or S.heading or 0
 		if not S.heading or math.abs(angleDiff(h, S.heading)) >= T.MinTurn then turnMap(h) end
-		if ui.me.Rotation ~= 0 then ui.me.Rotation = 0 end
-	elseif look and (look.X * look.X + look.Z * look.Z) > 1e-6 then
-		-- north-up map: "▲" points to -Z (map up) at Rotation 0; GUI rotation is clockwise (WorldMap updateArrow)
-		local rot = math.deg(math.atan2(look.X, -look.Z))
-		if math.abs(rot - ui.me.Rotation) >= T.MinTurn then ui.me.Rotation = rot end
 	end
 	placeQuest(pos.X, pos.Z)
+end
+
+-- every frame: my arrow points where my CHARACTER faces (HumanoidRootPart LookVector). "▲" points to map up at
+-- Rotation 0 and GUI rotation is clockwise, so on the turned map (camera heading up) it turns by the character's yaw
+-- minus the map's heading (walking forward = up, facing the camera = down), on a north-up map by the yaw itself; eased
+-- (T.ArrowEase) so a quick turn never jumps
+local function arrowStep(dt)
+	local _, look = myPose()
+	if not look or look.X * look.X + look.Z * look.Z < 1e-6 then return end
+	local yaw = math.deg(math.atan2(look.X, -look.Z))
+	local goal = T.HeadingUp and angleDiff(yaw, S.heading or cameraHeading() or 0) or yaw
+	local cur = ui.me.Rotation
+	local step = angleDiff(goal, cur)
+	if math.abs(step) < 0.2 then return end
+	ui.me.Rotation = angleDiff(cur + step * math.min(1, dt * T.ArrowEase), 0)
 end
 
 -- 1 Hz: box, potion merchant, anvil
@@ -907,6 +920,7 @@ local function onHeartbeat(dt)
 		acc.Move = math.min(acc.Move - T.MoveDt, T.MoveDt)
 		guard(moveStep, "move")
 	end
+	guard(function() arrowStep(dt) end, "arrow")
 end
 
 local function bindCamera()

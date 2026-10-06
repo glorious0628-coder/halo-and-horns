@@ -1647,11 +1647,8 @@ local function updateArrow(faction)
 	local u, v = toUV(pos.X, pos.Z)
 	u, v = math.clamp(u, 0, 1), math.clamp(v, 0, 1)
 	me.Position = UDim2.fromScale(u, v)
-	-- user 2026-10-06 ("the arrow turns the wrong way"): the arrow shows where I LOOK (the camera), like the live minimap
-	-- (whose map turns with the camera); the body's facing differs from it while the camera orbits or I walk backwards
-	local cam = workspace.CurrentCamera
-	local camLook = cam and cam.CFrame.LookVector
-	if camLook and (camLook.X * camLook.X + camLook.Z * camLook.Z) > 1e-4 then look = camLook end
+	-- user 2026-10-06 ("시선에 따라서 꼭짓점이 변화해야지"): the arrow's tip shows where my CHARACTER faces (the root's
+	-- LookVector) on this north-up map, the same rule as the live minimap's arrow
 	if look and (look.X * look.X + look.Z * look.Z) > 1e-6 then
 		-- "▲" points to -Z (map up) at Rotation 0; GUI rotation is clockwise
 		meGlyph.Rotation = math.deg(math.atan2(look.X, -look.Z))
