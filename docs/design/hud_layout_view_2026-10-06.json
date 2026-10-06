@@ -1,0 +1,410 @@
+{
+ "name": "화면 배치 시안",
+ "items": [
+  {
+   "id": "stats_card",
+   "label_ko": "내 상태판 (HP·MP·경험치·전투력·금고)",
+   "group": "상태판",
+   "pc": {
+    "x": 10,
+    "y": 66,
+    "w": 256,
+    "h": 115
+   },
+   "phone": {
+    "x": 8,
+    "y": 62,
+    "w": 216,
+    "h": 57
+   },
+   "phone_collapsed": "288x76du slim plate: badge, HP/MP, power + 금고, 7 px XP. Ends at y119, above the thumbstick zone (y120).",
+   "notes": "One fixed-height block (320x144du), never grows: the wanted row became a chip. Rows: class+전투력, HP, MP, 금고·주머니, XP with text, 오늘의 운. On PC it is lifted to MainGui Z55+ so it stays visible above the window dim."
+  },
+  {
+   "id": "luck_corner",
+   "label_ko": "오늘의 운",
+   "group": "상태판",
+   "pc": {
+    "x": 14,
+    "y": 164,
+    "w": 248,
+    "h": 14
+   },
+   "phone": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "phone_collapsed": "Fixed chip in row A, never folded into +N. Clover icon + '희귀 10.75%'; full text when it fits.",
+   "notes": "The top-right panel is removed (the PlayerList covers it). PC: a permanent plate row with the A23-18 text '오늘의 운 · 희귀 10.75%', always visible. The 응원별 stars move to the goose chip and tug bar."
+  },
+  {
+   "id": "bag_button",
+   "label_ko": "가방",
+   "group": "버튼 줄",
+   "pc": {
+    "x": 274,
+    "y": 66,
+    "w": 51,
+    "h": 51
+   },
+   "phone": {
+    "x": 585,
+    "y": 62,
+    "w": 48,
+    "h": 48
+   },
+   "phone_collapsed": "Top-right rail, 64du.",
+   "notes": "IconPouch with the label '가방'. The B14 scroll glow and NEW dot move here. PC: beside the plate, because the PlayerList owns the top-right. G opens Bag (BB7)."
+  },
+  {
+   "id": "map_button",
+   "label_ko": "지도",
+   "group": "버튼 줄",
+   "pc": {
+    "x": 329,
+    "y": 66,
+    "w": 51,
+    "h": 51
+   },
+   "phone": {
+    "x": 639,
+    "y": 62,
+    "w": 48,
+    "h": 48
+   },
+   "phone_collapsed": "",
+   "notes": "Opens WorldMap; the PlayerList is hidden while it is open."
+  },
+  {
+   "id": "menu_button",
+   "label_ko": "메뉴",
+   "group": "버튼 줄",
+   "pc": {
+    "x": 384,
+    "y": 66,
+    "w": 51,
+    "h": 51
+   },
+   "phone": {
+    "x": 693,
+    "y": 62,
+    "w": 48,
+    "h": 48
+   },
+   "phone_collapsed": "",
+   "notes": "The glow is for rebirth or vacation only. The menu body uses the BB13 sections."
+  },
+  {
+   "id": "pet_slot_reserved",
+   "label_ko": "(펫 자리)",
+   "group": "버튼 줄",
+   "pc": {
+    "x": 439,
+    "y": 66,
+    "w": 51,
+    "h": 51
+   },
+   "phone": {
+    "x": 531,
+    "y": 62,
+    "w": 48,
+    "h": 48
+   },
+   "phone_collapsed": "Empty in beta.",
+   "notes": "Reserved now so the rail never shifts onto the war meter at launch. The PC rail ends at x490, 6 px before the top column (496)."
+  },
+  {
+   "id": "quest_rows",
+   "label_ko": "퀘스트: 지금 할 일 + 받기",
+   "group": "퀘스트",
+   "pc": {
+    "x": 10,
+    "y": 217,
+    "w": 288,
+    "h": 94
+   },
+   "phone": {
+    "x": 516,
+    "y": 116,
+    "w": 225,
+    "h": 36
+   },
+   "phone_collapsed": "One 48du row: line 1 is the top entry, line 2 is progress + green '받기 N' + ▼.",
+   "notes": "Collapsed: 2 rows of 56du (45 px). Row 1 is 'now do' (the story, a pending choice with the A23-20 pulse, or the tutorial guide step), bold with a progress bar; a tap shows the guide beam. Row 2 priority: 받기 > the crown-shard auto-unlock quest > forge hint > daily. Expanded: at most 4 rows (to y409, above the chat at y448); the rest go in the journal. Type badges sit inside the row. TextTruncate=AtEnd."
+  },
+  {
+   "id": "war_meter",
+   "label_ko": "전쟁 미터 (빛 ↔ 뿔)",
+   "group": "가운데 위",
+   "pc": {
+    "x": 496,
+    "y": 66,
+    "w": 288,
+    "h": 46
+   },
+   "phone": {
+    "x": 255,
+    "y": 62,
+    "w": 240,
+    "h": 38
+   },
+   "phone_collapsed": "320x50du with the info line inside.",
+   "notes": "360x58du, centred at W/2. Column width = min(360du, 2*(PLleft-16-W/2)). Shields at both ends, crown on the bar."
+  },
+  {
+   "id": "status_chips_row",
+   "label_ko": "지역·상태 칩",
+   "group": "칩",
+   "pc": {
+    "x": 496,
+    "y": 116,
+    "w": 288,
+    "h": 21
+   },
+   "phone": {
+    "x": 241,
+    "y": 104,
+    "w": 267,
+    "h": 18
+   },
+   "phone_collapsed": "Row A (y104-122): [zone][luck][slot 3]. Slot 3 shows the first danger chip, otherwise the most important other chip, and ends in '+N' when more wait. Row B (y125-143) appears only for a 2nd+ danger chip. Danger chips never fold.",
+   "notes": "Chips are 26du tall (21 px on PC), max 2 rows on PC. Order: zone > danger (bully, outlaw, wanted, combat) > rookie > countdowns (goose, king from 3:00) > blessing, size, kaiju queue > '+N'. Y comes from the meter's live bottom +4. Icons are UIArt (IconSafe, IconSprout, IconClover…), not emoji. TextTruncate=AtEnd with short TXT fallbacks."
+  },
+  {
+   "id": "notify_column",
+   "label_ko": "알림 (최대 3줄)",
+   "group": "알림",
+   "pc": {
+    "x": 496,
+    "y": 141,
+    "w": 288,
+    "h": 117
+   },
+   "phone": {
+    "x": 241,
+    "y": 126,
+    "w": 267,
+    "h": 39
+   },
+   "phone_collapsed": "2 lines with 1 chip row, 1 line with 2 rows; ends at most at y165.",
+   "notes": "New. Spans from the chip bottom +4 to the cap (PC y258, phone y165). Sticky first, then toasts while they fit. Active=false; the phone part at x241-300, y120-165 lies in the stick zone and stays passive."
+  },
+  {
+   "id": "potion_buttons",
+   "label_ko": "물약 1·2",
+   "group": "전투 묶음",
+   "pc": {
+    "x": 926,
+    "y": 646,
+    "w": 122,
+    "h": 58
+   },
+   "phone": {
+    "x": 337,
+    "y": 298,
+    "w": 112,
+    "h": 54
+   },
+   "phone_collapsed": "Two 54 px slots left of Q, outside the stick zone (x >= 337).",
+   "notes": "72du each (PC: HP 926-984, MP 990-1048). Icon and bold '×2' at the bottom-left, key badge at the bottom-right, status ('가득'/'3초') in the centre. At 0 stock, a click shows the potion-shop hint and beam instead of doing nothing. PC: lifted above the dim, and works while a window is open."
+  },
+  {
+   "id": "attack_button",
+   "label_ko": "공격",
+   "group": "전투 묶음",
+   "pc": {
+    "x": 1144,
+    "y": 584,
+    "w": 120,
+    "h": 120
+   },
+   "phone": {
+    "x": 534,
+    "y": 241,
+    "w": 112,
+    "h": 112
+   },
+   "phone_collapsed": "150du, 8 px left of the live JumpButton, bottom margin 8.",
+   "notes": "PC: corner with 16 px margins. One swing per press (A23).",
+   "shape": "round"
+  },
+  {
+   "id": "skill_button",
+   "label_ko": "스킬 Q",
+   "group": "전투 묶음",
+   "pc": {
+    "x": 1062,
+    "y": 588,
+    "w": 77,
+    "h": 77
+   },
+   "phone": {
+    "x": 455,
+    "y": 252,
+    "w": 72,
+    "h": 72
+   },
+   "phone_collapsed": "96du at about 175° from attack; 7 px right of the phone window edge.",
+   "notes": "Short skill name (BB9) + 'MP20' + radial cooldown seconds. Gap to attack: PC 6.5, phone 7.4.",
+   "shape": "round"
+  },
+  {
+   "id": "skill_z_button",
+   "label_ko": "스킬 Z",
+   "group": "전투 묶음",
+   "pc": {
+    "x": 1121,
+    "y": 510,
+    "w": 77,
+    "h": 77
+   },
+   "phone": {
+    "x": 497,
+    "y": 180,
+    "w": 72,
+    "h": 72
+   },
+   "phone_collapsed": "96du at about 125°, the top of the fan.",
+   "notes": "Only with Skills.ZEnabled and learned (Lv5); otherwise the slot stays empty. PC top y510 is 40 px below the estimated PlayerList bottom.",
+   "shape": "round"
+  },
+  {
+   "id": "auto_button",
+   "label_ko": "자동",
+   "group": "전투 묶음",
+   "pc": {
+    "x": 1213,
+    "y": 520,
+    "w": 51,
+    "h": 51
+   },
+   "phone": {
+    "x": 665,
+    "y": 215,
+    "w": 48,
+    "h": 48
+   },
+   "phone_collapsed": "64du, 8 px above the jump button.",
+   "notes": "Hidden until AutoCombatUnlocked, then one NEW glint; the crown-shard quest row explains it. ON = gold ring, OFF = grey. During bully or outlaw: a lock with '벌칙', and a tap shows the reason. Keeps running while windows are open (A23-20).",
+   "shape": "round"
+  },
+  {
+   "id": "grudge_ghost_button",
+   "label_ko": "유령 붙잡기",
+   "group": "전투 묶음",
+   "pc": {
+    "x": 987,
+    "y": 577,
+    "w": 61,
+    "h": 61
+   },
+   "phone": {
+    "x": 590,
+    "y": 182,
+    "w": 57,
+    "h": 57
+   },
+   "phone_collapsed": "76du at about 72° above attack, clear of the phone window and the overlay.",
+   "notes": "Event only. A fixed slot that no longer anchors to ClusterTop. PC: left of Q, 8 px above the MP potion. Lifted above the dim on PC.",
+   "shape": "round"
+  },
+  {
+   "id": "combo_counter",
+   "label_ko": "콤보",
+   "group": "알림",
+   "pc": {
+    "x": 580,
+    "y": 463,
+    "w": 120,
+    "h": 24
+   },
+   "phone": {
+    "x": 305,
+    "y": 236,
+    "w": 144,
+    "h": 20
+   },
+   "phone_collapsed": "Small text only, outside the stick zone.",
+   "notes": "Text effect only, no box. The PC milestone is narrowed to the column (496,405,288,51) so it no longer goes under the PlayerList."
+  }
+ ],
+ "reserved_zones": [
+  {
+   "name_ko": "Roblox 상단바",
+   "pc": {
+    "x": 0,
+    "y": 0,
+    "w": 1280,
+    "h": 58
+   },
+   "phone": {
+    "x": 0,
+    "y": 0,
+    "w": 749,
+    "h": 58
+   }
+  },
+  {
+   "name_ko": "Roblox 플레이어 목록(Tab)",
+   "pc": {
+    "x": 800,
+    "y": 62,
+    "w": 476,
+    "h": 408
+   },
+   "phone": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   }
+  },
+  {
+   "name_ko": "채팅 창(열었을 때)",
+   "pc": {
+    "x": 8,
+    "y": 448,
+    "w": 412,
+    "h": 264
+   },
+   "phone": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   }
+  },
+  {
+   "name_ko": "조이스틱 자리 (비움)",
+   "pc": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "phone": {
+    "x": 0,
+    "y": 120,
+    "w": 300,
+    "h": 241
+   }
+  },
+  {
+   "name_ko": "점프",
+   "pc": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "phone": {
+    "x": 654,
+    "y": 271,
+    "w": 70,
+    "h": 70
+   }
+  }
+ ]
+}

@@ -1,0 +1,2779 @@
+{
+ "final": {
+  "name": "final",
+  "summary_ko": "왼쪽 위에는 내 상태판(HP·MP·경험치·전투력·오늘의 운)과 [가방][지도][메뉴] 버튼이 있고, 그 아래에 '지금 할 일' 퀘스트 2줄이 있어요. 가운데 위에는 전쟁 미터, 지역·상태 칩, 알림 3줄이 차례로 쌓이고, 오른쪽 아래에는 공격·스킬·자동·물약 버튼이 모여 있어요. 폰에서는 왼쪽 아래 조이스틱 자리를 비워 두고, 버튼 줄과 퀘스트 한 줄은 오른쪽 위로 옮겨요.",
+  "core_ui_handling": "BASE: first10, picked by 2 of 3 judges, with every agreed graft applied and every must_fix and overlap fixed.\n\nUNITS: every rect is in real screen px. The origin is the top-left of the window, including the Roblox top bar.\n- PC: 1280x720, inset 58, desktop UIScale 0.8, so px = du x 0.8.\n- Phone: 749x361, inset 58 (assumed), touch UIScale 0.75, so px = du x 0.75.\n- Top blocks start at inset+8 on PC and inset+4 on phone.\n\nBUILD: add one new pure ModuleScript, HudLayout.luau. Inputs: viewport, GetGuiInset, input mode, the live TouchGui JumpButton rect, and the PlayerList left-edge estimate. It returns every rect.\n- HUD, EventHUD, VitalsUI, GrudgeGhost, UIKit toasts and Panels all read from it. Add it to the ClientMain list before any require. This keeps HUD.luau and Fx.luau under the 200-local limit.\n- Pick the layout from LastInputType plus the viewport, not from TouchEnabled, so a touchscreen laptop gets the PC layout.\n- Live chain: meter bottom, then +4 chips (PC max 2 rows; phone row A, plus row B only for a second danger chip), then +4 notify area, down to a hard cap: PC y258 (top+240du), phone y165.\n- Delete UIKit TOAST_Y=152, HUD L.StripBelow=47, the CR-L36 luck clamp and EventHUD KING.place. The uncommitted Pumpkin King edit must be moved into the chip/sticky system before it is committed.\n- Notify area: one sticky slot first. Priority: danger warning > AFK > travel > personal line (sack, kaiju form, revenge) > live event (goose tug, live king, live kaiju, siren) > announce ribbon or zone banner. Lower live events fall back to chips. Then toasts (24 px on PC, 18 px on phone, gaps 4/3) only while they fit above the cap. The rest wait in a queue, and repeated loot merges ('+슬라임 젤리 x3').\n\nNARROW PC (logical width < 1500du, e.g. 1024x768 or 1280x1024):\n- The rail moves under the plate, and the quest panel moves down by rail height + 8.\n- The top column centres between plate right+8 and PlayerList left-8, with the meter at least 240du. At 1024x768 that is about x291-540.\n- The PlayerList-left formula keeps the column out from under the list.\n\nTOP BAR: nothing of ours goes in y < inset on either device. No TopbarSafeInsets exception is used.\n\nPLAYERLIST (PC, CoreGui, open by default):\n- Reserved x800-1276, y62-470 (estimate). Nothing persistent goes there.\n- Top column width = min(360du, 2*(PLleft-16-W/2)), which gives x496-784 at 1280x720.\n- Z (top y510) and 자동 (top y520) stay 40+ px below the estimated list bottom.\n- While any modal is open (Panels window, confirm, WorldMap, KO card), call StarterGui:SetCoreGuiEnabled(PlayerList,false), then restore the player's own state on close. If the restore misbehaves, fall back to a PC window at x428-784.\n- leaderstats order: 전투력 (an IntValue fed by CombatPower, created first so the list sorts by it), 레벨, 환생, 명성. Remove 골드 (A23-21, BB12).\n- Phone: the list lives in the Roblox menu, so no zone is reserved.\n\nCHAT:\n- First read TextChatService.ChatVersion in the live place. The place file says Legacy (token 0); HUD.Start assumes TextChatService.\n- PC: ChatWindowConfiguration Left/Bottom, with WidthScale/HeightScale tuned until window plus input bar is about x8-420, y448-712. Legacy fallback: SetCore ChatWindowPosition/Size to the same box. That corner has no thumbstick on PC. The quest panel ends at y409 even when expanded, and windows start at x428, so the chat no longer swallows 받기.\n- Phone: closed by default. When opened, Roblox puts it top-left over the plate, which is accepted (visual_direction:209).\n\nPHONE CONTROLS:\n- The thumbstick zone is Roblox's real DynamicThumbstick area: x < 0.4W, y > H/3 (x0-300, y120-361). Fix HUD L.StickZoneX and EventHUD ThumbW/ThumbH/outOfThumbZone to match.\n- Nothing interactive sits there. Only the passive top-column lines at x241-300, y120-165 touch it, and they are Active=false.\n- The cluster anchors to the live JumpButton: attack 8 px left of jump, 자동 8 px above jump, Q at about 175° and Z at about 125° around attack, ghost at about 72° above attack, potions left of Q at x >= 337.\n- Backpack and Health CoreGui stay disabled. Emotes, Tab and shift lock stay reserved.\n\nWINDOWS (A23-20: auto keeps fighting while a window is open):\n- PC: window x428-1048, y120-570 (775x562du), between the chat and the cluster and below the rail. The full-screen dim stays at Z50. The plate, potions, Q, Z, attack, 자동 and ghost are reparented out of the HUD root (Z5, Sibling) into MainGui at Z55+, so they stay visible and clickable. VitalsUI.canUse stops refusing potions while a window is open (VitalsUI.luau:24). While a window is open, toasts move under it (x496-784, y578-662).\n- Phone: window x8-448, y62-353. The dim covers only x0-452 (Active), so attack, Q, Z, 자동, ghost, jump, rail and quest row keep working. The window header carries HP/MP mini bars and two 45 px potion buttons. Walking pauses while a window is open. Toasts queue until it closes, except the danger warning, which shows in the header.\n\nWORLD LABELS:\n- Gate signs become a SurfaceGui on the lintel (a server MapBuilder change plus a map rebuild). Interim fix: MaxDistance 60.\n- Each frame the client hides any world billboard that projects into the top column, rail, plate, quest panel or PlayerList zone: the '여기로!' label, monster bars and gate signs. An edge arrow takes over for the guide label.\n- Monster bars shrink to 120x28, MaxDistance about 70, with the name only for monsters fighting me or within 30 studs.\n\nNUMERIC CHECK (scratchpad check_final.py), run at 1280x720, 749x361 and an anchor-derived 844x390. Result: 0 problems.\n- Every rect is inside the screen.\n- No two always-visible or event interactive rects overlap. Circles are measured as circles.\n- Tightest PC gaps: rail buttons 4, header to rows 4, HP to MP potion 6, attack to Q 6.5, attack to Z 6.9, ghost to MP potion 8, Z to PlayerList bottom 40, rail to top column 6, column to PlayerList 16.\n- Tightest phone gaps: HP to MP potion 4, rail and quest row 6, Q to window edge 7, attack to Q 7.4, attack to Z 7.0, attack to ghost 6.6, Q to MP potion 7.2, 자동 to jump 8, Z to overlay bottom 6, column bottom 165 to Z top 180.\n- Nothing interactive overlaps the top bar, the PlayerList, the chat, the thumbstick zone or the jump button.\n- Transients cover only what is listed:\n  - PC window: the PlayerList, which is hidden while the window is open.\n  - Phone window: plate and potions, both duplicated in its header; the thumbstick zone, as a modal.\n  - Phone quest overlay: rail and quest row, briefly, until it closes.\n  - Phone confirm and KO card: they sit in the thumbstick zone, as a modal and a dead-state card.",
+  "items": [
+   {
+    "id": "stats_card",
+    "label_ko": "왼쪽 위 내 상태판(카드 전체)",
+    "group": "상태판",
+    "key_hint": "C",
+    "pc": {
+     "x": 10,
+     "y": 66,
+     "w": 256,
+     "h": 115
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 216,
+     "h": 57
+    },
+    "phone_collapsed": "288x76du slim plate: badge, HP/MP, power + 금고, 7 px XP. Ends at y119, above the thumbstick zone (y120).",
+    "notes": "One fixed-height block (320x144du), never grows: the wanted row became a chip. Rows: class+전투력, HP, MP, 금고·주머니, XP with text, 오늘의 운. On PC it is lifted to MainGui Z55+ so it stays visible above the window dim."
+   },
+   {
+    "id": "stats_portrait",
+    "label_ko": "얼굴 링(내 캐릭터 3D 머리)",
+    "group": "상태판",
+    "key_hint": "C",
+    "pc": {
+     "x": 15,
+     "y": 71,
+     "w": 51,
+     "h": 51
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone_collapsed": "Hidden; the level badge takes its place.",
+    "notes": "64du. Part of the plate hit area (내 캐릭터)."
+   },
+   {
+    "id": "stats_level_badge",
+    "label_ko": "레벨 배지",
+    "group": "상태판",
+    "pc": {
+     "x": 11,
+     "y": 99,
+     "w": 26,
+     "h": 26
+    },
+    "phone": {
+     "x": 12,
+     "y": 65,
+     "w": 32,
+     "h": 32
+    },
+    "phone_collapsed": "43du badge at the plate's left.",
+    "notes": "Overlaps the portrait's lower-left. The faction-shaped badge art comes later (batch 6)."
+   },
+   {
+    "id": "stats_title_line",
+    "label_ko": "칭호 줄(★베타 개척자 등)",
+    "group": "상태판",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone_collapsed": "Not shown.",
+    "notes": "Removed from the HUD. The title shows on the overhead nametag and in 내 캐릭터 (BB8), and a toast appears once when a new title is earned. Its row is reused for 오늘의 운."
+   },
+   {
+    "id": "stats_class_power",
+    "label_ko": "직업 이름 + 전투력(BB5)",
+    "group": "상태판",
+    "key_hint": "C",
+    "pc": {
+     "x": 72,
+     "y": 70,
+     "w": 188,
+     "h": 18
+    },
+    "phone": {
+     "x": 50,
+     "y": 95,
+     "w": 88,
+     "h": 12
+    },
+    "phone_collapsed": "Only '전투력 424' at the left of row 3; the class name is hidden.",
+    "notes": "Class on the left (16du), '전투력 424' bold gold on the right (20du). The +N float and count-up stay, except during a level-up."
+   },
+   {
+    "id": "stats_hp_mp_bars",
+    "label_ko": "HP·MP 바",
+    "group": "상태판",
+    "pc": {
+     "x": 72,
+     "y": 91,
+     "w": 188,
+     "h": 35
+    },
+    "phone": {
+     "x": 50,
+     "y": 65,
+     "w": 170,
+     "h": 28
+    },
+    "phone_collapsed": "HP 14 px, MP 12 px, numbers only.",
+    "notes": "HP 91-107 and MP 110-126 on PC. HP is green and turns red under 30%; MP is royal blue. The text reads '82/152', without the word HP, so it is not confused with the potion."
+   },
+   {
+    "id": "stats_money_row",
+    "label_ko": "금고·주머니 골드 줄",
+    "group": "상태판",
+    "pc": {
+     "x": 72,
+     "y": 129,
+     "w": 188,
+     "h": 14
+    },
+    "phone": {
+     "x": 142,
+     "y": 95,
+     "w": 78,
+     "h": 12
+    },
+    "phone_collapsed": "One value: 금고, or 주머니 in orange when carried gold > 0 (it can be stolen).",
+    "notes": "PC: '금고 4.4K · 주머니 0' with icons."
+   },
+   {
+    "id": "stats_xp_bar",
+    "label_ko": "경험치 바",
+    "group": "상태판",
+    "pc": {
+     "x": 14,
+     "y": 147,
+     "w": 248,
+     "h": 14
+    },
+    "phone": {
+     "x": 12,
+     "y": 110,
+     "w": 208,
+     "h": 7
+    },
+    "phone_collapsed": "7 px sky-blue bar, no text.",
+    "notes": "Sky blue, not MP blue. PC shows '경험치 54%' inside. Growth feedback for the first 10 minutes (judge must_fix)."
+   },
+   {
+    "id": "luck_corner",
+    "label_ko": "오늘의 운(오른쪽 위 판 → 상태판 줄/칩)",
+    "group": "상태판",
+    "pc": {
+     "x": 14,
+     "y": 164,
+     "w": 248,
+     "h": 14
+    },
+    "phone": {
+     "x": 332,
+     "y": 104,
+     "w": 100,
+     "h": 18
+    },
+    "phone_collapsed": "Fixed chip in row A, never folded into +N. Clover icon + '희귀 10.75%'; full text when it fits.",
+    "notes": "The top-right panel is removed (the PlayerList covers it). PC: a permanent plate row with the A23-18 text '오늘의 운 · 희귀 10.75%', always visible. The 응원별 stars move to the goose chip and tug bar."
+   },
+   {
+    "id": "luck_on_phone",
+    "label_ko": "오늘의 운(폰: 칩)",
+    "group": "칩",
+    "pc": {
+     "x": 14,
+     "y": 164,
+     "w": 248,
+     "h": 14
+    },
+    "phone": {
+     "x": 332,
+     "y": 104,
+     "w": 100,
+     "h": 18
+    },
+    "phone_collapsed": "Always-visible chip, second in row A.",
+    "notes": "Follows the visual_direction rule for heights under 560 (luck goes to the chip row). Fed by EventHUD.LuckSummary."
+   },
+   {
+    "id": "stats_wanted_row",
+    "label_ko": "현상 별·현상금 → 위험 칩(뿔 군단)",
+    "group": "칩",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 21
+    },
+    "phone": {
+     "x": 436,
+     "y": 104,
+     "w": 66,
+     "h": 18
+    },
+    "phone_collapsed": "Danger chip in slot 3, e.g. '현상 ★2'.",
+    "notes": "Removed from the plate on both devices. Shown only when stars > 0 or bounty > 0, so the plate keeps a fixed height and the quest panel never shifts. It flows in the danger part of the chip row."
+   },
+   {
+    "id": "character_window_entry",
+    "label_ko": "내 캐릭터 창 열기(상태판 누르기, C)",
+    "group": "상태판",
+    "key_hint": "C",
+    "pc": {
+     "x": 10,
+     "y": 66,
+     "w": 256,
+     "h": 115
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 216,
+     "h": 57
+    },
+    "phone_collapsed": "The whole plate is the tap target, above the thumbstick zone.",
+    "notes": "The hit area and hover effect switch on only when Panels.Has('Character') (BB8), so there is no silent no-op."
+   },
+   {
+    "id": "bag_button",
+    "label_ko": "[가방] 버튼(G)",
+    "group": "버튼 줄",
+    "key_hint": "G",
+    "pc": {
+     "x": 274,
+     "y": 66,
+     "w": 51,
+     "h": 51
+    },
+    "phone": {
+     "x": 585,
+     "y": 62,
+     "w": 48,
+     "h": 48
+    },
+    "phone_collapsed": "Top-right rail, 64du.",
+    "notes": "IconPouch with the label '가방'. The B14 scroll glow and NEW dot move here. PC: beside the plate, because the PlayerList owns the top-right. G opens Bag (BB7)."
+   },
+   {
+    "id": "map_button",
+    "label_ko": "지도 버튼(M)",
+    "group": "버튼 줄",
+    "key_hint": "M",
+    "pc": {
+     "x": 329,
+     "y": 66,
+     "w": 51,
+     "h": 51
+    },
+    "phone": {
+     "x": 639,
+     "y": 62,
+     "w": 48,
+     "h": 48
+    },
+    "phone_collapsed": "",
+    "notes": "Opens WorldMap; the PlayerList is hidden while it is open."
+   },
+   {
+    "id": "menu_button",
+    "label_ko": "메뉴 버튼(B) + 금빛 알림",
+    "group": "버튼 줄",
+    "key_hint": "B",
+    "pc": {
+     "x": 384,
+     "y": 66,
+     "w": 51,
+     "h": 51
+    },
+    "phone": {
+     "x": 693,
+     "y": 62,
+     "w": 48,
+     "h": 48
+    },
+    "phone_collapsed": "",
+    "notes": "The glow is for rebirth or vacation only. The menu body uses the BB13 sections."
+   },
+   {
+    "id": "pet_slot_reserved",
+    "label_ko": "[펫] 버튼 자리(정식 때)",
+    "group": "버튼 줄",
+    "pc": {
+     "x": 439,
+     "y": 66,
+     "w": 51,
+     "h": 51
+    },
+    "phone": {
+     "x": 531,
+     "y": 62,
+     "w": 48,
+     "h": 48
+    },
+    "phone_collapsed": "Empty in beta.",
+    "notes": "Reserved now so the rail never shifts onto the war meter at launch. The PC rail ends at x490, 6 px before the top column (496)."
+   },
+   {
+    "id": "quest_header",
+    "label_ko": "퀘스트 판 머리(접기/펼치기)",
+    "group": "퀘스트",
+    "pc": {
+     "x": 10,
+     "y": 189,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 516,
+     "y": 116,
+     "w": 225,
+     "h": 36
+    },
+    "phone_collapsed": "No separate header; the one quest row's ▼ opens the overlay.",
+    "notes": "'퀘스트 · 오늘 0/3 · 받기 3 ▼': claimed and claimable are counted separately. A click only expands or collapses. The 일지 button at the right end opens the journal."
+   },
+   {
+    "id": "journal_entry",
+    "label_ko": "퀘스트 일지 입구(J)",
+    "group": "퀘스트",
+    "key_hint": "J",
+    "pc": {
+     "x": 258,
+     "y": 190,
+     "w": 38,
+     "h": 22
+    },
+    "phone": {
+     "x": 673,
+     "y": 64,
+     "w": 64,
+     "h": 24
+    },
+    "phone_collapsed": "[일지] button in the overlay header.",
+    "notes": "Shown only once the Journal window is registered (BB18). This ends the header-click conflict."
+   },
+   {
+    "id": "quest_rows",
+    "label_ko": "퀘스트 줄(지금 할 일 + 받기)",
+    "group": "퀘스트",
+    "pc": {
+     "x": 10,
+     "y": 217,
+     "w": 288,
+     "h": 94
+    },
+    "phone": {
+     "x": 516,
+     "y": 116,
+     "w": 225,
+     "h": 36
+    },
+    "phone_collapsed": "One 48du row: line 1 is the top entry, line 2 is progress + green '받기 N' + ▼.",
+    "notes": "Collapsed: 2 rows of 56du (45 px). Row 1 is 'now do' (the story, a pending choice with the A23-20 pulse, or the tutorial guide step), bold with a progress bar; a tap shows the guide beam. Row 2 priority: 받기 > the crown-shard auto-unlock quest > forge hint > daily. Expanded: at most 4 rows (to y409, above the chat at y448); the rest go in the journal. Type badges sit inside the row. TextTruncate=AtEnd."
+   },
+   {
+    "id": "quest_overlay_touch",
+    "label_ko": "폰 퀘스트 목록 창",
+    "group": "퀘스트",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone": {
+     "x": 308,
+     "y": 62,
+     "w": 433,
+     "h": 112
+    },
+    "phone_collapsed": "24 px header (title, 일지, X) plus a 2x2 grid of 38 px rows with 받기/교체.",
+    "notes": "Touch only. It covers the rail, the quest row and the right of the top column, and stays 6 px above Z (y180), so it never covers attack, Q, Z, auto or ghost. It closes on an outside tap, on any F/Q/Z/R or attack tap, and after 8 s. Keeps today's x >= 0.4W+8 rule."
+   },
+   {
+    "id": "next_weapon_card",
+    "label_ko": "대장간 카드 → 퀘스트 안내 줄",
+    "group": "퀘스트",
+    "key_hint": "U",
+    "pc": {
+     "x": 10,
+     "y": 266,
+     "w": 288,
+     "h": 45
+    },
+    "phone": {
+     "x": 516,
+     "y": 116,
+     "w": 225,
+     "h": 36
+    },
+    "phone_collapsed": "Shows as the one quest row only when it is the top entry.",
+    "notes": "The standalone card is removed. Right after the first mission (150G), the existing 'first blacksmith visit' guide step becomes row 1: '대장간 구경하기 · 나무 무기 150G (선택)' with [가기], which runs doUpgrade (Travel outside town; guide beam + WeaponShop inside). Later it is a row-2 hint while the next weapon is affordable. The U key stays, and Menu → 대장간 is added. Rename the Keybinds label '다음 무기' to '대장간'."
+   },
+   {
+    "id": "war_meter",
+    "label_ko": "전쟁 미터(빛 ↔ 뿔, 왕관)",
+    "group": "가운데 위",
+    "pc": {
+     "x": 496,
+     "y": 66,
+     "w": 288,
+     "h": 46
+    },
+    "phone": {
+     "x": 255,
+     "y": 62,
+     "w": 240,
+     "h": 38
+    },
+    "phone_collapsed": "320x50du with the info line inside.",
+    "notes": "360x58du, centred at W/2. Column width = min(360du, 2*(PLleft-16-W/2)). Shields at both ends, crown on the bar."
+   },
+   {
+    "id": "war_info_pills",
+    "label_ko": "전쟁 정보 1줄(왕관 결정·포위전·내 점수)",
+    "group": "가운데 위",
+    "pc": {
+     "x": 504,
+     "y": 96,
+     "w": 272,
+     "h": 15
+    },
+    "phone": {
+     "x": 263,
+     "y": 86,
+     "w": 224,
+     "h": 13
+    },
+    "phone_collapsed": "'9:06 · 내 점수 0'",
+    "notes": "Three pills become one line inside the meter: '왕관 결정 9:06 · 내 점수 0'. During a siege it turns red: '포위전 · 1인당 150점 · 9:06'. 내 점수 is hidden for 장인."
+   },
+   {
+    "id": "status_chips_row",
+    "label_ko": "상태 칩 줄",
+    "group": "칩",
+    "pc": {
+     "x": 496,
+     "y": 116,
+     "w": 288,
+     "h": 46
+    },
+    "phone": {
+     "x": 241,
+     "y": 104,
+     "w": 267,
+     "h": 39
+    },
+    "phone_collapsed": "Row A (y104-122): [zone][luck][slot 3]. Slot 3 shows the first danger chip, otherwise the most important other chip, and ends in '+N' when more wait. Row B (y125-143) appears only for a 2nd+ danger chip. Danger chips never fold.",
+    "notes": "Chips are 26du tall (21 px on PC), max 2 rows on PC. Order: zone > danger (bully, outlaw, wanted, combat) > rookie > countdowns (goose, king from 3:00) > blessing, size, kaiju queue > '+N'. Y comes from the meter's live bottom +4. Icons are UIArt (IconSafe, IconSprout, IconClover…), not emoji. TextTruncate=AtEnd with short TXT fallbacks."
+   },
+   {
+    "id": "zone_name_chip",
+    "label_ko": "지역 이름 칩(안전/PvP 포함)",
+    "group": "칩",
+    "pc": {
+     "x": 506,
+     "y": 116,
+     "w": 150,
+     "h": 21
+    },
+    "phone": {
+     "x": 248,
+     "y": 104,
+     "w": 80,
+     "h": 18
+    },
+    "phone_collapsed": "Icon + short zone name.",
+    "notes": "Always the first chip, in hunting zones too: '교차로 마을 · 안전', '말랑 초원', '고블린 숲 · PvP', '· 장인 안전'. It replaces the 3D gate sign as 'where am I'. Ship it together with the gate-sign change."
+   },
+   {
+    "id": "chip_zone_safety",
+    "label_ko": "안전/PvP 칩 → 지역 칩에 합침",
+    "group": "칩",
+    "pc": {
+     "x": 506,
+     "y": 116,
+     "w": 150,
+     "h": 21
+    },
+    "phone": {
+     "x": 248,
+     "y": 104,
+     "w": 80,
+     "h": 18
+    },
+    "phone_collapsed": "Icon colour only.",
+    "notes": "Merged into zone_name_chip: shield = safe, swords = PvP, leaf = hunting zone."
+   },
+   {
+    "id": "chip_rookie_grace",
+    "label_ko": "새싹 보호·새싹 졸업 칩(A23-18)",
+    "group": "칩",
+    "pc": {
+     "x": 660,
+     "y": 116,
+     "w": 114,
+     "h": 21
+    },
+    "phone": {
+     "x": 436,
+     "y": 104,
+     "w": 66,
+     "h": 18
+    },
+    "phone_collapsed": "Slot 3 when no danger chip.",
+    "notes": "'새싹 보호' or '새싹 졸업 · 52초' (the 60 s grace)."
+   },
+   {
+    "id": "chip_bully_penalty",
+    "label_ko": "깡패 벌칙 칩(A23-22)",
+    "group": "칩",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 21
+    },
+    "phone": {
+     "x": 436,
+     "y": 104,
+     "w": 66,
+     "h": 18
+    },
+    "phone_collapsed": "Red danger chip '깡패 12분' in slot 3 (row B if a 2nd danger exists).",
+    "notes": "Short red chip '깡패 벌칙 · 자동✕ · 보상½ · 12분' (about 200du, no wrap) in the danger flow. Must ship in the same commit as: the locked 자동 button (L.RefreshAuto reads BullyStacks and the outlaw flag), a reason toast on R or a tap, and a PC hover tooltip."
+   },
+   {
+    "id": "chip_outlaw_penalty",
+    "label_ko": "무법자 칩(A23-23)",
+    "group": "칩",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 21
+    },
+    "phone": {
+     "x": 241,
+     "y": 125,
+     "w": 110,
+     "h": 18
+    },
+    "phone_collapsed": "Red danger chip '무법자 ~월'.",
+    "notes": "'무법자 · 자동✕ · 보상½ · 월요일까지', with the same auto lock as the bully chip."
+   },
+   {
+    "id": "chip_combat_protect",
+    "label_ko": "전투 중·부활 보호 칩",
+    "group": "칩",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 21
+    },
+    "phone": {
+     "x": 436,
+     "y": 104,
+     "w": 66,
+     "h": 18
+    },
+    "phone_collapsed": "Slot 3 or '+N'.",
+    "notes": "'전투 중' or '부활 보호 3초'. Flows after the danger chips."
+   },
+   {
+    "id": "chip_blessing_size_kaiju",
+    "label_ko": "왕관 축복·덩치 저울·괴수 대기 칩",
+    "group": "칩",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 21
+    },
+    "phone": {
+     "x": 436,
+     "y": 104,
+     "w": 66,
+     "h": 18
+    },
+    "phone_collapsed": "Folded into '+N'.",
+    "notes": "Rare; the first to fold into '+N'. On PC, hovering '+N' lists the hidden chips."
+   },
+   {
+    "id": "goose_countdown_pill",
+    "label_ko": "황금 거위까지 알림",
+    "group": "이벤트",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 21
+    },
+    "phone": {
+     "x": 436,
+     "y": 104,
+     "w": 66,
+     "h": 18
+    },
+    "phone_collapsed": "Slot 3 chip from 3:00 when nothing is more urgent.",
+    "notes": "No longer a permanent pill. A chip '황금 거위 2:59 ★2/5' appears from 3:00 left, so players can still plan for the main co-op event."
+   },
+   {
+    "id": "pumpkin_king_chip",
+    "label_ko": "호박 대왕 시간·출현(핼러윈)",
+    "group": "이벤트",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "Countdown chip '호박 2:59'; live goes to the sticky line.",
+    "notes": "Only while Config.Halloween.Enabled. A chip '호박 대왕 2:59' from 3:00. Live: the sticky slot '호박 대왕 출현! 4:12', or a chip if the slot is taken, plus one ribbon and an edge arrow. KING.place in the uncommitted edit is replaced, so it can never reach the plate. EN text uses the same slot."
+   },
+   {
+    "id": "sticky_slot",
+    "label_ko": "고정 알림 1칸(이벤트·이동·개인·큰 알림 공용)",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "18 px single line.",
+    "notes": "New. One slot directly under the chips (live bottom +4). Rect shown is with 1 chip row; with 2 rows the PC slot is y166-190. Height: 24 px for a line, 34 px for the goose tug, 40 px for the ribbon (PC). Priority: danger warning > AFK > travel > personal > live event > announce/zone banner."
+   },
+   {
+    "id": "goose_tug_bar",
+    "label_ko": "거위 줄다리기·함께 구조 바",
+    "group": "이벤트",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 34
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "One bar with 'my contribution 12' inline.",
+    "notes": "Lives in the sticky slot: a 20 px bar plus a 14 px sub line ('내 기여 12 · 빛 편을 도와요 · ★2/5')."
+   },
+   {
+    "id": "kaiju_chip",
+    "label_ko": "괴수 알림(이름·남은 시간)",
+    "group": "이벤트",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "",
+    "notes": "Live kaiju uses the sticky slot ('괴수 · 고블린 대장 4:10'), or a red chip when the slot is taken. It no longer floats beside the strip."
+   },
+   {
+    "id": "kaiju_siren",
+    "label_ko": "괴수 사이렌",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "",
+    "notes": "A red pulsing sticky line plus the red edge glow, for 2.5 s. It is no longer a full-width band over the HUD."
+   },
+   {
+    "id": "personal_line",
+    "label_ko": "개인 상태 줄(원한 자루·괴수 변신·복수)",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "",
+    "notes": "Moved from 0.72H into the sticky slot, so toasts can no longer cover it: '원한 자루 지키기 32초' / '괴수 변신 중 1:10' / '복수 대상: 이름'."
+   },
+   {
+    "id": "travel_bar",
+    "label_ko": "이동 중 바",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "",
+    "notes": "A sticky line with a progress fill, '이동 중 3초'. It leaves the screen centre, so the combo clash is gone."
+   },
+   {
+    "id": "announce_banner",
+    "label_ko": "큰 알림 띠(레벨 업·전설·월드)",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 40
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "One line, 20du, 2.5 s.",
+    "notes": "A gold ribbon in the sticky slot: 20du title plus 16du sub line, 2.5 s. It is no longer at 0.3H over the meter. The character VFX carries the celebration."
+   },
+   {
+    "id": "zone_enter_banner",
+    "label_ko": "지역 들어갈 때 이름 배너",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 40
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "Name only.",
+    "notes": "On a ZoneId change: '말랑 초원' + '사냥터 · 추천 Lv1-9' for 2.5 s, lowest ribbon priority."
+   },
+   {
+    "id": "notify_column",
+    "label_ko": "알림 칸(최대 3줄, 높이 상한)",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 117
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 39
+    },
+    "phone_collapsed": "2 lines with 1 chip row, 1 line with 2 rows; ends at most at y165.",
+    "notes": "New. Spans from the chip bottom +4 to the cap (PC y258, phone y165). Sticky first, then toasts while they fit. Active=false; the phone part at x241-300, y120-165 lies in the stick zone and stays passive."
+   },
+   {
+    "id": "toast_stack",
+    "label_ko": "토스트 알림(획득·퀘스트·힌트)",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 169,
+     "w": 288,
+     "h": 80
+    },
+    "phone": {
+     "x": 241,
+     "y": 147,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "Rect shows a sticky line present; without one, toasts use y126-165 (2 lines).",
+    "notes": "UIKit toast y comes from HudLayout (TOAST_Y=152 deleted). PC: 3 lines of 24 px. Rect shown is with a sticky line present; the cap is y258. Repeated loot merges. Hidden waits in a queue. While a window is open, toasts move below it (PC) or wait (phone)."
+   },
+   {
+    "id": "notify_while_window",
+    "label_ko": "창 열렸을 때 알림 자리",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 578,
+     "w": 288,
+     "h": 84
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone_collapsed": "Toasts wait; only the danger warning shows in the window header.",
+    "notes": "New. Keeps toasts (Z95) from covering a window's header."
+   },
+   {
+    "id": "afk_warning_toast",
+    "label_ko": "20분 무입력 퇴장 예고",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "",
+    "notes": "A yellow sticky line at Idled >= 1020 s (BB39), so it is not lost under loot. Auto keeps running (A23-20)."
+   },
+   {
+    "id": "first_time_hints",
+    "label_ko": "처음 겪는 순간 한 줄 안내",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 169,
+     "w": 288,
+     "h": 52
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 39
+    },
+    "phone_collapsed": "",
+    "notes": "A toast of up to 2 lines (counts as 2), once per account, one at a time, 5 s (BB24)."
+   },
+   {
+    "id": "strong_opponent_marker",
+    "label_ko": "센 상대 ×2 표시 + 깡패 직전 경고",
+    "group": "알림",
+    "pc": {
+     "x": 496,
+     "y": 141,
+     "w": 288,
+     "h": 24
+    },
+    "phone": {
+     "x": 241,
+     "y": 126,
+     "w": 267,
+     "h": 18
+    },
+    "phone_collapsed": "",
+    "notes": "'×2' is a world billboard on the enemy nameplate, following the same culling rules. The warning '지금 쓰러뜨리면 깡패가 돼요' takes the sticky slot at top priority (BB28)."
+   },
+   {
+    "id": "potion_buttons",
+    "label_ko": "HP·MP 물약 칸(1·2)",
+    "group": "전투 묶음",
+    "key_hint": "1 / 2",
+    "pc": {
+     "x": 926,
+     "y": 646,
+     "w": 122,
+     "h": 58
+    },
+    "phone": {
+     "x": 337,
+     "y": 298,
+     "w": 112,
+     "h": 54
+    },
+    "phone_collapsed": "Two 54 px slots left of Q, outside the stick zone (x >= 337).",
+    "notes": "72du each (PC: HP 926-984, MP 990-1048). Icon and bold '×2' at the bottom-left, key badge at the bottom-right, status ('가득'/'3초') in the centre. At 0 stock, a click shows the potion-shop hint and beam instead of doing nothing. PC: lifted above the dim, and works while a window is open."
+   },
+   {
+    "id": "potion_low_hp_blink",
+    "label_ko": "HP 30% 아래 물약 칸 깜빡임",
+    "group": "전투 묶음",
+    "pc": {
+     "x": 922,
+     "y": 642,
+     "w": 66,
+     "h": 66
+    },
+    "phone": {
+     "x": 333,
+     "y": 294,
+     "w": 62,
+     "h": 62
+    },
+    "phone_collapsed": "",
+    "notes": "A red outline pulse on the HP slot only. At 0 stock, an arrow toward the merchant instead."
+   },
+   {
+    "id": "attack_button",
+    "label_ko": "공격 버튼(F / 짧은 클릭)",
+    "group": "전투 묶음",
+    "key_hint": "F",
+    "pc": {
+     "x": 1144,
+     "y": 584,
+     "w": 120,
+     "h": 120
+    },
+    "phone": {
+     "x": 534,
+     "y": 241,
+     "w": 112,
+     "h": 112
+    },
+    "phone_collapsed": "150du, 8 px left of the live JumpButton, bottom margin 8.",
+    "notes": "PC: corner with 16 px margins. One swing per press (A23)."
+   },
+   {
+    "id": "skill_button",
+    "label_ko": "스킬 Q(이름 + MP20 + 쿨다운)",
+    "group": "전투 묶음",
+    "key_hint": "Q",
+    "pc": {
+     "x": 1062,
+     "y": 588,
+     "w": 77,
+     "h": 77
+    },
+    "phone": {
+     "x": 455,
+     "y": 252,
+     "w": 72,
+     "h": 72
+    },
+    "phone_collapsed": "96du at about 175° from attack; 7 px right of the phone window edge.",
+    "notes": "Short skill name (BB9) + 'MP20' + radial cooldown seconds. Gap to attack: PC 6.5, phone 7.4."
+   },
+   {
+    "id": "skill_z_button",
+    "label_ko": "스킬 Z(플래그)",
+    "group": "전투 묶음",
+    "key_hint": "Z",
+    "pc": {
+     "x": 1121,
+     "y": 510,
+     "w": 77,
+     "h": 77
+    },
+    "phone": {
+     "x": 497,
+     "y": 180,
+     "w": 72,
+     "h": 72
+    },
+    "phone_collapsed": "96du at about 125°, the top of the fan.",
+    "notes": "Only with Skills.ZEnabled and learned (Lv5); otherwise the slot stays empty. PC top y510 is 40 px below the estimated PlayerList bottom."
+   },
+   {
+    "id": "auto_button",
+    "label_ko": "자동 켬/끔(R)",
+    "group": "전투 묶음",
+    "key_hint": "R",
+    "pc": {
+     "x": 1213,
+     "y": 520,
+     "w": 51,
+     "h": 51
+    },
+    "phone": {
+     "x": 665,
+     "y": 215,
+     "w": 48,
+     "h": 48
+    },
+    "phone_collapsed": "64du, 8 px above the jump button.",
+    "notes": "Hidden until AutoCombatUnlocked, then one NEW glint; the crown-shard quest row explains it. ON = gold ring, OFF = grey. During bully or outlaw: a lock with '벌칙', and a tap shows the reason. Keeps running while windows are open (A23-20)."
+   },
+   {
+    "id": "auto_ring",
+    "label_ko": "자동 켜짐 금빛 고리",
+    "group": "전투 묶음",
+    "pc": {
+     "x": 1209,
+     "y": 516,
+     "w": 59,
+     "h": 59
+    },
+    "phone": {
+     "x": 661,
+     "y": 211,
+     "w": 56,
+     "h": 56
+    },
+    "phone_collapsed": "",
+    "notes": "Code fallback: a rotating UIGradient stroke until the UIP_AutoRingOn art arrives."
+   },
+   {
+    "id": "grudge_ghost_button",
+    "label_ko": "유령으로 붙잡기(T)",
+    "group": "전투 묶음",
+    "key_hint": "T",
+    "pc": {
+     "x": 987,
+     "y": 577,
+     "w": 61,
+     "h": 61
+    },
+    "phone": {
+     "x": 590,
+     "y": 182,
+     "w": 57,
+     "h": 57
+    },
+    "phone_collapsed": "76du at about 72° above attack, clear of the phone window and the overlay.",
+    "notes": "Event only. A fixed slot that no longer anchors to ClusterTop. PC: left of Q, 8 px above the MP potion. Lifted above the dim on PC."
+   },
+   {
+    "id": "input_feedback",
+    "label_ko": "버튼 옆 짧은 반응(MP 부족·쿨·가득)",
+    "group": "전투 묶음",
+    "pc": {
+     "x": 1052,
+     "y": 566,
+     "w": 60,
+     "h": 18
+    },
+    "phone": {
+     "x": 375,
+     "y": 262,
+     "w": 74,
+     "h": 18
+    },
+    "phone_collapsed": "16du text left of Q for 1 s.",
+    "notes": "New. 'MP 부족' / '쿨 2초' for Q and Z. Potion feedback shows inside the slot. Replaces those toasts. Passive."
+   },
+   {
+    "id": "key_badges",
+    "label_ko": "키 표시 배지",
+    "group": "전투 묶음",
+    "pc": {
+     "x": 1228,
+     "y": 668,
+     "w": 18,
+     "h": 18
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone_collapsed": "Hidden on touch.",
+    "notes": "One rule for every key (F, Q, Z, R, T, G, M, B, 1, 2): a 22du badge inside the button's bottom-right, never over a rim. On circles it sits 14 px inside the rim at 45°. The rect shown is the F badge. Badges show the keys bound in Settings."
+   },
+   {
+    "id": "combo_counter",
+    "label_ko": "콤보 xN + 마일스톤",
+    "group": "알림",
+    "pc": {
+     "x": 580,
+     "y": 463,
+     "w": 120,
+     "h": 24
+    },
+    "phone": {
+     "x": 305,
+     "y": 236,
+     "w": 144,
+     "h": 20
+    },
+    "phone_collapsed": "Small text only, outside the stick zone.",
+    "notes": "Text effect only, no box. The PC milestone is narrowed to the column (496,405,288,51) so it no longer goes under the PlayerList."
+   },
+   {
+    "id": "edge_arrows",
+    "label_ko": "가장자리 화살표(자루·괴수·복수)",
+    "group": "월드",
+    "pc": {
+     "x": 430,
+     "y": 266,
+     "w": 354,
+     "h": 294
+    },
+    "phone": {
+     "x": 305,
+     "y": 172,
+     "w": 145,
+     "h": 118
+    },
+    "phone_collapsed": "Max 4 arrows.",
+    "notes": "The arrows ride the edge of this track box, so they never land on the plate, rail, quest panel, chat, PlayerList, cluster or stick zone. 24du glyph + 16du label."
+   },
+   {
+    "id": "hurt_edge_flash",
+    "label_ko": "맞을 때 가장자리 빨간 번쩍임",
+    "group": "월드",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 1280,
+     "h": 720
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 749,
+     "h": 361
+    },
+    "phone_collapsed": "",
+    "notes": "Unchanged (FxEdgeGui, DisplayOrder 11)."
+   },
+   {
+    "id": "confirm_dialog",
+    "label_ko": "확인 창",
+    "group": "창",
+    "pc": {
+     "x": 480,
+     "y": 250,
+     "w": 320,
+     "h": 200
+    },
+    "phone": {
+     "x": 100,
+     "y": 122,
+     "w": 348,
+     "h": 170
+    },
+    "phone_collapsed": "Modal on the left side; the combat cluster stays free.",
+    "notes": "Z100 modal, buttons 60du+. PC hides the PlayerList while it is open."
+   },
+   {
+    "id": "window_dim_overlay",
+    "label_ko": "창 열림 어둡게",
+    "group": "창",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 1280,
+     "h": 720
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 452,
+     "h": 361
+    },
+    "phone_collapsed": "The dim covers only the left side, so the right-side cluster, jump, rail and quest row keep working.",
+    "notes": "PC: full-screen Z50. The plate, potions and combat cluster are reparented from the HUD root into MainGui at Z55+ (a Panels modal-root refactor). VitalsUI.canUse no longer blocks potions while a window is open. PC: SetCoreGuiEnabled(PlayerList,false) while open, restored on close."
+   },
+   {
+    "id": "menu_sections",
+    "label_ko": "메뉴 묶음 창(BB13) + 모든 창 자리",
+    "group": "창",
+    "key_hint": "B",
+    "pc": {
+     "x": 428,
+     "y": 120,
+     "w": 620,
+     "h": 450
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 440,
+     "h": 291
+    },
+    "phone_collapsed": "Sections with headers, 2-column 60du buttons, scroll.",
+    "notes": "One window rect for menu, bag, character, skills, ranking, settings, help, journal and shops. PC: right of the chat (x420), left of the cluster, below the rail (775x562du). PC fallback if hiding the PlayerList fails: x428-784. Menu → 이동·지도·상점 adds 대장간."
+   },
+   {
+    "id": "window_header_vitals",
+    "label_ko": "폰 창 머리 HP·MP + 물약 버튼",
+    "group": "창",
+    "key_hint": "1 / 2",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone": {
+     "x": 16,
+     "y": 64,
+     "w": 424,
+     "h": 45
+    },
+    "phone_collapsed": "HP/MP mini bars at x16-330; potion buttons at 344-389 and 395-440 (45 px).",
+    "notes": "New, phone only. The window covers the HUD potions and plate, so they are duplicated here (A23-20). Above y120, so outside the stick zone."
+   },
+   {
+    "id": "settings_window_entry",
+    "label_ko": "설정 창(BB3)",
+    "group": "창",
+    "pc": {
+     "x": 428,
+     "y": 120,
+     "w": 620,
+     "h": 450
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 440,
+     "h": 291
+    },
+    "phone_collapsed": "",
+    "notes": "Menu → [설정·도움말]. Holds key badges, 이름 숨기기, 오프닝 다시 보기 and the language row."
+   },
+   {
+    "id": "skills_window_entry",
+    "label_ko": "스킬 창(K)",
+    "group": "창",
+    "key_hint": "K",
+    "pc": {
+     "x": 428,
+     "y": 120,
+     "w": 620,
+     "h": 450
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 440,
+     "h": 291
+    },
+    "phone_collapsed": "",
+    "notes": "K or Menu → [내 캐릭터·가방·스킬]."
+   },
+   {
+    "id": "ranking_window_entry",
+    "label_ko": "랭킹 창(L)",
+    "group": "창",
+    "key_hint": "L",
+    "pc": {
+     "x": 428,
+     "y": 120,
+     "w": 620,
+     "h": 450
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 440,
+     "h": 291
+    },
+    "phone_collapsed": "",
+    "notes": "L, Menu → [퀘스트·랭킹], or the town board's E prompt. Boards: 명예, 악명, PvP."
+   },
+   {
+    "id": "help_window_entry",
+    "label_ko": "도움말 창(H)",
+    "group": "창",
+    "key_hint": "H",
+    "pc": {
+     "x": 428,
+     "y": 120,
+     "w": 620,
+     "h": 450
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 440,
+     "h": 291
+    },
+    "phone_collapsed": "",
+    "notes": "Includes 안내자 다시 만나기 (BB15)."
+   },
+   {
+    "id": "ko_screen",
+    "label_ko": "쓰러짐·부활 화면(BB14)",
+    "group": "창",
+    "pc": {
+     "x": 484,
+     "y": 262,
+     "w": 312,
+     "h": 180
+    },
+    "phone": {
+     "x": 120,
+     "y": 122,
+     "w": 330,
+     "h": 140
+    },
+    "phone_collapsed": "Passive card while dead.",
+    "notes": "A non-modal dim with a centre card: cause, 잃은 것, 3·2·1, tip. It ends at CharacterAdded, so the ghost slot is free after respawn. The plate stays visible. PC hides the PlayerList while it shows."
+   },
+   {
+    "id": "guide_beam_label",
+    "label_ko": "안내 빛 '여기로!'",
+    "group": "월드",
+    "pc": {
+     "x": 430,
+     "y": 262,
+     "w": 354,
+     "h": 308
+    },
+    "phone": {
+     "x": 305,
+     "y": 172,
+     "w": 190,
+     "h": 78
+    },
+    "phone_collapsed": "",
+    "notes": "The rect is where the label may show. Each frame a WorldToViewportPoint check hides the label when it projects onto HUD blocks; the beam stays and an edge arrow takes over. Shrunk to 140x40 px. With the PlayerList closed, the PC area widens to about x1100."
+   },
+   {
+    "id": "gate_sign_3d",
+    "label_ko": "3D 지역 간판 → 문 위 표지판",
+    "group": "월드",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone_collapsed": "",
+    "notes": "No screen rect. The BillboardGui becomes a SurfaceGui on both faces of the lintel (server MapBuilder + map rebuild). Interim: MaxDistance 60 plus client culling above the chip-row bottom. Ship together with the zone chip and enter banner."
+   },
+   {
+    "id": "monster_name_bars",
+    "label_ko": "몬스터 이름·HP 바(월드)",
+    "group": "월드",
+    "pc": {
+     "x": 430,
+     "y": 262,
+     "w": 354,
+     "h": 308
+    },
+    "phone": {
+     "x": 305,
+     "y": 172,
+     "w": 190,
+     "h": 78
+    },
+    "phone_collapsed": "Bar only beyond 30 studs.",
+    "notes": "120x28 px (was 150x34), MaxDistance about 70. The name shows only for monsters fighting me or within 30 studs. Culled when projected onto HUD blocks; this also reduces stacked '왕 슬라임' labels."
+   },
+   {
+    "id": "proximity_prompts",
+    "label_ko": "E 상호작용(대장간·물약 상인·제단)",
+    "group": "월드",
+    "key_hint": "E",
+    "pc": {
+     "x": 560,
+     "y": 400,
+     "w": 150,
+     "h": 56
+    },
+    "phone": {
+     "x": 330,
+     "y": 200,
+     "w": 110,
+     "h": 48
+    },
+    "phone_collapsed": "Tap the prompt.",
+    "notes": "Default Roblox prompt at the object (example rect). The screen centre stays free of fixed HUD so it stays readable."
+   },
+   {
+    "id": "chat_window_core",
+    "label_ko": "채팅 창(Roblox)",
+    "group": "Roblox 기본",
+    "key_hint": "/",
+    "pc": {
+     "x": 8,
+     "y": 448,
+     "w": 412,
+     "h": 264
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 330,
+     "h": 150
+    },
+    "phone_collapsed": "Closed by default. When opened it sits top-left over the plate (accepted).",
+    "notes": "PC: Left/Bottom via ChatWindowConfiguration with tuned scales; legacy fallback via SetCore. Read ChatVersion live first."
+   },
+   {
+    "id": "player_list_core",
+    "label_ko": "Tab 플레이어 목록(Roblox)",
+    "group": "Roblox 기본",
+    "key_hint": "Tab",
+    "pc": {
+     "x": 800,
+     "y": 62,
+     "w": 476,
+     "h": 408
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone_collapsed": "Inside the Roblox menu.",
+    "notes": "Estimate for 4 stats, team headers and about 10 rows. Nothing persistent of ours is under it. Hidden while any modal is open."
+   },
+   {
+    "id": "tab_list_columns",
+    "label_ko": "Tab 목록 열(전투력·레벨·환생·명성)",
+    "group": "Roblox 기본",
+    "key_hint": "Tab",
+    "pc": {
+     "x": 800,
+     "y": 62,
+     "w": 476,
+     "h": 408
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone_collapsed": "",
+    "notes": "PlayerService: Power IntValue (from CombatPower) created first, then 레벨, 환생, 명성. 골드 removed (BB12, A23-21)."
+   },
+   {
+    "id": "roblox_topbar",
+    "label_ko": "Roblox 상단바",
+    "group": "Roblox 기본",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 1280,
+     "h": 58
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 749,
+     "h": 58
+    },
+    "phone_collapsed": "Inset unverified; measure with GetGuiInset.",
+    "notes": "Nothing of ours goes in it on either device."
+   }
+  ],
+  "reserved_zones": [
+   {
+    "name_ko": "Roblox 상단바(우리 UI 금지)",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 1280,
+     "h": 58
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 749,
+     "h": 58
+    }
+   },
+   {
+    "name_ko": "Tab 플레이어 목록(PC 기본 열림, 추정 · 창이 열리면 숨김)",
+    "pc": {
+     "x": 800,
+     "y": 62,
+     "w": 476,
+     "h": 408
+    },
+    "phone": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    }
+   },
+   {
+    "name_ko": "채팅 창(PC 왼쪽 아래 / 폰은 열었을 때만 왼쪽 위)",
+    "pc": {
+     "x": 8,
+     "y": 448,
+     "w": 412,
+     "h": 264
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 330,
+     "h": 150
+    }
+   },
+   {
+    "name_ko": "조이스틱 자리(폰 왼쪽 40% × 아래 2/3, 누르는 것 금지)",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone": {
+     "x": 0,
+     "y": 120,
+     "w": 300,
+     "h": 241
+    }
+   },
+   {
+    "name_ko": "Roblox 점프 버튼(폰)",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone": {
+     "x": 654,
+     "y": 271,
+     "w": 70,
+     "h": 70
+    }
+   },
+   {
+    "name_ko": "가운데 위 기둥(전쟁 미터·칩·알림, 아래 끝 상한)",
+    "pc": {
+     "x": 496,
+     "y": 66,
+     "w": 288,
+     "h": 192
+    },
+    "phone": {
+     "x": 241,
+     "y": 62,
+     "w": 267,
+     "h": 103
+    }
+   },
+   {
+    "name_ko": "내 정보·할 일(PC: 상태판·버튼 줄·퀘스트 / 폰: 상태판)",
+    "pc": {
+     "x": 10,
+     "y": 66,
+     "w": 480,
+     "h": 343
+    },
+    "phone": {
+     "x": 8,
+     "y": 62,
+     "w": 216,
+     "h": 57
+    }
+   },
+   {
+    "name_ko": "폰 오른쪽 위(버튼 줄 + 퀘스트 한 줄)",
+    "pc": {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0
+    },
+    "phone": {
+     "x": 516,
+     "y": 62,
+     "w": 225,
+     "h": 90
+    }
+   },
+   {
+    "name_ko": "전투 묶음(공격·Q·Z·자동·물약·유령)",
+    "pc": {
+     "x": 922,
+     "y": 510,
+     "w": 342,
+     "h": 198
+    },
+    "phone": {
+     "x": 333,
+     "y": 180,
+     "w": 380,
+     "h": 176
+    }
+   },
+   {
+    "name_ko": "화면 가운데 전투 시야(글자 효과·화살표·월드 표시만)",
+    "pc": {
+     "x": 430,
+     "y": 266,
+     "w": 354,
+     "h": 294
+    },
+    "phone": {
+     "x": 305,
+     "y": 172,
+     "w": 145,
+     "h": 118
+    }
+   }
+  ],
+  "risks": [
+   "The PlayerList size is an estimate (x800-1276, y62-470). Measure it with screen_capture at 1280x720 with 3, 8 and 20 players. If its bottom passes about y505, Z and 자동 lose mouse clicks (keys still work). Then drop Z and 자동 into one bottom row (HP, MP, Z, Q, F, with 자동 left of it).",
+   "SetCoreGuiEnabled(PlayerList,false) while a modal is open may not restore the player's own Tab open or closed state. Test in Play. If it fails, use the fallback PC window x428-784 (445du wide) and check that the BB7 bag still fits.",
+   "The PC window shrinks from 780x600du to 775x562du, and the phone window is 440x291 px (587x388du). Check the BB7 bag grid (88du cells) and the BB13 menu at those sizes.",
+   "The phone top-bar inset (58) and the phone JumpButton rect are assumptions. Measure GetGuiInset and TouchGui.JumpButton live at 749x361 and 844x390. The anchor-derived 844x390 check passes only if the jump button sits at (W-95, H-90).",
+   "Chat version: the committed place is LegacyChatService (token 0), while HUD.Start assumes TextChatService. Read ChatVersion live, then reach about x8-420, y448-712 with the API that is actually running. The size comes from tuned scales, not an exact rect.",
+   "The PC rail beside the plate departs from visual_direction ('오른쪽 위: [가방][지도][메뉴]'). It is forced by the default-open PlayerList. The user must OK it in the ART-G0 grey box before ART-G1.",
+   "Removing the 대장간 card puts the path '150G → 나무 무기 (optional)' on the tutorial guide step and the quest rows. Check that in a timed 10-minute fresh-account Play.",
+   "Phone text is 16du = 12 real px in 12-18 px rows. Measure TextBounds via MCP for the luck chip ('희귀 10.75%'), slot-3 chips, the quest row and the war info line, and use the short TXT fallbacks. English strings (BB29) are about 30% longer.",
+   "The phone luck chip shortens the A23-18 text to a clover icon + '희귀 10.75%' when the full sentence does not fit. Ask the user once whether that is acceptable. PC keeps the full sentence on the plate.",
+   "On phone, a window or confirm puts its dim over the thumbstick, so walking pauses while a window is open. Attack, skills, 자동, jump and the header potions still work. Check in a phone Play that this feels fine.",
+   "The phone quest overlay uses 38 px rows (about 50du), below the 60du touch guideline. If taps miss, make it a 1-column list that scrolls, keeping the bottom at y174.",
+   "Roblox system notifications (badges, friend requests) appear at the bottom-right on PC over attack, Q and the potions for a few seconds. They cannot be moved.",
+   "Lifting the plate, potions and cluster above the dim, and making the phone dim left-side only, need a Panels modal-root refactor. Every BB7/BB8/BB9/BB11/BB13 window depends on it, so do it first.",
+   "HUD.luau (about 147 top-level locals) and Fx.luau (about 168) are near the 200-local limit. All rects and new state go into HudLayout.luau and tables (L, ui, TXT).",
+   "Gate sign to SurfaceGui is a server MapBuilder change and a map rebuild, and it changes how readable the signs are from far away. If time is short, ship the interim (MaxDistance 60 + culling) together with the zone chip and banner.",
+   "The 1582x950 capture shows about 1.15 px per du with blocks starting at y133. That matches neither the code's UIScale cap nor the 58 px inset. Measure AbsolutePosition, UIScale and GetGuiInset at 1280x720, 1024x768, 749x361 and 844x390 before pixel sign-off.",
+   "Budget: ART-G1 is planned at 2 days, and this layout is about 4-5 dev days. Order: HudLayout + live BottomY chain + PlayerList clamp/hide + dim refactor + thumb-zone constants first. Then quest rows/forge, chips/sticky, and the combat cluster move. World billboards, gate signs and the narrow-PC rule last.",
+   "The bully/outlaw chip is short, so the 자동 lock (L.RefreshAuto reading BullyStacks and the outlaw flag) and the reason toast must land in the same commit. Otherwise a child cannot tell why auto stopped."
+  ]
+ },
+ "judges": [
+  {
+   "scores": [
+    {
+     "name": "pc-first",
+     "clarity_first10min": 7,
+     "combat_view": 6,
+     "pc_keyboard_fit": 8,
+     "phone_ready": 5,
+     "core_ui_conflicts": 7,
+     "build_cost": 6,
+     "total": 39,
+     "overlaps_found": [
+      "PC window 412-1000 x 110-590 vs PlayerList est. 800-1276 x 58-470: 200x360 at x800-1000 y110-470. This is the only layout that mitigates it, by hiding the PlayerList while a modal is open.",
+      "PC combo milestone 472-808 x 410-485 vs PlayerList: 8x60 at x800-808 y410-470 (transient text under CoreGui).",
+      "PC top column worst case (tug bar + event row 2 + 2 chip lines + 3 notices) ends at y328, 112 px into the combat-clear centre (384-896 x 216-590). It also crosses the kaiju siren band (y300-364) by 28 px. Even the nominal notify column (178-258) overlaps the layout's own reserved centre (400-880 x 230-560) by 304x28.",
+      "PC Horns plate+wanted (12-312 x 66-208) vs quest header (y198-224): 300x10 overlap unless the promised 18 px tracker shift is really implemented.",
+      "PC rail 1062-1272 x 5-53 sits inside the Roblox top bar band (y0-58). This is deliberate via TopbarSafeInsets but breaks visual_direction:208.",
+      "PC tight gaps: Q (1071-1148 x 573-650) bottom vs MP potion top 652 = 2 px. Circle gaps: attack-Q 6.5, attack-Z 6.5, Q-Z 10.7, Q-ghost 6.1 (no overlap). Z top 511 is 41 px below the estimated PlayerList bottom 470.",
+      "PC Roblox system notification area (~980-1270 x 600-710) covers attack 120x108, potions 122x58, Q 77x50 and ghost 61x45 for a few seconds (same in every layout).",
+      "Phone window 220-741 x 62-296 covers Q 72x69, Z 72x72, auto 48x48, attack top 112x55, ghost 57x57, the top 70x25 of the Roblox jump button (y271-296) and 80x176 of the thumbstick zone, all while A23-20 auto keeps fighting.",
+      "Phone plate 8-212 x 62-168 lies inside the DynamicThumbstick zone (0-300 x 120-361) for 204x48, or 204x62 with the wanted row (passive rows only).",
+      "Phone top column worst case: notify at y191-230 (up to ~244 with the tug bar) overlaps combo 285x39 and Q 55x3. Chips, notify and combo enter the stick zone 68-71 px wide.",
+      "Phone quest overlay 380-741 x 62-212 covers Z 72x43 and the right 137 px of the war meter, event row and chips.",
+      "Phone chat when opened (~8-338 x 62-212) covers the whole plate 204x106 and the left 106 px of the top column (accepted by visual_direction:209)."
+     ]
+    },
+    {
+     "name": "first10",
+     "clarity_first10min": 9,
+     "combat_view": 7,
+     "pc_keyboard_fit": 6,
+     "phone_ready": 6,
+     "core_ui_conflicts": 5,
+     "build_cost": 6,
+     "total": 39,
+     "overlaps_found": [
+      "PC chip row 460-820 x 116-161 runs 20x45 under the PlayerList at x800-820. This is persistent: the luck chip 640-820 x 140-161 loses 20x21 and the goose chip 10 px.",
+      "PC window 328-952 x 120-600 vs PlayerList 800-1276 x 58-470: 152x350 at x800-952 y120-470. The window's top-right (close) corner sits under the list, and nothing hides the list.",
+      "PC window vs bottom-left chat 8-420 x 448-712: 92x152 at x328-420 y448-600. The CoreGui chat covers the window's bottom-left.",
+      "PC edge-arrow band 40-1240 x 98-680 vs PlayerList: 440x372. The arrows avoid only chat and the cluster, not the list.",
+      "PC launch [펫] slot: a 4-button rail at 276-504 cuts 16 px into the war meter (488). The proposed 12 px meter shift puts its right edge at 804, 4 px under the PlayerList, so it cannot fit as specified.",
+      "PC toasts nominal 480-800 x 142-238 overlap a 2-line chip row (116-161) by 320x19 and the event line (165-199) unless they are stacked by live BottomY. Worst-case toast bottom is ~y300.",
+      "PC kaiju siren 0-1280 x 180-236 covers the quest header and rows (288x52) and runs under the PlayerList.",
+      "PC Roblox notifications (~980-1270 x 600-710) cover attack 120x104, Q 77x65, potions 68x58 and ghost 61x38.",
+      "Phone window 82-667 x 62-357 covers the potions (112x54), attack (112x112), Q, Z, ghost, [가방]+[지도], the jump button (13x70) and 218x237 of the stick zone. Potions are usable only through the bag while auto fights.",
+      "Phone quest overlay 455-741 x 118-268 covers auto 48x48, attack top 112x30, Q 72x35 and Z 72x72 (the layout claims only Z and auto).",
+      "Phone toasts 230-500 x 126-188 and the event line enter the stick zone 70x62 and 45x27 (passive). The plate (8-224 x 64-120) ends exactly at the stick-zone top: clean.",
+      "Phone circle gaps are OK: attack-Q 6.2, attack-Z 6.0, Q-Z 11.7, Q-ghost 7.1. The attack-to-jump gap is 8 px."
+     ]
+    },
+    {
+     "name": "combat-clear",
+     "clarity_first10min": 7,
+     "combat_view": 9,
+     "pc_keyboard_fit": 7,
+     "phone_ready": 6,
+     "core_ui_conflicts": 5,
+     "build_cost": 4,
+     "total": 38,
+     "overlaps_found": [
+      "PC window 328-952 x 149-629 vs PlayerList: 152x321 at x800-952 y149-470. The close corner sits under the list, and the layout never hides the list.",
+      "PC window vs chat 8-350 x 470-712: 22x159. Window vs toast lane 8-350 x 399-462: 22x63.",
+      "PC edge-arrow ellipse box 384-896 x 216-590: its right side runs 96x254 under the PlayerList. The 0-degree arrow lands at (896,403), inside the list.",
+      "PC guide-label allowed box 288-1040 x 226-576 vs PlayerList: 240x244, so labels may show under the list.",
+      "PC Z skill 1130-1207 x 480-557 is only 10 px below the estimated PlayerList bottom 470 (20 px below its own estimate 460). It is the first button to lose clicks as the server fills.",
+      "PC rail 1053-1272 x 4-55 sits inside the top bar band (TopbarSafeInsets exception to visual_direction:208).",
+      "PC Roblox notifications (~980-1270 x 600-710) cover attack 120x104, potions 122x58, the relocated combo counter 122x20 and Q 77x17.",
+      "Phone toast lane 8-206 x 124-178 sits entirely inside the thumbstick zone (198x54), under the left thumb, against visual_direction:204. On PC the lane sits directly on top of the chat log.",
+      "Phone window 8-510 x 62-353 covers the plate 216x56, potions 96x54, ghost 57x57 and interact pill 136x45, and 292x233 of the stick zone, so the player cannot walk while a window is open. It does keep attack, Q, Z, auto and jump free.",
+      "Phone combo 414-528 x 276-296 vs interact pill 374-524 x 249-294: 110x18 (relies on hide-while-pill).",
+      "Phone quest overlay 316-741 x 62-227 covers Q 72x71, Z 72x72 and auto 48x12.",
+      "Circle gaps are fine (PC 25-37 px, phone 12.8-17.2). The top stack has a fixed bottom of y223 on PC and stays out of the centre box: the best combat view."
+     ]
+    }
+   ],
+   "winner": "pc-first",
+   "grafts": [
+    "From first10: replace the deleted 대장간 card with quest-row priority. Row 1 is 'now do' (bold, progress bar, tap = guide beam). Row 2 is 받기 > the optional crown-shard auto-unlock quest > '대장간: 새 무기 살 수 있어요 150G' > daily. This keeps the 150-gold → wood-weapon path visible in the first 10 minutes. Rename the Keybinds label '다음 무기' to '대장간'.",
+    "From first10: hide the 자동 button until AutoCombatUnlocked, give it a one-time NEW glint, and let the quest row explain it (A23).",
+    "From first10: make the phone plate end above the thumbstick zone (8-224 x 64-120: badge, HP/MP, power + 금고, thin XP). No plate row should sit inside 0-300 x 120-361. Phone luck becomes a fixed chip that is always visible (A23-18), not a 13 px plate row.",
+    "From first10: choose the layout by LastInputType / viewport rather than TouchEnabled, so touchscreen laptops get the PC layout.",
+    "From first10: use its PC rail position (x276-445, y66-117 beside the plate) as the PC fallback when the top bar band is not free. The fallback to the top-right would land under the PlayerList.",
+    "From combat-clear: give the top column a hard height budget. Fold event row 2 into the chip line; use 1 chip line on phone with fixed danger chips plus '+N'; the travel bar, personal line and announce ribbon share one sticky slot. PC then ends at ≤y258 and phone at ≤y185, instead of the computed worst cases y328 and y230-244.",
+    "From combat-clear: show short input feedback next to Q (MP 부족 / 가득 / cooldown) instead of toasts.",
+    "From combat-clear: client-side culling of world BillboardGuis ('여기로!' label, monster bars) when they project into the top column, rail or plate, with the edge arrow taking over. Monster bars shrink to 120x28 with name shown only for fighting or close monsters.",
+    "From combat-clear: on phone, put HP/MP mini bars and two 1/2 potion quick buttons in the window header, so a phone window can stay clear of the combat cluster and the jump button while A23-20 auto fights.",
+    "From combat-clear: one key-badge rule with the badge inside the button's bottom-right corner, never hanging over a rim. Use the short penalty chips '깡패 벌칙 · 자동✕ · 보상½ · 4분' and '무법자 · 월요일까지', with a lock on the 자동 button."
+   ],
+   "must_fix": [
+    "Phone window rect 220-741 x 62-296 covers Q, Z, auto, the attack top (112x55) and the ghost button. It also covers the top 25 px of the Roblox jump button (654-724 x 271-341) and 80x176 of the thumbstick zone, all while auto keeps fighting. Keep the window left of x455 or above y160, carry HP/MP plus potion buttons in its header, and never cover the jump button.",
+    "Cap the top column. PC worst case reaches y328 (into the 384-896 x 216-590 centre and the y300-364 kaiju siren band). Phone worst case reaches y230-244, overlapping the combo text and Q. Enforce PC bottom ≤ y258 and phone ≤ y185 by drawing every block from HudLayout's live BottomY chain (no fixed StripBelow=47, no fixed toast y).",
+    "Horns wanted row: plate+wanted (to y208) overlaps the quest header at y198 by 10 px, and on phone it pushes the plate to y182, deeper into the stick zone. Either make it a danger chip (stars > 0 or bounty > 0 only) or implement the 18 px tracker shift in HudLayout and test it with a Horns character.",
+    "The rail inside the top bar (TopbarSafeInsets) breaks visual_direction:208 and needs the user's OK in the grey-box mock. Measure GuiService.TopbarInset live: PC needs ≥210 px free at x≥1062 with height ≥52, phone needs x≥531. The PC fallback must go top-left beside the plate (x276-445), never top-right under the PlayerList.",
+    "Window vs PlayerList (200x360 at x800-1000, y110-470): implement SetCoreGuiEnabled(PlayerList, false) for every modal (Panels, confirm, WorldMap, KO card). Verify in Play that Tab state comes back. If it does not, shrink the PC window to x412-792.",
+    "PlayerList size is only estimated (476x412). Z's top (y511) is 41 px under that estimate. Measure at 1280x720 with 3, 8 and 20 players and team headers. If the list bottom passes ~y505, drop Z and 자동 into a single bottom row (HP, MP, Z, Q, F).",
+    "Narrow the combo milestone from 472-808 to the column width 488-792; it pokes 8x60 under the PlayerList. Raise the Q-to-potion gaps to ≥6 px: they are 2 px on PC (650 vs 652) and 3 px on phone (299 vs 302).",
+    "Phone plate rows inside the stick zone (204x48 today) must be Active=false. Test in Play that a thumb drag starting on the plate still moves the character, or apply the first10 plate graft.",
+    "Removing the 대장간 card needs a replacement before step-6 sign-off: add the quest hint row, re-point the tutorial beam and texts that reference the card, and run a real first-10-minutes play to confirm the 150 G → 나무 무기 step is still found.",
+    "Chat: the committed place is LegacyChatService (ChatVersion token 0) while HUD.Start assumes TextChatService. Read ChatVersion live, then place the PC chat at about 8-408 x 470-712 with the API that is actually running, and confirm it no longer swallows quest [받기] clicks.",
+    "Define a narrow-PC fallback. At 1024x768, min(480, 2*(PlayerListLeft-8-W/2)) leaves about 56 px for the top column, so the war meter falls under the list.",
+    "Re-measure everything live before pixel sign-off: GetGuiInset, UIScale and AbsolutePosition at 1280x720, 1024x768, 749x361 and 844x390. The 1582x950 capture shows ~1.15 px per unit and blocks starting at y133, not the assumed y66. On phone, check that the luck text '오늘의 운 · 희귀 10.75%' fits its row (TextBounds), with a short fallback."
+   ]
+  },
+  {
+   "scores": [
+    {
+     "name": "pc-first",
+     "clarity_first10min": 7,
+     "combat_view": 7,
+     "pc_keyboard_fit": 8,
+     "phone_ready": 6,
+     "core_ui_conflicts": 7,
+     "build_cost": 5,
+     "total": 40,
+     "overlaps_found": [
+      "PC: window rect x412-1000,y110-590 lies under the Tab PlayerList (x800-1000, y110-470). It is safe only if SetCoreGuiEnabled(PlayerList,false) really hides and restores the list.",
+      "PC: the worst-case notify column (x488-792, y178-322: 2 event rows + 2 chip rows + 3 entries) enters its own centre reserve (x400-880, y230-560) by up to 92 px, in the middle of combat.",
+      "PC: the MP potion box (x1084-1142, top y652) is only 2 px from the Q circle (centre 1109.5,611.5, r38.5), and the auto ring is 2.3 px from the Z circle. These are mis-click-tight.",
+      "Phone: the window rect (x220-741, y62-296) covers the top of attack (y241-296), all of Q (y227-299), Z (y169-241) and auto (y215-263), plus the top 25 px of the Roblox jump button (x654-724, y271-296).",
+      "Phone: the combo milestone (x229-519, y166-247) overlaps the notify column (y166-185) and the ghost button (x400-457, y238-247).",
+      "Phone: the lower 48 px of the plate (y120-168) and the top-centre column at x232-300 (chips y124-163, notices y146-185) sit inside the DynamicThumbstick zone (x0-300, y>120). This is acceptable only while they stay Active=false.",
+      "Phone: the quest overlay (x380-741, y62-212) covers the war column at x380-517 and the Z button (x520-592, y169-212).",
+      "Phone fallback: if the top bar is under 52 px, the dropped rail (x585-741, y62-110) collides with quest card 1 (x529-741, y62-107), not only with card 2.",
+      "PC and phone: the rail inside the Roblox top bar (x1062-1272 / x531-741, y5-53) breaks visual_direction:208 ('all UI below the top bar'). It also depends on the right end of TopbarSafeInsets being free, which is unverified."
+     ]
+    },
+    {
+     "name": "first10",
+     "clarity_first10min": 8,
+     "combat_view": 8,
+     "pc_keyboard_fit": 7,
+     "phone_ready": 7,
+     "core_ui_conflicts": 6,
+     "build_cost": 6,
+     "total": 42,
+     "overlaps_found": [
+      "PC: the status chip row (x460-820, y116-161) runs 20 px under the Tab PlayerList (x800-1276, y62-392). The luck chip (x640-820) and the goose and blessing chips (x700-810) end under the list.",
+      "PC: the window rect (x328-952, y120-600) sits under the PlayerList (x800-952, y120-392), where the close button usually goes. It also sits under the moved chat window (x328-420, y448-600). Both are CoreGui and draw above the window.",
+      "PC: in the layout's own rects, the second chip line (luck chip y140-161) collides with the event row (x496-784, y141-175) and the toast column (x480-800, y142-238). The stack order is not consistent.",
+      "PC: the worst case (meter y66-112, 2 chip rows to y161, event row to ~199, 3 toasts of 28 px) ends near y300. That is inside its own centre reserve (x520-760, y290-560).",
+      "PC: adding the launch [펫] button to the top-left rail (x276-445) pushes it to x504, onto the war meter (x488). On 1024x768 the rail and the meter already collide.",
+      "Phone: the quest overlay (x455-741, y118-268) covers Z (x513-585, y169-241), auto (x665-713, y213-261), the top of Q (y233-268) and the top 30 px of the attack button (x534-646, y238-268) for up to 8 s.",
+      "Phone: the window (x82-667, y62-357) covers attack, Q, Z, the potions, the ghost button and the left edge of the jump button (x654-667, y271-341). Potions are reachable only through the bag.",
+      "Phone: the toast column (x230-500, y126-188) enters the thumbstick zone at x230-300 (passive only).",
+      "Phone: the XP band is 3 px (y116-119) and the PC XP band is 6 px with no text. They do not collide with anything, but they are practically invisible."
+     ]
+    },
+    {
+     "name": "combat-clear",
+     "clarity_first10min": 6,
+     "combat_view": 9,
+     "pc_keyboard_fit": 7,
+     "phone_ready": 7,
+     "core_ui_conflicts": 6,
+     "build_cost": 4,
+     "total": 39,
+     "overlaps_found": [
+      "PC: the window (x328-952, y149-629) sits under the Tab PlayerList (x790-952, y149-460), and no rule hides the list. Its lower-left corner is also under the chat (x328-350, y470-629).",
+      "PC: the banner slot (x490-790) touches the PlayerList edge at x790 with 0 px gap. The Z button top (y480) is only 20 px below the estimated list bottom (y460), so a full 20-player list overlaps Z and auto.",
+      "Phone: the window (x8-510, y62-353) covers the plate (x8-224, y62-118), most of the potions (x414-510 of x414-528, y299-353) and the ghost button (x351-408, y296-353).",
+      "Phone: the custom proximity pill (x374-524, y249-294) overlaps the combo counter (x414-524, y276-294). The layout handles this by hiding combo, and the pill sits 2 px above the ghost button (y296).",
+      "Phone: the notice lane (x8-206, y124-178) is inside the thumbstick zone and under the player's left hand, so notices are physically covered.",
+      "Phone: the quest overlay (x316-741, y62-227) covers the war meter, the chip line, Q (x524-596, y156-227) and Z (x604-676, y128-200).",
+      "Phone fallback: the vertical rail (x693-741, y62-214) ends 1 px above the auto button (x665-713, y215-263).",
+      "Phone: the chip line has one slot that rotates every 3 s. It shows luck, goose and rookie only part of the time, so a child cannot rely on reading it.",
+      "PC and phone: the top-bar rail (x1053-1272 / x534-741) breaks visual_direction:208 and depends on TopbarSafeInsets free space, which is unverified."
+     ]
+    }
+   ],
+   "winner": "first10",
+   "grafts": [
+    "From pc-first: one pure HudLayout.luau module, f(viewport, GetGuiInset, LastInputType, the TouchGui JumpButton rect, PlayerList left edge). HUD, EventHUD, VitalsUI, GrudgeGhost and the UIKit toasts read from it. EventHUD's live BottomY replaces StripBelow=47 and the fixed toast y (152+inset). This keeps HUD.luau and Fx.luau under the 200-local limit.",
+    "From pc-first: on PC, the top-centre column width = min(380du, 2*(PlayerListLeft-8-W/2)). That is x488-792 at 1280x720, so chips, event row and toasts never slide under the Tab list.",
+    "From pc-first: on PC, call SetCoreGuiEnabled(PlayerList,false) while any Panels window, confirm, WorldMap or KO card is open, then restore the player's own Tab open/closed state. This makes the window's close button reachable.",
+    "From pc-first: show '오늘의 운 · 희귀 N%' as a permanent last row of the status plate on both devices (A23-18 wording), instead of a chip that appears only above 5%. Move the 응원별 stars into the goose event row.",
+    "From pc-first: make the XP bar a sky-blue 14px bar with '경험치 54%' inside on PC, and at least 6-8px on phone. Growth feedback is a first-10-minute pillar.",
+    "From pc-first: quest header reads '퀘스트 · 오늘 0/3 · 받기 3', with claimed and claimable counts kept separate. A separate 일지 button (J, combat-clear's icon) opens the journal, so the header click only expands or collapses.",
+    "From combat-clear: the phone window rect is x8-510, so attack/Q/Z/auto/jump stay usable while A23-20 auto combat continues. Its header carries HP/MP mini bars and two 60du potion quick buttons. VitalsUI.canUse stops refusing potions while a window is open (VitalsUI.luau:24).",
+    "From combat-clear: an input_feedback slot just above Q shows 'MP 부족', '쿨 2초' and '가득' for 1 s at the thumb, instead of sending these to toasts.",
+    "From combat-clear: each frame the client culls world billboards (monster name/HP bars, the '여기로!' guide label, any remaining gate sign) that project into the top HUD band or onto HUD blocks. An edge arrow takes over for the guide label.",
+    "From combat-clear: the quest hint row '다음 무기 · <name> <price>G [가기]' runs the existing doUpgrade (Travel outside town; guide beam + WeaponShop inside). Add 대장간 under 메뉴 → 이동·지도·상점.",
+    "From combat-clear: reserve the [펫] slot in the rail now, and add a narrow-window rule (W<1200 real or <1500du: rail drops under the plate, top stack re-centres between the plate and the PlayerList). The rail then never shifts onto the war meter.",
+    "From combat-clear: cap the phone quest overlay above the attack button (bottom ≤ attack top − 8, about y230). Danger chips (bully/outlaw/sack/combat) never fold into '+N' on phone.",
+    "From pc-first: on phone, every frame inside x<300, y>120 is Active=false. Fix L.StickZoneX and EventHUD ThumbW/ThumbH to Roblox's real DynamicThumbstick area (0.4W x bottom 2/3).",
+    "From all three: Tab leaderstats are created in the order Power (from CombatPower, first so the list sorts by it), 레벨, 환생, 명성, with 골드 removed (A23-21/BB12). Gate signs become SurfaceGuis on the lintel (MapBuilder)."
+   ],
+   "must_fix": [
+    "PC chips run under the Tab PlayerList: the chip row x460-820 and the luck/goose/blessing chips reaching x810-820 sit under the list at x800+. Clamp the whole top column to x488-792 at 1280x720 using the PlayerList-left formula, and re-measure the real list width in Studio with 3, 8 and 20 players.",
+    "PC window hidden by CoreGui: the window rect x328-952, y120-600 sits under the PlayerList (x800-952, y120-392) and under the moved chat (x328-420, y448-600). Hide the PlayerList while a modal is open, and move the window to x428-1000 so it starts right of the chat at x8-420.",
+    "Phone window blocks combat: the window x82-667, y62-357 covers attack, Q, Z, the potions, the ghost button and the jump edge (x654-667). With auto combat running and monsters still attacking (A23-20), the player cannot drink. Use the x8-510 window with header HP/MP and potion buttons, and let 1/2 work while a window is open.",
+    "Phone quest overlay covers attack: the overlay x455-741, y118-268 covers the top 30 px of attack (y238-268), plus Q, Z and auto, for up to 8 s. Keep the overlay bottom above about y230, or open it leftward over the top-centre column.",
+    "Luck visibility vs A23-18: '오늘의 운' shows only when it is above 5%, but A23-18 asks for the readout '오늘의 운 · 희귀 10.75%'. Make it always visible (a plate row is best). It must not hide inside '+N' on phone.",
+    "XP too thin: PC XP is a 6 px strip with no text and phone XP is 3 px, so a beginner cannot see growth in the first 10 minutes. Make it at least 12-14 px with '경험치 N%' on PC and 6-8 px on phone, and keep the level-up ribbon.",
+    "One ordered top stack: the spec rects collide (second chip line y140-161 vs event row y141-175 vs toasts y142). Define a single order from live BottomY: meter → chips (max 2 rows) → event row → notices (max 3). Cap the total so the worst case ends above y290 (PC) and stays clear of the quest row and Z (phone).",
+    "Rail collisions: the top-left PC rail (x276-445) hits the war meter (x488) when [펫] is added at launch, and on 1024x768 it hits it now. Ship the narrow-window fallback and reserve the pet slot now.",
+    "Forge path after removing the 대장간 card: right after the first mission's 150 gold, quest row 2 must read '대장간: 새 무기 …' with a working [가기] (doUpgrade). Rename the Keybinds label '다음 무기' to '대장간'. Verify in a timed 10-minute fresh-account play.",
+    "Bully/outlaw explanation: the shortened bully/outlaw chip only works if the 자동 button shows a lock and R or a tap gives a reason toast. L.RefreshAuto must read BullyStacks and the A23-23 outlaw flag (today it ignores them).",
+    "Pumpkin King chip: the uncommitted Halloween edit places the Pumpkin King chip with KING.place left of the strip, which overlaps the plate at 749x361 and 1024x768. Move it into the chip/event row as this layout specifies, before committing.",
+    "Chat check: read TextChatService.ChatVersion in the live place before relying on ChatWindowConfiguration Left/Bottom. The committed place says LegacyChatService. If the move fails, the default top-left chat covers the plate and the PC rail.",
+    "Thumb zone: fix the thumb-zone constants to 0.4W x bottom 2/3, and keep the phone toast column part inside x<300, y>120 Active=false so it never eats a stick start.",
+    "World labels: the 3D gate signs must become SurfaceGuis (server MapBuilder rebuild), and the shrunk guide label needs projection culling. Otherwise world labels still float into the war-meter band, which is the original step-6 complaint.",
+    "Measure live: measure GetGuiInset, UIScale and AbsolutePosition at 1280x720, 1024x768, 749x361 and 844x390 before the grey-box approval sheet. The 1582x950 capture runs at about 1.15 px per unit with blocks starting at y133, which does not match the code's assumptions."
+   ]
+  },
+  {
+   "scores": [
+    {
+     "name": "pc-first",
+     "clarity_first10min": 7,
+     "combat_view": 7,
+     "pc_keyboard_fit": 8,
+     "phone_ready": 6,
+     "core_ui_conflicts": 8,
+     "build_cost": 5,
+     "total": 6.8,
+     "overlaps_found": [
+      "Own reserved zone clash: the launch [펫] slot is at PC x1062-1110 y5-53, inside the layout's own 'top-bar left' reserved zone x0-1110 (48 px). On phone the slot is x531-579, inside the reserved x0-579.",
+      "Event row: the goose tug bar plus its sub line spans PC y122-162. A live king or kaiju pushed to row 2 at +28 lands at y150-174, so they overlap by 12 px (x488-792).",
+      "Notify column worst case (2 event rows + 2 chip rows + 3 entries) ends near y322. That is 92 px inside the layout's own 'screen centre' reserved zone (x400-880, y230-560).",
+      "Toasts stay at Z95 and announce at Z90, but the PC window rect (x412-1000, y110-590, Z50) now contains the notify column. Toasts would draw over open windows at x488-792, y178-322.",
+      "Phone combo milestone (x229-519, y166-247) overlaps the notify column (x232-517, y146-185+), the Q skill (x462-534, y227-299) by about 57x20 px and the ghost button (x400-457, y238-295).",
+      "Phone window rect (x220-741, y62-296) covers Z (520-592, 169-241), Q, auto (665-713, 215-263), the top half of attack (534-646, y241-296) and the Roblox jump button (654-724, y271-296). Only the plate and potions are lifted above the dim.",
+      "1024x768 PC (desktop scale 0.853, logical 1200x900): the PlayerList left edge is about 544 px (637 logical), so the column width 2*(PLleft-8-W/2) is about 58 logical (~50 px). The war meter collapses.",
+      "The 'plate at Z55 above the dim' is not a ZIndex tweak. ui.stats is a child of the HUD root frame (Z5, ZIndexBehavior=Sibling, HUD.luau:3499-3506), and PanelsModal is one full-screen Active=true frame at Z50 with the window as its child (Panels.luau ~860-933). The plate must be reparented to MainGui."
+     ]
+    },
+    {
+     "name": "first10",
+     "clarity_first10min": 9,
+     "combat_view": 8,
+     "pc_keyboard_fit": 7,
+     "phone_ready": 8,
+     "core_ui_conflicts": 6,
+     "build_cost": 7,
+     "total": 7.5,
+     "overlaps_found": [
+      "PC chip row x460-820, y116-161 runs 20 px into the default-open PlayerList (x800-1276, y62-392). The luck chip (x640-820) and the goose/blessing chips (x700-810) also cross under the CoreGui list.",
+      "PC window rect x328-952, y120-600 sits under the PlayerList (x800-952, y120-392). UIKit's window close button (Position (1,-12,0,10), Panels.luau:835) lands at about x900-940, y130-160, under CoreGui, so it cannot be clicked. There is no PlayerList hide logic.",
+      "As listed, the toast rect y142-238 overlaps the 2-row chip row y116-161 and the event row y141-175. Only live BottomY chaining keeps them apart (UIKit TOAST_Y=152 and HUD L.StripBelow=47 are fixed today).",
+      "1024x768: the PC rail beside the plate (about x290-480) collides with the war meter (about x350-674). After the fallback (rail under the plate), the meter still overlaps the PlayerList (x544+) by about 130 px.",
+      "Phone quest overlay x455-741, y118-268 covers Z (513-585, 169-241) and auto (665-713, 213-261) while open.",
+      "Phone toast column and event row x230-300, y126-195 sit inside the real DynamicThumbstick area (x<300, y>120). They must be Active=false.",
+      "With a 20-player server the PlayerList can grow past y510 and cover Z (1121-1198, y510-587) and auto (1213-1264, y520-571) for mouse clicks. Keys still work."
+     ]
+    },
+    {
+     "name": "combat-clear",
+     "clarity_first10min": 7,
+     "combat_view": 9,
+     "pc_keyboard_fit": 8,
+     "phone_ready": 7,
+     "core_ui_conflicts": 6,
+     "build_cost": 3,
+     "total": 6.7,
+     "overlaps_found": [
+      "PC window rect x328-952, y149-629 overlaps the PlayerList (x790-952, y149-460), with the close button under CoreGui. It also overlaps the chat box (x328-350, y470-629) and the notice lane (x328-350, y399-462).",
+      "Phone window x8-510, y62-353 covers the ghost button (351-408, y296-353), the HP potion (414-468) and most of the MP potion (472-510, y299-353). It also covers the proximity pill (374-510, y249-294).",
+      "Phone combo slot (414-528, y276-296) overlaps the proximity pill (374-524, y249-294). This is resolved only by the 'hide while the pill shows' rule.",
+      "Phone quest overlay x316-741, y62-227 covers the top stack (x316-508, y62-130), Z (604-676, 128-200) and Q (524-596, 156-228).",
+      "PC Z skill top is y480, only 20 px under the estimated PlayerList bottom (y460). A larger server overlaps it.",
+      "The 'dim cut out around plate/potions/auto/attack' cannot be built as a cut-out. PanelsModal is a single full-screen Active frame with the window inside it, so phone half-screen windows need a Panels modal-root refactor that affects every window (BB7/BB8/BB9/BB11/BB13).",
+      "Phone notice lane x8-206, y124-178 sits fully inside the thumbstick zone (x<300, y>120)."
+     ]
+    }
+   ],
+   "winner": "first10",
+   "grafts": [
+    "From pc-first: one pure HudLayout.luau module (inputs: viewport, GetGuiInset, IS_TOUCH, TouchGui JumpButton rect; output: every rect). HUD, EventHUD, VitalsUI, GrudgeGhost and the UIKit toasts all read it. This keeps HUD.luau (147 top-level locals) and Fx.luau (168) under the 200 limit. Add it to ClientMain's module list before any require.",
+    "From pc-first: while any modal is open (Panels window, confirm, WorldMap, KO card), call StarterGui:SetCoreGuiEnabled(PlayerList,false), and restore it on close. Test whether the player's own Tab open/closed state survives. If it does not, shrink windows to end at x<=784 on PC.",
+    "From pc-first: the quest header counts dailies done and dailies claimable separately ('오늘 0/3 · 받기 3'). Put a separate [일지] button at the header's right end so J/journal (BB18) and expand/collapse do not fight. Move the type badge ('메인') inside the row, not on its rim.",
+    "From pc-first: on PC, make '오늘의 운 · 희귀 N%' a permanent last row of the plate (A23-18 wording). This frees chip-row width under the PlayerList. Phones keep it as a chip (visual_direction height<560 rule). Move the goose 응원별 stars into the goose pill or tug bar.",
+    "From pc-first: one key-badge corner for every button. Leaderstats get Power first and 골드 removed (BB12). Chat goes to Left/Bottom via ChatWindowConfiguration (LegacyChatService was sunset in 2025 per general knowledge, but read TextChatService.ChatVersion live first).",
+    "From combat-clear: an input_feedback line just above Q ('MP 부족', '쿨다운 2초', '가득') for 1 s instead of toasts. This is cheap and keeps the notify lines free.",
+    "From combat-clear: on PC too, the wanted row becomes a danger chip that shows only when stars>0 or bounty>0, so the plate keeps one fixed height and the quest panel never shifts by 16 px.",
+    "From combat-clear: hide the guide-beam '여기로!' label with a per-frame WorldToViewportPoint check whenever it projects into the top stack (the beam stays and the edge arrow takes over). Shrink monster billboards to 120x28 with MaxDistance about 70.",
+    "From combat-clear: the 4:3 rule. When logical W<1500, centre the top stack between the plate's right edge and the PlayerList's left edge, with the meter clamped to its minimum width, and drop the rail under the plate.",
+    "Goose countdown: show it as a chip from 3:00, like the Pumpkin King, instead of hiding it until 0:59. Players still get to plan for the main co-op event, and it stays one chip."
+   ],
+   "must_fix": [
+    "Cap the PC top column at the PlayerList. The chip row, event row and toasts must end at x<=784 at 1280x720 (today x460-820, luck chip x640-820, goose chip x700-810). Compute width = min(360du, 2*(PLleft-16-cx)) in HudLayout, with PLleft measured live.",
+    "Windows on PC (x328-952, y120-600) put the UIKit close button (~x900-940, y130-160) under the CoreGui PlayerList. Hide the PlayerList while any modal is open, or keep the window right edge <=784. Without one of these, the BB7/BB8/BB9/BB11/BB13 windows ship with an unclickable close button.",
+    "Always show luck: A23-18 requires the readout '오늘의 운 · 희귀 10.75%'. The 'only when >5%' rule contradicts it. Show it on the PC plate (graft) and as a permanent phone chip.",
+    "Lifting the plate, potions and combat cluster above the window dim means reparenting them out of the HUD root (Z5, Sibling) into MainGui at Z55+ (sibling of PanelsModal Z50), kept outside the window rect. Also remove 'Panels' from VitalsUI.canUse (VitalsUI.luau:24) so 1/2 work while auto combat runs (A23-20).",
+    "Replace every fixed y with live bottoms: chips = meter bottom+4, event row = chip bottom+4, toasts = event bottom+5. Delete UIKit TOAST_Y=152 and HUD L.StripBelow=47. As listed, the toast rect y142 collides with 2-row chips y116-161.",
+    "Thumbstick zone: change HUD L.StickZoneX/EventHUD ThumbH from 0.45 to the real 2/3 (x<0.4W, y>H/3). Set the phone toast and event rows at x230-300 to Active=false. Nothing clickable may start at x<300, y>120 on 749x361.",
+    "1024x768 fallback must be built and captured. The rail (~x290-480) hits the war meter (~x350-674), and the meter then runs under the PlayerList (x544+). Use the logical W<1500 rule (rail under the plate, stack centred between plate and PlayerList, meter at its minimum width).",
+    "Phone quest overlay (x455-741, y118-268) covers Z and auto. Close it on any F/Q/Z/R press or outside tap and cap it above y165, or accept it only with the 8 s auto-close.",
+    "The bully chip is shortened to '⚠ 깡패 4분', so the auto-button lock (L.RefreshAuto must read BullyStacks and the outlaw flag) and the tap-reason toast must land in the same commit. Otherwise a child cannot tell why auto stopped.",
+    "Text fit: phone 16du = 12 real px (0.75 scale) and PC 16du = 12.8 px (0.8). Set TextTruncate=AtEnd on every chip, quest-row and pill label, keep short fallback strings in the central text table, and measure TextBounds via MCP at 749x361, 844x390, 1280x720 and 1024x768. Replace the emoji glyphs (🌱⚔🛡🍀👑⚠) with the existing UIArt icons (IconSprout, IconSafe, IconClover, Crown) through UIKit.ArtImage, because emoji width and size vary per platform.",
+    "Removing the 대장간 card: right after the first-mission 150 gold, the '대장간: 새 무기 살 수 있어요' quest row must be row 2 (or row 1). Rename the Keybinds label '다음 무기' to '대장간', and check the whole first 10 minutes in a real Play.",
+    "Gate sign: converting it to a SurfaceGui is a server MapBuilder change plus a map rebuild. If time is short, the interim fix is MaxDistance about 60 plus hiding the label when it projects above the chip-row bottom. The zone chip and enter banner must ship together with that change.",
+    "Measure before freezing numbers: GetGuiInset on PC and phone, the PlayerList's real width and height with 3, 8 and 20 players, and the AbsolutePosition/UIScale behind the 1582x950 capture (about 1.15 px per unit, top at y133, which matches no code assumption).",
+    "The rail beside the plate on PC departs from visual_direction ('오른쪽 위: [가방][지도][메뉴]'). Put this in the ART-G0 grey box and get the user's OK before ART-G1. Budget: ART-G1 is planned at 2 days and BM4 at 2 days. first10 is about 4-5 dev days, so the work must be split, with the PlayerList, dim and thumbstick fixes first."
+   ]
+  }
+ ],
+ "inventory": {
+  "elements": [
+   {
+    "id": "stats_card",
+    "label_ko": "왼쪽 위 내 상태판(카드 전체)",
+    "current_pc": "anchor(0,0) at logical (12, max(12+inset/s,(inset+8)/s)), size 300x133 (Horns 300x153). 1280x720 desktop UIScale 0.8 -> real x10-250, y68-174 (Horns to 190), assuming a 58 px top bar. 1582x950 capture: x15-348, y133-340",
+    "shows_when": "HUD root visible: DataLoaded and no Intro/FactionPicker/ClassPicker open. Hidden under the Panels dim while a window is open",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "src/StarterPlayer/StarterPlayerScripts/HUD.luau:717-921 (build), 923-973 (L.LayoutStats), 3318-3322 (position); chat push-down 318-350, 3320-3321",
+    "notes": "Touch builds a slim 212x130 card: badge, XP, HP/MP, 금고, 전투력 row, no portrait. Desktop starts below a TextChatService chat window only when that window sits on the left side and its bottom is under 55% of the screen height."
+   },
+   {
+    "id": "stats_portrait",
+    "label_ko": "얼굴 링(내 캐릭터 3D 머리)",
+    "current_pc": "inside the card at (3,5), 74x76 logical. Capture: x18-105, y145-230",
+    "shows_when": "desktop only, always with the card",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:785-848, L.RefreshPortrait 1889+",
+    "notes": "A click calls L.PowerOpen -> Panels.Open('Character'). That does nothing until BB8 registers the window."
+   },
+   {
+    "id": "stats_level_badge",
+    "label_ko": "레벨 배지",
+    "current_pc": "card (80,5) 40x40 logical (touch (8,10) 48x48). Capture: x112-155, y140-182",
+    "shows_when": "always with the card",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:727-782",
+    "notes": "The faction-shaped badges (Halo/Horns/Artisan) are planned art (visual_direction batch 6)."
+   },
+   {
+    "id": "stats_title_line",
+    "label_ko": "칭호 줄(★베타 개척자 등)",
+    "current_pc": "card (126,10), w=StatsW-138 (162), h18, faction colour",
+    "shows_when": "desktop only, always",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:823-832, 1943-1953 (Config.DisplayTitle incl. TitleSel / SessionTitle)",
+    "notes": "Shown in Horns red in the capture."
+   },
+   {
+    "id": "stats_class_power",
+    "label_ko": "직업 이름 + 전투력 숫자(BB5)",
+    "current_pc": "desktop class row: class (126,30) w81 h15 left, power right half w~77 gold right-aligned. Touch: its own row under 금고. Capture: '흑마법사 / 전투력 424' y178-197",
+    "shows_when": "always; a rise floats a gold '+N' and counts up, except within a level-up",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:582-713 (L.Power*), 833-846, 865-869",
+    "notes": "A tap is meant to open '내 캐릭터' (BB8). Today it is a silent no-op. The step-6 layout must keep a power slot (BB5)."
+   },
+   {
+    "id": "stats_xp_bar",
+    "label_ko": "경험치 바",
+    "current_pc": "card (80,49) w208 h16 logical; text '408 / 753'",
+    "shows_when": "always",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:850-863, 1956-1964",
+    "notes": "No 'XP' label, unlike HP/MP. Same blue as the MP bar. visual_direction wants XP sky-blue."
+   },
+   {
+    "id": "stats_hp_mp_bars",
+    "label_ko": "HP·MP 바",
+    "current_pc": "card (80,67) and (80,85), each w208 h16 logical; text 'HP 82 / 152', 'MP 100 / 100'",
+    "shows_when": "always",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "VitalsUI.luau:64-84, 170-193",
+    "notes": "HP is red (239,45,51). visual_direction asks for HP green, MP royal blue, XP sky-blue. The Roblox Health CoreGui is disabled."
+   },
+   {
+    "id": "stats_money_row",
+    "label_ko": "금고·주머니 골드 줄",
+    "current_pc": "card (80,105), two halves of ~101x18 logical (touch: 금고 only)",
+    "shows_when": "always",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:558-580, 865-874, 1966-1970",
+    "notes": "Capture: '금고 4.4K  주머니 0'."
+   },
+   {
+    "id": "stats_wanted_row",
+    "label_ko": "현상 별 + 현상금 줄(뿔 군단만)",
+    "current_pc": "card (14, statsBaseH-8) w272 h16; makes the card +20 taller",
+    "shows_when": "Faction == Horns, shown even at 0 stars and 0 bounty",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:878-920, 1972-1992",
+    "notes": "Capture shows '☆☆☆☆☆ 현상금 0'. That is clutter at zero."
+   },
+   {
+    "id": "potion_buttons",
+    "label_ko": "HP·MP 물약 버튼(1·2)",
+    "current_pc": "row at (12, cardBottom+4) logical, 300x50 (two 147x50 buttons); touch 212x64. 1280x720 real y177-217. Capture x15-348, y352-405",
+    "shows_when": "always; status line 사용/가득/n초/대기/부활/괴수/구매",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "VitalsUI.luau:110-143 (build), 86-108 (layout), 38-55 (state); HUD.luau:876, 3351",
+    "notes": "Key badges 1/2 sit at the top-left corner (2,0). A23-20: blocked while any Panels window is open (VitalsUI.luau:24). The planned redesign moves the potions left of the attack button (72 px slots, blink under 30% HP)."
+   },
+   {
+    "id": "quest_header",
+    "label_ko": "오늘의 퀘스트 리본(접기/펼치기)",
+    "current_pc": "(12, cardBottom+60) logical, 270x28 (touch 260x32). 1280x720 real y222-244. Capture x15-337, y415-456",
+    "shows_when": "whenever the quest list has entries; green tint when something is claimable",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1247-1309 (build), 2602-2627 (text), 3352 (position)",
+    "notes": "Text: '오늘의 퀘스트 (DailyClaims/3) · 받기 N ▼'. Touch: a one-line summary that opens the overlay. BB18 plans that clicking the header opens the journal."
+   },
+   {
+    "id": "quest_rows",
+    "label_ko": "퀘스트 줄(메인·선택·안내·일일·추가) + 받기·교체",
+    "current_pc": "under the header, rows 270x50 logical (gap 4). Collapsed: 1 row (1280x720 real y222-288). Expanded with 5 entries: to ~real y460 (64% of the height). Capture row: y463-540",
+    "shows_when": "always (desktop): collapsed = story call row > pinned row > first claimable > first unfinished daily",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:2323-2505 (row), 2557-2707 (refreshQuests), 2531-2555 (B15 story pulse)",
+    "notes": "A23-20: a pending choice keeps its row visible and pulsing. A tap on a pinned or story row runs L.PinnedTap / L.StoryTap (travel, guide beam, dialogue)."
+   },
+   {
+    "id": "quest_overlay_touch",
+    "label_ko": "퀘스트 목록 창(폰 전용 오버레이)",
+    "current_pc": "touch only: 340 wide parchment at the top band, x >= 0.4W+8, y=minTop",
+    "shows_when": "touch, after tapping the quest header line",
+    "interactive": true,
+    "priority": "often",
+    "status": "exists",
+    "source": "HUD.luau:1313-1367, 3354-3360",
+    "notes": "Not used on PC."
+   },
+   {
+    "id": "war_meter",
+    "label_ko": "전쟁 미터(빛 ↔ 뿔, 왕관 표시)",
+    "current_pc": "anchor(0.5,0) at (cx, max(8+inset/s,(inset+8)/s)) logical, 380x56. cx is W/2 clamped between the left column and the luck panel (CR-L36), min width 200. 1280x720 real x488-792, y66-111. Capture x562-1019, y134-198 (with pills)",
+    "shows_when": "always",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1000-1107 (build), 2053-2078 (refresh), 3323-3342 (layout)",
+    "notes": "Faction shields sit at both ends. Score labels '빛 0' / '0 뿔'."
+   },
+   {
+    "id": "war_info_pills",
+    "label_ko": "전쟁 정보 알약(왕관 결정까지 · 몬스터 포위전 · 내 점수)",
+    "current_pc": "row inside the meter at y+36, h20, centred. Capture y175-197",
+    "shows_when": "timer always; 포위전 only while WarMode=Siege; 내 점수 only for Halo/Horns",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:977-996, 1109-1127, 2044-2078",
+    "notes": "Three pills plus a goose pill plus a chip row make four stacked rows in the top centre."
+   },
+   {
+    "id": "goose_countdown_pill",
+    "label_ko": "황금 거위까지 m:ss 알약",
+    "current_pc": "EventHUD strip under the war meter (y = meterBottom+6), pill 196x28 centred on the meter column. 1280x720 real y116-138. Capture x668-905, y205-240",
+    "shows_when": "GooseNextAt > 0 and no goose active (practically always)",
+    "interactive": false,
+    "priority": "often",
+    "status": "exists",
+    "source": "EventHUD.luau:461-495 (build), 855-922 (layout), 993-1003",
+    "notes": "The strip publishes BottomY. HUD's chip row uses a fixed StripBelow=47 instead."
+   },
+   {
+    "id": "goose_tug_bar",
+    "label_ko": "거위 줄다리기 / 함께 구조 바 + 안내 줄",
+    "current_pc": "replaces the pill: 360x24 bar plus a 13 px sub line (15 on touch), same strip",
+    "shows_when": "GooseActive (Versus tug or A23-14 Coop single side)",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "EventHUD.luau:497-592, 925-992",
+    "notes": "The sub line names my contribution and a faction hint."
+   },
+   {
+    "id": "kaiju_chip",
+    "label_ko": "괴수 칩(이름 · 남은 시간)",
+    "current_pc": "right of the strip at +8, 150x28 (touch 200x28). 1280x720 real x790-910, y116-138",
+    "shows_when": "KaijuPhase == Active",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "EventHUD.luau:594-614, 1069-1077",
+    "notes": "At 749x361 it lands on logical x687-887 over the next-weapon card."
+   },
+   {
+    "id": "pumpkin_king_chip",
+    "label_ko": "호박 대왕까지 / 호박 대왕 출현! 칩(핼러윈)",
+    "current_pc": "left of the strip: anchor(1,0) at strip-left-8, width min(room,210), h28. Under the strip when the room is < 130. 1280x720 real x322-490, y116-138",
+    "shows_when": "Config.Halloween.Enabled and (PumpkinKingActive or PumpkinKingNextAt > 0)",
+    "interactive": false,
+    "priority": "event",
+    "status": "dev-in-progress",
+    "source": "EventHUD.luau:616-633, 1006-1055 (uncommitted working-tree edit)",
+    "notes": "English text when Settings.Lang == 'en'. Server-wide appear/defeat lines also go to chat and a toast (Announce.luau, Config.Announce.Events)."
+   },
+   {
+    "id": "status_chips_row",
+    "label_ko": "상태 칩 줄(가운데 위)",
+    "current_pc": "anchor(0.5,0) at (cx, max(106+inset/s, meterBottom+47)) logical, width max(warW, symmetric room) up to 960, chip h24, wraps to more rows. 1280x720 real y148-172. Capture: one chip at x728-853, y255-290",
+    "shows_when": "any chip active",
+    "interactive": false,
+    "priority": "often",
+    "status": "exists",
+    "source": "HUD.luau:1130-1241 (build), 1996-2036 (refresh), 3345-3347 (layout)",
+    "notes": "Chip order: 왕관 축복, zone, 새싹, 부활 보호, 전투 중, 덩치 저울, 깡패 벌칙, 괴수 대기. Planned home for the zone name and, on small screens, 오늘의 운."
+   },
+   {
+    "id": "chip_zone_safety",
+    "label_ko": "안전 지대 / PvP 지역 / PvP 지역 · 장인은 안전 칩",
+    "current_pc": "in the chip row, with the IconSafe icon",
+    "shows_when": "ZoneTown or ZonePvP; hidden in plain hunting zones",
+    "interactive": false,
+    "priority": "often",
+    "status": "exists",
+    "source": "HUD.luau:2011-2021",
+    "notes": "No zone name. In the meadow nothing on the HUD says where you are."
+   },
+   {
+    "id": "chip_rookie_grace",
+    "label_ko": "새싹 보호중 / 새싹 졸업 · N초 뒤 대결 칩(A23-18)",
+    "current_pc": "in the chip row with IconSprout. Capture x728-853, y255-290",
+    "shows_when": "Rookie (not Neutral), or the GraduateGraceUntil 60 s window",
+    "interactive": false,
+    "priority": "often",
+    "status": "exists",
+    "source": "HUD.luau:2023-2027",
+    "notes": ""
+   },
+   {
+    "id": "chip_bully_penalty",
+    "label_ko": "깡패 벌칙 칩(A23-22): 자동 전투 불가 · 경험치·드랍 절반 (N분)",
+    "current_pc": "in the chip row, red; about 40 characters, so roughly 300+ logical px wide",
+    "shows_when": "BullyStacks > 0",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "HUD.luau:130, 2032-2034",
+    "notes": "Long enough to wrap the row on phones (438 wide). The 자동 button shows no disabled state during the penalty (L.RefreshAuto ignores BullyStacks)."
+   },
+   {
+    "id": "chip_combat_protect",
+    "label_ko": "전투 중 / 부활 보호 칩",
+    "current_pc": "in the chip row",
+    "shows_when": "InCombatUntil > now / Protected",
+    "interactive": false,
+    "priority": "often",
+    "status": "exists",
+    "source": "HUD.luau:2028-2029",
+    "notes": ""
+   },
+   {
+    "id": "chip_blessing_size_kaiju",
+    "label_ko": "왕관 축복 / 덩치 저울 ×N / 괴수 대기 중 칩",
+    "current_pc": "in the chip row",
+    "shows_when": "WarBlessing set / SizeMult > 1 / KaijuState == Queued",
+    "interactive": false,
+    "priority": "rare",
+    "status": "exists",
+    "source": "HUD.luau:2001-2009, 2030-2031, 2035",
+    "notes": ""
+   },
+   {
+    "id": "luck_corner",
+    "label_ko": "오늘의 운 · 희귀 N% + 응원별 판(오른쪽 위)",
+    "current_pc": "anchor(1,0) at (W-12, max(52,(inset+8)/s)) logical, 210x58. 1280x720 real x1102-1270, y66-113. Capture x1318-1566, y132-202",
+    "shows_when": "desktop only (hidden on touch)",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "EventHUD.luau:692-766 (build), 880 and 915-916 (layout), 1152-1176",
+    "notes": "Line 2 is goose cheer stars (CheerStarsForRare), unrelated to today's luck. On touch it is hidden, and EventHUD.LuckSummary is never called by Panels, so phones never see 오늘의 운 (A23-18)."
+   },
+   {
+    "id": "next_weapon_card",
+    "label_ko": "대장간 카드(U): 대장간 / 무기 선택 · 구매 · 판매 / 교차로 마을",
+    "current_pc": "right-aligned under the luck panel: centre (W-12-98, luckBottom+8+36) logical, 196x72 (touch 236x78 above the squares). 1280x720 real x1114-1270, y119-177. Capture x1333-1565, y212-293",
+    "shows_when": "always after the first refresh; refreshUpgrade forces Visible=true, also on touch",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1632-1701 (build), 2096-2131 (refresh), 3420 (layout), 2998-3009 (doUpgrade)",
+    "notes": "Opens Travel when outside the Crossroads, else the guide beam plus the WeaponShop panel. The full gold bar is only a '교차로 마을' label. The Keybinds label is '다음 무기' but the card says '대장간'."
+   },
+   {
+    "id": "auto_button",
+    "label_ko": "자동 켬/끔 버튼(R)",
+    "current_pc": "square row, left slot: 60x60 logical (touch 72). Desktop row centre y = luckBottom+8+72+8+30. 1280x720 real x1114-1162, y183-231. Capture x1333-1405, y305-378",
+    "shows_when": "AutoCombatUnlocked (crown-shard quest) and ClassChosen",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1621-1630, 3104-3117, 3419",
+    "notes": "A23-1/A23-20: the choice is saved, and auto keeps running while windows are open. The ON state is only a gold glow stroke; the spinning gold ring is planned art. Its key badge is at the top-right while the other squares put theirs at the bottom-right."
+   },
+   {
+    "id": "map_button",
+    "label_ko": "지도 버튼(M)",
+    "current_pc": "square row, middle slot 60x60. 1280x720 real x1168-1216, y183-231",
+    "shows_when": "always",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1614-1616, 3167-3175, 3418",
+    "notes": "Opens the full-screen WorldMap (own ScreenGui, DisplayOrder 12). Menu -> 지도 opens it too."
+   },
+   {
+    "id": "menu_button",
+    "label_ko": "메뉴 버튼(B) + 금빛 테두리 알림",
+    "current_pc": "square row, right slot 60x60. 1280x720 real x1222-1270, y183-231. Capture x1490-1565, y303-380 with glow",
+    "shows_when": "always; the glow pulses when rebirth is ready, there are vacation days, or a scroll item has not been looked at yet (B14)",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1617-1620, 2141-2162, 3149-3164, 3417; Panels.luau:1235-1320 (menu grid)",
+    "notes": "Entry point for every window. The menu today is a two-column grid: 이동, 아이템, 환생, 직업, 상점, 지도, 닉네임, 오프닝 다시 보기, 이름 숨기기, plus Welcome and 휴가 when they apply. BB7 moves the scroll glow to [가방]."
+   },
+   {
+    "id": "attack_button",
+    "label_ko": "공격 버튼(F / 짧은 클릭)",
+    "current_pc": "desktop: centre (W-16-90-10-60, H-16-60) logical, 120 diameter. 1280x720 real x1091-1187, y611-707. Capture x1302-1440, y789-920. Touch: 136, left of the Roblox jump button",
+    "shows_when": "always",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1548-1571 (build), 2958-2982 (one swing per press), 3364-3397 (layout)",
+    "notes": "A short world click also attacks (CameraFollow.PrimaryClick). The planned size is 150 (visual_direction)."
+   },
+   {
+    "id": "skill_button",
+    "label_ko": "스킬 버튼(Q) 'MP20' + 쿨다운 숫자",
+    "current_pc": "desktop: right of attack, bottoms level, 90 diameter. 1280x720 real x1195-1267, y635-707. Capture x1455-1560, y825-927. Touch: up-left of attack, 102",
+    "shows_when": "always; dimmed when MP < 20 or on cooldown",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1573-1611, 2081-2094, 2984-2996, 3398-3405",
+    "notes": "Shows the cost only, no skill name. BB9 adds names, and the planned layout fans Q/Z up-left of attack."
+   },
+   {
+    "id": "key_badges",
+    "label_ko": "키 표시 배지(F·Q·R·M·B·U·1·2)",
+    "current_pc": "small 18x18 dark badges on button corners, desktop keyboards only",
+    "shows_when": "keyboard and no touch, Settings.KeyBadges on, action bound",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:1442-1506; VitalsUI.luau:129-168",
+    "notes": "Corners differ: F/Q/M/B bottom-right, R/U top-right, 1/2 top-left."
+   },
+   {
+    "id": "grudge_ghost_button",
+    "label_ko": "유령으로 붙잡기 버튼(T)",
+    "current_pc": "anchor(1,1) at (ClusterLeft-10, ClusterTop+76) logical, 76x76 (>= 44 real px). 1280x720 real x1022-1083, y611-672",
+    "shows_when": "GrudgeThiefId > 0 (my gold is in a thief's sack) and I am alive",
+    "interactive": true,
+    "priority": "event",
+    "status": "exists",
+    "source": "GrudgeGhost.luau:48-126",
+    "notes": "On touch ClusterTop includes the next-weapon card, so the button rises to logical y140-216."
+   },
+   {
+    "id": "personal_line",
+    "label_ko": "개인 상태 줄(원한 자루 n초 / 괴수 변신 중 / 복수 대상)",
+    "current_pc": "desktop: anchor(0.5,0.5) at (0.5W, 0.72H) logical, 480x30. 1280x720 real x448-832, y506-530. Touch: under the chip row, narrowed left of the button cluster",
+    "shows_when": "SackGold > 0, or KaijuState Active, or a revenge target alive",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "EventHUD.luau:667-690, 881-920, 1098-1125",
+    "notes": "ZIndex 6 (above the HUD root, below toasts at 95)."
+   },
+   {
+    "id": "edge_arrows",
+    "label_ko": "화면 가장자리 화살표(원한 자루·괴수·복수 대상)",
+    "current_pc": "up to 10 glyph+label pairs, 40 px inside the screen edges, kept below the top bar and out of the touch stick zone",
+    "shows_when": "targets exist (kaiju > revenge > sacks)",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "EventHUD.luau:432-459, 1178-1356",
+    "notes": "Uses the old 40%x45% thumb zone, not Roblox's 40%x2/3."
+   },
+   {
+    "id": "kaiju_siren",
+    "label_ko": "괴수 사이렌 띠",
+    "current_pc": "full-width red band centred at 18% of the height, 64 tall",
+    "shows_when": "KaijuPhase == Siren",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "EventHUD.luau:635-665, 1078-1085",
+    "notes": "Covers the war meter, strip and right column while it shows."
+   },
+   {
+    "id": "travel_bar",
+    "label_ko": "이동 중 바(n초)",
+    "current_pc": "anchor(0.5,0.5) at scale (0.5,0.6), 340x64 logical (touch y 0.42). 1280x720 real x504-776, y406-458",
+    "shows_when": "TravelingUntil > now",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "HUD.luau:1385-1412, 2165-2176",
+    "notes": ""
+   },
+   {
+    "id": "toast_stack",
+    "label_ko": "토스트 알림(획득 아이템, MP 부족, 퀘스트, 이벤트)",
+    "current_pc": "anchor(0.5,0) at y 152+inset/s logical, 460 wide (<= 45% of the width), max 4 (2 when the screen is < 500 px tall). 1280x720 real top y180",
+    "shows_when": "on demand (loot '+슬라임 젤리', Epic drops, Halloween events, hints)",
+    "interactive": false,
+    "priority": "often",
+    "status": "exists",
+    "source": "UIKit.luau:68-72, 257-265, 1381+, 1767-1783",
+    "notes": "The top Y is a fixed slot, not tied to the real bottom of the strip or chips. BB24, BB39 and the BB19 log add more toasts."
+   },
+   {
+    "id": "announce_banner",
+    "label_ko": "큰 알림 띠(레벨 업 · 전설 획득 · 월드 이벤트)",
+    "current_pc": "anchor(0.5,0.5) at scale (0.5,0.3), 0.9 of the width up to 880x84 logical. 1280x720 real y~183-250",
+    "shows_when": "level up (Fx), Legendary finds, held world banners after the first mission",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "UIKit.luau:1785-1824; Fx.luau:1829-1866; Announce.luau:94-110",
+    "notes": "Toasts (Z95) draw over it (Z90)."
+   },
+   {
+    "id": "combo_counter",
+    "label_ko": "콤보 xN + 마일스톤 글자",
+    "current_pc": "anchor(0.5,0.5) at scale (0.5,0.66), 120x24; milestone 420x64, 46 above",
+    "shows_when": "combo >= threshold",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "Fx.luau:1688-1728",
+    "notes": "The milestone (real ~y412-464) can overlap the travel bar (406-458) at 1280x720."
+   },
+   {
+    "id": "hurt_edge_flash",
+    "label_ko": "맞을 때 화면 가장자리 빨간 번쩍임",
+    "current_pc": "FxEdgeGui (DisplayOrder 11): top/bottom 14%, left/right 10% gradient strips",
+    "shows_when": "on hurt",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "Fx.luau:1629-1686, 1731-1742",
+    "notes": ""
+   },
+   {
+    "id": "confirm_dialog",
+    "label_ko": "확인 창(퀘스트 바꾸기 등)",
+    "current_pc": "centre modal, ZIndex 100",
+    "shows_when": "교체 and other confirms",
+    "interactive": true,
+    "priority": "rare",
+    "status": "exists",
+    "source": "UIKit.luau:79, 1542+; HUD.luau:2315",
+    "notes": ""
+   },
+   {
+    "id": "window_dim_overlay",
+    "label_ko": "창이 열릴 때 화면 어둡게(공통 창 틀)",
+    "current_pc": "full-canvas black at 45% transparency, ZIndex 50 in MainGui; window up to 780x600 centred under the top inset",
+    "shows_when": "any Panels window open (menu, shops, story, nickname)",
+    "interactive": true,
+    "priority": "often",
+    "status": "exists",
+    "source": "Panels.luau:27-28, 844-933",
+    "notes": "Covers the whole HUD, including the HP bar, while A23-20 auto combat continues."
+   },
+   {
+    "id": "guide_beam_label",
+    "label_ko": "안내 빛줄기 + '여기로!' 라벨(월드, 항상 위)",
+    "current_pc": "world BillboardGui 220x64 px, AlwaysOnTop, MaxDistance 100000, above the target part, bobbing",
+    "shows_when": "tutorial steps 1/2, blacksmith first visit, zone unlock (90 s), manual guides",
+    "interactive": false,
+    "priority": "event",
+    "status": "exists",
+    "source": "HUD.luau:2796-2853, 2893-2935",
+    "notes": "It is world space, so it can float up into the top-centre HUD band."
+   },
+   {
+    "id": "gate_sign_3d",
+    "label_ko": "3D 지역 간판(관문·발판·제단·거위 둥지)",
+    "current_pc": "world BillboardGui 320x60 px (constant screen size), StudsOffset 6 above the gate lintel, AlwaysOnTop=false, MaxDistance 150",
+    "shows_when": "within 150 studs of a gate or pad",
+    "interactive": false,
+    "priority": "often",
+    "status": "exists",
+    "source": "src/ServerScriptService/MapBuilder.luau:116-140, 414-447, 600, 651, 755",
+    "notes": "This is the 'signboard overlaps the war bar' problem: it renders under the ScreenGui and shows through gaps. The plan replaces it with a HUD zone-name chip and banner."
+   },
+   {
+    "id": "monster_name_bars",
+    "label_ko": "몬스터 이름·HP 바(월드)",
+    "current_pc": "world BillboardGui 150x34 px (constant), name text max 16 plus an 8 px bar",
+    "shows_when": "within BAR_MAX_DISTANCE of monsters",
+    "interactive": false,
+    "priority": "always",
+    "status": "exists",
+    "source": "src/ServerScriptService/MonsterService.luau:530-575",
+    "notes": "In the capture two '왕 슬라임' name and HP pairs stack at about x915-1215, y295-375, just left of the right column."
+   },
+   {
+    "id": "proximity_prompts",
+    "label_ko": "E 상호작용 표시(대장간 모루·물약 상인·운명의 제단)",
+    "current_pc": "Roblox default ProximityPrompt UI near the object",
+    "shows_when": "near the anvil (Crossroads), potion merchant, altar",
+    "interactive": true,
+    "priority": "often",
+    "status": "exists",
+    "source": "ShopService.luau:168-176; MapBuilder.luau:659-672, 807-812",
+    "notes": "Shop windows open from these prompts. The Interact key is E (Keybinds)."
+   },
+   {
+    "id": "chat_window_core",
+    "label_ko": "채팅 창(Roblox 기본 UI)",
+    "current_pc": "desktop: HUD.Start sets ChatWindowConfiguration to Center/Bottom with WidthScale and HeightScale <= 0.7. Place file default is Left/Bottom, 0.85/0.8. Legacy fallback: SetCore ChatWindowPosition (0,0,0.6,0)",
+    "shows_when": "PC: open by default; phones: closed by default",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:318-366, 3554-3566; place/GoodEvil.rbxlx:128411-128470; Announce.luau:113-139",
+    "notes": "CoreGui draws above the HUD and takes clicks. The 2026-10-06 note says it swallowed [받기] while it sat bottom-left."
+   },
+   {
+    "id": "player_list_core",
+    "label_ko": "Tab 플레이어 목록(Roblox 기본 UI, leaderstats)",
+    "current_pc": "Roblox CoreGui top-right below the top bar. With 4 stat columns it is roughly 450-480 px wide (estimate), so at 1280x720 about x800-1276, y62+",
+    "shows_when": "PC: open by default, Tab toggles; phones: from the Roblox menu",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "src/ServerScriptService/PlayerService.luau:271-315; FactionService.luau:79-81, 423 (Teams)",
+    "notes": "Columns today: 레벨, 골드, 환생, 명성. A23-21/BB12 want 전투력·레벨·환생·명성 with gold hidden; not done (no Config.Leaderstats). Teams add header rows."
+   },
+   {
+    "id": "roblox_topbar",
+    "label_ko": "Roblox 상단바(메뉴·채팅 등)",
+    "current_pc": "CoreGui band at the top (GetGuiInset().Y); every top HUD block starts at inset + 8 real px",
+    "shows_when": "always",
+    "interactive": true,
+    "priority": "always",
+    "status": "exists",
+    "source": "HUD.luau:308-316, 3313-3315; UIKit.luau:231-239, 1744-1757; EventHUD.luau:249-257",
+    "notes": "MainGui IgnoreGuiInset=true and ScreenInsets=DeviceSafeInsets, so the HUD offsets by the inset itself."
+   },
+   {
+    "id": "bag_button",
+    "label_ko": "[가방] 버튼(G) — 오른쪽 위 버튼 줄",
+    "current_pc": "not built. The plan puts it in the top-right rail [가방][지도][메뉴] (64 px; BB7 says a 4th BtnSquare with IconPouch)",
+    "shows_when": "always (beta)",
+    "interactive": true,
+    "priority": "always",
+    "status": "beta-new",
+    "source": "docs/design/beta_basics_2026-10-05.md:684-757 (BB7); visual_direction_2026-10-05.md:153, 197; Config.luau:1740 (G already bound, Window='Bag')",
+    "notes": "G does nothing today because Panels.Has('Bag') is false. The scroll glow (B14) moves here. Leave room for a [펫] button at launch."
+   },
+   {
+    "id": "zone_name_chip",
+    "label_ko": "지역 이름 칩(안전/PvP/새싹 + 지역 이름)",
+    "current_pc": "not built. Planned in the chip line under the war meter",
+    "shows_when": "always",
+    "interactive": false,
+    "priority": "always",
+    "status": "beta-new",
+    "source": "docs/design/visual_direction_2026-10-05.md:194-196",
+    "notes": "Replaces relying on the 3D GateSign. Today no zone name appears on the HUD."
+   },
+   {
+    "id": "zone_enter_banner",
+    "label_ko": "지역 들어갈 때 이름 배너",
+    "current_pc": "not built. Planned as a short banner below the war meter, up to 3 notification lines",
+    "shows_when": "on ZoneId change",
+    "interactive": false,
+    "priority": "event",
+    "status": "beta-new",
+    "source": "visual_direction_2026-10-05.md:194-196",
+    "notes": ""
+   },
+   {
+    "id": "ko_screen",
+    "label_ko": "쓰러짐·부활 화면(원인 · 잃은 것 · 3·2·1 · 팁)",
+    "current_pc": "not built. Non-modal dark overlay below Intro/pickers (new DeathScreen.luau)",
+    "shows_when": "owner Fx 'KO' until CharacterAdded",
+    "interactive": false,
+    "priority": "event",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:1154-1203 (BB14)",
+    "notes": "Must leave the GrudgeGhost button usable after respawn."
+   },
+   {
+    "id": "potion_low_hp_blink",
+    "label_ko": "HP 30% 아래에서 물약 칸 깜빡임",
+    "current_pc": "not built",
+    "shows_when": "HP < 30%",
+    "interactive": false,
+    "priority": "event",
+    "status": "beta-new",
+    "source": "visual_direction_2026-10-05.md:203",
+    "notes": "Planned with potions moved left of the attack button."
+   },
+   {
+    "id": "auto_ring",
+    "label_ko": "자동 켜짐 금빛 화살 고리",
+    "current_pc": "not built (today: a gold glow stroke)",
+    "shows_when": "AutoCombatEnabled",
+    "interactive": false,
+    "priority": "often",
+    "status": "beta-new",
+    "source": "visual_direction_2026-10-05.md:202, 537 (UIP_AutoRingOn)",
+    "notes": "Planned: the auto button sits above the jump button on phones."
+   },
+   {
+    "id": "skill_z_button",
+    "label_ko": "Z 스킬 버튼(플래그)",
+    "current_pc": "not built. Planned fanned up-left of attack with Q",
+    "shows_when": "Config.Skills.ZEnabled and learned (Lv5, 100 gold)",
+    "interactive": true,
+    "priority": "often",
+    "status": "beta-new",
+    "source": "Config.luau:1733 (SkillZ, Flag Skills.ZEnabled); beta_basics_2026-10-05.md:759-816",
+    "notes": "Second in line to cut if late (A23-21 cut order)."
+   },
+   {
+    "id": "character_window_entry",
+    "label_ko": "내 캐릭터 창 열기(얼굴·전투력 누르기, C)",
+    "current_pc": "hit areas exist over the portrait and the power label; the window does not",
+    "shows_when": "always",
+    "interactive": true,
+    "priority": "often",
+    "status": "dev-in-progress",
+    "source": "HUD.luau:600-618; beta_basics_2026-10-05.md:817+ (BB8)",
+    "notes": "Silent no-op until Panels.Register('Character')."
+   },
+   {
+    "id": "menu_sections",
+    "label_ko": "메뉴 묶음 정리(내 캐릭터·가방·스킬 / 퀘스트·랭킹 / 이동·지도·상점 / 환생·직업·닉네임 / 설정·도움말)",
+    "current_pc": "not built (two-column grid today)",
+    "shows_when": "메뉴 / B",
+    "interactive": true,
+    "priority": "often",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:497-551 (BB13); Panels.luau:1235-1320",
+    "notes": "Also the home of 친구 초대 (BB25) and, via Settings, 의견 보내기 (BB41) and the language row (BB29). 오프닝 다시 보기 and 이름 숨기기 move to Settings."
+   },
+   {
+    "id": "settings_window_entry",
+    "label_ko": "설정 창 입구(키 설정 · 효과음 · 흔들림 · 키 표시 · 이름 숨기기)",
+    "current_pc": "not built (Settings data and Keybinds exist; no window)",
+    "shows_when": "메뉴 → 설정",
+    "interactive": true,
+    "priority": "rare",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:553-634 (BB3); Settings.luau; Keybinds.luau",
+    "notes": ""
+   },
+   {
+    "id": "skills_window_entry",
+    "label_ko": "스킬 창 입구(K)",
+    "current_pc": "not built",
+    "shows_when": "K or 메뉴 → 스킬",
+    "interactive": true,
+    "priority": "rare",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:759-816 (BB9); Config.luau:1742",
+    "notes": ""
+   },
+   {
+    "id": "ranking_window_entry",
+    "label_ko": "랭킹 창 입구(L, 게시판 E)",
+    "current_pc": "not built",
+    "shows_when": "L, 메뉴 → 랭킹, town board prompt",
+    "interactive": true,
+    "priority": "rare",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:1086-1123 (BB11); A23-22",
+    "notes": "Weekly 명예/악명 TOP3 rewards are shown there and as a stat-free title."
+   },
+   {
+    "id": "help_window_entry",
+    "label_ko": "도움말 입구(H) + 안내자 다시 만나기",
+    "current_pc": "not built",
+    "shows_when": "H or 메뉴 → 도움말",
+    "interactive": true,
+    "priority": "rare",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:1205-1248 (BB15)",
+    "notes": ""
+   },
+   {
+    "id": "journal_entry",
+    "label_ko": "퀘스트 일지 입구(J / 퀘스트 판 제목)",
+    "current_pc": "not built",
+    "shows_when": "J or a click on the quest header",
+    "interactive": true,
+    "priority": "rare",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:1404-1429 (BB18, beta-should)",
+    "notes": "Conflicts with today's header click (expand/collapse)."
+   },
+   {
+    "id": "afk_warning_toast",
+    "label_ko": "20분 무입력 퇴장 예고 토스트",
+    "current_pc": "not built (a toast)",
+    "shows_when": "Idled >= 1020 s",
+    "interactive": false,
+    "priority": "rare",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:1297-1321 (BB39, beta-should)",
+    "notes": "A23-20 keeps auto hunting while away; Roblox still kicks at 20 min."
+   },
+   {
+    "id": "first_time_hints",
+    "label_ko": "처음 겪는 순간 한 줄 안내(PvP 지역·현상 별·자루·괴수·쓰러짐·환생·자동 해금)",
+    "current_pc": "not built (one-time toasts)",
+    "shows_when": "first time each, per account",
+    "interactive": false,
+    "priority": "rare",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:1352-1371 (BB24, beta-should)",
+    "notes": ""
+   },
+   {
+    "id": "strong_opponent_marker",
+    "label_ko": "센 상대 ×2 표시 + 깡패 직전 경고",
+    "current_pc": "not built (client BillboardGui on enemies plus a personal warning)",
+    "shows_when": "PvP zone or combat-tagged",
+    "interactive": false,
+    "priority": "event",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:1602+ (BB28, beta-should)",
+    "notes": "The warning line needs a HUD slot (personal line or chip)."
+   },
+   {
+    "id": "luck_on_phone",
+    "label_ko": "오늘의 운 표시(폰: 칩 줄로)",
+    "current_pc": "PC has the luck corner; phones show nothing",
+    "shows_when": "always",
+    "interactive": false,
+    "priority": "always",
+    "status": "beta-new",
+    "source": "visual_direction_2026-10-05.md:160, 810; EventHUD.luau:1257, 1400-1404",
+    "notes": "A23-18 asks for the readout '오늘의 운 · 희귀 N%'."
+   },
+   {
+    "id": "tab_list_columns",
+    "label_ko": "Tab 목록 열 정리(전투력·레벨·환생·명성, 골드 숨김)",
+    "current_pc": "current leaderstats: 레벨·골드·환생·명성",
+    "shows_when": "Tab",
+    "interactive": false,
+    "priority": "often",
+    "status": "beta-new",
+    "source": "beta_basics_2026-10-05.md:1125-1152 (BB12); SPEC_ADDENDUM A23-21; PlayerService.luau:291-308",
+    "notes": "Add a Power IntValue fed by the CombatPower attribute, created first so the list sorts by it."
+   }
+  ],
+  "roblox_core_constraints": [
+   "Top bar inset (general-knowledge + verified-in-code): Roblox's current top bar is about 58 px tall on PC; GetGuiInset().Y was 36 before the 2023 redesign. Phone value unverified, measure via MCP. MainGui uses IgnoreGuiInset=true, ScreenInsets=DeviceSafeInsets and SafeAreaCompatibility=None (verified UIKit.luau:1744-1757). HUD, EventHUD and toasts place every top block at GetGuiInset().Y + 8 real px, with a 64 px fallback when the inset reads 0 (verified HUD.luau:308-316 and 3313-3315, UIKit.luau:231-239, EventHUD.luau:249-257, Config.luau:2152-2154).",
+   "UIScale (verified UIKit.luau:247-256, Config.luau:2155-2160): touch scale is clamp(viewportY/720, 0.75, 1.25); desktop is clamp(viewportY/720 x 0.8, 0.6, 1.0). Resulting logical canvases: 1280x720 PC = 0.8 (1600x900); 749x361 phone = 0.75 (999x481); 1280x720 touch = 1.0. IS_TOUCH = UserInputService.TouchEnabled, so a touchscreen laptop gets the touch layout (verified HUD.luau:47).",
+   "Top-left of the top bar (general-knowledge): the Roblox menu button and the unibar (chat toggle, '...' menu with leaderboard, emotes, etc.) sit at the top-left, inside the inset band. The HUD keeps x=12 below the band.",
+   "Chat on PC (general-knowledge): TextChatService's window opens top-left under the top bar and is visible by default on PC. On phones it is closed by default (visual_direction:209 agrees). It is CoreGui, so it draws above every PlayerGui ScreenGui and takes clicks (verified symptom: HUD.luau:3554-3555 says it swallowed the quest [받기] click).",
+   "ChatWindowConfiguration (general-knowledge + verified-in-code): HorizontalAlignment, VerticalAlignment, WidthScale and HeightScale can be set in Studio and from a LocalScript at runtime, but only under TextChatService. HUD.Start already sets Center/Bottom and scales <= 0.7 on desktop (verified HUD.luau:3556-3566). Under LegacyChatService only SetCore('ChatWindowPosition'/'ChatWindowSize') moves it; the code sets (0,0,0.6,0) (verified HUD.luau:352-366).",
+   "Chat version conflict (verified-in-code, needs runtime check): the committed place has TextChatService.ChatVersion token 0 (LegacyChatService) and IsLegacyChatDisabled=false. Its ChatWindowConfiguration is HorizontalAlignment=Left(1), VerticalAlignment=Bottom(2), WidthScale 0.85, HeightScale 0.8 (verified place/GoodEvil.rbxlx:128411-128466). Announce.luau:113-127 says legacy still runs, but the 2026-10-06 HUD comment describes TextChatService behaviour. Roblox has been migrating experiences off LegacyChatService (general-knowledge). Read TextChatService.ChatVersion in the live place before designing around either.",
+   "PlayerList (general-knowledge): CoreGui at the top-right just under the top bar. Open by default on PC and toggled with Tab (Tab is Reserved in Config.Keybinds, verified Config.luau:1752). Shows at most 4 leaderstats columns, sorts by the first column, and groups players under Team headers with team totals. Width is roughly 165-170 px for names plus about 70-75 px per stat, so about 450-480 px with 4 stats (estimate, measure in Studio). At 1280x720 it covers about x800-1276 from y≈62 down: the luck panel, 대장간 card and 자동/지도/메뉴 squares (real x1102-1270, y66-231). On phones it is hidden behind the Roblox menu.",
+   "leaderstats setup (verified PlayerService.luau:271-315): IntValues created in the order 레벨, 골드 (BankGold+CarriedGold), 환생, 명성 (Honor for Halo, Infamy for Horns, else 0), refreshed on LEADERSTAT_KEYS. Teams exist: 빛의 기사단, 뿔 군단, 장인 길드 and a None team (verified FactionService.luau:79-81, 423). A23-21/BB12 want 전투력·레벨·환생·명성 with gold hidden. Not implemented: no Config.Leaderstats and no CombatPower column yet.",
+   "Backpack hotbar and Health CoreGui are disabled (verified VitalsUI.luau:239-240). EmotesMenu is not disabled; it opens with '.' on PC (general-knowledge), and Period/Comma are Reserved (verified Config.luau:1752-1754). Shift lock is enabled (EnableMouseLockOption=true, verified place line 128676), so LeftShift is reserved. Esc opens the Roblox menu.",
+   "Mobile movement (verified place + general-knowledge): DevTouchMovementMode=UserChoice (token 0, place line 128674), so phones get the DynamicThumbstick by default. Its touch area is the left 40% of the width x the bottom 2/3 of the height (PlayerModule frame Size (0.4,0,2/3,0), Position (0,0,1/3,0); general-knowledge). The code assumes left 40% x bottom 45% (verified HUD.luau:73 L.StickZoneX, EventHUD.luau:69 ThumbW/ThumbH). ScreenOrientation is LandscapeSensor (token 2, verified place line 150450).",
+   "Mobile jump button (general-knowledge, TouchJump): when min(screen) <= 500, it is 70 px at (W-95, H-90); otherwise 120 px at (W-170, H-210). At 749x361 the jump button is real x654-724, y271-341 (logical x872-965, y361-455 at 0.75) and the DynamicThumbstick zone is real x0-300, y120-361. At 1280x720 touch the jump button is real x1110-1230, y510-630 and the stick zone is real x0-512, y240-720. The HUD waits up to 5 s for TouchGui.TouchControlFrame.JumpButton and puts attack to its left (verified HUD.luau:3272-3295, 3369-3372, 3621-3632). Fallback offset (-200,-170) (Config.luau:2163).",
+   "Current touch cluster at 749x361 (computed from code with a 58 px inset): attack logical x724-860, y312-448; skill x610-712, y346-448; 자동/지도/메뉴 x751-987, y228-300; 대장간 card x751-987, y140-218. visual_direction:809 reports the same jump-button numbers.",
+   "Roblox kicks idle players after 20 minutes without input (general-knowledge; A23-20 and BB39 rely on it). ProximityPrompts use the default Roblox UI with E (verified ShopService.luau:170-176, MapBuilder.luau:664-672, 808-812).",
+   "Draw order (verified + general): MainGui has DisplayOrder 10. Inside it: HUD root Z5, EventHUD strip Z3, personal line Z6, GrudgeGhost Z8, Panels modal Z50, announce Z90, toasts Z95, confirm Z100. FxEdgeGui is DisplayOrder 11, WorldMap 12, Intro 60. All Roblox CoreGui (top bar, chat, PlayerList, emotes, ProximityPrompt UI) draws above all of these, so the layout must leave their areas free.",
+   "Scope (verified SPEC_ADDENDUM A23-21): the beta rebinds PC keyboard keys only. Phone button layout and gamepad remapping come after launch (BB21, BB34), but the step-6 layout must still work at 749x361, 844x390 and 1280x720 (visual_direction:191, 810)."
+  ],
+  "current_problems": [
+   "3D zone signs collide with the top bar. GateSign and the pad, altar and goose-nest signs are 320x60 px BillboardGuis with constant screen size, AlwaysOnTop=false, MaxDistance 150 and StudsOffset 6 (MapBuilder.luau:116-140, 415-447). Walking toward a gate lifts the sign into the top-centre band, where it shows behind and between the war meter, goose pill and chips. In the capture a sign's text peeks out at the left edge between the card and the potions (x0-90, y~335-350). The HUD itself never shows the zone name; the zone chip says only 안전 지대 or PvP 지역 and is hidden in hunting zones.",
+   "The left side is one tall column: card, potions, quest header and rows. At 1280x720 it spans real y68-288 collapsed and up to ~460 with 5 rows expanded (64% of the height), 240 px wide. In the 1582x950 capture it spans y133-540 (43%), x15-348.",
+   "The right side is scattered. The luck panel, 대장간 card and 자동/지도/메뉴 squares pile up at the top-right (real y66-231 at 1280x720), then nothing until attack and skill in the corner (real y611-707). Three different frame styles are used. Key badges sit in different corners: R and U top-right, M, B, F and Q bottom-right, 1 and 2 top-left. On PC the default-open Tab PlayerList (about 450-480 px wide) covers that whole top-right column.",
+   "The top centre has four stacked rows: war bar, three info pills (왕관 결정까지 · 몬스터 포위전 · 내 점수), goose pill and chips. That is real y66-172 at 1280x720 (~15% of the height), with toasts starting right under it at a fixed y (152+inset/s logical, UIKit.luau:68, 258). The chip row's y uses a fixed StripBelow=47 (HUD.luau:69, 3347) instead of EventHUD's live BottomY. A wrapped second chip row (the bully penalty chip is about 40 characters) reaches 245 logical and overlaps the toasts from 224.5.",
+   "The Pumpkin King chip (uncommitted EventHUD edit) overlaps the stats card. KING.place (EventHUD.luau:1018-1032) checks only the room left of the strip, not the HUD's left column. At 749x361 it lands at logical x101-311, y150-178 over the card (x12-224, y89-219). On 4:3 or 5:4 PC windows such as 1024x768 it lands at x202-412 over the card (x12-312). It is fine at 1280x720 and 1582x950.",
+   "At 749x361 the kaiju chip (right of the strip, touch width 200) sits at logical x687-887, y150-178, on top of the 대장간 card (x751-987, y140-218).",
+   "The 대장간 card is built with Visible = not IS_TOUCH (HUD.luau:1638), but refreshUpgrade forces Visible=true on every device (HUD.luau:2127-2130). On phones the right column then runs from logical y140 to 481 (71% of the height). HUD.Layout.ClusterTop becomes 140, so the GrudgeGhost button (anchored to ClusterTop) moves to logical x524-600, y140-216, covering the goose pill or tug bar (x319-679, y150-189) and the status chips (y191-223).",
+   "Phone thumb zone: at 749x361 the potions (logical y223-287) and the quest header (x12-272, y293-325) sit inside the HUD's own U3 no-HUD zone (x<400, y>265). They also sit inside Roblox's DynamicThumbstick area (left 40% x bottom 2/3 = y>160), and so does the lower card. A thumb drag that starts there presses buttons instead of moving.",
+   "Phone vertical collisions at 749x361: the toast stack starts at logical y229 (x275-724) on the same line as the personal line (y229-259, narrowed to x397-602), so toasts (Z95) cover the grudge-sack timer (Z6). The travel bar (centre y=0.42H, logical y170-234) overlaps the strip bottom (150-189) and the chips (191-223). The announce banner at 30% of the height (real y77-140) covers the war meter, strip and 대장간 card.",
+   "Cut text: the 대장간 card subtitle '무기 선택 · 구매 · 판매' is clipped mid-glyph ('판ㅁ' in the capture) because ui.upgradePrice has no TextTruncate (HUD.luau:1672-1684, 2122), and the U badge sits over the card's top-right corner. The potion status line ('사용' / '구매') rides on the bottom rim of the 50-unit button and is partly hidden. The 1 and 2 key badges hang over the potion buttons' top-left rim. The quest row's '메인' badge overlaps the row's top rim.",
+   "Duplicated or confusing labels: 'HP 82 / 152' on the bar and 'HP2개' on the potion, with no space and the same 'HP' word. The XP bar has no label and the same blue as MP. The skill button shows only 'MP20', no skill name. The luck panel mixes '오늘의 운 · 희귀 5%' with unrelated goose '응원별 ☆☆☆☆☆ 0/5'. Horns always show '☆☆☆☆☆ 현상금 0', even at zero. The Keybinds name '다음 무기' does not match the card title '대장간', and a full gold progress bar is used only to print '교차로 마을'. In the capture two '왕 슬라임' name and HP bars stack near x915-1215, y295-375.",
+   "Quest header: '오늘의 퀘스트 (0/3) · 받기 3' counts claimed dailies (DailyClaims) while 3 are claimable (HUD.luau:2603-2604). The collapsed list shows the pinned 메인 story row ('분수의 조각과 이야기'), which has no 받기 button, so the 3 claimable rewards stay hidden behind ▼ (HUD.luau:2593-2600).",
+   "Dead or silent controls: the MP potion shows '구매' at 0 stock, but a click does nothing because requestPotion returns when the potion is unavailable (VitalsUI.luau:48, 57-62). Clicking the portrait or 전투력 calls Panels.Open('Character'), which does not exist yet (HUD.luau:600-603). G, C, K, L, H and J are bound in Config.Keybinds but have no windows.",
+   "Phones never show '오늘의 운' (A23-18 requires the readout). The luck corner is desktop-only (EventHUD.luau:1257), and EventHUD.LuckSummary is never called by Panels.",
+   "Chat: the place file says LegacyChatService but HUD.Start assumes TextChatService. If TextChatService is live, the desktop chat now sits bottom-centre with width and height scale 0.7. As CoreGui above the HUD it can cover the personal line (real y506-530 at 1280x720), the travel bar (406-458), the combo milestone (~412-464) and the character's feet, and it eats clicks. If legacy is live, the window at (0,0,0.6,0) (real y≥432) overlaps the expanded quest list (to ~460).",
+   "The Tab PlayerList still shows 골드 (bank + carried), against A23-21's hide-gold rule, and has no 전투력 column (PlayerService.luau:291-308). It also covers the HUD's top-right column by default on PC.",
+   "Windows and auto combat (A23-20): any Panels window lays a full-screen 45% dim at Z50 over the whole HUD while auto combat keeps fighting and monsters keep attacking. VitalsUI.canUse also refuses potions while any Panels window is open (VitalsUI.luau:24), so a player reading the menu or items cannot drink. BB7 bag potions are not built yet.",
+   "The bully penalty (A23-22) shows only as a long red chip. The 자동 button keeps its normal OFF/ON look during the penalty because L.RefreshAuto ignores BullyStacks (HUD.luau:3109-3117).",
+   "Safety-zone mismatch: the code's touch thumb zone (40% x 45%) is smaller than Roblox's DynamicThumbstick area (40% x 2/3). The U3 checks and EventHUD.outOfThumbZone therefore allow HUD pieces where the thumb lands.",
+   "Capture caveat: the 1582x950 capture shows HUD units at about 1.1-1.2 px each (war meter 457 px for 380 units, attack about 135 px for 120) and the top blocks starting about 133 px down (top ~14% empty). Desktop UIScale caps at 1.0 and a 58 px inset would put them at about 66-70 px, so the capture's viewport or display scale differs from the code assumptions. CoreGui (top bar, chat, PlayerList) is not visible in it. Measure AbsolutePosition and GetGuiInset in live Studio before pixel-exact decisions.",
+   "Engineering constraint for the redesign: HUD.luau (~147 top-level local lines) and Fx.luau (~168) are near Luau's 200-local limit per scope (AGENTS.md). New layout state must go into tables (L, ui, TXT) or a new module, as GrudgeGhost did."
+  ]
+ }
+}

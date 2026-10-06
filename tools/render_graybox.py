@@ -3,7 +3,7 @@
 Usage:
   py tools/render_graybox.py <layout.json> <out_prefix> [--bg <screenshot>]
 
-layout.json: { "name", "items": [{id, label_ko, group, pc:{x,y,w,h}, phone:{x,y,w,h}, key_hint?}],
+layout.json: { "name", "items": [{id, label_ko, group, pc:{x,y,w,h}, phone:{x,y,w,h}, key_hint?, shape? ("round")}],
                "reserved_zones": [{name_ko, pc:{...}, phone:{...}}] }
 Writes <out_prefix>_pc.png, <out_prefix>_phone.png and <out_prefix>_sheet.png.
 Also prints overlaps between items (same screen) so the spec can be fixed before showing it.
@@ -102,7 +102,10 @@ def render(spec, key, w, h, bg, scale_font):
         g = it.get("group", "")
         col = groups.setdefault(g, PALETTE[len(groups) % len(PALETTE)])
         x0, y0, x1, y1 = rect_of(r)
-        d.rounded_rectangle((x0, y0, x1, y1), radius=min(8, r["h"] / 3), fill=col + (150,), outline=(255, 255, 255, 230), width=2)
+        if it.get("shape") == "round":
+            d.ellipse((x0, y0, x1, y1), fill=col + (150,), outline=(255, 255, 255, 230), width=2)
+        else:
+            d.rounded_rectangle((x0, y0, x1, y1), radius=min(8, r["h"] / 3), fill=col + (150,), outline=(255, 255, 255, 230), width=2)
         label = it["label_ko"] + (f" [{it['key_hint']}]" if it.get("key_hint") and key == "pc" else "")
         f, lines, lh = fit_text(d, label, r["w"], r["h"], 15 * scale_font)
         ty = y0 + (r["h"] - lh * len(lines)) / 2
