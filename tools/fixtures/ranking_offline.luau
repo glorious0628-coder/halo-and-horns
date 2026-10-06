@@ -1991,6 +1991,64 @@ runGroup("bb37-lines", function()
 	w.AllowWarn = { "missing", "zoom" }
 end)
 
+------------------------------------------------------------------ 19c. BB11 town board (검수 2026-10-06)
+runGroup("board", function()
+	local T = R0.Text.Board
+	local w = rankWorld()
+	local R = w.Ranking
+	local a = w:Join(101, "Halo")
+	local b = w:Join(102, "Halo", { Hide = true })
+	local c = w:Join(201, "Horns")
+	local d = w:Join(301, "Neutral")
+	local e = w:Join(202, "Horns", { Data = { Outlaw = OUT(2962) } }) -- an outlaw this week
+	local f = w:Join(203, "Horns") -- this week's PvP leader: only a candidate
+	local g = w:Join(204, "Horns", { Hide = true, Data = { Outlaw = OUT(2962) } }) -- a hidden outlaw
+	R.Credit(a, "Honor", 12)
+	R.Credit(b, "Honor", 9)
+	R.Credit(c, "Infamy", 4)
+	R.Credit(d, "Artisan", 3)
+	R.Credit(f, "PvP", 6)
+	R.Credit(e, "PvP", 5)
+	R.Credit(g, "PvP", 5)
+	w.PvP.DebugSetStars(c, 2)
+	w.PvP.Start()
+	w.Spawned = {}
+	local text = w.Label.Text
+	local lines = string.split(text, "\n")
+	local hiddenHalo = string.format(C0.Announce.Text.HiddenName, C0.Factions.Halo.Name)
+	local hiddenHorns = string.format(C0.Announce.Text.HiddenName, C0.Factions.Horns.Name)
+	local tag = '<font color="#FF4A4A">' .. R0.Text.OutlawTag .. "</font>"
+	check(#lines == 6 and lines[1] == T.Header, "header '이 서버 · 이번 주 순위' + 4 weekly boards + the wanted line", text)
+	check(lines[2] and has(lines[2], T.Titles.Honor) and has(lines[2], "1. P101 12") and has(lines[2], "2. " .. hiddenHalo .. " 9")
+		and not has(lines[2], "P102"), "Honor: this week's points, PublicName (hidden -> '<진영> 한 명')", lines[2])
+	check(lines[3] and has(lines[3], T.Titles.Infamy) and has(lines[3], "1. P201 4"), "Infamy line", lines[3])
+	check(lines[4] and has(lines[4], T.Titles.Artisan) and has(lines[4], "1. P301 3"), "Artisan line (A23-24: four boards)", lines[4])
+	check(lines[5] and has(lines[5], T.Titles.PvP) and has(lines[5], "1. P203 6") and not has(lines[5], "1. P203 6 " .. tag),
+		"PvP: this week's leader is shown without the outlaw tag (only a candidate)", lines[5])
+	check(lines[5] and has(lines[5], "2. P202 5 " .. tag) and has(lines[5], "2. " .. hiddenHorns .. " 5 " .. tag),
+		"PvP: players who ARE outlaws carry the red tag, also when the name is hidden; tied 5s share rank 2", lines[5])
+	check(lines[6] and has(lines[6], T.Wanted) and has(lines[6], "1. P201 ★★"), "the wanted line stays (one line at the bottom)", lines[6])
+	check(w.Label.RichText == true, "the board label is RichText (the red tag)")
+	-- empty boards
+	local w2 = rankWorld()
+	w2:Join(101, "Halo")
+	w2.PvP.Start()
+	w2.Spawned = {}
+	local empty = 0
+	for _, line in string.split(w2.Label.Text, "\n") do
+		if has(line, T.Empty) then empty += 1 end
+	end
+	check(empty == 5, "nothing yet: every line says '(아직 없음)'", w2.Label.Text)
+	-- player text is escaped (the board is RichText)
+	local w3 = rankWorld()
+	local odd = w3:Join(105, "Halo")
+	odd.DisplayName = "a<b>&"
+	w3.Ranking.Credit(odd, "Honor", 2)
+	w3.PvP.Start()
+	w3.Spawned = {}
+	check(has(w3.Label.Text, "a&lt;b&gt;&amp;") and not has(w3.Label.Text, "a<b>"), "names are escaped on the RichText board", w3.Label.Text)
+end)
+
 ------------------------------------------------------------------ 20. XP (ProgressionService.GetXPMult)
 runGroup("effects-xp", function()
 	local w = rankWorld({ Progression = true })

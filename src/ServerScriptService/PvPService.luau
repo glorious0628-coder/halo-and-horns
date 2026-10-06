@@ -24,12 +24,7 @@ local GUARD = {
 }
 
 -- Most Wanted board lines (TECH_SPEC §4.13 board text)
-local BOARD_WANTED_TITLE = "현상수배 TOP 3"
-local BOARD_HONOR_TITLE = Config.Factions.Halo.Name .. " 명예 TOP 3"
-local BOARD_EMPTY = "(아직 없음)"
-local BOARD_BULLY = "깡패"
-local BOARD_HONOR_WORD = "명예"
-local BOARD_ROWS = 3
+local BOARD_ROWS = 3 -- BB11: top 3 of each weekly board + the wanted line (texts: Config.Ranking.Text.Board)
 
 local PvPService = {}
 
@@ -753,6 +748,14 @@ function PvPService.HandleKO(victim, killer, ctx)
 end
 
 ------------------------------------------------------------------ board
+-- RichText-safe player text on the board (nicknames are validated, Roblox names too; escaped anyway)
+local function boardEsc(text)
+	return (string.gsub(tostring(text), "[&<>\"]", { ["&"] = "&amp;", ["<"] = "&lt;", [">"] = "&gt;", ['"'] = "&quot;" }))
+end
+
+-- BB11 (검수 2026-10-06): the crossroads board shows THIS server's weekly boards (Honor / Infamy / Artisan / PvP, the
+-- same numbers as the ranking window, ties share a rank) and one wanted line. Names through PublicName; the red outlaw
+-- tag only for players who ARE outlaws this week (shown even when the name is hidden, A23-23).
 local function updateBoard()
 	local ok, label = pcall(function()
 		return S.MapBuilder.GetBoardLabel()
@@ -760,62 +763,56 @@ local function updateBoard()
 	if not ok or not label then
 		return
 	end
+	local T = Config.Ranking.Text.Board
+	local outlawTag = ' <font color="#FF4A4A">' .. Config.Ranking.Text.OutlawTag .. "</font>"
+	local R = S.RankingService
+	local lines = { T.Header }
+	for _, board in Config.Ranking.Order do
+		local rows = {}
+		if R and R.ServerTop then
+			local okTop, top = pcall(R.ServerTop, board, BOARD_ROWS)
+			if okTop and type(top) == "table" then rows = top end
+		end
+		local parts = {}
+		for _, row in rows do
+			local text = string.format(T.Row, row.Rank, boardEsc(row.Name), Util.FormatNumber(row.Value))
+			if row.Outlaw then text ..= outlawTag end
+			table.insert(parts, text)
+		end
+		table.insert(lines, "<b>" .. T.Titles[board] .. "</b>  " .. (#parts > 0 and table.concat(parts, T.Sep) or T.Empty))
+	end
 
-	local wanted, heroes = {}, {}
+	local wanted = {}
 	for _, p in S.PlayerService.GetReadyPlayers() do
 		local bounty = tonumber(p:GetAttribute("Bounty")) or 0
 		if bounty > 0 then
-			table.insert(wanted, { Name = publicName(p), Bounty = bounty, Stars = stars[p] or 0, Bully = bullyStacksOf(p) })
-		end
-		if faction(p) == "Halo" then
-			local honor = num(p, "Honor", 0)
-			if honor > 0 then
-				table.insert(heroes, { Name = publicName(p), Honor = honor })
-			end
+			table.insert(wanted, { P = p, Name = publicName(p), Bounty = bounty, Stars = stars[p] or 0, Bully = bullyStacksOf(p) })
 		end
 	end
 	table.sort(wanted, function(a, b)
 		if a.Bounty ~= b.Bounty then
 			return a.Bounty > b.Bounty
 		end
-		return a.Name < b.Name
+		return a.P.UserId < b.P.UserId
 	end)
-	table.sort(heroes, function(a, b)
-		if a.Honor ~= b.Honor then
-			return a.Honor > b.Honor
+	local parts = {}
+	for i = 1, math.min(BOARD_ROWS, #wanted) do
+		local w = wanted[i]
+		local text = string.format("%d. %s", i, boardEsc(w.Name))
+		if w.Stars > 0 then
+			text ..= " " .. string.rep("★", w.Stars)
 		end
-		return a.Name < b.Name
-	end)
-
-	local lines = { BOARD_WANTED_TITLE }
-	if #wanted == 0 then
-		table.insert(lines, BOARD_EMPTY)
-	else
-		for i = 1, math.min(BOARD_ROWS, #wanted) do
-			local w = wanted[i]
-			local line = string.format("%d. %s", i, w.Name)
-			if w.Stars > 0 then
-				line ..= " " .. string.rep("★", w.Stars)
-			end
-			line ..= " " .. Util.FormatNumber(w.Bounty) .. "G"
-			if w.Bully > 0 then
-				line ..= " " .. BOARD_BULLY
-			end
-			table.insert(lines, line)
+		text ..= " " .. Util.FormatNumber(w.Bounty) .. T.Gold
+		if w.Bully > 0 then
+			text ..= " " .. T.Bully
 		end
+		if w.P:GetAttribute("Outlaw") == true then text ..= outlawTag end
+		table.insert(parts, text)
 	end
-	table.insert(lines, "")
-	table.insert(lines, BOARD_HONOR_TITLE)
-	if #heroes == 0 then
-		table.insert(lines, BOARD_EMPTY)
-	else
-		for i = 1, math.min(BOARD_ROWS, #heroes) do
-			local h = heroes[i]
-			table.insert(lines, string.format("%d. %s %s %s", i, h.Name, BOARD_HONOR_WORD, Util.FormatNumber(h.Honor)))
-		end
-	end
+	table.insert(lines, "<b>" .. T.Wanted .. "</b>  " .. (#parts > 0 and table.concat(parts, T.Sep) or T.Empty))
 
 	local text = table.concat(lines, "\n")
+	if label.RichText ~= true then label.RichText = true end
 	if label.Text ~= text then
 		label.Text = text
 	end

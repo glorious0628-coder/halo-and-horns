@@ -2952,6 +2952,20 @@ Config.Ranking = {
 		RewardStartOff = "지난주 %s %d위! 칭호를 받았어요. 경험치·드랍 +10%%는 %s에 있을 때만 켜져요 (월요일까지).", -- (board, rank, faction)
 		RewardStartOffEn = "Last week's %s #%d! You got the title. XP and drops +10%% only while in %s (until Monday).",
 		ArtisanGain = "+%d 장인 명성", ArtisanGainEn = "+%d artisan fame",
+		-- BB11 town board (PvPService.updateBoard; 검수 2026-10-06): this server's weekly boards + one wanted line.
+		-- RichText: the red outlaw tag is fixed text, names are escaped. Row = (rank, name, value).
+		Board = {
+			Header = "이 서버 · 이번 주 순위",
+			Titles = { Honor = "기사단 명예", Infamy = "뿔 군단 악명", Artisan = "장인 명성", PvP = "이번 주 PvP" },
+			Wanted = "현상수배",
+			Row = "%d. %s %s", Sep = " · ", Empty = "(아직 없음)", Bully = "깡패", Gold = "G",
+		},
+		BoardEn = {
+			Header = "This server · this week",
+			Titles = { Honor = "Knights' honor", Infamy = "Horns' infamy", Artisan = "Artisan fame", PvP = "This week's PvP" },
+			Wanted = "Wanted",
+			Row = "%d. %s %s", Sep = " · ", Empty = "(nobody yet)", Bully = "Bully", Gold = "G",
+		},
 	},
 }
 Config.RateLimits.RequestRankings = 1

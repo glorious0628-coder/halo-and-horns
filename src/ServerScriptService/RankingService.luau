@@ -724,6 +724,21 @@ local function serverRows(board, weekId)
 	return rows, ids, Util.Now()
 end
 
+-- BB11 town board (PvPService.updateBoard): this server's top `n` of one weekly board, ranked like the window (ties
+-- share a number), names through PublicName; Outlaw = the player is an outlaw NOW (last week's settle), never this
+-- week's candidates (검수 2026-10-06)
+function RankingService.ServerTop(board, n)
+	if not R.Boards[board] then return {} end
+	local rows, ids = serverRows(board)
+	local out = {}
+	for i = 1, math.min(tonumber(n) or R.RewardTop, #rows) do
+		local p = Players:GetPlayerByUserId(ids[i])
+		table.insert(out, { Rank = rows[i].Rank, Name = rows[i].Name, Value = rows[i].Value,
+			Outlaw = p ~= nil and p:GetAttribute("Outlaw") == true })
+	end
+	return out
+end
+
 local function onRequest(player, ...)
 	if select("#", ...) ~= 2 then return end
 	local board, scope = ...

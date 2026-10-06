@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 474,
+  "checks": 486,
   "failedChecks": 0,
-  "namedChecks": 466,
+  "namedChecks": 478,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -2492,6 +2492,78 @@
       "fail": 0
     },
     {
+      "group": "board",
+      "check": "header '이 서버 · 이번 주 순위' + 4 weekly boards + the wanted line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "Honor: this week's points, PublicName (hidden -> '<진영> 한 명')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "Infamy line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "Artisan line (A23-24: four boards)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "PvP: this week's leader is shown without the outlaw tag (only a candidate)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "PvP: players who ARE outlaws carry the red tag, also when the name is hidden; tied 5s share rank 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "the wanted line stays (one line at the bottom)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "the board label is RichText (the red tag)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "nothing yet: every line says '(아직 없음)'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "names are escaped on the RichText board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "effects-xp",
       "check": "base XP multiplier",
       "pass": 1,
@@ -2808,9 +2880,9 @@
   "staticChecks": 22,
   "staticFailures": [],
   "mutations": {
-    "total": 179,
-    "applied": 179,
-    "caught": 179,
+    "total": 186,
+    "applied": 186,
+    "caught": 186,
     "skipped": false,
     "results": [
       {
@@ -3698,7 +3770,7 @@
           "artisan :: a failed tagged scroll: 0 points, the tag is used",
           "artisan :: a tagged Enh30 success at +2 scores 3 (A23-24 acceptance)"
         ],
-        "newFailingCount": 72
+        "newFailingCount": 78
       },
       {
         "mutation": "faction change keeps the old points",
@@ -3961,14 +4033,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "board :: PvP: players who ARE outlaws carry the red tag, also when the name is hidden; tied 5s share rank 2",
           "ties :: Honor 9 / 7 / 7 / 5 / 5: ranks 1, 2, 2 (the two 5s are 4th: no reward)",
           "ties :: Me.Rank = the shared rank",
           "ties :: PvP 5 / 3 / 3 / 3 / 2: the three 3s are all 2nd (floor 3 kept)",
           "ties :: a shown and a hidden player tied on 7: both rank 2 with the title",
-          "ties :: everyone tied with 3rd gets 3rd (Infamy 8 / 6 / 4 / 4 / 4)",
-          "ties :: global rows: ranks 1, 2, 2, 4; inside the tie UserId order (the hidden 103 after 102)"
+          "ties :: everyone tied with 3rd gets 3rd (Infamy 8 / 6 / 4 / 4 / 4)"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "settle reads only RewardTop rows",
@@ -4014,9 +4086,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "board :: PvP: players who ARE outlaws carry the red tag, also when the name is hidden; tied 5s share rank 2",
           "ties :: server rows: 4 / 4 / 2 -> ranks 1, 1, 3"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "Me.Rank = position",
@@ -4061,6 +4134,90 @@
           "settle :: a top 3 who switched faction: the title, and the line '보상은 빛의 기사단에 있을 때만' instead of '+10% 받았어요'"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "board outlaw tag for this week's candidates",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board :: PvP: this week's leader is shown without the outlaw tag (only a candidate)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board rank = position",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board :: PvP: players who ARE outlaws carry the red tag, also when the name is hidden; tied 5s share rank 2"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board ignores the weekly boards",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board :: Artisan line (A23-24: four boards)",
+          "board :: Honor: this week's points, PublicName (hidden -> '<진영> 한 명')",
+          "board :: Infamy line",
+          "board :: PvP: players who ARE outlaws carry the red tag, also when the name is hidden; tied 5s share rank 2",
+          "board :: PvP: this week's leader is shown without the outlaw tag (only a candidate)",
+          "board :: names are escaped on the RichText board"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "board without the outlaw tag",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board :: PvP: players who ARE outlaws carry the red tag, also when the name is hidden; tied 5s share rank 2"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board names not escaped",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board :: names are escaped on the RichText board"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board label not RichText",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board :: the board label is RichText (the red tag)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board without the wanted line",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board :: header '이 서버 · 이번 주 순위' + 4 weekly boards + the wanted line",
+          "board :: nothing yet: every line says '(아직 없음)'",
+          "board :: the wanted line stays (one line at the bottom)"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "last writer wins",
@@ -5075,11 +5232,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6359dbcfbf5c1384f7bfa5dfb5a961b4b7742b7aee22eed8a906455a88ef848b",
+    "src/ReplicatedStorage/Shared/Config.luau": "f26e0444799656e51be20ca5128b196e9077e0f1d4cd892ccaa94f3200cfa23e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/RankingService.luau": "ad11588c33afca34e9b5c6106eee57a99a3fcf07ad8d299423946919ebfdcff9",
+    "src/ServerScriptService/RankingService.luau": "50ce840d503ecd8faa70a3692f8428ef823b5b537e3d591d5b765175f52decdc",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/PvPService.luau": "5a29946e6b7f1c39dfc7388d9a4c89e55ecc17fe1e76406192fc27792b960f33",
+    "src/ServerScriptService/PvPService.luau": "6a74d3116f9ff4ca38505c81f37944f10e80d58a54bf4bcb426c04c05a177ecb",
     "src/ServerScriptService/GrudgeService.luau": "1ca13643411aaef28ed40fb496e20894ea53b9a5b2f041ba293415d822b9a63c",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/LootService.luau": "928bd064ac794ebcf2875fe2976ecf0e6522c3f295ca923e8798b4ba265f1a42",
@@ -5089,7 +5246,7 @@
     "src/ServerScriptService/CharacterVisuals.luau": "40a335a59c6e11e730b59daf9761c476d42187e0ea47421721733a6a83954f47",
     "src/ServerScriptService/KaijuService.luau": "16c8c973613c6943c5877f2c8543c7e1ca98c889e6ed78760e0727fb047e5e0e"
   },
-  "fixtureSHA256": "7ed5039afc309594b10289b31f16bd90d1d636a16536e839437024fb1b327292",
+  "fixtureSHA256": "e8cd941b8666cce656d038115a5a5e7c524b8bc7a1f0b2f3fecfc06416003e2e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
