@@ -41,3 +41,8 @@
 - 아이콘 확정 899dd1e(A_SplitHero_1 + B_Crown_1, 512, 생성 확장으로 여백). 썸네일 시안 6장 ad78191·a8acc89(사용자 고르기 대기 → 고르면 1920x1080).
 - 일정(A23-44): 10/12~14 오프닝 콘티 Firefly 6장(중간) + 부서진 왕관·조각 3D 2개(무료 먼저, 없으면 Tripo 약 80크레딧까지 OK) → 10/15~17 FilmSet 촬영 → 10/18~20 게임성 개발 1 Intro.luau.
 - 생성 도구는 한 번에 3개씩(14개 동시 → 10개 실패). 빛·뿔 마을 키트 배치 스크립트 tools/worldkit/towns_kit_place.luau.
+
+## 오후 3시 상태
+- 끝: 교차로 키트 21종(52ca1db) · 빛·뿔 마을 키트 14종(e5f0de2) · 유령 3D Tripo 100크레딧(2f355a4, 남은 3,715) · 유령 숲 소품 6종+콘셉트+ZoneLook 제안(959a9af, 콘셉트 2 채택) · 타일 3장 이음(a237e2c) · 아이콘 A1·B1(899dd1e) · 썸네일 최종 2장 높음 10크레딧(d7c27cb, 검수 통과, 사용자 답 대기 → approved로).
+- 배치·가져오기는 게임성 개발 1에 보냄(manifest). 진행 중: 유령 숲 바닥 Tex_HauntedFloor(Firefly 중간). 다음: 10/12 오프닝 3D(콘티 6장 + 왕관·조각, Tripo 약 80까지 OK).
+- 요령: Firefly 참조 이미지는 Adobe 저장소에 올린 뒤 페이지에서 fetch → input[type=file]에 넣기(__setRef). 생성 도구는 3개씩(genbatch.py). 최소화된 Studio는 캡처가 하얗게 나옴 → 창 조작 전 검수에 알림.
