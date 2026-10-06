@@ -548,5 +548,89 @@
   "cutout": "tools/cutout_flat.py --holes (flat gray flood-fill + enclosed holes); checked light/navy/magenta, 48px, cream 64px button",
   "preview": "art/review/icons_menu5_preview.png",
   "note": "BB13 메뉴 버튼 아이콘(도움말 두루마리). 사용자 승인 2026-10-06(\"너무 좋아\"). 키 이름 = Config.UIArt.Parts 키. 개발 세션이 업로드·Studio 적용."
+ },
+ "IconJelly": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconJelly.txt",
+  "original": "art/out/IconJelly_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconJelly.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py (flat-background flood-fill, keeps navy outline); checked light/navy/magenta, 48px",
+  "preview": "art/review/icons_materials6_preview.png",
+  "note": "재료 아이콘(슬라임 젤리) — 가방(BB7)·드랍 알림. 사용자 승인 2026-10-06(\"너무 좋은데\")."
+ },
+ "IconSlimeCore": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconSlimeCore.txt",
+  "original": "art/out/IconSlimeCore_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconSlimeCore.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py (flat-background flood-fill, keeps navy outline); checked light/navy/magenta, 48px",
+  "preview": "art/review/icons_materials6_preview.png",
+  "note": "재료 아이콘(왕 슬라임 핵) — 가방(BB7)·드랍 알림. 사용자 승인 2026-10-06(\"너무 좋은데\")."
+ },
+ "IconGoblinTooth": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconGoblinTooth.txt",
+  "original": "art/out/IconGoblinTooth_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconGoblinTooth.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py (flat-background flood-fill, keeps navy outline); checked light/navy/magenta, 48px",
+  "preview": "art/review/icons_materials6_preview.png",
+  "note": "재료 아이콘(고블린 이빨) — 가방(BB7)·드랍 알림. 사용자 승인 2026-10-06(\"너무 좋은데\")."
+ },
+ "IconBone": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconBone.txt",
+  "original": "art/out/IconBone_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconBone.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py (flat-background flood-fill, keeps navy outline); checked light/navy/magenta, 48px",
+  "preview": "art/review/icons_materials6_preview.png",
+  "note": "재료 아이콘(낡은 뼛조각) — 가방(BB7)·드랍 알림. 사용자 승인 2026-10-06(\"너무 좋은데\"). 첫 판은 외곽선 밖 빛 번짐이라 다시 생성(문구에서 glow 줄 빼고 crisp hard edge)."
+ },
+ "IconKnightCrest": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconKnightCrest.txt",
+  "original": "art/out/IconKnightCrest_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconKnightCrest.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py on flat white (BG_WHITE for gray subject), no --holes; checked light/navy/magenta, 48px",
+  "preview": "art/review/icons_materials6_preview.png",
+  "note": "재료 아이콘(녹슨 기사 문장) — 가방(BB7)·드랍 알림. 사용자 승인 2026-10-06(\"너무 좋은데\")."
+ },
+ "IconBruteHorn": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconBruteHorn.txt",
+  "original": "art/out/IconBruteHorn_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconBruteHorn.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py (flat-background flood-fill, keeps navy outline); checked light/navy/magenta, 48px",
+  "preview": "art/review/icons_materials6_preview.png",
+  "note": "재료 아이콘(우두머리 뿔) — 사용자가 4A 뿔피리형 선택 2026-10-06(\"뿔피리형이 좋다\"). 4B(속 찬 뿔)는 버림."
+ },
+ "IconCharacterF": {
+  "status": "approved",
+  "date": "2026-10-06",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, Medium, 1:1",
+  "prompt": "art/prompts/IconCharacterF.txt",
+  "original": "art/out/IconCharacterF_src.png (1024, Adobe MCP presigned download)",
+  "file": "art/ui/IconCharacterF.png",
+  "size": "512x512 RGBA",
+  "cutout": "tools/cutout_flat.py --holes --hole-tol 10 (one gray pocket by the neck); checked light/navy/magenta, 48px",
+  "preview": "art/review/icons_character_mf2_preview.png",
+  "note": "BB13 내 캐릭터 버튼 여자판 — CharacterGender == \"F\"일 때 사용. 사용자 요청 \"여자 눈도 남자처럼\"(2026-10-06)에 맞춘 B안(점 눈, 남자판과 같은 블록 얼굴). 첫 A안(속눈썹 눈)은 버림."
  }
 }

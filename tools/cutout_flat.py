@@ -6,7 +6,9 @@ Usage:
   py tools/cutout_flat.py <src.png> <out.png> [--size 512] [--fill 0.86] [--tol 48] [--soft 10]
   py tools/cutout_flat.py <src.png> <out.png> --check art/review/<name>_check.png
   py tools/cutout_flat.py <src.png> <out.png> --holes   (also clear enclosed background holes,
-      e.g. trophy handles, bag strap loops; prints each hole so you can confirm it)
+      e.g. trophy handles, bag strap loops; prints each hole so you can confirm it).
+      Gray backgrounds only: on a white background, white shine spots match the backdrop
+      and would be punched out.
 
 How it works:
   1. Background colour = median of the four 20px corner blocks.
@@ -25,7 +27,7 @@ from PIL import Image
 from scipy import ndimage
 
 
-def cutout(src, tol=48.0, soft=10.0, holes=False, hole_min=150, hole_tol=14.0):
+def cutout(src, tol=48.0, soft=10.0, holes=False, hole_min=150, hole_tol=5.0):
     img = np.asarray(Image.open(src).convert("RGB")).astype(np.float32)
     h, w, _ = img.shape
     b = 20
@@ -104,9 +106,11 @@ def main():
     ap.add_argument("--soft", type=float, default=10.0)
     ap.add_argument("--check")
     ap.add_argument("--holes", action="store_true")
+    ap.add_argument("--hole-tol", type=float, default=5.0,
+                    help="max median distance from the backdrop for a pocket to count as a hole")
     args = ap.parse_args()
 
-    im = square(cutout(args.src, args.tol, args.soft, args.holes), args.size, args.fill)
+    im = square(cutout(args.src, args.tol, args.soft, args.holes, hole_tol=args.hole_tol), args.size, args.fill)
     im.save(args.out)
     if args.check:
         check_sheet(im, args.check)
