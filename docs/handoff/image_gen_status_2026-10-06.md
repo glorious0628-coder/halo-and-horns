@@ -13,8 +13,15 @@
 - `tools/make_tileable.py`: 최소 차이 경로 잇기(두 번째 경로 고리 닫힘), `--prefer-dark 20`(돌 틈), `-20`(밝은 용암 틈), `--grid x|y|xy`(격자·널빤지 줄에서 줄까지). 3×3 시트로 확인.
 - 쓰지 않은 후보: `art/out/tex/`(미추적) — 격자 할로 타일·쿨톤 점판암·왕관 조각 땅은 재질 칸이 없어 안 넘김.
 
-## 하는 중 / 다음
-1. 나무: 잎 덩어리 `Tex_Leaves`·나무 껍질 `Tex_Bark`(밝은 무채색 — 파트 Color로 숲·마을 색). 잎은 기본 플라스틱 공이라 **잎 파트에만 붙이는 비덮어쓰기 MaterialVariant**로, 줄기는 Wood(문 기둥·말뚝도 Wood라 같이 바뀜) 또는 줄기 전용 변형.
-2. 교차로 승리 깃발 4장 `Banner_{Halo,Horns,Crossroads,Artisan}`(문구 써 둠, 9:16 불투명 — Firefly 2:3로 받고 잘라 576x1024).
-3. 게임 아이콘·썸네일(11b)은 10/20 무렵, 높음 품질이면 검수에 먼저.
+- 나무 재질 Tex_TreeLeaves·Tex_TreeBark(38a6148, 밝은 무채색 — 파트 Color 곱하기, 이름 붙인 변형 GE_TreeLeaves/GE_TreeBark).
+- 교차로 승리 깃발 4장 Banner_*(f5ed062, 683x1024 2:3).
+- 하늘 해·달 다시(37fc90a): 빛살 없는 둥근 원판(빛살은 Roblox 해 렌더에서 흰 데이지처럼 보였음).
+- 돌·판석 바닥 6장 이음 다시(efcdd0a) + make_tileable 고침: 비용 정규화, --search, 품질 경고, 100% 이음 크롭, 둥근 자갈용 --reseat. 모드 고르는 법은 도구 머리말.
+
+## A23-33 세계 소품 키트 (이 세션이 이끎)
+1. 끝: 소품 목록 `docs/design/world_kit_2026-10-06.md`(+ .json) — 사냥터별 81종(3de8eb5).
+2. 끝: 사냥터 콘셉트 7장 `art/review/world_concepts_sheet.png`, 고른 안 `art/review/concept/*.jpg`(cf207b9). 사용자에게 보냄.
+3. 다음: `build/WorldKit.rbxlx`(복사해 둠, 아직 안 엶)에서 교차로부터 3D — Creator Store(search_asset/insert_asset) → Roblox 생성 → Tripo(크레딧 합계 검수에 먼저). 넣자마자 Script/LocalScript/ModuleScript/원격/프롬프트 삭제, `art/models/worldkit/manifest.json`에 애셋 ID·만든 사람·삼각형 수, 모델은 `art/models/worldkit/*.rbxm`. 모든 Studio 도구에 STUDIO_NAME=WorldKit(메인·UiSandbox 절대 안 건드림). 쓸 때만 열고 닫기.
+4. 게임 아이콘·썸네일(11b)은 10/20 무렵, 높음 품질이면 검수에 먼저.
 - 주의: 파트에 붙은 MaterialVariant는 파트 Color가 ColorMap에 곱해진다 — 길·다리 파트 색이 진하면 타일이 어두워짐(이미지 개발에 알림).
+- Firefly 비율은 쓰고 나면 1:1로 돌려 둔다(깃발 2:3, 콘셉트 3:2 썼음).
