@@ -1,0 +1,713 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 81,
+  "failedChecks": 0,
+  "namedChecks": 81,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Visuals.MarkModels: 5 halos + 5 horns in ServerStorage.MarkModels",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rank 1: the delivered file names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rank 2: the delivered file names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rank 3: the delivered file names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rank 4: the delivered file names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rank 5: the delivered file names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "head 1.2, halo +0.3, horns -0.06 (이미지 생성 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "five ranks (Config.Titles.Thresholds)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the R5 glow (이미지 생성 1) and Yaw 180 for a glTF +Z front",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 1: the Acc_HaloR1 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 1: bottom at head top +0.3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 1: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 1: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 1: the halo glows (light)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 1: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 2: the Acc_HaloR2 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 2: bottom at head top +0.3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 2: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 2: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 2: the halo glows (light)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 2: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 3: the Acc_HaloR3 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 3: bottom at head top +0.3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 3: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 3: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 3: the halo glows (light)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 3: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 4: the Acc_HaloR4 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 4: bottom at head top +0.3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 4: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 4: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 4: the halo glows (light)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 4: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 5: the Acc_HaloR5 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 5: bottom at head top +0.3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 5: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 5: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 5: the halo glows (light)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Halo rank 5: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 1: the Acc_HornsR1 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 1: bottom at head top -0.06",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 1: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 1: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 1: no light on horns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 1: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 2: the Acc_HornsR2 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 2: bottom at head top -0.06",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 2: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 2: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 2: no light on horns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 2: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 3: the Acc_HornsR3 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 3: bottom at head top -0.06",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 3: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 3: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 3: no light on horns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 3: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 4: the Acc_HornsR4 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 4: bottom at head top -0.06",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 4: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 4: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 4: no light on horns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 4: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 5: the Acc_HornsR5 model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 5: bottom at head top -0.06",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 5: turned by Yaw, real size on a 1.2 head",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 5: a weightless, non-colliding accessory",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 5: no light on horns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "Horns rank 5: sparkles only at rank 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "each rank wears its own model",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bigger heads, models, missing files",
+      "check": "a 1.5 head: the horns x1.25 and sunk 0.06 x1.25",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bigger heads, models, missing files",
+      "check": "a template that is a Model: its mesh is used",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bigger heads, models, missing files",
+      "check": "rank 3 horns missing in Studio: the drawn horns",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bigger heads, models, missing files",
+      "check": "no MarkModels folder: the drawn halo disc",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bigger heads, models, missing files",
+      "check": "the guild keeps its gear (no rank model)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bigger heads, models, missing files",
+      "check": "a rebuild leaves one mark",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bigger heads, models, missing files",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bigger heads, models, missing files",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 12,
+  "staticFailures": [],
+  "mutations": {
+    "total": 13,
+    "applied": 13,
+    "caught": 13,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the rank model is never used",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 and sunk 0.06 x1.25",
+          "bigger heads, models, missing files :: a template that is a Model: its mesh is used",
+          "each rank wears its own model :: Halo rank 1: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 1: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 1: the Acc_HaloR1 model",
+          "each rank wears its own model :: Halo rank 1: turned by Yaw, real size on a 1.2 head"
+        ],
+        "newFailingCount": 44
+      },
+      {
+        "mutation": "always the rank 1 model",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 and sunk 0.06 x1.25",
+          "bigger heads, models, missing files :: a template that is a Model: its mesh is used",
+          "bigger heads, models, missing files :: rank 3 horns missing in Studio: the drawn horns",
+          "each rank wears its own model :: Halo rank 2: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 2: the Acc_HaloR2 model",
+          "each rank wears its own model :: Halo rank 2: turned by Yaw, real size on a 1.2 head"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "no scale for bigger heads",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 and sunk 0.06 x1.25"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the halo sits on the head",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "each rank wears its own model :: Halo rank 1: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 2: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 3: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 4: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 5: bottom at head top +0.3"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the horns float",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bigger heads, models, missing files :: a 1.5 head: the horns x1.25 and sunk 0.06 x1.25",
+          "each rank wears its own model :: Horns rank 1: bottom at head top -0.06",
+          "each rank wears its own model :: Horns rank 2: bottom at head top -0.06",
+          "each rank wears its own model :: Horns rank 3: bottom at head top -0.06",
+          "each rank wears its own model :: Horns rank 4: bottom at head top -0.06",
+          "each rank wears its own model :: Horns rank 5: bottom at head top -0.06"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the model faces its back",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "each rank wears its own model :: Halo rank 1: turned by Yaw, real size on a 1.2 head",
+          "each rank wears its own model :: Halo rank 2: turned by Yaw, real size on a 1.2 head",
+          "each rank wears its own model :: Halo rank 3: turned by Yaw, real size on a 1.2 head",
+          "each rank wears its own model :: Halo rank 4: turned by Yaw, real size on a 1.2 head",
+          "each rank wears its own model :: Halo rank 5: turned by Yaw, real size on a 1.2 head",
+          "each rank wears its own model :: Horns rank 1: turned by Yaw, real size on a 1.2 head"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "an anchored accessory",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "each rank wears its own model :: Halo rank 1: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 2: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 3: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 4: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 5: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Horns rank 1: a weightless, non-colliding accessory"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "a colliding accessory",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "each rank wears its own model :: Halo rank 1: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 2: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 3: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 4: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Halo rank 5: a weightless, non-colliding accessory",
+          "each rank wears its own model :: Horns rank 1: a weightless, non-colliding accessory"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "no halo light",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "each rank wears its own model :: Halo rank 1: the halo glows (light)",
+          "each rank wears its own model :: Halo rank 2: the halo glows (light)",
+          "each rank wears its own model :: Halo rank 3: the halo glows (light)",
+          "each rank wears its own model :: Halo rank 4: the halo glows (light)",
+          "each rank wears its own model :: Halo rank 5: the halo glows (light)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "sparkles at every rank",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "each rank wears its own model :: Halo rank 1: sparkles only at rank 5",
+          "each rank wears its own model :: Halo rank 2: sparkles only at rank 5",
+          "each rank wears its own model :: Halo rank 3: sparkles only at rank 5",
+          "each rank wears its own model :: Halo rank 4: sparkles only at rank 5",
+          "each rank wears its own model :: Horns rank 1: sparkles only at rank 5",
+          "each rank wears its own model :: Horns rank 2: sparkles only at rank 5"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "a Model template is skipped",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bigger heads, models, missing files :: a template that is a Model: its mesh is used"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: no R5 glow",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the R5 glow (이미지 생성 1) and Yaw 180 for a glTF +Z front"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: the halo on the head",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: head 1.2, halo +0.3, horns -0.06 (이미지 생성 1)",
+          "each rank wears its own model :: Halo rank 1: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 2: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 3: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 4: bottom at head top +0.3",
+          "each rank wears its own model :: Halo rank 5: bottom at head top +0.3"
+        ],
+        "newFailingCount": 6
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "f25b5577613b8e50668001b246b68a42a7b3af80dd24fd84342c5306a273746b",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60"
+  },
+  "fixtureSHA256": "a52ad2697fe8d1bf7258aaa12a93aca995304e71bc1411dfaabadbc2f2c5e350",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "계급 장식 3D (이미지 생성 1 45b6220, user OK): Halo / Horns rank r (Config.GetTitle) wears ServerStorage[Config.Visuals.MarkModels.Folder] Acc_HaloR<r> / Acc_HornsR<r> (a MeshPart, or a Model with one mesh) cloned, sized x head height / HeadRef (1.2), its bottom HaloGap (0.3) above / HornsDepth (0.06) into the head top (both x k), turned by Yaw, unanchored / massless / no collision, welded to the head; halos get the old PointLight, rank >= Glow.Rank (5) sparkles. A missing model keeps the drawn mark; the guild keeps its gear.",
+  "limitations": "The import itself (GLB -> MeshPart in ServerStorage.MarkModels, the asset upload) and the real look on avatars (front direction = Yaw 180, glTF +Z) are checked in Studio by game dev 1 / image dev. CFrame is a translation + yaw stand-in (the test head never turns)."
+}
