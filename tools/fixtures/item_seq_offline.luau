@@ -184,6 +184,12 @@ runGroup("other-paths", function()
 	end)())
 	check(next(e.ItemSeq) == nil and e.WeaponSeq[2] == 0 and e.ItemSeqNext == 0, "the values a save loads with are not gains")
 	check(q ~= nil, "joined")
+	-- a later gain counts only its own bit: the loaded weapons are never noted afterwards either (A23-34: the defaults
+	-- own nothing, so this save loads its own bits)
+	w2.PS.SetStat(q, "WeaponOwnedMask", bit32.bor(e.WeaponOwnedMask, 4))
+	w2:Flush()
+	check(e.WeaponSeq[3] == 1 and e.WeaponSeq[1] == 0 and e.WeaponSeq[2] == 0 and e.ItemSeqNext == 1,
+		"a later gain counts only the new weapon, never the loaded ones", show(e.WeaponSeq))
 end)
 
 ------------------------------------------------------------------ 4. a rejoin keeps the order

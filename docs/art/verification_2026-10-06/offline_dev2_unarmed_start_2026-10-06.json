@@ -1,0 +1,2293 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 224,
+  "failedChecks": 0,
+  "namedChecks": 217,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "a new save starts bare-handed: WeaponTier 0, nothing owned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save Version stays 3 (A23-34 is additive)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Combat.Unarmed = 4 / 7 / 0.8 s / 75 deg",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the punch reaches a slime that attacks me (Range 7 > monster reach 5.5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "bare hands = Unarmed.Damage, no scroll +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "bare hands still grow 2% a level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "armed damage unchanged (T1 8, T2 15)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "combat power at Lv1 bare-handed = 0 (A23-34)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Lv2 bare 12, Lv3 bare 23",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "bare hands ignore a +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "bare power never drops with a level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "any weapon is above bare hands at the same level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "armed combat power = floor(PowerOf x 10 + 0.5) as before (BB4 numbers kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T1 Lv1 283 / Lv2 300",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BestUsableWeapon: nothing owned -> 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BestUsableWeapon: no mask -> 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BestUsableWeapon: only T3 at Lv1 -> 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BestUsableWeapon: only T3 at Lv5 -> T3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BestUsableWeapon: only T2 (bought first) -> T2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BestUsableWeapon: T1 + jackpot T8 -> T8 (by damage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BestUsableWeapon: T1 -> T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WeaponName(0) = 맨손",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WeaponName(1) unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WeaponArtKey: bare hands have no icon (nil), T1 keeps its key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "AttackProfile(Warrior, 0) = the shared punch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "AttackProfile(Warrior, weapon) = the class row itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the punch profile is cached (no table per swing)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "AttackProfile(Mage, 0) = the shared punch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "AttackProfile(Mage, weapon) = the class row itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "AttackProfile(Archer, 0) = the shared punch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "AttackProfile(Archer, weapon) = the class row itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Warrior/Halo = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Warrior/Horns = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Warrior/Neutral = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Mage/Halo = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Mage/Horns = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Mage/Neutral = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Archer/Halo = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Archer/Horns = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SwingHitsToKill bare Archer/Neutral = 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T1 hit counts unchanged (Warrior 3, Mage 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "M1_1 GiveWeapon = tier 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text BareHands has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text WeaponFromQuest has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text JackpotEquip has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text FirstScrollBare has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text FirstWeapon has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text FirstWeaponBag has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text BareEquip has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text VisitBlacksmith has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text Claimed has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text AutoClaimed has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text ClaimedArmed has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text AutoClaimedArmed has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "text VisitBlacksmithArmed has KO + EN with the same placeholders",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "first-mission line points to the free first weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tier 1 source = the blacksmith's gift",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "a brand-new record stays bare-handed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 bare-handed save kept (no bit forced)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 bare-handed save kept (no bit forced) (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 stored tier 0 is valid: kept even with a weapon owned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 stored tier 0 is valid: kept even with a weapon owned (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 save that bought T2 first keeps only T2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 save that bought T2 first keeps only T2 (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 legacy save with T1 unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 legacy save with T1 unchanged (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 save with T1-T3 unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 save with T1-T3 unchanged (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 equipped tier is owned (bit added)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 equipped tier is owned (bit added) (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v2 save without a mask keeps its T1 (A23-4) + the equipped T2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v2 save without a mask keeps its T1 (A23-4) + the equipped T2 (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v2 save without weapon fields = T1 (pre-A23-34 saves always had it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v2 save without weapon fields = T1 (pre-A23-34 saves always had it) (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v2 tier 0 = its T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v2 tier 0 = its T1 (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v2 mask without T1 gets T1 back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v2 mask without T1 gets T1 back (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v1 SwordTier 3 -> T3 + T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v1 SwordTier 3 -> T3 + T1 (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 NaN mask -> nothing owned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 NaN mask -> nothing owned (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 negative mask -> nothing owned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 negative mask -> nothing owned (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 fraction mask -> only the equipped bit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 fraction mask -> only the equipped bit (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 0xFFFFFFFF -> only the equipped bit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 0xFFFFFFFF -> only the equipped bit (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 tier 9 with nothing owned -> bare hands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 tier 9 with nothing owned -> bare hands (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 tier -1, owns T2+T3 at Lv1 -> T2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 tier -1, owns T2+T3 at Lv1 -> T2 (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 NaN tier, owns T2+T3 at Lv5 -> T3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 NaN tier, owns T2+T3 at Lv5 -> T3 (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 tier 1.5 with T1 -> T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 tier 1.5 with T1 -> T1 (idempotent, Version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior bare-handed: one punch = 2 damage to the nearest slime in front only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior punch spends no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior Fx Swing: Style Punch, contact 0.15, no projectile",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior no shove before the punch contact",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior the punch shoves at contact 0.15 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior punch Fx starts at the right hand",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior no second punch 0.5 s later (punch interval 0.8 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior the next punch after 0.85 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior a slime falls to the 5th punch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Warrior a punch whiff flies 7 ahead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage bare-handed: one punch = 2 damage to the nearest slime in front only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage punch spends no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage Fx Swing: Style Punch, contact 0.15, no projectile",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage no shove before the punch contact",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage the punch shoves at contact 0.15 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage punch Fx starts at the right hand",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage no second punch 0.5 s later (punch interval 0.8 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage the next punch after 0.85 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage a slime falls to the 5th punch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Mage a punch whiff flies 7 ahead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer bare-handed: one punch = 2 damage to the nearest slime in front only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer punch spends no MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer Fx Swing: Style Punch, contact 0.15, no projectile",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer no shove before the punch contact",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer the punch shoves at contact 0.15 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer punch Fx starts at the right hand",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer no second punch 0.5 s later (punch interval 0.8 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer the next punch after 0.85 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer a slime falls to the 5th punch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "Archer a punch whiff flies 7 ahead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "a Horns punch: 4 x 1.15 x 0.5 = 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "armed Archer: two targets at 30, arrows (no Style)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "armed Mage pays MP for the orb",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "armed Mage: no shove before its orb lands (0.44 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "armed Mage: the shove at the class contact 0.44 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "punch",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "PvP punch: no class multiplier (0.55) and no ranged factor (0.85)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "monster hit: punch 4, skill base (class row) 4 x 0.55",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "no WeaponTier attribute = bare hands (4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "a punch on a player = RoundDamage(punch PvP hit x 0.5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "PvP: bare hands per second < every class's tier 1 (Lv1/15/30 x opponent T0-T8), skill too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "bare Archer Q at 20 studs: RoundDamage(4 x 0.55 x 6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "bare Warrior Q (RoundDamage(4 x 6) = 24) one-shots a slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto never swings at a slime 20 away bare-handed (punch reach 7)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "no hidden whiff cooldown from the auto tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto waits 1.1 s after my own press (punch interval + 0.3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "then auto punches",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "auto skill Q fires at 20 studs bare-handed (class reach)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "joined",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "tier 1 is not sold (it comes from M1_1): refused with a notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "a bare-handed player buys the wood weapon (150) and holds it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "a purchase counts as the visit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "selling the only weapon: back to bare hands (+15), never a free T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "selling the equipped T2 with T1 owned -> T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "selling the equipped T2 (T1 + T3 owned) at Lv1 -> T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "selling the equipped T2 (T1 + T3 owned) at Lv5 -> T3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "bare-handed seller of an unusable T3 (+80)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "M1_1 is the active main quest after the first mission",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "the M1_1 gift is in hand when the shop window opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "the anvil opens the weapon shop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "the M1_1 gift is in hand by the time the shop opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "M1_1 active, still bare-handed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) M1_1 done: tier 1 owned and equipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) the ownership attribute follows (item list / telemetry read it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) the gift is noted once in '얻은 순' (no double count)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) the weapon line comes after the blacksmith's line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) the equip Fx (Upgrade, Tier 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) power attribute source: Lv2 T1 = 300",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) then the wood weapon: T1 + T2, T2 held",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) GrantFirstWeapon again: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) no second weapon line (neither the equip line nor the bag line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(b) bought T2 bare-handed first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(b) M1_1 adds T1 to the bag, T2 stays in hand",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(b) the bag line points to a weapon the item list shows (attribute 3, T1 the newest gain)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(b) the bag line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(b) no power line when the gift is not equipped",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(c) legacy save: M1_1 done, nothing added",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(c) no gift line for a save that owns T1",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(d) attribute + '얻은 순' follow the join payment",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(d) a finished M1_1 that never paid is paid at the join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "joined",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(e) Lv1 Mage: '첫 무기 [마른 지팡이]를 받았어요! 전투력 0 → 283'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(e) equipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "(f) a gift paid before the mask watcher exists is still noted in '얻은 순' (once)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gift",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "a bare-handed jackpot (T8) is equipped at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "one jackpot line: equipped with the power change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "no 'equip it in the menu' line for a weapon already in hand",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "an armed player's jackpot is not equipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "an armed player's jackpot keeps the 'equip it in the menu' line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "a T4 drop at Lv3 stays in the bag (MinLevel 12)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "first scroll bare-handed: the first-weapon hint",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "first scroll with a weapon: the enhance hint",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "level reset with only T3 owned -> the free T1 equipped (T3 kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "the usual swap line names T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "a later M1_1 adds no gift line",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "a later M1_1 adds nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "DebugReset(0) = the bare-handed start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "drops",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-pvp-visuals",
+      "check": "JusticeService.GetCombatPower: bare Lv1 0, bare Lv2 12, T1 Lv1 283",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-pvp-visuals",
+      "check": "a bare killer (power 0): boldness x1, no division by 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-pvp-visuals",
+      "check": "KO of a bare victim (power 0): the weak multiplier",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-pvp-visuals",
+      "check": "tier 0: the old model is cleared and nothing is built",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-pvp-visuals",
+      "check": "tier 1: the weapon is built",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-pvp-visuals",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power-pvp-visuals",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 10,
+  "staticFailures": [],
+  "mutations": {
+    "total": 72,
+    "applied": 72,
+    "caught": 72,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "new players start with tier 1 again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto never swings at a slime 20 away bare-handed (punch reach 7)",
+          "auto :: auto skill Q fires at 20 studs bare-handed (class reach)",
+          "auto :: auto waits 1.1 s after my own press (punch interval + 0.3)",
+          "auto :: no hidden whiff cooldown from the auto tick",
+          "config :: a new save starts bare-handed: WeaponTier 0, nothing owned",
+          "drops :: a T4 drop at Lv3 stays in the bag (MinLevel 12)"
+        ],
+        "newFailingCount": 43
+      },
+      {
+        "mutation": "new players own tier 1 again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: a new save starts bare-handed: WeaponTier 0, nothing owned",
+          "drops :: first scroll bare-handed: the first-weapon hint",
+          "gift :: (a) M1_1 done: tier 1 owned and equipped",
+          "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)",
+          "gift :: (a) power attribute source: Lv2 T1 = 300",
+          "gift :: (a) the equip Fx (Upgrade, Tier 1)"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "bare hands hit like tier 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto skill Q fires at 20 studs bare-handed (class reach)",
+          "auto :: no hidden whiff cooldown from the auto tick",
+          "auto :: then auto punches",
+          "config :: Lv2 bare 12, Lv3 bare 23",
+          "config :: SwingHitsToKill bare Archer/Halo = 5",
+          "config :: SwingHitsToKill bare Archer/Horns = 5"
+        ],
+        "newFailingCount": 36
+      },
+      {
+        "mutation": "bare hands take a scroll +N",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: bare hands = Unarmed.Damage, no scroll +N",
+          "config :: bare hands ignore a +N"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "punch damage 5 (the weapon feels like no upgrade)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto skill Q fires at 20 studs bare-handed (class reach)",
+          "auto :: no hidden whiff cooldown from the auto tick",
+          "auto :: then auto punches",
+          "config :: Combat.Unarmed = 4 / 7 / 0.8 s / 75 deg",
+          "config :: Lv2 bare 12, Lv3 bare 23",
+          "config :: SwingHitsToKill bare Archer/Halo = 5"
+        ],
+        "newFailingCount": 36
+      },
+      {
+        "mutation": "bare power not counted from 0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Lv2 bare 12, Lv3 bare 23",
+          "config :: bare hands ignore a +N",
+          "config :: combat power at Lv1 bare-handed = 0 (A23-34)",
+          "drops :: one jackpot line: equipped with the power change",
+          "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)",
+          "gift :: (a) the weapon line comes after the blacksmith's line"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "every power counted from 0 (armed numbers move)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: T1 Lv1 283 / Lv2 300",
+          "config :: armed combat power = floor(PowerOf x 10 + 0.5) as before (BB4 numbers kept)",
+          "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)",
+          "gift :: (a) power attribute source: Lv2 T1 = 300",
+          "gift :: (a) the weapon line comes after the blacksmith's line",
+          "gift :: (e) Lv1 Mage: '첫 무기 [마른 지팡이]를 받았어요! 전투력 0 → 283'"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "best weapon falls back to tier 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: BestUsableWeapon: no mask -> 0",
+          "config :: BestUsableWeapon: nothing owned -> 0",
+          "config :: BestUsableWeapon: only T3 at Lv1 -> 0",
+          "drops :: DebugReset(0) = the bare-handed start",
+          "drops :: a later M1_1 adds no gift line",
+          "drops :: level reset with only T3 owned -> the free T1 equipped (T3 kept)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "best weapon ignores ownership",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: BestUsableWeapon: no mask -> 0",
+          "config :: BestUsableWeapon: nothing owned -> 0",
+          "config :: BestUsableWeapon: only T3 at Lv1 -> 0",
+          "drops :: DebugReset(0) = the bare-handed start",
+          "drops :: a later M1_1 adds no gift line",
+          "drops :: level reset with only T3 owned -> the free T1 equipped (T3 kept)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "bare-hands name is '?'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WeaponName(0) = 맨손"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bare hands show the tier-1 icon",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WeaponArtKey: bare hands have no icon (nil), T1 keeps its key"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bare profile = the class row",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto never swings at a slime 20 away bare-handed (punch reach 7)",
+          "auto :: auto skill Q fires at 20 studs bare-handed (class reach)",
+          "auto :: auto waits 1.1 s after my own press (punch interval + 0.3)",
+          "auto :: no hidden whiff cooldown from the auto tick",
+          "auto :: then auto punches",
+          "config :: AttackProfile(Archer, 0) = the shared punch"
+        ],
+        "newFailingCount": 38
+      },
+      {
+        "mutation": "punch reach = the class range",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto never swings at a slime 20 away bare-handed (punch reach 7)",
+          "auto :: auto skill Q fires at 20 studs bare-handed (class reach)",
+          "auto :: no hidden whiff cooldown from the auto tick",
+          "config :: AttackProfile(Archer, 0) = the shared punch",
+          "config :: AttackProfile(Mage, 0) = the shared punch",
+          "config :: AttackProfile(Warrior, 0) = the shared punch"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "punch keeps the class multiplier",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: no hidden whiff cooldown from the auto tick",
+          "auto :: then auto punches",
+          "config :: AttackProfile(Archer, 0) = the shared punch",
+          "config :: AttackProfile(Mage, 0) = the shared punch",
+          "config :: SwingHitsToKill bare Archer/Halo = 5",
+          "config :: SwingHitsToKill bare Archer/Horns = 5"
+        ],
+        "newFailingCount": 22
+      },
+      {
+        "mutation": "punch hits two targets",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: AttackProfile(Archer, 0) = the shared punch",
+          "config :: AttackProfile(Mage, 0) = the shared punch",
+          "config :: AttackProfile(Warrior, 0) = the shared punch",
+          "punch :: Archer Fx Swing: Style Punch, contact 0.15, no projectile",
+          "punch :: Archer bare-handed: one punch = 2 damage to the nearest slime in front only",
+          "punch :: Archer the punch shoves at contact 0.15 s"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "punch interval = the class interval",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto waits 1.1 s after my own press (punch interval + 0.3)",
+          "config :: AttackProfile(Archer, 0) = the shared punch",
+          "config :: AttackProfile(Mage, 0) = the shared punch",
+          "config :: AttackProfile(Warrior, 0) = the shared punch",
+          "punch :: Archer no second punch 0.5 s later (punch interval 0.8 s)",
+          "punch :: Mage a punch whiff flies 7 ahead"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "shop hit count with the class multiplier",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SwingHitsToKill bare Archer/Halo = 5",
+          "config :: SwingHitsToKill bare Archer/Horns = 5",
+          "config :: SwingHitsToKill bare Archer/Neutral = 5",
+          "config :: SwingHitsToKill bare Mage/Halo = 5",
+          "config :: SwingHitsToKill bare Mage/Horns = 5",
+          "config :: SwingHitsToKill bare Mage/Neutral = 5"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "M1_1 gives no weapon",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: M1_1 GiveWeapon = tier 1",
+          "gift :: (a) GrantFirstWeapon again: nothing",
+          "gift :: (a) M1_1 done: tier 1 owned and equipped",
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
+          "gift :: (a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
+          "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "load forces tier-1 ownership again",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save :: a brand-new record stays bare-handed",
+          "save :: load: v3 0xFFFFFFFF -> only the equipped bit",
+          "save :: load: v3 NaN mask -> nothing owned",
+          "save :: load: v3 NaN tier, owns T2+T3 at Lv5 -> T3",
+          "save :: load: v3 bare-handed save kept (no bit forced)",
+          "save :: load: v3 equipped tier is owned (bit added)"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "load turns tier 0 into a corrupted tier",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save :: load: v3 stored tier 0 is valid: kept even with a weapon owned"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a corrupted mask becomes the old starter",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save :: load: v3 0xFFFFFFFF -> only the equipped bit",
+          "save :: load: v3 NaN mask -> nothing owned",
+          "save :: load: v3 fraction mask -> only the equipped bit",
+          "save :: load: v3 negative mask -> nothing owned"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a corrupted tier becomes tier 1",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save :: load: v3 NaN tier, owns T2+T3 at Lv5 -> T3",
+          "save :: load: v3 tier -1, owns T2+T3 at Lv1 -> T2",
+          "save :: load: v3 tier 9 with nothing owned -> bare hands"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "v1 / v2 saves lose their tier 1",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save :: load: v1 SwordTier 3 -> T3 + T1",
+          "save :: load: v2 mask without T1 gets T1 back",
+          "save :: load: v2 save without a mask keeps its T1 (A23-4) + the equipped T2"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "v1 / v2 saves without a tier stay bare-handed",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save :: load: v2 save without weapon fields = T1 (pre-A23-34 saves always had it)",
+          "save :: load: v2 tier 0 = its T1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bare Mage pays MP for a punch",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "punch :: Mage punch spends no MP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "punch uses the class interval",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "punch :: Archer no second punch 0.5 s later (punch interval 0.8 s)",
+          "punch :: Mage a punch whiff flies 7 ahead",
+          "punch :: Mage a slime falls to the 5th punch",
+          "punch :: Mage the next punch after 0.85 s",
+          "punch :: Warrior a punch whiff flies 7 ahead",
+          "punch :: Warrior a slime falls to the 5th punch"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "punch uses the class range",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "punch :: Archer a punch whiff flies 7 ahead",
+          "punch :: Mage a punch whiff flies 7 ahead",
+          "punch :: Warrior a punch whiff flies 7 ahead"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "punch uses the class pattern",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "punch :: Mage a punch whiff flies 7 ahead",
+          "punch :: Mage a slime falls to the 5th punch",
+          "punch :: Mage bare-handed: one punch = 2 damage to the nearest slime in front only",
+          "punch :: Mage no second punch 0.5 s later (punch interval 0.8 s)",
+          "punch :: Mage the next punch after 0.85 s",
+          "punch :: Mage the punch shoves at contact 0.15 s"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "punch damage with the class multiplier",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: no hidden whiff cooldown from the auto tick",
+          "auto :: then auto punches",
+          "punch :: Archer a punch whiff flies 7 ahead",
+          "punch :: Archer a slime falls to the 5th punch",
+          "punch :: Archer bare-handed: one punch = 2 damage to the nearest slime in front only",
+          "punch :: Archer no second punch 0.5 s later (punch interval 0.8 s)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "punch on a player keeps the ranged factor",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: PvP punch: no class multiplier (0.55) and no ranged factor (0.85)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvP punch with the class multiplier",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: a punch on a player = RoundDamage(punch PvP hit x 0.5)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Swing Fx without Style",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "punch :: Archer Fx Swing: Style Punch, contact 0.15, no projectile",
+          "punch :: Archer a punch whiff flies 7 ahead",
+          "punch :: Mage Fx Swing: Style Punch, contact 0.15, no projectile",
+          "punch :: Mage a punch whiff flies 7 ahead",
+          "punch :: Warrior Fx Swing: Style Punch, contact 0.15, no projectile",
+          "punch :: Warrior a punch whiff flies 7 ahead"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "punch Fx from the bow hand",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "punch :: Archer punch Fx starts at the right hand"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "punch Fx with the class contact / flight",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "punch :: Archer Fx Swing: Style Punch, contact 0.15, no projectile",
+          "punch :: Mage Fx Swing: Style Punch, contact 0.15, no projectile",
+          "punch :: Warrior Fx Swing: Style Punch, contact 0.15, no projectile"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "auto swings at the class range (whiffs)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: no hidden whiff cooldown from the auto tick"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto yields for the class interval",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto waits 1.1 s after my own press (punch interval + 0.3)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "auto skill reach shrinks to the punch",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto :: auto skill Q fires at 20 studs bare-handed (class reach)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hit default tier 1",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: no WeaponTier attribute = bare hands (4)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "punch shove at the class contact",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "punch :: Archer the punch shoves at contact 0.15 s",
+          "punch :: Mage the punch shoves at contact 0.15 s",
+          "punch :: Warrior the punch shoves at contact 0.15 s"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "shop refuses a bare-handed buyer",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (b) M1_1 adds T1 to the bag, T2 stays in hand",
+          "gift :: (b) bought T2 bare-handed first",
+          "gift :: (b) the bag line",
+          "gift :: (b) the bag line points to a weapon the item list shows (attribute 3, T1 the newest gain)",
+          "shop :: a bare-handed player buys the wood weapon (150) and holds it",
+          "shop :: a purchase counts as the visit"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "shop needs the tier-1 bit again (buy)",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (b) M1_1 adds T1 to the bag, T2 stays in hand",
+          "gift :: (b) bought T2 bare-handed first",
+          "gift :: (b) the bag line",
+          "gift :: (b) the bag line points to a weapon the item list shows (attribute 3, T1 the newest gain)",
+          "shop :: a bare-handed player buys the wood weapon (150) and holds it",
+          "shop :: a purchase counts as the visit"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "tier 1 refusal says nothing",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: tier 1 is not sold (it comes from M1_1): refused with a notice"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "shop sells tier 1 for 0",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: no service warnings (pcall-swallowed handler errors)",
+          "shop :: tier 1 is not sold (it comes from M1_1): refused with a notice"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "sell refuses a bare-handed seller",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: bare-handed seller of an unusable T3 (+80)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "shop needs the tier-1 bit again (sell)",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: bare-handed seller of an unusable T3 (+80)",
+          "shop :: selling the only weapon: back to bare hands (+15), never a free T1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "selling the equipped weapon equips tier 1",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: selling the equipped T2 (T1 + T3 owned) at Lv5 -> T3",
+          "shop :: selling the only weapon: back to bare hands (+15), never a free T1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "sold-weapon fallback ignores the level",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: selling the equipped T2 (T1 + T3 owned) at Lv5 -> T3"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "sold-weapon fallback skips the level rule",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: selling the equipped T2 (T1 + T3 owned) at Lv1 -> T1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the anvil never finishes M1_1",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: the M1_1 gift is in hand by the time the shop opens",
+          "shop :: the M1_1 gift is in hand when the shop window opens"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the anvil opens the shop before the gift",
+        "file": "src/ServerScriptService/ShopService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shop :: the M1_1 gift is in hand when the shop window opens"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the gift replaces a bought weapon",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: an armed player's jackpot is not equipped",
+          "drops :: an armed player's jackpot keeps the 'equip it in the menu' line",
+          "gift :: (b) M1_1 adds T1 to the bag, T2 stays in hand",
+          "gift :: (b) no power line when the gift is not equipped",
+          "gift :: (b) the bag line"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "bare equip ignores the level",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: a T4 drop at Lv3 stays in the bag (MinLevel 12)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "power line from the new weapon's power",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: one jackpot line: equipped with the power change",
+          "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)",
+          "gift :: (a) the weapon line comes after the blacksmith's line",
+          "gift :: (e) Lv1 Mage: '첫 무기 [마른 지팡이]를 받았어요! 전투력 0 → 283'"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the gift is paid again to a legacy save",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: a later M1_1 adds no gift line",
+          "gift :: (a) GrantFirstWeapon again: nothing",
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
+          "gift :: (c) no gift line for a save that owns T1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the gift is paid again while another weapon is held",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (a) GrantFirstWeapon again: nothing",
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bare-handed PvP keeps the weapon floor",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: PvP: bare hands per second < every class's tier 1 (Lv1/15/30 x opponent T0-T8), skill too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bare PvP floor as high as the weapons'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: PvP: bare hands per second < every class's tier 1 (Lv1/15/30 x opponent T0-T8), skill too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bought-first player gets no bag line",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (b) the bag line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a drop is not equipped bare-handed",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: a bare-handed jackpot (T8) is equipped at once",
+          "drops :: no 'equip it in the menu' line for a weapon already in hand",
+          "drops :: one jackpot line: equipped with the power change"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "bare jackpot says 'equip it in the menu'",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: no 'equip it in the menu' line for a weapon already in hand",
+          "drops :: one jackpot line: equipped with the power change"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gift saved without the attribute mirror",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (a) the gift is noted once in '얻은 순' (no double count)",
+          "gift :: (a) the ownership attribute follows (item list / telemetry read it)",
+          "gift :: (b) the bag line points to a weapon the item list shows (attribute 3, T1 the newest gain)",
+          "gift :: (d) attribute + '얻은 순' follow the join payment",
+          "shop :: the M1_1 gift is in hand when the shop window opens"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a join-time gift is never noted",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (f) a gift paid before the mask watcher exists is still noted in '얻은 순' (once)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the gift is noted twice in a session",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (a) the gift is noted once in '얻은 순' (no double count)",
+          "gift :: (d) attribute + '얻은 순' follow the join payment"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bare first scroll tells about enhancing",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: first scroll bare-handed: the first-weapon hint"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a level reset drops a weapon owner to bare hands",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: a later M1_1 adds no gift line",
+          "drops :: level reset with only T3 owned -> the free T1 equipped (T3 kept)",
+          "drops :: the usual swap line names T1"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "join safety net off",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (d) a finished M1_1 that never paid is paid at the join",
+          "gift :: (d) attribute + '얻은 순' follow the join payment"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "debug reset keeps the starter",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "drops :: DebugReset(0) = the bare-handed start"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "M1_1 completion never pays the weapon",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (a) GrantFirstWeapon again: nothing",
+          "gift :: (a) M1_1 done: tier 1 owned and equipped",
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
+          "gift :: (a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
+          "gift :: (a) notice '첫 무기 [나뭇가지]를 받았어요! 전투력 12 → 300' (Lv2)",
+          "gift :: (a) power attribute source: Lv2 T1 = 300"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "weapon line before the story lines",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gift :: (a) the weapon line comes after the blacksmith's line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "power attribute clamps bare hands to tier 1",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power-pvp-visuals :: JusticeService.GetCombatPower: bare Lv1 0, bare Lv2 12, T1 Lv1 283"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvP power fallback clamps bare hands to tier 1",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power-pvp-visuals :: KO of a bare victim (power 0): the weak multiplier"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bare hands draw a weapon",
+        "file": "src/ServerScriptService/CharacterVisuals.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power-pvp-visuals :: tier 0: the old model is cleared and nothing is built"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "b936e676d8db751af1d64d522ab2b4839e5589862584e2e9d753078b71b1b486",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
+    "src/ServerScriptService/StoryQuestService.luau": "19f046c3251bb799230db775a0345b4324fe77301daff3fc89506eb3f7402c68",
+    "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
+    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/DataService.luau": "8da635577f3b6957f402db621c3ca684d825e9febbe2fa7e85a47d6a6eb37f0c",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/CharacterVisuals.luau": "c757f55faf2773a81935f5d3e50390b7bf0fdc544ed56ad4e92e543034b72385"
+  },
+  "fixtureSHA256": "c6df7cceab2ba8e72cb84812c41a1caae16b7e7d0afc1ec45db7791f1619ab98",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-34 server: Config.Data.Defaults WeaponTier 0 / WeaponOwnedMask 0; v1 / v2 records get tier 1 + its bit in migrate, v3 records keep what they own, fillDefaults accepts 0 and forces no bit, a corrupted tier = Config.BestUsableWeapon (0 = bare hands). Config.WeaponDamage(0) = Combat.Unarmed.Damage (4, no +N); Config.CombatPower counts bare hands from 0 (Lv1 = 0, Lv2 = 12) and leaves armed numbers unchanged; BestUsableWeapon -> 0 when nothing owned is usable; WeaponName(0) = Text.BareHands, WeaponArtKey(0) = nil; Config.AttackProfile(class, tier, faction) = the class row armed, the shared punch bare-handed (Style Punch, 1 nearest target within 7 in a 75 deg cone, 0.8 s, class multiplier 1, not ranged, no Mage MP). CombatService.Swing / auto combat use it (Fx Swing Style = 'Punch', From = right hand, Contact 0.15, no launch / flight); skill Q stays the class skill (class range / multiplier). ShopService sells tier 2-3 to a bare-handed player, refuses tier 1 with Text.WeaponFromQuest, selling the equipped weapon equips BestUsableWeapon (0 = bare hands); the anvil prompt runs StoryQuestService.Refresh before opening the shop. M1_1 (GiveWeapon = 1) -> LootService.GrantFirstWeapon: tier 1 owned, equipped only when bare-handed (notice FirstWeapon '전투력 X → Y'), else the bag line; nothing for a save that owns it; the join safety net pays a finished M1_1 that never paid. A weapon found bare-handed is equipped when its level allows. CharacterVisuals: tier 0 = no WeaponModel. JusticeService / PvP power read tier 0.",
+  "limitations": "Offline doubles for Players, characters (a root facing -Z and a right hand), monsters (records with a root), Net and the other services. The client side (punch animation / Fx, blacksmith and item windows with tier 0, the class card text) is the 게임성 개발 1 contract; real play is checked after the merge."
+}

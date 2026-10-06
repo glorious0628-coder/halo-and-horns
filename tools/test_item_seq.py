@@ -63,7 +63,9 @@ def static() -> tuple[int, list[str]]:
     fill = function_block(data, "local function fillDefaults(")
     check("Config.SanitizeItemSeq(d)" in fill, "DataService.fillDefaults repairs the ItemSeq fields of every loaded save")
     loot = read(SSS / "LootService.luau")
-    check(loot.count("Config.NoteGained(") == 3, "LootService notes gains in 3 places (addItem, potion watcher, weapon watcher)")
+    check(loot.count("Config.NoteGained(") == 4 and "if not STATE.Watching[player] then Config.NoteGained(data, nil, tier) end" in loot,
+          "LootService notes gains in 4 places (addItem, potion watcher, weapon watcher, and the A23-34 first-weapon gift "
+          "only while the watcher is not connected yet)")
     # every potion / weapon-ownership write in the server goes through PlayerService.SetStat (mirrored -> the watcher)
     raw = []
     for path in sorted(SSS.glob("*.luau")):

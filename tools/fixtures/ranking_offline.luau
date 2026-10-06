@@ -726,7 +726,9 @@ runGroup("artisan", function()
 	local function guild(o)
 		o = o or {}
 		local w = rankWorld(o)
-		local p = w:Join(301, o.Faction or "Neutral", { Data = { WeaponEnhance = { o.Plus or 2 }, Items = o.Items or {} } })
+		-- holding tier 1 (A23-34: the save defaults start bare-handed; the scroll enhances this weapon)
+		local p = w:Join(301, o.Faction or "Neutral", { Data = { WeaponTier = 1, WeaponOwnedMask = 1,
+			WeaponEnhance = { o.Plus or 2 }, Items = o.Items or {} } })
 		return w, p
 	end
 	local w, p = guild()

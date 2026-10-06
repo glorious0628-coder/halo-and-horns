@@ -119,6 +119,17 @@ local function migrate(d, player)
 	-- The bump exists so an older v2 server refuses these records (CR-L3 guard in loadLocked) instead of clamping an
 	-- equipped tier 8 down to tier 7 and saving it (a free 90,000-gold weapon once the record is back on new code).
 	if (tonumber(d.Version) or 1) < 3 then
+		-- A23-34: every v1 / v2 record is from before the bare-handed start, when tier 1 was always owned (A23-4). Keep
+		-- that here, because fillDefaults no longer forces bit 1: a missing / broken tier is tier 1 and bit 1 stays owned.
+		-- v3 records written by older servers already carry bit 1 (their fillDefaults wrote it on every load).
+		local tier = d.WeaponTier
+		if type(tier) ~= "number" or tier ~= math.floor(tier) or tier < 1 or tier > Config.MaxWeaponTier then
+			d.WeaponTier = 1
+		end
+		local mask = d.WeaponOwnedMask
+		if type(mask) ~= "number" or mask ~= mask or mask < 0 or mask ~= math.floor(mask)
+			or mask >= bit32.lshift(1, Config.MaxWeaponTier) then mask = 0 end
+		d.WeaponOwnedMask = bit32.bor(mask, 1)
 		d.Version = 3
 	end
 end
@@ -165,25 +176,29 @@ local function fillDefaults(d, playerName)
 		d[key] = Config.NormalizePotionCount(d[key])
 	end
 	d.Level = math.clamp(math.floor(tonumber(d.Level) or 1), 1, Config.Levels.MaxLevel)
-	-- B4: a stored tier that is not an integer in 1..MaxWeaponTier is corrupted -> the free starting weapon.
-	-- Never clamp: clamping turned e.g. tier 9 into the last tier (8 = the never-sold slime legendary).
-	local weaponTier = d.WeaponTier
-	if type(weaponTier) ~= "number" or weaponTier ~= math.floor(weaponTier) or weaponTier < 1
-		or weaponTier > Config.MaxWeaponTier then weaponTier = 1 end -- NaN fails the floor test, +-inf the range test
-	d.WeaponTier = weaponTier
-	-- Older saves only prove ownership of the equipped weapon. Preserve it, including rare tiers,
-	-- without granting speculative earlier purchases. Always retain the free starting weapon.
-	-- B4 + review: a value that is not an integer mask of the weapon tiers (non-number, NaN, +-inf, < 1, fraction, or
-	-- above validMask = any bit beyond MaxWeaponTier) is corrupted -> only the starting weapon (plus the equipped tier
-	-- below). v3 records never carry higher bits (an older server refuses v3, a v2 server reset them), so keeping the
-	-- low bits of e.g. 0xFFFFFFFF would hand out every weapon incl. T7 and the never-sold legendary.
+	-- A23-34: 0 is valid for both weapon fields (bare hands, nothing owned) and no bit is forced any more; records from
+	-- before the bare-handed start got their tier-1 bit in migrate (v1 / v2) or already saved it (v3).
+	-- B4 + review: a mask that is not an integer mask of the weapon tiers (non-number, NaN, +-inf, < 0, fraction, or
+	-- above validMask = any bit beyond MaxWeaponTier) is corrupted -> nothing owned (plus the equipped tier below).
+	-- v3 records never carry higher bits (an older server refuses v3, a v2 server reset them), so keeping the low bits
+	-- of e.g. 0xFFFFFFFF would hand out every weapon incl. T7 and the never-sold legendary.
 	local owned = d.WeaponOwnedMask
 	local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1
-	if type(owned) ~= "number" or owned ~= owned or owned < 1 or owned > validMask
+	if type(owned) ~= "number" or owned ~= owned or owned < 0 or owned > validMask
 		or owned ~= math.floor(owned) then
-		owned = 1
+		owned = 0
 	end
-	d.WeaponOwnedMask = bit32.bor(owned, 1, bit32.lshift(1, d.WeaponTier - 1))
+	-- B4: a stored tier that is not an integer in 0..MaxWeaponTier is corrupted -> the best owned weapon usable at this
+	-- level (0 = bare hands). Never clamp: clamping turned e.g. tier 9 into the last tier (8 = the never-sold legendary).
+	local weaponTier = d.WeaponTier
+	if type(weaponTier) ~= "number" or weaponTier ~= math.floor(weaponTier) or weaponTier < 0
+		or weaponTier > Config.MaxWeaponTier then -- NaN fails the floor test, +-inf the range test
+		weaponTier = Config.BestUsableWeapon(owned, d.Level)
+	end
+	d.WeaponTier = weaponTier
+	-- Older saves only prove ownership of the equipped weapon. Preserve it, including rare tiers, without granting
+	-- speculative earlier purchases.
+	d.WeaponOwnedMask = weaponTier >= 1 and bit32.bor(owned, bit32.lshift(1, weaponTier - 1)) or owned
 	-- Additive onboarding progress. Do not re-open a claimed/legacy tutorial or erase an unclaimed 5/5.
 	local steps = Config.Tutorial and Config.Tutorial.Steps or { Kill = 0, Guide = 1, Quest = 2, Done = 99 }
 	if d.TutorialStep ~= steps.Kill and d.TutorialStep ~= steps.Guide

@@ -109,7 +109,9 @@ local function fixture()
     check(type(config.WeaponShop)=="table" and config.WeaponShop.MaxSoldTier==3,"production shop ceiling is not 3")
     check(config.Weapons[2].Price==150 and config.Tutorial.QuestRewardGold>=config.Weapons[2].Price,
         "A23-3 first mission reward (150) no longer covers the wood weapon")
-    check(config.Data.Defaults.WeaponOwnedMask==1 and config.Data.Defaults.BlacksmithVisited==false,"production trade defaults differ")
+    -- A23-34: a new player starts bare-handed (tier 0, nothing owned); the M1_1 blacksmith gives tier 1
+    check(config.Data.Defaults.WeaponOwnedMask==0 and config.Data.Defaults.WeaponTier==0
+        and config.Data.Defaults.BlacksmithVisited==false,"production trade defaults differ")
     check(table.find(config.Data.Mirrored,"WeaponOwnedMask")~=nil and table.find(config.Data.Mirrored,"BlacksmithVisited")~=nil,"trade attributes are not mirrored")
     local services={Players=players,ReplicatedStorage={Shared={Config="Config",Util="Util",Net="Net"}},
         ProximityPromptService=events}
@@ -195,15 +197,13 @@ do
     check(f.Data.WeaponOwnedMask==5 and f.Data.CarriedGold==carried+15,"weapon sale was gated by PvP combat")
     for _,message in f.Warnings do check(not string.find(message,"weapon "),"combat gate threw: "..message) end
 end
--- A23-4 / A23-14 review: MinLevel gates the PURCHASE only. An owned weapon re-equips for free at any level (Lv1 after a
--- rebirth or a free class change keeps every weapon), an unowned one above the level is still refused with a notice.
+-- A23-28 (user 2026-10-06; replaces the A23-4 / A23-14 'MinLevel gates the purchase only'): MinLevel gates the purchase
+-- AND the equip. An owned weapon above the level (Lv1 after a rebirth or a free class change) is kept but refused with
+-- Text.EquipNeedLevel; an unowned one above the level is refused with Text.WeaponNeedLevel.
 do
     local f=fixture();f.Data.Level=1;f.Data.WeaponOwnedMask=5;f.Data.WeaponTier=1
-    f:Buy(3)
-    check(f.Data.WeaponTier==3 and f.Data.WeaponOwnedMask==5 and f.Data.CarriedGold==200 and f.Data.BankGold==1000,
-        "owned tier 3 could not be re-equipped for free at Lv1")
-    check(f.Notices[#f.Notices]==string.format(f.Config.Loot.Text.Equip,f.Config.WeaponName(3,"Archer","Halo")),
-        "Lv1 owned re-equip notice is not Config.Loot.Text.Equip")
+    local b0=f:Snapshot();f:Buy(3);f:Unchanged(b0,"owned tier 3 re-equipped below MinLevel 5")
+    check(f.Notices[#f.Notices]==string.format(f.Config.Text.EquipNeedLevel,5),"owned re-equip refusal is not Text.EquipNeedLevel")
     local g=fixture();g.Data.Level=4;local before=g:Snapshot();g:Buy(3);g:Unchanged(before,"unowned tier 3 bought below MinLevel 5")
     check(g.Notices[#g.Notices]==string.format(g.Config.Text.WeaponNeedLevel,5),"purchase level refusal notice missing")
     check(string.find(g.Config.Text.WeaponNeedLevel,"살 수",1,true)~=nil,"WeaponNeedLevel no longer says the level gates buying")
@@ -249,7 +249,7 @@ local rejects={
     {"classNotChosen",function(f) f.Data.ClassChosen=false end},
     {"tierNan",function(f) f.Data.WeaponTier=0/0 end},
     {"tierFraction",function(f) f.Data.WeaponTier=1.5 end},
-    {"tierZero",function(f) f.Data.WeaponTier=0 end},
+    {"tierNegative",function(f) f.Data.WeaponTier=-1 end}, -- A23-34: 0 (bare hands) is valid, below 0 is not
     {"notEnoughGold",function(f) f.Data.CarriedGold=149;f.Data.BankGold=0 end},
     {"levelGate",function(f) f.Data.Level=1 end,3},
     {"pvpCombat",function(f) f.InCombat=true end},
@@ -257,8 +257,9 @@ local rejects={
     {"nanOwnership",function(f) f.Data.WeaponOwnedMask=0/0 end},
     {"negativeOwnership",function(f) f.Data.WeaponOwnedMask=-1 end},
     {"fractionOwnership",function(f) f.Data.WeaponOwnedMask=1.5 end},
-    {"overflowOwnership",function(f) f.Data.WeaponOwnedMask=128 end},
-    {"missingStarterOwnership",function(f) f.Data.WeaponOwnedMask=2 end},
+    -- out of range but holding the T2 bit, so both the buy (re-equip) and the sale reach the validMask guard (A23-34: 128
+    -- = only the T8 legendary is a valid mask now that no tier-1 bit is required)
+    {"overflowOwnership",function(f) f.Data.WeaponOwnedMask=bit32.bor(bit32.lshift(1,f.Config.MaxWeaponTier),2) end},
     {"zeroPrice",function(f) f.Config.Weapons[2].Price=0 end},
     {"negativePrice",function(f) f.Config.Weapons[2].Price=-100 end},
     {"nanPrice",function(f) f.Config.Weapons[2].Price=0/0 end},
@@ -380,7 +381,7 @@ def main() -> int:
               "contract": "UpgradeWeapon(tier 1..3): buy/re-equip; SellWeapon(tier 2..3): remove owned bit and pay floor(price * 0.1); "
                           "anvil prompt KeyCode E, HoldDuration 0 (2026-10-06); first mission 150 gold covers the 150-gold wood weapon; "
                           "review B6: buy and owned re-equip refused in PvP combat before any gold is spent (sale not gated); "
-                          "MinLevel gates the purchase only, an owned weapon re-equips free at any level (A23-14 rebirth / free class change)",
+                          "MinLevel gates the purchase and the equip (A23-28): an owned weapon above the level is kept but refused (EquipNeedLevel)",
               "covered_catalog_cases": ["direct tier 3 purchase", "lower unowned tier purchase", "owned lower/higher re-equip",
                                         "immediate and delayed duplicate debit blocked", "invalid payload and rare tiers rejected",
                                         "finite ownership/price validation", "distance, alive, class and level gates",
@@ -388,7 +389,8 @@ def main() -> int:
                                         "equipped-item sale falls back to starter", "sale source cannot count as monster gold",
                                         "valid prompt records BlacksmithVisited; forged prompt does not",
                                         "PvP combat refuses purchase and re-equip without debit; sale still allowed",
-                                        "owned tier re-equips free at Lv1; unowned tier below MinLevel refused with WeaponNeedLevel"],
+                                        "owned tier above the level refused with EquipNeedLevel (A23-28); unowned tier below MinLevel refused with WeaponNeedLevel",
+                                        "A23-34: bare-handed start (defaults tier 0 / mask 0), no tier-1 bit required"],
               "source_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in paths},
               "real_source_executed": list(SOURCES.values()), "studio_calls": 0, "api_calls": 0,

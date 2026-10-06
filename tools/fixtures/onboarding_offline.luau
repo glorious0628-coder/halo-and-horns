@@ -253,6 +253,33 @@ for _, count in { 4, 5 } do
 		check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "대장간") ~= nil, "blacksmith followup missing")
 	end
 end
+-- A23-34: an anvil visit before the claim does not count for M1_1 (the first weapon waits for a visit with the jelly)
+do
+	local initial = saved(2, 5)
+	initial.Version, initial.WeaponTier, initial.WeaponOwnedMask, initial.BlacksmithVisited = 3, 0, 0, true -- bare-handed
+	local f = fixture(initial)
+	check(f.Data.BlacksmithVisited == true and f.Data.WeaponOwnedMask == 0, "fixture: bare-handed, anvil visited before the claim")
+	f:Claim()
+	local T = f.Config.Tutorial.Text
+	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == false,
+		"bare-handed: the claim clears an earlier anvil visit (M1_1 waits for a smithy visit after the first mission)")
+	check(f.LastList[1].Text == T.VisitBlacksmith, "bare-handed: the pinned row promises the first weapon", f.LastList[1].Text)
+	local last = f.Notices[#f.Notices]
+	check(last == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)), "bare-handed: the Claimed line", last)
+end
+-- A23-34 (검수): a save that already owns tier 1 (from before A23-34) keeps its visit and gets no first-weapon promise
+do
+	local initial = saved(2, 5); initial.BlacksmithVisited = true -- Version 2: owns tier 1 after migrate
+	local f = fixture(initial)
+	f:Claim()
+	local T = f.Config.Tutorial.Text
+	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == true and bit32.btest(f.Data.WeaponOwnedMask, 1),
+		"a tier-1 owner keeps the anvil visit at the claim")
+	local last = f.Notices[#f.Notices]
+	check(last == string.format(T.ClaimedArmed, tostring(f.Config.Tutorial.QuestRewardGold)), "a tier-1 owner: the old Claimed line", last)
+	local g = fixture(saved(99, 5)) -- step 99, tier 1 owned, no visit yet: the row has no first-weapon promise
+	check(g.LastList[1].Text == T.VisitBlacksmithArmed, "a tier-1 owner's pinned row: 'check the weapons'", g.LastList[1].Text)
+end
 for _, test in { { -4, 0 }, { 2.8, 2 }, { 99, 5 }, { "4", 0 }, { 0/0, 0 }, { math.huge, 0 }, { -math.huge, 0 } } do
 	local f = fixture(saved(2, test[1])); check(f.Data.TutorialKills == test[2], "invalid saved kills not normalized")
 end
@@ -482,12 +509,14 @@ do
 end
 do
 	local f = fixture()
-	check(f.Data.WeaponOwnedMask == 1 and f.Data.WeaponTier == 1 and f.Data.BlacksmithVisited == false,
-		"new player does not start with exactly the free weapon and no visit")
+	-- A23-34 (user 2026-10-06): a new player starts bare-handed (tier 0, nothing owned); M1_1 gives tier 1
+	check(f.Data.WeaponOwnedMask == 0 and f.Data.WeaponTier == 0 and f.Data.BlacksmithVisited == false,
+		"new player does not start bare-handed (no weapon owned) and no visit")
 	check(table.find(f.Config.Data.Mirrored, "WeaponOwnedMask") ~= nil
 		and table.find(f.Config.Data.Mirrored, "BlacksmithVisited") ~= nil, "new shop state is not mirrored")
 	local record = f:SaveAndRejoin()
-	check(record.WeaponOwnedMask == 1 and f.Data.WeaponOwnedMask == 1, "new ownership changed after save/reload")
+	check(record.WeaponOwnedMask == 0 and record.WeaponTier == 0 and f.Data.WeaponOwnedMask == 0 and f.Data.WeaponTier == 0,
+		"the bare-handed start changed after save/reload (no weapon may be forced on at load)")
 end
 -- Post-transaction states come from the separately tested ShopService contract. These
 -- checks exercise actual DataService save/release/load; they do not run another trade.
@@ -521,8 +550,9 @@ do
 	check(bit32.band(f.Data.WeaponOwnedMask, 6) == 0, "legacy migration granted unproven wood/iron ownership")
 end
 -- B4 (A23-12, Data Version 3): Config.MaxWeaponTier = 8 (tier 8 = the slime legendary, mask bit 7). A valid mask is an
--- integer in 1..255; anything else (non-number, NaN, +-inf, fraction, < 1, or any bit above tier 8) is corruption and
--- becomes the starting weapon plus the equipped tier's bit. Equipped tier 3 below -> corrupted rows give 1|4 = 5.
+-- integer in 0..255; anything else (non-number, NaN, +-inf, fraction, < 0, or any bit above tier 8) is corruption.
+-- These rows are Version 2 (saved() = from before A23-34): migrate keeps their always-owned tier 1 (A23-4), so corrupted
+-- rows give tier 1 plus the equipped tier's bit. Equipped tier 3 below -> corrupted rows give 1|4 = 5.
 do
 	local cfg = execute(CONFIG_SOURCE, configEnv)
 	check(cfg.MaxWeaponTier == 8 and #cfg.Weapons == 8, "fixture expects 8 weapon tiers (Config.MaxWeaponTier)")
@@ -552,7 +582,8 @@ for _, row in {
 	{ Value = 0/0, Tier = 1, Mask = 1 }, { Value = math.huge, Tier = 1, Mask = 1 },
 	{ Value = -math.huge, Tier = 1, Mask = 1 }, { Value = -2, Tier = 1, Mask = 1 },
 	{ Value = "4", Tier = 1, Mask = 1 }, { Value = false, Tier = 1, Mask = 1 },
-	-- B4: out-of-range or fractional tiers become the free weapon (never clamped: tier 9/99 must not become the legendary)
+	-- B4: out-of-range or fractional tiers of a Version 2 save become its tier 1 (never clamped: tier 9/99 must not become
+	-- the legendary); A23-34: a Version 2 save's tier 0 is tier 1 too (pre-A23-34 saves always had a weapon)
 	{ Value = 3.8, Tier = 1, Mask = 1 }, { Value = 99, Tier = 1, Mask = 1 }, { Value = 9, Tier = 1, Mask = 1 },
 	{ Value = 0, Tier = 1, Mask = 1 }, { Value = 8.5, Tier = 1, Mask = 1 },
 	-- valid tiers keep their ownership bit (tier 8 = the legendary, bit 7)
@@ -627,7 +658,11 @@ end
 do
 	local function lines(f)
 		local gold = tostring(f.Config.Tutorial.QuestRewardGold)
-		return string.format(f.Config.Tutorial.Text.AutoClaimed, gold), string.format(f.Config.Tutorial.Text.Claimed, gold)
+		local T = f.Config.Tutorial.Text
+		-- A23-34 (검수): a save that owns tier 1 (these Version 2 rows do after migrate) gets the lines without the
+		-- first-weapon promise
+		local armed = bit32.btest(math.floor(tonumber(f.Data.WeaponOwnedMask) or 0), 1)
+		return string.format(armed and T.AutoClaimedArmed or T.AutoClaimed, gold), string.format(armed and T.ClaimedArmed or T.Claimed, gold)
 	end
 	local function count(f, text)
 		local n = 0

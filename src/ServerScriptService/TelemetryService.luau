@@ -101,7 +101,7 @@ local function onReady(player, data)
 	local tut = tonumber(data.TutorialStep) or 0
 	if tut >= 1 then TelemetryService.Step(player, 5) end
 	if tut == 99 then TelemetryService.Step(player, 6) end
-	if (tonumber(data.WeaponOwnedMask) or 1) > 1 then TelemetryService.Step(player, 7) end
+	if (tonumber(data.WeaponOwnedMask) or 0) > 0 then TelemetryService.Step(player, 7) end -- A23-34: any weapon owned
 	if data.AutoCombatUnlocked == true then TelemetryService.Step(player, 8) end
 	for _, c in T.Conns[player] or {} do c:Disconnect() end
 	T.Conns[player] = nil
@@ -113,7 +113,7 @@ local function onReady(player, data)
 		if v == 99 then TelemetryService.Step(player, 6) end
 	end)
 	watch(player, "WeaponOwnedMask", function(v)
-		if (tonumber(v) or 1) > 1 then TelemetryService.Step(player, 7) end
+		if (tonumber(v) or 0) > 0 then TelemetryService.Step(player, 7) end
 	end)
 	watch(player, "AutoCombatUnlocked", function(v) if v == true then TelemetryService.Step(player, 8) end end)
 	watch(player, "AutoCombatEnabled", function(v)

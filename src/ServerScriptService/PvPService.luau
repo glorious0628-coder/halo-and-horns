@@ -220,7 +220,7 @@ local function combatPower(p)
 		end
 	end
 	local level = math.max(1, num(p, "Level", 1))
-	local tier = math.clamp(math.floor(num(p, "WeaponTier", 1)), 1, Config.MaxWeaponTier)
+	local tier = math.clamp(math.floor(num(p, "WeaponTier", 0)), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands
 	-- review B5: the equipped scroll +N counts. Read the attribute directly: data.WeaponEnhance is the per-tier table.
 	return Config.CombatPower(level, tier, tonumber(p:GetAttribute("WeaponEnhance")) or 0) -- BB4 (same as Justice)
 end

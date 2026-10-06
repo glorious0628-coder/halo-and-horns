@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 40,
+  "checks": 41,
   "failedChecks": 0,
-  "namedChecks": 40,
+  "namedChecks": 41,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -201,6 +201,12 @@
     },
     {
       "group": "other-paths",
+      "check": "a later gain counts only the new weapon, never the loaded ones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "other-paths",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -269,9 +275,9 @@
           "drops :: a potion drop: PotionHP is the most recent",
           "drops :: a weapon drop: WeaponSeq[4] is the most recent",
           "drops :: the owner's Inventory payload carries ItemSeq",
-          "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier"
+          "other-paths :: a later gain counts only the new weapon, never the loaded ones"
         ],
-        "newFailingCount": 14
+        "newFailingCount": 15
       },
       {
         "mutation": "a weapon gain written as an item key",
@@ -282,12 +288,12 @@
         "newFailingChecks": [
           "drops :: a weapon drop: WeaponSeq[4] is the most recent",
           "drops :: no service warnings (pcall-swallowed handler errors)",
+          "other-paths :: a later gain counts only the new weapon, never the loaded ones",
           "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier",
           "other-paths :: every noted gain is pushed to the owner",
-          "other-paths :: no service warnings (pcall-swallowed handler errors)",
-          "other-paths :: selling a weapon is not a gain"
+          "other-paths :: no service warnings (pcall-swallowed handler errors)"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "unknown keys kept",
@@ -425,12 +431,13 @@
         "crashed": false,
         "newFailingChecks": [
           "drops :: a weapon drop: WeaponSeq[4] is the most recent",
+          "other-paths :: a later gain counts only the new weapon, never the loaded ones",
           "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier",
           "other-paths :: every noted gain is pushed to the owner",
           "other-paths :: selling a weapon is not a gain",
           "other-paths :: two new weapons at once: both noted"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "selling a weapon counts as a gain",
@@ -452,12 +459,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "other-paths :: a weapon bought (a new ownership bit) is a gain for that tier",
-          "other-paths :: every noted gain is pushed to the owner",
-          "other-paths :: selling a weapon is not a gain",
-          "other-paths :: two new weapons at once: both noted"
+          "other-paths :: a later gain counts only the new weapon, never the loaded ones"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 1
       },
       {
         "mutation": "a noted gain is never pushed",
@@ -476,11 +480,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "312c36eb8a6cac8cb7b4114776f705b9e6f7723147502523d43d087b870e497c",
+    "src/ReplicatedStorage/Shared/Config.luau": "b936e676d8db751af1d64d522ab2b4839e5589862584e2e9d753078b71b1b486",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/LootService.luau": "82d8df3a9ee03e02d60e9c9ab733ec32ec98ded4676ff821a7d1c3e1b4a019d3"
+    "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160"
   },
-  "fixtureSHA256": "c94752c0dae12ab2aa1f87023346d1bb66c79a8d3d38a5ceb98da29252334144",
+  "fixtureSHA256": "8e181a430eb8de3191c9b9e643cb76573ed186093a3d9d25905368314210dbcd",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

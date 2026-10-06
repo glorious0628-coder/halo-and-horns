@@ -1,0 +1,197 @@
+{
+ "what": "A23-34 (+ 검수 3 fixes) and A23-39 pet tamer (게임성 개발 2): every offline suite run on dev2 0b0133f plus the uncommitted review fixes, with mutations",
+ "suites": [
+  {
+   "suite": "test_a23_14.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=19/19 (of 19)",
+    "Named checks: 146 passed, 0 failing; assertions 2257/2257"
+   ]
+  },
+  {
+   "suite": "test_auto_combat.py",
+   "exit": 0,
+   "summary": [
+    "Report: docs/art/verification_2026-10-06/offline_auto_combat_2026-10-06.json"
+   ]
+  },
+  {
+   "suite": "test_beta_basics.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=33/33 (of 33)",
+    "Named checks: 225 passed, 0 failing; assertions 275/275"
+   ]
+  },
+  {
+   "suite": "test_camera_input.py",
+   "exit": 0,
+   "summary": [
+    "CAMERA_INPUT_SUMMARY checks=44 failed=0"
+   ]
+  },
+  {
+   "suite": "test_costume_physics.py",
+   "exit": 1,
+   "summary": [
+    "RETIRED 2026-10-06: costumes removed (A23-5); this costume tool must not be run."
+   ]
+  },
+  {
+   "suite": "test_grudge.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=68/68 (of 68, baseline real)"
+   ]
+  },
+  {
+   "suite": "test_halloween.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=87/87 (of 87)",
+    "Named checks: 537 passed, 0 failing; assertions 7170/7170"
+   ]
+  },
+  {
+   "suite": "test_hud_layout.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=38/38 (of 38)",
+    "Named checks: 6697 passed, 0 failing; assertions 7116/7116"
+   ]
+  },
+  {
+   "suite": "test_intro_seen.py",
+   "exit": 0,
+   "summary": [
+    "Report: docs/art/verification_2026-10-06/offline_intro_seen_2026-10-06.json"
+   ]
+  },
+  {
+   "suite": "test_item_seq.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=15/15 (of 15)",
+    "Named checks: 41 passed, 0 failing; assertions 41/41"
+   ]
+  },
+  {
+   "suite": "test_keys_settings.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=42/42 (of 42)",
+    "Named checks: 310 passed, 0 failing; assertions 9217/9217"
+   ]
+  },
+  {
+   "suite": "test_ko_screen.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=16/16 (of 16)",
+    "Named checks: 32 passed, 0 failing; assertions 32/32"
+   ]
+  },
+  {
+   "suite": "test_loot.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=106/106 (of 106)",
+    "Named checks: 547 passed, 0 failing; assertions 2980/2980"
+   ]
+  },
+  {
+   "suite": "test_names_columns.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=28/28 (of 28)",
+    "Named checks: 107 passed, 0 failing; assertions 110/110"
+   ]
+  },
+  {
+   "suite": "test_nickname.py",
+   "exit": 0,
+   "summary": [
+    "NICKNAME_OFFLINE_OK checks=790 Studio/API calls=0"
+   ]
+  },
+  {
+   "suite": "test_onboarding.py",
+   "exit": 0,
+   "summary": [
+    "Report: docs/art/verification_2026-10-06/offline_onboarding_2026-10-06.json"
+   ]
+  },
+  {
+   "suite": "test_owner_restore.py",
+   "exit": 0,
+   "summary": [
+    "Report: build/owner_restore_offline_report.json"
+   ]
+  },
+  {
+   "suite": "test_potions.py",
+   "exit": 0,
+   "summary": [
+    "Report: docs/art/verification_2026-10-06/offline_potions_2026-10-06.json"
+   ]
+  },
+  {
+   "suite": "test_ranking.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=186/186 (of 186)",
+    "Named checks: 478 passed, 0 failing; assertions 486/486"
+   ]
+  },
+  {
+   "suite": "test_skill_release.py",
+   "exit": 0,
+   "summary": [
+    "SKILL_KEY_STATIC_OK checks=4"
+   ]
+  },
+  {
+   "suite": "test_tamer.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=36/36 (of 36)",
+    "Named checks: 93 passed, 0 failing; assertions 93/93"
+   ]
+  },
+  {
+   "suite": "test_unarmed_start.py",
+   "exit": 0,
+   "summary": [
+    "MUTATIONS caught=72/72 (of 72)",
+    "Named checks: 217 passed, 0 failing; assertions 224/224"
+   ]
+  },
+  {
+   "suite": "test_weapon_motion.py",
+   "exit": 0,
+   "summary": [
+    "WEAPON_MOTION_CHECKS 253"
+   ]
+  },
+  {
+   "suite": "test_zone_look.py",
+   "exit": 0,
+   "summary": [
+    "Status: passed"
+   ]
+  },
+  {
+   "suite": "gameplay_blacksmith_check.py",
+   "exit": 0,
+   "summary": [
+    "C:\\Users\\glori\\Documents\\Roblox\\Game-dev2\\docs\\art\\verification_2026-10-06\\offline_blacksmith_2026-10-06.json"
+   ]
+  }
+ ],
+ "notes": [
+  "test_costume_physics.py is retired (A23-5) and refuses to run; it fails the same way on main.",
+  "gameplay_blacksmith_check.py was failing on main since A23-28 (stale expectation); fixed in the A23-34 commit, passing.",
+  "Only the 게임성 개발 2 reports (offline_dev2_*, offline_ranking) are committed; the other sessions re-run theirs after the merge."
+ ]
+}
