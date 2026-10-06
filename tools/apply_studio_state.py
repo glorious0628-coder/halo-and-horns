@@ -171,6 +171,9 @@ def main():
             with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), lua), encoding="utf-8") as f:
                 res = c.call("execute_luau", {"code": f.read(), "datamodel_type": "Edit"})
             print(lua + ":", ("ERROR " if res.get("isError") else "") + text_of(res)[:400])
+        # 5. the crossroads 3D prop kit (A23-33, 52ca1db): models from the user's inventory + contract-safe placement
+        import apply_crossroads_kit  # noqa: E402
+        apply_crossroads_kit.run(c)
     finally:
         c.close()
 

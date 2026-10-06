@@ -511,7 +511,9 @@ end
 -- CR-M22: a reused pad is moved to its Config position (top at Y = 0.5) with every part under it (ring, decor);
 -- the billboard is adorned to the pad and follows. Returns true when it moved.
 local function placePad(pad, pos)
-	local want = Vector3.new(pos.X, 0.5 - pad.Size.Y / 2, pos.Z)
+	-- the crossroads kit (tools/worldkit/crossroads_kit_main.luau) sets TopY: the pad lies on its kit base top
+	local top = tonumber(pad:GetAttribute("TopY")) or 0.5
+	local want = Vector3.new(pos.X, top - pad.Size.Y / 2, pos.Z)
 	local delta = want - pad.Position
 	if delta.Magnitude < 0.05 then return false end
 	for _, d in pad:GetDescendants() do
@@ -541,7 +543,7 @@ local function ensurePads(ctx, folder)
 		pad:SetAttribute("TravelTo", entry.Dest)
 		if pad:IsA("BasePart") then
 			pad.CanTouch = true
-			pad.CanCollide = true
+			pad.CanCollide = pad:GetAttribute("KitBase") ~= true -- a kit base is the floor; the invisible pad only senses
 			if placePad(pad, entry.Position) then -- CR-M22: an older map had pads on the east road
 				Util.Log(TAG, ("moved %s to (%g, %g)"):format(name, entry.Position.X, entry.Position.Z))
 			end

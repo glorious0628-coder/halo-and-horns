@@ -76,15 +76,29 @@ class Client:
         import time
         # GoodEvil local file, or the published private experience (Darugi_S2 private place 81671223175574, 2026-10-06)
         want = os.environ.get("STUDIO_NAME", "GoodEvil|81671223175574")
+        # STUDIO_ID (an id or its prefix from list_roblox_studios) pins one window. Without it, two windows matching the
+        # name (e.g. the user opened the place a second time, 2026-10-06) is an error: never guess which one to sync /
+        # play, since that window may be the user's own play.
+        pin = os.environ.get("STUDIO_ID", "").strip()
         studios = []
         for _ in range(30):
             res = self.request("tools/call", {"name": "list_roblox_studios", "arguments": {}})
             studios = json.loads(res["content"][0]["text"])["studios"]
-            for s in studios:
-                if any(w.lower() in (s.get("name") or "").lower() for w in want.split("|")):
-                    return s["id"]
+            if pin:
+                for s in studios:
+                    if s["id"].startswith(pin):
+                        return s["id"]
+            else:
+                hits = [s for s in studios
+                        if any(w.lower() in (s.get("name") or "").lower() for w in want.split("|"))]
+                if len(hits) > 1:
+                    raise RuntimeError("같은 장소 Studio 창이 여러 개예요: "
+                                       + ", ".join(f"{s['id'][:8]} {s.get('name')}" for s in hits)
+                                       + " — STUDIO_ID=<id 앞자리>로 하나를 고르세요")
+                if hits:
+                    return hits[0]["id"]
             time.sleep(0.5)
-        raise RuntimeError(f"'{want}' 스튜디오 창을 찾지 못했습니다: {[s.get('name') for s in studios]}")
+        raise RuntimeError(f"'{pin or want}' 스튜디오 창을 찾지 못했습니다: {[s.get('name') for s in studios]}")
 
     def close(self):
         try:

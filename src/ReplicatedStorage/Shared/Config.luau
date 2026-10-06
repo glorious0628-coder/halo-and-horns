@@ -183,7 +183,7 @@ Config.Weapons = {
 	{ Tier = 3, Damage = 38, Price = 800, MinLevel = 5, Color = Color3.fromRGB(175, 180, 190), Material = Enum.Material.Metal, Length = 4 },
 	{ Tier = 4, Damage = 88, Price = 3000, MinLevel = 12, Color = Color3.fromRGB(255, 200, 40), Material = Enum.Material.Metal, Length = 4.5 },
 	{ Tier = 5, Damage = 200, Price = 10000, MinLevel = 20, Color = Color3.fromRGB(140, 220, 255), Material = Enum.Material.Glass, Length = 5 },
-	{ Tier = 6, Damage = 450, Price = 30000, MinLevel = 30, Color = Color3.fromRGB(80, 255, 170), Material = Enum.Material.Neon, Length = 5.5 },
+	{ Tier = 6, Damage = 450, Price = 30000, MinLevel = 30, Color = Color3.fromRGB(180, 150, 255), Material = Enum.Material.Neon, Length = 5.5 }, -- 3rd review: lilac like the approved Weapon_*_T6 art
 	{ Tier = 7, Damage = 1000, Price = 90000, MinLevel = 40, Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon, Length = 6.5,
 		RequiresFaction = true,
 		FactionColors = { Halo = Color3.fromRGB(255, 230, 120), Horns = Color3.fromRGB(200, 30, 40) },
@@ -1084,7 +1084,7 @@ Config.Map = {
 		{ Name = "LandWild", MinX = 530, MaxX = 1300, MinZ = -175, MaxZ = 175 },
 		{ Name = "IslandHalo", MinX = -110, MaxX = 110, MinZ = -500, MaxZ = -300 },
 		{ Name = "IslandHorns", MinX = -110, MaxX = 110, MinZ = 300, MaxZ = 500 },
-		{ Name = "LandPumpkinPatch", MinX = 280, MaxX = 440, MinZ = 175, MaxZ = 295 }, -- A23-30, joined to LandMeadow
+		{ Name = "LandPumpkinPatch", MinX = 280, MaxX = 440, MinZ = 175, MaxZ = 295, Season = "Halloween" }, -- A23-30, joined to LandMeadow; WorldMap draws it only in season
 	},
 	-- bridge decks (top at Y = 0); the built models are workspace.Map.Decor["Bridge_" .. Name]
 	Bridges = {

@@ -1792,8 +1792,11 @@ function WSHOP.Offer(selectedTier)
 	if def.RequiresFaction and faction ~= "Halo" and faction ~= "Horns" and faction ~= "Neutral" then
 		return info, fmtText("NeedFaction"), sellReason
 	end
-	-- A23-4: MinLevel gates the purchase only; an owned weapon is always re-equippable (server: ShopService / LootService)
-	if not info.Owned and level < def.MinLevel then return info, fmtText("WeaponNeedLevel", def.MinLevel), sellReason end
+	-- A23-28 (user 2026-10-06): MinLevel gates buying AND equipping, an owned weapon too (server: ShopService /
+	-- LootService); selling an owned weapon stays allowed below it
+	if not Config.WeaponUsable(selectedTier, level) then
+		return info, fmtText(info.Owned and "EquipNeedLevel" or "WeaponNeedLevel", def.MinLevel), sellReason
+	end
 	if not info.Owned and total < def.Price then
 		return info, string.format(T.WeaponShortF, exactNumber(def.Price - total)), sellReason
 	end
@@ -1860,6 +1863,7 @@ ITEMS = {
 		UseCombat = "전투 중에는 주문서를 쓸 수 없어요.", -- fallback for Config.Loot.Text.UseCombat
 		EquipPending = "확인 중…",
 		EquipCombat = "전투 중",
+		EquipLevelF = "Lv %d부터", -- A23-28: owned but below the weapon's MinLevel (the server refuses the equip)
 		EquipCombatLong = "전투 중에는 무기를 바꿀 수 없어요.", -- fallback for Config.Loot.Text.EquipCombat
 		FailDownF = "실패하면 %d%% 확률로 한 단계 내려가요. 무기는 절대 안 부서져요!", -- Config.Loot.FailDropChance
 		FailKeep = "실패해도 그대로예요. 무기는 절대 안 부서져요!",
@@ -2311,8 +2315,10 @@ BUILDERS.Items = function(parent)
 			end
 		elseif tier == equipped then
 			bText, enabled = L.Equipped, false
-		-- A23-4 review: no level check here. Every listed weapon is owned and MinLevel only gates the purchase, so a
-		-- reborn Lv1 player can always switch back to a kept T5 (server: LootService.onEquipWeapon matches)
+		elseif not Config.WeaponUsable(tier, level) then
+			-- A23-28 (user 2026-10-06): equipping keeps the weapon's MinLevel, an owned one too (server: LootService /
+			-- ShopService refuse it), so the row says from which level instead of offering a dead [장착]
+			bText, enabled = string.format(L.EquipLevelF, math.floor(tonumber(Config.Weapons[tier].MinLevel) or 1)), false
 		elseif pending and pending.Kind == "Equip" and pending.Tier == tier then
 			bText, enabled = L.EquipPending, false
 		elseif combat then
@@ -2374,14 +2380,20 @@ BUILDERS.Items = function(parent)
 			anyDrop = true
 			local parts = {}
 			for _, row in rows do
+				-- A23-27: below that weapon's MinLevel a weapon row pays its BelowLevel item on every kill instead
+				-- (LootService.rollRows: the king's T4 row -> 3 candies), so the list shows what I would really get
+				local r, p = row, row.P
+				if row.Weapon and type(row.BelowLevel) == "table" and not Config.WeaponUsable(row.Weapon, level) then
+					r, p = row.BelowLevel, 1
+				end
 				local name
-				if row.Item and loot.Items[row.Item] then
-					name = loot.Items[row.Item].Name
-					local n = math.floor(tonumber(row.N) or 1)
+				if r.Item and loot.Items[r.Item] then
+					name = loot.Items[r.Item].Name
+					local n = math.floor(tonumber(r.N) or 1)
 					if n > 1 then name = string.format(L.DropCount, name, n) end
-				elseif row.Potion then name = string.format(L.DropPotion, row.Potion)
-				elseif row.Weapon then name = string.format(L.DropWeapon, Config.WeaponGrade(row.Weapon).Name) end
-				if name then table.insert(parts, string.format(L.DropPart, name, Util.FormatPercent(row.P) .. "%")) end
+				elseif r.Potion then name = string.format(L.DropPotion, r.Potion)
+				elseif r.Weapon then name = string.format(L.DropWeapon, Config.WeaponGrade(r.Weapon).Name) end
+				if name then table.insert(parts, string.format(L.DropPart, name, Util.FormatPercent(p) .. "%")) end
 			end
 			local jp = loot.Jackpot
 			if jp and jp.Monsters and jp.Monsters[kind] then
