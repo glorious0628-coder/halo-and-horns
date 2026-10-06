@@ -498,14 +498,14 @@ local function nextGoalText(data)
 	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or num(data.WeaponTier, 1) >= IRON_TIER
 	if iron and not hasIron then
 		if level < iron.MinLevel then
-			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level)
+			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level), "IronLevel"
 		end
 		local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
-		return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold))
+		return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold)), "IronGold"
 	end
 	local zone = Config.Zones[NEXT_ZONE]
 	if zone and level < zone.MinLevel then
-		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level)
+		return string.format(TUT_MESSAGES.NextZone, zone.MinLevel, tostring(zone.Name), level), "Zone"
 	end
 	return nil
 end
@@ -531,10 +531,13 @@ local function tutorialEntry(player, data)
 			entry.Text = (hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith)
 				or "무기 살펴보기 · 교차로 마을 대장간"
 		else
-			local text = nextGoalText(data)
+			local text, kind = nextGoalText(data)
 			if not text then return nil end
 			entry.Text = text
 			entry.NextGoal = true
+			-- A23-48: which next goal this is ("IronLevel" | "IronGold" | "Zone"), so clients never search the (now
+			-- English) text for a word
+			entry.GoalKind = kind
 		end
 	else
 		return nil

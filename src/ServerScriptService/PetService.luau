@@ -8,6 +8,7 @@
 -- pick / class change / faction change, or a join as one) they get the baby slime once, equipped, Bound. A save that was
 -- the artisan hunter before A23-39 gets one notice + one free class change ticket (TamerNotice, saved first).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -149,6 +150,37 @@ local function onBecame(player)
 	PetService.GiveTamerPet(player)
 end
 
+------------------------------------------------------------------ the models the clients draw (PET-3)
+-- ServerStorage.CustomModels.Pet<species> -> ReplicatedStorage.PetModels.<species>, once at Start (a missing model is
+-- skipped; every script inside the copy is removed). The PET-3 follower (게임성 개발 1) clones from PetModels.
+local SCRIPT_CLASSES = { Script = true, LocalScript = true, ModuleScript = true }
+function PetService.PublishModels()
+	local custom = ServerStorage:FindFirstChild("CustomModels")
+	if not custom then return 0 end
+	local folder = ReplicatedStorage:FindFirstChild("PetModels")
+	if not folder then
+		folder = Instance.new("Folder")
+		folder.Name = "PetModels"
+		folder.Parent = ReplicatedStorage
+	end
+	local made = 0
+	for species in KNOWN do
+		local src = custom:FindFirstChild("Pet" .. species)
+		if src and not folder:FindFirstChild(species) then
+			local ok, copy = pcall(function() return src:Clone() end)
+			if ok and copy then
+				for _, d in copy:GetDescendants() do
+					if SCRIPT_CLASSES[d.ClassName] then d:Destroy() end
+				end
+				copy.Name = species
+				copy.Parent = folder
+				made += 1
+			end
+		end
+	end
+	return made
+end
+
 ------------------------------------------------------------------ lifecycle
 function PetService.Init(registry)
 	S = registry
@@ -168,6 +200,8 @@ local function connect(serviceName, signalName, fn)
 end
 
 function PetService.Start()
+	local ok, err = pcall(PetService.PublishModels)
+	if not ok then Util.Warn(TAG, "PublishModels: " .. tostring(err)) end
 	connect("PlayerService", "PlayerReady", onPlayerReady)
 	connect("ClassService", "ClassChanged", function(player) onBecame(player) end)
 	connect("FactionService", "FactionChanged", function(player) onBecame(player) end)

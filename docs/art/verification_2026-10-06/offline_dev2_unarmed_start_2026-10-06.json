@@ -2284,7 +2284,7 @@
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "c757f55faf2773a81935f5d3e50390b7bf0fdc544ed56ad4e92e543034b72385"
   },
-  "fixtureSHA256": "952ba7f8017c558e6f66cb5efd483c0b20089e4353ae9cf9f126a998ff47b6a8",
+  "fixtureSHA256": "bf1a0d3289e65da358d6e6e2de3dc192be651ee8fc665048fa084cd3deafa002",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

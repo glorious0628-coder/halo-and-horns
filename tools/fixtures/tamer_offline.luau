@@ -285,6 +285,25 @@ runGroup("sanitize", function()
 		and q:GetAttribute("EquippedPet") == "BabySlime", "the baby slime gets P2 (P1 kept)", show(f.Pets))
 end)
 
+------------------------------------------------------------------ 6b. the pet models the clients draw (PET-3)
+runGroup("models", function()
+	local w = bareWorld()
+	local rs = w.Services.ReplicatedStorage
+	local folder = rs:FindFirstChild("PetModels")
+	local slime = folder and folder:FindFirstChild("BabySlime")
+	check(slime ~= nil and slime.ClassName == "Model" and slime:FindFirstChild("Body") ~= nil,
+		"PetService.Start copies CustomModels.PetBabySlime to ReplicatedStorage.PetModels.BabySlime")
+	local scripts = 0
+	for _, d in (slime and slime:GetDescendants()) or {} do
+		if d.ClassName == "Script" or d.ClassName == "LocalScript" or d.ClassName == "ModuleScript" then scripts += 1 end
+	end
+	check(scripts == 0, "no script is copied with the model", scripts)
+	check(w.ServerStorage:FindFirstChild("CustomModels"):FindFirstChild("PetBabySlime") ~= nil, "the source stays in ServerStorage")
+	check(w.Pet.PublishModels() == 0 and #folder:GetChildren() == 1, "a second publish adds nothing (no duplicates)")
+	w.ServerStorage:FindFirstChild("CustomModels").Parent = nil
+	check(w.Pet.PublishModels() == 0, "no CustomModels: nothing, no error")
+end)
+
 ------------------------------------------------------------------ 6. the weapon model: a baton, never a bow
 runGroup("visuals", function()
 	local w = bareWorld()

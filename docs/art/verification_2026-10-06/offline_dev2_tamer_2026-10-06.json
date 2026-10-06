@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 93,
+  "checks": 100,
   "failedChecks": 0,
-  "namedChecks": 93,
+  "namedChecks": 100,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -536,6 +536,48 @@
       "fail": 0
     },
     {
+      "group": "models",
+      "check": "PetService.Start copies CustomModels.PetBabySlime to ReplicatedStorage.PetModels.BabySlime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "models",
+      "check": "no script is copied with the model",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "models",
+      "check": "the source stays in ServerStorage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "models",
+      "check": "a second publish adds nothing (no duplicates)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "models",
+      "check": "no CustomModels: nothing, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "models",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "models",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "visuals",
       "check": "the tamer holds a baton",
       "pass": 1,
@@ -570,9 +612,9 @@
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 36,
-    "applied": 36,
-    "caught": 36,
+    "total": 39,
+    "applied": 39,
+    "caught": 39,
     "skipped": false,
     "results": [
       {
@@ -1026,6 +1068,40 @@
           "visuals :: the tamer holds a baton"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "the pet models are never published",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "models :: PetService.Start copies CustomModels.PetBabySlime to ReplicatedStorage.PetModels.BabySlime",
+          "models :: a second publish adds nothing (no duplicates)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "scripts are copied with the model",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "models :: no script is copied with the model"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a model is copied again every publish",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "models :: a second publish adds nothing (no duplicates)"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -1033,19 +1109,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f6a2957ea9936fe4f7e9a255aff199f908d6406412ff7faba2381eca953ce7ab",
+    "src/ReplicatedStorage/Shared/Config.luau": "92ef28de499fadb9a20f106727ac528bb1619b6ea10487115c794ffe0eec138e",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
     "src/ServerScriptService/LootService.luau": "99ce9173fedb609d5b3cc3f6db9f13add86ee98c1a37072ceb9c039ca401a160",
     "src/ServerScriptService/StoryQuestService.luau": "19f046c3251bb799230db775a0345b4324fe77301daff3fc89506eb3f7402c68",
     "src/ServerScriptService/PvPService.luau": "5b06460349935766cf6176a2dda53156bdffc1e8f33823c82687e0f806ebb977",
     "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
-    "src/ServerScriptService/DataService.luau": "8da635577f3b6957f402db621c3ca684d825e9febbe2fa7e85a47d6a6eb37f0c",
+    "src/ServerScriptService/DataService.luau": "ecb89ed97364e80337e4d194f01c5b11e7ac31515fee767457b72f55318e0e6a",
     "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
     "src/ServerScriptService/CharacterVisuals.luau": "c757f55faf2773a81935f5d3e50390b7bf0fdc544ed56ad4e92e543034b72385",
-    "src/ServerScriptService/PetService.luau": "f553c803d09202b99d6cca2a9d0e6e0187639b99f8f57df9367c732de425c45d"
+    "src/ServerScriptService/PetService.luau": "2390c8f1cca79a370fcb67d37214635ac1d2585bc5bd8f178b4f4b4bc79b8290"
   },
-  "fixtureSHA256": "b8bcc5db031e3b6e14cbe3c4ec6222498f437127b33c81a9307192823efd3e4f",
+  "fixtureSHA256": "d879fe90d4ca3fd20da1cebaeda11b43b78f99effe1a253c59eda013a75541bf",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

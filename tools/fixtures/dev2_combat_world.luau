@@ -7,6 +7,33 @@
 -- PetService on doubles of the other services; characters face -Z with a right / left hand; monsters are records with
 -- a root.
 
+------------------------------------------------------------------ instance helpers PetService needs (Clone / GetDescendants)
+if not instMeta.Methods.Clone then
+	instMeta.Methods.GetDescendants = function(o)
+		local out = {}
+		local function walk(x)
+			for _, c in x._children do
+				table.insert(out, c)
+				walk(c)
+			end
+		end
+		walk(o)
+		return out
+	end
+	instMeta.Methods.Clone = function(o)
+		local function copy(src)
+			local c = newInstance(src.ClassName, src._world)
+			for k, v in src do
+				if k ~= "_children" and k ~= "_parent" and k ~= "Attrs" and k ~= "Signals" then rawset(c, k, v) end
+			end
+			for k, v in src.Attrs do c.Attrs[k] = v end
+			for _, ch in src._children do copy(ch).Parent = c end
+			return c
+		end
+		return copy(o)
+	end
+end
+
 ------------------------------------------------------------------ vector helpers the target cone needs (Unit / Dot)
 do
 	local baseIndex = vmt.__index
@@ -138,6 +165,33 @@ local function bareWorld(o)
 	reg.LootService = loot
 	local story = w:Load("StoryQuestService", STORY_SOURCE)
 	reg.StoryQuestService = story
+	-- PetService (when bound) reads ServerStorage.CustomModels at Start and parents PetModels under ReplicatedStorage:
+	-- a ServerStorage double with the baby slime model (a Script inside, which must not be copied) and a
+	-- ReplicatedStorage that keeps children
+	if PET_SOURCE then
+		local ss = newInstance("Folder", w)
+		ss.Name = "ServerStorage"
+		local custom = newInstance("Folder", w)
+		custom.Name = "CustomModels"
+		custom.Parent = ss
+		local model = newInstance("Model", w)
+		model.Name = "PetBabySlime"
+		model.Parent = custom
+		local body = newInstance("Part", w)
+		body.Name = "Body"
+		body.Parent = model
+		local sneaky = newInstance("Script", w)
+		sneaky.Name = "Sneaky"
+		sneaky.Parent = body
+		w.Services.ServerStorage = ss
+		w.ServerStorage = ss
+		local rs = w.Services.ReplicatedStorage
+		rs._children = rs._children or {}
+		rs.FindFirstChild = function(self, name)
+			for _, c in self._children do if c.Name == name then return c end end
+			return nil
+		end
+	end
 	local pet = PET_SOURCE and w:Load("PetService", PET_SOURCE) or nil
 	reg.PetService = pet
 	combat.Init(reg)

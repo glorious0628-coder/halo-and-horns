@@ -85,6 +85,10 @@ MUTATIONS = [
     # --- CharacterVisuals
     ("the tamer still holds a bow", V, 'local kind = (Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon',
      "local kind = classDef.Weapon"),
+    # --- PetService.PublishModels (PET-3 models for the clients)
+    ("the pet models are never published", PE, "\tlocal ok, err = pcall(PetService.PublishModels)\n", "\tlocal ok, err = true, nil\n"),
+    ("scripts are copied with the model", PE, "\t\t\t\t\tif SCRIPT_CLASSES[d.ClassName] then d:Destroy() end\n", ""),
+    ("a model is copied again every publish", PE, "if src and not folder:FindFirstChild(species) then", "if src then"),
 ]
 
 
