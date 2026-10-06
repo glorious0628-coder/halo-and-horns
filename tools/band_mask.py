@@ -51,7 +51,14 @@ def band_mask(path, sat_max=0.15, val_min=0.40, min_part=0.08, near_px=12, near_
     region = ndimage.binary_dilation(keep, iterations=2)
 
     soft = np.clip((sat_max + 0.05 - sat) / 0.05, 0, 1) * np.clip((val - (val_min - 0.08)) / 0.08, 0, 1)
-    w = np.where(keep, 1.0, np.where(region, soft, 0.0)) * a
+    w = np.where(keep, 1.0, np.where(region, soft, 0.0))
+    # close the band's own soft rim (else a thin silver crescent of the base peeks out)
+    rim = ndimage.binary_dilation(keep, iterations=1) & (sat < 0.25)
+    w = np.where(rim, 1.0, w) * a
+    # drop specks that are not attached to the band
+    specks, m = ndimage.label(w > 0.02)
+    attached = np.unique(specks[keep & (specks > 0)])
+    w = np.where(np.isin(specks, attached), w, 0.0)
 
     ref = np.percentile(val[keep], 98)
     lum = np.clip(val / max(ref, 1e-3), 0, 1)

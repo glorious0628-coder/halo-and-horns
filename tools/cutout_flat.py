@@ -80,6 +80,20 @@ def square(im, size=512, fill=0.86):
     return canvas.resize((size, size), Image.LANCZOS)
 
 
+def edge_fix(im, radius=3):
+    """Recolour semi-transparent edge pixels with their opaque neighbours' mean colour."""
+    arr = np.asarray(im).astype(np.float32)
+    rgb, a = arr[..., :3], arr[..., 3]
+    solid = (a >= 250).astype(np.float32)
+    k = 2 * radius + 1
+    num = np.stack([ndimage.uniform_filter(rgb[..., c] * solid, k) for c in range(3)], axis=-1)
+    den = ndimage.uniform_filter(solid, k)[..., None]
+    edge = (a > 0) & (a < 250) & (den[..., 0] > 1e-4)
+    rgb[edge] = num[edge] / den[edge]
+    out = np.dstack([np.clip(rgb, 0, 255), a]).round().astype(np.uint8)
+    return Image.fromarray(out, "RGBA"), int(edge.sum())
+
+
 def check_sheet(im, path):
     tiles = []
     for col in [(245, 245, 245), (20, 28, 60), (255, 0, 255)]:
@@ -106,11 +120,15 @@ def main():
     ap.add_argument("--soft", type=float, default=10.0)
     ap.add_argument("--check")
     ap.add_argument("--holes", action="store_true")
+    ap.add_argument("--no-edgefix", action="store_true", help="skip the edge colour clean-up")
     ap.add_argument("--hole-tol", type=float, default=5.0,
                     help="max median distance from the backdrop for a pocket to count as a hole")
     args = ap.parse_args()
 
     im = square(cutout(args.src, args.tol, args.soft, args.holes, hole_tol=args.hole_tol), args.size, args.fill)
+    if not args.no_edgefix:
+        im, n_edge = edge_fix(im)
+        print(f"  edge pixels recoloured: {n_edge}")
     im.save(args.out)
     if args.check:
         check_sheet(im, args.check)
