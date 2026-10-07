@@ -1743,7 +1743,7 @@ Config.Barks = {
 		},
 		BatGoblin = { -- a squeaky night goblin
 			Spot = { "Skree!", "Flap flap!" },
-			Hit = { "Eek!", "Skree-eek!" },
+			Hit = { "Eek!", "Skreek!" }, -- A23-74: fits the bat bubble (검수 2026-10-07)
 			Low = { "Flap away!" },
 			Idle = { "Flap flap~", "Skree~" },
 		},
