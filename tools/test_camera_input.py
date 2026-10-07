@@ -4,6 +4,9 @@ A23-51 (user 2026-10-06): the camera turns with the right mouse drag only (Roblo
 never touches); a left drag never turns it; a left press on the world = one attack on the press, never repeated.
 A23-65 + A23-74 (user 2026-10-07): the follow turn behind me while walking (forward, diagonal and sideways in wide arcs;
 never backing up) and the recenter behind my facing once I stop (never after a backpedal or my own hand turn).
+Review A23-74 (user 2026-10-07): Roblox's keyboard / trackpad camera turn is a hand turn, every held stick angle walks a
+circle of radius >= 50 studs, phones get Roblox's Classic touch camera (no second walking turn under its Follow camera)
+and a long frame turns as if it were 1/20 s.
 Does not inject physical mouse input, call Studio, or validate Roblox camera collision.
 Status "passed" only when the fixture passes AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-06/offline_camera_input_a23_51_2026-10-06.json
@@ -75,7 +78,9 @@ HUD_MUTATIONS = [
 
 # A23-65 + A23-74 (user 2026-10-07): the follow turn and the recenter (tools/fixtures/camera_follow_offline.luau); each
 # must make it fail. (a) D then stop -> behind me in 1.2 s, (b) W+D then stop, (c) no recenter in the holds / Free /
-# blocked, (d) W+D arc radius, (e) backing up never turns.
+# blocked, (d) W+D arc radius, (e) backing up never turns. Review A23-74 (user 2026-10-07): (1) Roblox's keyboard /
+# trackpad camera turn is a hand turn, (2) radius >= 50 studs for a stick held 0..110 deg off, (3) phones on Classic,
+# no second walking turn under Roblox's Follow camera, (4) a 0.5 s hitch turns as if 1/20 s.
 STOP_BOOK = ("\tif walking then\n\t\tFOLLOW.StopAt = math.huge\n\telseif FOLLOW.StopAt == math.huge then\n"
              "\t\tFOLLOW.StopAt = now\n\tend\n")
 FREE_LINE = '\tif setting("Cam", "Follow") == "Free" or blocked() then return end\n'
@@ -111,7 +116,7 @@ FOLLOW_MUTATIONS = [
      "-- (shift lock check removed)"),
     # A23-74 standing recenter
     ("(a)(b) no recenter on the stop (f3ab1f1: a side view forever)",
-     "else FOLLOW.CenterTurn(cx, cz, humanoid, now, dt, slow, was)", "else nil"),
+     "\t\ta = FOLLOW.CenterTurn(cx, cz, humanoid, now, dt, slow, was)\n", "\t\ta = nil\n"),
     ("(a) the recenter turns the wrong way", "local angle = math.atan2(cz * fx - cx * fz, dot)",
      "local angle = math.atan2(cx * fz - cz * fx, dot)"),
     ("(a) the recenter too slow (30 deg/s)", "CenterRate = math.rad(120),", "CenterRate = math.rad(30),"),
@@ -135,6 +140,46 @@ FOLLOW_MUTATIONS = [
      "if not root then return nil end"),
     ("(c) the stop is only counted after the hand-turn hold (a right drag before the stop is forgotten)",
      STOP_BOOK + FREE_LINE + HOLD_LINE, FREE_LINE + HOLD_LINE + STOP_BOOK),
+    # review A23-74 (user 2026-10-07): (1) Roblox's keyboard / trackpad turn = a hand turn
+    ("(1) a held arrow / Comma / Period is no hand turn (the recenter pulls Roblox's keyboard turn back)",
+     " or FOLLOW.KeyTurn() then", " then"),
+    ("(1) the Right arrow forgotten", "Enum.KeyCode.Left, Enum.KeyCode.Right, ", "Enum.KeyCode.Left, "),
+    ("(1) a Comma / Period tap between two frames is missed",
+     "if table.find(FOLLOW.TurnKeys, input.KeyCode) and not UserInputService:GetFocusedTextBox() then", "if false then"),
+    ("(1) a processed Comma / Period tap is ignored (Roblox's camera binds those keys itself)",
+     "if table.find(FOLLOW.TurnKeys, input.KeyCode) and not UserInputService",
+     "if table.find(FOLLOW.TurnKeys, input.KeyCode) and not processed and not UserInputService"),
+    ("(1) any key press counts as a hand turn", "if table.find(FOLLOW.TurnKeys, input.KeyCode) and not",
+     "if input.KeyCode and not"),
+    ("(1) a comma held while typing in a text box counts",
+     "if UserInputService:GetFocusedTextBox() then return false end -- typing a comma in chat turns nothing", "-- (removed)"),
+    ("(1) a period pressed while typing in a text box counts",
+     "and not UserInputService:GetFocusedTextBox() then\n\t\t\tFOLLOW.LastManual", "then\n\t\t\tFOLLOW.LastManual"),
+    ("(1) a trackpad pan is no hand turn",
+     "pcall(function() UserInputService.PointerAction:Connect(FOLLOW.OnPointerAction) end)", "local _ = nil"),
+    ("(1) a wheel / pinch zoom counts as a hand turn", "if pan and pan.Magnitude > 1e-3 then", "if pan then"),
+    # (2) the arc radius >= ~50 studs at every held angle
+    ("(2) no radius cap (a stick 25 deg off circles at 38 studs)",
+     ", (tonumber(speed) or 0) * math.min(1, ml) / FOLLOW.MinRadius)", ", math.huge)"),
+    ("(2) the radius cap at 35 studs", "MinRadius = 55,", "MinRadius = 35,"),
+    ("(2) a half-pushed stick gets the full-speed cap (27-stud circles)", "* math.min(1, ml) /", "* 1 /"),
+    ("(2) the radius cap reads a fixed 20 studs/s (a slower walk circles tighter)",
+     "FOLLOW.WalkTurn(cx, cz, move, dt, slow, humanoid.WalkSpeed)", "FOLLOW.WalkTurn(cx, cz, move, dt, slow, 20)"),
+    # (3) phones: Roblox's Classic touch camera; no second walking turn under Roblox's Follow camera
+    ("(3) phones keep Roblox's Follow camera (no Classic switch)",
+     "then LocalPlayer.DevTouchCameraMode = modes.Classic end", "then local _ = modes.Classic end"),
+    ("(3) Start never switches the touch camera", "\tFOLLOW.TouchClassic() -- phones", "\t-- (removed) -- phones"),
+    ("(3) WalkTurn adds to Roblox's Follow camera (two turns)", "elseif not FOLLOW.RobloxFollows() then", "elseif true then"),
+    ("(3) touch Default read as Classic (it is Follow on touch)",
+     'if mode == "Default" then mode = if touch then "Follow" else "Classic" end', 'if mode == "Default" then mode = "Classic" end'),
+    ("(3) a PC reads the touch mode (a PC player's Follow choice ignored)",
+     "(if touch then LocalPlayer.DevTouchCameraMode else LocalPlayer.DevComputerCameraMode)", "(LocalPlayer.DevTouchCameraMode)"),
+    ("(3) an explicit touch mode (Orbital) is overridden too",
+     "if mode == modes.UserChoice or mode == modes.Follow then", "if true then"),
+    # (4) a hitch never jumps the camera
+    ("(4) no frame clamp (a 0.5 s hitch jumps the recenter 60 deg)",
+     "\tdt = math.min(dt, FOLLOW.MaxDt) -- A23-74 review: a hitch never jumps the camera\n", ""),
+    ("(4) the clamp at 1/2 s", "MaxDt = 1 / 20,", "MaxDt = 1 / 2,"),
 ]
 
 
@@ -236,9 +281,22 @@ def main():
                           "before the stop or any time after it (kept until the next walk); the phone thumbstick drives "
                           "it, its touch never holds it; neither turn 1.5 s after a right drag / camera-side finger drag / "
                           "right stick, 0.5 s after my own Swing / Release / Skill Fx (the recenter resumes after it), in "
-                          "shift lock, first person, a window / scripted camera, or with Settings Camera = Free.",
+                          "shift lock, first person, a window / scripted camera, or with Settings Camera = Free. Review A23-74 "
+                          "(user 2026-10-07): Roblox's own keyboard / trackpad camera turn (Left / Right arrows, Comma / "
+                          "Period held or tapped, processed or not, outside a text box; a trackpad pan, not a wheel / "
+                          "pinch zoom) is a hand turn too (a held Right arrow turned 14 deg and snapped back before); the "
+                          "walking cap is never above speed / 55 studs (speed = Humanoid WalkSpeed x how far the stick is "
+                          "pushed), so a stick held anywhere 0..110 deg off forward walks a circle of radius >= 50 studs "
+                          "(55 at 20-35 deg; 38 before); Start sets LocalPlayer.DevTouchCameraMode = Classic when it is "
+                          "UserChoice / Follow (the place's StarterPlayer DevTouchCameraMovementMode is UserChoice, so "
+                          "phones got Roblox's Follow camera and its own walking turn: 10-stud circles at a 90 deg stick), "
+                          "and while Roblox's Follow camera is still active (the set refused, a PC player who picked "
+                          "Follow) WalkTurn stays off (the standing recenter still runs); a frame is clamped to 1/20 s "
+                          "(a 0.5 s hitch turned the recenter 60 deg, now <= 6).",
               "limitations": "Engine input propagation, the default camera's right-drag orbit itself and real mouse/touch "
-                             "need runtime validation (Studio own test Play)."}
+                             "need runtime validation (Studio own test Play). Roblox's camera is a double here: its "
+                             "keyboard turn is simulated at 120 deg/s; whether the client-side DevTouchCameraMode set "
+                             "switches the PlayerModule touch camera needs a phone-emulator Play."}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Status: {report['status']} (mutations {report['mutations']['caught']}/{report['mutations']['total']})")

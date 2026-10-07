@@ -12,7 +12,9 @@
 --    (FOLLOW.Cap) therefore depends on the angle: the full 45 deg/s only within FullAngle (20 deg) of the camera look,
 --    a smooth front-loaded fade to SideRate (16 deg/s) by SideAngle (60 deg), kept up to the backpedal limit. The
 --    radius of that arc = walk speed / cap: at WalkSpeed 20, D = 72 studs, W+D = 70, a stick 37 deg off = 58 (f3ab1f1's
---    45 deg/s up to 60 deg made 25-stud circles). A backpedal toward the camera (walk . look < BackDot) never turns.
+--    45 deg/s up to 60 deg made 25-stud circles). On top, the cap is never above my speed / MinRadius (55 studs; review
+--    A23-74 (user 2026-10-07): a stick 18-34 deg off made 35-48-stud circles), so no held input circles tighter, a
+--    half-pushed stick or a slower walk included. A backpedal toward the camera (walk . look < BackDot) never turns.
 -- 2. Standing (FOLLOW.CenterTurn): once the walk has ended for StopDelay s, it eases round behind my facing
 --    (HumanoidRootPart LookVector): speeding up at CenterAccel to CenterRate (120 deg/s), slowing in on the angle, a
 --    90 deg side view is behind me within ~1 s; DeadZone keeps it still once behind (a running recenter settles to
@@ -20,12 +22,19 @@
 --    backpedal ended: no 180 deg spin, the A23-74 exception), and a hand turn within ManualHold before the stop or any
 --    time after it is my own view: kept until the next walk.
 -- Neither turns for FOLLOW.ManualHold s after a hand turn (right drag, a finger drag on the camera side, the right
--- stick), for FOLLOW.AttackHold s after my swing / skill (FaceTarget / the server turning my body never whips the
--- camera; the recenter resumes after it), in shift lock or first person, and whenever blocked() (windows, the opening,
--- menus, loading). Settings "Cam" = "Free" turns both off; 'Screen shake' off or Roblox's Reduced Motion = slower rates.
+-- stick, and Roblox's own keyboard / trackpad camera turn: Left / Right arrows, Comma / Period, a two-finger trackpad
+-- pan - review A23-74 (user 2026-10-07): a held Right arrow turned 14 deg and snapped back), for FOLLOW.AttackHold s
+-- after my swing / skill (FaceTarget / the server turning my body never whips the camera; the recenter resumes after
+-- it), in shift lock or first person, and whenever blocked() (windows, the opening, menus, loading). Settings "Cam" =
+-- "Free" turns both off; 'Screen shake' off or Roblox's Reduced Motion = slower rates. A frame longer than MaxDt (a
+-- hitch) turns as if it were MaxDt long.
 -- Phone: the left thumbstick walks (a camera-relative MoveDirection like the keys) and so drives the follow; its touch
--- never counts as a hand turn. History: A23-65 ran only for walk . camera look >= 0.5 (69f1fe45), so single side keys
--- never turned; f3ab1f1 turned on side walks but never ended behind the head.
+-- never counts as a hand turn. Roblox's touch camera would be its Follow mode (StarterPlayer DevTouchCameraMovementMode
+-- = UserChoice, the phone default), which also turns on sideways walks (a 90 deg stick: 10-stud circles), so Start sets
+-- my DevTouchCameraMode to Classic (FOLLOW.TouchClassic); if Roblox's Follow camera is still active on this device (a
+-- PC player who picked Follow, or the set failed) WalkTurn stays off (FOLLOW.RobloxFollows): never two turns at once.
+-- History: A23-65 ran only for walk . camera look >= 0.5 (69f1fe45), so single side keys never turned; f3ab1f1 turned
+-- on side walks but never ended behind the head.
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local GuiService = game:GetService("GuiService")
@@ -48,6 +57,10 @@ local FOLLOW = {
 	SideRate = math.rad(16), SlowSideRate = math.rad(10),
 	FullAngle = math.rad(20), SideAngle = math.rad(60), -- the fade window (FOLLOW.Cap)
 	Fade = 6, -- fade shape (1 - t)^Fade * (1 + Fade * t): flat at both ends, mostly gone by t = 0.4 (a 37 deg stick)
+	-- A23-74 (user 2026-10-07) review: the cap is never above my speed / MinRadius (rad / s), so a held input never
+	-- circles tighter than this (studs; >= ~50 asked): 20 studs/s -> 20.8 deg/s (the 45 deg/s cap made 38 studs at 25 deg)
+	MinRadius = 55,
+	MaxDt = 1 / 20, -- s: a longer frame (a hitch) turns as if it were this long (a 0.5 s hitch jumped the recenter 60 deg)
 	BackDot = -0.35, -- walk / facing . camera look below this (more than ~110 deg off) = backing up: never turn
 	Ease = 1.2, SlowEase = 0.7, -- share of the remaining angle turned per second
 	DeadZone = math.rad(6), -- a smaller misalignment is left alone (walking, and before a recenter starts)
@@ -60,6 +73,8 @@ local FOLLOW = {
 	Settle = math.rad(1), -- a running recenter stops here
 	ManualHold = 1.5, AttackHold = 0.5, -- s
 	CameraSide = 0.4, -- a finger drag that starts right of this share of the screen turns the camera (not the stick)
+	-- Roblox's own keyboard camera turn (Config.Keybinds Reserved): held or pressed = a hand turn (A23-74 review)
+	TurnKeys = { Enum.KeyCode.Left, Enum.KeyCode.Right, Enum.KeyCode.Comma, Enum.KeyCode.Period },
 	LastManual = -math.huge, LastAttack = -math.huge, Touches = {},
 	StopAt = math.huge, -- os.clock() when the last walk ended (math.huge while walking)
 	Centering = false, CenterSpeed = 0, -- a recenter is running / its current speed (rad / s)
@@ -106,8 +121,9 @@ function FOLLOW.Cap(off, full, side)
 	return side + (full - side) * (1 - t) ^ FOLLOW.Fade * (1 + FOLLOW.Fade * t)
 end
 
--- walking: this frame's yaw (rad, + = left) toward my walking direction (= my back: AutoRotate), or nil
-function FOLLOW.WalkTurn(cx, cz, move, dt, slow)
+-- walking: this frame's yaw (rad, + = left) toward my walking direction (= my back: AutoRotate), or nil.
+-- speed = my Humanoid WalkSpeed (studs / s)
+function FOLLOW.WalkTurn(cx, cz, move, dt, slow, speed)
 	local mx, mz = move.X, move.Z
 	local ml = math.sqrt(mx * mx + mz * mz)
 	if ml < 0.05 then return nil end
@@ -117,8 +133,9 @@ function FOLLOW.WalkTurn(cx, cz, move, dt, slow)
 	-- signed yaw (about +Y) from the camera heading to the walking heading
 	local angle = math.atan2(cz * mx - cx * mz, dot)
 	if math.abs(angle) < FOLLOW.DeadZone then return nil end
-	local rate = FOLLOW.Cap(math.abs(angle), slow and FOLLOW.SlowRate or FOLLOW.Rate,
-		slow and FOLLOW.SlowSideRate or FOLLOW.SideRate)
+	-- A23-74 review: the arc radius = my actual speed (a half-pushed stick walks slower) / the rate >= MinRadius
+	local rate = math.min(FOLLOW.Cap(math.abs(angle), slow and FOLLOW.SlowRate or FOLLOW.Rate,
+		slow and FOLLOW.SlowSideRate or FOLLOW.SideRate), (tonumber(speed) or 0) * math.min(1, ml) / FOLLOW.MinRadius)
 	local ease = slow and FOLLOW.SlowEase or FOLLOW.Ease
 	return math.clamp(angle * math.min(1, ease * dt), -rate * dt, rate * dt)
 end
@@ -149,10 +166,54 @@ function FOLLOW.CenterTurn(cx, cz, humanoid, now, dt, slow, was)
 	return math.clamp(angle * math.min(1, ease * dt), -FOLLOW.CenterSpeed * dt, FOLLOW.CenterSpeed * dt)
 end
 
+-- Roblox's keyboard camera turn (TurnKeys) held right now, outside a text box: a hand turn (A23-74 review)
+function FOLLOW.KeyTurn()
+	if UserInputService:GetFocusedTextBox() then return false end -- typing a comma in chat turns nothing
+	for _, key in FOLLOW.TurnKeys do
+		if UserInputService:IsKeyDown(key) then return true end
+	end
+	return false
+end
+
+-- Roblox's own Follow camera is active on this device (it turns on sideways walks itself; Roblox's CameraModule rule:
+-- touch reads DevTouchCameraMode, a PC DevComputerCameraMode; UserChoice = the player's Roblox setting, whose Default
+-- is Follow on touch and Classic on a PC). WalkTurn stays off then so two turns never add up (A23-74 review)
+function FOLLOW.RobloxFollows()
+	local ok, follows = pcall(function()
+		local touch = UserInputService.TouchEnabled
+		local mode = (if touch then LocalPlayer.DevTouchCameraMode else LocalPlayer.DevComputerCameraMode).Name
+		if mode == "UserChoice" then
+			FOLLOW.UserGameSettings = FOLLOW.UserGameSettings or UserSettings():GetService("UserGameSettings")
+			local user = FOLLOW.UserGameSettings
+			mode = (if touch then user.TouchCameraMovementMode else user.ComputerCameraMovementMode).Name
+			if mode == "Default" then mode = if touch then "Follow" else "Classic" end
+		end
+		return mode == "Follow"
+	end)
+	return ok and follows == true
+end
+
+-- A23-74 review: StarterPlayer.DevTouchCameraMovementMode is UserChoice, so a phone gets Roblox's Follow camera (it
+-- turns on a sideways walk too: a 90 deg stick made 10-stud circles). A LocalScript may set its own player's camera
+-- mode and Roblox's CameraModule switches on the change, so phones get Classic and the walking turn is WalkTurn's
+-- alone. pcall: if the set fails, RobloxFollows() keeps WalkTurn off instead. Returns whether the mode is Classic now
+function FOLLOW.TouchClassic()
+	local ok, classic = pcall(function()
+		local modes = Enum.DevTouchCameraMovementMode
+		local mode = LocalPlayer.DevTouchCameraMode
+		if mode == modes.UserChoice or mode == modes.Follow then LocalPlayer.DevTouchCameraMode = modes.Classic end
+		return LocalPlayer.DevTouchCameraMode == modes.Classic
+	end)
+	return ok and classic == true
+end
+
 -- one frame of the follow turn (after Roblox's camera, priority Camera + 1)
 function FOLLOW.Step(dt)
+	dt = math.min(dt, FOLLOW.MaxDt) -- A23-74 review: a hitch never jumps the camera
 	local now = os.clock()
-	if UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then FOLLOW.LastManual = now end
+	if UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) or FOLLOW.KeyTurn() then
+		FOLLOW.LastManual = now
+	end
 	local was = FOLLOW.Centering
 	FOLLOW.Centering = false -- set again only by a frame that recenters
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -178,8 +239,12 @@ function FOLLOW.Step(dt)
 	cx, cz = cx / cl, cz / cl
 	local slow = setting("Shake", true) == false
 		or FOLLOW.Reduced()
-	local a = if walking then FOLLOW.WalkTurn(cx, cz, move, dt, slow)
-		else FOLLOW.CenterTurn(cx, cz, humanoid, now, dt, slow, was)
+	local a = nil
+	if not walking then
+		a = FOLLOW.CenterTurn(cx, cz, humanoid, now, dt, slow, was)
+	elseif not FOLLOW.RobloxFollows() then -- Roblox's Follow camera turns on the walk itself
+		a = FOLLOW.WalkTurn(cx, cz, move, dt, slow, humanoid.WalkSpeed)
+	end
 	if not a then return end
 	local c, sn = math.cos(a), math.sin(a)
 	local function yaw(v) return Vector3.new(v.X * c + v.Z * sn, v.Y, -v.X * sn + v.Z * c) end
@@ -187,7 +252,8 @@ function FOLLOW.Step(dt)
 	camera.CFrame = CFrame.lookAt(pos, pos + yaw(look))
 end
 
--- a hand turn: mouse movement with the right button down, a finger drag on the camera side, the right stick
+-- a hand turn: mouse movement with the right button down, a finger drag on the camera side, the right stick (Roblox's
+-- keyboard turn: FOLLOW.KeyTurn every frame and OnInputBegan; a trackpad pan: OnPointerAction)
 function FOLLOW.OnInputChanged(input, processed)
 	local kind = input.UserInputType
 	if kind == Enum.UserInputType.MouseMovement then
@@ -199,8 +265,16 @@ function FOLLOW.OnInputChanged(input, processed)
 	end
 end
 
--- touches that start on the camera side (right of CameraSide) and not on a GUI can turn the camera
+-- touches that start on the camera side (right of CameraSide) and not on a GUI can turn the camera. A TurnKeys press is
+-- a hand turn at once (a quick Comma / Period tap can begin and end between two frames; Roblox's camera binds these
+-- keys itself, so `processed` is not trusted here - a focused text box is)
 function FOLLOW.OnInputBegan(input, processed)
+	if input.UserInputType == Enum.UserInputType.Keyboard then
+		if table.find(FOLLOW.TurnKeys, input.KeyCode) and not UserInputService:GetFocusedTextBox() then
+			FOLLOW.LastManual = os.clock()
+		end
+		return
+	end
 	if input.UserInputType ~= Enum.UserInputType.Touch or processed then return end
 	local camera = workspace.CurrentCamera
 	local size = camera and camera.ViewportSize
@@ -210,6 +284,12 @@ end
 
 function FOLLOW.OnInputEnded(input)
 	FOLLOW.Touches[input] = nil
+end
+
+-- a two-finger trackpad pan turns Roblox's camera: a hand turn (A23-74 review). Counted even when processed: a missed
+-- turn would fight the player's view, a counted one only waits ManualHold
+function FOLLOW.OnPointerAction(_wheel, pan)
+	if pan and pan.Magnitude > 1e-3 then FOLLOW.LastManual = os.clock() end
 end
 
 -- my own swing / skill (the server's Fx, manual and auto): hold the follow for AttackHold s
@@ -281,6 +361,8 @@ function CameraFollow.Start()
 	UserInputService.InputBegan:Connect(FOLLOW.OnInputBegan)
 	UserInputService.InputChanged:Connect(FOLLOW.OnInputChanged)
 	UserInputService.InputEnded:Connect(FOLLOW.OnInputEnded)
+	pcall(function() UserInputService.PointerAction:Connect(FOLLOW.OnPointerAction) end) -- an older client may lack it
+	FOLLOW.TouchClassic() -- phones: Roblox's Classic touch camera, the walking turn is ours (A23-74 review)
 	RunService:BindToRenderStep("HHC_CameraFollow", Enum.RenderPriority.Camera.Value + 1, function(dt)
 		local ok, err = pcall(FOLLOW.Step, dt)
 		if not ok then warn("[CameraFollow] follow: " .. tostring(err)) end

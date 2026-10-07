@@ -9,6 +9,11 @@
 -- 3. Neither during a hand turn hold (1.5 s; a hand turn while standing keeps my view until the next walk), my swing /
 --    skill hold (0.5 s, then the recenter resumes), Cam = "Free", windows / scripted camera, shift lock, first person.
 -- 'Screen shake' off / Reduced Motion = slower. Phone: the left thumbstick drives it, its touch never holds it.
+-- Review A23-74 (user 2026-10-07): (1) Roblox's keyboard / trackpad camera turn (Left / Right arrows, Comma / Period,
+-- a trackpad pan) is a hand turn, never pulled back; (2) a stick held anywhere from 0 to 110 deg off forward walks a
+-- circle of radius >= 50 studs (the cap <= speed / 55 studs; a half-pushed stick and a slower walk too); (3) Start
+-- switches my touch camera to Classic, and while Roblox's Follow camera is active (touch or a PC player's choice) the
+-- walking turn stays off; (4) a 0.5 s hitch turns as if it were 1/20 s.
 -- Input: SOURCE.
 local checks, failed = 0, 0
 local function check(ok, name, detail)
@@ -54,15 +59,24 @@ function camera:GetPropertyChangedSignal(n) return self.Signals[n] end
 local workspace = { CurrentCamera = camera, Signal = signal() }
 function workspace:GetPropertyChangedSignal() return self.Signal end
 local root = { CFrame = { LookVector = vec(0, 0, -1) } }
-local humanoid = { MoveDirection = vec(0, 0, 0), Health = 100, RootPart = root, IsA = function(_, n) return n == "Humanoid" end }
+local humanoid = { MoveDirection = vec(0, 0, 0), Health = 100, RootPart = root, WalkSpeed = 20,
+	IsA = function(_, n) return n == "Humanoid" end }
 local character = { AncestryChanged = signal(), ChildAdded = signal(), ChildRemoved = signal() }
 function character:IsDescendantOf() return true end
 function character:FindFirstChildOfClass() return humanoid end
-local player = { UserId = 7, Character = character, CharacterAdded = signal(), CharacterRemoving = signal() }
+-- Roblox's camera movement modes (Dev* on the player, the player's own choice in UserGameSettings)
+local DTM = { UserChoice = { Name = "UserChoice" }, Classic = { Name = "Classic" }, Follow = { Name = "Follow" },
+	Orbital = { Name = "Orbital" } }
+local DCM = { UserChoice = { Name = "UserChoice" }, Classic = { Name = "Classic" }, Follow = { Name = "Follow" } }
+local userGame = { TouchCameraMovementMode = { Name = "Default" }, ComputerCameraMovementMode = { Name = "Default" } }
+local player = { UserId = 7, Character = character, CharacterAdded = signal(), CharacterRemoving = signal(),
+	DevTouchCameraMode = DTM.UserChoice, DevComputerCameraMode = DCM.UserChoice } -- the place: both UserChoice
 function player:GetAttribute(n) return n == "DataLoaded" end
-local input = { InputBegan = signal(), InputChanged = signal(), InputEnded = signal(), MouseBehavior = "Default", RightDown = false }
-function input:GetFocusedTextBox() return nil end
+local input = { InputBegan = signal(), InputChanged = signal(), InputEnded = signal(), PointerAction = signal(),
+	MouseBehavior = "Default", RightDown = false, Keys = {}, TextBox = nil, TouchEnabled = false }
+function input:GetFocusedTextBox() return self.TextBox end
 function input:IsMouseButtonPressed(kind) return kind == "RMB" and self.RightDown end
+function input:IsKeyDown(key) return self.Keys[key] == true end
 local steps = {}
 local run = {}
 function run:BindToRenderStep(name, priority, fn) steps[name] = { Priority = priority, Fn = fn } end
@@ -85,8 +99,12 @@ setfenv(fn, setmetatable({
 	require = function(m) assert(m.__module == "Net", tostring(m.__module)) return net end,
 	os = { clock = function() return W.Clock end },
 	Enum = { CameraType = { Custom = "Custom" }, UserInputType = { MouseButton1 = "LMB", MouseButton2 = "RMB", MouseMovement = "Move",
-		Touch = "Touch", Gamepad1 = "Pad" }, MouseBehavior = { Default = "Default", LockCenter = "LockCenter" },
-		KeyCode = { Thumbstick2 = "Thumb2" }, RenderPriority = { Camera = { Value = 200 } } },
+		Touch = "Touch", Gamepad1 = "Pad", Keyboard = "Keyboard" }, MouseBehavior = { Default = "Default", LockCenter = "LockCenter" },
+		KeyCode = { Thumbstick2 = "Thumb2", Left = "Left", Right = "Right", Comma = "Comma", Period = "Period" },
+		RenderPriority = { Camera = { Value = 200 } }, DevTouchCameraMovementMode = DTM },
+	UserSettings = function()
+		return { GetService = function(_, n) assert(n == "UserGameSettings", n) return userGame end }
+	end,
 	warn = function(...) print("WARN", ...) end,
 }, { __index = getfenv() }))
 local CF = fn()
@@ -96,6 +114,10 @@ local FOLLOW = CF.Follow
 local step = steps.HHC_CameraFollow
 check(step ~= nil and step.Priority == 201, "the follow turn runs every frame right after Roblox's camera (priority 201)",
 	step and step.Priority)
+-- (3) the place leaves DevTouchCameraMovementMode on UserChoice (phones: Roblox's Follow camera); Start makes it Classic
+check(player.DevTouchCameraMode == DTM.Classic and player.DevComputerCameraMode == DCM.UserChoice,
+	"(3) Start switches my touch camera to Classic (Roblox's Follow camera would turn on the walk too); the PC choice stays",
+	show({ touch = player.DevTouchCameraMode.Name, pc = player.DevComputerCameraMode.Name }))
 
 local DT = 1 / 60
 local WALK = 20 -- Config.Player.WalkSpeed (studs / s)
@@ -127,6 +149,10 @@ local function reset()
 	input.RightDown, input.MouseBehavior = false, "Default"
 	W.Settings.Cam, W.Settings.Shake = "Follow", true
 	gui.ReducedMotionEnabled = false
+	humanoid.WalkSpeed = WALK
+	input.Keys, input.TextBox, input.TouchEnabled = {}, nil, false
+	player.DevTouchCameraMode, player.DevComputerCameraMode = DTM.Classic, DCM.UserChoice -- as Start left them
+	userGame.TouchCameraMovementMode, userGame.ComputerCameraMovementMode = { Name = "Default" }, { Name = "Default" }
 	for _, name in { "FactionPicker", "ClassPicker", "Panels", "WorldMap" } do registry[name].Open = false end
 	camera.Focus.Position = focus
 	W.Clock += 10 -- past every hold
@@ -144,21 +170,32 @@ local function camRelative(right, fwd)
 	return vec(x / k, 0, z / k)
 end
 -- hold a camera-relative input for `seconds` (each frame recomputed, like a held key / stick): studs walked, deg turned
--- (+ = right), and the largest one-frame turn (deg)
-local function hold(right, fwd, seconds, each)
+-- (+ = right), and the largest one-frame turn (deg). Only CameraFollow's own turn counts (`each` runs first, so a
+-- simulated Roblox camera turn in it is left out). push = how far the stick is pushed (Roblox walks WalkSpeed * push)
+local function hold(right, fwd, seconds, each, push)
 	local walked, turned, maxStep = 0, 0, 0
+	push = push or 1
 	for i = 1, math.floor(seconds * 60 + 0.5) do
 		if each then each(i) end
-		humanoid.MoveDirection = camRelative(right, fwd)
+		humanoid.MoveDirection = camRelative(right, fwd) * push
 		local before = camYaw()
 		frame(1)
 		local d = diff(before, camYaw())
 		turned += d
 		maxStep = math.max(maxStep, math.abs(d))
-		walked += WALK * DT
+		walked += humanoid.WalkSpeed * push * DT
 	end
 	return walked, turned, maxStep
 end
+-- Roblox's own camera turn (its keyboard / trackpad turn, before CameraFollow's step): yaw round the focus, + = left
+local function robloxTurn(deg)
+	local c, s = math.cos(math.rad(deg)), math.sin(math.rad(deg))
+	local f = camera.Focus.Position
+	local function rot(v) return vec(v.X * c + v.Z * s, v.Y, -v.X * s + v.Z * c) end
+	local pos = f + rot(camera.CFrame.Position - f)
+	camera.CFrame = lookAt(pos, pos + rot(camera.CFrame.LookVector))
+end
+local KEY_TURN = 120 -- deg / s: Roblox's keyboard camera turn (CameraInput ROTATION_SPEED_KEYS)
 local function radius(walked, turned) return walked / math.max(1e-9, math.rad(math.abs(turned))) end
 -- stop walking and watch for `seconds`: when the camera first moved (s after the stop), the first moving step, the
 -- largest step (deg / frame), the camera-to-facing angle at `at` s and at the end, overshoot, distance / tilt drift
@@ -248,7 +285,8 @@ reset()
 humanoid.MoveDirection = vec(math.sin(math.rad(20)), 0, -math.cos(math.rad(20))) -- 20 deg right of the look
 frame(1)
 local near = math.abs(camYaw()) * 60
-check(near > 20 and near <= 45 + 1e-6, "a walk 20 deg off the look: the full cap (eased ~24 deg/s, above the side cap)", near)
+check(near > 18 and near <= math.deg(WALK / 55) + 1e-6,
+	"a walk 20 deg off the look: above the 16 deg/s side cap, at most speed / 55 studs (20.8 deg/s)", near)
 local capRows, prevCap, monotone, maxJump = {}, nil, true, 0
 for deg = 0, 110 do
 	local c = math.deg(FOLLOW.Cap(math.rad(deg), FOLLOW.Rate, FOLLOW.SideRate))
@@ -283,9 +321,44 @@ check(wdTurn > 0 and radius(wdWalk, wdTurn) >= 55, "(d) holding W+D for 3 s: a w
 for _, deg in { 37, 60, 100 } do
 	reset()
 	local sw, st = hold(math.sin(math.rad(deg)), math.cos(math.rad(deg)), 3)
-	check(st > 0 and radius(sw, st) >= 55, "(d) a stick held " .. deg .. " deg off forward: radius >= 55 studs",
+	check(st > 0 and radius(sw, st) >= 55 - 1e-3, "(d) a stick held " .. deg .. " deg off forward: radius >= 55 studs",
 		show({ turned = st, radius = radius(sw, st) }))
 end
+-- (2) review A23-74: a stick held 18-34 deg off made 35-48-stud circles (the 45 deg/s cap). Sweep 0..110 deg (the
+-- backpedal limit is ~110.5 deg) in 5 deg steps: every held angle walks a circle of radius >= 50 studs
+local sweepMin, sweepMinDeg, sweepTurning = math.huge, -1, 0
+for deg = 0, 110, 5 do
+	reset()
+	local sw, st = hold(math.sin(math.rad(deg)), math.cos(math.rad(deg)), 3)
+	local r = radius(sw, st)
+	if math.abs(st) > 1e-9 then sweepTurning += 1 end
+	if r < sweepMin then sweepMin, sweepMinDeg = r, deg end
+	check(st >= 0 and r >= 50, "(2) a stick held " .. deg .. " deg off forward: a circle of radius >= 50 studs",
+		show({ turned = st, radius = r }))
+end
+check(sweepTurning >= 20 and sweepMin >= 55 - 1e-3,
+	"(2) the sweep: the camera follows from 10 deg on, and no angle circles tighter than the 55-stud MinRadius",
+	show({ turning = sweepTurning, minRadius = sweepMin, at = sweepMinDeg }))
+-- a half-pushed stick walks at half speed: the cap halves with it (else 27-stud circles)
+reset()
+local halfWalk, halfTurn = hold(math.sin(math.rad(25)), math.cos(math.rad(25)), 3, nil, 0.5)
+check(halfTurn > 0 and radius(halfWalk, halfTurn) >= 50, "(2) a half-pushed stick 25 deg off: radius >= 50 studs too",
+	show({ turned = halfTurn, radius = radius(halfWalk, halfTurn) }))
+-- a slower walk (WalkSpeed 12): the cap follows my Humanoid's WalkSpeed
+reset()
+humanoid.WalkSpeed = 12
+local slowWalk, slowTurn = hold(math.sin(math.rad(25)), math.cos(math.rad(25)), 3)
+check(slowTurn > 0 and radius(slowWalk, slowTurn) >= 50, "(2) a slower walk (WalkSpeed 12) 25 deg off: radius >= 50 studs",
+	show({ turned = slowTurn, radius = radius(slowWalk, slowTurn) }))
+-- a faster walk (a pet bonus, WalkSpeed 26) still turns faster than at 20 (the cap scales up, never a fixed crawl)
+reset()
+local baseWalk, baseTurn = hold(math.sin(math.rad(25)), math.cos(math.rad(25)), 3)
+reset()
+humanoid.WalkSpeed = 26
+local fastWalk, fastTurn = hold(math.sin(math.rad(25)), math.cos(math.rad(25)), 3)
+check(fastTurn > baseTurn + 5 and radius(fastWalk, fastTurn) >= 50,
+	"(2) a faster walk (WalkSpeed 26) 25 deg off: turns faster than at 20, radius still >= 50 studs",
+	show({ turned = fastTurn, base = baseTurn, radius = radius(fastWalk, fastTurn), baseRadius = radius(baseWalk, baseTurn) }))
 -- phone: walking with the left thumbstick drives the follow (the stick sinks its touch: processed)
 reset()
 humanoid.MoveDirection = vec(1, 0, 0) -- the stick pushed right
@@ -528,10 +601,188 @@ hold(1, 0, 2)
 humanoid.Health = 0
 local deadStop = stopAndWatch(2)
 check(deadStop.FirstMove == math.huge, "dead: no recenter", show(deadStop))
+
+-- 7. (1) review A23-74: Roblox's own keyboard / trackpad camera turn is a hand turn (a held Right arrow turned only
+-- 14 deg and snapped back: the recenter pulled against it). Only CameraFollow's turn is measured
+local function keyHold(key, seconds, deg)
+	local ours = 0
+	for _ = 1, math.floor(seconds * 60 + 0.5) do
+		input.Keys[key] = true
+		robloxTurn(deg * DT)
+		local before = camYaw()
+		frame(1)
+		ours += math.abs(diff(camYaw(), before))
+	end
+	input.Keys[key] = nil
+	return ours
+end
+reset()
+local rightOurs = keyHold("Right", 0.5, -KEY_TURN)
+check(rightOurs < 1e-9 and math.abs(diff(camYaw(), -60)) < 1e-6,
+	"(1) the Right arrow held 0.5 s while standing: Roblox's keyboard turn goes the full 60 deg, never pulled back",
+	show({ ours = rightOurs, yaw = camYaw() }))
+local rightAfter = stopAndWatch(3)
+check(rightAfter.FirstMove == math.huge and math.abs(diff(camYaw(), -60)) < 1e-6,
+	"(1) after letting go of the Right arrow: my own view is kept (no snap back) until the next walk", show(rightAfter))
+local _, rightReTurn = hold(1, 0, 0.5)
+local rightReStop = stopAndWatch(1.4, 1.4)
+check(rightReStop.OffAt and rightReStop.OffAt <= 8, "(1) the next walk and stop recenters again",
+	show({ rightReTurn, rightReStop.OffAt }))
+for _, key in { "Left", "Comma", "Period" } do
+	reset()
+	local ours = keyHold(key, 0.4, KEY_TURN)
+	local after = stopAndWatch(2)
+	check(ours < 1e-9 and after.FirstMove == math.huge, "(1) " .. key .. " held while standing: a hand turn, kept",
+		show({ ours = ours, firstMove = after.FirstMove, yaw = camYaw() }))
+end
+reset()
+local _, arrowWalk = hold(0.7071, 0.7071, 1.9, function(i)
+	if i <= 30 then input.Keys.Left = true; robloxTurn(KEY_TURN * DT) else input.Keys.Left = nil end
+end)
+check(math.abs(arrowWalk) < 1e-9, "(1) W+D with the Left arrow for 0.5 s: no follow while it turns and for the 1.4 s after", arrowWalk)
+-- a quick Comma / Period tap that begins and ends between two frames (Roblox snaps the camera; processed or not)
+for _, tap in { { "Comma", false }, { "Period", true } } do
+	reset()
+	hold(1, 0, 2) -- D 2 s: my body ~90 deg right of the camera look
+	local tapStop = stopAndWatch(3, nil, function(t)
+		if math.abs(t - 0.1) < DT / 2 then
+			input.InputBegan:Fire({ UserInputType = "Keyboard", KeyCode = tap[1] }, tap[2])
+			robloxTurn(-45)
+		end
+	end)
+	check(tapStop.FirstMove == math.huge, "(1) a " .. tap[1] .. " tap between frames (processed " .. tostring(tap[2])
+		.. ") right after the stop: my own view, no recenter", show(tapStop))
+end
+-- a two-finger trackpad pan (UserInputService.PointerAction) turns Roblox's camera too
+reset()
+hold(1, 0, 2)
+local panStop = stopAndWatch(3, nil, function(t)
+	if t > 0.05 and t < 0.4 then
+		input.PointerAction:Fire(0, vec(-3, 0, 0), 0, false)
+		robloxTurn(-40 * DT)
+	end
+end)
+check(panStop.FirstMove == math.huge, "(1) a trackpad pan right after the stop: my own view, no recenter", show(panStop))
+reset()
+hold(1, 0, 2)
+local wheelStop = stopAndWatch(1.2, 1.2, function(t)
+	if t > 0.05 and t < 0.4 then input.PointerAction:Fire(1, vec(0, 0, 0), 0, false) end
+end)
+check(wheelStop.OffAt and wheelStop.OffAt <= 8, "(1) a wheel / pinch zoom (no pan) is not a hand turn: the recenter runs",
+	show(wheelStop))
+-- typing a comma / period in a text box (chat) is no hand turn: the recenter runs once the box closes
+reset()
+hold(1, 0, 2)
+local typedStop = stopAndWatch(2, 1.9, function(t)
+	if t < 0.5 then
+		input.TextBox = {}
+		input.Keys.Comma = t > 0.1 and t < 0.3
+		if math.abs(t - 0.2) < DT / 2 then input.InputBegan:Fire({ UserInputType = "Keyboard", KeyCode = "Period" }, true) end
+	else
+		input.TextBox, input.Keys.Comma = nil, nil
+	end
+end)
+check(typedStop.OffAt and typedStop.OffAt <= 8, "(1) typing ',' / '.' in a text box is no hand turn: the recenter runs after",
+	show(typedStop))
+reset()
+hold(1, 0, 2)
+local otherKeyStop = stopAndWatch(1.2, 1.2, function(t)
+	if math.abs(t - 0.1) < DT / 2 then input.InputBegan:Fire({ UserInputType = "Keyboard", KeyCode = "E" }, false) end
+end)
+check(otherKeyStop.OffAt and otherKeyStop.OffAt <= 8, "(1) other keys (E right after the stop) are no hand turn",
+	show(otherKeyStop))
+
+-- 8. (3) Roblox's Follow camera (touch: DevTouchCameraMode, a PC: DevComputerCameraMode; UserChoice = the player's
+-- Roblox setting, Default = Follow on touch / Classic on a PC): while it is active WalkTurn stays off (never two turns)
+local function sideStep(setup)
+	reset()
+	setup()
+	humanoid.MoveDirection = vec(1, 0, 0)
+	frame(1)
+	return camYaw() < -0.2
+end
+check(sideStep(function() input.TouchEnabled = true end), "(3) a phone on Classic (after Start): the walking turn is ours")
+check(not sideStep(function() input.TouchEnabled = true; player.DevTouchCameraMode = DTM.Follow end),
+	"(3) a phone on Roblox's Follow camera: no second walking turn")
+check(not sideStep(function() input.TouchEnabled = true; player.DevTouchCameraMode = DTM.UserChoice end),
+	"(3) a phone on UserChoice with Roblox's Default (= Follow on touch): no second walking turn")
+check(sideStep(function()
+	input.TouchEnabled = true; player.DevTouchCameraMode = DTM.UserChoice
+	userGame.TouchCameraMovementMode = { Name = "Classic" }
+end), "(3) a phone on UserChoice whose player picked Classic: the walking turn is ours")
+check(sideStep(function() input.TouchEnabled = false end), "(3) a PC on UserChoice with Roblox's Default (= Classic): ours")
+check(not sideStep(function() userGame.ComputerCameraMovementMode = { Name = "Follow" } end),
+	"(3) a PC player who picked Roblox's Follow camera: no second walking turn")
+check(not sideStep(function() player.DevComputerCameraMode = DCM.Follow end),
+	"(3) a PC with DevComputerCameraMode Follow: no second walking turn")
+reset()
+input.TouchEnabled, player.DevTouchCameraMode = true, DTM.Follow
+hold(1, 0, 2)
+local followStop = stopAndWatch(1.2, 1.2)
+check(followStop.OffAt and followStop.OffAt <= 8, "(3) Roblox's Follow camera on: the standing recenter still runs",
+	show(followStop))
+-- the set may be refused (a locked property): no error, and RobloxFollows keeps WalkTurn off instead
+reset()
+rawset(player, "DevTouchCameraMode", nil)
+setmetatable(player, { __index = { DevTouchCameraMode = DTM.UserChoice }, __newindex = function(t, k, v)
+	if k == "DevTouchCameraMode" then error("locked") end
+	rawset(t, k, v)
+end })
+local okSet, setResult = pcall(FOLLOW.TouchClassic)
+input.TouchEnabled = true
+humanoid.MoveDirection = vec(1, 0, 0)
+frame(1)
+check(okSet and setResult == false and still(),
+	"(3) the Classic switch refused: no error, and the walking turn stays off under Roblox's Follow camera",
+	show({ okSet, setResult, camYaw() }))
+setmetatable(player, nil)
+reset()
+player.DevTouchCameraMode = DTM.Orbital
+check(FOLLOW.TouchClassic() == false and player.DevTouchCameraMode == DTM.Orbital,
+	"(3) only UserChoice / Follow are switched (another explicit mode is left alone)", player.DevTouchCameraMode.Name)
+player.DevTouchCameraMode = DTM.Follow
+check(FOLLOW.TouchClassic() == true and player.DevTouchCameraMode == DTM.Classic, "(3) Follow is switched to Classic too",
+	player.DevTouchCameraMode.Name)
+
+-- 9. (4) review A23-74: a long frame (a 0.5 s hitch) turns as if it were 1/20 s (it jumped the recenter 60 deg)
+local function hitch(dt)
+	W.Clock += dt
+	local m = humanoid.MoveDirection
+	if W.AutoRotate and m.Magnitude >= 0.2 then face(m) end
+	step.Fn(dt)
+end
+reset()
+hold(1, 0, 2)
+humanoid.MoveDirection = vec(0, 0, 0)
+frame(30) -- 0.5 s after the stop: the recenter runs at full speed
+local beforeHitch = camYaw()
+hitch(0.5)
+local centerHitch = math.abs(diff(camYaw(), beforeHitch))
+check(centerHitch > 0.5 and centerHitch <= 120 / 20 + 1e-6,
+	"(4) a 0.5 s hitch during the recenter turns at most 6 deg (1/20 s at 120 deg/s), not 60", centerHitch)
+reset()
+hold(1, 0, 2)
+humanoid.MoveDirection = vec(0, 0, 0)
+frame(15) -- 0.25 s: the next frame starts the recenter
+local beforeFirst = camYaw()
+hitch(0.5)
+local firstHitch = math.abs(diff(camYaw(), beforeFirst))
+check(firstHitch <= 120 / 20 + 1e-6, "(4) a hitch on the recenter's first frame: at most 6 deg too", firstHitch)
+reset()
+hold(1, 0, 0.5)
+humanoid.MoveDirection = camRelative(1, 0)
+local beforeWalkHitch = camYaw()
+hitch(0.5)
+local walkHitch = math.abs(diff(camYaw(), beforeWalkHitch))
+check(walkHitch > 0.1 and walkHitch <= 16 / 20 + 1e-6,
+	"(4) a 0.5 s hitch while walking sideways turns at most 0.8 deg (1/20 s at 16 deg/s), not 8", walkHitch)
 local function r1(x) return x and math.floor(x * 10 + 0.5) / 10 or -1 end
 print(string.format("CAMERA_FOLLOW_NUMBERS dRadius=%s wdRadius=%s capAt37=%s capAt45=%s dStart=%s dOffAt1.2s=%s "
-	.. "dFirstMove=%.2f dMaxDegPerS=%s wdStart=%s wdOffAt1.2s=%s slowOffAt1.2s=%s swingFirstMove=%.2f",
+	.. "dFirstMove=%.2f dMaxDegPerS=%s wdStart=%s wdOffAt1.2s=%s slowOffAt1.2s=%s swingFirstMove=%.2f "
+	.. "sweepMinRadius=%s sweepMinAt=%d halfStickRadius=%s walk12Radius=%s rightArrowOurs=%s centerHitchDeg=%s "
+	.. "walkHitchDeg=%.2f",
 	r1(radius(dWalk, dTurn)), r1(radius(wdWalk, wdTurn)), r1(capRows[37]), r1(capRows[45]), r1(dStop.Start), r1(dStop.OffAt),
 	dStop.FirstMove, r1(dStop.MaxStep * 60), r1(wdStop.Start), r1(wdStop.OffAt), r1(slowStop.OffAt),
-	swingStop.FirstMove))
+	swingStop.FirstMove, r1(sweepMin), sweepMinDeg, r1(radius(halfWalk, halfTurn)), r1(radius(slowWalk, slowTurn)),
+	r1(rightOurs), r1(centerHitch), walkHitch))
 print("CAMERA_FOLLOW_SUMMARY checks=" .. checks .. " failed=" .. failed)
