@@ -1713,6 +1713,11 @@ function L.QuestBlockTap()
 	end
 	local l = ui.qline and ui.qline[1]
 	local e = l and l.Entry
+	-- round 3 #3 (ideas_first10 §3): 'Tap here: first quest from Hallie' opens the guide in one tap, even after [Later]
+	if e and e.Pinned and e.TutorialStep == 0 and L.PinnedTap then
+		L.PinnedTap(e)
+		return
+	end
 	if e and e.Progress >= e.Target and e.CanClaim then
 		for _, r in questRows do
 			if r.Entry == e and r.Claim.Visible then
@@ -3380,10 +3385,18 @@ refreshQuests = function()
 	end
 	-- 'now do' row: the pinned guide / next-goal row when there is one (검수 2026-10-06 (b): it always shows, phones too),
 	-- else the waiting story, the first claimable, the first unfinished daily. Desktop shows one more row under it.
+	-- round 3 #1 (ideas_first10 §3): after them the S0 shard story (it leads to auto combat) before the first daily,
+	-- until auto combat is unlocked
+	local s0 = nil
+	if attr("AutoCombatUnlocked", false) ~= true then
+		for i, e in entries do
+			if e.Story and e.Story.Id == "S0" and e.Progress < e.Target then s0 = i break end
+		end
+	end
 	local shown, second = nil, nil
 	if entries[1] and entries[1].Pinned then
 		shown = 1
-		second = callIndex or firstClaim or firstDaily
+		second = callIndex or firstClaim or s0 or firstDaily
 		if second == 1 then second = nil end
 	elseif callIndex then
 		shown = callIndex -- B15: the collapsed list shows the story that is waiting
@@ -3422,6 +3435,8 @@ refreshQuests = function()
 		if ui.questOverlayTitle then ui.questOverlayTitle.Text = head end
 	else
 		ui.questHeaderText.Text = head
+		-- round 3 #1: before the first mission is accepted (step 0) the list has no daily header
+		ui.questHeader.Visible = not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
 		ui.questChevron.Visible = #entries > 1
 		ui.questChevron.Text = questExpanded and TXT.QuestCollapse or TXT.QuestExpand
 	end
@@ -3431,7 +3446,7 @@ refreshQuests = function()
 	-- else today's count with 받기 N
 	if ui.qline then
 		if not second and entries[shown] then
-			local alt = callIndex or firstClaim or firstDaily
+			local alt = callIndex or firstClaim or s0 or firstDaily
 			if alt and alt ~= shown then second = alt end
 		end
 		local function lineFor(i)

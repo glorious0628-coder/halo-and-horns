@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "checks": 169,
-  "namedChecks": 45,
+  "checks": 174,
+  "namedChecks": 50,
   "failing": [],
   "static": [
     {
@@ -42,9 +42,9 @@
     }
   ],
   "mutations": {
-    "total": 28,
-    "applied": 28,
-    "caught": 28,
+    "total": 31,
+    "applied": 31,
+    "caught": 31,
     "results": [
       {
         "mutation": "the banter is never shown",
@@ -151,8 +151,44 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "choice hint :: Halo with 0 Honor: 'Honor -0' and '(you have 0)'",
+          "choice hint :: Halo with 10 Honor: the full -5",
           "choice hint :: Halo: Honor +Good on the left, Honor -Evil on the right (A23-58)",
+          "choice hint :: Horns with 1 Infamy: 'Infamy -1' (the good pick costs what I have)",
           "choice hint :: Horns: Infamy -Good on the left, Infamy +Evil on the right (A23-58)"
+        ]
+      },
+      {
+        "mutation": "the hint shows the full minus at 0 points",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "choice hint :: Halo with 0 Honor: 'Honor -0' and '(you have 0)'",
+          "choice hint :: Horns with 1 Infamy: 'Infamy -1' (the good pick costs what I have)"
+        ]
+      },
+      {
+        "mutation": "no '(you have N)'",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "choice hint :: Halo with 0 Honor: 'Honor -0' and '(you have 0)'",
+          "choice hint :: Halo with 10 Honor: the full -5",
+          "choice hint :: Horns with 1 Infamy: 'Infamy -1' (the good pick costs what I have)"
+        ]
+      },
+      {
+        "mutation": "the window passes no points",
+        "file": "panels",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the Story window takes its lines from STORY.Lines(step, f, arg.Var) and its hint from STORY.Hint(obj, f)"
         ]
       },
       {
@@ -162,6 +198,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "choice hint :: 0-point picks with points known: still the lean line",
           "choice hint :: two 0-point picks (E5): the lean line, no +0 / -0"
         ]
       },
@@ -351,13 +388,13 @@
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "f54d397395dbf7e6ae1d26dcb4fb6cca5da7d8c747075b785877323af7ac311a",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "5064aeeb2ff8afe04ed6fb1d5d1660e52dbd5fe17f1b218021c08e3694102e65",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "c5759deb4dc5c9bcfdf862bb6d09328c76acfae9ba6798212931a62470aafaf9",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "2513851ad2c826356eb7bb9e6b76e6c80aba0682f915f9d8e752ced68257d2b8",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "e599949c306b7b1fac5b94ea1fae443b5196b08eeaf1ccf6ed0e6865c37b6085",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "7d507dcd88cd1fded519e93a3dc13827e9f1638251044463fb3597e29bdbcf29",
     "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "7ad98bf22830e9eb5b18d645c10047369c947c0ff96d1a03f2fae6a9d271cc9e",
     "src/StarterPlayer/StarterPlayerScripts/PlayerListUI.luau": "bf6757b177aa451ee934c3fdb527c9960204de753b0e4ce43c27d44bcdee9f41",
     "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "420e3ecd248423816c5430aac41bb975cfd0f170ec59f3f0bc505e17d181faa6",
-    "tools/fixtures/story_client_offline.luau": "2d090e373345f392adbd281ea0a69c90dba18d9d2d49c748052b6daecc3cb8bd"
+    "tools/fixtures/story_client_offline.luau": "508144338467ad1d8216839b3fd9a475c882711b6e55c8e930e0d8b8f535ff0b"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

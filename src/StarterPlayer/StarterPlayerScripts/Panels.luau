@@ -2697,6 +2697,7 @@ local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, Calm
 		ToastShard = "A shard is talking to you! Tap the quest row to see.",
 		ToastOther = "A story is waiting! Tap the quest row to see.",
 		HintLean = "No points here. Your shard just leans to the light or the dark.", -- E5: both picks 0 points
+		HintHave = " (you have %d)", -- round 3 #5: my own side's points now, after the hint
 	},
 }
 
@@ -2757,13 +2758,25 @@ end
 
 -- the line under the two choice buttons (what a pick does, before picking). A23-58: a pick against my side lowers my
 -- own score (Halo: Honor +Good / -Evil, Horns: Infamy -Good / +Evil); E5: two 0-point picks only lean the shard
-function STORY.Hint(obj, f)
+-- have = my own side's points now (Halo: Honor, Horns: Infamy; nil = unknown -> the plain hint). Round 3 #5
+-- (ideas_first10 §3): the minus side shows what really goes - my points never go below 0 (A23-58), so with 0 it says
+-- "-0" - and the hint ends with "(you have N)"
+function STORY.Hint(obj, f, have)
 	local TXT = Config.StoryQuests.Text
 	if f ~= "Halo" and f ~= "Horns" then return TXT.ChoiceHintNeutral end
 	local good, evil = (obj.Good and obj.Good.Points) or 0, (obj.Evil and obj.Evil.Points) or 0
 	if good <= 0 and evil <= 0 then return STORY.Text.HintLean end
 	local own = TXT["ChoiceHint" .. f]
-	return string.format(type(own) == "string" and own or TXT.ChoiceHint, good, evil)
+	local fmt = type(own) == "string" and own or TXT.ChoiceHint
+	if type(have) ~= "number" or have ~= have then return string.format(fmt, good, evil) end
+	have = math.max(0, math.floor(have))
+	if f == "Halo" then evil = math.min(evil, have) else good = math.min(good, have) end
+	return string.format(fmt, good, evil) .. string.format(STORY.Text.HintHave, have)
+end
+
+-- my own side's points for STORY.Hint (nil before the save loads)
+function STORY.Points(f)
+	return tonumber(attr(f == "Halo" and "Honor" or "Infamy", nil))
 end
 
 BUILDERS.Story = function(parent)
@@ -2788,7 +2801,7 @@ BUILDERS.Story = function(parent)
 	-- what a pick does, shown with the choice buttons on the last page (user 2026-10-05: the flow must explain itself)
 	local hint = nil
 	if obj.Type == "Choice" then
-		hint = addText(parent, STORY.Hint(obj, f),
+		hint = addText(parent, STORY.Hint(obj, f, STORY.Points(f)),
 			{ Name = "StoryChoiceHint", Size = 16, Color = theme.Gold, Align = Enum.TextXAlignment.Center })
 	end
 	local buttons = {}
