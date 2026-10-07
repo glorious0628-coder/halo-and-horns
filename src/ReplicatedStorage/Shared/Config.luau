@@ -1790,7 +1790,8 @@ Config.StoryQuests = {
 	Landmarks = { SlimePond = Vector3.new(280, 0, -45), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
 		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey", -- A23-46 town NPCs, A23-55 kids
-		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo" }, -- story_depth §4 goblins (beta: names only, no models)
+		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo", -- story_depth §4 goblins (beta: names only, no models)
+		Gleam = "Sir Gleam", Rex = "Rascal Rex" }, -- story_depth §4 (beta: names only)
 	NpcTag = "StoryNpc",
 	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
 	Badge = { Main = "Main", Sub = "Side" },
@@ -1800,7 +1801,8 @@ Config.StoryQuests = {
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3 } },
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1" },
+	Subs = { "S0", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
+		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8" },
 	Text = {
 		Claim = "%s done! Press [Claim].",
 		Done = "%s done!",
@@ -2218,6 +2220,306 @@ Config.StoryQuests = {
 			},
 			Reward = { Item = "Enh70", N = 1 },
 		},
+		-- quest_volume §3-2 (A23-56, 검수 2026-10-06): 12 new subs + 6 pulled from story_depth §3 / town_npc_quests, each once,
+		-- ending in an A (angel) / B (devil) pick with the same size of reward in a different kind (A23-58 scores the pick).
+		-- Town-type (Lv5-10): 120 gold + half a level bar, A one 70% scroll / B 3 HP potions + 60 gold. Woods-type (Lv10+):
+		-- 2 minutes of hunting gold + XP, A one 70% scroll / B 3 HP potions + 192 gold (HuntValue 1 minute of Lv10-24).
+		-- They open after M1_4 at Lv5+ (the first ten minutes stay as they are). No weekly ranking points (A23-23 D1).
+		S6 = {
+			Kind = "Sub", Title = "Keep the Path Safe", Factions = { Halo = true, Horns = true },
+			Requires = { Done = { "M1_4" }, Level = 5 },
+			Steps = {
+				{ Text = "Slimes by the meadow arrival %d/%d", Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "Slime", Near = "MeadowArrival", Radius = 40, Count = 5 },
+					Horns = { Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 80 } } },
+				{ Text = "Back to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
+				{ Text = "Talk with the Guide", Panel = true,
+					Lines = { Halo = { "New kids walk this path. Keep it safe!", "The new kids keep asking for help…" },
+						Horns = { "A Horn Legion pouch must be FAT!", "So. What will you do with all that gold?" } },
+					Obj = { Type = "Choice", Good = { Label = "Help them find the slimes", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Make them say \"Thanks, boss!\"", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } },
+					Horns = { Obj = { Type = "Choice", Good = { Label = "Share snacks with the den", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Count it twice. Mine!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Who walks this path next?",
+		},
+		XR1 = {
+			Kind = "Sub", Title = "Lost & Found", Speaker = "Tiny",
+			Requires = { Done = { "M1_4" }, Level = 5 },
+			Steps = {
+				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Tiny: A King Slime swallowed a teddy bear!", "Tiny: Noted. Teddy bear: very loved. Very lost." } } },
+				{ Text = "King Slime %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
+				{ Text = "Bring the bear to Tiny", Guide = "Crossroads", Npc = "Tiny", Panel = true,
+					Lines = { All = { "Tiny: A bit sticky. Still very soft.", "Tiny: So. What now?" } },
+					Obj = { Type = "Choice", Good = { Label = "Return it to its owner", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Sell it at the counter", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } },
+						Neutral = { A = "Return it to its owner", B = "Sell it at the counter" } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Tiny: Thanks for your business. …Who lost it, anyway?",
+		},
+		H2 = {
+			Kind = "Sub", Title = "The Missing Halo Lantern", Speaker = "Bright", Factions = { Halo = true },
+			Requires = { Done = { "M1_4" }, Level = 8 },
+			Start = "Bright: The town lantern is gone! Did a slime eat it?",
+			Steps = {
+				{ Text = "Look around the fountain", Guide = "Crossroads",
+					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
+				{ Text = "Slimes %d/%d", Guide = "SlimeMeadow", Start = "Glowing jelly tracks lead to the meadow!",
+					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 5 } },
+				{ Text = "The lantern is back!", Panel = true,
+					Lines = { All = { "Found it! Still warm. Still glowing.", "Inside the lamp: a tiny 'B.' scratched in.\nWhose is it now?" } },
+					Obj = { Type = "Choice", Good = { Label = "Give it back to the town", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Hang it in my house", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Bright: Who was the first to carry it, I wonder?",
+		},
+		R5 = {
+			Kind = "Sub", Title = "Smokey's Hat Problem", Speaker = "Smokey", Factions = { Horns = true },
+			Requires = { Done = { "M1_4" }, Level = 8 },
+			Start = "Smokey: A King Slime is wearing my sack as a hat!",
+			Steps = {
+				{ Text = "Find the slime by the pond", Guide = "SlimePond", Obj = { Type = "Near", Spot = "SlimePond", Radius = 30 } },
+				{ Text = "King Slime %d/%d", Guide = "SlimePond", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
+				{ Text = "The sack is free!", Panel = true,
+					Lines = { All = { "A sack! A bit slimy. Smokey's name is on it.", "So whose sack is it now?" } },
+					Obj = { Type = "Choice", Good = { Label = "Give it back to Smokey", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Finders keepers!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+			},
+			Reward = { GoldN = 120, XPBar = 0.5 },
+			Finish = "Smokey: Did the slime look good in it, at least?",
+		},
+		GW1 = {
+			Kind = "Sub", Title = "Grab Club Meeting", Speaker = "Grabbo",
+			Requires = { Done = { "M2_7" }, Level = 12 },
+			Steps = {
+				{ Text = "Find the goblin camp meeting", Guide = "GoblinCamp1",
+					Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
+				{ Text = "Grab Club, meeting #47", Panel = true,
+					Lines = { All = { "Grabbo: Welcome to Grab Club! This is meeting number 47.",
+						"Grabbo: Last week we grabbed 100 dust. This week's goal: MORE.",
+						"Pip: Um, boss? Why do we grab?\nGrabbo: Because we grabbed last week! Next meeting: right now." } },
+					Obj = { Type = "Choice", Good = { Label = "Give the dust back", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Grab MORE dust!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Neutral = { A = "Give the dust back", B = "Grab MORE dust!" } } },
+				{ Text = "Grabbo's answer", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "Grabbo: Hmm. Noted!" } },
+					LinesBy = { From = "GW1", Good = { All = { "Grabbo: Give it… back? Write that down! A new idea!" } },
+						Evil = { All = { "Grabbo: Same plan, but MORE! Meeting 48 starts now!" } },
+						Default = { All = { "Grabbo: Hmm. Noted!" } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Grabbo: What were we grabbing for again?",
+		},
+		H3 = {
+			Kind = "Sub", Title = "Day 40: Cat in Tree", Speaker = "Gleam", Factions = { Halo = true },
+			Requires = { Done = { "M2_7" }, Level = 12 },
+			Steps = {
+				{ Text = "Talk to Sir Gleam", Guide = "HaloTown", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Sir Gleam: Day 40: Cat in tree. Again!", "Sir Gleam: Each rescue is a heart. 10,001 hearts!\nClear the slimes so I can reach it." } } },
+				{ Text = "Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
+				{ Text = "Back to Sir Gleam", Guide = "HaloTown", Panel = true,
+					Lines = { All = { "Sir Gleam: The cat is down! …It is already climbing again.", "Sir Gleam: What should we do?" } },
+					Obj = { Type = "Choice", Good = { Label = "Let the cat be. Help someone new.", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Put it back up. More hearts!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Sir Gleam: Is it still helping if you do it for the hearts?",
+		},
+		R3 = {
+			Kind = "Sub", Title = "Prank #200", Speaker = "Rex", Factions = { Horns = true },
+			Requires = { Done = { "M2_7" }, Level = 12 },
+			Steps = {
+				{ Text = "Talk to Rascal Rex", Guide = "HornsTown", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Rascal Rex: Prank number 200! Same as 199?", "Rascal Rex: Pranks cost gold. Go hunt some!" } } },
+				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 60 } },
+				{ Text = "Back to Rascal Rex", Guide = "HornsTown", Panel = true,
+					Lines = { All = { "Rascal Rex: The boos are the best part!", "Rascal Rex: So. Which prank?" } },
+					Obj = { Type = "Choice", Good = { Label = "Plan a surprise party instead", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Do prank 201. The same one!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Rascal Rex: Classic! …Is classic getting old?",
+		},
+		GW2 = {
+			Kind = "Sub", Title = "The Dark Path",
+			Requires = { Done = { "M2_7" }, Level = 11 },
+			Start = "The woods path is so dark. Kids are scared to walk it.",
+			Steps = {
+				{ Text = "Watch the woods path %d/%d s", Guide = "WoodsGate",
+					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
+				{ Text = "Goblins by the woods arrival %d/%d", Guide = "GoblinWoods",
+					Obj = { Type = "Kill", Kind = "Goblin", Near = "WoodsArrival", Radius = 40, Count = 4 } },
+				{ Text = "What will you put up?", Panel = true,
+					Lines = { All = { "The path is clear for now.", "What will you put up by the path?" } },
+					Obj = { Type = "Choice", Good = { Label = "Put up a lamp for everyone", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Put up a KEEP OUT sign", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Neutral = { A = "Put up a lamp for everyone", B = "Put up a KEEP OUT sign" } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Who will walk this path tomorrow?",
+		},
+		GW3 = {
+			Kind = "Sub", Title = "Gold Paint",
+			Requires = { Done = { "M2_7" }, Level = 14 },
+			Start = "A goblin painted himself gold to look rich!",
+			Steps = {
+				{ Text = "A golden monster in the woods %d/%d", Guide = "GoblinWoods",
+					Obj = { Type = "Kill", Golden = true, Zone = "GoblinWoods", Count = 1 } },
+				{ Text = "The gold goblin", Panel = true,
+					Lines = { All = { "Goblin: Don't tell! The gold comes off in the rain.", "Goblin: Do I look rich? Be honest." } },
+					Obj = { Type = "Choice", Good = { Label = "Tell him he's fine as he is", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Sell him more gold paint", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Neutral = { A = "Tell him he's fine as he is", B = "Sell him more gold paint" } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Does gold paint make anyone rich?",
+		},
+		H5 = {
+			Kind = "Sub", Title = "Form H-2", Speaker = "Bright", Factions = { Halo = true },
+			Requires = { Done = { "M2_7" }, Level = 15 },
+			Steps = {
+				{ Text = "Talk to Bright", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Bright: I need Form H-2 to fight a Brute.", "Bright: Who made these forms?! …Oh. Us." } } },
+				{ Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Count = 1 } },
+				{ Text = "Tell Bright", Guide = "HaloTown", Npc = "Bright", Panel = true,
+					Lines = { All = { "Bright: You beat it! Without a form!", "Bright: So… what about the forms?" } },
+					Obj = { Type = "Choice", Good = { Label = "Skip the form. Just help!", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Fill in three more forms", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Bright: Do rules help, or do people help?",
+		},
+		R6 = {
+			Kind = "Sub", Title = "Plan B, Again", Speaker = "Smokey", Factions = { Horns = true },
+			Requires = { Done = { "M2_7" }, Level = 15 },
+			Steps = {
+				{ Text = "Talk to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Smokey: Plan B failed. Time for… Plan B?", "Smokey: Plans cost gold. Lots of it." } } },
+				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 200 } },
+				{ Text = "Back to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+					Lines = { All = { "Smokey: Gold! Now, the plan…", "Smokey: Which plan?" } },
+					Obj = { Type = "Choice", Good = { Label = "Try a brand-new plan", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Plan B again, but LOUDER", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Smokey: What if a plan needs two people?",
+		},
+		GW4 = {
+			Kind = "Sub", Title = "The Crown War Is Close", Factions = { Halo = true, Horns = true },
+			Requires = { Done = { "M2_7" }, Level = 16 },
+			Start = "The Crown War is close! Win points for your side.",
+			Steps = {
+				{ Text = "Crown points %d/%d", Obj = { Type = "WarPoints", Count = 40 } },
+				{ Text = "The round is over", Panel = true,
+					Lines = { All = { "What a round!", "How will you end it?" } },
+					Obj = { Type = "Choice", Good = { Label = "Cheer for both sides", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Victory dance, our side only!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Who was the war really for?",
+		},
+		GW5 = {
+			Kind = "Sub", Title = "The Tired Goose", Speaker = "Fountain", Factions = { Halo = true, Horns = true },
+			Requires = { Done = { "M2_7" }, Level = 17 },
+			Start = "Fountain Shard: The Golden Goose looks so tired…",
+			Steps = {
+				{ Text = "Join the Golden Goose tug %d/%d", Guide = "Goose", Obj = { Type = "Goose", Count = 2 } },
+				{ Text = "Talk with the Fountain Shard", Guide = "Crossroads", Panel = true,
+					Lines = { All = { "Fountain Shard: She runs every day. Pulled this way, then that way.", "Fountain Shard: What now?" } },
+					Obj = { Type = "Choice", Good = { Label = "Let her rest a day", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Make her lay eggs faster!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Fountain Shard: Is more eggs ever enough?",
+		},
+		GW6 = {
+			Kind = "Sub", Title = "Nap Time",
+			Requires = { Done = { "M2_7" }, Level = 19 },
+			Start = "Beat a Brute and stay above half HP. He just wants a nap.",
+			Steps = {
+				{ Text = "Goblin Brute above half HP %d/%d", Guide = "GoblinWoods",
+					Obj = { Type = "SafeKill", Kind = "GoblinBrute", MinHP = 0.5, Count = 1 } },
+				{ Text = "The sleepy Brute", Panel = true,
+					Lines = { All = { "Brute: Zzz… five more minutes…", "What will you do?" } },
+					Obj = { Type = "Choice", Good = { Label = "Tuck him in for a nap", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Neutral = { A = "Tuck him in for a nap", B = "Draw a mustache on him" } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Even Brutes get tired. What makes you tired?",
+		},
+		GW7 = {
+			Kind = "Sub", Title = "Grab Club, Again", Speaker = "Grabbo",
+			Requires = { Done = { "GW1" }, Level = 21 },
+			Steps = {
+				{ Text = "Back to the goblin camp", Guide = "GoblinCamp1", Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
+				{ Text = "Grab Club meets again", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Grabbo: Grab Club meets again. Same topic?" } },
+					LinesBy = { From = "GW1",
+						Good = { All = { "Grabbo: Last time someone said 'give it back'. We wrote it down!", "Grabbo: Now help us practice. Gently!" } },
+						Evil = { All = { "Grabbo: Meeting #48! Topic: MORE. Same as always!", "Grabbo: Show us how you grab three at once!" } },
+						Default = { All = { "Grabbo: Grab Club meets again. Same topic?", "Grabbo: Show us how you grab three at once!" } } } },
+				{ Text = "Hit 3 at once with a skill %d/%d", Guide = "GoblinWoods", Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
+				{ Text = "The club votes", Panel = true,
+					Lines = { All = { "Grabbo: Time to vote!" } },
+					Obj = { Type = "Choice", Good = { Label = "Bring the club a new idea", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Vote for MORE. Again!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Neutral = { A = "Bring the club a new idea", B = "Vote for MORE. Again!" } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Grabbo: What else can a club do?",
+		},
+		H6 = {
+			Kind = "Sub", Title = "Dusty Heroes", Speaker = "Bright", Factions = { Halo = true },
+			Requires = { Done = { "M2_7" }, Level = 22 },
+			Start = "Bright: The hero statues are dusty. Who were they, really?",
+			Steps = {
+				{ Text = "Look at the hero statues %d/%d s", Guide = "HeroStatue",
+					Obj = { Type = "Near", Spot = "HeroStatue", Radius = 16, Stay = 10 } },
+				{ Text = "Goblins %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 8 } },
+				{ Text = "Back to the statues", Guide = "HaloTown", Panel = true,
+					Lines = { All = { "Bright: The statues are shiny again!", "Bright: What should the road show next?" } },
+					Obj = { Type = "Choice", Good = { Label = "Add a statue of a sprout too", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Make OUR statue bigger", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Bright: Who is a hero? Only the big ones?",
+		},
+		R7 = {
+			Kind = "Sub", Title = "Lava Party", Speaker = "Smokey", Factions = { Horns = true },
+			Requires = { Done = { "M2_7" }, Level = 22 },
+			Start = "Smokey: Party at the lava cracks! Bring snacks… or gold.",
+			Steps = {
+				{ Text = "Warm up at the lava %d/%d s", Guide = "LavaCrack",
+					Obj = { Type = "Near", Spot = "LavaCrack", Radius = 16, Stay = 10 } },
+				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 300 } },
+				{ Text = "Party time", Guide = "HornsTown", Panel = true,
+					Lines = { All = { "Smokey: Snacks! Gold! Music!", "Smokey: Who gets in?" } },
+					Obj = { Type = "Choice", Good = { Label = "Invite the whole den", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "VIP only. Just us!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "Smokey: Is a party better big, or just right?",
+		},
+		GW8 = {
+			Kind = "Sub", Title = "A Very Full Vault",
+			Requires = { Done = { "M2_7" }, Level = 23 },
+			Start = "Your vault is SO full. What is all this gold for?",
+			Steps = {
+				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 500 } },
+				{ Text = "Back to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
+				{ Text = "Talk about the vault", Panel = true,
+					Lines = { All = { "So much gold! The vault door barely shuts.", "Is a bigger vault ever big enough?" } },
+					Obj = { Type = "Choice", Good = { Label = "Give some to the town fund", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+						Evil = { Label = "Build a bigger vault", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Neutral = { A = "Give some to the town fund", B = "Build a bigger vault" } } },
+			},
+			Reward = { Gold = 2, XP = 2 },
+			Finish = "What is gold for, really?",
+		},
 	},
 }
 
@@ -2234,6 +2536,80 @@ Config.StoryQuests.Landmarks.KidsBench = Vector3.new(18, 0, 18)
 Config.StoryQuests.Landmarks.GoblinCamp1 = Vector3.new(660, 0, -60)
 Config.StoryQuests.Landmarks.GoblinCamp2 = Vector3.new(750, 0, 50)
 Config.StoryQuests.Landmarks.GoblinCamp3 = Vector3.new(820, 0, -40)
+-- quest_volume §3-5: the fields' arrival points follow their zones' Spawn (map v2 moves them along), and the two job
+-- boards (E11): the meadow board beside the meadow arrival, the woods board at the meadow end of the woods bridge
+-- (WoodsGate, outside the PvP woods). Game dev 1 places the boards there (the server checks the distance to these).
+Config.StoryQuests.Landmarks.MeadowArrival = Config.Zones.SlimeMeadow.Spawn
+Config.StoryQuests.Landmarks.WoodsArrival = Config.Zones.GoblinWoods.Spawn
+-- (a literal: some offline Vector3 doubles have no arithmetic; test_board checks it stays 10 studs from the arrival)
+Config.StoryQuests.Landmarks.MeadowBoard = Vector3.new(220, 0, 10)
+Config.StoryQuests.Landmarks.WoodsBoard = Config.StoryQuests.Landmarks.WoodsGate
+-- quest_volume §3-2 H6 / R7: the Heroes' Road between the hero statues (Halo Citadel) and the east lava channel (Horns
+-- Den), from tools/preview_map.lua (town center + offsets); map v2 moves them
+Config.StoryQuests.Landmarks.HeroStatue = Vector3.new(0, 0, -360)
+Config.StoryQuests.Landmarks.LavaCrack = Vector3.new(48, 0, 400)
+
+-- E11 (quest_volume §3-3 / §4, 검수 OK 2026-10-07): the hunting-field job boards (BoardService). Enabled = false until
+-- game dev 1's board window ships; on, extra quests stop (a claimed daily slot stays empty) and the boards take that
+-- role. A card is taken as [Kind] or [Sneaky]: only the side is counted (data.Story.N), no honor / infamy / ranking.
+-- Reward = HuntValue(the board's Level, 1) (meadow 36 gold + 60 XP, woods 192 + 336), x AfterMult after FullPerDay jobs
+-- a KST day; the BonusAt-th job of a day also gives one BonusItem. Jobs: Obj like a story step ("$Key" = the board's
+-- value), Count per board, Goal = the quest-list line ({Unit} / {Big} / {Camp} names, then %d/%d), Kind / Sneaky = the
+-- card's two buttons (a table = per board). Weight default 3; NeedAuto = only after Auto Battle is unlocked. A board's
+-- SafeIds: at least one such card is always on it (the woods: done outside the PvP zone).
+Config.Board = {
+	Enabled = false,
+	Cards = 4,
+	Hold = 3,
+	Range = 14, -- studs from the board spot for BoardAction
+	RerollCooldown = 60, -- one card swap per this many seconds (like the dailies)
+	FullPerDay = 10,
+	AfterMult = 0.5,
+	BonusAt = 5,
+	BonusItem = "Enh30",
+	HintAfter = "M1_4", -- the "Job Board" guide row shows after this story quest until the first job is taken
+	HintBoard = "Meadow",
+	Boards = {
+		Meadow = { Zone = "SlimeMeadow", Spot = "MeadowBoard", Level = 1, Unit = "Slime", Big = "BigSlime",
+			Arrival = "MeadowArrival", Camp = "SlimePond", CampName = "pond", Gate = "MeadowArrival" },
+		Woods = { Zone = "GoblinWoods", Spot = "WoodsBoard", Level = 10, Unit = "Goblin", Big = "GoblinBrute",
+			Arrival = "WoodsArrival", Camp = "GoblinCamp1", CampName = "camp", Gate = "WoodsGate",
+			SafeIds = { J6 = true, J10 = true } },
+	},
+	Jobs = {
+		{ Id = "J1", Obj = { Type = "Kill", Kind = "$Unit", Near = "$Arrival", Radius = 40 }, Count = { Meadow = 5, Woods = 4 },
+			Goal = "Clear the path · {Unit} %d/%d",
+			Kind = "Clear the path so new kids can walk.", Sneaky = "Clear the path. Now it's YOUR road!" },
+		{ Id = "J2", Obj = { Type = "Kill", Kind = "$Unit", Near = "$Camp", Radius = 40 }, Count = { Meadow = 4, Woods = 3 },
+			Goal = "By the {Camp} · {Unit} %d/%d",
+			Kind = { Meadow = "The pond is too crowded. Give the frogs room.", Woods = "The camp is too crowded. Give the little ones room." },
+			Sneaky = { Meadow = "Best spot in the meadow. Claim it!", Woods = "Best spot in the woods. Claim it!" } },
+		{ Id = "J3", Obj = { Type = "Kill", Kind = "$Big" }, Count = { Meadow = 2, Woods = 1 }, Goal = "{Big} %d/%d",
+			Kind = "A big one scares travelers. Stop it!", Sneaky = "Bonk the big one. Show who's boss!" },
+		{ Id = "J4", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, Goal = "Hit 3 at once with a skill %d/%d",
+			Kind = "A swarm blocks a cart. Clear it at once!", Sneaky = "Hit three at once. Make everyone look!" },
+		{ Id = "J5", Obj = { Type = "BasicKill", Kind = "$Unit" }, Count = { Meadow = 6, Woods = 4 }, Goal = "Basic hits only · {Unit} %d/%d",
+			Kind = "Basic hits only. Don't scare the birds.", Sneaky = "No skills needed. Too easy!" },
+		{ Id = "J6", Obj = { Type = "EarnGold", Source = "Monster" }, Count = { Meadow = 40, Woods = 150 }, Goal = "Hunting gold %d/%d",
+			Kind = "Collect gold for the town road fund.", Sneaky = "Fill your pouch. Bigger pouch, bigger grin!" },
+		{ Id = "J7", Obj = { Type = "AutoKill" }, Count = { Meadow = 8, Woods = 6 }, NeedAuto = true, Goal = "Auto Battle defeats %d/%d",
+			Kind = "Let your shard guard the road.", Sneaky = "Let your shard do the boring part." },
+		{ Id = "J8", Obj = { Type = "Kill", Golden = true }, Count = 1, Weight = 1, Goal = "A golden monster %d/%d",
+			Kind = "A golden one is lost. Bring it home!", Sneaky = "A golden one! Finders keepers!" },
+		{ Id = "J9", Obj = { Type = "SafeKill", Kind = "$Big", MinHP = 0.5 }, Count = 1, Goal = "{Big} above half HP %d/%d",
+			Kind = "Show the sprouts how to fight safely.", Sneaky = "Win without a scratch. Show off!" },
+		{ Id = "J10", Obj = { Type = "Near", Spot = "$Gate", Radius = 14 }, Count = 15, Goal = "Stand guard at the gate %d/%d s",
+			Kind = "Stand guard at the gate.", Sneaky = "Stand at the gate and look scary." },
+	},
+	Text = {
+		Done = "Job done! +%s gold · +%s XP",
+		LeanKind = "Your shard leaned to the light.",
+		LeanSneaky = "Your shard leaned to the dark.",
+		Bonus = "5th job today! +%s",
+		Full = "You carry 3 jobs. Finish one first!",
+		Hint = "Job Board · tap for directions",
+	},
+}
 
 ----------------------------------------------------------------- quests (3 slots: dailies first, then rolling extras)
 Config.Quests = {
@@ -2290,6 +2666,27 @@ Config.Quests = {
 			{ Id = "Gold", Weight = 3, Targets = { 40, 50, 60 } }, -- 사냥으로 골드 40~60 벌기
 		},
 	},
+	-- E12 (quest_volume §3-4, A23-56): the Goblin Woods band Lv10-24 works like Newbie (rows reuse a template Id, exact
+	-- Targets, about 3 minutes each, the three goals differ). Each daily pays HuntValue(level, 3), the full-set chest
+	-- HuntValue(level, 6): one day = 15 minutes of hunting (the template dailies paid 25 for about 3x the work).
+	-- Hunt / Plunder keep the PvP rules (Lv15+, no Sprout Shield, at most one) and their sides; Goose is Halo / Horns
+	-- only. Lv25+ keeps Templates[].DailyUnits. Vacation follows the band (Config.DailyDayMinutes = 15).
+	Woods = {
+		MinLevel = 10,
+		MaxLevel = 24,
+		RewardMinutes = 3,
+		ChestMinutes = 6,
+		Dailies = {
+			{ Id = "Kill", Weight = 3, Monster = "Goblin", Targets = { 12, 13, 14, 15 } }, -- goblins 12~15
+			{ Id = "Kill", Weight = 2, Monster = "GoblinBrute", Strict = true, Targets = { 2 } }, -- Goblin Brutes 2
+			{ Id = "Release", Weight = 3, Targets = { 4, 5, 6 } }, -- skills that hit monsters 4~6
+			{ Id = "Gold", Weight = 3, Targets = { 150, 200, 250 } }, -- hunting gold
+			{ Id = "Golden", Weight = 1, Targets = { 1 } }, -- one golden monster
+			{ Id = "Goose", Weight = 1, Targets = { 1 } }, -- the Golden Goose tug (Halo / Horns)
+			{ Id = "Hunt", Weight = 1, Targets = { 1 } }, -- PvP, Halo
+			{ Id = "Plunder", Weight = 1, Targets = { 1 } }, -- PvP, Horns
+		},
+	},
 }
 
 Config.Daily = {
@@ -2316,14 +2713,22 @@ function Config.DailyChestReward(level) -- gold, xp
 end
 
 -- minutes of hunting one full day of dailies is worth (all dailies + the chest) in the daily band of `level`:
--- Lv1..Quests.Newbie.MaxLevel = Newbie.RewardMinutes x Slots + Newbie.ChestMinutes (10), else Daily's (25)
+-- Lv1..Quests.Newbie.MaxLevel = Newbie.RewardMinutes x Slots + Newbie.ChestMinutes (10), E12 Woods.MinLevel..MaxLevel
+-- = Woods' (3 x 3 + 6 = 15), else Daily's (25)
 function Config.DailyDayMinutes(level)
 	local nb = Config.Quests.Newbie
 	local slots = Config.Quests.Slots
+	local lv = tonumber(level) or 1
 	if type(nb) == "table" and type(nb.Dailies) == "table" and #nb.Dailies > 0
-		and (tonumber(level) or 1) <= (tonumber(nb.MaxLevel) or 0) then
+		and lv <= (tonumber(nb.MaxLevel) or 0) then
 		return (tonumber(nb.RewardMinutes) or Config.Daily.QuestMinutes) * slots
 			+ (tonumber(nb.ChestMinutes) or Config.Daily.ChestMinutes)
+	end
+	local wd = Config.Quests.Woods
+	if type(wd) == "table" and type(wd.Dailies) == "table" and #wd.Dailies > 0
+		and lv >= (tonumber(wd.MinLevel) or math.huge) and lv <= (tonumber(wd.MaxLevel) or 0) then
+		return (tonumber(wd.RewardMinutes) or Config.Daily.QuestMinutes) * slots
+			+ (tonumber(wd.ChestMinutes) or Config.Daily.ChestMinutes)
 	end
 	return Config.Daily.QuestMinutes * slots + Config.Daily.ChestMinutes
 end
@@ -2381,7 +2786,8 @@ Config.Visuals = {
 -- once it is in Studio. ServerStorage[Folder] holds MeshParts (or Models with one mesh) named as below, imported at their
 -- real size (studs, built for a 1.2-stud head, origin = the bottom center; files art/models/acc/*.glb). Horns sink
 -- HornsDepth into the head top, halos float HaloGap above it (both x head height / HeadRef); Yaw turns the model to the
--- head's front (glTF +Z front -> 180; game dev 1 checks once in Studio). A missing model keeps the drawn mark.
+-- head's front (0: 이미지 생성 1 turned the models to face Roblox -Z before the import, 427baf8). A missing model keeps
+-- the drawn mark.
 Config.Visuals.MarkModels = {
 	Folder = "MarkModels",
 	Halo = { "Acc_HaloR1", "Acc_HaloR2", "Acc_HaloR3", "Acc_HaloR4", "Acc_HaloR5" },
@@ -2389,7 +2795,7 @@ Config.Visuals.MarkModels = {
 	HeadRef = 1.2,
 	HaloGap = 0.3,
 	HornsDepth = 0.06,
-	Yaw = 180,
+	Yaw = 0,
 	HaloLight = { Range = 8, Brightness = 1.2 }, -- the old halo disc's light
 	-- R5: a soft gold glow / embers as an effect (이미지 생성 1: "금빛 번짐·불씨는 효과로")
 	Glow = { Rank = 5, Rate = 5, Size = 0.25, Halo = Color3.fromRGB(255, 225, 130), Horns = Color3.fromRGB(255, 140, 60) },
@@ -2406,7 +2812,7 @@ end
 ----------------------------------------------------------------- remotes / misc
 -- minimum seconds between two accepted calls of the same remote from the same player (Util.RateLimit)
 Config.RateLimits = {
-	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
+	ChooseFaction = 1, ChooseClass = 1, StoryAction = 0.4, BoardAction = 0.3, Swing = 0.1, Release = 0.25, SetAutoAttack = 0.25,
 	UpgradeWeapon = 0.3, SellWeapon = 0.3, Rebirth = 1, SwitchFaction = 1, ChangeClass = 1, Travel = 0.5,
 	RerollQuest = 0.5, ClaimQuest = 0.3, ClaimVacation = 1, UsePotion = 0.3, BuyPotion = 0.3,
 	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown

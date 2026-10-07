@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 2257,
+  "checks": 3348,
   "failedChecks": 0,
-  "namedChecks": 146,
+  "namedChecks": 183,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -75,7 +75,7 @@
     },
     {
       "group": "dailies-config",
-      "check": "DailyDayMinutes: Lv1-9 = 2 x 3 + 4 = 10, Lv10+ = 25",
+      "check": "DailyDayMinutes: Lv1-9 = 2 x 3 + 4 = 10, Lv10-24 (E12 woods) = 3 x 3 + 6 = 15, Lv25+ = 25",
       "pass": 1,
       "fail": 0
     },
@@ -99,7 +99,13 @@
     },
     {
       "group": "dailies-config",
-      "check": "Lv10+ vacation unchanged (70% of 25 minutes)",
+      "check": "Lv25+ vacation unchanged (70% of 25 minutes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-config",
+      "check": "Lv10-24 vacation = 70% of the woods day (15 minutes)",
       "pass": 1,
       "fail": 0
     },
@@ -189,13 +195,13 @@
     },
     {
       "group": "dailies-generate",
-      "check": "Lv10 dailies keep the old reward (DailyQuestReward) and are never strict",
+      "check": "Lv25 dailies keep the old reward (DailyQuestReward) and are never strict",
       "pass": 30,
       "fail": 0
     },
     {
       "group": "dailies-generate",
-      "check": "Lv10 kill daily = 50-60 goblins (old sizes)",
+      "check": "Lv25 kill daily = 50-60 skeletons (old sizes)",
       "pass": 9,
       "fail": 0
     },
@@ -411,7 +417,7 @@
     },
     {
       "group": "dailies-day-change",
-      "check": "the new day is generated in the current (Lv10) band",
+      "check": "the new day is generated in the current (Lv10, woods) band",
       "pass": 1,
       "fail": 0
     },
@@ -423,6 +429,222 @@
     },
     {
       "group": "dailies-day-change",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "Config.Quests.Woods: Lv10-24, 3-minute dailies, 6-minute chest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "the woods band starts after the newbie band and ends where the Skeleton Ruins open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "every woods row reuses a template Id with exact Targets",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "Lv10-24: three different dailies",
+      "pass": 108,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "a woods daily pays HuntValue(level, 3)",
+      "pass": 324,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "the target comes from a woods row",
+      "pass": 324,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "kill rows: 12-15 goblins, or 2 Goblin Brutes (strict)",
+      "pass": 94,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "DailyLevel records the woods band",
+      "pass": 108,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "no goose daily for the guild",
+      "pass": 20,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "Hunt: Halo, Lv15+ (no Sprout Shield) only",
+      "pass": 9,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "Plunder: Horns, Lv15+ (no Sprout Shield) only",
+      "pass": 9,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "kill / skill / gold / golden all show up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "a Sprout-shielded Lv17: no PvP daily",
+      "pass": 60,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "a Goblin Brute daily shows up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "strict brute row: goblins count 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "a Goblin Brute counts 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "a Lv24 set claimed at Lv25: the woods chest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "a rerolled woods daily stays a woods daily",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "2 missed woods days = VacationReward(12, 2) (15-minute days)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "one claim of three = 3 of 15 woods minutes -> 0.8 vacation day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-woods",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "Config.Board.Enabled is false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "off: a claimed daily slot becomes an extra quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "off: the extra is listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: a claimed daily slot stays empty (no extra quest)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: the empty slot is not listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: the boards' Job rows are listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: an empty slot is never rerolled into an extra",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: a finished old extra pays and leaves its slot empty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: a rebirth keeps the empty slots empty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "on: the next day brings three fresh dailies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "switched off again: an empty slot gets an extra at load",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "board-switch",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -893,9 +1115,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 19,
-    "applied": 19,
-    "caught": 19,
+    "total": 33,
+    "applied": 33,
+    "caught": 33,
     "results": [
       {
         "mutation": "newbie daily pays the 5-minute reward",
@@ -920,11 +1142,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "dailies-day-change :: the new day is generated in the current (Lv10) band",
-          "dailies-generate :: Lv10 dailies keep the old reward (DailyQuestReward) and are never strict",
-          "dailies-generate :: Lv10 kill daily = 50-60 goblins (old sizes)"
+          "dailies-day-change :: the new day is generated in the current (Lv10, woods) band",
+          "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
+          "dailies-woods :: a woods daily pays HuntValue(level, 3)",
+          "dailies-woods :: kill rows: 12-15 goblins, or 2 Goblin Brutes (strict)",
+          "dailies-woods :: the target comes from a woods row"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "strict king-slime row counts slimes as fractions",
@@ -936,9 +1160,11 @@
           "dailies-progress :: a king slime counts exactly 1",
           "dailies-progress :: a stronger monster counts 1 too",
           "dailies-progress :: an unknown monster never counts for a strict row",
-          "dailies-progress :: strict 왕 슬라임 row: a slime counts 0 (no fractions)"
+          "dailies-progress :: strict 왕 슬라임 row: a slime counts 0 (no fractions)",
+          "dailies-woods :: a Goblin Brute counts 1",
+          "dailies-woods :: strict brute row: goblins count 0"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "newbie chest pays the Lv10+ chest",
@@ -962,9 +1188,10 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-day-change :: midnight auto-pay: stored 72/120 x 3 + the chest of the OLD (Lv1) band",
-          "dailies-reroll-band :: Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)"
+          "dailies-reroll-band :: Lv9 set claimed at Lv10: stored 72/120 and the newbie chest 144/240 (not 1920/3360)",
+          "dailies-woods :: a Lv24 set claimed at Lv25: the woods chest"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "newbie rows allow a repeated goal",
@@ -974,9 +1201,11 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-generate :: Lv1-9: three different dailies (kill / skill / gold)",
-          "dailies-progress :: group ran to the end without a Lua error"
+          "dailies-progress :: group ran to the end without a Lua error",
+          "dailies-woods :: Lv10-24: three different dailies",
+          "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "vacation uses the Lv10+ day value",
@@ -986,11 +1215,12 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-config :: 3 missed days (max) = 1260 XP < 1381 (no Lv10 from vacation alone)",
+          "dailies-config :: Lv10-24 vacation = 70% of the woods day (15 minutes)",
           "dailies-config :: a missed Lv1-9 day (70% of 10 minutes) pays less than a played day (360 + 600)",
           "dailies-config :: a missed Lv1-9 day pays exactly the documented 252 gold (70% of 360; float floor must not lose 1 gold)",
           "dailies-day-change :: 2 missed rookie days = VacationReward(1, 2) in the newbie band (840 XP)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "co-op success pays 100%",
@@ -1153,6 +1383,183 @@
           "class-change :: no ticket: refused, nothing changes"
         ],
         "newFailingCount": 6
+      },
+      {
+        "mutation": "Lv10-24 gets the template dailies again",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-day-change :: the new day is generated in the current (Lv10, woods) band",
+          "dailies-woods :: a Goblin Brute daily shows up",
+          "dailies-woods :: a Lv24 set claimed at Lv25: the woods chest",
+          "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
+          "dailies-woods :: a rerolled woods daily stays a woods daily",
+          "dailies-woods :: a woods daily pays HuntValue(level, 3)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the woods band reaches Lv25",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-generate :: Lv25 dailies keep the old reward (DailyQuestReward) and are never strict",
+          "dailies-generate :: Lv25 kill daily = 50-60 skeletons (old sizes)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a woods daily pays the 5-minute reward",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-day-change :: the new day is generated in the current (Lv10, woods) band",
+          "dailies-woods :: a Lv24 set claimed at Lv25: the woods chest",
+          "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
+          "dailies-woods :: a rerolled woods daily stays a woods daily",
+          "dailies-woods :: a woods daily pays HuntValue(level, 3)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the woods chest pays the Lv25 chest",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-woods :: a Lv24 set claimed at Lv25: the woods chest",
+          "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "woods targets scaled like templates",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-woods :: a Lv24 set claimed at Lv25: the woods chest",
+          "dailies-woods :: a full Lv10 woods day = 3 x 3 minutes + the 6-minute chest",
+          "dailies-woods :: the target comes from a woods row"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "woods vacation uses the 25-minute day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-config :: DailyDayMinutes: Lv1-9 = 2 x 3 + 4 = 10, Lv10-24 (E12 woods) = 3 x 3 + 6 = 15, Lv25+ = 25",
+          "dailies-config :: Lv10-24 vacation = 70% of the woods day (15 minutes)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the brute row is not strict",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dailies-woods :: a Goblin Brute counts 1",
+          "dailies-woods :: kill rows: 12-15 goblins, or 2 Goblin Brutes (strict)",
+          "dailies-woods :: strict brute row: goblins count 0"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the board switch always on",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: off: a claimed daily slot becomes an extra quest",
+          "board-switch :: off: the extra is listed",
+          "board-switch :: switched off again: an empty slot gets an extra at load",
+          "dailies-generate :: both kill variants occur (king slime 3 more often than 12-15 slimes)",
+          "dailies-progress :: a claimed daily slot becomes an extra quest",
+          "dailies-progress :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "board on: a claimed daily still becomes an extra",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: a claimed daily slot stays empty (no extra quest)",
+          "board-switch :: on: an empty slot is never rerolled into an extra",
+          "board-switch :: on: the empty slot is not listed"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "board on: the empty slot is listed",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: the empty slot is not listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board on: an empty slot can be rerolled",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: an empty slot is never rerolled into an extra"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board on: the job rows are not listed",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: the boards' Job rows are listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board on: a finished extra refills its slot",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: a finished old extra pays and leaves its slot empty"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "board on: a rebirth refills empty slots",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "board-switch :: on: a rebirth keeps the empty slots empty"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -1160,14 +1567,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
-    "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
+    "src/ReplicatedStorage/Shared/Config.luau": "a65e36e5ff32b21c33138873718edeb397fa6f532fdbe7326b708f271b3dfb5d",
+    "src/ReplicatedStorage/Shared/Net.luau": "0715c7aed87e0391dafc8dc9bd7945089cfe78585f4fcf385c64e92a2badb2f1",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
-    "src/ServerScriptService/QuestService.luau": "6e6cf3e0aeb4c1bd442da0fa624899f1979c949594443539840d393edd00fc69",
+    "src/ServerScriptService/QuestService.luau": "3f2a12c29b00bebb39813412068b72db1110a1608d047d45eee04d980d06d7d3",
     "src/ServerScriptService/GooseService.luau": "eb39998538042239d5966f71c08869788465bee782e6b26f6d2a50847bf8dc99",
     "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005"
   },
-  "fixtureSHA256": "7fb0c1cc337c63733afe4fa359154ac280ed9e30d1e806429b59dcc4d12e367f",
+  "fixtureSHA256": "9ba4c2718a5edb0c7698ac0a28a919c6a63e10a0eff2e942d95c7e2981b36dcd",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

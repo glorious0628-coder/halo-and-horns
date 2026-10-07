@@ -167,6 +167,7 @@ runGroup("offered", function()
 	check(w2:Track(gd2, "N1") and w2:Track(gd2, "N2") and w2:Track(gd2, "N3"), "switch on: N1 / N2 come back (data kept)",
 		show(gd2.Story.Subs))
 	-- the row carries the NPC (game dev 1 puts '!' over it) and a waiting talk never pops a window by itself
+	w.Config.StoryQuests.MaxSubs = 20 -- the row itself (A23-56's other new offers share the 3 list rows)
 	local rows = w.Story.SubRows(halo, hd)
 	local h1row = nil
 	for _, r in rows do if r.Story and r.Story.Id == "H1" then h1row = r end end
@@ -522,6 +523,11 @@ runGroup("max-subs", function()
 		for _, v in list do if v == id then return true end end
 		return false
 	end
+	-- (the A23-56 town-type subs S6 / XR1 are done here, so the list is about the town quests)
+	for _, id in { "S6", "XR1" } do
+		d.Story.Done[id] = true
+		d.Story.Subs[id] = nil
+	end
 	local first = ids()
 	check(#first == 3 and has(first, "H1") and has(first, "N3"), "both town quests wait at their NPC: on the list",
 		show(first))
@@ -530,13 +536,22 @@ runGroup("max-subs", function()
 	check(w:Track(d, "H1").St == 2, "H1 started (step 2)", w:Track(d, "H1").St)
 	w.GameState.Attrs.GooseActive = true
 	local busy = ids()
-	check(#busy == 3 and busy[1] == "N3" and busy[2] == "S1" and busy[3] == "H1",
-		"N3's card + the goose + H1 in progress: H1 stays on the list (S0 / S2 / S3 wait)", show(busy))
+	check(#busy == 3 and busy[1] == "S1" and busy[2] == "H1" and busy[3] == "S0",
+		"the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)", show(busy))
 	check(table.concat(ids(), ",") == table.concat(busy, ","), "the same order on every refresh (no swapping)", show(ids()))
 	w.GameState.Attrs.GooseActive = false
 	local calm = ids()
-	check(#calm == 3 and calm[1] == "N3" and calm[2] == "H1" and calm[3] == "S0", "the goose gone: N3, H1, then S0",
+	check(#calm == 3 and calm[1] == "H1" and calm[2] == "S0" and calm[3] == "N3", "the goose gone: H1, S0, then N3's offer",
 		show(calm))
+	-- a new offer (XR1's first card) never pushes a sub in progress off the list; a card waiting mid-quest comes first
+	d.Story.Done.XR1 = nil
+	d.Story.Subs.XR1 = { St = 1, P = 0, T = {}, Claim = false }
+	local offer = ids()
+	check(offer[1] == "H1" and offer[2] == "S0" and offer[3] == "XR1", "XR1's new offer joins after the subs in progress",
+		show(offer))
+	d.Story.Subs.XR1.St = 3 -- XR1's pick card waits mid-quest
+	local pickFirst = ids()
+	check(pickFirst[1] == "XR1" and pickFirst[2] == "H1", "a pick card waiting mid-quest comes first", show(pickFirst))
 	for _, r in w.Story.SubRows(p, d) do
 		check(r.Rank == nil and r.Order == nil, "the " .. tostring(r.Story and r.Story.Id) .. " row sends no Rank / Order",
 			show({ r.Rank, r.Order }))
@@ -984,6 +999,140 @@ runGroup("ch3-horns-evil", function()
 	w.Story.Claim(q, "M3_4")
 	w.Story.Refresh(q)
 	check(e.Story.Done.M3_4 and w:Track(e, "Pip1") ~= nil, "…and Pip1 comes at Lv15+ (A = the Good side)", show(e.Story.Subs.Pip1))
+end)
+
+------------------------------------------------------------------ 14. quest_volume §3-2: 12 new subs + 6 pulled (A23-56)
+local SUBS18 = { "S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8" }
+local TOWN_TYPE = { S6 = true, XR1 = true, H2 = true, R5 = true }
+
+runGroup("subs18-data", function()
+	local SQ = SQ0
+	for _, id in SUBS18 do
+		local def = SQ.Defs[id]
+		check(def ~= nil and def.Kind == "Sub" and table.find(SQ.Subs, id) ~= nil, id .. ": a sub in StoryQuests.Subs", show(def and def.Kind))
+		if def then
+			local last = def.Steps[#def.Steps]
+			local pick = last.Obj
+			if pick.Type ~= "Choice" then -- GW1 ends with Grabbo's answer after the pick
+				for _, step in def.Steps do if step.Obj.Type == "Choice" then pick = step.Obj end end
+			end
+			check(pick.Type == "Choice" and pick.Good.Points == 1 and pick.Evil.Points == 1, id .. ": an A / B pick, 1 point each",
+				show(pick and pick.Type))
+			local town = TOWN_TYPE[id]
+			check(sameReward(pick.Good.Reward, { Item = "Enh70", N = 1 })
+				and sameReward(pick.Evil.Reward, { Potion = "HP", N = 3, Gold = town and 60 or 192 }),
+				id .. ": A = one 70% scroll, B = 3 HP potions + " .. (town and "60" or "192") .. " gold", show({ pick.Good.Reward, pick.Evil.Reward }))
+			check(town and sameReward(def.Reward, { GoldN = 120, XPBar = 0.5 }) or (not town and sameReward(def.Reward, { Gold = 2, XP = 2 })),
+				id .. ": " .. (town and "town-type 120 gold + half a bar" or "woods-type 2 minutes of gold + XP"), show(def.Reward))
+			check(type(def.Finish) == "string" and string.find(def.Finish, "?", 1, true) ~= nil, id .. ": ends with a question", def.Finish)
+			local req = def.Requires or {}
+			local base = req.Done and req.Done[1]
+			check(req.Level and req.Level >= 5 and (base == "M1_4" or base == "M2_7" or (id == "GW7" and base == "GW1")),
+				id .. ": opens after M1_4 / M2_7 at Lv5+ (the first ten minutes stay as they are)", show(req))
+			if def.Factions == nil and id ~= "S6" then
+				check(pick.Neutral ~= nil, id .. ": everyone's sub keeps A / B labels for a Neutral save", show(pick.Neutral))
+			end
+			for _, step in def.Steps do
+				local o = step.Obj
+				if o.Spot then check(SQ.Landmarks[o.Spot] ~= nil, id .. ": spot " .. o.Spot .. " exists", o.Spot) end
+				if o.Near then check(SQ.Landmarks[o.Near] ~= nil, id .. ": spot " .. o.Near .. " exists", o.Near) end
+				if step.LinesBy then
+					check(type(step.Lines) == "table" and type(step.LinesBy.Default) == "table", id .. ": LinesBy with a Default and a Lines fallback")
+				end
+			end
+			if def.Speaker then check(SQ.Speakers[def.Speaker] ~= nil, id .. ": the speaker has a name", def.Speaker) end
+		end
+	end
+	check(C0.ZoneAt(SQ.Landmarks.HeroStatue).Id == "HaloTown" and C0.ZoneAt(SQ.Landmarks.LavaCrack).Id == "HornsTown",
+		"HeroStatue is in Halo Citadel, LavaCrack in Horns Den", show({ C0.ZoneAt(SQ.Landmarks.HeroStatue).Id, C0.ZoneAt(SQ.Landmarks.LavaCrack).Id }))
+	check(SQ.Defs.GW7.Requires.Done[1] == "GW1", "GW7 follows GW1")
+	check(SQ.Speakers.Gleam == "Sir Gleam" and SQ.Speakers.Rex == "Rascal Rex", "Sir Gleam / Rascal Rex")
+end)
+
+-- a player who finished chapter 2 (M1_1..M2_7 done) at `level`
+local function joinDone(w, userId, faction, level, through)
+	local done = {}
+	for _, id in w.Config.StoryQuests.Main do
+		done[id] = true
+		if id == (through or "M2_7") then break end
+	end
+	local p, d = w:Join(userId, { Faction = faction, Level = level, Data = { Story = { Main = { Id = "" }, Subs = {},
+		Done = done, Pick = {}, First = { Migrated = true } } } })
+	w.Story.Refresh(p)
+	w:Flush()
+	return p, d
+end
+local function offered(d)
+	local out = {}
+	for _, id in SUBS18 do if d.Story.Subs[id] then table.insert(out, id) end end
+	return out
+end
+
+runGroup("subs18-offered", function()
+	local w = townWorld({ Npcs = false })
+	local hp, h = joinDone(w, 1201, "Halo", 23)
+	local _, r = joinDone(w, 1202, "Horns", 23)
+	local _, n = joinDone(w, 1203, "Neutral", 23)
+	local hs, rs, ns = offered(h), offered(r), offered(n)
+	local function has(list, id) return table.find(list, id) ~= nil end
+	check(has(hs, "H2") and has(hs, "H3") and has(hs, "H5") and has(hs, "H6") and has(hs, "S6") and has(hs, "GW4") and has(hs, "GW5")
+		and not has(hs, "R5") and not has(hs, "R7") and not has(hs, "GW7"), "Halo Lv23: the Halo subs + everyone's (GW7 waits for GW1)", show(hs))
+	check(has(rs, "R3") and has(rs, "R5") and has(rs, "R6") and has(rs, "R7") and not has(rs, "H2") and not has(rs, "H6"),
+		"Horns Lv23: the Horns subs", show(rs))
+	check(has(ns, "XR1") and has(ns, "GW1") and has(ns, "GW8") and not has(ns, "S6") and not has(ns, "GW4") and not has(ns, "H2")
+		and not has(ns, "R5"), "a Neutral save: everyone's subs only", show(ns))
+	local _, low = joinDone(w, 1204, "Halo", 5, "M1_4")
+	local ls = offered(low)
+	check(#ls == 2 and has(ls, "S6") and has(ls, "XR1"), "Lv5 after M1_4: S6 + XR1 only", show(ls))
+	local _, early = joinDone(w, 1205, "Halo", 6, "M1_3")
+	check(#offered(early) == 0, "before M1_4: none of them (the first ten minutes stay)", show(offered(early)))
+	-- GW7 opens after GW1 is done
+	h.Story.Done.GW1 = true
+	h.Story.Subs.GW1 = nil
+	w.Story.Refresh(hp)
+	check(h.Story.Subs.GW7 ~= nil, "GW1 done: GW7 is offered", show(offered(h)))
+end)
+
+runGroup("subs18-flow", function()
+	local w = townWorld({ Npcs = false })
+	-- S6 for Horns: hunting gold 80 -> home -> the Horns pick labels
+	local p, d = joinDone(w, 1301, "Horns", 6, "M1_4")
+	local tr = w:Track(d, "S6")
+	check(tr and tr.St == 1, "S6 offered", show(tr))
+	w.Registry.ProgressionService.GoldEarned:Fire(p, 50, "Sale")
+	w.Registry.ProgressionService.GoldEarned:Fire(p, 80, "Monster")
+	w:Flush()
+	check(tr.St == 2, "Horns: 80 hunting gold (not sale gold) finishes step 1", show(tr))
+	w.ZoneOf[p] = "HornsTown"
+	w.Story.Refresh(p)
+	w:Flush()
+	check(tr.St == 3, "home: the pick", show(tr))
+	local infamy, bank = d.Infamy or 0, d.BankGold or 0
+	w:Act(p, "S6", "Choose", "Evil")
+	check(d.Story.Done.S6 and d.Story.Pick.S6 == "Evil" and (d.Infamy or 0) == infamy + 1 and (d.BankGold or 0) >= bank + 60 + 120,
+		"Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold", show({ d.Infamy, (d.BankGold or 0) - bank }))
+	-- XR1 through Tiny (no NPC placed: anywhere), the King Slime, the pick
+	local q, e = joinDone(w, 1302, "Halo", 6, "M1_4")
+	local x = w:Track(e, "XR1")
+	w:Act(q, "XR1", "Talk")
+	w:Kill(q, "BigSlime", 1)
+	check(x.St == 3, "XR1: talk, a King Slime, then the pick", show(x))
+	local enh = e.Items and e.Items.Enh70 or 0
+	w:Act(q, "XR1", "Choose", "Good")
+	check(e.Story.Done.XR1 and (e.Items.Enh70 or 0) == enh + 1, "Return it to its owner: one 70% scroll", show(e.Items))
+	-- GW7 remembers the GW1 pick (E2)
+	local panels = panelsOf(w)
+	local g, gd = joinDone(w, 1303, "Halo", 21)
+	gd.Story.Done.GW1 = true
+	gd.Story.Subs.GW1 = nil
+	gd.Story.Pick.GW1 = "Evil"
+	w.Story.Refresh(g)
+	local camp = SQ0.Landmarks.GoblinCamp1
+	w:MoveTo(g, vec(camp.X + 2, 0, camp.Z))
+	w:Tick(g, 1)
+	local card = panels[#panels]
+	check(card and card.Arg.Id == "GW7" and card.Arg.Var == "Evil", "GW7 at the camp: Grabbo remembers the MORE vote (Var Evil)",
+		show(card and card.Arg))
 end)
 
 finish()

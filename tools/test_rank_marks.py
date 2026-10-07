@@ -42,7 +42,8 @@ MUTATIONS = [
     ("no scale for bigger heads", V, "\tpart.Size = template.Size * k\n", "\tpart.Size = template.Size\n"),
     ("the halo sits on the head", V, "(M.HaloGap or 0.3) * k", "0"),
     ("the horns float", V, "-(M.HornsDepth or 0.06) * k", "(M.HornsDepth or 0.06) * k"),
-    ("the model faces its back", V, "CFrame.Angles(0, math.rad(M.Yaw or 0), 0)", "CFrame.Angles(0, 0, 0)"),
+    ("the model ignores Config Yaw (faces its back)", V, "CFrame.Angles(0, math.rad(M.Yaw or 0), 0)",
+     "CFrame.Angles(0, math.rad(180), 0)"),
     ("an anchored accessory", V, "\tpart.Anchored = false\n", ""),
     ("a colliding accessory", V, "\tpart.CanCollide = false\n", ""),
     ("no halo light", V, "\tif f == \"Halo\" and type(M.HaloLight) == \"table\" then", "\tif false then"),
@@ -86,7 +87,8 @@ SUITE = Suite(
              "halos get the old PointLight, rank >= Glow.Rank (5) sparkles. A missing model keeps the drawn mark; "
              "the guild keeps its gear.",
     limitations="The import itself (GLB -> MeshPart in ServerStorage.MarkModels, the asset upload) and the real look on "
-                "avatars (front direction = Yaw 180, glTF +Z) are checked in Studio by game dev 1 / image dev. CFrame is a "
+                "avatars (Yaw 0: the models were turned to face Roblox -Z before the import, 427baf8) are checked in Studio "
+                "by game dev 1. CFrame is a "
                 "translation + yaw stand-in (the test head never turns).",
 )
 

@@ -50,8 +50,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 MUTATIONS = [
     ("H1 opens after M1_1", C, 'Speaker = "Bright", Factions = { Halo = true },\n\t\t\tRequires = { Done = { "M2_3" } },',
      'Speaker = "Bright", Factions = { Halo = true },\n\t\t\tRequires = { Done = { "M1_1" } },'),
-    ("H1 spies 1 s", C, 'Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 }',
-     'Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 1 }'),
+    ("H1 spies 1 s", C,
+     '"Spy by the woods\' edge %d/%d s", Guide = "WoodsGate",\n\t\t\t\t\tObj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 }',
+     '"Spy by the woods\' edge %d/%d s", Guide = "WoodsGate",\n\t\t\t\t\tObj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 1 }'),
     ("N3 only for the guild", C, 'Speaker = "Tiny", -- everyone (A23-57: no Factions)',
      'Speaker = "Tiny", Factions = { Neutral = true },'),
     # A23-58
@@ -71,8 +72,8 @@ MUTATIONS = [
     ("no clue toast", ST, "\tif def.Clue then notify(player, def.Clue, \"info\") end", "\tlocal _ = def.Clue"),
     ("the Halo bridge spot moves away", C, "Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -161)",
      "Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -100)"),
-    ("B pays no gold", C, 'Reward = { Potion = "HP", N = 3, Gold = 60 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Smokey',
-     'Reward = { Potion = "HP", N = 3 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Smokey'),
+    ("B pays no gold", C, 'Reward = { Potion = "HP", N = 3, Gold = 60 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Smokey: So who',
+     'Reward = { Potion = "HP", N = 3 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Smokey: So who'),
     ("leaving the spot keeps the count", ST, "\t\t\t\t\t\tif mine then mine[key] = nil end\n", ""),
     ("a stay counts by ticks, not time", ST, "local held = math.min(obj.Stay, math.floor(os.clock() - mine[key]))",
      "local held = math.min(obj.Stay, num(tr.P) + 1)"),
@@ -96,7 +97,8 @@ MUTATIONS = [
     ("rebirth into the guild allowed", PR, "\tif not Config.Pickable(factionId) then", "\tif false then"),
     # quest_volume §2-6: 3 sub rows, a town quest in progress never pushed off
     ("MaxSubs back to 2", C, "\tMaxSubs = 3, -- sub rows", "\tMaxSubs = 2, -- sub rows"),
-    ("a started sub ranks like an untouched one", ST, '((started or id == "S0") and 2) or 3', '(id == "S0" and 2) or 3'),
+    ("a started sub ranks like an untouched one", ST, '((started or id == "S0") and 2)', '(id == "S0" and 2)'),
+    ("a new offer outranks the subs in progress", ST, "((tr.Claim or (waiting and started)) and 0)", "((tr.Claim or waiting) and 0)"),
     ("older quests first within a rank", ST, "\t\treturn a.Order > b.Order\n", "\t\treturn a.Order < b.Order\n"),
     ("the sort fields reach the client", ST, "\t\trows[i].Rank, rows[i].Order = nil, nil\n", ""),
     # story_depth E1 / E2 / E3 / E5
@@ -143,6 +145,24 @@ MUTATIONS = [
      '{ Text = "Hear the Guide", Panel = true, Obj = { Type = "Talk" },'),
     ("camp 1 outside the woods", C, "Landmarks.GoblinCamp1 = Vector3.new(660, 0, -60)",
      "Landmarks.GoblinCamp1 = Vector3.new(400, 0, -60)"),
+    # quest_volume §3-2: the 18 subs
+    ("GW7 not waiting for GW1", C, 'Requires = { Done = { "GW1" }, Level = 21 },', 'Requires = { Done = { "M2_7" }, Level = 21 },'),
+    ("XR1 before the first ten minutes", C,
+     'Kind = "Sub", Title = "Lost & Found", Speaker = "Tiny",\n\t\t\tRequires = { Done = { "M1_4" }, Level = 5 },',
+     'Kind = "Sub", Title = "Lost & Found", Speaker = "Tiny",\n\t\t\tRequires = { Done = { "M1_1" }, Level = 1 },'),
+    ("a woods-type B pays the town gold", C,
+     'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },',
+     'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } },'),
+    ("S6 for Horns without its gold step", C,
+     '\t\t\t\t\tHorns = { Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 80 } } },',
+     '\t\t\t\t},'),
+    ("the hero statue outside Halo Citadel", C, "Landmarks.HeroStatue = Vector3.new(0, 0, -360)",
+     "Landmarks.HeroStatue = Vector3.new(0, 0, -200)"),
+    ("GW7 forgets the GW1 pick", C, 'LinesBy = { From = "GW1",\n\t\t\t\t\t\tGood = { All = { "Grabbo: Last time',
+     'LinesBy = { From = "GW7",\n\t\t\t\t\t\tGood = { All = { "Grabbo: Last time'),
+    ("a Neutral save gets the Halo / Horns subs", C,
+     'Kind = "Sub", Title = "The Crown War Is Close", Factions = { Halo = true, Horns = true },',
+     'Kind = "Sub", Title = "The Crown War Is Close",'),
 ]
 
 

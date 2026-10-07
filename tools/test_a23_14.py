@@ -83,6 +83,39 @@ MUTATIONS = [
     ("keep threshold off by one", "CONFIG_SOURCE",
      "return math.floor(lv) < (tonumber(Config.ClassChange.FreeKeepLevelBelow) or 0)",
      "return math.floor(lv) <= (tonumber(Config.ClassChange.FreeKeepLevelBelow) or 0)"),
+    # E12 the Goblin Woods band (quest_volume §3-4)
+    ("Lv10-24 gets the template dailies again", "QUEST_SOURCE", "\t\treturn WOODS\n", "\t\treturn nil\n"),
+    ("the woods band reaches Lv25", "QUEST_SOURCE", "and level <= num(WOODS.MaxLevel, 0) then",
+     "and level <= num(WOODS.MaxLevel, 0) + 1 then"),
+    ("a woods daily pays the 5-minute reward", "QUEST_SOURCE",
+     "rewardGold, rewardXP = Config.HuntValue(level, num(band.RewardMinutes, Config.Daily.QuestMinutes)) -- E12",
+     "rewardGold, rewardXP = Config.DailyQuestReward(level) -- E12"),
+    ("the woods chest pays the Lv25 chest", "QUEST_SOURCE",
+     "\tif band then return Config.HuntValue(level, num(band.ChestMinutes, Config.Daily.ChestMinutes)) end\n", ""),
+    ("woods targets scaled like templates", "QUEST_SOURCE", "\tif t.Id == \"Gold\" and not band then",
+     "\tif t.Id == \"Gold\" and not newbie then"),
+    ("woods vacation uses the 25-minute day", "CONFIG_SOURCE",
+     "\t\treturn (tonumber(wd.RewardMinutes) or Config.Daily.QuestMinutes) * slots\n",
+     "\t\treturn Config.Daily.QuestMinutes * slots + Config.Daily.ChestMinutes + 0 * slots\n"),
+    ("the brute row is not strict", "CONFIG_SOURCE", 'Monster = "GoblinBrute", Strict = true, Targets = { 2 } },',
+     'Monster = "GoblinBrute", Targets = { 2 } },'),
+    # (no "vacation share ignores the woods band" mutation: a woods daily is 3 of 15 minutes and a template daily 5 of
+    # 25, the same 1/5 share, so the old day's f cannot differ; the paid amount follows Config.DailyDayMinutes, above)
+    # E11 the job-board switch (QuestService's side)
+    ("the board switch always on", "QUEST_SOURCE",
+     "\treturn type(Config.Board) == \"table\" and Config.Board.Enabled == true\n", "\treturn true\n"),
+    ("board on: a claimed daily still becomes an extra", "QUEST_SOURCE",
+     "\tdata.Quests[slot] = boardOn() and { Kind = \"Empty\" } or newQuest(", "\tdata.Quests[slot] = newQuest("),
+    ("board on: the empty slot is listed", "QUEST_SOURCE",
+     "\t\t\tif type(q) == \"table\" and not isEmptySlot(q) then\n", "\t\t\tif type(q) == \"table\" then\n"),
+    ("board on: an empty slot can be rerolled", "QUEST_SOURCE",
+     "\tif boardOn() and not isValidQuest(q) then return end -- E11: an empty slot is never rerolled into an extra\n", ""),
+    ("board on: the job rows are not listed", "QUEST_SOURCE",
+     "\tif boardOn() and board and type(board.JobRows) == \"function\" then", "\tif false then"),
+    ("board on: a finished extra refills its slot", "QUEST_SOURCE",
+     "\t\tdata.Quests[index] = boardOn() and { Kind = \"Empty\" } or newQuest(", "\t\tdata.Quests[index] = newQuest("),
+    ("board on: a rebirth refills empty slots", "QUEST_SOURCE",
+     "\t\t\tquests[i] = boardOn() and { Kind = \"Empty\" } or newQuest(", "\t\t\tquests[i] = newQuest("),
 ]
 
 

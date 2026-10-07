@@ -19,6 +19,7 @@ Net.Names = {
 	"GhostHold", -- no arguments: A23-18 the robbed victim holds the thief's grudge sack (+2 s, 3 s cooldown)
 	"SetSettings", -- (blob?) BB2: zero args = "send me mine"; one table <= 16 keys (SettingsService sanitizes + echoes)
 	"RequestRankings", -- (board: Config.Ranking.Order id, scope: "Server" | "Global") BB10: answered with "Rankings"
+	"BoardAction", -- E11 (boardId, "Open" | "Take" | "Reroll", slot?, "Kind" | "Sneaky"?) at a job board (BoardService)
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request
@@ -32,6 +33,9 @@ Net.Names = {
 	-- BB10: { Board, Scope, Rows = { { Rank, UserId (0 = hidden), Name, Sub?, Faction, Value, Test? } <= TopN },
 	-- Me = { Rank?, Value, Note? }, UpdatedAt, WeekId, WeekEndsAt } owner only, the answer to RequestRankings
 	"Rankings",
+	-- E11: { Board, Cards = { { Slot, Id, Kind, Sneaky, Goal, Target, RewardGold, RewardXP } }, Held, Hold, Done,
+	-- FullPerDay, Kind, Sneaky, RerollAt } owner only, the answer to BoardAction (Open / Take / Reroll)
+	"Board",
 }
 
 Net.GameStateDefaults = {

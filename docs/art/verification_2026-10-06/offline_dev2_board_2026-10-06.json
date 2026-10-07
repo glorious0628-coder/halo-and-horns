@@ -1,0 +1,818 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 88,
+  "failedChecks": 0,
+  "namedChecks": 85,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Board.Enabled = false until game dev 1's board window ships",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "4 cards, carry 3, 60 s swap, 10 full a day then half, the 5th +30% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J1..J10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rewards: meadow 36 + 60, woods 192 + 336",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "both boards stand outside PvP zones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the arrival spots follow the zones' Spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the meadow board stands beside the meadow arrival",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J1: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J2: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J3: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J4: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J5: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J6: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J7: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J8: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J9: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "J10: goal + two buttons",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the woods board always keeps J6 or J10 (outside PvP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "off: no board answer, nothing taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "off: no job rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "four different cards",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "card J3: two buttons, a goal, 36 gold + 60 XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "no Auto Battle job before Auto Battle is unlocked",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "card J8: two buttons, a goal, 36 gold + 60 XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "card J6: two buttons, a goal, 36 gold + 60 XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "card J10: two buttons, a goal, 36 gold + 60 XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "the board shows carried / Kind / Sneaky counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "after Auto Battle is unlocked, J7 shows up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "every woods board view has J6 or J10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "woods values: 192 gold, Goblin Brute x1, hunting gold 150",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cards",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "took J3 on the Kind side (2 King Slimes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "the taken card's slot gets a new card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "the quest list row: 'King Slime 0/2', Kind Job, no [Claim]",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "a slime is not a King Slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "2 King Slimes: paid at once (36 gold + 60 XP), the job leaves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "lines: 'Job done! +36 gold · +60 XP' and 'Your shard leaned to the light.'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "the side is counted (Kind 1), no honor / infamy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "a finished job never pays twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "carrying 3 jobs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "a 4th job is refused: 'You carry 3 jobs.'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "sale gold does not count, hunting gold does",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "40 hunting gold: done (Sneaky 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "a Sneaky job: 'Your shard leaned to the dark.'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "a slime far from the arrival does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "5 slimes by the arrival: J1 done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "a 2-hit skill or an auto skill does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "two manual skills hitting 3+: done (4 jobs today)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "take and finish",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day caps",
+      "check": "the 5th job of the day: one 30% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day caps",
+      "check": "the 10th job still pays in full (36)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day caps",
+      "check": "the 11th pays half (18)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day caps",
+      "check": "the scroll came once today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day caps",
+      "check": "a new day: Done 0, the scroll can come again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day caps",
+      "check": "the next day's 5th job: the scroll again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day caps",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "day caps",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote checks",
+      "check": "40 studs from the board: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote checks",
+      "check": "bad slots / sides / boards / extra args / the woods board from the meadow: all ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote checks",
+      "check": "a swap replaces the card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote checks",
+      "check": "a second swap within 60 s is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote checks",
+      "check": "a new card is never the swapped one or one of the last two",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote checks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote checks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stand guard",
+      "check": "J10: 15 s at the gate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stand guard",
+      "check": "the seconds count while standing there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stand guard",
+      "check": "stepping away resets the count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stand guard",
+      "check": "a late loop still counts real seconds (time, not ticks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stand guard",
+      "check": "14 s is not enough",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stand guard",
+      "check": "15 s in one go: done (Sneaky)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stand guard",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stand guard",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hint and saves",
+      "check": "no hint before M1_4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hint and saves",
+      "check": "after M1_4: 'Job Board · tap for directions' guides to the meadow board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hint and saves",
+      "check": "after the first job the hint is gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hint and saves",
+      "check": "the first job done: the hint does not come back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hint and saves",
+      "check": "a broken saved board: unknown jobs / boards / sides dropped, numbers fixed, at most 3 kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hint and saves",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hint and saves",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 4,
+  "staticFailures": [],
+  "mutations": {
+    "total": 22,
+    "applied": 22,
+    "caught": 22,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the switch ignored",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switch off :: off: no board answer, nothing taken",
+          "switch off :: off: no job rows"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the board works from anywhere",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remote checks :: 40 studs from the board: nothing",
+          "remote checks :: bad slots / sides / boards / extra args / the woods board from the meadow: all ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no carry limit",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "take and finish :: 40 hunting gold: done (Sneaky 1)",
+          "take and finish :: a 4th job is refused: 'You carry 3 jobs.'",
+          "take and finish :: two manual skills hitting 3+: done (4 jobs today)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the taken card stays",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "take and finish :: the taken card's slot gets a new card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "swaps forget the last templates",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remote checks :: a new card is never the swapped one or one of the last two",
+          "remote checks :: a swap replaces the card",
+          "take and finish :: the taken card's slot gets a new card"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "never half after 10",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day caps :: the 11th pays half (18)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the scroll on every 5th+ job",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day caps :: the next day's 5th job: the scroll again",
+          "day caps :: the scroll came once today"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the scroll one job late",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day caps :: the 5th job of the day: one 30% scroll",
+          "day caps :: the next day's 5th job: the scroll again",
+          "day caps :: the scroll came once today"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the side is not counted",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stand guard :: 15 s in one go: done (Sneaky)",
+          "take and finish :: 40 hunting gold: done (Sneaky 1)",
+          "take and finish :: the side is counted (Kind 1), no honor / infamy"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a finished job pays again",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day caps :: the 10th job still pays in full (36)",
+          "day caps :: the 11th pays half (18)",
+          "hint and saves :: the first job done: the hint does not come back",
+          "stand guard :: 15 s in one go: done (Sneaky)",
+          "take and finish :: 2 King Slimes: paid at once (36 gold + 60 XP), the job leaves",
+          "take and finish :: 40 hunting gold: done (Sneaky 1)"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "Auto Battle jobs before the unlock",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "cards :: no Auto Battle job before Auto Battle is unlocked"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the woods board may lose its safe card",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "cards :: every woods board view has J6 or J10"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no swap cooldown",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remote checks :: a second swap within 60 s is ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a stay counts ticks, not time",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stand guard :: a late loop still counts real seconds (time, not ticks)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "leaving keeps the count",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stand guard :: 14 s is not enough",
+          "stand guard :: a late loop still counts real seconds (time, not ticks)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no hint row",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hint and saves :: after M1_4: 'Job Board · tap for directions' guides to the meadow board"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the hint stays after the first job",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hint and saves :: the first job done: the hint does not come back"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a broken save keeps 4+ jobs",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hint and saves :: a broken saved board: unknown jobs / boards / sides dropped, numbers fixed, at most 3 kept"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the wrong side's line",
+        "file": "src/ServerScriptService/BoardService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "take and finish :: a Sneaky job: 'Your shard leaned to the dark.'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "EventAmount not shared",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "day caps :: the 10th job still pays in full (36)",
+          "day caps :: the 11th pays half (18)",
+          "day caps :: the 5th job of the day: one 30% scroll",
+          "day caps :: the next day's 5th job: the scroll again",
+          "day caps :: the scroll came once today",
+          "hint and saves :: the first job done: the hint does not come back"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Config: the switch on before the window",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.Board.Enabled = false until game dev 1's board window ships"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: the woods board inside the PvP woods",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: both boards stand outside PvP zones"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "a65e36e5ff32b21c33138873718edeb397fa6f532fdbe7326b708f271b3dfb5d",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/CombatService.luau": "82d298e324a6cd9f60859ad5e2b660b4b8bdaca4c505f2dfe7eb21fc66bef9c5",
+    "src/ServerScriptService/LootService.luau": "8192c94bcb9d1d296838a0c3ca368f790040109ec4b5a283853eb3b2ac83df7e",
+    "src/ServerScriptService/StoryQuestService.luau": "c42a3c9e3fb3aed3a2ded313a9b2dda54aadafb9880f5e2c16002ef60a0077f3",
+    "src/ServerScriptService/PvPService.luau": "bda0e5fc6f1297f14beef70b2b439b899949a597305773931735b17168bdba64",
+    "src/ServerScriptService/ShopService.luau": "a833a603ae923755ce87e265fa58d62f152fb184d3865243a1f490314dda72ed",
+    "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
+    "src/ServerScriptService/JusticeService.luau": "cce7d4de6d0347c59e4366fc449dc80d35b3fa58785a56d612be0c93098314be",
+    "src/ServerScriptService/CharacterVisuals.luau": "a256f34293b9486ff6fd5e75c1f914eb16d67288f61e2232bea1c47f1d461d60",
+    "src/ServerScriptService/BoardService.luau": "94f4327a892208e56d61c3b4f698964139fd9b6fcd278b31780f82712476ff9c"
+  },
+  "fixtureSHA256": "3ae254a7d6042ba7a1bf8d44c037d11994da438c2644cb8ad3e1ff76ebb37707",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "E11: Config.Board (Enabled false until the board window ships). BoardAction(board, Open | Take | Reroll, slot, Kind | Sneaky) within Range of the board spot; 4 cards per board from J1..J10 with the field's values (J7 only after Auto Battle is unlocked; the woods always keep J6 / J10, outside PvP); carry 3; a taken / swapped card gets a template that is neither on the board nor one of its last two; one swap per 60 s. Jobs are judged by StoryQuestService.EventAmount (J10: seconds in one go at the gate); a finished job pays at once HuntValue(board level, 1), half after 10 a KST day, the 5th of a day adds one 30% scroll, counts the side in data.Story.N (no honor / infamy / ranking) and says which way the shard leaned. JobRows = Kind 'Job' rows (+ the 'Job Board' hint after M1_4 until the first job). A broken save is cleaned at load.",
+  "limitations": "The board model, prompt and window are game dev 1's (remote contract in the doc); QuestService's extras switch is tested in test_a23_14. Real walking and the 1 s loop timing are modelled by moving the root and stepping the loop."
+}
