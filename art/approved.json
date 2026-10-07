@@ -6068,5 +6068,257 @@
   "size": "1024x1024 RGB, seamless (per-pixel transform keeps the tiling)",
   "edit": "tools/tile_recolor.py target mean RGB 100,90,150 (measured from Concept_HauntedHollow_2 ground (reference, night scene)); mean (65, 61, 100) -> (100, 89, 149)",
   "use": "replaces Config.UIArt.Tex_HauntedFloor after upload by 이미지 개발; then tools/apply_surface_materials.lua rebuilds GE_HauntedFloor — GE_HauntedFloor (Asphalt slot, haunted hollow)"
+ },
+ "BarkBubbleSlime": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleSlime_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleSlime_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundSlime_B_cut.png (prompt art/prompts/UIP_BarkRoundSlime_B.txt, 검수 고름 caa33da ★B)",
+  "file": "art/ui/BarkBubbleSlime.png",
+  "size": "512x415 RGBA",
+  "layout": {
+   "TextRect": [
+    0.202,
+    0.333,
+    0.562,
+    0.394
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 슬라임(초록 젤리 + 노란 조각): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleSlime = Id + Size 512x415 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.998."
+ },
+ "BarkBubbleBigSlime": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleBigSlime_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleBigSlime_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundBigSlime_A_cut.png (prompt art/prompts/UIP_BarkRoundBigSlime_A.txt, 검수 고름 caa33da ★A)",
+  "file": "art/ui/BarkBubbleBigSlime.png",
+  "size": "512x445 RGBA",
+  "layout": {
+   "TextRect": [
+    0.232,
+    0.385,
+    0.543,
+    0.338
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 왕 슬라임(파란 젤리 + 노란 조각 왕관, 흘러내림): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleBigSlime = Id + Size 512x445 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.995."
+ },
+ "BarkBubblePumpkinSlime": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubblePumpkinSlime_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubblePumpkinSlime_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundPumpkinSlime_A_cut.png (prompt art/prompts/UIP_BarkRoundPumpkinSlime_A.txt, 검수 고름 caa33da ★A)",
+  "file": "art/ui/BarkBubblePumpkinSlime.png",
+  "size": "512x438 RGBA",
+  "layout": {
+   "TextRect": [
+    0.254,
+    0.356,
+    0.486,
+    0.36
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 호박 슬라임(호박 + 덩굴 꼬리): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubblePumpkinSlime = Id + Size 512x438 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.996."
+ },
+ "BarkBubblePumpkinKing": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubblePumpkinKing_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubblePumpkinKing_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundPumpkinKing_B_cut.png (prompt art/prompts/UIP_BarkRoundPumpkinKing_B.txt, 검수 고름 caa33da ★B)",
+  "file": "art/ui/BarkBubblePumpkinKing.png",
+  "size": "512x431 RGBA",
+  "layout": {
+   "TextRect": [
+    0.226,
+    0.342,
+    0.543,
+    0.355
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 호박 왕(호박 + 금 왕관 + 보라 띠): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubblePumpkinKing = Id + Size 512x431 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.993."
+ },
+ "BarkBubbleLittleGhost": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleLittleGhost_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleLittleGhost_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundLittleGhost_A_cut.png (prompt art/prompts/UIP_BarkRoundLittleGhost_A.txt, 검수 고름 caa33da ★A)",
+  "file": "art/ui/BarkBubbleLittleGhost.png",
+  "size": "512x344 RGBA",
+  "layout": {
+   "TextRect": [
+    0.217,
+    0.325,
+    0.497,
+    0.412
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 꼬마 유령(구름 + 줄무늬 잠꼬깔): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleLittleGhost = Id + Size 512x344 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.997."
+ },
+ "BarkBubbleGhostMinion": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleGhostMinion_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleGhostMinion_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundGhostMinion_A_cut.png (prompt art/prompts/UIP_BarkRoundGhostMinion_A.txt, 검수 고름 caa33da ★A)",
+  "file": "art/ui/BarkBubbleGhostMinion.png",
+  "size": "512x333 RGBA",
+  "layout": {
+   "TextRect": [
+    0.228,
+    0.362,
+    0.538,
+    0.37
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 유령 졸개(하늘색 구름): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleGhostMinion = Id + Size 512x333 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.996."
+ },
+ "BarkBubbleGhostKing": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleGhostKing_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleGhostKing_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundGhostKing_A_cut.png (prompt art/prompts/UIP_BarkRoundGhostKing_A.txt, 검수 고름 caa33da ★A)",
+  "file": "art/ui/BarkBubbleGhostKing.png",
+  "size": "512x395 RGBA",
+  "layout": {
+   "TextRect": [
+    0.211,
+    0.383,
+    0.543,
+    0.339
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 유령 왕(보라 구름 + 금 왕관): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleGhostKing = Id + Size 512x395 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.996."
+ },
+ "BarkBubbleGoblin": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleGoblin_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleGoblin_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundGoblin_B_cut.png (prompt art/prompts/UIP_BarkRoundGoblin_B.txt, 검수 고름 caa33da ★B)",
+  "file": "art/ui/BarkBubbleGoblin.png",
+  "size": "512x409 RGBA",
+  "layout": {
+   "TextRect": [
+    0.202,
+    0.412,
+    0.56,
+    0.344
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 고블린(초록 자루 + 가죽 덧댐 + 노란 조각): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleGoblin = Id + Size 512x409 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.997."
+ },
+ "BarkBubbleGoblinBrute": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleGoblinBrute_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleGoblinBrute_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundGoblinBrute_A_cut.png (prompt art/prompts/UIP_BarkRoundGoblinBrute_A.txt, 검수 고름 caa33da ★A)",
+  "file": "art/ui/BarkBubbleGoblinBrute.png",
+  "size": "512x379 RGBA",
+  "layout": {
+   "TextRect": [
+    0.219,
+    0.243,
+    0.526,
+    0.397
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 고블린 깡패(나무판 + 못 + 밧줄): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleGoblinBrute = Id + Size 512x379 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.996."
+ },
+ "BarkBubbleBatGoblin": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleBatGoblin_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleBatGoblin_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundBatGoblin_B_cut.png (prompt art/prompts/UIP_BarkRoundBatGoblin_B.txt, 검수 고름 caa33da ★B)",
+  "file": "art/ui/BarkBubbleBatGoblin.png",
+  "size": "512x298 RGBA",
+  "layout": {
+   "TextRect": [
+    0.294,
+    0.33,
+    0.392,
+    0.413
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 박쥐 고블린(보라 + 귀·날개): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleBatGoblin = Id + Size 512x298 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.994."
+ },
+ "BarkBubbleSkeleton": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleSkeleton_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleSkeleton_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundSkeleton_B_cut.png (prompt art/prompts/UIP_BarkRoundSkeleton_B.txt, 검수 고름 caa33da ★B)",
+  "file": "art/ui/BarkBubbleSkeleton.png",
+  "size": "512x369 RGBA",
+  "layout": {
+   "TextRect": [
+    0.237,
+    0.233,
+    0.526,
+    0.429
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 해골(뼈 테): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleSkeleton = Id + Size 512x369 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.997."
+ },
+ "BarkBubbleSkeletonKnight": {
+  "status": "approved",
+  "date": "2026-10-07",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate",
+  "prompt": "art/prompts/UIP_BarkBubbleSkeletonKnight_HQ.txt",
+  "original": "art/out/s2/bark/hq/BarkBubbleSkeletonKnight_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/bark/UIP_BarkRoundSkeletonKnight_A_cut.png (prompt art/prompts/UIP_BarkRoundSkeletonKnight_A.txt, 검수 고름 caa33da ★A)",
+  "file": "art/ui/BarkBubbleSkeletonKnight.png",
+  "size": "512x409 RGBA",
+  "layout": {
+   "TextRect": [
+    0.277,
+    0.348,
+    0.447,
+    0.368
+   ]
+  },
+  "preview": "art/review/s2/bark_hq_sheet.jpg (시안 art/review/s2/bark_round_sheet.jpg)",
+  "cutout": "tools/img2/cut_keep.py --long 512 --holes --keep-largest; 4배 확대 남색·자홍·흰 바탕 확인, 조각 1개·구멍 없음",
+  "note": "몬스터 말풍선 해골 기사(쇠 테 + 리벳 + 보라 보석): 빈 흰 가운데 + 꼬리 왼쪽 아래. 9조각 아님(크기 고정) — 게임에서 폭 약 104px, ScaleType Fit, Config.UIArt.Parts.BarkBubbleSkeletonKnight = Id + Size 512x409 + TextRect(분수). 없으면 기본 BarkBubble. 중간 시안과 모양 겹침 0.998."
  }
 }
