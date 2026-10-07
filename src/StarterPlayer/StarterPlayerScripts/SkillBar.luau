@@ -360,16 +360,19 @@ local function buildButton(slot)
 		Size = UDim2.fromScale(0.66, 0.24), TextScaled = true, ZIndex = 7, Visible = false, Parent = holder,
 	}, "Number")
 
-	-- PCs: the name pill on the lower rim, the key badge in the lower right (keyboards)
+	-- PCs: the name pill on the lower rim, the key badge in the lower right (keyboards). The pill reaches a little past
+	-- the rim (like the tile captions) and its words take the 12 px Number floor, not the 16 px button floor: at 16 px
+	-- "Shockwave" stood taller than the 16 px pill and was cut ("Shockwa", 2026-10-07), Z / X names are longer still
 	if not IS_TOUCH then
 		b.Pill = UIKit.Create("Frame", {
 			Name = "Name", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.9),
-			Size = UDim2.fromScale(0.96, 0.22), BackgroundColor3 = COL.Navy, BackgroundTransparency = 0.12, ZIndex = 7,
+			Size = UDim2.fromScale(1.2, 0.22), BackgroundColor3 = COL.Navy, BackgroundTransparency = 0.12, ZIndex = 7,
 			Active = false, Parent = holder,
 		}, { corner() })
 		b.PillText = smallLabel({
-			Name = "Text", Text = "", Size = UDim2.fromScale(1, 1), TextScaled = true, ZIndex = 8, Parent = b.Pill,
-		}, "Button")
+			Name = "Text", Text = "", Position = UDim2.fromScale(0.04, 0), Size = UDim2.fromScale(0.92, 1),
+			TextScaled = true, ZIndex = 8, Parent = b.Pill,
+		}, "Number")
 	end
 	local kb = C and C.Keybinds
 	local showKeys = type(kb) == "table" and type(kb.ShowsKeys) == "function" and kb.ShowsKeys() or false

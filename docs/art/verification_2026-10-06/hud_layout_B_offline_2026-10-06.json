@@ -322,8 +322,8 @@
       "insetPx": 58,
       "jumpLogical": null,
       "minGap": {
-        "Gap": 2.6667,
-        "Pair": "chips/event"
+        "Gap": 1.3333,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 6.6667,
@@ -348,8 +348,8 @@
       "insetPx": 58,
       "jumpLogical": null,
       "minGap": {
-        "Gap": 2.5501,
-        "Pair": "chips/event"
+        "Gap": 1.275,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 6.3752,
@@ -374,8 +374,8 @@
       "insetPx": 58,
       "jumpLogical": null,
       "minGap": {
-        "Gap": 2.6667,
-        "Pair": "chips/event"
+        "Gap": 1.3333,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 6.6667,
@@ -425,8 +425,8 @@
         "H": 93.33333333333333
       },
       "minGap": {
-        "Gap": 2.6667,
-        "Pair": "chips/event"
+        "Gap": 1.3333,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 6.6667,
@@ -456,8 +456,8 @@
         "H": 93.33333333333333
       },
       "minGap": {
-        "Gap": 2.332,
-        "Pair": "chips/event"
+        "Gap": 1.166,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 4,
@@ -487,8 +487,8 @@
         "H": 93.33333333333333
       },
       "minGap": {
-        "Gap": 2.6667,
-        "Pair": "chips/event"
+        "Gap": 1.3333,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 6.6667,
@@ -518,8 +518,8 @@
         "H": 93.33333333333333
       },
       "minGap": {
-        "Gap": 2.3747,
-        "Pair": "chips/event"
+        "Gap": 1.1874,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 5.9368,
@@ -549,8 +549,8 @@
         "H": 93.33333333333333
       },
       "minGap": {
-        "Gap": 2.0223,
-        "Pair": "chips/event"
+        "Gap": 1.0111,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 4,
@@ -580,8 +580,8 @@
         "H": 93.33333333333333
       },
       "minGap": {
-        "Gap": 2.1077,
-        "Pair": "power_line/hp_bar"
+        "Gap": 1.0538,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 5.2692,
@@ -611,8 +611,8 @@
         "H": 112.5
       },
       "minGap": {
-        "Gap": 2.5634,
-        "Pair": "chips/event"
+        "Gap": 1.2817,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 6.4085,
@@ -642,8 +642,8 @@
         "H": 105.3658536585366
       },
       "minGap": {
-        "Gap": 2.6667,
-        "Pair": "chips/event"
+        "Gap": 1.3333,
+        "Pair": "event/notify"
       },
       "minPressableGap": {
         "Gap": 6.6667,
@@ -849,7 +849,7 @@
           "pc_700x450_small :: phone plate top-right portrait",
           "phone_568x320 :: column clear of chips/portrait"
         ],
-        "newFailingCount": 21
+        "newFailingCount": 23
       },
       {
         "mutation": "narrow phone safe area not shrunk",
@@ -864,7 +864,7 @@
           "phone_568x320 :: column clear of chips/power_line",
           "phone_568x320 :: column clear of event/hp_bar"
         ],
-        "newFailingCount": 73
+        "newFailingCount": 74
       },
       {
         "mutation": "centre column touches its neighbours",
@@ -879,7 +879,7 @@
           "pc_1280x720_unibar_wide :: in the top bar war_meter",
           "pc_573x354_small :: column clear of chips/quest"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 28
       },
       {
         "mutation": "PC face group never steps aside",
@@ -1035,13 +1035,13 @@
         "crashed": false,
         "newFailingChecks": [
           "phone_568x320 :: column clear of chips/portrait",
+          "phone_568x320 :: column clear of event/portrait",
           "phone_568x320 :: column clear of notify/portrait",
           "phone_568x320 :: column clear of notify/tiles",
           "phone_568x320 :: no overlap chips/portrait",
-          "phone_568x320 :: no overlap notify/portrait",
-          "phone_568x320 :: no overlap notify/tiles"
+          "phone_568x320 :: no overlap event/portrait"
         ],
-        "newFailingCount": 16
+        "newFailingCount": 20
       },
       {
         "mutation": "potions never widen",
@@ -1371,8 +1371,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 650.5,
+        "W": 310,
+        "X": 613,
         "Y": 124.5
       },
       "fold": {
@@ -1530,8 +1530,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 482.5,
+        "W": 310,
+        "X": 445,
         "Y": 105.4688
       },
       "fold": {
@@ -1689,8 +1689,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 522.5,
+        "W": 310,
+        "X": 485,
         "Y": 95.5
       },
       "fold": {
@@ -1847,9 +1847,9 @@
         "Y": 261.4958
       },
       "event": {
-        "H": 17.7285,
-        "W": 166.205,
-        "X": 983.5642,
+        "H": 19.9446,
+        "W": 265.928,
+        "X": 933.7027,
         "Y": 122.1514
       },
       "fold": {
@@ -2002,8 +2002,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 682.5,
+        "W": 310,
+        "X": 645,
         "Y": 110
       },
       "fold": {
@@ -2161,8 +2161,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 682.5,
+        "W": 310,
+        "X": 645,
         "Y": 82.5
       },
       "fold": {
@@ -2320,8 +2320,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 770.5,
+        "W": 310,
+        "X": 733,
         "Y": 110
       },
       "fold": {
@@ -2479,8 +2479,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 682.8906,
+        "W": 310,
+        "X": 645.3906,
         "Y": 105.4688
       },
       "fold": {
@@ -2638,8 +2638,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 842.5,
+        "W": 310,
+        "X": 805,
         "Y": 95.5
       },
       "fold": {
@@ -2796,9 +2796,9 @@
         "Y": 430.6208
       },
       "event": {
-        "H": 20.4005,
-        "W": 191.255,
-        "X": 348.5808,
+        "H": 22.9506,
+        "W": 240,
+        "X": 324.2083,
         "Y": 125.9924
       },
       "fold": {
@@ -2955,9 +2955,9 @@
         "Y": 400
       },
       "event": {
-        "H": 21.3333,
-        "W": 200,
-        "X": 421,
+        "H": 24,
+        "W": 320,
+        "X": 361,
         "Y": 127.3333
       },
       "fold": {
@@ -3114,9 +3114,9 @@
         "Y": 583.3333
       },
       "event": {
-        "H": 21.3333,
-        "W": 200,
-        "X": 483.3333,
+        "H": 24,
+        "W": 320,
+        "X": 423.3333,
         "Y": 127.3333
       },
       "fold": {
@@ -3274,8 +3274,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 482.5,
+        "W": 310,
+        "X": 445,
         "Y": 124.5
       },
       "fold": {
@@ -3433,8 +3433,8 @@
       },
       "event": {
         "H": 27.5,
-        "W": 235,
-        "X": 382.5,
+        "W": 310,
+        "X": 345,
         "Y": 110
       },
       "fold": {
@@ -3591,9 +3591,9 @@
         "Y": 271.2773
       },
       "event": {
-        "H": 16.178,
-        "W": 151.6689,
-        "X": 302.9248,
+        "H": 18.2003,
+        "W": 240,
+        "X": 258.7592,
         "Y": 100.5892
       },
       "fold": {
@@ -3750,9 +3750,9 @@
         "Y": 323.1153
       },
       "event": {
-        "H": 16.8616,
-        "W": 158.0774,
-        "X": 310.316,
+        "H": 18.9693,
+        "W": 240,
+        "X": 269.3547,
         "Y": 101.5719
       },
       "fold": {
@@ -3909,9 +3909,9 @@
         "Y": 338.4424
       },
       "event": {
-        "H": 18.9978,
-        "W": 178.1041,
-        "X": 337.7232,
+        "H": 21.3725,
+        "W": 248.6195,
+        "X": 302.4655,
         "Y": 104.6426
       },
       "fold": {
@@ -4068,9 +4068,9 @@
         "Y": 314.6667
       },
       "event": {
-        "H": 21.3333,
-        "W": 200,
-        "X": 398.6667,
+        "H": 24,
+        "W": 320,
+        "X": 338.6667,
         "Y": 108
       },
       "fold": {
@@ -4227,9 +4227,9 @@
         "Y": 292.5234
       },
       "event": {
-        "H": 18.656,
-        "W": 174.8999,
-        "X": 329.7178,
+        "H": 20.988,
+        "W": 240,
+        "X": 297.1678,
         "Y": 104.1513
       },
       "fold": {
@@ -4386,9 +4386,9 @@
         "Y": 353.3333
       },
       "event": {
-        "H": 21.3333,
-        "W": 200,
-        "X": 462.6667,
+        "H": 24,
+        "W": 320,
+        "X": 402.6667,
         "Y": 108
       },
       "fold": {
@@ -4545,9 +4545,9 @@
         "Y": 478.2652
       },
       "event": {
-        "H": 20.5073,
-        "W": 192.2563,
-        "X": 383.8718,
+        "H": 23.0708,
+        "W": 307.6101,
+        "X": 326.1949,
         "Y": 83.8543
       },
       "fold": {
@@ -4704,9 +4704,9 @@
         "Y": 488.9431
       },
       "event": {
-        "H": 21.3333,
-        "W": 200,
-        "X": 418.0488,
+        "H": 24,
+        "W": 320,
+        "X": 358.0488,
         "Y": 81.5935
       },
       "fold": {
@@ -4839,10 +4839,10 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "51791a49ee58c3ecc02e7a2b6b58f58644c56445ad6e3cadd8ebc16abc013b3b",
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "b939078ffadbf1642f97def30424896f8a800f55e971f0354eda9bb0c16c8719",
     "tools/fixtures/hud_layout_offline.luau": "557163b364cf5b8ce740cfdac5d7a052a6dafc37ff28c57a930a6f0552d62db7",
-    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "fa25d1321f3ed198cc32091ab09052338d91bf035c78dc7ddd140f377e8d2969",
-    "src/ReplicatedStorage/Shared/Config.luau": "fdc387cd25e615b1299154bf0cdb5f7b4fa6a72c6ef91eb0a918f47c2a360b4a"
+    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "22979c55e5bd4f03cbf1a74366a99a1ddc5e39a1244f54fa0330015c36375026",
+    "src/ReplicatedStorage/Shared/Config.luau": "2c84ed81a6af70f52f516e3e16adbe880450533c9d7d3518f6fc6604851545ca"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

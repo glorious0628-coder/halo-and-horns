@@ -19,16 +19,18 @@ local UIKit = {}
 
 UIKit.Gui = nil -- ScreenGui "MainGui", created in Init
 
--- A23-48 (user 2026-10-06 "게임은 영어만": every text on the game screen is English): one font set, chosen here only
--- (검수 2026-10-06 picked candidate 1 of art/review/font_en_candidates_2026-10-06.png). Head = titles, buttons and
--- numbers (TextStyles Title / Button / Number, ExtraBold text) = Fredoka One; Body = body text and name tags = Builder
--- Sans (Regular / Bold). No language choice and no device-language switch (A23-48 replaces A23-43's English + Korean).
+-- A23-48 (user 2026-10-06 "게임은 영어만": every text on the game screen is English): one font set, chosen here only.
+-- A23-63 (user 2026-10-07 "폰트 이쁜 걸로", candidate 3 of art/review/font_en_candidates_2026-10-06.png): Head = titles,
+-- buttons and numbers (TextStyles Title / Button / Number, ExtraBold text) = Denk One (one weight); Body = body text and
+-- name tags = Montserrat (Regular / Bold). Was Fredoka One + Builder Sans. Montserrat runs ~15 % wider than Builder Sans
+-- and Denk One ~11 % narrower than Fredoka One at the same size (UiSandbox TextService, 2026-10-07): sized-to-text
+-- elements measure with UIKit.MeasureText, so they follow. No language choice and no device-language switch.
 -- Shared state keeps large HUD / Fx chunks below the local limit.
 local FONT = { UseTextImages = false, Faces = {}, States = setmetatable({}, { __mode = "k" }), MeasureCache = {}, CacheCount = 0,
 	Lang = "en",
 	Sets = {
-		en = { Head = { Family = "rbxasset://fonts/families/FredokaOne.json" },
-			Body = { Family = "rbxasset://fonts/families/BuilderSans.json" } },
+		en = { Head = { Family = "rbxasset://fonts/families/DenkOne.json" },
+			Body = { Family = "rbxasset://fonts/families/Montserrat.json" } },
 	},
 	Cache = {}, -- [lang .. role .. weight name] = Font
 }
@@ -1460,7 +1462,7 @@ end
 --  * Text and AutoLocalize are never touched, so Roblox auto-translation keeps working.
 --  * UIGradient also tints a visible background: style transparent labels. To fade a dark-style label, tween its
 --    StyleStroke.Transparency with TextTransparency.
--- Families come from FONT.Sets (A23-48 English only): Fredoka One (Face = "Head") + Builder Sans (Face = "Body").
+-- Families come from FONT.Sets (A23-48 English only, A23-63): Denk One (Face = "Head") + Montserrat (Face = "Body").
 UIKit.TextStyles = {
 	Title = { Weight = Enum.FontWeight.ExtraBold, Size = 28, MinPx = 16, Face = "Head" }, -- window / ribbon titles, big notices
 	Button = { Weight = Enum.FontWeight.ExtraBold, Size = 20, MinPx = 16, Face = "Head" }, -- rubric: button text >= 16 px

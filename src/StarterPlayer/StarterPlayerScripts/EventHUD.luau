@@ -499,8 +499,8 @@ local function build()
 	local chipTextX = gooseIcon and 28 or 12
 	ui.GooseChipText = Art.text("ink", {
 		Name = "Text",
-		Position = UDim2.fromOffset(chipTextX, 4),
-		Size = UDim2.new(1, -chipTextX - 12, 1, -8),
+		Position = UDim2.fromOffset(chipTextX, 1),
+		Size = UDim2.new(1, -chipTextX - 12, 1, -2), -- the line's whole height: 18 px phone line, 14 px phone text
 		ZIndex = 4,
 	}, 16, ui.GooseChip)
 	if not Art.On then ui.GooseChipText.TextColor3 = GOLD end
@@ -636,8 +636,8 @@ local function build()
 	}, { CornerRadius = UDim.new(0.5, 0), StrokeColor = AC.RevengeInk }, ui.Strip)
 	ui.KingChipText = Art.text("ink", {
 		Name = "Text",
-		Position = UDim2.fromOffset(12, 4),
-		Size = UDim2.new(1, -24, 1, -8),
+		Position = UDim2.fromOffset(12, 1),
+		Size = UDim2.new(1, -24, 1, -2), -- the line's whole height (see the goose pill)
 		Color = AC.RevengeInk,
 		ZIndex = 4,
 	}, 15, ui.KingChip)
@@ -1031,14 +1031,34 @@ function KING.english()
 	return ok and lang == "en"
 end
 
+-- the width (logical px) the pill's words take as drawn now (TextBounds: real px at the size the text floors left them),
+-- + the side insets; 0 before the label exists. The measured / estimated need can be smaller than the drawn words
+-- when a style floor raised the size (phones: 14 px body floor, 2026-10-07 'Pumpkin King is here!' spilled out)
+function KING.drawn()
+	local label = ui.KingChipText
+	if not label or label.Text == "" then return 0 end
+	local s = currentScale()
+	if s <= 0 then s = 1 end
+	return math.ceil(label.TextBounds.X / s + 26)
+end
+
 -- the pill's slot (logical px, never on HUD's player card / quest column, its bottom-right cluster or the kaiju pill):
 -- 1. left of the strip, between HUD.Layout.LeftX (right edge of the card + quest column) and the strip, shrinking
 --    down to L.KingMinW; 2. right of the strip (after the kaiju pill while it shows) up to HUD.Layout.RightX (desktop:
 --    left of the luck panel) when that stays clear of the cluster; 3. else centred in a row under HUD's status chips,
 --    and the touch personal line moves one row lower (KING.Below)
 -- width (logical px) the current line needs at a readable size: the pill never gets narrower (review of 1614575: at
--- KingMinW the scaled text broke into two lines on phones / in English). Hangul / CJK ~1 em, the rest ~0.56 em.
+-- KingMinW the scaled text broke into two lines on phones / in English). Measured in the label's own font (UIKit
+-- TextService cache; A23-63 Montserrat is wider than the old estimate assumed), else Hangul / CJK ~1 em, the rest ~0.56 em.
 function KING.need(text)
+	local kit = C and C.UIKit
+	local label = ui.KingChipText
+	if label and type(kit) == "table" and type(kit.MeasureText) == "function" then
+		local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
+		local size = math.max(15, tc and tc.MinTextSize or 0)
+		local ok, _, w = pcall(kit.MeasureText, tostring(text or ""), size, label.FontFace, 100000)
+		if ok and type(w) == "number" and w > 0 then return math.ceil(w + 26) end
+	end
 	local em, w = 14, 0
 	for _, cp in utf8.codes(tostring(text or "")) do
 		w += (cp >= 0x2E80 and em or em * 0.56)
@@ -1053,7 +1073,7 @@ function KING.place(chip)
 	local s = currentScale()
 	local hl = C and type(C.HUD) == "table" and type(C.HUD.Layout) == "table" and C.HUD.Layout or {}
 	local gap = L.KingGap
-	local need = KING.need(ui.KingChipText and ui.KingChipText.Text)
+	local need = math.max(KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn())
 	local minW, maxW = math.max(L.KingMinW, need), math.max(L.KingW, need)
 	local W = num(hl.W) > 0 and hl.W or root.AbsoluteSize.X / s
 	local x0 = (strip.AbsolutePosition.X - root.AbsolutePosition.X) / s
@@ -1117,6 +1137,28 @@ function KING.pick(now)
 	return best, bestActive, best and bestT or nil
 end
 
+-- A23-63 (2026-10-07): the live line in a narrower form when the full one cannot fit the next-event line (phones with
+-- notch insets: the centre column is 240 du = 180 px and the phone text floor is 14 px)
+KING.SHORT = { HudActive = "Pumpkin King! %s left", GhostHudActive = "Ghost King! %s left" }
+
+-- full or short: the full line measured at the drawn line height against the event line's width minus the pill insets
+-- (real px like TextBounds), so a short line never sticks once the room is back
+function KING.fit(full, short)
+	local label = ui.KingChipText
+	local rects = V2.rects()
+	local ev = type(rects) == "table" and rects.event or nil
+	local kit = C and C.UIKit
+	if not (label and type(ev) == "table" and num(ev.W) > 0 and type(kit) == "table"
+		and type(kit.MeasureText) == "function") then
+		return full
+	end
+	local h = label.TextBounds.Y
+	if h <= 0 then return full end
+	local ok, _, w = pcall(kit.MeasureText, full, h, label.FontFace, 100000)
+	if not ok or type(w) ~= "number" then return full end
+	return (w > (num(ev.W) - 24) * currentScale() + 1) and short or full
+end
+
 function KING.update(now)
 	local chip = ui.KingChip
 	if not chip then return end
@@ -1130,6 +1172,7 @@ function KING.update(now)
 		if keys then
 			local k = active and keys[2] or keys[1]
 			line = safeFormat((en and text[k .. "En"]) or text[k], Util.FormatTime(t))
+			if KING.SHORT[k] then line = KING.fit(line, string.format(KING.SHORT[k], Util.FormatTime(t))) end
 		end
 	end
 	setVisible(chip, line ~= nil and line ~= "")
@@ -1452,8 +1495,8 @@ function V2.stack()
 		elseif goose then
 			eventInst = ui.GooseChip
 		end
-		local natural = eventInst == ui.KingChip and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text))
-			or GOOSE_CHIP_W
+		local natural = eventInst == ui.KingChip
+			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or GOOSE_CHIP_W
 		if eventInst then
 			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(ev.Y - top + 0.5)),
 				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(ev.H + 0.5)))

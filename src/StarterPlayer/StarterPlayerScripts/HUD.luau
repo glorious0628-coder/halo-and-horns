@@ -1468,6 +1468,15 @@ function L.BuildQuestLines(root)
 			Parent = row,
 		}, style)
 		text.AutomaticSize = Enum.AutomaticSize.X
+		-- phones: the game's 11 px floor (Config.UI.MinTextSize) instead of the 12 px name-tag floor - the 150 px block
+		-- beside the minimap fits "Free the supply road" only at 11 px (A23-63 Montserrat, 2026-10-07)
+		if IS_TOUCH then
+			text:SetAttribute("StyleMinPx", 11)
+			-- regular weight: bold "Free the supply road" ran 4 px past the room at 11 px
+			if type(UIKit.ApplyFont) == "function" then UIKit.ApplyFont(text, Enum.FontWeight.Regular, "Body") end
+		end
+		-- cut inside a word when it must ('AtEnd' drops whole words: "Free the…" left half the row empty)
+		text.TextTruncate = Enum.TextTruncate.SplitWord
 		UIKit.Create("UIFlexItem", { FlexMode = Enum.UIFlexMode.Shrink, Parent = text })
 		local nums = UIKit.StyledLabel({
 			Name = "Nums",
@@ -1534,6 +1543,12 @@ function L.LayoutQuestLines(q)
 	local lh = q.H / 2
 	local iconS = math.floor(lh * 0.9)
 	local textSize = math.max(12, math.floor(lh * 0.6))
+	if IS_TOUCH then
+		-- phones: a smaller icon and the 11 px text (the room goes to the words)
+		local s = currentScale()
+		iconS = math.floor(lh * 0.7)
+		textSize = math.max(12, math.ceil(11 / s))
+	end
 	for _, l in ui.qline do
 		if l.Icon then l.Icon.Size = UDim2.fromOffset(iconS, iconS) end
 		l.Text.TextSize = textSize
@@ -1542,6 +1557,32 @@ function L.LayoutQuestLines(q)
 		l.ClaimText.TextSize = math.max(12, math.floor(lh * 0.5))
 	end
 	if ui.questFold then ui.questFold.TextSize = math.max(12, math.floor(lh * 0.55)) end
+	for _, l in ui.qline do task.defer(L.FitQuestLine, l) end
+end
+
+-- A23-63 (2026-10-07): a line wider than its row first drops its " · ..." tail (the count says it: "Free the supply road
+-- · 5 slimes" -> "Free the supply road  1/5"); only what still does not fit is cut with "…" (phones: the block beside
+-- the minimap is 150 px and stays out of the thumbstick zone, so it cannot grow; before this it read "Fre…")
+function L.FitQuestLine(l)
+	local full = l and l.FullText
+	if type(full) ~= "string" or not l.Row.Visible then return end
+	local s = currentScale()
+	local rowW = l.Row.AbsoluteSize.X / s
+	if rowW <= 1 then return end
+	local used = (l.Icon and l.Icon.Visible) and (l.Icon.AbsoluteSize.X / s + 4) or 0
+	if l.Nums.Visible then used += l.Nums.AbsoluteSize.X / s + 4 end
+	if l.Claim.Visible then used += l.Claim.AbsoluteSize.X / s + 4 end
+	if ui.questFold and ui.questFold.Parent == l.Row then used += ui.questFold.AbsoluteSize.X / s + 4 end
+	local tc = l.Text:FindFirstChildOfClass("UITextSizeConstraint")
+	local size = math.max(l.Text.TextSize, tc and tc.MinTextSize or 0)
+	local text = full
+	local short = string.match(full, "^(.-)%s+·%s")
+	local avail = math.max(10, rowW - used)
+	if short and short ~= "" and type(UIKit.MeasureText) == "function" then
+		local ok, _, w = pcall(UIKit.MeasureText, full, size, l.Text.FontFace, 100000)
+		if ok and type(w) == "number" and w > avail then text = short end
+	end
+	if l.Text.Text ~= text then l.Text.Text = text end
 end
 
 -- one line: icon (monster head / row type), text, progress or 받기 (CR-M27 / CR-L31 numbers)
@@ -1550,6 +1591,7 @@ function L.SetQuestLine(l, e, label, nums)
 	l.Row.Visible = label ~= nil
 	if l.Band then l.Band.Visible = label ~= nil end
 	if not label then return end
+	l.FullText = label
 	l.Text.Text = label
 	local claimable = e ~= nil and e.Progress >= e.Target and e.CanClaim
 		and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") -- the list rows' 받기 rule (refreshQuests)
@@ -1561,6 +1603,7 @@ function L.SetQuestLine(l, e, label, nums)
 		local key = e and (QUEST_ICON[e.Id] or "IconScroll") or "IconStar"
 		l.Icon.Image = head or UIKit.ArtId(key) or UIKit.ArtId("IconScroll") or l.Icon.Image
 	end
+	task.defer(L.FitQuestLine, l) -- after the row's list layout placed the numbers / 받기
 end
 
 -- PC line press: claim / pinned or story action / fold the list

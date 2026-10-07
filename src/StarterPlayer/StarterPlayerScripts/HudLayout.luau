@@ -34,7 +34,9 @@ local ITEMS = {
 	-- follow our UIScale); the sheet's y = on the middle line of Roblox's buttons (34 px)
 	war_meter = { "TB", { 496, 13, 288, 42 }, { 255, 15, 240, 38 } },
 	chips = { "TC", { 516, 62, 248, 22 }, { 255, 62, 240, 17 } },
-	event = { "TC", { 546, 88, 188, 22 }, { 300, 81, 150, 16 } },
+	-- A23-63 (2026-10-07): as wide as the chip row on PC and the whole column on phones - Montserrat runs wider and the
+	-- king pill ("Pumpkin King is here! 4:54 left") was squeezed to 150 x 16 px with its words spilling out
+	event = { "TC", { 516, 88, 248, 22 }, { 255, 81, 240, 18 } },
 	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
 	portrait = { "BC", { 362, 586, 50, 50 }, { 502, 62, 45, 45 }, "TR" },
 	power_line = { "BC", { 420, 578, 440, 16 }, { 551, 62, 190, 14 }, "TR" },

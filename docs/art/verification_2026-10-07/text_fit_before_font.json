@@ -1,0 +1,357 @@
+{
+  "tool": "tools/text_fit_view.py",
+  "tag": "before_font",
+  "rows": [
+    {
+      "device": "pc",
+      "file": "build/text_fit_view/pc_before_font.png",
+      "probe": {
+        "Count": 35,
+        "Screen": [
+          1280,
+          720
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/SkillBar/SkillQ/Name/Text",
+            "Truncate": "None",
+            "Text": "Shockwave",
+            "Bounds": [
+              71,
+              20
+            ],
+            "Pos": [
+              1053,
+              656
+            ],
+            "Font": "FredokaOne",
+            "Fits": false,
+            "TextSize": 20,
+            "Size": [
+              73,
+              16
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "wide",
+      "file": "build/text_fit_view/wide_before_font.png",
+      "probe": {
+        "Count": 35,
+        "Screen": [
+          1920,
+          943
+        ],
+        "Bad": []
+      }
+    },
+    {
+      "device": "phone",
+      "file": "build/text_fit_view/phone_before_font.png",
+      "probe": {
+        "Count": 27,
+        "Screen": [
+          749,
+          361
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Power",
+            "Truncate": "None",
+            "Text": "Lv 1 · Power 0",
+            "Bounds": [
+              86,
+              16
+            ],
+            "Pos": [
+              533,
+              60
+            ],
+            "Font": "FredokaOne",
+            "Fits": false,
+            "TextSize": 17,
+            "Size": [
+              86,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Pouch",
+            "Truncate": "None",
+            "Text": "· Pouch 0",
+            "Bounds": [
+              59,
+              16
+            ],
+            "Pos": [
+              623,
+              60
+            ],
+            "Font": "FredokaOne",
+            "Fits": false,
+            "TextSize": 17,
+            "Size": [
+              59,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/WarMeter/Info/Text",
+            "Truncate": "AtEnd",
+            "Text": "Crown in 9:38",
+            "Bounds": [
+              87,
+              16
+            ],
+            "Pos": [
+              269,
+              39
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              180,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line1/Text",
+            "Truncate": "AtEnd",
+            "Text": "Free the supply road · 5 slimes",
+            "Bounds": [
+              62,
+              16
+            ],
+            "Pos": [
+              155,
+              60
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              84,
+              22
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line2/Text",
+            "Truncate": "AtEnd",
+            "Text": "Hit 4 monsters with a skill",
+            "Bounds": [
+              40,
+              16
+            ],
+            "Pos": [
+              155,
+              83
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              80,
+              22
+            ]
+          },
+          {
+            "Path": "MainGui/EventStrip/PumpkinKingChip/Text",
+            "Truncate": "None",
+            "Text": "Pumpkin King is here! 4:54 left",
+            "Bounds": [
+              176,
+              15
+            ],
+            "Pos": [
+              303,
+              81
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              113,
+              8
+            ]
+          },
+          {
+            "Path": "MainGui/MiniMap/North/N",
+            "Truncate": "None",
+            "Text": "N",
+            "Bounds": [
+              9,
+              16
+            ],
+            "Pos": [
+              77,
+              122
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              15,
+              15
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "844",
+      "file": "build/text_fit_view/844_before_font.png",
+      "probe": {
+        "Count": 27,
+        "Screen": [
+          844,
+          390
+        ],
+        "Bad": [
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Power",
+            "Truncate": "None",
+            "Text": "Lv 1 · Power 0",
+            "Bounds": [
+              86,
+              16
+            ],
+            "Pos": [
+              599,
+              61
+            ],
+            "Font": "FredokaOne",
+            "Fits": false,
+            "TextSize": 17,
+            "Size": [
+              86,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/Stats/PowerLine/Pouch",
+            "Truncate": "None",
+            "Text": "· Pouch 0",
+            "Bounds": [
+              59,
+              16
+            ],
+            "Pos": [
+              688,
+              61
+            ],
+            "Font": "FredokaOne",
+            "Fits": false,
+            "TextSize": 17,
+            "Size": [
+              59,
+              13
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/WarMeter/Info/Text",
+            "Truncate": "AtEnd",
+            "Text": "Crown in 9:34",
+            "Bounds": [
+              87,
+              16
+            ],
+            "Pos": [
+              302,
+              39
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 14,
+            "Size": [
+              240,
+              12
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line1/Text",
+            "Truncate": "AtEnd",
+            "Text": "Free the supply road · 5 slimes",
+            "Bounds": [
+              62,
+              16
+            ],
+            "Pos": [
+              167,
+              61
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              104,
+              22
+            ]
+          },
+          {
+            "Path": "MainGui/HUD/QuestLines/Line2/Text",
+            "Truncate": "AtEnd",
+            "Text": "Hit 4 monsters with a skill",
+            "Bounds": [
+              95,
+              16
+            ],
+            "Pos": [
+              167,
+              84
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 18,
+            "Size": [
+              100,
+              22
+            ]
+          },
+          {
+            "Path": "MainGui/EventStrip/PumpkinKingChip/Text",
+            "Truncate": "None",
+            "Text": "Pumpkin King is here! 4:54 left",
+            "Bounds": [
+              176,
+              15
+            ],
+            "Pos": [
+              356,
+              84
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              132,
+              9
+            ]
+          },
+          {
+            "Path": "MainGui/MiniMap/North/N",
+            "Truncate": "None",
+            "Text": "N",
+            "Bounds": [
+              9,
+              16
+            ],
+            "Pos": [
+              87,
+              132
+            ],
+            "Font": "BuilderSans",
+            "Fits": false,
+            "TextSize": 16,
+            "Size": [
+              15,
+              15
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
