@@ -5,7 +5,7 @@ tools/glb_texture_patch.py and dump, per screen sample, which texel it hits and 
 
   blender --background --factory-startup --python tools/castle_window_dump.py -- <in.glb> <out_dir> --screen cx,cy,rx,ry [--view front|front34|front34L|game] [--decimate 10000] [--ss 6] [--front +x]
 
-Writes <out_dir>/dump.npz (texel x/y per sample, valid mask, albedo, box origin, supersampling),
+Writes <out_dir>/dump.npz (texel x/y per sample, valid mask, albedo, hit point and normal, box origin, supersampling),
 <out_dir>/tex0.png (the original base-colour texture) and <out_dir>/model.glb (decimated, texture untouched).
 Step 2: py tools/castle_window_inpaint.py <out_dir>  (OpenCV inpaint in screen space, written back to the texels)
 Step 3: blender ... tools/glb_texture_patch.py -- export <out_dir>/model.glb <final.glb> --tex <out_dir>/tex_after.png
@@ -121,6 +121,8 @@ W_, H_ = (x1 - x0) * SS, (y1 - y0) * SS
 texel = -np.ones((H_, W_, 2), np.int32)
 alb = np.zeros((H_, W_, 3), np.float32)
 valid = np.zeros((H_, W_), np.uint8)
+pos = np.zeros((H_, W_, 3), np.float32)  # hit point and normal (normalised world space: height 2, base at z 0)
+nor = np.zeros((H_, W_, 3), np.float32)
 for j in range(H_):
     for i in range(W_):
         x = x0 + (i + 0.5) / SS
@@ -136,7 +138,9 @@ for j in range(H_):
         texel[j, i] = (tx, ty)
         alb[j, i] = px[ty, tx, :3]
         valid[j, i] = 1
-np.savez(os.path.join(OUT, "dump.npz"), texel=texel, alb=alb, valid=valid,
+        pos[j, i] = loc
+        nor[j, i] = nrm
+np.savez(os.path.join(OUT, "dump.npz"), texel=texel, alb=alb, valid=valid, pos=pos, nor=nor,
          box=np.array([x0, y0, x1, y1, SS]), ellipse=np.array([SCX, SCY, SRX, SRY]))
 np.save(os.path.join(OUT, "tex0.npy"), px)  # bottom-up rows, linear float RGBA
 print("[castle_window_dump] samples", int(valid.sum()), "of", W_ * H_, "tex", tw, th, flush=True)
