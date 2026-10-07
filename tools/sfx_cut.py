@@ -365,15 +365,26 @@ KO = {"SwingArcher": "활 두 발 파일(선택) · '슉슉'", "SwingArrow": "�
       "SkillHalo": "빛 스킬", "SkillHorns": "뿔 스킬", "Purify": "정화 · 빛 선택", "Devour": "먹기 · 뿔 선택 '앙! 꿀꺽 뽕!'",
       "Potion": "물약 마시기", "AutoOn": "자동 전투 켜기", "AutoOff": "자동 전투 끄기", "TalkBlip": "대화 글자 '톡'",
       "Equip": "장비 끼기 '착'", "SkillReady": "스킬 준비됨 '삥'", "HurtBig": "크게 맞음",
-      "PumpkinKing": "호박 왕 등장", "GhostKing": "유령 왕 등장", "GooseArrive": "황금 거위 착지", "GooseHonk": "거위 맞힘 '꽉!' 한 번"}
+      "PumpkinKing": "호박 왕 등장", "GhostKing": "유령 왕 등장", "GooseArrive": "황금 거위 착지", "GooseHonk": "거위 맞힘 '꽉!' 한 번",
+      "CrownHalo": "빛 진영 전쟁 승리 · 왕관", "CrownHorns": "뿔 진영 전쟁 승리 · 왕관", "KingDefeat": "왕 쓰러뜨림 '와르르 짜잔'",
+      "WarFinal30": "전쟁 30초 남음 '따릉따릉'", "CountTick": "3-2-1 '똑'", "GooseEnd": "황금 거위 떠남",
+      "KaijuSiren": "괴수 10초 전 알림(사이렌 아님)", "KaijuStomp": "괴수 발소리 '쿵'", "ZoneEnterPvP": "PvP 땅 들어감 '두둥'",
+      "GoldenSpot": "황금 몬스터 발견 '반짝반짝'", "ScrollSuccess": "강화 성공 '슈링 챙'", "Spend": "골드 씀 '짤-랑↓'",
+      "RankUp": "등급 올라감 '또로롱↑'", "KO": "내가 쓰러짐 '콩! 삐요삐요'", "Respawn": "다시 나타남 '뿅!'",
+      "Plunder": "주머니 뺏김 '짤그랑 또르르'", "JackpotOther": "남의 대박 '오오 반짝'"}
 ORDER = ["SwingArrow", "SwingMageHalo", "SwingMageHorns", "HitHeavy", "HitCrit", "ComboCoin", "HitSoft", "SwingArcher",
          "GoldPickup", "QuestNew", "QuestDone", "WindowClose", "Deny", "RankDown", "ScrollFail", "SkillHalo", "SkillHorns", "Purify", "Devour",
          "Potion", "AutoOn", "AutoOff", "TalkBlip", "Equip", "SkillReady", "HurtBig", "PowerUp", "Jump",
          "PumpkinKing", "GhostKing", "GooseArrive", "GooseHonk"]
+ORDER4 = ["CrownHalo", "CrownHorns", "KingDefeat", "WarFinal30", "CountTick", "GooseEnd", "KaijuSiren", "KaijuStomp", "ZoneEnterPvP",
+          "GoldenSpot", "ScrollSuccess", "Spend", "RankUp", "KO", "Respawn", "Plunder", "JackpotOther"]
 BATCH = {k: 1 for k in ORDER[:8]}
 BATCH.update({k: 2 for k in ORDER[8:28]})
 BATCH.update({k: 3 for k in ORDER[28:]})
-BATCH_TITLE = {1: "1번 묶음 · 전투 (지난번과 같은 후보)", 2: "2번 묶음 · UI·스킬·선택·새 소리", 3: "3번 묶음 · 할로윈 P0"}
+BATCH.update({k: 4 for k in ORDER4})
+ORDER += ORDER4
+BATCH_TITLE = {1: "1번 묶음 · 전투 (지난번과 같은 후보)", 2: "2번 묶음 · UI·스킬·선택·새 소리", 3: "3번 묶음 · 할로윈 P0",
+               4: "4번 묶음 · 왕관·왕·전쟁 → 거위·괴수·PvP·황금 → 강화·돈·등급·KO"}
 SCENE_OF = {"SwingArrow": "archer", "SwingMageHalo": "mage_halo", "SwingMageHorns": "mage_horns", "HitHeavy": "warrior_goblin",
             "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime"}
 PICK = {  # 소리 만들기 추천 (검수가 고른다)
@@ -409,6 +420,24 @@ PICK = {  # 소리 만들기 추천 (검수가 고른다)
     "GhostKing": ("GhostKing_sA", "호박 왕과 같은 왕 종 두 번 → 숨 섞인 '후우?'(위로, 질문 모양) → 유리 '찰랑' 1.33 s. Firefly 1-1·2-3도 통과지만 종이 달라요."),
     "GooseArrive": ("GooseArrive_sA", "날갯짓 3번 → '꽥' 560 Hz → '꽥' 3반음 위 → 금 반짝 0.98 s. 꽥은 GooseHonk와 같은 목소리."),
     "GooseHonk": ("GooseHonk_sA", "장난감 고무 거위 '꽉!' 한 번 0.16 s, 600 Hz, 위로 살짝 꺾임. 두 음이 내려가는 Deny와 다르게."),
+    # batch 4
+    "CrownHalo": ("CrownHalo_sA", "반짝이가 25 → 60/s로 차오르다 A장조 유리 화음 '치잉' 1.70 s, 중심 1.6 kHz. 뿔 왕관(sA)과 크기 차이 0.0 LU, 정화와 점수 2.26."),
+    "CrownHorns": ("CrownHorns_sA", "불꽃 '화르륵' → 나무 북 '쿠웅' → 불씨 '타닥' → '토독' 1.49 s. sB는 중간 빈 구멍 89 ms라 sA."),
+    "KingDefeat": ("KingDefeat_sA", "피냐타 '딱' + 사탕 52알 '와르르' + '짜잔' 1.08 s. 처치 동전과 점수 2.6(사탕 ≠ 돈)."),
+    "WarFinal30": ("WarFinal30_sA", "자전거 벨 3.2 kHz '따릉따릉' 두 번 0.52 s. 돈 소리와 점수 1.7 이상. sB는 조금 낮은 벨."),
+    "CountTick": ("CountTick_sA", "나무 블록 '똑' 79 ms. 게임이 1.0 / 1.12 / 1.26배로 올려 3-2-1. PvP '두둥'과 점수 2.9."),
+    "GooseEnd": ("GooseEnd_sA", "날갯짓 5번 멀어짐 + 기쁜 '꽥'(GooseHonk와 같은 목소리, 2반음 위) + 깃털 1.0 s."),
+    "KaijuSiren": ("KaijuSiren_sA", "'우르르릉' 굴러오는 울림 → 고무장화 '쿵! 쿵!' 1.83 s. 사이렌 음 없음(sB는 음 성분 0.34로 살짝 넘음)."),
+    "KaijuStomp": ("KaijuStomp_sA", "나무 몸통 '쿵' + 눈 밟는 '뽀득' + 먼지 0.32 s. 내 타격(HitHeavy)과 점수 1.65."),
+    "ZoneEnterPvP": ("ZoneEnterPvP_sA", "북 두 번 '두-둥' 400 → 530 Hz 0.39 s. 후보 하나뿐, 모든 검사 통과."),
+    "GoldenSpot": ("GoldenSpot_sA", "계단 없이 오르는 반짝이 + 유리 '핑' 0.50 s. 골드 받기와 점수 2.07(보는 것 ≠ 받는 것). GoldenKill도 이 파일을 다시 써요."),
+    "ScrollSuccess": ("ScrollSuccess_1-4", "Firefly '슈링~ 챙' 0.63 s, 중심 2.8 kHz. 실패보다 +4.9 LU(기준 4.8). 합성 sA는 더 밝고(4.2 kHz) 길어요."),
+    "Spend": ("Spend_sA", "골드 받기 동전 그대로 E7 → D7로 내려가며 조용히 0.25 s. 받기와 방향만 달라요(contour 0.22 ≥ 0.1)."),
+    "RankUp": ("RankUp_sA", "고른 RankDown(sA)의 거울: 마림바 C5-D5-E5 55 ms 간격 0.32 s."),
+    "KO": ("KO_sA", "'콩' + '보잉' + 빙글 별 '삐요삐요' 3개 0.79 s(설계서 그대로). 크게 맞음과 점수 2.4. Firefly 1-4도 통과."),
+    "Respawn": ("Respawn_sB", "더 높은 '뿅!' 1.0 → 2.2 kHz 0.17 s. 점프와 점수 1.70(sA는 0.73이라 점프처럼 들려요)."),
+    "Plunder": ("Plunder_sB", "동전 '짤그랑' 4개 + 한 개가 '또르르' 굴러감 0.36 s. 골드 받기와 점수 1.43(sA는 0.81이라 받기처럼 들려요)."),
+    "JackpotOther": ("JackpotOther_sA", "색종이 '퐁' + 오르는 유리 '핑' + 반짝 0.57 s."),
 }
 
 
@@ -428,8 +457,9 @@ def prompt_for(src):
     return open(p, encoding="utf-8").read().strip() if os.path.exists(p) else ""
 
 
-def board():
-    """build/sfx_firefly/board/index.html + a/*.wav, i/*.jpg, s/*.mp3 (published as files beside the page)"""
+def board(only=None):
+    """build/sfx_firefly/board/index.html + a/*.wav, i/*.jpg, s/*.mp3 (published as files beside the page);
+    only = one batch number (the batches already picked stay out of the page)"""
     import html as H
     summ = json.load(open(os.path.join(REVIEW, "summary.json"), encoding="utf-8"))
     results = json.load(open(REPORT, encoding="utf-8"))
@@ -457,7 +487,7 @@ def board():
     last = None
     for key in ORDER:
         rows = summ["keys"].get(key, [])
-        if not rows:
+        if not rows or (only and BATCH.get(key) != only):
             continue
         if BATCH.get(key) != last:
             last = BATCH.get(key)
@@ -505,7 +535,8 @@ def board():
         secs.append(f'<section><h3>{H.escape(KO.get(key, key))} <code class="key">{key}</code> {tag}</h3>'
                     f'<p class="target">{H.escape(ks.get("say", ""))} · {H.escape(ks.get("moment", ""))}</p>{recline}{recscene}'
                     f'<div class="grid">{"".join(tiles)}</div></section>')
-    page = BOARD_HTML.replace("{{BODY}}", "".join(secs))
+    lead, nav = BOARD_LEAD.get(only, BOARD_LEAD[None])
+    page = BOARD_HTML.replace("{{LEAD}}", lead).replace("{{NAV}}", nav).replace("{{BODY}}", "".join(secs))
     with open(os.path.join(root, "index.html"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(page)
     with open(os.path.join(root, "files.json"), "w", encoding="utf-8", newline="\n") as fh:
@@ -555,16 +586,26 @@ li.l2:before{background:var(--ok)}li.l1:before{background:var(--near)}li.l0:befo
 <main>
 <header>
 <h1>효과음 4차 듣기판</h1>
-<p class="lead">검수용입니다. 키마다 하나를 골라 주세요. 판정은 설계서 검사기(tools/sfx_check.py + tools/sfx_spec.json): PASS = 먼저 들어 볼 것, WARN = 작은 벗어남만 있음, 불합격은 뺐어요.
-'장면 20초'는 실제 게임 타이밍(휘두름 → 타격 → 처치 '뽕' → 동전)과 설계표 볼륨으로 겹친 소리예요. 맨 위 '추천 조합 장면'은 보통 스피커와 폰 스피커 두 가지.
-그림은 스펙트로그램(세로 50 Hz–12 kHz, 가로는 키 제목 옆에 적은 길이). 이름 끝이 sA·sB·kA인 것은 설계서 레시피대로 만든 우리 합성(+ Kenney CC0), 1-2 같은 숫자는 Firefly예요.
-2026-10-07 · Firefly 60번 생성(600크레딧: 1번 묶음 35 + 2·3번 묶음 25) + Kenney CC0 + 우리 합성. 1번 묶음은 지난번과 같은 후보예요.</p>
-<nav class="jump" aria-label="묶음"><a href="#b1">1번 묶음 · 전투</a><a href="#b2">2번 묶음 · UI·스킬</a><a href="#b3">3번 묶음 · 할로윈</a></nav>
+{{LEAD}}
+{{NAV}}
 <ul class="legend"><li class="l2">목표 안</li><li class="l1">조금 벗어남</li><li class="l0">벗어남</li><li>참고</li></ul>
 </header>
 {{BODY}}
 </main>
 """
+
+
+BOARD_LEAD = {
+    None: ("""<p class="lead">검수용입니다. 키마다 하나를 골라 주세요. 판정은 설계서 검사기(tools/sfx_check.py + tools/sfx_spec.json): PASS = 먼저 들어 볼 것, WARN = 작은 벗어남만 있음, 불합격은 뺐어요.
+'장면 20초'는 실제 게임 타이밍(휘두름 → 타격 → 처치 '뽕' → 동전)과 설계표 볼륨으로 겹친 소리예요. 맨 위 '추천 조합 장면'은 보통 스피커와 폰 스피커 두 가지.
+그림은 스펙트로그램(세로 50 Hz–12 kHz, 가로는 키 제목 옆에 적은 길이). 이름 끝이 sA·sB·kA인 것은 설계서 레시피대로 만든 우리 합성(+ Kenney CC0), 1-2 같은 숫자는 Firefly예요.
+2026-10-07 · Firefly 60번 생성(600크레딧: 1번 묶음 35 + 2·3번 묶음 25) + Kenney CC0 + 우리 합성. 1번 묶음은 지난번과 같은 후보예요.</p>""",
+           """<nav class="jump" aria-label="묶음"><a href="#b1">1번 묶음 · 전투</a><a href="#b2">2번 묶음 · UI·스킬</a><a href="#b3">3번 묶음 · 할로윈</a></nav>"""),
+    4: ("""<p class="lead">검수용 4번 묶음(17키)입니다. 키마다 하나를 골라 주세요. 1~3번 묶음은 이미 골라서 이 판에는 없어요.
+판정은 설계서 검사기(tools/sfx_check.py + tools/sfx_spec.json): PASS = 먼저 들어 볼 것, WARN = 작은 벗어남만 있음, 불합격은 뺐어요.
+그림은 스펙트로그램(세로 50 Hz–12 kHz, 가로는 키 제목 옆에 적은 길이). sA·sB·sC = 설계서 레시피대로 만든 우리 합성(+ Kenney CC0), 1-4 같은 숫자 = Firefly.
+2026-10-07 · Firefly 12번(120크레딧, 앞 계정에서 생성) + Kenney CC0 + 우리 합성. 빼앗김 sB와 부활 sB·sC는 짝 검사(골드 받기·점프와 구별) 때문에 새로 만들었어요.</p>""", ""),
+}
 
 
 def ledger(board_url="", generations=72, balance_before=9640):
@@ -607,7 +648,7 @@ def main():
     elif cmd == "pick":
         pick(int(sys.argv[2]) if len(sys.argv) > 2 else 3)
     elif cmd == "board":
-        board()
+        board(int(sys.argv[2]) if len(sys.argv) > 2 else None)
     elif cmd == "ledger":
         ledger(sys.argv[2] if len(sys.argv) > 2 else "")
     else:

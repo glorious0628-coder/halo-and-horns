@@ -7,6 +7,13 @@ AutoOn          AutoOn_sB                PASS 100  FAIL: -  |  WARN: -
 ComboCoin       ComboCoin_kC             PASS 100  FAIL: -  |  WARN: -
 ComboCoin       ComboCoin_kA             WARN  98  FAIL: -  |  WARN: durMs=198 (want 200..260)
 ComboCoin       ComboCoin_kB             WARN  98  FAIL: -  |  WARN: durMs=199 (want 200..260)
+CountTick       CountTick_sA             PASS 100  FAIL: -  |  WARN: -
+CountTick       CountTick_sB             PASS 100  FAIL: -  |  WARN: -
+CrownHalo       CrownHalo_sA             PASS 100  FAIL: -  |  WARN: -
+CrownHalo       CrownHalo_sB             PASS 100  FAIL: -  |  WARN: -
+CrownHalo       CrownHalo_1-2            WARN  88  FAIL: -  |  WARN: gt8k=0.264 (want 0..0.05); durMs=1344 (want 1500..1700); centroidHz=5952 (want 1200..4000)
+CrownHorns      CrownHorns_sA            PASS 100  FAIL: -  |  WARN: -
+CrownHorns      CrownHorns_sB            WARN  96  FAIL: -  |  WARN: holeMs=89.0 (want 0..60)
 Deny            Deny_sA                  PASS 100  FAIL: -  |  WARN: -
 Deny            Deny_sB                  WARN  98  FAIL: -  |  WARN: phoneDropDb=2.05 (want 0..2)
 Devour          Devour_sA                PASS 100  FAIL: -  |  WARN: -
@@ -20,9 +27,15 @@ GhostKing       GhostKing_sA             PASS 100  FAIL: -  |  WARN: -
 GoldPickup      GoldPickup_sB            PASS 100  FAIL: -  |  WARN: -
 GoldPickup      GoldPickup_sA            WARN  94  FAIL: -  |  WARN: centroidHz=3262 (want 2000..3200); pitchSemis=5.00 (want 0.5..3.50)
 GoldPickup      GoldPickup_kA            WARN  94  FAIL: -  |  WARN: durMs=208 (want 240..330); pitchSemis=0.4 (want 0.5..3.50)
+GoldenSpot      GoldenSpot_sA            PASS 100  FAIL: -  |  WARN: -
+GoldenSpot      GoldenSpot_1-3           WARN  97  FAIL: -  |  WARN: centDir=0.034 (want up)
+GoldenSpot      GoldenSpot_1-1           WARN  90  FAIL: -  |  WARN: centroidHz=5129 (want 2000..4500); pitchMaxHz=5820 (want <= 5200); ringMs=359 (want 0..350)
 GooseArrive     GooseArrive_sA           PASS 100  FAIL: -  |  WARN: -
 GooseArrive     GooseArrive_sB           PASS 100  FAIL: -  |  WARN: -
 GooseArrive     GooseArrive_1-1          WARN  96  FAIL: -  |  WARN: holeMs=126 (want 0..80)
+GooseEnd        GooseEnd_sA              PASS 100  FAIL: -  |  WARN: -
+GooseEnd        GooseEnd_sB              PASS 100  FAIL: -  |  WARN: -
+GooseEnd        GooseEnd_1-1             WARN  97  FAIL: -  |  WARN: periodicity=0.859 (want 0.1..0.7)
 GooseHonk       GooseHonk_sA             PASS 100  FAIL: -  |  WARN: -
 GooseHonk       GooseHonk_sB             PASS 100  FAIL: -  |  WARN: -
 GooseHonk       GooseHonk_1-1            WARN  97  FAIL: -  |  WARN: pitchStartHz=1263 (want 470..650)
@@ -37,8 +50,24 @@ HitSoft         HitSoft_kA               WARN  88  FAIL: -  |  WARN: lt150=0.133
 HitSoft         HitSoft_kC               WARN  88  FAIL: -  |  WARN: effLufs=-28.6 (want -28.4..-23.5); attackMs=9.50 (want 0..5); phoneDropDb=3.26 (want 0..3); likedFile=no (want same bytes as build/sfx_game/cand/HitSquish_b.ogg (user liked B))
 HurtBig         HurtBig_sA               PASS 100  FAIL: -  |  WARN: -
 HurtBig         HurtBig_sB               PASS 100  FAIL: -  |  WARN: -
+JackpotOther    JackpotOther_sA          PASS 100  FAIL: -  |  WARN: -
+JackpotOther    JackpotOther_sB          PASS 100  FAIL: -  |  WARN: -
+JackpotOther    JackpotOther_1-2         WARN  96  FAIL: -  |  WARN: centDir=-0.127 (want up)
 Jump            Jump_2-1                 PASS 100  FAIL: -  |  WARN: -
 Jump            Jump_2-2                 PASS 100  FAIL: -  |  WARN: -
+KO              KO_1-4                   PASS 100  FAIL: -  |  WARN: -
+KO              KO_sA                    PASS 100  FAIL: -  |  WARN: -
+KO              KO_sB                    PASS 100  FAIL: -  |  WARN: -
+KaijuSiren      KaijuSiren_sA            PASS 100  FAIL: -  |  WARN: -
+KaijuSiren      KaijuSiren_sB            WARN  97  FAIL: -  |  WARN: tonalShare=0.344 (want 0..0.3)
+KaijuStomp      KaijuStomp_sA            PASS 100  FAIL: -  |  WARN: -
+KaijuStomp      KaijuStomp_sB            PASS 100  FAIL: -  |  WARN: -
+KaijuStomp      KaijuStomp_1-1           WARN  93  FAIL: -  |  WARN: phoneDropDb=3.41 (want 0..3); nOnsets=4 (want 1..2)
+KingDefeat      KingDefeat_sA            PASS 100  FAIL: -  |  WARN: -
+KingDefeat      KingDefeat_sB            PASS 100  FAIL: -  |  WARN: -
+KingDefeat      KingDefeat_1-3           WARN  96  FAIL: -  |  WARN: durMs=932 (want 1000..1200)
+Plunder         Plunder_sA               PASS 100  FAIL: -  |  WARN: -
+Plunder         Plunder_sB               PASS 100  FAIL: -  |  WARN: -
 Potion          Potion_sA                PASS 100  FAIL: -  |  WARN: -
 Potion          Potion_sB                PASS 100  FAIL: -  |  WARN: -
 Potion          Potion_1-2               WARN  97  FAIL: -  |  WARN: centDir=-1.12 (want up)
@@ -60,7 +89,15 @@ QuestNew        QuestNew_1-2             WARN  92  FAIL: -  |  WARN: attackMs=75
 RankDown        RankDown_sA              PASS 100  FAIL: -  |  WARN: -
 RankDown        RankDown_sB              PASS 100  FAIL: -  |  WARN: -
 RankDown        RankDown_1-2             WARN  97  FAIL: -  |  WARN: pitchSemis=-12.9 (want -8..-2)
+RankUp          RankUp_sA                PASS 100  FAIL: -  |  WARN: -
+RankUp          RankUp_sB                PASS 100  FAIL: -  |  WARN: -
+Respawn         Respawn_sA               PASS 100  FAIL: -  |  WARN: -
+Respawn         Respawn_sB               PASS 100  FAIL: -  |  WARN: -
+Respawn         Respawn_sC               PASS 100  FAIL: -  |  WARN: -
 ScrollFail      ScrollFail_sA            PASS 100  FAIL: -  |  WARN: -
+ScrollSuccess   ScrollSuccess_1-4        PASS 100  FAIL: -  |  WARN: -
+ScrollSuccess   ScrollSuccess_sA         PASS 100  FAIL: -  |  WARN: -
+ScrollSuccess   ScrollSuccess_sB         PASS 100  FAIL: -  |  WARN: -
 SkillHalo       SkillHalo_sA             PASS 100  FAIL: -  |  WARN: -
 SkillHalo       SkillHalo_sB             PASS 100  FAIL: -  |  WARN: -
 SkillHalo       SkillHalo_1-3            WARN  94  FAIL: -  |  WARN: centroidHz=4567 (want 2500..4200); centDir=-0.215 (want up)
@@ -70,6 +107,8 @@ SkillHorns      SkillHorns_1-1           WARN  93  FAIL: -  |  WARN: attackMs=84
 SkillReady      SkillReady_sA            PASS 100  FAIL: -  |  WARN: -
 SkillReady      SkillReady_sB            PASS 100  FAIL: -  |  WARN: -
 SkillReady      SkillReady_1-2           WARN  96  FAIL: -  |  WARN: centroidHz=2622 (want 800..2500)
+Spend           Spend_sA                 PASS 100  FAIL: -  |  WARN: -
+Spend           Spend_sB                 PASS 100  FAIL: -  |  WARN: -
 SwingArcher     SwingArcher_2-1          PASS 100  FAIL: -  |  WARN: -
 SwingArcher     SwingArcher_3-1          PASS 100  FAIL: -  |  WARN: -
 SwingArcher     SwingArcher_2-4          WARN  94  FAIL: -  |  WARN: centroidHz=4876 (want 3200..4500); gt8k@1.08x=0.0693 (want 0..0.06); centroidHz@1.08x=5267 (want <= 4800)
@@ -85,9 +124,12 @@ SwingMageHorns  SwingMageHorns_2-2       PASS 100  FAIL: -  |  WARN: -
 TalkBlip        TalkBlip_sA              PASS 100  FAIL: -  |  WARN: -
 TalkBlip        TalkBlip_sB              PASS 100  FAIL: -  |  WARN: -
 TalkBlip        TalkBlip_1-1             WARN  95  FAIL: -  |  WARN: centroidHz=3529 (want 450..900); pitchStartHz=3524 (want 550..700)
+WarFinal30      WarFinal30_sA            PASS 100  FAIL: -  |  WARN: -
+WarFinal30      WarFinal30_sB            PASS 100  FAIL: -  |  WARN: -
 WindowClose     WindowClose_sA           PASS 100  FAIL: -  |  WARN: -
 WindowClose     WindowClose_1-1          WARN  96  FAIL: -  |  WARN: durMs=132 (want 140..180)
 WindowClose     WindowClose_1-3          WARN  86  FAIL: -  |  WARN: durMs=116 (want 140..180); centroidHz=812 (want 1100..2200); lt300=0.0122 (want 0..0.005); phoneDropDb=1.34 (want 0..0.5)
+ZoneEnterPvP    ZoneEnterPvP_sA          PASS 100  FAIL: -  |  WARN: -
 BarkPop         TalkBlip_sB@0.8x         PASS 100  FAIL: -  |  WARN: -
 BarkPop         TalkBlip_1-1@0.8x        PASS 100  FAIL: -  |  WARN: -
 BarkPop         TalkBlip_sB@1.5x         WARN  96  FAIL: -  |  WARN: effLufs=-35.4 (want -35.0..-27.5)
@@ -134,6 +176,21 @@ distinct ok   HitHeavy_3-2 [HitHeavy] vs HurtBig_sA [HurtBig]: score 1.33 (>= 1.
 distinct ok   HitHeavy_3-2 [HitHeavy] vs HurtBig_sB [HurtBig]: score 1.33 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
 distinct ok   HitHeavy_1-3 [HitHeavy] vs HurtBig_sA [HurtBig]: score 1.08 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
 distinct ok   HitHeavy_1-3 [HitHeavy] vs HurtBig_sB [HurtBig]: score 1.12 (>= 1.0) | 'I got hit' is not 'I hit a skeleton'
+distinct ok   HitCrit_1-2 [HitCrit] vs ScrollSuccess_1-4 [ScrollSuccess]: score 1.62 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitCrit_1-2 [HitCrit] vs ScrollSuccess_sA [ScrollSuccess]: score 1.94 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitCrit_1-2 [HitCrit] vs ScrollSuccess_sB [ScrollSuccess]: score 1.97 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitCrit_1-4 [HitCrit] vs ScrollSuccess_1-4 [ScrollSuccess]: score 1.59 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitCrit_1-4 [HitCrit] vs ScrollSuccess_sA [ScrollSuccess]: score 1.98 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitCrit_1-4 [HitCrit] vs ScrollSuccess_sB [ScrollSuccess]: score 2.01 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitCrit_sB3 [HitCrit] vs ScrollSuccess_1-4 [ScrollSuccess]: score 1.42 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitCrit_sB3 [HitCrit] vs ScrollSuccess_sA [ScrollSuccess]: score 1.69 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitCrit_sB3 [HitCrit] vs ScrollSuccess_sB [ScrollSuccess]: score 1.69 (>= 1.0) | the rising glint belongs to ScrollSuccess
+distinct ok   HitHeavy_1-2 [HitHeavy] vs CountTick_sA [CountTick]: score 2.33 (>= 1.0) | a war-end 3-2-1 must not sound like hits
+distinct ok   HitHeavy_1-2 [HitHeavy] vs CountTick_sB [CountTick]: score 2.32 (>= 1.0) | a war-end 3-2-1 must not sound like hits
+distinct ok   HitHeavy_3-2 [HitHeavy] vs CountTick_sA [CountTick]: score 2.84 (>= 1.0) | a war-end 3-2-1 must not sound like hits
+distinct ok   HitHeavy_3-2 [HitHeavy] vs CountTick_sB [CountTick]: score 2.83 (>= 1.0) | a war-end 3-2-1 must not sound like hits
+distinct ok   HitHeavy_1-3 [HitHeavy] vs CountTick_sA [CountTick]: score 2.66 (>= 1.0) | a war-end 3-2-1 must not sound like hits
+distinct ok   HitHeavy_1-3 [HitHeavy] vs CountTick_sB [CountTick]: score 2.64 (>= 1.0) | a war-end 3-2-1 must not sound like hits
 distinct ok   SkillHalo_sA [SkillHalo] vs ComboCoin_kC [ComboCoin]: score 1.79 (>= 1.0) | SkillHalo bells sat on the coin pitches
 distinct ok   SkillHalo_sA [SkillHalo] vs ComboCoin_kA [ComboCoin]: score 1.74 (>= 1.0) | SkillHalo bells sat on the coin pitches
 distinct ok   SkillHalo_sA [SkillHalo] vs ComboCoin_kB [ComboCoin]: score 1.73 (>= 1.0) | SkillHalo bells sat on the coin pitches
@@ -161,6 +218,15 @@ distinct ok   SkillHorns_sB [SkillHorns] vs Devour_1-1 [Devour]: score 2.7 (>= 1
 distinct ok   SkillHorns_1-1 [SkillHorns] vs Devour_sA [Devour]: score 2.56 (>= 1.0) | the cast is not the moral-choice reward
 distinct ok   SkillHorns_1-1 [SkillHorns] vs Devour_sB [Devour]: score 2.57 (>= 1.0) | the cast is not the moral-choice reward
 distinct ok   SkillHorns_1-1 [SkillHorns] vs Devour_1-1 [Devour]: score 1.9 (>= 1.0) | the cast is not the moral-choice reward
+distinct ok   KaijuStomp_sA [KaijuStomp] vs HitHeavy_1-2 [HitHeavy]: score 1.66 (>= 1.0) | danger cue vs my own hit
+distinct ok   KaijuStomp_sA [KaijuStomp] vs HitHeavy_3-2 [HitHeavy]: score 1.65 (>= 1.0) | danger cue vs my own hit
+distinct ok   KaijuStomp_sA [KaijuStomp] vs HitHeavy_1-3 [HitHeavy]: score 1.8 (>= 1.0) | danger cue vs my own hit
+distinct ok   KaijuStomp_sB [KaijuStomp] vs HitHeavy_1-2 [HitHeavy]: score 1.64 (>= 1.0) | danger cue vs my own hit
+distinct ok   KaijuStomp_sB [KaijuStomp] vs HitHeavy_3-2 [HitHeavy]: score 1.64 (>= 1.0) | danger cue vs my own hit
+distinct ok   KaijuStomp_sB [KaijuStomp] vs HitHeavy_1-3 [HitHeavy]: score 1.79 (>= 1.0) | danger cue vs my own hit
+distinct ok   KaijuStomp_1-1 [KaijuStomp] vs HitHeavy_1-2 [HitHeavy]: score 2.27 (>= 1.0) | danger cue vs my own hit
+distinct ok   KaijuStomp_1-1 [KaijuStomp] vs HitHeavy_3-2 [HitHeavy]: score 1.69 (>= 1.0) | danger cue vs my own hit
+distinct ok   KaijuStomp_1-1 [KaijuStomp] vs HitHeavy_1-3 [HitHeavy]: score 1.84 (>= 1.0) | danger cue vs my own hit
 distinct ok   WindowClose_sA [WindowClose] vs Deny_sA [Deny]: score 2.32 (>= 1.0) | a 'no' is two separate notes
 distinct ok   WindowClose_sA [WindowClose] vs Deny_sB [Deny]: score 2.47 (>= 1.0) | a 'no' is two separate notes
 distinct ok   WindowClose_1-1 [WindowClose] vs Deny_sA [Deny]: score 1.63 (>= 1.0) | a 'no' is two separate notes
@@ -197,6 +263,69 @@ distinct ok   AutoOn_sA [AutoOn] vs AutoOff_1-2 [AutoOff]: registerOct 0.929 (>=
 distinct ok   AutoOn_sB [AutoOn] vs AutoOff_sA [AutoOff]: registerOct 1.067 (>= 0.5) and contourOct 0.849 (>= 0.3) | score 1.7 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
 distinct ok   AutoOn_sB [AutoOn] vs AutoOff_1-1 [AutoOff]: registerOct 1.139 (>= 0.5) and contourOct 0.458 (>= 0.3) | score 1.63 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
 distinct ok   AutoOn_sB [AutoOn] vs AutoOff_1-2 [AutoOff]: registerOct 0.976 (>= 0.5) and contourOct 0.495 (>= 0.3) | score 1.66 | critique: ON ends high and bright (~2-2.5 kHz), OFF low and dry (~0.9-1.2 kHz); direction alone is not enough
+distinct ok   RankDown_sA [RankDown] vs RankUp_sA [RankUp]: contourOct 0.342 (>= 0.25) | score 0.68 | mirror pair
+distinct ok   RankDown_sA [RankDown] vs RankUp_sB [RankUp]: contourOct 0.34 (>= 0.25) | score 0.68 | mirror pair
+distinct ok   RankDown_sB [RankDown] vs RankUp_sA [RankUp]: contourOct 0.347 (>= 0.25) | score 0.69 | mirror pair
+distinct ok   RankDown_sB [RankDown] vs RankUp_sB [RankUp]: contourOct 0.342 (>= 0.25) | score 0.68 | mirror pair
+distinct ok   RankDown_1-2 [RankDown] vs RankUp_sA [RankUp]: contourOct 0.519 (>= 0.25) | score 1.51 | mirror pair
+distinct ok   RankDown_1-2 [RankDown] vs RankUp_sB [RankUp]: contourOct 0.505 (>= 0.25) | score 1.51 | mirror pair
+distinct ok   QuestDone_sA [QuestDone] vs ScrollSuccess_1-4 [ScrollSuccess]: score 1.2 (>= 1.0) | quest done vs enhance
+distinct ok   QuestDone_sA [QuestDone] vs ScrollSuccess_sA [ScrollSuccess]: score 2.08 (>= 1.0) | quest done vs enhance
+distinct ok   QuestDone_sA [QuestDone] vs ScrollSuccess_sB [ScrollSuccess]: score 2.1 (>= 1.0) | quest done vs enhance
+distinct ok   QuestDone_sB [QuestDone] vs ScrollSuccess_1-4 [ScrollSuccess]: score 1.2 (>= 1.0) | quest done vs enhance
+distinct ok   QuestDone_sB [QuestDone] vs ScrollSuccess_sA [ScrollSuccess]: score 2.09 (>= 1.0) | quest done vs enhance
+distinct ok   QuestDone_sB [QuestDone] vs ScrollSuccess_sB [ScrollSuccess]: score 2.11 (>= 1.0) | quest done vs enhance
+distinct ok   QuestDone_1-1 [QuestDone] vs ScrollSuccess_1-4 [ScrollSuccess]: score 2.15 (>= 1.0) | quest done vs enhance
+distinct ok   QuestDone_1-1 [QuestDone] vs ScrollSuccess_sA [ScrollSuccess]: score 1.76 (>= 1.0) | quest done vs enhance
+distinct ok   QuestDone_1-1 [QuestDone] vs ScrollSuccess_sB [ScrollSuccess]: score 1.8 (>= 1.0) | quest done vs enhance
+distinct ok   ScrollSuccess_1-4 [ScrollSuccess] vs GoldPickup_sB [GoldPickup]: score 2.26 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   ScrollSuccess_1-4 [ScrollSuccess] vs GoldPickup_sA [GoldPickup]: score 2.24 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   ScrollSuccess_1-4 [ScrollSuccess] vs GoldPickup_kA [GoldPickup]: score 1.59 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   ScrollSuccess_sA [ScrollSuccess] vs GoldPickup_sB [GoldPickup]: score 1.64 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   ScrollSuccess_sA [ScrollSuccess] vs GoldPickup_sA [GoldPickup]: score 1.67 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   ScrollSuccess_sA [ScrollSuccess] vs GoldPickup_kA [GoldPickup]: score 1.86 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   ScrollSuccess_sB [ScrollSuccess] vs GoldPickup_sB [GoldPickup]: score 1.66 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   ScrollSuccess_sB [ScrollSuccess] vs GoldPickup_sA [GoldPickup]: score 1.7 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   ScrollSuccess_sB [ScrollSuccess] vs GoldPickup_kA [GoldPickup]: score 1.86 (>= 1.0) | same metal family: keep the ring higher and longer
+distinct ok   GoldenSpot_sA [GoldenSpot] vs GoldPickup_sB [GoldPickup]: score 2.07 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_sA [GoldenSpot] vs GoldPickup_sA [GoldPickup]: score 2.09 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_sA [GoldenSpot] vs GoldPickup_kA [GoldPickup]: score 1.51 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-3 [GoldenSpot] vs GoldPickup_sB [GoldPickup]: score 2.36 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-3 [GoldenSpot] vs GoldPickup_sA [GoldPickup]: score 2.38 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-3 [GoldenSpot] vs GoldPickup_kA [GoldPickup]: score 1.82 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-1 [GoldenSpot] vs GoldPickup_sB [GoldPickup]: score 1.27 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-1 [GoldenSpot] vs GoldPickup_sA [GoldPickup]: score 1.32 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-1 [GoldenSpot] vs GoldPickup_kA [GoldPickup]: score 2.05 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_sA [GoldenSpot] vs ComboCoin_kC [ComboCoin]: score 1.53 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_sA [GoldenSpot] vs ComboCoin_kA [ComboCoin]: score 1.49 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_sA [GoldenSpot] vs ComboCoin_kB [ComboCoin]: score 1.46 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-3 [GoldenSpot] vs ComboCoin_kC [ComboCoin]: score 1.74 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-3 [GoldenSpot] vs ComboCoin_kA [ComboCoin]: score 1.75 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-3 [GoldenSpot] vs ComboCoin_kB [ComboCoin]: score 1.71 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-1 [GoldenSpot] vs ComboCoin_kC [ComboCoin]: score 1.99 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-1 [GoldenSpot] vs ComboCoin_kA [ComboCoin]: score 1.97 (>= 1.0) | spotting gold is not getting gold
+distinct ok   GoldenSpot_1-1 [GoldenSpot] vs ComboCoin_kB [ComboCoin]: score 1.93 (>= 1.0) | spotting gold is not getting gold
+distinct ok   WarFinal30_sA [WarFinal30] vs ComboCoin_kC [ComboCoin]: score 1.83 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sA [WarFinal30] vs ComboCoin_kA [ComboCoin]: score 1.79 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sA [WarFinal30] vs ComboCoin_kB [ComboCoin]: score 1.73 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sB [WarFinal30] vs ComboCoin_kC [ComboCoin]: score 1.89 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sB [WarFinal30] vs ComboCoin_kA [ComboCoin]: score 1.86 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sB [WarFinal30] vs ComboCoin_kB [ComboCoin]: score 1.8 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sA [WarFinal30] vs GoldPickup_sB [GoldPickup]: score 1.85 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sA [WarFinal30] vs GoldPickup_sA [GoldPickup]: score 1.91 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sA [WarFinal30] vs GoldPickup_kA [GoldPickup]: score 1.88 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sB [WarFinal30] vs GoldPickup_sB [GoldPickup]: score 1.85 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sB [WarFinal30] vs GoldPickup_sA [GoldPickup]: score 1.92 (>= 1.0) | 'hurry' must not read as money
+distinct ok   WarFinal30_sB [WarFinal30] vs GoldPickup_kA [GoldPickup]: score 1.96 (>= 1.0) | 'hurry' must not read as money
+distinct ok   KingDefeat_sA [KingDefeat] vs ComboCoin_kC [ComboCoin]: score 2.51 (>= 1.0) | candy is not gold
+distinct ok   KingDefeat_sA [KingDefeat] vs ComboCoin_kA [ComboCoin]: score 2.61 (>= 1.0) | candy is not gold
+distinct ok   KingDefeat_sA [KingDefeat] vs ComboCoin_kB [ComboCoin]: score 2.57 (>= 1.0) | candy is not gold
+distinct ok   KingDefeat_sB [KingDefeat] vs ComboCoin_kC [ComboCoin]: score 2.47 (>= 1.0) | candy is not gold
+distinct ok   KingDefeat_sB [KingDefeat] vs ComboCoin_kA [ComboCoin]: score 2.57 (>= 1.0) | candy is not gold
+distinct ok   KingDefeat_sB [KingDefeat] vs ComboCoin_kB [ComboCoin]: score 2.53 (>= 1.0) | candy is not gold
+distinct ok   KingDefeat_1-3 [KingDefeat] vs ComboCoin_kC [ComboCoin]: score 2.18 (>= 1.0) | candy is not gold
+distinct ok   KingDefeat_1-3 [KingDefeat] vs ComboCoin_kA [ComboCoin]: score 2.28 (>= 1.0) | candy is not gold
+distinct ok   KingDefeat_1-3 [KingDefeat] vs ComboCoin_kB [ComboCoin]: score 2.24 (>= 1.0) | candy is not gold
 distinct ok   PumpkinKing_sA [PumpkinKing] vs GhostKing_KingGhost-1-1 [GhostKing]: score 2.92 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
 distinct ok   PumpkinKing_sA [PumpkinKing] vs GhostKing_KingGhost-2-3 [GhostKing]: score 2.04 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
 distinct ok   PumpkinKing_sA [PumpkinKing] vs GhostKing_sA [GhostKing]: score 2.21 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
@@ -206,6 +335,17 @@ distinct ok   PumpkinKing_sB [PumpkinKing] vs GhostKing_sA [GhostKing]: score 2.
 distinct ok   PumpkinKing_KingPumpkin-2-3 [PumpkinKing] vs GhostKing_KingGhost-1-1 [GhostKing]: score 2.36 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
 distinct ok   PumpkinKing_KingPumpkin-2-3 [PumpkinKing] vs GhostKing_KingGhost-2-3 [GhostKing]: score 2.13 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
 distinct ok   PumpkinKing_KingPumpkin-2-3 [PumpkinKing] vs GhostKing_sA [GhostKing]: score 1.7 (>= 1.0) | eyes closed, at phone volume, tell the kings apart within the first second (they share the bell opening)
+distinct ok   CrownHalo_sA [CrownHalo] vs Purify_sA [Purify]: score 2.26 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo_sA [CrownHalo] vs Purify_sB [Purify]: score 2.79 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo_sA [CrownHalo] vs Purify_1-2 [Purify]: score 2.05 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo_sB [CrownHalo] vs Purify_sA [Purify]: score 2.3 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo_sB [CrownHalo] vs Purify_sB [Purify]: score 2.26 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo_sB [CrownHalo] vs Purify_1-2 [Purify]: score 2.04 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo_1-2 [CrownHalo] vs Purify_sA [Purify]: score 2.25 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo_1-2 [CrownHalo] vs Purify_sB [Purify]: score 2.19 (>= 1.0) | a different sound from the moral choice
+distinct ok   CrownHalo_1-2 [CrownHalo] vs Purify_1-2 [Purify]: score 1.87 (>= 1.0) | a different sound from the moral choice
+distinct ok   ZoneEnterPvP_sA [ZoneEnterPvP] vs CountTick_sA [CountTick]: score 2.92 (>= 1.0) | both wood: keep the safety cue its own
+distinct ok   ZoneEnterPvP_sA [ZoneEnterPvP] vs CountTick_sB [CountTick]: score 2.73 (>= 1.0) | both wood: keep the safety cue its own
 match    ok   Purify_sA [Purify] vs Devour_sA [Devour]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
 match    ok   Purify_sA [Purify] vs Devour_sB [Devour]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.1 LU (<= 2.0) | neither choice is louder or 'better'
 match    warn Purify_sA [Purify] vs Devour_1-1 [Devour]: in-game loudness gap 2.9 LU (<= 1.0), phone gap 3.3 LU (<= 2.0) | neither choice is louder or 'better'
@@ -233,6 +373,15 @@ match    ok   SkillHalo_sB [SkillHalo] vs SkillHorns_1-1 [SkillHorns]: in-game l
 match    ok   SkillHalo_1-3 [SkillHalo] vs SkillHorns_sA [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.7 LU (<= 2.0) | fair on phones
 match    ok   SkillHalo_1-3 [SkillHalo] vs SkillHorns_sB [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.6 LU (<= 2.0) | fair on phones
 match    ok   SkillHalo_1-3 [SkillHalo] vs SkillHorns_1-1 [SkillHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 1.8 LU (<= 2.0) | fair on phones
+match    ok   CrownHalo_sA [CrownHalo] vs CrownHorns_sA [CrownHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.0 LU (<= 2.0) | fair on phones
+match    ok   CrownHalo_sA [CrownHalo] vs CrownHorns_sB [CrownHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.0 LU (<= 2.0) | fair on phones
+match    ok   CrownHalo_sB [CrownHalo] vs CrownHorns_sA [CrownHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.0 LU (<= 2.0) | fair on phones
+match    ok   CrownHalo_sB [CrownHalo] vs CrownHorns_sB [CrownHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.0 LU (<= 2.0) | fair on phones
+match    ok   CrownHalo_1-2 [CrownHalo] vs CrownHorns_sA [CrownHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
+match    ok   CrownHalo_1-2 [CrownHalo] vs CrownHorns_sB [CrownHorns]: in-game loudness gap 0.0 LU (<= 1.0), phone gap 0.2 LU (<= 2.0) | fair on phones
+louder   ok   ScrollSuccess_1-4 [ScrollSuccess] vs ScrollFail_sA [ScrollFail]: ScrollSuccess is +4.9 LU vs ScrollFail in game (need >= +4.8) | spec: at least 4.8 dB above the fail
+louder   ok   ScrollSuccess_sA [ScrollSuccess] vs ScrollFail_sA [ScrollFail]: ScrollSuccess is +4.9 LU vs ScrollFail in game (need >= +4.8) | spec: at least 4.8 dB above the fail
+louder   ok   ScrollSuccess_sB [ScrollSuccess] vs ScrollFail_sA [ScrollFail]: ScrollSuccess is +4.9 LU vs ScrollFail in game (need >= +4.8) | spec: at least 4.8 dB above the fail
 louder   ok   QuestDone_sA [QuestDone] vs QuestNew_sA [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
 louder   ok   QuestDone_sA [QuestDone] vs QuestNew_sB [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
 louder   ok   QuestDone_sA [QuestDone] vs QuestNew_1-2 [QuestNew]: QuestDone is +2.3 LU vs QuestNew in game (need >= +1.5) | done is bigger than new
@@ -251,3 +400,27 @@ louder   ok   HitHeavy_3-2 [HitHeavy] vs SwingArcher_2-4 [SwingArcher]: HitHeavy
 louder   ok   HitHeavy_1-3 [HitHeavy] vs SwingArcher_2-1 [SwingArcher]: HitHeavy is +3.2 LU vs SwingArcher in game (need >= +2.0) | the archer swish is the quietest combat sound
 louder   ok   HitHeavy_1-3 [HitHeavy] vs SwingArcher_3-1 [SwingArcher]: HitHeavy is +3.2 LU vs SwingArcher in game (need >= +2.0) | the archer swish is the quietest combat sound
 louder   ok   HitHeavy_1-3 [HitHeavy] vs SwingArcher_2-4 [SwingArcher]: HitHeavy is +3.2 LU vs SwingArcher in game (need >= +2.0) | the archer swish is the quietest combat sound
+distinct ok   GoldPickup_sB [GoldPickup] vs Spend_sA [Spend]: contourOct 0.217 (>= 0.1) | score 0.43 | the same coins: getting goes up, spending goes down
+distinct ok   GoldPickup_sB [GoldPickup] vs Spend_sB [Spend]: contourOct 0.243 (>= 0.1) | score 0.49 | the same coins: getting goes up, spending goes down
+distinct ok   GoldPickup_sA [GoldPickup] vs Spend_sA [Spend]: contourOct 0.316 (>= 0.1) | score 0.63 | the same coins: getting goes up, spending goes down
+distinct ok   GoldPickup_sA [GoldPickup] vs Spend_sB [Spend]: contourOct 0.325 (>= 0.1) | score 0.65 | the same coins: getting goes up, spending goes down
+distinct ok   GoldPickup_kA [GoldPickup] vs Spend_sA [Spend]: contourOct 0.308 (>= 0.1) | score 1.95 | the same coins: getting goes up, spending goes down
+distinct ok   GoldPickup_kA [GoldPickup] vs Spend_sB [Spend]: contourOct 0.329 (>= 0.1) | score 1.95 | the same coins: getting goes up, spending goes down
+distinct warn GoldPickup_sB [GoldPickup] vs Plunder_sA [Plunder]: score 0.81 (>= 1.0) | losing coins is not getting coins
+distinct ok   GoldPickup_sB [GoldPickup] vs Plunder_sB [Plunder]: score 1.43 (>= 1.0) | losing coins is not getting coins
+distinct warn GoldPickup_sA [GoldPickup] vs Plunder_sA [Plunder]: score 0.87 (>= 1.0) | losing coins is not getting coins
+distinct ok   GoldPickup_sA [GoldPickup] vs Plunder_sB [Plunder]: score 1.58 (>= 1.0) | losing coins is not getting coins
+distinct ok   GoldPickup_kA [GoldPickup] vs Plunder_sA [Plunder]: score 1.88 (>= 1.0) | losing coins is not getting coins
+distinct ok   GoldPickup_kA [GoldPickup] vs Plunder_sB [Plunder]: score 1.57 (>= 1.0) | losing coins is not getting coins
+distinct ok   HurtBig_sA [HurtBig] vs KO_1-4 [KO]: score 2.84 (>= 1.0) | a big hit is not a knock-out (the KO adds the spinning stars)
+distinct ok   HurtBig_sA [HurtBig] vs KO_sA [KO]: score 2.4 (>= 1.0) | a big hit is not a knock-out (the KO adds the spinning stars)
+distinct ok   HurtBig_sA [HurtBig] vs KO_sB [KO]: score 2.44 (>= 1.0) | a big hit is not a knock-out (the KO adds the spinning stars)
+distinct ok   HurtBig_sB [HurtBig] vs KO_1-4 [KO]: score 2.74 (>= 1.0) | a big hit is not a knock-out (the KO adds the spinning stars)
+distinct ok   HurtBig_sB [HurtBig] vs KO_sA [KO]: score 2.43 (>= 1.0) | a big hit is not a knock-out (the KO adds the spinning stars)
+distinct ok   HurtBig_sB [HurtBig] vs KO_sB [KO]: score 2.46 (>= 1.0) | a big hit is not a knock-out (the KO adds the spinning stars)
+distinct ok   Jump_2-1 [Jump] vs Respawn_sA [Respawn]: score 1.47 (>= 1.0) | coming back is not a hop
+distinct ok   Jump_2-1 [Jump] vs Respawn_sB [Respawn]: score 1.81 (>= 1.0) | coming back is not a hop
+distinct ok   Jump_2-1 [Jump] vs Respawn_sC [Respawn]: score 1.67 (>= 1.0) | coming back is not a hop
+distinct warn Jump_2-2 [Jump] vs Respawn_sA [Respawn]: score 0.73 (>= 1.0) | coming back is not a hop
+distinct ok   Jump_2-2 [Jump] vs Respawn_sB [Respawn]: score 1.7 (>= 1.0) | coming back is not a hop
+distinct ok   Jump_2-2 [Jump] vs Respawn_sC [Respawn]: score 1.45 (>= 1.0) | coming back is not a hop
