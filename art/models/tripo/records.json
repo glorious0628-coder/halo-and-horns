@@ -4630,5 +4630,214 @@
    "bytes": 3859060,
    "at": "2026-10-07 11:40:31"
   }
+ ],
+ "W_Gate": [
+  {
+   "event": "generation_submitted",
+   "task_id": "83b014a6-a539-41fa-8df6-d54185b81b7a",
+   "image": "art\\out\\hq\\HQ_W_Gate.png",
+   "recipe": "building",
+   "seed": 94752
+  },
+  {
+   "task_id": "83b014a6-a539-41fa-8df6-d54185b81b7a",
+   "image": "art\\out\\hq\\HQ_W_Gate.png",
+   "recipe": "building",
+   "seed": 94752,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Gate_raw.glb",
+   "bytes": 4026688,
+   "at": "2026-10-07 11:50:11"
+  }
+ ],
+ "W_GiantTree": [
+  {
+   "event": "generation_submitted",
+   "task_id": "3f1bf193-7e3d-4748-8ea0-93eaad148fbc",
+   "image": "art\\out\\hq\\HQ_W_GiantTree.png",
+   "recipe": "building",
+   "seed": 12218
+  },
+  {
+   "task_id": "3f1bf193-7e3d-4748-8ea0-93eaad148fbc",
+   "image": "art\\out\\hq\\HQ_W_GiantTree.png",
+   "recipe": "building",
+   "seed": 12218,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_GiantTree_raw.glb",
+   "bytes": 3877904,
+   "at": "2026-10-07 11:50:40"
+  }
+ ],
+ "W_Tent_A": [
+  {
+   "event": "generation_submitted",
+   "task_id": "28bb6d6e-6195-4a5e-9c6d-8d673e002f51",
+   "image": "art\\out\\hq\\HQ_W_Tent_A.png",
+   "recipe": "building",
+   "seed": 10933
+  },
+  {
+   "task_id": "28bb6d6e-6195-4a5e-9c6d-8d673e002f51",
+   "image": "art\\out\\hq\\HQ_W_Tent_A.png",
+   "recipe": "building",
+   "seed": 10933,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Tent_A_raw.glb",
+   "bytes": 3169280,
+   "at": "2026-10-07 11:51:00"
+  }
+ ],
+ "W_Tent_B": [
+  {
+   "event": "generation_submitted",
+   "task_id": "873ce821-3e59-4cca-bc15-827f06f87c57",
+   "image": "art\\out\\hq\\HQ_W_Tent_B.png",
+   "recipe": "building",
+   "seed": 48063
+  },
+  {
+   "task_id": "873ce821-3e59-4cca-bc15-827f06f87c57",
+   "image": "art\\out\\hq\\HQ_W_Tent_B.png",
+   "recipe": "building",
+   "seed": 48063,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Tent_B_raw.glb",
+   "bytes": 3565752,
+   "at": "2026-10-07 11:53:31"
+  }
+ ],
+ "W_Totem": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c8987ebb-c024-4419-a40f-6bc16b938b6c",
+   "image": "art\\out\\hq\\HQ_W_Totem.png",
+   "recipe": "prop",
+   "seed": 16704
+  },
+  {
+   "task_id": "c8987ebb-c024-4419-a40f-6bc16b938b6c",
+   "image": "art\\out\\hq\\HQ_W_Totem.png",
+   "recipe": "prop",
+   "seed": 16704,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Totem_raw.glb",
+   "bytes": 3592732,
+   "at": "2026-10-07 11:52:29"
+  }
+ ],
+ "W_Tree_C": [
+  {
+   "event": "generation_submitted",
+   "task_id": "6e1e81e2-eea5-4282-b8e9-5ca61dd86bfd",
+   "image": "art\\out\\hq\\HQ_W_Tree_C.png",
+   "recipe": "tree",
+   "seed": 19917
+  },
+  {
+   "task_id": "6e1e81e2-eea5-4282-b8e9-5ca61dd86bfd",
+   "image": "art\\out\\hq\\HQ_W_Tree_C.png",
+   "recipe": "tree",
+   "seed": 19917,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Tree_C_raw.glb",
+   "bytes": 2620076,
+   "at": "2026-10-07 11:53:45"
+  }
+ ],
+ "W_Boulder_A": [
+  {
+   "event": "generation_submitted",
+   "task_id": "dba3b626-55ec-4931-a5ba-25a12733e733",
+   "image": "art\\out\\hq\\HQ_W_Boulder_A.png",
+   "recipe": "tree",
+   "seed": 96666
+  },
+  {
+   "task_id": "dba3b626-55ec-4931-a5ba-25a12733e733",
+   "image": "art\\out\\hq\\HQ_W_Boulder_A.png",
+   "recipe": "tree",
+   "seed": 96666,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Boulder_A_raw.glb",
+   "bytes": 2656704,
+   "at": "2026-10-07 11:55:56"
+  }
+ ],
+ "W_Boulder_B": [
+  {
+   "event": "generation_submitted",
+   "task_id": "5c83a4ee-6259-47f4-9d37-25ad62f7c970",
+   "image": "art\\out\\hq\\HQ_W_Boulder_B.png",
+   "recipe": "tree",
+   "seed": 34144
+  },
+  {
+   "task_id": "5c83a4ee-6259-47f4-9d37-25ad62f7c970",
+   "image": "art\\out\\hq\\HQ_W_Boulder_B.png",
+   "recipe": "tree",
+   "seed": 34144,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Boulder_B_raw.glb",
+   "bytes": 2766040,
+   "at": "2026-10-07 11:56:51"
+  }
+ ],
+ "W_Tree_B": [
+  {
+   "event": "generation_submitted",
+   "task_id": "caa37cfd-0be6-410b-acc0-a2bb65396f4a",
+   "image": "art\\out\\hq\\HQ_W_Tree_B.png",
+   "recipe": "tree",
+   "seed": 29371
+  },
+  {
+   "task_id": "caa37cfd-0be6-410b-acc0-a2bb65396f4a",
+   "image": "art\\out\\hq\\HQ_W_Tree_B.png",
+   "recipe": "tree",
+   "seed": 29371,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Tree_B_raw.glb",
+   "bytes": 1867032,
+   "at": "2026-10-07 11:59:11"
+  }
+ ],
+ "W_Tree_A": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c09a0edc-5f11-4c77-b46b-25a09c2c372e",
+   "image": "art\\out\\hq\\HQ_W_Tree_A.png",
+   "recipe": "tree",
+   "seed": 47681
+  },
+  {
+   "task_id": "c09a0edc-5f11-4c77-b46b-25a09c2c372e",
+   "image": "art\\out\\hq\\HQ_W_Tree_A.png",
+   "recipe": "tree",
+   "seed": 47681,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Tree_A_raw.glb",
+   "bytes": 1982280,
+   "at": "2026-10-07 11:58:56"
+  }
+ ],
+ "W_Tree_C3k": [
+  {
+   "event": "generation_submitted",
+   "task_id": "1acbd73c-105b-428d-8ee4-681aa8328a00",
+   "image": "art\\out\\hq\\HQ_W_Tree_C.png",
+   "recipe": "prop",
+   "seed": 57975
+  },
+  {
+   "task_id": "1acbd73c-105b-428d-8ee4-681aa8328a00",
+   "image": "art\\out\\hq\\HQ_W_Tree_C.png",
+   "recipe": "prop",
+   "seed": 57975,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\W_Tree_C3k_raw.glb",
+   "bytes": 2646412,
+   "at": "2026-10-07 11:59:12"
+  }
  ]
 }
