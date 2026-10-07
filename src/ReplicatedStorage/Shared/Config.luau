@@ -3848,6 +3848,10 @@ Config.UIArt = {
 		BtnKind = { Id = "rbxassetid://96995284140099", Size = Vector2.new(512, 175), Slice = Rect.new(88, 54, 424, 121), FitHeight = true, TextRect = { 0.053, 0.123, 0.893, 0.596 } }, -- sky blue, white "Kind"
 		BtnSneaky = { Id = "rbxassetid://82745606719708", Size = Vector2.new(512, 171), Slice = Rect.new(86, 53, 426, 118), FitHeight = true, TextRect = { 0.057, 0.117, 0.887, 0.612 } }, -- purple, white "Sneaky"
 		JobTag = { Id = "rbxassetid://87413375917921", Size = Vector2.new(256, 106), TextRect = { 0.2, 0.118, 0.745, 0.578 } }, -- the quest row's "Job" tag (accepted jobs only), keep the ratio
+		-- the job board buttons' icons (c51be3f, review OK): icon + 8 px + word as one centred group inside BtnKind /
+		-- BtnSneaky's TextRect (icon about 1.4x the word height) - the shape tells the two apart for red-green colour blindness
+		GlyphKindWing = { Id = "rbxassetid://73020277343948", Size = Vector2.new(256, 256) },
+		GlyphSneakyHorns = { Id = "rbxassetid://101558632670193", Size = Vector2.new(256, 256) },
 		-- monster bark bubble (8e517a6, user OK via review): white + thick navy rim, tail at the bottom left (points down at
 		-- the monster), no letters - dark navy text in TextRect. SliceScale 0.3 keeps the tail the same size at ~52 px and
 		-- lets only the 24 px middle band grow for a second line. MonsterLabels BillboardGui (game dev 1, BarkService)
@@ -3891,6 +3895,10 @@ Config.UIArt = {
 		-- A23-51 my arrow on the live minimap (a133773): white + light grey shading, thick navy rim; ImageColor3 = my faction
 		-- colour keeps the rim; up = forward; 24-32 px at the map's centre
 		MapPlayerArrow = { Id = "rbxassetid://113931548210892", Size = Vector2.new(512, 512) },
+		-- A23-66 / UI idea #1 (17817e6, user OK): my arrow per faction, drawn as is (white, never tinted), up = forward,
+		-- the centre = the turning point; MapPlayerArrow (tinted) stays for the Guild / no faction
+		MapArrowHalo = { Id = "rbxassetid://102236026912773", Size = Vector2.new(512, 512) },
+		MapArrowHorns = { Id = "rbxassetid://119222134756742", Size = Vector2.new(512, 512) },
 		-- A23-53 the big map window's background (57049d4, world map v2 A2_2): 1024x683, no lettering. It lines up with the
 		-- v2 world layout only (Config.Map v2 numbers, 게임성 개발 1): px = X0 + (x + OffX) * K, py = (z + OffZ) * K (studs ->
 		-- image px; 이미지 생성 1's 1536 transform x 2/3)

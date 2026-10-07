@@ -1591,6 +1591,8 @@ function L.SetQuestLine(l, e, label, nums)
 	l.Row.Visible = label ~= nil
 	if l.Band then l.Band.Visible = label ~= nil end
 	if not label then return end
+	-- phones: the quest's short name when the server gives one ("Supply road"); PC keeps the full line
+	if IS_TOUCH and e and e.ShortName then label = e.ShortName end
 	l.FullText = label
 	l.Text.Text = label
 	local claimable = e ~= nil and e.Progress >= e.Target and e.CanClaim
@@ -2680,6 +2682,8 @@ local function parseQuests()
 				NextGoal = e.NextGoal == true,
 				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
+				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
+				ShortName = (type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or nil,
 				Slot = (not isPinned) and slot or nil, -- N1: the client only ever sends Slot or "tutorial"
 			}
 			table.insert(isPinned and pinned or normal, entry)

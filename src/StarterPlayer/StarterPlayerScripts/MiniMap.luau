@@ -1,7 +1,10 @@
 -- MiniMap.luau : the live minimap in the HUD's top-left slot (SPEC_ADDENDUM A23-26 "실시간 지도").
--- Only my surroundings are shown (the whole world stays in WorldMap, A12). A23-51 (user 2026-10-06 "지도도 사용자가 가는
--- 방향으로 회전해야 돼"): the map turns so the way my CHARACTER faces is up (eased every frame, never a jump), my arrow
--- (MapPlayerArrow art in my faction colour) always points up in the middle, the 'N' rides the ring toward north. Marks:
+-- Only my surroundings are shown (the whole world stays in WorldMap, A12). A23-66 (user 2026-10-07 "캐릭터의 시선 따라서
+-- 뾰족한 게 바뀌어야 돼", replaces A23-51's 'my arrow always up'): the map turns so where the CAMERA looks is up (eased every
+-- frame, never a jump), my arrow in the middle turns to where my CHARACTER faces on that map ("<" when it looks left of
+-- the screen, down when it faces the camera), the 'N' rides the ring toward north. My arrow: MapArrowHalo / MapArrowHorns
+-- as drawn (17817e6), else MapPlayerArrow in my faction colour; Halo breathes, Horns' ember flickers (still with reduced
+-- motion). Marks:
 -- me, other players (faction colour dots), the quest target (★ inside the view, a ▲ chevron on the edge outside it), the potion
 -- merchant and the blacksmith anvil, and nearby monsters (small dots). Presentation only: no buttons and every instance
 -- is Active = false, so on phones the box (inside the thumbstick zone) never sinks a touch.
@@ -35,9 +38,17 @@ local T = {
 	Margin = 1.05, -- players / monsters inside the view box + 5% get a dot (the view clips the rest)
 	MoveDt = 1 / 15, -- canvas, map turn, quest marker (user 2026-10-06: <= 15 Hz)
 	ScanDt = 1 / 5, -- visibility, players, monsters, quest target
-	-- A23-51: the map turns with my character's facing (up = where it faces), the 'N' rides the ring; my arrow stays up
+	-- A23-66: the map turns with the camera (up = where the screen looks), the 'N' rides the ring; my arrow turns to my
+	-- character's facing relative to it
 	HeadingUp = true,
-	TurnEase = 8, -- 1/s: the map eases toward the character's facing every frame (smooth, no jump on a quick turn)
+	TurnEase = 8, -- 1/s: the map eases toward the camera's facing every frame (smooth, no jump on a quick turn)
+	MeEase = 12, -- 1/s: my arrow eases toward the character's facing on the turned map
+	-- the faction arrows (17817e6, user OK): drawn as they are (white); MapPlayerArrow tinted for the rest
+	MeArtFaction = { Halo = "MapArrowHalo", Horns = "MapArrowHorns" },
+	-- UI idea #1 (docs/design/ideas_ui_2026-10-07.md): Halo breathes (scale), Horns' ember flickers (a warm tint now and
+	-- then); UIKit.ReducedMotion = still
+	MeBreath = { Period = 2.4, Amp = 0.06 },
+	MeEmber = { Min = 0.12, Max = 0.32, Warm = Color3.fromRGB(255, 214, 180) },
 	TurnMin = 0.3, -- degrees: smaller turns are not written (no CanvasGroup re-render while standing still)
 	MeSize = IS_TOUCH and 20 or 22, -- du: my arrow (user 2026-10-06 "너무 커": ~15-18 px; still bigger than a monster dot)
 	MeArt = "MapPlayerArrow", -- white art with a navy rim: ImageColor3 = my faction colour, up = forward
@@ -523,11 +534,13 @@ local function build()
 		Name = "QuestEdge", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(T.Star, T.Star),
 		ImageColor3 = COL.QuestGo, ZIndex = 2, Active = false, Visible = false, Parent = ui.view,
 	}) or textMark("QuestEdge", TXT.Edge, T.Star, COL.Quest, 2, ui.view)
-	-- A23-51: my arrow art in the middle, always up (the map turns under it); the "▲" text when the art is missing
+	-- A23-66: my arrow art in the middle (the view's centre = the box's centre), turned to my character's facing; on the
+	-- box above the clipped map group, so its turns and its breathing never re-render the map (CanvasGroup); the "▲"
+	-- text when the art is missing
 	ui.me = UIKit.ArtImage(T.MeArt, {
 		Name = "Me", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromOffset(T.MeSize, T.MeSize), ZIndex = 3, Active = false, Parent = ui.view,
-	}) or textMark("Me", TXT.Me, T.Arrow, theme.Text, 3, ui.view)
+		Size = UDim2.fromOffset(T.MeSize, T.MeSize), ZIndex = 5, Active = false, Parent = root,
+	}) or textMark("Me", TXT.Me, T.Arrow, theme.Text, 5, root)
 	ui.me.Visible = true
 	S.meArt = ui.me:IsA("ImageLabel")
 	MiniMap.PaintMe()
@@ -875,19 +888,61 @@ local function moveStep()
 	placeQuest(pos.X, pos.Z)
 end
 
--- every frame (A23-51): the map turns so my CHARACTER's facing (HumanoidRootPart LookVector, degrees clockwise from
--- north) is up, eased (T.TurnEase) so a quick turn never jumps; my arrow stays at Rotation 0 (up)
+-- every frame (A23-66): the map turns so where the CAMERA looks (its LookVector on the ground, degrees clockwise from
+-- north) is up, eased (T.TurnEase) so a quick turn never jumps; my arrow turns to my CHARACTER's facing minus that
+-- heading, wrapped to -180..180 (never a whole-circle spin) and eased too (T.MeEase). Looking straight down keeps the
+-- last heading
 local function turnStep(dt)
-	local _, look = myPose()
-	if not T.HeadingUp or not look or look.X * look.X + look.Z * look.Z < 1e-6 then return end
-	local yaw = math.deg(math.atan2(look.X, -look.Z))
-	if not S.heading then
-		turnMap(yaw)
+	if not T.HeadingUp then return end
+	local cam = workspace.CurrentCamera
+	local look = cam and cam.CFrame.LookVector
+	if look and look.X * look.X + look.Z * look.Z >= 1e-6 then
+		local yaw = math.deg(math.atan2(look.X, -look.Z))
+		if not S.heading then
+			turnMap(yaw)
+		else
+			local step = angleDiff(yaw, S.heading)
+			if math.abs(step) >= T.TurnMin then turnMap(angleDiff(S.heading + step * math.min(1, dt * T.TurnEase), 0)) end
+		end
+	end
+	if not S.heading or not ui.me then return end
+	local _, face = myPose() -- no character: the camera's look, so the arrow stays up
+	if not face or face.X * face.X + face.Z * face.Z < 1e-6 then return end
+	local want = angleDiff(math.deg(math.atan2(face.X, -face.Z)), S.heading)
+	local cur = S.meRot or want
+	local new = angleDiff(cur + angleDiff(want, cur) * math.min(1, dt * T.MeEase), 0)
+	S.meRot = new
+	if math.abs(angleDiff(new, ui.me.Rotation)) >= T.MinTurn then ui.me.Rotation = new end
+end
+
+-- every frame (UI idea #1): Halo's arrow breathes, Horns' ember flickers; still with reduced motion or another arrow
+local function meFx(dt)
+	local me = ui.me
+	if not me or not S.meArt then return end
+	local breath = me:FindFirstChild("Breath")
+	local style = S.meStyle
+	if not style or UIKit.ReducedMotion() then
+		if breath and breath.Scale ~= 1 then breath.Scale = 1 end
+		if S.meTint and me.ImageColor3 ~= S.meTint then me.ImageColor3 = S.meTint end
 		return
 	end
-	local step = angleDiff(yaw, S.heading)
-	if math.abs(step) < T.TurnMin then return end
-	turnMap(angleDiff(S.heading + step * math.min(1, dt * T.TurnEase), 0))
+	S.fxT = (S.fxT or 0) + dt
+	if style == "Halo" then
+		if not breath then
+			breath = Instance.new("UIScale")
+			breath.Name = "Breath"
+			breath.Parent = me
+		end
+		breath.Scale = 1 + T.MeBreath.Amp * (0.5 - 0.5 * math.cos(S.fxT * 2 * math.pi / T.MeBreath.Period))
+	elseif style == "Horns" then
+		if breath and breath.Scale ~= 1 then breath.Scale = 1 end
+		S.emberIn = (S.emberIn or 0) - dt
+		if S.emberIn <= 0 then
+			S.emberIn = T.MeEmber.Min + math.random() * (T.MeEmber.Max - T.MeEmber.Min)
+			S.emberOn = not S.emberOn
+			me.ImageColor3 = S.emberOn and T.MeEmber.Warm or WHITE
+		end
+	end
 end
 
 -- 1 Hz: box, potion merchant, anvil
@@ -958,6 +1013,7 @@ local function onHeartbeat(dt)
 		guard(moveStep, "move")
 	end
 	guard(function() turnStep(dt) end, "turn")
+	guard(function() meFx(dt) end, "me fx")
 end
 
 local function bindCamera()
@@ -996,12 +1052,25 @@ function MiniMap.Start()
 	print("[MiniMap] started")
 end
 
--- my arrow in my faction's colour (the art is white with a navy rim; the text fallback stays white)
+-- my arrow: my faction's own arrow art as drawn (MapArrowHalo / MapArrowHorns, white), else MapPlayerArrow (white with
+-- a navy rim) in my faction's colour; the text fallback stays white
 function MiniMap.PaintMe()
 	if not ui.me or not S.meArt then return end
 	local f = LocalPlayer:GetAttribute("Faction")
-	ui.me.ImageColor3 = (f == "Halo" and COL.MeHalo) or (f == "Horns" and COL.MeHorns) or (f == "Neutral" and COL.MeNeutral)
-		or WHITE
+	local key = T.MeArtFaction[f]
+	local id = key and UIKit.ArtId(key)
+	if id then
+		ui.me.Image = id
+		ui.me.ImageColor3 = WHITE
+		S.meStyle = f
+	else
+		local base = UIKit.ArtId(T.MeArt)
+		if base then ui.me.Image = base end
+		ui.me.ImageColor3 = (f == "Halo" and COL.MeHalo) or (f == "Horns" and COL.MeHorns)
+			or (f == "Neutral" and COL.MeNeutral) or WHITE
+		S.meStyle = nil
+	end
+	S.meTint = ui.me.ImageColor3
 end
 
 -- re-reads C.HUD.Layout.Rects.minimap (HUD calls this right after each layout pass); no rect = hidden

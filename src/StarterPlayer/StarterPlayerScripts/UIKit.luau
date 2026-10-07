@@ -2245,6 +2245,15 @@ function UIKit.Toast(text, kind, duration, icon)
 		Parent = frame,
 	})
 	frame.Parent = toastHolder
+	-- review 2026-10-07: a notice that does not fit on one line breaks at its " · " (one part a line) instead of
+	-- starting the second line with the dot ("... +60 gold / · Check the board ...")
+	if string.find(text, " · ", 1, true) then
+		local room = toastHolder.AbsoluteSize.X / currentScale() - 28 - left
+		local ok, _, w = pcall(UIKit.MeasureText, text, label.TextSize, label.FontFace, 100000)
+		if room > 0 and ok and type(w) == "number" and w > room then
+			label.Text = (string.gsub(text, " · ", "\n"))
+		end
+	end
 	UIKit.WrapHeight(label, NOTIFY.ToastLines, img and TOAST_ICON or nil)
 
 	local t = { Frame = frame, Label = label, Stroke = stroke, Icon = img, Text = text, Token = 0, Dead = false }
