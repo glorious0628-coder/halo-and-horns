@@ -2753,7 +2753,7 @@ end
 -- check may widen the bubble (L.FitHint)
 L.HintCfg = { Seconds = 10, Every = 1.6, Size = 20, MinPx = 16, TipX = 0.932, TipY = 0.99, Aspect = 512 / 190,
 	TextX = 0.079, TextY = 0.181, TextW = 0.844, TextH = 0.448, MinW = 120, Wobble = { -9, 8, -6, 4, -2, 0 },
-	WobbleStep = 0.06, Breathe = 1.05, Spare = 5, FitMax = 2.5 }
+	WobbleStep = 0.06, Breathe = 1.05, Spare = 5, FitMax = 2.5, LineK = 1.4 }
 L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0, Fit }
 
 -- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then leaves it
@@ -2799,7 +2799,9 @@ function L.PlaceHint(h)
 	local tw = h.TextW0 * size / h.Size0
 	local w = math.max(cfg.MinW, tw / cfg.TextW + 16, (h.FitK or 0) * size)
 	local hh = w / cfg.Aspect
-	local need = size * 1.2 / cfg.TextH -- the text box holds one line of the text
+	-- the text box holds one rendered line: Denk One draws a 20du line 1.25-1.33x as tall (UiSandbox 2026-10-07, TextBounds
+	-- 20 px at 16 px on PC, 22 px at 16.5 px on phones), so LineK leaves room above that
+	local need = size * cfg.LineK / cfg.TextH
 	if hh < need then hh, w = need, need * cfg.Aspect end
 	bubble.Size = UDim2.fromOffset(math.ceil(w), math.ceil(hh))
 	h.Label.TextSize = size

@@ -220,7 +220,8 @@ local NOTIFY = {
 	-- (else just below it; else in the column as before) and big banners come as that one line
 	Avoid = nil,
 	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
-	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4 },
+	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4,
+		ThinK = 1.6 }, -- a target up to ThinK tag heights tall wears the tag beside its right end (UIKit.NewTag)
 	-- 창 꾸미기 ③ the reward popup (UIKit.RewardPopup), du: plate width, banner (BannerGold 512 x 178, text box
 	-- 0.254 / 0.225 / 0.492 / 0.365), slots, the glow and sparkles, the count-up time
 	-- 창 꾸미기: the parts the windows / popups use, loaded once at start (UIKit.Start) so the first confirm box or reward
@@ -3191,10 +3192,14 @@ function UIKit.NewTag(target, text)
 	local s = currentScale()
 	local h = math.max(cfg.H, math.ceil(cfg.MinPx * UIKit.PxFloor() / s) + 6)
 	local size = h - 6
+	-- a thin target (a one-line row, a chip) wears it beside its right end, on its middle: on the top-right corner it
+	-- climbed onto the row above (검수 2026-10-07: on phones it covered the war bar's Horns end); taller ones (the quest
+	-- lines) keep the corner
+	local thin = target.AbsoluteSize.Y / s <= h * cfg.ThinK
 	local tag = UIKit.ArtFrame("Chip", {
 		Name = "NewTag",
-		AnchorPoint = Vector2.new(1, 0.5),
-		Position = UDim2.new(1, 6, 0, 0),
+		AnchorPoint = thin and Vector2.new(0, 0.5) or Vector2.new(1, 0.5),
+		Position = thin and UDim2.new(1, 4, 0.5, 0) or UDim2.new(1, 6, 0, 0),
 		Size = UDim2.fromOffset(math.ceil(size * cfg.WidthEm), h),
 		ImageColor3 = cfg.Gold,
 		ZIndex = target.ZIndex + 6,
