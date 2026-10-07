@@ -85,6 +85,7 @@ def main():
     # reset --keep refuses while a pushed file still shows as 'modified' (or 'untracked') against the old HEAD, even
     # though it already equals origin. Put each such file back to the old HEAD version (or remove a new one) first;
     # the reset below writes origin's (= your pushed) version again at once.
+    touched = {}  # path -> pushed blob, so a failed reset can put the file back
     for p, b in blobs.items():
         if b is None or not os.path.isfile(p):
             continue
@@ -95,9 +96,19 @@ def main():
             git("checkout", "HEAD", "--", p, check=False)
         else:
             os.remove(p)
+        touched[p] = b
     r = subprocess.run(["git", "reset", "--keep", "origin/main"], capture_output=True, text=True)
     if r.returncode != 0:
         print("주의: reset --keep이 막혔어요(다른 세션의 수정과 겹침). 공유 HEAD는 그대로예요:", r.stderr.strip()[:200])
+        # 2026-10-07 (이미지 생성 2 report): the files reverted/removed above would stay gone from the working tree.
+        # Write the pushed bytes back so the session's work is still on disk (it is already safe in origin).
+        for p, b in touched.items():
+            data = subprocess.run(["git", "cat-file", "-p", b], capture_output=True).stdout
+            os.makedirs(os.path.dirname(p) or ".", exist_ok=True)
+            with open(p, "wb") as f:
+                f.write(data)
+        if touched:
+            print(f"올린 파일 {len(touched)}개를 작업 폴더에 다시 써 두었어요(origin과 같은 내용).")
     ab = git("rev-list", "--left-right", "--count", "HEAD...origin/main")
     print("HEAD...origin/main =", ab)
 

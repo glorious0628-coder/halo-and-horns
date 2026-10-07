@@ -490,7 +490,7 @@
   "Skill_Blacksmith_X": "rbxassetid://74870682122468",
   "Skill_Alchemist_X": "rbxassetid://130441529340108",
   "MapPlayerArrow": "rbxassetid://113931548210892",
-  "WorldMapV2": "rbxassetid://113059360504657",
+  "WorldMapV2": "rbxassetid://94679214685541",
   "PTR_TownBright": "rbxassetid://86154525392813",
   "PTR_TownSmokey": "rbxassetid://91810571998991",
   "PTR_TownTiny": "rbxassetid://107434856525614",
@@ -523,5 +523,18 @@
   "MapArrowHalo": "rbxassetid://102236026912773",
   "MapArrowHorns": "rbxassetid://119222134756742",
   "GlyphKindWing": "rbxassetid://73020277343948",
-  "GlyphSneakyHorns": "rbxassetid://101558632670193"
+  "GlyphSneakyHorns": "rbxassetid://101558632670193",
+  "RewardPanelHalo": "rbxassetid://117046183906202",
+  "RewardPanelHorns": "rbxassetid://119301483003268",
+  "RewardRibbonHalo": "rbxassetid://108314581848410",
+  "RewardRibbonHorns": "rbxassetid://80274270130287",
+  "RewardRibbonHaloStraight": "rbxassetid://127336158318218",
+  "RewardRibbonHornsStraight": "rbxassetid://83671618689638",
+  "RewardSlot": "rbxassetid://131467829477534",
+  "RewardGlow": "rbxassetid://134856789083293",
+  "RewardSparkle": "rbxassetid://139083428436055",
+  "IconGoldenMon": "rbxassetid://117889924897289",
+  "IconHunt": "rbxassetid://73974758192262",
+  "IconPlunder": "rbxassetid://79074522466902",
+  "IconChestWoods": "rbxassetid://121321744394366"
 }

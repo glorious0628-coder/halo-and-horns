@@ -4921,6 +4921,34 @@
    "site": "studio.tripo3d.ai",
    "file": null,
    "note_file": "GLB not downloaded yet (download needs user OK)"
+  },
+  {
+   "event": "web_export",
+   "task": "6e003ef8-0896-4416-b116-e51275704316",
+   "format": "GLB, texture 1k",
+   "points": 0,
+   "file": "art/models/tripo/web/Town_Halo_Fountain_HD.glb",
+   "bytes": 771756,
+   "at": "2026-10-07 14:32",
+   "balance_after": 3365,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "note": "download OK from the user in chat ('ㅇㅇ 다 예!'); built-in browser, signed URL via curl"
+  },
+  {
+   "event": "web_free_retry",
+   "task": "6e003ef8-0896-4416-b116-e51275704316",
+   "points": 0,
+   "tris": 9700,
+   "verts": 6627,
+   "retries_left": 2,
+   "file": "art/models/tripo/web/Town_Halo_Fountain_HD_retry1.glb",
+   "bytes": 764012,
+   "at": "2026-10-07 14:41",
+   "balance_after": 3365,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai",
+   "note": "'무료 재시도(×3)' under the HD view; looks almost the same as the first HD. 4K PBR source (meshopt GLB) fetched for the ① test: build/texcmp/src (not kept)"
   }
  ],
  "Town_Horns_Brazier_web_smart": [
@@ -4967,6 +4995,65 @@
    "site": "studio.tripo3d.ai",
    "file": null,
    "note_file": "GLB not downloaded yet (download needs user OK)"
+  },
+  {
+   "event": "web_export",
+   "task": "53521772-9a79-44bc-a0cb-ee0b2314c2cc",
+   "format": "GLB, texture 1k",
+   "points": 0,
+   "file": "art/models/tripo/web/Town_Horns_Brazier_HD.glb",
+   "bytes": 899300,
+   "at": "2026-10-07 14:33",
+   "balance_after": 3365,
+   "account": "web ① (12516812)",
+   "site": "studio.tripo3d.ai"
+  }
+ ],
+ "Kit_W_Campfire_Fire": [
+  {
+   "event": "generation_submitted",
+   "task_id": "c159bc5b-8773-4d67-b753-533810cad686",
+   "image": "art\\out\\hq\\HQ_Woods_Campfire_FB2.png",
+   "recipe": "prop",
+   "seed": 41552
+  },
+  {
+   "task_id": "c159bc5b-8773-4d67-b753-533810cad686",
+   "image": "art\\out\\hq\\HQ_Woods_Campfire_FB2.png",
+   "recipe": "prop",
+   "seed": 41552,
+   "credits": 40.0,
+   "file": "art\\models\\tripo\\Kit_W_Campfire_Fire_raw.glb",
+   "bytes": 2992056,
+   "at": "2026-10-07 14:24:24"
+  }
+ ],
+ "web_account1_unrecorded_2026-10-07": [
+  {
+   "event": "web_usage_found",
+   "points": 35,
+   "items": [
+    {
+     "at": "2026-10-07 13:33:53",
+     "type": "PBR 생성",
+     "points": 5
+    },
+    {
+     "at": "2026-10-07 13:35:55",
+     "type": "PBR 생성",
+     "points": 5
+    },
+    {
+     "at": "2026-10-07 13:37:54",
+     "type": "텍스처/텍스트 생성",
+     "points": 25,
+     "result": "'three-tier fountain with cloud base…' 9,525 tris, robot-like texture (failed try), asset 251525ce-b8f6-4525-a61c-34ec048e3c29"
+    }
+   ],
+   "balance_before": 3400,
+   "balance_after": 3365,
+   "account": "web ① (12516812)",
+   "note": "found in the account's 사용 내역 on 2026-10-07 14:35; done by the previous 이미지 생성 1 session while it wrote its handoff (13:35-13:40), not in records before"
   }
  ]
 }

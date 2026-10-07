@@ -14,7 +14,7 @@ do
 	task.spawn(watch, workspace)
 end
 
-local ORDER = { "CameraFollow", "UIKit", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "Panels", "SettingsUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "FirstSteps", "SkillBar", "Audio" }
+local ORDER = { "CameraFollow", "UIKit", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "Panels", "SettingsUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "FirstSteps", "SkillBar", "Audio", "FountainFx" }
 
 local C = {}
 for _, name in ORDER do

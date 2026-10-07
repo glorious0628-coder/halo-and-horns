@@ -4028,6 +4028,22 @@ Config.UIArt = {
 		BannerAlert = { Id = "rbxassetid://104830795997617", Size = Vector2.new(512, 133), Slice = Rect.new(84, 65, 428, 67), FitHeight = true, Tone = "Red" }, -- white text, dark red rim
 		NpcMarkerBubble = { Id = "rbxassetid://76402030324791", Size = Vector2.new(512, 512) }, -- gold pin over NPC heads; a glyph inside
 		RewardRays = { Id = "rbxassetid://140645623920982", Size = Vector2.new(512, 512) }, -- white rays: tint with ImageColor3, behind reward pops (dark backdrop only)
+		-- 창 꾸미기 ③ reward popup parts, High (1d58f6c; art/approved.json, 검수 picks 2026-10-07). Plates: 9-slice
+		-- (SliceScale 0.7 = the sheet's look), Inner = the cream / plum inside. Their slice lines sit on the straight rim only
+		-- (rows / columns measured identical, ~10 px clear of every wing, knot, horn and corner curve): approved.json's
+		-- (62, 66, 449, 231) / (60, 65, 452, 239) cut through the knots, and the phone's small plate (UiSandbox 749x361) drew
+		-- the bottom corners with a visible jog. Curved ribbons: keep the ratio (stretching breaks the curve), TextRect = the
+		-- band for the title. Straight ribbons (spare, for places that must stretch): pill slice. Slot: Fit, Inner = icon +
+		-- amount. Glow / Sparkle: white + brightness alpha, tint with ImageColor3 (Halo gold, Horns orange)
+		RewardPanelHalo = { Id = "rbxassetid://117046183906202", Size = Vector2.new(512, 294), Slice = Rect.new(80, 80, 432, 212), SliceScale = 0.7, Tone = "Parchment", Inner = Rect.new(39, 47, 473, 255) }, -- cream inside: navy text
+		RewardPanelHorns = { Id = "rbxassetid://119301483003268", Size = Vector2.new(512, 305), Slice = Rect.new(82, 92, 430, 225), SliceScale = 0.7, Tone = "Navy", Inner = Rect.new(34, 39, 479, 269) }, -- plum inside: white text
+		RewardRibbonHalo = { Id = "rbxassetid://108314581848410", Size = Vector2.new(512, 143), TextRect = { 0.22, 0.31, 0.56, 0.44 } }, -- gold band with wings
+		RewardRibbonHorns = { Id = "rbxassetid://80274270130287", Size = Vector2.new(512, 149), TextRect = { 0.12, 0.33, 0.76, 0.41 } }, -- red band, horns + forked tails
+		RewardRibbonHaloStraight = { Id = "rbxassetid://127336158318218", Size = Vector2.new(512, 100), Slice = Rect.new(71, 49, 441, 51), FitHeight = true, TextRect = { 0.14, 0.3, 0.72, 0.52 } },
+		RewardRibbonHornsStraight = { Id = "rbxassetid://83671618689638", Size = Vector2.new(512, 106), Slice = Rect.new(42, 52, 469, 54), FitHeight = true, TextRect = { 0.1, 0.26, 0.8, 0.5 } },
+		RewardSlot = { Id = "rbxassetid://131467829477534", Size = Vector2.new(256, 252), Tone = "Navy", Inner = Rect.new(31, 32, 225, 219) }, -- gold rim, navy inside
+		RewardGlow = { Id = "rbxassetid://134856789083293", Size = Vector2.new(512, 512) }, -- round glow, under the rays
+		RewardSparkle = { Id = "rbxassetid://139083428436055", Size = Vector2.new(256, 256) }, -- 4-point twinkle
 		GlyphBack = { Id = "rbxassetid://84595951514011", Size = Vector2.new(512, 512) },
 		GlyphLock = { Id = "rbxassetid://140357879006452", Size = Vector2.new(512, 512) },
 		GlyphCheck = { Id = "rbxassetid://76746602947118", Size = Vector2.new(512, 512) },
@@ -4054,10 +4070,11 @@ Config.UIArt = {
 		-- the centre = the turning point; MapPlayerArrow (tinted) stays for the Guild / no faction
 		MapArrowHalo = { Id = "rbxassetid://102236026912773", Size = Vector2.new(512, 512) },
 		MapArrowHorns = { Id = "rbxassetid://119222134756742", Size = Vector2.new(512, 512) },
-		-- A23-53 the big map window's background (57049d4, world map v2 A2_2): 1024x683, no lettering. It lines up with the
+		-- A23-53 the big map window's background (world map v2 A2_2, High 1d58f6c: no face look on the horned fortress's
+		-- middle tower, a crown medallion in the ruins; coastlines within 0.9 px): 1024x683, no lettering. It lines up with the
 		-- v2 world layout only (Config.Map v2 numbers, 게임성 개발 1): px = X0 + (x + OffX) * K, py = (z + OffZ) * K (studs ->
 		-- image px; 이미지 생성 1's 1536 transform x 2/3)
-		WorldMapV2 = { Id = "rbxassetid://113059360504657", Size = Vector2.new(1024, 683),
+		WorldMapV2 = { Id = "rbxassetid://94679214685541", Size = Vector2.new(1024, 683),
 			Map = { X0 = 30.815, K = 0.47407, OffX = 230, OffZ = 720 } },
 		-- A23-40 정정 fold-out / window icons (7fb375a): 이동 is a [메뉴] square; 직업 바꾸기 · 환생 · 오프닝 · 알림(이름 공개) · 휴가
 		-- go on 설정 rows and 닉네임 on 내 캐릭터 (BB13). BB11 ranking medals (3c9166a): in front of rows 1-3 (~85% of the row
@@ -4118,6 +4135,12 @@ Config.UIArt = {
 		IconMonGoblinBrute = { Id = "rbxassetid://121297622077113", Size = Vector2.new(512, 512) },
 		IconMonSkeleton = { Id = "rbxassetid://140176829708782", Size = Vector2.new(512, 512) },
 		IconMonSkeletonKnight = { Id = "rbxassetid://81833958125033", Size = Vector2.new(512, 512) },
+		-- E12 woods daily / PvP daily rows (28c6324, High, the navy-rimmed icon frame; drawn as is, no tint): the golden
+		-- monster row, Halo's Hunt row, Horns' Plunder row, the woods daily chest (Lv10-24)
+		IconGoldenMon = { Id = "rbxassetid://117889924897289", Size = Vector2.new(512, 512) },
+		IconHunt = { Id = "rbxassetid://73974758192262", Size = Vector2.new(512, 512) },
+		IconPlunder = { Id = "rbxassetid://79074522466902", Size = Vector2.new(512, 512) },
+		IconChestWoods = { Id = "rbxassetid://121321744394366", Size = Vector2.new(512, 512) },
 		-- materials (Config.Loot.Items[*].Icon)
 		IconJelly = { Id = "rbxassetid://120712914963442", Size = Vector2.new(512, 512) },
 		IconSlimeCore = { Id = "rbxassetid://135486964395284", Size = Vector2.new(512, 512) },

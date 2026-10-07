@@ -566,6 +566,34 @@ def respawn():
     return finish(FF.highpass(x, 450, 4), 300)
 
 
+def coin_roll(f0, n_b, g0, g1, fall, lp):
+    """one coin rolling away: taps whose gaps shrink g0 -> g1 (s), each quieter and duller"""
+    t, parts = 0.0, []
+    for i in range(n_b):
+        u = i / max(1, n_b - 1)
+        parts.append((coin(f0 * (1 - 0.03 * u), 0.08), t, fall ** i))
+        t += g0 + (g1 - g0) * u
+    y = at(parts)
+    w = np.linspace(0, 1, len(y))
+    return y * (1 - w) + FF.lowpass(y, lp, 2) * w
+
+
+def plunder_roll(notes=("G7", "E7", "C7", "A6"), gap=0.03, rollf="D6", nb=4, lp=1800):
+    """'jjal-geu-rang~ tto-reu-reu': a quick clatter of our coins falling down, then one coin rolls away (sA was too close
+    to GoldPickup: pair score 0.81 < 1.0)"""
+    clat = at([(coin(note_hz(nm)), i * gap, 0.92 ** (i * 2)) for i, nm in enumerate(notes)])
+    y = at([(clat, 0, 1.0), (coin_roll(note_hz(rollf), nb, 0.055, 0.02, 0.8, lp), len(notes) * gap + 0.03, 0.55)])
+    w = np.linspace(0, 1, len(y)) ** 0.6
+    return finish(y * (1 - w) + FF.lowpass(y, lp, 2) * w, 400)
+
+
+def respawn_high(f0=1000.0, f1=2200.0):
+    """a higher 'ppyong!' 1.0 -> 2.2 kHz with an octave layer (sA was too close to Jump: pair score 0.73 < 1.0)"""
+    n = N(0.17)
+    x = osc(glide(n, f0, f1, 0.7)) * env(n, 0.003, 12) + 0.2 * osc(glide(n, 2 * f0, 2 * f1, 0.7)) * env(n, 0.003, 16)
+    return finish(FF.highpass(x, 600, 4), 400, 7000)
+
+
 def jackpot_other(seed=281):
     """a 30 ms confetti pop (noise 2 kHz) + a rising glass ping 2.2 -> 2.9 kHz + sparkles"""
     pop = band(N(0.03), 2000, 1.0, seed) * env(N(0.03), 0.0005, 80)
@@ -573,6 +601,40 @@ def jackpot_other(seed=281):
     ping = osc(glide(n, 2200, 2900, 0.8)) * env(n, 0.002, 5.0)
     sp = rate_sparkle(0.45, 25, 15, 3000, 6000, seed + 1, level=0.4)
     return finish(FF.highpass(at([(pop, 0, 0.8), (ping, 0.02, 1.0), (sp, 0.12, 1.0)]), 400, 4), 150)
+
+
+# ---------------------------------------------------------------- SkillLearn (A23-71: Lv5 / 15 / 25)
+def button_pop(f0=700.0, f1=1600.0, dur=0.03, seed=11):
+    """the skill button pops in: a fast sine up-glide + a tiny click"""
+    n = N(dur)
+    x = osc(glide(n, f0, f1, 0.5)) * env(n, 0.001, 70)
+    return at([(x, 0, 1.0), (band(N(0.003), 3000, 1.0, seed), 0, 0.3)])
+
+
+def glass_run(notes, gap, gdur=0.06):
+    """a quick sparkle run of tiny glass grains (heard as one flourish, not a melody)"""
+    return at([(bell(note_hz(nm), gdur, 40.0, ((1.0, 1.0, 1.0), (2.76, 0.25, 1.6))), i * gap, 0.55 + 0.08 * i)
+               for i, nm in enumerate(notes)])
+
+
+def shimmer_chord(notes, dur=0.55, trem=7.0, depth=0.35, body=0.25, decay=4.5):
+    """one held bright chord (sine + triangle) with a slow shimmer tremolo and a small octave-down body for phones"""
+    n = N(dur)
+    t = secs(n)
+    x = np.zeros(n)
+    for i, nm in enumerate(notes):
+        f = note_hz(nm)
+        x += (0.7 * np.sin(2 * np.pi * f * t) + 0.3 * tri(np.full(n, f))) / (1 + 0.4 * i)
+    x += body * np.sin(2 * np.pi * note_hz(notes[0]) / 2 * t)
+    am = 1 - depth * (0.5 - 0.5 * np.cos(2 * np.pi * trem * t))
+    return x * am * np.minimum(t / 0.004, 1.0) * np.exp(-decay * t)
+
+
+def skill_learn(run_notes=("A6", "C7", "D7", "E7", "G7"), gap=0.022, chord=("A6", "E7"), at_chord=0.15):
+    """'ppok! sha-ra-rak~ tiing~': the button pop (loudest, so the start is crisp) -> a glass sparkle run -> one held
+    shimmering chord. Not PowerUp's sweep, not LevelUp's fanfare, not QuestDone's bell steps"""
+    parts = [(button_pop(), 0, 2.2), (glass_run(run_notes, gap), 0.035, 0.55), (shimmer_chord(chord), at_chord, 0.8)]
+    return finish(FF.lowpass(at(parts), 7000, 2), 400)
 
 
 RECIPES = {
@@ -642,10 +704,18 @@ RECIPES = {
                "sB": ("marimba C5-D5-E5 65 ms apart", lambda: rank_up(gap=0.065))},
     "Spend": {"sA": ("our coins E7 -> D7 going down, 50 ms apart (GoldPickup's coins)", lambda: spend()),
               "sB": ("same coins 60 ms apart", lambda: spend(0.06))},
-    "Plunder": {"sA": ("coins scattering away G7-E7-D7-C7-A6, quieter, later and duller", plunder)},
+    "Plunder": {"sA": ("coins scattering away G7-E7-D7-C7-A6, quieter, later and duller", plunder),
+                "sB": ("clatter G7-E7-C7-A6 30 ms apart + one D6 coin rolling away (4 taps, gaps 55 -> 20 ms), LP 1.8 k", lambda: plunder_roll())},
     "KO": {"sA": ("soft bump + 'boing' + three warbling tweet-stars 2.4 -> 2.9 kHz + soft whirl", lambda: ko()),
            "sB": ("same recipe, another bump", lambda: ko(263))},
-    "Respawn": {"sA": ("'ppyong!' 620 -> 1300 Hz with an octave layer, 0.16 s", respawn)},
+    "Respawn": {"sA": ("'ppyong!' 620 -> 1300 Hz with an octave layer, 0.16 s", respawn),
+                "sB": ("higher 'ppyong!' 1.0 -> 2.2 kHz with an octave layer, 0.17 s", lambda: respawn_high()),
+                "sC": ("'ppyong!' 0.9 -> 2.0 kHz with an octave layer, 0.17 s", lambda: respawn_high(900.0, 2000.0))},
     "JackpotOther": {"sA": ("confetti pop + rising glass ping 2.2 -> 2.9 kHz + sparkles", lambda: jackpot_other()),
                      "sB": ("same recipe, other sparkles", lambda: jackpot_other(283))},
+    "SkillLearn": {"sA": ("button pop 700 -> 1600 Hz + glass run A6-C7-D7-E7-G7 22 ms apart + held A6+E7 chord, 7 Hz shimmer", lambda: skill_learn()),
+                   "sB": ("button pop + shorter run C7-E7-G7 35 ms apart + the same chord at 130 ms",
+                          lambda: skill_learn(("C7", "E7", "G7"), 0.035, ("A6", "E7"), 0.13)),
+                   "sC": ("button pop + run A6-D7-E7-G7 30 ms apart + a lower E6+B6 chord (phones)",
+                          lambda: skill_learn(("A6", "D7", "E7", "G7"), 0.03, ("E6", "B6"), 0.14))},
 }
