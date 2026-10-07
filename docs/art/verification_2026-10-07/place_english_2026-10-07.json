@@ -62,7 +62,7 @@
   ],
   "source": {
     "place": "place/GoodEvil.rbxlx",
-    "placeSHA256": "b865947cbd9332a407b1e1efa4b444136f8f938d8ba77ea25b3ece3348049f78"
+    "placeSHA256": "cfcfc723084d92a0479077595bc03ad6cd77d66e359bf41a63a11dff95c482b6"
   },
   "contract": "The place shows English only (A23-48; 검수 2026-10-07: find every Hangul text inside the place, not only in src).\n\nOffline (default): reads a saved place file (place/GoodEvil.rbxlx, or --place <file>) and lists every Hangul string in\nany property of any object (TextLabel / TextButton / SurfaceGui / BillboardGui texts, ProximityPrompt texts, names,\nStringValues, string attributes, ...) except script sources (comments there are never shown). --studio runs the same\nsearch live in the open Studio's Edit DataModel through Studio MCP (Edit mode only; it changes nothing).\nStatic: beta signs (Config.Features): no \"Market\" landmark on the world map while Market is off; the Crossroads anvil spot\nis called \"Forge\" while NeutralFaction (the artisan guild) is off.",
   "limitations": "Script sources are skipped (comments are never shown); text that code makes at run time is covered by the src text tests (test_english, test_ko_screen)."
