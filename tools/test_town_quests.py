@@ -172,7 +172,7 @@ MUTATIONS = [
     ("E3: 'New title' for one already owned", ST, "if ok and new == true then notify", "if ok then notify"),
     ("E5: a 0-point pick says nothing", ST,
      '\t\t\t\tnotify(player, option == "Good" and TXT.LeanGood or TXT.LeanEvil, "info") -- E5: no "+0", the shard leans\n', ""),
-    ("E5: a hidden sub's Start toast", ST, "if def.Start and not def.Hidden then notify", "if def.Start then notify"),
+    ("E5: a hidden sub's Start toast", ST, "\tif def.Hidden then return end -- E5: a hidden sub stays secret\n", ""),
     ("E5: a hidden sub listed before it is found", ST, " and (not def.Hidden or found) then", " then"),
     ("E5: found from the start", ST, "local found = tr ~= nil and (tr.Claim or num(tr.St, 1) > 1)",
      "local found = tr ~= nil and (tr.Claim or num(tr.St, 1) >= 1)"),
