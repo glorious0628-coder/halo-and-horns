@@ -10,3 +10,7 @@
 - [ ] place/GoodEvil.rbxlx = build/GoodEvil.rbxlx(시간·해시), src와 같은지.
 - [ ] 화면 글자 한글 0개: `py tools/test_place_english.py`(30ccc2d 고친 판).
 - [ ] Creator Dashboard 한국어 자동 번역 끄기(사용자).
+- [ ] Config.Features.StatPoints = false(스탯 2단계 검토 전)인지.
+- [ ] 새 계정 흐름 세부(개발 2): [Accept] → 3초 페이드 → 교차로 모루 앞 착지 → E/탭 → "Otto: …" + 첫 무기 Power 0 → N(Stronger!) → 3초 뒤 초원 → 슬라임 5 → [Claim] 150골드 → M1_1 대장간에서 상점 창. 착지가 이상하면 Config.Tutorial.Forge.Landing = "Spawn".
+- [ ] `py tools/test_place_english.py --place build/GoodEvil.rbxlx` passed(자체 시험 포함).
+- 문서: dev2-sound 892fa28에서 stat_points·stats_server의 버전·서버 종료 문구 정리됨.
