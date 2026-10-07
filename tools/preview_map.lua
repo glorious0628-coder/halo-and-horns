@@ -220,115 +220,318 @@ local function ring(center, radius, n, size, color, parent, material) -- 수평 
 end
 
 ------------------------------------------------------------------ 지형 (두 모드 공통)
--- 주의: Terrain:FillBlock 은 지정한 윗면보다 2칸 높게 표면이 생긴다(실측). 그래서 모든 채우기를 2칸 내려서 넣는다.
-local Terrain = workspace.Terrain
-Terrain:Clear()
-Terrain.WaterColor = RGB(35, 100, 130)
-Terrain.WaterTransparency = 0.4
-Terrain.WaterReflectance = 0.5
-Terrain.WaterWaveSize = 0.12
-Terrain.WaterWaveSpeed = 8
-pcall(function()
-	-- A23-29/30: every ground is a painted Firefly tile that carries its own colour, so the materials stay near white
-	-- (tools/apply_surface_materials.lua sets the same PAINTED colour)
-	for _, m in { Enum.Material.Grass, Enum.Material.LeafyGrass, Enum.Material.Rock, Enum.Material.Cobblestone, Enum.Material.Limestone,
-		Enum.Material.Basalt, Enum.Material.Ground, Enum.Material.Slate, Enum.Material.CrackedLava, Enum.Material.Sand, Enum.Material.Mud,
-		Enum.Material.Asphalt } do
-		Terrain:SetMaterialColor(m, RGB(235, 235, 235))
-	end
-end)
+-- 지도 v2 지형 (A23-74 보강, 검수 2026-10-07 — 사용자: "기본 지형 덩어리라 우리 그림이랑 안 맞아 튄다"). 그림 지도
+-- A2_2 처럼 만든다:
+--   땅   = 둥근 모서리 + 천천히 출렁이는 해안. 같은 섬 묶음(초원+호박밭+유령 숲, 숲+고갯길+유적)은 매끈하게 이어지고,
+--          다른 섬과는 물길이 T.Channel 이상 남는다. 윗면 Y = 0 평평(놀이 땅은 안 깎음: 해안은 땅 조각 밖으로만 나감).
+--   해안 = 모래 띠가 물속으로 완만하게(얕은 물이 밝게 보임). 다리 끝은 부두처럼 Y = 0 그대로(길이 물에 안 빠짐).
+--   산   = 고갯길 띠에만 둥근 원뿔(공 덩어리 없음). 길목 |z| < PASS.HalfZ 는 평평, 바다 쪽으로는 완만하게 내려감.
+--   바다 바위 = 지형 공 대신 3D 바위(ServerStorage.WorldKit3D 의 W_Boulder_A/B; 없으면 건너뜀) → Decor.SeaRocks.
+-- 칸 쓰기: Terrain:WriteVoxelChannels(땅과 물이 한 칸을 나눠 씀 = 매끈한 물가), 안 되면 WriteVoxels.
+-- 색은 MaterialService 그림 타일(GE_*)이 가지므로 재질 색은 거의 흰색(235).
 local bw, bd = BOUNDS.MaxX - BOUNDS.MinX, BOUNDS.MaxZ - BOUNDS.MinZ
 local cx, cz = (BOUNDS.MinX + BOUNDS.MaxX) / 2, (BOUNDS.MinZ + BOUNDS.MaxZ) / 2
-Terrain:FillBlock(CFrame.new(cx, -20, cz), Vector3.new(bw + 400, 4, bd + 400), Enum.Material.Sand)
-Terrain:FillBlock(CFrame.new(cx, (WATER_TOP - 2 - 16) / 2, cz), Vector3.new(bw + 400, 16 + WATER_TOP, bd + 400), Enum.Material.Water)
-
--- 땅 (윗면 Y = 0) + 물가 모래 해변 (그림 지도처럼 둥근 해안: 모서리마다 모래 공 하나)
-local function rectFill(minX, maxX, minZ, maxZ, y, h, material)
-	Terrain:FillBlock(CFrame.new((minX + maxX) / 2, y, (minZ + maxZ) / 2), Vector3.new(maxX - minX, h, maxZ - minZ), material)
-end
-for _, l in LANDS do
-	rectFill(l.MinX - 8, l.MaxX + 8, l.MinZ - 8, l.MaxZ + 8, -12, 8, Enum.Material.Sand)
-	for _, c in { { l.MinX, l.MinZ }, { l.MaxX, l.MinZ }, { l.MinX, l.MaxZ }, { l.MaxX, l.MaxZ } } do
-		Terrain:FillBall(Vector3.new(c[1], -9, c[2]), 10, Enum.Material.Sand)
-	end
-end
-for _, l in LANDS do
-	rectFill(l.MinX, l.MaxX, l.MinZ, l.MaxZ, -8, 12, l.Floor)
-end
--- 지역 바닥: 교차로는 가운데 200 x 200 만 돌길(바깥은 풀), 마을은 섬 전체(빛 = 흰 석회암, 뿔 = 현무암)
-rectFill(-100, 100, -100, 100, -4, 4, Enum.Material.Cobblestone)
-for _ = 1, 40 do -- 해골 유적 바닥에 돌판 섞기
-	local z = ZONES.SkeletonRuins
-	Terrain:FillBlock(CFrame.new(z.Center.X + rng:NextNumber(-240, 240), -4, z.Center.Z + rng:NextNumber(-270, 270)) * CFrame.Angles(0, rng:NextNumber(0, 3), 0),
-		Vector3.new(rng:NextNumber(12, 30), 4, rng:NextNumber(12, 30)), Enum.Material.Slate)
-end
-for _ = 1, 16 do -- 뿔 소굴 용암 줄기 (성채 쪽 절반)
-	Terrain:FillBlock(CFrame.new(rng:NextNumber(-170, 170), -4, rng:NextNumber(450, 680)) * CFrame.Angles(0, rng:NextNumber(0, 3), 0),
-		Vector3.new(rng:NextNumber(16, 30), 4, 4), Enum.Material.CrackedLava)
-end
--- 호박밭: 4칸 고랑마다 잎 줄 (MapBuilder PATCH.fillLand 와 같은 층), 호박 길·유령 숲 길 = 호박 흙
 do
-	local l = LANDS[8]
-	for z = l.MinZ + 24 + 12, l.MaxZ - 12, 24 do
-		rectFill(l.MinX + 12, l.MaxX - 12, z - 2, z + 2, -4, 4, Enum.Material.LeafyGrass)
-	end
-end
-for _, r in ROADS do
-	if r.Season then rectFill(r.MinX, r.MaxX, r.MinZ, r.MaxZ, -4, 4, Enum.Material.Mud) end
-end
+	local Terrain = workspace.Terrain
+	local M = Enum.Material
+	local T = {
+		Res = 4, Margin = 1000, Floor = -20, Bottom = -28, DeepSea = 160,
+		Base = 9, Amp = 14, MinOut = 2, Channel = 36, Corner = 60, Blend = 50,
+		Beach = 12, Sand = 11, Dip = 2.4, Slope = 0.32,
+		PinNear = 16, PinFar = 46, PinE = 3, PinBeach = 2.5,
+		Shoulder = 36, SeaRocks = 26,
+	}
+	Terrain:Clear()
+	Terrain.WaterColor = RGB(24, 150, 190)
+	Terrain.WaterTransparency = 0.6
+	Terrain.WaterReflectance = 0.3
+	Terrain.WaterWaveSize = 0.12
+	Terrain.WaterWaveSpeed = 8
+	pcall(function()
+		-- A23-29/30: every ground is a painted Firefly tile that carries its own colour, so the materials stay near white
+		-- (tools/apply_surface_materials.lua sets the same PAINTED colour)
+		for _, m in { M.Grass, M.LeafyGrass, M.Rock, M.Cobblestone, M.Limestone, M.Basalt, M.Ground, M.Slate, M.CrackedLava,
+			M.Sand, M.Mud, M.Asphalt } do
+			Terrain:SetMaterialColor(m, RGB(235, 235, 235))
+		end
+	end)
 
--- 고갯길 산: 숲과 유적 사이 띠(x 1190~1260)에 바위 산 세 줄, 큰길 가운데 |z| < 70 은 비운다(돌길이 지나감)
-local function ridge(x1, z1, x2, z2, rMin, rMax, mat, capMat)
-	local a, b = Vector3.new(x1, 0, z1), Vector3.new(x2, 0, z2)
-	local len = (b - a).Magnitude
-	local n = math.max(1, math.floor(len / 26))
-	for i = 0, n do
-		local p = a:Lerp(b, i / n) + Vector3.new(rng:NextNumber(-6, 6), 0, rng:NextNumber(-4, 4))
-		local r = rng:NextNumber(rMin, rMax)
-		Terrain:FillBall(Vector3.new(p.X, -12 + r * 0.75, p.Z), r, mat)
-		if capMat and rng:NextNumber() < 0.6 then
-			Terrain:FillBall(Vector3.new(p.X + rng:NextNumber(-6, 6), -12 + r * 1.45, p.Z + rng:NextNumber(-6, 6)), r * 0.45, capMat)
+	-- islands: lands of one group melt together (smooth union); groups stay apart
+	local GROUP = { LandCrossroads = 1, LandMeadow = 2, LandPumpkinPatch = 2, LandHauntedHollow = 2, LandWoods = 3, LandPass = 3,
+		LandRuins = 3, IslandHalo = 4, IslandHorns = 5 }
+	local EAST = 3
+	local groups, radius = {}, {}
+	for i, l in LANDS do
+		local g = GROUP[l.Name] or (100 + i)
+		groups[g] = groups[g] or {}
+		table.insert(groups[g], l)
+		radius[l] = math.min(T.Corner, 0.25 * math.min(l.MaxX - l.MinX, l.MaxZ - l.MinZ))
+	end
+	local function rrect(px, pz, l, r) -- signed distance to the land rect with rounded corners (negative inside)
+		local qx = math.abs(px - (l.MinX + l.MaxX) / 2) - ((l.MaxX - l.MinX) / 2 - r)
+		local qz = math.abs(pz - (l.MinZ + l.MaxZ) / 2) - ((l.MaxZ - l.MinZ) / 2 - r)
+		local ox, oz = math.max(qx, 0), math.max(qz, 0)
+		return math.sqrt(ox * ox + oz * oz) + math.min(math.max(qx, qz), 0) - r
+	end
+	local function nearest(x, z) -- own island distance, next island distance, own group
+		local best, second, bestG = math.huge, math.huge, nil
+		for g, list in groups do
+			local d = nil
+			for _, l in list do
+				local s = rrect(x, z, l, radius[l])
+				if d == nil then
+					d = s
+				else
+					local h = math.max(T.Blend - math.abs(d - s), 0) / T.Blend
+					d = math.min(d, s) - h * h * T.Blend * 0.25
+				end
+			end
+			if d < best then
+				second, best, bestG = best, d, g
+			elseif d < second then
+				second = d
+			end
+		end
+		return best, second, bestG
+	end
+
+	-- bridge ends: the coast is pinned like a quay (flat to the rect edge, steep into the water)
+	local ENDS = {}
+	for _, b in BRIDGES do
+		table.insert(ENDS, b.From)
+		table.insert(ENDS, b.To)
+	end
+	local function smooth(t) return t * t * (3 - 2 * t) end
+	local function pinWeight(x, z) -- 0 at a bridge end, 1 away from every end
+		local m = math.huge
+		for _, p in ENDS do
+			local dx, dz = x - p.X, z - p.Z
+			m = math.min(m, math.sqrt(dx * dx + dz * dz))
+		end
+		if m <= T.PinNear then return 0 end
+		if m >= T.PinFar then return 1 end
+		return smooth((m - T.PinNear) / (T.PinFar - T.PinNear))
+	end
+	local function nearBridge(x, z, r)
+		for _, b in BRIDGES do
+			local a, c = b.From, b.To
+			local ab = c - a
+			local t = math.clamp(((x - a.X) * ab.X + (z - a.Z) * ab.Z) / (ab.X * ab.X + ab.Z * ab.Z), 0, 1)
+			if Vector3.new(x - (a.X + ab.X * t), 0, z - (a.Z + ab.Z * t)).Magnitude < r then return true end
+		end
+		return false
+	end
+
+	-- floor paints (one rule per column, no extra fills)
+	local PATCHES, VEINS = {}, {}
+	do
+		local zr = ZONES.SkeletonRuins
+		for _ = 1, 40 do -- slate slabs on the ruins floor
+			table.insert(PATCHES, { X = zr.Center.X + rng:NextNumber(-240, 240), Z = zr.Center.Z + rng:NextNumber(-270, 270),
+				A = rng:NextNumber(0, 3), HX = rng:NextNumber(6, 15), HZ = rng:NextNumber(6, 15) })
+		end
+		for _ = 1, 16 do -- lava veins on the Horns island (castle half)
+			table.insert(VEINS, { X = rng:NextNumber(-170, 170), Z = rng:NextNumber(450, 680), A = rng:NextNumber(0, 3),
+				HX = rng:NextNumber(8, 15), HZ = 2.2 })
 		end
 	end
-end
-local ROCK, SLATE = Enum.Material.Rock, Enum.Material.Slate
-for _, s in { -1, 1 } do
-	-- the ball's foot at Y = 0 reaches about r * 0.86 + 6: the rows start far enough out to keep the corridor flat
-	ridge(PASS.X, s * (PASS.HalfZ + 50), PASS.X, s * (PASS.MaxZ - 8), 40, 52, ROCK, SLATE)
-	ridge(PASS.MinX + 6, s * (PASS.HalfZ + 38), PASS.MinX + 6, s * (PASS.MaxZ - 10), 24, 34, ROCK, SLATE)
-	ridge(PASS.MaxX - 6, s * (PASS.HalfZ + 38), PASS.MaxX - 6, s * (PASS.MaxZ - 10), 24, 34, SLATE, Enum.Material.Limestone)
-end
--- the corridor floor stays flat stone (a stray ball never closes the road)
-Terrain:FillBlock(CFrame.new(PASS.X, 60, 0), Vector3.new(PASS.MaxX - PASS.MinX + 30, 120, PASS.HalfZ * 2), Enum.Material.Air)
-rectFill(PASS.MinX - 15, PASS.MaxX + 15, -PASS.HalfZ, PASS.HalfZ, -8, 12, Enum.Material.Ground)
+	local function inBox(x, z, b)
+		local dx, dz = x - b.X, z - b.Z
+		local c, s = math.cos(b.A), math.sin(b.A)
+		return math.abs(dx * c + dz * s) <= b.HX and math.abs(-dx * s + dz * c) <= b.HZ
+	end
+	local PUMPKIN = LANDS[8]
+	local function floorAt(x, z)
+		local land, best = nil, math.huge
+		for _, l in LANDS do
+			local d = rrect(x, z, l, 0)
+			if d < best then land, best = l, d end
+		end
+		if not land then return M.Grass end
+		for _, r in ROADS do -- season roads: pumpkin soil (MapBuilder PATCH.pathMissing then leaves them alone)
+			if r.Season and x >= r.MinX and x <= r.MaxX and z >= r.MinZ and z <= r.MaxZ then return M.Mud end
+		end
+		local name = land.Name
+		if name == "LandCrossroads" then
+			if rrect(x, z, { MinX = -100, MaxX = 100, MinZ = -100, MaxZ = 100 }, 24) <= 0 then return M.Cobblestone end
+		elseif name == "LandRuins" then
+			for _, p in PATCHES do
+				if inBox(x, z, p) then return M.Slate end
+			end
+		elseif name == "IslandHorns" then
+			for _, v in VEINS do
+				if inBox(x, z, v) then return M.CrackedLava end
+			end
+		elseif name == "LandPass" then
+			if math.abs(z) < PASS.HalfZ then return M.Ground end
+		elseif land == PUMPKIN then
+			-- leafy rows every 24 (the rows MapBuilder PATCH.fillLand makes: MinZ + 36, + 60, ...)
+			local d = (z - (PUMPKIN.MinZ + 36)) % 24
+			if x > PUMPKIN.MinX + 12 and x < PUMPKIN.MaxX - 12 and z < PUMPKIN.MaxZ - 10 and (d < 2 or d >= 22) then
+				return M.LeafyGrass
+			end
+		end
+		return land.Floor
+	end
 
--- 바다의 작은 바위섬(그림 지도처럼 장식): 땅에서 25~90 떨어진 물 위, 다리 길목과 경계 벽은 피함
-local function inLandPad(x, z, pad)
-	for _, l in LANDS do
-		if x > l.MinX - pad and x < l.MaxX + pad and z > l.MinZ - pad and z < l.MaxZ + pad then return true end
+	-- pass mountains: round cones (a soft dome on top, no lumps), the corridor stays flat
+	local PEAKS = {}
+	for _, s in { -1, 1 } do
+		local z0, z1 = PASS.HalfZ + 46, PASS.MaxZ + 10
+		for i = 0, 3 do
+			local h = rng:NextNumber(58, 86) * (i == 0 and 0.8 or 1)
+			table.insert(PEAKS, { X = PASS.X + rng:NextNumber(-10, 10), Z = s * (z0 + (z1 - z0) * (i + 0.5) / 4) + rng:NextNumber(-8, 8),
+				H = h, R = h * 0.95 })
+		end
+		for _, side in { -1, 1 } do -- lower shoulders on the woods / ruins side
+			for i = 0, 2 do
+				local h = rng:NextNumber(28, 44)
+				table.insert(PEAKS, { X = PASS.X + side * rng:NextNumber(38, 52),
+					Z = s * (z0 + 10 + (z1 - z0 - 20) * (i + 0.5) / 3) + rng:NextNumber(-10, 10), H = h, R = h * 1.05 })
+			end
+		end
 	end
-	return false
-end
-local function nearBridge(x, z)
-	for _, b in BRIDGES do
-		local a, c = b.From, b.To
-		local ab = c - a
-		local t = math.clamp(((x - a.X) * ab.X + (z - a.Z) * ab.Z) / (ab.X * ab.X + ab.Z * ab.Z), 0, 1)
-		if Vector3.new(x - (a.X + ab.X * t), 0, z - (a.Z + ab.Z * t)).Magnitude < 40 then return true end
+	local function mountain(x, z)
+		if x < PASS.MinX - 110 or x > PASS.MaxX + 110 then return 0 end
+		local h = 0
+		for _, p in PEAKS do
+			local dx, dz = x - p.X, z - p.Z
+			local r = math.sqrt(dx * dx + dz * dz)
+			if r < p.R then h = math.max(h, p.H * (1 - (r / p.R) ^ 1.6) ^ 1.25) end
+		end
+		local az = math.abs(z)
+		if az < PASS.HalfZ + T.Shoulder then h *= smooth(math.clamp((az - PASS.HalfZ) / T.Shoulder, 0, 1)) end
+		return h
 	end
-	return false
-end
-local rocks = 0
-for _ = 1, 400 do
-	if rocks >= 22 then break end
-	local x, z = rng:NextNumber(BOUNDS.MinX + 30, BOUNDS.MaxX - 30), rng:NextNumber(BOUNDS.MinZ + 30, BOUNDS.MaxZ - 30)
-	if not inLandPad(x, z, 25) and inLandPad(x, z, 90) and not nearBridge(x, z) then
-		local r = rng:NextNumber(4, 9)
-		Terrain:FillBall(Vector3.new(x, -4 + r * 0.3, z), r, ROCK)
-		rocks += 1
+
+	-- one column: surface height and material
+	local function columnAt(x, z)
+		local own, other, g = nearest(x, z)
+		if own > T.DeepSea then return T.Floor, M.Sand end
+		local n = math.noise(x / 110, z / 110, 1.7) + 0.45 * math.noise(x / 47, z / 47, 8.3)
+		local out = math.max(T.MinOut, T.Base + T.Amp * n)
+		out = math.min(out, math.max(1, (own + other - T.Channel) / 2))
+		local w = pinWeight(x, z)
+		out = T.PinE + (out - T.PinE) * w
+		local beach = T.PinBeach + (T.Beach - T.PinBeach) * w
+		local inland = out - own
+		local top, sandy
+		if inland >= beach then
+			top, sandy = 0, false
+		elseif inland >= 0 then
+			top, sandy = -T.Dip + T.Dip * smooth(inland / beach), inland < T.Sand
+		else
+			top, sandy = math.max(T.Floor, -T.Dip + inland * T.Slope), true
+		end
+		local mat = sandy and M.Sand or floorAt(x, z)
+		if g == EAST then
+			local h = mountain(x, z)
+			if h > 0.5 then
+				h *= smooth(math.clamp((inland + 20) / 50, 0, 1))
+				if h > 2 then mat = M.Rock end
+				top += h
+			end
+		end
+		return top, mat
 	end
+
+	-- write the voxels chunk by chunk (64 x 64 columns), each chunk only as tall as its highest column
+	local R = T.Res
+	local X0, X1 = math.floor((BOUNDS.MinX - T.Margin) / R) * R, math.ceil((BOUNDS.MaxX + T.Margin) / R) * R
+	local Z0, Z1 = math.floor((BOUNDS.MinZ - T.Margin) / R) * R, math.ceil((BOUNDS.MaxZ + T.Margin) / R) * R
+	local CH = 64 * R
+	local useChannels, chunks = true, 0
+	for zc = Z0, Z1 - 1, CH do
+		for xc = X0, X1 - 1, CH do
+			local nx, nz = math.min(CH, X1 - xc) / R, math.min(CH, Z1 - zc) / R
+			local tops, mats, maxTop = {}, {}, T.Floor
+			for i = 1, nx do
+				local x = xc + (i - 0.5) * R
+				for k = 1, nz do
+					local top, mat = columnAt(x, zc + (k - 0.5) * R)
+					local idx = (i - 1) * nz + k
+					tops[idx], mats[idx] = top, mat
+					if top > maxTop then maxTop = top end
+				end
+			end
+			local y1 = math.max(R, math.ceil((maxTop + R) / R) * R)
+			local ny = (y1 - T.Bottom) / R
+			local sm, so, lo = table.create(nx), table.create(nx), table.create(nx)
+			for i = 1, nx do
+				local mI, oI, lI = table.create(ny), table.create(ny), table.create(ny)
+				for j = 1, ny do
+					local c = T.Bottom + (j - 0.5) * R
+					local lw = math.clamp((WATER_TOP - c) / R + 0.5, 0, 1)
+					local mJ, oJ, lJ = table.create(nz), table.create(nz), table.create(nz)
+					for k = 1, nz do
+						local idx = (i - 1) * nz + k
+						local occ = math.clamp((tops[idx] - c) / R + 0.5, 0, 1)
+						if useChannels then
+							mJ[k], oJ[k], lJ[k] = occ > 0 and mats[idx] or M.Air, occ, occ < 1 and lw or 0
+						elseif occ >= 0.5 or lw <= 0 then
+							mJ[k], oJ[k] = occ > 0 and mats[idx] or M.Air, occ
+						else
+							mJ[k], oJ[k] = M.Water, lw
+						end
+					end
+					mI[j], oI[j], lI[j] = mJ, oJ, lJ
+				end
+				sm[i], so[i], lo[i] = mI, oI, lI
+			end
+			local region = Region3.new(Vector3.new(xc, T.Bottom, zc), Vector3.new(xc + nx * R, y1, zc + nz * R))
+			if useChannels then
+				local ok = pcall(function()
+					Terrain:WriteVoxelChannels(region, R, { SolidMaterial = sm, SolidOccupancy = so, LiquidOccupancy = lo })
+				end)
+				if not ok then
+					useChannels = false
+					for i = 1, nx do -- the same chunk as plain voxels (water where the solid is under half)
+						for j = 1, ny do
+							local c = T.Bottom + (j - 0.5) * R
+							local lw = math.clamp((WATER_TOP - c) / R + 0.5, 0, 1)
+							for k = 1, nz do
+								if so[i][j][k] < 0.5 and lw > 0 then sm[i][j][k], so[i][j][k] = M.Water, lw end
+							end
+						end
+					end
+				end
+			end
+			if not useChannels then Terrain:WriteVoxels(region, R, sm, so) end
+			chunks += 1
+			task.wait()
+		end
+	end
+
+	-- sea rocks: uploaded 3D boulders standing in the water around the islands (not on the bridge lanes)
+	local kit = SS:FindFirstChild("WorldKit3D")
+	local oldRocks = folders.Decor:FindFirstChild("SeaRocks")
+	if oldRocks then stash(oldRocks) end
+	local sea = model("SeaRocks", folders.Decor)
+	local rocks = 0
+	for _ = 1, 800 do
+		if rocks >= T.SeaRocks or not kit then break end
+		local x, z = rng:NextNumber(BOUNDS.MinX + 25, BOUNDS.MaxX - 25), rng:NextNumber(BOUNDS.MinZ + 25, BOUNDS.MaxZ - 25)
+		local own = nearest(x, z)
+		local src = kit:FindFirstChild(rng:NextNumber() < 0.5 and "W_Boulder_A" or "W_Boulder_B")
+		if own > 34 and own < 95 and src and not nearBridge(x, z, 45) then
+			local m = src:Clone()
+			pcall(m.ScaleTo, m, m:GetScale() * rng:NextNumber(0.9, 2.1))
+			local _, size = m:GetBoundingBox()
+			local floorY = math.max(T.Floor, -T.Dip - math.max(0, own - 12) * T.Slope)
+			m:PivotTo(CFrame.new(x, math.max(floorY - 1, WATER_TOP - size.Y * 0.55), z) * CFrame.Angles(0, rng:NextNumber(0, 6.28), 0))
+			for _, p in m:GetDescendants() do
+				if p:IsA("BasePart") then
+					p.Anchored = true
+					p.CastShadow = true
+				end
+			end
+			m.Parent = sea
+			rocks += 1
+		end
+	end
+	note(string.format("terrain v2: %d lands, %d chunks (%s), %d peaks, %d sea rocks%s", #LANDS, chunks,
+		useChannels and "WriteVoxelChannels" or "WriteVoxels", #PEAKS, rocks, kit and "" or " (no WorldKit3D)"))
 end
-note(string.format("terrain v2: %d lands, pass mountains, %d sea rocks", #LANDS, rocks))
 
 ------------------------------------------------------------------ 계약 조각 (두 모드 공통)
 -- 구역 바닥 파트: 투명·비충돌 계약 파트(A11-R1), 크기·자리는 Config.Zones 그대로

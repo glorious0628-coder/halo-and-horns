@@ -10,6 +10,9 @@
 --      초원 v1 x 155..490 → v2 210..650, 숲 v1 x 530..915 → v2 710..1190, 유적 v1 x 915..1300 → v2 1260..1780
 --      (z 는 v1 -175..175 → v2 각 땅의 z 범위).
 --   ③ 호박밭·유령 숲 장식(Decor.PumpkinPatch / HauntedHollow)은 MapBuilder 가 v2 자리에 다시 짓도록 보관함으로.
+--   ④ 이야기 자리 키트(SlimePond, KingSlimeHill, GoblinCamp ×3)는 비율이 아니라 v2 배치 자리(TARGET)로 통째로.
+--   ⑤ 검수의 초원 3D 장식 묶음 Decor.MeadowKit 은 조각마다, ServerStorage.MeadowPrimitiveBackup(키트 바꾸기 도구가 다시
+--      읽는 옛 자리)도 같은 비율로. apply 때 옮기기 전 옛 지형 위 높이를 속성 MapV2Ground 로 적어 둔다(settle 단계가 씀).
 --   교차로(x -110..115, z -175..175)는 그대로. 다리·길·PvP 경계(preview_map terrain 이 다시 지음)·관문(MapBuilder /
 --   preview_map 이 옮김)·구역·벽·발판은 건드리지 않는다. 한 번 옮긴 것에는 속성 MapV2Moved = true 를 달아 두 번 옮기지 않는다.
 -- 보는 곳: workspace.Map.Decor / Landmarks / NPCs 의 자식, 그리고 workspace 바로 아래의 다른 폴더·모델(키트 묶음:
@@ -36,6 +39,18 @@ local FIELDS = {
 local SKIP_PREFIX = { "Bridge_", "PvPBorder_", "Gate_", "Pad_", "Wall" }
 local SKIP_NAME = { Roads = true, PreviewSpawn = true, CrownOfBalance = true, CrownSkyAnchor = true }
 local SEASON_DECOR = { PumpkinPatch = true, HauntedHollow = true }
+-- whole kits that go to their v2 layout spot (the story places point there: Config.StoryQuests.Landmarks SlimePond /
+-- GoblinCamp1..3, kit_meadow M_KingHill); several of one name are matched west to east
+local TARGET = {
+	SlimePond = { Vector3.new(290, 0, 150) },
+	KingSlimeHill = { Vector3.new(430, 0, -170) },
+	GoblinCamp = { Vector3.new(840, 0, 95), Vector3.new(1010, 0, 130), Vector3.new(1090, 0, -150) },
+}
+-- kit groups (a Model of many small models, e.g. 검수's Decor.MeadowKit): every piece moves by its own share
+local GROUPS = { MeadowKit = true }
+-- A23-74 (검수): the meadow's old primitive decor waits in ServerStorage for tools/worldkit/meadow_kit_swap.luau, which
+-- rebuilds Decor.MeadowKit from these spots: they move by the same shares
+local KIT_SPOTS = "MeadowPrimitiveBackup"
 
 local function inRect(p, r) return p.X >= r.MinX and p.X <= r.MaxX and p.Z >= r.MinZ and p.Z <= r.MaxZ end
 local function lower(s) return string.lower(tostring(s)) end
@@ -74,11 +89,54 @@ local function skipped(inst)
 	return false
 end
 
+-- height over the OLD terrain (before preview_map rebuilds it): MapV2Ground = bottom - ground, read again by the
+-- "settle" step of tools/map_v2_apply.py, which puts the piece the same height over the NEW ground (a tree on a v1 hill
+-- comes down to the flat v2 meadow, a floating cloud stays floating). Water or nothing below -> no attribute (kept).
+local RAY = RaycastParams.new()
+RAY.FilterType = Enum.RaycastFilterType.Include
+RAY.FilterDescendantsInstances = { workspace.Terrain }
+RAY.IgnoreWater = false
+local function bottomOf(inst)
+	if inst:IsA("BasePart") then return inst.Position.Y - inst.Size.Y / 2 end
+	if inst:IsA("Model") then
+		local ok, cf, size = pcall(inst.GetBoundingBox, inst)
+		if ok then return cf.Position.Y - size.Y / 2 end
+	end
+	return nil
+end
+local function groundOffset(inst)
+	local p, b = posOf(inst), bottomOf(inst)
+	if not (p and b) then return nil end
+	local hit = workspace:Raycast(Vector3.new(p.X, 400, p.Z), Vector3.new(0, -800, 0), RAY)
+	if not hit or hit.Material == Enum.Material.Water then return nil end
+	return b - hit.Position.Y
+end
+
+-- kits with a v2 spot: matched west to east
+local targetOf = {}
+local function assignTargets(folder)
+	if not folder then return end
+	local found = {}
+	for _, inst in folder:GetChildren() do
+		local p = TARGET[inst.Name] and posOf(inst)
+		if p then
+			found[inst.Name] = found[inst.Name] or {}
+			table.insert(found[inst.Name], { Inst = inst, X = p.X })
+		end
+	end
+	for name, list in found do
+		table.sort(list, function(a, b) return a.X < b.X end)
+		for i, e in list do targetOf[e.Inst] = TARGET[name][i] end
+	end
+end
+
 -- what to do with one item: kind, delta (nil = leave)
 local function plan(inst)
 	if inst:GetAttribute("MapV2Moved") then return "done", nil end
 	local p = posOf(inst)
 	if not p then return "nopos", nil end
+	local spot = targetOf[inst]
+	if spot then return "spot", Vector3.new(spot.X - p.X, 0, spot.Z - p.Z) end
 	for key, t in TOWN do
 		if inRect(p, t) then
 			local name = lower(inst.Name)
@@ -109,7 +167,10 @@ if map then
 		local f = map:FindFirstChild(n)
 		if f then table.insert(sources, f) end
 	end
+	assignTargets(map:FindFirstChild("Decor"))
 end
+local kitSpots = SS:FindFirstChild(KIT_SPOTS)
+if kitSpots then table.insert(sources, kitSpots) end
 local playerChars = {}
 for _, plr in Players:GetPlayers() do
 	if plr.Character then playerChars[plr.Character] = true end
@@ -127,7 +188,7 @@ for _, c in workspace:GetChildren() do
 end
 
 local counts, examples, seasonal = {}, {}, {}
-local moved = 0
+local moved, grounded = 0, 0
 -- one unit: a Model or a part moves as one piece
 local function handle(inst, where)
 	local kind, delta = plan(inst)
@@ -138,20 +199,27 @@ local function handle(inst, where)
 		local d = delta or Vector3.zero
 		table.insert(examples[kind], string.format("%s/%s (%.0f,%.0f)->(%.0f,%.0f)", where, inst.Name, p.X, p.Z, p.X + d.X, p.Z + d.Z))
 	end
+	if MODE == "apply" and kind ~= "done" then
+		local off = inst:GetAttribute("MapV2Ground") == nil and groundOffset(inst) or nil
+		if off then
+			inst:SetAttribute("MapV2Ground", off)
+			grounded += 1
+		end
+	end
 	if delta and MODE == "apply" then
 		moveBy(inst, delta)
 		inst:SetAttribute("MapV2Moved", true)
 		moved += 1
 	end
 end
--- a Folder is looked into (its models / parts move one by one)
+-- a Folder (or a kit group Model) is looked into (its models / parts move one by one)
 local function visit(src)
 	for _, inst in src:GetChildren() do
 		if src.Name == "Decor" and src.Parent == map and SEASON_DECOR[inst.Name] then
 			table.insert(seasonal, inst)
 		elseif skipped(inst) then
 			counts.skipped = (counts.skipped or 0) + 1
-		elseif inst:IsA("Folder") then
+		elseif inst:IsA("Folder") or (inst:IsA("Model") and GROUPS[inst.Name]) then
 			visit(inst)
 		elseif inst:IsA("Model") or inst:IsA("BasePart") then
 			handle(inst, src.Name)
@@ -172,7 +240,8 @@ if MODE == "apply" and #seasonal > 0 then
 	for _, inst in seasonal do inst.Parent = sub end
 end
 
-local out = { string.format("map v2 move (%s): sources %d, moved %d, season decor to backup %d", MODE, #sources, moved, #seasonal) }
+local out = { string.format("map v2 move (%s): sources %d, moved %d, ground heights noted %d, season decor to backup %d", MODE,
+	#sources, moved, grounded, #seasonal) }
 local keys = {}
 for k in counts do table.insert(keys, k) end
 table.sort(keys)

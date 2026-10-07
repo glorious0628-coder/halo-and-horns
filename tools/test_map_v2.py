@@ -213,6 +213,39 @@ def static_checks(src: dict[str, str], values: dict | None) -> list[tuple[str, b
     out.append(("the Studio runner works only in Edit and runs preview_map only in terrain mode",
                 '"Current Studio Mode: Edit" not in state' in ap and ".replace('\"__MODE__\"', '\"terrain\"', 1)" in ap
                 and "'\"full\"'" not in ap))
+    # A23-74 (user: "default terrain lumps clash with our art"): the v2 terrain is written voxel by voxel like the A2_2 map
+    terr = pv[pv.find("-- 지형 (두 모드 공통)"):pv.find("-- 계약 조각 (두 모드 공통)")] if "-- 계약 조각 (두 모드 공통)" in pv else ""
+    out.append(("A23-74 terrain: round coasts written as voxels (WriteVoxelChannels, WriteVoxels fallback), no ball lumps, "
+                "islands kept apart by a channel, quays at the bridge ends, flat corridor through the pass, 3D sea rocks",
+                "Terrain:WriteVoxelChannels(region, R, { SolidMaterial = sm, SolidOccupancy = so, LiquidOccupancy = lo })" in terr
+                and "if not useChannels then Terrain:WriteVoxels(region, R, sm, so) end" in terr
+                and "FillBall" not in terr and "FillBlock" not in terr
+                and "out = math.min(out, math.max(1, (own + other - T.Channel) / 2))" in terr
+                and re.search(r"Channel = (\d+)", terr) is not None and int(re.search(r"Channel = (\d+)", terr)[1]) >= 30
+                and "out = T.PinE + (out - T.PinE) * w" in terr and "PinE = 3, PinBeach = 2.5" in terr
+                and "if az < PASS.HalfZ + T.Shoulder then h *= smooth(math.clamp((az - PASS.HalfZ) / T.Shoulder, 0, 1)) end" in terr
+                and 'kit:FindFirstChild(rng:NextNumber() < 0.5 and "W_Boulder_A" or "W_Boulder_B")' in terr
+                and "if oldRocks then stash(oldRocks) end" in terr))
+
+    def landmark(name):
+        m = re.search(r"Landmarks\." + name + r" = Vector3\.new\((-?[\d.]+), (-?[\d.]+), (-?[\d.]+)\)", src["config"])
+        return tuple(float(x) for x in m.groups()) if m else None
+    pond = re.search(r"Landmarks = \{ SlimePond = Vector3\.new\((-?[\d.]+), (-?[\d.]+), (-?[\d.]+)\)", src["config"])
+    pond_v = tuple(float(x) for x in pond.groups()) if pond else None
+    camps = [landmark(f"GoblinCamp{i}") for i in (1, 2, 3)]
+    camp_list = ", ".join(f"Vector3.new({c[0]:g}, {c[1]:g}, {c[2]:g})" for c in camps) if all(camps) else "?"
+    out.append(("the mover puts the pond and the three goblin camps on the story spots (Config.StoryQuests.Landmarks), "
+                "MeadowKit piece by piece, the kit swap's spots too, and notes the old ground height",
+                pond_v is not None and f"SlimePond = {{ Vector3.new({pond_v[0]:g}, {pond_v[1]:g}, {pond_v[2]:g}) }}," in mv
+                and f"GoblinCamp = {{ {camp_list} }}," in mv
+                and "local GROUPS = { MeadowKit = true }" in mv and 'local KIT_SPOTS = "MeadowPrimitiveBackup"' in mv
+                and 'elseif inst:IsA("Folder") or (inst:IsA("Model") and GROUPS[inst.Name]) then' in mv
+                and 'inst:SetAttribute("MapV2Ground", off)' in mv
+                and "if not hit or hit.Material == Enum.Material.Water then return nil end" in mv))
+    out.append(("the runner's settle step lifts / lowers only noted pieces, once, never over water or by more than 60",
+                'local off = inst:GetAttribute("MapV2Ground")' in ap and 'inst:SetAttribute("MapV2Settled", true)' in ap
+                and "if math.abs(dy) > 60 then" in ap and "hit.Material == Enum.Material.Water then" in ap
+                and '"settle", "build", "kits"' in ap))
     return out
 
 
