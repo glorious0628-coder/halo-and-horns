@@ -341,6 +341,60 @@ local function atPick(w, userId, faction, quest, stats)
 	return p, d, tr
 end
 
+-- A23-70: the lost lunchbox - one card right after the first [Claim], no score, both buttons for every side
+runGroup("a23-70 lunchbox", function()
+	local w = townWorld({ Npcs = false })
+	local T = w.Config.StoryQuests.Text
+	local function has(list, text)
+		for _, t in list do if t == text then return true end end
+		return false
+	end
+	local L = SQ0.Defs.Lunch1
+	check(L and L.Pop == true and L.Steps[1].Obj.Good.Points == 0 and L.Steps[1].Obj.Evil.Points == 0,
+		"Config: Lunch1 pops, 0 points both ways", show(L and { L.Pop, L.Requires }))
+	local function fresh(id, faction, step, done)
+		local p, d = w:Join(id, { Faction = faction, Class = "Warrior", Level = 2,
+			Data = { TutorialStep = step, Story = { Main = { Id = "" }, Subs = {}, Done = done or {}, Pick = {}, First = { Migrated = true } } } })
+		w.Story.Refresh(p)
+		w:Flush()
+		return p, d
+	end
+	local _, d0 = fresh(1701, "Halo", 2)
+	check(w:Track(d0, "Lunch1") == nil, "before the first [Claim]: no lunchbox")
+	local _, dv = fresh(1702, "Halo", 99, { M1_1 = true })
+	check(w:Track(dv, "Lunch1") == nil, "a player past the Forge (M1_1 done) never gets it")
+	local opens = w:Opens(0)
+	local p, d = fresh(1703, "Halo", 99)
+	check(w:Track(d, "Lunch1") ~= nil and w:Opens(0) == opens + 1, "right after the first [Claim]: offered, the card opens once",
+		show({ w:Track(d, "Lunch1") ~= nil, w:Opens(0) - opens }))
+	w.Story.Refresh(p)
+	w:Flush()
+	check(w:Opens(0) == opens + 1, "a refresh never opens it again", w:Opens(0) - opens)
+	-- [Give it back]: +1 HP potion, the kid's thanks, the Choice sound, no Honor and no lean line
+	local n0, fx0, hp, honor = #w.Notices, #w.Fx, d.HPPotionCount or 0, d.Honor or 0
+	w:Act(p, "Lunch1", "Choose", "Good")
+	local lines = w:NoticesFor(p, n0)
+	check((d.HPPotionCount or 0) == hp + 1 and (d.Honor or 0) == honor and d.Story.Done.Lunch1 == true,
+		"Give it back: +1 HP potion, Honor unchanged, done", show({ d.HPPotionCount, d.Honor, d.Story.Done.Lunch1 }))
+	check(has(lines, L.Steps[1].Obj.Good.Reply) and not has(lines, T.LeanGood), "the kid thanks you (no lean line)", show(lines))
+	local fx = nil
+	for i = fx0 + 1, #w.Fx do if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p then fx = w.Fx[i].Data end end
+	check(fx and fx.Option == "Good", "Fx Choice { Option = 'Good' }", show(fx))
+	-- [One bite!] (a Halo player may bite too): +25 gold to the bank, no Honor / Infamy
+	local p2, d2 = fresh(1704, "Halo", 99)
+	local bank, n2 = d2.BankGold or 0, #w.Notices
+	w:Act(p2, "Lunch1", "Choose", "Evil")
+	check((d2.BankGold or 0) == bank + 25 and (d2.Honor or 0) == 0 and (d2.Infamy or 0) == 0
+		and has(w:NoticesFor(p2, n2), L.Steps[1].Obj.Evil.Reply), "One bite: +25 gold, 'Yum!…', no score",
+		show({ (d2.BankGold or 0) - bank, d2.Honor, d2.Infamy, w:NoticesFor(p2, n2) }))
+	-- a Horns player may give it back
+	local p3, d3 = fresh(1705, "Horns", 99)
+	local hp3 = d3.HPPotionCount or 0
+	w:Act(p3, "Lunch1", "Choose", "Good")
+	check((d3.HPPotionCount or 0) == hp3 + 1 and (d3.Infamy or 0) == 0 and d3.Story.Pick.Lunch1 == "GiveBack",
+		"a Horns player can give it back too", show({ d3.HPPotionCount, d3.Infamy, d3.Story.Pick.Lunch1 }))
+end)
+
 runGroup("a23-58", function()
 	local w = townWorld({ Npcs = false })
 	local T = w.Config.StoryQuests.Text

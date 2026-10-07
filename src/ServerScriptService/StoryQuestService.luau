@@ -391,6 +391,11 @@ local function requirementsMet(player, data, def)
 		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
 	if req.Tutorial and num(data.TutorialStep) == 0 then return false end
+	-- A23-70: TutorialDone = the first mission is claimed (TutorialStep 99); NotDone = none of these quests is done yet
+	if req.TutorialDone and num(data.TutorialStep) ~= TUT_DONE then return false end
+	for _, gone in req.NotDone or {} do
+		if st.Done[gone] then return false end
+	end
 	if req.Level and num(data.Level, 1) < req.Level then return false end
 	for _, need in req.Done or {} do
 		if not st.Done[need] then return false end
@@ -444,6 +449,7 @@ local function refresh(player)
 		if def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
 			st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
 			if def.Start and not def.Hidden then notify(player, def.Start, "info") end -- E5: a hidden sub stays secret
+			if def.Pop then openStep(player, id, st.Subs[id]) end -- A23-70: the card opens by itself, once
 			changed = true
 		elseif st.Subs[id] and def.Factions and not def.Factions[faction(player)] then
 			st.Subs[id] = nil -- faction changed: the faction-only sub leaves (A6 / design 6-3)
@@ -747,16 +753,22 @@ local function onStoryAction(player, id, action, option, ...)
 			local pts = math.floor(num(pick.Points))
 			if pts > 0 then
 				pickScore(player, f, option, pts)
-			else
+			elseif not pick.Reply then
 				notify(player, option == "Good" and TXT.LeanGood or TXT.LeanEvil, "info") -- E5: no "+0", the shard leans
 			end
+			if pick.Reply then notify(player, pick.Reply, "good", "None") end -- A23-70: the other person answers
 			changedMind(player, st, obj, st.Pick[id])
 			payChoice(player, obj, option)
 		else
 			if option ~= "A" and option ~= "B" then return end
 			st.Pick[id] = option -- Neutral: recorded only (no good/evil score, A6)
 			choiceFx(player, option == "A" and "Good" or "Evil")
-			notify(player, TXT.Recorded, "info")
+			local side = obj[option == "A" and "Good" or "Evil"]
+			if type(side) == "table" and side.Reply then
+				notify(player, side.Reply, "good", "None") -- A23-70: the other person answers
+			else
+				notify(player, TXT.Recorded, "info")
+			end
 			changedMind(player, st, obj, option)
 			payChoice(player, obj, option == "A" and "Good" or "Evil")
 		end
