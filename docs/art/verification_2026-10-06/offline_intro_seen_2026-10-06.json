@@ -1,16 +1,16 @@
 {
   "status": "passed",
   "checks": 37,
-  "staticChecks": 7,
+  "staticChecks": 11,
   "staticFailures": [],
   "failure": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "75fe67c342053497ddf3aadf8373c4079d8c74cd273359681b419f3e793b5a64",
-    "src/ReplicatedStorage/Shared/Net.luau": "3c2d729816bce7ab3a3dd92d911528172b5c2dbc1b2ac74b632ed5dc2b1cc5ec",
+    "src/ReplicatedStorage/Shared/Config.luau": "5281ad9471dfbeee808c1ca276b9ddf685a22ae2db1977ad1d4f075fb02facdb",
+    "src/ReplicatedStorage/Shared/Net.luau": "e7ae68d63e76ddfc7bfd6f8c3d3cdac7738d938f59f03d4f021e02452e657b84",
     "src/ServerScriptService/DataService.luau": "fa170fafca35160fbafbfeeed4fb01c10066e72c50f430e4685674f29f1c3fe1",
-    "src/ServerScriptService/QuestService.luau": "6e6cf3e0aeb4c1bd442da0fa624899f1979c949594443539840d393edd00fc69"
+    "src/ServerScriptService/QuestService.luau": "3f2a12c29b00bebb39813412068b72db1110a1608d047d45eee04d980d06d7d3"
   },
-  "introSHA256": "502030f270f711f28fded7edede65bfab2b51bd47f2629eb7511363a86950fbe",
+  "introSHA256": "9114e257666d75677c7123a78e1221e2ec719ac7af7fdd1fd16b78fc8168d35b",
   "fixtureSHA256": "28a43f54ffc3d5d41fd7605226c64cae39a484508deca61445b7e25d95a46aba",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

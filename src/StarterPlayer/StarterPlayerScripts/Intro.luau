@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local ContextActionService = game:GetService("ContextActionService")
 local UserInputService = game:GetService("UserInputService")
+local GuiService = game:GetService("GuiService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -41,8 +42,12 @@ local SPOT = {
 	Red = Color3.fromRGB(235, 60, 60),
 	White = Color3.fromRGB(255, 250, 225),
 }
-local state = { Open = false, Token = 0, Done = false, Replay = false, Gui = nil, Folder = nil, Controls = nil,
+local state = { Open = false, Token = 0, Done = false, Replay = false, Gui = nil, Bars = nil, Folder = nil, Controls = nil,
 	CamTween = nil, OpenedAt = 0 }
+-- the letterbox: its own full-screen ScreenGui (ScreenInsets None) so the bars reach the real screen edges on phones
+-- (검수 2026-10-07: on a phone the safe-area insets left sky at both sides and lifted the bottom bar); phones get thinner
+-- bars and the top one starts under Roblox's top button row
+local BARS = { Height = 0.11, TouchHeight = 0.07 }
 local SKIP_GRACE = 1.5 -- seconds after the start when skip input is ignored
 
 local function needsFirstIntro()
@@ -128,14 +133,28 @@ local function buildGui()
 	gui.Name = "IntroGui"
 	gui.IgnoreGuiInset, gui.ResetOnSpawn, gui.DisplayOrder = true, false, 60
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling -- the skip label (child) must draw over its ZIndex-5 button
-	local function bar(y, anchor)
-		local f = Instance.new("Frame")
-		f.BackgroundColor3, f.BorderSizePixel = Color3.new(0, 0, 0), 0
-		f.AnchorPoint, f.Position, f.Size = Vector2.new(0, anchor), UDim2.fromScale(0, y), UDim2.fromScale(1, 0.11)
-		f.Parent = gui
+	local bars = Instance.new("ScreenGui")
+	bars.Name = "IntroBars"
+	bars.IgnoreGuiInset, bars.ResetOnSpawn, bars.DisplayOrder = true, false, 59 -- under the subtitle / skip (60)
+	pcall(function() bars.ScreenInsets = Enum.ScreenInsets.None end)
+	local touch = UserInputService.TouchEnabled == true
+	local h = touch and BARS.TouchHeight or BARS.Height
+	local topY = 0
+	if touch then
+		local ok, inset = pcall(function() return GuiService:GetGuiInset() end)
+		if ok and typeof(inset) == "Vector2" then topY = inset.Y end
 	end
-	bar(0, 0)
-	bar(1, 1)
+	local function bar(name, anchor, pos)
+		local f = Instance.new("Frame")
+		f.Name = name
+		f.BackgroundColor3, f.BorderSizePixel = Color3.new(0, 0, 0), 0
+		f.AnchorPoint, f.Position, f.Size = Vector2.new(0, anchor), pos, UDim2.fromScale(1, h)
+		f.Parent = bars
+	end
+	bar("TopBar", 0, UDim2.new(0, 0, 0, topY))
+	bar("BottomBar", 1, UDim2.fromScale(0, 1))
+	bars.Parent = player:WaitForChild("PlayerGui")
+	state.Bars = bars
 	local sub = Instance.new("TextLabel")
 	sub.Name = "Subtitle"
 	sub.BackgroundTransparency = 1
@@ -276,8 +295,9 @@ function Intro.Finish()
 	state.CamTween = nil
 	pcall(ContextActionService.UnbindAction, ContextActionService, "HHC_IntroSkip")
 	if state.Gui then state.Gui:Destroy() end
+	if state.Bars then state.Bars:Destroy() end
 	if state.Folder then state.Folder:Destroy() end
-	state.Gui, state.Sub, state.Folder = nil, nil, nil
+	state.Gui, state.Bars, state.Sub, state.Folder = nil, nil, nil, nil
 	local cam = workspace.CurrentCamera
 	if cam then
 		cam.CameraType = Enum.CameraType.Custom
