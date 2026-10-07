@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 166,
+  "checks": 169,
   "namedChecks": 45,
   "failing": [],
   "static": [
@@ -349,7 +349,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "378e0de1325302580076ce43e60471fe47824e1c7466b4fe64923e5d34444485",
+    "src/ReplicatedStorage/Shared/Config.luau": "48ad77505009f725b1c09a07e2b9ac3ee4b43ee9e7f4d0be0516ba7ddee4e7e6",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "f54d397395dbf7e6ae1d26dcb4fb6cca5da7d8c747075b785877323af7ac311a",
     "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "5064aeeb2ff8afe04ed6fb1d5d1660e52dbd5fe17f1b218021c08e3694102e65",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "2513851ad2c826356eb7bb9e6b76e6c80aba0682f915f9d8e752ced68257d2b8",
