@@ -371,7 +371,8 @@ KO = {"SwingArcher": "활 두 발 파일(선택) · '슉슉'", "SwingArrow": "�
       "KaijuSiren": "괴수 10초 전 알림(사이렌 아님)", "KaijuStomp": "괴수 발소리 '쿵'", "ZoneEnterPvP": "PvP 땅 들어감 '두둥'",
       "GoldenSpot": "황금 몬스터 발견 '반짝반짝'", "ScrollSuccess": "강화 성공 '슈링 챙'", "Spend": "골드 씀 '짤-랑↓'",
       "RankUp": "등급 올라감 '또로롱↑'", "KO": "내가 쓰러짐 '콩! 삐요삐요'", "Respawn": "다시 나타남 '뿅!'",
-      "Plunder": "주머니 뺏김 '짤그랑 또르르'", "JackpotOther": "남의 대박 '오오 반짝'"}
+      "Plunder": "주머니 뺏김 '짤그랑 또르르'", "JackpotOther": "남의 대박 '오오 반짝'",
+      "SkillLearn": "새 스킬 배움 '뽁! 샤라락 티잉~' (Lv5·15·25)"}
 ORDER = ["SwingArrow", "SwingMageHalo", "SwingMageHorns", "HitHeavy", "HitCrit", "ComboCoin", "HitSoft", "SwingArcher",
          "GoldPickup", "QuestNew", "QuestDone", "WindowClose", "Deny", "RankDown", "ScrollFail", "SkillHalo", "SkillHorns", "Purify", "Devour",
          "Potion", "AutoOn", "AutoOff", "TalkBlip", "Equip", "SkillReady", "HurtBig", "PowerUp", "Jump",
@@ -383,10 +384,15 @@ BATCH.update({k: 2 for k in ORDER[8:28]})
 BATCH.update({k: 3 for k in ORDER[28:]})
 BATCH.update({k: 4 for k in ORDER4})
 ORDER += ORDER4
+ORDER5 = ["SkillLearn"]
+BATCH.update({k: 5 for k in ORDER5})
+ORDER += ORDER5
 BATCH_TITLE = {1: "1번 묶음 · 전투 (지난번과 같은 후보)", 2: "2번 묶음 · UI·스킬·선택·새 소리", 3: "3번 묶음 · 할로윈 P0",
-               4: "4번 묶음 · 왕관·왕·전쟁 → 거위·괴수·PvP·황금 → 강화·돈·등급·KO"}
+               4: "4번 묶음 · 왕관·왕·전쟁 → 거위·괴수·PvP·황금 → 강화·돈·등급·KO",
+               5: "5번 묶음 · 새 스킬 배움 (A23-71)"}
 SCENE_OF = {"SwingArrow": "archer", "SwingMageHalo": "mage_halo", "SwingMageHorns": "mage_horns", "HitHeavy": "warrior_goblin",
-            "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime"}
+            "HitCrit": "warrior_goblin", "ComboCoin": "warrior_slime", "HitSoft": "warrior_slime", "SkillLearn": "lv5"}
+SCENE_LABEL = {"lv5": "Lv5 장면: LevelUp → 1.1 s 뒤 SkillLearn"}  # build/sfx_scene/lv5_*.mp3 (mixed by hand, game volumes)
 PICK = {  # 소리 만들기 추천 (검수가 고른다)
     "SwingArrow": ("SwingArrow_SwingArcher-2-4", "화살 한 발 73 ms, 중심 3.9 kHz(설계서 시제품 3.83), 줄 소리 없음. 궁수 장면에서 두 발이 '슉-슉'으로 떨어져 들려요."),
     "SwingMageHalo": ("SwingMageHalo_SwingMage-3-4", "'슝' 위로 휘는 반짝 0.17 s + 아주 얇은 합성 '샤랑'. 남은 경고는 잡음 정도(flat 0.05)뿐."),
@@ -438,6 +444,9 @@ PICK = {  # 소리 만들기 추천 (검수가 고른다)
     "Respawn": ("Respawn_sB", "더 높은 '뿅!' 1.0 → 2.2 kHz 0.17 s. 점프와 점수 1.70(sA는 0.73이라 점프처럼 들려요)."),
     "Plunder": ("Plunder_sB", "동전 '짤그랑' 4개 + 한 개가 '또르르' 굴러감 0.36 s. 골드 받기와 점수 1.43(sA는 0.81이라 받기처럼 들려요)."),
     "JackpotOther": ("JackpotOther_sA", "색종이 '퐁' + 오르는 유리 '핑' + 반짝 0.57 s."),
+    # batch 5
+    "SkillLearn": ("SkillLearn_sA", "버튼 '뽁'(제일 커서 시작이 또렷) → 유리 반짝 5알 '샤라락' → A6+E7 화음 '티잉~' 7 Hz로 반짝이며 0.70 s. "
+                                    "짝 점수 PowerUp 2.0 · LevelUp 1.4 · QuestDone 1.3(모두 1.0 이상). sC는 화음이 낮아(E6+B6) 폰에 더 둥글게."),
 }
 
 
@@ -518,7 +527,7 @@ def board(only=None):
                 how = '<p class="prompt">Firefly + 우리 합성 “샤랑” 한 겹(아주 얇게)</p>'
             chip = '<span class="pick">추천</span>' if name == rec else ""
             m = r["metrics"]
-            sc = scene_audio(f"{scene}_{name}", "장면 20초") if scene else ""
+            sc = scene_audio(f"{scene}_{name}", SCENE_LABEL.get(scene, "장면 20초")) if scene else ""
             tiles.append(
                 f'<article class="tile {r["verdict"].lower()}{" rec" if name == rec else ""}">'
                 f'<header><code>{H.escape(name)}</code><span class="vd {r["verdict"].lower()}">{r["verdict"]} {r["score"]}</span>{chip}</header>'
@@ -605,6 +614,10 @@ BOARD_LEAD = {
 판정은 설계서 검사기(tools/sfx_check.py + tools/sfx_spec.json): PASS = 먼저 들어 볼 것, WARN = 작은 벗어남만 있음, 불합격은 뺐어요.
 그림은 스펙트로그램(세로 50 Hz–12 kHz, 가로는 키 제목 옆에 적은 길이). sA·sB·sC = 설계서 레시피대로 만든 우리 합성(+ Kenney CC0), 1-4 같은 숫자 = Firefly.
 2026-10-07 · Firefly 12번(120크레딧, 앞 계정에서 생성) + Kenney CC0 + 우리 합성. 빼앗김 sB와 부활 sB·sC는 짝 검사(골드 받기·점프와 구별) 때문에 새로 만들었어요.</p>""", ""),
+    5: ("""<p class="lead">검수용 5번 묶음: 새 스킬을 배우는 순간(A23-71, Lv5·15·25) 소리 하나를 골라 주세요.
+'New skill!'과 함께 스킬 버튼이 '톡' 나타나는 때예요. Lv5·15·25에서는 LevelUp과 같이 오니, 게임에서는 LevelUp 소리 뒤(약 1.1 s)에 틀어요.
+PowerUp(첫 무기)·LevelUp·QuestDone과 다르게 들리도록 설계표 짝 규칙을 새로 넣었어요(점수 1.0 이상, LevelUp이 1 dB 이상 더 큼).
+판정은 설계서 검사기(tools/sfx_check.py + tools/sfx_spec.json). 그림은 스펙트로그램(세로 50 Hz–12 kHz). sA·sB·sC = 우리 합성, 크레딧 0.</p>""", ""),
 }
 
 

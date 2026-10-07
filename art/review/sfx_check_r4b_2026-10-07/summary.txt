@@ -104,6 +104,9 @@ SkillHalo       SkillHalo_1-3            WARN  94  FAIL: -  |  WARN: centroidHz=
 SkillHorns      SkillHorns_sA            PASS 100  FAIL: -  |  WARN: -
 SkillHorns      SkillHorns_sB            WARN  97  FAIL: -  |  WARN: peakAtMs=29.5 (want 30..110)
 SkillHorns      SkillHorns_1-1           WARN  93  FAIL: -  |  WARN: attackMs=84.5 (want 10..80); centroidHz=707 (want 900..1900)
+SkillLearn      SkillLearn_sA            PASS 100  FAIL: -  |  WARN: -
+SkillLearn      SkillLearn_sB            PASS 100  FAIL: -  |  WARN: -
+SkillLearn      SkillLearn_sC            PASS 100  FAIL: -  |  WARN: -
 SkillReady      SkillReady_sA            PASS 100  FAIL: -  |  WARN: -
 SkillReady      SkillReady_sB            PASS 100  FAIL: -  |  WARN: -
 SkillReady      SkillReady_1-2           WARN  96  FAIL: -  |  WARN: centroidHz=2622 (want 800..2500)
@@ -424,3 +427,21 @@ distinct ok   Jump_2-1 [Jump] vs Respawn_sC [Respawn]: score 1.67 (>= 1.0) | com
 distinct warn Jump_2-2 [Jump] vs Respawn_sA [Respawn]: score 0.73 (>= 1.0) | coming back is not a hop
 distinct ok   Jump_2-2 [Jump] vs Respawn_sB [Respawn]: score 1.7 (>= 1.0) | coming back is not a hop
 distinct ok   Jump_2-2 [Jump] vs Respawn_sC [Respawn]: score 1.45 (>= 1.0) | coming back is not a hop
+distinct ok   SkillLearn_sA [SkillLearn] vs PowerUp_1-2 [PowerUp]: score 2.01 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sA [SkillLearn] vs PowerUp_1-3 [PowerUp]: score 1.61 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sA [SkillLearn] vs PowerUp_2-1 [PowerUp]: score 1.3 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sB [SkillLearn] vs PowerUp_1-2 [PowerUp]: score 2.12 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sB [SkillLearn] vs PowerUp_1-3 [PowerUp]: score 1.66 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sB [SkillLearn] vs PowerUp_2-1 [PowerUp]: score 1.35 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sC [SkillLearn] vs PowerUp_1-2 [PowerUp]: score 2.13 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sC [SkillLearn] vs PowerUp_1-3 [PowerUp]: score 2.12 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sC [SkillLearn] vs PowerUp_2-1 [PowerUp]: score 1.53 (>= 1.0) | a new skill is not the first-weapon power-up
+distinct ok   SkillLearn_sA [SkillLearn] vs QuestDone_sA [QuestDone]: score 1.31 (>= 1.0) | a new skill is not a finished quest
+distinct ok   SkillLearn_sA [SkillLearn] vs QuestDone_sB [QuestDone]: score 1.31 (>= 1.0) | a new skill is not a finished quest
+distinct ok   SkillLearn_sA [SkillLearn] vs QuestDone_1-1 [QuestDone]: score 2.52 (>= 1.0) | a new skill is not a finished quest
+distinct ok   SkillLearn_sB [SkillLearn] vs QuestDone_sA [QuestDone]: score 1.33 (>= 1.0) | a new skill is not a finished quest
+distinct ok   SkillLearn_sB [SkillLearn] vs QuestDone_sB [QuestDone]: score 1.33 (>= 1.0) | a new skill is not a finished quest
+distinct ok   SkillLearn_sB [SkillLearn] vs QuestDone_1-1 [QuestDone]: score 2.57 (>= 1.0) | a new skill is not a finished quest
+distinct ok   SkillLearn_sC [SkillLearn] vs QuestDone_sA [QuestDone]: score 1.23 (>= 1.0) | a new skill is not a finished quest
+distinct ok   SkillLearn_sC [SkillLearn] vs QuestDone_sB [QuestDone]: score 1.23 (>= 1.0) | a new skill is not a finished quest
+distinct ok   SkillLearn_sC [SkillLearn] vs QuestDone_1-1 [QuestDone]: score 2.56 (>= 1.0) | a new skill is not a finished quest

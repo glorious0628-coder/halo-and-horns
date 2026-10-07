@@ -1247,6 +1247,26 @@
     "lt300": [0, 0.01],
     "phoneDropDb": {"range": [0, 1], "hard": [0, 2]}
    }
+  },
+  "SkillLearn": {
+   "status": "new key (A23-71: skills come at Lv5 / 15 / 25; PowerUp family but its own sound)",
+   "tier": "big",
+   "volume": 0.6,
+   "repeat": "3 times per life (Lv5, Lv15, Lv25)",
+   "say": "뽁! 샤라락~ 티잉~ (the new skill button pops in with a magic shimmer)",
+   "moment": "'New skill!' and the skill button pops in. At Lv5 / 15 / 25 it comes with LevelUp: play it after the LevelUp sound (about 1.1 s later).",
+   "rules": {
+    "durMs": {"range": [550, 800], "hard": [400, 1000]},
+    "firstOnsetMs": [0, 10],
+    "attackMs": {"range": [0, 10], "hard": [0, 20]},
+    "nOnsets": {"range": [2, 6], "hard": [1, 9]},
+    "centroidHz": [1500, 3500],
+    "lt300": [0, 0.01],
+    "gt8k": [0, 0.05],
+    "phoneDropDb": {"range": [0, 1.5], "hard": [0, 3]},
+    "harshDb": [0, 12]
+   },
+   "notes": {"pairs": "not PowerUp's long sweep, not LevelUp's fanfare, not QuestDone's bell steps: a pop (the button) + a quick sparkle run + one held shimmering chord"}
   }
  },
  "pairs": [
@@ -1623,6 +1643,34 @@
    "b": "Respawn",
    "require": {"score": 1.0},
    "why": "coming back is not a hop"
+  },
+  {
+   "kind": "distinct",
+   "a": "SkillLearn",
+   "b": "PowerUp",
+   "require": {"score": 1.0},
+   "why": "a new skill is not the first-weapon power-up"
+  },
+  {
+   "kind": "distinct",
+   "a": "SkillLearn",
+   "b": "LevelUp",
+   "require": {"score": 1.0},
+   "why": "it plays right after LevelUp at Lv5 / 15 / 25: it must not sound like a second level-up"
+  },
+  {
+   "kind": "distinct",
+   "a": "SkillLearn",
+   "b": "QuestDone",
+   "require": {"score": 1.0},
+   "why": "a new skill is not a finished quest"
+  },
+  {
+   "kind": "louder",
+   "a": "LevelUp",
+   "b": "SkillLearn",
+   "minDb": 1.0,
+   "why": "LevelUp is the loudest sound"
   }
  ]
 }
